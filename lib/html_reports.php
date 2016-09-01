@@ -65,8 +65,7 @@ $fields_reports_edit = array(
 		'method' => 'drop_array',
 		'default' => 'default.format',
 		'description' => __('Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.
-		If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.
-		These files are located in the \'formats\' directory.'),
+		If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the \'formats\' directory.'),
 		'value' => '|arg1:format_file|',
 		'array' => $formats
 		),
@@ -178,7 +177,7 @@ $fields_reports_edit = array(
 	'from_name' => array(
 		'friendly_name' => __('From Name'),
 		'method' => 'textbox',
-		'default' => read_config_option("settings_from_name"),
+		'default' => read_config_option('settings_from_name'),
 		'description' => __('This Name will be used as the default E-mail Sender'),
 		'max_length' => 255,
 		'value' => '|arg1:from_name|'
@@ -186,7 +185,7 @@ $fields_reports_edit = array(
 	'from_email' => array(
 		'friendly_name' => __('From Email Address'),
 		'method' => 'textbox',
-		'default' => read_config_option("settings_from_email"),
+		'default' => read_config_option('settings_from_email'),
 		'description' => __('This Adress will be used as the E-mail Senders address'),
 		'max_length' => 255,
 		'value' => '|arg1:from_email|'
@@ -216,7 +215,7 @@ $fields_reports_edit = array(
 	'attachment_type' => array(
 		'friendly_name' => __('Image attach type'),
 		'method' => 'drop_array',
-		'default' => read_config_option("reports_default_image_format"),
+		'default' => read_config_option('reports_default_image_format'),
 		'description' => __('Select one of the given Types for the Image Attachments'),
 		'value' => '|arg1:attachment_type|',
 		'array' => $attach_types
@@ -224,20 +223,24 @@ $fields_reports_edit = array(
 );
 
 /* get the hosts sql first */
-if (read_config_option("auth_method") != 0) {
+if (read_config_option('auth_method') != 0) {
 	/* get policy information for the sql where clause */
-	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION["sess_user_id"]));
-	$sql_where    = get_graph_permissions_sql($current_user["policy_graphs"], $current_user["policy_hosts"], $current_user["policy_graph_templates"]);
+	$current_user = db_fetch_row_prepared('SELECT * 
+		FROM user_auth 
+		WHERE id = ?', 
+		array($_SESSION['sess_user_id']));
+
+	$sql_where    = get_graph_permissions_sql($current_user['policy_graphs'], $current_user['policy_hosts'], $current_user['policy_graph_templates']);
 
 	$hosts_sql = "SELECT DISTINCT host.id, CONCAT_WS('',host.description,' (',host.hostname,')') as name
 		FROM (graph_templates_graph,host)
 		LEFT JOIN graph_local ON (graph_local.host_id=host.id)
 		LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
-		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
+		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION['sess_user_id'] . ') OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . '))
 		WHERE graph_templates_graph.local_graph_id=graph_local.id
 		AND host_template_id=|arg1:host_template_id|
-		" . (empty($sql_where) ? "" : "AND $sql_where") . "
-		ORDER BY name";
+		' . (empty($sql_where) ? '' : "AND $sql_where") . '
+		ORDER BY name';
 }else{
 	$hosts_sql = "SELECT DISTINCT host.id, CONCAT_WS('',host.description,' (',host.hostname,')') as name
 		FROM host
@@ -246,29 +249,29 @@ if (read_config_option("auth_method") != 0) {
 }
 
 /* next do the templates sql */
-if (read_config_option("auth_method") != 0) {
-	$templates_sql = "SELECT DISTINCT graph_templates.id, graph_templates.name
+if (read_config_option('auth_method') != 0) {
+	$templates_sql = 'SELECT DISTINCT graph_templates.id, graph_templates.name
 		FROM (graph_templates_graph,graph_local)
 		LEFT JOIN host ON (host.id=graph_local.host_id)
 		LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
-		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . ") OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=" . $_SESSION["sess_user_id"] . "))
+		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . '))
 		WHERE graph_templates_graph.local_graph_id=graph_local.id
 		AND graph_templates.id IS NOT NULL
 		AND host_id=|arg1:host_id|
-		" . (empty($sql_where) ? "" : "AND $sql_where") . "
-		ORDER BY name";
+		' . (empty($sql_where) ? '' : "AND $sql_where") . '
+		ORDER BY name';
 }else{
-	$templates_sql = "SELECT DISTINCT graph_templates.id, graph_templates.name
+	$templates_sql = 'SELECT DISTINCT graph_templates.id, graph_templates.name
 		FROM graph_templates
 		WHERE host_id=|arg1:host_id|
-		ORDER BY name";
+		ORDER BY name';
 }
 
 /* last do the tree permissions */
-if (read_config_option("auth_method") != 0) {
+if (read_config_option('auth_method') != 0) {
 	/* all allowed by default */
-	$sql_in = "";
-	if ($current_user["policy_trees"] == 1) {
+	$sql_in = '';
+	if ($current_user['policy_trees'] == 1) {
 		$exclude_trees = db_fetch_assoc_prepared('SELECT item_id
 			FROM user_auth_perms
 			WHERE user_id = ?
@@ -276,11 +279,11 @@ if (read_config_option("auth_method") != 0) {
 
 		if (sizeof($exclude_trees)) {
 			foreach($exclude_trees as $tree) {
-				$sql_in .= (strlen($sql_in) ? ", ":"") . $tree["item_id"];
+				$sql_in .= (strlen($sql_in) ? ', ':'') . $tree['item_id'];
 			}
 		}
 
-		$sql_where = (strlen($sql_in) ? "WHERE id NOT IN ($sql_in)":"");
+		$sql_where = (strlen($sql_in) ? "WHERE id NOT IN ($sql_in)":'');
 	}else{
 		$include_trees = db_fetch_assoc_prepared('SELECT item_id
 			FROM user_auth_perms
@@ -289,16 +292,16 @@ if (read_config_option("auth_method") != 0) {
 
 		if (sizeof($include_trees)) {
 			foreach($include_trees as $tree) {
-				$sql_in .= (strlen($sql_in) ? ", ":"") . $tree["item_id"];
+				$sql_in .= (strlen($sql_in) ? ', ':'') . $tree['item_id'];
 			}
 		}
 
-		$sql_where = (strlen($sql_in) ? "WHERE id IN ($sql_in)":"");
+		$sql_where = (strlen($sql_in) ? "WHERE id IN ($sql_in)":'');
 	}
 
 	$trees_sql = "SELECT id, name FROM graph_tree $sql_where ORDER BY name";
 }else{
-	$trees_sql = "SELECT id, name FROM graph_tree ORDER BY name";
+	$trees_sql = 'SELECT id, name FROM graph_tree ORDER BY name';
 }
 
 $fields_reports_item_edit = array(
@@ -1035,11 +1038,6 @@ function reports_edit() {
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
-		'id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
-			'pageset' => true,
-			'default' => '-1'
-			),
 		'rows' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'default' => '-1'
@@ -1077,23 +1075,23 @@ function reports_edit() {
 
 	/* display the report */
 	$report = array();
-	if (!isempty_request_var('id')) {
+	if (get_filter_request_var('id') > 0) {
 		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array(get_request_var('id')));
 		# reformat mailtime to human readable format
 		$report['mailtime'] = date(reports_date_time_format(), $report['mailtime']);
 		# setup header
 		$header_label = __('[edit: %s]', $report['name']);
+		$tabs = array('details' => __('Details'), 'items' => __('Items'), 'preview' => __('Preview'), 'events' => __('Events'));
 	}else{
 		$header_label = __('[new]');
 		# initialize mailtime with current timestamp
 		$report['mailtime'] = date(reports_date_time_format(), floor(time() / read_config_option('poller_interval')) * read_config_option('poller_interval'));
+		$tabs = array('details' => __('Details'));
 	}
 	/* if there was an error on the form, display the date in the correct format */
 	if (isset($_SESSION['sess_field_values']['mailtime'])) {
 		$_SESSION['sess_field_values']['mailtime'] = date(reports_date_time_format(), $_SESSION['sess_field_values']['mailtime']);
 	}
-
-	$tabs = array('details' => __('Details'), 'items' => __('Items'), 'preview' => __('Preview'), 'events' => __('Events'));
 
 	/* set the default settings category */
 	if (!isset_request_var('tab')) set_request_var('tab', 'details');

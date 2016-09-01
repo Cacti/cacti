@@ -826,30 +826,30 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 		}
 
 		if ($leaf_type == 'graph') {
-			$graph_name = db_fetch_cell_prepared("SELECT 
+			$graph_name = db_fetch_cell_prepared('SELECT 
 				gtg.title_cache AS title
 				FROM graph_templates_graph AS gtg
-				WHERE gtg.local_graph_id = ?", array($leaf['local_graph_id']));
+				WHERE gtg.local_graph_id = ?', array($leaf['local_graph_id']));
 		}
 
 		//if (!empty($tree_name) && empty($leaf_name) && empty($host_name) && !$nested) {
 		if (!empty($tree_name) && empty($leaf_name) && empty($host_name)) {
-			$title = $title_delimeter . "<strong>" . __('Tree:') . "</strong> $tree_name"; 
+			$title = $title_delimeter . '<strong>' . __('Tree:') . "</strong> $tree_name"; 
 			$title_delimeter = '-> ';
 		}
 
 		if (!empty($leaf_name)) {
-			$title .= $title_delimeter . "<strong>" . __('Leaf:') . "</strong> $leaf_name"; 
+			$title .= $title_delimeter . '<strong>' . __('Leaf:') . "</strong> $leaf_name"; 
 			$title_delimeter = '-> ';
 		}
 
 		if (!empty($host_name)) {
-			$title .= $title_delimeter . "<strong>" . __('Host:') . "</strong> $host_name"; 
+			$title .= $title_delimeter . '<strong>' . __('Host:') . "</strong> $host_name"; 
 			$title_delimeter = '-> ';
 		}
 
 		if (!empty($graph_name)) {
-			$title .= $title_delimeter . "<strong>" . __('Graph:') . "</strong> $graph_name"; 
+			$title .= $title_delimeter . '<strong>' . __('Graph:') . "</strong> $graph_name"; 
 			$title_delimeter = '-> ';
 		}
 
