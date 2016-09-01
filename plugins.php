@@ -33,8 +33,7 @@ $actions = array(
 );
 
 $status_names = array(
-	-2 => __('Disabled'),
-	-1 => __('Active'),
+	-1 => __('Not Compatible'),
 	0  => __('Not Installed'),
 	1  => __('Active'),
 	2  => __('Awaiting Configuration'),
@@ -55,18 +54,6 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 	$id   = sanitize_search_string(get_request_var('id'));
 
 	switch ($mode) {
-		case 'installold':
-			if (!in_array($id, $plugins_integrated)) {
-				api_plugin_install_old($id);
-			}
-			header('Location: plugins.php');
-			exit;
-			break;
-		case 'uninstallold':
-			api_plugin_uninstall_old($id);
-			header('Location: plugins.php');
-			exit;
-			break;
 		case 'install':
 			if (!in_array($id, $plugins_integrated)) {
 				api_plugin_install($id);
@@ -134,58 +121,6 @@ update_show_current();
 
 bottom_footer();
 
-function api_plugin_install_old ($plugin) {
-	global $config;
-	if (!file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
-		return false;
-	}
-	$oldplugins = read_config_option('oldplugins');
-	if (strlen(trim($oldplugins))) {
-	$oldplugins = explode(',', $oldplugins);
-	}else{
-		$oldplugins = array();
-	}
-	if (!in_array($plugin, $oldplugins)) {
-		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
-		$function = 'plugin_init_' . $plugin;
-		if (function_exists($function)){
-			$oldplugins[] = $plugin;
-			$oldplugins   = implode(',', $oldplugins);
-			set_config_option('oldplugins', $oldplugins);
-			unset($_SESSION['sess_config_array']['oldplugins']);
-			return true;
-		} else {
-			return false;
-		}
-	}
-	return false;
-}
-
-function api_plugin_uninstall_old ($plugin) {
-	global $config;
-	$oldplugins = read_config_option('oldplugins');
-	if (strlen(trim($oldplugins))) {
-	$oldplugins = explode(',', $oldplugins);
-	}else{
-		$oldplugins = array();
-	}
-	if (!empty($oldplugins)) {
-		if (in_array($plugin, $oldplugins)) {
-			for ($a = 0; $a < count($oldplugins); $a++) {
-				if ($oldplugins[$a] == $plugin) {
-					unset($oldplugins[$a]);
-					break;
-				}
-			}
-			$oldplugins = implode(',', $oldplugins);
-			set_config_option('oldplugins', $oldplugins);
-			unset($_SESSION['sess_config_array']['oldplugins']);
-			return true;
-		}
-	}
-	return false;
-}
-
 function plugins_temp_table_exists($table) {
 	return sizeof(db_fetch_row("SHOW TABLES LIKE '$table'"));
 }
@@ -227,7 +162,7 @@ function plugins_load_temp_table() {
 					if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = __('Not Stated');
 					if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
 					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['longname'] = ucfirst($file);
-					$cinfo[$file]['status'] = -2;
+					$cinfo[$file]['status'] = -1;
 					if (in_array($file, $plugins)) {
 						$cinfo[$file]['status'] = -1;
 					}
@@ -373,8 +308,6 @@ function update_show_current () {
 							<option value='5'<?php if (get_request_var('state') == '5') {?> selected<?php }?>><?php print __('Active/Installed');?></option>
 							<option value='2'<?php if (get_request_var('state') == '2') {?> selected<?php }?>><?php print __('Configuration Issues');?></option>
 							<option value='0'<?php if (get_request_var('state') == '0') {?> selected<?php }?>><?php print __('Not Installed');?></option>
-							<option value='-1'<?php if (get_request_var('state') == '-1') {?> selected<?php }?>><?php print __('Legacy Installed');?></option>
-							<option value='-2'<?php if (get_request_var('state') == '-2') {?> selected<?php }?>><?php print __('Legacy Not Intalled');?></option>
 						</select>
 					</td>
 					<td>
@@ -550,24 +483,6 @@ function plugin_actions($plugin) {
 
 	$link = '<td>';
 	switch ($plugin['status']) {
-		case '-2': // Old PA Not Installed
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=installold&id=' . $plugin['directory']) . "' title='" . __('Install Old Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
-			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
-			break;
-		case '-1':	// Old PA Currently Active
-			$oldplugins = read_config_option('oldplugins');
-			if (strlen(trim($oldplugins))) {
-				$oldplugins = explode(',', $oldplugins);
-			}else{
-				$oldplugins = array();
-			}
-			if (in_array($plugin['directory'], $oldplugins)) {
-				$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstallold&id=' . $plugin['directory']) . "' title='" . __('Uninstall Old Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
-			} else {
-				$link .= "<a href='#' title='" . __('Please Uninstall from config.php') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
-			}
-			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
-			break;
 		case '0': // Not Installed
 			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __('Install Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
 			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
@@ -584,8 +499,7 @@ function plugin_actions($plugin) {
 			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __('Enable Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/accept.png'></a>";
 			break;
 		default: // Old PIA
-			$link .= "<a href='#' title='" . __('Please Install/Uninstall from config.php') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
-			$link .= "<a href='#' title='" . __('Enabling from the UI is not supported') . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
+			$link .= "<a href='#' title='" . __('Plugin is not compatible') . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
 			break;
 	}
 	$link .= '</td>';
