@@ -1323,9 +1323,9 @@ function html_graph_tabs_right($current_user) {
 			case 'tree':
 				if (is_view_allowed('show_tree')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li role='tab' tabindex='1' aria-controls='tabs-1'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+						print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
-						print "<li role='tab' tabindex='1' aria-controls='tabs-1'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+						print "<li role='tab' tabindex='1'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
 					break;
 				}
@@ -1334,9 +1334,9 @@ function html_graph_tabs_right($current_user) {
 			case 'list':
 				if (is_view_allowed('show_list')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li role='tab' tabindex='2' aria-controls='tabs-2'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+						print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
-						print "<li role='tab' tabindex='2' aria-controls='tabs-2'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+						print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
 					break;
 				}
@@ -1345,9 +1345,9 @@ function html_graph_tabs_right($current_user) {
 			case 'preview':
 				if (is_view_allowed('show_preview')) {
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li role='tab' tabindex='3' aria-controls='tabs-3'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+						print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 					}else{
-						print "<li role='tab' tabindex='3' aria-controls='tabs-3'><a role='presentation' tabindex='-1' title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+						print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 					}
 					break;
 				}
