@@ -354,7 +354,7 @@ function push_out_data_input_method($data_input_id) {
 
 	if (sizeof($data_sources)) {
 		foreach($data_sources as $data_source) {
-			$_my_local_data_ids[] = $data_source['local_data_id'];
+			$_my_local_data_ids[] = $data_source['id'];
 
 			$poller_items = array_merge($poller_items, update_poller_cache($data_source));
 		}
@@ -581,8 +581,9 @@ function utilities_get_mysql_recommendations() {
 		$recommendations += array(
 			'collation_server' => array(
 				'value' => 'utf8_general_ci',
+				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than english, it is important to use
+				'comment' => __('When using Cacti with languages other than English, it is important to use
 					the utf8_general_ci collation type as some characters take more than a single byte.  
 					If you are first just now installing Cacti, stop, make the changes and start over again.
 					If your Cacti has been running and is in production, see the internet for instructions
@@ -590,8 +591,9 @@ function utilities_get_mysql_recommendations() {
 				),
 			'character_set_client' => array(
 				'value' => 'utf8',
+				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than english, it is important ot use
+				'comment' => __('When using Cacti with languages other than English, it is important ot use
 					the utf8 character set as some characters take more than a single byte.
 					If you are first just now installing Cacti, stop, make the changes and start over again.
 					If your Cacti has been running and is in production, see the internet for instructions
@@ -602,14 +604,16 @@ function utilities_get_mysql_recommendations() {
 		$recommendations += array(
 			'collation_server' => array(
 				'value' => 'utf8mb4_col',
+				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than english, it is important to use
+				'comment' => __('When using Cacti with languages other than English, it is important to use
 					the utf8mb4_col collation type as some characters take more than a single byte.')
 				),
 			'character_set_client' => array(
 				'value' => 'utf8mb4',
+				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than english, it is important ot use
+				'comment' => __('When using Cacti with languages other than English, it is important ot use
 					the utf8mb4 character set as some characters take more than a single byte.')
 				)
 		);
@@ -766,7 +770,11 @@ function utilities_get_mysql_recommendations() {
 			case 'gtm':
 				$value = trim($r['value'], 'M') * 1024 * 1024;
 				if ($variables[$name] < $value) {
-					$class = 'deviceDown';
+					if (isset($r['class']) && $r['class'] == 'warning') {
+						$class = 'textWarning';
+					}else{
+						$class = 'textError';
+					}
 				}
 
 				print "<td>" . $name . "</td>\n";
@@ -777,7 +785,11 @@ function utilities_get_mysql_recommendations() {
 				break;
 			case 'gt':
 				if ($variables[$name] < $r['value']) {
-					$class = 'deviceDown';
+					if (isset($r['class']) && $r['class'] == 'warning') {
+						$class = 'textWarning';
+					}else{
+						$class = 'textError';
+					}
 				}
 
 				print "<td>" . $name . "</td>\n";
@@ -788,7 +800,11 @@ function utilities_get_mysql_recommendations() {
 				break;
 			case 'equal':
 				if ($variables[$name] != $r['value']) {
-					$class = 'deviceDown';
+					if (isset($r['class']) && $r['class'] == 'warning') {
+						$class = 'textWarning';
+					}else{
+						$class = 'textError';
+					}
 				}
 
 				print "<td>" . $name . "</td>\n";
@@ -805,7 +821,11 @@ function utilities_get_mysql_recommendations() {
 				}
 
 				if ($variables[$name] < ($r['value']*$totalMem/100)) {
-					$class = 'deviceDown';
+					if (isset($r['class']) && $r['class'] == 'warning') {
+						$class = 'textWarning';
+					}else{
+						$class = 'textError';
+					}
 				}
 
 				print "<td>" . $name . "</td>\n";

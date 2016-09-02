@@ -883,7 +883,13 @@ legend {
 .textError {
 	font-size: 12px;
 	font-weight: bold;
-	color: red;
+	color: red !important;
+}
+
+.textWarning {
+	font-size: 12px;
+	font-weight: normal;
+	color: yellow !important;
 }
 
 .textInfo {

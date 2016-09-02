@@ -1022,6 +1022,12 @@ legend {
 	color: red !important;
 }
 
+.textWarning {
+	font-size: 12px;
+	font-weight: normal;
+	color: yellow !important;
+}
+
 .textInfo {
 	font-size: 12px;
 	font-weight: bold;
@@ -1185,7 +1191,7 @@ th.sortable {
 	line-height:10px;
 }
 
-th.primarySort {
+th.primarySort, th.tablesorter-headerDesc, th.tablesorter-headerAsc {
 	background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(167, 217, 134, 0.4) 0%, rgba(148, 179, 107, 0.4) 100%) repeat scroll 0 0;
 }
 
