@@ -180,7 +180,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>'></div>
 							<?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'>" . htmlspecialchars($graph["title_cache"]) . "</span>" : "");?>
 						</td>
-						<td class='noprint graphDrillDown'>
+						<td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php graph_drilldown_icons($graph['local_graph_id']);?>
 						</td>
 					</tr>
@@ -300,7 +300,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting("default_width");?>' graph_height='<?php print read_user_setting("default_height");?>'></div>
 							<?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'>" . htmlspecialchars($graph["title_cache"]) . "</span>" : "");?>
 						</td>
-						<td class='noprint graphDrillDown'>
+						<td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails');?>
 						</td>
 					</tr>
