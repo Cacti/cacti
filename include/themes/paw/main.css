@@ -5,8 +5,6 @@ body, table, tr, td, textarea {
 	font-size: 12px;
 	/* fix those ever present IE issues */
 	-ms-overflow-style:scrollbar;
-	color: black;
-
 }
 
 body {
@@ -558,7 +556,7 @@ label {
 }
 
 .cactiPageBottom {
-	background-color: #000000;
+	background-color: rgba(0,0,0,0.7);
 	height: 15px;
 	width: 100%;
 }
@@ -589,18 +587,11 @@ label {
 }
 
 .cactiTreeNavigationArea {
-	background: #efefef url('./../../../images/shadow_gray.gif') repeat-x center top;
-	border-right: #aaaaaa 1px solid;
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-top: 10px;
-	display: none;
-	vertical-align: top;
-	position: fixed; 
-	left: 0px; 
-	top: 56px; 
-	#z-index: 2; 
-	overflow-y: auto;
+	background: #f0f0f0;
+	overflow-y: auto !important;
+	width: 167px;
+	height:100%;
+	float: left;
 }
 
 .jstree {
@@ -608,18 +599,6 @@ label {
 	display:block;
 }
 
-.ellipsis {
-    white-space: nowrap; 
-    width: 12em; 
-    overflow: hidden;
-    text-overflow: ellipsis; 
-    border: 1px solid #000000;
-	display: block;
-}
-
-#navigation_right {
-
-}
 
 .cactiContentNavigationArea {
 	overflow: hidden;
@@ -632,9 +611,6 @@ label {
 
 .cactiConsoleNavigationArea {
 	background: #f0f0f0;
-	padding-left:0px;
-	vertical-align:top;
-	left: 0px; 
 	overflow-y: auto !important;
 	width: 167px;
 	height:100%;
@@ -813,29 +789,44 @@ legend {
 }
 
 .cactiGraphContentArea {
-	background: white url('./../../../images/shadow.gif') repeat-x center top;
-	padding-top: 10px;
-	padding-right: 5px;
-	padding-left: 5px;
-	display: none;
-	vertical-align: top;
+	height: 100%;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
+	#padding-left: 10px;
+	margin-right: 5px;
 }
+
+.cactiGraphContentArea>div:first-child {
+	display: none !important;
+}
+
+.cactiGraphContentArea>div:last-child {
+	margin-top: 10px;
+}
+
 
 .cactiGraphContentAreaPreview {
-	background: white url('./../../../images/shadow.gif') repeat-x center top;
-	padding-top: 10px;
-	padding-right: 5px;
-	padding-left: 5px;
-	display: none;
-	vertical-align: top;
+	height: 100%;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
+	padding-left: 10px;
+	margin-right: 5px;
 }
 
+.cactiGraphContentAreaPreview>div:first-child {
+	display: none !important;
+}
+
+.cactiGraphContentAreaPreview>div:last-child {
+	margin-top: 10px;
+}
 
 .cactiConsoleContentArea {
 	height: 100%;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	padding-left: 10px;
+	margin-right: 5px;
 }
 
 .cactiConsoleContentArea>div:first-child {
@@ -926,14 +917,7 @@ legend {
 }
 
 .templateHeader {
-	background: rgba(76,76,76,1);
-	background: -moz-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(76,76,76,1)), color-stop(12%, rgba(89,89,89,1)), color-stop(25%, rgba(102,102,102,1)), color-stop(39%, rgba(71,71,71,1)), color-stop(50%, rgba(44,44,44,1)), color-stop(51%, rgba(0,0,0,1)), color-stop(60%, rgba(17,17,17,1)), color-stop(76%, rgba(43,43,43,1)), color-stop(91%, rgba(28,28,28,1)), color-stop(100%, rgba(19,19,19,1)));
-	background: -webkit-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
-	background: -o-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
-	background: -ms-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
-	background: linear-gradient(to bottom, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313', GradientType=0 );
+	background: rgba(0,0,0,0.55);
 }
 
 .templateHeader td {
@@ -958,24 +942,24 @@ legend {
 	float: left;
 	text-align: left;
 	padding: 3px 0px;
-	height: 22px;
 	display: table-column;
-	font-size: 1.1em;
 	width: 90%;
+	font-size: 1em;
+	font-weight: 700;
 	border-bottom: 1px solid rgba(0,0,0,0.5);
-	background: rgba(0,0,0,1);
+	background: rgba(0,0,0,0.9);
+	
 	
 }
 
 .cactiTableButton {
 	float: right;
 	padding: 3px 0px;
-	height: 22px;
 	display: table-column;
 	text-align: right;
 	width: 10%;
 	border-bottom: 1px solid rgba(0,0,0,0.5);
-	background: rgba(0,0,0,1);
+	background: rgba(0,0,0,0.9);
 }
 
 .cactiTableButton span, .cactiTableTitle span {
@@ -1033,7 +1017,6 @@ legend {
 
 .tableHeader {
 	color: white;
-	#background: #2d4ca8;
 	background: rgba(0,0,0,0.55);
 }
 
@@ -1326,6 +1309,11 @@ div#gtabs {
 	height: 30px;
 }
 
+.ellipsis {
+	width:25px !important;
+	display:none;
+}
+
 .usertabs {
 	float: right !important;
 	width: 95px !important;
@@ -1443,8 +1431,6 @@ div.submenu span{
 }
 .tabs nav {
 	border-bottom:1px solid #ccc;
-	padding:0 0 0 4px;
-	zoom:1;
 }
 
 .tabs nav:after, .maintabs nav:after {
@@ -1582,7 +1568,7 @@ ul#nav {
 }
 
 .ui-tooltip-content div.header {
-	color: #006400;
+	color: #3f75a2;
 }
 
 .ui-tooltip-content div.content {
@@ -1622,7 +1608,6 @@ ul.pagination li a {
 }
 
 ul.pagination li span {
-	color: show;
 	float: left;
 	padding: 0px 0px;
 	text-decoration: none;
@@ -1630,18 +1615,12 @@ ul.pagination li span {
 }
 
 ul.pagination li a.active {
-	background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(167, 217, 134, 1) 0%, rgba(148, 179, 107, 1) 100%) repeat scroll 0 0;
-	color: black;
+	background: #3F75A2;
+	color: white;
 }
 
 ul.pagination li a:hover:not(.active) {
-	background: rgba(167,217,134,0.4);
-	background: -moz-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,0.4)), color-stop(100%, rgba(148,179,107,0.2)));
-	background: -webkit-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
-	background: -o-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
-	background: -ms-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
-	background: linear-gradient(to bottom, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
+	background: #f0f0f0;
 }
 
 tr#realtime td:first-child {
@@ -1707,4 +1686,16 @@ tr#realtime td:first-child {
 .darkblue{
 	background: #2d4ca8; /* Old browsers */
 
+}
+
+.ui-corner-all { 
+	border-radius: 0px !important;
+	-moz-border-radius-bottomright: 0px !important;
+	-moz-border-radius-bottomleft: 0px !important;
+	-moz-border-radius-topright: 0px !important; 
+	-moz-border-radius-topleft: 0px !important;
+}
+
+#graph_view_tree_content2_child > tbody > .tableHeader {
+	background: rgba(0,0,0,0.9);
 }
