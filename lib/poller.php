@@ -428,7 +428,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 						if (isset($rrd_field_names[$item['data_template_id'] . '_' . $matches[0]])) {
 							$field_map = $rrd_field_names[$item['data_template_id'] . '_' . $matches[0]]['data_source_name'];
 
-							if (strpos($field_map, ',')) {
+							if (strpos($field_map, ',') !== false) {
 								$fields = explode(',', $field_map);
 							}else{
 								$fields[] = $field_map;
@@ -473,8 +473,6 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 				}else{
 					unset($rrd_update_array[$rrd_path]['times'][$unix_time]);
 				}
-			}else{
-echo 'hh';
 			}
 		}
 
@@ -494,6 +492,7 @@ echo 'hh';
 
 		$results = NULL;
 		$rrd_update_array = NULL;
+
 		/* to much records in poller_output, process in chunks */
 		if ($remainder && strlen($limit)) {
 			$rrds_processed += process_poller_output($rrdtool_pipe, $remainder);
