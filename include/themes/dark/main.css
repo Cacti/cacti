@@ -1072,7 +1072,6 @@ legend {
 	background: -o-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
 	background: -ms-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
 	background: linear-gradient(to bottom, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313', GradientType=0 );
 }
 
 .templateHeader td {
@@ -1574,13 +1573,7 @@ div#gtabs {
 
 #nav li a.active {
 	color: snow;
-	background: -moz-linear-gradient(top,  #45484d 0%, #000000 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#45484d), color-stop(100%,#000000)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  #45484d 0%,#000000 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  #45484d 0%,#000000 100%); /* IE10+ */
-	background: linear-gradient(to bottom,  #45484d 0%,#000000 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+	background-image: linear-gradient(to top, #060606, #363636);
 }
 
 th {
@@ -1610,7 +1603,6 @@ tr.selectable:hover:not(.selected){
 	background: -o-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
 	background: -ms-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
 	background: linear-gradient(to bottom, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7d986', endColorstr='#94b36b', GradientType=0 );
 }
 
 tr.selectable:hover:not(.selected) a {
