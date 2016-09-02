@@ -662,20 +662,20 @@ function form_actions() {
 
 			print "	<tr>
 				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to delete the following Graph(s).') . "</p>
+					<p>" . __('Click \'Continue\' to delete the following Graph(s).  Note that if you choose to Delete Data Sources, only those Data Sources not in use elsewhere will also be Deleted.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>";
 
 			if (isset($data_sources) && sizeof($data_sources)) {
-				print "<tr><td class='textArea'><p>" . __('The following Data Source(s) are in use by these Graph(s):') . "</p>\n";
+				print "<tr><td class='textArea'><p>" . __('The following Data Source(s) are in use by these Graph(s).') . "</p>\n";
 
 				print '<div class="itemlist"><ul>';
 				foreach ($data_sources as $data_source) {
 					print '<li>' . htmlspecialchars($data_source['name_cache']) . "</li>\n";
 				}
-				print '</ul></div>';
+				print '</ul></div><br>';
 
 				print '<span class="nowrap">';
-				form_radio_button('delete_type', '2', '2', __('Delete all Data Source(s) referenced by these Graph(s).'), '2'); 
+				form_radio_button('delete_type', '2', '2', __('Delete all Data Source(s) referenced by these Graph(s) that are not in use elsewhere.'), '2'); 
 				print '<br>';
 				form_radio_button('delete_type', '1', '2', __('Leave the Data Source(s) untouched.'), '2'); 
 				print '<br>';
