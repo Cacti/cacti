@@ -25,6 +25,12 @@
 function run_data_query($host_id, $snmp_query_id) {
 	global $config, $input_types;
 
+	/* don't run/rerun the query if the host is down, or disabled */
+	$status = db_fetch_row_prepared('SELECT status, disabled FROM host WHERE id = ?', array($host_id));
+	if ($status['status'] == HOST_DOWN || $status['disabled'] == 'on') {
+		return true;
+	}
+
 	query_debug_timer_start();
 
 	include_once($config['library_path'] . '/poller.php');
