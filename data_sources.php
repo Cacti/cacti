@@ -1054,6 +1054,12 @@ function ds() {
 			'pageset' => true,
 			'default' => '-1'
 			),
+		'has_graphs' => array(
+			'filter' => FILTER_VALIDATE_REGEXP, 
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
+			),
 		'method_id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
@@ -1083,6 +1089,7 @@ function ds() {
 		strURL += '&rfilter=' + $('#rfilter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&status=' + $('#status').val();
+		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&method_id=' + $('#method_id').val();
 		strURL += '&page=' + $('#page').val();
@@ -1102,6 +1109,10 @@ function ds() {
 
 		$('#clear').click(function() {
 			clearFilter()
+		});
+
+		$('#has_graphs').click(function() {
+			applyFilter();
 		});
 
 		$('#form_data_sources').submit(function(event) {
@@ -1217,6 +1228,12 @@ function ds() {
 							?>
 						</select>
 					</td>
+					<td>
+						<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+					</td>
+					<td>
+						<label for='has_graphs'><?php print __('Has Graphs');?></label>
+					</td>
 				</tr>
 			</table>
 			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
@@ -1229,9 +1246,9 @@ function ds() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('rfilter'))) {
-		$sql_where1 = "WHERE (data_template_data.name_cache RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR data_template_data.local_data_id RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR data_template.name RLIKE '" . get_request_var('rfilter') . "'" .
+		$sql_where1 = "WHERE (dtd.name_cache RLIKE '" . get_request_var('rfilter') . "'" .
+			" OR dtd.local_data_id RLIKE '" . get_request_var('rfilter') . "'" .
+			" OR dt.name RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR data_input.name RLIKE '" . get_request_var('rfilter') . "')";
 	}else{
 		$sql_where1 = '';
@@ -1240,62 +1257,82 @@ function ds() {
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	}elseif (isempty_request_var('host_id')) {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' (data_local.host_id=0 OR data_local.host_id IS NULL)';
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' (dl.host_id=0 OR dl.host_id IS NULL)';
 	}elseif (!isempty_request_var('host_id')) {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_local.host_id=' . get_request_var('host_id');
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dl.host_id=' . get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	}elseif (get_request_var('template_id') == '0') {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.data_template_id=0';
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_template_id=0';
 	}elseif (!isempty_request_var('host_id')) {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.data_template_id=' . get_request_var('template_id');
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_template_id=' . get_request_var('template_id');
 	}
 
 	if (get_request_var('status') == '-1') {
 		/* Show all items */
 	}elseif (get_request_var('status') == '1') {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.active="on"';
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.active="on"';
 	}else{
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.active=""';
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.active=""';
 	}
 
 	if (get_request_var('method_id') == '-1') {
 		/* Show all items */
 	}elseif (get_request_var('method_id') == '0') {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.data_input_id=0';
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_input_id=0';
 	}elseif (!isempty_request_var('method_id')) {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' data_template_data.data_input_id=' . get_request_var('method_id');
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_input_id=' . get_request_var('method_id');
+	}
+
+	if (get_request_var('has_graphs') == 'true') {
+		$sql_having = 'HAVING deletable>0';
+	}else{
+		$sql_having = 'HAVING deletable=0';
 	}
 
 	$total_rows = sizeof(db_fetch_assoc("SELECT
-		data_local.id
-		FROM data_local
-		INNER JOIN data_template_data
-		ON data_local.id=data_template_data.local_data_id
+		dl.id,
+		COUNT(gti.id) AS deletable
+		FROM data_local AS dl
+		INNER JOIN data_template_data AS dtd
+		ON dl.id=dtd.local_data_id
 		LEFT JOIN data_input
-		ON (data_input.id=data_template_data.data_input_id)
-		LEFT JOIN data_template
-		ON (data_local.data_template_id=data_template.id)
-		$sql_where1"));
+		ON (data_input.id=dtd.data_input_id)
+		LEFT JOIN data_template AS dt
+		ON (dl.data_template_id=dt.id)
+		LEFT JOIN data_template_rrd AS dtr
+		ON dtr.local_data_id=dtd.local_data_id
+		LEFT JOIN graph_templates_item AS gti
+		ON (gti.task_item_id=dtr.id)
+		$sql_where1
+		GROUP BY dl.id
+		$sql_having"));
 
 	$data_sources = db_fetch_assoc("SELECT
-		data_template_data.local_data_id,
-		data_template_data.name_cache,
-		data_template_data.active,
-		data_template_data.rrd_step,
+		dtd.local_data_id,
+		dtd.name_cache,
+		dtd.active,
+		dtd.rrd_step,
 		data_input.name as data_input_name,
-		data_template.name as data_template_name,
-		data_local.host_id
-		FROM data_local
-		INNER JOIN data_template_data
-		ON data_local.id=data_template_data.local_data_id
+		dt.name AS data_template_name,
+		dl.host_id,
+		COUNT(gti.id) AS deletable
+		FROM data_local AS dl
+		INNER JOIN data_template_data AS dtd
+		ON dl.id=dtd.local_data_id
 		LEFT JOIN data_input
-		ON data_input.id=data_template_data.data_input_id
-		LEFT JOIN data_template
-		ON data_local.data_template_id=data_template.id
+		ON data_input.id=dtd.data_input_id
+		LEFT JOIN data_template AS dt
+		ON dl.data_template_id=dt.id
+		LEFT JOIN data_template_rrd AS dtr
+		ON dtr.local_data_id=dtd.local_data_id
+		LEFT JOIN graph_templates_item AS gti
+		ON (gti.task_item_id=dtr.id)
 		$sql_where1
+		GROUP BY dl.id
+		$sql_having
 		ORDER BY ". get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
@@ -1312,6 +1349,7 @@ function ds() {
 		'local_data_id' => array('display' => __('ID'),'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Data Source. Useful when performing automation or debugging.')),
 		'data_input_name' => array('display' => __('Data Input Method'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method by which data is gathered for this Data Source.')),
 		'nosort' => array('display' => __('Poller Interval'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The frequency that data is collected for this Data Source.')),
+		'nosort1' => array('display' => __('Deletable'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('If this Data Source is no long in use by Graphs, it can be Deleted.')),
 		'active' => array('display' => __('Active'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Whether or not data will be collected for this Data Source. Controlled at the Data Template level.')),
 		'data_template_name' => array('display' => __('Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Data Template that this Data Source was based upon.')));
 
@@ -1320,6 +1358,12 @@ function ds() {
 	$i = 0;
 	if (sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
+			if ($data_source['deletable'] > 0) {
+				$disabled = true;
+			}else{
+				$disabled = false;
+			}
+
 			$data_source['data_template_name'] = htmlspecialchars($data_source['data_template_name']);
 			$data_name_cache = title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'));
 
@@ -1354,14 +1398,15 @@ function ds() {
 				$data_input_name = htmlspecialchars($data_source['data_input_name']);
 			}
 
-			form_alternate_row('line' . $data_source['local_data_id'], true);
+			form_alternate_row('line' . $data_source['local_data_id'], true, $disabled);
 			form_selectable_cell(filter_value(title_trim($data_source['name_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']), $data_source['local_data_id']);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'text-align:right');
 			form_selectable_cell($data_input_name, $data_source['local_data_id']);
 			form_selectable_cell(get_poller_interval($data_source['rrd_step']), $data_source['local_data_id']);
+			form_selectable_cell(($data_source['deletable'] == '0' ? __('Yes') : __('No')), $data_source['local_data_id']);
 			form_selectable_cell(($data_source['active'] == 'on' ? __('Yes') : __('No')), $data_source['local_data_id']);
 			form_selectable_cell($data_template_name, $data_source['local_data_id']);
-			form_checkbox_cell($data_source['name_cache'], $data_source['local_data_id']);
+			form_checkbox_cell($data_source['name_cache'], $data_source['local_data_id'], $disabled);
 			form_end_row();
 		}
 	}else{
