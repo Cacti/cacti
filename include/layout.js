@@ -25,8 +25,10 @@ var theme;
 var myRefresh;
 var userMenuTimer;
 var graphMenuTimer;
+var graphMenuElement=0;
 var pulsating=true;
 var pageLoaded=false;
+var shiftPressed=false;
 var messageTimer;
 var myTitle;
 
@@ -491,6 +493,12 @@ function applySkin() {
 			}
 			return text;
 		}
+	}).tooltip('close').keydown(function(event) {
+		if (event.keyCode == 16) {
+			shiftPressed = true;
+		}else{
+			shiftPressed = false;
+		}
 	});
 
 	// remove stray tooltips
@@ -691,7 +699,12 @@ function setupSortable() {
 			var page=$(this).find('.sortinfo').attr('sort-page');
 			var column=$(this).find('.sortinfo').attr('sort-column');
 			var direction=$(this).find('.sortinfo').attr('sort-direction');
-			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false', function(data) {
+			if (shiftPressed) {
+				sortAdd='&add=true';
+			}else{
+				sortAdd='';
+			}
+			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false'+sortAdd, function(data) {
 				$('div[class^="ui-"]').remove();
 				$('#main').html(data);
 				applySkin();
@@ -872,7 +885,9 @@ function pulsateStop(element) {
 
 $(function() {
 	clearTimeout(messageTimer);
+
 	$('#message_container').show();
+
 	messageTimer = setTimeout(function() { 
 		$('#message_container').slideUp('fast'); 
 		$('#message_container').empty(); }, 2000);
@@ -1187,6 +1202,12 @@ function initializeGraphs() {
 	$('.graphDrillDown').hover(
 	function() {
 		element = $(this);
+
+		// hide the previously shown element
+		if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
+			$('#dd'+graphMenuElement).find('.iconWrapper:first').hide('slide', { direction: 'left' }, 300);
+		}
+
 		clearTimeout(graphMenuTimer);
 		graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
 	},
@@ -1198,14 +1219,15 @@ function initializeGraphs() {
 
 	function showGraphMenu(element) {
 		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').show('slide', { direction: 'left' }, 400, function() {
+		element.find('.iconWrapper').show('slide', { direction: 'left' }, 300, function() {
+			graphMenuElement = element.attr('id').replace('dd', '');;
 			$(this).find('.spikekillMenu').menu('enable');
 		});
 	}
 
 	function hideGraphMenu(element) {
 		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').hide('slide', { direction: 'left' }, 400, function() {
+		element.find('.iconWrapper').hide('slide', { direction: 'left' }, 300, function() {
 			$(this).find('.spikekillMenu').menu('enable');
 		});
 	}
