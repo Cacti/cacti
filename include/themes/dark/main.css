@@ -1185,6 +1185,11 @@ legend {
 	background: linear-gradient(to bottom,  #45484d 0%,#000000 100%); /* W3C */
 }
 
+.tableHeader th:hover:not(.primarySort) {
+	border: 0px solid #155413;
+    background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
+}
+
 th.sortable {
 	cursor:pointer;
 	line-height:10px;
