@@ -193,7 +193,6 @@ db_cacti_initialized($is_web);
 
 include_once($config['include_path'] . '/global_constants.php');
 
-
 if ($is_web) {
 	/* Sanity Check on "Corrupt" PHP_SELF */
 	if ($_SERVER['SCRIPT_NAME'] != $_SERVER['PHP_SELF']) {
@@ -201,6 +200,9 @@ if ($is_web) {
 		db_close();
 		exit;
 	}
+
+	/* set the maximum post size */
+	ini_set('post_max_size', '2M');
 
 	/* we don't want these pages cached */
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
@@ -215,6 +217,7 @@ if ($is_web) {
 	session_name($cacti_session_name);
 	if (!session_id()) session_start();
 
+	/* we never run with magic quotes on */
 	if (get_magic_quotes_gpc()) {
 		$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
 		while (list($key, $val) = each($process)) {
