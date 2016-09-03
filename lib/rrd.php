@@ -210,7 +210,7 @@ function decrypt($input){
 function rrdtool_execute() {
 	global $config;
 	$args = func_get_args();
-	$force_storage_location_local = ( isset($config['force_storage_location_local']) && $config['force_storage_location_local'] === true ) ? true : false;
+	$force_storage_location_local = (isset($config['force_storage_location_local']) && $config['force_storage_location_local'] === true) ? true : false;
 	$function = (read_config_option('storage_location') && $force_storage_location_local === false ) ? '__rrd_proxy_execute' : '__rrd_execute';
 	return call_user_func_array($function, $args);
 }
@@ -713,10 +713,12 @@ function rrdtool_function_tune($rrd_tune_array) {
      either be absolute (unix timestamp) or relative (to now)
    @arg $resolution - the accuracy of the data measured in seconds
    @arg $show_unknown - Show unknown 'NAN' values in the output as 'U'
+   @arg $rrdtool_file - Don't force Cacti to calculate the file
+   @arg $cf - Specify the consolidation function to use
    @returns - (array) an array containing all data in this data source broken down
      by each data source item. the maximum of all data source items is included in
      an item called 'ninety_fifth_percentile_maximum' */
-function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null) {
+function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE') {
 	global $config;
 
 	static $rrd_fetch_cache = array();
@@ -750,77 +752,62 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	boost_fetch_cache_check($local_data_id);
 
 	/* build and run the rrdtool fetch command with all of our data */
-	$cmd_line = "fetch $data_source_path AVERAGE -s $start_time -e $end_time";
+	$cmd_line = "fetch $data_source_path $cf -s $start_time -e $end_time";
 	if ($resolution > 0) {
 		$cmd_line .= " -r $resolution";
 	}
 	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT);
+	$output = explode("\n", $output);
 
-	/* grab the first line of the output which contains a list of data sources in this rrd output */
-	$line_one_eol = strpos($output, "\n");
-	$line_one = substr($output, 0, $line_one_eol);
-	$output = substr($output, $line_one_eol);
+	$first  = true;
+	$count  = 0;
 
-	/* split the output into an array */
-	$output = preg_split('/[\r\n]{1,2}/', $output, null, PREG_SPLIT_NO_EMPTY);
+	if (sizeof($output)) {
+		foreach($output as $line) {
+			$line      = trim($line);
+			$max_array = array();
 
-	/* find the data sources in the rrdtool output */
-	if (preg_match_all('/\S+/', $line_one, $data_source_names)) {
-		/* version 1.0.49 changed the output slightly, remove the timestamp label if present */
-		if (preg_match('/^timestamp/', $line_one)) {
-			array_shift($data_source_names[0]);
-		}
-		$fetch_array['data_source_names'] = $data_source_names[0];
+			if ($first) {
+				/* get the data source names */
+				$fetch_array['data_source_names'] = preg_split('/\s+/', $line);
+				$first = false;
 
-		/* build a regular expression to match each data source value in the rrdtool output line */
-		$regex = '/[0-9]+:\s+';
-		for ($i=0; $i < count($fetch_array['data_source_names']); $i++) {
-			$regex .= '([\-]?[0-9]{1}[.,][0-9]+e[\+-][0-9]{2,3}|-?[Nn][Aa][Nn])';
+				/* set the nth percentile source, and index */
+				$fetch_array['data_source_names'][] = 'nth_percentile_maximum';
+				$nthindex = sizeof($fetch_array['data_source_names']) - 1;
+			}elseif ($line != '') {
+				/* process the data sources into an array */
+				$parts     = explode(':', $line);
+				$timestamp = $parts[0];
+				$data      = explode(' ', trim($parts[1]));
 
-			if ($i < count($fetch_array['data_source_names']) - 1) {
-				$regex .= '\s+';
-			}
-		}
-		$regex .= '/';
-	}
+				if (!isset($fetch_array['timestamp']['start_time'])) {
+					$fetch_array['timestamp']['start_time'] = $timestamp;
+				}
 
-	/* loop through each line of the output */
-	$fetch_array['values'] = array();
-	for ($j = 0; $j < count($output); $j++) {
-		$matches = array();
-		$max_array = array();
-		/* match the output line */
-		if (preg_match($regex, $output[$j], $matches)) {
-			/* only process the output line if we have the correct number of matches */
-			if (count($matches) - 1 == count($fetch_array['data_source_names'])) {
-				/* get all values from the line and set them to the appropriate data source */
-				for ($i=1; $i <= count($fetch_array['data_source_names']); $i++) {
-					if (! isset($fetch_array['values'][$i - 1])) {
-						$fetch_array['values'][$i - 1] = array();
-					}
-					if ((strtolower($matches[$i]) == 'nan') || (strtolower($matches[$i]) == '-nan')) {
+				/* process out bad data */
+				foreach($data as $index => $number) {
+					if ((strtolower($number) == 'nan') || (strtolower($number) == '-nan')) {
 						if ($show_unknown) {
-							$fetch_array['values'][$i - 1][$j] = 'U';
+							$fetch_array['values'][$index][$count] = 'U';
 						}
 					} else {
-						list($mantisa, $exponent) = explode('e', $matches[$i]);
-						$mantisa = str_replace(',','.',$mantisa);
-						$value = ($mantisa * (pow(10, (float)$exponent)));
-						$mantisa = str_replace(',','.',$mantisa);
-						$fetch_array['values'][$i - 1][$j] = ($value * 1);
-						$max_array[$i - 1] = $value;
+						$fetch_array['values'][$index][$count] = $number + 0;
+						$max_array[] = $number + 0;
 					}
 				}
-				/* get max value for values on the line */
-				if (count($max_array) > 0) {
-					$fetch_array['values'][count($fetch_array['data_source_names'])][$j] = max($max_array);
+
+				if (sizeof($max_array)) {
+					$fetch_array['values'][$nthindex][$count] = max($max_array);
+				}else{
+					$fetch_array['values'][$nthindex][$count] = 0;
 				}
+
+				$count++;
 			}
 		}
-	}
-	/* add nth percentile maximum data source */
-	if (isset($fetch_array['values'][count($fetch_array['data_source_names'])])) {
-		$fetch_array['data_source_names'][count($fetch_array['data_source_names'])] = 'nth_percentile_maximum';
+
+		$fetch_array['timestamp']['end_time'] = $timestamp;
 	}
 
 	/* clear the cache if it gets too big */
