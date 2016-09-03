@@ -1054,11 +1054,10 @@ function ds() {
 			'pageset' => true,
 			'default' => '-1'
 			),
-		'has_graphs' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
-			'options' => array('options' => array('regexp' => '(true|false)')),
+		'orphans' => array(
+			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
+			'default' => '-1'
 			),
 		'method_id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -1089,7 +1088,7 @@ function ds() {
 		strURL += '&rfilter=' + $('#rfilter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&status=' + $('#status').val();
-		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
+		strURL += '&orphans=' + $('#orphans').val();
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&method_id=' + $('#method_id').val();
 		strURL += '&page=' + $('#page').val();
@@ -1109,10 +1108,6 @@ function ds() {
 
 		$('#clear').click(function() {
 			clearFilter()
-		});
-
-		$('#has_graphs').click(function() {
-			applyFilter();
 		});
 
 		$('#form_data_sources').submit(function(event) {
@@ -1214,6 +1209,16 @@ function ds() {
 						</select>
 					</td>
 					<td class='nowrap'>
+						<?php print __('Orphaned');?>
+					</td>
+					<td>
+						<select id='orphans' name='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('orphans') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<option value='0'<?php print (get_request_var('orphans') == '0' ? ' selected>':'>') . __('Has Graphs');?></option>
+							<option value='1'<?php print (get_request_var('orphans') == '1' ? ' selected>':'>') . __('Orphaned');?></option>
+						</select>
+					</td>
+					<td class='nowrap'>
 						<?php print __('Data Sources');?>
 					</td>
 					<td>
@@ -1227,12 +1232,6 @@ function ds() {
 							}
 							?>
 						</select>
-					</td>
-					<td>
-						<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
-					</td>
-					<td>
-						<label for='has_graphs'><?php print __('Has Graphs');?></label>
 					</td>
 				</tr>
 			</table>
@@ -1286,10 +1285,12 @@ function ds() {
 		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_input_id=' . get_request_var('method_id');
 	}
 
-	if (get_request_var('has_graphs') == 'true') {
+	if (get_request_var('orphans') == '0') {
 		$sql_having = 'HAVING deletable>0';
-	}else{
+	}elseif (get_request_var('orphans') == 1) {
 		$sql_having = 'HAVING deletable=0';
+	}else{
+		$sql_having = '';
 	}
 
 	$total_rows = sizeof(db_fetch_assoc("SELECT
