@@ -216,31 +216,31 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps, $ds_steps) {
 	$fetch_array = @rrdtool_function_fetch($local_data_id, $start_time, $end_time, $rra_steps * $ds_steps);
 
-	if ((!isset($fetch_array["data_source_names"])) || (count($fetch_array["data_source_names"]) == 0)) {
+	if ((!isset($fetch_array['data_source_names'])) || (count($fetch_array['data_source_names']) == 0)) {
 		return;
 	}
 
 	$return_array = array();
 
 	/* loop through each regexp determined above (or each data source) */
-	for ($i=0;$i<count($fetch_array["data_source_names"]);$i++) {
+	for ($i=0;$i<count($fetch_array['data_source_names']);$i++) {
 		$sum = 0;
 
-		if (isset($fetch_array["values"][$i])) {
-			$values_array = $fetch_array["values"][$i];
+		if (isset($fetch_array['values'][$i])) {
+			$values_array = $fetch_array['values'][$i];
 
-			foreach ($fetch_array["values"][$i] as $value) {
+			foreach ($fetch_array['values'][$i] as $value) {
 				$sum += $value;
 			}
 
-			if (count($fetch_array["values"][$i]) != 0) {
+			if (count($fetch_array['values'][$i]) != 0) {
 				$sum = ($sum * $ds_steps * $rra_steps);
 			}else{
 				$sum = 0;
 			}
 
 			/* collect summation alues in this array so we can return them */
-			$return_array[ $fetch_array["data_source_names"][$i] ] = $sum;
+			$return_array[$fetch_array['data_source_names'][$i]] = $sum;
 		}
 	}
 
