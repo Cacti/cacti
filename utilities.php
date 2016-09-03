@@ -213,7 +213,7 @@ function utilities_view_tech($php_info = '') {
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	if (get_request_var('tab') == 'summary') {
-		html_header(array(__('General Information')), 2);
+		html_section_header(__('General Information'), 2);
 		form_alternate_row();
 		print '<td>' . __('Date') . "</td>\n";
 		print '<td>' . date('r') . "</td>\n";
@@ -272,7 +272,7 @@ function utilities_view_tech($php_info = '') {
 		print "</td>\n";
 		form_end_row();
 
-		html_header(array(__('Poller Information')), 2);
+		html_section_header(__('Poller Information'), 2);
 
 		form_alternate_row();
 		print "<td>Interval</td>\n";
@@ -335,7 +335,7 @@ function utilities_view_tech($php_info = '') {
 		print '<td>' . read_config_option('stats_poller') . "</td>\n";
 		form_end_row();
 
-		html_header(array('System Memory'), 2);
+		html_section_header(__('System Memory'), 2);
 		$i = 0;
 
 		/* Get System Memory */
@@ -367,7 +367,7 @@ function utilities_view_tech($php_info = '') {
 		print "</td>\n";
 		form_end_row();
 
-		html_header(array(__('PHP Information')), 2);
+		html_section_header(__('PHP Information'), 2);
 
 		form_alternate_row();
 		print "<td>" . __('PHP Version') . "</td>\n";
@@ -441,8 +441,7 @@ function utilities_view_tech($php_info = '') {
 
 		utilities_get_mysql_recommendations();
 	}elseif (get_request_var('tab') == 'database') {
-
-		html_header(array(__('MySQL Table Information - Sizes in KBytes')), 2);
+		html_section_header(__('MySQL Table Information - Sizes in KBytes'), 2);
 
 		form_alternate_row();
 		print "		<td colspan='2' style='text-align:left;padding:0px'>";
@@ -478,17 +477,16 @@ function utilities_view_tech($php_info = '') {
 			print __('Unable to retrieve table status');
 		}
 		print "</td>\n";
+
 		form_end_row();
-
 	}else{
-
-		html_header(array(__('PHP Module Information')), 2);
+		html_section_header(__('PHP Module Information'), 2);
 		form_alternate_row();
 		$php_info = str_replace('width="600"', '', $php_info);
 		$php_info = str_replace('th colspan="2"', 'th class="subHeaderColumn"', $php_info);
 		print "<td colspan='2'>" . $php_info . "</td>\n";
-		form_end_row();
 
+		form_end_row();
 	}
 
 	html_end_box();
@@ -1710,7 +1708,7 @@ function utilities() {
 		<col style='vertical-align:top;width:80%;'></col>
 	</colgroup>
 
-	<?php html_header(array(__('Technical Support')), 2); form_alternate_row(); ?>
+	<?php html_section_header(__('Technical Support'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
 			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_tech');?>'><?php print __('Technical Support');?></a>
 		</td>
@@ -1719,7 +1717,7 @@ function utilities() {
 		</td>
 	</tr>
 
-	<?php html_header(array(__('Log Administration')), 2); form_alternate_row(); ?>
+	<?php html_section_header(__('Log Administration'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
 			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_logfile');?>'><?php print __('View Cacti Log File');?></a>
 		</td>
@@ -1736,7 +1734,7 @@ function utilities() {
 		</td>
 	</tr>
 
-	<?php html_header(array(__('Poller Cache Administration')), 2); form_alternate_row(); ?>
+	<?php html_section_header(__('Poller Cache Administration'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
 			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_poller_cache');?>'><?php print __('View Poller Cache');?></a>
 		</td>
@@ -1760,7 +1758,7 @@ function utilities() {
 			<?php print __('The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.');?>
 		</td>
 	</tr>
-	<?php html_header(array(__('Boost Utilities')), 2); form_alternate_row(); ?>
+	<?php html_section_header(__('Boost Utilities'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
 			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_boost_status');?>'><?php print __('View Boost Status');?></a>
 		</td>
@@ -1768,7 +1766,7 @@ function utilities() {
 			<?php print __('This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.');?>
 		</td>
 	</tr>
-	<?php html_header(array(__('RRD Utilities')), 2); form_alternate_row(); ?>
+	<?php html_section_header(__('RRD Utilities'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
 			<a class='hyperLink' href='<?php print htmlspecialchars('rrdcleaner.php');?>'><?php print __('RRDfile Cleaner<');?>/a>
 		</td>
@@ -1776,7 +1774,7 @@ function utilities() {
 			<?php print __('When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files.');?>
 		</td>
 	</tr>
-	<?php html_header(array(__('SNMPAgent Utilities')), 2); form_alternate_row(); ?>
+	<?php html_section_header(__('SNMPAgent Utilities'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
 			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmpagent_cache');?>'><?php print __('View SNMPAgent Cache');?></a>
 		</td>
@@ -1887,22 +1885,25 @@ function boost_display_run_status() {
 		AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
 
 	$pending_records = 0;
-	$arch_records = 0;
-	$data_length = 0;
-	$engine = '';
+	$arch_records    = 0;
+	$data_length     = 0;
+	$engine          = '';
 	$max_data_length = 0;
+
 	foreach($boost_table_status as $table) {
 		if ($table['TABLE_NAME'] == 'poller_output_boost') {
 			$pending_records += $table['TABLE_ROWS'];
 		} else {
 			$arch_records += $table['TABLE_ROWS'];
 		}
-		$data_length += $table['DATA_LENGTH'];
-		$data_length -= $table['DATA_FREE'];
-		$engine = $table['ENGINE'];
+
+		$data_length    += $table['DATA_LENGTH'];
+		$data_length    -= $table['DATA_FREE'];
+		$engine          = $table['ENGINE'];
 		$max_data_length = $table['MAX_DATA_LENGTH'];
 	}
-	$total_records = $pending_records + $arch_records;
+
+	$total_records  = $pending_records + $arch_records;
 	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
 
 	$total_data_sources = db_fetch_cell('SELECT COUNT(*) FROM poller_item');
@@ -1911,7 +1912,7 @@ function boost_display_run_status() {
 	if (strlen($boost_status)) {
 		$boost_status_array = explode(':', $boost_status);
 
-		$boost_status_date = $boost_status_array[1];
+		$boost_status_date  = $boost_status_array[1];
 
 		if (substr_count($boost_status_array[0], 'complete'))    $boost_status_text = __('Idle');
 		elseif (substr_count($boost_status_array[0], 'running')) $boost_status_text = __('Running');
@@ -1937,9 +1938,8 @@ function boost_display_run_status() {
 		$boost_rrds_updated = '';
 	}
 
-
 	/* get cache directory size/contents */
-	$cache_directory = read_config_option('boost_png_cache_directory', TRUE);
+	$cache_directory    = read_config_option('boost_png_cache_directory', TRUE);
 	$directory_contents = array();
 
 	if (is_dir($cache_directory)) {
@@ -1953,7 +1953,8 @@ function boost_display_run_status() {
 
 			/* get size of directory */
 			$directory_size = 0;
-			$cache_files = 0;
+			$cache_files    = 0;
+
 			if (sizeof($directory_contents)) {
 				/* goto the cache directory */
 				chdir($cache_directory);
@@ -1970,20 +1971,20 @@ function boost_display_run_status() {
 			}
 
 			$directory_size = boost_file_size_display($directory_size);
-			$cache_files = $cache_files . ' Files';
+			$cache_files    = $cache_files . ' Files';
 		}else{
 			$directory_size = '<strong>' . __('WARNING:') . '</strong>' . __('Can not open directory');
-			$cache_files = '<strong>' . __('WARNING:') . '</strong> ' . __('Unknown');
+			$cache_files    = '<strong>' . __('WARNING:') . '</strong> ' . __('Unknown');
 		}
 	}else{
 		$directory_size = '<strong>' . __('WARNING:') . '</strong> ' . __('Directory Does NOT Exist!!');
-		$cache_files = '<strong>' . __('WARNING:') . '</strong> ' . __('N/A');
+		$cache_files    = '<strong>' . __('WARNING:') . '</strong> ' . __('N/A');
 	}
 
 	$i = 0;
 
 	/* boost status display */
-	html_header(array(__('Current Boost Status')), 2);
+	html_section_header(__('Current Boost Status'), 2);
 
 	form_alternate_row();
 	print '<td>' . __('Boost On Demand Updating:') . '</td><td>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</td>';
@@ -1991,7 +1992,7 @@ function boost_display_run_status() {
 	form_alternate_row();
 	print '<td>' . __('Total Data Sources:') . '</td><td>' . number_format_i18n($total_data_sources) . '</td>';
 
-	if ($total_records > 0) {
+	if ($total_records) {
 		form_alternate_row();
 		print '<td>' . __('Pending Boost Records:') . '</td><td>' . number_format_i18n($pending_records) . '</td>';
 
@@ -2003,7 +2004,7 @@ function boost_display_run_status() {
 	}
 
 	/* boost status display */
-	html_header(array(__('Boost Storage Statistics')), 2);
+	html_section_header(__('Boost Storage Statistics'), 2);
 
 	/* describe the table format */
 	form_alternate_row();
@@ -2062,7 +2063,7 @@ function boost_display_run_status() {
 	print '<td>' . __('Estimated Maximum Records:') . '</td><td>' . $max_table_records  . ' Records</td>';
 
 	/* boost last runtime display */
-	html_header(array(__('Runtime Statistics')), 2);
+	html_section_header(__('Runtime Statistics'), 2);
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . $last_run_time . '</td>';
@@ -2086,7 +2087,7 @@ function boost_display_run_status() {
 	print '<td class="utilityPick">' . __('Max Poller Memory Allowed:') . '</td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' ' . __('MBytes') : __('N/A')) . '</td>';
 
 	/* boost runtime display */
-	html_header(array(__('Run Time Configuration')), 2);
+	html_section_header(__('Run Time Configuration'), 2);
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Update Frequency:') . '</td><td>' . ($rrd_updates == '' ? __('N/A') : $boost_refresh_interval[$update_interval]) . '</td>';
@@ -2101,7 +2102,7 @@ function boost_display_run_status() {
 	print '<td class="utilityPick">' . __('Maximum Allowed Runtime:') . '</td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
 
 	/* boost caching */
-	html_header(array(__('Image Caching')), 2);
+	html_section_header(__('Image Caching'), 2);
 
 	form_alternate_row();
 	print '<td>' . __('Image Caching Status:') . '</td><td>' . ($boost_cache == '' ? __('Disabled') : __('Enabled')) . '</td>';
@@ -2551,16 +2552,20 @@ function snmpagent_utilities_run_eventlog(){
 		$sql_where .= " AND (`varbinds` LIKE '%" . get_request_var('filter') . "%')";
 	}
 	$sql_where .= ' ORDER by `time` DESC';
-	$sql_query = "SELECT snl.*, sm.hostname, sc.description
+	$sql_query  = "SELECT snl.*, sm.hostname, sc.description
 		FROM snmpagent_notifications_log AS snl
 		INNER JOIN snmpagent_managers AS sm
 		ON sm.id = snl.manager_id
 		LEFT JOIN snmpagent_cache AS sc
 		ON sc.name = snl.notification
-		WHERE $sql_where LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		WHERE $sql_where 
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_notifications_log AS snl WHERE $sql_where");
-	$logs = db_fetch_assoc($sql_query);
+	$total_rows = db_fetch_cell("SELECT COUNT(*) 
+		FROM snmpagent_notifications_log AS snl 
+		WHERE $sql_where");
+
+	$logs       = db_fetch_assoc($sql_query);
 
 	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity='. get_request_var('severity').'&receiver='. get_request_var('receiver').'&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Log Entries'), 'page', 'main');
 

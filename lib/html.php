@@ -613,6 +613,23 @@ function html_header($header_items, $last_item_colspan = 1) {
 	print "</tr>\n";
 }
 
+/* html_section_header - draws a header row suitable for display inside of a box element
+     but for display as a secton title and not as a series of table header columns
+   @arg $header_name - an array of the display name of the header for the section and 
+     optional alignment.
+   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
+function html_section_header($header_item, $last_item_colspan = 1) {
+	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>\n";
+
+	if (is_array($header_item) && isset($header_item['display'])) {
+		print "<td " . (isset($header_item['align']) ? "style='text-align:" . $header_item['align'] . ";'":"") . " colspan='$last_item_colspan'>" . $header_item['display'] . "</td>\n";
+	}else{
+		print "<td colspan='$last_item_colspan'>" . $header_item . "</td>\n";
+	}
+
+	print "</tr>\n";
+}
+
 /* html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
      suitable for display inside of a box element
    @arg $header_items - an array containing a list of items to be included in the header
