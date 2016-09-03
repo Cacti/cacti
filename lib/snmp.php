@@ -60,6 +60,10 @@ function cacti_snmp_session($hostname, $community, $version, $username, $passwor
 	}
 	$session->max_oids = $max_oids;
 
+	if (read_config_option('oid_increasing_check_disable') == 'on') {
+		$session->oid_increasing_check = false;
+	}
+
 	if ($version != SNMP::VERSION_3) {
 		return $session;
 	}
@@ -559,13 +563,20 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 				' '    . $contextEngineID);
 		}
 
+		if (read_config_option('oid_increasing_check_disable') == 'on') {
+			$oidCheck = '-Cc';
+		}else{
+			$oidCheck = '';
+		}
+
 		if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($max_oids > 1)) {
 			$temp_array = exec_into_array(cacti_escapeshellcmd($path_snmpbulkwalk) . 
 				' -O Qn ' . $snmp_auth . 
 				' -v '    . $version .
 				' -t '    . $timeout . 
 				' -r '    . $retries . 
-				' -Cr'    . $max_oids . ' ' . 
+				' -Cr'    . $max_oids . 
+				' '       . $oidCheck . ' ' .
 				cacti_escapeshellarg($hostname) . ':' . $port . ' ' . 
 				cacti_escapeshellarg($oid));
 		}else{
@@ -574,6 +585,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 				' -v '    . $version . 
 				' -t '    . $timeout .
 				' -r '    . $retries . 
+				' '       .  $oidCheck . ' ' .
 				' '       . cacti_escapeshellarg($hostname) . ':' . $port . 
 				' '       . cacti_escapeshellarg($oid));
 		}

@@ -39,6 +39,7 @@ class SNMP {
 	public $oid_output_format;
 	public $enum_print;
 	public $quick_print;
+	public $oid_increasing_check;
 
 	private $version;
 	private $hostname;
