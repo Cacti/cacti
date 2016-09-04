@@ -257,21 +257,28 @@ function form_save() {
 		/* ==================================================== */
 
 		/* first; get the current graph template id */
-		$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id FROM graph_local WHERE id = ?', array(get_nfilter_request_var('local_graph_id')));
+		$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id 
+			FROM graph_local 
+			WHERE id = ?', 
+			array(get_nfilter_request_var('local_graph_id')));
 
 		/* get all inputs that go along with this graph template, if templated */
 		if ($graph_template_id > 0) {
-			$input_list = db_fetch_assoc_prepared('SELECT id, column_name FROM graph_template_input WHERE graph_template_id = ?', array($graph_template_id));
+			$input_list = db_fetch_assoc_prepared('SELECT id, column_name 
+				FROM graph_template_input 
+				WHERE graph_template_id = ?', 
+				array($graph_template_id));
 			
 			if (sizeof($input_list)) {
 				foreach ($input_list as $input) {
 					/* we need to find out which graph items will be affected by saving this particular item */
-					$item_list = db_fetch_assoc_prepared('SELECT
-						graph_templates_item.id
-						FROM (graph_template_input_defs, graph_templates_item)
-						WHERE graph_template_input_defs.graph_template_item_id = graph_templates_item.local_graph_template_item_id
-						AND graph_templates_item.local_graph_id = ?
-						AND graph_template_input_defs.graph_template_input_id = ?', array(get_nfilter_request_var('local_graph_id'), $input['id']));
+					$item_list = db_fetch_assoc_prepared('SELECT gti.id
+						FROM graph_template_input_defs AS gtid
+						INNER JOIN graph_templates_item AS gti
+						ON gtid.graph_template_item_id=gti.local_graph_template_item_id
+						WHERE gti.local_graph_id = ?
+						AND gtid.graph_template_input_id = ?', 
+						array(get_nfilter_request_var('local_graph_id'), $input['id']));
 					
 					/* loop through each item affected and update column data */
 					if (sizeof($item_list)) {
@@ -280,7 +287,10 @@ function form_save() {
 							 this is because the db and form are out of sync here, but it is ok to just skip over saving
 							 the inputs in this case. */
 							if (isset_request_var($input['column_name'] . '_' . $input['id'])) {
-								db_execute_prepared('UPDATE graph_templates_item SET ' . $input['column_name'] . ' = ? WHERE id = ?', array(get_nfilter_request_var($input['column_name'] . '_' . $input['id']), $item['id']));
+								db_execute_prepared('UPDATE graph_templates_item 
+									SET ' . $input['column_name'] . ' = ? 
+									WHERE id = ?', 
+									array(get_nfilter_request_var($input['column_name'] . '_' . $input['id']), $item['id']));
 							}
 						}
 					}
@@ -301,6 +311,56 @@ function form_save() {
 /* ------------------------
     The "actions" function
    ------------------------ */
+
+function get_current_graph_template_name($local_graph_id) {
+	$graph_local = db_fetch_row_prepared('SELECT * 
+		FROM graph_local 
+		WHERE id = ?', 
+		array($local_graph_id));
+
+	$task_items = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT task_item_id) AS items 
+		FROM graph_templates_item 
+		WHERE local_graph_id = ?', 
+		array($local_graph_id));
+
+	if ($task_items != '') {
+		$local_data_id = db_fetch_cell("SELECT DISTINCT local_data_id 
+			FROM data_template_rrd 
+			WHERE id IN($task_items)");
+	}else{
+		$local_data_id = 0;
+	}
+
+	if ($local_data_id > 0) {
+		$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id
+			FROM data_template_data
+			WHERE local_data_id = ?', 
+			array($local_data_id));
+
+		/* get each INPUT field for this data input source */
+		$output_type_field_id = db_fetch_cell_prepared('SELECT id
+			FROM data_input_fields
+			WHERE data_input_id = ?
+			AND input_output="in"
+			AND type_code="output_type"
+			ORDER BY sequence',
+			array($data['data_input_id']));
+
+		$snmp_query_graph_id = db_fetch_cell_prepared('SELECT value
+			FROM data_input_data
+			WHERE data_template_data_id = ?
+			AND data_input_field_id = ?',
+			array($data['id'], $output_type_field_id));
+
+		if (!empty($snmp_query_graph_id)) {
+			return db_fetch_cell_prepared('SELECT name FROM snmp_query_graph WHERE id = ?', array($snmp_query_graph_id));
+		}else{
+			return db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?' , array($graph_local['graph_template_id']));
+		}
+	}else{
+		return db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?' , array($graph_local['graph_template_id']));
+	}
+}
 
 function get_current_graph_template($local_graph_id) {
 	$graph_local = db_fetch_row_prepared('SELECT * 
@@ -342,7 +402,11 @@ function get_current_graph_template($local_graph_id) {
 			AND data_input_field_id = ?',
 			array($data['id'], $output_type_field_id));
 
-		return $graph_local['graph_template_id'] . '_' . $snmp_query_graph_id;
+		if (!empty($snmp_query_graph_id)) {
+			return $graph_local['graph_template_id'] . '_' . $snmp_query_graph_id;
+		}else{
+			return $graph_local['graph_template_id'];
+		}
 	}else{
 		return $graph_local['graph_template_id'];
 	}
@@ -1529,6 +1593,7 @@ function graph_management() {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : htmlspecialchars($graph['name']));
+			$template_name = get_current_graph_template_name($graph['local_graph_id']);
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right');

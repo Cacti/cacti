@@ -1058,11 +1058,6 @@ function ds() {
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
 			'default' => '-1'
-			),
-		'method_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
-			'pageset' => true,
-			'default' => '-1'
 			)
 	);
 
@@ -1090,7 +1085,6 @@ function ds() {
 		strURL += '&status=' + $('#status').val();
 		strURL += '&orphans=' + $('#orphans').val();
 		strURL += '&template_id=' + $('#template_id').val();
-		strURL += '&method_id=' + $('#method_id').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -1184,30 +1178,6 @@ function ds() {
 					<td>
 						<input id='rfilter' type='text' size='30' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>' onChange='applyFilter()'>
 					</td>
-					<td>
-						<?php print __('Method');?>
-					</td>
-					<td>
-						<select id='method_id' name='method_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('method_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
-							<option value='0'<?php if (get_request_var('method_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
-							<?php
-
-							$methods = db_fetch_assoc('SELECT DISTINCT data_input.id, data_input.name
-								FROM data_input
-								INNER JOIN data_template_data
-								ON data_input.id = data_template_data.data_input_id
-								WHERE data_template_data.local_data_id > 0
-								ORDER BY data_input.name');
-
-							if (sizeof($methods) > 0) {
-								foreach ($methods as $method) {
-									print "<option value='" . $method['id'] . "'"; if (get_request_var('method_id') == $method['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($method['name']), 40) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
 					<td class='nowrap'>
 						<?php print __('Orphaned');?>
 					</td>
@@ -1247,8 +1217,7 @@ function ds() {
 	if (strlen(get_request_var('rfilter'))) {
 		$sql_where1 = "WHERE (dtd.name_cache RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR dtd.local_data_id RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR dt.name RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR data_input.name RLIKE '" . get_request_var('rfilter') . "')";
+			" OR dt.name RLIKE '" . get_request_var('rfilter') . "')";
 	}else{
 		$sql_where1 = '';
 	}
@@ -1277,14 +1246,6 @@ function ds() {
 		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.active=""';
 	}
 
-	if (get_request_var('method_id') == '-1') {
-		/* Show all items */
-	}elseif (get_request_var('method_id') == '0') {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_input_id=0';
-	}elseif (!isempty_request_var('method_id')) {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_input_id=' . get_request_var('method_id');
-	}
-
 	if (get_request_var('orphans') == '0') {
 		$sql_having = 'HAVING deletable>0';
 	}elseif (get_request_var('orphans') == 1) {
@@ -1295,12 +1256,10 @@ function ds() {
 
 	$total_rows = sizeof(db_fetch_assoc("SELECT
 		dl.id,
-		COUNT(gti.id) AS deletable
+		COUNT(DISTINCT gti.local_graph_id) AS deletable
 		FROM data_local AS dl
 		INNER JOIN data_template_data AS dtd
 		ON dl.id=dtd.local_data_id
-		LEFT JOIN data_input
-		ON (data_input.id=dtd.data_input_id)
 		LEFT JOIN data_template AS dt
 		ON (dl.data_template_id=dt.id)
 		LEFT JOIN data_template_rrd AS dtr
@@ -1316,15 +1275,12 @@ function ds() {
 		dtd.name_cache,
 		dtd.active,
 		dtd.rrd_step,
-		data_input.name as data_input_name,
 		dt.name AS data_template_name,
 		dl.host_id,
-		COUNT(gti.id) AS deletable
+		COUNT(DISTINCT gti.local_graph_id) AS deletable
 		FROM data_local AS dl
 		INNER JOIN data_template_data AS dtd
 		ON dl.id=dtd.local_data_id
-		LEFT JOIN data_input
-		ON data_input.id=dtd.data_input_id
 		LEFT JOIN data_template AS dt
 		ON dl.data_template_id=dt.id
 		LEFT JOIN data_template_rrd AS dtr
@@ -1348,7 +1304,6 @@ function ds() {
 	$display_text = array(
 		'name_cache' => array('display' => __('Data Source Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Source. Generally programtically generated from the Data Template definition.')),
 		'local_data_id' => array('display' => __('ID'),'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Data Source. Useful when performing automation or debugging.')),
-		'data_input_name' => array('display' => __('Data Input Method'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method by which data is gathered for this Data Source.')),
 		'nosort' => array('display' => __('Poller Interval'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The frequency that data is collected for this Data Source.')),
 		'nosort1' => array('display' => __('Deletable'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('If this Data Source is no long in use by Graphs, it can be Deleted.')),
 		'active' => array('display' => __('Active'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Whether or not data will be collected for this Data Source. Controlled at the Data Template level.')),
@@ -1388,21 +1343,9 @@ function ds() {
 				$data_template_name = htmlspecialchars($data_source['data_template_name']);
 			}
 
-			if (empty($data_source['data_input_name'])) {
-				$data_input_name = '<em>' . __('None') . '</em>';
-			} elseif ($data_source_orig['data_input_name'] != $data_source['data_input_name']) {
-				/* was changed by plugin, plugin has to take care for html-escaping */
-				$data_input_name = ((empty($data_source['data_input_name'])) ? '<em>' . __('None') . '</em>' : $data_source['data_input_name']);
-			} elseif (get_request_var('rfilter') != '') {
-				$data_input_name = filter_value($data_source['data_input_name'], get_request_var('rfilter'));
-			} else {
-				$data_input_name = htmlspecialchars($data_source['data_input_name']);
-			}
-
 			form_alternate_row('line' . $data_source['local_data_id'], true, $disabled);
 			form_selectable_cell(filter_value(title_trim($data_source['name_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']), $data_source['local_data_id']);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'text-align:right');
-			form_selectable_cell($data_input_name, $data_source['local_data_id']);
 			form_selectable_cell(get_poller_interval($data_source['rrd_step']), $data_source['local_data_id']);
 			form_selectable_cell(($data_source['deletable'] == '0' ? __('Yes') : __('No')), $data_source['local_data_id']);
 			form_selectable_cell(($data_source['active'] == 'on' ? __('Yes') : __('No')), $data_source['local_data_id']);
