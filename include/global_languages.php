@@ -571,7 +571,9 @@ function number_format_i18n ($number, $decimals = 0) {
 			case 'LC_MONETARY':
 			case 'LC_NUMERIC':
 			case 'LC_TIME':
-				setlocale(constant($category), $locale);
+				if (defined($category)) {
+					setlocale(constant($category), $locale);
+				}
 			}
 		}
 
