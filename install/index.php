@@ -819,7 +819,7 @@ if (isset_request_var('database_hostname')) {
 	$_SESSION['database_ssl']      = isset_request_var('database_ssl') ? true:false;
 }
 
-$enable = '1';
+$enabled = '1';
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
