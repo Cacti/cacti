@@ -756,14 +756,25 @@ function host_edit() {
 	device_javascript();
 
 	if ((isset_request_var('display_dq_details')) && (isset($_SESSION['debug_log']['data_query']))) {
-		print "<table id='dqdebug' class='cactiDebugTable'><tr><td>\n";
-		print "<table class='cactiTableTitle' style='width:100%'>\n";
-		print "<tr><td class='textHeaderDark' style='width:99%'><a style='display:none;' name='dqdbg'></a>" . __('Data Query Debug Information') . "</td><td class='textHeaderDark'><a id='dbghide' class='linkOverDark'>" . __('Hide') ."</a></td></tr>\n";
-		print "</table>\n";
-		print "<table class='cactiTable'>\n";
-		print "<tr><td class='debug'><span>" . debug_log_return('data_query') . "</span></td></tr>";
-		print "</table>\n";
-		print "</table>\n";
+		?>
+		<div id='dqdebug' class='cactiTable'>
+			<div>
+				<div class='cactiTableTitle'>
+					<span style='padding:3px;' name='dqdbg'><?php print __('Data Query Debug Information');?></span>
+				</div>
+				<div class='cactiTableButton'>
+					<a id='dbghide' class='linkOverDark'><?php print __('Hide');?></a>
+				</div>
+			</div>
+			<table class='cactiTable'>
+				<tr>
+					<td class='debug'>
+						<span><?php print debug_log_return('data_query');?></span>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<?php
 	}
 
 	if (!empty($host['id'])) {
