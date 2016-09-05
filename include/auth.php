@@ -117,7 +117,7 @@ if (read_config_option('auth_method') != 0) {
 				$goBack = "<td colspan='2' align='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
 
-			print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
+			print "<!DOCTYPE html>\n";
 			print "<html>\n";
 			print "<head>\n";
 			print "\t<title>" . __('Permission Denied') . "</title>\n";

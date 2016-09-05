@@ -238,7 +238,7 @@ if (read_config_option('secpass_history') != '0') {
 
 $secpass_tooltip .= $secpass_body;
 
-print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
+print "<!DOCTYPE html>\n";
 print "<html>\n";
 print "<head>\n";
 print "\t<title>" . __('Change Password') . "</title>\n";
