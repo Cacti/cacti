@@ -243,6 +243,7 @@ print "<html>\n";
 print "<head>\n";
 print "\t<title>" . __('Change Password') . "</title>\n";
 print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
+print "\t<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>\n";
 print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
 print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
 print "\t<link href='" . $config['url_path'] . "include/" .  "/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>\n";
