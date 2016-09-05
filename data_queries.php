@@ -281,7 +281,7 @@ function form_actions() {
 
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>' . __n('Click \'Continue\' to delete the following Data Query.', 'Click \'Continue\' to delete following Data Queries.', sizeof($dq_array)) . '</p>
+					<p>" . __n('Click \'Continue\' to delete the following Data Query.', 'Click \'Continue\' to delete following Data Queries.', sizeof($dq_array)) . "</p>
 					<div class='itemlist'><ul>$dq_list</ul></div>
 				</td>
 			</tr>\n";
