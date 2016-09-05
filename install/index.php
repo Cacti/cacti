@@ -49,19 +49,29 @@ $old_version_index = array_search($old_cacti_version, $cacti_versions);
 
 /* do a version check */
 if ($old_cacti_version == $config['cacti_version']) {
-	print '	<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
+	print '<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
 		<p style="font-family: Verdana, Arial; font-size: 12px;">' 
 		. __('This installation is already up-to-date. Click <a href="%s">here</a> to use Cacti.', '../index.php') . '</p>';
 	exit;
 }elseif (preg_match('/^0\.6/', $old_cacti_version)) {
-	print '	<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
+	print '<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
 		<p style="font-family: Verdana, Arial; font-size: 12px;">' 
 		. __('You are attempting to install Cacti %s onto a 0.6.x database. To continue, you must create a new database, import "cacti.sql" into it, and update "include/config.php" to point to the new database.', $config['cacti_version']) . '</p>';
 	exit;
 }elseif (empty($old_cacti_version)) {
-	print '	<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
+	print '<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
 		<p style="font-family: Verdana, Arial; font-size: 12px;">' 
-		. __('You have created a new database, but have not yet imported the "cacti.sql" file. At the command line, execute the following to continue:</p><p><pre>mysql -u $database_username -p $database_default < cacti.sql</pre></p><p>This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database.') . '</p>';
+		. __("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:</p><p><pre>mysql -u %s -p %s < cacti.sql</pre></p><p>This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database.", $database_username, $database_default) . '</p>';
+
+	print '<p>' . __("In Cacti %s, you must also import MySQL timezone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table", $config['cacti_version']) . '</p>';
+
+	if ($config['cacti_server_os'] == 'unix') {
+		print '<p>' . __("On Linux/UNIX, do the following:") . '</p><p><pre>' . __("mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql") . "\n";
+	}else{
+		print '<p>' . __("On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:") . '</p><p><pre>';
+	}
+	print __("GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password) . '</pre></p>';
+
 	exit;
 }
 
