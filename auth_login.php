@@ -348,6 +348,7 @@ function auth_display_custom_error_message($message) {
 	print "<html>\n<head>\n";
 	print '     <title>' . 'Cacti' . "</title>\n";
 	print "     <meta http-equiv='Content-Type' content='text/html;charset=utf-8'>";
+	print "     <meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>";
 	print "     <link href=\"include/main.css\" type=\"text/css\" rel=\"stylesheet\">";
 	print "</head>\n";
 	print "<body>\n<br><br>\n";
@@ -483,6 +484,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 <head>
 	<title><?php print api_plugin_hook_function('login_title', __('Login to Cacti'));?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery-ui.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
