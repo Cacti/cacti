@@ -56,10 +56,9 @@ switch (get_request_var('action')) {
 		break;
 	default:
 		top_header();
-
 		graphs();
-
 		bottom_footer();
+
 		break;
 }
 

@@ -1288,29 +1288,29 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			WHERE snmp_query_graph_id= ?', 
 			array($snmp_query_array['snmp_query_graph_id']));
 
-		$exists = db_fetch_row_prepared('SELECT DISTINCT dl.*,
-			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields
-			FROM data_local AS dl
-			INNER JOIN data_template_data AS dtd
-			ON dl.id=dtd.local_data_id
-			INNER JOIN data_template_rrd AS dtr
-			ON dl.id=dtr.local_data_id
-			INNER JOIN graph_templates_item AS gti
-			ON dtr.id=gti.task_item_id
-			INNER JOIN snmp_query_graph_rrd AS sqgr
-			ON dtr.local_data_template_rrd_id=sqgr.data_template_rrd_id
-			INNER JOIN snmp_query_graph AS sqg
-			ON sqg.id=sqgr.snmp_query_graph_id
-			INNER JOIN data_input_fields AS dif
-			ON dif.data_input_id=dtd.data_input_id
-			WHERE dl.host_id = ? 
+		$exists = db_fetch_row_prepared('SELECT dl.*, 
+			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields 
+			FROM data_local AS dl 
+			INNER JOIN data_template_data AS dtd 
+			ON dl.id=dtd.local_data_id 
+			INNER JOIN data_input_fields AS dif 
+			ON dif.data_input_id=dtd.data_input_id 
+			INNER JOIN data_input_data AS did 
+			ON did.data_template_data_id=dtd.id 
+			AND did.data_input_field_id=dif.id 
+			INNER JOIN snmp_query_graph_rrd AS sqgr 
+			ON sqgr.snmp_query_graph_id=did.value 
+			WHERE input_output="in" 
+			AND type_code="output_type" 
+			AND dl.host_id = ? 
 			AND dl.data_template_id = ?
 			AND dl.snmp_query_id = ?
 			AND dl.snmp_index = ?
-			GROUP BY dl.id, sqg.graph_template_id
-			HAVING input_fields = ?',
-			array($host_id, $data_template['id'], $snmp_query_array['snmp_query_id'], 
-				$snmp_query_array['snmp_index'], $input_fields));
+			GROUP BY dtd.local_data_id
+			HAVING local_data_id IS NOT NULL AND input_fields = ?',
+			array($host_id, $data_template['id'], 
+				$snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'],
+				$input_fields));
 	}else{
 		$exists = db_fetch_row_prepared('SELECT * 
 			FROM data_local 
