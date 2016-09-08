@@ -1575,4 +1575,31 @@ function upgrade_to_1_0_0() {
 	db_install_execute('ALTER TABLE poller_command MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
 	db_install_execute('ALTER TABLE poller_item MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
 	db_install_execute('ALTER TABLE poller_time MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
+
+	/* add new column to make data query graphs easier to manage */
+	db_install_add_column ('graph_local', array('name' => 'snmp_query_graph_id', 'type' => 'INT UNSIGNED', 'NULL' => false, 'default' => '0', 'after' => 'snmp_query_id'));
+	db_install_add_key('graph_local', 'INDEX', 'snmp_query_graph_id', array('snmp_query_graph_id'));
+
+	/* add the snmp query graph id to graph local */
+	db_execute("UPDATE graph_local AS gl
+		INNER JOIN (
+			SELECT DISTINCT local_graph_id, task_item_id 
+			FROM graph_templates_item
+		) AS gti
+		ON gl.id=gti.local_graph_id
+		INNER JOIN data_template_rrd AS dtr
+		ON gti.task_item_id=dtr.id
+		INNER JOIN data_template_data AS dtd
+		ON dtr.local_data_id=dtd.local_data_id
+		INNER JOIN data_input_fields AS dif
+		ON dif.data_input_id=dtd.data_input_id
+		INNER JOIN data_input_data AS did
+		ON did.data_template_data_id=dtd.id
+		AND did.data_input_field_id=dif.id
+		INNER JOIN snmp_query_graph_rrd AS sqgr
+		ON sqgr.snmp_query_graph_id=did.value
+		SET gl.snmp_query_graph_id=did.value
+		WHERE input_output='in'
+		AND type_code='output_type'
+		AND gl.snmp_query_id>0");
 }

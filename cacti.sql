@@ -1756,11 +1756,13 @@ CREATE TABLE graph_local (
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
+  snmp_query_graph_id mediumint(8) NOT NULL default '0',
   snmp_index varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
   KEY host_id (host_id),
   KEY graph_template_id (graph_template_id),
   KEY snmp_query_id (snmp_query_id),
+  KEY snmp_query_graph_id (snmp_query_graph_id),
   KEY snmp_index (snmp_index)
 ) ENGINE=InnoDB COMMENT='Creates a relationship for each item in a custom graph.';
 
@@ -1768,10 +1770,10 @@ CREATE TABLE graph_local (
 -- Dumping data for table `graph_local`
 --
 
-INSERT INTO graph_local VALUES (1,12,1,0,'');
-INSERT INTO graph_local VALUES (2,9,1,0,'');
-INSERT INTO graph_local VALUES (3,10,1,0,'');
-INSERT INTO graph_local VALUES (4,8,1,0,'');
+INSERT INTO graph_local VALUES (1,12,1,0,0,'');
+INSERT INTO graph_local VALUES (2,9,1,0,0,'');
+INSERT INTO graph_local VALUES (3,10,1,0,0,'');
+INSERT INTO graph_local VALUES (4,8,1,0,0,'');
 
 --
 -- Table structure for table `graph_template_input`

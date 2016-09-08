@@ -952,6 +952,20 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	$save['graph_template_id'] = $graph_template_id;
 	$save['host_id'] = $host_id;
 
+	if (sizeof($snmp_query_array)) {
+		if (isset($snmp_query_array['snmp_query_id']) && $snmp_query_array['snmp_query_id'] > 0) {
+			$save['snmp_query_id'] = $snmp_query_array['snmp_query_id'];
+		}
+
+		if (isset($snmp_query_array['snmp_query_graph_id']) && $snmp_query_array['snmp_query_graph_id'] > 0) {
+			$save['snmp_query_graph_id'] = $snmp_query_array['snmp_query_graph_id'];
+		}
+
+		if (isset($snmp_query_array['snmp_index']) && $snmp_query_array['snmp_index'] != '') {
+			$save['snmp_index'] = $snmp_query_array['snmp_index'];
+		}
+	}
+
 	$cache_array['local_graph_id'] = sql_save($save, 'graph_local');
 
 	/* apply graph items */
