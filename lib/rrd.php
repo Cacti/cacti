@@ -72,14 +72,14 @@ function __rrd_init($output_to_term = TRUE) {
 	return popen($command, 'w');
 }
 
-function __rrd_proxy_init() {
+function __rrd_proxy_init($logopt = 'WEBLOG') {
 	global $config;
 	
 	$rsa = new \phpseclib\Crypt\RSA();
 	
 	$rrdp_socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 	if ($rrdp_socket === false) {
-		cacti_log('CACTI2RRDP ERROR: Unable to create socket to connect to RRDtool Proxy Server', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+		cacti_log('CACTI2RRDP ERROR: Unable to create socket to connect to RRDtool Proxy Server', false, $logopt, POLLER_VERBOSITY_LOW);
 		return false;
 	}
 	
@@ -93,14 +93,14 @@ function __rrd_proxy_init() {
 	
 	if($rrdp === false) {
 		/* log entry ... */
-		cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+		cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
 		
 		/* ... and try to use backup path */
 		$rrdp_id = ($rrdp_id + 1) % 2;
 		$rrdp = @socket_connect($rrdp_socket, (($rrdp_id == 1 ) ? read_config_option('rrdp_server') : read_config_option('rrdp_server_backup')), (($rrdp_id == 1 ) ? read_config_option('rrdp_port') : read_config_option('rrdp_port_backup')) );
 		
 		if($rrdp === false) {
-			cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+			cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
 			return false;
 		}
 	}
@@ -115,11 +115,11 @@ function __rrd_proxy_init() {
 		$recv = socket_read($rrdp_socket, 1000, PHP_BINARY_READ );
 		if($recv === false) {
 			/* timeout  */
-			cacti_log('CACTI2RRDP ERROR: Public RSA Key Exchange - Time-out while reading', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+			cacti_log('CACTI2RRDP ERROR: Public RSA Key Exchange - Time-out while reading', false, $logopt, POLLER_VERBOSITY_LOW);
 			$rrdp_public_key = false;
 			break;
 		}else if($recv == '') {
-			cacti_log('CACTI2RRDP ERROR: Session closed by Proxy.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+			cacti_log('CACTI2RRDP ERROR: Session closed by Proxy.', false, $logopt, POLLER_VERBOSITY_LOW);
 			/* session closed by Proxy */
 			break;	
 		}else {
@@ -135,7 +135,7 @@ function __rrd_proxy_init() {
 	$fingerprint = $rsa->getPublicKeyFingerprint();
 
 	if($rrdp_fingerprint != $fingerprint) {
-		cacti_log('CACTI2RRDP ERROR: Mismatch RSA Fingerprint.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+		cacti_log('CACTI2RRDP ERROR: Mismatch RSA Fingerprint.', false, $logopt, POLLER_VERBOSITY_LOW);
 		return false;
 	}else {
 		$rrdproxy = array($rrdp_socket, $rrdp_public_key);
@@ -365,7 +365,7 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	$rrdp_auto_close = FALSE;
 	
 	if(!$rrdp) {
-		$rrdp = __rrd_proxy_init();
+		$rrdp = __rrd_proxy_init($logopt);
 		$rrdp_auto_close = TRUE;
 	}
 	
