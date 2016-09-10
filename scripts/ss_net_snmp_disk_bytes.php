@@ -126,6 +126,8 @@ function ss_net_snmp_disk_bytes($host_id) {
 			if (array_key_exists($index, $indexes)) {
 				if ($current['uptime'] < $previous['uptime']) {
 					$bytesread = 'U';
+				}elseif (!isset($previous["br$index"])) {
+					$bytesread = 'U';
 				}elseif ($previous["br$index"] > $measure['value']) {
 					$bytesread += $measure['value'] + 18446744073709551615 - $previous["br$index"] - $previous["br$index"];
 				}else{
@@ -159,6 +161,8 @@ function ss_net_snmp_disk_bytes($host_id) {
 
 			if (array_key_exists($index, $indexes)) {
 				if ($current['uptime'] < $previous['uptime']) {
+					$byteswritten = 'U';
+				}elseif (!isset($previous["bw$index"])) {
 					$byteswritten = 'U';
 				}elseif ($previous["bw$index"] > $measure['value']) {
 					$byteswritten += $measure['value'] + 18446744073709551615 - $previous["bw$index"] - $previous["bw$index"];
