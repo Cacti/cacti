@@ -562,12 +562,12 @@ function utilities_view_user_log() {
 	?>
 	<script type="text/javascript">
 	function clearFilter() {
-		strURL = '?action=clear_user_log&clear=1&header=false';
+		strURL = urlPath+'utilities.php?action=view_user_log&clear=1&header=false';
 		loadPageNoHeader(strURL);
 	}
 
 	function purgeLog() {
-		strURL = '?action=clear_user_log&header=false';
+		strURL = urlPath+'utilities.php?action=clear_user_log&header=false';
 		loadPageNoHeader(strURL);
 	}
 
@@ -591,7 +591,7 @@ function utilities_view_user_log() {
 	});
 
 	function applyFilter() {
-		strURL  = '?username=' + $('#username').val();
+		strURL  = urlPath+'utilities.php?username=' + $('#username').val();
 		strURL += '&result=' + $('#result').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
@@ -803,10 +803,16 @@ function utilities_clear_user_log() {
 	if (sizeof($users)) {
 		/* remove active users */
 		foreach ($users as $user) {
-			$total_rows = db_fetch_cell_prepared('SELECT COUNT(username) FROM user_log WHERE username = ? AND result = 1', array($user['username']));
-			if ($total_rows > 1) {
-				db_execute_prepared('DELETE FROM user_log WHERE username = ? AND result = 1 ORDER BY time LIMIT ' . ($total_rows - 1), array($user['username']));
+			$total_login_rows = db_fetch_cell_prepared('SELECT COUNT(username) FROM user_log WHERE username = ? AND result IN (1)', array($user['username']));
+			$total_token_rows = db_fetch_cell_prepared('SELECT COUNT(username) FROM user_log WHERE username = ? AND result IN (2)', array($user['username']));
+			if ($total_login_rows > 1) {
+				db_execute_prepared('DELETE FROM user_log WHERE username = ? AND result IN(1) ORDER BY time LIMIT ' . ($total_login_rows - 1), array($user['username']));
 			}
+
+			if ($total_token_rows > 1) {
+				db_execute_prepared('DELETE FROM user_log WHERE username = ? AND result IN(2) ORDER BY time LIMIT ' . ($total_token_rows - 1), array($user['username']));
+			}
+
 			db_execute_prepared('DELETE FROM user_log WHERE username = ? AND result = 0', array($user['username']));
 		}
 
@@ -878,7 +884,7 @@ function utilities_view_logfile() {
     var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 	function purgeLog() {
-		strURL = '?action=view_logfile&purge=1&header=false';
+		strURL = urlPath+'utilities.php?action=view_logfile&purge=1&header=false';
 		loadPageNoHeader(strURL);
 	}
 
@@ -902,7 +908,7 @@ function utilities_view_logfile() {
 	});
 
 	function applyFilter() {
-		strURL  = '?tail_lines=' + $('#tail_lines').val();
+		strURL  = urlPath+'utilities.php?tail_lines=' + $('#tail_lines').val();
 		strURL += '&message_type=' + $('#message_type').val();
 		strURL += '&refresh=' + $('#refresh').val();
 		strURL += '&reverse=' + $('#reverse').val();
@@ -914,7 +920,7 @@ function utilities_view_logfile() {
 	}
 
 	function clearFilter() {
-		strURL  = '?clear=1';
+		strURL  = urlPath+'utilities.php?clear=1';
 		strURL += '&action=view_logfile';
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -1178,7 +1184,7 @@ function utilities_view_snmp_cache() {
     var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 	function applyFilter() {
-		strURL  = '?host_id=' + $('#host_id').val();
+		strURL  = urlPath+'utilities.php?host_id=' + $('#host_id').val();
 		strURL += '&snmp_query_id=' + $('#snmp_query_id').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
@@ -1189,7 +1195,7 @@ function utilities_view_snmp_cache() {
 	}
 
 	function clearFilter() {
-		strURL = '?action=view_snmp_cache&clear=1&header=false';
+		strURL = urlPath+'utilities.php?action=view_snmp_cache&clear=1&header=false';
 		loadPageNoHeader(strURL);
 	}
 
@@ -1475,7 +1481,7 @@ function utilities_view_poller_cache() {
     var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 	function applyFilter() {
-		strURL  = '?poller_action=' + $('#poller_action').val();
+		strURL  = urlPath+'utilities.php?poller_action=' + $('#poller_action').val();
 		strURL += '&action=view_poller_cache';
 		strURL += '&host_id=' + $('#host_id').val();
 		strURL += '&filter=' + $('#filter').val();
@@ -1486,7 +1492,7 @@ function utilities_view_poller_cache() {
 	}
 
 	function clearFilter() {
-		strURL = '?action=view_poller_cache&clear=1&header=false';
+		strURL = urlPath+'utilities.php?action=view_poller_cache&clear=1&header=false';
 		loadPageNoHeader(strURL);
 	}
 
@@ -1846,7 +1852,7 @@ function boost_display_run_status() {
     var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 	function applyFilter() {
-		strURL = '?action=view_boost_status&header=false&refresh=' + $('#refresh').val();
+		strURL = urlPath+'utilities.php?action=view_boost_status&header=false&refresh=' + $('#refresh').val();
 		loadPageNoHeader(strURL);
 	}
 	</script>
