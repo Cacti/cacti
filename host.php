@@ -39,7 +39,8 @@ $device_actions = array(
 	3 => __('Disable'),
 	4 => __('Change Device Settings'),
 	5 => __('Clear Statistics'),
-	6 => __('Apply Automation Rules')
+	6 => __('Apply Automation Rules'),
+	7 => __('Sync to Device Template')
 );
 
 $device_actions = api_plugin_hook_function('device_action_array', $device_actions);
@@ -231,6 +232,14 @@ function form_actions() {
 					db_execute_prepared("UPDATE host SET min_time = '9.99999', max_time = '0', cur_time = '0', avg_time = '0',
 						total_polls = '0', failed_polls = '0',	availability = '100.00'
 						where id = ?", array($selected_items[$i]));
+				}
+			}elseif (get_request_var('drp_action') == '7') { /* sync to device template */
+				for ($i=0;($i<count($selected_items));$i++) {
+					$device_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', array($selected_items[$i]));
+
+					if ($device_template_id > 0) {
+						api_device_update_host_template($selected_items[$i], $device_template_id);
+					}
 				}
 			}elseif (get_request_var('drp_action') == '1') { /* delete */
 				if (!isset_request_var('delete_type')) {
@@ -465,6 +474,15 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Clear Statistics on Device(s)') . "'>";
+		}elseif (get_nfilter_request_var('drp_action') == '7') { /* sync device template */
+			print "	<tr>
+				<td colspan='2' class='textArea'>
+					<p>" . __('Click \'Continue\' to Syncronize the following Device(s) to their Device Template.') . "</p>
+					<div class='itemlist'><ul>$host_list</ul></div>
+				</td>
+				</tr>\n";
+
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Synchronize Device(s)') ."'>";
 		}elseif (get_request_var('drp_action') == '1') { /* Delete */
 			print "<tr>
 				<td class='textArea'>
