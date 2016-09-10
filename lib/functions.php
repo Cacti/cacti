@@ -3432,26 +3432,24 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	// Handle Graph Attachments
 	if (is_array($attachments) && sizeof($attachments) && substr_count($body, '<GRAPH>') > 0) {
-		foreach($attachments as $val) {
-			$graph_data_array = array('output_flag'=> RRDTOOL_OUTPUT_STDOUT);
-  			$data = rrdtool_function_graph($val['local_graph_id'], isset($val['rra_id']) ? $val['rra_id']:read_user_setting('default_rra_id'), $graph_data_array);
-			if ($data != '') {
+		foreach($attachments as $attachment) {
+			if ($attachment['attachment'] != '') {
 				/* get content id and create attachment */
 				$cid = getmypid() . '_' . $i . '@' . 'localhost';
 
 				/* attempt to attach */
-				if ($mail->addStringEmbeddedImage($data, $cid, $val['filename'].'.png', 'base64', 'image/png', 'inline') === false) {
+				if ($mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']) === false) {
 					cacti_log('ERROR: ' . $mail->ErrorInfo, false);
 
 					return $mail->ErrorInfo;
 				}
 
 				$body = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $body);
-			} else {
-				$body = str_replace('<GRAPH>', "<br><img src='" . $val['file'] . "'><br>Could not open!<br>" . $val['file'], $body);
-			}
 
-			$i++;
+				$i++;
+			} else {
+				$body = str_replace('<GRAPH>' . $attachment['local_graph_id'] . '>', "<img src='" . $attachment['filename'] . "' ><br>Could not open!<br>" . $attachment['filename'], $body);
+			}
 		}
 	}elseif (is_array($attachments) && sizeof($attachments) && substr_count($body, '<GRAPH:') > 0) {
 		foreach($attachments as $attachment) {
@@ -3469,17 +3467,17 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				/* handle the body text */
 				switch ($attachment['inline']) {
 					case 'inline':
-						$body = str_replace('<GRAPH:' . $attachment['graphid'] . ':' . $attachment['timespan'] . '>', "<img src='cid:$cid' >", $body);
+						$body = str_replace('<GRAPH:' . $attachment['local_graph_id'] . ':' . $attachment['timespan'] . '>', "<img src='cid:$cid' >", $body);
 						break;
 					case 'attachment':
-						$body = str_replace('<GRAPH:' . $attachment['graphid'] . ':' . $attachment['timespan'] . '>', '', $body);
+						$body = str_replace('<GRAPH:' . $attachment['local_graph_id'] . ':' . $attachment['timespan'] . '>', '', $body);
 						break;
 				}
-			} else {
-				$body = str_replace('<GRAPH:' . $attachment['graphid'] . ':' . $attachment['timespan'] . '>', "<img src='" . $attachment['filename'] . "' ><br>Could not open!<br>" . $attachment['filename'], $body);
-			}
 
-			$i++;
+				$i++;
+			} else {
+				$body = str_replace('<GRAPH:' . $attachment['local_graph_id'] . ':' . $attachment['timespan'] . '>', "<img src='" . $attachment['filename'] . "' ><br>Could not open!<br>" . $attachment['filename'], $body);
+			}
 		}
 	}
 
