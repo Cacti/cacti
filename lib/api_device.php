@@ -293,3 +293,28 @@ function api_device_update_host_template($host_id, $host_template_id) {
 	}
 }
 
+/* api_device_template_sync_template - updates the device template mapping for all devices mapped to a template
+   @arg $device_template - the device template to syncronize
+   @arg $down_devices - also update mapping of down devices */
+function api_device_template_sync_template($device_template, $down_devices = false) {
+	if ($down_devices == true) {
+		$status_where = '';
+	}else{
+		$status_where = ' AND status IN(3,2)';
+	}
+
+	$devices = array_rekey(
+		db_fetch_assoc_prepared('SELECT id 
+			FROM host 
+			WHERE host_template_id = ?' . 
+			$status_where,
+			array($device_template)),
+		'id', 'id'
+	);
+
+	if (sizeof($devices)) {
+		foreach($devices as $device) {
+			api_device_update_host_template($device, $device_template);
+		}
+	}
+}

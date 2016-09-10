@@ -23,10 +23,13 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/api_device.php');
+include_once('./lib/data_query.php');
 
 $host_actions = array(
 	1 => __('Delete'),
-	2 => __('Duplicate')
+	2 => __('Duplicate'),
+	3 => __('Sync Devices')
 );
 
 /* set default action */
@@ -213,6 +216,10 @@ function form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_host_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
+			}elseif (get_nfilter_request_var('drp_action') == '3') { /* sync */
+				for ($i=0;($i<count($selected_items));$i++) {
+					api_device_template_sync_template($selected_items[$i]);
+				}
 			}
 		}
 
@@ -267,6 +274,17 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Duplicate Device Template(s)') ."'>";
+		}elseif (get_request_var('drp_action') == '3') { /* sync devices */
+			print "<tr>
+				<td class='textArea'>
+					<p>" . __('Click \'Continue\' to Synchronize Devices associated with the selected Device Template(s).  Note that this action may take some time depending on the number of Devices mapped to the Device Template.') ."</p>
+					<div class='itemlist'><ul>$host_list</ul></div>\n";
+
+			print "</p>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' value='" . __('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Sync Devices to Device Template(s)') ."'>";
 		}
 	}else{
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one host template.') . "</span></td></tr>\n";
