@@ -221,10 +221,6 @@ label {
 	width: 20px;
 }
 
-.iconWrapper {
-	display:none;
-}
-
 .drillDown {
 	cursor:pointer;
 }

@@ -559,6 +559,7 @@ function loadPageNoHeader(href) {
 function ajaxAnchors() {
 	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
 		event.preventDefault();
+		event.stopPropagation();
 
 		/* update menu selection */
 		if ($(this).hasClass('pic')) {
@@ -580,6 +581,11 @@ function ajaxAnchors() {
 
 		/* execute an ajax request to load the data */
 		href = $(this).attr('href');
+
+		console.log('hello');
+		if (href == '#') {
+			return false;
+		}
 
 		if (href != null) {
 			pageName = basename(href);
@@ -607,7 +613,7 @@ function handlePopState() {
 	if (!pageLoaded) {
 		pageLoaded = true;
 		return false;
-	}else{
+	}else if (href.indexOf('#') == 0) {
 		document.location = href;
 	}
 }
@@ -719,6 +725,7 @@ function setupSortable() {
 function setupBreadcrumbs() {
 	$('#breadcrumbs > li > a').click(function(event) {
 		event.preventDefault();
+		event.stopPropagation();
 		href =  $(this).attr('href');
 		if (href != '#') {
 			href = href.replace('tree_content', 'tree');
@@ -1132,6 +1139,7 @@ function redrawGraph(graph_id) {
 function initializeGraphs() {
 	$('a[id$="_mrtg"]').unbind('click').click(function(event) {
 		event.preventDefault();
+		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
 			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
@@ -1145,6 +1153,7 @@ function initializeGraphs() {
 
 	$('a[id$="_csv"]').unbind('click').click(function(event) {
 		event.preventDefault();
+		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
 		document.location = urlPath+
 			'graph_xport.php?local_graph_id='+graph_id+
@@ -1154,6 +1163,7 @@ function initializeGraphs() {
 
 	$('#form_graph_view').unbind('submit').on('submit', function(event) {
 		event.preventDefault();
+		event.stopPropagation();
 		applyFilter();
 	});
 
@@ -1199,39 +1209,6 @@ function initializeGraphs() {
 		});
 	})
 
-	$('.graphDrillDown').hover(
-	function() {
-		element = $(this);
-
-		// hide the previously shown element
-		if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
-			$('#dd'+graphMenuElement).find('.iconWrapper:first').hide('slide', { direction: 'left' }, 300);
-		}
-
-		clearTimeout(graphMenuTimer);
-		graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
-	},
-	function() {
-		element = $(this);
-		clearTimeout(graphMenuTimer);
-		graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
-	});
-
-	function showGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').show('slide', { direction: 'left' }, 300, function() {
-			graphMenuElement = element.attr('id').replace('dd', '');;
-			$(this).find('.spikekillMenu').menu('enable');
-		});
-	}
-
-	function hideGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').hide('slide', { direction: 'left' }, 300, function() {
-			$(this).find('.spikekillMenu').menu('enable');
-		});
-	}
-
 	$('#realtimeoff').unbind('click').click(function() {
 		stopRealtime();
 	});
@@ -1242,6 +1219,7 @@ function initializeGraphs() {
 
 	$('a[id$="_util"]').unbind('click').click(function(event) {
 		event.preventDefault();
+		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
 		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()), function(data) {
 			$('div[class^="ui-"]').remove();
@@ -1254,6 +1232,7 @@ function initializeGraphs() {
 
 	$('a[id$="_realtime"]').unbind('click').click(function(event) {
 		event.preventDefault();
+		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_realtime','');
 
 		if (realtimeArray[graph_id]) {
