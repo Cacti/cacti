@@ -62,7 +62,7 @@ function form_save() {
 
 		if (get_filter_request_var('import_data_source_profile') == '0') {
 			$import_as_new = true;
-			$profile_id = 0;
+			$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 		}else{
 			$import_as_new = false;
 			$profile_id = get_request_var('import_data_source_profile');

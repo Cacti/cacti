@@ -304,7 +304,6 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 			}
 		}
 	}
-
 	
 	/* use the profiles step if we are not importing a new one */
 	if ($import_as_new == false) {
