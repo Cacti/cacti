@@ -972,7 +972,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	change_graph_template($cache_array['local_graph_id'], $graph_template_id, true);
 
 	/* perform graph replacement based upon suggested values */
-	if (is_array($snmp_query_array)) {
+	if (sizeof($snmp_query_array)) {
 		/* suggested values for snmp query code */
 		$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name 
 			FROM snmp_query_graph_sv 
@@ -1095,7 +1095,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					WHERE local_data_id = ?',
 					array($cache_array['local_data_id'][$data_template['id']]));
 
-				if (is_array($snmp_query_array)) {
+				if (sizeof($snmp_query_array)) {
 					/* suggested values for snmp query code */
 					$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name 
 						FROM snmp_query_graph_rrd_sv 
@@ -1145,7 +1145,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					}
 				}
 
-				if (is_array($snmp_query_array)) {
+				if (sizeof($snmp_query_array)) {
 					$data_input_field = array_rekey(db_fetch_assoc_prepared('SELECT dif.id, dif.type_code
 						FROM snmp_query AS sq
 						INNER JOIN data_input AS di
@@ -1247,50 +1247,58 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	/* loop through each item affected and update column data */
 	if (sizeof($template_item_list)) {
 		foreach ($template_item_list as $template_item) {
-			$local_data_id = $cache_array['local_data_id'][$template_item['data_template_id']];
+			if (isset($cache_array['local_data_id'][$template_item['data_template_id']])) {
+				$local_data_id = $cache_array['local_data_id'][$template_item['data_template_id']];
 
-			$graph_template_item_id = db_fetch_cell_prepared('SELECT id 
-				FROM graph_templates_item 
-				WHERE local_graph_template_item_id = ?
-				AND local_graph_id = ?', 
-				array( $template_item['id'], $cache_array['local_graph_id']));
+				$graph_template_item_id = db_fetch_cell_prepared('SELECT id 
+					FROM graph_templates_item 
+					WHERE local_graph_template_item_id = ?
+					AND local_graph_id = ?', 
+					array( $template_item['id'], $cache_array['local_graph_id']));
 
-			$data_template_rrd_id = db_fetch_cell_prepared('SELECT id 
-				FROM data_template_rrd 
-				WHERE local_data_template_rrd_id = ?
-				AND local_data_id = ?', 
-				array($template_item['data_template_rrd_id'], $local_data_id));
+				$data_template_rrd_id = db_fetch_cell_prepared('SELECT id 
+					FROM data_template_rrd 
+					WHERE local_data_template_rrd_id = ?
+					AND local_data_id = ?', 
+					array($template_item['data_template_rrd_id'], $local_data_id));
 
-			if (!empty($data_template_rrd_id)) {
-				db_execute_prepared('UPDATE graph_templates_item 
-					SET task_item_id = ?
-					WHERE id = ?', 
-					array($data_template_rrd_id, $graph_template_item_id));
+				if (!empty($data_template_rrd_id)) {
+					db_execute_prepared('UPDATE graph_templates_item 
+						SET task_item_id = ?
+						WHERE id = ?', 
+						array($data_template_rrd_id, $graph_template_item_id));
+				}
 			}
 		}
 	}
 
 	/* this will not work until the ds->graph dots are connected */
-	if (is_array($snmp_query_array)) {
-		update_graph_data_query_cache($cache_array['local_graph_id']);
+	if (sizeof($snmp_query_array)) {
+		if (isset($cache_array['local_graph_id'])) {
+			update_graph_data_query_cache($cache_array['local_graph_id']);
+		}
 	}
 
 	/* now that we have the id of the new host, we may plugin postprocessing code */
-	$save['id']                = $cache_array['local_graph_id'];
-	$save['graph_template_id'] = $graph_template_id;	// attention: unset!
+	if (isset($cache_array['local_graph_id'])) {
+		$save['id']                = $cache_array['local_graph_id'];
+		$save['graph_template_id'] = $graph_template_id;	// attention: unset!
 
-	if (is_array($snmp_query_array)) {
-		$save['snmp_query_id'] = $snmp_query_array['snmp_query_id'];
-		$save['snmp_index']    = $snmp_query_array['snmp_index'];
-	} else {
-		$save['snmp_query_id'] = 0;
-		$save['snmp_index']    = 0;
+		if (sizeof($snmp_query_array)) {
+			$save['snmp_query_id']       = $snmp_query_array['snmp_query_id'];
+			$save['snmp_index']          = $snmp_query_array['snmp_index'];
+			$save['snmp_query_graph_id'] = $snmp_query_array['snmp_query_graph_id'];
+		} else {
+			$save['snmp_query_id']       = 0;
+			$save['snmp_index']          = 0;
+			$save['snmp_query_graph_id'] = 0;
+		}
+
+		/* provide automation services */
+		automation_hook_graph_create_tree($save);
+
+		api_plugin_hook_function('create_complete_graph_from_template', $save);
 	}
-
-	/* provide automation services */
-	automation_hook_graph_create_tree($save);
-
-	api_plugin_hook_function('create_complete_graph_from_template', $save);
 
 	return $cache_array;
 }

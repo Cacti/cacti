@@ -2098,7 +2098,11 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 	}
 
 	# graph already present?
-	$existsAlready = db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ?', array($graph_template_id, $host_id));
+	$existsAlready = db_fetch_cell_prepared('SELECT id 
+		FROM graph_local 
+		WHERE graph_template_id = ? 
+		AND host_id = ?', 
+		array($graph_template_id, $host_id));
 
 	if ((isset($existsAlready)) && ($existsAlready > 0)) {
 		$dataSourceId  = db_fetch_cell_prepared('SELECT
@@ -2108,12 +2112,12 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 			AND graph_templates_item.task_item_id = data_template_rrd.id
 			LIMIT 1', array($existsAlready));
 
-		cacti_log('NOTE: ' . $function . ' Host[' . $host_id . "] Graph - Already Exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)", false, 'AUTOM8');
+		cacti_log('NOTE: ' . $function . ' Host[' . $host_id . "] Graph - Already Exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)", false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 		return;
 	}else{
 		# input fields are not supported
 		$suggested_values = array();
-		$returnArray = create_complete_graph_from_template($graph_template_id, $host_id, '', $suggested_values);
+		$returnArray = create_complete_graph_from_template($graph_template_id, $host_id, array(), $suggested_values);
 
 		$dataSourceId = '';
 		if (sizeof($returnArray)) {
@@ -2372,7 +2376,7 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 				array($rule['graph_type_id'], $host_id, $rule['snmp_query_id'], $snmp_query_array['snmp_index']));
 
 			if (isset($existsAlready) && $existsAlready > 0) {
-				cacti_log('NOTE: ' . $function . ' Host[' . $host_id . "] Graph - Already Exists - DS[$existsAlready]", false, 'AUTOM8');
+				cacti_log('NOTE: ' . $function . ' Host[' . $host_id . "] Graph - Already Exists - DS[$existsAlready]", false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 				continue;
 			}
 
@@ -2542,7 +2546,7 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 
 	if (api_tree_branch_exists($rule['tree_id'], $parent_tree_item_id, $title)) {
 		$new_item = api_tree_get_branch_id($rule['tree_id'], $parent_tree_item_id, $title);
-		cacti_log('NOTE: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Already Exists', false, 'AUTOM8');
+		cacti_log('NOTE: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Already Exists', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 	}else{
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HEADER, $parent_tree_item_id,
 			$title, $local_graph_id, $host_id, $rule['host_grouping_type'], $item['sort_type'], $propagate);
@@ -2584,7 +2588,7 @@ function create_device_node($host_id, $parent, $rule) {
 			AND graph_tree_id = ?', 
 			array($host_id, $parent, $rule['tree_id']));
 
-		cacti_log('NOTE: ' . $function . ' Host[' . $host_id . '] Tree Item - Already Exists', false, 'AUTOM8');
+		cacti_log('NOTE: ' . $function . ' Host[' . $host_id . '] Tree Item - Already Exists', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 	}else{
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HOST, $parent, $title, 
 			$local_graph_id, $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
@@ -2626,7 +2630,7 @@ function create_graph_node($graph_id, $parent, $rule) {
 			AND graph_tree_id = ?', 
 			array($graph_id, $parent, $rule['tree_id']));
 
-		cacti_log('WARNING: ' . $function . ' Graph[' . $graph_id . '] Tree Item - Already Exists', false, 'AUTOM8');
+		cacti_log('NOTE: ' . $function . ' Graph[' . $graph_id . '] Tree Item - Already Exists', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 	}else{
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_GRAPH, $parent, $title, 
 			$graph_id, $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
