@@ -140,7 +140,7 @@ $(function() {
 		}else{
 			keepRealtime[graph_id]  = $('#wrapper_'+graph_id).html();
 
-			$(this).html("<i style='font-size:16px;' title='Click again to take this Graph out of Realtime' class='fa fa-circle-o-notch fa-spin'/>");
+			$(this).html("<i style='font-size:16px;' title='Click again to take this Graph our of Realtime' class='fa fa-circle-o-notch fa-spin'/>");
 			$(this).find('i').tooltip();
 
 			realtimeArray[graph_id] = true;
