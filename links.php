@@ -371,12 +371,12 @@ function pages() {
     html_start_box('', '100%', '', '4', 'center', '');
 
 	$display_text = array(
-		'nosort0'     => array('display' => __('Actions'), 'align' => 'left', 'sort' => ''),
-		'contentfile' => array('display' => __('Page'),    'align' => 'left', 'sort' => 'ASC'),
-		'title'       => array('display' => __('Title'),   'align' => 'left', 'sort' => 'ASC'),
-		'style'       => array('display' => __('Style'),   'align' => 'left', 'sort' => 'ASC'),
-		'disabled'    => array('display' => __('Enabled'), 'align' => 'left', 'sort' => 'ASC'),
-		'sortorder'   => array('display' => __('Order'),   'align' => 'left', 'sort' => 'ASC')
+		'nosort0'     => array('display' => __('Actions'), 'align' => 'left',  'sort' => ''),
+		'contentfile' => array('display' => __('Page'),    'align' => 'left',  'sort' => 'ASC'),
+		'title'       => array('display' => __('Title'),   'align' => 'left',  'sort' => 'ASC'),
+		'style'       => array('display' => __('Style'),   'align' => 'left',  'sort' => 'ASC'),
+		'disabled'    => array('display' => __('Enabled'), 'align' => 'left',  'sort' => 'ASC'),
+		'sortorder'   => array('display' => __('Order'),   'align' => 'right', 'sort' => 'ASC')
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
@@ -400,18 +400,18 @@ function pages() {
 
 			if (get_request_var('sort_column') == 'sortorder') {
 				if ($i != 0) {
-					$sort = '<a class="pic" href="' . htmlspecialchars('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id='.$page['id']) . '"><img src="' . $config['url_path'] . 'images/move_up.gif" alt="" align="absmiddle"></a>';
+					$sort = '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id='.$page['id']) . '"></a>';
 				}else{
-					$sort = '<img style="padding:2px;" src="' . $config['url_path'] . 'images/view_none.gif" alt="" align="absmiddle">';
+					$sort = '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i == sizeof($pages)-1) {
-					$sort .= '<img src="' . $config['url_path'] . 'images/view_none.gif" alt="" align="absmiddle">';
+					$sort .= '<span class="moveArrowNone"></span>';
 				}else{
-					$sort .= '<a class="pic" href="' . htmlspecialchars('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"><img src="' . $config['url_path'] . 'images/move_down.gif" alt="" align="absmiddle"></a>';
+					$sort .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
-				form_selectable_cell($sort, $page['id']);
+				form_selectable_cell($sort, $page['id'], '', 'right');
 			}else{
 				form_selectable_cell(__('Sort for Ordering'), $page['id']);
 			}

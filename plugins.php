@@ -398,11 +398,11 @@ function update_show_current () {
 	$display_text = array(
 		'nosort' => array('display' => __('Actions'), 'align' => 'left', 'sort' => '', 'tip' => __('Actions available include "Install", "Activate", "Disable", "Enable", "Uninstall".')),
 		'directory' => array('display' => __('Plugin Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name for this Plugin.  The name is controlled by the directory it resides in.')),
-		'id' => array('display' => __('Load Order'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.')),
 		'name' => array('display' => __('Plugin Description'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('A description that the Plugins author has given to the Plugin.')),
-		'version' => array('display' => __('Version'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The version of this Plugin.')),
 		'status' => array('display' => __('Status'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The status of this Plugin.')),
-		'author' => array('display' => __('Author'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The author of this Plugin.')));
+		'author' => array('display' => __('Author'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The author of this Plugin.')),
+		'version' => array('display' => __('Version'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The version of this Plugin.')),
+		'id' => array('display' => __('Load Order'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.')));
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1);
 
@@ -448,27 +448,28 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 
 	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'><strong>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</strong></a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">' . __('ERROR: Directory Missing') . '</span>)') . '</td>';
 
+	$row .= "<td class='nowrap'>" . filter_value($plugin['name'], get_request_var('filter')) . "</td>\n";
+	$row .= "<td class='nowrap'>" . $status_names[$plugin['status']] . "</td>\n";
+	$row .= "<td class='nowrap'>" . $plugin['author'] . "</td>\n";
+	$row .= "<td class='right'>"  . $plugin['version'] . "</td>\n";
+
 	if ($include_ordering) {
-		$row .= "<td class='nowrap'>";
+		$row .= "<td class='nowrap right'>";
 		if (!$first_plugin) {
-			$row .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __('Order Before Prevous Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/move_up.gif'></a>";
+			$row .= "<a class='pic fa fa-caret-down moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __('Order Before Prevous Plugin') . "'></a>";
 		}else{
-			$row .= "<a href='#' title='" . __('Can NOT Reduce Load Order') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'></a>";
+			$row .= '<span class="moveArrowNone"></span>';
 		}
 		if (!$last_plugin) {
-			$row .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='" . __('Order After Next Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/move_down.gif'></a>";
+			$row .= "<a class='pic fa fa-caret-up moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='" . __('Order After Next Plugin') . "'></a>";
 		}else{
-			$row .= "<a href='#' title='" . __('Can Increase Load Order') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'></a>";
+			$row .= '<span class="moveArrowNone"></span>';
 		}
 		$row .= "</td>\n";
 	}else{
 		$row .= "<td></td>\n";
 	}
 
-	$row .= "<td class='nowrap'>" . filter_value($plugin['name'], get_request_var('filter')) . "</td>\n";
-	$row .= '<td>' . $plugin['version'] . "</td>\n";
-	$row .= "<td class='nowrap'>" . $status_names[$plugin['status']] . "</td>\n";
-	$row .= "<td class='nowrap'>" . $plugin['author'] . "</td>\n";
 	$row .= "</tr>\n";
 
 	if ($include_ordering) {
