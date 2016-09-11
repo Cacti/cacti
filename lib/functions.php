@@ -4081,7 +4081,7 @@ function IgnoreErrorHandler($message) {
 
 	foreach ($snmp_ignore as $i) {
 		if (strpos($message, $i)) {
-			$snmp_error = $message;
+			$snmp_error = trim($message, "\\\n\t ");
 			return true;
 		}
 	}
