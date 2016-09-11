@@ -710,7 +710,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 			$('ul[id^="ui-id"]').on('mouseenter', function() {
 				clearTimeout(<?php print $form_name;?>Timer);
 			}).on('mouseleave', function() {
-				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_prefix;?>').autocomplete('close'); }, 800);
+				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_prefix;?>_input').autocomplete('close'); }, 800);
 			});
 
 			$('ul[id^="ui-id"] > li').each().on('mouseenter', function() {
