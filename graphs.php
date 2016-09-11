@@ -1151,6 +1151,7 @@ function graph_edit() {
 	}else{
 		$header_label = __('Graph Template Selection [new]');
 		$use_graph_template = false;
+		$host_id = 0;
 	}
 
 	/* handle debug mode */
@@ -1223,8 +1224,8 @@ function graph_edit() {
 			'description' => __('Choose the Device that this Graph belongs to.'),
 			'sql' => 'SELECT id, description as name FROM host ORDER BY name',
 			'action' => 'ajax_hosts_noany',
-			'id' => (isset_request_var('host_id') ? get_request_var('host_id') : $host_id),
-			'value' => db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', (isset_request_var('host_id') ? array(get_request_var('host_id')) : array($host_id))),
+			'id' => $host_id,
+			'value' => db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id)),
 			),
 		'graph_template_graph_id' => array(
 			'method' => 'hidden',
@@ -1384,6 +1385,7 @@ function graph_edit() {
 	if (<?php print ($locked == true ? 'true':'false');?> == true) {
 		$('input, select').not('input[value="<?php print __('Cancel');?>"]').prop('disabled', true);
 		$('#host_id_wrap').addClass('ui-selectmenu-disabled ui-state-disabled');
+		$('#host_id_input').addClass('ui-state-disabled');
 	}
 	</script>
 	<?php
