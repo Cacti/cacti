@@ -946,9 +946,14 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	include_once($config['library_path'] . '/data_query.php');
 
 	/* create the graph */
-	$save['id'] = 0;
-	$save['graph_template_id'] = $graph_template_id;
-	$save['host_id'] = $host_id;
+	$save['id']                  = 0;
+	$save['graph_template_id']   = $graph_template_id;
+	$save['host_id']             = $host_id;
+
+	/* defaults for non-snmp query based */
+	$save['snmp_query_id']       = 0;
+	$save['snmp_query_graph_id'] = 0;
+	$save['snmp_index']          = '';
 
 	if (sizeof($snmp_query_array)) {
 		if (isset($snmp_query_array['snmp_query_id']) && $snmp_query_array['snmp_query_id'] > 0) {
