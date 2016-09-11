@@ -456,7 +456,6 @@ function push_out_graph_item($graph_template_item_id) {
 			}
 		}
 	}
-
 	/* this is trickier with graph_items than with the actual graph... we have to make sure not to
 	overwrite any items covered in the 'graph item inputs'. the same thing applies to graphs, but
 	is easier to detect there (t_* columns). */
@@ -624,7 +623,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 	}else{
 		$template_graph_list = db_fetch_row_prepared('SELECT * 
 			FROM graph_templates_graph 
-			WHERE local_graph_id=0 
+			WHERE local_graph_id = 0 
 			AND graph_template_id = ?', 
 			array($graph_template_id));
 	}
@@ -715,7 +714,6 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 			if ($found) {
 				foreach($found_item as $column => $value) {
 					switch($column) {
-					case 'id':
 					case 'local_graph_id':
 					case 'local_graph_template_item_id':
 					case 'graph_template_id':
