@@ -33,7 +33,7 @@ $aggregate_actions = array(
 set_default_action();
 
 if (get_request_var('action') == 'save') {
-	if (isset_request_var('id') && get_filter_request_var('id') == 0 && isset_request_var('_graph_template_id') && get_filter_request_var('_graph_template_id') == 0) {
+	if (isset_request_var('id') && get_filter_request_var('id') == 0 && isset_request_var('graph_template_id_prev') && get_filter_request_var('graph_template_id_prev') == 0) {
 		set_request_var('action', 'edit');
 	}
 }
@@ -89,7 +89,7 @@ function aggregate_form_save() {
 
 	/* populate aggregate template save array and validate posted values*/
 	$save1['name']              = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-	$save1['graph_template_id'] = get_filter_request_var('_graph_template_id');
+	$save1['graph_template_id'] = get_filter_request_var('graph_template_id_prev');
 	$save1['gprint_prefix']     = form_input_validate(get_nfilter_request_var('gprint_prefix'), 'gprint_prefix', '', true, 3);
 	$save1['graph_type']        = form_input_validate(get_nfilter_request_var('graph_type'), 'graph_type', '', false, 3);
 	$save1['total']             = form_input_validate(get_nfilter_request_var('total'), 'total', '', false, 3);

@@ -213,7 +213,7 @@ function form_actions() {
 					db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', array($selected_items[$i]));
 					db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', array($selected_items[$i]));
 				}
-			}elseif (get_request_var('drp_action') == '4') { /* change snmp options */
+			}elseif (get_request_var('drp_action') == '4') { /* change device options */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reset($fields_host_edit);
 					while (list($field_name, $field_array) = each($fields_host_edit)) {

@@ -153,7 +153,7 @@ function form_save() {
 	/* ==================================================== */
 
 	$gt_id_unparsed      = get_nfilter_request_var('graph_template_id');
-	$gt_id_prev_unparsed = get_nfilter_request_var('_graph_template_id');
+	$gt_id_prev_unparsed = get_nfilter_request_var('graph_template_id_prev');
 	parse_validate_graph_template_id('graph_template_id');
 
 	if ((isset_request_var('save_component_graph_new')) && (!isempty_request_var('graph_template_id'))) {
@@ -301,7 +301,7 @@ function form_save() {
 
 	if ((isset_request_var('save_component_graph_new')) && (isempty_request_var('graph_template_id'))) {
 		header('Location: graphs.php?action=graph_edit&header=false&host_id=' . get_nfilter_request_var('host_id') . '&new=1');
-	}elseif ((is_error_message()) || (isempty_request_var('local_graph_id')) || (get_nfilter_request_var('graph_template_id') != get_nfilter_request_var('_graph_template_id')) || (get_nfilter_request_var('host_id') != get_nfilter_request_var('_host_id'))) {
+	}elseif ((is_error_message()) || (isempty_request_var('local_graph_id')) || (get_nfilter_request_var('graph_template_id') != get_nfilter_request_var('graph_template_id_prev')) || (get_nfilter_request_var('host_id') != get_nfilter_request_var('host_id_prev'))) {
 		header('Location: graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? get_nfilter_request_var('local_graph_id') : $local_graph_id) . (isset_request_var('host_id') ? '&host_id=' . get_nfilter_request_var('host_id') : ''));
 	}else{
 		header('Location: graphs.php?header=false');
@@ -529,7 +529,7 @@ function form_actions() {
 				}
 			}elseif (get_request_var('drp_action') == '2') { /* change graph template */
 				$gt_id_unparsed      = get_nfilter_request_var('graph_template_id');
-				$gt_id_prev_unparsed = get_nfilter_request_var('_graph_template_id');
+				$gt_id_prev_unparsed = get_nfilter_request_var('graph_template_id_prev');
 				parse_validate_graph_template_id('graph_template_id');
 
 				for ($i=0;($i<count($selected_items));$i++) {
@@ -1239,11 +1239,11 @@ function graph_edit() {
 			'method' => 'hidden',
 			'value' => (isset($graph) ? $graph['local_graph_template_graph_id'] : '0')
 			),
-		'_graph_template_id' => array(
+		'graph_template_id_prev' => array(
 			'method' => 'hidden',
 			'value' => $graph_template_id
 			),
-		'_host_id' => array(
+		'host_id_prev' => array(
 			'method' => 'hidden',
 			'value' => (isset($host_id) ? $host_id : '0')
 			)

@@ -137,26 +137,6 @@ $fields_user_group_edit = array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'
 		),
-	'_policy_graphs' => array(
-		'method' => 'hidden',
-		'default' => '2',
-		'value' => '|arg1:policy_graphs|'
-		),
-	'_policy_trees' => array(
-		'method' => 'hidden',
-		'default' => '2',
-		'value' => '|arg1:policy_trees|'
-		),
-	'_policy_hosts' => array(
-		'method' => 'hidden',
-		'default' => '2',
-		'value' => '|arg1:policy_hosts|'
-		),
-	'_policy_graph_templates' => array(
-		'method' => 'hidden',
-		'default' => '2',
-		'value' => '|arg1:policy_graph_templates|'
-		),
 	'save_component_group' => array(
 		'method' => 'hidden',
 		'value' => '1'
