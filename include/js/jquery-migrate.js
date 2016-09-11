@@ -7,6 +7,7 @@
 
 
 jQuery.migrateVersion = "3.0.0";
+jQuery.migrateMute = true;
 
 
 ( function() {
@@ -31,9 +32,9 @@ jQuery.migrateVersion = "3.0.0";
 	}
 
 	// Show a message on the console so devs know we're active
-	log( "JQMIGRATE: Migrate is installed" +
-		( jQuery.migrateMute ? "" : " with logging active" ) +
-		", version " + jQuery.migrateVersion );
+//	log( "JQMIGRATE: Migrate is installed" +
+//		( jQuery.migrateMute ? "" : " with logging active" ) +
+//		", version " + jQuery.migrateVersion );
 
 } )();
 
