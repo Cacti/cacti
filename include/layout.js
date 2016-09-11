@@ -609,10 +609,7 @@ function ajaxAnchors() {
 function handlePopState() {
 	var href = document.location.href;
 
-	if (!pageLoaded) {
-		pageLoaded = true;
-		return false;
-	}else if (href.indexOf('#') == 0) {
+	if (href.indexOf('#') == -1) {
 		document.location = href;
 	}
 }
