@@ -1101,12 +1101,12 @@ $enabled = '1';
 						function testRemoteDatabase() {
 							strURL  = 'index.php';
 							strURL += '?action=testdb';
-							strURL += '&database_type=<?php print $rdatabase_type;?>';
-							strURL += '&database_default=<?php print $rdatabase_default;?>';
-							strURL += '&database_username=<?php print $rdatabase_username;?>';
-							strURL += '&database_password=<?php print $rdatabase_password;?>';
-							strURL += '&database_port=<?php print $rdatabase_port;?>';
-							strURL += '&database_ssl=<?php print $rdatabase_ssl;?>';
+							strURL += '&database_type=<?php print (isset($rdatabase_type) ? $rdatabase_type:'');?>';
+							strURL += '&database_default=<?php print (isset($rdatabase_default) ? $rdatabase_default:'');?>';
+							strURL += '&database_username=<?php print (isset($rdatabase_username) ? $rdatabase_username:'');?>';
+							strURL += '&database_password=<?php print (isset($rdatabase_password) ? $rdatabase_password:'');?>';
+							strURL += '&database_port=<?php print (isset($rdatabase_port) ? $rdatabase_port:'');?>';
+							strURL += '&database_ssl=<?php print (isset($rdatabase_sll) ? $rdatabase_ssl:'');?>';
 
 							$.get(strURL, function(data) {
 								$('#results').html('<?php print __('Remote Database: ');?>'+data);
