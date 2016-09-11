@@ -1422,7 +1422,8 @@ function validate_graph_request_vars() {
 			'default' => '-1'
 			),
 		'template_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_REGEXP,
+			'options' => array('options' => array('regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])')),
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -1500,7 +1501,7 @@ function graph_management() {
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
-							$templates = get_allowed_graph_templates();
+							$templates = get_allowed_graph_templates_normalized();
 							if (sizeof($templates) > 0) {
 								foreach ($templates as $template) {
 									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($template['name']), 40) . "</option>\n";
@@ -1570,7 +1571,12 @@ function graph_management() {
 	}elseif (get_request_var('template_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
 	}elseif (!isempty_request_var('template_id')) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=' . get_request_var('template_id');
+		$parts = explode('_', get_request_var('template_id'));
+		if ($parts[0] == 'cg') {
+			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.graph_template_id=' . $parts[1];
+		}else{
+			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id=' . $parts[1];
+		}
 	}
 
 	/* don't allow aggregates to be view here */

@@ -1223,6 +1223,31 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 	return $templates;
 }
 
+function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'name', $limit = '', 
+	&$total_rows = 0, $user = 0, $graph_template_id = 0) {
+
+	$new_templates = array();
+
+	$templates = get_allowed_graph_templates($sql_where, $order_by, $limit, $total_rows, $user, $graph_template_id);
+
+	if (sizeof($templates)) {
+		foreach($templates as $key => $t) {
+			$dqg = db_fetch_assoc_prepared('SELECT id, name FROM snmp_query_graph WHERE graph_template_id = ? ORDER BY name', array($t['id']));
+
+			if (sizeof($dqg)) {
+				unset($templates[$key]);
+				foreach($dqg as $t) {
+					$new_templates[] = array('id' => 'dq_' . $t['id'], 'name' => $t['name']);
+				}
+			}else{
+				$new_templates[] = array('id' => 'cg_' . $t['id'], 'name' => $t['name']);
+			}
+		}
+	}
+
+	return $new_templates;
+}
+
 /* get_host_array - returns a list of hosts taking permissions into account if necessary
    @returns - (array) an array containing a list of hosts */
 function get_host_array() {
