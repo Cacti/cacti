@@ -1291,19 +1291,19 @@ function update_snmp_index_order($data_query) {
 		/* save the value to index on (ie. ifindex, ifip, etc) */
 		db_execute_prepared('REPLACE INTO data_input_data 
 			(data_input_field_id, data_template_data_id, t_value, value)
-			VALUES (?, ?, "", ?', 
+			VALUES (?, ?, "", ?)', 
 			array($data_input_field['index_type'], $data_query['data_template_data_id'], $data_query['snmp_index_on']));
 		
 		/* save the actual value (ie. 3, 192.168.1.101, etc) */
 		db_execute_prepared('REPLACE INTO data_input_data 
 			(data_input_field_id,data_template_data_id,t_value,value) 
-			VALUES (?, ?, "", ?', 
+			VALUES (?, ?, "", ?)', 
 			array($data_input_field['index_value'], $data_query['data_template_data_id'], $snmp_cache_value));
 		
 		/* set the expected output type (ie. bytes, errors, packets) */
 		db_execute_prepared('REPLACE INTO data_input_data 
 			(data_input_field_id,data_template_data_id,t_value,value) 
-			VALUES (?, ?, "", ?', 
+			VALUES (?, ?, "", ?)', 
 			array($data_input_field['output_type'], $data_query['data_template_data_id'], $data_query['snmp_query_graph_id']));
 		
 		/* now that we have put data into the 'data_input_data' table, update the snmp cache for ds's */
