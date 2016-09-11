@@ -150,68 +150,6 @@ if (sizeof($data_queries)) {
 	}
 }
 
-/**
- * perform sql updates for all required tables for new index_sort_order
- * @arg array $snmp_query_array
- * 				$host_id
- * 				snmp_query_id
- * 				snmp_index_on
- * 				snmp_query_graph_id
- * 				snmp_index
- * 				$data_template_data_id	
- * 				$local_data_id
- * 
- * this code stems from lib/template.php, function create_complete_graph_from_template
- */
-function update_snmp_index_order($data_query) {
-	if (is_array($data_query)) {
-		$data_input_field = array_rekey(db_fetch_assoc("SELECT 
-			data_input_fields.id, 
-			data_input_fields.type_code 
-			FROM (snmp_query,data_input,data_input_fields) 
-			WHERE snmp_query.data_input_id=data_input.id 
-			AND data_input.id=data_input_fields.data_input_id 
-			AND (data_input_fields.type_code='index_type' 
-			OR data_input_fields.type_code='index_value' 
-			OR data_input_fields.type_code='output_type') 
-			AND snmp_query.id=" . $data_query['snmp_query_id']), 'type_code', 'id');
-		
-		$snmp_cache_value = db_fetch_cell("SELECT field_value 
-			FROM host_snmp_cache 
-			WHERE host_id='" . $data_query["host_id"] . "' 
-			AND snmp_query_id='" . $data_query["snmp_query_id"] . "'
-			AND field_name='" . $data_query["snmp_index_on"] . "'
-			AND snmp_index='" . $data_query["snmp_index"] . "'");
-		
-		/* save the value to index on (ie. ifindex, ifip, etc) */
-		db_execute("REPLACE INTO data_input_data 
-				(data_input_field_id, data_template_data_id, t_value, value)
-				VALUES (" . 
-					$data_input_field["index_type"] . ", " . 
-					$data_query["data_template_data_id"] . ", '', '" . 
-					$data_query["snmp_index_on"] . "')");
-		
-		/* save the actual value (ie. 3, 192.168.1.101, etc) */
-		db_execute("REPLACE INTO data_input_data 
-			(data_input_field_id,data_template_data_id,t_value,value) 
-			VALUES (" . 
-				$data_input_field["index_value"] . "," . 
-				$data_query["data_template_data_id"] . ",'','" . 
-				addslashes($snmp_cache_value) . "')");
-		
-		/* set the expected output type (ie. bytes, errors, packets) */
-		db_execute("REPLACE INTO data_input_data 
-			(data_input_field_id,data_template_data_id,t_value,value) 
-			VALUES (" . 
-				$data_input_field["output_type"] . "," . 
-				$data_query["data_template_data_id"] . ",'','" . 
-				$data_query["snmp_query_graph_id"] . "')");
-		
-		/* now that we have put data into the 'data_input_data' table, update the snmp cache for ds's */
-		update_data_source_data_query_cache($data_query['local_data_id']);
-	}
-}
-
 /*  display_version - displays version information */
 function display_version() {
     $version = db_fetch_cell('SELECT cacti FROM version');

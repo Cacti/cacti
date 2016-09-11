@@ -61,6 +61,33 @@ function run_data_query($host_id, $snmp_query_id) {
 	update_data_query_sort_cache($host_id, $snmp_query_id);
 	query_debug_timer_offset('data_query', 'Update data query sort cache complete');
 
+	/* recalculate/change sort order */
+	$data_queries = db_fetch_assoc_prepared('SELECT dl.host_id, dl.snmp_query_id,
+		dl.snmp_index, dtd.local_data_id, dtd.data_input_id,
+		did.data_template_data_id, did.data_input_field_id, did.value
+		FROM data_local AS dl
+		LEFT JOIN data_template_data AS dtd
+		ON dl.id=dtd.local_data_id
+		LEFT JOIN data_input_fields AS dif
+		ON dtd.data_input_id = dif.data_input_id
+		LEFT JOIN data_input_data AS did
+		ON dtd.id = did.data_template_data_id
+		AND dif.id = did.data_input_field_id
+		WHERE dif.type_code="output_type"
+		AND dl.snmp_query_id = ?
+		AND dl.host_id = ?',
+		array($host_id, $snmp_query_id));
+
+	if (sizeof($data_queries)) {
+		foreach($data_queries as $data_query) {
+			/* build array required for function call */
+			$data_query['snmp_index_on']       = get_best_data_query_index_type($host_id, $snmp_query_id);
+			/* as we request the output_type, 'value' gives the snmp_query_graph_id */
+			$data_query['snmp_query_graph_id'] = $data_query['value'];
+			update_snmp_index_order($data_query);
+		}
+	}
+
 	/* update the auto reindex cache */
 	update_reindex_cache($host_id, $snmp_query_id);
 	query_debug_timer_offset('data_query', 'Update re-index cache complete');
@@ -1230,5 +1257,57 @@ function verify_index_order($raw_xml) {
 	}
 
 	return $all_index_order_fields_found;
+}
+
+/**
+ * perform sql updates for all required tables for new index_sort_order
+ * @arg array $snmp_query_array
+ *   host_id, snmp_query_id, snmp_index_on, snmp_query_graph_id,
+ *   snmp_index,data_template_data_id, local_data_id
+ * 
+ * this code stems from lib/template.php, function create_complete_graph_from_template
+ */
+function update_snmp_index_order($data_query) {
+	if (sizeof($data_query)) {
+		$data_input_field = array_rekey(db_fetch_assoc_prepared('SELECT 
+			data_input_fields.id, 
+			data_input_fields.type_code 
+			FROM (snmp_query,data_input,data_input_fields) 
+			WHERE snmp_query.data_input_id=data_input.id 
+			AND data_input.id=data_input_fields.data_input_id 
+			AND (data_input_fields.type_code="index_type" 
+			OR data_input_fields.type_code="index_value" 
+			OR data_input_fields.type_code="output_type") 
+			AND snmp_query.id = ?', array($data_query['snmp_query_id'])), 'type_code', 'id');
+		
+		$snmp_cache_value = db_fetch_cell_prepared('SELECT field_value 
+			FROM host_snmp_cache 
+			WHERE host_id = ?
+			AND snmp_query_id = ?
+			AND field_name = ?
+			AND snmp_index = ?', 
+			array($data_query['host_id'], $data_query['snmp_query_id'], $data_query['snmp_index_on'], $data_query['snmp_index']));
+		
+		/* save the value to index on (ie. ifindex, ifip, etc) */
+		db_execute_prepared('REPLACE INTO data_input_data 
+			(data_input_field_id, data_template_data_id, t_value, value)
+			VALUES (?, ?, "", ?', 
+			array($data_input_field['index_type'], $data_query['data_template_data_id'], $data_query['snmp_index_on']));
+		
+		/* save the actual value (ie. 3, 192.168.1.101, etc) */
+		db_execute_prepared('REPLACE INTO data_input_data 
+			(data_input_field_id,data_template_data_id,t_value,value) 
+			VALUES (?, ?, "", ?', 
+			array($data_input_field['index_value'], $data_query['data_template_data_id'], $snmp_cache_value));
+		
+		/* set the expected output type (ie. bytes, errors, packets) */
+		db_execute_prepared('REPLACE INTO data_input_data 
+			(data_input_field_id,data_template_data_id,t_value,value) 
+			VALUES (?, ?, "", ?', 
+			array($data_input_field['output_type'], $data_query['data_template_data_id'], $data_query['snmp_query_graph_id']));
+		
+		/* now that we have put data into the 'data_input_data' table, update the snmp cache for ds's */
+		update_data_source_data_query_cache($data_query['local_data_id']);
+	}
 }
 
