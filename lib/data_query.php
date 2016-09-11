@@ -87,6 +87,7 @@ function run_data_query($host_id, $snmp_query_id) {
 			update_snmp_index_order($data_query);
 		}
 	}
+	query_debug_timer_offset('data_query', 'Updated data query index ordering');
 
 	/* update the auto reindex cache */
 	update_reindex_cache($host_id, $snmp_query_id);
