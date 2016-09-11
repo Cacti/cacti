@@ -132,13 +132,13 @@ $.fn.replaceOptions = function(options, selected) {
 
 	$.each(options, function(index, option) {
 		if (selected == option.value) {
-			$option = $("<option></option>")
-			.attr("value", option.value)
-			.prop("selected", true)
+			$option = $('<option></option>')
+			.attr('value', option.value)
+			.prop('selected', true)
 			.text(option.text);
 		}else{
-			$option = $("<option></option>")
-			.attr("value", option.value)
+			$option = $('<option></option>')
+			.attr('value', option.value)
 			.text(option.text);
 		}
 		self.append($option);
@@ -151,8 +151,8 @@ $.fn.textWidth = function(text){
 	var org = $(this);
 	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.html()) + '</span>');
 	if (!text) {
-		html.css("font-family", org.css("font-family"));
-		html.css("font-weight", org.css("font-weight"));
+		html.css('font-family', org.css('font-family'));
+		html.css('font-weight', org.css('font-weight'));
 	}
 	$('body').append(html);
 	var width = html.width();
@@ -241,14 +241,14 @@ $.fn.serializeObject = function() {
 
 // Plugin to apply numeric format for tablesorter
 $.tablesorter.addParser({
-	id: "numberFormat",
+	id: 'numberFormat',
 	is: function(s) {
 		return /^[0-9]?[0-9,\.]*$/.test(s);
 	},
 	format: function(s) {
 		return $.tablesorter.formatFloat(s.replace(/,/g, ''));
 	},
-	type: "numeric"
+	type: 'numeric'
 });
 
 /** Mini jquery plugin to determine if an element has a scrollbar present */
@@ -582,7 +582,6 @@ function ajaxAnchors() {
 		/* execute an ajax request to load the data */
 		href = $(this).attr('href');
 
-		console.log('hello');
 		if (href == '#') {
 			return false;
 		}
