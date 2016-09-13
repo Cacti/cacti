@@ -4075,6 +4075,8 @@ function IgnoreErrorHandler($message) {
 	$snmp_ignore = array(
 		'No response from',
 		'noSuchName',
+		'No Such Object',
+		'Error in packet',
 		'This name does not exist',
 		'End of MIB',
 	);
