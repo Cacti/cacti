@@ -385,6 +385,7 @@ function cacti_snmp_session_get($session, $oid) {
 	} else {
 		$out = format_snmp_string($out, FALSE);
 	}
+
 	return $out;
 }
 
