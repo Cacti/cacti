@@ -40,8 +40,6 @@ a, a:active, a:visited {
 	color: #006400;
 	text-decoration: none;
 	font-size: 12px;
-	padding: 3px;
-	vertical-align: middle !important;
 }
 
 a:hover {

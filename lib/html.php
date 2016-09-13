@@ -47,8 +47,8 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 	?>
 	<div id='<?php print $table_id;?>' class='cactiTable' style='width:<?php print $width;?>;text-align:<?php print $align;?>;'>
 		<div>
-			<div class='cactiTableTitle'><span style='padding:3px;'><?php if ($title != "") { print $title; }?></span></div>
-			<div class='cactiTableButton'><span style='padding:3px;'><?php if ($add_text != "") {?><a style='padding-right:5px;' class="linkOverDark" href="<?php print htmlspecialchars($add_text);?>"><?php print $add_label;?></a><?php }?></span></div>
+			<div class='cactiTableTitle'><span><?php if ($title != "") { print $title; }?></span></div>
+			<div class='cactiTableButton'><span><?php if ($add_text != "") {?><a class="linkOverDark" href="<?php print htmlspecialchars($add_text);?>"><?php print $add_label;?></a><?php }?></span></div>
 		</div>
 		<table id='<?php print $table_id . '_child';?>' class='cactiTable' style='padding:<?php print $cell_padding;?>px;'>
 	<?php
