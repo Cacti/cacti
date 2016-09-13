@@ -419,12 +419,14 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 				}
 			/* multiple value output */
 			}elseif (strpos($value, ':') !== false) {
-				$values = explode(' ', $value);
+				$values = preg_split('/\s+/', $value);
 
 				foreach($values as $value) {
 					$matches = explode(':', $value);
 
 					if (sizeof($matches) == 2) {
+						$fields = array();
+
 						if (isset($rrd_field_names[$item['data_template_id'] . '_' . $matches[0]])) {
 							$field_map = $rrd_field_names[$item['data_template_id'] . '_' . $matches[0]]['data_source_name'];
 
