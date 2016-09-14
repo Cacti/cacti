@@ -1037,50 +1037,37 @@ function validate_result(&$result) {
 	$space_cnt = 0;
 
 	$valid_result = false;
-	$checked = false;
 
 	/* check the easy cases first */
 	/* it has no delimiters, and no space, therefore, must be numeric */
 	if ((substr_count($result, ':') == 0) && (substr_count($result, '!') == 0) && (substr_count($result, ' ') == 0)) {
-		$checked = true;
 		if (is_numeric($result)) {
 			$valid_result = true;
 		} else if (is_float($result)) {
 			$valid_result = true;
 		} else {
 			$valid_result = false;
-			$result = 'U';
 		}
-	}
-	/* it has delimiters and has no space */
-	if (!$checked) {
-		if (((substr_count($result, ':')) || (substr_count($result, '!')))) {
-			if (substr_count($result, ' ') == 0) {
+	}elseif (((substr_count($result, ':')) || (substr_count($result, '!')))) {
+		if (substr_count($result, ' ') == 0) {
+			$valid_result = true;
+		} else {
+			if (substr_count($result, ':')) {
+				$delim_cnt = substr_count($result, ':');
+			} else if (strstr($result, '!')) {
+				$delim_cnt = substr_count($result, '!');
+			}
+
+			$space_cnt = substr_count($result, ' ');
+
+			if ($space_cnt+1 == $delim_cnt) {
 				$valid_result = true;
-				$checked = true;
-			}
-
-			if (substr_count($result, ' ') != 0) {
-				$checked = true;
-				if (substr_count($result, ':')) {
-					$delim_cnt = substr_count($result, ':');
-				} else if (strstr($result, '!')) {
-					$delim_cnt = substr_count($result, '!');
-				}
-
-				$space_cnt = substr_count($result, ' ');
-
-				if ($space_cnt+1 == $delim_cnt) {
-					$valid_result = true;
-				} else {
-					$valid_result = false;
-				}
+			} else {
+				$valid_result = false;
 			}
 		}
-	}
-
-	/* default handling */
-	if (!$checked) {
+	}else{
+		/* default handling */
 		if (is_numeric($result)) {
 			$valid_result = true;
 		} else if (is_float($result)) {
