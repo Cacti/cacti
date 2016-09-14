@@ -108,6 +108,10 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		we are getting back */
 		snmp_set_quick_print(0);
 
+		if (function_exists('snmp_set_enum_print')) {
+			snmp_set_enum_print(true);
+		}
+
 		if ($version == '1') {
 			$snmp_value = snmpget($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
 		}elseif ($version == '2') {
