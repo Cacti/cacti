@@ -684,41 +684,22 @@ function format_snmp_string($string, $snmp_oid_included) {
 	}
 	$string = trim($string);
 
-	if ((substr_count($string, 'Hex-STRING:')) ||
-		(substr_count($string, 'Hex-')) ||
-		(substr_count($string, 'Hex:'))) {
+	if (preg_match('/(hex-string:)/i', $string)) {
 		/* strip of the 'Hex-STRING:' */
-		$string = preg_replace('/Hex-STRING: ?/i', '', $string);
-		$string = preg_replace('/Hex: ?/i', '', $string);
-		$string = preg_replace('/Hex- ?/i', '', $string);
+		$string = preg_replace('/hex-string: ?/i', '', $string);
+		$string = str_replace(' ', ':', $string);
+		$output = '';
 
-		$string_array = explode(' ', $string);
+		$parts = explode(':', $string);
 
-		/* loop through each string character and make ascii */
-		$string = '';
-		$hexval = '';
-		$ishex  = false;
-		for ($i=0;($i<sizeof($string_array));$i++) {
-			if (strlen($string_array[$i])) {
-				$string .= chr(hexdec($string_array[$i]));
+		/* convert the hex string into an ascii string */
+		foreach($parts as $part) {
+			if ($part == '00') break;
 
-				$hexval .= str_pad($string_array[$i], 2, '0', STR_PAD_LEFT);
-
-				if (($i+1) < count($string_array)) {
-					$hexval .= ':';
-				}
-
-				if ((hexdec($string_array[$i]) <= 31) || (hexdec($string_array[$i]) >= 127)) {
-					if ((($i+1) == sizeof($string_array)) && ($string_array[$i] == 0)) {
-						/* do nothing */
-					}else{
-						$ishex = true;
-					}
-				}
-			}
+			$output .= chr(hexdec($part));
 		}
 
-		if ($ishex) $string = $hexval;
+		$string = $output;
 	}elseif (preg_match('/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/i', $string)) {
 		$octet = '';
 
