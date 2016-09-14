@@ -976,10 +976,10 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 
 /* is_hexadecimal - test whether a string represents a hexadecimal number,
      ignoring space and tab, and case insensitive.
-   @arg $hexstr - the string to test
+   @arg $result - the string to test
    @arg 1 if the argument is hex, 0 otherwise, and FALSE on error */
-function is_hexadecimal($hexstr) {
-	$hexstr = trim($hexstr);
+function is_hexadecimal(&$result) {
+	$hexstr = trim($result);
 	$hexstr = str_replace(' ', ':', $hexstr);
 	$hexstr = str_replace('-', ':', $hexstr);
 
@@ -991,6 +991,8 @@ function is_hexadecimal($hexstr) {
 			return false;
 		}
 	}
+
+	$result = hex2dec($hexstr);
 
 	return true;
 }
