@@ -992,9 +992,36 @@ function is_hexadecimal(&$result) {
 		}
 	}
 
-	$result = hex2dec($hexstr);
-
 	return true;
+}
+
+/* is_mac_address - determine's if the result value is a mac address
+   @arg $result - (string) some string to be evaluated
+   @returns - (bool) either to result is a mac address of not */
+function is_mac_address($result) {
+	if (preg_match('/^([0-9a-f]{1,2}[\.:-]){5}([0-9a-f]{1,2})$/i', $result)) {
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function is_hex_string($result) {
+	if ($result != '') {
+		$parts = explode(' ', $result);
+
+		foreach($parts as $part) {
+			if (strlen($part) != 2) {
+				return false;
+			}elseif (!preg_match('/[a-fA-F0-9]/', $part)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	return false;
 }
 
 /* prepare_validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
@@ -1008,8 +1035,10 @@ function prepare_validate_result(&$result) {
 	$result = trim($result, "'\"\n\r");
 
 	/* clean off ugly non-numeric data */
-	if (is_numeric($result) || is_hexadecimal($result) || $result = 'U') {
+	if (is_numeric($result) || $result = 'U') {
 		return true;
+	}elseif (is_hexadecimal($result)) {
+		return hex2dec($result);
 	}elseif (((substr_count($result, ':')) || (substr_count($result, '!')))) {
 		/* looking for name value pairs */
 		if (substr_count($result, ' ') == 0) {

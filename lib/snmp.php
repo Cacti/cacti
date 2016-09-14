@@ -347,10 +347,8 @@ function cacti_snmp_session_walk($session, $oid, $dummy = FALSE, $max_repetition
 			$oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.5' || $oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.14' ||
 			$oid == '.1.3.6.1.4.1.9.9.23.1.2.1.1.6') {
 			/* do nothing */
-		}else{
-			if ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
-				cacti_log('WARNING: SNMP Error:\'Timeout (' . ($info['timeout']/1000) . " ms)\', Device:'" . $info['hostname'] . "', OID:'$oid'", false);
-			}
+		}elseif ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
+			cacti_log('WARNING: SNMP Error:\'Timeout (' . ($info['timeout']/1000) . " ms)\', Device:'" . $info['hostname'] . "', OID:'$oid'", false);
 		}
 
 		return array();
@@ -505,7 +503,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		}
 
 		/* check for bad entries */
-		if (is_array($temp_array) && sizeof($temp_array) && $temp_array !== false) {
+		if ($temp_array !== false && sizeof($temp_array)) {
 			foreach($temp_array as $key => $value) {
 				foreach($banned_snmp_strings as $item) {
 					if(strstr($value, $item) != '') {
@@ -590,7 +588,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 				' -v '    . $version . 
 				' -t '    . $timeout .
 				' -r '    . $retries . 
-				' '       .  $oidCheck . ' ' .
+				' '       . $oidCheck . ' ' .
 				' '       . cacti_escapeshellarg($hostname) . ':' . $port . 
 				' '       . cacti_escapeshellarg($oid));
 		}
@@ -684,19 +682,44 @@ function format_snmp_string($string, $snmp_oid_included) {
 	}
 	$string = trim($string);
 
-	if (preg_match('/(hex-string:)/i', $string)) {
-		/* strip of the 'Hex-STRING:' */
-		$string = preg_replace('/hex-string: ?/i', '', $string);
-		$string = str_replace(' ', ':', $string);
+	if (is_hex_string($string)) {
 		$output = '';
-
-		$parts = explode(':', $string);
+		$parts  = explode(' ', $string);
 
 		/* convert the hex string into an ascii string */
 		foreach($parts as $part) {
-			if ($part == '00') break;
-
 			$output .= chr(hexdec($part));
+		}
+
+		$string = $output;
+	}elseif (preg_match('/(hex-string:)/i', $string)) {
+		$output = '';
+
+		/* strip off the 'Hex-STRING:' */
+		$string = preg_replace('/hex-string: ?/i', '', $string);
+
+		/* normalize some forms */
+		$string = str_replace(' ', ':', $string);
+		$string = str_replace('-', ':', $string);
+		$string = str_replace('.', ':', $string);
+
+		$parts = explode(':', $string);
+
+		if (is_mac_address($string)) {
+			$mac = true;
+		}else{
+			$mac = false;
+		}
+
+		/* convert the hex string into an ascii string */
+		foreach($parts as $part) {
+			if ($mac == false) {
+				if ($part == '00') break;
+
+				$output .= chr(hexdec($part));
+			} else {
+				$output .= ($output != '' ? ':':'') . $output;
+			}
 		}
 
 		$string = $output;
