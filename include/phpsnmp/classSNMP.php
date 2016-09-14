@@ -28,8 +28,8 @@ class SNMP {
 	const ERRNO_ERROR_IN_REPLY	= 3;
 	const ERRNO_OID_NOT_INCREASING	= 4;
 
-	const VERSION_1 = 0;
-	const VERSION_2C = 1;
+	const VERSION_1 = 1;
+	const VERSION_2C = 2;
 	const VERSION_2c = SNMP::VERSION_2C;
 	const VERSION_3 = 3;
 
@@ -130,7 +130,9 @@ class SNMP {
 				}
 
 				if ($this->enum_print !== NULL) {
-					snmp_set_enum_print($this->enum_print);
+					if (function_exists('snmp_set_enum_print')) {
+						snmp_set_enum_print($this->enum_print);
+					}
 				}
 			}
 		} else {
@@ -274,5 +276,3 @@ class SNMP {
 		}
 	}
 }
-
-?>
