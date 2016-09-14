@@ -974,83 +974,44 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	);
 }
 
-/* strip_quotes - Strip single and double quotes from a string
-	in addition remove non-numeric data from strings.
-	@arg $result - (string) the result from the poll
-	@returns - (string) the string with quotes stripped */
-function strip_quotes($result) {
-	/* first strip all single and double quotes from the string */
-	$result = trim(trim($result), "'\"");
-
-	/* clean off ugly non-numeric data */
-	if ((!is_numeric($result)) && (!is_hexadecimal($result)) && ($result != 'U')) {
-		$len = strlen($result);
-		for($a=$len-1; $a>=0; $a--){
-			$p = ord($result[$a]);
-			if (($p > 47 && $p < 58) || ($p == 43 || $p == 45)) {
-				break;
-			}else{
-				$result[$a] = ' ';
-			}
-		}
-
-		$result = trim($result);
-	}
-
-	return($result);
-}
-
 /* is_hexadecimal - test whether a string represents a hexadecimal number,
      ignoring space and tab, and case insensitive.
    @arg $hexstr - the string to test
    @arg 1 if the argument is hex, 0 otherwise, and FALSE on error */
 function is_hexadecimal($hexstr) {
 	$hexstr = trim($hexstr);
-	$i      = 0;
-	$length = strlen($hexstr);
-	while ($i < $length) {
-		$part = substr($hexstr,$i,2);
-		$i += 2;
+	$hexstr = str_replace(' ', ':', $hexstr);
+	$hexstr = str_replace('-', ':', $hexstr);
 
+	$parts = explode(':', $hexstr);
+	foreach($parts as $part) {
 		if (!preg_match('/[a-fA-F0-9]/', $part)) {
 			return false;
-		} elseif ($i < $length) {
-			if (substr($hexstr,$i,1) != ':') {
-				return false;
-			}elseif ($i + 1 == $length) {
-				return false;
-			}
-			$i++;
-		}else{
-			$i++;
+		}elseif (strlen($part != 2)) {
+			return false;
 		}
 	}
 
 	return true;
 }
 
-/* validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
+/* prepare_validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
    @arg $result - (string) the result from the poll, the result can be modified in the call
-   @returns - (int) either to result is valid or not */
-function validate_result(&$result) {
+   @returns - (bool) either to result is valid or not */
+function prepare_validate_result(&$result) {
 	$delim_cnt = 0;
 	$space_cnt = 0;
 
-	$valid_result = false;
+	/* first trim the string */
+	$result = trim($result, "'\"\n\r");
 
-	/* check the easy cases first */
-	/* it has no delimiters, and no space, therefore, must be numeric */
-	if ((substr_count($result, ':') == 0) && (substr_count($result, '!') == 0) && (substr_count($result, ' ') == 0)) {
-		if (is_numeric($result)) {
-			$valid_result = true;
-		} else if (is_float($result)) {
-			$valid_result = true;
-		} else {
-			$valid_result = false;
-		}
+	/* clean off ugly non-numeric data */
+	if (is_numeric($result) || is_hexadecimal($result) || $result = 'U') {
+		return true;
 	}elseif (((substr_count($result, ':')) || (substr_count($result, '!')))) {
+		/* looking for name value pairs */
 		if (substr_count($result, ' ') == 0) {
-			$valid_result = true;
+			return true;
 		} else {
 			if (substr_count($result, ':')) {
 				$delim_cnt = substr_count($result, ':');
@@ -1061,23 +1022,26 @@ function validate_result(&$result) {
 			$space_cnt = substr_count($result, ' ');
 
 			if ($space_cnt+1 == $delim_cnt) {
-				$valid_result = true;
+				return true;
 			} else {
-				$valid_result = false;
+				return false;
 			}
 		}
 	}else{
-		/* default handling */
+		/* strip all non numeric data */
+		$result = preg_replace('/[^0-9,.+-]/', '', $result);
+
+		/* check the easy cases first */
+		/* it has no delimiters, and no space, therefore, must be numeric */
 		if (is_numeric($result)) {
-			$valid_result = true;
+			return true;
 		} else if (is_float($result)) {
-			$valid_result = true;
+			return true;
 		} else {
-			$valid_result = false;
+			$result = 'U';
+			return false;
 		}
 	}
-
-	return($valid_result);
 }
 
 /* get_full_script_path - gets the full path to the script to execute to obtain data for a
@@ -3811,11 +3775,10 @@ function update_system_mibs($host_id) {
 	$h = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
 
 	if (sizeof($h)) {
+		open_snmp_session($host_id, $h);
+
 		foreach($system_mibs as $name => $oid) {
-			$value = cacti_snmp_get($h['hostname'], $h['snmp_community'], $oid,
-				$h['snmp_version'], $h['snmp_username'], $h['snmp_password'],
-				$h['snmp_auth_protocol'], $h['snmp_priv_passphrase'], $h['snmp_priv_protocol'],
-				$h['snmp_context'], $h['snmp_port'], $h['snmp_timeout'], read_config_option('snmp_retries'), SNMP_CMDPHP);
+			$value = cacti_session_snmp_get($oid);
 
 			if (!empty($value)) {
 				db_execute_prepared("UPDATE host SET $name = ? WHERE id = ?",
