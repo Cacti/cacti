@@ -255,11 +255,7 @@ class Net_Ping
 
 		/* by default, we look at sysUptime */
 		if ($this->avail_method == AVAIL_SNMP_GET_NEXT) {
-			if (version_compare('5', phpversion(), '<')) {
-				$oid = '.1.3';
-			}else{
-				$oid = '.1.3.6.1.2.1.1.3.0';
-			}
+			$oid = '.1.3.6.1.2.1.1.3.0';
 		}else if ($this->avail_method == AVAIL_SNMP_GET_SYSDESC) {
 			$oid = '.1.3.6.1.2.1.1.1.0';
 		}else {
