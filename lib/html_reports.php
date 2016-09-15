@@ -1389,9 +1389,9 @@ function reports() {
 					</td>
 					<td>
 						<select id='status' onChange='applyFilter(document.report)'>
-							<option value='-1'" . (get_request_var('status') == '-1' ? 'selected':'') . ">" . __('Any') . "</option>
-							<option value='-2'" . (get_request_var('status') == '-2' ? 'selected':'') . ">" . __('Enabled') . "</option>
-							<option value='-3'" . (get_request_var('status') == '-3' ? 'selected':'') . ">" . __('Disabled') . "</option>
+							<option value='-1'" . (get_request_var('status') == '-1' ? ' selected':'') . ">" . __('Any') . "</option>
+							<option value='-2'" . (get_request_var('status') == '-2' ? ' selected':'') . ">" . __('Enabled') . "</option>
+							<option value='-3'" . (get_request_var('status') == '-3' ? ' selected':'') . ">" . __('Disabled') . "</option>
 						</select>
 					</td>
 					<td>
@@ -1399,7 +1399,7 @@ function reports() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter(document.report)'>
-							<option value='-1'" . (get_request_var('rows') == '-1' ? 'selected':'') . '>' . __('Default') . '</option>';
+							<option value='-1'" . (get_request_var('rows') == '-1' ? ' selected':'') . '>' . __('Default') . '</option>';
 							if (sizeof($item_rows)) {
 							foreach ($item_rows as $key => $value) {
 								print "<option value='" . $key . "'" . 
@@ -1469,10 +1469,10 @@ function reports() {
 
 	$nav = html_nav_bar(get_reports_page() . 'filter=' . get_request_var('filter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 10, __('Reports'), 'page', 'main');
 
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	print $nav;
 	
+	html_start_box('', '100%', '', '3', 'center', '');
+
 	if (is_reports_admin()) {
 		$display_text = array(
 			'name'            => array('display' => __('Report Name'), 'align' => 'left', 'sort' => 'ASC'),
