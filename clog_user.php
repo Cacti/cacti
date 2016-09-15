@@ -36,5 +36,3 @@ if (!clog_authorized()) {
 load_current_session_value('page_referrer', 'page_referrer', '');
 
 clog_view_logfile();
-
-?>

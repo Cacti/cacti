@@ -293,8 +293,8 @@ function filter() {
 	global $refresh, $page_refresh_interval, $log_tail_lines;
 	?>
 	<tr class='even'>
-		<form name='form_logfile'>
 		<td>
+		<form name='form_logfile'>
 			<table class='filterTable'>
 				<tr>
 					<td>
@@ -366,63 +366,63 @@ function filter() {
 					</td>
 				</tr>
 			</table>
-			<script type='text/javascript'>
-		    var refreshIsLogout=false;
-		    var refreshPage='<?php print $refresh['page'];?>';
-		    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
-
-			$('#rfilter').change(function() {
-				refreshFilter();
-			});
-
-			$('#reverse').change(function() {
-				refreshFilter();
-			});
-
-			$('#refresh').change(function() {
-				refreshFilter();
-			});
-
-			$('#message_type').change(function() {
-				refreshFilter();
-			});
-
-			$('#tail_lines').change(function() {
-				refreshFilter();
-			});
-
-			$('#go').click(function() {
-				refreshFilter();
-			});
-
-			$('#clear').click(function() {
-				clearFilter();
-			});
-
-			$('#purge').click(function() {
-				strURL = basename(location.pathname) + '?purge=1&header=false';
-				loadPageNoHeader(strURL);
-			});
-
-			function clearFilter() {
-				strURL = basename(location.pathname) + '?clear=1&header=false';
-				loadPageNoHeader(strURL);
-			}
-
-			function refreshFilter() {
-				refreshMSeconds=$('#refresh').val()*1000;
-
-				strURL = basename(location.pathname) + '?rfilter='+ $('#rfilter').val()+
-					'&reverse='+$('#reverse').val()+
-					'&refresh='+$('#refresh').val()+
-					'&message_type='+$('#message_type').val()+
-					'&tail_lines='+$('#tail_lines').val()+
-					'&header=false';
-
-				loadPageNoHeader(strURL);
-			}
-			</script>
 		</form>
+		<script type='text/javascript'>
+	    var refreshIsLogout=false;
+	    var refreshPage='<?php print $refresh['page'];?>';
+	    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
+
+		$('#rfilter').change(function() {
+			refreshFilter();
+		});
+
+		$('#reverse').change(function() {
+			refreshFilter();
+		});
+
+		$('#refresh').change(function() {
+			refreshFilter();
+		});
+
+		$('#message_type').change(function() {
+			refreshFilter();
+		});
+
+		$('#tail_lines').change(function() {
+			refreshFilter();
+		});
+
+		$('#go').click(function() {
+			refreshFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#purge').click(function() {
+			strURL = basename(location.pathname) + '?purge=1&header=false';
+			loadPageNoHeader(strURL);
+		});
+
+		function clearFilter() {
+			strURL = basename(location.pathname) + '?clear=1&header=false';
+			loadPageNoHeader(strURL);
+		}
+
+		function refreshFilter() {
+			refreshMSeconds=$('#refresh').val()*1000;
+
+			strURL = basename(location.pathname) + '?rfilter='+ $('#rfilter').val()+
+				'&reverse='+$('#reverse').val()+
+				'&refresh='+$('#refresh').val()+
+				'&message_type='+$('#message_type').val()+
+				'&tail_lines='+$('#tail_lines').val()+
+				'&header=false';
+
+			loadPageNoHeader(strURL);
+		}
+		</script>
 		</td>
 	</tr>
 	<?php
