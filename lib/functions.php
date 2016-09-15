@@ -3806,10 +3806,10 @@ function update_system_mibs($host_id) {
 	$h = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
 
 	if (sizeof($h)) {
-		open_snmp_session($host_id, $h);
+		$sesison = cacti_snmp_session($host_id, $h);
 
 		foreach($system_mibs as $name => $oid) {
-			$value = cacti_session_snmp_get($oid);
+			$value = cacti_snmp_session_get($session, $oid);
 
 			if (!empty($value)) {
 				db_execute_prepared("UPDATE host SET $name = ? WHERE id = ?",
