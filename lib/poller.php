@@ -519,6 +519,8 @@ function update_resource_cache($poller_id = 0) {
 	$spath = $config['scripts_path'];
 	$rpath = $config['resource_path'];
 
+	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z');
+
 	$paths = array(
 		'base'     => array('recursive' => false, 'path' => $mpath),
 		'scripts'  => array('recursive' => true,  'path' => $spath),
@@ -535,7 +537,22 @@ function update_resource_cache($poller_id = 0) {
 	if ($poller_id == 0) {
 		foreach($paths as $type => $path) {
 			if (is_readable($path['path'])) {
-				cache_in_path($path['path'], $type, $path['recursive']);
+				$pathinfo = pathinfo($path['path']);
+				if (isset($pathinfo['extension'])) {
+					$extension = strtolower($pathinfo['extension']);
+				}else{
+					$extension = '';
+				}
+
+				/* exclude spurious extensions */
+				$exclude = false;
+				if (array_search($extension, $excluded_extensions, true) !== false) {
+					$exclude = true;
+				}
+
+				if (!$exclude) {
+					cache_in_path($path['path'], $type, $path['recursive']);
+				}
 			}else{
 				cacti_log("ERROR: Unable to read the " . $type . " path '" . $path['path'] . "'", false, 'POLLER');
 			}
