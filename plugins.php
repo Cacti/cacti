@@ -456,12 +456,12 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 	if ($include_ordering) {
 		$row .= "<td class='nowrap right'>";
 		if (!$first_plugin) {
-			$row .= "<a class='pic fa fa-caret-down moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __('Order Before Prevous Plugin') . "'></a>";
+			$row .= "<a class='pic fa fa-caret-up moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __('Order Before Prevous Plugin') . "'></a>";
 		}else{
 			$row .= '<span class="moveArrowNone"></span>';
 		}
 		if (!$last_plugin) {
-			$row .= "<a class='pic fa fa-caret-up moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='" . __('Order After Next Plugin') . "'></a>";
+			$row .= "<a class='pic fa fa-caret-down moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='" . __('Order After Next Plugin') . "'></a>";
 		}else{
 			$row .= '<span class="moveArrowNone"></span>';
 		}
