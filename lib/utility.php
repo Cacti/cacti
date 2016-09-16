@@ -561,23 +561,30 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 }
 
 function utilities_get_mysql_recommendations() {
-	// MySQL Important Variables
+	// MySQL/MariaDB Important Variables
 	$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
 
 	$memInfo = utilities_get_system_memory();
+
+	if (strpos($variables['version'], 'MariaDB') !== false) {
+		$database = 'MariaDB';
+		$version  = str_replace('-MariaDB', '', $variables['version']);
+	}else{
+		$database = 'MySQL';
+		$version  = $variables['version'];
+	}
 
 	$recommendations = array(
 		'version' => array(
 			'value' => '5.6',
 			'measure' => 'gt',
-			'comment' => __('MySQL 5.6 is great release, and a very good version to choose.  
-				Other choices today include MariaDB which is very popular and addresses some issues
-				with the C API that negatively impacts spine in MySQL 5.5, and for some reason
-				Oracle has chosen not to fix in MySQL 5.5.  So, avoid MySQL 5.5 at all cost.')
+			'comment' => __('%s %s is great release, and a very good version to choose. Make sure you
+				run the very latest release though which fixes a long standing low level networking
+				issue that was casuing spine many issues with reliability.', $database, $version) 
 			)
 	);
 
-	if ($variables['version'] < '5.6') {
+	if ($variables['innodb_version'] < '5.6') {
 		$recommendations += array(
 			'collation_server' => array(
 				'value' => 'utf8_general_ci',
@@ -624,10 +631,10 @@ function utilities_get_mysql_recommendations() {
 			'value'   => '100', 
 			'measure' => 'gt', 
 			'comment' => __('Depending on the number of logins and use of spine data collector, 
-				MySQL will need many connections.  The calculation for spine is:
+				%s will need many connections.  The calculation for spine is:
 				total_connections = total_processes * (total_threads + script_servers + 1), then you
 				must leave headroom for user connections, which will change depending on the number of
-				concurrent login accounts.')
+				concurrent login accounts.', $database)
 			),
 		'max_heap_table_size' => array(
 			'value'   => '5',
@@ -671,9 +678,9 @@ function utilities_get_mysql_recommendations() {
 			'value'   => 'ON',
 			'measure' => 'equal',
 			'comment' => __('When using InnoDB storage it is important to keep your table spaces
-				separate.  This makes managing the tables simpler for long time users of MySQL.
+				separate.  This makes managing the tables simpler for long time users of %s.
 				If you are running with this currently off, you can migrate to the per file storage
-				by enabling the feature, and then running an alter statement on all InnoDB tables.')
+				by enabling the feature, and then running an alter statement on all InnoDB tables.', $database)
 			),
 		'innodb_buffer_pool_size' => array(
 			'value'   => '25',
@@ -703,13 +710,13 @@ function utilities_get_mysql_recommendations() {
 			)
 	);
 
-	if ($variables['version'] < '5.6') {
+	if ($variables['innodb_version'] < '5.6') {
 		$recommendations += array(
 			'innodb_flush_log_at_trx_commit' => array(
 				'value'   => '2',
 				'measure' => 'equal',
 				'comment' => __('Setting this value to 2 means that you will flush all transactions every
-				second rather than at commit.  This allows MySQL to perform writing less often.')
+				second rather than at commit.  This allows %s to perform writing less often.', $database)
 			),
 			'innodb_file_io_threads' => array(
 				'value'   => '16',
@@ -723,7 +730,7 @@ function utilities_get_mysql_recommendations() {
 			'innodb_flush_log_at_timeout' => array(
 				'value'   => '3',
 				'measure'  => 'gt',
-				'comment'  => __('As of MySQL 5.6, the you can control how often MySQL flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential'),
+				'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
 				),
 			'innodb_read_io_threads' => array(
 				'value'   => '32',
@@ -740,14 +747,14 @@ function utilities_get_mysql_recommendations() {
 			'innodb_buffer_pool_instances' => array(
 				'value' => '16',
 				'measure' => 'present',
-				'comment' => __('MySQL will divide the innodb_buffer_pool into memory regions to improve performance.
+				'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance.
 					The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size
-					divided by 128MB.  Continue to use this equation upto the max of 64.')
+					divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
 				)
 		);
 	}
 
-	html_header(array(__('MySQL Tuning') . ' (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . substr($variables['version'],0,3) . '/en/server-system-variables.html">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart')), 2);
+	html_header(array(__('%s Tuning', $database) . ' (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . substr($variables['innodb_version'],0,3) . '/en/server-system-variables.html">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart')), 2);
 
 	form_alternate_row();
 	print "<td colspan='2' style='text-align:left;padding:0px'>";
