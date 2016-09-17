@@ -109,6 +109,14 @@ switch (get_request_var('action')) {
 	case 'ping_host':
 		ping_host();
 		break;
+	case 'enable_debug':
+		enable_device_debug(get_filter_request_var('host_id'));
+		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+		break;
+	case 'disable_debug':
+		disable_device_debug(get_filter_request_var('host_id'));
+		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+		break;
 	default:
 		top_header();
 
@@ -724,13 +732,20 @@ function host_edit() {
 	api_plugin_hook('host_edit_top');
 
 	$header_label = __('Device [new]');
+	$debug_link   = '';
 	if (!isempty_request_var('id')) {
 		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array(get_request_var('id')));
 
 		if (sizeof($host)) {
 			$header_label = __('Device [edit: %s]', htmlspecialchars($host['description']));
+			if (is_device_debug_enabled($host['id'])) {
+				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . htmlspecialchars('host.php?action=disable_debug&host_id=' . $host['id']) . "'>" . __('Disable Device Debug') . "</a><br>";
+			}else{
+				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . htmlspecialchars('host.php?action=enable_debug&host_id=' . $host['id']) . "'>" . __('Enable Device Debug') . "</a><br>";
+			}
 		}
 	}
+
 
 	if (!empty($host['id'])) {
 		?>
@@ -741,6 +756,7 @@ function host_edit() {
 				</td>
 				<td rowspan='2' class='textInfo right' style='vertical-align:top'>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graphs_new.php?host_id=' . $host['id']);?>'><?php print __('Create Graphs for this Device');?></a><br>
+					<?php print $debug_link;?>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'><?php print __('Data Source List');?></a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1');?>'><?php print __('Graph List');?></a>
 					<?php api_plugin_hook('device_edit_top_links'); ?>

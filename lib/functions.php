@@ -577,10 +577,9 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 
 	/* only log if the specificied level is reached */
-	/* only log if the specificied level is reached */
 	if ($force_level != '') {
 		$level = $force_level;
-	}elseif ($level != '' && $level > read_config_option('log_verbosity')) {
+	}elseif ($level != '' && $level >= read_config_option('log_verbosity')) {
 		return;
 	}
 
@@ -1068,7 +1067,9 @@ function prepare_validate_result(&$result) {
 	$result = trim($result, "'\"\n\r");
 
 	/* clean off ugly non-numeric data */
-	if (is_numeric($result) || $result = 'U') {
+	if (is_numeric($result)) {
+		return true;
+	}elseif ($result == 'U') {
 		return true;
 	}elseif (is_hexadecimal($result)) {
 		return hex2dec($result);
@@ -4198,4 +4199,60 @@ function CactiShutdownHandler () {
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
 			}
 	}
+}
+
+/** enable_device_debug - Enables device debug for a device
+ *  if it is disabled.
+ *
+ *  @arg $host_id - the device id to search for
+ *
+ *  @returns - void */
+function enable_device_debug($host_id) {
+	$device_debug = read_config_option('selective_device_debug', true);
+	if ($device_debug != '') {
+		$devices = explode(',', $device_debug);
+		if (array_search($host_id, $devices) === false) {
+			set_config_option('selective_device_debug', $device_debug . ',' . $host_id);
+		}
+	}else{
+		set_config_option('selective_device_debug', $host_id);
+	}
+}
+
+/** disable_device_debug - Disables device debug for a device
+ *  if it is enabled.
+ *
+ *  @arg $host_id - the device id to search for
+ *
+ *  @returns - void */
+function disable_device_debug($host_id) {
+	$device_debug = read_config_option('selective_device_debug', true);
+	if ($device_debug != '') {
+		$devices = explode(',', $device_debug);
+		foreach($devices as $key => $device) {
+			if ($device == $host_id) {
+				unset($devices[$key]);
+				break;
+			}
+		}
+		set_config_option('selective_device_debug', implode(',', $devices));
+	}
+}
+
+/** is_device_debug_enabled - Determines if device debug is enabled
+ *  for a device.
+ *
+ *  @arg $host_id - the device id to search for
+ *
+ *  @returns - boolean true or false */
+function is_device_debug_enabled($host_id) {
+	$device_debug = read_config_option('selective_device_debug', true);
+	if ($device_debug != '') {
+		$devices = explode(',', $device_debug);
+		if (array_search($host_id, $devices) !== false) {
+			return true;
+		}
+	}
+
+	return false;
 }
