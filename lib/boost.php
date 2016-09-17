@@ -347,14 +347,10 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph
 
 								return $output;
 							}else{
-								if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-									cacti_log("Attempting to open cache file '$cache_file' failed", false, 'BOOST');
-								}
+								cacti_log("Attempting to open cache file '$cache_file' failed", false, 'BOOST', POLLER_VERBOSITY_DEBUG);
 							}
 						}else{
-							if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-								cacti_log("Boost Cache PNG Expired.  Image '$cache_file' will be recreated", false, 'BOOST');
-							}
+							cacti_log("Boost Cache PNG Expired.  Image '$cache_file' will be recreated", false, 'BOOST', POLLER_VERBOSITY_DEBUG);
 						}
 					}
 				}else{
@@ -632,8 +628,11 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 		}
 	}
 
-	if ($single_local_data_id && ($debug || $log_verbosity >= POLLER_VERBOSITY_MEDIUM)){
-		cacti_log("NOTE: Updating Local Data ID:'$local_data_id', Total of '" . sizeof($results) . "' Updates to Process", false, 'BOOST');
+	if ($single_local_data_id) {
+		if ($debug) {
+			$log_verbosity = POLLER_VERBOSITY_DEBUG;
+		}
+		cacti_log("NOTE: Updating Local Data ID:'$local_data_id', Total of '" . sizeof($results) . "' Updates to Process", false, 'BOOST', $log_verbosity);
 	}
 
 	if (sizeof($results) > 0) {
@@ -693,9 +692,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 			if ($local_data_id != $item['local_data_id']) {
 				/* update the rrd for the previous local_data_id */
 				if ($vals_in_buffer) {
-					if ($debug || $log_verbosity >= POLLER_VERBOSITY_MEDIUM) {
-						cacti_log("NOTE: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf, false, 'BOOST');
-					}
+					cacti_log("NOTE: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
 					boost_timer('rrdupdate', BOOST_TIMER_START);
 					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
@@ -738,9 +735,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 
 			if ($time != $item['timestamp']) {
 				if (strlen($outbuf) > $upd_string_len) {
-					if ($log_verbosity >= POLLER_VERBOSITY_MEDIUM) {
-						cacti_log("NOTE: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf, false, 'BOOST');
-					}
+					cacti_log("NOTE: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
 					boost_timer('rrdupdate', BOOST_TIMER_START);
 					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
@@ -789,9 +784,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 						if (isset($rrd_field_names{$matches[1]})) {
 							$multi_ok = true;
 
-							if ($log_verbosity == POLLER_VERBOSITY_DEBUG) {
-								cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names{$matches[1]} . ']' , false, 'BOOST');
-							}
+							cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names{$matches[1]} . ']' , false, 'BOOST', POLLER_VERBOSITY_DEBUG);
 
 							if (!$multi_vals_set) {
 								if (!$first_tmpl) $rrd_tmpl .= ':';
@@ -823,9 +816,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 
 		/* process the last rrdupdate if applicable */
 		if ($vals_in_buffer) {
-			if ($log_verbosity >= POLLER_VERBOSITY_MEDIUM) {
-				cacti_log("NOTE: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf, false, 'BOOST');
-			}
+			cacti_log("NOTE: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
 			boost_timer('rrdupdate', BOOST_TIMER_START);
 			$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);

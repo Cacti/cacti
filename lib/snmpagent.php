@@ -568,10 +568,8 @@ function snmpagent_notification( $notification, $mib, $varbinds, $severity = SNM
 
 	$path_snmptrap = read_config_option('snmpagent_path_snmptrap');
 
-	if ( !in_array( $severity, array( SNMPAGENT_EVENT_SEVERITY_LOW, SNMPAGENT_EVENT_SEVERITY_MEDIUM, SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL ) ) ) {
-		if (read_config_option('log_verbosity')>POLLER_VERBOSITY_NONE) {
-			cacti_log('ERROR: Unknown event severity: "' . $severity . '" for ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT');
-		}
+	if (!in_array($severity, array(SNMPAGENT_EVENT_SEVERITY_LOW, SNMPAGENT_EVENT_SEVERITY_MEDIUM, SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL))) {
+		cacti_log('ERROR: Unknown event severity: "' . $severity . '" for ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
 		return false;
 	}
 
@@ -583,9 +581,8 @@ function snmpagent_notification( $notification, $mib, $varbinds, $severity = SNM
 
 	if (!$enterprise_oid) {
 		/* system does not know this event */
-		if (read_config_option('log_verbosity')>POLLER_VERBOSITY_NONE) {
-			cacti_log('ERROR: Unknown event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT');
-		}
+		cacti_log('ERROR: Unknown event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
+
 		return false;
 	}else {
 		$branches = explode('.', $enterprise_oid);
@@ -605,9 +602,7 @@ function snmpagent_notification( $notification, $mib, $varbinds, $severity = SNM
 	if (sizeof($notification_managers)) {
 		/* To bad! Nobody wants to hear our message. :( */
 		if (in_array($severity, array(SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL))) {
-			if (read_config_option('log_verbosity')>POLLER_VERBOSITY_NONE) {
-				cacti_log('WARNING: No notification receivers configured for event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT');
-			}
+			cacti_log('WARNING: No notification receivers configured for event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
 		}else {
 			/* keep notifications of a lower/medium severity in mind to make a quicker decision next time */
 			$config['snmpagent']['notifications']['ignore'][$notification] = 1;
@@ -739,16 +734,12 @@ function snmpagent_notification( $notification, $mib, $varbinds, $severity = SNM
 				sql_save($save, 'snmpagent_notifications_log');
 
 				/* log the net-snmp command for Cacti admins if they wish for */
-				if (read_config_option('log_verbosity')>POLLER_VERBOSITY_MEDIUM) {
-					cacti_log("NOTE: $path_snmptrap " . str_replace(array($notification_manager['snmp_auth_password'], $notification_manager['snmp_priv_password']), '********', $args), false, 'SNMPAGENT');
-				}
+				cacti_log("NOTE: $path_snmptrap " . str_replace(array($notification_manager['snmp_auth_password'], $notification_manager['snmp_priv_password']), '********', $args), false, 'SNMPAGENT', POLLER_VERBOSITY_MEDIUM);
 			}
 		}
 	}else {
 		/* mismatching number of var binds */
-		if (read_config_option('log_verbosity')>POLLER_VERBOSITY_NONE) {
-			cacti_log('ERROR: Incomplete number of varbinds given for event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT');
-		}
+		cacti_log('ERROR: Incomplete number of varbinds given for event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
 		return false;
 	}
 }

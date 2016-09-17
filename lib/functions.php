@@ -544,8 +544,26 @@ function strip_newlines($string) {
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	global $config;
 
+	if (isset($_SERVER['PHP_SELF'])) {
+		$current_file = basename($_SERVER['PHP_SELF']);
+	}else{
+		$current_file = basename(__FILE__);
+	}
+		
+	$force_level = '';
+	$debug_files = read_config_option('selective_debug');
+	if ($debug_files != '') {
+		$files = explode(',', $debug_files);
+
+		if (array_search($current_file, $files) !== false) {
+			$force_level = POLLER_VERBOSITY_DEBUG;
+		}
+	}
+
 	/* only log if the specificied level is reached */
-	if ($level != '' && $level > read_config_option('log_verbosity')) {
+	if ($force_level != '') {
+		$level = $force_level;
+	}elseif ($level != '' && $level > read_config_option('log_verbosity')) {
 		return;
 	}
 
@@ -905,30 +923,28 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		}
 	}
 	/* if the user wants a flood of information then flood them */
-	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_HIGH) {
-		if (($hosts[$host_id]['status'] == HOST_UP) || ($hosts[$host_id]['status'] == HOST_RECOVERING)) {
-			/* log ping result if we are to use a ping for reachability testing */
-			if ($ping_availability == AVAIL_SNMP_AND_PING) {
-				cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
-				cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
-			} elseif ($ping_availability == AVAIL_SNMP) {
-				if (($hosts[$host_id]['snmp_community'] == '') && ($hosts[$host_id]['snmp_version'] != 3)) {
-					cacti_log("Device[$host_id] SNMP: Device does not require SNMP", $print_data_to_stdout);
-				}else{
-					cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
-				}
-			} else {
-				cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
+	if (($hosts[$host_id]['status'] == HOST_UP) || ($hosts[$host_id]['status'] == HOST_RECOVERING)) {
+		/* log ping result if we are to use a ping for reachability testing */
+		if ($ping_availability == AVAIL_SNMP_AND_PING) {
+			cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
+			cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
+		} elseif ($ping_availability == AVAIL_SNMP) {
+			if (($hosts[$host_id]['snmp_community'] == '') && ($hosts[$host_id]['snmp_version'] != 3)) {
+				cacti_log("Device[$host_id] SNMP: Device does not require SNMP", $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
+			}else{
+				cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 			}
 		} else {
-			if ($ping_availability == AVAIL_SNMP_AND_PING) {
-				cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
-				cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
-			} elseif ($ping_availability == AVAIL_SNMP) {
-				cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout);
-			} else {
-				cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout);
-			}
+			cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
+		}
+	} else {
+		if ($ping_availability == AVAIL_SNMP_AND_PING) {
+			cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
+			cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
+		} elseif ($ping_availability == AVAIL_SNMP) {
+			cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
+		} else {
+			cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 		}
 	}
 

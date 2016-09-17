@@ -698,18 +698,16 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 		$return_value = proc_close($cactiphp);
 	}
 
-	if (($print_data_to_stdout) || (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM)) {
-		/* take time and log performance data */
-		$end = microtime(true);
+	/* take time and log performance data */
+	$end = microtime(true);
 
-		cacti_log(sprintf('Time: %01.4f s, ' .
-			'Poller: %i, ' .
-			'Theads: N/A, ' .
-			'Devices: %s',
-			round($end-$start,4),
-			$poller_id,
-			$host_count), $print_data_to_stdout, 'POLLER');
-	}
+	cacti_log(sprintf('Time: %01.4f s, ' .
+		'Poller: %i, ' .
+		'Theads: N/A, ' .
+		'Devices: %s',
+		round($end-$start,4),
+		$poller_id,
+		$host_count), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 }else{
 	cacti_log('NOTE: There are no items in your poller for this polling cycle!', true, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 }

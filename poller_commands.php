@@ -107,15 +107,11 @@ if (sizeof($poller_commands) > 0) {
 				cacti_log("Device[$host_id] WARNING: Recache Event Detected for Device", true, 'PCOMMAND');
 			}
 
-			if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("Device[$host_id] RECACHE: Recache for Device, data query #$data_query_id", true, 'PCOMMAND');
-			}
+			cacti_log("Device[$host_id] RECACHE: Recache for Device, data query #$data_query_id", true, 'PCOMMAND', POLLER_VERBOSITY_DEBUG);
 
 			run_data_query($host_id, $data_query_id);
 
-			if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("Device[$host_id] RECACHE: Recache successful.", true, 'PCOMMAND');
-			}
+			cacti_log("Device[$host_id] RECACHE: Recache successful.", true, 'PCOMMAND', POLLER_VERBOSITY_DEBUG);
 			break;
 		default:
 			cacti_log('ERROR: Unknown poller command issued', true, 'PCOMMAND');

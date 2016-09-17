@@ -173,20 +173,37 @@ default:
 	var currentTheme = '';
 
 	$(function() {
-		$('#spikekill_templates').multiselect({
-			noneSelectedText: 'Select Template(s)', 
+		$('#selective_debug').multiselect({
+			noneSelectedText: '<?php print __('Select File(s)');?>', 
 			selectedText: function(numChecked, numTotal, checkedItems) {
-				myReturn = numChecked + ' Templates Selected';
+				myReturn = numChecked + ' <?php print __('Files Selected');?>';
+				return myReturn;
+			},
+			checkAllText: '<?php print __('All');?>', 
+			uncheckAllText: '<?php print __('None');?>',
+			uncheckall: function() {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).prop('checked', true);
+				});
+			}
+		}).multiselectfilter( {
+			label: '<?php print __('Search');?>', width: '150'
+		});
+
+		$('#spikekill_templates').multiselect({
+			noneSelectedText: '<?php print __('Select Template(s)');?>', 
+			selectedText: function(numChecked, numTotal, checkedItems) {
+				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
 				$.each(checkedItems, function(index, value) {
 					if (value.value == '0') {
-						myReturn='All Templates Selected';
+						myReturn='<?php print __('All Templates Selected');?>';
 						return false;
 					}
 				});
 				return myReturn;
 			},
-			checkAllText: 'All', 
-			uncheckAllText: 'None',
+			checkAllText: '<?php print __('All');?>', 
+			uncheckAllText: '<?php print __('None');?>',
 			uncheckall: function() {
 				$(this).multiselect('widget').find(':checkbox:first').each(function() {
 					$(this).prop('checked', true);
@@ -216,7 +233,7 @@ default:
 				}
 			}
 		}).multiselectfilter( {
-			label: 'Search', width: '150'
+			label: '<?php print __('Search');?>', width: '150'
 		});
 
 		$('.subTab').find('a').click(function(event) {
