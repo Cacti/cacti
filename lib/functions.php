@@ -546,8 +546,10 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	if (isset($_SERVER['PHP_SELF'])) {
 		$current_file = basename($_SERVER['PHP_SELF']);
+		$dir_name     = dirname($_SERVER['PHP_SELF']);
 	}else{
 		$current_file = basename(__FILE__);
+		$dir_name     = dirname(__FILE__);
 	}
 		
 	$force_level = '';
@@ -560,6 +562,21 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		}
 	}
 
+	if (strpos($dir_name, 'plugins') !== false) {
+		$debug_plugins = read_config_option('selective_plugin_debug');
+		if ($debug_plugins != '') {
+			$debug_plugins = explode(',', $debug_plugins);
+
+			foreach($debug_plugins as $myplugin) {
+				if (strpos($dir_path, DIRECTORY_SEPARATOR . $plugin) !== false) {
+					$force_level = POLLER_VERBOSITY_DEBUG;
+					break;
+				}
+			}
+		}
+	}
+
+	/* only log if the specificied level is reached */
 	/* only log if the specificied level is reached */
 	if ($force_level != '') {
 		$level = $force_level;

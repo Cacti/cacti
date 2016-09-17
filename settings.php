@@ -173,6 +173,23 @@ default:
 	var currentTheme = '';
 
 	$(function() {
+		$('#selective_plugin_debug').multiselect({
+			noneSelectedText: '<?php print __('Select Plugin(s)');?>', 
+			selectedText: function(numChecked, numTotal, checkedItems) {
+				myReturn = numChecked + ' <?php print __('Files Plugins');?>';
+				return myReturn;
+			},
+			checkAllText: '<?php print __('All');?>', 
+			uncheckAllText: '<?php print __('None');?>',
+			uncheckall: function() {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).prop('checked', true);
+				});
+			}
+		}).multiselectfilter( {
+			label: '<?php print __('Search');?>', width: '150'
+		});
+
 		$('#selective_debug').multiselect({
 			noneSelectedText: '<?php print __('Select File(s)');?>', 
 			selectedText: function(numChecked, numTotal, checkedItems) {

@@ -64,6 +64,10 @@ $spikekill_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT gt.id, gt.nam
 	WHERE gti.local_graph_id=0 AND data_source_type_id IN (3,2)
 	ORDER BY name'), 'id', 'name');
 
+$logplugins = array_rekey(db_fetch_assoc('SELECT directory AS id, name 
+	FROM plugin_config 
+	WHERE status=1'), 'id', 'name');
+
 /* get the files for selective logging */
 $files = array_keys($user_auth_realm_filenames);
 foreach($files as $file) {
@@ -239,10 +243,25 @@ $settings = array(
 			'array' => $logfile_verbosity,
 			),
 		'selective_debug' => array(
-			'friendly_name' => __('Selective Debug'),
-			'description' => __('Select which files you wish to place in Debug logging regardless of the Generic Log Level setting.  Any files selected will be treated as they are in Debug mode.'),
+			'friendly_name' => __('Selective File Debug'),
+			'description' => __('Select which files you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files selected will be treated as they are in Debug mode.'),
 			'method' => 'drop_multi',
 			'array' => $logfiles,
+			'default' => ''
+			),
+		'selective_plugin_debug' => array(
+			'friendly_name' => __('Selective Plugin Debug'),
+			'description' => __('Select which Plugins you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files used by this plugin will be treated as they are in Debug mode.'),
+			'method' => 'drop_multi',
+			'array' => $logplugins,
+			'default' => ''
+			),
+		'selective_device_debug' => array(
+			'friendly_name' => __('Selective Device Debug'),
+			'description' => __('A comma delimited list of Device ID\'s that you wish to be in Debug mode during data collection.  This Debug level is only in place during the Cacti polling process.'),
+			'method' => 'textbox',
+			'size' => '30',
+			'max_length' => 30,
 			'default' => ''
 			),
 		'poller_log' => array(
