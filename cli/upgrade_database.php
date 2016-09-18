@@ -121,7 +121,7 @@ $includes = array(
 	'0.8.8f' => '0_8_8e_to_0_8_8f.php',
 	'0.8.8g' => '0_8_8f_to_0_8_8g.php',
 	'0.8.8h' => '0_8_8g_to_0_8_8h.php',
-	'1.0.0' => '0_8_8f_to_1_0_0.php',
+	'1.0.0'  => '0_8_8h_to_1_0_0.php',
 );
 
 $old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
@@ -166,7 +166,7 @@ foreach ($includes as $v => $file) {
 
 db_execute("UPDATE version SET cacti = '" . $config['cacti_version'] . "'");
 
-function db_install_errors ($cacti_version) {
+function db_install_errors($cacti_version) {
 	global $session;
 
 	if (sizeof($session)) {	
@@ -179,16 +179,6 @@ function db_install_errors ($cacti_version) {
 				}
 			}
 		}
-	}
-}
-
-function db_install_execute($cacti_version, $sql) {
-	global $session;
-
-	if (db_execute($sql)) {
-		$session[][$cacti_version][1] = $sql;
-	}else{
-		$session[][$cacti_version][0] = $sql;
 	}
 }
 
