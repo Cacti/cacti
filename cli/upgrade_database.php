@@ -37,6 +37,7 @@ ini_set('max_execution_time', '0');
 include(dirname(__FILE__) . '/../include/global.php');
 include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/utility.php');
+include_once($config['base_path'] . '/install/functions.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -151,7 +152,11 @@ foreach ($includes as $v => $file) {
 		echo 'Upgrading to ' . $v . "\n";
 		include($config['base_path'] . '/install/' . $file);
 		$func = 'upgrade_to_' . str_replace('.', '_', $v);
-		$func();
+		if (function_exists($func)) {
+			$func();
+		}else{
+			echo "ERROR: Function does not exist\n";
+		}
 		db_install_errors($v);
 	}
 
