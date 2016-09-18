@@ -498,6 +498,48 @@ function is_view_allowed($view = 'show_tree') {
 	}
 }
 
+function is_tree_empty($tree_id, $parent = 0) {
+	$graphs = array_rekey(
+		db_fetch_assoc_prepared('SELECT local_graph_id 
+			FROM graph_tree_items 
+			WHERE graph_tree_id = ? 
+			AND parent = ?', 
+			array($tree_id, $parent)),
+		'local_graph_id', 'local_graph_id');
+
+	$hosts  = array_rekey(
+		db_fetch_assoc_prepared('SELECT host_id 
+			FROM graph_tree_items 
+			WHERE graph_tree_id = ? 
+			AND parent = ?', 
+			array($tree_id, $parent)),
+		'host_id', 'host_id');
+
+	$branches = db_fetch_cell_prepared('SELECT COUNT(*) 
+		FROM graph_tree_items 
+		WHERE graph_tree_id = ? 
+		AND parent = ? 
+		AND host_id = 0 
+		AND local_graph_id = 0',
+		array($tree_id, $parent));
+
+	$allowed_graphs  = 0;
+	$allowed_devices = 0;
+	if (sizeof($graphs)) {
+		$allowed_graphs  = sizeof(get_allowed_graphs('gl.id IN(' . implode(',', $graphs) . ')'));
+	}
+
+	if (sizeof($hosts)) {
+		$allowed_devices = sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')'));
+	}
+
+	if ($allowed_graphs + $allowed_devices + $branches > 0){ 
+		return false;
+	}else{
+		return true;
+	}
+}
+
 function is_realm_allowed($realm) {
 	global $user_auth_realms, $config;
 
@@ -615,19 +657,21 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 	if (read_config_option('auth_method') != 0) {
 		$new_heirarchy = array();
 		if (sizeof($heirarchy)) {
-		foreach($heirarchy as $h) {
-			if ($h['host_id'] > 0) {
-				if (is_device_allowed($h['host_id'])) {
-					$new_heirarchy[] = $h;
+			foreach($heirarchy as $h) {
+				if (!is_tree_empty($h['tree_id'], $h['id'])) {
+					if ($h['host_id'] > 0) {
+						if (is_device_allowed($h['host_id'])) {
+							$new_heirarchy[] = $h;
+						}
+					}elseif ($h['id'] == 0) {
+						if (is_tree_allowed($h['tree_id'])) {
+							$new_heirarchy[] = $h;
+						}
+					}else{
+						$new_heirarchy[] = $h;
+					}
 				}
-			}elseif ($h['id'] == 0) {
-				if (is_tree_allowed($h['tree_id'])) {
-					$new_heirarchy[] = $h;
-				}
-			}else{
-				$new_heirarchy[] = $h;
 			}
-		}
 		}
 
 		return $new_heirarchy;
