@@ -69,11 +69,15 @@ $logplugins = array_rekey(db_fetch_assoc('SELECT directory AS id, name
 	WHERE status=1'), 'id', 'name');
 
 /* get the files for selective logging */
-$files = array_keys($user_auth_realm_filenames);
-foreach($files as $file) {
+$realm_files  = array_keys($user_auth_realm_filenames);
+$nohead_files = array_values($no_http_header_files);
+foreach($realm_files as $file) {
 	$logfiles[$file] = $file;
 }
-sort($logfiles);
+foreach($nohead_files as $file) {
+	$logfiles[$file] = $file;
+}
+asort($logfiles);
 
 /* setting information */
 $settings = array(

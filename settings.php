@@ -176,7 +176,7 @@ default:
 		$('#selective_plugin_debug').multiselect({
 			noneSelectedText: '<?php print __('Select Plugin(s)');?>', 
 			selectedText: function(numChecked, numTotal, checkedItems) {
-				myReturn = numChecked + ' <?php print __('Files Plugins');?>';
+				myReturn = numChecked + ' <?php print __('Plugins Selected');?>';
 				return myReturn;
 			},
 			checkAllText: '<?php print __('All');?>', 
