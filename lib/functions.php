@@ -568,7 +568,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 			$debug_plugins = explode(',', $debug_plugins);
 
 			foreach($debug_plugins as $myplugin) {
-				if (strpos($dir_path, DIRECTORY_SEPARATOR . $plugin) !== false) {
+				if (strpos($dir_name, DIRECTORY_SEPARATOR . $myplugin) !== false) {
 					$force_level = POLLER_VERBOSITY_DEBUG;
 					break;
 				}
