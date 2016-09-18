@@ -498,7 +498,7 @@ function is_view_allowed($view = 'show_tree') {
 	}
 }
 
-function is_tree_empty($tree_id, $parent = 0) {
+function is_tree_branch_empty($tree_id, $parent = 0) {
 	$graphs = array_rekey(
 		db_fetch_assoc_prepared('SELECT local_graph_id 
 			FROM graph_tree_items 
@@ -515,12 +515,12 @@ function is_tree_empty($tree_id, $parent = 0) {
 			array($tree_id, $parent)),
 		'host_id', 'host_id');
 
-	$branches = db_fetch_cell_prepared('SELECT COUNT(*) 
+	$branches = db_fetch_assoc_prepared('SELECT *
 		FROM graph_tree_items 
 		WHERE graph_tree_id = ? 
 		AND parent = ? 
-		AND host_id = 0 
-		AND local_graph_id = 0',
+		AND local_graph_id = 0
+		AND host_id = 0',
 		array($tree_id, $parent));
 
 	$allowed_graphs  = 0;
@@ -533,8 +533,16 @@ function is_tree_empty($tree_id, $parent = 0) {
 		$allowed_devices = sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')'));
 	}
 
-	if ($allowed_graphs + $allowed_devices + $branches > 0){ 
+	if (($allowed_graphs + $allowed_devices) > 0) {
 		return false;
+	}elseif (sizeof($branches)) { 
+		foreach($branches as $b) {
+			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'])) {
+				return false;
+			}
+		}
+
+		return true;
 	}else{
 		return true;
 	}
@@ -658,18 +666,18 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 		$new_heirarchy = array();
 		if (sizeof($heirarchy)) {
 			foreach($heirarchy as $h) {
-				if (!is_tree_empty($h['tree_id'], $h['id'])) {
-					if ($h['host_id'] > 0) {
-						if (is_device_allowed($h['host_id'])) {
-							$new_heirarchy[] = $h;
-						}
-					}elseif ($h['id'] == 0) {
+				if ($h['host_id'] > 0) {
+					if (is_device_allowed($h['host_id'])) {
+						$new_heirarchy[] = $h;
+					}
+				}elseif ($h['id'] == 0) {
+					if (!is_tree_branch_empty($h['tree_id'], $h['id'])) {
 						if (is_tree_allowed($h['tree_id'])) {
 							$new_heirarchy[] = $h;
 						}
-					}else{
-						$new_heirarchy[] = $h;
 					}
+				}elseif (!is_tree_branch_empty($h['tree_id'], $h['id'])) {
+					$new_heirarchy[] = $h;
 				}
 			}
 		}
