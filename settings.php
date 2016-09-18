@@ -282,7 +282,7 @@ default:
 
 			if (themeChanged != true) {
 				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
-					$('#main').html(data);
+					$('#main').hide().html(data);
 					applySkin();
 				});
 			}else{

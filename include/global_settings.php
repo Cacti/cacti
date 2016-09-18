@@ -1064,6 +1064,17 @@ $settings = array(
 			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
+		'spine_log_level' => array(
+			'friendly_name' => __('Invalid Data Logging'),
+			'description' => __('How would you like Spine output errors logged?  The options are: \'Detailed\' which is similar to cmd.php logging; \'Summary\' which provides the number of output errors per host; and \'None\', which does not provide error counts.'),
+			'method' => 'drop_array',
+			'default' => '0',
+			'array' => array(
+				'0'  => __('None'), 
+				'1'  => __('Summary'),
+				'2'  => __('Detailed') 
+				),
+			),
 		'max_threads' => array(
 			'friendly_name' => __('Maximum Threads per Process'),
 			'description' => __('The maximum threads allowed per process.  Using a higher number when using Spine will improve performance.'),
