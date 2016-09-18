@@ -111,6 +111,12 @@ switch (get_request_var('action')) {
 	case 'graphs':
 		display_graphs();
 		break;
+	case 'tree_up':
+		tree_up();
+		break;
+	case 'tree_down':
+		tree_down();
+		break;
 	case 'lock':
 		api_tree_lock(get_request_var('id'), $_SESSION['sess_user_id']);
 		break;
@@ -152,6 +158,34 @@ switch (get_request_var('action')) {
 		tree();
 		bottom_footer();
 		break;
+}
+
+function tree_down() {
+	$tree_id = get_filter_request_var('id');
+	$seq     = db_fetch_cell_prepared('SELECT sequence FROM graph_tree WHERE id = ?', array($tree_id));
+	$new_seq = $seq + 1;
+
+	/* update the old tree first */
+	db_execute_prepared('UPDATE graph_tree SET sequence = ? WHERE sequence = ?', array($seq, $new_seq));
+	/* update the tree in question */
+	db_execute_prepared('UPDATE graph_tree SET sequence = ? WHERE id = ?', array($new_seq, $tree_id));
+
+	header('Location: tree.php?header=false');
+	exit;
+}
+
+function tree_up() {
+	$tree_id = get_filter_request_var('id');
+	$seq     = db_fetch_cell_prepared('SELECT sequence FROM graph_tree WHERE id = ?', array($tree_id));
+	$new_seq = $seq - 1;
+
+	/* update the old tree first */
+	db_execute_prepared('UPDATE graph_tree SET sequence = ? WHERE sequence = ?', array($seq, $new_seq));
+	/* update the tree in question */
+	db_execute_prepared('UPDATE graph_tree SET sequence = ? WHERE id = ?', array($new_seq, $tree_id));
+
+	header('Location: tree.php?header=false');
+	exit;
 }
 
 function get_host_sort_type() {
@@ -1390,7 +1424,7 @@ function tree() {
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'default' => 'sequence', 
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
@@ -1527,6 +1561,7 @@ function tree() {
 		'enabled' => array('display' => __('Published'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Unpublished Trees can not be viewed from the Graph tab')),
 		'locked' => array('display' => __('Locked'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('A Tree must be locked in order to be edited.')),
 		'user_id' => array('display' => __('Owner'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The original author of this Tree.')),
+		'sequence' => array('display' => __('Order'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('To change the order of the trees, first sort by this column, press the up or down arrows once they appear.')),
 		'last_modified' => array('display' => __('Last Edited'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The date that this Tree was last edited.')),
 		'modified_by' => array('display' => __('Edited By'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The last user to have modified this Tree.')),
 		'branches' => array('display' => __('Branches'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of Branches in this Tree.')),
@@ -1535,15 +1570,31 @@ function tree() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	$i = 0;
+	$i = 1;
 	if (sizeof($trees)) {
 		foreach ($trees as $tree) {
+			$sequence = '';
+			if (get_request_var('sort_column') == 'sequence' && get_request_var('sort_direction') == 'ASC') {
+				if ($i == 1) {
+					$sequence .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __('Move Down') . '"></a>';
+					$sequence .= '<span class="moveArrowNone"></span>';
+				}elseif ($i == sizeof($trees)) {
+					$sequence .= '<span class="moveArrowNone"></span>';
+					$sequence .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __('Move Down') . '"></a>';
+					
+				}else{
+					$sequence .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __('Move Down') . '"></a>';
+					$sequence .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __('Move Down') . '"></a>';
+				}
+			}
+
 			form_alternate_row('line' . $tree['id'], true);
 			form_selectable_cell(filter_value($tree['name'], get_request_var('filter'), 'tree.php?action=edit&id=' . $tree['id']), $tree['id']);
 			form_selectable_cell($tree['id'], $tree['id'], '', 'text-align:right');
 			form_selectable_cell($tree['enabled'] == 'on' ? __('Yes'):__('No'), $tree['id']);
 			form_selectable_cell($tree['locked'] == '1' ? __('Yes'):__('No'), $tree['id']);
 			form_selectable_cell(get_username($tree['user_id']), $tree['id']);
+			form_selectable_cell($sequence, $tree['id'], '', 'nowrap right');
 			form_selectable_cell(substr($tree['last_modified'],0,16), $tree['id'], '', 'text-align:right');
 			form_selectable_cell(get_username($tree['modified_by']), $tree['id'], '', 'text-align:right');
 			form_selectable_cell($tree['branches'] > 0 ? number_format_i18n($tree['branches']):'-', $tree['id'], '', 'text-align:right');
@@ -1551,6 +1602,8 @@ function tree() {
 			form_selectable_cell($tree['graphs'] > 0 ? number_format_i18n($tree['graphs']):'-', $tree['id'], '', 'text-align:right');
 			form_checkbox_cell($tree['name'], $tree['id']);
 			form_end_row();
+
+			$i++;
 		}
 	}else{
 		print "<tr class='tableRow'><td colspan='11'><em>" . __('No Trees Found') . "</em></td></tr>";

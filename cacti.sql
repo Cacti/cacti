@@ -2493,6 +2493,7 @@ CREATE TABLE graph_tree (
   locked_date timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   sort_type tinyint(3) unsigned NOT NULL default '1',
   name varchar(255) NOT NULL default '',
+  sequence int(10) unsigned DEFAULT '1',
   user_id int(10) unsigned DEFAULT '1',
   last_modified timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   modified_by int(10) unsigned DEFAULT '1',
@@ -2503,7 +2504,7 @@ CREATE TABLE graph_tree (
 -- Dumping data for table `graph_tree`
 --
 
-INSERT INTO graph_tree VALUES (1,'on',0,'0000-00-00',1,'Default Tree',1,'0000-00-00','1');
+INSERT INTO graph_tree VALUES (1,'on',0,'0000-00-00',1,'Default Tree',1,1,'0000-00-00','1');
 
 --
 -- Table structure for table `graph_tree_items`

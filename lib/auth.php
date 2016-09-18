@@ -609,7 +609,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 			'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname
 			FROM graph_tree AS gt
 			WHERE enabled='on'
-			ORDER BY gt.name");
+			ORDER BY gt.sequence");
 	}
 
 	if (read_config_option('auth_method') != 0) {

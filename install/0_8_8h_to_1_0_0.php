@@ -1602,4 +1602,13 @@ function upgrade_to_1_0_0() {
 		WHERE input_output='in'
 		AND type_code='output_type'
 		AND gl.snmp_query_id>0");
+
+	/* allow sorting of trees */
+	db_install_execute('ALTER TABLE graph_tree ADD COLUMN sequency int(10) unsigned DEFAULT "1" AFTER name');
+	$trees = db_fetch_assoc('SELECT id FROM graph_tree ORDER BY name');
+	if (sizeof($trees)) {
+		foreach($trees as $sequence => $tree) {
+			db_execute_prepared('UPDATE graph_tree SET sequence = ? WHERE id = ?', array($sequence+1, $tree['id']));
+		}
+	}
 }
