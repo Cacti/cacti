@@ -148,6 +148,8 @@ function form_save() {
 		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['graph_template_id'] = get_request_var('graph_template_id');
 
+		$header = '';
+
 		if (!is_error_message()) {
 			$snmp_query_graph_id = sql_save($save, 'snmp_query_graph');
 
@@ -192,8 +194,14 @@ function form_save() {
 
 		header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . (empty($snmp_query_graph_id) ? get_request_var('id') : $snmp_query_graph_id) . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 	}elseif (isset_request_var('svg_x') && !isempty_request_var('svg_text') && !isempty_request_var('svg_field')) {
+		/* ================= input validation ================= */
+		get_filter_request_var('id');
+		get_filter_request_var('snmp_query_id');
+		get_filter_request_var('graph_template_id');
+		/* ==================================================== */
+
 		/* suggested values -- graph templates */
-		$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_sv', 'snmp_query_graph_id=' . get_request_var('id') . " AND field_name = " . db_qstr(get_nfilter_request_var('svg_field')));
+		$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_sv', 'snmp_query_graph_id=' . get_filter_request_var('id') . " AND field_name = " . db_qstr(get_nfilter_request_var('svg_field')));
 
 		$hash   = get_hash_data_query(0, 'data_query_sv_graph');
 		$header = '';
@@ -205,8 +213,20 @@ function form_save() {
 
 		clear_messages();
 
+		if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
+			$header = '&header=false';
+		}else{
+			$header = '';
+		}
+
 		header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 	}elseif (isset_request_var('svds_x')) {
+		/* ================= input validation ================= */
+		get_filter_request_var('id');
+		get_filter_request_var('snmp_query_id');
+		get_filter_request_var('graph_template_id');
+		/* ==================================================== */
+
 		while (list($var, $val) = each($_POST)) {
 			if (preg_match('/^svds_([0-9]+)_text/i', $var, $matches)) {
 				/* ================= input validation ================= */
@@ -223,6 +243,12 @@ function form_save() {
 					array($hash, get_request_var('id'), $matches[1], $sequence, get_nfilter_request_var('svds_' . $matches[1] . '_field'), get_nfilter_request_var('svds_' . $matches[1] . '_text')));
 
 				clear_messages();
+
+				if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
+					$header = '&header=false';
+				}else{
+					$header = '';
+				}
 
 				header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 
@@ -492,15 +518,15 @@ function data_query_item_edit() {
 				</tr>';
 
 			$data_template_rrds = db_fetch_assoc_prepared('SELECT
-				data_template_rrd.id,
-				data_template_rrd.data_source_name,
-				snmp_query_graph_rrd.snmp_field_name,
-				snmp_query_graph_rrd.snmp_query_graph_id
-				FROM data_template_rrd
-				LEFT JOIN snmp_query_graph_rrd on (snmp_query_graph_rrd.data_template_rrd_id = data_template_rrd.id AND snmp_query_graph_rrd.snmp_query_graph_id = ? AND snmp_query_graph_rrd.data_template_id = ?)
-				WHERE data_template_rrd.data_template_id = ?
-				AND data_template_rrd.local_data_id = 0
-				ORDER BY data_template_rrd.data_source_name', array(get_request_var('id'), $data_template['id'], $data_template['id']));
+				dtr.id, dtr.data_source_name, sqgr.snmp_field_name, sqgr.snmp_query_graph_id
+				FROM data_template_rrd AS dtr
+				LEFT JOIN snmp_query_graph_rrd AS sqgr
+				ON sqgr.data_template_rrd_id = dtr.id 
+				AND sqgr.snmp_query_graph_id = ? 
+				AND sqgr.data_template_id = ?
+				WHERE dtr.data_template_id = ?
+				AND dtr.local_data_id = 0
+				ORDER BY dtr.data_source_name', array(get_request_var('id'), $data_template['id'], $data_template['id']));
 
 			$i = 0;
 			if (sizeof($data_template_rrds)) {
