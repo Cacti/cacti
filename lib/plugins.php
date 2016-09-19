@@ -190,21 +190,36 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 		if (isset($data['comment'])) {
 			$sql .= " COMMENT = '" . $data['comment'] . "'";
 		}
+
 		if (db_execute($sql)) {
-			db_execute_prepared("INSERT INTO plugin_db_changes (plugin, `table`, method) VALUES (?, ?, 'create')", array($plugin, $table));
+			db_execute_prepared("INSERT INTO plugin_db_changes 
+				(plugin, `table`, column, method) 
+				VALUES (?, ?, '', 'create')", 
+				array($plugin, $table));
 		}
 	}
 }
 
 function api_plugin_db_changes_remove ($plugin) {
-	$tables = db_fetch_assoc_prepared("SELECT `table` FROM plugin_db_changes WHERE plugin = ? AND method ='create'", array($plugin), false);
+	$tables = db_fetch_assoc_prepared("SELECT `table` 
+		FROM plugin_db_changes 
+		WHERE plugin = ? 
+		AND method ='create'", 
+		array($plugin), false);
+
 	if (count($tables)) {
 		foreach ($tables as $table) {
 			db_execute('DROP TABLE IF EXISTS `' . $table['table'] . '`;');
 		}
 		db_execute_prepared("DELETE FROM plugin_db_changes where plugin = ? AND method ='create'", array($plugin), false);
 	}
-	$columns = db_fetch_assoc_prepared("SELECT `table`, `column` FROM plugin_db_changes WHERE plugin = ? AND method ='addcolumn'", array($plugin), false);
+
+	$columns = db_fetch_assoc_prepared("SELECT `table`, `column` 
+		FROM plugin_db_changes 
+		WHERE plugin = ? 
+		AND method ='addcolumn'", 
+		array($plugin), false);
+
 	if (count($columns)) {
 		foreach ($columns as $column) {
 			db_execute('ALTER TABLE `' . $column['table'] . '` DROP `' . $column['column'] . '`');
