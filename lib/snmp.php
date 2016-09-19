@@ -51,7 +51,7 @@ function cacti_snmp_session($hostname, $community, $version, $username, $passwor
 	try {
 		$session = new SNMP($version, $hostname . ':' . $port, ($version == 3 ? $username : $community), $timeout * 1000, $retries);
 	} catch (Exception $e) {
-		return FALSE;
+		return false;
 	}
 
 	if (defined('SNMP_OID_OUTPUT_NUMERIC')) {
@@ -129,10 +129,14 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 
 		if ($snmp_value === false) {
 			cacti_log("WARNING: SNMP Error:'$snmp_error', Device:'$hostname', OID:'$oid'", false);
+			$snmp_value = 'U';
+		}else{
+			$snmp_value = format_snmp_string($snmp_value, false);
 		}
 	}else {
 		$snmp_value = '';
-		/* ucd/net snmp want the timeout in seconds */
+
+		/* net snmp want the timeout in seconds */
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == '1') {
@@ -190,21 +194,14 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		if (is_array($snmp_value)) {
 			$snmp_value = implode(' ', $snmp_value);
 		}
-	}
 
-	/* fix for multi-line snmp output */
-	if (isset($snmp_value)) {
-		if (is_array($snmp_value)) {
-			$snmp_value = implode(' ', $snmp_value);
+		if (substr_count($snmp_value, 'Timeout:')) {
+			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false);
+			$snmp_value = 'U';
+		}else{
+			$snmp_value = format_snmp_string($snmp_value, false);
 		}
 	}
-
-	if (substr_count($snmp_value, 'Timeout:')) {
-		cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false);
-	}
-
-	/* strip out non-snmp data */
-	$snmp_value = format_snmp_string($snmp_value, false);
 
 	return $snmp_value;
 }
@@ -250,10 +247,14 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 
 		if ($snmp_value === false) {
 			cacti_log("WARNING: SNMP Error:'$snmp_error', Device:'$hostname', OID:'$oid'", false);
+			$snmp_value = 'U';
+		}else{
+			$snmp_value = format_snmp_string($snmp_value, false);
 		}
 	} else {
 		$snmp_value = '';
-		/* ucd/net snmp want the timeout in seconds */
+
+		/* net snmp want the timeout in seconds */
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == '1') {
@@ -308,26 +309,24 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 			' -r ' . $retries . 
 			' '    . cacti_escapeshellarg($hostname) . ':' . $port .
 			' '    . cacti_escapeshellarg($oid), $snmp_value);
-	}
 
-	if (isset($snmp_value)) {
 		/* fix for multi-line snmp output */
 		if (is_array($snmp_value)) {
 			$snmp_value = implode(' ', $snmp_value);
 		}
-	}
 
-	if (substr_count($snmp_value, 'Timeout:')) {
-		cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false);
-	}
+		if (substr_count($snmp_value, 'Timeout:')) {
+			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false);
+		}
 
-	/* strip out non-snmp data */
-	$snmp_value = format_snmp_string($snmp_value, false);
+		/* strip out non-snmp data */
+		$snmp_value = format_snmp_string($snmp_value, false);
+	}
 
 	return $snmp_value;
 }
 
-function cacti_snmp_session_walk($session, $oid, $dummy = FALSE, $max_repetitions = NULL, $non_repeaters = NULL) {
+function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetitions = NULL, $non_repeaters = NULL) {
 	$info = $session->info;
 	if (is_array($oid) && sizeof($oid) == 0) {
 		cacti_log('Empty OID!', false);
@@ -341,8 +340,8 @@ function cacti_snmp_session_walk($session, $oid, $dummy = FALSE, $max_repetition
 	if ($max_repetitions <= 0)
 		$max_repetitions = 10;
 
-	$out = $session->walk($oid, FALSE, $max_repetitions, $non_repeaters);
-	if ($out === FALSE) {
+	$out = $session->walk($oid, false, $max_repetitions, $non_repeaters);
+	if ($out === false) {
 		if($oid == '.1.3.6.1.2.1.47.1.1.1.1.2' || $oid == '1.3.6.1.4.1.9.9.68.1.2.2.1.2' || 
 			$oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.5' || $oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.14' ||
 			$oid == '.1.3.6.1.4.1.9.9.23.1.2.1.1.6') {
@@ -356,7 +355,7 @@ function cacti_snmp_session_walk($session, $oid, $dummy = FALSE, $max_repetition
 
 	if (sizeof($out)) {
 		foreach($out as $oid => $value){
-			$out[$oid] = format_snmp_string($value, FALSE);
+			$out[$oid] = format_snmp_string($value, false);
 		}
 	}
 
@@ -374,18 +373,19 @@ function cacti_snmp_session_get($session, $oid) {
 		$oid = implode(',', $oid);
 	}
 		
-	if ($out === FALSE) {
+	if ($out === false) {
 		if ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
 			cacti_log('WARNING: SNMP Error:\'Timeout (' . ($info['timeout']/1000) . " ms)\', Device:'" . $info['hostname'] . "', OID:'$oid'", false);
 		}
 		return '';
 	}
+
 	if (is_array($out)) {
 		foreach($out as $oid => $value){
-			$out[$oid] = format_snmp_string($value, FALSE);
+			$out[$oid] = format_snmp_string($value, false);
 		}
 	} else {
-		$out = format_snmp_string($out, FALSE);
+		$out = format_snmp_string($out, false);
 	}
 
 	return $out;
@@ -401,30 +401,28 @@ function cacti_snmp_session_getnext($session, $oid) {
 	$out = $session->getnext($oid);
 	if (is_array($oid)) {
 		$oid = implode(',', $oid);
-	}
-		
-	if ($out === FALSE) {
+	}elseif ($out === false) {
 		if ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
 			cacti_log('WARNING: SNMP Error:\'Timeout (' . ($info['timeout']/1000) . " ms)\', Device:'" . $info['hostname'] . "', OID:'$oid'", false);
 		}
 
-		return '';
+		return 'U';
 	}
 
 	if (is_array($out)) {
 		foreach($out as $oid => $value){
-			$out[$oid] = format_snmp_string($value, FALSE);
+			$out[$oid] = format_snmp_string($value, false);
 		}
 	} else {
-		$out = format_snmp_string($out, FALSE);
+		$out = format_snmp_string($out, false);
 	}
 
 	return $out;
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $password, $auth_proto, $priv_pass, 
-	$priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, 
-	$max_oids = 10, $environ = SNMP_POLLER, $contextEngineID = '') {
+	$priv_proto, $context, $port = 161, $timeout = 500, $retries = 0, $max_oids = 10, $environ = SNMP_POLLER, $contextEngineID = '') {
+
 	global $config, $banned_snmp_strings, $snmp_error;
 
 	$snmp_oid_included = true;
@@ -506,7 +504,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		if ($temp_array !== false && sizeof($temp_array)) {
 			foreach($temp_array as $key => $value) {
 				foreach($banned_snmp_strings as $item) {
-					if(strstr($value, $item) != '') {
+					if (strstr($value, $item) != '') {
 						unset($temp_array[$key]);
 						continue 2;
 					}
@@ -625,10 +623,6 @@ function format_snmp_string($string, $snmp_oid_included) {
 
 	$string = preg_replace(REGEXP_SNMP_TRIM, '', trim($string));
 
-	if (substr($string, 0, 7) == 'No Such') {
-		return '';
-	}
-
 	if ($snmp_oid_included) {
 		/* strip off all leading junk (the oid and stuff) */
 		$string_array = explode('=', $string);
@@ -642,6 +636,8 @@ function format_snmp_string($string, $snmp_oid_included) {
 		}else {
 			$string = trim(implode('=', $string_array));
 		}
+	}else{
+		$string = trim($string);
 	}
 
 	/* return the easiest value */
@@ -651,7 +647,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 
 	/* now check for the second most obvious */
 	if (is_numeric($string)) {
-		return trim($string);
+		return $string;
 	}
 
 	/* remove ALL quotes, and other special delimiters */
@@ -664,7 +660,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 	$string = str_replace("\r", ' ', $string);
 
 	/* account for invalid MIB files */
-	if (substr_count($string, 'Wrong Type')) {
+	if (strpos($string, 'Wrong Type') !== false) {
 		$string = strrev($string);
 		if ($position = strpos($string, ':')) {
 			$string = trim(strrev(substr($string, 0, $position)));
@@ -748,7 +744,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 	}
 
 	foreach($banned_snmp_strings as $item) {
-		if(strstr($string, $item) != '') {
+		if (strpos($string, $item) !== false) {
 			$string = '';
 			break;
 		}
