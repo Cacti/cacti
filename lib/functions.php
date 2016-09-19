@@ -1045,7 +1045,7 @@ function is_hex_string($result) {
 		foreach($parts as $part) {
 			if (strlen($part) != 2) {
 				return false;
-			}elseif (!preg_match('/[a-fA-F0-9]/', $part)) {
+			}elseif (!preg_match('/^([a-fA-F0-9]{2})$/', $part)) {
 				return false;
 			}
 		}
