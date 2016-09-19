@@ -133,6 +133,22 @@ function import() {
 
 				print "<span class='monoSpace'>$result_text " . htmlspecialchars($vals['title']) . " $type_text</span><br>\n";
 
+				if (isset($vals['orphans'])) {
+					print '<ul class="monoSpace">';
+					foreach($vals['orphans'] as $orphan) {
+						print "<li>" . htmlspecialchars($orphan) . "</li>";
+					}
+					print '</ul>';
+				}
+
+				if (isset($vals['new_items'])) {
+					print '<ul class="monoSpace">';
+					foreach($vals['new_items'] as $item) {
+						print "<li>" . htmlspecialchars($item) . "</li>";
+					}
+					print '</ul>';
+				}
+
 				if (isset($vals['differences'])) {
 					print '<ul class="monoSpace">';
 					foreach($vals['differences'] as $diff) {
@@ -185,5 +201,19 @@ function import() {
 	form_hidden_box('save_component_import','1','');
 
 	form_save_button('', 'import');
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		<?php if (get_request_var('preview') == 1) { ?>
+		$('#templates_import1').find('.cactiTableButton > span').html('<a href="#" id="hideme"><?php print __('Hide');?></a>');
+		$('#hideme').click(function() {
+			$('#templates_import1').hide();
+		});
+		<?php } ?>
+		$('#remove_orphans').prop('checked', false).prop('disabled', true);
+	});
+	</script>
+	<?php
 }
 

@@ -111,7 +111,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 }
 
 function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) {
-	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $hash_version_codes, $preview_only;
+	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $hash_version_codes, $preview_only, $graph_item_types;
 
 	/* track changes */
 	$status = 0;
@@ -194,9 +194,32 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 
 	/* import into: graph_templates_item */
 	if (is_array($xml_array['items'])) {
+		$new_items = array();
+
+		if ($graph_template_id > 0) {
+			$items = db_fetch_assoc_prepared('SELECT *
+				FROM graph_templates_item
+				WHERE graph_template_id = ?
+				AND local_graph_id = 0',
+				array($graph_template_id));
+
+			if (sizeof($items)) {
+				foreach($items as $item) {
+					$orphaned_items[$item['hash']] = $item;
+				}
+			}
+		}else{
+			$orphaned_items = array();
+		}
+
 		while (list($item_hash, $item_array) = each($xml_array['items'])) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
+
+			/* mark present hashes */
+			if (isset($orphaned_items[$parsed_hash['hash']])) {
+				unset($orphaned_items[$parsed_hash['hash']]);
+			}
 
 			/* invalid/wrong hash */
 			if ($parsed_hash == false) { return false; }
@@ -207,7 +230,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 				WHERE hash = ?
 				AND graph_template_id = ?
 				AND local_graph_id=0', 
-			array($parsed_hash['hash'], $graph_template_id));
+				array($parsed_hash['hash'], $graph_template_id));
 
 			if (!empty($_graph_template_item_id)) {
 				$previous_data = db_fetch_row_prepared('SELECT * 
@@ -247,6 +270,12 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 					}else{
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 					}
+				}
+			}
+
+			if (!empty($_graph_template_id)) {
+				if (!sizeof($previous_data)) {
+					$new_items[$parsed_hash['hash']] = $save;
 				}
 			}
 
@@ -333,6 +362,22 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 	$_SESSION['import_debug_info']['type']   = (empty($_graph_template_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
 	$_SESSION['import_debug_info']['title']  = $xml_array['name'];
 	$_SESSION['import_debug_info']['result'] = ($preview_only ? 'preview':(empty($graph_template_id) ? 'fail' : 'success'));
+
+	if (isset($new_items) && sizeof($new_items)) {
+		$new_text = array();
+		foreach($new_items as $item) {
+			$new_text[] = 'New Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
+		}
+		$_SESSION['import_debug_info']['new_items'] = $new_text;
+	}
+
+	if (isset($orphaned_items) && sizeof($orphaned_items)) {
+		$orphan_text = array();
+		foreach($orphaned_items as $item) {
+			$orphan_text[] = 'Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
+		}
+		$_SESSION['import_debug_info']['orphans'] = $orphan_text;
+	}
 
 	return $hash_cache;
 }
