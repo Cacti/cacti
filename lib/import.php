@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-function import_xml_data(&$xml_data, $import_as_new, $profile_id) {
-	global $config, $hash_type_codes, $hash_version_codes;
+function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false) {
+	global $config, $hash_type_codes, $hash_version_codes, $preview_only, $remove_orphans;
 
 	include_once($config['library_path'] . '/xml.php');
 
@@ -50,6 +50,8 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id) {
 		}
 	}
 
+	//print '<pre>';print_r($dep_hash_cache);print '</pre>';exit;
+
 	$hash_cache = array();
 
 	/* the order of the $hash_type_codes array is ordered such that the items
@@ -61,7 +63,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id) {
 		if (isset($dep_hash_cache[$type])) {
 			/* yes we do. loop through each match for this type */
 			for ($i=0; $i<count($dep_hash_cache[$type]); $i++) {
-				$hash_array = $xml_array{'hash_' . $hash_type_codes{$dep_hash_cache[$type][$i]['type']} . $hash_version_codes{$dep_hash_cache[$type][$i]['version']} . $dep_hash_cache[$type][$i]['hash']};
+				$hash_array = $xml_array['hash_' . $hash_type_codes{$dep_hash_cache[$type][$i]['type']} . $hash_version_codes{$dep_hash_cache[$type][$i]['version']} . $dep_hash_cache[$type][$i]['hash']];
 
 				switch($type) {
 				case 'graph_template':
@@ -109,17 +111,39 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id) {
 }
 
 function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) {
-	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $hash_version_codes;
+	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $hash_version_codes, $preview_only;
+
+	/* track changes */
+	$status = 0;
 
 	/* import into: graph_templates */
-	$_graph_template_id = db_fetch_cell_prepared('SELECT id FROM graph_templates WHERE hash = ?', array($hash));
+	$_graph_template_id = db_fetch_cell_prepared('SELECT id 
+		FROM graph_templates 
+		WHERE hash = ?', 
+		array($hash));
+
+	if (!empty($_graph_template_id)) {
+		$previous_data = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates 
+			WHERE id = ?', array($_graph_template_id));
+	}else{
+		$previous_data = array();
+	}
+
 	$save['id']   = (empty($_graph_template_id) ? '0' : $_graph_template_id);
 	$save['hash'] = $hash;
 	$save['name'] = $xml_array['name'];
 
-	$graph_template_id = sql_save($save, 'graph_templates');
+	/* check for status changes */
+	$status += compare_data($save, $previous_data, 'graph_templates');
 
-	$hash_cache['graph_template'][$hash] = $graph_template_id;
+	if (!$preview_only) {
+		$graph_template_id = sql_save($save, 'graph_templates');
+
+		$hash_cache['graph_template'][$hash] = $graph_template_id;
+	}else{
+		$graph_template_id = $_graph_template_id;
+	}
 
 	/* import into: graph_templates_graph */
 	unset($save);
@@ -128,6 +152,15 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 		INNER JOIN graph_templates_graph AS gtg
 		ON gt.id=gtg.graph_template_id 
 		WHERE gt.id = ? AND gtg.local_graph_id=0', array($graph_template_id)));
+
+	if (!empty($_graph_template_id)) {
+		$previous_data = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates_graph 
+			WHERE id = ?', 
+			array($save['id']));
+	}else{
+		$previous_data = array();
+	}
 
 	$save['graph_template_id'] = $graph_template_id;
 
@@ -150,7 +183,14 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 		}
 	}
 
-	$graph_template_graph_id = sql_save($save, 'graph_templates_graph');
+	/* check for status changes */
+	$status += compare_data($save, $previous_data, 'graph_templates_graph');
+
+	if (!$preview_only) {
+		$graph_template_graph_id = sql_save($save, 'graph_templates_graph');
+	}else{
+		$graph_template_graph_id = $save['id'];
+	}
 
 	/* import into: graph_templates_item */
 	if (is_array($xml_array['items'])) {
@@ -166,7 +206,17 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 				FROM graph_templates_item 
 				WHERE hash = ?
 				AND graph_template_id = ?
-				AND local_graph_id=0', array($parsed_hash['hash'], $graph_template_id));
+				AND local_graph_id=0', 
+			array($parsed_hash['hash'], $graph_template_id));
+
+			if (!empty($_graph_template_item_id)) {
+				$previous_data = db_fetch_row_prepared('SELECT * 
+					FROM graph_templates_item 
+					WHERE id = ?', 
+					array($_graph_template_item_id));
+			}else{
+				$previous_data = array();
+			}
 
 			$save['id']                = (empty($_graph_template_item_id) ? '0' : $_graph_template_item_id);
 			$save['hash']              = $parsed_hash['hash'];
@@ -180,10 +230,16 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					}elseif (($field_name == 'color_id') && (preg_match('/^[a-fA-F0-9]{6}$/', $item_array[$field_name])) && (get_version_index($parsed_hash['version']) >= get_version_index('0.8.5'))) { /* treat the 'color' field differently */
-						$color_id = db_fetch_cell_prepared('SELECT id FROM colors WHERE hex = ?', array($item_array[$field_name]));
+						$color_id = db_fetch_cell_prepared('SELECT id 
+							FROM colors 
+							WHERE hex = ?', 
+							array($item_array[$field_name]));
 
-						if (empty($color_id)) {
-							db_execute_prepared('INSERT INTO colors (hex) VALUES (?)', array($item_array[$field_name]));
+						if (empty($color_id) && !$preview_only) {
+							db_execute_prepared('INSERT INTO colors (
+								hex) VALUES (?)', 
+								array($item_array[$field_name]));
+
 							$color_id = db_fetch_insert_id();
 						}
 
@@ -194,9 +250,14 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 				}
 			}
 
-			$graph_template_item_id = sql_save($save, 'graph_templates_item');
+			/* check for status changes */
+			$status += compare_data($save, $previous_data, 'graph_templates_item');
 
-			$hash_cache['graph_template_item']{$parsed_hash['hash']} = $graph_template_item_id;
+			if (!$preview_only) {
+				$graph_template_item_id = sql_save($save, 'graph_templates_item');
+
+				$hash_cache['graph_template_item']{$parsed_hash['hash']} = $graph_template_item_id;
+			}
 		}
 	}
 
@@ -213,7 +274,17 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 			$_graph_template_input_id = db_fetch_cell_prepared('SELECT id 
 				FROM graph_template_input 
 				WHERE hash = ?
-				AND graph_template_id = ?', array($parsed_hash['hash'], $graph_template_id));
+				AND graph_template_id = ?', 
+				array($parsed_hash['hash'], $graph_template_id));
+
+			if (!empty($_graph_template_input_id)) {
+				$previous_data = db_fetch_row_prepared('SELECT * 
+					FROM graph_template_input 
+					WHERE id = ?', 
+					array($_graph_template_input_id));
+			}else{
+				$previous_data = array();
+			}
 
 			$save['id']                = (empty($_graph_template_input_id) ? '0' : $_graph_template_input_id);
 			$save['hash']              = $parsed_hash['hash'];
@@ -227,25 +298,31 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 				}
 			}
 
-			$graph_template_input_id = sql_save($save, 'graph_template_input');
+			/* check for status changes */
+			$status += compare_data($save, $previous_data, 'graph_template_input');
 
-			$hash_cache['graph_template_input']{$parsed_hash['hash']} = $graph_template_input_id;
+			if (!$preview_only) {
+				$graph_template_input_id = sql_save($save, 'graph_template_input');
 
-			/* import into: graph_template_input_defs */
-			$hash_items = explode('|', $item_array['items']);
+				$hash_cache['graph_template_input']{$parsed_hash['hash']} = $graph_template_input_id;
 
-			if (!empty($hash_items[0])) {
-				for ($i=0; $i<count($hash_items); $i++) {
-					/* parse information from the hash */
-					$parsed_hash = parse_xml_hash($hash_items[$i]);
+				/* import into: graph_template_input_defs */
+				$hash_items = explode('|', $item_array['items']);
 
-					/* invalid/wrong hash */
-					if ($parsed_hash == false) { return false; }
+				if (!empty($hash_items[0])) {
+					for ($i=0; $i<count($hash_items); $i++) {
+						/* parse information from the hash */
+						$parsed_hash = parse_xml_hash($hash_items[$i]);
 
-					if (isset($hash_cache['graph_template_item']{$parsed_hash['hash']})) {
-						db_execute_prepared('REPLACE INTO graph_template_input_defs 
-							(graph_template_input_id,graph_template_item_id) 
-							VALUES (?, ?)', array($graph_template_input_id, $hash_cache['graph_template_item']{$parsed_hash['hash']}));
+						/* invalid/wrong hash */
+						if ($parsed_hash == false) { return false; }
+
+						if (isset($hash_cache['graph_template_item'][$parsed_hash['hash']])) {
+							db_execute_prepared('REPLACE INTO graph_template_input_defs 
+								(graph_template_input_id,graph_template_item_id) 
+								VALUES (?, ?)', 
+								array($graph_template_input_id, $hash_cache['graph_template_item'][$parsed_hash['hash']]));
+						}
 					}
 				}
 			}
@@ -253,26 +330,48 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 	}
 
 	/* status information that will be presented to the user */
-	$_SESSION['import_debug_info']['type']   = (empty($_graph_template_id) ? 'new' : 'update');
+	$_SESSION['import_debug_info']['type']   = (empty($_graph_template_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
 	$_SESSION['import_debug_info']['title']  = $xml_array['name'];
-	$_SESSION['import_debug_info']['result'] = (empty($graph_template_id) ? 'fail' : 'success');
+	$_SESSION['import_debug_info']['result'] = ($preview_only ? 'preview':(empty($graph_template_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
 
 function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
-	global $struct_data_source, $struct_data_source_item, $import_template_id;
+	global $struct_data_source, $struct_data_source_item, $import_template_id, $preview_only;
+
+	/* track changes */
+	$status = 0;
 
 	/* import into: data_template */
-	$_data_template_id = db_fetch_cell_prepared('SELECT id FROM data_template WHERE hash = ?', array($hash));
+	$_data_template_id = db_fetch_cell_prepared('SELECT id 
+		FROM data_template 
+		WHERE hash = ?', 
+		array($hash));
+
+	if (!empty($_data_template_id)) {
+		$previous_data = db_fetch_row_prepared('SELECT * 
+			FROM data_template 
+			WHERE id = ?', 
+			array($_data_template_id));
+	}else{
+		$previous_data = array();
+	}
 
 	$save['id']   = (empty($_data_template_id) ? '0' : $_data_template_id);
 	$save['hash'] = $hash;
 	$save['name'] = $xml_array['name'];
 
-	$data_template_id = sql_save($save, 'data_template');
+	/* check for status changes */
+	$status += compare_data($save, $previous_data, 'data_template');
 
-	$hash_cache['data_template'][$hash] = $data_template_id;
+	if (!$preview_only) {
+		$data_template_id = sql_save($save, 'data_template');
+
+		$hash_cache['data_template'][$hash] = $data_template_id;
+	}else{
+		$data_template_id = $_data_template_id;
+	}
 
 	/* import into: data_template_data */
 	unset($save);
@@ -282,6 +381,15 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 		ON dt.id=dtd.data_template_id 
 		WHERE dt.id = ?
 		AND dtd.local_data_id=0', array($data_template_id)));
+
+	if (!empty($save['id'])) {
+		$previous_data = db_fetch_row_prepared('SELECT * 
+			FROM data_template_data
+			WHERE id = ?', 
+			array($save['id']));
+	}else{
+		$previous_data = array();
+	}
 
 	$save['data_template_id'] = $data_template_id;
 
@@ -307,7 +415,10 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	
 	/* use the profiles step if we are not importing a new one */
 	if ($import_as_new == false) {
-		$save['rrd_step'] = db_fetch_cell_prepared('SELECT step FROM data_source_profiles WHERE id = ?', array($profile_id));
+		$save['rrd_step'] = db_fetch_cell_prepared('SELECT step 
+			FROM data_source_profiles 
+			WHERE id = ?', 
+			array($profile_id));
 	}
 	
 	/* Fix for importing during installation - use the polling interval as the step if we are to use the default rra settings */
@@ -315,9 +426,14 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 		$save['rrd_step'] = read_config_option('poller_interval');
 	}
 
-	$data_template_data_id = sql_save($save, 'data_template_data');
+	/* check for status changes */
+	$status += compare_data($save, $previous_data, 'data_template_data');
 
-	$import_template_id = $data_template_data_id;
+	if (!$preview_only) {
+		$data_template_data_id = sql_save($save, 'data_template_data');
+
+		$import_template_id = $data_template_data_id;
+	}
 
 	/* import into: data_template_rrd */
 	if (is_array($xml_array['items'])) {
@@ -333,7 +449,17 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				FROM data_template_rrd 
 				WHERE hash = ?
 				AND data_template_id = ?
-				AND local_data_id=0', array($parsed_hash['hash'], $data_template_id));
+				AND local_data_id=0', 
+				array($parsed_hash['hash'], $data_template_id));
+
+			if (!empty($_data_template_rrd_id)) {
+				$previous_data = db_fetch_row_prepared('SELECT * 
+					FROM data_template_rrd
+					WHERE id = ?', 
+					array($_data_template_rrd_id));
+			}else{
+				$previous_data = array();
+			}
 
 			$save['id']               = (empty($_data_template_rrd_id) ? '0' : $_data_template_rrd_id);
 			$save['hash']             = $parsed_hash['hash'];
@@ -359,7 +485,10 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 
 			/* use the profiles step * 2 as the heartbeat if we are not importing a new profile */
 			if ($import_as_new === false) {
-				$save['rrd_heartbeat'] = db_fetch_cell_prepared('SELECT step FROM data_source_profiles WHERE id = ?', array($profile_id)) * 2;
+				$save['rrd_heartbeat'] = db_fetch_cell_prepared('SELECT step 
+					FROM data_source_profiles 
+					WHERE id = ?', 
+					array($profile_id)) * 2;
 			}
 			
 			/* Fix for importing during installation - use the polling interval as the step if we are to use the default rra settings */
@@ -367,38 +496,61 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				$save['rrd_heartbeat'] = read_config_option('poller_interval') * 2;
 			}
 
-			$data_template_rrd_id = sql_save($save, 'data_template_rrd');
+			/* check for status changes */
+			$status += compare_data($save, $previous_data, 'data_template_rrd');
 
-			$hash_cache['data_template_item']{$parsed_hash['hash']} = $data_template_rrd_id;
+			if (!$preview_only) {
+				$data_template_rrd_id = sql_save($save, 'data_template_rrd');
+
+				$hash_cache['data_template_item']{$parsed_hash['hash']} = $data_template_rrd_id;
+			}
 		}
 	}
 
 	/* import into: data_input_data */
-	if (is_array($xml_array['data'])) {
-		while (list($item_hash, $item_array) = each($xml_array['data'])) {
-			unset($save);
-			$save['data_template_data_id'] = $data_template_data_id;
-			$save['data_input_field_id']   = resolve_hash_to_id($item_array['data_input_field_id'], $hash_cache);
-			$save['t_value']               = $item_array['t_value'];
-			$save['value']                 = xml_character_decode($item_array['value']);
+	if (!$preview_only) {
+		if (is_array($xml_array['data'])) {
+			while (list($item_hash, $item_array) = each($xml_array['data'])) {
+				unset($save);
+				$save['data_template_data_id'] = $data_template_data_id;
+				$save['data_input_field_id']   = resolve_hash_to_id($item_array['data_input_field_id'], $hash_cache);
+				$save['t_value']               = $item_array['t_value'];
+				$save['value']                 = xml_character_decode($item_array['value']);
 
-			sql_save($save, 'data_input_data', array('data_template_data_id', 'data_input_field_id'), false);
+				sql_save($save, 'data_input_data', array('data_template_data_id', 'data_input_field_id'), false);
+			}
 		}
 	}
 
 	/* status information that will be presented to the user */
-	$_SESSION['import_debug_info']['type'] = (empty($_data_template_id) ? 'new' : 'update');
-	$_SESSION['import_debug_info']['title'] = $xml_array['name'];
-	$_SESSION['import_debug_info']['result'] = (empty($data_template_id) ? 'fail' : 'success');
+	$_SESSION['import_debug_info']['type']   = (empty($_data_template_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$_SESSION['import_debug_info']['title']  = $xml_array['name'];
+	$_SESSION['import_debug_info']['result'] = ($preview_only ? 'preview':(empty($data_template_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
 
 function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
-	global $fields_data_query_edit, $fields_data_query_item_edit;
+	global $fields_data_query_edit, $fields_data_query_item_edit, $preview_only;
+
+	/* track changes */
+	$status = 0;
 
 	/* import into: snmp_query */
-	$_data_query_id = db_fetch_cell_prepared('SELECT id FROM snmp_query WHERE hash = ?', array($hash));
+	$_data_query_id = db_fetch_cell_prepared('SELECT id 
+		FROM snmp_query 
+		WHERE hash = ?', 
+		array($hash));
+
+	if (!empty($_data_query_id)) {
+		$previous_data = db_fetch_row_prepared('SELECT * 
+			FROM snmp_query 
+			WHERE id = ?', 
+			array($_data_query_id));
+	}else{
+		$previous_data = array();
+	}
+
 	$save['id']     = (empty($_data_query_id) ? '0' : $_data_query_id);
 	$save['hash']   = $hash;
 
@@ -415,9 +567,16 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 		}
 	}
 
-	$data_query_id = sql_save($save, 'snmp_query');
+	/* check for status changes */
+	$status += compare_data($save, $previous_data, 'snmp_query');
 
-	$hash_cache['data_query'][$hash] = $data_query_id;
+	if (!$preview_only) {
+		$data_query_id = sql_save($save, 'snmp_query');
+
+		$hash_cache['data_query'][$hash] = $data_query_id;
+	}else{
+		$data_query_id = $_data_query_id;
+	}
 
 	/* import into: snmp_query_graph */
 	if (is_array($xml_array['graphs'])) {
@@ -432,7 +591,17 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 			$_data_query_graph_id = db_fetch_cell_prepared('SELECT id 
 				FROM snmp_query_graph 
 				WHERE hash = ?
-				AND snmp_query_id = ?', array($parsed_hash['hash'], $data_query_id));
+				AND snmp_query_id = ?', 
+				array($parsed_hash['hash'], $data_query_id));
+
+			if (!empty($_data_query_graph_id)) {
+				$previous_data = db_fetch_row_prepared('SELECT * 
+					FROM snmp_query_graph
+					WHERE id = ?', 
+					array($_data_query_graph_id));
+			}else{
+				$previous_data = array();
+			}
 
 			$save['id']            = (empty($_data_query_graph_id) ? '0' : $_data_query_graph_id);
 			$save['hash']          = $parsed_hash['hash'];
@@ -451,21 +620,28 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 				}
 			}
 
-			$data_query_graph_id = sql_save($save, 'snmp_query_graph');
+			/* check for status changes */
+			$status += compare_data($save, $previous_data, 'snmp_query_graph');
 
-			$hash_cache['data_query_graph']{$parsed_hash['hash']} = $data_query_graph_id;
+			if (!$preview_only) {
+				$data_query_graph_id = sql_save($save, 'snmp_query_graph');
 
-			/* import into: snmp_query_graph_rrd */
-			if (is_array($item_array['rrd'])) {
-				while (list($sub_item_hash, $sub_item_array) = each($item_array['rrd'])) {
-					unset($save);
-					$save['snmp_query_graph_id']  = $data_query_graph_id;
-					$save['data_template_id']     = resolve_hash_to_id($sub_item_array['data_template_id'], $hash_cache);
-					$save['data_template_rrd_id'] = resolve_hash_to_id($sub_item_array['data_template_rrd_id'], $hash_cache);
-					$save['snmp_field_name']      = $sub_item_array['snmp_field_name'];
+				$hash_cache['data_query_graph']{$parsed_hash['hash']} = $data_query_graph_id;
 
-					sql_save($save, 'snmp_query_graph_rrd', array('snmp_query_graph_id', 'data_template_id', 'data_template_rrd_id'), false);
+				/* import into: snmp_query_graph_rrd */
+				if (is_array($item_array['rrd'])) {
+					while (list($sub_item_hash, $sub_item_array) = each($item_array['rrd'])) {
+						unset($save);
+						$save['snmp_query_graph_id']  = $data_query_graph_id;
+						$save['data_template_id']     = resolve_hash_to_id($sub_item_array['data_template_id'], $hash_cache);
+						$save['data_template_rrd_id'] = resolve_hash_to_id($sub_item_array['data_template_rrd_id'], $hash_cache);
+						$save['snmp_field_name']      = $sub_item_array['snmp_field_name'];
+
+						sql_save($save, 'snmp_query_graph_rrd', array('snmp_query_graph_id', 'data_template_id', 'data_template_rrd_id'), false);
+					}
 				}
+			}else{
+				$data_query_graph_id = $_data_query_graph_id;
 			}
 
 			/* import into: snmp_query_graph_sv */
@@ -481,7 +657,17 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					$_data_query_graph_sv_id = db_fetch_cell_prepared('SELECT id 
 						FROM snmp_query_graph_sv 
 						WHERE hash = ?
-						AND snmp_query_graph_id = ?', array($parsed_hash['hash'], $data_query_graph_id));
+						AND snmp_query_graph_id = ?', 
+						array($parsed_hash['hash'], $data_query_graph_id));
+
+					if (!empty($_data_query_graph_sv_id)) {
+						$previous_data = db_fetch_row_prepared('SELECT * 
+							FROM snmp_query_graph_sv
+							WHERE id = ?', 
+							array($_data_query_graph_sv_id));
+					}else{
+						$previous_data = array();
+					}
 
 					$save['id']                  = (empty($_data_query_graph_sv_id) ? '0' : $_data_query_graph_sv_id);
 					$save['hash']                = $parsed_hash['hash'];
@@ -490,9 +676,14 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					$save['field_name']          = $sub_item_array['field_name'];
 					$save['text']                = xml_character_decode($sub_item_array['text']);
 
-					$data_query_graph_sv_id = sql_save($save, 'snmp_query_graph_sv');
+					/* check for status changes */
+					$status += compare_data($save, $previous_data, 'snmp_query_graph_sv');
 
-					$hash_cache['data_query_sv_graph']{$parsed_hash['hash']} = $data_query_graph_sv_id;
+					if (!$preview_only) {
+						$data_query_graph_sv_id = sql_save($save, 'snmp_query_graph_sv');
+
+						$hash_cache['data_query_sv_graph']{$parsed_hash['hash']} = $data_query_graph_sv_id;
+					}
 				}
 			}
 
@@ -509,7 +700,17 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					$_data_query_graph_rrd_sv_id = db_fetch_cell_prepared('SELECT id 
 						FROM snmp_query_graph_rrd_sv 
 						WHERE hash = ?
-						AND snmp_query_graph_id = ?', array($parsed_hash['hash'], $data_query_graph_id));
+						AND snmp_query_graph_id = ?', 
+						array($parsed_hash['hash'], $data_query_graph_id));
+
+					if (!empty($_data_query_graph_rrd_sv_id)) {
+						$previous_data = db_fetch_row_prepared('SELECT * 
+							FROM snmp_query_graph_rrd_sv
+							WHERE id = ?', 
+							array($_data_query_graph_rrd_sv_id));
+					}else{
+						$previous_data = array();
+					}
 
 					$save['id']                  = (empty($_data_query_graph_rrd_sv_id) ? '0' : $_data_query_graph_rrd_sv_id);
 					$save['hash']                = $parsed_hash['hash'];
@@ -519,27 +720,47 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					$save['field_name']          = $sub_item_array['field_name'];
 					$save['text']                = xml_character_decode($sub_item_array['text']);
 
-					$data_query_graph_rrd_sv_id = sql_save($save, 'snmp_query_graph_rrd_sv');
+					/* check for status changes */
+					$status += compare_data($save, $previous_data, 'snmp_query_graph_rrd_sv');
 
-					$hash_cache['data_query_sv_data_source']{$parsed_hash['hash']} = $data_query_graph_rrd_sv_id;
+					if (!$preview_only) {
+						$data_query_graph_rrd_sv_id = sql_save($save, 'snmp_query_graph_rrd_sv');
+
+						$hash_cache['data_query_sv_data_source']{$parsed_hash['hash']} = $data_query_graph_rrd_sv_id;
+					}
 				}
 			}
 		}
 	}
 
 	/* status information that will be presented to the user */
-	$_SESSION['import_debug_info']['type']   = (empty($_data_query_id) ? 'new' : 'update');
+	$_SESSION['import_debug_info']['type']   = (empty($_data_query_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
 	$_SESSION['import_debug_info']['title']  = $xml_array['name'];
-	$_SESSION['import_debug_info']['result'] = (empty($data_query_id) ? 'fail' : 'success');
+	$_SESSION['import_debug_info']['result'] = ($preview_only ? 'preview':(empty($data_query_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
 
 function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
-	global $fields_grprint_presets_edit;
+	global $fields_grprint_presets_edit, $preview_only;
+
+	/* track changes */
+	$status = 0;
 
 	/* import into: graph_templates_gprint */
-	$_gprint_preset_id = db_fetch_cell_prepared('SELECT id FROM graph_templates_gprint WHERE hash = ?', array($hash));
+	$_gprint_preset_id = db_fetch_cell_prepared('SELECT id 
+		FROM graph_templates_gprint 
+		WHERE hash = ?', 
+		array($hash));
+
+	if (!empty($_gprint_preset_id)) {
+		$previous_data = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates_gprint
+			WHERE id = ?', 
+			array($_gprint_preset_id));
+	}else{
+		$previous_data = array();
+	}
 
 	$save['id']   = (empty($_gprint_preset_id) ? '0' : $_gprint_preset_id);
 	$save['hash'] = $hash;
@@ -552,20 +773,25 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 		}
 	}
 
-	$gprint_preset_id = sql_save($save, 'graph_templates_gprint');
+	/* check for status changes */
+	$status += compare_data($save, $previous_data, 'graph_templates_gprint');
 
-	$hash_cache['gprint_preset'][$hash] = $gprint_preset_id;
+	if (!$preview_only) {
+		$gprint_preset_id = sql_save($save, 'graph_templates_gprint');
+
+		$hash_cache['gprint_preset'][$hash] = $gprint_preset_id;
+	}
 
 	/* status information that will be presented to the user */
-	$_SESSION['import_debug_info']['type']   = (empty($_gprint_preset_id) ? 'new' : 'update');
+	$_SESSION['import_debug_info']['type']   = (empty($_gprint_preset_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
 	$_SESSION['import_debug_info']['title']  = $xml_array['name'];
-	$_SESSION['import_debug_info']['result'] = (empty($gprint_preset_id) ? 'fail' : 'success');
+	$_SESSION['import_debug_info']['result'] = ($preview_only ? 'preview':(empty($gprint_preset_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
 
 function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
-	global $fields_profile_edit, $fields_profile_rra_edit, $import_template_id;
+	global $fields_profile_edit, $fields_profile_rra_edit, $import_template_id, $preview_only;
 
 	if ($import_as_new == true) {
 		$save['id']   = 0;
@@ -582,61 +808,82 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 		// Give the Profile a new name
 		$save['name'] .= ' (imported)';
 
-		$dsp_id = sql_save($save, 'data_source_profiles');
+		if (!$preview_only) {
+			$dsp_id = sql_save($save, 'data_source_profiles');
 
-		if (!empty($dsp_id)) {
-			db_execute_prepared('UPDATE data_template_data SET data_source_profile_id = ? WHERE id = ?', array($dsp_id, $import_template_id));
-		}
-
-		$hash_cache['data_source_profiles'][$hash] = $dsp_id;
-
-		/* import into: data_source_profiles_cf */
-		$hash_items = explode('|', $xml_array['cf_items']);
-
-		if (!empty($hash_items[0])) {
-			for ($i=0; $i<count($hash_items); $i++) {
-				db_execute_prepared('REPLACE INTO data_source_profiles_cf 
-					(data_source_profile_id,consolidation_function_id) 
-					VALUES (?, ?)', array($dsp_id, $hash_items[$i]));
+			if (!empty($dsp_id)) {
+				db_execute_prepared('UPDATE data_template_data 
+					SET data_source_profile_id = ? 
+					WHERE id = ?', 
+					array($dsp_id, $import_template_id));
 			}
-		}
 
-		/* import into: data_source_profiles_rra */
-		if (is_array($xml_array['items'])) {
-			while (list($item_name, $item_array) = each($xml_array['items'])) {
-				unset($save);
+			$hash_cache['data_source_profiles'][$hash] = $dsp_id;
 
-				$save['id']                     = 0;
-				$save['data_source_profile_id'] = $dsp_id;
+			/* import into: data_source_profiles_cf */
+			$hash_items = explode('|', $xml_array['cf_items']);
 
-				reset($fields_profile_rra_edit);
-				while (list($field_name, $field_array) = each($fields_profile_rra_edit)) {
-					/* make sure this field exists in the xml array first */
-					if (isset($item_array[$field_name])) {
-						$save[$field_name] = xml_character_decode($item_array[$field_name]);
-					}
+			if (!empty($hash_items[0])) {
+				for ($i=0; $i<count($hash_items); $i++) {
+					db_execute_prepared('REPLACE INTO data_source_profiles_cf 
+						(data_source_profile_id,consolidation_function_id) 
+						VALUES (?, ?)', 
+						array($dsp_id, $hash_items[$i]));
 				}
+			}
 
-				$rra_id = sql_save($save, 'data_source_profiles_rra');
+			/* import into: data_source_profiles_rra */
+			if (is_array($xml_array['items'])) {
+				while (list($item_name, $item_array) = each($xml_array['items'])) {
+					unset($save);
 
-				$hash_cache['data_source_profile_rra']{$item_name} = $rra_id;
+					$save['id']                     = 0;
+					$save['data_source_profile_id'] = $dsp_id;
+
+					reset($fields_profile_rra_edit);
+					while (list($field_name, $field_array) = each($fields_profile_rra_edit)) {
+						/* make sure this field exists in the xml array first */
+						if (isset($item_array[$field_name])) {
+							$save[$field_name] = xml_character_decode($item_array[$field_name]);
+						}
+					}
+
+					$rra_id = sql_save($save, 'data_source_profiles_rra');
+
+					$hash_cache['data_source_profile_rra']{$item_name} = $rra_id;
+				}
 			}
 		}
 
 		/* status information that will be presented to the user */
 		$_SESSION['import_debug_info']['type']   = 'new';
 		$_SESSION['import_debug_info']['title']  = $xml_array['name'] . ' (imported)';
-		$_SESSION['import_debug_info']['result'] = (empty($dsp_id) ? 'fail' : 'success');
+		$_SESSION['import_debug_info']['result'] = ($preview_only ? 'preview':(empty($dsp_id) ? 'fail' : 'success'));
 	}
 
 	return $hash_cache;
 }
 
 function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
-	global $fields_host_template_edit;
+	global $fields_host_template_edit, $preview_only;
+
+	/* track changes */
+	$status = 0;
 
 	/* import into: graph_templates_gprint */
-	$_host_template_id = db_fetch_cell_prepared('SELECT id FROM host_template WHERE hash = ?', array($hash));
+	$_host_template_id = db_fetch_cell_prepared('SELECT id 
+		FROM host_template 
+		WHERE hash = ?', 
+		array($hash));
+
+	if (!empty($_host_template_id)) {
+		$previous_data = db_fetch_row_prepared('SELECT * 
+			FROM host_template
+			WHERE id = ?', 
+			array($_host_template_id));
+	}else{
+		$previous_data = array();
+	}
 
 	$save['id']   = (empty($_host_template_id) ? '0' : $_host_template_id);
 	$save['hash'] = $hash;
@@ -649,56 +896,68 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 		}
 	}
 
-	$host_template_id = sql_save($save, 'host_template');
+	/* check for status changes */
+	$status += compare_data($save, $previous_data, 'host_template');
 
-	$hash_cache['host_template'][$hash] = $host_template_id;
+	if (!$preview_only) {
+		$host_template_id = sql_save($save, 'host_template');
 
-	/* import into: host_template_graph */
-	$hash_items = explode('|', $xml_array['graph_templates']);
+		$hash_cache['host_template'][$hash] = $host_template_id;
 
-	if (!empty($hash_items[0])) {
-		for ($i=0; $i<count($hash_items); $i++) {
-			/* parse information from the hash */
-			$parsed_hash = parse_xml_hash($hash_items[$i]);
+		/* import into: host_template_graph */
+		$hash_items = explode('|', $xml_array['graph_templates']);
 
-			/* invalid/wrong hash */
-			if ($parsed_hash == false) { return false; }
+		if (!empty($hash_items[0])) {
+			for ($i=0; $i<count($hash_items); $i++) {
+				/* parse information from the hash */
+				$parsed_hash = parse_xml_hash($hash_items[$i]);
 
-			if (isset($hash_cache['graph_template']{$parsed_hash['hash']})) {
-				db_execute_prepared('REPLACE INTO host_template_graph (host_template_id,graph_template_id) values (?, ?)', array($host_template_id, $hash_cache['graph_template']{$parsed_hash['hash']}));
+				/* invalid/wrong hash */
+				if ($parsed_hash == false) { return false; }
+
+				if (isset($hash_cache['graph_template']{$parsed_hash['hash']})) {
+					db_execute_prepared('REPLACE INTO host_template_graph 
+						(host_template_id,graph_template_id) 
+						VALUES (?, ?)', 
+						array($host_template_id, $hash_cache['graph_template']{$parsed_hash['hash']}));
+				}
 			}
 		}
-	}
 
-	/* import into: host_template_snmp_query */
-	$hash_items = explode('|', $xml_array['data_queries']);
+		/* import into: host_template_snmp_query */
+		$hash_items = explode('|', $xml_array['data_queries']);
 
-	if (!empty($hash_items[0])) {
-		for ($i=0; $i<count($hash_items); $i++) {
-			/* parse information from the hash */
-			$parsed_hash = parse_xml_hash($hash_items[$i]);
+		if (!empty($hash_items[0])) {
+			for ($i=0; $i<count($hash_items); $i++) {
+				/* parse information from the hash */
+				$parsed_hash = parse_xml_hash($hash_items[$i]);
 
-			/* invalid/wrong hash */
-			if ($parsed_hash == false) { return false; }
+				/* invalid/wrong hash */
+				if ($parsed_hash == false) { return false; }
 
-			if (isset($hash_cache['data_query']{$parsed_hash['hash']})) {
-				db_execute_prepared('REPLACE INTO host_template_snmp_query 
-					(host_template_id,snmp_query_id) 
-					VALUES (?, ?)', array($host_template_id, $hash_cache['data_query']{$parsed_hash['hash']}));
+				if (isset($hash_cache['data_query']{$parsed_hash['hash']})) {
+					db_execute_prepared('REPLACE INTO host_template_snmp_query 
+						(host_template_id,snmp_query_id) 
+						VALUES (?, ?)', 
+						array($host_template_id, $hash_cache['data_query']{$parsed_hash['hash']}));
+				}
 			}
 		}
 	}
 
 	/* status information that will be presented to the user */
-	$_SESSION['import_debug_info']['type']   = (empty($_host_template_id) ? 'new' : 'update');
+	$_SESSION['import_debug_info']['type']   = (empty($_host_template_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
 	$_SESSION['import_debug_info']['title']  = $xml_array['name'];
-	$_SESSION['import_debug_info']['result'] = (empty($host_template_id) ? 'fail' : 'success');
+	$_SESSION['import_debug_info']['result'] = ($preview_only ? 'preview':(empty($host_template_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
 
 function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
-	global $fields_cdef_edit;
+	global $fields_cdef_edit, $preview_only;
+
+	/* track changes */
+	$status = 0;
 
 	$fields_cdef_item_edit = array(
 		'sequence' => 'sequence',
@@ -707,7 +966,19 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	);
 
 	/* import into: cdef */
-	$_cdef_id = db_fetch_cell_prepared('SELECT id FROM cdef WHERE hash = ?', array($hash));
+	$_cdef_id = db_fetch_cell_prepared('SELECT id 
+		FROM cdef 
+		WHERE hash = ?', 
+		array($hash));
+
+	if (!empty($_cdef_id)) {
+		$previous_data = db_fetch_row_prepared('SELECT * 
+			FROM cdef
+			WHERE id = ?', 
+			array($_cdef_id));
+	}else{
+		$previous_data = array();
+	}
 
 	$save['id']   = (empty($_cdef_id) ? '0' : $_cdef_id);
 	$save['hash'] = $hash;
@@ -720,9 +991,16 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 		}
 	}
 
-	$cdef_id = sql_save($save, 'cdef');
+	/* check for status changes */
+	$status += compare_data($save, $previous_data, 'cdef');
 
-	$hash_cache['cdef'][$hash] = $cdef_id;
+	if (!$preview_only) {
+		$cdef_id = sql_save($save, 'cdef');
+
+		$hash_cache['cdef'][$hash] = $cdef_id;
+	}else{
+		$cdef_id = $_cdef_id;
+	}
 
 	/* import into: cdef_items */
 	if (is_array($xml_array['items'])) {
@@ -734,7 +1012,20 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_cdef_item_id = db_fetch_cell_prepared('SELECT id FROM cdef_items WHERE hash= ? AND cdef_id = ?', array($parsed_hash['hash'], $cdef_id));
+			$_cdef_item_id = db_fetch_cell_prepared('SELECT id 
+				FROM cdef_items 
+				WHERE hash= ? 
+				AND cdef_id = ?', 
+				array($parsed_hash['hash'], $cdef_id));
+
+			if (!empty($_cdef_item_id)) {
+				$previous_data = db_fetch_row_prepared('SELECT * 
+					FROM cdef_items
+					WHERE id = ?', 
+					array($_cdef_item_id));
+			}else{
+				$previous_data = array();
+			}
 
 			$save['id']      = (empty($_cdef_item_id) ? '0' : $_cdef_item_id);
 			$save['hash']    = $parsed_hash['hash'];
@@ -752,9 +1043,15 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 						/* parse information from the hash, which in this case
 						 * is stored as a value of the current item being processed */
 						$parsed_item_hash = parse_xml_hash($item_array['value']);
+
 						/* invalid/wrong hash */
 						if ($parsed_item_hash == false) { return false; }
-						$_cdef_id = db_fetch_cell_prepared('SELECT id FROM cdef WHERE hash = ?', array($parsed_item_hash['hash']));
+
+						$_cdef_id = db_fetch_cell_prepared('SELECT id 
+							FROM cdef 
+							WHERE hash = ?', 
+							array($parsed_item_hash['hash']));
+
 						$save[$field_name] = $_cdef_id;
 					} else {
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
@@ -762,27 +1059,47 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 				}
 			}
 
-			$cdef_item_id = sql_save($save, 'cdef_items');
+			/* check for status changes */
+			$status += compare_data($save, $previous_data, 'cdef_items');
 
-			$hash_cache['cdef_item']{$parsed_hash['hash']} = $cdef_item_id;
+			if (!$preview_only) {
+				$cdef_item_id = sql_save($save, 'cdef_items');
+
+				$hash_cache['cdef_item']{$parsed_hash['hash']} = $cdef_item_id;
+			}
 		}
 	}
 
 	/* status information that will be presented to the user */
-	$_SESSION['import_debug_info']['type']   = (empty($_cdef_id) ? 'new' : 'update');
+	$_SESSION['import_debug_info']['type']   = (empty($_cdef_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
 	$_SESSION['import_debug_info']['title']  = $xml_array['name'];
-	$_SESSION['import_debug_info']['result'] = (empty($cdef_id) ? 'fail' : 'success');
+	$_SESSION['import_debug_info']['result'] = ($preview_only ? 'preview':(empty($cdef_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
 
 function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
-	global $config;
+	global $config, $preview_only;
 
 	include_once($config['library_path'] . 'vdef.php');
 
+	/* track changes */
+	$status = 0;
+
 	/* import into: vdef */
-	$_vdef_id = db_fetch_cell_prepared('SELECT id FROM vdef WHERE hash = ?', array($hash));
+	$_vdef_id = db_fetch_cell_prepared('SELECT id 
+		FROM vdef 
+		WHERE hash = ?', 
+		array($hash));
+
+	if (!empty($_vdef_id)) {
+		$previous_data = db_fetch_row_prepared('SELECT * 
+			FROM vdef
+			WHERE id = ?', 
+			array($_vdef_id));
+	}else{
+		$previous_data = array();
+	}
 
 	$save['id']   = (empty($_vdef_id) ? '0' : $_vdef_id);
 	$save['hash'] = $hash;
@@ -796,9 +1113,16 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 		}
 	}
 
-	$vdef_id = sql_save($save, 'vdef');
+	/* check for status changes */
+	$status += compare_data($save, $previous_data, 'vdef');
 
-	$hash_cache['vdef'][$hash] = $vdef_id;
+	if (!$preview_only) {
+		$vdef_id = sql_save($save, 'vdef');
+
+		$hash_cache['vdef'][$hash] = $vdef_id;
+	}else{
+		$vdef_id = $_vdef_id;
+	}
 
 	/* import into: vdef_items */
 	if (is_array($xml_array['items'])) {
@@ -810,7 +1134,20 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_vdef_item_id = db_fetch_cell_prepared('SELECT id FROM vdef_items WHERE hash = ? AND vdef_id = ?', array($parsed_hash['hash'], $vdef_id));
+			$_vdef_item_id = db_fetch_cell_prepared('SELECT id 
+				FROM vdef_items 
+				WHERE hash = ? 
+				AND vdef_id = ?', 
+				array($parsed_hash['hash'], $vdef_id));
+
+			if (!empty($_vdef_item_id)) {
+				$previous_data = db_fetch_row_prepared('SELECT * 
+					FROM vdef_items
+					WHERE id = ?', 
+					array($_vdef_item_id));
+			}else{
+				$previous_data = array();
+			}
 
 			$save['id']      = (empty($_vdef_item_id) ? '0' : $_vdef_item_id);
 			$save['hash']    = $parsed_hash['hash'];
@@ -825,28 +1162,48 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 				}
 			}
 
-			$vdef_item_id = sql_save($save, 'vdef_items');
+			/* check for status changes */
+			$status += compare_data($save, $previous_data, 'vdef_items');
 
-			$hash_cache['vdef_item']{$parsed_hash['hash']} = $vdef_item_id;
+			if (!$preview_only) {
+				$vdef_item_id = sql_save($save, 'vdef_items');
+
+				$hash_cache['vdef_item']{$parsed_hash['hash']} = $vdef_item_id;
+			}
 		}
 	}
 
 	/* status information that will be presented to the user */
-	$_SESSION['import_debug_info']['type']   = (empty($_vdef_id) ? 'new' : 'update');
+	$_SESSION['import_debug_info']['type']   = (empty($_vdef_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
 	$_SESSION['import_debug_info']['title']  = $xml_array['name'];
-	$_SESSION['import_debug_info']['result'] = (empty($vdef_id) ? 'fail' : 'success');
+	$_SESSION['import_debug_info']['result'] = ($preview_only ? 'preview':(empty($vdef_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
 
 function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
-	global $fields_data_input_edit, $fields_data_input_field_edit, $fields_data_input_field_edit_1;
+	global $fields_data_input_edit, $fields_data_input_field_edit, $fields_data_input_field_edit_1, $preview_only;
+
+	/* track changes */
+	$status = 0;
 
 	/* aggregate field arrays */
 	$fields_data_input_field_edit += $fields_data_input_field_edit_1;
 
 	/* import into: data_input */
-	$_data_input_id = db_fetch_cell_prepared('SELECT id FROM data_input WHERE hash = ?', array($hash));
+	$_data_input_id = db_fetch_cell_prepared('SELECT id 
+		FROM data_input 
+		WHERE hash = ?', 
+		array($hash));
+
+	if (!empty($_data_input_id)) {
+		$previous_data = db_fetch_row_prepared('SELECT * 
+			FROM data_input
+			WHERE id = ?', 
+			array($_data_input_id));
+	}else{
+		$previous_data = array();
+	}
 
 	$save['id']   = (empty($_data_input_id) ? '0' : $_data_input_id);
 	$save['hash'] = $hash;
@@ -864,9 +1221,16 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 		}
 	}
 
-	$data_input_id = sql_save($save, 'data_input');
+	/* check for status changes */
+	$status += compare_data($save, $previous_data, 'data_input');
 
-	$hash_cache['data_input_method'][$hash] = $data_input_id;
+	if (!$preview_only) {
+		$data_input_id = sql_save($save, 'data_input');
+
+		$hash_cache['data_input_method'][$hash] = $data_input_id;
+	}else{
+		$data_input_id = $_data_input_id;
+	}
 
 	/* import into: data_input_fields */
 	if (is_array($xml_array['fields'])) {
@@ -878,7 +1242,21 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_data_input_field_id = db_fetch_cell_prepared('SELECT id FROM data_input_fields WHERE hash= ? AND data_input_id = ?', array($parsed_hash['hash'], $data_input_id));
+			$_data_input_field_id = db_fetch_cell_prepared('SELECT id 
+				FROM data_input_fields 
+				WHERE hash= ? 
+				AND data_input_id = ?', 
+				array($parsed_hash['hash'], $data_input_id));
+
+			if (!empty($_data_input_field_id)) {
+				$previous_data = db_fetch_row_prepared('SELECT * 
+					FROM data_input_fields
+					WHERE id = ?', 
+					array($_data_input_field_id));
+			}else{
+				$previous_data = array();
+			}
+
 			$save['id']            = (empty($_data_input_field_id) ? '0' : $_data_input_field_id);
 			$save['hash']          = $parsed_hash['hash'];
 			$save['data_input_id'] = $data_input_id;
@@ -891,23 +1269,66 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 				}
 			}
 
-			$data_input_field_id = sql_save($save, 'data_input_fields');
+			/* check for status changes */
+			$status += compare_data($save, $previous_data, 'data_input_fields');
 
-			$hash_cache['data_input_field']{$parsed_hash['hash']} = $data_input_field_id;
+			if (!$preview_only) {
+				$data_input_field_id = sql_save($save, 'data_input_fields');
+
+				$hash_cache['data_input_field']{$parsed_hash['hash']} = $data_input_field_id;
+			}
 		}
 	}
 
 	/* update field use counter cache if possible */
-	if ((isset($xml_array['input_string'])) && (!empty($data_input_id))) {
-		generate_data_input_field_sequences($xml_array['input_string'], $data_input_id);
+	if (!$preview_only) {
+		if ((isset($xml_array['input_string'])) && (!empty($data_input_id))) {
+			generate_data_input_field_sequences($xml_array['input_string'], $data_input_id);
+		}
 	}
 
 	/* status information that will be presented to the user */
-	$_SESSION['import_debug_info']['type']   = (empty($_data_input_id) ? 'new' : 'update');
+	$_SESSION['import_debug_info']['type']   = (empty($_data_input_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
 	$_SESSION['import_debug_info']['title']  = $xml_array['name'];
-	$_SESSION['import_debug_info']['result'] = (empty($data_input_id) ? 'fail' : 'success');
+	$_SESSION['import_debug_info']['result'] = ($preview_only ? 'preview':(empty($data_input_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
+}
+
+function compare_data($save, $previous_data, $table) {
+	global $preview_only;
+
+	if ($preview_only) {
+		$ignores = array(
+			'task_item_id',
+			'gprint_id',
+			'cdef_id',
+			'vdef_id',
+			'consolidation_function_id',
+			'data_input_id',
+			'graph_template_id',
+			'data_template_id',
+			'data_input_field_id'
+		);
+	}else{
+		$ignores = array();
+	}
+
+	if (!sizeof($previous_data)) {
+		return 0;
+	}else{
+		$different = 0;
+		foreach($save as $column => $value) {
+			if (array_search($column, $ignores) !== false) continue;
+
+			if ($previous_data[$column] != $value) {
+				$different++;
+				$_SESSION['import_debug_info']['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: \'' . $value . '\', Old Value: \'' . $previous_data[$column] . '\''; 
+			}
+		}
+
+		return $different;
+	}
 }
 
 function hash_to_friendly_name($hash, $display_type_name) {

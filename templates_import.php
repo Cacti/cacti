@@ -47,6 +47,8 @@ switch (get_request_var('action')) {
    -------------------------- */
 
 function form_save() {
+	global $preview_only;
+
 	if (isset_request_var('save_component_import')) {
 		if (trim(get_nfilter_request_var('import_text') != '')) {
 			/* textbox input */
@@ -68,13 +70,25 @@ function form_save() {
 			$profile_id = get_request_var('import_data_source_profile');
 		}
 
+		if (get_nfilter_request_var('preview_only') == 'on') {
+			$preview_only = true;
+		}else{
+			$preview_only = false;
+		}
+
+		if (isset_request_var('remove_orphans') && get_nfilter_request_var('remove_orphans') == 'on') {
+			$remove_orphans = true;
+		}else{
+			$remove_orphans = false;
+		}
+
 		/* obtain debug information if it's set */
-		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id);
+		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans);
 		if(sizeof($debug_data) > 0) {
 			$_SESSION['import_debug_info'] = $debug_data;
 		}
 
-		header('Location: templates_import.php');
+		header('Location: templates_import.php?preview=' . $preview_only);
 	}
 }
 
@@ -88,9 +102,14 @@ function import() {
 	print "<form method='post' action='templates_import.php' enctype='multipart/form-data'>\n";
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box( __('Import Results'), '100%', '', '3', 'center', '');
+		html_start_box((get_filter_request_var('preview') == 1 ? __('Import Preview Results'):__('Import Results')), '100%', '', '3', 'center', '');
 
-		print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items:') . "</p>";
+		//print '<pre style="text-align:left;">';print_r($_SESSION['import_debug_info']);print '</pre>';
+		if (get_filter_request_var('preview') == 1) {
+			print "<tr class='odd'><td><p class='textArea'>" . __('Cacti would make the following changes if the Template was imported:') . "</p>";
+		}else{
+			print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items:') . "</p>";
+		}
 
 		while (list($type, $type_array) = each($_SESSION['import_debug_info'])) {
 			print '<p><strong>' . $hash_type_names[$type] . '</strong></p>';
@@ -98,36 +117,51 @@ function import() {
 			while (list($index, $vals) = each($type_array)) {
 				if ($vals['result'] == 'success') {
 					$result_text = "<span class='success'>" . __('[success]') . "</span>";
-				}else{
+				}elseif ($vals['result'] == 'fail') {
 					$result_text = "<span class='failed'>" . __('[fail]') . "</span>";
+				}else{
+					$result_text = "<span class='success'>" . __('[' . $vals['result'] . ']') . "</span>";
 				}
 
-				if ($vals['type'] == 'update') {
-					$type_text = "<span class='updateObject'>" . __('[update]') . "</span>";
-				}else{
+				if ($vals['type'] == 'updated') {
+					$type_text = "<span class='updateObject'>" . __('[' . $vals['type'] . ']') . "</span>";
+				}elseif ($vals['type'] == 'new') {
 					$type_text = "<span class='newObject'>" . __('[new]') . "</span>";
+				}else{
+					$type_text = "<span class='deviceUp'>" . __('[' . $vals['type'] . ']') . "</span>";
 				}
 
 				print "<span class='monoSpace'>$result_text " . htmlspecialchars($vals['title']) . " $type_text</span><br>\n";
 
-				$dep_text = '';
-				$there_are_dep_errors = false;
-				if ((isset($vals['dep'])) && (sizeof($vals['dep']) > 0)) {
-					while (list($dep_hash, $dep_status) = each($vals['dep'])) {
-						if ($dep_status == 'met') {
-							$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . "</span>";
-						}else{
-							$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . "</span>";
-							$there_are_dep_errors = true;
-						}
-
-						$dep_text .= "<span class='monoSpace'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . "</span><br>\n";
+				if (isset($vals['differences'])) {
+					print '<ul class="monoSpace">';
+					foreach($vals['differences'] as $diff) {
+						print "<li>" . htmlspecialchars($diff) . "</li>";
 					}
+					print '</ul>';
 				}
 
-				/* only print out dependency details if they contain errors; otherwise it would get too long */
-				if ($there_are_dep_errors == true) {
-					print $dep_text;
+				if (get_request_var('preview') == 0) {
+					$dep_text = '';
+					$there_are_dep_errors = false;
+					if ((isset($vals['dep'])) && (sizeof($vals['dep']) > 0)) {
+						while (list($dep_hash, $dep_status) = each($vals['dep'])) {
+							if ($dep_status == 'met') {
+								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . "</span>";
+							}else{
+								$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . "</span>";
+								$there_are_dep_errors = true;
+							}
+
+							$dep_text .= "<span class='monoSpace'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . "</span><br>\n";
+						}
+					}
+
+					/* only print out dependency details if they contain errors; otherwise it would get too long */
+					if ($there_are_dep_errors == true) {
+						print $dep_text;
+					}
+				}else{
 				}
 			}
 		}
