@@ -514,7 +514,7 @@ function db_get_table_column_types($table) {
 	$cols    = array();
 	if (sizeof($columns)) {
 		foreach($columns as $col) {
-			$cols[$col['Field']] = $col['Type'];
+			$cols[$col['Field']] = array('type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default']);;
 		}
 	}
 
@@ -816,11 +816,17 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 	cacti_log("DEVEL: SQL Save on table '$table_name': \"" . serialize($array_items) . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	while (list($key, $value) = each($array_items)) {
-		if (strstr($cols[$key], 'int') !== false || 
-			strstr($cols[$key], 'float') !== false || 
-			strstr($cols[$key], 'double') !== false || 
-			strstr($cols[$key], 'decimal') !== false) {
-			if (empty($value)) {
+		if (strstr($cols[$key]['type'], 'int') !== false || 
+			strstr($cols[$key]['type'], 'float') !== false || 
+			strstr($cols[$key]['type'], 'double') !== false || 
+			strstr($cols[$key]['type'], 'decimal') !== false) {
+			if ($value == '') {
+				if ($cols[$key]['null'] == 'YES') {
+					$array_items[$key] = 'NULL';
+				}else{
+					$array_items[$key] = $cols[$key]['default'];
+				}
+			}elseif (empty($value)) {
 				$array_items[$key] = 0;
 			}else{
 				$array_items[$key] = $value;
