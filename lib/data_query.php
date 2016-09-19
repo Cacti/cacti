@@ -515,7 +515,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						}
 					}
 
-					debug_log_insert('data_query', "Found item [$field_name='" . $value . "'] index: $snmp_index [from value]");
+					debug_log_insert('data_query', "Found item [$field_name='$value'] index: $snmp_index [from value]");
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value , $snmp_index, $oid);
 				}
