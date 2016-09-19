@@ -2997,7 +2997,7 @@ function generate_hash() {
    @arg $type - the 'category' or type of debug message
    @arg $text - section header */
 function debug_log_insert_section_start($type, $text) {
-	debug_log_insert($type, "<table class='cactiTable debug'><tr class='tableHeader'><td class='textHeaderDark'>$text</td></tr><tr><td style='padding:0px;'><table style='display:none;'><tr><td><div style='font-family: monospace;'>");
+	debug_log_insert($type, "<table class='cactiTable debug'><tr class='tableHeader'><td class='textHeaderDark'>" . htmlspecialchars($text) . "</td></tr><tr><td style='padding:0px;'><table style='display:none;'><tr><td><div style='font-family: monospace;'>");
 }
 
 /* debug_log_insert_section_end - finalizes the header started with the start function
