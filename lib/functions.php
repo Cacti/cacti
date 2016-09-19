@@ -3828,27 +3828,33 @@ function clog_authorized() {
 }
 
 function update_system_mibs($host_id) {
+	global $sessions;
+
 	$system_mibs = array(
-		'snmp_sysDescr' => '.1.3.6.1.2.1.1.1.0',
-		'snmp_sysObjectID' => '.1.3.6.1.2.1.1.2.0',
+		'snmp_sysDescr'          => '.1.3.6.1.2.1.1.1.0',
+		'snmp_sysObjectID'       => '.1.3.6.1.2.1.1.2.0',
 		'snmp_sysUpTimeInstance' => '.1.3.6.1.2.1.1.3.0',
-		'snmp_sysContact' => '.1.3.6.1.2.1.1.4.0',
-		'snmp_sysName' => '.1.3.6.1.2.1.1.5.0',
-		'snmp_sysLocation' => '.1.3.6.1.2.1.1.6.0'
+		'snmp_sysContact'        => '.1.3.6.1.2.1.1.4.0',
+		'snmp_sysName'           => '.1.3.6.1.2.1.1.5.0',
+		'snmp_sysLocation'       => '.1.3.6.1.2.1.1.6.0'
 	);
 
 	$h = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
 
 	if (sizeof($h)) {
-		$sesison = cacti_snmp_session($host_id, $h);
+		open_snmp_session($host_id, $h);
 
-		foreach($system_mibs as $name => $oid) {
-			$value = cacti_snmp_session_get($session, $oid);
+		if (isset($sessions[$host_id . '_' . $h['snmp_version']])) {
+			foreach($system_mibs as $name => $oid) {
+				$value = cacti_snmp_session_get($sessions[$host_id . '_' . $h['snmp_version']], $oid);
 
-			if (!empty($value)) {
-				db_execute_prepared("UPDATE host SET $name = ? WHERE id = ?",
-					array($value, $host_id));
+				if (!empty($value)) {
+					db_execute_prepared("UPDATE host SET $name = ? WHERE id = ?",
+						array($value, $host_id));
+				}
 			}
+		}else{
+			cacti_log("WARNING: Unable to open session for System Mib collection for Device[$host_id]", false, 'POLLER');
 		}
 	}
 }
