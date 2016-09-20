@@ -3,7 +3,7 @@
 $no_http_headers = true;
 
 include('../include/global.php');
-$contents = file('colors.csv');
+$contents = file($config['base_path'] . '/install/colors.csv');
 
 if (sizeof($contents)) {
 	foreach($contents as $line) {

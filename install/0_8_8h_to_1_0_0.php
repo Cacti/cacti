@@ -1173,7 +1173,7 @@ function upgrade_to_1_0_0() {
 		`sequence` int(10) unsigned DEFAULT '0',
 		PRIMARY KEY (`id`)) 
 		ENGINE=MyISAM 
-		COMMENT='Templates of SysDescr SysName and SysOID matches to use for automation'");
+		COMMENT='Templates of SNMP Sys variables used for automation'");
 
 	db_install_execute("DELETE FROM plugin_config WHERE directory='discovery'");
 	db_install_execute("DELETE FROM plugin_realms WHERE plugin='discovery'");

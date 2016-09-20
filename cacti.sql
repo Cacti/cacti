@@ -402,7 +402,7 @@ CREATE TABLE `automation_templates` (
   `sysOid` varchar(60) DEFAULT '',
   `sequence` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Templates of SysDescr SysName and SysOID matches to use for automation';
+) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Templates of SNMP Sys variables used for automation';
 
 --
 -- Dumping data for table `automation_templates`
