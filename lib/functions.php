@@ -2657,7 +2657,7 @@ function draw_navigation_text($type = 'url') {
 
 		if  ($i == 0) {
 			/* always use the default for level == 0 */
-			$url = $nav{$current_mappings[$i]}['url'];
+			$url = $nav{basename($current_mappings[$i])}['url'];
 
 			if (basename($url) == 'graph_view.php') continue;
 		}elseif (isset($nav_level_cache{$i}) && !empty($nav_level_cache{$i}['url'])) {
@@ -2679,8 +2679,8 @@ function draw_navigation_text($type = 'url') {
 			}
 		}else{
 			/* there is no '?' - pull from the above array */
-			$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
-			$title       .= htmlspecialchars(resolve_navigation_variables($nav{$current_mappings[$i]}['title'])) . ' -> ';
+			$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{basename($current_mappings[$i])}['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
+			$title       .= htmlspecialchars(resolve_navigation_variables($nav{basename($current_mappings[$i])}['title'])) . ' -> ';
 		}
 
 		$nav_count++;
