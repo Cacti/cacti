@@ -4109,7 +4109,9 @@ function IgnoreErrorHandler($message) {
 		}
 	}
 
-	$ignore = array();
+	$ignore = array(
+		'unable to read from socket'  # ping.php line 387 socket refusal
+	);
 
 	foreach ($ignore as $i) {
 		if (strpos($message, $i)) {
