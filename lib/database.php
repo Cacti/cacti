@@ -514,7 +514,7 @@ function db_get_table_column_types($table) {
 	$cols    = array();
 	if (sizeof($columns)) {
 		foreach($columns as $col) {
-			$cols[$col['Field']] = array('type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default']);;
+			$cols[$col['Field']] = array('type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default'], 'extra' => $col['Extra']);;
 		}
 	}
 
@@ -823,6 +823,8 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 			if ($value == '') {
 				if ($cols[$key]['null'] == 'YES') {
 					$array_items[$key] = 'NULL';
+				}elseif (strpos($cols[$key]['extra'], 'auto_increment') !== false) {
+					$array_items[$key] = 0;
 				}else{
 					$array_items[$key] = $cols[$key]['default'];
 				}
