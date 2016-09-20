@@ -576,11 +576,11 @@ $menu = array(
 		'graphs_new.php' => __('New Graphs')
 		),
 	__('Management') => array(
-		'graphs.php'           => __('Graphs'),
-		'tree.php'             => __('Trees'),
-		'data_sources.php'     => __('Data Sources'),
-		'sites.php'            => __('Sites'),
 		'host.php'             => __('Devices'),
+		'sites.php'            => __('Sites'),
+		'tree.php'             => __('Trees'),
+		'graphs.php'           => __('Graphs'),
+		'data_sources.php'     => __('Data Sources'),
 		'aggregate_graphs.php' => __('Aggregates'),
 		),
 	__('Data Collection') => array(
