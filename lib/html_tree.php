@@ -339,7 +339,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 
 	$heirarchy = get_allowed_tree_content($tree_id, $parent);
 
-	$tree = db_fetch_cell_prepared('SELECT * FROM graph_tree WHERE id = ?', array($tree_id));
+	$tree = db_fetch_row_prepared('SELECT * FROM graph_tree WHERE id = ?', array($tree_id));
 
 	$dhtml_tree = array();
 
@@ -387,15 +387,15 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 									if ((($data_query['id'] == 0) && (sizeof($non_template_graphs))) ||
 										(($data_query['id'] > 0) && (sizeof($sort_field_data) > 0))) {
 										if ($data_query['name'] != 'Non Query Based') {
-											$dhtml_tree[] = "\t\t\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_dataquery.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node' . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
+											$dhtml_tree[] = "\t\t\t\t\t\t<li id='node" . $tree_id . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_dataquery.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree_id . '&leaf_id=' . $leaf['id'] . '&nodeid=node' . $tree_id . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
 										}else{
-											$dhtml_tree[] = "\t\t\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node'. $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
+											$dhtml_tree[] = "\t\t\t\t\t\t<li id='node" . $tree_id . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree_id . '&leaf_id=' . $leaf['id'] . '&nodeid=node'. $tree_id . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . '&host_group_data=data_query:' . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
 										}
 
 										if ($data_query['id'] > 0) {
 											$dhtml_tree[] = "\t\t\t\t\t\t\t<ul>\n";
 											while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
-												$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='node" . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . urlencode($snmp_index) . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart_curve.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree['id'] . '&leaf_id=' . $leaf['id'] . '&nodeid=node' . $tree['id'] . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . urlencode($snmp_index) . '&host_group_data=data_query_index:' . $data_query['id'] . ':' . urlencode($snmp_index)) . '">' . htmlspecialchars($sort_field_value) . "</a></li>\n";
+												$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='node" . $tree_id . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . urlencode($snmp_index) . "' data-jstree='{ \"icon\" : \"" . $config['url_path'] . "images/server_chart_curve.png\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree_id . '&leaf_id=' . $leaf['id'] . '&nodeid=node' . $tree_id . '_' . $leaf['id'] . '_hgd_dq_' . $data_query['id'] . urlencode($snmp_index) . '&host_group_data=data_query_index:' . $data_query['id'] . ':' . urlencode($snmp_index)) . '">' . htmlspecialchars($sort_field_value) . "</a></li>\n";
 											}
 
 											$dhtml_tree[] = "\t\t\t\t\t\t\t</ul>\n";
