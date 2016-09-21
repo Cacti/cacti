@@ -150,7 +150,7 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 			unset($query);
 			return TRUE;
 		} elseif ($log) {
-			if ($en == 1213 || $en == 1205) { //substr_count(mysql_error($db_conn), 'Deadlock')
+			if ($en == 1213 || $en == 1205) { 
 				$errors++;
 				if ($errors > 30) {
 					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", TRUE, 'DBCALL', POLLER_VERBOSITY_DEBUG);
@@ -175,7 +175,9 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 			}
 		}
 	}
+
 	unset($query);
+
 	return FALSE;
 }
 
@@ -233,7 +235,9 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = T
 		cacti_log('ERROR: SQL Cell Failed!, Error: ' . $errorinfo[2], FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_debug_backtrace('SQL');
 	}
+
 	if (isset($query)) unset($query);
+
 	return FALSE;
 }
 
@@ -291,7 +295,9 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = F
 		cacti_log('ERROR: SQL Row Failed!, Error: ' . $errorinfo[2], FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_debug_backtrace('SQL');
 	}
+
 	if (isset($query)) unset($query);
+
 	return array();
 }
 
@@ -416,6 +422,7 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 			$sql .= ' AFTER ' . $column['after'];
 		return db_execute($sql, $log, $db_conn);
 	}
+
 	return true;
 }
 
@@ -439,10 +446,12 @@ function db_remove_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 	foreach($result as $arr) {
 		$columns[] = $arr['Field'];
 	}
+
 	if (isset($column) && in_array($column, $columns)) {
 		$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
 		return db_execute($sql, $log, $db_conn);
 	}
+
 	return true;
 }
 
@@ -709,9 +718,11 @@ function db_table_create ($table, $data, $log = TRUE, $db_conn = FALSE) {
 		if (isset($data['comment'])) {
 			$sql .= " COMMENT = '" . $data['comment'] . "'";
 		}
+
 		if (db_execute($sql, $log, $db_conn)) {
 			return true;
 		}
+
 		return false;
 	}
 }
@@ -754,6 +765,7 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = FALSE) {
 	cacti_log("DEVEL: SQL Replace on table '$table_name': \"" . serialize($array_items) . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	_db_replace($db_conn, $table_name, $array_items, $keyCols);
+
 	return db_fetch_insert_id($db_conn);
 }
 
@@ -793,7 +805,11 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
 
 	$sql .= ") VALUES ($sql2)" . ($sql3 != '' ? " ON DUPLICATE KEY UPDATE $sql3" : '');
 
-	@db_execute($sql);
+	$return_code = db_execute($sql);
+
+	if (!$return_code) {
+		cacti_log("ERROR: SQL Save Failed for Table '$table_name'.  SQL:'" . $sql . "'", FALSE, 'DBCALL');
+	}
 
 	return db_fetch_insert_id();
 }
@@ -822,8 +838,12 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 			strstr($cols[$key]['type'], 'decimal') !== false) {
 			if ($value == '') {
 				if ($cols[$key]['null'] == 'YES') {
+					// TODO: We should make 'NULL', but there are issues that need to be addressed first
 					$array_items[$key] = 0;
 				}elseif (strpos($cols[$key]['extra'], 'auto_increment') !== false) {
+					$array_items[$key] = 0;
+				}elseif ($cols[$key]['default'] == '') {
+					// TODO: We should make 'NULL', but there are issues that need to be addressed first
 					$array_items[$key] = 0;
 				}else{
 					$array_items[$key] = $cols[$key]['default'];
@@ -839,11 +859,6 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 	}
 
 	$replace_result = _db_replace($db_conn, $table_name, $array_items, $key_cols, $autoinc);
-
-	if ($replace_result === false) {
-		cacti_log("ERROR: SQL Save Command Failed for Table '$table_name'.  Error was '" . mysql_error($db_conn) . "'", FALSE, 'DBCALL');
-		return FALSE;
-	}
 
 	/* get the last AUTO_ID and return it */
 	if (!$replace_result || db_fetch_insert_id($db_conn) == '0') {
