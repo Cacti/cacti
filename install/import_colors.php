@@ -2,7 +2,7 @@
 
 $no_http_headers = true;
 
-include('../include/global.php');
+include(dirname(__FILE__) . '/../include/global.php');
 $contents = file($config['base_path'] . '/install/colors.csv');
 
 if (sizeof($contents)) {
