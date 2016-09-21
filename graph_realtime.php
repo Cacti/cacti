@@ -227,6 +227,7 @@ if (read_config_option('realtime_enabled') == '') {
     <link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
     <?php api_plugin_hook('page_head'); ?>
     <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js' language='javascript'></script>
+    <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js' language='javascript'></script>
     <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js' language='javascript'></script>
     <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js' language='javascript'></script>
     <script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
