@@ -228,7 +228,21 @@ function boost_fetch_cache_check($local_data_id) {
 	}
 }
 
-function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph_data_array, $return = true) {
+function boost_return_cached_image(&$graph_data_array) {
+	if (isset($graph_data_array['export_csv'])) {
+		return false;
+	}elseif (isset($graph_data_array['export_realtime'])) {
+		return false;
+	}elseif (isset($graph_data_array['disable_cache']) && $graph_data_array['disable_cache'] == true) {
+		return false;
+	}elseif (read_config_option('boost_png_cache_enable') == 'on' && boost_determine_caching_state()) {
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$graph_data_array, $return = true) {
 	global $config;
 
 	/* include poller processing routinges */
@@ -296,7 +310,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph
 	/* check the graph cache and use it if it is valid, otherwise turn over to
 	 * cacti's graphing functions.
 	 */
-	if (read_config_option('boost_png_cache_enable') == 'on' && boost_determine_caching_state()) {
+	if (boost_return_cached_image($graph_data_array)) {
 		/* if timespan is greater than 1, it is a predefined, if it does not
 		 * exist, it is the old fasioned MRTG type graph
 		 */
@@ -604,11 +618,10 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 
 		$query_string .= " (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output 
 			FROM poller_output_boost 
-			WHERE local_data_id='$orig_local_data_id' 
+			WHERE local_data_id=$orig_local_data_id 
 			AND time < FROM_UNIXTIME('$timestamp'))";
 
 		$query_string .= ' ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC ';
-
 	} else {
 		$query_string = "SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output 
 			FROM $archive_table FORCE INDEX (PRIMARY)

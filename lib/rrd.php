@@ -1124,13 +1124,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		return 'GRAPH ACCESS DENIED';
 	}
 
-	/* check the boost image cache and if we find a live file there return it instead */
-	if (!isset($graph_data_array['export_csv']) && 
-		!isset($graph_data_array['export_realtime']) && (isset($graph_data_array['disable_cache']) && $graph_data_array['disable_cache'] == false)) {
-		$graph_data = boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph_data_array, false);
-		if ($graph_data != false) {
-			return $graph_data;
-		}
+	/* check the purge the boost poller output cache, and check for a live image file if caching is enabled */
+	$graph_data = boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph_data_array, false);
+	if ($graph_data !== false) {
+		return $graph_data;
 	}
 
 	/* find the step and how often this graph is updated with new data */
