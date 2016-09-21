@@ -822,7 +822,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 			strstr($cols[$key]['type'], 'decimal') !== false) {
 			if ($value == '') {
 				if ($cols[$key]['null'] == 'YES') {
-					$array_items[$key] = 'NULL';
+					$array_items[$key] = 0;
 				}elseif (strpos($cols[$key]['extra'], 'auto_increment') !== false) {
 					$array_items[$key] = 0;
 				}else{
