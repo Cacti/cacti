@@ -720,10 +720,10 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 					case 'sequence':
 						break;
 					default:
-						if (strstr($cols[$column], 'int') !== false ||
-							strstr($cols[$column], 'float') !== false ||
-							strstr($cols[$column], 'decimal') !== false ||
-							strstr($cols[$column], 'double') !== false) {
+						if (strstr($cols[$column]['type'], 'int') !== false ||
+							strstr($cols[$column]['type'], 'float') !== false ||
+							strstr($cols[$column]['type'], 'decimal') !== false ||
+							strstr($cols[$column]['type'], 'double') !== false) {
 							if (!empty($value)) {
 								$save[$column] = $value;
 							}else{
@@ -779,10 +779,10 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 					case 'task_item_id':
 						break;
 					default:
-						if (strstr($cols[$column], 'int') !== false ||
-							strstr($cols[$column], 'float') !== false ||
-							strstr($cols[$column], 'decimal') !== false ||
-							strstr($cols[$column], 'double') !== false) {
+						if (strstr($cols[$column]['type'], 'int') !== false ||
+							strstr($cols[$column]['type'], 'float') !== false ||
+							strstr($cols[$column]['type'], 'decimal') !== false ||
+							strstr($cols[$column]['type'], 'double') !== false) {
 							if (!empty($value)) {
 								$save[$column] = $value;
 							}else{
