@@ -553,20 +553,31 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 		FROM graph_templates_item 
 		WHERE graph_template_id = ? 
 		AND local_graph_id = 0
-		ORDER BY sequence', array($graph_template_id));
+		ORDER BY sequence', 
+		array($graph_template_id));
 
 	if (sizeof($template_items)) {
 		foreach($template_items as $item) {
-			if ($local_graph_id == 0) {
+			if ($local_graph_id == -1) {
 				db_execute_prepared('UPDATE graph_templates_item 
 					SET sequence = ? 
-					WHERE graph_template_id = ? AND local_graph_id > 0
-					AND local_graph_template_item_id = ?', array($item['sequence'], $graph_template_id, $item['id']));
+					WHERE graph_template_id = ?
+					AND local_graph_template_item_id = ?', 
+					array($item['sequence'], $graph_template_id, $item['id']));
+			}elseif ($local_graph_id == 0) {
+				db_execute_prepared('UPDATE graph_templates_item 
+					SET sequence = ? 
+					WHERE graph_template_id = ? 
+					AND local_graph_id > 0
+					AND local_graph_template_item_id = ?', 
+					array($item['sequence'], $graph_template_id, $item['id']));
 			}else{
 				db_execute_prepared('UPDATE graph_templates_item 
 					SET sequence = ? 
-					WHERE graph_template_id = ? AND local_graph_id = ?
-					AND local_graph_template_item_id = ?', array($item['sequence'], $graph_template_id, $local_graph_id, $item['id']));
+					WHERE graph_template_id = ? 
+					AND local_graph_id = ?
+					AND local_graph_template_item_id = ?', 
+					array($item['sequence'], $graph_template_id, $local_graph_id, $item['id']));
 			}
 		}
 	}

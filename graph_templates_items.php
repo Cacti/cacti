@@ -286,26 +286,7 @@ function item_movedown() {
 	}
 
 	if (!isempty_request_var('graph_template_id')) {
-		resequence_graphs(get_request_var('graph_template_id'));
-	}
-}
-
-function resequence_graphs($graph_template_id) {
-	$items = db_fetch_assoc_prepared('SELECT id, sequence 
-		FROM graph_templates_item 
-		WHERE graph_template_id = ? 
-		AND local_graph_id = 0 
-		ORDER BY sequence', 
-		array($graph_template_id));
-
-	if (sizeof($items)) {
-		foreach($items as $item) {
-			db_execute_prepared('UPDATE graph_templates_item 
-				SET sequence = ? 
-				WHERE graph_template_id = ? 
-				AND local_graph_template_item_id = ?', 
-				array($item['sequence'], $graph_template_id, $item['id']));
-		}
+		resequence_graphs(get_request_var('graph_template_id'), -1);
 	}
 }
 
@@ -330,7 +311,7 @@ function item_moveup() {
 	}
 
 	if (!isempty_request_var('graph_template_id')) {
-		resequence_graphs(get_request_var('graph_template_id'));
+		resequence_graphs(get_request_var('graph_template_id'), -1);
 	}
 }
 
