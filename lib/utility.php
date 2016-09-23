@@ -585,9 +585,9 @@ function utilities_get_mysql_recommendations() {
 		'version' => array(
 			'value' => '5.6',
 			'measure' => 'gt',
-			'comment' => __('%s %s is great release, and a very good version to choose. Make sure you
+			'comment' => __('MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you
 				run the very latest release though which fixes a long standing low level networking
-				issue that was casuing spine many issues with reliability.', $database, $version) 
+				issue that was casuing spine many issues with reliability.')
 			)
 	);
 
@@ -828,7 +828,7 @@ function utilities_get_mysql_recommendations() {
 
 				break;
 			case 'gt':
-				if ($variables[$name] < $r['value']) {
+				if (version_compare($variables[$name], $r['value'], '<')) {
 					if (isset($r['class']) && $r['class'] == 'warning') {
 						$class = 'textWarning';
 					}else{
