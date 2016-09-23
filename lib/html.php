@@ -1112,7 +1112,7 @@ function html_show_tabs_left($show_console_tab) {
 			}
 		}
 
-		$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" ORDER BY sortorder');
+		$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" AND enabled="on" ORDER BY sortorder');
 		if (sizeof($external_links)) {
 			foreach($external_links as $tab) {
 				if (is_realm_allowed($tab['id']+10000)) {
@@ -1175,7 +1175,7 @@ function html_show_tabs_left($show_console_tab) {
 				'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
 			);
 
-		$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" ORDER BY sortorder');
+		$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" AND enabled="on" ORDER BY sortorder');
 		if (sizeof($external_links)) {
 			foreach($external_links as $tab) {
 				if (is_realm_allowed($tab['id']+10000)) {
