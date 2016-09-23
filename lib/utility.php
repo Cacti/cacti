@@ -569,9 +569,16 @@ function utilities_get_mysql_recommendations() {
 	if (strpos($variables['version'], 'MariaDB') !== false) {
 		$database = 'MariaDB';
 		$version  = str_replace('-MariaDB', '', $variables['version']);
+
+		if (isset($variables['innodb_version'])) {
+			$link_ver = substr($variables['innodb_version'], 0, 3);
+		}else{
+			$link_ver = '5.5';
+		}
 	}else{
 		$database = 'MySQL';
 		$version  = $variables['version'];
+		$link_ver = substr($variables['version'], 0, 3);
 	}
 
 	$recommendations = array(
@@ -584,7 +591,22 @@ function utilities_get_mysql_recommendations() {
 			)
 	);
 
-	if ($variables['innodb_version'] < '5.6') {
+	if (isset($variables['innodb_version']) && version_compare($variables['innodb_version'], '5.6', '<')) {
+		if (version_compare($link_ver, '5.2', '>=')) {
+			if (!isset($variables['innodb_version'])) {
+				$recommendations += array(
+					'innodb' => array(
+						'value' => 'ON',
+						'class' => 'warning',
+						'measure' => 'equal',
+						'comment' => __('It is recommended that you enable InnoDB in any %s version greater than 5.1.', $database)
+					)
+				);
+	
+				$variables['innodb'] = 'UNSET';
+			}
+		}
+
 		$recommendations += array(
 			'collation_server' => array(
 				'value' => 'utf8_general_ci',
@@ -608,6 +630,21 @@ function utilities_get_mysql_recommendations() {
 				)
 		);
 	}else{
+		if (version_compare($link_ver, '5.2', '>=')) {
+			if (!isset($variables['innodb_version'])) {
+				$recommendations += array(
+					'innodb' => array(
+						'value' => 'ON',
+						'class' => 'warning',
+						'measure' => 'equal',
+						'comment' => __('It is recommended that you enable InnoDB in any %s version greater than 5.1.', $database)
+					)
+				);
+	
+				$variables['innodb'] = 'UNSET';
+			}
+		}
+
 		$recommendations += array(
 			'collation_server' => array(
 				'value' => 'utf8mb4_col',
@@ -710,7 +747,7 @@ function utilities_get_mysql_recommendations() {
 			)
 	);
 
-	if ($variables['innodb_version'] < '5.6') {
+	if (isset($variables['innodb_version']) && version_compare($variables['innodb_version'], '5.6', '<')) {
 		$recommendations += array(
 			'innodb_flush_log_at_trx_commit' => array(
 				'value'   => '2',
@@ -754,7 +791,7 @@ function utilities_get_mysql_recommendations() {
 		);
 	}
 
-	html_header(array(__('%s Tuning', $database) . ' (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . substr($variables['innodb_version'],0,3) . '/en/server-system-variables.html">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart')), 2);
+	html_header(array(__('%s Tuning', $database) . ' (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart')), 2);
 
 	form_alternate_row();
 	print "<td colspan='2' style='text-align:left;padding:0px'>";
@@ -806,7 +843,7 @@ function utilities_get_mysql_recommendations() {
 
 				break;
 			case 'equal':
-				if ($variables[$name] != $r['value']) {
+				if (!isset($variables[$name]) || $variables[$name] != $r['value']) {
 					if (isset($r['class']) && $r['class'] == 'warning') {
 						$class = 'textWarning';
 					}else{
@@ -815,7 +852,7 @@ function utilities_get_mysql_recommendations() {
 				}
 
 				print "<td>" . $name . "</td>\n";
-				print "<td class='$class'>" . $variables[$name] . "</td>\n";
+				print "<td class='$class'>" . (isset($variables[$name]) ? $variables[$name]:'UNSET') . "</td>\n";
 				print "<td>" . $r['value'] . "</td>\n";
 				print "<td class='$class'>" . $r['comment'] . "</td>\n";
 
