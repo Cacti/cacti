@@ -345,12 +345,13 @@ function utilities_view_tech($php_info = '') {
 			if ($config['cacti_server_os'] == 'win32') {
 				form_alternate_row();
 				print "<td>$name</td>\n";
-				print '<td>' . number_format_i18n($value/1024, 2) . " MB</td>\n";
+				print '<td>' . number_format_i18n($value/1000, 2) . " MB</td>\n";
 				form_end_row();
 			}else{
 				switch($name) {
 				case 'SwapTotal':
 				case 'SwapFree':
+				case 'Cached':
 				case 'MemTotal':
 				case 'MemFree':
 				case 'Buffers':
@@ -358,7 +359,7 @@ function utilities_view_tech($php_info = '') {
 				case 'Inactive':
 					form_alternate_row();
 					print "<td>$name</td>\n";
-					print '<td>' . number_format_i18n($value/1024/1024, 2) . " MB</td>\n";
+					print '<td>' . number_format_i18n($value/1000/1000, 2) . " MB</td>\n";
 					form_end_row();
 				}
 			}
