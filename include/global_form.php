@@ -716,7 +716,7 @@ $struct_graph = array(
 		'friendly_name' => __('Right Axis Format (--right-axis-format &lt;format&gt;)'),
 		'method' => 'drop_sql',
 		'sql' => 'select id,name from graph_templates_gprint order by name',
-		'default' => '0',
+		'default' => '',
 		'none_value' => __('None'),
 		'description' => __('By default the format of the axis lables gets determined automatically. 
 			If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.'),
@@ -798,7 +798,7 @@ $struct_graph_item = array(
 		'friendly_name' => __('Graph Item Type'),
 		'method' => 'drop_array',
 		'array' => $graph_item_types,
-		'default' => '0',
+		'default' => '4',
 		'description' => __('How data for this item is represented visually on the graph.')
 		),
 	'task_item_id' => array(
@@ -815,30 +815,6 @@ $struct_graph_item = array(
 		'default' => '0',
 		'none_value' => __('None'),
 		'description' => __('The data source to use for this graph item.')
-		),
-	'line_width' => array(
-		'friendly_name' => __('Line Width (decimal)'),
-		'method' => 'textbox',
-		'max_length' => '5',
-		'default' => '',
-		'size' => '5',
-		'description' => __('In case LINE was chosen, specify width of line here.'),
-		),
-	'dashes' => array(
-		'friendly_name' => __('Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])'),
-		'method' => 'textbox',
-		'max_length' => '20',
-		'default' => '',
-		'size' => '20',
-		'description' => __('The dashes modifier enables dashed line style.'),
-		),
-	'dash_offset' => array(
-		'friendly_name' => __('Dash Offset (dash-offset=offset)'),
-		'method' => 'textbox',
-		'max_length' => '4',
-		'default' => '',
-		'size' => '4',
-		'description' => __('The dash-offset parameter specifies an offset into the pattern at which the stroke begins.'),
 		),
 	'color_id' => array(
 		'friendly_name' => __('Color'),
@@ -924,6 +900,30 @@ $struct_graph_item = array(
 		'method' => 'checkbox',
 		'default' => '',
 		'description' => __('Forces the legend to the next line after this item.')
+		),
+	'line_width' => array(
+		'friendly_name' => __('Line Width (decimal)'),
+		'method' => 'textbox',
+		'max_length' => '5',
+		'default' => '1.00',
+		'size' => '5',
+		'description' => __('In case LINE was chosen, specify width of line here.  You must include a decimal precision, for example 2.00'),
+		),
+	'dashes' => array(
+		'friendly_name' => __('Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])'),
+		'method' => 'textbox',
+		'max_length' => '40',
+		'default' => '',
+		'size' => '30',
+		'description' => __('The dashes modifier enables dashed line style.'),
+		),
+	'dash_offset' => array(
+		'friendly_name' => __('Dash Offset (dash-offset=offset)'),
+		'method' => 'textbox',
+		'max_length' => '4',
+		'default' => '',
+		'size' => '4',
+		'description' => __('The dash-offset parameter specifies an offset into the pattern at which the stroke begins.'),
 		),
 	'sequence' => array(
 		'friendly_name' => __('Sequence'),
@@ -1237,10 +1237,6 @@ $fields_host_edit = array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'
 		),
-	'_host_template_id' => array(
-		'method' => 'hidden_zero',
-		'value' => '|arg1:host_template_id|'
-		),
 	'save_component_host' => array(
 		'method' => 'hidden',
 		'value' => '1'
@@ -1352,7 +1348,7 @@ $fields_data_query_item_edit = array(
 		'method' => 'hidden_zero',
 		'value' => '|arg2:snmp_query_id|'
 		),
-	'_graph_template_id' => array(
+	'graph_template_id_prev' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:graph_template_id|'
 		),
@@ -1527,26 +1523,6 @@ $fields_user_user_edit_host = array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'
 		),
-	'_policy_graphs' => array(
-		'method' => 'hidden',
-		'default' => '2',
-		'value' => '|arg1:policy_graphs|'
-		),
-	'_policy_trees' => array(
-		'method' => 'hidden',
-		'default' => '2',
-		'value' => '|arg1:policy_trees|'
-		),
-	'_policy_hosts' => array(
-		'method' => 'hidden',
-		'default' => '2',
-		'value' => '|arg1:policy_hosts|'
-		),
-	'_policy_graph_templates' => array(
-		'method' => 'hidden',
-		'default' => '2',
-		'value' => '|arg1:policy_graph_templates|'
-		),
 	'save_component_user' => array(
 		'method' => 'hidden',
 		'value' => '1'
@@ -1591,6 +1567,20 @@ $fields_template_import = array(
 		'textarea_rows' => '10',
 		'textarea_cols' => '50',
 		'class' => 'textAreaNotes'
+		),
+	'preview_only' => array(
+		'friendly_name' => __('Preview Import Only'),
+		'method' => 'checkbox',
+		'description' => __('If checked, Cacti will not import the template, but rather compare the imported Template to the existing Template data.  If you are acceptable of the change, you can them import.'),
+		'value' => '',
+		'default' => '0'
+		),
+	'remove_orphans' => array(
+		'friendly_name' => __('Remove Orphaned Graph Items'),
+		'method' => 'checkbox',
+		'description' => __('If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template.'),
+		'value' => '',
+		'default' => 'on'
 		),
 	'import_data_source_profile' => array(
 		'friendly_name' => __('Data Source Profile'),
@@ -2013,7 +2003,7 @@ $struct_aggregate_template = array(
 		'array' => $agg_order_types,
 		'default' => AGGREGATE_ORDER_NONE,
 	),
-	'_graph_template_id' => array(
+	'graph_template_id_prev' => array(
 		'method' => 'hidden',
 		'value' => '|arg1:graph_template_id|',
 		'default' => 0
