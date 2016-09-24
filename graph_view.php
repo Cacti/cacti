@@ -672,6 +672,8 @@ case 'list':
 			}
 		});
 
+		strURL += '&reset=1';
+
 		document.location = strURL;
 	}
 
