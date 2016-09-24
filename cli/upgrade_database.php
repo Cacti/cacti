@@ -48,6 +48,7 @@ global $debug, $cli_upgrade, $session;
 $debug       = true;
 $cli_upgrade = true;
 $session     = array();
+$forcever    = '';
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -59,6 +60,9 @@ if (sizeof($parms)) {
 		}
 
 		switch ($arg) {
+			case '--forcever':
+				$forcever = $value;
+				break;
 			case '-d':
 			case '--debug':
 				$debug = TRUE;
@@ -125,7 +129,12 @@ $includes = array(
 	'1.0.0'  => '0_8_8h_to_1_0_0.php',
 );
 
-$old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
+/* we need to rerun the upgrade, force the current version */
+if ($forcever == '') {
+	$old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
+}else{
+	$old_cacti_version = $forcever;
+}
 
 /* try to find current (old) version in the array */
 $old_version_index = (isset($includes[$old_cacti_version]) ? $old_cacti_version : '');
@@ -197,10 +206,12 @@ function display_version() {
 function display_help () {
     display_version();
 
-    echo "\nusage: upgrade_database.php [-d|--debug]\n\n";
+    echo "\nusage: upgrade_database.php [--debug] [--forcever=VERSION]\n\n";
 	echo "A command line version of the Cacti database upgrade tool.  You must execute\n";
 	echo "this command as a super user, or someone who can write a PHP session file.\n";
 	echo "Typically, this user account will be apache, www-run, or root.\n\n";
-	echo "Optional:\n";
-    echo "-d | --debug     - Display verbose output during execution\n\n";
+	echo "If you are running a beta or alpha version of Cacti and need to rerun\n";
+	echo "the upgrade script, simply set the forcever to the previous release.\n\n";
+    echo "--forcever - Force the starting version, say 0.8.8h\n";
+    echo "--debug    - Display verbose output during execution\n\n";
 }

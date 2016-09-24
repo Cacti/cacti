@@ -23,6 +23,16 @@
 */
 
 function upgrade_to_1_0_0() {
+	$default_engine = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'default_storage_engine'");
+	if (!sizeof($default_engine)) {
+		$default_engine = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'storage_engine'");
+	}
+
+	if (sizeof($default_engine)) {
+		$engine = $default_engine['Value'];
+	}else{
+		$engine = 'MyISAM';
+	}
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `user_auth_group` (
 		`id` int(10) unsigned NOT NULL auto_increment,
@@ -39,7 +49,7 @@ function upgrade_to_1_0_0() {
 		`policy_graph_templates` tinyint(1) unsigned NOT NULL DEFAULT '1',
 		`enabled` char(2) NOT NULL DEFAULT 'on',
 		PRIMARY KEY (`id`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='Table that Contains User Groups';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `user_auth_group_perms` (
@@ -48,7 +58,7 @@ function upgrade_to_1_0_0() {
 		`type` tinyint(2) unsigned NOT NULL DEFAULT '0',
 		PRIMARY KEY (`group_id`,`item_id`,`type`),
 		KEY `group_id` (`group_id`,`type`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='Table that Contains User Group Permissions';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `user_auth_group_realm` (
@@ -57,7 +67,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY  (`group_id`, `realm_id`),
 		KEY `group_id` (`group_id`),
 		KEY `realm_id` (`realm_id`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='Table that Contains User Group Realm Permissions';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `user_auth_group_members` (
@@ -66,7 +76,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY  (`group_id`, `user_id`),
 		KEY `group_id` (`group_id`),
 		KEY `realm_id` (`user_id`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='Table that Contains User Group Members';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `settings_user_group` (
@@ -74,17 +84,16 @@ function upgrade_to_1_0_0() {
 		`name` varchar(50) NOT NULL DEFAULT '',
 		`value` varchar(2048) NOT NULL DEFAULT '',
 		PRIMARY KEY (`group_id`,`name`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='Stores the Default User Group Graph Settings';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_daily` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`rrd_name` varchar(19) NOT NULL,
-
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;");
+		) ENGINE=$engine;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_hourly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
@@ -92,7 +101,7 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;");
+		) ENGINE=$engine;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_cache` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
@@ -103,17 +112,15 @@ function upgrade_to_1_0_0() {
 		KEY `time` USING BTREE (`time`)
 		) ENGINE=MEMORY;");
 
-	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_last` (
+	db_install_execute('CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_last` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`rrd_name` varchar(19) NOT NULL,
 		`value` DOUBLE DEFAULT NULL,
 		`calculated` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MEMORY;");
+		) ENGINE=MEMORY;');
 
-	if (!sizeof(db_fetch_row("SHOW COLUMNS from data_source_stats_hourly_last where Field='calculated'"))) {
-		db_install_execute("ALTER TABLE data_source_stats_hourly_last ADD calculated DOUBLE DEFAULT NULL AFTER `value`");
-	};
+	db_install_add_column ('data_source_stats_hourly_last', array('name' => 'calculated', 'type' => 'DOUBLE', 'NULL' => true, 'default' => 'NULL', 'after' => 'value'));
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_monthly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
@@ -121,7 +128,7 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;"
+		) ENGINE=$engine;"
 	);
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_weekly` (
@@ -130,7 +137,7 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;"
+		) ENGINE=$engine;"
 	);
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_yearly` (
@@ -139,7 +146,7 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MyISAM;"
+		) ENGINE=$engine;"
 	);
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost` (
@@ -148,7 +155,7 @@ function upgrade_to_1_0_0() {
 		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
 		`output` varchar(512) NOT NULL,
 		PRIMARY KEY USING BTREE (`local_data_id`,`rrd_name`,`time`))
-		ENGINE=MyISAM ROW_FORMAT=FIXED");
+		ENGINE=$engine ROW_FORMAT=FIXED");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
 		`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
@@ -156,7 +163,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (`sock_int_value`))
 		ENGINE=MEMORY;");
 
-	if (db_table_exists('plugin_domains')) {
+	if (db_table_exists('plugin_domains', false)) {
 		db_install_rename_table('plugin_domains', 'user_domains');
 	}
 
@@ -168,10 +175,10 @@ function upgrade_to_1_0_0() {
 		`defdomain` tinyint(3) NOT NULL DEFAULT '0',
 		`user_id` int(10) unsigned NOT NULL default '0',
 		PRIMARY KEY  (`domain_id`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='Table to Hold Login Domains';");
 
-	if (db_table_exists('plugin_domains_ldap')) {
+	if (db_table_exists('plugin_domains_ldap', false)) {
 		db_install_rename_table('plugin_domains_ldap', 'user_domains_ldap');
 	}
 
@@ -194,9 +201,10 @@ function upgrade_to_1_0_0() {
 		`specific_dn` varchar(128) NOT NULL,
 		`specific_password` varchar(128) NOT NULL,
 		PRIMARY KEY  (`domain_id`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='Table to Hold Login Domains for LDAP';");
-	if (db_table_exists('plugin_snmpagent_cache')) {
+
+	if (db_table_exists('plugin_snmpagent_cache', false)) {
 		db_install_rename_table('plugin_snmpagent_cache', 'snmpagent_cache');
 	}
 
@@ -213,10 +221,10 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (`oid`),
 		KEY `name` (`name`),
 		KEY `mib` (`mib`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='SNMP MIB CACHE';");
 
-	if (db_table_exists('plugin_snmpagent_mibs')) {
+	if (db_table_exists('plugin_snmpagent_mibs', false)) {
 		db_install_rename_table('plugin_snmpagent_mibs', 'snmpagent_mibs');
 	}
 
@@ -225,22 +233,23 @@ function upgrade_to_1_0_0() {
 		`name` varchar(32) NOT NULL DEFAULT '',
 		`file` varchar(255) NOT NULL DEFAULT '',
 		PRIMARY KEY (`id`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='Registered MIB files';");
 
-	if (db_table_exists('plugin_snmpagent_cache_notifications')) {
+	if (db_table_exists('plugin_snmpagent_cache_notifications', false)) {
 		db_install_rename_table('plugin_snmpagent_cache_notifications', 'snmpagent_cache_notifications');
 	}
+
 	db_install_execute("CREATE TABLE IF NOT EXISTS `snmpagent_cache_notifications` (
 		`name` varchar(255) NOT NULL,
 		`mib` varchar(255) NOT NULL,
 		`attribute` varchar(255) NOT NULL,
 		`sequence_id` smallint(6) NOT NULL,
 		KEY `name` (`name`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='Notifcations and related attributes';");
 
-	if (db_table_exists('plugin_snmpagent_cache_textual_conventions')) {
+	if (db_table_exists('plugin_snmpagent_cache_textual_conventions', false)) {
 		db_install_rename_table('plugin_snmpagent_cache_textual_conventions', 'snmpagent_cache_textual_conventions');
 	}
 
@@ -251,10 +260,10 @@ function upgrade_to_1_0_0() {
 		`description` varchar(5000) NOT NULL DEFAULT '',
 		KEY `name` (`name`),
 		KEY `mib` (`mib`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='Textual conventions';");
 
-	if (db_table_exists('plugin_snmpagent_managers')) {
+	if (db_table_exists('plugin_snmpagent_managers', false)) {
 		db_install_rename_table('plugin_snmpagent_managers', 'snmpagent_managers');
 	}
 
@@ -277,10 +286,10 @@ function upgrade_to_1_0_0() {
 		`notes` text,
 		PRIMARY KEY (`id`),
 		KEY `hostname` (`hostname`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='snmp notification receivers';");
 
-	if (db_table_exists('plugin_snmpagent_managers_notifications')) {
+	if (db_table_exists('plugin_snmpagent_managers_notifications', false)) {
 		db_install_rename_table('plugin_snmpagent_managers_notifications', 'snmpagent_managers_notifications');
 	}
 
@@ -291,10 +300,10 @@ function upgrade_to_1_0_0() {
 		KEY `mib` (`mib`),
 		KEY `manager_id` (`manager_id`),
 		KEY `manager_id2` (`manager_id`,`notification`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='snmp notifications to receivers';");
 
-	if (db_table_exists('plugin_snmpagent_notifications_log')) {
+	if (db_table_exists('plugin_snmpagent_notifications_log', false)) {
 		db_install_rename_table('plugin_snmpagent_notifications_log', 'snmpagent_notifications_log');
 	}
 
@@ -311,7 +320,7 @@ function upgrade_to_1_0_0() {
 		KEY `severity` (`severity`),
 		KEY `manager_id` (`manager_id`),
 		KEY `manager_id2` (`manager_id`,`notification`))
-		ENGINE=MyISAM
+		ENGINE=$engine
 		COMMENT='logs snmp notifications to receivers';");
 		
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_purge_temp` (
@@ -328,7 +337,7 @@ function upgrade_to_1_0_0() {
 		KEY local_data_id (`local_data_id`), 
 		KEY in_cacti (`in_cacti`), 
 		KEY data_template_id (`data_template_id`)) 
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='RRD Cleaner File Repository';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
@@ -338,7 +347,7 @@ function upgrade_to_1_0_0() {
 		`action` tinyint(2) NOT NULL default 0,
 		PRIMARY KEY (`id`),
 		UNIQUE KEY name (`name`))
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='RRD Cleaner File Actions';");
 
 	db_install_add_column ('graph_tree', array('name' => 'enabled', 'type' => 'char(2)', 'default' => 'on', 'after' => 'id'));
@@ -352,6 +361,7 @@ function upgrade_to_1_0_0() {
 	db_install_add_column ('graph_tree_items', array('name' => 'position', 'type' => 'int UNSIGNED', 'NULL' => true, 'after' => 'parent'));
 
 	db_install_execute("ALTER TABLE graph_tree_items MODIFY COLUMN id BIGINT UNSIGNED NOT NULL auto_increment");
+
 	db_install_add_key('graph_tree_items', 'INDEX', 'parent', array('parent'));
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `user_auth_cache` (
@@ -359,7 +369,7 @@ function upgrade_to_1_0_0() {
 		`hostname` varchar(64) NOT NULL DEFAULT '',
 		`last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		`token` varchar(1024) NOT NULL DEFAULT '') 
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='Caches Remember Me Details'");
 
 	db_install_execute("ALTER TABLE host 
@@ -392,73 +402,72 @@ function upgrade_to_1_0_0() {
 	db_install_add_column ('user_auth', array('name' => 'lastfail', 'type' => 'int(12)', 'NULL' => false, 'default' => '0'));
 
 	// Convert all trees to new format, but never run more than once
-	$columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM graph_tree_items"), "Field", array("Type", "Null", "Key", "Default", "Extra"));
-
-	if (isset($columns['order_key'])) {
-		$trees = db_fetch_assoc("SELECT id FROM graph_tree ORDER BY id");
+	if (db_column_exists('graph_tree_items', 'order_key', false)) {
+		$trees = db_fetch_assoc('SELECT id FROM graph_tree ORDER BY id');
 
 		if (sizeof($trees)) {
-		foreach($trees as $t) {
-			$tree_items = db_fetch_assoc("SELECT * 
-				FROM graph_tree_items 
-				WHERE graph_tree_id=" . $t['id'] . " 
-				AND order_key NOT LIKE '___000%' 
-				ORDER BY order_key");
+			foreach($trees as $t) {
+				$tree_items = db_fetch_assoc("SELECT * 
+					FROM graph_tree_items 
+					WHERE graph_tree_id=" . $t['id'] . " 
+					AND order_key NOT LIKE '___000%' 
+					ORDER BY order_key");
 
-			/* reset the position variable in case we run more than once */
-			db_execute("UPDATE graph_tree_items SET position=0 WHERE graph_tree_id=" . $t['id']);
+				/* reset the position variable in case we run more than once */
+				db_execute("UPDATE graph_tree_items SET position=0 WHERE graph_tree_id=" . $t['id']);
 
-			$prev_parent = 0;
-			$prev_id     = 0;
-			$position    = 0;
+				$prev_parent = 0;
+				$prev_id     = 0;
+				$position    = 0;
 
-			if (sizeof($tree_items)) {
-				foreach($tree_items AS $item) {
-					$translated_key = rtrim($item["order_key"], "0\r\n");
-					$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
-					if ($missing_len > 0) {
-						$translated_key .= substr("000", 0, $missing_len);
-					}
-					$parent_key_len = strlen($translated_key) - CHARS_PER_TIER;
-					$parent_key     = substr($translated_key, 0, $parent_key_len);
-					$parent_id      = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id=" . $item["graph_tree_id"] . " AND order_key LIKE '" . $parent_key . "000%'");
+				if (sizeof($tree_items)) {
+					foreach($tree_items AS $item) {
+						$translated_key = rtrim($item["order_key"], "0\r\n");
+						$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
+						if ($missing_len > 0) {
+							$translated_key .= substr("000", 0, $missing_len);
+						}
+						$parent_key_len = strlen($translated_key) - CHARS_PER_TIER;
+						$parent_key     = substr($translated_key, 0, $parent_key_len);
+						$parent_id      = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id=" . $item["graph_tree_id"] . " AND order_key LIKE '" . $parent_key . "000%'");
 	
-					if (!empty($parent_id)) {
-						/* get order */
-						if ($parent_id != $prev_parent) {
-							$position = 0;
+						if (!empty($parent_id)) {
+							/* get order */
+							if ($parent_id != $prev_parent) {
+								$position = 0;
+							}
+
+							$position = db_fetch_cell("SELECT MAX(position) 
+								FROM graph_tree_items 
+								WHERE graph_tree_id=" . $item['graph_tree_id'] . " 
+								AND parent=" . $parent_id) + 1;
+
+							db_execute("UPDATE graph_tree_items SET parent=$parent_id, position=$position WHERE id=" . $item["id"]);
+						} else {
+							db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item["id"]);
 						}
 
-						$position = db_fetch_cell("SELECT MAX(position) 
-							FROM graph_tree_items 
-							WHERE graph_tree_id=" . $item['graph_tree_id'] . " 
-							AND parent=" . $parent_id) + 1;
-
-						db_execute("UPDATE graph_tree_items SET parent=$parent_id, position=$position WHERE id=" . $item["id"]);
-					} else {
-						db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item["id"]);
+						$prev_parent = $parent_id;
 					}
-
-					$prev_parent = $parent_id;
 				}
-			}
 
-			/* get base tree items and set position */
-			$tree_items = db_fetch_assoc("SELECT * 
-				FROM graph_tree_items
-				WHERE graph_tree_id=" . $t['id'] . " 
-				AND order_key LIKE '___000%' 
-				ORDER BY order_key");
+				/* get base tree items and set position */
+				$tree_items = db_fetch_assoc("SELECT * 
+					FROM graph_tree_items
+					WHERE graph_tree_id=" . $t['id'] . " 
+					AND order_key LIKE '___000%' 
+					ORDER BY order_key");
 
-			$position = 0;
-			if (sizeof($tree_items)) {
-				foreach($tree_items as $item) {
-					db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item['id']);
-					$position++;
+				$position = 0;
+				if (sizeof($tree_items)) {
+					foreach($tree_items as $item) {
+						db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item['id']);
+						$position++;
+					}
 				}
 			}
 		}
-		}
+
 		db_install_drop_column('graph_tree_items', 'order_key');
 	}
 
@@ -467,13 +476,13 @@ function upgrade_to_1_0_0() {
 	/* dlog admin = 18 */
 	$realms = db_fetch_assoc("SELECT * FROM plugin_realms WHERE plugin = 'clog'");
 	if (sizeof($realms)) {
-	foreach($realms as $r) {
-		if ($r['file'] == 'clog.php') {
-			db_execute("UPDATE user_auth_realm SET realm_id=18 WHERE realm_id=" . ($r['id']+100));
-		}elseif ($r['file'] == 'clog_user.php') {
-			db_execute("UPDATE user_auth_realm SET realm_id=19 WHERE realm_id=" . ($r['id']+100));
+		foreach($realms as $r) {
+			if ($r['file'] == 'clog.php') {
+				db_execute("UPDATE user_auth_realm SET realm_id=18 WHERE realm_id=" . ($r['id']+100));
+			}elseif ($r['file'] == 'clog_user.php') {
+				db_execute("UPDATE user_auth_realm SET realm_id=19 WHERE realm_id=" . ($r['id']+100));
+			}
 		}
-	}
 	}
 
 	db_install_execute("DELETE FROM plugin_realms WHERE file LIKE 'clog%'");
@@ -495,7 +504,7 @@ function upgrade_to_1_0_0() {
 		poller_id varchar(30) NOT NULL default '',
 		PRIMARY KEY  (local_data_id,rrd_name,`time`),
 		KEY poller_id(poller_id)) 
-		ENGINE=MyISAM");
+		ENGINE=$engine");
 
 	db_install_drop_table('poller_output_rt');
 
@@ -532,7 +541,7 @@ function upgrade_to_1_0_0() {
 			`enabled` char(2) DEFAULT '',
 			PRIMARY KEY (`id`),
 			KEY `mailtime` (`mailtime`)) 
-			ENGINE=MyISAM 
+			ENGINE=$engine 
 			COMMENT='Cacri Reporting Reports'");
 	
 		db_install_execute("CREATE TABLE IF NOT EXISTS `reports_items` (
@@ -554,7 +563,7 @@ function upgrade_to_1_0_0() {
 			`sequence` smallint(5) unsigned NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`),
 			KEY `report_id` (`report_id`)) 
-			ENGINE=MyISAM 
+			ENGINE=$engine 
 			COMMENT='Cacti Reporting Items'");
 	} else {
 		db_install_rename_table('plugin_nectar', 'reports');
@@ -587,23 +596,23 @@ function upgrade_to_1_0_0() {
 		/* fix host templates and graph template ids */
 		$items = db_fetch_assoc("SELECT * FROM reports_items WHERE item_type=1");
 		if (sizeof($items)) {
-		foreach ($items as $row) {
-			$host = db_fetch_row("SELECT host.* 
-				FROM graph_local 
-				LEFT JOIN host 
-				ON (graph_local.host_id=host.id) 
-				WHERE graph_local.id=" . $row["local_graph_id"]);
+			foreach ($items as $row) {
+				$host = db_fetch_row("SELECT host.* 
+					FROM graph_local 
+					LEFT JOIN host 
+					ON (graph_local.host_id=host.id) 
+					WHERE graph_local.id=" . $row["local_graph_id"]);
 
-			$graph_template = db_fetch_cell("SELECT graph_template_id 
-				FROM graph_local 
-				WHERE id=" . $row["local_graph_id"]);
+				$graph_template = db_fetch_cell("SELECT graph_template_id 
+					FROM graph_local 
+					WHERE id=" . $row["local_graph_id"]);
 
-			db_execute("UPDATE reports_items SET " .
-					" host_id='" . $host["id"] . "', " .
-					" host_template_id='" . $host["host_template_id"] . "', " .
-					" graph_template_id='" . $graph_template . "' " .
-					" WHERE id=" . $row["id"]);
-		}
+				db_execute("UPDATE reports_items SET " .
+						" host_id='" . $host["id"] . "', " .
+						" host_template_id='" . $host["host_template_id"] . "', " .
+						" graph_template_id='" . $graph_template . "' " .
+						" WHERE id=" . $row["id"]);
+			}
 		}
 	}
 
@@ -638,17 +647,17 @@ function upgrade_to_1_0_0() {
 	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
 	$data['primary']   = 'color_template_id';
 	$data['keys'][]    = ''; # lib/plugins.php _requires_ keys!
-	$data['type']      = 'MyISAM';
+	$data['type']      = $engine;
 	$data['comment']   = 'Color Templates';
 	db_table_create('plugin_aggregate_color_templates', $data);
 
 	$sql[] = "INSERT IGNORE INTO `plugin_aggregate_color_templates` " .
-			"(`color_template_id`, `name`) " .
-			"VALUES " .
-			"(1, 'Yellow: light -> dark, 4 colors'), " .
-			"(2, 'Red: light yellow > dark red, 8 colors'), " .
-			"(3, 'Red: light -> dark, 16 colors'), " .
-			"(4, 'Green: dark -> light, 16 colors');";
+		"(`color_template_id`, `name`) " .
+		"VALUES " .
+		"(1, 'Yellow: light -> dark, 4 colors'), " .
+		"(2, 'Red: light yellow > dark red, 8 colors'), " .
+		"(3, 'Red: light -> dark, 16 colors'), " .
+		"(4, 'Green: dark -> light, 16 colors');";
 
 	$data = array();
 	$data['columns'][] = array('name' => 'color_template_item_id', 'type' => 'int(12)', 'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
@@ -657,18 +666,18 @@ function upgrade_to_1_0_0() {
 	$data['columns'][] = array('name' => 'sequence', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
 	$data['primary']   = 'color_template_item_id';
 	$data['keys'][]    = ''; # lib/plugins.php _requires_ keys!
-	$data['type']      = 'MyISAM';
+	$data['type']      = $engine;
 	$data['comment']   = 'Color Items for Color Templates';
 	db_table_create ('plugin_aggregate_color_template_items', $data);
 
 	$sql[] = 'INSERT IGNORE INTO `plugin_aggregate_color_template_items` ' .
-			'(`color_template_item_id`, `color_template_id`, `color_id`, `sequence`) VALUES ' .
-			'(1, 1, 4, 1), (2, 1, 24, 2), (3, 1, 98, 3), (4, 1, 25, 4), ' .
-			'(5, 2, 25, 1), (6, 2, 29, 2), (7, 2, 30, 3), (8, 2, 31, 4), (9, 2, 33, 5), (10, 2, 35, 6), (11, 2, 41, 7), (12, 2, 9, 8), ' .
-			'(13, 3, 15, 1), (14, 3, 31, 2), (15, 3, 28, 3), (16, 3, 8, 4), (17, 3, 34, 5), (18, 3, 33, 6), (19, 3, 35, 7), (20, 3, 41, 8), ' .
-			'(21, 3, 36, 9), (22, 3, 42, 10), (23, 3, 44, 11), (24, 3, 48, 12), (25, 3, 9, 13), (26, 3, 49, 14), (27, 3, 51, 15), (28, 3, 52, 16), ' .
-			'(29, 4, 76, 1), (30, 4, 84, 2), (31, 4, 89, 3), (32, 4, 17, 4), (33, 4, 86, 5), (34, 4, 88, 6), (35, 4, 90, 7), (36, 4, 94, 8), ' .
-			'(37, 4, 96, 9), (38, 4, 93, 10), (39, 4, 91, 11), (40, 4, 22, 12), (41, 4, 12, 13), (42, 4, 95, 14), (43, 4, 6, 15), (44, 4, 92, 16);';
+		'(`color_template_item_id`, `color_template_id`, `color_id`, `sequence`) VALUES ' .
+		'(1, 1, 4, 1), (2, 1, 24, 2), (3, 1, 98, 3), (4, 1, 25, 4), ' .
+		'(5, 2, 25, 1), (6, 2, 29, 2), (7, 2, 30, 3), (8, 2, 31, 4), (9, 2, 33, 5), (10, 2, 35, 6), (11, 2, 41, 7), (12, 2, 9, 8), ' .
+		'(13, 3, 15, 1), (14, 3, 31, 2), (15, 3, 28, 3), (16, 3, 8, 4), (17, 3, 34, 5), (18, 3, 33, 6), (19, 3, 35, 7), (20, 3, 41, 8), ' .
+		'(21, 3, 36, 9), (22, 3, 42, 10), (23, 3, 44, 11), (24, 3, 48, 12), (25, 3, 9, 13), (26, 3, 49, 14), (27, 3, 51, 15), (28, 3, 52, 16), ' .
+		'(29, 4, 76, 1), (30, 4, 84, 2), (31, 4, 89, 3), (32, 4, 17, 4), (33, 4, 86, 5), (34, 4, 88, 6), (35, 4, 90, 7), (36, 4, 94, 8), ' .
+		'(37, 4, 96, 9), (38, 4, 93, 10), (39, 4, 91, 11), (40, 4, 22, 12), (41, 4, 12, 13), (42, 4, 95, 14), (43, 4, 6, 15), (44, 4, 92, 16);';
 
 	# now run all SQL commands
 	if (sizeof($sql)) {
@@ -694,7 +703,7 @@ function upgrade_to_1_0_0() {
 	$data['primary']   = 'id';
 	$data['keys'][]    = array('name' => 'graph_template_id' , 'columns' => 'graph_template_id');
 	$data['keys'][]    = array('name' => 'user_id' , 'columns' => 'user_id');
-	$data['type']      = 'MyISAM';
+	$data['type']      = $engine;
 	$data['comment']   = 'Template Definitions for Aggregate Graphs';
 	db_table_create ('plugin_aggregate_graph_templates', $data);
 
@@ -707,7 +716,7 @@ function upgrade_to_1_0_0() {
 	$data['columns'][] = array('name' => 'item_total', 'type' => 'CHAR(2)', 'NULL' => false);
 	$data['primary']   = 'aggregate_template_id`,`graph_templates_item_id';
 	$data['keys'][]    = '';
-	$data['type']      = 'MyISAM';
+	$data['type']      = $engine;
 	$data['comment']   = 'Aggregate Template Graph Items';
 	db_table_create ('plugin_aggregate_graph_templates_item', $data);
 
@@ -731,7 +740,7 @@ function upgrade_to_1_0_0() {
 	$data['keys'][]    = array('name' => 'local_graph_id', 'columns' => 'local_graph_id');
 	$data['keys'][]    = array('name' => 'title_format', 'columns' => 'title_format');
 	$data['keys'][]    = array('name' => 'user_id', 'columns' => 'user_id');
-	$data['type']      = 'MyISAM';
+	$data['type']      = $engine;
 	$data['comment']   = 'Aggregate Graph Definitions';
 	db_table_create ('plugin_aggregate_graphs', $data);
 
@@ -741,7 +750,7 @@ function upgrade_to_1_0_0() {
 	$data['columns'][] = array('name' => 'sequence', 'type' => 'mediumint(8)', 'unsigned' => 'unsigned', 'NULL' => false, 'default' => 0);
 	$data['primary']   = 'aggregate_graph_id`,`local_graph_id';
 	$data['keys'][]    = '';
-	$data['type']      = 'MyISAM';
+	$data['type']      = $engine;
 	$data['comment']   = 'Aggregate Graph Items';
 	db_table_create ('plugin_aggregate_graphs_items', $data);
 
@@ -754,7 +763,7 @@ function upgrade_to_1_0_0() {
 	$data['columns'][] = array('name' => 'item_total', 'type' => 'CHAR(2)', 'NULL' => false);
 	$data['primary']   = 'aggregate_graph_id`,`graph_templates_item_id';
 	$data['keys'][]    = '';
-	$data['type']      = 'MyISAM';
+	$data['type']      = $engine;
 	$data['comment']   = 'Aggregate Graph Graph Items';
 	db_table_create ('plugin_aggregate_graphs_graph_item', $data);
 
@@ -800,7 +809,7 @@ function upgrade_to_1_0_0() {
 	$data['columns'][] = array('name' => 'unit_exponent_value', 'type' => 'varchar(5)', 'NULL' => false, 'default' => '');
 	$data['primary']   = 'aggregate_template_id';
 	$data['keys'][]    = '';
-	$data['type']      = 'MyISAM';
+	$data['type']      = $engine;
 	$data['comment']   = 'Aggregate Template Graph Data';
 	db_table_create ('plugin_aggregate_graph_templates_graph', $data);
 
@@ -850,7 +859,7 @@ function upgrade_to_1_0_0() {
 		$data['columns'][] = array('name' => 'pattern', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
 		$data['primary'] = 'id';
 		$data['keys'][] = '';
-		$data['type'] = 'MyISAM';
+		$data['type'] = $engine;
 		$data['comment'] = 'Automation Match Rule Items';
 		db_table_create ('plugin_autom8_match_rule_items', $data);
 
@@ -865,7 +874,7 @@ function upgrade_to_1_0_0() {
 			(6, 2, 3, 1, 0, 'ht.name', 1, 'SNMP'),
 			(7, 2, 3, 2, 1, 'gt.name', 1, 'Traffic')";
 	} else {
-		if (db_table_exists('plugin_autom8_match_rules')) {
+		if (db_table_exists('plugin_autom8_match_rules', false)) {
 			$sql[] = "UPDATE plugin_autom8_match_rules SET field=REPLACE(field, 'host_template.', 'ht.')";
 			$sql[] = "UPDATE plugin_autom8_match_rules SET field=REPLACE(field, 'host.', 'h.')";
 			$sql[] = "UPDATE plugin_autom8_match_rules SET field=REPLACE(field, 'graph_templates.', 'gt.')";
@@ -882,7 +891,7 @@ function upgrade_to_1_0_0() {
 		$data['columns'][] = array('name' => 'enabled', 'type' => 'char(2)', 'NULL' => true,  'default' => '');
 		$data['primary'] = 'id';
 		$data['keys'][] = '';
-		$data['type'] = 'MyISAM';
+		$data['type'] = $engine;
 		$data['comment'] = 'Automation Graph Rules';
 		db_table_create ('plugin_autom8_graph_rules', $data);
 
@@ -905,7 +914,7 @@ function upgrade_to_1_0_0() {
 		$data['columns'][] = array('name' => 'pattern', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
 		$data['primary'] = 'id';
 		$data['keys'][] = '';
-		$data['type'] = 'MyISAM';
+		$data['type'] = $engine;
 		$data['comment'] = 'Automation Graph Rule Items';
 		db_table_create ('plugin_autom8_graph_rule_items', $data);
 
@@ -932,7 +941,7 @@ function upgrade_to_1_0_0() {
 		$data['columns'][] = array('name' => 'enabled', 'type' => 'char(2)', 'NULL' => true,  'default' => '');
 		$data['primary'] = 'id';
 		$data['keys'][] = '';
-		$data['type'] = 'MyISAM';
+		$data['type'] = $engine;
 		$data['comment'] = 'Automation Tree Rules';
 		db_table_create ('plugin_autom8_tree_rules', $data);
 
@@ -956,7 +965,7 @@ function upgrade_to_1_0_0() {
 		$data['columns'][] = array('name' => 'replace_pattern',	'type' => 'varchar(255)',                       	    'NULL' => false, 	'default' => '');
 		$data['primary'] = 'id';
 		$data['keys'][] = '';
-		$data['type'] = 'MyISAM';
+		$data['type'] = $engine;
 		$data['comment'] = 'Automation Tree Rule Items';
 		db_table_create ('plugin_autom8_tree_rule_items', $data);
 
@@ -1070,7 +1079,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (`id`),
 		UNIQUE KEY `ip` (`ip`),
 		KEY `hostname` (`hostname`)) 
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='Table of Discovered Devices'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_ips` (
@@ -1119,7 +1128,7 @@ function upgrade_to_1_0_0() {
 		`rerun_data_queries` char(2) DEFAULT NULL COMMENT 'Rerun data queries or not for existing hosts',
 		PRIMARY KEY (`id`),
 		KEY `poller_id` (`poller_id`)) 
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='Stores scanning subnet definitions'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_processes` (
@@ -1140,7 +1149,7 @@ function upgrade_to_1_0_0() {
 		`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 		`name` varchar(100) NOT NULL DEFAULT '',
 		PRIMARY KEY (`id`)) 
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='Group of SNMP Option Sets'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_snmp_items` (
@@ -1160,7 +1169,7 @@ function upgrade_to_1_0_0() {
 		`snmp_priv_protocol` char(6) DEFAULT '',
 		`snmp_context` varchar(64) DEFAULT '',
 		PRIMARY KEY (`id`,`snmp_id`)) 
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='Set of SNMP Options'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_templates` (
@@ -1172,7 +1181,7 @@ function upgrade_to_1_0_0() {
 		`sysOid` varchar(60) NULL DEFAULT '',
 		`sequence` int(10) unsigned DEFAULT '0',
 		PRIMARY KEY (`id`)) 
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='Templates of SNMP Sys variables used for automation'");
 
 	db_install_execute("DELETE FROM plugin_config WHERE directory='discovery'");
@@ -1198,7 +1207,7 @@ function upgrade_to_1_0_0() {
 	}
 	
 	db_install_execute("ALTER TABLE settings MODIFY COLUMN value varchar(2048) NOT NULL default ''");
-	if (db_table_exists('settings_graphs')) {
+	if (db_table_exists('settings_graphs', false)) {
 		db_install_execute("ALTER TABLE settings_graphs MODIFY COLUMN value varchar(2048) NOT NULL default ''");
 	}
 	db_install_execute("ALTER TABLE user_auth MODIFY COLUMN password varchar(2048) NOT NULL default ''");
@@ -1251,7 +1260,7 @@ function upgrade_to_1_0_0() {
 	$data['columns'][] = array('name' => 'data', 'type' => 'text',  'NULL' => true);
 	$data['primary']   = 'id';
 	$data['comment']   = 'Used for Database based Session Storage';
-	$data['type'] = 'InnoDB';
+	$data['type'] = $engine;
 	db_table_create('sessions', $data);
 		
 	/* create new table VDEF */
@@ -1261,7 +1270,7 @@ function upgrade_to_1_0_0() {
 	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(255)', 'NULL' => false, 'default' => '');
 	$data['primary']   = 'id';
 	$data['comment']   = 'vdef';
-	$data['type'] = 'MyISAM';
+	$data['type'] = $engine;
 	db_table_create('vdef', $data);
 
 	/* create new table VDEF_ITEMS */
@@ -1275,7 +1284,7 @@ function upgrade_to_1_0_0() {
 	$data['primary']   = 'id';
 	$data['keys'][] = array('name' => 'vdef_id', 'columns' => 'vdef_id');
 	$data['comment']   = 'vdef items';
-	$data['type'] = 'MyISAM';
+	$data['type'] = $engine;
 	db_table_create('vdef_items', $data);
 
 	
@@ -1325,7 +1334,7 @@ function upgrade_to_1_0_0() {
 		`x_files_factor` double DEFAULT '0.5',
 		`default` char(2) DEFAULT '',
 		PRIMARY KEY (`id`))
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='Stores Data Source Profiles'");
 		
 
@@ -1334,7 +1343,7 @@ function upgrade_to_1_0_0() {
 		`consolidation_function_id` smallint(5) unsigned NOT NULL DEFAULT '0',
 		PRIMARY KEY (`data_source_profile_id`,`consolidation_function_id`),
 		KEY `data_source_profile_id` (`data_source_profile_id`))
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='Maps the Data Source Profile Consolidation Functions'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_profiles_rra` (
@@ -1345,11 +1354,11 @@ function upgrade_to_1_0_0() {
 		`rows` int(10) unsigned NOT NULL DEFAULT '700',
 		PRIMARY KEY (`id`),
 		KEY `data_source_profile_id` (`data_source_profile_id`))
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='Stores RRA Definitions for Data Source Profiles'");
 
 	/* get the current data source profiles */
-	if (db_table_exists('data_template_data_rra')) {
+	if (db_table_exists('data_template_data_rra', false)) {
 		$profiles = db_fetch_assoc("SELECT pattern, rrd_step, rrd_heartbeat, x_files_factor
 			FROM (
 				SELECT data_template_data_id, GROUP_CONCAT(rra_id) AS pattern 
@@ -1462,19 +1471,19 @@ function upgrade_to_1_0_0() {
 		contents longblob,
 		PRIMARY KEY (id),
 		UNIQUE KEY path (path)) 
-		ENGINE=MyISAM 
+		ENGINE=$engine 
 		COMMENT='Caches all scripts, resources files, and plugins'");
 
 	db_install_add_column ('host', array('name' => 'poller_id', 'type' => 'INT UNSIGNED', 'default' => '0', 'after' => 'id'));
 	db_install_add_key('host', 'INDEX', 'poller_id', array('poller_id'));
 
-	if (db_table_exists('plugin_spikekill_templates')) {
+	if (db_table_exists('plugin_spikekill_templates', false)) {
 		$templates = implode(',', array_rekey(db_fetch_assoc('SELECT graph_template_id FROM plugin_spikekill_templates'), 'graph_template_id', 'graph_template_id'));
 		db_install_execute("REPLACE INTO settings (name, value) VALUES('spikekill_templates','$templates')");
 	}
 
 	// Migrate superlinks pages to new external links table
-	if (db_table_exists('superlinks_auth')) {
+	if (db_table_exists('superlinks_auth', false)) {
 		db_install_rename_table('superlinks_pages', 'external_links');
 
 		db_install_drop_column('external_links', 'imagecache');
@@ -1495,16 +1504,17 @@ function upgrade_to_1_0_0() {
 		db_install_execute('INSERT INTO user_auth_realm (user_id, realm_id) SELECT userid, pageid+10000 FROM superlinks_auth');
 		db_install_drop_table('superlinks_auth');
 	} else {
-		db_install_execute('CREATE TABLE IF NOT EXISTS `external_links` (
+		db_install_execute("CREATE TABLE IF NOT EXISTS `external_links` (
 			`id` int(11) NOT NULL AUTO_INCREMENT,
-			`sortorder` int(11) NOT NULL DEFAULT "0",
-			`enabled` char(2) DEFAULT "on",
-			`contentfile` varchar(255) NOT NULL DEFAULT "",
-			`title` varchar(20) NOT NULL DEFAULT "",
-			`style` varchar(10) NOT NULL DEFAULT "",
-			`extendedstyle` varchar(50) NOT NULL DEFAULT "",
+			`sortorder` int(11) NOT NULL DEFAULT '0',
+			`enabled` char(2) DEFAULT 'on',
+			`contentfile` varchar(255) NOT NULL DEFAULT '',
+			`title` varchar(20) NOT NULL DEFAULT '',
+			`style` varchar(10) NOT NULL DEFAULT '',
+			`extendedstyle` varchar(50) NOT NULL DEFAULT '',
 			PRIMARY KEY (`id`)) 
-			ENGINE=InnoDB COMMENT="Stores External Link Information"');
+			ENGINE=$engine 
+			COMMENT='Stores External Link Information'");
 	}
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `sites` (
@@ -1528,7 +1538,7 @@ function upgrade_to_1_0_0() {
 		KEY `postal_code` (`postal_code`),
 		KEY `country` (`country`),
 		KEY `alternate_id` (`alternate_id`)) 
-		ENGINE=InnoDB 
+		ENGINE=$engine 
 		COMMENT='Contains information about customer sites';");
 
 	db_install_add_column ('host', array('name' => 'site_id', 'type' => 'INT UNSIGNED', 'NULL' => false, 'default' => '0', 'after' => 'poller_id'));
@@ -1536,22 +1546,22 @@ function upgrade_to_1_0_0() {
 	db_install_add_key('host', 'INDEX', 'site_id', array('site_id'));
 
 	db_install_drop_table('poller');
-	db_install_execute('CREATE TABLE `poller` (
+	db_install_execute("CREATE TABLE `poller` (
 		`id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-		`disabled` char(2) DEFAULT "",
+		`disabled` char(2) DEFAULT '',
 		`name` varchar(30) DEFAULT NULL,
-		`notes` varchar(1024) DEFAULT "",
-		`status` int(10) unsigned NOT NULL DEFAULT "0",
-		`hostname` varchar(250) NOT NULL DEFAULT "",
-		`total_time` double DEFAULT "0",
-		`snmp` mediumint(8) unsigned DEFAULT "0",
-		`script` mediumint(8) unsigned DEFAULT "0",
-		`server` mediumint(8) unsigned DEFAULT "0",
-		`last_update` timestamp NOT NULL DEFAULT "0000-00-00 00:00:00",
-		`last_status` timestamp NOT NULL DEFAULT "0000-00-00 00:00:00",
+		`notes` varchar(1024) DEFAULT '',
+		`status` int(10) unsigned NOT NULL DEFAULT '0',
+		`hostname` varchar(250) NOT NULL DEFAULT '',
+		`total_time` double DEFAULT '0',
+		`snmp` mediumint(8) unsigned DEFAULT '0',
+		`script` mediumint(8) unsigned DEFAULT '0',
+		`server` mediumint(8) unsigned DEFAULT '0',
+		`last_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+		`last_status` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 		PRIMARY KEY (`id`)) 
-		ENGINE=InnoDB 
-		COMMENT="Pollers for Cacti"');
+		ENGINE=$engine 
+		COMMENT='Pollers for Cacti'");
 
 	db_install_execute('INSERT INTO poller (id, name, hostname) VALUES (1, "Main Poller", "localhost")');
 	db_install_execute('UPDATE automation_networks SET poller_id=1 WHERE poller_id=0');
@@ -1603,12 +1613,14 @@ function upgrade_to_1_0_0() {
 		AND type_code='output_type'
 		AND gl.snmp_query_id>0");
 
-	/* allow sorting of trees */
-	db_install_execute('ALTER TABLE graph_tree ADD COLUMN sequence int(10) unsigned DEFAULT "1" AFTER name');
-	$trees = db_fetch_assoc('SELECT id FROM graph_tree ORDER BY name');
-	if (sizeof($trees)) {
-		foreach($trees as $sequence => $tree) {
-			db_execute_prepared('UPDATE graph_tree SET sequence = ? WHERE id = ?', array($sequence+1, $tree['id']));
+	if (!db_column_exists('graph_tree', 'sequence', false)) {
+		/* allow sorting of trees */
+		db_install_add_column ('graph_tree', array('name' => 'sequence', 'type' => 'int(10) unsigned', 'NULL' => false, 'default' => '1', 'after' => 'name'));
+		$trees = db_fetch_assoc('SELECT id FROM graph_tree ORDER BY name');
+		if (sizeof($trees)) {
+			foreach($trees as $sequence => $tree) {
+				db_execute_prepared('UPDATE graph_tree SET sequence = ? WHERE id = ?', array($sequence+1, $tree['id']));
+			}
 		}
 	}
 }
