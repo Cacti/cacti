@@ -96,6 +96,14 @@ switch (get_request_var('action')) {
 		snmpagent_utilities_run_eventlog();
 		bottom_footer();
 		break;
+	case 'ajax_hosts':
+		get_allowed_ajax_hosts();
+
+		break;
+	case 'ajax_hosts_noany':
+		get_allowed_ajax_hosts(false);
+
+		break;
 	default:
 		if (!api_plugin_hook_function('utilities_action', get_request_var('action'))) {
 			top_header();
@@ -707,15 +715,15 @@ function utilities_view_user_log() {
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
 		if (strlen($sql_where)) {
-			$sql_where .= " AND (ul.username LIKE '%%" . get_request_var('filter') . "%%'
-				OR ul.time LIKE '%%" . get_request_var('filter') . "%%'
-				OR ua.full_name LIKE '%%" . get_request_var('filter') . "%%'
-				OR ul.ip LIKE '%%" . get_request_var('filter') . "%%')";
+			$sql_where .= " AND (ul.username LIKE '%" . get_request_var('filter') . "%'
+				OR ul.time LIKE '%" . get_request_var('filter') . "%'
+				OR ua.full_name LIKE '%" . get_request_var('filter') . "%'
+				OR ul.ip LIKE '%" . get_request_var('filter') . "%')";
 		}else{
-			$sql_where = "WHERE (ul.username LIKE '%%" . get_request_var('filter') . "%%'
-				OR ul.time LIKE '%%" . get_request_var('filter') . "%%'
-				OR ua.full_name LIKE '%%" . get_request_var('filter') . "%%'
-				OR ul.ip LIKE '%%" . get_request_var('filter') . "%%')";
+			$sql_where = "WHERE (ul.username LIKE '%" . get_request_var('filter') . "%'
+				OR ul.time LIKE '%" . get_request_var('filter') . "%'
+				OR ua.full_name LIKE '%" . get_request_var('filter') . "%'
+				OR ul.ip LIKE '%" . get_request_var('filter') . "%')";
 		}
 	}
 
@@ -804,22 +812,49 @@ function utilities_clear_user_log() {
 	if (sizeof($users)) {
 		/* remove active users */
 		foreach ($users as $user) {
-			$total_login_rows = db_fetch_cell_prepared('SELECT COUNT(username) FROM user_log WHERE username = ? AND result IN (1)', array($user['username']));
-			$total_token_rows = db_fetch_cell_prepared('SELECT COUNT(username) FROM user_log WHERE username = ? AND result IN (2)', array($user['username']));
+			$total_login_rows = db_fetch_cell_prepared('SELECT COUNT(username) 
+				FROM user_log 
+				WHERE username = ? 
+				AND result IN (1)', 
+				array($user['username']));
+
+			$total_token_rows = db_fetch_cell_prepared('SELECT COUNT(username) 
+				FROM user_log 
+				WHERE username = ? 
+				AND result IN (2)', 
+				array($user['username']));
+
 			if ($total_login_rows > 1) {
-				db_execute_prepared('DELETE FROM user_log WHERE username = ? AND result IN(1) ORDER BY time LIMIT ' . ($total_login_rows - 1), array($user['username']));
+				db_execute_prepared('DELETE 
+					FROM user_log 
+					WHERE username = ? 
+					AND result IN(1) 
+					ORDER BY time LIMIT ' . ($total_login_rows - 1), 
+					array($user['username']));
 			}
 
 			if ($total_token_rows > 1) {
-				db_execute_prepared('DELETE FROM user_log WHERE username = ? AND result IN(2) ORDER BY time LIMIT ' . ($total_token_rows - 1), array($user['username']));
+				db_execute_prepared('DELETE 
+					FROM user_log 
+					WHERE username = ? 
+					AND result IN(2) 
+					ORDER BY time 
+					LIMIT ' . ($total_token_rows - 1), 
+					array($user['username']));
 			}
 
-			db_execute_prepared('DELETE FROM user_log WHERE username = ? AND result = 0', array($user['username']));
+			db_execute_prepared('DELETE 
+				FROM user_log 
+				WHERE username = ? 
+				AND result = 0', 
+				array($user['username']));
 		}
 
 		/* delete inactive users */
-		db_execute('DELETE FROM user_log WHERE user_id NOT IN (SELECT id FROM user_auth) OR username NOT IN (SELECT username FROM user_auth)');
-
+		db_execute('DELETE 
+			FROM user_log 
+			WHERE user_id NOT IN (SELECT id FROM user_auth) 
+			OR username NOT IN (SELECT username FROM user_auth)');
 	}
 }
 
@@ -1231,42 +1266,7 @@ function utilities_view_snmp_cache() {
 					<td>
 						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
-					<td>
-						<?php print __('Device');?>
-					</td>
-					<td>
-						<select id='host_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
-							<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
-							<?php
-							if (get_request_var('snmp_query_id') == -1) {
-								$hosts = db_fetch_assoc('SELECT DISTINCT
-											host.id,
-											host.description,
-											host.hostname
-											FROM (host_snmp_cache, snmp_query,host)
-											WHERE host_snmp_cache.host_id = host.id
-											AND host_snmp_cache.snmp_query_id = snmp_query.id
-											ORDER by host.description');
-							}else{
-								$hosts = db_fetch_assoc_prepared('SELECT DISTINCT
-											host.id,
-											host.description,
-											host.hostname
-											FROM (host_snmp_cache, snmp_query,host)
-											WHERE host_snmp_cache.host_id = host.id
-											AND host_snmp_cache.snmp_query_id = snmp_query.id
-											AND host_snmp_cache.snmp_query_id = ?
-											ORDER by host.description', array(get_request_var('snmp_query_id')));
-							}
-							if (sizeof($hosts) > 0) {
-							foreach ($hosts as $host) {
-								print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['description'], ENT_QUOTES) . "</option>\n";
-							}
-							}
-							?>
-						</select>
-					</td>
+					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
 						<?php print __('Query Name');?>
 					</td>
@@ -1275,27 +1275,27 @@ function utilities_view_snmp_cache() {
 							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (get_request_var('host_id') == -1) {
-								$snmp_queries = db_fetch_assoc('SELECT DISTINCT
-											snmp_query.id,
-											snmp_query.name
-											FROM (host_snmp_cache, snmp_query,host)
-											WHERE host_snmp_cache.host_id = host.id
-											AND host_snmp_cache.snmp_query_id = snmp_query.id
-											ORDER by snmp_query.name');
+								$snmp_queries = db_fetch_assoc('SELECT DISTINCT sq.id, sq.name
+									FROM host_snmp_cache AS hsc
+									INNER JOIN snmp_query AS sq
+									ON hsc.snmp_query_id=sq.id
+									INNER JOIN host AS h
+									ON hsc.host_id=h.id
+									ORDER by snmp_query.name');
 							}else{
-								$snmp_queries = db_fetch_assoc_prepared("SELECT DISTINCT
-											snmp_query.id,
-											snmp_query.name
-											FROM (host_snmp_cache, snmp_query,host)
-											WHERE host_snmp_cache.host_id = host.id
-											AND host_snmp_cache.host_id = ?
-											AND host_snmp_cache.snmp_query_id = snmp_query.id
-											ORDER by snmp_query.name", array(get_request_var('host_id')));
+								$snmp_queries = db_fetch_assoc_prepared("SELECT DISTINCT sq.id, sq.name
+									FROM host_snmp_cache AS hsc
+									INNER JOIN snmp_query AS sq
+									ON hsc.snmp_query_id=sq.id
+									INNER JOIN host AS h
+									ON hsc.host_id=h.id
+									ORDER by snmp_query.name", array(get_request_var('host_id')));
 							}
-							if (sizeof($snmp_queries) > 0) {
-							foreach ($snmp_queries as $snmp_query) {
-								print "<option value='" . $snmp_query['id'] . "'"; if (get_request_var('snmp_query_id') == $snmp_query['id']) { print ' selected'; } print '>' . htmlspecialchars($snmp_query['name'], ENT_QUOTES) . "</option>\n";
-							}
+
+							if (sizeof($snmp_queries)) {
+								foreach ($snmp_queries as $snmp_query) {
+									print "<option value='" . $snmp_query['id'] . "'"; if (get_request_var('snmp_query_id') == $snmp_query['id']) { print ' selected'; } print '>' . htmlspecialchars($snmp_query['name'], ENT_QUOTES) . "</option>\n";
+								}
 							}
 							?>
 						</select>
@@ -1338,41 +1338,45 @@ function utilities_view_snmp_cache() {
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	}elseif (get_request_var('host_id') == '0') {
-		$sql_where .= ' AND host.id=0';
+		$sql_where .= ' AND h.id=0';
 	}elseif (!isempty_request_var('host_id')) {
-		$sql_where .= ' AND host.id=' . get_request_var('host_id');
+		$sql_where .= ' AND h.id=' . get_request_var('host_id');
 	}
 
 	/* filter by query name */
 	if (get_request_var('snmp_query_id') == '-1') {
 		/* Show all items */
 	}elseif (!isempty_request_var('snmp_query_id')) {
-		$sql_where .= ' AND host_snmp_cache.snmp_query_id=' . get_request_var('snmp_query_id');
+		$sql_where .= ' AND hsc.snmp_query_id=' . get_request_var('snmp_query_id');
 	}
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (host.description LIKE '%%" . get_request_var('filter') . "%%'
-			OR snmp_query.name LIKE '%%" . get_request_var('filter') . "%%'
-			OR host_snmp_cache.field_name LIKE '%%" . get_request_var('filter') . "%%'
-			OR host_snmp_cache.field_value LIKE '%%" . get_request_var('filter') . "%%'
-			OR host_snmp_cache.oid LIKE '%%" . get_request_var('filter') . "%%')";
+		$sql_where .= " AND (h.description LIKE '%" . get_request_var('filter') . "%'
+			OR sq.name LIKE '%" . get_request_var('filter') . "%'
+			OR hsc.field_name LIKE '%" . get_request_var('filter') . "%'
+			OR hsc.field_value LIKE '%" . get_request_var('filter') . "%'
+			OR hsc.oid LIKE '%" . get_request_var('filter') . "%')";
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(*)
-		FROM (host_snmp_cache, snmp_query,host)
-		WHERE host_snmp_cache.host_id = host.id
-		AND host_snmp_cache.snmp_query_id = snmp_query.id
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM host_snmp_cache AS hsc
+		INNER JOIN snmp_query AS sq
+		ON hsc.snmp_query_id = sq.id
+		INNER JOIN host AS h
+		ON hsc.host_id = h.id
+		WHERE hsc.host_id = h.id
+		AND hsc.snmp_query_id = sq.id
 		$sql_where");
 
-	$snmp_cache_sql = "SELECT
-		host_snmp_cache.*,
-		host.description,
-		snmp_query.name
-		FROM (host_snmp_cache, snmp_query,host)
-		WHERE host_snmp_cache.host_id = host.id
-		AND host_snmp_cache.snmp_query_id = snmp_query.id
+	$snmp_cache_sql = "SELECT hsc.*, h.description, sq.name
+		FROM host_snmp_cache AS hsc
+		INNER JOIN snmp_query AS sq
+		ON hsc.snmp_query_id = sq.id
+		INNER JOIN host AS h
+		ON hsc.host_id = h.id
+		WHERE hsc.host_id = h.id
+		AND hsc.snmp_query_id = sq.id
 		$sql_where
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
@@ -1443,7 +1447,7 @@ function utilities_view_poller_cache() {
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK, 
-			'default' => 'data_template_data.name_cache', 
+			'default' => 'dtd.name_cache', 
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
@@ -1453,6 +1457,11 @@ function utilities_view_poller_cache() {
 			),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'template_id' => array(
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
@@ -1485,6 +1494,7 @@ function utilities_view_poller_cache() {
 		strURL  = urlPath+'utilities.php?poller_action=' + $('#poller_action').val();
 		strURL += '&action=view_poller_cache';
 		strURL += '&host_id=' + $('#host_id').val();
+		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
@@ -1522,29 +1532,51 @@ function utilities_view_poller_cache() {
 		<form id='form_pollercache' action='utilities.php'>
 			<table class='filterTable'>
 				<tr>
+					<?php print html_host_filter(get_request_var('host_id'));?>
+					<td>
+						<?php print __('Template');?>
+					</td>
+					<td>
+						<select id='template_id' name='template_id' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
+							<?php
+							if (get_request_var('host_id') > 0) {
+								$sql_where = 'WHERE dl.host_id = ' . get_request_var('host_id');
+							}else{
+								$sql_where = '';
+							}
+
+							$templates = db_fetch_assoc("SELECT DISTINCT dt.id, dt.name 
+								FROM data_template AS dt
+								INNER JOIN data_local AS dl
+								ON dt.id=dl.data_template_id
+								$sql_where
+								ORDER BY name");
+
+							if (sizeof($templates)) {
+								foreach ($templates as $template) {
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($template['name']), 40) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+					</td>
+					<td>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+					</td>
+				</tr>
+			</table>
+			<table class='filterTable'>
+				<tr>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
 						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
-					</td>
-					<td>
-						<?php print __('Device');?>
-					</td>
-					<td>
-						<select id='host_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
-							<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
-							<?php
-							$hosts = db_fetch_assoc('SELECT id, description, hostname FROM host ORDER BY description');
-
-							if (sizeof($hosts) > 0) {
-							foreach ($hosts as $host) {
-								print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . htmlspecialchars($host['description'], ENT_QUOTES) . "</option>\n";
-							}
-							}
-							?>
-						</select>
 					</td>
 					<td>
 						<?php print __('Action');?>
@@ -1572,12 +1604,6 @@ function utilities_view_poller_cache() {
 							?>
 						</select>
 					</td>
-					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
-					</td>
 				</tr>
 			</table>
 			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
@@ -1590,46 +1616,54 @@ function utilities_view_poller_cache() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = 'WHERE poller_item.local_data_id = data_template_data.local_data_id';
+	$sql_where = 'WHERE pi.local_data_id = dtd.local_data_id';
 
 	if (get_request_var('poller_action') != '-1') {
-		$sql_where .= " AND poller_item.action='" . get_request_var('poller_action') . "'";
+		$sql_where .= " AND pi.action='" . get_request_var('poller_action') . "'";
 	}
 
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	}elseif (get_request_var('host_id') == '0') {
-		$sql_where .= ' AND poller_item.host_id = 0';
+		$sql_where .= ' AND pi.host_id = 0';
 	}elseif (!isempty_request_var('host_id')) {
-		$sql_where .= ' AND poller_item.host_id = ' . get_request_var('host_id');
+		$sql_where .= ' AND pi.host_id = ' . get_request_var('host_id');
+	}
+
+	if (get_request_var('template_id') == '-1') {
+		/* Show all items */
+	}elseif (get_request_var('template_id') == '0') {
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' dtd.data_template_id=0';
+	}elseif (!isempty_request_var('template_id')) {
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' dl.data_template_id=' . get_request_var('template_id');
 	}
 
 	if (strlen(get_request_var('filter'))) {
-		$sql_where .= " AND (data_template_data.name_cache LIKE '%%" . get_request_var('filter') . "%%'
-			OR host.description LIKE '%%" . get_request_var('filter') . "%%'
-			OR poller_item.arg1 LIKE '%%" . get_request_var('filter') . "%%'
-			OR poller_item.hostname LIKE '%%" . get_request_var('filter') . "%%'
-			OR poller_item.rrd_path  LIKE '%%" . get_request_var('filter') . "%%')";
+		$sql_where .= " AND (dtd.name_cache LIKE '%" . get_request_var('filter') . "%'
+			OR h.description LIKE '%" . get_request_var('filter') . "%'
+			OR pi.arg1 LIKE '%" . get_request_var('filter') . "%'
+			OR pi.hostname LIKE '%" . get_request_var('filter') . "%'
+			OR pi.rrd_path  LIKE '%" . get_request_var('filter') . "%')";
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(*)
-		FROM data_template_data
-		RIGHT JOIN (poller_item
-		LEFT JOIN host
-		ON poller_item.host_id = host.id)
-		ON data_template_data.local_data_id = poller_item.local_data_id
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM poller_item AS pi
+		INNER JOIN data_local AS dl
+		ON dl.id=pi.local_data_id
+		INNER JOIN data_template_data AS dtd
+		ON dtd.local_data_id = pi.local_data_id
+		INNER JOIN host AS h
+		ON pi.host_id = h.id
 		$sql_where");
 
-	$poller_sql = "SELECT
-		poller_item.*,
-		data_template_data.name_cache,
-		host.description
-		FROM data_template_data
-		RIGHT JOIN (poller_item
-		LEFT JOIN host
-		ON poller_item.host_id = host.id)
-		ON data_template_data.local_data_id = poller_item.local_data_id
+	$poller_sql = "SELECT pi.*, dtd.name_cache, h.description
+		FROM poller_item AS pi
+		INNER JOIN data_local AS dl
+		ON dl.id=pi.local_data_id
+		INNER JOIN data_template_data AS dtd
+		ON dtd.local_data_id = pi.local_data_id
+		INNER JOIN host AS h
+		ON pi.host_id = h.id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . ', action ASC
 		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
@@ -1643,7 +1677,7 @@ function utilities_view_poller_cache() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'data_template_data.name_cache' => array(__('Data Source Name'), 'ASC'),
+		'dtd.name_cache' => array(__('Data Source Name'), 'ASC'),
 		'nosort' => array(__('Details'), 'ASC'));
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_poller_cache');
