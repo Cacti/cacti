@@ -589,8 +589,8 @@ $menu = array(
 		'data_input.php'   => __('Data Input Methods')
 		),
 	__('Templates') => array(
-		'graph_templates.php'     => __('Graph'),
 		'host_templates.php'      => __('Device'),
+		'graph_templates.php'     => __('Graph'),
 		'data_templates.php'      => __('Data Source'),
 		'aggregate_templates.php' => __('Aggregate'),
 		'color_templates.php'     => __('Color')
