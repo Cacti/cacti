@@ -23,6 +23,20 @@
 */
 
 function upgrade_to_1_0_0() {
+	$confirmed_plugins = array(
+		'cycle'         => '4.0',
+		'flowview'      => '2.o',
+		'hmib'          => '3.0',
+		'mactrack'      => '4.0',
+		'maint'         => '1.0',
+		'mikrotik'      => '1.0',
+		'monitor'       => '2.0',
+		'package'       => '1.0',
+		'routerconfigs' => '1.0',
+		'syslog'        => '2.0',
+		'thold'         => '1.0'
+	);
+
 	$default_engine = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'default_storage_engine'");
 	if (!sizeof($default_engine)) {
 		$default_engine = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'storage_engine'");
@@ -1620,6 +1634,30 @@ function upgrade_to_1_0_0() {
 		if (sizeof($trees)) {
 			foreach($trees as $sequence => $tree) {
 				db_execute_prepared('UPDATE graph_tree SET sequence = ? WHERE id = ?', array($sequence+1, $tree['id']));
+			}
+		}
+	}
+
+	$plugins = array_rekey(
+		db_fetch_assoc('SELECT directory AS plugin, version 
+			FROM plugin_config 
+			WHERE status IN(1,2)'),
+		'plugin', 'version'
+	);
+
+	if (sizeof($plugins)) {
+		foreach($plugins as $plugin => $version) {
+			$disable = false;
+			if (!isset($confirmed_plugins[$plugin])) {
+				$disable = true;
+			}elseif ($confirmed_plugins[$plugin] < $version) {
+				$disable = true;
+			}
+
+			if ($disable == true) {
+				echo "Disabling $plugin version $version as it is not confirmed compatible with Cacti 1.0\n";
+				db_install_add_cache(1, "Disabling $plugin version $version as it is not confirmed compatible with Cacti 1.0");
+				api_plugin_disable($plugin);
 			}
 		}
 	}
