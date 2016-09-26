@@ -320,6 +320,8 @@ $graph_item_types = array(
 	GRAPH_ITEM_TYPE_TEXTALIGN       => 'TEXTALIGN',
 );
 
+asort($graph_item_types);
+
 $image_types = array(
 	1 => 'PNG', 
 	3 => 'SVG'
