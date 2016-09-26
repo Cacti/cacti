@@ -23,19 +23,7 @@
 */
 
 function upgrade_to_1_0_0() {
-	$confirmed_plugins = array(
-		'cycle'         => '4.0',
-		'flowview'      => '2.o',
-		'hmib'          => '3.0',
-		'mactrack'      => '4.0',
-		'maint'         => '1.0',
-		'mikrotik'      => '1.0',
-		'monitor'       => '2.0',
-		'package'       => '1.0',
-		'routerconfigs' => '1.0',
-		'syslog'        => '2.0',
-		'thold'         => '1.0'
-	);
+	global $config, $plugins_integrated;
 
 	$default_engine = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'default_storage_engine'");
 	if (!sizeof($default_engine)) {
@@ -1646,18 +1634,21 @@ function upgrade_to_1_0_0() {
 	);
 
 	if (sizeof($plugins)) {
-		foreach($plugins as $plugin => $version) {
-			$disable = false;
-			if (!isset($confirmed_plugins[$plugin])) {
-				$disable = true;
-			}elseif ($confirmed_plugins[$plugin] < $version) {
-				$disable = true;
+		foreach ($plugins as $plugin => $version) {
+			$disable = true;
+			if (is_dir($config['base_path'] . '/plugins/' . $plugin) 
+				&& file_exists($config['base_path'] . "/plugins/$plugin/setup.php") 
+				&& file_exists($config['base_path'] . "/plugins/$plugin/INFO") 
+				&& !in_array($plugin, $plugins_integrated)) {
+					$info = parse_ini_file($config['base_path'] . "/plugins/$plugin/INFO", true);
+					if (isset($info['info']['compat']) && version_compare($config['cacti_version'], $info['info']['compat']) > -1) {
+						$disable = false;
+					}
 			}
-
-			if ($disable == true) {
-				echo "Disabling $plugin version $version as it is not confirmed compatible with Cacti 1.0\n";
-				db_install_add_cache(1, "Disabling $plugin version $version as it is not confirmed compatible with Cacti 1.0");
-				api_plugin_disable($plugin);
+			if ($disable) {
+				echo "Disabling $plugin version $version as it is not compatible with Cacti " . $config['cacti_version'] . "\n";
+				db_install_add_cache(1, "Disabling $plugin version $version as it is not compatible with Cacti " . $config['cacti_version']);
+				api_plugin_disable_all($plugin);
 			}
 		}
 	}
