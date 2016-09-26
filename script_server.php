@@ -42,6 +42,7 @@ function sig_handler($signo) {
 		case SIGQUIT:
 		case SIGSEGV:
 			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" . basename($include_file) . "', function:'$function', params:'$parameters'", FALSE, 'PHPSVR');
+			db_close();
 
 			exit;
 			break;
@@ -149,7 +150,8 @@ while (1) {
 		if (substr($input_string,0,4) == 'quit') {
 			fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting\n');
 			cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
-			exit(1);
+			db_close();
+			exit(0);
 		}
 
 		if (strlen($input_string)) {

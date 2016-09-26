@@ -734,3 +734,6 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 /* record the process as having completed */
 record_cmdphp_done();
 
+/* close the database connection */
+db_close();
+
