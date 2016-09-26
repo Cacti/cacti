@@ -130,19 +130,8 @@ function input_remove() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
-		top_header();
-
-		form_confirm(__('Are You Sure?'), __('Are you sure you want to delete the input item <strong>\'%s\'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_template_input WHERE id = ?', array(get_request_var('id'))), ENT_QUOTES)), htmlspecialchars('graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id')), htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . get_request_var('id') . '&graph_template_id=' . get_request_var('graph_template_id')));
-
-		bottom_footer();
-		exit;
-	}
-
-	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
-		db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array(get_request_var('id')));
-		db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var('id')));
-	}
+	db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var('id')));
 }
 
 function input_edit() {
