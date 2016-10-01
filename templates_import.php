@@ -191,6 +191,13 @@ function import() {
 
 	html_start_box( __('Import Templates'), '100%', '', '3', 'center', '');
 
+	$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
+	if (empty($default_profile)) {
+		$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
+	}
+
+	$fields_template_import['import_data_source_profile']['default'] = $default_profile;
+
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
 		'fields' => $fields_template_import
