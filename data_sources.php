@@ -1054,6 +1054,11 @@ function ds() {
 			'pageset' => true,
 			'default' => '-1'
 			),
+		'profile' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
+			),
 		'orphans' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
@@ -1083,6 +1088,7 @@ function ds() {
 		strURL += '&rfilter=' + $('#rfilter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&status=' + $('#status').val();
+		strURL += '&profile=' + $('#profile').val();
 		strURL += '&orphans=' + $('#orphans').val();
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&page=' + $('#page').val();
@@ -1179,6 +1185,22 @@ function ds() {
 						<input id='rfilter' type='text' size='30' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>' onChange='applyFilter()'>
 					</td>
 					<td class='nowrap'>
+						<?php print __('Profile');?>
+					</td>
+					<td>
+						<select id='profile' name='profile' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<?php
+							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
+							if (sizeof($profiles)) {
+								foreach ($profiles as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('profile') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td class='nowrap'>
 						<?php print __('Orphaned');?>
 					</td>
 					<td>
@@ -1236,6 +1258,12 @@ function ds() {
 		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_template_id=0';
 	}elseif (!isempty_request_var('host_id')) {
 		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_template_id=' . get_request_var('template_id');
+	}
+
+	if (get_request_var('profile') == '-1') {
+		/* Show all items */
+	}else{
+		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_source_profile_id=' . get_request_var('profile');
 	}
 
 	if (get_request_var('status') == '-1') {
