@@ -569,7 +569,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 
 							db_execute_prepared('REPLACE INTO poller_command 
 								(poller_id, time, action, command) 
-								VALUES (0, NOW(), ?, ?',
+								VALUES (0, NOW(), ?, ?)',
 								array(POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']));
 
 							$assert_fail = true;
@@ -580,7 +580,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 
 							db_execute_prepared('REPLACE INTO poller_command 
 								(poller_id, time, action, command) 
-								VALUES (0, NOW(), ?, ?',
+								VALUES (0, NOW(), ?, ?)',
 								array(POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']));
 
 							$assert_fail = true;
