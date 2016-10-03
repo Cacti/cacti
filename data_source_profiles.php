@@ -27,7 +27,7 @@ include_once('./lib/utility.php');
 
 $profile_actions = array(
 	1 => __('Delete'),
-	2 => __('Duplicate')
+//	2 => __('Duplicate')
 );
 
 /* set default action */
@@ -409,7 +409,7 @@ function item_edit() {
 	?>
 	<script type='text/javascript'>
 
-	var profile_id=<?php print get_request_var('profile_id');?>;
+	var profile_id=<?php print get_request_var('profile_id') != '' ? get_request_var('profile_id'):0;?>;
 	var rows_to = false;
 
 	$(function() {
@@ -527,7 +527,7 @@ function profile_edit() {
 	?>
 	<script type='text/javascript'>
 
-	var profile_id=<?php print get_request_var('id');?>;
+	var profile_id=<?php print get_request_var('id') != '' ? get_request_var('id'):0;?>;
 
 	$(function() {
 		$('body').append("<div id='cdialog'></div>");
