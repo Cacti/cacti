@@ -402,8 +402,6 @@ function item_edit() {
 
 	form_hidden_box('profile_id', get_request_var('profile_id'), '');
 
-	html_end_box();
-
 	form_save_button('data_source_profiles.php?action=edit&id=' . get_request_var('profile_id'));
 
 	?>
