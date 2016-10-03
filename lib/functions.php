@@ -3117,10 +3117,10 @@ function sanitize_unserialize_selected_items($items) {
 		$items = unserialize(stripslashes($items));
 
 		if (is_array($items)) {
-			for ($i=0;($i<count($items));$i++) {
-				if (is_array($items[$i])) {
+			foreach ($items as $item) {
+				if (is_array($item)) {
 					return false;
-				}elseif (!is_numeric($items[$i]) && ($items[$i] != '')) {
+				}elseif (!is_numeric($item) && ($item != '')) {
 					return false;
 				}
 			}
