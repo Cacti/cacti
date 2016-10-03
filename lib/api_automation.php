@@ -2015,7 +2015,7 @@ function automation_hook_graph_create_tree($data) {
 		return;
 	}
 
-	automation_execute_graph_create_tree($data);
+	automation_execute_graph_create_tree($data['id']);
 
 	/* make sure, the next plugin gets required $data */
 	return($data);

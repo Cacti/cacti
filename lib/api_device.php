@@ -244,7 +244,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 
 		snmpagent_api_device_new($save);
 
-		automation_hook_device_create_tree($save);
+		automation_hook_device_create_tree($save['id']);
 
 		api_plugin_hook_function('api_device_new', $save);
 	}
