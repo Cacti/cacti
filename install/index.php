@@ -438,7 +438,7 @@ $enabled = '1';
 						print '<h3>' . __('Pre-installation Checks') .'</h3>';
 						print __('Cacti requries several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '<br><br>';
 
-						print '<br>' . __('The following PHP extensions are mandator, and MUST be installed before continuing your Cacti install.') . '<br><br>';
+						print '<br>' . __('The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install.') . '<br><br>';
 
 						html_start_box('<strong> ' . __('Required PHP Modules') . '</strong>', '30', 0, '', '', false);
 						html_header( array( __('Name'), __('Required'), __('Installed') ) );
@@ -449,6 +449,7 @@ $enabled = '1';
 						form_end_row();
 
 						$extensions = array( 
+							array('name' => 'posix',     'installed' => false),
 							array('name' => 'session',   'installed' => false),
 							array('name' => 'sockets',   'installed' => false),
 							array('name' => 'PDO',       'installed' => false),
