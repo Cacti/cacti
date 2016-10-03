@@ -136,7 +136,7 @@ function form_save() {
 				if (isset_request_var('step')) {
 					// Validate consolidation functions
 					$cfs = get_nfilter_request_var('consolidation_function_id');
-					if (sizeof($cfs)) {
+					if (sizeof($cfs) && !empty($cfs)) {
 						foreach($cfs as $cf) {
 							input_validate_input_number($cf);
 						}
@@ -149,7 +149,7 @@ function form_save() {
 
 					// Validate consolidation functions
 					$cfs = get_nfilter_request_var('consolidation_function_id');
-					if (sizeof($cfs)) {
+					if (sizeof($cfs) && !empty($cfs)) {
 						foreach($cfs as $cf) {
 							db_execute_prepared('REPLACE INTO data_source_profiles_cf 
 								(data_source_profile_id, consolidation_function_id) 
