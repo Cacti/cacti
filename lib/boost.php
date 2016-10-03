@@ -901,7 +901,7 @@ function boost_determine_caching_state() {
 		return false;
 	}
 
-	$action = get_request_var($action);
+	$action = get_request_var('action');
 
 	/* turn off image caching for the following actions */
 	if ($action == 'properties' ||
