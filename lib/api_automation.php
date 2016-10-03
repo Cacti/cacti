@@ -3189,7 +3189,7 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	}
 
 	/* more error handling */
-	if ($response == "") { return $ip; }
+	if ($response == "" || $requestsize == false || strlen($response) <= $requestsize) { return $ip; }
 
 	/* parse the response and find the response type */
 	$type = @unpack("s", substr($response, $requestsize+2));
