@@ -492,6 +492,10 @@ function automation_graph_rules_edit() {
 		# setup header
 		$header_label = __('Rule Selection [edit: %s]', htmlspecialchars($rule['name']));
 	}else{
+		$rule = array (
+				'name' => get_request_var('name'),
+				'snmp_query_id' => get_request_var('snmp_query_id'),
+				);
 		$header_label = __('Rule Selection [new]');
 	}
 
@@ -603,10 +607,7 @@ function automation_graph_rules_edit() {
 		strURL = strURL + '&snmp_query_id=' + $('#snmp_query_id').val();
 		strURL = strURL + '&name=' + $('#name').val();
 		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applyFilter();
-		});
+		loadPageNoHeader(strURL);
 	}
 
 	function applySNMPQueryTypeChange() {
@@ -615,10 +616,7 @@ function automation_graph_rules_edit() {
 		strURL = strURL + '&name=' + $('#name').val();
 		strURL = strURL + '&snmp_query_type' + $('#name').val();
 		strURL = strURL + '&header=false';
-		$.get(strURL, function(data) {
-			$('#main').html(data);
-			applyFilter();
-		});
+		loadPageNoHeader(strURL);
 	}
 	</script>
 	<?php
