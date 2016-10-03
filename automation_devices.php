@@ -99,11 +99,12 @@ function form_actions() {
 					}
 
 					$host_id = automation_add_device($d, true);
+					$description = (trim($d['hostname']) != '' ? $d['hostname'] : $d['hostname']);
 
 					if ($host_id) {
-						$message = "<span class='deviceUp'>" . __('Device') . ' ' . htmlspecialchars($d['description']) . ' ' . __('Added to Cacti') . '</span><br>';
+						$message = "<span class='deviceUp'>" . __('Device') . ' ' . htmlspecialchars($description) . ' ' . __('Added to Cacti') . '</span><br>';
 					}else{
-						$message = "<span class='deviceDown'>" . __('Device') . ' ' . htmlspecialchars($d['description']) . ' ' . __('Not Added to Cacti') . '</span><br>';
+						$message = "<span class='deviceDown'>" . __('Device') . ' ' . htmlspecialchars($description) . ' ' . __('Not Added to Cacti') . '</span><br>';
 					}
 				}
 
