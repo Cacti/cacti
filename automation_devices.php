@@ -99,7 +99,7 @@ function form_actions() {
 					}
 
 					$host_id = automation_add_device($d, true);
-					$description = (trim($d['hostname']) != '' ? $d['hostname'] : $d['hostname']);
+					$description = (trim($d['hostname']) != '' ? $d['hostname'] : $d['ip']);
 
 					if ($host_id) {
 						$message = "<span class='deviceUp'>" . __('Device') . ' ' . htmlspecialchars($description) . ' ' . __('Added to Cacti') . '</span><br>';
