@@ -629,8 +629,12 @@ function export_discovery_results() {
 
 function purge_discovery_results() {
 	get_filter_request_var('network');
-	
-	db_execute('TRUNCATE TABLE automation_devices' . (get_request_var('network') > 0 ? ' WHERE network_id=' . get_request_var('network'):''));
+
+	if (get_request_var('network') > 0) {
+		db_execute_prepared('DELETE FROM automation_devices WHERE network_id = ?', array(get_request_var('network')));
+	} else {
+		db_execute('TRUNCATE TABLE automation_devices');
+	}
 
 	header('Location: automation_devices.php?header=false');
 
