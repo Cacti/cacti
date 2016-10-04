@@ -354,7 +354,7 @@ function automation_graph_rules_item_edit() {
 
 	form_hidden_box('rule_type', get_request_var('rule_type'), get_request_var('rule_type'));
 	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id') : '0'), '');
-	form_hidden_box('item_id', (isset_request_var('item_id') ? get_request_var('id') : '0'), '');
+	form_hidden_box('item_id', (isset_request_var('item_id') ? get_request_var('item_id') : '0'), '');
 
 	if(get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
 		form_hidden_box('save_component_automation_match_item', '1', '');
