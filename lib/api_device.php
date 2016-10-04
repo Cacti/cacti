@@ -118,7 +118,7 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
-	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id = 0, $site_id = 0) {
+	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id = 1, $site_id = 1) {
 	global $config;
 
 	include_once($config['base_path'] . '/lib/utility.php');

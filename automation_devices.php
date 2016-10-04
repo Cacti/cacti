@@ -84,6 +84,7 @@ function form_actions() {
 			if (get_nfilter_request_var('drp_action') == '1') { /* add to cacti */
 				foreach($selected_items as $id) {
 					$d = db_fetch_row_prepared('SELECT * FROM automation_devices WHERE id = ?', array($id));
+					$d['poller_id']           = get_filter_request_var('poller_id');
 					$d['host_template']       = get_filter_request_var('host_template');
 					$d['availability_method'] = get_filter_request_var('availability_method');
 					$d['notes']               = __('Added manually through device automation interface.');
@@ -145,7 +146,10 @@ function form_actions() {
 	$available_host_templates = db_fetch_assoc_prepared('SELECT id, name FROM host_template ORDER BY name');
 
 	if (isset($device_array) && sizeof($device_array)) {
-		if (get_request_var('drp_action') == '1') { /* delete */
+		if (get_request_var('drp_action') == '1') { /* add */
+
+			$pollers = db_fetch_assoc_prepared('SELECT id, name FROM poller ORDER BY name');
+
 			print "<tr>
 				<td class='textArea odd'>
 					<p>" . __('Click \'Continue\' to add the following Discovered device(s).') . "</p>
@@ -154,7 +158,11 @@ function form_actions() {
 			</tr>
 			<tr>
 				<td class='textArea odd'>
-					<table><tr><td>" . __('Select Template') . "</td><td>\n";
+					<table><tr><td>" . __('Pollers') . "</td><td>\n";
+
+			form_dropdown('poller_id', $pollers, 'name', 'id', '', '', '');
+
+			print "</td></tr><tr><td>" . __('Select Template') . "</td><td>\n";
 
 			form_dropdown('host_template', $available_host_templates, 'name', 'id', '', '', '');
 
@@ -600,7 +608,7 @@ function export_discovery_results() {
 function purge_discovery_results() {
 	get_filter_request_var('network');
 	
-	db_execute('TRUNCATE TABLE automation_devices' . (get_request_var('network') > 0 ? 'WHERE network_id=' . get_request_var('network'):''));
+	db_execute('TRUNCATE TABLE automation_devices' . (get_request_var('network') > 0 ? ' WHERE network_id=' . get_request_var('network'):''));
 
 	header('Location: automation_devices.php?header=false');
 

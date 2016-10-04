@@ -2667,6 +2667,7 @@ function automation_add_device ($device, $web = false) {
 	$template_id          = $device['host_template'];
 	$snmp_sysName         = preg_split('/[\s.]+/', $device['snmp_sysName'], -1, PREG_SPLIT_NO_EMPTY);
 	$description          = (isset($snmp_sysName[0]) != '' ? $snmp_sysName[0] : ($device['hostname'] == '' ? $device['ip'] : $device['hostname']));
+	$poller_id            = isset($device['poller_id']) ? $device['poller_id'] : db_fetch_cell('SELECT id FROM poller ORDER BY id ASC LIMIT 0,1', 'id');
 	$ip                   = $device['ip'];
 	$community            = $device['community'];
 	$snmp_ver             = $device['snmp_version'];
@@ -2696,7 +2697,7 @@ function automation_add_device ($device, $web = false) {
 		$snmp_port, $snmp_timeout, $disable, $availability_method,
 		$ping_method, $ping_port, $ping_timeout, $ping_retries,
 		$notes, $snmp_auth_protocol, $snmp_priv_passphrase,
-		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads);
+		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id);
 
 	if ($host_id) {
 		if (!$web) {
