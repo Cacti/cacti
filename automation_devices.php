@@ -150,6 +150,28 @@ function form_actions() {
 
 			$pollers = db_fetch_assoc_prepared('SELECT id, name FROM poller ORDER BY name');
 
+			$availability_method = 0;
+			$host_template = 0;
+			$devices = db_fetch_assoc('SELECT id, sysName, sysDescr FROM automation_devices WHERE id IN (' . implode(',', $device_array) . ')');
+			foreach ($devices as $device) {
+				$os = automation_find_os($device['sysDescr'], '', $device['sysName']);
+				if (isset($os['host_template']) && $os['host_template'] > 0) {
+					if ($host_template == 0) {
+						$host_template = $os['host_template'];
+						$availability_method = $os['availability_method'];
+					} else if ($host_template != $os['host_template']) {
+						// End up here if we have 2 devices with different Host Template matches
+						$host_template = 0;
+						$availability_method = 0;
+						break;
+					}
+				} else {
+					// Couldn't determine the Host Template for a device, so abort and don't set a default
+					$host_template = 0;
+					$availability_method = 0;
+					break;
+				}
+			}
 			print "<tr>
 				<td class='textArea odd'>
 					<p>" . __('Click \'Continue\' to add the following Discovered device(s).') . "</p>
@@ -164,13 +186,13 @@ function form_actions() {
 
 			print "</td></tr><tr><td>" . __('Select Template') . "</td><td>\n";
 
-			form_dropdown('host_template', $available_host_templates, 'name', 'id', '', '', '');
+			form_dropdown('host_template', $available_host_templates, 'name', 'id', '', '', $host_template);
 
 			print "</td></tr>\n";
 
 			print "<tr><td>" . __('Availability Method') . "</td><td>\n";
 
-			form_dropdown('availability_method', $availability_options, '', '', '', '', '');
+			form_dropdown('availability_method', $availability_options, '', '', '', '', $availability_method);
 
 			print "</td></tr></table></td></tr>\n";
 
