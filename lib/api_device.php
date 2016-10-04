@@ -217,7 +217,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		if (read_config_option('extended_paths') == 'on'){
 			$host_dir = $config['rra_path'] . '/' . $host_id;
 			if (!is_dir($host_dir)){
-				if (is_writable($host_dir)) {
+				if (is_writable($config['rra_path'])) {
 					if (mkdir($host_dir, 0775)) {
 						if ($config['cacti_server_os'] != 'win32') {
 							$owner_id      = fileowner($config['rra_path']);
