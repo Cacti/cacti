@@ -531,6 +531,8 @@ function discoverDevices($network_id, $thread) {
 							}elseif ($fos == false) {
 								automation_debug(", Template: Not found, Not adding to Cacti");
 							}else{
+								automation_debug(", Template: " . $fos['name']);
+								$device['os']                   = $fos['name'];
 								automation_debug(", Skipped: Add to Cacti disabled");
 							}
 
