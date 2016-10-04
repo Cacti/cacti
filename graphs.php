@@ -852,7 +852,7 @@ function form_actions() {
 			$data_sources   = array();
 			$graph_template = '';
 
-			if (aggregate_get_data_sources($_POST, $data_sources, $graph_template)) {
+			if (aggregate_get_data_sources($graph_array, $data_sources, $graph_template)) {
 				# provide a new prefix for GPRINT lines
 				$gprint_prefix = '|host_hostname|';
 
