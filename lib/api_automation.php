@@ -1313,6 +1313,7 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			</tr>';
 
 			print $form_data;
+			$i++;
 		}
 	} else {
 		print "<tr><td colspan='7'><em>" . __('No Graph Creation Criteria') . "</em></td></tr>\n";
