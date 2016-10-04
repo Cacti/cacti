@@ -534,6 +534,7 @@ function automation_graph_rules_edit() {
 	 */
 	if (!empty($rule['graph_type_id']) && $rule['graph_type_id'] > 0) {
 		?>
+<table style='width:100%;text-align:center;'>
 	<tr>
 		<td class='textInfo' align='right' valign='top'>
 			<span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? __('Dont Show'):__('Show'));?> <?php print __('Matching Objects.');?></a></span><br>
@@ -886,4 +887,3 @@ function automation_graph_rules() {
 	form_end();
 }
 
-?>
