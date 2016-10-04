@@ -509,6 +509,8 @@ function automation_graph_rules_edit() {
 		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print ($_SESSION['automation_graph_rules_show_rule'] == true ? __('Dont Show'):__('Show'));?> <?php print __('Rule Details.');?></a></span><br>
 		</td>
 	</tr>
+</table>
+
 		<?php
 	}
 
@@ -522,6 +524,8 @@ function automation_graph_rules_edit() {
 		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Dont Show'):__('Show'));?> <?php print __('Matching Devices.');?></a></span><br>
 		</td>
 	</tr>
+</table>
+
 		<?php
 	}
 
