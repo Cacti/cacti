@@ -1215,7 +1215,7 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 		array('display' => __('Actions'),   'align' => 'right')
 	);
 
-	html_header($display_text, 1, false);
+	html_header($display_text, 2, false);
 
 	$i = 0;
 	if (sizeof($items)) {
@@ -1254,7 +1254,7 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$i++;
 		}
 	} else {
-		print "<tr><td colspan='7'><em>" . __('No Device Selection Criteria') . "</em></td></tr>\n";
+		print "<tr><td colspan='8'><em>" . __('No Device Selection Criteria') . "</em></td></tr>\n";
 	}
 
 	html_end_box(true);
@@ -1277,7 +1277,7 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 		array('display' => __('Actions'),   'align' => 'right')
 	);
 
-	html_header($display_text, 1, false);
+	html_header($display_text, 2, false);
 
 	$i = 0;
 	if (sizeof($items)) {
@@ -1316,7 +1316,7 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$i++;
 		}
 	} else {
-		print "<tr><td colspan='7'><em>" . __('No Graph Creation Criteria') . "</em></td></tr>\n";
+		print "<tr><td colspan='8'><em>" . __('No Graph Creation Criteria') . "</em></td></tr>\n";
 	}
 
 	html_end_box(true);
