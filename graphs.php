@@ -875,8 +875,7 @@ function form_actions() {
 				}
 				print "</tr>\n";
 
-				$ttitle = get_nfilter_request_var('graph_array');
-				$ttitle = $ttitle[0];
+				$ttitle = $graph_array[0];
 
 				/* aggregate form */
 				$_aggregate_defaults = array(
