@@ -763,6 +763,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	$count  = 0;
 
 	if (sizeof($output)) {
+		$timestamp = 0;
 		foreach($output as $line) {
 			$line      = trim($line);
 			$max_array = array();
