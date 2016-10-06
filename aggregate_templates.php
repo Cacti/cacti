@@ -205,13 +205,13 @@ function aggregate_form_save() {
 
 	foreach($graph_templates_items as $item_id => $data) {
 		$item_new = array();
-		$item_new['aggregate_template_id'] = $id;
+		$item_new['aggregate_template_id']   = $id;
 		$item_new['graph_templates_item_id'] = $item_id;
 
-		$item_new['color_template'] = isset($data['color_template']) ? $data['color_template']:-1;
+		$item_new['color_template'] = isset($data['color_template']) ? $data['color_template']:0;
 		$item_new['item_skip']      = isset($data['item_skip']) ? 'on':'';
 		$item_new['item_total']     = isset($data['item_total']) ? 'on':'';
-		$item_new['sequence']       = isset($data['sequence']) ? $data['sequence']:-1;
+		$item_new['sequence']       = isset($data['sequence']) ? $data['sequence']:0;
 
 		/* compare with old item to see if we need to push out. */
 		if (!isset($aggregate_template_items_old[$item_id])) {

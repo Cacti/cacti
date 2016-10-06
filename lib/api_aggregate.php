@@ -383,29 +383,33 @@ function aggregate_graph_items_save($items, $table) {
 	}else {
 		return false;
 	}
+
 	$defaults['graph_templates_item_id'] = null;
-	$defaults['sequence'] = 0;
-	$defaults['color_template'] = 0;
+	$defaults['sequence']        = 0;
+	$defaults['color_template']  = 0;
 	$defaults['t_graph_type_id'] = '';
-	$defaults['graph_type_id'] = 0;
-	$defaults['t_cdef_id'] = '';
-	$defaults['cdef_id'] = 0;
-	$defaults['item_skip'] = '';
-	$defaults['item_total'] = '';
+	$defaults['graph_type_id']   = 0;
+	$defaults['t_cdef_id']       = '';
+	$defaults['cdef_id']         = 0;
+	$defaults['item_skip']       = '';
+	$defaults['item_total']      = '';
 
 	$items_sql = array();
 	foreach ($items as $item) {
 		// substitute any missing fields with defaults
 		$item = array_merge($defaults, $item);
+
 		// remove any extra fields
 		$item = array_intersect_key($item, $defaults);
+
 		// without these graph item makes no sense
 		if (!isset($item[$id_field]) || !isset($item['graph_templates_item_id'])) {
 			return false;
 		}
+
 		// convert to partial SQL statement
 		$items_sql[] .= sprintf(
-			'(%d, %d, %d, %d, "%s", %d, "%s", %d, "%s", "%s")', 
+			' (%d, %d, %d, %d, %s, %d, %s, %d, %s, %s)', 
 			$item[$id_field],
 			$item['graph_templates_item_id'],
 			$item['sequence'],
@@ -427,6 +431,7 @@ function aggregate_graph_items_save($items, $table) {
 
 	/* remove all old items */
 	db_execute("DELETE FROM $table WHERE " . $id_field . '=' . $items[0][$id_field]);
+
 	if (db_execute($sql) == 1) {
 		return true;
 	}else {
@@ -480,7 +485,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 		if ($defs['type'] == 'bool') {
 			$params_new[$field] = (isset($posted[$field])) ? 'on' : '';
 		}else {
-			$params_new[$field] = (isset($posted[$field]) ? form_input_validate(htmlspecialchars($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3) : $defs['default']);
+			$params_new[$field] = form_input_validate(htmlspecialchars($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3);
 		}
 	}
 
@@ -673,6 +678,11 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 			WHERE local_graph_id = ?', 
 			array($local_graph_id));
 
+		$attribs['graph_title'] = db_fetch_cell_prepared('SELECT title_format 
+			FROM aggregate_graphs 
+			WHERE id = ?', 
+			array($id));
+
 		$attribs['skipped_items'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence
 				FROM aggregate_graphs_graph_item
@@ -725,6 +735,7 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 
 		$attribs['aggregate_graph_id']   = $aggregate_template_id;
 		$attribs['template_propogation'] = '';
+
 		$template_data                   = db_fetch_row_prepared('SELECT * FROM aggregate_graphs WHERE id = ?', array($id));
 		$attribs['graph_template_id']    = $template_data['graph_template_id'];
 		$attribs['gprint_prefix']        = $template_data['gprint_prefix'];
@@ -735,6 +746,8 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 		$attribs['reorder']              = $template_data['order_type'];
 		$attribs['item_no']              = db_fetch_cell_prepared('SELECT COUNT(*) FROM aggregate_graphs_graph_item WHERE aggregate_graph_id = ?', array($id));
 	}else{
+		$attribs['graph_title'] = '';
+
 		$attribs['skipped_items'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence
 				FROM aggregate_graph_templates_item
@@ -892,7 +905,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 		$save1['aggregate_template_id'] = $aggregate_template;
 		$save1['template_propogation']  = $template_propogation;
 
-		if ($graph_title != '') {
+		if (isset($graph_title)) {
 			$save1['title_format'] = $graph_title;
 		}
 
