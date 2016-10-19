@@ -507,10 +507,10 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 /** update_resource_cache - place the cacti website in the poller_resource_cache 
  * 
  *  for remote pollers to consume
- * @param int $poller_id    - The id of the poller.  0 is the main system
+ * @param int $poller_id    - The id of the poller.  1 is the main system
  * @return null             - No data is returned
  */
-function update_resource_cache($poller_id = 0) {
+function update_resource_cache($poller_id = 1) {
 	global $config;
 
 	if ($config['cacti_server_os'] == 'win32') return;
@@ -534,7 +534,7 @@ function update_resource_cache($poller_id = 0) {
 		'cli'      => array('recursive' => true,  'path' => $mpath . '/cli')
 	);
 
-	if ($poller_id == 0) {
+	if ($poller_id == 1) {
 		foreach($paths as $type => $path) {
 			if (is_readable($path['path'])) {
 				$pathinfo = pathinfo($path['path']);
