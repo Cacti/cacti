@@ -36,7 +36,7 @@ function test_database_connection() {
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print 'Connection Sucsessful';
+		print 'Connection Successful';
 	}else{
 		print 'Connection Failed';
 	}
