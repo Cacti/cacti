@@ -144,7 +144,8 @@ if (function_exists('pcntl_signal')) {
 api_plugin_hook('poller_top');
 
 // Prime the poller_resource_cache for multiple pollers
-update_resource_cache();
+
+update_resource_cache($poller_id);
 
 // record the start time
 $poller_start    = microtime(true);

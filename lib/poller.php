@@ -559,7 +559,7 @@ function update_resource_cache($poller_id = 1) {
 		}
 	}else{
 		foreach($paths as $type => $path) {
-			if (is_writable($config['scripts_path'])) {
+			if (is_writable($path['path'])) {
 				resource_cache_out($type, $path);
 			}else{
 				cacti_log("FATAL: Unable to write to the " . $type . " path '" . $path['path'] . "'", false, 'POLLER');
@@ -605,13 +605,14 @@ function update_db_from_path($path, $type, $recursive = true) {
 
 	while(($entry = $pobject->read()) !== false) {
 		if ($entry != '.' && $entry != '..') {
+			$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
 			if (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
 				if ($recursive) {
 					update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
 				}
-			}elseif (ltrim($path . DIRECTORY_SEPARATOR . $entry, DIRECTORY_SEPARATOR) != 'include' . DIRECTORY_SEPARATOR . 'config.php') {
+			}elseif ($spath != 'include' . DIRECTORY_SEPARATOR . 'config.php') {
 				$save                  = array();
-				$save['path']          = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
+				$save['path']          = $spath;
 				$save['id']            = db_fetch_cell_prepared('SELECT id FROM poller_resource_cache WHERE path = ?', array($save['path']));
 				$save['resource_type'] = $type;
 				$save['md5sum']        = md5_file($path . DIRECTORY_SEPARATOR . $entry);
@@ -644,10 +645,10 @@ function resource_cache_out($type, $path) {
 	$curr_md5      = md5sum_path($path['path']);
 
 	if (empty($last_md5) || $last_md5 != $curr_md5) {
-		$entries = db_fetch_assoc('SELECT * FROM poller_resource_cache WHERE resource_type = ?', array($type));
+		$entries = db_fetch_assoc_prepared('SELECT * FROM poller_resource_cache WHERE resource_type = ?', array($type));
 		if (sizeof($entries)) {
 			foreach($entries as $e) {
-				$mypath = $path['path'] . DIRECTORY_SEPARATOR . $e['path'];
+				$mypath = $config['base_path'] . DIRECTORY_SEPARATOR . $e['path'];
 
 				if (file_exists($mypath)) {
 					$md5sum = md5_file($mypath);
@@ -669,7 +670,7 @@ function resource_cache_out($type, $path) {
 							}
 
 							if (file_put_contents($tmpfile, base64_decode($e['contents'])) !== false) {
-								$output = system($path_php . ' -l ' . $tmpfile, $exit);
+								$output = system($php_path . ' -l ' . $tmpfile, $exit);
 								if ($exit == 0) {
 									file_put_contents($mypath, base64_decode($e['contents']));
 								}else{
