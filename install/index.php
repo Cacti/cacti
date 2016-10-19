@@ -840,17 +840,17 @@ $enabled = '1';
 						print '</p>';
 						print '<table class="filterTable">';
 						print '<tr><td>' . __('Database Name') . '</td>';
-						print "<td><input size='12' type='text' id='database_default' name='database_default' value='" . (isset($_SESSION['database_default']) ? $_SESSION['database_default']:'cacti') . "'></td></tr>";
+						print "<td><input size='12' type='text' id='database_default' name='database_default' value='" . (isset($_SESSION['database_default']) ? $_SESSION['database_default']: (isset($rdatabase_default) ? $rdatabase_default : 'cacti')) . "'></td></tr>";
 						print '<tr><td>' . __('Database Hostname') . '</td>';
-						print "<td><input size='30' type='text' id='database_hostname' name='database_hostname' value='" . (isset($_SESSION['database_hostname']) ? $_SESSION['database_hostname']:'yourhost.yourdomain.com') . "'></td></tr>";
+						print "<td><input size='30' type='text' id='database_hostname' name='database_hostname' value='" . (isset($_SESSION['database_hostname']) ? $_SESSION['database_hostname']: (isset($rdatabase_hostname) ? $rdatabase_hostname : 'yourhost.yourdomain.com')) . "'></td></tr>";
 						print '<tr><td>' . __('Database Username') . '</td>';
-						print "<td><input size='12' type='text' id='database_username' name='database_username' value='" . (isset($_SESSION['database_username']) ? $_SESSION['database_username']:'cactiuser') . "'></td></tr>";
+						print "<td><input size='12' type='text' id='database_username' name='database_username' value='" . (isset($_SESSION['database_username']) ? $_SESSION['database_username']: (isset($rdatabase_username) ? $rdatabase_username : 'cactiuser')) . "'></td></tr>";
 						print '<tr><td>' . __('Database Password') . '</td>';
-						print "<td><input size='12' type='text' id='database_password' name='database_password' value='" . (isset($_SESSION['database_password']) ? $_SESSION['database_password']:'cactiuser') . "'></td></tr>";
+						print "<td><input size='12' type='password' id='database_password' name='database_password' value=''></td></tr>";
 						print '<tr><td>' . __('Database Port') . '</td>';
-						print "<td><input size='4' type='text' id='database_port' name='database_port' value='" . (isset($_SESSION['database_port']) ? $_SESSION['database_port']:'3306') . "'></td></tr>";
+						print "<td><input size='4' type='text' id='database_port' name='database_port' value='" . (isset($_SESSION['database_port']) ? $_SESSION['database_port']: (isset($rdatabase_port) ? $rdatabase_port : '3306')) . "'></td></tr>";
 						print '<tr><td><label for="database_ssl">' . __('Database SSL') . '</label></td>';
-						print "<td><input type='checkbox' id='database_ssl' name='database_ssl' " . (isset($_SESSION['database_ssl']) && $_SESSION['database_ssl'] == true ? 'checked':'') . "></td></tr>";
+						print "<td><input type='checkbox' id='database_ssl' name='database_ssl' " . (isset($_SESSION['database_ssl']) && $_SESSION['database_ssl'] == true ? 'checked' : (isset($rdatabase_ssl) && $rdatabase_ssl == true ? 'checked' : '')) . "></td></tr>";
 						print '<tr><td><input id="testdb" type="button" value="' . __('Test Connection') . '"></td><td style="text-align:left" id="message"></td></tr>';
 						print '</table>';
 					}?>
@@ -860,7 +860,6 @@ $enabled = '1';
 					<td class='saveRow' style='text-align:left'>
 						<?php if ($step > 1) {?><input id='previous' type='button' value='<?php print __x('Dialog: previous', 'Previous'); ?>'><?php }?>
 						<input id='next' type='submit' value='<?php if ($step == '9'){ print __x('Dialog: complete', 'Finish'); }else{ print __x('Dialog: go to the next page', 'Next'); }?>'>
-						<input id='test' type='button' style='display:none' title='<?php print __('Test remote database connection');?>' value='<?php print __x('Dialog: test connection', 'Test Connection'); ?>'>
 						<input type='hidden' id='previous_step' name='previous_step' value='<?php print $previous_step;?>'>
 					</td>
 				<tr>
