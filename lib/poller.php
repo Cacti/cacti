@@ -639,7 +639,7 @@ function resource_cache_out($type, $path) {
 	global $config;
 
 	$settings_path = "md5dirsum_$type";
-	$php_path      = read_config_option('path_php');
+	$php_path      = read_config_option('path_php_binary');
 
 	$last_md5      = read_config_option($settings_path);
 	$curr_md5      = md5sum_path($path['path']);
