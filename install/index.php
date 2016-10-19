@@ -579,7 +579,7 @@ $enabled = '1';
 							if (!$remote_good) {
 								print '<p class="textError">' . __('ERROR: Your Remote Cacti Poller information has not 
 									been included in your config.php file.  Please review the config.php.dist, and 
-									not the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  
+									set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  
 									These variables must be set and point back to your Primary Cacti database server.
 									Correct this and try again.') . '</p>';
 							}
@@ -860,6 +860,7 @@ $enabled = '1';
 					<td class='saveRow' style='text-align:left'>
 						<?php if ($step > 1) {?><input id='previous' type='button' value='<?php print __x('Dialog: previous', 'Previous'); ?>'><?php }?>
 						<input id='next' type='submit' value='<?php if ($step == '9'){ print __x('Dialog: complete', 'Finish'); }else{ print __x('Dialog: go to the next page', 'Next'); }?>'>
+						<input id='test' type='button' style='display:none' title='<?php print __('Test remote database connection');?>' value='<?php print __x('Dialog: test connection', 'Test Connection'); ?>'>
 						<input type='hidden' id='previous_step' name='previous_step' value='<?php print $previous_step;?>'>
 					</td>
 				<tr>

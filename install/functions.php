@@ -23,16 +23,9 @@
 */
 
 function test_database_connection() {
-	$database_type     = 'mysql';
-	$database_default  = get_request_var('database_default');
-	$database_hostname = get_request_var('database_hostname');
-	$database_username = get_request_var('database_username');
-	$database_password = get_request_var('database_password');
-	$database_port     = get_request_var('database_port');
+	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl;
 
-	$database_ssl      = isset_request_var('database_ssl') ? true:false;
-
-	$connection = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
+	$connection = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl);
 
 	if (is_object($connection)) {
 		db_close($connection);
