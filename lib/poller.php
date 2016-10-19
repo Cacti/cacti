@@ -656,7 +656,7 @@ function resource_cache_out($type, $path) {
 				}
 
 				if (is_dir(dirname($mypath))) {
-					if ($md5sum != $e['md5sum']) {
+					if ($md5sum != $e['md5sum'] && $e['path'] != 'include' . DIRECTORY_SEPARATOR . 'config.php') {
 						$info = pathinfo($mypath);
 						$exit = -1;
 
