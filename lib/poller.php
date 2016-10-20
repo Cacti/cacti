@@ -662,7 +662,7 @@ function resource_cache_out($type, $path) {
 
 				if (is_dir(dirname($mypath))) {
 					if ($md5sum != $e['md5sum'] && $e['path'] != 'include' . DIRECTORY_SEPARATOR . 'config.php') {
-						$extension = substr(strrchr($filename, "."), 1);
+						$extension = substr(strrchr($e['path'], "."), 1);
 						$exit = -1;
 						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents FROM poller_resource_cache WHERE id = ?', array($e['id']), 'contents'));
 
