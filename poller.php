@@ -280,7 +280,7 @@ while ($poller_runs_completed < $poller_runs) {
 	}
 
 	$script = $server = $snmp = 0;
-	$totals = db_fetch_assoc('SELECT action, count(*) AS totals FROM poller_item GROUP BY action');
+	$totals = db_fetch_assoc_prepared('SELECT action, count(*) AS totals FROM poller_item WHERE poller_id = ? GROUP BY action', array($poller_id));
 	if (sizeof($totals)) {
 		foreach($totals as $value) {
 			switch($value['action']) {
