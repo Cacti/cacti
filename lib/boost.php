@@ -882,7 +882,7 @@ function boost_rrdtool_get_last_update_time($rrd_path, &$rrdtool_pipe) {
 	if(read_config_option('storage_location')) {
 		$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
 	}else {
-		$file_exists = file_exists($data_source_path);
+		$file_exists = file_exists($rrd_path);
 	}
 	
 	if ($file_exists == true) {
@@ -944,7 +944,7 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 		ON (pi.local_data_id = dtr.local_data_id
 		AND (pi.rrd_name = dtr.data_source_name OR pi.rrd_name = ''))
 		WHERE dtr.local_data_id = ?
-		ORDER BY data_source_name ASC;", array($local_data_id));
+		ORDER BY data_source_name ASC", array($local_data_id));
 
 	if (sizeof($ds_names)) {
 		foreach($ds_names as $ds_name) {
