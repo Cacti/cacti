@@ -662,15 +662,15 @@ function resource_cache_out($type, $path) {
 
 				if (is_dir(dirname($mypath))) {
 					if ($md5sum != $e['md5sum'] && $e['path'] != 'include' . DIRECTORY_SEPARATOR . 'config.php') {
-						$info = pathinfo($mypath);
+						$extension = substr(strrchr($filename, "."), 1);
 						$exit = -1;
 						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents FROM poller_resource_cache WHERE id = ?', array($e['id']), 'contents'));
 
 						/* if the file type is PHP check syntax */
-						if ($info['extension'] == 'php') {
+						if ($extension == 'php') {
 							if ($config['cacti_server_os'] == 'win32') {
 								$tmpfile = '%TEMP%' . DIRECTORY_SEPARATOR . 'cachecheck.php';
-							}else{
+							} else {
 								$tmpfile = '/tmp/cachecheck.php';
 							}
 
