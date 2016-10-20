@@ -66,7 +66,7 @@ function sig_handler($signo) {
 }
 
 function output_rrd_data($start_time, $force = FALSE) {
-	global $start, $max_run_duration, $config, $debug, $get_memory, $memory_used;
+	global $start, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
 
 	include_once($config['base_path'] . '/lib/rrd.php');
 
@@ -124,10 +124,10 @@ function output_rrd_data($start_time, $force = FALSE) {
 	db_execute("CREATE TABLE poller_output_boost LIKE $archive_table");
 	$more_arch_tables = db_fetch_assoc_prepared("SELECT table_name AS name
 		FROM information_schema.tables
-		WHERE table_schema=SCHEMA()
+		WHERE table_schema = ?
 		AND table_name LIKE 'poller_output_boost_arch_%'
-		AND table_name!= ?
-		AND table_rows>0;", array($archive_table));
+		AND table_name != ?
+		AND table_rows > 0", array($database_default, $archive_table));
 
 	if(count($more_arch_tables)) {
 		foreach($more_arch_tables as $table) {

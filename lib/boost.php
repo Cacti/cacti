@@ -525,11 +525,12 @@ function boost_timer_get_overhead() {
 
 /* boost_get_arch_table_name - returns current archive boost table or false if no arch table is present currently */
 function boost_get_arch_table_name() {
+	global $database_default;
 	$res = db_fetch_cell("SELECT table_name
 		FROM information_schema.tables
-		WHERE table_schema=SCHEMA()
+		WHERE table_schema='$database_default'
 		AND table_name LIKE 'poller_output_boost_arch_%'
-		AND table_rows>0 LIMIT 1;");
+		AND table_rows > 0 LIMIT 1");
 
 	if(strlen($res)) {
 		return $res;
@@ -541,8 +542,8 @@ function boost_get_arch_table_name() {
 /* boost_process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
      results to RRDTool for processing
    @arg $local_data_id - if you are using boost, you need to update only an rra id at a time */
-function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
-	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
+function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
+	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
 	static $warning_issued;
 
@@ -597,7 +598,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 		$query_string = '';
 		$arch_tables = db_fetch_assoc("SELECT table_name AS name
 			FROM information_schema.tables
-			WHERE table_schema=SCHEMA()
+			WHERE table_schema='$database_default'
 			AND table_name LIKE 'poller_output_boost_arch_%'
 			AND table_rows>0;");
 
@@ -847,7 +848,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe='') {
 		if ($single_local_data_id) {
 			$tables = db_fetch_assoc("SELECT table_name AS name
 				FROM information_schema.tables
-				WHERE table_schema=SCHEMA()
+				WHERE table_schema='$database_default'
 				AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')
 				AND table_rows>0;");
 
