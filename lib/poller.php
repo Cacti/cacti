@@ -645,7 +645,7 @@ function resource_cache_out($type, $path) {
 	$curr_md5      = md5sum_path($path['path']);
 
 	if (empty($last_md5) || $last_md5 != $curr_md5) {
-		$entries = db_fetch_assoc_prepared('SELECT * FROM poller_resource_cache WHERE resource_type = ?', array($type));
+		$entries = db_fetch_assoc_prepared('SELECT id, path, md5sum FROM poller_resource_cache WHERE resource_type = ?', array($type));
 		if (sizeof($entries)) {
 			foreach($entries as $e) {
 				$mypath = $config['base_path'] . DIRECTORY_SEPARATOR . $e['path'];
@@ -656,10 +656,15 @@ function resource_cache_out($type, $path) {
 					$md5sum = '';
 				}
 
+				if (!is_dir(dirname($mypath))) {
+					mkdir(dirname($mypath), 0644, true);
+				}
+
 				if (is_dir(dirname($mypath))) {
 					if ($md5sum != $e['md5sum'] && $e['path'] != 'include' . DIRECTORY_SEPARATOR . 'config.php') {
 						$info = pathinfo($mypath);
 						$exit = -1;
+						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents FROM poller_resource_cache WHERE id = ?', array($e['id']), 'contents'));
 
 						/* if the file type is PHP check syntax */
 						if ($info['extension'] == 'php') {
@@ -669,19 +674,22 @@ function resource_cache_out($type, $path) {
 								$tmpfile = '/tmp/cachecheck.php';
 							}
 
-							if (file_put_contents($tmpfile, base64_decode($e['contents'])) !== false) {
+							if (file_put_contents($tmpfile, $contents) !== false) {
 								$output = system($php_path . ' -l ' . $tmpfile, $exit);
 								if ($exit == 0) {
-									file_put_contents($mypath, base64_decode($e['contents']));
+									cacti_log("INFO: Updating '" . $mypath . "' from Cache!", false, 'POLLER');
+									file_put_contents($mypath, $contents);
 								}else{
 									cacti_log("ERROR: PHP File '" . $mypath . "' from Cache has a Syntax error!", false, 'POLLER');
 								}
 							}else{
 								cacti_log("ERROR: Unable to write file '" . $tmpfile . "' for PHP Syntax verification", false, 'POLLER');
 							}
+						} else {
+							file_put_contents($mypath, $contents);
 						}
 					}
-				}else{
+				} else {
 					cacti_log("ERROR: Directory does not exist '" . dirname($mypath) . "'", false, 'POLLER');
 				}
 			}
