@@ -170,6 +170,16 @@ if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($
 	$is_web = true;
 }
 
+if ($config['poller_id'] > 1) {
+	// We are a remote poller, so first try connecting to the remote database
+	if (db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl)) {
+		// Connection worked, so now override the default settings so that it will always utilize the remote connection
+		$database_hostname = $rdatabase_hostname;
+		$database_port     = $rdatabase_port;
+		$database_default  = $rdatabase_default;
+	}
+}
+
 /* connect to the database server */
 if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl)) {
 	print $is_web ? '<p>':'';
