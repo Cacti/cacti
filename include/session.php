@@ -37,4 +37,3 @@ function _clean($max) {
 session_set_save_handler('_open', '_close', '_read', '_write', '_destroy', '_clean');
 register_shutdown_function('session_write_close');
 
-?>
