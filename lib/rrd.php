@@ -1183,11 +1183,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			INNER JOIN data_source_profiles AS dsp
 			ON dspr.data_source_profile_id=dsp.id
 			WHERE dsp.id = ?', array($rra_id));
-
-		$rra['timespan'] = $rra['rows'] * $rra['step'] * $rra['steps'];
+		if (isset($rra['steps'])) {
+			$rra['timespan'] = $rra['rows'] * $rra['step'] * $rra['steps'];
+		}
 	}
 
-	if (!isset($graph_data_array['export_realtime'])) {
+	if (!isset($graph_data_array['export_realtime']) && isset($rra['steps'])) {
 		$seconds_between_graph_updates = ($ds_step * $rra['steps']);
 	}else{
 		$seconds_between_graph_updates = 5;

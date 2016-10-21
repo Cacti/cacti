@@ -113,7 +113,7 @@ if (isset_request_var('format') && get_nfilter_request_var('format') == 'table')
 	$html = false;
 }
 
-if (is_array($xport_array['meta'])) {
+if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 	if (!$html) {
 		print '"Title:","'          . $xport_array['meta']['title_cache']                . '"' . "\n";
 		print '"Vertical Label:","' . $xport_array['meta']['vertical_label']             . '"' . "\n";
@@ -189,7 +189,7 @@ if (is_array($xport_array['meta'])) {
 	}
 }
 
-if (is_array($xport_array['data'])) {
+if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 	if (!$html) {
 		$j = 1;
 		foreach($xport_array['data'] as $row) {
