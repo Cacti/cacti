@@ -136,10 +136,11 @@ if ((sizeof($polling_items) > 0)) {
 			if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
 				$output = 'U';
 			}else {
+				$host = db_fetch_row_prepared('SELECT ping_retries, max_oids FROM host WHERE hostname = ?', array($item['hostname']));
 				$session = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
 					$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
 					$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
-					$item['snmp_timeout'], $item['ping_retries'], $item['max_oids']);
+					$item['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
 				if ($session === false) {
 					$output = 'U';
