@@ -148,7 +148,7 @@ if ((sizeof($polling_items) > 0)) {
 					$session->close();
 				}
 
-				if (prepare_validate_results($output) === false) {
+				if (prepare_validate_result($output) === false) {
 					if (strlen($output) > 20) {
 						$strout = 20;
 					} else {
@@ -163,7 +163,7 @@ if ((sizeof($polling_items) > 0)) {
 		case POLLER_ACTION_SCRIPT: /* script (popen) */
 			$output = trim(exec_poll($item['arg1']));
 
-			if (prepare_validate_results($output) === false) {
+			if (prepare_validate_result($output) === false) {
 				if (strlen($output) > 20) {
 					$strout = 20;
 				} else {
@@ -178,7 +178,7 @@ if ((sizeof($polling_items) > 0)) {
 			if ($using_proc_function == true) {
 				$output = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp)));
 
-				if (prepare_validate_results($output) === false) {
+				if (prepare_validate_result($output) === false) {
 					if (strlen($output) > 20) {
 						$strout = 20;
 					} else {
