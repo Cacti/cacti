@@ -216,9 +216,6 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 				/* get the syntax */
 				$command = @rrdtool_function_create($item['local_data_id'], true);
 
-				/* change permissions so that the poller can clear */
-				@chmod($rt_graph_path, 0644);
-
 				/* replace path */
 				$command = str_replace($data_source_path, $rt_graph_path, $command);
 
@@ -234,6 +231,9 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 
 				/* create the rrdfile */
 				shell_exec($command);
+
+				/* change permissions so that the poller can clear */
+				@chmod($rt_graph_path, 0644);
 			}else{
 				/* change permissions so that the poller can clear */
 				@chmod($rt_graph_path, 0644);
