@@ -517,7 +517,7 @@ function loadPage(href) {
 			var breadCrumbs = htmlObject.find('#breadcrumbs').html();
 			var content     = htmlObject.find('#main').html();
 
-			$('#main').hide();
+			$('#main').empty().hide();
 			$('title').text(htmlTitle);
 			$('#breadcrumbs').html(breadCrumbs);
 			$('div[class^="ui-"]').remove();
@@ -529,7 +529,7 @@ function loadPage(href) {
 
 			myTitle = htmlTitle;
 		}else{
-			$('#main').hide();
+			$('#main').empty().hide();
 			$('#main').html(html);
 		}
 
@@ -545,7 +545,7 @@ function loadPage(href) {
 
 function loadPageNoHeader(href) {
 	$.get(href, function(data) {
-		$('#main').hide();
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 
@@ -710,7 +710,7 @@ function setupSortable() {
 				sortAdd='';
 			}
 			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false'+sortAdd, function(data) {
-				$('#main').hide()
+				$('#main').empty().hide()
 				$('div[class^="ui-"]').remove();
 				$('#main').html(data);
 				applySkin();
@@ -866,7 +866,7 @@ function setupPageTimeout() {
 				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
 
 				$.get(refreshPage, function(data) {
-					$('#main').hide()
+					$('#main').empty().hide()
 					$('div[class^="ui-"]').remove();
 					$('#main').html(data);
 					applySkin();
@@ -921,7 +921,7 @@ function clearGraphFilter() {
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
 	$.get(new_href+'&header=false', function(data) {
-		$('#main').hide()
+		$('#main').empty().hide()
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -977,7 +977,7 @@ function applyGraphTimespan() {
 	$.get(new_href+'?action='+pageAction+'&header=false'+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val(), function(data) {
-		$('#main').hide()
+		$('#main').empty().hide()
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -998,7 +998,7 @@ function refreshGraphTimespanFilter() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
-		$('#main').hide()
+		$('#main').empty().hide()
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1019,7 +1019,7 @@ function timeshiftGraphFilterLeft() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
-		$('#main').hide()
+		$('#main').empty().hide()
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1040,7 +1040,7 @@ function timeshiftGraphFilterRight() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
-		$('#main').hide()
+		$('#main').empty().hide()
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1060,7 +1060,7 @@ function clearGraphTimespanFilter() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
-		$('#main').hide()
+		$('#main').empty().hide()
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1150,7 +1150,7 @@ function initializeGraphs() {
 		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
-			$('#main').hide()
+			$('#main').empty().hide()
 			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
 			$('#zoom-container').remove();
 			$('div[class^="ui-"]').remove();
@@ -1231,7 +1231,7 @@ function initializeGraphs() {
 		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
 		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()), function(data) {
-			$('#main').hide()
+			$('#main').empty().hide()
 			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
 			$('#breadcrumbs').append('<li><a id="nav_util" href="#">Utility View</a></li>');
