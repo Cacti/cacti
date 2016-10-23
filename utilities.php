@@ -1939,7 +1939,7 @@ function boost_display_run_status() {
 		}
 
 		$data_length    += $table['DATA_LENGTH'];
-		$data_length    -= $table['DATA_FREE'];
+		$data_length    += $table['INDEX_LENGTH'];
 		$engine          = $table['ENGINE'];
 		$max_data_length = $table['MAX_DATA_LENGTH'];
 	}
@@ -2053,7 +2053,7 @@ function boost_display_run_status() {
 
 	/* tell the user how big the table is */
 	form_alternate_row();
-	print '<td>' . __('Current Boost Tables Size:') . '</td><td>' . boost_file_size_display($data_length, 2) . '</td>';
+	print '<td>' . __('Current Boost Table(s) Size:') . '</td><td>' . boost_file_size_display($data_length, 2) . '</td>';
 
 	/* tell the user about the average size/record */
 	form_alternate_row();
