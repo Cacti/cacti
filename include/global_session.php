@@ -63,13 +63,9 @@ if (!empty($refresh)) {
 } ?> 
 <script type='text/javascript'>
 	var theme='<?php print get_selected_theme();?>';
-
-	if (typeof refreshIsLogout === 'undefined') {
-		var refreshIsLogout=<?php print $refreshIsLogout;?>;
-		var refreshPage='<?php print $myrefresh['page'];?>';
-		var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;
-	}
-
+	var refreshIsLogout=<?php print $refreshIsLogout;?>;
+	var refreshPage='<?php print $myrefresh['page'];?>';
+	var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;
 	var urlPath='<?php print $config['url_path'];?>';
 	var previousPage='';
 </script>

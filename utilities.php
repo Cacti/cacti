@@ -1482,7 +1482,7 @@ function utilities_view_poller_cache() {
 	}
 
 	$refresh['seconds'] = '300';
-	$refresh['page'] = 'utilities.php?action=view_poller_cache&header=false';
+	$refresh['page']    = 'utilities.php?action=view_poller_cache';
 
 	?>
 	<script type="text/javascript">
@@ -1875,7 +1875,7 @@ function boost_display_run_status() {
 	$peak_memory     = read_config_option('boost_peak_memory', TRUE);
 	$detail_stats    = read_config_option('stats_detail_boost', TRUE);
 
-	$refresh['page'] = 'utilities.php?action=view_boost_status&header=false';
+	$refresh['page']    = 'utilities.php?action=view_boost_status';
 	$refresh['seconds'] = get_request_var('refresh');
 
 	html_start_box(__('Boost Status'), '100%', '', '3', 'center', '');
@@ -2064,15 +2064,15 @@ function boost_display_run_status() {
 	if (strlen($output_length)) {
 		$parts = explode(':', $output_length);
 		if ((time()-1200) > $parts[0]) {
-			$refresh = TRUE;
+			$ref = TRUE;
 		}else{
-			$refresh = FALSE;
+			$ref = FALSE;
 		}
 	}else{
-		$refresh = TRUE;
+		$ref = TRUE;
 	}
 
-	if ($refresh) {
+	if ($ref) {
 		if (strcmp($engine, 'MEMORY') == 0) {
 			$max_length = db_fetch_cell('SELECT MAX(LENGTH(output)) FROM poller_output_boost');
 		}else{
