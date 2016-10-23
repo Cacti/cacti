@@ -1473,7 +1473,12 @@ function host() {
 		$sortby = 'INET_ATON(hostname)';
 	}
 
-	$sql_query = "SELECT host.*, graphs, data_sources
+	$poller_interval = read_config_option('poller_interval');
+
+	$sql_query = "SELECT host.*, graphs, data_sources,
+		IF(status_event_count>0, status_event_count*$poller_interval, 
+			IF(UNIX_TIMESTAMP(status_rec_date)>943916400,UNIX_TIMESTAMP()-UNIX_TIMESTAMP(status_rec_date), 
+			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance,UNIX_TIMESTAMP()))) AS instate
 		FROM host
 		LEFT JOIN (SELECT host_id, COUNT(*) AS graphs FROM graph_local GROUP BY host_id) AS gl
 		ON host.id=gl.host_id
@@ -1501,7 +1506,7 @@ function host() {
 		'graphs'                 => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of Graphs generated from this Device.')),
 		'data_sources'           => array('display' => __('Data Sources'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of Data Sources generated from this Device.')),
 		'status'                 => array('display' => __('Status'), 'align' => 'center', 'sort' => 'ASC', 'tip' => __('The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.')),
-		'nosort99'               => array('display' => __('In State'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The amount of time that this Device has been in its current state.')),
+		'instate'                => array('display' => __('In State'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The amount of time that this Device has been in its current state.')),
 		'snmp_sysUpTimeInstance' => array('display' => __('Uptime'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The current amount of time that the host has been up.')),
 		'polling_time'           => array('display' => __('Poll Time'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The the amount of time it takes to collect data from this Device.')),
 		'cur_time'               => array('display' => __('Current (ms)'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The current ping time in milliseconds to reach the Device.')),
