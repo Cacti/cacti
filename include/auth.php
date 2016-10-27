@@ -146,7 +146,6 @@ if (read_config_option('auth_method') != 0) {
 					</div>
 					<div class='logoutErrors'></div>
 				</div>
-				<div class='versionInfo'>" . __('Version') . ' ' . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 			</div>
 			<div class='logoutRight'></div>
 			<script type='text/javascript'>
