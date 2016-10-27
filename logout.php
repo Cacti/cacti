@@ -117,7 +117,6 @@ if (get_request_var('action') == 'timeout') {
 			</div>
 			<div class='logoutErrors'></div>
 		</div>
-		<div class='versionInfo'>" . __('Version %s', $version) . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 	</div>
 	<div class='logoutRight'></div>
 	<script type='text/javascript'>
