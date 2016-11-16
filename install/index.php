@@ -476,7 +476,7 @@ $enabled = '1';
 						}
 						html_end_box(false);
 
-						print '<br>' . __('The following PHP extensions are recommented, and should be installed before continuing your Cacti install.') . '<br><br>';
+						print '<br>' . __('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.') . '<br><br>';
 						$extensions = array(
 							array('name' => 'snmp', 'installed' => false),
 							array('name' => 'gmp', 'installed' => false)
