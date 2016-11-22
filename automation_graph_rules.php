@@ -180,6 +180,10 @@ function save() {
 
 function automation_graph_rules_form_actions() {
 	global $config, $automation_graph_rules_actions;
+	
+        /* ================= input validation ================= */
+        get_filter_request_var('drp_action');
+        /* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
