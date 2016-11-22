@@ -593,7 +593,7 @@ function reports_form_actions() {
 			}elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-					duplicate_report($selected_items[$i], get_nfilter_request_var('name_format'));
+					duplicate_reports($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			}elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { /* enable */
 				for ($i=0;($i<count($selected_items));$i++) {
