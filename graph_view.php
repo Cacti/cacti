@@ -236,10 +236,23 @@ case 'tree_content':
 		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR TREE VIEW') . "</font>"; return;
 	}
 
+	if (!isempty_request_var('node')) {
+		$_SESSION['sess_graph_node'] = get_request_var('node');
+
+		if (!isempty_request_var('hgd')) {
+			$_SESSION['sess_graph_hgd'] = get_request_var('hgd');
+		}else{
+			$_SESSION['sess_graph_hgd'] = '';
+		}
+	}elseif (isset($_SESSION['sess_graph_node'])) {
+		set_request_var('node', $_SESSION['sess_graph_node']);
+		set_request_var('hgd', $_SESSION['sess_graph_hgd']);
+	}
+
 	?>
 	<script type='text/javascript'>
-    var refreshIsLogout=false;
-    var refreshPage='<?php print str_replace('tree_content', 'tree', $_SERVER['REQUEST_URI']);?>';
+	var refreshIsLogout=false;
+	var refreshPage='<?php print str_replace('tree_content', 'tree', $_SERVER['REQUEST_URI']);?>';
 	var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
 	var graph_start=<?php print get_current_graph_start();?>;
 	var graph_end=<?php print get_current_graph_end();?>;
@@ -259,20 +272,38 @@ case 'tree_content':
 
 	$access_denied = false;
 	$tree_parameters = array();
+	$tree_id = 0;
+	$node_id = 0;
+	$hgdata  = 0;
 
-	if (isset_request_var('nodeid')) {
-		$_SESSION['sess_node_id'] = 'tbranch-' . get_request_var('nodeid');
+	if (isset_request_var('node')) {
+		$parts = explode('-', get_request_var('node'));
+
+		// Check for tree anchoe
+		if (strpos(get_request_var('node'), 'tree_anchor') !== false) {
+			$tree_id = $parts[1];
+			$node_id = 0;
+		}elseif (strpos(get_request_var('node'), 'tbranch') !== false) {
+			// Check for branch
+			$node_id = $parts[1];
+			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id 
+				FROM graph_tree_items 
+				WHERE id = ?', 
+				array($node_id));
+		}
 	}
 
-	if (isset_request_var('tree_id')) {
-		if (!is_tree_allowed(get_request_var('tree_id'))) {
+	if (isset_request_var('hgd')) {
+		$hgdata = get_request_var('hgd');
+	}
+
+	if ($tree_id > 0) {
+		if (!is_tree_allowed($tree_id)) {
 			header('Location: permission_denied.php');
 			exit;
 		}
 
-        $_SESSION['sess_tree_id'] = get_request_var('tree_id');
-
-		grow_right_pane_tree((isset_request_var('tree_id') ? get_request_var('tree_id') : 0), (isset_request_var('leaf_id') ? get_request_var('leaf_id') : 0), (isset_request_var('host_group_data') ? urldecode(get_request_var('host_group_data')) : 0));
+		grow_right_pane_tree($tree_id, $node_id, $hgdata);
 	}
 
 	break;
