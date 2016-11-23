@@ -782,7 +782,7 @@ function form_actions() {
 			print "</td></tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') ."' title='" . __('Delete Graph(s)') . "'>";
-		}elseif (get_request_var('drp_action') == '2') { /* change graph template */
+		} elseif (get_request_var('drp_action') == '2') { /* change graph template */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Choose a Graph Template and click \'Continue\' to change the Graph Template for the following Graph(s). Please note, that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.') . "</p>
@@ -806,7 +806,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Change Graph Template') . "'>";
-		}elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { /* place on tree */
+		} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { /* place on tree */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Graph(s) under the Tree Branch selected below.') . "</p>
@@ -821,7 +821,7 @@ function form_actions() {
 				<input type='hidden' name='tree_id' value='" . htmlspecialchars($matches[1]) . "'>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Place Graph(s) on Tree') . "'>";
-		}elseif (get_request_var('drp_action') == '5') { /* change host */
+		} elseif (get_request_var('drp_action') == '5') { /* change host */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Choose a new Device for these Graph(s) and click \'Continue\'.') . "</p>
@@ -835,7 +835,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Change Graph(s) Associated Device'>";
-		}elseif (get_request_var('drp_action') == '6') { /* reapply suggested naming to host */
+		} elseif (get_request_var('drp_action') == '6') { /* reapply suggested naming to host */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to re-apply suggested naming to the following Graph(s).') . "</p>
