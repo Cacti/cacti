@@ -111,6 +111,7 @@ function form_save() {
 	} else {
 		$new_data = array();
 	}
+
 	if (is_error_message()) {
 		raise_message(2);
 		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
