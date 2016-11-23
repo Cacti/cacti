@@ -746,7 +746,7 @@ function saveTableWidths(initial) {
 		var key    = $(this).attr('id');
 		var sizes  = storage.get(key);
 		var items  = sizes ? sizes: new Array();
-		var width  = parseInt($(document).width());
+		var width  = $(document).width();
 
 		// if the table width changes, reset the columns
 		if (key !== undefined && sizes == undefined) {
@@ -774,7 +774,7 @@ function saveTableWidths(initial) {
 			if (initial && items.length) {
 				$('#'+key).find('th.ui-resizable').each(function(data) {
 					if (parseInt(items[i]) == 0) {
-						items[i] = parseInt($(this).width());
+						items[i] = $(this).width();
 						sizes[i] = items[i];
 					}
 
@@ -786,7 +786,7 @@ function saveTableWidths(initial) {
 				});
 			}else{
 				$('#'+key).find('th.ui-resizable').each(function(data) {
-					sizes[i] = parseInt($(this).width());
+					sizes[i] = $(this).width();
 
 					if (sizes[i] != 0) {
 						$(this).css('width', items[i]);
@@ -812,21 +812,21 @@ function applyTableSizing() {
 		handles: 'e',
 
 		start: function(event, ui) {
-			colWidth     = parseInt($(this).width());
-			originalSize = parseInt(ui.size.width);
+			colWidth     = $(this).width();
+			originalSize = ui.size.width;
 
 			if (originalSize == 0) {
-				originalSize = parseInt($(this).width());
+				originalSize = $(this).width();
 			}
 
 			$(ui.originalElement).siblings().each(function(data) {
-				$(this).attr('resizeWidth', parseInt($(this).width()));
+				$(this).attr('resizeWidth', $(this).width());
 			});
 		 },
 
 		resize: function(event, ui) {
-			var resizeDelta = parseInt(ui.size.width - originalSize);
-			var newColWidth = parseInt(colWidth + resizeDelta);
+			var resizeDelta = ui.size.width - originalSize;
+			var newColWidth = colWidth + resizeDelta;
 			nextWidth = $(ui.element).next().attr('resizeWidth');
 			$(ui.element).next().css('width', nextWidth-resizeDelta);
 			$(ui.element).prevUntil('tr').each(function(data) {
