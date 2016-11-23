@@ -467,6 +467,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 		'unit_value'          => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
 		'unit_exponent_value' => array('type' => 'int',  'allow_empty' => true,  'default' => '', 'regex' => '^-?[0-9]+$')
 	);
+
 	$params_new = array();
 
 	/* validate posted form fields */
@@ -477,15 +478,17 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 			$params_new[$field] = $defs['default'];
 			continue;
 		}
+
 		if ($has_override) {
 			/* override checkbox was on */
 			$params_new['t_'.$field] = 'on';
 		}
+
 		/* validate value */
 		if ($defs['type'] == 'bool') {
 			$params_new[$field] = (isset($posted[$field])) ? 'on' : '';
 		}else {
-			$params_new[$field] = form_input_validate(htmlspecialchars($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3);
+			$params_new[$field] = (isset($posted[$field]) ? form_input_validate(htmlspecialchars($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3) : $defs['default']);
 		}
 	}
 
@@ -1064,7 +1067,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 	restore_error_handler();
 }
 
-function aggregate_get_data_sources($graph_array, &$data_sources, &$graph_template) {
+function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_template) {
 	/* find out which (if any) data sources are being used by this graph, so we can tell the user */
 	if (isset($graph_array)) {
 		# fetch all data sources for all selected graphs
