@@ -1183,8 +1183,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			INNER JOIN data_source_profiles AS dsp
 			ON dspr.data_source_profile_id=dsp.id
 			WHERE dsp.id = ?', array($rra_id));
+
 		if (isset($rra['steps'])) {
 			$rra['timespan'] = $rra['rows'] * $rra['step'] * $rra['steps'];
+		}else{
+			$rra['timespan'] = 86400;
 		}
 	}
 
