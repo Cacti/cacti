@@ -643,6 +643,7 @@ function graph_edit() {
 
 	if (!isempty_request_var('id') && $current_tab == 'items') {
 		aggregate_items();
+		bottom_footer();
 		exit;
 	}
 
@@ -1068,15 +1069,15 @@ function aggregate_items() {
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
 		print '<tr><td><em>' . __('No Graphs Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
 
+	/* put the nav bar on the bottom as well */
+	print $nav;
+	
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 
