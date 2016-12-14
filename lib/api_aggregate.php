@@ -701,7 +701,7 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 				FROM aggregate_graphs_graph_item
 				WHERE item_total="on" 
 				AND aggregate_graph_id = ? 
-				ORDER BY sequency', 
+				ORDER BY sequence', 
 				array($id)),
 			'sequence', 'sequence'
 		);
