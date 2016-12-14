@@ -842,8 +842,6 @@ function graph_edit() {
 		</script>
 		<?php
 	}
-
-	form_end();
 }
 
 function aggregate_items() {
