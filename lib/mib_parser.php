@@ -483,5 +483,3 @@ class MibParser extends MibCache {
 	}
 
 }
-
-?>

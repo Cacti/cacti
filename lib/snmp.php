@@ -791,4 +791,3 @@ function snmp_get_method($version = 1) {
 	}
 }
 
-?>

@@ -1051,4 +1051,3 @@ function networks_filter() {
 	<?php
 }
 
-?>

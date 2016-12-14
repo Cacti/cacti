@@ -90,5 +90,3 @@ function preset_vdef_item_form_list() {
 
 	return $fields_vdef_item_edit;
 }
-
-?>
