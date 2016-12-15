@@ -785,6 +785,11 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	}
 
 	if ($status == HOST_DOWN) {
+		/* Set initial date down. BUGFIX */
+		if (empty($hosts[$host_id]["status_fail_date"]){
+                    $hosts[$host_id]["status_fail_date"] = date("Y-m-d H:i:s");
+		}
+		    
 		/* update total polls, failed polls and availability */
 		$hosts[$host_id]['failed_polls']++;
 		$hosts[$host_id]['total_polls']++;
