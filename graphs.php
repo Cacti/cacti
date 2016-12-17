@@ -457,7 +457,7 @@ function get_common_graph_templates(&$graph) {
 }
 
 function form_actions() {
-	global $graph_actions;
+	global $graph_actions, $struct_aggregate;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));

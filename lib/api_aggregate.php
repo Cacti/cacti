@@ -430,7 +430,9 @@ function aggregate_graph_items_save($items, $table) {
 	cacti_log(__FUNCTION__ . ' called. SQL: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	/* remove all old items */
-	db_execute("DELETE FROM $table WHERE " . $id_field . '=' . $items[0][$id_field]);
+	if (isset( $items[0][$id_field])) {
+		db_execute("DELETE FROM $table WHERE " . $id_field . '=' . $items[0][$id_field]);
+	}
 
 	if (db_execute($sql) == 1) {
 		return true;
