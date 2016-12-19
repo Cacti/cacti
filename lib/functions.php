@@ -786,8 +786,8 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 
 	if ($status == HOST_DOWN) {
 		/* Set initial date down. BUGFIX */
-		if (empty($hosts[$host_id]["status_fail_date"]){
-                    $hosts[$host_id]["status_fail_date"] = date("Y-m-d H:i:s");
+		if (empty($hosts[$host_id]['status_fail_date'])) {
+                    $hosts[$host_id]['status_fail_date'] = date('Y-m-d H:i:s');
 		}
 		    
 		/* update total polls, failed polls and availability */
@@ -827,7 +827,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 				$issue_log_message = true;
 
 				/* update the failure date only if the failure count is 1 */
-				if ($hosts[$host_id]["status_event_count"] == 1 ) {
+				if ($hosts[$host_id]['status_event_count'] == 1 ) {
 					$hosts[$host_id]['status_fail_date'] = date('Y-m-d H:i:s');
 				}
 			/* host is down, but not ready to issue log message */
