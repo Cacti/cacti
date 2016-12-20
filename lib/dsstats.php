@@ -712,13 +712,15 @@ function dsstats_poller_output(&$rrd_update_array) {
    @returns - NULL */
 function dsstats_boost_bottom() {
 	global $config;
+	
+	if (read_config_option('dsstats_enable') == 'on') {
+		include_once($config['base_path'] . '/lib/rrd.php');
 
-	include_once($config['base_path'] . '/lib/rrd.php');
-
-	/* run the daily stats. log to database to prevent secondary runs */
-	db_execute("REPLACE INTO settings (name, value) VALUES ('dsstats_last_daily_run_time', '" . date('Y-m-d G:i:s', time()) . "')");
-	dsstats_get_and_store_ds_avgpeak_values('daily');
-	log_dsstats_statistics('DAILY');
+		/* run the daily stats. log to database to prevent secondary runs */
+		db_execute("REPLACE INTO settings (name, value) VALUES ('dsstats_last_daily_run_time', '" . date('Y-m-d G:i:s', time()) . "')");
+		dsstats_get_and_store_ds_avgpeak_values('daily');
+		log_dsstats_statistics('DAILY');
+	}
 }
 
 /* dsstats_poller_command_args - this routine allows DSStats to increase the memory of the
