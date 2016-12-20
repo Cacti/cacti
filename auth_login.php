@@ -255,7 +255,10 @@ if (get_nfilter_request_var('action') == 'login') {
 		$_SESSION['sess_user_id'] = $user['id'];
 
 		/* handle 'force change password' */
-		if (($user['must_change_password'] == 'on') && (read_config_option('auth_method') == 1)) {
+		if (($user['must_change_password'] == 'on') && 
+			(read_config_option('auth_method') == 1) &&
+			($user['password_change'] == 'on')) {
+
 			$_SESSION['sess_change_password'] = true;
 		}
 
@@ -342,7 +345,8 @@ function auth_display_custom_error_message($message) {
 	global $config;
 
 	/* kill the session */
-	setcookie(session_name(),'',time() - 3600,$config['url_path']);
+	setcookie(session_name(), '', time() - 3600, $config['url_path']);
+
 	/* print error */
 	print '<!DOCTYPE html>';
 	print "<html>\n<head>\n";
@@ -478,6 +482,7 @@ function domains_ldap_search_dn($username, $realm) {
 if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 	return;
 }
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>

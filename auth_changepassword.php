@@ -51,6 +51,12 @@ if ($auth_method != 1 && $user['realm'] != 0) {
 
 if ($user['password_change'] != 'on') {
 	raise_message('nopassword');
+
+	/* destroy session information */
+	kill_session_var('sess_user_id');
+	unset($_COOKIE[$cacti_session_name]);
+	setcookie($cacti_session_name, null, -1, $config['url_path']);
+
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . $_SERVER['HTTP_REFERER']);
 	}else{

@@ -500,6 +500,10 @@ function form_save() {
 			raise_message(4);
 		}
 
+		if (get_nfilter_request_var('must_change_password') == 'on' && get_nfilter_request_var('password_change') != 'on') {
+			raise_message('password_change');
+		}
+
 		$save['id']                   = get_nfilter_request_var('id');
 		$save['username']             = form_input_validate(get_nfilter_request_var('username'), 'username', "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
 		$save['full_name']            = form_input_validate(get_nfilter_request_var('full_name'), 'full_name', '', true, 3);
