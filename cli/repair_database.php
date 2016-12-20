@@ -158,6 +158,8 @@ if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_input_fields 
 			WHERE data_input_fields.data_input_id NOT IN (SELECT id FROM data_input)');
+
+		update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 	}
 	echo "NOTE: $rows Invalid Data Input Field Rows " . ($force ? 'removed from':'found in') . " Data Templates\n";
 }

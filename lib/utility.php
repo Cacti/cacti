@@ -22,6 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
+/* update_replication_crc - update hash stored in settings table to inform
+   remote pollers to replicate tables
+   @arg $poller_id - the id of the poller impacted by hash update 
+   @arg $variable  - the variable name to store in the settings table */
+function update_replication_crc($poller_id, $variable) {
+	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
+
+	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . ($poller_id > 0 ? "_" . "$poller_id'":"'"), array($hash));
+}
+
 function repopulate_poller_cache() {
 	$poller_data    = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' * FROM data_local');
 	$poller_items   = array();

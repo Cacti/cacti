@@ -1531,6 +1531,8 @@ function generate_data_input_field_sequences($string, $data_input_id) {
 				db_execute_prepared("UPDATE data_input_fields set sequence = ? WHERE data_input_id = ? AND input_output = 'in' and data_name = ?", array($j, $data_input_id, $matches[1][$i]));
 			}
 		}
+
+		update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 	}
 }
 

@@ -619,6 +619,8 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 		$data_query_id = sql_save($save, 'snmp_query');
 
 		$hash_cache['data_query'][$hash] = $data_query_id;
+
+		update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 	}else{
 		$data_query_id = $_data_query_id;
 	}
@@ -1273,6 +1275,8 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 		$data_input_id = sql_save($save, 'data_input');
 
 		$hash_cache['data_input_method'][$hash] = $data_input_id;
+
+		update_replication_crc(0, 'poller_replicate_data_input_crc');
 	}else{
 		$data_input_id = $_data_input_id;
 	}
@@ -1321,6 +1325,8 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 				$data_input_field_id = sql_save($save, 'data_input_fields');
 
 				$hash_cache['data_input_field']{$parsed_hash['hash']} = $data_input_field_id;
+
+				update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 			}
 		}
 	}

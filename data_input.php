@@ -102,6 +102,8 @@ function form_save() {
 					db_execute_prepared('UPDATE data_input_fields SET sequence = 0 WHERE data_input_id = ?', array(get_nfilter_request_var('id')));
 
 					generate_data_input_field_sequences(get_nfilter_request_var('input_string'), get_nfilter_request_var('id'));
+
+					update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 				}
 
 				push_out_data_input_method($data_input_id);
@@ -140,6 +142,8 @@ function form_save() {
 				if ((!empty($data_input_field_id)) && (get_request_var('input_output') == 'in')) {
 					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(get_request_var('data_input_id'))), get_request_var('data_input_id'));
 				}
+
+				update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 			}else{
 				raise_message(2);
 			}
@@ -313,6 +317,8 @@ function field_remove() {
 			}
 		}
 	}
+
+	update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 }
 
 function field_edit() {
@@ -415,6 +421,9 @@ function data_remove($id) {
 
 	db_execute_prepared('DELETE FROM data_input WHERE id = ?', array($id));
 	db_execute_prepared('DELETE FROM data_input_fields WHERE data_input_id = ?', array($id));
+
+	update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
+	update_replication_crc(0, 'poller_replicate_data_input_crc');
 }
 
 function data_edit() {

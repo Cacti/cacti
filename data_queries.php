@@ -24,6 +24,7 @@
 
 include('./include/auth.php');
 include_once('./lib/data_query.php');
+include_once('./lib/utility.php');
 
 $dq_actions = array(
 	1 => __('Delete')
@@ -129,6 +130,8 @@ function form_save() {
 
 			if ($snmp_query_id) {
 				raise_message(1);
+
+				update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 			}else{
 				raise_message(2);
 			}
@@ -839,6 +842,8 @@ function data_query_remove($id) {
 	db_execute_prepared('DELETE FROM host_template_snmp_query WHERE snmp_query_id = ?', array($id));
 	db_execute_prepared('DELETE FROM host_snmp_query WHERE snmp_query_id = ?', array($id));
 	db_execute_prepared('DELETE FROM host_snmp_cache WHERE snmp_query_id = ?', array($id));
+
+	update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 }
 
 function data_query_edit() {

@@ -739,3 +739,85 @@ function md5sum_path($path, $recursive = true) {
 
     return md5(implode('', $filemd5s));
 }
+
+function replicate_tables($poller_id = 1) {
+	$replicate_in_tables = array(
+		'data_input' => array(
+			'direction' => 'in',    // Small table
+			'frequency' => 'onchange',
+			'setting'   => 'poller_replicate_data_input_crc'
+		),
+		'data_input_fields' => array(
+			'direction' => 'in',    // Small table
+			'frequency' => 'onchange',
+			'setting'   => 'poller_replicate_data_input_fields_crc'
+		),
+		'data_template_rrd' => array(
+			'direction' => 'in',    // Potentially large table
+			'frequency' => 'onchange',
+			'setting'   => 'poller_replicate_data_source_cache_crc_|poller_id|'
+		),
+		'host_snmp_query' => array(
+			'direction' => 'in',    // Small table
+			'frequncy'  => 'onchange'
+		),
+		'poller_command' => array(
+			'direction' => 'in',    // Small table
+			'frequency' => 'onchange'
+		),
+		'poller_item' => array(
+			'direction' => 'in',    // Larger table
+			'frequency' => 'onchange',
+			'setting'   => 'poller_replicate_data_source_cache_crc_|poller_id|'
+		),
+		'snmp_query' => array(
+			'direction' => 'in',    // Small table
+			'frequency' => 'onchange',
+			'setting'   => 'poller_replicate_snmp_query_crc'
+		)
+	);
+
+	$replicate_inout_tables = array(
+		'host' => array(
+			'direction'   => 'inout', // Relatively small table
+			'in_freq'     => 'onchange',
+			'out_freq'    => 'onrecovery',
+			'out_columns' => 'status, status_event_count, status_fail_date, status_rec_date, status_last_errors, min_time, max_time, cur_time, avg_time, polling_time, total_polls, failed_polls, availability',
+			'in_columns'  => 'all',
+			'setting'     => 'poller_replicate_device_cache_crc_|poller_id|'
+		),
+		'host_snmp_cache' => array(
+			'direction'   => 'inout', // Potentially large table
+			'in_freq'     => 'onchange',
+			'out_freq'    => 'onrecovery',
+			'out_columns' => 'all_changed',
+			'in_columns'  => 'all',
+			'setting'     => 'poller_replicate_device_cache_crc_|poller_id|'
+		),
+		'poller_reindex' => array(
+			'direction'   => 'inout', // Small table
+			'in_freq'     => 'always',
+			'out_freq'    => 'onrecovery',
+			'out_columns' => 'assert_value',
+			'in_columns'  => 'all',
+			'setting'     => 'poller_replicate_device_cache_crc_|poller_id|'
+		),
+//		'settings' => array(
+//			'direction' => 'inout', // Only some rows
+//			'in_freq'   => 'always',
+//			'out_freq'  => 'always',
+//			'out_names' => '',
+//			'in_names'  => ''
+//		)
+	);
+
+	$replicate_out_tables = array(
+		'poller_output_boost' => array(
+			'direction' => 'output',
+			'frequency' => 'onrecovery',
+			'out_columns' => 'all'
+		)
+	);
+
+	api_poller_hook_function('replicate_tables');
+}

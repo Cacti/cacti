@@ -24,11 +24,12 @@
 
 /* api_data_source_crc_update - update hash stored in settings table to inform
    remote pollers to update their caches
-   @arg $poller_id - the id of the poller impacted by hash update */
-function api_data_source_cache_crc_update($poller_id) {
+   @arg $poller_id - the id of the poller impacted by hash update 
+   @arg $variable  - the hash variable prefix for the replication setting. */
+function api_data_source_cache_crc_update($poller_id, $variable = 'poller_replicate_data_source_cache_crc') {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
 
-	db_execute_prepared("REPLACE INTO settings SET value = ?,name='data_source_cache_crc_$poller_id'", array($hash));
+	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . "_" . "$poller_id'", array($hash));
 }
 
 function api_data_source_remove($local_data_id) {
