@@ -10,7 +10,8 @@ body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	/* fix those ever present IE issues */
-	-ms-overflow-style:scrollbar
+	-ms-overflow-style:scrollbar;
+	color: #000000;
 }
 
 body {
@@ -1065,6 +1066,7 @@ legend {
 	margin-right:auto;
 	display: table;
 	line-height: 16px;
+	color: snow;
 }
 
 .cactiTableTitleRow {
@@ -1080,7 +1082,7 @@ legend {
 	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	color: white;
+	color: snow;
 }
 
 .cactiTableTitle {
@@ -1096,7 +1098,7 @@ legend {
 	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	color: white;
+	color: snow;
 }
 
 .cactiTableButton {
@@ -1112,7 +1114,7 @@ legend {
 	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	color: white;
+	color: snow;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
@@ -1332,6 +1334,7 @@ th.sortable {
 .textArea {
 	font-size: 12px;
 	background-color:#f5f5f5;
+	color: #000000;
 }
 
 .textArea a {
