@@ -24,7 +24,7 @@ html, body {
 body {
 	background: #161616 none repeat scroll 0 0;
 	color: #bbbfc2;
-	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 12px;
 }
 
@@ -34,6 +34,12 @@ li {
 
 table, tr, td, textarea {
 	-ms-overflow-style:scrollbar;
+}
+
+textarea {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 1.0em;
+	padding: 5px;
 }
 
 table {
@@ -1583,7 +1589,7 @@ div#gtabs {
 }
 
 th {
-	border-right: 1px groove #eee;
+	border-right: 1px groove #eee !important;
 }
 
 th:last-child {
