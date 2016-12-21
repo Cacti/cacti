@@ -25,7 +25,7 @@
 include_once("./include/global.php");
 
 $page = db_fetch_row_prepared('SELECT
-	id, title, style, contentfile
+	id, title, style, contentfile, enabled
 	FROM external_links AS el
 	WHERE id = ?', array(get_filter_request_var('id')));
 
@@ -76,9 +76,15 @@ if (!sizeof($page)) {
 	});
 
 	function resizeWindow() {
-		height = parseInt($('#navigation_right').height());
+        heightPage = $(window).height();
+        heightPageHead = $('#cactiPageHead').outerHeight();
+		heightBreadCrumbBar = $('#breadCrumbBar').outerHeight();
+        heightPageContent = heightPage - heightPageHead - heightBreadCrumbBar;
 		width  = $('#main').width();
-		$('#content').css({'height':height+'px', 'width':width, 'margin-top':'-5px'});
+		$('#cactiContent').css({'height':heightPageContent+'px', 'width':'100%'});
+		$('#content').css({'width':'100%', 'height':(heightPageContent-3)+'px'});
+		$('#navigation_right').css({'margin':'0px', 'padding':'0px'});
+		$('#main').css({'margin-top':'0px', 'position':'relative'});
 	}
 	</script>
 	<?php

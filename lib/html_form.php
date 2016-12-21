@@ -890,7 +890,7 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 		$on_change = " onChange='$on_change' ";
 	}
 
-	print "<select class='$class' id='$form_name' name='$form_name" . "[]' multiple>\n";
+	print "<select style='height:20px;' size='1' class='$class' id='$form_name' name='$form_name" . "[]' multiple>\n";
 
 	foreach (array_keys($array_display) as $id) {
 		print "<option value='" . $id . "'";
