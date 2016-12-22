@@ -76,7 +76,6 @@ function themeReady() {
 /* Start clean up */
 
 	//login page
-	$('head').append('<link href="/cactidev/include/fa/css/font-awesome.css" type="text/css" rel="stylesheet">');
 	$('.cactiLoginLogo').html("<i class='fa fa-paw'/>").css('font-size: 20px');
 	
 	/* clean up the navigation menu */
