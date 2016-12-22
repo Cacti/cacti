@@ -923,7 +923,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 
 	/* export options */
 	if (isset($graph_data_array['export'])) {
-		$graph_opts = read_config_option('path_html_export') . '/' . $graph_data_array['export_filename'] . RRD_NL;
+		$graph_opts = $graph_data_array['export_filename'] . RRD_NL;
 	}else{
 		if (empty($graph_data_array['output_filename'])) {
 				$graph_opts = '-' . RRD_NL;
@@ -1121,8 +1121,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
-	if (!is_graph_allowed($local_graph_id, $user)) {
-		return 'GRAPH ACCESS DENIED';
+	if ($user >= 0) {
+		if (!is_graph_allowed($local_graph_id, $user)) {
+			return 'GRAPH ACCESS DENIED';
+		}
 	}
 
 	/* check the purge the boost poller output cache, and check for a live image file if caching is enabled */
