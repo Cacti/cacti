@@ -182,6 +182,10 @@ label {
 }
 
 .running {
+	color:orange;
+}
+
+.errored {
 	color:red;
 }
 
