@@ -1244,6 +1244,8 @@ function html_show_tabs_left($show_console_tab) {
 			$tab_base = basename($tab['url']);
 			if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
 				$tabs_left[$i]['selected'] = true;
+			}elseif (isset_request_var('id') && ($tab_base == 'link.php?id=' . get_nfilter_request_var('id')) && $me_base == 'link.php') {
+				$tabs_left[$i]['selected'] = true;
 			}elseif ($tab_base == 'index.php' && is_console_page($me_base)) {
 				$tabs_left[$i]['selected'] = true;
 			}elseif ($tab_base == $me_base) {
