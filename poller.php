@@ -64,7 +64,6 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 include(dirname(__FILE__) . '/include/global.php');
 include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/graph_export.php');
 include_once($config['base_path'] . '/lib/rrd.php');
 include_once($config['base_path'] . '/lib/dsstats.php');
 include_once($config['base_path'] . '/lib/boost.php');
@@ -536,15 +535,6 @@ while ($poller_runs_completed < $poller_runs) {
 			 * in case, we have more PCOMMANDS than recaching, this has to be moved to poller_commands.php
 			 * but then we'll have to call it each time to make sure, stats are updated */
 			db_execute("REPLACE INTO settings (name,value) VALUES ('stats_recache_$poller_id','RecacheTime:0.0 DevicesRecached:0')");
-		}
-
-		/* graph export */
-		if ($poller_id == 0 && 
-			(read_config_option('export_type') != 'disabled') &&
-			(read_config_option('export_timing') != 'disabled')) {
-			$command_string = read_config_option('path_php_binary');
-			$extra_args = '-q "' . $config['base_path'] . '/poller_export.php"';
-			exec_background($command_string, $extra_args);
 		}
 
 		if ($method == 'spine') {
