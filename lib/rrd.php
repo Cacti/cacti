@@ -1204,7 +1204,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		gtg.slope_mode, gtg.auto_scale, gtg.auto_scale_opts, gtg.auto_scale_log,
 		gtg.scale_log_units, gtg.auto_scale_rigid, gtg.auto_padding, gtg.base_value,
 		gtg.upper_limit, gtg.lower_limit, gtg.height, gtg.width, gtg.image_format_id,
-		gtg.unit_value, gtg.unit_exponent_value, gtg.export, gtg.alt_y_grid, 
+		gtg.unit_value, gtg.unit_exponent_value, gtg.alt_y_grid, 
 		gtg.right_axis, gtg.right_axis_label, gtg.right_axis_format, gtg.no_gridfit,
 		gtg.unit_length, gtg.tab_width, gtg.dynamic_labels, gtg.force_rules_legend,
 		gtg.legend_position, gtg.legend_direction, gtg.right_axis_formatter,

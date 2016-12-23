@@ -1652,4 +1652,12 @@ function upgrade_to_1_0_0() {
 			}
 		}
 	}
+
+	/* removing obsolete column */
+	if (!db_column_exists('graph_templates_graph', 'export', false)) {
+		db_install_drop_column('graph_templates_graph', 'export');
+		db_install_drop_column('graph_templates_graph', 't_export');
+		db_install_drop_column('aggregate_graph_templates_graph', 'export');
+		db_install_drop_column('aggregate_graph_templates_graph', 't_export');
+	}
 }

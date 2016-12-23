@@ -557,13 +557,6 @@ $struct_graph = array(
 		'description' => __('Using Slope Mode evens out the shape of the graphs at the expense of
 			some on screen resolution.')
 		),
-	'export' => array(
-		'friendly_name' => __('Allow Graph Export'),
-		'method' => 'checkbox',
-		'default' => 'on',
-		'description' => __('Choose whether this graph will be included in the static html/png export if you use
-			the Cacti export feature.')
-		),
 	'scaling_header' => array(
 		'friendly_name' => __('Scaling Options'),
 		'collapsible' => 'true',
