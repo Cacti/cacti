@@ -35,7 +35,6 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 include('./include/global.php');
 include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/graph_export.php');
 include_once($config['base_path'] . '/lib/rrd.php');
 
 /* force Cacti to store realtime data locally */
