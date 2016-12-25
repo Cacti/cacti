@@ -469,9 +469,9 @@ function is_device_allowed($host_id, $user = 0) {
 /* is_graph_template_allowed - determines whether the current user is allowed to view a certain graph template
    @arg $graph_template_id - (int) the ID of the graph template to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph template or not */
-function is_graph_template_allowed($graph_template_id) {
+function is_graph_template_allowed($graph_template_id, $user = 0) {
 	$total_rows = 0;
-	$template = get_allowed_graph_templates('', '', '', $total_rows, $user = 0, $graph_template_id);
+	$template = get_allowed_graph_templates('', '', '', $total_rows, $user, $graph_template_id);
 
 	if ($total_rows > 0) {
 		return true;
