@@ -1121,7 +1121,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	/* before we do anything; make sure the user has permission to view this graph,
 	if not then get out */
-	if ($user >= 0) {
+	if ($user > 0) {
 		if (!is_graph_allowed($local_graph_id, $user)) {
 			return 'GRAPH ACCESS DENIED';
 		}
