@@ -235,6 +235,19 @@ function form_save() {
 				/* push out all "custom data" for this data source template */
 				push_out_data_source_custom_data($data_template_id);
 				push_out_host(0, 0, $data_template_id);
+
+				/* push out field mappings for the data collector */
+				db_execute_prepared('REPLACE INTO poller_data_template_field_mappings
+					SELECT dtr.data_template_id, 
+					dif.data_name, 
+					GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, 
+					NOW() AS last_updated
+					FROM data_template_rrd AS dtr
+					INNER JOIN data_input_fields AS dif
+					ON dtr.data_input_field_id = dif.id
+					WHERE dtr.local_data_id = 0
+					AND dtr.data_template_id = ?
+					GROUP BY dtr.data_template_id, dif.data_name', array($data_template_id));
 			}
 		}
 

@@ -28,6 +28,7 @@ $poller_actions = array(
 	1 => __('Delete'),
 	2 => __('Disable'),
 	3 => __('Enable'),
+	4 => __('Full Sync')
 );
 
 $poller_status = array(
@@ -61,6 +62,62 @@ $fields_site_edit = array(
 		'textarea_rows' => 4,
 		'textarea_cols' => 50
 	),
+	'spacer1' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('Remote Database Connection'),
+	),
+	'dbhost' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Hostname'),
+		'description' => __('The hostname for the remote database server.'),
+		'value' => '|arg1:dbhost|',
+		'size' => '50',
+		'default' => '',
+		'max_length' => '100'
+	),
+	'dbdefault' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Remote Database Name'),
+		'description' => __('The name of the remote database.'),
+		'value' => '|arg1:dbdefault|',
+		'size' => '20',
+		'default' => $database_default,
+		'max_length' => '20'
+	),
+	'dbuser' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Remote Database User'),
+		'description' => __('The user name to use to connect to the remote database.'),
+		'value' => '|arg1:dbuser|',
+		'size' => '20',
+		'default' => $database_username,
+		'max_length' => '20'
+	),
+	'dbpass' => array(
+		'method' => 'textbox_password',
+		'friendly_name' => __('Remote Database Password'),
+		'description' => __('The user password to use to connect to the remote database.'),
+		'value' => '|arg1:dbpass|',
+		'size' => '40',
+		'default' => $database_password,
+		'max_length' => '64'
+	),
+	'dbport' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Remote Database Port'),
+		'description' => __('The tcp port to use to connect to the remote database.'),
+		'value' => '|arg1:dbport|',
+		'size' => '5',
+		'default' => $database_port,
+		'max_length' => '5'
+	),
+	'dbssl' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Remote Database SSL'),
+		'description' => __('If the remote database uses SSL to connect, check the checkbox below.'),
+		'value' => '|arg1:dbssl|',
+		'default' => $database_ssl ? 'on':''
+	),
 	'id' => array(
 		'method' => 'hidden',
 		'value' => '|arg1:id|',
@@ -81,6 +138,10 @@ switch (get_request_var('action')) {
 		break;
 	case 'actions':
 		form_actions();
+
+		break;
+	case 'ping':
+		test_database_connection();
 
 		break;
 	case 'edit':
@@ -112,6 +173,12 @@ function form_save() {
 		$save['id']           = get_filter_request_var('id');
 		$save['name']         = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['notes']        = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
+		$save['dbdefault']    = form_input_validate(get_nfilter_request_var('dbdefault'), 'dbdefault', '', true, 3);
+		$save['dbhost']       = form_input_validate(get_nfilter_request_var('dbhost'), 'dbhost', '', true, 3);
+		$save['dbuser']       = form_input_validate(get_nfilter_request_var('dbuser'), 'dbuser', '', true, 3);
+		$save['dbpass']       = form_input_validate(get_nfilter_request_var('dbpass'), 'dbpass', '', true, 3);
+		$save['dbport']       = form_input_validate(get_nfilter_request_var('dbport'), 'dbport', '', true, 3);
+		$save['dbssl']        = isset_request_var('dbssl') ? 'on':'';
 
 		if (!is_error_message()) {
 			$poller_id = sql_save($save, 'poller');
@@ -264,6 +331,18 @@ function site_edit() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
+	if (isset($poller) && sizeof($poller)) {
+		if ($poller['id'] == 1) {
+			unset($fields_site_edit['spacer1']);
+			unset($fields_site_edit['dbdefault']);
+			unset($fields_site_edit['dbhost']);
+			unset($fields_site_edit['dbuser']);
+			unset($fields_site_edit['dbpass']);
+			unset($fields_site_edit['dbport']);
+			unset($fields_site_edit['dbssl']);
+		}
+	}
+
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
@@ -271,9 +350,82 @@ function site_edit() {
 		)
 	);
 
+	if (isset($poller) && sizeof($poller)) {
+		if ($poller['id'] > 1) {
+			?>
+			<script type='text/javascript'>
+			$(function() {
+				$('#row_dbssl').after('<tr class="odd"><td style="width:50%"></td><td><input id="dbtest" type="button" value="Test Database Connection"><span id="results"></span></td></tr>')
+				applySkin();
+
+				$('#dbtest').click(function() {
+					ping_database();
+				});
+			});
+
+			function ping_database() {
+				dbssl = $('#dbssl').is(':checked') ? 'on':'';
+
+				$.post('pollers.php', { 
+					__csrf_magic: csrfMagicToken,
+					action:       'ping',
+					dbdefault:    $('#dbdefault').val(), 
+					dbhost:       $('#dbhost').val(),
+					dbuser:       $('#dbuser').val(),
+					dbpass:       $('#dbpass').val(),
+					dbport:       $('#dbport').val(),
+					dbssl:        dbssl } )
+				.done(function(data) {
+					$('#results').empty().show().html(data).fadeOut(2000);
+				});
+			}
+			</script>
+			<?php 
+		}
+	}
+
 	html_end_box();
 
 	form_save_button('pollers.php', 'return');
+}
+
+function test_database_connection($poller = array()) {
+	if (!sizeof($poller)) {
+		$poller['dbtype'] = 'mysql';
+
+		$fields = array('dbhost', 'dbuser', 'dbpass', 'dbdefault', 'dbport', 'dbssl');
+		foreach ($fields as $field) {
+			if ($field == 'dbssl') {
+				if (isset_request_var('dbssl') && get_nfilter_request_var('dbssl') == 'on') {
+					$poller['dbssl'] = true;
+				}else{
+					$poller['dbssl'] = false;
+				}
+			}elseif (isset_request_var($field)) {
+				$poller[$field] = get_nfilter_request_var($field);
+			}else{
+				print 'ERROR: DB Connection Column ' . $field . ' Missing';
+				return false;
+			}
+		}
+	}
+
+    $connection = db_connect_real(
+		$poller['dbhost'], 
+		$poller['dbuser'], 
+		$poller['dbpass'], 
+		$poller['dbdefault'], 
+		$poller['dbtype'], 
+		$poller['dbport'], 
+		$poller['dbssl']
+	);
+
+    if (is_object($connection)) {
+        db_close($connection);
+        print 'Connection Successful';
+    }else{
+        print 'Connection Failed';
+    }
 }
 
 function pollers() {

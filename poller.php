@@ -142,8 +142,10 @@ if (function_exists('pcntl_signal')) {
 
 api_plugin_hook('poller_top');
 
-// Prime the poller_resource_cache for multiple pollers
+// Flush the boost table if in recovery mode
+poller_recovery_flush_boost($poller_id);
 
+// Prime the poller_resource_cache for multiple pollers
 update_resource_cache($poller_id);
 
 // record the start time

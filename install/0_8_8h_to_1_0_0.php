@@ -1555,6 +1555,12 @@ function upgrade_to_1_0_0() {
 		`notes` varchar(1024) DEFAULT '',
 		`status` int(10) unsigned NOT NULL DEFAULT '0',
 		`hostname` varchar(250) NOT NULL DEFAULT '',
+		`dbdefault` varchar(20) NOT NULL DEFAULT 'cacti',
+		`dbhost` varchar(64) NOT NULL DEFAULT '',
+		`dbuser` varchar(20) NOT NULL DEFAULT '',
+		`dbpass` varchar(64) NOT NULL DEFAULT '',
+		`dbport` int(10) unsigned DEFAULT '3306',
+		`dbssl` char(3) DEFAULT '',
 		`total_time` double DEFAULT '0',
 		`snmp` mediumint(8) unsigned DEFAULT '0',
 		`script` mediumint(8) unsigned DEFAULT '0',
@@ -1582,6 +1588,24 @@ function upgrade_to_1_0_0() {
 
 	db_install_execute('ALTER TABLE host MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
 	db_install_execute('ALTER TABLE host MODIFY COLUMN site_id int(10) unsigned DEFAULT "1"');
+
+	/* adding columns for remote poller sync */
+	db_install_execute('ALTER TABLE host 
+		ADD COLUMN last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER availability,
+		ADD INDEX last_updated(last_updated)');
+
+	db_install_execute('ALTER TABLE host_snmp_cache 
+		ADD COLUMN last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER present,
+		ADD INDEX last_updated(last_updated)');
+
+	db_install_execute('ALTER TABLE poller_item 
+		ADD COLUMN last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER present,
+		ADD INDEX last_updated(last_updated)');
+
+	db_install_execute('ALTER TABLE poller_command 
+		ADD COLUMN last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER command,
+		ADD INDEX last_updated(last_updated)');
+
 	db_install_execute('ALTER TABLE automation_networks MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
 	db_install_execute('ALTER TABLE automation_processes MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
 	db_install_execute('ALTER TABLE poller_command MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
@@ -1593,7 +1617,7 @@ function upgrade_to_1_0_0() {
 	db_install_add_key('graph_local', 'INDEX', 'snmp_query_graph_id', array('snmp_query_graph_id'));
 
 	/* add the snmp query graph id to graph local */
-	db_execute("UPDATE graph_local AS gl
+	db_install_execute("UPDATE graph_local AS gl
 		INNER JOIN (
 			SELECT DISTINCT local_graph_id, task_item_id 
 			FROM graph_templates_item
@@ -1660,4 +1684,21 @@ function upgrade_to_1_0_0() {
 		db_install_drop_column('aggregate_graph_templates_graph', 'export');
 		db_install_drop_column('aggregate_graph_templates_graph', 't_export');
 	}
+
+	db_install_execute("CREATE TABLE IF NOT EXISTS poller_data_template_field_mappings` (
+		`data_template_id` int(10) unsigned NOT NULL DEFAULT '0',
+		`data_name` varchar(25) NOT NULL DEFAULT '',
+		`data_source_names` varchar(120) NOT NULL DEFAULT '',
+		`last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		PRIMARY KEY (`data_template_id`,`data_name`,`data_source_name`)) 
+		ENGINE=InnoDB 
+		COMMENT='Tracks mapping of Data Templates to their Data Source Names'");
+
+	db_install_execute("INSERT IGNORE INTO poller_data_template_field_mappings
+		SELECT dtr.data_template_id, dif.data_name, GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW() 
+		FROM data_template_rrd AS dtr 
+		INNER JOIN data_input_fields AS dif 
+		ON dtr.data_input_field_id = dif.id 
+		WHERE dtr.local_data_id=0 
+		GROUP BY dtr.data_template_id, dif.data_name");
 }

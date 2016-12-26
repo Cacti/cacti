@@ -170,18 +170,37 @@ if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($
 	$is_web = true;
 }
 
-if ($config['poller_id'] > 1) {
-	// We are a remote poller, so first try connecting to the remote database
-	if (db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl)) {
-		// Connection worked, so now override the default settings so that it will always utilize the remote connection
-		$database_hostname = $rdatabase_hostname;
-		$database_port     = $rdatabase_port;
-		$database_default  = $rdatabase_default;
-	}
-}
+/* set poller mode */
+global $local_db_cnn_id, $remote_db_cnn_id;
 
-/* connect to the database server */
-if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl)) {
+$config['connection'] = 'online';
+if ($config['poller_id'] > 1) {
+	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
+
+	if ($local_db_cnn_id) {
+		$boost_records = db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost');
+		if ($boost_records > 0) {
+			$config['connection'] = 'recovery';
+		}
+	}
+
+	// We are a remote poller also try to connect to the remote database
+	$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl);
+
+	if ($remote_db_cnn_id && $config['connection'] != 'recovery') {
+		// Connection worked, so now override the default settings so that it will always utilize the remote connection
+		$database_default   = $rdatabase_default;
+		$database_hostname  = $rdatabase_hostname;
+		$database_username  = $rdatabase_username;
+		$database_password  = $rdatabase_password;
+		$database_port      = $rdatabase_port;
+		$database_ssl       = $rdatabase_ssl;
+
+		$config['connection'] = 'online';
+	}else{
+		$config['connection'] = 'offline';
+	}
+} elseif (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl)) {
 	print $is_web ? '<p>':'';
 	print 'FATAL: Connection to Cacti database failed. Please insure the database is running and your credentials in config.php are valid.';
 	print $is_web ? '</p>':'';
@@ -199,7 +218,6 @@ register_shutdown_function('CactiShutdownHandler');
 
 /* verify the cacti database is initialized before moving past here */
 db_cacti_initialized($is_web);
-
 
 if ($is_web) {
 	/* Sanity Check on "Corrupt" PHP_SELF */

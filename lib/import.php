@@ -565,6 +565,19 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				sql_save($save, 'data_input_data', array('data_template_data_id', 'data_input_field_id'), false);
 			}
 		}
+
+		/* push out field mappings for the data collector */
+		db_execute_prepared('REPLACE INTO poller_data_template_field_mappings
+			SELECT dtr.data_template_id, 
+			dif.data_name, 
+			GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, 
+			NOW() AS last_updated
+			FROM data_template_rrd AS dtr
+			INNER JOIN data_input_fields AS dif
+			ON dtr.data_input_field_id = dif.id
+			WHERE dtr.local_data_id = 0
+			AND dtr.data_template_id = ?
+			GROUP BY dtr.data_template_id, dif.data_name', array($data_template_id));
 	}
 
 	/* status information that will be presented to the user */

@@ -40,7 +40,7 @@ function display_help () {
 	display_version();
 
 	print "\nusage: poller_boost.php [--verbose] [--force] [--debug]\n\n";
-	print "Cacti's performance boosing poller.  This poller will purge the boost cache periodically.  You may\n";
+	print "Cacti's performance boosting poller.  This poller will purge the boost cache periodically.  You may\n";
 	print "force the processing of the boost cache by using the --force option.\n\n";
 	print "Optional:\n";
 	print "    --verbose - Show details logs at the command line\n";

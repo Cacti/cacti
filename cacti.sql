@@ -2579,6 +2579,7 @@ CREATE TABLE host (
   total_polls int(12) unsigned default '0',
   failed_polls int(12) unsigned default '0',
   availability decimal(8,5) NOT NULL default '100.00000',
+  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY  (id),
   KEY poller_id (poller_id),
   KEY site_id (site_id),
@@ -2589,7 +2590,7 @@ CREATE TABLE host (
 -- Dumping data for table `host`
 --
 
-INSERT INTO `host` VALUES (1,1,0,8,'Localhost','127.0.0.1','','public',2,'','','','','','','',161,500,'','',0,'','','',2,1,0,500,2,10,1,'',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00','',9.99999,0.00000,0.00000,0.00000,0,0,0,100.00000);
+INSERT INTO `host` VALUES (1,1,0,8,'Localhost','127.0.0.1','','public',2,'','','','','','','',161,500,'','',0,'','','',2,1,0,500,2,10,1,'',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00','',9.99999,0.00000,0.00000,0.00000,0,0,0,100.00000, NOW());
 
 --
 -- Table structure for table `host_graph`
@@ -2622,6 +2623,7 @@ CREATE TABLE host_snmp_cache (
   snmp_index varchar(255) NOT NULL default '',
   oid TEXT NOT NULL,
   present tinyint NOT NULL DEFAULT '1',
+  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY  (host_id,snmp_query_id,field_name,snmp_index),
   KEY host_id (host_id,field_name),
   KEY snmp_index (snmp_index),
@@ -2634,7 +2636,6 @@ CREATE TABLE host_snmp_cache (
 --
 -- Dumping data for table `host_snmp_cache`
 --
-
 
 --
 -- Table structure for table `host_snmp_query`
@@ -2803,6 +2804,12 @@ CREATE TABLE `poller` (
   `notes` varchar(1024) DEFAULT '',
   `status` int(10) unsigned NOT NULL DEFAULT '0',
   `hostname` varchar(250) NOT NULL DEFAULT '',
+  `dbdefault` varchar(20) NOT NULL DEFAULT 'cacti',
+  `dbhost` varchar(64) NOT NULL DEFAULT 'cacti',
+  `dbuser` varchar(20) NOT NULL DEFAULT '',
+  `dbpass` varchar(64) NOT NULL DEFAULT '',
+  `dbport` int(10) unsigned DEFAULT '3306',
+  `dbssl` char(3) DEFAULT '',
   `total_time` double DEFAULT '0',
   `snmp` mediumint(8) unsigned DEFAULT '0',
   `script` mediumint(8) unsigned DEFAULT '0',
@@ -2823,8 +2830,21 @@ CREATE TABLE poller_command (
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   action tinyint(3) unsigned NOT NULL default '0',
   command varchar(200) NOT NULL default '',
+  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY  (poller_id,action,command)
 ) ENGINE=InnoDB;
+
+--
+-- Table structure for table `poller_data_template_field_mappings`
+--
+
+CREATE TABLE `poller_data_template_field_mappings` (
+  `data_template_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `data_name` varchar(25) NOT NULL DEFAULT '',
+  `data_source_name` varchar(25) NOT NULL DEFAULT '',
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`data_template_id`,`data_name`,`data_source_name`)
+) ENGINE=InnoDB COMMENT='Tracks mapping of Data Templates to their Data Source Names';
 
 --
 -- Table structure for table `poller_item`
@@ -2836,6 +2856,7 @@ CREATE TABLE poller_item (
   host_id mediumint(8) unsigned NOT NULL default '0',
   action tinyint(2) unsigned NOT NULL default '1',
   present tinyint NOT NULL DEFAULT '1',
+  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   hostname varchar(250) NOT NULL default '',
   snmp_community varchar(100) NOT NULL default '',
   snmp_version tinyint(1) unsigned NOT NULL default '0',

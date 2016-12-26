@@ -378,13 +378,11 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		$limit");
 
 	if (!sizeof($rrd_field_names)) {
-		$rrd_field_names = array_rekey(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
-			CONCAT(dtr.data_template_id, "_", dif.data_name) AS keyname, GROUP_CONCAT(dtr.data_source_name) AS data_source_name 
-			FROM data_template_rrd AS dtr
-			INNER JOIN data_input_fields AS dif
-			ON dtr.data_input_field_id = dif.id
-			WHERE dtr.local_data_id=0
-			GROUP BY dtr.data_template_id, dif.data_name'), 'keyname', array('data_source_name'));
+		$rrd_field_names = array_rekey(
+			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
+				CONCAT(data_template_id, "_", data_name) AS keyname, data_source_names
+				FROM poller_data_template_field_mappings'), 
+			'keyname', array('data_source_names'));
 	}
 
 	if (sizeof($results)) {
@@ -428,7 +426,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 						$fields = array();
 
 						if (isset($rrd_field_names[$item['data_template_id'] . '_' . $matches[0]])) {
-							$field_map = $rrd_field_names[$item['data_template_id'] . '_' . $matches[0]]['data_source_name'];
+							$field_map = $rrd_field_names[$item['data_template_id'] . '_' . $matches[0]]['data_source_names'];
 
 							if (strpos($field_map, ',') !== false) {
 								$fields = explode(',', $field_map);
@@ -741,21 +739,13 @@ function md5sum_path($path, $recursive = true) {
 }
 
 function replicate_tables($poller_id = 1) {
+	global $config;
+
 	$replicate_in_tables = array(
 		'data_input' => array(
 			'direction' => 'in',    // Small table
 			'frequency' => 'onchange',
 			'setting'   => 'poller_replicate_data_input_crc'
-		),
-		'data_input_fields' => array(
-			'direction' => 'in',    // Small table
-			'frequency' => 'onchange',
-			'setting'   => 'poller_replicate_data_input_fields_crc'
-		),
-		'data_template_rrd' => array(
-			'direction' => 'in',    // Potentially large table
-			'frequency' => 'onchange',
-			'setting'   => 'poller_replicate_data_source_cache_crc_|poller_id|'
 		),
 		'host_snmp_query' => array(
 			'direction' => 'in',    // Small table
@@ -801,23 +791,20 @@ function replicate_tables($poller_id = 1) {
 			'out_columns' => 'assert_value',
 			'in_columns'  => 'all',
 			'setting'     => 'poller_replicate_device_cache_crc_|poller_id|'
-		),
-//		'settings' => array(
-//			'direction' => 'inout', // Only some rows
-//			'in_freq'   => 'always',
-//			'out_freq'  => 'always',
-//			'out_names' => '',
-//			'in_names'  => ''
-//		)
-	);
-
-	$replicate_out_tables = array(
-		'poller_output_boost' => array(
-			'direction' => 'output',
-			'frequency' => 'onrecovery',
-			'out_columns' => 'all'
 		)
 	);
 
 	api_poller_hook_function('replicate_tables');
+}
+
+function poller_recovery_flush_boost($poller_id) {
+	global $config;
+
+	if ($poller_id > 1) {
+		if ($config['connection'] == 'recovery') {
+			$command_string = read_config_option('path_php_binary');
+			$extra_args = '-q ' . $config['base_path'] . '/poller_recovery.php';
+			exec_background($command_string, $extra_args);
+		}
+	}
 }
