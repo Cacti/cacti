@@ -145,8 +145,9 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
    @arg $contents - the readable portion of the
    @arg $id - the id of the object that will be highlighted
    @arg $width - the width of the table element
-   @arg $style_or_class - the style or class to apply to the table element */
-function form_selectable_cell($contents, $id, $width='', $style_or_class = '') {
+   @arg $style_or_class - the style or class to apply to the table element
+   @arg $title - optional title for the column */
+function form_selectable_cell($contents, $id, $width='', $style_or_class = '', $title = '') {
 	$output = '';
 
 	if ($style_or_class != '') {
@@ -164,7 +165,13 @@ function form_selectable_cell($contents, $id, $width='', $style_or_class = '') {
 		}
 	}
 
-	print "\t<td " . $output . ">" . $contents . "</td>\n";
+	if ($title != '') {
+		$wrapper = "<span class='cactiTooltipHint' title='" . htmlspecialchars($title) . "'>" . $contents . "</span>";
+	}else{
+		$wrapper = $contents;
+	}
+
+	print "\t<td " . $output . ">" . $wrapper . "</td>\n";
 }
 
 /* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
