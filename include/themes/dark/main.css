@@ -896,7 +896,7 @@ legend {
 .cactiTooltipHint {
 	cursor: pointer;
 	padding:5px;
-	font-size:14px !important;
+	font-size:12px !important;
 }
 
 .spikekillData, .spikekillData td {
