@@ -351,7 +351,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 		foreach($snmp_indexes as $oid => $value) {
 			$snmp_indexes[$oid] = preg_replace($index_parse_regexp, "\\1", $oid);
-			query_debug_timer_offset('data_query', "index_parse at OID: '" . $oid . "' results: '" . $index['value'] . "'");
+			query_debug_timer_offset('data_query', "index_parse at OID: '" . $oid . "' results: '" . $snmp_indexes[$oid] . "'");
 		}
 	}
 
