@@ -512,16 +512,21 @@ function remote_update_config_file() {
 			$hostname = php_uname('n');
 		}
 
-		$save['name'] = 'New Poller';
-		$save['hostname']  = $hostname;
-		$save['dbdefault'] = $database_default;
-		$save['dbhost']    = $database_hostname;
-		$save['dbuser']    = $database_username;
-		$save['dbpass']    = $database_password;
-		$save['dbport']    = $database_port;
-		$save['dbssl']     = $database_ssl;
+		// Check for an existing poller
+		$poller_id = db_fetch_cell('SELECT id FROM poller WHERE hostname = ?', array($hostname), true, $connection);
 
-		$poller_id = sql_save($save, 'poller', 'id', TRUE, $connection);
+		if (empty($poller_id)) {
+			$save['name'] = 'New Poller';
+			$save['hostname']  = $hostname;
+			$save['dbdefault'] = $database_default;
+			$save['dbhost']    = $database_hostname;
+			$save['dbuser']    = $database_username;
+			$save['dbpass']    = $database_password;
+			$save['dbport']    = $database_port;
+			$save['dbssl']     = $database_ssl;
+
+			$poller_id = sql_save($save, 'poller', 'id', TRUE, $connection);
+		}
 
 		if (!empty($poller_id)) {
 			if (is_writable($config_file)) {
