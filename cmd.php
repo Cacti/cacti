@@ -157,6 +157,7 @@ $last      = NULL;
 $allhost   = true;
 $debug     = false;
 $mibs      = false;
+$mode      = 'online';
 $poller_id = $config['poller_id'];
 
 if (sizeof($parms)) {
@@ -196,6 +197,10 @@ if (sizeof($parms)) {
 		case '--mibs':
 		case '-m':
 			$mibs    = true;
+			break;
+		case '--mode':
+		case '-N':
+			$mode = $value;
 			break;
 		case '--debug':
 		case '-d':

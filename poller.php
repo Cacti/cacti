@@ -418,6 +418,10 @@ while ($poller_runs_completed < $poller_runs) {
 
 		$extra_args = api_plugin_hook_function('poller_command_args', $extra_args);
 
+		if ($poller_id > 1) {
+			$extra_args .= ' -N ' . $config['connection'];
+		}
+
 		/* Populate each execution file with appropriate information */
 		foreach ($polling_hosts as $item) {
 			if ($host_count == 1) {
