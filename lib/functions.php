@@ -4288,3 +4288,15 @@ function is_device_debug_enabled($host_id) {
 
 	return false;
 }
+
+/** get_url_type - Determines if remote communications are over
+ *  http or https for remote services.
+ *
+ *  @returns - http or https */
+function get_url_type() {
+	if (read_config_option('force_https') == 'on') {
+		return 'https';
+	}else{
+		return 'http';
+	}
+}

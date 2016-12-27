@@ -133,7 +133,7 @@ if (sizeof($polling_items)) {
 		$poller_id   = $item['poller_id'];
 
 		if ($poller_id > 1) {
-			$output = file_get_contents('http://' . $config['url_path'] . '/remote_agent.php?host_id=' . $host_id . '&local_data_id=' . $local_data_id);
+			$output = file_get_contents(get_url_type() . '://' . $config['url_path'] . '/remote_agent.php?host_id=' . $host_id . '&local_data_id=' . $local_data_id);
 		}else{
 			switch ($item['action']) {
 			case POLLER_ACTION_SNMP: /* snmp */

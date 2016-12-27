@@ -333,7 +333,7 @@ function api_device_ping_device($device_id) {
 
 	if ($host['poller_id'] > 1 && $poller_id != $host['poller_id']) {
 		$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($host['poller_id']));
-		print file_get_contents('http://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id']);
+		print file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id']);
 		return;
 	}
 
