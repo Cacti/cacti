@@ -395,6 +395,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 	$new_host     = true;
 	$last_host    = '';
 	$current_host = '';
+	$output_array = array();
+	$output_count = 0;
 
 	/* create new ping socket for host pinging */
 	$ping = new Net_Ping;
@@ -697,20 +699,31 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			if (isset($output)) {
 				/* insert a U in place of the actual value if the snmp agent restarts */
 				if (($set_spike_kill) && (!substr_count($output, ':'))) {
-					db_execute_prepared("INSERT INTO poller_output 
-						(local_data_id, rrd_name, time, output) 
-						VALUES (?, ?, ?,'U')", 
-						array($item['local_data_id'], $item['rrd_name'], $host_update_time));
+					$output_array[] = sprintf('(%d, %s, %s, "U")', $item['local_data_id'], $item['rrd_name'], $host_update_time);
 				/* otherwise, just insert the value received from the poller */
 				}else{
-					db_execute_prepared('INSERT INTO poller_output 
-						(local_data_id, rrd_name, time, output) 
-						VALUES (?, ?, ?, ?)', 
-						array($item['local_data_id'], $item['rrd_name'], $host_update_time, $output));
+					$output_array[] = sprintf('(%d, %s, %s, %s)', $item['local_data_id'], $item['rrd_name'], $host_update_time, $output);
+				}
+
+				if ($output_count > 1000) {
+					db_execute('INSERT IGNORE INTO poller_output
+						(local_data_id, rrd_name, time, output)
+						VALUES ' . implode(', ', $output_array));
+
+					$output_array = array();
+					$output_count = 0;
+				}else{
+					$output_count++;
 				}
 			}
 		} /* Next Cache Item */
 	} /* End foreach */
+
+	if ($output_count > 0) {
+		db_execute('INSERT IGNORE INTO poller_output
+			(local_data_id, rrd_name, time, output)
+			VALUES ' . implode(', ', $output_array));
+	}
 
 	if ($using_proc_function && $script_server_calls > 0) {
 		// close php server process
