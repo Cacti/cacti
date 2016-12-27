@@ -107,7 +107,8 @@ switch (get_request_var('action')) {
 		bottom_footer();
 		break;
 	case 'ping_host':
-		ping_host();
+		$host_id = get_filter_request_var('id');
+		api_device_ping_device($host_id);
 		break;
 	case 'enable_debug':
 		enable_device_debug(get_filter_request_var('host_id'));
@@ -622,105 +623,6 @@ function host_remove_gt() {
 /* ---------------------
     Device Functions
    --------------------- */
-
-function ping_host() {
-	get_filter_request_var('id');
-
-	if (isempty_request_var('id')) {
-		return "";
-	}
-
-	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array(get_request_var('id')));
-	$am   = $host['availability_method'];
-	$anym = false;
-
-	if ($host['disabled'] == 'on') {
-		print __('Device is Disabled') . '<br>';
-		print __('Device Availability Check Bypassed') . '<br>';
-	}elseif ($am == AVAIL_SNMP || $am == AVAIL_SNMP_GET_NEXT ||
-		$am == AVAIL_SNMP_GET_SYSDESC || $am == AVAIL_SNMP_AND_PING ||
-		$am == AVAIL_SNMP_OR_PING) {
-
-		$anym = true;
-
-		print __('SNMP Information') . "<br>\n";
-		print "<span class='monoSpace'>\n";
-
-		if (($host['snmp_community'] == '' && $host['snmp_username'] == '') || $host['snmp_version'] == 0) {
-			print "<span style='color: #ab3f1e; font-weight: bold;'>" . __('SNMP not in use') . "</span>\n";
-		}else{
-			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
- 				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
- 				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
-				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
-
-			if ($session === false) {
-				print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
-			}else{
-				$snmp_system = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0');
-
-				/* modify for some system descriptions */
-				/* 0000937: System output in host.php poor for Alcatel */
-				if (substr_count($snmp_system, '00:')) {
-					$snmp_system = str_replace('00:', '', $snmp_system);
-					$snmp_system = str_replace(':', ' ', $snmp_system);
-				}
-
-				if ($snmp_system == '') {
-					print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
-				}else{
-					$snmp_uptime     = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
-					$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
-					$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
-					$snmp_contact    = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
-
-					print '<strong>' . __('System:') . '</strong> ' . html_split_string($snmp_system) . "<br>\n";
-					$days      = intval($snmp_uptime / (60*60*24*100));
-					$remainder = $snmp_uptime % (60*60*24*100);
-					$hours     = intval($remainder / (60*60*100));
-					$remainder = $remainder % (60*60*100);
-					$minutes   = intval($remainder / (60*100));
-					print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
-					print "&nbsp;(" . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ")<br>\n";
-					print "<strong>" . __('Hostname:') . "</strong> $snmp_hostname<br>\n";
-					print "<strong>" . __('Location:') . "</strong> $snmp_location<br>\n";
-					print "<strong>" . __('Contact:') . "</strong> $snmp_contact<br>\n";
-				}
-
-				$session->close();
-			}
-		}
-		print "</span>\n";
-	}
-
-	if ($am == AVAIL_PING || $am == AVAIL_SNMP_AND_PING || $am == AVAIL_SNMP_OR_PING) {
-		$anym = true;
-
-		/* create new ping socket for host pinging */
-		$ping = new Net_Ping;
-
-		$ping->host = $host;
-		$ping->port = $host['ping_port'];
-
-		/* perform the appropriate ping check of the host */
-		$ping_results = $ping->ping(AVAIL_PING, $host['ping_method'], $host['ping_timeout'], $host['ping_retries']);
-
-		if ($ping_results == true) {
-			$host_down = false;
-			$class     = 'hostUp';
-		}else{
-			$host_down = true;
-			$class     = 'hostDown';
-		}
-
-		print __('Ping Results') . "<br>\n";
-		print "<span class='" . $class . "'>" . $ping->ping_response . "</span>\n";
-	}
-
-	if ($anym == false && $host['disabled'] != 'on') {
-		print __('No Ping or SNMP Availability Check In Use') . "<br><br>\n";
-	}
-}
 
 function host_edit() {
 	global $fields_host_edit, $reindex_types;
