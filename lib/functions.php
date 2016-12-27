@@ -37,6 +37,23 @@ function title_trim($text, $max_length) {
 	}
 }
 
+/* cacti_htmlspecialchars - filter dangerous specialchars but everything
+   @arg $value - the string to protect
+   @returns - the escaped string */
+function cacti_htmlspecialchars($value) {
+	static $charset;
+
+	if ($charset == '') {
+		$charset = ini_get('default_charset');
+	}
+
+	if (strpos($value, '<script') !== false) {
+		return htmlspecialchars($value, ENT_QUOTES, $charset, false);
+	}else{
+		return $value;
+	}
+}
+
 /* filter_value - a quick way to highlight text in a table from general filtering
    @arg $text - the string to filter
    @arg $filter - the search term to filter for

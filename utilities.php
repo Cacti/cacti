@@ -1074,12 +1074,12 @@ function utilities_view_logfile() {
 		$new_item = '';
 
 		if ((!$host_start) && (!$ds_start)) {
-			$new_item = htmlspecialchars($item);
+			$new_item = cacti_htmlspecialchars($item);
 		}else{
 			while ($host_start) {
 				$host_end   = strpos($item, ']', $host_start);
 				$host_id    = substr($item, $host_start+7, $host_end-($host_start+7));
-				$new_item   = $new_item . htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . htmlspecialchars('host.php?action=edit&id=' . $host_id) . "'>" . htmlspecialchars(substr($item, $host_start + 7, $host_end-($host_start + 7))) . '</a>';
+				$new_item   = $new_item . cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars('host.php?action=edit&id=' . $host_id) . "'>" . cacti_htmlspecialchars(substr($item, $host_start + 7, $host_end-($host_start + 7))) . '</a>';
 				$item       = substr($item, $host_end);
 				$host_start = strpos($item, 'Device[');
 			}
@@ -1088,12 +1088,12 @@ function utilities_view_logfile() {
 			while ($ds_start) {
 				$ds_end   = strpos($item, ']', $ds_start);
 				$ds_id    = substr($item, $ds_start+3, $ds_end-($ds_start+3));
-				$new_item = $new_item . htmlspecialchars(substr($item, 0, $ds_start + 3)) . "<a href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>';
+				$new_item = $new_item . cacti_htmlspecialchars(substr($item, 0, $ds_start + 3)) . "<a href='" . cacti_htmlspecialchars('data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . cacti_htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>';
 				$item     = substr($item, $ds_end);
 				$ds_start = strpos($item, 'DS[');
 			}
 
-			$new_item = $new_item . htmlspecialchars($item);
+			$new_item = $new_item . cacti_htmlspecialchars($item);
 		}
 
 		/* get the background color */

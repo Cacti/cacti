@@ -189,14 +189,14 @@ function clog_view_logfile() {
 		$new_item = '';
 
 		if ((!$host_start) && (!$ds_start)) {
-			$new_item = htmlspecialchars($item);
+			$new_item = cacti_htmlspecialchars($item);
 		}else{
 			while ($host_start) {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start+7, $host_end-($host_start+7));
-				$new_item   .= htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
+				$new_item   .= cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
 				$host_description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
-				$new_item   .= '] Description[' . htmlspecialchars($host_description) . '';
+				$new_item   .= '] Description[' . cacti_htmlspecialchars($host_description) . '';
 				$item        = substr($item, $host_end);
 				$host_start  = strpos($item, 'Device[');
 			}
@@ -210,7 +210,7 @@ function clog_view_logfile() {
 
 				if (sizeof($graph_ids)) {
 					$new_item  .= substr($item, 0, $ds_start + 3) .
-						"<a href='" . htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>' .
+						"<a href='" . cacti_htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . cacti_htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>' .
 						"] Graphs[<a href='";
 
 					$i = 0;
@@ -219,19 +219,19 @@ function clog_view_logfile() {
 						$graph_add .= ($i > 0 ? '%2C' : '') . $key;
 						$i++;
 						if (strlen($titles)) {
-							$titles .= ",'" . htmlspecialchars($title) . "'";
+							$titles .= ",'" . cacti_htmlspecialchars($title) . "'";
 						}else{
-							$titles .= "'"  . htmlspecialchars($title) . "'";
+							$titles .= "'"  . cacti_htmlspecialchars($title) . "'";
 						}
 					}
-					$new_item  .= htmlspecialchars($graph_add) . "' title='" . __('View Graphs') . "'>" . $titles . '</a>';
+					$new_item  .= cacti_htmlspecialchars($graph_add) . "' title='" . __('View Graphs') . "'>" . $titles . '</a>';
 				}
 
 				$item      = substr($item, $ds_end);
 				$ds_start  = strpos($item, 'DS[');
 			}
 
-			$new_item .= htmlspecialchars($item);
+			$new_item .= cacti_htmlspecialchars($item);
 		}
 
 		/* get the background color */
