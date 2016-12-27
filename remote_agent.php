@@ -64,6 +64,8 @@ switch (get_request_var('action')) {
 		print 'Unknown agent request';
 }
 
+exit;
+
 function strip_domain($host) {
 	if (strpos($host, '.') !== false) {
 		$parts = explode('.', $host);

@@ -321,7 +321,7 @@ function api_device_template_sync_template($device_template, $down_devices = fal
 }
 
 function api_device_ping_device($device_id) {
-	global $config;
+	global $config, $poller_id;
 
 	if (empty($device_id)) {
 		return "";
@@ -331,8 +331,9 @@ function api_device_ping_device($device_id) {
 	$am   = $host['availability_method'];
 	$anym = false;
 
-	if ($host['poller_id'] > 1) {
-		print file('http://' . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id']);
+	if ($host['poller_id'] > 1 && $poller_id != $host['poller_id']) {
+		$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($host['poller_id']));
+		print file_get_contents('http://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id']);
 		return;
 	}
 
