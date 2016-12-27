@@ -73,6 +73,13 @@ if (read_config_option('hide_console') != '1') {
 			<strong><?php print __('Version %s', $config['cacti_version']);?></strong>
 		</td>
 	</tr>
+	<?php if ($poller_id > 1) {?>
+	<tr>
+		<td class="textAreaNotes top left">
+			<?php print __('<strong>NOTE:</strong> This is a Remote Data Collector.  When online, you will be able to view and control much of the WebSite, but in order to view Graphs, you will need to utilize the Boost Server, or Cacti\'s RRDProxy service.');?>
+		</td>
+	</td>
+	<?php } ?>
 </table>
 
 <?php
