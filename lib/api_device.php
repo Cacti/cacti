@@ -331,7 +331,7 @@ function api_device_ping_device($device_id) {
 	$am   = $host['availability_method'];
 	$anym = false;
 
-	if ($host['poller_id']) > 1) {
+	if ($host['poller_id'] > 1) {
 		print file('http://' . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id']);
 		return;
 	}
