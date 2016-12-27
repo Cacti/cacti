@@ -69,6 +69,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY', ''))");
 
 			$database_sessions["$device:$port:$db_name"] = $cnn_id;
+
 			return $cnn_id;
 		} catch (PDOException $e) {
 			// Must catch this exception or else PDO will display an error with our username/password
@@ -461,7 +462,7 @@ function db_remove_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_index_exists($table, $index, $log = TRUE, $db_conn = FALSE) {
-	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM `$table`"), "Key_name", "Key_name");
+	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM `$table`", $log, $db_conn), "Key_name", "Key_name");
 	return in_array($index, $_keys);
 }
 
@@ -518,8 +519,17 @@ function db_column_exists($table, $column, $log = TRUE, $db_conn = FALSE) {
 /* db_get_table_column_types - returns all the types for each column of a table
    @param $table - the name of the table
    @returns - (array) an array of column types indexed by the column names */
-function db_get_table_column_types($table) {
-	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table");
+function db_get_table_column_types($table, $db_conn = FALSE) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+	}
+
+	if (!is_object($db_conn)) return FALSE;
+
+	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table", false, $db_conn);
 	$cols    = array();
 	if (sizeof($columns)) {
 		foreach($columns as $col) {
@@ -582,17 +592,17 @@ function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $d
 		}
 	}
 
-	$info = db_fetch_row("SELECT ENGINE, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_NAME = '$table'");
+	$info = db_fetch_row("SELECT ENGINE, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_NAME = '$table'", $log, $db_conn);
 	if (isset($info['TABLE_COMMENT']) && str_replace("'", '', $info['TABLE_COMMENT']) != str_replace("'", '', $data['comment'])) {
-		db_execute("ALTER TABLE `$table` COMMENT '" . str_replace("'", '', $data['comment']) . "'");
+		db_execute("ALTER TABLE `$table` COMMENT '" . str_replace("'", '', $data['comment']) . "'", $log, $db_conn);
 	}
 
 	if (isset($info['ENGINE']) && strtolower($info['ENGINE']) != strtolower($data['type'])) {
-		db_execute("ALTER TABLE `$table` ENGINE = " . $data['type']);
+		db_execute("ALTER TABLE `$table` ENGINE = " . $data['type'], $log, $db_conn);
 	}
 
 	// Correct any indexes
-	$indexes = db_fetch_assoc("SHOW INDEX FROM `$table`");
+	$indexes = db_fetch_assoc("SHOW INDEX FROM `$table`", $log, $db_conn);
 	$allindexes = array();
 
 	foreach ($indexes as $index) {
@@ -773,6 +783,15 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = FALSE) {
 // FIXME:  Need to Rename and cleanup a bit
 
 function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+	}
+
+	if (!is_object($db_conn)) return FALSE;
+
 	if (!is_array($keyCols)) {
 		$keyCols = array($keyCols);
 	}
@@ -805,13 +824,13 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
 
 	$sql .= ") VALUES ($sql2)" . ($sql3 != '' ? " ON DUPLICATE KEY UPDATE $sql3" : '');
 
-	$return_code = db_execute($sql);
+	$return_code = db_execute($sql, true, $db_conn);
 
 	if (!$return_code) {
 		cacti_log("ERROR: SQL Save Failed for Table '$table_name'.  SQL:'" . $sql . "'", FALSE, 'DBCALL');
 	}
 
-	return db_fetch_insert_id();
+	return db_fetch_insert_id($db_conn);
 }
 
 /* sql_save - saves data to an sql table
@@ -827,7 +846,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
-	$cols = db_get_table_column_types($table_name);
+	$cols = db_get_table_column_types($table_name, $db_conn);
 
 	cacti_log("DEVEL: SQL Save on table '$table_name': \"" . serialize($array_items) . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
@@ -886,7 +905,7 @@ function sql_sanitize($value) {
    @param $table_name - table to check
    @param $column_name - column name
    @return true or false; */
-function sql_column_exists($table_name, $column_name, $db_conn = '') {
+function sql_column_exists($table_name, $column_name, $db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -894,7 +913,7 @@ function sql_column_exists($table_name, $column_name, $db_conn = '') {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
-	$columns = db_fetch_assoc("SHOW COLUMNS FROM `$table_name`", false);
+	$columns = db_fetch_assoc("SHOW COLUMNS FROM `$table_name`", false, $db_conn);
 
 	foreach ($columns as $column) {
 		if ($column_name === $column['name']) {
@@ -907,7 +926,7 @@ function sql_column_exists($table_name, $column_name, $db_conn = '') {
 
 /* sql_function_timestamp - abstracts timestamp function across databases
    @return - fixed value */
-function sql_function_timestamp($db_conn = '') {
+function sql_function_timestamp($db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -926,7 +945,7 @@ function sql_function_timestamp($db_conn = '') {
 
 /* sql_function_substr - abstracts substring function across databases
    @return - fixed value */
-function sql_function_substr($db_conn = '') {
+function sql_function_substr($db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -963,7 +982,7 @@ function sql_function_substr($db_conn = '') {
 
 /* sql_function_concat - abstracts concatenation function across databases
    @return - fixed value */
-function sql_function_concat($db_conn = '') {
+function sql_function_concat($db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -981,7 +1000,7 @@ function sql_function_concat($db_conn = '') {
 
 /* sql_function_replace - abstracts replace function across databases
    @return - fixed value */
-function sql_function_replace($db_conn = '') {
+function sql_function_replace($db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -1022,7 +1041,7 @@ function sql_function_replace($db_conn = '') {
 
 /* sql_function_dateformat - abstracts dateformat function across databases
    @return - fixed value */
-function sql_function_dateformat($fmt, $col = false, $db_conn = '') {
+function sql_function_dateformat($fmt, $col = false, $db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -1042,7 +1061,7 @@ function sql_function_dateformat($fmt, $col = false, $db_conn = '') {
 //	}
 }
 
-function db_qstr($s, $db_conn = '') {
+function db_qstr($s, $db_conn = FALSE) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -1064,9 +1083,4 @@ function db_qstr($s, $db_conn = '') {
 
 	return  "'" . str_replace("'",$replaceQuote, $s) . "'";
 }
-
-
-
-
-
 
