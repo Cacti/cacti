@@ -195,12 +195,39 @@ function boost_poller_on_demand(&$results) {
 	}
 }
 
+function boost_poller_id_check() {
+	global $config, $poller_id;
+
+	$storage_location = read_config_option('storage_location');
+
+	/* error out if running from a remote poller and the storage
+	 * location is not the RRDproxy */
+	if ($poller_id > 1) {
+		if ($config['connection'] == 'online') {
+			if ($storage_location == 0) {
+				return false;
+			}else{
+				return true;
+			}
+		}else{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 function boost_fetch_cache_check($local_data_id) {
-	global $config, $rrdtool_pipe;
+	global $config, $poller_id, $rrdtool_pipe;
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
 		/* include poller processing routinges */
 		include_once($config['library_path'] . '/poller.php');
+
+		/* check to see if boost can do it's job */
+		if (!boost_poller_id_check()) {
+			return false;
+		}
 
 		/* suppress warnings */
 		if (defined('E_DEPRECATED')) {
@@ -257,6 +284,11 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 
 	/* install the boost error handler */
 	set_error_handler('boost_error_handler');
+
+	/* check to see if boost can do it's job */
+	if (!boost_poller_id_check()) {
+		return false;
+	}
 
 	/* if we are just printing the rrd command return */
 	if (isset($graph_data_array['print_source'])) {
@@ -679,7 +711,9 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 				if (sizeof($results) == $data_ids_to_get) {
 					cacti_log("FALURE: Current LIMIT ($data_ids_to_get) is too low to run multiple DS RRD writes, consider raising it", false, 'BOOST');
 				}
+
 				restore_error_handler();
+
 				return boost_process_poller_output($first_ds, $rrdtool_pipe);
 			}
 		}
@@ -690,12 +724,13 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		foreach ($results as $item) {
 			$item['timestamp'] = trim($item['timestamp']);
 
-			if (	$single_local_data_id && /* duplicate entry, possible when fetching data while rotating poller_output_boost */
+			if ($single_local_data_id && /* duplicate entry, possible when fetching data while rotating poller_output_boost */
 				$last_item['local_data_id'] == $item['local_data_id'] &&
 				$last_item['timestamp'] == $item['timestamp'] &&
-				strcmp($last_item['rrd_name'], $item['rrd_name']) == 0
-			)
+				strcmp($last_item['rrd_name'], $item['rrd_name']) == 0) {
+
 				continue;
+			}
 
 			if (!$single_local_data_id && $first_ds != $last_ds && $last_ds == $item['local_data_id']) {
 				/* we faced last and possibly incomplete DS, bail out */
