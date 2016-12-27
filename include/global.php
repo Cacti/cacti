@@ -174,7 +174,7 @@ if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($
 global $local_db_cnn_id, $remote_db_cnn_id;
 
 $config['connection'] = 'online';
-if ($config['poller_id'] > 1) {
+if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
 
 	if ($local_db_cnn_id) {
@@ -184,10 +184,13 @@ if ($config['poller_id'] > 1) {
 		}
 	}
 
+	/* gather the existing cactidb version */
+	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', false, $local_db_cnn_id);
+
 	// We are a remote poller also try to connect to the remote database
 	$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl);
 
-	if ($remote_db_cnn_id && $config['connection'] != 'recovery') {
+	if ($remote_db_cnn_id && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install') {
 		// Connection worked, so now override the default settings so that it will always utilize the remote connection
 		$database_default   = $rdatabase_default;
 		$database_hostname  = $rdatabase_hostname;
@@ -205,6 +208,9 @@ if ($config['poller_id'] > 1) {
 	print 'FATAL: Connection to Cacti database failed. Please insure the database is running and your credentials in config.php are valid.';
 	print $is_web ? '</p>':'';
 	exit;
+}else{
+	/* gather the existing cactidb version */
+	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
 }
 
 if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions')) {
@@ -295,9 +301,6 @@ if ((bool)ini_get('register_globals')) {
 
 	unset($input);
 }
-
-/* gather the existing cactidb version */
-$config['cacti_db_version'] = db_fetch_cell("SELECT cacti FROM version LIMIT 1");
 
 include_once($config['include_path'] . '/global_languages.php');
 

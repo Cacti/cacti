@@ -33,15 +33,16 @@ $database_port     = '3306';
 $database_ssl      = false;
 
 /* when the cacti server is a remote poller, then these entries point to
- * the main cacti server.  otherwise, these variables have no use. */
+ * the main cacti server.  otherwise, these variables have no use. 
+ * and must remain commented out. */
 
-$rdatabase_type     = 'mysql';
-$rdatabase_default  = 'cacti';
-$rdatabase_hostname = 'localhost';
-$rdatabase_username = 'cactiuser';
-$rdatabase_password = 'cactiuser';
-$rdatabase_port     = '3306';
-$rdatabase_ssl      = false;
+#$rdatabase_type     = 'mysql';
+#$rdatabase_default  = 'cacti';
+#$rdatabase_hostname = 'localhost';
+#$rdatabase_username = 'cactiuser';
+#$rdatabase_password = 'cactiuser';
+#$rdatabase_port     = '3306';
+#$rdatabase_ssl      = false;
 
 /* the poller_id of this system.  set to '1' for the main cacti
  * web server.  otherwise, you this value should be the poller_id

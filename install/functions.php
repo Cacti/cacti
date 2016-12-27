@@ -492,3 +492,59 @@ function install_file_paths () {
 
 	return $input;
 }
+
+function remote_update_config_file() {
+	global $config, $rdatabase_type, $rdatabase_hostname, $rdatabase_username, 
+		$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl;
+
+	global $database_type, $database_hostname, $database_username, 
+		$database_password, $database_default, $database_type, $database_port, $database_ssl;
+
+	$written     = false;
+	$config_file = $config['base_path'] . '/include/config.php';
+
+	$connection = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl);
+
+	if (is_object($connection)) {
+		if (function_exists('gethostname')) {
+			$hostname = gethostname();
+		}else{
+			$hostname = php_uname('n');
+		}
+
+		$save['name'] = 'New Poller';
+		$save['hostname']  = $hostname;
+		$save['dbdefault'] = $database_default;
+		$save['dbhost']    = $database_hostname;
+		$save['dbuser']    = $database_username;
+		$save['dbpass']    = $database_password;
+		$save['dbport']    = $database_port;
+		$save['dbssl']     = $database_ssl;
+
+		$poller_id = sql_save($save, 'poller', 'id', TRUE, $connection);
+
+		if (!empty($poller_id)) {
+			if (is_writable($config_file)) {
+				$fp = fopen($config_file, 'r+');
+
+				if (is_resource($fp)) {
+					while (!feof($fp)) {
+						$line = fgets($fp);
+
+						if (strpos($line, "\$poller_id = 1") !== false) {
+							fwrite($fp, "\$poller_id = $poller_id");
+							$written = true;
+							break;
+						}
+					}
+
+					fclose($fp);
+				}
+			}
+		}
+
+		db_close($connection);
+	}
+
+	return $written;
+}

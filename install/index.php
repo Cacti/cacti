@@ -79,6 +79,8 @@ if ($old_cacti_version == $config['cacti_version']) {
 /* default value for this variable */
 if (!isset_request_var('install_type')) {
 	set_request_var('install_type', '0');
+}else{
+	$_SESSION['sess_install_type'] = get_filter_request_var('install_type');
 }
 
 /* defaults for the install type dropdown */
@@ -164,21 +166,24 @@ if ($step == '7') {
 	include_once('../lib/utility.php');
 	
 	/* look for templates that have been checked for install */
-		$install = Array();
-		foreach ($_POST as $post => $v) {
-			if (substr($post, 0, 4) == 'chk_' && is_numeric(substr($post, 4))) {
-				$install[] = substr($post, 4);
-			}
+	$install = Array();
+	foreach ($_POST as $post => $v) {
+		if (substr($post, 0, 4) == 'chk_' && is_numeric(substr($post, 4))) {
+			$install[] = substr($post, 4);
 		}
-		/* install templates */
-		$templates = plugin_setup_get_templates(1);
-		if (!empty($install)) {
-			foreach ($install as $i) {
-				plugin_setup_install_template($templates[$i]['filename'], 1, $templates[$i]['interval']);
-			}
+	}
+	/* install templates */
+	$templates = plugin_setup_get_templates(1);
+	if (!empty($install)) {
+		foreach ($install as $i) {
+			plugin_setup_install_template($templates[$i]['filename'], 1, $templates[$i]['interval']);
 		}
+	}
 	
 	/* clear session */
+	if ($_SESSION['sess_install_type'] == 2) {
+		$success = remote_update_config_file();
+	}
 	
 	setcookie(session_name(),'',time() - 3600,$config['url_path']);
 
@@ -207,6 +212,7 @@ if ($step == '7') {
 	/* change cacti version */
 	db_execute('DELETE FROM version');
 	db_execute("INSERT INTO version (cacti) VALUES ('" . $config["cacti_version"] . "')");
+	db_execute("INSERT INTO settings (name, value) VALUES ('testing123', '123)");
 
 	/* send to login page */
 	header ('Location: ../index.php');
@@ -639,6 +645,9 @@ $enabled = '1';
 
 							$.get(strURL, function(data) {
 								$('#results').html('<?php print __('Remote Database: ');?>'+data);
+								if (data == 'Connection Successful') {
+									$('#next').button('enable');
+								}
 							});
 						}
 						</script>
@@ -836,7 +845,7 @@ $enabled = '1';
 						print __('Before continuing, you must test the database connection to the Primary Cacti Web Server using your information below.  Please enter connection values for your Primary Cacti Web Server and press the \'Test Connection\' button in order to proceed.');
 						print '</p>';
 						print '<p>';
-						print __('<b>Note:</b> the Database hostname can not be either \'localhost\' or the loopback address of this server.');
+						print __('<b>Note:</b> the Database hostname must be resolvable via by IP Address or Hostname.');
 						print '</p>';
 						print '<table class="filterTable">';
 						print '<tr><td>' . __('Database Name') . '</td>';
@@ -875,7 +884,9 @@ var step='<?php print $step;?>';
 $(function() {
 	$('#next, #previous, #testdb').button();
 
-	if (step == 1) {
+	if (step == 0) {
+		$('#next').button('disable');
+	}else if (step == 1) {
 		$('#next').button('disable');
 	}else if (step == 10) {
 		$('#next').button('disable');
@@ -899,11 +910,19 @@ $(function() {
 		$('#next').button('enable');
 	}
 
+	if ($('#accept').length) {
+		if ($('#accept').is(':checked')) {
+			$('#next').button('enable');
+		}else{
+			$('#next').button('disable');
+		}
+	}
+
 	$('#testdb').click(function() {
 		strURL = 'index.php?action=testdb';
 		$.post(strURL, $('input').serializeObject()).done(function(data) {
 			$('#message').html(data).show().fadeOut(2000);
-			if (data == 'Connection Sucsessful') {
+			if (data == 'Connection Successful') {
 				$('#next').button('enable');
 			}
 		});
