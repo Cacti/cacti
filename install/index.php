@@ -99,11 +99,14 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 		/* license&welcome - send to checkdependencies */
 		$previous_step = 0;
 		$step++;
+
 		break;
 	case '2':
 		$previous_step = 1;
+
 		/* checkdependencies - send to install/upgrade */	
 		$step++;
+
 		break;
 	case '3':
 		$previous_step = 2;
@@ -117,19 +120,30 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 			/* install/upgrade - if user chooses "Upgrade" send to upgrade */
 			$step = 8;
 		}
+
 		break;
 	case '4':
 		$previous_step = 4;
+
 		/* settingscheck - send to settings-install */
 		$step = 5;
+
 		break;
 	case '5':
 		$previous_step = 5;
-		/* settings-install - send to template-import */
-		$step = 6;
+
+		if ($_SESSION['sess_install_type'] != 2) {
+			/* settings-install - send to template-import */
+			$step = 6;
+		}else{
+			/* remote pollers are done, no template import */
+			$step = 7;
+		}
+
 		break;
 	case '6':
 		$previous_step = 6;
+
 		/* template-import - send to installfinal */
 		$step = 7;
 		break;
@@ -166,53 +180,61 @@ if ($step == '7') {
 	include_once('../lib/utility.php');
 	
 	/* look for templates that have been checked for install */
-	$install = Array();
-	foreach ($_POST as $post => $v) {
-		if (substr($post, 0, 4) == 'chk_' && is_numeric(substr($post, 4))) {
-			$install[] = substr($post, 4);
+	if ($_SESSION['sess_install_type'] != 2) {
+		$install = Array();
+		foreach ($_POST as $post => $v) {
+			if (substr($post, 0, 4) == 'chk_' && is_numeric(substr($post, 4))) {
+				$install[] = substr($post, 4);
+			}
 		}
-	}
-	/* install templates */
-	$templates = plugin_setup_get_templates(1);
-	if (!empty($install)) {
-		foreach ($install as $i) {
-			plugin_setup_install_template($templates[$i]['filename'], 1, $templates[$i]['interval']);
+		/* install templates */
+		$templates = plugin_setup_get_templates(1);
+		if (!empty($install)) {
+			foreach ($install as $i) {
+				plugin_setup_install_template($templates[$i]['filename'], 1, $templates[$i]['interval']);
+			}
 		}
 	}
 	
-	/* clear session */
 	if ($_SESSION['sess_install_type'] == 2) {
+		global $local_db_cnn_id;
+
 		$success = remote_update_config_file();
-	}
 	
-	setcookie(session_name(),'',time() - 3600,$config['url_path']);
+		/* change cacti version */
+		db_execute('DELETE FROM version', true, $local_db_cnn_id);
+		db_execute("INSERT INTO version (cacti) VALUES ('" . $config["cacti_version"] . "')", true, $local_db_cnn_id);
+		db_execute("INSERT INTO settings (name, value) VALUES ('testing123', '123)", true, $local_db_cnn_id);
+	}else{
+		/* pre-fill poller cache with initial data on a new install only */
+		if ($old_cacti_version == 'new_install') {
+			/* just in case we have hard drive graphs to deal with */
+			$host_id = db_fetch_cell("SELECT id FROM host WHERE hostname='127.0.0.1'");
+
+			if (!empty($host_id)) {
+				run_data_query($host_id, 6);
+			}
+
+			/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and up-to-date */ 	 
+			repopulate_poller_cache(); 	 
+
+			/* fill up the snmpcache */
+			snmpagent_cache_rebuilt();
+		
+			/* generate RSA key pair */
+			rsa_check_keypair();
+		}
+	
+		/* change cacti version */
+		db_execute('DELETE FROM version');
+		db_execute("INSERT INTO version (cacti) VALUES ('" . $config['cacti_version'] . "')");
+	}
+
+	/* clear session */
+	setcookie(session_name(),'',time() - 3600, $config['url_path']);
 
 	kill_session_var('sess_config_array');
 	kill_session_var('sess_host_cache_array');
-
-	/* pre-fill poller cache with initial data on a new install only */
-	if ($old_cacti_version == 'new_install') {
-		/* just in case we have hard drive graphs to deal with */
-		$host_id = db_fetch_cell("SELECT id FROM host WHERE hostname='127.0.0.1'");
-
-		if (!empty($host_id)) {
-			run_data_query($host_id, 6);
-		}
-
-		/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and up-to-date */ 	 
-		repopulate_poller_cache(); 	 
-
-		/* fill up the snmpcache */
-		snmpagent_cache_rebuilt();
-		
-		/* generate RSA key pair */
-		rsa_check_keypair();
-	}
-	
-	/* change cacti version */
-	db_execute('DELETE FROM version');
-	db_execute("INSERT INTO version (cacti) VALUES ('" . $config["cacti_version"] . "')");
-	db_execute("INSERT INTO settings (name, value) VALUES ('testing123', '123)");
 
 	/* send to login page */
 	header ('Location: ../index.php');
@@ -654,7 +676,7 @@ $enabled = '1';
 						<?php
 				 	/* settingscheck */
 					}elseif ($step == '4') {
-						print '<h3>' . __('Critical Paths') . '</h3>';
+						print '<h3>' . __('Critical Binary Locations and Versions') . '</h3>';
 
 						print '<p>' . __('Make sure all of these values are correct before continuing.') . '</p>';						
 						$i = 0;
@@ -698,14 +720,17 @@ $enabled = '1';
 							$i++;
 						}
 						
-						print '<p><strong><font color="#FF0000">';
+						if ($_SESSION['sess_install_type'] != 2) {
+							print '<p><strong><font color="#FF0000">';
 
-						print __('NOTE:') . '</font></strong> ' . __('Once you click "Finish", all of your 
-							settings will be saved and your database will be upgraded if this is an upgrade.');
-						print __('You can change any of the settings on this screen at a later time by going 
-							to "Cacti Settings" from within Cacti.'); 
+							print __('NOTE:') . '</font></strong> ' . __('Once you click "Finish", all of your 
+								settings will be saved and your database will be upgraded if this is an upgrade.');
+							print __('You can change any of the settings on this screen at a later time by going 
+								to "Cacti Settings" from within Cacti.'); 
 
-						print '</p>';
+							print '</p>';
+						}
+
 				 	/* settings-install */
 					}elseif ($step == '5') { 
 						include_once('../lib/data_query.php');
@@ -722,33 +747,40 @@ $enabled = '1';
 						}
 							
 						/* Print message and error logs */
-						print ' <p><b>' . __('Settings installed') . '</b><br><br></p>';
+						print '<h3>' . __('Directory Permission Checks') . '</h3>';
 							
-						/* Check if /resource is writable */
-						print '<p>'. __('Next step is template installation. For Template Installation to work the folders below need to be writable by the webserver.') . '</p>';
-						print '<p>' . __('If you dont want to install any templates now you can skip this and import them later.') . '</p>';
-													
-						if (is_writable('../resource/snmp_queries')) {
-							print ' <p>'. $config['base_path'] . '/resource/snmp_queries is <font color="#008000">' . __('writable') . '</font></p>';
-						} else {
-							print ' <p>'. $config['base_path'] . '/resource/snmp_queries is <font color="#FF0000">' . __('not writable') . '</font></p>';
-							$writable=FALSE;
-						}
-							
-						if (is_writable('../resource/script_server')) {
-							print ' <p>'. $config['base_path'] . '/resource/script_server is <font color="#008000">' . __('writable') . '</font></p>';
-						} else {
-							print ' <p>'. $config['base_path'] . '/resource/script_server is <font color="#FF0000">' . __('not writable') . '</font></p>';
-							$writable=FALSE;
+						print '<p>' . __('Make sure the directory permissions below are correct.  Typically, these directories need to be owned by the Apache user, either apache or wwwrun depending on your Operating System.') . '</p>';						
+
+						$all_paths = array(
+							$config['base_path'] . '/resource/snmp_queries',
+							$config['base_path'] . '/resource/script_server',
+							$config['base_path'] . '/resource/script_queries',
+							$config['base_path'] . '/log',
+							$config['base_path'] . '/scripts',
+						);
+
+						$main_paths = array(
+							$config['base_path'] . '/cache/boost',
+							$config['base_path'] . '/cache/mibcache',
+							$config['base_path'] . '/cache/realtime',
+							$config['base_path'] . '/cache/spikekill'
+						);
+
+						if ($_SESSION['sess_install_type'] != 2) {
+							$paths = array_merge($all_paths, $main_paths);
+						}else{
+							$paths = $all_paths;
 						}
 
-						if (is_writable('../resource/script_queries')) {
-							print ' <p>'. $config['base_path'] . '/resource/script_queries is <font color="#008000">' . __('writable') . '</font></p>';
-						} else {
-							print ' <p>'. $config['base_path'] . '/resource/script_queries is <font color="#FF0000">' . __('not writable') . '</font></p>';
-							$writable=FALSE;
+						foreach($paths as $path) {
+							if (is_writable($path)) {
+								print ' <p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
+							} else {
+								print ' <p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
+								$writable = false;
+							}
 						}
-
+							
 						/* Print help message for unix and windows if directory is not writable */
 						if (($config['cacti_server_os'] == "unix") && isset($writable)) {
 							print __('Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache %s/resource/', $config['base_path']) . '<br>';
@@ -757,6 +789,23 @@ $enabled = '1';
 							print __('Check Permissions');
 						}else {
 							print '<font color="#008000">' . __('All folders are writable') . '</font><br><br>';
+						}
+
+						if ($_SESSION['sess_install_type'] != 2) {
+							print '<p><strong><font color="#FF0000">';
+
+							print __('NOTE:') . '</font></strong>' . __('If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site.');
+
+							print '</p>';
+						}else{
+							print '<p><strong><font color="#FF0000">';
+
+							print __('NOTE:') . '</font></strong> ' . __('For remote pollers, it is critical that
+								the paths that you will be updating frequently, including the plugins, scripts,
+								and resources paths have read/write access as the data collector will have to
+								update these paths from the main web server content.');
+
+							print '</p>';
 						}
 
 					/* template-import */
@@ -855,7 +904,7 @@ $enabled = '1';
 						print '<tr><td>' . __('Database Username') . '</td>';
 						print "<td><input size='12' type='text' id='database_username' name='database_username' value='" . (isset($_SESSION['database_username']) ? $_SESSION['database_username']: (isset($rdatabase_username) ? $rdatabase_username : 'cactiuser')) . "'></td></tr>";
 						print '<tr><td>' . __('Database Password') . '</td>';
-						print "<td><input size='12' type='password' id='database_password' name='database_password' value=''></td></tr>";
+						print "<td><input size='12' type='password' id='database_password' name='database_password' value='" . (isset($_SESSION['database_port']) ? $_SESSION['database_port']: (isset($rdatabase_password) ? $rdatabase_password : '')) . "'></td></tr>";
 						print '<tr><td>' . __('Database Port') . '</td>';
 						print "<td><input size='4' type='text' id='database_port' name='database_port' value='" . (isset($_SESSION['database_port']) ? $_SESSION['database_port']: (isset($rdatabase_port) ? $rdatabase_port : '3306')) . "'></td></tr>";
 						print '<tr><td><label for="database_ssl">' . __('Database SSL') . '</label></td>';
@@ -890,6 +939,8 @@ $(function() {
 		$('#next').button('disable');
 	}else if (step == 10) {
 		$('#next').button('disable');
+	}else if (step == 5 && '<?php print $_SESSION['sess_install_type'];?>' == '2') {
+		$('#next').val('Finish');
 	}
 
 	$('#previous').click(function() {
