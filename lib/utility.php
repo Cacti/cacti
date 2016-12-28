@@ -119,233 +119,237 @@ function update_poller_cache($data_source, $commit = false) {
 		ON dtd.data_input_id=di.id
 		WHERE dtd.local_data_id = ?', array($data_source['id']));
 
-	/* we have to perform some additional sql queries if this is a 'query' */
-	if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
-		($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
-		($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
-		$field = data_query_field_list($data_input['data_template_data_id']);
+	if (sizeof($data_input)) {
+		/* we have to perform some additional sql queries if this is a 'query' */
+		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
+			($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
+			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
+			$field = data_query_field_list($data_input['data_template_data_id']);
 
-		$params = array();
-		if (strlen($field['output_type'])) {
-			$output_type_sql = ' AND snmp_query_graph_rrd.snmp_query_graph_id = ?';
-			$params[] = $field['output_type'];
-		}else{
-			$output_type_sql = '';
+			$params = array();
+			if (strlen($field['output_type'])) {
+				$output_type_sql = ' AND snmp_query_graph_rrd.snmp_query_graph_id = ?';
+				$params[] = $field['output_type'];
+			}else{
+				$output_type_sql = '';
+			}
+			$params[] = $data_input['data_template_id'];
+			$params[] = $data_source['id'];
+
+			$outputs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . "
+				snmp_query_graph_rrd.snmp_field_name,
+				data_template_rrd.id as data_template_rrd_id
+				FROM (snmp_query_graph_rrd,data_template_rrd FORCE INDEX (local_data_id))
+				WHERE snmp_query_graph_rrd.data_template_rrd_id = data_template_rrd.local_data_template_rrd_id
+				$output_type_sql
+				AND snmp_query_graph_rrd.data_template_id = ?
+				AND data_template_rrd.local_data_id = ?
+				ORDER BY data_template_rrd.id", $params);
 		}
-		$params[] = $data_input['data_template_id'];
-		$params[] = $data_source['id'];
 
-		$outputs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . "
-			snmp_query_graph_rrd.snmp_field_name,
-			data_template_rrd.id as data_template_rrd_id
-			FROM (snmp_query_graph_rrd,data_template_rrd FORCE INDEX (local_data_id))
-			WHERE snmp_query_graph_rrd.data_template_rrd_id = data_template_rrd.local_data_template_rrd_id
-			$output_type_sql
-			AND snmp_query_graph_rrd.data_template_id = ?
-			AND data_template_rrd.local_data_id = ?
-			ORDER BY data_template_rrd.id", $params);
-	}
+		if ($data_input['active'] == 'on') {
+			if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT) || ($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER)) { /* script */
+				/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
+				if (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (function_exists('proc_open'))) {
+					$action = POLLER_ACTION_SCRIPT_PHP;
+					$script_path = get_full_script_path($data_source['id']);
+				}else if (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
+					$action = POLLER_ACTION_SCRIPT;
+					$script_path = read_config_option('path_php_binary') . ' -q ' . get_full_script_path($data_source['id']);
+				}else{
+					$action = POLLER_ACTION_SCRIPT;
+					$script_path = get_full_script_path($data_source['id']);
+				}
 
-	if ($data_input['active'] == 'on') {
-		if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT) || ($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER)) { /* script */
-			/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
-			if (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (function_exists('proc_open'))) {
-				$action = POLLER_ACTION_SCRIPT_PHP;
-				$script_path = get_full_script_path($data_source['id']);
-			}else if (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
-				$action = POLLER_ACTION_SCRIPT;
-				$script_path = read_config_option('path_php_binary') . ' -q ' . get_full_script_path($data_source['id']);
-			}else{
-				$action = POLLER_ACTION_SCRIPT;
-				$script_path = get_full_script_path($data_source['id']);
-			}
+				$num_output_fields = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id 
+					FROM data_input_fields 
+					WHERE data_input_id = ? 
+					AND input_output="out" 
+					AND update_rra="on"', 
+					array($data_input['id'])));
 
-			$num_output_fields = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id 
-				FROM data_input_fields 
-				WHERE data_input_id = ? 
-				AND input_output="out" 
-				AND update_rra="on"', 
-				array($data_input['id'])));
+				if ($num_output_fields == 1) {
+					$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_rrd WHERE local_data_id = ?', array($data_source['id']));
+					$data_source_item_name = get_data_source_item_name($data_template_rrd_id);
+				}else{
+					$data_source_item_name = '';
+				}
 
-			if ($num_output_fields == 1) {
+				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], array(), $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
+			}else if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) { /* snmp */
+				/* get the host override fields */
+				$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
+
+				/* get host fields first */
+				$host_fields = array_rekey(
+					db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+						FROM data_input_fields AS dif
+						LEFT JOIN data_input_data AS did
+						ON dif.id=did.data_input_field_id
+						WHERE (type_code LIKE "snmp_%" OR type_code IN("hostname","host_id"))
+						AND did.data_template_data_id = ?
+						AND did.value != ""', array($data_input['data_template_data_id'])), 
+					'type_code', 'value'
+				);
+
+				$data_template_fields = array_rekey(
+					db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+						FROM data_input_fields AS dif
+						LEFT JOIN data_input_data AS did
+						ON dif.id=did.data_input_field_id
+						WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+						AND did.data_template_data_id = ?
+						AND data_template_data_id = ?
+						AND did.value != ""', array($data_template_id, $data_template_id)), 
+					'type_code', 'value'
+				);
+
+				if (sizeof($host_fields)) {
+					if (sizeof($data_template_fields)) {
+					foreach($data_template_fields as $key => $value) {
+						if (!isset($host_fields[$key])) {
+							$host_fields[$key] = $value;
+						}
+					}
+					}
+				} elseif (sizeof($data_template_fields)) {
+					$host_fields = $data_template_fields;
+				}
+
 				$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_rrd WHERE local_data_id = ?', array($data_source['id']));
-				$data_source_item_name = get_data_source_item_name($data_template_rrd_id);
-			}else{
-				$data_source_item_name = '';
-			}
 
-			$poller_items[] = api_poller_cache_item_add($data_source['host_id'], array(), $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
-		}else if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) { /* snmp */
-			/* get the host override fields */
-			$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
+				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields['snmp_oid']) ? $host_fields['snmp_oid'] : ''));
+			}else if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
+				$snmp_queries = get_data_query_array($data_source['snmp_query_id']);
 
-			/* get host fields first */
-			$host_fields = array_rekey(
-				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
-					FROM data_input_fields AS dif
-					LEFT JOIN data_input_data AS did
-					ON dif.id=did.data_input_field_id
-					WHERE (type_code LIKE "snmp_%" OR type_code IN("hostname","host_id"))
-					AND did.data_template_data_id = ?
-					AND did.value != ""', array($data_input['data_template_data_id'])), 
-				'type_code', 'value'
-			);
+				/* get the host override fields */
+				$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
 
-			$data_template_fields = array_rekey(
-				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
-					FROM data_input_fields AS dif
-					LEFT JOIN data_input_data AS did
-					ON dif.id=did.data_input_field_id
-					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
-					AND did.data_template_data_id = ?
-					AND data_template_data_id = ?
-					AND did.value != ""', array($data_template_id, $data_template_id)), 
-				'type_code', 'value'
-			);
+				/* get host fields first */
+				$host_fields = array_rekey(
+					db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+						FROM data_input_fields AS dif
+						LEFT JOIN data_input_data AS did
+						ON dif.id=did.data_input_field_id
+						WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+						AND did.data_template_data_id = ?
+						AND did.value != ""', array($data_input['data_template_data_id'])), 
+					'type_code', 'value'
+				);
 
-			if (sizeof($host_fields)) {
-				if (sizeof($data_template_fields)) {
-				foreach($data_template_fields as $key => $value) {
-					if (!isset($host_fields[$key])) {
-						$host_fields[$key] = $value;
+				$data_template_fields = array_rekey(
+					db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+						FROM data_input_fields AS dif
+						LEFT JOIN data_input_data AS did
+						ON dif.id=did.data_input_field_id
+						WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+						AND did.data_template_data_id = ?
+						AND data_template_data_id = ?
+						AND did.value != ""', array($data_template_id, $data_template_id)), 
+					'type_code', 'value'
+				);
+
+				if (sizeof($host_fields)) {
+					if (sizeof($data_template_fields)) {
+					foreach($data_template_fields as $key => $value) {
+						if (!isset($host_fields[$key])) {
+							$host_fields[$key] = $value;
+						}
 					}
-				}
-				}
-			} elseif (sizeof($data_template_fields)) {
-				$host_fields = $data_template_fields;
-			}
-
-			$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_rrd WHERE local_data_id = ?', array($data_source['id']));
-
-			$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields['snmp_oid']) ? $host_fields['snmp_oid'] : ''));
-		}else if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
-			$snmp_queries = get_data_query_array($data_source['snmp_query_id']);
-
-			/* get the host override fields */
-			$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
-
-			/* get host fields first */
-			$host_fields = array_rekey(
-				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
-					FROM data_input_fields AS dif
-					LEFT JOIN data_input_data AS did
-					ON dif.id=did.data_input_field_id
-					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
-					AND did.data_template_data_id = ?
-					AND did.value != ""', array($data_input['data_template_data_id'])), 
-				'type_code', 'value'
-			);
-
-			$data_template_fields = array_rekey(
-				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
-					FROM data_input_fields AS dif
-					LEFT JOIN data_input_data AS did
-					ON dif.id=did.data_input_field_id
-					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
-					AND did.data_template_data_id = ?
-					AND data_template_data_id = ?
-					AND did.value != ""', array($data_template_id, $data_template_id)), 
-				'type_code', 'value'
-			);
-
-			if (sizeof($host_fields)) {
-				if (sizeof($data_template_fields)) {
-				foreach($data_template_fields as $key => $value) {
-					if (!isset($host_fields[$key])) {
-						$host_fields[$key] = $value;
 					}
-				}
-				}
-			} elseif (sizeof($data_template_fields)) {
-				$host_fields = $data_template_fields;
-			}
-
-			if (sizeof($outputs) > 0) {
-			foreach ($outputs as $output) {
-				if (isset($snmp_queries['fields']{$output['snmp_field_name']}['oid'])) {
-					$oid = $snmp_queries['fields']{$output['snmp_field_name']}['oid'] . '.' . $data_source['snmp_index'];
-
-					if (isset($snmp_queries['fields']{$output['snmp_field_name']}['oid_suffix'])) {
-						$oid .= '.' . $snmp_queries['fields']{$output['snmp_field_name']}['oid_suffix'];
-					}
+				} elseif (sizeof($data_template_fields)) {
+					$host_fields = $data_template_fields;
 				}
 
-				if (!empty($oid)) {
-					$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($output['data_template_rrd_id']), sizeof($outputs), $oid);
-				}
-			}
-			}
-		}else if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) || ($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) { /* script query */
-			$script_queries = get_data_query_array($data_source['snmp_query_id']);
-
-			/* get the host override fields */
-			$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
-
-			/* get host fields first */
-			$host_fields = array_rekey(
-				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
-					FROM data_input_fields AS dif
-					LEFT JOIN data_input_data AS did
-					ON dif.id=did.data_input_field_id
-					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
-					AND did.data_template_data_id = ?
-					AND did.value != ""', array($data_input['data_template_data_id'])), 
-				'type_code', 'value'
-			);
-
-			$data_template_fields = array_rekey(
-				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
-					FROM data_input_fields AS dif
-					LEFT JOIN data_input_data AS did
-					ON dif.id=did.data_input_field_id
-					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
-					AND data_template_data_id = ?
-					AND did.data_template_data_id = ?
-					AND did.value != ""', array($data_template_id, $data_template_id)), 
-				'type_code', 'value'
-			);
-
-			if (sizeof($host_fields)) {
-				if (sizeof($data_template_fields)) {
-				foreach($data_template_fields as $key => $value) {
-					if (!isset($host_fields[$key])) {
-						$host_fields[$key] = $value;
-					}
-				}
-				}
-			} elseif (sizeof($data_template_fields)) {
-				$host_fields = $data_template_fields;
-			}
-
-			if (sizeof($outputs) > 0) {
+				if (sizeof($outputs) > 0) {
 				foreach ($outputs as $output) {
-					if (isset($script_queries['fields']{$output['snmp_field_name']}['query_name'])) {
-						$identifier = $script_queries['fields']{$output['snmp_field_name']}['query_name'];
+					if (isset($snmp_queries['fields']{$output['snmp_field_name']}['oid'])) {
+						$oid = $snmp_queries['fields']{$output['snmp_field_name']}['oid'] . '.' . $data_source['snmp_index'];
 
-						/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
-						if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (function_exists('proc_open'))) {
-							$action = POLLER_ACTION_SCRIPT_PHP;
-							$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . escapeshellarg($data_source['snmp_index']), $script_queries['script_path'] . ' ' . $script_queries['script_function'], $data_source['host_id']);
-						}else if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
-							$action = POLLER_ACTION_SCRIPT;
-							$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index'], $script_queries['script_path'], $data_source['host_id']);
-						}else{
-							$action = POLLER_ACTION_SCRIPT;
-							$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . escapeshellarg($data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
+						if (isset($snmp_queries['fields']{$output['snmp_field_name']}['oid_suffix'])) {
+							$oid .= '.' . $snmp_queries['fields']{$output['snmp_field_name']}['oid_suffix'];
 						}
 					}
 
-					if (isset($script_path)) {
-						$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], $action, get_data_source_item_name($output['data_template_rrd_id']), sizeof($outputs), $script_path);
+					if (!empty($oid)) {
+						$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($output['data_template_rrd_id']), sizeof($outputs), $oid);
+					}
+				}
+				}
+			}else if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) || ($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) { /* script query */
+				$script_queries = get_data_query_array($data_source['snmp_query_id']);
+
+				/* get the host override fields */
+				$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
+
+				/* get host fields first */
+				$host_fields = array_rekey(
+					db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+						FROM data_input_fields AS dif
+						LEFT JOIN data_input_data AS did
+						ON dif.id=did.data_input_field_id
+						WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+						AND did.data_template_data_id = ?
+						AND did.value != ""', array($data_input['data_template_data_id'])), 
+					'type_code', 'value'
+				);
+
+				$data_template_fields = array_rekey(
+					db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+						FROM data_input_fields AS dif
+						LEFT JOIN data_input_data AS did
+						ON dif.id=did.data_input_field_id
+						WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+						AND data_template_data_id = ?
+						AND did.data_template_data_id = ?
+						AND did.value != ""', array($data_template_id, $data_template_id)), 
+					'type_code', 'value'
+				);
+
+				if (sizeof($host_fields)) {
+					if (sizeof($data_template_fields)) {
+					foreach($data_template_fields as $key => $value) {
+						if (!isset($host_fields[$key])) {
+							$host_fields[$key] = $value;
+						}
+					}
+					}
+				} elseif (sizeof($data_template_fields)) {
+					$host_fields = $data_template_fields;
+				}
+
+				if (sizeof($outputs) > 0) {
+					foreach ($outputs as $output) {
+						if (isset($script_queries['fields']{$output['snmp_field_name']}['query_name'])) {
+							$identifier = $script_queries['fields']{$output['snmp_field_name']}['query_name'];
+
+							/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
+							if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (function_exists('proc_open'))) {
+								$action = POLLER_ACTION_SCRIPT_PHP;
+								$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . escapeshellarg($data_source['snmp_index']), $script_queries['script_path'] . ' ' . $script_queries['script_function'], $data_source['host_id']);
+							}else if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
+								$action = POLLER_ACTION_SCRIPT;
+								$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index'], $script_queries['script_path'], $data_source['host_id']);
+							}else{
+								$action = POLLER_ACTION_SCRIPT;
+								$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . escapeshellarg($data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
+							}
+						}
+
+						if (isset($script_path)) {
+							$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], $action, get_data_source_item_name($output['data_template_rrd_id']), sizeof($outputs), $script_path);
+						}
 					}
 				}
 			}
 		}
+	}else{
+		cacti_log('WARNING: Repopulate Poller Cache found Data Input Missing for Data Source ' . $data_source['id'] . '.  Database may be corrupted');
 	}
 
-	if ($commit) {
+	if ($commit && sizeof($poller_items)) {
 		poller_update_poller_cache_from_buffer((array)$data_source['id'], $poller_items);
-	} else {
+	} elseif (!$commit) {
 		return $poller_items;
 	}
 }
