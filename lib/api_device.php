@@ -189,11 +189,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		if ($host_id) {
 			raise_message(1);
 
-			/* let the remote pollers know there was a change */
-			/* todo - need to put in real poller_id */
-			$poller_id = 0;
-
-			api_device_cache_crc_update($poller_id);
+			api_device_cache_crc_update($save['poller_id']);
 
 			/* push out relavant fields to data sources using this host */
 			push_out_host($host_id, 0);
@@ -321,7 +317,7 @@ function api_device_template_sync_template($device_template, $down_devices = fal
 }
 
 function api_device_ping_device($device_id) {
-	global $config, $poller_id;
+	global $config;
 
 	if (empty($device_id)) {
 		return "";
@@ -331,7 +327,7 @@ function api_device_ping_device($device_id) {
 	$am   = $host['availability_method'];
 	$anym = false;
 
-	if ($host['poller_id'] > 1 && $poller_id != $host['poller_id']) {
+	if ($host['poller_id'] > 1 && $conifg['poller_id'] != $host['poller_id']) {
 		$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($host['poller_id']));
 		print file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id']);
 		return;

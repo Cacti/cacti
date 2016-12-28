@@ -48,7 +48,7 @@ if (sizeof($parms)) {
 	/* setup defaults */
 	$description   = '';
 	$ip            = '';
-	$poller_id     = 1;
+	$poller_id     = $config['poller_id'];
 	$site_id       = 0;
 	$template_id   = 0;
 	$community     = read_config_option('snmp_community');

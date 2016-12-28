@@ -196,13 +196,13 @@ function boost_poller_on_demand(&$results) {
 }
 
 function boost_poller_id_check() {
-	global $config, $poller_id;
+	global $config;
 
 	$storage_location = read_config_option('storage_location');
 
 	/* error out if running from a remote poller and the storage
 	 * location is not the RRDproxy */
-	if ($poller_id > 1) {
+	if ($config['poller_id'] > 1) {
 		if ($config['connection'] == 'online') {
 			if ($storage_location == 0) {
 				return false;
@@ -218,7 +218,7 @@ function boost_poller_id_check() {
 }
 
 function boost_fetch_cache_check($local_data_id) {
-	global $config, $poller_id, $rrdtool_pipe;
+	global $config, $rrdtool_pipe;
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
 		/* include poller processing routinges */

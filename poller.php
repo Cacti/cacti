@@ -75,15 +75,7 @@ $debug     = false;
 $mibs      = false;
 
 /* set the poller_id */
-if (!isset($config['poller_id'])) {
-	$poller_id = 1;
-}else{
-	$poller_id = $config['poller_id'];
-
-	if (empty($poller_id) || $poller_id < 1) {
-		$poller_id = 1;
-	}
-}
+$poller_id = $config['poller_id'];
 
 /* requires for remote poller stage out */
 chdir(dirname(__FILE__));

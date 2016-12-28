@@ -123,7 +123,7 @@ array_shift($parms);
 $debug      = false;
 $force      = false;
 $network_id = 0;
-$poller_id  = 0;
+$poller_id  = $config['poller_id'];
 $thread     = 0;
 $master     = false;
 

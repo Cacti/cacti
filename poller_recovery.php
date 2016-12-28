@@ -94,6 +94,7 @@ array_shift($parms);
 $debug          = FALSE;
 $forcerun       = FALSE;
 $verbose        = FALSE;
+$poller_id      = $config['poller_id'];
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
