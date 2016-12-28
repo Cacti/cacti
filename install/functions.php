@@ -514,7 +514,7 @@ function remote_update_config_file() {
 		}
 
 		// Check for an existing poller
-		$poller_id = db_fetch_cell('SELECT id FROM poller WHERE hostname = ?', array($hostname), true, $connection);
+		$poller_id = db_fetch_cell_prepared('SELECT id FROM poller WHERE hostname = ?', array($hostname), true, $connection);
 
 		if (empty($poller_id)) {
 			$save['name'] = 'New Poller';
