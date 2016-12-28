@@ -20,8 +20,14 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_net_snmp_disk_bytes', $_SERVER['argv']);
 }
 
-function ss_net_snmp_disk_bytes($host_id) {
+function ss_net_snmp_disk_bytes($host_id_or_hostname) {
 	global $environ, $config;
+
+	if (!is_numeric($host_id_or_hostname)) {
+		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE hostname = ?', array($host_id_or_hostname));
+	}else{
+		$host_id = $host_id_or_hostname;
+	}
 
 	if ($config['cacti_server_os'] == 'win32') {
 		$tmpdir = getenv('TEMP');
@@ -124,7 +130,9 @@ function ss_net_snmp_disk_bytes($host_id) {
 			$index = $parts[sizeof($parts)-1];
 
 			if (array_key_exists($index, $indexes)) {
-				if ($current['uptime'] < $previous['uptime']) {
+				if (!isset($previous['uptime'])) {
+					$bytesread = 'U';
+				}elseif ($current['uptime'] < $previous['uptime']) {
 					$bytesread = 'U';
 				}elseif (!isset($previous["br$index"])) {
 					$bytesread = 'U';
@@ -160,7 +168,9 @@ function ss_net_snmp_disk_bytes($host_id) {
 			$index = $parts[sizeof($parts)-1];
 
 			if (array_key_exists($index, $indexes)) {
-				if ($current['uptime'] < $previous['uptime']) {
+				if (!isset($previous['uptime'])) {
+					$byteswritten = 'U';
+				}elseif ($current['uptime'] < $previous['uptime']) {
 					$byteswritten = 'U';
 				}elseif (!isset($previous["bw$index"])) {
 					$byteswritten = 'U';
