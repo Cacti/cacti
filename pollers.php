@@ -40,7 +40,7 @@ $poller_status = array(
 );
 
 /* file: pollers.php, action: edit */
-$fields_site_edit = array(
+$fields_poller_edit = array(
 	'spacer0' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Data Collector Information'),
@@ -147,7 +147,7 @@ switch (get_request_var('action')) {
 	case 'edit':
 		top_header();
 
-		site_edit();
+		poller_edit();
 
 		bottom_footer();
 		break;
@@ -246,7 +246,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$pollers .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM sites WHERE id = ?', array($matches[1]))) . '</li>';
+			$pollers .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($matches[1]))) . '</li>';
 			$poller_array[$i] = $matches[1];
 
 			$i++;
@@ -313,8 +313,8 @@ function form_actions() {
     Site Functions
    --------------------- */
 
-function site_edit() {
-	global $fields_site_edit;
+function poller_edit() {
+	global $fields_poller_edit;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -327,26 +327,26 @@ function site_edit() {
 		$header_label = __('Site [new]');
 	}
 
-	form_start('pollers.php', 'site');
+	form_start('pollers.php', 'poller');
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	if (isset($poller) && sizeof($poller)) {
 		if ($poller['id'] == 1) {
-			unset($fields_site_edit['spacer1']);
-			unset($fields_site_edit['dbdefault']);
-			unset($fields_site_edit['dbhost']);
-			unset($fields_site_edit['dbuser']);
-			unset($fields_site_edit['dbpass']);
-			unset($fields_site_edit['dbport']);
-			unset($fields_site_edit['dbssl']);
+			unset($fields_poller_edit['spacer1']);
+			unset($fields_poller_edit['dbdefault']);
+			unset($fields_poller_edit['dbhost']);
+			unset($fields_poller_edit['dbuser']);
+			unset($fields_poller_edit['dbpass']);
+			unset($fields_poller_edit['dbport']);
+			unset($fields_poller_edit['dbssl']);
 		}
 	}
 
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($fields_site_edit, (isset($poller) ? $poller : array()))
+			'fields' => inject_form_variables($fields_poller_edit, (isset($poller) ? $poller : array()))
 		)
 	);
 
@@ -460,7 +460,7 @@ function pollers() {
 			)
 	);
 
-	validate_store_request_vars($filters, 'sess_site');
+	validate_store_request_vars($filters, 'sess_poller');
 	/* ================= input validation ================= */
 
 	if (get_request_var('rows') == '-1') {
