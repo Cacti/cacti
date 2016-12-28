@@ -85,6 +85,9 @@ if (!isset($config['poller_id'])) {
 	}
 }
 
+/* requires for remote poller stage out */
+chdir(dirname(__FILE__));
+
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
@@ -562,11 +565,12 @@ while ($poller_runs_completed < $poller_runs) {
 			$plugin_start = microtime(true);
 
 			/* all plugins moved to core */
-			snmpagent_poller_bottom();
-			dsstats_poller_bottom();
-			boost_poller_bottom();
-
-			api_plugin_hook('poller_bottom');
+			if ($poller_id == 1) {
+				snmpagent_poller_bottom();
+				dsstats_poller_bottom();
+				boost_poller_bottom();
+				api_plugin_hook('poller_bottom');
+			}
 
 			/* record the start time for this loop */
 			$loop_end      = microtime(true);
@@ -681,10 +685,10 @@ if ($poller_id == 1) {
 	spikekill_poller_bottom();
 	automation_poller_bottom();
 	poller_maintenance();
+	api_plugin_hook('poller_bottom');
 }else{
 	automation_poller_bottom();
 	poller_maintenance();
 }
 
-api_plugin_hook('poller_bottom');
 

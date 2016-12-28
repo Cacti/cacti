@@ -555,6 +555,16 @@ function update_resource_cache($poller_id = 1) {
 				cacti_log("ERROR: Unable to read the " . $type . " path '" . $path['path'] . "'", false, 'POLLER');
 			}
 		}
+
+		/* purge old entries */
+		$cache = db_fetch_assoc('SELECT path FROM poller_resource_cache');
+		if (sizeof($cache)) {
+		foreach($cache as $item) {
+			if (!file_exists($item['path'])) {
+				db_execute_prepared('DELETE FROM poller_resource_cache WHERE path = ?', array($item['path']));
+			}
+		}
+		}
 	}else{
 		foreach($paths as $type => $path) {
 			if (is_writable($path['path'])) {
@@ -655,7 +665,8 @@ function resource_cache_out($type, $path) {
 				}
 
 				if (!is_dir(dirname($mypath))) {
-					mkdir(dirname($mypath), 0644, true);
+					$relative_dir = str_replace($config['url_path'], '', dirname($mypath));
+					mkdir('./' . $relative_dir, 0644, true);
 				}
 
 				if (is_dir(dirname($mypath))) {
@@ -723,6 +734,8 @@ function md5sum_path($path, $recursive = true) {
 		}elseif (strpos($entry, '.tar') !== false) {
 			continue;
 		}elseif (strpos($entry, '.gz') !== false) {
+			continue;
+		}elseif (strpos($entry, '.swp') !== false) {
 			continue;
 		}else{
              if (is_dir($path . DIRECTORY_SEPARATOR . $entry) && $recursive) {
