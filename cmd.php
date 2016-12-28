@@ -699,10 +699,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			if (isset($output)) {
 				/* insert a U in place of the actual value if the snmp agent restarts */
 				if (($set_spike_kill) && (!substr_count($output, ':'))) {
-					$output_array[] = sprintf('(%d, %s, %s, "U")', $item['local_data_id'], $item['rrd_name'], $host_update_time);
+					$output_array[] = sprintf('(%d, %s, %s, "U")', $item['local_data_id'], db_qstr($item['rrd_name']), db_qstr($host_update_time));
 				/* otherwise, just insert the value received from the poller */
 				}else{
-					$output_array[] = sprintf('(%d, %s, %s, %s)', $item['local_data_id'], $item['rrd_name'], $host_update_time, $output);
+					$output_array[] = sprintf('(%d, %s, %s, %s)', $item['local_data_id'], db_qstr($item['rrd_name']), db_qstr($host_update_time), db_qstr($output));
 				}
 
 				if ($output_count > 1000) {
