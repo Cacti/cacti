@@ -277,9 +277,7 @@ function applySelectorVisibilityAndActions() {
 	$('tr[id^=gt_line]').each(function(data) {
 		var id = $(this).attr('id');
 		var search = id.substr(7);
-		//console.log('id:'+id+', search:'+search);
 		if ($.inArray(search, gt_created_graphs) >= 0) {
-			//console.log('The id is : '+id+', The search is : '+search+', Result found');
 			$(this).addClass('disabled_row');
 			$(this).find(':checkbox').prop('disabled', true);
 		}
@@ -431,10 +429,10 @@ function applySkin() {
 	}else{
 		// Allows selection of a non disabled row
 		$('tr.selectable:not([id^="gt_line"])').find('td').not('.checkbox').each(function(data) {
-			$(this).unbind().click(function(data) {
+			$(this).click(function(data) {
 				$(this).parent().toggleClass('selected');
-				var $checkbox = $(this).parent().find(':checkbox');
-				$checkbox.prop('checked', !$checkbox.is(':checked'));
+				var checkbox = $(this).parent().find(':checkbox');
+				checkbox.prop('checked', !checkbox.is(':checked'));
 			});
 		});
 
@@ -442,7 +440,7 @@ function applySkin() {
 		$('tr.selectable').find('.checkbox').click(function(data) {
 			if (!$(this).is(':disabled')) {
 				$(this).parent().toggleClass('selected');
-				var checked = $(this).is(':checkbox');
+				var checked = $(this).is(':checked');
 				$(this).prop('checked', !checked);
 			}
 		});
@@ -750,7 +748,6 @@ function saveTableWidths(initial) {
 
 		// if the table width changes, reset the columns
 		if (key !== undefined && sizes == undefined) {
-			//console.log(key+', no sizes');
 			storage.remove(key);
 			sizes = new Array();
 			items = new Array();
@@ -759,7 +756,6 @@ function saveTableWidths(initial) {
 		}else if (key !== undefined && initial) {
 			if (items.length > 0) {
 				if (items[0] + 18 < width) {
-					//console.log(key+', reset, document: '+width+', key: '+(items[0]+14));
 					storage.remove(key);
 					sizes = new Array();
 					items = new Array();
@@ -796,7 +792,6 @@ function saveTableWidths(initial) {
 				});
 
 				if (i > 1) {
-					//console.log(key+', '+sizes.length);
 					storage.set(key, sizes);
 				}
 			}
