@@ -997,13 +997,12 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 			});
 		});
 
-		$('tr.selectable').find('.checkbox').each(function(data) {
-			$(this).unbind();
-			$(this).click(function(data) {
+		$('tr.selectable').find('input.checkbox').each(function(data) {
+			$(this).unbind().click(function(data) {
 				if (!$(this).is(':disabled')) {
-					$(this).parent().toggleClass('selected');
-					var checked = $(this).is(':checkbox');
-					$(this).prop('checked', !checked);
+					$(this).parentsUntil('tr').parent().toggleClass('selected');
+					var checked = $(this).is(':checked');
+					$(this).prop('checked', checked);
 				}
 			});
 		});
