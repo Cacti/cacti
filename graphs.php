@@ -1150,7 +1150,12 @@ function graph_edit() {
 	}else{
 		$header_label = __('Graph Template Selection [new]');
 		$use_graph_template = false;
-		$host_id = 0;
+
+		if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0) {
+			$host_id = get_request_var('host_id');
+		}else{
+			$host_id = 0;
+		}
 	}
 
 	/* handle debug mode */
@@ -1265,6 +1270,10 @@ function graph_edit() {
 		draw_nontemplated_fields_graph_item($graph['graph_template_id'], get_request_var('id'), '|field|_|id|', '<strong>' . __('Graph Item Fields') . '</strong>', true, $locked);
 
 		html_end_box();
+	}
+
+	if (isempty_request_var('id') || isempty_request_var('graph_template_id')) {
+		$locked = false;
 	}
 
 	/* graph item list goes here */
