@@ -134,7 +134,7 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 	case '5':
 		$previous_step = 5;
 
-		if (get_request_var('sess_install_type') != 2) {
+		if (get_request_var('install_type') != 2) {
 			/* settings-install - send to template-import */
 			$step = 6;
 		}else{
@@ -182,7 +182,7 @@ if ($step == '7') {
 	include_once('../lib/utility.php');
 	
 	/* look for templates that have been checked for install */
-	if (get_request_var('sess_install_type') != 2) {
+	if (get_request_var('install_type') != 2) {
 		$install = Array();
 		foreach ($_POST as $post => $v) {
 			if (substr($post, 0, 4) == 'chk_' && is_numeric(substr($post, 4))) {
@@ -198,7 +198,7 @@ if ($step == '7') {
 		}
 	}
 	
-	if (get_request_var('sess_install_type') == 2) {
+	if (get_request_var('install_type') == 2) {
 		global $local_db_cnn_id;
 
 		$success = remote_update_config_file();
@@ -722,7 +722,7 @@ $enabled = '1';
 							$i++;
 						}
 						
-						if (get_request_var('sess_install_type') != 2) {
+						if (get_request_var('install_type') != 2) {
 							print '<p><strong><font color="#FF0000">';
 
 							print __('NOTE:') . '</font></strong> ' . __('Once you click "Finish", all of your 
@@ -768,7 +768,7 @@ $enabled = '1';
 							$config['base_path'] . '/cache/spikekill'
 						);
 
-						if (get_request_var('sess_install_type') != 2) {
+						if (get_request_var('install_type') != 2) {
 							$paths = array_merge($all_paths, $main_paths);
 						}else{
 							$paths = $all_paths;
@@ -793,7 +793,7 @@ $enabled = '1';
 							print '<font color="#008000">' . __('All folders are writable') . '</font><br><br>';
 						}
 
-						if (get_request_var('sess_install_type') != 2) {
+						if (get_request_var('install_type') != 2) {
 							print '<p><strong><font color="#FF0000">';
 
 							print __('NOTE:') . '</font></strong>' . __('If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site.');
@@ -899,14 +899,15 @@ $enabled = '1';
 						print __('<b>Note:</b> the Database hostname must be resolvable via by IP Address or Hostname.');
 						print '</p>';
 						print '<table class="filterTable">';
+						print '<tr><td><input type="password" id="prevent_autofill" style="display:none" disabled="disabled"/></td></tr>';
 						print '<tr><td>' . __('Database Name') . '</td>';
 						print "<td><input size='12' type='text' id='database_default' name='database_default' value='" . (isset($_SESSION['database_default']) ? $_SESSION['database_default']: (isset($rdatabase_default) ? $rdatabase_default : 'cacti')) . "'></td></tr>";
 						print '<tr><td>' . __('Database Hostname') . '</td>';
 						print "<td><input size='30' type='text' id='database_hostname' name='database_hostname' value='" . (isset($_SESSION['database_hostname']) ? $_SESSION['database_hostname']: (isset($rdatabase_hostname) ? $rdatabase_hostname : 'yourhost.yourdomain.com')) . "'></td></tr>";
 						print '<tr><td>' . __('Database Username') . '</td>';
-						print "<td><input size='12' type='text' id='database_username' name='database_username' value='" . (isset($_SESSION['database_username']) ? $_SESSION['database_username']: (isset($rdatabase_username) ? $rdatabase_username : 'cactiuser')) . "'></td></tr>";
+						print "<td><input size='12' type='text' id='database_username' name='database_username' autocomplete='off' value='" . (isset($_SESSION['database_username']) ? $_SESSION['database_username']: (isset($rdatabase_username) ? $rdatabase_username : 'cactiuser')) . "'></td></tr>";
 						print '<tr><td>' . __('Database Password') . '</td>';
-						print "<td><input size='12' type='password' id='database_password' name='database_password' value='" . (isset($_SESSION['database_port']) ? $_SESSION['database_port']: (isset($rdatabase_password) ? $rdatabase_password : '')) . "'></td></tr>";
+						print "<td><input size='12' type='password' id='database_password' name='database_password' autocomplete='off' value='" . (isset($_SESSION['database_port']) ? $_SESSION['database_port']: (isset($rdatabase_password) ? $rdatabase_password : '')) . "'></td></tr>";
 						print '<tr><td>' . __('Database Port') . '</td>';
 						print "<td><input size='4' type='text' id='database_port' name='database_port' value='" . (isset($_SESSION['database_port']) ? $_SESSION['database_port']: (isset($rdatabase_port) ? $rdatabase_port : '3306')) . "'></td></tr>";
 						print '<tr><td><label for="database_ssl">' . __('Database SSL') . '</label></td>';
@@ -941,7 +942,7 @@ $(function() {
 		$('#next').button('disable');
 	}else if (step == 10) {
 		$('#next').button('disable');
-	}else if (step == 5 && '<?php print get_request_var('sess_install_type');?>' == '2') {
+	}else if (step == 5 && '<?php print get_request_var('install_type');?>' == '2') {
 		$('#next').val('Finish');
 	}
 

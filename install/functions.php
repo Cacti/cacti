@@ -501,6 +501,7 @@ function remote_update_config_file() {
 		$database_password, $database_default, $database_type, $database_port, $database_ssl;
 
 	$written     = false;
+	$newfile     = array();
 	$config_file = $config['base_path'] . '/include/config.php';
 
 	$connection = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl);
@@ -530,20 +531,24 @@ function remote_update_config_file() {
 
 		if (!empty($poller_id)) {
 			if (is_writable($config_file)) {
-				$fp = fopen($config_file, 'r+');
+				$file_array = file($config_file);
 
-				if (is_resource($fp)) {
-					while (!feof($fp)) {
-						$line = fgets($fp);
-
-						if (strpos($line, "\$poller_id = 1") !== false) {
-							fwrite($fp, "\$poller_id = $poller_id");
-							$written = true;
-							break;
+				if (sizeof($file_array)) {
+					foreach($file_array as $line) {
+						if (strpos(trim($line), "\$poller_id") !== false) {
+							$newfile[] = "\$poller_id = $poller_id;\n";
+						}else{
+							$newfile[] = $line;
 						}
 					}
 
+					$fp = fopen($config_file, 'w');
+					foreach($newfile as $line) {
+						fwrite($fp, $line);
+					}
 					fclose($fp);
+
+					$written = true;
 				}
 			}
 		}
