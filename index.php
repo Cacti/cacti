@@ -61,7 +61,7 @@ if (read_config_option('hide_console') != '1') {
 <table class='cactiTable'>
 	<tr>
 		<td class="textAreaNotes top left">
-			<strong><?php print __('You are now logged into <a href="%s">Cacti</a>. You can follow these basic steps to get started.', 'about.php');?></strong>
+			<?php print __('You are now logged into <a href="%s"><b>Cacti</b></a>. You can follow these basic steps to get started.', 'about.php');?>
 
 			<ul>
 				<li><?php print __('<a href="%s">Create devices</a> for network', 'host.php');?></li>
