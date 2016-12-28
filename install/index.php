@@ -77,10 +77,12 @@ if ($old_cacti_version == $config['cacti_version']) {
 }
 
 /* default value for this variable */
-if (!isset_request_var('install_type')) {
-	set_request_var('install_type', '0');
-}else{
+if (isset_request_var('install_type')) {
 	$_SESSION['sess_install_type'] = get_filter_request_var('install_type');
+}elseif (isset($_SESSION['sess_install_type'])) {
+	set_request_var('install_type', $_SESSION['sess_install_type']);
+}else{
+	set_request_var('install_type', '0');
 }
 
 /* defaults for the install type dropdown */
@@ -132,7 +134,7 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 	case '5':
 		$previous_step = 5;
 
-		if ($_SESSION['sess_install_type'] != 2) {
+		if (get_request_var('sess_install_type') != 2) {
 			/* settings-install - send to template-import */
 			$step = 6;
 		}else{
@@ -180,7 +182,7 @@ if ($step == '7') {
 	include_once('../lib/utility.php');
 	
 	/* look for templates that have been checked for install */
-	if ($_SESSION['sess_install_type'] != 2) {
+	if (get_request_var('sess_install_type') != 2) {
 		$install = Array();
 		foreach ($_POST as $post => $v) {
 			if (substr($post, 0, 4) == 'chk_' && is_numeric(substr($post, 4))) {
@@ -196,7 +198,7 @@ if ($step == '7') {
 		}
 	}
 	
-	if ($_SESSION['sess_install_type'] == 2) {
+	if (get_request_var('sess_install_type') == 2) {
 		global $local_db_cnn_id;
 
 		$success = remote_update_config_file();
@@ -720,7 +722,7 @@ $enabled = '1';
 							$i++;
 						}
 						
-						if ($_SESSION['sess_install_type'] != 2) {
+						if (get_request_var('sess_install_type') != 2) {
 							print '<p><strong><font color="#FF0000">';
 
 							print __('NOTE:') . '</font></strong> ' . __('Once you click "Finish", all of your 
@@ -766,7 +768,7 @@ $enabled = '1';
 							$config['base_path'] . '/cache/spikekill'
 						);
 
-						if ($_SESSION['sess_install_type'] != 2) {
+						if (get_request_var('sess_install_type') != 2) {
 							$paths = array_merge($all_paths, $main_paths);
 						}else{
 							$paths = $all_paths;
@@ -791,7 +793,7 @@ $enabled = '1';
 							print '<font color="#008000">' . __('All folders are writable') . '</font><br><br>';
 						}
 
-						if ($_SESSION['sess_install_type'] != 2) {
+						if (get_request_var('sess_install_type') != 2) {
 							print '<p><strong><font color="#FF0000">';
 
 							print __('NOTE:') . '</font></strong>' . __('If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site.');
@@ -939,7 +941,7 @@ $(function() {
 		$('#next').button('disable');
 	}else if (step == 10) {
 		$('#next').button('disable');
-	}else if (step == 5 && '<?php print $_SESSION['sess_install_type'];?>' == '2') {
+	}else if (step == 5 && '<?php print get_request_var('sess_install_type');?>' == '2') {
 		$('#next').val('Finish');
 	}
 
