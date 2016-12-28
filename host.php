@@ -1181,6 +1181,11 @@ function host() {
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
 			'default' => '-1'
+			),
+		'poller_id' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'pageset' => true,
+			'default' => '-1'
 			)
 	);
 
@@ -1200,6 +1205,7 @@ function host() {
 		strURL  = 'host.php?host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&site_id=' + $('#site_id').val();
+		strURL += '&poller_id=' + $('#poller_id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&page=' + $('#page').val();
@@ -1251,6 +1257,23 @@ function host() {
 							if (sizeof($sites)) {
 								foreach ($sites as $site) {
 									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . htmlspecialchars($site['name']) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<?php print __('Data Collector');?>
+					</td>
+					<td>
+						<select id='poller_id' name='poller_id' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var('poller_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<?php
+							$pollers = db_fetch_assoc('SELECT id, name FROM poller ORDER BY name');
+
+							if (sizeof($pollers)) {
+								foreach ($pollers as $poller) {
+									print "<option value='" . $poller['id'] . "'"; if (get_request_var('poller_id') == $poller['id']) { print ' selected'; } print '>' . htmlspecialchars($poller['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -1332,7 +1355,7 @@ function host() {
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('filter'))) {
-		$sql_where = "where (host.hostname like '%" . get_request_var('filter') . "%' OR host.description like '%" . get_request_var('filter') . "%')";
+		$sql_where = "WHERE (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -1363,6 +1386,12 @@ function host() {
 		$sql_where .= (strlen($sql_where) ? ' AND host.site_id=0' : ' WHERE host.site_id=0');
 	}elseif (!isempty_request_var('site_id')) {
 		$sql_where .= (strlen($sql_where) ? ' AND host.site_id=' . get_request_var('site_id') : ' WHERE host.site_id=' . get_request_var('site_id'));
+	}
+
+	if (get_request_var('poller_id') == '-1') {
+		/* Show all items */
+	}else{
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' host.poller_id=' . get_request_var('poller_id');
 	}
 
 	$total_rows = db_fetch_cell("SELECT
