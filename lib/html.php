@@ -973,7 +973,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 			$(':checkbox.disabled').each(function(data) {
 				if ($(this).is(':checked')) {
 					$(this).prop('checked', false);
-					$(this).parent().toggleClass('selected');
+					$(this).parentsUntil('tr').parent().toggleClass('selected');
 				}
 				$(this).unbind();
 				$(this).prop('disabled', true).change().closest('tr').removeClass('selectable').removeClass('selected');
@@ -989,20 +989,22 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		}
 
 		$('tr.selectable').find('td').not('.checkbox').each(function(data) {
-			$(this).unbind();
-			$(this).click(function(data) {
+			$(this).unbind().click(function(data) {
 				$(this).parent().toggleClass('selected');
-				var $checkbox = $(this).parent().find(':checkbox');
-				$checkbox.prop('checked', !$checkbox.is(':checked'));
+				var checkbox = $(this).parent().find(':checkbox');
+				checkbox.prop('checked', !checkbox.is(':checked'));
 			});
 		});
 
 		$('tr.selectable').find('input.checkbox').each(function(data) {
 			$(this).unbind().click(function(data) {
 				if (!$(this).is(':disabled')) {
-					$(this).parentsUntil('tr').parent().toggleClass('selected');
 					var checked = $(this).is(':checked');
-					$(this).prop('checked', checked);
+					if (checked) {
+						$(this).parentsUntil('tr').parent().removeClass('selected');
+					}else{
+						$(this).parentsUntil('tr').parent().addClass('selected');
+					}
 				}
 			});
 		});
