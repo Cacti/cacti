@@ -147,7 +147,7 @@ function get_snmp_data_walk() {
 
 function ping_device() {
 	$host_id = get_filter_request_var('host_id');
-	api_device_ping_device($host_id);
+	api_device_ping_device($host_id, true);
 }
 
 function poll_for_data() {
