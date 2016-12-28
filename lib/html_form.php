@@ -1108,7 +1108,14 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php print $cancel_action;?>
-				<input type='submit' value='<?php print $alt;?>'>
+				<input id='submit' type='submit' value='<?php print $alt;?>'>
+				<script type='text/javascript'>
+				$(function() {
+					$('#submit').click(function() {
+						$(this).button('disable');
+					});
+				});
+				</script>
 			</td>
 		</tr>
 	</table>
