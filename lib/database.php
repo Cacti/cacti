@@ -415,8 +415,10 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 			$sql .= ' NOT NULL';
 		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
 			$sql .= ' default NULL';
-		if (isset($column['default']))
+		if (isset($column['default']) && $column['default'] != 'CURRENT_TIMESTAMP')
 			$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+		if (isset($column['default']) && $column['default'] == 'CURRENT_TIMESTAMP')
+			$sql .= ' default CURRENT_TIMESTAMP';
 		if (isset($column['on_update']))
 			$sql .= ' ON UPDATE ' . $column['on_update'];
 		if (isset($column['auto_increment']))
