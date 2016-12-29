@@ -980,7 +980,7 @@ function graphs() {
 	}
 
 	if (strlen($script)) {
-		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(this).next('select').val()) });</script>\n";
+		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()) });</script>\n";
 		print $script;
 	}
 
