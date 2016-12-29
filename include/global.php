@@ -234,7 +234,8 @@ if ($is_web) {
 	}
 
 	/* set the maximum post size */
-	ini_set('post_max_size', '2M');
+	ini_set('post_max_size', '8M');
+	ini_set('max_input_vars', '5000');
 
 	/* we don't want these pages cached */
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
