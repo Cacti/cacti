@@ -385,7 +385,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
 				CONCAT(data_template_id, "_", data_name) AS keyname, data_source_names AS data_source_name
 				FROM poller_data_template_field_mappings'), 
-			'keyname', 'data_source_name');
+			'keyname', Array('data_source_name'));
 	}
 
 	if (sizeof($results)) {
