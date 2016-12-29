@@ -1590,21 +1590,17 @@ function upgrade_to_1_0_0() {
 	db_install_execute('ALTER TABLE host MODIFY COLUMN site_id int(10) unsigned DEFAULT "1"');
 
 	/* adding columns for remote poller sync */
-	db_install_execute('ALTER TABLE host 
-		ADD COLUMN last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER availability,
-		ADD INDEX last_updated(last_updated)');
+	db_install_add_column ('host', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'availability'));
+	db_install_add_key('host', 'INDEX', 'last_updated', array('last_updated'));
 
-	db_install_execute('ALTER TABLE host_snmp_cache 
-		ADD COLUMN last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER present,
-		ADD INDEX last_updated(last_updated)');
+	db_install_add_column ('host_snmp_cache', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'present'));
+	db_install_add_key('host_snmp_cache', 'INDEX', 'last_updated', array('last_updated'));
 
-	db_install_execute('ALTER TABLE poller_item 
-		ADD COLUMN last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER present,
-		ADD INDEX last_updated(last_updated)');
+	db_install_add_column ('poller_item', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'present'));
+	db_install_add_key('poller_item', 'INDEX', 'last_updated', array('last_updated'));
 
-	db_install_execute('ALTER TABLE poller_command 
-		ADD COLUMN last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER command,
-		ADD INDEX last_updated(last_updated)');
+	db_install_add_column ('poller_command', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'command'));
+	db_install_add_key('poller_command', 'INDEX', 'last_updated', array('last_updated'));
 
 	db_install_execute('ALTER TABLE automation_networks MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
 	db_install_execute('ALTER TABLE automation_processes MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');

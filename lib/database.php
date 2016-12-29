@@ -417,6 +417,8 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 			$sql .= ' default NULL';
 		if (isset($column['default']))
 			$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+		if (isset($column['on_update']))
+			$sql .= ' ON UPDATE ' . $column['on_update'];
 		if (isset($column['auto_increment']))
 			$sql .= ' auto_increment';
 		if (isset($column['after']))
