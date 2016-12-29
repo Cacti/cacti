@@ -312,6 +312,11 @@ $database_password = "cacti";</userinput></screen>
 					</listitem>
 					<listitem>
 						<para>
+							Copy installed plugins from the old Cacti directory (if they exist).
+						</para>
+					</listitem>
+					<listitem>
+						<para>
 							Set the appropriate permissions on cacti's directories for graph/log generation. You
 							should execute these commands from inside cacti's directory to change the permissions.
 						</para>
