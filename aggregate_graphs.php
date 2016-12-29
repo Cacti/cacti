@@ -472,7 +472,7 @@ function item() {
 	}else{
 		$template_item_list = db_fetch_assoc_prepared('SELECT
 			gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id,
-			gti.consolidation_function_id, dtr.data_source_name,
+			gti.consolidation_function_id, dtr.data_source_name, gti.alpha,
 			cdef.name AS cdef_name, colors.hex
 			FROM graph_templates_item AS gti
 			LEFT JOIN data_template_rrd AS dtr ON (gti.task_item_id=dtr.id)

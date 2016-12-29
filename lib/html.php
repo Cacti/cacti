@@ -747,6 +747,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		DrawMatrixHeaderItem(__('Data Source'),'',1);
 		DrawMatrixHeaderItem(__('Graph Item Type'),'',1);
 		DrawMatrixHeaderItem(__('CF Type'),'',1);
+		DrawMatrixHeaderItem(__('Alpha %'),'',1);
 		DrawMatrixHeaderItem(__('Item Color'),'',4);
 	print "</tr>";
 
@@ -808,6 +809,11 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
 			print "<td style='$this_row_style'>" . $graph_item_types{$item["graph_type_id"]} . "</td>\n";
 			print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
+			if (preg_match("/(AREA|STACK|LINE[123])/", $_graph_type_name)) {
+				print "<td style='$this_row_style'>" . round((hexdec($item['alpha'])/255)*100) . "%</td>\n";
+			}else{
+				print "<td style='$this_row_style'></td>\n";
+			}
 			print "<td style='width:1%;" . ((!empty($item["hex"])) ? "background-color:#" . $item["hex"] . ";'" : "'") . "></td>\n";
 			print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
 

@@ -1062,6 +1062,7 @@ function item() {
 			graph_templates_item.value,
 			graph_templates_item.hard_return,
 			graph_templates_item.graph_type_id,
+			graph_templates_item.alpha,
 			graph_templates_item.consolidation_function_id,
 			data_template_rrd.data_source_name,
 			cdef.name AS cdef_name,
