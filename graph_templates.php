@@ -33,7 +33,7 @@ $graph_actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate'),
 	3 => __('ReSize'),
-	4 => __('ReTemplate')
+	4 => __('Sync Graphs')
 );
 
 /* set default action */
@@ -348,12 +348,12 @@ function form_actions() {
 		}elseif (get_request_var('drp_action') == '4') { /* retemplate */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to Re-Template the following Graph Template(s). This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.') . "</p>
+					<p>" . __('Click \'Continue\' to Syncronize your Graphs the following Graph Template(s). This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue'). "' title='" . __('Re-Template Graph Template(s)') . "'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue'). "' title='" . __('Synchronize Graphs to Graph Template(s)') . "'>";
 		}
 	}else{
 		print "<tr><td class='even'><p><span class='textError'>" . __('ERROR: You must select at least one graph template.') . "</span></p></td></tr>\n";
