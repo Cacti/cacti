@@ -238,7 +238,9 @@ function host_new_graphs_save($host_id) {
 			}
 
 			if ($current_form_type == 'cg') {
-				$return_array = create_complete_graph_from_template($graph_template_id, $host_id, '', $values['cg']);
+				$snmp_query_array = array();
+
+				$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['cg']);
 
 				debug_log_insert('new_graphs', __('Created graph: %s', get_graph_title($return_array['local_graph_id'])));
 
