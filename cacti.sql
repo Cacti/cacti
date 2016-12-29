@@ -2619,7 +2619,7 @@ CREATE TABLE host_snmp_cache (
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(50) NOT NULL default '',
-  field_value varchar(255) default NULL,
+  field_value varchar(512) default NULL,
   snmp_index varchar(255) NOT NULL default '',
   oid TEXT NOT NULL,
   present tinyint NOT NULL DEFAULT '1',

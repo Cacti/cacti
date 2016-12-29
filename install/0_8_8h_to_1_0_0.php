@@ -1701,4 +1701,6 @@ function upgrade_to_1_0_0() {
 		ON dtr.data_input_field_id = dif.id 
 		WHERE dtr.local_data_id=0 
 		GROUP BY dtr.data_template_id, dif.data_name");
+
+	db_install_execute("ALTER TABLE host_snmp_cache MODIFY COLUMN field_value varchar(512) DEFAULT NULL");
 }
