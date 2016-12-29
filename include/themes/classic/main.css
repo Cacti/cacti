@@ -956,7 +956,7 @@ legend {
 	color: white;
 	float: left;
 	text-align: left;
-	padding: 3px 0px;
+	padding: 2px 0px;
 	height: 16px;
 	display: table-cell;
 	width: 90%;
@@ -965,7 +965,7 @@ legend {
 
 .cactiTableButton {
 	float: right;
-	padding: 3px 0px;
+	padding: 2px 0px;
 	height: 16px;
 	display: table-cell;
 	text-align: right;
@@ -974,8 +974,9 @@ legend {
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 5px 0px 5px;
-	font-size: 12px;
+	padding: 0px 3px 0px 3px;
+	font-size: 11px;
+	font-weight: bold;
 }
 
 .cactiDebugTable {
