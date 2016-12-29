@@ -171,7 +171,8 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 	$data_query_xml  = get_data_query_array($data_query_id);
 
-	switch ($data_query['reindex_method']) {
+	if (sizeof($data_query)) {
+		switch ($data_query['reindex_method']) {
 		case DATA_QUERY_AUTOINDEX_NONE:
 			break;
 		case DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME:
@@ -276,6 +277,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 			}
 
 			break;
+		}
 	}
 
 	if (sizeof($recache_stack)) {
@@ -754,35 +756,93 @@ function md5sum_path($path, $recursive = true) {
     return md5(implode('', $filemd5s));
 }
 
-function replicate_tables($poller_id = 1) {
+function replicate_out($remote_poller_id = 1) {
 	global $config;
 
-	$replicate_in_tables = array(
-		'data_input' => array(
-			'direction' => 'in',    // Small table
-			'frequency' => 'onchange',
-			'setting'   => 'poller_replicate_data_input_crc'
-		),
-		'host_snmp_query' => array(
-			'direction' => 'in',    // Small table
-			'frequncy'  => 'onchange'
-		),
-		'poller_command' => array(
-			'direction' => 'in',    // Small table
-			'frequency' => 'onchange'
-		),
-		'poller_item' => array(
-			'direction' => 'in',    // Larger table
-			'frequency' => 'onchange',
-			'setting'   => 'poller_replicate_data_source_cache_crc_|poller_id|'
-		),
-		'snmp_query' => array(
-			'direction' => 'in',    // Small table
-			'frequency' => 'onchange',
-			'setting'   => 'poller_replicate_snmp_query_crc'
-		)
-	);
+	if ($config['poller_id'] == 1) {
+		$cinfo = db_fetch_row_prepared('SELECT * FROM poller WHERE id = ?', array($remote_poller_id));
 
+		if (!sizeof($cinfo)) {
+			raise_message('poller_notfound');
+			return false;
+		}
+
+		$remote_db_cnn_id = db_connect_real(
+			$cinfo['dbhost'], 
+			$cinfo['dbuser'], 
+			$cinfo['dbpass'], 
+			$cinfo['dbdefault'], 
+			'mysql',
+			$cinfo['dbport'], 
+			$cinfo['dbssl']);
+
+		if (!is_object($remote_db_cnn_id)) {
+			raise_message('poller_noconnect');
+			return false;
+		}
+	}else{
+		// We only allow sync from the main cacti server
+		raise_message('poller_nosync');
+		return false;
+	}
+
+	// Start Push Replication
+	$data = db_fetch_assoc('SELECT * FROM data_input');
+	replicate_out_table($remote_db_cnn_id, $data, 'data_input', $remote_poller_id);
+
+	$data = db_fetch_assoc('SELECT * FROM snmp_query');
+	replicate_out_table($remote_db_cnn_id, $data, 'snmp_query', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT hsq.* 
+		FROM host_snmp_query AS hsq
+		INNER JOIN host AS h
+		ON h.id=hsq.host_id 
+		WHERE h.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'host_snmp_query', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT pc.* 
+		FROM poller_command AS pc 
+		WHERE pc.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'poller_command', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT pi.* 
+		FROM poller_item AS pi 
+		WHERE pi.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'poller_item', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT h.* 
+		FROM host AS h 
+		WHERE h.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'host', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT hsc.* 
+		FROM host_snmp_cache AS hsc
+		INNER JOIN host AS h
+		ON h.id=hsc.host_id 
+		WHERE h.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'host_snmp_cache', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT pri.* 
+		FROM poller_reindex AS pri
+		INNER JOIN host AS h
+		ON h.id=pri.host_id 
+		WHERE h.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'poller_reindex', $remote_poller_id);
+
+	api_plugin_hook_function('replicate_out', $remote_poller_id);
+
+	raise_message('poller_sync');
+
+	return true;
+}
+
+function replicate_in() {
 	$replicate_inout_tables = array(
 		'host' => array(
 			'direction'   => 'inout', // Relatively small table
@@ -810,7 +870,53 @@ function replicate_tables($poller_id = 1) {
 		)
 	);
 
-	api_poller_hook_function('replicate_tables');
+	api_plugin_hook_function('replicate_in', $remote_poller_id);
+}
+
+function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
+	if (sizeof($data)) {
+		$prefix    = "REPLACE INTO $table (";
+		$sql       = '';
+		$colcnt    = 0;
+		$rows_done = 0;
+		$columns   = array_keys($data[0]);
+
+		foreach($columns as $c) {
+			$prefix .= ($colcnt > 0 ? ', ':'') . $c;
+			$colcnt++;
+		}
+		$prefix .= ') VALUES ';
+
+		$rowcnt = 0;
+		foreach($data as $row) {
+			$colcnt  = 0;
+			$sql_row = '(';
+			foreach($row as $col => $value) {
+				$sql_row .= ($colcnt > 0 ? ', ':'') . db_qstr($value);
+				$colcnt++;
+			}
+			$sql_row .= ')';
+			$sql     .= ($rowcnt > 0 ? ', ':'') . $sql_row;
+
+			$rowcnt++;
+
+			if ($rowcnt > 1000) {
+				db_execute($prefix . $sql, true, $conn);
+				$rows_done += db_affected_rows($conn);
+				$sql = '';
+				$rowcnt = 0;
+			}
+		}
+
+		if ($rowcnt > 0) {
+			db_execute($prefix . $sql, true, $conn);
+			$rows_done += db_affected_rows($conn);
+		}
+
+		cacti_log('NOTE: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated');
+	}else{
+		cacti_log('NOTE: Table ' . $table . ' Not Replicated to Remote Poller ' . $remote_poller_id . ' Due to No Rows Found');
+	}
 }
 
 function poller_recovery_flush_boost($poller_id) {

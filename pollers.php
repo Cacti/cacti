@@ -23,6 +23,7 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/poller.php');
 
 $poller_actions = array(
 	1 => __('Delete'),
@@ -229,6 +230,11 @@ function form_actions() {
 				db_execute('UPDATE poller SET disabled="" WHERE ' . array_to_sql_or($selected_items, 'id'));
 
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' enabled by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
+			}elseif (get_request_var('drp_action') == '4') { /* full sync */
+				foreach($selected_items as $item) {
+					replicate_out($item);
+				}
+				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' synchronized by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
 			}
 		}
 
@@ -287,6 +293,15 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Enable Data Collector', 'Enable Data Collectors', sizeof($poller_array)) . "'>";
+		}elseif (get_request_var('drp_action') == '4') { /* full sync */
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>" . __n('Click \'Continue\' to Synchronize the Remote Data Collector for Offline Operation.', 'Click \'Continue\' to Synchronize the Remote Data Colletors for Offline Operation.', sizeof($poller_array)) . "</p>
+					<div class='itemlist'><ul>$pollers</ul></div>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Enable Data Collector', 'Synchronize Remote Data Collectors', sizeof($poller_array)) . "'>";
 		}
 	}else{
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Site.') . "</span></td></tr>\n";
