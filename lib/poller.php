@@ -383,9 +383,9 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 	if (!sizeof($rrd_field_names)) {
 		$rrd_field_names = array_rekey(
 			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
-				CONCAT(data_template_id, "_", data_name) AS keyname, data_source_names
+				CONCAT(data_template_id, "_", data_name) AS keyname, data_source_name
 				FROM poller_data_template_field_mappings'), 
-			'keyname', array('data_source_names'));
+			'keyname', 'data_source_name');
 	}
 
 	if (sizeof($results)) {
@@ -429,7 +429,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 						$fields = array();
 
 						if (isset($rrd_field_names[$item['data_template_id'] . '_' . $matches[0]])) {
-							$field_map = $rrd_field_names[$item['data_template_id'] . '_' . $matches[0]]['data_source_names'];
+							$field_map = $rrd_field_names[$item['data_template_id'] . '_' . $matches[0]]['data_source_name'];
 
 							if (strpos($field_map, ',') !== false) {
 								$fields = explode(',', $field_map);
