@@ -275,7 +275,7 @@ function snmpagent_poller_bottom() {
 	$devices = db_fetch_assoc('SELECT id, description, hostname, status, 
 		disabled, status_event_count, status_fail_date, status_rec_date, 
 		status_last_error, min_time, max_time, cur_time, avg_time, 
-		total_polls, failed_polls, availability 
+		total_polls, failed_polls, availability, snmp_engine_id 
 		FROM host 
 		ORDER BY id ASC');
 
@@ -291,13 +291,16 @@ function snmpagent_poller_bottom() {
 					'cactiApplDeviceHostname' => $device['hostname'],
 					'cactiApplDeviceLastError' => $device['status_last_error']
 				);
+				
+				$overwrite['snmp_engine_id'] = $device['snmp_engine_id'];
+				
 				if (isset($mc_dfailed[$device['id']]) && $device['failed_polls'] > $mc_dfailed[$device['id']]) {
-					snmpagent_notification('cactiNotifyDeviceFailedPoll', 'CACTI-MIB', $varbinds);
+					snmpagent_notification('cactiNotifyDeviceFailedPoll', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_MEDIUM, $overwrite);
 				}
 				if (isset($mc_dstatus[$device['id']]) && $mc_dstatus[$device['id']] == HOST_UP && $device['status'] == HOST_DOWN ) {
-					snmpagent_notification('cactiNotifyDeviceDown', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_HIGH);
+					snmpagent_notification('cactiNotifyDeviceDown', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_HIGH, $overwrite);
 				}elseif (isset($mc_dstatus[$device['id']]) && $mc_dstatus[$device['id']] == HOST_DOWN && $device['status'] == HOST_RECOVERING ){
-					snmpagent_notification('cactiNotifyDeviceRecovering', 'CACTI-MIB', $varbinds);
+					snmpagent_notification('cactiNotifyDeviceRecovering', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_MEDIUM, $overwrite);
 				}
 			}
 
@@ -559,7 +562,7 @@ function snmpagent_read($object){
 	return $value;
 }
 
-function snmpagent_notification( $notification, $mib, $varbinds, $severity = SNMPAGENT_EVENT_SEVERITY_MEDIUM){
+function snmpagent_notification( $notification, $mib, $varbinds, $severity = SNMPAGENT_EVENT_SEVERITY_MEDIUM, $overwrite = false){
 	global $config;
 
 	if (isset($config['snmpagent']['notifications']['ignore'][$notification])) {
@@ -706,6 +709,11 @@ function snmpagent_notification( $notification, $mib, $varbinds, $severity = SNM
 				}else if ($notification_manager['snmp_version'] == 2 ) {
 					$args = ' -v 2c -c ' . $notification_manager['snmp_community'] . ( ($notification_manager['snmp_message_type'] == 2 )? ' -Ci ' : '' )  . ' ' . $notification_manager['hostname'] . ':' . $notification_manager['snmp_port'] . " \"\" " . $enterprise_oid . $snmp_notification_varbinds;
 				}else if ($notification_manager['snmp_version'] == 3 ) {
+					
+					if ( $overwrite && isset($overwrite['snmp_engine_id']) && $overwrite['snmp_engine_id'] ) {
+						$notification_manager['snmp_engine_id'] = $overwrite['snmp_engine_id'];
+					}
+					
 					$args = ' -v 3 -e ' . $notification_manager['snmp_engine_id'] . (($notification_manager['snmp_message_type'] == 2 )? ' -Ci ' : '' ) .  ' -u ' . $notification_manager['snmp_username'];
 
 					if ( $notification_manager['snmp_auth_password'] && $notification_manager['snmp_priv_password']) {
