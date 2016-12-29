@@ -117,7 +117,7 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 			$step = 4;
 		}elseif (get_filter_request_var('install_type') == '2') {
 			/* install - New Remote Poller */
-			$step = 10;
+			$step = 4;
 		}elseif (get_filter_request_var('install_type') == '3') {
 			/* install/upgrade - if user chooses "Upgrade" send to upgrade */
 			$step = 8;
@@ -164,10 +164,6 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 	case '9':
 		$previous_step = 8;
 		/* upgrade-oldversion - if user upgrades from old version send to settingscheck */
-		$step = 4;
-		break;
-	case '10':
-		$previous_step = 3;
 		$step = 4;
 		break;
 	}
@@ -598,7 +594,7 @@ $enabled = '1';
 							print '<h4>' . __('Remote Poller Cacti database connection information') . '</h4>';
 
 							if (!$good_write) {
-								print '<p class="textError">' . __('ERROR: Your config.php file must be writable by 
+								print '<p>' . __('ERROR: Your config.php file must be writable by 
 									the web server during install in order to configure the Remote poller.  Once 
 									installation is complete, you must set this file to Read Only to prevent 
 									possible security issues.');
@@ -611,16 +607,36 @@ $enabled = '1';
 									set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  
 									These variables must be set and point back to your Primary Cacti database server.
 									Correct this and try again.') . '</p>';
+
+								print '<p>' . __('The variables that must be set include the following:') . '</p>';
+								print '<ul>';
+								print '<li>$rdatabase_type     = \'mysql\';</li>';
+								print '<li>$rdatabase_default  = \'cacti\';</li>';
+								print '<li>$rdatabase_hostname = \'localhost\';</li>';
+								print '<li>$rdatabase_username = \'cactiuser\';</li>';
+								print '<li>$rdatabase_password = \'cactiuser\';</li>';
+								print '<li>$rdatabase_port     = \'3306\';</li>';
+								print '<li>$rdatabase_ssl      = false;</li>';
+								print '</ul>';
+
+								print '<p>' . __('You must also set the $poller_id variable in the config.php.') . '</p>';
+
+								print '<p>' . __('Once you have the variables set in the config.php file, you must also
+									grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with
+									any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is
+									successful you will be able to proceed and complete the install.') . '</p>';
 							}
 						}
 
 						print '</div>';
 
-						print '<h4 style="height:20px;margin:4px;" id="results"></h4>';
+						print '<span style="height:20px;margin:4px;" id="results"></span>';
 
 						?>
 						<script type="text/javascript">
 						$(function() {
+							$('#next, #previous, #test').button();
+
 							$('#install_type').change(function() {
 								switch($(this).val()) {
 								case '1':
@@ -628,7 +644,7 @@ $enabled = '1';
 									$('#remote_database').hide();
 									$('#test').hide();
 									$('#results').html('');
-									$('#next').prop('disabled', false);
+									$('#next').button('enable');
 									break;
 								case '2':
 									$('#local_database').show();
@@ -637,8 +653,13 @@ $enabled = '1';
 
 									<?php if ($remote_good) {?>
 									$('#test').button().show();
+									if (test_good) {
+										$('#next').prop('disabled', false).button('enable');
+									}else{
+										$('#next').button('disable');
+									}
 									<?php } else { ?>
-									$('#next').prop('disabled', true);
+									$('#next').button('disable');
 									<?php } ?>
 									break;
 								case '3':
@@ -646,7 +667,7 @@ $enabled = '1';
 									$('#remote_database').hide();
 									$('#test').hide();
 									$('#results').html('');
-									$('#next').prop('disabled', false);
+									$('#next').button('enable');
 									break;
 								}
 							}).change();
@@ -657,18 +678,11 @@ $enabled = '1';
 						});
 
 						function testRemoteDatabase() {
-							strURL  = 'index.php';
-							strURL += '?action=testdb';
-							strURL += '&database_type=<?php print (isset($rdatabase_type) ? $rdatabase_type:'');?>';
-							strURL += '&database_default=<?php print (isset($rdatabase_default) ? $rdatabase_default:'');?>';
-							strURL += '&database_username=<?php print (isset($rdatabase_username) ? $rdatabase_username:'');?>';
-							strURL += '&database_password=<?php print (isset($rdatabase_password) ? $rdatabase_password:'');?>';
-							strURL += '&database_port=<?php print (isset($rdatabase_port) ? $rdatabase_port:'');?>';
-							strURL += '&database_ssl=<?php print (isset($rdatabase_sll) ? $rdatabase_ssl:'');?>';
-
-							$.get(strURL, function(data) {
-								$('#results').html('<?php print __('Remote Database: ');?>'+data);
+							strURL = 'index.php?action=testdb';
+							$.post(strURL, $('input').serializeObject()).done(function(data) {
+								$('#results').html('<b><?php print __('Remote Database: ');?></b>'+data);
 								if (data == 'Connection Successful') {
+									test_good=true;
 									$('#next').button('enable');
 								}
 							});
@@ -775,18 +789,18 @@ $enabled = '1';
 
 						foreach($paths as $path) {
 							if (is_writable($path)) {
-								print ' <p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
+								print '<p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
 							} else {
-								print ' <p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
+								print '<p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
 								$writable = false;
 							}
 						}
 							
 						/* Print help message for unix and windows if directory is not writable */
-						if (($config['cacti_server_os'] == "unix") && isset($writable)) {
-							print __('Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache %s/resource/', $config['base_path']) . '<br>';
-							print __('For SELINUX-users make sure that you have the correct permissions or set "setenforce 0" temporarily.') . '<br><br>';
-						}elseif (($config['cacti_server_os'] == "win32") && isset($writable)){
+						if (($config['cacti_server_os'] == 'unix') && isset($writable)) {
+							print '<p>' . __('Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache %s/resource/', $config['base_path']) . '</p>';
+							print '<p>' . __('For SELINUX-users make sure that you have the correct permissions or set \'setenforce 0\' temporarily.') . '</p><br>';
+						}elseif (($config['cacti_server_os'] == 'win32') && isset($writable)){
 							print __('Check Permissions');
 						}else {
 							print '<font color="#008000">' . __('All folders are writable') . '</font><br><br>';
@@ -889,30 +903,6 @@ $enabled = '1';
 						print '<p><tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span style="font-weight: bold; color: red;">poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt></p>';
 						print '<p>' . __('Once you have made this change, please click Finish to continue.') . '</p>';
 
-					/* remote poller */
-					}elseif ($step == '10') {
-						print '<p>';
-						print __('Before continuing, you must test the database connection to the Primary Cacti Web Server using your information below.  Please enter connection values for your Primary Cacti Web Server and press the \'Test Connection\' button in order to proceed.');
-						print '</p>';
-						print '<p>';
-						print __('<b>Note:</b> the Database hostname must be resolvable via by IP Address or Hostname.');
-						print '</p>';
-						print '<table class="filterTable">';
-						print '<tr><td><input type="password" id="prevent_autofill" style="display:none" disabled="disabled"/></td></tr>';
-						print '<tr><td>' . __('Database Name') . '</td>';
-						print "<td><input size='12' type='text' id='database_default' name='database_default' value='" . (isset($_SESSION['database_default']) ? $_SESSION['database_default']: (isset($rdatabase_default) ? $rdatabase_default : 'cacti')) . "'></td></tr>";
-						print '<tr><td>' . __('Database Hostname') . '</td>';
-						print "<td><input size='30' type='text' id='database_hostname' name='database_hostname' value='" . (isset($_SESSION['database_hostname']) ? $_SESSION['database_hostname']: (isset($rdatabase_hostname) ? $rdatabase_hostname : 'yourhost.yourdomain.com')) . "'></td></tr>";
-						print '<tr><td>' . __('Database Username') . '</td>';
-						print "<td><input size='12' type='text' id='database_username' name='database_username' autocomplete='off' value='" . (isset($_SESSION['database_username']) ? $_SESSION['database_username']: (isset($rdatabase_username) ? $rdatabase_username : 'cactiuser')) . "'></td></tr>";
-						print '<tr><td>' . __('Database Password') . '</td>';
-						print "<td><input size='12' type='password' id='database_password' name='database_password' autocomplete='off' value='" . (isset($_SESSION['database_port']) ? $_SESSION['database_port']: (isset($rdatabase_password) ? $rdatabase_password : '')) . "'></td></tr>";
-						print '<tr><td>' . __('Database Port') . '</td>';
-						print "<td><input size='4' type='text' id='database_port' name='database_port' value='" . (isset($_SESSION['database_port']) ? $_SESSION['database_port']: (isset($rdatabase_port) ? $rdatabase_port : '3306')) . "'></td></tr>";
-						print '<tr><td><label for="database_ssl">' . __('Database SSL') . '</label></td>';
-						print "<td><input type='checkbox' id='database_ssl' name='database_ssl' " . (isset($_SESSION['database_ssl']) && $_SESSION['database_ssl'] == true ? 'checked' : (isset($rdatabase_ssl) && $rdatabase_ssl == true ? 'checked' : '')) . "></td></tr>";
-						print '<tr><td><input id="testdb" type="button" value="' . __('Test Connection') . '"></td><td style="text-align:left" id="message"></td></tr>';
-						print '</table>';
 					}?>
 					</td>
 				</tr>
@@ -931,17 +921,19 @@ $enabled = '1';
 
 <input type='hidden' name='step' value='<?php print $step;?>'>
 <script type='text/javascript'>
-var step='<?php print $step;?>';
+var step=<?php print $step;?>;
+var enabled=<?php print $enabled;?>;
+var install_type=<?php print get_request_var('install_type');?>;
+var test_good=false;
+
 $(function() {
-	$('#next, #previous, #testdb').button();
+	$('#next, #previous, #test').button();
 
 	if (step == 0) {
 		$('#next').button('disable');
 	}else if (step == 1) {
 		$('#next').button('disable');
-	}else if (step == 10) {
-		$('#next').button('disable');
-	}else if (step == 5 && '<?php print get_request_var('install_type');?>' == '2') {
+	}else if (step == 5 && install_type == 2) {
 		$('#next').val('Finish');
 	}
 
@@ -957,10 +949,12 @@ $(function() {
 		}
 	});
 
-	if ('<?php print $enabled;?>' == '0') {
-		$('#next').button('disable');
-	}else{
+	if (step == 3) {
+		// script is handled in the step
+	}else if (enabled) {
 		$('#next').button('enable');
+	}else{
+		$('#next').button('disable');
 	}
 
 	if ($('#accept').length) {
@@ -970,16 +964,6 @@ $(function() {
 			$('#next').button('disable');
 		}
 	}
-
-	$('#testdb').click(function() {
-		strURL = 'index.php?action=testdb';
-		$.post(strURL, $('input').serializeObject()).done(function(data) {
-			$('#message').html(data).show().fadeOut(2000);
-			if (data == 'Connection Successful') {
-				$('#next').button('enable');
-			}
-		});
-	});
 
 	$('#database_hostname').keyup(function() {
 		if ($('#database_hostname').val() == 'localhost') {
