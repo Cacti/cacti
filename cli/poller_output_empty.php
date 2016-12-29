@@ -35,6 +35,7 @@ $no_http_headers = true;
 include(dirname(__FILE__) . '/../include/global.php');
 include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/data_query.php');
+include_once($config['base_path'] . '/lib/dsstats.php');
 include_once($config['base_path'] . '/lib/rrd.php');
 
 /* process calling arguments */
