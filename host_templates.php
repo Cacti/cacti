@@ -826,11 +826,11 @@ function template() {
 				$disabled = false;
 			}
 
-			form_alternate_row('line' . $template['id'], true);
+			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'host_templates.php?action=edit&id=' . $template['id']), $template['id']);
-			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right', $disabled);
-			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right', $disabled);
-			form_selectable_cell(number_format_i18n($template['hosts']), $template['id'], '', 'text-align:right', $disabled);
+			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
+			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($template['hosts']), $template['id'], '', 'text-align:right');
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}
