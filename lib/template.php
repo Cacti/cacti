@@ -425,7 +425,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 	children. if the graph template item is part of a graph input, the field will not be
 	pushed out
    @arg $graph_template_item_id - the id of the graph template item to push out values for */
-function push_out_graph_item($graph_template_item_id) {
+function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 	global $struct_graph_item;
 
 	/* get information about this graph template */
@@ -456,6 +456,7 @@ function push_out_graph_item($graph_template_item_id) {
 			}
 		}
 	}
+
 	/* this is trickier with graph_items than with the actual graph... we have to make sure not to
 	overwrite any items covered in the 'graph item inputs'. the same thing applies to graphs, but
 	is easier to detect there (t_* columns). */
@@ -473,11 +474,21 @@ function push_out_graph_item($graph_template_item_id) {
 	reset($struct_graph_item);
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
 		/* are we allowed to push out the column? */
-		if (!isset($graph_item_inputs[$field_name])) {
-			db_execute_prepared("UPDATE graph_templates_item 
-				SET $field_name = ? 
-				WHERE local_graph_template_item_id = ?", 
-				array($graph_template_item[$field_name], $graph_template_item['id']));
+		if ($local_graph_id == 0) {
+			if (!isset($graph_item_inputs[$field_name])) {
+				db_execute_prepared("UPDATE graph_templates_item 
+					SET $field_name = ? 
+					WHERE local_graph_template_item_id = ?", 
+					array($graph_template_item[$field_name], $graph_template_item['id']));
+			}
+		}else{
+			if (!isset($graph_item_inputs[$field_name])) {
+				db_execute_prepared("UPDATE graph_templates_item 
+					SET $field_name = ? 
+					WHERE local_graph_template_item_id = ?
+					AND local_graph_id = ?", 
+					array($graph_template_item[$field_name], $graph_template_item['id'], $local_graph_id));
+			}
 		}
 	}
 }
@@ -549,7 +560,7 @@ function parse_graph_template_id($value) {
 }
 
 function resequence_graphs($graph_template_id, $local_graph_id = 0) {
-	$template_items = db_fetch_assoc_prepared('SELECT id, sequence 
+	$template_items = db_fetch_assoc_prepared('SELECT *
 		FROM graph_templates_item 
 		WHERE graph_template_id = ? 
 		AND local_graph_id = 0
@@ -583,6 +594,31 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 	}
 }
 
+/* retemplate_graphs - reapply the graph template as it current exists to all
+    graphs using that template.  This is important when you have graphs that
+    have multiple versions of a template.
+   @arg $graph_template_id - the graph template id to retemplat
+   @arg $local_graph_id - optional local graph id */
+function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
+	if ($local_graph_id == 0) {
+		$graphs = db_fetch_assoc_prepared('SELECT id 
+			FROM graph_local 
+			WHERE graph_template_id = ?', 
+			array($graph_template_id));
+	}else{
+		$graphs = db_fetch_assoc_prepared('SELECT id 
+			FROM graph_local 
+			WHERE graph_template_id = ?
+			AND id = ?', 
+			array($graph_template_id, $local_graph_id));
+	}
+
+	if (sizeof($graphs)) {
+		foreach($graphs as $graph) {
+			change_graph_template($graph['id'], $graph_template_id, true);
+		}
+	}
+}
 
 /* change_graph_template - changes the graph template for a particular graph to
 	$graph_template_id
