@@ -298,6 +298,7 @@ DirectoryIndex index.php</userinput></screen>
 						</para>
 						<screen><prompt>shell&gt;</prompt> <userinput>mysql --user=root mysql</userinput>
 <prompt>mysql&gt;</prompt> <userinput>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY 'somepassword';</userinput>
+<prompt>mysql&gt;</prompt> <userinput>GRANT SELECT ON mysql.time_zone_name TO cactiuser@localhost;</userinput>
 <prompt>mysql&gt;</prompt> <userinput>flush privileges;</userinput></screen>
 					</listitem>
 					<listitem>
