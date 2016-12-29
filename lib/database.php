@@ -578,6 +578,8 @@ function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $d
 					$sql .= ' default NULL';
 				if (isset($column['default']))
 					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+				if (isset($column['on_update']))
+					$sql .= ' ON UPDATE ' . $column['on_update'];
 				if (isset($column['auto_increment']))
 					$sql .= ' auto_increment';
 				db_execute($sql, $log, $db_conn);
@@ -700,6 +702,8 @@ function db_table_create ($table, $data, $log = TRUE, $db_conn = FALSE) {
 					$sql .= ' default NULL';
 				if (isset($column['default']))
 					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+				if (isset($column['on_update']))
+					$sql .= ' ON UPDATE ' . $column['on_update'];
 				if (isset($column['auto_increment']))
 					$sql .= ' auto_increment';
 				$c++;
