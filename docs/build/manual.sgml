@@ -3572,7 +3572,7 @@ print $b;
 			<title>Simplest Method of Going from Script to Graph (Walkthrough)</title>
 			<authorblurb>
 				<para>
-					<emphasis>Written by Kevin der Kinderen, <ulink url="http://kdeuja.com/~kevin/">http://kdeuja.com/~kevin/</ulink></emphasis>
+					<emphasis>Written by Kevin der Kinderen</emphasis>
 				</para>
 			</authorblurb>
 			<para>
@@ -4819,7 +4819,7 @@ disk /</userinput></screen>
 			<para>
 				CDEFs allow you to apply mathematical functions to graph data to alter output. The concept of a
 				CDEF comes straight from <application>RRDTool</application>, and are written in reverse polish notation (RPN). For more
-				information regarding the syntax of CDEFs, check out the <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph_data.en.html">CDEF tutorial</ulink>.
+				information regarding the syntax of CDEFs, check out the <ulink url="http://oss.oetiker.ch/rrdtool/tut/cdeftutorial.en.html">CDEF tutorial</ulink>.
 			</para>
 			<sect2 id="add_new_cdef">
 				<title>Creating a CDEF</title>
@@ -4847,7 +4847,7 @@ disk /</userinput></screen>
 						<tbody>
 							<row>
 								<entry>Function</entry>
-								<entry>You can choose a CDEF function to use as the item. The <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph.en.html">RRDTool graph manual</ulink> describes the purpose of each CDEF function.</entry>
+								<entry>You can choose a CDEF function to use as the item. The <ulink url="http://oss.oetiker.ch/rrdtool/doc/index.en.html">RRDTool graph manual</ulink> describes the purpose of each CDEF function.</entry>
 							</row>
 							<row>
 								<entry>Operator</entry>
