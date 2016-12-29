@@ -502,6 +502,11 @@ function applySkin() {
 	// remove stray tooltips
 	$(document).tooltip('close');
 
+	// debounce submits
+	$('input[type="submit"], button[type="submit"]').click(function() {
+		$(this).button('disable');
+	});
+
 	$('#main').show();
 }
 
