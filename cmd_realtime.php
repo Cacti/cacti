@@ -121,7 +121,7 @@ if (sizeof($polling_items)) {
 			$using_proc_function = false;
 		}
 	}else{
-		$using_proc_function = FALSE;
+		$using_proc_function = false;
 	}
 
 	/* all polled items need the same insert time */
@@ -130,9 +130,9 @@ if (sizeof($polling_items)) {
 	foreach ($polling_items as $item) {
 		$data_source = $item['local_data_id'];
 		$host_id     = $item['host_id'];
-		$poller_id   = $item['poller_id'];
+		$col_poller_id   = $item['poller_id'];
 
-		if ($poller_id > 1) {
+		if ($col_poller_id > 1) {
 			$output = file_get_contents(get_url_type() . '://' . $config['url_path'] . '/remote_agent.php?host_id=' . $host_id . '&local_data_id=' . $local_data_id);
 		}else{
 			switch ($item['action']) {
@@ -201,21 +201,21 @@ if (sizeof($polling_items)) {
 		}
 
 		if (isset($output)) {
-			db_execute_prepared('REPLACE INTO poller_output_realtime 
+			db_execute_prepared('INSERT INTO poller_output_realtime 
 				(local_data_id, rrd_name, time, poller_id, output) 
 				VALUES 
 				(?, ?, ?, ?, ?)', 
 				array($item['local_data_id'], $item['rrd_name'], $host_update_time, $poller_id, $output));
 		}
+	}
 
-		if (($using_proc_function == true) && ($script_server_calls > 0)) {
-			/* close php server process */
-			fwrite($pipes[0], "quit\r\n");
-			fclose($pipes[0]);
-			fclose($pipes[1]);
-			fclose($pipes[2]);
+	if (($using_proc_function == true) && ($script_server_calls > 0)) {
+		/* close php server process */
+		fwrite($pipes[0], "quit\r\n");
+		fclose($pipes[0]);
+		fclose($pipes[1]);
+		fclose($pipes[2]);
 
-			$return_value = proc_close($cactiphp);
-		}
+		$return_value = proc_close($cactiphp);
 	}
 }

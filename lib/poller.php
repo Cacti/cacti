@@ -62,6 +62,9 @@ function exec_poll($command) {
      server */
 function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 	global $config;
+
+	$output = '';
+
 	/* execute using php process */
 	if ($using_proc_function == 1) {
 		if (is_resource($proc_fd)) {
