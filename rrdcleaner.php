@@ -409,7 +409,8 @@ function remove_all_rrds() {
 
 	/* add to data_source_purge_action table */
 	db_execute_prepared('INSERT INTO data_source_purge_action 
-		SELECT "" AS id, name, local_data_id, ? AS action 
+		(name, local_data_id, action)
+		SELECT name, local_data_id, ? AS action 
 		FROM data_source_purge_temp 
 		WHERE in_cacti = 0 
 		ON DUPLICATE KEY UPDATE action = VALUES(action)', array($action));
@@ -442,7 +443,11 @@ function do_rrd() {
 				WHERE id = ?', array($matches[1]));
 
 			/* add to data_source_purge_action table */
-			$sql = "INSERT INTO data_source_purge_action VALUES('', ?, ?, ?) ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)";
+			$sql = "INSERT INTO data_source_purge_action 
+				(name, local_data_id, action) 
+				VALUES(?, ?, ?) 
+				ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)";
+
 			db_execute_prepared($sql, array($unused_file['name'], $unused_file['local_data_id'], get_nfilter_request_var('drp_action')));
 
 			/* drop from data_source_purge table */
