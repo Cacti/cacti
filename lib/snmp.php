@@ -377,7 +377,7 @@ function cacti_snmp_session_get($session, $oid) {
 		if ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
 			cacti_log('WARNING: SNMP Error:\'Timeout (' . ($info['timeout']/1000) . " ms)\', Device:'" . $info['hostname'] . "', OID:'$oid'", false);
 		}
-		return '';
+		return false;
 	}
 
 	if (is_array($out)) {
@@ -406,7 +406,7 @@ function cacti_snmp_session_getnext($session, $oid) {
 			cacti_log('WARNING: SNMP Error:\'Timeout (' . ($info['timeout']/1000) . " ms)\', Device:'" . $info['hostname'] . "', OID:'$oid'", false);
 		}
 
-		return 'U';
+		return false;
 	}
 
 	if (is_array($out)) {
