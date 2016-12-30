@@ -1571,7 +1571,7 @@ function upgrade_to_1_0_0() {
 		ENGINE=$engine 
 		COMMENT='Pollers for Cacti'");
 
-	db_install_execute('INSERT INTO poller (id, name, hostname) VALUES (1, "Main Poller", "localhost")');
+	db_install_execute('INSERT INTO poller (id, name, hostname) VALUES (1, "Main Poller", "' . php_uname('n') . '")');
 	db_install_execute('UPDATE automation_networks SET poller_id=1 WHERE poller_id=0');
 	db_install_execute('UPDATE automation_processes SET poller_id=1 WHERE poller_id=0');
 	db_install_execute('UPDATE host SET poller_id=1 WHERE poller_id=0');
