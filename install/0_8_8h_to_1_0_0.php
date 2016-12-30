@@ -1699,4 +1699,8 @@ function upgrade_to_1_0_0() {
 		GROUP BY dtr.data_template_id, dif.data_name");
 
 	db_install_execute("ALTER TABLE host_snmp_cache MODIFY COLUMN field_value varchar(512) DEFAULT NULL");
+
+	/* repair system data input methods */
+	repair_system_data_input_methods('upgrade');
 }
+

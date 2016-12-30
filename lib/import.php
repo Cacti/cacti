@@ -53,6 +53,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	//print '<pre>';print_r($dep_hash_cache);print '</pre>';exit;
 
 	$hash_cache = array();
+	$repair     = 0;
 
 	/* the order of the $hash_type_codes array is ordered such that the items
 	with the most dependencies are last and the items with no dependencies are first.
@@ -71,12 +72,14 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					break;
 				case 'data_template':
 					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
+					$repair++;
 					break;
 				case 'host_template':
 					$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
 					break;
 				case 'data_input_method':
 					$hash_cache += xml_to_data_input_method($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					$repair++;
 					break;
 				case 'data_query':
 					$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
@@ -105,6 +108,10 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				kill_session_var('import_debug_info');
 			}
 		}
+	}
+
+	if ($repair) {
+		repair_system_data_input_methods();
 	}
 
 	return $info_array;

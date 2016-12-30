@@ -4300,3 +4300,156 @@ function get_url_type() {
 		return 'http';
 	}
 }
+
+/** repair_system_data_input_methods - This utility will repair 
+ *  system data input methods when they are detected on the system
+ *
+ *  @returns - null */
+function repair_system_data_input_methods($step = 'import') {
+	$system_hashes = array(
+		'3eb92bb845b9660a7445cf9740726522', // Get SNMP Data
+		'bf566c869ac6443b0c75d1c32b5a350e', // Get SNMP Data (Indexed)
+		'80e9e4c4191a5da189ae26d0e237f015', // Get Script Data (Indexed)
+		'332111d8b54ac8ce939af87a7eac0c06', // Get Script Server Data (Indexed)
+	);
+
+	$good_field_hashes = array(
+		'3eb92bb845b9660a7445cf9740726522' => array( // Get SNMP Data (1)
+			'92f5906c8dc0f964b41f4253df582c38', // IP Address
+			'012ccb1d3687d3edb29c002ea66e72da', // SNMP Version
+			'32285d5bf16e56c478f5e83f32cda9ef', // SNMP Community
+			'fc64b99742ec417cc424dbf8c7692d36', // SNMP Port
+			'ad14ac90641aed388139f6ba86a2e48b', // SNMP Username
+			'9c55a74bd571b4f00a96fd4b793278c6', // SNMP Password
+			'20832ce12f099c8e54140793a091af90', // SNMP Authentication Protocol
+			'c60c9aac1e1b3555ea0620b8bbfd82cb', // SNMP Privacy Passphrase
+			'feda162701240101bc74148415ef415a', // SNMP Privacy Protocol
+			'4276a5ec6e3fe33995129041b1909762'  // SNMP OID
+		),
+		'bf566c869ac6443b0c75d1c32b5a350e' => array( // Get SNMP Data (Indexed) (2)
+			'617cdc8a230615e59f06f361ef6e7728', // IP Address
+			'b5c23f246559df38662c255f4aa21d6b', // SNMP Version
+			'acb449d1451e8a2a655c2c99d31142c7', // SNMP Community
+			'c1f36ee60c3dc98945556d57f26e475b', // SNMP Port
+			'f4facc5e2ca7ebee621f09bc6d9fc792', // SNMP Username
+			'1cc1493a6781af2c478fa4de971531cf', // SNMP Password
+			'2cf7129ad3ff819a7a7ac189bee48ce8', // SNMP Authentication Protocol
+			'6b13ac0a0194e171d241d4b06f913158', // SNMP Privacy Passphrase
+			'3a33d4fc65b8329ab2ac46a36da26b72', // SNMP Privacy Protocol
+			'6027a919c7c7731fbe095b6f53ab127b', // Index Type
+			'cbbe5c1ddfb264a6e5d509ce1c78c95f', // Index Value
+			'e6deda7be0f391399c5130e7c4a48b28'  // Output Type ID
+		),
+		'80e9e4c4191a5da189ae26d0e237f015' => array( // Get Script Data (Indexed) 11
+			'd39556ecad6166701bfb0e28c5a11108', // Index Type
+			'3b7caa46eb809fc238de6ef18b6e10d5', // Index Value
+			'74af2e42dc12956c4817c2ef5d9983f9', // Output Type ID
+			'8ae57f09f787656bf4ac541e8bd12537'  // Output Value
+		), 
+		'332111d8b54ac8ce939af87a7eac0c06' => array( // Get Script Server Data (Indexed) 12
+			'172b4b0eacee4948c6479f587b62e512', // Index Type
+			'30fb5d5bcf3d66bb5abe88596f357c26', // Index Value
+			'31112c85ae4ff821d3b288336288818c', // Output Type ID
+			'5be8fa85472d89c621790b43510b5043'  // Output Value
+		)
+	);
+
+	foreach($good_field_hashes as $hash => $field_hashes) {
+		$data_input_id = db_fetch_cell_prepared('SELECT id FROM data_input WHERE hash = ?', array($hash));
+
+		if (!empty($data_input_id)) {
+			$bad_hashes = db_fetch_assoc_prepared('SELECT * 
+				FROM data_input_fields 
+				WHERE hash NOT IN ("' . implode('","', $field_hashes) . '") 
+				AND hash != ""
+				AND data_input_id = ?', 
+				array($data_input_id));
+
+			if (sizeof($bad_hashes)) {
+				cacti_log(strtoupper($step) . ' NOTE: Repairing ' . sizeof($bad_hashes) . ' Damaged data_input_fields', false);
+
+				foreach($bad_hashes as $bhash) {
+					$good_field_id = db_fetch_cell_prepared('SELECT id 
+						FROM data_input_fields 
+						WHERE hash != ? 
+						AND data_input_id = ? 
+						AND data_name = ?', 
+						array($bhash['hash'], $data_input_id, $bhash['data_name']));
+
+					cacti_log("Data Input ID $data_input_id Bad Field ID is " . $bhash['id'] . ", Good Field ID: " . $good_field_id, false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+
+					cacti_log("Executing Data Input Data Check", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+
+					// Data Input Data
+					$bad_mappings = db_fetch_assoc_prepared('SELECT * FROM data_input_data WHERE data_input_field_id = ?', array($bhash['id']));
+
+					if (sizeof($bad_mappings)) {
+						cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_input_fields', false);
+						foreach($bad_mappings as $mfid) {
+							$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
+								FROM data_input_data 
+								WHERE data_input_field_id = ?
+								AND data_template_data_id = ?',
+								array($good_field_id, $mfid['data_template_data_id']));
+
+							if ($good_found) {
+								cacti_log("Good Found for " . $mfid['data_input_field_id'] . ", Fixing", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+
+								db_execute("DELETE FROM data_input_data 
+									WHERE data_input_field_id = " . $mfid['data_input_field_id'] . " 
+									AND data_template_data_id = " . $mfid['data_template_data_id']);
+							}else{
+								cacti_log("Good NOT Found for " . $mfid['data_input_field_id'] . ", Fixing", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+
+								db_execute("UPDATE data_input_data 
+									SET data_input_field_id = $good_field_id 
+									WHERE data_input_field_id = " . $mfid['data_input_field_id'] . " 
+									AND data_template_data_id = " . $mfid['data_template_data_id']);
+							}
+						}
+					}else{
+						cacti_log("No Bad Data Input Data Records", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+					}
+
+					// Data Template RRD
+					cacti_log("Executing Data Template RRD Check", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);;
+
+					$bad_mappings = db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE data_input_field_id = ?', array($bhash['id']));
+
+					if (sizeof($bad_mappings)) {
+						cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_template_rrd', false);
+
+						foreach($bad_mappings as $mfid) {
+							$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
+								FROM data_template_rrd 
+								WHERE data_input_field_id = ?
+								AND id = ?',
+								array($good_field_id, $mfid['id']));
+
+							if ($good_found) {
+								cacti_log("Good Found for " . $mfid['data_input_field_id'] . ", Fixing", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+
+								db_execute("DELETE FROM data_template_rrd 
+									WHERE data_input_field_id = " . $mfid['data_input_field_id'] . " 
+									AND id = " . $mfid['id']);
+							}else{
+								cacti_log("Good NOT Found for " . $mfid['data_input_field_id'] . ", Fixing", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+
+								db_execute("UPDATE data_template_rrd 
+									SET data_input_field_id = $good_field_id 
+									WHERE data_input_field_id = " . $mfid['data_input_field_id'] . " 
+									AND id = " . $mfid['id']);
+							}
+						}
+					}else{
+						cacti_log("No Bad Data Template RRD Records", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+					}
+
+					db_execute_prepared('DELETE FROM data_input_fields WHERE hash = ?', array($bhash['hash']));
+				}
+			}
+		}else{
+			cacti_log("Could not find hash '" . $hash . "' for Data Input", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+		}
+	}
+}
