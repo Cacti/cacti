@@ -1684,7 +1684,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute("CREATE TABLE IF NOT EXISTS `poller_data_template_field_mappings` (
 		`data_template_id` int(10) unsigned NOT NULL DEFAULT '0',
 		`data_name` varchar(25) NOT NULL DEFAULT '',
-		`data_source_names` varchar(120) NOT NULL DEFAULT '',
+		`data_source_names` varchar(255) NOT NULL DEFAULT '',
 		`last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 		PRIMARY KEY (`data_template_id`,`data_name`,`data_source_names`)) 
 		ENGINE=InnoDB 
