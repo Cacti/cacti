@@ -984,15 +984,33 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 				$(this).prop('disabled', true).closest('tr').removeClass('selected');
 			});
 
-			$('#submit').button('enable');
+			$('#submit').each(function() {
+				if ($(this).button === 'function') {
+					$(this).button('enable');
+				}else{
+					$(this).prop('disable', false);
+				}
+			});
 		}else if ($('#drp_action').val() == 0) {
 			$(':checkbox.disabled').each(function(data) {
 				$(this).prop('disabled', false);
 			});
 
-			$('#submit').button('disable');
+			$('#submit').each(function() {
+				if ($(this).button === 'function') {
+					$(this).button('disable');
+				}else{
+					$(this).prop('disable', true);
+				}
+			});
 		}else if (<?php print $delete_action;?> != 0) {
-			$('#submit').button('enable');
+			$('#submit').each(function() {
+				if ($(this).button === 'function') {
+					$(this).button('enable');
+				}else{
+					$(this).prop('disable', false);
+				}
+			});
 		}
 
 		$('tr[id^=line').not('.disabled_row').find('td').not('.checkbox').each(function(data) {
