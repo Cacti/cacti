@@ -337,20 +337,24 @@ function get_current_graph_template_name($local_graph_id) {
 			WHERE local_data_id = ?', 
 			array($local_data_id));
 
-		/* get each INPUT field for this data input source */
-		$output_type_field_id = db_fetch_cell_prepared('SELECT id
-			FROM data_input_fields
-			WHERE data_input_id = ?
-			AND input_output="in"
-			AND type_code="output_type"
-			ORDER BY sequence',
-			array($data['data_input_id']));
+		if (sizeof($data)) {
+			/* get each INPUT field for this data input source */
+			$output_type_field_id = db_fetch_cell_prepared('SELECT id
+				FROM data_input_fields
+				WHERE data_input_id = ?
+				AND input_output="in"
+				AND type_code="output_type"
+				ORDER BY sequence',
+				array($data['data_input_id']));
 
-		$snmp_query_graph_id = db_fetch_cell_prepared('SELECT value
-			FROM data_input_data
-			WHERE data_template_data_id = ?
-			AND data_input_field_id = ?',
-			array($data['id'], $output_type_field_id));
+			$snmp_query_graph_id = db_fetch_cell_prepared('SELECT value
+				FROM data_input_data
+				WHERE data_template_data_id = ?
+				AND data_input_field_id = ?',
+				array($data['id'], $output_type_field_id));
+		}else{
+			$snmp_query_graph_id = 0;
+		}
 
 		if (!empty($snmp_query_graph_id)) {
 			return db_fetch_cell_prepared('SELECT name FROM snmp_query_graph WHERE id = ?', array($snmp_query_graph_id));
