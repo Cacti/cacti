@@ -846,6 +846,13 @@ legend {
 	text-decoration: none;
 }
 
+.iconLink {
+}
+
+.iconLink img {
+	padding-bottom:2px;
+}
+
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
 	color: #2d4ca8;
 	text-decoration: none;

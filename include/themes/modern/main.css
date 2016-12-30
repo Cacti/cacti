@@ -938,6 +938,14 @@ legend {
 	text-decoration: none;
 }
 
+.iconLink {
+	padding:2px;
+}
+
+.iconLink img {
+	padding-bottom:2px;
+}
+
 .noLinkEditMain {
 	color: rgba(44,130,29,1);
 	text-decoration: none;

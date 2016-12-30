@@ -340,14 +340,14 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
 
 	print "<div class='iconWrapper'>\n";
-	print "<a class='utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='" . __('Graph Details, Zooming and Debugging Utilities') . "'></a><br>\n";
-	print "<a class='csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __('CSV Export of Graph Data'). "'></a><br>\n";
-	print "<a class='mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' alt='' title='" . __('MRTG Graph View'). "'></a><br>\n";
+	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='" . __('Graph Details, Zooming and Debugging Utilities') . "'></a><br>\n";
+	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __('CSV Export of Graph Data'). "'></a><br>\n";
+	print "<a class='iconLink mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' alt='' title='" . __('MRTG Graph View'). "'></a><br>\n";
 	if (read_config_option('realtime_enabled') == 'on') {
-		print "<a class='realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __('Click to view just this Graph in Realtime'). "'></a><br/>\n";
+		print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __('Click to view just this Graph in Realtime'). "'></a><br/>\n";
 	}
 	if (is_realm_allowed(1043)) {
-		print "<span class='spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif'></span>";
+		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif' title='" . __('Kill Spikes in Graphs') . "'></span>";
 		print '<br/>';
 	}
 
@@ -1550,32 +1550,39 @@ function html_spikekill_menu($local_graph_id) {
 function html_spikekill_js() {
 	?>
 	<script type='text/javascript'>
+	spikeKillOpen = false;
 	$(function() {
-		$('.spikekill').hover(function() {
-			local_graph_id = $(this).attr('data-graph');
+		$(document).click(function() {
+			if (spikeKillOpen) {
+				$('.spikekillParent').hide();
+				spikeKillOpen = false;
+			}
+		});
 
-			$.get('?action=spikemenu&local_graph_id='+local_graph_id, function(data) {
-				$('#sk'+local_graph_id).after(data);	
+		$('span.spikekill').click(function() {
+			if (spikeKillOpen == false) {
+				local_graph_id = $(this).attr('data-graph');
 
-				$('.spikekillMenu').menu({
-					select: function(event, ui) {
-						$(this).menu('focus', event, ui.item);
-					},
-					delay: 500
+				$.get('?action=spikemenu&local_graph_id='+local_graph_id, function(data) {
+					$('#sk'+local_graph_id).after(data);	
+
+					$('.spikekillMenu').menu({
+						select: function(event, ui) {
+							$(this).menu('focus', event, ui.item);
+						},
+						delay: 1000
+					});
+
+					$('.spikekillParent').show();
+
+					spikeKillActions();
+
+					spikeKillOpen = true;
 				});
-
-				spikeKillActions();
-
-				$('.spikekillParent').show();
-			});
-		}, function() {
-			$(this).find('.spikekillParent:first').each(function() {
-				$(this).find('.spikekillMenu:first').menu('collapseAll', null, true);
-				$(this).fadeOut(600, function() {
-					$('.spikekillMenu').menu('destroy');
-					$('.spikekillParent').remove();
-				});
-			});
+			}else{
+				spikeKillOpen = false;
+				$('.spikekillParent').hide();
+			}
 		});
 	});
 

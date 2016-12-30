@@ -206,7 +206,6 @@ label {
 }
 
 .iconWrapper {
-	display:none;
 }
 
 .deleteMarker {
@@ -641,12 +640,13 @@ ul#breadcrumbs {
 	padding-left:5px;
 	padding-right:5px;
 	padding-top:10px;
-	width:300px;
+	width:250px;
 	max-width:400px;
 	height: 100%;
 	float: left;
 	vertical-align: top;
-	overflow: hidden;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .jstree {
@@ -841,6 +841,14 @@ legend {
 	cursor:pointer;
 	text-decoration: none;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.iconLink {
+	padding:2px;
+}
+
+.iconLink img {
+	padding-bottom:2px;
 }
 
 .noLinkEditMain {
