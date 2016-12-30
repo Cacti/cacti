@@ -190,7 +190,7 @@ function import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box( __('Import Templates'), '100%', '', '3', 'center', '');
+	html_start_box(__('Import Templates'), '100%', '', '3', 'center', '');
 
 	$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
 	if (empty($default_profile)) {
