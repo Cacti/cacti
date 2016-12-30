@@ -1077,7 +1077,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$total_rows = sizeof($graph_list);
 
 	/* generate page list */
-	$nav = html_nav_bar("graph_view.php?action=tree_content&tree_id=$tree_id&leaf_id=$leaf_id&node=" . get_request_var('node') . '&host_group_data=' . get_request_var('host_group_data'), MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_rows, get_request_var('columns'), __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar("graph_view.php?action=tree_content&tree_id=$tree_id&leaf_id=$leaf_id&node=" . get_request_var('node') . '&hgd=' . $host_group_data, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_rows, get_request_var('columns'), __('Graphs'), 'page', 'main');
 
 	print $nav;
 
