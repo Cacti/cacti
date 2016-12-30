@@ -562,7 +562,7 @@ button.ui-button::-moz-focus-inner {
 }
 .ui-menu .ui-state-focus,
 .ui-menu .ui-state-active {
-	margin: -1px;
+	margin: 0px;
 }
 
 /* icon support */
@@ -882,7 +882,7 @@ body .ui-tooltip {
 .ui-state-focus,
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
-	background-color: #ffffff;
+	background-color: #E1E1E1;
 	color: #3F473F;
 }
 .ui-state-hover a,
