@@ -202,6 +202,10 @@ if ($step == '7') {
 		/* change cacti version */
 		db_execute('DELETE FROM version', true, $local_db_cnn_id);
 		db_execute("INSERT INTO version (cacti) VALUES ('" . $config["cacti_version"] . "')", true, $local_db_cnn_id);
+
+		/* make the poller and poller_output_boost InnoDB */
+		db_execute('ALTER TABLE poller_output ENGINE=InnoDB');
+		db_execute('ALTER TABLE poller_output_boost ENGINE=InnoDB');
 	}else{
 		/* pre-fill poller cache with initial data on a new install only */
 		if ($old_cacti_version == 'new_install') {
