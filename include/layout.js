@@ -408,8 +408,18 @@ function cactiReturnTo(href) {
 function applySkin() {
 	if (!theme || theme == 'classic') {
 		theme = 'classic';
+
+		// debounce submits
+		$('input[type="submit"], button[type="submit"]').click(function() {
+			$(this).prop('disabled', true);
+		});
 	}else{
 		$('input[type=submit], input[type=button]').button();
+
+		// debounce submits
+		$('input[type="submit"], button[type="submit"]').click(function() {
+			$(this).button('disable');
+		});
 	}
 
 	$('.ui-tooltip').remove();
@@ -502,11 +512,6 @@ function applySkin() {
 	// remove stray tooltips
 	$(document).tooltip('close');
 
-	// debounce submits
-	$('input[type="submit"], button[type="submit"]').click(function() {
-		$(this).button('disable');
-	});
-
 	$('#main').show();
 }
 
@@ -563,7 +568,7 @@ function loadPageNoHeader(href) {
 }
 
 function ajaxAnchors() {
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab, a.iconLink').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
