@@ -410,14 +410,14 @@ function applySkin() {
 		theme = 'classic';
 
 		// debounce submits
-		$('input[type="submit"], button[type="submit"]').click(function() {
+		$('input[type="submit"], button[type="submit"]').not('.import, .export').click(function() {
 			$(this).prop('disabled', true);
 		});
 	}else{
 		$('input[type=submit], input[type=button]').button();
 
 		// debounce submits
-		$('input[type="submit"], button[type="submit"]').click(function() {
+		$('input[type="submit"], button[type="submit"]').not('.import, .export').click(function() {
 			$(this).button('disable');
 		});
 	}

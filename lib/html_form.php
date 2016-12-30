@@ -1108,7 +1108,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php print $cancel_action;?>
-				<input id='submit' type='submit' value='<?php print $alt;?>'>
+				<input class='<?php print $force_type;?>' id='submit' type='submit' value='<?php print $alt;?>'>
 			</td>
 		</tr>
 	</table>
