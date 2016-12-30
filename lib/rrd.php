@@ -1629,12 +1629,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				}
 			}
 
-			$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval((isset($cf_ds_cache{$graph_item['data_template_rrd_id']}[$cf_id]) ? $cf_ds_cache{$graph_item['data_template_rrd_id']}[$cf_id] : '0'))), $cdef_string);
-
 			/* allow automatic rate calculations on raw guage data */
 			if (isset($graph_item['local_data_id'])) {
-				$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])));
+				$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
 			}
+
+			$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval((isset($cf_ds_cache{$graph_item['data_template_rrd_id']}[$cf_id]) ? $cf_ds_cache{$graph_item['data_template_rrd_id']}[$cf_id] : '0'))), $cdef_string);
 
 			/* ALL|SIMILAR_DATA_SOURCES(NO)?DUPS are to be replaced here */
 			if (isset($magic_item['ALL_DATA_SOURCES_DUPS'])) {
