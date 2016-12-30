@@ -86,54 +86,56 @@ if (sizeof($parms)) {
 
 maint_debug('Checking for Purge Actions');
 
-/* are my tables already present? */
-$purge = db_fetch_cell('SELECT count(*) FROM data_source_purge_action');
+if ($config['poller_id'] == 1) {
+	/* are my tables already present? */
+	$purge = db_fetch_cell('SELECT count(*) FROM data_source_purge_action');
 
-/* if the table that holds the actions is present, work on it */
-if ($purge) {
-	maint_debug("Purging Required - Files Found $purge");
+	/* if the table that holds the actions is present, work on it */
+	if ($purge) {
+		maint_debug("Purging Required - Files Found $purge");
 
-	/* take the purge in steps */
-	while (true) {
-		maint_debug('Grabbing 1000 RRDfiles to Remove');
+		/* take the purge in steps */
+		while (true) {
+			maint_debug('Grabbing 1000 RRDfiles to Remove');
 
-		$file_array = db_fetch_assoc('SELECT id, name, local_data_id, action 
-			FROM data_source_purge_action
-			ORDER BY name
-			LIMIT 1000');
+			$file_array = db_fetch_assoc('SELECT id, name, local_data_id, action 
+				FROM data_source_purge_action
+				ORDER BY name
+				LIMIT 1000');
 
-		if (sizeof($file_array) == 0) {
-			break;
-		}
+			if (sizeof($file_array) == 0) {
+				break;
+			}
 	
-		if (sizeof($file_array) || $force) {
-			/* there's something to do for us now */
-			remove_files($file_array);
+			if (sizeof($file_array) || $force) {
+				/* there's something to do for us now */
+				remove_files($file_array);
 	
-			if ($force) {
-				cleanup_ds_and_graphs();
+				if ($force) {
+					cleanup_ds_and_graphs();
+				}
 			}
 		}
+
+		/* record the start time */
+		$poller_end         = microtime(true);
+		$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
+		cacti_log($string, true, 'SYSTEM');
 	}
 
-	/* record the start time */
-	$poller_end         = microtime(true);
-	$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
-	cacti_log($string, true, 'SYSTEM');
-}
+	/* removing security tokens older than 90 days */
+	if (read_config_option('auth_cache_enabled') == 'on') {
+		db_execute_prepared('DELETE FROM user_auth_cache WHERE last_update < ?', array(date('Y-m-d H:i:s', time()-(86400*90))));
+	}else{
+		db_execute('TRUNCATE TABLE user_auth_cache');
+	}
 
-/* removing security tokens older than 90 days */
-if (read_config_option('auth_cache_enabled') == 'on') {
-	db_execute_prepared('DELETE FROM user_auth_cache WHERE last_update < ?', array(date('Y-m-d H:i:s', time()-(86400*90))));
-}else{
-	db_execute('TRUNCATE TABLE user_auth_cache');
+	// Check expired accounts
+	secpass_check_expired();
 }
 
 // Check the realtime cache and poller
 realtime_purge_cache();
-
-// Check expired accounts
-secpass_check_expired();
 
 // Check whether the cacti log needs rotating
 if (read_config_option('logrotate_enabled') == 'on') {
