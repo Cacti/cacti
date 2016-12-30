@@ -932,8 +932,6 @@ legend {
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {
 	color: #006400 !important;
-	font-size: 1.1em;
-	padding: 0px;
 	cursor:pointer;
 	text-decoration: none;
 }
