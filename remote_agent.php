@@ -31,6 +31,7 @@ include_once('./lib/data_query.php');
 include_once('./lib/poller.php');
 include_once('./lib/ping.php');
 include_once('./lib/snmp.php');
+include_once('./lib/rrd.php');
 
 if (!remote_client_authorized()) {
 	print 'FATAL: You are not authorized to use this service';
@@ -58,6 +59,10 @@ switch (get_request_var('action')) {
 		break;
 	case 'snmpwalk':
 		get_snmp_walk_data();
+
+		break;
+	case 'graph_json':
+		get_graph_data();
 
 		break;
 	default:
@@ -95,6 +100,66 @@ function remote_client_authorized() {
 	}
 
 	return false;
+}
+
+function get_graph_data() {
+	get_filter_request_var('graph_start');
+	get_filter_request_var('graph_end');
+	get_filter_request_var('graph_height');
+	get_filter_request_var('graph_width');
+	get_filter_request_var('local_graph_id');
+	get_filter_request_var('rra_id');
+
+	$local_graph_id   = get_filter_request_var('local_graph_id');
+	$rra_id           = get_filter_request_var('rra_id');
+
+	$graph_data_array = array();
+
+	/* override: graph start time (unix time) */
+	if (!isempty_request_var('graph_start') && get_request_var('graph_start') < 1600000000) {
+		$graph_data_array['graph_start'] = get_request_var('graph_start');
+	}
+
+	/* override: graph end time (unix time) */
+	if (!isempty_request_var('graph_end') && get_request_var('graph_end') < 1600000000) {
+		$graph_data_array['graph_end'] = get_request_var('graph_end');
+	}
+
+	/* override: graph height (in pixels) */
+	if (!isempty_request_var('graph_height') && get_request_var('graph_height') < 3000) {
+		$graph_data_array['graph_height'] = get_request_var('graph_height');
+	}
+
+	/* override: graph width (in pixels) */
+	if (!isempty_request_var('graph_width') && get_request_var('graph_width') < 3000) {
+		$graph_data_array['graph_width'] = get_request_var('graph_width');
+	}
+
+	/* override: skip drawing the legend? */
+	if (!isempty_request_var('graph_nolegend')) {
+		$graph_data_array['graph_nolegend'] = get_request_var('graph_nolegend');
+	}
+
+	/* print RRDTool graph source? */
+	if (!isempty_request_var('show_source')) {
+		$graph_data_array['print_source'] = get_request_var('show_source');
+	}
+
+	/* disable cache check */
+	if (isset_request_var('disable_cache')) {
+		$graph_data_array['disable_cache'] = true;
+	}
+
+	/* set the theme */
+	if (isset_request_var('graph_theme')) {
+		$graph_data_array['graph_theme'] = get_request_var('graph_theme');
+	}
+
+	$graph_data_array['graphv'] = true;
+
+	print @rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array);
+
+	return true;
 }
 
 function get_snmp_data() {
