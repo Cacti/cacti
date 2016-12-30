@@ -574,6 +574,7 @@ $host_group_types = array(
 
 $custom_data_source_types = array(
 	'CURRENT_DATA_SOURCE'         => __('Current Graph Item Data Source'),
+	'CURRENT_DATA_SOURCE_PI'      => __('Current Graph Item Polling Interval'),
 	'ALL_DATA_SOURCES_NODUPS'     => __('All Data Sources (Dont Include Duplicates)'),
 	'ALL_DATA_SOURCES_DUPS'       => __('All Data Sources (Include Duplicates)'),
 	'SIMILAR_DATA_SOURCES_NODUPS' => __('All Similar Data Sources (Dont Include Duplicates)'),
