@@ -76,6 +76,7 @@ $mibs      = false;
 
 /* set the poller_id */
 $poller_id = $config['poller_id'];
+$hostname  = php_uname('n');
 
 /* requires for remote poller stage out */
 chdir(dirname(__FILE__));
@@ -125,6 +126,9 @@ if (sizeof($parms)) {
 		}
 	}
 }
+
+// Update the pollers hostname if it has changed
+db_execute_prepared('UPDATE poller SET hostname = ? WHERE id = ?', array($hostname, $poller_id));
 
 // Check to see if the poller is disabled
 poller_enabled_check($poller_id);
