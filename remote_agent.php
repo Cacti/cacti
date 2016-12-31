@@ -33,6 +33,8 @@ include_once('./lib/ping.php');
 include_once('./lib/snmp.php');
 include_once('./lib/rrd.php');
 
+$debug = false;
+
 if (!remote_client_authorized()) {
 	print 'FATAL: You are not authorized to use this service';
 	exit;
@@ -42,40 +44,63 @@ set_default_action();
 
 switch (get_request_var('action')) {
 	case 'polldata':
+		debug('Start: Poling Data for Realtime');
 		poll_for_data();
+		debug('End: Poling Data for Realtime');
 
 		break;
 	case 'runquery':
+		debug('Start: Running Data Query');
 		run_remote_data_query();
+		debug('End: Running Data Query');
 
 		break;
 	case 'ping':
+		debug('Start: Pinging Device');
 		ping_device();
+		debug('End: Pinging Device');
 
 		break;
 	case 'snmpget':
+		debug('Start: Performing SNMP Get Request');
 		get_snmp_data();
+		debug('End: Performing SNMP Get Request');
 
 		break;
 	case 'snmpwalk':
+		debug('Start: Performing SNMP Walk Request');
 		get_snmp_walk_data();
+		debug('End: Performing SNMP Walk Request');
 
 		break;
 	case 'graph_json':
+		debug('Start: Performing Graph Request');
 		get_graph_data();
+		debug('End: Performing Graph Request');
 
 		break;
 	case 'discover':
+		debug('Start:Performing Network Discovery Request');
 		run_remote_discovery();
+		debug('End:Performing Network Discovery Request');
 
 		break;
 	default:
 		if (!api_plugin_hook_function('remote_agent', get_request_var('action'))) {
-			print 'Unknown agent request';
+			debug('WARNING: Unknown Agent Request');
+			print 'Unknown Agent Request';
 		}
 }
 
 exit;
+
+function debug($message) {
+	global $debug;
+
+	if ($debug) {
+		cacti_log("REMOTE DEBUG: " . trim($message), false, 'WEBSVCS');
+	}
+}
 
 function strip_domain($host) {
 	if (strpos($host, '.') !== false) {
