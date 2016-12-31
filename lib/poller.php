@@ -793,6 +793,9 @@ function replicate_out($remote_poller_id = 1) {
 	$data = db_fetch_assoc('SELECT * FROM snmp_query');
 	replicate_out_table($remote_db_cnn_id, $data, 'snmp_query', $remote_poller_id);
 
+	$data = db_fetch_assoc('SELECT * FROM data_input_fields');
+	replicate_out_table($remote_db_cnn_id, $data, 'data_input_fields', $remote_poller_id);
+
 	$data = db_fetch_assoc_prepared('SELECT hsq.* 
 		FROM host_snmp_query AS hsq
 		INNER JOIN host AS h
@@ -834,6 +837,64 @@ function replicate_out($remote_poller_id = 1) {
 		WHERE h.poller_id = ?', 
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'poller_reindex', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT dl.* 
+		FROM data_local AS dl
+		INNER JOIN host AS h
+		ON h.id=dl.host_id 
+		WHERE h.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'data_local', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT gl.* 
+		FROM graph_local AS gl
+		INNER JOIN host AS h
+		ON h.id=gl.host_id 
+		WHERE h.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'graph_local', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT dtd.* 
+		FROM data_template_data AS dtd
+		INNER JOIN data_local AS dl
+		ON dtd.local_data_id=dl.id
+		INNER JOIN host AS h
+		ON h.id=dl.host_id 
+		WHERE h.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'data_template_data', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT dtr.* 
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_local AS dl
+		ON dtr.local_data_id=dl.id
+		INNER JOIN host AS h
+		ON h.id=dl.host_id 
+		WHERE h.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'data_template_rrd', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT gti.* 
+		FROM graph_templates_item AS gti
+		INNER JOIN graph_local AS gl
+		ON gti.local_graph_id=gl.id
+		INNER JOIN host AS h
+		ON h.id=gl.host_id 
+		WHERE h.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'graph_templates_item', $remote_poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT did.* 
+		FROM data_input_data AS did
+		INNER JOIN data_template_data AS dtd
+		ON did.data_template_data_id=dtd.id
+		INNER JOIN data_local AS dl
+		ON dl.id=dtd.local_data_id
+		INNER JOIN host AS h
+		ON h.id=dl.host_id 
+		WHERE h.poller_id = ?', 
+		array($remote_poller_id));
+	replicate_out_table($remote_db_cnn_id, $data, 'data_input_data', $remote_poller_id);
 
 	api_plugin_hook_function('replicate_out', $remote_poller_id);
 
