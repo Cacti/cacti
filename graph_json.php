@@ -155,6 +155,15 @@ if ($config['poller_id'] == 1) {
 		}
 	}
 
+	/* get the theme */
+	if (!isset_request_var('graph_theme')) {
+		$graph_data_array['graph_theme'] = get_selected_theme();
+	}
+
+	if (isset($_SESSION['sess_user_id'])) {
+		$graph_data_array['effective_user'] = $_SESSION['sess_user_id'];
+	}
+
 	$hostname = db_fetch_cell('SELECT hostname FROM poller WHERE id = 1');
 
 	$url  = get_url_type() . '://' . $hostname . $config['url_path'] . 'remote_agent.php?action=graph_json';
