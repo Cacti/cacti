@@ -440,7 +440,7 @@ function snmpagent_cache_install(){
 	snmpagent_cache_init();
 
 	/* call install routine of plugins supporting the SNMPagent */
-	do_hook('snmpagent_cache_install');
+	api_plugin_hook('snmpagent_cache_install');
 }
 
 function snmpagent_cache_rebuilt(){
