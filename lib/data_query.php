@@ -31,6 +31,29 @@ function run_data_query($host_id, $snmp_query_id) {
 		return true;
 	}
 
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', array($host_id));
+
+	if ($poller_id != $config['poller_id']) {
+		$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($poller_id));
+
+		$response = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id);
+
+		if ($response != '') {
+			$response = json_decode($response, true);
+
+			$_SESSION['debug_log']['data_query'] = $response['data_query'];
+
+			if (isset($_SESSION['debug_log']['response'])) {
+				$result = $_SESSION['debug_log']['response'];
+				unset($_SESSION['debug_log']['response']);
+
+				return $result;
+			}
+		}
+
+		return false;
+	}
+
 	query_debug_timer_start();
 
 	include_once($config['library_path'] . '/poller.php');
@@ -101,12 +124,34 @@ function run_data_query($host_id, $snmp_query_id) {
 	update_poller_cache_from_query($host_id, $snmp_query_id);
 	query_debug_timer_offset('data_query', 'Update poller cache from query complete');
 
-	/* perform any automation on reindex */
-	automation_execute_data_query($host_id, $snmp_query_id);
-	query_debug_timer_offset('data_query', 'Automation execute data query complete');
+	if ($config['poller_id'] == 1) {
+		/* perform any automation on reindex */
+		automation_execute_data_query($host_id, $snmp_query_id);
+		query_debug_timer_offset('data_query', 'Automation execute data query complete');
 
-	api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
-	query_debug_timer_offset('data_query', 'Plugin hooks complete');
+		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
+		query_debug_timer_offset('data_query', 'Plugin hooks complete');
+	}else{
+		if ($config['connection'] == 'online') {
+			automation_execute_data_query($host_id, $snmp_query_id);
+			query_debug_timer_offset('data_query', 'Automation execute data query complete');
+
+			api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
+			query_debug_timer_offset('data_query', 'Plugin hooks complete');
+		}
+
+		if (!isset($_SESSION)) {
+			$config['debug_log']['result'] = $result;
+			print json_encode($config['debug_log']);
+		}else{
+			$_SESSION['debug_log']['result'] = $result;
+			print json_encode($_SESSION['debug_log']);
+
+			kill_session_var('debug_log');
+		}
+
+		return true;
+	}
 
 	return (isset($result) ? $result : true);
 }
