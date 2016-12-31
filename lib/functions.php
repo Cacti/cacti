@@ -3034,11 +3034,21 @@ function debug_log_insert_section_end($type) {
    @arg $type - the 'category' or type of debug message
    @arg $text - the actual debug message */
 function debug_log_insert($type, $text) {
-	if (!isset($_SESSION['debug_log'][$type])) {
-		$_SESSION['debug_log'][$type] = array();
-	}
+	global $config;
 
-	array_push($_SESSION['debug_log'][$type], $text);
+	if ($config['poller_id'] == 1 || isset($_SESSION)) {
+		if (!isset($_SESSION['debug_log'][$type])) {
+			$_SESSION['debug_log'][$type] = array();
+		}
+
+		array_push($_SESSION['debug_log'][$type], $text);
+	}else{
+		if (!isset($config['debug_log'][$type])) {
+			$config['debug_log'][$type] = array();
+		}
+
+		array_push($config['debug_log'][$type], $text);
+	}
 }
 
 /* debug_log_clear - clears the debug log for a particular category
