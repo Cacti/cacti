@@ -341,13 +341,30 @@ while ($poller_runs_completed < $poller_runs) {
 
 	// Only report issues for the main poller or from bad local data ids, other pollers may insert somewhat asynchornously
 	$issues_limit = 20;
-	$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name 
-		FROM poller_output AS po
-		LEFT JOIN data_local AS dl
-		ON po.local_data_id=dl.id
-		LEFT JOIN host AS h
-		ON dl.host_id=h.id
-		WHERE h.poller_id = ? OR h.id IS NULL LIMIT ' . $issues_limit, array($poller_id));
+
+	if ($poller_id == 1) {
+		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name 
+			FROM poller_output AS po
+			LEFT JOIN data_local AS dl
+			ON po.local_data_id=dl.id
+			LEFT JOIN host AS h
+			ON dl.host_id=h.id
+			WHERE h.poller_id = ? OR h.id IS NULL LIMIT ' . $issues_limit, array($poller_id));
+	}else{
+		if ($config['connection'] == 'online') {
+			$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name 
+				FROM poller_output AS po
+				LEFT JOIN data_local AS dl
+				ON po.local_data_id=dl.id
+				LEFT JOIN host AS h
+				ON dl.host_id=h.id
+				WHERE h.poller_id = ? OR h.id IS NULL 
+				AND time < DATE_SUB(CURDATE(), INTERVAL 10 MINUTE)
+				LIMIT ' . $issues_limit, array($poller_id));
+		}else{
+			$issues = array();
+		}
+	}
 
 	if (sizeof($issues)) {
 		$count  = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*) 
