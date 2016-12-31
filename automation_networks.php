@@ -74,21 +74,37 @@ function form_save() {
 }
 
 function api_networks_remove($network_id){
-	db_execute_prepared('DELETE FROM automation_networks WHERE id = ?', array($network_id));
-	db_execute_prepared('DELETE FROM automation_devices WHERE network_id = ?', array($network_id));
+	db_execute_prepared('DELETE FROM automation_networks 
+		WHERE id = ?', 
+		array($network_id));
+
+	db_execute_prepared('DELETE FROM automation_devices 
+		WHERE network_id = ?', 
+		array($network_id));
 }
 
 function api_networks_enable($network_id){
-	db_execute_prepared('UPDATE automation_networks SET enabled="on" WHERE id = ?', array($network_id));
+	db_execute_prepared('UPDATE automation_networks 
+		SET enabled="on" 
+		WHERE id = ?', 
+		array($network_id));
 }
 
 function api_networks_disable($network_id){
-	db_execute_prepared('UPDATE automation_networks SET enabled="" WHERE id = ?', array($network_id));
+	db_execute_prepared('UPDATE automation_networks 
+		SET enabled="" 
+		WHERE id = ?', 
+		array($network_id));
 }
 
 function api_networks_cancel($network_id){
-	db_execute_prepared('UPDATE IGNORE automation_processes SET command="cancel" WHERE task="tmaster" AND network_id = ?', array($network_id));
+	db_execute_prepared('UPDATE IGNORE automation_processes 
+		SET command="cancel" 
+		WHERE task="tmaster" 
+		AND network_id = ?', 
+		array($network_id));
 } 
+
 function api_networks_discover($network_id) {
 	global $config;
 
