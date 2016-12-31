@@ -66,7 +66,9 @@ switch (get_request_var('action')) {
 
 		break;
 	default:
-		print 'Unknown agent request';
+		if (!api_plugin_hook_function('remote_agent', get_request_var('action'))) {
+			print 'Unknown agent request';
+		}
 }
 
 exit;
@@ -109,6 +111,8 @@ function get_graph_data() {
 	get_filter_request_var('graph_width');
 	get_filter_request_var('local_graph_id');
 	get_filter_request_var('rra_id');
+	get_filter_request_var('graph_theme', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+	get_filter_request_var('effective_user');
 
 	$local_graph_id   = get_filter_request_var('local_graph_id');
 	$rra_id           = get_filter_request_var('rra_id');
@@ -155,9 +159,18 @@ function get_graph_data() {
 		$graph_data_array['graph_theme'] = get_request_var('graph_theme');
 	}
 
+	/* set the theme */
+	if (isset_request_var('effective_user')) {
+		$user = get_request_var('effective_user');
+	}else{
+		$user = 0;
+	}
+
 	$graph_data_array['graphv'] = true;
 
-	print @rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array);
+	$xport_options = array();
+
+	print @rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, null, $xport_options, $user);
 
 	return true;
 }
