@@ -128,12 +128,13 @@ if (sizeof($polling_items)) {
 	$host_update_time = date('Y-m-d H:i:s');
 
 	foreach ($polling_items as $item) {
-		$data_source = $item['local_data_id'];
-		$host_id     = $item['host_id'];
-		$col_poller_id   = $item['poller_id'];
+		$data_source   = $item['local_data_id'];
+		$host_id       = $item['host_id'];
+		$col_poller_id = $item['poller_id'];
 
 		if ($col_poller_id > 1) {
-			$output = file_get_contents(get_url_type() . '://' . $config['url_path'] . '/remote_agent.php?host_id=' . $host_id . '&local_data_id=' . $local_data_id);
+			$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($col_poller_id));
+			$output = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=polldata&host_id=' . $host_id . '&local_data_id=' . $local_data_id);
 		}else{
 			switch ($item['action']) {
 			case POLLER_ACTION_SNMP: /* snmp */
