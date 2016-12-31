@@ -90,13 +90,21 @@ function api_networks_cancel($network_id){
 	db_execute_prepared('UPDATE IGNORE automation_processes SET command="cancel" WHERE task="tmaster" AND network_id = ?', array($network_id));
 } 
 function api_networks_discover($network_id) {
-	$enabled = db_fetch_cell_prepared('SELECT enabled FROM automation_networks WHERE id = ?', array($network_id));
-	$running = db_fetch_cell_prepared('SELECT count(*) FROM automation_processes WHERE network_id = ?', array($network_id));
-	$name    = db_fetch_cell_prepared('SELECT name FROM automation_networks WHERE id = ?', array($network_id));
+	global $config;
+
+	$enabled   = db_fetch_cell_prepared('SELECT enabled FROM automation_networks WHERE id = ?', array($network_id));
+	$running   = db_fetch_cell_prepared('SELECT count(*) FROM automation_processes WHERE network_id = ?', array($network_id));
+	$name      = db_fetch_cell_prepared('SELECT name FROM automation_networks WHERE id = ?', array($network_id));
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id FROM automation_networks WHERE id = ?', array($network_id));
 
 	if ($enabled == 'on') {
 		if (!$running) {
-			exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force");
+			if ($config['poller_id'] == $poller_id) {
+				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force");
+			}else{
+				$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($poller_id));
+				$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id);
+			}
 		}else{
 			$_SESSION['automation_message'] = "Can Not Restart Discovery for Discovery in Progress for Network '$name'";
 			raise_message('automation_message');
@@ -113,6 +121,7 @@ function api_networks_save($post) {
 
 		/* general information */
 		$save['name']          = form_input_validate($post['name'], 'name', '', false, 3);
+		$save['poller_id']     = form_input_validate($post['poller_id'], 'poller_id', '^[0-9]+$', false, 3);
 		$save['subnet_range']  = form_input_validate($post['subnet_range'], 'subnet_range', '', false, 3);
 		$save['dns_servers']   = form_input_validate($post['dns_servers'], 'dns_servers', '', true, 3);
 
@@ -357,6 +366,14 @@ function network_edit() {
 		'value' => '|arg1:name|',
 		'max_length' => '250',
 		'placeholder' => __('New Network Discovery Range')
+		),
+	'poller_id' => array(
+		'method' => 'drop_sql',
+		'friendly_name' => __('Data Collector'),
+		'description' => __('Choose the Cacti Data Collector/Poller to be used to gather data from this Device.'),
+		'value' => '|arg1:poller_id|',
+		'default' => read_config_option('default_poller'),
+		'sql' => 'SELECT id, name FROM poller ORDER BY name',
 		),
 	'subnet_range' => array(
 		'method' => 'textarea',
@@ -804,8 +821,10 @@ function get_networks(&$sql_where, $rows, $apply_limits = TRUE) {
 		$sql_where = " WHERE (automation_networks.name LIKE '%" . get_request_var('filter') . "%')";
 	}
 
-	$query_string = "SELECT *
+	$query_string = "SELECT automation_networks.*, poller.name AS data_collector
 		FROM automation_networks
+		LEFT JOIN poller
+		ON automation_networks.poller_id=poller.id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
 
@@ -886,16 +905,17 @@ function networks() {
 	);
 
 	$display_text = array(
-		'name'         => array('display' => __('Network Name'), 'align' => 'left', 'sort' => 'ASC'),
-		'sched_type'   => array('display' => __('Schedule'), 'align' => 'left', 'sort' => 'DESC'),
-		'total_ips'    => array('display' => __('Total IPs'), 'align' => 'right', 'sort' => 'DESC'),
-		'nosort1'      => array('display' => __('Status'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The Current Status of this Networks Discovery')),
-		'nosort2'      => array('display' => __('Progress'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('Pending/Running/Done')),
-		'nosort3'      => array('display' => __('Up/SNMP Hosts'), 'align' => 'right', 'sort' => 'DESC'),
-		'threads'      => array('display' => __('Threads'), 'align' => 'right', 'sort' => 'DESC'),
-		'last_runtime' => array('display' => __('Last Runtime'), 'align' => 'right', 'sort' => 'ASC'),
-		'nosort4'      => array('display' => __('Next Start'), 'align' => 'right', 'sort' => 'ASC'),
-		'last_started' => array('display' => __('Last Started'), 'align' => 'right', 'sort' => 'ASC'));
+		'name'           => array('display' => __('Network Name'), 'align' => 'left', 'sort' => 'ASC'),
+		'data_collector' => array('display' => __('Data Collector'), 'align' => 'left', 'sort' => 'DESC'),
+		'sched_type'     => array('display' => __('Schedule'), 'align' => 'left', 'sort' => 'DESC'),
+		'total_ips'      => array('display' => __('Total IPs'), 'align' => 'right', 'sort' => 'DESC'),
+		'nosort1'        => array('display' => __('Status'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The Current Status of this Networks Discovery')),
+		'nosort2'        => array('display' => __('Progress'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('Pending/Running/Done')),
+		'nosort3'        => array('display' => __('Up/SNMP Hosts'), 'align' => 'right', 'sort' => 'DESC'),
+		'threads'        => array('display' => __('Threads'), 'align' => 'right', 'sort' => 'DESC'),
+		'last_runtime'   => array('display' => __('Last Runtime'), 'align' => 'right', 'sort' => 'ASC'),
+		'nosort4'        => array('display' => __('Next Start'), 'align' => 'right', 'sort' => 'ASC'),
+		'last_started'   => array('display' => __('Last Started'), 'align' => 'right', 'sort' => 'ASC'));
 
 	$status = 'Idle';
 
@@ -947,6 +967,7 @@ function networks() {
 
 			form_alternate_row('line' . $network['id'], true);
 			form_selectable_cell('<a class="linkEditMain" href="' . htmlspecialchars('automation_networks.php?action=edit&id=' . $network['id']) . '">' . $network['name'] . '</a>', $network['id']);
+			form_selectable_cell($network['data_collector'], $network['id']);
 			form_selectable_cell($sched_types[$network['sched_type']], $network['id']);
 			form_selectable_cell(number_format_i18n($network['total_ips']), $network['id'], '', 'text-align:right;');
 			form_selectable_cell($mystat, $network['id'], '', 'text-align:right;');

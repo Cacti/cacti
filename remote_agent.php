@@ -65,6 +65,10 @@ switch (get_request_var('action')) {
 		get_graph_data();
 
 		break;
+	case 'discover':
+		run_remote_discovery();
+
+		break;
 	default:
 		if (!api_plugin_hook_function('remote_agent', get_request_var('action'))) {
 			print 'Unknown agent request';
@@ -340,3 +344,22 @@ function run_remote_data_query() {
 	}
 }
 
+function run_remote_discovery() {
+	global $config;
+
+	$poller_id = $config['poller_id'];
+	$network   = get_filter_request_var('network');
+	$php       = read_config_option('path_php_binary');
+	$path      = read_config_option('path_webroot') . '/poller_automation.php';
+
+	$options   = ' --poller=' . $poller_id . ' --network=' . $network . ' --force';
+	if (isset_request_var('debug')) {
+		$options .= ' --debug';
+	}
+
+	exec_background($php, '-q ' . $path . $options);
+
+	sleep(2);
+
+	return;
+}
