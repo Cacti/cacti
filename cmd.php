@@ -122,6 +122,7 @@ function display_help () {
 	echo "    --last   - Last host id in the range to collect from.\n\n";
 	echo "Optional:\n";
 	echo "    --poller - The poller to run as.  Defaults to the system poller.\n";
+	echo "    --mode   - The poller mode, either online, offline, or recovery.\n";
 	echo "    --mibs   - Refresh all system mibs from hosts supporting snmp.\n";
 	echo "    --debug  - Display verbose output during execution.\n\n";
 }

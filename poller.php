@@ -418,7 +418,7 @@ while ($poller_runs_completed < $poller_runs) {
 		$extra_args = api_plugin_hook_function('poller_command_args', $extra_args);
 
 		if ($poller_id > 1) {
-			$extra_args .= ' -N ' . $config['connection'];
+			$extra_args .= ' --mode=' . $config['connection'];
 		}
 
 		/* Populate each execution file with appropriate information */
@@ -472,15 +472,17 @@ while ($poller_runs_completed < $poller_runs) {
 			$started_processes++;
 		}
 
-		/* insert the current date/time for graphs */
-		db_execute("REPLACE INTO settings (name, value) VALUES ('date', NOW())");
+		if ($poller_id == 1) {
+			/* insert the current date/time for graphs */
+			db_execute("REPLACE INTO settings (name, value) VALUES ('date', NOW())");
+
+			/* open a pipe to rrdtool for writing */
+			$rrdtool_pipe = rrd_init();
+		}
 
 		if ($poller_type == '1') {
 			$max_threads = 'N/A';
 		}
-
-		/* open a pipe to rrdtool for writing */
-		$rrdtool_pipe = rrd_init();
 
 		$rrds_processed = 0;
 		$poller_finishing_dispatched = false;
@@ -496,7 +498,10 @@ while ($poller_runs_completed < $poller_runs) {
 					api_plugin_hook('poller_finishing');
 					$poller_finishing_dispatched = true;
 				}
-				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, true);
+
+				if ($poller_id == 1) {
+					$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, true);
+				}
 
 				log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
 					sizeof($polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
@@ -508,7 +513,10 @@ while ($poller_runs_completed < $poller_runs) {
 				}
 
 				$mtb = microtime(true);
-				$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
+
+				if ($poller_id == 1) {
+					$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
+				}
 
 				/* end the process if the runtime exceeds MAX_POLLER_RUNTIME */
 				if (($poller_start + MAX_POLLER_RUNTIME) < time()) {
@@ -528,7 +536,9 @@ while ($poller_runs_completed < $poller_runs) {
 			}
 		}
 
-		rrd_close($rrdtool_pipe);
+		if ($poller_id == 1) {
+			rrd_close($rrdtool_pipe);
+		}
 
 		/* process poller commands */
 		if (db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*) FROM poller_command WHERE poller_id = ?', array($poller_id)) > 0) {
