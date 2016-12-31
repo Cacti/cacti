@@ -358,8 +358,8 @@ while ($poller_runs_completed < $poller_runs) {
 				ON po.local_data_id=dl.id
 				LEFT JOIN host AS h
 				ON dl.host_id=h.id
-				WHERE h.poller_id = ? OR h.id IS NULL 
-				AND time < DATE_SUB(CURDATE(), INTERVAL 10 MINUTE)
+				WHERE (h.poller_id = ? OR h.id IS NULL)
+				AND time < FROM_UNIXTIME(UNIX_TIMESTAMP()-600)
 				LIMIT ' . $issues_limit, array($poller_id));
 		}else{
 			$issues = array();
