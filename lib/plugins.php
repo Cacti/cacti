@@ -88,6 +88,7 @@ function api_plugin_hook ($name) {
 
 function api_plugin_hook_function ($name, $parm=NULL) {
 	global $config, $plugin_hooks, $plugins_integrated;
+
 	$ret = $parm;
 	$p = array();
 	if (defined('IN_CACTI_INSTALL')) {
@@ -117,6 +118,7 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 		}
 	}
 
+
 	if (isset($plugin_hooks[$name]) && is_array($plugin_hooks[$name])) {
 		foreach ($plugin_hooks[$name] as $pname => $function) {
 			if (function_exists($function)  && !function_exists('plugin_' . $pname . '_install') && !in_array($pname, $p)) {
@@ -128,6 +130,149 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 	/* Variable-length argument lists have a slight problem when */
 	/* passing values by reference. Pity. This is a workaround.  */
 	return $ret;
+}
+
+function api_plugin_run_plugin_hook($function, $hook, $plugin, $args) {
+	global $config;
+
+	if ($config['poller_id'] > 1) {
+		$required_capabilities = array(
+			// Poller related
+			'poller_bottom'            => array('remote_collect'), // Poller execution, api_plugin_hook
+			'update_host_status'       => array('remote_collect'), // Processing poller output, api_plugin_hook
+
+			// GUI Related
+			'page_head'                => array('online_view', 'offline_view'), // Navigation, api_plugin_hook
+			'top_header_tabs'          => array('online_view', 'offline_view'), // Top Tabs, api_plugin_hook
+			'top_graph_header_tabs'    => array('online_view', 'offline_view'), // Top Tabs, api_plugin_hook
+			'graph_buttons'            => array('online_view', 'offline_view'), // Buttons by graphs, api_plugin_hook
+			'graphs_new_top_links'     => array('online_mgmt', 'offline_mgmt'), // Buttons by graphs, api_plugin_hook
+			'page_head'                => array('online_view', 'offline_view')  // Content, api_plugin_hook
+		);
+
+		$plugin_capabilities = api_plugin_remote_capabilities($plugin);
+
+		if ($plugin_capabilities === false) {
+			$function($args);
+		}elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
+			$function($args);
+		}elseif (isset($required_capabilities[$hook])) {
+			if (api_pluign_status_run($hook, $required_capabilities, $plugin_capabilities)) {
+				$function($args);
+			}
+		}else{
+			$function($args);
+		}
+
+	}else{
+		$function($args);
+	}
+
+	return $args;
+}
+
+function api_plugin_run_plugin_function($function, $ret, $hook, $plugin) {
+	global $config;
+
+	if ($config['poller_id'] > 1) {
+		$required_capabilities = array(
+			// Poller related
+			'poller_output'            => array('remote_collect'), // Processing poller output, api_plugin_hook_function
+
+			// GUI Related
+			'top_header'               => array('online_view', 'offline_view'), // Top Tabs, api_plugin_hook_function
+			'top_graph_header'         => array('online_view', 'offline_view'), // Top Tabs, api_plugin_hook_function
+			'rrd_graph_graph_options'  => array('online_view', 'offline_view'), // Buttons by graphs, api_plugin_hook_function
+			'data_sources_table'       => array('online_mgmt', 'offline_mgmt'), // Buttons by graphs, api_plugin_hook_function
+
+			'device_action_array'      => array('online_mgmt', 'offline_mgmt'), // Actions Dropdown, api_plugin_hook_function
+			'data_source_action_array' => array('online_mgmt', 'offline_mgmt'), // Actions Dropdown, api_plugin_hook_function
+			'graphs_action_array'      => array('online_mgmt', 'offline_mgmt'), // Actions Dropdown, api_plugin_hook_function
+		);
+
+		$plugin_capabilities = api_plugin_remote_capabilities($plugin);
+
+		if ($plugin_capabilities === false) {
+			$ret = $function($ret);
+		}elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
+			$ret = $function($ret);
+		}elseif (isset($required_capabilities[$hook])) {
+			if (api_pluign_status_run($hook, $required_capabilities, $plugin_capabilities)) {
+				$ret = $function($ret);
+			}
+		}else{
+			$ret = $function($ret);
+		}
+	}else{
+		$ret = $function($ret);
+	}
+
+	return $ret;
+}
+
+function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities) {
+	if (isset($required_capabilities[$hook])) {
+		foreach($required_capabilities[$hook] as $capability) {
+			if (strpos($capability, "remote_collect:1") !== false) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+function api_plugin_remote_capabilities($plugin) {
+	global $config, $info_data;
+
+	$file = $config['base_path'] . '/plugins/' . $plugin . '/INFO';
+
+	if (!isset($info_data[$plugin])) {
+		if (file_exists($file)) {
+			$info = parse_ini_file($config['base_path'] . '/plugins/thold/INFO', true);
+
+			if (sizeof($info)) {
+				$info_data[$plugin] = $info;
+			}
+		}
+	}
+
+	if (isset($info_data[$plugin]) && isset($info_data[$plugin]['capability'])) {
+		return $info_data[$plugin]['capability'];
+	}
+
+	return false;
+}
+
+function api_pluign_status_run($hook, $required_capabilities, $plugin_capabilities) {
+	global $config;
+
+	$status = $config['connection'];
+
+	foreach($required_capabilities as $capability) {
+		if (strpos($plugin_capabilities, "$capability:1") !== false) {
+			return true;
+		}
+
+		switch($capability) {
+			case 'offline_view': // if the plugin has mgmt, it's assumed to have view
+				if (strpos($plugin_capabilities, "offline_mgmt:1") !== false) {
+					return true;
+				}
+
+				break;
+			case 'online_view': // if the plugin has mgmt, it's assumed to have view
+				if (strpos($plugin_capabilities, "offline_mgmt:1") !== false) {
+					return true;
+				}
+
+				break;
+			default:
+				break;
+		}
+	}
+
+	return false;
 }
 
 function api_plugin_db_table_create ($plugin, $table, $data) {
