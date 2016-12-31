@@ -711,6 +711,12 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 						(local_data_id, rrd_name, time, output)
 						VALUES ' . implode(', ', $output_array));
 
+					if (read_config_option('boost_redirect') == 'on') {
+						db_execute('INSERT IGNORE INTO poller_output_boost
+							(local_data_id, rrd_name, time, output)
+							VALUES ' . implode(', ', $output_array));
+					}
+
 					$output_array = array();
 					$output_count = 0;
 				}else{
@@ -724,6 +730,12 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 		db_execute('INSERT IGNORE INTO poller_output
 			(local_data_id, rrd_name, time, output)
 			VALUES ' . implode(', ', $output_array));
+
+		if (read_config_option('boost_redirect') == 'on') {
+			db_execute('INSERT IGNORE INTO poller_output_boost
+				(local_data_id, rrd_name, time, output)
+				VALUES ' . implode(', ', $output_array));
+		}
 	}
 
 	if ($using_proc_function && $script_server_calls > 0) {

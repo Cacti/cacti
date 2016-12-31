@@ -134,12 +134,8 @@ function boost_poller_on_demand(&$results) {
 		if (boost_check_correct_enabled()) {
 			/* if boost redirect is on, rows are being inserted directly */
 			if (read_config_option('boost_redirect') == 'on') {
-				if (read_config_option('poller_type') == '1') {
-					cacti_log('WARNING: Boost Redirect is enabled, but you are using cmd.php', false, 'BOOST');
-				}else{
-					restore_error_handler();
-					return false;
-				}
+				restore_error_handler();
+				return false;
 			}
 
 			$max_allowed_packet = db_fetch_row("SHOW VARIABLES LIKE 'max_allowed_packet'");
