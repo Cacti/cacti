@@ -533,6 +533,7 @@ function update_resource_cache($poller_id = 1) {
 		'include'  => array('recursive' => true,  'path' => $mpath . '/include'),
 		'formats'  => array('recursive' => true,  'path' => $mpath . '/formats'),
 		'locales'  => array('recursive' => true,  'path' => $mpath . '/locales'),
+		'images'   => array('recursive' => true,  'path' => $mpath . '/images'),
 		'mibs'     => array('recursive' => true,  'path' => $mpath . '/mibs'),
 		'cli'      => array('recursive' => true,  'path' => $mpath . '/cli')
 	);
