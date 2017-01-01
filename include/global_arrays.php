@@ -589,60 +589,77 @@ $custom_data_source_types = array(
 	'COUNT_SIMILAR_DS_DUPS'	      => __('Count of All Similar Data Sources (Include Duplicates)')
 );
 
-$menu = array(
-	__('Create') => array(
-		'graphs_new.php' => __('New Graphs')
-		),
-	__('Management') => array(
-		'host.php'             => __('Devices'),
-		'sites.php'            => __('Sites'),
-		'tree.php'             => __('Trees'),
-		'graphs.php'           => __('Graphs'),
-		'data_sources.php'     => __('Data Sources'),
-		'aggregate_graphs.php' => __('Aggregates'),
-		),
-	__('Data Collection') => array(
-		'pollers.php' => __('Data Collectors'),
-		'data_queries.php' => __('Data Queries'),
-		'data_input.php'   => __('Data Input Methods')
-		),
-	__('Templates') => array(
-		'host_templates.php'      => __('Device'),
-		'graph_templates.php'     => __('Graph'),
-		'data_templates.php'      => __('Data Source'),
-		'aggregate_templates.php' => __('Aggregate'),
-		'color_templates.php'     => __('Color')
-		),
-	__('Automation') => array(
-		'automation_networks.php'    => __('Networks'),
-		'automation_devices.php'     => __('Discovered Devices'),
-		'automation_templates.php'   => __('Device Rules'),
-		'automation_graph_rules.php' => __('Graph Rules'),
-		'automation_tree_rules.php'  => __('Tree Rules'),
-		'automation_snmp.php'        => __('SNMP Options'),
-		),
-	__('Presets') => array(
-		'data_source_profiles.php' => __('Data Profiles'),
-		'cdef.php'                 => __('CDEFs'),
-		'vdef.php'                 => __('VDEFs'),
-		'color.php'                => __('Colors'),
-		'gprint_presets.php'       => __('GPRINTs')
-		),
-	__('Import/Export') => array(
-		'templates_import.php' => __('Import Templates'),
-		'templates_export.php' => __('Export Templates')
-		),
-	__('Configuration')  => array(
-		'settings.php' => __('Settings'),
-		'links.php'    => __('External Links')
-		),
-	__('Utilities') => array(
-		'utilities.php'        => __('System Utilities'),
-		'user_admin.php'       => __('Users'),
-		'user_group_admin.php' => __('User Groups'),
-		'user_domains.php'     => __('User Domains')
-		)
-);
+if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
+	$menu = array(
+		__('Create') => array(
+			'graphs_new.php' => __('New Graphs')
+			),
+		__('Management') => array(
+			'host.php'             => __('Devices'),
+			'sites.php'            => __('Sites'),
+			'tree.php'             => __('Trees'),
+			'graphs.php'           => __('Graphs'),
+			'data_sources.php'     => __('Data Sources'),
+			'aggregate_graphs.php' => __('Aggregates'),
+			),
+		__('Data Collection') => array(
+			'pollers.php' => __('Data Collectors'),
+			'data_queries.php' => __('Data Queries'),
+			'data_input.php'   => __('Data Input Methods')
+			),
+		__('Templates') => array(
+			'host_templates.php'      => __('Device'),
+			'graph_templates.php'     => __('Graph'),
+			'data_templates.php'      => __('Data Source'),
+			'aggregate_templates.php' => __('Aggregate'),
+			'color_templates.php'     => __('Color')
+			),
+		__('Automation') => array(
+			'automation_networks.php'    => __('Networks'),
+			'automation_devices.php'     => __('Discovered Devices'),
+			'automation_templates.php'   => __('Device Rules'),
+			'automation_graph_rules.php' => __('Graph Rules'),
+			'automation_tree_rules.php'  => __('Tree Rules'),
+			'automation_snmp.php'        => __('SNMP Options'),
+			),
+		__('Presets') => array(
+			'data_source_profiles.php' => __('Data Profiles'),
+			'cdef.php'                 => __('CDEFs'),
+			'vdef.php'                 => __('VDEFs'),
+			'color.php'                => __('Colors'),
+			'gprint_presets.php'       => __('GPRINTs')
+			),
+		__('Import/Export') => array(
+			'templates_import.php' => __('Import Templates'),
+			'templates_export.php' => __('Export Templates')
+			),
+		__('Configuration')  => array(
+			'settings.php' => __('Settings'),
+			'links.php'    => __('External Links')
+			),
+		__('Utilities') => array(
+			'utilities.php'        => __('System Utilities'),
+			'user_admin.php'       => __('Users'),
+			'user_group_admin.php' => __('User Groups'),
+			'user_domains.php'     => __('User Domains')
+			)
+	);
+}else{
+	$menu = array(
+		__('Management') => array(
+			'host.php'             => __('Devices')
+			),
+		__('Data Collection') => array(
+			'pollers.php' => __('Data Collectors')
+			),
+		__('Configuration')  => array(
+			'settings.php' => __('Settings')
+			),
+		__('Utilities') => array(
+			'utilities.php'        => __('System Utilities')
+			)
+	);
+}
 
 if ((isset($_SESSION['sess_user_id']))) {
 	$consoles = db_fetch_assoc('SELECT id, title, extendedstyle
