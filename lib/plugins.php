@@ -43,11 +43,10 @@ function api_user_realm_auth ($filename = '') {
  */
 function api_plugin_hook ($name) {
 	global $config, $plugin_hooks, $plugins_integrated;
-	$data = func_get_args();
+	$args = func_get_args();
 	$ret = '';
-	$p = array();
 	if (defined('IN_CACTI_INSTALL')) {
-		return $data;
+		return $args;
 	}
 
 	/* order the plugins by order */
@@ -61,36 +60,36 @@ function api_plugin_hook ($name) {
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
-				$p[] = $hdata['name'];
 				if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 					include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
 				}
 				$function = $hdata['function'];
 				if (function_exists($function)) {
-					$function($data);
+					api_plugin_run_plugin_hook($name, $hdata['name'], $function, $args);
+//					$function($args);
 				}
 			}
 		}
 	}
 
-	if (isset($plugin_hooks[$name]) && is_array($plugin_hooks[$name])) {
-		foreach ($plugin_hooks[$name] as $pname => $function) {
-			if (function_exists($function)  && !function_exists('plugin_' . $pname . '_install') && !in_array($pname, $p)) {
-				$function($data);
-			}
-		}
-	}
+	// Legacy plugin handling
+//	if (isset($plugin_hooks[$name]) && is_array($plugin_hooks[$name])) {
+//		foreach ($plugin_hooks[$name] as $pname => $function) {
+//			if (function_exists($function)  && !function_exists('plugin_' . $pname . '_install') && !in_array($pname, $p)) {
+//				$function($args);
+//			}
+//		}
+//	}
 
 	/* Variable-length argument lists have a slight problem when */
 	/* passing values by reference. Pity. This is a workaround.  */
-	return $data;
+	return $args;
 }
 
-function api_plugin_hook_function ($name, $parm=NULL) {
+function api_plugin_hook_function ($name, $parm = NULL) {
 	global $config, $plugin_hooks, $plugins_integrated;
 
 	$ret = $parm;
-	$p = array();
 	if (defined('IN_CACTI_INSTALL')) {
 		return $ret;
 	}
@@ -112,30 +111,35 @@ function api_plugin_hook_function ($name, $parm=NULL) {
 				}
 				$function = $hdata['function'];
 				if (function_exists($function)) {
-					$ret = $function($ret);
+					$ret = api_plugin_run_plugin_hook($name, $hdata['name'], $function, $ret);
+//					$ret = $function($ret);
 				}
 			}
 		}
 	}
 
 
-	if (isset($plugin_hooks[$name]) && is_array($plugin_hooks[$name])) {
-		foreach ($plugin_hooks[$name] as $pname => $function) {
-			if (function_exists($function)  && !function_exists('plugin_' . $pname . '_install') && !in_array($pname, $p)) {
-				$ret = $function($ret);
-			}
-		}
-	}
+	// Legacy plugin handling
+//	if (isset($plugin_hooks[$name]) && is_array($plugin_hooks[$name])) {
+//		foreach ($plugin_hooks[$name] as $pname => $function) {
+//			if (function_exists($function)  && !function_exists('plugin_' . $pname . '_install') && !in_array($pname, $p)) {
+//				$ret = $function($ret);
+//			}
+//		}
+//	}
 
 	/* Variable-length argument lists have a slight problem when */
 	/* passing values by reference. Pity. This is a workaround.  */
 	return $ret;
 }
 
-function api_plugin_run_plugin_hook($function, $hook, $plugin, $args) {
-	global $config;
+function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
+	global $config, $menu;
 
 	if ($config['poller_id'] > 1) {
+		// Let's control the menu
+		$orig_menu = $menu;
+
 		$required_capabilities = array(
 			// Poller related
 			'poller_bottom'            => array('remote_collect'), // Poller execution, api_plugin_hook
@@ -155,15 +159,25 @@ function api_plugin_run_plugin_hook($function, $hook, $plugin, $args) {
 		if ($plugin_capabilities === false) {
 			$function($args);
 		}elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
-			$function($args);
+			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
+				$function($args);
+			}
 		}elseif (isset($required_capabilities[$hook])) {
-			if (api_pluign_status_run($hook, $required_capabilities, $plugin_capabilities)) {
+			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
 				$function($args);
 			}
 		}else{
 			$function($args);
 		}
 
+		// See if we need to restore the menu to original
+		if (($hook == 'config_arrays' || 'config_insert') && $config['connection'] == 'offline') {
+			if (!api_plugin_has_capability($plugin, 'offline_mgmt')) {
+				if ($orig_menu !== $menu) {
+					$menu = $orig_menu;
+				}
+			}
+		}
 	}else{
 		$function($args);
 	}
@@ -171,7 +185,7 @@ function api_plugin_run_plugin_hook($function, $hook, $plugin, $args) {
 	return $args;
 }
 
-function api_plugin_run_plugin_function($function, $ret, $hook, $plugin) {
+function api_plugin_run_plugin_function($hook, $plugin, $function, $ret) {
 	global $config;
 
 	if ($config['poller_id'] > 1) {
@@ -192,12 +206,17 @@ function api_plugin_run_plugin_function($function, $ret, $hook, $plugin) {
 
 		$plugin_capabilities = api_plugin_remote_capabilities($plugin);
 
+		// we will run if capabilities are not set
 		if ($plugin_capabilities === false) {
 			$ret = $function($ret);
+		// run if hooks is remote_collect and we support it
 		}elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
-			$ret = $function($ret);
+			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
+				$ret = $function($ret);
+			}
+		// run if hooks is remote_collect and we support it
 		}elseif (isset($required_capabilities[$hook])) {
-			if (api_pluign_status_run($hook, $required_capabilities, $plugin_capabilities)) {
+			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
 				$ret = $function($ret);
 			}
 		}else{
@@ -213,7 +232,7 @@ function api_plugin_run_plugin_function($function, $ret, $hook, $plugin) {
 function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities) {
 	if (isset($required_capabilities[$hook])) {
 		foreach($required_capabilities[$hook] as $capability) {
-			if (strpos($capability, "remote_collect:1") !== false) {
+			if (strpos($capability, 'remote_collect') !== false) {
 				return true;
 			}
 		}
@@ -225,31 +244,54 @@ function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilitie
 function api_plugin_remote_capabilities($plugin) {
 	global $config, $info_data;
 
+	if ($plugin == 'internal') {
+		return 'online_view:1 online_mgmt:1 offline_view:1 offline_mgmt:1 remote_collect:1';
+	}
+
 	$file = $config['base_path'] . '/plugins/' . $plugin . '/INFO';
 
 	if (!isset($info_data[$plugin])) {
 		if (file_exists($file)) {
-			$info = parse_ini_file($config['base_path'] . '/plugins/thold/INFO', true);
+			$info = parse_ini_file($file, true);
 
 			if (sizeof($info)) {
-				$info_data[$plugin] = $info;
+				$info_data[$plugin] = $info['info'];
 			}
 		}
 	}
 
-	if (isset($info_data[$plugin]) && isset($info_data[$plugin]['capability'])) {
-		return $info_data[$plugin]['capability'];
+	if (isset($info_data[$plugin]) && isset($info_data[$plugin]['capabilities'])) {
+		return $info_data[$plugin]['capabilities'];
+	}else{
+		return 'online_view:0 online_mgmt:0 offline_view:0 offline_mgmt:0 remote_collect:0';
 	}
 
 	return false;
 }
 
-function api_pluign_status_run($hook, $required_capabilities, $plugin_capabilities) {
+function api_plugin_has_capability($plugin, $capability) {
+	$capabilities = api_plugin_remote_capabilities($plugin);
+
+	if (strpos($capabilities, "$capability:1") !== false) {
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities) {
 	global $config;
 
 	$status = $config['connection'];
 
-	foreach($required_capabilities as $capability) {
+	if (!isset($required_capabilities[$hook])) {
+		return true;
+	}
+
+	foreach($required_capabilities[$hook] as $capability) {
+		if ($status == 'online' && strpos($capability, 'online') === false) continue;
+		if (($status == 'offline' || $status == 'recovery') && strpos($capability, 'offline') === false) continue;
+
 		if (strpos($plugin_capabilities, "$capability:1") !== false) {
 			return true;
 		}
@@ -513,7 +555,7 @@ function api_plugin_moveup($plugin) {
 }
 
 function api_plugin_movedown($plugin) {
-	$id = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
+	$id      = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
 	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
 	$next_id = db_fetch_cell_prepared('SELECT MIN(id) FROM plugin_config WHERE id > ?', array($id));
 
@@ -524,46 +566,98 @@ function api_plugin_movedown($plugin) {
 }
 
 function api_plugin_register_hook ($plugin, $hook, $function, $file) {
-	$exists = db_fetch_assoc_prepared('SELECT id FROM plugin_hooks WHERE name = ? AND hook = ?', array($plugin, $hook), false);
+	$exists = db_fetch_assoc_prepared('SELECT id 
+		FROM plugin_hooks 
+		WHERE name = ? 
+		AND hook = ?', 
+		array($plugin, $hook), false);
+
 	if (!count($exists)) {
 		$settings = array('config_settings', 'config_arrays', 'config_form');
+
 		if (!in_array($hook, $settings)) {
-			db_execute_prepared('INSERT INTO plugin_hooks (name, hook, function, file) VALUES (?, ?, ?, ?)', array($plugin, $hook, $function, $file));
+			db_execute_prepared('INSERT INTO plugin_hooks 
+				(name, hook, function, file) 
+				VALUES (?, ?, ?, ?)', 
+				array($plugin, $hook, $function, $file));
 		} else {
-			db_execute_prepared('INSERT INTO plugin_hooks (name, hook, function, file, status) VALUES (?, ?, ?, ?, 1)', array($plugin, $hook, $function, $file));
+			db_execute_prepared('INSERT INTO plugin_hooks 
+				(name, hook, function, file, status) 
+				VALUES (?, ?, ?, ?, 1)', 
+				array($plugin, $hook, $function, $file));
 		}
 	}
 }
 
 function api_plugin_remove_hooks ($plugin) {
-	db_execute_prepared('DELETE FROM plugin_hooks WHERE name = ?', array($plugin));
+	db_execute_prepared('DELETE FROM plugin_hooks 
+		WHERE name = ?', 
+		array($plugin));
 }
 
 function api_plugin_enable_hooks ($plugin) {
-	db_execute_prepared('UPDATE plugin_hooks SET status = 1 WHERE name = ?', array($plugin));
+	db_execute_prepared('UPDATE plugin_hooks 
+		SET status = 1 
+		WHERE name = ?', 
+		array($plugin));
 }
 
 function api_plugin_disable_hooks ($plugin) {
-	db_execute_prepared("UPDATE plugin_hooks SET status = 0 WHERE name = ? AND hook != 'config_settings' AND hook != 'config_arrays' AND hook != 'config_form'", array($plugin));
+	db_execute_prepared("UPDATE plugin_hooks 
+		SET status = 0 
+		WHERE name = ? 
+		AND hook != 'config_settings' 
+		AND hook != 'config_arrays' 
+		AND hook != 'config_form'", 
+		array($plugin));
 }
 
 function api_plugin_disable_hooks_all ($plugin) {
-	db_execute_prepared("UPDATE plugin_hooks SET status = 0 WHERE name = ?", array($plugin));
+	db_execute_prepared("UPDATE plugin_hooks 
+		SET status = 0 
+		WHERE name = ?", 
+		array($plugin));
 }
 
 function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {
-	$exists = db_fetch_assoc_prepared('SELECT id FROM plugin_realms WHERE plugin = ? AND file = ?', array($plugin, $file), false);
+	$exists = db_fetch_assoc_prepared('SELECT id 
+		FROM plugin_realms 
+		WHERE plugin = ? 
+		AND file = ?', 
+		array($plugin, $file), false);
+
 	if (!count($exists)) {
-		db_execute_prepared('INSERT INTO plugin_realms (plugin, file, display) VALUES (?, ?, ?)', array($plugin, $file, $display));
+		db_execute_prepared('INSERT INTO plugin_realms 
+			(plugin, file, display) 
+			VALUES (?, ?, ?)', 
+			array($plugin, $file, $display));
+
 		if ($admin) {
-			$realm_id = db_fetch_assoc_prepared('SELECT id FROM plugin_realms WHERE plugin = ? AND file = ?', array($plugin, $file), false);
+			$realm_id = db_fetch_assoc_prepared('SELECT id 
+				FROM plugin_realms 
+				WHERE plugin = ? 
+				AND file = ?', 
+				array($plugin, $file), false);
+
 			$realm_id = $realm_id[0]['id'] + 100;
-			$user_id = db_fetch_assoc("SELECT id FROM user_auth WHERE username = 'admin'", false);
+
+			$user_id = db_fetch_assoc("SELECT id 
+				FROM user_auth 
+				WHERE username = 'admin'", false);
+
 			if (count($user_id)) {
 				$user_id = $user_id[0]['id'];
-				$exists = db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? and realm_id = ?', array($user_id, $realm_id), false);
+				$exists = db_fetch_assoc_prepared('SELECT realm_id 
+					FROM user_auth_realm 
+					WHERE user_id = ? 
+					AND realm_id = ?', 
+					array($user_id, $realm_id), false);
+
 				if (!count($exists)) {
-					db_execute_prepared('INSERT INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', array($user_id, $realm_id));
+					db_execute_prepared('INSERT INTO user_auth_realm 
+						(user_id, realm_id) 
+						VALUES (?, ?)', 
+						array($user_id, $realm_id));
 				}
 			}
 		}
@@ -571,13 +665,25 @@ function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {
 }
 
 function api_plugin_remove_realms ($plugin) {
-	$realms = db_fetch_assoc_prepared('SELECT id FROM plugin_realms WHERE plugin = ?', array($plugin), false);
+	$realms = db_fetch_assoc_prepared('SELECT id 
+		FROM plugin_realms 
+		WHERE plugin = ?', 
+		array($plugin), false);
+
 	foreach ($realms as $realm) {
 		$id = $realm['id'] + 100;
-		db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($id));
-		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($id));
+		db_execute_prepared('DELETE FROM user_auth_realm 
+			WHERE realm_id = ?', 
+			array($id));
+
+		db_execute_prepared('DELETE FROM user_auth_group_realm 
+			WHERE realm_id = ?', 
+			array($id));
 	}
-	db_execute_prepared('DELETE FROM plugin_realms WHERE plugin = ?', array($plugin));
+
+	db_execute_prepared('DELETE FROM plugin_realms 
+			WHERE plugin = ?', 
+			array($plugin));
 }
 
 function api_plugin_load_realms () {
@@ -608,8 +714,12 @@ function api_plugin_user_realm_auth ($filename = '') {
 }
 
 function plugin_config_arrays () {
-	global $menu;
-	$menu['Configuration']['plugins.php'] = 'Plugin Management';
+	global $config, $menu;
+
+	if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
+		$menu[__('Configuration')]['plugins.php'] = __('Plugin Management');
+	}
+
 	api_plugin_load_realms ();
 }
 
