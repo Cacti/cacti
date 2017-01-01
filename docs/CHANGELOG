@@ -11,6 +11,9 @@ Cacti CHANGELOG
 -feature: Bulk inserts in cmd.php to address WAN latency issues for Remote Data Collectors
 -feature: Support Boost Redirect in cmd.php data collector
 -feature: Optimize Data Collection through creation of hash tables.  Can reduce poll times by 50% for large sites.
+-feature: Support RRDtool VDEF's in the GUI
+-feature: Support the following new Graph Items: AREA:STACK, GPRINT:AVERAGE, GPRINT:LAST, GPRINT:MAX, GPRINT:MIN, LINE:STACK, TEXTALIGN, TICK
+-feature: Support the following RRDtool feature: Right Axis Support, Dynamic Labels, Tab Width, Legend Position, Legend Direction
 -feature: Add Theme settings for RRDtool Graph Rendering (fonts, colors, border)
 -feature; Add Resizable Columns whose column width is remembered between login sessions
 -feature: Remove Single Pane Tree View feature
