@@ -50,6 +50,7 @@ Cacti CHANGELOG
 -feature: Allow Plugins to participate in Device Templates and Automation (eg Thold)
 -feature: Remove UI clutter by allowsing inline Help to be hidden from view.
 -feature: Allow users to Preview Template imports to determine if their will be issues by importing the graphs
+-feature: Allow automatic removal of Orphaned Graph Items when Importing new versions of Graph Templates
 -feature: Allow users to actually see what was changed when importing.  No more mysterious '[updated]' messages.
 -feature: When creating Data Source Profiles, provide an estimation of the size of each RRDfile
 -feature: Allow displaying Remote Data Collector and main Data Collector status from the UI
