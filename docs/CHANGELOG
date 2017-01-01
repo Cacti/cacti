@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -feature: Support for Remote Data Collectors
 -feature: Support Internationalization (i18n) for the main Cacti site, and supported plugins
 -feature: Entirely Redesigned Tree page including Drag & Drop functionality
+-feature: Entirely new Graph Permissions system that make Graph permissions simple to manage
 -feature: Add Themes to WebGUI (deprecation of $colors array)
 -feature: Entirely New way of Handling Data Collection using Data Source Profiles, allowing a single system to multiple polling frequencies 
 -feature: Ability to Debug Data Source's by comparing them to the Data Template Setting
@@ -58,6 +59,9 @@ Cacti CHANGELOG
 -feature: Allow Bulk enable/disable of Data Sources from the Data Sources interface
 -feature: Make the users email address a part of their user profile.  Allow them to manage it
 -feature: Support for MySQL 5.7 and PHP 7.0
+-feature: Allow Creation of New Device Defaults for SNMP, Availability, Site, Poller, etc.
+-feature: Allow Creation of New Graph Template defaults for Image format, height and width
+-feature: Support SNMP v3 EngineID
 -feature: Merge Aggregate Plugin
 -feature: Merge AutoM8 Plugin
 -feature: Merge Boost Plugin
@@ -77,7 +81,6 @@ Cacti CHANGELOG
 -feature: Merge SuperLinks Plugin
 -feature: Merge UGroup Plugin
 -feature: Merge Watermark Plugin
-
 -bug: Make Cacti's permissions consistent for RBAC
 -bug: Fixed issue where thumbnails may not render do to comment graph item definitions
 -bug: Fixed issues where old Graph Templates (0.8.6-), could import bogus data causing issues with Data Input Methods
