@@ -3,7 +3,7 @@
 ###########################################################################
 # Script to build documentationd
 #
-# Copyright (C) 2004-2016 The Cacti Group
+# Copyright (C) 2004-2017 The Cacti Group
 ###########################################################################
 
 # Set distro option - removes build sources
