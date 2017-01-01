@@ -1109,19 +1109,27 @@ function html_show_tabs_left($show_console_tab) {
 		}
 
 		if (is_realm_allowed(7)) {
-			?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php
-			$file = basename($_SERVER['PHP_SELF']);
-			if ($file == "graph_view.php" || $file == "graph.php") {
-				print "_down";
-			} 
-			print ".gif";?>" alt="Graphs"></a><?php
+			if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
+				// Don't show graphs tab when offline
+			}else{
+				?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php
+				$file = basename($_SERVER['PHP_SELF']);
+				if ($file == "graph_view.php" || $file == "graph.php") {
+					print "_down";
+				} 
+				print ".gif";?>" alt="Graphs"></a><?php
+			}
 		}
 
 		if (is_realm_allowed(21) || is_realm_allowed(22)) {
-			if (substr_count($_SERVER["REQUEST_URI"], "reports_")) {
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
+			if ($config['poller_id'] > 1) {
+				// Don't show reports tabe if not poller 1
 			}else{
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
+				if (substr_count($_SERVER["REQUEST_URI"], "reports_")) {
+					print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
+				}else{
+					print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
+				}
 			}
 		}
 
@@ -1133,29 +1141,33 @@ function html_show_tabs_left($show_console_tab) {
 			}
 		}
 
-		$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" AND enabled="on" ORDER BY sortorder');
-		if (sizeof($external_links)) {
-			foreach($external_links as $tab) {
-				if (is_realm_allowed($tab['id']+10000)) {
-					$parsed_url = parse_url($_SERVER['REQUEST_URI']);
-					$down = false;
+		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
+			// Only show external links when online
+		}else{
+			$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" AND enabled="on" ORDER BY sortorder');
+			if (sizeof($external_links)) {
+				foreach($external_links as $tab) {
+					if (is_realm_allowed($tab['id']+10000)) {
+						$parsed_url = parse_url($_SERVER['REQUEST_URI']);
+						$down = false;
 
-					if (basename($parsed_url['path']) == 'link.php') {
-						if (isset($parsed_url['query'])) {
-							$queries = explode('&', $parsed_url['query']);
-							foreach($queries as $q) {
-								list($var, $value) = explode('=', $q);
-								if ($var == 'id') {
-									if ($value == $tab['id']) {
-										$down = true;
-										break;
+						if (basename($parsed_url['path']) == 'link.php') {
+							if (isset($parsed_url['query'])) {
+								$queries = explode('&', $parsed_url['query']);
+								foreach($queries as $q) {
+									list($var, $value) = explode('=', $q);
+									if ($var == 'id') {
+										if ($value == $tab['id']) {
+											$down = true;
+											break;
+										}
 									}
 								}
 							}
 						}
+	
+						print '<a href="' . $config['url_path'] . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . $tab['title'] . '"></a>';
 					}
-
-					print '<a href="' . $config['url_path'] . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . $tab['title'] . '"></a>';
 				}
 			}
 		}
@@ -1172,21 +1184,29 @@ function html_show_tabs_left($show_console_tab) {
 			);
 		}
 
-		$tabs_left[] =
-			array(
-				'title' => __('Graphs'),
-				'id'	=> 'maintab-anchor-graphs',
-				'image' => '',
-				'url'   => $config['url_path'] . 'graph_view.php',
-			);
+		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
+			// Don't show the graphs tab when offline
+		}else{
+			$tabs_left[] =
+				array(
+					'title' => __('Graphs'),
+					'id'	=> 'maintab-anchor-graphs',
+					'image' => '',
+					'url'   => $config['url_path'] . 'graph_view.php',
+				);
+		}
 
-		$tabs_left[] =
-			array(
-				'title' => __('Reporting'),
-				'id'	=> 'maintab-anchor-reports',
-				'image' => '',
-				'url'   => $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php'),
-			);
+		if ($config['poller_id'] > 1) {
+			// Don't show the reports tab on other pollers
+		}else{
+			$tabs_left[] =
+				array(
+					'title' => __('Reporting'),
+					'id'	=> 'maintab-anchor-reports',
+					'image' => '',
+					'url'   => $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php'),
+				);
+		}
 
 		$tabs_left[] =
 			array(
@@ -1196,17 +1216,21 @@ function html_show_tabs_left($show_console_tab) {
 				'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
 			);
 
-		$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" AND enabled="on" ORDER BY sortorder');
-		if (sizeof($external_links)) {
-			foreach($external_links as $tab) {
-				if (is_realm_allowed($tab['id']+10000)) {
-					$tabs_left[] = 
-						array(
-							'title' => $tab['title'],
-							'id'    => 'maintab-anchor-link' . $tab['id'],
-							'image' => '',
-							'url'   => $config['url_path'] . 'link.php?id=' . $tab['id']
-						);
+		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
+			// Only show external links when online
+		}else{
+			$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" AND enabled="on" ORDER BY sortorder');
+			if (sizeof($external_links)) {
+				foreach($external_links as $tab) {
+					if (is_realm_allowed($tab['id']+10000)) {
+						$tabs_left[] = 
+							array(
+								'title' => $tab['title'],
+								'id'    => 'maintab-anchor-link' . $tab['id'],
+								'image' => '',
+								'url'   => $config['url_path'] . 'link.php?id=' . $tab['id']
+							);
+					}
 				}
 			}
 		}
