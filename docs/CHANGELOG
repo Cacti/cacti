@@ -2,27 +2,57 @@ Cacti CHANGELOG
 
 1.0
 -feature: Support for Remote Data Collectors
+-feature: Support Internationalization (i18n) for the main Cacti site, and supported plugins
 -feature: Entirely Redesigned Tree page including Drag & Drop functionality
--feature: Entirely New way of Handling Data Collection with Introduction of Data Source Profiles
--feature: Ability to Debug Data Source's by comparing them to the Data Template Setting
 -feature: Add Themes to WebGUI (deprecation of $colors array)
+-feature: Entirely New way of Handling Data Collection using Data Source Profiles, allowing a single system to multiple polling frequencies 
+-feature: Ability to Debug Data Source's by comparing them to the Data Template Setting
+-feature: Created a New Special Data Source type to detect the poller interval for rate calculations making Templates more portable
+-feature: Bulk inserts in cmd.php to address WAN latency issues for Remote Data Collectors
+-feature: Support Boost Redirect in cmd.php data collector
+-feature: Optimize Data Collection through creation of hash tables.  Can reduce poll times by 50% for large sites.
 -feature: Add Theme settings for RRDtool Graph Rendering (fonts, colors, border)
--feature; Add Resizable Columns
+-feature; Add Resizable Columns whose column width is remembered between login sessions
 -feature: Remove Single Pane Tree View feature
 -feature: Add 'Classic', 'Modern', 'Dark', and 'Paw' Themes
 -feature: Use jQuery for Settings and Graph Settings pages to remove clutter
 -feature: Add Role Based Access Control (RBAC)
+-feature: Support User Grop Permissions
 -feature: Redesign User Management pages
 -feature: Allow Graphs and Data Source columns to be sorted on Devices page
 -feature: When running Verbose Query, and Re-query from Device page return to a meaninful location
 -feature: Adding number of in use Graphs, Data Sources, and Devices to Template pages
+-feature: Allow Bulk Resync of Graphs to their Parent Graph Template
+-feature: Allow all Device Settings to be Modified in Bulk from a single page
 -feature: Move CDEFs, Colors, GPrint Presets to Presets menu
--feature: Removal for the RRA Preset and Creation of new Data Source Profile
+-feature: Removal for the RRA Preset and Creation of new Data Source Profile feature to replace
 -feature: Allow login, logout and access denied pages to have CSS
 -feature: Allow use of Authentication Cookies 'remember me' functionality
 -feature: Remove most inline styles in Cacti
 -feature: Add session timeout and automatic logout due to inactivity
--feature: Support Database based sessions
+-feature: Support Database based sessions for Load Balancing and Remote Data Collectors
+-feature: Remove Boost Server support and replace with RRDtool Proxy support
+-feature: Make all page refresh Ajax based
+-feature: Make Suggested Naming user interface more consistent
+-feature: Add State Filter for Pugins Page
+-feature: All Filters Handled in Ajax
+-feature: Refactor Graph Details page to incldue CSV output, zoom, debug, and download links
+-feature: Removal of Traditional Graph Export.  It will be handled in a separate Plugin now.
+-feature: Allow users to save their Graph View preferences between login sessions
+-feature: Support new Change Password functionality including Secure Password Rules
+-feature: Through the merge of the Discovery and AutoM8, Plugins provide a consistent Automation Experience
+-feature: Allow Changing of Interface Graphs from 32Bit to 64Bit easily
+-feature: Ability to prevent removal of objects that are presently in use and whose delete could corrup the database
+-feature: Allow Bulk Resizing of Graphs from the Graph Templates interface
+-feature: Allow Plugins to participate in Device Templates and Automation (eg Thold)
+-feature: Remove UI clutter by allowsing inline Help to be hidden from view.
+-feature: Allow users to Preview Template imports to determine if their will be issues by importing the graphs
+-feature: Allow users to actually see what was changed when importing.  No more mysterious '[updated]' messages.
+-feature: When creating Data Source Profiles, provide an estimation of the size of each RRDfile
+-feature: Allow displaying Remote Data Collector and main Data Collector status from the UI
+-feature: Support 'Site' object to be used in the Future for more dynamic Tree experiences, and partitioning devices
+-feature: Allow Bulk enable/disable of Data Sources from the Data Sources interface
+-feature: Make the users email address a part of their user profile.  Allow them to manage it
 -feature: Merge Aggregate Plugin
 -feature: Merge AutoM8 Plugin
 -feature: Merge Boost Plugin
@@ -42,15 +72,10 @@ Cacti CHANGELOG
 -feature: Merge SuperLinks Plugin
 -feature: Merge UGroup Plugin
 -feature: Merge Watermark Plugin
--feature: Make all page refresh Ajax based
--feature: Make Suggestion Naming more consistent
--feature: Add State Filter for Pugins Page
--feature: All Filters Handled in Ajax
--feature: Refactor Graph Details page to incldue CSV output, zoom, debug, and download links
--feature: Removal of Traditional Graph Export.  It will be handled in a separate Plugin now.
 
 -bug: Make Cacti's permissions consistent for RBAC
 -bug: Fixed issue where thumbnails may not render do to comment graph item definitions
+-bug: Fixed issues where old Graph Templates (0.8.6-), could import bogus data causing issues with Data Input Methods
 -bug#0000168: Duplicate data sources should be avoided when creating new graphs
 -bug#0000851: be able to review an imported template
 -bug#0000924: Problem with UTF-8
