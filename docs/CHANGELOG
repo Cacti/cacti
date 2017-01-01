@@ -53,6 +53,7 @@ Cacti CHANGELOG
 -feature: Support 'Site' object to be used in the Future for more dynamic Tree experiences, and partitioning devices
 -feature: Allow Bulk enable/disable of Data Sources from the Data Sources interface
 -feature: Make the users email address a part of their user profile.  Allow them to manage it
+-feature: Support for MySQL 5.7 and PHP 7.0
 -feature: Merge Aggregate Plugin
 -feature: Merge AutoM8 Plugin
 -feature: Merge Boost Plugin
