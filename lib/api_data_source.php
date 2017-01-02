@@ -147,7 +147,7 @@ function api_data_source_remove_multi($local_data_ids) {
 
 		if ($autoclean == 'on') {
 			db_execute("INSERT INTO data_source_purge_action (local_data_id, name, action)
-				SELECT local_data_id, REPLACE(data_source_name, '<path_cacti>/', ''), '" . $acmethod . "'
+				SELECT local_data_id, REPLACE(data_source_path, '<path_cacti>/', ''), '" . $acmethod . "'
 				FROM data_template_data
 				WHERE local_data_id IN (" . implode(',', $ids_to_delete) . ')
 				ON DUPLICATE KEY UPDATE action=VALUES(action)');
