@@ -1,226 +1,114 @@
 Cacti CHANGELOG
 
-1.0
--feature: Support for Remote Data Collectors
+1.0.0
+-feature: Support for remote data collectors
 -feature: Support Internationalization (i18n) for the main Cacti site, and supported plugins
--feature: Entirely Redesigned Tree page including Drag & Drop functionality
--feature: Entirely new Graph Permissions system that make Graph permissions simple to manage
--feature: Add Themes to WebGUI (deprecation of $colors array)
--feature: Entirely New way of Handling Data Collection using Data Source Profiles, allowing a single system to multiple polling frequencies 
--feature: Ability to Debug Data Source's by comparing them to the Data Template Setting
--feature: Created a New Special Data Source type to detect the poller interval for rate calculations making Templates more portable
--feature: Bulk inserts in cmd.php to address WAN latency issues for Remote Data Collectors
--feature: Support Boost Redirect in cmd.php data collector
--feature: Optimize Data Collection through creation of hash tables.  Can reduce poll times by 50% for large sites.
--feature: Support RRDtool VDEF's in the GUI
--feature: Support the following new Graph Items: AREA:STACK, GPRINT:AVERAGE, GPRINT:LAST, GPRINT:MAX, GPRINT:MIN, LINE:STACK, TEXTALIGN, TICK
--feature: Support the following RRDtool feature: Right Axis Support, Dynamic Labels, Tab Width, Legend Position, Legend Direction
--feature: Add Theme settings for RRDtool Graph Rendering (fonts, colors, border)
--feature; Add Resizable Columns whose column width is remembered between login sessions
--feature: Remove Single Pane Tree View feature
--feature: Add 'Classic', 'Modern', 'Dark', and 'Paw' Themes
--feature: Use jQuery for Settings and Graph Settings pages to remove clutter
--feature: Add Role Based Access Control (RBAC)
+-feature: Data Source Profiles replace RRA settings allowing a single system to have multiple polling intervals
+-feature: Redesigned Tree page including Drag & Drop functionality
+-feature: New Graph Permissions system designed to make permissions simple to manage
+-feature: Add Themes 'Classic', 'Modern', 'Dark', and 'Paw'
+-feature: Debug Data Sources by comparing them to the Data Template
+-feature: New special Data Source type to detect the poller interval
+-feature: Bulk inserts in PHP poller to address latency issues
+-feature: Optimize data collection through in memory caching giving a 50% reduction in polling times when dealing with large sites
+-feature: Support RRDtool VDEFs
+-feature: Support new Graph Items: AREA:STACK, GPRINT:AVERAGE, GPRINT:LAST, GPRINT:MAX, GPRINT:MIN, LINE:STACK, TEXTALIGN, TICK
+-feature: Support RRDtool features: Right Axis Support, Dynamic Labels, Tab Width, Legend Position, Legend Direction
+-feature; Resizable table columns
+-feature: Deprecated Single Pane Tree View
+-feature: Role Based Access Control (RBAC)
 -feature: Support User Group Permissions
--feature: Redesign User Management pages
--feature: Allow Graphs and Data Source columns to be sorted on Devices page
--feature: When running Verbose Query, and Re-query from Device page return to a meaningful location
--feature: Adding number of in use Graphs, Data Sources, and Devices to Template pages
--feature: Allow Bulk Resync of Graphs to their Parent Graph Template
--feature: Allow all Device Settings to be Modified in Bulk from a single page
--feature: Move CDEFs, Colors, GPrint Presets to Presets menu
--feature: Removal for the RRA Preset and Creation of new Data Source Profile feature to replace
--feature: Allow login, logout and access denied pages to have CSS
--feature: Allow use of Authentication Cookies 'remember me' functionality
--feature: Remove most inline styles in Cacti
--feature: Add session timeout and automatic logout due to inactivity
--feature: Support Database based sessions for Load Balancing and Remote Data Collectors
--feature: Remove Boost Server support and replace with RRDtool Proxy support
--feature: Make all page refreshes Ajax based
--feature: Make Suggested Naming user interface more consistent
--feature: Add State Filter for Plugins Page
--feature: All Filters Handled in Ajax
--feature: Refactor Graph Details page to include CSV output, zoom, debug, and download links
--feature: Removal of Traditional Graph Export.  It will be handled in a separate Plugin now
--feature: Allow users to save their Graph View preferences between login sessions
--feature: Support new Change Password functionality including Secure Password Rules
--feature: Through the merge of the Discovery and AutoM8, Plugins provide a consistent Automation Experience
--feature: Allow Changing of Interface Graphs from 32Bit to 64Bit easily
--feature: Ability to prevent removal of objects that are presently in use and whose delete could corrupt the database
--feature: Allow Bulk Resizing of Graphs from the Graph Templates interface
--feature: Allow Plugins to participate in Device Templates and Automation (eg Thold)
--feature: Remove UI clutter by allowing inline Help to be hidden from view.
--feature: Allow users to Preview Template imports to determine if their will be issues by importing the graphs
--feature: Allow automatic removal of Orphaned Graph Items when Importing new versions of Graph Templates
--feature: Allow users to actually see what was changed when importing.  No more mysterious '[updated]' messages.
--feature: When creating Data Source Profiles, provide an estimation of the size of each RRDfile
--feature: Allow displaying Remote Data Collector and main Data Collector status from the UI
--feature: Support 'Site' object to be used in the Future for more dynamic Tree experiences, and partitioning devices
--feature: Allow Bulk enable/disable of Data Sources from the Data Sources interface
--feature: Make the users email address a part of their user profile.  Allow them to manage it
--feature: Support for MySQL 5.7 and PHP 7.0
--feature: Allow Creation of New Device Defaults for SNMP, Availability, Site, Poller, etc.
--feature: Allow Creation of New Graph Template defaults for Image format, height and width
+-feature: Show number of in use Graphs, Data Sources, and Devices for a given Template
+-feature: Support bulk re-sync of graphs to assigned Graph Template
+-feature: Bulk Device Settings changes
+-feature: CDEFs, Colors, GPrint Presets consolidated to Presets menu
+-feature: Authentication cookies for 'remember me' functionality
+-feature: Automatic logout after session inactivity
+-feature: Replace Boost server in favor of RRDtool Proxy
+-feature: Graph Details include CSV output, zoom, debug, and download links
+-feature: Graph Export moved to a plugin
+-feature: User change password functionality
+-feature: Automation added to core funtionality through the merge of the Discovery and AutoM8 plugins
+-feature: Change interface graphs from 32 bit to 64 bit with ease
+-feature: Plugins now have hooks in device templates and automation
+-feature: Allow users to preview template imports to determine if there will be issues from importing
+-feature: Automatic removal of orphaned graph items when importing newer versions of graph templates
+-feature: Support for MySQL 5.7
+-feature: Support for PHP 7.0
 -feature: Support SNMP v3 EngineID
--feature: Merge Aggregate Plugin
--feature: Merge AutoM8 Plugin
--feature: Merge Boost Plugin
--feature: Merge CLog Plugin
--feature: Merge Discovery Plugin
--feature: Merge Domains Plugin
--feature: Merge DSStats Plugin
--feature: Merge Logrotate Plugin
--feature: Merge Realtime Plugin
--feature: Merge Reporting (Nectar) Plugin
--feature: Merge RRDclean Plugin
--feature: Merge Secpass Plugin
--feature: Merge Settings Plugin
--feature: Merge SNMP Agent Plugin
--feature: Merge SpikeKill Plugin
--feature: Merge SSL Plugin
--feature: Merge SuperLinks Plugin
--feature: Merge UGroup Plugin
--feature: Merge Watermark Plugin
--bug: Make Cacti's permissions consistent for RBAC
--bug: Fixed issue where thumbnails may not render do to comment graph item definitions
--bug: Fixed issues where old Graph Templates (0.8.6-), could import bogus data causing issues with Data Input Methods
+-feature: Merge Aggregate Plugin - Aggregate graph creation
+-feature: Merge AutoM8 Plugin - Automation of graph creation
+-feature: Merge Boost Plugin - Faster polling, result caching, on-demand RRDtool file updates
+-feature: Merge CLog Plugin - View Cacti logs
+-feature: Merge Discovery Plugin - Device discovery
+-feature: Merge Domains Plugin - Support for domain (ADS/LDAP) specific user templates
+-feature: Merge DSStats Plugin - Cache Data Source values for easy retrieval
+-feature: Merge Logrotate Plugin - Rotate Cacti logs
+-feature: Merge Realtime Plugin - Realtime graph viewing
+-feature: Merge Reporting (Nectar) Plugin - Reporting
+-feature: Merge RRDclean Plugin - RRD file cleanup and management
+-feature: Merge Secpass Plugin - User password policy enforcement
+-feature: Merge Settings Plugin - Shared settings for plugins
+-feature: Merge SNMP Agent Plugin - SNMP Agent for Cacti providing system statistics
+-feature: Merge SpikeKill Plugin - Remove unwanted spikes from graphs
+-feature: Merge SSL Plugin - Force https
+-feature: Merge SuperLinks Plugin - Add external links within Cacti
+-feature: Merge UGroup Plugin - User groups with permissions
+-feature: Merge Watermark Plugin - Watermark your Cacti graphs
+-bug: Fixed issue where old graph templates (0.8.6-), could import bogus data causing issues with Data Input Methods
 -bug#0000168: Duplicate data sources should be avoided when creating new graphs
--bug#0000851: be able to review an imported template
--bug#0000924: Problem with UTF-8
--bug#0000928: "bits/sec, Total Bandwidth" : totals are calculated incorrectly
--bug#0001042: Selective Log Levels
--bug#0001128: Ability to sort trees
--bug#0001148: Search for unused data sources / graphs / graph templates
--bug#0001155: When viewing tree - don't show empty leafs
--bug#0001156: add ability to move tree nodes between tree roots
--bug#0001212: Cacti doesn't update `value` field of `data_input_data` table when using "change graph template" in graph management
--bug#0001229: Changing LEAF_ID in URL allows User to see Unauthorized Devices Names
+-bug#0000851: Review an imported template
+-bug#0001155: When viewing graph tree do not show empty nodes
 -bug#0001337: Form to filter for graphs in host view mode
--bug#0001367: Add a 'Respect Tree' override switch to permissions
--bug#0001375: Device "Add Graph Template" includes already added templates
--bug#0001395: Regexp for ipAdEntAddr
--bug#0001415: spine does not handle log_perror
--bug#0001423: Data Query Index Graph Grouping Style
--bug#0001447: SNMP community names with an apostrophe do not work.
--bug#0001448: Improper escaping of SNMP community string
--bug#0001459: Datasources list does not support localization
--bug#0001482: Make .csv report exports take the name of the interface they were generated for
--bug#0001513: Remove orphaned data from database
--bug#0001530: default policy deny doesn't allow individual exceptions in some cases
--bug#0001531: Cacti depends on its own location
 -bug#0001552: Date ranges not shown on graphs in the view with Daily, Weekly, Monthly & Yearly graphs
 -bug#0001573: RRA templates/grouping
--bug#0001577: override session handling and store session in Database
--bug#0001599: No default Site or Poller
--bug#0001739: Add Treeitems - Search field
+-bug#0001577: Override session handling and store session in Database
 -bug#0001790: Allow for XML delimiter in fields of a script query
 -bug#0001820: Unable to use a Data Input Method Output Field in more than one Data Source Item
--bug#0001827: changing the graph template messes up the graph item fields
--bug#0001836: Add mysql error msg in cacti.log
+-bug#0001827: Changing the graph template messes up the graph item fields
+-bug#0001836: Add mysql error messageg to log
 -bug#0001877: Cookies path is not properly set
--bug#0001889: cached url causes page not to display when behind a rewrite rule with PIA installed.
--bug#0001891: html_header_sort_checkbox function causes page not to display when behind a rewrite rule with PIA installed.
--bug#0001907: Ability to add 'step' and 'reduce' parameters to a graph template.
--bug#0001949: Cannot add device/graph to tree from 'Trees'
--bug#0001950: Field is called 'Host' instead of 'Device'
 -bug#0001966: Expand Devices in tree view not honored
 -bug#0001970: Data query index order cache should be populated on re-index
--bug#0001981: Cacti is not full UtF-8
--bug#0001986: add_graphs.php with multiples --snmp-field and --snmp-value options
--bug#0001996: Add-on: Using data input field in graph title
--bug#0002089: Forms on pages with graph selection default to adding graph
+-bug#0001981: Cacti is not full UTF-8
+-bug#0001986: CLI allow add_graphs.php to have multiples --snmp-field and --snmp-value options
+-bug#0001996: Allow using data input field in graph title
 -bug#0002096: Enumerated SNMP values not parsed correctly
--bug#0002112: Add configurable parameters in "cli/add_device.php"
--bug#0002133: restrict User to only manage specific hosts/s
--bug#0002135: Add regex to filter option
--bug#0002137: oid_suffix doesn't work
--bug#0002149: Cumulative patch from BorisL
--bug#0002159: cacti.sql not fully compliant with strict SQL mode
--bug#0002162: Error when authenticating a user whom the password contains UTF8 chars
--bug#0002164: push_out_host() and run_data_query() are extremely slow
--bug#0002177: LDAP: Bind DN is not always the canonical DN
--bug#0002186: user-supplied input to DIMs are not escaped when command runs
--bug#0002188: OO SNMP class partial support
--bug#0002190: Poller cleanup
+-bug#0002112: CLI add configurable parameters for device_add.php
+-bug#0002133: Restrict User to only manage specific device(s)
+-bug#0002135: Regular expression support for filter
+-bug#0002137: Data query oid_suffix parameter does not function
+-bug#0002159: Database creation file not fully compliant with strict SQL mode
+-bug#0002162: Unable to authenticate user with password containing UTF-8
 -bug#0002196: Incorrect script server instance number in log
--bug#0002220: spine/cacti patch to allow SNMP_polling devices' hostnames like user@host:port
--bug#0002225: Make -Cc SNMP option configurable (system wide or per device)
--bug#0002234: Wrong  alphanumeric value got from Spine SNMP poller
--bug#0002239: Please add the ability to change an existing devices host template in bulk.
--bug#0002255: Many perl, php, df processes and highly Load Average on system
--bug#0002257: status_fail_date and status_rec_date are initialised when a host recovers
--bug#0002263: Poller and ping problems
--bug#0002265: cacti spine - possibility to set config-path/file
--bug#0002271: Bulk Tree Relocation.
--bug#0002273: Encoding missmatch
--bug#0002296: improper use of snmp_set_oid_numeric_print() function
--bug#0002335: Change Availability Options action doesn't expose all fields
--bug#0002336: Implement php-snmp class library for use with Cacti
--bug#0002340: script query should escape
--bug#0002346: Slash can not be used in the password field
--bug#0002348: poller does not run if $cron_interval < $poller_interval
--bug#0002349: Thresholds not triggering (I found a fix for this problem)
+-bug#0002225: Make -Cc SNMP option configurable
+-bug#0002255: Script query_unix_partitions.pl should only query local mounts
+-bug#0002336: Implement php-snmp class library
+-bug#0002340: Data query script execution should be escaped
 -bug#0002350: SNMP Data Query index_order ignored
 -bug#0002351: Ping does not work with non-English locale
--bug#0002352: Database setting $port ignored
--bug#0002353: monitor plugins: Some devices are showing more than one time.
--bug#0002355: scripts/loadavg_multi.pl does not work with locales that use a comma as separator [PATCH]
--bug#0002356: Support for "VALUE/REGEXP:" for get input fields
--bug#0002359: Umlaute and special characters not displayed in title of graph
--bug#0002361: spine does not log unknowns the same way cmd.php does
--bug#0002362: cmd.php makes wrong hex-string to decimal conversion
+-bug#0002361: Spine does not log unknowns the same way cmd.php
+-bug#0002362: Poller cmd.php makes wrong hex-string to decimal conversion
 -bug#0002370: Cacti prints wrong date formats, does not honor a systems locale
--bug#0002372: Mac Track Report interface field limitation
--bug#0002377: Upgrade interface must require authentication
--bug#0002387: Changed Graphing Behavior for empty COMMENT
--bug#0002399: Refactored array_to_sql_or and to do's
--bug#0002402: Subtree must not have the same header as the parent header
 -bug#0002403: Typo in DELETE statement leading to poor graphing performance
--bug#0002406: Exported graphs labels drop degree symbol
 -bug#0002412: Graph Template duplication causes \t to be converted to TAB char
--bug#0002417: update_poller_cache should quote user-entered arguments
 -bug#0002418: Data Source Items named 'ds' break UI ability to add more items
 -bug#0002419: SNMP enum results not parsed correctly by cmd.php poller
--bug#0002430: the upper value of the ucd/net memory usage is low
--bug#0002452: PHP Object Injection Vulnerabilities
+-bug#0002452: CVE-2014-4000 PHP Object Injection Vulnerabilities
 -bug#0002454: OS Command Injection
--bug#0002462: Fail to delete all data input items when removing more than 1000 data sources
--bug#0002467: patch to add oid_rewrite_pattern and OID textual translate to data queries
--bug#0002468: Changing Graph Format From PNG Causes No Output
--bug#0002473: Adding new Header Item will destroy part of Graph Tree
--bug#0002476: Add support for SNMP v3 EngineId
--bug#0002477: Segmentation fault on installation
--bug#0002478: Upgrade to MySQLi API and MySQLND library
--bug#0002482: Correct count of hosts using a Host Template
+-bug#0002468: Changing graph format to anything but PNG causes no output
+-bug#0002476: Add support for SNMP v3 EngineID
 -bug#0002483: Cisco ASA using Re-index method of verify all causes recache event every time
 -bug#0002484: Incorrect SQL request in cli script repair_database.php
--bug#0002486: API hook into the html_tree.php for JQuery/Javascript support in Plugins
--bug#0002521: Can't create two devices via CLI with the same IP-Address
--bug#0002522: snmp.php doesn't translate zero padded hex strings
--bug#0002533: Cacti drop non Unicode symbols in graph title
--bug#0002535: Graph Template Changes not updating RRDTool output
--bug#0002537: graph viewing not working correctly in IE and Chrome
--bug#0002545: graphing a --vertical-label="|query_foo|" does not rrd_substitute_host_query_data()
--bug#0002568: scripts/loadavg_multi.pl doesn't work with German locales
--bug#0002593: Spine Compilation impossible under OpenBSD
--bug#0002614: Page doesn't resize to screen resizing
--bug#0002621: Moving items up/down in templates jumps to wrong position
+-bug#0002521: Unable to create two devices via CLI with the same IP-Address
+-bug#0002522: Zero padded hex strings are parsed incorrectly
+-bug#0002535: Graph Template Changes not updating RRDTool command
 -bug#0002636: Creating Data Template with "U" for min and max saves field data_input_field_id as 0 for first item
--bug#0002651: False Positive Down status with snmpv3
--bug#0002661: Unable to start flow-capture script
--bug#0002663: make dependency error when building spine manual
--bug#0002669: ADOdb Outdated Version
--bug#0002674: Segmentation fault in Spine during polling host
--bug#0002675: mysql not supported on php7
--bug#0002697: CVE-2016-2313 fix in 000265 wrong
--bug#0002698: When the host is down, cacti uses the wrong data type for some columns of the host table
--bug#0002723: Renaming a disabled device
--bug#0002724: Multipage graphs
--bug#0002725: Changing graph template - doesn't mark correct interfaces
--bug#0002726: Graph Management Selection
--bug#0002727: Disable graph polling
--bug#0002728: Change graph Template - Graph Item Fields are lost
--bug#0002795: Install script is hard coded to check for mysql extension - PHP 7 incompatibility
+-bug#0002697: CVE-2016-2313 allows remote authenticated users who use web authentication to bypass intended access
+-bug#0002698: When the host is down the wrong data type are used for some columns in the host table
+-bug#0002723: Renaming a disabled device still attempts to connect and get SNMP host information
+-bug#0002724: Multipage graphs the menu can disappear
+-bug#0002725: Changing graph template does not mark correct interfaces disabled on data query generated list
 
 0.8.8h
 -bug:0002656: Authentication using web authentication as a user not in the cacti database allows complete access (regression)
