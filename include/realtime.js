@@ -124,6 +124,8 @@ function realtimeGrapher() {
 			position = $('#wrapper_'+local_graph_id).find('img').position();
 
 			Pace.ignore(function() {
+				position = $('#wrapper_'+local_graph_id).find('img').position();
+
 				$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'')+'&graph_end=0&graph_start=-'+graph_start+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'#count='+count, function(data) {
 					results = $.parseJSON(data);
 
