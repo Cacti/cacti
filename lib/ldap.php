@@ -152,7 +152,7 @@ function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port
 }
 
 class Ldap {
-	function Ldap() {
+	function __construct() {
 		/* Initialize LDAP parameters for Authenticate */
 		$this->dn         = read_config_option('ldap_dn');
 		$this->host       = read_config_option('ldap_server');
