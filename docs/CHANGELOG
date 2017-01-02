@@ -21,10 +21,10 @@ Cacti CHANGELOG
 -feature: Add 'Classic', 'Modern', 'Dark', and 'Paw' Themes
 -feature: Use jQuery for Settings and Graph Settings pages to remove clutter
 -feature: Add Role Based Access Control (RBAC)
--feature: Support User Grop Permissions
+-feature: Support User Group Permissions
 -feature: Redesign User Management pages
 -feature: Allow Graphs and Data Source columns to be sorted on Devices page
--feature: When running Verbose Query, and Re-query from Device page return to a meaninful location
+-feature: When running Verbose Query, and Re-query from Device page return to a meaningful location
 -feature: Adding number of in use Graphs, Data Sources, and Devices to Template pages
 -feature: Allow Bulk Resync of Graphs to their Parent Graph Template
 -feature: Allow all Device Settings to be Modified in Bulk from a single page
@@ -36,20 +36,20 @@ Cacti CHANGELOG
 -feature: Add session timeout and automatic logout due to inactivity
 -feature: Support Database based sessions for Load Balancing and Remote Data Collectors
 -feature: Remove Boost Server support and replace with RRDtool Proxy support
--feature: Make all page refresh Ajax based
+-feature: Make all page refreshes Ajax based
 -feature: Make Suggested Naming user interface more consistent
--feature: Add State Filter for Pugins Page
+-feature: Add State Filter for Plugins Page
 -feature: All Filters Handled in Ajax
--feature: Refactor Graph Details page to incldue CSV output, zoom, debug, and download links
--feature: Removal of Traditional Graph Export.  It will be handled in a separate Plugin now.
+-feature: Refactor Graph Details page to include CSV output, zoom, debug, and download links
+-feature: Removal of Traditional Graph Export.  It will be handled in a separate Plugin now
 -feature: Allow users to save their Graph View preferences between login sessions
 -feature: Support new Change Password functionality including Secure Password Rules
 -feature: Through the merge of the Discovery and AutoM8, Plugins provide a consistent Automation Experience
 -feature: Allow Changing of Interface Graphs from 32Bit to 64Bit easily
--feature: Ability to prevent removal of objects that are presently in use and whose delete could corrup the database
+-feature: Ability to prevent removal of objects that are presently in use and whose delete could corrupt the database
 -feature: Allow Bulk Resizing of Graphs from the Graph Templates interface
 -feature: Allow Plugins to participate in Device Templates and Automation (eg Thold)
--feature: Remove UI clutter by allowsing inline Help to be hidden from view.
+-feature: Remove UI clutter by allowing inline Help to be hidden from view.
 -feature: Allow users to Preview Template imports to determine if their will be issues by importing the graphs
 -feature: Allow automatic removal of Orphaned Graph Items when Importing new versions of Graph Templates
 -feature: Allow users to actually see what was changed when importing.  No more mysterious '[updated]' messages.
@@ -75,8 +75,8 @@ Cacti CHANGELOG
 -feature: Merge RRDclean Plugin
 -feature: Merge Secpass Plugin
 -feature: Merge Settings Plugin
--feature: Merge SNMP Agent Pluign
--feature: Merge SpikeKill Pluign
+-feature: Merge SNMP Agent Plugin
+-feature: Merge SpikeKill Plugin
 -feature: Merge SSL Plugin
 -feature: Merge SuperLinks Plugin
 -feature: Merge UGroup Plugin
@@ -134,7 +134,7 @@ Cacti CHANGELOG
 -bug#0002133: restrict User to only manage specific hosts/s
 -bug#0002135: Add regex to filter option
 -bug#0002137: oid_suffix doesn't work
--bug#0002149: Cummultive patch from BorisL
+-bug#0002149: Cumulative patch from BorisL
 -bug#0002159: cacti.sql not fully compliant with strict SQL mode
 -bug#0002162: Error when authenticating a user whom the password contains UTF8 chars
 -bug#0002164: push_out_host() and run_data_query() are extremely slow
@@ -143,7 +143,7 @@ Cacti CHANGELOG
 -bug#0002188: OO SNMP class partial support
 -bug#0002190: Poller cleanup
 -bug#0002196: Incorrect script server instance number in log
--bug#0002220: spine/cacti patch to allow SNMP_polling decices' hostnames like user@host:port
+-bug#0002220: spine/cacti patch to allow SNMP_polling devices' hostnames like user@host:port
 -bug#0002225: Make -Cc SNMP option configurable (system wide or per device)
 -bug#0002234: Wrong  alphanumeric value got from Spine SNMP poller
 -bug#0002239: Please add the ability to change an existing devices host template in bulk.
@@ -153,7 +153,7 @@ Cacti CHANGELOG
 -bug#0002265: cacti spine - possibility to set config-path/file
 -bug#0002271: Bulk Tree Relocation.
 -bug#0002273: Encoding missmatch
--bug#0002296: inproper use of snmp_set_oid_numeric_print() function
+-bug#0002296: improper use of snmp_set_oid_numeric_print() function
 -bug#0002335: Change Availability Options action doesn't expose all fields
 -bug#0002336: Implement php-snmp class library for use with Cacti
 -bug#0002340: script query should escape
@@ -164,7 +164,7 @@ Cacti CHANGELOG
 -bug#0002351: Ping does not work with non-English locale
 -bug#0002352: Database setting $port ignored
 -bug#0002353: monitor plugins: Some devices are showing more than one time.
--bug#0002355: scripts/loadavg_multi.pl does not work with locales that use a comma as seperator [PATCH]
+-bug#0002355: scripts/loadavg_multi.pl does not work with locales that use a comma as separator [PATCH]
 -bug#0002356: Support for "VALUE/REGEXP:" for get input fields
 -bug#0002359: Umlaute and special characters not displayed in title of graph
 -bug#0002361: spine does not log unknowns the same way cmd.php does
@@ -201,13 +201,13 @@ Cacti CHANGELOG
 -bug#0002535: Graph Template Changes not updating RRDTool output
 -bug#0002537: graph viewing not working correctly in IE and Chrome
 -bug#0002545: graphing a --vertical-label="|query_foo|" does not rrd_substitute_host_query_data()
--bug#0002568: scripts/loadavg_multi.pl doesn't work with german locales
+-bug#0002568: scripts/loadavg_multi.pl doesn't work with German locales
 -bug#0002593: Spine Compilation impossible under OpenBSD
--bug#0002614: Page doesnt resize to screen resizing
+-bug#0002614: Page doesn't resize to screen resizing
 -bug#0002621: Moving items up/down in templates jumps to wrong position
 -bug#0002636: Creating Data Template with "U" for min and max saves field data_input_field_id as 0 for first item
 -bug#0002651: False Positive Down status with snmpv3
--bug#0002661: Unable ti start flow-capture script
+-bug#0002661: Unable to start flow-capture script
 -bug#0002663: make dependency error when building spine manual
 -bug#0002669: ADOdb Outdated Version
 -bug#0002674: Segmentation fault in Spine during polling host
@@ -216,7 +216,7 @@ Cacti CHANGELOG
 -bug#0002698: When the host is down, cacti uses the wrong data type for some columns of the host table
 -bug#0002723: Renaming a disabled device
 -bug#0002724: Multipage graphs
--bug#0002725: Changing graph template - doesnt mark correct interfaces
+-bug#0002725: Changing graph template - doesn't mark correct interfaces
 -bug#0002726: Graph Management Selection
 -bug#0002727: Disable graph polling
 -bug#0002728: Change graph Template - Graph Item Fields are lost
