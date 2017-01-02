@@ -1,22 +1,20 @@
 language: php
 php:
-  - '5.3'
-  - '5.4'
-  - '5.5'
-  - '5.6'
-  - '7.0'
-
+- '5.3'
+- '5.4'
+- '5.5'
+- '5.6'
+- '7.0'
 matrix:
   allow_failures:
-    - php: 7.0
-
+  - php: 7.0
 before_script:
-  - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
-
+- if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected";
+  then exit 1; fi
 script: true
-
 install: true
-
 notifications:
   email:
-    - troman@cacti.net
+  - troman@cacti.net
+  slack:
+    secure: dmHUSaOV5YKFHOo6Wm28CBoMAYj9JNSs7gtsfuuTtTOCIZxONWU9c9dU7C7E2ZxrpA/TCWVBva9umk6sV3LVzpgbBKf46xIE5DlUgbSDXcBtFY4fDgSmDhplWd9LbgI3yHe6e1hb60+4GtiOMF9TVAmdeEwXdm+Zpmj5YEsDZ7xTqjuQMofhjGQ2/pXvymQizV6Ar8zHV0XMfZLfkBUaRwcwOrJnm7vLaZxY0+u30/mgE4SjMlDtbtmJNJudUZ0xwN7S++0vdCFWhExaz59x+SVVkyXTZ/g/+Wt9WuJTG2SHWCNlWZR3xmXu5xzhpw7Bm4E81CSt2a9AYg6t5l5ID/f+KEPuF2Y1hJFpRqKILehdb6G+cnqvCOQVtslwZpLLJeie3nCGZpZQVsBuqWwEZ8shla6cSml1zEjw7/zsajOZFBc0G9bZ7r04jqACl2RRwGbkfkASru5zXXS+frDYEOTJg4npEpDr55ULTE4Pn79Vk+3dgWZNsy1HGxAxwvx4MfrN4cdpAB/qeyOgldx1kNGONCO9Qzo2mxT92aL77gu3eI6OgFzbpiBqUM4kvgFEbc/gGrgtfUr4xAVGrJhz3q0RUmwS0YU5HbMDvd6a7ljyl2ur+GsPvRkJFL3cpIh/DUUbpltx0Mqld0FaMISHiDVnlTBVIkZqx46ilonMiC4=
