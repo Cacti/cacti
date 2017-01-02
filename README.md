@@ -23,10 +23,10 @@ Get involved in development by partcipating in active development on
 Cacti should be able to run on any Unix-based operating system with
 the following requirements:
 
-- PHP 5.4+
-- MySQL 5.1+
-- RRDTool 1.0.49+, 1.5+ recommended
-- NET-SNMP 5.2+
+- PHP 5.5+
+- MySQL 5.5+
+- RRDTool 1.2+, 1.5+ recommended
+- NET-SNMP 5.5+
 - Web Server with PHP support
 
 PHP Must also be compiled as a standalone cgi or cli binary. This is required
