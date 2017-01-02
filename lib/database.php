@@ -835,7 +835,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
 	$return_code = db_execute($sql, true, $db_conn);
 
 	if (!$return_code) {
-		cacti_log("ERROR: SQL Save Failed for Table '$table_name'.  SQL:'" . $sql . "'", FALSE, 'DBCALL');
+		cacti_log("ERROR: SQL Save Failed for Table '$table'.  SQL:'" . $sql . "'", FALSE, 'DBCALL');
 	}
 
 	return db_fetch_insert_id($db_conn);
