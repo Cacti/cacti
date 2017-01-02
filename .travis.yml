@@ -1,24 +1,32 @@
 language: php
+
 php:
 - '5.3'
 - '5.4'
 - '5.5'
 - '5.6'
 - '7.0'
+
 matrix:
   allow_failures:
   - php: 7.0
+
 before_script:
-- if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected";
-  then exit 1; fi
+  - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
+
 script: true
+
 install: true
+
 notifications:
   email:
-  - troman@cacti.net
+    on_success: change
+    on_failure: always
+    recipients:
+      - developers@cacti.net
   slack:
     on_success: always
     on_failure: always
     rooms:
-    - secure: VjWdzdjUSMGwKCObjuyCOwyzCUV+LDwPsUxdmgPojTLGgZS12QOQxD0QNRUkvvtaus2SgbFP/B49NYsqOGrRCFy21aa2goNcqCXUlty8Pcs4L1NIT3L4rmC5DjwKtlL6sO9/HwbS1woFE7fhZ1KA2nIoTHYeGCZFpW1gGpm9VUEbab9m9gP3HagtULInzx02M7vVHA6WwgumWpYqX62St6Tb11YK0SjkUYRKuZN8Ezf8euChEN6OwFwmJnDbKc37kYPHy7SLCKJ3Vy9wbw8O+tYLf8sNauHu0XJGaTg1cvDMbNwLdVBcV6CeaVZTkLyPY46UJ0wprIieKu+HxCQT6CNX4UT3qd27OFtlNDnsJ1o/9f6OKjnRTqPcF6ynLZuzWVIvnPo45bsafvDl/AcfYnm0c4UG+gCZnyMfr432WJ+RJxYZvPgqCEwiweQQMvBSSD3GP2/lbYNRCgI/NU9JDEEWWrYMj/cJxDn1qvKJmdNj4W9nFnF1BqAldzVAQQgLO04K215t1skENChyvEi4+ocZ2A2EwGx582d2PrIK0CpQHcQKxAZl5TwKiuIFQlIOCqh8vt45KG1mY/t9FmVbyhxtrlMdjAAd/6Rxh7aICJQ0PQc0Lw9LX1f2a9/JBNrQ4QxRo/xco4ZI9AfonG5PbMxHEusnfeTC3ZnFU6y+P3I=
+      - secure: VjWdzdjUSMGwKCObjuyCOwyzCUV+LDwPsUxdmgPojTLGgZS12QOQxD0QNRUkvvtaus2SgbFP/B49NYsqOGrRCFy21aa2goNcqCXUlty8Pcs4L1NIT3L4rmC5DjwKtlL6sO9/HwbS1woFE7fhZ1KA2nIoTHYeGCZFpW1gGpm9VUEbab9m9gP3HagtULInzx02M7vVHA6WwgumWpYqX62St6Tb11YK0SjkUYRKuZN8Ezf8euChEN6OwFwmJnDbKc37kYPHy7SLCKJ3Vy9wbw8O+tYLf8sNauHu0XJGaTg1cvDMbNwLdVBcV6CeaVZTkLyPY46UJ0wprIieKu+HxCQT6CNX4UT3qd27OFtlNDnsJ1o/9f6OKjnRTqPcF6ynLZuzWVIvnPo45bsafvDl/AcfYnm0c4UG+gCZnyMfr432WJ+RJxYZvPgqCEwiweQQMvBSSD3GP2/lbYNRCgI/NU9JDEEWWrYMj/cJxDn1qvKJmdNj4W9nFnF1BqAldzVAQQgLO04K215t1skENChyvEi4+ocZ2A2EwGx582d2PrIK0CpQHcQKxAZl5TwKiuIFQlIOCqh8vt45KG1mY/t9FmVbyhxtrlMdjAAd/6Rxh7aICJQ0PQc0Lw9LX1f2a9/JBNrQ4QxRo/xco4ZI9AfonG5PbMxHEusnfeTC3ZnFU6y+P3I=
 
