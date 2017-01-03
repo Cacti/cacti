@@ -68,22 +68,22 @@
 		<itemizedlist>
 			<listitem>
 				<para>
-					<application>RRDTool</application> 1.0.49 or greater, 1.4+ recommended
+					<application>RRDTool</application> 1.2 or greater, 1.5+ recommended
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>MySQL</application> 5.x or greater
+					<application>MySQL</application> 5.1 or greater
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>PHP</application> 5.1 or greater
+					<application>PHP</application> 5.3 or greater
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>Web Server that supports PHP</application> e.g. Apache or IIS
+					<application>Web Server with PHP support</application>
 				</para>
 			</listitem>
 		</itemizedlist>
