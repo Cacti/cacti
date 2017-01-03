@@ -477,21 +477,54 @@ $enabled = '1';
 						form_selectable_cell((version_compare(PHP_VERSION, '5.2.0', '<') ? "<font color=red>" . PHP_VERSION . "</font>" : "<font color=green>" . PHP_VERSION . "</font>"), '');
 						form_end_row();
 
-						$extensions = array( 
-							array('name' => 'posix',     'installed' => false),
-							array('name' => 'session',   'installed' => false),
-							array('name' => 'sockets',   'installed' => false),
-							array('name' => 'PDO',       'installed' => false),
-							array('name' => 'pdo_mysql', 'installed' => false),
-							array('name' => 'xml',       'installed' => false),
-							array('name' => 'ldap',      'installed' => false),
-							array('name' => 'mbstring',  'installed' => false),
-							array('name' => 'pcre',      'installed' => false),
-							array('name' => 'json',      'installed' => false),
-							array('name' => 'openssl',   'installed' => false),
-							array('name' => 'gd',        'installed' => false),
-							array('name' => 'zlib',      'installed' => false)
-						);
+						if ($config['cacti_server_os'] == 'unix') {
+							$extensions = array( 
+								array('name' => 'posix',     'installed' => false),
+								array('name' => 'session',   'installed' => false),
+								array('name' => 'sockets',   'installed' => false),
+								array('name' => 'PDO',       'installed' => false),
+								array('name' => 'pdo_mysql', 'installed' => false),
+								array('name' => 'xml',       'installed' => false),
+								array('name' => 'ldap',      'installed' => false),
+								array('name' => 'mbstring',  'installed' => false),
+								array('name' => 'pcre',      'installed' => false),
+								array('name' => 'json',      'installed' => false),
+								array('name' => 'openssl',   'installed' => false),
+								array('name' => 'gd',        'installed' => false),
+								array('name' => 'zlib',      'installed' => false)
+							);
+						}elseif (version_compare(PHP_VERSION, '5.4.5') < 0) {
+							$extensions = array( 
+								array('name' => 'session',   'installed' => false),
+								array('name' => 'sockets',   'installed' => false),
+								array('name' => 'PDO',       'installed' => false),
+								array('name' => 'pdo_mysql', 'installed' => false),
+								array('name' => 'xml',       'installed' => false),
+								array('name' => 'ldap',      'installed' => false),
+								array('name' => 'mbstring',  'installed' => false),
+								array('name' => 'pcre',      'installed' => false),
+								array('name' => 'json',      'installed' => false),
+								array('name' => 'openssl',   'installed' => false),
+								array('name' => 'gd',        'installed' => false),
+								array('name' => 'zlib',      'installed' => false)
+							);
+						}else{
+							$extensions = array( 
+								array('name' => 'com_dotnet','installed' => false),
+								array('name' => 'session',   'installed' => false),
+								array('name' => 'sockets',   'installed' => false),
+								array('name' => 'PDO',       'installed' => false),
+								array('name' => 'pdo_mysql', 'installed' => false),
+								array('name' => 'xml',       'installed' => false),
+								array('name' => 'ldap',      'installed' => false),
+								array('name' => 'mbstring',  'installed' => false),
+								array('name' => 'pcre',      'installed' => false),
+								array('name' => 'json',      'installed' => false),
+								array('name' => 'openssl',   'installed' => false),
+								array('name' => 'gd',        'installed' => false),
+								array('name' => 'zlib',      'installed' => false)
+							);
+						}
 
 						$ext = verify_php_extensions($extensions);
 						$enabled = '1';

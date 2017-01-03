@@ -38,12 +38,12 @@ function sig_handler($signo) {
 			$running_processes = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' * FROM poller_time WHERE end_time=\'0000-00-00 00:00:00\'');
 
 			if (sizeof($running_processes)) {
-			foreach($running_processes as $process) {
-				if (function_exists('posix_kill')) {
-					cacti_log("WARNING: Termination poller process with pid '" . $process['pid'] . "'", true, 'POLLER', POLLER_VERBOSITY_LOW);
-					posix_kill($process['pid'], SIGTERM);
+				foreach($running_processes as $process) {
+					if (function_exists('posix_kill')) {
+						cacti_log("WARNING: Termination poller process with pid '" . $process['pid'] . "'", true, 'POLLER', POLLER_VERBOSITY_LOW);
+						posix_kill($process['pid'], SIGTERM);
+					}
 				}
-			}
 			}
 
 			db_execute('TRUNCATE TABLE poller_time');

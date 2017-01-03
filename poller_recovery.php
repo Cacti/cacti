@@ -153,7 +153,9 @@ $start = microtime(true);
 $record_limit = 10000;
 $inserted     = 0;
 
-if (posix_getpgid($recovery_pid) === false) {
+$pid = posix_kill($recovery_pid, 0);
+
+if ($pid === false) {
 	db_execute("DELETE FROM settings WHERE name='recovery_pid'");
 
 	$end_count = 0;

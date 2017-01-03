@@ -4156,7 +4156,6 @@ function IgnoreErrorHandler($message) {
 	return false;
 }
 
-
 function CactiErrorHandler($level, $message, $file, $line, $context) {
 	global $phperrors;
 
@@ -4463,3 +4462,23 @@ function repair_system_data_input_methods($step = 'import') {
 		}
 	}
 }
+
+if ($config['cacti_server_os'] == 'win32' && !function_exists('posix_kill')) {
+	function posix_kill($pid, $signal = SIGTERM) {
+		$wmi   = new COM("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2");
+		$procs = $wmi->ExecQuery("SELECT * FROM Win32_Process WHERE ProcessId='" . $pid . "'");
+
+		if (sizeof($procs)) {
+			if ($signal == SIGTERM) {
+				foreach($procs as $proc) {
+					$proc->Terminate();
+				}
+			}else{
+				return true;
+			}
+		}else{
+			return false;
+		}
+	}
+}
+
