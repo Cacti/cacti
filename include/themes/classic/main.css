@@ -247,8 +247,6 @@ label {
 .cactiTooltipHint {
 	cursor: pointer;
 	color: #6d88ad;
-	padding:5px;
-	font-size:14px !important;
 }
 
 .monoSpace {
