@@ -4466,7 +4466,7 @@ function repair_system_data_input_methods($step = 'import') {
 if ($config['cacti_server_os'] == 'win32' && !function_exists('posix_kill')) {
 	function posix_kill($pid, $signal = SIGTERM) {
 		$wmi   = new COM("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2");
-		$procs = $wmi->ExecQuery("SELECT * FROM Win32_Process WHERE ProcessId='" . $pid . "'");
+		$procs = $wmi->ExecQuery("SELECT ProcessId FROM Win32_Process WHERE ProcessId='" . $pid . "'");
 
 		if (sizeof($procs)) {
 			if ($signal == SIGTERM) {
