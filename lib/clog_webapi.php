@@ -294,7 +294,7 @@ function filter() {
 	?>
 	<tr class='even'>
 		<td>
-		<form name='form_logfile'>
+		<form id='logfile'>
 			<table class='filterTable'>
 				<tr>
 					<td>
@@ -403,6 +403,11 @@ function filter() {
 		$('#purge').click(function() {
 			strURL = basename(location.pathname) + '?purge=1&header=false';
 			loadPageNoHeader(strURL);
+		});
+
+		$('#logfile').submit(function(event) {
+			event.preventDefault();
+			refreshFilter();
 		});
 
 		function clearFilter() {
