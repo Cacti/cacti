@@ -25,6 +25,7 @@
 include('./include/auth.php');
 include_once('./lib/api_data_source.php');
 include_once('./lib/utility.php');
+include_once('./lib/clog_webapi.php');
 include_once('./lib/boost.php');
 
 /* set default action */
@@ -54,6 +55,10 @@ switch (get_request_var('action')) {
 		break;
 	case 'clear_logfile':
 		utilities_clear_logfile();
+		utilities_view_logfile();
+		break;
+	case 'purge_logfile':
+		clog_purge_logfile();
 		utilities_view_logfile();
 		break;
 	case 'view_cleaner':
@@ -920,7 +925,7 @@ function utilities_view_logfile() {
     var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 	function purgeLog() {
-		strURL = urlPath+'utilities.php?action=view_logfile&purge=1&header=false';
+		strURL = urlPath+'utilities.php?action=purge_logfile&header=false';
 		loadPageNoHeader(strURL);
 	}
 
