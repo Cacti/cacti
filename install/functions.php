@@ -133,7 +133,9 @@ function find_best_path($binary_name) {
 function plugin_setup_get_templates() {
 	global $config;
 	$templates = array(
-		'Disk IO Usage.xml.gz'
+		'MikroTik_Device.xml.gz',
+		'NetSNMP_Device.xml.gz',
+		'Windows_Device.xml.gz'
 	);
 
 	$path = $config['base_path'] . '/install/templates';
