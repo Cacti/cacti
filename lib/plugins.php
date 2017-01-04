@@ -66,20 +66,10 @@ function api_plugin_hook ($name) {
 				$function = $hdata['function'];
 				if (function_exists($function)) {
 					api_plugin_run_plugin_hook($name, $hdata['name'], $function, $args);
-//					$function($args);
 				}
 			}
 		}
 	}
-
-	// Legacy plugin handling
-//	if (isset($plugin_hooks[$name]) && is_array($plugin_hooks[$name])) {
-//		foreach ($plugin_hooks[$name] as $pname => $function) {
-//			if (function_exists($function)  && !function_exists('plugin_' . $pname . '_install') && !in_array($pname, $p)) {
-//				$function($args);
-//			}
-//		}
-//	}
 
 	/* Variable-length argument lists have a slight problem when */
 	/* passing values by reference. Pity. This is a workaround.  */
@@ -112,21 +102,10 @@ function api_plugin_hook_function ($name, $parm = NULL) {
 				$function = $hdata['function'];
 				if (function_exists($function)) {
 					$ret = api_plugin_run_plugin_hook($name, $hdata['name'], $function, $ret);
-//					$ret = $function($ret);
 				}
 			}
 		}
 	}
-
-
-	// Legacy plugin handling
-//	if (isset($plugin_hooks[$name]) && is_array($plugin_hooks[$name])) {
-//		foreach ($plugin_hooks[$name] as $pname => $function) {
-//			if (function_exists($function)  && !function_exists('plugin_' . $pname . '_install') && !in_array($pname, $p)) {
-//				$ret = $function($ret);
-//			}
-//		}
-//	}
 
 	/* Variable-length argument lists have a slight problem when */
 	/* passing values by reference. Pity. This is a workaround.  */
@@ -235,6 +214,39 @@ function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilitie
 			if (strpos($capability, 'remote_collect') !== false) {
 				return true;
 			}
+		}
+	}
+
+	return false;
+}
+
+function api_plugin_get_dependencies($plugin) {
+	global $config;
+
+	$file = $config['base_path'] . '/plugins/' . $plugin . '/INFO';
+
+	if (file_exists($file)) {
+		$info = parse_ini_file($file, true);
+
+		if (isset($info['info']['requires'])) {
+			$components = explode(',', $info['info']['requires']);
+			foreach($components as $c) {
+				$returndeps[trim($c)] = trim($c);
+			}
+
+			return $returndeps;
+		}
+	}
+
+	return false;
+}
+
+function api_plugin_installed($plugin) {
+	$plugin_data = db_fetch_row_prepared('SELECT directory, status FROM plugin_config WHERE directory = ?', array($plugin));
+
+	if (sizeof($plugin_data)) {
+		if ($plugin_data['status'] >= 1) {
+			return true;
 		}
 	}
 
@@ -454,6 +466,30 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
 function api_plugin_install ($plugin) {
 	global $config;
 	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+
+	$dependencies = api_plugin_get_dependencies($plugin);
+
+	if (is_array($dependencies) && sizeof($dependencies)) {
+		$message = '';
+		$proceed = true;
+		foreach($dependencies as $dependency) {
+			if (!api_plugin_installed($dependency)) {
+				$message .= ($message != '' ? '<br>':'') . __('Plugin %s is required for %s, and it is not installed.', $dependency, $plugin);
+
+				$proceed = false;
+			}
+		}
+
+		if (!$proceed) {
+			$message .= '<br>' . __('Plugin can not be installed.');
+			$_SESSION['reports_message'] = $message;
+
+			raise_message('reports_message');
+
+			header('Location: plugins.php?header=false');
+			exit;
+		}
+	}
 
 	$exists = db_fetch_assoc_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin), false);
 	if (sizeof($exists)) {
