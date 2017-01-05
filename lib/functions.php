@@ -2714,8 +2714,9 @@ function draw_navigation_text($type = 'url') {
 		$current_nav .= "<li><a id='nav_$i' href=#>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
 	}else{
 		$current_array = $nav[$current_page . ':' . $current_action];
-		$url = (isset($current_array['url']) ? $current_array['url']:'');
-		$current_nav .= "<li><a id='nav_$i' href='$url'>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+		$url           = (isset($current_array['url']) ? $current_array['url']:'');
+		$title         = (isset($current_array['title']) ? $current_array['title']:'');
+		$current_nav  .= "<li><a id='nav_$i' href='$url'>" . htmlspecialchars(resolve_navigation_variables($title)) . '</a></li>';
 	}
 
 	if (isset_request_var('tree_id') || isset_request_var('leaf_id')) {
