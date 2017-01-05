@@ -132,7 +132,11 @@ function find_best_path($binary_name) {
 
 function plugin_setup_get_templates() {
 	global $config;
+
 	$templates = array(
+		'Cisco_Router.xml.gz',
+		'Generic SNMP Device.xml.gz',
+		'Local_Linux_Machine.xml.gz',
 		'MikroTik_Device.xml.gz',
 		'NetSNMP_Device.xml.gz',
 		'Windows_Device.xml.gz'
