@@ -202,6 +202,100 @@ function themeReady() {
 		}
 	);
 	
+	$.ui.selectmenu.prototype._renderItem = function(ui, item) {
+		if (item.element.closest('select').hasClass('colordropdown')) {
+			if (item.label != 'None') {
+				var li = $("<li>", { text: item.label });
+
+				$('<span>', {
+					style: item.element.attr('data-style'),
+					'class': 'ui-icon color-icon'
+				}).appendTo(li);
+			}else{
+				var li = $("<li>", { text: item.label });
+			}
+		}else if (item.element.closest('select').hasClass('iconselect')) {
+			var li = $('<li>', { text: item.label });
+
+			if (item.disabled) {
+				li.addClass('ui-state-disabled');
+			}
+
+			$('<span>', {
+				style: item.element.attr('data-style'),
+				'class': 'ui-icon ' + item.element.attr('data-class')
+			}).appendTo(li);
+
+			return li.appendTo(ui);
+		}else{
+			var li = $("<li>");
+
+			this._setText(li, item.label);
+		}
+
+		if (item.disabled) {
+			li.addClass("ui-state-disabled");
+		}
+
+		return li.appendTo(ui);
+	}
+
+	$('select').each(function() {
+		if ($(this).prop('multiple') != true) {
+			$(this).selectmenu({
+				change: function(event, ui) {
+					$(this).val(ui.item.value).change();
+				},
+				position: {
+					my: "left top",
+					at: "left bottom",
+					collision: "flip"
+				},
+			}).each(function() {
+				id = $(this).attr('id');
+				minWidth = 0;
+				$('#'+id+' > option').each(function() {
+					width=$(this).textWidth();
+					if (width > minWidth) {
+						minWidth = width;
+					}
+				});
+
+				minWidth+=80;
+				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', '400px').css('width','');
+				$('#'+id+'-menu').css('max-height', '250px');
+			});
+		}else{
+			$(this).addClass('ui-state-default ui-corner-all');
+		}
+	});
+
+	$('#host').unbind().autocomplete({
+		source: pageName+'?action=ajax_hosts',
+		autoFocus: true,
+		minLength: 0,
+		select: function(event,ui) {
+			$('#host_id').val(ui.item.id);
+			callBack = $('#call_back').val();
+			if (callBack != 'undefined') {
+				eval(callBack);
+			}else if (typeof applyGraphFilter === 'function') {
+				applyGraphFilter();
+			}else{
+				applyFilter();
+			}
+		}
+	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
+
+	$('#host, #host_click').click(function() {
+		if (!hostOpen) {
+			$('#host').autocomplete('option', 'minLength', 0).autocomplete('search', '');
+			hostOpen = true;
+		}else{
+			$('#host').autocomplete('close');
+			hostOpen = false;
+		}
+	});
 
 /* End clean up */
 
