@@ -101,7 +101,7 @@ function api_plugin_hook_function ($name, $parm = NULL) {
 				}
 				$function = $hdata['function'];
 				if (function_exists($function)) {
-					$ret = api_plugin_run_plugin_hook($name, $hdata['name'], $function, $ret);
+					$ret = api_plugin_run_plugin_hook_function($name, $hdata['name'], $function, $ret);
 				}
 			}
 		}
@@ -164,7 +164,7 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 	return $args;
 }
 
-function api_plugin_run_plugin_function($hook, $plugin, $function, $ret) {
+function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
 	global $config;
 
 	if ($config['poller_id'] > 1) {
