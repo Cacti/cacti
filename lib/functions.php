@@ -593,9 +593,17 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		}
 	}
 
-	/* only log if the specificied level is reached */
+	/* only log if the specificied level is reached, developer debug is special low + specific devdbg calls */
 	if ($force_level != '') {
 		$level = $force_level;
+	}elseif (read_config_option('log_verbosity', true) == POLLER_VERBOSITY_DEVDBG) {
+		if ($level != '') {
+			if ($level != POLLER_VERBOSITY_DEVDBG) {
+				if ($level > POLLER_VERBOSITY_LOW) {
+					return;
+				}
+			}
+		}
 	}elseif ($level != '' && $level >= read_config_option('log_verbosity', true)) {
 		return;
 	}
