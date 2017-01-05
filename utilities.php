@@ -1286,7 +1286,7 @@ function utilities_view_snmp_cache() {
 									ON hsc.snmp_query_id=sq.id
 									INNER JOIN host AS h
 									ON hsc.host_id=h.id
-									ORDER by snmp_query.name');
+									ORDER by sq.name');
 							}else{
 								$snmp_queries = db_fetch_assoc_prepared("SELECT DISTINCT sq.id, sq.name
 									FROM host_snmp_cache AS hsc
@@ -1294,7 +1294,7 @@ function utilities_view_snmp_cache() {
 									ON hsc.snmp_query_id=sq.id
 									INNER JOIN host AS h
 									ON hsc.host_id=h.id
-									ORDER by snmp_query.name", array(get_request_var('host_id')));
+									ORDER by sq.name", array(get_request_var('host_id')));
 							}
 
 							if (sizeof($snmp_queries)) {
