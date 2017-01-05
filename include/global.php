@@ -184,6 +184,8 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		}
 	}
 
+	if (!isset($rdatabase_ssl)) $rdatabase_ssl = false;
+
 	/* gather the existing cactidb version */
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', false, $local_db_cnn_id);
 
