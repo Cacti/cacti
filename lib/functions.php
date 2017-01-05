@@ -4482,3 +4482,60 @@ if ($config['cacti_server_os'] == 'win32' && !function_exists('posix_kill')) {
 	}
 }
 
+function is_ipaddress($ip_address = '') {
+	/* check for ipv4/v6 */
+	if (substr_count($ip_address, ':')) {
+		/* compressed dot format */
+		if (substr_count($ip_address, '::')) {
+			$ip_address = str_replace('::', ':', $ip_address);
+			$segments   = explode(':', $ip_address);
+		}else{
+			$segments = explode(':', $ip_address);
+
+			if (sizeof($segments) != 8) {
+				/* should be 8 segments */
+				return false;
+			}
+		}
+
+		$i = 0;
+		foreach ($segments as $segment) {
+			$i++;
+
+			if ((trim($segment) == '') && ($i == 1)) {
+				continue;
+			}elseif (!is_numeric('0x' . $segment)) {
+				return false;
+			}
+		}
+
+		return true;
+	}else if (strlen($ip_address) <= 15) {
+		$octets = explode('.', $ip_address);
+
+		$i = 0;
+
+		if (count($octets) != 4) {
+			return false;
+		}
+
+		foreach($octets as $octet) {
+			if ($i == 0 || $i == 3) {
+				if(($octet < 0) || ($octet > 255)) {
+					return false;
+				}
+			}else{
+				if(($octet < 0) || ($octet > 255)) {
+					return false;
+				}
+			}
+
+			$i++;
+		}
+
+		return true;
+	}else{
+		return false;
+	}
+}
+
