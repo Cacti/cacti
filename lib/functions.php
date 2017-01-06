@@ -2306,25 +2306,25 @@ function draw_navigation_text($type = 'url') {
 			'level' => '2'
 			),
 		'utilities.php:view_logfile' => array(
-			'title' => __('View Cacti Log File'), 
+			'title' => __('View Cacti Log'), 
 			'mapping' => 'index.php:,utilities.php:', 
 			'url' => 'utilities.php', 
 			'level' => '2'
 			),
 		'utilities.php:clear_logfile' => array(
-			'title' => __('Clear Cacti Log File'), 
+			'title' => __('Clear Cacti Log'), 
 			'mapping' => 'index.php:,utilities.php:', 
 			'url' => 'utilities.php', 
 			'level' => '2'
 			),
 		'utilities.php:view_user_log' => array(
-			'title' => __('View User Log File'), 
+			'title' => __('View User Log'), 
 			'mapping' => 'index.php:,utilities.php:', 
 			'url' => 'utilities.php', 
 			'level' => '2'
 			),
 		'utilities.php:clear_user_log' => array(
-			'title' => __('Clear User Log File'), 
+			'title' => __('Clear User Log'), 
 			'mapping' => 'index.php:,utilities.php:', 
 			'url' => 'utilities.php', 
 			'level' => '2'

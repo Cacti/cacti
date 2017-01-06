@@ -148,7 +148,7 @@ function clog_view_logfile() {
 		return;	
 	}
 
-	html_start_box(__('Log File Filters'), '100%', '', '3', 'center', '');
+	html_start_box(__('Log Filters'), '100%', '', '3', 'center', '');
 	filter();
 	html_end_box();
 
@@ -171,9 +171,9 @@ function clog_view_logfile() {
 	}
 
 	if (get_request_var('message_type') > 0) {
-		$start_string = __('Log File [Total Lines: %d %s - Additional Filter in Affect]', sizeof($logcontents), $ad_filter);
+		$start_string = __('Log [Total Lines: %d %s - Additional Filter in Affect]', sizeof($logcontents), $ad_filter);
 	}else{
-		$start_string = __('Log File [Total Lines: %d %s - No Other Filter in Affect]', sizeof($logcontents), $ad_filter);
+		$start_string = __('Log [Total Lines: %d %s - No Other Filter in Affect]', sizeof($logcontents), $ad_filter);
 	}
 
 	html_start_box($start_string, '100%', '', '3', 'center', '');

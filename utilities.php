@@ -969,7 +969,7 @@ function utilities_view_logfile() {
 	</script>
 	<?php
 
-	html_start_box(__('Log File Filters'), '100%', '', '3', 'center', '');
+	html_start_box(__('Log Filters'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -1009,7 +1009,7 @@ function utilities_view_logfile() {
 						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Log File');?>'>
+						<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Log');?>'>
 					</td>
 				</tr>
 				<tr>
@@ -1062,9 +1062,9 @@ function utilities_view_logfile() {
 	}
 
 	if (get_request_var('message_type') > 0) {
-		$start_string = __('Log File [Total Lines: %d - Non-Matching Items Hidden]', sizeof($logcontents));
+		$start_string = __('Log [Total Lines: %d - Non-Matching Items Hidden]', sizeof($logcontents));
 	}else{
-		$start_string = __('Log File [Total Lines: %d - All Items Shown]', sizeof($logcontents));
+		$start_string = __('Log [Total Lines: %d - All Items Shown]', sizeof($logcontents));
 	}
 
 	html_start_box($start_string, '100%', '', '3', 'center', '');
@@ -1152,14 +1152,14 @@ function utilities_clear_logfile() {
 		$logfile = './log/cacti.log';
 	}
 
-	html_start_box(__('Clear Cacti Log File'), '100%', '', '3', 'center', '');
+	html_start_box(__('Clear Cacti Log'), '100%', '', '3', 'center', '');
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
 			$timestamp = date('Y-m-d H:i:s');
 			$log_fh = fopen($logfile, 'w');
 			fwrite($log_fh, __('%s - WEBUI: Cacti Log Cleared from Web Management Interface.', $timestamp) . "\n");
 			fclose($log_fh);
-			print '<tr><td>' . __('Cacti Log File Cleared') . '</td></tr>';
+			print '<tr><td>' . __('Cacti Log Cleared') . '</td></tr>';
 		}else{
 			print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, no write permissions.') . "<b></td></tr>";
 		}
@@ -1765,10 +1765,10 @@ function utilities() {
 
 	<?php html_section_header(__('Log Administration'), 2); form_alternate_row(); ?>
 		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_logfile');?>'><?php print __('View Cacti Log File');?></a>
+			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_logfile');?>'><?php print __('View Cacti Log');?></a>
 		</td>
 		<td class='textArea'>
-			<?php print __('The Cacti Log File stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.');?>
+			<?php print __('The Cacti Log stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.');?>
 		</td>
 	</tr>
 	<?php form_alternate_row(); ?>
