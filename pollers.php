@@ -55,10 +55,19 @@ $fields_poller_edit = array(
 		'default' => __('New Data Collector'),
 		'max_length' => '100'
 	),
+	'hostname' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Web Site Hostname'),
+		'description' => __('The hostname for Data Collector.  It may have to be a Fully Qualified Domain name for the remote pollers to contact it for activities such as re-indexing, realtime graphing, etc.'),
+		'value' => '|arg1:hostname|',
+		'size' => '50',
+		'default' => '',
+		'max_length' => '100'
+	),
 	'notes' => array(
 		'method' => 'textarea',
 		'friendly_name' => __('Notes'),
-		'description' => __('Notes for this Data Collector.'),
+		'description' => __('Notes for this Data Collectors Database.'),
 		'value' => '|arg1:notes|',
 		'textarea_rows' => 4,
 		'textarea_cols' => 50
@@ -173,6 +182,7 @@ function form_save() {
 	if (isset_request_var('save_component_poller')) {
 		$save['id']           = get_filter_request_var('id');
 		$save['name']         = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['hostname']     = form_input_validate(get_nfilter_request_var('hostname'), 'hostname', '', false, 3);
 		$save['notes']        = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 		$save['dbdefault']    = form_input_validate(get_nfilter_request_var('dbdefault'), 'dbdefault', '', true, 3);
 		$save['dbhost']       = form_input_validate(get_nfilter_request_var('dbhost'), 'dbhost', '', true, 3);
@@ -586,6 +596,7 @@ function pollers() {
 	$display_text = array(
 		'name'        => array('display' => __('Collector Name'), 'align' => 'left',   'sort' => 'ASC',  'tip' => __('The Name of this Data Collector.')),
 		'id'          => array('display' => __('ID'),             'align' => 'right',  'sort' => 'ASC',  'tip' => __('The unique id associated with this Data Collector.')),
+		'hostname'    => array('display' => __('Hostname'),       'align' => 'right',  'sort' => 'ASC',  'tip' => __('The Hostname where the Data Collector is running.')),
 		'status'      => array('display' => __('Status'),         'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Status of this Data Collector.')),
 		'total_time'  => array('display' => __('Polling Time'),   'align' => 'right',  'sort' => 'DESC', 'tip' => __('The last data collection time for this Data Collector.')),
 		'hosts'       => array('display' => __('Devices'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of Devices associated with this Data Collector.')),
@@ -615,6 +626,7 @@ function pollers() {
 			form_alternate_row('line' . $poller['id'], true, $disabled);
 			form_selectable_cell(filter_value($poller['name'], get_request_var('filter'), 'pollers.php?action=edit&id=' . $poller['id']), $poller['id']);
 			form_selectable_cell($poller['id'], $poller['id'], '', 'right');
+			form_selectable_cell($poller['hostname'], $poller['id'], '', 'right');
 			form_selectable_cell($poller_status[$poller['status']], $poller['id'], '', 'center');
 			form_selectable_cell(number_format_i18n($poller['total_time'], 2), $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['hosts']), $poller['id'], '', 'right');
