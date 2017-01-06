@@ -130,12 +130,24 @@ function find_best_path($binary_name) {
 	}
 }
 
+function get_public_key() {
+$public_key = <<<EOD
+-----BEGIN PUBLIC KEY-----
+MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMbPpuQfwmg93oOGjdLKrAqwEPwvvNjC
+bk2YZiDglh8lQJxNQI9glG1Z/ptvqprFO3iSx9rTP4vzZ0Ek2+EMYTMCAwEAAQ==
+-----END PUBLIC KEY-----
+EOD;
+
+    return $public_key;
+}
+
+
 function plugin_setup_get_templates() {
 	global $config;
 
 	$templates = array(
 		'Cisco_Router.xml.gz',
-		'Generic SNMP Device.xml.gz',
+		'Generic_SNMP_Device.xml.gz',
 		'Local_Linux_Machine.xml.gz',
 		'MikroTik_Device.xml.gz',
 		'NetSNMP_Device.xml.gz',
@@ -161,7 +173,7 @@ function plugin_setup_get_templates() {
 	return $info;
 }
 
-function plugin_setup_install_template($xmlfile, $opt = 0, $interval = 5) {
+function plugin_setup_install_template($xmlfile, $opt = 0) {
 	global $config;
 	if ($opt) {
 		$path = $config['base_path'] . '/install/templates/';
@@ -169,22 +181,11 @@ function plugin_setup_install_template($xmlfile, $opt = 0, $interval = 5) {
 		$path = $config['base_path'] . '/install/templates/';
 	}
 
-	if ($interval == 1) {
-		$interval = array(1, 2, 3, 4, 5);
-	} else {
-		$interval = array(1, 2, 3, 4);
-	}
-
 	/* set new timeout and memory settings */
-	ini_set("max_execution_time", "5");
+	ini_set("max_execution_time", "40");
 	ini_set("memory_limit", "64M");
 
-	$public_key = <<<EOD
------BEGIN PUBLIC KEY-----
-MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMbPpuQfwmg93oOGjdLKrAqwEPwvvNjC
-bk2YZiDglh8lQJxNQI9glG1Z/ptvqprFO3iSx9rTP4vzZ0Ek2+EMYTMCAwEAAQ==
------END PUBLIC KEY-----
-EOD;
+	$public_key = get_public_key();
 
 	$filename = "compress.zlib://$path/$xmlfile";
 	$binary_signature = "";
@@ -194,8 +195,9 @@ EOD;
 	while (!feof($f)) {
 		$x = fgets($f);
 		if (strpos($x, "<signature>") !== FALSE) {
-			$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), '', $x)));
-			$x = "	<signature></signature>\n";
+			$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)));
+			$x = "   <signature></signature>\n";
+cacti_log('Got signature');
 		}
 		$xml .= "$x";
 	}
@@ -204,12 +206,15 @@ EOD;
 	// Verify Signature
 	$ok = openssl_verify($xml, $binary_signature, $public_key);
 	if ($ok == 1) {
+		cacti_log('File is signed correctly');
 		//print "	File is signed correctly\n";
 	} elseif ($ok == 0) {
+		cacti_log('ERROR: File has been tampered with');
 		//print "	ERROR: File has been tampered with\n";
 		//exit;
 		return;
 	} else {
+		cacti_log('ERROR: Could not verify signature');
 		//print "	ERROR: Could not verify signature!\n";
 		//exit;
 		return;
@@ -227,13 +232,14 @@ EOD;
 	}
 
 	foreach ($data['files']['file'] as $f) {
-
 		$binary_signature = base64_decode($f['filesignature']);
 		$fdata = base64_decode($f['data']);
-		$ok = openssl_verify($fdata, $binary_signature, $public_key);
+		$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
 		if ($ok == 1) {
+			cacti_log("File OK : " . $f['name']);
 			//print "	File OK : " . $f['name'] . "\n";
 		} else {
+			cacti_log("ERROR: Could not verify signature for file: " . $f['name']);
 			//print "	ERROR: Could not verify signature for file: " . $f['name'] . "\n";
 			//exit;
 			return;
@@ -258,6 +264,7 @@ EOD;
 				//print "	Unable to create directory: $filename\n";
 			}
 		} else {
+			cacti_log("Importing XML Data");
 			$debug_data = import_xml_data($fdata, false, 1);
 		}
 	}

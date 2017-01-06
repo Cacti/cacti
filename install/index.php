@@ -25,6 +25,8 @@
 define('IN_CACTI_INSTALL', 1);
 
 include_once('../include/global.php');
+include_once('../lib/api_data_source.php');
+include_once('../lib/api_device.php');
 include_once('../lib/utility.php');
 include_once('./functions.php');
 
@@ -125,14 +127,14 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 
 		break;
 	case '4':
-		$previous_step = 4;
+		$previous_step = 3;
 
 		/* settingscheck - send to settings-install */
 		$step = 5;
 
 		break;
 	case '5':
-		$previous_step = 5;
+		$previous_step = 4;
 
 		if (get_request_var('install_type') != 2) {
 			/* settings-install - send to template-import */
@@ -144,7 +146,7 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 
 		break;
 	case '6':
-		$previous_step = 6;
+		$previous_step = 5;
 
 		/* template-import - send to installfinal */
 		$step = 7;
@@ -178,7 +180,7 @@ if ($step == '7') {
 	include_once('../lib/utility.php');
 	
 	/* look for templates that have been checked for install */
-	if (get_request_var('install_type') != 2) {
+	if (get_request_var('install_type') == 1) {
 		$install = Array();
 		foreach ($_POST as $post => $v) {
 			if (substr($post, 0, 4) == 'chk_' && is_numeric(substr($post, 4))) {
@@ -189,8 +191,40 @@ if ($step == '7') {
 		$templates = plugin_setup_get_templates(1);
 		if (!empty($install)) {
 			foreach ($install as $i) {
-				plugin_setup_install_template($templates[$i]['filename'], 1, $templates[$i]['interval']);
+				plugin_setup_install_template($templates[$i]['filename'], 1);
 			}
+		}
+
+		// Add the correct device type
+		if ($config['cacti_server_os'] == 'win32') {
+			$hash = '5b8300be607dce4f030b026a381b91cd';
+			$version      = 2;
+			$community    = 'public';
+			$avail        = 'snmp';
+			$ip           = 'localhost';
+			$description  = "Local Windows Machine";
+		}else{
+			$hash = '2d3e47f416738c2d22c87c40218cc55e';
+			$version      = 0;
+			$community    = 'public';
+			$avail        = 'none';
+			$ip           = 'localhost';
+			$description  = "Local Linux Machine";
+		}
+
+		$host_template_id = db_fetch_cell_prepared('SELECT id FROM host_template WHERE hash = ?', array($hash));
+
+		cacti_log('Host Template for First Cacti Device is ' . $host_template_id);
+
+		// Add the host
+		if (!empty($host_template_id)) {
+			$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/add_device.php" . 
+				" --description='$description' --ip='$ip' --template=$host_template_id" . 
+				" --notes='Initial Cacti Device' --poller=1 --site=0 --avail=$avail" .
+				" --version=$version --community='$community'");
+			cacti_log(trim($results));
+		}else{
+			cacti_log('ERROR: Device Template for your Operating System Not Found.  Please add your first device manually');
 		}
 	}
 	
@@ -443,7 +477,7 @@ $enabled = '1';
 					<?php	
 					/* license&welcome */
 					if ($step == '1') {
-						print '<h3>' . __('License Agreement') . '</h3>';
+						print '<h2>' . __('License Agreement') . '</h2>';
 
 						print '<p>' . __('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.') . '</p>';
 						print '<p>' . __('Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href="%1$s">Unix</a> and <a href="%2$s">Win32</a>-based operating systems.', '../docs/html/install_unix.html', '../docs/html/install_windows.html') . '</p>';
@@ -464,7 +498,7 @@ $enabled = '1';
 					<?php 	
 					/* checkdependencies */
 					}elseif ($step == '2') { 
-						print '<h3>' . __('Pre-installation Checks') .'</h3>';
+						print '<h2>' . __('Pre-installation Checks') .'</h2>';
 						print __('Cacti requries several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '<br><br>';
 
 						print '<br>' . __('The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install.') . '<br><br>';
@@ -563,7 +597,7 @@ $enabled = '1';
 						html_end_box(false);
 					/* install/upgrade */
 					}elseif ($step == '3') {
-						print '<h3>' . __('Installation Type') . '</h3>';
+						print '<h2>' . __('Installation Type') . '</h2>';
 
 						print '<h4>' . __('Please select the type of installation') . '</h4>';
 						print '<p>' . __('You have three Cacti installation options to choose from:') . '</p>';
@@ -728,7 +762,7 @@ $enabled = '1';
 						<?php
 				 	/* settingscheck */
 					}elseif ($step == '4') {
-						print '<h3>' . __('Critical Binary Locations and Versions') . '</h3>';
+						print '<h2>' . __('Critical Binary Locations and Versions') . '</h2>';
 
 						print '<p>' . __('Make sure all of these values are correct before continuing.') . '</p>';						
 						$i = 0;
@@ -799,40 +833,75 @@ $enabled = '1';
 						}
 							
 						/* Print message and error logs */
-						print '<h3>' . __('Directory Permission Checks') . '</h3>';
+						print '<h2>' . __('Directory Permission Checks') . '</h2>';
 							
-						print '<p>' . __('Make sure the directory permissions below are correct.  Typically, these directories need to be owned by the Apache user, either apache or wwwrun depending on your Operating System.') . '</p>';						
+						print '<p>' . __('Please insure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Apache user, either apache or wwwrun depending on your Operating System.') . '</p>';						
 
-						$all_paths = array(
+						if (get_request_var('install_type') == 1) {
+							print '<p>' . __('After the install is complete, you can make some of these directories read only to increase security.') . '</p>';						
+						}else{
+							print '<p>' . __('These directories will be required to stay read writable after the instal so that the Cacti remote synchonization process can update them as the Main Cacti Web Site changes') . '</p>';
+						}
+
+						$remote_poller = array(
 							$config['base_path'] . '/resource/snmp_queries',
 							$config['base_path'] . '/resource/script_server',
 							$config['base_path'] . '/resource/script_queries',
-							$config['base_path'] . '/log',
 							$config['base_path'] . '/scripts',
-						);
-
-						$main_paths = array(
+							$config['base_path'] . '/log',
 							$config['base_path'] . '/cache/boost',
 							$config['base_path'] . '/cache/mibcache',
 							$config['base_path'] . '/cache/realtime',
 							$config['base_path'] . '/cache/spikekill'
 						);
 
-						if (get_request_var('install_type') != 2) {
-							$paths = array_merge($all_paths, $main_paths);
-						}else{
-							$paths = $all_paths;
-						}
+						$always_paths = array(
+							$config['base_path'] . '/log',
+							$config['base_path'] . '/cache/boost',
+							$config['base_path'] . '/cache/mibcache',
+							$config['base_path'] . '/cache/realtime',
+							$config['base_path'] . '/cache/spikekill'
+						);
 
-						foreach($paths as $path) {
-							if (is_writable($path)) {
-								print '<p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
-							} else {
-								print '<p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
-								$writable = false;
+						$install_paths = array(
+							$config['base_path'] . '/resource/snmp_queries',
+							$config['base_path'] . '/resource/script_server',
+							$config['base_path'] . '/resource/script_queries',
+							$config['base_path'] . '/scripts',
+						);
+
+						if (get_request_var('install_type') != 2) {
+							print '<p><strong>' . __('Required Writable at Install Time Only') . '</strong></p>';
+							foreach($install_paths as $path) {
+								if (is_writable($path)) {
+									print '<p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
+								} else {
+									print '<p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
+									$writable = false;
+								}
+							}
+
+							print '<p><strong>' . __('Required Writable after Install Complete') . '</strong></p>';
+							foreach($always_paths as $path) {
+								if (is_writable($path)) {
+									print '<p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
+								} else {
+									print '<p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
+									$writable = false;
+								}
+							}
+						}else{
+							print '<p><strong>' . __('Required Writable after Install Complete') . '</strong></p>';
+							foreach($remote_paths as $path) {
+								if (is_writable($path)) {
+									print '<p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
+								} else {
+									print '<p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
+									$writable = false;
+								}
 							}
 						}
-							
+
 						/* Print help message for unix and windows if directory is not writable */
 						if (($config['cacti_server_os'] == 'unix') && isset($writable)) {
 							print '<p>' . __('Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache %s/resource/', $config['base_path']) . '</p>';
@@ -846,7 +915,7 @@ $enabled = '1';
 						if (get_request_var('install_type') != 2) {
 							print '<p><strong><font color="#FF0000">';
 
-							print __('NOTE:') . '</font></strong>' . __('If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site.');
+							print __('NOTE:') . '</font></strong> ' . __('If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site.');
 
 							print '</p>';
 						}else{
@@ -862,9 +931,11 @@ $enabled = '1';
 
 					/* template-import */
 					}elseif ($step == '6') {
-						print '<p>' . __('Make sure all of these values are correct before continuing.') . '</p>';
-						print '<h1>' . __('Template Setup') . '</h1>';
-						print __('Templates allow you to monitor and graph a vast assortment of data within Cacti. While the base Cacti install provides basic templates for most devices, you can select a few extra templates below to include in your install.') . '<br><br>';
+						print '<h2>' . __('Template Setup') . '</h2>';
+
+						print '<p>' . __('Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to insure that you select the \'Windows Device\' Template.  If your Operating System is Linux/UNIX, make sure you select the \'Local Linux Machine\' Device Template.') . '</p>';
+
+						print __('Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press \'Finish\' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes.') . '<br><br>';
 						print '<form name="chk" method="post" action="start.php">';
 
 						$templates = plugin_setup_get_templates();
@@ -883,8 +954,12 @@ $enabled = '1';
 							}
 							form_checkbox_cell($p['name'], $id);
 							form_end_row();
-							html_end_box(false);
 						}
+						html_end_box(false);
+
+						print '<p><strong><font color="#FF0000">' . __('NOTE:') . ' </font></strong>';
+
+						print __('Press \'Finish\' to complete the installation process after selecting your Device Templates.') . '</p>';
 					
 					/* upgrade */
 					}elseif ($step == '8') {
@@ -971,6 +1046,8 @@ $(function() {
 	}else if (step == 1) {
 		$('#next').button('disable');
 	}else if (step == 5 && install_type == 2) {
+		$('#next').val('Finish');
+	}else if (step == 6 && install_type == 1) {
 		$('#next').val('Finish');
 	}
 

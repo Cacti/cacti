@@ -322,7 +322,7 @@ CREATE TABLE `automation_networks` (
 -- Dumping data for table `automation_networks`
 --
 
-INSERT INTO `automation_networks` VALUES (1,1,'Test Network','192.168.1.0/24','','on',1,'on','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
+INSERT INTO `automation_networks` VALUES (1,1,'Test Network','192.168.1.0/24','','',1,'on','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
 
 --
 -- Table structure for table `automation_processes`
@@ -2590,8 +2590,6 @@ CREATE TABLE host (
 -- Dumping data for table `host`
 --
 
-INSERT INTO `host` VALUES (1,1,0,8,'Localhost','127.0.0.1','','public',2,'','','','','','','',161,500,'','',0,'','','',2,1,0,500,2,10,1,'',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00','',9.99999,0.00000,0.00000,0.00000,0,0,0,100.00000, NOW());
-
 --
 -- Table structure for table `host_graph`
 --
@@ -2605,11 +2603,6 @@ CREATE TABLE host_graph (
 --
 -- Dumping data for table `host_graph`
 --
-
-INSERT INTO host_graph VALUES (1,8);
-INSERT INTO host_graph VALUES (1,9);
-INSERT INTO host_graph VALUES (1,10);
-INSERT INTO host_graph VALUES (1,12);
 
 --
 -- Table structure for table `host_snmp_cache`
@@ -2654,8 +2647,6 @@ CREATE TABLE host_snmp_query (
 --
 -- Dumping data for table `host_snmp_query`
 --
-
-INSERT INTO host_snmp_query VALUES (1,6,'dskDevice','|query_dskDevice|',0);
 
 --
 -- Table structure for table `host_template`
