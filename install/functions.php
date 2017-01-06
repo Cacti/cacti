@@ -151,6 +151,7 @@ function plugin_setup_get_templates() {
 		'Local_Linux_Machine.xml.gz',
 		'MikroTik_Device.xml.gz',
 		'NetSNMP_Device.xml.gz',
+		'Host_MIB_Summary_Device.xml.gz',
 		'Windows_Device.xml.gz'
 	);
 
