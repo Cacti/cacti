@@ -219,9 +219,9 @@ if ($step == '7') {
 		// Add the host
 		if (!empty($host_template_id)) {
 			$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/add_device.php" . 
-				" --description='$description' --ip='$ip' --template=$host_template_id" . 
-				" --notes='Initial Cacti Device' --poller=1 --site=0 --avail=$avail" .
-				" --version=$version --community='$community'");
+				" --description=" . escapeshellarg($description) . " --ip=" . escapeshellarg($ip) . " --template=$host_template_id" . 
+				" --notes=" . escapeshellarg('Initial Cacti Device') . " --poller=1 --site=0 --avail=" . escapeshellarg($avail) .
+				" --version=$version --community=" . escapeshellarg($community));
 			cacti_log(trim($results));
 		}else{
 			cacti_log('ERROR: Device Template for your Operating System Not Found.  Please add your first device manually');
