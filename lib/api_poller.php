@@ -54,6 +54,7 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			}
 
 			$host['id'] = 0;
+			$host['poller_id']      = 1;
 			$host['snmp_community'] = '';
 			$host['snmp_timeout'] = '';
 			$host['snmp_username'] = '';
