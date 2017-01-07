@@ -410,15 +410,15 @@ function applySkin() {
 		theme = 'classic';
 
 		// debounce submits
-		$('input[type="submit"], button[type="submit"]').not('.import, .export').submit(function() {
-			$(this).prop('disabled', true);
+		$('form').submit(function() {
+			$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', true);
 		});
 	}else{
 		$('input[type=submit], input[type=button]').button();
 
 		// debounce submits
-		$('input[type="submit"], button[type="submit"]').not('.import, .export').submit(function() {
-			$(this).button('disable');
+		$('form').submit(function() {
+			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
 		});
 	}
 
