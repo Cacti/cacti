@@ -108,12 +108,16 @@ function snmpagent_api_device_new($device){
 		'cactiStatsDeviceAvailability' => $device_data['availability']
 	);
 
-	$mc->table('cactiApplDeviceTable')->row($device['id'])->replace($appl_values);
-	$mc->object('cactiApplLastUpdate')->set( time() );
+	if ($mc->table('cactiApplDeviceTable') != 'ERROR') {
+		$mc->table('cactiApplDeviceTable')->row($device['id'])->replace($appl_values);
+	}
+	$mc->object('cactiApplLastUpdate')->set(time());
 
-	$mc->table('cactiStatsDeviceTable')->row($device['id'])->replace($stats_values);
-	$mc->object('cactiStatsTotalsDevices')->set( snmpagent_read('cactiStatsTotalsDevices') );
-	$mc->object('cactiStatsLastUpdate')->set( time() );
+	if ($mc->table('cactiStatsDeviceTable') != 'ERROR') {
+		$mc->table('cactiStatsDeviceTable')->row($device['id'])->replace($stats_values);
+	}
+	$mc->object('cactiStatsTotalsDevices')->set(snmpagent_read('cactiStatsTotalsDevices'));
+	$mc->object('cactiStatsLastUpdate')->set(time());
 }
 
 function snmpagent_data_source_action_bottom($data){
@@ -121,13 +125,13 @@ function snmpagent_data_source_action_bottom($data){
 	$action = $data[0];
 	if ($action == '1') {
 		/* delete data sources */
-		$mc->object('cactiStatsTotalsDataSources')->set( snmpagent_read('cactiStatsTotalsDataSources') );
-		$mc->object('cactiStatsTotalsGraphs')->set( snmpagent_read('cactiStatsTotalsGraphs') );
-		$mc->object('cactiStatsLastUpdate')->set( time() );
+		$mc->object('cactiStatsTotalsDataSources')->set(snmpagent_read('cactiStatsTotalsDataSources'));
+		$mc->object('cactiStatsTotalsGraphs')->set(snmpagent_read('cactiStatsTotalsGraphs'));
+		$mc->object('cactiStatsLastUpdate')->set(time());
 	}elseif ($action == '4') {
 		/* duplicate data sources */
-		$mc->object('cactiStatsTotalsDataSources')->set( snmpagent_read('cactiStatsTotalsDataSources') );
-		$mc->object('cactiStatsLastUpdate')->set( time() );
+		$mc->object('cactiStatsTotalsDataSources')->set(snmpagent_read('cactiStatsTotalsDataSources'));
+		$mc->object('cactiStatsLastUpdate')->set(time());
 	}
 }
 
@@ -136,13 +140,13 @@ function snmpagent_graphs_action_bottom($data){
 	$action = $data[0];
 	if ($action == '1') {
 		/* delete graphs */
-		$mc->object('cactiStatsTotalsDataSources')->set( snmpagent_read('cactiStatsTotalsDataSources') );
-		$mc->object('cactiStatsTotalsGraphs')->set( snmpagent_read('cactiStatsTotalsGraphs') );
-		$mc->object('cactiStatsLastUpdate')->set( time() );
+		$mc->object('cactiStatsTotalsDataSources')->set(snmpagent_read('cactiStatsTotalsDataSources'));
+		$mc->object('cactiStatsTotalsGraphs')->set(snmpagent_read('cactiStatsTotalsGraphs'));
+		$mc->object('cactiStatsLastUpdate')->set(time());
 	}elseif ($action == '3') {
 		/* duplicate graphs */
-		$mc->object('cactiStatsTotalsGraphs')->set( snmpagent_read('cactiStatsTotalsGraphs') );
-		$mc->object('cactiStatsLastUpdate')->set( time() );
+		$mc->object('cactiStatsTotalsGraphs')->set(snmpagent_read('cactiStatsTotalsGraphs'));
+		$mc->object('cactiStatsLastUpdate')->set(time());
 	}
 }
 
