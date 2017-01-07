@@ -209,7 +209,9 @@ function snmpagent_device_action_bottom($data){
 function snmpagent_poller_exiting($poller_index = 1){
 	$mc = new MibCache();
 
-	$poller = $mc->table('cactiApplPollerTable')->row($poller_index)->select();
+	if ($mc->table('cactiApplPollerTable') != 'ERROR') {
+		$poller = $mc->table('cactiApplPollerTable')->row($poller_index)->select();
+	}
 
 	$varbinds = array(
 		'cactiApplPollerIndex'     => $poller_index,
