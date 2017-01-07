@@ -1700,5 +1700,14 @@ function upgrade_to_1_0_0() {
 
 	/* repair system data input methods */
 	repair_system_data_input_methods('upgrade');
+
+	$fields = "t_auto_scale_opts t_auto_scale_log t_scale_log_units t_auto_scale_rigid t_auto_padding t_base_value t_grouping t_unit_value t_unit_exponent_value t_alt_y_grid t_right_axis t_right_axis_label t_right_axis_format t_right_axis_formatter t_left_axis_formatter t_no_gridfit t_unit_length t_tab_width t_dynamic_labels t_force_rules_legend t_legend_position t_legend_direction t_image_format_id t_title t_height t_width t_upper_limit t_lower_limit t_vertical_label t_slope_mode t_auto_scale";
+
+	/* repair install issues */
+	$fields = explode(' ', $fields);
+	foreach($fields as $field) {
+		db_install_execute("UPDATE graph_templates_graph SET $field='' WHERE $field IS NULL");
+		db_install_execute("UPDATE graph_templates_graph SET $field='' WHERE $field='0'");
+	}
 }
 
