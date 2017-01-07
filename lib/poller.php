@@ -522,7 +522,7 @@ function update_resource_cache($poller_id = 1) {
 	$spath = $config['scripts_path'];
 	$rpath = $config['resource_path'];
 
-	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z');
+	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack');
 
 	$paths = array(
 		'base'     => array('recursive' => false, 'path' => $mpath),
