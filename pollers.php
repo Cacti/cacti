@@ -485,7 +485,7 @@ function pollers() {
 			)
 	);
 
-	validate_store_request_vars($filters, 'sess_poller');
+	validate_store_request_vars($filters, 'sess_pollers');
 	/* ================= input validation ================= */
 
 	if (get_request_var('rows') == '-1') {
