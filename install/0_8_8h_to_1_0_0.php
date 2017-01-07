@@ -782,7 +782,7 @@ function upgrade_to_1_0_0() {
 	$data['columns'][] = array('name' => 't_upper_limit', 'type' => 'char(2)', 'default' => '');
 	$data['columns'][] = array('name' => 'upper_limit', 'type' => 'varchar(20)', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 't_lower_limit', 'type' => 'char(2)', 'default' => '');
-	$data['columns'][] = array('name' => 'lower_limit', 'type' => 'varchar(20)', 'NULL' => false,	'default' => 0);
+	$data['columns'][] = array('name' => 'lower_limit', 'type' => 'varchar(20)', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 't_vertical_label', 'type' => 'char(2)', 'default' => '');
 	$data['columns'][] = array('name' => 'vertical_label', 'type' => 'varchar(200)', 'default' => '');
 	$data['columns'][] = array('name' => 't_slope_mode', 'type' => 'char(2)', 'default' => '');
@@ -790,7 +790,7 @@ function upgrade_to_1_0_0() {
 	$data['columns'][] = array('name' => 't_auto_scale', 'type' => 'char(2)', 'default' => '');
 	$data['columns'][] = array('name' => 'auto_scale', 'type' => 'char(2)', 'default' => '');
 	$data['columns'][] = array('name' => 't_auto_scale_opts', 'type' => 'char(2)', 'default' => '');
-	$data['columns'][] = array('name' => 'auto_scale_opts', 'type' => 'tinyint(1)', 'NULL' => false,	'default' => 0);
+	$data['columns'][] = array('name' => 'auto_scale_opts', 'type' => 'tinyint(1)', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 't_auto_scale_log', 'type' => 'char(2)', 'default' => '');
 	$data['columns'][] = array('name' => 'auto_scale_log', 'type' => 'char(2)', 'default' => '');
 	$data['columns'][] = array('name' => 't_scale_log_units', 'type' => 'char(2)', 'default' => '');
@@ -803,8 +803,6 @@ function upgrade_to_1_0_0() {
 	$data['columns'][] = array('name' => 'base_value', 'type' => 'mediumint(8)', 'NULL' => false, 'default' => 0);
 	$data['columns'][] = array('name' => 't_grouping', 'type' => 'char(2)', 'default' => '');
 	$data['columns'][] = array('name' => 'grouping', 'type' => 'char(2)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 't_export', 'type' => 'char(2)', 'default' => '');
-	$data['columns'][] = array('name' => 'export', 'type' => 'char(2)', 'default' => '');
 	$data['columns'][] = array('name' => 't_unit_value', 'type' => 'char(2)', 'default' => '');
 	$data['columns'][] = array('name' => 'unit_value', 'type' => 'varchar(20)', 'default' => '');
 	$data['columns'][] = array('name' => 't_unit_exponent_value', 'type' => 'char(2)', 'default' => '');
@@ -1227,31 +1225,31 @@ function upgrade_to_1_0_0() {
 	db_install_add_column ('graph_templates_item', array('name' => 'shift', 'type' => 'char(2)', 'NULL' => true, 'after' => 'vdef_id'));
 	db_install_add_column ('graph_templates_item', array('name' => 'textalign', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 'consolidation_function_id'));
 
-	db_install_add_column ('graph_templates_graph', array('name' => 't_alt_y_grid', 'type' => 'char(2)',  'default' => '0', 'after' => 'unit_exponent_value'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_alt_y_grid', 'type' => 'char(2)',  'default' => '', 'after' => 'unit_exponent_value'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'alt_y_grid', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_alt_y_grid'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis', 'type' => 'char(2)',  'default' => '0', 'after' => 'alt_y_grid'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis', 'type' => 'char(2)',  'default' => '', 'after' => 'alt_y_grid'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'right_axis', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 't_right_axis'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis_label', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis_label', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'right_axis_label', 'type' => 'varchar(200)', 'NULL' => true, 'after' => 't_right_axis_label'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis_format', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis_label'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis_format', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_label'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'right_axis_format', 'type' => 'mediumint(8)', 'NULL' => true, 'after' => 't_right_axis_format'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis_formatter', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis_format'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis_formatter', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_format'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'right_axis_formatter', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_right_axis_formatter'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_left_axis_formatter', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis_formatter'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_left_axis_formatter', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_formatter'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'left_axis_formatter', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_left_axis_formatter'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_no_gridfit', 'type' => 'char(2)',  'default' => '0', 'after' => 'left_axis_formatter'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_no_gridfit', 'type' => 'char(2)',  'default' => '', 'after' => 'left_axis_formatter'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'no_gridfit', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_no_gridfit'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_unit_length', 'type' => 'char(2)',  'default' => '0', 'after' => 'no_gridfit'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_unit_length', 'type' => 'char(2)',  'default' => '', 'after' => 'no_gridfit'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'unit_length', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_unit_length'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_tab_width', 'type' => 'char(2)',  'default' => '30', 'after' => 'unit_length'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'tab_width', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 't_tab_width'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_dynamic_labels', 'type' => 'char(2)',  'default' => '0', 'after' => 'tab_width'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_tab_width', 'type' => 'char(2)',  'default' => '', 'after' => 'unit_length'));
+	db_install_add_column ('graph_templates_graph', array('name' => 'tab_width', 'type' => 'varchar(20)', 'default' => '30', 'NULL' => true, 'after' => 't_tab_width'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_dynamic_labels', 'type' => 'char(2)',  'default' => '', 'after' => 'tab_width'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'dynamic_labels', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_dynamic_labels'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_force_rules_legend', 'type' => 'char(2)',  'default' => '0', 'after' => 'dynamic_labels'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_force_rules_legend', 'type' => 'char(2)',  'default' => '', 'after' => 'dynamic_labels'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'force_rules_legend', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_force_rules_legend'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_legend_position', 'type' => 'char(2)',  'default' => '0', 'after' => 'force_rules_legend'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_legend_position', 'type' => 'char(2)',  'default' => '', 'after' => 'force_rules_legend'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'legend_position', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_position'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_legend_direction', 'type' => 'char(2)',  'default' => '0', 'after' => 'legend_position'));
+	db_install_add_column ('graph_templates_graph', array('name' => 't_legend_direction', 'type' => 'char(2)',  'default' => '', 'after' => 'legend_position'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'legend_direction', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_direction'));
 		
 	/* create new table sessions */
