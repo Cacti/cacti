@@ -1452,7 +1452,7 @@ $fields_user_user_edit_host = array(
 				),
 			'graph_settings' => array(
 				'value' => '|arg1:graph_settings|',
-				'friendly_name' => __('Maintain Custom Graph Settings'),
+				'friendly_name' => __('Maintain Custom Graph and User Settings'),
 				'form_id' => '|arg1:id|',
 				'default' => 'on'
 				)
