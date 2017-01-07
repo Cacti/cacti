@@ -465,10 +465,10 @@ function utilities_view_tech($php_info = '') {
 			print "<tr class='tableHeader'>\n";
 			print "  <th class='tableSubHeaderColumn'>" . __('Name') . "</th>\n";
 			print "  <th class='tableSubHeaderColumn'>" . __('Engine') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn' style='text-align:right;'>" . __('Rows') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn'>" . __('Avg Row Length') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn'>" . __('Data Length') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn'>" . __('Index Length') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn right'>" . __('Rows') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn right'>" . __('Avg Row Length') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn right'>" . __('Data Length') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn right'>" . __('Index Length') . "</th>\n";
 			print "  <th class='tableSubHeaderColumn'>" . __('Collation') . "</th>\n";
 			print "  <th class='tableSubHeaderColumn'>" . __('Comment') . "</th>\n";
 			print "</tr>\n";
