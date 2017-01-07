@@ -331,6 +331,7 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 
 function api_plugin_db_table_create ($plugin, $table, $data) {
 	global $config;
+
 	include_once($config['library_path'] . '/database.php');
 
 	$result = db_fetch_assoc('SHOW TABLES');
@@ -340,6 +341,7 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 			$tables[] = $t;
 		}
 	}
+
 	if (!in_array($table, $tables)) {
 		$c = 0;
 		$sql = 'CREATE TABLE `' . $table . "` (\n";
@@ -391,7 +393,7 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 		}
 
 		if (db_execute($sql)) {
-			db_execute_prepared("INSERT INTO plugin_db_changes 
+			db_execute_prepared("REPLACE INTO plugin_db_changes 
 				(plugin, `table`, column, method) 
 				VALUES (?, ?, '', 'create')", 
 				array($plugin, $table));
