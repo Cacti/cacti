@@ -192,7 +192,6 @@ function form_save() {
 		}
 
 		if (!empty($graph_template_id)) {
-			cacti_log('Resequncing');
 			resequence_graphs($graph_template_id);
 		}
 	}
