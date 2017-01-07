@@ -970,7 +970,7 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 	$ds_null      = array();
 	$ds_nnull     = array();
 
-	$ds_names = db_fetch_assoc_prepared("SELECT data_source_name, rrd_path
+	$ds_names = db_fetch_assoc_prepared("SELECT data_source_name, rrd_name, rrd_path
 		FROM data_template_rrd AS dtr
 		INNER JOIN poller_item AS pi
 		ON (pi.local_data_id = dtr.local_data_id
