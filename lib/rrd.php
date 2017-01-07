@@ -887,7 +887,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		$rigid = '--rigid' . RRD_NL;
 	}
 
-	if (!empty($graph['unit_value'])) {
+	if ($graph['unit_value'] != '') {
 		$unit_value = '--y-grid=' . cacti_escapeshellarg($graph['unit_value']) . RRD_NL;
 	}
 
@@ -1156,7 +1156,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* get a list of RRAs related to this graph */
 			$rras = get_associated_rras($local_graph_id);
 
-			if (sizeof($rras) > 0) {
+			if (sizeof($rras)) {
 				foreach ($rras as $unchosen_rra) {
 					/* the timespan specified in the RRA "timespan" field may not be accurate */
 					$real_timespan = ($ds_step * $unchosen_rra['steps'] * $unchosen_rra['rows']);
@@ -1174,8 +1174,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 
 			if (!isset($rra)) {
-				$rra['rows']  = 600;
-				$rra['steps'] = 1;
+				$rra['rows']     = 600;
+				$rra['steps']    = 1;
+				$rra['timespan'] = 86400;
 			}
 		}
 	}else{
@@ -1190,6 +1191,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$rra['timespan'] = $rra['rows'] * $rra['step'] * $rra['steps'];
 		}else{
 			$rra['timespan'] = 86400;
+			$rra['steps']    = 1;
+			$rra['rows']     = 600;
 		}
 	}
 
