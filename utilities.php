@@ -1568,7 +1568,7 @@ function utilities_view_poller_cache() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+						<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
 						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
