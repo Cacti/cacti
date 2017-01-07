@@ -64,6 +64,11 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		if (isset($dep_hash_cache[$type])) {
 			/* yes we do. loop through each match for this type */
 			for ($i=0; $i<count($dep_hash_cache[$type]); $i++) {
+				cacti_log('$dep_hash_cache[$type][$i][\'type\']: ' . $dep_hash_cache[$type][$i]['type'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+				cacti_log('$dep_hash_cache[$type][$i][\'version\']: ' . $dep_hash_cache[$type][$i]['version'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+				cacti_log('$hash_version_codes{$dep_hash_cache[$type][$i][\'version\']}: ' . $hash_version_codes{$dep_hash_cache[$type][$i]['version']}, false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+				cacti_log('$dep_hash_cache[$type][$i][\'hash\']: ' . $dep_hash_cache[$type][$i]['hash'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+
 				$hash_array = $xml_array['hash_' . $hash_type_codes{$dep_hash_cache[$type][$i]['type']} . $hash_version_codes{$dep_hash_cache[$type][$i]['version']} . $dep_hash_cache[$type][$i]['hash']];
 
 				switch($type) {
@@ -1472,7 +1477,7 @@ function parse_xml_hash($hash) {
 			return false;
 		}
 	}else{
-		cacti_log(__FUNCTION__ . ' ERROR wrong hash format', false);
+		cacti_log(__FUNCTION__ . ' ERROR wrong hash format for hash: ' . $hash, false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 		return false;
 	}
 
@@ -1520,12 +1525,15 @@ function check_hash_version($hash_version) {
 	}
 
 	if (!isset($current_version_index)) {
+		cacti_log("ERROR: $hash_version Current Cacti Version does not exist!", false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 		raise_message(15); /* error: current cacti version does not exist! */
 		return false;
 	}elseif (!isset($hash_version_index)) {
+		cacti_log("ERROR: $hash_version hash version does not exist!", false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 		raise_message(16); /* error: hash version does not exist! */
 		return false;
 	}elseif ($hash_version_index > $current_version_index) {
+		cacti_log("ERROR: $hash_version hash version if for a newer Cacti!", false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 		raise_message(17); /* error: hash made with a newer version of cacti */
 		return false;
 	}
