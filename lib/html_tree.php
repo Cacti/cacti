@@ -495,7 +495,7 @@ function html_validate_tree_vars() {
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST, 
 			'pageset' => true,
-			'default' => read_user_setting('graph_template_id')
+			'default' => read_user_setting('graph_template_id', '0')
 			),
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT, 
