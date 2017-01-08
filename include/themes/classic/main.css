@@ -552,7 +552,7 @@ label {
 }
 
 .cactiPageHead {
-	background-color: #a9a9a9;
+	background: #a9a9a9 url("./images/cacti_logo.svg") no-repeat scroll right 40% / 400px auto;
 	border-bottom:1px solid #00438c;
 	height:37px;
 	width:100%;
@@ -570,10 +570,9 @@ label {
 }
 
 .cactiConsolePageHeadBackdrop {
-	background: #a9a9a9 url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	padding-bottom:0px;
 	float:right;
-	width:200px;
+	width:0px;
 	height:37px;
 	z-index:-1;
 }
