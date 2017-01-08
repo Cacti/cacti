@@ -102,92 +102,14 @@ function import() {
 
 	print "<form method='post' action='templates_import.php' enctype='multipart/form-data'>\n";
 
+	$display_hideme = false;
+
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box((get_filter_request_var('preview') == 1 ? __('Import Preview Results'):__('Import Results')), '100%', '', '3', 'center', '');
-
-		//print '<pre style="text-align:left;">';print_r($_SESSION['import_debug_info']);print '</pre>';
-		if (get_filter_request_var('preview') == 1) {
-			print "<tr class='odd'><td><p class='textArea'>" . __('Cacti would make the following changes if the Template was imported:') . "</p>";
-		}else{
-			print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items:') . "</p>";
-		}
-
-		while (list($type, $type_array) = each($_SESSION['import_debug_info'])) {
-			print '<p><strong>' . $hash_type_names[$type] . '</strong></p>';
-
-			while (list($index, $vals) = each($type_array)) {
-				if ($vals['result'] == 'success') {
-					$result_text = "<span class='success'>" . __('[success]') . "</span>";
-				}elseif ($vals['result'] == 'fail') {
-					$result_text = "<span class='failed'>" . __('[fail]') . "</span>";
-				}else{
-					$result_text = "<span class='success'>" . __('[' . $vals['result'] . ']') . "</span>";
-				}
-
-				if ($vals['type'] == 'updated') {
-					$type_text = "<span class='updateObject'>" . __('[' . $vals['type'] . ']') . "</span>";
-				}elseif ($vals['type'] == 'new') {
-					$type_text = "<span class='newObject'>" . __('[new]') . "</span>";
-				}else{
-					$type_text = "<span class='deviceUp'>" . __('[' . $vals['type'] . ']') . "</span>";
-				}
-
-				print "<span class='monoSpace'>$result_text " . htmlspecialchars($vals['title']) . " $type_text</span><br>\n";
-
-				if (isset($vals['orphans'])) {
-					print '<ul class="monoSpace">';
-					foreach($vals['orphans'] as $orphan) {
-						print "<li>" . htmlspecialchars($orphan) . "</li>";
-					}
-					print '</ul>';
-				}
-
-				if (isset($vals['new_items'])) {
-					print '<ul class="monoSpace">';
-					foreach($vals['new_items'] as $item) {
-						print "<li>" . htmlspecialchars($item) . "</li>";
-					}
-					print '</ul>';
-				}
-
-				if (isset($vals['differences'])) {
-					print '<ul class="monoSpace">';
-					foreach($vals['differences'] as $diff) {
-						print "<li>" . htmlspecialchars($diff) . "</li>";
-					}
-					print '</ul>';
-				}
-
-				if (get_request_var('preview') == 0) {
-					$dep_text = '';
-					$there_are_dep_errors = false;
-					if ((isset($vals['dep'])) && (sizeof($vals['dep']) > 0)) {
-						while (list($dep_hash, $dep_status) = each($vals['dep'])) {
-							if ($dep_status == 'met') {
-								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . "</span>";
-							}else{
-								$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . "</span>";
-								$there_are_dep_errors = true;
-							}
-
-							$dep_text .= "<span class='monoSpace'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . "</span><br>\n";
-						}
-					}
-
-					/* only print out dependency details if they contain errors; otherwise it would get too long */
-					if ($there_are_dep_errors == true) {
-						print $dep_text;
-					}
-				}else{
-				}
-			}
-		}
-
-		print '</td></tr>';
-
-		html_end_box();
+		import_display_results($_SESSION['import_debug_info'], array(), true, get_filter_request_var('preview'));
 
 		kill_session_var('import_debug_info');
+
+		$display_hideme = true;
 	}
 
 	html_start_box(__('Import Templates'), '100%', '', '3', 'center', '');
@@ -199,10 +121,12 @@ function import() {
 
 	$fields_template_import['import_data_source_profile']['default'] = $default_profile;
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => $fields_template_import
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => $fields_template_import
+		)
+	);
 
 	html_end_box();
 
@@ -213,7 +137,7 @@ function import() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		<?php if (get_request_var('preview') == 1) { ?>
+		<?php if ($display_hideme) { ?>
 		$('#templates_import1').find('.cactiTableButton > span').html('<a href="#" id="hideme"><?php print __('Hide');?></a>');
 		$('#hideme').click(function() {
 			$('#templates_import1').hide();
