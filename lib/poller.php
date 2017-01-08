@@ -788,6 +788,9 @@ function replicate_out($remote_poller_id = 1) {
 	}
 
 	// Start Push Replication
+	$data = db_fetch_assoc('SELECT * FROM settings WHERE name NOT LIKE "%_lastrun%"');
+	replicate_out_table($remote_db_cnn_id, $data, 'settings', $remote_poller_id);
+
 	$data = db_fetch_assoc('SELECT * FROM data_input');
 	replicate_out_table($remote_db_cnn_id, $data, 'data_input', $remote_poller_id);
 
@@ -942,10 +945,15 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 		$colcnt    = 0;
 		$rows_done = 0;
 		$columns   = array_keys($data[0]);
+		$skipcols  = array();
 
-		foreach($columns as $c) {
-			$prefix .= ($colcnt > 0 ? ', ':'') . $c;
-			$colcnt++;
+		foreach($columns as $index => $c) {
+			if (!db_column_exists($table, $c, false, $conn)) {
+				$skipcols[$index] = $c;
+			}else{
+				$prefix .= ($colcnt > 0 ? ', ':'') . $c;
+				$colcnt++;
+			}
 		}
 		$prefix .= ') VALUES ';
 
@@ -954,8 +962,10 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 			$colcnt  = 0;
 			$sql_row = '(';
 			foreach($row as $col => $value) {
-				$sql_row .= ($colcnt > 0 ? ', ':'') . db_qstr($value);
-				$colcnt++;
+				if (array_search($col, $skipcols) === false) {
+					$sql_row .= ($colcnt > 0 ? ', ':'') . db_qstr($value);
+					$colcnt++;
+				}
 			}
 			$sql_row .= ')';
 			$sql     .= ($rowcnt > 0 ? ', ':'') . $sql_row;
