@@ -130,19 +130,7 @@ function find_best_path($binary_name) {
 	}
 }
 
-function get_public_key() {
-$public_key = <<<EOD
------BEGIN PUBLIC KEY-----
-MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMbPpuQfwmg93oOGjdLKrAqwEPwvvNjC
-bk2YZiDglh8lQJxNQI9glG1Z/ptvqprFO3iSx9rTP4vzZ0Ek2+EMYTMCAwEAAQ==
------END PUBLIC KEY-----
-EOD;
-
-    return $public_key;
-}
-
-
-function plugin_setup_get_templates() {
+function install_setup_get_templates() {
 	global $config;
 
 	$templates = array(
@@ -171,105 +159,8 @@ function plugin_setup_get_templates() {
 		$data['info']['filename'] = $xmlfile;
 		$info[] = $data['info'];
 	}
+
 	return $info;
-}
-
-function plugin_setup_install_template($xmlfile, $opt = 0) {
-	global $config;
-	if ($opt) {
-		$path = $config['base_path'] . '/install/templates/';
-	} else {
-		$path = $config['base_path'] . '/install/templates/';
-	}
-
-	/* set new timeout and memory settings */
-	ini_set("max_execution_time", "40");
-	ini_set("memory_limit", "64M");
-
-	$public_key = get_public_key();
-
-	$filename = "compress.zlib://$path/$xmlfile";
-	$binary_signature = "";
-
-	$f = fopen($filename, 'r');
-	$xml = "";
-	while (!feof($f)) {
-		$x = fgets($f);
-		if (strpos($x, "<signature>") !== FALSE) {
-			$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)));
-			$x = "   <signature></signature>\n";
-cacti_log('Got signature');
-		}
-		$xml .= "$x";
-	}
-	fclose($f); 
-
-	// Verify Signature
-	$ok = openssl_verify($xml, $binary_signature, $public_key);
-	if ($ok == 1) {
-		cacti_log('File is signed correctly');
-		//print "	File is signed correctly\n";
-	} elseif ($ok == 0) {
-		cacti_log('ERROR: File has been tampered with');
-		//print "	ERROR: File has been tampered with\n";
-		//exit;
-		return;
-	} else {
-		cacti_log('ERROR: Could not verify signature');
-		//print "	ERROR: Could not verify signature!\n";
-		//exit;
-		return;
-	}
-
-	//print "Loading Plugin Information from package\n";
-	$xmlget = simplexml_load_string($xml); 
-	$data = to_array($xmlget);
-
-	$plugin = $data['info']['name'];
-
-	//print "Verifying each files signature\n";
-	if (isset($data['files']['file']['data'])) {
-		$data['files']['file'] = array($data['files']['file']);
-	}
-
-	foreach ($data['files']['file'] as $f) {
-		$binary_signature = base64_decode($f['filesignature']);
-		$fdata = base64_decode($f['data']);
-		$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
-		if ($ok == 1) {
-			cacti_log("File OK : " . $f['name']);
-			//print "	File OK : " . $f['name'] . "\n";
-		} else {
-			cacti_log("ERROR: Could not verify signature for file: " . $f['name']);
-			//print "	ERROR: Could not verify signature for file: " . $f['name'] . "\n";
-			//exit;
-			return;
-		}
-	}
-	include_once($config['base_path'] . "/lib/import.php");
-
-	$p = $config['base_path'];
-	$error = false;
-	//print "Writing Files\n";
-	foreach ($data['files']['file'] as $f) {
-		$fdata = base64_decode($f['data']);
-		$name = $f['name'];
-		if (substr($name, 0, 8) == 'scripts/' || substr($name, 0, 9) == 'resource/') {
-			$filename = "$p/$name";
-			//print "	Writing $filename\n";
-			$file = fopen($filename,'wb');
-			fwrite($file ,$fdata, strlen($fdata));
-			fclose($file);
-			clearstatcache();
-			if (!file_exists($filename)) {
-				//print "	Unable to create directory: $filename\n";
-			}
-		} else {
-			cacti_log("Importing XML Data");
-			$debug_data = import_xml_data($fdata, false, 1);
-		}
-	}
-	//print "File creation complete\n";
 }
 
 function to_array ($data) {

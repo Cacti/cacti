@@ -33,7 +33,6 @@ $no_http_headers = true;
 
 include(dirname(__FILE__).'/../include/global.php');
 include_once($config['base_path'] . '/lib/import.php');
-include_once($config['base_path'] . '/lib/utility.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -43,9 +42,9 @@ global $preview_only;
 
 if (sizeof($parms)) {
 	$filename       = '';
-	$with_profile   = false;
+	$use_profile    = false;
 	$remove_orphans = false;
-	$preview_only   = 0;
+	$preview_only   = false;
 	$profile_id     = '';
 
 	foreach($parms as $parameter) {
@@ -61,20 +60,20 @@ if (sizeof($parms)) {
 				$filename = trim($value);
 
 				break;
-			case '--with-profile':
-				$with_profile = true;
+			case '--use-profile':
+				$use_profile = true;
 
 				break;
 			case '--remove-orphans':
 				$remove_orphans = true;
 
 				break;
-			case '--preview':
-				$preview_only = 1;
-
-				break;
 			case '--profile-id':
 				$profile_id = trim($value);
+
+				break;
+			case '--preview':
+				$preview_only = true;
 
 				break;
 			case '--help':
@@ -93,37 +92,17 @@ if (sizeof($parms)) {
 		}
 	}
 	
-	if($profile_id > 0) {
-		if ($with_profile) {
-			echo "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'\n";
-		} else {
-			$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($profile_id));
-
-			if (empty($id)) {
-				echo "WARNING: Data Source Profile ID $profile_id not found. Using System Default\n";
-				$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
-			}
-		}
-	}else{
-		$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
-	}
-
-	if (empty($id)) {
-		echo "FATAL: No valid Data Source Profiles found on the system.  Exiting!\n";
-		exit(1);
-	}
-
-	if ($filename != '') {
+	if ($filename != '' && is_readable($filename)) {
 		if(file_exists($filename) && is_readable($filename)) {
 			$fp = fopen($filename,'r');
-			$xml_data = fread($fp,filesize($filename));
+			$data = fread($fp,filesize($filename));
 			fclose($fp);
 
-			echo 'Read ' . strlen($xml_data) . " bytes of XML data\n";
+			echo 'Read ' . strlen($data) . " bytes of Package data\n";
 
-			$debug_data = import_xml_data($xml_data, false, $id, $remove_orphans);
+			list($debug_data, $filestatus) = import_package($filename, $profile_id, $remove_orphans, $preview_only);
 
-			import_display_results($debug_data, false, $preview_only);
+			import_display_results($debug_data, $filestatus, false, $preview_only);
 		} else {
 			echo "ERROR: file $filename is not readable, or does not exist\n\n";
 			exit(1);
@@ -148,10 +127,10 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	echo "\nusage: import_template.php --filename=[filename] [--with-profile | --profile-id=N]\n\n";
-	echo "A utility to allow Cacti Templates to be imported from the command line.\n\n";
+	echo "\nusage: import_package.php --filename=[filename] [--with-profile] [--profile-id=N\n\n";
+	echo "A utility to allow signed Cacti Packages to be imported from the command line.\n\n";
 	echo "Required:\n";
-	echo "    --filename        The name of the XML file to import\n\n";
+	echo "    --filename              The name of the gziped package file to import\n\n";
 	echo "Optional:\n";
 	echo "    --preview         Preview the Template Import, do not import\n";
 	echo "    --with-profile    Use the default system Data Source Profile\n";

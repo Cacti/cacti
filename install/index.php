@@ -178,6 +178,7 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 if ($step == '7') {
 	include_once('../lib/data_query.php');
 	include_once('../lib/utility.php');
+	include_once('../lib/import.php');
 	
 	/* look for templates that have been checked for install */
 	if (get_request_var('install_type') == 1) {
@@ -187,11 +188,14 @@ if ($step == '7') {
 				$install[] = substr($post, 4);
 			}
 		}
+
+		$path = $config['base_path'] . '/install/templates/';
+
 		/* install templates */
-		$templates = plugin_setup_get_templates(1);
+		$templates = install_setup_get_templates(1);
 		if (!empty($install)) {
 			foreach ($install as $i) {
-				plugin_setup_install_template($templates[$i]['filename'], 1);
+				import_package($path . $templates[$i]['filename'], 1, false);
 			}
 		}
 
@@ -214,7 +218,7 @@ if ($step == '7') {
 
 		$host_template_id = db_fetch_cell_prepared('SELECT id FROM host_template WHERE hash = ?', array($hash));
 
-		cacti_log('Host Template for First Cacti Device is ' . $host_template_id);
+		cacti_log('Device Template for First Cacti Device is ' . $host_template_id);
 
 		// Add the host
 		if (!empty($host_template_id)) {
