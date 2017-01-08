@@ -28,6 +28,7 @@ include_once('../include/global.php');
 include_once('../lib/api_data_source.php');
 include_once('../lib/api_device.php');
 include_once('../lib/utility.php');
+include_once('../lib/import.php');
 include_once('./functions.php');
 
 set_default_action();
@@ -942,7 +943,7 @@ $enabled = '1';
 						print __('Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press \'Finish\' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes.') . '<br><br>';
 						print '<form name="chk" method="post" action="start.php">';
 
-						$templates = plugin_setup_get_templates();
+						$templates = install_setup_get_templates();
 
 						html_start_box('<strong>' . __('Templates') . '</strong>', '100%', '3', 'center', '', '');
 						html_header_checkbox( array( __('Name'), __('Description'), __('Author'), __('Homepage') ) );
