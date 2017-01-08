@@ -1125,6 +1125,10 @@ legend {
 	padding: 0px 5px 0px 5px;
 }
 
+.cactiTableButton span a {
+	color: snow;
+}
+
 .cactiDebugTable {
 	width: 100%;
 }
@@ -1194,7 +1198,7 @@ th.sortable {
 	line-height:10px;
 }
 
-.tableHeader th {
+.tableHeader th, .tableHeader td {
 	color: snow;
 	cursor: pointer;
 	vertical-align:middle;
@@ -1336,7 +1340,7 @@ th.sortable {
 }
 
 .textArea {
-	font-size: 12px;
+	font-size: 11px;
 	background-color:#f5f5f5;
 	color: #000000;
 }
