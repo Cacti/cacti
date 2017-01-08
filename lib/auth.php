@@ -1390,7 +1390,13 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 
 	if (sizeof($templates)) {
 		foreach($templates as $key => $t) {
-			$dqg = db_fetch_assoc_prepared('SELECT id, name FROM snmp_query_graph WHERE graph_template_id = ? ORDER BY name', array($t['id']));
+			$dqg = db_fetch_assoc_prepared("SELECT id, name 
+				FROM snmp_query_graph AS sqg
+				INNER JOIN graph_local AS gl
+				ON gl.snmp_query_graph_id=sqg.id
+				WHERE graph_template_id = ? 
+				" . ($sql_where != '' ? " AND ":"") . "$sql_where
+				ORDER BY name", array($t['id']));
 
 			if (sizeof($dqg)) {
 				unset($templates[$key]);

@@ -307,11 +307,10 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					$snmp_query_graph_id = $form_id2;
 					$num_graphs = sizeof($form_array3);
 
-					$snmp_query = db_fetch_row_prepared('SELECT
-						snmp_query.name,
-						snmp_query.xml_path
+					$snmp_query = db_fetch_row_prepared('SELECT snmp_query.name
 						FROM snmp_query
-						WHERE snmp_query.id = ?', array($snmp_query_id));
+						WHERE snmp_query.id = ?', 
+						array($snmp_query_id));
 
 					$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id FROM snmp_query_graph WHERE id = ?', array($snmp_query_graph_id));
 				}
@@ -520,12 +519,12 @@ function graphs() {
 
 						$snmp_queries = db_fetch_assoc_prepared('SELECT
 							snmp_query.id,
-							snmp_query.name,
-							snmp_query.xml_path
+							snmp_query.name
 							FROM (snmp_query, host_snmp_query)
 							WHERE host_snmp_query.snmp_query_id = snmp_query.id
 							AND host_snmp_query.host_id = ?
-							ORDER BY snmp_query.name', array($host['id']));
+							ORDER BY snmp_query.name', 
+							array($host['id']));
 
 						if (sizeof($snmp_queries) > 0) {
 						foreach ($snmp_queries as $query) {
@@ -599,7 +598,7 @@ function graphs() {
 		}
 	}
 
-	$script = "<script type='text/javascript'>; var created_graphs = new Array()\n";
+	$script = "<script type='text/javascript'>\nvar created_graphs = new Array();\n";
 
 	if (get_request_var('graph_type') < 0) {
 		print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __('Graph Templates') . "</span></div><div class='cactiTableButton'><span></span></div></div></div>\n";
@@ -685,8 +684,7 @@ function graphs() {
 	if (get_request_var('graph_type') != -1 && !isempty_request_var('host_id')) {
 		$snmp_queries = db_fetch_assoc('SELECT
 			snmp_query.id,
-			snmp_query.name,
-			snmp_query.xml_path
+			snmp_query.name
 			FROM (snmp_query,host_snmp_query)
 			WHERE host_snmp_query.snmp_query_id=snmp_query.id
 			AND host_snmp_query.host_id=' . $host['id'] .
@@ -739,18 +737,12 @@ function graphs() {
 
 				if (sizeof($snmp_query_graphs)) {
 					foreach ($snmp_query_graphs as $snmp_query_graph) {
-						$created_graphs = db_fetch_assoc_prepared("SELECT DISTINCT
-							dl.snmp_index
-							FROM data_local AS dl
-							INNER JOIN data_template_data AS dtd
-							ON dl.id=dtd.local_data_id
-							LEFT JOIN data_input_data AS did
-							ON dtd.id=did.data_template_data_id
-							LEFT JOIN data_input_fields AS dif 
-							ON did.data_input_field_id=dif.id
-							WHERE dif.type_code='output_type'
-							AND did.value = ?
-							AND dl.host_id = ?", array($snmp_query_graph['id'], $host['id']));
+						$created_graphs = db_fetch_assoc_prepared('SELECT DISTINCT
+							gl.snmp_index
+							FROM graph_local AS gl
+							WHERE gl.snmp_query_graph_id = ?
+							AND gl.host_id = ?', 
+							array($snmp_query_graph['id'], $host['id']));
 
 						$script .= 'created_graphs[' . $snmp_query_graph['id'] . '] = new Array(';
 

@@ -318,51 +318,20 @@ function get_current_graph_template_name($local_graph_id) {
 		WHERE id = ?', 
 		array($local_graph_id));
 
-	$task_items = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT task_item_id) AS items 
-		FROM graph_templates_item 
-		WHERE local_graph_id = ?', 
-		array($local_graph_id));
-
-	if ($task_items != '') {
-		$local_data_id = db_fetch_cell("SELECT DISTINCT local_data_id 
-			FROM data_template_rrd 
-			WHERE id IN($task_items)");
+	if ($graph_local['snmp_query_id'] > 0) {
+		return db_fetch_cell_prepared('SELECT sqg.name 
+			FROM snmp_query_graph AS sqg 
+			INNER JOIN graph_local AS gl 
+			ON gl.snmp_query_graph_id=sqg.id 
+			WHERE gl.id = ?', 
+			array($local_graph_id));
 	}else{
-		$local_data_id = 0;
-	}
-
-	if ($local_data_id > 0) {
-		$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id
-			FROM data_template_data
-			WHERE local_data_id = ?', 
-			array($local_data_id));
-
-		if (sizeof($data)) {
-			/* get each INPUT field for this data input source */
-			$output_type_field_id = db_fetch_cell_prepared('SELECT id
-				FROM data_input_fields
-				WHERE data_input_id = ?
-				AND input_output="in"
-				AND type_code="output_type"
-				ORDER BY sequence',
-				array($data['data_input_id']));
-
-			$snmp_query_graph_id = db_fetch_cell_prepared('SELECT value
-				FROM data_input_data
-				WHERE data_template_data_id = ?
-				AND data_input_field_id = ?',
-				array($data['id'], $output_type_field_id));
-		}else{
-			$snmp_query_graph_id = 0;
-		}
-
-		if (!empty($snmp_query_graph_id)) {
-			return db_fetch_cell_prepared('SELECT name FROM snmp_query_graph WHERE id = ?', array($snmp_query_graph_id));
-		}else{
-			return db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?' , array($graph_local['graph_template_id']));
-		}
-	}else{
-		return db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?' , array($graph_local['graph_template_id']));
+		return db_fetch_cell_prepared('SELECT gt.name
+			FROM graph_templates AS gt
+			INNER JOIN graph_local AS gl
+			ON gl.graph_template_id=gt.id
+			WHERE gl.id = ?',
+			array($local_graph_id));
 	}
 }
 
@@ -1516,7 +1485,14 @@ function graph_management() {
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
-							$templates = get_allowed_graph_templates_normalized();
+							if (get_request_var('host_id') == 0) {
+								$templates = get_allowed_graph_templates_normalized('gl.host_id=0');
+							}elseif (get_request_var('host_id') > 0) {
+								$templates = get_allowed_graph_templates_normalized('gl.host_id=' . get_filter_request_var('host_id'));
+							}else{
+								$templates = get_allowed_graph_templates_normalized();
+							}
+
 							if (sizeof($templates) > 0) {
 								foreach ($templates as $template) {
 									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($template['name']), 40) . "</option>\n";
