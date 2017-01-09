@@ -157,9 +157,9 @@ function form_save() {
 	parse_validate_graph_template_id('graph_template_id');
 
 	if ((isset_request_var('save_component_graph_new')) && (!isempty_request_var('graph_template_id'))) {
-		$save['id'] = get_nfilter_request_var('local_graph_id');
+		$save['id']                = get_nfilter_request_var('local_graph_id');
 		$save['graph_template_id'] = get_nfilter_request_var('graph_template_id');
-		$save['host_id'] = get_nfilter_request_var('host_id');
+		$save['host_id']           = get_nfilter_request_var('host_id');
 
 		$local_graph_id = sql_save($save, 'graph_local');
 
@@ -174,57 +174,43 @@ function form_save() {
 			set_request_var('host_id', '0');
 		}
 
-		$save1['id']                     = get_nfilter_request_var('local_graph_id');
-		$save1['host_id']                = get_request_var('host_id');
-		$save1['graph_template_id']      = get_nfilter_request_var('graph_template_id');
+		$save1['id']                   = get_nfilter_request_var('local_graph_id');
+		$save1['host_id']              = get_request_var('host_id');
+		$save1['graph_template_id']    = get_nfilter_request_var('graph_template_id');
 
-		$save2['id']                     = get_nfilter_request_var('graph_template_graph_id');
+		$save2['id']                   = get_nfilter_request_var('graph_template_graph_id');
 		$save2['local_graph_template_graph_id'] = get_nfilter_request_var('local_graph_template_graph_id');
-		$save2['graph_template_id']      = get_nfilter_request_var('graph_template_id');
-		$save2['image_format_id']        = form_input_validate(get_nfilter_request_var('image_format_id'), 'image_format_id', '^[0-9]+$', true, 3);
-		$save2['title']                  = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
-		$save2['height']                 = form_input_validate(get_nfilter_request_var('height'), 'height', '^[0-9]+$', false, 3);
-		$save2['width']                  = form_input_validate(get_nfilter_request_var('width'), 'width', '^[0-9]+$', false, 3);
-		$save2['upper_limit']            = form_input_validate(get_nfilter_request_var('upper_limit'), 'upper_limit', "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((strlen(get_nfilter_request_var('upper_limit')) === 0) ? true : false), 3);
-		$save2['lower_limit']            = form_input_validate(get_nfilter_request_var('lower_limit'), 'lower_limit', "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((strlen(get_nfilter_request_var('lower_limit')) === 0) ? true : false), 3);
-		$save2['vertical_label']         = form_input_validate(get_nfilter_request_var('vertical_label'), 'vertical_label', '', true, 3);
-		$save2['slope_mode']             = form_input_validate((isset_request_var('slope_mode') ? get_nfilter_request_var('slope_mode') : ''), 'slope_mode', '', true, 3);
-		$save2['auto_scale']             = form_input_validate((isset_request_var('auto_scale') ? get_nfilter_request_var('auto_scale') : ''), 'auto_scale', '', true, 3);
-		$save2['auto_scale_opts']        = form_input_validate(get_nfilter_request_var('auto_scale_opts'), 'auto_scale_opts', '', true, 3);
-		$save2['auto_scale_log']         = form_input_validate((isset_request_var('auto_scale_log') ? get_nfilter_request_var('auto_scale_log') : ''), 'auto_scale_log', '', true, 3);
-		$save2['scale_log_units']        = form_input_validate((isset_request_var('scale_log_units') ? get_nfilter_request_var('scale_log_units') : ''), 'scale_log_units', '', true, 3);
-		$save2['auto_scale_rigid']       = form_input_validate((isset_request_var('auto_scale_rigid') ? get_nfilter_request_var('auto_scale_rigid') : ''), 'auto_scale_rigid', '', true, 3);
-		$save2['auto_padding']           = form_input_validate((isset_request_var('auto_padding') ? get_nfilter_request_var('auto_padding') : ''), 'auto_padding', '', true, 3);
-		$save2['base_value']             = form_input_validate(get_nfilter_request_var('base_value'), 'base_value', '^[0-9]+$', false, 3);
-		$save2['export']                 = form_input_validate((isset_request_var('export') ? get_nfilter_request_var('export') : ''), 'export', '', true, 3);
-		$save2['unit_value']             = form_input_validate(get_nfilter_request_var('unit_value'), 'unit_value', '', true, 3);
-		$save2['unit_exponent_value']    = form_input_validate(get_nfilter_request_var('unit_exponent_value'), 'unit_exponent_value', '^-?[0-9]+$', true, 3);
-		$save2['t_alt_y_grid']           = form_input_validate((isset_request_var('t_alt_y_grid') ? get_nfilter_request_var('t_alt_y_grid') : ''), 't_alt_y_grid', '', true, 3);
-		$save2['alt_y_grid']             = form_input_validate((isset_request_var('alt_y_grid') ? get_nfilter_request_var('alt_y_grid') : ''), 'alt_y_grid', '', true, 3);
-		$save2['t_right_axis']           = form_input_validate((isset_request_var('t_right_axis') ? get_nfilter_request_var('t_right_axis') : ''), 't_right_axis', '', true, 3);
-		$save2['right_axis']             = form_input_validate((isset_request_var('right_axis') ? get_nfilter_request_var('right_axis') : ''), 'right_axis', '^[.0-9]+:-?[.0-9]+$', true, 3);
-		$save2['t_right_axis_label']     = form_input_validate((isset_request_var('t_right_axis_label') ? get_nfilter_request_var('t_right_axis_label') : ''), 't_right_axis_label', '', true, 3);
-		$save2['right_axis_label']       = form_input_validate((isset_request_var('right_axis_label') ? get_nfilter_request_var('right_axis_label') : ''), 'right_axis_label', '', true, 3);
-		$save2['t_right_axis_format']    = form_input_validate((isset_request_var('t_right_axis_format') ? get_nfilter_request_var('t_right_axis_format') : ''), 't_right_axis_format', '', true, 3);
-		$save2['right_axis_format']      = form_input_validate((isset_request_var('right_axis_format') ? get_nfilter_request_var('right_axis_format') : ''), 'right_axis_format', '^[0-9]+$', true, 3);
-		$save2['t_no_gridfit']           = form_input_validate((isset_request_var('t_no_gridfit') ? get_nfilter_request_var('t_no_gridfit') : ''), 't_no_gridfit', '', true, 3);
-		$save2['no_gridfit']             = form_input_validate((isset_request_var('no_gridfit') ? get_nfilter_request_var('no_gridfit') : ''), 'no_gridfit', '', true, 3);
-		$save2['t_unit_length']          = form_input_validate((isset_request_var('t_unit_length') ? get_nfilter_request_var('t_unit_length') : ''), 't_unit_length', '', true, 3);
-		$save2['unit_length']            = form_input_validate((isset_request_var('unit_length') ? get_nfilter_request_var('unit_length') : ''), 'unit_length', '^[0-9]+$', true, 3);
-		$save2['t_tab_width']            = form_input_validate((isset_request_var('t_tab_width') ? get_nfilter_request_var('t_tab_width') : ''), 't_tab_width', '', true, 3);
-		$save2['tab_width']              = form_input_validate((isset_request_var('tab_width') ? get_nfilter_request_var('tab_width') : ''), 'tab_width', '^[0-9]*$', true, 3);
-		$save2['t_dynamic_labels']       = form_input_validate((isset_request_var('t_dynamic_labels') ? get_nfilter_request_var('t_dynamic_labels') : ''), 't_dynamic_labels', '', true, 3);
-		$save2['dynamic_labels']         = form_input_validate((isset_request_var('dynamic_labels') ? get_nfilter_request_var('dynamic_labels') : ''), 'dynamic_labels', '', true, 3);
-		$save2['t_force_rules_legend']   = form_input_validate((isset_request_var('t_force_rules_legend') ? get_nfilter_request_var('t_force_rules_legend') : ''), 't_force_rules_legend', '', true, 3);
-		$save2['force_rules_legend']     = form_input_validate((isset_request_var('force_rules_legend') ? get_nfilter_request_var('force_rules_legend') : ''), 'force_rules_legend', '', true, 3);
-		$save2['t_legend_position']      = form_input_validate((isset_request_var('t_legend_position') ? get_nfilter_request_var('t_legend_position') : ''), 't_legend_position', '', true, 3);
-		$save2['legend_position']        = form_input_validate((isset_request_var('legend_position') ? get_nfilter_request_var('legend_position') : ''), 'legend_position', '', true, 3);
-		$save2['t_legend_direction']     = form_input_validate((isset_request_var('t_legend_direction') ? get_nfilter_request_var('t_legend_direction') : ''), 't_legend_direction', '', true, 3);
-		$save2['legend_direction']       = form_input_validate((isset_request_var('legend_direction') ? get_nfilter_request_var('legend_direction') : ''), 'legend_direction', '', true, 3);
-		$save2['t_right_axis_formatter'] = form_input_validate((isset_request_var('t_right_axis_formatter') ? get_nfilter_request_var('t_right_axis_formatter') : ''), 't_right_axis_formatter', '', true, 3);
-		$save2['right_axis_formatter']   = form_input_validate((isset_request_var('right_axis_formatter') ? get_nfilter_request_var('right_axis_formatter') : ''), 'right_axis_formatter', '', true, 3);
-		$save2['t_left_axis_formatter']  = form_input_validate((isset_request_var('t_left_axis_formatter') ? get_nfilter_request_var('t_left_axis_formatter') : ''), 't_left_axis_formatter', '', true, 3);
-		$save2['left_axis_formatter']    = form_input_validate((isset_request_var('left_axis_formatter') ? get_nfilter_request_var('left_axis_formatter') : ''), 'left_axis_formatter', '', true, 3);
+		$save2['graph_template_id']    = get_nfilter_request_var('graph_template_id');
+		$save2['image_format_id']      = form_input_validate(get_nfilter_request_var('image_format_id'), 'image_format_id', '^[0-9]+$', true, 3);
+		$save2['title']                = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
+		$save2['height']               = form_input_validate(get_nfilter_request_var('height'), 'height', '^[0-9]+$', false, 3);
+		$save2['width']                = form_input_validate(get_nfilter_request_var('width'), 'width', '^[0-9]+$', false, 3);
+		$save2['upper_limit']          = form_input_validate(get_nfilter_request_var('upper_limit'), 'upper_limit', "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((strlen(get_nfilter_request_var('upper_limit')) === 0) ? true : false), 3);
+		$save2['lower_limit']          = form_input_validate(get_nfilter_request_var('lower_limit'), 'lower_limit', "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((strlen(get_nfilter_request_var('lower_limit')) === 0) ? true : false), 3);
+		$save2['vertical_label']       = form_input_validate(get_nfilter_request_var('vertical_label'), 'vertical_label', '', true, 3);
+		$save2['slope_mode']           = form_input_validate((isset_request_var('slope_mode') ? get_nfilter_request_var('slope_mode') : ''), 'slope_mode', '', true, 3);
+		$save2['auto_scale']           = form_input_validate((isset_request_var('auto_scale') ? get_nfilter_request_var('auto_scale') : ''), 'auto_scale', '', true, 3);
+		$save2['auto_scale_opts']      = form_input_validate(get_nfilter_request_var('auto_scale_opts'), 'auto_scale_opts', '', true, 3);
+		$save2['auto_scale_log']       = form_input_validate((isset_request_var('auto_scale_log') ? get_nfilter_request_var('auto_scale_log') : ''), 'auto_scale_log', '', true, 3);
+		$save2['scale_log_units']      = form_input_validate((isset_request_var('scale_log_units') ? get_nfilter_request_var('scale_log_units') : ''), 'scale_log_units', '', true, 3);
+		$save2['auto_scale_rigid']     = form_input_validate((isset_request_var('auto_scale_rigid') ? get_nfilter_request_var('auto_scale_rigid') : ''), 'auto_scale_rigid', '', true, 3);
+		$save2['auto_padding']         = form_input_validate((isset_request_var('auto_padding') ? get_nfilter_request_var('auto_padding') : ''), 'auto_padding', '', true, 3);
+		$save2['base_value']           = form_input_validate(get_nfilter_request_var('base_value'), 'base_value', '^[0-9]+$', false, 3);
+		$save2['unit_value']           = form_input_validate(get_nfilter_request_var('unit_value'), 'unit_value', '', true, 3);
+		$save2['unit_exponent_value']  = form_input_validate(get_nfilter_request_var('unit_exponent_value'), 'unit_exponent_value', '^-?[0-9]+$', true, 3);
+		$save2['alt_y_grid']           = form_input_validate((isset_request_var('alt_y_grid') ? get_nfilter_request_var('alt_y_grid') : ''), 'alt_y_grid', '', true, 3);
+		$save2['right_axis']           = form_input_validate((isset_request_var('right_axis') ? get_nfilter_request_var('right_axis') : ''), 'right_axis', '^[.0-9]+:-?[.0-9]+$', true, 3);
+		$save2['right_axis_label']     = form_input_validate((isset_request_var('right_axis_label') ? get_nfilter_request_var('right_axis_label') : ''), 'right_axis_label', '', true, 3);
+		$save2['right_axis_format']    = form_input_validate((isset_request_var('right_axis_format') ? get_nfilter_request_var('right_axis_format') : ''), 'right_axis_format', '^[0-9]+$', true, 3);
+		$save2['no_gridfit']           = form_input_validate((isset_request_var('no_gridfit') ? get_nfilter_request_var('no_gridfit') : ''), 'no_gridfit', '', true, 3);
+		$save2['unit_length']          = form_input_validate((isset_request_var('unit_length') ? get_nfilter_request_var('unit_length') : ''), 'unit_length', '^[0-9]+$', true, 3);
+		$save2['tab_width']            = form_input_validate((isset_request_var('tab_width') ? get_nfilter_request_var('tab_width') : ''), 'tab_width', '^[0-9]*$', true, 3);
+		$save2['dynamic_labels']       = form_input_validate((isset_request_var('dynamic_labels') ? get_nfilter_request_var('dynamic_labels') : ''), 'dynamic_labels', '', true, 3);
+		$save2['force_rules_legend']   = form_input_validate((isset_request_var('force_rules_legend') ? get_nfilter_request_var('force_rules_legend') : ''), 'force_rules_legend', '', true, 3);
+		$save2['legend_position']      = form_input_validate((isset_request_var('legend_position') ? get_nfilter_request_var('legend_position') : ''), 'legend_position', '', true, 3);
+		$save2['legend_direction']     = form_input_validate((isset_request_var('legend_direction') ? get_nfilter_request_var('legend_direction') : ''), 'legend_direction', '', true, 3);
+		$save2['right_axis_formatter'] = form_input_validate((isset_request_var('right_axis_formatter') ? get_nfilter_request_var('right_axis_formatter') : ''), 'right_axis_formatter', '', true, 3);
+		$save2['left_axis_formatter']  = form_input_validate((isset_request_var('left_axis_formatter') ? get_nfilter_request_var('left_axis_formatter') : ''), 'left_axis_formatter', '', true, 3);
 
 		if (!is_error_message()) {
 			$local_graph_id = sql_save($save1, 'graph_local');
@@ -852,9 +838,9 @@ function form_actions() {
 
 				/* aggregate form */
 				$_aggregate_defaults = array(
-					'title_format' 	=> auto_title($ttitle),
+					'title_format'      => auto_title($ttitle),
 					'graph_template_id' => $graph_template, 
-					'gprint_prefix'	=> $gprint_prefix
+					'gprint_prefix'     => $gprint_prefix
 				);
 
 				draw_edit_form(
@@ -1089,15 +1075,15 @@ function graph_edit() {
 			array(get_request_var('id')));
 
 		if (get_request_var('id') != $_SESSION['sess_graph_lock_id'] && !empty($local_graph_template_graph_id)) {
-			$locked = 'true';
+			$locked = true;
 			$_SESSION['sess_graph_locked'] = $locked;
 		}elseif (empty($local_graph_template_graph_id)) {
-			$locked = 'false';
+			$locked = false;
 			$_SESSION['sess_graph_locked'] = $locked;
 		}elseif (isset($_SESSION['sess_graph_locked'])) {
 			$locked = $_SESSION['sess_graph_locked'];
 		}else{
-			$locked = 'true';
+			$locked = true;
 			$_SESSION['sess_graph_locked'] = $locked;
 		}
 
@@ -1129,6 +1115,10 @@ function graph_edit() {
 			$host_id = get_request_var('host_id');
 		}else{
 			$host_id = 0;
+		}
+
+		if (isempty_request_var('graph_template_id')) {
+			$locked = false;
 		}
 	}
 
@@ -1163,7 +1153,7 @@ function graph_edit() {
 						if (!isempty_request_var('host_id') || !empty($host_id)) {
 							?><span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . ($host_id > 0 ? $host_id : get_request_var('host_id')));?>'><?php print __('Edit Device.');?></a></span><br><?php
 						}
-						if ($locked == 'true') {
+						if ($locked) {
 							?><span class='linkMarker'>*<span class='hyperLink' id='unlockid'><?php print __('Unlock Graph.');?></span></span><?php
 						}else{
 							?><span class='linkMarker'>*<span class='hyperLink' id='lockid'><?php print __('Lock Graph.');?></span></span><?php
@@ -1246,10 +1236,6 @@ function graph_edit() {
 		html_end_box();
 	}
 
-	if (isempty_request_var('id') || isempty_request_var('graph_template_id')) {
-		$locked = false;
-	}
-
 	/* graph item list goes here */
 	if ((!isempty_request_var('id')) && (empty($graph['graph_template_id']))) {
 		item();
@@ -1324,6 +1310,8 @@ function graph_edit() {
 	?>
 	<script type='text/javascript'>
 
+	var locked=<?php print ($locked ? 'true':'false');?>;
+
 	dynamic();
 
 	function dynamic() {
@@ -1364,8 +1352,13 @@ function graph_edit() {
 		});
 	});
 
-	if (<?php print ($locked == true ? 'true':'false');?> == true) {
+	if (locked) {
 		$('input, select').not('input[value="<?php print __('Cancel');?>"]').prop('disabled', true);
+		if ($('#submit').button === 'function') {
+			$('#submit').button('disable');
+		}else{
+			$('#submit').prop('disabled', true);
+		}
 		$('#host_id_wrap').addClass('ui-selectmenu-disabled ui-state-disabled');
 		$('#host_id_input').addClass('ui-state-disabled');
 	}
