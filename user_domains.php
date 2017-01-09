@@ -212,7 +212,7 @@ function form_actions() {
 
 	form_start('user_domains.php');
 
-	html_start_box($actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($d_array) && sizeof($d_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
@@ -253,7 +253,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Make Selected Domain Default') . "'>";
 		}
 	}else{
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one data input method.') . "</span></td></tr>\n";
+		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one User Domain.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
