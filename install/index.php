@@ -606,7 +606,7 @@ $enabled = '1';
 
 						$ext = verify_php_extensions($extensions);
 						html_start_box('<strong> ' . __('Optional Modules') . '</strong>', '30', 0, '', '', false);
-						html_header( array( __('Name'), __('Required'), __('Installed') ) );
+						html_header( array( __('Name'), __('Optional'), __('Installed') ) );
 						foreach ($ext as $id => $e) {
 							form_alternate_row('line' . $id, true);
 							form_selectable_cell($e['name'], '');
