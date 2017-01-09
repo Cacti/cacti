@@ -273,6 +273,15 @@ $.tablesorter.addParser({
  *  of graphs for creation. Is will scan the against preset variables
  *  taking action as required to enable or disable rows. */
 function applySelectorVisibilityAndActions() {
+	// Change for accessibility  
+	$('input[type="checkbox"], input[type="radio"]').click(function() {
+		if ($(this).is(':checked')) {
+			$(this).attr('aria-checked', 'true');
+		}else{
+			$(this).attr('aria-checked', 'false');
+		}
+	});
+
 	// Apply disabled/enabled status first for Graph Templates
 	$('tr[id^=gt_line]').each(function(data) {
 		var id = $(this).attr('id');
@@ -284,19 +293,18 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Rows
-	$('tr.selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
+	$('tr[id^=line].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
 		$(this).click(function(data) {
-			$(this).parent().toggleClass('selected');
-			var $checkbox = $(this).parent().find(':checkbox');
-			$checkbox.prop('checked', !$checkbox.is(':checked'));
+			$(this).closest('tr').toggleClass('selected');
+			var checkbox = $(this).parent().find(':checkbox');
+			checkbox.prop('checked', !checkbox.is(':checked'));
 		});
 	});
 
 	// Create Actions for Checkboxes
-	$('tr.selectable').find('.checkbox').click(function(data) {
+	$('tr[id^=line].selectable').find('input.checkbox').click(function(data) {
 		if (!$(this).is(':disabled')) {
-			$(this).parent().toggleClass('selected');
-			$(this).prop('checked', !$(this).is(':checked'));
+			$(this).closest('tr').toggleClass('selected');
 		}
 	});
 }
@@ -310,10 +318,10 @@ function dqUpdateDeps(snmp_query_id) {
 	var snmp_query_graph_id = $('#sgg_'+snmp_query_id).val();
 
 	// Next for Data Queries
-	$('tr[id^=line'+snmp_query_id+'_]').each(function(data) {
+	$('tr[id^=dqline'+snmp_query_id+'_]').each(function(data) {
 		var id = $(this).attr('id');
 		var pieces = id.split('_');
-		var dq = pieces[0].substr(4);
+		var dq = pieces[0].substr(6);
 		var hash = pieces[1];
 
 		if ($.inArray(hash, created_graphs[snmp_query_graph_id]) >= 0) {
@@ -323,21 +331,24 @@ function dqUpdateDeps(snmp_query_id) {
 			$(this).find(':checkbox').prop('disabled', true).prop('checked', false);
 		}
 	});
+
+	$('tr[id^=dqline'+snmp_query_id+'_]').unbind().not('.disabled_row').click(function() {
+		checked = $(this).find(':checkbox').is(':checked');
+		$(this).toggleClass('selected').find(':checkbox').prop('checked', !checked);
+	});
 }
 
 /** dqResetDeps - This function will make all rows selectable.
  *  It is done just before a new data query is checked.
  *  @arg snmp_query_id - The snmp query id the is current */
 function dqResetDeps(snmp_query_id) {
-	var prefix = 'sg_' + snmp_query_id + '_'
-
-	$('tr[id^=line'+snmp_query_id+'_]').addClass('selectable').removeClass('disabled_row').find(':checkbox').prop('disabled', false);
+	$('tr[id^=dqline'+snmp_query_id+'_]').addClass('selectable').removeClass('disabled_row').find(':checkbox').prop('disabled', false);
 }
 
 /** SelectAll - This function will select all non-disabled rows
  *  @arg attrib - The Graph Type either graph template, or data query */
 function SelectAll(attrib, checked) {
-	if (attrib == 'chk_') {
+	if (attrib == 'chk') {
 		if (checked == true) {
 			$('tr[id^=line]:not(.disabled_row').each(function(data) {
 				$(this).addClass('selected');
@@ -366,12 +377,12 @@ function SelectAll(attrib, checked) {
 		var dq   = attribSplit[1];
 
 		if (checked == true) {
-			$('tr[id^=line'+dq+'\_]:not(.disabled_row').each(function(data) {
+			$('tr[id^=dqline'+dq+'\_]:not(.disabled_row').each(function(data) {
 				$(this).addClass('selected');
 				$(this).find(':checkbox').prop('checked', true);
 			});
 		}else{
-			$('tr[id^=line'+dq+'\_]:not(.disabled_row)').each(function(data) {
+			$('tr[id^=dqline'+dq+'\_]:not(.disabled_row)').each(function(data) {
 				$(this).removeClass('selected');
 				$(this).find(':checkbox').prop('checked', false);
 			});
@@ -424,38 +435,6 @@ function applySkin() {
 
 	$('.ui-tooltip').remove();
 
-	// change for accessibility  
-	$('input[type="checkbox"], input[type="radio"]').click(function() {
-		if ($(this).is(':checked')) {
-			$(this).attr('aria-checked', 'true');
-		}else{
-			$(this).attr('aria-checked', 'false');
-		}
-	});
-
-	// Select All Action for everyone but graphs_new, else do ugly shit
-	if (basename(document.location.pathname, '.php') == 'graphs_new') {
-		applySelectorVisibilityAndActions();
-	}else{
-		// Allows selection of a non disabled row
-		$('tr.selectable:not([id^="gt_line"])').find('td').not('.checkbox').each(function(data) {
-			$(this).click(function(data) {
-				$(this).parent().toggleClass('selected');
-				var checkbox = $(this).parent().find(':checkbox');
-				checkbox.prop('checked', !checkbox.is(':checked'));
-			});
-		});
-
-		// Generic Checkbox Function
-		$('tr.selectable').find('.checkbox').click(function(data) {
-			if (!$(this).is(':disabled')) {
-				$(this).parent().toggleClass('selected');
-				var checked = $(this).is(':checked');
-				$(this).prop('checked', !checked);
-			}
-		});
-	}
-
 	setupSortable();
 
 	setupBreadcrumbs();
@@ -471,6 +450,8 @@ function applySkin() {
 	setupCollapsible();
 
 	ajaxAnchors();
+
+	applySelectorVisibilityAndActions();
 
 	if (typeof themeReady == 'function') {
 		themeReady();
