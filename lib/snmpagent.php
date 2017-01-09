@@ -45,7 +45,9 @@ function snmpagent_cacti_stats_update($data){
 		'cactiStatsPollerUtilization'         => round($data[0]/read_config_option('poller_interval', true)*100, 10)
 	);
 
-	$mc->table('cactiStatsPollerTable')->row($index)->update($values);
+	if ($mc->table('cactiStatsPollerTable') != 'ERROR') {
+		$mc->table('cactiStatsPollerTable')->row($index)->update($values);
+	}
 	$mc->object('cactiStatsLastUpdate')->set( time() );
 }
 
@@ -215,15 +217,15 @@ function snmpagent_poller_exiting($poller_index = 1){
 
 	if ($mc->table('cactiApplPollerTable') != 'ERROR') {
 		$poller = $mc->table('cactiApplPollerTable')->row($poller_index)->select();
+
+		$varbinds = array(
+			'cactiApplPollerIndex'     => $poller_index,
+			'cactiApplPollerHostname'  => $poller['cactiApplPollerHostname'],
+			'cactiApplPollerIpAddress' => $poller['cactiApplPollerIpAddress']
+		);
+
+		snmpagent_notification('cactiNotifyPollerRuntimeExceeding', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_HIGH);
 	}
-
-	$varbinds = array(
-		'cactiApplPollerIndex'     => $poller_index,
-		'cactiApplPollerHostname'  => $poller['cactiApplPollerHostname'],
-		'cactiApplPollerIpAddress' => $poller['cactiApplPollerIpAddress']
-	);
-
-	snmpagent_notification('cactiNotifyPollerRuntimeExceeding', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_HIGH);
 }
 
 function snmpagent_poller_bottom() {
