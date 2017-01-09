@@ -556,7 +556,7 @@ function data_query_item_edit() {
 									$snmp_queries = get_data_query_array(get_request_var('snmp_query_id'));
 									$xml_outputs = array();
 
-									if (sizeof($snmp_queries)) {
+									if (isset($snmp_queries['fields']) && sizeof($snmp_queries['fields'])) {
 										while (list($field_name, $field_array) = each($snmp_queries['fields'])) {
 											if ($field_array['direction'] == 'output') {
 												$xml_outputs[$field_name] = $field_name . ' (' . $field_array['name'] . ')';
