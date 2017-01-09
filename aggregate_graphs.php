@@ -139,16 +139,17 @@ function form_save() {
 	 */
 	if (!isset_request_var('template_propogation')) {
 		/* template propagation is disabled */
-		$save                         = array();
-		$save['id']                   = $aggregate_graph_id;
-		$save['template_propogation'] = '';
-		$save['gprint_prefix']        = get_nfilter_request_var('gprint_prefix');
-		$save['total_prefix']         = get_nfilter_request_var('total_prefix');
+		$save                          = array();
+		$save['id']                    = $aggregate_graph_id;
+		$save['aggregate_template_id'] = $aggregate_template_id;
+		$save['template_propogation']  = '';
+		$save['gprint_prefix']         = get_nfilter_request_var('gprint_prefix');
+		$save['total_prefix']          = get_nfilter_request_var('total_prefix');
 
-		$save['total']                = get_filter_request_var('total');
-		$save['graph_type']           = get_filter_request_var('graph_type');
-		$save['total_type']           = get_filter_request_var('total_type');
-		$save['order_type']           = get_filter_request_var('order_type');
+		$save['total']                 = get_filter_request_var('total');
+		$save['graph_type']            = get_filter_request_var('graph_type');
+		$save['total_type']            = get_filter_request_var('total_type');
+		$save['order_type']            = get_filter_request_var('order_type');
 
 		/* see if anything changed, if so, we will have to push out the aggregate */
 		if (!empty($aggregate_graph_id)) {
@@ -159,13 +160,14 @@ function form_save() {
 
 			$save_me = 0;
 
-			$save_me += ($old['template_propogation'] != $save['template_propogation']);
-			$save_me += ($old['gprint_prefix']        != $save['gprint_prefix']);
-			$save_me += ($old['graph_type']           != $save['graph_type']);
-			$save_me += ($old['total']                != $save['total']);
-			$save_me += ($old['total_type']           != $save['total_type']);
-			$save_me += ($old['total_prefix']         != $save['total_prefix']);
-			$save_me += ($old['order_type']           != $save['order_type']);
+			$save_me += ($old['aggregate_template_id'] != $save['aggregate_template_id']);
+			$save_me += ($old['template_propogation']  != $save['template_propogation']);
+			$save_me += ($old['gprint_prefix']         != $save['gprint_prefix']);
+			$save_me += ($old['graph_type']            != $save['graph_type']);
+			$save_me += ($old['total']                 != $save['total']);
+			$save_me += ($old['total_type']            != $save['total_type']);
+			$save_me += ($old['total_prefix']          != $save['total_prefix']);
+			$save_me += ($old['order_type']            != $save['order_type']);
 
 			if ($save_me) {
 				$aggregate_graph_id = sql_save($save, 'aggregate_graphs');
