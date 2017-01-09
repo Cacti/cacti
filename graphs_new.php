@@ -43,7 +43,7 @@ switch (get_request_var('action')) {
 		header('Location: graphs_new.php?host_id=' . get_request_var('host_id') . '&header=false');
 		break;
 	case 'ajax_hosts':
-		get_allowed_ajax_hosts();
+		get_allowed_ajax_hosts(false, false);
 
 		break;
 	case 'ajax_hosts_noany':
@@ -458,10 +458,16 @@ function graphs() {
 
 	if (!isempty_request_var('host_id')) {
 		$host   = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id FROM host WHERE id = ?', array(get_request_var('host_id')));
-		$header =  __('New Graphs for [ %s ]', htmlspecialchars($host['description']) . ' (' . htmlspecialchars($host['hostname']) . ') ' . 
+
+		if (sizeof($host)) {
+			$header =  __('New Graphs for [ %s ]', htmlspecialchars($host['description']) . ' (' . htmlspecialchars($host['hostname']) . ') ' . 
 			(!empty($host['host_template_id']) ? htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($host['host_template_id']))):''));
+		}else{
+			$header =  __('New Graphs for [ All Devices ]');
+			$host['id'] = -1;
+		}
 	}else{
-		$host   = array();
+		$host['id'] = 0;
 		$header = __('New Graphs for None Host Type');
 	}
 
@@ -507,7 +513,7 @@ function graphs() {
 	<form id='graphs_new' action='graphs_new.php'>
 		<table class='filterTable'>
 			<tr>
-				<?php print html_host_filter(get_request_var('host_id'));?>
+				<?php print html_host_filter(get_request_var('host_id'), 'applyFilter', '', true, true);?>
 				<td>
 					<?php print __('Graph Types');?>
 				</td>

@@ -1423,7 +1423,7 @@ function html_graph_tabs_right($current_user) {
 	}
 }
 
-function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '') {
+function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
 	if ($theme == 'classic') {
@@ -1433,8 +1433,8 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		</td>
 		<td>
 			<select id='host_id' name='host_id' onChange='<?php print $call_back;?>()'>
-				<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
-				<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
+				<?php if (!$noany) {?><option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
+				<?php if (!$nonone) {?><option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 				<?php
 
 				if ($sql_where != '' && strpos($sql_where, 'WHERE') === false) { 
