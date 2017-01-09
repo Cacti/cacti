@@ -913,7 +913,7 @@ function reports_item_edit() {
 	useCss=<?php print ($report['cformat'] == 'on' ? 'true':'false');?>;
 
 	function toggle_item_type() {
-		console.log($('#item_type').val());
+		//console.log($('#item_type').val());
 		// right bracket ')' does not come with a field
 		if ($('#item_type').val() == '<?php print REPORTS_ITEM_GRAPH;?>') {
 			$('#row_align').show();

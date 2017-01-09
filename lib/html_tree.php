@@ -154,20 +154,11 @@ function grow_dhtml_trees() {
 			$(this)
 			.on('init.jstree', function(e, data) {
 				<?php if (isset_request_var('hyper')) { ?>
-//				$('#jstree').jstree().clear_state();
+				$('#jstree').jstree().clear_state();
 				<?php } ?>
 			})
 			.on('ready.jstree', function(e, data) {
-				<?php 
-				if (isset_request_var('hyper')) {
-					foreach($path as $link) { ?>
-						console.log('<?php print $link;?>');
-						//$('#jstree').jstree('select_node', 'tbranch-<?php print get_request_var('node');?>');
-						//$('#jstree').jstree('select_node', '<?php print $link;?>');
-						console.log('doneish');<?php
-					}
-				}
-				?>
+				resizeGraphContent();
 			})
 			.on('changed.jstree', function(e, data) {
 				resizeGraphContent();
@@ -182,7 +173,7 @@ function grow_dhtml_trees() {
 				if (data.node.id) {
 					if (data.node.id.search('tree_anchor') >= 0) {
 						href=$('#'+data.node.id).find('a:first').attr('href');
-//						href=$('#'+data.node.id).find('a:first').attr('href')+"&node=0";
+						//href=$('#'+data.node.id).find('a:first').attr('href')+"&node=0";
 					}else{
 //						href=$('#'+data.node.id).find('a:first').attr('href')+"&node="+data.node.id.replace('tbranch-','');
 						href=$('#'+data.node.id).find('a:first').attr('href');
