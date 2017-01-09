@@ -980,7 +980,6 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 					$(this).prop('checked', false);
 					$(this).closest('tr').removeClass('selected');
 				}
-				$(this).unbind();
 				$(this).prop('disabled', true).closest('tr').removeClass('selected');
 			});
 
@@ -1000,7 +999,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 				if ($(this).button === 'function') {
 					$(this).button('disable');
 				}else{
-					$(this).prop('disable', true);
+					$(this).prop('disabled', true);
 				}
 			});
 		}else if (<?php print $delete_action;?> != 0) {
@@ -1014,14 +1013,14 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		}
 
 		$('tr[id^=line').not('.disabled_row').find('td').not('.checkbox').each(function(data) {
-			$(this).unbind().click(function(data) {
+			$(this).click(function(data) {
 				$(this).closest('tr').toggleClass('selected');
 				var checkbox = $(this).parent().find(':checkbox');
 				checkbox.prop('checked', !checkbox.is(':checked'));
 			});
 		});
 
-		$('tr[id^=line').find('input.checkbox').unbind().each(function(data) {
+		$('tr[id^=line').find('input.checkbox').each(function(data) {
 			$(this).click(function(data) {
 				if (!$(this).closest('tr').hasClass('disabled_row')) {
 					$(this).closest('tr').toggleClass('selected');
@@ -1032,7 +1031,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 
 	$(function() {
 		setDisabled();
-		$('#drp_action').unbind().change(function() {
+		$('#drp_action').change(function() {
 			setDisabled();
 		});
 
