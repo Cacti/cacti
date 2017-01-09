@@ -292,7 +292,9 @@ print "<body class='loginBody'>
 							<td><input type='password' name='confirm' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
-							<td><input type='submit' value='" . __('Save') . "'></td>
+							<td class='nowrap' colspan='2'><input type='submit' value='" . __('Save') . "'>
+						" . ($user['must_change_password'] != 'on' ? "<input type='button' onClick='window.history.go(-1)' value='" . __('Return') . "'>":"") . "
+							</td>
 						</tr>
 					</table>
 				</div>
