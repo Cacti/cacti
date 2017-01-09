@@ -180,6 +180,7 @@ if ($step == '7') {
 	include_once('../lib/data_query.php');
 	include_once('../lib/utility.php');
 	include_once('../lib/import.php');
+	include_once('../lib/api_automation.php');
 	
 	/* look for templates that have been checked for install */
 	if (get_request_var('install_type') == 1) {
@@ -227,6 +228,26 @@ if ($step == '7') {
 				" --description=" . escapeshellarg($description) . " --ip=" . escapeshellarg($ip) . " --template=$host_template_id" . 
 				" --notes=" . escapeshellarg('Initial Cacti Device') . " --poller=1 --site=0 --avail=" . escapeshellarg($avail) .
 				" --version=$version --community=" . escapeshellarg($community));
+
+			$host_id = db_fetch_cell_prepared('SELECT id 
+				FROM host 
+				WHERE host_template_id = ? 
+				LIMIT 1', 
+				array($host_template_id));
+
+			if (!empty($host_id)) {
+				$templates = db_fetch_assoc_prepared('SELECT * 
+					FROM host_graph 
+					WHERE host_id = ?', 
+					array($host_id));
+
+				if (sizeof($templates)) {
+					foreach($templates as $template) {
+						automation_execute_graph_template($host_id, $template['graph_template_id']);
+					}
+				}
+			}
+
 			cacti_log(trim($results));
 		}else{
 			cacti_log('ERROR: Device Template for your Operating System Not Found.  Please add your first device manually');
