@@ -524,10 +524,31 @@ $enabled = '1';
 					<?php 	
 					/* checkdependencies */
 					}elseif ($step == '2') { 
-						print '<h2>' . __('Pre-installation Checks') .'</h2>';
-						print __('Cacti requries several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '<br><br>';
+						$enabled = '1';
 
-						print '<br>' . __('The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install.') . '<br><br>';
+						print '<h2>' . __('Pre-installation Checks') .'</h2>';
+						print '<h3>' . __('MySQL TimeZone Support') .'</h3>';
+						$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
+						if (sizeof($mysql_timezone_access)) {
+							$timezone_populated = db_fetch_cell('SELECT COUNT(*) FROM mysql.time_zone_name');
+							if (!$timezone_populated) {
+								print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your MySQL timezone database is not populated.  Please populate this database before proceeding.') . '</p>';
+								$enabled = '0';
+							}
+						}else{
+							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Cacti database login account does not have access to the MySQL timezone database.  Please provide the Cacti database account "select" access to the "time_zone_name" table in the "mysql" database, and populate MySQL\'s timezone information before proceeding.') . '</p>';
+							$enabled = '0';
+						}
+
+						if ($enabled == '1') {
+							print '<p>' . __('Your Cacti database account has access to the MySQL timezone database and that database is populated with global timezone information.') . '</p>';
+						}
+
+						print '<h3>' . __('Required PHP Module Support') .'</h3>';
+
+						print '<p>' .  __('Cacti requries several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '</p>';
+
+						print '<p>' . __('The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install.') . '</p>';
 
 						html_start_box('<strong> ' . __('Required PHP Modules') . '</strong>', '30', 0, '', '', false);
 						html_header( array( __('Name'), __('Required'), __('Installed') ) );
@@ -587,7 +608,6 @@ $enabled = '1';
 						}
 
 						$ext = verify_php_extensions($extensions);
-						$enabled = '1';
 						foreach ($ext as $id =>$e) {
 							form_alternate_row('line' . $id);
 							form_selectable_cell($e['name'], '');
@@ -598,7 +618,9 @@ $enabled = '1';
 						}
 						html_end_box(false);
 
-						print '<br>' . __('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.') . '<br><br>';
+						print '<h3>' . __('Optional PHP Module Support') .'</h3>';
+
+						print '<p>' . __('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.') . '</p>';
 						$extensions = array(
 							array('name' => 'snmp', 'installed' => false),
 							array('name' => 'gmp', 'installed' => false)
@@ -691,7 +713,7 @@ $enabled = '1';
 							print '<h4>' . __('Remote Poller Cacti database connection information') . '</h4>';
 
 							if (!$good_write) {
-								print '<p>' . __('ERROR: Your config.php file must be writable by 
+								print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your config.php file must be writable by 
 									the web server during install in order to configure the Remote poller.  Once 
 									installation is complete, you must set this file to Read Only to prevent 
 									possible security issues.');
@@ -699,7 +721,7 @@ $enabled = '1';
 							}
 	
 							if (!$remote_good) {
-								print '<p class="textError">' . __('ERROR: Your Remote Cacti Poller information has not 
+								print '<p class="textError">' . __('ERROR:') . '</strong> ' . __('Your Remote Cacti Poller information has not 
 									been included in your config.php file.  Please review the config.php.dist, and 
 									set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  
 									These variables must be set and point back to your Primary Cacti database server.
@@ -850,7 +872,7 @@ $enabled = '1';
 						/* Print message and error logs */
 						print '<h2>' . __('Directory Permission Checks') . '</h2>';
 							
-						print '<p>' . __('Please insure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Apache user, either apache or wwwrun depending on your Operating System.') . '</p>';						
+						print '<p>' . __('Please insure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an \'install_package.php\' cli script that can be used from the command line after the install is complete.') . '</p>';
 
 						if (get_request_var('install_type') == 1) {
 							print '<p>' . __('After the install is complete, you can make some of these directories read only to increase security.') . '</p>';						
