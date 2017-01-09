@@ -832,17 +832,6 @@ $enabled = '1';
 							$i++;
 						}
 						
-						if (get_request_var('install_type') != 2) {
-							print '<p><strong><font color="#FF0000">';
-
-							print __('NOTE:') . '</font></strong> ' . __('Once you click "Finish", all of your 
-								settings will be saved and your database will be upgraded if this is an upgrade.');
-							print __('You can change any of the settings on this screen at a later time by going 
-								to "Cacti Settings" from within Cacti.'); 
-
-							print '</p>';
-						}
-
 				 	/* settings-install */
 					}elseif ($step == '5') { 
 						include_once('../lib/data_query.php');
