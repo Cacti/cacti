@@ -730,9 +730,9 @@ function form_actions() {
 				print '</ul></div><br>';
 
 				print '<span class="nowrap">';
-				form_radio_button('delete_type', '2', '2', __('Delete all Data Source(s) referenced by these Graph(s) that are not in use elsewhere.'), '2'); 
+				form_radio_button('delete_type', '2', '2', __('Delete all Data Source(s) referenced by these Graph(s) that are not in use elsewhere.'), '1'); 
 				print '<br>';
-				form_radio_button('delete_type', '1', '2', __('Leave the Data Source(s) untouched.'), '2'); 
+				form_radio_button('delete_type', '2', '1', __('Leave the Data Source(s) untouched.'), '1'); 
 				print '<br>';
 				print '</span>';
 				print '</td></tr>';
