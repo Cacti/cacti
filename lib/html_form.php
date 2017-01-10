@@ -64,12 +64,12 @@ function draw_edit_form($array) {
 				print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><td colspan='2' style='cursor:pointer;' class='tableSubHeaderColumn'>" . $field_array['friendly_name'] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":'') . "</td></tr>\n";
 			}else{
 				if (isset($config_array['force_row_color'])) {
-					print "<tr class='even-alternate'>";
+					print "<tr class='formRow even-alternate'>";
 				}else{
 					form_alternate_row('row_' . $field_name);
 				}
 
-				print "<td style='width:" . ((isset($config_array['left_column_width'])) ? $config_array['left_column_width'] . 'px;':'50%;') . "'>\n<span class='formItemName'>" . $field_array['friendly_name'] . "</span>\n";
+				print "<td class='formRow' style='width:" . ((isset($config_array['left_column_width'])) ? $config_array['left_column_width'] . 'px;':'50%;') . "'>\n<span class='formItemName'>" . $field_array['friendly_name'] . "</span>\n";
 
 				if (read_config_option('hide_form_description') == 'on') {
 					print '<br><span class="formItemDescription">' . ((isset($field_array['description'])) ? $field_array['description'] : '') . "<br></span>\n";
@@ -534,7 +534,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input role='textbox' type='$type'";
+	print "<input type='$type'";
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
@@ -768,7 +768,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$checked = " aria-checked='false'";
 	}
 
-	print "<input role='checkbox' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . ">" . ($form_caption != '' ? " <label for='$form_name'>$form_caption</label>\n":"");
+	print "<input type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . ">" . ($form_caption != '' ? " <label for='$form_name'>$form_caption</label>\n":"");
 }
 
 /* form_radio_button - draws a standard html radio button
@@ -845,7 +845,7 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		$placeholder = " placeholder='$placeholder'";
 	}
 
-	print "<textarea role='textbox' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . $placeholder . '>' . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
+	print "<textarea aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . $placeholder . '>' . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
 }
 
 /* form_multi_dropdown - draws a standard html multiple select dropdown

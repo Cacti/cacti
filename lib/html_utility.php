@@ -103,9 +103,9 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
 	}
 
 	if (strlen($row_id)) {
-		print "<tr class='$class selectable' id='$row_id'>\n";
+		print "<tr class='$class selectable formRow' id='$row_id'>\n";
 	}else{
-		print "<tr class='$class'>\n";
+		print "<tr class='$class formRow'>\n";
 	}
 
 	return $current_color;
@@ -131,13 +131,13 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	$i++;
 
 	if (strlen($row_id) && substr($row_id,0,4) != 'row_' && !$disabled) {
-		print "<tr class='$class selectable' id='$row_id'>\n";
+		print "<tr class='$class selectable formRow' id='$row_id'>\n";
 	}elseif (substr($row_id,0,4) == 'row_') {
-		print "<tr class='$class' id='$row_id'>\n";
+		print "<tr class='$class formRow' id='$row_id'>\n";
 	}elseif (strlen($row_id)) {
-		print "<tr class='$class' id='$row_id'>\n";
+		print "<tr class='$class formRow' id='$row_id'>\n";
 	}else{
-		print "<tr class='$class'>\n";
+		print "<tr class='$class formRow'>\n";
 	}
 }
 

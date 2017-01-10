@@ -1185,12 +1185,12 @@ legend {
 }
 
 .tableHeader {
+	background: rgba(138,179,105,1);
+//	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
 	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 }
 
 th.sortable {
@@ -1215,9 +1215,10 @@ th.sortable {
 
 .tableSubHeaderColumn {
 	color: snow;
-	vertical-align:middle;
-	text-align:left;
-	cursor:pointer;
+	vertical-align: middle;
+	text-align: left;
+	padding: 3px;
+	cursor: pointer;
 }
 
 .graphSubHeaderColumn {
@@ -1236,6 +1237,10 @@ th.sortable {
 	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+}
+
+.formRow {
+	line-height: 20px;
 }
 
 .image_table {
@@ -1465,8 +1470,6 @@ th.sortable {
 	padding:2px;
 }
 
-
-
 td.tab {
 	border-top: 1px solid #999;
 	border-right: 1px solid #666;
@@ -1621,7 +1624,7 @@ div#gtabs {
 }
 
 th {
-	border-right: 1px groove #eee;
+	border-right: 1px groove snow;
 }
 
 th:last-child {
