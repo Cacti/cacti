@@ -533,7 +533,9 @@ function form_actions() {
 			$save['drp_action'] = get_request_var('drp_action');
 			$save['host_list'] = $host_list;
 			$save['host_array'] = (isset($host_array)? $host_array : array());
+
 			api_plugin_hook_function('device_action_prepare', $save);
+
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "'>";
 		}
 	}else{
@@ -875,7 +877,7 @@ function host_edit() {
 						</td>
 					</tr>
 				</table>
-				<a style='display:none;' name='dqtop'></a>
+				<a style='display:none;' id='dqtop'></a>
 			</td>
 		</tr>
 
@@ -1189,6 +1191,8 @@ function host() {
 			)
 	);
 
+	$filters = api_plugin_hook_function('device_filters', $filters);
+
 	validate_store_request_vars($filters, 'sess_host');
 	/* ================= input validation ================= */
 
@@ -1394,6 +1398,8 @@ function host() {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' host.poller_id=' . get_request_var('poller_id');
 	}
 
+	$sql_where = api_plugin_hook_function('device_sql_where', $sql_where);
+
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(host.id)
 		FROM host
@@ -1497,5 +1503,7 @@ function host() {
 	draw_actions_dropdown($device_actions);
 
 	form_end();
+
+	api_plugin_hook('device_table_bottom');
 }
 
