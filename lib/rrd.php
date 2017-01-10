@@ -235,8 +235,10 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " $command_line", $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 
 	/* if we want to see the error output from rrdtool; make sure to specify this */
-	if (($output_flag == RRDTOOL_OUTPUT_STDERR) && (!is_resource($rrdtool_pipe))) {
-		$command_line .= ' 2>&1';
+	if ($config['cacti_server_os'] != 'win32') {
+		if (($output_flag == RRDTOOL_OUTPUT_STDERR) && (!is_resource($rrdtool_pipe))) {
+			$command_line .= ' 2>&1';
+		}
 	}
 
 	/* use popen to eliminate the zombie issue */
