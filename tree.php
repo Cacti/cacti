@@ -358,6 +358,8 @@ function form_save() {
 
 		if (get_filter_request_var('id') > 0) {
 			$prev_order = db_fetch_cell_prepared('SELECT sort_type FROM graph_tree WHERE id = ?', array(get_request_var('id')));
+		}else{
+			$prev_order = 1;
 		}
 
 		$save['id']            = get_request_var('id');
