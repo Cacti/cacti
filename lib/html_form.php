@@ -1166,7 +1166,7 @@ function form_end($ajax = true) {
 			$('#<?php print $form_id;?>').submit(function(event) {
 				event.preventDefault();
 				strURL = '<?php print $form_action;?>';
-				strURL += (strURL.indexOf('?') >- 0 ? '&':'?') + 'header=false';
+				strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';
 				json =  $('#<?php print $form_id;?>').serializeObject();
 				$.post(strURL, json).done(function(data) {
 					$('#main').html(data);
