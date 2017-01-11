@@ -1102,6 +1102,13 @@ function graph_edit() {
 			WHERE id = ?', 
 			array(get_request_var('id')));
 
+		/* case of a deleted graph */
+		if (!sizeof($graph)) {
+			raise_message(31);
+			header('Location: graphs.php');
+			exit;
+		}
+
 		$header_label = __('Graph Template Selection [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));
 
 		if ($graph['graph_template_id'] == '0') {
@@ -1280,7 +1287,7 @@ function graph_edit() {
 			$form_array[$field_name]['value'] = (isset($graph) ? $graph[$field_name] : '');
 			$form_array[$field_name]['form_id'] = (isset($graph) ? $graph['id'] : '0');
 
-			if (!(($use_graph_template == false) || ($graph_template{'t_' . $field_name} == 'on'))) {
+			if ($use_graph_template == true && isset($graph_template['t_' . $field_name]) && ($graph_template['t_' . $field_name] == 'on')) {
 				$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
 				$form_array[$field_name]['description'] = '';
 			}
