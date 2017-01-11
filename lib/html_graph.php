@@ -66,7 +66,7 @@ function html_graph_validate_preview_request_vars() {
 		'graphs' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_user_setting('preview_graphs_per_page')
+			'default' => read_user_setting('preview_graphs_per_page', 20)
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -75,12 +75,12 @@ function html_graph_validate_preview_request_vars() {
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST, 
 			'pageset' => true,
-			'default' => read_user_setting('graph_template_id')
+			'default' => read_user_setting('graph_template_id', 0)
 			),
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT, 
 			'pageset' => true,
-			'default' => read_user_setting('num_columns')
+			'default' => read_user_setting('num_columns', 2)
 			),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT, 
@@ -95,7 +95,7 @@ function html_graph_validate_preview_request_vars() {
 		'thumbnails' => array(
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '(true|false)')),
-			'default' => read_user_setting('thumbnail_section_preview') == 'on' ? 'true':'false'
+			'default' => read_user_setting('thumbnail_section_preview', '') == 'on' ? 'true':'false'
 			),
 		'graph_list' => array(
 			'filter' => FILTER_VALIDATE_REGEXP, 
