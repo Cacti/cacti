@@ -1237,6 +1237,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		WHERE gti.local_graph_id = ?
 		ORDER BY gti.sequence', array($local_graph_id));
 
+	/* handle the case where the graph has been deleted */
+	if (!sizeof($graph)) {
+		return false;
+	}
+
 	/* variables for use below */
 	$graph_defs       = '';
 	$txt_graph_items  = '';
@@ -2029,6 +2034,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	if (!isset($graph_data_array['export_csv']) || $graph_data_array['export_csv'] != true) {
 		$graph_array = api_plugin_hook_function('rrd_graph_graph_options', array('graph_opts' => $graph_opts, 'graph_defs' => $graph_defs, 'txt_graph_items' => $txt_graph_items, 'graph_id' => $local_graph_id, 'start' => $graph_start, 'end' => $graph_end));
+
 		if (!empty($graph_array)) {
 			$graph_defs = $graph_array['graph_defs'];
 			$txt_graph_items = $graph_array['txt_graph_items'];

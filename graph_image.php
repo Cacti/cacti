@@ -124,5 +124,12 @@ if (isset_request_var('graph_theme')) {
 	$graph_data_array['graph_theme'] = get_request_var('graph_theme');
 }
 
-print @rrdtool_function_graph(get_request_var('local_graph_id'), (array_key_exists('rra_id', $_REQUEST) ? get_request_var('rra_id') : null), $graph_data_array);
+$output =  @rrdtool_function_graph(get_request_var('local_graph_id'), (array_key_exists('rra_id', $_REQUEST) ? get_request_var('rra_id') : null), $graph_data_array);
+
+
+if ($output !== false && $output != '') {
+	print $output;
+}else{
+	print file_get_contents(__DIR__ . '/images/rrd_not_found.png');
+}
 

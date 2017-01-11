@@ -180,7 +180,7 @@ if ($config['poller_id'] == 1) {
 $oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => get_request_var('rra_id'));
 
 // Check if we received back something populated from rrdtool
-if ($output) {
+if ($output !== false && $output != '') {
 	// Find the beginning of the image definition row
 	$image_begin_pos  = strpos($output, "image = ");
 	// Find the end of the line of the image definition row, after this the raw image data will come
@@ -195,8 +195,7 @@ if ($output) {
 		$oarray[$parts[0]] = trim($parts[1]);
 	}
 } else { 
-	// We most likely got back an empty image since the graph data doesn't exist yet, show a placeholder
-	$oarray['image']  = base64_encode(file_get_contents(__DIR__."/images/rrd_not_found.png"));
+	$oarray['image'] = base64_encode(file_get_contents(__DIR__ . '/images/rrd_not_found.png'));
 }
 
 print json_encode($oarray);
