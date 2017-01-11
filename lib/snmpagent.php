@@ -278,9 +278,13 @@ function snmpagent_poller_bottom() {
 	/* update state and statistics of all devices */
 	$mc_dstatus = array();
 	$mc_devices = $mc->table('cactiApplDeviceTable')->select(array('cactiApplDeviceIndex', 'cactiApplDeviceStatus'));
-	if ($mc_devices && sizeof($mc_devices)>0) {
+	if ($mc_devices && sizeof($mc_devices)) {
 		foreach($mc_devices as $mc_device) {
-			$mc_dstatus[$mc_device['cactiApplDeviceIndex']] = $mc_device['cactiApplDeviceStatus'];
+			if (isset($mc_device['cactiApplDeviceStatus'])) {
+				$mc_dstatus[$mc_device['cactiApplDeviceIndex']] = $mc_device['cactiApplDeviceStatus'];
+			}else{
+				$mc_dstatus[$mc_device['cactiApplDeviceIndex']] = 0;
+			}
 		}
 	}
 
