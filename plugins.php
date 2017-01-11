@@ -53,6 +53,12 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 	$mode = get_nfilter_request_var('mode');
 	$id   = sanitize_search_string(get_request_var('id'));
 
+	if (isset_request_var('header')) {
+		$option = 'header=false';
+	}else{
+		$option = '';
+	}
+
 	switch ($mode) {
 		case 'install':
 			if (!in_array($id, $plugins_integrated)) {
@@ -60,22 +66,22 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			}
 
 			if ($_SESSION['sess_plugins_state'] != '-3') {
-				header('Location: plugins.php?state=5');
+				header('Location: plugins.php?state=5' . ($option != '' ? '&' . $option:''));
 			}else{
-				header('Location: plugins.php');
+				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			}
 			exit;
 			break;
 		case 'uninstall':
 			if (!in_array($id, $pluginslist)) break;
 			api_plugin_uninstall($id);
-			header('Location: plugins.php');
+			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			exit;
 			break;
 		case 'disable':
 			if (!in_array($id, $pluginslist)) break;
 			api_plugin_disable($id);
-			header('Location: plugins.php');
+			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			exit;
 			break;
 		case 'enable':
@@ -83,7 +89,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			if (!in_array($id, $plugins_integrated)) {
 				api_plugin_enable($id);
 			}
-			header('Location: plugins.php');
+			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			exit;
 			break;
 		case 'check':
@@ -93,14 +99,14 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			if (!in_array($id, $pluginslist)) break;
 			if (in_array($id, $plugins_integrated)) break;
 			api_plugin_moveup($id);
-			header('Location: plugins.php');
+			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			exit;
 			break;
 		case 'movedown':
 			if (!in_array($id, $pluginslist)) break;
 			if (in_array($id, $plugins_integrated)) break;
 			api_plugin_movedown($id);
-			header('Location: plugins.php');
+			header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
 			exit;
 			break;
 	}
