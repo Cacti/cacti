@@ -224,9 +224,18 @@ function form_save() {
 							}
 
 							if ((!empty($form_value)) || (!isempty_request_var('t_value_' . $input_field['data_name']))) {
+								/* unusual case where a form value comes back as an array 
+								 * this should be cleaned up in the database repair script. */
+								$value = get_nfilter_request_var($form_value);
+								if (is_array($value)) {
+									$value = trim($value[0]);
+								}else{
+									$value = trim($value);
+								}
+
 								db_execute_prepared('INSERT INTO data_input_data 
 									(data_input_field_id, data_template_data_id, t_value, value)
-									VALUES (?, ?, ?, ?)', array($input_field['id'], $data_template_data_id, $template_this_item, trim(get_nfilter_request_var($form_value))));
+									VALUES (?, ?, ?, ?)', array($input_field['id'], $data_template_data_id, $template_this_item, $value));
 							}
 						}
 					}
