@@ -671,7 +671,7 @@ function resource_cache_out($type, $path) {
 				}
 
 				if (!is_dir(dirname($mypath))) {
-					$relative_dir = str_replace($config['url_path'], '', dirname($mypath));
+					$relative_dir = str_replace($config['base_path'], '', dirname($mypath));
 					mkdir('./' . $relative_dir, 0755, true);
 				}
 
