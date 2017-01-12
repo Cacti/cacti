@@ -516,7 +516,11 @@ function read_user_i18n_setting($config_name) {
 			$config_array = $config['config_options_array'];
 		}
 		if (!isset($config_array[$config_name])) {
-			$effective_uid = db_fetch_cell_prepared("SELECT user_auth.id from settings INNER JOIN user_auth ON user_auth.username = settings.value WHERE settings.name = 'guest_user'");
+			$effective_uid = db_fetch_cell("SELECT user_auth.id 
+				FROM settings 
+				INNER JOIN user_auth 
+				ON user_auth.username = settings.value 
+				WHERE settings.name = 'guest_user'");
 		}
 		if (strlen($effective_uid) == 0) {
 			$effective_uid = 0;
@@ -525,7 +529,13 @@ function read_user_i18n_setting($config_name) {
 		$effective_uid = 0;
 	}
 
-	$db_setting = db_fetch_row_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $effective_uid));
+	if (db_table_exists('settings_user')) {
+		$db_setting = db_fetch_row_prepared('SELECT value 
+			FROM settings_user 
+			WHERE name = ? 
+			AND user_id = ?', 
+			array($config_name, $effective_uid));
+	}
 	
 	if (isset($db_setting['value'])) {
 		return $db_setting['value'];
