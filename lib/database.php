@@ -174,6 +174,10 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 				cacti_debug_backtrace('SQL');
 				return FALSE;
 			}
+		}else{
+			$query->closeCursor();
+			unset($query);
+			return FALSE;
 		}
 	}
 
@@ -405,26 +409,38 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 	foreach($result as $arr) {
 		$columns[] = $arr['Field'];
 	}
+
 	if (isset($column['name']) && !in_array($column['name'], $columns)) {
 		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
 		if (isset($column['type']))
 			$sql .= ' ' . $column['type'];
+
 		if (isset($column['unsigned']))
 			$sql .= ' unsigned';
+
 		if (isset($column['NULL']) && $column['NULL'] == false)
 			$sql .= ' NOT NULL';
+
 		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
 			$sql .= ' default NULL';
-		if (isset($column['default']) && $column['default'] != 'CURRENT_TIMESTAMP')
-			$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-		if (isset($column['default']) && $column['default'] == 'CURRENT_TIMESTAMP')
-			$sql .= ' default CURRENT_TIMESTAMP';
+
+		if (isset($column['default'])) {
+			if (strtolower($column['type']) == 'timestamp' && $column['default'] == 'CURRENT_TIMESTAMP') {
+				$sql .= ' default CURRENT_TIMESTAMP';
+			}else{
+				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+			}
+		}
+
 		if (isset($column['on_update']))
 			$sql .= ' ON UPDATE ' . $column['on_update'];
+
 		if (isset($column['auto_increment']))
 			$sql .= ' auto_increment';
+
 		if (isset($column['after']))
 			$sql .= ' AFTER ' . $column['after'];
+
 		return db_execute($sql, $log, $db_conn);
 	}
 
