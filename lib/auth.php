@@ -289,13 +289,13 @@ function get_auth_realms($login = false) {
 	);
 
 	if (db_table_exists('user_domains')) {
-		$realms = db_fetch_assoc('SELECT * FROM user_domains WHERE enabled="on" ORDER BY domain_name');
+		$drealms = db_fetch_assoc('SELECT * FROM user_domains WHERE enabled="on" ORDER BY domain_name');
 		$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
 
-		if (sizeof($realms)) {
+		if (sizeof($drealms)) {
 			if ($login) {
 				$new_realms['local'] = array('name' => 'Local', 'selected' => false);
-				foreach($realms as $realm) {
+				foreach($drealms as $realm) {
 					$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
 				}
 
@@ -311,7 +311,7 @@ function get_auth_realms($login = false) {
 				}
 			}
 
-			$realms = $new_realms;
+			$realms .= $new_realms;
 		}
 	}
 
