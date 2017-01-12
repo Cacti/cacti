@@ -311,7 +311,7 @@ function get_auth_realms($login = false) {
 				}
 			}
 
-			$realms .= $new_realms;
+			$realms += $new_realms;
 		}
 	}
 
