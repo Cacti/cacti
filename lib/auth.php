@@ -278,7 +278,7 @@ function user_enable($user_id) {
 function get_auth_realms($login = false) {
 	static $realms = array();
 
-	if (sizeof($realms) return $realms;
+	if (sizeof($realms)) return $realms;
 
 	$realms = array(
 		0 => 'Local',
