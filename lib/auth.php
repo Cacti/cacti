@@ -276,35 +276,41 @@ function user_enable($user_id) {
 
 /* get_auth_realms - return a list of system user authentication realms */
 function get_auth_realms($login = false) {
-	$realms = db_fetch_assoc('SELECT * FROM user_domains WHERE enabled="on" ORDER BY domain_name');
-	$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
+	static $realms = array();
 
-	if (sizeof($realms)) {
-		if ($login) {
-			$new_realms['local'] = array('name' => 'Local', 'selected' => false);
-			foreach($realms as $realm) {
-				$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
-			}
+	if (sizeof($realms) return $realms;
 
-			if (!empty($default_realm)) {
-				$new_realms[1000+$default_realm]['selected'] = true;
+	$realms = array(
+		0 => 'Local',
+		1 => 'LDAP',
+		2 => 'Web Basic'
+	);
+
+	if (db_table_exists('user_domains')) {
+		$realms = db_fetch_assoc('SELECT * FROM user_domains WHERE enabled="on" ORDER BY domain_name');
+		$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
+
+		if (sizeof($realms)) {
+			if ($login) {
+				$new_realms['local'] = array('name' => 'Local', 'selected' => false);
+				foreach($realms as $realm) {
+					$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
+				}
+
+				if (!empty($default_realm)) {
+					$new_realms[1000+$default_realm]['selected'] = true;
+				}else{
+					$new_realms['local']['selected'] = true;
+				}
 			}else{
-				$new_realms['local']['selected'] = true;
+				$new_realms['0'] = 'Local';
+				foreach($realms as $realm) {
+					$new_realms[1000+$realm['domain_id']] = $realm['domain_name'];
+				}
 			}
-		}else{
-			$new_realms['0'] = 'Local';
-			foreach($realms as $realm) {
-				$new_realms[1000+$realm['domain_id']] = $realm['domain_name'];
-			}
-		}
 
-		$realms = $new_realms;
-	}else{
-		$realms = array(
-			0 => 'Local',
-			1 => 'LDAP',
-			2 => 'Web Basic'
-		);
+			$realms = $new_realms;
+		}
 	}
 
 	return $realms;
