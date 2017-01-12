@@ -161,7 +161,7 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 			/* upgrade - if user runs old version send to upgrade-oldversion*/
 			$step = 9;
 		}else{
-			$step = 4;
+			$step = 7;
 		}
 		break;
 	case '9':
@@ -648,6 +648,9 @@ $enabled = '1';
 						print '<h2>' . __('Installation Type') . '</h2>';
 
 						print '<h4>' . __('Please select the type of installation') . '</h4>';
+
+						print '<p>' . __('Note that when upgrading, you only will recieve the Upgrade selection.') . '</p>';
+
 						print '<p>' . __('You have three Cacti installation options to choose from:') . '</p>';
 
 						print '<p><ul>';
@@ -656,13 +659,20 @@ $enabled = '1';
 						print '<li><b><i>' . __('Upgrade Previous Cacti') . '</i></b> - ' . __('Use this option to upgrade a previous release of Cacti') . '</li>';
 						print '</ul></p>';
 
-						print '<p>
-							<select id="install_type" name="install_type">
-								<option value="1"' . (($default_install_type == '1') ? ' selected' : '') . '>' . __('New Primary Server') . '</option>
-								<option value="2"' . (($default_install_type == '2') ? ' selected' : '') . '>' . __('New Remote Poller') . '</option>
-								<option value="3"' . (($default_install_type == '3') ? ' selected' : '') . '>' . __('Upgrade Previous Cacti') . '</option>
-							</select>
-						</p>';
+						if ($default_install_type == '3') {
+							print '<p>
+								<select id="install_type" name="install_type">
+									<option value="3"' . (($default_install_type == '3') ? ' selected' : '') . '>' . __('Upgrade Previous Cacti') . '</option>
+								</select>
+							</p>';
+						}else{
+							print '<p>
+								<select id="install_type" name="install_type">
+									<option value="1"' . (($default_install_type == '1') ? ' selected' : '') . '>' . __('New Primary Server') . '</option>
+									<option value="2"' . (($default_install_type == '2') ? ' selected' : '') . '>' . __('New Remote Poller') . '</option>
+								</select>
+							</p>';
+						}
 
 						if ($default_install_type == '3') {
 							print '<p> <font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing') . '</font></p>';
@@ -764,6 +774,7 @@ $enabled = '1';
 									$('#test').hide();
 									$('#results').html('');
 									$('#next').button('enable');
+									$('#next').val('<?php print __('Next');?>');
 									break;
 								case '2':
 									$('#local_database').show();
@@ -779,6 +790,7 @@ $enabled = '1';
 									}
 									<?php } else { ?>
 									$('#next').button('disable');
+									$('#next').val('<?php print __('Next');?>');
 									<?php } ?>
 									break;
 								case '3':
@@ -787,6 +799,7 @@ $enabled = '1';
 									$('#test').hide();
 									$('#results').html('');
 									$('#next').button('enable');
+									$('#next').val('<?php print __('Upgrade');?>');
 									break;
 								}
 							}).change();
@@ -1000,7 +1013,9 @@ $enabled = '1';
 					
 					/* upgrade */
 					}elseif ($step == '8') {
-						print '<p>' . __('Upgrade results:') . '</p>';
+						print '<h2>' . __('Upgrade Results') . '</h2>';
+
+						print '<p>' . __('You Cacti database has been upgraded.  You can view the results below.') . '</p>';
 
 						$current_version  = '';
 						$upgrade_results = '';
@@ -1082,6 +1097,8 @@ $(function() {
 		$('#next').button('disable');
 	}else if (step == 1) {
 		$('#next').button('disable');
+	}else if (step == 8) {
+		$('#next').val('Finish');
 	}else if (step == 5 && install_type == 2) {
 		$('#next').val('Finish');
 	}else if (step == 6 && install_type == 1) {
