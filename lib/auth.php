@@ -278,7 +278,9 @@ function user_enable($user_id) {
 function get_auth_realms($login = false) {
 	static $realms = array();
 
-	if (sizeof($realms)) return $realms;
+	if (sizeof($realms)) {
+		return $realms;
+	}
 
 	$realms = array(
 		0 => 'Local',
@@ -578,7 +580,7 @@ function is_realm_allowed($realm) {
 		if (isset($_SESSION['sess_user_realms'][$realm])) {
 			return true;
 		}elseif (read_config_option('auth_method') != 0) {
-			if ($config['cacti_db_version'] >= 1.0) {
+			if (version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
 				$user_realm = db_fetch_cell_prepared('SELECT realm_id 
 					FROM user_auth_realm 
 					WHERE user_id = ?
@@ -1620,17 +1622,21 @@ function reset_user_perms($user_id) {
    @arg $user_id - (int) the id of the current user
    @returns - true if still valid, false otherwise */
 function user_perms_valid($user_id) {
+	global $config;
+
 	$valid = false;
 
-	$key   = db_fetch_cell_prepared('SELECT reset_perms FROM user_auth WHERE id = ?', array($user_id));
+	if (version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
+		$key   = db_fetch_cell_prepared('SELECT reset_perms FROM user_auth WHERE id = ?', array($user_id));
 
-	if (isset($_SESSION['sess_user_perms_key'])) {
-		if ($key == $_SESSION['sess_user_perms_key']) {
-			$valid = true;
+		if (isset($_SESSION['sess_user_perms_key'])) {
+			if ($key == $_SESSION['sess_user_perms_key']) {
+				$valid = true;
+			}
 		}
-	}
 
-	$_SESSION['sess_user_perms_key'] = $key;
+		$_SESSION['sess_user_perms_key'] = $key;
+	}
 
 	return $valid;
 }
