@@ -418,14 +418,14 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 		if (isset($column['unsigned']))
 			$sql .= ' unsigned';
 
-		if (isset($column['NULL']) && $column['NULL'] == false)
+		if (isset($column['NULL']) && $column['NULL'] === false)
 			$sql .= ' NOT NULL';
 
-		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
+		if (isset($column['NULL']) && $column['NULL'] === true && !isset($column['default']))
 			$sql .= ' default NULL';
 
 		if (isset($column['default'])) {
-			if (strtolower($column['type']) == 'timestamp' && $column['default'] == 'CURRENT_TIMESTAMP') {
+			if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 				$sql .= ' default CURRENT_TIMESTAMP';
 			}else{
 				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
