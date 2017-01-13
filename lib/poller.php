@@ -624,6 +624,24 @@ function update_db_from_path($path, $type, $recursive = true) {
 				if ($recursive) {
 					update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
 				}
+			}elseif ($entry == '.') {
+				continue;
+			}elseif ($entry == '..') {
+				continue;
+			}elseif ($entry == '') {
+				continue;
+			}elseif (strpos($entry, '.tgz') !== false) {
+				continue;
+			}elseif (strpos($entry, '.zip') !== false) {
+				continue;
+			}elseif (strpos($entry, '.tar') !== false) {
+				continue;
+			}elseif (strpos($entry, '.gz') !== false) {
+				continue;
+			}elseif (strpos($entry, '.swp') !== false) {
+				continue;
+			}elseif (strpos($entry, '.swo') !== false) {
+				continue;
 			}elseif ($spath != 'include' . DIRECTORY_SEPARATOR . 'config.php') {
 				$save                  = array();
 				$save['path']          = $spath;
@@ -742,6 +760,8 @@ function md5sum_path($path, $recursive = true) {
 		}elseif (strpos($entry, '.gz') !== false) {
 			continue;
 		}elseif (strpos($entry, '.swp') !== false) {
+			continue;
+		}elseif (strpos($entry, '.swo') !== false) {
 			continue;
 		}else{
              if (is_dir($path . DIRECTORY_SEPARATOR . $entry) && $recursive) {
