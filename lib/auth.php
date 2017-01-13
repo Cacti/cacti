@@ -306,7 +306,7 @@ function get_auth_realms($login = false) {
 				}
 			}else{
 				$new_realms['0'] = 'Local';
-				foreach($realms as $realm) {
+				foreach($drealms as $realm) {
 					$new_realms[1000+$realm['domain_id']] = $realm['domain_name'];
 				}
 			}
