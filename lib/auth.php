@@ -283,9 +283,9 @@ function get_auth_realms($login = false) {
 	}
 
 	$realms = array(
-		0 => 'Local',
-		1 => 'LDAP',
-		2 => 'Web Basic'
+		0 => __('Local'),
+		1 => __('LDAP'),
+		2 => __('Web Basic')
 	);
 
 	if (db_table_exists('user_domains')) {
@@ -294,7 +294,7 @@ function get_auth_realms($login = false) {
 
 		if (sizeof($drealms)) {
 			if ($login) {
-				$new_realms['local'] = array('name' => 'Local', 'selected' => false);
+				$new_realms['local'] = array('name' => __('Local'), 'selected' => false);
 				foreach($drealms as $realm) {
 					$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
 				}
@@ -305,7 +305,7 @@ function get_auth_realms($login = false) {
 					$new_realms['local']['selected'] = true;
 				}
 			}else{
-				$new_realms['0'] = 'Local';
+				$new_realms['0'] = __('Local');
 				foreach($drealms as $realm) {
 					$new_realms[1000+$realm['domain_id']] = $realm['domain_name'];
 				}
@@ -425,8 +425,17 @@ function is_tree_allowed($tree_id, $user = 0) {
 			}
 		}
 
-		$policy = db_fetch_cell_prepared('SELECT policy_trees FROM user_auth WHERE id = ?', array($user));
-		$trees  = db_fetch_assoc_prepared('SELECT user_id FROM user_auth_perms WHERE user_id = ? AND type = 2 AND item_id = ?', array($user, $tree_id));
+		$policy = db_fetch_cell_prepared('SELECT policy_trees 
+			FROM user_auth 
+			WHERE id = ?', 
+			array($user));
+
+		$trees  = db_fetch_assoc_prepared('SELECT user_id 
+			FROM user_auth_perms 
+			WHERE user_id = ? 
+			AND type = 2 
+			AND item_id = ?', 
+			array($user, $tree_id));
 
 		$authorized = auth_check_perms($trees, $policy);
 
@@ -441,7 +450,13 @@ function is_tree_allowed($tree_id, $user = 0) {
 			if (sizeof($groups)) {
 				foreach($groups as $g) {
 					$policy = $g['policy_trees'];
-					$trees  = db_fetch_assoc_prepared('SELECT user_id FROM user_auth_perms WHERE user_id = ? AND type = 2 AND item_id = ?', array($user, $tree_id));
+					$trees  = db_fetch_assoc_prepared('SELECT user_id 
+						FROM user_auth_perms 
+						WHERE user_id = ? 
+						AND type = 2 
+						AND item_id = ?', 
+						array($user, $tree_id));
+
 					$authorized = auth_check_perms($trees, $policy);
 					if ($authorized) {
 						return true;
@@ -506,7 +521,10 @@ function is_view_allowed($view = 'show_tree') {
 	}elseif (isset($values[2])) {
 		return true;
 	}else{
-		$value = db_fetch_cell_prepared("SELECT $view FROM user_auth WHERE id = ?", array($_SESSION['sess_user_id']));
+		$value = db_fetch_cell_prepared("SELECT $view 
+			FROM user_auth 
+			WHERE id = ?", 
+			array($_SESSION['sess_user_id']));
 
 		if ($value == 'on') {
 			return true;
