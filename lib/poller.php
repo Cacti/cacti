@@ -522,7 +522,7 @@ function update_resource_cache($poller_id = 1) {
 	$spath = $config['scripts_path'];
 	$rpath = $config['resource_path'];
 
-	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack');
+	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
 
 	$paths = array(
 		'base'     => array('recursive' => false, 'path' => $mpath),
@@ -617,6 +617,8 @@ function update_db_from_path($path, $type, $recursive = true) {
 
 	$pobject = dir($path);
 
+	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
+
 	while(($entry = $pobject->read()) !== false) {
 		if ($entry != '.' && $entry != '..') {
 			$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
@@ -630,19 +632,21 @@ function update_db_from_path($path, $type, $recursive = true) {
 				continue;
 			}elseif ($entry == '') {
 				continue;
-			}elseif (strpos($entry, '.tgz') !== false) {
+			}elseif (basename($path) == 'config.php') {
 				continue;
-			}elseif (strpos($entry, '.zip') !== false) {
-				continue;
-			}elseif (strpos($entry, '.tar') !== false) {
-				continue;
-			}elseif (strpos($entry, '.gz') !== false) {
-				continue;
-			}elseif (strpos($entry, '.swp') !== false) {
-				continue;
-			}elseif (strpos($entry, '.swo') !== false) {
-				continue;
-			}elseif ($spath != 'include' . DIRECTORY_SEPARATOR . 'config.php') {
+			}else{
+				$pathinfo = pathinfo($entry);
+				if (isset($pathinfo['extension'])) {
+					$extension = strtolower($pathinfo['extension']);
+				}else{
+					$extension = '';
+				}
+
+				/* exclude spurious extensions */
+				if (array_search($extension, $excluded_extensions, true) !== false) {
+					continue;
+				}
+
 				$save                  = array();
 				$save['path']          = $spath;
 				$save['id']            = db_fetch_cell_prepared('SELECT id FROM poller_resource_cache WHERE path = ?', array($save['path']));
@@ -694,10 +698,13 @@ function resource_cache_out($type, $path) {
 				}
 
 				if (is_dir(dirname($mypath))) {
-					if ($md5sum != $e['md5sum'] && $e['path'] != 'include' . DIRECTORY_SEPARATOR . 'config.php') {
+					if ($md5sum != $e['md5sum'] && basename($e['path']) != 'config.php') {
 						$extension = substr(strrchr($e['path'], "."), 1);
 						$exit = -1;
-						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents FROM poller_resource_cache WHERE id = ?', array($e['id']), 'contents'));
+						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents 
+							FROM poller_resource_cache 
+							WHERE id = ?', 
+							array($e['id'])));
 
 						/* if the file type is PHP check syntax */
 						if ($extension == 'php') {
@@ -744,6 +751,8 @@ function md5sum_path($path, $recursive = true) {
     $filemd5s = array();
     $pobject = dir($path);
 
+	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
+
     while (($entry = $pobject->read()) !== false) {
 		if ($entry == '.') {
 			continue;
@@ -751,24 +760,24 @@ function md5sum_path($path, $recursive = true) {
 			continue;
 		}elseif ($entry == '') {
 			continue;
-		}elseif (strpos($entry, '.tgz') !== false) {
-			continue;
-		}elseif (strpos($entry, '.zip') !== false) {
-			continue;
-		}elseif (strpos($entry, '.tar') !== false) {
-			continue;
-		}elseif (strpos($entry, '.gz') !== false) {
-			continue;
-		}elseif (strpos($entry, '.swp') !== false) {
-			continue;
-		}elseif (strpos($entry, '.swo') !== false) {
-			continue;
 		}else{
-             if (is_dir($path . DIRECTORY_SEPARATOR . $entry) && $recursive) {
-                 $filemd5s[] = md5sum_path($path . DIRECTORY_SEPARATOR. $entry, $recursive);
-             } else {
-                 $filemd5s[] = md5_file($path . DIRECTORY_SEPARATOR . $entry);
-             }
+			$pathinfo = pathinfo($entry);
+			if (isset($pathinfo['extension'])) {
+				$extension = strtolower($pathinfo['extension']);
+			}else{
+				$extension = '';
+			}
+
+			/* exclude spurious extensions */
+			if (array_search($extension, $excluded_extensions, true) !== false) {
+				continue;
+			}
+
+			if (is_dir($path . DIRECTORY_SEPARATOR . $entry) && $recursive) {
+				$filemd5s[] = md5sum_path($path . DIRECTORY_SEPARATOR. $entry, $recursive);
+			} else {
+				$filemd5s[] = md5_file($path . DIRECTORY_SEPARATOR . $entry);
+			}
          }
     }
 
