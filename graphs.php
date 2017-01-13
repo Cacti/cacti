@@ -1610,7 +1610,7 @@ function graph_management() {
 
 	$display_text = array(
 		'title_cache'    => array('display' => __('Graph Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')),
-		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID fro this Graph.  Useful when performing automation or debugging.')),
+		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Graph.  Useful when performing automation or debugging.')),
 		'name'           => array('display' => __('Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Graph Template that this Graph was based upon.')),
 		'height'         => array('display' => __('Size'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The size of this Graph when not in Preview mode.'))
 	);

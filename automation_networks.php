@@ -404,7 +404,7 @@ function network_edit() {
 	'total_ips' => array(
 		'method' => 'other',
 		'friendly_name' => __('Total IP Addresses'),
-		'description' => __('Total addressible IP Addresses in this Network Range.'),
+		'description' => __('Total addressable IP Addresses in this Network Range.'),
 		'value' => (isset($network['total_ips']) ? number_format_i18n($network['total_ips']) : 0)
 		),
 	'dns_servers' => array(
@@ -604,7 +604,7 @@ function network_edit() {
 		),
 	'ping_method' => array(
 		'friendly_name' => __('Ping Method'),
-		'description' => __('The type of ping packet to sent.'),
+		'description' => __('The type of ping packet to send.'),
 		'value' => '|arg1:ping_method|',
 		'method' => 'drop_array',
 		'default' => read_config_option('ping_method'),

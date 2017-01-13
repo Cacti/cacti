@@ -483,7 +483,7 @@ function api_plugin_install ($plugin) {
 		}
 
 		if (!$proceed) {
-			$message .= '<br>' . __('Plugin can not be installed.');
+			$message .= '<br>' . __('Plugin cannot be installed.');
 			$_SESSION['reports_message'] = $message;
 
 			raise_message('reports_message');

@@ -479,15 +479,15 @@ function filter() {
 					</td>
 					<td>
 						<select id='age' name='age' onChange='refreshForm()'>
-							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('1 Week');?></option>
-							<option value='604800'   <?php print (get_request_var('age') == '604800'   ? ' selected':'');?>>&gt; <?php print __('1 Week');?></option>
+							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('%d Week', 1);?></option>
+							<option value='604800'   <?php print (get_request_var('age') == '604800'   ? ' selected':'');?>>&gt; <?php print __('%d Week', 1);?></option>
 							<option value='1209600'  <?php print (get_request_var('age') == '1209600'  ? ' selected':'');?>>&gt; <?php print __('%d Weeks',2);?></option>
 							<option value='1814400'  <?php print (get_request_var('age') == '1814400'  ? ' selected':'');?>>&gt; <?php print __('%d Weeks', 3);?></option>
-							<option value='2628000'  <?php print (get_request_var('age') == '2628000'  ? ' selected':'');?>>&gt; <?php print __('1 Month');?></option>
+							<option value='2628000'  <?php print (get_request_var('age') == '2628000'  ? ' selected':'');?>>&gt; <?php print __('%d Month', 1);?></option>
 							<option value='5256000'  <?php print (get_request_var('age') == '5256000'  ? ' selected':'');?>>&gt; <?php print __('%d Months', 2);?></option>
 							<option value='10512000' <?php print (get_request_var('age') == '10512000' ? ' selected':'');?>>&gt; <?php print __('%d Months', 4);?></option>
 							<option value='15768000' <?php print (get_request_var('age') == '15768000' ? ' selected':'');?>>&gt; <?php print __('%d Months', 6);?></option>
-							<option value='31536000' <?php print (get_request_var('age') == '31536000' ? ' selected':'');?>>&gt; <?php print __('1 Year');?></option>
+							<option value='31536000' <?php print (get_request_var('age') == '31536000' ? ' selected':'');?>>&gt; <?php print __('%d Year', 1);?></option>
 						</select>
 					</td>
 					<td>

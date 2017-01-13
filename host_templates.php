@@ -811,7 +811,7 @@ function template() {
 	$display_text = array(
 		'name' => array('display' => __('Device Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Device Template.')),
 		'host_template.id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Device Template.  Useful when performing automation or debugging.')),
-		"nosort" => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Device Templates in use can not be Deleted.  In use is defined as being referenced by a Device.')),
+		"nosort" => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Device Templates in use cannot be Deleted.  In use is defined as being referenced by a Device.')),
 		'hosts' => array('display' => __('Devices Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Devices using this Device Template.'))
 	);
 

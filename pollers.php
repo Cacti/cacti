@@ -58,7 +58,7 @@ $fields_poller_edit = array(
 	'hostname' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Web Site Hostname'),
-		'description' => __('The hostname for Data Collector.  It may have to be a Fully Qualified Domain name for the remote pollers to contact it for activities such as re-indexing, realtime graphing, etc.'),
+		'description' => __('The hostname for Data Collector.  It may have to be a Fully Qualified Domain name for the remote Pollers to contact it for activities such as re-indexing, Real-time graphing, etc.'),
 		'value' => '|arg1:hostname|',
 		'size' => '50',
 		'default' => '',
@@ -115,7 +115,7 @@ $fields_poller_edit = array(
 	'dbport' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Remote Database Port'),
-		'description' => __('The tcp port to use to connect to the remote database.'),
+		'description' => __('The TCP port to use to connect to the remote database.'),
 		'value' => '|arg1:dbport|',
 		'size' => '5',
 		'default' => $database_port,
@@ -306,7 +306,7 @@ function form_actions() {
 		}elseif (get_request_var('drp_action') == '4') { /* full sync */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to Synchronize the Remote Data Collector for Offline Operation.', 'Click \'Continue\' to Synchronize the Remote Data Colletors for Offline Operation.', sizeof($poller_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to Synchronize the Remote Data Collector for Offline Operation.', 'Click \'Continue\' to Synchronize the Remote Data Collectors for Offline Operation.', sizeof($poller_array)) . "</p>
 					<div class='itemlist'><ul>$pollers</ul></div>
 				</td>
 			</tr>\n";

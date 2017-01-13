@@ -937,7 +937,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap'><?php print __('Default Graph Template Template policy for this User Group');?></td>
+			<td class='nowrap'><?php print __('Default Graph Template policy for this User Group');?></td>
 			<td> 
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 			</td>

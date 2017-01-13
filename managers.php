@@ -1044,7 +1044,7 @@ function form_actions(){
 			if (sizeof($selected_items)) {
 				$msg = (get_nfilter_request_var('drp_action') == 1)
 					 ? __('Click \'Continue\' to forward the following Notification Objects to this Notification Receiver.')
-					 : __('Click \'Continue\' to disable forwarding the following Notification Objects to this Noticification Receiver.');
+					 : __('Click \'Continue\' to disable forwarding the following Notification Objects to this Notification Receiver.');
 
 				print "<tr>
 					<td class='textArea'>

@@ -840,7 +840,7 @@ function vdef($refresh = true) {
 
     $display_text = array(
         'name'      => array('display' => __('VDEF Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this VDEF.') ),
-        'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('VDEFs that are in use can not be Deleted. In use is defined as being referenced by a Graph or a Graph Template.') ),
+        'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template.') ),
         'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this VDEF.') ),
         'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs Templates using this VDEF.') )
 	);

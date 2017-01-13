@@ -707,7 +707,7 @@ function data() {
 
 	$display_text = array(
 		'name'         => array('display' => __('Data Input Name'),    'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')),
-		'nosort'       => array('display' => __('Deletable'),          'align' => 'right', 'tip' => __('Data Inputs that are in use can not be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')), 
+		'nosort'       => array('display' => __('Deletable'),          'align' => 'right', 'tip' => __('Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')), 
 		'data_sources' => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources that use this Data Input Method.')),
 		'templates'    => array('display' => __('Templates Using'),    'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Templates that use this Data Input Method.')),
 		'type_id'      => array('display' => __('Data Input Method'),  'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method used to gather information for this Data Input Method.')));

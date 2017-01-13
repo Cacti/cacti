@@ -175,8 +175,8 @@ function settings() {
 		),
 		'email_address' => array(
 			'method' => 'textbox',
-			'friendly_name' => __('E-Mail Address'),
-			'description' => __('An E-Mail Address you be reached at.'),
+			'friendly_name' => __('Email Address'),
+			'description' => __('An Email Address you be reached at.'),
 			'value' => '|arg1:email_address|',
 			'max_length' => '60',
 			'size' => '60'

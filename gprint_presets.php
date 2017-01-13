@@ -385,7 +385,7 @@ function gprint_presets() {
 
 	$display_text = array(
 		'name'      => array('display' => __('GPRINT Preset Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this GPRINT Preset.')),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('GPRINTs that are in use can not be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.')), 
+		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.')), 
 		'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this GPRINT.')),
 		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs Templates using this GPRINT.'))
 	);

@@ -101,7 +101,7 @@ $messages = array(
 		'message' => __('Graph not found.  Either it has been deleted or your database needs repair.'),
 		'type' => 'error'),
 	'clog_purged' => array(
-		'message' => __('Cacti Log Purged Sucessfully'), 
+		'message' => __('Cacti Log purged successfully'), 
 		'type' => 'info'),
 	'password_change' => array(
 		'message' => __('Error: If you force a password change, you must also allow the user to change their password.'), 
@@ -122,10 +122,10 @@ $messages = array(
 		'message' => __('Invalid Timestamp. Select timestamp in the future.'),
 		'type'    => 'error'),
 	'poller_sync' => array(
-		'message' => '<i>' . __('Data Collector(s) Syncronized for Offline Operation') . '</i>', 
+		'message' => '<i>' . __('Data Collector(s) Synchronized for Offline Operation') . '</i>', 
 		'type' => 'info'),
 	'poller_notfound' => array(
-		'message' => '<i>' . __('Data Collector(s) Not found when attempting Syncronization') . '</i>', 
+		'message' => '<i>' . __('Data Collector(s) Not found when attempting Synchronization') . '</i>', 
 		'type' => 'error'),
 	'poller_noconnect' => array(
 		'message' => '<i>' . __('Unable to establish MySQL connection with remote Data Collector.') . '</i>', 
@@ -578,17 +578,17 @@ $host_group_types = array(
 $custom_data_source_types = array(
 	'CURRENT_DATA_SOURCE'         => __('Current Graph Item Data Source'),
 	'CURRENT_DATA_SOURCE_PI'      => __('Current Graph Item Polling Interval'),
-	'ALL_DATA_SOURCES_NODUPS'     => __('All Data Sources (Dont Include Duplicates)'),
+	'ALL_DATA_SOURCES_NODUPS'     => __('All Data Sources (Do not Include Duplicates)'),
 	'ALL_DATA_SOURCES_DUPS'       => __('All Data Sources (Include Duplicates)'),
-	'SIMILAR_DATA_SOURCES_NODUPS' => __('All Similar Data Sources (Dont Include Duplicates)'),
+	'SIMILAR_DATA_SOURCES_NODUPS' => __('All Similar Data Sources (Do not Include Duplicates)'),
 	'SIMILAR_DATA_SOURCES_DUPS'   => __('All Similar Data Sources (Include Duplicates)'),
 	'CURRENT_DS_MINIMUM_VALUE'    => __('Current Data Source Item: Minimum Value'),
 	'CURRENT_DS_MAXIMUM_VALUE'    => __('Current Data Source Item: Maximum Value'),
 	'CURRENT_GRAPH_MINIMUM_VALUE' => __('Graph: Lower Limit'),
 	'CURRENT_GRAPH_MAXIMUM_VALUE' => __('Graph: Upper Limit'),
-	'COUNT_ALL_DS_NODUPS'         => __('Count of All Data Sources (Dont Include Duplicates)'),
+	'COUNT_ALL_DS_NODUPS'         => __('Count of All Data Sources (Do not Include Duplicates)'),
 	'COUNT_ALL_DS_DUPS'           => __('Count of All Data Sources (Include Duplicates)'),
-	'COUNT_SIMILAR_DS_NODUPS'     => __('Count of All Similar Data Sources (Dont Include Duplicates)'),
+	'COUNT_SIMILAR_DS_NODUPS'     => __('Count of All Similar Data Sources (Do not Include Duplicates)'),
 	'COUNT_SIMILAR_DS_DUPS'	      => __('Count of All Similar Data Sources (Include Duplicates)')
 );
 
@@ -665,17 +665,19 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 }
 
 if ((isset($_SESSION['sess_user_id']))) {
-	$consoles = db_fetch_assoc('SELECT id, title, extendedstyle
-		FROM external_links
-		WHERE style="CONSOLE"
-		AND enabled="on"
-		ORDER BY extendedstyle, sortorder, id');
+	if (db_table_exists('external_links')) {
+		$consoles = db_fetch_assoc('SELECT id, title, extendedstyle
+			FROM external_links
+			WHERE style="CONSOLE"
+			AND enabled="on"
+			ORDER BY extendedstyle, sortorder, id');
 
-	if (sizeof($consoles)) {
-		foreach ($consoles as $page) {
-			if (is_realm_allowed($page['id']+10000)) {
-				$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? $page['extendedstyle'] : __('External Links'));
-				$menu[$menuname]['link.php?id=' . $page['id']] = $page['title'];
+		if (sizeof($consoles)) {
+			foreach ($consoles as $page) {
+				if (is_realm_allowed($page['id']+10000)) {
+					$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? $page['extendedstyle'] : __('External Links'));
+					$menu[$menuname]['link.php?id=' . $page['id']] = $page['title'];
+				}
 			}
 		}
 	}
@@ -1008,24 +1010,24 @@ $graph_timespans = array(
 );
 
 $graph_timeshifts = array(
-	GTS_HALF_HOUR => __('30 Min'),
-	GTS_1_HOUR    => __('1 Hour'),
+	GTS_HALF_HOUR => __('%d Min', 30),
+	GTS_1_HOUR    => __('%d Hour', 1),
 	GTS_2_HOURS   => __('%d Hours', 2),
 	GTS_4_HOURS   => __('%d Hours', 4),
 	GTS_6_HOURS   => __('%d Hours', 6),
 	GTS_12_HOURS  => __('%d Hours', 12),
-	GTS_1_DAY     => __('1 Day'),
+	GTS_1_DAY     => __('%d Day', 1),
 	GTS_2_DAYS    => __('%d Days', 2),
 	GTS_3_DAYS    => __('%d Days', 3),
 	GTS_4_DAYS    => __('%d Days', 4),
-	GTS_1_WEEK    => __('1 Week'),
+	GTS_1_WEEK    => __('%d Week', 1),
 	GTS_2_WEEKS   => __('%d Weeks', 2),
-	GTS_1_MONTH   => __('1 Month'),
+	GTS_1_MONTH   => __('%d Month', 1),
 	GTS_2_MONTHS  => __('%d Months', 2),
 	GTS_3_MONTHS  => __('%d Months', 3),
 	GTS_4_MONTHS  => __('%d Months', 4),
 	GTS_6_MONTHS  => __('%d Months', 6),
-	GTS_1_YEAR    => __('1 Year'),
+	GTS_1_YEAR    => __('%d Year', 1),
 	GTS_2_YEARS   => __('%d Years', 2)
 );
 
@@ -1373,7 +1375,7 @@ $automation_oper = array(
 
 $automation_tree_item_types  = array(
 	TREE_ITEM_TYPE_GRAPH => __('Graph'),
-	TREE_ITEM_TYPE_HOST  => __('Host')
+	TREE_ITEM_TYPE_HOST  => __('Device')
 );
 
 $automation_tree_header_types  = array(

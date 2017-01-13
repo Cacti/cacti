@@ -486,7 +486,7 @@ function form_actions() {
 		}elseif (get_nfilter_request_var('drp_action') == '7') { /* sync device template */
 			print "	<tr>
 				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to Syncronize the following Device(s) to their Device Template.') . "</p>
+					<p>" . __('Click \'Continue\' to Synchronize the following Device(s) to their Device Template.') . "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
 				</tr>\n";
@@ -852,7 +852,7 @@ function host_edit() {
 				form_end_row();
 			}
 		}else{ 
-			print "<tr class='tableRow'><td colspan='4'><em>" . __('No associated data queries.') . "</em></td></tr>"; 
+			print "<tr class='tableRow'><td colspan='4'><em>" . __('No Associated Data Queries.') . "</em></td></tr>"; 
 		}
 
 		?>
@@ -1445,10 +1445,10 @@ function host() {
 		'status'                 => array('display' => __('Status'), 'align' => 'center', 'sort' => 'ASC', 'tip' => __('The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.')),
 		'instate'                => array('display' => __('In State'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The amount of time that this Device has been in its current state.')),
 		'snmp_sysUpTimeInstance' => array('display' => __('Uptime'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The current amount of time that the host has been up.')),
-		'polling_time'           => array('display' => __('Poll Time'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The the amount of time it takes to collect data from this Device.')),
+		'polling_time'           => array('display' => __('Poll Time'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The amount of time it takes to collect data from this Device.')),
 		'cur_time'               => array('display' => __('Current (ms)'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The current ping time in milliseconds to reach the Device.')),
 		'avg_time'               => array('display' => __('Average (ms)'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The average ping time in milliseconds to reach the Device since the counters were cleared for this Device.')),
-		'availability'           => array('display' => __('Availability'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The availability percentage based upon ping results insce the counters were cleared for this Device.'))
+		'availability'           => array('display' => __('Availability'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The availability percentage based upon ping results since the counters were cleared for this Device.'))
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);

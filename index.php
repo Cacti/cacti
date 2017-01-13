@@ -84,7 +84,7 @@ if (read_config_option('hide_console') != '1') {
 	</td>
 	<tr>
 		<td class="textAreaNotes top left">
-			<?php print __('<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as THold will work so long as the Remote Data Collector is in <b>\'online\'</b> mode.');?>
+			<?php print __('<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>\'online\'</b> mode.');?>
 		</td>
 	</td>
 	<?php } ?>

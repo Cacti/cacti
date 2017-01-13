@@ -1116,7 +1116,7 @@ function data_query() {
 	$display_text = array(
 		'name'              => array('display' => __('Data Query Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Query.')),
 		'id'                => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal ID for this Graph Template.  Useful when performing automation or debugging.')),
-		'nosort'            => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Data Queries that are in use can not be Deleted. In use is defined as being referenced by either a Graph or a Graph Template.')), 
+		'nosort'            => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Data Queries that are in use cannot be Deleted. In use is defined as being referenced by either a Graph or a Graph Template.')), 
 		'graphs'            => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this Data Query.')),
 		'templates'         => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs Templates using this Data Query.')),
 		'data_input_method' => array('display' => __('Data Input Method'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Data Input Method used to collect data for Data Sources associated with this Data Query.')));

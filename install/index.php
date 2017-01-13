@@ -67,7 +67,7 @@ if ($old_cacti_version == $config['cacti_version']) {
 		<p style="font-family: Verdana, Arial; font-size: 12px;">' 
 		. __("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:</p><p><pre>mysql -u %s -p %s < cacti.sql</pre></p><p>This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database.", $database_username, $database_default) . '</p>';
 
-	print '<p>' . __("In Cacti %s, you must also import MySQL timezone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table", $config['cacti_version']) . '</p>';
+	print '<p>' . __("In Cacti %s, you must also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table", $config['cacti_version']) . '</p>';
 
 	if ($config['cacti_server_os'] == 'unix') {
 		print '<p>' . __("On Linux/UNIX, do the following:") . '</p><p><pre>' . __("mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql") . "\n";
@@ -532,21 +532,21 @@ $enabled = '1';
 						if (sizeof($mysql_timezone_access)) {
 							$timezone_populated = db_fetch_cell('SELECT COUNT(*) FROM mysql.time_zone_name');
 							if (!$timezone_populated) {
-								print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your MySQL timezone database is not populated.  Please populate this database before proceeding.') . '</p>';
+								print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your MySQL TimeZone database is not populated.  Please populate this database before proceeding.') . '</p>';
 								$enabled = '0';
 							}
 						}else{
-							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Cacti database login account does not have access to the MySQL timezone database.  Please provide the Cacti database account "select" access to the "time_zone_name" table in the "mysql" database, and populate MySQL\'s timezone information before proceeding.') . '</p>';
+							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account "select" access to the "time_zone_name" table in the "mysql" database, and populate MySQL\'s TimeZone information before proceeding.') . '</p>';
 							$enabled = '0';
 						}
 
 						if ($enabled == '1') {
-							print '<p>' . __('Your Cacti database account has access to the MySQL timezone database and that database is populated with global timezone information.') . '</p>';
+							print '<p>' . __('Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information.') . '</p>';
 						}
 
 						print '<h3>' . __('Required PHP Module Support') .'</h3>';
 
-						print '<p>' .  __('Cacti requries several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '</p>';
+						print '<p>' .  __('Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '</p>';
 
 						print '<p>' . __('The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install.') . '</p>';
 
@@ -649,7 +649,7 @@ $enabled = '1';
 
 						print '<h4>' . __('Please select the type of installation') . '</h4>';
 
-						print '<p>' . __('Note that when upgrading, you only will recieve the Upgrade selection.') . '</p>';
+						print '<p>' . __('Note that when upgrading, you only will receive the Upgrade selection.') . '</p>';
 
 						print '<p>' . __('You have three Cacti installation options to choose from:') . '</p>';
 
@@ -885,15 +885,15 @@ $enabled = '1';
 						/* Print message and error logs */
 						print '<h2>' . __('Directory Permission Checks') . '</h2>';
 							
-						print '<p>' . __('Please insure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an \'install_package.php\' cli script that can be used from the command line after the install is complete.') . '</p>';
+						print '<p>' . __('Please ensure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an \'install_package.php\' cli script that can be used from the command line after the install is complete.') . '</p>';
 
 						if (get_request_var('install_type') == 1) {
 							print '<p>' . __('After the install is complete, you can make some of these directories read only to increase security.') . '</p>';						
 						}else{
-							print '<p>' . __('These directories will be required to stay read writable after the instal so that the Cacti remote synchonization process can update them as the Main Cacti Web Site changes') . '</p>';
+							print '<p>' . __('These directories will be required to stay read writable after the install so that the Cacti remote synchronization process can update them as the Main Cacti Web Site changes') . '</p>';
 						}
 
-						$remote_poller = array(
+						$remote_paths = array(
 							$config['base_path'] . '/resource/snmp_queries',
 							$config['base_path'] . '/resource/script_server',
 							$config['base_path'] . '/resource/script_queries',
@@ -983,7 +983,7 @@ $enabled = '1';
 					}elseif ($step == '6') {
 						print '<h2>' . __('Template Setup') . '</h2>';
 
-						print '<p>' . __('Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to insure that you select the \'Windows Device\' Template.  If your Operating System is Linux/UNIX, make sure you select the \'Local Linux Machine\' Device Template.') . '</p>';
+						print '<p>' . __('Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the \'Windows Device\' Template.  If your Operating System is Linux/UNIX, make sure you select the \'Local Linux Machine\' Device Template.') . '</p>';
 
 						print __('Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press \'Finish\' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes.') . '<br><br>';
 						print '<form name="chk" method="post" action="start.php">';

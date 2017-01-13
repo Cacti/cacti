@@ -377,7 +377,7 @@ function update_show_current () {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'nosort' => array('display' => __('Actions'), 'align' => 'left', 'sort' => '', 'tip' => __('Actions available include "Install", "Activate", "Disable", "Enable", "Uninstall".')),
+		'nosort' => array('display' => __('Actions'), 'align' => 'left', 'sort' => '', 'tip' => __('Actions available include \'Install\', \'Activate\', \'Disable\', \'Enable\', \'Uninstall\'.')),
 		'directory' => array('display' => __('Plugin Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name for this Plugin.  The name is controlled by the directory it resides in.')),
 		'name' => array('display' => __('Plugin Description'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('A description that the Plugins author has given to the Plugin.')),
 		'status' => array('display' => __('Status'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The status of this Plugin.')),
@@ -437,7 +437,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 	if ($include_ordering) {
 		$row .= "<td class='nowrap right'>";
 		if (!$first_plugin) {
-			$row .= "<a class='pic fa fa-caret-up moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __('Order Before Prevous Plugin') . "'></a>";
+			$row .= "<a class='pic fa fa-caret-up moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __('Order Before Previous Plugin') . "'></a>";
 		}else{
 			$row .= '<span class="moveArrowNone"></span>';
 		}

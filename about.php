@@ -39,7 +39,7 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 	<td valign="top" class="odd" class="textArea">
 		<a href="http://www.cacti.net/"><img align="right" src="images/cacti_about_logo.gif" alt="raXnet"></a>
 		
-		<?php print __('Cacti is designed to be a complete graphing solution based on the RRDTool\'s framework. Its goal is to make a network administrator\'s job easier by taking care of all the necessary details necessary to create meaningful graphs.'); ?>
+		<?php print __('Cacti is designed to be a complete graphing solution based on the RRDtool\'s framework. Its goal is to make a network administrator\'s job easier by taking care of all the necessary details necessary to create meaningful graphs.'); ?>
 
 		<p><?php print __('Please see the official %sCacti website%s for information, support, and updates.', '<a href="http://www.cacti.net/?version=' . $config['cacti_version'] . '">', '</a>'); ?></p>
 
@@ -47,7 +47,7 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 		<ul type="disc">
 			<li>
 				<strong>Ian Berry</strong> 
-				<?php print __('(raX) was the original creator of Cacti which was first released to the world in 2001. He remained the sole developer for over two years, writing code, supporting users, and keeping the project active. Over the years, Ian has moved from hist role as a fledgling developer to starting multiple companies focusing on building unique internet based services for customers worldwide.'); ?>
+				<?php print __('(raX) was the original creator of Cacti which was first released to the world in 2001. He remained the sole developer for over two years, writing code, supporting users, and keeping the project active. Over the years, Ian has moved from his role as a fledgling developer to starting multiple companies focusing on building unique internet based services for customers worldwide.'); ?>
 			</li>
 			<li>
 				<strong>Larry Adams</strong>
@@ -59,7 +59,7 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 			</li>
 			<li>
 				<strong>J.P. Pasnak, CD</strong>
-				<?php print __('(Linegod) joined the Cacti Group in August of 2005. He is contributing to releases and maintains the %s. Jeff is one of our true leaders on the team. He plays a diminished role, but when he speaks, the rest of the team listen, if for nothing else, but to prep the palate for another swig of hard cider and shepherds pie!', '<a href="http://docs.cacti.net/">' . __('Documentation System') . '</a>'); ?>
+				<?php print __('(Linegod) joined the Cacti Group in August of 2005. He is contributing to releases and maintains the %s. Jeff is one of our true leaders on the team. He plays a diminished role, but when he speaks, the rest of the team listen, if for nothing else, but to prep the palate for another swig of hard cider and shepherd\'s pie!', '<a href="http://docs.cacti.net/">' . __('Documentation System') . '</a>'); ?>
 			</li>
 			<li>
 				<strong>Jimmy Conner</strong>
@@ -79,11 +79,11 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 		<p><strong><?php print __('Thanks'); ?></a></strong><br>
 		<ul type="disc">
 			<li>
-				<?php print __('A very special thanks to %sTobi Oetiker%s, the creator of %sRRDTool%s and the very popular %sMRTG%s.', '<a href="http://tobi.oetiker.ch/"><strong>', '</strong></a>', '<a href="http://www.rrdtool.org/">', '</a>', '<a href="http://www.rrdtool.org">', '</a>'); ?>
+				<?php print __('A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s.', '<a href="http://tobi.oetiker.ch/"><strong>', '</strong></a>', '<a href="http://www.rrdtool.org/">', '</a>', '<a href="http://www.rrdtool.org">', '</a>'); ?>
 			</li>
 			<li>
 				<strong><?php print __('The users of Cacti'); ?></strong>
-				<?php print __('Especially anyone who has taken the time to create a bug report, or otherwise help fix a Cacti-related problem. Also to anyone who has purchased an item from a developers amazon.com wishlist or donated money to the project.'); ?>
+				<?php print __('Especially anyone who has taken the time to create a bug report, or otherwise help fix a Cacti-related problem. Also to anyone who has donated money to the project.'); ?>
 			</li>
 		</ul>
 		</p>

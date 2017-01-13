@@ -167,11 +167,11 @@ function utilities_view_tech($php_info = '') {
 	/* Check RRDTool issues */
 	$rrdtool_error = '';
 	if ($rrdtool_version != read_config_option('rrdtool_version')) {
-		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: Installed RRDTool version does not match configured version.<br>Please visit the %s and select the correct RRDTool Utility Version.', "<a href='" . htmlspecialchars('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span><br>";
+		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not match configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . htmlspecialchars('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span><br>";
 	}
 	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
 	if ($graph_gif_count > 0) {
-		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: RRDTool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span><br>';
+		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span><br>';
 	}
 
 	/* Get spine version */
@@ -255,7 +255,7 @@ function utilities_view_tech($php_info = '') {
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('RRDTool Version') . "</td>\n";
+		print '<td>' . __('RRDtool Version') . "</td>\n";
 		print '<td>' . $rrdtool_versions[$rrdtool_version] . ' ' . $rrdtool_error . "</td>\n";
 		form_end_row();
 
@@ -1324,7 +1324,7 @@ function utilities_view_snmp_cache() {
 						<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Fitlers');?>'>
+						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1785,7 +1785,7 @@ function utilities() {
 			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_poller_cache');?>'><?php print __('View Poller Cache');?></a>
 		</td>
 		<td class='textArea'>
-			<?php print __('This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the rrd files for graphing or the database for display.');?>
+			<?php print __('This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the RRDfiles for graphing or the database for display.');?>
 		</td>
 	</tr>
 	<?php form_alternate_row(); ?>
@@ -1833,7 +1833,7 @@ function utilities() {
 			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=rebuild_snmpagent_cache');?>'><?php print __('Rebuild SNMPAgent Cache');?></a>
 		</td>
 		<td class='textArea'>
-			<?php print __('The snmp cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.');?>
+			<?php print __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.');?>
 		</td>
 	</tr>
 	<?php form_alternate_row(); ?>
@@ -2019,7 +2019,7 @@ function boost_display_run_status() {
 			$directory_size = boost_file_size_display($directory_size);
 			$cache_files    = $cache_files . ' Files';
 		}else{
-			$directory_size = '<strong>' . __('WARNING:') . '</strong>' . __('Can not open directory');
+			$directory_size = '<strong>' . __('WARNING:') . '</strong>' . __('Cannot open directory');
 			$cache_files    = '<strong>' . __('WARNING:') . '</strong> ' . __('Unknown');
 		}
 	}else{
@@ -2033,7 +2033,7 @@ function boost_display_run_status() {
 	html_section_header(__('Current Boost Status'), 2);
 
 	form_alternate_row();
-	print '<td>' . __('Boost On Demand Updating:') . '</td><td>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</td>';
+	print '<td>' . __('Boost On-demand Updating:') . '</td><td>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</td>';
 
 	form_alternate_row();
 	print '<td>' . __('Total Data Sources:') . '</td><td>' . number_format_i18n($total_data_sources) . '</td>';

@@ -684,7 +684,7 @@ function color() {
 		'name'      => array('display' => __('Color Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Color definition.')),
 		'read_only' => array('display' => __('Named Color'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Is this color a named color which are read only.')),
 		'nosort1'   => array('display' => __('Color'), 'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Color as shown on the screen.')),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use can not be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
+		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
 		'graphs'    => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
 		'templates' => array('display' => __('Templates'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph Templates using this Color.'))
 	);

@@ -152,7 +152,7 @@ function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port
 }
 
 class Ldap {
-	function __construct() {
+	function Ldap() {
 		/* Initialize LDAP parameters for Authenticate */
 		$this->dn         = read_config_option('ldap_dn');
 		$this->host       = read_config_option('ldap_server');
@@ -238,7 +238,7 @@ class Ldap {
 			if ($this->encryption == '2') {
 				if (!@ldap_start_tls($ldap_conn)) {
 					$output['error_num'] = '5';
-					$output['error_text'] = __('Protocol error, unable to start TLS communications');
+					$output['error_text'] = __('Protocol Error, unable to start TLS communications');
 					cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
 					@ldap_close($ldap_conn);
 					return $output;
@@ -292,7 +292,7 @@ class Ldap {
 				if ($ldap_error == 0x03) {
 					/* protocol error */
 					$output['error_num'] = '7';
-					$output['error_text'] = __('Protocol error');
+					$output['error_text'] = __('Protocol Error');
 				}elseif ($ldap_error == 0x31) {
 					/* invalid credentials */
 					$output['error_num'] = '1';
@@ -300,11 +300,11 @@ class Ldap {
 				}elseif ($ldap_error == 0x32) {
 					/* insuffient access */
 					$output['error_num'] = '8';
-					$output['error_text'] = __('Insufficient access');
+					$output['error_text'] = __('Insufficient Access');
 				}elseif ($ldap_error == 0x51) {
 					/* unable to connect to server */
 					$output['error_num'] = '9';
-					$output['error_text'] = __('Unable to connect to server');
+					$output['error_text'] = __('Unable to Connect to Server');
 				}elseif ($ldap_error == 0x55) {
 					/* timeout */
 					$output['error_num'] = '10';
@@ -312,13 +312,13 @@ class Ldap {
 				}else{
 					/* general bind error */
 					$output['error_num'] = '11';
-					$output['error_text'] = __('General bind error, LDAP result:') . ' ' . ldap_error($ldap_conn);
+					$output['error_text'] = __('General Bind Error, LDAP result:') . ' ' . ldap_error($ldap_conn);
 				}
 			}
 		}else{
 			/* Error intializing LDAP */
 			$output['error_num'] = '6';
-			$output['error_text'] = __('Unable to create LDAP object');
+			$output['error_text'] = __('Unable to Create LDAP Object');
 		}
 
 		/* Close LDAP connection */
@@ -405,7 +405,7 @@ class Ldap {
 				/* protocol error */
 				$output['dn'] = '';
 				$output['error_num'] = '4';
-				$output['error_text'] = __('Protocol error, unable to set version');
+				$output['error_text'] = __('Protocol Error, unable to set version');
 				cacti_log('LDAP_SEARCH: ' . $output['error_text'], false, 'AUTH');
 				@ldap_close($ldap_conn);
 				return $output;
@@ -430,7 +430,7 @@ class Ldap {
 					/* TLS startup error */
 					$output['dn'] = '';
 					$output['error_num'] = '5';
-					$output['error_text'] = __('Protocol error, unable to start TLS communications');
+					$output['error_text'] = __('Protocol Error, unable to start TLS communications');
 					cacti_log('LDAP_SEARCH: ' . $output['error_text'], false, 'AUTH');
 					@ldap_close($ldap_conn);
 					return $output;
@@ -474,22 +474,22 @@ class Ldap {
 					/* protocol error */
 					$output['dn'] = '';
 					$output['error_num'] = '6';
-					$output['error_text'] = __('Protocol error');
+					$output['error_text'] = __('Protocol Error');
 				}elseif ($ldap_error == 0x31) {
 					/* invalid credentials */
 					$output['dn'] = '';
 					$output['error_num'] = '7';
-					$output['error_text'] = __('Invalid credentials');
+					$output['error_text'] = __('Invalid Credentials');
 				}elseif ($ldap_error == 0x32) {
 					/* insuffient access */
 					$output['dn'] = '';
 					$output['error_num'] = '8';
-					$output['error_text'] = __('Insufficient access');
+					$output['error_text'] = __('Insufficient Access');
 				}elseif ($ldap_error == 0x51) {
 					/* unable to connect to server */
 					$output['dn'] = '';
 					$output['error_num'] = '9';
-					$output['error_text'] = __('Unable to connect to server');
+					$output['error_text'] = __('Unable to Connect to Server');
 				}elseif ($ldap_error == 0x55) {
 					/* timeout */
 					$output['dn'] = '';
@@ -499,7 +499,7 @@ class Ldap {
 					/* general bind error */
 					$output['dn'] = '';
 					$output['error_num'] = '11';
-					$output['error_text'] = __('General bind error, LDAP result:') . ' ' . ldap_error($ldap_conn);
+					$output['error_text'] = __('General Bind Error, LDAP result:') . ' ' . ldap_error($ldap_conn);
 				}
 			}
 		}else{

@@ -746,7 +746,7 @@ case 'list':
 		});
 
 		$('#graph_template_id').hide().multiselect({
-			noneSelectedText: '<?php print __('All Graphs & Templatess');?>', 
+			noneSelectedText: '<?php print __('All Graphs & Templates');?>', 
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
 				$.each(checkedItems, function(index, value) {

@@ -261,8 +261,7 @@ $fields_data_input_field_edit_2 = array(
 	'data_name' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Field [%s]', '|arg1:|'),
-		'description' => __('Enter a name for this %s field.  Note: If using name value pairs in your script, for example: NAME:VALUE,
-            it is important that the name match your output field name identically to the script output name or names.', '|arg1:|'),
+		'description' => __('Enter a name for this %s field.  Note: If using name value pairs in your script, for example: NAME:VALUE, it is important that the name match your output field name identically to the script output name or names.', '|arg1:|'),
 		'value' => '|arg2:data_name|',
 		'max_length' => '50',
 		'size' => '40'
@@ -281,8 +280,8 @@ $fields_data_input_field_edit = array(
 		),
 	'update_rra' => array(
 		'method' => 'checkbox',
-		'friendly_name' => __('Update RRD File'),
-		'description' => __('Whether data from this output field is to be entered into the rrd file.'),
+		'friendly_name' => __('Update RRDfile'),
+		'description' => __('Whether data from this output field is to be entered into the RRDfile.'),
 		'value' => '|arg1:update_rra|',
 		'default' => 'on',
 		'form_id' => '|arg1:id|'
@@ -290,7 +289,7 @@ $fields_data_input_field_edit = array(
 	'regexp_match' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Regular Expression Match'),
-		'description' => __('If you want to require a certain regular expression to be matched againt input data, enter it here (preg_match format).'),
+		'description' => __('If you want to require a certain regular expression to be matched against input data, enter it here (preg_match format).'),
 		'value' => '|arg1:regexp_match|',
 		'max_length' => '200',
 		'size' => '80'
@@ -379,7 +378,7 @@ $struct_data_source = array(
 		'max_length' => '255',
 		'size' => '80',
 		'default' => '',
-		'description' => __('The full path to the RRD file.'),
+		'description' => __('The full path to the RRDfile.'),
 		'flags' => 'NOTEMPLATE'
 		),
 	'data_input_id' => array(
@@ -425,7 +424,7 @@ $struct_data_source_item = array(
 		'max_length' => '19',
 		'size' => '30',
 		'default' => '',
-		'description' => __('Choose unique name to represent this piece of data inside of the rrd file.')
+		'description' => __('Choose unique name to represent this piece of data inside of the RRDfile.')
 		),
 	'rrd_minimum' => array(
 		'friendly_name' => __('Minimum Value ("U" for No Minimum)'),
@@ -578,7 +577,7 @@ $struct_graph = array(
 			--alt-autoscale to scale to the absolute minimum and maximum <br>
 			--alt-autoscale-max to scale to the maximum value, using a given lower limit <br>
 			--alt-autoscale-min to scale to the minimum value, using a given upper limit <br>
-			--alt-autoscale (with limits) to scale using both lower and upper limits (rrdtool default) <br>'),
+			--alt-autoscale (with limits) to scale using both lower and upper limits (RRDtool default) <br>'),
 		'items' => array(
 			0 => array(
 				'radio_value' => '1',
@@ -594,7 +593,7 @@ $struct_graph = array(
 				),
 			3 => array(
 				'radio_value' => '4',
-				'radio_caption' => __('Use --alt-autoscale (accepting both limits, rrdtool default)')
+				'radio_caption' => __('Use --alt-autoscale (accepting both limits, RRDtool default)')
 				)
 			)
 		),
@@ -645,7 +644,7 @@ $struct_graph = array(
 		'max_length' => '50',
 		'default' => '',
 		'description' => __('Sets the exponent value on the Y-axis for numbers. Note: This option is
-			depricated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear
+			deprecated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear
 			at each grid step interval.  Labels are placed every label factor lines.'),
 		'size' => '12'
 		),
@@ -664,16 +663,16 @@ $struct_graph = array(
 		'max_length' => '50',
 		'default' => '',
 		'size' => '30',
-		'description' => __('How many digits should rrdtool assume the y-axis labels to be? You may have to use this 
-			option to make enough space once you start fiddeling with the y-axis labeling.'),
+		'description' => __('How many digits should RRDtool assume the y-axis labels to be? You may have to use this 
+			option to make enough space once you start fiddling with the y-axis labeling.'),
         ),
 	'no_gridfit' => array(
 		'friendly_name' => __('No Gridfit (--no-gridfit)'),
 		'method' => 'checkbox',
 		'default' => '',
-		'description' => __('In order to avoid anti-aliasing blurring effects rrdtool snaps points to device 
+		'description' => __('In order to avoid anti-aliasing blurring effects RRDtool snaps points to device 
 			resolution pixels, this results in a crisper appearance. If this is not to your liking, you can 
-			use this switch to turn this behaviour off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default.'),
+			use this switch to turn this behavior off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default.'),
 		),
 	'alt_y_grid' => array(
 		'friendly_name' => __('Alternative Y Grid (--alt-y-grid)'),
@@ -711,7 +710,7 @@ $struct_graph = array(
 		'sql' => 'select id,name from graph_templates_gprint order by name',
 		'default' => '',
 		'none_value' => __('None'),
-		'description' => __('By default the format of the axis lables gets determined automatically. 
+		'description' => __('By default, the format of the axis labels gets determined automatically. 
 			If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.'),
 		),
 	'right_axis_formatter' => array(
@@ -721,7 +720,7 @@ $struct_graph = array(
 		'default' => '0',
 		'none_value' => __('None'),
 		'description' => __('When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where
-			data is treated as numeric, "timestamp" where values are interpreted as unix timestamps (number of seconds since January 1970)
+			data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970)
 			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --left-axis-format.  Finally
 			"duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
 		),
@@ -732,7 +731,7 @@ $struct_graph = array(
 		'default' => '0',
 		'none_value' => __('None'),
 		'description' => __('When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where
-			data is treated as numeric, "timestamp" where values are interpreted as unix timestamps (number of seconds since January 1970)
+			data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970)
 			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --left-axis-format.  Finally
 			"duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
 		),
@@ -747,7 +746,7 @@ $struct_graph = array(
 		'default' => 'on',
 		'description' => __('Pad text so that legend and graph data always line up. Note: this could cause
 			graphs to take longer to render because of the larger overhead. Also Auto Padding may not
-			be accurate on all types of graphs, consistant labeling usually helps.')
+			be accurate on all types of graphs, consistent labeling usually helps.')
 		),
 	'dynamic_labels' => array(
 		'friendly_name' => __('Dynamic Labels (--dynamic-labels)'),
@@ -1020,7 +1019,7 @@ $fields_host_edit = array(
 	'site_id' => array(
 		'method' => 'drop_sql',
 		'friendly_name' => __('Device Site Association'),
-		'description' => __('What Site is this Desive associated with.'),
+		'description' => __('What Site is this Device associated with.'),
 		'value' => '|arg1:site_id|',
 		'none_value' => __('None'),
 		'default' => read_config_option('default_site'),
@@ -1129,7 +1128,7 @@ $fields_host_edit = array(
 	'snmp_engine_id' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('SNMP Engine ID (v3)'),
-		'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being definied per SNMPv3 Notification receiver.'),
+		'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
 		'value' => '|arg1:snmp_engine_id|',
 		'default' => '',
 		'max_length' => '30',
@@ -1405,8 +1404,8 @@ $fields_user_user_edit_host = array(
 		),
 	'email_address' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('E-Mail Address'),
-		'description' => __('An E-Mail Address where the User can be reached.'),
+		'friendly_name' => __('Email Address'),
+		'description' => __('An Email Address where the User can be reached.'),
 		'value' => '|arg1:email_address|',
 		'max_length' => '128',
 		'size' => 60
@@ -1507,7 +1506,7 @@ $fields_user_user_edit_host = array(
 	'realm' => array(
 		'method' => 'drop_array',
 		'friendly_name' => __('Authentication Realm'),
-		'description' => __('Only used if you have LDAP or Web Basic Authentication enabled.  Changing this to an non-enabled realm will effectively disable the user.'),
+		'description' => __('Only used if you have LDAP or Web Basic Authentication enabled.  Changing this to a non-enabled realm will effectively disable the user.'),
 		'value' => '|arg1:realm|',
 		'default' => 0,
 		'array' => $auth_realms,
@@ -1610,7 +1609,7 @@ $fields_template_import = array(
 		'disabled' => array(
 			'method' => 'checkbox',
 			'friendly_name' => __('Disable SNMP Notification Receiver'),
-			'description' => __('Check this box if you temporary do not want to sent SNMP notifications to this host.'),
+			'description' => __('Check this box if you temporary do not want to send SNMP notifications to this host.'),
 			'value' => '|arg1:disabled|',
 			'default' => '',
 			'form_id' => false
@@ -1618,7 +1617,7 @@ $fields_template_import = array(
 		'max_log_size' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Maximum Log Size'),
-			'description' => __('Maximum number of days notification log entries for this receiver need to be stored.'),
+			'description' => __('Maximum number of day\'s notification log entries for this receiver need to be stored.'),
 			'value' => '|arg1:max_log_size|',
 			'default' => 31,
 			'array' => array_combine( range(1,31), range(1,31) )
@@ -1701,7 +1700,7 @@ $fields_template_import = array(
 		'snmp_port' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('SNMP Port'),
-			'description' => __('The UDP port to be used for SNMP traps. Typically 162.'),
+			'description' => __('The UDP port to be used for SNMP traps. Typically, 162.'),
 			'value' => '|arg1:snmp_port|',
 			'max_length' => '5',
 			'default' => '162',
@@ -1830,7 +1829,7 @@ $struct_aggregate_graph = array(
 		'size' => '80'
 	),
 	'template_propogation' => array(
-		'friendly_name' => __('Propogation Enabled'),
+		'friendly_name' => __('Propagation Enabled'),
 		'description' => __('Is this to carry the template?'),
 		'method' => 'checkbox',
 		'default' => '',
@@ -2238,7 +2237,7 @@ $fields_automation_tree_rule_item_edit = array(
 	'field' => array(
 		'method' => 'drop_array',
 		'friendly_name' => __('Header Type'),
-		'description' => __('Choose an Object to build a new Subheader.'),
+		'description' => __('Choose an Object to build a new Sub-header.'),
 		'array' => array(),			# later to be filled dynamically
 		'value' => '|arg1:field|',
 		'none_value' => $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING],
@@ -2255,7 +2254,7 @@ $fields_automation_tree_rule_item_edit = array(
 	'propagate_changes' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Propagate Changes'),
-		'description' => __('Propagate all options on this form (except for \'Title\') to all child  \'Header\' items.'),
+		'description' => __('Propagate all options on this form (except for \'Title\') to all child \'Header\' items.'),
 		'value' => '|arg1:propagate_changes|',
 		'default' => '',
 		'form_id' => false

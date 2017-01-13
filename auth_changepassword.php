@@ -90,7 +90,7 @@ case 'changepassword':
 			
 	if (!secpass_check_history($_SESSION['sess_user_id'], get_nfilter_request_var('password'))) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('You can not use a previously entered password!') . "</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('You cannot use a previously entered password!') . "</span>";
 	}
 
 	// Get password options for the new password
@@ -117,7 +117,7 @@ case 'changepassword':
 
 	if ($user['password'] == $password_new || $user['password'] == $password_old) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('Your new password can not be the same as the old password. Please try again.') . "</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . "</span>";
 	}
 	
 	if (get_nfilter_request_var('password') !== (get_nfilter_request_var('confirm'))) {
@@ -239,7 +239,7 @@ if (read_config_option('secpass_reqspec') == 'on') {
 }
 
 if (read_config_option('secpass_history') != '0') {
-	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Can not be reused for %d password changes', read_config_option('secpass_history')+1);
+	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Cannot be reused for %d password changes', read_config_option('secpass_history')+1);
 }
 
 $secpass_tooltip .= $secpass_body;

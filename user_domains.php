@@ -416,7 +416,7 @@ function domain_edit() {
 			),
 		'group_require' => array(
 			'friendly_name' => __('Require Group Membership'),
-			'description' => __('Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authenication failure.'),
+			'description' => __('Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authentication failure.'),
 			'value' => '|arg1:group_require|',
 			'method' => 'checkbox'
 			),
@@ -425,8 +425,8 @@ function domain_edit() {
 			'method' => 'spacer'
 			),
 		'group_dn' => array(
-			'friendly_name' => __('Group Distingished Name (DN)'),
-			'description' => __('Distingished Name of the group that user must have membership.'),
+			'friendly_name' => __('Group Distinguished Name (DN)'),
+			'description' => __('Distinguished Name of the group that user must have membership.'),
 			'method' => 'textbox',
 			'value' => '|arg1:group_dn|',
 			'max_length' => '255'
@@ -440,10 +440,10 @@ function domain_edit() {
 			),
 		'group_member_type' => array(
 			'friendly_name' => __('Group Member Type'),
-			'description' => __('Defines if users use full Distingished Name or just Username in the defined Group Member Attribute.'),
+			'description' => __('Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute.'),
 			'method' => 'drop_array',
 			'value' => '|arg1:group_member_type|',
-			'array' => array( 1 => 'Distingished Name', 2 => 'Username' )
+			'array' => array( 1 => 'Distinguished Name', 2 => 'Username' )
 			),
 		'search_base_header' => array(
 			'friendly_name' => __('LDAP Specific Search Settings'),
@@ -464,7 +464,7 @@ function domain_edit() {
 			'max_length' => '255'
 			),
 		'specific_dn' => array(
-			'friendly_name' => __('Search Distingished Name (DN)'),
+			'friendly_name' => __('Search Distinguished Name (DN)'),
 			'description' => __('Distinguished Name for Specific Searching binding to the LDAP directory.'),
 			'method' => 'textbox',
 			'value' => '|arg1:specific_dn|',

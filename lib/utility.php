@@ -695,7 +695,7 @@ function utilities_get_mysql_recommendations() {
 				out of memory table space.  This is done two ways, first reducing the size of your output
 				column to just the right size.  This column is in the tables poller_output, 
 				and poller_output_boost.  The second thing you can do is allocate more memory to memory
-				tables.  We have arbitrarily choosen a recommended value of 10% of system memory, but 
+				tables.  We have arbitrarily chosen a recommended value of 10% of system memory, but 
 				if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation
 				or choose a different storage engine.  You may see the expected consumption of the 
 				Performance Booster tables under Console -> System Utilities -> View Boost Status.')
@@ -723,7 +723,7 @@ function utilities_get_mysql_recommendations() {
 			'value'   => '64M',
 			'measure' => 'gtm',
 			'comment' => __('When performing joins, if they are below this size, they will 
-				be kept in memory and never writen to a temporary file.')
+				be kept in memory and never written to a temporary file.')
 			),
 		'innodb_file_per_table' => array(
 			'value'   => 'ON',
@@ -772,7 +772,7 @@ function utilities_get_mysql_recommendations() {
 			'innodb_file_io_threads' => array(
 				'value'   => '16',
 				'measure' => 'gt',
-				'comment' => __('With modern SSD type storage, having multiple io threads is advantagious for
+				'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for
 					applications with high io characteristics.')
 				)
 		);
@@ -786,13 +786,13 @@ function utilities_get_mysql_recommendations() {
 			'innodb_read_io_threads' => array(
 				'value'   => '32',
 				'measure' => 'gt',
-				'comment' => __('With modern SSD type storage, having multiple read io threads is advantagious for
+				'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for
 					applications with high io characteristics.')
 				),
 			'innodb_write_io_threads' => array(
 				'value'   => '16',
 				'measure' => 'gt',
-				'comment' => __('With modern SSD type storage, having multiple write io threads is advantagious for
+				'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for
 					applications with high io characteristics.')
 				),
 			'innodb_buffer_pool_instances' => array(

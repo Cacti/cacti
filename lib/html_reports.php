@@ -145,7 +145,7 @@ $fields_reports_edit = array(
 	'intrvl' => array(
 		'friendly_name' => __('Report Interval'),
 		'description' => __('Defines a Report Frequency relative to the given Mailtime above.') . '<br>' .
-			__('e.g. "Week(s)" represents a weekly Reporting Interval.'),
+			__('e.g. \'Week(s)\' represents a weekly Reporting Interval.'),
 		'default' => REPORTS_SCHED_INTVL_DAY,
 		'method' => 'drop_array',
 		'array' => $reports_interval,
@@ -186,7 +186,7 @@ $fields_reports_edit = array(
 		'friendly_name' => __('From Email Address'),
 		'method' => 'textbox',
 		'default' => read_config_option('settings_from_email'),
-		'description' => __('This Adress will be used as the E-mail Senders address'),
+		'description' => __('This Address will be used as the E-mail Senders address'),
 		'max_length' => 255,
 		'value' => '|arg1:from_email|'
 		),
@@ -197,7 +197,7 @@ $fields_reports_edit = array(
 		'textarea_cols' => '60',
 		'class' => 'textAreaNotes',
 		'default' => '',
-		'description' => __('Please seperate multiple adresses by comma (,)'),
+		'description' => __('Please separate multiple addresses by comma (,)'),
 		'max_length' => 255,
 		'value' => '|arg1:email|'
 		),
@@ -208,7 +208,7 @@ $fields_reports_edit = array(
 		'textarea_cols' => '60',
 		'class' => 'textAreaNotes',
 		'default' => '',
-		'description' => __('Blind carbon copy. Please seperate multiple adresses by comma (,)'),
+		'description' => __('Blind carbon copy. Please separate multiple addresses by comma (,)'),
 		'max_length' => 255,
 		'value' => '|arg1:bcc|'
 		),
@@ -334,7 +334,7 @@ $fields_reports_item_edit = array(
 			WHERE graph_tree_id=|arg1:tree_id| AND host_id=0 AND local_graph_id=0
 			ORDER BY position)
 			UNION
-			(SELECT graph_tree_items.id, CONCAT_WS('', description, ' (Host)') AS name
+			(SELECT graph_tree_items.id, CONCAT_WS('', description, ' (Device)') AS name
 			FROM graph_tree_items
 			INNER JOIN host
 			ON host.id=graph_tree_items.host_id
@@ -355,19 +355,19 @@ $fields_reports_item_edit = array(
 		'size' => 80,
 		'value' => '|arg1:graph_name_regexp|'),
 	'host_template_id' => array(
-		'friendly_name' => __('Host Template'),
+		'friendly_name' => __('Device Template'),
 		'method' => 'drop_sql',
 		'default' => REPORTS_HOST_NONE,
 		'none_value' => __('None'),
-		'description' => __('Select a Host Template to use.'),
+		'description' => __('Select a Device Template to use.'),
 		'value' => '|arg1:host_template_id|',
 		'on_change' => 'applyChange(document.reports_item_edit)',
 		'sql' => "SELECT DISTINCT ht.id, ht.name FROM host_template AS ht INNER JOIN host AS h ON h.host_template_id=ht.id ORDER BY name"),
 	'host_id' => array(
-		'friendly_name' => __('Host'),
+		'friendly_name' => __('Device'),
 		'method' => 'drop_sql',
 		'default' => REPORTS_HOST_NONE,
-		'description' => __('Select a Host to specify a Graph'),
+		'description' => __('Select a Device to specify a Graph'),
 		'value' => '|arg1:host_id|',
 		'none_value' => __('None'),
 		'on_change' => 'applyChange(document.reports_item_edit)',
@@ -1256,7 +1256,7 @@ function display_reports_items($report_id) {
 				$item_details = 'Tree: ' . $tree_name;
 				if ($item['branch_id'] > 0) {
 					if ($branch_details['host_id'] > 0) {
-						$item_details .= ', Host: ' . db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($branch_details['host_id']));
+						$item_details .= ', Device: ' . db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($branch_details['host_id']));
 					}else{
 						$item_details .= ', Branch: ' . $branch_details['title'];
 
@@ -1372,7 +1372,7 @@ function reports() {
 
 	print '<form id="form_report" action="' . get_reports_page() . '">';
 
-	html_start_box(__('Reports %s', (is_reports_admin() ? ' [ Administrator Level ]':' [ User Level ]')), '100%', '', '3', 'center', get_reports_page() . '?action=edit&tab=details');
+	html_start_box(__('Reports [%s]', (is_reports_admin() ? __('Administrator Level'):__('User Level'))), '100%', '', '3', 'center', get_reports_page() . '?action=edit&tab=details');
 
 	print "<tr class='even'>
 		<td>

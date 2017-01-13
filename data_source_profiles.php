@@ -627,7 +627,7 @@ function get_span($duration) {
 	if ($duration > 2592000) {
 		if (floor($duration/2592000)) {
 			$months    = floor($duration/2592000);
-			$months    = ( $months == 1 ) ? __('1 Month') : __('%d Months', $months); 
+			$months    = ( $months == 1 ) ? __('%d Month', 1) : __('%d Months', $months); 
 			$duration %= 2592000;
 			$output   .= (strlen($output) ? ', ':'') . $months;
 		}
@@ -636,7 +636,7 @@ function get_span($duration) {
 	if ($duration > 604800) {
 		if (floor($duration/604800) > 0) {
 			$weeks     = floor($duration/604800);
-			$weeks     = ( $weeks == 1 ) ? __('1 Week') : __('%d Weeks', $weeks); 
+			$weeks     = ( $weeks == 1 ) ? __('%d Week', 1) : __('%d Weeks', $weeks); 
 			$duration %= 604800;
 			$output   .= (strlen($output) ? ', ':'') . $weeks;
 		}
@@ -645,7 +645,7 @@ function get_span($duration) {
 	if ($duration > 86400) {
 		if (floor($duration/86400) > 0) {
 			$days      = floor($duration/86400);
-			$days      = ( $days == 1 ) ? __('1 Day') : __('%d Days', $days);
+			$days      = ( $days == 1 ) ? __('%d Day', 1) : __('%d Days', $days);
 			$duration %= 86400;
 			$output   .= (strlen($output) ? ', ':'') . $days;
 		}
@@ -843,10 +843,10 @@ function profile() {
 	$display_text = array(
 		'name' => array('display' => __('Data Source Profile Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this CDEF.')),
 		'nosort00' => array('display' => __('Default'), 'align' => 'right', 'tip' => __('Is this the default Profile for all new Data Templates?')), 
-		'nosort01' => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Profiles that are in use can not be Deleted. In use is defined as being referenced by a Data Source or a Data Template.')), 
+		'nosort01' => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Profiles that are in use cannot be Deleted. In use is defined as being referenced by a Data Source or a Data Template.')), 
 		'nosort02' => array('display' => __('Read Only'), 'align' => 'right', 'tip' => __('Profiles that are in use by Data Sources become read only for now.')), 
 		'step' => array('display' => __('Poller Interval'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The Polling Frequency for the Profile')),
-		'heartbeat' => array('display' => __('Heartbeat'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The Amount of Time, in seocnds, without good data before Data is stored as Unknown')),
+		'heartbeat' => array('display' => __('Heartbeat'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The Amount of Time, in seconds, without good data before Data is stored as Unknown')),
 		'data_sources' => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources using this Profile.')),
 		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Templates using this Profile.')));
 

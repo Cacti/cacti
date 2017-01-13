@@ -2368,7 +2368,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	 * header information
 	 -----------------------------------------------------------------------------------*/
 	if ($cacti_header_array['rrd_step'] != $info['step']) {
-		$diff['step'] = __("required rrd step size is '%s'", $cacti_header_array['rrd_step']);
+		$diff['step'] = __("Required RRD step size is '%s'", $cacti_header_array['rrd_step']);
 	}
 
 	/* -----------------------------------------------------------------------------------
@@ -2388,12 +2388,12 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 
 				$ds_type = trim($info['ds'][$ds_name]['type'], '"');
 				if ($data_source_types[$data_source['data_source_type_id']] != $ds_type) {
-					$diff['ds'][$ds_name]['type'] = __("type for data source '%s' should be '%s'", $ds_name, $data_source_types[$data_source['data_source_type_id']]);
+					$diff['ds'][$ds_name]['type'] = __("Type for Data Source '%s' should be '%s'", $ds_name, $data_source_types[$data_source['data_source_type_id']]);
 					$diff['tune'][] = $info['filename'] . ' ' . '--data-source-type ' . $ds_name . ':' . $data_source_types[$data_source['data_source_type_id']];
 				}
 
 				if ($data_source['rrd_heartbeat'] != $info['ds'][$ds_name]['minimal_heartbeat']) {
-					$diff['ds'][$ds_name]['minimal_heartbeat'] = __("heartbeat for data source '%s' should be '%s'", $ds_name, $data_source['rrd_heartbeat']);
+					$diff['ds'][$ds_name]['minimal_heartbeat'] = __("Heartbeat for Data Source '%s' should be '%s'", $ds_name, $data_source['rrd_heartbeat']);
 					$diff['tune'][] = $info['filename'] . ' ' . '--heartbeat ' . $ds_name . ':' . $data_source['rrd_heartbeat'];
 				}
 
@@ -2401,7 +2401,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 					if ($data_source['rrd_minimum'] == 'U' && $info['ds'][$ds_name]['min'] == 'NaN') {
 						$data_source['rrd_minimum'] == 'NaN';
 					}else{
-						$diff['ds'][$ds_name]['min'] = __("rrd minimum for data source '%s' should be '%s'", $ds_name, $data_source['rrd_minimum']);
+						$diff['ds'][$ds_name]['min'] = __("RRD minimum for Data Source '%s' should be '%s'", $ds_name, $data_source['rrd_minimum']);
 						$diff['tune'][] = $info['filename'] . ' ' . '--minimum ' . $ds_name . ':' . $data_source['rrd_minimum'];
 					}
 				}
@@ -2434,7 +2434,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				}
 
 				if ($data_source['rrd_maximum'] != $info['ds'][$ds_name]['max']) {
-					$diff['ds'][$ds_name]['max'] = __("rrd maximum for data source '%s' should be '%s'", $ds_name, $data_source['rrd_maximum']);
+					$diff['ds'][$ds_name]['max'] = __("RRD maximum for Data Source '%s' should be '%s'", $ds_name, $data_source['rrd_maximum']);
 					$diff['tune'][] = $info['filename'] . ' ' . '--maximum ' . $ds_name . ':' . $data_source['rrd_maximum'];
 				}
 			} else {
@@ -2444,7 +2444,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				$info['ds'][$ds_name]['min'] = $data_source['rrd_minimum'];
 				$info['ds'][$ds_name]['max'] = $data_source['rrd_maximum'];
 				$info['ds'][$ds_name]['seen'] = TRUE;
-				$diff['ds'][$ds_name]['error'] = __("DS '%s' missing in rrd file", $ds_name);
+				$diff['ds'][$ds_name]['error'] = __("DS '%s' missing in RRDfile", $ds_name);
 			}
 		}
 	}
@@ -2453,7 +2453,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	if (sizeof($info['ds']) > 0) {
 		foreach ($info['ds'] as $ds_name => $data_source) {
 			if (!isset($data_source['seen'])) {
-				$diff['ds'][$ds_name]['error'] = __("DS '%s' missing in cacti definition", $ds_name);
+				$diff['ds'][$ds_name]['error'] = __("DS '%s' missing in Cacti definition", $ds_name);
 			}
 		}
 	}
@@ -2470,8 +2470,8 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 			$steps = $cacti_rra_array{$i}['steps'];
 			foreach($cacti_rra_array as $cacti_rra_id => $cacti_rra) {
 				if ($cf == $cacti_rra['cf'] && $steps == $cacti_rra['steps'] && ($i != $cacti_rra_id)) {
-					$diff['rra'][$i]['error'] = __("Cacti RRA '%s' has same cf/steps (%s, %s) as '%s'", $i, $consolidation_functions{$cf}, $steps, $cacti_rra_id);
-					$diff['rra'][$cacti_rra_id]['error'] = __("Cacti RRA '%s' has same cf/steps (%s, %s) as '%s'", $cacti_rra_id, $consolidation_functions{$cf}, $steps, $i);
+					$diff['rra'][$i]['error'] = __("Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'", $i, $consolidation_functions{$cf}, $steps, $cacti_rra_id);
+					$diff['rra'][$cacti_rra_id]['error'] = __("Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'", $cacti_rra_id, $consolidation_functions{$cf}, $steps, $i);
 					$resize = FALSE;
 				}
 			}
@@ -2484,8 +2484,8 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 			$steps = $info['rra']{$i}['pdp_per_row'];
 			foreach($info['rra'] as $file_rra_id => $file_rra) {
 				if (($cf == $file_rra['cf']) && ($steps == $file_rra['pdp_per_row']) && ($i != $file_rra_id)) {
-					$diff['rra'][$i]['error'] = __("File RRA '%s' has same cf/steps (%s, %s) as '%s'", $i, $cf, $steps, $file_rra_id);
-					$diff['rra'][$file_rra_id]['error'] = __("File RRA '%s' has same cf/steps (%s, %s) as '%s'", $file_rra_id, $cf, $steps, $i);
+					$diff['rra'][$i]['error'] = __("File RRA '%s' has same CF/steps (%s, %s) as '%s'", $i, $cf, $steps, $file_rra_id);
+					$diff['rra'][$file_rra_id]['error'] = __("File RRA '%s' has same CF/steps (%s, %s) as '%s'", $file_rra_id, $cf, $steps, $i);
 					$resize = FALSE;
 				}
 			}
@@ -2515,11 +2515,11 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 					}
 
 					if ($cacti_rra['xff'] != $file_rra['xff']) {
-						$diff['rra'][$file_rra_id]['xff'] = __("xff for cacti rra id '%s' should be '%s'", $cacti_rra_id, $cacti_rra['xff']);
+						$diff['rra'][$file_rra_id]['xff'] = __("XFF for cacti RRA id '%s' should be '%s'", $cacti_rra_id, $cacti_rra['xff']);
 					}
 
 					if ($cacti_rra['rows'] != $file_rra['rows'] && $resize) {
-						$diff['rra'][$file_rra_id]['rows'] = __("number of rows for cacti rra id '%s' should be '%s'", $cacti_rra_id, $cacti_rra['rows']);
+						$diff['rra'][$file_rra_id]['rows'] = __("Number of rows for Cacti RRA id '%s' should be '%s'", $cacti_rra_id, $cacti_rra['rows']);
 						if ($cacti_rra['rows'] > $file_rra['rows']) {
 							$diff['resize'][] = $info['filename'] . ' ' . $cacti_rra_id . ' GROW ' . ($cacti_rra['rows'] - $file_rra['rows']);
 						} else {
@@ -2535,7 +2535,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				$info['rra']['cacti_' . $cacti_rra_id]['steps'] = $cacti_rra['steps'];
 				$info['rra']['cacti_' . $cacti_rra_id]['xff']   = $cacti_rra['xff'];
 				$info['rra']['cacti_' . $cacti_rra_id]['rows']  = $cacti_rra['rows'];
-				$diff['rra']['cacti_' . $cacti_rra_id]['error'] = __("RRA '%s' missing in rrd file", $cacti_rra_id);
+				$diff['rra']['cacti_' . $cacti_rra_id]['error'] = __("RRA '%s' missing in RRDfile", $cacti_rra_id);
 			}
 		}
 	}
@@ -2544,7 +2544,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	if (sizeof($info['rra']) > 0) {
 		foreach ($info['rra'] as $file_rra_id => $file_rra) {
 			if (!isset($info['rra'][$file_rra_id]['seen'])) {
-				$diff['rra'][$file_rra_id]['error'] = __("RRA '%s' missing in cacti definition", $file_rra_id);
+				$diff['rra'][$file_rra_id]['error'] = __("RRA '%s' missing in Cacti definition", $file_rra_id);
 			}
 		}
 	}
@@ -2602,7 +2602,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 		array('display' => __('Max'),               'align' => 'right'),
 		array('display' => __('Last DS'),           'align' => 'right'),
 		array('display' => __('Value'),             'align' => 'right'),
-		array('display' => __('Unkown Sec'),        'align' => 'right')
+		array('display' => __('Unknown Sec'),       'align' => 'right')
 	);
 
 	html_start_box('', '100%', '', '3', 'center', '');
@@ -2630,14 +2630,14 @@ function rrdtool_info2html($info_array, $diff=array()) {
 
 	# round robin archive
 	$header_items = array(
-		array('display' => __('Round Robin Archive'),        'align' => 'left'),
-		array('display' => __('Consolidation Function'),     'align' => 'left'),
-		array('display' => __('Rows'),                       'align' => 'right'),
-		array('display' => __('Cur Row'),                    'align' => 'right'),
-		array('display' => __('PDP per Row'),                'align' => 'right'),
-		array('display' => __('X Files Factor'),             'align' => 'right'),
-		array('display' => __('CDP Prep Value (0)'),         'align' => 'right'),
-		array('display' => __('CDP Unknown Datapoints (0)'), 'align' => 'right')
+		array('display' => __('Round Robin Archive'),         'align' => 'left'),
+		array('display' => __('Consolidation Function'),      'align' => 'left'),
+		array('display' => __('Rows'),                        'align' => 'right'),
+		array('display' => __('Cur Row'),                     'align' => 'right'),
+		array('display' => __('PDP per Row'),                 'align' => 'right'),
+		array('display' => __('X Files Factor'),              'align' => 'right'),
+		array('display' => __('CDP Prep Value (0)'),          'align' => 'right'),
+		array('display' => __('CDP Unknown Data points (0)'), 'align' => 'right')
 	);
 
 	html_start_box('', '100%', '', '3', 'center', '');
@@ -2805,9 +2805,9 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
 					/* scratch that XML file to avoid filling up the disk */
 					unlink($xml_file);
-					cacti_log(__('Added datasource(s) to rrd file: %s', $file), false, 'UTIL');
+					cacti_log(__('Added Data Source(s) to RRDfile: %s', $file), false, 'UTIL');
 				} else {
-					$check['err_msg'] = __('ERROR: RRD file %s not writeable', $file);
+					$check['err_msg'] = __('ERROR: RRDfile %s not writeable', $file);
 					return $check;
 				}
 			}
@@ -2834,7 +2834,7 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
 		$dom = new domDocument;
 		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
 		if (!$dom) {
-			$check['err_msg'] = __('Error while parsing the XML of rrdtool dump');
+			$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
 			return $check;
 		}
 
@@ -2860,9 +2860,9 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
 					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
 					/* scratch that XML file to avoid filling up the disk */
 					unlink($xml_file);
-					cacti_log(__('Deleted rra(s) from rrd file: %s', $file), false, 'UTIL');
+					cacti_log(__('Deleted RRA(s) from RRDfile: %s', $file), false, 'UTIL');
 				} else {
-					$check['err_msg'] = __('ERROR: RRD file %s not writeable', $file);
+					$check['err_msg'] = __('ERROR: RRDfile %s not writeable', $file);
 					return $check;
 				}
 			}
@@ -2890,7 +2890,7 @@ function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 		$dom = new domDocument;
 		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
 		if (!$dom) {
-			$check['err_msg'] = __('Error while parsing the XML of rrdtool dump');
+			$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
 			return $check;
 		}
 

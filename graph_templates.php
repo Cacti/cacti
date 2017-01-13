@@ -32,7 +32,7 @@ include_once('./lib/html_tree.php');
 $graph_actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate'),
-	3 => __('ReSize'),
+	3 => __('Resize'),
 	4 => __('Sync Graphs')
 );
 
@@ -347,7 +347,7 @@ function form_actions() {
 		}elseif (get_request_var('drp_action') == '4') { /* retemplate */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to Syncronize your Graphs the following Graph Template(s). This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.') . "</p>
+					<p>" . __('Click \'Continue\' to Synchronize your Graphs the following Graph Template(s). This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
 			</tr>\n";
@@ -492,7 +492,7 @@ function template_edit() {
 
 		$header_label = __('Template [edit: %s]', htmlspecialchars($template['name']));
 	}else{
-		$header_label = __('Tempalte [new]');
+		$header_label = __('Template [new]');
 	}
 
 	form_start('graph_templates.php', 'graph_templates');
@@ -758,9 +758,9 @@ function template() {
 		'name'            => array('display' => __('Graph Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Graph Template.')),
 		'gt.id'           => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal ID for this Graph Template.  Useful when performing automation or debugging.')),
 		'size'            => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The default size of the resulting Graphs.')),
-		'image_format_id' => array('display' => __('Image Format'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The default image formatefor the resulting Graphs.')),
+		'image_format_id' => array('display' => __('Image Format'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The default image format for the resulting Graphs.')),
 		'vertical_label'  => array('display' => __('Vertical Label'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The vertical label for the resulting Graphs.')),
-		'nosort3'         => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Graph Templates that are in use can not be Deleted.  In use is defined as being referenced by a Graph.')),
+		'nosort3'         => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Graph Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Graph.')),
 		'graphs'          => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this Graph Template.'))
 	);
 

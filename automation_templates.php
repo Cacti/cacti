@@ -290,7 +290,7 @@ function template_edit() {
 	$fields_automation_template_edit = array(
 		'host_template' => array(
 			'method' => 'drop_array',
-			'friendly_name' => __('Host Template'),
+			'friendly_name' => __('Device Template'),
 			'description' => __('Select a Device Template that Devices will be matched to.'),
 			'value' => '|arg1:host_template|',
 			'array' => $template_names,
@@ -306,21 +306,21 @@ function template_edit() {
 		'sysDescr' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('System Description Match'),
-			'description' => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Discovery Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.'),
+			'description' => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Discovery Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value' => '|arg1:sysDescr|',
 			'max_length' => '255',
 			),
 		'sysName' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('System Name Match'),
-			'description' => __('This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.'),
+			'description' => __('This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value' => '|arg1:sysName|',
 			'max_length' => '128',
 			),
 		'sysOid' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('System OID Match'),
-			'description' => __('This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any perl regular expression can be used in addition to any wildcardable SQL Where expression.'),
+			'description' => __('This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value' => '|arg1:sysOid|',
 			'max_length' => '128',
 			),
@@ -342,7 +342,7 @@ function template_edit() {
 
 	if (!isempty_request_var('id')) {
 		$host_template = db_fetch_row_prepared('SELECT * FROM automation_templates WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Automation Templates [edit: %s', htmlspecialchars($template_names[$host_template['host_template']]));
+		$header_label = __('Automation Templates [edit: %s]', htmlspecialchars($template_names[$host_template['host_template']]));
 	}else{
 		$header_label = __('Automation Templates [new]');
 		set_request_var('id', 0);

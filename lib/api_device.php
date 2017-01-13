@@ -417,7 +417,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 	}
 
 	if ($anym == false && $host['disabled'] != 'on') {
-		print __('No Ping or SNMP Availability Check In Use') . "<br><br>\n";
+		print __('No Ping or SNMP Availability Check in Use') . "<br><br>\n";
 	}
 }
 

@@ -395,7 +395,7 @@ function form_actions() {
 		}elseif (get_request_var('drp_action') == '3') { /* create aggregate from aggregates */
 			print "<tr>
 				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to combined the following Aggregate Graph(s) into a single Aggregate Graph.') . "</p>
+					<p>" . __('Click \'Continue\' to combine the following Aggregate Graph(s) into a single Aggregate Graph.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
 			</tr>\n";
@@ -615,7 +615,7 @@ function graph_edit() {
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
-		html_start_box(__('Aggregate Preview %s', $header_label), '100%', '', '3', 'center', '');
+		html_start_box(__('Aggregate Preview [%s]', $header_label), '100%', '', '3', 'center', '');
 		?>
 		<tr class='even'>
 			<td align='center' class='textInfo' colspan='2'>

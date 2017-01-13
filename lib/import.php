@@ -1778,7 +1778,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				}
 
 				if ($vals['type'] == 'updated') {
-					$type_text = "<span class='updateObject'>" . __('[' . $vals['type'] . ']') . "</span>\n";
+					$type_text = "<span class='updateObject'>" . __('[updated]') . "</span>\n";
 				}elseif ($vals['type'] == 'new') {
 					$type_text = "<span class='newObject'>" . __('[new]') . "</span>\n";
 				}else{

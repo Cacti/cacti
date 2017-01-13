@@ -875,11 +875,11 @@ function template() {
 	$display_text = array(
 		'name'              => array('display' => __('Data Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Template.')),
 		'id'                => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Data Template.  Useful when performing automation or debugging.')),
-		'nosort'            => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Data Templates that are in use can not be Deleted.  In use is defined as being referenced by a Data Source.')),
+		'nosort'            => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Data Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Data Source.')),
 		'data_sources'      => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources using this Data Template.')),
 		'data_input_method' => array('display' => __('Input Method'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method that is used to place Data into the Data Source RRDfile.')),
 		'profile_name' => array('display' => __('Profile Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The default Data Source Profile for this Data Template.')),
-		'active'            => array('display' => __('Status'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Data Sources based on Inactive Data Templates wont be updated when the poller runs.'))
+		'active'            => array('display' => __('Status'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Data Sources based on Inactive Data Templates will not be updated when the poller runs.'))
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);

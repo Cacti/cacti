@@ -192,21 +192,21 @@ if (!isset($_SESSION['sess_realtime_graph_start'])) {
 if (read_config_option('realtime_enabled') == '') {
 	print "<html>\n";
 	print "<body>\n";
-	print "	<p><strong>" . __('Realtime has been disabled by your administrator.') . "</strong></p>\n";
+	print "	<p><strong>" . __('Real-time has been disabled by your administrator.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
 	exit;
 }elseif (!is_dir(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
-	print "	<p><strong>" . __('The Image Cache Directory directory does not exist.  Please first create it and set permissions and then attempt to open another realtime graph.') . "</strong></p>\n";
+	print "	<p><strong>" . __('The Image Cache Directory does not exist.  Please first create it and set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
 	exit;
 }elseif (!is_writable(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
-	print "	<p><strong>" . __('The Image Cache Directory is not writable.  Please set permissions and then attempt to open another realtime graph.') . "</strong></p>\n";
+	print "	<p><strong>" . __('The Image Cache Directory is not writable.  Please set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
 	exit;
@@ -217,7 +217,7 @@ if (read_config_option('realtime_enabled') == '') {
 <head>
     <meta http-equiv='X-UA-Compatible' content='edge'>
     <meta content='width=720, initial-scale=1.2, maximum-scale=1.2, minimum-scale=1.2' name='viewport'>
-	<title><?php print __('Cacti Realtime Graphing');?></title>
+	<title><?php print __('Cacti Real-time Graphing');?></title>
     <meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
     <link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
     <link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.zoom.css' type='text/css' rel='stylesheet'>

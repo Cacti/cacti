@@ -1559,8 +1559,8 @@ function tree() {
 
 	$display_text = array(
 		'name' => array('display' => __('Tree Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name by which this Tree will be referred to as.')),
-		'id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Tree.  Usefull when performing automation or debugging.')),
-		'enabled' => array('display' => __('Published'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Unpublished Trees can not be viewed from the Graph tab')),
+		'id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Tree.  Useful when performing automation or debugging.')),
+		'enabled' => array('display' => __('Published'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Unpublished Trees cannot be viewed from the Graph tab')),
 		'locked' => array('display' => __('Locked'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('A Tree must be locked in order to be edited.')),
 		'user_id' => array('display' => __('Owner'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The original author of this Tree.')),
 		'sequence' => array('display' => __('Order'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('To change the order of the trees, first sort by this column, press the up or down arrows once they appear.')),

@@ -31,7 +31,7 @@ switch(get_nfilter_request_var('method')) {
 	case 'variance':
 		break;
 	default:
-		echo __("FATAL: SpikeKill method '%s' is Invalid\n", get_nfilter_request_var('method'));
+		echo __("FATAL: Spike Kill method '%s' is Invalid\n", get_nfilter_request_var('method'));
 		exit(1);
 		break;
 }
@@ -68,6 +68,6 @@ if (is_realm_allowed(1043)) {
 
 	print json_encode(array('local_graph_id' => get_request_var('local_graph_id'), 'results' => $results));
 }else{
-	echo __("FATAL: SpikeKill Not Allowed\n");
+	echo __("FATAL: Spike Kill Not Allowed\n");
 }
 

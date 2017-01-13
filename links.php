@@ -514,8 +514,7 @@ function edit_page() {
 			'friendly_name' => __('Console Menu Section'),
 			'method' => 'drop_array',
 			'array' => $sec_ar,
-			'description' => __('Under which Console heading should this item appear?
-				(All SuperLinks menus will appear between Configuration and Utilities)'),
+			'description' => __('Under which Console heading should this item appear? (All External Link menus will appear between Configuration and Utilities)'),
 			'value' => (isset($data['extendedstyle']) ? $data['extendedstyle']:'')
 		),
 		'consolenewsection' => array(
@@ -544,7 +543,7 @@ function edit_page() {
 		'fileurl' => array(
 			'friendly_name' => __('Web URL Location'),
 			'method' => 'textbox',
-			'description' => __('The valid URL to use for this external link.  Must include the type, for example http://www.cacti.net.  Note that many websites do not allow them to be embedded in an iframe from a foreign site, and therefore External Linkinig may not work.'),
+			'description' => __('The valid URL to use for this external link.  Must include the type, for example http://www.cacti.net.  Note that many websites do not allow them to be embedded in an iframe from a foreign site, and therefore External Linking may not work.'),
 			'max_length' => 255,
 			'size' => 80,
 			'default' => 'http://www.cacti.net',

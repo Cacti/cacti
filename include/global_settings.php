@@ -117,7 +117,7 @@ $settings = array(
 			'max_length' => '255'
 			),
 		'path_rrdtool' => array(
-			'friendly_name' => __('RRDTool Binary Path'),
+			'friendly_name' => __('RRDtool Binary Path'),
 			'description' => __('The path to the rrdtool binary.'),
 			'method' => 'filepath',
 			'max_length' => '255'
@@ -134,7 +134,7 @@ $settings = array(
 			'method' => 'spacer',
 			),
 		'path_cactilog' => array(
-			'friendly_name' => __('Cacti Log File Path'),
+			'friendly_name' => __('Cacti Log Path'),
 			'description' => __('The path to your Cacti log file (if blank, defaults to <path_cacti>/log/cacti.log)'),
 			'method' => 'filepath',
 			'default' => $config['base_path'] . '/log/cacti.log',
@@ -190,7 +190,7 @@ $settings = array(
  			),
 		'rrd_archive' => array(
 			'friendly_name' => __('Archive directory'),
-			'description' => __('This is the directory where rrd files are <strong>moved</strong> for <strong>Archive</strong>'),
+			'description' => __('This is the directory where RRDfiles are <strong>moved</strong> for <strong>Archive</strong>'),
 			'method' => 'dirpath',
 			'default' => $config['base_path'] . '/rra/archive/',
 			'max_length' => 255,
@@ -203,7 +203,7 @@ $settings = array(
 			'method' => 'spacer',
 			),
 		'log_destination' => array(
-			'friendly_name' => __('Log File Destination'),
+			'friendly_name' => __('Log Destination'),
 			'description' => __('How will Cacti handle event logging.'),
 			'method' => 'drop_array',
 			'default' => 1,
@@ -240,7 +240,7 @@ $settings = array(
 			),
 		'log_verbosity' => array(
 			'friendly_name' => __('Generic Log Level'),
-			'description' => __('What level of detail do you want sent to the log file.  WARNING: Leaving in any other status than NONE or LOW can exaust your disk space rapidly.'),
+			'description' => __('What level of detail do you want sent to the log file.  WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly.'),
 			'method' => 'drop_array',
 			'default' => POLLER_VERBOSITY_LOW,
 			'array' => $logfile_verbosity,
@@ -309,8 +309,8 @@ $settings = array(
 			'sql' => 'SELECT id, name FROM poller ORDER BY name',
 			),
 		'reindex_method' => array(
-			'friendly_name' => __('Reindex Method for Data Queries'),
-			'description' => __('The default Reindex Method to use for all Data Queries.'),
+			'friendly_name' => __('Re-index Method for Data Queries'),
+			'description' => __('The default Re-index Method to use for all Data Queries.'),
 			'method' => 'drop_array',
 			'default' => '1',
 			'array' => $reindex_types,
@@ -371,15 +371,15 @@ $settings = array(
 			'method' => 'spacer',
 			),
 		'rrdtool_version' => array(
-			'friendly_name' => __('RRDTool Version'),
-			'description' => __('The version of RRDTool that you have installed.'),
+			'friendly_name' => __('RRDtool Version'),
+			'description' => __('The version of RRDtool that you have installed.'),
 			'method' => 'drop_array',
 			'default' => 'rrd-1.4.x',
 			'array' => $rrdtool_versions,
 			),
 		'graph_auth_method' => array(
 			'friendly_name' => __('Graph Permission Method'),
-			'description' => __('There are two methods for determining a Users Graph Permissions.  The first is \'Permissive\'.  Under the \'Permissive\' setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under \'Restrictive\', the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.'),
+			'description' => __('There are two methods for determining a User\'s Graph Permissions.  The first is \'Permissive\'.  Under the \'Permissive\' setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under \'Restrictive\', the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.'),
 			'method' => 'drop_array',
 			'default' => '1',
 			'array' => array('1' => 'Permissive', '2' => 'Restrictive')
@@ -508,7 +508,7 @@ $settings = array(
 			),
 		'snmp_port' => array(
 			'friendly_name' => __('Port Number'),
-			'description' => __('Default UDP port to be used for SNMP Calls.  Typically 161.'),
+			'description' => __('Default UDP port to be used for SNMP Calls.  Typically, 161.'),
 			'method' => 'textbox',
 			'default' => '161',
 			'max_length' => '10',
@@ -536,7 +536,7 @@ $settings = array(
 			),
 		'ping_method' => array(
 			'friendly_name' => __('Ping Type'),
-			'description' => __('The type of ping packet to sent.  <br><i>NOTE: ICMP requires that the Cacti Service ID have root privilages in Unix.</i>'),
+			'description' => __('The type of ping packet to send.  <br><i>NOTE: ICMP requires that the Cacti Service ID have root privileges in UNIX/Linux.</i>'),
 			'method' => 'drop_array',
 			'default' => PING_UDP,
 			'array' => $ping_methods,
@@ -651,14 +651,14 @@ $settings = array(
 			'method' => 'spacer',
 			),
 		'num_rows_log' => array(
-			'friendly_name' => __('Default Log File Tail Lines'),
+			'friendly_name' => __('Default Log Tail Lines'),
 			'description' => __('Default number of lines of the Cacti log file to tail.'),
 			'method' => 'drop_array',
 			'default' => 500,
 			'array' => $log_tail_lines,
 			),
 		'log_refresh_interval' => array(
-			'friendly_name' => __('Log File Tail Refresh'),
+			'friendly_name' => __('Log Tail Refresh'),
 			'description' => __('How often do you want the Cacti log display to update.'),
 			'method' => 'drop_array',
 			'default' => 60,
@@ -693,13 +693,13 @@ $settings = array(
 			'max_length' => 512
 			),
 		'realtime_header' => array(
-			'friendly_name' => __('Realtime Graphs'),
+			'friendly_name' => __('Real-time Graphs'),
 			'method' => 'spacer',
 			'collapsible' => 'true',
 			),
 		'realtime_enabled' => array(
-			'friendly_name' => __('Enable Realtime Graphing'),
-			'description' => __('When an option is checked, users will be able to put Cacti into Realtime mode.'),
+			'friendly_name' => __('Enable Real-time Graphing'),
+			'description' => __('When an option is checked, users will be able to put Cacti into Real-time mode.'),
 			'method' => 'checkbox',
 			'default' => 'on'
 			),
@@ -835,7 +835,7 @@ $settings = array(
 			),
 		'poller_interval' => array(
 			'friendly_name' => __('Poller Interval'),
-			'description' => __('The polling interval in use.  This setting will effect how often rrd files are checked and updated.
+			'description' => __('The polling interval in use.  This setting will effect how often RRDfiles are checked and updated.
 			<strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>'),
 			'method' => 'drop_array',
 			'default' => 300,
@@ -910,7 +910,7 @@ $settings = array(
 			),
 		'max_get_size' => array(
 			'friendly_name' => __('The Maximum SNMP OIDs Per SNMP Get Request'),
-			'description' => __('The maximum number of snmp get OIDs to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 100 OIDs.  Decreasing this value to 0 or 1 will disable snmpbulkwalk'),
+			'description' => __('The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 100 OIDs.  Decreasing this value to 0 or 1 will disable snmpbulkwalk'),
 			'method' => 'textbox',
 			'default' => '10',
 			'max_length' => '10',
@@ -924,14 +924,14 @@ $settings = array(
 			),
 		'auth_method' => array(
 			'friendly_name' => __('Authentication Method'),
-			'description' => __('<blockquote><i>None</i> - No authentication will be used, all users will have full access.<br><br><i>Builtin Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP Authentication</i> - Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.  If PHPs LDAP module is not enabled, LDAP Authentication will not appear as a selectable option.<br><br><i>Multiple LDAP/AD Domain Authentication</i> - Allows administrators to support multiple desparate groups from different LDAP/AD directories to access Cacti resources.  Just as LDAP Authentication, the PHP LDAP module is required to utilize this method.</blockquote>'),
+			'description' => __('<blockquote><i>None</i> - No authentication will be used, all users will have full access.<br><br><i>Built-in Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP Authentication</i> - Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.  If PHPs LDAP module is not enabled, LDAP Authentication will not appear as a selectable option.<br><br><i>Multiple LDAP/AD Domain Authentication</i> - Allows administrators to support multiple disparate groups from different LDAP/AD directories to access Cacti resources.  Just as LDAP Authentication, the PHP LDAP module is required to utilize this method.</blockquote>'),
 			'method' => 'drop_array',
 			'default' => 1,
 			'array' => $auth_methods
 			),
 		'auth_cache_enabled' => array(
 			'friendly_name' => __('Support Authentication Cookies'),
-			'description' => __('If a user authenticates and selects \'Keep me signed in\', an authentication cookie will be created on the users computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use.'),
+			'description' => __('If a user authenticates and selects \'Keep me signed in\', an authentication cookie will be created on the user\'s computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use.'),
 			'default' => '',
 			'method' => 'checkbox'
 			),
@@ -971,13 +971,13 @@ $settings = array(
 			),
 		'secpass_reqmixcase' => array(
 			'friendly_name' => __('Require Mix Case'),
-			'description' => __('This will require new passwords to contains both lower and upper case characters.'),
+			'description' => __('This will require new passwords to contains both lower and upper-case characters.'),
 			'method' => 'checkbox',
 			'default' => 'on',
 			),
 		'secpass_reqnum' => array(
 			'friendly_name' => __('Require Number'),
-			'description' => __('This will require new passwords to contain at least 1 numberical character.'),
+			'description' => __('This will require new passwords to contain at least 1 numerical character.'),
 			'method' => 'checkbox',
 			'default' => 'on',
 			),
@@ -1004,7 +1004,7 @@ $settings = array(
 				'60'  => __('%d Days', 60), 
 				'90'  => __('%d Days', 90), 
 				'120'  => __('%d Days', 120), 
-				'365'  => __('1 Year'),
+				'365'  => __('%d Year', 1),
 				'730'  => __('%d Years', 2) )
 			),
 		'secpass_expirepass' => array(
@@ -1084,13 +1084,13 @@ $settings = array(
 			),
 		'ldap_server' => array(
 			'friendly_name' => __('Server'),
-			'description' => __('The dns hostname or ip address of the server.'),
+			'description' => __('The DNS hostname or IP address of the server.'),
 			'method' => 'textbox',
 			'max_length' => '255'
 			),
 		'ldap_port' => array(
 			'friendly_name' => __('Port Standard'),
-			'description' => __('TCP/UDP port for Non SSL communications.'),
+			'description' => __('TCP/UDP port for Non-SSL communications.'),
 			'method' => 'textbox',
 			'max_length' => '5',
 			'default' => '389',
@@ -1127,7 +1127,7 @@ $settings = array(
 			),
 		'ldap_mode' => array(
 			'friendly_name' => __('Mode'),
-		'description' => __('Mode which cacti will attempt to authenicate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN).'),
+		'description' => __('Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user\'s Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user\'s Distinguished Name (DN).'),
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => $ldap_modes
@@ -1140,7 +1140,7 @@ $settings = array(
 			),
 		'ldap_group_require' => array(
 			'friendly_name' => __('Require Group Membership'),
-			'description' => __('Require user to be member of group to authenicate. Group settings must be set for this to work, enabling without proper group settings will cause authenication failure.'),
+			'description' => __('Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authentication failure.'),
 			'default' => '',
 			'method' => 'checkbox'
 			),
@@ -1149,8 +1149,8 @@ $settings = array(
 			'method' => 'spacer'
 			),
 		'ldap_group_dn' => array(
-			'friendly_name' => __('Group Distingished Name (DN)'),
-			'description' => __('Distingished Name of the group that user must have membership.'),
+			'friendly_name' => __('Group Distinguished Name (DN)'),
+			'description' => __('Distinguished Name of the group that user must have membership.'),
 			'method' => 'textbox',
 			'max_length' => '255'
 			),
@@ -1162,10 +1162,10 @@ $settings = array(
 			),
 		'ldap_group_member_type' => array(
 			'friendly_name' => __('Group Member Type'),
-			'description' => __('Defines if users use full Distingished Name or just Username in the defined Group Member Attribute.'),
+			'description' => __('Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute.'),
 			'method' => 'drop_array',
 			'default' => 1,
-			'array' => array( 1 => __('Distingished Name'), 2 => __('Username') )
+			'array' => array( 1 => __('Distinguished Name'), 2 => __('Username') )
 			),
 		'ldap_search_base_header' => array(
 			'friendly_name' => __('LDAP Specific Search Settings'),
@@ -1184,7 +1184,7 @@ $settings = array(
 			'max_length' => '255'
 			),
 		'ldap_specific_dn' => array(
-			'friendly_name' => __('Search Distingished Name (DN)'),
+			'friendly_name' => __('Search Distinguished Name (DN)'),
 			'description' => __('Distinguished Name for Specific Searching binding to the LDAP directory.'),
 			'method' => 'textbox',
 			'max_length' => '255'
@@ -1215,7 +1215,7 @@ $settings = array(
 			),
 		'settings_test_email' => array(
 			'friendly_name' => __('Test Email'),
-			'description' => __('This is a email account used for sending a test message to ensure everything is working properly.'),
+			'description' => __('This is a Email account used for sending a test message to ensure everything is working properly.'),
 			'method' => 'textbox',
 			'max_length' => 255,
 			),
@@ -1228,19 +1228,19 @@ $settings = array(
 			),
 		'settings_from_email' => array(
 			'friendly_name' => __('From Email Address'),
-			'description' => __('This is the email address that the email will appear from.'),
+			'description' => __('This is the Email address that the Email will appear from.'),
 			'method' => 'textbox',
 			'max_length' => 255,
 			),
 		'settings_from_name' => array(
 			'friendly_name' => __('From Name'),
-			'description' => __('This is the actual name that the email will appear from.'),
+			'description' => __('This is the actual name that the Email will appear from.'),
 			'method' => 'textbox',
 			'max_length' => 255,
 			),
 		'settings_wordwrap' => array(
 			'friendly_name' => __('Word Wrap'),
-			'description' => __('This is how many characters will be allowed before a line in the email is automatically word wrapped. (0 = Disabled)'),
+			'description' => __('This is how many characters will be allowed before a line in the Email is automatically word wrapped. (0 = Disabled)'),
 			'method' => 'textbox',
 			'default' => 120,
 			'max_length' => 4,
@@ -1265,7 +1265,7 @@ $settings = array(
 			),
 		'settings_smtp_host' => array(
 			'friendly_name' => __('SMTP Hostname'),
-			'description' => __('This is the hostname/IP of the SMTP Server you will send the email to. For failover, separate your hosts using a semi-colon.'),
+			'description' => __('This is the hostname/IP of the SMTP Server you will send the Email to. For failover, separate your hosts using a semi-colon.'),
 			'method' => 'textbox',
 			'default' => 'localhost',
 			'max_length' => 255,
@@ -1292,7 +1292,7 @@ $settings = array(
 			),
 		'settings_smtp_secure' => array(
 			'friendly_name' => __('SMTP Security'),
-			'description' => __('The encryption method to use for the email.'),
+			'description' => __('The encryption method to use for the Email.'),
 			'method' => 'drop_array',
 			'array' => array( 'none' => __('None'), 'ssl' => __('SSL'), 'tls' => __('TLS') ),
 			'default' => 'none'
@@ -1326,13 +1326,13 @@ $settings = array(
 			),
 		'reports_log_verbosity' => array(
 			'friendly_name' => __('Poller Logging Level for Cacti Reporting'),
-			'description' => __('What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exaust your disk space rapidly.'),
+			'description' => __('What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly.'),
 			'method' => 'drop_array',
 			'default' => POLLER_VERBOSITY_LOW,
 			'array' => $logfile_verbosity,
 			),
 		'reports_allow_ln' => array(
-			'friendly_name' => __('Enable Lotus Notus (R) tweak'),
+			'friendly_name' => __('Enable Lotus Notes (R) tweak'),
 			'description' => __('Enable code tweak for specific handling of Lotus Notes Mail Clients.'),
 			'method' => 'checkbox',
 			'default' => '',
@@ -1401,8 +1401,8 @@ $settings = array(
 			'size' => '10'
 			),
 		'dsstats_poller_mem_limit' => array(
-			'friendly_name' => __('Memory Limit for dsstats and Poller'),
-			'description' => __('The maximum amount of memory for the Cacti Poller and dsstats Poller'),
+			'friendly_name' => __('Memory Limit for Data Source Statistics Data Collector'),
+			'description' => __('The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller'),
 			'method' => 'drop_array',
 			'default' => '1024',
 			'array' => $dsstats_max_memory
@@ -1422,26 +1422,26 @@ $settings = array(
 		'dsstats_partial_retrieve' => array(
 			'friendly_name' => __('Enable Partial Reference Data Retrieve'),
 			'description' => __('If using a large system, it may be beneficial for you to only gather data as needed
-			during Cacti poller passes.  If you check this box, you DSStats will gather data this way.'),
+			during Cacti poller passes.  If you check this box, Data Source Statistics will gather data this way.'),
 			'method' => 'checkbox',
 			'default' => ''
 			)
 		),
 	'boost' => array(
 		'boost_hq_header' => array(
-			'friendly_name' => __('On Demand RRD Update Settings'),
+			'friendly_name' => __('On-demand RRD Update Settings'),
 			'method' => 'spacer',
 			'collapsible' => 'true'
 			),
 		'boost_rrd_update_enable' => array(
-			'friendly_name' => __('Enable On Demand RRD Updating'),
-			'description' => __('Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.'),
+			'friendly_name' => __('Enable On-demand RRD Updating'),
+			'description' => __('Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take effect until after the next polling cycle.'),
 			'method' => 'checkbox',
 			'default' => ''
 			),
 		'boost_rrd_update_system_enable' => array(
 			'friendly_name' => __('System Level RRD Updater'),
-			'description' => __('Before RRD On Demand Update Can be Cleared, a poller run must alway pass'),
+			'description' => __('Before RRD On-demand Update Can be Cleared, a poller run must always pass'),
 			'method' => 'hidden',
 			'default' => ''
 			),
@@ -1549,7 +1549,7 @@ $settings = array(
 			),
 		'extended_paths' => array(
 			'friendly_name' => __('Structured RRD Path (/host_id/local_data_id.rrd)'),
-			'description' => __('Use a seperate subfolder for each hosts RRD files.'),
+			'description' => __('Use a separate subfolder for each hosts RRD files.'),
 			'method' => 'checkbox'
 			),
 		'rrdp_header' => array(
@@ -1559,7 +1559,7 @@ $settings = array(
 			),
 		'rrdp_server' => array(
 			'friendly_name' => __('Proxy Server'),
-			'description' => __('The dns hostname or ip address of the rrdtool proxy server.'),
+			'description' => __('The DNS hostname or IP address of the RRDtool proxy server.'),
 			'method' => 'textbox',
 			'max_length' => '255'
 			),
@@ -1591,7 +1591,7 @@ $settings = array(
 		),
 		'rrdp_server_backup' => array(
 			'friendly_name' => __('Proxy Server'),
-			'description' => __('The dns hostname or ip address of the rrdtool backup proxy server if proxy is running in MSR mode.'),
+			'description' => __('The DNS hostname or IP address of the RRDtool backup proxy server if proxy is running in MSR mode.'),
 			'method' => 'textbox',
 			'max_length' => '255'
 			),
@@ -1622,7 +1622,7 @@ $settings = array(
 			'description' => __('There are two removal methods.  The first, Standard Deviation, will remove any
 			sample that is X number of standard deviations away from the average of samples.  The second method,
 			Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes
-			into account a certain number of \'outliers\'.  Those are exceptinal samples, like the spike, that need
+			into account a certain number of \'outliers\'.  Those are exceptional samples, like the spike, that need
 			to be excluded from the Variance Average calculation.'),
 			'method' => 'drop_array',
 			'default' => '2',
@@ -1745,7 +1745,7 @@ $settings = array(
 			'size' => '10'
 			),
 		'spikekill_templates' => array(
-			'friendly_name' => __('Graph Templates to SpikeKill'),
+			'friendly_name' => __('Graph Templates to Spike Kill'),
 			'method' => 'drop_multi',
 			'description' => __('When performing batch spike removal, only the templates selected below will be acted on.'),
 			'array' => $spikekill_templates,
@@ -1835,7 +1835,7 @@ $settings_user = array(
 			),
 		'allow_graph_dates_in_future' => array(
 			'friendly_name' => __('Allow Graph to extend to Future'),
-			'description' => __('When displaying Graphs, allow Graph Dates to extend "to future"'),
+			'description' => __('When displaying Graphs, allow Graph Dates to extend \'to future\''),
 			'method' => 'checkbox',
 			'default' => 'on'
 		),
@@ -1887,7 +1887,7 @@ $settings_user = array(
 			'array' => array('1' => __('1 Column'),'2' => __('%d Columns', 2), '3' => __('%d Columns', 3), '4' => __('%d Columns', 4), '5' => __('%d Columns', 5), '6' => __('%d Columns', 6) )
 			),
 		'num_columns_tree' => array(
-			'friendly_name' => __('Treeview Thumbnail Columns'),
+			'friendly_name' => __('Tree View Thumbnail Columns'),
 			'description' => __('The number of columns to use when displaying Thumbnail graphs in Tree mode.'),
 			'method' => 'drop_array',
 			'default' => '2',

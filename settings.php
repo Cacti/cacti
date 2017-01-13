@@ -296,7 +296,7 @@ default:
 			$('#emailtest').click(function() {
 				var $div = $('<div />').appendTo('body');
 				$div.attr('id', 'testmail');
-				$('#testmail').prop('title', '<?php print __('Test E-Mail Results');?>');
+				$('#testmail').prop('title', '<?php print __('Test Email Results');?>');
 				$('#testmail').dialog({
 					autoOpen: false,
 					modal: true,

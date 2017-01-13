@@ -540,7 +540,7 @@ function aggregate_color_template() {
 
 	$display_text = array(
 		'name'      => array( __('Template Title'), 'ASC'),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Color Templates that are in use can not be Deleted. In use is defined as being referenced by an Aggregate Template.')),
+		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template.')),
 		'graphs'    => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC'),
 		'templates' => array('display' => __('Templates'), 'align' => 'right', 'sort' => 'DESC')
 	);
