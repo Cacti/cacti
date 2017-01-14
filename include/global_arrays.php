@@ -245,12 +245,18 @@ $custom_vdef_data_source_types = array( // this may change as soon as RRDTool su
 );
 
 $input_types = array(
-	DATA_INPUT_TYPE_SNMP                => __('SNMP'), // Action 0:
+	DATA_INPUT_TYPE_SNMP                => __('SNMP Get'), // Action 0:
 	DATA_INPUT_TYPE_SNMP_QUERY          => __('SNMP Query'),
 	DATA_INPUT_TYPE_SCRIPT              => __('Script/Command'),  // Action 1:
 	DATA_INPUT_TYPE_SCRIPT_QUERY        => __('Script Query'), // Action 1:
-	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script - Script Server (PHP)'),
+	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script Server'),
 	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => __('Script Query - Script Server')
+);
+
+$input_types_script = array(
+	DATA_INPUT_TYPE_SNMP                => __('SNMP Get'), // Action 0:
+	DATA_INPUT_TYPE_SCRIPT              => __('Script/Command'),  // Action 1:
+	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script Server'),
 );
 
 $reindex_types = array(

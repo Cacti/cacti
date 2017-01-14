@@ -223,7 +223,7 @@ $fields_data_input_edit = array(
 		'friendly_name' => __('Input Type'),
 		'description' => __('Choose the method you wish to use to collect data for this Data Input method.'),
 		'value' => '|arg1:type_id|',
-		'array' => $input_types,
+		'array' => $input_types_script,
 		),
 	'input_string' => array(
 		'method' => 'textarea',
@@ -1287,7 +1287,7 @@ $fields_data_query_edit = array(
 		'friendly_name' => __('Data Input Method'),
 		'description' => __('Choose the input method for this Data Query.  This input method defines how data is collected for each Device associated with the Data Query.'),
 		'value' => '|arg1:data_input_id|',
-		'sql' => 'SELECT id,name FROM data_input WHERE (type_id=3 OR type_id=4 OR type_id=5 OR type_id=6) ORDER BY name',
+		'sql' => 'SELECT id,name FROM data_input WHERE type_id IN(3,4,6) ORDER BY name',
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
