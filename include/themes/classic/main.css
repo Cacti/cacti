@@ -1038,6 +1038,11 @@ legend {
 	background-color: #6d88ad;
 }
 
+.tableHeader td {
+	color: #ffffff;
+	font-weight: bold;
+}
+
 .tableHeader th {
 	color: #ffffff;
 	font-weight:bold;
