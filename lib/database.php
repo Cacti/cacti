@@ -438,6 +438,9 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 		if (isset($column['auto_increment']))
 			$sql .= ' auto_increment';
 
+		if (isset($column['comment']))
+			$sql .= " COMMENT '" . $column['comment'] . "'";
+
 		if (isset($column['after']))
 			$sql .= ' AFTER ' . $column['after'];
 
@@ -601,6 +604,8 @@ function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $d
 					$sql .= ' ON UPDATE ' . $column['on_update'];
 				if (isset($column['auto_increment']))
 					$sql .= ' auto_increment';
+				if (isset($column['comment']))
+					$sql .= " COMMENT '" . $column['comment'] . "'";
 				db_execute($sql, $log, $db_conn);
 			}
 		}
@@ -673,6 +678,9 @@ function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $d
 	if (isset($data['primary'])) {
 		if (!isset($allindexes['PRIMARY'])) {
 			// No current primary key, so add it
+			if (is_array($data['primary'])) {
+				$data['primary'] = implode(',', $data['primary']);
+			}
 			db_execute("ALTER TABLE `$table` ADD PRIMARY KEY(" . $data['primary'] . ")", $log, $db_conn);
 		} else {
 			$add = array_diff($data['primary'], $allindexes['PRIMARY']);
@@ -723,6 +731,8 @@ function db_table_create ($table, $data, $log = TRUE, $db_conn = FALSE) {
 					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
 				if (isset($column['on_update']))
 					$sql .= ' ON UPDATE ' . $column['on_update'];
+				if (isset($column['comment']))
+					$sql .= " COMMENT '" . $column['comment'] . "'";
 				if (isset($column['auto_increment']))
 					$sql .= ' auto_increment';
 				$c++;

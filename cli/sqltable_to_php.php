@@ -101,7 +101,7 @@ function sqltable_to_php ($table, $create) {
 	}
 
 	if (in_array($table, $tables)) {
-		$result = db_fetch_assoc("SHOW columns FROM $table");
+		$result = db_fetch_assoc("SHOW FULL columns FROM $table");
 
 		$cols   = array();
 		$pri    = array();
@@ -126,10 +126,18 @@ function sqltable_to_php ($table, $create) {
 				}
 
 				if (trim($r['Extra']) != '') {
+					if (strtolower($r['Extra']) == 'on update current_timestamp') {
+						$text .= ", 'on_update' => 'CURRENT_TIMESTAMP'";
+					}
+
 					if (strtolower($r['Extra']) == 'auto_increment') {
 						$text .= ", 'auto_increment' => true";
 					}
 				}
+				if (trim($r['Comment']) != '') {
+					$text .= ", 'comment' => '" . $r['Comment'] . "'";
+				}
+
 				$text .= ");\n";
 			}
 		}else{
@@ -157,8 +165,8 @@ function sqltable_to_php ($table, $create) {
 				}
 			}
 		}else{
-			echo "ERROR: Obtaining list of indexes from $table\n";
-			exit;
+			//echo "ERROR: Obtaining list of indexes from $table\n";
+			//exit;
 		}
 
 		$result = db_fetch_row("SELECT ENGINE, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_NAME = '$table'");
