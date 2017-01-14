@@ -344,7 +344,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __('CSV Export of Graph Data'). "'></a><br>\n";
 	print "<a class='iconLink mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' alt='' title='" . __('MRTG Graph View'). "'></a><br>\n";
 	if (read_config_option('realtime_enabled') == 'on') {
-		print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __('Click to view just this Graph in Realtime'). "'></a><br/>\n";
+		print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __('Click to view just this Graph in Real-time'). "'></a><br/>\n";
 	}
 	if (is_realm_allowed(1043)) {
 		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif' title='" . __('Kill Spikes in Graphs') . "'></span>";
@@ -987,7 +987,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 				if ($(this).button === 'function') {
 					$(this).button('enable');
 				}else{
-					$(this).prop('disable', false);
+					$(this).prop('disabled', false);
 				}
 			});
 		}else if ($('#drp_action').val() == 0) {
@@ -1007,7 +1007,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 				if ($(this).button === 'function') {
 					$(this).button('enable');
 				}else{
-					$(this).prop('disable', false);
+					$(this).prop('disabled', false);
 				}
 			});
 		}
@@ -1545,7 +1545,7 @@ function html_spikekill_menu($local_graph_id) {
 
 	$rkills  = '<li>' . __('Kills Per RRA') . '<ul>';
 	for($i = 1; $i <= 10; $i++) {
-		$rkills .= '<li class="skkills" id="kills_' . $i . '"><i ' . (html_spikekill_setting('spikekill_number') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%d Spiikes', $i) . '</li>';
+		$rkills .= '<li class="skkills" id="kills_' . $i . '"><i ' . (html_spikekill_setting('spikekill_number') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%d Spikes', $i) . '</li>';
 	}
 	$rkills .= '</ul></li>';
 
@@ -1554,8 +1554,8 @@ function html_spikekill_menu($local_graph_id) {
 	<ul class='spikekillMenu' style='font-size:1em;'>
 		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa fa-support'></i><span></span><?php print __('Remove StdDev');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-support'></i><span></span><?php print __('Remove Variance');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span><?php print __('DryRun StdDev');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span><?php print __('DryRun Variance');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span><?php print __('Dry Run StdDev');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span><?php print __('Dry Run Variance');?></li>
 		<li><i class='fa fa-cog'></i><span></span>Settings
 			<ul>
 				<?php print $rmethod;?>
