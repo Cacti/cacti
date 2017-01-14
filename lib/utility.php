@@ -974,12 +974,52 @@ function utilities_get_system_memory() {
 			}
 		}
 	}else{
-		$data = explode("\n", file_get_contents('/proc/meminfo'));
-		foreach($data as $l) {
-			if (trim($l) != '') {
-				list($key, $val) = explode(':', $l);
-				$val = trim($val, " kBb\r\n");
-				$memInfo[$key] = round($val * 1024,0);
+		$file = '';
+		if (file_exists('/proc/meminfo')) {
+			$file = '/proc/meminfo';
+		}elseif(file_exists('/linux/proc/meminfo')) {
+			$file = '/linux/proc/meminfo';
+		}elseif(file_exists('/compat/linux/proc/meminfo')) {
+			$file = '/compat/linux/proc/meminfo';
+		}
+
+		if ($file != '') {
+			$data = explode("\n", file_get_contents($file));
+			foreach($data as $l) {
+				if (trim($l) != '') {
+					list($key, $val) = explode(':', $l);
+					$val = trim($val, " kBb\r\n");
+					$memInfo[$key] = round($val * 1000,0);
+				}
+			}
+		}elseif (file_exists('/usr/bin/free')) {
+			$menInfo   = array();
+			$output    = array();
+			$exit_code = 0;
+
+			exec('/usr/bin/free', $output, $exit_code);
+			if ($exit_code == 0) {
+				foreach($output as $line) {
+					$parts = preg_split('/\s+/', $line);
+					switch ($parts[0]) {
+					case 'Mem:':
+						$memInfo['MemTotal']  = (isset($parts[1]) ? $parts[1]*1000:0);
+						$memInfo['MemUsed']   = (isset($parts[2]) ? $parts[2]*1000:0);
+						$memInfo['MemFree']   = (isset($parts[3]) ? $parts[3]*1000:0);
+						$memInfo['MemShared'] = (isset($parts[4]) ? $parts[4]*1000:0);
+						$memInfo['Buffers']   = (isset($parts[5]) ? $parts[5]*1000:0);
+						$memInfo['Cached']    = (isset($parts[6]) ? $parts[6]*1000:0);
+						break;
+					case '-/+':
+						$memInfo['Active']    = (isset($parts[2]) ? $parts[3]*1000:0);
+						$memInfo['Inactive']  = (isset($parts[3]) ? $parts[3]*1000:0);
+						break;
+					case 'Swap:':
+						$memInfo['SwapTotal'] = (isset($parts[1]) ? $parts[1]*1000:0);
+						$memInfo['SwapUsed']  = (isset($parts[2]) ? $parts[2]*1000:0);
+						break;
+					}
+				}
 			}
 		}
 	}
