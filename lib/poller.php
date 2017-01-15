@@ -714,19 +714,32 @@ function resource_cache_out($type, $path) {
 								$tmpfile = '/tmp/cachecheck.php';
 							}
 
-							if (file_put_contents($tmpfile, $contents) !== false) {
-								$output = system($php_path . ' -l ' . $tmpfile, $exit);
-								if ($exit == 0) {
-									cacti_log("INFO: Updating '" . $mypath . "' from Cache!", false, 'POLLER');
-									file_put_contents($mypath, $contents);
+							if (is_writeable($tmpfile)) {
+								if (file_put_contents($tmpfile, $contents) !== false) {
+									$output = system($php_path . ' -l ' . $tmpfile, $exit);
+									if ($exit == 0) {
+										cacti_log("INFO: Updating '" . $mypath . "' from Cache!", false, 'POLLER');
+
+										if (is_writable($mypath)) {
+											file_put_contents($mypath, $contents);
+										}else{
+											cacti_log("ERROR: Cache in can not write to '" . $mypath . "', purge this location");
+										}
+									}else{
+										cacti_log("ERROR: PHP Source File '" . $mypath . "' from Cache has a Syntax error!", false, 'POLLER');
+									}
+
+									unlink($tmpfile);
 								}else{
-									cacti_log("ERROR: PHP File '" . $mypath . "' from Cache has a Syntax error!", false, 'POLLER');
+									cacti_log("ERROR: Unable to write file '" . $tmpfile . "' for PHP Syntax verification", false, 'POLLER');
 								}
 							}else{
-								cacti_log("ERROR: Unable to write file '" . $tmpfile . "' for PHP Syntax verification", false, 'POLLER');
+								cacti_log("ERROR: Cache in can not write to '" . $tmpfile . "', purge this location");
 							}
-						} else {
+						} elseif (is_writeable($mypath)) {
 							file_put_contents($mypath, $contents);
+						} else {
+							cacti_log("ERROR: Cache in can not write to '" . $mypath . "', purge this location");
 						}
 					}
 				} else {
