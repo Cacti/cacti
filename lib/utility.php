@@ -341,6 +341,21 @@ function update_poller_cache($data_source, $commit = false) {
 						}
 					}
 				}
+			}else{
+				$arguments = array(
+					'poller_items' => $poller_items, 
+					'data_source'  => $data_source, 
+					'data_input'   => $data_input
+				);
+
+				$arguments = api_plugin_hook_function('data_source_to_poller_items', $arguments);
+
+				// Process the returned poller items
+				if ((isset($arguments['poller_items'])) && 
+					(is_array($arguments['poller_items'])) && 
+					(sizeof($poller_items) < sizeof($arguments['poller_items']))) {
+					$poller_items = $arguments['poller_items'];
+				}
 			}
 		}
 	}else{

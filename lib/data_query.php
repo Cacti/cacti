@@ -77,7 +77,21 @@ function run_data_query($host_id, $snmp_query_id) {
 	}elseif ($type_id == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
 		$result = query_script_host($host_id, $snmp_query_id);
 	}else{
-		query_debug_timer_offset('data_query', "Unknown type = '$type_id'");
+		$result = false;
+		$arguments = array(
+			'result' => $result, 
+			'host_id' => $host_id, 
+			'snmp_query_id' => $snmp_query_id
+		);
+
+		$arguments = api_plugin_hook_function('run_data_query', $arguments);
+
+		if (isset($arguments['result']) && $arguments['result'] !== false) {
+			$result = $arguments['result'];
+		}else{
+			query_debug_timer_offset('data_query', "Unknown type = '$type_id'");
+			unset($result);
+		}
 	}
 
 	/* update the sort cache */

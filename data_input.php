@@ -375,13 +375,7 @@ function field_edit() {
 	/* field name */
 	if ((($data_input['type_id'] == '1') || ($data_input['type_id'] == '5')) && ($current_field_type == 'in')) { /* script */
 		$form_array = inject_form_variables($fields_data_input_field_edit_1, $dfield, $array_field_names, (isset($field) ? $field : array()));
-	}elseif (($data_input['type_id'] == '2') ||
-			($data_input['type_id'] == '3') ||
-			($data_input['type_id'] == '4') ||
-			($data_input['type_id'] == '6') ||
-			($data_input['type_id'] == '7') ||
-			($data_input['type_id'] == '8') ||
-			($current_field_type == 'out')) { /* snmp */
+	}elseif ($current_field_type == 'out' || ($data_input['type_id'] != 1 && $data_input['type_id'] != 5)) {
 		$form_array = inject_form_variables($fields_data_input_field_edit_2, $dfield, (isset($field) ? $field : array()));
 	}
 
@@ -676,10 +670,9 @@ function data() {
 		$sql_where = '';
 	}
 
-	$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . " (di.name!='Get Script Data (Indexed)'
-		AND di.name!='Get Script Server Data (Indexed)'
-		AND di.name!='Get SNMP Data'
-		AND di.name!='Get SNMP Data (Indexed)')";
+	$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . " (di.hash NOT IN ('3eb92bb845b9660a7445cf9740726522', 'bf566c869ac6443b0c75d1c32b5a350e', '80e9e4c4191a5da189ae26d0e237f015', '332111d8b54ac8ce939af87a7eac0c06'))";
+
+	$sql_where  = api_plugin_hook_function('data_input_sql_where', $sql_where);
 
 	$total_rows = db_fetch_cell("SELECT
 		count(*)
