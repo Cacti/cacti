@@ -247,7 +247,7 @@ INSERT INTO `automation_graph_rules` VALUES (1,'Traffic 64 bit Server',1,14,''),
 
 CREATE TABLE `automation_ips` (
   `ip_address` varchar(20) NOT NULL DEFAULT '',
-  `hostname` varchar(250) DEFAULT NULL,
+  `hostname` varchar(100) DEFAULT NULL,
   `network_id` int(10) unsigned DEFAULT NULL,
   `pid` int(10) unsigned DEFAULT NULL,
   `status` int(10) unsigned DEFAULT NULL,
@@ -1051,8 +1051,7 @@ CREATE TABLE data_input (
   name varchar(200) NOT NULL default '',
   input_string varchar(255) default NULL,
   type_id tinyint(2) NOT NULL default '0',
-  PRIMARY KEY (id),
-  KEY name (name)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -1353,6 +1352,7 @@ CREATE TABLE data_local (
   PRIMARY KEY  (id),
   KEY data_template_id (data_template_id),
   KEY snmp_query_id (snmp_query_id),
+  KEY snmp_index (snmp_index(191)),
   KEY host_id (host_id)
 ) ENGINE=InnoDB;
 
@@ -1417,131 +1417,131 @@ CREATE TABLE `data_source_profiles_rra` (
 --
 
 INSERT INTO `data_source_profiles_rra` VALUES 
-	(1,1,'Daily (5 Minute Average)',1,600),
-	(2,1,'Weekly (30 Minute Average)',6,700),
-	(3,1,'Monthly (2 Hour Average)',24,775),
-	(4,1,'Yearly (1 Day Average)',288,797);
+  (1,1,'Daily (5 Minute Average)',1,600),
+  (2,1,'Weekly (30 Minute Average)',6,700),
+  (3,1,'Monthly (2 Hour Average)',24,775),
+  (4,1,'Yearly (1 Day Average)',288,797);
 
 --
 -- Table structure for table `data_source_purge_action`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
-		`id` integer UNSIGNED auto_increment,
-		`name` varchar(128) NOT NULL default '',
-		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
-		`action` tinyint(2) NOT NULL default 0,
-		PRIMARY KEY (`id`),
-		UNIQUE KEY name (`name`))
-		ENGINE=InnoDB
-		COMMENT='RRD Cleaner File Actions';
+CREATE TABLE `data_source_purge_action` (
+  `id` integer UNSIGNED auto_increment,
+  `name` varchar(128) NOT NULL default '',
+  `local_data_id` mediumint(8) unsigned NOT NULL default '0',
+  `action` tinyint(2) NOT NULL default 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY name (`name`))
+  ENGINE=InnoDB
+  COMMENT='RRD Cleaner File Actions';
 
 --
 -- Table structure for table `data_source_purge_temp`
 --
 
 CREATE TABLE `data_source_purge_temp` (
-		`id` integer UNSIGNED auto_increment,
-		`name_cache` varchar(255) NOT NULL default '',
-		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
-		`name` varchar(128) NOT NULL default '',
-		`size` integer UNSIGNED NOT NULL default '0',
-		`last_mod` TIMESTAMP NOT NULL default '0000-00-00 00:00:00',
-		`in_cacti` tinyint NOT NULL default '0',
-		`data_template_id` mediumint(8) unsigned NOT NULL default '0',
-		PRIMARY KEY (`id`),
-		UNIQUE KEY name (`name`),
-		KEY local_data_id (`local_data_id`),
-		KEY in_cacti (`in_cacti`),
-		KEY data_template_id (`data_template_id`))
-		ENGINE=InnoDB
-		COMMENT='RRD Cleaner File Repository';
+  `id` integer UNSIGNED auto_increment,
+  `name_cache` varchar(255) NOT NULL default '',
+  `local_data_id` mediumint(8) unsigned NOT NULL default '0',
+  `name` varchar(128) NOT NULL default '',
+  `size` integer UNSIGNED NOT NULL default '0',
+  `last_mod` TIMESTAMP NOT NULL default '0000-00-00 00:00:00',
+  `in_cacti` tinyint NOT NULL default '0',
+  `data_template_id` mediumint(8) unsigned NOT NULL default '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY name (`name`),
+  KEY local_data_id (`local_data_id`),
+  KEY in_cacti (`in_cacti`),
+  KEY data_template_id (`data_template_id`))
+  ENGINE=InnoDB
+  COMMENT='RRD Cleaner File Repository';
 
 	
 --
 -- Table structure for table `data_source_stats_daily`
 --
 	
-CREATE TABLE IF NOT EXISTS `data_source_stats_daily` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`average` DOUBLE DEFAULT NULL,
-		`peak` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=InnoDB;
+CREATE TABLE `data_source_stats_daily` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `average` DOUBLE DEFAULT NULL,
+  `peak` DOUBLE DEFAULT NULL,
+  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  ) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_hourly`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_hourly` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`average` DOUBLE DEFAULT NULL,
-		`peak` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=InnoDB;
+CREATE TABLE `data_source_stats_hourly` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `average` DOUBLE DEFAULT NULL,
+  `peak` DOUBLE DEFAULT NULL,
+  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  ) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_hourly_cache`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_cache` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
-		`value` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`time`,`rrd_name`),
-		KEY `time` USING BTREE (`time`)
-		) ENGINE=MEMORY;
+CREATE TABLE `data_source_stats_hourly_cache` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `time` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `value` DOUBLE DEFAULT NULL,
+  PRIMARY KEY  (`local_data_id`,`time`,`rrd_name`),
+  KEY `time` USING BTREE (`time`)
+  ) ENGINE=MEMORY;
 
 --
 -- Table structure for table `data_source_stats_hourly_last`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_last` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`value` DOUBLE DEFAULT NULL,
-		`calculated` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MEMORY;
+CREATE TABLE `data_source_stats_hourly_last` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `value` DOUBLE DEFAULT NULL,
+  `calculated` DOUBLE DEFAULT NULL,
+  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  ) ENGINE=MEMORY;
 
 --
 -- Table structure for table `data_source_stats_monthly`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_monthly` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`average` DOUBLE DEFAULT NULL,
-		`peak` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=InnoDB;
+CREATE TABLE `data_source_stats_monthly` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `average` DOUBLE DEFAULT NULL,
+  `peak` DOUBLE DEFAULT NULL,
+  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  ) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_weekly`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_weekly` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`average` DOUBLE DEFAULT NULL,
-		`peak` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=InnoDB;
+CREATE TABLE `data_source_stats_weekly` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `average` DOUBLE DEFAULT NULL,
+  `peak` DOUBLE DEFAULT NULL,
+  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  ) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_yearly`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_yearly` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`average` DOUBLE DEFAULT NULL,
-		`peak` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=InnoDB;
+CREATE TABLE `data_source_stats_yearly` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `average` DOUBLE DEFAULT NULL,
+  `peak` DOUBLE DEFAULT NULL,
+  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  ) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_template`
@@ -1743,7 +1743,7 @@ CREATE TABLE graph_local (
   KEY graph_template_id (graph_template_id),
   KEY snmp_query_id (snmp_query_id),
   KEY snmp_query_graph_id (snmp_query_graph_id),
-  KEY snmp_index (snmp_index)
+  KEY snmp_index (snmp_index(191))
 ) ENGINE=InnoDB COMMENT='Creates a relationship for each item in a custom graph.';
 
 --
@@ -2488,7 +2488,7 @@ CREATE TABLE host (
   site_id int(10) unsigned NOT NULL default '1',
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   description varchar(150) NOT NULL default '',
-  hostname varchar(250) default NULL,
+  hostname varchar(100) default NULL,
   notes text,
   snmp_community varchar(100) default NULL,
   snmp_version tinyint(1) unsigned NOT NULL default '1',
@@ -2568,9 +2568,9 @@ CREATE TABLE host_snmp_cache (
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY  (host_id,snmp_query_id,field_name,snmp_index),
   KEY host_id (host_id,field_name),
-  KEY snmp_index (snmp_index),
+  KEY snmp_index (snmp_index(191)),
   KEY field_name (field_name),
-  KEY field_value (field_value(200)),
+  KEY field_value (field_value(191)),
   KEY snmp_query_id (snmp_query_id),
   KEY present (present)
 ) ENGINE=InnoDB;
@@ -2743,7 +2743,7 @@ CREATE TABLE `poller` (
   `name` varchar(30) DEFAULT NULL,
   `notes` varchar(1024) DEFAULT '',
   `status` int(10) unsigned NOT NULL DEFAULT '0',
-  `hostname` varchar(250) NOT NULL DEFAULT '',
+  `hostname` varchar(100) NOT NULL DEFAULT '',
   `dbdefault` varchar(20) NOT NULL DEFAULT 'cacti',
   `dbhost` varchar(64) NOT NULL DEFAULT 'cacti',
   `dbuser` varchar(20) NOT NULL DEFAULT '',
@@ -2797,7 +2797,7 @@ CREATE TABLE poller_item (
   action tinyint(2) unsigned NOT NULL default '1',
   present tinyint NOT NULL DEFAULT '1',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  hostname varchar(250) NOT NULL default '',
+  hostname varchar(100) NOT NULL default '',
   snmp_community varchar(100) NOT NULL default '',
   snmp_version tinyint(1) unsigned NOT NULL default '0',
   snmp_username varchar(50) NOT NULL default '',
@@ -2863,7 +2863,7 @@ CREATE TABLE  `poller_output_boost_processes` (
 -- Table structure for table `poller_output_realtime`
 --
 
-CREATE TABLE IF NOT EXISTS poller_output_realtime (
+CREATE TABLE poller_output_realtime (
   local_data_id mediumint(8) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -2897,7 +2897,7 @@ CREATE TABLE poller_resource_cache (
   id int(10) unsigned NOT NULL AUTO_INCREMENT,
   resource_type varchar(20) DEFAULT NULL,
   md5sum varchar(32) DEFAULT NULL,
-  path varchar(255) DEFAULT NULL,
+  path varchar(191) DEFAULT NULL,
   update_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   contents longblob,
   PRIMARY KEY (id),
@@ -3000,7 +3000,7 @@ CREATE TABLE settings_user (
   user_id smallint(8) unsigned NOT NULL default '0',
   name varchar(50) NOT NULL default '',
   value varchar(2048) NOT NULL default '',
-  PRIMARY KEY  (user_id,name)
+  PRIMARY KEY  (user_id, name)
 ) ENGINE=InnoDB;
 
 --
@@ -3016,7 +3016,7 @@ CREATE TABLE settings_user_group (
   group_id smallint(8) unsigned NOT NULL DEFAULT '0',
   name varchar(50) NOT NULL DEFAULT '',
   value varchar(2048) NOT NULL DEFAULT '',
-  PRIMARY KEY (group_id,name)
+  PRIMARY KEY (group_id, name)
 ) ENGINE=InnoDB COMMENT='Stores the Default User Group Graph Settings';
 
 --
@@ -3027,7 +3027,7 @@ CREATE TABLE settings_tree (
   user_id mediumint(8) unsigned NOT NULL default '0',
   graph_tree_item_id mediumint(8) unsigned NOT NULL default '0',
   status tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (user_id,graph_tree_item_id)
+  PRIMARY KEY  (user_id, graph_tree_item_id)
 ) ENGINE=InnoDB;
 
 --
@@ -3047,7 +3047,7 @@ CREATE TABLE snmp_query (
   description varchar(255) default NULL,
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   data_input_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY name (name)
 ) ENGINE=InnoDB;
 
@@ -3071,7 +3071,7 @@ CREATE TABLE snmp_query_graph (
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   name varchar(100) NOT NULL default '',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -3102,7 +3102,7 @@ CREATE TABLE snmp_query_graph_rrd (
   data_template_id mediumint(8) unsigned NOT NULL default '0',
   data_template_rrd_id mediumint(8) unsigned NOT NULL default '0',
   snmp_field_name varchar(50) NOT NULL default '0',
-  PRIMARY KEY  (snmp_query_graph_id,data_template_id,data_template_rrd_id),
+  PRIMARY KEY (snmp_query_graph_id,data_template_id,data_template_rrd_id),
   KEY data_template_rrd_id (data_template_rrd_id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
 ) ENGINE=InnoDB;
@@ -3320,11 +3320,11 @@ INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','',
 CREATE TABLE `user_auth_cache` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `hostname` varchar(64) NOT NULL DEFAULT '',
+  `hostname` varchar(100) NOT NULL DEFAULT '',
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `token` varchar(200) NOT NULL DEFAULT '',
+  `token` varchar(191) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `tokenkey` (`user_id`,`hostname`,`token`),
+  UNIQUE KEY `tokenkey` (`token`),
   KEY `hostname` (`hostname`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB COMMENT='Caches Remember Me Details';
@@ -3580,9 +3580,9 @@ CREATE TABLE `sites` (
 --
 
 CREATE TABLE `snmpagent_cache` (
-  `oid` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `mib` varchar(255) NOT NULL,
+  `oid` varchar(191) NOT NULL,
+  `name` varchar(191) NOT NULL,
+  `mib` varchar(191) NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT '',
   `otype` varchar(255) NOT NULL DEFAULT '',
   `kind` varchar(255) NOT NULL DEFAULT '',
@@ -3617,7 +3617,7 @@ CREATE TABLE `snmpagent_mibs` (
 --
 
 CREATE TABLE `snmpagent_cache_notifications` (
-  `name` varchar(255) NOT NULL,
+  `name` varchar(191) NOT NULL,
   `mib` varchar(255) NOT NULL,
   `attribute` varchar(255) NOT NULL,
   `sequence_id` smallint(6) NOT NULL,
@@ -3633,8 +3633,8 @@ CREATE TABLE `snmpagent_cache_notifications` (
 --
 
 CREATE TABLE `snmpagent_cache_textual_conventions` (
-  `name` varchar(255) NOT NULL,
-  `mib` varchar(255) NOT NULL,
+  `name` varchar(191) NOT NULL,
+  `mib` varchar(191) NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT '',
   `description` varchar(5000) NOT NULL DEFAULT '',
   KEY `name` (`name`),
@@ -3651,7 +3651,7 @@ CREATE TABLE `snmpagent_cache_textual_conventions` (
 
 CREATE TABLE `snmpagent_managers` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
-  `hostname` varchar(255) NOT NULL,
+  `hostname` varchar(100) NOT NULL,
   `description` varchar(255) NOT NULL,
   `disabled` char(2) DEFAULT NULL,
   `max_log_size` tinyint(1) NOT NULL,
@@ -3681,7 +3681,7 @@ CREATE TABLE `snmpagent_managers` (
 CREATE TABLE `snmpagent_managers_notifications` (
   `manager_id` int(8) NOT NULL,
   `notification` varchar(255) NOT NULL,
-  `mib` varchar(255) NOT NULL,
+  `mib` varchar(191) NOT NULL,
   KEY `mib` (`mib`),
   KEY `manager_id` (`manager_id`),
   KEY `manager_id2` (`manager_id`,`notification`)
@@ -3701,7 +3701,7 @@ CREATE TABLE `snmpagent_notifications_log` (
   `severity` tinyint(1) NOT NULL,
   `manager_id` int(8) NOT NULL,
   `notification` varchar(255) NOT NULL,
-  `mib` varchar(255) NOT NULL,
+  `mib` varchar(191) NOT NULL,
   `varbinds` varchar(5000) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `time` (`time`),
