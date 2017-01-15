@@ -1999,7 +1999,7 @@ function automation_hook_device_create_tree($host_id) {
 	automation_execute_device_create_tree($host_id);
 
 	/* make sure, the next plugin gets required $data */
-	return($data);
+	return($host_id);
 }
 
 /**
