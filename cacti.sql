@@ -3317,14 +3317,16 @@ INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','',
 -- Table structure for table `user_auth_cache`
 --
 
-CREATE TABLE IF NOT EXISTS `user_auth_cache` (
+CREATE TABLE `user_auth_cache` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   `hostname` varchar(64) NOT NULL DEFAULT '',
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `token` varchar(1024) NOT NULL DEFAULT '',
-  PRIMARY KEY  (user_id),
-  KEY hostname (hostname),
-  KEY last_update (last_update)
+  `token` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tokenkey` (`user_id`,`hostname`,`token`),
+  KEY `hostname` (`hostname`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB COMMENT='Caches Remember Me Details';
 
 --

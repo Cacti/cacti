@@ -366,12 +366,18 @@ function upgrade_to_1_0_0() {
 
 	db_install_add_key('graph_tree_items', 'INDEX', 'parent', array('parent'));
 
-	db_install_execute("CREATE TABLE IF NOT EXISTS `user_auth_cache` (
+	db_install_execute("DROP TABLE IF EXISTS `user_auth_cache`");
+	db_install_execute("CREATE TABLE `user_auth_cache` (
+		`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 		`user_id` int(10) unsigned NOT NULL DEFAULT '0',
 		`hostname` varchar(64) NOT NULL DEFAULT '',
 		`last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		`token` varchar(1024) NOT NULL DEFAULT '') 
-		ENGINE=$engine 
+		`token` varchar(200) NOT NULL DEFAULT '',
+		PRIMARY KEY (`id`),
+		UNIQUE KEY `tokenkey` (`user_id`,`hostname`,`token`),
+		KEY `hostname` (`hostname`),
+		KEY `user_id` (`user_id`)) 
+		ENGINE=InnoDB 
 		COMMENT='Caches Remember Me Details'");
 
 	db_install_execute("ALTER TABLE host 
@@ -1717,10 +1723,5 @@ function upgrade_to_1_0_0() {
 		db_install_execute("UPDATE graph_templates_graph SET $field='' WHERE $field='0'");
 	}
 	db_install_execute("UPDATE graph_templates_graph SET unit_value='' WHERE unit_value='on'");
-
-	db_install_add_key('user_auth_cache', 'PRIMARY KEY', '', array('user_id'));
-	db_install_add_key('user_auth_cache', 'INDEX', 'hostname', array('hostname'));
-	db_install_add_key('user_auth_cache', 'INDEX', 'last_update', array('last_update'));
-
 }
 
