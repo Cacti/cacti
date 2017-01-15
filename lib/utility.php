@@ -676,11 +676,11 @@ function utilities_get_mysql_recommendations() {
 
 		$recommendations += array(
 			'collation_server' => array(
-				'value' => 'utf8mb4_col',
+				'value' => 'utf8mb4_unicode_ci',
 				'class' => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use
-					the utf8mb4_col collation type as some characters take more than a single byte.')
+					the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
 				),
 			'character_set_client' => array(
 				'value' => 'utf8mb4',
