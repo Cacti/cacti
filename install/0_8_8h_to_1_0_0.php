@@ -1723,5 +1723,7 @@ function upgrade_to_1_0_0() {
 		db_install_execute("UPDATE graph_templates_graph SET $field='' WHERE $field='0'");
 	}
 	db_install_execute("UPDATE graph_templates_graph SET unit_value='' WHERE unit_value='on'");
+
+	db_install_add_key('data_local',  'INDEX', 'snmp_index', array('snmp_index(191)'));
 }
 

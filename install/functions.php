@@ -65,7 +65,7 @@ function db_install_add_key ($table, $type, $key, $columns) {
 		$columns = array($columns);
 	}
 	
-	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' ' . $key . '(' . implode(',', $columns) . ')';
+	$sql = 'ALTER IGNORE TABLE `' . $table . '` ADD ' . $type . ' ' . $key . '(' . implode(',', $columns) . ')';
 	if (!db_index_exists($table, $key, false)) {
 		$status = db_install_execute($sql);
 	} else {
