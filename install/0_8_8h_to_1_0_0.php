@@ -1717,5 +1717,10 @@ function upgrade_to_1_0_0() {
 		db_install_execute("UPDATE graph_templates_graph SET $field='' WHERE $field='0'");
 	}
 	db_install_execute("UPDATE graph_templates_graph SET unit_value='' WHERE unit_value='on'");
+
+	db_install_add_key('user_auth_cache', 'PRIMARY KEY', '', array('user_id'));
+	db_install_add_key('user_auth_cache', 'INDEX', 'hostname', array('hostname'));
+	db_install_add_key('user_auth_cache', 'INDEX', 'last_update', array('last_update'));
+
 }
 

@@ -3321,7 +3321,10 @@ CREATE TABLE IF NOT EXISTS `user_auth_cache` (
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   `hostname` varchar(64) NOT NULL DEFAULT '',
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `token` varchar(1024) NOT NULL DEFAULT ''
+  `token` varchar(1024) NOT NULL DEFAULT '',
+  PRIMARY KEY  (user_id),
+  KEY hostname (hostname),
+  KEY last_update (last_update)
 ) ENGINE=InnoDB COMMENT='Caches Remember Me Details';
 
 --
