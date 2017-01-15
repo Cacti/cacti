@@ -2570,7 +2570,7 @@ CREATE TABLE host_snmp_cache (
   KEY host_id (host_id,field_name),
   KEY snmp_index (snmp_index),
   KEY field_name (field_name),
-  KEY field_value (field_value),
+  KEY field_value (field_value(200)),
   KEY snmp_query_id (snmp_query_id),
   KEY present (present)
 ) ENGINE=InnoDB;
