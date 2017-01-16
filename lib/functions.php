@@ -134,7 +134,19 @@ function set_user_setting($config_name, $value, $user = -1) {
    @arg $user_id - the id of the user to check the configuration value for
    @returns (bool) - true if a value exists, false if a value does not exist */
 function user_setting_exists($config_name, $user_id) {
-	return sizeof(db_fetch_assoc_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $user_id)));
+	static $user_setting_values = array();
+
+	if (!isset($user_setting_values[$config_name])) {
+		$value = db_fetch_cell_prepared('SELECT COUNT(*) FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $user_id));
+
+		if ($value > 0) {
+			$user_setting_values[$config_name] = true;
+		}else{
+			$user_setting_values[$config_name] = false;
+		}
+	}
+
+	return $user_setting_values[$config_name];
 }
 
 /* read_default_user_setting - finds the default value of a user configuration setting
