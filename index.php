@@ -77,7 +77,7 @@ if (read_config_option('hide_console') != '1') {
 	<tr><td><hr></td></tr>
 	<tr><td><strong><?php print __('Remote Data Collector Status:');?></strong>  <?php print '<i>' . ($config['connection'] == 'online' ? __('Online'):($config['connection'] == 'recovery' ? __('Recovery'):__('Offline'))) . '</i>';?></td></tr>
 	<?php if ($config['connection'] != 'online') {?>
-	<tr><td><strong><?php print __('Number of Offline Records:');?></strong>  <?php print '<i>' . number_format_i18n(db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost', true, $local_db_cnn_id)) . '</i>';?></td></tr>
+	<tr><td><strong><?php print __('Number of Offline Records:');?></strong>  <?php print '<i>' . number_format_i18n(db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost', '', true, $local_db_cnn_id)) . '</i>';?></td></tr>
 	<?php }?>
 	<tr><td><hr></td></tr>
 	<tr>

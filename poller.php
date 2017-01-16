@@ -570,7 +570,11 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		if ($method == 'spine') {
-			chdir(read_config_option('path_webroot'));
+			$webroot = read_config_option('path_webroot');
+
+			if (is_dir($webroot)) {
+				chdir($webroot);
+			}
 		}
 	}else{
 		cacti_log('NOTE: There are no items in your poller for this polling cycle!', true, 'POLLER', $level);
