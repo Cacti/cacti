@@ -6,9 +6,11 @@ Developed in the early 2000's by Ian Berry as a high school project, it has been
 
 ## Cacti 1.0
 
-This release of Cacti has been two years in the making.  With the release of Cacti 1.0, we have meged 19 Cacti Group developed plugins in to the base of Cacti in an effort to make Cacti less cumbersome to deploy and manage.  With the merge of these user plugins into the core of Cacti, we have also addressed their integration so that they behave as if they were incorporated into Cacti from the beginning.
+This release of Cacti has been two years in the making.  With the release of Cacti 1.0, we have meged 19 Cacti Group developed plugins in to the base of Cacti in an effort to make Cacti less cumbersome to deploy and manage.  With the merge of these plugins into the core of Cacti, we have also addressed their integration so that they behave as if they were incorporated into Cacti from the beginning.  This drove major redsign in some cases to address look and feel, performance, and scalability issues.
 
-Those plugins include:
+### Merged Plugins
+
+The plugins that have been merged include the plugin below:
 
 | Plugin | Description |
 | ----------- | ------------- |
@@ -33,17 +35,32 @@ Those plugins include:
 | spikekill   |  Removes spikes from Cacti Graphs |
 | superlinks  |  Allows Cacti Administrators to add additional sites to Cacti |
 
+### Remote Data Collection
 Also, in the Cacti 1.0 release, we have added support for multiple data collection intervals from the same Cacti installation.  We have done this with the creation of a new object called a 'Data Source Profile'.  These Data Source Profiles can be applied to Graphs at creation time, or at the Data Template level as a part of the automated Graph creation process.
 
+### Themes and HTML5
+
 Featured in Cacti 1.0 is also support more the skinning of the user interface through Themes.  We have attempted to make Cacti 1.0 as HTML5 compatible as possible using jQuery, jQueryUI, and several jQuery plugins to make the user interface more appealing to people who wish to have a more modern browser experience.  Ajax page rendering is incorporated throughout the interface to again enhance the user experience.  We have included four base Themes in the default Cacti install including the old fashioned 'Classic' theme.
+
+### User Experience and Security
 
 We have also tried very hard to make Cacti easier to adopt through preventing most damaging activities such as accidentially removing a Data Source for a Graph that is still in existince, or deleting a Data Template or Graph Template that are in use.  We have improved the Template Import and Export functions to allow you to preview Templates before incorporating them into your Cacti system.
 
 We have also increased Cacti's overall security through the removal of the direct use of $_GET, $_REQUEST, and $_POST variables, have minimized the possibility of SQL injection through the use of prepared statements in our database calls, and reduced the likely hood of Cross Site Request Forgery through CSRF protection.  From the security perspective, we now support authentication cookies, as well as C3 level security settings for local accounts including strong password hashing, forced regular password changes, complexity, and history as well as account lockout to prevent hacking into your Cacti instance from intruders.  We have also included features that will force connections over HTTPS and have also provided a new Developer Debug mode that will log all unsafe activities to the Cacti Log so that Cacti developers can write safer plugins.  All of this was done in an effort to have a more friendly and secure Cacti user experience.
 
-We have also included several JavaScript based HTML5 Charting API's into the base Cacti including C3, D3, Chart.js, DynaGraphs, and jQuery Sparklines in an effort to assist plugin developers who wish to use a Graphing API's other than RRDtool for creating dashboards.
+### Charting API's
+
+We have also included several JavaScript based HTML5 Charting API's into the base Cacti including C3, D3, Chart.js, DynaGraphs, and jQuery Sparklines in an effort to assist plugin developers who wish to use Graphing API's in their plugins other than RRDtool for creating various dashboards.
+
+### Multiple Data Collection Intervals
 
 We have also added the capability to deploy and control multiple Data Collectors inside of Cacti.  The design of multiple Data Collectors includes and offline mode that will cache RRDtool updates on the remote server until network connectivity is restored.  So, you can now deploy Cacti to remote sites whose servers are firewalled off from the main Cacti Server.  The only requirement is that the Remote Data collectors must be able to communicate to the main Cacti server via MySQL and HTTP/HTTPS ports.
+
+### Enhanced Discovery and Automation
+
+As part of the merge of the discovery and autom8 plugins, these plugins were redesigned to work as a single entity.  We incorporated multiple discovery networks and discovery frequencies as well.  These merge activities essentially completed these plugins.
+
+### Improved Graph Permissions, User Groups and Domains
 
 Lastly, Cacti 1.0 includes a new Graph permissions interface to make the creation and management of Graph, Tree, Template, and Device permissions more manageable.  As a part of this change, we also included support for User Groups, and reworked the way that Realm permissions appear on the User Management page to make them appear in more of an Role Based (RBAC) fashion.
 
