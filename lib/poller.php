@@ -844,6 +844,30 @@ function replicate_out($remote_poller_id = 1) {
 	$data = db_fetch_assoc('SELECT * FROM data_input_fields');
 	replicate_out_table($remote_db_cnn_id, $data, 'data_input_fields', $remote_poller_id);
 
+	$data = db_fetch_assoc('SELECT * FROM user_auth');
+	replicate_out_table($remote_db_cnn_id, $data, 'user_auth', $remote_poller_id);
+
+	$data = db_fetch_assoc('SELECT * FROM user_auth_group');
+	replicate_out_table($remote_db_cnn_id, $data, 'user_auth_group', $remote_poller_id);
+
+	$data = db_fetch_assoc('SELECT * FROM user_auth_group_members');
+	replicate_out_table($remote_db_cnn_id, $data, 'user_auth_group_members', $remote_poller_id);
+
+	$data = db_fetch_assoc('SELECT * FROM user_auth_group_perms');
+	replicate_out_table($remote_db_cnn_id, $data, 'user_auth_group_perms', $remote_poller_id);
+
+	$data = db_fetch_assoc('SELECT * FROM user_auth_group_realm');
+	replicate_out_table($remote_db_cnn_id, $data, 'user_auth_group_realm', $remote_poller_id);
+
+	$data = db_fetch_assoc('SELECT * FROM user_auth_realm');
+	replicate_out_table($remote_db_cnn_id, $data, 'user_auth_realm', $remote_poller_id);
+
+	$data = db_fetch_assoc('SELECT * FROM user_domains');
+	replicate_out_table($remote_db_cnn_id, $data, 'user_domains', $remote_poller_id);
+
+	$data = db_fetch_assoc('SELECT * FROM user_domains_ldap');
+	replicate_out_table($remote_db_cnn_id, $data, 'user_domains_ldap', $remote_poller_id);
+
 	$data = db_fetch_assoc_prepared('SELECT hsq.* 
 		FROM host_snmp_query AS hsq
 		INNER JOIN host AS h
