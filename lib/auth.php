@@ -62,7 +62,7 @@ function set_auth_cookie($user) {
 	db_execute_prepared('REPLACE INTO user_auth_cache 
 		(user_id, hostname, last_update, token) 
 		VALUES 
-		(?, ?, NOW(), ?);', array($user['id'], $_SERVER['HTTP_HOST'], $secret));
+		(?, ?, NOW(), ?);', array($user['id'], $_SERVER['REMOTE_ADDR'], $secret));
 
 	setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
 }
