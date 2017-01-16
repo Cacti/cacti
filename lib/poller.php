@@ -538,7 +538,9 @@ function update_resource_cache($poller_id = 1) {
 		'cli'      => array('recursive' => true,  'path' => $mpath . '/cli')
 	);
 
-	if ($poller_id == 1) {
+	$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled=""');
+
+	if ($poller_id == 1 && $pollers > 1) {
 		foreach($paths as $type => $path) {
 			if (is_readable($path['path'])) {
 				$pathinfo = pathinfo($path['path']);
@@ -571,7 +573,7 @@ function update_resource_cache($poller_id = 1) {
 			}
 		}
 		}
-	}else{
+	}elseif ($poller_id > 1) {
 		foreach($paths as $type => $path) {
 			if (is_writable($path['path'])) {
 				resource_cache_out($type, $path);
