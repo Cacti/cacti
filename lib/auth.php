@@ -1644,16 +1644,20 @@ function user_perms_valid($user_id) {
 
 	$valid = false;
 
-	if (version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
-		$key   = db_fetch_cell_prepared('SELECT reset_perms FROM user_auth WHERE id = ?', array($user_id));
+	if (!isset($_SESSION['sess_user_perms_key'])) {
+		if (version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
+			$key   = db_fetch_cell_prepared('SELECT reset_perms FROM user_auth WHERE id = ?', array($user_id));
 
-		if (isset($_SESSION['sess_user_perms_key'])) {
-			if ($key == $_SESSION['sess_user_perms_key']) {
-				$valid = true;
+			if (isset($_SESSION['sess_user_perms_key'])) {
+				if ($key == $_SESSION['sess_user_perms_key']) {
+					$valid = true;
+				}
 			}
-		}
 
-		$_SESSION['sess_user_perms_key'] = $key;
+			$_SESSION['sess_user_perms_key'] = $key;
+		}
+	}else{
+		$valid = $_SESSION['sess_user_perms_key'];
 	}
 
 	return $valid;
