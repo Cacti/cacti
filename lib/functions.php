@@ -236,7 +236,19 @@ function set_config_option($config_name, $value) {
      in 'include/global_settings.php'
    @returns (bool) - true if a value exists, false if a value does not exist */
 function config_value_exists($config_name) {
-	return sizeof(db_fetch_assoc_prepared('SELECT value FROM settings WHERE name= ?', array($config_name)));
+	static $config_values = array();
+
+	if (!isset($config_values[$config_name])) {
+		$value = db_fetch_cell_prepared('SELECT COUNT(*) FROM settings WHERE name = ?', array($config_name));
+
+		if ($value > 0) {
+			$config_values[$config_name] = true;
+		}else{
+			$config_values[$config_name] = false;
+		}
+	}
+
+	return $config_values[$config_name];
 }
 
 /* read_default_config_option - finds the default value of a Cacti configuration setting
