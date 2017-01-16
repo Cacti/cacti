@@ -1811,7 +1811,7 @@ function user_edit() {
 		$header_label = '[new]';
 	}
 
-	if (sizeof($tabs) && isset_request_var('id')) {
+	if (sizeof($tabs) && !isempty_request_var('id')) {
 		$i = 0;
 
 		/* draw the tabs */
