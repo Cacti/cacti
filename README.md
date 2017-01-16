@@ -35,7 +35,8 @@ The plugins that have been merged include the plugin below:
 | spikekill   |  Removes spikes from Cacti Graphs |
 | superlinks  |  Allows Cacti Administrators to add additional sites to Cacti |
 
-### Remote Data Collection
+### Multiple Data Collection Intervals
+
 Also, in the Cacti 1.0 release, we have added support for multiple data collection intervals from the same Cacti installation.  We have done this with the creation of a new object called a 'Data Source Profile'.  These Data Source Profiles can be applied to Graphs at creation time, or at the Data Template level as a part of the automated Graph creation process.
 
 ### Themes and HTML5
@@ -52,7 +53,7 @@ We have also increased Cacti's overall security through the removal of the direc
 
 We have also included several JavaScript based HTML5 Charting API's into the base Cacti including C3, D3, Chart.js, DynaGraphs, and jQuery Sparklines in an effort to assist plugin developers who wish to use Graphing API's in their plugins other than RRDtool for creating various dashboards.
 
-### Multiple Data Collection Intervals
+### Remote Data Collection
 
 We have also added the capability to deploy and control multiple Data Collectors inside of Cacti.  The design of multiple Data Collectors includes and offline mode that will cache RRDtool updates on the remote server until network connectivity is restored.  So, you can now deploy Cacti to remote sites whose servers are firewalled off from the main Cacti Server.  The only requirement is that the Remote Data collectors must be able to communicate to the main Cacti server via MySQL and HTTP/HTTPS ports.
 
@@ -62,7 +63,21 @@ As part of the merge of the discovery and autom8 plugins, these plugins were red
 
 ### Improved Graph Permissions, User Groups and Domains
 
-Lastly, Cacti 1.0 includes a new Graph permissions interface to make the creation and management of Graph, Tree, Template, and Device permissions more manageable.  As a part of this change, we also included support for User Groups, and reworked the way that Realm permissions appear on the User Management page to make them appear in more of an Role Based (RBAC) fashion.
+Cacti 1.0 also includes a new Graph permissions interface to make the creation and management of Graph, Tree, Template, and Device permissions more manageable.  As a part of this change, we also included support for User Groups, and reworked the way that Realm permissions appear on the User Management page to make them appear in more of an Role Based (RBAC) fashion.
+
+### Many, many New Features
+
+There are many, many additional changes that are best left for a ChangeLog review.  Some examples include features like:
+
+* The ability to Audit Data Sources vs. their Data Template and be provided RRDtool syntax on how to resolve issues
+* A New Graph View that automatically resizes images to match your screen resolution
+* jQuery multi-select for Graph Templates on the various Graph View pages
+* Running Realtime on dozens of Graphs concurrently without additional popup windows
+* The ability for users to change their password from the UI
+* The ability for users to save their Graph Settings from the Graph View pages
+* Autocomplete in many areas of the UI where large dropdown lists would cause a slowdown in the UI over wide area networks
+* Per file, per plugin and per host debugging
+* The ability to synchronize Graph Templates to Graphs
 
 ## Contribute
 
