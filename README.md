@@ -65,6 +65,28 @@ As part of the merge of the discovery and autom8 plugins, these plugins were red
 
 Cacti 1.0 also includes a new Graph permissions interface to make the creation and management of Graph, Tree, Template, and Device permissions more manageable.  As a part of this change, we also included support for User Groups, and reworked the way that Realm permissions appear on the User Management page to make them appear in more of an Role Based (RBAC) fashion.
 
+### Improved Support for RRDtool Graph Options
+
+In Cacti 1.0, we support many more RRDtool Graph options incuding:
+
+#### Graphs Templates
+* Full Right Axis Support
+* Shift
+* Dash and Dash Offset
+* Alt Y-Grid
+* No Grid Fit
+* Units Length
+* Tab Width
+* Dynamic Labels
+* Force Rules Legend
+* Legend Position
+
+#### Graph Template Items
+* VDEF's
+* Stacked Lines
+* User Definable Line Widths
+* Text Align
+
 ### Many, many New Features
 
 There are many, many additional changes that are best left for a ChangeLog review.  Some examples include features like:
