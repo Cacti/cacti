@@ -160,6 +160,7 @@ $start = microtime(true);
 
 $record_limit = 10000;
 $inserted     = 0;
+$sleep_time   = 3;
 
 debug('About to start recovery processing');
 
@@ -177,7 +178,7 @@ if (!empty($recovery_pid)) {
 if ($run) {
 	debug('No pid exists, starting recovery process!');
 
-	db_execute("DELETE FROM settings WHERE name='recovery_pid'");
+	db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
 
 	$end_count = 0;
 
@@ -189,7 +190,7 @@ if ($run) {
 	while (true) {
 		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries 
 			FROM poller_output_boost 
-			GROUP BY time');
+			GROUP BY time', true, $local_db_cnn_id);
 
 		debug('There are ' . sizeof($time_records) . ' in the recovery database');
 
@@ -244,7 +245,7 @@ if ($run) {
 			$rows = db_fetch_assoc("SELECT * 
 				FROM poller_output_boost 
 				WHERE time $operator '$purge_time' 
-				ORDER BY time ASC");
+				ORDER BY time ASC", true, $local_db_cnn_id);
 
 			if (sizeof($rows)) {
 				$count     = 0;
@@ -273,7 +274,7 @@ if ($run) {
 				}
 
 				/* remove the recovery records */
-				db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'");
+				db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'", true, $local_db_cnn_id);
 			}
 
 			sleep($sleep_time);

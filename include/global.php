@@ -177,13 +177,6 @@ $config['connection'] = 'online';
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
 
-	if ($local_db_cnn_id) {
-		$boost_records = db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost');
-		if ($boost_records > 0) {
-			$config['connection'] = 'recovery';
-		}
-	}
-
 	if (!isset($rdatabase_ssl)) $rdatabase_ssl = false;
 
 	/* gather the existing cactidb version */
@@ -213,6 +206,13 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 }else{
 	/* gather the existing cactidb version */
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
+}
+
+if ($poller_id > 1 && $config['connection'] == 'online') {
+	$boost_records = db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost');
+	if ($boost_records > 0) {
+		$config['connection'] = 'recovery';
+	}
 }
 
 if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions')) {
