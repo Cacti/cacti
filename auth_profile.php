@@ -155,6 +155,26 @@ function settings() {
 		return;
 	}
 
+	// Set the graph views the user has permission to
+	unset($graph_views);
+	if (is_view_allowed('show_tree')) {
+		$graph_views[1] = __('Tree View');
+	}
+
+	if (is_view_allowed('show_list')) {
+		$graph_views[2] = __('List View');
+	}
+
+	if (is_view_allowed('show_preview')) {
+		$graph_views[2] = __('Preview View');
+	}
+
+	if (sizeof($graph_views)) {
+		$settings_user['general']['default_view_mode']['array'] = $graph_views;
+	}else{
+		unset($settings_user['general']['default_view_mode']);
+	}
+
 	/* file: user_admin.php, action: user_edit (host) */
 	$fields_user = array(
 		'username' => array(

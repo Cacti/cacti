@@ -37,21 +37,39 @@ function set_default_graph_action() {
 		if (!isset($_SESSION['sess_graph_view_action'])) {
 			switch(read_user_setting('default_view_mode')) {
 			case '1':
-				set_request_var('action', 'tree');
+				if (is_view_allowed('show_tree')) {
+					set_request_var('action', 'tree');
+				}
 				break;
 			case '2':
-				set_request_var('action', 'list');
+				if (is_view_allowed('show_list')) {
+					set_request_var('action', 'list');
+				}
 				break;
 			case '3':
-				set_request_var('action', 'preview');
+				if (is_view_allowed('show_preview')) {
+					set_request_var('action', 'preview');
+				}
 				break;
 			default:
 				break;
 			}
 		}elseif (in_array($_SESSION['sess_graph_view_action'], array('tree', 'list', 'preview'))) {
-			set_request_var('action', $_SESSION['sess_graph_view_action']);
-		} else {
+			if (is_view_allowed('show_' . $_SESSION['sess_graph_view_action'])) {
+				set_request_var('action', $_SESSION['sess_graph_view_action']);
+			}
+		}
+	}
+
+	if (!isset_request_var('action')) {
+		if (is_view_allowed('show_tree')) {
 			set_request_var('action', 'tree');
+		}elseif (is_view_allowed('show_preview')) {
+			set_request_var('action', 'preview');
+		}elseif (is_view_allowed('show_list')) {
+			set_request_var('action', 'list');
+		}else{
+			set_request_var('action', '');
 		}
 	}
 

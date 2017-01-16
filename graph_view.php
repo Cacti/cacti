@@ -118,7 +118,7 @@ function get_matching_nodes() {
 	}
 }
 
-switch (get_nfilter_request_var('action')) {
+switch (get_request_var('action')) {
 case 'ajax_hosts':
 	get_allowed_ajax_hosts();
 
