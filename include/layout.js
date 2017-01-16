@@ -896,7 +896,8 @@ $(function() {
 
 	messageTimer = setTimeout(function() { 
 		$('#message_container').slideUp('fast'); 
-		$('#message_container').empty(); }, 2000);
+		$('#message_container').empty(); 
+	}, 6000);
 
 	setupUserMenu();
 

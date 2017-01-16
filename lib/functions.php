@@ -3269,7 +3269,7 @@ function bottom_footer() {
 
 		$(function() {
 			if (message != '') {
-				$('#message_container').html(message).show().delay(2000).slideUp('fast');
+				$('#message_container').html(message).show().delay(6000).slideUp('fast');
 				window.scrollTo(0,0);
 			}
 
