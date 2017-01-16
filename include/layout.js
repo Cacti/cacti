@@ -522,6 +522,12 @@ function loadPage(href) {
 			$('#main').html(html);
 		}
 
+		hrefParts = href.split('?');
+		href = basename(hrefParts[0]);
+
+		$('#menu').find('.pic').removeClass('selected');
+		$('#menu').find("a[href*='/"+basename(href)+"']").addClass('selected');
+
 		applySkin();
 
 		window.scrollTo(0, 0);
@@ -537,6 +543,12 @@ function loadPageNoHeader(href) {
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
+
+		hrefParts = href.split('?');
+		href = basename(hrefParts[0]);
+
+		$('#menu').find('.pic').removeClass('selected');
+		$('#menu').find("a[href*='/"+basename(href)+"']").addClass('selected');
 
 		applySkin();
 
