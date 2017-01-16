@@ -10,26 +10,28 @@ This release of Cacti has been two years in the making.  With the release of Cac
 
 Those plugins include:
 
-* snmpagent     An SNMP Agent extension, Trap & Notification generator for Cacti data
-* clog          A single click Cacti Log viewers for Administrators
-* settings      A plugin for providing core Email and DNS services
-* boost         Cacti's large system performance boosting plugin
-* dsstats       Cacti's Data Source Statistics plugin
-* watermark     Provides the ability to watermark your Cacti Graphs
-* ssl           Forces Cacti connections over HTTPS
-* ugroup        Supports User Groups in Cacti
-* domains       Supports Multiple Authentication Domains in Cacti
-* jqueryskin    The original Cacti skinning plugin
-* secpass       Provides C3 level password and site security in Cacti
-* logrotate     Provides cacti.log rotation services
-* realtime      The Realtime Graphing plugin
-* rrdclean      The RRDfile purging and maintenance plugin
-* nectar        Provides Email based Graph reporting features in Cacti
-* aggregate     Provides Templating, Creation and Management of Aggregate Cacti Graphs
-* autom8        Provides Graph and Tree creation automation services
-* discovery     Provides Network Discovery and Device automation services
-* spikekill     Removes spikes from Cacti Graphs
-* superlinks    Allows Cacti Administrators to add additional sites to Cacti
+| Plugin | Description |
+| ----------- | ------------- |
+| snmpagent   |  An SNMP Agent extension, Trap & Notification generator for Cacti data |
+| clog        |  A single click Cacti Log viewers for Administrators |
+| settings    |  A plugin for providing core Email and DNS services |
+| boost       |  Cacti's large system performance boosting plugin |
+| dsstats     |  Cacti's Data Source Statistics plugin |
+| watermark   |  Provides the ability to watermark your Cacti Graphs |
+| ssl         |  Forces Cacti connections over HTTPS |
+| ugroup      |  Supports User Groups in Cacti |
+| domains     |  Supports Multiple Authentication Domains in Cacti |
+| jqueryskin  |  The original Cacti skinning plugin |
+| secpass     |  Provides C3 level password and site security in Cacti |
+| logrotate   |  Provides cacti.log rotation services |
+| realtime    |  The Realtime Graphing plugin |
+| rrdclean    |  The RRDfile purging and maintenance plugin |
+| nectar      |  Provides Email based Graph reporting features in Cacti |
+| aggregate   |  Provides Templating, Creation and Management of Aggregate Cacti Graphs |
+| autom8      |  Provides Graph and Tree creation automation services |
+| discovery   |  Provides Network Discovery and Device automation services |
+| spikekill   |  Removes spikes from Cacti Graphs |
+| superlinks  |  Allows Cacti Administrators to add additional sites to Cacti |
 
 Also, in the Cacti 1.0 release, we have added support for multiple data collection intervals from the same Cacti installation.  We have done this with the creation of a new object called a 'Data Source Profile'.  These Data Source Profiles can be applied to Graphs at creation time, or at the Data Template level as a part of the automated Graph creation process.
 
