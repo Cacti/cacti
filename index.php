@@ -75,7 +75,7 @@ if (read_config_option('hide_console') != '1') {
 	</tr>
 	<?php if ($poller_id > 1) {?>
 	<tr><td><hr></td></tr>
-	<tr><td><strong><?php print __('Remote Data Collector Status:');?></strong>  <?php print '<i>' . ($config['connection'] == 'online' ? __('Online'):__('Offline')) . '</i>';?></td></tr>
+	<tr><td><strong><?php print __('Remote Data Collector Status:');?></strong>  <?php print '<i>' . ($config['connection'] == 'online' ? __('Online'):($config['connection'] == 'recovery' ? __('Recovery'):__('Offline'))) . '</i>';?></td></tr>
 	<tr><td><hr></td></tr>
 	<tr>
 		<td class="textAreaNotes top left">

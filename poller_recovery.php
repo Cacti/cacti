@@ -65,6 +65,14 @@ function sig_handler($signo) {
 
 }
 
+function debug($string) {
+	global $debug;
+
+	if ($debug) {
+		print trim($string) . "\n";
+	}
+}
+
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
@@ -153,17 +161,37 @@ $start = microtime(true);
 $record_limit = 10000;
 $inserted     = 0;
 
-$pid = posix_kill($recovery_pid, 0);
+debug('About to start recovery processing');
 
-if ($pid === false) {
+if (!empty($recovery_pid)) {
+	$pid = posix_kill($recovery_pid, 0);
+	if ($pid === false) {
+		$run = true;
+	}else{
+		$run = false;
+	}
+}else{
+	$run = true;
+}
+
+if ($run) {
+	debug('No pid exists, starting recovery process!');
+
 	db_execute("DELETE FROM settings WHERE name='recovery_pid'");
 
 	$end_count = 0;
+
+	/* let the console know you are in recovery mode */
+	db_execute_prepared('UPDATE poller 
+		SET status="5" 
+		WHERE id= ?', array($poller_id), true, $remote_db_cnn_id);
 
 	while (true) {
 		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries 
 			FROM poller_output_boost 
 			GROUP BY time');
+
+		debug('There are ' . sizeof($time_records) . ' in the recovery database');
 
 		$total_records = db_affected_rows();
 		$found         = 0;
@@ -179,7 +207,7 @@ if ($pid === false) {
 			 * continue doing this till you get to the end
 			 * or hit the record limit */
 			foreach ($time_records as $record) {
-				$time   = $records['time'];
+				$time   = $record['time'];
 				$found += $record['entries'];
 				$i++;
 
@@ -222,14 +250,14 @@ if ($pid === false) {
 				$count     = 0;
 				$sql_array = array();
 
-				foreach($rows as $row) {
+				foreach($rows as $r) {
 					$sql_array[] .= "(" . $r['local_data_id'] . "," . db_qstr($r['rrd_name']) . "," . db_qstr($r['time']) . "," . db_qstr($r['output']) . ")";
 					$count++;
 
 					if ($count > 1000) {
 						db_execute("INSERT IGNORE INTO poller_output_boost 
 							(local_data_id, rrd_name, time, output) 
-							VALUES " . implode(',', $sql_array), $remote_db_cnn_id);
+							VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
 
 						$sql_array = array();
 						$inserted += $count;
@@ -243,12 +271,21 @@ if ($pid === false) {
 						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
 					$inserted += $count;
 				}
+
+				/* remove the recovery records */
+				db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'");
 			}
 
 			sleep($sleep_time);
 		}
 	}
+
+	/* let the console know you are in online mode */
+	db_execute_prepared('UPDATE poller 
+		SET status="2" 
+		WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
 }else{
+	debug('Recovery process still running, exiting');
 	cacti_log("Recovery process still running for Poller " . $poller_id . ".  PID is $recovery_pid");
 	exit(1);
 }

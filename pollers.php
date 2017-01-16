@@ -33,11 +33,12 @@ $poller_actions = array(
 );
 
 $poller_status = array(
-	0 => __('<div class="deviceUnknown">New/Idle</div>'),
-	1 => __('<div class="deviceUp">Running</div>'),
-	2 => __('<div class="deviceRecovering">Idle</div>'),
-	3 => __('<div class="deviceDown">Unknown/Down</div>'),
-	4 => __('<div class="deviceDisabled">Disabled</div>')
+	0 => '<div class="deviceUnknown">'    . __('New/Idle')     . '</div>',
+	1 => '<div class="deviceUp">'         . __('Running')      . '</div>',
+	2 => '<div class="deviceRecovering">' . __('Idle')         . '</div>',
+	3 => '<div class="deviceDown">'       . __('Unknown/Down') . '</div>',
+	4 => '<div class="deviceDisabled">'   . __('Disabled')     . '</div>',
+	5 => '<div class="deviceDown">'       . __('Recovering')   . '</div>'
 );
 
 /* file: pollers.php, action: edit */
