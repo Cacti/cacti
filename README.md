@@ -69,6 +69,7 @@ Cacti 1.0 also includes a new Graph permissions interface to make the creation a
 
 There are many, many additional changes that are best left for a ChangeLog review.  Some examples include features like:
 
+* A completely New Tree design that can scale to hundreds of thousands of node even over wide area networks
 * The ability to Audit Data Sources vs. their Data Template and be provided RRDtool syntax on how to resolve issues
 * A New Graph View that automatically resizes images to match your screen resolution
 * jQuery multi-select for Graph Templates on the various Graph View pages
@@ -78,6 +79,7 @@ There are many, many additional changes that are best left for a ChangeLog revie
 * Autocomplete in many areas of the UI where large dropdown lists would cause a slowdown in the UI over wide area networks
 * Per file, per plugin and per host debugging
 * The ability to synchronize Graph Templates to Graphs
+* New Meta objects incuding: Site, Remote Data Collectors and Data Source Profiles
 
 ## Contribute
 
