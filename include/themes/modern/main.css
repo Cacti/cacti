@@ -145,8 +145,8 @@ label {
 	font-weight:normal;
 }
 
-.disabled_row {
-	color:grey;
+.disabled_row span, .disabled_row td, .disabled_row a {
+	color:grey !important;
 }
 
 .disabled {
@@ -1186,7 +1186,6 @@ legend {
 
 .tableHeader {
 	background: rgba(138,179,105,1);
-//	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
