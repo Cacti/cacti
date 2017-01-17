@@ -56,9 +56,22 @@ Cacti 1.0 supports skinning of the user interface through Themes.  We have attem
 
 ### User Experience and Security
 
-We have also tried very hard to make Cacti easier to adopt through preventing most damaging activities such as accidentially removing a Data Source for a Graph that is still in existince, or deleting a Data Template or Graph Template that are in use.  We have improved the Template Import and Export functions to allow you to preview Templates before incorporating them into your Cacti system.
+We have also tried to make Cacti easier to adopt by preventing most damaging activities such as accidentially removing a Data Source for a Graph that is still in existince, or deleting a Data Template or Graph Template that are in use.  We have improved the Template Import and Export functions to allow you to preview Templates before incorporating them into your Cacti system.
 
-We have also increased Cacti's overall security through the removal of the direct use of $_GET, $_REQUEST, and $_POST variables, have minimized the possibility of SQL injection through the use of prepared statements in our database calls, and reduced the likely hood of Cross Site Request Forgery through CSRF protection.  From the security perspective, we now support authentication cookies, as well as C3 level security settings for local accounts including strong password hashing, forced regular password changes, complexity, and history as well as account lockout to prevent hacking into your Cacti instance from intruders.  We have also included features that will force connections over HTTPS and have also provided a new Developer Debug mode that will log all unsafe activities to the Cacti Log so that Cacti developers can write safer plugins.  All of this was done in an effort to have a more friendly and secure Cacti user experience.
+We have also increased Cacti's overall security:
+
+* removal of the direct use of $_GET, $_REQUEST, and $_POST variables
+* minimized the possibility of SQL injection through the use of prepared statements in our database calls
+* reduced the likely hood of Cross Site Request Forgery through CSRF protection
+* use of authentication cookies
+* C3 level security settings for local accounts:
+  * strong password hashing
+  * forced regular password changes, complexity, and history 
+  * account lockout to prevent hacking into your Cacti instance from intruders
+* option to force connections over HTTPS 
+* a new Developer Debug mode that will log all unsafe activities to the Cacti Log so that Cacti developers can write safer plugins.  
+
+All of this was done in an effort to have a more friendly and secure Cacti user experience.
 
 ### Charting API's
 
