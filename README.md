@@ -1,16 +1,16 @@
 # Cacti <sup>TM</sup>
 
-Cacti is the complete network graphing solution designed to harness the power of RRDTool's data storage and graphing functionality. Cacti provides support for multiple fast data collectors, network discovery and device management automation, advanced graph templating, aggregate graph templating and adminstration, as well as limitless data acquisition methods, embedded email notification facilities, and user, group and login domain management features out of the box. All of this is wrapped in an intuitive, easy to use interface that makes sense for LAN-sized installations up to complex networks with thousands of devices.
+Cacti is a complete network graphing solution designed to harness the power of RRDTool's data storage and graphing functionality. Cacti provides support for multiple fast data collectors, network discovery, device management automation, advanced graph templating, aggregate graph templating, limitless data acquisition methods, embedded email notification facilities, and user, group and login domain management features. All of this is wrapped in an intuitive, easy to use interface that makes sense for both LAN-sized installations and complex networks with thousands of devices.
 
-Developed in the early 2000's by Ian Berry as a high school project, it has been used by thousands of companies and enthusiasts to monitor and manage their Networks and Data Centers over the years.
+Developed in the early 2000's by Ian Berry as a high school project, it has been used by thousands of companies and enthusiasts to monitor and manage their Networks and Data Centers.
 
 ## Cacti 1.0
 
-This release of Cacti has been two years in the making.  With the release of Cacti 1.0, we have meged 19 Cacti Group developed plugins in to the base of Cacti in an effort to make Cacti less cumbersome to deploy and manage.  With the merge of these plugins into the core of Cacti, we have also addressed their integration so that they behave as if they were incorporated into Cacti from the beginning.  This drove major redsign in some cases to address look and feel, performance, and scalability issues.
+This release of Cacti has been two years in the making.  With the release of Cacti 1.0, we have meged 19 Cacti Group developed plugins in to the base of Cacti in an effort to make Cacti less cumbersome to deploy and manage.  With the merge of these plugins into the core of Cacti, they behave as if they were incorporated into Cacti from the beginning.  This drove major redesign to address look and feel, performance, and scalability issues.
 
 ### Merged Plugins
 
-The plugins that have been merged include the plugin below:
+The plugins that have been merged include:
 
 | Plugin | Description |
 | ----------- | ------------- |
@@ -37,11 +37,11 @@ The plugins that have been merged include the plugin below:
 
 ### Multiple Data Collection Intervals
 
-Also, in the Cacti 1.0 release, we have added support for multiple data collection intervals from the same Cacti installation.  We have done this with the creation of a new object called a 'Data Source Profile'.  These Data Source Profiles can be applied to Graphs at creation time, or at the Data Template level as a part of the automated Graph creation process.
+In the Cacti 1.0 release, we have added support for multiple data collection intervals within the same Cacti installation.  We have done this with the creation of a new object called a 'Data Source Profile'.  These Data Source Profiles can be applied to Graphs at creation time, or at the Data Template level as a part of the automated Graph creation process.
 
 ### Themes and HTML5
 
-Featured in Cacti 1.0 is also support more the skinning of the user interface through Themes.  We have attempted to make Cacti 1.0 as HTML5 compatible as possible using jQuery, jQueryUI, and several jQuery plugins to make the user interface more appealing to people who wish to have a more modern browser experience.  Ajax page rendering is incorporated throughout the interface to again enhance the user experience.  We have included four base Themes in the default Cacti install including the old fashioned 'Classic' theme.
+Cacti 1.0 supports skinning of the user interface through Themes.  We have attempted to make Cacti 1.0 as HTML5 compatible as possible using jQuery, jQueryUI, and several jQuery plugins to make the user interface more appealing to people who wish to have a more modern browser experience.  Ajax page rendering is incorporated throughout the interface to enhance the user experience.  We have included four base Themes in the default Cacti install including the 'Classic' theme.
 
 ### User Experience and Security
 
