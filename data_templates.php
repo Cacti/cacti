@@ -296,11 +296,19 @@ function form_actions() {
 					api_duplicate_data_source(0, $selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}elseif (get_nfilter_request_var('drp_action') == '3') { /* change data source profile */
-				for ($i=0;($i<count($selected_items));$i++) {
-					db_execute_prepared('UPDATE data_template_data 
-						SET data_source_profile_id = ? 
-						WHERE data_template_id = ?', 
-						array(get_filter_request_var('data_source_profile_id'), $selected_items[$i]));
+				$step = db_fetch_cell_prepared('SELECT step 
+					FROM data_source_profiles 
+					WHERE id = ?', 
+					array(get_filter_request_var('data_source_profile_id')));
+
+				if (!empty($step)) {
+					for ($i=0;($i<count($selected_items));$i++) {
+						db_execute_prepared('UPDATE data_template_data 
+							SET data_source_profile_id = ?,
+							rrd_step = ?
+							WHERE data_template_id = ?', 
+							array(get_filter_request_var('data_source_profile_id'), $step, $selected_items[$i]));
+					}
 				}
 			}
 		}
