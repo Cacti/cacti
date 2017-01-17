@@ -2037,9 +2037,9 @@ CREATE TABLE graph_templates (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash char(32) NOT NULL default '',
   name char(255) NOT NULL default '',
-  PRIMARY KEY  (id),
-  KEY name (name)
-) ENGINE=InnoDB COMMENT='Contains each graph template name.';
+  PRIMARY KEY  (id)) 
+  ENGINE=InnoDB 
+  COMMENT='Contains each graph template name.';
 
 --
 -- Dumping data for table `graph_templates`
@@ -2165,7 +2165,7 @@ CREATE TABLE graph_templates_graph (
   PRIMARY KEY  (id),
   KEY local_graph_id (local_graph_id),
   KEY graph_template_id (graph_template_id),
-  KEY title_cache (title_cache)
+  KEY title_cache (title_cache(191))
 ) ENGINE=InnoDB COMMENT='Stores the actual graph data.';
 
 --
