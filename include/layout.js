@@ -525,8 +525,10 @@ function loadPage(href) {
 		hrefParts = href.split('?');
 		href = basename(hrefParts[0]);
 
-		$('#menu').find('.pic').removeClass('selected');
-		$('#menu').find("a[href*='/"+basename(href)+"']").addClass('selected');
+		if (basename(href) != '') {
+			$('#menu').find('.pic').removeClass('selected');
+			$('#menu').find("a[href*='/"+basename(href)+"']").addClass('selected');
+		}
 
 		applySkin();
 
@@ -547,8 +549,10 @@ function loadPageNoHeader(href) {
 		hrefParts = href.split('?');
 		href = basename(hrefParts[0]);
 
-		$('#menu').find('.pic').removeClass('selected');
-		$('#menu').find("a[href*='/"+basename(href)+"']").addClass('selected');
+		if (basename(href) != '') {
+			$('#menu').find('.pic').removeClass('selected');
+			$('#menu').find("a[href*='/"+basename(href)+"']").addClass('selected');
+		}
 
 		applySkin();
 
