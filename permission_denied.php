@@ -57,7 +57,7 @@ print "<body class='logoutBody'>
 			<div class='cactiLogoutLogo'></div>
 			<legend>" . __('Permission Denied') . "</legend>
 			<div class='logoutTitle'>
-				<p>" . __('You are not permitted to access this section of Cacti. If you feel that this is an error. Please contact your Cacti Administrator.') . "</p>
+				<p>" . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.') . "</p>
 				<center>" . $goBack . "</center>
 			</div>
 			<div class='logoutErrors'></div>

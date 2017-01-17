@@ -141,7 +141,7 @@ if (read_config_option('auth_method') != 0) {
 					<div class='cactiLogoutLogo'></div>
 					<legend>" . __('Permission Denied') . "</legend>
 					<div class='logoutTitle'>
-						<p>" . __('You are not permitted to access this section of Cacti. If you feel that you need access to this particular section, please contact the Cacti administrator.') .
+						<p>" . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.') .
 						"</p>
 						<center>" . $goBack . "</center>
 					</div>
