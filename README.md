@@ -79,15 +79,15 @@ We have also included several JavaScript based HTML5 Charting API's into the bas
 
 ### Remote Data Collection
 
-We have also added the capability to deploy and control multiple Data Collectors inside of Cacti.  The design of multiple Data Collectors includes and offline mode that will cache RRDtool updates on the remote server until network connectivity is restored.  So, you can now deploy Cacti to remote sites whose servers are firewalled off from the main Cacti Server.  The only requirement is that the Remote Data collectors must be able to communicate to the main Cacti server via MySQL and HTTP/HTTPS ports.
+We have added the capability to deploy and control multiple Data Collectors from inside of Cacti.  The design of multiple Data Collectors includes an offline mode that will cache RRDtool updates on the remote server until network connectivity is restored.  You can now deploy Cacti to remote sites whose devices are firewalled off from the main Cacti Server.  The only requirement is that the Remote Data collectors must be able to communicate to the main Cacti server via MySQL and HTTP/HTTPS ports.
 
 ### Enhanced Discovery and Automation
 
-As part of the merge of the discovery and autom8 plugins, these plugins were redesigned to work as a single entity.  We incorporated multiple discovery networks and discovery frequencies as well.  These merge activities essentially completed these plugins.
+The Discovery and Autom8 plugins were redesigned and merged into a single plugin, incorporating multiple discovery networks and discovery frequencies.
 
 ### Improved Graph Permissions, User Groups and Domains
 
-Cacti 1.0 also includes a new Graph permissions interface to make the creation and management of Graph, Tree, Template, and Device permissions more manageable.  We also included support for User Groups, and reworked the way that Realm permissions appear on the User Management page to make them appear in more of an Role Based (RBAC) fashion.
+Cacti 1.0 also includes a new Graph permissions interface, making the creation and management of Graph, Tree, Template, and Device permissions more flexible and intuitive.  We also included support for User Groups and reworked the way that Realm permissions appear on the User Management page to make them appear in more of an Role Based (RBAC) fashion.
 
 ### Improved Support for RRDtool Graph Options
 
@@ -113,11 +113,11 @@ In Cacti 1.0, we support more RRDtool Graph options incuding:
 
 ### Many, many New Features
 
-There are many, many additional changes that are best left for a ChangeLog review.  Some examples include features like:
+There are many additional changes that are best left for a ChangeLog review.  Some examples include:
 
-* A completely New Tree design that can scale to hundreds of thousands of node even over wide area networks
-* The ability to Audit Data Sources vs. their Data Template and be provided RRDtool syntax on how to resolve issues
-* A New Graph View that automatically resizes images to match your screen resolution
+* A completely new Tree design that can scale to hundreds of thousands of nodes even over wide area networks
+* The ability to Audit Data Sources against their Data Template and be provided RRDtool syntax on how to resolve issues
+* A new Graph View that automatically resizes images to match your screen resolution
 * jQuery multi-select for Graph Templates on the various Graph View pages
 * Running Realtime on dozens of Graphs concurrently without additional popup windows
 * The ability for users to change their password from the UI
