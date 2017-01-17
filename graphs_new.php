@@ -917,7 +917,7 @@ function graphs() {
 									}
 								}
 
-								print "<td style='width:1%;'>";
+								print "<td style='width:1%;' class='checkbox'>";
 								print "<input class='checkbox' type='checkbox' name='sg_$query_row' id='sg_$query_row'>";
 								print '</td>';
 								print "</tr>\n";

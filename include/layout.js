@@ -337,6 +337,8 @@ function dqUpdateDeps(snmp_query_id) {
 			$(this).removeClass('selected');
 			$(this).removeClass('selectable');
 			$(this).find(':checkbox').prop('disabled', true).prop('checked', false);
+		}else{
+			removeSelectAll = true;
 		}
 	});
 
@@ -344,9 +346,17 @@ function dqUpdateDeps(snmp_query_id) {
 		$('#all_'+snmp_query_id).prop('checked', false);
 	}
 
-	$('tr[id^=dqline'+snmp_query_id+'_]').unbind().not('.disabled_row').click(function() {
-		checked = $(this).find(':checkbox').is(':checked');
-		$(this).toggleClass('selected').find(':checkbox').prop('checked', !checked);
+	$('tr[id^=dqline'+snmp_query_id+'_]').not('.disabled_row').each(function() {
+		$(this).find(':checkbox').click(function() {
+			$(this).closest('tr').toggleClass('selected');
+		});
+
+		$(this).find('td').not('.checkbox').each(function() {
+			$(this).click(function() {
+				checked = $(this).closest('tr').find(':checkbox').is(':checked');
+				$(this).closest('tr').toggleClass('selected').find(':checkbox').prop('checked', !checked);;
+			});
+		});
 	});
 }
 
