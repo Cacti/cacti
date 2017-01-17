@@ -159,7 +159,7 @@ RRDTool is available in multiple versions and a majority of them are supported b
 
 To handle data gathering, you can feed cacti the paths to any external script/command along with any data that the user will need to "fill in", cacti will then gather this data in a cron-job and populate a MySQL database/the round robin archives.
 
-Data Sources can also be created, which correspond to actual data on the graph. For instance, if a user would want to graph the ping times to a host, you could create a data source utilizing a script that pings a host and returns it's value in milliseconds. After defining options for RRDTool such as how to store the data you will be able to define any additional information that the data input source requires, such as a host to ping in this case. Once a data source is created, it is automatically maintained at 5 minute intervals.
+Data Sources can also be created which correspond to actual data on the graph. If a user would want to graph the ping times to a host, you could create a data source utilizing a script that pings a host and returns it's value in milliseconds. After defining options for RRDTool such as how to store the data you will be able to define any additional information that the data input source requires, such as a host to ping in this case. Once a data source is created, it is automatically maintained at 5 minute intervals.
 
 ## Graphs
 
