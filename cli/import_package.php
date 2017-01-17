@@ -33,6 +33,7 @@ $no_http_headers = true;
 
 include(dirname(__FILE__).'/../include/global.php');
 include_once($config['base_path'] . '/lib/import.php');
+include_once($config['base_path'] . '/lib/utility.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
