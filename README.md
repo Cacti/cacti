@@ -103,6 +103,10 @@ There are many, many additional changes that are best left for a ChangeLog revie
 * The ability to synchronize Graph Templates to Graphs
 * New Meta objects incuding: Site, Remote Data Collectors and Data Source Profiles
 
+## Notes on Legacy Plugins
+
+Plugins written for Cacti 0.8.8 and before will require some re-writes in order to become compatible with Cacti 1.0.  There have been several changes that all plugin developers need to be aware of.  Please see the Cacti Wiki for information on migrating your own custom developed plugins to the Cacti 1.0 framework.  Any of the Cacti Group maintained plugin can be used as reference plugins for driving your plugin migration to the 1.0 framework.
+
 ## Contribute
 
 Check out the main [Cacti](http://www.cacti.net) web site for distribution downloads, links to Change log and release notes and more!
