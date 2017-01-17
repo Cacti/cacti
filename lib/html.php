@@ -1099,8 +1099,14 @@ function is_console_page($url) {
 	return false;
 }
 
-function html_show_tabs_left($show_console_tab) {
+function html_show_tabs_left() {
 	global $config, $tabs_left;
+
+	if (is_realm_allowed(8)) {
+		$show_console_tab = true;
+	}else{
+		$show_console_tab = false;
+	}
 
 	if (get_selected_theme() == 'classic') {
 		if ($show_console_tab == true) {

@@ -114,7 +114,7 @@ load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2'
 <body>
 <div id='cactiPageHead' class='cactiPageHead' role='banner'>
 	<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
-	<div id='tabs'><?php html_show_tabs_left(true);?></div>
+	<div id='tabs'><?php html_show_tabs_left();?></div>
 	<div class='cactiGraphHeaderBackground'><div id='gtabs'><?php print html_graph_tabs_right($current_user);?></div></div>
 </div>
 <div id='breadCrumbBar' class='breadCrumbBar'>

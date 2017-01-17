@@ -82,7 +82,7 @@ $using_guest_account = false;
 <body>
 <div id='cactiPageHead' class='cactiPageHead' role='banner'>
 	<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
-	<div id='tabs'><?php html_show_tabs_left(true);?></div>
+	<div id='tabs'><?php html_show_tabs_left();?></div>
 	<div class='cactiConsolePageHeadBackdrop'></div>
 </div>
 <div id='breadCrumbBar' class='breadCrumbBar'>
