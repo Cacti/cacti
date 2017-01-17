@@ -75,7 +75,7 @@ All of this was done in an effort to have a more friendly and secure Cacti user 
 
 ### Charting API's
 
-We have also included several JavaScript based HTML5 Charting API's into the base Cacti including C3, D3, Chart.js, DynaGraphs, and jQuery Sparklines in an effort to assist plugin developers who wish to use Graphing API's in their plugins other than RRDtool for creating various dashboards.
+We have also included several JavaScript based HTML5 Charting API's into the base Cacti including [C3](http://c3js.org/), [D3](https://d3js.org/), [Chart.js](http://www.chartjs.org/), [DyGraphs](http://dygraphs.com/), and [jQuery Sparklines](http://omnipotent.net/jquery.sparkline/) in an effort to assist plugin developers who wish to use Graphing API's in their plugins other than RRDtool for creating various dashboards.
 
 ### Remote Data Collection
 
