@@ -1,6 +1,17 @@
 # Cacti <sup>TM</sup>
 
-Cacti is a complete network graphing solution designed to harness the power of RRDTool's data storage and graphing functionality. Cacti provides support for multiple fast data collectors, network discovery, device management automation, advanced graph templating, aggregate graph templating, limitless data acquisition methods, embedded email notification facilities, and user, group and login domain management features. All of this is wrapped in an intuitive, easy to use interface that makes sense for both LAN-sized installations and complex networks with thousands of devices.
+Cacti is a complete network graphing solution designed to harness the power of RRDTool's data storage and graphing functionality. Cacti provides support for:
+
+* multiple fast data collectors
+* network discovery
+* device management automation
+* advanced graph templating
+* aggregate graph templating
+* limitless data acquisition methods
+* embedded email notification facilities
+* user, group and login domain management features
+
+All of this is wrapped in an intuitive, easy to use interface that makes sense for both LAN-sized installations and complex networks with thousands of devices.
 
 Developed in the early 2000's by Ian Berry as a high school project, it has been used by thousands of companies and enthusiasts to monitor and manage their Networks and Data Centers.
 
