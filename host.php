@@ -720,22 +720,43 @@ function host_edit() {
 
 		html_header(array(__('Graph Template Name'), __('Status')), 2);
 
-		$selected_graph_templates = db_fetch_assoc_prepared('SELECT
+		if ($host['snmp_version'] == 0) {
+			$sql_where = ' AND data_template_data.data_input_id != 1';
+		}else{
+			$sql_where = '';
+		}
+
+		$selected_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT
 			graph_templates.id,
 			graph_templates.name
-			FROM (graph_templates, host_graph)
-			WHERE graph_templates.id = host_graph.graph_template_id
-			AND host_graph.host_id = ?
-			ORDER BY graph_templates.name', array(get_request_var('id')));
+			FROM graph_templates
+			INNER JOIN host_graph
+			ON graph_templates.id = host_graph.graph_template_id
+			INNER JOIN graph_templates_item
+			ON graph_templates_item.graph_template_id=graph_templates.id
+			INNER JOIN data_template_rrd
+			ON graph_templates_item.task_item_id=data_template_rrd.id
+			INNER JOIN data_template_data
+			ON data_template_data.id=data_template_rrd.data_template_id
+			WHERE host_graph.host_id = ?
+			$sql_where
+			ORDER BY graph_templates.name", array(get_request_var('id')));
 
-		$available_graph_templates = db_fetch_assoc_prepared('SELECT
+		$available_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT
 			graph_templates.id, graph_templates.name
 			FROM snmp_query_graph 
 			RIGHT JOIN graph_templates
 			ON snmp_query_graph.graph_template_id = graph_templates.id
+			INNER JOIN graph_templates_item
+			ON graph_templates_item.graph_template_id=graph_templates.id
+			INNER JOIN data_template_rrd
+			ON graph_templates_item.task_item_id=data_template_rrd.id
+			INNER JOIN data_template_data
+			ON data_template_data.id=data_template_rrd.data_template_id
 			WHERE snmp_query_graph.name IS NULL 
+			$sql_where
 			AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
-			ORDER BY graph_templates.name', array(get_request_var('id')));
+			ORDER BY graph_templates.name", array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($selected_graph_templates)) {
@@ -794,16 +815,26 @@ function host_edit() {
 
 		html_header(array(__('Data Query Name'), __('Debugging'), __('Re-Index Method'), __('Status')), 2);
 
-		$selected_data_queries = db_fetch_assoc_prepared('SELECT snmp_query.id,
+		if ($host['snmp_version'] == 0) {
+			$sql_where1 = ' AND snmp_query.data_input_id != 2';
+			$sql_where2 = ' WHERE snmp_query.data_input_id != 2';
+		}else{
+			$sql_where1 = '';
+			$sql_where2 = '';
+		}
+
+		$selected_data_queries = db_fetch_assoc_prepared("SELECT snmp_query.id,
 			snmp_query.name, host_snmp_query.reindex_method
 			FROM (snmp_query, host_snmp_query)
 			WHERE snmp_query.id = host_snmp_query.snmp_query_id
 			AND host_snmp_query.host_id = ?
-			ORDER BY snmp_query.name', array(get_request_var('id')));
+			$sql_where1
+			ORDER BY snmp_query.name", array(get_request_var('id')));
 
-		$available_data_queries = db_fetch_assoc('SELECT snmp_query.id, snmp_query.name
+		$available_data_queries = db_fetch_assoc("SELECT snmp_query.id, snmp_query.name
 			FROM snmp_query
-			ORDER BY snmp_query.name');
+			$sql_where2
+			ORDER BY snmp_query.name");
 
 		$keeper = array();
 		if (sizeof($available_data_queries)) {
