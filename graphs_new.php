@@ -888,7 +888,7 @@ function graphs() {
 						}else{
 							print "<tr class='tableHeader'>
 									$html_dq_header
-									<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __('Select All') . "' onClick='SelectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'></th>\n
+									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __('Select All') . "' onClick='SelectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'></th>\n
 								</tr>\n";
 						}
 

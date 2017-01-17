@@ -316,6 +316,10 @@ function dqUpdateDeps(snmp_query_id) {
 	dqResetDeps(snmp_query_id);
 
 	var snmp_query_graph_id = $('#sgg_'+snmp_query_id).val();
+	var removeSelectAll = false;
+
+	// Check if select all is clicked
+	var allChecked = $('#all_'+snmp_query_id).is(':checked');
 
 	// Next for Data Queries
 	$('tr[id^=dqline'+snmp_query_id+'_]').each(function(data) {
@@ -325,12 +329,20 @@ function dqUpdateDeps(snmp_query_id) {
 		var hash = pieces[1];
 
 		if ($.inArray(hash, created_graphs[snmp_query_graph_id]) >= 0) {
+			if ($(this).hasClass('selected')) {
+				removeSelectAll = true;
+			}
+
 			$(this).addClass('disabled_row');
 			$(this).removeClass('selected');
 			$(this).removeClass('selectable');
 			$(this).find(':checkbox').prop('disabled', true).prop('checked', false);
 		}
 	});
+
+	if (allChecked && removeSelectAll) {
+		$('#all_'+snmp_query_id).prop('checked', false);
+	}
 
 	$('tr[id^=dqline'+snmp_query_id+'_]').unbind().not('.disabled_row').click(function() {
 		checked = $(this).find(':checkbox').is(':checked');
