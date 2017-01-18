@@ -17,7 +17,7 @@ Developed in the early 2000's by Ian Berry as a high school project, it has been
 
 ## Cacti 1.0
 
-This release of Cacti has been two years in the making.  With the release of Cacti 1.0, we have meged 19 Cacti Group developed plugins in to the base of Cacti in an effort to make Cacti less cumbersome to deploy and manage.  With the merge of these plugins into the core of Cacti, they behave as if they were incorporated into Cacti from the beginning.  This drove major redesign to address look and feel, performance, and scalability issues.
+This release of Cacti has been two years in the making.  With the release of Cacti 1.0, we have merged 19 Cacti Group developed plugins in to the base of Cacti in an effort to make Cacti less cumbersome to deploy and manage.  With the merge of these plugins into the core of Cacti, they behave as if they were incorporated into Cacti from the beginning.  This drove major redesign to address look and feel, performance, and scalability issues.
 
 ### Merged Plugins
 
@@ -56,7 +56,7 @@ Cacti 1.0 supports skinning of the user interface through Themes.  We have attem
 
 ### User Experience and Security
 
-We have also tried to make Cacti easier to adopt by preventing most damaging activities such as accidentially removing a Data Source for a Graph that is still in existince, or deleting a Data Template or Graph Template that are in use.  We have improved the Template Import and Export functions to allow you to preview Templates before incorporating them into your Cacti system.
+We have also tried to make Cacti easier to adopt by preventing most damaging activities such as accidentally removing a Data Source for a Graph that is still in existence, or deleting a Data Template or Graph Template that are in use.  We have improved the Template Import and Export functions to allow you to preview Templates before incorporating them into your Cacti system.
 
 We have also increased Cacti's overall security:
 
@@ -91,7 +91,7 @@ Cacti 1.0 also includes a new Graph permissions interface, making the creation a
 
 ### Improved Support for RRDtool Graph Options
 
-In Cacti 1.0, we support more RRDtool Graph options incuding:
+In Cacti 1.0, we support more RRDtool Graph options including:
 
 #### Graphs Templates
 * Full Right Axis Support
@@ -125,7 +125,7 @@ There are many additional changes that are best left for a ChangeLog review.  So
 * Autocomplete in many areas of the UI where large dropdown lists would cause a slowdown in the UI over wide area networks
 * Per file, per plugin and per host debugging
 * The ability to synchronize Graph Templates to Graphs
-* New Meta objects incuding: Site, Remote Data Collectors and Data Source Profiles
+* New Meta objects including: Site, Remote Data Collectors and Data Source Profiles
 
 ## Notes on Legacy Plugins
 
