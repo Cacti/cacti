@@ -1899,6 +1899,8 @@ function user_edit() {
 			}
 		}
 
+		var password_change = $('#password_change').is(':checked');
+
 		$(function() {
 			changeRealm();
 
@@ -1916,6 +1918,35 @@ function user_edit() {
 
 			$('#realm').change(function() {
 				changeRealm();
+			});
+
+			$('#password_change').click(function() {
+				password_change = $('#password_change').is(':checked');
+
+				if (!password_change && $('#must_change_password').is(':checked')) {
+					if (typeof $('#must_change_password').button === 'function') {
+						$('#must_change_password').prop('checked', false).button('refresh');
+					}else{
+						$('#must_change_password').prop('checked', false);
+					}
+				}
+			});
+
+			$('#must_change_password').click(function() {
+				if ($(this).is(':checked')) {
+					if (typeof $('#must_change_password').button === 'function') {
+						$('#password_change').prop('checked', true);
+						$('#password_change').button('refresh');
+					}else{
+						$('#password_change').prop('checked', true);
+					}
+				}else{
+					if (typeof $('#must_change_password').button === 'function') {
+						$('#password_change').prop('checked', password_change).button('refresh');
+					}else{
+						$('#password_change').prop('checked', password_change);
+					}
+				}
 			});
 		});
 
