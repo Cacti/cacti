@@ -18,7 +18,7 @@
 /* padding: 0 4px 0 1px; */
   margin: 0;
   vertical-align: top;
-  padding: 1px !important;
+  padding: 3px !important;
 }
 .jstree-anchor:focus {
   outline: 0;
