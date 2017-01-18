@@ -137,7 +137,7 @@ Check out the main [Cacti](http://www.cacti.net) web site for distribution downl
 
 Get help or help others by participating on the [community forums](http://forums.cacti.net).
 
-Get involved in development by partcipating in active development on [GitHub](https://github.com/cacti).
+Get involved in development by participating in active development on [GitHub](https://github.com/cacti).
 
 ## Requirements
 
@@ -169,7 +169,7 @@ Not only can you create RRDTool based Graphs in cacti, but there are many ways t
 
 ## User, Group and Domain Management
 
-Due to the depth of the tool, we have provided User, Group and Domain management in Cacti to make each user or group of users experience a more customizable and personal one.  Each user has the capability to save their own proferences to also increase it's adoption.  Cacti includes an RBAC like User and Group editor to assist with Deploying and Managing Cacti.
+We have provided User, Group and Domain management in Cacti to make each user or group of users experience a customizable and personal one.  Each user has the capability to save their own preferences to also increase it's adoption.  Cacti includes an RBAC like User and Group editor to assist with Deploying and Managing Cacti.
 
 ## Templating
 
@@ -177,8 +177,8 @@ Cacti is able to scale to a large number of Data Sources and Graphs through the 
 
 ## Plugin Management
 
-Cacti is more than a network monitoring system, it is an Operations Framework that allows the Cacti Adminnistrator to create their own extensions to Cacti.  Through our Plugin infrastructure, you can extend Cacti to provide other services outside of standard Cacti graphing.  The Cacti Group continues to maintain over a dozen add-on plugins from our GitHub repository.  If you are looking to add features to Cacti, there is quite a bit of reference material to choose from on GitHub.
+Cacti is more than a network monitoring system, it is an Operations Framework that allows the Cacti Administrator to create their own extensions to Cacti.  Through our Plugin infrastructure, you can extend Cacti to provide other services outside of standard Cacti graphing.  The Cacti Group continues to maintain over a dozen add-on plugins from our GitHub repository.  If you are looking to add features to Cacti, there is quite a bit of reference material to choose from on GitHub.
 
 ## Network Discovery and Automation
 
-Cacti provides the Cacti Administrator a series of Network Automation tools in order to reduce the time and effort it takes to setup and manage a Cacti system.  This includes: support for multiple Network Discovery rules as well as Device, Graph and Tree Automation Templates that allow Cacti Adminnistrators add thousands of Devices to Cacti with much less effort than ever before.
+Cacti provides the Cacti Administrator a series of Network Automation tools in order to reduce the time and effort it takes to setup and manage a Cacti system.  This includes: support for multiple Network Discovery rules as well as Device, Graph and Tree Automation Templates that allow Cacti Administrators add thousands of Devices to Cacti with much less effort than ever before.
