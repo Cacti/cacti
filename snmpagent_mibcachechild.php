@@ -41,20 +41,16 @@ include_once('./include/global.php');
 
 $last_time = time()-30;
 
-/* check SNMPAgent status */
-$snmpagent = db_fetch_cell("SELECT status FROM plugin_config WHERE directory = 'snmpagent'", false);
-
 $path_mibcache = $config['base_path'] . '/cache/mibcache/mibcache.tmp';
 $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
 
 if($snmpagent) {
-
 	/* check mib cache table status */
-	$mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS WHERE `Name` LIKE 'plugin_snmpagent_cache' AND (UNIX_TIMESTAMP(`Update_time`)) >= ?", array($last_time));
+	$mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS WHERE `Name` LIKE 'snmpagent_cache' AND (UNIX_TIMESTAMP(`Update_time`)) >= ?", array($last_time));
 
 	if($mibcache_changed !== NULL || file_exists($path_mibcache) === FALSE ) {
-		$objects = db_fetch_assoc("SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value` FROM plugin_snmpagent_cache");
-		
+		$objects = db_fetch_assoc("SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value` FROM snmpagent_cache");
+
 		if($objects && sizeof($objects)>0) {
 			$oids = array();
 			foreach($objects as &$object) {
@@ -96,17 +92,6 @@ if($snmpagent) {
 		unlink($path_mibcache_lock);
 	}
 	return;
-}else {
-	$cache = array();
-	/* create lock file */
-	$lock = fopen($path_mibcache_lock, 'w');
-
-	/* Note: If the SNMPAgent plugin has been disabled or the Cacti Database is unreachable the cache will be truncated automatically */
-	file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
-
-	/* destroy lock file */
-	fclose($lock);
-	unlink($path_mibcache_lock);
 }
 
 ?>
