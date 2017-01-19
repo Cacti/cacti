@@ -996,6 +996,8 @@ function utilities_get_system_memory() {
 			$file = '/linux/proc/meminfo';
 		}elseif(file_exists('/compat/linux/proc/meminfo')) {
 			$file = '/compat/linux/proc/meminfo';
+		}elseif(file_exists('/usr/compat/linux/proc/meminfo')) {
+			$file = '/usr/compat/linux/proc/meminfo';
 		}
 
 		if ($file != '') {
