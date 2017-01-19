@@ -1541,8 +1541,7 @@ $settings = array(
 			),
 		'storage_location' => array(
 			'friendly_name' => __('Location'),
-			'description' => __('Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server.
-			<strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>'),
+			'description' => __('Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server.'),
 			'method' => 'drop_array',
 			'default' => 0,
 			'array' => array ( __('Local'), __('RRDtool Proxy Server') ),
