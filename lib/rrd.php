@@ -357,7 +357,7 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	Also make sure to replace all of the fancy \'s at the end of the line,
 	but make sure not to get rid of the "\n"'s that are supposed to be
 	in there (text format) */
-	$command_line = str_replace("\\\n", " ", $command_line);
+	$command_line = str_replace( array($config['rra_path'], "\\\n"), array(".", " "), $command_line);
 
 	/* output information to the log file if appropriate */
 	cacti_log("CACTI2RRDP: " . read_config_option("path_rrdtool") . " $command_line", $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
