@@ -1268,7 +1268,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 
 			/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
 			if ($expand_paths == true) {
-				$data_source_path = str_replace('<path_rra>/', (read_config_option('storage_location') ? './' : $config['rra_path'] . '/'), $data_source_path);
+				$data_source_path = str_replace('<path_rra>/', $config['rra_path'] . '/', $data_source_path);
 			}
 
 			$data_source_path_cache[$local_data_id] = $data_source_path;
