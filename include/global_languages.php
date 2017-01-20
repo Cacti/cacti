@@ -565,10 +565,10 @@ function number_format_i18n ($number, $decimals = 0) {
 		setlocale(LC_ALL, $cacti_locale . '_' . $country);
 		$locale = localeconv();
 
-        if($number>1000000000000)   $number =  number_format($number/1000000000000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
-        else if($number>1000000000) $number = number_format($number/1000000000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
-        else if($number>1000000)    $number = number_format($number/1000000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
-        else if($number>1000)       $number = number_format($number/1000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
+        if($number>=1000000000000)   $number =  number_format($number/1000000000000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
+        else if($number>=1000000000) $number = number_format($number/1000000000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
+        else if($number>=1000000)    $number = number_format($number/1000000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
+        else if($number>=1000)       $number = number_format($number/1000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
 		else $number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
 
 		foreach ($origlocales as $locale_setting) {
