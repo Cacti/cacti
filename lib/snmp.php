@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2011 The Cacti Group                                 |
  | Portions Copyright (C) 2010 Boris Lytochkin, Sponsored by Yandex LLC    |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
@@ -75,7 +75,7 @@ function cacti_snmp_session($hostname, $community, $version, $username, $passwor
 		$proto = 'authPriv';
 	}
 	
-	$session->set_security($proto, $auth_proto, $password, $priv_proto, $priv_pass, $context, $contextEngineID);
+	$session->setSecurity($proto, $auth_proto, $password, $priv_proto, $priv_pass, $context, $contextEngineID);
 
 	return $session;
 }

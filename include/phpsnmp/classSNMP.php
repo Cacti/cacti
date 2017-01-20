@@ -99,7 +99,7 @@ class SNMP {
 		$this->close();
 	}
 
-	function set_security($sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, 
+	function setSecurity($sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, 
 		$priv_passphrase, $contextName, $contextEngineID) {
 		$this->sec_level       = $sec_level;
 		$this->auth_protocol   = $auth_protocol;
