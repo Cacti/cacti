@@ -1041,13 +1041,17 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 					/* if there are no '|' characters, all of the substitutions were successful */
 					if (!strstr($subs_string, '|query')) {
-						db_execute_prepared('UPDATE graph_templates_graph 
-							SET ' . $suggested_value['field_name'] . ' = ?
-							WHERE local_graph_id = ?', 
-							array($suggested_value['text'], $cache_array['local_graph_id']));
+						if (db_column_exists('graph_templates_graph', $suggested_value['field_name'])) {
+							db_execute_prepared('UPDATE graph_templates_graph 
+								SET ' . $suggested_value['field_name'] . ' = ?
+								WHERE local_graph_id = ?', 
+								array($suggested_value['text'], $cache_array['local_graph_id']));
 
-						/* once we find a working value, stop */
-						$suggested_values_graph[$graph_template_id][$suggested_value['field_name']] = true;
+							/* once we find a working value, stop */
+							$suggested_values_graph[$graph_template_id][$suggested_value['field_name']] = true;
+						}else{
+							cacti_log('ERROR: Suggested value column error.  Column ' . $suggested_value['field_name'] . ' for Data Query ID ' . $snmp_query_array['snmp_query_id'] . ' and Graph Template ID ' . $graph_template_id .  ' is not a compatible field name.  Please correct this suggested value mapping', false);
+						}
 					}
 				}
 			}
