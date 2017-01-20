@@ -550,7 +550,7 @@ function read_user_i18n_setting($config_name) {
  *
  * @return - formatted numer in the correct locale
  */
-function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
+function number_format_i18n($number, $decimals = 2, $baseu = 1024) {
 	global $cacti_locale, $cacti_country;
 
 	$country = strtoupper($cacti_country);
