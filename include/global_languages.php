@@ -550,7 +550,7 @@ function read_user_i18n_setting($config_name) {
  *
  * @return - formatted numer in the correct locale
  */
-function number_format_i18n ($number, $decimals = 0) {
+function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 	global $cacti_locale, $cacti_country;
 
 	$country = strtoupper($cacti_country);
@@ -565,11 +565,17 @@ function number_format_i18n ($number, $decimals = 0) {
 		setlocale(LC_ALL, $cacti_locale . '_' . $country);
 		$locale = localeconv();
 
-        if($number>=1000000000000)   $number =  number_format($number/1000000000000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
-        else if($number>=1000000000) $number = number_format($number/1000000000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
-        else if($number>=1000000)    $number = number_format($number/1000000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
-        else if($number>=1000)       $number = number_format($number/1000, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
-		else $number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+        if ($number>=pow($baseu, 4)) {
+			$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
+        } elseif($number>=pow($baseu, 3)) {
+			$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
+        } elseif($number>=pow($baseu, 2)) {
+			$number = number_format($number/pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
+        } elseif($number>=$baseu) {
+			$number = number_format($number/$baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
+		} else {
+			$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+		}
 
 		foreach ($origlocales as $locale_setting) {
 			if (strpos($locale_setting, '=') !== false) {
