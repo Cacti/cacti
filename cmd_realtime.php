@@ -114,7 +114,7 @@ if (sizeof($polling_items)) {
 			);
 
 		if (function_exists('proc_open')) {
-			$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/script_server.php realtime', $cactides, $pipes);
+			$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/script_server.php realtime ' . $poller_id, $cactides, $pipes);
 			$output = fgets($pipes[1], 1024);
 			$using_proc_function = true;
 		}else {
@@ -134,7 +134,7 @@ if (sizeof($polling_items)) {
 
 		if ($col_poller_id > 1) {
 			$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($col_poller_id));
-			$output = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=polldata&host_id=' . $host_id . '&local_data_id=' . $local_data_id);
+			$output = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=polldata&host_id=' . $host_id . '&local_data_id=' . $data_source . '&poller_id=' . $poller_id);
 		}else{
 			switch ($item['action']) {
 			case POLLER_ACTION_SNMP: /* snmp */

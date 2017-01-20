@@ -21,7 +21,7 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_net_snmp_disk_bytes($host_id_or_hostname) {
-	global $environ, $config;
+	global $environ, $poller_id, $config;
 
 	if (!is_numeric($host_id_or_hostname)) {
 		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE hostname = ?', array($host_id_or_hostname));
@@ -40,7 +40,7 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname) {
 		$tmpfile = $host_id . '_bytes';
 	}else{
 		$tmpdir = $tmpdir . '/cacti/net-snmp-devio';
-		$tmpfile = $host_id . '_bytes_rt';
+		$tmpfile = $host_id . '_' . $poller_id . '_bytes_rt';
 	}
 
 	if (!is_dir($tmpdir)) {

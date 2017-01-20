@@ -73,7 +73,7 @@ if (php_sapi_name() != 'cli') {
 }
 
 /* signal for realtime */
-global $environ;
+global $environ, $poller_id;
 
 /* record the script start time */
 $start = microtime(true);

@@ -258,13 +258,23 @@ function ping_device() {
 }
 
 function poll_for_data() {
+	global $config;
+
 	$local_data_id = get_filter_request_var('local_data_id');
 	$host_id       = get_filter_request_var('host_id');
+	$poller_id     = get_nfilter_request_var('poller_id');
 
 	$item = db_fetch_row_prepared('SELECT * 
 		FROM poller_item 
 		WHERE host_id = ? 
 		AND local_data_id = ?', 
+		array($host_id, $local_data_id));
+
+	$script_server_calls = db_fetch_cell_prepared('SELECT COUNT(*) 
+		FROM poller_item 
+		WHERE host_id = ? 
+		AND local_data_id = ? 
+		AND action = 2', 
 		array($host_id, $local_data_id));
 
 	if (sizeof($item)) {
@@ -320,7 +330,7 @@ function poll_for_data() {
 			);
 
 			if (function_exists('proc_open')) {
-				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/script_server.php realtime', $cactides, $pipes);
+				$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/script_server.php realtime ' . $poller_id, $cactides, $pipes);
 				$output = fgets($pipes[1], 1024);
 				$using_proc_function = true;
 			}else {
