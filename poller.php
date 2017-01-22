@@ -127,8 +127,10 @@ if (sizeof($parms)) {
 	}
 }
 
-// Update the pollers hostname if it has changed
-db_execute_prepared('UPDATE poller SET hostname = ? WHERE id = ?', array($hostname, $poller_id));
+// Update the pollers hostname if it is blank, otherwise allow the user to edit it
+if (db_fetch_cell_prepared('SELECT hostname FROM poller where id = ?', array($poller_id), 'hostname') == '') {
+	db_execute_prepared('UPDATE poller SET hostname = ? WHERE id = ?', array($hostname, $poller_id));
+}
 
 // Check to see if the poller is disabled
 poller_enabled_check($poller_id);
