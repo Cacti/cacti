@@ -723,8 +723,7 @@ function resource_cache_out($type, $path) {
 									$output = system($php_path . ' -l ' . $tmpfile, $exit);
 									if ($exit == 0) {
 										cacti_log("INFO: Updating '" . $mypath . "' from Cache!", false, 'POLLER');
-
-										if (is_writable($mypath)) {
+										if (is_writable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
 											file_put_contents($mypath, $contents);
 										}else{
 											cacti_log("ERROR: Cache in cannot write to '" . $mypath . "', purge this location");
@@ -740,7 +739,7 @@ function resource_cache_out($type, $path) {
 							}else{
 								cacti_log("ERROR: Cache in cannot write to '" . $tmpfile . "', purge this location");
 							}
-						} elseif (is_writeable($mypath)) {
+						} elseif (is_writeable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
 							file_put_contents($mypath, $contents);
 						} else {
 							cacti_log("ERROR: Cache in cannot write to '" . $mypath . "', purge this location");
