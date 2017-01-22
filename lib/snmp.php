@@ -75,7 +75,11 @@ function cacti_snmp_session($hostname, $community, $version, $username, $passwor
 		$proto = 'authPriv';
 	}
 	
-	$session->setSecurity($proto, $auth_proto, $password, $priv_proto, $priv_pass, $context, $contextEngineID);
+	try {
+		$session->setSecurity($proto, $auth_proto, $password, $priv_proto, $priv_pass, $context, $contextEngineID);
+	} catch (Exception $e) {
+		return false;
+	}
 
 	return $session;
 }

@@ -64,6 +64,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
 			// MySQL 5.7 forces NO_ZERO_DATE on
+			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'STRICT_TRANS_TABLES', ''))");
 			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'NO_ZERO_DATE', ''))");
 			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'NO_ZERO_IN_DATE', ''))");
 			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY', ''))");
