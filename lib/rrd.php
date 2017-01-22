@@ -1100,8 +1100,8 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	}
 
 	/* if the user desires a wartermark set it */
-	if (read_config_option('graph_wathermark') != '') {
-		$graph_opts .= '--watermark ' . cacti_escapeshellarg(read_config_option('graph_wathermark')) . RRD_NL;
+	if (read_config_option('graph_watermark') != '') {
+		$graph_opts .= '--watermark ' . cacti_escapeshellarg(read_config_option('graph_watermark')) . RRD_NL;
 	}
 
 	return $graph_opts;

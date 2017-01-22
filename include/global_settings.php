@@ -664,12 +664,12 @@ $settings = array(
 			'default' => 60,
 			'array' => $page_refresh_interval,
 			),
-		'wathermark_header' => array(
+		'watermark_header' => array(
 			'friendly_name' => __('RRDtool Graph Watermark'),
 			'collapsible' => 'true',
 			'method' => 'spacer'
 			),
-		'graph_wathermark' => array(
+		'graph_watermark' => array(
 			'friendly_name' => __('Watermark Text'),
 			'description' => __('Test to place at the bottom center of every Graph.'),
 			'method' => 'textbox',
