@@ -129,7 +129,7 @@ function remote_client_authorized() {
 			}
 		}
 	}
-
+	cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)");
 	return false;
 }
 
