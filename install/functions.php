@@ -137,9 +137,7 @@ function install_setup_get_templates() {
 		'Cisco_Router.xml.gz',
 		'Generic_SNMP_Device.xml.gz',
 		'Local_Linux_Machine.xml.gz',
-		'MikroTik_Device.xml.gz',
 		'NetSNMP_Device.xml.gz',
-		'Host_Mib_Summary_Device.xml.gz',
 		'Windows_Device.xml.gz'
 	);
 
