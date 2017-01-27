@@ -645,10 +645,6 @@ case 'list':
 	var refreshMSeconds=999999999;
 	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
 
-	$(function() {
-		initializeChecks();
-	});
-
 	function clearFilter() {
 		strURL = 'graph_view.php?action=list&header=false&clear=1';
 		loadPageNoHeader(strURL);
@@ -737,6 +733,8 @@ case 'list':
 	}
 
 	$(function() {
+		initializeChecks();
+
 		var msWidth = 100;
 		$('#graph_template_id option').each(function() {
 			if ($(this).textWidth() > msWidth) {
@@ -798,7 +796,7 @@ case 'list':
 			width: msWidth
 		});
 
-		$('#form_graph_list').on('submit', function(event) {
+		$('#form_graph_list').unbind().on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
