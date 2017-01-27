@@ -509,7 +509,7 @@ function upgrade_to_1_0_0() {
 		rrd_name varchar(19) NOT NULL default '',
 		time timestamp NOT NULL default '0000-00-00 00:00:00',
 		output text NOT NULL,
-		poller_id varchar(30) NOT NULL default '',
+		poller_id varchar(256) NOT NULL default '',
 		PRIMARY KEY  (local_data_id,rrd_name,`time`),
 		KEY poller_id(poller_id)) 
 		ENGINE=$engine");

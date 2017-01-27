@@ -2868,7 +2868,7 @@ CREATE TABLE poller_output_realtime (
   rrd_name varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
-  poller_id varchar(30) NOT NULL default '1',
+  poller_id varchar(256) NOT NULL default '1',
   PRIMARY KEY  (local_data_id,rrd_name,`time`),
   KEY poller_id(poller_id)
 ) ENGINE=InnoDB;
