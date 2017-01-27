@@ -37,9 +37,9 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 </tr>
 <tr>
 	<td valign="top" class="odd" class="textArea">
-		<a href="http://www.cacti.net/"><img align="right" src="images/cacti_about_logo.gif" alt="raXnet"></a>
+		<div style='float:right;'><a href="http://www.cacti.net/"><img align="right" src="images/cacti_about_logo.gif" alt="raXnet"></a></div>
 		
-		<?php print __('Cacti is designed to be a complete graphing solution based on the RRDtool\'s framework. Its goal is to make a network administrator\'s job easier by taking care of all the necessary details necessary to create meaningful graphs.'); ?>
+		<p><?php print __('Cacti is designed to be a complete graphing solution based on the RRDtool\'s framework. Its goal is to make a network administrator\'s job easier by taking care of all the necessary details necessary to create meaningful graphs.'); ?></p>
 
 		<p><?php print __('Please see the official %sCacti website%s for information, support, and updates.', '<a href="http://www.cacti.net/?version=' . $config['cacti_version'] . '">', '</a>'); ?></p>
 
