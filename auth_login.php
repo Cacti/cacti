@@ -490,6 +490,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 	<title><?php print api_plugin_hook_function('login_title', __('Login to Cacti'));?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
+	<meta name='robots' content='noindex,nofollow'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery-ui.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
@@ -612,6 +613,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 				?>
 			</div>
 		</div>
+		<div class='versionInfo'><?php print __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT);?></div>
 	</div>
 	<div class='loginRight'></div>
 	<script type='text/javascript'>
