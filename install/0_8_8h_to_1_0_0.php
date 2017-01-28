@@ -511,7 +511,7 @@ function upgrade_to_1_0_0() {
 		output text NOT NULL,
 		poller_id varchar(256) NOT NULL default '',
 		PRIMARY KEY  (local_data_id,rrd_name,`time`),
-		KEY poller_id(poller_id)) 
+		KEY poller_id(poller_id(191))) 
 		ENGINE=$engine");
 
 	db_install_drop_table('poller_output_rt');
