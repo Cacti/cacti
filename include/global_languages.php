@@ -565,13 +565,15 @@ function number_format_i18n($number, $decimals = 2, $baseu = 1024) {
 		setlocale(LC_ALL, $cacti_locale . '_' . $country);
 		$locale = localeconv();
 
-        if ($number>=pow($baseu, 4)) {
+		if ($decimals == -1) {
+			$number =  number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+		}elseif ($number>=pow($baseu, 4)) {
 			$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
-        } elseif($number>=pow($baseu, 3)) {
+		} elseif($number>=pow($baseu, 3)) {
 			$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
-        } elseif($number>=pow($baseu, 2)) {
+		} elseif($number>=pow($baseu, 2)) {
 			$number = number_format($number/pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
-        } elseif($number>=$baseu) {
+		} elseif($number>=$baseu) {
 			$number = number_format($number/$baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
 		} else {
 			$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
