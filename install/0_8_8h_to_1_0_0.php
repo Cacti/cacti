@@ -1724,10 +1724,15 @@ function upgrade_to_1_0_0() {
 	}
 	db_install_execute("UPDATE graph_templates_graph SET unit_value='' WHERE unit_value='on'");
 
-	db_install_add_key('data_local',  'INDEX', 'snmp_index', array('snmp_index(191)'));
+	db_install_add_key('data_local', 'INDEX', 'snmp_index', array('snmp_index(191)'));
+	db_install_add_key('graph_local', 'INDEX', 'snmp_index', array('snmp_index(191)'));
 
 	if (db_fetch_cell('SELECT name FROM settings WHERE name = "graph_wathermark"', 'name') == 'graph_wathermark') {
-		db_install_execute('UPDATE settings SET name = "graph_watermark" WHERE name = "graph_wathermark"');
+		if (db_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = "graph_wathermark"') == 0) {
+			db_install_execute('UPDATE settings SET name = "graph_watermark" WHERE name = "graph_wathermark"');
+		}else{
+			db_install_execute('DELETE FROM settings WHERE name = "graph_wathermark"');
+		}
 	}
 }
 

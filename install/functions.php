@@ -49,14 +49,20 @@ function db_install_execute($sql) {
 	db_install_add_cache ($status, $sql);
 }
 
-function db_install_add_column ($table, $column) {
+function db_install_add_column ($table, $column, $ignore = true) {
 	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
+	$status = 1;
+
 	$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
+
 	if (!db_column_exists($table, $column['name'], false)) {
 		$status = db_add_column($table, $column, false);
-	} else {
+	} elseif (!$ignore) {
 		$status = 2;
+	} else {
+		$status = 1;
 	}
+
 	db_install_add_cache ($status, $sql);
 }
 
@@ -65,12 +71,13 @@ function db_install_add_key ($table, $type, $key, $columns) {
 		$columns = array($columns);
 	}
 	
-	$sql = 'ALTER IGNORE TABLE `' . $table . '` ADD ' . $type . ' ' . $key . '(' . implode(',', $columns) . ')';
-	if (!db_index_exists($table, $key, false)) {
-		$status = db_install_execute($sql);
-	} else {
-		db_install_add_cache (2, $sql);
+	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' ' . $key . '(' . implode(',', $columns) . ')';
+
+	if (db_index_exists($table, $key, false)) {
+		db_execute("ALTER TABLE $table DROP $type $key");
 	}
+
+	db_install_execute($sql);
 }
 
 function db_install_drop_table ($table) {
