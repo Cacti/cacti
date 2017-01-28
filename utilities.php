@@ -261,12 +261,12 @@ function utilities_view_tech($php_info = '') {
 
 		form_alternate_row();
 		print '<td>' . __('Devices') . "</td>\n";
-		print '<td>' . number_format_i18n($host_count) . "</td>\n";
+		print '<td>' . number_format_i18n($host_count, -1) . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
 		print '<td>' . __('Graphs') . "</td>\n";
-		print '<td>' . number_format_i18n($graph_count) . "</td>\n";
+		print '<td>' . number_format_i18n($graph_count, -1) . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();
@@ -275,10 +275,10 @@ function utilities_view_tech($php_info = '') {
 		$data_total = 0;
 		if (sizeof($data_count)) {
 			foreach ($data_count as $item) {
-				print $input_types[$item['type_id']] . ': ' . number_format_i18n($item['total']) . '<br>';
+				print $input_types[$item['type_id']] . ': ' . number_format_i18n($item['total'], -1) . '<br>';
 				$data_total += $item['total'];
 			}
-			print __('Total: %d', number_format_i18n($data_total));
+			print __('Total: %d', number_format_i18n($data_total, -1));
 		}else{
 			print "<span class='deviceDown'>0</span>";
 		}
@@ -308,10 +308,10 @@ function utilities_view_tech($php_info = '') {
 		$total = 0;
 		if (sizeof($poller_item)) {
 			foreach ($poller_item as $item) {
-				print __('Action[%s]', $item['action']) . ': ' . number_format_i18n($item['total']) . '<br>';
+				print __('Action[%s]', $item['action']) . ': ' . number_format_i18n($item['total'], -1) . '<br>';
 				$total += $item['total'];
 			}
-			print __('Total: %d', number_format_i18n($total));
+			print __('Total: %d', number_format_i18n($total), -1);
 		}else{
 			print "<span class='deviceDown'>" . __('No items to poll') . "</span>";
 		}
@@ -477,10 +477,10 @@ function utilities_view_tech($php_info = '') {
 				form_alternate_row();
 				print '<td>' . $table['TABLE_NAME'] . "</td>\n";
 				print '<td>' . $table['ENGINE'] . "</td>\n";
-				print '<td class="right">' . number_format_i18n($table['TABLE_ROWS']) . "</td>\n";
-				print '<td class="right">' . number_format_i18n($table['AVG_ROW_LENGTH']/1024) . "</td>\n";
-				print '<td class="right">' . number_format_i18n($table['DATA_LENGTH']/1024) . "</td>\n";
-				print '<td class="right">' . number_format_i18n($table['INDEX_LENGTH']/1024) . "</td>\n";
+				print '<td class="right">' . number_format_i18n($table['TABLE_ROWS'], -1) . "</td>\n";
+				print '<td class="right">' . number_format_i18n($table['AVG_ROW_LENGTH'], -1) . "</td>\n";
+				print '<td class="right">' . number_format_i18n($table['DATA_LENGTH'], -1) . "</td>\n";
+				print '<td class="right">' . number_format_i18n($table['INDEX_LENGTH'], -1) . "</td>\n";
 				print '<td>' . $table['TABLE_COLLATION'] . "</td>\n";
 				print '<td>' . $table['TABLE_COMMENT'] . "</td>\n";
 				form_end_row();
@@ -2036,17 +2036,17 @@ function boost_display_run_status() {
 	print '<td>' . __('Boost On-demand Updating:') . '</td><td>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</td>';
 
 	form_alternate_row();
-	print '<td>' . __('Total Data Sources:') . '</td><td>' . number_format_i18n($total_data_sources) . '</td>';
+	print '<td>' . __('Total Data Sources:') . '</td><td>' . number_format_i18n($total_data_sources, -1) . '</td>';
 
 	if ($total_records) {
 		form_alternate_row();
-		print '<td>' . __('Pending Boost Records:') . '</td><td>' . number_format_i18n($pending_records) . '</td>';
+		print '<td>' . __('Pending Boost Records:') . '</td><td>' . number_format_i18n($pending_records, -1) . '</td>';
 
 		form_alternate_row();
-		print '<td>' . __('Archived Boost Records:') . '</td><td>' . number_format_i18n($arch_records) . '</td>';
+		print '<td>' . __('Archived Boost Records:') . '</td><td>' . number_format_i18n($arch_records, -1) . '</td>';
 
 		form_alternate_row();
-		print '<td>' . __('Total Boost Records:') . '</td><td>' . number_format_i18n($total_records) . '</td>';
+		print '<td>' . __('Total Boost Records:') . '</td><td>' . number_format_i18n($total_records, -1) . '</td>';
 	}
 
 	/* boost status display */
@@ -2062,7 +2062,7 @@ function boost_display_run_status() {
 
 	/* tell the user about the average size/record */
 	form_alternate_row();
-	print '<td>' . __('Avg Bytes/Record:') . '</td><td>' . boost_file_size_display($avg_row_length) . '</td>';
+	print '<td>' . __('Avg Bytes/Record:') . '</td><td>' . boost_file_size_display($avg_row_length, 0) . '</td>';
 
 	/* tell the user about the average size/record */
 	$output_length = read_config_option('boost_max_output_length');
@@ -2100,13 +2100,13 @@ function boost_display_run_status() {
 		$max_table_records = __('Unlimited');
 	}else{
 		$max_table_allowed = boost_file_size_display($max_data_length, 2);
-		$max_table_records = number_format_i18n(($avg_row_length ? round($max_data_length/$avg_row_length, 0) : 0));
+		$max_table_records = number_format_i18n(($avg_row_length ? $max_data_length/$avg_row_length : 0), 3, 1000);
 	}
 	print '<td>' . __('Max Allowed Boost Table Size:') . '</td><td>' . $max_table_allowed . '</td>';
 
 	/* tell the user about the estimated records that "could" be held in memory */
 	form_alternate_row();
-	print '<td>' . __('Estimated Maximum Records:') . '</td><td>' . $max_table_records  . ' Records</td>';
+	print '<td>' . __('Estimated Maximum Records:') . '</td><td>' . $max_table_records . ' Records</td>';
 
 	/* boost last runtime display */
 	html_section_header(__('Runtime Statistics'), 2);
@@ -2121,7 +2121,7 @@ function boost_display_run_status() {
 	print '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . $boost_rrds_updated . '</td>';
+	print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . number_format_i18n($boost_rrds_updated, -1) . '</td>';
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '') ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';
@@ -2142,7 +2142,7 @@ function boost_display_run_status() {
 	print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . $next_run_time . '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick">' . __('Maximum Records:') . '</td><td>' . $max_records . ' ' . __('Records') . '</td>';
+	print '<td class="utilityPick">' . __('Maximum Records:') . '</td><td>' . number_format_i18n($max_records, -1) . ' ' . __('Records') . '</td>';
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Maximum Allowed Runtime:') . '</td><td>' . $boost_max_runtime[$max_runtime] . '</td>';

@@ -24,13 +24,13 @@
 
 function boost_file_size_display($file_size, $digits = 2) {
 	if ($file_size > 1024) {
-		$file_size = round(($file_size / 1024), 0);
+		$file_size = $file_size / 1024;
 
 		if ($file_size > 1024) {
-			$file_size = round(($file_size / 1024), 0);
+			$file_size = $file_size / 1024;
 
 			if ($file_size > 1024) {
-				$file_size = round(($file_size / 1024), 0);
+				$file_size = $file_size / 1024;
 				$file_suffix = ' GBytes';
 			}else{
 				$file_suffix = ' MBytes';
@@ -42,7 +42,7 @@ function boost_file_size_display($file_size, $digits = 2) {
 		$file_suffix = ' Bytes';
 	}
 
-	$file_size = round($file_size, $digits) . $file_suffix;
+	$file_size = number_format_i18n($file_size, $digits) . $file_suffix;
 
 	return $file_size;
 }
