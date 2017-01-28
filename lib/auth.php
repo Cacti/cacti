@@ -766,38 +766,47 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		}
 
 		/* get policies for all groups and user */
-		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth_group AS uag
+		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, 
+			policy_graphs, policy_hosts, policy_graph_templates 
+			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
-			WHERE uag.enabled = 'on' AND uagm.user_id = ?", array($user));
+			WHERE uag.enabled = 'on' AND uagm.user_id = ?", 
+			array($user));
 
-		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id = ?", array($user));
+		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 
+			policy_graphs, policy_hosts, policy_graph_templates 
+			FROM user_auth WHERE id = ?", 
+			array($user));
 		
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
 				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NULL";
 			}else{
-				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i=" . $policy['id'];
+				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NOT NULL";
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1) ";
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
 			if ($policy['policy_hosts'] == 1) {
 				$sql_having .= " OR (user$i IS NULL";
 			}else{
-				$sql_having .= " OR (user$i=" . $policy['id'];
+				$sql_having .= " OR (user$i IS NOT NULL";
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3) ";
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
 			if ($policy['policy_graph_templates'] == 1) {
 				$sql_having .= " $sql_operator user$i IS NULL))";
 			}else{
-				$sql_having .= " $sql_operator user$i=" . $policy['id'] . '))';
+				$sql_having .= " $sql_operator user$i IS NOT NULL))";
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4) ";
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 		}
@@ -936,27 +945,30 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 			if ($policy['policy_graphs'] == 1) {
 				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NULL";
 			}else{
-				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i=" . $policy['id'];
+				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NOT NULL";
 			}
-			$sql_join   .= "LEFT JOIN user_auth_" . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1) ";
+
+			$sql_join   .= "LEFT JOIN user_auth_" . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
 			if ($policy['policy_hosts'] == 1) {
 				$sql_having .= " OR (user$i IS NULL";
 			}else{
-				$sql_having .= " OR (user$i=" . $policy['id'];
+				$sql_having .= " OR (user$i IS NOT NULL";
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3) ";
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
 			if ($policy['policy_graph_templates'] == 1) {
 				$sql_having .= " $sql_operator user$i IS NULL))";
 			}else{
-				$sql_having .= " $sql_operator user$i=" . $policy['id'] . '))';
+				$sql_having .= " $sql_operator user$i IS NOT NULL))";
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4) ";
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 		}
@@ -1162,37 +1174,46 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		}
 
 		/* get policies for all groups and user */
-		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth_group AS uag
+		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, 
+			policy_graphs, policy_hosts, policy_graph_templates 
+			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
 			WHERE uag.enabled = 'on' AND uagm.user_id = ?", array($user));
-		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id = ?", array($user));
+
+		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 
+			policy_graphs, policy_hosts, policy_graph_templates 
+			FROM user_auth 
+			WHERE id = ?", array($user));
 		
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
 				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NULL";
 			}else{
-				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i=" . $policy['id'];
+				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NOT NULL";
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1) ";
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
 			if ($policy['policy_hosts'] == 1) {
 				$sql_having .= " OR (user$i IS NULL";
 			}else{
-				$sql_having .= " OR (user$i=" . $policy['id'];
+				$sql_having .= " OR (user$i IS NOT NULL";
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3) ";
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
 			if ($policy['policy_graph_templates'] == 1) {
 				$sql_having .= " $sql_operator user$i IS NULL))";
 			}else{
-				$sql_having .= " $sql_operator user$i=" . $policy['id'] . '))';
+				$sql_having .= " $sql_operator user$i IS NOT NULL))";
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4) ";
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 		}
@@ -1323,22 +1344,40 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		}
 
 		/* get policies for all groups and user */
-		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth_group AS uag
+		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, policy_graphs, policy_hosts, 
+			policy_graph_templates FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
-			WHERE uag.enabled = 'on' AND uagm.user_id = ?", array($user));
+			WHERE uag.enabled = 'on' AND uagm.user_id = ?", 
+			array($user));
 
-		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id = ?", array($user));
+		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs, 
+			policy_hosts, policy_graph_templates 
+			FROM user_auth 
+			WHERE id = ?", 
+			array($user));
 		
 		foreach($policies as $policy) {
 			if ($policy['policy_graph_templates'] == 1) {
-				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "user$i IS NULL";
+				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NULL";
 			}else{
-				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "user$i=" . $policy['id'];
+				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NOT NULL";
 			}
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gt.graph_template_id=uap$i.item_id AND uap$i.type=4) ";
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gt.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
+
+			if ($policy['policy_graphs'] == 1) {
+				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "user$i IS NULL)";
+			}else{
+				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "user$i IS NOT NULL)";
+			}
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
+			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+
 		}
 
 		$sql_having = "HAVING $sql_having";

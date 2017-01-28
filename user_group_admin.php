@@ -223,9 +223,16 @@ function form_actions() {
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 3)', array(get_nfilter_request_var('id'), $matches[1]));
+					db_execute_prepared('REPLACE INTO user_auth_group_perms 
+						(group_id, item_id, type) 
+						VALUES (?, ?, 3)', 
+						array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 3', array(get_nfilter_request_var('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_group_perms 
+						WHERE group_id = ? 
+						AND item_id = ? 
+						AND type = 3', 
+						array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
@@ -240,9 +247,16 @@ function form_actions() {
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 1)', array(get_nfilter_request_var('id'), $matches[1]));
+					db_execute_prepared('REPLACE INTO user_auth_group_perms 
+						(group_id, item_id, type) 
+						VALUES (?, ?, 1)', 
+						array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 1', array(get_nfilter_request_var('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_group_perms 
+						WHERE group_id = ? 
+						AND item_id = ? 
+						AND type = 1', 
+						array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
@@ -257,9 +271,16 @@ function form_actions() {
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 4)', array(get_nfilter_request_var('id'), $matches[1]));
+					db_execute_prepared('REPLACE INTO user_auth_group_perms 
+						(group_id, item_id, type) 
+						VALUES (?, ?, 4)', 
+						array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 4', array(get_nfilter_request_var('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_group_perms 
+						WHERE group_id = ? 
+						AND item_id = ? 
+						AND type = 4', 
+						array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
@@ -274,9 +295,16 @@ function form_actions() {
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_perms (group_id, item_id, type) VALUES (?, ?, 2)', array(get_nfilter_request_var('id'), $matches[1]));
+					db_execute_prepared('REPLACE INTO user_auth_group_perms 
+						(group_id, item_id, type) 
+						VALUES (?, ?, 2)', 
+						array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ? AND item_id = ? AND type = 2', array(get_nfilter_request_var('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_group_perms 
+						WHERE group_id = ? 
+						AND item_id = ? 
+						AND type = 2', 
+						array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
@@ -291,9 +319,15 @@ function form_actions() {
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_members (group_id, user_id) VALUES (?, ?)', array(get_nfilter_request_var('id'), $matches[1]));
+					db_execute_prepared('REPLACE INTO user_auth_group_members 
+						(group_id, user_id) 
+						VALUES (?, ?)', 
+						array(get_nfilter_request_var('id'), $matches[1]));
 				}else{
-					db_execute_prepared('DELETE FROM user_auth_group_members WHERE group_id = ? AND user_id = ?', array(get_nfilter_request_var('id'), $matches[1]));
+					db_execute_prepared('DELETE FROM user_auth_group_members 
+						WHERE group_id = ? 
+						AND user_id = ?', 
+						array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
 		}
@@ -1780,13 +1814,14 @@ function user_group() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name' => array('Group Name', 'ASC'),
-		'members' => array('Members', 'ASC'),
-		'description' => array('Description', 'ASC'),
-		'policy_graphs' => array('Graph Policy', 'ASC'),
-		'policy_hosts' => array('Device Policy', 'ASC'),
-		'policy_graph_templates' => array('Template Policy', 'ASC'),
-		'enabled' => array('Enabled', 'ASC'));
+		'name'                   => array(__('Group Name'), 'ASC'),
+		'members'                => array(__('Members'), 'ASC'),
+		'description'            => array(__('Description'), 'ASC'),
+		'policy_graphs'          => array(__('Graph Policy'), 'ASC'),
+		'policy_hosts'           => array(__('Device Policy'), 'ASC'),
+		'policy_graph_templates' => array(__('Template Policy'), 'ASC'),
+		'enabled'                => array(__('Enabled'), 'ASC')
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -1800,7 +1835,7 @@ function user_group() {
 
 			form_alternate_row('line' . $group['id'], true);
 			form_selectable_cell(filter_value($group['name'], get_request_var('filter'), 'user_group_admin.php?action=edit&tab=general&id=' . $group['id']), $group['id']);
-			form_selectable_cell(($group['members'] > 0 ? number_format_i18n($group['members']):'None'), $group['id']);
+			form_selectable_cell(($group['members'] > 0 ? number_format_i18n($group['members'], 0):'None'), $group['id']);
 			form_selectable_cell(filter_value($group['description'], get_request_var('filter')), $group['id']);
 			form_selectable_cell(($group['policy_graphs'] == 1 ? __('ALLOW') : __('DENY') ), $group['id']);
 			form_selectable_cell(($group['policy_hosts'] == 1 ? __('ALLOW') : __('DENY') ), $group['id']);
