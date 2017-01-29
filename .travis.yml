@@ -16,6 +16,10 @@ before_script:
 
 script: true
 
+before_install:
+  - mysql -e 'CREATE DATABASE cacti;'
+  - mysql cacti < cacti.sql
+
 install: true
 
 notifications:
