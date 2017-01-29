@@ -342,7 +342,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	print "<div class='iconWrapper'>\n";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='" . __('Graph Details, Zooming and Debugging Utilities') . "'></a><br>\n";
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __('CSV Export of Graph Data'). "'></a><br>\n";
-	print "<a class='iconLink mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/mrtg.png' alt='' title='" . __('MRTG Graph View'). "'></a><br>\n";
+	print "<a class='iconLink mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/timeview.png' alt='' title='" . __('Time Graph View'). "'></a><br>\n";
 	if (read_config_option('realtime_enabled') == 'on') {
 		print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __('Click to view just this Graph in Real-time'). "'></a><br/>\n";
 	}
