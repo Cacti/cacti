@@ -1198,7 +1198,7 @@ function initializeGraphs() {
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
 			$('#main').empty().hide()
-			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
+			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">Time Graph View</a></li>');
 			$('#zoom-container').remove();
 			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
