@@ -383,7 +383,7 @@ if ($using_cacti) {
 
 $strout = '';
 
-if (!empty($out_start)) {
+if (!empty($out_start) && !$dryrun) {
 	$strout .= ($html ? "<p class='spikekillNote'>":'') . "NOTE: Removing Outliers in Range and Replacing with Last" . ($html ? "</p>\n":"\n");
 }
 
@@ -618,9 +618,12 @@ if ($method == 1) {
 		if (!$dryrun) {
 			$new_output = updateXML($output, $rra);
 		}
+	}elseif (!empty($out_start)) {
+		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+			"NOTE: NO Window Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}else{
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
-			"NOTE: NO Standard Deviation or Window Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
+			"NOTE: NO Standard Deviation found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}
 }else{
 	/* variance subroutine */
@@ -628,9 +631,12 @@ if ($method == 1) {
 		if (!$dryrun) {
 			$new_output = updateXML($output, $rra);
 		}
+	}elseif (!empty($out_start)) {
+		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+			"NOTE: NO Window Fills found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}else{
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
-			"NOTE: NO Variance Spikes or Window found in '$rrdfile'" . ($html ? "</p>\n":"\n");
+			"NOTE: NO Variance Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}
 }
 
@@ -765,7 +771,7 @@ function removeNanFromSamples(&$string) {
 }
 
 function calculateOverallStatistics(&$rra, &$samples) {
-	global $percent, $stddev, $ds_min, $ds_max, $var_kills, $std_kills, $out_kills, $out_start, $out_end;
+	global $percent, $stddev, $method, $ds_min, $ds_max, $var_kills, $std_kills, $out_kills, $out_start, $out_end;
 
 	$rra_num = 0;
 	if (sizeof($rra)) {
@@ -782,12 +788,12 @@ function calculateOverallStatistics(&$rra, &$samples) {
 
 				if (isset($rra[$rra_num][$ds_num]['sumofsamples']) && isset($rra[$rra_num][$ds_num]['numsamples'])) {
 					if ($rra[$rra_num][$ds_num]['numsamples'] > 0) {
-						$rra[$rra_num][$ds_num]['average']    = $rra[$rra_num][$ds_num]['sumofsamples'] / $rra[$rra_num][$ds_num]['numsamples'];
+						$rra[$rra_num][$ds_num]['average'] = $rra[$rra_num][$ds_num]['sumofsamples'] / $rra[$rra_num][$ds_num]['numsamples'];
 					}else{
-						$rra[$rra_num][$ds_num]['average']    = 0;
+						$rra[$rra_num][$ds_num]['average'] = 0;
 					}
 				}else{
-					$rra[$rra_num][$ds_num]['average']    = 0;
+					$rra[$rra_num][$ds_num]['average'] = 0;
 				}
 
 				$rra[$rra_num][$ds_num]['min_cutoff'] = $rra[$rra_num][$ds_num]['average'] - ($stddev * $rra[$rra_num][$ds_num]['standard_deviation']);
@@ -813,10 +819,22 @@ function calculateOverallStatistics(&$rra, &$samples) {
 				if (sizeof($samples[$rra_num][$ds_num])) {
 				foreach($samples[$rra_num][$ds_num] as $timestamp => $sample) {
 					if (!empty($out_start) && $timestamp >= $out_start && $timestamp <= $out_end) {
-						debug(sprintf("Window Kill: Value '%.4e', Time '%s'", $sample, date('Y-m-d H:i', $timestamp)));
+						if ($method == 2) {
+							if ($sample > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg'] || strtolower($sample) == 'nan') {
+								debug(sprintf("Window Kill: Value '%.4e', Time '%s'", $sample, date('Y-m-d H:i', $timestamp)));
 
-						$rra[$rra_num][$ds_num]['outwind_killed']++;
-						$out_kills = true;
+								$rra[$rra_num][$ds_num]['outwind_killed']++;
+								$out_kills = true;
+							}
+						} else {
+							if (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) ||
+								($sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
+								debug(sprintf("Window Kill: Value '%.4e', Time '%s'", $sample, date('Y-m-d H:i', $timestamp)));
+
+								$rra[$rra_num][$ds_num]['outwind_killed']++;
+								$out_kills = true;
+							}
+						}
 					}else if (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) ||
 						($sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 						debug(sprintf("Std Kill: Value '%.4e', StandardDev '%.4e', StdDevLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['standard_deviation'], ($rra[$rra_num][$ds_num]['max_cutoff'] * (1+$percent))));
@@ -880,7 +898,7 @@ function outputStatistics($rra) {
 			$strout .= "\n";
 			$strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
 				'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
-				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindKilled', 'StdDevAvg', 'VarAvg');
+				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindFilled', 'StdDevAvg', 'VarAvg');
 			$strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
 				'----------', '---------------', '----------', '-------', '-------', '----------', '----------', 
 				'----------', '----------', '----------', '----------', '----------', '----------', '----------', 
@@ -922,7 +940,7 @@ function outputStatistics($rra) {
 		}else{
 			$strout .= sprintf("<tr class='tableHeader'><th style='width:10%%;'>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
 				'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
-				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindKilled', 'StdDevAvg', 'VarAvg');
+				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindFilled', 'StdDevAvg', 'VarAvg');
 			foreach($rra as $rra_key => $dses) {
 				if (sizeof($dses)) {
 				foreach($dses as $dskey => $ds) {
