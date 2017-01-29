@@ -744,7 +744,15 @@ function calculateVarianceAverages(&$rra, &$samples) {
 					$rra[$rra_num][$ds_num]['variance_avg'] = array_sum($myds) / sizeof($myds);
 				}
 			}else{
-				$rra[$rra_num][$ds_num]['variance_avg'] = $rra[$rra_num][$ds_num]['sumofsamples'] / $rra[$rra_num][$ds_num]['numsamples'];
+				if (isset($rra[$rra_num][$ds_num]['sumofsamples']) && isset($rra[$rra_num][$ds_num]['numsamples'])) {
+					if ($rra[$rra_num][$ds_num]['numsamples'] > 0) {
+						$rra[$rra_num][$ds_num]['variance_avg'] = $rra[$rra_num][$ds_num]['sumofsamples'] / $rra[$rra_num][$ds_num]['numsamples'];
+					}else{
+						$rra[$rra_num][$ds_num]['variance_avg'] = 0;
+					}
+				}else{
+					$rra[$rra_num][$ds_num]['variance_avg'] = 0;
+				}
 			}
 		}
 		}
@@ -771,7 +779,16 @@ function calculateOverallStatistics(&$rra, &$samples) {
 				if ($rra[$rra_num][$ds_num]['standard_deviation'] == 'NAN') {
 					$rra[$rra_num][$ds_num]['standard_deviation'] = 0;
 				}
-				$rra[$rra_num][$ds_num]['average']    = $rra[$rra_num][$ds_num]['sumofsamples'] / $rra[$rra_num][$ds_num]['numsamples'];
+
+				if (isset($rra[$rra_num][$ds_num]['sumofsamples']) && isset($rra[$rra_num][$ds_num]['numsamples'])) {
+					if ($rra[$rra_num][$ds_num]['numsamples'] > 0) {
+						$rra[$rra_num][$ds_num]['average']    = $rra[$rra_num][$ds_num]['sumofsamples'] / $rra[$rra_num][$ds_num]['numsamples'];
+					}else{
+						$rra[$rra_num][$ds_num]['average']    = 0;
+					}
+				}else{
+					$rra[$rra_num][$ds_num]['average']    = 0;
+				}
 
 				$rra[$rra_num][$ds_num]['min_cutoff'] = $rra[$rra_num][$ds_num]['average'] - ($stddev * $rra[$rra_num][$ds_num]['standard_deviation']);
 				if ($rra[$rra_num][$ds_num]['min_cutoff'] < $ds_min[$ds_num]) {
