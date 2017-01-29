@@ -476,6 +476,10 @@ function create_dhtml_tree() {
 }
 
 function html_validate_tree_vars() {
+	if (!isset_request_var('hgd')) {
+		set_request_var('hgd', '');
+	}
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
