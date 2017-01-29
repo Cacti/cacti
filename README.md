@@ -57,7 +57,7 @@ Cacti handles the gathering of data through the concept of data sources. Data so
 
 ## Graphs
 
-Graphs, the heart and soul of Cacti, are created by RRDtool using the defined data sources data.  
+Graphs, the heart and soul of Cacti, are created by RRDtool using the defined data sources definition.
 
 ## Templating
 
@@ -65,7 +65,7 @@ Bringing it all together, Cacti uses and extensive template system that allows f
 
 ## Data Collection AKA Poller
 
-Local and remote data collection support now with the ability to set collection intervals. Check out *Data Source Profile* with in Cacti for more information. *Data Source Profiles* can be applied to graphs at creation time or at the data template level.
+Local and remote data collection support with the ability to set collection intervals. Check out *Data Source Profile* with in Cacti for more information. *Data Source Profiles* can be applied to graphs at creation time or at the data template level.
 
 Remote data collection has been made easy through replication of resources to remote data collectors. Even when connectivity to the main Cacti installation is lost from remote data collector, it will store collected data until connectivity is restored. Remote data collection only requires MySQL and HTTP/HTTPS access back to the main Cacti installation location.
 
@@ -99,7 +99,7 @@ Cacti allows for many runtime augmentations while viewing graphs:
 
 ## User, Groups and Permissions
 
-Support for per user and per group permissions at a per realm (area of Cacti), per graph, per graph tree, per device, etc... The permission model in Cacti is role based access control (RBAC) to allow for flexible assignment of permissions to users and groups. Support for enforcement of password complexity, password age and changing of expired passwords. 
+Support for per user and per group permissions at a per realm (area of Cacti), per graph, per graph tree, per device, etc... The permission model in Cacti is role based access control (RBAC) to allow for flexible assignment of permissions. Support for enforcement of password complexity, password age and changing of expired passwords.
 
 ## Extensive RRDtool Graph Option Support
 
