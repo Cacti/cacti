@@ -14,7 +14,7 @@ Cacti CHANGELOG
 -feature: Support RRDtool VDEFs
 -feature: Support new Graph Items: AREA:STACK, GPRINT:AVERAGE, GPRINT:LAST, GPRINT:MAX, GPRINT:MIN, LINE:STACK, TEXTALIGN, TICK
 -feature: Support RRDtool features: Right Axis Support, Dynamic Labels, Tab Width, Legend Position, Legend Direction
--feature; Resizable table columns
+-feature; Resizeable table columns
 -feature: Deprecated Single Pane Tree View
 -feature: Role Based Access Control (RBAC)
 -feature: Support User Group Permissions
@@ -28,7 +28,7 @@ Cacti CHANGELOG
 -feature: Graph Details include CSV output, zoom, debug, and download links
 -feature: Graph Export moved to a plugin
 -feature: User change password functionality
--feature: Automation added to core funtionality through the merge of the Discovery and AutoM8 plugins
+-feature: Automation added to core functionality through the merge of the Discovery and AutoM8 plugins
 -feature: Change interface graphs from 32 bit to 64 bit with ease
 -feature: Plugins now have hooks in device templates and automation
 -feature: Allow users to preview template imports to determine if there will be issues from importing
@@ -65,7 +65,7 @@ Cacti CHANGELOG
 -bug#0001790: Allow for XML delimiter in fields of a script query
 -bug#0001820: Unable to use a Data Input Method Output Field in more than one Data Source Item
 -bug#0001827: Changing the graph template messes up the graph item fields
--bug#0001836: Add mysql error messageg to log
+-bug#0001836: Add mysql error message to log
 -bug#0001877: Cookies path is not properly set
 -bug#0001966: Expand Devices in tree view not honored
 -bug#0001970: Data query index order cache should be populated on re-index
