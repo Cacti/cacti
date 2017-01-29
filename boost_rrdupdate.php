@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -25,7 +25,7 @@
 
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
+	die('<br>This script is only meant to run at the command line.');
 }
 
 /* We are not talking to the browser */
@@ -76,9 +76,9 @@ if (!strlen(trim($result))) {
 }
 
 /* add the value to the table */
-db_execute("INSERT INTO poller_output_boost_processes
+db_execute_prepared('INSERT INTO poller_output_boost_processes
 	(sock_int_value, status)
-	VALUES ('" . $socket_int_value . "'," . db_qstr($result, get_magic_quotes_gpc()) . ')');
+	VALUES (?, ?)', array($socket_int_value, $result));
 
 /* close the connection */
 pclose($handle);

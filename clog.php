@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -30,12 +30,10 @@ include_once('./lib/clog_webapi.php');
 
 /* check edit/alter permissions */
 if (!clog_admin()) {
-	echo 'FATAL: YOU DO NO HAVE ACCESS TO THIS AREA OF CACTI';
+	echo __('FATAL: YOU DO NO HAVE ACCESS TO THIS AREA OF CACTI');
 	exit;
 }
 
 load_current_session_value('page_referrer', 'page_referrer', '');
 
 clog_view_logfile();
-
-?>

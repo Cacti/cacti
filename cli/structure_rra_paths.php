@@ -1,7 +1,8 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -39,26 +40,36 @@ $hostId = NULL;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
-		@list($arg, $value) = @explode("=", $parameter);
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
 		switch ($arg) {
-		case "--proceed":
-			$proceed = TRUE;
+			case '--proceed':
+				$proceed = TRUE;
 
-			break;
-		case "--version":
-		case "-V":
-		case "-H":
-		case "--help":
-			display_help();
-			exit(0);
-		case "--hostId":
-			$hostId = $value;
-			break;
-		default:
-			echo "ERROR: Invalid Argument: ($arg)\n\n";
-			display_help();
-			exit(1);
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			case '--host-id':
+			case '--hostId':
+				$hostId = $value;
+				break;
+			default:
+				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				display_help();
+				exit(1);
 		}
 	}
 }
@@ -87,21 +98,18 @@ if ($poller_running == "1") {
 }
 
 /* turn on extended paths from in the database */
-set_config_option("extended_paths", "on");
+set_config_option('extended_paths', 'on');
 
 /* fetch all DS having wrong path */
-$data_sources = db_fetch_assoc("SELECT
-				local_data_id,
-				host_id,
-				data_source_path,
-				CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd') AS new_data_source_path,
-				REPLACE(data_source_path, '<path_rra>', '$base_rra_path') AS rrd_path,
-				REPLACE(CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path
-					FROM data_template_data
-					INNER JOIN data_local ON data_local.id=data_template_data.local_data_id
-					INNER JOIN host ON host.id=data_local.host_id
-				WHERE data_source_path != CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd')"
-				 . ($hostId === NULL ? "" : " AND host_id=$hostId"));
+$data_sources = db_fetch_assoc("SELECT local_data_id, host_id, data_source_path,
+	CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd') AS new_data_source_path,
+	REPLACE(data_source_path, '<path_rra>', '$base_rra_path') AS rrd_path,
+	REPLACE(CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path
+	FROM data_template_data
+	INNER JOIN data_local ON data_local.id=data_template_data.local_data_id
+	INNER JOIN host ON host.id=data_local.host_id
+	WHERE data_source_path != CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd')"
+	. ($hostId === NULL ? '' : " AND host_id=$hostId"));
 
 /* setup some counters */
 $done_count   = 0;
@@ -109,16 +117,16 @@ $warn_count   = 0;
 
 /* scan all data sources */
 foreach ($data_sources as $info) {
-	$new_base_path = "$base_rra_path" . "/" . $info["host_id"];
-	$new_rrd_path  = $info["new_rrd_path"];
-	$old_rrd_path  = $info["rrd_path"];
+	$new_base_path = $base_rra_path . '/' . $info['host_id'];
+	$new_rrd_path  = $info['new_rrd_path'];
+	$old_rrd_path  = $info['rrd_path'];
 
 	/* create one subfolder for every host */
 	if (!is_dir($new_base_path)) {
 		/* see if we can create the dirctory for the new file */
 		if (mkdir($new_base_path, 0775)) {
 			echo "NOTE: New Directory '$new_base_path' Created for RRD Files\n";
-			if ($config["cacti_server_os"] != "win32") {
+			if ($config['cacti_server_os'] != 'win32') {
 				if (chown($new_base_path, $owner_id) && chgrp($new_base_path, $group_id)) {
 					echo "NOTE: New Directory '$new_base_path' Permissions Set\n";
 				} else {
@@ -150,7 +158,7 @@ foreach ($data_sources as $info) {
 		$done_count++;
 
 		echo "NOTE: HardLink Complete:'" . $old_rrd_path . "' -> '" . $new_rrd_path . "'\n";
-		if ($config["cacti_server_os"] != "win32") {
+		if ($config['cacti_server_os'] != 'win32') {
 			if (chown($new_rrd_path, $owner_id) && chgrp($new_rrd_path, $group_id)) {
 				echo "NOTE: Permissions set for '$new_rrd_path'\n";
 			}else{
@@ -192,15 +200,15 @@ echo "NOTE: Process Complete, '$done_count' Completed, '$warn_count' Skipped\n";
 function update_database($info) {
 	/* upate table poller_item */
 	db_execute("UPDATE poller_item
-		SET rrd_path = '" . $info["new_rrd_path"] . "'
-		WHERE local_data_id=" . $info["local_data_id"]);
+		SET rrd_path = '" . $info['new_rrd_path'] . "'
+		WHERE local_data_id=" . $info['local_data_id']);
 
 	/* update table data_template_data */
 	db_execute("UPDATE data_template_data
-		SET data_source_path='" . $info["new_data_source_path"] . "'
-		WHERE local_data_id=" . $info["local_data_id"]);
+		SET data_source_path='" . $info['new_data_source_path'] . "'
+		WHERE local_data_id=" . $info['local_data_id']);
 
-	echo "NOTE: Database Changes Complete for File '" . $info["new_rrd_path"] . "'\n";
+	echo "NOTE: Database Changes Complete for File '" . $info['new_rrd_path'] . "'\n";
 }
 
 /* turn on the poller */
@@ -213,10 +221,17 @@ function disable_poller() {
 	set_config_option('poller_enabled', '');
 }
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+    echo "Cacti Structured Paths Creation Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 function display_help() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Structured RRA Paths Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "A simple command line utility that converts a Cacti system from using\n";
+	display_version();
+
+	echo "\nusage: structure_rra_paths.php [--host-id=N] [--proceed] [--version|-V|-v] [--help|-H|-h]\n\n"; 
+	echo "A simple interactive command line utility that converts a Cacti system from using\n";
 	echo "legacy RRA paths to using structured RRA paths with the following\n";
 	echo "naming convention: <path_rra>/host_id/local_data_id.rrd\n\n";
 	echo "This utility is designed for very large Cacti systems.\n\n";
@@ -239,7 +254,4 @@ function display_help() {
 	echo "If the utility encounters a problem along the way, it will:\n";
 	echo "  1) Re-enable the poller\n";
 	echo "  2) Exit\n\n";
-	echo "usage: structure_rra_paths.php --proceed [--help | -H | --version | -V] [--hostId=<hostId>]\n\n";
 }
-
-?>

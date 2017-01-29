@@ -1,11 +1,18 @@
 # Description: Standard Formating
+# Theme: classic
 <style type='text/css'>
+
+body {
+	margin-left:auto;
+	margin-right:auto;
+}
 
 .report_table {
 	background-color:#F9F9F9;
 	align: center;
 	border:0;
 	width:100%;
+	margin: auto;
 }
 
 .title_row {
@@ -40,6 +47,18 @@
 	background-color:#EAEAEA;
 	font-size: 16pt;
 	text-align: center;
+}
+
+.left {
+	text-align:left;
+}
+
+.right {
+	text-align:right;
+}
+
+.center {
+	text-align:center;
 }
 
 </style>

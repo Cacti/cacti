@@ -1,8 +1,9 @@
+#!/usr/bin/php -q
 <?php
 
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -18,13 +19,13 @@
  +-------------------------------------------------------------------------+
 */
 
+/* we are not talking to the browser */
+$no_http_headers = true;
+
 /* do NOT run this script through a web browser */
 if (!isset ($_SERVER['argv'][0]) || isset ($_SERVER['REQUEST_METHOD']) || isset ($_SERVER['REMOTE_ADDR'])) {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
-
-/* We are not talking to the browser */
-$no_http_headers = true;
 
 /* let PHP run just as long as it has to */
 ini_set('max_execution_time', '0');
@@ -34,8 +35,7 @@ $dir = dirname(__FILE__);
 chdir($dir);
 
 /* record the start time */
-list($micro,$seconds) = explode(' ', microtime());
-$poller_start         = $seconds + $micro;
+$poller_start         = microtime(true);
 
 include ('./include/global.php');
 
@@ -50,80 +50,92 @@ $force    = FALSE;
 $archived = 0;
 $purged   = 0;
 
-foreach ($parms as $parameter) {
-	@list ($arg, $value) = @explode('=', $parameter);
+if (sizeof($parms)) {
+	foreach ($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-		case '-h' :
-		case '-v' :
-		case '--version' :
-		case '--help' :
-			display_help();
-			exit;
-		case '--force' :
-			$force = true;
-			break;
-		case '--debug' :
-			$debug = true;
-			break;
-		default :
-			print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-			display_help();
-			exit;
+		switch ($arg) {
+			case '--version' :
+			case '-V' :
+			case '-v' :
+				display_version();
+				exit;
+			case '--help' :
+			case '-H' :
+			case '-h' :
+				display_help();
+				exit;
+			case '--force' :
+				$force = true;
+				break;
+			case '--debug' :
+				$debug = true;
+				break;
+			default :
+				echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 
 maint_debug('Checking for Purge Actions');
 
-/* are my tables already present? */
-$purge = db_fetch_cell('SELECT count(*) FROM data_source_purge_action');
+if ($config['poller_id'] == 1) {
+	/* are my tables already present? */
+	$purge = db_fetch_cell('SELECT count(*) FROM data_source_purge_action');
 
-/* if the table that holds the actions is present, work on it */
-if (($purge)) {
-	maint_debug("Purging Required - Files Found $purge");
+	/* if the table that holds the actions is present, work on it */
+	if ($purge) {
+		maint_debug("Purging Required - Files Found $purge");
 
-	/* take the purge in steps */
-	while (true) {
-		maint_debug('Grabbing 1000 RRDfiles to Remove');
+		/* take the purge in steps */
+		while (true) {
+			maint_debug('Grabbing 1000 RRDfiles to Remove');
 
-		$file_array = db_fetch_assoc('SELECT id, name, local_data_id, action 
-			FROM data_source_purge_action
-			ORDER BY name
-			LIMIT 1000');
+			$file_array = db_fetch_assoc('SELECT id, name, local_data_id, action 
+				FROM data_source_purge_action
+				ORDER BY name
+				LIMIT 1000');
 
-		if (sizeof($file_array) == 0) {
-			break;
-		}
+			if (sizeof($file_array) == 0) {
+				break;
+			}
 	
-		if (sizeof($file_array) || $force) {
-			/* there's something to do for us now */
-			remove_files($file_array);
+			if (sizeof($file_array) || $force) {
+				/* there's something to do for us now */
+				remove_files($file_array);
 	
-			if ($force) {
-				cleanup_ds_and_graphs();
+				if ($force) {
+					cleanup_ds_and_graphs();
+				}
 			}
 		}
+
+		/* record the start time */
+		$poller_end         = microtime(true);
+		$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
+		cacti_log($string, true, 'SYSTEM');
 	}
 
-	/* record the start time */
-	list($micro,$seconds) = explode(' ', microtime());
-	$poller_end         = $seconds + $micro;
-	$string = sprintf('MAINT STATS: Time:%4.4f Purged:%s Archived:%s RRDfiles', ($poller_end - $poller_start), $purged, $archived);
-	cacti_log($string, true, 'SYSTEM');
-}
+	/* removing security tokens older than 90 days */
+	if (read_config_option('auth_cache_enabled') == 'on') {
+		db_execute_prepared('DELETE FROM user_auth_cache WHERE last_update < ?', array(date('Y-m-d H:i:s', time()-(86400*90))));
+	}else{
+		db_execute('TRUNCATE TABLE user_auth_cache');
+	}
 
-/* removing security tokens older than 90 days */
-if (read_config_option('auth_cache_enabled') == 'on') {
-	db_execute("DELETE FROM user_auth_cache WHERE last_update<'" . date('Y-m-d H:i:s', time()-(86400*90)) . "'");
-}else{
-	db_execute('TRUNCATE TABLE user_auth_cache');
+	// Check expired accounts
+	secpass_check_expired();
 }
 
 // Check the realtime cache and poller
 realtime_purge_cache();
-
-// Check expired accounts
-secpass_check_expired ();
 
 // Check whether the cacti log needs rotating
 if (read_config_option('logrotate_enabled') == 'on') {
@@ -237,16 +249,16 @@ function secpass_check_expired () {
 	$e = read_config_option('secpass_expireaccount');
 	if ($e > 0 && is_numeric($e)) {
 		$t = time();
-		db_execute("UPDATE user_auth SET lastlogin = $t WHERE lastlogin = -1 AND realm = 0 AND enabled = 'on'");
+		db_execute_prepared("UPDATE user_auth SET lastlogin = ? WHERE lastlogin = -1 AND realm = 0 AND enabled = 'on'", array($t));
 		$t = $t - (intval($e) * 86400);
-		db_execute("UPDATE user_auth SET enabled = '' WHERE realm = 0 AND enabled = 'on' AND lastlogin < $t AND id > 1");
+		db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE realm = 0 AND enabled = 'on' AND lastlogin < ? AND id > 1", array($t));
 	}
 	$e = read_config_option('secpass_expirepass');
 	if ($e > 0 && is_numeric($e)) {
 		$t = time();
-		db_execute("UPDATE user_auth SET lastchange = $t WHERE lastchange = -1 AND realm = 0 AND enabled = 'on'");
+		db_execute_prepared("UPDATE user_auth SET lastchange = ? WHERE lastchange = -1 AND realm = 0 AND enabled = 'on'", array($t));
 		$t = $t - (intval($e) * 86400);
-		db_execute("UPDATE user_auth SET must_change_password = 'on' WHERE realm = 0 AND enabled = 'on' AND lastchange < $t");
+		db_execute_prepared("UPDATE user_auth SET must_change_password = 'on' WHERE realm = 0 AND enabled = 'on' AND lastchange < ?", array($t));
 	}
 }
 
@@ -284,7 +296,7 @@ function remove_files($file_array) {
 			if (unlink($source_file)) {
 				maint_debug('Deleted: ' . $file['name']);
 			} else {
-				cacti_log($file['name'] . " Error: unable to delete from $rra_path!", true, 'MAINT');
+				cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to delete from $rra_path!", true, 'MAINT');
 			}
 			$purged++;
 			break;
@@ -298,7 +310,7 @@ function remove_files($file_array) {
 			if (rename($source_file, $target_file)) {
 				maint_debug('Moved: ' . $file['name'] . ' to: ' . $rrd_archive);
 			} else {
-				cacti_log($file['name'] . " Error: unable to move to $rrd_archive!", true, 'MAINT');
+				cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to move to $rrd_archive!", true, 'MAINT');
 			}
 			$archived++;
 			break;
@@ -322,12 +334,12 @@ function remove_files($file_array) {
 
 		if (sizeof($lgis)) {
 			/* anything found? */
-			cacti_log('Processing ' . sizeof($lgis) . ' Graphs for data source id: ' . $file['local_data_id'], true, 'MAINT');
+			maint_debug('Processing ' . sizeof($lgis) . ' Graphs for data source id: ' . $file['local_data_id']);
 
 			/* get them all */
 			foreach ($lgis as $item) {
 				$remove_lgis[] = $item['id'];
-				cacti_log('remove local_graph_id=' . $item['id'], true, 'MAINT');
+				maint_debug('remove local_graph_id=' . $item['id']);
 			}
 
 			/* and remove them in a single run */
@@ -338,12 +350,12 @@ function remove_files($file_array) {
 
 		/* remove related data source if any */
 		if ($file['local_data_id'] > 0) {
-			cacti_log('removing data source: ' . $file['local_data_id'], true, 'MAINT');
+			maint_debug('Removing Data Source: ' . $file['local_data_id']);
 			api_data_source_remove($file['local_data_id']);
 		}
 	}
 
-	cacti_log('RRDClean has finished a purge pass of ' . sizeof($file_array) . ' items', true, 'MAINT');
+	maint_debug('RRDClean has finished a purge pass of ' . sizeof($file_array) . ' items');
 }
 
 function rrdclean_create_path($path) {
@@ -361,7 +373,7 @@ function rrdclean_create_path($path) {
 				@chgrp($path, $group_id);
 			}
 		}else{
-			cacti_log("ERROR: Unable to create directory '" . $path . "'", FALSE);
+			cacti_log("ERROR: RRDfile Maintenance unable to create directory '" . $path . "'", false, 'MAINT');
 		}
 	}
 
@@ -384,7 +396,7 @@ function cleanup_ds_and_graphs() {
 	$remove_ldis = array ();
 	$remove_lgis = array ();
 
-	cacti_log('RRDClean now cleans up all data sources and graphs', true, 'MAINT');
+	maint_debug('RRDClean now cleans up all data sources and graphs');
 	//fetch all local_data_id's which have appropriate data-sources
 	$rrds = db_fetch_assoc("SELECT local_data_id, name_cache, data_source_path 
 		FROM data_template_data 
@@ -399,17 +411,17 @@ function cleanup_ds_and_graphs() {
 		if (!file_exists($real_pth)) {
 			if (!in_array($ldi, $remove_ldis)) {
 				$remove_ldis[] = $ldi;
-				cacti_log("RRD file is missing for data source name: $name (local_data_id=$ldi)", true, 'MAINT');
+				maint_debug("RRD file is missing for data source name: $name (local_data_id=$ldi)");
 			}
 		}
 	}
 
 	if (empty ($remove_ldis)) {
-		cacti_log('No missing rrd files found', true, 'MAINT');
+		maint_debug('No missing rrd files found');
 		return 0;
 	}
 
-	cacti_log('Processing Graphs', true, 'MAINT');
+	maint_debug('Processing Graphs');
 	//fetch all local_graph_id's according to filtered rrds
 	$lgis = db_fetch_assoc('SELECT DISTINCT gl.id
 		FROM graph_local AS gl
@@ -423,18 +435,18 @@ function cleanup_ds_and_graphs() {
 
 	foreach ($lgis as $item) {
 		$remove_lgis[] = $item['id'];
-		cacti_log('RRD file missing for local_graph_id=' . $item['id'], true, 'MAINT');
+		maint_debug('RRD file missing for local_graph_id=' . $item['id']);
 	}
 
 	if (!empty ($remove_lgis)) {
-		cacti_log('removing graphs', true, 'MAINT');
+		maint_debug('removing graphs');
 		api_graph_remove_multi($remove_lgis);
 	}
 
-	cacti_log('removing data sources', true, 'MAINT');
+	maint_debug('removing data sources');
 	api_data_source_remove_multi($remove_ldis);
 
-	cacti_log('removed graphs:' . count($remove_lgis) . ' removed data-sources:' . count($remove_ldis), true, 'MAINT');
+	maint_debug('removed graphs:' . count($remove_lgis) . ' removed data-sources:' . count($remove_ldis));
 }
 
 function maint_debug($message) {
@@ -445,16 +457,23 @@ function maint_debug($message) {
 	}
 }
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /*
  * display_help
  * displays the usage of the function
  */
 function display_help() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	print "Cacti Maintenance Script, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	print "usage: poller_maintenance.php [--force] [--debug] [--help] [--version]\n\n";
-	print "--force       - force execution, e.g. for testing\n";
-	print "--debug       - debug execution, e.g. for testing\n\n";
-	print "-v --version  - Display this help message\n";
-	print "-h --help     - display this help message\n";
+	display_version();
+
+	echo "\nusage: poller_maintenance.php [--force] [--debug]\n\n";
+	echo "Cacti's maintenance poller.  This poller is repsonsible for executing periodic\n";
+	echo "maintenance activities for Cacti including log rotation, deactivating accounts, etc.\n\n";
+	echo "Optional:\n";
+	echo "    --force   - Force immediate execution, e.g. for testing.\n";
+	echo "    --debug   - Display verbose output during execution.\n\n";
 }

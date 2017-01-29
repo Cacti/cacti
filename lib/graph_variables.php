@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -216,31 +216,31 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps, $ds_steps) {
 	$fetch_array = @rrdtool_function_fetch($local_data_id, $start_time, $end_time, $rra_steps * $ds_steps);
 
-	if ((!isset($fetch_array["data_source_names"])) || (count($fetch_array["data_source_names"]) == 0)) {
+	if ((!isset($fetch_array['data_source_names'])) || (count($fetch_array['data_source_names']) == 0)) {
 		return;
 	}
 
 	$return_array = array();
 
 	/* loop through each regexp determined above (or each data source) */
-	for ($i=0;$i<count($fetch_array["data_source_names"]);$i++) {
+	for ($i=0;$i<count($fetch_array['data_source_names']);$i++) {
 		$sum = 0;
 
-		if (isset($fetch_array["values"][$i])) {
-			$values_array = $fetch_array["values"][$i];
+		if (isset($fetch_array['values'][$i])) {
+			$values_array = $fetch_array['values'][$i];
 
-			foreach ($fetch_array["values"][$i] as $value) {
+			foreach ($fetch_array['values'][$i] as $value) {
 				$sum += $value;
 			}
 
-			if (count($fetch_array["values"][$i]) != 0) {
+			if (count($fetch_array['values'][$i]) != 0) {
 				$sum = ($sum * $ds_steps * $rra_steps);
 			}else{
 				$sum = 0;
 			}
 
 			/* collect summation alues in this array so we can return them */
-			$return_array[ $fetch_array["data_source_names"][$i] ] = $sum;
+			$return_array[$fetch_array['data_source_names'][$i]] = $sum;
 		}
 	}
 
@@ -461,7 +461,11 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 
 	/* format the output according to args passed to the variable */
 	if (($regexp_match_array[2] == "current") || ($regexp_match_array[2] == "atomic")) {
-		$summation = $summation_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
+		if (isset($summation_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]})) {
+			$summation = $summation_cache{$graph_item["local_data_id"]}{$graph_item["data_source_name"]};
+		}else{
+			$summation = 0;
+		}
 	}elseif ($regexp_match_array[2] == "total") {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((preg_match("/(AREA|STACK|LINE[123])/", $graph_item_types{$graph_items[$t]["graph_type_id"]})) && (!empty($graph_items[$t]["data_template_rrd_id"]))) {
@@ -476,7 +480,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 		$summation /= pow(10,intval($regexp_match_array[1]));
 	}elseif ($regexp_match_array[1] == "auto") {
 		if ($summation < 1000) {
-			$summation_label = "bytes";
+			$summation_label = "B";
 		}elseif ($summation < 1000000) {
 			$summation_label = "KB";
 			$summation /= 1000;

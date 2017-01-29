@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,7 +23,7 @@
 */
 
 function clog_get_graphs_from_datasource($local_data_id) {
-	return array_rekey(db_fetch_assoc("SELECT DISTINCT graph_templates_graph.local_graph_id AS id,
+	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT graph_templates_graph.local_graph_id AS id,
 		graph_templates_graph.title_cache AS name
 		FROM (graph_templates_graph
 		INNER JOIN graph_templates_item
@@ -31,7 +31,7 @@ function clog_get_graphs_from_datasource($local_data_id) {
 		INNER JOIN data_template_rrd
 		ON graph_templates_item.task_item_id=data_template_rrd.id
 		WHERE graph_templates_graph.local_graph_id>0
-		AND data_template_rrd.local_data_id=$local_data_id"), 'id', 'name');
+		AND data_template_rrd.local_data_id = ?', array($local_data_id)), 'id', 'name');
 }
 
 function clog_purge_logfile() {
@@ -40,14 +40,14 @@ function clog_purge_logfile() {
 	$logfile = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
-		$logfile = './log/cacti.log';
+		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
-			$timestamp = date('m/d/Y h:i:s A');
+			$timestamp = date('Y-m-d H:i:s');
 			$log_fh = fopen($logfile, 'w');
-			fwrite($log_fh, $timestamp . " - WEBUI: Cacti Log Cleared from Web Management Interface\n");
+			fwrite($log_fh, "$timestamp - WEBUI: Cacti Log Cleared from Web Management Interface\n");
 			fclose($log_fh);
 			raise_message('clog_purged');
 		}else{
@@ -70,95 +70,93 @@ function clog_view_logfile() {
 	/* helps determine output color */
 	$linecolor = true;
 
-	input_validate_input_number(get_request_var_request('tail_files'));
-	input_validate_input_number(get_request_var_request('message_type'));
-	input_validate_input_number(get_request_var_request('refresh'));
-	input_validate_input_number(get_request_var_request('reverse'));
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'tail_lines' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => read_config_option('num_rows_log')
+			),
+		'message_type' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '-1'
+			),
+		'refresh' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => read_config_option('log_refresh_interval')
+			),
+		'reverse' => array(
+			'filter' => FILTER_VALIDATE_INT, 
+			'default' => '1'
+			),
+		'rfilter' => array(
+			'filter' => FILTER_VALIDATE_IS_REGEX, 
+			'default' => '' 
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_clog');
+	/* ================= input validation ================= */
 
 	/* enable page refreshes */
 	kill_session_var('custom');
 
-	/* if the user pushed the 'clear' button */
-	if (isset($_REQUEST['clear'])) {
-		kill_session_var('sess_clog_tail_lines');
-		kill_session_var('sess_clog_message_type');
-		kill_session_var('sess_clog_filter');
-		kill_session_var('sess_clog_refresh');
-		kill_session_var('sess_clog_reverse');
-
-		unset($_REQUEST['tail_lines']);
-		unset($_REQUEST['message_type']);
-		unset($_REQUEST['filter']);
-		unset($_REQUEST['refresh']);
-		unset($_REQUEST['reverse']);
-	}
-
-	load_current_session_value('tail_lines', 'sess_clog_tail_lines', read_config_option('num_rows_log'));
-	load_current_session_value('message_type', 'sess_clog_message_type', '-1');
-	load_current_session_value('filter', 'sess_clog_filter', '');
-	load_current_session_value('refresh', 'sess_clog_refresh', read_config_option('log_refresh_interval'));
-	load_current_session_value('reverse', 'sess_clog_reverse', 1);
-
-	$_REQUEST['page_referrer'] = 'view_logfile';
+	set_request_var('page_referrer', 'view_logfile');
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
-	$refresh['seconds'] = $_REQUEST['refresh'];
-	$refresh['page']    = $config['url_path'] . 'clog.php';
-	if ((isset($_REQUEST['purge_continue'])) && (clog_admin())) clog_purge_logfile();
+	$refresh['seconds'] = get_request_var('refresh');
+	$refresh['page']    = $config['url_path'] . 'clog' . (!clog_admin() ? '_user':'') . '.php?header=false';
+	if ((isset_request_var('purge_continue')) && (clog_admin())) clog_purge_logfile();
 
 	general_header();
 
-	if ((isset($_REQUEST['purge'])) && (clog_admin())) {
-		html_start_box('<strong>Purge</strong>', '50%', '', '3', 'center', '');
+	if ((isset_request_var('purge')) && (clog_admin())) {
+		form_start('clog.php');
 
-		print "	
-			<form action='clog.php' autocomplete='off' method='post'>
-			<tr>
-				<td class='textArea'>
-					<p>Click \"Continue\" to purge the cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.</p>
-				</td>
-			</tr>
-			<tr>
-				<td colspan='2' align='right' bgcolor='#eaeaea'>
-					<input id='cancel' type='button' value='Cancel'>&nbsp
-					<input id='pc' type='button' name='purge_continue' value='Continue' title='Purge cacti.log'>
-					<script type='text/javascript'>
-					$('#pc').click(function() {
-						url='?purge_continue=1&header=false';
-						$.get(location.pathname+url, function(data) {
-							$('#main').html(data);
-							applySkin();
-						});
-					});
+		html_start_box(__('Purge'), '50%', '', '3', 'center', '');
 
-					$('#cancel').click(function() {
-						url='?header=false';
-						$.get(location.pathname+url, function(data) {
-							$('#main').html(data);
-							applySkin();
-						});
-					});
+		print "<tr>
+			<td class='textArea'>
+				<p>" . __('Click \'Continue\' to purge the Cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.') . "</p>
+			</td>
+		</tr>
+		<tr class='saveRow'>
+			<td colspan='2' align='right'>
+				<input id='cancel' type='button' value='" . __('Cancel') . "'>&nbsp
+				<input id='pc' type='button' name='purge_continue' value='" . __('Continue') . "' title='" . __('Purge cacti.log') . "'>
+				<script type='text/javascript'>
+				$('#pc').click(function() {
+					strURL = location.pathname+'?purge_continue=1&header=false';
+					loadPageNoHeader(strURL);
+				});
 
-					$(function() {
-						applySkin();
-					});
-					</script>
-				</td>
-			</tr>
-			";
+				$('#cancel').click(function() {
+					strURL = location.pathname+'?header=false';
+					loadPageNoHeader(strURL);
+				});
+
+				$(function() {
+					applySkin();
+				});
+				</script>
+			</td>
+		</tr>\n";
+
 		html_end_box();
+
+		form_end();
+
 		return;	
 	}
 
-	html_start_box('<strong>Log File Filters</strong>', '100%', $colors['header'], '3', 'center', '');
+	html_start_box(__('Log Filters'), '100%', '', '3', 'center', '');
 	filter();
 	html_end_box();
 
 	/* read logfile into an array and display */
-	$logcontents   = tail_file($logfile, $_REQUEST['tail_lines'], $_REQUEST['message_type'], $_REQUEST['filter']);
+	$logcontents   = tail_file($logfile, get_request_var('tail_lines'), get_request_var('message_type'), get_request_var('rfilter'));
 	$exclude_regex = read_config_option('clog_exclude', true);
 
-	if ($_REQUEST['reverse'] == 1) {
+	if (get_request_var('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
 	}
 
@@ -172,13 +170,13 @@ function clog_view_logfile() {
 		$ad_filter = ' - Admin View';
 	}
 
-	if ($_REQUEST['message_type'] > 0) {
-		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . $ad_filter . ' - Additional Filter in Affect]';
+	if (get_request_var('message_type') > 0) {
+		$start_string = __('Log [Total Lines: %d %s - Additional Filter in Affect]', sizeof($logcontents), $ad_filter);
 	}else{
-		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . $ad_filter . ' - No Other Filter in Affect]';
+		$start_string = __('Log [Total Lines: %d %s - No Other Filter in Affect]', sizeof($logcontents), $ad_filter);
 	}
 
-	html_start_box($start_string, '100%', $colors['header'], '3', 'center', '');
+	html_start_box($start_string, '100%', '', '3', 'center', '');
 
 	$i = 0;
 	$j = 0;
@@ -191,14 +189,14 @@ function clog_view_logfile() {
 		$new_item = '';
 
 		if ((!$host_start) && (!$ds_start)) {
-			$new_item = $item;
+			$new_item = cacti_htmlspecialchars($item);
 		}else{
 			while ($host_start) {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start+7, $host_end-($host_start+7));
-				$new_item   .= substr($item, 0, $host_start + 7) . "<a href='" . $config['url_path'] . 'host.php?action=edit&id=' . $host_id . "'>" . substr($item, $host_start + 5, $host_end-($host_start + 7)) . '</a>';
-				$host_description = db_fetch_cell("SELECT description FROM host WHERE id=$host_id");
-				$new_item   .= '] Description[' . $host_description . '';
+				$new_item   .= cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
+				$host_description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
+				$new_item   .= '] Description[' . cacti_htmlspecialchars($host_description) . '';
 				$item        = substr($item, $host_end);
 				$host_start  = strpos($item, 'Device[');
 			}
@@ -208,51 +206,50 @@ function clog_view_logfile() {
 				$ds_end    = strpos($item, ']', $ds_start);
 				$ds_id     = substr($item, $ds_start+3, $ds_end-($ds_start+3));
 				$graph_ids = clog_get_graphs_from_datasource($ds_id);
-				$graph_add = '&graph_add=';
+				$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
 				if (sizeof($graph_ids)) {
 					$new_item  .= substr($item, 0, $ds_start + 3) .
-						"<a href='" . $config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id . "'>" . substr($item, $ds_start + 3, $ds_end-($ds_start + 3)) . '</a>' .
-						"] Graphs[<a href='" . $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview';
+						"<a href='" . cacti_htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . cacti_htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>' .
+						"] Graphs[<a href='";
 
 					$i = 0;
 					$titles = '';
 					foreach($graph_ids as $key => $title) {
-						$new_item .= '&graph_' . $key . '=' . $key;
-						$graph_add .= ($i > 0 ? htmlspecialchars('%2C') : '') . $key;
+						$graph_add .= ($i > 0 ? '%2C' : '') . $key;
 						$i++;
 						if (strlen($titles)) {
-							$titles .= ",'" . $title . "'";
+							$titles .= ",'" . cacti_htmlspecialchars($title) . "'";
 						}else{
-							$titles .= "'"  . $title . "'";
+							$titles .= "'"  . cacti_htmlspecialchars($title) . "'";
 						}
 					}
-					$new_item  .= $graph_add . "' title='View Graphs'>" . $titles . '</a>';
+					$new_item  .= cacti_htmlspecialchars($graph_add) . "' title='" . __('View Graphs') . "'>" . $titles . '</a>';
 				}
 
 				$item      = substr($item, $ds_end);
 				$ds_start  = strpos($item, 'DS[');
 			}
 
-			$new_item = $new_item . $item;
+			$new_item .= cacti_htmlspecialchars($item);
 		}
 
 		/* get the background color */
 		if ((substr_count($new_item, 'ERROR')) || (substr_count($new_item, 'FATAL'))) {
-			$bgcolor = 'FF3932';
+			$class = 'clogError';
 		}elseif (substr_count($new_item, 'WARN')) {
-			$bgcolor = 'EACC00';
+			$class = 'clogWarning';
 		}elseif (substr_count($new_item, ' SQL ')) {
-			$bgcolor = '6DC8FE';
+			$class = 'clogSQL';
 		}elseif (substr_count($new_item, 'DEBUG')) {
-			$bgcolor = 'C4FD3D';
+			$class = 'clogDebug';
 		}elseif (substr_count($new_item, 'STATS')) {
-			$bgcolor = '96E78A';
+			$class = 'clogStats';
 		}else{
 			if ($linecolor) {
-				$bgcolor = 'CCCCCC';
+				$class = 'odd';
 			}else{
-				$bgcolor = 'FFFFFF';
+				$class = 'even';
 			}
 			$linecolor = !$linecolor;
 		}
@@ -264,7 +261,7 @@ function clog_view_logfile() {
 		}
 		if ($show) {
 		?>
-		<tr bgcolor='#<?php print $bgcolor;?>'>
+		<tr class='<?php print $class;?>'>
 			<td>
 				<?php print $new_item;?>
 			</td>
@@ -278,7 +275,7 @@ function clog_view_logfile() {
 			?>
 			<tr class='even'>
 				<td>
-					<?php print '>>>>  LINE LIMIT OF 1000 LINES REACHED!!  <<<<';?>
+					<?php print '>>>>  ' . __('LINE LIMIT OF 1000 LINES REACHED!!') . '  <<<<';?>
 				</td>
 			</tr>
 			<?php
@@ -293,147 +290,145 @@ function clog_view_logfile() {
 }
 
 function filter() {
-	global $page_refresh_interval, $log_tail_lines;
+	global $refresh, $page_refresh_interval, $log_tail_lines;
 	?>
 	<tr class='even'>
-		<form name='form_logfile'>
 		<td>
-			<table cellpadding='2' cellspacing='0'>
+		<form id='logfile'>
+			<table class='filterTable'>
 				<tr>
-					<td width='85' style='white-space: nowrap;'>
-						Tail Lines
+					<td>
+						<?php print __('Tail Lines');?>
 					</td>
 					<td>
 						<select id='tail_lines' name='tail_lines'>
 							<?php
 							foreach($log_tail_lines AS $tail_lines => $display_text) {
-								print "<option value='" . $tail_lines . "'"; if ($_REQUEST['tail_lines'] == $tail_lines) { print ' selected'; } print '>' . $display_text . "</option>\n";
+								print "<option value='" . $tail_lines . "'"; if (get_request_var('tail_lines') == $tail_lines) { print ' selected'; } print '>' . $display_text . "</option>\n";
 							}
 							?>
 						</select>
 					</td>
-					<td style='white-space: nowrap;'>
-						Message Type
+					<td class='nowrap'>
+						<?php print __('Message Type');?>
 					</td>
-					<td width='1'>
+					<td>
 						<select id='message_type' name='message_type'>
-							<option value='-1'<?php if ($_REQUEST['message_type'] == '-1') {?> selected<?php }?>>All</option>
-							<option value='1'<?php if ($_REQUEST['message_type'] == '1') {?> selected<?php }?>>Stats</option>
-							<option value='2'<?php if ($_REQUEST['message_type'] == '2') {?> selected<?php }?>>Warnings</option>
-							<option value='3'<?php if ($_REQUEST['message_type'] == '3') {?> selected<?php }?>>Errors</option>
-							<option value='4'<?php if ($_REQUEST['message_type'] == '4') {?> selected<?php }?>>Debug</option>
-							<option value='5'<?php if ($_REQUEST['message_type'] == '5') {?> selected<?php }?>>SQL Calls</option>
+							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
+							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
+							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>><?php print __('Errors');?></option>
+							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>><?php print __('Debug');?></option>
+							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
 						</select>
 					</td>
 					<td>
-						<input type='button' id='go' name='go' value='Go' alt='Go' border='0' align='absmiddle'>
+						<input type='button' id='go' name='go' value='<?php print __('Go');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear' value='Clear' alt='Clear' border='0' align='absmiddle'>
+						<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>'>
 					</td>
 					<td>
-						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='Purge' alt='Purge' border='0' align='absmiddle'><?php }?>
+						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='<?php print __('Purge');?>'><?php }?>
 					</td>
 				</tr>
 				<tr>
-					<td width='85'>
-						Refresh
+					<td>
+						<?php print __('Refresh');?>
 					</td>
 					<td>
 						<select id='refresh' name='refresh'>
 							<?php
 							foreach($page_refresh_interval AS $seconds => $display_text) {
-								print "<option value='" . $seconds . "'"; if ($_REQUEST['refresh'] == $seconds) { print ' selected'; } print '>' . $display_text . "</option>\n";
+								print "<option value='" . $seconds . "'"; if (get_request_var('refresh') == $seconds) { print ' selected'; } print '>' . $display_text . "</option>\n";
 							}
 							?>
 						</select>
 					</td>
-					<td style='white-space: nowrap;'>
-						Display Order
+					<td class='nowrap'>
+						<?php print __('Display Order');?>
 					</td>
 					<td>
 						<select id='reverse' name='reverse'>
-							<option value='1'<?php if ($_REQUEST['reverse'] == '1') {?> selected<?php }?>>Newest First</option>
-							<option value='2'<?php if ($_REQUEST['reverse'] == '2') {?> selected<?php }?>>Oldest First</option>
+							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
+							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
 					</td>
 				</tr>
 			</table>
-			<table cellpadding='2' cellspacing='0'>
+			<table class='filterTable'>
 				<tr>
-					<td width='85'>
-						SearchRegex
+					<td>
+						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='75' value='<?php print $_REQUEST['filter'];?>'>
+						<input id='rfilter' type='text' size='75' value='<?php print get_request_var('rfilter');?>'>
 					</td>
 				</tr>
 			</table>
-			<script type='text/javascript'>
-			$('#filter').change(function() {
-				refreshFilter();
-			});
-
-			$('#reverse').change(function() {
-				refreshFilter();
-			});
-
-			$('#refresh').change(function() {
-				refreshFilter();
-			});
-
-			$('#message_type').change(function() {
-				refreshFilter();
-			});
-
-			$('#tail_lines').change(function() {
-				refreshFilter();
-			});
-
-			$('#go').click(function() {
-				refreshFilter();
-			});
-
-			$('#clear').click(function() {
-				clearFilter();
-			});
-
-			$('#purge').click(function() {
-				var url='?purge=1&header=false';
-				$.get(basename(location.pathname)+url, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
-			});
-
-			function clearFilter() {
-				var url='?clear=1&header=false';
-				$.get(basename(location.pathname)+url, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
-			}
-
-			function refreshFilter() {
-				refreshMSeconds=$('#refresh').val()*1000;
-
-				var url='?filter='+ $('#filter').val()+
-					'&reverse='+$('#reverse').val()+
-					'&refresh='+$('#refresh').val()+
-					'&message_type='+$('#message_type').val()+
-					'&tail_lines='+$('#tail_lines').val()+
-					'&header=false';
-
-				$.get(basename(location.pathname)+url, function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
-			}
-			</script>
 		</form>
+		<script type='text/javascript'>
+	    var refreshIsLogout=false;
+	    var refreshPage='<?php print $refresh['page'];?>';
+	    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
+
+		$('#rfilter').change(function() {
+			refreshFilter();
+		});
+
+		$('#reverse').change(function() {
+			refreshFilter();
+		});
+
+		$('#refresh').change(function() {
+			refreshFilter();
+		});
+
+		$('#message_type').change(function() {
+			refreshFilter();
+		});
+
+		$('#tail_lines').change(function() {
+			refreshFilter();
+		});
+
+		$('#go').click(function() {
+			refreshFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#purge').click(function() {
+			strURL = basename(location.pathname) + '?purge=1&header=false';
+			loadPageNoHeader(strURL);
+		});
+
+		$('#logfile').submit(function(event) {
+			event.preventDefault();
+			refreshFilter();
+		});
+
+		function clearFilter() {
+			strURL = basename(location.pathname) + '?clear=1&header=false';
+			loadPageNoHeader(strURL);
+		}
+
+		function refreshFilter() {
+			refreshMSeconds=$('#refresh').val()*1000;
+
+			strURL = basename(location.pathname) + '?rfilter='+ $('#rfilter').val()+
+				'&reverse='+$('#reverse').val()+
+				'&refresh='+$('#refresh').val()+
+				'&message_type='+$('#message_type').val()+
+				'&tail_lines='+$('#tail_lines').val()+
+				'&header=false';
+
+			loadPageNoHeader(strURL);
+		}
+		</script>
 		</td>
 	</tr>
 	<?php
 }
-
-

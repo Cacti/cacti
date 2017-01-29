@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,10 +24,9 @@
 
 function upgrade_to_0_8_6g() {
 	/* changes for even longer OID's */
-	db_install_execute("0.8.6g", "ALTER TABLE `host_snmp_cache` CHANGE `snmp_index` `snmp_index` VARCHAR( 255 ) NOT NULL;");
-	db_install_execute("0.8.6g", "ALTER TABLE `data_local` CHANGE `snmp_index` `snmp_index` VARCHAR( 255 ) NOT NULL;");
-	db_install_execute("0.8.6g", "ALTER TABLE `graph_local` CHANGE `snmp_index` `snmp_index` VARCHAR( 255 ) NOT NULL;");
-	db_install_execute("0.8.6g", "ALTER TABLE `graph_templates_graph` CHANGE `lower_limit` `lower_limit` VARCHAR ( 20 ) DEFAULT '0';");
-	db_install_execute("0.8.6g", "ALTER TABLE `graph_templates_graph` CHANGE `upper_limit` `upper_limit` VARCHAR ( 20 ) DEFAULT '0';");
+	db_install_execute("ALTER TABLE `host_snmp_cache` CHANGE `snmp_index` `snmp_index` VARCHAR( 255 ) NOT NULL;");
+	db_install_execute("ALTER TABLE `data_local` CHANGE `snmp_index` `snmp_index` VARCHAR( 255 ) NOT NULL;");
+	db_install_execute("ALTER TABLE `graph_local` CHANGE `snmp_index` `snmp_index` VARCHAR( 255 ) NOT NULL;");
+	db_install_execute("ALTER TABLE `graph_templates_graph` CHANGE `lower_limit` `lower_limit` VARCHAR ( 20 ) DEFAULT '0';");
+	db_install_execute("ALTER TABLE `graph_templates_graph` CHANGE `upper_limit` `upper_limit` VARCHAR ( 20 ) DEFAULT '0';");
  }
-?>

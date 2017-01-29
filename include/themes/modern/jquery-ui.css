@@ -120,7 +120,7 @@
 }
 .ui-resizable-e {
 	cursor: e-resize;
-	width: 7px;
+	width: 1px;
 	right: -5px;
 	top: 0;
 	height: 100%;
@@ -253,11 +253,11 @@ button.ui-button-icons-only {
 }
 .ui-button-text-icon-primary .ui-button-text,
 .ui-button-text-icons .ui-button-text {
-	padding: .4em 1em .4em 2.1em;
+	padding: .4em .4em .4em .4em;
 }
 .ui-button-text-icon-secondary .ui-button-text,
 .ui-button-text-icons .ui-button-text {
-	padding: .4em 2.1em .4em 1em;
+	padding: .4em .4em .4em .4em;
 }
 .ui-button-text-icons .ui-button-text {
 	padding-left: 2.1em;
@@ -637,6 +637,7 @@ button.ui-button::-moz-focus-inner {
 	position: relative;
 	text-decoration: none;
 	cursor: pointer;
+	vertical-align: middle;
 }
 .ui-selectmenu-button span.ui-icon {
 	right: 0.5em;
@@ -647,7 +648,7 @@ button.ui-button::-moz-focus-inner {
 }
 .ui-selectmenu-button span.ui-selectmenu-text, .ui-selectmenu-button input.ui-selectmenu-text {
 	text-align: left;
-	padding: 0.4em 2.1em 0.4em 1em;
+	padding: 0.4em .4em .4em .4em;
 	display: block;
 	line-height: 1.4;
 	overflow: hidden;
@@ -831,7 +832,7 @@ body .ui-tooltip {
 ----------------------------------*/
 .ui-widget {
 	font-family: Verdana,Arial,sans-serif;
-	font-size: 1.1em;
+	font-size: 12px;
 }
 .ui-widget .ui-widget {
 	font-size: 1em;

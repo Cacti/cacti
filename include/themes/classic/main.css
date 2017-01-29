@@ -1,14 +1,35 @@
 /* main styles */
 
-body, table, tr, td {
+html, body {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+}
+
+body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px;
+	font-size: 10px;
 }
 
 body {
-	margin: 0px;
 	background-color: #ffffff;
 	background-repeat: repeat-y;
+}
+
+table {
+	border-collapse: collapse; border-spacing: 0;
+	border: none;
+	text-align:left;
+}
+
+td, th, select {
+	padding: 2px;
+	margin: 0px;
+}
+
+img {
+	border:none;
+	vertical-align:middle;
 }
 
 /* links */
@@ -30,8 +51,35 @@ th .fa {
     top: 50%;
 }
 
+#main {
+	display: none;
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
 tr.selected {
 	background-color: khaki;
+}
+
+label {
+	white-space:nowrap;
+}
+
+.nowrap {
+	white-space:nowrap;
+}
+
+.right {
+	text-align:right !important;
+}
+
+.left {
+	text-align:left !important;
+}
+
+.center {
+	text-align:center !important;
 }
 
 .usermenudown {
@@ -48,6 +96,308 @@ tr.selected {
 	cursor:pointer;
 }
 
+.badpassword_message {
+	padding:2px;
+	color:red;
+	font-size:1.0em !important;
+	vertical-align:bottom;
+}
+
+.badpassword {
+	padding:4px;
+	color:red;
+	font-size:1.5em !important;
+	vertical-align:bottom;
+}
+
+.goodpassword {
+	padding:4px;
+	color:green;
+	font-size:1.5em !important;
+	vertical-align:bottom;
+}
+
+.associated {
+	color:green;
+	font-weight:bold;
+}
+
+.notAssociated {
+	color:red;
+	font-weight:bold;
+}
+
+.disabled_row span, .disabled_row td, .disabled_row a {
+	color:grey;
+}
+
+.disabled {
+	color:grey;
+	font-weight:bold;
+}
+
+.idle {
+	color:green;
+	font-weight:bold;
+}
+
+.running {
+	color:red;
+	font-weight:bold;
+}
+
+.newObject{
+	color:blue;
+}
+
+.updateObject {
+	color:grey;
+}
+
+.unmetDependency {
+	color:red;
+}
+
+.foundDependency {
+	color:navy;
+}
+
+.success {
+	color:green;
+}
+
+.failed {
+	color:red;
+}
+
+.accessGranted {
+	color:green;
+	font-weight:bold;
+}
+
+.accessGrantedItem {
+	color:green;
+}
+
+.accessRestricted {
+	color:red;
+	font-weight:bold;
+}
+
+.accessRestrictedItem {
+	color:red;
+}
+
+.deleteIcon {
+	width:10px;
+	height:10px;
+	cursor:pointer;
+	padding:2px;
+	border:none;
+}
+
+.graphDrillDown {
+	vertical-align: top;
+	align-self: left;
+	z-index: 4;
+	padding: 3px;
+	height: 100%;
+	width: 20px;
+}
+
+.iconWrapper {
+}
+
+.deleteMarker {
+	color: red !important;
+	height: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.deleteMarker:hover {
+	text-decoration: none !important;
+}
+
+.drillDown {
+	cursor:pointer;
+}
+
+.moveArrow {
+	color: #00438C !important;
+	height: 14px !important;
+	font-size: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.moveArrow:hover {
+	text-decoration: none !important;
+}
+
+.moveArrowNone {
+	padding-left:8px;
+}
+
+.action, .shiftArrow, .calendar {
+	cursor: pointer;
+	padding:2px;
+}
+
+.cactiTooltipHint {
+	cursor: pointer;
+	color: #6d88ad;
+}
+
+.monoSpace {
+	font-size:9px;
+	font-family: monospace;
+}
+
+.utilityPick {
+	width: 200px;
+}
+
+.itemlist { 
+	height:400px;
+	overflow-y:scroll;
+}
+
+.realms {
+	width:20%;
+	vertical-align:top;
+	white-space:nowrap;
+}
+
+.deviceUp {
+	color: rgba(148, 179, 107, 0.8) !important;
+}
+
+.deviceDown {
+	color: #ff0000 !important;
+}
+
+.deviceUnknown {
+	color: #0000ff !important;
+}
+
+.deviceDisabled {
+	color: #a1a1a1 !important;
+}
+
+.deviceRecovering {
+	color: #ff8f1e !important;
+}
+
+.deviceError {
+	color: #750F7D !important;
+}
+
+.deviceDownMuted {
+	color: #ffe333 !important;
+}
+
+.deviceThreshold {
+	color: #ffa833 !important;
+}
+
+.deviceUnmonitored {
+	color: rgba(250, 253, 158) !important;
+}
+
+.deviceWarning {
+	color: #aa7807 !important;
+}
+
+.deviceAlert {
+	color: #660000 !important;
+}
+
+.deviceUpBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: rgba(148, 179, 107, 0.8);
+}
+
+.deviceDownBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ff0000;
+}
+
+.deviceUnknownBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #0000ff;
+}
+
+.deviceDisabledBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #a1a1a1;
+}
+
+.deviceRecoveringBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ff8f1e;
+}
+
+.deviceErrorBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #750F7D;
+}
+
+.deviceDownMutedBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ffe333;
+}
+
+.deviceThresholdBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ffa833;
+}
+
+.deviceUnmonitoredBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: rgba(250, 253, 158, 0.8);
+}
+
+.deviceWarningBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #aa7807;
+}
+
+.deviceAlertBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #660000;
+}
+
+.beingGraphed {
+	color: green;
+}
+
+.notBeingGraphed {
+	color: #484848;
+}
+
 .menuoptions {
 	background: none repeat scroll 0 0 #eee;
     border-color: #f5f5f5 #e5e5e5 #ccc;
@@ -57,8 +407,8 @@ tr.selected {
 	display:block;
 	float:right;
 	position:absolute;
-	right:16px;
-	top:60px;
+	right:12px;
+	top:58px;
   	list-style: none;
 	text-align:right;
 	margin:0px;
@@ -78,25 +428,63 @@ tr.selected {
 	background-color: #e1e1e1;
 }
 
+.import_label {
+	opacity: 0;
+	display: none;
+}
+
+.import_button {
+	opacity: 1;
+}
+
+.import_text {
+	display:none;
+}
+
 .emailtest {
 	cursor:pointer;
 	display:block;
+	float:right;
+	text-align:right;
+}
+
+.reloadquery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color:lime;
+	font-weight:bold;
+	font-size:14px;
+}
+
+.deletequery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color:red;
+	font-weight:bold;
+	font-size:14px
 }
 
 .odd {
-	background-color:#F5F5F5;
+	background: none repeat scroll 0 0 #F5F5F5;
+    border: none;
 }
 
 .even {
-	background-color:#E5E5E5;
+	background: none repeat scroll 0 0 #E5E5E5;
+    border: none;
 }
 
 .even-alternate {
+	background: none repeat scroll 0 0 #E7E9F2;
 	background-color:#E7E9F2;
+    border: none;
 }
 
 .saveRow {
 	background-color:#EAEAEA;
+	text-align:right;
 	padding:4px;
 }
 
@@ -164,23 +552,43 @@ tr.selected {
 }
 
 .cactiPageHead {
-	background-color: #a9a9a9;
-	min-height:25px;
-	border-bottom:2px solid #00438c;
+	background: #a9a9a9 url("./images/cacti_logo.svg") no-repeat scroll right 40% / 400px auto;
+	border-bottom:1px solid #00438c;
+	height:37px;
+	width:100%;
 }
 
 .cactiGraphPageHeadBackdrop {
-	background: transparent url('./../../../images/cacti_backdrop2.gif') no-repeat center right;
+	background: #a9a9a9 url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	background-color: #a9a9a9;
+	vertical-align: bottom;
+	padding-bottom: 0px;
+	float:right;
+	width:400px;
+	height:37px;
+	z-index:-1;
 }
 
 .cactiConsolePageHeadBackdrop {
-	background: transparent url('./../../../images/cacti_backdrop.gif') no-repeat center right;
-	background-color: #a9a9a9;
+	padding-bottom:0px;
+	float:right;
+	width:0px;
+	height:37px;
+	z-index:-1;
+}
+
+.navigation {
+}
+
+.debug td {
+	padding:3px;
+	margin:0px;
 }
 
 .breadCrumbBar {
 	background-color: #e9e9e9;
+	padding:2px;
+	height:16px;
 }
 
 ul#breadcrumbs {
@@ -189,24 +597,38 @@ ul#breadcrumbs {
 	padding: 0;
 	list-style: none;
 }
+
 .infoBar {
 	vertical-align: middle;
+	display: block;
+	min-width: 15%;
+	max-width: 40%;
+	margin-right:10px;
 	float:right;
+	text-align: right;
 }
 
 #breadcrumbs li {
-  float: left;
-  padding:3px 0px 0px 0px;
-  font-size:10px;
+	float: left;
+	font-size:10px;
 }
 
 #breadcrumbs a {
-  padding-left:5px;
-  padding-right:5px;
-  float: left;
-  text-decoration: none;
-  color: blue;
-  position: relative;
+	padding-left:5px;
+	padding-right:5px;
+	float: left;
+	text-decoration: none;
+	color: blue;
+	position: relative;
+}
+
+.cactiContent {
+	width: 100%;
+	height: 100%;
+	vertical-align: top;
+	display: table;
+	position: relative;
+	overflow: hidden;
 }
 
 .cactiTreeNavigationArea {
@@ -215,24 +637,52 @@ ul#breadcrumbs {
 	padding-left:5px;
 	padding-right:5px;
 	padding-top:10px;
+	width:250px;
+	max-width:400px;
+	height: 100%;
+	float: left;
+	vertical-align: top;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.jstree {
+	position:relative;
+	display:block;
 }
 
 .cactiConsoleNavigationArea {
-	background: #f5f5f5 url('./../../../images/shadow_gray.gif') repeat-x center top;
+	background: snow url('./../../../images/shadow_gray.gif') repeat-x center top;
 	border-right: #aaaaaa 1px solid;
-	padding-left:5px;
-	padding-right:5px;
-	padding-top:8px;
+	padding-left:0px;
+	padding-right:0px;
+	padding-top:5px;
+	vertical-align:top;
+	float:left;
+	width:162px;
+	height: 100%;
+	overflow:auto;
+}
+
+.cactiConsoleNavigationArea table {
+	width:160px;
+}
+
+.treeTable {
+	width:100%;
 }
 
 .cactiLogo {
 	padding-top:20px;
-	background: #efefef url('./../../../images/cacti_logo.gif') no-repeat center;
-	display:block;
-	width:90px;
+	background: #f5f5f5 url('./images/cacti_logo.svg') no-repeat 30px;	display:block;
 	cursor:pointer;
 	height:140px;
+	width:156px;
+	margin-top:-6px;
+	margin-left:2px;
+	margin-right:2px;
 }
+
 
 .loginLeft, .logoutLeft {
 	width:33%;
@@ -273,7 +723,7 @@ ul#breadcrumbs {
 
 .loginErrors, .logoutErrors {
 	color:red;
-	min-height:15px;
+	min-height:0px;
 }
 
 legend {
@@ -297,37 +747,122 @@ legend {
 	color:black;
 }
 
+.actionsDropdown {
+	vertical-align:middle;
+	padding: 3px;
+	width:100%;
+	text-align: right;
+	display: table;
+}
+
+.actionsDropdown div {
+	display: table-row;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.actionsDropdownButton {
+	vertical-align: top;
+	float: right;
+	margin-top: 1px;
+	margin-left: 3px;
+	display: table-cell;
+}
+
+.actionsDropdownArrow {
+	margin-top: auto;
+	margin-bottom: auto;
+	float:left !important;
+	padding: 3px;
+}
+
 .loginPanel {
 	padding:4px 0px;
 }
 
 .cactiGraphContentArea {
-	background: #ffffff url('./../../../images/shadow.gif') repeat-x center top;
+	background: #FFFFFF url('./../../../images/shadow.gif') repeat-x center top;
 	padding-top:10px;
 	padding-right: 5px;
 	padding-left: 5px;
+	vertical-align:top;
+	float: left;
+}
+.spikekillData, .spikekillData td {
+	border: 1px solid #999;
+}
+
+.spikekillNote {
+	padding: 1px;
+}
+
+.spikekillMenu {
+	background: #f5f5f5 none repeat scroll 0 0;
+    border: 1px solid #979797;
+    box-shadow: 2px 2px 2px #999999;
+    margin: 0;
+    padding: 2px;
+	line-height: 1.5em;
+}
+
+.spikekillMenu li {
+	vertical-align:middle;
+}
+
+.spikekillMenu i {
+	text-align:center;
+	width: 2.0em;
+	display:inline-block;
+}
+
+.spikekillMenu i:empty{
+	width: 2.0em;
+	display:inline-block;
 }
 
 .cactiConsoleContentArea {
-	background: #ffffff url('./../../../images/shadow.gif') repeat-x center top;
-	padding-top:10px;
+	background: #FFFFFF url('./../../../images/shadow.gif') repeat-x center top;
+	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
+	margin-left: 162px;
+	height: 100%;
+	vertical-align: top;
+	display: none;
 }
 
-.hyperLink {
-	color: blue;
-	font-size: 12px;
+.hyperLink, .hyperLink:hover, .hyperLink:visited {
+	color: blue !important;
+	font-size: 1.1em;
 	padding: 3px;
 	cursor:pointer;
 	text-decoration: none;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
+.iconLink {
+	padding:2px;
+}
+
+.iconLink img {
+	padding-bottom:2px;
+}
+
+.noLinkEditMain {
+	color: blue;
+	text-decoration: none;
+	font-weight: bold;
+	padding: 3px;
+	white-space: nowrap;
+}
+
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
 	color: blue;
 	text-decoration: none;
 	font-weight: bold;
+	padding: 3px;
+	white-space: nowrap;
+	cursor:pointer;
 }
 
 .linkEditMain:hover {
@@ -338,7 +873,9 @@ legend {
 
 .linkOverDark, .linkOverDark:visited, .linkOverDark:active {
 	color: white;
+	font-weight: normal;
 	text-decoration: none;
+	cursor;pointer;
 }
 
 .linkOverDark:hover {
@@ -351,7 +888,13 @@ legend {
 .textError {
 	font-size: 12px;
 	font-weight: bold;
-	color: red;
+	color: red !important;
+}
+
+.textWarning {
+	font-size: 12px;
+	font-weight: normal;
+	color: yellow !important;
 }
 
 .textInfo {
@@ -369,6 +912,10 @@ legend {
 	font-weight: bold;
 }
 
+.remover {
+	cursor: pointer;
+}
+
 .messageBox {
 	margin-bottom:5px;
 	padding:5px;
@@ -380,6 +927,7 @@ legend {
 
 .textHeaderDark {
 	font-size: 12px;
+	font-weight: bold;
 	color: #ffffff;
 }
 
@@ -387,6 +935,9 @@ legend {
 	background-color: #888888;
 }
 
+.templateHeader td {
+	padding:3px;
+}
 .textSubHeaderDark, .textSubHeaderDark:visited {
 	font-size: 10px;
 	color: #ffffff;
@@ -398,10 +949,66 @@ legend {
 }
 
 .cactiTable {
-	background-color: #f5f5f5;
+	width: 100%;
 	border-width: 0px;
 	border-color: #00438c;
 	border-style: solid;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.cactiTableTitle {
+	color: white;
+	float: left;
+	text-align: left;
+	padding: 2px 0px;
+	height: 16px;
+	display: table-cell;
+	width: 90%;
+	background-color: #00438c;
+}
+
+.cactiTableButton {
+	float: right;
+	padding: 2px 0px;
+	height: 16px;
+	display: table-cell;
+	text-align: right;
+	width: 10%;
+	background-color: #00438c;
+}
+
+.cactiTableButton span, .cactiTableTitle span {
+	padding: 0px 3px 0px 3px;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.cactiDebugTable {
+	width: 100%;
+}
+
+.filterTable {
+	white-space:nowrap;
+}
+
+.filterTable td:first-child {
+	width:55px;
+}
+
+.formItemDescription {
+}
+
+.formItemName {
+	font-weight:bold;
+}
+
+.graphItem {
+	background-color: #D5D5D5;
+}
+
+.graphItemAlternate {
+	background-color: #D2D6E7;
 }
 
 .break {
@@ -418,10 +1025,6 @@ legend {
 	padding-left:6px;
 }
 
-.cactiTableTitle {
-	background-color: #00438c;
-}
-
 .cactiNavBarTop {
 	background-color: #00438c;
 }
@@ -430,62 +1033,59 @@ legend {
 	background-color: #00438c;
 }
 
-.cactiTreeNavigationArea {
-	background: #efefef url('./../../../images/shadow_gray.gif') repeat-x center top;
-	border-right: #aaaaaa 1px solid;
-	padding-left:5px;
-	padding-right:5px;
-	padding-top:10px;
-}
-
-.cactiConsoleNavigationArea {
-	background: #f5f5f5 url('./../../../images/shadow_gray.gif') repeat-x center top;
-	border-right: #aaaaaa 1px solid;
-	padding-left:0px;
-	padding-right:0px;
-	padding-top:5px;
-}
-
-.cactiConsoleNavigationArea table {
-    width:135px;
-}
 
 .tableHeader {
 	background-color: #6d88ad;
+}
+
+.tableHeader td {
+	color: #ffffff;
+	font-weight: bold;
 }
 
 .tableHeader th {
 	color: #ffffff;
 	font-weight:bold;
 	cursor: pointer;
-	vertical-align:bottom;
+	vertical-align:middle;
 	text-align:left;
 	border-right: 1px groove #efefef;
+	background-color: #6d88ad;
 	font-size:11px;
+}
+
+.tableHeader th:last-child {
+    border-right: none !important;
 }
 
 .tableHeader th div {
 	display:block;
-	padding-right: 8px;
-	font-size:11px;
+	padding-right:8px;
+	font-size:10px;
 }
 
 .tableSubHeaderColumn {
 	color: #ffffff;
 	font-weight:bold;
-	vertical-align:bottom;
+	vertical-align:middle;
 	text-align:left;
+	cursor:pointer;
 }
 
 .graphSubHeaderColumn {
 	color: #ffffff;
 	font-size:12px;
-	vertical-align:bottom;
+	vertical-align:middle;
 	text-align:left;
+	padding:3px;
 }
 
 .tableSubHeaderCheckbox {
 	background-color: #819bc0;
+}
+
+.image_table {
+	width:100%;
 }
 
 .tableConfirmation {
@@ -493,11 +1093,81 @@ legend {
 	border: 1px solid #aaaaaa;
 }
 
+.navBar {
+	min-width:30%;
+	white-space:nowrap;
+}
+
 .navBarNavigation {
 	color: white;
+	width: 100%;
+	text-align:center;
+	display:inline-block;
+	margin-bottom: -3px;
+	margin-left:auto;
+	margin-right:auto;
+	background-color: #00438c;
+	font-size: 12px;
+}
+
+.navBarNavigation a, .navBarNavigation a:visited, .navBarNavigation a:hover {
+	color: white;
+	text-decoration: none;
+	font-weight: normal;
+	font-size: 12px;
+}
+
+
+.navBarNavigationPrevious {
+	text-align: left;
+	cursor: pointer;
 	font-weight: bold;
-	display:block;
-	cursor:pointer;
+	float: left;
+	white-space: nowrap;
+	display: block;
+	width: 10%;
+	padding: 2px 0px;
+	height: 16px;
+	vertical-align: middle;
+}
+
+.navBarNavigationCenter {
+	text-align: center;
+	display: block;
+	float: left;
+	white-space: nowrap;
+	width:80%;
+	padding: 2px 0px;
+	height: 16px;
+	margin-top: auto;
+}
+
+.navBarNavigationCenter span {
+	vertical-align: middle;
+}
+
+.navBarNavigationNext {
+	text-align: right;
+	cursor: pointer;
+	font-weight: bold;
+	float: right;
+	white-space: nowrap;
+	display: block;
+	width: 10%;
+	padding: 2px 0px;
+	height: 16px;
+	vertical-align: middle;
+}
+
+.navBarNavigationNone {
+	text-align: center;
+	display: block;
+	float: left;
+	white-space: nowrap;
+	width:100%;
+	padding: 2px 0px;
+	height: 16px;
+	margin-top: auto;
 }
 
 .navBarNavigationNext i.ui-icon {
@@ -574,6 +1244,8 @@ legend {
 }
 .txtErrorText {
 	color: #FF0000;
+	font-size: 12px;
+	font-weight: bold;
 }
 
 /* tabs */
@@ -608,15 +1280,45 @@ legend {
 .tabs li a {
 	background-color: #DFDFDF;
     float:left !important;
-    padding:3px 4px;
+    padding:5px 4px;
     text-decoration:none;
     font-size: 11px;
-	border-color: #999 #666 -moz-use-text-color #999;
+	border-color: #999 #666 !important;
     border-style: solid solid none;
     border-width: 1px 1px medium;
 	font-weight: bold;
 }
 
+div#tabs {
+	padding-bottom: 0px;
+	float: left;
+	vertical-align: bottom;
+}
+
+td#tabs {
+	padding-bottom: 0px;
+	float: left;
+	vertical-align: bottom;
+}
+
+.cactiGraphHeaderBackground {
+	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 10% / 380px auto;
+	height: 37px;
+	width:500px;
+	float:right;
+	z-index:-1;
+}
+
+div#gtabs {
+	padding-bottom: 0px;
+	vertical-align: bottom;
+	float:right;
+}
+
+.tabs {
+	width:100%;
+	display: table-row;
+}
 
 .tabs a:hover {
 	background-color: silver;
@@ -627,51 +1329,43 @@ legend {
 }
 
 .tabs li {
-    bottom:-1px;
-    float:left;
-    margin:0 3px 0 0;
-    position:relative;
+	bottom:-1px;
+	float:left;
+	margin:0 3px 0 0;
 }
 
 .tabs li.current a {
-    background:#fff;
-    border-bottom:1px solid #fff;
+	background:#fff;
+	border-bottom:1px solid #fff;
 }
+
 .tabs li.current a:hover {
-    background:#fff;
-    border-bottom:1px solid #fff;
+	background:#fff;
+	border-bottom:1px solid #fff;
 }
 .tabs nav {
-    border-bottom:1px solid #ccc;
-    padding:0px 4px 0px 0px;
+	padding:0px 4px 0px 0px;
     background-repeat:repeat-x;
-    zoom:1;
+	zoom:1;
 }
 
 .tabs nav:after {
-    clear:both;
-    content:".";
-    display:block;
-    height:0;
-    visibility:hidden;
+	clear:both;
+	display:block;
+	height:0;
+	visibility:hidden;
 }
 
 .tabs ul {
-    list-style:none;
-    margin:0;
-    padding:0;
+	list-style:none;
+	margin:0;
+	padding:0;
 }
 
 /* Navigation Area */
 #nav {
-	background-color: #f5f5f5
-	float: left;
-	width: 150;
-	border-top: 0px solid #999;
-	border-right: 0px solid #999;
-	border-left: 0px solid #999;
-	font-size:10px;
-	margin: 0px 0;
+	margin: 0px;
+	overflow-y: auto;
 }
 
 #nav li a {
@@ -718,236 +1412,28 @@ ul#nav {
 	width:100%;
 }
 
-/* The main calendar widget.  DIV containing a table. */
-
-div.calendar { position: relative; }
-
-.calendar, .calendar table {
-	border: 1px solid #556;
-	font-size: 11px;
-	color: #000;
-	cursor: default;
-	background: #eef;
-	font-family: tahoma,verdana,sans-serif;
+.clogError {
+	background-color: #FF3932;
 }
 
-/* Header part -- contains navigation buttons and day names. */
-
-.calendar .button { /* "<<", "<", ">", ">>" buttons have this class */
-	text-align: center;    /* They are the navigation buttons */
-	padding: 2px;          /* Make the buttons seem like they're pressing */
+.clogWarning {
+	background-color: #EACC00;
 }
 
-.calendar .nav {
-  background: #778 url(../../../images/menuarrow.gif) no-repeat 100% 100%;
+.clogSQL {
+	background-color: #6DC8FE;
 }
 
-.calendar thead .title { /* This holds the current "month, year" */
-  font-weight: bold;      /* Pressing it will take you to the current date */
-  text-align: center;
-  background: #fff;
-  color: #000;
-  padding: 2px;
+.clogDebug {
+	background-color: #C4FD3D;
 }
 
-.calendar thead .headrow { /* Row <TR> containing navigation buttons */
-  background: #778;
-  color: #fff;
+.clogStats {
+	background-color: #96E78A;
 }
 
-.calendar thead .daynames { /* Row <TR> containing the day names */
-  background: #bdf;
-}
-
-.calendar thead .name { /* Cells <TD> containing the day names */
-  border-bottom: 1px solid #556;
-  padding: 2px;
-  text-align: center;
-  color: #000;
-}
-
-.calendar thead .weekend { /* How a weekend day name shows in header */
-  color: #a66;
-}
-
-.calendar thead .hilite { /* How do the buttons in header appear when hover */
-  background-color: #aaf;
-  color: #000;
-  border: 1px solid #04f;
-  padding: 1px;
-}
-
-.calendar thead .active { /* Active (pressed) buttons in header */
-  background-color: #77c;
-  padding: 2px 0px 0px 2px;
-}
-
-/* The body part -- contains all the days in month. */
-
-.calendar tbody .day { /* Cells <TD> containing month days dates */
-  width: 2em;
-  color: #456;
-  text-align: right;
-  padding: 2px 4px 2px 2px;
-}
-.calendar tbody .day.othermonth {
-  font-size: 80%;
-  color: #bbb;
-}
-.calendar tbody .day.othermonth.oweekend {
-  color: #fbb;
-}
-
-.calendar table .wn {
-  padding: 2px 3px 2px 2px;
-  border-right: 1px solid #000;
-  background: #bdf;
-}
-
-.calendar tbody .rowhilite td {
-  background: #def;
-}
-
-.calendar tbody .rowhilite td.wn {
-  background: #eef;
-}
-
-.calendar tbody td.hilite { /* Hovered cells <TD> */
-  background: #def;
-  padding: 1px 3px 1px 1px;
-  border: 1px solid #bbb;
-}
-
-.calendar tbody td.active { /* Active (pressed) cells <TD> */
-  background: #cde;
-  padding: 2px 2px 0px 2px;
-}
-
-.calendar tbody td.selected { /* Cell showing today date */
-  font-weight: bold;
-  border: 1px solid #000;
-  padding: 1px 3px 1px 1px;
-  background: #fff;
-  color: #000;
-}
-
-.calendar tbody td.weekend { /* Cells showing weekend days */
-  color: #a66;
-}
-
-.calendar tbody td.today { /* Cell showing selected date */
-  font-weight: bold;
-  color: #00f;
-}
-
-.calendar tbody .disabled { color: #999; }
-
-.calendar tbody .emptycell { /* Empty cells (the best is to hide them) */
-  visibility: hidden;
-}
-
-.calendar tbody .emptyrow { /* Empty row (some months need less than 6 rows) */
-  display: none;
-}
-
-/* The footer part -- status bar and "Close" button */
-
-.calendar tfoot .footrow { /* The <TR> in footer (only one right now) */
-  text-align: center;
-  background: #556;
-  color: #fff;
-}
-
-.calendar tfoot .ttip { /* Tooltip (status bar) cell <TD> */
-  background: #fff;
-  color: #445;
-  border-top: 1px solid #556;
-  padding: 1px;
-}
-
-.calendar tfoot .hilite { /* Hover style for buttons in footer */
-  background: #aaf;
-  border: 1px solid #04f;
-  color: #000;
-  padding: 1px;
-}
-
-.calendar tfoot .active { /* Active (pressed) style for buttons in footer */
-  background: #77c;
-  padding: 2px 0px 0px 2px;
-}
-
-/* Combo boxes (menus that display months/years for direct selection) */
-
-.calendar .combo {
-  position: absolute;
-  display: none;
-  top: 0px;
-  left: 0px;
-  width: 4em;
-  cursor: default;
-  border: 1px solid #655;
-  background: #def;
-  color: #000;
-  font-size: 90%;
-}
-
-.calendar .combo .label,
-.calendar .combo .label-IEfix {
-  text-align: center;
-  padding: 1px;
-}
-
-.calendar .combo .label-IEfix {
-  width: 4em;
-}
-
-.calendar .combo .hilite {
-  background: #acf;
-}
-
-.calendar .combo .active {
-  border-top: 1px solid #46a;
-  border-bottom: 1px solid #46a;
-  background: #eef;
-  font-weight: bold;
-}
-
-.calendar td.time {
-  border-top: 1px solid #000;
-  padding: 1px 0px;
-  text-align: center;
-  background-color: #f4f0e8;
-}
-
-.calendar td.time .hour,
-.calendar td.time .minute,
-.calendar td.time .ampm {
-  padding: 0px 3px 0px 4px;
-  border: 1px solid #889;
-  font-weight: bold;
-  background-color: #fff;
-}
-
-.calendar td.time .ampm {
-  text-align: center;
-}
-
-.calendar td.time .colon {
-  padding: 0px 2px 0px 3px;
-  font-weight: bold;
-}
-
-.calendar td.time span.hilite {
-  border-color: #000;
-  background-color: #667;
-  color: #fff;
-}
-
-.calendar td.time span.active {
-  border-color: #f00;
-  background-color: #000;
-  color: #0f0;
+.clogLimit {
+	background-color: #EACC00;
 }
 
 @media print {
@@ -962,6 +1448,15 @@ div.calendar { position: relative; }
 	color: blue;
 }
 
+.ui-tooltip-content {
+	min-width: 100px !important;
+	max-width: 500px !important;
+	overflow:auto !important;
+	opacity: 0.95;
+	border-radius: 5px !important;
+	border: transparent;
+}
+
 .ui-tooltip-content div.content {
 	font-size: 10px;
 	color: #333333;
@@ -971,3 +1466,93 @@ div.preformatted {
 	font-family: monospace;
 	white-space: pre;
 }
+
+ul.pagination {
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	vertical-align:middle;
+}
+
+ul.pagination li {
+	display: inline;
+}
+
+ul.pagination li a {
+	color: white;
+	float: left;
+	padding: 0px 2px 2px 2px;
+	text-decoration: none;
+	margin: 0px 1px;
+}
+
+ul.pagination li span {
+	color: white;
+	float: left;
+	padding: 0px 0px;
+	text-decoration: none;
+	margin: 0px 1px;
+}
+
+ul.pagination li a.active {
+	background-color: #E1E1E1;
+	color: black;
+}
+
+ul.pagination li a:hover:not(.active) {
+	background-color: #9C9C9C;
+	color: black;
+}
+
+tr#realtime td:first-child {
+	height:54px;
+}
+
+.logEmergency {
+	background-color: #FA7420;
+	text-align: center;
+	width: 12.5%;
+}
+
+.logCritical {
+	background-color: #F21721;
+	text-align: center;
+	width: 12.5%;
+}
+
+.logWarning {
+	background-color: #FF7A30;
+	text-align: center;
+	width: 12.5%;
+}
+
+.logAlert {
+	background-color: #F21924;
+	text-align: center;
+	width: 12.5%;
+}
+
+.logError {
+	background-color: #FB4A14;
+	text-align: center;
+	width: 12.5%;
+}
+
+.logNotice {
+	background-color: #FAFD9E;
+	text-align: center;
+	width: 12.5%;
+}
+
+.logInfo {
+	background-color: #CCFFCC;
+	text-align: center;
+	width: 12.5%;
+}
+
+.logDebug {
+	background-color: #CDCFC4;
+	text-align: center;
+	width: 12.5%;
+}
+

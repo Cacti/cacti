@@ -1,5 +1,11 @@
 # Description: Lotus Notes Format
+# Theme: classic
 <style type='text/css'>
+
+body {
+	margin-left:auto;
+	margin-right:auto;
+}
 
 .report_table {
 	background-color:#F9F9F9;
@@ -8,6 +14,7 @@
 	width:100%;
     border: 3px outset #CCCCCC; 
     padding: 4px;
+	margin: auto;
 }
 
 .title_row {
@@ -56,7 +63,7 @@
 	width:100%;
     border: 3px ridge #00438C; 
     padding: 4px;
-
+	margin: auto;
 }
 
 .header_row {
@@ -71,6 +78,18 @@
 	color:#FFF;
 }
 
+.left {
+	text-align:left;
+}
+
+.right {
+	text-align:right;
+}
+
+.center {
+	text-align:center;
+}
+
 .footer {
 	background-color:#00438C;
 	font-size:10pt;
@@ -80,12 +99,12 @@
 }
 </style>
 <!-- header -->
-<table class="header_table">
-<tr class="header_row" ><td class="header">Cacti Reporting Report for Lotus Notes</td></tr>
+<table class='header_table'>
+<tr class='header_row' ><td class='header'>Cacti Reporting Report for Lotus Notes</td></tr>
 <!-- main report -->
 <tr><td>
 <REPORT>
 </td></tr>
 <!-- footer -->
-<tr class="header_row"><td class="footer">Copyright &copy; 2015 - The Cacti Group</td></tr>
+<tr class='header_row'><td class='footer'>Copyright &copy; 2004-2016 - The Cacti Group</td></tr>
 </table>

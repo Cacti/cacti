@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,20 +23,18 @@
 */
 
 function upgrade_to_0_8_1() {
-	db_install_execute("0.8.1", "ALTER TABLE user_log add user_id mediumint(8) not null after username;");
-	db_install_execute("0.8.1", "ALTER TABLE user_log change time time datetime not null;");
-	db_install_execute("0.8.1", "ALTER TABLE user_log drop primary key;");
-	db_install_execute("0.8.1", "ALTER TABLE user_log add primary key (username, user_id, time);");
-	db_install_execute("0.8.1", "ALTER TABLE user_auth add realm mediumint(8) not null after password;");
-	db_install_execute("0.8.1", "UPDATE user_auth set realm = 1 where full_name='ldap user';");
+	db_install_add_column ('user_log', array('name' => 'user_id', 'type' => 'mediumint(8)', 'NULL' => false, 'after' => 'username'));
+	db_install_execute("ALTER TABLE user_log change time time datetime not null;");
+	db_install_execute("ALTER TABLE user_log drop primary key;");
+	db_install_execute("ALTER TABLE user_log add primary key (username, user_id, time);");
+	db_install_add_column ('user_auth', array('name' => 'realm', 'type' => 'mediumint(8)', 'NULL' => false, 'after' => 'password'));
+	db_install_execute("UPDATE user_auth set realm = 1 where full_name='ldap user';");
 
 	$_src = db_fetch_assoc("select id, username from user_auth");
 
 	if (sizeof($_src) > 0) {
 		foreach ($_src as $item) {
-			db_install_execute("0.8.1", "UPDATE user_log set user_id = " . $item["id"] . " where username = '" . $item["username"] . "';");
+			db_install_execute("UPDATE user_log set user_id = " . $item["id"] . " where username = '" . $item["username"] . "';");
 		}
 	}
 }
-
-?>

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -26,9 +26,9 @@ include('./include/auth.php');
 include_once('./lib/template.php');
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
+set_default_action();
 
-switch ($_REQUEST['action']) {
+switch (get_request_var('action')) {
 	case 'save':
 		form_save();
 
@@ -36,7 +36,7 @@ switch ($_REQUEST['action']) {
 	case 'input_remove':
 		input_remove();
 
-		header('Location: graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']);
+		header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_request_var('graph_template_id'));
 		break;
 	case 'input_edit':
 		top_header();
@@ -48,21 +48,21 @@ switch ($_REQUEST['action']) {
 }
 
 function form_save() {
-	if ((isset($_POST['save_component_input'])) && (!is_error_message())) {
+	if ((isset_request_var('save_component_input')) && (!is_error_message())) {
 		$graph_input_values = array();
 		$selected_graph_items = array();
 
 		/* ================= input validation ================= */
-		input_validate_input_number(get_request_var_post('graph_template_input_id'));
-		input_validate_input_number(get_request_var_post('graph_template_id'));
+		get_filter_request_var('graph_template_input_id');
+		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
 		
-		$save['id'] = $_POST['graph_template_input_id'];
-		$save['hash'] = get_hash_graph_template($_POST['graph_template_input_id'], 'graph_template_input');
-		$save['graph_template_id'] = $_POST['graph_template_id'];
-		$save['name'] = form_input_validate($_POST['name'], 'name', '', false, 3);
-		$save['description'] = form_input_validate($_POST['description'], 'description', '', true, 3);
-		$save['column_name'] = form_input_validate($_POST['column_name'], 'column_name', '', true, 3);
+		$save['id'] = get_nfilter_request_var('graph_template_input_id');
+		$save['hash'] = get_hash_graph_template(get_nfilter_request_var('graph_template_input_id'), 'graph_template_input');
+		$save['graph_template_id'] = get_nfilter_request_var('graph_template_id');
+		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['description'] = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
+		$save['column_name'] = form_input_validate(get_nfilter_request_var('column_name'), 'column_name', '', true, 3);
 
 		if (!is_error_message()) {
 			$graph_template_input_id = sql_save($save, 'graph_template_input');
@@ -111,10 +111,10 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: graph_templates_inputs.php?action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? $_POST['graph_template_input_id'] : $graph_template_input_id) . '&graph_template_id=' . $_POST['graph_template_id']);
+			header('Location: graph_templates_inputs.php?header=false&action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? get_nfilter_request_var('graph_template_input_id') : $graph_template_input_id) . '&graph_template_id=' . get_nfilter_request_var('graph_template_id'));
 			exit;
 		}else{
-			header('Location: graph_templates.php?action=template_edit&id=' . $_POST['graph_template_id']);
+			header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_nfilter_request_var('graph_template_id'));
 			exit;
 		}
 	}
@@ -126,34 +126,23 @@ function form_save() {
 
 function input_remove() {
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	if ((read_config_option('deletion_verification') == 'on') && (!isset($_REQUEST['confirm']))) {
-		top_header();
-
-		form_confirm('Are You Sure?', "Are you sure you want to delete the input item <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_template_input WHERE id = ?', array(get_request_var_request('id'))), ENT_QUOTES) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", htmlspecialchars('graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']), htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $_REQUEST['id'] . '&graph_template_id=' . $_REQUEST['graph_template_id']));
-
-		bottom_footer();
-		exit;
-	}
-
-	if ((read_config_option('deletion_verification') == '') || (isset($_REQUEST['confirm']))) {
-		db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array(get_request_var_request('id')));
-		db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var_request('id')));
-	}
+	db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var('id')));
 }
 
 function input_edit() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item, $fields_graph_template_input_edit;
 
 	/* ================= input validation ================= */
-	input_validate_input_number(get_request_var_request('id'));
-	input_validate_input_number(get_request_var_request('graph_template_id'));
+	get_filter_request_var('id');
+	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var_request('graph_template_id'))) . ']';
+	$header_label = __('Graph Item Inputs [edit graph: %s]' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
 
 	/* get a list of all graph item field names and populate an array for user display */
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
@@ -162,18 +151,24 @@ function input_edit() {
 		}
 	}
 
-	if (!empty($_REQUEST['id'])) {
-		$graph_template_input = db_fetch_row_prepared('SELECT * FROM graph_template_input WHERE id = ?', array(get_request_var_request('id')));
+	if (!isempty_request_var('id')) {
+		$graph_template_input = db_fetch_row_prepared('SELECT * FROM graph_template_input WHERE id = ?', array(get_request_var('id')));
 	}
 
-	html_start_box('<strong>Graph Item Inputs</strong> ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	form_start('graph_templates_inputs.php');
 
-	draw_edit_form(array(
-		'config' => array(),
-		'fields' => inject_form_variables($fields_graph_template_input_edit, (isset($graph_template_input) ? $graph_template_input : array()), (isset($graph_template_items) ? $graph_template_items : array()), $_REQUEST)
-		));
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	if (!(isset($_REQUEST['id']))) { $_REQUEST['id'] = 0; }
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_graph_template_input_edit, (isset($graph_template_input) ? $graph_template_input : array()), (isset($graph_template_items) ? $graph_template_items : array()), $_REQUEST)
+		)
+	);
+
+	if (!isset_request_var('id')) { 
+		set_request_var('id', 0);
+	}
 
 	$item_list = db_fetch_assoc_prepared("SELECT
 		CONCAT_WS(' - ', data_template_data.name, data_template_rrd.data_source_name) AS data_source_name,
@@ -189,17 +184,19 @@ function input_edit() {
 		LEFT JOIN data_template_data ON (data_local.id = data_template_data.local_data_id)
 		WHERE graph_templates_item.local_graph_id = 0
 		AND graph_templates_item.graph_template_id = ?
-		ORDER BY graph_templates_item.sequence", array(get_request_var_request('id'), get_request_var_request('graph_template_id')));
+		ORDER BY graph_templates_item.sequence", array(get_request_var('id'), get_request_var('graph_template_id')));
 
-	form_alternate_row();?>
-		<td width="50%">
-			<font class="textEditTitle">Associated Graph Items</font><br>
-			Select the graph items that you want to accept user input for.
-		</td>
-		<td>
-		<?php
-		$i = 0; $any_selected_item = '';
-		if (sizeof($item_list) > 0) {
+	form_alternate_row();
+
+	?>
+	<td width="50%">
+		<font class="textEditTitle"><?php print __('Associated Graph Items');?></font><br>
+		<?php print __('Select the graph items that you want to accept user input for.');?>
+	</td>
+	<td>
+	<?php
+	$i = 0; $any_selected_item = '';
+	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			if ($item['graph_template_input_id'] == '') {
 				$old_value = '';
@@ -217,21 +214,21 @@ function input_edit() {
 			}
 
 			$name = "$start_bold Item #" . ($i+1) . ': ' . $graph_item_types{$item['graph_type_id']} . ' (' . $consolidation_functions{$item['consolidation_function_id']} . ")$end_bold";
-			form_checkbox('i_' . $item['graph_templates_item_id'], $old_value, $name, '', '', $_REQUEST['graph_template_id']); print '<br>';
+			form_checkbox('i_' . $item['graph_templates_item_id'], $old_value, $name, '', '', get_request_var('graph_template_id')); print '<br>';
 
 			$i++;
 		}
-		}else{
-			print "<tr class='tableRow'><td><em>No Items</em></td></tr>";
-		}
-		?>
-		</td>
+	}else{
+		print "<tr class='tableRow'><td><em>" . __('No Items') . "</em></td></tr>";
+	}
+	?>
+	</td>
 	</tr>
-
 	<?php
-	html_end_box();
 
 	form_hidden_box('any_selected_item', $any_selected_item, '');
 
-	form_save_button('graph_templates.php?action=template_edit&id=' . $_REQUEST['graph_template_id']);
+	html_end_box();
+
+	form_save_button('graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
 }

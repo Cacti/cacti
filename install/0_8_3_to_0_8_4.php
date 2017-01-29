@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,38 +23,38 @@
 */
 
 function upgrade_to_0_8_4() {
-	db_install_execute("0.8.4", "DROP TABLE `user_realm`;");
-	db_install_execute("0.8.4", "DROP TABLE `user_realm_filename`;");
-	db_install_execute("0.8.4", "DROP TABLE `host_template_data_sv`;");
-	db_install_execute("0.8.4", "DROP TABLE `host_template_graph_sv`;");
+	db_install_execute("DROP TABLE `user_realm`;");
+	db_install_execute("DROP TABLE `user_realm_filename`;");
+	db_install_execute("DROP TABLE `host_template_data_sv`;");
+	db_install_execute("DROP TABLE `host_template_graph_sv`;");
 
-	db_install_execute("0.8.4", "UPDATE `host` set hostname=management_ip;");
-	db_install_execute("0.8.4", "UPDATE `data_input_fields` set type_code='hostname' where type_code='management_ip';");
+	db_install_execute("UPDATE `host` set hostname=management_ip;");
+	db_install_execute("UPDATE `data_input_fields` set type_code='hostname' where type_code='management_ip';");
 
-	db_install_execute("0.8.4", "ALTER TABLE `data_input_data_cache` CHANGE `management_ip` `hostname` VARCHAR( 250 ) NOT NULL, ADD `snmp_port` MEDIUMINT( 5 ) UNSIGNED DEFAULT '161' NOT NULL AFTER `snmp_password`, ADD `snmp_timeout` MEDIUMINT( 8 ) UNSIGNED NOT NULL AFTER `snmp_port`;");
-	db_install_execute("0.8.4", "ALTER TABLE `host` ADD `snmp_port` MEDIUMINT( 5 ) UNSIGNED DEFAULT '161' NOT NULL AFTER `snmp_password`, ADD `snmp_timeout` MEDIUMINT( 8 ) UNSIGNED DEFAULT '500' NOT NULL AFTER `snmp_port`, DROP `management_ip`;");
-	db_install_execute("0.8.4", "ALTER TABLE `data_input` DROP `output_string`;");
+	db_install_execute("ALTER TABLE `data_input_data_cache` CHANGE `management_ip` `hostname` VARCHAR( 250 ) NOT NULL, ADD `snmp_port` MEDIUMINT( 5 ) UNSIGNED DEFAULT '161' NOT NULL AFTER `snmp_password`, ADD `snmp_timeout` MEDIUMINT( 8 ) UNSIGNED NOT NULL AFTER `snmp_port`;");
+	db_install_execute("ALTER TABLE `host` ADD `snmp_port` MEDIUMINT( 5 ) UNSIGNED DEFAULT '161' NOT NULL AFTER `snmp_password`, ADD `snmp_timeout` MEDIUMINT( 8 ) UNSIGNED DEFAULT '500' NOT NULL AFTER `snmp_port`, DROP `management_ip`;");
+	db_install_execute("ALTER TABLE `data_input` DROP `output_string`;");
 
-	db_install_execute("0.8.4", "ALTER TABLE `host_snmp_cache` DROP PRIMARY KEY;");
-	db_install_execute("0.8.4", "ALTER TABLE `host_snmp_cache` ADD PRIMARY KEY ( `host_id` , `snmp_query_id` , `field_name` , `snmp_index` );");
+	db_install_execute("ALTER TABLE `host_snmp_cache` DROP PRIMARY KEY;");
+	db_install_execute("ALTER TABLE `host_snmp_cache` ADD PRIMARY KEY ( `host_id` , `snmp_query_id` , `field_name` , `snmp_index` );");
 
 	/* hash columns for xml export/import code */
-	db_install_execute("0.8.4", "ALTER TABLE `data_input_fields` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `data_template_rrd` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `graph_template_input` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `graph_templates_item` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `host_template` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `snmp_query_graph` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `snmp_query_graph_rrd_sv` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `snmp_query_graph_sv` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `cdef_items` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `cdef` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `data_input` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `data_template` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `graph_templates` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `graph_templates_gprint` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `snmp_query` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
-	db_install_execute("0.8.4", "ALTER TABLE `rra` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `data_input_fields` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `data_template_rrd` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `graph_template_input` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `graph_templates_item` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `host_template` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `snmp_query_graph` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `snmp_query_graph_rrd_sv` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `snmp_query_graph_sv` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `cdef_items` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `cdef` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `data_input` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `data_template` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `graph_templates` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `graph_templates_gprint` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `snmp_query` ADD `hash` CHAR( 32 ) NOT NULL AFTER `id`;");
+	db_install_execute("ALTER TABLE `rra` ADD `hash` VARCHAR( 32 ) NOT NULL AFTER `id`;");
 
 	/* new realms */
 	$users = db_fetch_assoc("select id from user_auth");
@@ -62,9 +62,9 @@ function upgrade_to_0_8_4() {
 	if (sizeof($users) > 0) {
 	foreach ($users as $user) {
 		if (sizeof(db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $user["id"])) == 13) {
-			db_install_execute("0.8.4", "insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",4)");
-			db_install_execute("0.8.4", "insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",16)");
-			db_install_execute("0.8.4", "insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",17)");
+			db_install_execute("insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",4)");
+			db_install_execute("insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",16)");
+			db_install_execute("insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",17)");
 		}
 	}
 	}
@@ -798,5 +798,3 @@ function upgrade_to_0_8_4() {
 		db_execute("update rra set hash='" . get_hash_round_robin_archive($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 	}
 }
-
-?>

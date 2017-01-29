@@ -1,14 +1,38 @@
 /* main styles */
 
-body, table, tr, td {
+html, body {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+}
+
+body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
+	/* fix those ever present IE issues */
+	-ms-overflow-style:scrollbar;
+	color: #000000;
 }
 
 body {
-	margin: 0px;
 	background-color: snow;
 	background-repeat: repeat-y;
+}
+
+table {
+	border-collapse: collapse; border-spacing: 0; 
+	border: none;
+	text-align:left;
+}
+
+td, th {
+	padding: 2px;
+	margin: 0px;
+}
+
+img {
+	border:none;
+	vertical-align:middle;
 }
 
 /* links */
@@ -17,8 +41,6 @@ a, a:active, a:visited {
 	color: #006400;
 	text-decoration: none;
 	font-size: 12px;
-	padding: 3px;
-  	text-shadow: 0 1px 0 rgba(255,255,255,.5);
 }
 
 a:hover {
@@ -26,15 +48,50 @@ a:hover {
 	color: #333333;
 }
 
-th .fa {
+th i.fa {
     margin-top: -5px;
     position: absolute;
     right: 3px;
     top: 50%;
 }
 
+#main {
+	display:none;
+	position: relative;
+	width: 100%;
+	z-index: 3;
+}
+
 input, select {
-	padding: 0.4em 2.1em 0.4em 1em;
+	padding: 0.4em 0.4em 0.4em 0.4em;
+}
+
+*:focus {
+    outline: none;
+}
+
+label {
+	white-space:nowrap;
+}
+
+.nowrap {
+	white-space:nowrap;
+}
+
+.top {
+	vertical-align:top;
+}
+
+.right {
+	text-align:right !important;
+}
+
+.left {
+	text-align:left;
+}
+
+.center {
+	text-align:center !important;
 }
 
 .usermenudown {
@@ -47,7 +104,6 @@ input, select {
 
 .user {
 	padding-right:16px;
-	font-weight:bold;
 	cursor:pointer;
 }
 
@@ -55,37 +111,278 @@ input, select {
 	position:relative;
 	left: -20px;
 	margin-right: -10px;
-	font-size: 13px !important;
+	font-size: 12px !important;
 }
 
-/* input#host {
-	background-color: #e6e6e6;
-	border: none;
-	padding-right: 24px;
-	line-height:1.4;
-	overflow-hidden;
-	padding: 0.4em 2.1em 0.4em 1em;
-	color: #555555;
-}*/
+.badpassword_message {
+	padding:2px;
+	color:red;
+	font-size:1.0em !important;
+	vertical-align:bottom;
+}
 
-/* input#filter {
-	padding-right: 24px;
-	line-height:1.4;
-	overflow-hidden;
-	padding: 0.4em 2.1em 0.4em 1em;
-}*/
+.badpassword {
+	padding:4px;
+	color:red;
+	font-size:1.5em !important;
+	vertical-align:bottom;
+}
+
+.goodpassword {
+	padding:4px;
+	color:green;
+	font-size:1.5em !important;
+	vertical-align:bottom;
+}
+
+.associated {
+	color:green;
+	font-weight:normal;
+}
+
+.notAssociated {
+	color:red;
+	font-weight:normal;
+}
+
+.disabled_row span, .disabled_row td, .disabled_row a {
+	color:grey !important;
+}
+
+.disabled {
+	color:grey;
+	font-weight:normal;
+}
+
+.idle {
+	color:green;
+	font-weight:normal;
+}
+
+.running {
+	color:red;
+}
+
+.newObject{
+	color:blue;
+}
+
+.updateObject {
+	color:grey;
+}
+
+.unmetDependency {
+	color:red;
+}
+
+.foundDependency {
+	color:navy;
+}
+
+.success {
+	color:green;
+}
+
+.failed {
+	color:red;
+}
+
+.accessGranted {
+	color:green;
+}
+
+.accessGrantedItem {
+	color:green;
+}
+
+.accessRestricted {
+	color:red;
+}
+
+.accessRestrictedItem {
+	color:red;
+}
+
+.deleteIcon {
+	width:10px;
+	height:10px;
+	cursor:pointer;
+	padding:2px;
+	border:none;
+}
+
+.graphDrillDown {
+	vertical-align: top;
+	align-self: left;
+	z-index: 4;
+	padding: 3px;
+	height: 100%;
+	width: 20px;
+}
+
+.drillDown {
+	cursor:pointer;
+}
+
+.monoSpace {
+	font-size:9px;
+	font-family: monospace;
+}
+
+.utilityPick {
+	width: 200px;
+}
+
+.itemlist { 
+	max-height:200px;
+	overflow-y:auto;
+}
+
+.realms {
+	width:20%;
+	vertical-align:top;
+	white-space:nowrap;
+}
+
+.deviceUp {
+	color: rgba(148, 179, 107, 0.8) !important;
+}
+
+.deviceDown {
+	color: #ff0000 !important;
+}
+
+.deviceUnknown {
+	color: #0000ff !important;
+}
+
+.deviceDisabled {
+	color: #a1a1a1 !important;
+}
+
+.deviceRecovering {
+	color: #ff8f1e !important;
+}
+
+.deviceError {
+	color: #750F7D !important;
+}
+
+.deviceDownMuted {
+	color: #ffe333 !important;
+}
+
+.deviceThreshold {
+	color: #ffa833 !important;
+}
+
+.deviceUnmonitored {
+	color: rgba(250, 253, 158) !important;
+}
+
+.deviceWarning {
+	color: #ea9827 !important;
+}
+
+.deviceAlert {
+	color: #ea5f27 !important;
+}
+
+.deviceUpBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: rgba(148, 179, 107, 0.8);
+}
+
+.deviceDownBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ff0000;
+}
+
+.deviceUnknownBg {
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #0000ff;
+}
+
+.deviceDisabledBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #a1a1a1;
+}
+
+.deviceRecoveringBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ff8f1e;
+}
+
+.deviceErrorBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #750F7D;
+}
+
+.deviceDownMutedBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ffe333;
+}
+
+.deviceThresholdBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #ffa833;
+}
+
+.deviceUnmonitoredBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: rgba(250, 253, 158, 0.8);
+}
+
+.deviceWarningBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #aa7807;
+}
+
+.deviceAlertBg {
+	color: rgba(22,22,22,0.8);
+	font-size: 10pt;
+	font-weight: bold;
+	background-color: #660000;
+}
+
+.beingGraphed {
+	color: green;
+}
+
+.notBeingGraphed {
+	color: #484848;
+}
 
 .menuoptions {
 	background: none repeat scroll 0 0 #eee;
     border-color: #f5f5f5 #e5e5e5 #ccc;
     border-style: solid;
     border-width: 0px 1px 1px 1px;
-	z-index:2;
+	z-index:4;
 	display:block;
 	float:right;
 	position:absolute;
 	right:26px;
-	top:55px;
+	top:22px;
   	list-style: none;
 	text-align:right;
 	margin:0px;
@@ -94,7 +391,7 @@ input, select {
 
 .menuoptions li a {
 	border-top: 1px solid #ccc;
-	font-weight:bold;
+	font-weight:normal;
 	display:block;
 	height:14px;
 }
@@ -104,36 +401,67 @@ input, select {
 	background: linear-gradient(to bottom, rgba(242, 246, 248, 1) 0%, rgba(216, 225, 231, 1) 50%, rgba(181, 198, 208, 1) 51%, rgba(224, 239, 249, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
 }
 
+.import_label {
+	opacity: 1;
+}
+
+.import_button {
+	opacity: 0;
+	display: none;
+}
+
+.import_text {
+	opacity: 1;
+}
+
+.color-icon {
+	background-image:none !important;
+}
+
 .emailtest {
 	cursor:pointer;
 	display:block;
+	float:right;
+	text-align:right;
+}
+
+.reloadquery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color:lime;
+	font-size:14px;
+}
+
+.deletequery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color:red;
+	font-size:14px
 }
 
 .odd {
 	background: none repeat scroll 0 0 #F5F5F5;
-    border-style: solid;
-    border-width: 1px;
+    border: none;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even {
 	background: none repeat scroll 0 0 #E5E5E5;
-#    border-color: #f5f5f5 #e5e5e5 #ccc;
-    border-style: solid;
-    border-width: 1px;
+    border: none;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even-alternate {
 	background: none repeat scroll 0 0 #E7E9F2;
-	background-color:#E7E9F2;
-    border-style: solid;
-    border-width: 1px;
+    border: none;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .saveRow {
 	background-color:#EAEAEA;
+	text-align:right;
 	padding:4px;
 }
 
@@ -189,42 +517,66 @@ input, select {
 .hostUp {
 	color: #000000;
 	font-size: 10px;
-	font-weight: normal;
 	font-family: monospace;
 }
 
 .hostDown {
 	color: #ff0000;
 	font-size: 10px;
-	font-weight: normal;
 	font-family: monospace;
 }
 
 .cactiPageHead {
 	background-color: #a9a9a9;
-	height:35px;
-	border-bottom:2px solid #00438c;
+	height:30px;
+	width:100%;
+	position:fixed;
+	padding-top:5px;
+	top:0px;
+	left:0px;
+	z-index:4;
 }
 
 .cactiGraphPageHeadBackdrop {
-	background: transparent url('./../../../images/cacti_backdrop2.gif') no-repeat center right;
-}
-
-.loginLogo {
-	background: url('./../../../images/auth_login.gif') no-repeat center center;
-	padding-right:40px;
+	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
+	padding-bottom: 0px;
+	float:right;
+	width:400px;
+	height:35px;
+	top:0px;
+	position:fixed;
+	right:0px;
+	z-index:-1;
 }
 
 .cactiConsolePageHeadBackdrop {
-	background: transparent url('./../../../images/cacti_backdrop.gif') no-repeat center right;
+	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
+	padding-bottom:0px;
+	float:right;
+	width:400px;
+	height:35px;
+	top:0px;
+	position:fixed;
+	right:0px;
+	z-index:-1;
 }
 
 .navigation {
-//	width:400px;
+}
+
+.debug td {
+	padding:3px;
+	margin:0px;
 }
 
 .breadCrumbBar {
-	height:5px;
+	height:18px;
+	width:100%;
+	position:fixed;
+	padding:4px;
+	top:30px;
+	left:0px;
+	z-index:4;
 	background: rgba(167,217,134,1);
 	background: -moz-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,1)), color-stop(100%, rgba(148,179,107,1)));
@@ -232,8 +584,6 @@ input, select {
 	background: -o-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
 	background: -ms-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
 	background: linear-gradient(to bottom, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7d986', endColorstr='#94b36b', GradientType=0 );
-	/*background-color: #e9e9e9;*/
 }
 
 ul#breadcrumbs {
@@ -256,6 +606,7 @@ ul#breadcrumbs {
 	display: block;
 	min-width: 15%;
 	max-width: 40%;
+	margin-right:10px;
 	float: right;
 	text-align: right;
 }
@@ -286,9 +637,9 @@ ul#breadcrumbs {
 	color: #444;
 	position: relative;
 	font-size:10px;
-	text-shadow: 0 1px 0 rgba(255,255,255,.5);
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 	background-color: #ddd;
-	background-image: linear-gradient(to right, #f5f5f5, #ddd);  
+	background-image: linear-gradient(to right, #f5f5f5, #ddd);
 }
 
 #breadcrumbs li:first-child a {
@@ -305,22 +656,22 @@ ul#breadcrumbs {
 	content: "";
 	position: absolute;
 	top: 50%;
-	margin-top: -1.5em;   
+	margin-top: -1.5em;
 	border-top: 1.5em solid transparent;
 	border-bottom: 1.5em solid transparent;
 	border-left: 1.1em solid;
 	right: -1em;
 }
 
-#breadcrumbs a::after { 
-	z-index: 2;
-	border-left-color: #ddd;  
+#breadcrumbs a::after {
+	z-index: 4;
+	border-left-color: #ddd;
 }
 
 #breadcrumbs a::before {
-	border-left-color: #ccc;  
+	border-left-color: #ccc;
 	right: -1.1em;
-	z-index: 1; 
+	z-index: 3;
 }
 
 #breadcrumbs a:hover::after {
@@ -329,38 +680,68 @@ ul#breadcrumbs {
 
 #breadcrumbs .current,
 #breadcrumbs .current:hover {
-	font-weight: bold;
 	background: none;
 }
 
 #breadcrumbs .current::after,
 #breadcrumbs .current::before {
-	content: normal;  
+	content: normal;
+}
+
+.cactiContent {
+	width: 100%;
+	vertical-align: top;
+	padding-top: 56px;
 }
 
 .cactiTreeNavigationArea {
 	background: #efefef url('./../../../images/shadow_gray.gif') repeat-x center top;
 	border-right: #aaaaaa 1px solid;
-	padding-left:5px;
-	padding-right:5px;
-	padding-top:10px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 10px;
+	display: none;
+	vertical-align: top;
+	position: fixed; 
+	left: 0px; 
+	top: 56px; 
+	z-index: 2; 
+	overflow-y: auto;
+}
+
+.jstree {
+	position:relative;
+	display:block;
 }
 
 .cactiConsoleNavigationArea {
-	background: #efefef url('./../../../images/shadow_gray.gif') repeat-x center top;
+	background: #ECECEC url('./../../../images/shadow_gray.gif') repeat-x center top;
 	border-right: #aaaaaa 1px solid;
 	padding-left:0px;
 	padding-right:0px;
 	padding-top:5px;
+	vertical-align:top;
+	position: fixed; 
+	left: 0px; 
+	top: 56px; 
+	overflow-y: hidden;
+	width: 167px;
+}
+
+.cactiConsoleNavigationArea table {
+	width:162px;
 }
 
 .cactiLogo {
-	padding-top:20px;
-	background: #efefef url('./../../../images/cacti_logo.gif') no-repeat center;
+	background: #efefef url('./images/cacti_logo.svg') no-repeat 30px;
 	display:block;
-	width:90px;
 	cursor:pointer;
-	height:140px;
+	padding-bottom:160px;
+	margin-bottom:60px;
+	width:156px;
+	margin-top:-6px;
+	margin-left:2px;
+	margin-right:2px;
 }
 
 .loginLeft, .logoutLeft {
@@ -386,21 +767,18 @@ ul#breadcrumbs {
 	background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
 	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
 	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
-	/*text-shadow: 1px 1px 2px rgba(9, 61, 16, 1);*/
-	text-shadow: 1px 1px 1px rgba(9, 61, 16, .66);
+	text-shadow: 1px 1px 1px rgba(9, 61, 16, 0.66);
 }
 
 .cactiLoginLogo, .cactiLogoutLogo {
 	position:relative;
-	float:right:
-	top:30%;
-	background: transparent url('./../../../images/cacti_logo_new.gif') no-repeat center;
-	width:90px;
-	height:128px;
+	float:right;
+	background: transparent url('./images/cacti_logo.svg') no-repeat center;
+	width:120px;
+	height:148px;
 	z-index:2;
-	margin-top:-90px;
-	margin-left:255px;
+	margin-top:-95px;
+	margin-left:240px;
 	margin-bottom:-20px;
 }
 
@@ -423,7 +801,6 @@ ul#breadcrumbs {
 
 legend {
 	font-size:22px;
-	font-weight:bold;
 }
 
 .loginRight, .logoutRight {
@@ -439,7 +816,6 @@ legend {
 	background: -o-linear-gradient(top, rgba(12,31,16,1) 0%, rgba(13,61,28,1) 56%, rgba(9,59,6,1) 100%);
 	background: -ms-linear-gradient(top, rgba(12,31,16,1) 0%, rgba(13,61,28,1) 56%, rgba(9,59,6,1) 100%);
 	background: linear-gradient(to bottom, rgba(12,31,16,1) 0%, rgba(13,61,28,1) 56%, rgba(9,59,6,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0c1f10', endColorstr='#093b06', GradientType=0 );
 }
 
 .versionInfo {
@@ -449,54 +825,154 @@ legend {
 	color:snow;
 }
 
+.actionsDropdown {
+	vertical-align:middle;
+	padding: 3px;
+	width:100%;
+	text-align: right;
+	display: table;
+}
+
+.actionsDropdown div {
+	display: table-row;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.actionsDropdownButton {
+	vertical-align: top;
+	float: right;
+	margin-top: 1px;
+	margin-left: 3px;
+	display: table-cell;
+}
+
+.actionsDropdownArrow {
+	margin-top: auto;
+	margin-bottom: auto;
+	float:left !important;
+	padding: 3px;
+}
+
+.cactiTooltipHint {
+	cursor: pointer;
+	color: #627D4D;
+}
+
+.spikekillData, .spikekillData td {
+	border: 1px solid #999;
+}
+
+.spikekillNote {
+	padding: 1px;
+}
+
+.spikekillMenu {
+	background: #f5f5f5 none repeat scroll 0 0;
+    border: 1px solid #979797;
+    box-shadow: 2px 2px 2px #999999;
+    margin: 0;
+    padding: 2px;
+	line-height: 1.5em;
+}
+
+.spikekillMenu li {
+	vertical-align:middle;
+}
+
+.spikekillMenu i {
+	text-align:center;
+	width: 2.0em;
+	display:inline-block;
+}
+
+.spikekillMenu i:empty{
+	width: 2.0em;
+	display:inline-block;
+}
+
 .loginPanel {
 	padding:4px 0px;
 }
 
-.cactiConsoleNavigationArea table {
-	width:160px;
+.treeTable {
+	width:100%;
 }
 
 .cactiGraphContentArea {
 	background: snow url('./../../../images/shadow.gif') repeat-x center top;
-	padding-top:10px;
+	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
+	display: none;
+	vertical-align: top;
 }
+
+.cactiGraphContentAreaPreview {
+	background: snow url('./../../../images/shadow.gif') repeat-x center top;
+	padding-top: 10px;
+	padding-right: 5px;
+	padding-left: 5px;
+	display: none;
+	vertical-align: top;
+}
+
 
 .cactiConsoleContentArea {
 	background: snow url('./../../../images/shadow.gif') repeat-x center top;
-	padding-top:10px;
+	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
+	vertical-align: top;
+	display: none;
+	margin-left: 168px;
 }
 
-.hyperLink {
-	color: #006400;
-	font-size: 12px;
-	padding: 3px;
+.hyperLink, .hyperLink:hover, .hyperLink:visited {
+	color: #006400 !important;
 	cursor:pointer;
 	text-decoration: none;
-	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.iconLink {
+	padding:2px;
+}
+
+.iconLink img {
+	padding-bottom:2px;
+}
+
+.noLinkEditMain {
+	color: rgba(44,130,29,1);
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: normal;
+	padding: 3px;
+
+	white-space: nowrap;
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
 	color: rgba(44,130,29,1);
 	text-decoration: none;
 	font-size: 12px;
-	font-weight: bold;
+	font-weight: normal;
 	padding: 3px;
-  	text-shadow: 0 1px 0 rgba(255,255,255,.5);
+	white-space: nowrap;
+	cursor:pointer;
 }
 
 .linkEditMain:hover {
 	color: rgba(31,59,8,1);
+	white-space: nowrap;
 	text-decoration: none;
 }
 
 .linkOverDark, .linkOverDark:visited, .linkOverDark:active {
 	color: white;
+	font-weight: normal;
 	text-decoration: none;
+	cursor: pointer;
 }
 
 .linkOverDark:hover {
@@ -504,12 +980,30 @@ legend {
 	text-decoration: none;
 }
 
+.linkOverLight {
+	color:#161616;
+	text-decoration: none;
+	font-weight:normal;
+	text-align:center;
+}
+
+.linkOverLight:hover {
+	color:#464646;
+	text-decoration: none;
+	font-weight:normal;
+}
 /* text styles */
 
 .textError {
 	font-size: 12px;
-	font-weight: bold;
-	color: red;
+	font-weight: normal;
+	color: red !important;
+}
+
+.textWarning {
+	font-size: 12px;
+	font-weight: normal;
+	color: #D886DB !important;
 }
 
 .textInfo {
@@ -527,6 +1021,10 @@ legend {
 	font-weight: bold;
 }
 
+.remover {
+	cursor:pointer;
+}
+
 .messageBox {
 	margin-bottom:5px;
 	padding:5px;
@@ -534,11 +1032,14 @@ legend {
 	border:1px solid #BBBBBB;
 	max-width:100%;
 	position:relative;
+	z-index: 6;
 }
 
 .textHeaderDark {
 	font-size: 12px;
+	font-weight: normal;
 	color: snow;
+	background-color: transparent;
 }
 
 .templateHeader {
@@ -552,21 +1053,107 @@ legend {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313', GradientType=0 );
 }
 
+.templateHeader td {
+	padding:3px;
+}
+
 .textSubHeaderDark, .textSubHeaderDark:visited {
 	font-size: 11px;
 	color: snow;
-	font-weight: bold;
+	font-weight: normal;
+	padding: 2px;
 }
 
-.cactiTableTitle {
+.cactiTable {
+	width: 100%;
+	margin-left:auto; 
+	margin-right:auto;
+	display: table;
+	line-height: 16px;
+	color: snow;
+}
+
+.cactiTableTitleRow {
+	float: left;
+	text-align: left;
+	padding: 3px 0px;
+	height: 16px;
+	display: table-column;
+	width: 100%;
 	background: rgba(98,125,77,1);
 	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
 	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: linear-gradient(to bottom, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08', GradientType=0 );
+	color: snow;
+}
+
+.cactiTableTitle {
+	float: left;
+	text-align: left;
+	padding: 3px 0px;
+	height: 16px;
+	display: table-column;
+	width: 90%;
+	background: rgba(98,125,77,1);
+	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	color: snow;
+}
+
+.cactiTableButton {
+	float: right;
+	padding: 3px 0px;
+	height: 16px;
+	display: table-column;
+	text-align: right;
+	width: 10%;
+	background: rgba(98,125,77,1);
+	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	color: snow;
+}
+
+.cactiTableButton span, .cactiTableTitle span {
+	padding: 0px 5px 0px 5px;
+}
+
+.cactiTableButton span a {
+	color: snow;
+}
+
+.cactiDebugTable {
+	width: 100%;
+}
+
+.filterTable {
+	white-space:nowrap;
+}
+
+.filterTable td:first-child {
+	width:55px;
+}
+
+.formItemDescription {
+}
+
+.formItemName {
+	font-weight:normal;
+}
+
+.graphItem {
+	background-color: #D5D5D5;
+}
+
+.graphItemAlternate {
+	background-color: #D2D6E7;
 }
 
 .break {
@@ -590,8 +1177,7 @@ legend {
 	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: linear-gradient(to bottom, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08', GradientType=0 );
+	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 }
 
 .cactiNavBarBottom {
@@ -601,58 +1187,68 @@ legend {
 .tableHeader {
 	background: rgba(138,179,105,1);
 	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
 	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
 }
 
 th.sortable {
 	cursor:pointer;
+	line-height:10px;
 }
 
-.tableHeader th {
+.tableHeader th, .tableHeader td {
 	color: snow;
-	font-weight:bold;
-	vertical-align:bottom;
+	cursor: pointer;
+	vertical-align:middle;
 	text-align:left;
 	font-size: 11px;
+	font-weight:normal;
 }
 
 .tableHeader th div {
 	display:block;
 	padding-right:8px;
-	font-size: 11px;
+	font-size:11px;
 }
 
 .tableSubHeaderColumn {
 	color: snow;
-	font-weight:bold;
-	vertical-align:bottom;
-	text-align:left;
+	vertical-align: middle;
+	text-align: left;
+	padding: 3px;
+	cursor: pointer;
 }
 
 .graphSubHeaderColumn {
-	color: #snow;
+	color: snow;
 	font-size:12px;
-	vertical-align:bottom;
+	vertical-align:middle;
 	text-align:left;
+	padding:3px;
 }
 
 .tableSubHeaderCheckbox {
-	background: rgba(138,179,105,1);
+	width:1%;
 	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
 	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
+}
+
+.formRow {
+	line-height: 20px;
+}
+
+.image_table {
+	width:100%;
 }
 
 .tableConfirmation {
+	width:100%;
+	text-align:center;
 	background-color: #f5f5f5;
 	border: 1px solid #aaaaaa;
 }
@@ -664,9 +1260,75 @@ th.sortable {
 
 .navBarNavigation {
 	color: white;
+	width: 100%;
+	text-align:center;
+	display:inline-block;
+	margin-bottom: -3px;
+	height: 22px;
+	background: rgba(98,125,77,1);
+	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+}
+
+.navBarNavigation a, navBarNavigation a:hover, navBarNavigation a:visited {
+	color: white;
+	font-weight: normal !important;
+}
+
+.navBarNavigationPrevious {
+	text-align: left;
+	cursor: pointer;
 	font-weight: bold;
-	display:block;
+	float: left;
+	white-space: nowrap;
+	display: block;
+	width: 10%;
+	padding: 2px 0px;
+	height: 20px;
+	vertical-align: middle;
+}
+
+.navBarNavigationCenter {
+	text-align: center;
+	display: block;
+	float: left;
+	white-space: nowrap;
+	width:80%;
+	padding: 2px 0px;
+	height: 20px;
+	margin-top: auto;
+}
+
+.navBarNavigationCenter span {
+	vertical-align: middle;
+}
+
+.navBarNavigationNext {
+	text-align:right;
 	cursor:pointer;
+	font-weight: bold;
+	float: right;
+	white-space: nowrap;
+	display: block;
+	width: 10%;
+	padding: 2px 0px;
+	height: 20px;
+	vertical-align: middle;
+
+}
+
+.navBarNavigationNone {
+	text-align: center;
+	display: block;
+	float: left;
+	white-space: nowrap;
+	width:100%;
+	padding: 2px 0px;
+	height: 20px;
+	margin-top: auto;
 }
 
 .navBarNavigationNext i.ui-icon {
@@ -682,8 +1344,9 @@ th.sortable {
 }
 
 .textArea {
-	font-size: 12px;
+	font-size: 11px;
 	background-color:#f5f5f5;
+	color: #000000;
 }
 
 .textArea a {
@@ -712,7 +1375,7 @@ th.sortable {
 }
 
 .textEditTitle {
-	font-weight: bold;
+	font-weight: normal;
 }
 
 .textMenuHeader {
@@ -720,7 +1383,7 @@ th.sortable {
 	background-color: #9C9C9C;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
-	font-weight: bold;
+	font-weight: normal;
 }
 
 .textMenuItem {
@@ -742,13 +1405,13 @@ th.sortable {
 }
 
 .txtErrorTextBox {
-	border: 2px solid #ff0000;
+	border: 2px solid #ff0000 !important;
 }
 
 .txtErrorText {
 	color: #FF0000;
 	font-size: 12px;
-	font-weight: bold;
+	font-weight: normal;
 }
 
 /* tabs */
@@ -775,21 +1438,82 @@ th.sortable {
 }
 
 .deleteMarker {
-	padding-bottom: 9px !important; 
+	color: red !important;
+	height: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.deleteMarker:hover {
+	text-decoration: none !important;
+}
+
+.moveArrow {
+	color: #00438C !important;
+	height: 14px !important;
+	font-size: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.moveArrow:hover {
+	text-decoration: none !important;
+}
+
+.moveArrowNone {
+	padding-left:8px;
+}
+
+.action, .shiftArrow, .calendar {
+	cursor: pointer;
+	padding:2px;
 }
 
 td.tab {
 	border-top: 1px solid #999;
 	border-right: 1px solid #666;
 	border-left: 1px solid #999;
-	padding-left:3px;
-	padding-right:3px;
+	padding-left: 3px;
+	padding-right: 3px;
 	min-width:0%;
 	border-bottom: none;
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
 	-moz-border-radius-topright: 4px;
 	-moz-border-radius-topleft: 4px;
+}
+
+div#tabs {
+	padding-bottom: 0px;
+	vertical-align: bottom;
+	position: fixed;
+	left: 5px;
+	top: 5px;
+	height: 30px;
+}
+
+td#tabs {
+	padding:0px !important;
+}
+
+.cactiGraphHeaderBackground {
+	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 10% / 380px auto;
+	height: 35px;
+	width:500px;
+	float:right;
+	position:fixed;
+	top: 0px;
+	right: 0px;
+	z-index:-1;
+}
+
+div#gtabs {
+	padding-bottom: 0px;
+	vertical-align: bottom;
+	position:fixed;
+	right: 5px;
+	top: 5px;
+	height: 30px;
 }
 
 .tabs a, .maintabs a {
@@ -805,9 +1529,10 @@ td.tab {
 	border-color:#eee #ccc #ccc #eee;
 	color:#333;
 	float:left !important;
-	padding:5px 8px;
+	padding:5px;
 	text-decoration:none;
 	font-size: 11px;
+	vertical-align:bottom;
 }
 
 .tabs a:hover, .maintabs a:hover {
@@ -831,7 +1556,6 @@ td.tab {
 }
 
 .tabs li, .maintabs li {
-	bottom:-1px;
 	float:left;
 	margin:0 3px 0 0;
 	position:relative;
@@ -841,10 +1565,12 @@ td.tab {
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs li.current a:hover, .maintabs li.current a:hover {
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs nav, .maintabs nav {
 	border-bottom:1px solid #ccc;
 	padding:0 0 0 4px;
@@ -866,28 +1592,27 @@ td.tab {
 
 /* Navigation Area */
 #nav {
-	float: left; 
-	width: 150; 
-	border-top: 0px solid #999; 
-	border-right: 0px solid #999; 
-	border-left: 0px solid #999; 
+	float: left;
+	width: 150px;
+	border-top: 0px solid #999;
+	border-right: 0px solid #999;
+	border-left: 0px solid #999;
 	font-size:12px;
 	margin: 0px 0;
 }
 
 #nav li a {
-	display: block; 
-	padding: 2px 4px; 
-	background: #ccc; 
-	border-top: 1px solid #eee; 
-	border-bottom: 1px solid #999; 
-	text-decoration: none; 
+	display: block;
+	padding: 2px 4px;
+	background: #ccc;
+	border-top: 1px solid #eee;
+	border-bottom: 1px solid #999;
+	text-decoration: none;
 	color: #000;
 }
 
 #nav li a.active {
 	color: snow;
-	background: rgba(138,179,105,1);
 	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
 	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
@@ -898,7 +1623,11 @@ td.tab {
 }
 
 th {
-	border-right: 1px groove #eee;
+	border-right: 1px groove snow;
+}
+
+th:last-child {
+	border-right: none !important;
 }
 
 tr.selected {
@@ -909,7 +1638,21 @@ tr.selected {
 	background: -o-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
 	background: -ms-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
 	background: linear-gradient(to bottom, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
+}
+
+tr.selectable:hover:not(.selected){
+	background: rgba(167,217,134,0.4);
+	background: -moz-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,0.4)), color-stop(100%, rgba(148,179,107,0.2)));
+	background: -webkit-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
+	background: -o-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
+	background: -ms-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
+	background: linear-gradient(to bottom, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7d986', endColorstr='#94b36b', GradientType=0 );
+}
+
+tr.selectable:hover:not(.selected) a {
+	color:black;
 }
 
 tr.selected a {
@@ -917,14 +1660,12 @@ tr.selected a {
 }
 
 #nav li a.pic:hover, #nav li a.selected {
-	background: rgba(242,246,248,1);
 	background: -moz-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(242,246,248,1)), color-stop(50%, rgba(216,225,231,1)), color-stop(51%, rgba(181,198,208,1)), color-stop(100%, rgba(224,239,249,1)));
 	background: -webkit-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
 	background: -o-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
 	background: -ms-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
 	background: linear-gradient(to bottom, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f6f8', endColorstr='#e0eff9', GradientType=0 );
 }
 
 #nav li ul {
@@ -933,328 +1674,44 @@ tr.selected a {
 }
 
 #nav li ul li a {
-	padding: 2px 4px; 
-	background: #ececec; 
+	padding: 2px 4px;
+	background: #ececec;
 	border-bottom: 1px dotted #ccc;
-} 
+}
 
 #nav li ul li {
 	list-style:none;
 	padding:0;
 }
 
-ul#nav { 
-	list-style: none; 
+ul#nav {
+	list-style: none;
 	padding:0;
 	width:100%;
 }
 
-/* The main calendar widget.  DIV containing a table. */
-
-div.calendar { 
-	position: relative; 
+.clogError {
+	background-color: #FF3932;
 }
 
-.calendar, .calendar table {
-	background: rgba(214,255,207,1);
-	background: -moz-linear-gradient(top, rgba(214,255,207,1) 0%, rgba(213,230,198,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(214,255,207,1)), color-stop(100%, rgba(213,230,198,1)));
-	background: -webkit-linear-gradient(top, rgba(214,255,207,1) 0%, rgba(213,230,198,1) 100%);
-	background: -o-linear-gradient(top, rgba(214,255,207,1) 0%, rgba(213,230,198,1) 100%);
-	background: -ms-linear-gradient(top, rgba(214,255,207,1) 0%, rgba(213,230,198,1) 100%);
-	background: linear-gradient(to bottom, rgba(214,255,207,1) 0%, rgba(213,230,198,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d6ffcf', endColorstr='#d5e6c6', GradientType=0 );
-	border: 1px solid #556;
-	font-size: 11px;
-	color: #000;
-	cursor: default;
-	font-family: tahoma,verdana,sans-serif;
+.clogWarning {
+	background-color: #EACC00;
 }
 
-/* Header part -- contains navigation buttons and day names. */
-
-.calendar .button { /* "<<", "<", ">", ">>" buttons have this class */
-	background: rgba(98,125,77,1);
-	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
-	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: linear-gradient(to bottom, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08', GradientType=0 );
-	text-align: center;    /* They are the navigation buttons */
-	color:snow;
-	padding: 2px;          /* Make the buttons seem like they're pressing */
+.clogSQL {
+	background-color: #6DC8FE;
 }
 
-.calendar .nav {
-	color: snow;
-	background: rgba(138,179,105,1);
-	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
-	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
+.clogDebug {
+	background-color: #C4FD3D;
 }
 
-.calendar thead .title { /* This holds the current "month, year" */
-	font-weight: bold;      /* Pressing it will take you to the current date */
-	text-align: center;
-	padding: 2px;
-	background: rgba(98,125,77,1);
-	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
-	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	background: linear-gradient(to bottom, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08', GradientType=0 );
-	color:snow;
+.clogStats {
+	background-color: #96E78A;
 }
 
-.calendar thead .headrow { /* Row <TR> containing navigation buttons */
-	color: snow;
-	background: rgba(138,179,105,1);
-	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
-	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
-}
-
-.calendar thead .daynames { /* Row <TR> containing the day names */
-	background: rgba(167,217,134,1);
-	background: -moz-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,1)), color-stop(100%, rgba(148,179,107,1)));
-	background: -webkit-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
-	background: -o-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
-	background: -ms-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
-	background: linear-gradient(to bottom, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7d986', endColorstr='#94b36b', GradientType=0 );
-}
-
-.calendar thead .name { /* Cells <TD> containing the day names */
-	border-bottom: 1px solid #556;
-	padding: 2px;
-	text-align: center;
-	color: #333;
-}
-
-.calendar thead .weekend { /* How a weekend day name shows in header */
-	color: #a66;
-}
-
-.calendar thead .hilite { /* How do the buttons in header appear when hover */
-	color: snow;
-	background: rgba(138,179,105,1);
-	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
-	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
-	border: 1px solid #3f750f;
-	padding: 1px;
-}
-
-.calendar thead .active { /* Active (pressed) buttons in header */
-	background-color: #77c;
-	padding: 2px 0px 0px 2px;
-}
-
-/* The body part -- contains all the days in month. */
-
-.calendar tbody .day { /* Cells <TD> containing month days dates */
-	width: 2em;
-	color: #456;
-	text-align: right;
-	padding: 2px 4px 2px 2px;
-}
-.calendar tbody .day.othermonth {
-	font-size: 80%;
-	color: #bbb;
-}
-.calendar tbody .day.othermonth.oweekend {
-	color: #fbb;
-}
-
-.calendar table .wn {
-	padding: 2px 3px 2px 2px;
-	border-right: 1px solid #000;
-	background: #bdf;
-}
-
-.calendar tbody .rowhilite td {
-	background: #def;
-}
-
-.calendar tbody .rowhilite td.wn {
-	background: #eef;
-}
-
-.calendar tbody td.hilite { /* Hovered cells <TD> */
-	background: #def;
-	padding: 1px 3px 1px 1px;
-	border: 1px solid #bbb;
-}
-
-.calendar tbody td.active { /* Active (pressed) cells <TD> */
-	background: #cde;
-	padding: 2px 2px 0px 2px;
-}
-
-.calendar tbody td.selected { /* Cell showing today date */
-	font-weight: bold;
-	border: 1px solid #000;
-	padding: 1px 3px 1px 1px;
-	background: #fff;
-	color: #000;
-}
-
-.calendar tbody td.weekend { /* Cells showing weekend days */
-	color: #a66;
-}
-
-.calendar tbody td.today { /* Cell showing selected date */
-	font-weight: bold;
-	color: #00f;
-}
-
-.calendar tbody .disabled { color: #999; }
-
-.calendar tbody .emptycell { /* Empty cells (the best is to hide them) */
-	visibility: hidden;
-}
-
-.calendar tbody .emptyrow { /* Empty row (some months need less than 6 rows) */
-	display: none;
-}
-
-/* The footer part -- status bar and "Close" button */
-
-.calendar tfoot .footrow { /* The <TR> in footer (only one right now) */
-	text-align: center;
-	background: #556;
-	color: #fff;
-}
-
-.calendar tfoot .ttip { /* Tooltip (status bar) cell <TD> */
-	background: rgba(214,255,207,1);
-	background: -moz-linear-gradient(top, rgba(214,255,207,1) 0%, rgba(213,230,198,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(214,255,207,1)), color-stop(100%, rgba(213,230,198,1)));
-	background: -webkit-linear-gradient(top, rgba(214,255,207,1) 0%, rgba(213,230,198,1) 100%);
-	background: -o-linear-gradient(top, rgba(214,255,207,1) 0%, rgba(213,230,198,1) 100%);
-	background: -ms-linear-gradient(top, rgba(214,255,207,1) 0%, rgba(213,230,198,1) 100%);
-	background: linear-gradient(to bottom, rgba(214,255,207,1) 0%, rgba(213,230,198,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d6ffcf', endColorstr='#d5e6c6', GradientType=0 );
-	color: #445;
-	border-top: 1px solid #556;
-	padding: 1px;
-}
-
-.calendar tfoot .hilite { /* Hover style for buttons in footer */
-	background: #aaf;
-	border: 1px solid #04f;
-	color: #000;
-	padding: 1px;
-}
-
-.calendar tfoot .active { /* Active (pressed) style for buttons in footer */
-	background: #77c;
-	padding: 2px 0px 0px 2px;
-}
-
-/* Combo boxes (menus that display months/years for direct selection) */
-
-.calendar .combo {
-	position: absolute;
-	display: none;
-	top: 0px;
-	left: 0px;
-	width: 4em;
-	cursor: default;
-	border: 1px solid #655;
-	background: #def;
-	color: #000;
-	font-size: 90%;
-}
-
-.calendar .combo .label,
-.calendar .combo .label-IEfix {
-	text-align: center;
-	padding: 1px;
-}
-
-.calendar .combo .label-IEfix {
-	width: 4em;
-}
-
-.calendar .combo .hilite {
-	background: #acf;
-}
-
-.calendar .combo .active {
-	border-top: 1px solid #46a;
-	border-bottom: 1px solid #46a;
-	background: #eef;
-	font-weight: bold;
-}
-
-.calendar td.time {
-	color: snow;
-	background: rgba(138,179,105,1);
-	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(138,179,105,1)), color-stop(100%, rgba(63,117,15,1)));
-	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab369', endColorstr='#3f750f', GradientType=0 );
-	border-top: 1px solid #000;
-	padding: 1px 0px;
-	text-align: center;
-}
-
-.calendar td.time .hour,
-.calendar td.time .minute,
-.calendar td.time .ampm {
-	background: rgba(167,217,134,1);
-	background: -moz-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,1)), color-stop(100%, rgba(148,179,107,1)));
-	background: -webkit-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
-	background: -o-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
-	background: -ms-linear-gradient(top, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
-	background: linear-gradient(to bottom, rgba(167,217,134,1) 0%, rgba(148,179,107,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7d986', endColorstr='#94b36b', GradientType=0 );
-	color:#333;
-  	padding: 0px 3px 0px 4px;
-	font-weight: bold;
-}
-
-.calendar td.time .ampm {
-	text-align: center;
-}
-
-.calendar td.time .colon {
-	padding: 0px 2px 0px 3px;
-	font-weight: bold;
-}
-
-.calendar td.time span.hilite {
-	border-color: #000;
-	background-color: #667;
-	color: #fff;
-}
-
-.calendar td.time span.active {
-	border-color: #f00;
-	background-color: #000;
-	color: #0f0;
+.clogLimit {
+	background-color: #EACC00;
 }
 
 @media print {
@@ -1274,7 +1731,118 @@ div.calendar {
 	color: #333333;
 }
 
+.ui-tooltip-content {
+	max-width: 500px !important;
+	overflow:auto !important;
+	opacity: 0.95;
+	border-radius: 5px !important;
+	border: transparent;
+}
+
 div.preformatted {
 	font-family: monospace;
 	white-space: pre;
 }
+
+ul.pagination {
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	vertical-align:middle;
+}
+
+ul.pagination li {
+	display: inline;
+}
+
+ul.pagination li a {
+	color: snow;
+	float: left;
+	padding: 0px 2px 2px 2px;
+	text-decoration: none;
+	margin: 0px 1px;
+}
+
+ul.pagination li span {
+	color: show;
+	float: left;
+	padding: 0px 0px;
+	text-decoration: none;
+	margin: 0px 1px;
+}
+
+ul.pagination li a.active {
+	background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(167, 217, 134, 1) 0%, rgba(148, 179, 107, 1) 100%) repeat scroll 0 0;
+	color: black;
+}
+
+ul.pagination li a:hover:not(.active) {
+	background: rgba(167,217,134,0.4);
+	background: -moz-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,0.4)), color-stop(100%, rgba(148,179,107,0.2)));
+	background: -webkit-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
+	background: -o-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
+	background: -ms-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
+	background: linear-gradient(to bottom, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
+}
+
+tr#realtime td:first-child {
+	height:68px;
+}
+
+.logEmergency {
+	background-color: rgba(250, 116, 32, 0.8);
+	text-align: center;
+	width: 12.5%;
+	color: #0A0A0A;
+}
+
+.logCritical {
+	background-color: rgba(242, 23, 33, 0.8);
+	text-align: center;
+	width: 12.5%;
+	color: #0A0A0A;
+}
+
+.logAlert {
+	background-color: rgba(242, 25, 36, 0.8);
+	text-align: center;
+	width: 12.5%;
+	color: #0A0A0A;
+}
+
+.logWarning {
+	background-color: rgba(255, 122, 48, 0.8);
+	text-align: center;
+	width: 12.5%;
+	color: #0A0A0A;
+}
+
+.logError {
+	background-color: rgba(251, 74, 20, 0.8);
+	text-align: center;
+	width: 12.5%;
+	color: #0A0A0A;
+}
+
+.logNotice {
+	background-color: rgba(250, 253, 158, 0.8);
+	text-align: center;
+	width: 12.5%;
+	color: #0A0A0A;
+}
+
+.logInfo {
+	background-color: rgba(204, 255, 204, 0.8);
+	text-align: center;
+	width: 12.5%;
+	color: #0A0A0A;
+}
+
+.logDebug {
+	background-color: rgba(205, 207, 196, 0.8);
+	text-align: center;
+	width: 12.5%;
+	color: #0A0A0A;
+}
+

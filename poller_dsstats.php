@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -26,16 +26,27 @@
 /* tick use required as of PHP 4.3.0 to accomodate signal handling */
 declare(ticks = 1);
 
+/* we are not talking to the browser */
+$no_http_headers = true;
+
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Data Source Staitistcs Poller, Version $version " . COPYRIGHT_YEARS . "\n";
+}
+
 /* display_help - generic help screen for utilities
    @returns - null */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	print 'Data Sources Statistics Poller, Version ' . $version . ', ' . COPYRIGHT_YEARS . "\n\n";
-	print "usage: poller_dsstats.php [-f | --force] [-d | --debug] [-h | -H | --help] [-v | -V | --version]\n\n";
-	print "-f | --force     - Force the execution of a update process\n";
-	print "-d | --debug     - Display verbose output during execution\n";
-	print "-v -V --version  - Display this help message\n";
-	print "-h -H --help     - display this help message\n";
+	display_version();
+
+	echo "\nusage: poller_dsstats.php [--force] [--debug]\n\n";
+	echo "Cacti's Data Source Statics poller.  This poller will periodically\n";
+	echo "calculate Data Source statistics for Cacti and works in conjunction\n";
+	echo "with Cacti's performance boosting popller as required.\n\n";
+	echo "Optional:\n";
+	echo "    --force     - Force the execution of a update process\n";
+	echo "    --debug     - Display verbose output during execution\n\n";
 }
 
 /* sig_handler - provides a generic means to catch exceptions to the Cacti log.
@@ -62,9 +73,6 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-/* We are not talking to the browser */
-$no_http_headers = TRUE;
-
 /* include important functions */
 include_once('./include/global.php');
 include_once($config['base_path'] . '/lib/poller.php');
@@ -79,30 +87,39 @@ $debug          = FALSE;
 $forcerun       = FALSE;
 $forcerun_maint = FALSE;
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode('=', $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case '-d':
-	case '--debug':
-		$debug = TRUE;
-		break;
-	case '-f':
-	case '--force':
-		$forcerun = TRUE;
-		break;
-	case '-v':
-	case '--version':
-	case '-V':
-	case '--help':
-	case '-h':
-	case '-H':
-		display_help();
-		exit;
-	default:
-		print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+		case '-d':
+		case '--debug':
+			$debug = TRUE;
+			break;
+		case '-f':
+		case '--force':
+			$forcerun = TRUE;
+			break;
+		case '--version':
+		case '-v':
+		case '-V':
+			display_version();
+			exit;
+		case '--help':
+		case '-h':
+		case '-H':
+			display_help();
+			exit;
+		default:
+			echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+			display_help();
+			exit;
+		}
 	}
 }
 
@@ -113,8 +130,7 @@ if (function_exists('pcntl_signal')) {
 }
 
 /* take time and log performance data */
-list($micro,$seconds) = split(' ', microtime());
-$start = $seconds + $micro;
+$start = microtime(true);
 
 /* let's give this script lot of time to run for ever */
 ini_set('max_execution_time', '0');
@@ -135,8 +151,8 @@ if ((read_config_option('dsstats_enable') == 'on') || $forcerun) {
 	$last_run_major           = read_config_option('dsstats_last_major_run_time');
 
 	/* remove old records from the cache first */
-	if (db_fetch_cell("SELECT count(*) FROM data_source_stats_hourly_cache WHERE time < '$hourly_window'")) {
-		db_execute("DELETE FROM data_source_stats_hourly_cache WHERE time < '$hourly_window'");
+	if (db_fetch_cell_prepared('SELECT count(*) FROM data_source_stats_hourly_cache WHERE time < ?', array($hourly_window))) {
+		db_execute_prepared('DELETE FROM data_source_stats_hourly_cache WHERE time < ?', array($hourly_window));
 	}
 
 	/* store the current averages into the hourly table */

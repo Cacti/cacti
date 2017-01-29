@@ -32,9 +32,9 @@
 			<surname>Braun</surname>
 		</author>
 	</authorgroup>
-	<pubdate>2014</pubdate>
+	<pubdate>2017</pubdate>
 	<copyright>
-		<year>2014</year>
+		<year>2017</year>
 		<holder>The Cacti Group</holder>
 	</copyright>
 
@@ -68,22 +68,22 @@
 		<itemizedlist>
 			<listitem>
 				<para>
-					<application>RRDTool</application> 1.0.49 or greater, 1.4+ recommended
+					<application>RRDTool</application> 1.2 or greater, 1.5+ recommended
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>MySQL</application> 5.x or greater
+					<application>MySQL</application> 5.1 or greater
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>PHP</application> 5.1 or greater
+					<application>PHP</application> 5.3 or greater
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>Web Server that supports PHP</application> e.g. Apache or IIS
+					<application>Web Server with PHP support</application>
 				</para>
 			</listitem>
 		</itemizedlist>
@@ -298,6 +298,7 @@ DirectoryIndex index.php</userinput></screen>
 						</para>
 						<screen><prompt>shell&gt;</prompt> <userinput>mysql --user=root mysql</userinput>
 <prompt>mysql&gt;</prompt> <userinput>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY 'somepassword';</userinput>
+<prompt>mysql&gt;</prompt> <userinput>GRANT SELECT ON mysql.time_zone_name TO cactiuser@localhost;</userinput>
 <prompt>mysql&gt;</prompt> <userinput>flush privileges;</userinput></screen>
 					</listitem>
 					<listitem>
@@ -309,6 +310,11 @@ $database_default = "cacti";
 $database_hostname = "localhost";
 $database_username = "cactiuser";
 $database_password = "cacti";</userinput></screen>
+					</listitem>
+					<listitem>
+						<para>
+							Copy installed plugins from the old Cacti directory (if they exist).
+						</para>
 					</listitem>
 					<listitem>
 						<para>
@@ -681,6 +687,8 @@ Web
 				</para>
 				<screen><prompt>shell&gt;</prompt> <userinput>mysql --user=root --password mysql</userinput>
 <prompt>mysql&gt;</prompt> <userinput>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY 'somepassword';</userinput>
+<prompt>mysql&gt;</prompt> <userinput>GRANT SELECT ON mysql.time_zone_name TO cactiuser@localhost;</userinput>
+<prompt>mysql&gt;</prompt> <userinput>;</userinput>
 <prompt>mysql&gt;</prompt> <userinput>flush privileges;</userinput></screen>
 			</listitem>
 			<listitem>
@@ -3564,7 +3572,7 @@ print $b;
 			<title>Simplest Method of Going from Script to Graph (Walkthrough)</title>
 			<authorblurb>
 				<para>
-					<emphasis>Written by Kevin der Kinderen, <ulink url="http://kdeuja.com/~kevin/">http://kdeuja.com/~kevin/</ulink></emphasis>
+					<emphasis>Written by Kevin der Kinderen</emphasis>
 				</para>
 			</authorblurb>
 			<para>
@@ -4811,7 +4819,7 @@ disk /</userinput></screen>
 			<para>
 				CDEFs allow you to apply mathematical functions to graph data to alter output. The concept of a
 				CDEF comes straight from <application>RRDTool</application>, and are written in reverse polish notation (RPN). For more
-				information regarding the syntax of CDEFs, check out the <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph_data.en.html">CDEF tutorial</ulink>.
+				information regarding the syntax of CDEFs, check out the <ulink url="http://oss.oetiker.ch/rrdtool/tut/cdeftutorial.en.html">CDEF tutorial</ulink>.
 			</para>
 			<sect2 id="add_new_cdef">
 				<title>Creating a CDEF</title>
@@ -4839,7 +4847,7 @@ disk /</userinput></screen>
 						<tbody>
 							<row>
 								<entry>Function</entry>
-								<entry>You can choose a CDEF function to use as the item. The <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph.en.html">RRDTool graph manual</ulink> describes the purpose of each CDEF function.</entry>
+								<entry>You can choose a CDEF function to use as the item. The <ulink url="http://oss.oetiker.ch/rrdtool/doc/index.en.html">RRDTool graph manual</ulink> describes the purpose of each CDEF function.</entry>
 							</row>
 							<row>
 								<entry>Operator</entry>
@@ -5455,7 +5463,7 @@ Localhost - mtaReceivedVolume 	SNMP Version: 1, Community: somesecret, OID: .1.3
 
 			<para>Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q rebuild_poller_cache.php --help
-Cacti Rebuild Poller Cache Script 1.0, Copyright 2004-2014 - The Cacti Group
+Cacti Rebuild Poller Cache Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 usage: rebuild_poller_cache.php [-d] [-h] [--help] [-v] [--version]
 
@@ -5535,7 +5543,7 @@ WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take qui
 			<para>If you feel the need for manual re-indexing, you may run it from cli.
 			Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php --help
-Cacti Reindex Host Script 1.2, Copyright 2004-2014 - The Cacti Group
+Cacti Reindex Host Script 1.2, Copyright 2004-2017 - The Cacti Group
 
 usage: poller_reindex_hosts.php --id=[host_id|All] [--qid=[ID|All]] [--host-descr=[description]]
                            [-d] [-h] [--help] [-v] [--version]
@@ -5597,7 +5605,7 @@ DEBUG: Data query number '1' host: '2' SNMP Query Id: '1' ending</screen>
 			<emphasis>after increasing PHP memory appropriately</emphasis> by running
 			this very script. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_output_empty.php --help
-Cacti Empty Poller Output Table Script 1.0, Copyright 2004-2014 - The Cacti Group
+Cacti Empty Poller Output Table Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 usage: poller_output_empty.php [-h] [--help] [-v] [--version]
 
@@ -5647,7 +5655,7 @@ There were 21, RRD updates made this pass
 			all existing graphs. This is, where <application>poller_graphs_reapply_names.php</application>
 			drops in. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_graphs_reapply_names.php --help
-Cacti Reapply Graph Names Script 1.0, Copyright 2004-2014 - The Cacti Group
+Cacti Reapply Graph Names Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 usage: poller_graphs_reapply_names.php -id=[host_id|All][host_id1|host_id2|...] [-s=[search_string] [-d] [-h] [--help] [-v] [--version]
 
@@ -5718,7 +5726,7 @@ Harry Potter 	Guest Account 	Yes 		Local 	ALLOW 			N/A</screen>
 			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_device.php --help
 
-Add Device Script 1.0, Copyright 2004-2014 - The Cacti Group
+Add Device Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 A simple command line utility to add a device in Cacti
 
@@ -5822,7 +5830,7 @@ Device Add Test 	0 	0 		Unknown router.mydomain.com 	0 		0 		100</screen>
 			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_data_query.php --help
 
-Add Data Query Script 1.0, Copyright 2004-2014 - The Cacti Group
+Add Data Query Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 A simple command line utility to add a data query to an existing device in Cacti
 
@@ -5889,7 +5897,7 @@ Success - Host (11: router.mydomain.com) data query (1: SNMP - Interface Statist
 			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_graph_template.php --help
 
-Add Graph Template Script 1.0, Copyright 2004-2014 - The Cacti Group
+Add Graph Template Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 A simple command line utility to associate a graph template with a host in Cacti
 
@@ -6184,7 +6192,7 @@ Device Add Test - Traffic - lo  	Interface - Traffic (bits/sec)  	120x500</scree
 			Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_tree.php --help
 
-Add Tree Script 1.0, Copyright 2004-2014 - The Cacti Group
+Add Tree Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 A simple command line utility to add objects to a tree in Cacti
 
@@ -6373,7 +6381,7 @@ Added Node node-id: (28)</screen>
 			the parameter <userinput>--help</userinput></para>
 			<screen><prompt>shell&gt;</prompt>php -q add_perms.php --help
 
-Add Permissions Script 1.0, Copyright 2004-2014 - The Cacti Group
+Add Permissions Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 A simple command line utility to add permissions to tree items in Cacti
 

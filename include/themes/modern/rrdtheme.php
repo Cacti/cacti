@@ -3,8 +3,8 @@ $rrdcolors['back']   = 'F3F3F3';
 $rrdcolors['canvas'] = 'FDFDFD';
 $rrdcolors['shadea'] = 'CBCBCB';
 $rrdcolors['shadeb'] = '999999';
-$rrdcolors['grid']   = 'C4C4C4';
-$rrdcolors['mgrid']  = '1A1C1C';
+#$rrdcolors['grid']   = 'C4C4C4';
+#$rrdcolors['mgrid']  = '1A1C1C';
 $rrdcolors['font']   = '000000';
 $rrdcolors['axis']   = '2C4D43';
 $rrdcolors['arrow']  = '2C4D43';
@@ -24,4 +24,3 @@ $rrdfonts['watermark']['size'] = '6';
 
 # Only supported in RRDtool 1.4+
 $rrdborder = 1;
-?>

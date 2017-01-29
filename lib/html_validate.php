@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -35,25 +35,31 @@ function input_validate_input_number($value) {
 }
 
 function input_validate_input_regex($value, $regex) {
-	if ((!preg_match('/' . $regex . '/', $value)) && ($value != '')) {
+	if ($value != null && $value != '' && (!preg_match('/' . $regex . '/', $value))) {
 		die_html_input_error();
 	}
 }
 
-function die_html_input_error() {
+function html_log_input_error($variable) {
+	cacti_debug_backtrace("Input Validation Not Performed for '$variable'");
+}
+
+function die_html_input_error($variable = '', $value = '', $message = '') {
 	global $config;
 
 	?>
-	<table width="100%" align="center">
+	<table style="width:100%;text-align:center;">
 		<tr>
 			<td>
-				Validation error.
+				Validation error<?php print ($variable != '' ? ' for variable ' . $variable . ', with value of "' . $value . '"' . ($message != '' ? ', and error:' . $message : '') : '');?>.  See backtrace below for more details.
 			</td>
 		</tr>
 	</table>
 	<?php
 
-	include_once('./include/bottom_footer.php');
+	cacti_debug_backtrace('Validation Error' . ($variable != '' ? ", Variable:$variable":"") . ($value != '' ? ", Value:$value":""), true);
+
+	bottom_footer();
 	exit;
 }
 

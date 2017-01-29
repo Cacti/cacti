@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -22,14 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
+global $no_session_write;
+
 $oper_mode = api_plugin_hook_function('bottom_footer', OPER_MODE_NATIVE);
 if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) {
 
 ?>
-			</div>
-		</td>
-	</tr>
-</table>
+		</div>
+	</div>
+</div>
 <?php api_plugin_hook('page_bottom');?>
 <script type='text/javascript'>
 $(function() { 
@@ -50,6 +51,11 @@ kill_session_var("sess_field_values");
 
 /* make sure the debug log doesn't get too big */
 debug_log_clear();
+
+/* close the session */
+if (array_search(basename($_SERVER['PHP_SELF']), $no_session_write) === false) {
+	session_write_close();
+}
 
 /* close the database connection */
 db_close();

@@ -1,7 +1,7 @@
 <?php
 /*
    +-------------------------------------------------------------------------+
-   | Copyright (C) 2004-2015 The Cacti Group                                 |
+   | Copyright (C) 2004-2017 The Cacti Group                                 |
    |                                                                         |
    | This program is free software; you can redistribute it and/or           |
    | modify it under the terms of the GNU General Public License             |
@@ -191,20 +191,22 @@ class MibParser extends MibCache {
 	 */
 	function parse_simple_token($tokens, &$index, $allowed=NULL)
 	{
+		$index++;
+	
 		if(is_array($allowed))
 		{
-			if(in_array(strtolower($tokens[$index+1]), $allowed))
-				return $tokens[++$index];
+			if(in_array(strtolower($tokens[$index]), $allowed))
+				return $tokens[$index];
 		}
 		elseif(is_null($allowed))
 		{
-			if($tokens[$index+1] == '{')
-				return MibParser::parse_bracket_token($tokens, ++$index, '{', '}');
+			if($tokens[$index] == '{')
+				return MibParser::parse_bracket_token($tokens, $index, '{', '}');
 			else
-				return $tokens[++$index];
+				return $tokens[$index];
 		}
-		trigger_error("unknown token {$tokens[$index]} {$tokens[$index+1]}", E_USER_ERROR);
-		return $tokens[++$index];
+		trigger_error("unknown token {$tokens[$index]} {$tokens[$index]}", E_USER_ERROR);
+		return $tokens[$index];
 	}
 
 	/**
@@ -222,30 +224,33 @@ class MibParser extends MibCache {
 			case 'SEQUENCE':
 				if($tokens[$index+2] == 'OF')
 				{
-					$index += 2;
-					if($tokens[$index+1] == '{')
-						$ret = array('SEQUENCE OF'=>MibParser::parse_bracket_token($tokens, ++$index, '{', '}'));
+					$index += 3;
+					if($tokens[$index] == '{')
+						$ret = array('SEQUENCE OF'=>MibParser::parse_bracket_token($tokens, $index, '{', '}'));
 					else
-						$ret = array('SEQUENCE OF'=>$tokens[++$index]);
+						$ret = array('SEQUENCE OF'=>$tokens[$index]);
 				}
 				break;
 			case 'OCTET':
 				if($tokens[$index+2] == 'STRING')
 				{
-					$index += 2;
-					if($tokens[$index+1] == '{')
-						$ret = array('OCTET STRING'=>MibParser::parse_bracket_token($tokens, ++$index, '{', '}'));
-					elseif($tokens[$index+1] == '(')
-						$ret = array('OCTET STRING'=>MibParser::parse_bracket_token($tokens, ++$index, '(', ')'));
+					$index += 3;
+					if($tokens[$index] == '{')
+						$ret = array('OCTET STRING'=>MibParser::parse_bracket_token($tokens, $index, '{', '}'));
+					elseif($tokens[$index] == '(')
+						$ret = array('OCTET STRING'=>MibParser::parse_bracket_token($tokens, $index, '(', ')'));
 					else
 						$ret = 'OCTET STRING';
 				}
 				break;
 			case 'OBJECT':
-				if($tokens[$index+2] == 'IDENTIFIER')
-					$ret = $tokens[++$index] . ' ' . $tokens[++$index];
-				else
+				if($tokens[$index+2] == 'IDENTIFIER') {
+					$index++;
+					$ret = $tokens[$index] . ' ' . $tokens[$index+1];
+					$index++;
+				}else {
 					trigger_error("unknown token {$tokens[$index+1]} {$tokens[$index+2]}", E_USER_ERROR);
+				}
 				break;
 			case 'INTEGER':
 			case 'Counter':
@@ -262,18 +267,26 @@ class MibParser extends MibCache {
 			case 'TimeInterval':
 			case 'Unsigned32':
 			case 'DisplayString':
-				$ret = $tokens[++$index];
-				if($tokens[$index+1] == '{')
-					$ret = array($ret=>MibParser::parse_bracket_token($tokens, ++$index, '{', '}'));
-				elseif($tokens[$index+1] == '(')
-					$ret = array($ret=>MibParser::parse_bracket_token($tokens, ++$index, '(', ')'));
+				$index++;
+				$ret = $tokens[$index];
+				if($tokens[$index+1] == '{') {
+					$index++;
+					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '{', '}'));
+				}elseif($tokens[$index+1] == '(') {
+					$index++;
+					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '(', ')'));
+				}
 				break;
 			default:
-				$ret = $tokens[++$index];
-				if($tokens[$index+1] == '{')
-					$ret = array($ret=>MibParser::parse_bracket_token($tokens, ++$index, '{', '}'));
-				elseif($tokens[$index+1] == '(')
-					$ret = array($ret=>MibParser::parse_bracket_token($tokens, ++$index, '(', ')'));
+				$index++;
+				$ret = $tokens[$index];
+				if($tokens[$index+1] == '{') {
+					$index++;
+					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '{', '}'));
+				}elseif($tokens[$index+1] == '(') {
+					$index++;
+					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '(', ')'));
+				}
 				break;
 		}
 		return $ret;
@@ -470,5 +483,3 @@ class MibParser extends MibCache {
 	}
 
 }
-
-?>

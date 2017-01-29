@@ -1,8 +1,9 @@
+#!/usr/bin/php -q
 <?php
 /*
  ex: set tabstop=4 shiftwidth=4 autoindent:
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,59 +25,69 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 $no_http_headers = true;
 
-include("../include/global.php");
+include('../include/global.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 global $debug;
 
-$debug = FALSE;
+$debug = false;
 $size  = 300000;
-$rebuild = FALSE;
+$rebuild = false;
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode("=", $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case "-d":
-	case "--debug":
-		$debug = TRUE;
-		break;
-	case "-r":
-	case "--rebuild":
-		$rebuild = TRUE;
-		break;
-	case "-s":
-	case "--size":
-		$size = $value;
-		break;
-	case "-h":
-	case "-v":
-	case "-V":
-	case "--version":
-	case "--help":
-		display_help();
-		exit;
-	default:
-		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+			case '-d':
+			case '--debug':
+				$debug = true;
+				break;
+			case '-r':
+			case '--rebuild':
+				$rebuild = true;
+				break;
+			case '-s':
+			case '--size':
+				$size = $value;
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 echo "Converting All Non-Memory Cacti Database Tables to Innodb with Less than '$size' Records\n";
 
-$engines = db_fetch_assoc("SHOW ENGINES");
+$engines = db_fetch_assoc('SHOW ENGINES');
 
 foreach($engines as $engine) {
-	if (strtolower($engine["Engine"]) == "innodb" && strtolower($engine["Support"] == "off")) {
+	if (strtolower($engine['Engine']) == 'innodb' && strtolower($engine['Support'] == 'off')) {
 		echo "InnoDB Engine is not enabled\n";
 		exit;
 	}
@@ -84,37 +95,43 @@ foreach($engines as $engine) {
 
 $file_per_table = db_fetch_row("show global variables like 'innodb_file_per_table'");
 
-if (strtolower($file_per_table["Value"]) != "on") {
-	echo "innodb_file_per_table not enabled";
+if (strtolower($file_per_table['Value']) != 'on') {
+	echo 'innodb_file_per_table not enabled';
 	exit;
 }
 
-$tables = db_fetch_assoc("SHOW TABLE STATUS");
+$tables = db_fetch_assoc('SHOW TABLE STATUS');
 
 if (sizeof($tables)) {
-foreach($tables AS $table) {
-	if ($table["Engine"] == "MyISAM" || ($table["Engine"] == "InnoDB" && $rebuild)) {
-		if ($table["Rows"] < $size) {
-			echo "Converting Table -> '" . $table['Name'] . "'";
-			$status = db_execute("ALTER TABLE " . $table['Name'] . " ENGINE=Innodb");
-			echo ($status == 0 ? " Failed" : " Successful") . "\n";
+	foreach($tables AS $table) {
+		if ($table['Engine'] == 'MyISAM' || ($table['Engine'] == 'InnoDB' && $rebuild)) {
+			if ($table['Rows'] < $size) {
+				echo "Converting Table -> '" . $table['Name'] . "'";
+				$status = db_execute('ALTER TABLE ' . $table['Name'] . ' ENGINE=Innodb');
+				echo ($status == 0 ? ' Failed' : ' Successful') . "\n";
+			}else{
+				echo "Skipping Table -> '" . $table['Name'] . " too many rows '" . $table['Rows'] . "'\n";
+			}
 		}else{
-			echo "Skipping Table -> '" . $table['Name'] . " too many rows '" . $table["Rows"] . "'\n";
+			echo "Skipping Table ->'" . $table['Name'] . "\n";
 		}
-	}else{
-		echo "Skipping Table ->'" . $table['Name'] . "\n";
 	}
 }
+
+/*  display_version - displays version information */
+function display_version() {
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Database Conversion Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Cacti Database Conversion Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "usage: convert_innodb.php [-d] [-h] [--form] [--help] [-v] [-V] [--version]\n\n";
-	echo "-d | --debug     - Display verbose output during execution\n";
-	echo "-s | --size=N    - The largest table size in records to convert\n";
-	echo "-v -V --version  - Display this help message\n";
-	echo "-h --help        - display this help message\n";
+	display_version();
+
+	echo "\nusage: convert_innodb.php [--debug] [--site=N] \n\n";
+	echo "A utility to convert a Cacti Database from MyISAM to the InnoDB table format\n\n";
+	echo "Optional:\n";
+	echo "-s | --size=N  - The largest table size in records to convert\n";
+	echo "-r | --rebuild - Will compress/optimize existing InnoDB tables if found\n";
+	echo "-d | --debug   - Display verbose output during execution\n\n";
 }
-?>

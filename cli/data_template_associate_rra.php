@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,38 +24,59 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset ($_SERVER["argv"][0]) || isset ($_SERVER['REQUEST_METHOD']) || isset ($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset ($_SERVER['argv'][0]) || isset ($_SERVER['REQUEST_METHOD']) || isset ($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 /* We are not talking to the browser */
 $no_http_headers = true;
 
-include (dirname(__FILE__) . "/../include/global.php");
+include (dirname(__FILE__) . '/../include/global.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
-$me    = array_shift($parms);
-$debug = FALSE;	# no debug mode
+$parms            = $_SERVER['argv'];
+$debug            = false;	
 $data_template_id = 0;
-$quietMode = false;
-$rra = '';
+$quietMode        = false;
+$rra              = '';
 
 if (sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		@ list ($arg, $value) = @ explode("=", $parameter);
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
 		switch ($arg) {
-			case "-d":
-			case "--debug":				$debug 						= TRUE; 		break;
-			case "--rra":				$rra						= trim($value);	break;
-			case "--data-template-id" :	$data_template_id 			= trim($value);	break;
-			case "-V":
-			case "-H":
-			case "--help":
-			case "--version":		display_help($me);								exit(0);
-			case "--quiet":			$quietMode = TRUE;								break;
-			default:				echo "ERROR: Invalid Argument: ($arg)\n\n"; display_help($me); exit(1);
+			case '-d':
+			case '--debug':				
+				$debug = TRUE;
+				break;
+			case '--rra':
+				$rra = trim($value);
+				break;
+			case '--data-template-id':
+				$data_template_id = trim($value);
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			case '--quiet':
+				$quietMode = TRUE;
+				break;
+			default:
+				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				display_help();
+				exit(1);
 		}
 	}
 
@@ -85,13 +106,12 @@ if (sizeof($parms)) {
 	}
 
 } else {
-	display_help($me);
+	display_help();
 	exit (0);
 }
 
 
 function associate($data_template_id, $data_rra, $debug, $quiet) {
-
 	/* get a list of data sources using this template 
 	 * including the template itself */
 	$data_sources = db_fetch_assoc("SELECT
@@ -123,14 +143,18 @@ function associate($data_template_id, $data_rra, $debug, $quiet) {
 	return;
 }
 
-function display_help($me) {
+/*  display_version - displays version information */
+function display_version() {
 	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Data Template Associate RRD Utilivy, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "A simple command line utility to associate RRA definitions to a data template in Cacti\n\n";
-	echo "usage: $me --rra='rra-1:..:rra-n' --data-template-id=[ID]\n";
-	echo "Required:\n";
-	echo "    --rra                  the rra ids that shall be associated, seperated by colon\n";
-	echo "    --data-template-id     the data template id\n";
+	echo "Cacti Data Template Associate RRD Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
-?>
 
+function display_help() {
+	display_version();
+
+	echo "usage: data_template_associate.php --rra='rra-1:..:rra-n' --data-template-id=[ID]\n\n";
+	echo "A simple command line utility to associate RRA definitions to a data template in Cacti\n\n";
+	echo "Required:\n";
+	echo "    --rra               - The rra ids that shall be associated, seperated by colon\n";
+	echo "    --data-template-id  - The data template id\n\n";
+}

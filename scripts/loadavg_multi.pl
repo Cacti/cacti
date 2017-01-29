@@ -1,7 +1,10 @@
 #!/usr/bin/perl
+delete @ENV{qw(PATH)};
+$ENV{PATH} = "/usr/bin:/bin";
+$path = $ENV{'PATH'};
 
 #get load avg for 1;5;10 min
-open(PROCESS, "uptime |");
+open(PROCESS, "env LC_ALL=C uptime |");
 $avg = <PROCESS>;
 close(PROCESS);
 

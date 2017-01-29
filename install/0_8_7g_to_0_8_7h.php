@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,38 +24,30 @@
 
 function upgrade_to_0_8_7h() {
 	global $config;
+
 	require_once($config["base_path"] . "/lib/poller.php");
 
 	/* speed up the reindexing */
-	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM host_snmp_cache"), "Field", "Field");
-	if (!in_array("present", $_columns)) {
-		db_install_execute("0.8.7h", "ALTER TABLE host_snmp_cache ADD COLUMN present tinyint NOT NULL DEFAULT '1' AFTER `oid`");
-		db_install_execute("0.8.7h", "ALTER TABLE host_snmp_cache ADD INDEX present (present)");
-		cacti_log(__FUNCTION__ . " upgrade table host_snmp_cache", false, "UPGRADE");
+	if (!db_column_exists('host_snmp_cache', 'present', false)) {
+		db_install_add_column ('host_snmp_cache', array('name' => 'present', 'type' => 'tinyint', 'NULL' => false, 'default' => '1', 'after' => 'oid'));
+		db_install_execute("ALTER TABLE host_snmp_cache ADD INDEX present (present)");
 	}
-	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM poller_item"), "Field", "Field");
-	if (!in_array("present", $_columns)) {
-		db_install_execute("0.8.7h", "ALTER TABLE poller_item ADD COLUMN present tinyint NOT NULL DEFAULT '1' AFTER `action`");
-		db_install_execute("0.8.7h", "ALTER TABLE poller_item ADD INDEX present (present)");
-		cacti_log(__FUNCTION__ . " upgrade table poller_item", false, "UPGRADE");
+	if (!db_column_exists('poller_item', 'present', false)) {
+		db_install_add_column ('poller_item', array('name' => 'present', 'type' => 'tinyint', 'NULL' => false, 'default' => '1', 'after' => 'action'));
+		db_install_execute("ALTER TABLE poller_item ADD INDEX present (present)");
 	}
-	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM poller_reindex"), "Field", "Field");
-	if (!in_array("present", $_columns)) {
-		db_install_execute("0.8.7h", "ALTER TABLE poller_reindex ADD COLUMN present tinyint NOT NULL DEFAULT '1' AFTER `action`");
-		db_install_execute("0.8.7h", "ALTER TABLE poller_reindex ADD INDEX present (present)");
-		cacti_log(__FUNCTION__ . " upgrade table poller_reindex", false, "UPGRADE");
+	if (!db_column_exists('poller_reindex', 'present', false)) {
+		db_install_add_column ('poller_reindex', array('name' => 'present', 'type' => 'tinyint', 'NULL' => false, 'default' => '1', 'after' => 'action'));
+		db_install_execute("ALTER TABLE poller_reindex ADD INDEX present (present)");
 	}
 
-	$_columns = array_rekey(db_fetch_assoc("SHOW COLUMNS FROM host"), "Field", "Field");
-	if (!in_array("device_threads", $_columns)) {
-		db_install_execute("0.8.7h", "ALTER TABLE host ADD COLUMN device_threads tinyint(2) unsigned NOT NULL DEFAULT '1' AFTER max_oids;");
-		cacti_log(__FUNCTION__ . " upgrade table host", false, "UPGRADE");
+	if (!db_column_exists('host', 'device_threads', false)) {
+		db_install_add_column ('host', array('name' => 'device_threads', 'type' => 'tinyint(2) unsigned', 'NULL' => false, 'default' => '1', 'after' => 'max_oids'));
 	}
 
 	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM data_template_rrd"), "Key_name", "Key_name");
 	if (!in_array("duplicate_dsname_contraint", $_keys)) {
-		db_install_execute("0.8.7h", "ALTER TABLE `data_template_rrd` ADD UNIQUE INDEX `duplicate_dsname_contraint` (`local_data_id`, `data_source_name`, `data_template_id`)");
-		cacti_log(__FUNCTION__ . " upgrade table data_template_rrd", false, "UPGRADE");
+		db_install_execute("ALTER TABLE `data_template_rrd` ADD UNIQUE INDEX `duplicate_dsname_contraint` (`local_data_id`, `data_source_name`, `data_template_id`)");
 	}
 
 	/* update the reindex cache, as we now introduced more options for "index count changed" */
@@ -63,6 +55,4 @@ function upgrade_to_0_8_7h() {
 	$extra_args = "-q \"" . $config["base_path"] . "/cli/poller_reindex_hosts.php\" --id=all";
 	exec_background($command_string, "$extra_args");
 	cacti_log(__FUNCTION__ . " running $command_string $extra_args", false, "UPGRADE");
-
 }
-?>

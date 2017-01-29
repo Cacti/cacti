@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -25,44 +25,61 @@
 include('./include/auth.php');
 
 /* set default action */
-if (!isset($_REQUEST['action'])) { $_REQUEST['action'] = ''; }
+set_default_action();
 
-switch ($_REQUEST['action']) {
+get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+
+switch (get_request_var('action')) {
 case 'save':
-	while (list($field_name, $field_array) = each($settings{$_POST['tab']})) {
+	while (list($field_name, $field_array) = each($settings{get_request_var('tab')})) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
 		}elseif ($field_array['method'] == 'checkbox') {
-			if (isset($_POST[$field_name])) {
+			if (isset_request_var($field_name)) {
 				db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, 'on')", array($field_name));
 			}else{
 				db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, '')", array($field_name));
 			}
 		}elseif ($field_array['method'] == 'checkbox_group') {
 			while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-				if (isset($_POST[$sub_field_name])) {
+				if (isset_request_var($sub_field_name)) {
 					db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, 'on')", array($sub_field_name));
 				}else{
 					db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, '')", array($sub_field_name));
 				}
 			}
 		}elseif ($field_array['method'] == 'textbox_password') {
-			if ($_POST[$field_name] != $_POST[$field_name.'_confirm']) {
+			if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
 				raise_message(4);
 				break;
-			}elseif (isset($_POST[$field_name])) {
-				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_request_var_post($field_name)));
+			}elseif (!isempty_request_var($field_name)) {
+				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
 			}
 		}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 			while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
-				if (isset($_POST[$sub_field_name])) {
-					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($sub_field_name, get_request_var_post($sub_field_name)));
+				if (isset_request_var($sub_field_name)) {
+					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($sub_field_name, get_nfilter_request_var($sub_field_name)));
 				}
 			}
-		}elseif (isset($_POST[$field_name])) {
-			db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_request_var_post($field_name)));
+		}elseif (isset_request_var($field_name)) {
+			if (is_array(get_nfilter_request_var($field_name))) {
+				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, implode(',', get_nfilter_request_var($field_name))));
+			}else{
+				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
+			}
 		}
 	}
+
+	if (isset_request_var('log_verbosity')) {
+		if (!isset_request_var('selective_debug')) {
+			db_execute('REPLACE INTO settings (name, value) VALUES("selective_debug", "")');
+		}
+
+		if (!isset_request_var('selective_plugin_debug')) {
+			db_execute('REPLACE INTO settings (name, value) VALUES("selective_plugin_debug", "")');
+		}
+	}
+
 	/* update snmpcache */
 	snmpagent_global_settings_update();
 	
@@ -72,10 +89,10 @@ case 'save':
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var('sess_config_array');
 
-	if (isset($_REQUEST['header']) && $_REQUEST['header'] == 'false') {
-		header('Location: settings.php?header=false&tab=' . $_POST['tab']);
+	if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
+		header('Location: settings.php?header=false&tab=' . get_request_var('tab'));
 	}else{
-		header('Location: settings.php?tab=' . $_POST['tab']);
+		header('Location: settings.php?tab=' . get_request_var('tab'));
 	}
 
 	break;
@@ -86,7 +103,7 @@ default:
 	top_header();
 
 	/* set the default settings category */
-	if (!isset($_REQUEST['tab'])) {
+	if (!isset_request_var('tab')) {
 		/* there is no selected tab; select the first one */
 		if (isset($_SESSION['sess_settings_tab'])) {
 			$current_tab = $_SESSION['sess_settings_tab'];
@@ -95,24 +112,30 @@ default:
 			$current_tab = $current_tab[0];
 		}
 	}else{
-		$current_tab = $_REQUEST['tab'];
+		$current_tab = get_request_var('tab');
 	}
 	$_SESSION['sess_settings_tab'] = $current_tab;
 
 	/* draw the categories tabs on the top of the page */
-	print "<table cellpadding='0' cellspacing='0' border='0'><tr><td>\n";
-	print "<div class='tabs' style='float:left;'><nav><ul>\n";
+	print "<table><tr><td style='padding-bottom:0px;'>\n";
+	print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
 	if (sizeof($tabs) > 0) {
-	foreach (array_keys($tabs) as $tab_short_name) {
-		print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>$tabs[$tab_short_name]</a></li>\n";
-	}
+		$i = 0;
+
+		foreach (array_keys($tabs) as $tab_short_name) {
+			print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
+
+			$i++;
+		}
 	}
 
 	print "</ul></nav></div>\n";
-	print "</tr></table><table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td>\n";
+	print "</tr></table><table style='width:100%;'><tr><td style='padding:0px;'>\n";
 
-	html_start_box('<strong>Cacti Settings (' . $tabs[$current_tab] . ')</strong>', '100%', '', '3', 'center', '');
+	form_start('settings.php', 'chk');
+
+	html_start_box( __('Cacti Settings (%s)', $tabs[$current_tab]), '100%', '', '3', 'center', '');
 
 	$form_array = array();
 
@@ -138,15 +161,18 @@ default:
 
 	draw_edit_form(
 		array(
-			'config' => array(),
-			'fields' => $form_array)
-			);
+			'config' => array('no_form_tag' => true),
+			'fields' => $form_array
+		)
+	);
 
 	html_end_box();
 
 	form_hidden_box('tab', $current_tab, '');
 
 	form_save_button('', 'save');
+
+	form_end();
 
 	print "</td></tr></table>\n";
 
@@ -157,26 +183,111 @@ default:
 	var currentTheme = '';
 
 	$(function() {
+		$('#selective_plugin_debug').multiselect({
+			noneSelectedText: '<?php print __('Select Plugin(s)');?>', 
+			selectedText: function(numChecked, numTotal, checkedItems) {
+				myReturn = numChecked + ' <?php print __('Plugins Selected');?>';
+				return myReturn;
+			},
+			checkAllText: '<?php print __('All');?>', 
+			uncheckAllText: '<?php print __('None');?>',
+			uncheckall: function() {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).prop('checked', true);
+				});
+			}
+		}).multiselectfilter( {
+			label: '<?php print __('Search');?>', width: '150'
+		});
+
+		$('#selective_debug').multiselect({
+			noneSelectedText: '<?php print __('Select File(s)');?>', 
+			selectedText: function(numChecked, numTotal, checkedItems) {
+				myReturn = numChecked + ' <?php print __('Files Selected');?>';
+				return myReturn;
+			},
+			checkAllText: '<?php print __('All');?>', 
+			uncheckAllText: '<?php print __('None');?>',
+			uncheckall: function() {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).prop('checked', true);
+				});
+			}
+		}).multiselectfilter( {
+			label: '<?php print __('Search');?>', width: '150'
+		});
+
+		$('#spikekill_templates').multiselect({
+			noneSelectedText: '<?php print __('Select Template(s)');?>', 
+			selectedText: function(numChecked, numTotal, checkedItems) {
+				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
+				$.each(checkedItems, function(index, value) {
+					if (value.value == '0') {
+						myReturn='<?php print __('All Templates Selected');?>';
+						return false;
+					}
+				});
+				return myReturn;
+			},
+			checkAllText: '<?php print __('All');?>', 
+			uncheckAllText: '<?php print __('None');?>',
+			uncheckall: function() {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).prop('checked', true);
+				});
+			},
+			click: function(event, ui) {
+				checked=$(this).multiselect('widget').find('input:checked').length;
+
+				if (ui.value == '0') {
+					if (ui.checked == true) {
+						$('#host').multiselect('uncheckAll');
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).prop('checked', true);
+						});
+					}
+				}else if (checked == 0) {
+					$(this).multiselect('widget').find(':checkbox:first').each(function() {
+						$(this).click();
+					});
+				}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
+					if (checked > 0) {
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).click();
+							$(this).prop('disable', true);
+						});
+					}
+				}
+			}
+		}).multiselectfilter( {
+			label: '<?php print __('Search');?>', width: '150'
+		});
+
 		$('.subTab').find('a').click(function(event) {
 			event.preventDefault();
-			href = $(this).attr('href');
-			href = href+ (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
-			$.get(href, function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			strURL = $(this).attr('href');
+			strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
+			loadPageNoHeader(strURL);
 		});
 		
 		$('input[value="Save"]').click(function(event) {
 			event.preventDefault();
+
+			if (parseInt($('#cron_interval').val()) < parseInt($('#poller_interval').val())) {
+				$('#message_container').html('<div id="message" class="textError messageBox"><?php print __('Poller Interval must be less than Cron Interval');?></div>').show().delay(4000).slideUp('fast', function() {
+					$('#message_container').empty();
+				});
+				return false;
+			}
+
 			if (themeChanged != true) {
 				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
-					$('#main').html(data);
+					$('#main').hide().html(data);
 					applySkin();
 				});
 			}else{
 				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
-					document.location = 'settings.php?tab='+$('#tab').val();
+					document.location = 'settings.php?newtheme=1&tab='+$('#tab').val();
 				});
 			}
 		});
@@ -185,7 +296,7 @@ default:
 			$('#emailtest').click(function() {
 				var $div = $('<div />').appendTo('body');
 				$div.attr('id', 'testmail');
-				$('#testmail').prop('title', 'Test E-Mail Results');
+				$('#testmail').prop('title', '<?php print __('Test Email Results');?>');
 				$('#testmail').dialog({
 					autoOpen: false,
 					modal: true,
@@ -208,156 +319,155 @@ default:
 				});
 			});
 		}
-	});
 
-	if ($('#row_font_method')) {
-		currentTheme = $('#selected_theme').val();
+		if ($('#row_font_method')) {
+			currentTheme = $('#selected_theme').val();
 
-		initFonts();
-		initRealtime();
-
-		$('#font_method').change(function() {
 			initFonts();
-		});
-
-		$('#selected_theme').change(function() {
-			themeChanger();
-		});
-
-		$('#realtime_enabled').change(function() {
 			initRealtime();
-		});
-	}
 
-	if ($('#row_snmp_ver')) {
-		initSNMP();
-		$('#snmp_ver').change(function() {
-			initSNMP();
-		});
-	}
+			$('#font_method').change(function() {
+				initFonts();
+			});
 
-	if ($('#row_availability_method')) {
-		initAvail();
-		$('#availability_method').change(function() {
-			initAvail();
-		});
-	}
+			$('#selected_theme').change(function() {
+				themeChanger();
+			});
 
-	if ($('#row_export_type')) {
-		initFTPExport();
-		initPresentation();
-		initTiming();
-
-		$('#export_type').change(function() {
-			initFTPExport();
-		});
-
-		$('#export_presentation').change(function() {
-			initPresentation();
-		});
-
-		$('#export_timing').change(function() {
-			initTiming();
-		});
-
-		$('#export_type').change(function() {
-			initFTPExport();
-		});
-	}
-
-	if ($('#row_auth_method')) {
-		initAuth();
-		initSearch();
-		initGroupMember();
-
-		$('#auth_method').change(function() {
-			initAuth();
-		});
-
-		$('#ldap_mode').change(function() {
-			initSearch();
-		});
-
-		$('#ldap_group_require').change(function() {
-			initGroupMember();
-		});
-	}
-
-	if ($('#rrd_autoclean')) {
-		initRRDClean();
-
-		$('#rrd_autoclean').change(function() {
-			initRRDClean();
-		});
-
-		$('#rrd_autoclean_method').change(function() {
-			initRRDClean();
-		});
-	}
-
-	if ($('#boost_rrd_update_enable')) {
-		initBoostOD();
-		initBoostServer();
-		initBoostCache();
-
-		$('#boost_rrd_update_enable').change(function() {
-			initBoostOD();
-		});
-
-		$('#boost_server_enable').change(function() {
-			initBoostServer();
-		});
-
-		$('#boost_png_cache_enable').change(function() {
-			initBoostCache();
-		});
-	}
-
-	if ($('#settings_test_email')) {
-		initMail();
-
-		$('#settings_how').change(function() {
-			initMail();
-		});
-	}
-
-	function initMail() {
-		switch($('#settings_how').val()) {
-		case '0':
-			$('#row_settings_sendmail_header').hide();
-			$('#row_settings_sendmail_path').hide();
-			$('#row_settings_smtp_header').hide();
-			$('#row_settings_smtp_host').hide();
-			$('#row_settings_smtp_port').hide();
-			$('#row_settings_smtp_username').hide();
-			$('#row_settings_smtp_password').hide();
-			$('#row_settings_smtp_secure').hide();
-			$('#row_settings_smtp_timeout').hide();
-			break;
-		case '1':
-			$('#row_settings_sendmail_header').show();
-			$('#row_settings_sendmail_path').show();
-			$('#row_settings_smtp_header').hide();
-			$('#row_settings_smtp_host').hide();
-			$('#row_settings_smtp_port').hide();
-			$('#row_settings_smtp_username').hide();
-			$('#row_settings_smtp_password').hide();
-			$('#row_settings_smtp_secure').hide();
-			$('#row_settings_smtp_timeout').hide();
-			break;
-		case '2':
-			$('#row_settings_sendmail_header').hide();
-			$('#row_settings_sendmail_path').hide();
-			$('#row_settings_smtp_header').show();
-			$('#row_settings_smtp_host').show();
-			$('#row_settings_smtp_port').show();
-			$('#row_settings_smtp_username').show();
-			$('#row_settings_smtp_password').show();
-			$('#row_settings_smtp_secure').show();
-			$('#row_settings_smtp_timeout').show();
-			break;
+			$('#realtime_enabled').change(function() {
+				initRealtime();
+			});
 		}
-	}
+
+		if ($('#row_snmp_ver')) {
+			initSNMP();
+			$('#snmp_ver').change(function() {
+				initSNMP();
+			});
+		}
+
+		if ($('#row_availability_method')) {
+			initAvail();
+			$('#availability_method').change(function() {
+				initAvail();
+			});
+		}
+
+		if ($('#row_export_type')) {
+			initFTPExport();
+			initPresentation();
+			initTiming();
+
+			$('#export_type').change(function() {
+				initFTPExport();
+			});
+
+			$('#export_presentation').change(function() {
+				initPresentation();
+			});
+
+			$('#export_timing').change(function() {
+				initTiming();
+			});
+
+			$('#export_type').change(function() {
+				initFTPExport();
+			});
+		}
+
+		if ($('#row_auth_method')) {
+			initAuth();
+			initSearch();
+			initGroupMember();
+
+			$('#auth_method').change(function() {
+				initAuth();
+			});
+
+			$('#ldap_mode').change(function() {
+				initSearch();
+			});
+
+			$('#ldap_group_require').change(function() {
+				initGroupMember();
+			});
+		}
+
+		if ($('#rrd_autoclean')) {
+			initRRDClean();
+
+			$('#rrd_autoclean').change(function() {
+				initRRDClean();
+			});
+
+			$('#rrd_autoclean_method').change(function() {
+				initRRDClean();
+			});
+		}
+
+		if ($('#boost_rrd_update_enable')) {
+			initBoostOD();
+			initBoostCache();
+
+			$('#boost_rrd_update_enable').change(function() {
+				initBoostOD();
+			});
+
+			$('#boost_png_cache_enable').change(function() {
+				initBoostCache();
+			});
+		}
+
+		if ($('#settings_test_email')) {
+			initMail();
+
+			$('#settings_how').change(function() {
+				initMail();
+			});
+		}
+
+		function initMail() {
+			/* clear passwords */
+			$('#settings_smtp_password').val('');
+			$('#settings_smtp_password_confirm').val('');
+
+			switch($('#settings_how').val()) {
+			case '0':
+				$('#row_settings_sendmail_header').hide();
+				$('#row_settings_sendmail_path').hide();
+				$('#row_settings_smtp_header').hide();
+				$('#row_settings_smtp_host').hide();
+				$('#row_settings_smtp_port').hide();
+				$('#row_settings_smtp_username').hide();
+				$('#row_settings_smtp_password').hide();
+				$('#row_settings_smtp_secure').hide();
+				$('#row_settings_smtp_timeout').hide();
+				break;
+			case '1':
+				$('#row_settings_sendmail_header').show();
+				$('#row_settings_sendmail_path').show();
+				$('#row_settings_smtp_header').hide();
+				$('#row_settings_smtp_host').hide();
+				$('#row_settings_smtp_port').hide();
+				$('#row_settings_smtp_username').hide();
+				$('#row_settings_smtp_password').hide();
+				$('#row_settings_smtp_secure').hide();
+				$('#row_settings_smtp_timeout').hide();
+				break;
+			case '2':
+				$('#row_settings_sendmail_header').hide();
+				$('#row_settings_sendmail_path').hide();
+				$('#row_settings_smtp_header').show();
+				$('#row_settings_smtp_host').show();
+				$('#row_settings_smtp_port').show();
+				$('#row_settings_smtp_username').show();
+				$('#row_settings_smtp_password').show();
+				$('#row_settings_smtp_secure').show();
+				$('#row_settings_smtp_timeout').show();
+				break;
+			}
+		}
+	});
 
 	function initBoostCache() {
 		if ($('#boost_png_cache_enable').is(':checked')){
@@ -384,26 +494,6 @@ default:
 			$('#row_boost_poller_mem_limit').hide();
 			$('#row_boost_rrd_update_max_runtime').hide();
 			$('#row_boost_redirect').hide();
-		}
-	}
-
-	function initBoostServer() {
-		if ($('#boost_server_enable').is(':checked')){
-			$('#row_boost_server_effective_user').show();
-			$('#row_boost_server_multiprocess').show();
-			$('#row_boost_path_rrdupdate').show();
-			$('#row_boost_server_hostname').show();
-			$('#row_boost_server_listen_port').show();
-			$('#row_boost_server_timeout').show();
-			$('#row_boost_server_clients').show();
-		}else{
-			$('#row_boost_server_effective_user').hide();
-			$('#row_boost_server_multiprocess').hide();
-			$('#row_boost_path_rrdupdate').hide();
-			$('#row_boost_server_hostname').hide();
-			$('#row_boost_server_listen_port').hide();
-			$('#row_boost_server_timeout').hide();
-			$('#row_boost_server_clients').hide();
 		}
 	}
 
@@ -466,37 +556,52 @@ default:
 	}
 
 	function initSearch() {
-		switch($('#ldap_mode').val()) {
-		case "0":
+		if ($('#auth_method').val() == 3) {
+			switch($('#ldap_mode').val()) {
+			case "0":
+				$('#row_ldap_search_base_header').hide();
+				$('#row_ldap_search_base').hide();
+				$('#row_ldap_search_filter').hide();
+				$('#row_ldap_specific_dn').hide();
+				$('#row_ldap_specific_password').hide();
+				break;
+			case "1":
+				$('#row_ldap_search_base_header').show();
+				$('#row_ldap_search_base').show();
+				$('#row_ldap_search_filter').show();
+				$('#row_ldap_specific_dn').hide();
+				$('#row_ldap_specific_password').hide();
+				break;
+			case "2":
+				$('#row_ldap_search_base_header').show();
+				$('#row_ldap_search_base').show();
+				$('#row_ldap_search_filter').show();
+				$('#row_ldap_specific_dn').show();
+				$('#row_ldap_specific_password').show();
+				break;
+			}
+		}else{
 			$('#row_ldap_search_base_header').hide();
 			$('#row_ldap_search_base').hide();
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
-			break;
-		case "1":
-			$('#row_ldap_search_base_header').show();
-			$('#row_ldap_search_base').show();
-			$('#row_ldap_search_filter').show();
-			$('#row_ldap_specific_dn').hide();
-			$('#row_ldap_specific_password').hide();
-			break;
-		case "2":
-			$('#row_ldap_search_base_header').show();
-			$('#row_ldap_search_base').show();
-			$('#row_ldap_search_filter').show();
-			$('#row_ldap_specific_dn').show();
-			$('#row_ldap_specific_password').show();
-			break;
 		}
 	}
 
 	function initGroupMember() {
-		if ($('#ldap_group_require').is(':checked')) {
-			$('#row_ldap_group_header').show();
-			$('#row_ldap_group_dn').show();
-			$('#row_ldap_group_attrib').show();
-			$('#row_ldap_group_member_type').show();
+		if ($('#auth_method').val() == 3) {
+			if ($('#ldap_group_require').is(':checked')) {
+				$('#row_ldap_group_header').show();
+				$('#row_ldap_group_dn').show();
+				$('#row_ldap_group_attrib').show();
+				$('#row_ldap_group_member_type').show();
+			}else{
+				$('#row_ldap_group_header').hide();
+				$('#row_ldap_group_dn').hide();
+				$('#row_ldap_group_attrib').hide();
+				$('#row_ldap_group_member_type').hide();
+			}
 		}else{
 			$('#row_ldap_group_header').hide();
 			$('#row_ldap_group_dn').hide();
@@ -779,6 +884,10 @@ default:
 	}
 
 	function initSNMP() {
+		/* clear passwords */
+		$('#snmp_password').val('');
+		$('#snmp_password_confirm').val('');
+
 		switch($('#snmp_ver').val()) {
 		case "0":
 			$('#row_snmp_community').hide();

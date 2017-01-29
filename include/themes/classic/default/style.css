@@ -17,6 +17,7 @@
   white-space: nowrap;
 /* padding: 0 4px 0 1px; */
   margin: 0;
+  padding: 3px !important;
   vertical-align: top;
 }
 .jstree-anchor:focus {

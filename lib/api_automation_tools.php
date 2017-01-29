@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -386,7 +386,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 
 	$parentID = 0;
 
-	$nodes = db_fetch_assoc_prepared('SELECT id, local_graph_id, rra_id, title,
+	$nodes = db_fetch_assoc_prepared('SELECT id, local_graph_id, title,
 		host_id, host_grouping_type, sort_children_type
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
@@ -434,10 +434,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 							FROM graph_templates_graph AS gtg
 							WHERE gtg.local_graph_id = ?', array($node['local_graph_id']));
 
-						$rra = db_fetch_cell_prepared('SELECT name FROM rra WHERE id = ?', array($node['rra_id']));
-
 						echo $graph_title . "\t";
-						echo $rra . "\t";
 						echo "\n";
 					}
 
@@ -472,17 +469,16 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 
 function displayRRAs($quietMode = FALSE) {
 	if (!$quietMode) {
-		echo "Known RRAs:\nid\tsteps\trows\ttimespan\tname\n";
+		echo "Known RRAs:\nid\tsteps\trows\tname\n";
 	}
 
-	$rras = db_fetch_assoc('SELECT id, name, steps, rows, timespan FROM rra ORDER BY id');
+	$rras = db_fetch_assoc('SELECT id, name, steps, rows FROM data_source_profiles_rra ORDER BY id');
 
 	if (sizeof($rras)) {
 		foreach ($rras as $rra) {
 			echo $rra['id']."\t";
 			echo $rra['steps']."\t";
 			echo $rra['rows']."\t";
-			echo $rra['timespan']."\t\t";
 			echo $rra['name']."\n";
 		}
 	}

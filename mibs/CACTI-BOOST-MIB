@@ -3,7 +3,7 @@
 --
 -- Jan 2015, Andreas Braun (aka browniebraun)
 --
--- Copyright (c) 2004-2015 by The Cacti Group
+-- Copyright (c) 2004-2017 by The Cacti Group
 -- All rights reserved.
 --
 -- *****************************************************************
@@ -33,7 +33,7 @@ IMPORTS
 ;
 
 boost MODULE-IDENTITY
-    LAST-UPDATED    "201501120000Z"
+    LAST-UPDATED    "201603080000Z"
     ORGANIZATION    "The Cacti Group"
     CONTACT-INFO
             "The Cacti Group
@@ -112,6 +112,12 @@ boost MODULE-IDENTITY
                +- boostStatsStorage
                +- boostStatsImageCache
     "
+    REVISION        "201603080000Z"
+    DESCRIPTION
+        "- With decommission of the BOOST SERVER status of: 
+            boostApplServerEnabled, boostApplServerMultiprocess, boostApplServerHostname
+            boostApplServerListenPort, boostApplServerTimeOut and cactiStatsPollerRunTime
+           has been set to obsolete."
     REVISION        "201303230000Z"
     DESCRIPTION
         "Initial version of this MIB module."
@@ -224,7 +230,7 @@ boostApplRrdUpdateRedirect OBJECT-TYPE
 boostApplServerEnabled OBJECT-TYPE
     SYNTAX          TruthValue
     MAX-ACCESS      read-only
-    STATUS          current
+    STATUS          obsolete
     DESCRIPTION
         "If Boost Server will be used for RRDUpdates this object is set
          to true (1)."
@@ -234,7 +240,7 @@ boostApplServerEnabled OBJECT-TYPE
 boostApplServerMultiprocess OBJECT-TYPE
     SYNTAX          TruthValue
     MAX-ACCESS      read-only
-    STATUS          current
+    STATUS          obsolete
     DESCRIPTION
         "This object returns true (1) if Boost Server should  fork a separate
          update process for each boost request"
@@ -244,7 +250,7 @@ boostApplServerMultiprocess OBJECT-TYPE
 boostApplServerHostname OBJECT-TYPE
     SYNTAX          DisplayString (SIZE(1..100))
     MAX-ACCESS      read-only
-    STATUS          current
+    STATUS          obsolete
     DESCRIPTION
         "Returns the Hostname/IP of the boost server."
     ::= { boostAppl 12 }
@@ -252,7 +258,7 @@ boostApplServerHostname OBJECT-TYPE
 boostApplServerListenPort OBJECT-TYPE
     SYNTAX          DisplayString (SIZE(1..10))
     MAX-ACCESS      read-only
-    STATUS          current
+    STATUS          obsolete
     DESCRIPTION
         "Returns the TCP port the boost server will listen on."
     ::= { boostAppl 13 }
@@ -261,7 +267,7 @@ boostApplServerTimeOuts OBJECT-TYPE
     SYNTAX          Unsigned32 (1..4294967295)
     UNITS           "seconds"
     MAX-ACCESS      read-only
-    STATUS          current
+    STATUS          obsolete
     DESCRIPTION
         "Defines the maximum number of seconds a client should wait on the
          Boost server before giving up."
@@ -286,10 +292,7 @@ boostApplLoggingEnabled OBJECT-TYPE
     ::= { boostAppl 16 }
 
 boostApplStorageDatabaseEngine OBJECT-TYPE
-    SYNTAX          INTEGER {
-                        memory(1),
-                        myisam(2)
-                    }
+    SYNTAX          DisplayString (SIZE(1..20))
     MAX-ACCESS      read-only
     STATUS          current
     DESCRIPTION

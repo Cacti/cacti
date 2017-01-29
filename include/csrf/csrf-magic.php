@@ -16,6 +16,12 @@
 // CONFIGURATION:
 
 /**
+ * Convenience parameter for disabling all of our functionality;
+ * equivalent to setting 'rewrite' to false and 'defer' to true.
+ */
+$GLOBALS['csrf']['disable'] = false;
+
+/**
  * By default, when you include this file csrf-magic will automatically check
  * and exit if the CSRF token is invalid. This will defer executing
  * csrf_check() until you're ready.  You can also pass false as a parameter to
@@ -52,7 +58,7 @@ $GLOBALS['csrf']['rewrite-js'] = false;
  * place it here. If you change this value, all previously generated tokens
  * will become invalid.
  */
-$GLOBALS['csrf']['secret'] = sha1($database_hostname . $database_default . $database_username . $database_password);
+$GLOBALS['csrf']['secret'] = '';
 // nota bene: library code should use csrf_get_secret() and not access
 // this global directly
 
@@ -131,7 +137,7 @@ $GLOBALS['csrf']['xhtml'] = true;
 // FUNCTIONS:
 
 // Don't edit this!
-$GLOBALS['csrf']['version'] = '1.0.4';
+$GLOBALS['csrf']['version'] = '1.0.5';
 
 /**
  * Rewrites <form> on the fly to add CSRF tokens to them. This can also
@@ -182,7 +188,7 @@ function csrf_ob_handler($buffer, $flags) {
  * @return True if check passes or is not necessary, false if failure.
  */
 function csrf_check($fatal = true) {
-    if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') return true;
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] !== 'POST') return true;
     csrf_start();
     $name = $GLOBALS['csrf']['input-name'];
     $ok = false;
@@ -209,15 +215,21 @@ function csrf_check($fatal = true) {
  * by semicolons.
  */
 function csrf_get_tokens() {
+	global $config;
+
     $has_cookies = !empty($_COOKIE);
 
     // $ip implements a composite key, which is sent if the user hasn't sent
     // any cookies. It may or may not be used, depending on whether or not
     // the cookies "stick"
     $secret = csrf_get_secret();
-    if (!$has_cookies && $secret && isset($_SERVER['IP_ADDRESS'])) {
+    if (!$has_cookies && $secret) {
         // :TODO: Harden this against proxy-spoofing attacks
-        $ip = ';ip:' . csrf_hash($_SERVER['IP_ADDRESS']);
+	if (isset($_SERVER['REMOTE_ADDR'])) { 
+		$ip = ';ip:' . csrf_hash($_SERVER['REMOTE_ADDR']);
+	} else {
+		$ip = '';
+	}
     } else {
         $ip = '';
     }
@@ -227,7 +239,7 @@ function csrf_get_tokens() {
     if (session_id()) return 'sid:' . csrf_hash(session_id()) . $ip;
     if ($GLOBALS['csrf']['cookie']) {
         $val = csrf_generate_secret();
-        setcookie($GLOBALS['csrf']['cookie'], $val);
+        setcookie($GLOBALS['csrf']['cookie'], $val, time() + 3600, $config['url_path']);
         return 'cookie:' . csrf_hash($val) . $ip;
     }
     if ($GLOBALS['csrf']['key']) return 'key:' . csrf_hash($GLOBALS['csrf']['key']) . $ip;
@@ -263,20 +275,32 @@ function csrf_flattenpost2($level, $key, $data) {
  * @param $tokens is safe for HTML consumption
  */
 function csrf_callback($tokens) {
-    // (yes, $tokens is safe to echo without escaping)
-    header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-    $data = '';
-    foreach (csrf_flattenpost($_POST) as $key => $value) {
-        if ($key == $GLOBALS['csrf']['input-name']) continue;
-        $data .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'" />';
-    }
-    echo "<html><head><title>CSRF check failed</title></head>
-        <body>
-        <p>CSRF check failed. Your form session may have expired, or you may not have
-        cookies enabled.</p>
-        <form method='post' action=''>$data<input type='submit' value='Try again' /></form>
-        <p>Debug: $tokens</p></body></html>
-";
+	global $config;
+
+	// (yes, $tokens is safe to echo without escaping)
+	$data = '';
+	foreach (csrf_flattenpost($_POST) as $key => $value) {
+		if ($key == $GLOBALS['csrf']['input-name']) continue;
+		$data .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'" />';
+	}
+
+	if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $config['url_path']) !== false) {
+		$_SESSION['sess_messages'] = 'CSRF Timeout, refreshing page';
+
+		if (strpos($_SERVER['HTTP_REFERER'], '?') !== false) {
+			$add = '&';
+		}else{
+			$add = '?';
+		}
+
+		header('Location:' . $_SERVER['HTTP_REFERER'] . (strpos($_SERVER['HTTP_REFERER'], 'header=false')) !== 'false' ? $add . '&header=false':'');
+	}else{
+		header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+		echo "<html><head><title>CSRF check failed</title></head>
+			<body>
+				<p><font color='red'>Warning: CSRF check failed!</font></p>
+			</body></html>";
+	}
 }
 
 /**
@@ -392,12 +416,20 @@ function csrf_generate_secret($len = 32) {
  */
 function csrf_hash($value, $time = null) {
     if (!$time) $time = time();
-    return sha1(csrf_get_secret() . $value . $time) . ',' . $time;
+    if (function_exists("hash_hmac")) {
+        return hash_hmac('sha1', $time . ':' . $value, csrf_get_secret()) . ',' . $time;
+    } else {
+        $secret = csrf_get_secret();
+        return sha1($secret . sha1($secret . $time . ':' . $value)) . ',' . $time;
+    }
 }
 
 // Load user configuration
 if (function_exists('csrf_startup')) csrf_startup();
-// Initialize our handler
-if ($GLOBALS['csrf']['rewrite'])     ob_start('csrf_ob_handler');
-// Perform check
-if (!$GLOBALS['csrf']['defer'])      csrf_check();
+if (!$GLOBALS['csrf']['disable']) {
+    // Initialize our handler
+    if ($GLOBALS['csrf']['rewrite'])     ob_start('csrf_ob_handler');
+    // Perform check
+    if (!$GLOBALS['csrf']['defer'])      csrf_check();
+}
+

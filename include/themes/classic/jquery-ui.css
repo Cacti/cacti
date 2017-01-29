@@ -120,7 +120,7 @@
 }
 .ui-resizable-e {
 	cursor: e-resize;
-	width: 7px;
+	width: 1px;
 	right: -5px;
 	top: 0;
 	height: 100%;
@@ -562,7 +562,7 @@ button.ui-button::-moz-focus-inner {
 }
 .ui-menu .ui-state-focus,
 .ui-menu .ui-state-active {
-	margin: -1px;
+	margin: 0px;
 }
 
 /* icon support */
@@ -830,7 +830,7 @@ body .ui-tooltip {
 /* Component containers
 ----------------------------------*/
 .ui-widget {
-	font-family: segoe ui,Arial,sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 1.0em;
 }
 .ui-widget .ui-widget {
@@ -840,12 +840,12 @@ body .ui-tooltip {
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-	font-family: segoe ui,Arial,sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 1em;
 }
 .ui-widget-content {
-	border: 1px solid #dfd9c3;
-	background: #f5f3e5 url("images/ui-bg_highlight-hard_100_f5f3e5_1x100.png") 50% top repeat-x;
+	border: 1px solid #A1A6AA;
+	background-color: #ffffff;
 	color: #312e25;
 }
 .ui-widget-content a {
@@ -853,7 +853,7 @@ body .ui-tooltip {
 }
 .ui-widget-header {
 	border: 1px solid #d4ccb0;
-	background: #ece8da url("images/ui-bg_gloss-wave_100_ece8da_500x100.png") 50% 50% repeat-x;
+	background-color: #ece8da;
 	color: #433f38;
 	font-weight: bold;
 }
@@ -866,9 +866,9 @@ body .ui-tooltip {
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
-	border: 1px solid #433f38;
-	background: #ffffff;
-	font-weight: bold;
+	border: 0.7px solid #A1A6AA;
+	background-color: #ffffff;
+	color: #3F473F;
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -882,10 +882,8 @@ body .ui-tooltip {
 .ui-state-focus,
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
-	border: 1px solid #327E04;
-	background: #E7E9F2;
-	font-weight: bold;
-	color: #000000;
+	background-color: #E1E1E1;
+	color: #3F473F;
 }
 .ui-state-hover a,
 .ui-state-hover a:hover,
@@ -901,15 +899,12 @@ body .ui-tooltip {
 .ui-state-active,
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
-	border: 1px solid #d4ccb0;
-	background: #fafaf4 url("images/ui-bg_highlight-hard_100_fafaf4_1x100.png") 50% 50% repeat-x;
-	font-weight: bold;
-	color: #459e00;
+	border: 1px solid #A1A6AA;
+	background-color: #ffffff;
 }
 .ui-state-active a,
 .ui-state-active a:link,
 .ui-state-active a:visited {
-	color: #459e00;
 	text-decoration: none;
 }
 
@@ -919,7 +914,7 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
 	border: 1px solid #e8e1b5;
-	background: #fcf0ba url("images/ui-bg_glass_55_fcf0ba_1x400.png") 50% 50% repeat-x;
+	background-color: #fcf0ba;
 	color: #363636;
 }
 .ui-state-highlight a,
@@ -931,7 +926,7 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-error,
 .ui-widget-header .ui-state-error {
 	border: 1px solid #e3a345;
-	background: #ffedad url("images/ui-bg_highlight-soft_95_ffedad_1x100.png") 50% top repeat-x;
+	background-color: #ffedad;
 	color: #cd5c0a;
 }
 .ui-state-error a,
@@ -983,14 +978,14 @@ body .ui-tooltip {
 	background-image: url("images/ui-icons_847e71_256x240.png");
 }
 .ui-state-default .ui-icon {
-	background-image: url("images/ui-icons_eeeeee_256x240.png");
+	background-image: url("images/ui-icons_222222_256x240.png");
 }
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon {
-	background-image: url("images/ui-icons_ffffff_256x240.png");
+	background-image: url("images/ui-icons_222222_256x240.png");
 }
 .ui-state-active .ui-icon {
-	background-image: url("images/ui-icons_8DC262_256x240.png");
+	background-image: url("images/ui-icons_222222_256x240.png");
 }
 .ui-state-highlight .ui-icon {
 	background-image: url("images/ui-icons_8DC262_256x240.png");
@@ -1187,37 +1182,37 @@ body .ui-tooltip {
 .ui-corner-top,
 .ui-corner-left,
 .ui-corner-tl {
-	border-top-left-radius: 6px;
+	border-top-left-radius: 0px;
 }
 .ui-corner-all,
 .ui-corner-top,
 .ui-corner-right,
 .ui-corner-tr {
-	border-top-right-radius: 6px;
+	border-top-right-radius: 0px;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-left,
 .ui-corner-bl {
-	border-bottom-left-radius: 6px;
+	border-bottom-left-radius: 0px;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-right,
 .ui-corner-br {
-	border-bottom-right-radius: 6px;
+	border-bottom-right-radius: 0px;
 }
 
 /* Overlays */
 .ui-widget-overlay {
-	background: #2b2922 url("images/ui-bg_inset-soft_15_2b2922_1x100.png") 50% bottom repeat-x;
+	background-color: #2b2922;
 	opacity: .9;
 	filter: Alpha(Opacity=90); /* support: IE8 */
 }
 .ui-widget-shadow {
 	margin: -12px 0 0 -12px;
 	padding: 12px;
-	background: #cccccc url("images/ui-bg_highlight-hard_95_cccccc_1x100.png") 50% top repeat-x;
+	background-color: #cccccc;
 	opacity: .2;
 	filter: Alpha(Opacity=20); /* support: IE8 */
 	border-radius: 10px;

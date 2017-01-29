@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2015 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,8 +23,8 @@
 */
 
 define('CACTI_ESCAPE_CHARACTER', '"');
-define('COPYRIGHT_YEARS', 'Copyright (c) 2004-2015 - The Cacti Group, Inc.');
-define('COPYRIGHT_YEARS_SHORT', '(c) 2004-2015 - The Cacti Group');
+define('COPYRIGHT_YEARS', 'Copyright (C) 2004-2017 The Cacti Group');
+define('COPYRIGHT_YEARS_SHORT', '(c) 2004-2017 - The Cacti Group');
 
 define('HOST_GROUPING_GRAPH_TEMPLATE', 1);
 define('HOST_GROUPING_DATA_QUERY_INDEX', 2);
@@ -43,6 +43,36 @@ define('RRDTOOL_OUTPUT_NULL', 0);
 define('RRDTOOL_OUTPUT_STDOUT', 1);
 define('RRDTOOL_OUTPUT_STDERR', 2);
 define('RRDTOOL_OUTPUT_GRAPH_DATA', 3);
+define('RRDTOOL_OUTPUT_BOOLEAN', 4);
+
+define('RRD_VERSION_1_2', 'rrd-1.2.x');
+define('RRD_VERSION_1_3', 'rrd-1.3.x');
+define('RRD_VERSION_1_4', 'rrd-1.4.x');
+define('RRD_VERSION_1_5', 'rrd-1.5.x');
+
+define('RRD_FONT_RENDER_NORMAL',  'normal');
+define('RRD_FONT_RENDER_LIGHT',   'light');
+define('RRD_FONT_RENDER_MONO',    'mono');
+
+define('RRD_GRAPH_RENDER_NORMAL', 'normal');
+define('RRD_GRAPH_RENDER_MONO',   'mono');
+
+define('RRD_LEGEND_POS_NORTH',    'north');
+define('RRD_LEGEND_POS_SOUTH',    'south');
+define('RRD_LEGEND_POS_WEST',     'west');
+define('RRD_LEGEND_POS_EAST',     'east');
+
+define('RRD_ALIGN_NONE',          '');
+define('RRD_ALIGN_LEFT',          'left');
+define('RRD_ALIGN_RIGHT',         'right');
+define('RRD_ALIGN_JUSTIFIED',     'justified');
+define('RRD_ALIGN_CENTER',        'center');
+
+define('RRD_LEGEND_DIR_TOPDOWN',  'topdown');
+define('RRD_LEGEND_DIR_BOTTOMUP', 'bottomup');
+
+define('RRD_FILE_VERSION1',       '0001');
+define('RRD_FILE_VERSION3',       '0003');
 
 define('DATA_QUERY_AUTOINDEX_NONE', 0);
 define('DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME', 1);
@@ -66,16 +96,13 @@ define('GRAPH_ITEM_TYPE_AREA',               7);
 define('GRAPH_ITEM_TYPE_STACK',              8);
 define('GRAPH_ITEM_TYPE_GPRINT',             9);
 define('GRAPH_ITEM_TYPE_LEGEND',            10);
-define('GRAPH_ITEM_TYPE_LINE1_LEGEND_CAX',  11);
-define('GRAPH_ITEM_TYPE_LINE1_LEGEND_CAXM', 12);
-define('GRAPH_ITEM_TYPE_LINE2_LEGEND_CAX',  13);
-define('GRAPH_ITEM_TYPE_LINE2_LEGEND_CAXM', 14);
-define('GRAPH_ITEM_TYPE_LINE3_LEGEND_CAX',  15);
-define('GRAPH_ITEM_TYPE_LINE3_LEGEND_CAXM', 16);
-define('GRAPH_ITEM_TYPE_AREA_LEGEND_CAX',   17);
-define('GRAPH_ITEM_TYPE_AREA_LEGEND_CAXM',  18);
-define('GRAPH_ITEM_TYPE_STACK_LEGEND_CAX',  19);
-define('GRAPH_ITEM_TYPE_STACK_LEGEND_CAXM', 20);
+define('GRAPH_ITEM_TYPE_GPRINT_LAST',       11);
+define('GRAPH_ITEM_TYPE_GPRINT_MAX',        12);
+define('GRAPH_ITEM_TYPE_GPRINT_MIN',        13);
+define('GRAPH_ITEM_TYPE_GPRINT_AVERAGE',    14);
+define('GRAPH_ITEM_TYPE_LINESTACK',         20);
+define('GRAPH_ITEM_TYPE_TIC',               30);
+define('GRAPH_ITEM_TYPE_TEXTALIGN',         40);
 
 /* used both for polling and reindexing */
 define('POLLER_ACTION_SNMP', 0);
@@ -193,6 +220,12 @@ define('GD_Y_MN_D', 5);
 define('GDC_HYPHEN', 0);
 define('GDC_SLASH', 1);
 
+define('CVDEF_ITEM_TYPE_FUNCTION', 1);
+define('CVDEF_ITEM_TYPE_OPERATOR', 2);
+define('CVDEF_ITEM_TYPE_SPEC_DS', 4);
+define('CVDEF_ITEM_TYPE_CDEF', 5);
+define('CVDEF_ITEM_TYPE_STRING', 6);
+
 define('SNMP_POLLER', 0);
 define('SNMP_CMDPHP', 1);
 define('SNMP_WEBUI', 2);
@@ -275,3 +308,76 @@ define('REPORTS_OUTPUT_STDOUT', 1);
 define('REPORTS_OUTPUT_EMAIL',  2);
 
 define('REPORTS_DEFAULT_MAX_SIZE', 10485760);
+
+# unless a hook for 'global_constants' is available, all DEFINEs go here
+define('AGGREGATE_GRAPH_TYPE_KEEP', 0);
+define('AGGREGATE_GRAPH_TYPE_KEEP_STACKED', 50);
+
+define('AGGREGATE_TOTAL_NONE', 1);
+define('AGGREGATE_TOTAL_ALL', 2);
+define('AGGREGATE_TOTAL_ONLY', 3);
+
+define('AGGREGATE_TOTAL_TYPE_SIMILAR', 1);
+define('AGGREGATE_TOTAL_TYPE_ALL', 2);
+
+define('AGGREGATE_ORDER_NONE', 1);
+define('AGGREGATE_ORDER_DS_GRAPH', 2);
+define('AGGREGATE_ORDER_GRAPH_DS', 3);
+
+define('AUTOMATION_OP_NONE', 0);
+define('AUTOMATION_OP_CONTAINS', 1);
+define('AUTOMATION_OP_CONTAINS_NOT', 2);
+define('AUTOMATION_OP_BEGINS', 3);
+define('AUTOMATION_OP_BEGINS_NOT', 4);
+define('AUTOMATION_OP_ENDS', 5);
+define('AUTOMATION_OP_ENDS_NOT', 6);
+define('AUTOMATION_OP_MATCHES', 7);
+define('AUTOMATION_OP_MATCHES_NOT', 8);
+define('AUTOMATION_OP_LT', 9);
+define('AUTOMATION_OP_LE', 10);
+define('AUTOMATION_OP_GT', 11);
+define('AUTOMATION_OP_GE', 12);
+define('AUTOMATION_OP_UNKNOWN', 13);
+define('AUTOMATION_OP_NOT_UNKNOWN', 14);
+define('AUTOMATION_OP_EMPTY', 15);
+define('AUTOMATION_OP_NOT_EMPTY', 16);
+define('AUTOMATION_OP_REGEXP', 17);
+define('AUTOMATION_OP_NOT_REGEXP', 18);
+
+define('AUTOMATION_OPER_NULL', 0);
+define('AUTOMATION_OPER_AND', 1);
+define('AUTOMATION_OPER_OR', 2);
+define('AUTOMATION_OPER_LEFT_BRACKET', 3);
+define('AUTOMATION_OPER_RIGHT_BRACKET', 4);
+
+define('AUTOMATION_TREE_ITEM_TYPE_STRING', '0');
+
+define('AUTOMATION_RULE_TYPE_GRAPH_MATCH', 1);
+define('AUTOMATION_RULE_TYPE_GRAPH_ACTION', 2);
+define('AUTOMATION_RULE_TYPE_TREE_MATCH', 3);
+define('AUTOMATION_RULE_TYPE_TREE_ACTION', 4);
+
+# pseudo table name required as long as Data Query XML resides in files
+define('AUTOMATION_RULE_TABLE_XML', 'XML');
+
+define('AUTOMATION_ACTION_GRAPH_DUPLICATE', 1);
+define('AUTOMATION_ACTION_GRAPH_ENABLE', 2);
+define('AUTOMATION_ACTION_GRAPH_DISABLE', 3);
+define('AUTOMATION_ACTION_GRAPH_DELETE', 99);
+define('AUTOMATION_ACTION_TREE_DUPLICATE', 1);
+define('AUTOMATION_ACTION_TREE_ENABLE', 2);
+define('AUTOMATION_ACTION_TREE_DISABLE', 3);
+define('AUTOMATION_ACTION_TREE_DELETE', 99);
+
+if ($database_type == 'mysql') {
+	define('SQL_NO_CACHE', 'SQL_NO_CACHE');
+}else{
+	define('SQL_NO_CACHE', '');
+}
+
+define('MAX_DISPLAY_PAGES', 9);
+define('CHECKED', 'on');
+
+define('FILTER_VALIDATE_IS_REGEX',          99999);
+define('FILTER_VALIDATE_IS_NUMERIC_ARRAY', 100000);
+define('FILTER_VALIDATE_IS_NUMERIC_LIST',  100001);
