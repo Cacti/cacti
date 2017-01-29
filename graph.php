@@ -286,11 +286,11 @@ case 'zoom':
                             <?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 					</td>
 					<td valign='top' style='align:left;padding-top: 3px;' class='noprint'>
-						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='hyperLink properties'> 
+						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink hyperLink properties'> 
 							<img class='drillDown' src='<?php print $config['url_path'] . "images/graph_properties.gif";?>' alt='' title='<?php print __('Graph Source/Properties');?>'>
 						</a>
 						<br>
-						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_csv' class='hyperLink properties'> 
+						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_csv' class='iconLink hyperLink properties'> 
 							<img class='drillDown' src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='<?php print __('Graph Data');?>'>
 						</a>
 						<br>
