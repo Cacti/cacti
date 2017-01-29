@@ -590,8 +590,11 @@ calculateVarianceAverages($rra, $samples);
    3) The max and min cutoffs of all samples
    4) The number of kills in each ds based upon the thresholds
 */
-$strout .= ($html ? "<p class='spikekillNote'>":'') . 
-	"NOTE: Searching for Spikes in XML file '$xmlfile'" . ($html ? "</p>\n":"\n");
+
+if (empty($out_start)) {
+	$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+		"NOTE: Searching for Spikes in XML file '$xmlfile'" . ($html ? "</p>\n":"\n");
+}
 
 calculateOverallStatistics($rra, $samples);
 
@@ -978,32 +981,27 @@ function updateXML(&$output, &$rra) {
 					/* do nothing, it's a NaN, and the first one */
 				}elseif(strtolower($dsvalue) == 'nan' && isset($first_num[$ds_num])) {
 					if ($method == 2) {
-						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg']) {
-							if ($avgnan == 'avg') {
-								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-								$dsvalue = $first_num[$ds_num];
-							}else{
-								$dsvalue = 'NaN';
-							}
-
-							$total_kills++;
-							$kills++;
+						if ($avgnan == 'avg') {
+							$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
+						}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+							$dsvalue = $first_num[$ds_num];
+						}else{
+							$dsvalue = 'NaN';
 						}
+
+						$total_kills++;
+						$kills++;
 					}else{
-						if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
-							($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
-							if ($avgnan == 'avg') {
-								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
-							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-								$dsvalue = $first_num[$ds_num];
-							}else{
-								$dsvalue = 'NaN';
-							}
-
-							$total_kills++;
-							$kills++;
+						if ($avgnan == 'avg') {
+							$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
+						}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+							$dsvalue = $first_num[$ds_num];
+						}else{
+							$dsvalue = 'NaN';
 						}
+
+						$total_kills++;
+						$kills++;
 					}
 				}elseif (!empty($out_start) && $timestamp > $out_start && $timestamp < $out_end) {
 					if ($method == 2) {
