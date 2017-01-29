@@ -1,143 +1,23 @@
 # Cacti <sup>TM</sup>
 
-Cacti is a complete network graphing solution designed to harness the power of RRDTool's data storage and graphing functionality. Cacti provides support for:
+-----------------------------------------------------------------------------
 
-* multiple fast data collectors
+Cacti is a complete network graphing solution designed to harness the power of RRDTool's data storage and graphing functionality. Cacti provides following features:
+
+* remote and local data collectors
 * network discovery
 * device management automation
-* advanced graph templating
-* aggregate graph templating
-* limitless data acquisition methods
-* embedded email notification facilities
-* user, group and login domain management features
+* graph templating
+* custom data acquisition methods
+* user, group and domain management
+* C3 level security settings for local accounts
+  * strong password hashing
+  * forced regular password changes, complexity, and history 
+  * account lockout support
 
 All of this is wrapped in an intuitive, easy to use interface that makes sense for both LAN-sized installations and complex networks with thousands of devices.
 
 Developed in the early 2000's by Ian Berry as a high school project, it has been used by thousands of companies and enthusiasts to monitor and manage their Networks and Data Centers.
-
-## Cacti 1.0
-
-This release of Cacti has been two years in the making.  With the release of Cacti 1.0, we have merged 19 Cacti Group developed plugins in to the base of Cacti in an effort to make Cacti less cumbersome to deploy and manage.  With the merge of these plugins into the core of Cacti, they behave as if they were incorporated into Cacti from the beginning.  This drove major redesign to address look and feel, performance, and scalability issues.
-
-### Merged Plugins
-
-The plugins that have been merged include:
-
-| Plugin | Description |
-| ----------- | ------------- |
-| snmpagent   |  An SNMP Agent extension, Trap & Notification generator for Cacti data |
-| clog        |  A single click Cacti Log viewers for Administrators |
-| settings    |  A plugin for providing core Email and DNS services |
-| boost       |  Cacti's large system performance boosting plugin |
-| dsstats     |  Cacti's Data Source Statistics plugin |
-| watermark   |  Provides the ability to watermark your Cacti Graphs |
-| ssl         |  Forces Cacti connections over HTTPS |
-| ugroup      |  Supports User Groups in Cacti |
-| domains     |  Supports Multiple Authentication Domains in Cacti |
-| jqueryskin  |  The original Cacti skinning plugin |
-| secpass     |  Provides C3 level password and site security in Cacti |
-| logrotate   |  Provides cacti.log rotation services |
-| realtime    |  The Realtime Graphing plugin |
-| rrdclean    |  The RRDfile purging and maintenance plugin |
-| nectar      |  Provides Email based Graph reporting features in Cacti |
-| aggregate   |  Provides Templating, Creation and Management of Aggregate Cacti Graphs |
-| autom8      |  Provides Graph and Tree creation automation services |
-| discovery   |  Provides Network Discovery and Device automation services |
-| spikekill   |  Removes spikes from Cacti Graphs |
-| superlinks  |  Allows Cacti Administrators to add additional sites to Cacti |
-
-### Multiple Data Collection Intervals
-
-In the Cacti 1.0 release, we have added support for multiple data collection intervals within the same Cacti installation.  We have done this with the creation of a new object called a 'Data Source Profile'.  These Data Source Profiles can be applied to Graphs at creation time, or at the Data Template level as a part of the automated Graph creation process.
-
-### Themes and HTML5
-
-Cacti 1.0 supports skinning of the user interface through Themes.  We have attempted to make Cacti 1.0 as HTML5 compatible as possible using jQuery, jQueryUI, and several jQuery plugins to make the user interface more appealing to people who wish to have a more modern browser experience.  Ajax page rendering is incorporated throughout the interface to enhance the user experience.  We have included four base Themes in the default Cacti install including the 'Classic' theme.
-
-### User Experience and Security
-
-We have also tried to make Cacti easier to adopt by preventing most damaging activities such as accidentally removing a Data Source for a Graph that is still in existence, or deleting a Data Template or Graph Template that are in use.  We have improved the Template Import and Export functions to allow you to preview Templates before incorporating them into your Cacti system.
-
-We have also increased Cacti's overall security:
-
-* removal of the direct use of $_GET, $_REQUEST, and $_POST variables
-* minimized the possibility of SQL injection through the use of prepared statements in our database calls
-* reduced the likely hood of Cross Site Request Forgery through CSRF protection
-* use of authentication cookies
-* C3 level security settings for local accounts:
-  * strong password hashing
-  * forced regular password changes, complexity, and history 
-  * account lockout to prevent hacking into your Cacti instance from intruders
-* option to force connections over HTTPS 
-* a new Developer Debug mode that will log all unsafe activities to the Cacti Log so that Cacti developers can write safer plugins.  
-
-All of this was done in an effort to have a more friendly and secure Cacti user experience.
-
-### Charting API's
-
-We have also included several JavaScript based HTML5 Charting API's into the base Cacti including [C3](http://c3js.org/), [D3](https://d3js.org/), [Chart.js](http://www.chartjs.org/), [DyGraphs](http://dygraphs.com/), and [jQuery Sparklines](http://omnipotent.net/jquery.sparkline/) in an effort to assist plugin developers who wish to use Graphing API's in their plugins other than RRDtool for creating various dashboards.
-
-### Remote Data Collection
-
-We have added the capability to deploy and control multiple Data Collectors from inside of Cacti.  The design of multiple Data Collectors includes an offline mode that will cache RRDtool updates on the remote server until network connectivity is restored.  You can now deploy Cacti to remote sites whose devices are firewalled off from the main Cacti Server.  The only requirement is that the Remote Data collectors must be able to communicate to the main Cacti server via MySQL and HTTP/HTTPS ports.
-
-### Enhanced Discovery and Automation
-
-The Discovery and Autom8 plugins were redesigned and merged into a single plugin, incorporating multiple discovery networks and discovery frequencies.
-
-### Improved Graph Permissions, User Groups and Domains
-
-Cacti 1.0 also includes a new Graph permissions interface, making the creation and management of Graph, Tree, Template, and Device permissions more flexible and intuitive.  We also included support for User Groups and reworked the way that Realm permissions appear on the User Management page to make them appear in more of an Role Based (RBAC) fashion.
-
-### Improved Support for RRDtool Graph Options
-
-In Cacti 1.0, we support more RRDtool Graph options including:
-
-#### Graphs Templates
-* Full Right Axis Support
-* Shift
-* Dash and Dash Offset
-* Alt Y-Grid
-* No Grid Fit
-* Units Length
-* Tab Width
-* Dynamic Labels
-* Force Rules Legend
-* Legend Position
-
-#### Graph Template Items
-* VDEF's
-* Stacked Lines
-* User Definable Line Widths
-* Text Align
-
-### Many, many New Features
-
-There are many additional changes that are best left for a ChangeLog review.  Some examples include:
-
-* A completely new Tree design that can scale to hundreds of thousands of nodes even over wide area networks
-* The ability to Audit Data Sources against their Data Template and be provided RRDtool syntax on how to resolve issues
-* A new Graph View that automatically resizes images to match your screen resolution
-* jQuery multi-select for Graph Templates on the various Graph View pages
-* Running Realtime on dozens of Graphs concurrently without additional popup windows
-* The ability for users to change their password from the UI
-* The ability for users to save their Graph Settings from the Graph View pages
-* Autocomplete in many areas of the UI where large dropdown lists would cause a slowdown in the UI over wide area networks
-* Per file, per plugin and per host debugging
-* The ability to synchronize Graph Templates to Graphs
-* New Meta objects including: Site, Remote Data Collectors and Data Source Profiles
-
-## Notes on Legacy Plugins
-
-Plugins written for Cacti 0.8.8 and before will require rewrites in order to be compatible with Cacti 1.0.  There have been several changes that all plugin developers need to be aware of.  Please see the [Cacti Wiki](https://github.com/Cacti/cacti/wiki/PluginMigration) for information on migrating your own custom developed plugins to the Cacti 1.0 framework.  Any of the Cacti Group maintained plugin can be used as reference plugins for driving your plugin migration to the 1.0 framework.
-
-## Contribute
-
-Check out the main [Cacti](http://www.cacti.net) web site for distribution downloads, links to changelog and release notes and more!
-
-Get help or help others by participating on the [community forums](http://forums.cacti.net).
-
-Get involved in development by participating in active development on [GitHub](https://github.com/cacti).
 
 ## Requirements
 
@@ -155,30 +35,150 @@ PHP Must also be compiled as a standalone cgi or cli binary. This is required fo
 
 RRDTool is available in multiple versions and a majority of them are supported by Cacti. Please remember to confirm your Cacti settings for the RRDtool version if you having problem rendering graphs.
 
+## Contribute
+
+Check out the main [Cacti](http://www.cacti.net) web site for downloads, change logs, release notes and more!
+
+### Community
+
+Given the large scope of Cacti, the forums tend to generate a respectable amount of traffic. Doing your part in answering basic questions goes a long way since we cannot be everywhere at once. Contribute to the Cacti community by participating on the [Cacti Community Forums](http://forums.cacti.net).
+
+### Development
+
+Get involved in development of Cacti! Join the developers and community on [GitHub](https://github.com/cacti)!
+
+-----------------------------------------------------------------------------
+
+# Abilities of Cacti
+
 ## Data Sources
 
-To handle data gathering, you can feed cacti the paths to any external script/command along with any data that the user will need to "fill in", cacti will then gather this data in a cron-job and populate a MySQL database/the round robin archives.
-
-Data Sources can also be created which correspond to actual data on the graph. If a user would want to graph the ping times to a host, you could create a data source utilizing a script that pings a host and returns it's value in milliseconds. After defining options for RRDTool such as how to store the data you will be able to define any additional information that the data input source requires, such as a host to ping in this case. Once a data source is created, it is automatically maintained at 5 minute intervals.
+Cacti handles the gathering of data through the concept of data sources. Data sources utilize input methods to gather data from devices, hosts, databases, scripts, etc...  The possibilities are endless as to the nature of the data you are able to collect.  Data sources are the direct link to the underlying RRD files; how data is stored within RRD files and how data is retrieved from RRD files.
 
 ## Graphs
 
-Once one or more Data Sources are defined, an RRDTool Graph can be created using the data within the Data Sources. Cacti allows you to create almost any imaginable RRDTool Graph using most of the standard RRDTool Graph types, CDEF's and VDEF's.  A color selection area and automatic text alignment is also incorporated into the base Cacti making Graph Template creation easier to achieve.
-
-Not only can you create RRDTool based Graphs in cacti, but there are many ways to display them. Along with a standard "list view" and a "preview mode", there is a "tree view", which allows you to put graphs onto a hierarchical Trees for organizational purposes.
-
-## User, Group and Domain Management
-
-We have provided User, Group and Domain management in Cacti to make each user or group of users experience a customizable and personal one.  Each user has the capability to save their own preferences to also increase it's adoption.  Cacti includes an RBAC like User and Group editor to assist with Deploying and Managing Cacti.
+Graphs, the heart and soul of Cacti, are created by RRDtool using the defined data sources data.  
 
 ## Templating
 
-Cacti is able to scale to a large number of Data Sources and Graphs through the use of various Templates. This allows the creation of a single Graph or Data Source Template which defines any Graph or Data Source associated with it. Device Templates enable you to define the capabilities of a Device so Cacti and what performance metrics are important and that can be collected automatically upon it's addition to Cacti.
+Bringing it all together, Cacti uses and extensive template system that allows for the creation and consumption of portable templates. Graph, data source, and RRA templates allow for the easy creation of graphs and data sources out of the box.  Along with the Cacti community support, templates have become the standard way to support graphing any number of devices in use in today computing and networking environments. 
 
-## Plugin Management
+## Data Collection AKA Poller
 
-Cacti is more than a network monitoring system, it is an Operations Framework that allows the Cacti Administrator to create their own extensions to Cacti.  Through our Plugin infrastructure, you can extend Cacti to provide other services outside of standard Cacti graphing.  The Cacti Group continues to maintain over a dozen add-on plugins from our GitHub repository.  If you are looking to add features to Cacti, there is quite a bit of reference material to choose from on GitHub.
+Local and remote data collection support now with the ability to set collection intervals. Check out *Data Source Profile* with in Cacti for more information. *Data Source Profiles* can be applied to graphs at creation time or at the data template level.
+
+Remote data collection has been made easy through replication of resources to remote data collectors. Even when connectivity to the main Cacti installation is lost from remote data collector, it will store collected data until connectivity is restored. Remote data collection only requires MySQL and HTTP/HTTPS access back to the main Cacti installation location.
+
+## User Interface Enhancements
+
+The user interface experience has been enhanced from previous version of Cacti.  There has been efforts to migrate to using client side web 2.0 techniques to improve the usability and functionality of the web interface.  As a neat side effect Cacti now supports user interface skins to have a customizable experience.
 
 ## Network Discovery and Automation
 
-Cacti provides the Cacti Administrator a series of Network Automation tools in order to reduce the time and effort it takes to setup and manage a Cacti system.  This includes: support for multiple Network Discovery rules as well as Device, Graph and Tree Automation Templates that allow Cacti Administrators add thousands of Devices to Cacti with much less effort than ever before.
+Cacti provides administrators a series of network automation functionality in order to reduce the time and effort it takes to setup and manage a devices.  This includes: 
+
+- Support for multiple network discovery rules
+- Device, graph and tree automation templates that allow administrators to dictate actions on adding devices automatically
+
+## Plugin Framework
+
+Cacti is more than a network monitoring system, it is an operations framework that allows the extension and augmentation of Cacti functionality. The Cacti Group continues to maintain an assortment of plugins.  If you are looking to add features to Cacti, there is quite a bit of reference material to choose from on GitHub.
+
+## Dynamic Graph Viewing Experience
+
+Cacti allows for many runtime augmentations while viewing graphs:
+
+- Dynamically loaded tree and graph view
+- Searching by string, graph and template types
+- Viewing augmentation
+- Simple time span adjustments
+- Convenient sliding time window buttons
+- Single click realtime graph option
+- Easy graph export to csv
+- RRA view with just a click
+
+## User, Groups and Permissions
+
+Support for per user and per group permissions at a per realm (area of Cacti), per graph, per graph tree, per device, etc... The permission model in Cacti is role based access control (RBAC) to allow for flexible assignment of permissions to users and groups. Support for enforcement of password complexity, password age and changing of expired passwords. 
+
+## Extensive RRDtool Graph Option Support
+
+Cacti supports more RRDtool Graph options as of version 1.0.0 including:
+
+### Graphs Templates
+* Full right axis
+* Shift
+* Dash and dash offset
+* Alt y-grid
+* No grid fit
+* Units length
+* Tab width
+* Dynamic labels
+* Rules legend
+* Legend position
+
+### Graph Template Items
+* VDEF's
+* Stacked lines
+* User definable line widths
+* Text alignment
+
+Additionally the ability to manage RRD files that Cacti creates and uses has been added.  The ability to *fix up* graph data is available while viewing graphs to allow for easy removal of spikes or filling of missing areas of data.
+
+-----------------------------------------------------------------------------
+
+# Cacti 1.0.0
+
+With the release of Cacti 1.0.0 many improvements and enhancements have been made. As part of ongoing efforts to improve Cacti almost 20 plugins were merged into the core of Cacti eliminating the need for the plugins. A major refresh of the interface has been started and will continue to occur as development on Cacti continues.
+
+### Plugins Absorbed into the Core
+
+The following plugins have been merged into the core Cacti code as of version 1.0.0:
+
+| Plugin      | Description                                              |
+| ----------- | -------------------------------------------------------- |
+| snmpagent   | An SNMP Agent extension, trap and notification generator |
+| clog        | Log viewers for administrators                           |
+| settings    | Core plugin providing email and DNS services             |
+| boost       | Large system performance boost plugin                    |
+| dsstats     | Cacti data source statistics                             |
+| watermark   | Watermark graphs                                         |
+| ssl         | Force https connection                                   |
+| ugroup      | User groups support                                      |
+| domains     | Multiple authentication domains                          |
+| jqueryskin  | User interface skinning                                  |
+| secpass     | C3 level password and site security                      |
+| logrotate   | Log management                                           |
+| realtime    | Realtime graphing                                        |
+| rrdclean    | RRD file maintenance                                     |
+| nectar      | Email based graph reporting                              |
+| aggregate   | Templating, creation and management of aggregate graphs  |
+| autom8      | Graph and Tree creation automation                       |
+| discovery   | Network Discovery and Device automation                  |
+| spikekill   | Removes spikes from Graphs                               |
+| superlinks  | Allows administrators to links to additional sites       |
+
+-----------------------------------------------------------------------------
+
+# Notes to Plugin Developers
+
+## Legacy Plugins Notice
+
+Plugins written for Cacti 0.8.8 and before will require modifications in order to be compatible with Cacti 1.0.0.  There have been several changes that all plugin developers need to be aware of.  Please see the [Cacti Wiki](https://github.com/Cacti/cacti/wiki/PluginMigration) for information on migrating your own custom developed plugins to the Cacti 1.0.0 framework.  Any of the Cacti Group maintained plugin can be used as reference plugins for driving your plugin migration to the 1.0.0 framework and are available on [Github](https://github.com/Cacti/). 
+
+## Charting Functionality
+
+Several JavaScript based HTML5 Charting packages have been included in Cacti in an effort to assist plugin developers who wish to use graphing API's in their plugins other than RRDtool.
+
+* [C3](http://c3js.org/)
+* [D3](https://d3js.org/)
+* [Chart.js](http://www.chartjs.org/)
+* [DyGraphs](http://dygraphs.com/)
+* [jQuery Sparklines](http://omnipotent.net/jquery.sparkline/)
+
+## Logging
+
+For developers using the Cacti framework, it is important to note that additional controls on logging have been added.  Debug logging can now be controlled at not only a global level, but now per plugin, per device and even per file.
+
+
+
