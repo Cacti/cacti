@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-28 17:53-0500\n"
+"POT-Creation-Date: 2017-01-29 12:26-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -497,7 +497,7 @@ msgstr ""
 #: ../include/global_settings.php:1002 ../include/global_settings.php:1016
 #: ../include/global_settings.php:1028 ../include/global_settings.php:1053
 #: ../include/global_settings.php:1067 ../include/global_settings.php:1126
-#: ../include/global_settings.php:1730 ../user_admin.php:1113 ../host.php:1358
+#: ../include/global_settings.php:1731 ../user_admin.php:1113 ../host.php:1358
 msgid "Disabled"
 msgstr ""
 
@@ -541,8 +541,8 @@ msgstr ""
 #: ../graph_view.php:389 ../graph_view.php:550 ../aggregate_graphs.php:955
 #: ../aggregate_graphs.php:1050 ../aggregate_graphs.php:1293
 #: ../lib/html_graph.php:212 ../lib/functions.php:1903
-#: ../lib/api_automation.php:274 ../lib/html_tree.php:655
-#: ../lib/html_tree.php:1071 ../lib/html.php:1197
+#: ../lib/api_automation.php:274 ../lib/html_tree.php:659
+#: ../lib/html_tree.php:1075 ../lib/html.php:1197
 #: ../plugins/maint/maint.php:932 ../plugins/hmib/hmib.php:2123
 #: ../plugins/thold/thold_graph.php:588 ../plugins/thold/notify_lists.php:819
 #: ../plugins/mikrotik/mikrotik.php:157 ../plugins/mikrotik/mikrotik.php:2129
@@ -868,8 +868,8 @@ msgstr ""
 #: ../lib/html_graph.php:206 ../lib/html_graph.php:429
 #: ../lib/html_reports.php:1382 ../lib/api_automation.php:133
 #: ../lib/api_automation.php:460 ../lib/api_automation.php:683
-#: ../lib/api_automation.php:991 ../lib/html_tree.php:602
-#: ../lib/html_tree.php:876 ../lib/clog_webapi.php:362
+#: ../lib/api_automation.php:991 ../lib/html_tree.php:606
+#: ../lib/html_tree.php:880 ../lib/clog_webapi.php:362
 #: ../plugins/flowview/flowview_schedules.php:405
 #: ../plugins/flowview/flowview_devices.php:393 ../plugins/maint/maint.php:789
 #: ../plugins/maint/maint.php:1075 ../plugins/hmib/hmib_types.php:977
@@ -1040,7 +1040,7 @@ msgstr ""
 #: ../user_group_admin.php:2401 ../user_group_admin.php:2488
 #: ../automation_templates.php:431 ../graphs_new.php:573 ../graph_view.php:568
 #: ../aggregate_graphs.php:979 ../aggregate_graphs.php:1311
-#: ../lib/html_graph.php:193 ../lib/html_tree.php:642
+#: ../lib/html_graph.php:193 ../lib/html_tree.php:646
 #: ../plugins/flowview/functions.php:153
 #: ../plugins/flowview/flowview_schedules.php:429
 #: ../plugins/flowview/flowview_devices.php:402 ../plugins/maint/maint.php:841
@@ -1166,7 +1166,7 @@ msgstr ""
 #: ../user_group_admin.php:2075 ../user_group_admin.php:2185
 #: ../rrdcleaner.php:348 ../graph_view.php:518 ../aggregate_graphs.php:1271
 #: ../lib/html_graph.php:159 ../lib/api_automation.php:434
-#: ../lib/html_tree.php:608 ../plugins/hmib/hmib.php:231
+#: ../lib/html_tree.php:612 ../plugins/hmib/hmib.php:231
 #: ../plugins/hmib/hmib.php:560 ../plugins/hmib/hmib.php:908
 #: ../plugins/hmib/hmib.php:1213 ../plugins/hmib/hmib.php:1496
 #: ../plugins/hmib/hmib.php:1943 ../plugins/thold/thold_graph.php:108
@@ -1216,7 +1216,7 @@ msgstr ""
 #: ../lib/html_reports.php:389 ../lib/api_automation.php:144
 #: ../lib/api_automation.php:422 ../lib/api_automation.php:439
 #: ../lib/api_automation.php:576 ../lib/api_automation.php:1002
-#: ../lib/html_tree.php:840 ../lib/html.php:1440
+#: ../lib/html_tree.php:844 ../lib/html.php:1440
 #: ../plugins/flowview/arrays.php:166 ../plugins/flowview/arrays.php:178
 #: ../plugins/flowview/functions.php:117 ../plugins/maint/maint.php:800
 #: ../plugins/syslog/syslog.php:346 ../plugins/syslog/syslog.php:367
@@ -1438,7 +1438,7 @@ msgstr ""
 #: ../lib/html_graph.php:190 ../lib/html_reports.php:1412
 #: ../lib/api_automation.php:187 ../lib/api_automation.php:452
 #: ../lib/api_automation.php:704 ../lib/api_automation.php:1045
-#: ../lib/html_tree.php:639 ../lib/clog_webapi.php:326
+#: ../lib/html_tree.php:643 ../lib/clog_webapi.php:326
 #: ../plugins/flowview/flowview_schedules.php:426
 #: ../plugins/maint/maint.php:838 ../plugins/maint/maint.php:1102
 #: ../plugins/hmib/hmib_types.php:930 ../plugins/hmib/hmib_types.php:998
@@ -1493,8 +1493,8 @@ msgstr ""
 #: ../lib/html_graph.php:193 ../lib/html_graph.php:322
 #: ../lib/html_reports.php:1415 ../lib/api_automation.php:190
 #: ../lib/api_automation.php:455 ../lib/api_automation.php:707
-#: ../lib/api_automation.php:1048 ../lib/html_tree.php:642
-#: ../lib/html_tree.php:769 ../lib/clog_webapi.php:329
+#: ../lib/api_automation.php:1048 ../lib/html_tree.php:646
+#: ../lib/html_tree.php:773 ../lib/clog_webapi.php:329
 #: ../plugins/flowview/functions.php:153
 #: ../plugins/flowview/flowview_schedules.php:429
 #: ../plugins/flowview/flowview_devices.php:402 ../plugins/maint/maint.php:841
@@ -1940,7 +1940,7 @@ msgid "Graph Types"
 msgstr ""
 
 #: ../graphs_new.php:522 ../graph_view.php:758 ../lib/html_graph.php:392
-#: ../lib/html_reports.php:329 ../lib/html_tree.php:839
+#: ../lib/html_reports.php:329 ../lib/html_tree.php:843
 #: ../lib/clog_webapi.php:317 ../plugins/flowview/arrays.php:189
 #: ../plugins/hmib/hmib.php:193 ../plugins/hmib/hmib.php:213
 #: ../plugins/hmib/hmib.php:235 ../plugins/hmib/hmib.php:274
@@ -2308,8 +2308,8 @@ msgstr ""
 
 #: ../graph_view.php:522 ../graph_view.php:747 ../graph_view.php:752
 #: ../lib/html_graph.php:163 ../lib/html_graph.php:381
-#: ../lib/html_graph.php:386 ../lib/html_tree.php:612 ../lib/html_tree.php:828
-#: ../lib/html_tree.php:833
+#: ../lib/html_graph.php:386 ../lib/html_tree.php:616 ../lib/html_tree.php:832
+#: ../lib/html_tree.php:837
 msgid "All Graphs & Templates"
 msgstr ""
 
@@ -2335,7 +2335,7 @@ msgstr ""
 msgid "Graph Size"
 msgstr ""
 
-#: ../graph_view.php:749 ../lib/html_graph.php:383 ../lib/html_tree.php:830
+#: ../graph_view.php:749 ../lib/html_graph.php:383 ../lib/html_tree.php:834
 #: ../settings.php:223
 msgid "Templates Selected"
 msgstr ""
@@ -2751,24 +2751,24 @@ msgid "Version %s"
 msgstr ""
 
 #: ../lib/html_graph.php:197 ../lib/html_form.php:1081
-#: ../lib/html_form.php:1090 ../lib/html_tree.php:646
+#: ../lib/html_form.php:1090 ../lib/html_tree.php:650
 #: ../plugins/flowview/flowview.php:346 ../plugins/flowview/setup.php:135
 #: ../plugins/syslog/syslog.php:1005 ../plugins/monitor/monitor.php:464
 #: ../plugins/cycle/cycle.php:129 ../auth_changepassword.php:295
 msgid "Save"
 msgstr ""
 
-#: ../lib/html_graph.php:197 ../lib/html_tree.php:646
+#: ../lib/html_graph.php:197 ../lib/html_tree.php:650
 msgid ""
 "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift "
 "preferences to your profile"
 msgstr ""
 
-#: ../lib/html_graph.php:226 ../lib/html_tree.php:669
+#: ../lib/html_graph.php:226 ../lib/html_tree.php:673
 msgid "Columns"
 msgstr ""
 
-#: ../lib/html_graph.php:230 ../lib/html_tree.php:676
+#: ../lib/html_graph.php:230 ../lib/html_tree.php:680
 #: ../plugins/cycle/functions.php:57 ../plugins/cycle/setup.php:277
 #, php-format
 msgid "%d Column"
@@ -2776,41 +2776,41 @@ msgstr ""
 
 #: ../lib/html_graph.php:231 ../lib/html_graph.php:232
 #: ../lib/html_graph.php:233 ../lib/html_graph.php:234
-#: ../lib/html_graph.php:235 ../lib/html_tree.php:677 ../lib/html_tree.php:678
-#: ../lib/html_tree.php:679 ../lib/html_tree.php:680 ../lib/html_tree.php:681
+#: ../lib/html_graph.php:235 ../lib/html_tree.php:681 ../lib/html_tree.php:682
+#: ../lib/html_tree.php:683 ../lib/html_tree.php:684 ../lib/html_tree.php:685
 #: ../plugins/cycle/functions.php:58 ../plugins/cycle/functions.php:59
 #: ../plugins/cycle/functions.php:60 ../plugins/cycle/functions.php:61
 #: ../plugins/cycle/functions.php:62 ../plugins/cycle/functions.php:63
 #: ../plugins/cycle/functions.php:64 ../plugins/cycle/setup.php:278
 #: ../plugins/cycle/setup.php:279 ../plugins/cycle/setup.php:280
-#: ../plugins/cycle/setup.php:281 ../include/global_settings.php:1886
-#: ../include/global_settings.php:1893
+#: ../plugins/cycle/setup.php:281 ../include/global_settings.php:1887
+#: ../include/global_settings.php:1894
 #, php-format
 msgid "%d Columns"
 msgstr ""
 
 #: ../lib/html_graph.php:239 ../lib/html_reports.php:125
-#: ../lib/html_tree.php:686
+#: ../lib/html_tree.php:690
 msgid "Thumbnails"
 msgstr ""
 
-#: ../lib/html_graph.php:255 ../lib/html_tree.php:702
+#: ../lib/html_graph.php:255 ../lib/html_tree.php:706
 #: ../plugins/flowview/flowview.php:178 ../include/global_arrays.php:633
 msgid "Presets"
 msgstr ""
 
-#: ../lib/html_graph.php:261 ../lib/html_tree.php:708
+#: ../lib/html_graph.php:261 ../lib/html_tree.php:712
 #: ../plugins/flowview/flowview.php:184 ../plugins/syslog/syslog.php:937
 msgid "Custom"
 msgstr ""
 
 #: ../lib/html_graph.php:282 ../lib/html_reports.php:1483
-#: ../lib/html_reports.php:1494 ../lib/html_tree.php:729
+#: ../lib/html_reports.php:1494 ../lib/html_tree.php:733
 #: ../plugins/syslog/syslog.php:959
 msgid "From"
 msgstr ""
 
-#: ../lib/html_graph.php:288 ../lib/html_tree.php:735
+#: ../lib/html_graph.php:288 ../lib/html_tree.php:739
 #: ../plugins/flowview/flowview.php:210
 #: ../plugins/flowview/flowview_schedules.php:329
 #: ../plugins/syslog/syslog.php:965
@@ -2818,32 +2818,32 @@ msgid "Start Date Selector"
 msgstr ""
 
 #: ../lib/html_graph.php:291 ../lib/html_reports.php:1484
-#: ../lib/html_reports.php:1495 ../lib/html_tree.php:738
+#: ../lib/html_reports.php:1495 ../lib/html_tree.php:742
 #: ../plugins/syslog/syslog.php:968
 msgid "To"
 msgstr ""
 
-#: ../lib/html_graph.php:297 ../lib/html_tree.php:744
+#: ../lib/html_graph.php:297 ../lib/html_tree.php:748
 #: ../plugins/flowview/flowview.php:217 ../plugins/syslog/syslog.php:974
 msgid "End Date Selector"
 msgstr ""
 
-#: ../lib/html_graph.php:300 ../lib/html_tree.php:747
+#: ../lib/html_graph.php:300 ../lib/html_tree.php:751
 #: ../plugins/syslog/syslog.php:977
 msgid "Shift Time Backward"
 msgstr ""
 
-#: ../lib/html_graph.php:303 ../lib/html_tree.php:750
+#: ../lib/html_graph.php:303 ../lib/html_tree.php:754
 #: ../plugins/syslog/syslog.php:980
 msgid "Define Shifting Interval"
 msgstr ""
 
-#: ../lib/html_graph.php:316 ../lib/html_tree.php:763
+#: ../lib/html_graph.php:316 ../lib/html_tree.php:767
 #: ../plugins/syslog/syslog.php:993
 msgid "Shift Time Forward"
 msgstr ""
 
-#: ../lib/html_graph.php:319 ../lib/html_tree.php:766 ../lib/html_tree.php:786
+#: ../lib/html_graph.php:319 ../lib/html_tree.php:770 ../lib/html_tree.php:790
 #: ../lib/clog_webapi.php:337 ../plugins/mactrack/mactrack_utilities.php:184
 #: ../plugins/mactrack/mactrack_utilities.php:195
 #: ../plugins/webseer/webseer_servers.php:292
@@ -2853,15 +2853,15 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: ../lib/html_graph.php:319 ../lib/html_tree.php:766
+#: ../lib/html_graph.php:319 ../lib/html_tree.php:770
 msgid "Refresh selected time span"
 msgstr ""
 
-#: ../lib/html_graph.php:322 ../lib/html_tree.php:769
+#: ../lib/html_graph.php:322 ../lib/html_tree.php:773
 msgid "Return to the default time span"
 msgstr ""
 
-#: ../lib/html_graph.php:327 ../lib/html_tree.php:774
+#: ../lib/html_graph.php:327 ../lib/html_tree.php:778
 #: ../graph_realtime.php:249
 msgid "Window"
 msgstr ""
@@ -2871,7 +2871,7 @@ msgstr ""
 msgid "Interval"
 msgstr ""
 
-#: ../lib/html_graph.php:351 ../lib/html_tree.php:798
+#: ../lib/html_graph.php:351 ../lib/html_tree.php:802
 #: ../plugins/cycle/cycle.php:111
 msgid "Stop"
 msgstr ""
@@ -3404,7 +3404,7 @@ msgstr ""
 msgid "List Mode"
 msgstr ""
 
-#: ../lib/functions.php:1927 ../include/global_settings.php:1872
+#: ../lib/functions.php:1927 ../include/global_settings.php:1873
 msgid "Preview Mode"
 msgstr ""
 
@@ -4361,11 +4361,11 @@ msgstr ""
 msgid "No Reports Found"
 msgstr ""
 
-#: ../lib/reports.php:837 ../lib/html_tree.php:588
+#: ../lib/reports.php:837 ../lib/html_tree.php:592
 msgid "Tree:"
 msgstr ""
 
-#: ../lib/reports.php:842 ../lib/html_tree.php:589
+#: ../lib/reports.php:842 ../lib/html_tree.php:593
 msgid "Leaf:"
 msgstr ""
 
@@ -4706,32 +4706,32 @@ msgstr ""
 msgid "Web Basic"
 msgstr ""
 
-#: ../lib/html_tree.php:577 ../lib/html_tree.php:580 ../lib/html_tree.php:583
+#: ../lib/html_tree.php:581 ../lib/html_tree.php:584 ../lib/html_tree.php:587
 #: ../lib/html.php:124
 msgid "Graph Template:"
 msgstr ""
 
-#: ../lib/html_tree.php:590 ../plugins/monitor/monitor.php:1082
+#: ../lib/html_tree.php:594 ../plugins/monitor/monitor.php:1082
 msgid "Device:"
 msgstr ""
 
-#: ../lib/html_tree.php:593
+#: ../lib/html_tree.php:597
 msgid "Graph Filters"
 msgstr ""
 
-#: ../lib/html_tree.php:593 ../plugins/flowview/flowview.php:164
+#: ../lib/html_tree.php:597 ../plugins/flowview/flowview.php:164
 msgid "Filter"
 msgstr ""
 
-#: ../lib/html_tree.php:593
+#: ../lib/html_tree.php:597
 msgid "Applied"
 msgstr ""
 
-#: ../lib/html_tree.php:639
+#: ../lib/html_tree.php:643
 msgid "Set/Refresh Filter"
 msgstr ""
 
-#: ../lib/html_tree.php:674 ../plugins/syslog/syslog_alerts.php:703
+#: ../lib/html_tree.php:678 ../plugins/syslog/syslog_alerts.php:703
 #: ../plugins/thold/thold_graph.php:397 ../plugins/thold/thold_graph.php:398
 #: ../plugins/thold/thold_graph.php:399 ../plugins/thold/thold_graph.php:404
 #: ../plugins/thold/thold_graph.php:415 ../plugins/thold/thold_graph.php:416
@@ -5198,7 +5198,7 @@ msgid "CSV Export of Graph Data"
 msgstr ""
 
 #: ../lib/html.php:345
-msgid "MRTG Graph View"
+msgid "Time Graph View"
 msgstr ""
 
 #: ../lib/html.php:347
@@ -5254,7 +5254,7 @@ msgid "Cacti Log"
 msgstr ""
 
 #: ../lib/html.php:1329 ../lib/html.php:1351 ../auth_profile.php:161
-#: ../include/global_arrays.php:489 ../include/global_settings.php:1876
+#: ../include/global_arrays.php:489 ../include/global_settings.php:1877
 msgid "Tree View"
 msgstr ""
 
@@ -5268,71 +5268,83 @@ msgstr ""
 msgid "Preview View"
 msgstr ""
 
-#: ../lib/html.php:1527
-msgid "Replacement Methods"
+#: ../lib/html.php:1534 ../include/global_settings.php:1631
+msgid "Replacement Method"
 msgstr ""
 
-#: ../lib/html.php:1528 ../include/global_settings.php:1636
+#: ../lib/html.php:1535 ../include/global_settings.php:1637
 msgid "Average"
 msgstr ""
 
-#: ../lib/html.php:1529
+#: ../lib/html.php:1536
 msgid "Nan's"
 msgstr ""
 
-#: ../lib/html.php:1532
+#: ../lib/html.php:1537 ../include/global_settings.php:1637
+msgid "Last Known Good"
+msgstr ""
+
+#: ../lib/html.php:1540
 msgid "Standard Deviations"
 msgstr ""
 
-#: ../lib/html.php:1534
+#: ../lib/html.php:1542
 #, php-format
 msgid "%s Standard Deviations"
 msgstr ""
 
-#: ../lib/html.php:1538 ../include/global_settings.php:1657
+#: ../lib/html.php:1546 ../include/global_settings.php:1658
 msgid "Variance Percentage"
 msgstr ""
 
-#: ../lib/html.php:1544
+#: ../lib/html.php:1552
 msgid "Variance Outliers"
 msgstr ""
 
-#: ../lib/html.php:1546
+#: ../lib/html.php:1554
 #, php-format
 msgid "%d Outliers"
 msgstr ""
 
-#: ../lib/html.php:1550
+#: ../lib/html.php:1558
 msgid "Kills Per RRA"
 msgstr ""
 
-#: ../lib/html.php:1552
+#: ../lib/html.php:1560
 #, php-format
 msgid "%d Spikes"
 msgstr ""
 
-#: ../lib/html.php:1559
+#: ../lib/html.php:1567
 msgid "Remove StdDev"
 msgstr ""
 
-#: ../lib/html.php:1560
+#: ../lib/html.php:1568
 msgid "Remove Variance"
 msgstr ""
 
-#: ../lib/html.php:1561
+#: ../lib/html.php:1569
+msgid "Fill in Range"
+msgstr ""
+
+#: ../lib/html.php:1570
 msgid "Dry Run StdDev"
 msgstr ""
 
-#: ../lib/html.php:1562
+#: ../lib/html.php:1571
 msgid "Dry Run Variance"
 msgstr ""
 
-#: ../spikekill.php:34
+#: ../lib/html.php:1572
+msgid "Dry Run Fill in Range"
+msgstr ""
+
+#: ../spikekill.php:35
 #, php-format
 msgid "FATAL: Spike Kill method '%s' is Invalid\n"
 msgstr ""
 
-#: ../spikekill.php:71
+#: ../spikekill.php:79
 msgid "FATAL: Spike Kill Not Allowed\n"
 msgstr ""
 
@@ -6820,8 +6832,8 @@ msgstr ""
 #: ../include/global_arrays.php:438 ../include/global_arrays.php:439
 #: ../include/global_arrays.php:1393 ../include/global_arrays.php:1394
 #: ../include/global_arrays.php:1395 ../include/global_arrays.php:1396
-#: ../include/global_arrays.php:1397 ../include/global_settings.php:1731
-#: ../include/global_settings.php:1732
+#: ../include/global_arrays.php:1397 ../include/global_settings.php:1732
+#: ../include/global_settings.php:1733
 #, php-format
 msgid "Every %d Hours"
 msgstr ""
@@ -7149,7 +7161,7 @@ msgstr ""
 #: ../include/global_arrays.php:1153 ../include/global_arrays.php:1164
 #: ../include/global_settings.php:1069 ../include/global_settings.php:1070
 #: ../include/global_settings.php:1071 ../include/global_settings.php:1072
-#: ../include/global_settings.php:1073 ../include/global_settings.php:1803
+#: ../include/global_settings.php:1073 ../include/global_settings.php:1804
 #, php-format
 msgid "%d Minutes"
 msgstr ""
@@ -14181,7 +14193,7 @@ msgstr ""
 #: ../include/global_arrays.php:1145 ../include/global_arrays.php:1146
 #: ../include/global_arrays.php:1158 ../include/global_arrays.php:1159
 #: ../include/global_arrays.php:1160 ../include/global_arrays.php:1161
-#: ../include/global_arrays.php:1162 ../include/global_settings.php:1803
+#: ../include/global_arrays.php:1162 ../include/global_settings.php:1804
 #, php-format
 msgid "%d Seconds"
 msgstr ""
@@ -15786,7 +15798,7 @@ msgid ""
 msgstr ""
 
 #: ../plugins/gexport/setup.php:226 ../include/global_settings.php:597
-#: ../include/global_settings.php:740 ../include/global_settings.php:1758
+#: ../include/global_settings.php:740 ../include/global_settings.php:1759
 msgid "Theme"
 msgstr ""
 
@@ -15937,7 +15949,7 @@ msgstr ""
 msgid "The number of columns to use by default when displaying Graphs."
 msgstr ""
 
-#: ../plugins/gexport/setup.php:376 ../include/global_settings.php:1921
+#: ../plugins/gexport/setup.php:376 ../include/global_settings.php:1922
 msgid "Graphs Per Page"
 msgstr ""
 
@@ -16653,7 +16665,7 @@ msgid "This sets the graph width for the displayed graphs."
 msgstr ""
 
 #: ../plugins/cycle/setup.php:194 ../include/global_settings.php:752
-#: ../include/global_settings.php:1943
+#: ../include/global_settings.php:1944
 msgid "Title Font Size"
 msgstr ""
 
@@ -16717,7 +16729,7 @@ msgid ""
 "example '1,2,3,4'"
 msgstr ""
 
-#: ../plugins/cycle/setup.php:237 ../include/global_settings.php:1914
+#: ../plugins/cycle/setup.php:237 ../include/global_settings.php:1915
 msgid "Default Tree"
 msgstr ""
 
@@ -17001,7 +17013,7 @@ msgstr ""
 #: ../data_sources.php:1006 ../include/global_arrays.php:446
 #: ../include/global_arrays.php:756 ../include/global_arrays.php:1113
 #: ../include/global_arrays.php:1147 ../include/global_arrays.php:1163
-#: ../include/global_settings.php:1068 ../include/global_settings.php:1803
+#: ../include/global_settings.php:1068 ../include/global_settings.php:1804
 msgid "1 Minute"
 msgstr ""
 
@@ -24269,7 +24281,7 @@ msgstr ""
 msgid "Theme Settings"
 msgstr ""
 
-#: ../include/global_settings.php:598 ../include/global_settings.php:1759
+#: ../include/global_settings.php:598 ../include/global_settings.php:1760
 msgid "Please select one of the available Themes to skin your Cacti with."
 msgstr ""
 
@@ -24447,7 +24459,7 @@ msgstr ""
 msgid "Enter Valid Font Config Value"
 msgstr ""
 
-#: ../include/global_settings.php:753 ../include/global_settings.php:1944
+#: ../include/global_settings.php:753 ../include/global_settings.php:1945
 msgid "The size of the font used for Graph Titles"
 msgstr ""
 
@@ -24466,11 +24478,11 @@ msgstr ""
 msgid "Enter True Type Font Path"
 msgstr ""
 
-#: ../include/global_settings.php:768 ../include/global_settings.php:1956
+#: ../include/global_settings.php:768 ../include/global_settings.php:1957
 msgid "Legend Font Size"
 msgstr ""
 
-#: ../include/global_settings.php:769 ../include/global_settings.php:1957
+#: ../include/global_settings.php:769 ../include/global_settings.php:1958
 msgid "The size of the font used for Graph Legend items"
 msgstr ""
 
@@ -24484,11 +24496,11 @@ msgid ""
 "or valid Pango font-config value."
 msgstr ""
 
-#: ../include/global_settings.php:784 ../include/global_settings.php:1969
+#: ../include/global_settings.php:784 ../include/global_settings.php:1970
 msgid "Axis Font Size"
 msgstr ""
 
-#: ../include/global_settings.php:785 ../include/global_settings.php:1970
+#: ../include/global_settings.php:785 ../include/global_settings.php:1971
 msgid "The size of the font used for Graph Axis"
 msgstr ""
 
@@ -24502,11 +24514,11 @@ msgid ""
 "file or valid Pango font-config value."
 msgstr ""
 
-#: ../include/global_settings.php:800 ../include/global_settings.php:1982
+#: ../include/global_settings.php:800 ../include/global_settings.php:1983
 msgid "Unit Font Size"
 msgstr ""
 
-#: ../include/global_settings.php:801 ../include/global_settings.php:1983
+#: ../include/global_settings.php:801 ../include/global_settings.php:1984
 msgid "The size of the font used for Graph Units"
 msgstr ""
 
@@ -25354,27 +25366,24 @@ msgstr ""
 msgid "Variance Based w/Outliers Removed"
 msgstr ""
 
-#: ../include/global_settings.php:1631
-msgid "Replacement Method"
-msgstr ""
-
 #: ../include/global_settings.php:1632
 msgid ""
-"There are two replacement methods.  The first method replaces the spike with "
-"the\n"
+"There are three replacement methods.  The first method replaces the spike "
+"with the\n"
 "\t\t\tthe average of the data source in question.  The second method "
-"replaces the spike with a 'NaN'."
+"replaces the spike with a 'NaN'.\n"
+"\t\t\tThe last replaces the spike with the last known good value found."
 msgstr ""
 
-#: ../include/global_settings.php:1636
+#: ../include/global_settings.php:1637
 msgid "NaN's"
 msgstr ""
 
-#: ../include/global_settings.php:1639
+#: ../include/global_settings.php:1640
 msgid "Number of Standard Deviations"
 msgstr ""
 
-#: ../include/global_settings.php:1640
+#: ../include/global_settings.php:1641
 msgid ""
 "Any value that is this many standard deviations above the average will be "
 "excluded.\n"
@@ -25383,15 +25392,15 @@ msgid ""
 "\t\t\tthan 5 Standard Deviations."
 msgstr ""
 
-#: ../include/global_settings.php:1646 ../include/global_settings.php:1647
-#: ../include/global_settings.php:1648 ../include/global_settings.php:1649
-#: ../include/global_settings.php:1650 ../include/global_settings.php:1651
-#: ../include/global_settings.php:1652 ../include/global_settings.php:1653
+#: ../include/global_settings.php:1647 ../include/global_settings.php:1648
+#: ../include/global_settings.php:1649 ../include/global_settings.php:1650
+#: ../include/global_settings.php:1651 ../include/global_settings.php:1652
+#: ../include/global_settings.php:1653 ../include/global_settings.php:1654
 #, php-format
 msgid "%d Standard Deviations"
 msgstr ""
 
-#: ../include/global_settings.php:1658
+#: ../include/global_settings.php:1659
 #, php-format
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
@@ -25401,11 +25410,11 @@ msgid ""
 "\t\t\twould remove any sample above the quantity of 100 from the graph."
 msgstr ""
 
-#: ../include/global_settings.php:1677
+#: ../include/global_settings.php:1678
 msgid "Variance Number of Outliers"
 msgstr ""
 
-#: ../include/global_settings.php:1678
+#: ../include/global_settings.php:1679
 msgid ""
 "This value represents the number of high and low average samples will be "
 "removed from the\n"
@@ -25414,70 +25423,70 @@ msgid ""
 "\t\t\tand bottom 5 averages are removed."
 msgstr ""
 
-#: ../include/global_settings.php:1684 ../include/global_settings.php:1685
-#: ../include/global_settings.php:1686 ../include/global_settings.php:1687
-#: ../include/global_settings.php:1688 ../include/global_settings.php:1689
-#: ../include/global_settings.php:1690 ../include/global_settings.php:1691
+#: ../include/global_settings.php:1685 ../include/global_settings.php:1686
+#: ../include/global_settings.php:1687 ../include/global_settings.php:1688
+#: ../include/global_settings.php:1689 ../include/global_settings.php:1690
+#: ../include/global_settings.php:1691 ../include/global_settings.php:1692
 #, php-format
 msgid "%d High/Low Samples"
 msgstr ""
 
-#: ../include/global_settings.php:1695
+#: ../include/global_settings.php:1696
 msgid "Max Kills Per RRA"
 msgstr ""
 
-#: ../include/global_settings.php:1696
+#: ../include/global_settings.php:1697
 msgid ""
 "This value represents the maximum number of spikes to remove from a Graph "
 "RRA."
 msgstr ""
 
-#: ../include/global_settings.php:1700 ../include/global_settings.php:1701
-#: ../include/global_settings.php:1702 ../include/global_settings.php:1703
-#: ../include/global_settings.php:1704 ../include/global_settings.php:1705
-#: ../include/global_settings.php:1706 ../include/global_settings.php:1707
+#: ../include/global_settings.php:1701 ../include/global_settings.php:1702
+#: ../include/global_settings.php:1703 ../include/global_settings.php:1704
+#: ../include/global_settings.php:1705 ../include/global_settings.php:1706
+#: ../include/global_settings.php:1707 ../include/global_settings.php:1708
 #, php-format
 msgid "%d Samples"
 msgstr ""
 
-#: ../include/global_settings.php:1711
+#: ../include/global_settings.php:1712
 msgid "RRDfile Backup Directory"
 msgstr ""
 
-#: ../include/global_settings.php:1712
+#: ../include/global_settings.php:1713
 msgid ""
 "If this directory is not empty, then your original RRDfiles will be backed\n"
 "\t\t\tup to this location."
 msgstr ""
 
-#: ../include/global_settings.php:1720
+#: ../include/global_settings.php:1721
 msgid "Batch Spike Kill Settings"
 msgstr ""
 
-#: ../include/global_settings.php:1724
+#: ../include/global_settings.php:1725
 msgid "Removal Schedule"
 msgstr ""
 
-#: ../include/global_settings.php:1725
+#: ../include/global_settings.php:1726
 msgid ""
 "Do you wish to periodically remove spikes from your graphs?  If so, select "
 "the frequency\n"
 "\t\t\tbelow."
 msgstr ""
 
-#: ../include/global_settings.php:1733
+#: ../include/global_settings.php:1734
 msgid "Once a Day"
 msgstr ""
 
-#: ../include/global_settings.php:1734
+#: ../include/global_settings.php:1735
 msgid "Every Other Day"
 msgstr ""
 
-#: ../include/global_settings.php:1738
+#: ../include/global_settings.php:1739
 msgid "Base Time"
 msgstr ""
 
-#: ../include/global_settings.php:1739
+#: ../include/global_settings.php:1740
 msgid ""
 "The Base Time for Spike removal to occur.  For example, if you use '12:00am' "
 "and you choose\n"
@@ -25485,232 +25494,232 @@ msgid ""
 "every day."
 msgstr ""
 
-#: ../include/global_settings.php:1747
+#: ../include/global_settings.php:1748
 msgid "Graph Templates to Spike Kill"
 msgstr ""
 
-#: ../include/global_settings.php:1749
+#: ../include/global_settings.php:1750
 msgid ""
 "When performing batch spike removal, only the templates selected below will "
 "be acted on."
 msgstr ""
 
-#: ../include/global_settings.php:1765
+#: ../include/global_settings.php:1766
 msgid "Default View Mode"
 msgstr ""
 
-#: ../include/global_settings.php:1766
+#: ../include/global_settings.php:1767
 msgid ""
 "Which Graph mode you want displayed by default when you first visit the "
 "Graphs page?"
 msgstr ""
 
-#: ../include/global_settings.php:1772
+#: ../include/global_settings.php:1773
 msgid "User Language"
 msgstr ""
 
-#: ../include/global_settings.php:1773
+#: ../include/global_settings.php:1774
 msgid "Defines the preferred GUI language."
 msgstr ""
 
-#: ../include/global_settings.php:1779
+#: ../include/global_settings.php:1780
 msgid "Show Graph Title"
 msgstr ""
 
-#: ../include/global_settings.php:1780
+#: ../include/global_settings.php:1781
 msgid ""
 "Display the graph title on the page so that it may be searched using the "
 "browser."
 msgstr ""
 
-#: ../include/global_settings.php:1785
+#: ../include/global_settings.php:1786
 msgid "Graph Date Display Format"
 msgstr ""
 
-#: ../include/global_settings.php:1786
+#: ../include/global_settings.php:1787
 msgid "The date format to use for graphs"
 msgstr ""
 
-#: ../include/global_settings.php:1792
+#: ../include/global_settings.php:1793
 msgid "Graph Date Separator"
 msgstr ""
 
-#: ../include/global_settings.php:1793
+#: ../include/global_settings.php:1794
 msgid "The date separator to be used for graphs"
 msgstr ""
 
-#: ../include/global_settings.php:1799
+#: ../include/global_settings.php:1800
 msgid "Page Refresh"
 msgstr ""
 
-#: ../include/global_settings.php:1800
+#: ../include/global_settings.php:1801
 msgid "The number of seconds between automatic page refreshes."
 msgstr ""
 
-#: ../include/global_settings.php:1806
+#: ../include/global_settings.php:1807
 msgid "Preview Graphs Per Page"
 msgstr ""
 
-#: ../include/global_settings.php:1807 ../include/global_settings.php:1922
+#: ../include/global_settings.php:1808 ../include/global_settings.php:1923
 msgid "The number of graphs to display on one page in preview mode."
 msgstr ""
 
-#: ../include/global_settings.php:1815
+#: ../include/global_settings.php:1816
 msgid "Default Time Range"
 msgstr ""
 
-#: ../include/global_settings.php:1816
+#: ../include/global_settings.php:1817
 msgid "The default RRA to use in rare occasions."
 msgstr ""
 
-#: ../include/global_settings.php:1822
+#: ../include/global_settings.php:1823
 msgid "Default Graph View Timespan"
 msgstr ""
 
-#: ../include/global_settings.php:1823
+#: ../include/global_settings.php:1824
 msgid "The default timespan you wish to be displayed when you display graphs"
 msgstr ""
 
-#: ../include/global_settings.php:1829
+#: ../include/global_settings.php:1830
 msgid "Default Graph View Timeshift"
 msgstr ""
 
-#: ../include/global_settings.php:1830
+#: ../include/global_settings.php:1831
 msgid "The default timeshift you wish to be displayed when you display graphs"
 msgstr ""
 
-#: ../include/global_settings.php:1836
+#: ../include/global_settings.php:1837
 msgid "Allow Graph to extend to Future"
 msgstr ""
 
-#: ../include/global_settings.php:1837
+#: ../include/global_settings.php:1838
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
 msgstr ""
 
-#: ../include/global_settings.php:1842
+#: ../include/global_settings.php:1843
 msgid "First Day of the Week"
 msgstr ""
 
-#: ../include/global_settings.php:1843
+#: ../include/global_settings.php:1844
 msgid "The first Day of the Week for weekly Graph Displays"
 msgstr ""
 
-#: ../include/global_settings.php:1849
+#: ../include/global_settings.php:1850
 msgid "Start of Daily Shift"
 msgstr ""
 
-#: ../include/global_settings.php:1850
+#: ../include/global_settings.php:1851
 msgid "Start Time of the Daily Shift."
 msgstr ""
 
-#: ../include/global_settings.php:1857
+#: ../include/global_settings.php:1858
 msgid "End of Daily Shift"
 msgstr ""
 
-#: ../include/global_settings.php:1858
+#: ../include/global_settings.php:1859
 msgid "End Time of the Daily Shift."
 msgstr ""
 
-#: ../include/global_settings.php:1867
+#: ../include/global_settings.php:1868
 msgid "Thumbnail Sections"
 msgstr ""
 
-#: ../include/global_settings.php:1868
+#: ../include/global_settings.php:1869
 msgid "Which portions of Cacti display Thumbnails by default."
 msgstr ""
 
-#: ../include/global_settings.php:1882
+#: ../include/global_settings.php:1883
 msgid "Preview Thumbnail Columns"
 msgstr ""
 
-#: ../include/global_settings.php:1883
+#: ../include/global_settings.php:1884
 msgid ""
 "The number of columns to use when displaying Thumbnail graphs in Preview "
 "mode."
 msgstr ""
 
-#: ../include/global_settings.php:1886 ../include/global_settings.php:1893
+#: ../include/global_settings.php:1887 ../include/global_settings.php:1894
 msgid "1 Column"
 msgstr ""
 
-#: ../include/global_settings.php:1889
+#: ../include/global_settings.php:1890
 msgid "Tree View Thumbnail Columns"
 msgstr ""
 
-#: ../include/global_settings.php:1890
+#: ../include/global_settings.php:1891
 msgid ""
 "The number of columns to use when displaying Thumbnail graphs in Tree mode."
 msgstr ""
 
-#: ../include/global_settings.php:1896
+#: ../include/global_settings.php:1897
 msgid "Thumbnail Height"
 msgstr ""
 
-#: ../include/global_settings.php:1897
+#: ../include/global_settings.php:1898
 msgid "The height of Thumbnail graphs in pixels."
 msgstr ""
 
-#: ../include/global_settings.php:1904
+#: ../include/global_settings.php:1905
 msgid "Thumbnail Width"
 msgstr ""
 
-#: ../include/global_settings.php:1905
+#: ../include/global_settings.php:1906
 msgid "The width of Thumbnail graphs in pixels."
 msgstr ""
 
-#: ../include/global_settings.php:1915
+#: ../include/global_settings.php:1916
 msgid "The default graph tree to use when displaying graphs in tree mode."
 msgstr ""
 
-#: ../include/global_settings.php:1928
+#: ../include/global_settings.php:1929
 msgid "Expand Devices"
 msgstr ""
 
-#: ../include/global_settings.php:1929
+#: ../include/global_settings.php:1930
 msgid ""
 "Choose whether to expand the Graph Templates and Data Queries used by a "
 "Device on Tree."
 msgstr ""
 
-#: ../include/global_settings.php:1936
+#: ../include/global_settings.php:1937
 msgid "Use Custom Fonts"
 msgstr ""
 
-#: ../include/global_settings.php:1937
+#: ../include/global_settings.php:1938
 msgid ""
 "Choose whether to use your own custom fonts and font sizes or utilize the "
 "system defaults."
 msgstr ""
 
-#: ../include/global_settings.php:1950
+#: ../include/global_settings.php:1951
 msgid "Title Font File"
 msgstr ""
 
-#: ../include/global_settings.php:1951
+#: ../include/global_settings.php:1952
 msgid "The font file to use for Graph Titles"
 msgstr ""
 
-#: ../include/global_settings.php:1963
+#: ../include/global_settings.php:1964
 msgid "Legend Font File"
 msgstr ""
 
-#: ../include/global_settings.php:1964
+#: ../include/global_settings.php:1965
 msgid "The font file to be used for Graph Legend items"
 msgstr ""
 
-#: ../include/global_settings.php:1976
+#: ../include/global_settings.php:1977
 msgid "Axis Font File"
 msgstr ""
 
-#: ../include/global_settings.php:1977
+#: ../include/global_settings.php:1978
 msgid "The font file to be used for Graph Axis items"
 msgstr ""
 
-#: ../include/global_settings.php:1989
+#: ../include/global_settings.php:1990
 msgid "Unit Font File"
 msgstr ""
 
-#: ../include/global_settings.php:1990
+#: ../include/global_settings.php:1991
 msgid "The font file to be used for Graph Unit items"
 msgstr ""
 
