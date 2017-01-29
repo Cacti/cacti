@@ -1629,11 +1629,12 @@ $settings = array(
 			),
 		'spikekill_avgnan' => array(
 			'friendly_name' => __('Replacement Method'),
-			'description' => __('There are two replacement methods.  The first method replaces the spike with the
-			the average of the data source in question.  The second method replaces the spike with a \'NaN\'.'),
+			'description' => __('There are three replacement methods.  The first method replaces the spike with the
+			the average of the data source in question.  The second method replaces the spike with a \'NaN\'.
+			The last replaces the spike with the last known good value found.'),
 			'method' => 'drop_array',
-			'default' => '1',
-			'array' => array(1 => __('Average'), 2 => __('NaN\'s'))
+			'default' => 'last',
+			'array' => array('avg' => __('Average'), 'nan' => __('NaN\'s'), 'last' => __('Last Known Good'))
 			),
 		'spikekill_deviations' => array(
 			'friendly_name' => __('Number of Standard Deviations'),

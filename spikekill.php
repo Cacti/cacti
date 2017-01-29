@@ -26,14 +26,16 @@ include('./include/auth.php');
 
 $debug = false;
 
-switch(get_nfilter_request_var('method')) {
-	case 'stddev':
-	case 'variance':
-		break;
-	default:
-		echo __("FATAL: Spike Kill method '%s' is Invalid\n", get_nfilter_request_var('method'));
-		exit(1);
-		break;
+if (isset_request_var('method')) {
+	switch(get_nfilter_request_var('method')) {
+		case 'stddev':
+		case 'variance':
+			break;
+		default:
+			echo __("FATAL: Spike Kill method '%s' is Invalid\n", get_nfilter_request_var('method'));
+			exit(1);
+			break;
+	}
 }
 
 if (is_realm_allowed(1043)) {
@@ -52,14 +54,20 @@ if (is_realm_allowed(1043)) {
 				if ($debug) {
 					cacti_log(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/removespikes.php ' .
 						' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
-						' -M=' . get_nfilter_request_var('method') .
+						(isset_request_var('method') ? ' -M=' . get_nfilter_request_var('method'):'') .
+						(isset_request_var('avgnan') ? ' -A=' . get_nfilter_request_var('avgnan'):'') .
+						(isset_request_var('outlier-start') ? ' --outlier-start=' . get_request_var('outlier-start'):'') .
+						(isset_request_var('outlier-end') ? ' --outlier-end=' . get_request_var('outlier-end'):'') .
 						' -U=' . $_SESSION['sess_user_id'] . 
 						' --html', false);
 				}
 
 				$results .= shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/removespikes.php ' .
 					' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
-					' -M=' . get_nfilter_request_var('method') .
+					(isset_request_var('method') ? ' -M=' . get_nfilter_request_var('method'):'') .
+					(isset_request_var('avgnan') ? ' -A=' . get_nfilter_request_var('avgnan'):'') .
+					(isset_request_var('outlier-start') ? ' --outlier-start=' . get_request_var('outlier-start'):'') .
+					(isset_request_var('outlier-end') ? ' --outlier-end=' . get_request_var('outlier-end'):'') .
 					' -U=' . $_SESSION['sess_user_id'] . 
 					' --html');
 			}

@@ -1,9 +1,9 @@
-#!/usr/bin/php -q
 <?php
+#!/usr/bin/php -q
 /*
  ex: set tabstop=4 shiftwidth=4 autoindent:
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2009 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,34 +24,52 @@
  +-------------------------------------------------------------------------+
 */
 
-/* We are not talking to the browser */
-$no_http_headers = true;
-
 /* do NOT run this script through a web browser */
 if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-include(dirname(__FILE__) . '/../include/global.php');
+/* We are not talking to the browser */
+$no_http_headers = true;
+
+$dir = dirname(__FILE__);
+chdir($dir);
+
+/* Start Initialization Section */
+if (file_exists('../include/global.php')) {
+	include_once('../include/global.php');
+	$using_cacti = true;
+}else{
+	$using_cacti = false;
+}
 
 /* setup defaults */
 $debug     = FALSE;
 $dryrun    = FALSE;
-$avgnan    = 'avg';
+$out_start = '';
+$out_end   = '';
 $rrdfile   = '';
 $std_kills = FALSE;
 $var_kills = FALSE;
 $html      = FALSE;
 $backup    = FALSE;
+$out_set   = FALSE;
 
-$dmethod   = read_config_option('spikekill_method');
-$dnumspike = read_config_option('spikekill_number');
-$dstddev   = read_config_option('spikekill_deviations');
-$dpercent  = read_config_option('spikekill_percent');
-$doutliers = read_config_option('spikekill_outliers');
-$davgnan   = read_config_option('spikekill_avgnan');
-
-global $strout;
+if ($using_cacti) {
+	$dmethod   = read_config_option('spikekill_method', 1);
+	$dnumspike = read_config_option('spikekill_number', 10);
+	$dstddev   = read_config_option('spikekill_deviations', 10);
+	$dpercent  = read_config_option('spikekill_percent', 500);
+	$doutliers = read_config_option('spikekill_outliers', 5);
+	$davgnan   = read_config_option('spikekill_avgnan', 'last');
+}else{
+	$dmethod   = 1; // Standard Deviation
+	$dnumspike = 10;
+	$dstddev   = 10;
+	$dpercent  = 500;
+	$doutliers = 5;
+	$davgnan   = 'last';
+}
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -108,12 +126,16 @@ if (sizeof($parms)) {
 				break;
 			case '--avgnan':
 			case '-A':
+				$value = strtolower($value);
+
 				if ($value == 'avg') {
 					$avgnan = 'avg';
+				}elseif ($value == 'last') {
+					$avgnan = 'last';
 				}elseif ($value == 'nan') {
 					$avgnan = 'nan';
 				}else{
-					echo "FATAL: You must specify either 'avg' or 'nan' as replacement methods.\n\n";
+					echo "FATAL: You must specify either 'last', 'avg' or 'nan' as replacement methods.\n\n";
 					display_help();
 					exit(-10);
 				}
@@ -145,6 +167,34 @@ if (sizeof($parms)) {
 				}
 
 				break;
+			case '--outlier-start':
+				if (!is_numeric($value)) {
+					$out_start = strtotime($value);
+				}else{
+					$out_start = $value;
+				}
+
+				if ($out_start === false) {
+					echo "FATAL: The outlier-start argument must be in the format of YYYY-MM-DD HH:MM.\n\n";
+					display_help();
+					exit(-6);
+				}
+
+				break;
+			case '--outlier-end':
+				if (!is_numeric($value)) {
+					$out_end   = strtotime($value);
+				}else{
+					$out_end   = $value;
+				}
+
+				if ($out_end === false) {
+					echo "FATAL: The outlier-end argument must be in the format of YYYY-MM-DD HH:MM.\n\n";
+					display_help();
+					exit(-6);
+				}
+
+				break;
 			case '--outliers':
 			case '-O':
 				$outliers = $value;
@@ -154,6 +204,8 @@ if (sizeof($parms)) {
 					display_help();
 					exit(-6);
 				}
+
+				$out_set = TRUE;
 
 				break;
 			case '--percent':
@@ -214,7 +266,7 @@ if (sizeof($parms)) {
 	}
 }
 
-/* set the corret calue */
+/* set the correct value */
 if (!isset($avgnan)) {
 	if (!isset($uavgnan)) {
 		$avgnan = $davgnan;
@@ -263,6 +315,26 @@ if (!isset($outliers)) {
 	}
 }
 
+if ((!empty($out_start) || !empty($out_end)) && $out_set == true) {
+	echo "FATAL: Outlier time range and outliers are mutually exclusive options\n";
+	display_help();
+	exit(-4);
+}
+
+if ((!empty($out_start) && empty($out_end)) || (!empty($out_end) && empty($out_start))) {
+	echo "FATAL: Outlier time range requires outliers-start and outliers-end to be specifieid.\n";
+	display_help();
+	exit(-4);
+}
+
+if (!empty($out_start)) {
+	if ($out_start >= $out_end) {
+		echo "FATAL: Outlier time range requires outliers-start to be less than outliers-end.\n";
+		display_help();
+		exit(-4);
+	}
+}
+
 /* additional error check */
 if ($rrdfile == '') {
 	echo "FATAL: You must specify an RRDfile!\n\n";
@@ -270,9 +342,36 @@ if ($rrdfile == '') {
 	exit(-2);
 }
 
+/* let's see if we can find rrdtool */
+if (!$using_cacti) {
+	if (substr_count(PHP_OS, 'WIN')) {
+		$response = shell_exec('rrdtool.exe');
+	}else{
+		$response = shell_exec('rrdtool');
+	}
+
+	if (strlen($response)) {
+		$response_array = explode(' ', $response);
+		echo 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . "\n";
+	}else{
+		echo "FATAL: RRDTool not found in path.  Please insure RRDTool can be found in your path!\n";
+		exit(-1);
+	}
+}
+
 /* determine the temporary file name */
 $seed = mt_rand();
-if ($config['cacti_server_os'] == 'win32') {
+if ($using_cacti) {
+	if ($config['cacti_server_os'] == 'win32') {
+		$tempdir  = getenv('TEMP');
+		$xmlfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
+		$bakfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
+	}else{
+		$tempdir = '/tmp';
+		$xmlfile = '/tmp/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
+		$bakfile = '/tmp/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
+	}
+}elseif (substr_count(PHP_OS, 'WIN')) {
 	$tempdir  = getenv('TEMP');
 	$xmlfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
 	$bakfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
@@ -284,10 +383,18 @@ if ($config['cacti_server_os'] == 'win32') {
 
 $strout = '';
 
-/* execute the dump command */
-$strout .= ($html ? "<p class='spikekillNote'>":"") . "NOTE: Creating XML file '$xmlfile' from '$rrdfile'" . ($html ? "</p>\n":"\n");
+if (!empty($out_start)) {
+	$strout .= ($html ? "<p class='spikekillNote'>":'') . "NOTE: Removing Outliers in Range and Replacing with Last" . ($html ? "</p>\n":"\n");
+}
 
-shell_exec(read_config_option('path_rrdtool') . " dump $rrdfile > $xmlfile");
+/* execute the dump command */
+$strout .= ($html ? "<p class='spikekillNote'>":'') . "NOTE: Creating XML file '$xmlfile' from '$rrdfile'" . ($html ? "</p>\n":"\n");
+
+if ($using_cacti) {
+	shell_exec(read_config_option('path_rrdtool') . " dump $rrdfile > $xmlfile");
+}else{
+	shell_exec("rrdtool dump $rrdfile > $xmlfile");
+}
 
 /* read the xml file into an array*/
 if (file_exists($xmlfile)) {
@@ -296,7 +403,11 @@ if (file_exists($xmlfile)) {
 	/* remove the temp file */
 	unlink($xmlfile);
 }else{
-	$strout .= ($html ? "<p class='spikekillNote'>":'') . 'FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!' . ($html ? "</p>\n":"\n");
+	if ($using_cacti) {
+		$strout .= ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!" . ($html ? "</td></tr>\n":"\n");
+	}else{
+		$strout .= ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "FATAL: RRDtool Command Failed.  Please insure your RRDtool install is valid!" . ($html ? "</td></tr>\n":"\n");
+	}
 
 	print $strout;
 
@@ -344,7 +455,7 @@ $output = removeComments($output);
 
    There will also be a secondary array created with the actual samples.  This
    array will be used to calculate the standard deviation of the sample set.
-   samples[rra_num][ds_num][];
+   samples[rra_num][ds_num][timestamp];
 
    Also track the min and max value for each ds and store it into the two
    arrays: ds_min[ds#], ds_max[ds#].
@@ -375,13 +486,40 @@ if (sizeof($output)) {
 foreach($output as $line) {
 	if (substr_count($line, '<v>')) {
 		$linearray = explode('<v>', $line);
+
+		/* get the timestamp */
+		$timestamp_part = $linearray[0];
+		if (strpos($timestamp_part, '<timestamp>') !== false) {
+			$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
+			$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
+			$timestamp = trim($timestamp_part);
+		}else{
+			$timestamp = 0;
+		}
+
 		/* discard the row */
 		array_shift($linearray);
 		$ds_num = 0;
 		foreach($linearray as $dsvalue) {
 			/* peel off garbage */
 			$dsvalue = trim(str_replace('</row>', '', str_replace('</v>', '', $dsvalue)));
-			if (strtolower($dsvalue) != 'nan') {
+
+			/* check for outlier territory */
+			if ($timestamp > 0) {
+				if (!empty($out_start) && $timestamp < $out_start) {
+					$process = true;
+				}elseif (!empty($out_end) && $timestamp > $out_end) {
+					$process = true;
+				}elseif (empty($out_start)) {
+					$process = true;
+				}else{
+					$process = false;
+				}
+			}else{
+				$process = true;
+			}
+
+			if (strtolower($dsvalue) != 'nan' && $process) {
 				if (!isset($rra[$rra_num][$ds_num]['numsamples'])) {
 					$rra[$rra_num][$ds_num]['numsamples'] = 1;
 				}else{
@@ -405,9 +543,13 @@ foreach($output as $line) {
 				}else if ($dsvalue < $rra[$rra_num][$ds_num]['min_value']) {
 					$rra[$rra_num][$ds_num]['min_value'] = $dsvalue;
 				}
+			}
 
-				/* store the sample for standard deviation calculation */
+			/* store the sample for standard deviation calculation */
+			if ($timestamp == 0) {
 				$samples[$rra_num][$ds_num][] = $dsvalue;
+			}else{
+				$samples[$rra_num][$ds_num][$timestamp] = $dsvalue;
 			}
 
 			if (!isset($rra[$rra_num][$ds_num]['totalsamples'])) {
@@ -469,23 +611,23 @@ if ($debug || $dryrun) {
 /* create an output array */
 if ($method == 1) {
 	/* standard deviation subroutine */
-	if ($std_kills) {
+	if ($std_kills || $out_kills) {
 		if (!$dryrun) {
 			$new_output = updateXML($output, $rra);
 		}
 	}else{
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
-			"NOTE: NO Standard Deviation Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
+			"NOTE: NO Standard Deviation or Window Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}
 }else{
 	/* variance subroutine */
-	if ($var_kills) {
+	if ($var_kills || $out_kills) {
 		if (!$dryrun) {
 			$new_output = updateXML($output, $rra);
 		}
 	}else{
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
-			"NOTE: NO Variance Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
+			"NOTE: NO Variance Spikes or Window found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}
 }
 
@@ -505,32 +647,44 @@ if (!$dryrun) {
 			$strout .= ($html ? "<p class='spikekillNote'>":'') . 
 				"FATAL: Unable to write XML file '$xmlfile'" . ($html ? "</p>\n":"\n");
 		}
+	}else{
+		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+			"NOTE: No Spikes Found.  No remediation performed." . ($html ? "</p>\n":"\n");
 	}
 }else{
 	$strout .= ($html ? "<p class='spikekillNote'>":'') . 
 		"NOTE: Dryrun requested.  No updates performed" . ($html ? "</p>\n":"\n");
 }
 
-if ($html) {
-	$strout .= '<hr/>';
-}
+$strout .= ($html ? "</table>":'');
 
-if ($total_kills > 0) {
-	cacti_log("NOTE: Removed '$total_kills' Spikes from '$rrdfile', Method:'$method'", false, ($html ? 'WEBUI':'CLI'));
-}elseif($debug) {
-	cacti_log("NOTE: Removed '$total_kills' Spikes from '$rrdfile', Method:'$method'", false, ($html ? 'WEBUI':'CLI'));
+if ($using_cacti) {
+	if ($total_kills > 0) {
+		cacti_log("WARNING: Removed '$total_kills' Spikes from '$rrdfile', Method:'$method'", false, 'WEBUI');
+	}elseif($debug) {
+		cacti_log("NOTE: Removed '$total_kills' Spikes from '$rrdfile', Method:'$method'", false, 'WEBUI');
+	}
 }
 
 print $strout;
 
 /* All Functions */
 function createRRDFileFromXML($xmlfile, $rrdfile) {
-	global $html;
+	global $using_cacti, $html, $strout;
 
 	/* execute the dump command */
-	echo ($html ? "<p class='spikekillNote'>":'') . "NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($html ? "</p>\n":"\n");
-	$response = shell_exec(read_config_option('path_rrdtool') . " restore -f -r $xmlfile $rrdfile");
-	if (strlen($response)) echo ($html ? "<p class='spikekillNote'>":'') . $response . ($html ? "</p>\n":"\n");
+	$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+		"NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($html ? "</p>\n":"\n");
+
+	if ($using_cacti) {
+		$response = shell_exec(read_config_option("path_rrdtool") . " restore -f -r $xmlfile $rrdfile");
+	}else{
+		$response = shell_exec("rrdtool restore -f -r $xmlfile $rrdfile");
+	}
+
+	if (strlen($response)) {
+		$strout .= ($html ? "<p class='spikekillNote'>":'') . $response . ($html ? "</p>\n":"\n");
+	}
 }
 
 function writeXMLFile($output, $xmlfile) {
@@ -538,11 +692,15 @@ function writeXMLFile($output, $xmlfile) {
 }
 
 function backupRRDFile($rrdfile) {
-	global $tempdir, $seed, $html;
+	global $using_cacti, $tempdir, $seed, $html, $strout;
 
-	$backupdir = read_config_option('spikekill_backupdir');
+	if ($using_cacti) {
+		$backupdir = read_config_option('spikekill_backupdir');
 
-	if ($backupdir == '') {
+		if ($backupdir == '') {
+			$backupdir = $tempdir;
+		}
+	}else{
 		$backupdir = $tempdir;
 	}
 
@@ -552,28 +710,38 @@ function backupRRDFile($rrdfile) {
 		$newfile = basename($rrdfile);
 	}
 
-	echo ($html ? "<p class='spikekillNote'>":'') . "NOTE: Backing Up '$rrdfile' to '" . $backupdir . "/" .  $newfile . "'" . ($html ? "</p>\n":"\n");
+	$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+		"NOTE: Backing Up '$rrdfile' to '" . $backupdir . '/' .  $newfile . "'" . ($html ? "</p>\n":"\n");
 
-	return copy($rrdfile, $backupdir . '/' . $newfile);
+	return copy($rrdfile, $backupdir . "/" . $newfile);
 }
 
 function calculateVarianceAverages(&$rra, &$samples) {
-	global $outliers;
+	global $outliers, $out_start, $out_end;
 
 	if (sizeof($samples)) {
 	foreach($samples as $rra_num => $dses) {
 		if (sizeof($dses)) {
 		foreach($dses as $ds_num => $ds) {
-			if (sizeof($ds) < $outliers * 3) {
-				$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
+			if (empty($out_start)) {
+				if (sizeof($ds) < $outliers * 3) {
+					$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
+				}else{
+					$myds = $ds;
+					$myds = array_filter($myds, 'removeNanFromSamples');
+
+					/* remove high outliers */
+					rsort($myds, SORT_NUMERIC);
+					$myds = array_slice($myds, $outliers);
+
+					/* remove low outliers */
+					sort($ds, SORT_NUMERIC);
+					$myds = array_slice($myds, $outliers);
+
+					$rra[$rra_num][$ds_num]['variance_avg'] = array_sum($myds) / sizeof($myds);
+				}
 			}else{
-				rsort($ds, SORT_NUMERIC);
-				$ds = array_slice($ds, $outliers);
-
-				sort($ds, SORT_NUMERIC);
-				$ds = array_slice($ds, $outliers);
-
-				$rra[$rra_num][$ds_num]['variance_avg'] = array_sum($ds) / sizeof($ds);
+				$rra[$rra_num][$ds_num]['variance_avg'] = $rra[$rra_num][$ds_num]['sumofsamples'] / $rra[$rra_num][$ds_num]['numsamples'];
 			}
 		}
 		}
@@ -581,8 +749,12 @@ function calculateVarianceAverages(&$rra, &$samples) {
 	}
 }
 
+function removeNanFromSamples(&$string) {
+	return stripos($string, 'nan') === false;
+}
+
 function calculateOverallStatistics(&$rra, &$samples) {
-	global $percent, $stddev, $ds_min, $ds_max, $var_kills, $std_kills;
+	global $percent, $stddev, $ds_min, $ds_max, $var_kills, $std_kills, $out_kills, $out_start, $out_end;
 
 	$rra_num = 0;
 	if (sizeof($rra)) {
@@ -592,7 +764,7 @@ function calculateOverallStatistics(&$rra, &$samples) {
 		if (sizeof($dses)) {
 		foreach($dses as $ds) {
 			if (isset($samples[$rra_num][$ds_num])) {
-				$rra[$rra_num][$ds_num]['standard_deviation'] = standard_deviation($samples[$rra_num][$ds_num]);
+				$rra[$rra_num][$ds_num]['standard_deviation'] = processStandardDeviationCalculation($samples[$rra_num][$ds_num]);
 				if ($rra[$rra_num][$ds_num]['standard_deviation'] == 'NAN') {
 					$rra[$rra_num][$ds_num]['standard_deviation'] = 0;
 				}
@@ -613,14 +785,22 @@ function calculateOverallStatistics(&$rra, &$samples) {
 				$rra[$rra_num][$ds_num]['avgnksamples'] = 0;
 
 				/* go through values and find cutoffs */
-				$rra[$rra_num][$ds_num]['stddev_killed']    = 0;
-				$rra[$rra_num][$ds_num]['variance_killed']  = 0;
+				$rra[$rra_num][$ds_num]['stddev_killed']   = 0;
+				$rra[$rra_num][$ds_num]['variance_killed'] = 0;
+				$rra[$rra_num][$ds_num]['outwind_killed']  = 0;
 
+				/* kill what is required to be killed */
 				if (sizeof($samples[$rra_num][$ds_num])) {
-				foreach($samples[$rra_num][$ds_num] as $sample) {
-					if (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) ||
+				foreach($samples[$rra_num][$ds_num] as $timestamp => $sample) {
+					if (!empty($out_start) && $timestamp >= $out_start && $timestamp <= $out_end) {
+						debug(sprintf("Window Kill: Value '%.4e', Time '%s'", $sample, date('Y-m-d H:i', $timestamp)));
+
+						$rra[$rra_num][$ds_num]['outwind_killed']++;
+						$out_kills = true;
+					}else if (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) ||
 						($sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 						debug(sprintf("Std Kill: Value '%.4e', StandardDev '%.4e', StdDevLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['standard_deviation'], ($rra[$rra_num][$ds_num]['max_cutoff'] * (1+$percent))));
+
 						$rra[$rra_num][$ds_num]['stddev_killed']++;
 						$std_kills = true;
 					}else{
@@ -628,11 +808,14 @@ function calculateOverallStatistics(&$rra, &$samples) {
 						$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 					}
 
-					if ($rra[$rra_num][$ds_num]['variance_avg'] == 'NAN') {
+					if (!empty($out_start) && $timestamp >= $out_start && $timestamp <= $out_end) {
+						// Already calculated
+					}else if ($rra[$rra_num][$ds_num]['variance_avg'] == 'NAN') {
 						/* not enought samples to calculate */
 					}else if ($sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$percent))) {
 						/* kill based upon variance */
 						debug(sprintf("Var Kill: Value '%.4e', VarianceDev '%.4e', VarianceLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['variance_avg'], ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$percent))));
+
 						$rra[$rra_num][$ds_num]['variance_killed']++;
 						$var_kills = true;
 					}
@@ -653,6 +836,7 @@ function calculateOverallStatistics(&$rra, &$samples) {
 				$rra[$rra_num][$ds_num]['stddev_killed']      = 'N/A';
 				$rra[$rra_num][$ds_num]['variance_killed']    = 'N/A';
 				$rra[$rra_num][$ds_num]['stddev_killed']      = 'N/A';
+				$rra[$rra_num][$ds_num]['outwind_killed']     = 'N/A';
 				$rra[$rra_num][$ds_num]['numnksamples']       = 'N/A';
 				$rra[$rra_num][$ds_num]['sumnksamples']       = 'N/A';
 				$rra[$rra_num][$ds_num]['variance_killed']    = 'N/A';
@@ -674,13 +858,13 @@ function outputStatistics($rra) {
 	if (sizeof($rra)) {
 		if (!$html) {
 			$strout .= "\n";
-			$strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
+			$strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
 				'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
-				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'StdDevAvg', 'VarAvg');
+				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindKilled', 'StdDevAvg', 'VarAvg');
 			$strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
-				'----------', '---------------', '----------', '-------', '-------', '----------', '----------', '----------',
-				'----------', '----------', '----------', '----------', '----------', '----------',
-				'----------');
+				'----------', '---------------', '----------', '-------', '-------', '----------', '----------', 
+				'----------', '----------', '----------', '----------', '----------', '----------', '----------', 
+				'----------', '----------');
 			foreach($rra as $rra_key => $dses) {
 				if (sizeof($dses)) {
 				foreach($dses as $dskey => $ds) {
@@ -691,7 +875,7 @@ function outputStatistics($rra) {
 						(isset($ds['min_value']) ? ($ds['min_value'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
 						(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
 						(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
-						'%10s %10s ' .
+						'%10s %10s %10s ' .
 						(isset($ds['avgnksampled']) ? ($ds['avgnksamples'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
 						(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') . "\n",
 						displayTime($rra_pdp[$rra_key]),
@@ -707,6 +891,7 @@ function outputStatistics($rra) {
 						($ds['min_cutoff'] != 'N/A' ? round($ds['min_cutoff'],2) : $ds['min_cutoff']),
 						$ds['stddev_killed'],
 						$ds['variance_killed'],
+						$ds['outwind_killed'],
 						($ds['avgnksamples'] != 'N/A' ? round($ds['avgnksamples'],2) : $ds['avgnksamples']),
 						(isset($ds['variance_avg']) ? round($ds['variance_avg'],2) : 'N/A'));
 				}
@@ -715,9 +900,9 @@ function outputStatistics($rra) {
 
 			$strout .= "\n";
 		}else{
-			$strout .= sprintf("<tr class='tableHeader'><th style='width:10%%;'>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
+			$strout .= sprintf("<tr class='tableHeader'><th style='width:10%%;'>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
 				'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
-				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'StdDevAvg', 'VarAvg');
+				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindKilled', 'StdDevAvg', 'VarAvg');
 			foreach($rra as $rra_key => $dses) {
 				if (sizeof($dses)) {
 				foreach($dses as $dskey => $ds) {
@@ -728,7 +913,7 @@ function outputStatistics($rra) {
 						(isset($ds['min_value']) ? ($ds['min_value'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
 						(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
 						(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
-						'%s</td><td>%s</td><td>' .
+						'%s</td><td>%s</td><td>%s</td><td>' .
 						(isset($ds['avgnksampled']) ? ($ds['avgnksamples'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
 						(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? "%s</td></tr>\n":"%.4e</td></tr>\n") : "%s</td></tr>\n") . "\n",
 						displayTime($rra_pdp[$rra_key]),
@@ -744,6 +929,7 @@ function outputStatistics($rra) {
 						($ds['min_cutoff'] != 'N/A' ? round($ds['min_cutoff'],2) : $ds['min_cutoff']),
 						$ds['stddev_killed'],
 						$ds['variance_killed'],
+						$ds['outwind_killed'],
 						($ds['avgnksamples'] != 'N/A' ? round($ds['avgnksamples'],2) : $ds['avgnksamples']),
 						(isset($ds['variance_avg']) ? round($ds['variance_avg'],2) : 'N/A'));
 				}
@@ -754,34 +940,107 @@ function outputStatistics($rra) {
 }
 
 function updateXML(&$output, &$rra) {
-	global $numspike, $percent, $avgnan, $method, $total_kills;
+	global $numspike, $percent, $avgnan, $method, $total_kills, $out_start, $out_end;
 
 	/* variance subroutine */
-	$rra_num = 0;
-	$ds_num  = 0;
-	$kills   = 0;
+	$rra_num   = 0;
+	$ds_num    = 0;
+	$kills     = 0;
+	$first_num = array();
 
 	if (sizeof($output)) {
 	foreach($output as $line) {
 		if (substr_count($line, '<v>')) {
 			$linearray = explode('<v>', $line);
+
+			/* get the timestamp */
+			$timestamp_part = $linearray[0];
+			if (strpos($timestamp_part, '<timestamp>') !== false) {
+				$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
+				$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
+				$timestamp = trim($timestamp_part);
+			}else{
+				$timestamp = 0;
+			}
+
 			/* discard the row */
 			array_shift($linearray);
 
 			/* initialize variables */
-			$ds_num  = 0;
-			$out_row = '<row>';
+			$ds_num    = 0;
+			$out_row   = '<row>';
+
 			foreach($linearray as $dsvalue) {
 				/* peel off garbage */
 				$dsvalue = trim(str_replace('</row>', '', str_replace('</v>', '', $dsvalue)));
-				if (strtolower($dsvalue) == 'nan') {
-					/* do nothing, it's a NaN */
+
+				if (strtolower($dsvalue) == 'nan' && !isset($first_num[$ds_num])) {
+					/* do nothing, it's a NaN, and the first one */
+				}elseif(strtolower($dsvalue) == 'nan' && isset($first_num[$ds_num])) {
+					if ($method == 2) {
+						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg']) {
+							if ($avgnan == 'avg') {
+								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
+							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+								$dsvalue = $first_num[$ds_num];
+							}else{
+								$dsvalue = 'NaN';
+							}
+
+							$total_kills++;
+							$kills++;
+						}
+					}else{
+						if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
+							($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
+							if ($avgnan == 'avg') {
+								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
+							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+								$dsvalue = $first_num[$ds_num];
+							}else{
+								$dsvalue = 'NaN';
+							}
+
+							$total_kills++;
+							$kills++;
+						}
+					}
+				}elseif (!empty($out_start) && $timestamp > $out_start && $timestamp < $out_end) {
+					if ($method == 2) {
+						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg']) {
+							if ($avgnan == 'avg') {
+								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
+							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+								$dsvalue = $first_num[$ds_num];
+							}else{
+								$dsvalue = 'NaN';
+							}
+							$kills++;
+							$total_kills++;
+						}
+					}else{
+						if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
+							($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
+							if ($avgnan == 'avg') {
+								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
+							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+								$dsvalue = $first_num[$ds_num];
+							}else{
+								$dsvalue = 'NaN';
+							}
+							$kills++;
+							$total_kills++;
+						}
+					}
 				}else{
+					$first_num[$ds_num] = $dsvalue;
 					if ($method == 2) {
 						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg']) {
 							if ($kills < $numspike) {
 								if ($avgnan == 'avg') {
-									$dsvalue = $rra[$rra_num][$ds_num]['variance_avg'];
+									$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
+								}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+									$dsvalue = $first_num[$ds_num];
 								}else{
 									$dsvalue = 'NaN';
 								}
@@ -794,7 +1053,9 @@ function updateXML(&$output, &$rra) {
 							($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 							if ($kills < $numspike) {
 								if ($avgnan == 'avg') {
-									$dsvalue = $rra[$rra_num][$ds_num]['average'];
+									$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
+								}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+									$dsvalue = $first_num[$ds_num];
 								}else{
 									$dsvalue = 'NaN';
 								}
@@ -817,9 +1078,11 @@ function updateXML(&$output, &$rra) {
 				$ds_minmax = array();
 				$rra_num++;
 				$kills = 0;
+				$first_num = array();
 			}else if (substr_count($line, '</database>')) {
 				$ds_num++;
 				$kills = 0;
+				$first_num = array();
 			}
 
 			$new_array[] = $line;
@@ -838,6 +1101,8 @@ function removeComments(&$output) {
 				continue;
 			}else{
 				/* is there a comment, remove it */
+				$oline = $line;
+
 				$comment_start = strpos($line, '<!--');
 				if ($comment_start === false) {
 					/* do nothing no line */
@@ -848,6 +1113,14 @@ function removeComments(&$output) {
 					}else{
 						$line = trim(substr($line,0,$comment_start-1) . substr($line,$comment_end+3));
 					}
+
+					if (strpos($line, '<row>') !== false) {
+						/* capture the timestamp */
+						$stamp     = trim(substr($oline, $comment_start+4, $comment_end-4));
+						$stamp     = explode('/', $stamp);
+						$timestamp = trim($stamp[1]);
+						$line = str_replace('<row><v>', "<row><timestamp> $timestamp </timestamp><v>", $line);
+					}
 				}
 
 				if ($line != '') {
@@ -855,6 +1128,7 @@ function removeComments(&$output) {
 				}
 			}
 		}
+
 		/* transfer the new array back to the original array */
 		return $new_array;
 	}
@@ -894,20 +1168,65 @@ function debug($string) {
 	}
 }
 
-function standard_deviation($samples) {
-	$sample_count = count($samples);
+function processStandardDeviationCalculation($samples) {
+	global $out_start, $out_end;
 
-	for ($current_sample = 0; $sample_count > $current_sample; ++$current_sample) {
-		$sample_square[$current_sample] = pow($samples[$current_sample], 2);
+	$my_samples = $samples;
+
+	if (!empty($out_start)) {
+		foreach($samples as $timestamp => $value) {
+			if ($timestamp < $out_start || $timestamp > $out_end) {
+				$my_samples[] = $value;
+			}
+		}
 	}
 
-	return sqrt(array_sum($sample_square) / $sample_count - pow((array_sum($samples) / $sample_count), 2));
+	return calculateStandardDeviation($my_samples);
+}
+
+function calculateStandardDeviation($items) {
+	if (!function_exists('stats_standard_deviation')) {
+		function stats_standard_deviation($items, $sample = false) {
+			$total_items = count($items);
+
+			if ($total_items === 0) {
+				return false;
+			}
+
+			if ($sample && $total_items === 1) {
+				return false;
+			}
+
+			$mean  = array_sum($items) / $total_items;
+			$carry = 0.0;
+
+			foreach ($items as $val) {
+				$d = ((double) $val) - $mean;
+				$carry += $d * $d;
+			}
+
+			if ($sample) {
+				--$total_items;
+			}
+
+			return sqrt($carry / $total_items);
+		}
+	}
+
+	return stats_standard_deviation($items, false);
 }
 
 /*  display_version - displays version information */
 function display_version() {
-    $version = db_fetch_cell('SELECT cacti FROM version');
-    echo "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	global $using_cacti;
+
+	if ($using_cacti) {
+		$version = spikekill_version();
+	} else {
+		$version = 'v2.0';
+	}
+
+	echo "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /* display_help - displays the usage of the function */
@@ -915,24 +1234,35 @@ function display_help () {
 	display_version();
 
 	echo "\nusage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";
+	echo "    [-O|--outliers=N | --outlier-start=YYYY-MM-DD HH:MM --outlier-end=YYYY-MM-DD HH:MM]\n";
 	echo "    [-P|--percent=N] [-N|--number=N] [-D|--dryrun] [-d|--debug]\n";
-	echo "    [--html] [-h|--help|-v|-V|--version]\n\n";
+	echo "    [-U|--user=N] [--html] [-h|--help|-v|-V|--version]\n\n";
 
 	echo "A utility to programatically remove spikes from Cacti graphs. If no optional input parameters\n";
 	echo "are specified the defaults are taken from the Cacti database.\n\n";
 
 	echo "Required:\n";
-	echo "    --rrdfile=F   - The path to the RRDfile that will de-spiked.\n\n";
+	echo "    --rrdfile=F   - The path to the RRDfile that will be de-spiked.\n\n";
+
 	echo "Optional:\n";
-	echo "    --user        - The Cacti user account to pull settings from.  Default is to use system settings.\n";
-	echo "    --method      - The spike removal method to use.  Options are 'stddev'|'variance'.\n";
-	echo "    --avgnan      - The spike replacement method to use.  Options are 'avg'|'nan'.\n";
-	echo "    --stddev      - The number of standard deviations +/- allowed.\n";
-	echo "    --percent     - The sample to sample percentage variation allowed.\n";
-	echo "    --number      - The maximum number of spikes to remove from the RRDfile.\n";
-	echo "    --dryrun      - If specified, the RRDfile will not be changed.  Instead a summary of\n";
-	echo "                    changes that would have been performed will be issued.\n";
-	echo "    --backup      - Backup the original RRDfile to preserve prior values.\n";
-	echo "    --html        - Format the output for a web browser.\n";
-	echo "    --debug       - Display verbose output during execution.\n\n";
+	echo "    --user          - The Cacti user account to pull settings from.  Default is to use the system settings.\n";
+	echo "    --method        - The spike removal method to use.  Options are stddev|variance\n";
+	echo "    --avgnan        - The spike replacement method to use.  Options are last|avg|nan\n";
+	echo "    --stddev        - The number of standard deviations +/- allowed\n";
+	echo "    --percent       - The sample to sample percentage variation allowed\n";
+	echo "    --number        - The maximum number of spikes to remove from the RRDfile\n";
+	echo "    --outlier-start - A start date of an incident where all data should be considered\n";
+	echo "                      invalid data and should be excluded from average calculations.\n";
+	echo "    --outlier-end   - A end date of an incident where all data should be considered\n";
+	echo "                      invalid data and should be excluded from average calculations.\n";
+	echo "    --outliers      - The number of outliers to ignore when calculating average.\n";
+	echo "    --dryrun        - If specified, the RRDfile will not be changed.  Instead a summary of\n";
+	echo "                      changes that would have been performed will be issued.\n";
+	echo "    --backup        - Backup the original RRDfile to preserve prior values.\n\n";
+
+	echo "The remainder of arguments are informational\n";
+	echo "    --html          - Format the output for a web browser\n";
+	echo "    --debug         - Display verbose output during execution\n";
+	echo "    --version       - Display this help message\n";
+	echo "    --help          - display this help message\n";
 }

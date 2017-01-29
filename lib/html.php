@@ -1035,7 +1035,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 			setDisabled();
 		});
 
-		$('.tableSubHeaderCheckbox').find(':checkbox').click(function(data) {
+		$('.tableSubHeaderCheckbox').find(':checkbox').unbind().click(function(data) {
 			if ($(this).is(':checked')) {
 				$('input[id^=chk_]').not(':disabled').prop('checked',true);
 				$('tr.selectable').addClass('selected');
@@ -1493,9 +1493,16 @@ function html_spikekill_actions() {
 		break;
 	case 'spikesave':
 		switch(get_nfilter_request_var('setting')) {
-			case 'rmethod':
-				$id = get_filter_request_var('id');
-				set_user_setting('spikekill_method', $id);
+			case 'ravgnan':
+				$id = get_nfilter_request_var('id');
+				switch($id) {
+					case 'avg':
+					case 'last':
+					case 'nan':
+						set_user_setting('spikekill_avgnan', $id);
+						break;
+				}
+
 				break;
 			case 'rstddev':
 				$id = get_filter_request_var('id');
@@ -1524,10 +1531,11 @@ function html_spikekill_setting($name) {
 }
 
 function html_spikekill_menu($local_graph_id) {
-	$rmethod  = '<li>' . __('Replacement Methods') . '<ul>';
-	$rmethod .= '<li class="skmethod" id="method_1"><i ' . (html_spikekill_setting('spikekill_avgnan') == '1' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Average') . '</li>';
-	$rmethod .= '<li class="skmethod" id="method_2"><i ' . (html_spikekill_setting('spikekill_avgnan') == '2' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Nan\'s') . '</li>';
-	$rmethod .= '</ul></li>';
+	$ravgnan  = '<li>' . __('Replacement Method') . '<ul>';
+	$ravgnan .= '<li class="skmethod" id="method_avg"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Average') . '</li>';
+	$ravgnan .= '<li class="skmethod" id="method_nan"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Nan\'s') . '</li>';
+	$ravgnan .= '<li class="skmethod" id="method_last"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'last' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Last Known Good') . '</li>';
+	$ravgnan .= '</ul></li>';
 
 	$rstddev  = '<li>' . __('Standard Deviations') . '<ul>';
 	for($i = 1; $i <= 10; $i++) {
@@ -1558,11 +1566,12 @@ function html_spikekill_menu($local_graph_id) {
 	<ul class='spikekillMenu' style='font-size:1em;'>
 		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa fa-support'></i><span></span><?php print __('Remove StdDev');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-support'></i><span></span><?php print __('Remove Variance');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='routlier'><i class='deviceUnknown fa fa-support'></i><span></span><?php print __('Fill in Range');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span><?php print __('Dry Run StdDev');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span><?php print __('Dry Run Variance');?></li>
 		<li><i class='fa fa-cog'></i><span></span>Settings
 			<ul>
-				<?php print $rmethod;?>
+				<?php print $ravgnan;?>
 				<?php print $rstddev;?>
 				<?php print $rvarpct;?>
 				<?php print $rvarout;?>
@@ -1581,12 +1590,12 @@ function html_spikekill_js() {
 	$(function() {
 		$(document).click(function() {
 			if (spikeKillOpen) {
-				$('.spikekillParent').hide();
+				$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 				spikeKillOpen = false;
 			}
 		});
 
-		$('span.spikekill').click(function() {
+		$('span.spikekill').unbind().click(function() {
 			if (spikeKillOpen == false) {
 				local_graph_id = $(this).attr('data-graph');
 
@@ -1608,73 +1617,77 @@ function html_spikekill_js() {
 				});
 			}else{
 				spikeKillOpen = false;
-				$('.spikekillParent').hide();
+				$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 			}
 		});
 	});
 
 	function spikeKillActions() {
-		$('.rstddev').click(function() {
+		$('.rstddev').unbind().click(function() {
 			removeSpikesStdDev($(this).attr('data-graph'));
-			$('.spikekillParent').hide();
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.dstddev').click(function() {
+		$('.dstddev').unbind().click(function() {
 			dryRunStdDev($(this).attr('data-graph'));
-			$('.spikekillParent').hide();
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.rvariance').click(function() {
+		$('.rvariance').unbind().click(function() {
 			removeSpikesVariance($(this).attr('data-graph'));
-			$('.spikekillParent').hide();
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.dvariance').click(function() {
+		$('.routlier').unbind().click(function() {
+			removeSpikesInRange($(this).attr('data-graph'));
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+		});
+
+		$('.dvariance').unbind().click(function() {
 			dryRunVariance($(this).attr('data-graph'));
-			$('.spikekillParent').hide();
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-
-		$('.skmethod').click(function() {
+		$('.skmethod').unbind().click(function() {
 			$('.skmethod').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
-			$('.spikekillMenu').menu('collapseAll', null, true);
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
-			strURL = '?action=spikesave&setting=rmethod&id='+$(this).attr('id').replace('method_','');
+			strURL = '?action=spikesave&setting=ravgnan&id='+$(this).attr('id').replace('method_','');
 			$.get(strURL);
 		});
 
-		$('.skkills').click(function() {
+		$('.skkills').unbind().click(function() {
 			$('.skkills').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
-			$('.spikekillMenu').menu('collapseAll', null, true);
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rkills&id='+$(this).attr('id').replace('kills_','');
 			$.get(strURL);
 		});
 
-		$('.skstddev').click(function() {
+		$('.skstddev').unbind().click(function() {
 			$('.skstddev').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
-			$('.spikekillMenu').menu('collapseAll', null, true);
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rstddev&id='+$(this).attr('id').replace('stddev_','');
 			$.get(strURL);
 		});
 
-		$('.skvarpct').click(function() {
+		$('.skvarpct').unbind().click(function() {
 			$('.skvarpct').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
-			$('.spikekillMenu').menu('collapseAll', null, true);
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rvarpct&id='+$(this).attr('id').replace('varpct_','');
 			$.get(strURL);
 		});
 
-		$('.skvarout').click(function() {
+		$('.skvarout').unbind().click(function() {
 			$('.skvarout').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
-			$('.spikekillMenu').menu('collapseAll', null, true);
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rvarout&id='+$(this).attr('id').replace('varout_','');
 			$.get(strURL);
