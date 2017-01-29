@@ -35,7 +35,6 @@ Cacti CHANGELOG
 -feature: Automatic removal of orphaned graph items when importing newer versions of graph templates
 -feature: Support for MySQL 5.7
 -feature: Support for PHP 7.0
--feature: Support SNMP v3 EngineID
 -feature: Merge Aggregate Plugin - Aggregate graph creation
 -feature: Merge AutoM8 Plugin - Automation of graph creation
 -feature: Merge Boost Plugin - Faster polling, result caching, on-demand RRDtool file updates
