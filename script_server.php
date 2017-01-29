@@ -149,6 +149,7 @@ while (1) {
 
 		if (substr($input_string,0,4) == 'quit') {
 			fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting\n');
+			fflush(STDOUT);
 			cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 			db_close();
 			exit(0);
@@ -187,6 +188,7 @@ while (1) {
 			if (!parseArgs($parameters, $parameter_array)) {
 				cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
+				fflush(STDOUT);
 				continue;
 			}
 
@@ -230,11 +232,13 @@ while (1) {
 			} else {
 				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
+				fflush(STDOUT);
 			}
 		}
 	}else{
 		cacti_log('ERROR: Input Expected, Script Server Terminating', false, 'PHPSVR');
 		fputs(STDOUT, "ERROR: Input Expected, Script Server Terminating\n");
+		fflush(STDOUT);
 		exit (-1);
 	}
 
