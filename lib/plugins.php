@@ -394,7 +394,7 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 
 		if (db_execute($sql)) {
 			db_execute_prepared("REPLACE INTO plugin_db_changes 
-				(plugin, `table`, column, method) 
+				(plugin, `table`, `column`, `method`) 
 				VALUES (?, ?, '', 'create')", 
 				array($plugin, $table));
 		}

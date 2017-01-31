@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.0.1
+-issue#240: SQL error when install plugin
 -issue#231: SNMPv3 - PHP ERROR WARNING: Fatal error: Unknown user name in file
 -issue: Resolving visual issues with row counts.
 
