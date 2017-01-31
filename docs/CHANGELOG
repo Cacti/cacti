@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.0.1
+-issue#231: SNMPv3 - PHP ERROR WARNING: Fatal error: Unknown user name in file
+-issue: Resolving visual issues with row counts.
+
 1.0.0
 -feature: Support for remote data collectors
 -feature: Support Internationalization (i18n) for the main Cacti site, and supported plugins

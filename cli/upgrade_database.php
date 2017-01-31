@@ -127,6 +127,7 @@ $includes = array(
 	'0.8.8g' => '0_8_8f_to_0_8_8g.php',
 	'0.8.8h' => '0_8_8g_to_0_8_8h.php',
 	'1.0.0'  => '0_8_8h_to_1_0_0.php',
+	'1.0.1'  => '1_0_0_to_1_0_1.php',
 );
 
 /* we need to rerun the upgrade, force the current version */
