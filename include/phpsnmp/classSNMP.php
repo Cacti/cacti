@@ -102,10 +102,10 @@ class SNMP {
 	function setSecurity($sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, 
 		$priv_passphrase, $contextName, $contextEngineID) {
 		$this->sec_level       = $sec_level;
-		$this->auth_protocol   = $auth_protocol;
-		$this->auth_passphrase = $auth_passphrase;
-		$this->priv_protocol   = $priv_protocol;
-		$this->priv_passphrase = $priv_passphrase;
+		$this->auth_proto      = $auth_protocol;
+		$this->auth_pass       = $auth_passphrase;
+		$this->priv_proto      = $priv_protocol;
+		$this->priv_pass       = $priv_passphrase;
 		$this->contextName     = $contextName;
 		$this->contextEngineID = $contextEngineID;
 		
@@ -163,9 +163,9 @@ class SNMP {
 		}
 
 		foreach ($oids as $oid) {
-			$output[$oid] = $function_name($this->hostname, $this->community, $oid, 
-				$this->version, $this->username, $this->auth_pass, $this->auth_proto, 
-				$this->priv_pass, $this->priv_proto, $this->contextName, $this->port, 
+			$output[$oid] = $function_name($this->hostname, $this->community, $oid,
+				$this->version, $this->username, $this->auth_pass, $this->sec_level,
+				$this->priv_pass, $this->priv_proto, $this->contextName, $this->port,
 				$this->timeout, $this->retries, SNMP_POLLER, $this->contextEngineID);
 		}
 
