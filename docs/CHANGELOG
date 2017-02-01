@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#243: SMTP Ping Failure with not SNMP Authentication
 -issue#241: Authentication Method: None not functional
 -issue#240: SQL error when install plugin
+-issue#238: Duplicate color id's cause error during Upgrade
 -issue#231: SNMPv3 - PHP ERROR WARNING: Fatal error: Unknown user name in file
 -issue: Resolving visual issues with row counts.
 
