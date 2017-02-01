@@ -3401,10 +3401,16 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$mail->isSMTP();
 		$mail->Host     = read_config_option('settings_smtp_host');
 		$mail->Port     = read_config_option('settings_smtp_port');
-		$mail->Username = read_config_option('settings_smtp_username');
-		$mail->Password = read_config_option('settings_smtp_password');
-		if ($mail->Username != '') {
+
+		if (read_config_option('settings_smtp_username') != '') {
 			$mail->SMTPAuth = true;
+			$mail->Username = read_config_option('settings_smtp_username');
+
+			if (read_config_option('settings_smtp_password') != '') {
+				$mail->Password = read_config_option('settings_smtp_password');
+			}
+		}else{
+			$mail->SMTPAuth = false;
 		}
 
 		// Set a reasonable timeout of 5 seconds
@@ -3641,10 +3647,12 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 5, $secure 
 			//Say hello
 			if ($smtp->hello(gethostbyname(gethostname()))) { //Put your host name in here
 				//Authenticate
-				if ($smtp->authenticate($user, $password)) {
-					$results = true;
-				} else {
-					throw new Exception(__('Authentication failed: %s', $smtp->getLastReply()));
+				if ($user != '') {
+					if ($smtp->authenticate($user, $password)) {
+						$results = true;
+					} else {
+						throw new Exception(__('Authentication failed: %s', $smtp->getLastReply()));
+					}
 				}
 			} else {
 				throw new Exception(__('HELO failed: %s', $smtp->getLastReply()));
