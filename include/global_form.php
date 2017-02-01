@@ -1110,7 +1110,7 @@ $fields_host_edit = array(
 		),
 	'snmp_priv_protocol' => array(
 		'method' => 'drop_array',
-		'friendly_name' => __('SNMP privacy protocol (v3)'),
+		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
 		'description' => __('Choose the SNMPv3 privacy protocol.'),
 		'value' => '|arg1:snmp_priv_protocol|',
 		'default' => read_config_option('snmp_priv_protocol'),
