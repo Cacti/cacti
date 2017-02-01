@@ -507,30 +507,34 @@ function is_graph_template_allowed($graph_template_id, $user = 0) {
  *                   View options include 'show_tree', 'show_list', 'show_preview', 'graph_settings'
  */
 function is_view_allowed($view = 'show_tree') {
-	$values = array_rekey(db_fetch_assoc_prepared("SELECT DISTINCT $view
-		FROM user_auth_group AS uag
-		INNER JOIN user_auth_group_members AS uagm
-		ON uag.id = uagm.user_id
-		WHERE uag.enabled = 'on' 
-		AND uagm.user_id = ?", array($_SESSION['sess_user_id'])), $view, $view);
+	if (read_config_option('auth_method') != 0) {
+		$values = array_rekey(db_fetch_assoc_prepared("SELECT DISTINCT $view
+			FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id = uagm.user_id
+			WHERE uag.enabled = 'on' 
+			AND uagm.user_id = ?", array($_SESSION['sess_user_id'])), $view, $view);
 
-	if (isset($values[3])) {
-		return false;
-	}elseif (isset($values['on'])) {
-		return true;
-	}elseif (isset($values[2])) {
-		return true;
-	}else{
-		$value = db_fetch_cell_prepared("SELECT $view 
-			FROM user_auth 
-			WHERE id = ?", 
-			array($_SESSION['sess_user_id']));
-
-		if ($value == 'on') {
+		if (isset($values[3])) {
+			return false;
+		}elseif (isset($values['on'])) {
+			return true;
+		}elseif (isset($values[2])) {
 			return true;
 		}else{
-			return false;
+			$value = db_fetch_cell_prepared("SELECT $view 
+				FROM user_auth 
+				WHERE id = ?", 
+				array($_SESSION['sess_user_id']));
+
+			if ($value == 'on') {
+				return true;
+			}else{
+				return false;
+			}
 		}
+	}else{
+		return true;
 	}
 }
 
@@ -588,48 +592,52 @@ function is_realm_allowed($realm) {
 	global $user_auth_realms, $config;
 
 	/* list all realms that this user has access to */
-	if (isset($_SESSION['sess_user_id'])) {
-		if (!user_perms_valid($_SESSION['sess_user_id'])) {
-			kill_session_var('sess_user_realms');
-			kill_session_var('sess_graph_config_array');
-			kill_session_var('sess_config_array');
-		}
-
-		if (isset($_SESSION['sess_user_realms'][$realm])) {
-			return true;
-		}elseif (read_config_option('auth_method') != 0) {
-			if (version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
-				$user_realm = db_fetch_cell_prepared('SELECT realm_id 
-					FROM user_auth_realm 
-					WHERE user_id = ?
-					AND realm_id = ?
-					UNION
-					SELECT realm_id
-					FROM user_auth_group_realm AS uagr
-					INNER JOIN user_auth_group AS uag
-					ON uag.id = uagr.group_id
-					INNER JOIN user_auth_group_members AS uagm
-					ON uag.id = uagm.group_id
-					WHERE uag.enabled = \'on\' AND uagr.realm_id = ?
-					AND uagm.user_id = ?', array($_SESSION['sess_user_id'], $realm, $realm, $_SESSION['sess_user_id']));
-			}else{
-				$user_realm = db_fetch_cell_prepared('SELECT realm_id 
-					FROM user_auth_realm 
-					WHERE user_id = ?
-					AND realm_id = ?', array($_SESSION['sess_user_id'], $realm));
+	if (read_config_option('auth_method') != 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			if (!user_perms_valid($_SESSION['sess_user_id'])) {
+				kill_session_var('sess_user_realms');
+				kill_session_var('sess_graph_config_array');
+				kill_session_var('sess_config_array');
 			}
 
-			if (!empty($user_realm)) {
-				$_SESSION['sess_user_realms'][$realm] = $realm;
+			if (isset($_SESSION['sess_user_realms'][$realm])) {
 				return true;
+			}elseif (read_config_option('auth_method') != 0) {
+				if (version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
+					$user_realm = db_fetch_cell_prepared('SELECT realm_id 
+						FROM user_auth_realm 
+						WHERE user_id = ?
+						AND realm_id = ?
+						UNION
+						SELECT realm_id
+						FROM user_auth_group_realm AS uagr
+						INNER JOIN user_auth_group AS uag
+						ON uag.id = uagr.group_id
+						INNER JOIN user_auth_group_members AS uagm
+						ON uag.id = uagm.group_id
+						WHERE uag.enabled = \'on\' AND uagr.realm_id = ?
+						AND uagm.user_id = ?', array($_SESSION['sess_user_id'], $realm, $realm, $_SESSION['sess_user_id']));
+				}else{
+					$user_realm = db_fetch_cell_prepared('SELECT realm_id 
+						FROM user_auth_realm 
+						WHERE user_id = ?
+						AND realm_id = ?', array($_SESSION['sess_user_id'], $realm));
+				}
+
+				if (!empty($user_realm)) {
+					$_SESSION['sess_user_realms'][$realm] = $realm;
+					return true;
+				}else{
+					return false;
+				}
 			}else{
-				return false;
+				$_SESSION['sess_user_realms'][$realm] = $realm;
 			}
 		}else{
-			$_SESSION['sess_user_realms'][$realm] = $realm;
+			return false;
 		}
 	}else{
-		return false;
+		return true;
 	}
 }
 

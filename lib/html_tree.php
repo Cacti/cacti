@@ -88,32 +88,36 @@ function grow_dhtml_trees() {
 	$default_tree_id = read_user_setting('default_tree_id');
 
 	if (empty($default_tree_id)) {
-		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+		if (read_config_option('auth_method') != 0) {
+			$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
-		if ($user['policy_trees'] == 1) {
-			$default_tree_id = db_fetch_cell_prepared('SELECT id 
-				FROM graph_tree
-				WHERE id NOT IN (
-					SELECT item_id 
-					FROM user_auth_perms 
-					WHERE type=2 AND user_id = ?
-				)
-				AND enabled="on"
-				ORDER BY id LIMIT 1', 
-				array($_SESSION['sess_user_id']));
-		}else{
-			$default_tree_id = db_fetch_cell('SELECT id 
-				FROM graph_tree
-				WHERE id IN (
-					SELECT item_id 
-					FROM user_auth_perms 
-					WHERE type=2 
-					AND user_id = ?
-				)
-				AND enabled="on"
-				ORDER BY id LIMIT 1', 
-				array($_SESSION['sess_user_id']));
+			if ($user['policy_trees'] == 1) {
+				$default_tree_id = db_fetch_cell_prepared('SELECT id 
+					FROM graph_tree
+					WHERE id NOT IN (
+						SELECT item_id 
+						FROM user_auth_perms 
+						WHERE type=2 AND user_id = ?
+					)
+					AND enabled="on"
+					ORDER BY id LIMIT 1', 
+					array($_SESSION['sess_user_id']));
+			}else{
+				$default_tree_id = db_fetch_cell('SELECT id 
+					FROM graph_tree
+					WHERE id IN (
+						SELECT item_id 
+						FROM user_auth_perms 
+						WHERE type=2 
+						AND user_id = ?
+					)
+					AND enabled="on"
+					ORDER BY id LIMIT 1', 
+					array($_SESSION['sess_user_id']));
+			}
 		}
+	}else{
+		$default_tree_id = db_fetch_cell('SELECT id FROM graph_tree ORDER BY sequence LIMIT 1');
 	}
 
 	print "<div style='white-space:nowrap'><span style='padding-right:4px;'>Search</span><input id='searcher' style='padding:2px;font-size:12px;max-width:200px;' type='text' size='35'><hr></div>\n";
