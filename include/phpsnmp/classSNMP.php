@@ -164,7 +164,7 @@ class SNMP {
 
 		foreach ($oids as $oid) {
 			$output[$oid] = $function_name($this->hostname, $this->community, $oid,
-				$this->version, $this->username, $this->auth_pass, $this->sec_level,
+				$this->version, $this->username, $this->auth_pass, $this->auth_proto,
 				$this->priv_pass, $this->priv_proto, $this->contextName, $this->port,
 				$this->timeout, $this->retries, SNMP_POLLER, $this->contextEngineID);
 		}
