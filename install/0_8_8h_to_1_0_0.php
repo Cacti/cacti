@@ -1211,6 +1211,45 @@ function upgrade_to_1_0_0() {
 		db_install_execute('INSERT IGNORE INTO user_auth_realm (user_id, realm_id) VALUES (1, 23)');
 	}
 
+	/* stamp out duplicate colors */
+	$duplicates = db_fetch_assoc('SELECT hex, COUNT(*) AS totals 
+		FROM colors
+		GROUP BY hex 
+		HAVING totals > 1');
+
+	if (sizeof($duplicates)) {
+		foreach($duplicates as $duplicate) {
+			$hexes = db_fetch_assoc_prepared('SELECT id, hex 
+				FROM colors
+				WHERE hex = ? 
+				ORDER BY id ASC', 
+				array($duplicate['hex']));
+
+			$first = true;
+
+			foreach($hexes as $hex) {
+				if ($first) {
+					$keephex = $hex['id'];
+					$first   = false;
+				}else{
+					db_execute_prepared('UPDATE graph_templates_item 
+						SET color_id = ? 
+						WHERE color_id = ?', 
+						array($keephex, $hex['id']));
+
+					if (db_table_exists('color_template_items')) {
+						db_execute_prepared('UPDATE color_template_item 
+							SET color_id = ? 
+							WHERE color_id = ?', 
+							array($keephex, $hex['id']));
+					}
+
+					db_execute_prepared('DELECT FROM colors WHERE id = ?', array($hex['id']));
+				}
+			}
+		}
+	}
+
 	db_install_add_key('colors', 'UNIQUE INDEX', 'hex', array('hex'));
 	db_install_add_column ('colors', array('name' => 'name', 'type' => 'varchar(40)', 'default' => '', 'after' => 'id'));
 	db_install_add_column ('colors', array('name' => 'read_only', 'type' => 'char(2)', 'default' => '', 'after' => 'hex'));
