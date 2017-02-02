@@ -1152,7 +1152,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	}
 
 	if ($host_id > 0) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . " gl.host_id=$host_id";
+		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . " h.id=$host_id";
 	}
 
 	$i          = 0;

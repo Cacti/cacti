@@ -571,17 +571,19 @@ function tree_edit() {
 		$header_label = __('Trees [new]');
 	}
 
-	form_start('tree.php');
+	form_start('tree.php', 'tree_edit');
 
 	// Remove inherit from the main tree option
 	unset($fields_tree_edit['sort_type']['array'][0]);
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array(),
-		'fields' => inject_form_variables($fields_tree_edit, (isset($tree) ? $tree : array()))
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_tree_edit, (isset($tree) ? $tree : array()))
+		)
+	);
 
 	html_end_box();
 
@@ -787,12 +789,15 @@ function tree_edit() {
 			$('select, input').prop('disabled', false);
 			<?php }?>
 
-			$('input[value="Save"]').click(function(event) {
+			$('form').submit(function(event) {
 				event.preventDefault();
-				$.post('tree.php', { action: 'save', name: $('#name').val(), sort_type: $('#sort_type').val(), enabled: $('#enabled').is(':checked'), id: $('#id').val(), save_component_tree: 1, __csrf_magic: csrfMagicToken } ).done(function(data) {
-					$('#main').html(data);
-					applySkin();
-				});
+
+				if ($(this).attr('id') == 'tree_edit') {
+					$.post('tree.php', { action: 'save', name: $('#name').val(), sort_type: $('#sort_type').val(), enabled: $('#enabled').is(':checked'), id: $('#id').val(), save_component_tree: 1, __csrf_magic: csrfMagicToken } ).done(function(data) {
+						$('#main').html(data);
+						applySkin();
+					});
+				}
 			});
 
 			$('#lock').click(function() {
@@ -1353,26 +1358,16 @@ function tree_edit() {
 
 function display_hosts() {
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE hostname LIKE '%" . get_request_var('filter') . "%' OR description LIKE '%" . get_request_var('filter') . "%'";
+		$sql_where = "h.hostname LIKE '%" . get_request_var('filter') . "%' OR h.description LIKE '%" . get_request_var('filter') . "%'";
 	}else{
 		$sql_where = '';
 	}
 
-	$hosts = db_fetch_assoc("SELECT h.id, CONCAT_WS('', 
-		h.description, ' (', h.hostname, ')') AS host, 
-		ht.name AS template_name 
-		FROM host AS h 
-		LEFT JOIN host_template AS ht 
-		ON ht.id=h.host_template_id 
-		$sql_where 
-		ORDER BY description 
-		LIMIT 20");
+	$hosts = get_allowed_devices($sql_where, 'description', '20');
 
 	if (sizeof($hosts)) {
 		foreach($hosts as $h) {
-			if (is_device_allowed($h['id'])) {
-				echo "<ul><li id='thost:" . $h['id'] . "' data-jstree='{ \"type\" : \"device\"}'>" . $h['host'] . "</li></ul>\n";
-			}
+			echo "<ul><li id='thost:" . $h['id'] . "' data-jstree='{ \"type\" : \"device\"}'>" . $h['description'] . ' (' . $h['hostname'] . ')' . "</li></ul>\n";
 		}
 	}
 }
