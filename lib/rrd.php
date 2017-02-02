@@ -302,6 +302,10 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				pclose($fp);
 
 				return $line;
+			}elseif (is_resource($rrdtool_pipe)) {
+				$line .= fread($rrdtool_pipe, 16192);
+
+				return $line;
 			}
 
 			break;
@@ -717,10 +721,11 @@ function rrdtool_function_tune($rrd_tune_array) {
    @arg $show_unknown - Show unknown 'NAN' values in the output as 'U'
    @arg $rrdtool_file - Don't force Cacti to calculate the file
    @arg $cf - Specify the consolidation function to use
+   @arg $rrdtool_pipe - a pipe to an rrdtool command
    @returns - (array) an array containing all data in this data source broken down
      by each data source item. the maximum of all data source items is included in
      an item called 'ninety_fifth_percentile_maximum' */
-function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE') {
+function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = '') {
 	global $config;
 
 	include_once($config['library_path'] . '/boost.php');
@@ -748,7 +753,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	if ($resolution > 0) {
 		$cmd_line .= " -r $resolution";
 	}
-	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT);
+	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
 	$output = explode("\n", $output);
 
 	$first  = true;
@@ -801,11 +806,6 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 		}
 
 		$fetch_array['timestamp']['end_time'] = $timestamp;
-	}
-
-	/* clear the cache if it gets too big */
-	if (sizeof($rrd_fetch_cache) >= MAX_FETCH_CACHE_SIZE) {
-		$rrd_fetch_cache = array();
 	}
 
 	return $fetch_array;
