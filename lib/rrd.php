@@ -723,21 +723,11 @@ function rrdtool_function_tune($rrd_tune_array) {
 function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE') {
 	global $config;
 
-	static $rrd_fetch_cache = array();
-
 	include_once($config['library_path'] . '/boost.php');
 
 	/* validate local data id */
 	if (empty($local_data_id) && is_null($rrdtool_file)) {
 		return array();
-	}
-
-	/* the cache hash is used to identify unique items in the cache */
-	$current_hash_cache = md5($local_data_id . $start_time . $end_time . $resolution . $show_unknown . $rrdtool_file);
-
-	/* return the cached entry if available */
-	if (isset($rrd_fetch_cache[$current_hash_cache])) {
-		return $rrd_fetch_cache[$current_hash_cache];
 	}
 
 	/* initialize fetch array */
@@ -816,11 +806,6 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	/* clear the cache if it gets too big */
 	if (sizeof($rrd_fetch_cache) >= MAX_FETCH_CACHE_SIZE) {
 		$rrd_fetch_cache = array();
-	}
-
-	/* update the cache */
-	if (MAX_FETCH_CACHE_SIZE > 0) {
-		$rrd_fetch_cache[$current_hash_cache] = $fetch_array;
 	}
 
 	return $fetch_array;
