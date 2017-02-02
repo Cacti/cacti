@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.0.1
 -issue#251: Remote Data Collector stuck on upgrade page
 -issue#247: Devices missing from tree device list
+-issue#245: Drag and Drop in Tree Edit Erratic
 -issue#243: SMTP Ping Failure with not SNMP Authentication
 -issue#241: Authentication Method: None not functional
 -issue#240: SQL error when install plugin

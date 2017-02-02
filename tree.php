@@ -789,7 +789,7 @@ function tree_edit() {
 			$('select, input').prop('disabled', false);
 			<?php }?>
 
-			$('form').submit(function(event) {
+			$('form').unbind().submit(function(event) {
 				event.preventDefault();
 
 				if ($(this).attr('id') == 'tree_edit') {
@@ -1456,7 +1456,7 @@ function tree() {
 		loadPageNoHeader(strURL);
 	}
 
-	$(function(data) {
+	$(function() {
 		$('#refresh').click(function() {
 			applyFilter();
 		});
