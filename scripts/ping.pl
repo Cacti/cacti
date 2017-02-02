@@ -1,7 +1,7 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 delete @ENV{qw(PATH)};
-$ENV{PATH} = "/usr/bin:/bin";
+$ENV{PATH} = "/usr/bin:/bin:/sbin";
 $path = $ENV{'PATH'};
 
 # take care for tcp:hostname or TCP:ip@
@@ -18,14 +18,14 @@ $ENV{LANG}='en_US.UTF-8';
 
 # old linux version use 'icmp_seq'
 # newer use 'icmp_req' instead
-open(PROCESS, "ping -c 1 $host 2>&1 | grep -E '(icmp_[s|r]eq.*time|unknown host)' 2>/dev/null |");
+open(PROCESS, "ping -c 1 $host 2>&1 | grep -E '(icmp_[s|r]eq.*time|unknown host|Unknown host)' 2>/dev/null |");
 $ping = <PROCESS>;
 close(PROCESS);
 chomp($ping);
 
-if ($ping =~ 'unknown host') {
-	if (-f '/bin/ping6') {
-		open(PROCESS, "/bin/ping6 -c 1 $host 2>&1 | grep 'icmp_[s|r]eq.*time' 2>/dev/null |");
+if (($ping =~ 'unknown host') || ($ping =~ 'Unknown host')) {
+	if ((-f '/bin/ping6') || (-f '/sbin/ping6')) {
+		open(PROCESS, "ping6 -c 1 $host 2>&1 | grep 'icmp_[s|r]eq.*time' 2>/dev/null |");
 		$ping = <PROCESS>;
 		close(PROCESS);
 		chomp($ping);
