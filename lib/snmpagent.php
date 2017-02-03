@@ -494,24 +494,22 @@ function snmpagent_cache_init(){
 	if ($pollers && sizeof($pollers)>0) {
 		foreach($pollers as $poller){
 			$poller_data = db_fetch_row_prepared('SELECT * FROM poller WHERE id = ?', array($poller['id']));
-		}
-	}else {
-		/* this is NOT a distributed system, but it should have at least one local poller. */
-		$poller_lastrun = read_config_option('poller_lastrun', true);
-		$values = array(
-			'cactiApplPollerIndex'      => 1,
-			'cactiApplPollerHostname'   => 'localhost',
-			'cactiApplPollerIpAddress'  => '127.0.0.1',
-			'cactiApplPollerLastUpdate' => $poller_lastrun
-		);
-		$mc->table('cactiApplPollerTable')->row(1)->insert($values);
 
-		$values = array(
-			'cactiStatsPollerIndex'    => 1,
-			'cactiStatsPollerHostname' => 'localhost',
-			'cactiStatsPollerMethod'   => read_config_option('poller_type', true)
-		);
-		$mc->table('cactiStatsPollerTable')->row(1)->insert($values);
+			$values = array(
+				'cactiApplPollerIndex'      => $poller_data['id'],
+				'cactiApplPollerHostname'   => $poller_data['name'],
+				'cactiApplPollerIpAddress'  => $poller_data['hostname'],
+				'cactiApplPollerLastUpdate' => $poller_data['last_update'],
+			);
+			$mc->table('cactiApplPollerTable')->row($poller_data['id'])->insert($values);
+
+			$values = array(
+				'cactiStatsPollerIndex'    => $poller_data['id'],
+				'cactiStatsPollerHostname' => $poller_data['name'],
+				'cactiStatsPollerMethod'   => read_config_option('poller_type', true)
+			);
+			$mc->table('cactiStatsPollerTable')->row($poller_data['id'])->insert($values);
+		}
 	}
 
 	/* add all devices as devicetable entries to the snmp cache */
