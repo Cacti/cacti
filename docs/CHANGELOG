@@ -1,6 +1,10 @@
 Cacti CHANGELOG
 
 1.0.1
+-issue#257: Poller Output Table not Empty WARNING messages in cacti.log
+-issue#256: New Graph - Add Graph Items Fails (Data Sources shows None)
+-issue#255: Errors Creating new Graphs - Undefined Index Errors
+-issue#254: Unable to Properly add Data Source
 -issue#251: Remote Data Collector stuck on upgrade page
 -issue#247: Devices missing from tree device list
 -issue#245: Drag and Drop in Tree Edit Erratic
