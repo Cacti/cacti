@@ -302,10 +302,6 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				pclose($fp);
 
 				return $line;
-			}elseif (is_resource($rrdtool_pipe)) {
-				$line = fread($rrdtool_pipe, 16192);
-
-				return $line;
 			}
 
 			break;
