@@ -379,7 +379,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 			$dhtml_tree[] = "\t\t\t<ul>\n";
 			foreach ($heirarchy as $leaf) {
 				if ($leaf['host_id'] > 0) {  //It's a host
-					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id']) . '">Device: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
+					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">Device: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
 
 					if (read_user_setting('expand_hosts') == 'on') {
 						$dhtml_tree[] = "\t\t\t\t\t<ul>\n";
@@ -446,7 +446,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 				}else{ //It's not a host
 					$children = db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_tree_items WHERE parent = ? AND local_graph_id=0', array($leaf['id']));
 
-					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id']) . '">' . htmlspecialchars($leaf['title']) . "</a></li>\n";
+					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . htmlspecialchars($leaf['title']) . "</a></li>\n";
 				}
 			}
 	
@@ -454,7 +454,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 		}else{
 			$dhtml_tree[] = "<ul>\n";
 			foreach($heirarchy as $h) {
-				$dhtml_tree[] = "<li id='tree_anchor-" . $h['tree_id'] . "' data-jstree='{ \"type\" : \"tree\" }' class='jstree-closed'><a href='" . htmlspecialchars('graph_view.php?action=tree&node=tree_anchor-' . $h['tree_id']) . "'>" . htmlspecialchars($h['title']) . "</a></li>\n";
+				$dhtml_tree[] = "<li id='tree_anchor-" . $h['tree_id'] . "' data-jstree='{ \"type\" : \"tree\" }' class='jstree-closed'><a href='" . htmlspecialchars('graph_view.php?action=tree&node=tree_anchor-' . $h['tree_id'] . '&hgd=') . "'>" . htmlspecialchars($h['title']) . "</a></li>\n";
 			}
 			$dhtml_tree[] = "</ul>\n";
 		}
@@ -480,10 +480,6 @@ function create_dhtml_tree() {
 }
 
 function html_validate_tree_vars() {
-	if (!isset_request_var('hgd')) {
-		set_request_var('hgd', '');
-	}
-
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
@@ -821,6 +817,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	var timeOffset=<?php print date('Z');?>;
 	var pageAction = 'tree';
 	var graphPage  = 'graph_view.php';
+	var hgd        = '<?php print $host_group_data;?>';
 	var date1Open  = false;
 	var date2Open  = false;
 
