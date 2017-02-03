@@ -498,7 +498,6 @@ function html_validate_tree_vars() {
 			),
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT, 
-			'pageset' => true,
 			'default' => read_user_setting('num_columns_tree')
 			),
 		'page' => array(
