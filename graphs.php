@@ -1253,7 +1253,7 @@ function graph_edit() {
 		<table style='width:100%;'>
 			<tr>
 				<td class="textInfo center" colspan="2">
-					<img <?php print ($graph['image_format_id'] == 3 ? "style='width:" . $graph['width'] . "px;height:" . $graph['height'] . "px;'":"");?> src="<?php print htmlspecialchars('graph_image.php?action=edit&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id'));?>" alt="">
+					<img <?php print ($graph['image_format_id'] == 3 ? "style='width:" . $graph['width'] . "px;height:" . $graph['height'] . "px;'":"");?> src="<?php print htmlspecialchars('graph_image.php?action=edit&disable_cache=true&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&v=' . mt_rand());?>" alt="">
 				</td>
 				<?php
 				if ((isset($_SESSION['graph_debug_mode'])) && (isset_request_var('id'))) {
@@ -1284,12 +1284,14 @@ function graph_edit() {
 		while (list($field_name, $field_array) = each($struct_graph)) {
 			$form_array += array($field_name => $struct_graph[$field_name]);
 
-			$form_array[$field_name]['value'] = (isset($graph) ? $graph[$field_name] : '');
-			$form_array[$field_name]['form_id'] = (isset($graph) ? $graph['id'] : '0');
+			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){
+				$form_array[$field_name]['value'] = (isset($graph) ? $graph[$field_name] : '');
+				$form_array[$field_name]['form_id'] = (isset($graph) ? $graph['id'] : '0');
 
-			if ($use_graph_template == true && isset($graph_template['t_' . $field_name]) && ($graph_template['t_' . $field_name] == 'on')) {
-				$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
-				$form_array[$field_name]['description'] = '';
+				if ($use_graph_template == true && isset($graph_template['t_' . $field_name]) && ($graph_template['t_' . $field_name] == 'on')) {
+					$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
+					$form_array[$field_name]['description'] = '';
+				}
 			}
 		}
 
