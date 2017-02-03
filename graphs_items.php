@@ -316,7 +316,7 @@ function item_edit() {
 	html_end_box();
 
 	if (get_request_var('host_id') > 0) {
-		$sql_where = 'host.id=' . get_request_var('host_id');
+		$sql_where = 'h.id=' . get_request_var('host_id');
 	}elseif (get_request_var('host_id') == 0) {
 		$sql_where = 'h.id IS NULL';
 	}else{
@@ -336,7 +336,14 @@ function item_edit() {
 		$host_id       = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array(get_request_var('local_graph_id')));
 	}
 
-	$header_label = __('Graph Items [graph: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT title_cache FROM graph_templates_graph WHERE local_graph_id = ?'. array(get_request_var('local_graph_id')))));
+	$title = db_fetch_cell_prepared('SELECT title_cache 
+		FROM graph_templates_graph 
+		WHERE local_graph_id = ?', 
+		array(get_request_var('local_graph_id')));
+
+	$header_label = __('Graph Items [graph: %s]', htmlspecialchars($title));
+
+	form_start('graphs_items.php', 'greph_edit');
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
@@ -367,9 +374,9 @@ function item_edit() {
 		/* Make sure we don't limit the list so that the selected DS isn't in the list in edit mode */
 		if ($sql_where != '') {
 			if (!isempty_request_var('id')) {
-				$struct_graph_item['task_item_id']['sql'] .= "WHERE ($sql_where) OR (dtr.id=" . $template_item['task_item_id'] . ")";
+				$struct_graph_item['task_item_id']['sql'] .= " WHERE ($sql_where) OR (dtr.id=" . $template_item['task_item_id'] . ")";
 			} else {
-				$struct_graph_item['task_item_id']['sql'] .= "WHERE $sql_where";
+				$struct_graph_item['task_item_id']['sql'] .= " WHERE $sql_where";
 			}
 		}
 		$struct_graph_item['task_item_id']['sql'] .= ' ORDER BY name';
@@ -386,7 +393,7 @@ function item_edit() {
 
 	draw_edit_form(
 		array(
-			'config' => array(),
+			'config' => array('no_form_tag' => true),
 			'fields' => $form_array
 		)
 	);
@@ -395,7 +402,6 @@ function item_edit() {
 	form_hidden_box('graph_template_item_id', (isset($template_item) ? $template_item['id'] : '0'), '');
 	form_hidden_box('local_graph_template_item_id', (isset($template_item) ? $template_item['local_graph_template_item_id'] : '0'), '');
 	form_hidden_box('graph_template_id', (isset($template_item) ? $template_item['graph_template_id'] : '0'), '');
-	form_hidden_box('sequence', (isset($template_item) ? $template_item['sequence'] : '0'), '');
 	form_hidden_box('_graph_type_id', (isset($template_item) ? $template_item['graph_type_id'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
@@ -445,7 +451,7 @@ function item_edit() {
 	}
 
 	function applyFilter() {
-		strURL = 'graph_items.php?header=false&action=item_edit<?php print $id;?>' + 
+		strURL = 'graphs_items.php?header=false&action=item_edit<?php print $id;?>' + 
 			'&local_graph_id=<?php print get_request_var('local_graph_id');?>' + 
 			'&data_template_id='+$('#data_template_id').val()+
 			'&host_id='+$('#host_id').val();
@@ -493,6 +499,7 @@ function item_edit() {
 		case '4': // LINE1
 		case '5': // LINE2
 		case '6': // LINE3
+		case '20': // LINE:STACK
 			$('#row_task_item_id').show();
 			$('#row_color_id').show();
 			$('#row_line_width').show();
@@ -511,7 +518,6 @@ function item_edit() {
 			break;
 		case '7': // AREA
 		case '8': // STACK
-		case '20': // LINE:STACK
 			$('#row_task_item_id').show();
 			$('#row_color_id').show();
 			$('#row_line_width').hide();
