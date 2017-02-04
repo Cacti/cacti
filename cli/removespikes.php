@@ -1279,15 +1279,8 @@ function calculateStandardDeviation($items) {
 
 /*  display_version - displays version information */
 function display_version() {
-	global $using_cacti;
-
-	if ($using_cacti) {
-		$version = spikekill_version();
-	}else{
-		$version = 'v2.0';
-	}
-
-	echo "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+    $version = db_fetch_cell('SELECT cacti FROM version');
+    echo "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /* display_help - displays the usage of the function */
@@ -1297,7 +1290,7 @@ function display_help () {
 	echo "\nusage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";
 	echo "    [-O|--outliers=N | --outlier-start=YYYY-MM-DD HH:MM --outlier-end=YYYY-MM-DD HH:MM]\n";
 	echo "    [-P|--percent=N] [-N|--number=N] [-D|--dryrun] [-d|--debug]\n";
-	echo "    [-U|--user=N] [--html] [-h|--help|-v|-V|--version]\n\n";
+	echo "    [-U|--user=N] [--html]\n\n";
 
 	echo "A utility to programatically remove spikes from Cacti graphs. If no optional input parameters\n";
 	echo "are specified the defaults are taken from the Cacti database.\n\n";
@@ -1324,6 +1317,4 @@ function display_help () {
 	echo "The remainder of arguments are informational\n";
 	echo "    --html          - Format the output for a web browser\n";
 	echo "    --debug         - Display verbose output during execution\n";
-	echo "    --version       - Display this help message\n";
-	echo "    --help          - display this help message\n";
 }
