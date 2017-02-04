@@ -485,7 +485,6 @@ function db_remove_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
    @param $table - the name of the table
    @param $type - the type of the index
    @param $key - the name of the index
-   @param $log - whether to log error messages, defaults to true
    @param $columns - an array that defines the columns to include in the index
    @returns - (bool) the result of the operation true or false */
 function db_add_index($table, $type, $key, $columns) {
@@ -493,7 +492,7 @@ function db_add_index($table, $type, $key, $columns) {
 		$columns = array($columns);
 	}
 	
-	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' ' . $key . '(' . implode(',', $columns) . ')';
+	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' `' . $key . '`(`' . implode('`,`', $columns) . '`)';
 
 	if (db_index_exists($table, $key, false)) {
 		$type = str_ireplace('UNIQUE ', '', $type);
