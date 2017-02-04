@@ -355,7 +355,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 		print $aggregate_url;
 	}
 
-	api_plugin_hook($type, array('hook' => 'graphs_thumbnails', 'local_graph_id' => $local_graph_id, 'rra' =>  0, 'view_type' => ''));
+	api_plugin_hook($type, array('hook' => 'graph_buttons_thumbnails', 'local_graph_id' => $local_graph_id, 'rra' =>  0, 'view_type' => ''));
 
 	print "</div>\n";
 }
