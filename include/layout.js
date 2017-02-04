@@ -1125,6 +1125,17 @@ function removeSpikesInRange(local_graph_id) {
 	});
 }
 
+function removeRangeFill(local_graph_id) {
+	strURL = 'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	$.getJSON(strURL, function(data) {
+		redrawGraph(local_graph_id);
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+	});
+}
+
 function dryRunStdDev(local_graph_id) {
 	strURL = "spikekill.php?method=stddev&dryrun=true&local_graph_id="+local_graph_id;
 	$.getJSON(strURL, function(data) {
@@ -1147,6 +1158,17 @@ function dryRunVariance(local_graph_id) {
 
 function dryRunSpikesInRange(local_graph_id) {
 	strURL = 'spikekill.php?avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	$.getJSON(strURL, function(data) {
+		redrawGraph(local_graph_id);
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+	});
+}
+
+function dryRunRangeFill(local_graph_id) {
+	strURL = 'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();

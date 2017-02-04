@@ -79,7 +79,7 @@ if (sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
-		} else {
+		}else{
 			$arg = $parameter;
 			$value = '';
 		}
@@ -117,6 +117,8 @@ if (sizeof($parms)) {
 					$method = 2;
 				}elseif ($value == 'stddev') {
 					$method = 1;
+				}elseif ($value == 'float') {
+					$method = 3;
 				}else{
 					echo "FATAL: You must specify either 'stddev' or 'variance' as methods.\n\n";
 					display_help();
@@ -322,17 +324,23 @@ if ((!empty($out_start) || !empty($out_end)) && $out_set == true) {
 }
 
 if ((!empty($out_start) && empty($out_end)) || (!empty($out_end) && empty($out_start))) {
-	echo "FATAL: Outlier time range requires outliers-start and outliers-end to be specifieid.\n";
+	echo "FATAL: Outlier time range requires outlier-start and outlier-end to be specifieid.\n";
 	display_help();
 	exit(-4);
 }
 
 if (!empty($out_start)) {
 	if ($out_start >= $out_end) {
-		echo "FATAL: Outlier time range requires outliers-start to be less than outliers-end.\n";
+		echo "FATAL: Outlier time range requires outlier-start to be less than outlier-end.\n";
 		display_help();
 		exit(-4);
 	}
+}
+
+if ($method == 3 && empty($out_start)) {
+	echo "FATAL: The 'float' removal method requires the specification of a start and end date.\n";
+	display_help();
+	exit(-4);
 }
 
 /* additional error check */
@@ -560,22 +568,22 @@ foreach($output as $line) {
 
 			$ds_num++;
 		}
-	} elseif (substr_count($line, '<rra>')) {
+	}elseif (substr_count($line, '<rra>')) {
 		$in_rra = true;
-	} elseif (substr_count($line, '<min>')) {
+	}elseif (substr_count($line, '<min>')) {
 		$ds_min[] = trim(str_replace('<min>', '', str_replace('</min>', '', trim($line))));
-	} elseif (substr_count($line, '<max>')) {
+	}elseif (substr_count($line, '<max>')) {
 		$ds_max[] = trim(str_replace('<max>', '', str_replace('</max>', '', trim($line))));
-	} elseif (substr_count($line, '<name>')) {
+	}elseif (substr_count($line, '<name>')) {
 		$ds_name[] = trim(str_replace('<name>', '', str_replace('</name>', '', trim($line))));
-	} elseif (substr_count($line, '<cf>')) {
+	}elseif (substr_count($line, '<cf>')) {
 		$rra_cf[] = trim(str_replace('<cf>', '', str_replace('</cf>', '', trim($line))));
-	} elseif (substr_count($line, '<pdp_per_row>')) {
+	}elseif (substr_count($line, '<pdp_per_row>')) {
 		$rra_pdp[] = trim(str_replace('<pdp_per_row>', '', str_replace('</pdp_per_row>', '', trim($line))));
-	} elseif (substr_count($line, '</rra>')) {
+	}elseif (substr_count($line, '</rra>')) {
 		$in_rra = false;
 		$rra_num++;
-	} elseif (substr_count($line, '<step>')) {
+	}elseif (substr_count($line, '<step>')) {
 		$step = trim(str_replace('<step>', '', str_replace('</step>', '', trim($line))));
 	}
 }
@@ -819,14 +827,19 @@ function calculateOverallStatistics(&$rra, &$samples) {
 				if (sizeof($samples[$rra_num][$ds_num])) {
 				foreach($samples[$rra_num][$ds_num] as $timestamp => $sample) {
 					if (!empty($out_start) && $timestamp >= $out_start && $timestamp <= $out_end) {
-						if ($method == 2) {
+						if ($method == 3) {
+							debug(sprintf("Window Kill: Value '%.4e', Time '%s'", $sample, date('Y-m-d H:i', $timestamp)));
+
+							$rra[$rra_num][$ds_num]['outwind_killed']++;
+							$out_kills = true;
+						}else if ($method == 2) {
 							if ($sample > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg'] || strtolower($sample) == 'nan') {
 								debug(sprintf("Window Kill: Value '%.4e', Time '%s'", $sample, date('Y-m-d H:i', $timestamp)));
 
 								$rra[$rra_num][$ds_num]['outwind_killed']++;
 								$out_kills = true;
 							}
-						} else {
+						}else{
 							if (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) ||
 								($sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 								debug(sprintf("Window Kill: Value '%.4e', Time '%s'", $sample, date('Y-m-d H:i', $timestamp)));
@@ -1039,7 +1052,18 @@ function updateXML(&$output, &$rra) {
 						$kills++;
 					}
 				}elseif (!empty($out_start) && $timestamp > $out_start && $timestamp < $out_end) {
-					if ($method == 2) {
+					if ($method == 3) {
+						if ($avgnan == 'avg') {
+							$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
+						}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+							$dsvalue = $first_num[$ds_num];
+						}else{
+							$dsvalue = 'NaN';
+						}
+
+						$kills++;
+						$total_kills++;
+					}elseif ($method == 2) {
 						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg']) {
 							if ($avgnan == 'avg') {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
@@ -1048,6 +1072,7 @@ function updateXML(&$output, &$rra) {
 							}else{
 								$dsvalue = 'NaN';
 							}
+
 							$kills++;
 							$total_kills++;
 						}
@@ -1061,6 +1086,7 @@ function updateXML(&$output, &$rra) {
 							}else{
 								$dsvalue = 'NaN';
 							}
+
 							$kills++;
 							$total_kills++;
 						}
@@ -1077,6 +1103,7 @@ function updateXML(&$output, &$rra) {
 								}else{
 									$dsvalue = 'NaN';
 								}
+
 								$kills++;
 								$total_kills++;
 							}
@@ -1092,6 +1119,7 @@ function updateXML(&$output, &$rra) {
 								}else{
 									$dsvalue = 'NaN';
 								}
+
 								$kills++;
 								$total_kills++;
 							}
@@ -1255,7 +1283,7 @@ function display_version() {
 
 	if ($using_cacti) {
 		$version = spikekill_version();
-	} else {
+	}else{
 		$version = 'v2.0';
 	}
 
@@ -1279,7 +1307,7 @@ function display_help () {
 
 	echo "Optional:\n";
 	echo "    --user          - The Cacti user account to pull settings from.  Default is to use the system settings.\n";
-	echo "    --method        - The spike removal method to use.  Options are stddev|variance\n";
+	echo "    --method        - The spike removal method to use.  Options are stddev|variance|float\n";
 	echo "    --avgnan        - The spike replacement method to use.  Options are last|avg|nan\n";
 	echo "    --stddev        - The number of standard deviations +/- allowed\n";
 	echo "    --percent       - The sample to sample percentage variation allowed\n";

@@ -1566,10 +1566,12 @@ function html_spikekill_menu($local_graph_id) {
 	<ul class='spikekillMenu' style='font-size:1em;'>
 		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa fa-support'></i><span></span><?php print __('Remove StdDev');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-support'></i><span></span><?php print __('Remove Variance');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='routlier'><i class='deviceUnknown fa fa-support'></i><span></span><?php print __('Fill in Range');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='routlier'><i class='deviceUnknown fa fa-support'></i><span></span><?php print __('Gap Fill Range');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='rrangefill'><i class='deviceDown fa fa-support'></i><span></span><?php print __('Float Range');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span><?php print __('Dry Run StdDev');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span><?php print __('Dry Run Variance');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='doutlier'><i class='deviceUnknown fa fa-check'></i><span></span><?php print __('Dry Run Fill in Range');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='doutlier'><i class='deviceUnknown fa fa-check'></i><span></span><?php print __('Dry Run Gap Fill Range');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='drangefill'><i class='deviceDown fa fa-check'></i><span></span><?php print __('Dry Run Float Range');?></li>
 		<li><i class='fa fa-cog'></i><span></span>Settings
 			<ul>
 				<?php print $ravgnan;?>
@@ -1651,6 +1653,16 @@ function html_spikekill_js() {
 
 		$('.doutlier').unbind().click(function() {
 			dryRunSpikesInRange($(this).attr('data-graph'));
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+		});
+
+		$('.rrangefill').unbind().click(function() {
+			removeRangeFill($(this).attr('data-graph'));
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+		});
+
+		$('.drangefill').unbind().click(function() {
+			dryRunRangeFill($(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 

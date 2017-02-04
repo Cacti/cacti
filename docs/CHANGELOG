@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.0.1
+-feature: SpikeKill allows filling range to last known good value
 -issue#261: Add IPv4 and IPv6 Specific Counters to interfaces.xml
 -issue#257: Poller Output Table not Empty WARNING messages in cacti.log
 -issue#256: New Graph - Add Graph Items Fails (Data Sources shows None)
