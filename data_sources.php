@@ -181,6 +181,7 @@ function form_save() {
 		get_filter_request_var('current_rrd');
 		get_filter_request_var('rrd_step');
 		get_filter_request_var('data_input_id');
+		get_filter_request_var('data_source_profile_id');
 		get_filter_request_var('host_id');
 		get_filter_request_var('_host_id');
 		get_filter_request_var('_data_template_id');
@@ -197,6 +198,7 @@ function form_save() {
 		$save2['name']                        = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save2['data_source_path']            = form_input_validate(get_nfilter_request_var('data_source_path'), 'data_source_path', '', true, 3);
 		$save2['active']                      = form_input_validate((isset_request_var('active') ? get_nfilter_request_var('active') : ''), 'active', '', true, 3);
+		$save2['data_source_profile_id']      = form_input_validate(get_request_var('data_source_profile_id'), 'data_source_profile_id', '^[0-9]+$', false, 3);
 		$save2['rrd_step']                    = form_input_validate(get_request_var('rrd_step'), 'rrd_step', '^[0-9]+$', false, 3);
 
 		if (!is_error_message()) {
@@ -525,7 +527,7 @@ function form_actions() {
     data - Custom Data
    ---------------------------- */
 
-function data_edit() {
+function data_edit($incform = true) {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	/* ==================================================== */
@@ -546,7 +548,9 @@ function data_edit() {
 			WHERE data_local.host_id = host.id and data_local.id = ?', array(get_request_var('id')));
 	}
 
-	form_start('data_sources.php');
+	if ($incform) {
+		form_start('data_sources.php', 'data_source_edit');
+	}
 
 	$i = 0;
 	if (!empty($data['data_input_id'])) {
@@ -607,8 +611,11 @@ function data_edit() {
 		html_end_box();
 	}
 
-	form_hidden_box('local_data_id', (isset($data) ? $data['local_data_id'] : '0'), '');
-	form_hidden_box('data_template_data_id', (isset($data) ? $data['id'] : '0'), '');
+	if ($incform) {
+		form_hidden_box('local_data_id', (isset($data) ? $data['local_data_id'] : '0'), '');
+		form_hidden_box('data_template_data_id', (isset($data) ? $data['id'] : '0'), '');
+	}
+
 	form_hidden_box('save_component_data', '1', '');
 }
 
@@ -724,7 +731,7 @@ function ds_edit() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	if (isset($data_template)) {
+	if (sizeof($data_template)) {
 		$data_sources = db_fetch_cell_prepared('SELECT 
 			GROUP_CONCAT(DISTINCT data_source_name ORDER BY data_source_name) AS data_source_names
 			FROM data_template_rrd
@@ -757,8 +764,8 @@ function ds_edit() {
 			'method' => 'drop_sql',
 			'friendly_name' => __('Selected Data Template'),
 			'description' => __('The name given to this data template.  Please note that you may only change Graph Templates to a 100% compatible Graph Template, which means that it includes identical Data Sources.'),
-			'value' => (isset($data_template) ? $data_template['id'] : '0'),
-			'none_value' => (isset($data_template) ? '':'None'),
+			'value' => (sizeof($data_template) ? $data_template['id'] : '0'),
+			'none_value' => (sizeof($data_template) ? '':'None'),
 			'sql' => $dtsql
 			),
 		'host_id' => array(
@@ -773,7 +780,7 @@ function ds_edit() {
 			),
 		'_data_template_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($data_template) ? $data_template['id'] : '0')
+			'value' => (sizeof($data_template) ? $data_template['id'] : '0')
 			),
 		'_host_id' => array(
 			'method' => 'hidden',
@@ -797,9 +804,10 @@ function ds_edit() {
 			),
 		);
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => $form_array
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => $form_array
 		)
 	);
 
@@ -828,21 +836,24 @@ function ds_edit() {
 		while (list($field_name, $field_array) = each($struct_data_source)) {
 			$form_array += array($field_name => $struct_data_source[$field_name]);
 
-			if (!(($use_data_template == false) || (!empty($data_template_data{'t_' . $field_name})) || ($field_array['flags'] == 'NOTEMPLATE'))) {
-				$form_array[$field_name]['description'] = '';
-			}
+			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){
+				if (!(($use_data_template == false) || (!empty($data_template_data{'t_' . $field_name})) || ($field_array['flags'] == 'NOTEMPLATE'))) {
+					$form_array[$field_name]['description'] = '';
+				}
 
-			$form_array[$field_name]['value'] = (isset($data[$field_name]) ? $data[$field_name] : '');
-			$form_array[$field_name]['form_id'] = (empty($data['id']) ? '0' : $data['id']);
+				$form_array[$field_name]['value'] = (isset($data[$field_name]) ? $data[$field_name] : '');
+				$form_array[$field_name]['form_id'] = (empty($data['id']) ? '0' : $data['id']);
 
-			if (!(($use_data_template == false) || (!empty($data_template_data{'t_' . $field_name})) || ($field_array['flags'] == 'NOTEMPLATE'))) {
-				$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
+				if (!(($use_data_template == false) || (!empty($data_template_data{'t_' . $field_name})) || ($field_array['flags'] == 'NOTEMPLATE'))) {
+					$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
+				}
 			}
 		}
 
-		draw_edit_form(array(
-			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($form_array, (isset($data) ? $data : array()))
+		draw_edit_form(
+			array(
+				'config' => array('no_form_tag' => true),
+				'fields' => inject_form_variables($form_array, (isset($data) ? $data : array()))
 			)
 		);
 
@@ -913,36 +924,39 @@ function ds_edit() {
 		while (list($field_name, $field_array) = each($struct_data_source_item)) {
 			$form_array += array($field_name => $struct_data_source_item[$field_name]);
 
-			if (!(($use_data_template == false) || ($rrd_template{'t_' . $field_name} == 'on'))) {
-				$form_array[$field_name]['description'] = '';
-			}
+			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){
+				if (!(($use_data_template == false) || ($rrd_template{'t_' . $field_name} == 'on'))) {
+					$form_array[$field_name]['description'] = '';
+				}
 
-			$form_array[$field_name]['value'] = (isset($rrd) ? $rrd[$field_name] : '');
+				$form_array[$field_name]['value'] = (isset($rrd) ? $rrd[$field_name] : '');
 
-			if (!(($use_data_template == false) || ($rrd_template{'t_' . $field_name} == 'on'))) {
-				$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
+				if (!(($use_data_template == false) || ($rrd_template{'t_' . $field_name} == 'on'))) {
+					$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
+				}
 			}
 		}
 
-		draw_edit_form(array(
-			'config' => array('no_form_tag' => true),
-			'fields' => array(
-				'data_template_rrd_id' => array(
-					'method' => 'hidden',
-					'value' => (isset($rrd) ? $rrd['id'] : '0')
-				),
-				'local_data_template_rrd_id' => array(
-					'method' => 'hidden',
-					'value' => (isset($rrd) ? $rrd['local_data_template_rrd_id'] : '0')
-				)
-			) + $form_array
+		draw_edit_form(
+			array(
+				'config' => array('no_form_tag' => true),
+				'fields' => array(
+					'data_template_rrd_id' => array(
+						'method' => 'hidden',
+						'value' => (isset($rrd) ? $rrd['id'] : '0')
+					),
+					'local_data_template_rrd_id' => array(
+						'method' => 'hidden',
+						'value' => (isset($rrd) ? $rrd['local_data_template_rrd_id'] : '0')
+					)
+				) + $form_array
 			)
 		);
 
 		html_end_box();
 
 		/* data source data goes here */
-		data_edit();
+		data_edit(false);
 
 		form_hidden_box('current_rrd', get_request_var('view_rrd'), '0');
 	}

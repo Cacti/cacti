@@ -705,14 +705,45 @@ function form_actions() {
 		if (get_request_var('drp_action') == '1') { /* delete */
 			/* find out which (if any) data sources are being used by this graph, so we can tell the user */
 			if (isset($graph_array) && sizeof($graph_array)) {
-				$data_sources = db_fetch_assoc('SELECT DISTINCT dtd.local_data_id, dtd.name_cache
-					FROM data_template_data AS dtd
-					INNER JOIN data_template_rrd AS dtr
-					ON dtr.local_data_id=dtd.local_data_id
-					INNER JOIN graph_templates_item AS gti
-					ON dtr.id=gti.task_item_id
-					WHERE ' . array_to_sql_or($graph_array, 'gti.local_graph_id') . '
-					AND dtd.local_data_id > 0');
+				$data_sources = array_rekey(
+					db_fetch_assoc('SELECT DISTINCT dtd.local_data_id, dtd.name_cache
+						FROM data_template_data AS dtd
+						INNER JOIN data_template_rrd AS dtr
+						ON dtr.local_data_id=dtd.local_data_id
+						INNER JOIN graph_templates_item AS gti
+						ON dtr.id=gti.task_item_id
+						WHERE ' . array_to_sql_or($graph_array, 'gti.local_graph_id') . '
+						AND dtd.local_data_id > 0'),
+					'local_data_id', array('local_data_id', 'name_cache'));
+
+				/* data sources to delete */
+				$data_array = array_keys($data_sources);
+
+				$not_deletable = array_rekey(
+					db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
+						FROM data_template_data AS dtd
+						INNER JOIN data_template_rrd AS dtr
+						ON dtr.local_data_id=dtd.local_data_id
+						INNER JOIN graph_templates_item AS gti
+						ON dtr.id=gti.task_item_id
+						WHERE gti.local_graph_id NOT IN(' . implode(',', $graph_array) . ')
+						AND dtr.local_data_id IN(' . implode(',', $data_array) . ')
+						AND dtd.local_data_id > 0'),
+					'local_data_id', 'local_data_id');
+
+				if (sizeof($not_deletable)) {
+					$data_sources = array_rekey(
+						db_fetch_assoc('SELECT DISTINCT dtd.local_data_id, dtd.name_cache
+							FROM data_template_data AS dtd
+							INNER JOIN data_template_rrd AS dtr
+							ON dtr.local_data_id=dtd.local_data_id
+							INNER JOIN graph_templates_item AS gti
+							ON dtr.id=gti.task_item_id
+							WHERE gti.local_graph_id IN (' . implode(',', $graph_array) . ')
+							AND dtr.local_data_id NOT IN (' . implode(',', $not_deletable) . ')
+							AND dtd.local_data_id > 0'),
+						'local_data_id', array('local_data_id', 'name_cache'));
+				}
 			}
 
 			print "	<tr>
@@ -1253,7 +1284,7 @@ function graph_edit() {
 		<table style='width:100%;'>
 			<tr>
 				<td class="textInfo center" colspan="2">
-					<img <?php print ($graph['image_format_id'] == 3 ? "style='width:" . $graph['width'] . "px;height:" . $graph['height'] . "px;'":"");?> src="<?php print htmlspecialchars('graph_image.php?action=edit&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id'));?>" alt="">
+					<img <?php print ($graph['image_format_id'] == 3 ? "style='width:" . $graph['width'] . "px;height:" . $graph['height'] . "px;'":"");?> src="<?php print htmlspecialchars('graph_image.php?action=edit&disable_cache=true&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&v=' . mt_rand());?>" alt="">
 				</td>
 				<?php
 				if ((isset($_SESSION['graph_debug_mode'])) && (isset_request_var('id'))) {
@@ -1284,12 +1315,14 @@ function graph_edit() {
 		while (list($field_name, $field_array) = each($struct_graph)) {
 			$form_array += array($field_name => $struct_graph[$field_name]);
 
-			$form_array[$field_name]['value'] = (isset($graph) ? $graph[$field_name] : '');
-			$form_array[$field_name]['form_id'] = (isset($graph) ? $graph['id'] : '0');
+			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){
+				$form_array[$field_name]['value'] = (isset($graph) ? $graph[$field_name] : '');
+				$form_array[$field_name]['form_id'] = (isset($graph) ? $graph['id'] : '0');
 
-			if ($use_graph_template == true && isset($graph_template['t_' . $field_name]) && ($graph_template['t_' . $field_name] == 'on')) {
-				$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
-				$form_array[$field_name]['description'] = '';
+				if ($use_graph_template == true && isset($graph_template['t_' . $field_name]) && ($graph_template['t_' . $field_name] == 'on')) {
+					$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
+					$form_array[$field_name]['description'] = '';
+				}
 			}
 		}
 

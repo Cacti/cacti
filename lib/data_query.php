@@ -614,7 +614,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 							}
 							if ($isascii) {
 								query_debug_timer_offset('data_query', "Found OCTET STRING '$parse_value' decoded value: '$decoded'");
-								$value = $decoded;
+								$parse_value = $decoded;
 							}
 						}
 					}

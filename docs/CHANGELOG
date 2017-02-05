@@ -1,5 +1,24 @@
 Cacti CHANGELOG
 
+1.0.1
+-feature: SpikeKill allows filling range to last known good value
+-issue#261: Add IPv4 and IPv6 Specific Counters to interfaces.xml
+-issue#257: Poller Output Table not Empty WARNING messages in cacti.log
+-issue#256: New Graph - Add Graph Items Fails (Data Sources shows None)
+-issue#255: Errors Creating new Graphs - Undefined Index Errors
+-issue#254: Unable to Properly add Data Source
+-issue#251: Remote Data Collector stuck on upgrade page
+-issue#247: Devices missing from tree device list
+-issue#245: Drag and Drop in Tree Edit Erratic
+-issue#243: SMTP Ping Failure with not SNMP Authentication
+-issue#241: Authentication Method: None not functional
+-issue#240: SQL error when install plugin
+-issue#238: Duplicate color id's cause error during Upgrade
+-issue#231: SNMPv3 - PHP ERROR WARNING: Fatal error: Unknown user name in file
+-issue: Resolving visual issues with row counts.
+-issue: When deleting Graphs prevent the removal of Data Sources that are still in use
+-issue: Improve SNMP agent performance through SQL optimizations
+
 1.0.0
 -feature: Support for remote data collectors
 -feature: Support Internationalization (i18n) for the main Cacti site, and supported plugins

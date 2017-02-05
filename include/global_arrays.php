@@ -100,6 +100,9 @@ $messages = array(
 	31 => array(
 		'message' => __('Graph not found.  Either it has been deleted or your database needs repair.'),
 		'type' => 'error'),
+	32 => array(
+		'message' => __('SNMPv3 Auth Passphrases must be 8 characters or greater.'),
+		'type' => 'error'),
 	'clog_purged' => array(
 		'message' => __('Cacti Log purged successfully'), 
 		'type' => 'info'),
@@ -923,7 +926,8 @@ $hash_version_codes = array(
 	'0.8.8f' => '0025',
 	'0.8.8g' => '0025',
 	'0.8.8h' => '0025',
-	'1.0.0'  => '0100'
+	'1.0.0'  => '0100',
+	'1.0.1'  => '0100',
 );
 
 $hash_type_names = array(

@@ -29,6 +29,7 @@ $debug = false;
 if (isset_request_var('method')) {
 	switch(get_nfilter_request_var('method')) {
 		case 'stddev':
+		case 'float':
 		case 'variance':
 			break;
 		default:

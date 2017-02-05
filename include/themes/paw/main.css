@@ -1323,7 +1323,7 @@ div#gtabs {
 
 .usertabs {
 	float: right !important;
-	width: 95px !important;
+	width: 30px !important;
 	overflow:hidden;
 	right: 0;
 }

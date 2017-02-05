@@ -717,27 +717,18 @@ function rrdtool_function_tune($rrd_tune_array) {
    @arg $show_unknown - Show unknown 'NAN' values in the output as 'U'
    @arg $rrdtool_file - Don't force Cacti to calculate the file
    @arg $cf - Specify the consolidation function to use
+   @arg $rrdtool_pipe - a pipe to an rrdtool command
    @returns - (array) an array containing all data in this data source broken down
      by each data source item. the maximum of all data source items is included in
      an item called 'ninety_fifth_percentile_maximum' */
-function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE') {
+function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = '') {
 	global $config;
-
-	static $rrd_fetch_cache = array();
 
 	include_once($config['library_path'] . '/boost.php');
 
 	/* validate local data id */
 	if (empty($local_data_id) && is_null($rrdtool_file)) {
 		return array();
-	}
-
-	/* the cache hash is used to identify unique items in the cache */
-	$current_hash_cache = md5($local_data_id . $start_time . $end_time . $resolution . $show_unknown . $rrdtool_file);
-
-	/* return the cached entry if available */
-	if (isset($rrd_fetch_cache[$current_hash_cache])) {
-		return $rrd_fetch_cache[$current_hash_cache];
 	}
 
 	/* initialize fetch array */
@@ -758,7 +749,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	if ($resolution > 0) {
 		$cmd_line .= " -r $resolution";
 	}
-	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT);
+	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
 	$output = explode("\n", $output);
 
 	$first  = true;
@@ -811,16 +802,6 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 		}
 
 		$fetch_array['timestamp']['end_time'] = $timestamp;
-	}
-
-	/* clear the cache if it gets too big */
-	if (sizeof($rrd_fetch_cache) >= MAX_FETCH_CACHE_SIZE) {
-		$rrd_fetch_cache = array();
-	}
-
-	/* update the cache */
-	if (MAX_FETCH_CACHE_SIZE > 0) {
-		$rrd_fetch_cache[$current_hash_cache] = $fetch_array;
 	}
 
 	return $fetch_array;
@@ -2620,11 +2601,11 @@ function rrdtool_info2html($info_array, $diff=array()) {
 			form_selectable_cell($key, 'name', '', (isset($diff['ds'][$key]['error']) ? 'color:red' : ''));
 			form_selectable_cell((isset($value['type']) ? $value['type'] : ''), 'type', '', (isset($diff['ds'][$key]['type']) ? 'color:red' : ''));
 			form_selectable_cell((isset($value['minimal_heartbeat']) ? $value['minimal_heartbeat'] : ''), 'minimal_heartbeat', '', (isset($diff['ds'][$key]['minimal_heartbeat']) ? 'color:red, text-align:right' : 'text-align:right'));
-			form_selectable_cell((isset($value['min']) ? $value['min'] != 'NaN' ? number_format($value['min']): $value['min'] : ''), 'min', '', (isset($diff['ds'][$key]['min']) ? 'color:red;text-align:right' : 'text-align:right'));
-			form_selectable_cell((isset($value['max']) ? $value['max'] != 'NaN' ? number_format($value['max']): $value['max'] : ''), 'max', '', (isset($diff['ds'][$key]['max']) ? 'color:red;text-align:right' : 'text-align:right'));
-			form_selectable_cell((isset($value['last_ds']) ? number_format($value['last_ds']) : ''), 'last_ds', '', 'text-align:right');
-			form_selectable_cell((isset($value['value']) ? $value['value'] != 'NaN' ? number_format($value['value']) : $value['value'] : ''), 'value', '', 'text-align:right');
-			form_selectable_cell((isset($value['unknown_sec']) ? number_format($value['unknown_sec']) : ''), 'unknown_sec', '', 'text-align:right');
+			form_selectable_cell((isset($value['min']) && is_numeric($value['min']) ? number_format_i18n($value['min']): (isset($value['min']) ? $value['min']:'')), 'min', '', (isset($diff['ds'][$key]['min']) ? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_cell((isset($value['max']) && is_numeric($value['max']) ? number_format_i18n($value['max']): (isset($value['max']) ? $value['max']:'')), 'max', '', (isset($diff['ds'][$key]['max']) ? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_cell((isset($value['last_ds']) && is_numeric($value['last_ds']) ? number_format_i18n($value['last_ds']) : (isset($value['last_ds']) ? $value['last_ds']:'')), 'last_ds', '', 'text-align:right');
+			form_selectable_cell((isset($value['value']) ? is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value'] : ''), 'value', '', 'text-align:right');
+			form_selectable_cell((isset($value['unknown_sec']) && is_numeric($value['unknown_sec']) ? number_format_i18n($value['unknown_sec']) : (isset($value['unknown_sec']) ? $value['unknown_sec']:'')), 'unknown_sec', '', 'text-align:right');
 
 			form_end_row();
 		}

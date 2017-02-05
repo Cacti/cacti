@@ -729,7 +729,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		}
 
 		$total_rows = db_fetch_cell("select
-			COUNT(gtg.id)
+			COUNT(DISTINCT gtg.id)
 			FROM graph_templates_graph AS gtg
 			LEFT JOIN user_auth_group_perms 
 			ON (gtg.local_graph_id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 1 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
@@ -871,7 +871,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		}
 
 		$total_rows = db_fetch_cell("SELECT
-			COUNT(host.id)
+			COUNT(DISTINCT host.id)
 			FROM host
 			LEFT JOIN user_auth_group_perms 
 			ON (host.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 3 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
@@ -1011,7 +1011,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		}
 
 		$total_rows = db_fetch_cell("SELECT
-			COUNT(gt.id)
+			COUNT(DISTINCT gt.id)
 			FROM graph_templates AS gt
 			INNER JOIN graph_local AS gl
 			ON gt.id = gl.graph_template_id
@@ -1151,7 +1151,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		}
 
 		$total_rows = db_fetch_cell("SELECT
-			COUNT(gt.id)
+			COUNT(DISTINCT gt.id)
 			FROM graph_tree AS gt
 			LEFT JOIN user_auth_group_perms 
 			ON (gt.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")

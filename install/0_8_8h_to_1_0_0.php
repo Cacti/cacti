@@ -211,9 +211,9 @@ function upgrade_to_1_0_0() {
 	}
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `snmpagent_cache` (
-		`oid` varchar(255) NOT NULL,
-		`name` varchar(255) NOT NULL,
-		`mib` varchar(255) NOT NULL,
+		`oid` varchar(191) NOT NULL,
+		`name` varchar(191) NOT NULL,
+		`mib` varchar(191) NOT NULL,
 		`type` varchar(255) NOT NULL DEFAULT '',
 		`otype` varchar(255) NOT NULL DEFAULT '',
 		`kind` varchar(255) NOT NULL DEFAULT '',
@@ -243,7 +243,7 @@ function upgrade_to_1_0_0() {
 	}
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `snmpagent_cache_notifications` (
-		`name` varchar(255) NOT NULL,
+		`name` varchar(191) NOT NULL,
 		`mib` varchar(255) NOT NULL,
 		`attribute` varchar(255) NOT NULL,
 		`sequence_id` smallint(6) NOT NULL,
@@ -256,8 +256,8 @@ function upgrade_to_1_0_0() {
 	}
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `snmpagent_cache_textual_conventions` (
-		`name` varchar(255) NOT NULL,
-		`mib` varchar(255) NOT NULL,
+		`name` varchar(191) NOT NULL,
+		`mib` varchar(191) NOT NULL,
 		`type` varchar(255) NOT NULL DEFAULT '',
 		`description` varchar(5000) NOT NULL DEFAULT '',
 		KEY `name` (`name`),
@@ -271,7 +271,7 @@ function upgrade_to_1_0_0() {
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `snmpagent_managers` (
 		`id` int(8) NOT NULL AUTO_INCREMENT,
-		`hostname` varchar(255) NOT NULL,
+		`hostname` varchar(100) NOT NULL,
 		`description` varchar(255) NOT NULL,
 		`disabled` char(2) DEFAULT NULL,
 		`max_log_size` tinyint(1) NOT NULL,
@@ -298,7 +298,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute("CREATE TABLE IF NOT EXISTS `snmpagent_managers_notifications` (
 		`manager_id` int(8) NOT NULL,
 		`notification` varchar(255) NOT NULL,
-		`mib` varchar(255) NOT NULL,
+		`mib` varchar(191) NOT NULL,
 		KEY `mib` (`mib`),
 		KEY `manager_id` (`manager_id`),
 		KEY `manager_id2` (`manager_id`,`notification`))
@@ -315,7 +315,7 @@ function upgrade_to_1_0_0() {
 		`severity` tinyint(1) NOT NULL,
 		`manager_id` int(8) NOT NULL,
 		`notification` varchar(255) NOT NULL,
-		`mib` varchar(255) NOT NULL,
+		`mib` varchar(191) NOT NULL,
 		`varbinds` varchar(5000) NOT NULL,
 		PRIMARY KEY (`id`),
 		KEY `time` (`time`),
@@ -372,9 +372,9 @@ function upgrade_to_1_0_0() {
 		`user_id` int(10) unsigned NOT NULL DEFAULT '0',
 		`hostname` varchar(64) NOT NULL DEFAULT '',
 		`last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		`token` varchar(200) NOT NULL DEFAULT '',
+		`token` varchar(191) NOT NULL DEFAULT '',
 		PRIMARY KEY (`id`),
-		UNIQUE KEY `tokenkey` (`user_id`,`hostname`,`token`),
+		UNIQUE KEY `tokenkey` (`token`),
 		KEY `hostname` (`hostname`),
 		KEY `user_id` (`user_id`)) 
 		ENGINE=InnoDB 
@@ -1209,6 +1209,45 @@ function upgrade_to_1_0_0() {
 
 	if (db_fetch_cell('SELECT id FROM user_auth WHERE id=1') == 1) {
 		db_install_execute('INSERT IGNORE INTO user_auth_realm (user_id, realm_id) VALUES (1, 23)');
+	}
+
+	/* stamp out duplicate colors */
+	$duplicates = db_fetch_assoc('SELECT hex, COUNT(*) AS totals 
+		FROM colors
+		GROUP BY hex 
+		HAVING totals > 1');
+
+	if (sizeof($duplicates)) {
+		foreach($duplicates as $duplicate) {
+			$hexes = db_fetch_assoc_prepared('SELECT id, hex 
+				FROM colors
+				WHERE hex = ? 
+				ORDER BY id ASC', 
+				array($duplicate['hex']));
+
+			$first = true;
+
+			foreach($hexes as $hex) {
+				if ($first) {
+					$keephex = $hex['id'];
+					$first   = false;
+				}else{
+					db_execute_prepared('UPDATE graph_templates_item 
+						SET color_id = ? 
+						WHERE color_id = ?', 
+						array($keephex, $hex['id']));
+
+					if (db_table_exists('color_template_items')) {
+						db_execute_prepared('UPDATE color_template_item 
+							SET color_id = ? 
+							WHERE color_id = ?', 
+							array($keephex, $hex['id']));
+					}
+
+					db_execute_prepared('DELECT FROM colors WHERE id = ?', array($hex['id']));
+				}
+			}
+		}
 	}
 
 	db_install_add_key('colors', 'UNIQUE INDEX', 'hex', array('hex'));

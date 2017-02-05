@@ -1338,7 +1338,7 @@ function graph_perms_edit($tab, $header_label) {
 		}
 
 		$total_rows = db_fetch_cell("SELECT
-			COUNT(gt.id)
+			COUNT(DISTINCT gt.id)
 			FROM graph_templates AS gt
 			INNER JOIN graph_local AS gl
 			ON gt.id = gl.graph_template_id
@@ -1387,7 +1387,7 @@ function graph_perms_edit($tab, $header_label) {
 					if ($policy['policy_graph_templates'] == 1) {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $g['id']);
 					}else{
-						form_selectable_cell('<span style="accessGranted">' . __('Access Granted') . '</span>', $g['id']);
+						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['id']);
 					}
 				}
 				form_selectable_cell($g['totals'], $g['id']);
@@ -1477,7 +1477,7 @@ function graph_perms_edit($tab, $header_label) {
 		}
 
 		$total_rows = db_fetch_cell("SELECT
-			COUNT(gt.id)
+			COUNT(DISTINCT gt.id)
 			FROM graph_tree AS gt
 			LEFT JOIN user_auth_perms 
 			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 2 AND user_auth_perms.user_id = " . get_request_var('id') . ")

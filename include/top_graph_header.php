@@ -51,6 +51,8 @@ if (read_config_option('auth_method') != 0) {
 	if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = ?', array($_SESSION['sess_user_id']))) == 0) {
 		$show_console_tab = false;
 	}
+}else{
+	$current_user = 0;
 }
 
 /* need to correct $_SESSION["sess_nav_level_cache"] in zoom view */
@@ -120,7 +122,7 @@ load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2'
 <div id='breadCrumbBar' class='breadCrumbBar'>
 	<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
 	<div class='scrollBar'></div>
-	<div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div>
+	<?php if (read_config_option('auth_method') != 0) {?><div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div><?php }?>
 </div>
 <div id='cactiContent' class='cactiContent'>
 	<?php if (basename($_SERVER['PHP_SELF']) == 'graph_view.php' && (get_nfilter_request_var('action') == 'tree' || (isset_request_var('view_type') && get_nfilter_request_var('view_type') == 'tree'))) { ?>
