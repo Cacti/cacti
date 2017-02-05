@@ -75,7 +75,7 @@ if (sizeof($parms)) {
 
 echo "Analyzing All Cacti Database Tables\n";
 
-$tables = db_fetch_assoc('SHOW TABLES FROM ' . $database_default);
+$tables = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`');
 
 if (sizeof($tables)) {
 	foreach($tables AS $table) {
