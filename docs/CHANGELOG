@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#238: Duplicate color id's cause error during Upgrade
 -issue#231: SNMPv3 - PHP ERROR WARNING: Fatal error: Unknown user name in file
 -issue: Resolving visual issues with row counts.
+-issue: When deleting Graphs prevent the removal of Data Sources that are still in use
 
 1.0.0
 -feature: Support for remote data collectors
