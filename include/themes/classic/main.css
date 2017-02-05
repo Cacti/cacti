@@ -701,7 +701,7 @@ ul#breadcrumbs {
 
 .cactiLoginLogo, .cactiLogoutLogo {
 	position:relative;
-	float:right:
+	float:right;
 	top:15%;
 	background: transparent url('./../../../images/auth_background.gif') no-repeat center;
 	width:350px;
