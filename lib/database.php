@@ -32,7 +32,8 @@
    @param $retries - the number a time the server should attempt to connect before failing
    @returns - (bool) '1' for success, '0' for error */
 function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $db_ssl = false, $retries = 20) {
-	global $database_sessions;
+	global $database_sessions, $database_total_queries;
+	$database_total_queries = 0;
 
 	$i = 0;
 	$error = '';
@@ -117,7 +118,8 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
 function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
+	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
+	$database_total_queries++;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
@@ -206,7 +208,8 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
+	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
+	$database_total_queries++;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
@@ -261,7 +264,8 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
 function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
+	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
+	$database_total_queries++;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
@@ -321,7 +325,8 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $config, $database_hostname, $database_port;
+	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
+	$database_total_queries++;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
