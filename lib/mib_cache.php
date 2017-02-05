@@ -23,7 +23,6 @@
 */
 
 class MibCache{
-
 	private $active_mib				= '';
 	private $active_object			= '';
 	private $active_table			= '';
@@ -219,7 +218,6 @@ class MibCache{
 		return false;
 	}
 
-
 	public function select($column=false) {
 		$result = array();
 		if ($this->active_table_entry) {
@@ -357,15 +355,22 @@ class MibCache{
 		if ($oid_entry !== false) {
 			$columns = $this->cache__tables_columns[$this->active_mib][$this->active_table];
 			if ($columns & sizeof($columns)>0) {
+				$sql = array();
+
 				foreach($columns as $column_params) {
 					$column_params['oid'] .= '.' . $this->active_table_entry;
 					if (isset($values[$column_params['name']])) {
-						db_execute_prepared('UPDATE `snmpagent_cache` 
-							SET `value` = ? 
-							WHERE `oid` = ?', 
-							array($values[$column_params['name']], $column_params['oid']));
+						$sql[] = '(' . db_qstr($values[$column_params['name']]) . ', ' . db_qstr($column_params['oid']) . ')';
 					}
 				}
+
+				if (sizeof($sql)) {
+					db_execute('INSERT INTO `snmpagent_cache` 
+						(oid, value) 
+						VALUES ' . implode(', ', $sql) . '
+						ON DUPLICATE KEY UPDATE value=VALUES(value)', $sql);
+				}
+
 				return true;
 			}
 		}

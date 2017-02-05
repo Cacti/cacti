@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#231: SNMPv3 - PHP ERROR WARNING: Fatal error: Unknown user name in file
 -issue: Resolving visual issues with row counts.
 -issue: When deleting Graphs prevent the removal of Data Sources that are still in use
+-issue: Improve SNMP agent performance through SQL optimizations
 
 1.0.0
 -feature: Support for remote data collectors
