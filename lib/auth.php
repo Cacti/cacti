@@ -288,31 +288,29 @@ function get_auth_realms($login = false) {
 		2 => __('Web Basic')
 	);
 
-	if (db_table_exists('user_domains')) {
-		$drealms = db_fetch_assoc('SELECT * FROM user_domains WHERE enabled="on" ORDER BY domain_name');
-		$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
+	$drealms       = db_fetch_assoc('SELECT * FROM user_domains WHERE enabled="on" ORDER BY domain_name');
+	$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
 
-		if (sizeof($drealms)) {
-			if ($login) {
-				$new_realms['local'] = array('name' => __('Local'), 'selected' => false);
-				foreach($drealms as $realm) {
-					$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
-				}
-
-				if (!empty($default_realm)) {
-					$new_realms[1000+$default_realm]['selected'] = true;
-				}else{
-					$new_realms['local']['selected'] = true;
-				}
-			}else{
-				$new_realms['0'] = __('Local');
-				foreach($drealms as $realm) {
-					$new_realms[1000+$realm['domain_id']] = $realm['domain_name'];
-				}
+	if (sizeof($drealms)) {
+		if ($login) {
+			$new_realms['local'] = array('name' => __('Local'), 'selected' => false);
+			foreach($drealms as $realm) {
+				$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
 			}
 
-			$realms += $new_realms;
+			if (!empty($default_realm)) {
+				$new_realms[1000+$default_realm]['selected'] = true;
+			}else{
+				$new_realms['local']['selected'] = true;
+			}
+		}else{
+			$new_realms['0'] = __('Local');
+			foreach($drealms as $realm) {
+				$new_realms[1000+$realm['domain_id']] = $realm['domain_name'];
+			}
 		}
+
+		$realms += $new_realms;
 	}
 
 	return $realms;
