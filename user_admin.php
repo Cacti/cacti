@@ -874,7 +874,7 @@ function graph_perms_edit($tab, $header_label) {
 			$rows = get_request_var('rows');
 		}
 
-		$user = $_SESSION['sess_user_id'];
+		$user_id = get_request_var('id');
 
 		if (read_config_option('graph_auth_method') == 1) {
 			$sql_operator = 'OR';
@@ -891,12 +891,12 @@ function graph_perms_edit($tab, $header_label) {
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
 			WHERE uag.enabled = 'on' AND uagm.user_id = ?", 
-			array($user));
+			array($user_id));
 
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 'user' AS name, 
 			policy_graphs, policy_hosts, policy_graph_templates 
 			FROM user_auth WHERE id = ?", 
-			array($user));
+			array($user_id));
 
 		array_reverse($policies);
 
