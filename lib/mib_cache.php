@@ -360,7 +360,7 @@ class MibCache{
 				foreach($columns as $column_params) {
 					$column_params['oid'] .= '.' . $this->active_table_entry;
 					if (isset($values[$column_params['name']])) {
-						$sql[] = '(' . db_qstr($values[$column_params['name']]) . ', ' . db_qstr($column_params['oid']) . ')';
+						$sql[] = '(' . db_qstr($values[$column_params['oid']]) . ', ' . db_qstr($column_params['name']) . ')';
 					}
 				}
 
