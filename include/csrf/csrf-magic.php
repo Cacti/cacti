@@ -295,6 +295,8 @@ function csrf_callback($tokens) {
 
 		header('Location:' . $_SERVER['HTTP_REFERER'] . (strpos($_SERVER['HTTP_REFERER'], 'header=false')) !== 'false' ? $add . '&header=false':'');
 	}else{
+		header('logout.php');
+		exit;
 		header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
 		echo "<html><head><title>CSRF check failed</title></head>
 			<body>
@@ -351,7 +353,12 @@ function csrf_check_token($token) {
             if ($GLOBALS['csrf']['user'] !== false) return false;
             if (!empty($_COOKIE)) return false;
             if (!$GLOBALS['csrf']['allow-ip']) return false;
-            return $value === csrf_hash($_SERVER['IP_ADDRESS'], $time);
+
+			if (isset($_SERVER['IP_ADDRESS'])) {
+	            return $value === csrf_hash($_SERVER['IP_ADDRESS'], $time);
+			}elseif (isset($_SERVER['SERVER_ADDR'])) {
+				return $value === csrf_hash(gethostbyname($_SERVER['REMOTE_ADDR']), $time);
+			}
     }
     return false;
 }
