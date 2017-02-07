@@ -1444,16 +1444,11 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 					$sql_where = 'WHERE ' . $sql_where;
 				}
 
-				$hosts = db_fetch_assoc("SELECT h.id, CONCAT_WS('',h.description,' (',h.hostname,')') AS name 
-					FROM host AS h
-					LEFT JOIN host_template AS ht
-					ON ht.id=h.host_template_id
-					$sql_where 
-					ORDER BY h.description, h.hostname");
+				$devices = get_allowed_devices($sql_where);
 
-				if (sizeof($hosts) > 0) {
-					foreach ($hosts as $host) {
-						print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($host['name']), 40) . "</option>\n";
+				if (sizeof($devices)) {
+					foreach ($devices as $device) {
+						print "<option value='" . $device['id'] . "'"; if (get_request_var('host_id') == $device['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($device['description'] . ' (' . $device['hostname'] . ')'), 40) . "</option>\n";
 					}
 				}
 				?>
