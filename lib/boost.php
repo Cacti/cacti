@@ -612,7 +612,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 		if ($archive_table === false) {
 			if ($warning_issued != true) {
-				cacti_log('Failed to determine archive table', false, 'BOOST');
+				cacti_log('NOTE: Failed to determine archive table', false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 			}
 
 			$warning_issued = true;
