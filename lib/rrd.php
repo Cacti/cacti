@@ -926,7 +926,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		'--start=' . cacti_escapeshellarg($graph_start) . RRD_NL .
 		'--end=' . cacti_escapeshellarg($graph_end) . RRD_NL;
 
-	if ($version != RRD_VERSION_1_2 && $config['cacti_server_os'] != 'win32') {
+	if ($version != RRD_VERSION_1_2) {
 		$graph_opts .= '--pango-markup ' . RRD_NL;
 	}
 
