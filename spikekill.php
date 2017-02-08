@@ -57,8 +57,8 @@ if (is_realm_allowed(1043)) {
 						' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
 						(isset_request_var('method') ? ' -M=' . get_nfilter_request_var('method'):'') .
 						(isset_request_var('avgnan') ? ' -A=' . get_nfilter_request_var('avgnan'):'') .
-						(isset_request_var('outlier-start') ? ' --outlier-start=' . get_request_var('outlier-start'):'') .
-						(isset_request_var('outlier-end') ? ' --outlier-end=' . get_request_var('outlier-end'):'') .
+						(isset_request_var('outlier-start') ? ' --outlier-start=' . get_nfilter_request_var('outlier-start'):'') .
+						(isset_request_var('outlier-end') ? ' --outlier-end=' . get_nfilter_request_var('outlier-end'):'') .
 						' -U=' . $_SESSION['sess_user_id'] . 
 						' --html', false);
 				}
@@ -67,8 +67,8 @@ if (is_realm_allowed(1043)) {
 					' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
 					(isset_request_var('method') ? ' -M=' . get_nfilter_request_var('method'):'') .
 					(isset_request_var('avgnan') ? ' -A=' . get_nfilter_request_var('avgnan'):'') .
-					(isset_request_var('outlier-start') ? ' --outlier-start=' . get_request_var('outlier-start'):'') .
-					(isset_request_var('outlier-end') ? ' --outlier-end=' . get_request_var('outlier-end'):'') .
+					(isset_request_var('outlier-start') ? ' --outlier-start=' . get_nfilter_request_var('outlier-start'):'') .
+					(isset_request_var('outlier-end') ? ' --outlier-end=' . get_nfilter_request_var('outlier-end'):'') .
 					' -U=' . $_SESSION['sess_user_id'] . 
 					' --html');
 			}
