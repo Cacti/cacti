@@ -3347,7 +3347,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
  *  @arg $headers - an array of name value pairs representing custom headers.
  *  @arg $html - if set to true, html is the default, otherwise text format will be used
  */
-function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments, $headers, $html = true) {
+function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true) {
 	global $config;
 
 	include_once($config['include_path'] . '/phpmailer/PHPMailerAutoload.php');
