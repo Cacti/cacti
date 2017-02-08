@@ -622,7 +622,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
 
 	while(($entry = $pobject->read()) !== false) {
-		if ($entry != '.' && $entry != '..') {
+		if ($entry != '.' && $entry != '..' && $entry != '.git') {
 			$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
 			if (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
 				if ($recursive) {
@@ -631,6 +631,8 @@ function update_db_from_path($path, $type, $recursive = true) {
 			}elseif ($entry == '.') {
 				continue;
 			}elseif ($entry == '..') {
+				continue;
+			}elseif ($entry == '.git') {
 				continue;
 			}elseif ($entry == '') {
 				continue;
@@ -773,6 +775,8 @@ function md5sum_path($path, $recursive = true) {
 		if ($entry == '.') {
 			continue;
 		}elseif ($entry == '..') {
+			continue;
+		}elseif ($entry == '.git') {
 			continue;
 		}elseif ($entry == '') {
 			continue;
