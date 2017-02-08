@@ -85,6 +85,8 @@ function grow_dhtml_trees() {
 
 	include_once($config['library_path'] . '/data_query.php');
 
+	html_validate_tree_vars();
+
 	$default_tree_id = read_user_setting('default_tree_id');
 
 	if (empty($default_tree_id)) {
