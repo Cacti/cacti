@@ -3387,6 +3387,9 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	// Set the subject
 	$mail->Subject = $subject;
 
+	// Support i18n
+	$mail->CharSet = 'UTF-8';
+
 	$how = read_config_option('settings_how');
 	if ($how < 0 || $how > 2) {
 		$how = 0;
