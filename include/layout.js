@@ -293,6 +293,22 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Rows
+	$('tr[id^="gt_line"].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
+		$(this).click(function(data) {
+			$(this).closest('tr').toggleClass('selected');
+			var checkbox = $(this).parent().find(':checkbox');
+			checkbox.prop('checked', !checkbox.is(':checked'));
+		});
+	});
+
+	// Create Actions for Checkboxes
+	$('tr[id^="gt_line"].selectable').find('input.checkbox').click(function(data) {
+		if (!$(this).is(':disabled')) {
+			$(this).closest('tr').toggleClass('selected');
+		}
+	});
+
+	// Create Actions for Rows
 	$('tr[id^="line"].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
 		$(this).click(function(data) {
 			$(this).closest('tr').toggleClass('selected');
