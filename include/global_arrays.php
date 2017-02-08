@@ -531,6 +531,7 @@ $ldap_modes = array(
 );
 
 $rrdtool_versions = array(
+	'rrd-1.2.x' => 'RRDTool 1.2.x',
 	'rrd-1.3.x' => 'RRDTool 1.3.x',
 	'rrd-1.4.x' => 'RRDTool 1.4.x',
 	'rrd-1.5.x' => 'RRDTool 1.5.x',
