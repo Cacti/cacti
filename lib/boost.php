@@ -632,10 +632,12 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 		if(count($arch_tables)) {
 			foreach($arch_tables as $table) {
-				if (strlen($query_string)) {
-					$query_string .= ' UNION ';
+				if (db_table_exists($table)) {
+					if (strlen($query_string)) {
+						$query_string .= ' UNION ';
+					}
+					$query_string .= ' (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output FROM ' . $table['name'] . " WHERE local_data_id='$local_data_id') ";
 				}
-				$query_string .= ' (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output FROM ' . $table['name'] . " WHERE local_data_id='$local_data_id') ";
 			}
 		}
 
