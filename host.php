@@ -720,43 +720,35 @@ function host_edit() {
 
 		html_header(array(__('Graph Template Name'), __('Status')), 2);
 
-		if ($host['snmp_version'] == 0) {
-			$sql_where = ' AND data_template_data.data_input_id != 1';
-		}else{
+//		if ($host['snmp_version'] == 0) {
+//			$sql_where = ' AND dtd.data_input_id NOT IN (1,2)';
+//		}else{
 			$sql_where = '';
-		}
+//		}
 
-		$selected_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT
-			graph_templates.id,
-			graph_templates.name
-			FROM graph_templates
-			INNER JOIN host_graph
-			ON graph_templates.id = host_graph.graph_template_id
-			INNER JOIN graph_templates_item
-			ON graph_templates_item.graph_template_id=graph_templates.id
-			INNER JOIN data_template_rrd
-			ON graph_templates_item.task_item_id=data_template_rrd.id
-			INNER JOIN data_template_data
-			ON data_template_data.id=data_template_rrd.data_template_id
-			WHERE host_graph.host_id = ?
-			$sql_where
-			ORDER BY graph_templates.name", array(get_request_var('id')));
+		$selected_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT gt.id, gt.name
+			FROM graph_templates AS gt
+			INNER JOIN host_graph AS hg
+			ON gt.id = hg.graph_template_id
+			WHERE hg.host_id = ?
+			ORDER BY gt.name", array(get_request_var('id')));
 
-		$available_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT
-			graph_templates.id, graph_templates.name
-			FROM snmp_query_graph 
-			RIGHT JOIN graph_templates
-			ON snmp_query_graph.graph_template_id = graph_templates.id
-			INNER JOIN graph_templates_item
-			ON graph_templates_item.graph_template_id=graph_templates.id
-			INNER JOIN data_template_rrd
-			ON graph_templates_item.task_item_id=data_template_rrd.id
-			INNER JOIN data_template_data
-			ON data_template_data.id=data_template_rrd.data_template_id
-			WHERE snmp_query_graph.name IS NULL 
+		$available_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT gt.id, gt.name
+			FROM graph_templates AS gt
+			LEFT JOIN snmp_query_graph AS sqg
+			ON sqg.graph_template_id = gt.id
+			INNER JOIN graph_templates_item AS gti
+			ON gti.graph_template_id=gt.id
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id=dtr.id
+			INNER JOIN data_template_data AS dtd
+			ON dtd.id=dtr.data_template_id
+			WHERE sqg.name IS NULL 
+			AND gti.local_graph_id=0
+			AND dtr.local_data_id=0
 			$sql_where
-			AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
-			ORDER BY graph_templates.name", array(get_request_var('id')));
+			AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
+			ORDER BY gt.name", array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($selected_graph_templates)) {
