@@ -1327,7 +1327,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				}
 
 				/* FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra) */
-				$data_source_path = str_replace(':', '\:', $data_source_path);
+				$data_source_path = rrdtool_escape_string($data_source_path);
 
 				if (!empty($data_source_path)) {
 					/* NOTE: (Update) Data source DEF names are created using the graph_item_id; then passed
@@ -1793,8 +1793,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		/* to make things easier... if there is no text format set; set blank text */
 		if (!isset($graph_variables['text_format'][$graph_item_id])) {
 			$graph_variables['text_format'][$graph_item_id] = '';
-		} else {
-			$graph_variables['text_format'][$graph_item_id] = str_replace('"', '\"', $graph_variables['text_format'][$graph_item_id]); /* escape doublequotes */
 		}
 
 		if (!isset($hardreturn[$graph_item_id])) {
@@ -1848,7 +1846,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					}
 
 					# create rrdtool specific command line
-					$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . str_replace(':', '\:', $comment_arg) . ' ';
+					$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . rrdtool_escape_string($comment_arg) . ' ';
 				}
 
 				break;
@@ -1861,14 +1859,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				break;
 			case GRAPH_ITEM_TYPE_GPRINT:
-				$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]);
+				$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string($graph_variables['text_format'][$graph_item_id]);
 
 				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . ':' . $consolidation_functions{$graph_item['consolidation_function_id']} . ':' . cacti_escapeshellarg(trim($graph_variables['text_format'][$graph_item_id]) . trim($graph_item['gprint_text']) . ($hardreturn[$graph_item_id] != '' ? $hardreturn[$graph_item_id]:'')) . ' ';
 
 				break;
 			case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
 				if (!isset($graph_data_array['graph_nolegend'])) {
-					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]);
+					$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string($graph_variables['text_format'][$graph_item_id]);
 
 					if ($graph_item['vdef_id'] == '0') {
 						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':AVERAGE:"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
@@ -1880,7 +1878,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				break;
 			case GRAPH_ITEM_TYPE_GPRINT_LAST:
 				if (!isset($graph_data_array['graph_nolegend'])) {
-					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]);
+					$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string($graph_variables['text_format'][$graph_item_id]);
 
 					if ($graph_item['vdef_id'] == '0') {
 						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':LAST:"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
@@ -1892,7 +1890,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				break;
 			case GRAPH_ITEM_TYPE_GPRINT_MAX:
 				if (!isset($graph_data_array['graph_nolegend'])) {
-					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]);
+					$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string($graph_variables['text_format'][$graph_item_id]);
 
 					if ($graph_item['vdef_id'] == '0') {
 						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':MAX:"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
@@ -1904,7 +1902,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				break;
 			case GRAPH_ITEM_TYPE_GPRINT_MIN:
 				if (!isset($graph_data_array['graph_nolegend'])) {
-					$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', $graph_variables['text_format'][$graph_item_id]);
+					$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string($graph_variables['text_format'][$graph_item_id]);
 
 					if ($graph_item['vdef_id'] == '0') {
 						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':MIN:"' . $graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id] . '" ';
@@ -1915,7 +1913,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				break;
 			case GRAPH_ITEM_TYPE_AREA:
-				$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', ($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id],$pad_number):''));
+				$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string(($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id],$pad_number):''));
 
 				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . ':"' . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . '" ';
 
@@ -1925,7 +1923,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				break;
 			case GRAPH_ITEM_TYPE_STACK:
-				$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', ($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id],$pad_number):''));
+				$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string(($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id],$pad_number):''));
 
 				$txt_graph_items .= 'AREA:' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id]) . ':STACK';
 
@@ -1937,7 +1935,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			case GRAPH_ITEM_TYPE_LINE1:
 			case GRAPH_ITEM_TYPE_LINE2:
 			case GRAPH_ITEM_TYPE_LINE3:
-				$graph_variables['text_format'][$graph_item_id] = str_replace(':', '\:', ($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):'')); 
+				$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string(($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):'')); 
 
 				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id]) . ' ';
 
@@ -1961,7 +1959,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				break;
 			case GRAPH_ITEM_TYPE_HRULE:
-				$graph_variables['value'][$graph_item_id] = str_replace(':', '\:', $graph_variables['value'][$graph_item_id]); /* escape colons */
+				$graph_variables['value'][$graph_item_id] = rrdtool_escape_string($graph_variables['value'][$graph_item_id]); /* escape colons */
 
 				/* perform variable substitution; if this does not return a number, rrdtool will FAIL! */
 				$substitute = rrd_substitute_host_query_data($graph_variables['value'][$graph_item_id], $graph, $graph_item);
@@ -2082,6 +2080,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		return $xport_array;
 	}
+}
+
+function rrdtool_escape_string($text) {
+	$text = str_replace('"', '\"', $text);
+	$text = str_replace(":", "\:", $text);
+	$text = str_replace('%', '', $text);
+	$text = str_replace('&', '', $text);
+
+	return $text;
 }
 
 function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta) {
