@@ -1,5 +1,11 @@
 Cacti CHANGELOG
 
+1.0.2
+-issue#279: Correct Boost Status display issue
+-issue#275: Permission View issue and Device Dropdown when in Classic Theme
+-issue#270: Major Mib Cache corruption.  Rebuild your MIB Cache after upgrading
+-issue: Resolve Cacti logo on Graphs page in Classic Theme
+
 1.0.1
 -feature: SpikeKill allows filling range to last known good value
 -issue#261: Add IPv4 and IPv6 Specific Counters to interfaces.xml

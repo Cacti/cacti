@@ -971,7 +971,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	<input type='hidden' id='action' name='action' value='actions'>
 	<script type='text/javascript'>
 	function setDisabled() {
-		$('tr[id^=line').addClass('selectable').prop('disabled', false).removeClass('disabled_row').find('td').unbind().find(':checkbox.disabled').prop('disabled', false);
+		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').find('td').unbind().find(':checkbox.disabled').prop('disabled', false);
 
 		if ($('#drp_action').val() == <?php print $delete_action;?>) {
 			$(':checkbox.disabled').each(function(data) {
@@ -1012,7 +1012,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 			});
 		}
 
-		$('tr[id^=line').not('.disabled_row').find('td').not('.checkbox').each(function(data) {
+		$('tr[id^="line"]').not('.disabled_row').find('td').not('.checkbox').each(function(data) {
 			$(this).click(function(data) {
 				$(this).closest('tr').toggleClass('selected');
 				var checkbox = $(this).parent().find(':checkbox');
@@ -1020,7 +1020,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 			});
 		});
 
-		$('tr[id^=line').find('input.checkbox').each(function(data) {
+		$('tr[id^="line"]').find('input.checkbox').each(function(data) {
 			$(this).click(function(data) {
 				if (!$(this).closest('tr').hasClass('disabled_row')) {
 					$(this).closest('tr').toggleClass('selected');
@@ -1037,10 +1037,10 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 
 		$('.tableSubHeaderCheckbox').find(':checkbox').unbind().click(function(data) {
 			if ($(this).is(':checked')) {
-				$('input[id^=chk_]').not(':disabled').prop('checked',true);
+				$('input[id^="chk_"]').not(':disabled').prop('checked',true);
 				$('tr.selectable').addClass('selected');
 			}else{
-				$('input[id^=chk_]').not(':disabled').prop('checked',false);
+				$('input[id^="chk_"]').not(':disabled').prop('checked',false);
 				$('tr.selectable').removeClass('selected');
 			}
 		});
@@ -1444,16 +1444,11 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 					$sql_where = 'WHERE ' . $sql_where;
 				}
 
-				$hosts = db_fetch_assoc("SELECT h.id, CONCAT_WS('',h.description,' (',h.hostname,')') AS name 
-					FROM host AS h
-					LEFT JOIN host_template AS ht
-					ON ht.id=h.host_template_id
-					$sql_where 
-					ORDER BY h.description, h.hostname");
+				$devices = get_allowed_devices($sql_where);
 
-				if (sizeof($hosts) > 0) {
-					foreach ($hosts as $host) {
-						print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($host['name']), 40) . "</option>\n";
+				if (sizeof($devices)) {
+					foreach ($devices as $device) {
+						print "<option value='" . $device['id'] . "'"; if (get_request_var('host_id') == $device['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($device['description'] . ' (' . $device['hostname'] . ')'), 40) . "</option>\n";
 					}
 				}
 				?>

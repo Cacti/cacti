@@ -741,11 +741,9 @@ $settings = array(
 			),
 		'path_rrdtool_default_font' => array(
 			'friendly_name' => __('Default Font'),
-			'description' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' 	? __('When not using Theme based fonts, the path to the default True Type Font File.')
-																					: __('When not using Theme based font control, the Pangon font-config font name to use for all Graphs. Optionally, you may leave blank and control font settings on a per object basis.') ),
+			'description' =>  __('When not using Theme based font control, the Pangon font-config font name to use for all Graphs. Optionally, you may leave blank and control font settings on a per object basis.'),
 			'method' => 'font',
-			'placeholder' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' 	? __('Enter valid True Type Font File Path')
-																					: __('Enter Valid Font Config Value') ),
+			'placeholder' =>  __('Enter Valid Font Config Value'),
 			'max_length' => '255'
 			),
 		'title_size' => array(
@@ -760,8 +758,7 @@ $settings = array(
 			'friendly_name' => __('Title Font Setting'),
 			'description' => __('The font to use for Graph Titles.  Enter either a valid True Type Font file or valid Pango font-config value.'),
 			'method' => 'font',
-			'placeholder' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' 	? __('Enter True Type Font Path')
-																					: __('Enter Valid Font Config Value') ),
+			'placeholder' => __('Enter Valid Font Config Value'),
 			'max_length' => '100'
 			),
 		'legend_size' => array(
@@ -776,8 +773,7 @@ $settings = array(
 			'friendly_name' => __('Legend Font Setting'),
 			'description' => __('The font to use for Graph Legends.  Enter either a valid True Type Font file or valid Pango font-config value.'),
 			'method' => 'font',
-			'placeholder' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' 	? __('Enter True Type Font Path') 
-																					: __('Enter Valid Font Config Value') ),
+			'placeholder' => __('Enter Valid Font Config Value'),
 			'max_length' => '100'
 			),
 		'axis_size' => array(
@@ -792,8 +788,7 @@ $settings = array(
 			'friendly_name' => __('Axis Font Setting'),
 			'description' => __('The font to use for Graph Axis items.  Enter either a valid True Type Font file or valid Pango font-config value.'),
 			'method' => 'font',
-			'placeholder' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' 	? __('Enter True Type Font Path')
-																					: __('Enter Valid Font Config Value') ),
+			'placeholder' => __('Enter Valid Font Config Value'),
 			'max_length' => '100'
 			),
 		'unit_size' => array(
@@ -808,8 +803,7 @@ $settings = array(
 			'friendly_name' => __('Unit Font Setting'),
 			'description' => __('The font to use for Graph Unit items.  Enter either a valid True Type Font file or valid Pango font-config value.'),
 			'method' => 'font',
-			'placeholder' => (read_config_option('rrdtool_version') == 'rrd-1.2.x' 	? __('Enter True Type Font Path')
-																					: __('Enter Valid Font Config Value') ),
+			'placeholder' => __('Enter Valid Font Config Value'),
 			'max_length' => '100'
 			)
 		),

@@ -110,6 +110,11 @@ if (isset($poller_id)) {
 	$config['poller_id'] = 1;
 }
 
+/* check for an empty database port */
+if ($database_port == '') {
+	$database_port = '3306';
+}
+
 /* set URL path */
 if (! isset($url_path)) {
 	$url_path = '';
@@ -346,5 +351,5 @@ if ($is_web) {
 api_plugin_hook('config_insert');
 
 /* current cacti version */
-$config['cacti_version'] = '1.0.1';
+$config['cacti_version'] = '1.0.2';
 

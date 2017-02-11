@@ -559,7 +559,6 @@ label {
 }
 
 .cactiGraphPageHeadBackdrop {
-	background: #a9a9a9 url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	background-color: #a9a9a9;
 	vertical-align: bottom;
 	padding-bottom: 0px;
@@ -1302,9 +1301,7 @@ td#tabs {
 }
 
 .cactiGraphHeaderBackground {
-	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 10% / 380px auto;
 	height: 37px;
-	width:500px;
 	float:right;
 	z-index:-1;
 }

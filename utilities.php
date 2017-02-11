@@ -2121,7 +2121,7 @@ function boost_display_run_status() {
 	print '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . number_format_i18n($boost_rrds_updated, -1) . '</td>';
+	print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . ($boost_rrds_updated != '' ? number_format_i18n($boost_rrds_updated, -1):'-') . '</td>';
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '') ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';

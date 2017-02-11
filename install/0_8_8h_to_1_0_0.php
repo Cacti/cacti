@@ -130,8 +130,7 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=$engine;"
-	);
+		) ENGINE=$engine;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_weekly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
@@ -139,8 +138,7 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=$engine;"
-	);
+		) ENGINE=$engine;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_yearly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
@@ -148,8 +146,7 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=$engine;"
-	);
+		) ENGINE=$engine;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost` (
 		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
@@ -157,7 +154,7 @@ function upgrade_to_1_0_0() {
 		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
 		`output` varchar(512) NOT NULL,
 		PRIMARY KEY USING BTREE (`local_data_id`,`rrd_name`,`time`))
-		ENGINE=$engine ROW_FORMAT=FIXED");
+		ENGINE=$engine'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
 		`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,

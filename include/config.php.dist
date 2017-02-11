@@ -63,7 +63,7 @@ $cacti_session_name = 'Cacti';
 
 /* save sessions to a database for load balancing */
 
-$cacti_db_session = true;
+$cacti_db_session = false;
 
 /* optional parameters to define scripts and resource paths.  these
  * variables become important when using remote poller installs

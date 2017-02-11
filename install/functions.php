@@ -387,16 +387,14 @@ function install_file_paths () {
 		exec("\"" . $input['path_rrdtool']['default'] . "\"", $out_array);
 
 		if (sizeof($out_array) > 0) {
-			if (preg_match('/^RRDtool 1\.5/', $out_array[0])) {
+			if (preg_match('/^RRDtool 1\.6/', $out_array[0])) {
+				$input['rrdtool_version']['default'] = 'rrd-1.6.x';
+			}else if (preg_match('/^RRDtool 1\.5/', $out_array[0])) {
 				$input['rrdtool_version']['default'] = 'rrd-1.5.x';
 			}else if (preg_match('/^RRDtool 1\.4\./', $out_array[0])) {
 				$input['rrdtool_version']['default'] = 'rrd-1.4.x';
 			}else if (preg_match('/^RRDtool 1\.3\./', $out_array[0])) {
 				$input['rrdtool_version']['default'] = 'rrd-1.3.x';
-			}else if (preg_match('/^RRDtool 1\.2\./', $out_array[0])) {
-				$input['rrdtool_version']['default'] = 'rrd-1.2.x';
-			}else if (preg_match('/^RRDtool 1\.0\./', $out_array[0])) {
-				$input['rrdtool_version']['default'] = 'rrd-1.0.x';
 			}
 		}
 	}

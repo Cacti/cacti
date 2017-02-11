@@ -366,7 +366,7 @@ class MibCache{
 
 				if (sizeof($sql)) {
 					db_execute('INSERT INTO `snmpagent_cache` 
-						(oid, value) 
+						(value, oid) 
 						VALUES ' . implode(', ', $sql) . '
 						ON DUPLICATE KEY UPDATE value=VALUES(value)', $sql);
 				}

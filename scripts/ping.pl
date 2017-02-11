@@ -13,6 +13,9 @@ if (($host =~ tr/:://) == 0) {
   $host =~ s/:[0-9]{1,5}/$1/gis;
 }
 
+# Addition2
+($host) = $host =~ /^([\w.]+)$/;
+
 # always have the language in english
 $ENV{LANG}='en_US.UTF-8';
 

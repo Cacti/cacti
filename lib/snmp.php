@@ -610,10 +610,14 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 				}
 			}
 
-			for ($i=0; $i < count($temp_array); $i++) {
-				if ($temp_array[$i] != 'NULL') {
-					$snmp_array[$i]['oid']   = trim(preg_replace('/(.*) =.*/', "\\1", $temp_array[$i]));
-					$snmp_array[$i]['value'] = format_snmp_string($temp_array[$i], true);
+			$i = 0;
+			foreach($temp_array as $index => $value) {
+				if (preg_match('/(.*) =.*/', $value)) {
+					$snmp_array[$i]['oid']   = trim(preg_replace('/(.*) =.*/', "\\1", $value));
+					$snmp_array[$i]['value'] = format_snmp_string($value, true);
+					$i++;
+				}else{
+					$snmp_array[$i-1]['value'] .= $value;
 				}
 			}
 		}

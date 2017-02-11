@@ -68,22 +68,22 @@
 		<itemizedlist>
 			<listitem>
 				<para>
-					<application>RRDTool</application> 1.2 or greater, 1.5+ recommended
+					<application>RRDTool</application> 1.0.49 or greater, 1.4+ recommended
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>MySQL</application> 5.1 or greater
+					<application>MySQL</application> 5.x or greater
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>PHP</application> 5.3 or greater
+					<application>PHP</application> 5.1 or greater
 				</para>
 			</listitem>
 			<listitem>
 				<para>
-					<application>Web Server with PHP support</application>
+					<application>Web Server that supports PHP</application> e.g. Apache or IIS
 				</para>
 			</listitem>
 		</itemizedlist>
@@ -174,47 +174,90 @@
 			</sect1>
 			<sect1 id="unix_configure_php">
 				<title>Configure PHP</title>
-					<para>Please ensure, that PHP support is either builtin or installed for the
-					following PHP extension modules:</para>
+					<para>Please ensure, that PHP support is either builtin or installed for the following PHP extension modules:</para>
 					<itemizedlist>
 						<listitem>
 							<para>
-								<application>mysql</application> (For configuration, see note below)
+								<application>PDO</application>
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>SNMP</application> (For configuration, see note below)
+								<application>pdo-mysql</application>
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>XML</application>
+								<application>snmp</application> (Optional, but recommended)
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>Session</application>
+								<application>xml</application>
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>Sockets</application>
+								<application>session</application>
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>LDAP</application> (Required only when using LDAP authentication)
+								<application>posix</application> (Linux only)
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>GD</application> (Required only for some Plugins)
+								<application>sockets</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>ldap</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>json</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>pcre</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>mbstring</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>openssl</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>gd</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>zlib</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>gmp</application> (Recommened for plugins)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>com_dotnet</application> (Windows PHP 5.4.5+)
 							</para>
 						</listitem>
 					</itemizedlist>
-					<para> You may run the following command to get the list of all
-					available PHP modules</para>
+					<para> You may run the following command to get the list of all available PHP modules</para>
 					<screen><userinput>php -m</userinput></screen>
 					<para>Please verify, that the modules are installed and configured correctly.
 					There are several ways to do so, please consult <ulink url="http://www.php.net/manual/en/configuration.php">PHP configuration instructions</ulink>
@@ -298,7 +341,6 @@ DirectoryIndex index.php</userinput></screen>
 						</para>
 						<screen><prompt>shell&gt;</prompt> <userinput>mysql --user=root mysql</userinput>
 <prompt>mysql&gt;</prompt> <userinput>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY 'somepassword';</userinput>
-<prompt>mysql&gt;</prompt> <userinput>GRANT SELECT ON mysql.time_zone_name TO cactiuser@localhost;</userinput>
 <prompt>mysql&gt;</prompt> <userinput>flush privileges;</userinput></screen>
 					</listitem>
 					<listitem>
@@ -310,11 +352,6 @@ $database_default = "cacti";
 $database_hostname = "localhost";
 $database_username = "cactiuser";
 $database_password = "cacti";</userinput></screen>
-					</listitem>
-					<listitem>
-						<para>
-							Copy installed plugins from the old Cacti directory (if they exist).
-						</para>
 					</listitem>
 					<listitem>
 						<para>
@@ -687,8 +724,6 @@ Web
 				</para>
 				<screen><prompt>shell&gt;</prompt> <userinput>mysql --user=root --password mysql</userinput>
 <prompt>mysql&gt;</prompt> <userinput>GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY 'somepassword';</userinput>
-<prompt>mysql&gt;</prompt> <userinput>GRANT SELECT ON mysql.time_zone_name TO cactiuser@localhost;</userinput>
-<prompt>mysql&gt;</prompt> <userinput>;</userinput>
 <prompt>mysql&gt;</prompt> <userinput>flush privileges;</userinput></screen>
 			</listitem>
 			<listitem>
@@ -3572,7 +3607,7 @@ print $b;
 			<title>Simplest Method of Going from Script to Graph (Walkthrough)</title>
 			<authorblurb>
 				<para>
-					<emphasis>Written by Kevin der Kinderen</emphasis>
+					<emphasis>Written by Kevin der Kinderen, <ulink url="http://kdeuja.com/~kevin/">http://kdeuja.com/~kevin/</ulink></emphasis>
 				</para>
 			</authorblurb>
 			<para>
@@ -4819,7 +4854,7 @@ disk /</userinput></screen>
 			<para>
 				CDEFs allow you to apply mathematical functions to graph data to alter output. The concept of a
 				CDEF comes straight from <application>RRDTool</application>, and are written in reverse polish notation (RPN). For more
-				information regarding the syntax of CDEFs, check out the <ulink url="http://oss.oetiker.ch/rrdtool/tut/cdeftutorial.en.html">CDEF tutorial</ulink>.
+				information regarding the syntax of CDEFs, check out the <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph_data.en.html">CDEF tutorial</ulink>.
 			</para>
 			<sect2 id="add_new_cdef">
 				<title>Creating a CDEF</title>
@@ -4847,7 +4882,7 @@ disk /</userinput></screen>
 						<tbody>
 							<row>
 								<entry>Function</entry>
-								<entry>You can choose a CDEF function to use as the item. The <ulink url="http://oss.oetiker.ch/rrdtool/doc/index.en.html">RRDTool graph manual</ulink> describes the purpose of each CDEF function.</entry>
+								<entry>You can choose a CDEF function to use as the item. The <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph.en.html">RRDTool graph manual</ulink> describes the purpose of each CDEF function.</entry>
 							</row>
 							<row>
 								<entry>Operator</entry>

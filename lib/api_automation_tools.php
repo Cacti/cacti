@@ -494,7 +494,7 @@ function displayHostGraphs($host_id, $quietMode = FALSE) {
 		echo "Known Device Graphs: (id, name, template)\n";
 	}
 
-	$graphs = db_fetch_assoc('SELECT
+	$graphs = db_fetch_assoc_prepared('SELECT
 			graph_templates_graph.local_graph_id AS id,
 			graph_templates_graph.title_cache AS name,
 			graph_templates.name AS template_name

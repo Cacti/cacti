@@ -283,7 +283,7 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Apply disabled/enabled status first for Graph Templates
-	$('tr[id^=gt_line]').each(function(data) {
+	$('tr[id^="gt_line"]').each(function(data) {
 		var id = $(this).attr('id');
 		var search = id.substr(7);
 		if ($.inArray(search, gt_created_graphs) >= 0) {
@@ -293,7 +293,7 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Rows
-	$('tr[id^=line].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
+	$('tr[id^="gt_line"].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
 		$(this).click(function(data) {
 			$(this).closest('tr').toggleClass('selected');
 			var checkbox = $(this).parent().find(':checkbox');
@@ -302,7 +302,23 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Checkboxes
-	$('tr[id^=line].selectable').find('input.checkbox').click(function(data) {
+	$('tr[id^="gt_line"].selectable').find('input.checkbox').click(function(data) {
+		if (!$(this).is(':disabled')) {
+			$(this).closest('tr').toggleClass('selected');
+		}
+	});
+
+	// Create Actions for Rows
+	$('tr[id^="line"].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
+		$(this).click(function(data) {
+			$(this).closest('tr').toggleClass('selected');
+			var checkbox = $(this).parent().find(':checkbox');
+			checkbox.prop('checked', !checkbox.is(':checked'));
+		});
+	});
+
+	// Create Actions for Checkboxes
+	$('tr[id^="line"].selectable').find('input.checkbox').click(function(data) {
 		if (!$(this).is(':disabled')) {
 			$(this).closest('tr').toggleClass('selected');
 		}
@@ -322,7 +338,7 @@ function dqUpdateDeps(snmp_query_id) {
 	var allChecked = $('#all_'+snmp_query_id).is(':checked');
 
 	// Next for Data Queries
-	$('tr[id^=dqline'+snmp_query_id+'_]').each(function(data) {
+	$('tr[id^="dqline'+snmp_query_id+'_"]').each(function(data) {
 		var id = $(this).attr('id');
 		var pieces = id.split('_');
 		var dq = pieces[0].substr(6);
@@ -346,7 +362,7 @@ function dqUpdateDeps(snmp_query_id) {
 		$('#all_'+snmp_query_id).prop('checked', false);
 	}
 
-	$('tr[id^=dqline'+snmp_query_id+'_]').not('.disabled_row').each(function() {
+	$('tr[id^="dqline'+snmp_query_id+'_"]').not('.disabled_row').each(function() {
 		$(this).find(':checkbox').click(function() {
 			$(this).closest('tr').toggleClass('selected');
 		});
@@ -364,7 +380,7 @@ function dqUpdateDeps(snmp_query_id) {
  *  It is done just before a new data query is checked.
  *  @arg snmp_query_id - The snmp query id the is current */
 function dqResetDeps(snmp_query_id) {
-	$('tr[id^=dqline'+snmp_query_id+'_]').addClass('selectable').removeClass('disabled_row').find(':checkbox').prop('disabled', false);
+	$('tr[id^="dqline'+snmp_query_id+'_"]').addClass('selectable').removeClass('disabled_row').find(':checkbox').prop('disabled', false);
 }
 
 /** SelectAll - This function will select all non-disabled rows
@@ -372,24 +388,24 @@ function dqResetDeps(snmp_query_id) {
 function SelectAll(attrib, checked) {
 	if (attrib == 'chk') {
 		if (checked == true) {
-			$('tr[id^=line]:not(.disabled_row').each(function(data) {
+			$('tr[id^="line"]:not(.disabled_row)').each(function(data) {
 				$(this).addClass('selected');
 				$(this).find(':checkbox').prop('checked', true);
 			});
 		}else{
-			$('tr[id^=line]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="line"]:not(.disabled_row)').each(function(data) {
 				$(this).removeClass('selected');
 				$(this).find(':checkbox').prop('checked', false);
 			});
 		}
 	}else if (attrib == 'sg') {
 		if (checked == true) {
-			$('tr[id^=gt_line]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="gt_line"]:not(.disabled_row)').each(function(data) {
 				$(this).addClass('selected');
 				$(this).find(':checkbox').prop('checked', true);
 			});
 		}else{
-			$('tr[id^=gt_line]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="gt_line"]:not(.disabled_row)').each(function(data) {
 				$(this).removeClass('selected');
 				$(this).find(':checkbox').prop('checked', false);
 			});
@@ -399,12 +415,12 @@ function SelectAll(attrib, checked) {
 		var dq   = attribSplit[1];
 
 		if (checked == true) {
-			$('tr[id^=dqline'+dq+'\_]:not(.disabled_row').each(function(data) {
+			$('tr[id^="dqline'+dq+'\_"]:not(.disabled_row)').each(function(data) {
 				$(this).addClass('selected');
 				$(this).find(':checkbox').prop('checked', true);
 			});
 		}else{
-			$('tr[id^=dqline'+dq+'\_]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="dqline'+dq+'\_"]:not(.disabled_row)').each(function(data) {
 				$(this).removeClass('selected');
 				$(this).find(':checkbox').prop('checked', false);
 			});
@@ -447,7 +463,7 @@ function applySkin() {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', true);
 		});
 	}else{
-		$('input[type=submit], input[type=button]').button();
+		$('input[type="submit"], input[type="button"]').button();
 
 		// debounce submits
 		$('form').submit(function() {
@@ -480,7 +496,11 @@ function applySkin() {
 	}
 
 	// Add tooltips to graph drilldowns
-	$('.drillDown').tooltip();
+	$('.drillDown').tooltip({
+		content: function() {
+			return $(this).prop('title');
+		}
+	});
 
 	// Debug message actions
 	$('table.debug').click(function() { 
@@ -498,9 +518,8 @@ function applySkin() {
 
 			if (element.is('div')) {
 				var text = $(this).find('span').html();
-			}
-			if (element.is('span') || element.is('a')) {
-				var text = $(this).attr('title');
+			}else if (element.is('span') || element.is('a')) {
+				var text = $(this).prop('title');
 			}
 			return text;
 		}
