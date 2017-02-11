@@ -1006,22 +1006,10 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 	if (strlen($form_previous_value) == 0) { # no data: defaults are used; everythings fine
 			$extra_data = '';
 	} else {
-
-		/* do some simple checks */
-		if (read_config_option('rrdtool_version') == 'rrd-1.2.x') { # rrdtool 1.2 uses font files
-			if (is_file($form_previous_value)) {
-				$extra_data = "<span style='color:green'><br>[" . __('OK: FILE FOUND') . ']</span>';
-			}else if (is_dir($form_previous_value)) {
-				$extra_data = "<span style='color:red'><br>[" . __('ERROR: IS DIR') . ']</span>';
-			}else{
-				$extra_data = "<span style='color:red'><br>[" . __('ERROR: FILE NOT FOUND') . ']</span>';
-			}
-		} else {	# rrdtool 1.3+ use fontconfig
-			/* verifying all possible pango font params is too complex to be tested here
-			 * so we only escape the font
-			 */
-			$extra_data = "<span style='color:green'><br>[" . __('NO FONT VERIFICATION POSSIBLE') . ']</span>';
-		}
+		/* verifying all possible pango font params is too complex to be tested here
+		 * so we only escape the font
+		 */
+		$extra_data = "<span style='color:green'><br>[" . __('NO FONT VERIFICATION POSSIBLE') . ']</span>';
 	}
 
 	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . htmlspecialchars($placeholder) . "'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;

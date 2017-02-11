@@ -926,9 +926,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		'--start=' . cacti_escapeshellarg($graph_start) . RRD_NL .
 		'--end=' . cacti_escapeshellarg($graph_end) . RRD_NL;
 
-	if ($version != RRD_VERSION_1_2) {
-		$graph_opts .= '--pango-markup ' . RRD_NL;
-	}
+	$graph_opts .= '--pango-markup ' . RRD_NL;
 
 	foreach($graph as $key => $value) {
 		switch($key) {
@@ -987,25 +985,19 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 			}
 			break;
 		case "right_axis":
-			if ($version != RRD_VERSION_1_2) {
-				if (!empty($value)) {
-					$graph_opts .= "--right-axis " . cacti_escapeshellarg($value) . RRD_NL;
-				}
+			if (!empty($value)) {
+				$graph_opts .= "--right-axis " . cacti_escapeshellarg($value) . RRD_NL;
 			}
 			break;
 		case "right_axis_label":
-			if ($version != RRD_VERSION_1_2) {
-				if (!empty($value)) {
-					$graph_opts .= "--right-axis-label " . cacti_escapeshellarg($value) . RRD_NL;
-				}
+			if (!empty($value)) {
+				$graph_opts .= "--right-axis-label " . cacti_escapeshellarg($value) . RRD_NL;
 			}
 			break;
 		case "right_axis_format":
-			if ($version != RRD_VERSION_1_2) {
-				if (!empty($value)) {
-					$format = db_fetch_cell_prepared('SELECT gprint_text from graph_templates_gprint WHERE id = ?', array($value));
-					$graph_opts .= "--right-axis-format " . cacti_escapeshellarg($format) . RRD_NL;
-				}
+			if (!empty($value)) {
+				$format = db_fetch_cell_prepared('SELECT gprint_text from graph_templates_gprint WHERE id = ?', array($value));
+				$graph_opts .= "--right-axis-format " . cacti_escapeshellarg($format) . RRD_NL;
 			}
 			break;
 		case "no_gridfit":
@@ -1034,28 +1026,28 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 			}
 			break;
 		case "legend_position":
-			if ($version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
+			if ($version != RRD_VERSION_1_3) {
 				if (!empty($value)) {
 					$graph_opts .= "--legend-position " . cacti_escapeshellarg($value) . RRD_NL;
 				}
 			}
 			break;
 		case "legend_direction":
-			if ($version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
+			if ($version != RRD_VERSION_1_3) {
 				if (!empty($value)) {
 					$graph_opts .= "--legend-direction " . cacti_escapeshellarg($value) . RRD_NL;
 				}
 			}
 			break;
 		case 'left_axis_formatter':
-			if ($version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
+			if ($version != RRD_VERSION_1_3) {
 				if (!empty($value)) {
 					$graph_opts .= "--left-axis-formatter " . cacti_escapeshellarg($value) . RRD_NL;
 				}
 			}
 			break;
 		case 'right_axis_formatter':
-			if ($version != RRD_VERSION_1_2 && $version != RRD_VERSION_1_3) {
+			if ($version != RRD_VERSION_1_3) {
 				if (!empty($value)) {
 					$graph_opts .= "--right-axis-formatter " . cacti_escapeshellarg($value) . RRD_NL;
 				}
@@ -1821,14 +1813,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINESTACK ||
 			$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_HRULE ||
 			$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_VRULE) {
-			if ($rrdtool_version != RRD_VERSION_1_2) {
-				if (!empty($graph_item['dashes'])) {
-					$dash .= ':dashes=' . $graph_item['dashes'];
-				}
+			if (!empty($graph_item['dashes'])) {
+				$dash .= ':dashes=' . $graph_item['dashes'];
+			}
 
-				if (!empty($graph_item['dash_offset'])) {
-					$dash .= ':dash-offset=' . $graph_item['dash_offset'];
-				}
+			if (!empty($graph_item['dash_offset'])) {
+				$dash .= ':dash-offset=' . $graph_item['dash_offset'];
 			}
 		}
 
@@ -1852,7 +1842,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				break;
 			case GRAPH_ITEM_TYPE_TEXTALIGN:
 				if (!isset($graph_data_array['graph_nolegend'])) {
-					if (!empty($graph_item['textalign']) && $rrdtool_version != RRD_VERSION_1_2) {
+					if (!empty($graph_item['textalign'])) {
 						$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $graph_item['textalign'];
 					}
 				}
@@ -2215,19 +2205,10 @@ function rrdtool_function_set_font($type, $no_legend, $themefonts) {
 	}
 
 	if(strlen($font)) {
-		/* do some simple checks */
-		if (read_config_option('rrdtool_version') == RRD_VERSION_1_2) {
-			# rrdtool 1.2 uses font files
-			if (!is_file($font)) {
-				$font = '';
-			}
-		} else {	
-			# rrdtool 1.3+ use fontconfig
-			/* verifying all possible pango font params is too complex to be tested here
-			 * so we only escape the font
-			 */
-			$font = cacti_escapeshellarg($font);
-		}
+		/* verifying all possible pango font params is too complex to be tested here
+		 * so we only escape the font
+		 */
+		$font = cacti_escapeshellarg($font);
 	}
 
 	if ($type == 'title') {
@@ -2762,7 +2743,7 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 
 		/* rrdtool dump depends on rrd file version:
 		 * version 0001 => RRDTool 1.0.x
-		 * version 0003 => RRDTool 1.2.x, 1.3.x, 1.4.x
+		 * version 0003 => RRDTool 1.2.x, 1.3.x, 1.4.x, 1.5.x, 1.6.x
 		 */
 		$version = trim($dom->getElementsByTagName('version')->item(0)->nodeValue);
 
