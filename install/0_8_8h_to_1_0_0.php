@@ -153,8 +153,8 @@ function upgrade_to_1_0_0() {
 		`rrd_name` varchar(19) NOT NULL default '',
 		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
 		`output` varchar(512) NOT NULL,
-		PRIMARY KEY USING BTREE (`local_data_id`,`rrd_name`,`time`))
-		ENGINE=$engine'");
+		PRIMARY KEY USING BTREE (`local_data_id`,`rrd_name`,`time`)
+		) ENGINE=$engine;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
 		`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
