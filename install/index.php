@@ -455,6 +455,9 @@ $enabled = '1';
 <head>
 	<title>Cacti Server Installation/Upgrade</title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta http-equiv='cache-control" content='no-cache' />
+	<meta http-equiv='expires" content='0' />
+	<meta http-equiv='pragma" content='no-cache' />
 	<link href='<?php echo $config['url_path']; ?>include/themes/modern/main.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/modern/jquery.zoom.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/modern/jquery-ui.css' type='text/css' rel='stylesheet'>
