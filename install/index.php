@@ -423,7 +423,7 @@ if ($step == '7') {
 			upgrade_to_1_0_2();
 		}elseif ($cacti_versions[$i] == '1.0.3') {
 			include ('1_0_2_to_1_0_3.php');
-			upgrade_to_1_0_2();
+			upgrade_to_1_0_3();
 		}
 
 	}
