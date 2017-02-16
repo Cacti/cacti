@@ -1456,7 +1456,6 @@ div.submenu span{
 /* Navigation Area */
 #nav {
 	float: left;
-	white-space: nowrap;
 	border-top: 0px solid #999;
 	border-right: 0px solid #999;
 	border-left: 0px solid #999;
