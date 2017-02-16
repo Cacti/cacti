@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.0.3
+-issue#297: Upgrade 0.8.8h to 1.0.0 fails to create poller_output_boost table
+-issue: Added missing template import hash for 1.0.2
+
 1.0.2
 -issue#279: Correct Boost Status display issue
 -issue#275: Permission View issue and Device Dropdown when in Classic Theme

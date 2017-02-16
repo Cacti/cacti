@@ -45,7 +45,7 @@ $cacti_versions = array('0.8', '0.8.1', '0.8.2', '0.8.2a', '0.8.3', '0.8.3a', '0
 	'0.8.6', '0.8.6a', '0.8.6b', '0.8.6c', '0.8.6d', '0.8.6e', '0.8.6f', '0.8.6g', '0.8.6h', '0.8.6i', '0.8.6j', '0.8.6k',
 	'0.8.7', '0.8.7a', '0.8.7b', '0.8.7c', '0.8.7d', '0.8.7e', '0.8.7f', '0.8.7g', '0.8.7h', '0.8.7i',
 	'0.8.8', '0.8.8a', '0.8.8b', '0.8.8c', '0.8.8d', '0.8.8e', '0.8.8f', '0.8.8g', '0.8.8h', '1.0.0',
-	'1.0.1', '1.0.2');
+	'1.0.1', '1.0.2', '1.0.3');
 
 $old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
 
@@ -421,7 +421,11 @@ if ($step == '7') {
 		}elseif ($cacti_versions[$i] == '1.0.2') {
 			include ('1_0_1_to_1_0_2.php');
 			upgrade_to_1_0_2();
+		}elseif ($cacti_versions[$i] == '1.0.3') {
+			include ('1_0_2_to_1_0_3.php');
+			upgrade_to_1_0_3();
 		}
+
 	}
 
 	foreach ($plugins_integrated as $plugin) {
@@ -451,6 +455,9 @@ $enabled = '1';
 <head>
 	<title>Cacti Server Installation/Upgrade</title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta http-equiv='cache-control" content='no-cache' />
+	<meta http-equiv='expires" content='0' />
+	<meta http-equiv='pragma" content='no-cache' />
 	<link href='<?php echo $config['url_path']; ?>include/themes/modern/main.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/modern/jquery.zoom.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/modern/jquery-ui.css' type='text/css' rel='stylesheet'>
