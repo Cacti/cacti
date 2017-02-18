@@ -4178,6 +4178,8 @@ function IgnoreErrorHandler($message) {
 		'Error in packet',
 		'This name does not exist',
 		'End of MIB',
+		'Unknown host',
+		'Name or service not known'
 	);
 
 	foreach ($snmp_ignore as $i) {
