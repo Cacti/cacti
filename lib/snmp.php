@@ -576,23 +576,23 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 
 		if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($max_oids > 1)) {
 			$temp_array = exec_into_array(cacti_escapeshellcmd($path_snmpbulkwalk) . 
-				' -O Qn ' . $snmp_auth . 
-				' -v '    . $version .
-				' -t '    . $timeout . 
-				' -r '    . $retries . 
-				' -Cr'    . $max_oids . 
-				' '       . $oidCheck . ' ' .
+				' -O QnU ' . $snmp_auth . 
+				' -v '     . $version .
+				' -t '     . $timeout . 
+				' -r '     . $retries . 
+				' -Cr'     . $max_oids . 
+				' '        . $oidCheck . ' ' .
 				cacti_escapeshellarg($hostname) . ':' . $port . ' ' . 
 				cacti_escapeshellarg($oid));
 		}else{
 			$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option('path_snmpwalk')) . 
-				' -O Qn ' . $snmp_auth . 
-				' -v '    . $version . 
-				' -t '    . $timeout .
-				' -r '    . $retries . 
-				' '       . $oidCheck . ' ' .
-				' '       . cacti_escapeshellarg($hostname) . ':' . $port . 
-				' '       . cacti_escapeshellarg($oid));
+				' -O QnU ' . $snmp_auth . 
+				' -v '     . $version . 
+				' -t '     . $timeout .
+				' -r '     . $retries . 
+				' '        . $oidCheck . ' ' .
+				' '        . cacti_escapeshellarg($hostname) . ':' . $port . 
+				' '        . cacti_escapeshellarg($oid));
 		}
 
 		if (substr_count(implode(' ', $temp_array), 'Timeout:')) {
