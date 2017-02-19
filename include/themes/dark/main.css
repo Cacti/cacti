@@ -1469,7 +1469,7 @@ th.primarySort, th.tablesorter-headerDesc, th.tablesorter-headerAsc {
 }
 
 .moveArrowNone {
-	padding-left:8px;
+	padding-left:14px;
 }
 
 .action, .shiftArrow, .calendar {

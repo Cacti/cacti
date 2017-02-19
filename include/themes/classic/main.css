@@ -236,7 +236,7 @@ label {
 }
 
 .moveArrowNone {
-	padding-left:8px;
+	padding-left:14px;
 }
 
 .action, .shiftArrow, .calendar {
@@ -1313,8 +1313,6 @@ div#gtabs {
 }
 
 .tabs {
-	width:100%;
-	display: table-row;
 }
 
 .tabs a:hover {
