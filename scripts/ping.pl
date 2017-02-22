@@ -14,7 +14,7 @@ if (($host =~ tr/:://) == 0) {
 }
 
 # Addition2
-($host) = $host =~ /^([\w.]+)$/;
+($host) = $host =~ /^([\w.-]+)$/;
 
 # always have the language in english
 $ENV{LANG}='en_US.UTF-8';
