@@ -223,7 +223,7 @@ $secpass_tooltip = "<span style='font-weight:normal;'>" . __('Password requireme
 $secpass_body    = '';
 
 if (read_config_option('secpass_minlen') > 0) {
-	$secpass_body .= __('Must be at least %i characters in length', read_config_option('secpass_minlen'));
+	$secpass_body .= __('Must be at least %d characters in length', read_config_option('secpass_minlen'));
 }
 
 if (read_config_option('secpass_reqmixcase') == 'on') {
