@@ -404,7 +404,7 @@ function aggregate_template_edit() {
 			$('#row_order_type').hide();
 
 			$('#graph_template_id').change(function() {
-				document.template_edit.submit();
+				$('#template_edit').submit();
 			});
 
 			$('#save_component_template').parent().next('table').css('display', 'none');
