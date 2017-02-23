@@ -126,7 +126,8 @@ if (read_config_option('auth_method') != 0) {
 			print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
 			print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
 			print "\t<link href='" . $config['url_path'] . "include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>\n";
-			print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
+			print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/images/favicon.ico' rel='shortcut icon'>\n";
+			print "\t<link rel='icon' type='image/gif' href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/images/favicon.ico' sizes='96x96'>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";

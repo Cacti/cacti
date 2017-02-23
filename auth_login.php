@@ -494,7 +494,8 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery-ui.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/favicon.ico' rel='shortcut icon'>
+    <link rel='icon' type='image/gif' href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/favicon.ico' sizes='96x96'>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js' language='javascript'></script>
