@@ -856,7 +856,8 @@ function tree_edit() {
 						}
 					},
 					'animation' : 0,
-					'check_callback' : true
+					'check_callback' : true,
+					'force_text' : true
 				},
 				'themes' : {
 					'name' : 'default',
