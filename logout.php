@@ -67,7 +67,7 @@ if (get_request_var('action') == 'timeout') {
 			<legend>" . __('Automatic Logout') . "</legend>
 			<div class='logoutTitle'>
 				<p>" . __('You have been logged out of Cacti due to a session timeout.') . "</p>
-				<p>" . __('Please close your browser or </p><center>[<a href="%s">Login Again</a>]</center>', 'index.php') . "
+				<p>" . __('Please close your browser or %sLogin Again%s', '</p><center>[<a href="index.php">', '</a>]</center>') . "
 			</div>
 			<div class='logoutErrors'></div>
 		</div>
@@ -114,7 +114,7 @@ if (get_request_var('action') == 'timeout') {
 			<legend>" . __('Automatic Logout') . "</legend>
 			<div class='logoutTitle'>
 				<p>" . __('You have been logged out of Cacti due to a session timeout.') . "</p>
-				<p>" . __('Please close your browser or </p><center>[<a href="%s">Login Again</a>]</center>', 'index.php') . "
+				<p>" . __('Please close your browser or %sLogin Again%s', '</p><center>[<a href="index.php">', '</a>]</center>') . "
 			</div>
 			<div class='logoutErrors'></div>
 		</div>
