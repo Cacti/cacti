@@ -589,7 +589,11 @@ function data_query_item_edit() {
 			WHERE snmp_query_graph_id = ?
 			ORDER BY field_name, sequence', array(get_request_var('id')));
 
-		html_header(array( __('Name'), '', __('Equation')), 2);
+		html_header(array(
+			array('display' => __('Name'), 'align' => 'left'), 
+			array('display' => __('Order'), 'align' => 'center'), 
+			array('display' => __('Equation'), 'align' => 'left')
+		), 2);
 
 		$i = 0;
 		$total_values = sizeof($suggested_values);
@@ -611,10 +615,10 @@ function data_query_item_edit() {
 				}
 
 				?>
-				<td style='width;120;'>
+				<td class='left'>
 					<?php print htmlspecialchars($suggested_value['field_name']);?>
 				</td>
-				<td style='width:40px;text-align:right;'>
+				<td class='center'>
 					<?php if ($show_down) {?>
 					<span class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></span>
 					<?php }else{?>
@@ -626,10 +630,10 @@ function data_query_item_edit() {
 					<span class='moveArrowNone'></span>
 					<?php } ?>
 				</td>
-				<td>
+				<td class='left'>
 					<?php print htmlspecialchars($suggested_value['text']);?>
 				</td>
-				<td align='right'>
+				<td class='right'>
 					<span class='remover deleteMarker fa fa-remove' titel='<?php print __('Delete');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id'));?>'></span>
 				</td>
 				<?php
@@ -680,7 +684,11 @@ function data_query_item_edit() {
 				AND data_template_id = ?
 				ORDER BY field_name, sequence', array(get_request_var('id'), $data_template['id']));
 
-			html_header(array( __('Name'), '', __('Equation')), 2);
+			html_header(array(
+				array('display' => __('Name'), 'align' => 'left'), 
+				array('display' => __('Order'), 'align' => 'center'), 
+				array('display' => __('Equation'), 'align' => 'left')
+			), 2);
 
 			$i = 0;
 			$total_values = sizeof($suggested_values);
@@ -704,10 +712,10 @@ function data_query_item_edit() {
 					}
 
 					?>
-					<td style='width:120;'>
+					<td class='left'>
 						<?php print htmlspecialchars($suggested_value['field_name']);?>
 					</td>
-					<td style='width:40;text-align:center;'>
+					<td class='center'>
 						<?php if ($show_down) {?>
 						<span class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id='. $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></span>
 						<?php }else{?>
@@ -719,10 +727,10 @@ function data_query_item_edit() {
 						<span class='moveArrowNone'></span>
 						<?php } ?>
 					</td>
-					<td class='nowrap'>
+					<td class='nowrap left'>
 						<?php print htmlspecialchars($suggested_value['text']);?>
 					</td>
-					<td align='right'>
+					<td class='right'>
 						<span class='remover deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id']);?>'></span>
 					</td>
 					<?php

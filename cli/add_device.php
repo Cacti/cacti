@@ -110,7 +110,12 @@ if (sizeof($parms)) {
 
 			break;
 		case '--version':
-			$snmp_ver = trim($value);
+			if (sizeof($parms) == 1) {
+				display_version();
+				exit;
+			}else{
+				$snmp_ver = trim($value);
+			}
 
 			break;
 		case '--notes':

@@ -51,8 +51,8 @@ $using_guest_account = false;
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/c3.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/pace.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
-	<link rel='icon' type='image/gif' href='<?php echo $config['url_path']; ?>images/cacti_logo.gif' sizes='96x96'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/favicon.ico' rel='shortcut icon'>
+	<link rel='icon' type='image/gif' href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/favicon.ico' sizes='96x96'>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js'></script>

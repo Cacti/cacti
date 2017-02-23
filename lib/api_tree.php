@@ -185,7 +185,7 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = 'New Branc
 
 	/* clean up text string */
 	if (isset($title)) {
-		$title = sanitize_search_string($title);
+		$title = sanitize_search_string(htmlspecialchars_decode($title));
 	}
 	
 	$data  = api_tree_parse_node_data($node_id);
@@ -462,7 +462,7 @@ function api_tree_rename_node($tree_id, $node_id = '', $text = '') {
 	input_validate_input_number($tree_id);
 	
 	/* clean up text string */
-	$text = sanitize_search_string($text);
+	$text = sanitize_search_string(htmlspecialchars_decode($text));
 	
 	// Basic Error Checking
 	if ($tree_id <= 0) {
@@ -487,12 +487,7 @@ function api_tree_rename_node($tree_id, $node_id = '', $text = '') {
 
 	$oname = api_tree_get_branch_name($tree_id, $data['leaf_id']);
 
-	if (api_tree_branch_exists($tree_id, $data['parent'], $text)) {
-		header('Content-Type: application/json; charset=utf-8');
-		print json_encode(array('id' => $node_id, 'result' => 'false', 'text' => $oname));
-
-		return;
-	}
+	$exists_id = api_tree_branch_exists($tree_id, $data['parent'], $text);
 
 	// Initialize some variables
 	$leaf_id  = 0;

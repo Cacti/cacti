@@ -77,11 +77,6 @@ if (get_request_var('action') != '') {
 			'pageset' => true,
 			'default' => ''
 			),
-		'text' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => '', 
-			'options' => array('options' => 'sanitize_search_string')
-			),
 		'filter' => array(
 			'filter' => FILTER_CALLBACK, 
 			'default' => '', 
@@ -127,7 +122,7 @@ switch (get_request_var('action')) {
 		api_tree_copy_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('parent'), get_request_var('position'));
 		break;
 	case 'create_node':
-		api_tree_create_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('position'), get_request_var('text'));
+		api_tree_create_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('position'), get_nfilter_request_var('text'));
 		break;
 	case 'delete_node':
 		api_tree_delete_node(get_request_var('tree_id'), get_request_var('id'));
@@ -136,7 +131,7 @@ switch (get_request_var('action')) {
 		api_tree_move_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('parent'), get_request_var('position'));
 		break;
 	case 'rename_node':
-		api_tree_rename_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('text'));
+		api_tree_rename_node(get_request_var('tree_id'), get_request_var('id'), get_nfilter_request_var('text'));
 		break;
 	case 'get_node':
 		api_tree_get_node(get_request_var('tree_id'), get_request_var('id'));
@@ -906,7 +901,6 @@ function tree_edit() {
 					});
 			})
 			.on('rename_node.jstree', function (e, data) {
-				data.text = $.trim(data.text);
 				$.get('?action=rename_node', { 'id' : data.node.id, 'tree_id' : $('#id').val(), 'text' : data.text })
 					.done(function (d) {
 						if (d.result == 'false') {
@@ -1558,7 +1552,7 @@ function tree() {
 		'enabled' => array('display' => __('Published'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Unpublished Trees cannot be viewed from the Graph tab')),
 		'locked' => array('display' => __('Locked'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('A Tree must be locked in order to be edited.')),
 		'user_id' => array('display' => __('Owner'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The original author of this Tree.')),
-		'sequence' => array('display' => __('Order'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('To change the order of the trees, first sort by this column, press the up or down arrows once they appear.')),
+		'sequence' => array('display' => __('Order'), 'align' => 'center', 'sort' => 'ASC', 'tip' => __('To change the order of the trees, first sort by this column, press the up or down arrows once they appear.')),
 		'last_modified' => array('display' => __('Last Edited'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The date that this Tree was last edited.')),
 		'modified_by' => array('display' => __('Edited By'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The last user to have modified this Tree.')),
 		'branches' => array('display' => __('Branches'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of Branches in this Tree.')),
@@ -1591,7 +1585,7 @@ function tree() {
 			form_selectable_cell($tree['enabled'] == 'on' ? __('Yes'):__('No'), $tree['id']);
 			form_selectable_cell($tree['locked'] == '1' ? __('Yes'):__('No'), $tree['id']);
 			form_selectable_cell(get_username($tree['user_id']), $tree['id']);
-			form_selectable_cell($sequence, $tree['id'], '', 'nowrap right');
+			form_selectable_cell($sequence, $tree['id'], '', 'nowrap center');
 			form_selectable_cell(substr($tree['last_modified'],0,16), $tree['id'], '', 'text-align:right');
 			form_selectable_cell(get_username($tree['modified_by']), $tree['id'], '', 'text-align:right');
 			form_selectable_cell($tree['branches'] > 0 ? number_format_i18n($tree['branches']):'-', $tree['id'], '', 'text-align:right');

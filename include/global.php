@@ -213,7 +213,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
 }
 
-if ($poller_id > 1 && $config['connection'] == 'online') {
+if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	$boost_records = db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost', '', true, $local_db_cnn_id);
 	if ($boost_records > 0) {
 		$config['connection'] = 'recovery';
