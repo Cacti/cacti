@@ -105,10 +105,10 @@ $using_guest_account = false;
 		</div>
 	</div>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
+		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;display:none;' id='main' role='main'>
 <?php }else{ ?>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
+		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;display:none;' id='main' role='main'>
 <?php } ?>

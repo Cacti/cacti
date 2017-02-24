@@ -131,6 +131,6 @@ load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2'
 	<?php }else{ ?>
 	<div id='navigation_right' class='cactiGraphContentAreaPreview'>
 	<?php } ?>
-		<div id='message_container'><?php print display_output_messages();?></div>
+		<div class='messageContainer' id='message_container'><?php print display_output_messages();?></div>
 		<div style='position:static;' id='main' role='main'>
 	<?php } ?>

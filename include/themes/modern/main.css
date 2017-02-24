@@ -393,7 +393,8 @@ label {
 	border-top: 1px solid #ccc;
 	font-weight:normal;
 	display:block;
-	height:14px;
+	padding:2px;
+	height:16px;
 }
 
 .menuoptions li a:hover {
@@ -828,7 +829,7 @@ legend {
 .actionsDropdown {
 	vertical-align:middle;
 	padding: 3px;
-	width:100%;
+	width:99.5%;
 	text-align: right;
 	display: table;
 }
@@ -995,20 +996,20 @@ legend {
 /* text styles */
 
 .textError {
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: normal;
 	color: red !important;
 }
 
 .textWarning {
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: normal;
 	color: #D886DB !important;
 }
 
 .textInfo {
-	font-size: 12px;
-	font-weight: bold;
+	font-size: 11px;
+	font-weight: normal;
 	color: black;
 }
 
@@ -1025,14 +1026,25 @@ legend {
 	cursor:pointer;
 }
 
+.messageContainer {
+	text-align: center;
+	position: absolute;
+	display: none;
+	left: 30%;
+	right: 30%;
+	margin-left: auto;
+	margin-right: auto;
+	z-index: 4;
+}
+
 .messageBox {
-	margin-bottom:5px;
-	padding:5px;
-	background-color:snow;
+	padding: 1px;
+	margin-top: 2px;
+	border-radius: 3px;
+	background-color: snow;
 	border:1px solid #BBBBBB;
-	max-width:100%;
-	position:relative;
-	z-index: 6;
+	position: relative;
+	z-index: 4;
 }
 
 .textHeaderDark {
