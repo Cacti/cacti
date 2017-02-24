@@ -674,7 +674,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 					<td>
 						<select name='columns' id='columns' onChange='applyGraphFilter()' <?php print get_request_var('thumbnails') == 'false' ? 'disabled':'';?>>
-							<?php if ( get_request_var('thumbnails') == 'false') {?>
+							<?php if (get_request_var('thumbnails') == 'false') {?>
 							<option value='<?php print get_request_var('columns');?>' selected><?php print __('N/A');?></option>
 							<?php }else{?>
 							<option value='1' <?php print (get_request_var('columns') == '1' ? ' selected':'');?>><?php print __('%d Column', 1);?></option>
@@ -690,7 +690,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<label for='thumbnails'><?php print __('Thumbnails');?></label>
 					</td>
 					<td>
-						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
+						<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true' || get_request_var('thumbnails') == 'on') ? 'checked':'');?>>
 					</td>
 				</tr>
 			</table>
@@ -1091,7 +1091,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$i++;
 	}
 
-	if (get_request_var('thumbnails') == 'true') {
+	if (get_request_var('thumbnails') == 'true' || get_request_var('thumbnails') == 'on') {
 		html_graph_thumbnail_area($new_graph_list, '', 'view_type=tree&graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
 	}else{
 		html_graph_area($new_graph_list, '', 'view_type=tree&graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', 1);
