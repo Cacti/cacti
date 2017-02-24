@@ -122,8 +122,6 @@ function themeReady() {
 	if ($('.usertabs').length == 0) {
 		$('<div class="maintabs usertabs">'
 			+'<nav><ul>'
-				+'<li><a class="pic" href="auth_profile.php?action=edit"><i class="fa fa-search"></i></a></li>'
-				+'<li><a class="pic" href="auth_profile.php?action=edit"><i class="fa fa-cog"></i></a></li>'
 				+'<li class="action-icon-user"><a class="pic" href="#"><i class="fa fa-user"></i></a></li>'
 			+'</ul></nav>'
 		+'</div>').insertAfter('.ellipsis');	
