@@ -1535,7 +1535,8 @@ function reports() {
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($reports_actions);
 
-	print "</form>\n";
+	form_end();
+
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
