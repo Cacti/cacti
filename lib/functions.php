@@ -3266,6 +3266,9 @@ function bottom_footer() {
 		/* display output messgages */
 		display_messages();
 	}else{
+		/* display output messgages */
+		display_messages();
+
 		/* we use this session var to store field values for when a save fails,
 		this way we can restore the field's previous values. we reset it here, because
 		they only need to be stored for a single page */
@@ -3279,9 +3282,6 @@ function bottom_footer() {
 
 		/* close the database connection */
 		db_close();
-
-		/* display output messgages */
-		display_messages();
 	}
 }
 
