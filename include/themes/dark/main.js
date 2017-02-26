@@ -280,6 +280,8 @@ function setMenuVisibility() {
 	$('#nav li:has(ul) a.active').unbind().click(function(event) {
 		event.preventDefault();
 
+		id = $(this).closest('.menuitem').attr('id');
+
 		if ($(this).next().is(':visible')){
 			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
@@ -293,5 +295,14 @@ function setMenuVisibility() {
 				storage.set($(this).text(), 'collapsed');
 			}
 		}
+
+		$('.menuitem').not('#'+id).each(function() {
+			text = $(this).text();
+			id   = $(this).attr('id');
+			
+			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
+			$(this).find('ul').slideUp( { duration: 200, easing: 'swing' } );
+			storage.set(text, 'collapsed');
+		});
 	});
 }
