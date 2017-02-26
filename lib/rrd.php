@@ -1163,6 +1163,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			dspr.rows, dsp.step, dspr.steps 
 			FROM data_source_profiles_rra AS dspr
 			INNER JOIN data_source_profiles AS dsp
+			ON dspr.data_source_profile_id=dsp.id
 			WHERE dspr.id = ?', array($rra_id));
 
 		if (isset($rra['steps'])) {
