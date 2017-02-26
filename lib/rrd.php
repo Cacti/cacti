@@ -1159,15 +1159,23 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 		}
 	}else{
+		# ds_step already retrieved, maybe only need rra data?
 		$rra = db_fetch_row_prepared('SELECT 
 			rows, step, steps 
 			FROM data_source_profiles_rra AS dspr
 			INNER JOIN data_source_profiles AS dsp
 			ON dspr.data_source_profile_id=dsp.id
-			WHERE dsp.id = ?', array($rra_id));
+			INNER JOIN data_template_data dtd
+			ON dtd.data_source_profile_id=dsp.id 
+			INNER JOIN data_template_rrd dtr
+			ON dtr.local_data_id=dtd.local_data_id
+			INNER JOIN graph_templates_item gti
+			ON  gti.task_item_id=dtr.id
+			WHERE dspr.id = ? AND gti.local_graph_id = ? LIMIT 1', array($rra_id, $local_graph_id));
 
 		if (isset($rra['steps'])) {
 			$rra['timespan'] = $rra['rows'] * $rra['step'] * $rra['steps'];
+
 		}else{
 			$rra['timespan'] = 86400;
 			$rra['steps']    = 1;
