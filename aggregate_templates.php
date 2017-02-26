@@ -348,9 +348,9 @@ function aggregate_template_edit() {
 			WHERE id = ?', 
 			array(get_request_var('id')));
 
-		$header_label = '[edit: ' . $template['name'] . ']';
+		$header_label = __('Aggregate Template [edit: %s]', $template['name']);
 	}else{
-		$header_label = '[new]';
+		$header_label = __('Aggregate Template [new]');
 	}
 
 	/* populate the graph template id if it's set */
@@ -364,7 +364,7 @@ function aggregate_template_edit() {
 
 	form_start('aggregate_templates.php', 'template_edit');
 
-	html_start_box("Aggregate Template $header_label", '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -404,7 +404,7 @@ function aggregate_template_edit() {
 			$('#row_order_type').hide();
 
 			$('#graph_template_id').change(function() {
-				document.template_edit.submit();
+				$('#template_edit').submit();
 			});
 
 			$('#save_component_template').parent().next('table').css('display', 'none');
@@ -656,7 +656,7 @@ function aggregate_template() {
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'aggregate_templates.php?action=edit&id=' . $template['id'] . '&page=1'), $template['id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($template['graphs']), $template['id'], '', 'text-align:right;');
+			form_selectable_cell(number_format_i18n($template['graphs'],0), $template['id'], '', 'text-align:right;');
 			form_selectable_cell(filter_value($template['graph_template_name'], get_request_var('filter')), $template['id']);
 			form_checkbox_cell($template['graph_template_name'], $template['id'], $disabled);
 			form_end_row();

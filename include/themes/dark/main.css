@@ -907,7 +907,7 @@ legend {
 }
 
 .spikekillMenu {
-	background: #f5f5f5 none repeat scroll 0 0;
+	background: #161616 none repeat scroll 0 0;
     border: 1px solid #373737;
     box-shadow: 2px 2px 2px #292929;
     margin: 0;
@@ -1036,20 +1036,20 @@ legend {
 /* text styles */
 
 .textError {
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: normal;
 	color: red !important;
 }
 
 .textWarning {
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: normal;
 	color: yellow !important;
 }
 
 .textInfo {
-	font-size: 12px;
-	font-weight: bold;
+	font-size: 11px;
+	font-weight: normal;
 	color: snow;
 }
 
@@ -1066,15 +1066,25 @@ legend {
 	cursor:pointer;
 }
 
+.messageContainer {
+	text-align: center;
+	position: absolute;
+	display: none;
+	left: 30%;
+	right: 30%;
+	margin-left: auto;
+	margin-right: auto;
+	z-index: 4;
+}
+
 .messageBox {
-	margin-bottom:5px;
-	padding:5px;
-	color: snow;
-	background-color: #161616;
+	padding: 1px;
+	margin-top: 2px;
+	border-radius: 3px;
+	background-color: #222222;
 	border:1px solid #161616;
-	max-width:100%;
-	position:relative;
-	z-index: 6;
+	position: relative;
+	z-index: 4;
 }
 
 .textHeaderDark {
@@ -1469,7 +1479,7 @@ th.primarySort, th.tablesorter-headerDesc, th.tablesorter-headerAsc {
 }
 
 .moveArrowNone {
-	padding-left:8px;
+	padding-left:14px;
 }
 
 .action, .shiftArrow, .calendar {

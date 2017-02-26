@@ -575,8 +575,8 @@ function graph_edit() {
 	$current_tab = get_request_var('tab');
 
 	/* draw the categories tabs on the top of the page */
-	print "<table class='tabs' width='100%' align='center'>\n";
-	print "<tr><td width='100%' id='tabs' valign='bottom'><div class='aggtabs'><nav><ul role='tablist'>\n";
+	print "<div class='tabs'>\n";
+	print "<div class='aggtabs'><nav><ul role='tablist'>\n";
 
 	$i = 0;
 	if (sizeof($aggregate_tabs)) {
@@ -589,7 +589,7 @@ function graph_edit() {
 			$i++;
 		}
 	}
-	print "</ul></nav></div></td>\n";
+	print "</ul>\n";
 
 	/* handle debug mode */
 	if (isset_request_var('debug')) {
@@ -607,38 +607,36 @@ function graph_edit() {
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
-		print "<td id='tabs' class='nowrap' align='right'><a class='hyperLink textHeader' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . "</a></td>\n</tr></table>\n";
+		print "<ul style='float:right;'><li><a class='pic' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . "</a></li></ul></nav>\n</div></div>\n";
 	}elseif (!isempty_request_var('id') && $current_tab == 'details' && (!sizeof($template))) {
-		print "<td id='tabs class='nowrap right'><a id='toggle_items' class='textHeader' href='#'>" . __('Show Item Details') . "</a></td>\n</tr></table>\n";
+		print "<ul style='float:right;'><li><a id='toggle_items' class='pic' href='#'>" . __('Show Item Details') . "</a></li></ul></nav>\n</div></div>\n";
 	}else{
-		print "<td align='right'></td>\n</tr></table>\n";
+		print "</nav></div></div>\n";
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
 		html_start_box(__('Aggregate Preview [%s]', $header_label), '100%', '', '3', 'center', '');
 		?>
-		<tr class='even'>
-			<td align='center' class='textInfo' colspan='2'>
-				<img src='<?php print htmlspecialchars($config['url_path'] . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id'));?>' alt=''>
-			</td>
-			<?php
-			if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {
-				$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
-				$graph_data_array['print_source'] = 1;
-				?>
-				<td>
-					<div style='overflow:auto;'>
-					<span class='textInfo'><?php print __('RRDTool Command:');?></span><br>
-					<pre class='monoSpace'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
-					<span class='textInfo'><?php print __('RRDTool Says:');?></span><br>
-					<?php unset($graph_data_array['print_source']);?>
-					<pre class='monoSpace'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
-					</div>
-				</td>
-				<?php
-			}
+		<tr class='even'><td class='center'>
+			<img src='<?php print htmlspecialchars($config['url_path'] . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id'));?>' alt=''>
+		</td></tr>
+		<?php
+		if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {
+			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
+			$graph_data_array['print_source'] = 1;
 			?>
-		</tr>
+			<tr><td class='left'>
+				<div style='overflow:auto;'>
+				<span class='textInfo'><?php print __('RRDTool Command:');?></span><br>
+				<pre class='monoSpace'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
+				<span class='textInfo'><?php print __('RRDTool Says:');?></span><br>
+				<?php unset($graph_data_array['print_source']);?>
+				<pre class='monoSpace'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
+				</div>
+			</td></tr>
+			<?php
+		}
+		?>
 		<?php
 		html_end_box(false);
 	}

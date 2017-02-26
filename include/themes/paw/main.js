@@ -1,7 +1,6 @@
 // Host Autocomplete Magic
 var pageName = basename($(location).attr('pathname'));
 
-
 /* only perform the recalculation of elements at the final end of the windows resize event */
 var waitForFinalEvent = (function () {
   var timers = {};
@@ -28,7 +27,8 @@ $(window).resize(function () {
 		$('#cactiContent').css('height', heightPageContent);
 		
 		/* check visibility of all tabs */
-		$('.maintabs nav ul li a').each( function() {
+		$('#submenu-ellipsis').empty();
+		$('.maintabs nav ul li a').each(function() {
 			id = $(this).attr('id');
 			if( $(this).offset().top !== 0 ) {
 				if( $('#' + id + '-ellipsis').length == 0 ) {
@@ -37,10 +37,10 @@ $(window).resize(function () {
 					$('#submenu-ellipsis').prepend('<li>' + str2 + '</li>');
 				}
 			}else {
-				
 				$('#' + id + '-ellipsis').parent().remove();
 			}
 		});
+
 		if($("#submenu-ellipsis li").length == 0) {
 			$(".ellipsis").hide(0);
 		}else {
@@ -51,16 +51,12 @@ $(window).resize(function () {
 
 $('<div id="cactiPageBottom" class="cactiPageBottom"></div>').insertAfter('#cactiContent');
 
-
 function themeReady() {
-
 	var pageName = basename($(location).attr('pathname'));
 	var hostTimer = false;
 	var clickTimeout = false;
 	var hostOpen = false;
 
-
-	
 	// Setup the navigation menu
 	setMenuVisibility();
 
@@ -70,10 +66,8 @@ function themeReady() {
 	$('input#filter').addClass('ui-state-default ui-corner-all');
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
-
-
 	
-/* Start clean up */
+	/* Start clean up */
 
 	//login page
 	$('.cactiLoginLogo').html("<i class='fa fa-paw'/>").css('font-size: 20px');
@@ -83,7 +77,7 @@ function themeReady() {
 	$('.cactiConsoleNavigationArea').find('#navigation > table').remove();
 
 	/* 'ellipsis' menu in the middle */
-	if($('.ellipsis').length == 0 ){
+	if ($('.ellipsis').length == 0) {
 		$('<div class="maintabs ellipsis">'
 			+'<nav><ul>'
 				+'<li class="maintabs-submenu">'
@@ -95,7 +89,6 @@ function themeReady() {
 		+'<ul id="submenu-ellipsis" class="submenuoptions" style="display:none;">'
 		+'</ul>'
 	+'</div>').appendTo('body');	
-	
 	
 	/* Hey - No footer available ? */
 	//if($('#cactiPageBottom').length == 0) {
@@ -123,12 +116,9 @@ function themeReady() {
 			/* plugin stuff here ? */
 		}		
 	});
-	
-	
 
-	
 	/* user menu on the right ... */
-	if($('.usertabs').length == 0 ){
+	if ($('.usertabs').length == 0) {
 		$('<div class="maintabs usertabs">'
 			+'<nav><ul>'
 				+'<li class="action-icon-user"><a class="pic" href="#"><i class="fa fa-user"></i></a></li>'
@@ -141,12 +131,8 @@ function themeReady() {
 	/* User Menu */
 	$('.menuoptions').parent().appendTo('body');
 
-	
-	
-	
 	$(window).trigger('resize');
-	
-	
+
 	$('.action-icon-user').unbind().click(function(event) {
 		event.preventDefault();
 
@@ -174,10 +160,8 @@ function themeReady() {
 			if(!position) {
 				position = $(this).position();
 				submenu.css({'left':position.left - parseInt(submenu.outerWidth()) + parseInt($(this).outerWidth()) }).slideDown(120);
-
 			}else {
 				/* move dd to the left */
-
 				submenu.css({'left':position.left}).slideDown(120);
 			}
 		}else {
@@ -187,7 +171,6 @@ function themeReady() {
 		return false;
 	});
 
-	
 	/* Highlight sortable table columns */
 	$('.tableHeader th').has('i.fa-unsorted').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-asc').addClass('tableHeaderColumnSelected');
@@ -315,34 +298,40 @@ function setMenuVisibility() {
 	storage=$.localStorage;
 
 	// Initialize the navigation settings
-	$('.menu_parent').each(function() {
-		active = storage.get($(this).text());
+	$('#navigation').hide();
+	$('li.menuitem').each(function() {
+		active = storage.get($(this).attr('id'));
 		if (active != null) {
 			if (active == 'active') {
-				$(this).next().show();
+				$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
+				$(this).next('a').show();
 			}else{
-				$(this).next().hide();
+				$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
+				$(this).next('a').hide();
 			}
 		}
 	});
+	$('#navigation').show();
 
 	// Functon to give life to the Navigation pane
 	$('#nav li:has(ul) a.active').unbind().click(function(event) {
 		event.preventDefault();
+
+		id = $(this).closest('.menuitem').attr('id');
+
 		if ($(this).next().is(':visible')){
+			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
-			storage.set($(this).text(), 'collapsed');
+			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
 		} else {
+			$(this).next('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true');
 			$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
 			if ($(this).next().is(':visible')) {
-				storage.set($(this).text(), 'active');
+				storage.set($(this).closest('.menuitem').attr('id'), 'active');
 			}else{
-				storage.set($(this).text(), 'collapsed');
+				storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
 			}
 		}
 	});
 }
-
-
-
 	

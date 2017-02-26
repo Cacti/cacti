@@ -303,10 +303,11 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 			# take care of the graph_item_type
 			# user may want to override types (ex. LINEx to AREA)
 			# do this before we try start converting stuff to AREAs and such
-			if ($_graph_item_types[$i] > 0)
+			if ($_graph_item_types[$i] > 0) {
 				$save['graph_type_id'] = $_graph_item_types[$i];
-			else
+			} else {
 				$save['graph_type_id'] = $graph_item['graph_type_id'];
+			}
 
 			/* change graph types, if requested */
 			$save['graph_type_id'] = aggregate_change_graph_type($_selected_graph_index, $save['graph_type_id'], $_graph_type);
@@ -1220,7 +1221,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 
 	$group_counter = 0; $_graph_type_name = ''; $i = 0;
 
-	if (sizeof($item_list) > 0) {
+	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
 			$this_row_style = ''; $use_custom_class = false; $hard_return = '';
@@ -1235,6 +1236,24 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 				}
 
 				$group_counter++;
+			}
+
+			/* column "Data Source" */
+			$_graph_type_name = $graph_item_types[$item['graph_type_id']];
+			$force_skip = false;
+
+			switch (true) {
+				case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
+					$matrix_title = $item['text_format'];
+					break;
+				case preg_match('/(HRULE|VRULE)/', $_graph_type_name):
+					$force_skip = true;
+					$matrix_title = 'HRULE: ' . $item['value'];
+					break;
+				case preg_match('/(COMMENT)/', $_graph_type_name):
+					$force_skip = true;
+					$matrix_title = 'COMMENT: ' . $item['text_format'];
+					break;
 			}
 
 			/* values can be overriden in aggregate graph/template */
@@ -1264,20 +1283,6 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			}
 			print "</td>\n";
 
-			/* column "Data Source" */
-			$_graph_type_name = $graph_item_types{$item['graph_type_id']};
-			switch (true) {
-				case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
-					$matrix_title = $item['text_format'];
-					break;
-				case preg_match('/(HRULE|VRULE)/', $_graph_type_name):
-					$matrix_title = 'HRULE: ' . $item['value'];
-					break;
-				case preg_match('/(COMMENT)/', $_graph_type_name):
-					$matrix_title = 'COMMENT: ' . $item['text_format'];
-					break;
-			}
-
 			if ($item['hard_return'] == 'on') {
 				$hard_return = '<strong><font color="#FF0000">&lt;HR&gt;</font></strong>';
 			}
@@ -1304,15 +1309,23 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			print '</td>';
 
 			/* column "Skip" */
-			print "<td style='width:1%;text-align:center;'>";
-			print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . '>';
-			print '</td>';
+			if (!$force_skip) {
+				print "<td style='width:1%;text-align:center;'>";
+				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . '>';
+				print '</td>';
 
-			/* column 'Total' */
-			print "<td style='width:1%;text-align:center;'>";
-			print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
-			print '</td>';
-
+				/* column 'Total' */
+				print "<td style='width:1%;text-align:center;'>";
+				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
+				print '</td>';
+			}else{
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '></td>';
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'></td>";
+				print "<span style='width:1%;text-align:center;display:none;'><input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '></span>';
+				print "<span style='width:1%;text-align:center;display:none;'><input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'></span>";
+				
+			}
+	
 			print '</tr>';
 
 			$i++;

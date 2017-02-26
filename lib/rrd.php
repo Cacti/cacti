@@ -1160,11 +1160,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		}
 	}else{
 		$rra = db_fetch_row_prepared('SELECT 
-			rows, step, steps 
+			dspr.rows, dsp.step, dspr.steps 
 			FROM data_source_profiles_rra AS dspr
 			INNER JOIN data_source_profiles AS dsp
 			ON dspr.data_source_profile_id=dsp.id
-			WHERE dsp.id = ?', array($rra_id));
+			WHERE dspr.id = ?', array($rra_id));
 
 		if (isset($rra['steps'])) {
 			$rra['timespan'] = $rra['rows'] * $rra['step'] * $rra['steps'];
@@ -1832,11 +1832,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					if (trim($comment_arg) == '') { # an empty COMMENT must be treated with care
 						$comment_arg = cacti_escapeshellarg(' ' . $hardreturn[$graph_item_id]);
 					} else {
-						$comment_arg = cacti_escapeshellarg($comment_arg . $hardreturn[$graph_item_id]);
+						$comment_arg = cacti_escapeshellarg(rrdtool_escape_string($comment_arg) . $hardreturn[$graph_item_id]);
 					}
 
 					# create rrdtool specific command line
-					$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . rrdtool_escape_string($comment_arg) . ' ';
+					$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $comment_arg . ' ';
 				}
 
 				break;

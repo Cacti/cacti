@@ -220,32 +220,38 @@ function setMenuVisibility() {
 	storage=$.localStorage;
 
 	// Initialize the navigation settings
-	$('.menu_parent').each(function() {
-		active = storage.get($(this).text());
+	$('#navigation').hide();
+	$('li.menuitem').each(function() {
+		active = storage.get($(this).attr('id'));
 		if (active != null) {
 			if (active == 'active') {
-				$(this).next().show();
+				$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
+				$(this).next('a').show();
 			}else{
-				$(this).next().hide();
+				$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
+				$(this).next('a').hide();
 			}
 		}
 	});
+	$('#navigation').show();
 
 	// Functon to give life to the Navigation pane
 	$('#nav li:has(ul) a.active').unbind().click(function(event) {
 		event.preventDefault();
 
+		id = $(this).closest('.menuitem').attr('id');
+
 		if ($(this).next().is(':visible')){
 			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
-			storage.set($(this).text(), 'collapsed');
+			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
 		} else {
 			$(this).next('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true');
 			$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
 			if ($(this).next().is(':visible')) {
-				storage.set($(this).text(), 'active');
+				storage.set($(this).closest('.menuitem').attr('id'), 'active');
 			}else{
-				storage.set($(this).text(), 'collapsed');
+				storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
 			}
 		}
 	});

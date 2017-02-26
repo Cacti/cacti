@@ -173,8 +173,8 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 				cacti_debug_backtrace('SQL');
 				return FALSE;
 			} else {
-				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", FALSE, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], FALSE, POLLER_VERBOSITY_DEBUG);
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", FALSE, 'DBCALL');
+				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], FALSE);
 				cacti_debug_backtrace('SQL');
 				return FALSE;
 			}
@@ -354,8 +354,8 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn =
 		}
 		return $a;
 	}elseif ($log) {
-		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
-		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $errorinfo[2], FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', FALSE, 'DBCALL');
+		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $errorinfo[2], FALSE, 'DBCALL');
 		cacti_debug_backtrace('SQL');
 	}
 

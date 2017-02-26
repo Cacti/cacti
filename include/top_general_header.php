@@ -40,7 +40,6 @@ $using_guest_account = false;
 	<meta content='width=720, initial-scale=0.8, maximum-scale=2.0, minimum-scale=0.5' name='viewport'>
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.zoom.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery-ui.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/default/style.css' type='text/css' rel='stylesheet'>
@@ -50,8 +49,9 @@ $using_guest_account = false;
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/c3.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/pace.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
-	<link rel='icon' type='image/gif' href='<?php echo $config['url_path']; ?>images/cacti_logo.gif' sizes='96x96'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/favicon.ico' rel='shortcut icon'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js'></script>
@@ -92,7 +92,7 @@ $using_guest_account = false;
 </div>
 <div id='cactiContent' class='cactiContent'>
 	<?php if (isset($user_menu) && is_array($user_menu)) {?>
-	<div id='navigation' class='cactiConsoleNavigationArea'>
+	<div style='display:none;' id='navigation' class='cactiConsoleNavigationArea'>
 		<table style='width:100%;'>
 			<?php draw_menu($user_menu);?>
 			<tr>
@@ -103,15 +103,15 @@ $using_guest_account = false;
 		</table>
 	</div>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
+		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;' id='main'>
 	<?php } else { ?>
 	<div id='navigation_right' class='cactiConsoleContentArea' style='margin-left:0px;'>
-		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
+		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;' id='main'>
 	<?php } ?>
 <?php } else { ?>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
+		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;' id='main' role='main'>
 <?php } ?>

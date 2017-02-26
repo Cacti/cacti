@@ -3262,24 +3262,12 @@ function bottom_footer() {
 
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
 		include($config['base_path'] . '/include/bottom_footer.php');
+
+		/* display output messgages */
+		display_messages();
 	}else{
-		?>
-		<script type='text/javascript'>
-		var message = "<?php print display_output_messages();?>";
-
-		$(function() {
-			if (message != '') {
-				$('#message_container').html(message).show().delay(6000).slideUp('fast');
-				window.scrollTo(0,0);
-			}
-
-			if (refreshMSeconds == null || refreshMSeconds < 5000) {
-				refreshMSeconds=999999999;
-			}
-		});
-
-		</script>
-		<?php
+		/* display output messgages */
+		display_messages();
 
 		/* we use this session var to store field values for when a save fails,
 		this way we can restore the field's previous values. we reset it here, because
@@ -3295,6 +3283,38 @@ function bottom_footer() {
 		/* close the database connection */
 		db_close();
 	}
+}
+
+function display_messages() {
+	?>
+	<script type='text/javascript'>
+	var message = "<?php print display_output_messages();?>";
+
+	$(function() {
+		clearTimeout(messageTimer);
+
+		if (message != '') {
+			$('.messageContainer').empty().show().html(message);
+			message = '';
+
+			messageTimer = setTimeout(function() { 
+				$('#message_container').fadeOut(1000);
+			}, 2000);
+
+			window.scrollTo(0,0);
+		}
+
+		if (refreshMSeconds == null || refreshMSeconds < 5000) {
+			refreshMSeconds=999999999;
+		}
+
+		$(document).submit(function() {
+			$('#message_container').hide().empty();
+		});
+	});
+
+	</script>
+	<?php
 }
 
 function top_header() {
@@ -4178,6 +4198,8 @@ function IgnoreErrorHandler($message) {
 		'Error in packet',
 		'This name does not exist',
 		'End of MIB',
+		'Unknown host',
+		'Name or service not known'
 	);
 
 	foreach ($snmp_ignore as $i) {

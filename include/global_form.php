@@ -1447,7 +1447,7 @@ $fields_user_user_edit_host = array(
 				'value' => '|arg1:password_change|',
 				'friendly_name' => __('Change Password'),
 				'form_id' => '|arg1:id|',
-				'default' => ''
+				'default' => 'on'
 				),
 			'graph_settings' => array(
 				'value' => '|arg1:graph_settings|',

@@ -43,6 +43,9 @@ if (file_exists('../include/global.php')) {
 	$using_cacti = false;
 }
 
+/* allow more memory */
+ini_set('memory_limit', '-1');
+
 /* setup defaults */
 $debug     = FALSE;
 $dryrun    = FALSE;

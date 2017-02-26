@@ -889,7 +889,7 @@ function draw_menu($user_menu = "") {
 			}
 			$headers[$id] = true;
 
-			print "<li role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$header_name</a>\n";
+			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$header_name</a>\n";
 			print "<ul role='menu' id='${id}_div' style='display:block;'>\n";
 
 			/* pass 2: loop through each top level item and render it */
