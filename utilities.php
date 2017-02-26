@@ -1746,113 +1746,88 @@ function utilities_view_poller_cache() {
 }
 
 function utilities() {
+	global $utilities;
+
+	$utilities[__('Technical Support')] = array(
+		__('Tecnical Support') => array(
+			'link'  => 'utilities.php?action=view_tech',
+			'description' => __('Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.')
+		),
+		__('Log Administration') => array(
+			'link'  => 'utilities.php?action=view_logfile',
+			'description' => __('The Cacti Log stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.')
+		),
+		__('View User Log') => array(
+			'link'  => 'utilities.php?action=view_user_log',
+			'description' => __('Allows Administrators to browse the user log.  Administrators can filter and export the log as well.')
+		)
+	);
+
+	$utilities[__('Poller Cache Administration')] = array(
+		__('View Poller Cache') => array(
+			'link'  => 'utilities.php?action=view_poller_cache',
+			'description' => __('This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the RRDfiles for graphing or the database for display.')
+		),
+		__('View Data Query Cache') => array(
+			'link'  => 'utilities.php?action=view_snmp_cache',
+			'description' => __('The Data Query Cache stores information gathered from Data Query input types. The values from these fields can be used in the text area of Graphs for Legends, Vertical Labels, and GPRINTS as well as in CDEF\'s.')
+		),
+		__('Rebuild Poller Cache') => array(
+			'link'  => 'utilities.php?action=clear_poller_cache',
+			'description' => __('The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.')
+		),
+	);
+
+	$utilities[__('Boost Utilities')] = array(
+		__('View Boost Status') => array(
+			'link'  => 'utilities.php?action=view_boost_status',
+			'description' => __('This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.')
+		),
+	);
+
+	$utilities[__('RRD Utilities')] = array(
+		__('RRDfile Cleaner') => array(
+			'link'  => 'rrdcleaner.php',
+			'description' => __('When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files.')
+		),
+	);
+
+	$utilities[__('SNMPAgent Utilities')] = array(
+		__('View SNMPAgent Cache') => array(
+			'link'  => 'utilities.php?action=view_snmpagent_cache',
+			'description' => __('This shows all objects being handled by the SNMPAgent.')
+		),
+		__('Rebuild SNMPAgent Cache') => array(
+			'link'  => 'utilities.php?action=rebuild_snmpagent_cache',
+			'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
+		),
+		__('View SNMPAgent Notification Log') => array(
+			'link'  => 'utilities.php?action=view_snmpagent_events',
+			'description' => __('This menu pick allows you to view the latest events SNMPAgent has handled in relation to the registered notification receivers.')
+		),
+		__('SNMP Notification Receivers') => array(
+			'link'  => 'managers.php',
+			'description' => __('Allows Administrators to maintain SNMP notification receivers.')
+		),
+	);
+
+	api_plugin_hook('utilities_array');
+
 	html_start_box(__('Cacti System Utilities'), '100%', '', '3', 'center', '');
 
-	?>
-	<colgroup span='3'>
-		<col class='nowrap' style='vertical-align:top;width:20%;'></col>
-		<col style='vertical-align:top;width:80%;'></col>
-	</colgroup>
-
-	<?php html_section_header(__('Technical Support'), 2); form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_tech');?>'><?php print __('Technical Support');?></a>
-		</td>
-		<td class='textArea'>
-			<?php print __('Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.');?>
-		</td>
-	</tr>
-
-	<?php html_section_header(__('Log Administration'), 2); form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_logfile');?>'><?php print __('View Cacti Log');?></a>
-		</td>
-		<td class='textArea'>
-			<?php print __('The Cacti Log stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.');?>
-		</td>
-	</tr>
-	<?php form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_user_log');?>'><?php print __('View User Log');?></a>
-		</td>
-		<td class='textArea'>
-			<?php print __('Allows Administrators to browse the user log.  Administrators can filter and export the log as well.');?>
-		</td>
-	</tr>
-
-	<?php html_section_header(__('Poller Cache Administration'), 2); form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_poller_cache');?>'><?php print __('View Poller Cache');?></a>
-		</td>
-		<td class='textArea'>
-			<?php print __('This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the RRDfiles for graphing or the database for display.');?>
-		</td>
-	</tr>
-	<?php form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmp_cache');?>'><?php print __('View Data Query Cache');?></a>
-		</td>
-		<td class='textArea'>
-			<?php print __('The Data Query Cache stores information gathered from Data Query input types. The values from these fields can be used in the text area of Graphs for Legends, Vertical Labels, and GPRINTS as well as in CDEF\'s.');?>
-		</td>
-	</tr>
-	<?php form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=clear_poller_cache');?>'><?php print __('Rebuild Poller Cache');?></a>
-		</td>
-		<td class='textArea'>
-			<?php print __('The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.');?>
-		</td>
-	</tr>
-	<?php html_section_header(__('Boost Utilities'), 2); form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_boost_status');?>'><?php print __('View Boost Status');?></a>
-		</td>
-		<td class='textArea'>
-			<?php print __('This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.');?>
-		</td>
-	</tr>
-	<?php html_section_header(__('RRD Utilities'), 2); form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('rrdcleaner.php');?>'><?php print __('RRDfile Cleaner<');?>/a>
-		</td>
-		<td class='textArea'>
-			<?php print __('When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files.');?>
-		</td>
-	</tr>
-	<?php html_section_header(__('SNMPAgent Utilities'), 2); form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmpagent_cache');?>'><?php print __('View SNMPAgent Cache');?></a>
-		</td>
-		<td class='textArea'>
-			<?php print __('This shows all objects being handled by the SNMPAgent.');?>
-		</td>
-	</tr>
-	<?php form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=rebuild_snmpagent_cache');?>'><?php print __('Rebuild SNMPAgent Cache');?></a>
-		</td>
-		<td class='textArea'>
-			<?php print __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.');?>
-		</td>
-	</tr>
-	<?php form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('utilities.php?action=view_snmpagent_events');?>'><?php print __('View SNMPAgent Notification Log');?></a>
-		</td>
-		<td class='textArea'>
-			<?php print __('This menu pick allows you to view the latest events SNMPAgent has handled in relation to the registered notification receivers.');?>
-		</td>
-	</tr>
-	<?php form_alternate_row(); ?>
-		<td class='textArea'>
-			<a class='hyperLink' href='<?php print htmlspecialchars('managers.php');?>'><?php print __('SNMP Notification Receivers');?></a>
-		</td>
-		<td class='textArea'>
-			<?php print __('Allows Administrators to maintain SNMP notification receivers.');?>
-		</td>
-	</tr>
-	<?php
+	foreach($utilities as $header => $content) {
+		html_section_header($header, 2); 
+		foreach($content as $title => $details) {
+			form_alternate_row(true);
+			print "<td class='nowrap'>";
+			print "<a class='hyperLink' href='" . htmlspecialchars($details['link']) . "'>" . $title . "</a>";
+			print "</td>\n";
+			print "<td>";
+			print $details['description'];
+			print "</td>\n";
+			form_end_row();
+		}
+	}
 
 	api_plugin_hook('utilities_list');
 
