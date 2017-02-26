@@ -92,7 +92,7 @@ $using_guest_account = false;
 </div>
 <div id='cactiContent' class='cactiContent'>
 	<?php if (isset($user_menu) && is_array($user_menu)) {?>
-	<div id='navigation' class='cactiConsoleNavigationArea'>
+	<div style='display:none;' id='navigation' class='cactiConsoleNavigationArea'>
 		<table style='width:100%;'>
 			<?php draw_menu($user_menu);?>
 			<tr>

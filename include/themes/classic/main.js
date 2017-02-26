@@ -2,6 +2,7 @@ function themeReady() {
 	height = document.body.scrollHeight;
 	$('body').css('height', height);
 	$('#navigation').css('height', height);
+	$('#navigation').show();
 
 	$(window).unbind().resize(function(event) {
 		height       = document.body.scrollHeight;

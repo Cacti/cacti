@@ -93,7 +93,7 @@ $using_guest_account = false;
 </div>
 <div id='cactiContent' class='cactiContent'>
 	<div class='cactiConsoleNavigationArea' style='overflow:hidden'>
-		<div id='navigation'>
+		<div style='display:none;' id='navigation'>
 			<table style='width:100%;'>
 				<?php draw_menu();?>
 				<tr>
