@@ -1175,7 +1175,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		if (isset($rra['steps'])) {
 			$rra['timespan'] = $rra['rows'] * $rra['step'] * $rra['steps'];
-
 		}else{
 			$rra['timespan'] = 86400;
 			$rra['steps']    = 1;
