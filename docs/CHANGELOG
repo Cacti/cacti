@@ -1,5 +1,37 @@
 Cacti CHANGELOG
 
+1.0.4
+-feature: Javascript: make menu movement smooth and use localStorage
+-feature:: Added cacti_snmp_get_raw() for plugin developers
+-issue288: Function cacti_snmp_get bad handling of wierd value into snmp_value
+-issue298: Graph generation issue with SNMP - Bits/Sec + Total Bandwith
+-issue301: Unresolvable DNS hostname causing backtraces
+-issue302: spikekill memory leak
+-issue303: Error when creating tree items with "&" in the name
+-issue307: Aggregate graph gives CMDPHP errors
+-issue308: UI resize issue
+-issue309: Show "Save Successful" notification permanently
+-issue311: Graph thumbnail settings in profile setting does not work
+-issue320: Users can not change their own password
+-issue324: Aggregate template graph template JavaScript error
+-issue352: Add configurable auto-logout and page-reload options
+-issue329: Customize the favicon
+-issue334: primary key on poller output boost table not efficient/not being used correctly
+-issue: Fixed issues with Dark theme
+-issue: Fixed issues with Paw theme
+-issue: Fix timespan calculation
+-issue: Added misplaced join condition when generating RRDTool graphs
+-issue: Fix the selection of timestan based on local_graph_id and rra_id
+-issue: Correct error in discovery not adding devices
+-issue: Action message did not always display
+-issue: fix regex to use Domains like www.t-online.de
+-issue: Properly align Order columns.
+-issue: address renaming issues with tree items.
+-issue: Add device snmp --version is ambiguous
+-issue: SNMP Availability failed to report down devices - This only was occuring for cmd.php collector.
+-issue: i18n remove embedded HTML syntax
+-issue: Wrap menu items to avoid scrolling
+
 1.0.3
 -issue#297: Upgrade 0.8.8h to 1.0.0 fails to create poller_output_boost table
 -issue: Added missing template import hash for 1.0.2
