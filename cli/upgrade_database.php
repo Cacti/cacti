@@ -130,6 +130,7 @@ $includes = array(
 	'1.0.1'  => '1_0_0_to_1_0_1.php',
 	'1.0.2'  => '1_0_1_to_1_0_2.php',
 	'1.0.3'  => '1_0_2_to_1_0_3.php',
+	'1.0.4'  => '1_0_3_to_1_0_4.php',
 );
 
 /* we need to rerun the upgrade, force the current version */
