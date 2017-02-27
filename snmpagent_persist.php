@@ -107,6 +107,7 @@ while(1) {
 			exit(0);
 		case 'PING':
 			fwrite(STDOUT, 'PONG' . $eol);
+			cache_refresh();
 			break;
 		case 'get':
 			$oid = trim(fgets(STDIN));

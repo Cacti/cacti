@@ -44,54 +44,52 @@ $last_time = time()-30;
 $path_mibcache = $config['base_path'] . '/cache/mibcache/mibcache.tmp';
 $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
 
-if($snmpagent) {
-	/* check mib cache table status */
-	$mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS WHERE `Name` LIKE 'snmpagent_cache' AND (UNIX_TIMESTAMP(`Update_time`)) >= ?", array($last_time));
+/* check mib cache table status */
+$mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS WHERE `Name` LIKE 'snmpagent_cache' AND (UNIX_TIMESTAMP(`Update_time`)) >= ?", array($last_time));
 
-	if($mibcache_changed !== NULL || file_exists($path_mibcache) === FALSE ) {
-		$objects = db_fetch_assoc("SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value` FROM snmpagent_cache");
+if($mibcache_changed !== NULL || file_exists($path_mibcache) === FALSE ) {
+	$objects = db_fetch_assoc("SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value` FROM snmpagent_cache");
 
-		if($objects && sizeof($objects)>0) {
-			$oids = array();
-			foreach($objects as &$object) {
-				$oids[] = $object['oid'];
-				$object = ($object['otype'] == 'DATA' && $object['max-access'] != 'not-accessible') ? array('type' => $object['type'], 'value' => $object['value']) : false;
-			}
-			/* natural sorting with MySQL is not available - especially not for OIDs */
-			natsort($oids);
-
-			$last_accessible_object = false;
-			$next_accessible_object_required = array();
-
-			foreach($oids as $key => $oid) {
-				if($objects[$key]) {
-					if($last_accessible_object) {
-						$cache[$last_accessible_object]['next'] = $oid;
-					}
-					if(sizeof($next_accessible_object_required)>0) {
-						foreach($next_accessible_object_required as $next_accessible_object_required_oid) {
-							$cache[$next_accessible_object_required_oid]['next'] = $oid;
-						}
-						$next_accessible_object_required = array();
-					}
-					$last_accessible_object = $oid;
-				}else {
-					$next_accessible_object_required[] = $oid;
-				}
-				$cache[$oid] = $objects[$key];
-			}
+	if($objects && sizeof($objects)>0) {
+		$oids = array();
+		foreach($objects as &$object) {
+			$oids[] = $object['oid'];
+			$object = ($object['otype'] == 'DATA' && $object['max-access'] != 'not-accessible') ? array('type' => $object['type'], 'value' => $object['value']) : false;
 		}
-		/* create lock file */
-		$lock = fopen($path_mibcache_lock, 'w');
+		/* natural sorting with MySQL is not available - especially not for OIDs */
+		natsort($oids);
 
-		/* Note: If SNMPAgent plugin has been disabled the cache will be truncated automatically */
-		file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
+		$last_accessible_object = false;
+		$next_accessible_object_required = array();
 
-		/* destroy lock file */
-		fclose($lock);
-		unlink($path_mibcache_lock);
+		foreach($oids as $key => $oid) {
+			if($objects[$key]) {
+				if($last_accessible_object) {
+					$cache[$last_accessible_object]['next'] = $oid;
+				}
+				if(sizeof($next_accessible_object_required)>0) {
+					foreach($next_accessible_object_required as $next_accessible_object_required_oid) {
+						$cache[$next_accessible_object_required_oid]['next'] = $oid;
+					}
+					$next_accessible_object_required = array();
+				}
+				$last_accessible_object = $oid;
+			}else {
+				$next_accessible_object_required[] = $oid;
+			}
+			$cache[$oid] = $objects[$key];
+		}
 	}
-	return;
+	/* create lock file */
+	$lock = fopen($path_mibcache_lock, 'w');
+
+	/* Note: If SNMPAgent plugin has been disabled the cache will be truncated automatically */
+	file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
+
+	/* destroy lock file */
+	fclose($lock);
+	unlink($path_mibcache_lock);
 }
+return;
 
 ?>
