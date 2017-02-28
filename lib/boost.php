@@ -559,12 +559,10 @@ function boost_get_arch_table_name() {
 			WHERE table_schema='$database_default'
 			AND table_name LIKE 'poller_output_boost_arch_%'");
 
-	if (count($tables)) {
-		foreach($tables as $table) {
-			$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
-			if (is_integer($rows) && intval($rows) > 0) {
-				return $table['name'];
-			}
+	foreach($tables as $table) {
+		$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
+		if (is_numeric($rows) && intval($rows) > 0) {
+			return $table['name'];
 		}
 	}
 	return false;
@@ -635,7 +633,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		if(count($arch_tables)) {
 			foreach($arch_tables as $table) {
 				$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
-				if (db_table_exists($table['name']) && is_integer($rows) && intval($rows) > 0) {
+				if (db_table_exists($table['name']) && is_numeric($rows) && intval($rows) > 0) {
 					if (strlen($query_string)) {
 						$query_string .= ' UNION ';
 					}

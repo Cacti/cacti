@@ -132,7 +132,7 @@ function output_rrd_data($start_time, $force = FALSE) {
 		foreach($more_arch_tables as $table) {
 			$table_name = $table['name'];
 			$rows = db_fetch_cell("SELECT count(*) FROM $table_name");
-			if (is_integer($rows) && intval($rows) > 0) {
+			if (is_numeric($rows) && intval($rows) > 0) {
 				db_execute("INSERT INTO $archive_table SELECT * FROM $table_name");
 				db_execute("TRUNCATE TABLE $table_name");
 			}
@@ -187,7 +187,7 @@ function output_rrd_data($start_time, $force = FALSE) {
 	if (count($tables)) {
 	foreach($tables as $table) {
 		$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
-		if (is_integer($rows) && intval($rows) == 0) {
+		if (is_numeric($rows) && intval($rows) == 0) {
 			db_execute('DROP TABLE ' . $table['name']);
 		}
 	}
