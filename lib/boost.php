@@ -557,7 +557,7 @@ function boost_get_arch_table_name() {
 	$tables = db_fetch_assoc("SELECT table_name AS name
 			FROM information_schema.tables
 			WHERE table_schema='$database_default'
-			AND table_name LIKE 'poller_output_boost_arch_%");
+			AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	if (count($tables)) {
 		foreach($tables as $table) {
@@ -630,7 +630,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		$arch_tables = db_fetch_assoc("SELECT table_name AS name
 			FROM information_schema.tables
 			WHERE table_schema='$database_default'
-			AND table_name LIKE 'poller_output_boost_arch_%';");
+			AND table_name LIKE 'poller_output_boost_arch_%'");
 
 		if(count($arch_tables)) {
 			foreach($arch_tables as $table) {
@@ -885,7 +885,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			$tables = db_fetch_assoc("SELECT table_name AS name
 				FROM information_schema.tables
 				WHERE table_schema='$database_default'
-				AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost';");
+				AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost'");
 
 			if (count($tables)) {
 				foreach($tables as $table) {
