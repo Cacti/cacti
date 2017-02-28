@@ -182,7 +182,7 @@ function output_rrd_data($start_time, $force = FALSE) {
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
 		WHERE table_schema=SCHEMA()
-		AND table_name LIKE 'poller_output_boost_arch_%';");
+		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	if (count($tables)) {
 	foreach($tables as $table) {
