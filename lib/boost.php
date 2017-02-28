@@ -555,9 +555,9 @@ function boost_timer_get_overhead() {
 function boost_get_arch_table_name() {
 	global $database_default;
 	$tables = db_fetch_assoc("SELECT table_name AS name
-			FROM information_schema.tables
-			WHERE table_schema='$database_default'
-			AND table_name LIKE 'poller_output_boost_arch_%'");
+		FROM information_schema.tables
+		WHERE table_schema='$database_default'
+		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	foreach($tables as $table) {
 		$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
