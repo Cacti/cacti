@@ -538,7 +538,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 								<label for='login_username'><?php print __('Username');?></label>
 							</td>
 							<td>
-								<input type='text' id='login_username' name='login_username' value='<?php print htmlspecialchars($username, ENT_QUOTES); ?>' placeholder='<?php print __('Username');?>'>
+								<input type='text' id='login_username' name='login_username' value='<?php print htmlspecialchars($username, ENT_QUOTES); ?>' placeholder='<?php print __esc('Username');?>'>
 							</td>
 						</tr>
 						<tr>
@@ -592,7 +592,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 					<?php } ?>
 						<tr>
 							<td cospan='2'>
-								<input type='submit' value='<?php print __('Login');?>'>
+								<input type='submit' value='<?php print __esc('Login');?>'>
 							</td>
 						</tr>
 					</table>
