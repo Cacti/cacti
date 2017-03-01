@@ -177,6 +177,24 @@ define('CACTI_COUNTRY', $cacti_country);
 define('CACTI_LANGUAGE', $lang2locale[CACTI_LOCALE]['language']);
 define('CACTI_LANGUAGE_FILE', $lang2locale[CACTI_LOCALE]['filename']);
 
+/**
+ * Universal escaping wrappers
+ */
+function __esc() {
+	return htmlspecialchars( call_user_func_array('__', func_get_args()), ENT_QUOTES);
+}
+
+function __esc_n() {
+	return htmlspecialchars( call_user_func_array('__n', func_get_args()), ENT_QUOTES);
+}
+
+function __esc_x() {
+	return htmlspecialchars( call_user_func_array('__x', func_get_args()), ENT_QUOTES);
+}
+
+function __esc_xn() {
+	return htmlspecialchars( call_user_func_array('__xn', func_get_args()), ENT_QUOTES);
+}
 
 /**
  * load_fallback_procedure - loads wrapper package if native language (English) has to be used
