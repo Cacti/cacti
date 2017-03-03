@@ -268,7 +268,7 @@ function vdef_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete VDEF(s)'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', sizeof($vdef_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') === '2') { /* duplicate */
 			print "	<tr>
 					<td class='topBoxAlt'>
@@ -278,11 +278,11 @@ function vdef_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='Duplicate VDEF(s)'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', sizeof($vdef_array)) . "'>";
 		}
 	}else{
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one VDEF.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
     print "<tr>
@@ -330,8 +330,8 @@ function vdef_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td align='right'>
-			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove VDEF Item');?>'>
+			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
 		</td>
 	</tr>
 	<?php
@@ -586,19 +586,19 @@ function vdef_edit() {
 					<?php
 					if (read_config_option('drag_and_drop') == '') {
 						if ($i < $total_items && $total_items > 1) {
-							echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __('Move Down') . '"></a>';
+							echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
 						}else{
 							echo '<span class="moveArrowNone"></span>';
 						}
 
 						if ($i > 1 && $i <= $total_items) {
-							echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __('Move Up') . '"></a>';
+							echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
 						}else{
 							echo '<span class="moveArrowNone"></span>';
 						}
 					}
 					?>
-					<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __('Delete VDEF Item');?>'></a>
+					<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __esc('Delete VDEF Item');?>'></a>
 				</td>
 				<?php
 
@@ -637,7 +637,7 @@ function vdef_edit() {
 			$.get(request, function(data) {
 				$('#cdialog').html(data);
 				applySkin();
-				$('#cdialog').dialog({ title: '<?php print __('Delete VDEF Item');?>', minHeight: 80, minWidth: 500 });
+				$('#cdialog').dialog({ title: '<?php print __esc('Delete VDEF Item');?>', minHeight: 80, minWidth: 500 });
 			});
 		}).css('cursor', 'pointer');
 	});
@@ -684,10 +684,10 @@ function vdef_filter() {
                         <label for='has_graphs'><?php print __('Has Graphs');?></label>
                     </td>
 					<td>
-						<input type='button' Value='<?php print __x('filter: use', 'Go');?>' id='refresh'>
+						<input type='button' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' id='refresh'>
 					</td>
 					<td>
-						<input type='button' Value='<?php print __x('filter: reset', 'Clear');?>' id='clear'>
+						<input type='button' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' id='clear'>
 					</td>
 				</tr>
 			</table>
@@ -749,15 +749,16 @@ function get_vdef_records(&$total_rows, &$rowspp) {
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(rows)
         FROM (
-            SELECT vd.id AS rows,
+            SELECT vd.id AS rows, vd.name,
             SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
             FROM vdef AS vd
             LEFT JOIN graph_templates_item AS gti
             ON gti.vdef_id=vd.id
-            $sql_where
             GROUP BY vd.id
-            $sql_having
-        ) AS rs");
+        ) AS rs
+        $sql_where
+		$sql_having
+	");
 
 	return db_fetch_assoc("SELECT rs.*,
 		SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates,
@@ -839,10 +840,10 @@ function vdef($refresh = true) {
 	html_start_box('', '100%', '', '3', 'center', '');
 
     $display_text = array(
-        'name'      => array('display' => __('VDEF Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this VDEF.') ),
-        'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template.') ),
-        'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this VDEF.') ),
-        'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs Templates using this VDEF.') )
+        'name'      => array('display' => __('VDEF Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __esc('The name of this VDEF.') ),
+        'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __esc('VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template.') ),
+        'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __esc('The number of Graphs using this VDEF.') ),
+        'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __esc('The number of Graphs Templates using this VDEF.') )
 	);
 
     html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
