@@ -3721,7 +3721,7 @@ CREATE TABLE `snmpagent_notifications_log` (
 CREATE TABLE vdef (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  name varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  name varchar(255) NOT NULL default '',
   PRIMARY KEY  (id)
 ) ENGINE=InnoDB COMMENT='vdef';
 
@@ -3747,7 +3747,7 @@ CREATE TABLE vdef_items (
   vdef_id mediumint(8) unsigned NOT NULL default '0',
   sequence mediumint(8) unsigned NOT NULL default '0',
   type tinyint(2) NOT NULL default '0',
-  value varchar(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
+  value varchar(150) NOT NULL default '',
   PRIMARY KEY  (id),
   KEY vdef_id (vdef_id)
 ) ENGINE=InnoDB COMMENT='vdef items';
