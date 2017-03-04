@@ -1080,6 +1080,18 @@ function item() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', $add_text);
 	draw_graph_items_list($template_item_list, 'graphs_items.php', 'local_graph_id=' . get_request_var('id'), (empty($graph_template_id) ? false : true));
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('.deleteMarker, .moveArrow').click(function(event) {
+			event.preventDefault();
+			loadPageNoHeader($(this).attr('href'));
+		});
+	});
+	</script>
+	<?php
+
 	html_end_box();
 }
 

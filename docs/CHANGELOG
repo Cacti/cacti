@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#343: Device Discovery cannot handle dots in device name
 -issue#358: Sending test e-mail results in warning
 -issue#360: Issue importing cacti.sql with some charsets
+-issue#364: Moving graph item causes page render issue
 -issue#365: ss_host_disk.php and ss_host_cpu.php should use return
 -issue#367: Upgrade Chart.js to version 2.5
 -issue#368: Issue with device automation ip vs. ip_address
