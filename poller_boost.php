@@ -126,14 +126,16 @@ function output_rrd_data($start_time, $force = FALSE) {
 		FROM information_schema.tables
 		WHERE table_schema = ?
 		AND table_name LIKE 'poller_output_boost_arch_%'
-		AND table_name != ?
-		AND table_rows > 0", array($database_default, $archive_table));
+		AND table_name != ?", array($database_default, $archive_table));
 
 	if(count($more_arch_tables)) {
 		foreach($more_arch_tables as $table) {
 			$table_name = $table['name'];
-			db_execute("INSERT INTO $archive_table SELECT * FROM $table_name");
-			db_execute("TRUNCATE TABLE $table_name");
+			$rows = db_fetch_cell("SELECT count(*) FROM $table_name");
+			if (is_numeric($rows) && intval($rows) > 0) {
+				db_execute("INSERT INTO $archive_table SELECT * FROM $table_name");
+				db_execute("TRUNCATE TABLE $table_name");
+			}
 		}
 	}
 
@@ -180,12 +182,14 @@ function output_rrd_data($start_time, $force = FALSE) {
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
 		WHERE table_schema=SCHEMA()
-		AND table_name LIKE 'poller_output_boost_arch_%'
-		AND table_rows=0;");
+		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	if (count($tables)) {
 	foreach($tables as $table) {
-		db_execute('DROP TABLE ' . $table['name']);
+		$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
+		if (is_numeric($rows) && intval($rows) == 0) {
+			db_execute('DROP TABLE ' . $table['name']);
+		}
 	}
 	}
 	db_execute("SELECT RELEASE_LOCK('poller_boost');");
