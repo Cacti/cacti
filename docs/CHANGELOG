@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#337: Error when try create new graph - SNMP - Generic OID
 -issue#343: Device Discovery cannot handle dots in device name
 -issue#353: Legacy Broadcast & Multicast Packet Counters Missing in interface.xml
+-issue#354: Place on tree dashes / ordering is not correct
 -issue#358: Sending test e-mail results in warning
 -issue#360: Issue importing cacti.sql with some charsets
 -issue#364: Moving graph item causes page render issue
