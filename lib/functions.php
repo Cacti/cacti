@@ -3729,7 +3729,7 @@ function email_test() {
 		if ($smtp_username != '' && $smtp_password != '') {
 			$mail .= '<b>' . __('Authentication') . '</b>: true<br>';
 			$mail .= '<b>' . __('Username') . "</b>: $smtp_username<br>";
-			$mail .= '<b>' . __('Password') . '</b>: (' . _('Not Shown for Security Reasons') . ')<br>';
+			$mail .= '<b>' . __('Password') . '</b>: (' . __('Not Shown for Security Reasons') . ')<br>';
 			$mail .= '<b>' . __('Security') . "</b>: $smtp_secure<br>";
 		} else {
 			$mail .= '<b>' . __('Authentication') . '</b>: false<br>';
