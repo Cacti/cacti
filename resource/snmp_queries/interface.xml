@@ -197,6 +197,34 @@
 			<direction>output</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.17</oid>
 		</ifOutUcastPkts>
+		<ifInMulticastPkts>
+			<name>Multicast Packets In (Legacy)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.2</oid>
+		</ifInMulticastPkts>
+		<ifOutMulticastPkts>
+			<name>Multicast Packets Out (Legacy)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.4</oid>
+		</ifOutMulticastPkts>
+		<ifInBroadcastPkts>
+			<name>Broadcast Packets In (Legacy)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.3</oid>
+		</ifInBroadcastPkts>
+		<ifOutBroadcastPkts>
+			<name>Broadcast Packets Out (Legacy)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.5</oid>
+		</ifOutBroadcastPkts>
 		<ifInErrors>
 			<name>Errors In</name>
 			<method>walk</method>
