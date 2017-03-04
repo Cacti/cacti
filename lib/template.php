@@ -1277,8 +1277,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					while (list($data_input_field_id, $field_value) = each($suggested_vals[$graph_template_id]['custom_data']{$data_template['id']})) {
 						db_execute_prepared('REPLACE INTO data_input_data 
 							(data_input_field_id, data_template_data_id, t_value, value) 
-							VALUES (?, ?, ?)', 
-							array($data_input_field_id,$data_template_data_id, $field_value));
+							VALUES (?, ?, "", ?)', 
+							array($data_input_field_id, $data_template_data_id, $field_value));
 					}
 				}
 

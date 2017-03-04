@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.0.5
+-issue#337: Error when try create new graph - SNMP - Generic OID
 -issue#343: Device Discovery cannot handle dots in device name
 -issue#358: Sending test e-mail results in warning
 -issue#360: Issue importing cacti.sql with some charsets
