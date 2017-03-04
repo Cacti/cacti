@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.0.5
 -issue#296: Poller warning for Non-SNMP device
+-issue#319: Add default 'High Collection Rate' Data Source Profile to new installs to demonstrate concept of multiple rates
 -issue#337: Error when try create new graph - SNMP - Generic OID
 -issue#342: Infinite loop in poller_automation.php with invalid schedule
 -issue#343: Device Discovery cannot handle dots in device name

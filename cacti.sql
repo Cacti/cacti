@@ -1380,6 +1380,7 @@ CREATE TABLE `data_source_profiles` (
 --
 
 INSERT INTO `data_source_profiles` VALUES (1,'d62c52891f4f9688729a5bc9fad91b18','System Default',300,600,0.5,'on');
+INSERT INTO `data_source_profiles` VALUES (2,'c0dd0e46b9ca268e7ed4162d329f9215','High Collection Rate',30,1200,0.5,'');
 
 --
 -- Table structure for table `data_source_profiles_cf`
@@ -1397,6 +1398,7 @@ CREATE TABLE `data_source_profiles_cf` (
 --
 
 INSERT INTO `data_source_profiles_cf` VALUES (1,1),(1,2),(1,3),(1,4);
+INSERT INTO `data_source_profiles_cf` VALUES (2,1),(2,2),(2,3),(2,4);
 
 --
 -- Table structure for table `data_source_profiles_rra`
@@ -1416,11 +1418,15 @@ CREATE TABLE `data_source_profiles_rra` (
 -- Dumping data for table `data_source_profiles_rra`
 --
 
-INSERT INTO `data_source_profiles_rra` VALUES 
-  (1,1,'Daily (5 Minute Average)',1,600),
-  (2,1,'Weekly (30 Minute Average)',6,700),
-  (3,1,'Monthly (2 Hour Average)',24,775),
-  (4,1,'Yearly (1 Day Average)',288,797);
+INSERT INTO `data_source_profiles_rra` VALUES (1,1,'Daily (5 Minute Average)',1,600);
+INSERT INTO `data_source_profiles_rra` VALUES (2,1,'Weekly (30 Minute Average)',6,700);
+INSERT INTO `data_source_profiles_rra` VALUES (3,1,'Monthly (2 Hour Average)',24,775);
+INSERT INTO `data_source_profiles_rra` VALUES (4,1,'Yearly (1 Day Average)',288,797);
+INSERT INTO `data_source_profiles_rra` VALUES (5,2,'30 Second Samples',1,1500);
+INSERT INTO `data_source_profiles_rra` VALUES (6,2,'15 Minute Average',30,1346);
+INSERT INTO `data_source_profiles_rra` VALUES (7,2,'1 Hour Average',120,1445);
+INSERT INTO `data_source_profiles_rra` VALUES (8,2,'4 Hour Average',480,4380);
+
 
 --
 -- Table structure for table `data_source_purge_action`
