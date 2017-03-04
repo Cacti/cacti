@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#337: Error when try create new graph - SNMP - Generic OID
 -issue#342: Infinite loop in poller_automation.php with invalid schedule
 -issue#343: Device Discovery cannot handle dots in device name
+-issue#344: Unable to upgrade to latest Cacti on FreeBSD
 -issue#353: Legacy Broadcast & Multicast Packet Counters Missing in interface.xml
 -issue#354: Place on tree dashes / ordering is not correct
 -issue#355: Replace table rows with count when using InnoDB tables

@@ -976,6 +976,8 @@ function memory_readable($val) {
 function utilities_get_system_memory() {
 	global $config;
 
+	$memInfo = array();
+
 	if ($config['cacti_server_os'] == 'win32') {
 		exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
 		exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);

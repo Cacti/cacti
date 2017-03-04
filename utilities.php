@@ -348,38 +348,38 @@ function utilities_view_tech($php_info = '') {
 		print '<td>' . read_config_option('stats_poller') . "</td>\n";
 		form_end_row();
 
-		html_section_header(__('System Memory'), 2);
-		$i = 0;
-
 		/* Get System Memory */
 		$memInfo = utilities_get_system_memory();
 
-		foreach($memInfo as $name => $value) {
-			if ($config['cacti_server_os'] == 'win32') {
-				form_alternate_row();
-				print "<td>$name</td>\n";
-				print '<td>' . number_format_i18n($value/1000, 2) . " MB</td>\n";
-				form_end_row();
-			}else{
-				switch($name) {
-				case 'SwapTotal':
-				case 'SwapFree':
-				case 'Cached':
-				case 'MemTotal':
-				case 'MemFree':
-				case 'Buffers':
-				case 'Active':
-				case 'Inactive':
+		if (sizeof($memInfo)) {
+			html_section_header(__('System Memory'), 2);
+
+			foreach($memInfo as $name => $value) {
+				if ($config['cacti_server_os'] == 'win32') {
 					form_alternate_row();
 					print "<td>$name</td>\n";
-					print '<td>' . number_format_i18n($value/1000/1000, 2) . " MB</td>\n";
+					print '<td>' . number_format_i18n($value/1000, 2) . " MB</td>\n";
 					form_end_row();
+				}else{
+					switch($name) {
+					case 'SwapTotal':
+					case 'SwapFree':
+					case 'Cached':
+					case 'MemTotal':
+					case 'MemFree':
+					case 'Buffers':
+					case 'Active':
+					case 'Inactive':
+						form_alternate_row();
+						print "<td>$name</td>\n";
+						print '<td>' . number_format_i18n($value/1000/1000, 2) . " MB</td>\n";
+						form_end_row();
+					}
 				}
 			}
-			$i++;
+
+			form_end_row();
 		}
-		print "</td>\n";
-		form_end_row();
 
 		html_section_header(__('PHP Information'), 2);
 
