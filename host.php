@@ -878,6 +878,13 @@ function host_edit() {
 			print "<tr class='tableRow'><td colspan='4'><em>" . __('No Associated Data Queries.') . "</em></td></tr>"; 
 		}
 
+		if ($host['snmp_version'] == 0) {
+			unset($reindex_types[1]);
+			$default = 0;
+		}else{
+			$default = read_config_option('reindex_method');
+		}
+
 		?>
 		<tr class='odd'>
 			<td class='saveRow' colspan='5'>
@@ -893,7 +900,7 @@ function host_edit() {
 							<?php print __('Re-Index Method');?>
 						</td>
 						<td>
-							<?php form_dropdown('reindex_method',$reindex_types,'','',read_config_option('reindex_method'),'','');?>
+							<?php form_dropdown('reindex_method',$reindex_types,'','',$default,'','');?>
 						</td>
 						<td>
 							<input type='button' value='<?php print __('Add');?>' id='add_dq' title='<?php print __('Add Data Query to Device');?>'>

@@ -194,6 +194,12 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		if ($host_id) {
 			raise_message(1);
 
+			/* change reindex method for 'None' for non-snmp devices */
+			if ($save['snmp_version'] == 0) {
+				db_execute_prepared('UPDATE host_snmp_query SET reindex_method = 0 WHERE host_id = ?', array($host_id));
+				db_execute_prepared('DELETE * FROM poller_reindex WHERE host_id = ?', array($host_id));
+			}
+
 			api_device_cache_crc_update($save['poller_id']);
 
 			/* push out relavant fields to data sources using this host */
