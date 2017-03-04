@@ -338,8 +338,6 @@ function template_edit() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	display_output_messages();
-
 	if (!isempty_request_var('id')) {
 		$host_template = db_fetch_row_prepared('SELECT * FROM automation_templates WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('Automation Templates [edit: %s]', htmlspecialchars($template_names[$host_template['host_template']]));
@@ -543,7 +541,7 @@ function template() {
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$add_text .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_template.php?action=moveup&id=' . $dt['id']) . '" title="' . __('Move Up') . '"></a>';
+					$add_text .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __('Move Up') . '"></a>';
 				}else{
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
@@ -581,6 +579,7 @@ function template() {
 			loadPageNoHeader(strURL);
 		});
 
+		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#template_ids').find('tr:first').addClass('nodrag').addClass('nodrop');
 
         $('#template_ids').tableDnD({
@@ -588,6 +587,7 @@ function template() {
                 loadPageNoHeader('automation_templates.php?action=ajax_dnd&'+$.tableDnD.serialize());
             }
         });
+		<?php } ?>
 
 	});
 	</script>
