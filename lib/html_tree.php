@@ -34,10 +34,8 @@ function process_tree_settings() {
 	}
 }
 
-function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tree_item_id = '') {
+function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tree_item_id = '', $tier = 0) {
 	global $config;
-
-	static $tier = 0;
 
 	$tier++;
 
@@ -71,7 +69,7 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 
 			print "<option value='" . $leaf['id'] . "'$html_selected>$indent " . $leaf['title'] . "</option>\n";
 
-			grow_dropdown_tree($tree_id, $leaf['id'], $form_name, $selected_tree_item_id);
+			grow_dropdown_tree($tree_id, $leaf['id'], $form_name, $selected_tree_item_id, $tier);
 		}
 	}
 
