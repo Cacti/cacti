@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#360: Issue importing cacti.sql with some charsets
 -issue#368: Issue with device automation ip vs. ip_address
 -issue#343: Device Discovery cannot handle dots in device name
+-issue#369: Interface Bits/Second Total Bandwidth wrong CDEF
 -issue: Improve is_ipaddress functions
 
 1.0.4
