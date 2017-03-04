@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.0.5
 -issue#360: Issue importing cacti.sql with some charsets
 -issue#368: Issue with device automation ip vs. ip_address
+-issue#343: Device Discovery cannot handle dots in device name
 
 1.0.4
 -feature: Javascript: make menu movement smooth and use localStorage

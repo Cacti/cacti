@@ -465,16 +465,25 @@ function discoverDevices($network_id, $thread) {
 					}
 	
 					if ($result && automation_valid_snmp_device($device)) {
-						$snmp_sysName = preg_split('/[\s.]+/', $device['snmp_sysName'], -1, PREG_SPLIT_NO_EMPTY);
-						if(!isset($snmp_sysName[0])) {
-							$snmp_sysName[0] = '';
-						}
-						$snmp_sysName_short = preg_split('/[\.]+/', strtolower($snmp_sysName[0]), -1, PREG_SPLIT_NO_EMPTY);
-						if(!isset($snmp_sysName_short[0])) {
-							$snmp_sysName_short[0] = '';
-						}
+						$snmp_sysName       = trim($device['snmp_sysName']);
+						$snmp_sysName_short = '';
+						if (!is_ipaddress($snmp_sysName)) {
+							$parts = explode('.', $snmp_sysName);
+							foreach($parts as $part) {
+								if (is_numeric($part)) {
+									$snmp_sysName_short = $snmp_sysName;
+									break;
+								}
+							}
 
-						$exists = db_fetch_row_prepared('SELECT status, snmp_version FROM host WHERE hostname IN (?,?)', array($snmp_sysName_short[0], $snmp_sysName[0]));
+							if ($snmp_sysName_short == '') {
+								$snmp_sysName_short = $parts[0];
+							}
+						}else{
+							$snmp_sysName_short = $snmp_sysName;
+						}
+						
+						$exists = db_fetch_row_prepared('SELECT status, snmp_version FROM host WHERE hostname IN (?,?)', array($snmp_sysName_short, $snmp_sysName));
 
 						if (sizeof($exists)) {
 							if ($exists['status'] == 3 || $exists['status'] == 2) {
@@ -491,10 +500,10 @@ function discoverDevices($network_id, $thread) {
 						} else {
 							$isCactiSysName = db_fetch_cell_prepared('SELECT COUNT(*)
 								FROM host
-								WHERE snmp_sysName = ?', array($snmp_sysName[0]));
+								WHERE snmp_sysName = ?', array($snmp_sysName));
 
 							if ($isCactiSysName) {
-								automation_debug(", Skipping sysName '" . $snmp_sysName[0] . "' already in Cacti!\n");
+								automation_debug(", Skipping sysName '" . $snmp_sysName . "' already in Cacti!\n");
 								markIPDone($device['ip_address'], $network_id);
 								continue;
 							}
@@ -504,10 +513,10 @@ function discoverDevices($network_id, $thread) {
 								WHERE network_id = ? 
 								AND sysName != ""
 								AND ip != ?
-								AND sysName = ?', array($device['ip_address'], $network_id, $snmp_sysName[0]));
+								AND sysName = ?', array($device['ip_address'], $network_id, $snmp_sysName));
 
 							if ($isDuplicateSysName) {
-								automation_debug(", Skipping sysName '" . $snmp_sysName[0] . "' already Discovered!\n");
+								automation_debug(", Skipping sysName '" . $snmp_sysName . "' already Discovered!\n");
 								markIPDone($device['ip_address'], $network_id);
 								continue;
 							}
