@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#353: Legacy Broadcast & Multicast Packet Counters Missing in interface.xml
 -issue#354: Place on tree dashes / ordering is not correct
 -issue#355: Replace table rows with count when using InnoDB tables
+-issue#357: If Recovery Mode runs longer than a polling interval, a second is spawned
 -issue#358: Sending test e-mail results in warning
 -issue#360: Issue importing cacti.sql with some charsets
 -issue#364: Moving graph item causes page render issue

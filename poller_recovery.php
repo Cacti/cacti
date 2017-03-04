@@ -93,7 +93,14 @@ include_once($config['base_path'] . '/lib/dsstats.php');
 
 global $local_db_cnn_id, $remote_db_cnn_id;
 
-$recovery_pid = read_config_option('recovery_pid');
+$recovery_pid = db_fetch_cell("SELECT value FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
+$packet_data  = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'max_allowed_packet'", true, $remote_db_cnn_id);
+
+if (isset($packet_data['Value'])) {
+	$max_allowed_packet = $packet_data['Value'];
+}else{
+	$max_allowed_packet = 1E6;
+}
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -252,17 +259,19 @@ if ($run) {
 				$sql_array = array();
 
 				foreach($rows as $r) {
-					$sql_array[] .= "(" . $r['local_data_id'] . "," . db_qstr($r['rrd_name']) . "," . db_qstr($r['time']) . "," . db_qstr($r['output']) . ")";
-					$count++;
+					$sql = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
+					$count += strlen($sql);
 
-					if ($count > 1000) {
-						db_execute("INSERT IGNORE INTO poller_output_boost 
+					if ($count >= $max_allowed_packet) {
+						db_execute('INSERT IGNORE INTO poller_output_boost 
 							(local_data_id, rrd_name, time, output) 
-							VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
+							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 
+						$inserted += sizeof($sql_array);
 						$sql_array = array();
-						$inserted += $count;
 						$count = 0;
+					}else{
+						$sql_array[] = $sql;
 					}
 				}
 
@@ -287,7 +296,7 @@ if ($run) {
 		WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
 }else{
 	debug('Recovery process still running, exiting');
-	cacti_log("Recovery process still running for Poller " . $poller_id . ".  PID is $recovery_pid");
+	cacti_log('Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid);
 	exit(1);
 }
 
