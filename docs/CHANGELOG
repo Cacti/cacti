@@ -15,6 +15,8 @@ Cacti CHANGELOG
 -issue#368: Issue with device automation ip vs. ip_address
 -issue#369: Interface Bits/Second Total Bandwidth wrong CDEF
 -issue: Improve is_ipaddress functions
+-feature: Log proper IP Address if logging in behind a NAT
+-feature: Add new query parsing rules: VALUE/TEST:(test):(true):(false), VALUE/TABLE:(value1):(return1):...:(valueX):(returnX), VALUE/HEX2IP:(start_nbr):(end_nbr)
 
 1.0.4
 -feature: Javascript: make menu movement smooth and use localStorage
