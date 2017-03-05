@@ -270,9 +270,9 @@ if ($run) {
 						$inserted += sizeof($sql_array);
 						$sql_array = array();
 						$count = 0;
-					}else{
-						$sql_array[] = $sql;
 					}
+
+					$sql_array[] = $sql;
 				}
 
 				if ($count > 0) {
