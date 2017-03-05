@@ -978,10 +978,13 @@ function tree_edit() {
 					},
 					'core' : {
 						'animation' : 0,
-						'check_callback' : true
+						'check_callback' : function(operation, node, node_parent, node_position, more) {
+							return false;  // not dragging onto self
+						}
 					},
 					'dnd' : {
-						'always_copy' : true
+						'always_copy' : true,
+						'check_while_dragging': true
 					},
 					'themes' : { 'stripes' : true },
 					'plugins' : [ 'wholerow', <?php if ($editable) {?>'dnd', <?php }?>'types' ]
