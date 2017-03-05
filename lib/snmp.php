@@ -506,7 +506,6 @@ function cacti_snmp_session_get($session, $oid) {
 		$out = false;
 	}
 
-	$out = $session->get($oid);
 	if (is_array($oid)) {
 		$oid = implode(',', $oid);
 	}
