@@ -460,7 +460,7 @@ CREATE TABLE cdef (
   hash varchar(32) NOT NULL default '',
   system mediumint(8) unsigned NOT NULL DEFAULT '0',
   name varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -485,7 +485,7 @@ CREATE TABLE cdef_items (
   sequence mediumint(8) unsigned NOT NULL default '0',
   type tinyint(2) NOT NULL default '0',
   value varchar(150) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY cdef_id (cdef_id)
 ) ENGINE=InnoDB;
 
@@ -1283,7 +1283,7 @@ CREATE TABLE data_input_fields (
   type_code varchar(40) default NULL,
   regexp_match varchar(200) default NULL,
   allow_nulls char(2) default NULL,
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY data_input_id (data_input_id),
   KEY type_code (type_code)
 ) ENGINE=InnoDB;
@@ -1349,7 +1349,7 @@ CREATE TABLE data_local (
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
   snmp_index varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY data_template_id (data_template_id),
   KEY snmp_query_id (snmp_query_id),
   KEY snmp_index (snmp_index(191)),
@@ -1473,7 +1473,7 @@ CREATE TABLE `data_source_stats_daily` (
   `rrd_name` varchar(19) NOT NULL,
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
-  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
   ) ENGINE=InnoDB;
 
 --
@@ -1485,7 +1485,7 @@ CREATE TABLE `data_source_stats_hourly` (
   `rrd_name` varchar(19) NOT NULL,
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
-  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
   ) ENGINE=InnoDB;
 
 --
@@ -1497,7 +1497,7 @@ CREATE TABLE `data_source_stats_hourly_cache` (
   `rrd_name` varchar(19) NOT NULL,
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   `value` DOUBLE DEFAULT NULL,
-  PRIMARY KEY  (`local_data_id`,`time`,`rrd_name`),
+  PRIMARY KEY (`local_data_id`,`time`,`rrd_name`),
   KEY `time` USING BTREE (`time`)
   ) ENGINE=MEMORY;
 
@@ -1510,7 +1510,7 @@ CREATE TABLE `data_source_stats_hourly_last` (
   `rrd_name` varchar(19) NOT NULL,
   `value` DOUBLE DEFAULT NULL,
   `calculated` DOUBLE DEFAULT NULL,
-  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
   ) ENGINE=MEMORY;
 
 --
@@ -1522,7 +1522,7 @@ CREATE TABLE `data_source_stats_monthly` (
   `rrd_name` varchar(19) NOT NULL,
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
-  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
   ) ENGINE=InnoDB;
 
 --
@@ -1534,7 +1534,7 @@ CREATE TABLE `data_source_stats_weekly` (
   `rrd_name` varchar(19) NOT NULL,
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
-  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
   ) ENGINE=InnoDB;
 
 --
@@ -1546,7 +1546,7 @@ CREATE TABLE `data_source_stats_yearly` (
   `rrd_name` varchar(19) NOT NULL,
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
-  PRIMARY KEY  (`local_data_id`,`rrd_name`)
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
   ) ENGINE=InnoDB;
 
 --
@@ -1557,7 +1557,7 @@ CREATE TABLE data_template (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(150) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -1612,7 +1612,7 @@ CREATE TABLE data_template_data (
   rrd_step mediumint(8) unsigned NOT NULL default '0',
   t_data_source_profile_id char(2) default '',
   data_source_profile_id mediumint(8) unsigned NOT NULL default '1',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
   KEY data_input_id (data_input_id)
@@ -1672,7 +1672,7 @@ CREATE TABLE data_template_rrd (
   data_source_name varchar(19) NOT NULL default '',
   t_data_input_field_id char(2) default NULL,
   data_input_field_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   UNIQUE KEY `duplicate_dsname_contraint` (`local_data_id`,`data_source_name`,`data_template_id`),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
@@ -1744,7 +1744,7 @@ CREATE TABLE graph_local (
   snmp_query_id mediumint(8) NOT NULL default '0',
   snmp_query_graph_id mediumint(8) NOT NULL default '0',
   snmp_index varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY host_id (host_id),
   KEY graph_template_id (graph_template_id),
   KEY snmp_query_id (snmp_query_id),
@@ -1767,7 +1767,7 @@ CREATE TABLE graph_template_input (
   name varchar(255) NOT NULL default '',
   description text,
   column_name varchar(50) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='Stores the names for graph item input groups.';
 
 --
@@ -1838,7 +1838,7 @@ INSERT INTO graph_template_input VALUES (83,'ac2355b4895c37e14df827f969f31c12',3
 CREATE TABLE graph_template_input_defs (
   graph_template_input_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_item_id int(12) unsigned NOT NULL default '0',
-  PRIMARY KEY  (graph_template_input_id,graph_template_item_id),
+  PRIMARY KEY (graph_template_input_id,graph_template_item_id),
   KEY graph_template_input_id (graph_template_input_id)
 ) ENGINE=InnoDB COMMENT='Stores the relationship for what graph iitems are associated';
 
@@ -2043,7 +2043,7 @@ CREATE TABLE graph_templates (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash char(32) NOT NULL default '',
   name char(255) NOT NULL default '',
-  PRIMARY KEY  (id)) 
+  PRIMARY KEY (id)) 
   ENGINE=InnoDB 
   COMMENT='Contains each graph template name.';
 
@@ -2085,7 +2085,7 @@ CREATE TABLE graph_templates_gprint (
   hash varchar(32) NOT NULL default '',
   name varchar(100) NOT NULL default '',
   gprint_text varchar(255) default NULL,
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -2168,7 +2168,7 @@ CREATE TABLE graph_templates_graph (
   legend_position varchar(10) DEFAULT NULL,
   t_legend_direction char(2) DEFAULT '',
   legend_direction varchar(10) DEFAULT NULL,
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY local_graph_id (local_graph_id),
   KEY graph_template_id (graph_template_id),
   KEY title_cache (title_cache(191))
@@ -2229,7 +2229,7 @@ CREATE TABLE graph_templates_item (
   hard_return char(2) default NULL,
   gprint_id mediumint(8) unsigned NOT NULL default '0',
   sequence mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY graph_template_id (graph_template_id),
   KEY local_graph_id (local_graph_id),
   KEY task_item_id (task_item_id)
@@ -2448,7 +2448,7 @@ CREATE TABLE graph_tree (
   user_id int(10) unsigned DEFAULT '1',
   last_modified timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   modified_by int(10) unsigned DEFAULT '1',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -2535,7 +2535,7 @@ CREATE TABLE host (
   failed_polls int(12) unsigned default '0',
   availability decimal(8,5) NOT NULL default '100.00000',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY poller_id (poller_id),
   KEY site_id (site_id),
   KEY disabled (disabled)
@@ -2552,7 +2552,7 @@ CREATE TABLE host (
 CREATE TABLE host_graph (
   host_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (host_id,graph_template_id)
+  PRIMARY KEY (host_id,graph_template_id)
 ) ENGINE=InnoDB;
 
 --
@@ -2568,11 +2568,11 @@ CREATE TABLE host_snmp_cache (
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(50) NOT NULL default '',
   field_value varchar(512) default NULL,
-  snmp_index varchar(255) NOT NULL default '',
+  snmp_index varchar(191) NOT NULL default '',
   oid TEXT NOT NULL,
   present tinyint NOT NULL DEFAULT '1',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY  (host_id,snmp_query_id,field_name,snmp_index),
+  PRIMARY KEY (host_id, snmp_query_id, field_name, snmp_index),
   KEY host_id (host_id,field_name),
   KEY snmp_index (snmp_index(191)),
   KEY field_name (field_name),
@@ -2595,7 +2595,7 @@ CREATE TABLE host_snmp_query (
   sort_field varchar(50) NOT NULL default '',
   title_format varchar(50) NOT NULL default '',
   reindex_method tinyint(3) unsigned NOT NULL default '0',
-  PRIMARY KEY  (host_id,snmp_query_id),
+  PRIMARY KEY (host_id,snmp_query_id),
   KEY host_id (host_id)
 ) ENGINE=InnoDB;
 
@@ -2611,7 +2611,7 @@ CREATE TABLE host_template (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(100) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -2631,7 +2631,7 @@ INSERT INTO host_template VALUES (8,'2d3e47f416738c2d22c87c40218cc55e','Local Li
 CREATE TABLE host_template_graph (
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (host_template_id,graph_template_id),
+  PRIMARY KEY (host_template_id,graph_template_id),
   KEY host_template_id (host_template_id)
 ) ENGINE=InnoDB;
 
@@ -2657,7 +2657,7 @@ INSERT INTO host_template_graph VALUES (8,12);
 CREATE TABLE host_template_snmp_query (
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (host_template_id,snmp_query_id),
+  PRIMARY KEY (host_template_id, snmp_query_id),
   KEY host_template_id (host_template_id)
 ) ENGINE=InnoDB;
 
@@ -2686,7 +2686,7 @@ CREATE TABLE `plugin_config` (
   `author` varchar(64) NOT NULL default '',
   `webpage` varchar(255) NOT NULL default '',
   `version` varchar(8) NOT NULL default '',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `directory` (`directory`)
 ) ENGINE=InnoDB;
@@ -2702,7 +2702,7 @@ CREATE TABLE `plugin_hooks` (
   `file` varchar(255) NOT NULL default '',
   `function` varchar(128) NOT NULL default '',
   `status` int(8) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   KEY `hook` (`hook`),
   KEY `status` (`status`)
 ) ENGINE=InnoDB;
@@ -2716,7 +2716,7 @@ CREATE TABLE `plugin_realms` (
   `plugin` varchar(32) NOT NULL default '',
   `file` text NOT NULL,
   `display` varchar(64) NOT NULL default '',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   KEY `plugin` (`plugin`)
 ) ENGINE=InnoDB;
 
@@ -2730,7 +2730,7 @@ CREATE TABLE `plugin_db_changes` (
   `table` varchar(64) NOT NULL default '',
   `column` varchar(64) NOT NULL,
   `method` varchar(16) NOT NULL default '',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   KEY `plugin` (`plugin`),
   KEY `method` (`method`)
 ) ENGINE=InnoDB;
@@ -2775,9 +2775,9 @@ CREATE TABLE poller_command (
   poller_id smallint(5) unsigned NOT NULL default '1',
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   action tinyint(3) unsigned NOT NULL default '0',
-  command varchar(200) NOT NULL default '',
+  command varchar(191) NOT NULL default '',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY  (poller_id,action,command)
+  PRIMARY KEY (poller_id, action, command)
 ) ENGINE=InnoDB;
 
 --
@@ -2787,9 +2787,9 @@ CREATE TABLE poller_command (
 CREATE TABLE `poller_data_template_field_mappings` (
   `data_template_id` int(10) unsigned NOT NULL DEFAULT '0',
   `data_name` varchar(25) NOT NULL DEFAULT '',
-  `data_source_names` varchar(255) NOT NULL DEFAULT '',
+  `data_source_names` varchar(191) NOT NULL DEFAULT '',
   `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`data_template_id`,`data_name`,`data_source_names`)
+  PRIMARY KEY (`data_template_id`, `data_name`, `data_source_names`)
 ) ENGINE=InnoDB COMMENT='Tracks mapping of Data Templates to their Data Source Names';
 
 --
@@ -2823,7 +2823,7 @@ CREATE TABLE poller_item (
   arg1 TEXT default NULL,
   arg2 varchar(255) default NULL,
   arg3 varchar(255) default NULL,
-  PRIMARY KEY  (local_data_id,rrd_name),
+  PRIMARY KEY (local_data_id,rrd_name),
   KEY local_data_id (local_data_id),
   KEY host_id (host_id),
   KEY rrd_next_step (rrd_next_step),
@@ -2840,7 +2840,7 @@ CREATE TABLE poller_output (
   rrd_name varchar(19) NOT NULL default '',
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
-  PRIMARY KEY (local_data_id,rrd_name,time) /*!50060 USING BTREE */
+  PRIMARY KEY (local_data_id, rrd_name, time) /*!50060 USING BTREE */
 ) ENGINE=InnoDB;
 
 --
@@ -2852,7 +2852,7 @@ CREATE TABLE  `poller_output_boost` (
   `rrd_name` varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   `output` varchar(512) NOT NULL,
-  PRIMARY KEY USING BTREE (`local_data_id`,`time`, `rrd_name`)
+  PRIMARY KEY USING BTREE (`local_data_id`, `time`, `rrd_name`)
 ) ENGINE=InnoDB;
 
 --
@@ -2862,7 +2862,7 @@ CREATE TABLE  `poller_output_boost` (
 CREATE TABLE  `poller_output_boost_processes` (
   `sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
   `status` varchar(255) default NULL,
-  PRIMARY KEY  (`sock_int_value`)
+  PRIMARY KEY (`sock_int_value`)
 ) ENGINE=MEMORY;
 
 --
@@ -2875,7 +2875,7 @@ CREATE TABLE poller_output_realtime (
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
   poller_id varchar(256) NOT NULL default '1',
-  PRIMARY KEY  (local_data_id,rrd_name,`time`),
+  PRIMARY KEY (local_data_id,rrd_name,`time`),
   KEY poller_id(poller_id(191))
 ) ENGINE=InnoDB;
 
@@ -2891,7 +2891,7 @@ CREATE TABLE poller_reindex (
   op char(1) NOT NULL default '',
   assert_value varchar(100) NOT NULL default '',
   arg1 varchar(255) NOT NULL default '',
-  PRIMARY KEY  (host_id,data_query_id,arg1),
+  PRIMARY KEY (host_id, data_query_id),
   KEY present (present)
 ) ENGINE=InnoDB;
 
@@ -2920,7 +2920,7 @@ CREATE TABLE poller_time (
   poller_id int(10) unsigned NOT NULL default '1',
   start_time timestamp NOT NULL default '0000-00-00 00:00:00',
   end_time timestamp NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -2990,7 +2990,7 @@ CREATE TABLE `reports_items` (
 CREATE TABLE settings (
   name varchar(50) NOT NULL default '',
   value varchar(2048) NOT NULL default '',
-  PRIMARY KEY  (name)
+  PRIMARY KEY (name)
 ) ENGINE=InnoDB;
 
 --
@@ -3006,7 +3006,7 @@ CREATE TABLE settings_user (
   user_id smallint(8) unsigned NOT NULL default '0',
   name varchar(50) NOT NULL default '',
   value varchar(2048) NOT NULL default '',
-  PRIMARY KEY  (user_id, name)
+  PRIMARY KEY (user_id, name)
 ) ENGINE=InnoDB;
 
 --
@@ -3033,7 +3033,7 @@ CREATE TABLE settings_tree (
   user_id mediumint(8) unsigned NOT NULL default '0',
   graph_tree_item_id mediumint(8) unsigned NOT NULL default '0',
   status tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (user_id, graph_tree_item_id)
+  PRIMARY KEY (user_id, graph_tree_item_id)
 ) ENGINE=InnoDB;
 
 --
@@ -3159,7 +3159,7 @@ CREATE TABLE snmp_query_graph_rrd_sv (
   sequence mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(100) NOT NULL default '',
   text varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY snmp_query_graph_id (snmp_query_graph_id),
   KEY data_template_id (data_template_id)
 ) ENGINE=InnoDB;
@@ -3232,7 +3232,7 @@ CREATE TABLE snmp_query_graph_sv (
   sequence mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(100) NOT NULL default '',
   text varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
 ) ENGINE=InnoDB;
 
@@ -3306,7 +3306,7 @@ CREATE TABLE user_auth (
   failed_attempts int(5) NOT NULL DEFAULT '0',
   lastfail int(12) NOT NULL DEFAULT '0',
   reset_perms int(12) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY username (username),
   KEY realm (realm),
   KEY enabled (enabled)
@@ -3420,7 +3420,7 @@ CREATE TABLE user_auth_perms (
   user_id mediumint(8) unsigned NOT NULL default '0',
   item_id mediumint(8) unsigned NOT NULL default '0',
   type tinyint(2) unsigned NOT NULL default '0',
-  PRIMARY KEY  (user_id,item_id,type),
+  PRIMARY KEY (user_id,item_id,type),
   KEY user_id (user_id,type)
 ) ENGINE=InnoDB;
 
@@ -3436,7 +3436,7 @@ CREATE TABLE user_auth_perms (
 CREATE TABLE user_auth_realm (
   realm_id mediumint(8) unsigned NOT NULL default '0',
   user_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (realm_id,user_id),
+  PRIMARY KEY (realm_id,user_id),
   KEY user_id (user_id)
 ) ENGINE=InnoDB;
 
@@ -3478,7 +3478,7 @@ CREATE TABLE user_log (
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   result tinyint(1) NOT NULL default '0',
   ip varchar(40) NOT NULL default '',
-  PRIMARY KEY  (username,user_id,time),
+  PRIMARY KEY (username,user_id,time),
   KEY username (username),
   KEY user_id (user_id)
 ) ENGINE=InnoDB;
@@ -3686,7 +3686,7 @@ CREATE TABLE `snmpagent_managers` (
 
 CREATE TABLE `snmpagent_managers_notifications` (
   `manager_id` int(8) NOT NULL,
-  `notification` varchar(255) NOT NULL,
+  `notification` varchar(180) NOT NULL,
   `mib` varchar(191) NOT NULL,
   KEY `mib` (`mib`),
   KEY `manager_id` (`manager_id`),
@@ -3706,7 +3706,7 @@ CREATE TABLE `snmpagent_notifications_log` (
   `time` int(24) NOT NULL,
   `severity` tinyint(1) NOT NULL,
   `manager_id` int(8) NOT NULL,
-  `notification` varchar(255) NOT NULL,
+  `notification` varchar(180) NOT NULL,
   `mib` varchar(191) NOT NULL,
   `varbinds` varchar(5000) NOT NULL,
   PRIMARY KEY (`id`),
@@ -3728,7 +3728,7 @@ CREATE TABLE vdef (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='vdef';
 
 --
@@ -3754,7 +3754,7 @@ CREATE TABLE vdef_items (
   sequence mediumint(8) unsigned NOT NULL default '0',
   type tinyint(2) NOT NULL default '0',
   value varchar(150) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY vdef_id (vdef_id)
 ) ENGINE=InnoDB COMMENT='vdef items';
 
@@ -3784,7 +3784,7 @@ INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '
 
 CREATE TABLE version (
   cacti char(20) default '',
-  PRIMARY KEY  (cacti)
+  PRIMARY KEY (cacti)
 ) ENGINE=InnoDB;
 
 --
