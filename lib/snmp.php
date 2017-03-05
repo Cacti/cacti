@@ -466,7 +466,12 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 	if ($max_repetitions <= 0)
 		$max_repetitions = 10;
 
-	$out = $session->walk($oid, false, $max_repetitions, $non_repeaters);
+	try {
+		$out = $session->walk($oid, false, $max_repetitions, $non_repeaters);
+	} catch (Exception $e) {
+		$out = false;
+	}
+
 	if ($out === false) {
 		if($oid == '.1.3.6.1.2.1.47.1.1.1.1.2' || $oid == '1.3.6.1.4.1.9.9.68.1.2.2.1.2' || 
 			$oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.5' || $oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.14' ||
@@ -494,6 +499,13 @@ function cacti_snmp_session_get($session, $oid) {
 		cacti_log('Empty OID!', false);
 		return array();
 	}
+
+	try {
+		$out = $session->get($oid);
+	} catch (Exception $e) {
+		$out = false;
+	}
+
 	$out = $session->get($oid);
 	if (is_array($oid)) {
 		$oid = implode(',', $oid);
@@ -524,7 +536,12 @@ function cacti_snmp_session_getnext($session, $oid) {
 		return array();
 	}
 
-	$out = $session->getnext($oid);
+	try {
+		$out = $session->getnext($oid);
+	} catch (Exception $e) {
+		$out = false;
+	}
+
 	if (is_array($oid)) {
 		$oid = implode(',', $oid);
 	}elseif ($out === false) {

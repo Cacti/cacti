@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -issue: Improve is_ipaddress functions
 -issue: Drag & Drop showing when disabled on page automation_templates.php
 -issue: Output messages displayed incorrectly in automation_templates.php and automation_snmp.php
+-issue: Handle snmp error exceptions better
 -feature#332: Support 'Copy User Groups'
 -feature: Log proper IP Address if logging in behind a NAT
 -feature: Add new query parsing rules: VALUE/TEST:(test):(true):(false), VALUE/TABLE:(value1):(return1):...:(valueX):(returnX), VALUE/HEX2IP:(start_nbr):(end_nbr)
