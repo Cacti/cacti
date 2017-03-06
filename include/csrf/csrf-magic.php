@@ -215,6 +215,8 @@ function csrf_check($fatal = true) {
  * by semicolons.
  */
 function csrf_get_tokens() {
+	global $config;
+
     $has_cookies = !empty($_COOKIE);
 
     // $ip implements a composite key, which is sent if the user hasn't sent
@@ -237,7 +239,7 @@ function csrf_get_tokens() {
     if (session_id()) return 'sid:' . csrf_hash(session_id()) . $ip;
     if ($GLOBALS['csrf']['cookie']) {
         $val = csrf_generate_secret();
-        setcookie($GLOBALS['csrf']['cookie'], $val);
+        setcookie($GLOBALS['csrf']['cookie'], $val, time() + 3600, $config['url_path']);
         return 'cookie:' . csrf_hash($val) . $ip;
     }
     if ($GLOBALS['csrf']['key']) return 'key:' . csrf_hash($GLOBALS['csrf']['key']) . $ip;
@@ -273,20 +275,34 @@ function csrf_flattenpost2($level, $key, $data) {
  * @param $tokens is safe for HTML consumption
  */
 function csrf_callback($tokens) {
-    // (yes, $tokens is safe to echo without escaping)
-    header(isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL']:'' . ' 403 Forbidden');
-    $data = '';
-    foreach (csrf_flattenpost($_POST) as $key => $value) {
-        if ($key == $GLOBALS['csrf']['input-name']) continue;
-        $data .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'" />';
-    }
-    echo "<html><head><title>CSRF check failed</title></head>
-        <body>
-        <p>CSRF check failed. Your form session may have expired, or you may not have
-        cookies enabled.</p>
-        <form method='post' action=''>$data<input type='submit' value='Try again' /></form>
-        <p>Debug: $tokens</p></body></html>
-";
+	global $config;
+
+	// (yes, $tokens is safe to echo without escaping)
+	$data = '';
+	foreach (csrf_flattenpost($_POST) as $key => $value) {
+		if ($key == $GLOBALS['csrf']['input-name']) continue;
+		$data .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'" />';
+	}
+
+	if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $config['url_path']) !== false) {
+		$_SESSION['sess_messages'] = 'CSRF Timeout, refreshing page';
+
+		if (strpos($_SERVER['HTTP_REFERER'], '?') !== false) {
+			$add = '&';
+		}else{
+			$add = '?';
+		}
+
+		header('Location:' . $_SERVER['HTTP_REFERER'] . (strpos($_SERVER['HTTP_REFERER'], 'header=false')) !== 'false' ? $add . '&header=false':'');
+	}else{
+		header('logout.php');
+		exit;
+		header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+		echo "<html><head><title>CSRF check failed</title></head>
+			<body>
+				<p><font color='red'>Warning: CSRF check failed!</font></p>
+			</body></html>";
+	}
 }
 
 /**
@@ -337,7 +353,12 @@ function csrf_check_token($token) {
             if ($GLOBALS['csrf']['user'] !== false) return false;
             if (!empty($_COOKIE)) return false;
             if (!$GLOBALS['csrf']['allow-ip']) return false;
-            return $value === csrf_hash($_SERVER['IP_ADDRESS'], $time);
+
+			if (isset($_SERVER['IP_ADDRESS'])) {
+	            return $value === csrf_hash($_SERVER['IP_ADDRESS'], $time);
+			}elseif (isset($_SERVER['SERVER_ADDR'])) {
+				return $value === csrf_hash(gethostbyname($_SERVER['REMOTE_ADDR']), $time);
+			}
     }
     return false;
 }

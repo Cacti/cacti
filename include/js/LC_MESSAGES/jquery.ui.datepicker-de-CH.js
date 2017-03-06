@@ -1,4 +1,4 @@
-﻿/* Swiss-German initialisation for the jQuery UI date picker plugin. */
+/* Swiss-German initialisation for the jQuery UI date picker plugin. */
 /* By Douglas Jose & Juerg Meier. */
 jQuery(function($){
 	$.datepicker.regional['de-CH'] = {

@@ -99,6 +99,62 @@
 			<direction>output</direction>
 			<oid>.1.3.6.1.2.1.31.1.1.1.10</oid>
 		</ifHCOutOctets>
+		<ifInOctetsIPv4>
+			<name>IPv4 Bytes In</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.4.31.3.1.5.1</oid>
+		</ifInOctetsIPv4>
+		<ifOutOctetsIPv4>
+			<name>IPv4 Bytes Out</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.4.31.3.1.32.1</oid>
+		</ifOutOctetsIPv4>
+		<ifHCInOctetsIPv4>
+			<name>IPv4 Bytes In - 64-bit Counters</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.4.31.3.1.6.1</oid>
+		</ifHCInOctetsIPv4>
+		<ifHCOutOctetsIPv4>
+			<name>IPv4 Bytes Out - 64-bit Counters</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.4.31.3.1.33.1</oid>
+		</ifHCOutOctetsIPv4>
+		<ifInOctetsIPv6>
+			<name>IPv6 Bytes In</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.4.31.3.1.5.2</oid>
+		</ifInOctetsIPv6>
+		<ifOutOctetsIPv6>
+			<name>IPv6 Bytes Out</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.4.31.3.1.32.2</oid>
+		</ifOutOctetsIPv6>
+		<ifHCInOctetsIPv6>
+			<name>IPv6 Bytes In - 64-bit Counters</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.4.31.3.1.6.2</oid>
+		</ifHCInOctetsIPv6>
+		<ifHCOutOctetsIPv6>
+			<name>IPv6 Bytes Out - 64-bit Counters</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.4.31.3.1.33.2</oid>
+		</ifHCOutOctetsIPv6>
 		<ifInDiscards>
 			<name>Discarded Packets In</name>
 			<method>walk</method>
@@ -141,6 +197,34 @@
 			<direction>output</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.17</oid>
 		</ifOutUcastPkts>
+		<ifInMulticastPkts>
+			<name>Multicast Packets In (Legacy)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.2</oid>
+		</ifInMulticastPkts>
+		<ifOutMulticastPkts>
+			<name>Multicast Packets Out (Legacy)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.4</oid>
+		</ifOutMulticastPkts>
+		<ifInBroadcastPkts>
+			<name>Broadcast Packets In (Legacy)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.3</oid>
+		</ifInBroadcastPkts>
+		<ifOutBroadcastPkts>
+			<name>Broadcast Packets Out (Legacy)</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.5</oid>
+		</ifOutBroadcastPkts>
 		<ifInErrors>
 			<name>Errors In</name>
 			<method>walk</method>
@@ -158,7 +242,7 @@
 		<ifIP>
 			<name>IP Address</name>
 			<method>walk</method>
-			<source>OID/REGEXP:.*\.([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$</source>
+			<source>OID/REGEXP:^\.?1\.3\.6\.1\.2\.1\.4\.20\.1\.2\.([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}).*</source>
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.4.20.1.2</oid>
 		</ifIP>

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,8 +23,8 @@
 */
 
 define('CACTI_ESCAPE_CHARACTER', '"');
-define('COPYRIGHT_YEARS', 'Copyright (C) 2004-2016 The Cacti Group');
-define('COPYRIGHT_YEARS_SHORT', '(c) 2004-2016 - The Cacti Group');
+define('COPYRIGHT_YEARS', 'Copyright (C) 2004-2017 The Cacti Group');
+define('COPYRIGHT_YEARS_SHORT', '(c) 2004-2017 - The Cacti Group');
 
 define('HOST_GROUPING_GRAPH_TEMPLATE', 1);
 define('HOST_GROUPING_DATA_QUERY_INDEX', 2);
@@ -45,10 +45,10 @@ define('RRDTOOL_OUTPUT_STDERR', 2);
 define('RRDTOOL_OUTPUT_GRAPH_DATA', 3);
 define('RRDTOOL_OUTPUT_BOOLEAN', 4);
 
-define('RRD_VERSION_1_2', 'rrd-1.2.x');
 define('RRD_VERSION_1_3', 'rrd-1.3.x');
 define('RRD_VERSION_1_4', 'rrd-1.4.x');
 define('RRD_VERSION_1_5', 'rrd-1.5.x');
+define('RRD_VERSION_1_6', 'rrd-1.6.x');
 
 define('RRD_FONT_RENDER_NORMAL',  'normal');
 define('RRD_FONT_RENDER_LIGHT',   'light');
@@ -375,5 +375,9 @@ if ($database_type == 'mysql') {
 	define('SQL_NO_CACHE', '');
 }
 
-define('MAX_DISPLAY_PAGES', 5);
+define('MAX_DISPLAY_PAGES', 9);
 define('CHECKED', 'on');
+
+define('FILTER_VALIDATE_IS_REGEX',          99999);
+define('FILTER_VALIDATE_IS_NUMERIC_ARRAY', 100000);
+define('FILTER_VALIDATE_IS_NUMERIC_LIST',  100001);

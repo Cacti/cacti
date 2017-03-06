@@ -1,7 +1,8 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -46,27 +47,34 @@ array_shift($parms);
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
-		@list($arg, $value) = @explode('=', $parameter);
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
 		switch ($arg) {
-		case '--version':
-		case '-V':
-		case '-H':
-		case '--help':
-			display_help();
-			exit(0);
-		case '--poller':
-		case '-p':
-			$poller_id = $value;
-			break;
-		case '--debug':
-		case '-d':
-			$debug = true;
-			break;
-		default:
-			echo "ERROR: Invalid Argument: ($arg)\n\n";
-			display_help();
-			exit(1);
+			case '--version':
+			case '-V':
+				display_version();
+				exit;
+			case '-H':
+			case '--help':
+				display_help();
+				exit(0);
+			case '--poller':
+			case '-p':
+				$poller_id = $value;
+				break;
+			case '--debug':
+			case '-d':
+				$debug = true;
+				break;
+			default:
+				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				display_help();
+				exit(1);
 		}
 	}
 }
@@ -99,15 +107,11 @@ if (sizeof($poller_commands) > 0) {
 				cacti_log("Device[$host_id] WARNING: Recache Event Detected for Device", true, 'PCOMMAND');
 			}
 
-			if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("Device[$host_id] RECACHE: Recache for Device, data query #$data_query_id", true, 'PCOMMAND');
-			}
+			cacti_log("Device[$host_id] RECACHE: Recache for Device, data query #$data_query_id", true, 'PCOMMAND', POLLER_VERBOSITY_DEBUG);
 
 			run_data_query($host_id, $data_query_id);
 
-			if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("Device[$host_id] RECACHE: Recache successful.", true, 'PCOMMAND');
-			}
+			cacti_log("Device[$host_id] RECACHE: Recache successful.", true, 'PCOMMAND', POLLER_VERBOSITY_DEBUG);
 			break;
 		default:
 			cacti_log('ERROR: Unknown poller command issued', true, 'PCOMMAND');
@@ -136,14 +140,22 @@ if ($recached_hosts > 0) {
 }
 
 /* insert poller stats into the settings table */
-db_execute("REPLACE INTO settings (name, value) VALUES ('stats_recache_$poller_id', '$recache_stats')");
+db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)',
+	array('stats_recache_' . $poller_id, $recache_stats));
+
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	print "Cacti Poller Commands Poller, Version $version " . COPYRIGHT_YEARS . "\n";
+}
 
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Cacti Poller Commands Poller, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "usage: poller_commands.php [ --poller=ID ] [-d | --debug] [-h | --help | -v | --version]\n\n";
-	echo "-p | --poller - The poller to run as.  Defaults to the system poller\n";
-	echo "-d | --debug  - Display verbose output during execution\n";
-	echo "-v --version  - Display this help message\n";
-	echo "-h --help     - Display this help message\n";
+	display_version();
+
+	echo "\nusage: poller_commands.php [--poller=ID] [--debug]\n\n";
+	echo "Cacti's commands poller.  This poller can receive specifically crafted commands from\n";
+	echo "either the Cacti UI, or from the main poller, and then run them in the background.\n\n";
+	echo "Optional:\n";
+	echo "    --poller=ID - The poller to run as.  Defaults to the system poller\n";
+	echo "    --debug     - Display verbose output during execution\n\n";
 }

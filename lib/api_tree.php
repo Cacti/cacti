@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -34,11 +34,9 @@ function api_tree_lock($tree_id, $user_id = 0, $web = true) {
 	/* ==================================================== */
 
 	db_execute_prepared('UPDATE graph_tree 
-		SET locked = 1, 
-		locked_date = NOW(), 
-		last_modified = NOW(), 
-		modified_by = ? 
-		WHERE id = ?', array($user_id, $tree_id));
+		SET locked = 1, locked_date = NOW(), last_modified = NOW(), modified_by = ? 
+		WHERE id = ?', 
+		array($user_id, $tree_id));
 
 	if ($web) {
 		header('Location: tree.php?action=edit&header=false&id=' . $tree_id);
@@ -57,10 +55,9 @@ function api_tree_unlock($tree_id, $user_id = 0, $web = true) {
 	/* ==================================================== */
 
 	db_execute_prepared('UPDATE graph_tree 
-		SET locked = 0, 
-		last_modified = NOW(), 
-		modified_by = ?
-		WHERE id = ?', array($user_id, $tree_id));
+		SET locked = 0, last_modified = NOW(), modified_by = ?
+		WHERE id = ?', 
+		array($user_id, $tree_id));
 
 	if ($web) {
 		header('Location: tree.php?action=edit&header=false&id=' . $tree_id);
@@ -188,7 +185,7 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = 'New Branc
 
 	/* clean up text string */
 	if (isset($title)) {
-		$title = sanitize_search_string($title);
+		$title = sanitize_search_string(htmlspecialchars_decode($title));
 	}
 	
 	$data  = api_tree_parse_node_data($node_id);
@@ -465,7 +462,7 @@ function api_tree_rename_node($tree_id, $node_id = '', $text = '') {
 	input_validate_input_number($tree_id);
 	
 	/* clean up text string */
-	$text = sanitize_search_string($text);
+	$text = sanitize_search_string(htmlspecialchars_decode($text));
 	
 	// Basic Error Checking
 	if ($tree_id <= 0) {
@@ -490,12 +487,7 @@ function api_tree_rename_node($tree_id, $node_id = '', $text = '') {
 
 	$oname = api_tree_get_branch_name($tree_id, $data['leaf_id']);
 
-	if (api_tree_branch_exists($tree_id, $data['parent'], $text)) {
-		header('Content-Type: application/json; charset=utf-8');
-		print json_encode(array('id' => $node_id, 'result' => 'false', 'text' => $oname));
-
-		return;
-	}
+	$exists_id = api_tree_branch_exists($tree_id, $data['parent'], $text);
 
 	// Initialize some variables
 	$leaf_id  = 0;
@@ -554,7 +546,7 @@ function api_tree_get_main($tree_id, $parent = 0) {
 		if ($tree_id > 0) {
 			$name     = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($tree_id));
 
-			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id'><a href='" . htmlspecialchars('graph_view.php?action=tree&tree_id=' . $tree_id . '&leaf_id=&host_group_data='). "'>" . htmlspecialchars($name) . "</a>\n";
+			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id' data-jstree='{ \"type\" : \"tree\" }'><a href='" . htmlspecialchars('graph_view.php?action=tree&node=tree_anchor-' . $tree_id). "'>" . htmlspecialchars($name) . "</a>\n";
 
 			$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 

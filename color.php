@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,7 +24,9 @@
 
 include('./include/auth.php');
 
-$color_actions = array('1' => 'Delete');
+$color_actions = array(
+	'1' => __('Delete')
+);
 
 /* set default action */
 set_default_action();
@@ -82,7 +84,7 @@ function form_save() {
 
 		$save['id']        = get_nfilter_request_var('id');
 
-		if (!isset_request_var('read_only')) {
+		if (get_nfilter_request_var('read_only') == '') {
 			$save['name']      = get_nfilter_request_var('name');
 			$save['hex']       = form_input_validate(get_nfilter_request_var('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
 		}else{
@@ -135,8 +137,8 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-				db_execute('DELETE FROM colors WHERE ' . array_to_sql_or($selected_items, 'hex'));
+			if (get_request_var('drp_action') == '1') { /* delete */
+				db_execute('DELETE FROM colors WHERE ' . array_to_sql_or($selected_items, 'id'));
 			}
 		}
 
@@ -174,7 +176,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Color', 'Click \'Continue\' to delete the following Colors', sizeof($color_array)) . "</p>
-					<p><ul>$color_list</ul></p>
+					<div class='itemlist'><ul>$color_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -189,7 +191,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($color_array) ? serialize($color_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -481,7 +483,7 @@ function process_request_vars() {
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
-			'default' => 'true'
+			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
 			),
 		'named' => array(
 			'filter' => FILTER_VALIDATE_REGEXP, 
@@ -506,7 +508,7 @@ function color() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box( __('Colors'), '100%', '', '3', 'center', 'color.php?action=edit');
+	html_start_box(__('Colors'), '100%', '', '3', 'center', 'color.php?action=edit');
 
 	?>
 	<tr class='even'>
@@ -525,7 +527,7 @@ function color() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -536,13 +538,13 @@ function color() {
 						</select>
 					</td>
 					<td>
-						<input type="checkbox" id='named' <?php print (get_request_var('named') == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='named' <?php print (get_request_var('named') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='named'><?php print __('Named Colors');?></label>
 					</td>
 					<td>
-						<input type="checkbox" id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+						<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
 					</td>
 					<td>
 						<label for='has_graphs'><?php print __('Has Graphs');?></label>
@@ -631,10 +633,6 @@ function color() {
 		$sql_having = '';
 	}
 
-	form_start('color.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(color)
 		FROM (
@@ -675,22 +673,26 @@ function color() {
 
     $nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Colors', 'page', 'main');
 
+	form_start('color.php', 'chk');
+
     print $nav;
 
+	html_start_box('', '100%', '', '3', 'center', '');
+
 	$display_text = array(
-		'hex' => array('display' => __('Hex'), 'align' => 'left', 'sort' => 'DESC', 'tip' => __('The Hex Value for this Color.')),
-		'name' => array('display' => __('Color Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Color definition.')),
+		'hex'       => array('display' => __('Hex'), 'align' => 'left', 'sort' => 'DESC', 'tip' => __('The Hex Value for this Color.')),
+		'name'      => array('display' => __('Color Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Color definition.')),
 		'read_only' => array('display' => __('Named Color'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Is this color a named color which are read only.')),
-		'nosort1' => array('display' => __('Color'), 'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Color as shown on the screen.')),
-		'nosort' => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use can not be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
-		'graphs' => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
+		'nosort1'   => array('display' => __('Color'), 'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Color as shown on the screen.')),
+		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
+		'graphs'    => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
 		'templates' => array('display' => __('Templates'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph Templates using this Color.'))
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($colors) > 0) {
+	if (sizeof($colors)) {
 		foreach ($colors as $color) {
 			if ($color['graphs'] == 0 && $color['templates'] == 0) {
 				$disabled = false;
@@ -704,21 +706,24 @@ function color() {
 
 			form_alternate_row('line' . $color['id'], false, $disabled);
 			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('color.php?action=edit&id=' . $color['id']) . "'>" . $color['hex'] . '</a>', $color['id']);
-			form_selectable_cell(strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($color['name'])) : htmlspecialchars($color['name']), $color['id']);
+			form_selectable_cell(filter_value($color['name'], get_request_var('filter')), $color['id']);
 			form_selectable_cell($color['read_only'] == 'on' ? __('Yes'):__('No'), $color['id']);
 			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . $color['hex'] . ';min-width:30%');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $color['id'], '', 'text-align:right');
-			form_selectable_cell(number_format($color['graphs']), $color['id'], '', 'text-align:right');
-			form_selectable_cell(number_format($color['templates']), $color['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($color['graphs']), $color['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($color['templates']), $color['id'], '', 'text-align:right');
 			form_checkbox_cell($color['name'], $color['id'], $disabled);
 			form_end_row();
 		}
-
-		print $nav;
 	}else{
 		print "<tr class='tableRow'><td colspan='7'><em>" . __('No Colors Found') . "</em></td></tr>\n";
 	}
-	html_end_box();
+
+	html_end_box(false);
+
+	if (sizeof($colors)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($color_actions, 1);

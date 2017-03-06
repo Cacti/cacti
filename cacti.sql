@@ -1,3 +1,10 @@
+
+--
+-- Allow MySQL to handle Cacti's legacy syntax
+--
+
+SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'NO_ZERO_DATE', '')) ;
+
 --
 -- Table structure for table `aggregate_graph_templates`
 --
@@ -54,35 +61,33 @@ CREATE TABLE `aggregate_graph_templates_graph` (
   `base_value` mediumint(8) NOT NULL DEFAULT '0',
   `t_grouping` char(2) DEFAULT '',
   `grouping` char(2) NOT NULL DEFAULT '',
-  `t_export` char(2) DEFAULT '',
-  `export` char(2) DEFAULT '',
   `t_unit_value` char(2) DEFAULT '',
   `unit_value` varchar(20) DEFAULT '',
   `t_unit_exponent_value` char(2) DEFAULT '',
   `unit_exponent_value` varchar(5) NOT NULL DEFAULT '',
-  t_alt_y_grid char(2) default '0',
+  t_alt_y_grid char(2) default '',
   alt_y_grid char(2) default NULL,
-  t_right_axis char(2) DEFAULT '0',
+  t_right_axis char(2) DEFAULT '',
   right_axis varchar(20) DEFAULT NULL,
-  t_right_axis_label char(2) DEFAULT '0',
+  t_right_axis_label char(2) DEFAULT '',
   right_axis_label varchar(200) DEFAULT NULL,
-  t_right_axis_format char(2) DEFAULT '0',
+  t_right_axis_format char(2) DEFAULT '',
   right_axis_format mediumint(8) DEFAULT NULL,
-  t_right_axis_formatter char(2) DEFAULT '0',
+  t_right_axis_formatter char(2) DEFAULT '',
   right_axis_formatter varchar(10) DEFAULT NULL,
-  t_left_axis_formatter char(2) DEFAULT '0',
+  t_left_axis_formatter char(2) DEFAULT '',
   left_axis_formatter varchar(10) DEFAULT NULL,
-  t_no_gridfit char(2) DEFAULT '0',
+  t_no_gridfit char(2) DEFAULT '',
   no_gridfit char(2) DEFAULT NULL,
-  t_unit_length char(2) DEFAULT '0',
+  t_unit_length char(2) DEFAULT '',
   unit_length varchar(10) DEFAULT NULL,
-  t_tab_width char(2) DEFAULT '30',
-  tab_width varchar(20) DEFAULT NULL,
-  t_dynamic_labels char(2) default '0',
+  t_tab_width char(2) DEFAULT '',
+  tab_width varchar(20) DEFAULT '30',
+  t_dynamic_labels char(2) default '',
   dynamic_labels char(2) default NULL,
-  t_force_rules_legend char(2) DEFAULT '0',
+  t_force_rules_legend char(2) DEFAULT '',
   force_rules_legend char(2) DEFAULT NULL,
-  t_legend_position char(2) DEFAULT '0',
+  t_legend_position char(2) DEFAULT '',
   legend_position varchar(10) DEFAULT NULL,
   t_legend_direction char(2) DEFAULT '0',
   legend_direction varchar(10) DEFAULT NULL,
@@ -97,7 +102,7 @@ CREATE TABLE `aggregate_graph_templates_item` (
   `aggregate_template_id` int(10) unsigned NOT NULL,
   `graph_templates_item_id` int(10) unsigned NOT NULL,
   `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `color_template` int(11) unsigned NOT NULL,
+  `color_template` int(11) NOT NULL,
   `t_graph_type_id` char(2) DEFAULT '',
   `graph_type_id` tinyint(3) NOT NULL DEFAULT '0',
   `t_cdef_id` char(2) DEFAULT '',
@@ -180,6 +185,7 @@ CREATE TABLE `automation_devices` (
   `snmp_priv_passphrase` varchar(200) DEFAULT '',
   `snmp_priv_protocol` char(6) DEFAULT '',
   `snmp_context` varchar(64) DEFAULT '',
+  `snmp_engine_id` varchar(30) DEFAULT '',
   `sysName` varchar(100) NOT NULL DEFAULT '',
   `sysLocation` varchar(255) NOT NULL DEFAULT '',
   `sysContact` varchar(255) NOT NULL DEFAULT '',
@@ -241,7 +247,7 @@ INSERT INTO `automation_graph_rules` VALUES (1,'Traffic 64 bit Server',1,14,''),
 
 CREATE TABLE `automation_ips` (
   `ip_address` varchar(20) NOT NULL DEFAULT '',
-  `hostname` varchar(250) DEFAULT NULL,
+  `hostname` varchar(100) DEFAULT NULL,
   `network_id` int(10) unsigned DEFAULT NULL,
   `pid` int(10) unsigned DEFAULT NULL,
   `status` int(10) unsigned DEFAULT NULL,
@@ -278,7 +284,7 @@ INSERT INTO `automation_match_rule_items` VALUES (1,1,1,1,0,'h.description',14,'
 
 CREATE TABLE `automation_networks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `poller_id` int(10) unsigned DEFAULT '0',
+  `poller_id` int(10) unsigned DEFAULT '1',
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT 'The name for this network',
   `subnet_range` varchar(255) NOT NULL DEFAULT '' COMMENT 'Defined subnet ranges for discovery',
   `dns_servers` varchar(128) NOT NULL DEFAULT '' COMMENT 'DNS Servers to use for name resolution',
@@ -316,7 +322,7 @@ CREATE TABLE `automation_networks` (
 -- Dumping data for table `automation_networks`
 --
 
-INSERT INTO `automation_networks` VALUES (1,0,'Test Network','192.168.1.0/24','','on',1,'on','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
+INSERT INTO `automation_networks` VALUES (1,1,'Test Network','192.168.1.0/24','','',1,'on','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
 
 --
 -- Table structure for table `automation_processes`
@@ -324,7 +330,7 @@ INSERT INTO `automation_networks` VALUES (1,0,'Test Network','192.168.1.0/24',''
 
 CREATE TABLE `automation_processes` (
   `pid` int(8) unsigned NOT NULL,
-  `poller_id` int(10) unsigned DEFAULT '0',
+  `poller_id` int(10) unsigned DEFAULT '1',
   `network_id` int(10) unsigned NOT NULL DEFAULT '0',
   `task` varchar(20) DEFAULT '',
   `status` varchar(20) DEFAULT NULL,
@@ -371,6 +377,7 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_priv_passphrase` varchar(200) DEFAULT '',
   `snmp_priv_protocol` char(6) DEFAULT '',
   `snmp_context` varchar(64) DEFAULT '',
+  `snmp_engine_id` varchar(30) DEFAULT '',
   PRIMARY KEY (`id`,`snmp_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Set of SNMP Options';
 
@@ -378,7 +385,7 @@ CREATE TABLE `automation_snmp_items` (
 -- Dumping data for table `automation_snmp_items`
 --
 
-INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,'admin','baseball','MD5','','DES',''),(2,1,2,'2','private',161,1000,3,10,'admin','baseball','MD5','','DES','');
+INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,'admin','baseball','MD5','','DES','',''),(2,1,2,'2','private',161,1000,3,10,'admin','baseball','MD5','','DES','','');
 
 --
 -- Table structure for table `automation_templates`
@@ -393,7 +400,7 @@ CREATE TABLE `automation_templates` (
   `sysOid` varchar(60) DEFAULT '',
   `sequence` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Templates of SysDescr SysName and SysOID matches to use for automation';
+) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Templates of SNMP Sys variables used for automation';
 
 --
 -- Dumping data for table `automation_templates`
@@ -453,7 +460,7 @@ CREATE TABLE cdef (
   hash varchar(32) NOT NULL default '',
   system mediumint(8) unsigned NOT NULL DEFAULT '0',
   name varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -478,7 +485,7 @@ CREATE TABLE cdef_items (
   sequence mediumint(8) unsigned NOT NULL default '0',
   type tinyint(2) NOT NULL default '0',
   value varchar(150) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY cdef_id (cdef_id)
 ) ENGINE=InnoDB;
 
@@ -1044,8 +1051,7 @@ CREATE TABLE data_input (
   name varchar(200) NOT NULL default '',
   input_string varchar(255) default NULL,
   type_id tinyint(2) NOT NULL default '0',
-  PRIMARY KEY (id),
-  KEY name (name)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -1277,7 +1283,7 @@ CREATE TABLE data_input_fields (
   type_code varchar(40) default NULL,
   regexp_match varchar(200) default NULL,
   allow_nulls char(2) default NULL,
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY data_input_id (data_input_id),
   KEY type_code (type_code)
 ) ENGINE=InnoDB;
@@ -1343,21 +1349,16 @@ CREATE TABLE data_local (
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
   snmp_index varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY data_template_id (data_template_id),
   KEY snmp_query_id (snmp_query_id),
+  KEY snmp_index (snmp_index(191)),
   KEY host_id (host_id)
 ) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `data_local`
 --
-
-INSERT INTO data_local VALUES (3,13,1,0,'');
-INSERT INTO data_local VALUES (4,15,1,0,'');
-INSERT INTO data_local VALUES (5,11,1,0,'');
-INSERT INTO data_local VALUES (6,17,1,0,'');
-INSERT INTO data_local VALUES (7,16,1,0,'');
 
 --
 -- Table structure for table `data_source_profiles`
@@ -1379,6 +1380,7 @@ CREATE TABLE `data_source_profiles` (
 --
 
 INSERT INTO `data_source_profiles` VALUES (1,'d62c52891f4f9688729a5bc9fad91b18','System Default',300,600,0.5,'on');
+INSERT INTO `data_source_profiles` VALUES (2,'c0dd0e46b9ca268e7ed4162d329f9215','High Collection Rate',30,1200,0.5,'');
 
 --
 -- Table structure for table `data_source_profiles_cf`
@@ -1396,6 +1398,7 @@ CREATE TABLE `data_source_profiles_cf` (
 --
 
 INSERT INTO `data_source_profiles_cf` VALUES (1,1),(1,2),(1,3),(1,4);
+INSERT INTO `data_source_profiles_cf` VALUES (2,1),(2,2),(2,3),(2,4);
 
 --
 -- Table structure for table `data_source_profiles_rra`
@@ -1415,132 +1418,136 @@ CREATE TABLE `data_source_profiles_rra` (
 -- Dumping data for table `data_source_profiles_rra`
 --
 
-INSERT INTO `data_source_profiles_rra` VALUES 
-	(1,1,'Daily (5 Minute Average)',1,600),
-	(2,1,'Weekly (30 Minute Average)',6,700),
-	(3,1,'Monthly (2 Hour Average)',24,775),
-	(4,1,'Yearly (1 Day Average)',288,797);
+INSERT INTO `data_source_profiles_rra` VALUES (1,1,'Daily (5 Minute Average)',1,600);
+INSERT INTO `data_source_profiles_rra` VALUES (2,1,'Weekly (30 Minute Average)',6,700);
+INSERT INTO `data_source_profiles_rra` VALUES (3,1,'Monthly (2 Hour Average)',24,775);
+INSERT INTO `data_source_profiles_rra` VALUES (4,1,'Yearly (1 Day Average)',288,797);
+INSERT INTO `data_source_profiles_rra` VALUES (5,2,'30 Second Samples',1,1500);
+INSERT INTO `data_source_profiles_rra` VALUES (6,2,'15 Minute Average',30,1346);
+INSERT INTO `data_source_profiles_rra` VALUES (7,2,'1 Hour Average',120,1445);
+INSERT INTO `data_source_profiles_rra` VALUES (8,2,'4 Hour Average',480,4380);
+
 
 --
 -- Table structure for table `data_source_purge_action`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
-		`id` integer UNSIGNED auto_increment,
-		`name` varchar(128) NOT NULL default '',
-		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
-		`action` tinyint(2) NOT NULL default 0,
-		PRIMARY KEY (`id`),
-		UNIQUE KEY name (`name`))
-		ENGINE=InnoDB
-		COMMENT='RRD Cleaner File Actions';
+CREATE TABLE `data_source_purge_action` (
+  `id` integer UNSIGNED auto_increment,
+  `name` varchar(128) NOT NULL default '',
+  `local_data_id` mediumint(8) unsigned NOT NULL default '0',
+  `action` tinyint(2) NOT NULL default 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY name (`name`))
+  ENGINE=InnoDB
+  COMMENT='RRD Cleaner File Actions';
 
 --
 -- Table structure for table `data_source_purge_temp`
 --
 
 CREATE TABLE `data_source_purge_temp` (
-		`id` integer UNSIGNED auto_increment,
-		`name_cache` varchar(255) NOT NULL default '',
-		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
-		`name` varchar(128) NOT NULL default '',
-		`size` integer UNSIGNED NOT NULL default '0',
-		`last_mod` TIMESTAMP NOT NULL default '0000-00-00 00:00:00',
-		`in_cacti` tinyint NOT NULL default '0',
-		`data_template_id` mediumint(8) unsigned NOT NULL default '0',
-		PRIMARY KEY (`id`),
-		UNIQUE KEY name (`name`),
-		KEY local_data_id (`local_data_id`),
-		KEY in_cacti (`in_cacti`),
-		KEY data_template_id (`data_template_id`))
-		ENGINE=InnoDB
-		COMMENT='RRD Cleaner File Repository';
+  `id` integer UNSIGNED auto_increment,
+  `name_cache` varchar(255) NOT NULL default '',
+  `local_data_id` mediumint(8) unsigned NOT NULL default '0',
+  `name` varchar(128) NOT NULL default '',
+  `size` integer UNSIGNED NOT NULL default '0',
+  `last_mod` TIMESTAMP NOT NULL default '0000-00-00 00:00:00',
+  `in_cacti` tinyint NOT NULL default '0',
+  `data_template_id` mediumint(8) unsigned NOT NULL default '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY name (`name`),
+  KEY local_data_id (`local_data_id`),
+  KEY in_cacti (`in_cacti`),
+  KEY data_template_id (`data_template_id`))
+  ENGINE=InnoDB
+  COMMENT='RRD Cleaner File Repository';
 
 	
 --
 -- Table structure for table `data_source_stats_daily`
 --
 	
-CREATE TABLE IF NOT EXISTS `data_source_stats_daily` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`average` DOUBLE DEFAULT NULL,
-		`peak` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=InnoDB;
+CREATE TABLE `data_source_stats_daily` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `average` DOUBLE DEFAULT NULL,
+  `peak` DOUBLE DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
+  ) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_hourly`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_hourly` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`average` DOUBLE DEFAULT NULL,
-		`peak` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=InnoDB;
+CREATE TABLE `data_source_stats_hourly` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `average` DOUBLE DEFAULT NULL,
+  `peak` DOUBLE DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
+  ) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_hourly_cache`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_cache` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
-		`value` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`time`,`rrd_name`),
-		KEY `time` USING BTREE (`time`)
-		) ENGINE=MEMORY;
+CREATE TABLE `data_source_stats_hourly_cache` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `time` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `value` DOUBLE DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`time`,`rrd_name`),
+  KEY `time` USING BTREE (`time`)
+  ) ENGINE=MEMORY;
 
 --
 -- Table structure for table `data_source_stats_hourly_last`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_last` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`value` DOUBLE DEFAULT NULL,
-		`calculated` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=MEMORY;
+CREATE TABLE `data_source_stats_hourly_last` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `value` DOUBLE DEFAULT NULL,
+  `calculated` DOUBLE DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
+  ) ENGINE=MEMORY;
 
 --
 -- Table structure for table `data_source_stats_monthly`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_monthly` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`average` DOUBLE DEFAULT NULL,
-		`peak` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=InnoDB;
+CREATE TABLE `data_source_stats_monthly` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `average` DOUBLE DEFAULT NULL,
+  `peak` DOUBLE DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
+  ) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_weekly`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_weekly` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`average` DOUBLE DEFAULT NULL,
-		`peak` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=InnoDB;
+CREATE TABLE `data_source_stats_weekly` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `average` DOUBLE DEFAULT NULL,
+  `peak` DOUBLE DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
+  ) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_source_stats_yearly`
 --
 
-CREATE TABLE IF NOT EXISTS `data_source_stats_yearly` (
-		`local_data_id` mediumint(8) unsigned NOT NULL,
-		`rrd_name` varchar(19) NOT NULL,
-		`average` DOUBLE DEFAULT NULL,
-		`peak` DOUBLE DEFAULT NULL,
-		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=InnoDB;
+CREATE TABLE `data_source_stats_yearly` (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `rrd_name` varchar(19) NOT NULL,
+  `average` DOUBLE DEFAULT NULL,
+  `peak` DOUBLE DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`)
+  ) ENGINE=InnoDB;
 
 --
 -- Table structure for table `data_template`
@@ -1550,7 +1557,7 @@ CREATE TABLE data_template (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(150) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -1598,14 +1605,14 @@ CREATE TABLE data_template_data (
   t_name char(2) default NULL,
   name varchar(250) NOT NULL default '',
   name_cache varchar(255) NOT NULL default '',
-  data_source_path varchar(255) default NULL,
-  t_active char(2) default NULL,
+  data_source_path varchar(255) default '',
+  t_active char(2) default '',
   active char(2) default NULL,
-  t_rrd_step char(2) default NULL,
+  t_rrd_step char(2) default '',
   rrd_step mediumint(8) unsigned NOT NULL default '0',
   t_data_source_profile_id char(2) default '',
   data_source_profile_id mediumint(8) unsigned NOT NULL default '1',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
   KEY data_input_id (data_input_id)
@@ -1640,11 +1647,6 @@ INSERT INTO data_template_data VALUES (56,0,0,43,12,'','|host_description| - Har
 INSERT INTO data_template_data VALUES (57,0,0,44,12,'','|host_description| - CPU Utilization','',NULL,'','on','',300,'',1);
 INSERT INTO data_template_data VALUES (58,0,0,45,1,'','|host_description| - Processes','',NULL,'','on','',300,'',1);
 INSERT INTO data_template_data VALUES (59,0,0,46,1,'','|host_description| - Logged in Users','',NULL,'','on','',300,'',1);
-INSERT INTO data_template_data VALUES (62,13,3,13,6,NULL,'|host_description| - Memory - Free','Localhost - Memory - Free','<path_rra>/localhost_mem_buffers_3.rrd',NULL,'on',NULL,300,'',1);
-INSERT INTO data_template_data VALUES (63,15,4,15,6,NULL,'|host_description| - Memory - Free Swap','Localhost - Memory - Free Swap','<path_rra>/localhost_mem_swap_4.rrd',NULL,'on',NULL,300,'',1);
-INSERT INTO data_template_data VALUES (64,11,5,11,4,NULL,'|host_description| - Load Average','Localhost - Load Average','<path_rra>/localhost_load_1min_5.rrd',NULL,'on',NULL,300,'',1);
-INSERT INTO data_template_data VALUES (65,17,6,17,5,NULL,'|host_description| - Logged in Users','Localhost - Logged in Users','<path_rra>/localhost_users_6.rrd',NULL,'on',NULL,300,'',1);
-INSERT INTO data_template_data VALUES (66,16,7,16,7,NULL,'|host_description| - Processes','Localhost - Processes','<path_rra>/localhost_proc_7.rrd',NULL,'on',NULL,300,'',1);
 INSERT INTO data_template_data VALUES (68,0,0,47,1,'','|host_description| - Memory - Cache','',NULL,'','on','',300,'',1);
 INSERT INTO data_template_data VALUES (69,0,0,48,1,'on','|host_description| -','',NULL,'','on','',300,'',1);
 
@@ -1670,7 +1672,7 @@ CREATE TABLE data_template_rrd (
   data_source_name varchar(19) NOT NULL default '',
   t_data_input_field_id char(2) default NULL,
   data_input_field_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   UNIQUE KEY `duplicate_dsname_contraint` (`local_data_id`,`data_source_name`,`data_template_id`),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
@@ -1681,16 +1683,16 @@ CREATE TABLE data_template_rrd (
 -- Dumping data for table `data_template_rrd`
 --
 
-INSERT INTO data_template_rrd VALUES (3,'2d53f9c76767a2ae8909f4152fd473a4',0,0,3,'','0','','0','',600,'',1,'','hdd_free','',0);
-INSERT INTO data_template_rrd VALUES (4,'93d91aa7a3cc5473e7b195d5d6e6e675',0,0,3,'','0','','0','',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (3,'2d53f9c76767a2ae8909f4152fd473a4',0,0,3,'','U','','0','',600,'',1,'','hdd_free','',0);
+INSERT INTO data_template_rrd VALUES (4,'93d91aa7a3cc5473e7b195d5d6e6e675',0,0,3,'','U','','0','',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (5,'7bee7987bbf30a3bc429d2a67c6b2595',0,0,4,'','100','','0','',600,'',2,'','cpu_system','',0);
 INSERT INTO data_template_rrd VALUES (6,'ddccd7fbdece499da0235b4098b87f9e',0,0,5,'','100','','0','',600,'',2,'','cpu_user','',0);
 INSERT INTO data_template_rrd VALUES (7,'122ab2097f8c6403b7b90cde7b9e2bc2',0,0,6,'','100','','0','',600,'',2,'','cpu_nice','',0);
 INSERT INTO data_template_rrd VALUES (12,'8175ca431c8fe50efff5a1d3ae51b55d',0,0,11,'','500','','0','',600,'',1,'','load_1min','',17);
 INSERT INTO data_template_rrd VALUES (13,'a2eeb8acd6ea01cd0e3ac852965c0eb6',0,0,11,'','500','','0','',600,'',1,'','load_5min','',18);
 INSERT INTO data_template_rrd VALUES (14,'9f951b7fb3b19285a411aebb5254a831',0,0,11,'','500','','0','',600,'',1,'','load_15min','',19);
-INSERT INTO data_template_rrd VALUES (16,'a4df3de5238d3beabee1a2fe140d3d80',0,0,13,'','0','','0','',600,'',1,'','mem_buffers','',23);
-INSERT INTO data_template_rrd VALUES (18,'7fea6acc9b1a19484b4cb4cef2b6c5da',0,0,15,'','0','','0','',600,'',1,'','mem_swap','',23);
+INSERT INTO data_template_rrd VALUES (16,'a4df3de5238d3beabee1a2fe140d3d80',0,0,13,'','U','','0','',600,'',1,'','mem_buffers','',23);
+INSERT INTO data_template_rrd VALUES (18,'7fea6acc9b1a19484b4cb4cef2b6c5da',0,0,15,'','U','','0','',600,'',1,'','mem_swap','',23);
 INSERT INTO data_template_rrd VALUES (19,'f1ba3a5b17b95825021241398bb0f277',0,0,16,'','1000','','0','',600,'',1,'','proc','',24);
 INSERT INTO data_template_rrd VALUES (20,'46a5afe8e6c0419172c76421dc9e304a',0,0,17,'','500','','0','',600,'',1,'','users','',21);
 INSERT INTO data_template_rrd VALUES (21,'962fd1994fe9cae87fb36436bdb8a742',0,0,18,'','5000','','0','',600,'',1,'','ping','',30);
@@ -1698,9 +1700,9 @@ INSERT INTO data_template_rrd VALUES (30,'3c0fd1a188b64a662dfbfa985648397b',0,0,
 INSERT INTO data_template_rrd VALUES (33,'ed44c2438ef7e46e2aeed2b6c580815c',0,0,30,'','500','','0','',600,'',1,'','load_1min','',0);
 INSERT INTO data_template_rrd VALUES (34,'9b3a00c9e3530d9e58895ac38271361e',0,0,31,'','500','','0','',600,'',1,'','load_5min','',0);
 INSERT INTO data_template_rrd VALUES (35,'6746c2ed836ecc68a71bbddf06b0e5d9',0,0,32,'','500','','0','',600,'',1,'','load_15min','',0);
-INSERT INTO data_template_rrd VALUES (36,'9835d9e1a8c78aa2475d752e8fa74812',0,0,33,'','0','','0','',600,'',1,'','mem_buffers','',0);
-INSERT INTO data_template_rrd VALUES (37,'9c78dc1981bcea841b8c827c6dc0d26c',0,0,34,'','0','','0','',600,'',1,'','mem_free','',0);
-INSERT INTO data_template_rrd VALUES (44,'4c82df790325d789d304e6ee5cd4ab7d',0,0,37,'','0','','0','',600,'',1,'','hdd_free','',0);
+INSERT INTO data_template_rrd VALUES (36,'9835d9e1a8c78aa2475d752e8fa74812',0,0,33,'','U','','0','',600,'',1,'','mem_buffers','',0);
+INSERT INTO data_template_rrd VALUES (37,'9c78dc1981bcea841b8c827c6dc0d26c',0,0,34,'','U','','0','',600,'',1,'','mem_free','',0);
+INSERT INTO data_template_rrd VALUES (44,'4c82df790325d789d304e6ee5cd4ab7d',0,0,37,'','U','','0','',600,'',1,'','hdd_free','',0);
 INSERT INTO data_template_rrd VALUES (46,'c802e2fd77f5b0a4c4298951bf65957c',0,0,38,'','10000000','','0','',600,'',2,'','errors_in','',0);
 INSERT INTO data_template_rrd VALUES (47,'4e2a72240955380dc8ffacfcc8c09874',0,0,38,'','10000000','','0','',600,'',2,'','discards_in','',0);
 INSERT INTO data_template_rrd VALUES (48,'636672962b5bb2f31d86985e2ab4bdfe',0,0,39,'','1000000000','','0','',600,'',2,'','unicast_in','',0);
@@ -1711,21 +1713,25 @@ INSERT INTO data_template_rrd VALUES (52,'7be68cbc4ee0b2973eb9785f8c7a35c7',0,0,
 INSERT INTO data_template_rrd VALUES (53,'93e2b6f59b10b13f2ddf2da3ae98b89a',0,0,40,'','1000000000','','0','',600,'',2,'','nonunicast_in','',0);
 INSERT INTO data_template_rrd VALUES (54,'2df25c57022b0c7e7d0be4c035ada1a0',0,0,41,'on','100000000','','0','',600,'',2,'','traffic_in','',0);
 INSERT INTO data_template_rrd VALUES (55,'721c0794526d1ac1c359f27dc56faa49',0,0,41,'on','100000000','','0','',600,'',2,'','traffic_out','',0);
-INSERT INTO data_template_rrd VALUES (56,'07175541991def89bd02d28a215f6fcc',0,0,37,'','0','','0','',600,'',1,'','hdd_used','',0);
-INSERT INTO data_template_rrd VALUES (78,'0ee6bb54957f6795a5369a29f818d860',0,0,43,'','0','','0','',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (56,'07175541991def89bd02d28a215f6fcc',0,0,37,'','U','','0','',600,'',1,'','hdd_used','',0);
+INSERT INTO data_template_rrd VALUES (78,'0ee6bb54957f6795a5369a29f818d860',0,0,43,'','U','','0','',600,'',1,'','hdd_used','',0);
 INSERT INTO data_template_rrd VALUES (79,'9825aaf7c0bdf1554c5b4b86680ac2c0',0,0,44,'','100','','0','',600,'',1,'','cpu','',0);
 INSERT INTO data_template_rrd VALUES (80,'50ccbe193c6c7fc29fb9f726cd6c48ee',0,0,45,'','1000','','0','',600,'',1,'','proc','',0);
 INSERT INTO data_template_rrd VALUES (81,'9464c91bcff47f23085ae5adae6ab987',0,0,46,'','5000','','0','',600,'',1,'','users','',0);
-INSERT INTO data_template_rrd VALUES (84,'',16,3,13,NULL,'0',NULL,'0',NULL,600,NULL,1,NULL,'mem_buffers',NULL,23);
-INSERT INTO data_template_rrd VALUES (85,'',18,4,15,NULL,'0',NULL,'0',NULL,600,NULL,1,NULL,'mem_swap',NULL,23);
-INSERT INTO data_template_rrd VALUES (86,'',12,5,11,NULL,'500',NULL,'0',NULL,600,NULL,1,NULL,'load_1min',NULL,17);
-INSERT INTO data_template_rrd VALUES (87,'',13,5,11,NULL,'500',NULL,'0',NULL,600,NULL,1,NULL,'load_5min',NULL,18);
-INSERT INTO data_template_rrd VALUES (88,'',14,5,11,NULL,'500',NULL,'0',NULL,600,NULL,1,NULL,'load_15min',NULL,19);
-INSERT INTO data_template_rrd VALUES (89,'',20,6,17,NULL,'500',NULL,'0',NULL,600,NULL,1,NULL,'users',NULL,21);
-INSERT INTO data_template_rrd VALUES (90,'',19,7,16,NULL,'1000',NULL,'0',NULL,600,NULL,1,NULL,'proc',NULL,24);
-INSERT INTO data_template_rrd VALUES (92,'165a0da5f461561c85d092dfe96b9551',0,0,43,'','0','','0','',600,'',1,'','hdd_total','',0);
-INSERT INTO data_template_rrd VALUES (95,'7a6ca455bbeff99ca891371bc77d5cf9',0,0,47,'','0','','0','',600,'',1,'','mem_cache','',0);
+INSERT INTO data_template_rrd VALUES (92,'165a0da5f461561c85d092dfe96b9551',0,0,43,'','U','','0','',600,'',1,'','hdd_total','',0);
+INSERT INTO data_template_rrd VALUES (95,'7a6ca455bbeff99ca891371bc77d5cf9',0,0,47,'','U','','0','',600,'',1,'','mem_cache','',0);
 INSERT INTO data_template_rrd VALUES (96,'224b83ea73f55f8a861bcf4c9bea0472',0,0,48,'on','100','','0','',600,'on',1,'','snmp_oid','',0);
+
+CREATE TABLE external_links (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  sortorder int(11) NOT NULL DEFAULT '0',
+  enabled char(2) DEFAULT 'on',
+  contentfile varchar(255) NOT NULL default '',
+  title varchar(20) NOT NULL default '',
+  style varchar(10) NOT NULL DEFAULT '',
+  extendedstyle varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB COMMENT='Contains external links that are embedded into Cacti';
 
 --
 -- Table structure for table `graph_local`
@@ -1736,22 +1742,19 @@ CREATE TABLE graph_local (
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
+  snmp_query_graph_id mediumint(8) NOT NULL default '0',
   snmp_index varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY host_id (host_id),
   KEY graph_template_id (graph_template_id),
   KEY snmp_query_id (snmp_query_id),
-  KEY snmp_index (snmp_index)
+  KEY snmp_query_graph_id (snmp_query_graph_id),
+  KEY snmp_index (snmp_index(191))
 ) ENGINE=InnoDB COMMENT='Creates a relationship for each item in a custom graph.';
 
 --
 -- Dumping data for table `graph_local`
 --
-
-INSERT INTO graph_local VALUES (1,12,1,0,'');
-INSERT INTO graph_local VALUES (2,9,1,0,'');
-INSERT INTO graph_local VALUES (3,10,1,0,'');
-INSERT INTO graph_local VALUES (4,8,1,0,'');
 
 --
 -- Table structure for table `graph_template_input`
@@ -1764,7 +1767,7 @@ CREATE TABLE graph_template_input (
   name varchar(255) NOT NULL default '',
   description text,
   column_name varchar(50) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='Stores the names for graph item input groups.';
 
 --
@@ -1835,7 +1838,7 @@ INSERT INTO graph_template_input VALUES (83,'ac2355b4895c37e14df827f969f31c12',3
 CREATE TABLE graph_template_input_defs (
   graph_template_input_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_item_id int(12) unsigned NOT NULL default '0',
-  PRIMARY KEY  (graph_template_input_id,graph_template_item_id),
+  PRIMARY KEY (graph_template_input_id,graph_template_item_id),
   KEY graph_template_input_id (graph_template_input_id)
 ) ENGINE=InnoDB COMMENT='Stores the relationship for what graph iitems are associated';
 
@@ -2040,9 +2043,9 @@ CREATE TABLE graph_templates (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash char(32) NOT NULL default '',
   name char(255) NOT NULL default '',
-  PRIMARY KEY  (id),
-  KEY name (name)
-) ENGINE=InnoDB COMMENT='Contains each graph template name.';
+  PRIMARY KEY (id)) 
+  ENGINE=InnoDB 
+  COMMENT='Contains each graph template name.';
 
 --
 -- Dumping data for table `graph_templates`
@@ -2082,7 +2085,7 @@ CREATE TABLE graph_templates_gprint (
   hash varchar(32) NOT NULL default '',
   name varchar(100) NOT NULL default '',
   gprint_text varchar(255) default NULL,
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -2102,109 +2105,102 @@ CREATE TABLE graph_templates_graph (
   local_graph_template_graph_id mediumint(8) unsigned NOT NULL default '0',
   local_graph_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  t_image_format_id char(2) default '0',
+  t_image_format_id char(2) default '',
   image_format_id tinyint(1) NOT NULL default '0',
-  t_title char(2) default '0',
+  t_title char(2) default '',
   title varchar(255) NOT NULL default '',
   title_cache varchar(255) NOT NULL default '',
-  t_height char(2) default '0',
+  t_height char(2) default '',
   height mediumint(8) NOT NULL default '0',
-  t_width char(2) default '0',
+  t_width char(2) default '',
   width mediumint(8) NOT NULL default '0',
-  t_upper_limit char(2) default '0',
+  t_upper_limit char(2) default '',
   upper_limit varchar(20) NOT NULL default '0',
-  t_lower_limit char(2) default '0',
+  t_lower_limit char(2) default '',
   lower_limit varchar(20) NOT NULL default '0',
-  t_vertical_label char(2) default '0',
+  t_vertical_label char(2) default '',
   vertical_label varchar(200) default NULL,
-  t_slope_mode char(2) default '0',
+  t_slope_mode char(2) default '',
   slope_mode char(2) default 'on',
-  t_auto_scale char(2) default '0',
+  t_auto_scale char(2) default '',
   auto_scale char(2) default NULL,
-  t_auto_scale_opts char(2) default '0',
+  t_auto_scale_opts char(2) default '',
   auto_scale_opts tinyint(1) NOT NULL default '0',
-  t_auto_scale_log char(2) default '0',
+  t_auto_scale_log char(2) default '',
   auto_scale_log char(2) default NULL,
-  t_scale_log_units char(2) default '0',
+  t_scale_log_units char(2) default '',
   scale_log_units char(2) default NULL,
-  t_auto_scale_rigid char(2) default '0',
+  t_auto_scale_rigid char(2) default '',
   auto_scale_rigid char(2) default NULL,
-  t_auto_padding char(2) default '0',
+  t_auto_padding char(2) default '',
   auto_padding char(2) default NULL,
-  t_base_value char(2) default '0',
+  t_base_value char(2) default '',
   base_value mediumint(8) NOT NULL default '0',
-  t_grouping char(2) default '0',
+  t_grouping char(2) default '',
   grouping char(2) NOT NULL default '',
-  t_export char(2) default '0',
-  export char(2) default NULL,
-  t_unit_value char(2) default '0',
+  t_unit_value char(2) default '',
   unit_value varchar(20) default NULL,
-  t_unit_exponent_value char(2) default '0',
+  t_unit_exponent_value char(2) default '',
   unit_exponent_value varchar(5) NOT NULL default '',
-  t_alt_y_grid char(2) default '0',
+  t_alt_y_grid char(2) default '',
   alt_y_grid char(2) default NULL,
-  t_right_axis char(2) DEFAULT '0',
+  t_right_axis char(2) DEFAULT '',
   right_axis varchar(20) DEFAULT NULL,
-  t_right_axis_label char(2) DEFAULT '0',
+  t_right_axis_label char(2) DEFAULT '',
   right_axis_label varchar(200) DEFAULT NULL,
-  t_right_axis_format char(2) DEFAULT '0',
+  t_right_axis_format char(2) DEFAULT '',
   right_axis_format mediumint(8) DEFAULT NULL,
-  t_right_axis_formatter char(2) DEFAULT '0',
+  t_right_axis_formatter char(2) DEFAULT '',
   right_axis_formatter varchar(10) DEFAULT NULL,
-  t_left_axis_formatter char(2) DEFAULT '0',
+  t_left_axis_formatter char(2) DEFAULT '',
   left_axis_formatter varchar(10) DEFAULT NULL,
-  t_no_gridfit char(2) DEFAULT '0',
+  t_no_gridfit char(2) DEFAULT '',
   no_gridfit char(2) DEFAULT NULL,
-  t_unit_length char(2) DEFAULT '0',
+  t_unit_length char(2) DEFAULT '',
   unit_length varchar(10) DEFAULT NULL,
-  t_tab_width char(2) DEFAULT '30',
-  tab_width varchar(20) DEFAULT NULL,
-  t_dynamic_labels char(2) default '0',
+  t_tab_width char(2) DEFAULT '',
+  tab_width varchar(20) DEFAULT '30',
+  t_dynamic_labels char(2) default '',
   dynamic_labels char(2) default NULL,
-  t_force_rules_legend char(2) DEFAULT '0',
+  t_force_rules_legend char(2) DEFAULT '',
   force_rules_legend char(2) DEFAULT NULL,
-  t_legend_position char(2) DEFAULT '0',
+  t_legend_position char(2) DEFAULT '',
   legend_position varchar(10) DEFAULT NULL,
-  t_legend_direction char(2) DEFAULT '0',
+  t_legend_direction char(2) DEFAULT '',
   legend_direction varchar(10) DEFAULT NULL,
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY local_graph_id (local_graph_id),
   KEY graph_template_id (graph_template_id),
-  KEY title_cache (title_cache)
+  KEY title_cache (title_cache(191))
 ) ENGINE=InnoDB COMMENT='Stores the actual graph data.';
 
 --
 -- Dumping data for table `graph_templates_graph`
 --
 
-INSERT INTO graph_templates_graph VALUES (2,0,0,2,'',1,'on','|host_description| - Traffic','','',120,'',500,'','100','','0','','bits per second','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (3,0,0,3,'',1,'on','|host_description| - Hard Drive Space','','',120,'',500,'','100','','0','','bytes','0','on','','on','',2,'','','0','','','on','','on','',1024,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (4,0,0,4,'',1,'','|host_description| - CPU Usage','','',120,'',500,'','100','','0','','percent','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (7,0,0,7,'',1,'','|host_description| - Ping Latency','','',120,'',500,'','100','','0','','milliseconds','0','on','','on','',2,'','','0','','','','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (8,0,0,8,'',1,'','|host_description| - Processes','','',120,'',500,'','100','','0','','processes','0','on','','on','',2,'','','0','','','','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (9,0,0,9,'',1,'','|host_description| - Load Average','','',120,'',500,'','100','','0','','processes in queue','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','0','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (10,0,0,10,'',1,'','|host_description| - Logged in Users','','',120,'',500,'','100','','0','','users','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (11,0,0,11,'',1,'','|host_description| - Load Average','','',120,'',500,'','100','','0','','processes in queue','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','0','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (12,0,0,12,'',1,'','|host_description| - Memory Usage','','',120,'',500,'','100','','0','','kilobytes','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (13,0,0,13,'',1,'','|host_description| - Memory Usage','','',120,'',500,'','100','','0','','bytes','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (18,0,0,18,'',1,'','|host_description| - CPU Usage','','',120,'',500,'','100','','0','','percent','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (21,0,0,21,'',1,'on','|host_description| - Available Disk Space','','',120,'',500,'','100','','0','','bytes','0','on','','on','',2,'','','0','','','on','','on','',1024,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (22,0,0,22,'',1,'on','|host_description| - Errors/Discards','','',120,'',500,'','100','','0','','errors/sec','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (23,0,0,23,'',1,'on','|host_description| - Unicast Packets','','',120,'',500,'','100','','0','','packets/sec','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (24,0,0,24,'',1,'on','|host_description| - Non-Unicast Packets','','',120,'',500,'','100','','0','','packets/sec','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (25,0,0,25,'',1,'on','|host_description| - Traffic','','',120,'',500,'','100','','0','','bytes per second','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (34,0,0,26,'',1,'on','|host_description| - Available Disk Space','','',120,'',500,'','100','','0','','bytes','0','on','','on','',2,'','','0','','','on','','on','',1024,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (35,0,0,27,'',1,'on','|host_description| - CPU Utilization','','',120,'',500,'','100','','0','','percent','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (36,0,0,28,'',1,'','|host_description| - Logged in Users','','',120,'',500,'','100','','0','','users','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (37,0,0,29,'',1,'','|host_description| - Processes','','',120,'',500,'','100','','0','','processes','0','on','','on','',2,'','','0','','','','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (38,12,1,12,'0',1,'0','|host_description| - Memory Usage','Localhost - Memory Usage','0',120,'0',500,'0','100','0','0','0','kilobytes','0','on','0','on','0',2,'0','','0','','0','on','0','on','0',1000,'0','','0','on','0','','0','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (39,9,2,9,'0',1,'0','|host_description| - Load Average','Localhost - Load Average','0',120,'0',500,'0','100','0','0','0','processes in queue','0','on','0','on','0',2,'0','','0','','0','on','0','on','0',1000,'0','','0','on','0','','0','0','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (40,10,3,10,'0',1,'0','|host_description| - Logged in Users','Localhost - Logged in Users','0',120,'0',500,'0','100','0','0','0','users','0','on','0','on','0',2,'0','','0','','0','on','0','on','0',1000,'0','','0','on','0','','0','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (41,8,4,8,'0',1,'0','|host_description| - Processes','Localhost - Processes','0',120,'0',500,'0','100','0','0','0','processes','0','on','0','on','0',2,'0','','0','','0','','0','on','0',1000,'0','','0','on','0','','0','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (43,0,0,31,'',1,'on','|host_description| - Traffic','','',120,'',500,'','100','','0','','bits per second','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (44,0,0,32,'',1,'on','|host_description| - Traffic','','',120,'',500,'','100','','0','','bits per second','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (45,0,0,33,'',1,'on','|host_description| - Traffic','','',120,'',500,'','100','','0','','bytes per second','0','on','','on','',2,'','','0','','','on','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
-INSERT INTO graph_templates_graph VALUES (47,0,0,34,'',1,'on','|host_description| -','','',120,'',500,'','100','','0','on','','0','on','','on','',2,'','','0','','','','','on','',1000,'0','','','on','','','','','0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL,'40',NULL,'0',NULL,'0',NULL,'0',NULL,'0',NULL);
+INSERT INTO graph_templates_graph VALUES (2,0,0,2,'',1,'on','|host_description| - Traffic','','',150,'',600,'','100','','0','','bits per second','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (3,0,0,3,'',1,'on','|host_description| - Hard Drive Space','','',150,'',600,'','100','','0','','bytes','','on','','on','',2,'','','','','','on','','on','',1024,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (4,0,0,4,'',1,'','|host_description| - CPU Usage','','',150,'',600,'','100','','0','','percent','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (7,0,0,7,'',1,'','|host_description| - Ping Latency','','',150,'',600,'','100','','0','','milliseconds','','on','','on','',2,'','','','','','','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (8,0,0,8,'',1,'','|host_description| - Processes','','',150,'',600,'','100','','0','','processes','','on','','on','',2,'','','','','','','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (9,0,0,9,'',1,'','|host_description| - Load Average','','',150,'',600,'','100','','0','','processes in queue','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','0','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (10,0,0,10,'',1,'','|host_description| - Logged in Users','','',150,'',600,'','100','','0','','users','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (11,0,0,11,'',1,'','|host_description| - Load Average','','',150,'',600,'','100','','0','','processes in queue','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','0','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (12,0,0,12,'',1,'','|host_description| - Memory Usage','','',150,'',600,'','100','','0','','kilobytes','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (13,0,0,13,'',1,'','|host_description| - Memory Usage','','',150,'',600,'','100','','0','','bytes','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (18,0,0,18,'',1,'','|host_description| - CPU Usage','','',150,'',600,'','100','','0','','percent','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (21,0,0,21,'',1,'on','|host_description| - Available Disk Space','','',150,'',600,'','100','','0','','bytes','','on','','on','',2,'','','','','','on','','on','',1024,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (22,0,0,22,'',1,'on','|host_description| - Errors/Discards','','',150,'',600,'','100','','0','','errors/sec','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (23,0,0,23,'',1,'on','|host_description| - Unicast Packets','','',150,'',600,'','100','','0','','packets/sec','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (24,0,0,24,'',1,'on','|host_description| - Non-Unicast Packets','','',150,'',600,'','100','','0','','packets/sec','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (25,0,0,25,'',1,'on','|host_description| - Traffic','','',150,'',600,'','100','','0','','bytes per second','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (34,0,0,26,'',1,'on','|host_description| - Available Disk Space','','',150,'',600,'','100','','0','','bytes','','on','','on','',2,'','','','','','on','','on','',1024,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (35,0,0,27,'',1,'on','|host_description| - CPU Utilization','','',150,'',600,'','100','','0','','percent','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (36,0,0,28,'',1,'','|host_description| - Logged in Users','','',150,'',600,'','100','','0','','users','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (37,0,0,29,'',1,'','|host_description| - Processes','','',150,'',600,'','100','','0','','processes','','on','','on','',2,'','','','','','','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (43,0,0,31,'',1,'on','|host_description| - Traffic','','',150,'',600,'','100','','0','','bits per second','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (44,0,0,32,'',1,'on','|host_description| - Traffic','','',150,'',600,'','100','','0','','bits per second','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
+INSERT INTO graph_templates_graph VALUES (45,0,0,33,'',1,'on','|host_description| - Traffic','','',150,'',600,'','100','','0','','bytes per second','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
 
 --
 -- Table structure for table `graph_templates_item`
@@ -2233,7 +2229,7 @@ CREATE TABLE graph_templates_item (
   hard_return char(2) default NULL,
   gprint_id mediumint(8) unsigned NOT NULL default '0',
   sequence mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY graph_template_id (graph_template_id),
   KEY local_graph_id (local_graph_id),
   KEY task_item_id (task_item_id)
@@ -2398,29 +2394,6 @@ INSERT INTO graph_templates_item VALUES (324,'5acebbde3dc65e02f8fda03955852fbe',
 INSERT INTO graph_templates_item VALUES (325,'311079ffffac75efaab2837df8123122',0,0,29,80,0,'FF',9,0.00,NULL,NULL,0,0,NULL,1,NULL,'Average:','','',3,3);
 INSERT INTO graph_templates_item VALUES (326,'724d27007ebf31016cfa5530fee1b867',0,0,29,80,0,'FF',9,0.00,NULL,NULL,0,0,NULL,3,NULL,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (373,'1995d8c23e7d8e1efa2b2c55daf3c5a7',0,0,32,54,22,'FF',7,0.00,NULL,NULL,2,0,NULL,1,NULL,'Inbound','','',2,1);
-INSERT INTO graph_templates_item VALUES (335,'',95,1,12,84,41,'FF',7,0.00,NULL,NULL,0,0,NULL,1,NULL,'Free','','',2,9);
-INSERT INTO graph_templates_item VALUES (336,'',96,1,12,84,0,'FF',9,0.00,NULL,NULL,0,0,NULL,4,NULL,'Current:','','',2,10);
-INSERT INTO graph_templates_item VALUES (337,'',97,1,12,84,0,'FF',9,0.00,NULL,NULL,0,0,NULL,1,NULL,'Average:','','',2,11);
-INSERT INTO graph_templates_item VALUES (338,'',98,1,12,84,0,'FF',9,0.00,NULL,NULL,0,0,NULL,3,NULL,'Maximum:','','on',2,12);
-INSERT INTO graph_templates_item VALUES (339,'',99,1,12,85,30,'FF',8,0.00,NULL,NULL,0,0,NULL,1,NULL,'Swap','','',2,13);
-INSERT INTO graph_templates_item VALUES (340,'',100,1,12,85,0,'FF',9,0.00,NULL,NULL,0,0,NULL,4,NULL,'Current:','','',2,14);
-INSERT INTO graph_templates_item VALUES (341,'',101,1,12,85,0,'FF',9,0.00,NULL,NULL,0,0,NULL,1,NULL,'Average:','','',2,15);
-INSERT INTO graph_templates_item VALUES (342,'',102,1,12,85,0,'FF',9,0.00,NULL,NULL,0,0,NULL,3,NULL,'Maximum:','','on',2,16);
-INSERT INTO graph_templates_item VALUES (343,'',69,2,9,86,15,'FF',7,0.00,NULL,NULL,0,0,NULL,1,NULL,'1 Minute Average','','',2,1);
-INSERT INTO graph_templates_item VALUES (344,'',70,2,9,86,0,'FF',9,0.00,NULL,NULL,0,0,NULL,4,NULL,'Current:','','on',4,2);
-INSERT INTO graph_templates_item VALUES (345,'',71,2,9,87,8,'FF',8,0.00,NULL,NULL,0,0,NULL,1,NULL,'5 Minute Average','','',2,3);
-INSERT INTO graph_templates_item VALUES (346,'',72,2,9,87,0,'FF',9,0.00,NULL,NULL,0,0,NULL,4,NULL,'Current:','','on',4,4);
-INSERT INTO graph_templates_item VALUES (347,'',73,2,9,88,9,'FF',8,0.00,NULL,NULL,0,0,NULL,1,NULL,'15 Minute Average','','',2,5);
-INSERT INTO graph_templates_item VALUES (348,'',74,2,9,88,0,'FF',9,0.00,NULL,NULL,0,0,NULL,4,NULL,'Current:','','on',4,6);
-INSERT INTO graph_templates_item VALUES (349,'',75,2,9,0,1,'FF',4,0.00,NULL,NULL,12,0,NULL,1,NULL,'','','',2,7);
-INSERT INTO graph_templates_item VALUES (350,'',76,3,10,89,67,'FF',7,0.00,NULL,NULL,0,0,NULL,1,NULL,'Users','','',2,1);
-INSERT INTO graph_templates_item VALUES (351,'',77,3,10,89,0,'FF',9,0.00,NULL,NULL,0,0,NULL,4,NULL,'Current:','','',3,2);
-INSERT INTO graph_templates_item VALUES (352,'',78,3,10,89,0,'FF',9,0.00,NULL,NULL,0,0,NULL,1,NULL,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (353,'',79,3,10,89,0,'FF',9,0.00,NULL,NULL,0,0,NULL,3,NULL,'Maximum:','','on',3,4);
-INSERT INTO graph_templates_item VALUES (354,'',65,4,8,90,48,'FF',7,0.00,NULL,NULL,0,0,NULL,1,NULL,'Running Processes','','',2,1);
-INSERT INTO graph_templates_item VALUES (355,'',66,4,8,90,0,'FF',9,0.00,NULL,NULL,0,0,NULL,4,NULL,'Current:','','',3,2);
-INSERT INTO graph_templates_item VALUES (356,'',67,4,8,90,0,'FF',9,0.00,NULL,NULL,0,0,NULL,1,NULL,'Average:','','',3,3);
-INSERT INTO graph_templates_item VALUES (357,'',68,4,8,90,0,'FF',9,0.00,NULL,NULL,0,0,NULL,3,NULL,'Maximum:','','on',3,4);
 INSERT INTO graph_templates_item VALUES (362,'918e6e7d41bb4bae0ea2937b461742a4',0,0,31,54,22,'FF',7,0.00,NULL,NULL,2,0,NULL,1,NULL,'Inbound','','',2,1);
 INSERT INTO graph_templates_item VALUES (363,'f19fbd06c989ea85acd6b4f926e4a456',0,0,31,54,0,'FF',9,0.00,NULL,NULL,2,0,NULL,4,NULL,'Current:','','',2,2);
 INSERT INTO graph_templates_item VALUES (364,'fc150a15e20c57e11e8d05feca557ef9',0,0,31,54,0,'FF',9,0.00,NULL,NULL,2,0,NULL,1,NULL,'Average:','','',2,3);
@@ -2471,17 +2444,18 @@ CREATE TABLE graph_tree (
   locked_date timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   sort_type tinyint(3) unsigned NOT NULL default '1',
   name varchar(255) NOT NULL default '',
+  sequence int(10) unsigned DEFAULT '1',
   user_id int(10) unsigned DEFAULT '1',
   last_modified timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   modified_by int(10) unsigned DEFAULT '1',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `graph_tree`
 --
 
-INSERT INTO graph_tree VALUES (1,'on',0,'0000-00-00',1,'Default Tree',1,'0000-00-00','1');
+INSERT INTO graph_tree VALUES (1,'on',0,'0000-00-00',1,'Default Tree',1,1,'0000-00-00','1');
 
 --
 -- Table structure for table `graph_tree_items`
@@ -2516,10 +2490,11 @@ INSERT INTO graph_tree_items VALUES (1,0,0,1,0,'',1,1,1);
 
 CREATE TABLE host (
   id mediumint(8) unsigned NOT NULL auto_increment,
-  poller_id int(10) unsigned NOT NULL default '0',
+  poller_id int(10) unsigned NOT NULL default '1',
+  site_id int(10) unsigned NOT NULL default '1',
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   description varchar(150) NOT NULL default '',
-  hostname varchar(250) default NULL,
+  hostname varchar(100) default NULL,
   notes text,
   snmp_community varchar(100) default NULL,
   snmp_version tinyint(1) unsigned NOT NULL default '1',
@@ -2529,6 +2504,7 @@ CREATE TABLE host (
   snmp_priv_passphrase varchar(200) default '',
   snmp_priv_protocol char(6) default '',
   snmp_context varchar(64) default '',
+  snmp_engine_id varchar(30) default '',
   snmp_port mediumint(5) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '500',
   snmp_sysDescr varchar(300) NOT NULL default '',
@@ -2558,16 +2534,16 @@ CREATE TABLE host (
   total_polls int(12) unsigned default '0',
   failed_polls int(12) unsigned default '0',
   availability decimal(8,5) NOT NULL default '100.00000',
-  PRIMARY KEY  (id),
+  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
   KEY poller_id (poller_id),
+  KEY site_id (site_id),
   KEY disabled (disabled)
 ) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `host`
 --
-
-INSERT INTO `host` VALUES (1,0,8,'Localhost','127.0.0.1','','public',2,'','','','','','',161,500,'','',0,'','','',2,1,0,500,2,10,1,'',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00','',9.99999,0.00000,0.00000,0.00000,0,0,0,100.00000);
 
 --
 -- Table structure for table `host_graph`
@@ -2576,17 +2552,12 @@ INSERT INTO `host` VALUES (1,0,8,'Localhost','127.0.0.1','','public',2,'','','',
 CREATE TABLE host_graph (
   host_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (host_id,graph_template_id)
+  PRIMARY KEY (host_id,graph_template_id)
 ) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `host_graph`
 --
-
-INSERT INTO host_graph VALUES (1,8);
-INSERT INTO host_graph VALUES (1,9);
-INSERT INTO host_graph VALUES (1,10);
-INSERT INTO host_graph VALUES (1,12);
 
 --
 -- Table structure for table `host_snmp_cache`
@@ -2596,15 +2567,16 @@ CREATE TABLE host_snmp_cache (
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(50) NOT NULL default '',
-  field_value varchar(255) default NULL,
-  snmp_index varchar(255) NOT NULL default '',
+  field_value varchar(512) default NULL,
+  snmp_index varchar(191) NOT NULL default '',
   oid TEXT NOT NULL,
   present tinyint NOT NULL DEFAULT '1',
-  PRIMARY KEY  (host_id,snmp_query_id,field_name,snmp_index),
+  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (host_id, snmp_query_id, field_name, snmp_index),
   KEY host_id (host_id,field_name),
-  KEY snmp_index (snmp_index),
+  KEY snmp_index (snmp_index(191)),
   KEY field_name (field_name),
-  KEY field_value (field_value),
+  KEY field_value (field_value(191)),
   KEY snmp_query_id (snmp_query_id),
   KEY present (present)
 ) ENGINE=InnoDB;
@@ -2612,7 +2584,6 @@ CREATE TABLE host_snmp_cache (
 --
 -- Dumping data for table `host_snmp_cache`
 --
-
 
 --
 -- Table structure for table `host_snmp_query`
@@ -2624,15 +2595,13 @@ CREATE TABLE host_snmp_query (
   sort_field varchar(50) NOT NULL default '',
   title_format varchar(50) NOT NULL default '',
   reindex_method tinyint(3) unsigned NOT NULL default '0',
-  PRIMARY KEY  (host_id,snmp_query_id),
+  PRIMARY KEY (host_id,snmp_query_id),
   KEY host_id (host_id)
 ) ENGINE=InnoDB;
 
 --
 -- Dumping data for table `host_snmp_query`
 --
-
-INSERT INTO host_snmp_query VALUES (1,6,'dskDevice','|query_dskDevice|',0);
 
 --
 -- Table structure for table `host_template`
@@ -2642,7 +2611,7 @@ CREATE TABLE host_template (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(100) NOT NULL default '',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -2662,7 +2631,7 @@ INSERT INTO host_template VALUES (8,'2d3e47f416738c2d22c87c40218cc55e','Local Li
 CREATE TABLE host_template_graph (
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (host_template_id,graph_template_id),
+  PRIMARY KEY (host_template_id,graph_template_id),
   KEY host_template_id (host_template_id)
 ) ENGINE=InnoDB;
 
@@ -2688,7 +2657,7 @@ INSERT INTO host_template_graph VALUES (8,12);
 CREATE TABLE host_template_snmp_query (
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (host_template_id,snmp_query_id),
+  PRIMARY KEY (host_template_id, snmp_query_id),
   KEY host_template_id (host_template_id)
 ) ENGINE=InnoDB;
 
@@ -2717,7 +2686,7 @@ CREATE TABLE `plugin_config` (
   `author` varchar(64) NOT NULL default '',
   `webpage` varchar(255) NOT NULL default '',
   `version` varchar(8) NOT NULL default '',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `directory` (`directory`)
 ) ENGINE=InnoDB;
@@ -2733,7 +2702,7 @@ CREATE TABLE `plugin_hooks` (
   `file` varchar(255) NOT NULL default '',
   `function` varchar(128) NOT NULL default '',
   `status` int(8) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   KEY `hook` (`hook`),
   KEY `status` (`status`)
 ) ENGINE=InnoDB;
@@ -2747,7 +2716,7 @@ CREATE TABLE `plugin_realms` (
   `plugin` varchar(32) NOT NULL default '',
   `file` text NOT NULL,
   `display` varchar(64) NOT NULL default '',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   KEY `plugin` (`plugin`)
 ) ENGINE=InnoDB;
 
@@ -2761,7 +2730,7 @@ CREATE TABLE `plugin_db_changes` (
   `table` varchar(64) NOT NULL default '',
   `column` varchar(64) NOT NULL,
   `method` varchar(16) NOT NULL default '',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
   KEY `plugin` (`plugin`),
   KEY `method` (`method`)
 ) ENGINE=InnoDB;
@@ -2774,25 +2743,54 @@ INSERT INTO `plugin_hooks` VALUES (2, 'internal', 'draw_navigation_text', '', 'p
 -- Table structure for table `poller`
 --
 
-CREATE TABLE poller (
-  id smallint(5) unsigned NOT NULL auto_increment,
-  hostname varchar(250) NOT NULL default '',
-  ip_address int(11) unsigned NOT NULL default '0',
-  last_update timestamp NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (id)
-) ENGINE=InnoDB;
+CREATE TABLE `poller` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `disabled` char(2) DEFAULT '',
+  `name` varchar(30) DEFAULT NULL,
+  `notes` varchar(1024) DEFAULT '',
+  `status` int(10) unsigned NOT NULL DEFAULT '0',
+  `hostname` varchar(100) NOT NULL DEFAULT '',
+  `dbdefault` varchar(20) NOT NULL DEFAULT 'cacti',
+  `dbhost` varchar(64) NOT NULL DEFAULT 'cacti',
+  `dbuser` varchar(20) NOT NULL DEFAULT '',
+  `dbpass` varchar(64) NOT NULL DEFAULT '',
+  `dbport` int(10) unsigned DEFAULT '3306',
+  `dbssl` char(3) DEFAULT '',
+  `total_time` double DEFAULT '0',
+  `snmp` mediumint(8) unsigned DEFAULT '0',
+  `script` mediumint(8) unsigned DEFAULT '0',
+  `server` mediumint(8) unsigned DEFAULT '0',
+  `last_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_status` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='Pollers for Cacti';
+
+INSERT INTO poller (id,name,hostname) VALUES (1,'Main Poller', 'localhost');
 
 --
 -- Table structure for table `poller_command`
 --
 
 CREATE TABLE poller_command (
-  poller_id smallint(5) unsigned NOT NULL default '0',
+  poller_id smallint(5) unsigned NOT NULL default '1',
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   action tinyint(3) unsigned NOT NULL default '0',
-  command varchar(200) NOT NULL default '',
-  PRIMARY KEY  (poller_id,action,command)
+  command varchar(191) NOT NULL default '',
+  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (poller_id, action, command)
 ) ENGINE=InnoDB;
+
+--
+-- Table structure for table `poller_data_template_field_mappings`
+--
+
+CREATE TABLE `poller_data_template_field_mappings` (
+  `data_template_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `data_name` varchar(25) NOT NULL DEFAULT '',
+  `data_source_names` varchar(191) NOT NULL DEFAULT '',
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`data_template_id`, `data_name`, `data_source_names`)
+) ENGINE=InnoDB COMMENT='Tracks mapping of Data Templates to their Data Source Names';
 
 --
 -- Table structure for table `poller_item`
@@ -2800,11 +2798,12 @@ CREATE TABLE poller_command (
 
 CREATE TABLE poller_item (
   local_data_id mediumint(8) unsigned NOT NULL default '0',
-  poller_id smallint(5) unsigned NOT NULL default '0',
+  poller_id int(10) unsigned NOT NULL default '1',
   host_id mediumint(8) unsigned NOT NULL default '0',
   action tinyint(2) unsigned NOT NULL default '1',
   present tinyint NOT NULL DEFAULT '1',
-  hostname varchar(250) NOT NULL default '',
+  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  hostname varchar(100) NOT NULL default '',
   snmp_community varchar(100) NOT NULL default '',
   snmp_version tinyint(1) unsigned NOT NULL default '0',
   snmp_username varchar(50) NOT NULL default '',
@@ -2813,6 +2812,7 @@ CREATE TABLE poller_item (
   snmp_priv_passphrase varchar(200) NOT NULL default '',
   snmp_priv_protocol varchar(6) NOT NULL default '',
   snmp_context varchar(64) default '',
+  snmp_engine_id varchar(30) default '',
   snmp_port mediumint(5) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
@@ -2823,7 +2823,7 @@ CREATE TABLE poller_item (
   arg1 TEXT default NULL,
   arg2 varchar(255) default NULL,
   arg3 varchar(255) default NULL,
-  PRIMARY KEY  (local_data_id,rrd_name),
+  PRIMARY KEY (local_data_id,rrd_name),
   KEY local_data_id (local_data_id),
   KEY host_id (host_id),
   KEY rrd_next_step (rrd_next_step),
@@ -2840,7 +2840,7 @@ CREATE TABLE poller_output (
   rrd_name varchar(19) NOT NULL default '',
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
-  PRIMARY KEY (local_data_id,rrd_name,time) /*!50060 USING BTREE */
+  PRIMARY KEY (local_data_id, rrd_name, time) /*!50060 USING BTREE */
 ) ENGINE=InnoDB;
 
 --
@@ -2852,8 +2852,8 @@ CREATE TABLE  `poller_output_boost` (
   `rrd_name` varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   `output` varchar(512) NOT NULL,
-  PRIMARY KEY USING BTREE (`local_data_id`,`rrd_name`,`time`)
-) ENGINE=InnoDB ROW_FORMAT=FIXED;
+  PRIMARY KEY USING BTREE (`local_data_id`, `time`, `rrd_name`)
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `poller_output_boost_processes`
@@ -2862,21 +2862,21 @@ CREATE TABLE  `poller_output_boost` (
 CREATE TABLE  `poller_output_boost_processes` (
   `sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
   `status` varchar(255) default NULL,
-  PRIMARY KEY  (`sock_int_value`)
+  PRIMARY KEY (`sock_int_value`)
 ) ENGINE=MEMORY;
 
 --
 -- Table structure for table `poller_output_realtime`
 --
 
-CREATE TABLE IF NOT EXISTS poller_output_realtime (
+CREATE TABLE poller_output_realtime (
   local_data_id mediumint(8) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
-  poller_id varchar(30) NOT NULL default '',
-  PRIMARY KEY  (local_data_id,rrd_name,`time`),
-  KEY poller_id(poller_id)
+  poller_id varchar(256) NOT NULL default '1',
+  PRIMARY KEY (local_data_id,rrd_name,`time`),
+  KEY poller_id(poller_id(191))
 ) ENGINE=InnoDB;
 
 --
@@ -2891,7 +2891,7 @@ CREATE TABLE poller_reindex (
   op char(1) NOT NULL default '',
   assert_value varchar(100) NOT NULL default '',
   arg1 varchar(255) NOT NULL default '',
-  PRIMARY KEY  (host_id,data_query_id,arg1),
+  PRIMARY KEY (host_id, data_query_id),
   KEY present (present)
 ) ENGINE=InnoDB;
 
@@ -2903,7 +2903,7 @@ CREATE TABLE poller_resource_cache (
   id int(10) unsigned NOT NULL AUTO_INCREMENT,
   resource_type varchar(20) DEFAULT NULL,
   md5sum varchar(32) DEFAULT NULL,
-  path varchar(255) DEFAULT NULL,
+  path varchar(191) DEFAULT NULL,
   update_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   contents longblob,
   PRIMARY KEY (id),
@@ -2917,10 +2917,10 @@ CREATE TABLE poller_resource_cache (
 CREATE TABLE poller_time (
   id mediumint(8) unsigned NOT NULL auto_increment,
   pid int(11) unsigned NOT NULL default '0',
-  poller_id smallint(5) unsigned NOT NULL default '0',
+  poller_id int(10) unsigned NOT NULL default '1',
   start_time timestamp NOT NULL default '0000-00-00 00:00:00',
   end_time timestamp NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -2990,7 +2990,7 @@ CREATE TABLE `reports_items` (
 CREATE TABLE settings (
   name varchar(50) NOT NULL default '',
   value varchar(2048) NOT NULL default '',
-  PRIMARY KEY  (name)
+  PRIMARY KEY (name)
 ) ENGINE=InnoDB;
 
 --
@@ -3006,7 +3006,7 @@ CREATE TABLE settings_user (
   user_id smallint(8) unsigned NOT NULL default '0',
   name varchar(50) NOT NULL default '',
   value varchar(2048) NOT NULL default '',
-  PRIMARY KEY  (user_id,name)
+  PRIMARY KEY (user_id, name)
 ) ENGINE=InnoDB;
 
 --
@@ -3022,7 +3022,7 @@ CREATE TABLE settings_user_group (
   group_id smallint(8) unsigned NOT NULL DEFAULT '0',
   name varchar(50) NOT NULL DEFAULT '',
   value varchar(2048) NOT NULL DEFAULT '',
-  PRIMARY KEY (group_id,name)
+  PRIMARY KEY (group_id, name)
 ) ENGINE=InnoDB COMMENT='Stores the Default User Group Graph Settings';
 
 --
@@ -3033,7 +3033,7 @@ CREATE TABLE settings_tree (
   user_id mediumint(8) unsigned NOT NULL default '0',
   graph_tree_item_id mediumint(8) unsigned NOT NULL default '0',
   status tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (user_id,graph_tree_item_id)
+  PRIMARY KEY (user_id, graph_tree_item_id)
 ) ENGINE=InnoDB;
 
 --
@@ -3053,7 +3053,7 @@ CREATE TABLE snmp_query (
   description varchar(255) default NULL,
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   data_input_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY name (name)
 ) ENGINE=InnoDB;
 
@@ -3077,7 +3077,7 @@ CREATE TABLE snmp_query_graph (
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   name varchar(100) NOT NULL default '',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 --
@@ -3108,7 +3108,7 @@ CREATE TABLE snmp_query_graph_rrd (
   data_template_id mediumint(8) unsigned NOT NULL default '0',
   data_template_rrd_id mediumint(8) unsigned NOT NULL default '0',
   snmp_field_name varchar(50) NOT NULL default '0',
-  PRIMARY KEY  (snmp_query_graph_id,data_template_id,data_template_rrd_id),
+  PRIMARY KEY (snmp_query_graph_id,data_template_id,data_template_rrd_id),
   KEY data_template_rrd_id (data_template_rrd_id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
 ) ENGINE=InnoDB;
@@ -3159,7 +3159,7 @@ CREATE TABLE snmp_query_graph_rrd_sv (
   sequence mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(100) NOT NULL default '',
   text varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY snmp_query_graph_id (snmp_query_graph_id),
   KEY data_template_id (data_template_id)
 ) ENGINE=InnoDB;
@@ -3232,7 +3232,7 @@ CREATE TABLE snmp_query_graph_sv (
   sequence mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(100) NOT NULL default '',
   text varchar(255) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
 ) ENGINE=InnoDB;
 
@@ -3306,7 +3306,7 @@ CREATE TABLE user_auth (
   failed_attempts int(5) NOT NULL DEFAULT '0',
   lastfail int(12) NOT NULL DEFAULT '0',
   reset_perms int(12) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY username (username),
   KEY realm (realm),
   KEY enabled (enabled)
@@ -3323,11 +3323,16 @@ INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','',
 -- Table structure for table `user_auth_cache`
 --
 
-CREATE TABLE IF NOT EXISTS `user_auth_cache` (
+CREATE TABLE `user_auth_cache` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `hostname` varchar(64) NOT NULL DEFAULT '',
+  `hostname` varchar(100) NOT NULL DEFAULT '',
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `token` varchar(1024) NOT NULL DEFAULT ''
+  `token` varchar(191) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tokenkey` (`token`),
+  KEY `hostname` (`hostname`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB COMMENT='Caches Remember Me Details';
 
 --
@@ -3415,7 +3420,7 @@ CREATE TABLE user_auth_perms (
   user_id mediumint(8) unsigned NOT NULL default '0',
   item_id mediumint(8) unsigned NOT NULL default '0',
   type tinyint(2) unsigned NOT NULL default '0',
-  PRIMARY KEY  (user_id,item_id,type),
+  PRIMARY KEY (user_id,item_id,type),
   KEY user_id (user_id,type)
 ) ENGINE=InnoDB;
 
@@ -3431,7 +3436,7 @@ CREATE TABLE user_auth_perms (
 CREATE TABLE user_auth_realm (
   realm_id mediumint(8) unsigned NOT NULL default '0',
   user_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (realm_id,user_id),
+  PRIMARY KEY (realm_id,user_id),
   KEY user_id (user_id)
 ) ENGINE=InnoDB;
 
@@ -3457,7 +3462,6 @@ INSERT INTO user_auth_realm VALUES (15,1);
 INSERT INTO user_auth_realm VALUES (16,1);
 INSERT INTO user_auth_realm VALUES (17,1);
 INSERT INTO user_auth_realm VALUES (18,1);
-INSERT INTO user_auth_realm VALUES (19,1);
 INSERT INTO user_auth_realm VALUES (20,1);
 INSERT INTO user_auth_realm VALUES (21,1);
 INSERT INTO user_auth_realm VALUES (22,1);
@@ -3474,7 +3478,7 @@ CREATE TABLE user_log (
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   result tinyint(1) NOT NULL default '0',
   ip varchar(40) NOT NULL default '',
-  PRIMARY KEY  (username,user_id,time),
+  PRIMARY KEY (username,user_id,time),
   KEY username (username),
   KEY user_id (user_id)
 ) ENGINE=InnoDB;
@@ -3538,7 +3542,7 @@ CREATE TABLE `sessions` (
   `id` varchar(32) NOT NULL,
   `remote_addr` varchar(25) NOT NULL DEFAULT '',
   `access` int(10) unsigned DEFAULT NULL,
-  `data` text,
+  `data` mediumblob,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='Used for Database based Session Storage';
 
@@ -3547,13 +3551,44 @@ CREATE TABLE `sessions` (
 --
 
 --
+-- Table structure for table `sites`
+--
+
+CREATE TABLE `sites` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `address1` varchar(100) DEFAULT '',
+  `address2` varchar(100) DEFAULT '',
+  `city` varchar(50) DEFAULT '',
+  `state` varchar(20) DEFAULT NULL,
+  `postal_code` varchar(20) DEFAULT '',
+  `country` varchar(30) DEFAULT '',
+  `timezone` varchar(40) DEFAULT '',
+  `latitude` decimal(13,10) NOT NULL DEFAULT '0.0000000000',
+  `longitude` decimal(13,10) NOT NULL DEFAULT '0.0000000000',
+  `alternate_id` varchar(30) DEFAULT '',
+  `notes` varchar(1024),
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `city` (`city`),
+  KEY `state` (`state`),
+  KEY `postal_code` (`postal_code`),
+  KEY `country` (`country`),
+  KEY `alternate_id` (`alternate_id`)
+) ENGINE=InnoDB COMMENT='Contains information about customer sites';
+
+--
+-- Dumping data for table `sites`
+--
+
+--
 -- Table structure for table `snmpagent_cache`
 --
 
 CREATE TABLE `snmpagent_cache` (
-  `oid` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `mib` varchar(255) NOT NULL,
+  `oid` varchar(191) NOT NULL,
+  `name` varchar(191) NOT NULL,
+  `mib` varchar(191) NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT '',
   `otype` varchar(255) NOT NULL DEFAULT '',
   `kind` varchar(255) NOT NULL DEFAULT '',
@@ -3588,7 +3623,7 @@ CREATE TABLE `snmpagent_mibs` (
 --
 
 CREATE TABLE `snmpagent_cache_notifications` (
-  `name` varchar(255) NOT NULL,
+  `name` varchar(191) NOT NULL,
   `mib` varchar(255) NOT NULL,
   `attribute` varchar(255) NOT NULL,
   `sequence_id` smallint(6) NOT NULL,
@@ -3604,8 +3639,8 @@ CREATE TABLE `snmpagent_cache_notifications` (
 --
 
 CREATE TABLE `snmpagent_cache_textual_conventions` (
-  `name` varchar(255) NOT NULL,
-  `mib` varchar(255) NOT NULL,
+  `name` varchar(191) NOT NULL,
+  `mib` varchar(191) NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT '',
   `description` varchar(5000) NOT NULL DEFAULT '',
   KEY `name` (`name`),
@@ -3622,7 +3657,7 @@ CREATE TABLE `snmpagent_cache_textual_conventions` (
 
 CREATE TABLE `snmpagent_managers` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
-  `hostname` varchar(255) NOT NULL,
+  `hostname` varchar(100) NOT NULL,
   `description` varchar(255) NOT NULL,
   `disabled` char(2) DEFAULT NULL,
   `max_log_size` tinyint(1) NOT NULL,
@@ -3651,8 +3686,8 @@ CREATE TABLE `snmpagent_managers` (
 
 CREATE TABLE `snmpagent_managers_notifications` (
   `manager_id` int(8) NOT NULL,
-  `notification` varchar(255) NOT NULL,
-  `mib` varchar(255) NOT NULL,
+  `notification` varchar(180) NOT NULL,
+  `mib` varchar(191) NOT NULL,
   KEY `mib` (`mib`),
   KEY `manager_id` (`manager_id`),
   KEY `manager_id2` (`manager_id`,`notification`)
@@ -3671,8 +3706,8 @@ CREATE TABLE `snmpagent_notifications_log` (
   `time` int(24) NOT NULL,
   `severity` tinyint(1) NOT NULL,
   `manager_id` int(8) NOT NULL,
-  `notification` varchar(255) NOT NULL,
-  `mib` varchar(255) NOT NULL,
+  `notification` varchar(180) NOT NULL,
+  `mib` varchar(191) NOT NULL,
   `varbinds` varchar(5000) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `time` (`time`),
@@ -3692,8 +3727,8 @@ CREATE TABLE `snmpagent_notifications_log` (
 CREATE TABLE vdef (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  name varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
-  PRIMARY KEY  (id)
+  name varchar(255) NOT NULL default '',
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='vdef';
 
 --
@@ -3718,8 +3753,8 @@ CREATE TABLE vdef_items (
   vdef_id mediumint(8) unsigned NOT NULL default '0',
   sequence mediumint(8) unsigned NOT NULL default '0',
   type tinyint(2) NOT NULL default '0',
-  value varchar(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL default '',
-  PRIMARY KEY  (id),
+  value varchar(150) NOT NULL default '',
+  PRIMARY KEY (id),
   KEY vdef_id (vdef_id)
 ) ENGINE=InnoDB COMMENT='vdef items';
 
@@ -3748,8 +3783,8 @@ INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '
 --
 
 CREATE TABLE version (
-  cacti char(20) default NULL,
-  PRIMARY KEY  (cacti)
+  cacti char(20) default '',
+  PRIMARY KEY (cacti)
 ) ENGINE=InnoDB;
 
 --

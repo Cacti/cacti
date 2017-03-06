@@ -5,7 +5,7 @@
  *
  * Uses mcrypt, if available, and an internal implementation, otherwise.
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * Useful resources are as follows:
  *
@@ -14,9 +14,9 @@
  * Here's a short example of how to use this library:
  * <code>
  * <?php
- *    include 'Crypt/Twofish.php';
+ *    include 'vendor/autoload.php';
  *
- *    $twofish = new Crypt_Twofish();
+ *    $twofish = new \phpseclib\Crypt\Twofish();
  *
  *    $twofish->setKey('12345678901234567890123456789012');
  *
@@ -26,26 +26,8 @@
  * ?>
  * </code>
  *
- * LICENSE: Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
  * @category  Crypt
- * @package   Crypt_Twofish
+ * @package   Twofish
  * @author    Jim Wigginton <terrafrost@php.net>
  * @author    Hans-Juergen Petrich <petrich@tronic-media.com>
  * @copyright 2007 Jim Wigginton
@@ -53,78 +35,23 @@
  * @link      http://phpseclib.sourceforge.net
  */
 
-/**
- * Include Crypt_Base
- *
- * Base cipher class
- */
-if (!class_exists('Crypt_Base')) {
-    include_once 'Base.php';
-}
-
-/**#@+
- * @access public
- * @see Crypt_Twofish::encrypt()
- * @see Crypt_Twofish::decrypt()
- */
-/**
- * Encrypt / decrypt using the Counter mode.
- *
- * Set to -1 since that's what Crypt/Random.php uses to index the CTR mode.
- *
- * @link http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation#Counter_.28CTR.29
- */
-define('CRYPT_TWOFISH_MODE_CTR', CRYPT_MODE_CTR);
-/**
- * Encrypt / decrypt using the Electronic Code Book mode.
- *
- * @link http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation#Electronic_codebook_.28ECB.29
- */
-define('CRYPT_TWOFISH_MODE_ECB', CRYPT_MODE_ECB);
-/**
- * Encrypt / decrypt using the Code Book Chaining mode.
- *
- * @link http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation#Cipher-block_chaining_.28CBC.29
- */
-define('CRYPT_TWOFISH_MODE_CBC', CRYPT_MODE_CBC);
-/**
- * Encrypt / decrypt using the Cipher Feedback mode.
- *
- * @link http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation#Cipher_feedback_.28CFB.29
- */
-define('CRYPT_TWOFISH_MODE_CFB', CRYPT_MODE_CFB);
-/**
- * Encrypt / decrypt using the Cipher Feedback mode.
- *
- * @link http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation#Output_feedback_.28OFB.29
- */
-define('CRYPT_TWOFISH_MODE_OFB', CRYPT_MODE_OFB);
-/**#@-*/
+namespace phpseclib\Crypt;
 
 /**
  * Pure-PHP implementation of Twofish.
  *
- * @package Crypt_Twofish
+ * @package Twofish
  * @author  Jim Wigginton <terrafrost@php.net>
  * @author  Hans-Juergen Petrich <petrich@tronic-media.com>
  * @access  public
  */
-class Crypt_Twofish extends Crypt_Base
+class Twofish extends Base
 {
-    /**
-     * The namespace used by the cipher for its constants.
-     *
-     * @see Crypt_Base::const_namespace
-     * @var String
-     * @access private
-     */
-    var $const_namespace = 'TWOFISH';
-
     /**
      * The mcrypt specific name of the cipher
      *
-     * @see Crypt_Base::cipher_name_mcrypt
-     * @var String
+     * @see \phpseclib\Crypt\Base::cipher_name_mcrypt
+     * @var string
      * @access private
      */
     var $cipher_name_mcrypt = 'twofish';
@@ -132,8 +59,8 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * Optimizing value while CFB-encrypting
      *
-     * @see Crypt_Base::cfb_init_len
-     * @var Integer
+     * @see \phpseclib\Crypt\Base::cfb_init_len
+     * @var int
      * @access private
      */
     var $cfb_init_len = 800;
@@ -141,10 +68,10 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * Q-Table
      *
-     * @var Array
+     * @var array
      * @access private
      */
-    var $q0 = array (
+    var $q0 = array(
         0xA9, 0x67, 0xB3, 0xE8, 0x04, 0xFD, 0xA3, 0x76,
         0x9A, 0x92, 0x80, 0x78, 0xE4, 0xDD, 0xD1, 0x38,
         0x0D, 0xC6, 0x35, 0x98, 0x18, 0xF7, 0xEC, 0x6C,
@@ -182,10 +109,10 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * Q-Table
      *
-     * @var Array
+     * @var array
      * @access private
      */
-    var $q1 = array (
+    var $q1 = array(
         0x75, 0xF3, 0xC6, 0xF4, 0xDB, 0x7B, 0xFB, 0xC8,
         0x4A, 0xD3, 0xE6, 0x6B, 0x45, 0x7D, 0xE8, 0x4B,
         0xD6, 0x32, 0xD8, 0xFD, 0x37, 0x71, 0xF1, 0xE1,
@@ -223,10 +150,10 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * M-Table
      *
-     * @var Array
+     * @var array
      * @access private
      */
-    var $m0 = array (
+    var $m0 = array(
         0xBCBC3275, 0xECEC21F3, 0x202043C6, 0xB3B3C9F4, 0xDADA03DB, 0x02028B7B, 0xE2E22BFB, 0x9E9EFAC8,
         0xC9C9EC4A, 0xD4D409D3, 0x18186BE6, 0x1E1E9F6B, 0x98980E45, 0xB2B2387D, 0xA6A6D2E8, 0x2626B74B,
         0x3C3C57D6, 0x93938A32, 0x8282EED8, 0x525298FD, 0x7B7BD437, 0xBBBB3771, 0x5B5B97F1, 0x474783E1,
@@ -264,10 +191,10 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * M-Table
      *
-     * @var Array
+     * @var array
      * @access private
      */
-    var $m1 = array (
+    var $m1 = array(
         0xA9D93939, 0x67901717, 0xB3719C9C, 0xE8D2A6A6, 0x04050707, 0xFD985252, 0xA3658080, 0x76DFE4E4,
         0x9A084545, 0x92024B4B, 0x80A0E0E0, 0x78665A5A, 0xE4DDAFAF, 0xDDB06A6A, 0xD1BF6363, 0x38362A2A,
         0x0D54E6E6, 0xC6432020, 0x3562CCCC, 0x98BEF2F2, 0x181E1212, 0xF724EBEB, 0xECD7A1A1, 0x6C774141,
@@ -305,10 +232,10 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * M-Table
      *
-     * @var Array
+     * @var array
      * @access private
      */
-    var $m2 = array (
+    var $m2 = array(
         0xBC75BC32, 0xECF3EC21, 0x20C62043, 0xB3F4B3C9, 0xDADBDA03, 0x027B028B, 0xE2FBE22B, 0x9EC89EFA,
         0xC94AC9EC, 0xD4D3D409, 0x18E6186B, 0x1E6B1E9F, 0x9845980E, 0xB27DB238, 0xA6E8A6D2, 0x264B26B7,
         0x3CD63C57, 0x9332938A, 0x82D882EE, 0x52FD5298, 0x7B377BD4, 0xBB71BB37, 0x5BF15B97, 0x47E14783,
@@ -346,10 +273,10 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * M-Table
      *
-     * @var Array
+     * @var array
      * @access private
      */
-    var $m3 = array (
+    var $m3 = array(
         0xD939A9D9, 0x90176790, 0x719CB371, 0xD2A6E8D2, 0x05070405, 0x9852FD98, 0x6580A365, 0xDFE476DF,
         0x08459A08, 0x024B9202, 0xA0E080A0, 0x665A7866, 0xDDAFE4DD, 0xB06ADDB0, 0xBF63D1BF, 0x362A3836,
         0x54E60D54, 0x4320C643, 0x62CC3562, 0xBEF298BE, 0x1E12181E, 0x24EBF724, 0xD7A1ECD7, 0x77416C77,
@@ -387,7 +314,7 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * The Key Schedule Array
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $K = array();
@@ -395,7 +322,7 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * The Key depended S-Table 0
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $S0 = array();
@@ -403,7 +330,7 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * The Key depended S-Table 1
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $S1 = array();
@@ -411,7 +338,7 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * The Key depended S-Table 2
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $S2 = array();
@@ -419,7 +346,7 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * The Key depended S-Table 3
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $S3 = array();
@@ -427,47 +354,48 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * Holds the last used key
      *
-     * @var Array
+     * @var array
      * @access private
      */
     var $kl;
 
     /**
-     * Sets the key.
+     * The Key Length (in bytes)
      *
-     * Keys can be of any length. Twofish, itself, requires the use of a key that's 128, 192 or 256-bits long.
-     * If the key is less than 256-bits we round the length up to the closest valid key length,
-     * padding $key with null bytes. If the key is more than 256-bits, we trim the excess bits.
+     * @see Crypt_Twofish::setKeyLength()
+     * @var int
+     * @access private
+     */
+    var $key_length = 16;
+
+    /**
+     * Sets the key length.
      *
-     * If the key is not explicitly set, it'll be assumed a 128 bits key to be all null bytes.
+     * Valid key lengths are 128, 192 or 256 bits
      *
      * @access public
-     * @see Crypt_Base::setKey()
-     * @param String $key
+     * @param int $length
      */
-    function setKey($key)
+    function setKeyLength($length)
     {
-        $keylength = strlen($key);
         switch (true) {
-            case $keylength <= 16:
-                $key = str_pad($key, 16, "\0");
+            case $length <= 128:
+                $this->key_length = 16;
                 break;
-            case $keylength <= 24:
-                $key = str_pad($key, 24, "\0");
+            case $length <= 192:
+                $this->key_length = 24;
                 break;
-            case $keylength < 32:
-                $key = str_pad($key, 32, "\0");
-                break;
-            case $keylength > 32:
-                $key = substr($key, 0, 32);
+            default:
+                $this->key_length = 32;
         }
-        parent::setKey($key);
+
+        parent::setKeyLength($length);
     }
 
     /**
      * Setup the key (expansion)
      *
-     * @see Crypt_Base::_setupKey()
+     * @see \phpseclib\Crypt\Base::_setupKey()
      * @access private
      */
     function _setupKey()
@@ -492,9 +420,9 @@ class Crypt_Twofish extends Crypt_Base
 
         switch (strlen($this->key)) {
             case 16:
-                list ($s7, $s6, $s5, $s4) = $this->_mdsrem($le_longs[1], $le_longs[2]);
-                list ($s3, $s2, $s1, $s0) = $this->_mdsrem($le_longs[3], $le_longs[4]);
-                for ($i = 0, $j = 1; $i < 40; $i+= 2,$j+= 2) {
+                list($s7, $s6, $s5, $s4) = $this->_mdsrem($le_longs[1], $le_longs[2]);
+                list($s3, $s2, $s1, $s0) = $this->_mdsrem($le_longs[3], $le_longs[4]);
+                for ($i = 0, $j = 1; $i < 40; $i+= 2, $j+= 2) {
                     $A = $m0[$q0[$q0[$i] ^ $key[ 9]] ^ $key[1]] ^
                          $m1[$q0[$q1[$i] ^ $key[10]] ^ $key[2]] ^
                          $m2[$q1[$q0[$i] ^ $key[11]] ^ $key[3]] ^
@@ -515,9 +443,9 @@ class Crypt_Twofish extends Crypt_Base
                 }
                 break;
             case 24:
-                list ($sb, $sa, $s9, $s8) = $this->_mdsrem($le_longs[1], $le_longs[2]);
-                list ($s7, $s6, $s5, $s4) = $this->_mdsrem($le_longs[3], $le_longs[4]);
-                list ($s3, $s2, $s1, $s0) = $this->_mdsrem($le_longs[5], $le_longs[6]);
+                list($sb, $sa, $s9, $s8) = $this->_mdsrem($le_longs[1], $le_longs[2]);
+                list($s7, $s6, $s5, $s4) = $this->_mdsrem($le_longs[3], $le_longs[4]);
+                list($s3, $s2, $s1, $s0) = $this->_mdsrem($le_longs[5], $le_longs[6]);
                 for ($i = 0, $j = 1; $i < 40; $i+= 2, $j+= 2) {
                     $A = $m0[$q0[$q0[$q1[$i] ^ $key[17]] ^ $key[ 9]] ^ $key[1]] ^
                          $m1[$q0[$q1[$q1[$i] ^ $key[18]] ^ $key[10]] ^ $key[2]] ^
@@ -539,10 +467,10 @@ class Crypt_Twofish extends Crypt_Base
                 }
                 break;
             default: // 32
-                list ($sf, $se, $sd, $sc) = $this->_mdsrem($le_longs[1], $le_longs[2]);
-                list ($sb, $sa, $s9, $s8) = $this->_mdsrem($le_longs[3], $le_longs[4]);
-                list ($s7, $s6, $s5, $s4) = $this->_mdsrem($le_longs[5], $le_longs[6]);
-                list ($s3, $s2, $s1, $s0) = $this->_mdsrem($le_longs[7], $le_longs[8]);
+                list($sf, $se, $sd, $sc) = $this->_mdsrem($le_longs[1], $le_longs[2]);
+                list($sb, $sa, $s9, $s8) = $this->_mdsrem($le_longs[3], $le_longs[4]);
+                list($s7, $s6, $s5, $s4) = $this->_mdsrem($le_longs[5], $le_longs[6]);
+                list($s3, $s2, $s1, $s0) = $this->_mdsrem($le_longs[7], $le_longs[8]);
                 for ($i = 0, $j = 1; $i < 40; $i+= 2, $j+= 2) {
                     $A = $m0[$q0[$q0[$q1[$q1[$i] ^ $key[25]] ^ $key[17]] ^ $key[ 9]] ^ $key[1]] ^
                          $m1[$q0[$q1[$q1[$q0[$i] ^ $key[26]] ^ $key[18]] ^ $key[10]] ^ $key[2]] ^
@@ -575,9 +503,9 @@ class Crypt_Twofish extends Crypt_Base
      * _mdsrem function using by the twofish cipher algorithm
      *
      * @access private
-     * @param String $A
-     * @param String $B
-     * @return Array
+     * @param string $A
+     * @param string $B
+     * @return array
      */
     function _mdsrem($A, $B)
     {
@@ -623,8 +551,8 @@ class Crypt_Twofish extends Crypt_Base
      * Encrypts a block
      *
      * @access private
-     * @param String $in
-     * @return String
+     * @param string $in
+     * @return string
      */
     function _encryptBlock($in)
     {
@@ -679,8 +607,8 @@ class Crypt_Twofish extends Crypt_Base
      * Decrypts a block
      *
      * @access private
-     * @param String $in
-     * @return String
+     * @param string $in
+     * @return string
      */
     function _decryptBlock($in)
     {
@@ -734,18 +662,18 @@ class Crypt_Twofish extends Crypt_Base
     /**
      * Setup the performance-optimized function for de/encrypt()
      *
-     * @see Crypt_Base::_setupInlineCrypt()
+     * @see \phpseclib\Crypt\Base::_setupInlineCrypt()
      * @access private
      */
     function _setupInlineCrypt()
     {
-        $lambda_functions =& Crypt_Twofish::_getLambdaFunctions();
+        $lambda_functions =& self::_getLambdaFunctions();
 
         // Max. 10 Ultra-Hi-optimized inline-crypt functions. After that, we'll (still) create very fast code, but not the ultimate fast one.
         // (Currently, for Crypt_Twofish, one generated $lambda_function cost on php5.5@32bit ~140kb unfreeable mem and ~240kb on php5.5@64bit)
-        $gen_hi_opt_code = (bool)( count($lambda_functions) < 10 );
+        $gen_hi_opt_code = (bool)(count($lambda_functions) < 10);
 
-        // Generation of a uniqe hash for our generated code
+        // Generation of a unique hash for our generated code
         $code_hash = "Crypt_Twofish, {$this->mode}";
         if ($gen_hi_opt_code) {
             $code_hash = str_pad($code_hash, 32) . $this->_hashInlineCryptFunction($this->key);

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -169,5 +169,113 @@ function api_get_graphs_from_datasource($local_data_id) {
 		ON graph_templates_item.task_item_id = data_template_rrd.id
 		WHERE graph_templates_graph.local_graph_id > 0
 		AND data_template_rrd.local_data_id = ?', array($local_data_id)), 'id', 'name');
+}
+
+function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
+	global $struct_graph, $struct_graph_item;
+
+	if (!empty($_local_graph_id)) {
+		$graph_local          = db_fetch_row_prepared('SELECT * FROM graph_local WHERE id = ?', array($_local_graph_id));
+		$graph_template_graph = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array($_local_graph_id));
+		$graph_template_items = db_fetch_assoc_prepared('SELECT * FROM graph_templates_item WHERE local_graph_id = ?', array($_local_graph_id));
+
+		/* create new entry: graph_local */
+		$save['id'] = 0;
+		$save['graph_template_id'] = $graph_local['graph_template_id'];
+		$save['host_id']           = $graph_local['host_id'];
+		$save['snmp_query_id']     = $graph_local['snmp_query_id'];
+		$save['snmp_index']        = $graph_local['snmp_index'];
+
+		$local_graph_id = sql_save($save, 'graph_local');
+
+		$graph_template_graph['title'] = str_replace('<graph_title>', $graph_template_graph['title'], $graph_title);
+	}elseif (!empty($_graph_template_id)) {
+		$graph_template        = db_fetch_row_prepared('SELECT * FROM graph_templates WHERE id = ?', array($_graph_template_id));
+		$graph_template_graph  = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE graph_template_id = ? AND local_graph_id=0', array($_graph_template_id));
+
+		$graph_template_items  = db_fetch_assoc_prepared('SELECT * FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id=0', array($_graph_template_id));
+		$graph_template_inputs = db_fetch_assoc_prepared('SELECT * FROM graph_template_input WHERE graph_template_id = ?', array($_graph_template_id));
+
+		/* create new entry: graph_templates */
+		$save['id']   = 0;
+		$save['hash'] = get_hash_graph_template(0);
+		$save['name'] = str_replace('<template_title>', $graph_template['name'], $graph_title);
+
+		$graph_template_id = sql_save($save, 'graph_templates');
+	}
+
+	unset($save);
+	reset($struct_graph);
+
+	/* create new entry: graph_templates_graph */
+	$save['id']                            = 0;
+	$save['local_graph_id']                = (isset($local_graph_id) ? $local_graph_id : 0);
+	$save['local_graph_template_graph_id'] = (isset($graph_template_graph['local_graph_template_graph_id']) ? $graph_template_graph['local_graph_template_graph_id'] : 0);
+	$save['graph_template_id']             = (!empty($_local_graph_id) ? $graph_template_graph['graph_template_id'] : $graph_template_id);
+	$save['title_cache']                   = $graph_template_graph['title_cache'];
+
+	reset($struct_graph);
+	while (list($field, $array) = each($struct_graph)) {
+		if ($array['method'] == 'spacer') continue;
+		$save{$field} = $graph_template_graph{$field};
+		$save{'t_' . $field} = $graph_template_graph{'t_' . $field};
+	}
+
+	$graph_templates_graph_id = sql_save($save, 'graph_templates_graph');
+
+	/* create new entry(s): graph_templates_item */
+	if (sizeof($graph_template_items)) {
+		foreach ($graph_template_items as $graph_template_item) {
+			unset($save);
+			reset($struct_graph_item);
+
+			$save['id']                           = 0;
+			/* save a hash only for graph_template copy operations */
+			$save['hash']                         = (!empty($_graph_template_id) ? get_hash_graph_template(0, 'graph_template_item') : 0);
+			$save['local_graph_id']               = (isset($local_graph_id) ? $local_graph_id : 0);
+			$save['graph_template_id']            = (!empty($_local_graph_id) ? $graph_template_item['graph_template_id'] : $graph_template_id);
+			$save['local_graph_template_item_id'] = (isset($graph_template_item['local_graph_template_item_id']) ? $graph_template_item['local_graph_template_item_id'] : 0);
+
+			while (list($field, $array) = each($struct_graph_item)) {
+				$save{$field} = $graph_template_item{$field};
+			}
+
+			$graph_item_mappings{$graph_template_item['id']} = sql_save($save, 'graph_templates_item');
+		}
+	}
+
+	if (!empty($_graph_template_id)) {
+		/* create new entry(s): graph_template_input (graph template only) */
+		if (sizeof($graph_template_inputs)) {
+			foreach ($graph_template_inputs as $graph_template_input) {
+				unset($save);
+
+				$save['id']                = 0;
+				$save['graph_template_id'] = $graph_template_id;
+				$save['name']              = $graph_template_input['name'];
+				$save['description']       = $graph_template_input['description'];
+				$save['column_name']       = $graph_template_input['column_name'];
+				$save['hash']              = get_hash_graph_template(0, 'graph_template_input');
+
+				$graph_template_input_id   = sql_save($save, 'graph_template_input');
+
+				$graph_template_input_defs = db_fetch_assoc_prepared('SELECT * FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_template_input['id']));
+
+				/* create new entry(s): graph_template_input_defs (graph template only) */
+				if (sizeof($graph_template_input_defs)) {
+					foreach ($graph_template_input_defs as $graph_template_input_def) {
+						db_execute_prepared('INSERT INTO graph_template_input_defs 
+							(graph_template_input_id, graph_template_item_id)
+							VALUES (?, ?)', 
+							array($graph_template_input_id, $graph_item_mappings[$graph_template_input_def['graph_template_item_id']]));
+					}
+				}
+			}
+		}
+	}
+
+	if (!empty($_local_graph_id)) {
+		update_graph_title_cache($local_graph_id);
+	}
 }
 

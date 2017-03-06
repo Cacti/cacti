@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -80,6 +80,7 @@ function form_save() {
 		get_filter_request_var('graph_template_id');
 		get_filter_request_var('task_item_id');
 		get_filter_request_var('sequence');
+		get_filter_request_var('color_id');
 		get_filter_request_var('graph_template_item_id');
 		/* ==================================================== */
 
@@ -114,20 +115,20 @@ function form_save() {
 					));
 		}
 
-		$sequence = get_nfilter_request_var('sequence');
+		$sequence = get_request_var('sequence');
 
 		foreach ($items as $item) {
 			/* generate a new sequence if needed */
 			if (empty($sequence)) {
-				$sequence = get_sequence($sequence, 'sequence', 'graph_templates_item', 'graph_template_id=' . get_nfilter_request_var('graph_template_id') . ' AND local_graph_id=0');
+				$sequence = get_sequence($sequence, 'sequence', 'graph_templates_item', 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0');
 			}
 
-			$save['id']                = get_nfilter_request_var('graph_template_item_id');
-			$save['hash']              = get_hash_graph_template(get_nfilter_request_var('graph_template_item_id'), 'graph_template_item');
-			$save['graph_template_id'] = get_nfilter_request_var('graph_template_id');
+			$save['id']                = get_request_var('graph_template_item_id');
+			$save['hash']              = get_hash_graph_template(get_request_var('graph_template_item_id'), 'graph_template_item');
+			$save['graph_template_id'] = get_request_var('graph_template_id');
 			$save['local_graph_id']    = 0;
-			$save['task_item_id']      = form_input_validate(get_nfilter_request_var('task_item_id'), 'task_item_id', '^[0-9]+$', true, 3);
-			$save['color_id']          = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '', true, 3);
+			$save['task_item_id']      = form_input_validate(get_request_var('task_item_id'), 'task_item_id', '^[0-9]+$', true, 3);
+			$save['color_id']          = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_request_var('color_id')), 'color_id', '', true, 3);
 
 			/* if alpha is disabled, use invisible_alpha instead */
 			if (!isset_request_var('alpha')) {
@@ -135,10 +136,10 @@ function form_save() {
 			}
 
 			$save['alpha']             = form_input_validate((isset($item['alpha']) ? $item['alpha'] : get_nfilter_request_var('alpha')), 'alpha', '', true, 3);
-			$save['graph_type_id']     = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : get_nfilter_request_var('graph_type_id')), 'graph_type_id', '^[0-9]+$', true, 3);
+			$save['graph_type_id']     = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : get_filter_request_var('graph_type_id')), 'graph_type_id', '^[0-9]+$', true, 3);
 
 			if (isset_request_var('line_width') || isset($item['line_width'])) {
-				$save['line_width']    = form_input_validate((isset($item['line_width']) ? $item['line_width'] : get_nfilter_request_var('line_width')), 'line_width', '^[0-9]+[\.,]+[0-9]+$', true, 3);
+				$save['line_width']    = form_input_validate((isset($item['line_width']) ? $item['line_width'] : get_nfilter_request_var('line_width')), 'line_width', '^[0-9]+[.0-9]+$', true, 3);
 			}else { # make sure to transfer old LINEx style into line_width on save
 				switch ($save['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_LINE1:
@@ -153,33 +154,33 @@ function form_save() {
 				default:
 					$save['line_width'] = 0;
 				}
-   			}
+			}
 
-			$save['dashes']            = form_input_validate((isset_request_var('dashes') ? get_nfilter_request_var('dashes') : ''), 'dashes', '^[0-9]+[,0-9]*$', true, 3);
-            $save['dash_offset']       = form_input_validate((isset_request_var('dash_offset') ? get_nfilter_request_var('dash_offset') : ''), 'dash_offset', '^[0-9]+$', true, 3);
-			$save['cdef_id']           = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
-			$save['vdef_id']           = form_input_validate(get_nfilter_request_var('vdef_id'), 'vdef_id', '^[0-9]+$', true, 3);
-			$save['shift']             = form_input_validate((isset_request_var('shift') ? get_nfilter_request_var('shift') : ''), 'shift', '^((on)|)$', true, 3);
+			$save['dashes']      = form_input_validate((isset_request_var('dashes') ? get_nfilter_request_var('dashes') : ''), 'dashes', '^[0-9]+[,0-9]*$', true, 3);
+            $save['dash_offset'] = form_input_validate((isset_request_var('dash_offset') ? get_nfilter_request_var('dash_offset') : ''), 'dash_offset', '^[0-9]+$', true, 3);
+			$save['cdef_id']     = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
+			$save['vdef_id']     = form_input_validate(get_nfilter_request_var('vdef_id'), 'vdef_id', '^[0-9]+$', true, 3);
+			$save['shift']       = form_input_validate((isset_request_var('shift') ? get_nfilter_request_var('shift') : ''), 'shift', '^((on)|)$', true, 3);
 			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : get_nfilter_request_var('consolidation_function_id')), 'consolidation_function_id', '^[0-9]+$', true, 3);
-			$save['textalign']         = form_input_validate((isset_request_var('textalign') ? get_nfilter_request_var('textalign') : ''), 'textalign', '^[a-z]+$', true, 3);
-			$save['text_format']       = form_input_validate((isset($item['text_format']) ? $item['text_format'] : get_nfilter_request_var('text_format')), 'text_format', '', true, 3);
-			$save['value']             = form_input_validate(get_nfilter_request_var('value'), 'value', '', true, 3);
-			$save['hard_return']       = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset_request_var('hard_return') ? get_nfilter_request_var('hard_return') : ''))), 'hard_return', '', true, 3);
-			$save['gprint_id']         = form_input_validate(get_nfilter_request_var('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
-			$save['sequence']          = $sequence;
+			$save['textalign']   = form_input_validate((isset_request_var('textalign') ? get_nfilter_request_var('textalign') : ''), 'textalign', '^[a-z]+$', true, 3);
+			$save['text_format'] = form_input_validate((isset($item['text_format']) ? $item['text_format'] : get_nfilter_request_var('text_format')), 'text_format', '', true, 3);
+			$save['value']       = form_input_validate(get_nfilter_request_var('value'), 'value', '', true, 3);
+			$save['hard_return'] = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset_request_var('hard_return') ? get_nfilter_request_var('hard_return') : ''))), 'hard_return', '', true, 3);
+			$save['gprint_id']   = form_input_validate(get_nfilter_request_var('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
+			$save['sequence']    = $sequence;
 
 			if (!is_error_message()) {
 				/* Before we save the item, let's get a look at task_item_id <-> input associations */
 				$orig_data_source_graph_inputs = db_fetch_assoc_prepared("SELECT
-					graph_template_input.id,
-					graph_template_input.name,
-					graph_templates_item.task_item_id
-					FROM (graph_template_input, graph_template_input_defs, graph_templates_item)
-					WHERE graph_template_input.id = graph_template_input_defs.graph_template_input_id
-					AND graph_template_input_defs.graph_template_item_id = graph_templates_item.id
-					AND graph_template_input.graph_template_id = ?
-					AND graph_template_input.column_name = 'task_item_id'
-					GROUP BY graph_templates_item.task_item_id", array($save['graph_template_id']));
+					gtin.id, gtin.name, gti.task_item_id 
+					FROM graph_template_input AS gtin
+					INNER JOIN graph_template_input_defs AS gtid
+					ON gtin.id = gtid.graph_template_input_id
+					INNER JOIN graph_templates_item AS gti
+					ON gtid.graph_template_item_id = gti.id
+					WHERE gtin.graph_template_id = ?
+					AND gtin.column_name = 'task_item_id'
+					GROUP BY gti.task_item_id", array($save['graph_template_id']));
 
 				$orig_data_source_to_input = array_rekey($orig_data_source_graph_inputs, 'task_item_id', 'id');
 
@@ -192,27 +193,45 @@ function form_save() {
 						/* old item clean-up.  Don't delete anything if the item <-> task_item_id association remains the same. */
 						if (get_nfilter_request_var('_task_item_id') != get_nfilter_request_var('task_item_id')) {
 							/* It changed.  Delete any old associations */
-							db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_item_id = ?', array($graph_template_item_id));
+							db_execute_prepared('DELETE FROM graph_template_input_defs 
+								WHERE graph_template_item_id = ?', 
+								array($graph_template_item_id));
 
 							/* Input for current data source exists and has changed.  Update the association */
 							if (isset($orig_data_source_to_input{$save['task_item_id']})) {
-								db_execute_prepared('REPLACE INTO graph_template_input_defs (graph_template_input_id, graph_template_item_id) values (?, ?)', array($orig_data_source_to_input{$save['task_item_id']}, $graph_template_item_id));
+								db_execute_prepared('REPLACE INTO graph_template_input_defs 
+									(graph_template_input_id, graph_template_item_id) 
+									VALUES (?, ?)', 
+									array($orig_data_source_to_input{$save['task_item_id']}, $graph_template_item_id));
 							}
 						}
 
 						/* an input for the current data source does NOT currently exist, let's create one */
-						if (!isset($orig_data_source_to_input{$save['task_item_id']})) {
-							$ds_name = db_fetch_cell_prepared('SELECT data_source_name FROM data_template_rrd WHERE id = ?', array(get_nfilter_request_var('task_item_id')));
+						if (!isset($orig_data_source_to_input[$save['task_item_id']])) {
+							$ds_name = db_fetch_cell_prepared('SELECT data_source_name 
+								FROM data_template_rrd 
+								WHERE id = ?', 
+								array(get_nfilter_request_var('task_item_id')));
 
-							db_execute_prepared("REPLACE INTO graph_template_input (hash, graph_template_id, name, column_name) VALUES (?, ?, ?, 'task_item_id')", array(get_hash_graph_template(0, 'graph_template_input'), $save['graph_template_id'], "Data Source [$ds_name]"));
+							db_execute_prepared("REPLACE INTO graph_template_input 
+								(hash, graph_template_id, name, column_name) 
+								VALUES (?, ?, ?, 'task_item_id')", 
+								array(get_hash_graph_template(0, 'graph_template_input'), $save['graph_template_id'], "Data Source [$ds_name]"));
 
 							$graph_template_input_id = db_fetch_insert_id();
 
-							$graph_items = db_fetch_assoc_prepared('SELECT id FROM graph_templates_item WHERE graph_template_id = ? AND task_item_id = ?', array($save['graph_template_id'], get_nfilter_request_var('task_item_id')));
+							$graph_items = db_fetch_assoc_prepared('SELECT id 
+								FROM graph_templates_item 
+								WHERE graph_template_id = ? 
+								AND task_item_id = ?', 
+								array($save['graph_template_id'], get_nfilter_request_var('task_item_id')));
 
-							if (sizeof($graph_items) > 0) {
+							if (sizeof($graph_items)) {
 								foreach ($graph_items as $graph_item) {
-									db_execute_prepared('REPLACE INTO graph_template_input_defs (graph_template_input_id, graph_template_item_id) VALUES (?, ?)', array($graph_template_input_id, $graph_item['id']));
+									db_execute_prepared('REPLACE INTO graph_template_input_defs 
+										(graph_template_input_id, graph_template_item_id) 
+										VALUES (?, ?)', 
+										array($graph_template_input_id, $graph_item['id']));
 								}
 							}
 						}
@@ -267,17 +286,7 @@ function item_movedown() {
 	}
 
 	if (!isempty_request_var('graph_template_id')) {
-		resequence_graphs(get_request_var('graph_template_id'));
-	}
-}
-
-function resequence_graphs($graph_template_id) {
-	$items = db_fetch_assoc_prepared('SELECT id, sequence FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id = 0 ORDER BY sequence', array($graph_template_id));
-
-	if (sizeof($items)) {
-	foreach($items as $item) {
-		db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE graph_template_id = ? AND local_graph_template_item_id = ?', array($item['sequence'], $graph_template_id, $item['id']));
-	}
+		resequence_graphs(get_request_var('graph_template_id'), -1);
 	}
 }
 
@@ -302,7 +311,7 @@ function item_moveup() {
 	}
 
 	if (!isempty_request_var('graph_template_id')) {
-		resequence_graphs(get_request_var('graph_template_id'));
+		resequence_graphs(get_request_var('graph_template_id'), -1);
 	}
 }
 
@@ -345,17 +354,25 @@ function item_edit() {
 
 	form_start('graph_templates_items.php', 'graph_items');
 
-	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id'))) . ']';
+	$header_label = __('Graph Template Items [edit graph: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
 
-	html_start_box('Graph Template Items ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	if (!isempty_request_var('id')) {
-		$template_item = db_fetch_row_prepared('SELECT * FROM graph_templates_item WHERE id = ?', array(get_request_var('id')));
+		$template_item = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates_item 
+			WHERE id = ?', 
+			array(get_request_var('id')));
 	}
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	if (!isempty_request_var('graph_template_id')) {
-		$default = db_fetch_row_prepared('SELECT task_item_id FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id = 0 ORDER BY sequence DESC', array(get_request_var('graph_template_id')));
+		$default = db_fetch_row_prepared('SELECT task_item_id 
+			FROM graph_templates_item 
+			WHERE graph_template_id = ? 
+			AND local_graph_id = 0 
+			ORDER BY sequence DESC', 
+			array(get_request_var('graph_template_id')));
 
 		if (sizeof($default) > 0) {
 			$struct_graph_item['task_item_id']['default'] = $default['task_item_id'];
@@ -517,9 +534,25 @@ function item_edit() {
 			$('#row_text_format').show();
 			$('#row_hard_return').show();
 			break;
+		case '20': // LINE:STACK
+			$('#row_task_item_id').show();
+			$('#row_color_id').show();
+			$('#row_line_width').show();
+			$('#row_dashes').show();
+			$('#row_dash_offset').show();
+			$('#row_textalign').hide();
+			$('#row_shift').show();
+			$('#row_alpha').show();
+			$('#row_consolidation_function_id').show();
+			$('#row_cdef_id').show();
+			$('#row_vdef_id').hide();
+			$('#row_value').hide();
+			$('#row_gprint_id').hide();
+			$('#row_text_format').show();
+			$('#row_hard_return').show();
+			break;
 		case '7': // AREA
 		case '8': // STACK
-		case '20': // LINE:STACK
 			$('#row_task_item_id').show();
 			$('#row_color_id').show();
 			$('#row_line_width').hide();

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -33,7 +33,7 @@ if (!isset($config['cacti_db_version'])) {
 	$version = $config['cacti_db_version'];
 }
 
-if ($version != $config['cacti_version']) {
+if ($version != $config['cacti_version'] && $config['poller_id'] == 1) {
 	header ('Location: ' . $config['url_path'] . 'install/');
 	exit;
 }
@@ -117,14 +117,17 @@ if (read_config_option('auth_method') != 0) {
 				$goBack = "<td colspan='2' align='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
 
-			print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
+			print "<!DOCTYPE html>\n";
 			print "<html>\n";
 			print "<head>\n";
 			print "\t<title>" . __('Permission Denied') . "</title>\n";
 			print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
-			print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
+			print "\t<meta name='robots' content='noindex,nofollow'>\n";
 			print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
-			print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
+			print "\t<link href='" . $config['url_path'] . "include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>\n";
+			print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
+			print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/images/favicon.ico' rel='shortcut icon'>\n";
+			print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/images/cacti_logo.gif' rel='icon' sizes='96x96'>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
@@ -140,7 +143,7 @@ if (read_config_option('auth_method') != 0) {
 					<div class='cactiLogoutLogo'></div>
 					<legend>" . __('Permission Denied') . "</legend>
 					<div class='logoutTitle'>
-						<p>" . __('You are not permitted to access this section of Cacti. If you feel that you need access to this particular section, please contact the Cacti administrator.') .
+						<p>" . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.') .
 						"</p>
 						<center>" . $goBack . "</center>
 					</div>

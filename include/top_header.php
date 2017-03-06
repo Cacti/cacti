@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -41,19 +41,22 @@ $using_guest_account = false;
 	<meta content='width=720, initial-scale=0.8, maximum-scale=2.0, minimum-scale=0.5' name='viewport'>
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.zoom.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery-ui.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/default/style.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.multiselect.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.timepicker.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.colorpicker.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/c3.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/pace.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
-	<link rel='icon' type='image/gif' href='<?php echo $config['url_path']; ?>images/cacti_logo.gif' sizes='96x96'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/favicon.ico' rel='shortcut icon'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.ui.touch.punch.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.storageapi.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
@@ -69,6 +72,8 @@ $using_guest_account = false;
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.sparkline.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/Chart.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/dygraph-combined.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/d3.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/c3.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/pace.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/realtime.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
@@ -76,34 +81,34 @@ $using_guest_account = false;
 	<?php api_plugin_hook('page_head'); ?>
 </head>
 <body>
-<div id='cactiPageHead' class='cactiPageHead'>
+<div id='cactiPageHead' class='cactiPageHead' role='banner'>
 	<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
-	<div id='tabs'><?php html_show_tabs_left(true);?></div>
+	<div id='tabs'><?php html_show_tabs_left();?></div>
 	<div class='cactiConsolePageHeadBackdrop'></div>
 </div>
 <div id='breadCrumbBar' class='breadCrumbBar'>
 	<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
 	<div class='scrollBar'></div>
-	<div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div>
+	<?php if (read_config_option('auth_method') != 0) {?><div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div><?php }?>
 </div>
 <div id='cactiContent' class='cactiContent'>
 	<div class='cactiConsoleNavigationArea' style='overflow:hidden'>
-		<div id='navigation'>
+		<div style='display:none;' id='navigation'>
 			<table style='width:100%;'>
 				<?php draw_menu();?>
 				<tr>
 					<td style='text-align:center;'>
-						<div class='cactiLogo' onClick='loadPageNoHeader("about.php?header=false");'></div>
+						<div class='cactiLogo' onclick='loadPage("<?php print $config['url_path'];?>about.php")'></div>
 					</td>
 				</tr>
 			</table>
 		</div>
 	</div>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
-		<div style='position:relative;' id='main'>
+		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
+		<div style='position:relative;display:none;' id='main' role='main'>
 <?php }else{ ?>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div style='display:none;' id='message_container'><?php display_output_messages();?></div>
-		<div style='position:relative;' id='main'>
+		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
+		<div style='position:relative;display:none;' id='main' role='main'>
 <?php } ?>

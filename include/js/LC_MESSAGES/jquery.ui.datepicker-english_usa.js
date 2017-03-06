@@ -1,1 +1,1 @@
-﻿/* Dummy- Please do NOT remove */
+/* Dummy- Please do NOT remove */

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -221,20 +221,20 @@ function generate_report($report, $force = false) {
 	$first_weekdayid = read_user_setting('first_weekdayid');
 
 	$offset      = 0;
-	$graphids    = array();
+	$graphs      = array();
 	$attachments = array();
 	while ( true ) {
 		$pos = strpos($body, '<GRAPH:', $offset);
 
 		if ($pos) {
-			$offset   = $pos+7;
-			$graph    = substr($body, $pos+7, 10);
-			$arr      = explode(':', $graph);
-			$arr1     = explode('>', $arr[1]);
-			$graphid  = $arr[0];
-			$timespan = $arr1[0];
+			$offset         = $pos+7;
+			$graph          = substr($body, $pos+7, 10);
+			$arr            = explode(':', $graph);
+			$arr1           = explode('>', $arr[1]);
+			$local_graph_id = $arr[0];
+			$timespan       = $arr1[0];
 
-			$graphids[$graphid . ':' . $timespan] = $graphid;
+			$graphs[$local_graph_id . ':' . $timespan] = $local_graph_id;
 		} else {
 			break;
 		}
@@ -242,8 +242,8 @@ function generate_report($report, $force = false) {
 	$user = $report['user_id'];
 	$xport_meta = array();
 
-	if (sizeof($graphids)) {
-	foreach($graphids as $key => $graphid) {
+	if (sizeof($graphs)) {
+	foreach($graphs as $key => $local_graph_id) {
 		$arr = explode(':', $key);
 		$timesp = $arr[1];
 
@@ -270,100 +270,100 @@ function generate_report($report, $force = false) {
 		switch($report['attachment_type']) {
 			case REPORTS_TYPE_INLINE_PNG:
 				$attachments[] = array(
-					'attachment' => @rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user),
-					'filename'   => 'graph_' . $graphid . '.png',
-					'mime_type'  => 'image/png',
-					'graphid'    => $graphid,
-					'timespan'   => $timesp,
-					'inline'     => 'inline'
+					'attachment' => @rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user),
+					'filename'       => 'graph_' . $local_graph_id . '.png',
+					'mime_type'      => 'image/png',
+					'local_graph_id' => $local_graph_id,
+					'timespan'       => $timesp,
+					'inline'         => 'inline'
 				);
 				break;
 			case REPORTS_TYPE_INLINE_JPG:
 				$attachments[] = array(
-					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'   => 'graph_' . $graphid . '.jpg',
-					'mime_type'  => 'image/jpg',
-					'graphid'    => $graphid,
-					'timespan'   => $timesp,
-					'inline'     => 'inline'
+					'attachment' => png2jpeg(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+					'filename'       => 'graph_' . $local_graph_id . '.jpg',
+					'mime_type'      => 'image/jpg',
+					'local_graph_id' => $local_graph_id,
+					'timespan'       => $timesp,
+					'inline'         => 'inline'
 				);
 				break;
 			case REPORTS_TYPE_INLINE_GIF:
 				$attachments[] = array(
-					'attachment' => png2gif(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'   => 'graph_' . $graphid . '.gif',
-					'mime_type'  => 'image/gif',
-					'graphid'    => $graphid,
-					'timespan'   => $timesp,
-					'inline'     => 'inline'
+					'attachment'     => png2gif(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+					'filename'       => 'graph_' . $local_graph_id . '.gif',
+					'mime_type'      => 'image/gif',
+					'local_graph_id' => $local_graph_id,
+					'timespan'       => $timesp,
+					'inline'         => 'inline'
 				);
 				break;
 			case REPORTS_TYPE_ATTACH_PNG:
 				$attachments[] = array(
-					'attachment' => @rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user),
-					'filename'   => 'graph_' . $graphid . '.png',
-					'mime_type'  => 'image/png',
-					'graphid'    => $graphid,
-					'timespan'   => $timesp,
-					'inline'     => 'attachment'
+					'attachment'     => @rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user),
+					'filename'       => 'graph_' . $local_graph_id . '.png',
+					'mime_type'      => 'image/png',
+					'local_graph_id' => $local_graph_id,
+					'timespan'       => $timesp,
+					'inline'         => 'attachment'
 				);
 				break;
 			case REPORTS_TYPE_ATTACH_JPG:
 				$attachments[] = array(
-					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'   => 'graph_' . $graphid . '.jpg',
-					'mime_type'  => 'image/jpg',
-					'graphid'    => $graphid,
-					'timespan'   => $timesp,
-					'inline'     => 'attachment'
+					'attachment'     => png2jpeg(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+					'filename'       => 'graph_' . $local_graph_id . '.jpg',
+					'mime_type'      => 'image/jpg',
+					'local_graph_id' => $local_graph_id,
+					'timespan'       => $timesp,
+					'inline'         => 'attachment'
 				);
 				break;
 			case REPORTS_TYPE_ATTACH_GIF:
 				$attachments[] = array(
-					'attachment' => png2gif(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'   => 'graph_' . $graphid . '.gif',
-					'mime_type'  => 'image/gif',
-					'graphid'    => $graphid,
-					'timespan'   => $timesp,
-					'inline'     => 'attachment'
+					'attachment'     => png2gif(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+					'filename'       => 'graph_' . $local_graph_id . '.gif',
+					'mime_type'      => 'image/gif',
+					'local_graph_id' => $local_graph_id,
+					'timespan'       => $timesp,
+					'inline'         => 'attachment'
 				);
 				break;
 			case REPORTS_TYPE_INLINE_PNG_LN:
 				$attachments[] = array(
-					'attachment' => @rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user),
-					'filename'   => '',	# LN does not accept filenames for inline attachments
-					'mime_type'  => 'image/png',
-					'graphid'    => $graphid,
-					'timespan'   => $timesp,
-					'inline'     => 'inline'
+					'attachment'     => @rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user),
+					'filename'       => '',	# LN does not accept filenames for inline attachments
+					'mime_type'      => 'image/png',
+					'local_graph_id' => $local_graph_id,
+					'timespan'       => $timesp,
+					'inline'         => 'inline'
 				);
 				break;
 			case REPORTS_TYPE_INLINE_JPG_LN:
 				$attachments[] = array(
-					'attachment' => png2jpeg(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'   => '',	# LN does not accept filenames for inline attachments
-					'mime_type'  => 'image/jpg',
-					'graphid'    => $graphid,
-					'timespan'   => $timesp,
-					'inline'     => 'inline'
+					'attachment'     => png2jpeg(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+					'filename'       => '',	# LN does not accept filenames for inline attachments
+					'mime_type'      => 'image/jpg',
+					'local_graph_id' => $local_graph_id,
+					'timespan'       => $timesp,
+					'inline'         => 'inline'
 				);
 				break;
 			case REPORTS_TYPE_INLINE_GIF_LN:
 				$attachments[] = array(
-					'attachment' => png2gif(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'   => '',	# LN does not accept filenames for inline attachments
-					'mime_type'  => 'image/gif',
-					'graphid'    => $graphid,
-					'timespan'   => $timesp,
-					'inline'     => 'inline'
+					'attachment'     => png2gif(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+					'filename'       => '',	# LN does not accept filenames for inline attachments
+					'mime_type'      => 'image/gif',
+					'local_graph_id' => $local_graph_id,
+					'timespan'       => $timesp,
+					'inline'         => 'inline'
 				);
 				break;
 			case REPORTS_TYPE_ATTACH_PDF:
 #				$attachments[] = array(
-#					'attachment' => png2gif(@rrdtool_function_graph($graphid, '', $graph_data_array, '', $xport_meta, $user)),
-#					'filename'   => 'graph_' . $graphid . '.gif',
+#					'attachment' => png2gif(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+#					'filename'   => 'graph_' . $local_graph_id . '.gif',
 #					'mime_type'  => 'image/gif',
-#					'graphid'    => $graphid,
+#					'local_graph_id'    => $local_graph_id,
 #					'timespan'   => $timesp,
 #					'inline'     => 'attachment'
 #				);
@@ -722,15 +722,15 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	$out = ''; 	
 	if ($output == REPORTS_OUTPUT_STDOUT) {
 		$out = "<img class='image' alt='' src='" . htmlspecialchars($config['url_path'] . 'graph_image.php' .
-				'?graph_width=' . $report['graph_width'] .
-				'&graph_height=' . $report['graph_height'] .
-				'&graph_nolegend=' . ($report['thumbnails'] == 'on' ? 'true':'') .
-				'&local_graph_id=' . $item['local_graph_id'] .
-				'&graph_start=' . $timespan['begin_now'] .
-				'&graph_end=' . $timespan['end_now'] .
-				'&graph_theme=' . $theme .
-				'&image_format=png' . 
-				'&rra_id=0') . "'>";
+			'?graph_width=' . $report['graph_width'] .
+			'&graph_height=' . $report['graph_height'] .
+			'&graph_nolegend=' . ($report['thumbnails'] == 'on' ? 'true':'') .
+			'&local_graph_id=' . $item['local_graph_id'] .
+			'&graph_start=' . $timespan['begin_now'] .
+			'&graph_end=' . $timespan['end_now'] .
+			'&graph_theme=' . $theme .
+			'&image_format=png' . 
+			'&rra_id=0') . "'>";
 	} else {
 		$out = '<GRAPH:' . $item['local_graph_id'] . ':' . $item['timespan'] . '>';
 	}
@@ -826,30 +826,30 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 		}
 
 		if ($leaf_type == 'graph') {
-			$graph_name = db_fetch_cell_prepared("SELECT 
-			gtg.title_cache AS title
-			FROM graph_templates_graph AS gtg
-			WHERE gtg.local_graph_id = ?", array($leaf['local_graph_id']));
+			$graph_name = db_fetch_cell_prepared('SELECT 
+				gtg.title_cache AS title
+				FROM graph_templates_graph AS gtg
+				WHERE gtg.local_graph_id = ?', array($leaf['local_graph_id']));
 		}
 
 		//if (!empty($tree_name) && empty($leaf_name) && empty($host_name) && !$nested) {
 		if (!empty($tree_name) && empty($leaf_name) && empty($host_name)) {
-			$title = $title_delimeter . "<strong>Tree:</strong> $tree_name"; 
+			$title = $title_delimeter . '<strong>' . __('Tree:') . "</strong> $tree_name"; 
 			$title_delimeter = '-> ';
 		}
 
 		if (!empty($leaf_name)) {
-			$title .= $title_delimeter . "<strong>Leaf:</strong> $leaf_name"; 
+			$title .= $title_delimeter . '<strong>' . __('Leaf:') . "</strong> $leaf_name"; 
 			$title_delimeter = '-> ';
 		}
 
 		if (!empty($host_name)) {
-			$title .= $title_delimeter . "<strong>Host:</strong> $host_name"; 
+			$title .= $title_delimeter . '<strong>' . __('Host:') . "</strong> $host_name"; 
 			$title_delimeter = '-> ';
 		}
 
 		if (!empty($graph_name)) {
-			$title .= $title_delimeter . "<strong>Graph:</strong> $graph_name"; 
+			$title .= $title_delimeter . '<strong>' . __('Graph:') . "</strong> $graph_name"; 
 			$title_delimeter = '-> ';
 		}
 
@@ -925,15 +925,18 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 		} elseif ($leaf_type == 'host' && $nested) {
 			/* graph template grouping */
 			if ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
-				$graph_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT
-					gt.id, gt.name
-					FROM graph_local AS gl
-					INNER JOIN graph_templates AS gt
-					ON gt.id=gl.graph_template_id
-					INNER JOIN graph_templates_graph AS gtg
-					ON gtg.local_graph_id=gl.id
-					WHERE gl.host_id=' . $leaf['host_id'] . '
-					ORDER BY gt.name'), 'id', 'name');
+				$graph_templates = array_rekey(
+					db_fetch_assoc_prepared('SELECT DISTINCT
+						gt.id, gt.name
+						FROM graph_local AS gl
+						INNER JOIN graph_templates AS gt
+						ON gt.id=gl.graph_template_id
+						INNER JOIN graph_templates_graph AS gtg
+						ON gtg.local_graph_id=gl.id
+						WHERE gl.host_id = ?
+						ORDER BY gt.name', array($leaf['host_id'])), 
+					'id', 'name'
+				);
 
 				if (sizeof($graph_templates)) {
 					foreach($graph_templates AS $id => $name) {
@@ -944,10 +947,12 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 				}
 
 				/* for graphs without a template */
-				array_push($graph_templates, array(
-					'id' => '0',
-					'name' => '(No Graph Template)'
-					));
+				array_push($graph_templates, 
+					array(
+						'id' => '0',
+						'name' => __('(No Graph Template)')
+					)
+				);
 
 				$outgraphs = array();
 				if (sizeof($graph_templates) > 0) {
@@ -993,20 +998,23 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 				}
 			/* data query index grouping */
 			} elseif ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
-				$data_queries = db_fetch_assoc('SELECT DISTINCT
+				$data_queries = db_fetch_assoc_prepared('SELECT DISTINCT
 					sq.id, sq.name
 					FROM graph_local AS gl
 					INNER JOIN snmp_query AS sq
 					ON gl.snmp_query_id=sq.id
-					WHERE gl.host_id=' . $leaf['host_id'] . '
-					ORDER BY sq.name');
+					WHERE gl.host_id = ?
+					ORDER BY sq.name', 
+					array($leaf['host_id']));
 
 				/* for graphs without a data query */
 				if (empty($data_query_id)) {
-					array_push($data_queries, array(
-						'id' => '0',
-						'name' => 'Non Query Based'
-						));
+					array_push($data_queries, 
+						array(
+							'id' => '0',
+							'name' => 'Non Query Based'
+						)
+					);
 				}
 
 				$i = 0;
@@ -1317,19 +1325,19 @@ function reports_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_HIGH) {
 		/* define all error types */
 		$errortype = array(
-		E_ERROR             => 'Error',
-		E_WARNING           => 'Warning',
-		E_PARSE             => 'Parsing Error',
-		E_NOTICE            => 'Notice',
-		E_CORE_ERROR        => 'Core Error',
-		E_CORE_WARNING      => 'Core Warning',
-		E_COMPILE_ERROR     => 'Compile Error',
-		E_COMPILE_WARNING   => 'Compile Warning',
-		E_USER_ERROR        => 'User Error',
-		E_USER_WARNING      => 'User Warning',
-		E_USER_NOTICE       => 'User Notice',
-		E_STRICT            => 'Runtime Notice',
-		E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
+			E_ERROR             => 'Error',
+			E_WARNING           => 'Warning',
+			E_PARSE             => 'Parsing Error',
+			E_NOTICE            => 'Notice',
+			E_CORE_ERROR        => 'Core Error',
+			E_CORE_WARNING      => 'Core Warning',
+			E_COMPILE_ERROR     => 'Compile Error',
+			E_COMPILE_WARNING   => 'Compile Warning',
+			E_USER_ERROR        => 'User Error',
+			E_USER_WARNING      => 'User Warning',
+			E_USER_NOTICE       => 'User Notice',
+			E_STRICT            => 'Runtime Notice',
+			E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
 		);
 
 		/* create an error string for the log */
@@ -1361,7 +1369,7 @@ function reports_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
  * @arg $action		actions to be performed from dropdown
  */
 function reports_graphs_action_array($action) {
-	$action['reports'] = 'Add to Report';
+	$action['reports'] = __('Add to Report');
 	return $action;
 }
 
@@ -1377,24 +1385,26 @@ function reports_graphs_action_prepare($save) {
 	global $colors, $config, $graph_timespans, $alignment;
 
 	if ($save['drp_action'] == 'reports') { /* report */
-		print "	<tr>
-				<td class='textArea'>
-					<p>Choose the Report to associate these graphs with.  The defaults for alignment will be used
-					for each graph in the list below.</p>
-					<p>" . $save['graph_list'] . "</p>
-					<p><strong>Report:</strong><br>";
-					form_dropdown('reports_id', db_fetch_assoc_prepared('SELECT reports.id, reports.name
-						FROM reports
-						WHERE user_id = ?
-						ORDER by name', array($_SESSION['sess_user_id'])),'name','id','','','0');
-					echo '<br><p><strong>Graph Timespan:</strong><br>';
-					form_dropdown('timespan', $graph_timespans, '', '', '0', '', '', '');
-					echo '<br><p><strong>Graph Alignment:</strong><br>';
-					form_dropdown('alignment', $alignment, '', '', '0', '', '', '');
-					print "</p>
-				</td>
-			</tr>\n
-			";
+		print "<tr>
+			<td class='textArea'>
+				<p>" . __('Choose the Report to associate these graphs with.  The defaults for alignment will be used for each graph in the list below.') . "</p>
+				<p>" . $save['graph_list'] . "</p>
+				<p>" . __('Report:') . "<br>";
+				form_dropdown('reports_id', db_fetch_assoc_prepared('SELECT reports.id, reports.name
+					FROM reports
+					WHERE user_id = ?
+					ORDER by name', 
+					array($_SESSION['sess_user_id'])), 'name', 'id', '', '', '0');
+
+				echo '<br><p>' . __('Graph Timespan:') . '<br>';
+				form_dropdown('timespan', $graph_timespans, '', '', '0', '', '', '');
+
+				echo '<br><p>' . __('Graph Alignment:') . '<br>';
+				form_dropdown('alignment', $alignment, '', '', '0', '', '', '');
+
+				print "</p>
+			</td>
+		</tr>";
 	} else {
 		return $save;
 	}
@@ -1431,7 +1441,8 @@ function reports_graphs_action_execute($action) {
 						FROM reports_items
 						WHERE local_graph_id = ?
 						AND report_id = ?
-						AND timespan = ?', array($local_graph_id, $reports_id, get_nfilter_request_var('timespan')));
+						AND timespan = ?', 
+						array($local_graph_id, $reports_id, get_nfilter_request_var('timespan')));
 
 					if (!$existing) {
 						$sequence = db_fetch_cell_prepared('SELECT max(sequence)
@@ -1470,12 +1481,12 @@ function reports_graphs_action_execute($action) {
 
 						$id = sql_save($save, 'reports_items');
 						if ($id) {
-							$message .= "Created Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>'<br>";
+							$message .= __('Created Report Graph Item \'<i>%s</i>\'', get_graph_title($local_graph_id)) . '<br>';
 						} else {
-							$message .= "Failed Adding Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>' Already Exists<br>";
+							$message .= __('Failed Adding Report Graph Item \'<i>%s</i>\' Already Exists', get_graph_title($local_graph_id)) . '<br>';
 						}
 					} else {
-						$message .= "Skipped Report Graph Item '<i>" . get_graph_title($local_graph_id) . "</i>' Already Exists<br>";
+						$message .= __('Skipped Report Graph Item \'<i>%s</i>\' Already Exists', get_graph_title($local_graph_id)) . '<br>';
 					}
 				}
 			}

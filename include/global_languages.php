@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2012 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -42,11 +42,11 @@ if (!read_config_option('i18n_language_support') && read_config_option('i18n_lan
 
 
 /* determine whether or not we can support the language */
-if (isset($_GET['language']) && isset($lang2locale[$_GET['language']]))
+if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']]))
 /* user requests another language */
 {
-	$cacti_locale = $_GET['language'];
-	$cacti_country = $lang2locale[$_GET['language']]['country'];
+	$cacti_locale  = $_REQUEST['language'];
+	$cacti_country = $lang2locale[$_REQUEST['language']]['country'];
 	$_SESSION['sess_user_language'] = $cacti_locale;
 	unset($_SESSION['sess_current_date1']);
 	unset($_SESSION['sess_current_date2']);
@@ -177,6 +177,24 @@ define('CACTI_COUNTRY', $cacti_country);
 define('CACTI_LANGUAGE', $lang2locale[CACTI_LOCALE]['language']);
 define('CACTI_LANGUAGE_FILE', $lang2locale[CACTI_LOCALE]['filename']);
 
+/**
+ * Universal escaping wrappers
+ */
+function __esc() {
+	return htmlspecialchars( call_user_func_array('__', func_get_args()), ENT_QUOTES);
+}
+
+function __esc_n() {
+	return htmlspecialchars( call_user_func_array('__n', func_get_args()), ENT_QUOTES);
+}
+
+function __esc_x() {
+	return htmlspecialchars( call_user_func_array('__x', func_get_args()), ENT_QUOTES);
+}
+
+function __esc_xn() {
+	return htmlspecialchars( call_user_func_array('__xn', func_get_args()), ENT_QUOTES);
+}
 
 /**
  * load_fallback_procedure - loads wrapper package if native language (English) has to be used
@@ -516,7 +534,11 @@ function read_user_i18n_setting($config_name) {
 			$config_array = $config['config_options_array'];
 		}
 		if (!isset($config_array[$config_name])) {
-			$effective_uid = db_fetch_cell_prepared("SELECT user_auth.id from settings INNER JOIN user_auth ON user_auth.username = settings.value WHERE settings.name = 'guest_user'");
+			$effective_uid = db_fetch_cell("SELECT user_auth.id 
+				FROM settings 
+				INNER JOIN user_auth 
+				ON user_auth.username = settings.value 
+				WHERE settings.name = 'guest_user'");
 		}
 		if (strlen($effective_uid) == 0) {
 			$effective_uid = 0;
@@ -525,7 +547,13 @@ function read_user_i18n_setting($config_name) {
 		$effective_uid = 0;
 	}
 
-	$db_setting = db_fetch_row_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $effective_uid));
+	if (db_table_exists('settings_user')) {
+		$db_setting = db_fetch_row_prepared('SELECT value 
+			FROM settings_user 
+			WHERE name = ? 
+			AND user_id = ?', 
+			array($config_name, $effective_uid));
+	}
 	
 	if (isset($db_setting['value'])) {
 		return $db_setting['value'];
@@ -534,4 +562,63 @@ function read_user_i18n_setting($config_name) {
 	}
 }
 
+
+/**
+ * number_format_i18n - local specific number format wrapper
+ *
+ * @return - formatted numer in the correct locale
+ */
+function number_format_i18n($number, $decimals = 2, $baseu = 1024) {
+	global $cacti_locale, $cacti_country;
+
+	$country = strtoupper($cacti_country);
+
+	if (function_exists('numfmt_create')) {
+		$fmt = numfmt_create($cacti_locale . '_' . $country, NumberFormatter::DECIMAL);
+		numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+
+		return numfmt_format($fmt, $number);
+	}else{
+		$origlocales = explode(';', setlocale(LC_ALL, 0));
+		setlocale(LC_ALL, $cacti_locale . '_' . $country);
+		$locale = localeconv();
+
+		if ($decimals == -1) {
+			$number =  number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+		}elseif ($number>=pow($baseu, 4)) {
+			$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
+		} elseif($number>=pow($baseu, 3)) {
+			$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
+		} elseif($number>=pow($baseu, 2)) {
+			$number = number_format($number/pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
+		} elseif($number>=$baseu) {
+			$number = number_format($number/$baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
+		} else {
+			$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+		}
+
+		foreach ($origlocales as $locale_setting) {
+			if (strpos($locale_setting, '=') !== false) {
+				list($category, $locale) = explode('=', $locale_setting);
+  			} else {
+				$category = LC_ALL;
+				$locale   = $locale_setting;
+			}
+
+			switch($category) {
+			case 'LC_ALL':
+			case 'LC_COLLATE':
+			case 'LC_CTYPE':
+			case 'LC_MONETARY':
+			case 'LC_NUMERIC':
+			case 'LC_TIME':
+				if (defined($category)) {
+					setlocale(constant($category), $locale);
+				}
+			}
+		}
+
+		return $number;
+	}
+}
 

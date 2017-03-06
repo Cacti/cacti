@@ -2,7 +2,7 @@
 <?php
 /*
    +-------------------------------------------------------------------------+
-   | Copyright (C) 2004-2016 The Cacti Group                                 |
+   | Copyright (C) 2004-2017 The Cacti Group                                 |
    |                                                                         |
    | This program is free software; you can redistribute it and/or           |
    | modify it under the terms of the GNU General Public License             |
@@ -107,6 +107,7 @@ while(1) {
 			exit(0);
 		case 'PING':
 			fwrite(STDOUT, 'PONG' . $eol);
+			cache_refresh();
 			break;
 		case 'get':
 			$oid = trim(fgets(STDIN));

@@ -77,7 +77,7 @@ body {
 
 .header_row {
 	background-color:#222222;
-   }
+}
 
 .header {
 	background-color:#222222;
@@ -85,6 +85,18 @@ body {
 	text-align:left;
 	align:center;
 	color:#FFF;
+}
+
+.left {
+	text-align:left;
+}
+
+.right {
+	text-align:right;
+}
+
+.center {
+	text-align:center;
 }
 
 .footer {

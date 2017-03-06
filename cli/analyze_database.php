@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,66 +24,82 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 $no_http_headers = true;
 
-include(dirname(__FILE__) . "/../include/global.php");
+include(dirname(__FILE__) . '/../include/global.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 global $debug;
 
 $debug = FALSE;
-$form  = "";
+$form  = '';
 $start = time();
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode("=", $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case "-d":
-	case "--debug":
-		$debug = TRUE;
-		break;
-	case "-v":
-	case "-V":
-	case "--version":
-	case "--help":
-	case "-h":
-		display_help();
-		exit;
-	default:
-		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+			case '-d':
+			case '--debug':
+				$debug = TRUE;
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			default:
+				print "ERROR: Invalid Parameter " . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
+
 echo "Analyzing All Cacti Database Tables\n";
 
-$tables = db_fetch_assoc("SHOW TABLES FROM " . $database_default);
+$tables = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`');
 
 if (sizeof($tables)) {
 	foreach($tables AS $table) {
 		echo "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "'";
-		$status = db_execute("ANALYZE TABLE " . $table['Tables_in_' . $database_default] . $form);
-		echo ($status == 0 ? " Failed" : " Successful") . "\n";
+		$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);
+		echo ($status == 0 ? ' Failed' : ' Successful') . "\n";
 	}
 
-	cacti_log("ANALYSIS STATS: Analyzing Cacti Tables Complete.  Total time " . (time() - $start) . " seconds.", false, "SYSTEM");
+	cacti_log('ANALYSIS STATS: Analyzing Cacti Tables Complete.  Total time ' . (time() - $start) . ' seconds.', false, 'SYSTEM');
+}
+
+/*  display_version - displays version information */
+function display_version() {
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Analyze Database Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Cacti Database Analyze Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "usage: analyze_database.php [-d|--debug] [-h|--help|-v|-V|--version]\n\n";
-	echo "-d | --debug     - Display verbose output during execution\n";
-	echo "-v -V --version  - Display this help message\n";
-	echo "-h --help        - display this help message\n";
+	display_version();
+
+	echo "\nusage: analyze_database.php [-d|--debug]\n\n";
+	echo "A utility to recalculate the cardinality of indexes within the Cacti database.\n";
+	echo "It's important to periodically run this utility expecially on larger systems.\n\n";
+	echo "Optional:\n";
+	echo "-d | --debug - Display verbose output during execution\n\n";
 }
-?>

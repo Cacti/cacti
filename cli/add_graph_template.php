@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,18 +24,18 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 /* We are not talking to the browser */
 $no_http_headers = true;
 
-include(dirname(__FILE__)."/../include/global.php");
-include_once($config["base_path"]."/lib/api_automation_tools.php");
+include(dirname(__FILE__) . '/../include/global.php');
+include_once($config['base_path'] . '/lib/api_automation_tools.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (sizeof($parms)) {
@@ -46,14 +46,19 @@ if (sizeof($parms)) {
 	unset($graph_template_id);
 
 	foreach($parms as $parameter) {
-		@list($arg, $value) = @explode("=", $parameter);
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
 		switch ($arg) {
-		case "-d":
+		case '-d':
 			$debug = TRUE;
 
 			break;
-		case "--host-id":
+		case '--host-id':
 			$host_id = trim($value);
 			if (!is_numeric($host_id)) {
 				echo "ERROR: You must supply a valid host-id to run this script!\n";
@@ -61,7 +66,7 @@ if (sizeof($parms)) {
 			}
 
 			break;
-		case "--graph-template-id":
+		case '--graph-template-id':
 			$graph_template_id = $value;
 			if (!is_numeric($graph_template_id)) {
 				echo "ERROR: You must supply a numeric graph-template-id for all hosts!\n";
@@ -69,19 +74,23 @@ if (sizeof($parms)) {
 			}
 
 			break;
-		case "--version":
-		case "-V":
-		case "-H":
-		case "--help":
+		case '--version':
+		case '-V':
+		case '-v':
+			display_version();
+			exit;
+		case '--help':
+		case '-H':
+		case '-h':
 			display_help();
 			exit(0);
-		case "--list-hosts":
+		case '--list-hosts':
 			$displayHosts = TRUE;
 			break;
-		case "--list-graph-templates":
+		case '--list-graph-templates':
 			$displayGraphTemplates = TRUE;
 			break;
-		case "--quiet":
+		case '--quiet':
 			$quietMode = TRUE;
 			break;
 		default:
@@ -162,11 +171,16 @@ if (sizeof($parms)) {
 	exit(0);
 }
 
-function display_help() {
+/*  display_version - displays version information */
+function display_version() {
 	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Add Graph Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "A simple command line utility to associate a graph template with a host in Cacti\n\n";
-	echo "usage: add_graph_template.php --host-id=[ID] --graph-template-id=[ID]\n";
+	echo "Cacti Add Graph Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
+function display_help() {
+	display_version();
+
+	echo "\nusage: add_graph_template.php --host-id=[ID] --graph-template-id=[ID]\n";
 	echo "    [--quiet]\n\n";
 	echo "Required:\n";
 	echo "    --host-id             the numerical ID of the host\n";
@@ -176,5 +190,3 @@ function display_help() {
 	echo "    --list-graph-templates\n";
 	echo "    --quiet - batch mode value return\n\n";
 }
-
-?>

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -29,16 +29,23 @@ declare(ticks = 1);
 /* we are not talking to the browser */
 $no_http_headers = true;
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n";
+}
+
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	print "Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n\n";
-	print "usage: poller_boost.php [-f | --force] [-d | --debug] [-h | -H | --help] [-v | -V | --version]\n\n";
-	print "-f | --force   - Force the execution of a update process\n";
-	print "-v | --verbose - Show details logs at the command line\n";
-	print "-d | --debug   - Display verbose output during execution\n";
-	print "-V | --version - Display this help message\n";
-	print "-h -H --help   - display this help message\n";
+	display_version();
+
+	print "\nusage: poller_boost.php [--verbose] [--force] [--debug]\n\n";
+	print "Cacti's performance boosting poller.  This poller will purge the boost cache periodically.  You may\n";
+	print "force the processing of the boost cache by using the --force option.\n\n";
+	print "Optional:\n";
+	print "    --verbose - Show details logs at the command line\n";
+	print "    --force   - Force the execution of a update process\n";
+	print "    --debug   - Display verbose output during execution\n\n";
 }
 
 function sig_handler($signo) {
@@ -59,7 +66,7 @@ function sig_handler($signo) {
 }
 
 function output_rrd_data($start_time, $force = FALSE) {
-	global $start, $max_run_duration, $config, $debug, $get_memory, $memory_used;
+	global $start, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
 
 	include_once($config['base_path'] . '/lib/rrd.php');
 
@@ -115,18 +122,20 @@ function output_rrd_data($start_time, $force = FALSE) {
 	$archive_table = 'poller_output_boost_arch_' . time();
 	db_execute("RENAME TABLE poller_output_boost TO $archive_table");
 	db_execute("CREATE TABLE poller_output_boost LIKE $archive_table");
-	$more_arch_tables = db_fetch_assoc("SELECT table_name AS name
+	$more_arch_tables = db_fetch_assoc_prepared("SELECT table_name AS name
 		FROM information_schema.tables
-		WHERE table_schema=SCHEMA()
+		WHERE table_schema = ?
 		AND table_name LIKE 'poller_output_boost_arch_%'
-		AND table_name!='$archive_table'
-		AND table_rows>0;");
+		AND table_name != ?", array($database_default, $archive_table));
 
 	if(count($more_arch_tables)) {
 		foreach($more_arch_tables as $table) {
 			$table_name = $table['name'];
-			db_execute("INSERT INTO $archive_table SELECT * FROM $table_name");
-			db_execute("TRUNCATE TABLE $table_name");
+			$rows = db_fetch_cell("SELECT count(*) FROM $table_name");
+			if (is_numeric($rows) && intval($rows) > 0) {
+				db_execute("INSERT INTO $archive_table SELECT * FROM $table_name");
+				db_execute("TRUNCATE TABLE $table_name");
+			}
 		}
 	}
 
@@ -173,12 +182,14 @@ function output_rrd_data($start_time, $force = FALSE) {
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
 		WHERE table_schema=SCHEMA()
-		AND table_name LIKE 'poller_output_boost_arch_%'
-		AND table_rows=0;");
+		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	if (count($tables)) {
 	foreach($tables as $table) {
-		db_execute('DROP TABLE ' . $table['name']);
+		$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
+		if (is_numeric($rows) && intval($rows) == 0) {
+			db_execute('DROP TABLE ' . $table['name']);
+		}
 	}
 	}
 	db_execute("SELECT RELEASE_LOCK('poller_boost');");
@@ -199,7 +210,7 @@ function log_boost_statistics($rrd_updates) {
 		$rrd_updates);
 
 	/* log to the database */
-	db_execute("REPLACE INTO settings (name,value) VALUES ('stats_boost', '" . $cacti_stats . "')");
+	db_execute_prepared("REPLACE INTO settings (name,value) VALUES ('stats_boost', ?)", array($cacti_stats));
 
 	/* log to the logfile */
 	cacti_log('BOOST STATS: ' . $cacti_stats , TRUE, 'SYSTEM');
@@ -222,7 +233,7 @@ function log_boost_statistics($rrd_updates) {
 				$outstr .= ", timer_overhead:~$timer_overhead";
 			}
 			/* log to the database */
-			db_execute("REPLACE INTO settings (name,value) VALUES ('stats_detail_boost', '" . str_replace(',', '', $outstr) . "')");
+			db_execute_prepared("REPLACE INTO settings (name,value) VALUES ('stats_detail_boost', ?)", array(str_replace(',', '', $outstr)));
 
 			/* log to the logfile */
 			if ($verbose) {
@@ -261,33 +272,42 @@ $debug          = FALSE;
 $forcerun       = FALSE;
 $verbose        = FALSE;
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode('=', $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case '-d':
-	case '--debug':
-		$debug = TRUE;
-		break;
-	case '-f':
-	case '--force':
-		$forcerun = TRUE;
-		break;
-	case '-v':
-	case '--verbose':
-		$verbose = TRUE;
-		break;
-	case '--version':
-	case '-V':
-	case '--help':
-	case '-h':
-	case '-H':
-		display_help();
-		exit;
-	default:
-		print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+			case '-d':
+			case '--debug':
+				$debug = TRUE;
+				break;
+			case '-f':
+			case '--force':
+				$forcerun = TRUE;
+				break;
+			case '--verbose':
+				$verbose = TRUE;
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 
@@ -414,4 +434,3 @@ if ((read_config_option('boost_png_cache_enable') == 'on') || $forcerun) {
 		}
 	}
 }
-

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -51,6 +51,12 @@ if ($auth_method != 1 && $user['realm'] != 0) {
 
 if ($user['password_change'] != 'on') {
 	raise_message('nopassword');
+
+	/* destroy session information */
+	kill_session_var('sess_user_id');
+	unset($_COOKIE[$cacti_session_name]);
+	setcookie($cacti_session_name, null, -1, $config['url_path']);
+
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . $_SERVER['HTTP_REFERER']);
 	}else{
@@ -84,7 +90,7 @@ case 'changepassword':
 			
 	if (!secpass_check_history($_SESSION['sess_user_id'], get_nfilter_request_var('password'))) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('You can not use a previously entered password!') . "</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('You cannot use a previously entered password!') . "</span>";
 	}
 
 	// Get password options for the new password
@@ -111,7 +117,7 @@ case 'changepassword':
 
 	if ($user['password'] == $password_new || $user['password'] == $password_old) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('Your new password can not be the same as the old password. Please try again.') . "</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . "</span>";
 	}
 	
 	if (get_nfilter_request_var('password') !== (get_nfilter_request_var('confirm'))) {
@@ -122,12 +128,23 @@ case 'changepassword':
 	if ($bad_password == false && get_nfilter_request_var('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
 		// Password change is good to go
 		if (read_config_option('secpass_expirepass') > 0) {
-			db_execute("UPDATE user_auth SET lastchange = " . time() . " WHERE id = " . intval($_SESSION['sess_user_id']) . " AND realm = 0 AND enabled = 'on'");
+			db_execute_prepared("UPDATE user_auth 
+				SET lastchange = ? 
+				WHERE id = ?
+				AND realm = 0 
+				AND enabled = 'on'", 
+				array(time(), intval($_SESSION['sess_user_id'])));
 		}
 
 		$history = intval(read_config_option('secpass_history'));
 		if ($history > 0) {
-				$h = db_fetch_row_prepared("SELECT password, password_history FROM user_auth WHERE id = ? AND realm = 0 AND enabled = 'on'", array($_SESSION['sess_user_id']));
+				$h = db_fetch_row_prepared("SELECT password, password_history 
+					FROM user_auth 
+					WHERE id = ? 
+					AND realm = 0 
+					AND enabled = 'on'", 
+					array($_SESSION['sess_user_id']));
+
 				$op = $h['password'];
 				$h = explode('|', $h['password_history']);
 				while (count($h) > $history - 1) {
@@ -135,11 +152,21 @@ case 'changepassword':
 				}
 				$h[] = $op;
 				$h = implode('|', $h);
-				db_execute_prepared("UPDATE user_auth SET password_history = ? WHERE id = ? AND realm = 0 AND enabled = 'on'", array($h, $_SESSION['sess_user_id']));
+
+				db_execute_prepared("UPDATE user_auth 
+					SET password_history = ? WHERE id = ? AND realm = 0 AND enabled = 'on'", 
+					array($h, $_SESSION['sess_user_id']));
 		}
 
-		db_execute_prepared('INSERT IGNORE INTO user_log (username, result, ip) VALUES (?, 3, ?)', array($user['username'], $_SERVER['REMOTE_ADDR']));
-		db_execute_prepared("UPDATE user_auth SET must_change_password = '', password = ? WHERE id = ?", array($password_new != '' ? $password_new:$password_old, $_SESSION['sess_user_id']));
+		db_execute_prepared('INSERT IGNORE INTO user_log 
+			(username, result, time, ip) 
+			VALUES (?, 3, NOW(), ?)', 
+			array($user['username'], $_SERVER['REMOTE_ADDR']));
+
+		db_execute_prepared("UPDATE user_auth 
+			SET must_change_password = '', password = ? 
+			WHERE id = ?", 
+			array($password_new != '' ? $password_new:$password_old, $_SESSION['sess_user_id']));
 
 		kill_session_var('sess_change_password');
 
@@ -147,7 +174,10 @@ case 'changepassword':
 
 		/* if no console permissions show graphs otherwise, pay attention to user setting */
 		$realm_id    = $user_auth_realm_filenames['index.php'];
-		$has_console = db_fetch_cell_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array($_SESSION['sess_user_id'], $realm_id));
+		$has_console = db_fetch_cell_prepared('SELECT realm_id 
+			FROM user_auth_realm 
+			WHERE user_id = ? AND realm_id = ?', 
+			array($_SESSION['sess_user_id'], $realm_id));
 
 		if (basename(get_nfilter_request_var('ref')) == 'auth_changepassword.php' || basename(get_nfilter_request_var('ref')) == '') {
 			if ($has_console) {
@@ -185,7 +215,7 @@ if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_R
 }
 
 if (get_request_var('action') == 'force') {
-	$errorMessage = "<span color='#FF0000'>*** " . __('Forced password change') . " ***</span>";
+	$errorMessage = "<span class='loginErrors'>*** " . __('Forced password change') . " ***</span>";
 }
 
 /* Create tooltip for password complexity */
@@ -193,7 +223,7 @@ $secpass_tooltip = "<span style='font-weight:normal;'>" . __('Password requireme
 $secpass_body    = '';
 
 if (read_config_option('secpass_minlen') > 0) {
-	$secpass_body .= __('Must be at least %i characters in length', read_config_option('secpass_minlen'));
+	$secpass_body .= __('Must be at least %d characters in length', read_config_option('secpass_minlen'));
 }
 
 if (read_config_option('secpass_reqmixcase') == 'on') {
@@ -209,21 +239,24 @@ if (read_config_option('secpass_reqspec') == 'on') {
 }
 
 if (read_config_option('secpass_history') != '0') {
-	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Can not be reused for %d password changes', read_config_option('secpass_history')+1);
+	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Cannot be reused for %d password changes', read_config_option('secpass_history')+1);
 }
 
 $secpass_tooltip .= $secpass_body;
 
-print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
+print "<!DOCTYPE html>\n";
 print "<html>\n";
 print "<head>\n";
 print "\t<title>" . __('Change Password') . "</title>\n";
 print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
+print "\t<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>\n";
 print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
 print "\t<link href='" . $config['url_path'] . "include/" .  "/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>\n";
-print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
+print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
+print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/images/favicon.ico' rel='shortcut icon'>\n";
+print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/images/cacti_logo.gif' rel='icon' sizes='96x96'>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
+print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-migrate.js' language='javascript'></script>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.js' language='javascript'></script>\n";
@@ -260,7 +293,9 @@ print "<body class='loginBody'>
 							<td><input type='password' name='confirm' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
-							<td><input type='submit' value='" . __('Save') . "'></td>
+							<td class='nowrap' colspan='2'><input type='submit' value='" . __('Save') . "'>
+						" . ($user['must_change_password'] != 'on' ? "<input type='button' onClick='window.history.go(-1)' value='" . __('Return') . "'>":"") . "
+							</td>
 						</tr>
 					</table>
 				</div>

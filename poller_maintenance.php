@@ -1,8 +1,9 @@
+#!/usr/bin/php -q
 <?php
 
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -49,79 +50,92 @@ $force    = FALSE;
 $archived = 0;
 $purged   = 0;
 
-foreach ($parms as $parameter) {
-	@list ($arg, $value) = @explode('=', $parameter);
+if (sizeof($parms)) {
+	foreach ($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-		case '-h' :
-		case '-v' :
-		case '--version' :
-		case '--help' :
-			display_help();
-			exit;
-		case '--force' :
-			$force = true;
-			break;
-		case '--debug' :
-			$debug = true;
-			break;
-		default :
-			print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-			display_help();
-			exit;
+		switch ($arg) {
+			case '--version' :
+			case '-V' :
+			case '-v' :
+				display_version();
+				exit;
+			case '--help' :
+			case '-H' :
+			case '-h' :
+				display_help();
+				exit;
+			case '--force' :
+				$force = true;
+				break;
+			case '--debug' :
+				$debug = true;
+				break;
+			default :
+				echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 
 maint_debug('Checking for Purge Actions');
 
-/* are my tables already present? */
-$purge = db_fetch_cell('SELECT count(*) FROM data_source_purge_action');
+if ($config['poller_id'] == 1) {
+	/* are my tables already present? */
+	$purge = db_fetch_cell('SELECT count(*) FROM data_source_purge_action');
 
-/* if the table that holds the actions is present, work on it */
-if ($purge) {
-	maint_debug("Purging Required - Files Found $purge");
+	/* if the table that holds the actions is present, work on it */
+	if ($purge) {
+		maint_debug("Purging Required - Files Found $purge");
 
-	/* take the purge in steps */
-	while (true) {
-		maint_debug('Grabbing 1000 RRDfiles to Remove');
+		/* take the purge in steps */
+		while (true) {
+			maint_debug('Grabbing 1000 RRDfiles to Remove');
 
-		$file_array = db_fetch_assoc('SELECT id, name, local_data_id, action 
-			FROM data_source_purge_action
-			ORDER BY name
-			LIMIT 1000');
+			$file_array = db_fetch_assoc('SELECT id, name, local_data_id, action 
+				FROM data_source_purge_action
+				ORDER BY name
+				LIMIT 1000');
 
-		if (sizeof($file_array) == 0) {
-			break;
-		}
+			if (sizeof($file_array) == 0) {
+				break;
+			}
 	
-		if (sizeof($file_array) || $force) {
-			/* there's something to do for us now */
-			remove_files($file_array);
+			if (sizeof($file_array) || $force) {
+				/* there's something to do for us now */
+				remove_files($file_array);
 	
-			if ($force) {
-				cleanup_ds_and_graphs();
+				if ($force) {
+					cleanup_ds_and_graphs();
+				}
 			}
 		}
+
+		/* record the start time */
+		$poller_end         = microtime(true);
+		$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
+		cacti_log($string, true, 'SYSTEM');
 	}
 
-	/* record the start time */
-	$poller_end         = microtime(true);
-	$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
-	cacti_log($string, true, 'SYSTEM');
-}
+	/* removing security tokens older than 90 days */
+	if (read_config_option('auth_cache_enabled') == 'on') {
+		db_execute_prepared('DELETE FROM user_auth_cache WHERE last_update < ?', array(date('Y-m-d H:i:s', time()-(86400*90))));
+	}else{
+		db_execute('TRUNCATE TABLE user_auth_cache');
+	}
 
-/* removing security tokens older than 90 days */
-if (read_config_option('auth_cache_enabled') == 'on') {
-	db_execute("DELETE FROM user_auth_cache WHERE last_update<'" . date('Y-m-d H:i:s', time()-(86400*90)) . "'");
-}else{
-	db_execute('TRUNCATE TABLE user_auth_cache');
+	// Check expired accounts
+	secpass_check_expired();
 }
 
 // Check the realtime cache and poller
 realtime_purge_cache();
-
-// Check expired accounts
-secpass_check_expired();
 
 // Check whether the cacti log needs rotating
 if (read_config_option('logrotate_enabled') == 'on') {
@@ -235,16 +249,16 @@ function secpass_check_expired () {
 	$e = read_config_option('secpass_expireaccount');
 	if ($e > 0 && is_numeric($e)) {
 		$t = time();
-		db_execute("UPDATE user_auth SET lastlogin = $t WHERE lastlogin = -1 AND realm = 0 AND enabled = 'on'");
+		db_execute_prepared("UPDATE user_auth SET lastlogin = ? WHERE lastlogin = -1 AND realm = 0 AND enabled = 'on'", array($t));
 		$t = $t - (intval($e) * 86400);
-		db_execute("UPDATE user_auth SET enabled = '' WHERE realm = 0 AND enabled = 'on' AND lastlogin < $t AND id > 1");
+		db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE realm = 0 AND enabled = 'on' AND lastlogin < ? AND id > 1", array($t));
 	}
 	$e = read_config_option('secpass_expirepass');
 	if ($e > 0 && is_numeric($e)) {
 		$t = time();
-		db_execute("UPDATE user_auth SET lastchange = $t WHERE lastchange = -1 AND realm = 0 AND enabled = 'on'");
+		db_execute_prepared("UPDATE user_auth SET lastchange = ? WHERE lastchange = -1 AND realm = 0 AND enabled = 'on'", array($t));
 		$t = $t - (intval($e) * 86400);
-		db_execute("UPDATE user_auth SET must_change_password = 'on' WHERE realm = 0 AND enabled = 'on' AND lastchange < $t");
+		db_execute_prepared("UPDATE user_auth SET must_change_password = 'on' WHERE realm = 0 AND enabled = 'on' AND lastchange < ?", array($t));
 	}
 }
 
@@ -443,16 +457,23 @@ function maint_debug($message) {
 	}
 }
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /*
  * display_help
  * displays the usage of the function
  */
 function display_help() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	print "Cacti Maintenance Script, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	print "usage: poller_maintenance.php [--force] [--debug] [--help] [--version]\n\n";
-	print "--force       - force execution, e.g. for testing\n";
-	print "--debug       - debug execution, e.g. for testing\n\n";
-	print "-v --version  - Display this help message\n";
-	print "-h --help     - display this help message\n";
+	display_version();
+
+	echo "\nusage: poller_maintenance.php [--force] [--debug]\n\n";
+	echo "Cacti's maintenance poller.  This poller is repsonsible for executing periodic\n";
+	echo "maintenance activities for Cacti including log rotation, deactivating accounts, etc.\n\n";
+	echo "Optional:\n";
+	echo "    --force   - Force immediate execution, e.g. for testing.\n";
+	echo "    --debug   - Display verbose output during execution.\n\n";
 }

@@ -1,7 +1,8 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -81,8 +82,8 @@ function sig_handler($signo) {
 }
 
 /* let PHP run just as long as it has to */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 /* take time and log performance data */
@@ -92,84 +93,93 @@ $start = microtime(true);
 $startTime = time();
 
 /* let PHP run just as long as it has to */
-ini_set("max_execution_time", "0");
+ini_set('max_execution_time', '0');
 
 $dir = dirname(__FILE__);
 chdir($dir);
 
-include("./include/global.php");
-include_once($config["base_path"] . '/lib/snmp.php');
-include_once($config["base_path"] . '/lib/ping.php');
-include_once($config["base_path"] . '/lib/poller.php');
-include_once($config["base_path"] . '/lib/utility.php');
-include_once($config["base_path"] . '/lib/api_data_source.php');
-include_once($config["base_path"] . '/lib/api_graph.php');
-include_once($config["base_path"] . '/lib/snmp.php');
-include_once($config["base_path"] . '/lib/data_query.php');
-include_once($config["base_path"] . '/lib/api_device.php');
+include('./include/global.php');
+include_once($config['base_path'] . '/lib/snmp.php');
+include_once($config['base_path'] . '/lib/ping.php');
+include_once($config['base_path'] . '/lib/poller.php');
+include_once($config['base_path'] . '/lib/utility.php');
+include_once($config['base_path'] . '/lib/api_data_source.php');
+include_once($config['base_path'] . '/lib/api_graph.php');
+include_once($config['base_path'] . '/lib/snmp.php');
+include_once($config['base_path'] . '/lib/data_query.php');
+include_once($config['base_path'] . '/lib/api_device.php');
 
-include_once($config["base_path"] . '/lib/sort.php');
-include_once($config["base_path"] . '/lib/html_form_template.php');
-include_once($config["base_path"] . '/lib/template.php');
+include_once($config['base_path'] . '/lib/sort.php');
+include_once($config['base_path'] . '/lib/html_form_template.php');
+include_once($config['base_path'] . '/lib/template.php');
 
-include_once($config["base_path"] . '/lib/api_tree.php');
-include_once($config["base_path"] . '/lib/api_automation.php');
+include_once($config['base_path'] . '/lib/api_tree.php');
+include_once($config['base_path'] . '/lib/api_automation.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 $debug      = false;
 $force      = false;
 $network_id = 0;
-$poller_id  = 0;
+$poller_id  = $config['poller_id'];
 $thread     = 0;
 $master     = false;
 
 global $debug, $poller_id, $network_id, $thread, $master;
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode('=', $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case "-d":
-	case "--debug":
-		$debug = true;
-		break;
-	case "-M":
-	case "--master":
-		$master = true;
-		break;
-	case "--poller":
-		$poller_id = $value;
-		break;
-	case "-f":
-	case "--force":
-		$force = true;
-		break;
-	case "--network":
-		$network_id = $value;
-		break;
-	case "--thread":
-		$thread = $value;
-		break;
-	case "-h":
-	case "-v":
-	case "--version":
-	case "--help":
-		display_help();
-		exit;
-	default:
-		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+			case '-d':
+			case '--debug':
+				$debug = true;
+				break;
+			case '-M':
+			case '--master':
+				$master = true;
+				break;
+			case '--poller':
+				$poller_id = $value;
+				break;
+			case '-f':
+			case '--force':
+				$force = true;
+				break;
+			case '--network':
+				$network_id = $value;
+				break;
+			case '--thread':
+				$thread = $value;
+				break;
+			case '-v':
+			case '--version':
+				display_version();
+				exit;
+			case '-h':
+			case '--help':
+				display_help();
+				exit;
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 
 /* install signal handlers for UNIX only */
-if (function_exists("pcntl_signal")) {
-    pcntl_signal(SIGTERM, "sig_handler");
-    pcntl_signal(SIGINT, "sig_handler");
+if (function_exists('pcntl_signal')) {
+    pcntl_signal(SIGTERM, 'sig_handler');
+    pcntl_signal(SIGINT, 'sig_handler');
 }
 
 // Let's insure that we were called correctly
@@ -180,7 +190,11 @@ if (!$master && !$network_id) {
 
 // Simple check for a disabled network
 if (!$master && $thread == 0) {
-	$status = db_fetch_cell("SELECT enabled FROM automation_networks WHERE id=$network_id AND poller_id=$poller_id");
+	$status = db_fetch_cell_prepared('SELECT enabled 
+		FROM automation_networks 
+		WHERE id = ?
+		AND poller_id = ?', 
+		array($network_id, $poller_id));
 
 	if ($status != 'on' && !$force) {
 		print "ERROR: This Subnet Range is disabled.  You must use the 'force' option to force it's execution.\n";
@@ -195,7 +209,7 @@ if ($master) {
 		foreach($networks as $network) {
 			if (api_automation_is_time_to_start($network['id']) || $force) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
-				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --poller=" . $poller_id . " --network=" . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
+				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
 				$launched++;
 			}else{
 				automation_debug("Not time to Run Discovery for '" . $network['name'] . "'\n");
@@ -211,9 +225,13 @@ if (!$master && $thread == 0) {
 	automation_debug("Thread master about to launch collector threads\n");
 
 	// Remove any stale entries
-	$pids = array_rekey(db_fetch_assoc("SELECT pid 
-		FROM automation_processes 
-		WHERE network_id=$network_id"), 'pid', 'pid');
+	$pids = array_rekey(
+		db_fetch_assoc_prepared('SELECT pid 
+			FROM automation_processes 
+			WHERE network_id = ?', 
+			array($network_id)), 
+		'pid', 'pid'
+	);
 
 	automation_debug("Killing any prior running threads\n");
 	if (sizeof($pids)) {
@@ -228,8 +246,8 @@ if (!$master && $thread == 0) {
 	}
 
 	automation_debug("Removing any orphan entries\n");
-	db_execute("DELETE FROM automation_ips WHERE network_id=$network_id");
-	db_execute("DELETE FROM automation_processes WHERE network_id=$network_id");
+	db_execute_prepared('DELETE FROM automation_ips WHERE network_id = ?', array($network_id));
+	db_execute_prepared('DELETE FROM automation_processes WHERE network_id = ?', array($network_id));
 
 	registerTask($network_id, getmypid(), $poller_id, 'tmaster');
 
@@ -237,7 +255,7 @@ if (!$master && $thread == 0) {
 
 	automation_primeIPAddressTable($network_id);
 
-	$threads = db_fetch_cell("SELECT threads FROM automation_networks WHERE id=$network_id");
+	$threads = db_fetch_cell_prepared('SELECT threads FROM automation_networks WHERE id = ?', array($network_id));
 	automation_debug("Automation will use $threads Threads\n");
 
 	$curthread = 1;
@@ -251,18 +269,32 @@ if (!$master && $thread == 0) {
 	automation_debug("Checking for Running Threads\n");
 
 	while (true) {
-		$command = db_fetch_cell("SELECT command FROM automation_processes WHERE network_id=$network_id AND task='tmaster'");
+		$command = db_fetch_cell_prepared('SELECT command 
+			FROM automation_processes 
+			WHERE network_id = ? 
+			AND task="tmaster"', 
+			array($network_id));
+
 		if ($command == 'cancel') {
 			killProcess(getmypid());
 		}
 
-		$running = db_fetch_cell("SELECT count(*) FROM automation_processes WHERE network_id=$network_id AND task!='tmaster' AND status='running'");
+		$running = db_fetch_cell_prepared('SELECT count(*) 
+			FROM automation_processes 
+			WHERE network_id = ? 
+			AND task!="tmaster" 
+			AND status="running"', 
+			array($network_id));
+
 		automation_debug("Found $running Threads\n");
 
 		if ($running == 0) {
 			db_execute_prepared('DELETE FROM automation_ips WHERE network_id = ?', array($network_id));
 
-			$totals = db_fetch_row_prepared('SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp FROM automation_processes WHERE network_id=?', array($network_id));
+			$totals = db_fetch_row_prepared('SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp 
+				FROM automation_processes 
+				WHERE network_id=?', 
+				array($network_id));
 
 			/* take time and log performance data */
 			$end = microtime(true);
@@ -433,16 +465,25 @@ function discoverDevices($network_id, $thread) {
 					}
 	
 					if ($result && automation_valid_snmp_device($device)) {
-						$snmp_sysName = preg_split('/[\s.]+/', $device['snmp_sysName'], -1, PREG_SPLIT_NO_EMPTY);
-						if(!isset($snmp_sysName[0])) {
-							$snmp_sysName[0] = '';
-						}
-						$snmp_sysName_short = preg_split('/[\.]+/', strtolower($snmp_sysName[0]), -1, PREG_SPLIT_NO_EMPTY);
-						if(!isset($snmp_sysName_short[0])) {
-							$snmp_sysName_short[0] = '';
-						}
+						$snmp_sysName       = trim($device['snmp_sysName']);
+						$snmp_sysName_short = '';
+						if (!is_ipaddress($snmp_sysName)) {
+							$parts = explode('.', $snmp_sysName);
+							foreach($parts as $part) {
+								if (is_numeric($part)) {
+									$snmp_sysName_short = $snmp_sysName;
+									break;
+								}
+							}
 
-						$exists = db_fetch_row_prepared('SELECT status, snmp_version FROM host WHERE hostname IN (?,?)', array($snmp_sysName_short[0], $snmp_sysName[0]));
+							if ($snmp_sysName_short == '') {
+								$snmp_sysName_short = $parts[0];
+							}
+						}else{
+							$snmp_sysName_short = $snmp_sysName;
+						}
+						
+						$exists = db_fetch_row_prepared('SELECT status, snmp_version FROM host WHERE hostname IN (?,?)', array($snmp_sysName_short, $snmp_sysName));
 
 						if (sizeof($exists)) {
 							if ($exists['status'] == 3 || $exists['status'] == 2) {
@@ -459,10 +500,10 @@ function discoverDevices($network_id, $thread) {
 						} else {
 							$isCactiSysName = db_fetch_cell_prepared('SELECT COUNT(*)
 								FROM host
-								WHERE snmp_sysName = ?', array($snmp_sysName[0]));
+								WHERE snmp_sysName = ?', array($snmp_sysName));
 
 							if ($isCactiSysName) {
-								automation_debug(", Skipping sysName '" . $snmp_sysName[0] . "' already in Cacti!\n");
+								automation_debug(", Skipping sysName '" . $snmp_sysName . "' already in Cacti!\n");
 								markIPDone($device['ip_address'], $network_id);
 								continue;
 							}
@@ -472,10 +513,10 @@ function discoverDevices($network_id, $thread) {
 								WHERE network_id = ? 
 								AND sysName != ""
 								AND ip != ?
-								AND sysName = ?', array($device['ip_address'], $network_id, $snmp_sysName[0]));
+								AND sysName = ?', array($device['ip_address'], $network_id, $snmp_sysName));
 
 							if ($isDuplicateSysName) {
-								automation_debug(", Skipping sysName '" . $snmp_sysName[0] . "' already Discovered!\n");
+								automation_debug(", Skipping sysName '" . $snmp_sysName . "' already Discovered!\n");
 								markIPDone($device['ip_address'], $network_id);
 								continue;
 							}
@@ -499,6 +540,8 @@ function discoverDevices($network_id, $thread) {
 							}elseif ($fos == false) {
 								automation_debug(", Template: Not found, Not adding to Cacti");
 							}else{
+								automation_debug(", Template: " . $fos['name']);
+								$device['os']                   = $fos['name'];
 								automation_debug(", Skipped: Add to Cacti disabled");
 							}
 
@@ -586,24 +629,31 @@ function discoverDevices($network_id, $thread) {
 	return true;
 }
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+    print "Cacti Network Discovery Scanner, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /*	display_help - displays the usage of the function */
 function display_help () {
-    $version = db_fetch_cell('SELECT cacti FROM version');
-    print "Network Discovery, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	print "Cacti Network Discovery Scanner based on original works of Autom8 and Discovery\n\n";
-	print "usage: poller_automation.php -M [--poller=N ] | --network=network_id [-T=thread_id]\n";
-	print "    [-d | --debug] [-f | --force] [-h | --help | -v | --version]\n\n";
+	display_version();
+
+	print "\nusage: poller_automation.php -M [--poller=ID] | --network=network_id [-T=thread_id]\n";
+	print "    [--debug] [--force]\n\n";
+	print "Cacti's automation poller.  This poller has two operating modes, Master and Slave.\n";
+	print "The Master process tracks and launches all Slaves based upon Cacti's automation\n";
+	print "settings.  If you only want to force a network to be collected, you only need to\n";
+	print "specify the Network ID and the force options.\n\n";
 	print "Master Process:\n";
 	print "    -M | --master - Master poller for all Automation\n";
-	print "    --poller=n    - Master Poller ID, Defaults to 0 or WebServer\n\n";
+	print "    --poller=ID   - Master Poller ID, Defaults to 0 or WebServer\n\n";
 	print "Network Masters and Workers:\n";
 	print "    --network=n   - Network ID to discover\n";
 	print "    --thread=n    - Thread ID, Defaults to 0 or Network Master\n\n";
 	print "General Options:\n";
-	print "    -f | --force  - Force the execution of a discovery process\n";
-	print "    -d | --debug  - Display verbose output during execution\n";
-	print "    -v --version  - Display this help message\n";
-	print "    -h --help     - Display this help message\n";
+	print "    --force       - Force the execution of a discovery process\n";
+	print "    --debug       - Display verbose output during execution\n\n";
 }
 
 function isProcessRunning($pid) {
@@ -658,5 +708,3 @@ function updateDownDevice($network_id, $ip) {
 		db_execute_prepared("UPDATE automation_devices SET up='0' WHERE ip = ? AND network_id = ?", array($ip, $network_id));
 	}
 }
-
-

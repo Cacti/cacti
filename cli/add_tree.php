@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,18 +24,18 @@
  */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 $no_http_headers = true;
 
-include(dirname(__FILE__)."/../include/global.php");
-include_once($config["base_path"]."/lib/api_automation_tools.php");
-include_once($config["base_path"].'/lib/api_tree.php');
+include(dirname(__FILE__).'/../include/global.php');
+include_once($config['base_path'].'/lib/api_automation_tools.php');
+include_once($config['base_path'].'/lib/api_tree.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (sizeof($parms)) {
@@ -64,75 +64,84 @@ if (sizeof($parms)) {
 	$hosts          = getHosts();
 
 	foreach($parms as $parameter) {
-		@list($arg, $value) = @explode("=", $parameter);
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
 		switch ($arg) {
-		case "--type":
+		case '--type':
 			$type = trim($value);
 
 			break;
-		case "--name":
+		case '--name':
 			$name = trim($value);
 
 			break;
-		case "--sort-method":
+		case '--sort-method':
 			$sortMethod = trim($value);
 
 			break;
-		case "--parent-node":
+		case '--parent-node':
 			$parentNode = $value;
 
 			break;
-		case "--tree-id":
+		case '--tree-id':
 			$treeId = $value;
 
 			break;
-		case "--node-type":
+		case '--node-type':
 			$nodeType = trim($value);
 
 			break;
-		case "--graph-id":
+		case '--graph-id':
 			$graphId = $value;
 
 			break;
-		case "--host-id":
+		case '--host-id':
 			$hostId = $value;
 
 			break;
-		case "--quiet":
+		case '--quiet':
 			$quietMode = TRUE;
 
 			break;
-		case "--list-hosts":
+		case '--list-hosts':
 			$displayHosts = TRUE;
 
 			break;
-		case "--list-trees":
+		case '--list-trees':
 			$displayTrees = TRUE;
 
 			break;
-		case "--list-nodes":
+		case '--list-nodes':
 			$displayNodes = TRUE;
 
 			break;
-		case "--list-graphs":
+		case '--list-graphs':
 			$displayGraphs = TRUE;
 
 			break;
-		case "--host-group-style":
+		case '--host-group-style':
 			$hostGroupStyle = trim($value);
 
 			break;
-		case "--quiet":
+		case '--quiet':
 			$quietMode = TRUE;
 
 			break;
-		case "--version":
-		case "-V":
-		case "-H":
-		case "--help":
+		case '--version':
+		case '-V':
+		case '-v':
+			display_version();
+			exit;
+		case '--help':
+		case '-H':
+		case '-h':
 			display_help();
-			exit(0);
+			exit;
 		default:
 			echo "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
@@ -186,14 +195,14 @@ if (sizeof($parms)) {
 		}
 
 		$treeOpts = array();
-		$treeOpts["id"]        = 0; # Zero means create a new one rather than save over an existing one
-		$treeOpts["name"]      = $name;
+		$treeOpts['id']        = 0; # Zero means create a new one rather than save over an existing one
+		$treeOpts['name']      = $name;
 
-		if ($sortMethod == "manual"||
-			$sortMethod == "alpha" ||
-			$sortMethod == "numeric" ||
-			$sortMethod == "natural") {
-			$treeOpts["sort_type"] = $sortMethods[$sortMethod];
+		if ($sortMethod == 'manual'||
+			$sortMethod == 'alpha' ||
+			$sortMethod == 'numeric' ||
+			$sortMethod == 'natural') {
+			$treeOpts['sort_type'] = $sortMethods[$sortMethod];
 		} else {
 			echo "ERROR: Invalid sort-method: ($sortMethod)\n";
 			display_help();
@@ -206,7 +215,7 @@ if (sizeof($parms)) {
 			exit(1);
 		}
 
-		$treeId = sql_save($treeOpts, "graph_tree");
+		$treeId = sql_save($treeOpts, 'graph_tree');
 
 		api_tree_sort_branch(0, $treeId);
 
@@ -215,9 +224,9 @@ if (sizeof($parms)) {
 		exit(0);
 	} elseif ($type == 'node') {
 		# Add a new node to a tree
-		if ($nodeType == "header"||
-			$nodeType == "graph" ||
-			$nodeType == "host") {
+		if ($nodeType == 'header'||
+			$nodeType == 'graph' ||
+			$nodeType == 'host') {
 			$itemType = $nodeTypes[$nodeType];
 		} else {
 			echo "ERROR: Invalid node-type: ($nodeType)\n";
@@ -259,10 +268,9 @@ if (sizeof($parms)) {
 			$hostId         = 0;
 			$hostGroupStyle = 1;
 
-			$graphs = db_fetch_assoc("SELECT " .
-				"id " .
-				"FROM graph_local " .
-				"WHERE graph_local.id=" . $graphId);
+			$graphs = db_fetch_assoc('SELECT id 
+				FROM graph_local
+				WHERE graph_local.id=' . $graphId);
 		
 			if (!sizeof($graphs)) {
 				echo "ERROR: No such graph-id ($graphId) exists. Try --list-graphs\n";
@@ -301,11 +309,16 @@ if (sizeof($parms)) {
 	exit(0);
 }
 
-function display_help() {
+/*  display_version - displays version information */
+function display_version() {
 	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Add Tree Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "A simple command line utility to add objects to a tree in Cacti\n\n";
-	echo "usage: add_tree.php  --type=[tree|node] [type-options] [--quiet]\n\n";
+	echo "Cacti Add Tree Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
+function display_help() {
+	display_version();
+
+	echo "\nusage: add_tree.php  --type=[tree|node] [type-options] [--quiet]\n\n";
 	echo "Tree options:\n";
 	echo "    --name=[Tree Name]\n";
 	echo "    --sort-method=[manual|alpha|natural|numeric]\n\n";
@@ -329,5 +342,3 @@ function display_help() {
 	echo "    --list-nodes --tree-id=[ID]\n";
 	echo "    --list-graphs --host-id=[ID]\n";
 }
-
-?>

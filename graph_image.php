@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -52,7 +52,7 @@ $graph_data_array = array();
 
 // Determine the graph type of the output
 if (!isset_request_var('image_format')) {
-	$type   = db_fetch_cell('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id=' . get_request_var('local_graph_id'));
+	$type   = db_fetch_cell_prepared('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
 	switch($type) {
 	case '1':
 		$gtype = 'png';
@@ -124,5 +124,12 @@ if (isset_request_var('graph_theme')) {
 	$graph_data_array['graph_theme'] = get_request_var('graph_theme');
 }
 
-print @rrdtool_function_graph(get_request_var('local_graph_id'), (array_key_exists('rra_id', $_REQUEST) ? get_request_var('rra_id') : null), $graph_data_array);
+$output =  @rrdtool_function_graph(get_request_var('local_graph_id'), (array_key_exists('rra_id', $_REQUEST) ? get_request_var('rra_id') : null), $graph_data_array);
+
+
+if ($output !== false && $output != '') {
+	print $output;
+}else{
+	print file_get_contents(__DIR__ . '/images/rrd_not_found.png');
+}
 

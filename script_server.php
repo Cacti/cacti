@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -42,6 +42,7 @@ function sig_handler($signo) {
 		case SIGQUIT:
 		case SIGSEGV:
 			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" . basename($include_file) . "', function:'$function', params:'$parameters'", FALSE, 'PHPSVR');
+			db_close();
 
 			exit;
 			break;
@@ -72,7 +73,7 @@ if (php_sapi_name() != 'cli') {
 }
 
 /* signal for realtime */
-global $environ;
+global $environ, $poller_id;
 
 /* record the script start time */
 $start = microtime(true);
@@ -85,10 +86,10 @@ $ctr = 0;
 $polling_interval = read_config_option('poller_interval');
 
 if (!empty($polling_interval)) {
-	$num_polling_items = db_fetch_cell('SELECT count(*) FROM poller_item WHERE rrd_next_step <= 0');
+	$num_polling_items = db_fetch_cell_prepared('SELECT count(*) FROM poller_item WHERE rrd_next_step <= 0 AND poller_id = ?', array($config['poller_id']), 'count(*)');
 	define('MAX_POLLER_RUNTIME', $polling_interval);
 }else{
-	$num_polling_items = db_fetch_cell('SELECT count(*) FROM poller_item');
+	$num_polling_items = db_fetch_cell_prepared('SELECT count(*) FROM poller_item WHERE poller_id = ?', array($config['poller_id']), 'count(*)');
 	define('MAX_POLLER_RUNTIME', 300);
 }
 
@@ -110,30 +111,26 @@ if ($_SERVER['argc'] >= 2) {
 	if ($_SERVER['argc'] == 3)
 		$poller_id = $_SERVER['argv'][2];
 	else
-		$poller_id = 0;
+		$poller_id = 1;
 } else {
 	$environ = 'cmd';
-	$poller_id = 0;
+	$poller_id = 1;
 }
 
-if(read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-	cacti_log('DEBUG: SERVER: ' . $environ, false, 'PHPSVR');
+cacti_log('DEBUG: SERVER: ' . $environ, false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
-	if ($config['cacti_server_os'] == 'win32') {
-		cacti_log('DEBUG: GETCWD: ' . strtolower(strtr(getcwd(),"\\",'/')), false, 'PHPSVR');
-		cacti_log('DEBUG: DIRNAM: ' . strtolower(strtr(dirname(__FILE__),"\\",'/')), false, 'PHPSVR');
-	}else{
-		cacti_log('DEBUG: GETCWD: ' . strtr(getcwd(),"\\",'/'), false, 'PHPSVR');
-		cacti_log('DEBUG: DIRNAM: ' . strtr(dirname(__FILE__),"\\",'/'), false, 'PHPSVR');
-	}
-
-	cacti_log('DEBUG: FILENM: ' . __FILE__, false, 'PHPSVR');
+if ($config['cacti_server_os'] == 'win32') {
+	cacti_log('DEBUG: GETCWD: ' . strtolower(strtr(getcwd(),"\\",'/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+	cacti_log('DEBUG: DIRNAM: ' . strtolower(strtr(dirname(__FILE__),"\\",'/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+}else{
+	cacti_log('DEBUG: GETCWD: ' . strtr(getcwd(),"\\",'/'), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+	cacti_log('DEBUG: DIRNAM: ' . strtr(dirname(__FILE__),"\\",'/'), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 }
+
+cacti_log('DEBUG: FILENM: ' . __FILE__, false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
 /* send status back to the server */
-if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_HIGH) {
-	cacti_log('PHP Script Server has Started - Parent is ' . $environ, false, 'PHPSVR');
-}
+cacti_log('PHP Script Server has Started - Parent is ' . $environ, false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
 
 fputs(STDOUT, 'PHP Script Server has Started - Parent is ' . $environ . "\n");
 fflush(STDOUT);
@@ -152,10 +149,10 @@ while (1) {
 
 		if (substr($input_string,0,4) == 'quit') {
 			fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting\n');
-			if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR');
-			}
-			exit(1);
+			fflush(STDOUT);
+			cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			db_close();
+			exit(0);
 		}
 
 		if (strlen($input_string)) {
@@ -191,12 +188,11 @@ while (1) {
 			if (!parseArgs($parameters, $parameter_array)) {
 				cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
+				fflush(STDOUT);
 				continue;
 			}
 
-			if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-				cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
-			}
+			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
 			/* validate the existance of the function, and include if applicable */
 			if (!function_exists($function)) {
@@ -230,19 +226,19 @@ while (1) {
 				fputs(STDOUT, trim($result) . "\n");
 				fflush(STDOUT);
 
-				if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-					cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR');
-				}
+				cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
 				$ctr++;
 			} else {
 				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
+				fflush(STDOUT);
 			}
 		}
 	}else{
 		cacti_log('ERROR: Input Expected, Script Server Terminating', false, 'PHPSVR');
 		fputs(STDOUT, "ERROR: Input Expected, Script Server Terminating\n");
+		fflush(STDOUT);
 		exit (-1);
 	}
 

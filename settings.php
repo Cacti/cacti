@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -62,9 +62,24 @@ case 'save':
 				}
 			}
 		}elseif (isset_request_var($field_name)) {
-			db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
+			if (is_array(get_nfilter_request_var($field_name))) {
+				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, implode(',', get_nfilter_request_var($field_name))));
+			}else{
+				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
+			}
 		}
 	}
+
+	if (isset_request_var('log_verbosity')) {
+		if (!isset_request_var('selective_debug')) {
+			db_execute('REPLACE INTO settings (name, value) VALUES("selective_debug", "")');
+		}
+
+		if (!isset_request_var('selective_plugin_debug')) {
+			db_execute('REPLACE INTO settings (name, value) VALUES("selective_plugin_debug", "")');
+		}
+	}
+
 	/* update snmpcache */
 	snmpagent_global_settings_update();
 	
@@ -103,18 +118,22 @@ default:
 
 	/* draw the categories tabs on the top of the page */
 	print "<table><tr><td style='padding-bottom:0px;'>\n";
-	print "<div class='tabs' style='float:left;'><nav><ul>\n";
+	print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
 	if (sizeof($tabs) > 0) {
-	foreach (array_keys($tabs) as $tab_short_name) {
-		print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>$tabs[$tab_short_name]</a></li>\n";
-	}
+		$i = 0;
+
+		foreach (array_keys($tabs) as $tab_short_name) {
+			print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
+
+			$i++;
+		}
 	}
 
 	print "</ul></nav></div>\n";
 	print "</tr></table><table style='width:100%;'><tr><td style='padding:0px;'>\n";
 
-	form_start('settings.php');
+	form_start('settings.php', 'chk');
 
 	html_start_box( __('Cacti Settings (%s)', $tabs[$current_tab]), '100%', '', '3', 'center', '');
 
@@ -143,8 +162,9 @@ default:
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
-			'fields' => $form_array)
-			);
+			'fields' => $form_array
+		)
+	);
 
 	html_end_box();
 
@@ -163,6 +183,86 @@ default:
 	var currentTheme = '';
 
 	$(function() {
+		$('#selective_plugin_debug').multiselect({
+			noneSelectedText: '<?php print __('Select Plugin(s)');?>', 
+			selectedText: function(numChecked, numTotal, checkedItems) {
+				myReturn = numChecked + ' <?php print __('Plugins Selected');?>';
+				return myReturn;
+			},
+			checkAllText: '<?php print __('All');?>', 
+			uncheckAllText: '<?php print __('None');?>',
+			uncheckall: function() {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).prop('checked', true);
+				});
+			}
+		}).multiselectfilter( {
+			label: '<?php print __('Search');?>', width: '150'
+		});
+
+		$('#selective_debug').multiselect({
+			noneSelectedText: '<?php print __('Select File(s)');?>', 
+			selectedText: function(numChecked, numTotal, checkedItems) {
+				myReturn = numChecked + ' <?php print __('Files Selected');?>';
+				return myReturn;
+			},
+			checkAllText: '<?php print __('All');?>', 
+			uncheckAllText: '<?php print __('None');?>',
+			uncheckall: function() {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).prop('checked', true);
+				});
+			}
+		}).multiselectfilter( {
+			label: '<?php print __('Search');?>', width: '150'
+		});
+
+		$('#spikekill_templates').multiselect({
+			noneSelectedText: '<?php print __('Select Template(s)');?>', 
+			selectedText: function(numChecked, numTotal, checkedItems) {
+				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
+				$.each(checkedItems, function(index, value) {
+					if (value.value == '0') {
+						myReturn='<?php print __('All Templates Selected');?>';
+						return false;
+					}
+				});
+				return myReturn;
+			},
+			checkAllText: '<?php print __('All');?>', 
+			uncheckAllText: '<?php print __('None');?>',
+			uncheckall: function() {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).prop('checked', true);
+				});
+			},
+			click: function(event, ui) {
+				checked=$(this).multiselect('widget').find('input:checked').length;
+
+				if (ui.value == '0') {
+					if (ui.checked == true) {
+						$('#host').multiselect('uncheckAll');
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).prop('checked', true);
+						});
+					}
+				}else if (checked == 0) {
+					$(this).multiselect('widget').find(':checkbox:first').each(function() {
+						$(this).click();
+					});
+				}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
+					if (checked > 0) {
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).click();
+							$(this).prop('disable', true);
+						});
+					}
+				}
+			}
+		}).multiselectfilter( {
+			label: '<?php print __('Search');?>', width: '150'
+		});
+
 		$('.subTab').find('a').click(function(event) {
 			event.preventDefault();
 			strURL = $(this).attr('href');
@@ -172,9 +272,17 @@ default:
 		
 		$('input[value="Save"]').click(function(event) {
 			event.preventDefault();
+
+			if (parseInt($('#cron_interval').val()) < parseInt($('#poller_interval').val())) {
+				$('#message_container').html('<div id="message" class="textError messageBox"><?php print __('Poller Interval must be less than Cron Interval');?></div>').show().delay(4000).slideUp('fast', function() {
+					$('#message_container').empty();
+				});
+				return false;
+			}
+
 			if (themeChanged != true) {
 				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
-					$('#main').html(data);
+					$('#main').hide().html(data);
 					applySkin();
 				});
 			}else{
@@ -188,7 +296,7 @@ default:
 			$('#emailtest').click(function() {
 				var $div = $('<div />').appendTo('body');
 				$div.attr('id', 'testmail');
-				$('#testmail').prop('title', '<?php print __('Test E-Mail Results');?>');
+				$('#testmail').prop('title', '<?php print __('Test Email Results');?>');
 				$('#testmail').dialog({
 					autoOpen: false,
 					modal: true,

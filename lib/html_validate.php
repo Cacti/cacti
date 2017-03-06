@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -44,20 +44,20 @@ function html_log_input_error($variable) {
 	cacti_debug_backtrace("Input Validation Not Performed for '$variable'");
 }
 
-function die_html_input_error($variable = '', $value = '') {
+function die_html_input_error($variable = '', $value = '', $message = '') {
 	global $config;
 
 	?>
 	<table style="width:100%;text-align:center;">
 		<tr>
 			<td>
-				Validation error<?php print $variable != '' ? ' for variable ' . $variable . ' with value of "' . $value .'"':'';?>.  See backtrace below for more details.
+				Validation error<?php print ($variable != '' ? ' for variable ' . $variable . ', with value of "' . $value . '"' . ($message != '' ? ', and error:' . $message : '') : '');?>.  See backtrace below for more details.
 			</td>
 		</tr>
 	</table>
 	<?php
 
-	cacti_debug_backtrace('Validation' . ($variable != '' ? ", Variable:$variable":"") . ($value != '' ? ", Value:$value":""), true);
+	cacti_debug_backtrace('Validation Error' . ($variable != '' ? ", Variable:$variable":"") . ($value != '' ? ", Value:$value":""), true);
 
 	bottom_footer();
 	exit;

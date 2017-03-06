@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -103,9 +103,9 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
 	}
 
 	if (strlen($row_id)) {
-		print "<tr class='$class selectable' id='$row_id'>\n";
+		print "<tr class='$class selectable formRow' id='$row_id'>\n";
 	}else{
-		print "<tr class='$class'>\n";
+		print "<tr class='$class formRow'>\n";
 	}
 
 	return $current_color;
@@ -131,11 +131,13 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	$i++;
 
 	if (strlen($row_id) && substr($row_id,0,4) != 'row_' && !$disabled) {
-		print "<tr class='$class selectable' id='$row_id'>\n";
+		print "<tr class='$class selectable formRow' id='$row_id'>\n";
 	}elseif (substr($row_id,0,4) == 'row_') {
-		print "<tr class='$class' id='$row_id'>\n";
+		print "<tr class='$class formRow' id='$row_id'>\n";
+	}elseif (strlen($row_id)) {
+		print "<tr class='$class formRow' id='$row_id'>\n";
 	}else{
-		print "<tr class='$class'>\n";
+		print "<tr class='$class formRow'>\n";
 	}
 }
 
@@ -143,8 +145,9 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
    @arg $contents - the readable portion of the
    @arg $id - the id of the object that will be highlighted
    @arg $width - the width of the table element
-   @arg $style_or_class - the style or class to apply to the table element */
-function form_selectable_cell($contents, $id, $width='', $style_or_class = '') {
+   @arg $style_or_class - the style or class to apply to the table element
+   @arg $title - optional title for the column */
+function form_selectable_cell($contents, $id, $width='', $style_or_class = '', $title = '') {
 	$output = '';
 
 	if ($style_or_class != '') {
@@ -162,13 +165,19 @@ function form_selectable_cell($contents, $id, $width='', $style_or_class = '') {
 		}
 	}
 
-	print "\t<td id='$id' " . $output . ">" . $contents . "</td>\n";
+	if ($title != '') {
+		$wrapper = "<span class='cactiTooltipHint' title='" . htmlspecialchars($title) . "'>" . $contents . "</span>";
+	}else{
+		$wrapper = $contents;
+	}
+
+	print "\t<td " . $output . ">" . $wrapper . "</td>\n";
 }
 
 /* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
    @arg $title - the text that will be displayed if your hover over the checkbox */
 function form_checkbox_cell($title, $id, $disabled = false) {
-	print "\t<td style='width:1%;'>\n";
+	print "\t<td class='checkbox' style='width:1%;'>\n";
 	print "\t\t<input type='checkbox' class='checkbox" . ($disabled ? ' disabled':'') . "' " . ($disabled ? "disabled='disabled'":'') . " id='chk_" . $id . "' name='chk_" . $id . "'>\n";
 	print "\t</td>\n";
 }
@@ -186,9 +195,9 @@ function form_confim_buttons($post_variable, $item_array, $save_message, $return
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($item_array) ? serialize($item_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $post_variable . "'>" . ($return ? "
-			<input type='button' value='Return' onClick='cactiReturnTo()'>
+			<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>
 			":"
-			<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='$message'>") . "
+			<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') ."' title='$save_message'>") . "
 		</td>
 	</tr>\n";
 }
@@ -348,8 +357,69 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 			set_request_var($name, get_nfilter_request_var($name));
 
 			return get_request_var($name);
+		}elseif (get_nfilter_request_var($name) == 'undefined') {
+			if (isset($options['default'])) {
+				set_request_var($name, $options['default']);
+
+				return $options['default'];
+			}else{
+				set_request_var($name, '');
+
+				return '';
+			}
 		}else{
-			if (!sizeof($options)) {
+			if (get_nfilter_request_var($name) == '0') {
+				$value = '0';
+			}elseif (get_nfilter_request_var($name) == 'undefined') {
+				if (isset($options['default'])) {
+					$value = $options['default'];
+				}else{
+					$value = '';
+				}
+			}elseif (isempty_request_var($name)) {
+				$value = '';
+			}elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
+				$valid = validate_is_regex($_REQUEST[$name]);
+				if ($valid === true) {
+					$value = $_REQUEST[$name];
+				}else{
+					$value = FALSE;
+					$custom_error = $valid;
+				}
+			}elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
+				$valid = true;
+				if (is_array($_REQUEST[$name])) {
+					foreach($_REQUEST[$name] AS $number) {
+						if (!is_numeric($number)) {
+							$valid = false;
+							break;
+						}
+					}
+				}else{
+					$valid = false;
+				}
+
+				if ($valid == true) {
+					$value = $_REQUEST[$name];
+				}else{
+					$value = false;
+				}
+			}elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
+				$valid = true;
+				$values = explode(',', $_REQUEST[$name]);
+				foreach($values AS $number) {
+					if (!is_numeric($number)) {
+						$valid = false;
+						break;
+					}
+				}
+
+				if ($valid == true) {
+					$value = $_REQUEST[$name];
+				}else{
+					$value = false;
+				}
+			}elseif (!sizeof($options)) {
 				$value = filter_var($_REQUEST[$name], $filter);
 			}else{
 				$value = filter_var($_REQUEST[$name], $filter, $options);
@@ -357,7 +427,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 		}
 
 		if ($value === false) {
-			die_html_input_error($name, get_request_var($name));
+			die_html_input_error($name, get_nfilter_request_var($name));
 		}else{
 			set_request_var($name, $value);
 
@@ -444,14 +514,17 @@ function get_request_var_post($name, $default = '') {
 
    Validateion 'filter' follow PHP conventions including:
 
-     FILTER_VALIDATE_BOOLEAN - Validate that the variable is boolean
-     FILTER_VALIDATE_EMAIL   - Validate that the variable is an email
-     FILTER_VALIDATE_FLOAT   - Validate that the variable is a float
-     FILTER_VALIDATE_INT     - Validate that the variable is an integer
-     FILTER_VALIDATE_IP      - Validate that the variable is an IP address
-     FILTER_VALIDATE_MAC     - Validate that the variable is a MAC Address
-     FILTER_VALIDATE_REGEXP  - Validate against a REGEX
-     FILTER_VALIDATE_URL     - Validate that the variable is a valid URL
+     FILTER_VALIDATE_BOOLEAN          - Validate that the variable is boolean
+     FILTER_VALIDATE_EMAIL            - Validate that the variable is an email
+     FILTER_VALIDATE_FLOAT            - Validate that the variable is a float
+     FILTER_VALIDATE_INT              - Validate that the variable is an integer
+     FILTER_VALIDATE_IP               - Validate that the variable is an IP address
+     FILTER_VALIDATE_MAC              - Validate that the variable is a MAC Address
+     FILTER_VALIDATE_REGEXP           - Validate against a REGEX
+     FILTER_VALIDATE_URL              - Validate that the variable is a valid URL
+     FILTER_VALIDATE_IS_REGEX         - Validate if a filter variable is a valid regex
+     FILTER_VALIDATE_IS_NUMERIC_ARRAY - Validate if a filter variable is a numeric array
+     FILTER_VALIDATE_IS_NUMERIC_LIST  - Validate if a filter variable is a comma delimited list of numbers
 
    Sanitization 'filters' follow PHP conventions including:
 
@@ -471,6 +544,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 	global $_CACTI_REQUEST;
 
 	$changed = 0;
+	$custom_error = '';
 
 	if (sizeof($filters)) {
 		foreach($filters as $variable => $options) {
@@ -507,8 +581,55 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 			}else{
 				if (get_nfilter_request_var($variable) == '0') {
 					$value = '0';
+				}elseif (get_nfilter_request_var($variable) == 'undefined') {
+					if (isset($options['default'])) {
+						$value = $options['default'];
+					}else{
+						$value = '';
+					}
 				}elseif (isempty_request_var($variable)) {
 					$value = '';
+				}elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
+					$valid = validate_is_regex($_REQUEST[$variable]);
+					if ($valid === true) {
+						$value = $_REQUEST[$variable];
+					}else{
+						$value = FALSE;
+						$custom_error = $valid;
+					}
+				}elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
+					$valid = true;
+					if (is_array($_REQUEST[$variable])) {
+						foreach($_REQUEST[$variable] AS $number) {
+							if (!is_numeric($number)) {
+								$valid = false;
+								break;
+							}
+						}
+					}else{
+						$valid = false;
+					}
+
+					if ($valid == true) {
+						$value = $_REQUEST[$variable];
+					}else{
+						$value = false;
+					}
+				}elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
+					$valid = true;
+					$values = explode(',', $_REQUEST[$variable]);
+					foreach($values AS $number) {
+						if (!is_numeric($number)) {
+							$valid = false;
+							break;
+						}
+					}
+
+					if ($valid == true) {
+						$value = $_REQUEST[$variable];
+					}else{
+						$value = false;
+					}
 				}elseif (!isset($options['options'])) {
 					$value = filter_var($_REQUEST[$variable], $options['filter']);
 				}else{
@@ -516,7 +637,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 				}
 
 				if ($value === FALSE) {
-					die_html_input_error($variable, $_REQUEST[$variable]);
+					die_html_input_error($variable, $_REQUEST[$variable], $custom_error);
 				}else{
 					set_request_var($variable, $value);
 				}
@@ -535,6 +656,42 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 	if ($changed) {
 		set_request_var('page', 1);
 		set_request_var('changed', 1);
+	}
+}
+
+function validate_is_regex($regex) {
+	global $php_errormsg;
+
+	if ($regex == '') {
+		return true;
+	}
+
+	$track_errors = ini_get('track_errors');
+	ini_set('track_errors', 1); 
+
+    if(@preg_match("'" . $regex . "'", NULL) !== false) {
+		ini_set('track_errors', $track_errors);
+		return true;
+	}
+
+	$php_error = trim(str_replace('preg_match():', '', $php_errormsg));
+
+	ini_set('track_errors', $track_errors);
+
+	$errors = array(
+		PREG_INTERNAL_ERROR         => __('There was an internal error!'),
+		PREG_BACKTRACK_LIMIT_ERROR  => __('Backtrack limit was exhausted!'),
+		PREG_RECURSION_LIMIT_ERROR  => __('Recursion limit was exhausted!'),
+		PREG_BAD_UTF8_ERROR         => __('Bad UTF-8 error!'),
+		PREG_BAD_UTF8_OFFSET_ERROR  => __('Bad UTF-8 offset error!'),
+	);
+
+	$error = preg_last_error();
+
+	if (empty($error)) {
+		return $php_error;
+	}else{
+		return $errors[$error];
 	}
 }
 
@@ -568,23 +725,23 @@ function get_colored_device_status($disabled, $status) {
 	);
 
 	if ($disabled) {
-		return "<span class='deviceDisabled'>Disabled</span>";
+		return "<span class='deviceDisabled'>" . __('Disabled') . "</span>";
 	}else{
 		switch ($status) {
 			case HOST_DOWN:
-				return "<span class='deviceDown'>Down</span>"; 
+				return "<span class='deviceDown'>" . __('Down') . "</span>"; 
 				break;
 			case HOST_RECOVERING:
-				return "<span class='deviceRecovering'>Recovering</span>";
+				return "<span class='deviceRecovering'>" . __('Recovering') . "</span>";
 				break;
 			case HOST_UP:
-				return "<span class='deviceUp'>Up</span>";
+				return "<span class='deviceUp'>" . __('Up') . "</span>";
 				break;
 			case HOST_ERROR:
-				return "<span class='deviceError'>Error</span>";
+				return "<span class='deviceError'>" . __('Error') . "</span>";
 				break;
 			default:
-				return "<span class='deviceUnknown'>Unknown</span>";
+				return "<span class='deviceUnknown'>" . __('Unknown') . "</span>";
 				break;
 		}
 	}

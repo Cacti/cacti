@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -97,9 +97,18 @@ $messages = array(
 	30 => array(
 		'message' => __('Graph Template Not Found during Export.  Please run Database Repair Script to Identify.'),
 		'type' => 'error'),
+	31 => array(
+		'message' => __('Graph not found.  Either it has been deleted or your database needs repair.'),
+		'type' => 'error'),
+	32 => array(
+		'message' => __('SNMPv3 Auth Passphrases must be 8 characters or greater.'),
+		'type' => 'error'),
 	'clog_purged' => array(
-		'message' => __('Cacti Log Purged Sucessfully'), 
+		'message' => __('Cacti Log purged successfully'), 
 		'type' => 'info'),
+	'password_change' => array(
+		'message' => __('Error: If you force a password change, you must also allow the user to change their password.'), 
+		'type' => 'error'),
 	'nopassword' => array(
 		'message' => __('Error: You are not allowed to change your password.'), 
 		'type' => 'error'),
@@ -115,6 +124,18 @@ $messages = array(
 	'mg_mailtime_invalid' => array(
 		'message' => __('Invalid Timestamp. Select timestamp in the future.'),
 		'type'    => 'error'),
+	'poller_sync' => array(
+		'message' => '<i>' . __('Data Collector(s) Synchronized for Offline Operation') . '</i>', 
+		'type' => 'info'),
+	'poller_notfound' => array(
+		'message' => '<i>' . __('Data Collector(s) Not found when attempting Synchronization') . '</i>', 
+		'type' => 'error'),
+	'poller_noconnect' => array(
+		'message' => '<i>' . __('Unable to establish MySQL connection with remote Data Collector.') . '</i>', 
+		'type' => 'error'),
+	'poller_nosync' => array(
+		'message' => '<i>' . __('Data Collector Synchronization must be initiated from the main Cacti server.') . '</i>', 
+		'type' => 'error'),
 	'reports_save' => array(
 		'message' => '<i>' . __('Report Saved') . '</i>', 
 		'type' => 'info'),
@@ -227,12 +248,18 @@ $custom_vdef_data_source_types = array( // this may change as soon as RRDTool su
 );
 
 $input_types = array(
-	DATA_INPUT_TYPE_SNMP                => __('SNMP'), // Action 0:
+	DATA_INPUT_TYPE_SNMP                => __('SNMP Get'), // Action 0:
 	DATA_INPUT_TYPE_SNMP_QUERY          => __('SNMP Query'),
 	DATA_INPUT_TYPE_SCRIPT              => __('Script/Command'),  // Action 1:
 	DATA_INPUT_TYPE_SCRIPT_QUERY        => __('Script Query'), // Action 1:
-	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script - Script Server (PHP)'),
+	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script Server'),
 	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => __('Script Query - Script Server')
+);
+
+$input_types_script = array(
+	DATA_INPUT_TYPE_SNMP                => __('SNMP Get'), // Action 0:
+	DATA_INPUT_TYPE_SCRIPT              => __('Script/Command'),  // Action 1:
+	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script Server'),
 );
 
 $reindex_types = array(
@@ -319,6 +346,8 @@ $graph_item_types = array(
 	GRAPH_ITEM_TYPE_TIC             => 'TICK',
 	GRAPH_ITEM_TYPE_TEXTALIGN       => 'TEXTALIGN',
 );
+
+asort($graph_item_types);
 
 $image_types = array(
 	1 => 'PNG', 
@@ -557,71 +586,111 @@ $host_group_types = array(
 
 $custom_data_source_types = array(
 	'CURRENT_DATA_SOURCE'         => __('Current Graph Item Data Source'),
-	'ALL_DATA_SOURCES_NODUPS'     => __('All Data Sources (Dont Include Duplicates)'),
+	'CURRENT_DATA_SOURCE_PI'      => __('Current Graph Item Polling Interval'),
+	'ALL_DATA_SOURCES_NODUPS'     => __('All Data Sources (Do not Include Duplicates)'),
 	'ALL_DATA_SOURCES_DUPS'       => __('All Data Sources (Include Duplicates)'),
-	'SIMILAR_DATA_SOURCES_NODUPS' => __('All Similar Data Sources (Dont Include Duplicates)'),
+	'SIMILAR_DATA_SOURCES_NODUPS' => __('All Similar Data Sources (Do not Include Duplicates)'),
 	'SIMILAR_DATA_SOURCES_DUPS'   => __('All Similar Data Sources (Include Duplicates)'),
 	'CURRENT_DS_MINIMUM_VALUE'    => __('Current Data Source Item: Minimum Value'),
 	'CURRENT_DS_MAXIMUM_VALUE'    => __('Current Data Source Item: Maximum Value'),
 	'CURRENT_GRAPH_MINIMUM_VALUE' => __('Graph: Lower Limit'),
 	'CURRENT_GRAPH_MAXIMUM_VALUE' => __('Graph: Upper Limit'),
-	'COUNT_ALL_DS_NODUPS'         => __('Count of All Data Sources (Dont Include Duplicates)'),
+	'COUNT_ALL_DS_NODUPS'         => __('Count of All Data Sources (Do not Include Duplicates)'),
 	'COUNT_ALL_DS_DUPS'           => __('Count of All Data Sources (Include Duplicates)'),
-	'COUNT_SIMILAR_DS_NODUPS'     => __('Count of All Similar Data Sources (Dont Include Duplicates)'),
+	'COUNT_SIMILAR_DS_NODUPS'     => __('Count of All Similar Data Sources (Do not Include Duplicates)'),
 	'COUNT_SIMILAR_DS_DUPS'	      => __('Count of All Similar Data Sources (Include Duplicates)')
 );
 
-$menu = array(
-	'Create' => array(
-		'graphs_new.php' => __('New Graphs')
-		),
-	'Management' => array(
-		'graphs.php'           => __('Graphs'),
-		'tree.php'             => __('Trees'),
-		'data_sources.php'     => __('Data Sources'),
-		'host.php'             => __('Devices'),
-		'aggregate_graphs.php' => __('Aggregates'),
-		),
-	'Collection Methods' => array(
-		'data_queries.php' => __('Data Queries'),
-		'data_input.php'   => __('Data Input Methods')
-		),
-	'Templates' => array(
-		'graph_templates.php'     => __('Graph'),
-		'host_templates.php'      => __('Device'),
-		'data_templates.php'      => __('Data Source'),
-		'aggregate_templates.php' => __('Aggregate'),
-		'color_templates.php'     => __('Color')
-		),
-	'Automation' => array(
-		'automation_networks.php'    => __('Networks'),
-		'automation_devices.php'     => __('Discovered Devices'),
-		'automation_templates.php'   => __('Device Rules'),
-		'automation_graph_rules.php' => __('Graph Rules'),
-		'automation_tree_rules.php'  => __('Tree Rules'),
-		'automation_snmp.php'        => __('SNMP Options'),
-		),
-	'Presets' => array(
-		'data_source_profiles.php' => __('Data Profiles'),
-		'cdef.php'                 => __('CDEFs'),
-		'vdef.php'                 => __('VDEFs'),
-		'color.php'                => __('Colors'),
-		'gprint_presets.php'       => __('GPRINTs')
-		),
-	'Import/Export' => array(
-		'templates_import.php' => __('Import Templates'),
-		'templates_export.php' => __('Export Templates')
-		),
-	'Configuration'  => array(
-		'settings.php' => __('Settings')
-		),
-	'Utilities' => array(
-		'utilities.php'        => __('System Utilities'),
-		'user_admin.php'       => __('Users'),
-		'user_group_admin.php' => __('User Groups'),
-		'user_domains.php'     => __('User Domains')
-		)
-);
+if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
+	$menu = array(
+		__('Create') => array(
+			'graphs_new.php' => __('New Graphs')
+			),
+		__('Management') => array(
+			'host.php'             => __('Devices'),
+			'sites.php'            => __('Sites'),
+			'tree.php'             => __('Trees'),
+			'graphs.php'           => __('Graphs'),
+			'data_sources.php'     => __('Data Sources'),
+			'aggregate_graphs.php' => __('Aggregates'),
+			),
+		__('Data Collection') => array(
+			'pollers.php' => __('Data Collectors'),
+			'data_queries.php' => __('Data Queries'),
+			'data_input.php'   => __('Data Input Methods')
+			),
+		__('Templates') => array(
+			'host_templates.php'      => __('Device'),
+			'graph_templates.php'     => __('Graph'),
+			'data_templates.php'      => __('Data Source'),
+			'aggregate_templates.php' => __('Aggregate'),
+			'color_templates.php'     => __('Color')
+			),
+		__('Automation') => array(
+			'automation_networks.php'    => __('Networks'),
+			'automation_devices.php'     => __('Discovered Devices'),
+			'automation_templates.php'   => __('Device Rules'),
+			'automation_graph_rules.php' => __('Graph Rules'),
+			'automation_tree_rules.php'  => __('Tree Rules'),
+			'automation_snmp.php'        => __('SNMP Options'),
+			),
+		__('Presets') => array(
+			'data_source_profiles.php' => __('Data Profiles'),
+			'cdef.php'                 => __('CDEFs'),
+			'vdef.php'                 => __('VDEFs'),
+			'color.php'                => __('Colors'),
+			'gprint_presets.php'       => __('GPRINTs')
+			),
+		__('Import/Export') => array(
+			'templates_import.php' => __('Import Templates'),
+			'templates_export.php' => __('Export Templates')
+			),
+		__('Configuration')  => array(
+			'settings.php' => __('Settings'),
+			'links.php'    => __('External Links')
+			),
+		__('Utilities') => array(
+			'utilities.php'        => __('System Utilities'),
+			'user_admin.php'       => __('Users'),
+			'user_group_admin.php' => __('User Groups'),
+			'user_domains.php'     => __('User Domains')
+			)
+	);
+}else{
+	$menu = array(
+		__('Management') => array(
+			'host.php'             => __('Devices')
+			),
+		__('Data Collection') => array(
+			'pollers.php' => __('Data Collectors')
+			),
+		__('Configuration')  => array(
+			'settings.php' => __('Settings')
+			),
+		__('Utilities') => array(
+			'utilities.php'        => __('System Utilities')
+			)
+	);
+}
+
+if ((isset($_SESSION['sess_user_id']))) {
+	if (db_table_exists('external_links')) {
+		$consoles = db_fetch_assoc('SELECT id, title, extendedstyle
+			FROM external_links
+			WHERE style="CONSOLE"
+			AND enabled="on"
+			ORDER BY extendedstyle, sortorder, id');
+
+		if (sizeof($consoles)) {
+			foreach ($consoles as $page) {
+				if (is_realm_allowed($page['id']+10000)) {
+					$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? $page['extendedstyle'] : __('External Links'));
+					$menu[$menuname]['link.php?id=' . $page['id']] = $page['title'];
+				}
+			}
+		}
+	}
+}
 
 $log_tail_lines = array(
 	-1    => __('All Lines'),
@@ -644,8 +713,12 @@ $item_rows = array(
 	15   => '15',
 	20   => '20',
 	25   => '25',
+	26   => '26',
+	27   => '27',
 	30   => '30',
 	40   => '40',
+	44   => '44',
+	45   => '45',
 	50   => '50',
 	100  => '100',
 	250  => '250',
@@ -691,42 +764,44 @@ $page_refresh_interval = array(
 );
 
 $user_auth_realms = array(
-	8  => __('Console Access'),
-	7  => __('View Graphs'),
-	20 => __('Update Profile'),
+	8    => __('Console Access'),
+	7    => __('View Graphs'),
+	20   => __('Update Profile'),
+	24   => __('External Links'),
 
-	1  => __('User Management'),
-	15 => __('Settings and Utilities'),
-	23 => __('Automation Settings'),
+	1    => __('User Management'),
+	15   => __('Settings and Utilities'),
+	23   => __('Automation Settings'),
 
-	2  => __('Data Input Methods'),
-	13 => __('Data Queries'),
+	2    => __('Data Input Methods'),
+	13   => __('Data Queries'),
 
-	3  => __('Devices/Data Sources'),
-	5  => __('Graphs'),
-	4  => __('Graph Trees'),
+	3    => __('Sites/Devices/Data Sources/Data Collectors'),
+	5    => __('Graphs'),
+	4    => __('Trees'),
+	1043 => __('Remove Spikes from Graphs'),
 
-	9  => __('Data Source Profiles'),
-	14 => __('Colors/GPrints/CDEFs/VDEFs'),
+	9    => __('Data Source Profiles'),
+	14   => __('Colors/GPrints/CDEFs/VDEFs'),
 
-	10 => __('Graph Templates'),
-	11 => __('Data Templates'),
-	12 => __('Device Templates'),
+	10   => __('Graph Templates'),
+	11   => __('Data Templates'),
+	12   => __('Device Templates'),
 
-	16 => __('Export Data'),
-	17 => __('Import Data'),
+	16   => __('Export Data'),
+	17   => __('Import Data'),
 
-	18 => __('Log Management'),
-	19 => __('Log Viewing'),
+	18   => __('Log Management'),
+	19   => __('Log Viewing'),
 
-	21 => __('Reports Management'),
-	22 => __('Reports Creation')
+	21   => __('Reports Management'),
+	22   => __('Reports Creation')
 );
 
 $user_auth_roles = array(
-	'Normal User'            => array(7, 19, 20, 22),
+	'Normal User'            => array(7, 19, 20, 22, 24),
 	'Template Editor'        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
-	'General Administration' => array(8, 3, 4, 5, 23),
+	'General Administration' => array(8, 3, 4, 5, 23, 1043),
 	'System Administration'  => array(8, 15, 1, 18, 21, 101)
 );
 
@@ -753,12 +828,15 @@ $user_auth_realm_filenames = array(
 	'graphs.php' => 5,
 	'graphs_items.php' => 5,
 	'graphs_new.php' => 5,
+	'sites.php' => 3,
+	'pollers.php' => 3,
 	'host.php' => 3,
 	'host_templates.php' => 12,
 	'index.php' => 8,
 	'managers.php' => 15,
 	'rrdcleaner.php' => 15,
 	'settings.php' => 15,
+	'links.php' => 15,
 	'data_queries.php' => 13,
 	'templates_export.php' => 16,
 	'templates_import.php' => 17,
@@ -788,6 +866,7 @@ $user_auth_realm_filenames = array(
 	'aggregate_templates.php' => 5,
 	'aggregate_graphs.php' => 5,
 	'aggregate_items.php' => 5,
+	'spikekill.php' => 1043,
 	'permission_denied.php' => -1
 );
 
@@ -846,7 +925,13 @@ $hash_version_codes = array(
 	'0.8.8e' => '0025',
 	'0.8.8f' => '0025',
 	'0.8.8g' => '0025',
-	'1.0.0'  => '0027'
+	'0.8.8h' => '0025',
+	'1.0.0'  => '0100',
+	'1.0.1'  => '0100',
+	'1.0.2'  => '0100',
+	'1.0.3'  => '0100',
+	'1.0.4'  => '0100',
+	'1.0.5'  => '0100',
 );
 
 $hash_type_names = array(
@@ -871,6 +956,8 @@ $host_struc = array(
 	'host_template_id',
 	'description',
 	'hostname',
+	'site_id',
+	'poller_id',
 	'notes',
 	'snmp_community',
 	'snmp_version',
@@ -880,6 +967,7 @@ $host_struc = array(
 	'snmp_priv_passphrase',
 	'snmp_priv_protocol',
 	'snmp_context',
+	'snmp_engine_id',
 	'snmp_port',
 	'snmp_timeout',
 	'max_oids',
@@ -936,24 +1024,24 @@ $graph_timespans = array(
 );
 
 $graph_timeshifts = array(
-	GTS_HALF_HOUR => __('30 Min'),
-	GTS_1_HOUR    => __('1 Hour'),
+	GTS_HALF_HOUR => __('%d Min', 30),
+	GTS_1_HOUR    => __('%d Hour', 1),
 	GTS_2_HOURS   => __('%d Hours', 2),
 	GTS_4_HOURS   => __('%d Hours', 4),
 	GTS_6_HOURS   => __('%d Hours', 6),
 	GTS_12_HOURS  => __('%d Hours', 12),
-	GTS_1_DAY     => __('1 Day'),
+	GTS_1_DAY     => __('%d Day', 1),
 	GTS_2_DAYS    => __('%d Days', 2),
 	GTS_3_DAYS    => __('%d Days', 3),
 	GTS_4_DAYS    => __('%d Days', 4),
-	GTS_1_WEEK    => __('1 Week'),
+	GTS_1_WEEK    => __('%d Week', 1),
 	GTS_2_WEEKS   => __('%d Weeks', 2),
-	GTS_1_MONTH   => __('1 Month'),
+	GTS_1_MONTH   => __('%d Month', 1),
 	GTS_2_MONTHS  => __('%d Months', 2),
 	GTS_3_MONTHS  => __('%d Months', 3),
 	GTS_4_MONTHS  => __('%d Months', 4),
 	GTS_6_MONTHS  => __('%d Months', 6),
-	GTS_1_YEAR    => __('1 Year'),
+	GTS_1_YEAR    => __('%d Year', 1),
 	GTS_2_YEARS   => __('%d Years', 2)
 );
 
@@ -1301,7 +1389,7 @@ $automation_oper = array(
 
 $automation_tree_item_types  = array(
 	TREE_ITEM_TYPE_GRAPH => __('Graph'),
-	TREE_ITEM_TYPE_HOST  => __('Host')
+	TREE_ITEM_TYPE_HOST  => __('Device')
 );
 
 $automation_tree_header_types  = array(
@@ -1377,6 +1465,26 @@ $i18n_weekdays_short = array(
 	'Fri'	=> __x('A textual representation of a day, three letters', 'Fri'),
 	'Sat'	=> __x('A textual representation of a day, three letters', 'Sat')
 );
+
+$phperrors = array (
+	1 => 'ERROR',
+	2 => 'WARNING',
+	4 => 'PARSE',
+	8 => 'NOTICE',
+	16 => 'CORE_ERROR',
+	32 => 'CORE_WARNING',
+	64 => 'COMPILE_ERROR',
+	128 => 'COMPILE_WARNING',
+	256 => 'USER_ERROR',
+	512 => 'USER_WARNING',
+	1024 => 'USER_NOTICE',
+	2048 => 'STRICT',
+	4096 => 'RECOVERABLE_ERROR',
+	8192 => 'DEPRECATED',
+	16384 => 'USER_DEPRECATED',
+	32767 => 'ALL'
+);
+
 
 api_plugin_hook('config_arrays');
 

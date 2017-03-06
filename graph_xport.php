@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -113,7 +113,7 @@ if (isset_request_var('format') && get_nfilter_request_var('format') == 'table')
 	$html = false;
 }
 
-if (is_array($xport_array['meta'])) {
+if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 	if (!$html) {
 		print '"Title:","'          . $xport_array['meta']['title_cache']                . '"' . "\n";
 		print '"Vertical Label:","' . $xport_array['meta']['vertical_label']             . '"' . "\n";
@@ -146,7 +146,7 @@ if (is_array($xport_array['meta'])) {
 		$second = "align='right' colspan='2'";
 		print "<table align='center' width='100%' style='border: 1px solid #bbbbbb;'><tr><td>\n";
 		print "<table class='cactiTable' align='center' width='100%'>\n";
-		print "<tr class='tableHeader'><td colspan='2' class='linkOverDark' style='font-weight:bold;'>Summary Details</td><td align='right'><span style='cursor:pointer;' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>Download</span></td></tr>\n";
+		print "<tr class='tableHeader'><td colspan='2' class='linkOverDark' style='font-weight:bold;'>Summary Details</td><td align='right'><a href='#' role='link' style='cursor:pointer;' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>Download</a></td></tr>\n";
 		print "<tr class='even'><td align='left'>Title</td><td $second>"          . trim($xport_array['meta']['title_cache'],"'")      . "</td></tr>\n";
 		print "<tr class='odd'><td align='left'>Vertical Label</td><td $second>" . trim($xport_array['meta']['vertical_label'],"'")    . "</td></tr>\n";
 		print "<tr class='even'><td align='left'>Start Date</td><td $second>"     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . "</td></tr>\n";
@@ -189,7 +189,7 @@ if (is_array($xport_array['meta'])) {
 	}
 }
 
-if (is_array($xport_array['data'])) {
+if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 	if (!$html) {
 		$j = 1;
 		foreach($xport_array['data'] as $row) {
@@ -206,7 +206,7 @@ if (is_array($xport_array['data'])) {
 			print "<tr><td align='left'>" . date('Y-m-d H:i:s', (isset($row["timestamp"]) ? $row["timestamp"] : $xport_array["meta"]["start"] + $j*$xport_array["meta"]["step"])) . "</td>";
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				if ($row['col' . $i] > 1) {
-					print "<td align='right'>" . trim(number_format(round($row['col' . $i],3))) . "</td>";
+					print "<td align='right'>" . trim(number_format_i18n(round($row['col' . $i],3))) . "</td>";
 				}elseif($row['col' . $i] == 0) {
 					print "<td align='right'>-</td>";
 				}else{

@@ -78,6 +78,18 @@ body {
 	color:#FFF;
 }
 
+.left {
+	text-align:left;
+}
+
+.right {
+	text-align:right;
+}
+
+.center {
+	text-align:center;
+}
+
 .footer {
 	background-color:#00438C;
 	font-size:10pt;

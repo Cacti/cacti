@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -50,7 +50,7 @@ function initialize_timespan(&$timespan) {
 	/* initialize the default timespan if not set */
 	if ((!isset($_SESSION['sess_current_timespan'])) || (isset_request_var('button_clear'))) {
 		$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
-		$_REQUEST['predefined_timespan']   = read_user_setting('default_timespan');
+		set_request_var('predefined_timespan', read_user_setting('default_timespan'));
 		$_SESSION['custom'] = 0;
 	}
 

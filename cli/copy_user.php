@@ -1,7 +1,8 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,29 +24,38 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
-
-if (empty($_SERVER["argv"][2])) {
-	print "\nIt is highly recommended that you use the web interface to copy users as this script will only copy Local Cacti users.\n\n";
-	print "Syntax:\n php copy_cacti_user.php <template user> <new user>\n\n";
-	exit;
-}
-
 
 $no_http_headers = true;
 
-include(dirname(__FILE__) . "/../include/global.php");
-include_once($config["base_path"] . "/lib/auth.php");
+include(dirname(__FILE__) . '/../include/global.php');
+include_once($config['base_path'] . '/lib/auth.php');
 
-$template_user = $_SERVER["argv"][1];
-$new_user = $_SERVER["argv"][2];
+if (empty($_SERVER['argv'][1]) ){
+	display_help();
+	exit;
+}else{
+	switch($_SERVER['argv'][1]) {
+		case '--help':
+		case '-H':
+		case '-h':
+			display_help();
+			exit;
+		case '--version':
+		case '-V':
+		case '-v':
+			display_version();
+			exit;
+	}
+}
 
-print "\nIt is highly recommended that you use the web interface to copy users as this script will only copy Local Cacti users.\n\n";
-print "Cacti User Copy Utility\n";
-print "Template User: " . $template_user . "\n";
-print "New User: " . $new_user . "\n";
+$template_user = $_SERVER['argv'][1];
+$new_user      = $_SERVER['argv'][2];
+
+print 'Template User: ' . $template_user . "\n";
+print 'New User:      ' . $new_user . "\n";
 
 /* Check that user exists */
 $user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $template_user . "' AND realm = 0");
@@ -66,5 +76,17 @@ if (! isset($user_auth)) {
 
 print "User copied...\n";
 
+/*  display_version - displays version information */
+function display_version() {
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Copy User Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
 
-?>
+function display_help() {
+	display_version();
+
+	print "\nusage: copy_cacti_user.php <template user> <new user>\n\n";
+	print "A utility to copy on local Cacti user and their settings to a new one\n\n";
+	print "NOTE: It is highly recommended that you use the web interface to copy users as\n";
+	print "this script will only copy Local Cacti users.\n\n";
+}

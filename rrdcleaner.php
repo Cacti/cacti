@@ -2,7 +2,7 @@
 
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -311,10 +311,6 @@ function list_rrd() {
 		$sql_where .= " AND last_mod<='" . date("Y-m-d H:i:s", (time() - $secsback)) . "'";
 	}
 
-	form_start('rrdcleaner.php');
-
-	html_start_box('', $width, '', '3', 'center', '');
-
 	$total_rows = db_fetch_cell("SELECT COUNT(rc.name) 
 		FROM data_source_purge_temp AS rc
 		LEFT JOIN data_template AS dt
@@ -338,7 +334,11 @@ function list_rrd() {
 
 	$nav = html_nav_bar($config['url_path'] . 'rrdcleaner.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'RRD Files', 'page', 'main');
 
+	form_start('rrdcleaner.php');
+
 	print $nav;
+
+	html_start_box('', $width, '', '3', 'center', '');
 
 	$display_text = array(
 		'name'               => array( __('RRD File Name'), 'ASC'),
@@ -356,25 +356,25 @@ function list_rrd() {
 		foreach($file_list as $file) {
 			$data_template_name = ((empty($file['data_template_name'])) ? '<em>None</em>' : $file['data_template_name']);
 			form_alternate_row('line' . $file['id'], true);
-			form_selectable_cell(((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($file['name'])) : htmlspecialchars($file['name'])) . '</a>', $file['id']);
-			form_selectable_cell(($file['local_data_id'] != 0) ? "<a class='linkEditMain' href='../../data_sources.php?action=ds_edit&id=" . $file['local_data_id'] . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", title_trim(htmlspecialchars($file['name_cache']), read_config_option('max_title_length'))) : title_trim(htmlspecialchars($file['name_cache']), read_config_option('max_title_length'))) . '</a>' : '<i>Deleted</i>', $file['id']);
+			form_selectable_cell(filter_value($file['name'], get_request_var('filter')), $file['id']);
+			form_selectable_cell(filter_value($file['name_cache'], get_request_var('filter'), $config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $file['local_data_id']), $file['id']);
 			form_selectable_cell($file['local_data_id'] > 0 ? $file['local_data_id']:'<i>' . __('Deleted') . '</i>', $file['id']);
 			form_selectable_cell($file['data_template_id'] > 0 ? $file['data_template_id']: '<i>' . __('Deleted') . '</i>', $file['id']);
-			form_selectable_cell($file['data_template_id'] > 0 ? (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($file['data_template_name'])) . '</a>': htmlspecialchars($file['data_template_name'])):'<i>' . __('Deleted') . '</i>', $file['id']);
+			form_selectable_cell(filter_value($file['data_template_name'], get_request_var('filter')), $file['id']);
 			form_selectable_cell($file['last_mod'], $file['id']);
 			form_selectable_cell(round($file['size']/1024,2), $file['id']);
 			form_checkbox_cell($file['id'], $file['id']);
 			form_end_row();
-			$i++;
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	} else {
 		print "<tr><td><em>" . __('No unused RRD Files') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
+
+	if (sizeof($file_list)) {
+		print $nav;
+	}
 
 	rrdcleaner_legend($total_size);
 
@@ -409,7 +409,8 @@ function remove_all_rrds() {
 
 	/* add to data_source_purge_action table */
 	db_execute_prepared('INSERT INTO data_source_purge_action 
-		SELECT "" AS id, name, local_data_id, ? AS action 
+		(name, local_data_id, action)
+		SELECT name, local_data_id, ? AS action 
 		FROM data_source_purge_temp 
 		WHERE in_cacti = 0 
 		ON DUPLICATE KEY UPDATE action = VALUES(action)', array($action));
@@ -442,7 +443,11 @@ function do_rrd() {
 				WHERE id = ?', array($matches[1]));
 
 			/* add to data_source_purge_action table */
-			$sql = "INSERT INTO data_source_purge_action VALUES('', ?, ?, ?) ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)";
+			$sql = "INSERT INTO data_source_purge_action 
+				(name, local_data_id, action) 
+				VALUES(?, ?, ?) 
+				ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)";
+
 			db_execute_prepared($sql, array($unused_file['name'], $unused_file['local_data_id'], get_nfilter_request_var('drp_action')));
 
 			/* drop from data_source_purge table */
@@ -474,15 +479,15 @@ function filter() {
 					</td>
 					<td>
 						<select id='age' name='age' onChange='refreshForm()'>
-							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('1 Week');?></option>
-							<option value='604800'   <?php print (get_request_var('age') == '604800'   ? ' selected':'');?>>&gt; <?php print __('1 Week');?></option>
+							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('%d Week', 1);?></option>
+							<option value='604800'   <?php print (get_request_var('age') == '604800'   ? ' selected':'');?>>&gt; <?php print __('%d Week', 1);?></option>
 							<option value='1209600'  <?php print (get_request_var('age') == '1209600'  ? ' selected':'');?>>&gt; <?php print __('%d Weeks',2);?></option>
 							<option value='1814400'  <?php print (get_request_var('age') == '1814400'  ? ' selected':'');?>>&gt; <?php print __('%d Weeks', 3);?></option>
-							<option value='2628000'  <?php print (get_request_var('age') == '2628000'  ? ' selected':'');?>>&gt; <?php print __('1 Month');?></option>
+							<option value='2628000'  <?php print (get_request_var('age') == '2628000'  ? ' selected':'');?>>&gt; <?php print __('%d Month', 1);?></option>
 							<option value='5256000'  <?php print (get_request_var('age') == '5256000'  ? ' selected':'');?>>&gt; <?php print __('%d Months', 2);?></option>
 							<option value='10512000' <?php print (get_request_var('age') == '10512000' ? ' selected':'');?>>&gt; <?php print __('%d Months', 4);?></option>
 							<option value='15768000' <?php print (get_request_var('age') == '15768000' ? ' selected':'');?>>&gt; <?php print __('%d Months', 6);?></option>
-							<option value='31536000' <?php print (get_request_var('age') == '31536000' ? ' selected':'');?>>&gt; <?php print __('1 Year');?></option>
+							<option value='31536000' <?php print (get_request_var('age') == '31536000' ? ' selected':'');?>>&gt; <?php print __('%d Year', 1);?></option>
 						</select>
 					</td>
 					<td>
@@ -490,7 +495,7 @@ function filter() {
 					</td>
 					<td>
 						<select id='rows' name='rows'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {

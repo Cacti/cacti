@@ -10,6 +10,7 @@
 body {
 	margin-left:auto;
 	margin-right:auto;
+	background-color:snow;
 }
 
 .report_table {
@@ -46,7 +47,8 @@ body {
 .image_row {
 }
 
-.image_column {	align:center;
+.image_column {
+	align:center;
 }
 
 .image {
@@ -76,7 +78,7 @@ body {
 
 .header_row {
 	background-color:#3F750F;
-   }
+}
 
 .header {
 	background-color:#3F750F;
@@ -86,6 +88,18 @@ body {
 	color:#FFF;
 }
 
+.left {
+	text-align:left;
+}
+
+.right {
+	text-align:right;
+}
+
+.center {
+	text-align:center;
+}
+
 .footer {
 	background-color:#3F750F;
 	font-size:10pt;
@@ -93,6 +107,7 @@ body {
 	align:center;
 	color:#FFF;
 }
+
 </style>
 <table class='header_table'>
 <tr class='header_row' ><td class='header'>Cacti Reporting Report</td></tr>

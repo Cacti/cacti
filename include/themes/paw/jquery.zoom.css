@@ -25,7 +25,7 @@
 	display: none;
 	width: 0;
 	cursor:e-resize;
-	background-color:ForestGreen;
+	background-color: #3f75a2;
 	height:0px;
 	position:absolute;
 	z-index:auto;
@@ -47,7 +47,7 @@
 
 .zoom-area-excluded {
 	display:none;
-	background-color: black;
+	background-color: #3f75a2;
 	height:0px;
 	position:absolute;
 	z-index:auto;
@@ -59,7 +59,6 @@
 	border:0;
 	padding:0;
 	margin:0;
-	background: rgba(0,0,0,0.5);
 	box-shadow: 0 2px 6px rgba(0,0,0,0.75), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
 	-o-box-shadow: 0 2px 6px rgba(0,0,0,0.75), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
 	-webkit-box-shadow: 0 2px 6px rgba(0,0,0,0.75), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
@@ -84,7 +83,7 @@
 	top: -6px;
 	left: -4px;
 	font-size: 0px; line-height: 0%; width: 0px;
-	border-top: 6px solid red;
+	border-top: 6px solid #3f75a2;
 	border-left: 3px solid transparent;
 	border-right: 3px solid transparent;
 }
@@ -94,7 +93,7 @@
 	position: relative;
 	left: -4px;
 	font-size: 0px; line-height: 0%; width: 0px;
-	border-bottom: 6px solid red;
+	border-bottom: 6px solid #3f75a2;
 	border-left: 3px solid transparent;
 	border-right: 3px solid transparent;
 }
@@ -103,13 +102,14 @@
 	display: none;
 	position: absolute;
 	z-index:auto;
+	color: snow;
 }
 
 .zoom-marker-tooltip-value{
 	white-space: pre-line;
 	font-size: 1em;
 	float: left;
-	background: #FFE87C;
+	background: #323232;
 	padding-left: 3px;
 	padding-right: 3px;
 	border: 1px solid rgba(0,0,0,0.75);
@@ -134,7 +134,7 @@
 	height: 0;
 	border-top: 4px solid transparent;
 	border-bottom: 4px solid transparent;
-	border-right: 8px solid #FFE87C;
+	border-right: 8px solid #323232;
 	z-index: auto;
 }
 
@@ -157,7 +157,7 @@
 	height: 0;
 	border-top: 4px solid transparent;
 	border-bottom: 4px solid transparent;
-	border-left: 8px solid #FFE87C;
+	border-left: 8px solid #323232;
 	z-index: auto;
 }
 

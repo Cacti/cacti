@@ -1,7 +1,8 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -48,42 +49,59 @@ global $debug;
 $debug = FALSE;
 $force = FALSE;
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode('=', $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case '-d':
-	case '--debug':
-		$debug = TRUE;
-		break;
-	case '-f':
-	case '--force':
-		$force = TRUE;
-		break;
-	case '-v':
-	case '-V':
-	case '--version':
-	case '--help':
-	case '-h':
-		display_help();
-		exit;
-	default:
-		print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+		case '-d':
+		case '--debug':
+			$debug = TRUE;
+			break;
+		case '-f':
+		case '--force':
+			$force = TRUE;
+			break;
+		case '--version':
+		case '-V':
+		case '-v':
+			display_version();
+			exit;
+		case '--help':
+		case '-H':
+		case '-h':
+			display_help();
+			exit;
+		default:
+			echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+			display_help();
+			exit;
+		}
 	}
 }
 
 /* graph export */
 graph_export($force);
 
+/*  display_version - displays version information */
+function display_version() {
+    $version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Graph Export Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
-	print "Cacti Graph Export Tool Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	print "usage: poller_export.php [-f|--force] [-d|--debug] [-h|--help|-v|-V|--version]\n\n";
-	print "-f | --force     - Force export to run now running now\n";
-	print "-d | --debug     - Display verbose output during execution\n";
-	print "-v -V --version  - Display this help message\n";
-	print "-h --help        - display this help message\n";
+	display_version();
+
+	echo "\nusage: poller_export.php [-f|--force] [-d|--debug]\n\n";
+	echo "Cacti's Graph Export poller.  This poller will export parts of the Cacti\n";
+	echo "website into a static representation.\n\n";
+	echo "Optional:\n";
+	echo "    --force     - Force export to run now running now\n";
+	echo "    --debug     - Display verbose output during execution\n\n";
 }

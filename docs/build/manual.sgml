@@ -32,9 +32,9 @@
 			<surname>Braun</surname>
 		</author>
 	</authorgroup>
-	<pubdate>2016</pubdate>
+	<pubdate>2017</pubdate>
 	<copyright>
-		<year>2016</year>
+		<year>2017</year>
 		<holder>The Cacti Group</holder>
 	</copyright>
 
@@ -174,47 +174,90 @@
 			</sect1>
 			<sect1 id="unix_configure_php">
 				<title>Configure PHP</title>
-					<para>Please ensure, that PHP support is either builtin or installed for the
-					following PHP extension modules:</para>
+					<para>Please ensure, that PHP support is either builtin or installed for the following PHP extension modules:</para>
 					<itemizedlist>
 						<listitem>
 							<para>
-								<application>mysql</application> (For configuration, see note below)
+								<application>PDO</application>
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>SNMP</application> (For configuration, see note below)
+								<application>pdo-mysql</application>
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>XML</application>
+								<application>snmp</application> (Optional, but recommended)
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>Session</application>
+								<application>xml</application>
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>Sockets</application>
+								<application>session</application>
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>LDAP</application> (Required only when using LDAP authentication)
+								<application>posix</application> (Linux only)
 							</para>
 						</listitem>
 						<listitem>
 							<para>
-								<application>GD</application> (Required only for some Plugins)
+								<application>sockets</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>ldap</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>json</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>pcre</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>mbstring</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>openssl</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>gd</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>zlib</application>
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>gmp</application> (Recommened for plugins)
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								<application>com_dotnet</application> (Windows PHP 5.4.5+)
 							</para>
 						</listitem>
 					</itemizedlist>
-					<para> You may run the following command to get the list of all
-					available PHP modules</para>
+					<para> You may run the following command to get the list of all available PHP modules</para>
 					<screen><userinput>php -m</userinput></screen>
 					<para>Please verify, that the modules are installed and configured correctly.
 					There are several ways to do so, please consult <ulink url="http://www.php.net/manual/en/configuration.php">PHP configuration instructions</ulink>
@@ -2429,7 +2472,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;ifIndex-&gt;source</entry>
-							<entry><para>When Cacti obtains a list for this field, you need to tell it how to derive its value for each row.</para><para><parameter>value</parameter>: The 'value' option simply returns the result of the snmpget for each row.</para><para><parameter>OID/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' can be used when you need to use a POSIX-based regular expression to derive the value from the OID. The most common example of this is to retreive the IP address of an interface, and can be seen in the 'interface.xml' file.</para><para><parameter>VALUE/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' option can be used to parse the value based on a regular expression, returning the first match.</para><para><parameter>index</parameter>: Simply use the value of the index for this row as the value. If the index is being parsed from the OID using the <property>oid_index_parse</property> field, you must specify <parameter>index</parameter> here. Omit the &lt;oid&gt;...&lt;/oid&gt; field, then.</para></entry>
+							<entry><para>When Cacti obtains a list for this field, you need to tell it how to derive its value for each row.</para><para><parameter>value</parameter>: The 'value' option simply returns the result of the snmpget for each row.</para><para><parameter>OID/REGEXP:(regexp_match)</parameter>: The 'OID/REGEXP:(regexp_match)' can be used when you need to use a POSIX-based regular expression to derive the value from the OID. The most common example of this is to retreive the IP address of an interface, and can be seen in the 'interface.xml' file.</para><para><parameter>VALUE/REGEXP:(regexp_match)</parameter>: The 'VALUE/REGEXP:(regexp_match)' option can be used to parse the value based on a regular expression, returning the first match.</para><para><parameter>VALUE/TEST:(test_value):(if_match):(if_not_match)</parameter>: The 'VALUE/TEST' option can be used to check the value and return a specific striong if it's match and another if not.</para><para><parameter>VALUE/TABLE:(value1):(return1):...:(valueX):(returnX)</parameter>: The 'VALUE/TABLE' option can be used to check the value 'valueX' in the list and return the 'returnX' if it's match. If no value match, it return 'N/A'</parameter><para><parameter>VALUE/HEX2IP:(start_nbr):(end_nbr)</parameter>: The 'VALUE/HEX2IP' option can be used to convert a IP address value in hexadecimal format in decimal format. The 'start_nbr' and 'end_nbr' can limit the number of character to take in count if the value as other information (like netmask).</para><para><parameter>index</parameter>: Simply use the value of the index for this row as the value. If the index is being parsed from the OID using the <property>oid_index_parse</property> field, you must specify <parameter>index</parameter> here. Omit the &lt;oid&gt;...&lt;/oid&gt; field, then.</para></entry>
 						</row>
 						<row>
 							<entry>query-&gt;fields-&gt;ifIndex-&gt;direction</entry>
@@ -5455,7 +5498,7 @@ Localhost - mtaReceivedVolume 	SNMP Version: 1, Community: somesecret, OID: .1.3
 
 			<para>Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q rebuild_poller_cache.php --help
-Cacti Rebuild Poller Cache Script 1.0, Copyright 2004-2016 - The Cacti Group
+Cacti Rebuild Poller Cache Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 usage: rebuild_poller_cache.php [-d] [-h] [--help] [-v] [--version]
 
@@ -5535,7 +5578,7 @@ WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take qui
 			<para>If you feel the need for manual re-indexing, you may run it from cli.
 			Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_reindex_hosts.php --help
-Cacti Reindex Host Script 1.2, Copyright 2004-2016 - The Cacti Group
+Cacti Reindex Host Script 1.2, Copyright 2004-2017 - The Cacti Group
 
 usage: poller_reindex_hosts.php --id=[host_id|All] [--qid=[ID|All]] [--host-descr=[description]]
                            [-d] [-h] [--help] [-v] [--version]
@@ -5597,7 +5640,7 @@ DEBUG: Data query number '1' host: '2' SNMP Query Id: '1' ending</screen>
 			<emphasis>after increasing PHP memory appropriately</emphasis> by running
 			this very script. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_output_empty.php --help
-Cacti Empty Poller Output Table Script 1.0, Copyright 2004-2016 - The Cacti Group
+Cacti Empty Poller Output Table Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 usage: poller_output_empty.php [-h] [--help] [-v] [--version]
 
@@ -5647,7 +5690,7 @@ There were 21, RRD updates made this pass
 			all existing graphs. This is, where <application>poller_graphs_reapply_names.php</application>
 			drops in. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q poller_graphs_reapply_names.php --help
-Cacti Reapply Graph Names Script 1.0, Copyright 2004-2016 - The Cacti Group
+Cacti Reapply Graph Names Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 usage: poller_graphs_reapply_names.php -id=[host_id|All][host_id1|host_id2|...] [-s=[search_string] [-d] [-h] [--help] [-v] [--version]
 
@@ -5718,7 +5761,7 @@ Harry Potter 	Guest Account 	Yes 		Local 	ALLOW 			N/A</screen>
 			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_device.php --help
 
-Add Device Script 1.0, Copyright 2004-2016 - The Cacti Group
+Add Device Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 A simple command line utility to add a device in Cacti
 
@@ -5822,7 +5865,7 @@ Device Add Test 	0 	0 		Unknown router.mydomain.com 	0 		0 		100</screen>
 			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_data_query.php --help
 
-Add Data Query Script 1.0, Copyright 2004-2016 - The Cacti Group
+Add Data Query Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 A simple command line utility to add a data query to an existing device in Cacti
 
@@ -5889,7 +5932,7 @@ Success - Host (11: router.mydomain.com) data query (1: SNMP - Interface Statist
 			it provides. Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_graph_template.php --help
 
-Add Graph Template Script 1.0, Copyright 2004-2016 - The Cacti Group
+Add Graph Template Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 A simple command line utility to associate a graph template with a host in Cacti
 
@@ -6184,7 +6227,7 @@ Device Add Test - Traffic - lo  	Interface - Traffic (bits/sec)  	120x500</scree
 			Calling the script with the parameter <userinput>--help</userinput> yields</para>
 			<screen><prompt>shell&gt;</prompt>php -q add_tree.php --help
 
-Add Tree Script 1.0, Copyright 2004-2016 - The Cacti Group
+Add Tree Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 A simple command line utility to add objects to a tree in Cacti
 
@@ -6373,7 +6416,7 @@ Added Node node-id: (28)</screen>
 			the parameter <userinput>--help</userinput></para>
 			<screen><prompt>shell&gt;</prompt>php -q add_perms.php --help
 
-Add Permissions Script 1.0, Copyright 2004-2016 - The Cacti Group
+Add Permissions Script 1.0, Copyright 2004-2017 - The Cacti Group
 
 A simple command line utility to add permissions to tree items in Cacti
 

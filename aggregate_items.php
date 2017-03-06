@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -188,15 +188,15 @@ function form_save_aggregate() {
 		// composed from multiple columns. need to manualy build query
 		$sql_set = 'SET ';
 		foreach ($save as $key => $value) {
-			$sql_set .= $key . "='" . addslashes($value) . "', ";
+			$sql_set .= $key . "=" . db_qstr($value) . ", ";
 		}
 		$sql_set = substr($sql_set, 0, -2);
 
 		$sql_where = 'graph_templates_item_id = ' . get_filter_request_var('graph_template_item_id') . ' AND ';
 		if ($save_to == 'aggregate_graph_templates_item') {
-			$sql_where .= 'aggregate_template_id=' . addslashes(get_filter_request_var('aggregate_template_id'));
+			$sql_where .= 'aggregate_template_id=' . get_filter_request_var('aggregate_template_id');
 		}else{
-			$sql_where .= 'aggregate_graph_id=' . addslashes(get_filter_request_var('aggregate_graph_id'));
+			$sql_where .= 'aggregate_graph_id=' . get_filter_request_var('aggregate_graph_id');
 		}
 		$sql = "UPDATE $save_to $sql_set WHERE $sql_where LIMIT 1";
 		$success = db_execute($sql);
@@ -241,7 +241,7 @@ function item_movedown() {
 
 	if ((!empty($next_id)) && (isset($arr{get_request_var('id')}))) {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'next');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell('select graph_type_id from graph_templates_item where id=' . get_request_var('id'))})) {
+	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		move_item_down('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
 	}
 }
@@ -259,7 +259,7 @@ function item_moveup() {
 
 	if ((!empty($previous_id)) && (isset($arr{get_request_var('id')}))) {
 		move_graph_group(get_request_var('id'), $arr, $previous_id, 'previous');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell('select graph_type_id from graph_templates_item where id=' . get_request_var('id'))})) {
+	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		move_item_up('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
 	}
 }
@@ -269,7 +269,7 @@ function item_remove() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute('DELETE FROM graph_templates_item WHERE id=' . get_request_var('id'));
+	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', array(get_request_var('id')));
 }
 
 function item_edit() {
@@ -302,15 +302,18 @@ function item_edit() {
 	}
 
 	if (!isempty_request_var('id')) {
-		$template_item = db_fetch_row('select * from graph_templates_item where id=' . get_request_var('id'));
+		$template_item = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates_item 
+			WHERE id = ?', 
+			array(get_request_var('id')));
 	}
 
 	/* override some template_item values from aggregate tables */
-	$item_overrides = db_fetch_row("SELECT *
+	$item_overrides = db_fetch_row_prepared("SELECT *
 		FROM $table_name 
-		WHERE $id_field=" . get_request_var($id_field)."
-		AND graph_templates_item_id=" . get_request_var("id")
-	);
+		WHERE $id_field = ?
+		AND graph_templates_item_id = ?", 
+		array(get_request_var($id_field), get_request_var("id")));
 
 	if (sizeof($item_overrides) == 0) {
 		/* this item is not currently in aggregate tables
@@ -325,11 +328,11 @@ function item_edit() {
 
 		aggregate_graph_items_save(array($item_new), $table_name);
 
-		$item_overrides = db_fetch_row("SELECT *
+		$item_overrides = db_fetch_row_prepared("SELECT *
 			FROM $table_name 
-			WHERE $id_field= ".get_request_var($id_field)."
-			AND graph_templates_item_id=".get_request_var("id")
-		);
+			WHERE $id_field = ?
+			AND graph_templates_item_id = ?", 
+			array(get_request_var($id_field), get_request_var("id")));
 	}
 
 	foreach (array_keys($template_item) as $field_name) {
@@ -340,7 +343,7 @@ function item_edit() {
 			$template_item[$field_name] = $item_overrides[$field_name];
 	}
 
-	html_start_box('Override Values for Graph Item', '100%', '', '3', 'center', '');
+	html_start_box(__('Override Values for Graph Item'), '100%', '', '3', 'center', '');
 
 	$form_array = array();
 
@@ -351,7 +354,7 @@ function item_edit() {
 		if (array_key_exists('t_' . $field_name, $item_overrides)) {
 			$form_array[$field_name]['sub_checkbox']  = array(
 				'name' => 't_' . $field_name,
-				'friendly_name' => 'Override this Value<br>',
+				'friendly_name' => __('Override this Value') . '<br>',
 				'value' => ($item_overrides['t_'.$field_name] == 'on' ? 'on' : ''),
 				'on_change' => 'toggleFieldEnabled(this);'
 			);
@@ -365,10 +368,10 @@ function item_edit() {
 		array(
 			'config' => array(
 				'post_to' => $config['url_path'] . 'aggregate_items.php'
-				),
+			),
 			'fields' => $form_array
-			)
-		);
+		)
+	);
 
 	form_hidden_box('local_graph_id', get_request_var('local_graph_id'), '0');
 	form_hidden_box('graph_template_item_id', (isset($template_item) ? $template_item['id'] : '0'), '');
@@ -397,15 +400,13 @@ function item_edit() {
 
 	function dynamic() {
 		$('#alpha').prop('disabled', true);
-		if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
-			($('#color_id').val() != 0)) {
+		if ($('#color_id').val() != 0) {
 			$('#alpha').prop('disabled', true);
 		}
 	}
 
 	function changeColorId() {
-		if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
-			($('#color_id').attr('selectedIndex') != 0)) {
+		if ($('#color_id').attr('selectedIndex') != 0) {
 			$('#alpha').prop('disabled', true);
 		}
 	}
@@ -434,6 +435,5 @@ function item_edit() {
 
 	</script>
 	<?php
-} // function item_edit()
+} 
 
-?>

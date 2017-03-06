@@ -24,7 +24,9 @@ function themeReady() {
 	// Add nice search filter to filters
 	$('input[id="filter"], input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a search term').parent('td').css('white-space', 'nowrap');
 
-	$('input#filter').addClass('ui-state-default ui-corner-all');
+	$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a regular expression').parent('td').css('white-space', 'nowrap');
+
+	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
@@ -111,7 +113,7 @@ function themeReady() {
 					}
 				});
 
-				minWidth+=60;
+				minWidth+=80;
 				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', '400px').css('width','');
 				$('#'+id+'-menu').css('max-height', '250px');
 			});
@@ -198,6 +200,41 @@ function themeReady() {
 		}
 	});
 
+	// Hide the graph icons until you hover
+	$('.graphDrillDown').hover(
+	function() {
+		element = $(this);
+
+		// hide the previously shown element
+		if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
+			$('#dd'+graphMenuElement).find('.iconWrapper:first').hide('slide', { direction: 'left' }, 300);
+		}
+
+		clearTimeout(graphMenuTimer);
+		graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
+	},
+	function() {
+		element = $(this);
+		clearTimeout(graphMenuTimer);
+		graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
+	});
+
+	function showGraphMenu(element) {
+		element.find('.spikekillMenu').menu('disable');
+		element.find('.iconWrapper').show('slide', { direction: 'left' }, 300, function() {
+			graphMenuElement = element.attr('id').replace('dd', '');;
+			$(this).find('.spikekillMenu').menu('enable');
+		});
+	}
+
+	function hideGraphMenu(element) {
+		element.find('.spikekillMenu').menu('disable');
+		element.find('.iconWrapper').hide('slide', { direction: 'left' }, 300, function() {
+			$(this).find('.spikekillMenu').menu('enable');
+		});
+	}
+
+
 	// Hid the scroll bar when not hovering
 	var hoverTimer;
 	$('.cactiConsoleNavigationArea').unbind().mouseenter(function() {
@@ -228,31 +265,48 @@ function setMenuVisibility() {
 	storage=$.localStorage;
 
 	// Initialize the navigation settings
-	$('.menu_parent').each(function() {
-		active = storage.get($(this).text());
+	$('#navigation').hide();
+	$('li.menuitem').each(function() {
+		active = storage.get($(this).attr('id'));
 		if (active != null) {
 			if (active == 'active') {
-				$(this).next().show();
+				$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
+				$(this).next('a').show();
 			}else{
-				$(this).next().hide();
+				$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
+				$(this).next('a').hide();
 			}
 		}
 	});
+	$('#navigation').show();
 
 	// Functon to give life to the Navigation pane
 	$('#nav li:has(ul) a.active').unbind().click(function(event) {
 		event.preventDefault();
 
+		id = $(this).closest('.menuitem').attr('id');
+
 		if ($(this).next().is(':visible')){
+			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
-			storage.set($(this).text(), 'collapsed');
+			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
 		} else {
+			$(this).next('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true');
 			$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
 			if ($(this).next().is(':visible')) {
-				storage.set($(this).text(), 'active');
+				storage.set($(this).closest('.menuitem').attr('id'), 'active');
 			}else{
-				storage.set($(this).text(), 'collapsed');
+				storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
 			}
 		}
+
+		$('li.menuitem').not('#'+id).each(function() {
+			text = $(this).attr('id');
+			id   = $(this).attr('id');
+			
+			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
+			$(this).find('ul').slideUp( { duration: 200, easing: 'swing' } );
+			storage.set($(this).attr('id'), 'collapsed');
+		});
 	});
 }

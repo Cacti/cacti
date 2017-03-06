@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -26,14 +26,14 @@ include_once('./include/auth.php');
 include_once('./lib/api_aggregate.php');
 
 $aggregate_actions = array(
-	1 => 'Delete'
+	1 => __('Delete')
 );
 
 /* set default action */
 set_default_action();
 
 if (get_request_var('action') == 'save') {
-	if (isset_request_var('id') && get_filter_request_var('id') == 0 && isset_request_var('_graph_template_id') && get_filter_request_var('_graph_template_id') == 0) {
+	if (isset_request_var('id') && get_filter_request_var('id') == 0 && isset_request_var('graph_template_id_prev') && get_filter_request_var('graph_template_id_prev') == 0) {
 		set_request_var('action', 'edit');
 	}
 }
@@ -89,7 +89,7 @@ function aggregate_form_save() {
 
 	/* populate aggregate template save array and validate posted values*/
 	$save1['name']              = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-	$save1['graph_template_id'] = get_filter_request_var('_graph_template_id');
+	$save1['graph_template_id'] = get_filter_request_var('graph_template_id_prev');
 	$save1['gprint_prefix']     = form_input_validate(get_nfilter_request_var('gprint_prefix'), 'gprint_prefix', '', true, 3);
 	$save1['graph_type']        = form_input_validate(get_nfilter_request_var('graph_type'), 'graph_type', '', false, 3);
 	$save1['total']             = form_input_validate(get_nfilter_request_var('total'), 'total', '', false, 3);
@@ -108,9 +108,14 @@ function aggregate_form_save() {
 
 	/* do a quick comparison to see if anything changed */
 	if ($is_new == false) {
-		$old = db_fetch_row('SELECT * FROM aggregate_graph_templates WHERE id=' . $save1['id']);
+		$old = db_fetch_row_prepared('SELECT * 
+			FROM aggregate_graph_templates 
+			WHERE id = ?', 
+			array($save1['id']));
+
 		$save_me = 0;
 
+		$save_me += ($old['name']          != $save1['name']);
 		$save_me += ($old['gprint_prefix'] != $save1['gprint_prefix']);
 		$save_me += ($old['graph_type']    != $save1['graph_type']);
 		$save_me += ($old['total']         != $save1['total']);
@@ -124,14 +129,12 @@ function aggregate_form_save() {
 		$id = sql_save($save1, 'aggregate_graph_templates', 'id');
 
 		/* update children of the template */
-		db_execute("UPDATE aggregate_graphs SET
-			gprint_prefix='" . $save1['gprint_prefix'] . "',
-			graph_type="     . $save1['graph_type'] . ",
-			total="          . $save1['total'] . ",
-			total_prefix='"  . $save1['total_prefix'] . "',
-			order_type="     . $save1['order_type'] . "
-			WHERE aggregate_template_id=$id
-			AND template_propogation='on'");
+		db_execute_prepared("UPDATE aggregate_graphs 
+			SET gprint_prefix = ?, graph_type = ?, total = ?, total_prefix = ?, order_type = ?
+			WHERE aggregate_template_id = ?
+			AND template_propogation='on'", 
+			array($save1['gprint_prefix'], $save1['graph_type'], 
+				$save1['total'], $save1['total_prefix'],  $save1['order_type'], $id));
 
 		cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $id, FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 	}else{
@@ -148,11 +151,17 @@ function aggregate_form_save() {
 	/* validate posted graph params */
 	$params_new = aggregate_validate_graph_params($_POST, true);
 	$params_new['aggregate_template_id'] = $id;
+
 	/* compare new graph param values with existing in DB.
 	 * We need to know if there were changes so we only
 	 * rebuild existing graphs if needed. */
 	$params_changed = false;
-	$params_old = db_fetch_row('SELECT * FROM aggregate_graph_templates_graph WHERE aggregate_template_id='.$id);
+
+	$params_old = db_fetch_row_prepared('SELECT * 
+		FROM aggregate_graph_templates_graph 
+		WHERE aggregate_template_id = ?', 
+		array($id));
+
 	if (!empty($params_old)) {
 		foreach ($params_old as $field => $value_old) {
 			if (isset($params_new[$field]) && $params_new[$field] != $value_old) {
@@ -173,13 +182,19 @@ function aggregate_form_save() {
 	/* save the template items now */
 	/* get existing item ids and sequences from graph template */
 	$graph_templates_items = array_rekey(
-		db_fetch_assoc('SELECT id, sequence FROM graph_templates_item WHERE local_graph_id=0 AND graph_template_id=' . $save1['graph_template_id']),
+		db_fetch_assoc_prepared('SELECT id, sequence 
+			FROM graph_templates_item 
+			WHERE local_graph_id=0 
+			AND graph_template_id = ?', 
+			array($save1['graph_template_id'])),
 		'id', array('sequence')
 	);
 
 	/* get existing aggregate template items */
 	$aggregate_template_items_old = array_rekey(
-		db_fetch_assoc('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id='.$id),
+		db_fetch_assoc_prepared('SELECT * 
+			FROM aggregate_graph_templates_item 
+			WHERE aggregate_template_id = ?', array($id)),
 		'graph_templates_item_id', array('sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total')
 	);
 
@@ -191,13 +206,13 @@ function aggregate_form_save() {
 
 	foreach($graph_templates_items as $item_id => $data) {
 		$item_new = array();
-		$item_new['aggregate_template_id'] = $id;
+		$item_new['aggregate_template_id']   = $id;
 		$item_new['graph_templates_item_id'] = $item_id;
 
-		$item_new['color_template'] = isset($data['color_template']) ? $data['color_template']:-1;
+		$item_new['color_template'] = isset($data['color_template']) ? $data['color_template']:0;
 		$item_new['item_skip']      = isset($data['item_skip']) ? 'on':'';
 		$item_new['item_total']     = isset($data['item_total']) ? 'on':'';
-		$item_new['sequence']       = isset($data['sequence']) ? $data['sequence']:-1;
+		$item_new['sequence']       = isset($data['sequence']) ? $data['sequence']:0;
 
 		/* compare with old item to see if we need to push out. */
 		if (!isset($aggregate_template_items_old[$item_id])) {
@@ -274,7 +289,7 @@ function aggregate_form_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$aggregate_list .= '<li>' . db_fetch_cell('SELECT name FROM aggregate_graph_templates WHERE id=' . $matches[1]) . '</li>';
+			$aggregate_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM aggregate_graph_templates WHERE id = ?', array($matches[1])) . '</li>';
 			$aggregate_array[] = $matches[1];
 		}
 	}
@@ -289,16 +304,16 @@ function aggregate_form_actions() {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 					<td class='textArea'>
-						<p>Are you sure you want to Delete the following Aggregate Graph Template(s)?</p>
-						<p><ul>$aggregate_list</ul></p>
+						<p>" . __('Click \'Continue\' to Delete the following Aggregate Graph Template(s).') . "</p>
+						<div class='itemlist'><ul>$aggregate_list</ul></div>
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete Color Template(s)'>";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Color Template(s)') . "'>";
 		}
 	}else{
-		print "<tr><td class='even'><span class='textError'>You must select at least one Aggregate Graph Template.</span></td></tr>\n";
-		$save_html = "<input type='button' value='Return' onClick='cactiReturnTo()'>";
+		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Aggregate Graph Template.') . "</span></td></tr>\n";
+		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -328,10 +343,14 @@ function aggregate_template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$template = db_fetch_row('SELECT * FROM aggregate_graph_templates WHERE id=' . get_request_var('id'));
-		$header_label = '[edit: ' . $template['name'] . ']';
+		$template = db_fetch_row_prepared('SELECT * 
+			FROM aggregate_graph_templates 
+			WHERE id = ?', 
+			array(get_request_var('id')));
+
+		$header_label = __('Aggregate Template [edit: %s]', $template['name']);
 	}else{
-		$header_label = '[new]';
+		$header_label = __('Aggregate Template [new]');
 	}
 
 	/* populate the graph template id if it's set */
@@ -345,12 +364,14 @@ function aggregate_template_edit() {
 
 	form_start('aggregate_templates.php', 'template_edit');
 
-	html_start_box("Aggregate Template $header_label", '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($struct_aggregate_template, (isset($template) ? $template : array()))
-	));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($struct_aggregate_template, (isset($template) ? $template : array()))
+		)
+	);
 
 	html_end_box();
 
@@ -383,7 +404,7 @@ function aggregate_template_edit() {
 			$('#row_order_type').hide();
 
 			$('#graph_template_id').change(function() {
-				document.template_edit.submit();
+				$('#template_edit').submit();
 			});
 
 			$('#save_component_template').parent().next('table').css('display', 'none');
@@ -495,7 +516,7 @@ function aggregate_template() {
 			'filter' => FILTER_VALIDATE_REGEXP, 
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
-			'default' => 'true'
+			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
 			)
 	);
 
@@ -510,20 +531,20 @@ function aggregate_template() {
 
 	form_start('aggregate_templates.php', 'template');
 
-	html_start_box('Aggregate Templates', '100%', '', '3', 'center', 'aggregate_templates.php?action=edit');
+	html_start_box(__('Aggregate Templates'), '100%', '', '3', 'center', 'aggregate_templates.php?action=edit');
 
 	$filter_html = '<tr class="even">
 		<td>
 			<table class="filterTable">
 				<tr>
 					<td>
-						Search
+						' . __('Search') . '
 					</td>
 					<td>
 						<input type="text" id="filter" size="25" value="' . get_request_var("filter") . '">
 					</td>
 					<td>
-						Templates
+						' . __('Templates') . '
 					</td>
 					<td>
 						<select id="rows" onChange="applyFilter()">
@@ -550,13 +571,13 @@ function aggregate_template() {
 						<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
 					</td>
 					<td>
-						<label for="has_graphs">Has Graphs</label>
+						<label for="has_graphs">' . __('Has Graphs') . '</label>
 					</td>
 					<td>
-						<input type="button" value="Go" id="refresh">
+						<input type="button" value="' . __('Go') . '" id="refresh">
 					</td>
 					<td>
-						<input type="button" value="Clear" id="clear">
+						<input type="button" value="' . __('Clear') . '" id="clear">
 					</td>
 				</tr>
 			</table>
@@ -579,10 +600,6 @@ function aggregate_template() {
 	if (get_request_var('has_graphs') == 'true') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'graphs.graphs>0';
 	}
-
-	form_start('aggregate_templates.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(pgt.id)
@@ -611,15 +628,20 @@ function aggregate_template() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('aggregate_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Aggregate Templates', 'page', 'main');
+	$nav = html_nav_bar('aggregate_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Aggregate Templates'), 'page', 'main');
+
+	form_start('aggregate_templates.php', 'chk');
 
 	print $nav;
 
+	html_start_box('', '100%', '', '3', 'center', '');
+
 	$display_text = array(
-		'pgt.name' => array('display' => 'Template Title', 'align' => 'left', 'sort' => 'ASC'),
-		'nosort' => array('display' => 'Deletable', 'align' => 'right', 'tip' => 'Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate.'),
-		'graphs.graphs' => array('display' => 'Graphs', 'align' => 'right', 'sort' => 'DESC'),
-		'graph_template_name' => array('display' => 'Graph Template', 'align' => 'left', 'sort' => 'ASC'));
+		'pgt.name'            => array('display' => __('Template Title'), 'align' => 'left', 'sort' => 'ASC'),
+		'nosort'              => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate.')),
+		'graphs.graphs'       => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC'),
+		'graph_template_name' => array('display' => __('Graph Template'), 'align' => 'left', 'sort' => 'ASC')
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -632,21 +654,23 @@ function aggregate_template() {
 			}
 
 			form_alternate_row('line' . $template['id'], true, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('aggregate_templates.php?action=edit&id=' . $template['id'] . '&page=1'). "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['name'])) : htmlspecialchars($template['name'])) . '</a>', $template['id']);
+			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'aggregate_templates.php?action=edit&id=' . $template['id'] . '&page=1'), $template['id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
-			form_selectable_cell(number_format($template['graphs']), $template['id'], '', 'text-align:right;');
-			form_selectable_cell(((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($template['graph_template_name'])) : htmlspecialchars($template['graph_template_name'])), $template['id']);
+			form_selectable_cell(number_format_i18n($template['graphs'],0), $template['id'], '', 'text-align:right;');
+			form_selectable_cell(filter_value($template['graph_template_name'], get_request_var('filter')), $template['id']);
 			form_checkbox_cell($template['graph_template_name'], $template['id'], $disabled);
 			form_end_row();
 		}
-
-		/* put the nav bar on the bottom as well */
-		print $nav;
 	}else{
-		print "<tr><td><em>No Aggregate Templates</em></td></tr>\n";
+		print "<tr><td><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
+
+	if (sizeof($template_list)) {
+		/* put the nav bar on the bottom as well */
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($aggregate_actions);
@@ -693,4 +717,3 @@ function aggregate_template() {
 	<?php
 }
 
-?>

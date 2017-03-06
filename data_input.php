@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -25,7 +25,9 @@
 include('./include/auth.php');
 include_once('./lib/utility.php');
 
-$di_actions = array(1 => 'Delete');
+$di_actions = array(
+	1 => __('Delete')
+);
 
 /* set default action */
 set_default_action();
@@ -100,6 +102,8 @@ function form_save() {
 					db_execute_prepared('UPDATE data_input_fields SET sequence = 0 WHERE data_input_id = ?', array(get_nfilter_request_var('id')));
 
 					generate_data_input_field_sequences(get_nfilter_request_var('input_string'), get_nfilter_request_var('id'));
+
+					update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 				}
 
 				push_out_data_input_method($data_input_id);
@@ -117,14 +121,14 @@ function form_save() {
 		get_filter_request_var('input_output', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^(in|out)$/')));
 		/* ==================================================== */
 
-		$save['id']            = get_nfilter_request_var('id');
+		$save['id']            = get_request_var('id');
 		$save['hash']          = get_hash_data_input(get_nfilter_request_var('id'), 'data_input_field');
-		$save['data_input_id'] = get_nfilter_request_var('data_input_id');
+		$save['data_input_id'] = get_request_var('data_input_id');
 		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['data_name']     = form_input_validate(get_nfilter_request_var('data_name'), 'data_name', '', false, 3);
-		$save['input_output']  = get_nfilter_request_var('input_output');
+		$save['input_output']  = get_request_var('input_output');
 		$save['update_rra']    = form_input_validate((isset_request_var('update_rra') ? get_nfilter_request_var('update_rra') : ''), 'update_rra', '', true, 3);
-		$save['sequence']      = get_nfilter_request_var('sequence');
+		$save['sequence']      = get_request_var('sequence');
 		$save['type_code']     = form_input_validate((isset_request_var('type_code') ? get_nfilter_request_var('type_code') : ''), 'type_code', '', true, 3);
 		$save['regexp_match']  = form_input_validate((isset_request_var('regexp_match') ? get_nfilter_request_var('regexp_match') : ''), 'regexp_match', '', true, 3);
 		$save['allow_nulls']   = form_input_validate((isset_request_var('allow_nulls') ? get_nfilter_request_var('allow_nulls') : ''), 'allow_nulls', '', true, 3);
@@ -135,18 +139,20 @@ function form_save() {
 			if ($data_input_field_id) {
 				raise_message(1);
 
-				if ((!empty($data_input_field_id)) && (get_nfilter_request_var('input_output') == 'in')) {
-					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(get_nfilter_request_var('data_input_id'))), get_nfilter_request_var('data_input_id'));
+				if ((!empty($data_input_field_id)) && (get_request_var('input_output') == 'in')) {
+					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(get_request_var('data_input_id'))), get_request_var('data_input_id'));
 				}
+
+				update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 			}else{
 				raise_message(2);
 			}
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_nfilter_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_nfilter_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_nfilter_request_var('input_output') : ''));
+			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_request_var('input_output') : ''));
 		}else{
-			header('Location: data_input.php?header=false&action=edit&id=' . get_nfilter_request_var('data_input_id'));
+			header('Location: data_input.php?header=false&action=edit&id=' . get_request_var('data_input_id'));
 		}
 	}
 }
@@ -204,7 +210,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Data Input Method', 'Click \'Continue\' to delete the following Data Input Method', sizeof($di_array)) . "</p>
-					<p><ul>$di_list</ul></p>
+					<div class='itemlist'><ul>$di_list</ul></div>
 				</td>
 			</tr>\n";
 		}
@@ -311,6 +317,8 @@ function field_remove() {
 			}
 		}
 	}
+
+	update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 }
 
 function field_edit() {
@@ -352,27 +360,23 @@ function field_edit() {
 
 	if ($current_field_type == 'out') {
 		$header_name = __('Output Fields [edit: %s]', htmlspecialchars($data_input['name']));
+		$dfield      = __('Output Field');
 	}elseif ($current_field_type == 'in') {
 		$header_name = __('Input Fields [edit: %s]', htmlspecialchars($data_input['name']));
+		$dfield      = __('Input Field');
 	}
 
 	form_start('data_input.php', 'data_input');
 
-	html_start_box( $header_name, '100%', '', '3', 'center', '');
+	html_start_box($header_name, '100%', '', '3', 'center', '');
 
 	$form_array = array();
 
 	/* field name */
 	if ((($data_input['type_id'] == '1') || ($data_input['type_id'] == '5')) && ($current_field_type == 'in')) { /* script */
-		$form_array = inject_form_variables($fields_data_input_field_edit_1, $header_name, $array_field_names, (isset($field) ? $field : array()));
-	}elseif (($data_input['type_id'] == '2') ||
-			($data_input['type_id'] == '3') ||
-			($data_input['type_id'] == '4') ||
-			($data_input['type_id'] == '6') ||
-			($data_input['type_id'] == '7') ||
-			($data_input['type_id'] == '8') ||
-			($current_field_type == 'out')) { /* snmp */
-		$form_array = inject_form_variables($fields_data_input_field_edit_2, $header_name, (isset($field) ? $field : array()));
+		$form_array = inject_form_variables($fields_data_input_field_edit_1, $dfield, $array_field_names, (isset($field) ? $field : array()));
+	}elseif ($current_field_type == 'out' || ($data_input['type_id'] != 1 && $data_input['type_id'] != 5)) {
+		$form_array = inject_form_variables($fields_data_input_field_edit_2, $dfield, (isset($field) ? $field : array()));
 	}
 
 	/* ONLY if the field is an input */
@@ -384,10 +388,12 @@ function field_edit() {
 		unset($fields_data_input_field_edit['type_code']);
 	}
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => $form_array + inject_form_variables($fields_data_input_field_edit, (isset($field) ? $field : array()), $current_field_type, $_REQUEST)
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => $form_array + inject_form_variables($fields_data_input_field_edit, (isset($field) ? $field : array()), $current_field_type, $_REQUEST)
+		)
+	);
 
 	html_end_box();
 
@@ -409,6 +415,9 @@ function data_remove($id) {
 
 	db_execute_prepared('DELETE FROM data_input WHERE id = ?', array($id));
 	db_execute_prepared('DELETE FROM data_input_fields WHERE data_input_id = ?', array($id));
+
+	update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
+	update_replication_crc(0, 'poller_replicate_data_input_crc');
 }
 
 function data_edit() {
@@ -427,7 +436,7 @@ function data_edit() {
 
 	form_start('data_input.php', 'data_input');
 
-	html_start_box( $header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -471,12 +480,12 @@ function data_edit() {
 		}
 		html_end_box();
 
-		html_start_box( __('Output Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . get_request_var('id'));
+		html_start_box(__('Output Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . get_request_var('id'));
 		print "<tr class='tableHeader'>";
-			DrawMatrixHeaderItem( __('Name'),'',1);
-			DrawMatrixHeaderItem( __('Field Order'),'',1);
-			DrawMatrixHeaderItem( __('Friendly Name'),'',1);
-			DrawMatrixHeaderItem( __('Update RRA'),'',2);
+			DrawMatrixHeaderItem(__('Name'),'',1);
+			DrawMatrixHeaderItem(__('Field Order'),'',1);
+			DrawMatrixHeaderItem(__('Friendly Name'),'',1);
+			DrawMatrixHeaderItem(__('Update RRA'),'',2);
 		print '</tr>';
 
 		$fields = db_fetch_assoc_prepared("SELECT id, name, data_name, update_rra, sequence FROM data_input_fields WHERE data_input_id = ? and input_output = 'out' ORDER BY sequence, data_name", array(get_request_var('id')));
@@ -600,7 +609,7 @@ function data() {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -611,7 +620,7 @@ function data() {
 						</select>
 					</td>
 					<td>
-						<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php __('Set/Refresh Filters');?>'>
+						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
 						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php __('Clear Filters');?>'>
@@ -621,6 +630,7 @@ function data() {
 			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
+
 		function applyFilter() {
 			strURL = 'data_input.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 			loadPageNoHeader(strURL);
@@ -645,17 +655,13 @@ function data() {
 				applyFilter();
 			});
 		});
+
 		</script>
 		</td>
 	</tr>
 	<?php
 
 	html_end_box();
-
-	/* print checkbox form for validation */
-	form_start('data_input.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -664,10 +670,9 @@ function data() {
 		$sql_where = '';
 	}
 
-	$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . " (di.name!='Get Script Data (Indexed)'
-		AND di.name!='Get Script Server Data (Indexed)'
-		AND di.name!='Get SNMP Data'
-		AND di.name!='Get SNMP Data (Indexed)')";
+	$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . " (di.hash NOT IN ('3eb92bb845b9660a7445cf9740726522', 'bf566c869ac6443b0c75d1c32b5a350e', '80e9e4c4191a5da189ae26d0e237f015', '332111d8b54ac8ce939af87a7eac0c06'))";
+
+	$sql_where  = api_plugin_hook_function('data_input_sql_where', $sql_where);
 
 	$total_rows = db_fetch_cell("SELECT
 		count(*)
@@ -679,27 +684,31 @@ function data() {
 		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 		FROM data_input AS di
 		LEFT JOIN data_template_data AS dtd
-		ON di.id=dtd.data_template_id
+		ON di.id=dtd.data_input_id
 		$sql_where
 		GROUP BY di.id
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
 		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('data_input.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, 'Input Methods', 'page', 'main');
+	$nav = html_nav_bar('data_input.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('Input Methods'), 'page', 'main');
+
+	form_start('data_input.php', 'chk');
 
 	print $nav;
 
+	html_start_box('', '100%', '', '3', 'center', '');
+
 	$display_text = array(
-		'name' => array('display' => __('Data Input Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')),
-		'nosort' => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Data Inputs that are in use can not be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')), 
+		'name'         => array('display' => __('Data Input Name'),    'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')),
+		'nosort'       => array('display' => __('Deletable'),          'align' => 'right', 'tip' => __('Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')), 
 		'data_sources' => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources that use this Data Input Method.')),
-		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Templates that use this Data Input Method.')),
-		'type_id' => array('display' => __('Data Input Method'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method used to gather information for this Data Input Method.')));
+		'templates'    => array('display' => __('Templates Using'),    'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Templates that use this Data Input Method.')),
+		'type_id'      => array('display' => __('Data Input Method'),  'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method used to gather information for this Data Input Method.')));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($data_inputs) > 0) {
+	if (sizeof($data_inputs)) {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
 			if ($data_input['templates'] > 0 || $data_input['data_sources'] > 0) {
@@ -708,21 +717,23 @@ function data() {
 				$disabled = false;
 			}
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('data_input.php?action=edit&id=' . $data_input['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($data_input['name'])) : htmlspecialchars($data_input['name'])) . '</a>', $data_input['id']);
+			form_selectable_cell(filter_value($data_input['name'], get_request_var('filter'), 'data_input.php?action=edit&id=' . $data_input['id']), $data_input['id']);
 			form_selectable_cell($disabled ? __('No'): __('Yes'), $data_input['id'],'', 'text-align:right');
-			form_selectable_cell(number_format($data_input['data_sources']), $data_input['id'],'', 'text-align:right');
-			form_selectable_cell(number_format($data_input['templates']), $data_input['id'],'', 'text-align:right');
+			form_selectable_cell(number_format_i18n($data_input['data_sources']), $data_input['id'],'', 'text-align:right');
+			form_selectable_cell(number_format_i18n($data_input['templates']), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell($input_types{$data_input['type_id']}, $data_input['id']);
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);
 			form_end_row();
 		}
-
-		print $nav;
 	}else{
-		print "<tr><td colspan='5'><em>" . __('No Data Input Methods') . "</em></td></tr>";
+		print "<tr><td colspan='5'><em>" . __('No Data Input Methods Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
+
+	if (sizeof($data_inputs)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($di_actions);

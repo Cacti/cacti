@@ -1,7 +1,8 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,40 +24,49 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 $no_http_headers = true;
 
-include(dirname(__FILE__) . "/../include/global.php");
-include_once("../lib/utility.php");
-include_once("../lib/template.php");
+include(dirname(__FILE__) . '/../include/global.php');
+include_once('../lib/utility.php');
+include_once('../lib/template.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 $execute = FALSE;
 
-foreach($parms as $parameter) {
-	@list($arg, $value) = @explode("=", $parameter);
+if (sizeof($parms)) {
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	switch ($arg) {
-	case "--execute":
-		$execute = TRUE;
-		break;
-	case "-h":
-	case "-v":
-	case "-V":
-	case "--version":
-	case "--help":
-		display_help();
-		exit;
-	default:
-		print "ERROR: Invalid Parameter " . $parameter . "\n\n";
-		display_help();
-		exit;
+		switch ($arg) {
+			case '--execute':
+				$execute = TRUE;
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				diaplay_version();
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+				exit;
+		}
 	}
 }
 
@@ -76,7 +86,7 @@ if ($execute) {
 $damaged_template_ids = db_fetch_assoc("SELECT DISTINCT data_template_id FROM data_template_rrd WHERE hash='' AND local_data_id=0");
 if (sizeof($damaged_template_ids)) {
 	foreach($damaged_template_ids as $id) {
-		$template_name = db_fetch_cell("SELECT name FROM data_template WHERE id=" . $id["data_template_id"]);
+		$template_name = db_fetch_cell('SELECT name FROM data_template WHERE id=' . $id['data_template_id']);
 		echo "NOTE: Data Template '$template_name' is Damaged and can be repaired\n";
 	}
 
@@ -85,8 +95,8 @@ if (sizeof($damaged_template_ids)) {
 		echo "NOTE: -- Damaged Data Templates Objects Found is '" . sizeof($damaged_templates) . "'\n";
 		if ($execute) {
 			foreach($damaged_templates as $template) {
-				$hash = get_hash_data_template($template["local_data_template_rrd_id"], "data_template_item");
-				db_execute("UPDATE data_template_rrd SET hash='$hash' WHERE id=" . $template["id"]);
+				$hash = get_hash_data_template($template['local_data_template_rrd_id'], 'data_template_item');
+				db_execute("UPDATE data_template_rrd SET hash='$hash' WHERE id=" . $template['id']);
 			}
 		}
 	}
@@ -107,7 +117,7 @@ if ($execute) {
 $damaged_template_ids = db_fetch_assoc("SELECT DISTINCT graph_template_id FROM graph_template_input WHERE hash=''");
 if (sizeof($damaged_template_ids)) {
 	foreach($damaged_template_ids as $id) {
-		$template_name = db_fetch_cell("SELECT name FROM graph_templates WHERE id=" . $id["graph_template_id"]);
+		$template_name = db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $id['graph_template_id']);
 		echo "NOTE: Graph Template '$template_name' is Damaged and can be repaired\n";
 	}
 
@@ -116,8 +126,8 @@ if (sizeof($damaged_template_ids)) {
 		echo "NOTE: -- Damaged Graph Templates Objects Found is '" . sizeof($damaged_templates) . "'\n";
 		if ($execute) {
 			foreach($damaged_templates as $template) {
-				$hash = get_hash_graph_template(0, "graph_template_input");
-				db_execute("UPDATE graph_template_input SET hash='$hash' WHERE id=" . $template["id"]);
+				$hash = get_hash_graph_template(0, 'graph_template_input');
+				db_execute("UPDATE graph_template_input SET hash='$hash' WHERE id=" . $template['id']);
 			}
 		}
 	}
@@ -125,13 +135,19 @@ if (sizeof($damaged_template_ids)) {
 	echo "NOTE: No Damaged Graph Templates Found\n";
 }
 
+/*  display_version - displays version information */
+function display_version() {
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	echo "Cacti Database Template Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
 
 /* display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Database Template Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "usage: repair_templates.php --execute [--help]\n\n";
-	echo "--execute        - Perform the repair\n";
-	echo "--help           - display this help message\n";
+	display_version();
+
+	echo "\nusage: repair_templates.php [--execute]\n\n";
+	echo "A utility designed to repair any damaged Cacti Graph and Data Templates.  That lacked a hash.\n";
+	echo "This utility should not need to be used in any modern Cacti install.\n\n";
+	echo "Optional:\n";
+	echo "    --execute  - Perform the repair.  Otherwise check for errors.\n";
 }
-?>

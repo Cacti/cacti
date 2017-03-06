@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -51,6 +51,8 @@ if (read_config_option('auth_method') != 0) {
 	if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = ?', array($_SESSION['sess_user_id']))) == 0) {
 		$show_console_tab = false;
 	}
+}else{
+	$current_user = 0;
 }
 
 /* need to correct $_SESSION["sess_nav_level_cache"] in zoom view */
@@ -72,19 +74,22 @@ load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2'
 	<meta content='width=720, initial-scale=0.8, maximum-scale=2.0, minimum-scale=0.5' name='viewport'>
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.zoom.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery-ui.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/default/style.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.multiselect.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.timepicker.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.colorpicker.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/c3.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/pace.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
-	<link rel='icon' type='image/gif' href='<?php echo $config['url_path']; ?>images/cacti_logo.gif' sizes='96x96'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/favicon.ico' rel='shortcut icon'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.ui.touch.punch.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.storageapi.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
@@ -100,6 +105,8 @@ load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2'
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.sparkline.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/Chart.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/dygraph-combined.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/d3.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/c3.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/pace.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/realtime.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
@@ -107,15 +114,15 @@ load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2'
 	<?php api_plugin_hook('page_head'); ?>
 </head>
 <body>
-<div id='cactiPageHead' class='cactiPageHead'>
+<div id='cactiPageHead' class='cactiPageHead' role='banner'>
 	<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
-	<div id='tabs'><?php html_show_tabs_left(true);?></div>
+	<div id='tabs'><?php html_show_tabs_left();?></div>
 	<div class='cactiGraphHeaderBackground'><div id='gtabs'><?php print html_graph_tabs_right($current_user);?></div></div>
 </div>
 <div id='breadCrumbBar' class='breadCrumbBar'>
 	<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
 	<div class='scrollBar'></div>
-	<div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div>
+	<?php if (read_config_option('auth_method') != 0) {?><div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div><?php }?>
 </div>
 <div id='cactiContent' class='cactiContent'>
 	<?php if (basename($_SERVER['PHP_SELF']) == 'graph_view.php' && (get_nfilter_request_var('action') == 'tree' || (isset_request_var('view_type') && get_nfilter_request_var('view_type') == 'tree'))) { ?>
@@ -124,6 +131,6 @@ load_current_session_value('action', 'sess_cacti_graph_action', $graph_views['2'
 	<?php }else{ ?>
 	<div id='navigation_right' class='cactiGraphContentAreaPreview'>
 	<?php } ?>
-		<div id='message_container'><?php print display_output_messages();?></div>
-		<div style='position:static;' id='main'>
+		<div class='messageContainer' id='message_container'><?php print display_output_messages();?></div>
+		<div style='position:static;' id='main' role='main'>
 	<?php } ?>

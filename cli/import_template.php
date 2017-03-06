@@ -1,7 +1,8 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,120 +24,106 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 /* We are not talking to the browser */
 $no_http_headers = true;
 
-include(dirname(__FILE__)."/../include/global.php");
-include_once($config["base_path"] . "/lib/import.php");
+include(dirname(__FILE__).'/../include/global.php');
+include_once($config['base_path'] . '/lib/import.php');
+include_once($config['base_path'] . '/lib/utility.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
+global $preview_only;
+
 if (sizeof($parms)) {
-	$filename = "";
-	$import_custom_rra_settings = false;
-	$rra_set = "";
+	$filename       = '';
+	$with_profile   = false;
+	$remove_orphans = false;
+	$preview_only   = 0;
+	$profile_id     = '';
 
 	foreach($parms as $parameter) {
-		@list($arg, $value) = @explode("=", $parameter);
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
 		switch ($arg) {
-			case "--filename":
+			case '--filename':
 				$filename = trim($value);
 
 				break;
-			case "--with-template-rras":
-				$import_custom_rra_settings = true;
+			case '--with-profile':
+				$with_profile = true;
 
 				break;
-			case "--with-user-rras":
-				$rra_set = trim($value);
+			case '--remove-orphans':
+				$remove_orphans = true;
 
 				break;
+			case '--preview':
+				$preview_only = 1;
+
+				break;
+			case '--profile-id':
+				$profile_id = trim($value);
+
+				break;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
 			default:
 				echo "ERROR: Invalid Argument: ($arg)\n\n";
 				exit(1);
 		}
 	}
 	
-	if($rra_set != "") {
-		if ($import_custom_rra_settings) {
-			echo "ERROR: '--with-template-rras' given and '--with-user-rras' given. Ignoring '--with-user-rras'\n";
+	if($profile_id > 0) {
+		if ($with_profile) {
+			echo "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'\n";
 		} else {
-			$rra_array = explode(':', $rra_set);
-			if (sizeof($rra_array)) {
-				foreach ($rra_array as $key => $value) {
-					$name = db_fetch_cell("SELECT name FROM rra WHERE id=" . intval($value));
-					if (strlen($name)) {
-						echo "using RRA $name\n";
-					} else {
-						echo "RRA id $value not found\n";
-						unset($rra_array[$key]);
-					}
-				}
+			$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($profile_id));
+
+			if (empty($id)) {
+				echo "WARNING: Data Source Profile ID $profile_id not found. Using System Default\n";
+				$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 			}
 		}
 	}else{
-		$rra_array = array();
-		if (!$import_custom_rra_settings) {
-			echo "ERROR: neither '--with-template-rras' given nor '--with-user-rras' given. Exiting'\n";
-			return false;
-		}
+		$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 	}
 
-	if($filename != "") {
+	if (empty($id)) {
+		echo "FATAL: No valid Data Source Profiles found on the system.  Exiting!\n";
+		exit(1);
+	}
+
+	if ($filename != '') {
 		if(file_exists($filename) && is_readable($filename)) {
-			$fp = fopen($filename,"r");
+			$fp = fopen($filename,'r');
 			$xml_data = fread($fp,filesize($filename));
 			fclose($fp);
 
-			echo "Read ".strlen($xml_data)." bytes of XML data\n";
+			echo 'Read ' . strlen($xml_data) . " bytes of XML data\n";
 
-			$debug_data = import_xml_data($xml_data, $import_custom_rra_settings, $rra_array);
+			$debug_data = import_xml_data($xml_data, false, $id, $remove_orphans);
 
-			while (list($type, $type_array) = each($debug_data)) {
-				print "** " . $hash_type_names[$type] . "\n";
-
-				while (list($index, $vals) = each($type_array)) {
-					if ($vals["result"] == "success") {
-						$result_text = " [success]";
-					}else{
-						$result_text = " [fail]";
-					}
-
-					if ($vals["type"] == "update") {
-						$type_text = " [update]";
-					}else{
-						$type_text = " [new]";
-					}
-					echo "   $result_text " . $vals["title"] . " $type_text\n";
-
-					$dep_text = ""; $errors = false;
-					if ((isset($vals["dep"])) && (sizeof($vals["dep"]) > 0)) {
-						while (list($dep_hash, $dep_status) = each($vals["dep"])) {
-							if ($dep_status == "met") {
-								$dep_status_text = "Found Dependency: ";
-							} else {
-								$dep_status_text = "Unmet Dependency: ";
-								$errors = true;
-							}
-
-							$dep_text .= "    + $dep_status_text " . hash_to_friendly_name($dep_hash, true) . "\n";
-						}
-					}
-
-					/* dependency errors need to be reported */
-					if ($errors) {
-						echo $dep_text;
-						exit(-1);
-					}
-				}
-			}
+			import_display_results($debug_data, false, $preview_only);
 		} else {
 			echo "ERROR: file $filename is not readable, or does not exist\n\n";
 			exit(1);
@@ -152,14 +139,24 @@ if (sizeof($parms)) {
 	exit(1);
 }
 
-function display_help() {
+/*  display_version - displays version information */
+function display_version() {
 	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Add Graphs Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "A simple command line utility to import a Template into Cacti\n\n";
-	echo "usage: import_template.php --filename=[filename] [--with-template-rras] [--with-user-rras=[n[:m]...]]\n";
+	echo "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
+function display_help() {
+	display_version();
+
+	echo "\nusage: import_template.php --filename=[filename] [--with-profile | --profile-id=N]\n\n";
+	echo "A utility to allow Cacti Templates to be imported from the command line.\n\n";
 	echo "Required:\n";
-	echo "    --filename     the name of the XML file to import\n";
+	echo "    --filename        The name of the XML file to import\n\n";
 	echo "Optional:\n";
-	echo "    --with-template-rras    also import custom RRA definitions from the template\n";
-	echo "    --with-user-rras        use your own set of RRA like '1:2:3:4'\n";
+	echo "    --preview         Preview the Template Import, do not import\n";
+	echo "    --with-profile    Use the default system Data Source Profile\n";
+	echo "    --profile-id=N    Use the specific profile id when importing\n";
+	echo "    --remove-orphans  If importing a new version of the template, old\n";
+	echo "                      elements will be removed, if they do not exist\n";
+	echo "                      in the new version of the template.\n\n";
 }

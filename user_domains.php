@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -30,7 +30,7 @@ $actions = array(
 	2 => __('Disable'),
 	3 => __('Enable'),
 	4 => __('Default')
-	);
+);
 
 /* set default action */
 set_default_action();
@@ -212,14 +212,14 @@ function form_actions() {
 
 	form_start('user_domains.php');
 
-	html_start_box($actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($d_array) && sizeof($d_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to delete the following User Domain.', 'Click \'Continue\' to delete following User Domains.', sizeof($d_array)) . "</p>
-					<p><ul>$d_list</ul></p>
+					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -228,7 +228,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to disable the following User Domain.', 'Click \'Continue\' to disable following User Domains.', sizeof($d_array)) . "</p>
-					<p><ul>$d_list</ul></p>
+					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -237,7 +237,7 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to enable the following User Domain.', 'Click \'Continue\' to enable following User Domains.', sizeof($d_array)) . "</p>
-					<p><ul>$d_list</ul></p>
+					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
 
@@ -246,14 +246,14 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to make the following the following User Domain the default one.') . "</p>
-					<p><ul>$d_list</ul></p>
+					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Make Selected Domain Default') . "'>";
 		}
 	}else{
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one data input method.') . "</span></td></tr>\n";
+		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one User Domain.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
@@ -416,7 +416,7 @@ function domain_edit() {
 			),
 		'group_require' => array(
 			'friendly_name' => __('Require Group Membership'),
-			'description' => __('Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authenication failure.'),
+			'description' => __('Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authentication failure.'),
 			'value' => '|arg1:group_require|',
 			'method' => 'checkbox'
 			),
@@ -425,8 +425,8 @@ function domain_edit() {
 			'method' => 'spacer'
 			),
 		'group_dn' => array(
-			'friendly_name' => __('Group Distingished Name (DN)'),
-			'description' => __('Distingished Name of the group that user must have membership.'),
+			'friendly_name' => __('Group Distinguished Name (DN)'),
+			'description' => __('Distinguished Name of the group that user must have membership.'),
 			'method' => 'textbox',
 			'value' => '|arg1:group_dn|',
 			'max_length' => '255'
@@ -440,10 +440,10 @@ function domain_edit() {
 			),
 		'group_member_type' => array(
 			'friendly_name' => __('Group Member Type'),
-			'description' => __('Defines if users use full Distingished Name or just Username in the defined Group Member Attribute.'),
+			'description' => __('Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute.'),
 			'method' => 'drop_array',
 			'value' => '|arg1:group_member_type|',
-			'array' => array( 1 => 'Distingished Name', 2 => 'Username' )
+			'array' => array( 1 => 'Distinguished Name', 2 => 'Username' )
 			),
 		'search_base_header' => array(
 			'friendly_name' => __('LDAP Specific Search Settings'),
@@ -464,7 +464,7 @@ function domain_edit() {
 			'max_length' => '255'
 			),
 		'specific_dn' => array(
-			'friendly_name' => __('Search Distingished Name (DN)'),
+			'friendly_name' => __('Search Distinguished Name (DN)'),
 			'description' => __('Distinguished Name for Specific Searching binding to the LDAP directory.'),
 			'method' => 'textbox',
 			'value' => '|arg1:specific_dn|',
@@ -555,7 +555,7 @@ function domain_edit() {
 
 		$('#mode').change(function() {
 			initSearch();
-       		});
+		});
 
 		$('#group_require').change(function() {
 			initGroupMember();
@@ -627,7 +627,7 @@ function domains() {
 					</td>
 					<td>
 						<select id='rows' name="rows" onChange="applyFilter()">
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -641,7 +641,7 @@ function domains() {
 						<input id='refresh' type='button' value='<?php print __x('filter: use', 'Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input id='clear' type='button' value='<?php print __('filter: reset', 'Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<input id='clear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -682,10 +682,6 @@ function domains() {
 
 	html_end_box();
 
-	form_start('user_domains.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (domain_name LIKE '%%" . get_request_var('filter') . "%%') ||
@@ -707,7 +703,11 @@ function domains() {
 
 	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('User Domains'), 'page', 'main');
 
+	form_start('user_domains.php', 'chk');
+
 	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'domain_name' => array( __('Domain Name'), 'ASC'),
@@ -719,11 +719,11 @@ function domains() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($domains) > 0) {
+	if (sizeof($domains)) {
 		foreach ($domains as $domain) {
 			/* hide system types */
 			form_alternate_row('line' . $domain['domain_id'], true);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('user_domains.php?action=edit&domain_id=' . $domain['domain_id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue>\\1</span>", htmlspecialchars($domain['domain_name'])) : htmlspecialchars($domain['domain_name'])) . '</a>', $domain['domain_id']);
+			form_selectable_cell(filter_value($domain['domain_name'], get_request_var('filter'), 'user_domains.php?action=edit&domain_id=' . $domain['domain_id']), $domain['domain_id']);
 			form_selectable_cell($domain_types{$domain['type']}, $domain['domain_id']);
 			form_selectable_cell( ($domain['defdomain'] == '0' ? '--': __('Yes') ), $domain['domain_id']);
 			form_selectable_cell( ($domain['user_id'] == '0' ? __('None Selected') : db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);
@@ -731,18 +731,18 @@ function domains() {
 			form_checkbox_cell($domain['domain_name'], $domain['domain_id']);
 			form_end_row();
 		}
-
-		print $nav;
 	}else{
-		print '<tr><td><em>' . __('No User Domains Defined') . '</em></td></tr>';
+		print '<tr><td><em>' . __('No User Domains Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
+
+	if (sizeof($domains)) {
+		print $nav;
+	}
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($actions);
 
 	form_end();
 }
-
-

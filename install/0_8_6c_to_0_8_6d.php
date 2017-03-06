@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,8 +24,7 @@
 
 function upgrade_to_0_8_6d() {
 	/* changes for long OID's */
-	db_install_execute("0.8.6d", "ALTER TABLE `host_snmp_cache` CHANGE `snmp_index` `snmp_index` VARCHAR( 100 ) NOT NULL;");
-	db_install_execute("0.8.6d", "ALTER TABLE `data_local` CHANGE `snmp_index` `snmp_index` VARCHAR( 100 ) NOT NULL;");
-	db_install_execute("0.8.6d", "ALTER TABLE `graph_local` CHANGE `snmp_index` `snmp_index` VARCHAR( 100 ) NOT NULL;");
+	db_install_execute("ALTER TABLE `host_snmp_cache` CHANGE `snmp_index` `snmp_index` VARCHAR( 100 ) NOT NULL;");
+	db_install_execute("ALTER TABLE `data_local` CHANGE `snmp_index` `snmp_index` VARCHAR( 100 ) NOT NULL;");
+	db_install_execute("ALTER TABLE `graph_local` CHANGE `snmp_index` `snmp_index` VARCHAR( 100 ) NOT NULL;");
 }
-?>

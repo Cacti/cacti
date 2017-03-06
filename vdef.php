@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2012 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,7 +23,6 @@
 */
 
 include('./include/auth.php');
-include_once('./lib/utility.php');
 include_once('./lib/vdef.php');
 
 $vdef_actions = array(
@@ -49,6 +48,20 @@ switch (get_request_var('action')) {
 	case 'item_remove':
 		vdef_item_remove();
 
+		break;
+	case 'item_movedown':
+		get_filter_request_var('vdef_id');
+
+		item_movedown();
+
+		header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
+		break;
+	case 'item_moveup':
+		get_filter_request_var('vdef_id');
+
+		item_moveup();
+
+		header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -141,6 +154,46 @@ function vdef_form_save() {
 	}
 }
 
+function duplicate_vdef($_vdef_id, $vdef_title) {
+	global $fields_vdef_edit;
+
+	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array($_vdef_id));
+	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ?', array($_vdef_id));
+
+	/* substitute the title variable */
+	$vdef['name'] = str_replace('<vdef_title>', $vdef['name'], $vdef_title);
+
+	/* create new entry: device_template */
+	$save['id']   = 0;
+	$save['hash'] = get_hash_vdef(0);
+
+	$fields_vdef_edit = preset_vdef_form_list();
+	reset($fields_vdef_edit);
+	while (list($field, $array) = each($fields_vdef_edit)) {
+		if (!preg_match('/^hidden/', $array['method'])) {
+			$save[$field] = $vdef[$field];
+		}
+	}
+
+	$vdef_id = sql_save($save, 'vdef');
+
+	/* create new entry(s): vdef_items */
+	if (sizeof($vdef_items) > 0) {
+		foreach ($vdef_items as $vdef_item) {
+			unset($save);
+
+			$save['id']       = 0;
+			$save['hash']     = get_hash_vdef(0, 'vdef_item');
+			$save['vdef_id']  = $vdef_id;
+			$save['sequence'] = $vdef_item['sequence'];
+			$save['type']     = $vdef_item['type'];
+			$save['value']    = $vdef_item['value'];
+
+			sql_save($save, 'vdef_items');
+		}
+	}
+}
+
 /* ------------------------
     The 'actions' function
    ------------------------ */
@@ -195,7 +248,7 @@ function vdef_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$vdef_list .= '<li>' . db_fetch_cell('select name from vdef where id=' . $matches[1]) . '</li>';
+			$vdef_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM vdef WHERE id = ?', array($matches[1])) . '</li>';
 			$vdef_array[] = $matches[1];
 		}
 	}
@@ -211,25 +264,25 @@ function vdef_form_actions() {
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __n('Click \'Continue\' to delete the following VDEF.', 'Click \'Continue\' to delete following VDEFs.', sizeof($vdef_array)) . "</p>
-						<p><ul>$vdef_list</ul></p>
+						<div class='itemlist'><ul>$vdef_list</ul></div>
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='Cancel' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='Continue' title='Delete VDEF(s)'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', sizeof($vdef_array)) . "'>";
 		}elseif (get_nfilter_request_var('drp_action') === '2') { /* duplicate */
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __n('Click \'Continue\' to duplicate the following VDEF. You can optionally change the title format for the new VDEF.', 'Click \'Continue\' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs.', sizeof($vdef_array)) . "</p>
-						<p><ul>$vdef_list</ul></p>
+						<div class='itemlist'><ul>$vdef_list</ul></div>
 						<p><strong>" . __('Title Format:') . "</strong><br>"; form_text_box("title_format", "<vdef_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='Duplicate VDEF(s)'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', sizeof($vdef_array)) . "'>";
 		}
 	}else{
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one VDEF.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
     print "<tr>
@@ -264,8 +317,8 @@ function vdef_item_remove_confirm() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$vdef       = db_fetch_row('SELECT * FROM vdef WHERE id=' . get_request_var('id'));
-	$vdef_item  = db_fetch_row('SELECT * FROM vdef_items WHERE id=' . get_request_var('vdef_id'));
+	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array(get_request_var('id')));
+	$vdef_item  = db_fetch_row_prepared('SELECT * FROM vdef_items WHERE id = ?', array(get_request_var('vdef_id')));
 
 	?>
 	<tr>
@@ -277,8 +330,8 @@ function vdef_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td align='right'>
-			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove VDEF Item');?>'>
+			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
 		</td>
 	</tr>
 	<?php
@@ -306,13 +359,13 @@ function vdef_item_remove_confirm() {
 	</script>
 	<?php
 }
-		
+
 function vdef_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('vdef_id');
 	/* ==================================================== */
 
-	db_execute('DELETE FROM vdef_items WHERE id=' . get_request_var('vdef_id'));
+	db_execute_prepared('DELETE FROM vdef_items WHERE id = ?', array(get_request_var('vdef_id')));
 }
 
 function vdef_item_edit() {
@@ -342,7 +395,7 @@ function vdef_item_edit() {
 
 	form_start('vdef.php', 'form_vdef');
 
-	html_start_box( $header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	if (isset_request_var('type_select')) {
 		$current_type = get_request_var('type_select');
@@ -409,12 +462,30 @@ function vdef_item_edit() {
     VDEF Functions
    --------------------- */
 
+function item_movedown() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('vdef_id');
+	/* ==================================================== */
+
+	move_item_down('vdef_items', get_request_var('id'), 'vdef_id=' . get_request_var('vdef_id'));
+}
+
+function item_moveup() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('vdef_id');
+	/* ==================================================== */
+
+	move_item_up('vdef_items', get_request_var('id'), 'vdef_id=' . get_request_var('vdef_id'));
+}
+
 function vdef_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
 	/* ================= Input validation ================= */
 
-	if (!isset_request_var('vdef_item') || !is_array(get_request_var('vdef_item'))) exit;
+	if (!isset_request_var('vdef_item') || !is_array(get_nfilter_request_var('vdef_item'))) exit;
 
 	/* vdef table contains one row defined as 'nodrag&nodrop' */
 	unset($_REQUEST['vdef_item'][0]);
@@ -422,7 +493,7 @@ function vdef_item_dnd() {
 	/* delivered vdef ids has to be exactly the same like we have stored */
 	$old_order = array();
 
-	foreach(get_request_var('vdef_item') as $sequence => $vdef_id) {
+	foreach(get_nfilter_request_var('vdef_item') as $sequence => $vdef_id) {
 		if (empty($vdef_id)) continue;
 		$new_order[$sequence] = str_replace('line', '', $vdef_id);
 	}
@@ -437,10 +508,10 @@ function vdef_item_dnd() {
 		exit;
 	}
 
-	if(sizeof(array_diff($new_order, $old_order))>0) exit;
+	if (sizeof(array_diff($new_order, $old_order))>0) exit;
 
 	/* the set of sequence numbers has to be the same too */
-	if(sizeof(array_diff_key($new_order, $old_order))>0) exit;
+	if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
 	/* ==================================================== */
 
 	foreach($new_order as $sequence => $vdef_id) {
@@ -461,7 +532,7 @@ function vdef_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$vdef = db_fetch_row('SELECT * FROM vdef WHERE id=' . get_request_var('id'));
+		$vdef = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('VDEFs [edit: %s]', $vdef['name']);
 	}else{
 		$header_label = __('VDEFs [new]');
@@ -498,23 +569,42 @@ function vdef_edit() {
 		html_header($header_items, 2);
 
 		$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', array(get_request_var('id')));
-		$i = 0;
+		$i = 1;
+		$total_items = sizeof($vdef_items);
+
 		if (sizeof($vdef_items)) {
 			foreach ($vdef_items as $vdef_item) {
-				form_alternate_row('line' . $vdef_item['id'], true);
+				form_alternate_row('line' . $vdef_item['id'], true, true);
+				?>
+				<td>
+					<a class='linkEditMain' href='<?php print htmlspecialchars('vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']);?>'><?php print __('Item #%d', $i);?></a>
+				</td>
+				<td>
+					<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item['id']);?></strong>
+				</td>
+				<td align='right' style='text-align:right'>
+					<?php
+					if (read_config_option('drag_and_drop') == '') {
+						if ($i < $total_items && $total_items > 1) {
+							echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						}else{
+							echo '<span class="moveArrowNone"></span>';
+						}
+
+						if ($i > 1 && $i <= $total_items) {
+							echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						}else{
+							echo '<span class="moveArrowNone"></span>';
+						}
+					}
 					?>
-					<td>
-						<a class='linkEditMain' href='<?php print htmlspecialchars('vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']);?>'><?php print __('Item #%d', $i);?></a>
-					</td>
-					<td>
-						<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item['id']);?></strong>
-					</td>
-					<td align='right' style='text-align:right'>
-						<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __('Delete VDEF Item');?>'></a>
-					</td>
-			<?php
-			form_end_row();
-			$i++;
+					<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __esc('Delete VDEF Item');?>'></a>
+				</td>
+				<?php
+
+				form_end_row();
+
+				$i++;
 			}
 		}
 
@@ -528,13 +618,16 @@ function vdef_edit() {
 
 	$(function() {
 		$('#vdef_edit3').find('.cactiTable').attr('id', 'vdef_item');
-		$('body').append("<div id='cdialog'></div>");
+		$('.cdialog').remove();
+		$('body').append("<div class='cdialog' id='cdialog'></div>");
 
+		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#vdef_item').tableDnD({
 			onDrop: function(table, row) {
 				loadPageNoHeader('vdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
 			}
 		});
+		<?php } ?>
 
 		$('.delete').click(function (event) {
 			event.preventDefault();
@@ -544,7 +637,7 @@ function vdef_edit() {
 			$.get(request, function(data) {
 				$('#cdialog').html(data);
 				applySkin();
-				$('#cdialog').dialog({ title: '<?php print __('Delete VDEF Item');?>', minHeight: 80, minWidth: 500 });
+				$('#cdialog').dialog({ title: '<?php print __esc('Delete VDEF Item');?>', minHeight: 80, minWidth: 500 });
 			});
 		}).css('cursor', 'pointer');
 	});
@@ -574,7 +667,7 @@ function vdef_filter() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows)) {
 							foreach ($item_rows as $key => $value) {
@@ -591,10 +684,10 @@ function vdef_filter() {
                         <label for='has_graphs'><?php print __('Has Graphs');?></label>
                     </td>
 					<td>
-						<input type='button' Value='<?php print __x('filter: use', 'Go');?>' id='refresh'>
+						<input type='button' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' id='refresh'>
 					</td>
 					<td>
-						<input type='button' Value='<?php print __x('filter: reset', 'Clear');?>' id='clear'>
+						<input type='button' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' id='clear'>
 					</td>
 				</tr>
 			</table>
@@ -642,7 +735,7 @@ function vdef_filter() {
 function get_vdef_records(&$total_rows, &$rowspp) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (vdef.name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = "WHERE (rs.name LIKE '%" . get_request_var('filter') . "%')";
 	}else{
 		$sql_where = '';
 	}
@@ -656,15 +749,16 @@ function get_vdef_records(&$total_rows, &$rowspp) {
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(rows)
         FROM (
-            SELECT vd.id AS rows,
+            SELECT vd.id AS rows, vd.name,
             SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
             FROM vdef AS vd
             LEFT JOIN graph_templates_item AS gti
             ON gti.vdef_id=vd.id
-            $sql_where
             GROUP BY vd.id
-            $sql_having
-        ) AS rs");
+        ) AS rs
+        $sql_where
+		$sql_having
+	");
 
 	return db_fetch_assoc("SELECT rs.*,
 		SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates,
@@ -717,7 +811,7 @@ function vdef($refresh = true) {
 			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
-			'default' => 'true'
+			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
 			)
 	);
 
@@ -737,25 +831,25 @@ function vdef($refresh = true) {
 
 	$vdefs = get_vdef_records($total_rows, $rows);
 
+	$nav = html_nav_bar('vdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('VDEFs'), 'page', 'main');
+
 	form_start('vdef.php', 'chk');
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
-	$nav = html_nav_bar('vdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'VDEFs', 'page', 'main');
 
     print $nav;
 
+	html_start_box('', '100%', '', '3', 'center', '');
+
     $display_text = array(
-        'name'      => array('display' => __('VDEF Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this VDEF.') ),
-        'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('VDEFs that are in use can not be Deleted. In use is defined as being referenced by a Graph or a Graph Template.') ),
-        'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this VDEF.') ),
-        'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs Templates using this VDEF.') )
+        'name'      => array('display' => __('VDEF Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __esc('The name of this VDEF.') ),
+        'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __esc('VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template.') ),
+        'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __esc('The number of Graphs using this VDEF.') ),
+        'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __esc('The number of Graphs Templates using this VDEF.') )
 	);
 
     html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
     $i = 0;
-    if (sizeof($vdefs) > 0) {
+    if (sizeof($vdefs)) {
         foreach ($vdefs as $vdef) {
             if ($vdef['graphs'] == 0 && $vdef['templates'] == 0) {
                 $disabled = false;
@@ -764,18 +858,22 @@ function vdef($refresh = true) {
             }
 
             form_alternate_row('line' . $vdef['id'], false, $disabled);
-            form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('vdef.php?action=edit&id=' . $vdef['id']) . "'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($vdef['name'])) : htmlspecialchars($vdef['name'])) . '</a>', $vdef['id']);
+			form_selectable_cell(filter_value($vdef['name'], get_request_var('filter'), 'vdef.php?action=edit&id=' . $vdef['id']), $vdef['id']);
             form_selectable_cell($disabled ? __('No'):__('Yes'), $vdef['id'], '', 'text-align:right');
-            form_selectable_cell(number_format($vdef['graphs']), $vdef['id'], '', 'text-align:right');
-            form_selectable_cell(number_format($vdef['templates']), $vdef['id'], '', 'text-align:right');
+            form_selectable_cell(number_format_i18n($vdef['graphs']), $vdef['id'], '', 'text-align:right');
+            form_selectable_cell(number_format_i18n($vdef['templates']), $vdef['id'], '', 'text-align:right');
             form_checkbox_cell($vdef['name'], $vdef['id'], $disabled);
             form_end_row();
         }
-        print $nav;
     }else{
         print "<tr class='tableRow'><td colspan='4'><em>" . __('No VDEFs') . "</em></td></tr>\n";
     }
+
     html_end_box(false);
+
+    if (sizeof($vdefs)) {
+        print $nav;
+	}
 
     /* draw the dropdown containing a list of available actions for this form */
     draw_actions_dropdown($vdef_actions);

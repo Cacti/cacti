@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -130,19 +130,8 @@ function input_remove() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
-		top_header();
-
-		form_confirm('Are You Sure?', "Are you sure you want to delete the input item <strong>'" . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_template_input WHERE id = ?', array(get_request_var('id'))), ENT_QUOTES) . "'</strong>? NOTE: Deleting this item will NOT affect graphs that use this template.", htmlspecialchars('graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id')), htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . get_request_var('id') . '&graph_template_id=' . get_request_var('graph_template_id')));
-
-		bottom_footer();
-		exit;
-	}
-
-	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
-		db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array(get_request_var('id')));
-		db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var('id')));
-	}
+	db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var('id')));
 }
 
 function input_edit() {
@@ -153,7 +142,7 @@ function input_edit() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	$header_label = '[edit graph: ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id'))) . ']';
+	$header_label = __('Graph Item Inputs [edit graph: %s]' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
 
 	/* get a list of all graph item field names and populate an array for user display */
 	while (list($field_name, $field_array) = each($struct_graph_item)) {
@@ -168,12 +157,14 @@ function input_edit() {
 
 	form_start('graph_templates_inputs.php');
 
-	html_start_box('Graph Item Inputs ' . htmlspecialchars($header_label), '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($fields_graph_template_input_edit, (isset($graph_template_input) ? $graph_template_input : array()), (isset($graph_template_items) ? $graph_template_items : array()), $_REQUEST)
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_graph_template_input_edit, (isset($graph_template_input) ? $graph_template_input : array()), (isset($graph_template_items) ? $graph_template_items : array()), $_REQUEST)
+		)
+	);
 
 	if (!isset_request_var('id')) { 
 		set_request_var('id', 0);
@@ -199,13 +190,13 @@ function input_edit() {
 
 	?>
 	<td width="50%">
-		<font class="textEditTitle">Associated Graph Items</font><br>
-		Select the graph items that you want to accept user input for.
+		<font class="textEditTitle"><?php print __('Associated Graph Items');?></font><br>
+		<?php print __('Select the graph items that you want to accept user input for.');?>
 	</td>
 	<td>
 	<?php
 	$i = 0; $any_selected_item = '';
-	if (sizeof($item_list) > 0) {
+	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			if ($item['graph_template_input_id'] == '') {
 				$old_value = '';
@@ -228,7 +219,7 @@ function input_edit() {
 			$i++;
 		}
 	}else{
-		print "<tr class='tableRow'><td><em>No Items</em></td></tr>";
+		print "<tr class='tableRow'><td><em>" . __('No Items') . "</em></td></tr>";
 	}
 	?>
 	</td>

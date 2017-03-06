@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -186,6 +186,7 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 		$string = str_replace($l_escape_string . 'host_snmp_priv_passphrase' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_priv_passphrase'], $string);
 		$string = str_replace($l_escape_string . 'host_snmp_priv_protocol' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_priv_protocol'], $string);
 		$string = str_replace($l_escape_string . 'host_snmp_context' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_context'], $string);
+		$string = str_replace($l_escape_string . 'host_snmp_engine_id' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_engine_id'], $string);
 		$string = str_replace($l_escape_string . 'host_snmp_port' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_port'], $string);
 		$string = str_replace($l_escape_string . 'host_snmp_timeout' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_timeout'], $string);
 

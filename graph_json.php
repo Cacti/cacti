@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -112,7 +112,11 @@ $graph_data_array['graphv'] = true;
 
 // Determine the graph type of the output
 if (!isset_request_var('image_format')) {
-	$type   = db_fetch_cell('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id=' . get_request_var('local_graph_id'));
+	$type   = db_fetch_cell_prepared('SELECT image_format_id 
+		FROM graph_templates_graph 
+		WHERE local_graph_id = ?', 
+		array(get_request_var('local_graph_id')));
+
 	switch($type) {
 	case '1':
 		$gtype = 'png';
@@ -140,12 +144,43 @@ if (!isset_request_var('image_format')) {
 
 $graph_data_array['image_format'] = $gtype;
 
-$output = @rrdtool_function_graph(get_request_var('local_graph_id'), (array_key_exists('rra_id', $_REQUEST) ? get_request_var('rra_id') : null), $graph_data_array);
+if ($config['poller_id'] == 1) {
+	$output = @rrdtool_function_graph(get_request_var('local_graph_id'), (array_key_exists('rra_id', $_REQUEST) ? get_request_var('rra_id') : null), $graph_data_array);
+}else{
+	if (isset_request_var('rra_id')) {
+		if (get_nfilter_request_var('rra_id') == 'all') {
+			$rra_id = 'all';
+		}else{
+			$rra_id = get_filter_request_var('rra_id');
+		}
+	}
+
+	/* get the theme */
+	if (!isset_request_var('graph_theme')) {
+		$graph_data_array['graph_theme'] = get_selected_theme();
+	}
+
+	if (isset($_SESSION['sess_user_id'])) {
+		$graph_data_array['effective_user'] = $_SESSION['sess_user_id'];
+	}
+
+	$hostname = db_fetch_cell('SELECT hostname FROM poller WHERE id = 1');
+
+	$url  = get_url_type() . '://' . $hostname . $config['url_path'] . 'remote_agent.php?action=graph_json';
+	$url .= '&local_graph_id=' . get_request_var('local_graph_id');
+	$url .= '&rra_id=' . get_request_var('rra_id');
+
+	foreach($graph_data_array as $variable => $value) {
+		$url .= '&' . $variable . '=' . $value;
+	}
+
+	$output = file_get_contents($url);
+}
 
 $oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => get_request_var('rra_id'));
 
 // Check if we received back something populated from rrdtool
-if ($output) {
+if ($output !== false && $output != '') {
 	// Find the beginning of the image definition row
 	$image_begin_pos  = strpos($output, "image = ");
 	// Find the end of the line of the image definition row, after this the raw image data will come
@@ -160,8 +195,7 @@ if ($output) {
 		$oarray[$parts[0]] = trim($parts[1]);
 	}
 } else { 
-	// We most likely got back an empty image since the graph data doesn't exist yet, show a placeholder
-	$oarray['image']  = base64_encode(file_get_contents(__DIR__."/images/rrd_not_found.png"));
+	$oarray['image'] = base64_encode(file_get_contents(__DIR__ . '/images/rrd_not_found.png'));
 }
 
 print json_encode($oarray);

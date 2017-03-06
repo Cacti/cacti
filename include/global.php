@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -107,7 +107,12 @@ $config['php_snmp_support'] = function_exists('snmpget');
 if (isset($poller_id)) {
 	$config['poller_id'] = $poller_id;
 }else{
-	$config['poller_id'] = 0;
+	$config['poller_id'] = 1;
+}
+
+/* check for an empty database port */
+if ($database_port == '') {
+	$database_port = '3306';
 }
 
 /* set URL path */
@@ -161,31 +166,83 @@ $colors['form_alternate2'] = 'E5E5E5';
 
 /* include base modules */
 include_once($config['library_path'] . '/database.php');
-
-if (isset($cacti_db_session) && $cacti_db_session) {
-	include(dirname(__FILE__) . '/session.php');
-}
-
-/* connect to the database server */
-db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
-
-/* include additional modules */
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 
 if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) {
 	$is_web = false;
-
-	// Don't start a session, this is the CLI
 }elseif ($_SERVER['PHP_SELF'] != '') {
 	$is_web = true;
+}
 
+/* set poller mode */
+global $local_db_cnn_id, $remote_db_cnn_id;
+
+$config['connection'] = 'online';
+if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
+	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
+
+	if (!isset($rdatabase_ssl)) $rdatabase_ssl = false;
+
+	/* gather the existing cactidb version */
+	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', false, $local_db_cnn_id);
+
+	// We are a remote poller also try to connect to the remote database
+	$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl);
+
+	if ($remote_db_cnn_id && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install') {
+		// Connection worked, so now override the default settings so that it will always utilize the remote connection
+		$database_default   = $rdatabase_default;
+		$database_hostname  = $rdatabase_hostname;
+		$database_username  = $rdatabase_username;
+		$database_password  = $rdatabase_password;
+		$database_port      = $rdatabase_port;
+		$database_ssl       = $rdatabase_ssl;
+
+		$config['connection'] = 'online';
+	}else{
+		$config['connection'] = 'offline';
+	}
+} elseif (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl)) {
+	print $is_web ? '<p>':'';
+	print 'FATAL: Connection to Cacti database failed. Please insure the database is running and your credentials in config.php are valid.';
+	print $is_web ? '</p>':'';
+	exit;
+}else{
+	/* gather the existing cactidb version */
+	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
+}
+
+if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+	$boost_records = db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost', '', true, $local_db_cnn_id);
+	if ($boost_records > 0) {
+		$config['connection'] = 'recovery';
+	}
+}
+
+if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions')) {
+	include(dirname(__FILE__) . '/session.php');
+}else{
+	$cacti_db_session = false;
+}
+
+set_error_handler('CactiErrorHandler');
+register_shutdown_function('CactiShutdownHandler');
+
+/* verify the cacti database is initialized before moving past here */
+db_cacti_initialized($is_web);
+
+if ($is_web) {
 	/* Sanity Check on "Corrupt" PHP_SELF */
 	if ($_SERVER['SCRIPT_NAME'] != $_SERVER['PHP_SELF']) {
 		echo "\nInvalid PHP_SELF Path \n";
 		db_close();
 		exit;
 	}
+
+	/* set the maximum post size */
+	ini_set('post_max_size', '8M');
+	ini_set('max_input_vars', '5000');
 
 	/* we don't want these pages cached */
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
@@ -196,20 +253,25 @@ if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
 
-	/* initilize php session */
+	/* initialize php session */
 	session_name($cacti_session_name);
 	if (!session_id()) session_start();
 
-	/* detect and handle get_magic_quotes */
-	if (!get_magic_quotes_gpc()) {
-		function addslashes_deep($value) {
-			$value = is_array($value) ? array_map('addslashes_deep', $value) : addslashes($value);
-			return $value;
+	/* we never run with magic quotes on */
+	if (get_magic_quotes_gpc()) {
+		$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
+		while (list($key, $val) = each($process)) {
+			foreach ($val as $k => $v) {
+				unset($process[$key][$k]);
+				if (is_array($v)) {
+					$process[$key][stripslashes($k)] = $v;
+					$process[] = &$process[$key][stripslashes($k)];
+				} else {
+					$process[$key][stripslashes($k)] = stripslashes($v);
+				}
+			}
 		}
-
-		$_POST   = array_map('addslashes_deep', $_POST);
-		$_GET    = array_map('addslashes_deep', $_GET);
-		$_COOKIE = array_map('addslashes_deep', $_COOKIE);
+		unset($process);
 	}
 
 	/* make sure to start only only Cacti session at a time */
@@ -221,8 +283,6 @@ if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($
 			session_destroy();
 		}
 	}
-}else{
-	$is_web = false;
 }
 
 /* emulate 'register_globals' = 'off' if turned on */
@@ -249,9 +309,6 @@ if ((bool)ini_get('register_globals')) {
 
 	unset($input);
 }
-
-/* gather the existing cactidb version */
-$config['cacti_db_version'] = db_fetch_cell("SELECT cacti FROM version LIMIT 1");
 
 include_once($config['include_path'] . '/global_languages.php');
 
@@ -294,5 +351,5 @@ if ($is_web) {
 api_plugin_hook('config_insert');
 
 /* current cacti version */
-$config['cacti_version'] = '1.0.0';
+$config['cacti_version'] = '1.0.5';
 

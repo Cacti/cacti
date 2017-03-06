@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -40,14 +40,14 @@ function clog_purge_logfile() {
 	$logfile = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
-		$logfile = './log/cacti.log';
+		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
-			$timestamp = date('m/d/Y h:i:s A');
+			$timestamp = date('Y-m-d H:i:s');
 			$log_fh = fopen($logfile, 'w');
-			fwrite($log_fh, $timestamp . " - WEBUI: Cacti Log Cleared from Web Management Interface\n");
+			fwrite($log_fh, "$timestamp - WEBUI: Cacti Log Cleared from Web Management Interface\n");
 			fclose($log_fh);
 			raise_message('clog_purged');
 		}else{
@@ -88,10 +88,9 @@ function clog_view_logfile() {
 			'filter' => FILTER_VALIDATE_INT, 
 			'default' => '1'
 			),
-		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => '', 
-			'options' => array('options' => 'sanitize_search_string')
+		'rfilter' => array(
+			'filter' => FILTER_VALIDATE_IS_REGEX, 
+			'default' => '' 
 			)
 	);
 
@@ -113,17 +112,17 @@ function clog_view_logfile() {
 	if ((isset_request_var('purge')) && (clog_admin())) {
 		form_start('clog.php');
 
-		html_start_box('<strong>Purge</strong>', '50%', '', '3', 'center', '');
+		html_start_box(__('Purge'), '50%', '', '3', 'center', '');
 
 		print "<tr>
 			<td class='textArea'>
-				<p>Click 'Continue' to purge the Cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.</p>
+				<p>" . __('Click \'Continue\' to purge the Cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.') . "</p>
 			</td>
 		</tr>
 		<tr class='saveRow'>
 			<td colspan='2' align='right'>
-				<input id='cancel' type='button' value='Cancel'>&nbsp
-				<input id='pc' type='button' name='purge_continue' value='Continue' title='Purge cacti.log'>
+				<input id='cancel' type='button' value='" . __('Cancel') . "'>&nbsp
+				<input id='pc' type='button' name='purge_continue' value='" . __('Continue') . "' title='" . __('Purge cacti.log') . "'>
 				<script type='text/javascript'>
 				$('#pc').click(function() {
 					strURL = location.pathname+'?purge_continue=1&header=false';
@@ -149,12 +148,12 @@ function clog_view_logfile() {
 		return;	
 	}
 
-	html_start_box('<strong>Log File Filters</strong>', '100%', $colors['header'], '3', 'center', '');
+	html_start_box(__('Log Filters'), '100%', '', '3', 'center', '');
 	filter();
 	html_end_box();
 
 	/* read logfile into an array and display */
-	$logcontents   = tail_file($logfile, get_request_var('tail_lines'), get_request_var('message_type'), get_request_var('filter'));
+	$logcontents   = tail_file($logfile, get_request_var('tail_lines'), get_request_var('message_type'), get_request_var('rfilter'));
 	$exclude_regex = read_config_option('clog_exclude', true);
 
 	if (get_request_var('reverse') == 1) {
@@ -172,12 +171,12 @@ function clog_view_logfile() {
 	}
 
 	if (get_request_var('message_type') > 0) {
-		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . $ad_filter . ' - Additional Filter in Affect]';
+		$start_string = __('Log [Total Lines: %d %s - Additional Filter in Affect]', sizeof($logcontents), $ad_filter);
 	}else{
-		$start_string = '<strong>Log File</strong> [Total Lines: ' . sizeof($logcontents) . $ad_filter . ' - No Other Filter in Affect]';
+		$start_string = __('Log [Total Lines: %d %s - No Other Filter in Affect]', sizeof($logcontents), $ad_filter);
 	}
 
-	html_start_box($start_string, '100%', $colors['header'], '3', 'center', '');
+	html_start_box($start_string, '100%', '', '3', 'center', '');
 
 	$i = 0;
 	$j = 0;
@@ -190,14 +189,14 @@ function clog_view_logfile() {
 		$new_item = '';
 
 		if ((!$host_start) && (!$ds_start)) {
-			$new_item = htmlspecialchars($item);
+			$new_item = cacti_htmlspecialchars($item);
 		}else{
 			while ($host_start) {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start+7, $host_end-($host_start+7));
-				$new_item   .= htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
+				$new_item   .= cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
 				$host_description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
-				$new_item   .= '] Description[' . htmlspecialchars($host_description) . '';
+				$new_item   .= '] Description[' . cacti_htmlspecialchars($host_description) . '';
 				$item        = substr($item, $host_end);
 				$host_start  = strpos($item, 'Device[');
 			}
@@ -211,7 +210,7 @@ function clog_view_logfile() {
 
 				if (sizeof($graph_ids)) {
 					$new_item  .= substr($item, 0, $ds_start + 3) .
-						"<a href='" . htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>' .
+						"<a href='" . cacti_htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . cacti_htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>' .
 						"] Graphs[<a href='";
 
 					$i = 0;
@@ -220,19 +219,19 @@ function clog_view_logfile() {
 						$graph_add .= ($i > 0 ? '%2C' : '') . $key;
 						$i++;
 						if (strlen($titles)) {
-							$titles .= ",'" . htmlspecialchars($title) . "'";
+							$titles .= ",'" . cacti_htmlspecialchars($title) . "'";
 						}else{
-							$titles .= "'"  . htmlspecialchars($title) . "'";
+							$titles .= "'"  . cacti_htmlspecialchars($title) . "'";
 						}
 					}
-					$new_item  .= htmlspecialchars($graph_add) . "' title='View Graphs'>" . $titles . '</a>';
+					$new_item  .= cacti_htmlspecialchars($graph_add) . "' title='" . __('View Graphs') . "'>" . $titles . '</a>';
 				}
 
 				$item      = substr($item, $ds_end);
 				$ds_start  = strpos($item, 'DS[');
 			}
 
-			$new_item .= htmlspecialchars($item);
+			$new_item .= cacti_htmlspecialchars($item);
 		}
 
 		/* get the background color */
@@ -276,7 +275,7 @@ function clog_view_logfile() {
 			?>
 			<tr class='even'>
 				<td>
-					<?php print '>>>>  LINE LIMIT OF 1000 LINES REACHED!!  <<<<';?>
+					<?php print '>>>>  ' . __('LINE LIMIT OF 1000 LINES REACHED!!') . '  <<<<';?>
 				</td>
 			</tr>
 			<?php
@@ -294,12 +293,12 @@ function filter() {
 	global $refresh, $page_refresh_interval, $log_tail_lines;
 	?>
 	<tr class='even'>
-		<form name='form_logfile'>
 		<td>
+		<form id='logfile'>
 			<table class='filterTable'>
 				<tr>
 					<td>
-						Tail Lines
+						<?php print __('Tail Lines');?>
 					</td>
 					<td>
 						<select id='tail_lines' name='tail_lines'>
@@ -311,31 +310,31 @@ function filter() {
 						</select>
 					</td>
 					<td class='nowrap'>
-						Message Type
+						<?php print __('Message Type');?>
 					</td>
 					<td>
 						<select id='message_type' name='message_type'>
-							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>>All</option>
-							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>>Stats</option>
-							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>>Warnings</option>
-							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>>Errors</option>
-							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>>Debug</option>
-							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>>SQL Calls</option>
+							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
+							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
+							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>><?php print __('Errors');?></option>
+							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>><?php print __('Debug');?></option>
+							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
 						</select>
 					</td>
 					<td>
-						<input type='button' id='go' name='go' value='Go' alt='Go'>
+						<input type='button' id='go' name='go' value='<?php print __('Go');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear' value='Clear' alt='Clear'>
+						<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>'>
 					</td>
 					<td>
-						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='Purge' alt='Purge'><?php }?>
+						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='<?php print __('Purge');?>'><?php }?>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Refresh
+						<?php print __('Refresh');?>
 					</td>
 					<td>
 						<select id='refresh' name='refresh'>
@@ -347,86 +346,89 @@ function filter() {
 						</select>
 					</td>
 					<td class='nowrap'>
-						Display Order
+						<?php print __('Display Order');?>
 					</td>
 					<td>
 						<select id='reverse' name='reverse'>
-							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>>Newest First</option>
-							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>>Oldest First</option>
+							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
+							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
 					</td>
 				</tr>
 			</table>
-			<table>
+			<table class='filterTable'>
 				<tr>
 					<td>
-						SearchRegex
+						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='75' value='<?php print get_request_var('filter');?>'>
+						<input id='rfilter' type='text' size='75' value='<?php print get_request_var('rfilter');?>'>
 					</td>
 				</tr>
 			</table>
-			<script type='text/javascript'>
-		    var refreshIsLogout=false;
-		    var refreshPage='<?php print $refresh['page'];?>';
-		    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
-
-			$('#filter').change(function() {
-				refreshFilter();
-			});
-
-			$('#reverse').change(function() {
-				refreshFilter();
-			});
-
-			$('#refresh').change(function() {
-				refreshFilter();
-			});
-
-			$('#message_type').change(function() {
-				refreshFilter();
-			});
-
-			$('#tail_lines').change(function() {
-				refreshFilter();
-			});
-
-			$('#go').click(function() {
-				refreshFilter();
-			});
-
-			$('#clear').click(function() {
-				clearFilter();
-			});
-
-			$('#purge').click(function() {
-				strURL = basename(location.pathname) + '?purge=1&header=false';
-				loadPageNoHeader(strURL);
-			});
-
-			function clearFilter() {
-				strURL = basename(location.pathname) + '?clear=1&header=false';
-				loadPageNoHeader(strURL);
-			}
-
-			function refreshFilter() {
-				refreshMSeconds=$('#refresh').val()*1000;
-
-				strURL = basename(location.pathname) + '?filter='+ $('#filter').val()+
-					'&reverse='+$('#reverse').val()+
-					'&refresh='+$('#refresh').val()+
-					'&message_type='+$('#message_type').val()+
-					'&tail_lines='+$('#tail_lines').val()+
-					'&header=false';
-
-				loadPageNoHeader(strURL);
-			}
-			</script>
 		</form>
+		<script type='text/javascript'>
+	    var refreshIsLogout=false;
+	    var refreshPage='<?php print $refresh['page'];?>';
+	    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
+
+		$('#rfilter').change(function() {
+			refreshFilter();
+		});
+
+		$('#reverse').change(function() {
+			refreshFilter();
+		});
+
+		$('#refresh').change(function() {
+			refreshFilter();
+		});
+
+		$('#message_type').change(function() {
+			refreshFilter();
+		});
+
+		$('#tail_lines').change(function() {
+			refreshFilter();
+		});
+
+		$('#go').click(function() {
+			refreshFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#purge').click(function() {
+			strURL = basename(location.pathname) + '?purge=1&header=false';
+			loadPageNoHeader(strURL);
+		});
+
+		$('#logfile').submit(function(event) {
+			event.preventDefault();
+			refreshFilter();
+		});
+
+		function clearFilter() {
+			strURL = basename(location.pathname) + '?clear=1&header=false';
+			loadPageNoHeader(strURL);
+		}
+
+		function refreshFilter() {
+			refreshMSeconds=$('#refresh').val()*1000;
+
+			strURL = basename(location.pathname) + '?rfilter='+ $('#rfilter').val()+
+				'&reverse='+$('#reverse').val()+
+				'&refresh='+$('#refresh').val()+
+				'&message_type='+$('#message_type').val()+
+				'&tail_lines='+$('#tail_lines').val()+
+				'&header=false';
+
+			loadPageNoHeader(strURL);
+		}
+		</script>
 		</td>
 	</tr>
 	<?php
 }
-
-

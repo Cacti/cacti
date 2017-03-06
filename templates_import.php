@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,6 +24,7 @@
 
 include('./include/auth.php');
 include_once('./lib/import.php');
+include_once('./lib/utility.php');
 
 /* set default action */
 set_default_action();
@@ -47,6 +48,8 @@ switch (get_request_var('action')) {
    -------------------------- */
 
 function form_save() {
+	global $preview_only;
+
 	if (isset_request_var('save_component_import')) {
 		if (trim(get_nfilter_request_var('import_text') != '')) {
 			/* textbox input */
@@ -62,19 +65,31 @@ function form_save() {
 
 		if (get_filter_request_var('import_data_source_profile') == '0') {
 			$import_as_new = true;
-			$profile_id = 0;
+			$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 		}else{
 			$import_as_new = false;
 			$profile_id = get_request_var('import_data_source_profile');
 		}
 
+		if (get_nfilter_request_var('preview_only') == 'on') {
+			$preview_only = true;
+		}else{
+			$preview_only = false;
+		}
+
+		if (isset_request_var('remove_orphans') && get_nfilter_request_var('remove_orphans') == 'on') {
+			$remove_orphans = true;
+		}else{
+			$remove_orphans = false;
+		}
+
 		/* obtain debug information if it's set */
-		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id);
+		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans);
 		if(sizeof($debug_data) > 0) {
 			$_SESSION['import_debug_info'] = $debug_data;
 		}
 
-		header('Location: templates_import.php');
+		header('Location: templates_import.php?preview=' . $preview_only);
 	}
 }
 
@@ -87,69 +102,50 @@ function import() {
 
 	print "<form method='post' action='templates_import.php' enctype='multipart/form-data'>\n";
 
+	$display_hideme = false;
+
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box( __('Import Results'), '100%', '', '3', 'center', '');
-
-		print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items:') . "</p>";
-
-		while (list($type, $type_array) = each($_SESSION['import_debug_info'])) {
-			print '<p><strong>' . $hash_type_names[$type] . '</strong></p>';
-
-			while (list($index, $vals) = each($type_array)) {
-				if ($vals['result'] == 'success') {
-					$result_text = "<span class='success'>" . __('[success]') . "</span>";
-				}else{
-					$result_text = "<span class='failed'>" . __('[fail]') . "</span>";
-				}
-
-				if ($vals['type'] == 'update') {
-					$type_text = "<span class='updateObject'>" . __('[update]') . "</span>";
-				}else{
-					$type_text = "<span class='newObject'>" . __('[new]') . "</span>";
-				}
-
-				print "<span class='monoSpace'>$result_text " . htmlspecialchars($vals['title']) . " $type_text</span><br>\n";
-
-				$dep_text = '';
-				$there_are_dep_errors = false;
-				if ((isset($vals['dep'])) && (sizeof($vals['dep']) > 0)) {
-					while (list($dep_hash, $dep_status) = each($vals['dep'])) {
-						if ($dep_status == 'met') {
-							$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . "</span>";
-						}else{
-							$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . "</span>";
-							$there_are_dep_errors = true;
-						}
-
-						$dep_text .= "<span class='monoSpace'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . "</span><br>\n";
-					}
-				}
-
-				/* only print out dependency details if they contain errors; otherwise it would get too long */
-				if ($there_are_dep_errors == true) {
-					print $dep_text;
-				}
-			}
-		}
-
-		print '</td></tr>';
-
-		html_end_box();
+		import_display_results($_SESSION['import_debug_info'], array(), true, get_filter_request_var('preview'));
 
 		kill_session_var('import_debug_info');
+
+		$display_hideme = true;
 	}
 
-	html_start_box( __('Import Templates'), '100%', '', '3', 'center', '');
+	html_start_box(__('Import Templates'), '100%', '', '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => $fields_template_import
-		));
+	$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
+	if (empty($default_profile)) {
+		$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
+	}
+
+	$fields_template_import['import_data_source_profile']['default'] = $default_profile;
+
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => $fields_template_import
+		)
+	);
 
 	html_end_box();
 
 	form_hidden_box('save_component_import','1','');
 
 	form_save_button('', 'import');
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		<?php if ($display_hideme) { ?>
+		$('#templates_import1').find('.cactiTableButton > span').html('<a href="#" id="hideme"><?php print __('Hide');?></a>');
+		$('#hideme').click(function() {
+			$('#templates_import1').hide();
+		});
+		<?php } ?>
+		$('#remove_orphans').prop('checked', false).prop('disabled', true);
+	});
+	</script>
+	<?php
 }
 

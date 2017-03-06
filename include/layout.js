@@ -1,6 +1,6 @@
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,8 +24,11 @@
 var theme;
 var myRefresh;
 var userMenuTimer;
+var graphMenuTimer;
+var graphMenuElement=0;
 var pulsating=true;
 var pageLoaded=false;
+var shiftPressed=false;
 var messageTimer;
 var myTitle;
 
@@ -129,13 +132,13 @@ $.fn.replaceOptions = function(options, selected) {
 
 	$.each(options, function(index, option) {
 		if (selected == option.value) {
-			$option = $("<option></option>")
-			.attr("value", option.value)
-			.prop("selected", true)
+			$option = $('<option></option>')
+			.attr('value', option.value)
+			.prop('selected', true)
 			.text(option.text);
 		}else{
-			$option = $("<option></option>")
-			.attr("value", option.value)
+			$option = $('<option></option>')
+			.attr('value', option.value)
 			.text(option.text);
 		}
 		self.append($option);
@@ -148,8 +151,8 @@ $.fn.textWidth = function(text){
 	var org = $(this);
 	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.html()) + '</span>');
 	if (!text) {
-		html.css("font-family", org.css("font-family"));
-		html.css("font-weight", org.css("font-weight"));
+		html.css('font-family', org.css('font-family'));
+		html.css('font-weight', org.css('font-weight'));
 	}
 	$('body').append(html);
 	var width = html.width();
@@ -238,14 +241,14 @@ $.fn.serializeObject = function() {
 
 // Plugin to apply numeric format for tablesorter
 $.tablesorter.addParser({
-	id: "numberFormat",
+	id: 'numberFormat',
 	is: function(s) {
 		return /^[0-9]?[0-9,\.]*$/.test(s);
 	},
 	format: function(s) {
 		return $.tablesorter.formatFloat(s.replace(/,/g, ''));
 	},
-	type: "numeric"
+	type: 'numeric'
 });
 
 /** Mini jquery plugin to determine if an element has a scrollbar present */
@@ -270,32 +273,54 @@ $.tablesorter.addParser({
  *  of graphs for creation. Is will scan the against preset variables
  *  taking action as required to enable or disable rows. */
 function applySelectorVisibilityAndActions() {
+	// Change for accessibility  
+	$('input[type="checkbox"], input[type="radio"]').click(function() {
+		if ($(this).is(':checked')) {
+			$(this).attr('aria-checked', 'true');
+		}else{
+			$(this).attr('aria-checked', 'false');
+		}
+	});
+
 	// Apply disabled/enabled status first for Graph Templates
-	$('tr[id^=gt_line]').each(function(data) {
+	$('tr[id^="gt_line"]').each(function(data) {
 		var id = $(this).attr('id');
 		var search = id.substr(7);
-		//console.log('id:'+id+', search:'+search);
 		if ($.inArray(search, gt_created_graphs) >= 0) {
-			//console.log('The id is : '+id+', The search is : '+search+', Result found');
 			$(this).addClass('disabled_row');
 			$(this).find(':checkbox').prop('disabled', true);
 		}
 	});
 
 	// Create Actions for Rows
-	$('tr.selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
+	$('tr[id^="gt_line"].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
 		$(this).click(function(data) {
-			$(this).parent().toggleClass('selected');
-			var $checkbox = $(this).parent().find(':checkbox');
-			$checkbox.prop('checked', !$checkbox.is(':checked'));
+			$(this).closest('tr').toggleClass('selected');
+			var checkbox = $(this).parent().find(':checkbox');
+			checkbox.prop('checked', !checkbox.is(':checked'));
 		});
 	});
 
 	// Create Actions for Checkboxes
-	$('tr.selectable').find('.checkbox').click(function(data) {
+	$('tr[id^="gt_line"].selectable').find('input.checkbox').click(function(data) {
 		if (!$(this).is(':disabled')) {
-			$(this).parent().toggleClass('selected');
-			$(this).prop('checked', !$(this).is(':checked'));
+			$(this).closest('tr').toggleClass('selected');
+		}
+	});
+
+	// Create Actions for Rows
+	$('tr[id^="line"].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
+		$(this).click(function(data) {
+			$(this).closest('tr').toggleClass('selected');
+			var checkbox = $(this).parent().find(':checkbox');
+			checkbox.prop('checked', !checkbox.is(':checked'));
+		});
+	});
+
+	// Create Actions for Checkboxes
+	$('tr[id^="line"].selectable').find('input.checkbox').click(function(data) {
+		if (!$(this).is(':disabled')) {
+			$(this).closest('tr').toggleClass('selected');
 		}
 	});
 }
@@ -307,20 +332,47 @@ function dqUpdateDeps(snmp_query_id) {
 	dqResetDeps(snmp_query_id);
 
 	var snmp_query_graph_id = $('#sgg_'+snmp_query_id).val();
+	var removeSelectAll = false;
+
+	// Check if select all is clicked
+	var allChecked = $('#all_'+snmp_query_id).is(':checked');
 
 	// Next for Data Queries
-	$('tr[id^=line'+snmp_query_id+'_]').each(function(data) {
+	$('tr[id^="dqline'+snmp_query_id+'_"]').each(function(data) {
 		var id = $(this).attr('id');
 		var pieces = id.split('_');
-		var dq = pieces[0].substr(4);
+		var dq = pieces[0].substr(6);
 		var hash = pieces[1];
 
 		if ($.inArray(hash, created_graphs[snmp_query_graph_id]) >= 0) {
+			if ($(this).hasClass('selected')) {
+				removeSelectAll = true;
+			}
+
 			$(this).addClass('disabled_row');
 			$(this).removeClass('selected');
 			$(this).removeClass('selectable');
 			$(this).find(':checkbox').prop('disabled', true).prop('checked', false);
+		}else{
+			removeSelectAll = true;
 		}
+	});
+
+	if (allChecked && removeSelectAll) {
+		$('#all_'+snmp_query_id).prop('checked', false);
+	}
+
+	$('tr[id^="dqline'+snmp_query_id+'_"]').not('.disabled_row').each(function() {
+		$(this).find(':checkbox').click(function() {
+			$(this).closest('tr').toggleClass('selected');
+		});
+
+		$(this).find('td').not('.checkbox').each(function() {
+			$(this).click(function() {
+				checked = $(this).closest('tr').find(':checkbox').is(':checked');
+				$(this).closest('tr').toggleClass('selected').find(':checkbox').prop('checked', !checked);;
+			});
+		});
 	});
 }
 
@@ -328,34 +380,32 @@ function dqUpdateDeps(snmp_query_id) {
  *  It is done just before a new data query is checked.
  *  @arg snmp_query_id - The snmp query id the is current */
 function dqResetDeps(snmp_query_id) {
-	var prefix = 'sg_' + snmp_query_id + '_'
-
-	$('tr[id^=line'+snmp_query_id+'_]').addClass('selectable').removeClass('disabled_row').find(':checkbox').prop('disabled', false);
+	$('tr[id^="dqline'+snmp_query_id+'_"]').addClass('selectable').removeClass('disabled_row').find(':checkbox').prop('disabled', false);
 }
 
 /** SelectAll - This function will select all non-disabled rows
  *  @arg attrib - The Graph Type either graph template, or data query */
 function SelectAll(attrib, checked) {
-	if (attrib == 'chk_') {
+	if (attrib == 'chk') {
 		if (checked == true) {
-			$('tr[id^=line]:not(.disabled_row').each(function(data) {
+			$('tr[id^="line"]:not(.disabled_row)').each(function(data) {
 				$(this).addClass('selected');
 				$(this).find(':checkbox').prop('checked', true);
 			});
 		}else{
-			$('tr[id^=line]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="line"]:not(.disabled_row)').each(function(data) {
 				$(this).removeClass('selected');
 				$(this).find(':checkbox').prop('checked', false);
 			});
 		}
 	}else if (attrib == 'sg') {
 		if (checked == true) {
-			$('tr[id^=gt_line]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="gt_line"]:not(.disabled_row)').each(function(data) {
 				$(this).addClass('selected');
 				$(this).find(':checkbox').prop('checked', true);
 			});
 		}else{
-			$('tr[id^=gt_line]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="gt_line"]:not(.disabled_row)').each(function(data) {
 				$(this).removeClass('selected');
 				$(this).find(':checkbox').prop('checked', false);
 			});
@@ -365,12 +415,12 @@ function SelectAll(attrib, checked) {
 		var dq   = attribSplit[1];
 
 		if (checked == true) {
-			$('tr[id^=line'+dq+'\_]:not(.disabled_row').each(function(data) {
+			$('tr[id^="dqline'+dq+'\_"]:not(.disabled_row)').each(function(data) {
 				$(this).addClass('selected');
 				$(this).find(':checkbox').prop('checked', true);
 			});
 		}else{
-			$('tr[id^=line'+dq+'\_]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="dqline'+dq+'\_"]:not(.disabled_row)').each(function(data) {
 				$(this).removeClass('selected');
 				$(this).find(':checkbox').prop('checked', false);
 			});
@@ -407,34 +457,21 @@ function cactiReturnTo(href) {
 function applySkin() {
 	if (!theme || theme == 'classic') {
 		theme = 'classic';
+
+		// debounce submits
+		$('form').submit(function() {
+			$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', true);
+		});
 	}else{
-		$('input[type=submit], input[type=button]').button();
+		$('input[type="submit"], input[type="button"]').button();
+
+		// debounce submits
+		$('form').submit(function() {
+			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
+		});
 	}
 
 	$('.ui-tooltip').remove();
-
-	// Select All Action for everyone but graphs_new, else do ugly shit
-	if (basename(document.location.pathname, '.php') == 'graphs_new') {
-		applySelectorVisibilityAndActions();
-	}else{
-		// Allows selection of a non disabled row
-		$('tr.selectable:not([id^="gt_line"])').find('td').not('.checkbox').each(function(data) {
-			$(this).unbind().click(function(data) {
-				$(this).parent().toggleClass('selected');
-				var $checkbox = $(this).parent().find(':checkbox');
-				$checkbox.prop('checked', !$checkbox.is(':checked'));
-			});
-		});
-
-		// Generic Checkbox Function
-		$('tr.selectable').find('.checkbox').click(function(data) {
-			if (!$(this).is(':disabled')) {
-				$(this).parent().toggleClass('selected');
-				var checked = $(this).is(':checkbox');
-				$(this).prop('checked', !checked);
-			}
-		});
-	}
 
 	setupSortable();
 
@@ -452,12 +489,18 @@ function applySkin() {
 
 	ajaxAnchors();
 
+	applySelectorVisibilityAndActions();
+
 	if (typeof themeReady == 'function') {
 		themeReady();
 	}
 
 	// Add tooltips to graph drilldowns
-	$('.drillDown').tooltip();
+	$('.drillDown').tooltip({
+		content: function() {
+			return $(this).prop('title');
+		}
+	});
 
 	// Debug message actions
 	$('table.debug').click(function() { 
@@ -475,16 +518,18 @@ function applySkin() {
 
 			if (element.is('div')) {
 				var text = $(this).find('span').html();
-			}
-			if (element.is('span') || element.is('a')) {
-				var text = $(this).attr('title');
+			}else if (element.is('span') || element.is('a')) {
+				var text = $(this).prop('title');
 			}
 			return text;
 		}
+	}).tooltip('close').keydown(function(event) {
+		if (event.keyCode == 16) {
+			shiftPressed = true;
+		}else{
+			shiftPressed = false;
+		}
 	});
-
-	// Don't show the message container until all GUI interaction is done
-	$('#message_container').delay(2000).slideUp('fast');
 
 	// remove stray tooltips
 	$(document).tooltip('close');
@@ -496,19 +541,35 @@ function loadPage(href) {
 	$.get(href, function(html) {
 		var htmlObject  = $(html);
 		var matches     = html.match(/<title>(.*?)<\/title>/);
-		var htmlTitle   = matches[1];
-		var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-		var content     = htmlObject.find('#main').html();
 
-		$('title').text(htmlTitle);
-		$('#breadcrumbs').html(breadCrumbs);
-		$('#main').empty().html(content);
+		if (matches !== null) {
+			var htmlTitle   = matches[1];
+			var breadCrumbs = htmlObject.find('#breadcrumbs').html();
+			var content     = htmlObject.find('#main').html();
 
-		if (typeof window.history.pushState !== 'undefined') {
-			window.history.pushState({page: href}, htmlTitle, href);
+			$('#main').empty().hide();
+			$('title').text(htmlTitle);
+			$('#breadcrumbs').html(breadCrumbs);
+			$('div[class^="ui-"]').remove();
+			$('#main').html(content);
+
+			if (typeof window.history.pushState !== 'undefined') {
+				window.history.pushState({page: href}, htmlTitle, href);
+			}
+
+			myTitle = htmlTitle;
+		}else{
+			$('#main').empty().hide();
+			$('#main').html(html);
 		}
 
-		myTitle = htmlTitle;
+		hrefParts = href.split('?');
+		href = basename(hrefParts[0]);
+
+		if (basename(href) != '') {
+			$('#menu').find('.pic').removeClass('selected');
+			$('#menu').find("a[href*='/"+basename(href)+"']").addClass('selected');
+		}
 
 		applySkin();
 
@@ -522,7 +583,17 @@ function loadPage(href) {
 
 function loadPageNoHeader(href) {
 	$.get(href, function(data) {
-		$('#main').empty().html(data);
+		$('#main').empty().hide();
+		$('div[class^="ui-"]').remove();
+		$('#main').html(data);
+
+		hrefParts = href.split('?');
+		href = basename(hrefParts[0]);
+
+		if (basename(href) != '') {
+			$('#menu').find('.pic').removeClass('selected');
+			$('#menu').find("a[href*='/"+basename(href)+"']").addClass('selected');
+		}
 
 		applySkin();
 
@@ -535,8 +606,9 @@ function loadPageNoHeader(href) {
 }
 
 function ajaxAnchors() {
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab, a.iconLink').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
 		event.preventDefault();
+		event.stopPropagation();
 
 		/* update menu selection */
 		if ($(this).hasClass('pic')) {
@@ -559,6 +631,10 @@ function ajaxAnchors() {
 		/* execute an ajax request to load the data */
 		href = $(this).attr('href');
 
+		if (href == '#') {
+			return false;
+		}
+
 		if (href != null) {
 			pageName = basename(href);
 		}
@@ -569,36 +645,48 @@ function ajaxAnchors() {
 	});
 
 	$(window).bind('popstate', function(event) {
-		href = document.location.href;
-		if (!pageLoaded) {
-			pageLoaded = true;
-			return false;
-		}else{
-			document.location = href;
+		handlePopState();
+	});
+
+	$('#filter, #rfilter').keyup(function(event) {
+		if (event.keyCode == 8 && $(this).val() == '') {
+			handlePopState();
 		}
 	});
 }
 
+function handlePopState() {
+	var href = document.location.href;
+
+	if (href.indexOf('#') == -1) {
+		document.location = href;
+	}
+}
+
 function setupCollapsible() {
-	storage=$.sessionStorage;
+	storage=$.localStorage;
 
 	$('.collapsible').each(function(data) {
 		id=$(this).attr('id')+'_cs';
 		state = storage.get(id);
 		if (state == 'hide') {
+			$(this).addClass('collapsed');
 			$(this).nextUntil('tr.spacer').hide();
 			$(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+			storage.set(id, 'hide');
 		}
 	});
 
 	$('.collapsible').click(function(data) {
 		id=$(this).attr('id')+'_cs';
 		if ($(this).find('i').hasClass('fa-angle-double-up')) {
-			$(this).nextUntil('tr.spacer').slideUp('fast');
+			$(this).addClass('collapsed');
+			$(this).nextUntil('tr.spacer').slideUp('slow');
 			$(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
 			storage.set(id, 'hide');
 		}else{
-			$(this).nextUntil('tr.spacer').slideDown('fast');
+			$(this).removeClass('collapsed');
+			$(this).nextUntil('tr.spacer').slideDown('slow');
 			$(this).nextUntil('tr.spacer').each(function(data) {
 				$(this).find('input, select').change();
 			});
@@ -641,15 +729,15 @@ function setupUserMenu() {
 }
 
 function setupSpecialKeys() {
-	$('#filter').unbind('keypress').attr('title', 'Press Ctrl+Shift+X to Clear Filter');
-	$('#filter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
+	$('#filter, #rfilter').unbind('keypress').attr('title', 'Press Ctrl+Shift+X to Clear Filter');
+	$('#filter, #rfilter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
 
-	$('#filter').bind('keypress', 'ctrl+shift+x', function() {
-		clearFilter();
+	$('#filter, #rfilter').bind('keypress', 'ctrl+shift+x', function() {
+		$('#filter, #rfilter').val('').css('text-align', 'left').submit();
 	});
 
 	if (!isMobile.any()) {
-		$('#filter').focus();
+		$('#filter, #rfilter').focus();
 	}
 }
 
@@ -662,7 +750,14 @@ function setupSortable() {
 			var page=$(this).find('.sortinfo').attr('sort-page');
 			var column=$(this).find('.sortinfo').attr('sort-column');
 			var direction=$(this).find('.sortinfo').attr('sort-direction');
-			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false', function(data) {
+			if (shiftPressed) {
+				sortAdd='&add=true';
+			}else{
+				sortAdd='';
+			}
+			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false'+sortAdd, function(data) {
+				$('#main').empty().hide()
+				$('div[class^="ui-"]').remove();
 				$('#main').html(data);
 				applySkin();
 			});
@@ -670,12 +765,13 @@ function setupSortable() {
 	});
 
 	// Setup tool tips for all titles to match the jQueryUI theme
-	$('i, th, img, input, label, select, button').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
+	$('i, th, img, input, label, select, button').tooltip({ closed: true }).on('focus', function() { $('#filter, #rfilter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
 }
 
 function setupBreadcrumbs() {
 	$('#breadcrumbs > li > a').click(function(event) {
 		event.preventDefault();
+		event.stopPropagation();
 		href =  $(this).attr('href');
 		if (href != '#') {
 			href = href.replace('tree_content', 'tree');
@@ -696,11 +792,10 @@ function saveTableWidths(initial) {
 		var key    = $(this).attr('id');
 		var sizes  = storage.get(key);
 		var items  = sizes ? sizes: new Array();
-		var width  = parseInt($(document).width());
+		var width  = $(document).width();
 
 		// if the table width changes, reset the columns
 		if (key !== undefined && sizes == undefined) {
-			//console.log(key+', no sizes');
 			storage.remove(key);
 			sizes = new Array();
 			items = new Array();
@@ -709,7 +804,6 @@ function saveTableWidths(initial) {
 		}else if (key !== undefined && initial) {
 			if (items.length > 0) {
 				if (items[0] + 18 < width) {
-					//console.log(key+', reset, document: '+width+', key: '+(items[0]+14));
 					storage.remove(key);
 					sizes = new Array();
 					items = new Array();
@@ -724,7 +818,7 @@ function saveTableWidths(initial) {
 			if (initial && items.length) {
 				$('#'+key).find('th.ui-resizable').each(function(data) {
 					if (parseInt(items[i]) == 0) {
-						items[i] = parseInt($(this).width());
+						items[i] = $(this).width();
 						sizes[i] = items[i];
 					}
 
@@ -736,7 +830,7 @@ function saveTableWidths(initial) {
 				});
 			}else{
 				$('#'+key).find('th.ui-resizable').each(function(data) {
-					sizes[i] = parseInt($(this).width());
+					sizes[i] = $(this).width();
 
 					if (sizes[i] != 0) {
 						$(this).css('width', items[i]);
@@ -746,7 +840,6 @@ function saveTableWidths(initial) {
 				});
 
 				if (i > 1) {
-					//console.log(key+', '+sizes.length);
 					storage.set(key, sizes);
 				}
 			}
@@ -762,21 +855,21 @@ function applyTableSizing() {
 		handles: 'e',
 
 		start: function(event, ui) {
-			colWidth     = parseInt($(this).width());
-			originalSize = parseInt(ui.size.width);
+			colWidth     = $(this).width();
+			originalSize = ui.size.width;
 
 			if (originalSize == 0) {
-				originalSize = parseInt($(this).width());
+				originalSize = $(this).width();
 			}
 
 			$(ui.originalElement).siblings().each(function(data) {
-				$(this).attr('resizeWidth', parseInt($(this).width()));
+				$(this).attr('resizeWidth', $(this).width());
 			});
 		 },
 
 		resize: function(event, ui) {
-			var resizeDelta = parseInt(ui.size.width - originalSize);
-			var newColWidth = parseInt(colWidth + resizeDelta);
+			var resizeDelta = ui.size.width - originalSize;
+			var newColWidth = colWidth + resizeDelta;
 			nextWidth = $(ui.element).next().attr('resizeWidth');
 			$(ui.element).next().css('width', nextWidth-resizeDelta);
 			$(ui.element).prevUntil('tr').each(function(data) {
@@ -806,7 +899,7 @@ function setupPageTimeout() {
 	if (typeof refreshMSeconds != 'undefined') {
 		myRefresh = setTimeout(function() {
 			if (refreshIsLogout) {
-				document.location = 'logout.php';
+				document.location = urlPath+'logout.php?action=timeout';
 			}else{
 				if (previousPage != '') {
 					refreshPage = previousPage;
@@ -816,6 +909,8 @@ function setupPageTimeout() {
 				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
 
 				$.get(refreshPage, function(data) {
+					$('#main').empty().hide()
+					$('div[class^="ui-"]').remove();
 					$('#main').html(data);
 					applySkin();
 				});
@@ -840,10 +935,6 @@ function pulsateStop(element) {
 }
 
 $(function() {
-	clearTimeout(messageTimer);
-	$('#message_container').show();
-	messageTimer = setTimeout(function() { $('#message_container').slideUp('fast'); }, 2000);
-
 	setupUserMenu();
 
 	applySkin();
@@ -860,7 +951,13 @@ var graphPage  = urlPath+'graph_view.php';
 var pageAction = 'preview';
 
 function clearGraphFilter() {
-	$.get(graphPage+'?action='+pageAction+'&header=false&clear=1', function(data) {
+	href = graphPage+'?action='+pageAction+'&clear=1';
+
+	new_href = href.replace('action=tree&', 'action=tree_content&');
+
+	$.get(new_href+'&header=false', function(data) {
+		$('#main').empty().hide()
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
@@ -870,24 +967,32 @@ function saveGraphFilter(section) {
 	href=graphPage+'?action=save'+
 		'&columns='+$('#columns').val()+
 		'&graphs='+$('#graphs').val()+
-		'&thumbnails='+$('#thumbnails').is(':checked')+
+		'&graph_template_id='+$('#graph_template_id').val()+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
 
 	$.get(href+'&header=false&section='+section, function(data) {
-		$('#text').show().text('Filter Settings Saved').fadeOut(2000);
+		$('#text').show().text('Filter Settings Saved').fadeOut(2000, function() {
+			$('#text').empty();
+		});
 	});
 }
 
 function applyGraphFilter() {
 	href = graphPage+'?action='+pageAction+
-		'&filter='+$('#filter').val()+'&host_id='+$('#host_id').val()+'&columns='+$('#columns').val()+
-		'&graphs='+$('#graphs').val()+'&graph_template_id='+$('#graph_template_id').val()+
+		'&rfilter='+$('#rfilter').val()+
+		'&host_id='+$('#host_id').val()+
+		'&columns='+$('#columns').val()+
+		'&graphs='+$('#graphs').val()+
+		'&graph_template_id='+$('#graph_template_id').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
+
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
 	$.get(new_href+'&header=false', function(data) {
+		$('#main').hide()
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 
 		applySkin();
@@ -907,6 +1012,8 @@ function applyGraphTimespan() {
 	$.get(new_href+'?action='+pageAction+'&header=false'+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val(), function(data) {
+		$('#main').empty().hide()
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
@@ -926,6 +1033,8 @@ function refreshGraphTimespanFilter() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
+		$('#main').empty().hide()
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
@@ -945,6 +1054,8 @@ function timeshiftGraphFilterLeft() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
+		$('#main').empty().hide()
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
@@ -964,6 +1075,8 @@ function timeshiftGraphFilterRight() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
+		$('#main').empty().hide()
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
@@ -982,34 +1095,167 @@ function clearGraphTimespanFilter() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.post(new_href, json).done(function(data) {
+		$('#main').empty().hide()
+		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
 	});
 }
 
+function removeSpikesStdDev(local_graph_id) {
+	strURL = 'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
+	$.getJSON(strURL, function(data) {
+		redrawGraph(local_graph_id);
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+	});
+}
+
+function removeSpikesVariance(local_graph_id) {
+	strURL = "spikekill.php?method=variance&local_graph_id="+local_graph_id;
+	$.getJSON(strURL, function(data) {
+		redrawGraph(local_graph_id);
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+	});
+}
+
+function removeSpikesInRange(local_graph_id) {
+	strURL = 'spikekill.php?avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	$.getJSON(strURL, function(data) {
+		redrawGraph(local_graph_id);
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+	});
+}
+
+function removeRangeFill(local_graph_id) {
+	strURL = 'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	$.getJSON(strURL, function(data) {
+		redrawGraph(local_graph_id);
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+	});
+}
+
+function dryRunStdDev(local_graph_id) {
+	strURL = "spikekill.php?method=stddev&dryrun=true&local_graph_id="+local_graph_id;
+	$.getJSON(strURL, function(data) {
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+	});
+}
+
+function dryRunVariance(local_graph_id) {
+	strURL = "spikekill.php?method=variance&dryrun=true&local_graph_id="+local_graph_id;
+	$.getJSON(strURL, function(data) {
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+	});
+}
+
+function dryRunSpikesInRange(local_graph_id) {
+	strURL = 'spikekill.php?avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	$.getJSON(strURL, function(data) {
+		redrawGraph(local_graph_id);
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+	});
+}
+
+function dryRunRangeFill(local_graph_id) {
+	strURL = 'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	$.getJSON(strURL, function(data) {
+		redrawGraph(local_graph_id);
+		$('#spikeresults').remove();
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('#spikeresults').html(data.results);
+		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+	});
+}
+
+function redrawGraph(graph_id) {
+	mainWidth = $('#main').width();
+	myColumns = $('#columns').val();
+	isThumb   = $('#thumbnails').is(':checked');
+
+	if (isThumb) {
+		myWidth = (mainWidth-(40*myColumns))/myColumns;
+	}
+
+	graph_height=$('#wrapper_'+graph_id).attr('graph_height');
+	graph_width=$('#wrapper_'+graph_id).attr('graph_width');
+
+	$.getJSON(urlPath+'graph_json.php?rra_id=0'+
+		'&local_graph_id='+graph_id+
+		'&graph_start='+graph_start+
+		'&graph_end='+graph_end+
+		'&graph_height='+graph_height+
+		'&graph_width='+graph_width+
+		(isThumb ? '&graph_nolegend=true':''),
+		function(data) {
+			if (isThumb && myWidth < data.image_width) {
+				ratio=myWidth/data.image_width;
+				data.image_width  *= ratio;
+				data.image_height *= ratio;
+				data.graph_width  *= ratio;
+				data.graph_height *= ratio;
+				data.graph_top    *= ratio;
+				data.graph_left   *= ratio;
+			}
+
+			$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+		}
+	);
+}
+
 function initializeGraphs() {
-	$('span[id$="_mrtg"]').unbind('click').click(function() {
+	$('a[id$="_mrtg"]').unbind('click').click(function(event) {
+		event.preventDefault();
+		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
-			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">MRTG View</a></li>');
+			$('#main').empty().hide()
+			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">Time Graph View</a></li>');
 			$('#zoom-container').remove();
+			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
 			applySkin();
 			clearTimeout(myRefresh);
 		});
 	});
 
-	$('span[id$="_csv"]').unbind('click').click(function() {
+	$('a[id$="_csv"]').unbind('click').click(function(event) {
+		event.preventDefault();
+		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
-		document.location = urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val());
+		document.location = urlPath+
+			'graph_xport.php?local_graph_id='+graph_id+
+			'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+
+			'&graph_end='+getTimestampFromDate($('#date2').val());
 	});
 
 	$('#form_graph_view').unbind('submit').on('submit', function(event) {
 		event.preventDefault();
+		event.stopPropagation();
 		applyFilter();
 	});
 
-	mainWidth = $('#main').width();
+	mainWidth = $('#main').width()-40;
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
 
@@ -1049,7 +1295,7 @@ function initializeGraphs() {
 				});
 				realtimeArray[data.local_graph_id] = false;
 		});
-	});
+	})
 
 	$('#realtimeoff').unbind('click').click(function() {
 		stopRealtime();
@@ -1059,9 +1305,13 @@ function initializeGraphs() {
 		realtimeGrapher();
 	});
 
-	$('span[id$="_util"]').unbind('click').click(function() {
+	$('a[id$="_util"]').unbind('click').click(function(event) {
+		event.preventDefault();
+		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
 		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()), function(data) {
+			$('#main').empty().hide()
+			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
 			$('#breadcrumbs').append('<li><a id="nav_util" href="#">Utility View</a></li>');
 			applySkin();
@@ -1069,7 +1319,9 @@ function initializeGraphs() {
 		});
 	});
 
-	$('span[id$="_realtime"]').unbind('click').click(function() {
+	$('a[id$="_realtime"]').unbind('click').click(function(event) {
+		event.preventDefault();
+		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_realtime','');
 
 		if (realtimeArray[graph_id]) {

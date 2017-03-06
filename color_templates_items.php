@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -32,12 +32,20 @@ switch (get_request_var('action')) {
 		aggregate_color_item_form_save();
 
 		break;
+	case 'ajax_dnd':
+		color_templates_item_dnd();
+
+		break;
+	case 'item_remove_confirm':
+		aggregate_color_item_remove_confirm();
+
+		break;
 	case 'item_remove':
 		get_filter_request_var('color_template_id');
 
 		aggregate_color_item_remove();
 
-		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id'));
+		header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('id'));
 		break;
 	case 'item_movedown':
 		get_filter_request_var('color_template_id');
@@ -119,6 +127,51 @@ function aggregate_color_item_form_save() {
     item - Graph Items
    ----------------------- */
 
+function color_templates_item_dnd() {
+   /* ================= Input validation ================= */
+    get_filter_request_var('id');
+    /* ================= Input validation ================= */
+
+    if (!isset_request_var('color_item') || !is_array(get_nfilter_request_var('color_item'))) exit;
+
+    /* snmp table contains one row defined as 'nodrag&nodrop' */
+    unset($_REQUEST['color_item'][0]);
+
+    /* delivered vdef ids has to be exactly the same like we have stored */
+    $old_order = array();
+
+    foreach(get_nfilter_request_var('color_item') as $sequence => $option_id) {
+        if (empty($option_id)) continue;
+        $new_order[$sequence] = str_replace('line', '', $option_id);
+    }
+
+    $color_items = db_fetch_assoc_prepared('SELECT color_template_item_id, sequence FROM color_template_items WHERE color_template_id = ?', array(get_request_var('id')));
+
+    if (sizeof($color_items)) {
+        foreach($color_items as $item) {
+            $old_order[$item['sequence']] = $item['color_template_item_id'];
+        }
+    }else {
+        exit;
+    }
+
+    if (sizeof(array_diff($new_order, $old_order))>0) exit;
+
+    /* the set of sequence numbers has to be the same too */
+    if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
+    /* ==================================================== */
+
+    foreach($new_order as $sequence => $color_template_item_id) {
+        input_validate_input_number($sequence);
+        input_validate_input_number($color_template_item_id);
+
+        db_execute_prepared('UPDATE color_template_items SET sequence = ? WHERE color_template_item_id = ?', array($sequence, $color_template_item_id));
+    }
+
+    header('Location: color_templates.php?action=template_edit&header=false&color_template_id=' . get_request_var('id'));
+	exit;
+}
+
 /**
  * aggregate_color_item_movedown		move item down
  */
@@ -127,29 +180,36 @@ function aggregate_color_item_movedown() {
 	get_filter_request_var('color_template_item_id');
 	get_filter_request_var('color_template_id');
 	/* ==================================================== */
-	$current_sequence = db_fetch_row('SELECT color_template_item_id, sequence
+
+	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id=' . get_request_var('color_template_item_id'), true);
+		WHERE color_template_item_id = ?', 
+		array(get_request_var('color_template_item_id')));
 
-	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], 
+		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-	$next_sequence = db_fetch_row('SELET color_template_item_id, sequence
+	$next_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE sequence>' . $current_sequence['sequence'] . '
-		AND color_template_id=' . get_request_var('color_template_id') . '
-		ORDER BY sequence ASC limit 1', true);
+		WHERE sequence > ?
+		AND color_template_id = ?
+		ORDER BY sequence ASC limit 1', 
+		array($current_sequence['sequence'], get_request_var('color_template_id')));
 
-	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'], FALSE, POLLER_VERBOSITY_DEBUG);
+	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'], 
+		FALSE, POLLER_VERBOSITY_DEBUG);
 
-	db_execute('UPDATE color_template_items
-		SET sequence=' . $next_sequence['sequence'] . '
-		WHERE color_template_id=' . get_request_var('color_template_id') . '
-		AND color_template_item_id=' . $current_sequence['color_template_item_id']);
+	db_execute_prepared('UPDATE color_template_items
+		SET sequence = ?
+		WHERE color_template_id = ?
+		AND color_template_item_id = ?', 
+		array($next_sequence['sequence'], get_request_var('color_template_id'), $current_sequence['color_template_item_id']));
 
-	db_execute('UPDATE color_template_items
-		SET sequence=' . $current_sequence['sequence'] . '
-		WHERE color_template_id=' . get_request_var('color_template_id') . '
-		AND color_template_item_id=' . $next_sequence['color_template_item_id']);
+	db_execute_prepared('UPDATE color_template_items
+		SET sequence = ?
+		WHERE color_template_id = ?
+		AND color_template_item_id = ?', 
+		array($current_sequence['sequence'], get_request_var('color_template_id'), $next_sequence['color_template_item_id']));
 }
 
 
@@ -162,41 +222,102 @@ function aggregate_color_item_moveup() {
 	get_filter_request_var('color_template_id');
 	/* ==================================================== */
 
-	$current_sequence = db_fetch_row('SELECT color_template_item_id, sequence
+	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id=' . get_request_var('color_template_item_id'), true);
+		WHERE color_template_item_id = ?', 
+		array(get_request_var('color_template_item_id')));
 
-	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], 
+		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-	$previous_sequence = db_fetch_row('SELECT color_template_item_id, sequence
+	$previous_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE sequence < ' . $current_sequence['sequence'] . '
-		AND color_template_id=' . get_request_var('color_template_id') . '
-		ORDER BY sequence DESC limit 1', true);
+		WHERE sequence < ?
+		AND color_template_id = ?
+		ORDER BY sequence DESC limit 1', 
+		array($current_sequence['sequence'], get_request_var('color_template_id')));
 
-	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'], 
+		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-	db_execute('UPDATE color_template_items
-		SET sequence=' . $previous_sequence['sequence'] . '
-		WHERE color_template_id=' . get_request_var('color_template_id') . '
-		AND color_template_item_id=' . $current_sequence['color_template_item_id']);
+	db_execute_prepared('UPDATE color_template_items
+		SET sequence = ?
+		WHERE color_template_id = ?
+		AND color_template_item_id = ?', 
+		array($previous_sequence['sequence'], get_request_var('color_template_id'), $current_sequence['color_template_item_id']));
 
-	db_execute('UPDATE color_template_items
-		SET sequence=' . $current_sequence['sequence'] . '
-		WHERE color_template_id=' . get_request_var('color_template_id') . '
-		AND color_template_item_id=' . $previous_sequence['color_template_item_id']);
+	db_execute_prepared('UPDATE color_template_items
+		SET sequence = ?
+		WHERE color_template_id = ?
+		AND color_template_item_id = ?', 
+		array($current_sequence['sequence'], get_request_var('color_template_id'), $previous_sequence['color_template_item_id']));
 }
+
+function aggregate_color_item_remove_confirm() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('color_id');
+	/* ==================================================== */
+
+	form_start('color_templates.php');
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	$template   = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('id')));
+	$color_item = db_fetch_row_prepared('SELECT * FROM color_template_items WHERE color_template_item_id = ?', array(get_request_var('color_id')));
+	$color_hex  = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($color_item['color_id']));
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p><?php print __('Click \'Continue\' to delete the following Color Template Color.'); ?></p>
+			<p><?php print __('Color Name:');?> '<?php print $template['name'];?>'<br>
+			<?php print __('Color Hex:');?><strong><?php print $color_hex;?></p>
+		</td>
+	</tr>
+	<tr>
+		<td align='right'>
+			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove Color Item');?>'>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+
+	form_end();
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#cdialog').dialog();
+	});
+
+	$('#continue').click(function(data) {
+		$.post('color_templates_items.php?action=item_remove', { 
+			__csrf_magic: csrfMagicToken, 
+			color_id: <?php print get_request_var('color_id');?>, 
+			id: <?php print get_request_var('id');?> 
+		}, function(data) {
+			$('#cdialog').dialog('close');
+			loadPageNoHeader('color_templates.php?action=template_edit&header=false&color_template_id=<?php print get_request_var('id');?>');
+		});
+	});
+	</script>
+	<?php
+}
+
 
 /**
  * aggregate_color_item_remove		remove item
  */
 function aggregate_color_item_remove() {
 	/* ================= input validation ================= */
-	get_filter_request_var('color_template_item_id');
-	get_filter_request_var('color_template_id');
+	get_filter_request_var('id');
+	get_filter_request_var('color_id');
 	/* ==================================================== */
 
-	db_execute('DELETE FROM color_template_items WHERE color_template_item_id=' . get_request_var('color_template_item_id'));
+	db_execute_prepared('DELETE FROM color_template_items WHERE color_template_item_id = ?', array(get_request_var('color_id')));
 }
 
 
@@ -211,10 +332,10 @@ function aggregate_color_item_edit() {
 	get_filter_request_var('color_template_id');
 	/* ==================================================== */
 
-	$template = db_fetch_row('SELECT * FROM color_templates WHERE color_template_id=' . get_request_var('color_template_id'));
+	$template = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id')));
 
 	if (isset_request_var('color_template_item_id') && (get_request_var('color_template_item_id') > 0)) {
-		$template_item = db_fetch_row('select * from color_template_items where color_template_item_id=' . get_request_var('color_template_item_id'));
+		$template_item = db_fetch_row_prepared('SELECT * FROM color_template_items WHERE color_template_item_id = ?', array(get_request_var('color_template_item_id')));
 		$header_label = __('Color Template Items [edit Report Item: %s]', $template['name']);
 	}else{
 		$template_item = array();

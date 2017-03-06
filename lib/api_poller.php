@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -27,43 +27,34 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 
 	if (!isset($hosts[$host_id])) {
 		$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
-			host.id,
-			host.hostname,
-			host.snmp_community,
-			host.snmp_version,
-			host.snmp_username,
-			host.snmp_password,
-			host.snmp_auth_protocol,
-			host.snmp_priv_passphrase,
-			host.snmp_priv_protocol,
-			host.snmp_context,
-			host.snmp_port,
-			host.snmp_timeout,
-			host.disabled
+			host.id, host.poller_id, host.hostname, host.snmp_community, host.snmp_version,
+			host.snmp_username, host.snmp_password, host.snmp_auth_protocol, host.snmp_priv_passphrase,
+			host.snmp_priv_protocol, host.snmp_context, host.snmp_engine_id, host.snmp_port,
+			host.snmp_timeout, host.disabled
 			FROM host
 			WHERE host.id = ?', array($host_id));
 
-		$hosts[$host_id] = $host;
+		if (sizeof($host)) {
+			$hosts[$host_id] = $host;
+		}
 	} else {
 		$host = $hosts[$host_id];
 	}
 
-	/* the $host_field_override array can be used to override certain host fields in the poller cache */
-	if (isset($host)) {
-		$host = array_merge($host, $host_field_override);
-	}
 
-	if (isset($host['id']) || (isset($host_id))) {
-		if (isset($host)) {
-			if ($host['disabled'] == 'on') {
-				return;
-			}
-		} else {
-			if ($poller_action_id == 0) {
+	if (sizeof($host) || (isset($host_id))) {
+		if (isset($host['disabled']) && $host['disabled'] == 'on') {
+			return;
+		}
+
+		if (!isset($host['id'])) {
+			// host id 0 can not have snmp
+			if ($poller_action_id == POLLER_ACTION_SNMP) {
 				return;
 			}
 
 			$host['id'] = 0;
+			$host['poller_id']      = 1;
 			$host['snmp_community'] = '';
 			$host['snmp_timeout'] = '';
 			$host['snmp_username'] = '';
@@ -72,12 +63,21 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			$host['snmp_priv_passphrase'] = '';
 			$host['snmp_priv_protocol'] = '';
 			$host['snmp_context'] = '';
+			$host['snmp_engine_id'] = '';
 			$host['snmp_version'] = '';
 			$host['snmp_port'] = '';
 			$host['hostname'] = 'None';
+
+			$hosts[0] = $host;
 		}
 
-		if ($poller_action_id == 0) {
+		/* the $host_field_override array can be used to override certain host fields in the poller cache */
+		if (sizeof($host_field_override)) {
+			$host = array_merge($host, $host_field_override);
+		}
+
+		// don't add to poller cache for wrong snmp information
+		if ($poller_action_id == POLLER_ACTION_SNMP) {
 			if (($host['snmp_version'] < 1) || ($host['snmp_version'] > 3) ||
 				($host['snmp_community'] == '' && $host['snmp_version'] != 3)) {
 				return;
@@ -86,12 +86,18 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 
 		$rrd_next_step = api_poller_get_rrd_next_step($rrd_step, $num_rrd_items);
 
-		return "($local_data_id, " . '0, ' . $host['id'] . ", $poller_action_id," . db_qstr($host['hostname']) . ",
-			" . db_qstr($host['snmp_community'])       . ', ' . db_qstr($host['snmp_version'])       . ', ' . db_qstr($host['snmp_timeout']) . ",
-			" . db_qstr($host['snmp_username'])        . ', ' . db_qstr($host['snmp_password'])      . ', ' . db_qstr($host['snmp_auth_protocol']) . ",
-			" . db_qstr($host['snmp_priv_passphrase']) . ', ' . db_qstr($host['snmp_priv_protocol']) . ', ' . db_qstr($host['snmp_context']) . ",
-			" . db_qstr($host['snmp_port'])            . ', ' . db_qstr($data_source_item_name) . ', '     . db_qstr(clean_up_path(get_data_source_path($local_data_id, true))) . ",
-			" . db_qstr($num_rrd_items) . ', ' . db_qstr($rrd_step) . ', ' . db_qstr($rrd_next_step) . ', ' . db_qstr($arg1) . ', ' . db_qstr($arg2) . ', ' . db_qstr($arg3) . ", '1')";
+		return "($local_data_id, " . $host['poller_id'] . ', ' . 
+			$host['id'] . ", $poller_action_id," . 
+			db_qstr($host['hostname'])           . ', ' . db_qstr($host['snmp_community'])       . ', ' . 
+			db_qstr($host['snmp_version'])       . ', ' . db_qstr($host['snmp_timeout'])         . ', ' . 
+			db_qstr($host['snmp_username'])      . ', ' . db_qstr($host['snmp_password'])        . ', ' . 
+			db_qstr($host['snmp_auth_protocol']) . ', ' . db_qstr($host['snmp_priv_passphrase']) . ', ' . 
+			db_qstr($host['snmp_priv_protocol']) . ', ' . db_qstr($host['snmp_context'])         . ', ' . 
+			db_qstr($host['snmp_engine_id'])     . ', ' . db_qstr($host['snmp_port'])            . ', ' . 
+			db_qstr($data_source_item_name)      . ', ' . db_qstr(clean_up_path(get_data_source_path($local_data_id, true))) . ', ' . 
+			db_qstr($num_rrd_items)              . ', ' . db_qstr($rrd_step)                     . ', ' . 
+			db_qstr($rrd_next_step)              . ', ' . db_qstr($arg1)                         . ', ' . 
+			db_qstr($arg2)                       . ', ' . db_qstr($arg3) . ", '1')";
 	}
 }
 

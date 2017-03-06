@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,7 +23,5 @@
 */
 
 function upgrade_to_0_8_2a() {
-	db_install_execute("0.8.2a", "ALTER TABLE `data_input_data_cache` ADD `rrd_num` TINYINT( 2 ) UNSIGNED NOT NULL AFTER `rrd_path`;");
+	db_install_execute("ALTER TABLE `data_input_data_cache` ADD `rrd_num` TINYINT( 2 ) UNSIGNED NOT NULL AFTER `rrd_path`;");
 }
-
-?>

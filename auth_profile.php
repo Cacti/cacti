@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -155,6 +155,26 @@ function settings() {
 		return;
 	}
 
+	// Set the graph views the user has permission to
+	unset($graph_views);
+	if (is_view_allowed('show_tree')) {
+		$graph_views[1] = __('Tree View');
+	}
+
+	if (is_view_allowed('show_list')) {
+		$graph_views[2] = __('List View');
+	}
+
+	if (is_view_allowed('show_preview')) {
+		$graph_views[2] = __('Preview View');
+	}
+
+	if (sizeof($graph_views)) {
+		$settings_user['general']['default_view_mode']['array'] = $graph_views;
+	}else{
+		unset($settings_user['general']['default_view_mode']);
+	}
+
 	/* file: user_admin.php, action: user_edit (host) */
 	$fields_user = array(
 		'username' => array(
@@ -175,8 +195,8 @@ function settings() {
 		),
 		'email_address' => array(
 			'method' => 'textbox',
-			'friendly_name' => __('E-Mail Address'),
-			'description' => __('An E-Mail Address you be reached at.'),
+			'friendly_name' => __('Email Address'),
+			'description' => __('An Email Address you be reached at.'),
 			'value' => '|arg1:email_address|',
 			'max_length' => '60',
 			'size' => '60'
@@ -201,7 +221,7 @@ function settings() {
 	        )
 		);
 	}
-	
+
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
