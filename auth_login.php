@@ -236,13 +236,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	/* Process the user  */
 	if (sizeof($user)) {
 		cacti_log("LOGIN: User '" . $user['username'] . "' Authenticated", false, 'AUTH');
-		if (isset($_SERVER['X-Forwarded-For'])) {
-			db_execute_prepared('INSERT IGNORE INTO user_log (username, user_id, result, ip, time) VALUES (?, ?, 1, ?, NOW())',array($username, $user['id'], $_SERVER['X-Forwarded-For']));
-		} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-			db_execute_prepared('INSERT IGNORE INTO user_log (username, user_id, result, ip, time) VALUES (?, ?, 1, ?, NOW())',array($username, $user['id'], $_SERVER['HTTP_X_FORWARDED_FOR']));
-		} else {
-			db_execute_prepared('INSERT IGNORE INTO user_log (username, user_id, result, ip, time) VALUES (?, ?, 1, ?, NOW())', array($username, $user['id'], $_SERVER['REMOTE_ADDR']));
-		}
+		db_execute_prepared('INSERT IGNORE INTO user_log (username, user_id, result, ip, time) VALUES (?, ?, 1, ?, NOW())', array($username, $user['id'], $_SERVER['REMOTE_ADDR']));
 
 		/* is user enabled */
 		$user_enabled = $user['enabled'];
