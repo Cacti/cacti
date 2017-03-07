@@ -27,7 +27,9 @@ function run_data_query($host_id, $snmp_query_id) {
 
 	/* don't run/rerun the query if the host is down, or disabled */
 	$status = db_fetch_row_prepared('SELECT status, disabled FROM host WHERE id = ?', array($host_id));
-	if ($status['status'] == HOST_DOWN || $status['disabled'] == 'on') {
+	if (!sizeof($status)) {
+		return false;
+	}elseif ($status['status'] == HOST_DOWN || $status['disabled'] == 'on') {
 		return true;
 	}
 
