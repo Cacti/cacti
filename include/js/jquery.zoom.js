@@ -1,6 +1,6 @@
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2016 The Cacti Group                                 |
+ | Copyright (C) 2004-2017 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -145,7 +145,7 @@
 		function zoom_init(image) {
 			/* destroy every other active zoom sessions */
 			zoomElements_remove();
-			
+
 			var $this = image;
 			$this.parent().disableSelection();
 			$this.off().mouseenter(
@@ -167,7 +167,7 @@
 
 			/* as long as Zoom is active reposition all elements once the window has been resized by the user */
 			$(window).off('resize').on('resize', function() { zoomElements_reposition( $this ); } );
-			
+
 			/* load global settings cached in a cookie if available */
 			zoom.custom =  $.cookie(zoom.options.cookieName) ? unserialize( $.cookie(zoom.options.cookieName) ) : {};
 			if(zoom.custom.zoomMode == undefined) zoom.custom.zoomMode = 'quick';
@@ -177,7 +177,7 @@
 			if(zoom.custom.zoomTimestamps == undefined) zoom.custom.zoomTimestamps = 'auto';
 			if(zoom.custom.zoom3rdMouseButton == undefined) zoom.custom.zoom3rdMouseButton = false;
 			$.cookie( zoom.options.cookieName, serialize(zoom.custom), {expires: 30} );
-			
+
 			/* take care of different time zones server and client can make use of */
 			if(zoom.options.serverTimeOffset > clientTimeOffset ) {
 				timeOffset = (zoom.options.serverTimeOffset - clientTimeOffset)*1000;
@@ -211,6 +211,10 @@
 			// add all additional HTML elements to the DOM if necessary and register
 			// the individual events needed. Once added we will only reset
 			// and reposition these elements.
+
+			zoom.image.data 			= atob($this.attr('src').split(',')[1]);
+			zoom.image.type 			= ($this.attr('src').split(';')[0] == 'data:image/svg+xml' )? 'svg' : 'png';
+			zoom.image.name 			= 'cacti_ ' + $this.attr('id') + '.' + zoom.image.type;
 
 			// add the container for all elements Zoom requires
 			if($("#zoom-container").length == 0) {
@@ -272,6 +276,11 @@
 					+ 			'<span class="zoomContextMenuAction__set_zoomMode__advanced">Advanced</span>'
 					+ 		'</div>'
 					+ '</div>'
+					+ '<div class="sep_li"></div>'
+					+ '<div class="first_li">'
+					+ 		'<div class="ui-icon ui-icon-disk zoomContextMenuAction__save"></div>'
+					+       '<span class="zoomContextMenuAction__save">Save Image</span>'
+					+ '</div>'
 					+ '<div class="first_li advanced_mode">'
 					+ 		'<div class="ui-icon ui-icon-wrench"></div><span>Settings</span>'
 					+ 			'<div class="inner_li">'
@@ -319,31 +328,31 @@
 					+ 		'<div class="ui-icon ui-icon-close zoomContextMenuAction__close"></div><span class="zoomContextMenuAction__close">Close</span>'
 					+ '</div>').appendTo("#zoom-container");
 			}
-			zoomElements_reset()
+			zoomElements_reset();
 			zoomContextMenu_init();
 			zoomAction_init(image);
 		}
 
 		/**
 		 * reposition all elements of Zoom
-		 **/	
+		 **/
 		function zoomElements_reposition( image ) {
 			var $this = image;
 			zoom.image.top	= parseInt($this.offset().top);
 			zoom.image.left	= parseInt($this.offset().left);
 			$("#zoom-container").css({ top:zoom.image.top+'px', left:zoom.image.left+'px' });
-			
+
 		}
 
 		/**
 		 * resets and destroys all elements of Zoom
-		 **/		
+		 **/
 		function zoomElements_remove() {
 			zoomElements_reset();
 			$("#zoom-container").find('*').off();
 			$("#zoom-container").remove();
 		}
-		
+
 		/**
 		 * resets all elements of Zoom
 		 **/
@@ -405,25 +414,25 @@
 						case 1:
 							if(zoom.attr.start != 'none') {
 								zoomAction_zoom_in();
-			
+
 							}
 						break;
 					}
 				});
 
 				/* stretch the zoom area in that direction the user moved the mouse pointer */
-				$("#zoom-box").mousemove( function(e) { 
+				$("#zoom-box").mousemove( function(e) {
 					zoomAction_draw(e);
 				} );
 
 				/* stretch the zoom area in that direction the user moved the mouse pointer.
 				   That is required to get it working faultlessly with Opera, IE and Chrome	*/
-				$("#zoom-area").mousemove( function(e) { 
+				$("#zoom-area").mousemove( function(e) {
 					zoomAction_draw(e);
 				} );
 
 				/* moving the mouse pointer quickly will avoid that the mousemove event has enough time to actualize the zoom area */
-				$("#zoom-box").mouseout( function(e) { 
+				$("#zoom-box").mouseout( function(e) {
 					zoomAction_draw(e);
 				} );
 
@@ -518,7 +527,7 @@
 							$this.draggable({
 								containment: "#zoom-box",
 								axis: "x",
-								scroll: false, 
+								scroll: false,
 								start:
 									function(event, ui) {
 										if(zoom.custom.zoomTimestamps == "auto") {
@@ -641,7 +650,7 @@
 				/* execute zoom within "tree view" or the "preview view" */
 				$('#' + zoom.options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
-				
+
 				zoomElements_remove();
 				$("input[name='" + zoom.options.submitButton + "']").trigger('click');
 				return false;
@@ -891,6 +900,31 @@
 					break;
 				case "zoom_in":
 					zoomAction_zoom_in();
+					break;
+				case "save":
+					var arraybuffer = new ArrayBuffer(zoom.image.data.length);
+					var view = new Uint8Array(arraybuffer);
+					for (var i = 0; i < zoom.image.data.length; i++) {
+						view[i] = zoom.image.data.charCodeAt(i) & 0xff;
+					}
+
+					try {
+						var blob = new Blob([arraybuffer], {type: 'application/octet-stream'});
+					} catch (e) {
+						var bb = new (window.WebKitBlobBuilder || window.MozBlobBuilder);
+						bb.append(arraybuffer);
+						var blob = bb.getBlob('application/octet-stream');
+					}
+
+					if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+						window.navigator.msSaveOrOpenBlob(blob, zoom.image.name);
+					} else {
+						var objectUrl = URL.createObjectURL(blob);
+						var a = document.createElement('a');
+						a.setAttribute('download', zoom.image.name);
+						a.setAttribute("href", objectUrl);
+						a.click();
+					}
 					break;
 			}
 		}
