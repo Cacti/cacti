@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#368: Issue with device automation ip vs. ip_address
 -issue#369: Interface Bits/Second Total Bandwidth wrong CDEF
 -issue#375: Drag and Drop of Devices and Graphs allows dropping onto self
+-issue#382: When using php5.5+ new users unable to change their password
 -issue: Improve is_ipaddress functions
 -issue: Drag & Drop showing when disabled on page automation_templates.php
 -issue: Output messages displayed incorrectly in automation_templates.php and automation_snmp.php
