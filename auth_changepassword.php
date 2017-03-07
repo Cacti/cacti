@@ -110,12 +110,12 @@ case 'changepassword':
 	$current_password_old = md5(get_nfilter_request_var('current_password'));
 
 	// Password and Confirmed password checks
-	if ($user['password'] != $current_password_new && $user['password'] != $current_password_old) {
+	if ((!password_verify(get_nfilter_request_var('current_password'), $user['password'])) && $user['password'] != $current_password_old) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . "</span>";
 	}
 
-	if ($user['password'] == $password_new || $user['password'] == $password_old) {
+	if (password_verify(get_nfilter_request_var('password'), $user['password']) || $user['password'] == $password_old) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . "</span>";
 	}
