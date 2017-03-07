@@ -553,48 +553,32 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 			query_debug_timer_offset('data_query', "Executing SNMP walk for data @ '" . $field_array['oid'] . "'");
 
-			if (preg_match('/^value/i',$field_array["source"])) {
-				for ($i=0; $i<sizeof($snmp_data); $i++) {
-					$index_regex = (isset($field_array["oid_index_parse"]) ? $field_array["oid_index_parse"] : $index_parse_regexp) . (isset($field_array["oid_suffix"]) ? ("." . $field_array["oid_suffix"]) : "");
-					if (!preg_match("/$index_regex/", $snmp_data[$i]["oid"])) { continue; }
-					$snmp_index = preg_replace("/$index_regex/","\\1", $snmp_data[$i]["oid"]);
-					$oid = $field_array["oid"] . ".$snmp_index" . (isset($field_array["oid_suffix"]) ? ("." . $field_array["oid_suffix"]) : "");
-					if ($field_name == "ifOperStatus") {
-						switch(true) {
-							case preg_match('/^(down|2)/i',$snmp_data[$i]["value"]):
-								$snmp_data[$i]["value"] = "Down";
-								break;
-							case preg_match('/^(up|1)/i',$snmp_data[$i]["value"]):
-								$snmp_data[$i]["value"] = "Up";
-								break;
-							case preg_match('/^(notpresent|6)/i',$snmp_data[$i]["value"]):
-								$snmp_data[$i]["value"] = "notPresent";
-								break;
-							default:
-								$snmp_data[$i]["value"] = "Testing";
+			if ($field_array['source'] == 'value') {
+				foreach($snmp_data as $oid => $value) {
+					$snmp_index = preg_replace((isset($field_array['oid_index_parse']) ? '/' . $field_array['oid_index_parse'] . '/' : $index_parse_regexp), "\\1", $oid);
+
+					$oid = $field_array['oid'] . ".$snmp_index";
+
+					if ($field_name == 'ifOperStatus') {
+						if ((substr_count(strtolower($value), 'down')) ||
+							($value == '2')) {
+							$value = 'Down';
+						} elseif ((substr_count(strtolower($value), 'up')) ||
+							($value == '1')) {
+							$value = 'Up';
+						} elseif ((substr_count(strtolower($value), 'notpresent')) ||
+							($value == '6')) {
+							$value = 'notPresent';
+						}else{
+							$value = 'Testing';
 						}
-						$mode = "value";
-					} elseif (preg_match('/VALUE\/REGEXP:(.*)/',$field_array["source"],$matches)) {
-						$value = preg_replace('/' . $matches[1] . '/', "\\1", $snmp_data[$i]["value"]);
-						$mode = "regexp value parse";
-					} elseif (preg_match('/^VALUE\/TEST:(.*):(.*):(.*)/',$field_array["source"],$matches)) {
-						$value = (strcmp($matches[1],$snmp_data[$i]["value"]) !== 0)?$matches[3]:$matches[2];
-						$mode = "test value parse";
-					} elseif (preg_match('/^VALUE\/TABLE:(.*)/',$field_array["source"])) {
-						$value = (array_key_exists($snmp_data[$i]["value"],$const_table))?$const_table[$snmp_data[$i]["value"]]:'N/A';
-						$mode = "table value parse";
-					} elseif (preg_match('/^VALUE\/HEX2IP:(\d+):(\d+)/',$field_array["source"],$matches)) {
-						$value = substr(str_replace(':','',$snmp_data[$i]["value"]),$matches[1],$matches[2]);
-						$value = implode('.',unpack ("C*",pack("H*", $value)));
-						$mode = "hex2ip value parse";
-					} else {
-						$mode = "value";
 					}
-					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, isset($value)?$value:$snmp_data[$i]["value"] , $snmp_index, $oid);
-					debug_log_insert("data_query",sprintf("Found item [%s='%s'] index: %s [from %s]",$field_name,isset($value)?"$value (".$snmp_data[$i]["value"].")":$snmp_data[$i]["value"],$snmp_index,$mode));
-					unset($value);
+
+					debug_log_insert('data_query', "Found item [$field_name='$value'] index: $snmp_index [from value]");
+
+					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value , $snmp_index, $oid);
 				}
-			} elseif (substr($field_array['source'], 0, 11) == 'OID/REGEXP:') {
+			}elseif (substr($field_array['source'], 0, 11) == 'OID/REGEXP:') {
 				foreach($snmp_data as $oid => $value) {
 					$parse_value = preg_replace('/' . str_replace('OID/REGEXP:', '', $field_array['source']) . '/', "\\1", $oid);
 
@@ -638,6 +622,16 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					debug_log_insert('data_query', "Found item [$field_name='$parse_value'] index: $snmp_index [from regexp oid parse]");
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
+				}
+			}elseif (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:') {
+				foreach($snmp_data as $oid => $value) {
+					$value = preg_replace('/' . str_replace('VALUE/REGEXP:', '', $field_array['source']) . '/', "\\1", $value);
+					$snmp_index = preg_replace((isset($field_array['oid_index_parse']) ? '/' . $field_array['oid_index_parse'] . '/' : $index_parse_regexp), "\\1", $oid);
+					$oid = $field_array['oid'] . '.' . $snmp_index;
+
+					debug_log_insert('data_query', "Found item [$field_name='$value'] index: $snmp_index [from regexp value parse]");
+
+					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $snmp_index, $oid);
 				}
 			}
 
