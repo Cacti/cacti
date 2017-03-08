@@ -224,13 +224,18 @@
 				$("#zoom-container").css({ top:zoom.image.top+'px', left:zoom.image.left+'px', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' });
 			}
 
+			// add an (hidden) anchor to support a download of the image itself
+			if($("#zoom-image").length == 0) {
+				$("<a id='zoom-image' display='none'></a>").appendTo("body");
+			}
+
 			// add the "zoomBox"
 			if($("#zoom-box").length == 0) {
 				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
 				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
 				$("<div id='zoom-box'></div>").appendTo("#zoom-container");
 			}
-
+			
 			// add the "zoomSelectedArea"
 			if($("#zoom-area").length == 0) {
 				$("<div id='zoom-area'></div>").appendTo("#zoom-container");
@@ -920,10 +925,7 @@
 						window.navigator.msSaveOrOpenBlob(blob, zoom.image.name);
 					} else {
 						var objectUrl = URL.createObjectURL(blob);
-						var a = document.createElement('a');
-						a.setAttribute('download', zoom.image.name);
-						a.setAttribute("href", objectUrl);
-						a.click();
+						$('#zoom-image').attr({'download':zoom.image.name, 'href':objectUrl}).get(0).click();
 					}
 					break;
 			}
