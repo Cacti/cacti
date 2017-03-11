@@ -185,7 +185,7 @@ CREATE TABLE `automation_devices` (
   `snmp_priv_passphrase` varchar(200) DEFAULT '',
   `snmp_priv_protocol` char(6) DEFAULT '',
   `snmp_context` varchar(64) DEFAULT '',
-  `snmp_engine_id` varchar(30) DEFAULT '',
+  `snmp_engine_id` varchar(64) DEFAULT '',
   `sysName` varchar(100) NOT NULL DEFAULT '',
   `sysLocation` varchar(255) NOT NULL DEFAULT '',
   `sysContact` varchar(255) NOT NULL DEFAULT '',
@@ -377,7 +377,7 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_priv_passphrase` varchar(200) DEFAULT '',
   `snmp_priv_protocol` char(6) DEFAULT '',
   `snmp_context` varchar(64) DEFAULT '',
-  `snmp_engine_id` varchar(30) DEFAULT '',
+  `snmp_engine_id` varchar(64) DEFAULT '',
   PRIMARY KEY (`id`,`snmp_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Set of SNMP Options';
 
@@ -2504,7 +2504,7 @@ CREATE TABLE host (
   snmp_priv_passphrase varchar(200) default '',
   snmp_priv_protocol char(6) default '',
   snmp_context varchar(64) default '',
-  snmp_engine_id varchar(30) default '',
+  snmp_engine_id varchar(64) default '',
   snmp_port mediumint(5) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '500',
   snmp_sysDescr varchar(300) NOT NULL default '',
@@ -2812,7 +2812,7 @@ CREATE TABLE poller_item (
   snmp_priv_passphrase varchar(200) NOT NULL default '',
   snmp_priv_protocol varchar(6) NOT NULL default '',
   snmp_context varchar(64) default '',
-  snmp_engine_id varchar(30) default '',
+  snmp_engine_id varchar(64) default '',
   snmp_port mediumint(5) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',

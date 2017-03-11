@@ -29,4 +29,15 @@ function upgrade_to_1_0_5() {
 	db_install_execute('ALTER TABLE poller_reindex DROP PRIMARY KEY, ADD PRIMARY KEY (host_id, data_query_id)');
 	db_install_execute('ALTER TABLE snmpagent_managers_notifications MODIFY COLUMN notification varchar(180) NOT NULL');
 	db_install_execute('ALTER TABLE snmpagent_notifications_log MODIFY COLUMN notification varchar(180) NOT NULL');
+
+	/* bad data source profile id's */
+	$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+	db_install_execute('UPDATE data_template_data SET data_source_profile_id = ' . $profile_id . ' WHERE data_source_profile_id = 0');
+
+	/* engine id length */
+	db_install_execute('ALTER TABLE automation_devices MODIFY COLUMN snmp_engine_id VARCHAR(64) DEFAULT ""');
+	db_install_execute('ALTER TABLE automation_snmp_items MODIFY COLUMN snmp_engine_id VARCHAR(64) DEFAULT ""');
+	db_install_execute('ALTER TABLE host MODIFY COLUMN snmp_engine_id VARCHAR(64) DEFAULT ""');
+	db_install_execute('ALTER TABLE poller_item MODIFY COLUMN snmp_engine_id VARCHAR(64) DEFAULT ""');
+	db_install_execute('ALTER TABLE snmpagent_managers MODIFY COLUMN snmp_engine_id VARCHAR(64) DEFAULT ""');
 }
