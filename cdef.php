@@ -798,7 +798,7 @@ function cdef() {
 	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' AND system=0)";
 	}else{
-		$sql_where = '';
+		$sql_where = 'WHERE system=0';
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
