@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -issue#385: You can't place an aggregate on a subtree
 -issue#390: Display Graphs from this Aggregate icon next to graph not displaying
 -issue#392: cdef.php missing sql where for system cdef's
+-issue#398: checkbox is not honored when creating tree
 -issue#399: External link configuration: Order buttons don't work
 -issue#400: SNMP Engine ID (v3) field too short
 -issue#401: Graphs -> Apply Automation Rules fails

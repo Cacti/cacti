@@ -573,6 +573,10 @@ function tree_edit() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
+	if (!sizeof($tree)) {
+		unset($fields_tree_edit['enabled']);
+	}
+
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
