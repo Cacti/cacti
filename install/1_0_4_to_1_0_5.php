@@ -40,4 +40,16 @@ function upgrade_to_1_0_5() {
 	db_install_execute('ALTER TABLE host MODIFY COLUMN snmp_engine_id VARCHAR(64) DEFAULT ""');
 	db_install_execute('ALTER TABLE poller_item MODIFY COLUMN snmp_engine_id VARCHAR(64) DEFAULT ""');
 	db_install_execute('ALTER TABLE snmpagent_managers MODIFY COLUMN snmp_engine_id VARCHAR(64) DEFAULT ""');
+
+	/* issue 399 external links ordering */
+	$badlinks = db_fetch_cell('SELECT COUNT(*) FROM external_links WHERE sortorder=0');
+	if ($badlinks) {
+		$links = db_fetch_assoc('SELECT id FROM external_links ORDER BY id');
+		$order = 1;
+
+		foreach($links as $link) {
+			db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?', array($order, $link['id']));
+			$order++;
+		}
+	}
 }

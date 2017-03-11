@@ -75,7 +75,9 @@ case 'save':
 
 	$consolesection    = get_nfilter_request_var('consolesection');
 	$consolenewsection = get_nfilter_request_var('consolenewsection');
-	$extendedstyle = '';
+	$extendedstyle     = '';
+	$lastsortorder     = db_fetch_cell('SELECT MAX(sortorder) FROM external_links');
+	$save['sortorder'] = $lastsortorder + 1;
 
 	if ($save['style'] == 'CONSOLE') {
 		if ($consolesection == '__NEW__') {
@@ -376,7 +378,7 @@ function pages() {
 		'title'       => array('display' => __('Title'),   'align' => 'left',  'sort' => 'ASC'),
 		'style'       => array('display' => __('Style'),   'align' => 'left',  'sort' => 'ASC'),
 		'disabled'    => array('display' => __('Enabled'), 'align' => 'left',  'sort' => 'ASC'),
-		'sortorder'   => array('display' => __('Order'),   'align' => 'right', 'sort' => 'ASC')
+		'sortorder'   => array('display' => __('Order'),   'align' => 'center', 'sort' => 'ASC')
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
@@ -411,7 +413,7 @@ function pages() {
 					$sort .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
-				form_selectable_cell($sort, $page['id'], '', 'right');
+				form_selectable_cell($sort, $page['id'], '', 'center');
 			}else{
 				form_selectable_cell(__('Sort for Ordering'), $page['id']);
 			}
