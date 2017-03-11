@@ -3351,7 +3351,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 
 	$from = array($from, $fromname);
 
-	mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
+	return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
 }
 
 /** mailer - function to send mails to users 
@@ -3441,7 +3441,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		// Set a reasonable timeout of 5 seconds
 		$timeout = read_config_option('settings_smtp_timeout');
 		if (empty($timeout) || $timeout < 0 || $timeout > 300) {
-			$mail->Timeout = 5;
+			$mail->Timeout = 10;
 		}else{
 			$mail->Timeout = $timeout;
 		}
