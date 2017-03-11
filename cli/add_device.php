@@ -56,6 +56,7 @@ if (sizeof($parms)) {
 	$disable       = 0;
 
 	$notes         = '';
+	$external_id   = '';
 
 	$snmp_username        = read_config_option('snmp_username');
 	$snmp_password        = read_config_option('snmp_password');
@@ -134,6 +135,10 @@ if (sizeof($parms)) {
 			$disable  = $value;
 
 			break;
+		case '--external-id':
+			$external_id  = $value;
+
+			break;
 		case '--username':
 			$snmp_username = trim($value);
 
@@ -163,7 +168,7 @@ if (sizeof($parms)) {
 
 			break;
 		case '--port':
-			$snmp_port     = $value;
+			$snmp_port = $value;
 
 			break;
 		case '--proxy':
@@ -171,15 +176,15 @@ if (sizeof($parms)) {
 
 			break;
 		case '--timeout':
-			$snmp_timeout  = $value;
+			$snmp_timeout = $value;
 
 			break;
 		case '--ping_timeout':
-			$ping_timeout  = $value;
+			$ping_timeout = $value;
 
 			break;
 		case '--threads':
-			$device_threads  = $value;
+			$device_threads = $value;
 
 			break;
 		case '--avail':
@@ -424,12 +429,12 @@ if (sizeof($parms)) {
 	echo "Adding $description ($ip) as \"" . $host_templates[$template_id] . "\" using SNMP v$snmp_ver with community \"$community\"\n";
 
 	$host_id = api_device_save('0', $template_id, $description, $ip,
-				$community, $snmp_ver, $snmp_username, $snmp_password,
-				$snmp_port, $snmp_timeout, $disable, $avail, $ping_method,
-				$ping_port, $ping_timeout, $ping_retries, $notes,
-				$snmp_auth_protocol, $snmp_priv_passphrase,
-				$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, 
-				$poller_id, $site_id);
+		$community, $snmp_ver, $snmp_username, $snmp_password,
+		$snmp_port, $snmp_timeout, $disable, $avail, $ping_method,
+		$ping_port, $ping_timeout, $ping_retries, $notes,
+		$snmp_auth_protocol, $snmp_priv_passphrase,
+		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, 
+		$poller_id, $site_id, $external_id);
 
 	if (is_error_message()) {
 		echo "ERROR: Failed to add this device\n";
@@ -453,7 +458,7 @@ function display_help() {
 	display_version();
 
 	echo "\nusage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes=\"[]\"] [--disable]\n";
-	echo "    [--poller=[id]] [--site=[id] [--proxy] [--threads=[1]\n";
+	echo "    [--poller=[id]] [--site=[id] [--external-id=[S]] [--proxy] [--threads=[1]\n";
 	echo "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_timeout=[N] --ping_retries=[2]\n";
 	echo "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
 	echo "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]\n";
@@ -465,6 +470,7 @@ function display_help() {
 	echo "    --proxy        if specified, allows adding a second host with same ip address\n";
 	echo "    --template     0, is a number (read below to get a list of templates)\n";
 	echo "    --notes        '', General information about this host.  Must be enclosed using double quotes.\n";
+	echo "    --external-id  '', An external ID to align Cacti devices with devices from other systems.\n";
 	echo "    --disable      0, 1 to add this host but to disable checks and 0 to enable it\n";
 	echo "    --poller       0, numeric poller id that will perform data collection for the device.\n";
 	echo "    --site         0, numeric site id that will be associated with the device.\n";

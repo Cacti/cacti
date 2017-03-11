@@ -2496,6 +2496,7 @@ CREATE TABLE host (
   description varchar(150) NOT NULL default '',
   hostname varchar(100) default NULL,
   notes text,
+  external_id varchar(40) default NULL,
   snmp_community varchar(100) default NULL,
   snmp_version tinyint(1) unsigned NOT NULL default '1',
   snmp_username varchar(50) default NULL,
@@ -2538,6 +2539,7 @@ CREATE TABLE host (
   PRIMARY KEY (id),
   KEY poller_id (poller_id),
   KEY site_id (site_id),
+  KEY external_id (external_id),
   KEY disabled (disabled)
 ) ENGINE=InnoDB;
 

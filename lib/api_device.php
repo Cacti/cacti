@@ -119,7 +119,7 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
-	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id = 1, $site_id = 1) {
+	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id = 1, $site_id = 1, $external_id = '') {
 	global $config;
 
 	include_once($config['base_path'] . '/lib/utility.php');
@@ -138,6 +138,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 
 	$save['poller_id']            = form_input_validate($poller_id, 'poller_id', '^[0-9]+$', true, 3);
 	$save['site_id']              = form_input_validate($site_id, 'site_id', '^[0-9]+$', true, 3);
+	$save['external_id']          = form_input_validate($external_id, 'external_id', '', true, 3);
 
 	$save['description']          = form_input_validate($description, 'description', '', false, 3);
 	$save['hostname']             = form_input_validate(trim($hostname), 'hostname', '', false, 3);

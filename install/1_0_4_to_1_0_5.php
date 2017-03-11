@@ -52,4 +52,10 @@ function upgrade_to_1_0_5() {
 			$order++;
 		}
 	}
+
+	/* add external id column */
+	if (!db_column_exists('host', 'external_id')) {
+		db_install_execute('ALTER TABLE host ADD COLUMN external_id VARCHAR(40) DEFAULT NULL AFTER notes');
+		db_install_execute('ALTER TABLE host ADD INDEX external_id (external_id)');
+	}
 }

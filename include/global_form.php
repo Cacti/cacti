@@ -1225,6 +1225,15 @@ $fields_host_edit = array(
 		'textarea_rows' => '5',
 		'textarea_cols' => '50'
 		),
+	'external_id' => array(
+		'friendly_name' => __('External ID'),
+		'description' => __('External ID for linking Cacti data to external monitoring systems.'),
+		'method' => 'textbox',
+		'value' => '|arg1:external_id|',
+		'default' => '',
+		'max_length' => '40',
+		'size' => '20'
+		),
 	'id' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'
