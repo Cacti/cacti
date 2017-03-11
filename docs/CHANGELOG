@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -issue#384: graph_view.php backtrace errors
 -issue#392: cdef.php missing sql where for system cdef's
 -issue#400: SNMP Engine ID (v3) field too short
+-issue#401: Graphs -> Apply Automation Rules fails
 -issue: Improve is_ipaddress functions
 -issue: Drag & Drop showing when disabled on page automation_templates.php
 -issue: Output messages displayed incorrectly in automation_templates.php and automation_snmp.php
