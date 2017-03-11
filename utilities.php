@@ -278,7 +278,7 @@ function utilities_view_tech($php_info = '') {
 				print $input_types[$item['type_id']] . ': ' . number_format_i18n($item['total'], -1) . '<br>';
 				$data_total += $item['total'];
 			}
-			print __('Total: %d', number_format_i18n($data_total, -1));
+			print __('Total: %s', number_format_i18n($data_total, -1));
 		}else{
 			print "<span class='deviceDown'>0</span>";
 		}
@@ -311,7 +311,7 @@ function utilities_view_tech($php_info = '') {
 				print __('Action[%s]', $item['action']) . ': ' . number_format_i18n($item['total'], -1) . '<br>';
 				$total += $item['total'];
 			}
-			print __('Total: %d', number_format_i18n($total), -1);
+			print __('Total: %s', number_format_i18n($total, -1));
 		}else{
 			print "<span class='deviceDown'>" . __('No items to poll') . "</span>";
 		}
