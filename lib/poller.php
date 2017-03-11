@@ -269,9 +269,9 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$assert_value = $index['field_value'];
 
 					if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
-						$recache_stack[] = "($host_id, $data_query_id," .  POLLER_ACTION_SNMP . ", '=', '$assert_value', '" . $data_query_xml['fields']{$data_query['sort_field']}['oid'] . '.' . $index['snmp_index'] . "', '1')";
+						$recache_stack[] = "(".db_qstr($host_id).", ".db_qstr($data_query_id).", ".POLLER_ACTION_SNMP.", '=', ".db_qstr($assert_value).", ".db_qstr(($data_query_xml['fields']{$data_query['sort_field']}['source'] == 'index')?$data_query_xml['oid_index']:$data_query_xml['fields']{$data_query['sort_field']}['oid'].".".$index['snmp_index']).", '1')";
 					}else if ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-						$recache_stack[] = "('$host_id', '$data_query_id'," . POLLER_ACTION_SCRIPT . ", '=', '$assert_value', '" . get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_get'] . ' ' . $data_query_xml['fields']{$data_query['sort_field']}['query_name'] . ' ' . $index['snmp_index'], $data_query_xml['script_path'], $host_id) . "', '1')";
+						$recache_stack[] = "(".db_qstr($host_id).", ".db_qstr($data_query_id).", ".POLLER_ACTION_SCRIPT.", '=', ".db_qstr($assert_value).", ".db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_get'] . ' ' . $data_query_xml['fields']{$data_query['sort_field']}['query_name'] . ' ' . $index['snmp_index'], $data_query_xml['script_path'], $host_id)).", '1')";
 					}
 				}
 			}
