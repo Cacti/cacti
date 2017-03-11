@@ -76,11 +76,14 @@ function get_matching_nodes() {
 			while ($row['parent'] != '0') {
 				$match[] = 'tbranch-' . $row['parent'];
 				$row = db_fetch_row_prepared('SELECT id, parent, graph_tree_id FROM graph_tree_items WHERE id = ?', array($row['parent']));
+				if (!sizeof($row)) break;
 			}
 
-			$match[]      = 'tree_anchor-' . $row['graph_tree_id'];
-			$my_matches[] = array_reverse($match);
-			$match        = array();
+			if (sizeof($row)) {
+				$match[]      = 'tree_anchor-' . $row['graph_tree_id'];
+				$my_matches[] = array_reverse($match);
+				$match        = array();
+			}
 		}
 
 		// Now flatten the list of nodes
