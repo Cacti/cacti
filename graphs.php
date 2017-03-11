@@ -661,7 +661,7 @@ function form_actions() {
 
 				/* work on all selected graphs */
 				for ($i=0;($i<count($selected_items));$i++) {
-					execute_graph_create_tree($selected_items[$i]);
+					automation_execute_graph_create_tree($selected_items[$i]);
 				}
 			} else {
 				api_plugin_hook_function('graphs_action_execute', get_request_var('drp_action'));
