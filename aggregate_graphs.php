@@ -427,7 +427,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Aggregate Graph(s) under the Tree Branch.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
-					<p>" . __('Destination Branch:') . "<br>"; grow_dropdown_tree($matches[1], "tree_item_id", "0"); print "</p>
+					<p>" . __('Destination Branch:') . "<br>"; grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); print "</p>
 				</td>
 			</tr>\n
 			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";

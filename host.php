@@ -511,7 +511,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Device(s) under the branch selected below.') . "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
-					<p><strong>" . __('Destination Branch:') . "</strong><br>\n";
+					<p>" . __('Destination Branch:') . "<br>\n";
 					grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); 
 
 			print "</p>
