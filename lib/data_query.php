@@ -560,46 +560,49 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				$const_table = array_combine($match_temp[1],$match_temp[2]);
 			}
 
-			if (preg_match('/^value/i',$field_array["source"])) {
+			if (preg_match('/^value/i',$field_array['source'])) {
 				foreach ($snmp_data as $oid => $value) {
-					$index_regex = (isset($field_array["oid_index_parse"]) ? $field_array["oid_index_parse"] : $index_parse_regexp) . (isset($field_array["oid_suffix"]) ? ("." . $field_array["oid_suffix"]) : "");
-					if (!preg_match("$index_regex", $oid)) { continue; }
-					$snmp_index = preg_replace("$index_regex","\\1", $oid);
-					$oid = $field_array["oid"] . ".$snmp_index" . (isset($field_array["oid_suffix"]) ? ("." . $field_array["oid_suffix"]) : "");
-					if ($field_name == "ifOperStatus") {
+					$index_regex = (isset($field_array['oid_index_parse']) ? $field_array['oid_index_parse'] : $index_parse_regexp) . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
+					if (!preg_match($index_regex, $oid)) { 
+						continue;
+					}
+
+					$snmp_index = preg_replace($index_regex,"\\1", $oid);
+					$oid = $field_array['oid'] . ".$snmp_index" . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
+					if ($field_name == 'ifOperStatus') {
 						switch(true) {
 							case preg_match('/^(down|2)/i',$value):
-								$value = "Down";
+								$value = 'Down';
 								break;
 							case preg_match('/^(up|1)/i',$value):
-								$value = "Up";
+								$value = 'Up';
 								break;
 							case preg_match('/^(notpresent|6)/i',$value):
-								$value = "notPresent";
+								$value = 'notPresent';
 								break;
 							default:
-								$value = "Testing";
+								$value = 'Testing';
 						}
-						$mode = "value";
-					} elseif (preg_match('/VALUE\/REGEXP:(.*)/',$field_array["source"],$matches)) {
+						$mode = 'value';
+					} elseif (preg_match('/VALUE\/REGEXP:(.*)/',$field_array['source'],$matches)) {
 						$modified_value = preg_replace('/' . $matches[1] . '/', "\\1", $value);
-						$mode = "regexp value parse";
-					} elseif (preg_match('/^VALUE\/TEST:(.*):(.*):(.*)/',$field_array["source"],$matches)) {
+						$mode = 'regexp value parse';
+					} elseif (preg_match('/^VALUE\/TEST:(.*):(.*):(.*)/',$field_array['source'],$matches)) {
 						$modified_value = (strcmp($matches[1],$value) !== 0)?$matches[3]:$matches[2];
-						$mode = "test value parse";
-					} elseif (preg_match('/^VALUE\/TABLE:(.*)/',$field_array["source"])) {
+						$mode = 'test value parse';
+					} elseif (preg_match('/^VALUE\/TABLE:(.*)/',$field_array['source'])) {
 						$modified_value = (array_key_exists($value,$const_table))?$const_table[$value]:'N/A';
-						$mode = "table value parse";
-					} elseif (preg_match('/^VALUE\/HEX2IP:(\d+):(\d+)/',$field_array["source"],$matches)) {
+						$mode = 'table value parse';
+					} elseif (preg_match('/^VALUE\/HEX2IP:(\d+):(\d+)/',$field_array['source'],$matches)) {
 						#$modified_value = substr(str_replace(':','',$value),$matches[1],$matches[2]);
 						$modified_value = substr(preg_replace('/(:|HEX-)/','',$value),$matches[1],$matches[2]);
-						$modified_value = implode('.',unpack ("C*",pack("H*", $modified_value)));
-						$mode = "hex2ip value parse";
+						$modified_value = implode('.',unpack ('C*',pack('H*', $modified_value)));
+						$mode = 'hex2ip value parse';
 					} else {
-						$mode = "value";
+						$mode = 'value';
 					}
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, isset($modified_value)?$modified_value:$value , $snmp_index, $oid);
-					debug_log_insert("data_query",sprintf("Found item [%s='%s'] index: %s [from %s]",$field_name,isset($modified_value)?"$modified_value ($value)":$value,$snmp_index,$mode));
+					debug_log_insert('data_query', sprintf("Found item [%s='%s'] index: %s [from %s]",$field_name,isset($modified_value)?"$modified_value ($value)":$value,$snmp_index,$mode));
 					unset($modified_value);
 				}
 			} elseif (substr($field_array['source'], 0, 11) == 'OID/REGEXP:') {
