@@ -32,6 +32,7 @@ Cacti CHANGELOG
 -issue#401: Graphs -> Apply Automation Rules fails
 -issue#404: Cacti gives success even when test mail fails
 -issue#406: HRULE Text Format special characters not escaped
+-issue#408: Suppress SNMP Units suffix from cacti_snmp_get() output
 -issue: Improve is_ipaddress functions
 -issue: Drag & Drop showing when disabled on page automation_templates.php
 -issue: Output messages displayed incorrectly in automation_templates.php and automation_snmp.php

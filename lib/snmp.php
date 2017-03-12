@@ -187,7 +187,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		if (empty($snmp_auth)) { return; }
 
 		exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . 
-			' -O fntev ' . $snmp_auth . 
+			' -O fntevU ' . $snmp_auth . 
 			' -v ' . $version . 
 			' -t ' . $timeout . 
 			' -r ' . $retries . 
@@ -429,7 +429,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		}
 
 		exec(cacti_escapeshellcmd(read_config_option('path_snmpgetnext')) . 
-			' -O fntev ' . $snmp_auth . 
+			' -O fntevU ' . $snmp_auth . 
 			' -v ' . $version . 
 			' -t ' . $timeout .
 			' -r ' . $retries . 
