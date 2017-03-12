@@ -38,6 +38,7 @@ Cacti CHANGELOG
 -issue: Output messages displayed incorrectly in automation_templates.php and automation_snmp.php
 -issue: Importing Template from old Cacti would not show Data Templates from GUI
 -issue: Handle snmp error exceptions better
+-issue: Update Apache .htaccess files to support multiple version
 -feature#197: Add external_id to Cacti for linking Cacti to other monitoring systems
 -feature#332: Support 'Copy User Groups'
 -feature: Log proper IP Address if logging in behind a NAT
