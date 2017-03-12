@@ -4452,86 +4452,90 @@ function repair_system_data_input_methods($step = 'import') {
 						AND data_name = ?', 
 						array($bhash['hash'], $data_input_id, $bhash['data_name']));
 
-					cacti_log("Data Input ID $data_input_id Bad Field ID is " . $bhash['id'] . ", Good Field ID: " . $good_field_id, false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+					if (!empty($good_field_id)) {
+						cacti_log("Data Input ID $data_input_id Bad Field ID is " . $bhash['id'] . ", Good Field ID: " . $good_field_id, false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-					cacti_log('Executing Data Input Data Check', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+						cacti_log('Executing Data Input Data Check', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-					// Data Input Data
-					$bad_mappings = db_fetch_assoc_prepared('SELECT * 
-						FROM data_input_data 
-						WHERE data_input_field_id = ?', 
-						array($bhash['id']));
+						// Data Input Data
+						$bad_mappings = db_fetch_assoc_prepared('SELECT * 
+							FROM data_input_data 
+							WHERE data_input_field_id = ?', 
+							array($bhash['id']));
 
-					if (sizeof($bad_mappings)) {
-						cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_input_fields', false);
-						foreach($bad_mappings as $mfid) {
-							$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
-								FROM data_input_data 
-								WHERE data_input_field_id = ?
-								AND data_template_data_id = ?',
-								array($good_field_id, $mfid['data_template_data_id']));
-
-							if ($good_found > 0) {
-								cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
-
-								db_execute_prepared('DELETE FROM data_input_data 
+						if (sizeof($bad_mappings)) {
+							cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_input_fields', false);
+							foreach($bad_mappings as $mfid) {
+								$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
+									FROM data_input_data 
 									WHERE data_input_field_id = ?
 									AND data_template_data_id = ?',
-									array($mfid['data_input_field_id'], $mfid['data_template_data_id']));
-							}else{
-								cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+									array($good_field_id, $mfid['data_template_data_id']));
 
-								db_execute_prepared('UPDATE data_input_data 
-									SET data_input_field_id = ?
-									WHERE data_input_field_id = ?
-									AND data_template_data_id = ?',
-									array($good_field_id, $mfid['data_input_field_id'], $mfid['data_template_data_id']));
+								if ($good_found > 0) {
+									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+
+									db_execute_prepared('DELETE FROM data_input_data 
+										WHERE data_input_field_id = ?
+										AND data_template_data_id = ?',
+										array($mfid['data_input_field_id'], $mfid['data_template_data_id']));
+								}else{
+									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+
+									db_execute_prepared('UPDATE data_input_data 
+										SET data_input_field_id = ?
+										WHERE data_input_field_id = ?
+										AND data_template_data_id = ?',
+										array($good_field_id, $mfid['data_input_field_id'], $mfid['data_template_data_id']));
+								}
 							}
+						}else{
+							cacti_log('No Bad Data Input Data Records', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 						}
-					}else{
-						cacti_log('No Bad Data Input Data Records', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
-					}
 
-					// Data Template RRD
-					cacti_log('Executing Data Template RRD Check', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);;
+						// Data Template RRD
+						cacti_log('Executing Data Template RRD Check', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);;
 
-					$bad_mappings = db_fetch_assoc_prepared('SELECT * 
-						FROM data_template_rrd 
-						WHERE data_input_field_id = ?', 
-						array($bhash['id']));
+						$bad_mappings = db_fetch_assoc_prepared('SELECT * 
+							FROM data_template_rrd 
+							WHERE data_input_field_id = ?', 
+							array($bhash['id']));
 
-					if (sizeof($bad_mappings)) {
-						cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_template_rrd', false);
+						if (sizeof($bad_mappings)) {
+							cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_template_rrd', false);
 
-						foreach($bad_mappings as $mfid) {
-							$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
-								FROM data_template_rrd 
-								WHERE data_input_field_id = ?
-								AND id = ?',
-								array($good_field_id, $mfid['id']));
-
-							if ($good_found > 0) {
-								cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
-
-								db_execute_prepared('DELETE FROM data_template_rrd 
-									WHERE data_input_field_id = ?
-									AND id = ?', 
-									array($mfid['data_input_field_id'], $mfid['id']));
-							}else{
-								cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
-
-								db_execute_prepared('UPDATE data_template_rrd 
-									SET data_input_field_id = ?
+							foreach($bad_mappings as $mfid) {
+								$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
+									FROM data_template_rrd 
 									WHERE data_input_field_id = ?
 									AND id = ?',
-									array($good_field_id, $mfid['data_input_field_id'], $mfid['id']));
-							}
-						}
-					}else{
-						cacti_log('No Bad Data Template RRD Records', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
-					}
+									array($good_field_id, $mfid['id']));
 
-					db_execute_prepared('DELETE FROM data_input_fields WHERE hash = ?', array($bhash['hash']));
+								if ($good_found > 0) {
+									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+
+									db_execute_prepared('DELETE FROM data_template_rrd 
+										WHERE data_input_field_id = ?
+										AND id = ?', 
+										array($mfid['data_input_field_id'], $mfid['id']));
+								}else{
+									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+
+									db_execute_prepared('UPDATE data_template_rrd 
+										SET data_input_field_id = ?
+										WHERE data_input_field_id = ?
+										AND id = ?',
+										array($good_field_id, $mfid['data_input_field_id'], $mfid['id']));
+								}
+							}
+						}else{
+							cacti_log('No Bad Data Template RRD Records', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+						}
+
+						db_execute_prepared('DELETE FROM data_input_fields WHERE hash = ?', array($bhash['hash']));
+					}else{
+						cacti_log('WARNING: Could not find Cacti default matching hash for unknown system hash "' . $bhash['hash'] . '" for ' . $data_input_id . '.  No repair performed.');
+					}
 				}
 			}
 		}else{
