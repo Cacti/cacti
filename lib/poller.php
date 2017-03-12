@@ -1013,6 +1013,20 @@ function replicate_in() {
 
 function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 	if (sizeof($data)) {
+		/* check if the table structure changed */
+		$local_columns  = db_fetch_assoc('SHOW COLUMNS FROM ' . $table);
+		$remote_columns = db_fetch_assoc('SHOW COLUMNS FROM ' . $table, true, $conn);
+
+		if (sizeof($local_columns) != sizeof($remote_columns)) {
+			cacti_log('NOTE: Replicate Out Detected a Table Structure Change for ' . $table);
+			$create = db_fetch_row('SHOW CREATE TABLE ' . $table);
+			if (isset($create['Create Table'])) {
+				cacti_log('NOTE: Replication Recreating Remote Table Structure for ' . $table);
+				db_execute('DROP TABLE IF EXISTS ' . $table, true, $conn);
+				db_execute($create['Create Table'], true, $conn);
+			}
+		}
+
 		$prefix    = "REPLACE INTO $table (";
 		$sql       = '';
 		$colcnt    = 0;
