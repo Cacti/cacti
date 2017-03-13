@@ -3943,9 +3943,9 @@ function update_system_mibs($host_id) {
 	if (sizeof($h)) {
 		open_snmp_session($host_id, $h);
 
-		if (isset($sessions[$host_id . '_' . $h['snmp_version']])) {
+		if (isset($sessions[$host_id . '_' . $h['snmp_version'] . '_' . $h['snmp_port']])) {
 			foreach($system_mibs as $name => $oid) {
-				$value = cacti_snmp_session_get($sessions[$host_id . '_' . $h['snmp_version']], $oid);
+				$value = cacti_snmp_session_get($sessions[$host_id . '_' . $h['snmp_version'] . '_' . $h['snmp_port']], $oid);
 
 				if (!empty($value)) {
 					db_execute_prepared("UPDATE host SET $name = ? WHERE id = ?",
