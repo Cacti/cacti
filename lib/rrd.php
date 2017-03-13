@@ -932,7 +932,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		switch($key) {
 		case "title_cache":
 			if (!empty($value)) {
-				$graph_opts .= "--title=" . cacti_escapeshellarg($value) . RRD_NL;
+				$graph_opts .= "--title=" . cacti_escapeshellarg(htmlspecialchars($value, ENT_QUOTES, 'UTF-8')) . RRD_NL;
 			}
 			break;
 		case "alt_y_grid":
@@ -2024,7 +2024,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph = 'graph';
 			}
 
-			if (isset($graph_data_array['export'])) {
+			if (isset($graph_data_array['get_error'])) {
+				return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_STDERR, $rrdtool_pipe);
+			}elseif (isset($graph_data_array['export'])) {
 				rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
 
 				return 0;
@@ -3149,4 +3151,7 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 	}
 
 	return $dom;
+}
+
+function rrdtool_create_error_image($string, $type = 'png') {
 }
