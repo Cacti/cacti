@@ -90,14 +90,14 @@ function open_snmp_session($host_id, &$item) {
 		$item['max_oids'] = read_config_option('max_get_size');
 	}
 
-	if (!isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]) && !isset($downhosts[$host_id])) {
+	if (!isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]) && !isset($downhosts[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
 		$sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
 			$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
 			$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
 			$item['snmp_timeout'], read_config_option('snmp_retries'), $item['max_oids']);
 
 		if ($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] === false) {
-			unset($sessions[$host_id . '_' . $item['snmp_version']]);
+			unset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]);
 			$downhosts[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] = true;
 		}
 	}
@@ -481,8 +481,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 						case POLLER_ACTION_SNMP: /* snmp */
 							open_snmp_session($host_id, $item);
 
-							if (isset($sessions[$host_id . '_' . $item['snmp_version']])) {
-								$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version']], $index_item['arg1']);
+							if (isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
+								$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $index_item['arg1']);
 							}else{
 								$output = 'U';
 							}
@@ -529,8 +529,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 						case POLLER_ACTION_SNMP_COUNT: /* snmp; count items */
 							open_snmp_session($host_id, $item);
 
-							if (isset($sessions[$host_id . '_' . $item['snmp_version']])) {
-								$output = sizeof(cacti_snmp_session_walk($sessions[$host_id . '_' . $item['snmp_version']], $index_item['arg1']));
+							if (isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
+								$output = sizeof(cacti_snmp_session_walk($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $index_item['arg1']));
 							}else{
 								$output = 'U';
 							}
@@ -634,8 +634,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 				}else {
 					open_snmp_session($host_id, $item);
 
-					if (isset($sessions[$host_id . '_' . $item['snmp_version']])) {
-						$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version']], $item['arg1']);
+					if (isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
+						$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $item['arg1']);
 					}else{
 						$output = 'U';
 					}

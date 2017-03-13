@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.0.6
+-issue#415: SNMP session handling broken
+
 1.0.5
 -issue#296: Poller warning for Non-SNMP device
 -issue#319: Add default 'High Collection Rate' data source profile to new installs to demonstrate concept of multiple rates
