@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 1.0.6
--issue#385: Allow special characters in graph title
+-issue#386: Allow special characters in graph title
 -issue#414: Install Wizard check path for spine
 -issue#415: SNMP session handling broken
 
