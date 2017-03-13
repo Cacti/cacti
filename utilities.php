@@ -278,7 +278,7 @@ function utilities_view_tech($php_info = '') {
 				print $input_types[$item['type_id']] . ': ' . number_format_i18n($item['total'], -1) . '<br>';
 				$data_total += $item['total'];
 			}
-			print __('Total: %d', number_format_i18n($data_total, -1));
+			print __('Total: %s', number_format_i18n($data_total, -1));
 		}else{
 			print "<span class='deviceDown'>0</span>";
 		}
@@ -311,7 +311,7 @@ function utilities_view_tech($php_info = '') {
 				print __('Action[%s]', $item['action']) . ': ' . number_format_i18n($item['total'], -1) . '<br>';
 				$total += $item['total'];
 			}
-			print __('Total: %d', number_format_i18n($total), -1);
+			print __('Total: %s', number_format_i18n($total, -1));
 		}else{
 			print "<span class='deviceDown'>" . __('No items to poll') . "</span>";
 		}
@@ -348,38 +348,38 @@ function utilities_view_tech($php_info = '') {
 		print '<td>' . read_config_option('stats_poller') . "</td>\n";
 		form_end_row();
 
-		html_section_header(__('System Memory'), 2);
-		$i = 0;
-
 		/* Get System Memory */
 		$memInfo = utilities_get_system_memory();
 
-		foreach($memInfo as $name => $value) {
-			if ($config['cacti_server_os'] == 'win32') {
-				form_alternate_row();
-				print "<td>$name</td>\n";
-				print '<td>' . number_format_i18n($value/1000, 2) . " MB</td>\n";
-				form_end_row();
-			}else{
-				switch($name) {
-				case 'SwapTotal':
-				case 'SwapFree':
-				case 'Cached':
-				case 'MemTotal':
-				case 'MemFree':
-				case 'Buffers':
-				case 'Active':
-				case 'Inactive':
+		if (sizeof($memInfo)) {
+			html_section_header(__('System Memory'), 2);
+
+			foreach($memInfo as $name => $value) {
+				if ($config['cacti_server_os'] == 'win32') {
 					form_alternate_row();
 					print "<td>$name</td>\n";
-					print '<td>' . number_format_i18n($value/1000/1000, 2) . " MB</td>\n";
+					print '<td>' . number_format_i18n($value/1000, 2) . " MB</td>\n";
 					form_end_row();
+				}else{
+					switch($name) {
+					case 'SwapTotal':
+					case 'SwapFree':
+					case 'Cached':
+					case 'MemTotal':
+					case 'MemFree':
+					case 'Buffers':
+					case 'Active':
+					case 'Inactive':
+						form_alternate_row();
+						print "<td>$name</td>\n";
+						print '<td>' . number_format_i18n($value/1000/1000, 2) . " MB</td>\n";
+						form_end_row();
+					}
 				}
 			}
-			$i++;
+
+			form_end_row();
 		}
-		print "</td>\n";
-		form_end_row();
 
 		html_section_header(__('PHP Information'), 2);
 
@@ -670,13 +670,13 @@ function utilities_view_user_log() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+						<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge User Log');?>'>
+						<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge User Log');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1003,13 +1003,13 @@ function utilities_view_logfile() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refreshme' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+						<input type='button' id='refreshme' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Log');?>'>
+						<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Log');?>'>
 					</td>
 				</tr>
 				<tr>
@@ -1321,10 +1321,10 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
-						<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+						<input type='submit' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1387,7 +1387,7 @@ function utilities_view_snmp_cache() {
 
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
-	$nav = html_nav_bar('utilities.php?action=view_snmp_cache&host_id=' . get_request_var('host_id') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, 'Entries', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_snmp_cache&host_id=' . get_request_var('host_id') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('Entries'), 'page', 'main');
 
 	print $nav;
 
@@ -1568,10 +1568,10 @@ function utilities_view_poller_cache() {
 						</select>
 					</td>
 					<td>
-						<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+						<input type='submit' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 					</td>
 					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1675,7 +1675,7 @@ function utilities_view_poller_cache() {
 
 	$poller_cache = db_fetch_assoc($poller_sql);
 
-	$nav = html_nav_bar('utilities.php?action=view_poller_cache&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 3, 'Entries', 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_poller_cache&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 3, __('Entries'), 'page', 'main');
 
 	print $nav;
 
@@ -1888,7 +1888,7 @@ function boost_display_run_status() {
 						?>
 					</td>
 					<td>
-						<input type='button' value='<?php print __('Refresh');?>' onClick='applyFilter()'>
+						<input type='button' value='<?php print __esc('Refresh');?>' onClick='applyFilter()'>
 					</td>
 				</tr>
 			</table>
@@ -2092,7 +2092,7 @@ function boost_display_run_status() {
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
 	print (($boost_last_run_duration > 60) ? __('%d minutes', (int)($boost_last_run_duration/60)) : '' ) . __('%d seconds', $boost_last_run_duration%60);
-	if ($rrd_updates != ''){ print ' (' . __('%0.2f percent of update frequency', round(100*$boost_last_run_duration/$update_interval/60));}
+	if ($rrd_updates != ''){ print ' (' . __('%0.2f percent of update frequency)', round(100*$boost_last_run_duration/$update_interval/60));}
 	print '</td>';
 
 	form_alternate_row();
@@ -2277,10 +2277,10 @@ function snmpagent_utilities_run_cache() {
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 						</td>
 						<td>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</td>
 					</tr>
 				</table>
@@ -2540,9 +2540,9 @@ function snmpagent_utilities_run_eventlog(){
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
-							<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Notification Log');?>'>
+							<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Notification Log');?>'>
 						</td>
 					</tr>
 				</table>

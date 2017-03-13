@@ -28,6 +28,7 @@ include_once('./lib/api_graph.php');
 include_once('./lib/api_tree.php');
 include_once('./lib/api_data_source.php');
 include_once('./lib/api_aggregate.php');
+include_once('./lib/api_automation.php');
 include_once('./lib/template.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/html_form_template.php');
@@ -660,7 +661,7 @@ function form_actions() {
 
 				/* work on all selected graphs */
 				for ($i=0;($i<count($selected_items));$i++) {
-					execute_graph_create_tree($selected_items[$i]);
+					automation_execute_graph_create_tree($selected_items[$i]);
 				}
 			} else {
 				api_plugin_hook_function('graphs_action_execute', get_request_var('drp_action'));
@@ -1080,6 +1081,18 @@ function item() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', $add_text);
 	draw_graph_items_list($template_item_list, 'graphs_items.php', 'local_graph_id=' . get_request_var('id'), (empty($graph_template_id) ? false : true));
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('.deleteMarker, .moveArrow').click(function(event) {
+			event.preventDefault();
+			loadPageNoHeader($(this).attr('href'));
+		});
+	});
+	</script>
+	<?php
+
 	html_end_box();
 }
 

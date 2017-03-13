@@ -3113,8 +3113,9 @@ function debug_log_return($type) {
 	}else{
 		if (isset($_SESSION['debug_log'][$type])) {
 			$log_text .= "<table style='width:100%;'>";
-			for ($i=0; $i<count($_SESSION['debug_log'][$type]); $i++) {
-				$log_text .= '<tr><td>' . $_SESSION['debug_log'][$type][$i] . '</td></tr>';
+			foreach($_SESSION['debug_log'][$type] as $key => $val) {
+				$log_text .= "<tr><td>$val</td></tr>\n";
+				unset($_SESSION['debug_log'][$type][$key]);
 			}
 			$log_text .= '</table>';
 		}
@@ -3350,7 +3351,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 
 	$from = array($from, $fromname);
 
-	mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
+	return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
 }
 
 /** mailer - function to send mails to users 
@@ -3440,7 +3441,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		// Set a reasonable timeout of 5 seconds
 		$timeout = read_config_option('settings_smtp_timeout');
 		if (empty($timeout) || $timeout < 0 || $timeout > 300) {
-			$mail->Timeout = 5;
+			$mail->Timeout = 10;
 		}else{
 			$mail->Timeout = $timeout;
 		}
@@ -3729,7 +3730,7 @@ function email_test() {
 		if ($smtp_username != '' && $smtp_password != '') {
 			$mail .= '<b>' . __('Authentication') . '</b>: true<br>';
 			$mail .= '<b>' . __('Username') . "</b>: $smtp_username<br>";
-			$mail .= '<b>' . __('Password') . '</b>: (' . _('Not Shown for Security Reasons') . ')<br>';
+			$mail .= '<b>' . __('Password') . '</b>: (' . __('Not Shown for Security Reasons') . ')<br>';
 			$mail .= '<b>' . __('Security') . "</b>: $smtp_secure<br>";
 		} else {
 			$mail .= '<b>' . __('Authentication') . '</b>: false<br>';
@@ -4451,76 +4452,90 @@ function repair_system_data_input_methods($step = 'import') {
 						AND data_name = ?', 
 						array($bhash['hash'], $data_input_id, $bhash['data_name']));
 
-					cacti_log("Data Input ID $data_input_id Bad Field ID is " . $bhash['id'] . ", Good Field ID: " . $good_field_id, false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+					if (!empty($good_field_id)) {
+						cacti_log("Data Input ID $data_input_id Bad Field ID is " . $bhash['id'] . ", Good Field ID: " . $good_field_id, false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-					cacti_log("Executing Data Input Data Check", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+						cacti_log('Executing Data Input Data Check', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-					// Data Input Data
-					$bad_mappings = db_fetch_assoc_prepared('SELECT * FROM data_input_data WHERE data_input_field_id = ?', array($bhash['id']));
+						// Data Input Data
+						$bad_mappings = db_fetch_assoc_prepared('SELECT * 
+							FROM data_input_data 
+							WHERE data_input_field_id = ?', 
+							array($bhash['id']));
 
-					if (sizeof($bad_mappings)) {
-						cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_input_fields', false);
-						foreach($bad_mappings as $mfid) {
-							$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
-								FROM data_input_data 
-								WHERE data_input_field_id = ?
-								AND data_template_data_id = ?',
-								array($good_field_id, $mfid['data_template_data_id']));
+						if (sizeof($bad_mappings)) {
+							cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_input_fields', false);
+							foreach($bad_mappings as $mfid) {
+								$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
+									FROM data_input_data 
+									WHERE data_input_field_id = ?
+									AND data_template_data_id = ?',
+									array($good_field_id, $mfid['data_template_data_id']));
 
-							if ($good_found) {
-								cacti_log("Good Found for " . $mfid['data_input_field_id'] . ", Fixing", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+								if ($good_found > 0) {
+									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-								db_execute("DELETE FROM data_input_data 
-									WHERE data_input_field_id = " . $mfid['data_input_field_id'] . " 
-									AND data_template_data_id = " . $mfid['data_template_data_id']);
-							}else{
-								cacti_log("Good NOT Found for " . $mfid['data_input_field_id'] . ", Fixing", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+									db_execute_prepared('DELETE FROM data_input_data 
+										WHERE data_input_field_id = ?
+										AND data_template_data_id = ?',
+										array($mfid['data_input_field_id'], $mfid['data_template_data_id']));
+								}else{
+									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-								db_execute("UPDATE data_input_data 
-									SET data_input_field_id = $good_field_id 
-									WHERE data_input_field_id = " . $mfid['data_input_field_id'] . " 
-									AND data_template_data_id = " . $mfid['data_template_data_id']);
+									db_execute_prepared('UPDATE data_input_data 
+										SET data_input_field_id = ?
+										WHERE data_input_field_id = ?
+										AND data_template_data_id = ?',
+										array($good_field_id, $mfid['data_input_field_id'], $mfid['data_template_data_id']));
+								}
 							}
+						}else{
+							cacti_log('No Bad Data Input Data Records', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 						}
-					}else{
-						cacti_log("No Bad Data Input Data Records", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
-					}
 
-					// Data Template RRD
-					cacti_log("Executing Data Template RRD Check", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);;
+						// Data Template RRD
+						cacti_log('Executing Data Template RRD Check', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);;
 
-					$bad_mappings = db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE data_input_field_id = ?', array($bhash['id']));
+						$bad_mappings = db_fetch_assoc_prepared('SELECT * 
+							FROM data_template_rrd 
+							WHERE data_input_field_id = ?', 
+							array($bhash['id']));
 
-					if (sizeof($bad_mappings)) {
-						cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_template_rrd', false);
+						if (sizeof($bad_mappings)) {
+							cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_template_rrd', false);
 
-						foreach($bad_mappings as $mfid) {
-							$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
-								FROM data_template_rrd 
-								WHERE data_input_field_id = ?
-								AND id = ?',
-								array($good_field_id, $mfid['id']));
+							foreach($bad_mappings as $mfid) {
+								$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
+									FROM data_template_rrd 
+									WHERE data_input_field_id = ?
+									AND id = ?',
+									array($good_field_id, $mfid['id']));
 
-							if ($good_found) {
-								cacti_log("Good Found for " . $mfid['data_input_field_id'] . ", Fixing", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+								if ($good_found > 0) {
+									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-								db_execute("DELETE FROM data_template_rrd 
-									WHERE data_input_field_id = " . $mfid['data_input_field_id'] . " 
-									AND id = " . $mfid['id']);
-							}else{
-								cacti_log("Good NOT Found for " . $mfid['data_input_field_id'] . ", Fixing", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
+									db_execute_prepared('DELETE FROM data_template_rrd 
+										WHERE data_input_field_id = ?
+										AND id = ?', 
+										array($mfid['data_input_field_id'], $mfid['id']));
+								}else{
+									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-								db_execute("UPDATE data_template_rrd 
-									SET data_input_field_id = $good_field_id 
-									WHERE data_input_field_id = " . $mfid['data_input_field_id'] . " 
-									AND id = " . $mfid['id']);
+									db_execute_prepared('UPDATE data_template_rrd 
+										SET data_input_field_id = ?
+										WHERE data_input_field_id = ?
+										AND id = ?',
+										array($good_field_id, $mfid['data_input_field_id'], $mfid['id']));
+								}
 							}
+						}else{
+							cacti_log('No Bad Data Template RRD Records', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 						}
-					}else{
-						cacti_log("No Bad Data Template RRD Records", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
-					}
 
-					db_execute_prepared('DELETE FROM data_input_fields WHERE hash = ?', array($bhash['hash']));
+						db_execute_prepared('DELETE FROM data_input_fields WHERE hash = ?', array($bhash['hash']));
+					}else{
+						cacti_log('WARNING: Could not find Cacti default matching hash for unknown system hash "' . $bhash['hash'] . '" for ' . $data_input_id . '.  No repair performed.');
+					}
 				}
 			}
 		}else{
@@ -4550,55 +4565,13 @@ if ($config['cacti_server_os'] == 'win32' && !function_exists('posix_kill')) {
 
 function is_ipaddress($ip_address = '') {
 	/* check for ipv4/v6 */
-	if (substr_count($ip_address, ':')) {
-		/* compressed dot format */
-		if (substr_count($ip_address, '::')) {
-			$ip_address = str_replace('::', ':', $ip_address);
-			$segments   = explode(':', $ip_address);
+	if (function_exists('filter_var')) {
+		if (filter_var($ip_address, FILTER_VALIDATE_IP) !== false) {
+			return true;
 		}else{
-			$segments = explode(':', $ip_address);
-
-			if (sizeof($segments) != 8) {
-				/* should be 8 segments */
-				return false;
-			}
-		}
-
-		$i = 0;
-		foreach ($segments as $segment) {
-			$i++;
-
-			if ((trim($segment) == '') && ($i == 1)) {
-				continue;
-			}elseif (!is_numeric('0x' . $segment)) {
-				return false;
-			}
-		}
-
-		return true;
-	}else if (strlen($ip_address) <= 15) {
-		$octets = explode('.', $ip_address);
-
-		$i = 0;
-
-		if (count($octets) != 4) {
 			return false;
 		}
-
-		foreach($octets as $octet) {
-			if ($i == 0 || $i == 3) {
-				if(($octet < 0) || ($octet > 255)) {
-					return false;
-				}
-			}else{
-				if(($octet < 0) || ($octet > 255)) {
-					return false;
-				}
-			}
-
-			$i++;
-		}
-
+	}elseif (inet_pton($ip_address) !== false) {
 		return true;
 	}else{
 		return false;

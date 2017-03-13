@@ -585,6 +585,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	}
 
 	$save['data_template_id'] = $data_template_id;
+	$save['data_source_profile_id'] = $profile_id;
 
 	reset($struct_data_source);
 	while (list($field_name, $field_array) = each($struct_data_source)) {

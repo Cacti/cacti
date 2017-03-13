@@ -450,10 +450,7 @@ function item() {
 	$(function() {
 		$('.deleteMarker, .moveArrow').click(function(event) {
 			event.preventDefault();
-			$.get($(this).attr('href'), function(data) {
-				$('#main').html(data);
-				applySkin();
-			});
+			loadPageNoHeader($(this).attr('href'));
 		});
 	});
 	</script>

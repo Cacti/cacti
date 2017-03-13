@@ -209,8 +209,6 @@ function form_automation_snmp_actions() {
 
 	general_header();
 
-	display_output_messages();
-
 	?>
 	<script type='text/javascript'>
 	function goTo(location) {

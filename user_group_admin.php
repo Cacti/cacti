@@ -28,6 +28,7 @@ set_default_action();
 
 $group_actions = array(
 	1 => __('Delete'),
+	2 => __('Copy'),
 	3 => __('Enable'),
 	4 => __('Disable')
 );
@@ -195,6 +196,53 @@ function user_group_remove($id) {
 	db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ?', array($id));
 }
 
+function user_group_copy($id, $prefix = 'New Group') {
+	static $count = 1;
+	
+	$name = $prefix . ' ' . $count;
+
+	db_execute_prepared('INSERT INTO user_auth_group 
+		(name, description, graph_settings, login_opts, show_tree, show_list, show_preview, 
+		policy_graphs, policy_trees, policy_hosts, policy_graph_templates, enabled)
+		SELECT ' . db_qstr($name) . ', description, graph_settings, login_opts, show_tree, show_list, show_preview, 
+		policy_graphs, policy_trees, policy_hosts, policy_graph_templates, enabled
+		FROM user_auth_group WHERE id = ?', array($id));
+
+	$id = db_fetch_insert_id();
+
+	if (!empty($id)) {
+		$perms = db_fetch_assoc_prepared('SELECT * 
+			FROM user_auth_group_perms 
+			WHERE group_id = ?', 
+			array($id));
+
+		if (sizeof($perms)) {
+			foreach($perms as $p) {
+				db_execute_prepared('INSERT INTO user_auth_group_perms 
+					(group_id, item_id, type) 
+					VALUES (?, ?, ?)', 
+					array($id, $p['item_id'], $p['type']));
+			}
+		}
+
+		$realms = db_fetch_assoc_prepared('SELECT * 
+			FROM user_auth_group_realm 
+			WHERE group_id = ?', 
+			array($id));
+
+		if (sizeof($realms)) {
+			foreach($realms as $r) {
+				db_execute_prepared('INSERT INTO user_auth_group_realm 
+					(group_id, realm_id) 
+					VALUES (?, ?)', 
+					array($id, $r['realm_id']));
+			}
+		}
+	}
+
+	$count++;
+}
+
 function update_policies() {
 	$set = '';
 
@@ -342,6 +390,10 @@ function form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					user_group_remove($selected_items[$i]);
 				}
+			}elseif (get_nfilter_request_var('drp_action') == '2') { /* copy */
+				for ($i=0;($i<count($selected_items));$i++) {
+					user_group_copy($selected_items[$i], get_nfilter_request_var('group_prefix'));
+				}
 			}elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					user_group_enable($selected_items[$i]);
@@ -396,6 +448,23 @@ function form_actions() {
 
 		$group_id = '';
 
+		if ((get_nfilter_request_var('drp_action') == '2') && (sizeof($group_array))) { /* copy */
+			print "<tr>
+				<td class='textArea'>
+					<p>" . __n('Click \'Continue\' to Copy the following User Group to a new User Group.', 'Click \'Continue\' to Copy following User Groups to new User Groups.', sizeof($group_array)) . "</p>
+					<div class='itemlist'><ul>$group_list</ul></div>
+				</td>
+			</tr>
+			<tr>
+				<td class='textArea'>
+					<p>" . __('Group Prefix:') . " ";
+			print form_text_box('group_prefix', __('New Group'), '', 25);
+			print "</p></td>
+				</tr>\n";
+
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Copy User Group', 'Copy User Groups', sizeof($group_array)) . "'>";
+		}
+
 		if ((get_nfilter_request_var('drp_action') == '3') && (sizeof($group_array))) { /* enable */
 			print "<tr>
 				<td class='textArea'>
@@ -425,13 +494,10 @@ function form_actions() {
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>";
-	if (get_nfilter_request_var('drp_action') == '2') { /* copy */
-		print "<input type='hidden' name='selected_items' value='" . $group_id . "'>\n";
-	}else{
-		print "<input type='hidden' name='selected_items' value='" . (isset($group_array) ? serialize($group_array) : '') . "'>\n";
-	}
-	print "				<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
-			$save_html
+
+	print "<input type='hidden' name='selected_items' value='" . (isset($group_array) ? serialize($group_array) : '') . "'>\n";
+	print "<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+		$save_html
 		</td>
 	</tr>\n";
 

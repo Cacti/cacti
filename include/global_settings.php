@@ -1295,7 +1295,7 @@ $settings = array(
 			'friendly_name' => __('SMTP Timeout'),
 			'description' => __('Please enter the SMTP timeout in seconds.'),
 			'method' => 'textbox',
-			'default' => '5',
+			'default' => '10',
 			'max_length' => '10',
 			'size' => '5'
 			),

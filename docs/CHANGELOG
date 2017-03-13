@@ -1,22 +1,68 @@
 Cacti CHANGELOG
 
+1.0.5
+-issue#296: Poller warning for Non-SNMP device
+-issue#319: Add default 'High Collection Rate' data source profile to new installs to demonstrate concept of multiple rates
+-issue#330: Import templates to non-default Data Profile
+-issue#337: Error when try create new graph - SNMP - Generic OID
+-issue#342: Infinite loop in poller_automation.php with invalid schedule
+-issue#343: Device discovery cannot handle dots in device name
+-issue#344: Unable to upgrade to latest Cacti on FreeBSD
+-issue#353: Legacy broadcast & multicast packet counters missing in interface.xml
+-issue#354: Place on tree dashes / ordering is not correct
+-issue#355: Replace table rows with count when using InnoDB tables
+-issue#357: If recovery mode runs longer than a polling interval, a second is spawned
+-issue#358: Sending test e-mail results in warning
+-issue#360: Issue importing cacti.sql with some charsets
+-issue#364: Moving graph item causes page render issue
+-issue#365: ss_host_disk.php and ss_host_cpu.php should use return
+-issue#367: Upgrade chart.js to version 2.5
+-issue#368: Issue with device automation ip vs. ip_address
+-issue#369: Interface bits/second total Bandwidth wrong CDEF
+-issue#375: Drag and Drop of Devices and Graphs allows dropping onto self
+-issue#380: Ignores a non-standard SNMP port
+-issue#382: When using php5.5+ new users unable to change their password
+-issue#384: graph_view.php backtrace errors
+-issue#385: Unable to place an aggregate grapn on a subtree
+-issue#390: Display graphs from this aggregate icon next to graph not displaying
+-issue#392: cdef.php missing sql where for system cdef's
+-issue#398: checkbox is not honored when creating tree
+-issue#399: External link configuration: Order buttons don't work
+-issue#400: SNMP Engine ID (v3) field too short
+-issue#401: Graphs -> Apply Automation Rules fails
+-issue#404: Success even when test mail fails
+-issue#406: HRULE text format special characters not escaped
+-issue#408: Suppress SNMP units suffix from cacti_snmp_get() output
+-issue: Improve is_ipaddress functions
+-issue: Drag & drop showing when disabled on page automation_templates.php
+-issue: Output messages displayed incorrectly in automation_templates.php and automation_snmp.php
+-issue: Importing template from old Cacti would not show data templates
+-issue: Handle snmp error exceptions better
+-issue: Update Apache .htaccess files to support multiple version
+-issue: When executing a full sync, if the table structured has changed, recreate the remote table
+-issue: Multiple domains not working as expected
+-feature#197: Add external_id to Cacti for linking Cacti to other monitoring systems
+-feature#332: Support copy user groups
+-feature: Log proper IP address if logging in behind a NAT
+-feature: New qquery parsing rules: VALUE/TEST, VALUE/TABLE, VALUE/HEX2IP
+
 1.0.4
 -feature: Javascript: make menu movement smooth and use localStorage
--feature:: Added cacti_snmp_get_raw() for plugin developers
--issue288: Function cacti_snmp_get bad handling of wierd value into snmp_value
--issue298: Graph generation issue with SNMP - Bits/Sec + Total Bandwith
--issue301: Unresolvable DNS hostname causing backtraces
--issue302: spikekill memory leak
--issue303: Error when creating tree items with "&" in the name
--issue307: Aggregate graph gives CMDPHP errors
--issue308: UI resize issue
--issue309: Show "Save Successful" notification permanently
--issue311: Graph thumbnail settings in profile setting does not work
--issue320: Users can not change their own password
--issue324: Aggregate template graph template JavaScript error
--issue352: Add configurable auto-logout and page-reload options
--issue329: Customize the favicon
--issue334: primary key on poller output boost table not efficient/not being used correctly
+-feature: Added cacti_snmp_get_raw() for plugin developers
+-issue#288: Function cacti_snmp_get bad handling of wierd value into snmp_value
+-issue#298: Graph generation issue with SNMP - Bits/Sec + Total Bandwith
+-issue#301: Unresolvable DNS hostname causing backtraces
+-issue#302: spikekill memory leak
+-issue#303: Error when creating tree items with "&" in the name
+-issue#307: Aggregate graph gives CMDPHP errors
+-issue#308: UI resize issue
+-issue#309: Show "Save Successful" notification permanently
+-issue#311: Graph thumbnail settings in profile setting does not work
+-issue#320: Users can not change their own password
+-issue#324: Aggregate template graph template JavaScript error
+-issue#352: Add configurable auto-logout and page-reload options
+-issue#329: Customize the favicon
+-issue#334: primary key on poller output boost table not efficient/not being used correctly
 -issue: Fixed issues with Dark theme
 -issue: Fixed issues with Paw theme
 -issue: Fix timespan calculation

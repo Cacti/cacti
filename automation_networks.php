@@ -177,6 +177,27 @@ function api_networks_save($post) {
 		$save['monthly_week']  = form_input_validate(isset($post['monthly_week']) ? implode(',', $post['monthly_week']):'', 'monthly_week', '', true, 3);
 		$save['monthly_day']   = form_input_validate(isset($post['monthly_day']) ? implode(',', $post['monthly_day']):'', 'monthly_day', '', true, 3);
 
+		/* check for bad rules */
+		if ($save['sched_type'] == '3') {
+			if ($save['day_of_week'] == '') {
+				$save['enabled'] = '';
+				$_SESSION['automation_message'] = __('ERROR: You must specificy the day of the week.  Disabling Network %s!.', $net);
+				raise_message('automation_message');
+			}
+		}elseif ($save['sched_type'] == '4') {
+			if ($save['month'] == '' || $save['day_of_month'] == '') {
+				$save['enabled'] = '';
+				$_SESSION['automation_message'] = __('ERROR: You must specificy both the Months and Days of Month.  Disabling Network %s!.', $net);
+				raise_message('automation_message');
+			}
+		}elseif ($save['sched_type'] == '5') {
+			if ($save['month'] == '' || $save['monthly_day'] == '' || $save['monthly_week'] == '') {
+				$save['enabled'] = '';
+				$_SESSION['automation_message'] = __('ERROR: You must specificy the Months, Weeks of Months, and Days of Week.  Disabling Network %s!.', $net);
+				raise_message('automation_message');
+			}
+		}
+
 		/* validate the network definitions and rais error if failed */
 		$continue  = true;
 		$total_ips = 0;
@@ -231,7 +252,6 @@ function form_actions() {
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
-
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				foreach($selected_items as $item) {
@@ -352,8 +372,6 @@ function network_edit() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	/* ==================================================== */
-
-	display_output_messages();
 
 	$sched_types = array(
 		'1' => __('Manual'), 

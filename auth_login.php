@@ -71,7 +71,7 @@ $ldap_error_message = '';
 $realm        = 0;
 
 if (get_nfilter_request_var('action') == 'login') {
-	if (get_nfilter_request_var('realm') == 'local') {
+	if (get_nfilter_request_var('realm') == '1') {
 		$auth_method = 1;
 	}else{
 		$auth_method = read_config_option('auth_method');
@@ -236,7 +236,13 @@ if (get_nfilter_request_var('action') == 'login') {
 	/* Process the user  */
 	if (sizeof($user)) {
 		cacti_log("LOGIN: User '" . $user['username'] . "' Authenticated", false, 'AUTH');
-		db_execute_prepared('INSERT IGNORE INTO user_log (username, user_id, result, ip, time) VALUES (?, ?, 1, ?, NOW())', array($username, $user['id'], $_SERVER['REMOTE_ADDR']));
+		if (isset($_SERVER['X-Forwarded-For'])) {
+			db_execute_prepared('INSERT IGNORE INTO user_log (username, user_id, result, ip, time) VALUES (?, ?, 1, ?, NOW())',array($username, $user['id'], $_SERVER['X-Forwarded-For']));
+		} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			db_execute_prepared('INSERT IGNORE INTO user_log (username, user_id, result, ip, time) VALUES (?, ?, 1, ?, NOW())',array($username, $user['id'], $_SERVER['HTTP_X_FORWARDED_FOR']));
+		} else {
+			db_execute_prepared('INSERT IGNORE INTO user_log (username, user_id, result, ip, time) VALUES (?, ?, 1, ?, NOW())', array($username, $user['id'], $_SERVER['REMOTE_ADDR']));
+		}
 
 		/* is user enabled */
 		$user_enabled = $user['enabled'];
@@ -538,7 +544,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 								<label for='login_username'><?php print __('Username');?></label>
 							</td>
 							<td>
-								<input type='text' id='login_username' name='login_username' value='<?php print htmlspecialchars($username, ENT_QUOTES); ?>' placeholder='<?php print __('Username');?>'>
+								<input type='text' id='login_username' name='login_username' value='<?php print htmlspecialchars($username, ENT_QUOTES); ?>' placeholder='<?php print __esc('Username');?>'>
 							</td>
 						</tr>
 						<tr>
@@ -554,12 +560,12 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 							if (read_config_option('auth_method') == '3') {
 								$realms = api_plugin_hook_function('login_realms', 
 									array(
-										'local' => array(
-											'name' => 'Local', 
+										'1' => array(
+											'name' => __('Local'), 
 											'selected' => false
 										), 
-										'ldap' => array(
-											'name' => 'LDAP', 
+										'2' => array(
+											'name' => __('LDAP'), 
 											'selected' => true
 										)
 									)
@@ -575,8 +581,8 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 							<td>
 								<select id='realm' name='realm'><?php
 									if (sizeof($realms)) {
-									foreach($realms as $name => $realm) {
-										print "\t\t\t\t\t<option value='" . $name . "'" . ($realm['selected'] ? ' selected':'') . '>' . htmlspecialchars($realm['name']) . "</option>\n";
+									foreach($realms as $index => $realm) {
+										print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected':'') . '>' . htmlspecialchars($realm['name']) . "</option>\n";
 									}
 									}
 									?>
@@ -592,7 +598,7 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 					<?php } ?>
 						<tr>
 							<td cospan='2'>
-								<input type='submit' value='<?php print __('Login');?>'>
+								<input type='submit' value='<?php print __esc('Login');?>'>
 							</td>
 						</tr>
 					</table>

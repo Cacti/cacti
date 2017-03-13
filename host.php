@@ -168,7 +168,7 @@ function form_save() {
 				get_nfilter_request_var('snmp_priv_protocol'), get_nfilter_request_var('snmp_context'), 
 				get_nfilter_request_var('snmp_engine_id'), get_nfilter_request_var('max_oids'), 
 				get_nfilter_request_var('device_threads'), get_nfilter_request_var('poller_id'), 
-				get_nfilter_request_var('site_id'));
+				get_nfilter_request_var('site_id'), get_nfilter_request_var('external_id'));
 
 			if ($host_id !== false) {
 				api_plugin_hook_function('host_save', array('host_id' => $host_id));
@@ -511,7 +511,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Device(s) under the branch selected below.') . "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
-					<p><strong>" . __('Destination Branch:') . "</strong><br>\n";
+					<p>" . __('Destination Branch:') . "<br>\n";
 					grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); 
 
 			print "</p>
@@ -878,6 +878,13 @@ function host_edit() {
 			print "<tr class='tableRow'><td colspan='4'><em>" . __('No Associated Data Queries.') . "</em></td></tr>"; 
 		}
 
+		if ($host['snmp_version'] == 0) {
+			unset($reindex_types[1]);
+			$default = 0;
+		}else{
+			$default = read_config_option('reindex_method');
+		}
+
 		?>
 		<tr class='odd'>
 			<td class='saveRow' colspan='5'>
@@ -893,7 +900,7 @@ function host_edit() {
 							<?php print __('Re-Index Method');?>
 						</td>
 						<td>
-							<?php form_dropdown('reindex_method',$reindex_types,'','',read_config_option('reindex_method'),'','');?>
+							<?php form_dropdown('reindex_method',$reindex_types,'','',$default,'','');?>
 						</td>
 						<td>
 							<input type='button' value='<?php print __('Add');?>' id='add_dq' title='<?php print __('Add Data Query to Device');?>'>

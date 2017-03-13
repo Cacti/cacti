@@ -1672,7 +1672,7 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
  * @param string $sql_where - additional where clause
  * @return array			- matching graphs
  */
-function get_matching_graphs($rule, $rule_type, $sql_where='') {
+function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 	cacti_log(__FUNCTION__ . ' called: ' . serialize($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description, h.disabled, 
@@ -2234,7 +2234,7 @@ function automation_execute_graph_create_tree($graph_id) {
 			
 			/* does this rule apply to the current graph?
 			 * test 'eligible objects' rule items */
-			$matches = get_matching_graphs($rule, AUTOMATION_RULE_TYPE_TREE_MATCH, 'graph_local.id=' . $graph_id);
+			$matches = get_matching_graphs($rule, AUTOMATION_RULE_TYPE_TREE_MATCH, 'gl.id=' . $graph_id);
 
 			cacti_log(__FUNCTION__ . ' Graph[' . $graph_id . '], Matching graphs: ' . serialize($matches), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 			
@@ -2668,7 +2668,7 @@ function automation_add_device ($device, $web = false) {
 	$snmp_sysName         = preg_split('/[\s.]+/', $device['snmp_sysName'], -1, PREG_SPLIT_NO_EMPTY);
 	$description          = (isset($snmp_sysName[0]) != '' ? $snmp_sysName[0] : ($device['hostname'] == '' ? $device['ip'] : $device['hostname']));
 	$poller_id            = isset($device['poller_id']) ? $device['poller_id'] : db_fetch_cell('SELECT id FROM poller ORDER BY id ASC LIMIT 0,1', 'id');
-	$ip                   = $device['ip_address'];
+	$ip                   = isset($device['ip']) ? $device['ip']:$device['ip_address'];
 	$community            = $device['community'];
 	$snmp_ver             = $device['snmp_version'];
 	$snmp_username	      = $device['snmp_username'];
