@@ -40,6 +40,7 @@ Cacti CHANGELOG
 -issue: Handle snmp error exceptions better
 -issue: Update Apache .htaccess files to support multiple version
 -issue: When executing a Full Sync, if the table structured has changed, recreate the remote table
+-issue: Multiple domains not working as expected
 -feature#197: Add external_id to Cacti for linking Cacti to other monitoring systems
 -feature#332: Support 'Copy User Groups'
 -feature: Log proper IP Address if logging in behind a NAT
