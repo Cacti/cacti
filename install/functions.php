@@ -126,9 +126,39 @@ function db_install_add_cache ($status, $sql) {
 function find_best_path($binary_name) {
 	global $config;
 	if ($config['cacti_server_os'] == 'win32') {
-		$search_paths = array('c:/usr/bin', 'c:/cacti', 'c:/rrdtool', 'c:/spine', 'c:/php', 'c:/progra~1/php', 'c:/net-snmp/bin', 'c:/progra~1/net-snmp/bin', 'd:/usr/bin', 'd:/net-snmp/bin', 'd:/progra~1/net-snmp/bin', 'd:/cacti', 'd:/rrdtool', 'd:/spine', 'd:/php', 'd:/progra~1/php');
+		$search_paths = array(
+			'c:/usr/bin', 
+			'c:/cacti', 
+			'c:/rrdtool', 
+			'c:/spine', 
+			'c:/php', 
+			'c:/net-snmp/bin', 
+			'c:/progra~1/net-snmp/bin', 
+			'c:/progra~1/php', 
+			'c:/progra~1/spine', 
+			'c:/progra~1/spine/bin', 
+			'd:/usr/bin', 
+			'd:/cacti', 
+			'd:/rrdtool', 
+			'd:/spine', 
+			'd:/php', 
+			'd:/net-snmp/bin', 
+			'd:/progra~1/net-snmp/bin', 
+			'd:/progra~1/php', 
+			'd:/progra~1/spine', 
+			'd:/progra~1/spine/bin'
+		);
 	}else{
-		$search_paths = array('/bin', '/sbin', '/usr/bin', '/usr/sbin', '/usr/local/bin', '/usr/local/sbin');
+		$search_paths = array(
+			'/bin', 
+			'/sbin', 
+			'/usr/bin', 
+			'/usr/sbin', 
+			'/usr/local/bin', 
+			'/usr/local/sbin',
+			'/usr/local/spine/bin',
+			'/usr/spine/bin'
+		);
 	}
 
 	for ($i=0; $i<count($search_paths); $i++) {
@@ -357,6 +387,31 @@ function install_file_paths () {
 			$input['path_snmptrap']['default'] = $which_snmptrap;
 		}else{
 			$input['path_snmptrap']['default'] = 'c:/net-snmp/bin/snmptrap.exe';
+		}
+	}
+
+	/* spine Binary Path */
+	$input['path_spine'] = $settings['path']['path_spine'];
+
+	if ($config['cacti_server_os'] == 'unix') {
+		$which_spine = find_best_path('spine');
+
+		if (config_value_exists('path_spine')) {
+			$input['path_spine']['default'] = read_config_option('path_spine');
+		}else if (!empty($which_spine)) {
+			$input['path_spine']['default'] = $which_spine;
+		}else{
+			$input['path_spine']['default'] = '/usr/local/bin/spine';
+		}
+	}elseif ($config['cacti_server_os'] == 'win32') {
+		$which_spine = find_best_path('spine.exe');
+
+		if (config_value_exists('path_spine')) {
+			$input['path_spine']['default'] = read_config_option('path_spine');
+		}else if (!empty($which_spine)) {
+			$input['path_spine']['default'] = $which_spine;
+		}else{
+			$input['path_spine']['default'] = 'c:/spine/bin/spine.exe';
 		}
 	}
 

@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.0.6
+-issue#414: Install Wizard check path for spine
 -issue#415: SNMP session handling broken
 
 1.0.5
