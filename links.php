@@ -309,17 +309,17 @@ function pages() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='textbox' id='filter' value='<?php print $_REQUEST['filter'];?>' size='25'>
+						<input type='textbox' id='filter' value='<?php print get_request_var('filter');?>' size='25'>
 					</td>
 					<td>
 						<?php print __('Links');?>
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value=-1 <?php $_REQUEST['rows'] == -1 ? 'selected':'';?>><?php print __('Default');?></option>
+							<option value=-1 <?php get_request_var('rows') == -1 ? 'selected':'';?>><?php print __('Default');?></option>
 							<?php
 							foreach ($item_rows as $key => $row) {
-								echo "<option value='" . $key . "'" . ($key == $_REQUEST['rows'] ? ' selected' : '') . '>' . $row . '</option>';
+								echo "<option value='" . $key . "'" . ($key == get_request_var('rows') ? ' selected' : '') . '>' . $row . '</option>';
 							}
 							?>
 						</select>
