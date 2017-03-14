@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#386: Allow special characters in graph title
 -issue#414: Install Wizard check path for spine
 -issue#415: SNMP session handling broken
+-issue#418: LDAP create user from template not working
 
 1.0.5
 -issue#296: Poller warning for Non-SNMP device
