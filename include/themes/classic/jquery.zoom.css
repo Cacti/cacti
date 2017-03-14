@@ -222,3 +222,10 @@
 	background: #E0EDFE;
 }
 
+.zoom-hidden {
+	z-index: -999;
+	position: fixed;
+	top: 0;
+	left: 0;
+	opacity: 0;
+}

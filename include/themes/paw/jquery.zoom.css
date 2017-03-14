@@ -172,7 +172,7 @@
 }
 
 .zoom-menu .first_li span {
-	width:110px;
+	width:115px;
 	display:block;
 	padding:5px 10px;
 	cursor:pointer
@@ -221,3 +221,10 @@
 	background: #E0EDFE;
 }
 
+.zoom-hidden {
+	z-index: -999;
+	position: fixed;
+	top: 0;
+	left: 0;
+	opacity: 0;
+}
