@@ -2655,7 +2655,7 @@ msgid "Graph Item Fields"
 msgstr ""
 
 msgid "Graph Management"
-msgstr ""
+msgstr "Управление графиками"
 
 msgid "Graph Name"
 msgstr ""
@@ -3586,7 +3586,7 @@ msgid "Aggregate"
 msgstr ""
 
 msgid "Automation"
-msgstr ""
+msgstr "Автоматизация"
 
 msgid "Discovered Devices"
 msgstr ""
@@ -6052,10 +6052,10 @@ msgid ""
 msgstr ""
 
 msgid "Special Users"
-msgstr ""
+msgstr "Специальный пользователь"
 
 msgid "Guest User"
-msgstr ""
+msgstr "Гость"
 
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
 msgstr ""
@@ -7686,7 +7686,7 @@ msgid "Tail Lines"
 msgstr ""
 
 msgid "Message Type"
-msgstr ""
+msgstr "Тип сообщения"
 
 msgid "Stats"
 msgstr ""
@@ -7749,7 +7749,7 @@ msgid "(Remove)"
 msgstr ""
 
 msgid "View Cacti Log"
-msgstr ""
+msgstr "Просмотреть логи Cacti"
 
 msgid "Graph Trees"
 msgstr ""
@@ -7921,7 +7921,7 @@ msgid "Showing %s %d to %d of %s [ %s ]"
 msgstr ""
 
 msgid "Showing All %d %s"
-msgstr ""
+msgstr "Показаны все %d %s"
 
 msgid "No %s Found"
 msgstr ""
@@ -8394,7 +8394,7 @@ msgid "Invalid"
 msgstr ""
 
 msgid "No Reports Found"
-msgstr ""
+msgstr "Отчёты не найдены"
 
 msgid "Tree:"
 msgstr ""
@@ -11032,7 +11032,7 @@ msgid "Show Device Details"
 msgstr "Детали устройства"
 
 msgid "Showing All Graphs"
-msgstr "Показать Все Графики"
+msgstr "Показаны Все Графики"
 
 msgid "Showing Graphs"
 msgstr "Показать Графики"
