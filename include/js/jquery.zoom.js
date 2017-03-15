@@ -64,7 +64,7 @@
 			// "options" contains the start input parameters
 			options: $.extend(defaults, options),
 			// "attributes" holds all values that will describe the selected area
-			attr: { activeElement:'', start:'none', end:'none', action:'left2right', location: window.location.href.split("?") }
+			attr: { activeElement:'', start:'none', end:'none', action:'left2right', location: window.location.href.split("?"), urlPath: ((typeof urlPath == 'undefined') ? '' : urlPath), origin: ((typeof location.origin == 'undefined') ? location.protocol + '//' + location.host : location.origin)}
 		};
 
 		// support jQuery's concatenation
@@ -186,16 +186,21 @@
 			}
 
 			/* fetch all attributes that rrdgraph provides */
-			zoom.image.top				= parseInt($this.offset().top);
-			zoom.image.left				= parseInt($this.offset().left);
-			zoom.image.width			= parseInt($this.attr('image_width'));
-			zoom.image.height			= parseInt($this.attr('image_height'));
-			zoom.graph.top				= parseInt($this.attr('graph_top'));
-			zoom.graph.left				= parseInt($this.attr('graph_left'));
-			zoom.graph.width			= parseInt($this.attr('graph_width'));
-			zoom.graph.height			= parseInt($this.attr('graph_height'));
-			zoom.graph.start			= parseInt($this.attr('graph_start'));
-			zoom.graph.end				= parseInt($this.attr('graph_end'));
+			zoom.image.data 			= atob( zoom.initiator.attr('src').split(',')[1] );
+			zoom.image.type 			= (zoom.initiator.attr('src').split(';')[0] == 'data:image/svg+xml' )? 'svg' : 'png';
+			zoom.image.id				= zoom.initiator.attr('id').replace('graph_', '');
+			zoom.image.name 			= 'cacti_' + zoom.image.id + '.' + zoom.image.type;
+			zoom.image.legend			= ($('#thumbnails').length != 0 && $('#thumbnails').is(':checked')) ? false : true;
+			zoom.image.top				= parseInt(zoom.initiator.offset().top);
+			zoom.image.left				= parseInt(zoom.initiator.offset().left);
+			zoom.image.width			= parseInt(zoom.initiator.attr('image_width'));
+			zoom.image.height			= parseInt(zoom.initiator.attr('image_height'));
+			zoom.graph.top				= parseInt(zoom.initiator.attr('graph_top'));
+			zoom.graph.left				= parseInt(zoom.initiator.attr('graph_left'));
+			zoom.graph.width			= parseInt(zoom.initiator.attr('graph_width'));
+			zoom.graph.height			= parseInt(zoom.initiator.attr('graph_height'));
+			zoom.graph.start			= parseInt(zoom.initiator.attr('graph_start'));
+			zoom.graph.end				= parseInt(zoom.initiator.attr('graph_end'));
 			zoom.graph.timespan			= zoom.graph.end - zoom.graph.start;
 			zoom.graph.secondsPerPixel 	= zoom.graph.timespan/zoom.graph.width;
 			zoom.box.width				= zoom.graph.width;
@@ -212,10 +217,6 @@
 			// the individual events needed. Once added we will only reset
 			// and reposition these elements.
 
-			zoom.image.data 			= atob($this.attr('src').split(',')[1]);
-			zoom.image.type 			= ($this.attr('src').split(';')[0] == 'data:image/svg+xml' )? 'svg' : 'png';
-			zoom.image.name 			= 'cacti_ ' + $this.attr('id') + '.' + zoom.image.type;
-
 			// add the container for all elements Zoom requires
 			if($("#zoom-container").length == 0) {
 				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
@@ -224,9 +225,13 @@
 				$("#zoom-container").css({ top:zoom.image.top+'px', left:zoom.image.left+'px', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' });
 			}
 
-			// add an (hidden) anchor to support a download of the image itself
+			// add a hidden anchor to use for downloads
 			if($("#zoom-image").length == 0) {
-				$("<a id='zoom-image' display='none'></a>").appendTo("body");
+				$("<a class='zoom-hidden' id='zoom-image'></a>").appendTo("body");
+			}
+			// add a hidden textareas used to copy images / links
+			if($("#zoom-textarea").length == 0) {
+				$("<textarea id='zoom-textarea' class='zoom-hidden'></textarea>").appendTo("body");
 			}
 
 			// add the "zoomBox"
@@ -283,8 +288,12 @@
 					+ '</div>'
 					+ '<div class="sep_li"></div>'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-disk zoomContextMenuAction__save"></div>'
-					+       '<span class="zoomContextMenuAction__save">Save Image</span>'
+					+ 		'<div class="ui-icon ui-icon-empty"></div><span>Graph</span>'
+					+ 		'<div class="inner_li">'
+					+ 			'<span class="zoomContextMenuAction__newTab">Open in new tab</a></span>'
+					+			'<span class="zoomContextMenuAction__save">Save graph</span>'
+					+ 			'<span class="zoomContextMenuAction__link">Copy graph link</span>'
+					+ 		'</div>'
 					+ '</div>'
 					+ '<div class="first_li advanced_mode">'
 					+ 		'<div class="ui-icon ui-icon-wrench"></div><span>Settings</span>'
@@ -925,8 +934,22 @@
 						window.navigator.msSaveOrOpenBlob(blob, zoom.image.name);
 					} else {
 						var objectUrl = URL.createObjectURL(blob);
-						$('#zoom-image').attr({'download':zoom.image.name, 'href':objectUrl}).get(0).click();
+						$('#zoom-image').removeAttr('target').attr({'download':zoom.image.name, 'href':objectUrl }).get(0).click();
 					}
+					break;
+				case "newTab":
+					var url = zoom.attr.urlPath + 'graph_image.php?local_graph_id=' + zoom.image.id + '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' );
+					$('#zoom-image').removeAttr('download').attr({ 'href':url, 'target': '_bank' }).get(0).click();
+					break;
+				case "link":
+					var url = zoom.attr.origin + ((zoom.attr.urlPath == '') ? '/' : zoom.attr.urlPath) + 'graph_image.php?local_graph_id=' + zoom.image.id + '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' );
+					$('#zoom-textarea').html(url).select();
+					try {
+						var successful = document.execCommand('copy');
+					} catch (err) {
+						alert('Unsupported Browser');
+					}
+					return false;
 					break;
 			}
 		}

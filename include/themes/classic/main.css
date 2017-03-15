@@ -660,7 +660,8 @@ ul#breadcrumbs {
 	float:left;
 	width:162px;
 	height: 100%;
-	overflow:auto;
+	overflow-y:auto !important;
+	overflow-x:auto;
 }
 
 .cactiConsoleNavigationArea table {

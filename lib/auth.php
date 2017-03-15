@@ -278,18 +278,13 @@ function user_enable($user_id) {
 function get_auth_realms($login = false) {
 	static $realms = array();
 
-	$realms = array(
-		'1' => array('name' => __('Local'),     'selected' => true),
-		'3' => array('name' => __('LDAP'),      'selected' => false),
-		'2' => array('name' => __('Web Basic'), 'selected' => false)
-	);
-
 	$drealms       = db_fetch_assoc('SELECT * FROM user_domains WHERE enabled="on" ORDER BY domain_name');
 	$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
+	$auth_method   = read_config_option('auth_method');
 
-	if (sizeof($drealms)) {
+	if (sizeof($drealms) && $auth_method == 4) {
 		if ($login) {
-			$new_realms['1'] = array('name' => __('Local'), 'selected' => false);
+			$new_realms['0'] = array('name' => __('Local'), 'selected' => false);
 			foreach($drealms as $realm) {
 				$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
 			}
@@ -297,16 +292,22 @@ function get_auth_realms($login = false) {
 			if (!empty($default_realm)) {
 				$new_realms[1000+$default_realm]['selected'] = true;
 			}else{
-				$new_realms['1']['selected'] = true;
+				$new_realms['0']['selected'] = true;
 			}
 		}else{
-			$new_realms['1'] = __('Local');
+			$new_realms['0'] = __('Local');
 			foreach($drealms as $realm) {
 				$new_realms[1000+$realm['domain_id']] = $realm['domain_name'];
 			}
 		}
 
 		$realms = $new_realms;
+	}else{
+		$realms = array(
+			'0' => __('Local'),
+			'3' => __('LDAP'),
+			'2' => __('Web Basic')
+		);
 	}
 
 	return $realms;
