@@ -101,23 +101,29 @@ case 'changepassword':
 	}
 	$password_old = md5(get_nfilter_request_var('password'));
 
-	// Get old password to compare against the database 
-	if (function_exists('password_hash')) {
-		$current_password_new = password_hash(get_nfilter_request_var('current_password'), PASSWORD_DEFAULT);
-	}else{
-		$current_password_new = '';
-	}
 	$current_password_old = md5(get_nfilter_request_var('current_password'));
 
 	// Password and Confirmed password checks
-	if ((!password_verify(get_nfilter_request_var('current_password'), $user['password'])) && $user['password'] != $current_password_old) {
-		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . "</span>";
-	}
+	if (function_exists('password_verify')) {
+		if ((!password_verify(get_nfilter_request_var('current_password'), $user['password'])) && $user['password'] != $current_password_old) {
+			$bad_password = true;
+			$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . "</span>";
+		}
 
-	if (password_verify(get_nfilter_request_var('password'), $user['password']) || $user['password'] == $password_old) {
-		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . "</span>";
+		if (password_verify(get_nfilter_request_var('password'), $user['password']) || $user['password'] == $password_old) {
+			$bad_password = true;
+			$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . "</span>";
+		}
+	}else{
+		if ($user['password'] != $current_password_old) {
+			$bad_password = true;
+			$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . "</span>";
+		}
+
+		if ($user['password'] == $password_old) {
+			$bad_password = true;
+			$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . "</span>";
+		}
 	}
 	
 	if (get_nfilter_request_var('password') !== (get_nfilter_request_var('confirm'))) {

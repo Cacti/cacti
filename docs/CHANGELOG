@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.0.7
 -issue#422: additional issues with LDAP authentication
 -issue#427: undefined index TotalVisibleMemorySize on FreeBSD
+-issue#434: password_verify not compatible in php5.4-
 
 1.0.6
 -issue#386: Allow special characters in graph title
