@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#422: additional issues with LDAP authentication
 -issue#427: undefined index TotalVisibleMemorySize on FreeBSD
 -issue#434: password_verify not compatible in php5.4-
+-issue#435: urlPath missing from paw theme links
 
 1.0.6
 -issue#386: Allow special characters in graph title
