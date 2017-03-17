@@ -149,9 +149,13 @@ if (get_nfilter_request_var('action') == 'login') {
 
 		break;
 	case '4':
-		domains_login_process();
+		if (get_request_var('realm') > 0) {
+			domains_login_process();
 
-		break;
+			break;
+		}
+
+		/* continue on to normal login process */
 	default:
 		secpass_login_process();
 
