@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.0.7
+-issue#376: Structured RRD path permission issues
 -issue#422: additional issues with LDAP authentication
 -issue#427: undefined index TotalVisibleMemorySize on FreeBSD
 -issue#434: password_verify not compatible in php5.4-
@@ -8,6 +9,9 @@ Cacti CHANGELOG
 -issue#443: Allow remote_agent.php through a NAT
 -issue: Improve email test exception errors and change default timeout to 10 seconds
 -feature: Add page refresh API to make page refreshing in Ajax easier to accomplish
+-feature: Update fontawesome to version 4.7
+-feature: Use fontawesome glyphs for menu items
+-feature: Support multiple column sort in table library
 
 1.0.6
 -issue#386: Allow special characters in graph title
