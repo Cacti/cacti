@@ -652,7 +652,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'user_domains.php'     => __('User Domains')
 			),
 		__('Utilities') => array(
-			'utilities.php' => __('System Utilities')
+			'utilities.php' => __('System Utilities'),
 			'links.php'     => __('External Links'),
 			)
 	);
