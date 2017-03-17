@@ -174,6 +174,7 @@ if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($
 }elseif ($_SERVER['PHP_SELF'] != '') {
 	$is_web = true;
 }
+$config['is_web'] = $is_web;
 
 /* set poller mode */
 global $local_db_cnn_id, $remote_db_cnn_id;
