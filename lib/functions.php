@@ -3256,6 +3256,31 @@ function cacti_escapeshellarg($string, $quote=true) {
 	}
 }
 
+/**
+ * set a page refresh in Cacti through a callback
+ * @param $refresh - an array containing the page, seconds, and logout
+ * @return         - nill
+ */
+function set_page_refresh($refresh) {
+	if (isset($refresh['seconds'])) {
+		$_SESSION['refresh']['seconds'] = $refresh['seconds'];
+	}
+
+	if (isset($refresh['logout'])) {
+		if ($refresh['logout'] == 'true' || $refresh['logout'] === true) {
+			$_SESSION['refresh']['logout']  = 'true';
+		}else{
+			$_SESSION['refresh']['logout']  = 'false';
+		}
+	}else{
+		$_SESSION['refresh']['logout']  = 'true';
+	}
+
+	if (isset($refresh['page'])) {
+		$_SESSION['refresh']['page']    = $refresh['page'];
+	}
+}
+
 function bottom_footer() {
 	global $config, $refresh;
 

@@ -43,15 +43,34 @@ if ($script == 'graph_view.php' || $script == 'graph.php') {
 	}
 }
 
-if (!empty($refresh)) {
-	$refreshIsLogout = 'false';
-	if (!is_array($refresh)) {
-		$myrefresh['seconds'] = $refresh;
-		$myrefresh['page'] = $_SERVER['REQUEST_URI'] . (strpos($_SERVER['REQUEST_URI'], '?') ? '&':'?') . 'header=false';;
-	} else {
-		$myrefresh = $refresh;
-		$myrefresh['page'] .= (strpos($myrefresh['page'], '?') ? '&':'?') . 'header=false';
+if (isset($_SESSION['refresh'])) {
+	if (isset($_SESSION['refresh']['seconds'])) {
+		$myrefresh['seconds'] = $_SESSION['refresh']['seconds'];
+	}else{
+		$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
 	}
+
+    if (isset($_SESSION['refresh']['logout'])) {
+        $refreshIsLogout = $_SESSION['refresh']['logout'];
+    }else{
+		$refreshIsLogout = 'true';
+	}
+
+    if (isset($_SESSION['refresh']['page'])) {
+        $myrefresh['page'] = $_SESSION['refresh']['page'];
+    }else{
+		$myrefresh['page'] = $config['url_path'] . 'logout.php?action=timeout';
+	}
+
+	unset($_SESSION['refresh']);
+}elseif (isset($refresh) && is_array($refresh)) {
+	$refreshIsLogout = 'false';
+	$myrefresh['seconds'] = $refresh;
+	$myrefresh['page']    = $_SERVER['REQUEST_URI'] . (strpos($_SERVER['REQUEST_URI'], '?') ? '&':'?') . 'header=false';;
+}elseif (isset($refresh)) {
+	$refreshIsLogout = 'false';
+	$myrefresh = $refresh;
+	$myrefresh['page'] .= (strpos($myrefresh['page'], '?') ? '&':'?') . 'header=false';
 } elseif (read_config_option('auth_cache_enabled') == 'on' && isset($_COOKIE['cacti_remembers'])) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page'] = 'index.php';
