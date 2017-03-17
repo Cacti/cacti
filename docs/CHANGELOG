@@ -1,17 +1,21 @@
 Cacti CHANGELOG
 
 1.0.7
+-issue#337: Generic SNMP OID Graph Template damanged
 -issue#376: Structured RRD path permission issues
 -issue#422: additional issues with LDAP authentication
 -issue#427: undefined index TotalVisibleMemorySize on FreeBSD
 -issue#434: password_verify not compatible in php5.4-
 -issue#435: urlPath missing from paw theme links
 -issue#443: Allow remote_agent.php through a NAT
+-issue#446: No local admin when using multiple LDAP configuration
 -issue: Improve email test exception errors and change default timeout to 10 seconds
+-issue: When on links page, breadcrumbs would become corrupted
 -feature: Add page refresh API to make page refreshing in Ajax easier to accomplish
 -feature: Update fontawesome to version 4.7
 -feature: Use fontawesome glyphs for menu items
 -feature: Support multiple column sort in table library
+-feature: Add glyphs to main Cacti console menu
 
 1.0.6
 -issue#386: Allow special characters in graph title
