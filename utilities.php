@@ -864,7 +864,7 @@ function utilities_clear_user_log() {
 }
 
 function utilities_view_logfile() {
-	global $log_tail_lines, $page_refresh_interval, $refresh, $config;
+	global $log_tail_lines, $page_refresh_interval, $config;
 
 	$logfile = read_config_option('path_cactilog');
 
@@ -914,15 +914,15 @@ function utilities_view_logfile() {
 	}
 
 	$refresh['seconds'] = get_request_var('refresh');
-	$refresh['page'] = 'utilities.php?action=view_logfile&header=false';
+	$refresh['page']    = 'utilities.php?action=view_logfile&header=false';
+	$refresh['logout']  = 'false';
+
+	set_page_refresh($refresh);
 
 	top_header();
 
 	?>
 	<script type='text/javascript'>
-    var refreshIsLogout=false;
-    var refreshPage='<?php print $refresh['page'];?>';
-    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 	function purgeLog() {
 		strURL = urlPath+'utilities.php?action=purge_logfile&header=false';
@@ -1142,7 +1142,10 @@ function utilities_clear_logfile() {
 	load_current_session_value('refresh', 'sess_logfile_refresh', read_config_option('log_refresh_interval'));
 
 	$refresh['seconds'] = get_request_var('refresh');
-	$refresh['page'] = 'utilities.php?action=view_logfile&header=false';
+	$refresh['page']    = 'utilities.php?action=view_logfile&header=false';
+	$refresh['logout']  = 'false';
+
+	set_page_refresh($refresh);
 
 	top_header();
 
@@ -1216,13 +1219,13 @@ function utilities_view_snmp_cache() {
 	}
 
 	$refresh['seconds'] = '300';
-	$refresh['page'] = 'utilities.php?action=view_snmp_cache&header=false';
+	$refresh['page']    = 'utilities.php?action=view_snmp_cache&header=false';
+	$refresh['logout']  = 'false';
+
+	set_page_refresh($refresh);
 
 	?>
 	<script type="text/javascript">
-    var refreshIsLogout=false;
-    var refreshPage='<?php print $refresh['page'];?>';
-    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 	function applyFilter() {
 		strURL  = urlPath+'utilities.php?host_id=' + $('#host_id').val();
@@ -1488,12 +1491,12 @@ function utilities_view_poller_cache() {
 
 	$refresh['seconds'] = '300';
 	$refresh['page']    = 'utilities.php?action=view_poller_cache';
+	$refresh['logout']  = 'false';
+
+	set_page_refresh($refresh);
 
 	?>
 	<script type="text/javascript">
-    var refreshIsLogout=false;
-    var refreshPage='<?php print $refresh['page'];?>';
-    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 	function applyFilter() {
 		strURL  = urlPath+'utilities.php?poller_action=' + $('#poller_action').val();
@@ -1835,7 +1838,7 @@ function utilities() {
 }
 
 function boost_display_run_status() {
-	global $refresh, $config, $refresh_interval, $boost_utilities_interval, $boost_refresh_interval, $boost_max_runtime;
+	global $config, $refresh_interval, $boost_utilities_interval, $boost_refresh_interval, $boost_max_runtime;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('refresh');
@@ -1855,16 +1858,16 @@ function boost_display_run_status() {
 	$peak_memory     = read_config_option('boost_peak_memory', TRUE);
 	$detail_stats    = read_config_option('stats_detail_boost', TRUE);
 
-	$refresh['page']    = 'utilities.php?action=view_boost_status';
 	$refresh['seconds'] = get_request_var('refresh');
+	$refresh['page']    = 'utilities.php?action=view_boost_status';
+	$refresh['logout']  = 'false';
+
+	set_page_refresh($refresh);
 
 	html_start_box(__('Boost Status'), '100%', '', '3', 'center', '');
 
 	?>
 	<script type="text/javascript">
-    var refreshIsLogout=false;
-    var refreshPage='<?php print $refresh['page'];?>';
-    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 	function applyFilter() {
 		strURL = urlPath+'utilities.php?action=view_boost_status&header=false&refresh=' + $('#refresh').val();
