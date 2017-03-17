@@ -65,19 +65,19 @@ if (isset($_SESSION['refresh'])) {
 	unset($_SESSION['refresh']);
 }elseif (isset($refresh) && is_array($refresh)) {
 	$refreshIsLogout = 'false';
-	$myrefresh['seconds'] = $refresh;
-	$myrefresh['page']    = $_SERVER['REQUEST_URI'] . (strpos($_SERVER['REQUEST_URI'], '?') ? '&':'?') . 'header=false';;
+	$myrefresh['seconds'] = $refresh['seconds'];
+	$myrefresh['page']    = (strpos($refresh['page'], '?') ? '&':'?') . 'header=false';
 }elseif (isset($refresh)) {
 	$refreshIsLogout = 'false';
-	$myrefresh = $refresh;
-	$myrefresh['page'] .= (strpos($myrefresh['page'], '?') ? '&':'?') . 'header=false';
+	$myrefresh['seconds'] = $refresh;
+	$myrefresh['page']    = $_SERVER['REQUEST_URI'] . (strpos($_SERVER['REQUEST_URI'], '?') ? '&':'?') . 'header=false';;
 } elseif (read_config_option('auth_cache_enabled') == 'on' && isset($_COOKIE['cacti_remembers'])) {
 	$myrefresh['seconds'] = 99999999;
-	$myrefresh['page'] = 'index.php';
+	$myrefresh['page']    = 'index.php';
 	$refreshIsLogout = 'false';
 }else{
 	$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
-	$myrefresh['page'] = $config['url_path'] . 'logout.php?action=timeout';
+	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
 	$refreshIsLogout = 'true';
 } ?> 
 <script type='text/javascript'>
