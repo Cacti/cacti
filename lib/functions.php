@@ -3646,7 +3646,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 }
 
-function ping_mail_server($host, $port, $user, $password, $timeout = 5, $secure = 'none') {
+function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure = 'none') {
 	global $config;
 
 	include_once($config['include_path'] . '/phpmailer/PHPMailerAutoload.php');
@@ -3683,10 +3683,11 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 5, $secure 
 				throw new Exception(__('HELO failed: %s', $smtp->getLastReply()));
 			}
 		} else {
-			throw new Exception(__('Connect failed'));
+			throw new Exception(__('Connect failed: %s', $smtp->getLastReply()));
 		}
 	} catch (Exception $e) {
 		$results = __('SMTP error: ') . $e->getMessage();
+		cacti_log($results);
 	}
 
 	//Whatever happened, close the connection.
