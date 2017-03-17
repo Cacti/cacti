@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-global $menu;
+global $menu, $menu_glyphs;
 
 $messages = array(
 	1  => array(
@@ -646,14 +646,14 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'templates_export.php' => __('Export Templates')
 			),
 		__('Configuration')  => array(
-			'settings.php' => __('Settings'),
-			'links.php'    => __('External Links')
-			),
-		__('Utilities') => array(
-			'utilities.php'        => __('System Utilities'),
+			'settings.php'         => __('Settings'),
 			'user_admin.php'       => __('Users'),
 			'user_group_admin.php' => __('User Groups'),
 			'user_domains.php'     => __('User Domains')
+			),
+		__('Utilities') => array(
+			'utilities.php' => __('System Utilities')
+			'links.php'     => __('External Links'),
 			)
 	);
 }else{
@@ -672,6 +672,18 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			)
 	);
 }
+
+$menu_glyphs = array(
+	__('Create') => 'fa fa-area-chart',
+	__('Management') => 'fa fa-home',
+	__('Data Collection') => 'fa fa-database',
+	__('Templates') => 'fa fa-clone',
+	__('Automation') => 'fa fa-superpowers',
+	__('Presets') => 'fa fa-archive',
+	__('Import/Export') => 'fa fa-exchange',
+	__('Configuration')  => 'fa fa-sliders',
+	__('Utilities') => 'fa fa-cogs'
+);
 
 if ((isset($_SESSION['sess_user_id']))) {
 	if (db_table_exists('external_links')) {
