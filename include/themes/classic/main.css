@@ -1564,3 +1564,6 @@ tr#realtime td:first-child {
 	width: 12.5%;
 }
 
+.menu_glyph {
+	display: none;
+}

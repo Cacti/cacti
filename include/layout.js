@@ -523,12 +523,8 @@ function applySkin() {
 			}
 			return text;
 		}
-	}).tooltip('close').keydown(function(event) {
-		if (event.keyCode == 16) {
-			shiftPressed = true;
-		}else{
-			shiftPressed = false;
-		}
+	}).tooltip('close').on('keyup keydown', function(event) {
+		shiftPressed = event.shiftKey;
 	});
 
 	// remove stray tooltips
@@ -745,6 +741,7 @@ function setupSpecialKeys() {
  *  every time a page is regenerated */
 function setupSortable() {
 	$('th.sortable').on('click', function(e) {
+		document.getSelection().removeAllRanges();
 		var $target = $(e.target);
 		if (!$target.is('.ui-resizable-handle')) {
 			var page=$(this).find('.sortinfo').attr('sort-page');
@@ -753,7 +750,7 @@ function setupSortable() {
 			if (shiftPressed) {
 				sortAdd='&add=true';
 			}else{
-				sortAdd='';
+				sortAdd='&add=reset';
 			}
 			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false'+sortAdd, function(data) {
 				$('#main').empty().hide()

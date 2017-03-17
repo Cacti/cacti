@@ -855,16 +855,21 @@ function get_networks(&$sql_where, $rows, $apply_limits = TRUE) {
 		$sql_where = " WHERE (automation_networks.name LIKE '%" . get_request_var('filter') . "%')";
 	}
 
+	$sql_order = get_order_string();
+
+	if ($apply_limits) {
+		$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	}else{
+		$sql_limit = '';
+	}
+
 	$query_string = "SELECT automation_networks.*, poller.name AS data_collector
 		FROM automation_networks
 		LEFT JOIN poller
 		ON automation_networks.poller_id=poller.id
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
-
-	if ($apply_limits) {
-		$query_string .= ' LIMIT ' . ($rows*(get_request_var('page') -1)) . ',' . $rows;
-	}
+		$sql_order
+		$sql_limit";
 
 	return db_fetch_assoc($query_string);
 }

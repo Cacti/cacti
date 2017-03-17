@@ -2222,6 +2222,9 @@ function user() {
 		FROM user_auth
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$user_list = db_fetch_assoc("SELECT id, user_auth.username, full_name,
 		realm, enabled, policy_graphs, policy_hosts, policy_graph_templates,
 		time, max(time) as dtime
@@ -2229,8 +2232,8 @@ function user() {
 		LEFT JOIN user_log ON (user_auth.id = user_log.user_id)
 		$sql_where
 		GROUP BY id
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('user_admin.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 9, 'Users', 'page', 'main');
 

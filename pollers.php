@@ -577,14 +577,17 @@ function pollers() {
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM poller $sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$pollers = db_fetch_assoc("SELECT poller.*, count(h.id) AS hosts
 		FROM poller
 		LEFT JOIN host AS h
 		ON h.poller_id=poller.id
 		$sql_where
 		GROUP BY poller.id
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('pollers.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Pollers'), 'page', 'main');
 

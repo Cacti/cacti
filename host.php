@@ -1435,12 +1435,10 @@ function host() {
 		FROM host
 		$sql_where");
 
-	$sortby = get_request_var('sort_column');
-	if ($sortby=='hostname') {
-		$sortby = 'INET_ATON(hostname)';
-	}
-
 	$poller_interval = read_config_option('poller_interval');
+
+	$sql_order = get_order_string();
+	$sql_limit = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$sql_query = "SELECT host.*, graphs, data_sources,
 		IF(status_event_count>0, status_event_count*$poller_interval, 
@@ -1453,8 +1451,8 @@ function host() {
 		ON host.id=dl.host_id
 		$sql_where
 		GROUP BY host.id
-		ORDER BY " . $sortby . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		$sql_order
+		$sql_limit";
 
 	$hosts = db_fetch_assoc($sql_query);
 

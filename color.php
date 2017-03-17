@@ -652,6 +652,9 @@ function color() {
 			$sql_having
 		) AS rs");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$colors = db_fetch_assoc("SELECT *,
         SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
         SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates
@@ -668,8 +671,8 @@ function color() {
 		$sql_where
 		GROUP BY rs.id
 		$sql_having
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
-		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
     $nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Colors', 'page', 'main');
 

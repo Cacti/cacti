@@ -1312,6 +1312,9 @@ function ds() {
 		GROUP BY dl.id
 		$sql_having"));
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$data_sources = db_fetch_assoc("SELECT
 		dtd.local_data_id,
 		dtd.name_cache,
@@ -1332,8 +1335,8 @@ function ds() {
 		$sql_where1
 		GROUP BY dl.id
 		$sql_having
-		ORDER BY ". get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('data_sources.php?rfilter=' . get_request_var('rfilter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Sources'), 'page', 'main');
 

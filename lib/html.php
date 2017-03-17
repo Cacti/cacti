@@ -422,10 +422,22 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
    @arg $url - a base url to redirect sort actions to */
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '') {
 	/* reverse the sort direction */
-	if ($sort_direction == "ASC") {
-		$new_sort_direction = "DESC";
+	if ($sort_direction == 'ASC') {
+		$new_sort_direction = 'DESC';
 	}else{
-		$new_sort_direction = "ASC";
+		$new_sort_direction = 'ASC';
+	}
+
+	$page = basename($_SERVER['SCRIPT_NAME']);
+	if (isset($_SESSION['sort_data'][$page])) {
+		$order_data = $_SESSION['sort_data'][$page];
+	}else{
+		$order_data = array(get_request_var('sort_column') => get_request_var('sort_direction'));
+	}
+
+	foreach($order_data as $key => $direction) {
+		$primarySort = $key;
+		break;
 	}
 
 	print "<tr class='tableHeader'>\n";
@@ -435,16 +447,37 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		if (array_key_exists('display', $display_array)) {
 			$display_text = $display_array['display'];
 			if ($sort_column == $db_column) {
-				$icon = $sort_direction;
+				$icon      = $sort_direction;
 				$direction = $new_sort_direction;
-				$isSort = true;
-			}else{
-				$icon = '';
-				if (isset($display_array['sort'])) {
-					$direction = $display_array['sort'];
+
+				if ($db_column == $primarySort) {
+					$isSort = 'primarySort';
 				}else{
-					$direction = 'ASC';
+					$isSort = 'secondarySort';
 				}
+			}else{
+				if (isset($order_data[$db_column])) {
+					$icon = $order_data[$db_column];
+					if ($order_data[$db_column] == 'DESC') {
+						$direction = 'ASC';
+					}else{
+						$direction = 'DESC';
+					}
+
+					if ($db_column == $primarySort) {
+						$isSort = 'primarySort';
+					}else{
+						$isSort = 'secondarySort';
+					}
+				}else{
+					$icon = '';
+					if (isset($display_array['sort'])) {
+						$direction = $display_array['sort'];
+					}else{
+						$direction = 'ASC';
+					}
+				}
+
 				$isSort = false;
 			}
 
@@ -462,14 +495,35 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}else{
 			/* by default, you will always sort ascending, with the exception of an already sorted column */
 			if ($sort_column == $db_column) {
-				$icon = $sort_direction;
-				$direction = $new_sort_direction;
+				$icon         = $sort_direction;
+				$direction    = $new_sort_direction;
 				$display_text = $display_array[0];
-				$isSort = true;
+
+				if ($db_column == $primarySort) {
+					$isSort = 'primarySort';
+				}else{
+					$isSort = 'secondarySort';
+				}
 			}else{
-				$icon = '';
+				if (isset($order_data[$db_column])) {
+					$icon = $order_data[$db_column];
+					if ($order_data[$db_column] == 'DESC') {
+						$direction = 'ASC';
+					}else{
+						$direction = 'DESC';
+					}
+
+					if ($db_column == $primarySort) {
+						$isSort = 'primarySort';
+					}else{
+						$isSort = 'secondarySort';
+					}
+				}else{
+					$icon = '';
+					$direction = $display_array[1];
+				}
+
 				$display_text = $display_array[0];
-				$direction = $display_array[1];
 				$isSort = false;
 			}
 
@@ -485,10 +539,10 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			$icon = 'fa fa-unsorted';
 		}
 
-		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " style='padding:4px;text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $display_text . "</th>\n";
+		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":'') . " style='padding:4px;text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
 		}else{
-			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " class='sortable" . ($isSort ? ' primarySort':'') . "' style='padding:4px;text-align:$align;'>";
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":'') . " class='sortable" . ($isSort ? " $isSort":'') . "' style='padding:4px;text-align:$align;'>";
 			print "<div class='sortinfo' sort-page='" . ($url == '' ? htmlspecialchars($_SERVER['PHP_SELF']):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 
@@ -514,14 +568,26 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	static $page = 0;
 
 	/* reverse the sort direction */
-	if ($sort_direction == "ASC") {
-		$new_sort_direction = "DESC";
+	if ($sort_direction == 'ASC') {
+		$new_sort_direction = 'DESC';
 	}else{
-		$new_sort_direction = "ASC";
+		$new_sort_direction = 'ASC';
+	}
+
+	$page = basename($_SERVER['SCRIPT_NAME']);
+	if (isset($_SESSION['sort_data'][$page])) {
+		$order_data = $_SESSION['sort_data'][$page];
+	}else{
+		$order_data = array(get_request_var('sort_column') => get_request_var('sort_direction'));
+	}
+
+	foreach($order_data as $key => $direction) {
+		$primarySort = $key;
+		break;
 	}
 
 	/* default to the 'current' file */
-	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
+	if ($form_action == '') { $form_action = basename($_SERVER['PHP_SELF']); }
 
 	print "<tr class='tableHeader'>\n";
 
@@ -530,18 +596,37 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		if (array_key_exists('display', $display_array)) {
 			$display_text = $display_array['display'];
 			if ($sort_column == $db_column) {
-				$icon = $sort_direction;
+				$icon      = $sort_direction;
 				$direction = $new_sort_direction;
-				$isSort = true;
-			}else{
-				$icon = '';
 
-				if (isset($display_array['sort'])) {
-					$direction = $display_array['sort'];
+				if ($db_column == $primarySort) {
+					$isSort = 'primarySort';
 				}else{
-					$direction = 'ASC';
+					$isSort = 'secondarySort';
 				}
-				$isSort = false;
+			}else{
+				if (isset($order_data[$db_column])) {
+					$icon = $order_data[$db_column];
+					if ($order_data[$db_column] == 'DESC') {
+						$direction = 'ASC';
+					}else{
+						$direction = 'DESC';
+					}
+
+					if ($db_column == $primarySort) {
+						$isSort = 'primarySort';
+					}else{
+						$isSort = 'secondarySort';
+					}
+				}else{
+					$icon   = '';
+					$isSort = false;
+					if (isset($display_array['sort'])) {
+						$direction = $display_array['sort'];
+					}else{
+						$direction = 'ASC';
+					}
+				}
 			}
 
 			if (isset($display_array['align'])) {
@@ -558,15 +643,37 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}else{
 			/* by default, you will always sort ascending, with the exception of an already sorted column */
 			if ($sort_column == $db_column) {
-				$icon = $sort_direction;
-				$direction = $new_sort_direction;
+				$icon         = $sort_direction;
+				$direction    = $new_sort_direction;
 				$display_text = $display_array[0];
-				$isSort = true;
+
+				if ($db_column == $primarySort) {
+					$isSort = 'primarySort';
+				}else{
+					$isSort = 'secondarySort';
+				}
 			}else{
-				$icon = '';
+				if (isset($order_data[$db_column])) {
+					$icon = $order_data[$db_column];
+					if ($order_data[$db_column] == 'DESC') {
+						$direction = 'ASC';
+					}else{
+						$direction = 'DESC';
+					}
+
+					if ($db_column == $primarySort) {
+						$isSort = 'primarySort';
+					}else{
+						$isSort = 'secondarySort';
+					}
+				}else{
+					$icon   = '';
+					$isSort = false;
+
+					$direction = $display_array[1];
+				}
+
 				$display_text = $display_array[0];
-				$direction = $display_array[1];
-				$isSort = false;
 			}
 
 			$align = 'left';
@@ -581,10 +688,10 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 			$icon = 'fa fa-unsorted';
 		}
 
-		if (($db_column == "") || (substr_count($db_column, "nosort"))) {
-			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " style='text-align:$align;'>" . $display_text . "</th>\n";
+		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":'') . " style='text-align:$align;'>" . $display_text . "</th>\n";
 		}else{
-			print "<th " . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":"") . " class='sortable" . ($isSort ? ' primarySort':'') . "' style='text-align:$align;'>";
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":'') . " class='sortable" . ($isSort ? " $isSort":'') . "' style='text-align:$align;'>";
 			print "<div class='sortinfo' sort-page='" . htmlspecialchars($form_action) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 	}
@@ -845,7 +952,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 /* draw_menu - draws the cacti menu for display in the console */
 function draw_menu($user_menu = "") {
-	global $config, $user_auth_realm_filenames, $menu;
+	global $config, $user_auth_realm_filenames, $menu, $menu_glyphs;
 
 	if (strlen($user_menu == 0)) {
 		$user_menu = $menu;
@@ -889,7 +996,13 @@ function draw_menu($user_menu = "") {
 			}
 			$headers[$id] = true;
 
-			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$header_name</a>\n";
+			if (isset($menu_glyphs[$header_name])) {
+				$glyph = '<i class="menu_glyph ' . $menu_glyphs[$header_name] . '"></i>';
+			}else{
+				$glyph = '<i class="menu_glyph fa fa-folder"></i>';
+			}
+
+			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$glyph<span>$header_name</span></a>\n";
 			print "<ul role='menu' id='${id}_div' style='display:block;'>\n";
 
 			/* pass 2: loop through each top level item and render it */

@@ -323,14 +323,17 @@ function list_rrd() {
 		ON dt.id = rc.data_template_id
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$file_list = db_fetch_assoc("SELECT rc.id, rc.name, rc.last_mod, rc.size, 
 		rc.name_cache, rc.local_data_id, rc.data_template_id, dt.name AS data_template_name
 		FROM data_source_purge_temp AS rc
 		LEFT JOIN data_template AS dt
 		ON dt.id = rc.data_template_id
 		$sql_where 
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar($config['url_path'] . 'rrdcleaner.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'RRD Files', 'page', 'main');
 

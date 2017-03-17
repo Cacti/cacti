@@ -1633,6 +1633,9 @@ function graph_management() {
 		ON ag.local_graph_id=gl.id
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+			
 	$graph_list = db_fetch_assoc("SELECT gtg.id, gtg.local_graph_id, gtg.height, gtg.width,
 		gtg.title_cache, gt.name, gl.host_id
 		FROM graph_local AS gl
@@ -1643,8 +1646,8 @@ function graph_management() {
 		LEFT JOIN aggregate_graphs AS ag
 		ON ag.local_graph_id=gl.id
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('graphs.php?rfilter=' . get_request_var('rfilter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
 

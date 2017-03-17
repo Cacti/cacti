@@ -1097,6 +1097,9 @@ function data_query() {
 		ON (sq.data_input_id=di.id)
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$snmp_queries = db_fetch_assoc("SELECT sq.id, sq.name,
 		di.name AS data_input_method, 
 		COUNT(DISTINCT gl.id) AS graphs,
@@ -1110,8 +1113,8 @@ function data_query() {
 		ON gl.snmp_query_id=sq.id
 		$sql_where
 		GROUP BY sq.id
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Queries'), 'page', 'main');
 

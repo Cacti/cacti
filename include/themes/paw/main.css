@@ -1716,3 +1716,14 @@ tr#realtime td:first-child {
 #graph_view_tree_content2_child > tbody > .tableHeader {
 	background: rgba(0,0,0,0.9);
 }
+
+.menu_glyph {
+	font-size: 18px;
+	padding-right: 5px;
+	vertical-align: 10%;
+	float: middle;
+}
+
+.menuitem span {
+	vertical-align: 20%;
+}

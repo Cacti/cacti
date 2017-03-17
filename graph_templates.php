@@ -728,6 +728,9 @@ function template() {
 			$sql_having
 		) AS rs");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$template_list = db_fetch_assoc("SELECT
 		gt.id, gt.name, CONCAT(gtg.height,'x',gtg.width) AS size, gtg.vertical_label, 
 		gtg.image_format_id, COUNT(gl.id) AS graphs
@@ -740,8 +743,8 @@ function template() {
 		$sql_where
 		GROUP BY gt.id
 		$sql_having
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('graph_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Graph Templates'), 'page', 'main');
 

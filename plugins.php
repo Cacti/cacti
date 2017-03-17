@@ -360,11 +360,17 @@ function update_show_current () {
 		FROM $table
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
+	$sql_order = str_replace($sql_order, 'version ', 'version+0 ');
+	$sql_order = str_replace($sql_order, 'id DESC', 'id ASC');
+
 	$plugins = db_fetch_assoc("SELECT *
 		FROM $table
 		$sql_where
-		ORDER BY " . $sortc . ' ' . $sortd . '
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	db_execute("DROP TABLE $table");
 

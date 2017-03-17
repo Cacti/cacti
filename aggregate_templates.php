@@ -614,6 +614,9 @@ function aggregate_template() {
 		ON gt.id=pgt.graph_template_id
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$template_list = db_fetch_assoc("SELECT pgt.*, graphs.graphs, gt.name AS graph_template_name
 		FROM aggregate_graph_templates AS pgt
 		LEFT JOIN (
@@ -625,8 +628,8 @@ function aggregate_template() {
 		LEFT JOIN graph_templates AS gt
 		ON gt.id=pgt.graph_template_id
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('aggregate_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Aggregate Templates'), 'page', 'main');
 
