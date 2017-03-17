@@ -113,9 +113,16 @@ function strip_domain($host) {
 
 function remote_client_authorized() {
 	/* don't allow to run from the command line */
-	if (!isset($_SERVER['REMOTE_ADDR'])) return false;
+	if (isset($_SERVER['X-Forwarded-For'])) {
+		$client_addr = $_SERVER['X-Forwarded-For'];
+	} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+		$client_addr = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	} elseif (isset($_SERVER['REMOTE_ADDR'])) {
+		$client_addr = $_SERVER['REMOTE_ADDR'];
+	}else{
+		return false;
+	}
 
-	$client_addr = $_SERVER['REMOTE_ADDR'];
 	$client_name = strip_domain(gethostbyaddr($client_addr));
 
 	$pollers = db_fetch_assoc('SELECT * FROM poller');

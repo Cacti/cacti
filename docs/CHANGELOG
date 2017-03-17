@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#427: undefined index TotalVisibleMemorySize on FreeBSD
 -issue#434: password_verify not compatible in php5.4-
 -issue#435: urlPath missing from paw theme links
+-issue#443: Allow remote_agent.php through a NAT
 -issue: Improve email test exception errors and change default timeout to 10 seconds
 -feature: Add page refresh API to make page refreshing in Ajax easier to accomplish
 
