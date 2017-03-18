@@ -118,7 +118,7 @@ function themeReady() {
 		minLength: 0,
 		select: function(event,ui) {
 			$('#host_id').val(ui.item.id);
-			callBack = $('#call_back').val().replace('()()', '()');
+			callBack = $('#call_back').val();
 			if (callBack != 'undefined') {
 				eval(callBack);
 			}else if (typeof applyGraphFilter === 'function') {
