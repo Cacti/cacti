@@ -363,8 +363,8 @@ function update_show_current () {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$sql_order = str_replace($sql_order, 'version ', 'version+0 ');
-	$sql_order = str_replace($sql_order, 'id DESC', 'id ASC');
+	$sql_order = str_replace('version ', 'version+0 ', $sql_order);
+	$sql_order = str_replace('id DESC', 'id ASC', $sql_order);
 
 	$plugins = db_fetch_assoc("SELECT *
 		FROM $table
