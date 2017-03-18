@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#338: Extremely slow new graph/DS creation
 -issue#376: Structured RRD path permission issues
 -issue#407: The RRDfile does not exist message is misleading
+-issue#410: Select character data was interpreted as hex by cacti_snmp_walk()
 -issue#422: additional issues with LDAP authentication
 -issue#427: undefined index TotalVisibleMemorySize on FreeBSD
 -issue#434: password_verify not compatible in php5.4-
