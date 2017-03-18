@@ -35,6 +35,9 @@ include_once('./lib/html_form_template.php');
 include_once('./lib/rrd.php');
 include_once('./lib/data_query.php');
 
+/* set default action */
+set_default_action();
+
 validate_graph_request_vars();
 
 $graph_actions = array(
@@ -56,9 +59,6 @@ $graph_actions += array(
 );
 
 $graph_actions = api_plugin_hook_function('graphs_action_array', $graph_actions);
-
-/* set default action */
-set_default_action();
 
 switch (get_request_var('action')) {
 	case 'save':
