@@ -602,7 +602,7 @@ function loadPageNoHeader(href) {
 }
 
 function ajaxAnchors() {
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab, a.iconLink').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -1191,7 +1191,7 @@ function redrawGraph(graph_id) {
 	isThumb   = $('#thumbnails').is(':checked');
 
 	if (isThumb) {
-		myWidth = (mainWidth-(40*myColumns))/myColumns;
+		myWidth = (mainWidth-(30*myColumns))/myColumns;
 	}
 
 	graph_height=$('#wrapper_'+graph_id).attr('graph_height');
@@ -1257,7 +1257,7 @@ function initializeGraphs() {
 	isThumb   = $('#thumbnails').is(':checked');
 
 	if (isThumb) {
-		myWidth = (mainWidth-(28*myColumns))/myColumns;
+		myWidth = (mainWidth-(30*myColumns))/myColumns;
 	}
 
 	//$('div[id^="wrapper_"]').each(function() {
