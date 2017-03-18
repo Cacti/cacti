@@ -257,7 +257,6 @@ $input_types = array(
 );
 
 $input_types_script = array(
-	DATA_INPUT_TYPE_SNMP                => __('SNMP Get'), // Action 0:
 	DATA_INPUT_TYPE_SCRIPT              => __('Script/Command'),  // Action 1:
 	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script Server'),
 );
