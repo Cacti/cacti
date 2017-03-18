@@ -337,18 +337,6 @@ function update_show_current () {
 		}
 	}
 
-	if (get_request_var('sort_column') == 'version') {
-		$sortc = 'version+0';
-	}else{
-		$sortc = get_request_var('sort_column');
-	}
-
-	if (get_request_var('sort_column') == 'id') {
-		$sortd = 'ASC';
-	}else{
-		$sortd = get_request_var('sort_direction');
-	}
-
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	}else{
