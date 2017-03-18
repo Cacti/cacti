@@ -428,7 +428,15 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$new_sort_direction = 'ASC';
 	}
 
-	$page = basename($_SERVER['SCRIPT_NAME']);
+	$page = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+	if (isset_request_var('action')) {
+		$page .= '_' . get_request_var('action');
+	}
+
+	if (isset_request_var('tab')) {
+		$page .= '_' . get_request_var('tab');
+	}
+
 	if (isset($_SESSION['sort_data'][$page])) {
 		$order_data = $_SESSION['sort_data'][$page];
 	}else{
@@ -574,7 +582,15 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		$new_sort_direction = 'ASC';
 	}
 
-	$page = basename($_SERVER['SCRIPT_NAME']);
+	$page = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+	if (isset_request_var('action')) {
+		$page .= '_' . get_request_var('action');
+	}
+
+	if (isset_request_var('tab')) {
+		$page .= '_' . get_request_var('tab');
+	}
+
 	if (isset($_SESSION['sort_data'][$page])) {
 		$order_data = $_SESSION['sort_data'][$page];
 	}else{

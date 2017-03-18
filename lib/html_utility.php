@@ -664,7 +664,15 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 /* update_order_string - creates a sort string for standard Cacti tables
    @returns - null */
 function update_order_string() {
-	$page  = basename($_SERVER['SCRIPT_NAME']);
+	$page  = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+	if (isset_request_var('action')) {
+		$page .= '_' . get_request_var('action');
+	}
+
+	if (isset_request_var('tab')) {
+		$page .= '_' . get_request_var('tab');
+	}
+
 	$order = '';
 
 	if (isset_request_var('clear')) {
@@ -696,7 +704,15 @@ function update_order_string() {
 /* get_order_string - returns a valid order string for a table 
    @returns - the order string */
 function get_order_string() {
-	$page = basename($_SERVER['SCRIPT_NAME']);
+	$page = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+
+	if (isset_request_var('action')) {
+		$page .= '_' . get_request_var('action');
+	}
+
+	if (isset_request_var('tab')) {
+		$page .= '_' . get_request_var('tab');
+	}
 
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
