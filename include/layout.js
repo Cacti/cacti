@@ -1252,12 +1252,12 @@ function initializeGraphs() {
 		applyFilter();
 	});
 
-	mainWidth = $('#main').width()-40;
+	mainWidth = $('#main').width()-30;
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
 
 	if (isThumb) {
-		myWidth = (mainWidth-(32*myColumns))/myColumns;
+		myWidth = (mainWidth-(28*myColumns))/myColumns;
 	}
 
 	//$('div[id^="wrapper_"]').each(function() {
