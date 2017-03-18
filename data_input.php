@@ -438,6 +438,23 @@ function data_edit() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
+	if (isset($data_input)) {
+		switch ($data_input['type_id']) {
+		case DATA_INPUT_TYPE_SNMP:
+			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SNMP] = __('SNMP Get');
+			break;
+		case DATA_INPUT_TYPE_SNMP_QUERY:
+			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SNMP_QUERY] = __('SNMP Query');
+			break;
+		case DATA_INPUT_TYPE_SCRIPT_QUERY:
+			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SCRIPT_QUERY] = __('Script Query');
+			break;
+		case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
+			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER] = __('Script Query - Script Server');
+			break;
+		}
+	}
+
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_data_input_edit, (isset($data_input) ? $data_input : array()))
