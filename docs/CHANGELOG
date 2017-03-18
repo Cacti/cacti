@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#443: Allow remote_agent.php through a NAT
 -issue#446: No local admin when using multiple LDAP configuration
 -issue#447: Creating another non data query graph from same template reuses first data source
+-issue#449: exec_poll_php does not flush pipes when using script server
 -issue: Improve email test exception errors and change default timeout to 10 seconds
 -issue: When on links page, breadcrumbs would become corrupted
 -feature: Add page refresh API to make page refreshing in Ajax easier to accomplish

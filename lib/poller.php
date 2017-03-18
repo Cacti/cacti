@@ -75,6 +75,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 
 			/* send command to the php server */
 			fwrite($pipes[0], $command . "\r\n");
+			fflush($pipes[0]);
 
 			$output = fgets($pipes[1], 8192);
 
