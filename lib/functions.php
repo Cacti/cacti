@@ -1085,7 +1085,7 @@ function is_hexadecimal(&$result) {
    @arg $result - (string) some string to be evaluated
    @returns - (bool) either to result is a mac address of not */
 function is_mac_address($result) {
-	if (preg_match('/^([0-9a-f]{1,2}[\.:-]){5}([0-9a-f]{1,2})$/i', $result)) {
+	if (filter_var($result, FILTER_VALIDATE_MAC)) {
 		return true;
 	}else{
 		return false;
@@ -1095,6 +1095,12 @@ function is_mac_address($result) {
 function is_hex_string($result) {
 	if ($result != '') {
 		$parts = explode(' ', $result);
+
+		/* assume if something is a hex string 
+		   it will have a length > 1 */
+		if (sizeof($parts) == 1) {
+			return false;
+		}
 
 		foreach($parts as $part) {
 			if (strlen($part) != 2) {
