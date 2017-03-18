@@ -476,9 +476,9 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 					}else{
 						$direction = 'ASC';
 					}
-				}
 
-				$isSort = false;
+					$isSort = false;
+				}
 			}
 
 			if (isset($display_array['align'])) {
