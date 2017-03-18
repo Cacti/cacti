@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.0.7
 -issue#337: Generic SNMP OID Graph Template damanged
+-issue#338: Extremely slow new graph/DS creation
 -issue#376: Structured RRD path permission issues
 -issue#422: additional issues with LDAP authentication
 -issue#427: undefined index TotalVisibleMemorySize on FreeBSD
@@ -9,6 +10,7 @@ Cacti CHANGELOG
 -issue#435: urlPath missing from paw theme links
 -issue#443: Allow remote_agent.php through a NAT
 -issue#446: No local admin when using multiple LDAP configuration
+-issue#447: Creating another non data query graph from same template reuses first data source
 -issue: Improve email test exception errors and change default timeout to 10 seconds
 -issue: When on links page, breadcrumbs would become corrupted
 -feature: Add page refresh API to make page refreshing in Ajax easier to accomplish
