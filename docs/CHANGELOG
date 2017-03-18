@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#450: Graph list view - No Graphs Found
 -issue: Improve email test exception errors and change default timeout to 10 seconds
 -issue: When on links page, breadcrumbs would become corrupted
+-issue: When upgrading from any version of Cacti to 1.0.5, SQL's relative to poller_reindex might appear
 -feature: Add page refresh API to make page refreshing in Ajax easier to accomplish
 -feature: Update fontawesome to version 4.7
 -feature: Use fontawesome glyphs for menu items
