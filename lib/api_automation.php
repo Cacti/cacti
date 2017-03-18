@@ -2646,7 +2646,7 @@ function create_graph_node($graph_id, $parent, $rule) {
 	return $new_item;
 }
 
-function automation_poller_bottom () {
+function automation_poller_bottom() {
 	global $config;
 
 	$command_string = trim(read_config_option('path_php_binary'));
@@ -2661,7 +2661,7 @@ function automation_poller_bottom () {
 	exec_background($command_string, $extra_args);
 }
 
-function automation_add_device ($device, $web = false) {
+function automation_add_device($device, $web = false) {
 	global $plugins, $config;
 
 	$template_id          = $device['host_template'];
@@ -3009,24 +3009,29 @@ function automation_primeIPAddressTable($network_id) {
 	automation_debug("A Total of $total IP Addresses Primed\n");
 }
 
-function automation_valid_snmp_device (&$device) {
+function automation_valid_snmp_device(&$device) {
 	global $snmp_logging;
 
 	/* initialize variable */
 	$host_up = FALSE;
 	$snmp_logging = false;
-	$device["snmp_status"] = HOST_DOWN;
-	$device["ping_status"] = 0;
+	$device['snmp_status'] = HOST_DOWN;
+	$device['ping_status'] = 0;
 
 	/* force php to return numeric oid's */
 	cacti_oid_numeric_format();
 
-	$snmp_items = db_fetch_assoc_prepared('SELECT * FROM automation_snmp_items WHERE snmp_id = ? ORDER BY sequence ASC', array($device['snmp_id']));
+	$snmp_items = db_fetch_assoc_prepared('SELECT * 
+		FROM automation_snmp_items 
+		WHERE snmp_id = ? 
+		ORDER BY sequence ASC', 
+		array($device['snmp_id']));
 
 	if (sizeof($snmp_items)) {
 		automation_debug(', SNMP:');
 		foreach($snmp_items as $item) {
 			// general options
+			$device['snmp_id']              = $item['snmp_id'];
 			$device['snmp_version']         = $item['snmp_version'];
 			$device['snmp_port']            = $item['snmp_port'];
 			$device['snmp_timeout']         = $item['snmp_timeout'];
@@ -3045,7 +3050,7 @@ function automation_valid_snmp_device (&$device) {
 			$device['snmp_engine_id']       = $item['snmp_engine_id'];
 			$device['max_oids']             = $item['max_oids'];
 
-            $session = cacti_snmp_session($device['hostname'], $device['snmp_readstring'], $device['snmp_version'],
+            $session = cacti_snmp_session($device['ip_address'], $device['snmp_readstring'], $device['snmp_version'],
                 $device['snmp_username'], $device['snmp_password'], $device['snmp_auth_protocol'], $device['snmp_priv_passphrase'],
                 $device['snmp_priv_protocol'], $device['snmp_context'], $device['snmp_engine_id'], $device['snmp_port'],
                 $device['snmp_timeout'], $device['snmp_retries'], $device['max_oids']);
@@ -3085,40 +3090,40 @@ function automation_valid_snmp_device (&$device) {
 		$snmp_sysName = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0'); 
 
 		if (strlen($snmp_sysName)) {
-			$snmp_sysName = trim(strtr($snmp_sysName,"\""," "));
-			$device["snmp_sysName"] = $snmp_sysName;
+			$snmp_sysName = trim(strtr($snmp_sysName,'"',' '));
+			$device['snmp_sysName'] = $snmp_sysName;
 		}
 
 		/* get system location */
 		$snmp_sysLocation = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0'); 
 
 		if (strlen($snmp_sysLocation)) {
-			$snmp_sysLocation = trim(strtr($snmp_sysLocation,"\""," "));
-			$device["snmp_sysLocation"] = $snmp_sysLocation;
+			$snmp_sysLocation = trim(strtr($snmp_sysLocation,'"',' '));
+			$device['snmp_sysLocation'] = $snmp_sysLocation;
 		}
 
 		/* get system contact */
 		$snmp_sysContact = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0'); 
 
 		if (strlen($snmp_sysContact)) {
-			$snmp_sysContact = trim(strtr($snmp_sysContact,"\""," "));
-			$device["snmp_sysContact"] = $snmp_sysContact;
+			$snmp_sysContact = trim(strtr($snmp_sysContact,'"',' '));
+			$device['snmp_sysContact'] = $snmp_sysContact;
 		}
 
 		/* get system description */
 		$snmp_sysDescr = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0'); 
 
 		if (strlen($snmp_sysDescr)) {
-			$snmp_sysDescr = trim(strtr($snmp_sysDescr,"\""," "));
-			$device["snmp_sysDescr"] = $snmp_sysDescr;
+			$snmp_sysDescr = trim(strtr($snmp_sysDescr,'"',' '));
+			$device['snmp_sysDescr'] = $snmp_sysDescr;
 		}
 
 		/* get system uptime */
 		$snmp_sysUptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0'); 
 
 		if (strlen($snmp_sysUptime)) {
-			$snmp_sysUptime = trim(strtr($snmp_sysUptime,"\""," "));
-			$device["snmp_sysUptime"] = $snmp_sysUptime;
+			$snmp_sysUptime = trim(strtr($snmp_sysUptime,'"',' '));
+			$device['snmp_sysUptime'] = $snmp_sysUptime;
 		}
 
 		$session->close();
@@ -3143,10 +3148,10 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	$data .= "\1\0\0\1\0\0\0\0\0\0";
 
 	/* split IP into octets */
-	$octets = explode(".", $ip);
+	$octets = explode('.', $ip);
 
 	/* perform a quick error check */
-	if (count($octets) != 4) return "ERROR";
+	if (count($octets) != 4) return 'ERROR';
 
 	/* needs a byte to indicate the length of each segment of the request */
 	for ($x=3; $x>=0; $x--) {
@@ -3158,7 +3163,7 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 		case 3: // 3 byte long segment
 			$data .= "\3"; break;
 		default: // segment is too big, invalid IP
-			return "ERROR";
+			return 'ERROR';
 		}
 
 		/* and the segment itself */
@@ -3186,19 +3191,19 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	/* close the socket */
 	@fclose($handle);
 
-	if ($info["timed_out"]) {
-		return "timed_out";
+	if ($info['timed_out']) {
+		return 'timed_out';
 	}
 
 	/* more error handling */
-	if ($response == "" || $requestsize == false || strlen($response) <= $requestsize) { return $ip; }
+	if ($response == '' || $requestsize == false || strlen($response) <= $requestsize) { return $ip; }
 
 	/* parse the response and find the response type */
-	$type = @unpack("s", substr($response, $requestsize+2));
+	$type = @unpack('s', substr($response, $requestsize+2));
 
 	if (isset($type[1]) && $type[1] == 0x0C00) {
 		/* set up our variables */
-		$host = "";
+		$host = '';
 		$len = 0;
 
 		/* set our pointer at the beginning of the hostname uses the request
@@ -3209,7 +3214,7 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 		/* reconstruct the hostname */
 		do {
 			/* get segment size */
-			$len = unpack("c", substr($response, $position));
+			$len = unpack('c', substr($response, $position));
 
 			/* null terminated string, so length 0 = finished */
 			if ($len[1] == 0) {
@@ -3218,7 +3223,7 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 			}
 
 			/* add the next segment to our host */
-			$host .= substr($response, $position+1, $len[1]) . ".";
+			$host .= substr($response, $position+1, $len[1]) . '.';
 
 			/* move pointer on to the next segment */
 			$position += $len[1] + 1;
@@ -3585,7 +3590,7 @@ function ping_netbios_name($ip, $timeout_ms = 1000) {
 		/* close the socket */
 		fclose($handle);
 
-		if ($info["timed_out"]) {
+		if ($info['timed_out']) {
 			return false;
 		}
 
