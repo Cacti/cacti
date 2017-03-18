@@ -642,7 +642,7 @@ function color() {
 			SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates
 			FROM colors AS c
 			LEFT JOIN (
-				SELECT color_id, graph_template_id, local_graph_id 
+				SELECT DISTINCT color_id, graph_template_id, local_graph_id 
 				FROM graph_templates_item 
 				WHERE color_id>0
 			) AS gti
@@ -662,7 +662,7 @@ function color() {
 			SELECT c.*, local_graph_id
 			FROM colors AS c
 			LEFT JOIN (
-				SELECT color_id, graph_template_id, local_graph_id 
+				SELECT DISTINCT color_id, graph_template_id, local_graph_id 
 				FROM graph_templates_item 
 				WHERE color_id>0
 			) AS gti
