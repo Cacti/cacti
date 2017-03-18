@@ -80,7 +80,7 @@ function html_end_box($trailing_br = true) { ?>
    @arg $extra_url_args - extra arguments to append to the url
    @arg $header - html to use as a header
    @arg $columns - the number of columns to present */
-function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "", $columns = 0) {
+function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0) {
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
@@ -99,68 +99,68 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 	<?php
 
 	if ($num_graphs > 0) {
-		if ($header != "") {
+		if ($header != '') {
 			print $header;
 		}
 
 		$start = true;
 		foreach ($graph_array as $graph) {
-			if (isset($graph["graph_template_name"])) {
+			if (isset($graph['graph_template_name'])) {
 				if (isset($prev_graph_template_name)) {
-					if ($prev_graph_template_name != $graph["graph_template_name"]) {
+					if ($prev_graph_template_name != $graph['graph_template_name']) {
 						$print  = true;
-						$prev_graph_template_name = $graph["graph_template_name"];
+						$prev_graph_template_name = $graph['graph_template_name'];
 					}else{
 						$print = false;
 					}
 				}else{
 					$print  = true;
-					$prev_graph_template_name = $graph["graph_template_name"];
+					$prev_graph_template_name = $graph['graph_template_name'];
 				}
 
 				if ($print) {
 					print "<tr class='templateHeader'>
 						<td colspan='3' class='textHeaderDark'>
-							" . __('Graph Template:') . ' ' . htmlspecialchars($graph["graph_template_name"]) . "
+							" . __('Graph Template:') . ' ' . htmlspecialchars($graph['graph_template_name']) . "
 						</td>
-					</tr>";
+					</tr>\n";
 				}
-			}elseif (isset($graph["data_query_name"])) {
+			}elseif (isset($graph['data_query_name'])) {
 				if (isset($prev_data_query_name)) {
-					if ($prev_data_query_name != $graph["data_query_name"]) {
+					if ($prev_data_query_name != $graph['data_query_name']) {
 						$print  = true;
-						$prev_data_query_name = $graph["data_query_name"];
+						$prev_data_query_name = $graph['data_query_name'];
 					}else{
 						$print = false;
 					}
 				}else{
 					$print  = true;
-					$prev_data_query_name = $graph["data_query_name"];
+					$prev_data_query_name = $graph['data_query_name'];
 				}
 
 				if ($print) {
 					if (!$start) {
 						while(($i % $columns) != 0) {
-							print "<td style='text-align:center;width:" . ceil(100 / $columns) . "%;'></td>";
+							print "<td style='text-align:center;width:" . round(100 / $columns, 2) . "%;'></td>\n";
 							$i++;
 						}
 
-						print "</tr>";
+						print "</tr>\n";
 					}
 
 					print "<tr class='tableHeader'>
-							<td colspan='$columns' class='graphSubHeaderColumn textHeaderDark'>" . __('Data Query:') . ' ' . $graph["data_query_name"] . "</td>
-						</tr>";
+							<td colspan='$columns' class='graphSubHeaderColumn textHeaderDark'>" . __('Data Query:') . ' ' . $graph['data_query_name'] . "</td>
+						</tr>\n";
 					$i = 0;
 				}
 
-				if (!isset($prev_sort_field_value) || $prev_sort_field_value != $graph["sort_field_value"]){
-					$prev_sort_field_value = $graph["sort_field_value"];
+				if (!isset($prev_sort_field_value) || $prev_sort_field_value != $graph['sort_field_value']){
+					$prev_sort_field_value = $graph['sort_field_value'];
 					print "<tr class='templateHeader'>
 						<td colspan='$columns' class='textHeaderDark'>
-							" . $graph["sort_field_value"] . "
+							" . $graph['sort_field_value'] . "
 						</td>
-					</tr>";
+					</tr>\n";
 					$i = 0;
 					$j = 0;
 				}
@@ -172,13 +172,13 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 			}
 
 			?>
-			<td style='width:<?php print ceil(100 / $columns);?>%;'>
+			<td style='width:<?php print round(100 / $columns, 2);?>%;'>
 				<div>
 				<table style='text-align:center;margin:auto;'>
 					<tr>
 						<td>
-							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>'></div>
-							<?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'>" . htmlspecialchars($graph["title_cache"]) . "</span>" : "");?>
+							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
+							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span align='center'>" . htmlspecialchars($graph['title_cache']) . '</span>' : '');?>
 						</td>
 						<td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php graph_drilldown_icons($graph['local_graph_id']);?>
@@ -195,21 +195,21 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
 			if (($i % $columns) == 0 && ($k < $num_graphs)) {
 				$i=0;
 				$j++;
-				print "</tr>";
+				print "</tr>\n";
 				$start = true;
 			}
 		}
 
 		if (!$start) {
 			while(($i % $columns) != 0) {
-				print "<td style='text-align:center;width:" . ceil(100 / $columns) . "%;'></td>";
+				print "<td style='text-align:center;width:" . round(100 / $columns, 2) . "%;'></td>";
 				$i++;
 			}
 
-			print "</tr>";
+			print "</tr>\n";
 		}
 	}else{
-		if ($no_graphs_message != "") {
+		if ($no_graphs_message != '') {
 			print "<td><em>$no_graphs_message</em></td>";
 		}
 	}
@@ -224,7 +224,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = "", $extra_url_args
    @arg $extra_url_args - extra arguments to append to the url
    @arg $header - html to use as a header
    @arg $columns - the number of columns to present */
-function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extra_url_args = "", $header = "", $columns = 0) {
+function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0) {
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
@@ -243,46 +243,46 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 	<?php
 
 	if ($num_graphs > 0) {
-		if ($header != "") {
+		if ($header != '') {
 			print $header;
 		}
 
 		$start = true;
 		foreach ($graph_array as $graph) {
-			if (isset($graph["graph_template_name"])) {
+			if (isset($graph['graph_template_name'])) {
 				if (isset($prev_graph_template_name)) {
-					if ($prev_graph_template_name != $graph["graph_template_name"]) {
-						$prev_graph_template_name = $graph["graph_template_name"];
+					if ($prev_graph_template_name != $graph['graph_template_name']) {
+						$prev_graph_template_name = $graph['graph_template_name'];
 					}
 				}else{
-					$prev_graph_template_name = $graph["graph_template_name"];
+					$prev_graph_template_name = $graph['graph_template_name'];
 				}
-			}elseif (isset($graph["data_query_name"])) {
+			}elseif (isset($graph['data_query_name'])) {
 				if (isset($prev_data_query_name)) {
-					if ($prev_data_query_name != $graph["data_query_name"]) {
+					if ($prev_data_query_name != $graph['data_query_name']) {
 						$print  = true;
-						$prev_data_query_name = $graph["data_query_name"];
+						$prev_data_query_name = $graph['data_query_name'];
 					}else{
 						$print = false;
 					}
 				}else{
 					$print  = true;
-					$prev_data_query_name = $graph["data_query_name"];
+					$prev_data_query_name = $graph['data_query_name'];
 				}
 
 				if ($print) {
 					if (!$start) {
 						while(($i % $columns) != 0) {
-							print "<td style='text-align:center;width:" . ceil(100 / $columns) . "%;'></td>";
+							print "<td style='text-align:center;width:" . round(100 / $columns, 3) . "%;'></td>";
 							$i++;
 						}
 
-						print "</tr>";
+						print "</tr>\n";
 					}
 
 					print "<tr class='tableHeader'>
-							<td class='graphSubHeaderColumn textHeaderDark' colspan='$columns'>" . __('Data Query:') . ' ' . $graph["data_query_name"] . "</td>
-						</tr>";
+							<td class='graphSubHeaderColumn textHeaderDark' colspan='$columns'>" . __('Data Query:') . ' ' . $graph['data_query_name'] . "</td>
+						</tr>\n";
 					$i = 0;
 				}
 			}
@@ -293,12 +293,12 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 			}
 
 			?>
-			<td style='width:<?php print ceil(100 / $columns);?>%;'>
+			<td style='width:<?php print round(100 / $columns, 2);?>%;'>
 				<table style='text-align:center;margin:auto;'>
 					<tr>
 						<td>
-							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting("default_width");?>' graph_height='<?php print read_user_setting("default_height");?>'></div>
-							<?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'>" . htmlspecialchars($graph["title_cache"]) . "</span>" : "");?>
+							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
+							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span align='center'>" . htmlspecialchars($graph['title_cache']) . '</span>' : '');?>
 						</td>
 						<td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails');?>
@@ -314,21 +314,21 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = "", $extr
 			if (($i % $columns) == 0 && ($k < $num_graphs)) {
 				$i=0;
 				$j++;
-				print "</tr>";
+				print "</tr>\n";
 				$start = true;
 			}
 		}
 
 		if (!$start) {
 			while(($i % $columns) != 0) {
-				print "<td style='text-align:center;width:" . ceil(100 / $columns) . "%;'></td>";
+				print "<td style='text-align:center;width:" . round(100 / $columns, 2) . "%;'></td>";
 				$i++;
 			}
 
-			print "</tr>";
+			print "</tr>\n";
 		}
 	}else{
-		if ($no_graphs_message != "") {
+		if ($no_graphs_message != '') {
 			print "<td><em>$no_graphs_message</em></td>";
 		}
 	}
@@ -370,7 +370,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
    @arg $object - the object types that is being displayed
    @arg $page_var - the object types that is being displayed
    @arg $return_to - paint the resulting page into this dom object */
-function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = 'Rows', $page_var = "page", $return_to = "") {
+function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = 'Rows', $page_var = 'page', $return_to = '') {
 	if ($total_rows > $rows_per_page) {
 		if (substr_count($base_url, '?') == 0) {
 			$base_url = trim($base_url) . '?';
@@ -548,9 +548,9 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":'') . " style='padding:4px;text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " style='padding:4px;text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
 		}else{
-			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":'') . " class='sortable" . ($isSort ? " $isSort":'') . "' style='padding:4px;text-align:$align;'>";
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " class='sortable" . ($isSort ? " $isSort":'') . "' style='padding:4px;text-align:$align;'>";
 			print "<div class='sortinfo' sort-page='" . ($url == '' ? htmlspecialchars($_SERVER['PHP_SELF']):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 
@@ -572,7 +572,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
    @arg $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
    @arg $form_action - the url to post the 'select all' form to */
-function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = "") {
+function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '') {
 	static $page = 0;
 
 	/* reverse the sort direction */
@@ -705,10 +705,10 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":'') . " style='text-align:$align;'>" . $display_text . "</th>\n";
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " style='text-align:$align;'>" . $display_text . "</th>\n";
 		}else{
-			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip) . "'":'') . " class='sortable" . ($isSort ? " $isSort":'') . "' style='text-align:$align;'>";
-			print "<div class='sortinfo' sort-page='" . htmlspecialchars($form_action) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " class='sortable" . ($isSort ? " $isSort":'') . "' style='text-align:$align;'>";
+			print "<div class='sortinfo' sort-page='" . htmlspecialchars($form_action, ENT_QUOTES, 'UTF-8') . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 	}
 
@@ -791,7 +791,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
 		foreach (array_keys($form_data) as $id) {
-			print '<option value="' . htmlspecialchars($id, ENT_QUOTES) . '"';
+			print '<option value="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '"';
 
 			if ($form_previous_value == $id) {
 			print " selected";
@@ -802,7 +802,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 	}else{
 		if (sizeof($form_data) > 0) {
 			foreach ($form_data as $row) {
-				print "<option value='" . htmlspecialchars($row[$column_id], ENT_QUOTES) . "'";
+				print "<option value='" . htmlspecialchars($row[$column_id], ENT_QUOTES, 'UTF-8') . "'";
 
 				if ($form_previous_value == $row[$column_id]) {
 					print " selected";
