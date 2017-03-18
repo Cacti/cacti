@@ -666,11 +666,11 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 function update_order_string() {
 	$page  = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
 	if (isset_request_var('action')) {
-		$page .= '_' . get_request_var('action');
+		$page .= '_' . get_nfilter_request_var('action');
 	}
 
 	if (isset_request_var('tab')) {
-		$page .= '_' . get_request_var('tab');
+		$page .= '_' . get_nfilter_request_var('tab');
 	}
 
 	$order = '';
@@ -707,11 +707,11 @@ function get_order_string() {
 	$page = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
 
 	if (isset_request_var('action')) {
-		$page .= '_' . get_request_var('action');
+		$page .= '_' . get_nfilter_request_var('action');
 	}
 
 	if (isset_request_var('tab')) {
-		$page .= '_' . get_request_var('tab');
+		$page .= '_' . get_nfilter_request_var('tab');
 	}
 
 	if (isset($_SESSION['sort_string'][$page])) {
