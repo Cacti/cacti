@@ -217,6 +217,14 @@ if ($output !== false && $output != '') {
 
 	$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
 
+	if ($graph_data_array['graph_nolegend']) {
+		$oarray['image_width']  = $graph_data_array['graph_width']  * 1.24;
+		$oarray['image_height'] = $graph_data_array['graph_height'] * 1.45;
+	}else{
+		$oarray['image_width']  = $graph_data_array['graph_width']  * 1.2;
+		$oarray['image_height'] = $graph_data_array['graph_height'] * 1.8;
+	}
+
 	if ($image !== false) {
 		$oarray['image'] = base64_encode($image);
 	}else{
