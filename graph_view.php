@@ -685,10 +685,10 @@ case 'list':
 		strURL = urlPath+'graph_view.php?action=preview';
 		$('#form_graph_list').find('select, input').each(function() {
 			switch($(this).attr('id')) {
-			case 'host_id':
 			case 'graph_template_id':
 				strURL += '&' + $(this).attr('id') + '=' + $(this).prop('selectedIndex');
 				break;
+			case 'host_id':
 			case 'rfilter':
 			case 'graph_add':
 			case 'graph_remove':
