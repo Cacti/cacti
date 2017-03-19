@@ -145,7 +145,11 @@ if ($output !== false && $output != '') {
 
 	$error = ob_get_contents();
 
-	$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
+	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
+		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
+	}else{
+		$image = rrdtool_create_error_image($error);
+	}
 
 	ob_end_clean();
 

@@ -215,7 +215,11 @@ if ($output !== false && $output != '') {
 
 	ob_end_clean();
 
-	$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
+	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
+		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
+	}else{
+		$image = rrdtool_create_error_image($error);
+	}
 
 	if (isset($graph_data_array['graph_nolegend'])) {
 		$oarray['image_width']  = $graph_data_array['graph_width']  * 1.24;
