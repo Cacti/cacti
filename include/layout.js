@@ -1147,9 +1147,9 @@ function removeSpikesStdDev(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		//$('#spikeresults').html(data.results);
+		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
@@ -1158,9 +1158,9 @@ function removeSpikesVariance(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		//$('#spikeresults').html(data.results);
+		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
@@ -1169,9 +1169,9 @@ function removeSpikesInRange(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		//$('#spikeresults').html(data.results);
+		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
@@ -1180,9 +1180,9 @@ function removeRangeFill(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		//$('#spikeresults').html(data.results);
+		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
