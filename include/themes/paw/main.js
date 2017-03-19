@@ -182,6 +182,10 @@ function themeReady() {
 			$( this ).removeClass( "tableHeaderColumnHover" );
 		}
 	);
+
+	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
+
+	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 	
 	$.ui.selectmenu.prototype._renderItem = function(ui, item) {
 		if (item.element.closest('select').hasClass('colordropdown')) {
