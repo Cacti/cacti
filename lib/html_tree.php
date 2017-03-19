@@ -183,19 +183,23 @@ function grow_dhtml_trees() {
 						href=$('#'+data.node.id).find('a:first').attr('href');
 					}
 					origHref = href;
-					href=href.replace('action=tree', 'action=tree_content');
-					$.get(href, function(data) {
-						$('#main').html(data);
-						applySkin();
-						var mytitle = 'Tree Mode - '+$('#nav_title').text();
-						document.getElementsByTagName('title')[0].innerHTML = mytitle;
-						if (typeof window.history.pushState !== 'undefined') {
-							window.history.pushState({ page: origHref+'&hyper=true' }, mytitle, origHref+'&hyper=true');
-						}
 
-				        window.scrollTo(0, 0);
-						resizeGraphContent();
-					});
+					if (typeof href !== 'undefined') {
+						href=href.replace('action=tree', 'action=tree_content');
+
+						$.get(href, function(data) {
+							$('#main').html(data);
+							applySkin();
+							var mytitle = 'Tree Mode - '+$('#nav_title').text();
+							document.getElementsByTagName('title')[0].innerHTML = mytitle;
+							if (typeof window.history.pushState !== 'undefined') {
+								window.history.pushState({ page: origHref+'&hyper=true' }, mytitle, origHref+'&hyper=true');
+							}
+
+							window.scrollTo(0, 0);
+							resizeGraphContent();
+						});
+					}
 					node = data.node.id;
 				}
 				resizeGraphContent();
