@@ -158,16 +158,32 @@ function form_save() {
 	parse_validate_graph_template_id('graph_template_id');
 
 	if ((isset_request_var('save_component_graph_new')) && (!isempty_request_var('graph_template_id'))) {
-		$save['id']                = get_nfilter_request_var('local_graph_id');
-		$save['graph_template_id'] = get_nfilter_request_var('graph_template_id');
-		$save['host_id']           = get_nfilter_request_var('host_id');
+		$snmp_query_array  = array();
+		$suggested_values  = array();
+		$graph_template_id = get_request_var('graph_template_id');
+		$host_id           = get_request_var('host_id');
 
-		$local_graph_id = sql_save($save, 'graph_local');
+		$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $suggested_values);
 
-		change_graph_template($local_graph_id, $gt_id_unparsed, true);
+		debug_log_insert('new_graphs', __('Created graph: %s', get_graph_title($return_array['local_graph_id'])));
 
-		/* update the title cache */
-		update_graph_title_cache($local_graph_id);
+		/* lastly push host-specific information to our data sources */
+		if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
+			foreach($return_array['local_data_id'] as $item) {
+				push_out_host($host_id, $item);
+			}
+		} else {
+			debug_log_insert('new_graphs', __('ERROR: no Data Source associated. Check Template'));
+		}
+
+		if (isset($return_array['local_graph_id'])) {
+			$local_graph_id = $return_array['local_graph_id'];
+			header('Location: graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
+		}else{
+			header('Location: graphs.php?header=false');
+		}
+
+		exit;
 	}
 
 	if (isset_request_var('save_component_graph')) {
