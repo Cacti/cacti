@@ -757,15 +757,14 @@ legend {
 
 .spikekillMenu {
 	background: #f5f5f5 none repeat scroll 0 0;
-    border: 1px solid #373737;
-    box-shadow: 2px 2px 2px #292929;
+    border: 1px solid #979797;
+    box-shadow: 2px 2px 2px #999999;
     margin: 0;
     padding: 2px;
 	line-height: 1.5em;
 }
 
 .spikekillMenu li {
-	color: snow;
 	vertical-align:middle;
 }
 

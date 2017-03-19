@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#422: additional issues with LDAP authentication
 -issue#424: Automation does not discover devices w/o resolvable hostnames
 -issue#427: undefined index TotalVisibleMemorySize on FreeBSD
+-issue#432: SpikeKill menu wonky on Paw Theme
 -issue#434: password_verify not compatible in php5.4-
 -issue#435: urlPath missing from paw theme links
 -issue#443: Allow remote_agent.php through a NAT
