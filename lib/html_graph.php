@@ -374,7 +374,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				if ($(this).textWidth() > msWidth) {
 					msWidth = $(this).textWidth();
 				}
-				$('#graph_template_id').css('width', msWidth+80+'px');
+				$('#graph_template_id').css('width', msWidth+120+'px');
 			});
 
 			$('#graph_template_id').hide().multiselect({

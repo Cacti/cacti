@@ -828,7 +828,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			if ($(this).textWidth() > msWidth) {
 				msWidth = $(this).textWidth();
 			}
-			$('#graph_template_id').css('width', msWidth+80+'px');
+			$('#graph_template_id').css('width', msWidth+120+'px');
 		});
 
 		$('#graph_template_id').hide().multiselect({

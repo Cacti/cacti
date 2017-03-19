@@ -24,6 +24,10 @@ Cacti CHANGELOG
 -issue: When upgrading from any version of Cacti to 1.0.5, SQL's relative to poller_reindex might appear
 -issue: Color page performance poor
 -issue: The Device dropdown on the Graph View page was unreliable
+-issue: Aggregate and non-Device Graphs in list view had not Device or Title description
+-issue: Re-engineer back button design to accomocate ajax and native navigation
+-issue: Make Graph Template filter wider 
+-issue: Resolve some visual issues in Classic theme
 -feature: Add page refresh API to make page refreshing in Ajax easier to accomplish
 -feature: Update fontawesome to version 4.7
 -feature: Use fontawesome glyphs for menu items
