@@ -726,11 +726,11 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 	}
 
 	$graph_template_inputs = db_fetch_assoc_prepared('SELECT
-		graph_template_input.column_name,
-		graph_template_input_defs.graph_template_item_id
-		FROM (graph_template_input,graph_template_input_defs)
-		WHERE graph_template_input.id=graph_template_input_defs.graph_template_input_id
-		AND graph_template_input.graph_template_id = ?', 
+		gti.column_name, gtid.graph_template_item_id
+		FROM graph_template_input AS gti
+		INNER JOIN graph_template_input_defs AS gtid
+		ON gti.id=gtid.graph_template_input_id
+		AND gti.graph_template_id = ?', 
 		array($graph_template_id));
 
 	$cols = db_get_table_column_types('graph_templates_item');
