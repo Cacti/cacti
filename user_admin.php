@@ -1622,7 +1622,7 @@ function user_realms_edit($header_label) {
 		}
 
 		if ($j > 1) {
-			print "<td class='realms' colspan='" . (6-$j) . "'></td>\n";
+			print "<td class='realms' colspan='" . (5-$j) . "'></td>\n";
 			print "</tr>\n";
 		}
 
@@ -1683,7 +1683,7 @@ function user_realms_edit($header_label) {
 		}
 
 		if ($j > 1) {
-			print "<td class='realms' colspan='" . (6-$j) . "'></td>\n";
+			print "<td class='realms' colspan='" . (5-$j) . "'></td>\n";
 			print "</tr>\n";
 		}
 
@@ -1710,7 +1710,7 @@ function user_realms_edit($header_label) {
 			if ($last_plugin != $r['name'] && $last_plugin != 'none') {
 				$break = true;
 
-				if ($j == 6) {
+				if ($j == 5) {
 					print "</tr><tr>\n";
 					$break = true;;
 					$j = 1;
