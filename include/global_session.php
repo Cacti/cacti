@@ -87,4 +87,5 @@ if (isset($_SESSION['refresh'])) {
 	var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;
 	var urlPath='<?php print $config['url_path'];?>';
 	var previousPage='';
+	var requestURI='<?php print $_SERVER['REQUEST_URI'];?>';
 </script>

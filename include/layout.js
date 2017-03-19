@@ -455,6 +455,13 @@ function cactiReturnTo(href) {
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attrbute 'on()' */
 function applySkin() {
+	if (typeof requestURI !== 'undefined') {
+		if (typeof window.history.pushState !== 'undefined') {
+			requestURI.replace('&header=false', '').replace('?header=false', '');
+			window.history.pushState({ page: requestURI }, '', requestURI);
+		}
+	}
+
 	if (!theme || theme == 'classic') {
 		theme = 'classic';
 
