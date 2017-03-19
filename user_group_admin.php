@@ -791,10 +791,10 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		if (get_request_var('associated') == 'false') {
 			/* Show all items */
 		} else {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type=1 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
+			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 1 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 
-		$total_rows = db_fetch_cell("select
+		$total_rows = db_fetch_cell("SELECT
 			COUNT(DISTINCT gtg.id)
 			FROM graph_templates_graph AS gtg
 			LEFT JOIN user_auth_group_perms 
@@ -804,7 +804,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		$sql_query = "SELECT gtg.local_graph_id, gtg.title_cache, user_auth_group_perms.group_id
 			FROM graph_templates_graph AS gtg
 			LEFT JOIN user_auth_group_perms 
-			ON (gtg.local_graph_id=user_auth_group_perms.item_id AND user_auth_group_perms.type=1 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
+			ON (gtg.local_graph_id=user_auth_group_perms.item_id AND user_auth_group_perms.type = 1 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
 			$sql_where 
 			ORDER BY title_cache
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
@@ -949,7 +949,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		$sql_query = "SELECT host.*, user_auth_group_perms.group_id
 			FROM host 
 			LEFT JOIN user_auth_group_perms 
-			ON (host.id=user_auth_group_perms.item_id AND user_auth_group_perms.type=3 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
+			ON (host.id=user_auth_group_perms.item_id AND user_auth_group_perms.type = 3 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
 			$sql_where 
 			ORDER BY description
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
@@ -1073,7 +1073,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		if (get_request_var('associated') == 'false') {
 			/* Show all items */
 		} else {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type=4 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
+			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 
 		$total_rows = db_fetch_cell("SELECT
@@ -1213,7 +1213,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		if (get_request_var('associated') == 'false') {
 			/* Show all items */
 		} else {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type=2 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
+			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 
 		$total_rows = db_fetch_cell("SELECT
@@ -1279,7 +1279,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		form_hidden_box('id', get_request_var('id'), '');
 		form_hidden_box('associate_tree', '1', '');
 
-		if ($policy['policy_graph_templates'] == 1) {
+		if ($policy['policy_trees'] == 1) {
 			$assoc_actions = array(
 				1 => __('Revoke Access'),
 				2 => __('Grant Access')

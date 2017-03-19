@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#432: SpikeKill menu wonky on Paw Theme
 -issue#434: password_verify not compatible in php5.4-
 -issue#435: urlPath missing from paw theme links
+-issue#436: Restricted user does not see graphs in tree view
 -issue#443: Allow remote_agent.php through a NAT
 -issue#446: No local admin when using multiple LDAP configuration
 -issue#447: Creating another non data query graph from same template reuses first data source

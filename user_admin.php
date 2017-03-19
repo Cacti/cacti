@@ -1540,7 +1540,7 @@ function graph_perms_edit($tab, $header_label) {
 		form_hidden_box('id', get_request_var('id'), '');
 		form_hidden_box('associate_tree', '1', '');
 
-		if ($policy['policy_graph_templates'] == 1) {
+		if ($policy['policy_trees'] == 1) {
 			$assoc_actions = array(
 				1 => __('Revoke Access'),
 				2 => __('Grant Access')
@@ -2731,7 +2731,7 @@ function device_filter($header_label) {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>></option>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2818,7 +2818,7 @@ function template_filter($header_label) {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>></option>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {

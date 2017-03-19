@@ -971,7 +971,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}elseif ($leaf_type == 'host') {
 		/* graph template grouping */
 		if ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
-			$sql_where       = 'gl.host_id=' . $leaf['host_id'] . (empty($graph_template_id) ? '' : ' AND gt.graph_template_id=' . $graph_template_id);
+			$sql_where = 'gl.host_id=' . $leaf['host_id'] . (empty($graph_template_id) ? '' : ' AND gl.graph_template_id=' . $graph_template_id);
 			if (get_request_var('graph_template_id') != '' && get_request_var('graph_template_id') != '0') {
 				$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 			}
@@ -979,10 +979,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$graph_templates = get_allowed_graph_templates($sql_where);
 
 			/* for graphs without a template */
-			array_push($graph_templates, array(
-				'id' => '0',
-				'name' => '(No Graph Template)'
-				));
+			array_push(
+				$graph_templates, array(
+					'id' => '0',
+					'name' => '(No Graph Template)'
+				)
+			);
 
 			if (sizeof($graph_templates)) {
 				foreach ($graph_templates as $graph_template) {
