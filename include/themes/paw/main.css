@@ -1536,7 +1536,7 @@ tr.selected a {
 }
 
 #nav li ul li a {
-	padding: 2px 4px 2px 25px; 
+	padding: 2px 4px 2px 35px; 
 	background: #f0f0f0;
 }
 
@@ -1717,10 +1717,9 @@ tr#realtime td:first-child {
 }
 
 .menu_glyph {
-	font-size: 18px;
-	padding-right: 5px;
-	vertical-align: 10%;
-	float: middle;
+	font-size: 12px;
+	width: 20px;
+	vertical-align: 30%;
 }
 
 .menuitem span {
