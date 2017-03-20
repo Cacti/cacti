@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-1.0.7
+1.1.0
 -issue#337: Generic SNMP OID Graph Template damanged
 -issue#338: Extremely slow new graph/DS creation
 -issue#353: Broadcast & Multicast Packet counters missing
