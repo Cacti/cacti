@@ -234,7 +234,10 @@ function host_new_graphs_save($host_id) {
 					$snmp_query_array['snmp_query_graph_id'] = $form_id2;
 				}
 
-				$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id FROM snmp_query_graph WHERE id = ?', array($snmp_query_array['snmp_query_graph_id']));
+				$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id 
+					FROM snmp_query_graph 
+					WHERE id = ?', 
+					array($snmp_query_array['snmp_query_graph_id']));
 			}
 
 			if ($current_form_type == 'cg') {

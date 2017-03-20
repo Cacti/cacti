@@ -816,6 +816,9 @@ function profile() {
 			$sql_having
 		) AS rs");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$profile_list = db_fetch_assoc("SELECT rs.*,
 		SUM(CASE WHEN local_data_id=0 THEN 1 ELSE 0 END) AS templates,
 		SUM(CASE WHEN local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
@@ -829,8 +832,8 @@ function profile() {
 		$sql_where
 		GROUP BY rs.id
 		$sql_having
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('data_source_profiles.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 9, __('Profiles'), 'page', 'main');
 

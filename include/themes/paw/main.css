@@ -757,15 +757,14 @@ legend {
 
 .spikekillMenu {
 	background: #f5f5f5 none repeat scroll 0 0;
-    border: 1px solid #373737;
-    box-shadow: 2px 2px 2px #292929;
+    border: 1px solid #979797;
+    box-shadow: 2px 2px 2px #999999;
     margin: 0;
     padding: 2px;
 	line-height: 1.5em;
 }
 
 .spikekillMenu li {
-	color: snow;
 	vertical-align:middle;
 }
 
@@ -1715,4 +1714,15 @@ tr#realtime td:first-child {
 
 #graph_view_tree_content2_child > tbody > .tableHeader {
 	background: rgba(0,0,0,0.9);
+}
+
+.menu_glyph {
+	font-size: 18px;
+	padding-right: 5px;
+	vertical-align: 10%;
+	float: middle;
+}
+
+.menuitem span {
+	vertical-align: 20%;
 }

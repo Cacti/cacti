@@ -889,8 +889,10 @@ function utilities_get_mysql_recommendations() {
 			case 'pmem':
 				if (isset($memInfo['MemTotal'])) {
 					$totalMem = $memInfo['MemTotal'];
-				}else{
+				}elseif (isset($memInfo['TotalVisibleMemorySize'])) {
 					$totalMem = $memInfo['TotalVisibleMemorySize'];
+				}else{
+					break;
 				}
 
 				if ($variables[$name] < ($r['value']*$totalMem/100)) {

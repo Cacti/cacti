@@ -37,7 +37,6 @@ get_filter_request_var('graph_end');
 get_filter_request_var('graph_height');
 get_filter_request_var('graph_width');
 get_filter_request_var('local_graph_id');
-get_filter_request_var('rra_id');
 
 if (isset_request_var('graph_nolegend')) {
 	set_request_var('graph_nolegend', 'true');
@@ -76,11 +75,6 @@ if (!isset_request_var('image_format')) {
 }
 
 $graph_data_array['image_format'] = $gtype;
-
-header('Content-type: image/'. $gtype);
-
-/* flush the headers now */
-ob_end_clean();
 
 session_write_close();
 
@@ -124,12 +118,47 @@ if (isset_request_var('graph_theme')) {
 	$graph_data_array['graph_theme'] = get_request_var('graph_theme');
 }
 
-$output =  @rrdtool_function_graph(get_request_var('local_graph_id'), (array_key_exists('rra_id', $_REQUEST) ? get_request_var('rra_id') : null), $graph_data_array);
+if (isset_request_var('rra_id')) {
+	if (get_nfilter_request_var('rra_id') == 'all') {
+		$rra_id = 'all';
+	}else{
+		$rra_id = get_filter_request_var('rra_id');
+	}
+}else{
+	$rra_id = null;
+}
 
+$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
 
 if ($output !== false && $output != '') {
+	/* flush the headers now */
+	ob_end_clean();
+
+	header('Content-type: image/'. $gtype);
 	print $output;
 }else{
-	print file_get_contents(__DIR__ . '/images/rrd_not_found.png');
+	ob_start();
+
+	/* get the error string */
+	$graph_data_array['get_error'] = true;
+	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
+
+	$error = ob_get_contents();
+
+	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
+		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
+	}else{
+		$image = rrdtool_create_error_image($error);
+	}
+
+	ob_end_clean();
+
+	header('Content-type: image/png');
+
+	if ($image !== false) {
+		print $image;
+	}else{
+		print file_get_contents(__DIR__ . '/images/cacti_error_image.png');
+	}
 }
 

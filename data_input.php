@@ -438,6 +438,23 @@ function data_edit() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
+	if (isset($data_input)) {
+		switch ($data_input['type_id']) {
+		case DATA_INPUT_TYPE_SNMP:
+			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SNMP] = __('SNMP Get');
+			break;
+		case DATA_INPUT_TYPE_SNMP_QUERY:
+			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SNMP_QUERY] = __('SNMP Query');
+			break;
+		case DATA_INPUT_TYPE_SCRIPT_QUERY:
+			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SCRIPT_QUERY] = __('Script Query');
+			break;
+		case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
+			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER] = __('Script Query - Script Server');
+			break;
+		}
+	}
+
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_data_input_edit, (isset($data_input) ? $data_input : array()))
@@ -679,6 +696,9 @@ function data() {
 		FROM data_input AS di
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$data_inputs = db_fetch_assoc("SELECT di.*,
 		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
 		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
@@ -687,8 +707,8 @@ function data() {
 		ON di.id=dtd.data_input_id
 		$sql_where
 		GROUP BY di.id
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('data_input.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('Input Methods'), 'page', 'main');
 

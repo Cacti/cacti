@@ -1085,7 +1085,7 @@ function is_hexadecimal(&$result) {
    @arg $result - (string) some string to be evaluated
    @returns - (bool) either to result is a mac address of not */
 function is_mac_address($result) {
-	if (preg_match('/^([0-9a-f]{1,2}[\.:-]){5}([0-9a-f]{1,2})$/i', $result)) {
+	if (filter_var($result, FILTER_VALIDATE_MAC)) {
 		return true;
 	}else{
 		return false;
@@ -1095,6 +1095,12 @@ function is_mac_address($result) {
 function is_hex_string($result) {
 	if ($result != '') {
 		$parts = explode(' ', $result);
+
+		/* assume if something is a hex string 
+		   it will have a length > 1 */
+		if (sizeof($parts) == 1) {
+			return false;
+		}
 
 		foreach($parts as $part) {
 			if (strlen($part) != 2) {
@@ -2797,7 +2803,9 @@ function draw_navigation_text($type = 'url') {
 
 		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . $leaf_name:'') . ($leaf_sub != '' ? ':' . $leaf_sub . ')':($leaf_name != '' ? ')':''));
 
-		$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li></ul>';
+		if ($tree_title != '') {
+			$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li></ul>';
+		}
 	}elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
         $title      = db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]));
 		$style      = db_fetch_cell_prepared('SELECT style FROM external_links WHERE id = ?', array($matches[1]));
@@ -3256,6 +3264,31 @@ function cacti_escapeshellarg($string, $quote=true) {
 	}
 }
 
+/**
+ * set a page refresh in Cacti through a callback
+ * @param $refresh - an array containing the page, seconds, and logout
+ * @return         - nill
+ */
+function set_page_refresh($refresh) {
+	if (isset($refresh['seconds'])) {
+		$_SESSION['refresh']['seconds'] = $refresh['seconds'];
+	}
+
+	if (isset($refresh['logout'])) {
+		if ($refresh['logout'] == 'true' || $refresh['logout'] === true) {
+			$_SESSION['refresh']['logout']  = 'true';
+		}else{
+			$_SESSION['refresh']['logout']  = 'false';
+		}
+	}else{
+		$_SESSION['refresh']['logout']  = 'true';
+	}
+
+	if (isset($refresh['page'])) {
+		$_SESSION['refresh']['page']    = $refresh['page'];
+	}
+}
+
 function bottom_footer() {
 	global $config, $refresh;
 
@@ -3646,7 +3679,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 }
 
-function ping_mail_server($host, $port, $user, $password, $timeout = 5, $secure = 'none') {
+function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure = 'none') {
 	global $config;
 
 	include_once($config['include_path'] . '/phpmailer/PHPMailerAutoload.php');
@@ -3683,10 +3716,11 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 5, $secure 
 				throw new Exception(__('HELO failed: %s', $smtp->getLastReply()));
 			}
 		} else {
-			throw new Exception(__('Connect failed'));
+			throw new Exception(__('Connect failed: %s', $smtp->getLastReply()));
 		}
 	} catch (Exception $e) {
 		$results = __('SMTP error: ') . $e->getMessage();
+		cacti_log($results);
 	}
 
 	//Whatever happened, close the connection.

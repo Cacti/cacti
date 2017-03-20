@@ -42,7 +42,6 @@ if ($debug == false) {
 	get_filter_request_var('graph_height');
 	get_filter_request_var('graph_width');
 	get_filter_request_var('local_graph_id');
-	get_filter_request_var('rra_id');
 
 	if (isset_request_var('graph_nolegend')) {
 		set_request_var('graph_nolegend', 'true');
@@ -60,9 +59,6 @@ if ($debug == false) {
 	set_request_var('local_graph_id', 53);
 	set_request_var('rra_id', 0);
 }
-
-/* flush the headers now */
-ob_end_clean();
 
 session_write_close();
 
@@ -108,6 +104,16 @@ if (isset_request_var('graph_theme')) {
 	$graph_data_array['graph_theme'] = get_request_var('graph_theme');
 }
 
+if (isset_request_var('rra_id')) {
+	if (get_nfilter_request_var('rra_id') == 'all') {
+		$rra_id = 'all';
+	}else{
+		$rra_id = get_filter_request_var('rra_id');
+	}
+}else{
+	$rra_id = null;
+}
+
 $graph_data_array['graphv'] = true;
 
 // Determine the graph type of the output
@@ -145,7 +151,9 @@ if (!isset_request_var('image_format')) {
 $graph_data_array['image_format'] = $gtype;
 
 if ($config['poller_id'] == 1) {
-	$output = @rrdtool_function_graph(get_request_var('local_graph_id'), (array_key_exists('rra_id', $_REQUEST) ? get_request_var('rra_id') : null), $graph_data_array);
+	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
+
+	ob_end_clean();
 }else{
 	if (isset_request_var('rra_id')) {
 		if (get_nfilter_request_var('rra_id') == 'all') {
@@ -168,7 +176,7 @@ if ($config['poller_id'] == 1) {
 
 	$url  = get_url_type() . '://' . $hostname . $config['url_path'] . 'remote_agent.php?action=graph_json';
 	$url .= '&local_graph_id=' . get_request_var('local_graph_id');
-	$url .= '&rra_id=' . get_request_var('rra_id');
+	$url .= '&rra_id=' . $rra_id;
 
 	foreach($graph_data_array as $variable => $value) {
 		$url .= '&' . $variable . '=' . $value;
@@ -177,7 +185,7 @@ if ($config['poller_id'] == 1) {
 	$output = file_get_contents($url);
 }
 
-$oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => get_request_var('rra_id'));
+$oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => $rra_id);
 
 // Check if we received back something populated from rrdtool
 if ($output !== false && $output != '') {
@@ -195,7 +203,37 @@ if ($output !== false && $output != '') {
 		$oarray[$parts[0]] = trim($parts[1]);
 	}
 } else { 
-	$oarray['image'] = base64_encode(file_get_contents(__DIR__ . '/images/rrd_not_found.png'));
+	/* image type now png */
+	$oarray['type'] = 'png';
+
+	ob_start();
+
+    $graph_data_array['get_error'] = true;
+    rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
+
+	$error = ob_get_contents();
+
+	ob_end_clean();
+
+	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
+		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
+	}else{
+		$image = rrdtool_create_error_image($error);
+	}
+
+	if (isset($graph_data_array['graph_nolegend'])) {
+		$oarray['image_width']  = $graph_data_array['graph_width']  * 1.24;
+		$oarray['image_height'] = $graph_data_array['graph_height'] * 1.45;
+	}else{
+		$oarray['image_width']  = $graph_data_array['graph_width']  * 1.15;
+		$oarray['image_height'] = $graph_data_array['graph_height'] * 1.8;
+	}
+
+	if ($image !== false) {
+		$oarray['image'] = base64_encode($image);
+	}else{
+		$oarray['image'] = base64_encode(file_get_contents(__DIR__ . '/images/cacti_error_image.png'));
+	}
 }
 
 print json_encode($oarray);

@@ -1540,7 +1540,7 @@ function graph_perms_edit($tab, $header_label) {
 		form_hidden_box('id', get_request_var('id'), '');
 		form_hidden_box('associate_tree', '1', '');
 
-		if ($policy['policy_graph_templates'] == 1) {
+		if ($policy['policy_trees'] == 1) {
 			$assoc_actions = array(
 				1 => __('Revoke Access'),
 				2 => __('Grant Access')
@@ -1622,7 +1622,7 @@ function user_realms_edit($header_label) {
 		}
 
 		if ($j > 1) {
-			print "<td class='realms' colspan='" . (6-$j) . "'></td>\n";
+			print "<td class='realms' colspan='" . (5-$j) . "'></td>\n";
 			print "</tr>\n";
 		}
 
@@ -1683,7 +1683,7 @@ function user_realms_edit($header_label) {
 		}
 
 		if ($j > 1) {
-			print "<td class='realms' colspan='" . (6-$j) . "'></td>\n";
+			print "<td class='realms' colspan='" . (5-$j) . "'></td>\n";
 			print "</tr>\n";
 		}
 
@@ -1710,7 +1710,7 @@ function user_realms_edit($header_label) {
 			if ($last_plugin != $r['name'] && $last_plugin != 'none') {
 				$break = true;
 
-				if ($j == 6) {
+				if ($j == 5) {
 					print "</tr><tr>\n";
 					$break = true;;
 					$j = 1;
@@ -2222,6 +2222,9 @@ function user() {
 		FROM user_auth
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$user_list = db_fetch_assoc("SELECT id, user_auth.username, full_name,
 		realm, enabled, policy_graphs, policy_hosts, policy_graph_templates,
 		time, max(time) as dtime
@@ -2229,8 +2232,8 @@ function user() {
 		LEFT JOIN user_log ON (user_auth.id = user_log.user_id)
 		$sql_where
 		GROUP BY id
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('user_admin.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 9, 'Users', 'page', 'main');
 
@@ -2728,7 +2731,7 @@ function device_filter($header_label) {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>></option>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
@@ -2815,7 +2818,7 @@ function template_filter($header_label) {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?>></option>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {

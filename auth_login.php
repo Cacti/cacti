@@ -101,7 +101,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		break;
 	case '3':
 		/* LDAP Auth */
- 		if ((get_nfilter_request_var('realm') == '3') && (strlen(get_nfilter_request_var('login_password')) > 0)) {
+ 		if ((get_nfilter_request_var('realm') == '2') && (strlen(get_nfilter_request_var('login_password')) > 0)) {
 			/* include LDAP lib */
 			include_once('./lib/ldap.php');
 
@@ -149,9 +149,13 @@ if (get_nfilter_request_var('action') == 'login') {
 
 		break;
 	case '4':
-		domains_login_process();
+		if (get_request_var('realm') > 0) {
+			domains_login_process();
 
-		break;
+			break;
+		}
+
+		/* continue on to normal login process */
 	default:
 		secpass_login_process();
 

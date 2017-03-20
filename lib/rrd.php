@@ -570,31 +570,30 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 	   exists and if not create it.
 	 */
 	if (read_config_option('extended_paths') == 'on') {
-	
-		if(read_config_option('storage_location')) {
-			if( false === rrdtool_execute("is_dir " . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') ) {
-				if( false === rrdtool_execute("mkdir " . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') ) {
+		if (read_config_option('storage_location')) {
+			if (false === rrdtool_execute("is_dir " . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') ) {
+				if (false === rrdtool_execute("mkdir " . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') ) {
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
 				}
 			}
-		}else {
-			if (!is_dir(dirname($data_source_path))) {
-				if (mkdir(dirname($data_source_path), 0775)) {
-					if ($config['cacti_server_os'] != 'win32') {
-						$owner_id = fileowner($config['rra_path']);
-						$group_id = filegroup($config['rra_path']);
+		}elseif (!is_dir(dirname($data_source_path)) && $config['is_web'] == false) {
+			if (mkdir(dirname($data_source_path), 0775)) {
+				if ($config['cacti_server_os'] != 'win32') {
+					$owner_id = fileowner($config['rra_path']);
+					$group_id = filegroup($config['rra_path']);
 
-						if ((chown(dirname($data_source_path), $owner_id)) &&
-							(chgrp(dirname($data_source_path), $group_id))) {
-							/* permissions set ok */
-						}else{
-							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
-						}
+					if ((chown(dirname($data_source_path), $owner_id)) &&
+						(chgrp(dirname($data_source_path), $group_id))) {
+						/* permissions set ok */
+					}else{
+						cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
 					}
-				}else{
-					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
 				}
+			}else{
+				cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
 			}
+		}else{
+			cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", FALSE);
 		}
 	}
 
@@ -2025,13 +2024,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 
 			if (isset($graph_data_array['get_error'])) {
-				return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_STDERR, $rrdtool_pipe);
+				return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_STDERR);	
 			}elseif (isset($graph_data_array['export'])) {
 				rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
 
 				return 0;
 			}elseif (isset($graph_data_array['export_realtime'])) {
-			
 				$output_flag = RRDTOOL_OUTPUT_GRAPH_DATA;
 				$output = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 
@@ -3153,5 +3151,143 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 	return $dom;
 }
 
-function rrdtool_create_error_image($string, $type = 'png') {
+function rrdtool_create_error_image($string, $width = '', $height = '') {
+	global $config;
+
+	/* put image in buffer */
+	ob_start();
+
+	$image_data  = false;
+	$font_color  = '000000';
+	$font_size   = 8;
+	$back_color  = 'F3F3F3';
+	$shadea      = 'CBCBCB';
+	$shadeb      = '999999';
+
+	if ($config['cacti_server_os'] == 'unix') {
+		$font_file = '/usr/share/fonts/dejavu/DejaVuSans.ttf';
+	}else{
+		$font_file = 'C:/Windows/Fonts/Arial.ttf';
+	}
+
+	$themefile  = $config['base_path'] . '/include/themes/' . get_selected_theme() . '/rrdtheme.php';
+
+	if (file_exists($themefile) && is_readable($themefile)) {
+		include($themefile);
+
+		if (isset($rrdfonts['legend']['size'])) {
+			$font_size   = $rrdfonts['legend']['size'];
+		}
+
+		if (isset($rrdcolors['font'])) {
+			$font_color  = $rrdcolors['font'];
+		}
+
+		if (isset($rrdcolors['canvas'])) {
+			$back_color  = $rrdcolors['canvas'];
+		}
+
+		if (isset($rrdcolors['shadea'])) {
+			$shadea = $rrdcolors['shadea'];
+		}
+
+		if (isset($rrdcolors['shadeb'])) {
+			$shadeb = $rrdcolors['shadeb'];
+		}
+	}
+
+	$image = imagecreatetruecolor(450, 200);
+	imagesavealpha($image, true);
+
+	/* create a transparent color */
+	$transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
+	imagefill($image, 0, 0, $transparent);
+
+	/* background the entire image with the frame */
+	list($red, $green, $blue) = sscanf($shadeb, '%02x%02x%02x');
+	$shadeb = imagecolorallocate($image, $red, $green, $blue);
+	imagefill($image, 0, 0, $shadeb);
+
+	/* set the background color */
+	list($red, $green, $blue) = sscanf($shadea, '%02x%02x%02x');
+	$shadea = imagecolorallocate($image, $red, $green, $blue);
+	imagefilledrectangle($image, 1, 1, 448, 198, $shadea);
+
+	/* set the background color */
+	list($red, $green, $blue) = sscanf($back_color, '%02x%02x%02x');
+	$back_color = imagecolorallocate($image, $red, $green, $blue);
+	imagefilledrectangle($image, 2, 2, 447, 197, $back_color);
+
+	/* allocate the image */
+	$logo = imagecreatefrompng($config['base_path'] . '/images/cacti_error_image.png');
+
+	/* merge the two images */
+	imagecopy($image, $logo, 0, 0, 0, 0, 450, 200);
+
+	/* set the background color */
+	list($red, $green, $blue) = sscanf($font_color, '%02x%02x%02x');
+	$text_color = imagecolorallocate($image, $red, $green, $blue);
+
+	/* see the size of the string */
+	$string    = trim($string);
+	$maxstring = (450 - (125 + 10)) / ($font_size / 1.4);
+	$stringlen = strlen($string) * $font_size;
+	$padding   = 5;
+	if ($stringlen > $maxstring) {
+		$cstring = wordwrap($string, $maxstring, "\n", true);
+		$strings = explode("\n", $cstring);
+		$strings = array_reverse($strings);
+		$lines   = sizeof($strings);
+	}else{
+		$strings = array($string);
+		$lines   = 1;
+	}
+
+	/* setup the text position, image is 450x200, we start at 125 pixels from the left */
+	$xpos  = 125;
+	$texth = ($lines * $font_size + (($lines - 1) * $padding));
+	$ypos  = round((200 / 2) + ($texth / 2),0);
+
+	/* set the font of the image */
+	if (file_exists($font_file) && is_readable($font_file)) {
+		foreach($strings as $string) {
+			if (!imagettftext($image, $font_size, 0, $xpos, $ypos, $text_color, $font_file, $string)) {
+				cacti_log('TTF text overlay failed');
+			}
+			$ypos -= ($font_size + $padding);
+		}
+	}else{
+		foreach($strings as $string) {
+			if (!imagestring($image, $font_size, $xpos, $ypos, $string, $font_color)) {
+				cacti_log('Text overlay failed');
+			}
+			$ypos -= ($font_size + $padding);
+		}
+	}
+
+	if ($width != '' && $height != '') {
+		$nimage = imagecreatetruecolor($width, $height);
+		imagecopyresized($nimage, $image, 0, 0, 0, 0, $width, $height, 450, 200);
+
+		/* create the image */
+		imagepng($image);
+	}else{
+		/* create the image */
+		imagepng($image);
+	}
+
+	/* get the image from the buffer */
+	$image_data = ob_get_contents();
+
+	/* destroy the image object */
+	imagedestroy($image);
+	imagedestroy($logo);
+	if (isset($nimage)) {
+		imagedestroy($nimage);
+	}
+	
+	/* flush the buffer */
+	ob_end_clean();
+
+	return $image_data;
 }

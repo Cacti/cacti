@@ -1031,6 +1031,9 @@ function aggregate_items() {
 		ON gtg.local_graph_id=agi.local_graph_id
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$graph_list = db_fetch_assoc("SELECT
 		gtg.id, gtg.local_graph_id, gtg.height, gtg.width, gtg.title_cache, agi.local_graph_id AS agg_graph_id
 		FROM graph_templates_graph AS gtg
@@ -1042,8 +1045,8 @@ function aggregate_items() {
 			WHERE aggregate_graph_id=$aggregate_id) AS agi
 		ON gtg.local_graph_id=agi.local_graph_id
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
@@ -1053,18 +1056,18 @@ function aggregate_items() {
 		'title_cache'    => array('display' => __('Graph Title'), 'align' => 'left', 'sort' => 'ASC'),
 		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC'),
 		'agg_graph_id'   => array('display' => __('Included in Aggregate'), 'align' => 'left', 'sort' => 'ASC'),
-		'height'         => array('display' => __('Size'), 'align' => 'left', 'sort' => 'ASC'));
+		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC'));
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 'action=edit&tab=items&id=' . get_request_var('id'), false);
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false, 'aggregate_graphs.php?action=edit&id=' . get_request_var('id'));
 
 	if (sizeof($graph_list) > 0) {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(get_request_var('filter') != '' ? aggregate_format_text(htmlspecialchars($graph['title_cache']), get_request_var('filter')) : htmlspecialchars($graph['title_cache']), $graph['local_graph_id']);
-			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right');
-			form_selectable_cell(($graph['agg_graph_id'] != '' ? "<span class='associated'>" . __('Yes') . "</span>":"<span class='notAssociated'>" . __('No') . "</span>"), $graph['local_graph_id']);
-			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
+			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'right');
+			form_selectable_cell(($graph['agg_graph_id'] != '' ? "<span class='associated'>" . __('Yes') . '</span>':"<span class='notAssociated'>" . __('No') . "</span>"), $graph['local_graph_id']);
+			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}
@@ -1343,6 +1346,9 @@ function aggregate_graph() {
 		ON agt.id=ag.aggregate_template_id
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$graph_list = db_fetch_assoc("SELECT
 		gtg.id, gtg.local_graph_id, gtg.height, gtg.width, gtg.title_cache, agt.name
 		FROM graph_templates_graph AS gtg
@@ -1354,9 +1360,8 @@ function aggregate_graph() {
 		ON agt.id=ag.aggregate_template_id
 		$sql_where
 		AND ag.id IS NOT NULL
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
-
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('aggregate_graphs.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Aggregate Graphs'), 'page', 'main');
 
@@ -1373,7 +1378,7 @@ function aggregate_graph() {
 		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC')
 	);
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false, 'filter=' . get_request_var('filter'));
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false, 'aggregate_graphs.php?filter=' . get_request_var('filter'));
 
 	if (sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
@@ -1381,9 +1386,9 @@ function aggregate_graph() {
 			$template_name = htmlspecialchars($graph['name']);
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'aggregate_graphs.php?action=edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
-			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right;');
+			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'right');
 			form_selectable_cell((empty($graph['name']) ? '<em>' . __('None') . '</em>' : filter_value($template_name, get_request_var('filter'))), $graph['local_graph_id']);
-			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
+			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}

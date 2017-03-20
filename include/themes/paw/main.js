@@ -107,9 +107,9 @@ function themeReady() {
 			$('<li class="maintabs-submenu"><a class="submenu-' + submenu_counter + '" href="#"><i class="fa fa-angle-down"></i></a></li>').insertAfter( $(this) );
 			$('<div class="dropdownMenu">'
 				+'<ul id="submenu-' + submenu_counter + '" class="submenuoptions" style="display:none;">'
-					+'<li><a href="graph_view.php?action=tree">Tree View</a></li>'
-					+'<li><a href="graph_view.php?action=list">List View</a></li>'
-					+'<li><a href="graph_view.php?action=preview">Preview View</a></li>'
+					+'<li><a href="'+urlPath+'graph_view.php?action=tree">Tree View</a></li>'
+					+'<li><a href="'+urlPath+'graph_view.php?action=list">List View</a></li>'
+					+'<li><a href="'+urlPath+'graph_view.php?action=preview">Preview View</a></li>'
 				+'</ul>'
 			+'</div>').appendTo('body');
 		}else {
@@ -182,6 +182,10 @@ function themeReady() {
 			$( this ).removeClass( "tableHeaderColumnHover" );
 		}
 	);
+
+	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
+
+	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 	
 	$.ui.selectmenu.prototype._renderItem = function(ui, item) {
 		if (item.element.closest('select').hasClass('colordropdown')) {

@@ -618,6 +618,23 @@ case 'list':
 	$i = 0;
 	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
+			if ($graph['description'] == '' && $graph['template_name'] == '') {
+				$aggregate = db_fetch_cell_prepared('SELECT agt.name 
+					FROM aggregate_graphs AS ag
+					INNER JOIN aggregate_graph_templates AS agt
+					ON ag.aggregate_template_id=agt.id
+					WHERE local_graph_id = ?', 
+					array($graph['local_graph_id']));
+
+				if (!empty($aggregate)) {
+					$graph['description']   = __('Aggregated Device');
+					$graph['template_name'] = $aggregate;
+				}else{
+					$graph['description']   = __('Non-Device');
+					$graph['template_name'] = __('Not Applicable');
+				}
+			}
+
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value($graph['title_cache'], get_request_var('rfilter'), 'graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0'), $graph['local_graph_id']);
 			form_selectable_cell($graph['description'], $graph['local_graph_id']);
@@ -685,10 +702,10 @@ case 'list':
 		strURL = urlPath+'graph_view.php?action=preview';
 		$('#form_graph_list').find('select, input').each(function() {
 			switch($(this).attr('id')) {
-			case 'host_id':
 			case 'graph_template_id':
 				strURL += '&' + $(this).attr('id') + '=' + $(this).prop('selectedIndex');
 				break;
+			case 'host_id':
 			case 'rfilter':
 			case 'graph_add':
 			case 'graph_remove':
@@ -743,7 +760,7 @@ case 'list':
 			if ($(this).textWidth() > msWidth) {
 				msWidth = $(this).textWidth();
 			}
-			$('#graph_template_id').css('width', msWidth+80+'px');
+			$('#graph_template_id').css('width', msWidth+120+'px');
 		});
 
 		$('#graph_template_id').hide().multiselect({

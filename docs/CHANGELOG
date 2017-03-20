@@ -1,5 +1,40 @@
 Cacti CHANGELOG
 
+1.1.0
+-issue#337: Generic SNMP OID Graph Template damanged
+-issue#338: Extremely slow new graph/DS creation
+-issue#353: Broadcast & Multicast Packet counters missing
+-issue#376: Structured RRD path permission issues
+-issue#389: Manual template based graph creation not working
+-issue#407: The RRDfile does not exist message is misleading
+-issue#410: Select character data was interpreted as hex by cacti_snmp_walk()
+-issue#422: additional issues with LDAP authentication
+-issue#424: Automation does not discover devices w/o resolvable hostnames
+-issue#427: undefined index TotalVisibleMemorySize on FreeBSD
+-issue#432: SpikeKill menu wonky on Paw Theme
+-issue#434: password_verify not compatible in php5.4-
+-issue#435: urlPath missing from paw theme links
+-issue#436: Restricted user does not see graphs in tree view
+-issue#443: Allow remote_agent.php through a NAT
+-issue#446: No local admin when using multiple LDAP configuration
+-issue#447: Creating another non data query graph from same template reuses first data source
+-issue#449: exec_poll_php does not flush pipes when using script server
+-issue#450: Graph list view - No Graphs Found
+-issue: Improve email test exception errors and change default timeout to 10 seconds
+-issue: When on links page, breadcrumbs would become corrupted
+-issue: When upgrading from any version of Cacti to 1.0.5, SQL's relative to poller_reindex might appear
+-issue: Color page performance poor
+-issue: The Device dropdown on the Graph View page was unreliable
+-issue: Aggregate and non-Device Graphs in list view had not Device or Title description
+-issue: Re-engineer back button design to accomocate ajax and native navigation
+-issue: Make Graph Template filter wider 
+-issue: Resolve some visual issues in Classic theme
+-feature: Add page refresh API to make page refreshing in Ajax easier to accomplish
+-feature: Update fontawesome to version 4.7
+-feature: Use fontawesome glyphs for menu items
+-feature: Support multiple column sort in table library
+-feature: Add glyphs to main Cacti console menu
+
 1.0.6
 -issue#386: Allow special characters in graph title
 -issue#414: Install Wizard check path for spine

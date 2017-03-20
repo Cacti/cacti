@@ -790,6 +790,9 @@ function template() {
 			$sql_having
 		) AS rs");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$template_list = db_fetch_assoc("SELECT
 		host_template.id,host_template.name, COUNT(DISTINCT host.id) AS hosts
 		FROM host_template
@@ -797,8 +800,8 @@ function template() {
 		$sql_where
 		GROUP BY host_template.id
 		$sql_having
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Device Templates'), 'page', 'main');
 

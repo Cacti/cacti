@@ -511,6 +511,9 @@ function aggregate_color_template() {
 		ON ct.color_template_id=graphs.color_template
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$template_list = db_fetch_assoc("SELECT
 		ct.color_template_id, ct.name, templates.templates, graphs.graphs
 		FROM color_templates AS ct
@@ -527,8 +530,8 @@ function aggregate_color_template() {
 		) AS graphs
 		ON ct.color_template_id=graphs.color_template
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Color Templates', 'page', 'main');
 

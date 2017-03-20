@@ -191,6 +191,9 @@ function manager(){
 		FROM snmpagent_managers
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$managers = db_fetch_assoc("SELECT
 		snmpagent_managers.id,
 		snmpagent_managers.description,
@@ -212,8 +215,8 @@ function manager(){
 		) AS snmpagent_notifications_log
 		ON snmpagent_notifications_log.manager_id = snmpagent_managers.id
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .  ' 
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$display_text = array(
 		'description' => array( __('Description'), 'ASC'),

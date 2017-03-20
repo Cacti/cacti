@@ -154,7 +154,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		<form id='form_graph_view' method='post' action='<?php print $page;?>?action=<?php print $action;?>'>
 			<table id='device' class='filterTable'>
 				<tr>
-					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter()', $devices_where);?>
+					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter', $devices_where);?>
 					<td>
 						<?php print __('Template');?>
 					</td>
@@ -374,7 +374,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				if ($(this).textWidth() > msWidth) {
 					msWidth = $(this).textWidth();
 				}
-				$('#graph_template_id').css('width', msWidth+80+'px');
+				$('#graph_template_id').css('width', msWidth+120+'px');
 			});
 
 			$('#graph_template_id').hide().multiselect({

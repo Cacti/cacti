@@ -358,6 +358,9 @@ function gprint_presets() {
 			GROUP BY gp.id
 			$sql_having
 		) AS rs");
+
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 			
 	$gprint_list = db_fetch_assoc("SELECT rs.*,
 		SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates,
@@ -372,10 +375,10 @@ function gprint_presets() {
 		$sql_where
 		GROUP BY rs.id
 		$sql_having
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
-	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('GPRINTs'), 'page', 'main');
+	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('GPRINTs'), 'page', 'main');
 
 	form_start('gprint_presets.php', 'chk');
 
@@ -385,6 +388,7 @@ function gprint_presets() {
 
 	$display_text = array(
 		'name'      => array('display' => __('GPRINT Preset Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this GPRINT Preset.')),
+		'gprint_text'      => array('display' => __('Format'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The GPRINT format string.')),
 		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.')), 
 		'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this GPRINT.')),
 		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs Templates using this GPRINT.'))
@@ -403,6 +407,7 @@ function gprint_presets() {
 
             form_alternate_row('line' . $gp['id'], false, $disabled);
 			form_selectable_cell(filter_value($gp['name'], get_request_var('filter'), 'gprint_presets.php?action=edit&id=' . $gp['id']), $gp['id']);
+            form_selectable_cell($gp['gprint_text'], $gp['id'], '', 'text-align:right');
             form_selectable_cell($disabled ? __('No'):__('Yes'), $gp['id'], '', 'text-align:right');
             form_selectable_cell(number_format_i18n($gp['graphs']), $gp['id'], '', 'text-align:right');
             form_selectable_cell(number_format_i18n($gp['templates']), $gp['id'], '', 'text-align:right');
@@ -410,7 +415,7 @@ function gprint_presets() {
             form_end_row();
 		}
 	}else{
-		print "<tr class='tableRow'><td colspan='4'><em>" . __('No GPRINT Presets') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='6'><em>" . __('No GPRINT Presets') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

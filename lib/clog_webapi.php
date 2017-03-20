@@ -59,7 +59,7 @@ function clog_purge_logfile() {
 }
 
 function clog_view_logfile() {
-	global $config, $colors, $log_tail_lines, $page_refresh_interval, $refresh;
+	global $config, $colors, $log_tail_lines, $page_refresh_interval;
 
 	$logfile = read_config_option('path_cactilog');
 
@@ -105,6 +105,10 @@ function clog_view_logfile() {
 
 	$refresh['seconds'] = get_request_var('refresh');
 	$refresh['page']    = $config['url_path'] . 'clog' . (!clog_admin() ? '_user':'') . '.php?header=false';
+	$refresh['logout']  = 'false';
+
+	set_page_refresh($refresh);
+
 	if ((isset_request_var('purge_continue')) && (clog_admin())) clog_purge_logfile();
 
 	general_header();
@@ -290,7 +294,7 @@ function clog_view_logfile() {
 }
 
 function filter() {
-	global $refresh, $page_refresh_interval, $log_tail_lines;
+	global $page_refresh_interval, $log_tail_lines;
 	?>
 	<tr class='even'>
 		<td>
@@ -368,9 +372,6 @@ function filter() {
 			</table>
 		</form>
 		<script type='text/javascript'>
-	    var refreshIsLogout=false;
-	    var refreshPage='<?php print $refresh['page'];?>';
-	    var refreshMSeconds=<?php print $refresh['seconds']*1000;?>;
 
 		$('#rfilter').change(function() {
 			refreshFilter();

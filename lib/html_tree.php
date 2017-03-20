@@ -183,19 +183,23 @@ function grow_dhtml_trees() {
 						href=$('#'+data.node.id).find('a:first').attr('href');
 					}
 					origHref = href;
-					href=href.replace('action=tree', 'action=tree_content');
-					$.get(href, function(data) {
-						$('#main').html(data);
-						applySkin();
-						var mytitle = 'Tree Mode - '+$('#nav_title').text();
-						document.getElementsByTagName('title')[0].innerHTML = mytitle;
-						if (typeof window.history.pushState !== 'undefined') {
-							window.history.pushState({ page: origHref+'&hyper=true' }, mytitle, origHref+'&hyper=true');
-						}
 
-				        window.scrollTo(0, 0);
-						resizeGraphContent();
-					});
+					if (typeof href !== 'undefined') {
+						href=href.replace('action=tree', 'action=tree_content');
+
+						$.get(href, function(data) {
+							$('#main').html(data);
+							applySkin();
+							var mytitle = 'Tree Mode - '+$('#nav_title').text();
+							document.getElementsByTagName('title')[0].innerHTML = mytitle;
+							if (typeof window.history.pushState !== 'undefined') {
+								window.history.pushState({ page: origHref+'&hyper=true' }, mytitle, origHref+'&hyper=true');
+							}
+
+							window.scrollTo(0, 0);
+							resizeGraphContent();
+						});
+					}
 					node = data.node.id;
 				}
 				resizeGraphContent();
@@ -824,7 +828,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			if ($(this).textWidth() > msWidth) {
 				msWidth = $(this).textWidth();
 			}
-			$('#graph_template_id').css('width', msWidth+80+'px');
+			$('#graph_template_id').css('width', msWidth+120+'px');
 		});
 
 		$('#graph_template_id').hide().multiselect({
@@ -967,7 +971,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}elseif ($leaf_type == 'host') {
 		/* graph template grouping */
 		if ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
-			$sql_where       = 'gl.host_id=' . $leaf['host_id'] . (empty($graph_template_id) ? '' : ' AND gt.graph_template_id=' . $graph_template_id);
+			$sql_where = 'gl.host_id=' . $leaf['host_id'] . (empty($graph_template_id) ? '' : ' AND gl.graph_template_id=' . $graph_template_id);
 			if (get_request_var('graph_template_id') != '' && get_request_var('graph_template_id') != '0') {
 				$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 			}
@@ -975,10 +979,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$graph_templates = get_allowed_graph_templates($sql_where);
 
 			/* for graphs without a template */
-			array_push($graph_templates, array(
-				'id' => '0',
-				'name' => '(No Graph Template)'
-				));
+			array_push(
+				$graph_templates, array(
+					'id' => '0',
+					'name' => '(No Graph Template)'
+				)
+			);
 
 			if (sizeof($graph_templates)) {
 				foreach ($graph_templates as $graph_template) {

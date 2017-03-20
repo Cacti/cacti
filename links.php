@@ -353,14 +353,15 @@ function pages() {
 		$sql_where = '';
 	}
 
-	$limit = ' LIMIT ' . ($rows*(get_request_var('page') - 1)) . ", $rows";
-	$sort  = ' ORDER BY ' . get_request_var('sort_column') . ' ' . (get_request_var('sort_colomn') == 'sortorder' ? 'ASC':get_request_var('sort_direction'));
+	$sql_order = get_order_string();
+	$sql_order = str_replace('sortorder DESC', 'sortorder ASC', $sql_order);
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$pages = db_fetch_assoc("SELECT *
 		FROM external_links
 		$sql_where
-		$sort
-		$limit");
+		$sql_order
+		$sql_limit");
 
 	$total_rows = db_fetch_cell('SELECT COUNT(*) FROM external_links');
 

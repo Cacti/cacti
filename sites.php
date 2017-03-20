@@ -456,14 +456,17 @@ function sites() {
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM sites $sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$site_list = db_fetch_assoc("SELECT sites.*, count(h.id) AS hosts
 		FROM sites
 		LEFT JOIN host AS h
 		ON h.site_id=sites.id
 		$sql_where
 		GROUP BY sites.id
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('sites.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Sites'), 'page', 'main');
 

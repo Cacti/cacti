@@ -609,7 +609,8 @@ ul#breadcrumbs {
 
 #breadcrumbs li {
 	float: left;
-	font-size:10px;
+	font-size: 10px;
+	padding-top: 2px;
 }
 
 #breadcrumbs a {
@@ -1564,3 +1565,25 @@ tr#realtime td:first-child {
 	width: 12.5%;
 }
 
+.menu_glyph {
+	display: none;
+}
+
+.ui-multiselect {
+	padding: 1px;
+	color: black;
+	font-size: 12px;
+}
+
+.ui-multiselect-checkboxes span {
+	font-size: 12px;
+	color: black;
+}
+
+.ui-multiselect-header {
+	background-color: #E5E5E5;
+}
+
+.ui-multiselect-filter {
+	width: 100%;
+}

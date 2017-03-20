@@ -581,10 +581,11 @@ function automation_tree_rules_edit() {
 		'fields' => inject_form_variables($form_array, (isset($rule) ? $rule : array()))
 	));
 
-	html_end_box();
 	form_hidden_box('id', (isset($rule['id']) ? $rule['id'] : '0'), '');
 	form_hidden_box('item_id', (isset($rule['item_id']) ? $rule['item_id'] : '0'), '');
 	form_hidden_box('save_component_automation_tree_rule', '1', '');
+
+	html_end_box();
 
 	/*
 	 * display the rule items -------------------------------------------------------------------------------
@@ -605,6 +606,7 @@ function automation_tree_rules_edit() {
 	}
 
 	form_save_button('automation_tree_rules.php', 'return');
+
 	print '<br>';
 
 	if (!empty($rule['id'])) {
@@ -815,6 +817,9 @@ function automation_tree_rules() {
 		ON atr.id=gt.id 
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$automation_tree_rules = db_fetch_assoc("SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id,
 		atr.leaf_type, atr.host_grouping_type, atr.enabled,
 		gt.name AS tree_name, gti.title AS subtree_name 
@@ -824,8 +829,8 @@ function automation_tree_rules() {
 		LEFT JOIN graph_tree_items AS gti
 		ON atr.tree_item_id = gti.id
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
-		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('automation_tree_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Tree Rules'), 'page', 'main');
 

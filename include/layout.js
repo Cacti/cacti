@@ -31,6 +31,9 @@ var pageLoaded=false;
 var shiftPressed=false;
 var messageTimer;
 var myTitle;
+var myHref;
+var statePushed=false;
+var popFired=false;
 
 var isMobile = {
 	Android: function() {
@@ -438,10 +441,6 @@ function applyTimespanFilterChange(objForm) {
 /** cactiReturnTo - This function simply returns to the previous page
  *  @args href - the previous page */
 function cactiReturnTo(href) {
-	if (typeof window.history.pushState !== 'undefined') {
-		window.history.pushState({page:href}, myTitle , href);
-	}
-
 	if (typeof href == 'string') {
 		href = href + (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
 		loadPageNoHeader(href);
@@ -455,6 +454,10 @@ function cactiReturnTo(href) {
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attrbute 'on()' */
 function applySkin() {
+	if (typeof requestURI !== 'undefined') {
+		pushState(myTitle, requestURI);
+	}
+
 	if (!theme || theme == 'classic') {
 		theme = 'classic';
 
@@ -523,12 +526,8 @@ function applySkin() {
 			}
 			return text;
 		}
-	}).tooltip('close').keydown(function(event) {
-		if (event.keyCode == 16) {
-			shiftPressed = true;
-		}else{
-			shiftPressed = false;
-		}
+	}).tooltip('close').on('keyup keydown', function(event) {
+		shiftPressed = event.shiftKey;
 	});
 
 	// remove stray tooltips
@@ -538,6 +537,8 @@ function applySkin() {
 }
 
 function loadPage(href) {
+	statePushed = false;
+
 	$.get(href, function(html) {
 		var htmlObject  = $(html);
 		var matches     = html.match(/<title>(.*?)<\/title>/);
@@ -553,22 +554,23 @@ function loadPage(href) {
 			$('div[class^="ui-"]').remove();
 			$('#main').html(content);
 
-			if (typeof window.history.pushState !== 'undefined') {
-				window.history.pushState({page: href}, htmlTitle, href);
-			}
-
 			myTitle = htmlTitle;
+			myHref  = href;
+
+			pushState(myTitle, href);
 		}else{
 			$('#main').empty().hide();
 			$('#main').html(html);
+
+			pushState(myTitle, href);
 		}
 
-		hrefParts = href.split('?');
-		href = basename(hrefParts[0]);
+		var hrefParts = href.split('?');
+		var myBasename = basename(hrefParts[0]);
 
-		if (basename(href) != '') {
+		if (myBasename != '') {
 			$('#menu').find('.pic').removeClass('selected');
-			$('#menu').find("a[href*='/"+basename(href)+"']").addClass('selected');
+			$('#menu').find("a[href*='/"+myBasename+"']").addClass('selected');
 		}
 
 		applySkin();
@@ -582,20 +584,24 @@ function loadPage(href) {
 }
 
 function loadPageNoHeader(href) {
+	statePushed = false;
+
 	$.get(href, function(data) {
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 
-		hrefParts = href.split('?');
-		href = basename(hrefParts[0]);
+		var hrefParts = href.split('?');
+		var myBasename = basename(hrefParts[0]);
 
-		if (basename(href) != '') {
+		if (myBasename != '') {
 			$('#menu').find('.pic').removeClass('selected');
-			$('#menu').find("a[href*='/"+basename(href)+"']").addClass('selected');
+			$('#menu').find("a[href*='/"+myBasename+"']").addClass('selected');
 		}
 
 		applySkin();
+
+		pushState(myTitle, href);
 
 		window.scrollTo(0, 0);
 
@@ -606,7 +612,7 @@ function loadPageNoHeader(href) {
 }
 
 function ajaxAnchors() {
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab, a.iconLink').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -644,7 +650,7 @@ function ajaxAnchors() {
 		return false;
 	});
 
-	$(window).bind('popstate', function(event) {
+	$(window).on('popstate', function(event) {
 		handlePopState();
 	});
 
@@ -658,9 +664,13 @@ function ajaxAnchors() {
 function handlePopState() {
 	var href = document.location.href;
 
-	if (href.indexOf('#') == -1) {
-		document.location = href;
+	if (popFired == false) {
+		if (href.indexOf('#') == -1) {
+			document.location = href + (href.indexOf('?') > 0 ? '&nostate=true':'?nostate=true');
+		}
 	}
+
+	popFired = true;
 }
 
 function setupCollapsible() {
@@ -745,6 +755,7 @@ function setupSpecialKeys() {
  *  every time a page is regenerated */
 function setupSortable() {
 	$('th.sortable').on('click', function(e) {
+		document.getSelection().removeAllRanges();
 		var $target = $(e.target);
 		if (!$target.is('.ui-resizable-handle')) {
 			var page=$(this).find('.sortinfo').attr('sort-page');
@@ -753,7 +764,7 @@ function setupSortable() {
 			if (shiftPressed) {
 				sortAdd='&add=true';
 			}else{
-				sortAdd='';
+				sortAdd='&add=reset';
 			}
 			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false'+sortAdd, function(data) {
 				$('#main').empty().hide()
@@ -934,7 +945,17 @@ function pulsateStop(element) {
 	pulsating=false;
 }
 
+function setTitleAndHref() {
+	myHref  = $(location).attr('href');
+	myTitle = $(document).attr('title');
+}
+
 $(function() {
+	statePushed = false;
+	popFired = false;
+
+	setTitleAndHref();
+
 	setupUserMenu();
 
 	applySkin();
@@ -997,12 +1018,31 @@ function applyGraphFilter() {
 
 		applySkin();
 
-		if (typeof window.history.pushState !== 'undefined') {
-			window.history.pushState({ page: href }, 'Preview Mode', href);
-		}
-
-		myTitle = 'Preview Mode';
+		pushState(myTitle, myHref);
 	});
+}
+
+function cleanHeader(href) {
+	href = href.replace('&header=false', '').replace('?header=false');
+	href = href.replace('action=tree_content', 'action=tree').replace('&&', '&');
+	href = href.replace('&nostate=true', '').replace('?nostate=true');
+
+	return href;
+}
+
+function pushState(myTitle, myHref) {
+	if (myHref.indexOf('nostate') < 0) {
+		//console.log('called -> ' + myTitle + ', ' + myHref);
+		if (statePushed == false) {
+			//console.log('executed -> ' + myTitle + ', ' + myHref);
+			var myObject = { myTitle: myHref };
+			if (typeof window.history.pushState !== 'undefined') {
+				window.history.pushState(myObject, myTitle, cleanHeader(myHref));
+			}
+		}
+	}
+
+	statePushed = true;
 }
 
 function applyGraphTimespan() {
@@ -1107,9 +1147,9 @@ function removeSpikesStdDev(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		//$('#spikeresults').html(data.results);
+		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
@@ -1118,9 +1158,9 @@ function removeSpikesVariance(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		//$('#spikeresults').html(data.results);
+		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
@@ -1129,9 +1169,9 @@ function removeSpikesInRange(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		//$('#spikeresults').html(data.results);
+		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
@@ -1140,9 +1180,9 @@ function removeRangeFill(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		//$('#spikeresults').html(data.results);
+		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
@@ -1194,7 +1234,7 @@ function redrawGraph(graph_id) {
 	isThumb   = $('#thumbnails').is(':checked');
 
 	if (isThumb) {
-		myWidth = (mainWidth-(40*myColumns))/myColumns;
+		myWidth = (mainWidth-(30*myColumns))/myColumns;
 	}
 
 	graph_height=$('#wrapper_'+graph_id).attr('graph_height');
@@ -1255,12 +1295,12 @@ function initializeGraphs() {
 		applyFilter();
 	});
 
-	mainWidth = $('#main').width()-40;
+	mainWidth = $('#main').width()-30;
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
 
 	if (isThumb) {
-		myWidth = (mainWidth-(32*myColumns))/myColumns;
+		myWidth = (mainWidth-(30*myColumns))/myColumns;
 	}
 
 	//$('div[id^="wrapper_"]').each(function() {

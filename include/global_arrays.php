@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-global $menu;
+global $menu, $menu_glyphs;
 
 $messages = array(
 	1  => array(
@@ -257,7 +257,6 @@ $input_types = array(
 );
 
 $input_types_script = array(
-	DATA_INPUT_TYPE_SNMP                => __('SNMP Get'), // Action 0:
 	DATA_INPUT_TYPE_SCRIPT              => __('Script/Command'),  // Action 1:
 	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script Server'),
 );
@@ -646,14 +645,14 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'templates_export.php' => __('Export Templates')
 			),
 		__('Configuration')  => array(
-			'settings.php' => __('Settings'),
-			'links.php'    => __('External Links')
-			),
-		__('Utilities') => array(
-			'utilities.php'        => __('System Utilities'),
+			'settings.php'         => __('Settings'),
 			'user_admin.php'       => __('Users'),
 			'user_group_admin.php' => __('User Groups'),
 			'user_domains.php'     => __('User Domains')
+			),
+		__('Utilities') => array(
+			'utilities.php' => __('System Utilities'),
+			'links.php'     => __('External Links'),
 			)
 	);
 }else{
@@ -672,6 +671,18 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			)
 	);
 }
+
+$menu_glyphs = array(
+	__('Create') => 'fa fa-area-chart',
+	__('Management') => 'fa fa-home',
+	__('Data Collection') => 'fa fa-database',
+	__('Templates') => 'fa fa-clone',
+	__('Automation') => 'fa fa-superpowers',
+	__('Presets') => 'fa fa-archive',
+	__('Import/Export') => 'fa fa-exchange',
+	__('Configuration')  => 'fa fa-sliders',
+	__('Utilities') => 'fa fa-cogs'
+);
 
 if ((isset($_SESSION['sess_user_id']))) {
 	if (db_table_exists('external_links')) {
@@ -933,6 +944,7 @@ $hash_version_codes = array(
 	'1.0.4'  => '0100',
 	'1.0.5'  => '0100',
 	'1.0.6'  => '0100',
+	'1.1.0'  => '0100',
 );
 
 $hash_type_names = array(

@@ -1124,15 +1124,13 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 	   exists and if not create it.
 	 */
 	if (read_config_option('extended_paths') == 'on') {
-	
-		if(read_config_option('storage_location')) {
-			if( false === rrdtool_execute("is_dir " . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
-				if( false === rrdtool_execute("mkdir " . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
+		if (read_config_option('storage_location')) {
+			if (false === rrdtool_execute('is_dir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
+				if (false === rrdtool_execute('mkdir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
 				}
 			}
-		}else {
-		if (!is_dir(dirname($data_source_path))) {
+		}elseif (!is_dir(dirname($data_source_path)) && $config['is_web'] == false) {
 			if (mkdir(dirname($data_source_path), 0775)) {
 				if ($config['cacti_server_os'] != 'win32') {
 					$owner_id      = fileowner($config['rra_path']);
@@ -1142,13 +1140,14 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 						(chgrp(dirname($data_source_path), $group_id))) {
 						/* permissions set ok */
 					}else{
-							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
+						cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
 					}
 				}
 			}else{
-					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
-				}
+				cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
 			}
+		}else{
+			cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", FALSE);
 		}
 	}
 

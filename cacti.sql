@@ -2051,7 +2051,6 @@ CREATE TABLE graph_templates (
 -- Dumping data for table `graph_templates`
 --
 
-INSERT INTO graph_templates VALUES (34,'010b90500e1fc6a05abfd542940584d0','SNMP - Generic OID Template');
 INSERT INTO graph_templates VALUES (2,'5deb0d66c81262843dce5f3861be9966','Interface - Traffic (bits/sec)');
 INSERT INTO graph_templates VALUES (3,'abb5e813c9f1e8cd6fc1e393092ef8cb','ucd/net - Available Disk Space');
 INSERT INTO graph_templates VALUES (4,'e334bdcf821cd27270a4cc945e80915e','ucd/net - CPU Usage');
@@ -2075,6 +2074,7 @@ INSERT INTO graph_templates VALUES (29,'62205afbd4066e5c4700338841e3901e','Host 
 INSERT INTO graph_templates VALUES (31,'1742b2066384637022d178cc5072905a','Interface - Traffic (bits/sec, 95th Percentile)');
 INSERT INTO graph_templates VALUES (32,'13b47e10b2d5db45707d61851f69c52b','Interface - Traffic (bits/sec, Total Bandwidth)');
 INSERT INTO graph_templates VALUES (33,'8ad6790c22b693680e041f21d62537ac','Interface - Traffic (bytes/sec, Total Bandwidth)');
+INSERT INTO graph_templates VALUES (34,'010b90500e1fc6a05abfd542940584d0','SNMP - Generic OID Template');
 
 --
 -- Table structure for table `graph_templates_gprint`
@@ -2201,7 +2201,7 @@ INSERT INTO graph_templates_graph VALUES (37,0,0,29,'',1,'','|host_description| 
 INSERT INTO graph_templates_graph VALUES (43,0,0,31,'',1,'on','|host_description| - Traffic','','',150,'',600,'','100','','0','','bits per second','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
 INSERT INTO graph_templates_graph VALUES (44,0,0,32,'',1,'on','|host_description| - Traffic','','',150,'',600,'','100','','0','','bits per second','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
 INSERT INTO graph_templates_graph VALUES (45,0,0,33,'',1,'on','|host_description| - Traffic','','',150,'',600,'','100','','0','','bytes per second','','on','','on','',2,'','','','','','on','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','30','',NULL,'',NULL,'',NULL,'',NULL);
-
+INSERT INTO `graph_templates_graph` VALUES (47,0,0,34,'',1,'on','|host_description| -','','',150,'',600,'','100','','0','on','','','on','','on','',2,'','','','','','','','on','',1000,'','','','','','','',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'',NULL,'','40','',NULL,'',NULL,'',NULL,'',NULL);
 --
 -- Table structure for table `graph_templates_item`
 --

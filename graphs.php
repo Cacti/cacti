@@ -35,6 +35,9 @@ include_once('./lib/html_form_template.php');
 include_once('./lib/rrd.php');
 include_once('./lib/data_query.php');
 
+/* set default action */
+set_default_action();
+
 validate_graph_request_vars();
 
 $graph_actions = array(
@@ -56,9 +59,6 @@ $graph_actions += array(
 );
 
 $graph_actions = api_plugin_hook_function('graphs_action_array', $graph_actions);
-
-/* set default action */
-set_default_action();
 
 switch (get_request_var('action')) {
 	case 'save':
@@ -158,16 +158,32 @@ function form_save() {
 	parse_validate_graph_template_id('graph_template_id');
 
 	if ((isset_request_var('save_component_graph_new')) && (!isempty_request_var('graph_template_id'))) {
-		$save['id']                = get_nfilter_request_var('local_graph_id');
-		$save['graph_template_id'] = get_nfilter_request_var('graph_template_id');
-		$save['host_id']           = get_nfilter_request_var('host_id');
+		$snmp_query_array  = array();
+		$suggested_values  = array();
+		$graph_template_id = get_request_var('graph_template_id');
+		$host_id           = get_request_var('host_id');
 
-		$local_graph_id = sql_save($save, 'graph_local');
+		$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $suggested_values);
 
-		change_graph_template($local_graph_id, $gt_id_unparsed, true);
+		debug_log_insert('new_graphs', __('Created graph: %s', get_graph_title($return_array['local_graph_id'])));
 
-		/* update the title cache */
-		update_graph_title_cache($local_graph_id);
+		/* lastly push host-specific information to our data sources */
+		if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
+			foreach($return_array['local_data_id'] as $item) {
+				push_out_host($host_id, $item);
+			}
+		} else {
+			debug_log_insert('new_graphs', __('ERROR: no Data Source associated. Check Template'));
+		}
+
+		if (isset($return_array['local_graph_id'])) {
+			$local_graph_id = $return_array['local_graph_id'];
+			header('Location: graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
+		}else{
+			header('Location: graphs.php?header=false');
+		}
+
+		exit;
 	}
 
 	if (isset_request_var('save_component_graph')) {
@@ -1633,6 +1649,9 @@ function graph_management() {
 		ON ag.local_graph_id=gl.id
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+			
 	$graph_list = db_fetch_assoc("SELECT gtg.id, gtg.local_graph_id, gtg.height, gtg.width,
 		gtg.title_cache, gt.name, gl.host_id
 		FROM graph_local AS gl
@@ -1643,8 +1662,8 @@ function graph_management() {
 		LEFT JOIN aggregate_graphs AS ag
 		ON ag.local_graph_id=gl.id
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('graphs.php?rfilter=' . get_request_var('rfilter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
 

@@ -856,6 +856,9 @@ function template() {
 			$sql_having
 		) AS rs");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$template_list = db_fetch_assoc("SELECT dt.id, dt.name, 
 		di.name AS data_input_method, dtd.active AS active, dsp.name AS profile_name,
 		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
@@ -869,8 +872,8 @@ function template() {
 		$sql_where
 		GROUP BY dt.id
 		$sql_having
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('data_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Templates'), 'page', 'main');
 

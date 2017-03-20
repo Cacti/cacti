@@ -166,7 +166,7 @@ function form_selectable_cell($contents, $id, $width='', $style_or_class = '', $
 	}
 
 	if ($title != '') {
-		$wrapper = "<span class='cactiTooltipHint' title='" . htmlspecialchars($title) . "'>" . $contents . "</span>";
+		$wrapper = "<span class='cactiTooltipHint' style='padding:0px;margin:0px;' title='" . str_replace(array('"', "'"), '', $title) . "'>" . $contents . "</span>";
 	}else{
 		$wrapper = $contents;
 	}
@@ -651,11 +651,73 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 				}
 			}
 		}
+
+		update_order_string();
 	}
 
 	if ($changed) {
 		set_request_var('page', 1);
 		set_request_var('changed', 1);
+	}
+}
+
+/* update_order_string - creates a sort string for standard Cacti tables
+   @returns - null */
+function update_order_string() {
+	$page  = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+	if (isset_request_var('action')) {
+		$page .= '_' . get_nfilter_request_var('action');
+	}
+
+	if (isset_request_var('tab')) {
+		$page .= '_' . get_nfilter_request_var('tab');
+	}
+
+	$order = '';
+
+	if (isset_request_var('clear')) {
+		unset($_SESSION['sort_data'][$page]);
+		unset($_SESSION['sort_string'][$page]);
+	}elseif (isset_request_var('add') && get_nfilter_request_var('add') == 'reset') {
+		unset($_SESSION['sort_data'][$page]);
+		unset($_SESSION['sort_string'][$page]);
+
+		$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
+		$_SESSION['sort_string'][$page] = 'ORDER BY ' . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
+	}elseif (isset_request_var('sort_column')) {
+		$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
+		$_SESSION['sort_string'][$page] = 'ORDER BY ';
+		foreach($_SESSION['sort_data'][$page] as $column => $direction) {
+			if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
+				$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
+			}else{
+				$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
+			}
+		}
+		$_SESSION['sort_string'][$page] .= $order;
+	}else{
+		unset($_SESSION['sort_data'][$page]);
+		unset($_SESSION['sort_string'][$page]);
+	}
+}
+
+/* get_order_string - returns a valid order string for a table 
+   @returns - the order string */
+function get_order_string() {
+	$page = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+
+	if (isset_request_var('action')) {
+		$page .= '_' . get_nfilter_request_var('action');
+	}
+
+	if (isset_request_var('tab')) {
+		$page .= '_' . get_nfilter_request_var('tab');
+	}
+
+	if (isset($_SESSION['sort_string'][$page])) {
+		return $_SESSION['sort_string'][$page];
+	}else{
+		return 'ORDER BY ' . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
 	}
 }
 

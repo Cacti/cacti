@@ -830,6 +830,9 @@ function automation_graph_rules() {
 		ON (agr.snmp_query_id=sq.id)
 		$sql_where");
 
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$automation_graph_rules_list = db_fetch_assoc("SELECT agr.id, agr.name, agr.snmp_query_id, agr.graph_type_id, 
 		agr.enabled, sq.name AS snmp_query_name, sqg.name AS graph_type_name 
 		FROM automation_graph_rules AS agr
@@ -838,8 +841,8 @@ function automation_graph_rules() {
 		LEFT JOIN snmp_query_graph AS sqg	
 		ON (agr.graph_type_id=sqg.id) 
 		$sql_where 
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . "
-		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
 	$nav = html_nav_bar('automation_graph_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Graph Rules'), 'page', 'main');
 
