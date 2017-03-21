@@ -255,8 +255,6 @@ class Ldap {
 				if ($this->group_require == 1) {
 					/* Process group membership if required */
 					if ($this->group_member_type == 1) {
-						$ldap_group_response = @ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->dn);
-					} else if ($this->group_member_type == 2) {
 						/* Do a lookup to find this user's true DN. */
 						/* ldap_exop_whoami is not yet included in PHP. For reference, the
 						 * feature request: http://bugs.php.net/bug.php?id=42060
@@ -266,6 +264,8 @@ class Ldap {
 						$true_dn_result = ldap_search($ldap_conn, $this->search_base, 'userPrincipalName=' .$this->dn, array('dn'));
 						$true_dn = ldap_get_dn($ldap_conn, ldap_first_entry($ldap_conn, $true_dn_result));
 						$ldap_group_response = @ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $true_dn);
+					} else if ($this->group_member_type == 2) {
+						$ldap_group_response = @ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->username);
 					}
 
 					if ($ldap_group_response === true) {
