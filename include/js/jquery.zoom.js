@@ -143,8 +143,6 @@
 
 		/* init zoom */
 		function zoom_init(image) {
-			/* destroy every other active zoom sessions */
-			zoomElements_remove();
 
 			var $this = image;
 			$this.parent().disableSelection();
