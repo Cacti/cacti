@@ -666,7 +666,13 @@
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
 				zoomElements_remove();
-				$("input[name='" + zoom.options.submitButton + "']").trigger('click');
+				if(graph_start !== null && graph_end !== null) {
+					graph_start = newGraphStartTime;
+					graph_end = newGraphEndTime;
+					initializeGraphs();
+				}else {
+					$("input[name='" + zoom.options.submitButton + "']").trigger('click');
+				}
 				return false;
 			}else {
 				/* graph view is already in zoom status */
@@ -721,9 +727,13 @@
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
 				zoomElements_remove();
-				/* submit form data and restart */
-				$("input[name='" + zoom.options.submitButton + "']").trigger('click');
-				return false;
+				if(graph_start !== null && graph_end !== null) {
+					graph_start = newGraphStartTime;
+					graph_end = newGraphEndTime;
+					initializeGraphs();
+				}else {
+					$("input[name='" + zoom.options.submitButton + "']").trigger('click');
+				}
 			}else {
 				open(zoom.attr.location[0] + "?action=" + zoom.graph.action + "&local_graph_id=" + zoom.graph.local_graph_id + "&rra_id=" + zoom.graph.rra_id + "&view_type=" + zoom.graph.view_type + "&graph_start=" + newGraphStartTime + "&graph_end=" + newGraphEndTime + "&graph_height=" + zoom.graph.height + "&graph_width=" + zoom.graph.width + "&title_font_size=" + zoom.graph.title_font_size, "_self");
 			}
