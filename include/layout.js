@@ -32,6 +32,7 @@ var shiftPressed=false;
 var messageTimer;
 var myTitle;
 var myHref;
+var lastPage=null;
 var statePushed=false;
 var popFired=false;
 
@@ -661,18 +662,6 @@ function ajaxAnchors() {
 	});
 }
 
-function handlePopState() {
-	var href = document.location.href;
-
-	if (popFired == false) {
-		if (href.indexOf('#') == -1) {
-			document.location = href + (href.indexOf('?') > 0 ? '&nostate=true':'?nostate=true');
-		}
-	}
-
-	popFired = true;
-}
-
 function setupCollapsible() {
 	storage=$.localStorage;
 
@@ -1023,18 +1012,16 @@ function applyGraphFilter() {
 }
 
 function cleanHeader(href) {
-	href = href.replace('&header=false', '').replace('?header=false');
+	href = href.replace('&header=false', '').replace('?header=false', '');
 	href = href.replace('action=tree_content', 'action=tree').replace('&&', '&');
-	href = href.replace('&nostate=true', '').replace('?nostate=true');
+	href = href.replace('&nostate=true', '').replace('?nostate=true', '');
 
 	return href;
 }
 
 function pushState(myTitle, myHref) {
 	if (myHref.indexOf('nostate') < 0) {
-		//console.log('called -> ' + myTitle + ', ' + myHref);
 		if (statePushed == false) {
-			//console.log('executed -> ' + myTitle + ', ' + myHref);
 			var myObject = { myTitle: myHref };
 			if (typeof window.history.pushState !== 'undefined') {
 				window.history.pushState(myObject, myTitle, cleanHeader(myHref));
@@ -1043,6 +1030,25 @@ function pushState(myTitle, myHref) {
 	}
 
 	statePushed = true;
+}
+
+function handlePopState() {
+	var href = document.location.href;
+
+	if (popFired == false) {
+		if (href.indexOf('#') == -1) {
+			if (href.indexOf('header=false') > 0) {
+				loadPageNoHeader(href + '&nostate=true');
+			}else if  (basename(href) == lastPage) {
+				loadPageNoHeader(href + (href.indexOf('?') > 0 ? '&header=false&nostate=true':'?header=false&nostate=true'));
+			}else{
+				document.location = href + (href.indexOf('?') > 0 ? '&nostate=true':'?nostate=true');
+			}
+		}
+	}
+
+	popFired = true;
+	lastPage = basename(href);
 }
 
 function applyGraphTimespan() {
