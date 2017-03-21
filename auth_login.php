@@ -126,7 +126,7 @@ if (get_nfilter_request_var('action') == 'login') {
 					/* User ok */
 					$user_auth = true;
 					$copy_user = true;
-					$realm = 1;
+					$realm = 3;
 
 					/* Locate user in database */
 					cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated", false, 'AUTH');

@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.1
+-issue#457: Continuing LDAP issues with initial user creation
+
 1.1.0
 -issue#337: Generic SNMP OID Graph Template damanged
 -issue#338: Extremely slow new graph/DS creation
