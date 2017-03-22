@@ -184,6 +184,10 @@ class Ldap {
 		return true;
 	}
 
+	function ErrorHandler($level, $message, $file, $line, $context) {
+		return false;
+	}
+
 	function Authenticate() {
 		$output = array();
 
@@ -198,6 +202,7 @@ class Ldap {
 		if (empty($this->username)) {
 			$output['error_num'] = '2';
 			$output['error_text'] = __('No username defined');
+
 			return $output;
 		}
 
@@ -207,55 +212,63 @@ class Ldap {
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
 		$this->password = html_entity_decode($this->password, $this->GetMask(), 'UTF-8');
 
+		/* set an error handler for ldap */
+		set_error_handler(array($this, 'ErrorHandler'));
+
 		/* Determine connection method and create LDAP Object */
 		if ($this->encryption == '1') {
 			/* This only works with OpenLDAP, I'm pretty sure this will not work with Solaris, Tony */
-			$ldap_conn = @ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
+			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
 		}else{
-			$ldap_conn = @ldap_connect($this->host, $this->port);
+			$ldap_conn = ldap_connect($this->host, $this->port);
 		}
 
 		if ($ldap_conn) {
 			/* Set protocol version */
 			cacti_log('LDAP: Setting protocol version to ' . $this->version, false, 'AUTH');
 
-			if (!@ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, $this->version)) {
+			if (!ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, $this->version)) {
 				$output['error_num'] = '3';
 				$output['error_text'] = __('Protocol Error, Unable to set version');
 				cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
-				@ldap_close($ldap_conn);
+				ldap_close($ldap_conn);
+				restore_error_handler();
 				return $output;
 			}
 
 			/* set referrals */
 			if ($this->referrals == '0') {
-				if (!@ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
+				if (!ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
 					$output['error_num'] = '4';
 					$output['error_text'] = __('Unable to set referrals option');
 					cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
-					@ldap_close($ldap_conn);
+					ldap_close($ldap_conn);
+					restore_error_handler();
 					return $output;
 				}
 			}
 
 			/* start TLS if requested */
 			if ($this->encryption == '2') {
-				if (!@ldap_start_tls($ldap_conn)) {
+				if (!ldap_start_tls($ldap_conn)) {
 					$output['error_num'] = '5';
 					$output['error_text'] = __('Protocol Error, unable to start TLS communications');
 					cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
-					@ldap_close($ldap_conn);
+					ldap_close($ldap_conn);
+					restore_error_handler();
 					return $output;
 				}
 			}
 
 			/* Bind to the LDAP directory */
-			$ldap_response = @ldap_bind($ldap_conn, $this->dn, $this->password);
+			$ldap_response = ldap_bind($ldap_conn, $this->dn, $this->password);
 			if ($ldap_response) {
 				if ($this->group_require == 1) {
+					$ldap_group_response = false;
+
 					/* Process group membership if required */
 					if ($this->group_member_type == 1) {
-						$ldap_group_response = @ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->dn);
+						$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->dn);
 					} else if ($this->group_member_type == 2) {
 						/* Do a lookup to find this user's true DN. */
 						/* ldap_exop_whoami is not yet included in PHP. For reference, the
@@ -263,9 +276,16 @@ class Ldap {
 						 * And the patch against lastest PHP release:
 						 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
 						*/
-						$true_dn_result = ldap_search($ldap_conn, $this->search_base, 'userPrincipalName=' .$this->dn, array('dn'));
-						$true_dn = ldap_get_dn($ldap_conn, ldap_first_entry($ldap_conn, $true_dn_result));
-						$ldap_group_response = @ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $true_dn);
+						$true_dn_result = ldap_search($ldap_conn, $this->search_base, 'userPrincipalName=' . $this->dn, array('dn'));
+						$first_entry    = ldap_first_entry($ldap_conn, $true_dn_result);
+
+						/* we will test in two ways */
+						if ($first_entry !== false) {
+							$true_dn             = ldap_get_dn($ldap_conn, $first_entry);
+							$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $true_dn);
+						}else{
+							$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->username);
+						}
 					}
 
 					if ($ldap_group_response === true) {
@@ -276,13 +296,15 @@ class Ldap {
 						$output['error_num'] = '8';
 						$output['error_text'] = __('Insufficient access');
 						cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
-						@ldap_close($ldap_conn);
+						ldap_close($ldap_conn);
+						restore_error_handler();
 						return $output;
 					} else {
 						$output['error_num'] = '12';
 						$output['error_text'] = __('Group DN could not be found to compare');
 						cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
-						@ldap_close($ldap_conn);
+						ldap_close($ldap_conn);
+						restore_error_handler();
 						return $output;
 					}
 				}else{
@@ -326,11 +348,13 @@ class Ldap {
 		}
 
 		/* Close LDAP connection */
-		@ldap_close($ldap_conn);
+		ldap_close($ldap_conn);
 
 		if ($output['error_num'] > 0) {
 			cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
 		}
+
+		restore_error_handler();
 
 		return $output;
 	}
