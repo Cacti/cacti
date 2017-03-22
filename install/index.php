@@ -226,9 +226,9 @@ if ($step == '7') {
 		// Add the host
 		if (!empty($host_template_id)) {
 			$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/add_device.php" . 
-				" --description=" . escapeshellarg($description) . " --ip=" . escapeshellarg($ip) . " --template=$host_template_id" . 
-				" --notes=" . escapeshellarg('Initial Cacti Device') . " --poller=1 --site=0 --avail=" . escapeshellarg($avail) .
-				" --version=$version --community=" . escapeshellarg($community));
+				" --description=" . cacti_escapeshellarg($description) . " --ip=" . cacti_escapeshellarg($ip) . " --template=$host_template_id" . 
+				" --notes=" . cacti_escapeshellarg('Initial Cacti Device') . " --poller=1 --site=0 --avail=" . cacti_escapeshellarg($avail) .
+				" --version=$version --community=" . cacti_escapeshellarg($community));
 
 			$host_id = db_fetch_cell_prepared('SELECT id 
 				FROM host 

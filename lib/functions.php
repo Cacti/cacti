@@ -1204,7 +1204,7 @@ function get_full_script_path($local_data_id) {
 
 	if (sizeof($data) > 0) {
 	foreach ($data as $item) {
-		$full_path = str_replace('<' . $item['data_name'] . '>', escapeshellarg($item['value']), $full_path);
+		$full_path = str_replace('<' . $item['data_name'] . '>', cacti_escapeshellarg($item['value']), $full_path);
 	}
 	}
 
@@ -3231,7 +3231,7 @@ function cacti_escapeshellcmd($string) {
  * @param $quote 	- true: do NOT remove quotes from result; false: do remove quotes
  * @return			- the escaped [quoted|unquoted] string
  */
-function cacti_escapeshellarg($string, $quote=true) {
+function cacti_escapeshellarg($string, $quote = true) {
 	global $config;
 	/* we must use an apostrophe to escape community names under Unix in case the user uses
 	characters that the shell might interpret. the ucd-snmp binaries on Windows flip out when
@@ -3256,7 +3256,7 @@ function cacti_escapeshellarg($string, $quote=true) {
 		}
 
 		/* ... before we add our own quotation */
-		if ( $quote ) {
+		if ($quote) {
 			return CACTI_ESCAPE_CHARACTER . $string . CACTI_ESCAPE_CHARACTER;
 		} else {
 			return $string;
