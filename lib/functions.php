@@ -594,7 +594,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 		
 	$force_level = '';
-	$debug_files = read_config_option('selective_debug', true);
+	$debug_files = read_config_option('selective_debug');
 	if ($debug_files != '') {
 		$files = explode(',', $debug_files);
 
@@ -604,7 +604,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 
 	if (strpos($dir_name, 'plugins') !== false) {
-		$debug_plugins = read_config_option('selective_plugin_debug', true);
+		$debug_plugins = read_config_option('selective_plugin_debug');
 		if ($debug_plugins != '') {
 			$debug_plugins = explode(',', $debug_plugins);
 
@@ -620,7 +620,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	/* only log if the specificied level is reached, developer debug is special low + specific devdbg calls */
 	if ($force_level != '') {
 		$level = $force_level;
-	}elseif (read_config_option('log_verbosity', true) == POLLER_VERBOSITY_DEVDBG) {
+	}elseif (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
 		if ($level != '') {
 			if ($level != POLLER_VERBOSITY_DEVDBG) {
 				if ($level > POLLER_VERBOSITY_LOW) {
@@ -628,7 +628,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 				}
 			}
 		}
-	}elseif ($level != '' && $level >= read_config_option('log_verbosity', true)) {
+	}elseif ($level != '' && $level >= read_config_option('log_verbosity')) {
 		return;
 	}
 
