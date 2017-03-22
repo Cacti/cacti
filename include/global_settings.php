@@ -365,6 +365,20 @@ $settings = array(
             'default' => '1',
             'array' => array( '0' => __('Disabled'), '1' => __('Enabled'))
             ),
+		'default_date_format' => array(
+			'friendly_name' => __('Date Display Format'),
+			'description' => __('The System default date format to use in Cacti.'),
+			'method' => 'drop_array',
+			'array' => $dateformats,
+			'default' => GD_Y_MO_D
+			),
+		'default_datechar' => array(
+			'friendly_name' => __('Date Separator'),
+			'description' => __('The System default date separator to be used in Cacti.'),
+			'method' => 'drop_array',
+			'array' => $datechar,
+			'default' => GDC_SLASH
+			),
 		'other1_header' => array(
 			'friendly_name' => __('Other Settings'),
 			'collapsible' => 'true',
@@ -1780,14 +1794,14 @@ $settings_user = array(
 			'friendly_name' => __('Date Display Format'),
 			'description' => __('The date format to use in Cacti.'),
 			'method' => 'drop_array',
-			'array' => $graph_dateformats,
+			'array' => $dateformats,
 			'default' => GD_Y_MO_D
 			),
 		'default_datechar' => array(
 			'friendly_name' => __('Date Separator'),
 			'description' => __('The date separator to be used in Cacti.'),
 			'method' => 'drop_array',
-			'array' => $graph_datechar,
+			'array' => $datechar,
 			'default' => GDC_SLASH
 			),
 		'page_refresh' => array(

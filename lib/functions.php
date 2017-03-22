@@ -3411,6 +3411,18 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		return __('Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.');
 	}
 
+	/* perform data substitution */
+	if (strpos($subject, '|date_time|') !== false) {
+		$date = db_fetch_cell('SELECT value FROM settings WHERE name="date"');
+		if (!empty($date)) {
+			$time = strtotime($date);
+		}else{
+			$time = time();
+		}
+
+		$subject = str_replace('|date_time|', date(date_time_format(), $time), $subject);
+	}
+
 	if (is_array($to)) {
 		$toText = $to[1] . ' <' . $to[0] . '>';
 	}else{
@@ -4621,8 +4633,13 @@ function date_time_format() {
 	$date = '';
 
 	/* setup date format */
-	$date_fmt = read_user_setting('default_date_format');
-	$datechar = read_user_setting('default_datechar');
+	if (isset($_SESSION['sess_user_id'])) {
+		$date_fmt = read_user_setting('default_date_format');
+		$datechar = read_user_setting('default_datechar');
+	}else{
+		$date_fmt = read_config_option('default_date_format');
+		$datechar = read_config_option('default_datechar');
+	}
 
 	switch ($datechar) {
 		case GDC_HYPHEN: 	$datechar = '-'; break;

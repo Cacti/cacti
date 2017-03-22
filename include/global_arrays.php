@@ -1068,7 +1068,7 @@ $graph_weekdays = array(
 	WD_SATURDAY  => date('l', strtotime('Saturday'))
 );
 
-$graph_dateformats = array(
+$dateformats = array(
 	GD_MO_D_Y => __('Month Number, Day, Year'),
 	GD_MN_D_Y => __('Month Name, Day, Year'),
 	GD_D_MO_Y => __('Day, Month Number, Year'),
@@ -1077,7 +1077,7 @@ $graph_dateformats = array(
 	GD_Y_MN_D => __('Year, Month Name, Day')
 );
 
-$graph_datechar = array(
+$datechar = array(
 	GDC_HYPHEN => '-',
 	GDC_SLASH => '/'
 );
