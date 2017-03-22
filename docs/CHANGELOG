@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.1
 -issue#457: Continuing LDAP issues with initial user creation
+-issue#460: Add external_id to host variables
 -issue#462: LDAP authorization issues: group membership check broken for 'Group Member Type' = 'Username'
 -issue: Back button issues due to syntax problems in JavaScript
 

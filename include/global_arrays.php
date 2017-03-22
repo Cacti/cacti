@@ -1498,6 +1498,5 @@ $phperrors = array (
 	32767 => 'ALL'
 );
 
-
 api_plugin_hook('config_arrays');
 
