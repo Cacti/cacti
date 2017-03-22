@@ -4612,3 +4612,45 @@ function is_ipaddress($ip_address = '') {
 	}
 }
 
+/** date_time_format		create a format string for date/time
+ * @param string returns	date time format
+ */
+function date_time_format() {
+	global $config;
+
+	$date = '';
+
+	/* setup date format */
+	$date_fmt = read_user_setting('default_date_format');
+	$datechar = read_user_setting('default_datechar');
+
+	switch ($datechar) {
+		case GDC_HYPHEN: 	$datechar = '-'; break;
+		case GDC_SLASH: 	$datechar = '/'; break;
+		case GDC_DOT:	 	$datechar = '.'; break;
+	}
+
+	switch ($date_fmt) {
+		case GD_MO_D_Y:
+			$date = 'm' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			break;
+		case GD_MN_D_Y:
+			$date = 'M' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			break;
+		case GD_D_MO_Y:
+			$date = 'd' . $datechar . 'm' . $datechar . 'Y H:i:s';
+			break;
+		case GD_D_MN_Y:
+			$date = 'd' . $datechar . 'M' . $datechar . 'Y H:i:s';
+			break;
+		case GD_Y_MO_D:
+			$date = 'Y' . $datechar . 'm' . $datechar . 'd H:i:s';
+			break;
+		case GD_Y_MN_D:
+			$date = 'Y' . $datechar . 'M' . $datechar . 'd H:i:s';
+			break;
+	}
+
+	return $date;
+}
+

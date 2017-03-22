@@ -1777,15 +1777,15 @@ $settings_user = array(
 			'default' => ''
 			),
 		'default_date_format' => array(
-			'friendly_name' => __('Graph Date Display Format'),
-			'description' => __('The date format to use for graphs'),
+			'friendly_name' => __('Date Display Format'),
+			'description' => __('The date format to use in Cacti.'),
 			'method' => 'drop_array',
 			'array' => $graph_dateformats,
 			'default' => GD_Y_MO_D
 			),
 		'default_datechar' => array(
-			'friendly_name' => __('Graph Date Separator'),
-			'description' => __('The date separator to be used for graphs'),
+			'friendly_name' => __('Date Separator'),
+			'description' => __('The date separator to be used in Cacti.'),
 			'method' => 'drop_array',
 			'array' => $graph_datechar,
 			'default' => GDC_SLASH

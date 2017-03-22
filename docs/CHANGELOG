@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#460: Add external_id to host variables
 -issue#462: LDAP authorization issues: group membership check broken for 'Group Member Type' = 'Username'
 -issue: Back button issues due to syntax problems in JavaScript
+-feature: Support generalized date format approach in the GUI
 
 1.1.0
 -issue#337: Generic SNMP OID Graph Template damanged
