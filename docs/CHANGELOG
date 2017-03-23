@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#460: Add external_id to host variables
 -issue#461: The function escapeshell arg not appropriate on Windows
 -issue#462: LDAP authorization issues: group membership check broken for 'Group Member Type' = 'Username'
+-issue#465: Less than sign inside items and labels of graph break graph
 -issue#467: Reduce the number of queries in log function
 -issue: Back button issues due to syntax problems in JavaScript
 -feature: Support generalized date format approach in the GUI
