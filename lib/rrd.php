@@ -1831,7 +1831,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					if (trim($comment_arg) == '') { # an empty COMMENT must be treated with care
 						$comment_arg = cacti_escapeshellarg(' ' . $hardreturn[$graph_item_id]);
 					} else {
-						$comment_arg = cacti_escapeshellarg(rrdtool_escape_string($comment_arg) . $hardreturn[$graph_item_id]);
+						$comment_arg = cacti_escapeshellarg(rrdtool_escape_string(htmlspecialchars($comment_arg, ENT_QUOTES, 'UTF-8')) . $hardreturn[$graph_item_id]);
 					}
 
 					# create rrdtool specific command line
@@ -1902,7 +1902,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				break;
 			case GRAPH_ITEM_TYPE_AREA:
-				$graph_variables['text_format'][$graph_item_id] = htmlspecialchars($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):'', ENT_QUOTES, 'UTF-8');
+				$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):'', ENT_QUOTES, 'UTF-8'));
 
 				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . ':"' . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . '" ';
 
@@ -2076,7 +2076,6 @@ function rrdtool_escape_string($text) {
 	$text = str_replace('"', '\"', $text);
 	$text = str_replace(":", "\:", $text);
 	$text = str_replace('%', '', $text);
-//	$text = str_replace('&', '', $text);
 
 	return $text;
 }
