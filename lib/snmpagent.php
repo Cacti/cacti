@@ -486,6 +486,7 @@ function snmpagent_cache_init(){
 	   *  will be updated automatically at the bottom of the next poller run
 	*/
 	$mc = new MibCache();
+
 	/* update global settings */
 	snmpagent_global_settings_update();
 
@@ -494,22 +495,24 @@ function snmpagent_cache_init(){
 	if ($pollers && sizeof($pollers)>0) {
 		foreach($pollers as $poller){
 			$poller_data = db_fetch_row_prepared('SELECT * FROM poller WHERE id = ?', array($poller['id']));
-
-			$values = array(
-				'cactiApplPollerIndex'      => $poller_data['id'],
-				'cactiApplPollerHostname'   => $poller_data['name'],
-				'cactiApplPollerIpAddress'  => $poller_data['hostname'],
-				'cactiApplPollerLastUpdate' => $poller_data['last_update'],
-			);
-			$mc->table('cactiApplPollerTable')->row($poller_data['id'])->insert($values);
-
-			$values = array(
-				'cactiStatsPollerIndex'    => $poller_data['id'],
-				'cactiStatsPollerHostname' => $poller_data['name'],
-				'cactiStatsPollerMethod'   => read_config_option('poller_type', true)
-			);
-			$mc->table('cactiStatsPollerTable')->row($poller_data['id'])->insert($values);
 		}
+	}else {
+		/* this is NOT a distributed system, but it should have at least one local poller. */
+		$poller_lastrun = read_config_option('poller_lastrun', true);
+		$values = array(
+			'cactiApplPollerIndex'      => 1,
+			'cactiApplPollerHostname'   => 'localhost',
+			'cactiApplPollerIpAddress'  => '127.0.0.1',
+			'cactiApplPollerLastUpdate' => $poller_lastrun
+		);
+		$mc->table('cactiApplPollerTable')->row(1)->insert($values);
+
+		$values = array(
+			'cactiStatsPollerIndex'    => 1,
+			'cactiStatsPollerHostname' => 'localhost',
+			'cactiStatsPollerMethod'   => read_config_option('poller_type', true)
+		);
+		$mc->table('cactiStatsPollerTable')->row(1)->insert($values);
 	}
 
 	/* add all devices as devicetable entries to the snmp cache */
@@ -522,32 +525,35 @@ function snmpagent_cache_init(){
 	if (sizeof($devices)) {
 		foreach($devices as $device) {
 			$device = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($device['id']));
-			/* add device to cactiApplDeviceTable */
-			$values = array(
-				'cactiApplDeviceIndex'        => $device['id'],
-				'cactiApplDeviceDescription'  => $device['description'],
-				'cactiApplDeviceHostname'     => $device['hostname'],
-				'cactiApplDeviceStatus'       => ($device['disabled'] == 'on') ? 4 : $device['status'],
-				'cactiApplDeviceEventCount'   => $device['status_event_count'],
-				'cactiApplDeviceFailDate'     => $device['status_fail_date'],
-				'cactiApplDeviceRecoveryDate' => $device['status_rec_date'],
-				'cactiApplDeviceLastError'    => $device['status_last_error'],
-			);
-			$mc->table('cactiApplDeviceTable')->row($device['id'])->insert($values);
 
-			/* add device to cactiStatsDeviceTable */
-			$values = array(
-				'cactiStatsDeviceIndex'        => $device['id'],
-				'cactiStatsDeviceHostname'     => $device['hostname'],
-				'cactiStatsDeviceMinTime'      => $device['min_time'],
-				'cactiStatsDeviceMaxTime'      => $device['max_time'],
-				'cactiStatsDeviceCurTime'      => $device['cur_time'],
-				'cactiStatsDeviceAvgTime'      => $device['avg_time'],
-				'cactiStatsDeviceTotalPolls'   => $device['total_polls'],
-				'cactiStatsDeviceFailedPolls'  => $device['failed_polls'],
-				'cactiStatsDeviceAvailability' => $device['availability']
-			);
-			$mc->table('cactiStatsDeviceTable')->row($device['id'])->insert($values);
+			/* add device to cactiApplDeviceTable */
+			if (sizeof($device)) {
+				$values = array(
+					'cactiApplDeviceIndex'        => $device['id'],
+					'cactiApplDeviceDescription'  => $device['description'],
+					'cactiApplDeviceHostname'     => $device['hostname'],
+					'cactiApplDeviceStatus'       => ($device['disabled'] == 'on') ? 4 : $device['status'],
+					'cactiApplDeviceEventCount'   => $device['status_event_count'],
+					'cactiApplDeviceFailDate'     => $device['status_fail_date'],
+					'cactiApplDeviceRecoveryDate' => $device['status_rec_date'],
+					'cactiApplDeviceLastError'    => $device['status_last_error'],
+				);
+				$mc->table('cactiApplDeviceTable')->row($device['id'])->insert($values);
+
+				/* add device to cactiStatsDeviceTable */
+				$values = array(
+					'cactiStatsDeviceIndex'        => $device['id'],
+					'cactiStatsDeviceHostname'     => $device['hostname'],
+					'cactiStatsDeviceMinTime'      => $device['min_time'],
+					'cactiStatsDeviceMaxTime'      => $device['max_time'],
+					'cactiStatsDeviceCurTime'      => $device['cur_time'],
+					'cactiStatsDeviceAvgTime'      => $device['avg_time'],
+					'cactiStatsDeviceTotalPolls'   => $device['total_polls'],
+					'cactiStatsDeviceFailedPolls'  => $device['failed_polls'],
+					'cactiStatsDeviceAvailability' => $device['availability']
+				);
+				$mc->table('cactiStatsDeviceTable')->row($device['id'])->insert($values);
+			}
 		}
 	}
 }
