@@ -487,6 +487,10 @@ function snmpagent_cache_init(){
 	*/
 	$mc = new MibCache();
 
+	if (!is_object($mc)) {
+		return false;
+	}
+
 	/* update global settings */
 	snmpagent_global_settings_update();
 
