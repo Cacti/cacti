@@ -2076,7 +2076,7 @@ function rrdtool_escape_string($text) {
 	$text = str_replace('"', '\"', $text);
 	$text = str_replace(":", "\:", $text);
 	$text = str_replace('%', '', $text);
-	$text = str_replace('&', '', $text);
+//	$text = str_replace('&', '', $text);
 
 	return $text;
 }
