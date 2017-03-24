@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#465: Less than sign inside items and labels of graph break graph
 -issue#466: Call to member function row() on a non-object in lib/snmpagent.php
 -issue#467: Reduce the number of queries in log function
+-issue#472: Schema changes to improve performance
 -issue: Back button issues due to syntax problems in JavaScript
 -feature: Support generalized date format approach in the GUI
 
