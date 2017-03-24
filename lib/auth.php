@@ -831,14 +831,10 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 			gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
 			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id = gtg.local_graph_id 
-			INNER JOIN graph_tree_items AS gti
-			ON gti.local_graph_id = gl.id
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id = gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id = gl.host_id 
+			INNER JOIN graph_local AS gl ON gl.id = gtg.local_graph_id 
+			INNER JOIN graph_tree_items AS gti ON gti.local_graph_id = gl.id
+			LEFT JOIN graph_templates AS gt ON gt.id = gl.graph_template_id 
+			LEFT JOIN host AS h ON h.id = gl.host_id 
 			$sql_join
 			$sql_where
 			$sql_having
@@ -858,14 +854,10 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 			gl.snmp_index,
 			gl.snmp_query_id
 			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id = gtg.local_graph_id 
-			INNER JOIN graph_tree_items AS gti
-			ON gti.local_graph_id = gl.id
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id = gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id = gl.host_id 
+			INNER JOIN graph_local AS gl ON gl.id = gtg.local_graph_id 
+			INNER JOIN graph_tree_items AS gti ON gti.local_graph_id = gl.id
+			LEFT JOIN graph_templates AS gt ON gt.id = gl.graph_template_id 
+			LEFT JOIN host AS h ON h.id = gl.host_id 
 			$sql_where
 			$order_by
 			$limit");
@@ -967,12 +959,9 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
 			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
+			INNER JOIN graph_local AS gl ON gl.id=gtg.local_graph_id 
+			LEFT JOIN graph_templates AS gt ON gt.id=gl.graph_template_id 
+			LEFT JOIN host AS h ON h.id=gl.host_id 
 			$sql_join
 			$sql_where
 			$sql_having
@@ -991,12 +980,9 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 			gl.snmp_index,
 			gl.snmp_query_id
 			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
+			INNER JOIN graph_local AS gl ON gl.id=gtg.local_graph_id 
+			LEFT JOIN graph_templates AS gt ON gt.id=gl.graph_template_id 
+			LEFT JOIN host AS h ON h.id=gl.host_id 
 			$sql_where
 			$order_by
 			$limit");
@@ -1097,12 +1083,9 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		$graphs = db_fetch_assoc("SELECT SQL_CALC_FOUND_ROWS DISTINCT gt.id, gt.name,
 			$sql_select
 			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
+			INNER JOIN graph_local AS gl ON gl.id=gtg.local_graph_id 
+			LEFT JOIN graph_templates AS gt ON gt.id=gl.graph_template_id 
+			LEFT JOIN host AS h ON h.id=gl.host_id 
 			$sql_join
 			$sql_where
 			$sql_having
@@ -1113,12 +1096,9 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 	}else{
 		$graphs = db_fetch_assoc("SELECT SQL_CALC_FOUND_ROWS DISTINCT gt.id, gt.name
 			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
+			INNER JOIN graph_local AS gl ON gl.id=gtg.local_graph_id 
+			LEFT JOIN graph_templates AS gt ON gt.id=gl.graph_template_id 
+			LEFT JOIN host AS h ON h.id=gl.host_id 
 			$sql_where
 			$order_by
 			$limit");
@@ -1381,6 +1361,7 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 function get_host_array() {
 	$hosts = get_allowed_devices();
 
+	$return_devices = array();
 	foreach($hosts as $host) {
 		$return_devices[] = $host['description'] . ' (' . $host['hostname'] . ')';
 	}
@@ -1408,9 +1389,9 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	}
 
 	if (sizeof($hosts)) {
-	foreach($hosts as $host) {
-		$return[] = array('label' => $host['description'], 'value' => $host['description'], 'id' => $host['id']);
-	}
+		foreach($hosts as $host) {
+			$return[] = array('label' => $host['description'], 'value' => $host['description'], 'id' => $host['id']);
+		}
 	}
 
 	print json_encode($return);
