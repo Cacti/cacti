@@ -1859,7 +1859,7 @@ function boost_display_run_status() {
 	$detail_stats    = read_config_option('stats_detail_boost', TRUE);
 
 	$refresh['seconds'] = get_request_var('refresh');
-	$refresh['page']    = 'utilities.php?action=view_boost_status';
+	$refresh['page']    = 'utilities.php?action=view_boost_status&header=false';
 	$refresh['logout']  = 'false';
 
 	set_page_refresh($refresh);
