@@ -28,6 +28,11 @@ function keepWindowSize() {
 			$('body').css('height', heightPage);
 			$('#cactiContent').css('height', heightPageContent);
 		
+			$('.cactiTreeNavigationArea').css('height', heightPageContent);
+			width = parseInt($('#searcher').width())+65;
+			$('.cactiTreeNavigationArea').css('width', width+'px');
+			$('.cactiTreeNavigationArea > div').css('padding-top', '5px');
+			
 			/* check visibility of all tabs */
 			$('#submenu-ellipsis').empty();
 			$('.maintabs nav ul li a').each(function() {
@@ -42,14 +47,6 @@ function keepWindowSize() {
 					$('#' + id + '-ellipsis').parent().remove();
 				}
 			});
-
-			// Resize from dark theme
-			if (!$(event.target).hasClass('ui-resizable')) {
-				$('.cactiTreeNavigationArea').css('height', ($(window).height())+'px');
-				width = parseInt($('#searcher').width())+65;
-				$('.cactiTreeNavigationArea').css('width', width+'px');
-				$('.cactiTreeNavigationArea > div').css('padding-top', '5px');
-			}
 
 			if($("#submenu-ellipsis li").length == 0) {
 				$(".ellipsis").hide(0);
