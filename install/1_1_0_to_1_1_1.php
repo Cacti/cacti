@@ -30,4 +30,7 @@ function upgrade_to_1_1_1() {
 	db_install_execute('ALTER TABLE `graph_tree_items` 
 		DROP INDEX `parent`, 
 		ADD INDEX `parent_position` (`parent`, `position`)');
+	
+	db_install_execute('ALTER TABLE `graph_template_input_defs` 
+		COMMENT = \'Stores the relationship for what graph items are associated\';');
 }
