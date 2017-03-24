@@ -45,10 +45,10 @@ function keepWindowSize() {
 
 			// Resize from dark theme
 			if (!$(event.target).hasClass('ui-resizable')) {
-				$('#navigation').css('height', ($(window).height())+'px');
+				$('.cactiTreeNavigationArea').css('height', ($(window).height())+'px');
 				width = parseInt($('#searcher').width())+65;
-				$('#navigation').css('width', width+'px');
-				$('#navigation > div').css('padding-top', '5px');
+				$('.cactiTreeNavigationArea').css('width', width+'px');
+				$('.cactiTreeNavigationArea > div').css('padding-top', '5px');
 			}
 
 			if($("#submenu-ellipsis li").length == 0) {
