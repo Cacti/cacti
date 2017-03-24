@@ -477,11 +477,7 @@ function is_device_allowed($host_id, $user = 0) {
 	$total_rows = 0;
 	$host = get_allowed_devices('', '', '', $total_rows, $user, $host_id);
 
-	if ($total_rows > 0) {
-		return true;
-	}else{
-		return false;
-	}
+	return ($total_rows > 0);
 }
 
 /* is_graph_template_allowed - determines whether the current user is allowed to view a certain graph template
@@ -491,11 +487,7 @@ function is_graph_template_allowed($graph_template_id, $user = 0) {
 	$total_rows = 0;
 	$template = get_allowed_graph_templates('', '', '', $total_rows, $user, $graph_template_id);
 
-	if ($total_rows > 0) {
-		return true;
-	}else{
-		return false;
-	}
+	return ($total_rows > 0);
 }
 
 /* is_view_allowed - Returns a true or false as to wether or not a specific view type is allowed
@@ -834,7 +826,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gtg.local_graph_id, 
+		$graphs = db_fetch_assoc("SELECT SQL_CALC_FOUND_ROWS gti.id, gti.title, gtg.local_graph_id, 
 			h.description, gt.name AS template_name, gtg.title_cache, 
 			gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
@@ -853,24 +845,9 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM (
-				SELECT $sql_select
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id = gtg.local_graph_id 
-				INNER JOIN graph_tree_items AS gti
-				ON gti.local_graph_id = gl.id
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id = gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id = gl.host_id 
-				$sql_join
-				$sql_where
-				$sql_having
-			) AS rower");
+		$total_rows = db_fetch_cell("SELECT FOUND_ROWS()");
 	}else{
-		$graphs = db_fetch_assoc("SELECT 
+		$graphs = db_fetch_assoc("SELECT SQL_CALC_FOUND_ROWS
 			gti.id, gti.title, 
 			gtg.local_graph_id, 
 			h.description, 
@@ -893,17 +870,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			INNER JOIN graph_tree_items AS gti
-			ON gti.local_graph_id=gl.id
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
-			$sql_where");
+		$total_rows = db_fetch_cell("SELECT FOUND_ROWS()");
 	}
 
 	return $graphs;
@@ -996,7 +963,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name, 
+		$graphs = db_fetch_assoc("SELECT SQL_CALC_FOUND_ROWS gtg.local_graph_id, h.description, gt.name AS template_name, 
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
 			FROM graph_templates_graph AS gtg 
@@ -1012,22 +979,9 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM (
-				SELECT $sql_select
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id=gtg.local_graph_id 
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id=gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id=gl.host_id 
-				$sql_join
-				$sql_where
-				$sql_having
-			) AS rower");
+		$total_rows = db_fetch_cell("SELECT FOUND_ROWS()");
 	}else{
-		$graphs = db_fetch_assoc("SELECT 
+		$graphs = db_fetch_assoc("SELECT SQL_CALC_FOUND_ROWS
 			gtg.local_graph_id, 
 			h.description, 
 			gt.name AS template_name, 
@@ -1047,15 +1001,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
-			$sql_where");
+		$total_rows = db_fetch_cell("SELECT FOUND_ROWS()");
 	}
 
 	return $graphs;
@@ -1148,7 +1094,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT DISTINCT gt.id, gt.name,
+		$graphs = db_fetch_assoc("SELECT SQL_CALC_FOUND_ROWS DISTINCT gt.id, gt.name,
 			$sql_select
 			FROM graph_templates_graph AS gtg 
 			INNER JOIN graph_local AS gl 
@@ -1163,22 +1109,9 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM (
-				SELECT $sql_select
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id=gtg.local_graph_id 
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id=gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id=gl.host_id 
-				$sql_join
-				$sql_where
-				$sql_having
-			) AS rower");
+		$total_rows = db_fetch_cell("SELECT FOUND_ROWS()");
 	}else{
-		$graphs = db_fetch_assoc("SELECT DISTINCT gt.id, gt.name
+		$graphs = db_fetch_assoc("SELECT SQL_CALC_FOUND_ROWS DISTINCT gt.id, gt.name
 			FROM graph_templates_graph AS gtg 
 			INNER JOIN graph_local AS gl 
 			ON gl.id=gtg.local_graph_id 
@@ -1190,15 +1123,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
-			$sql_where");
+		$total_rows = db_fetch_cell("SELECT FOUND_ROWS()");
 	}
 
 	return $graphs;
@@ -1311,10 +1236,9 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . " h.id=$host_id";
 	}
 
-	$i          = 0;
-	$sql_having = '';
-	$sql_select = '';
-	$sql_join   = '';
+	$i        = 0;
+	$sql_auth = '';
+	$sql_join = '';
 
 	if ($user == -1) {
 		$auth_method = 0;
@@ -1352,113 +1276,70 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
-				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NULL";
+				$sql_auth .= ($sql_auth != '' ? ' OR ':'') . "(uap$i." . $policy['type'] . "_id IS NULL";
 			}else{
-				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NOT NULL";
+				$sql_auth .= ($sql_auth != '' ? ' OR ':'') . "(uap$i." . $policy['type'] . "_id IS NOT NULL";
 			}
 
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
-			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$sql_join .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$i++;
 
 			if ($policy['policy_hosts'] == 1) {
-				$sql_having .= " OR (user$i IS NULL";
+				$sql_auth .= " OR (uap$i." . $policy['type'] . "_id IS NULL";
 			}else{
-				$sql_having .= " OR (user$i IS NOT NULL";
+				$sql_auth .= " OR (uap$i." . $policy['type'] . "_id IS NOT NULL";
 			}
 
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
-			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$sql_join .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$i++;
 
 			if ($policy['policy_graph_templates'] == 1) {
-				$sql_having .= " $sql_operator user$i IS NULL))";
+				$sql_auth .= " $sql_operator uap$i." . $policy['type'] . "_id IS NULL))";
 			}else{
-				$sql_having .= " $sql_operator user$i IS NOT NULL))";
+				$sql_auth .= " $sql_operator uap$i." . $policy['type'] . "_id IS NOT NULL))";
 			}
 
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
-			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$sql_join .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
 			$i++;
 		}
 
-		$sql_having = "HAVING $sql_having";
+		$sql_auth = ($sql_where == '' ? ' WHERE ' : ' AND ') . $sql_auth;
 
-		$host_list = db_fetch_assoc("SELECT h1.*
+		$host_list = db_fetch_assoc("SELECT SQL_CALC_FOUND_ROWS h1.*
 			FROM host AS h1
 			INNER JOIN (
-				SELECT DISTINCT id FROM (
-					SELECT h.*, $sql_select
-					FROM host AS h
-					LEFT JOIN graph_local AS gl 
-					ON h.id=gl.host_id 
-					LEFT JOIN graph_templates_graph AS gtg 
-					ON gl.id=gtg.local_graph_id 
-					LEFT JOIN graph_templates AS gt 
-					ON gt.id=gl.graph_template_id 
-					LEFT JOIN host_template AS ht
-					ON h.host_template_id=ht.id
-					$sql_join
-					$sql_where
-					$sql_having
-				) AS rs1
-			) AS rs2
-			ON rs2.id=h1.id
-			$order_by
-			$limit");
-
-		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
-			FROM (
-				SELECT h.id, $sql_select
-				FROM host AS h 
-				LEFT JOIN graph_local AS gl 
-				ON h.id=gl.host_id 
-				LEFT JOIN graph_templates_graph AS gtg 
-				ON gl.id=gtg.local_graph_id 
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id=gl.graph_template_id 
-				LEFT JOIN host_template AS ht
-				ON h.host_template_id=ht.id
+				SELECT DISTINCT h.id
+				FROM host AS h
+				LEFT JOIN graph_local AS gl ON h.id=gl.host_id 
+				LEFT JOIN graph_templates_graph AS gtg ON gl.id=gtg.local_graph_id 
+				LEFT JOIN graph_templates AS gt ON gt.id=gl.graph_template_id 
+				LEFT JOIN host_template AS ht ON h.host_template_id=ht.id
 				$sql_join
 				$sql_where
-				$sql_having
-			) AS rower");
-	}else{
-		$host_list = db_fetch_assoc("SELECT h1.*
-			FROM host AS h1
-			INNER JOIN (
-				SELECT DISTINCT id FROM (
-					SELECT h.* 
-					FROM host AS h
-					LEFT JOIN graph_local AS gl 
-					ON h.id=gl.host_id 
-					LEFT JOIN graph_templates_graph AS gtg 
-					ON gl.id=gtg.local_graph_id 
-					LEFT JOIN graph_templates AS gt 
-					ON gt.id=gl.graph_template_id 
-					LEFT JOIN host_template AS ht
-					ON h.host_template_id=ht.id
-					$sql_where
-				) AS rs1
-			) AS rs2
-			ON rs2.id=h1.id
+				$sql_auth
+			) AS rs
+			ON rs.id = h1.id
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
-			FROM (
-				SELECT h.id
-				FROM host AS h 
-				LEFT JOIN graph_local AS gl 
-				ON h.id=gl.host_id 
-				LEFT JOIN graph_templates_graph AS gtg 
-				ON gl.id=gtg.local_graph_id 
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id=gl.graph_template_id 
-				LEFT JOIN host_template AS ht
-				ON h.host_template_id=ht.id
+		$total_rows = db_fetch_cell("SELECT FOUND_ROWS()");
+	}else{
+		$host_list = db_fetch_assoc("SELECT SQL_CALC_FOUND_ROWS h1.*
+			FROM host AS h1
+			INNER JOIN (
+				SELECT DISTINCT h.id 
+				FROM host AS h
+				LEFT JOIN graph_local AS gl ON h.id=gl.host_id 
+				LEFT JOIN graph_templates_graph AS gtg ON gl.id=gtg.local_graph_id 
+				LEFT JOIN graph_templates AS gt ON gt.id=gl.graph_template_id 
+				LEFT JOIN host_template AS ht ON h.host_template_id=ht.id
 				$sql_where
-			) AS rower");
+			) AS rs
+			ON rs.id = h1.id
+			$order_by
+			$limit");
+
+		$total_rows = db_fetch_cell("SELECT FOUND_ROWS()");
 	}
 
 	return $host_list;
