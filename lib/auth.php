@@ -535,52 +535,51 @@ function is_view_allowed($view = 'show_tree') {
 
 function is_tree_branch_empty($tree_id, $parent = 0) {
 	$graphs = array_rekey(
-		db_fetch_assoc_prepared('SELECT local_graph_id 
-			FROM graph_tree_items 
-			WHERE graph_tree_id = ? 
-			AND parent = ?', 
-			array($tree_id, $parent)),
-		'local_graph_id', 'local_graph_id');
-
-	$hosts  = array_rekey(
-		db_fetch_assoc_prepared('SELECT host_id 
-			FROM graph_tree_items 
-			WHERE graph_tree_id = ? 
-			AND parent = ?', 
-			array($tree_id, $parent)),
-		'host_id', 'host_id');
-
-	$branches = db_fetch_assoc_prepared('SELECT *
-		FROM graph_tree_items 
-		WHERE graph_tree_id = ? 
-		AND parent = ? 
-		AND local_graph_id = 0
-		AND host_id = 0',
-		array($tree_id, $parent));
-
-	$allowed_graphs  = 0;
-	$allowed_devices = 0;
-	if (sizeof($graphs)) {
-		$allowed_graphs  = sizeof(get_allowed_graphs('gl.id IN(' . implode(',', $graphs) . ')'));
-	}
-
-	if (sizeof($hosts)) {
-		$allowed_devices = sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')'));
-	}
-
-	if (($allowed_graphs + $allowed_devices) > 0) {
+		db_fetch_assoc_prepared(
+			'SELECT local_graph_id 
+			 FROM graph_tree_items 
+			 WHERE graph_tree_id = ? 
+			 AND parent = ?', 
+			array($tree_id, $parent)
+	        ),
+		'local_graph_id', 'local_graph_id'
+	);
+	if (sizeof($graphs) && sizeof(get_allowed_graphs('gl.id IN(' . implode(',', $graphs) . ')')) > 0) {
 		return false;
-	}elseif (sizeof($branches)) { 
+	}
+
+	$hosts = array_rekey(
+		db_fetch_assoc_prepared(
+			'SELECT host_id 
+			 FROM graph_tree_items 
+			 WHERE graph_tree_id = ? 
+			 AND parent = ?', 
+			array($tree_id, $parent)
+	        ),
+		'host_id', 'host_id'
+	);
+	if (sizeof($hosts) && sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')')) > 0) {
+		return false;
+	}
+
+	$branches = db_fetch_assoc_prepared(
+		'SELECT id, graph_tree_id
+		 FROM graph_tree_items 
+		 WHERE graph_tree_id = ? 
+		 AND parent = ? 
+		 AND local_graph_id = 0
+		 AND host_id = 0',
+		array($tree_id, $parent)
+	);
+	if (sizeof($branches)) { 
 		foreach($branches as $b) {
 			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'])) {
 				return false;
 			}
 		}
-
-		return true;
-	}else{
-		return true;
 	}
+
+	return true;
 }
 
 function is_realm_allowed($realm) {
