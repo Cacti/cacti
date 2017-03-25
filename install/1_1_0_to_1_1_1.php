@@ -33,4 +33,6 @@ function upgrade_to_1_1_1() {
 	
 	db_install_execute('ALTER TABLE `graph_template_input_defs` 
 		COMMENT = \'Stores the relationship for what graph items are associated\';');
+
+	db_install_execute('UPDATE graph_templates_item SET hash="" WHERE local_graph_id>0');
 }
