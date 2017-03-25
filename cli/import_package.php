@@ -34,6 +34,7 @@ $no_http_headers = true;
 include(dirname(__FILE__).'/../include/global.php');
 include_once($config['base_path'] . '/lib/import.php');
 include_once($config['base_path'] . '/lib/utility.php');
+include_once($config['base_path'] . '/lib/template.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -92,6 +93,20 @@ if (sizeof($parms)) {
 				exit(1);
 		}
 	}
+
+	if ($profile_id != '') {
+		$exists = db_fetch_cell_prepared('SELECT id 
+			FROM data_source_profiles 
+			WHERE id = ?',
+			array($profile_id));
+
+		if (empty($exists)) {
+			echo "FATAL: Data Source Profile ID " . $profile_id . " does not exist!\n";
+			exit(1);
+		}
+	}else{
+		$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+	}
 	
 	if ($filename != '' && is_readable($filename)) {
 		if(file_exists($filename) && is_readable($filename)) {
@@ -128,7 +143,7 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	echo "\nusage: import_package.php --filename=[filename] [--with-profile] [--profile-id=N\n\n";
+	echo "\nusage: import_package.php --filename=[filename] [--remove-orphans] [--with-profile] [--profile-id=N\n\n";
 	echo "A utility to allow signed Cacti Packages to be imported from the command line.\n\n";
 	echo "Required:\n";
 	echo "    --filename              The name of the gziped package file to import\n\n";

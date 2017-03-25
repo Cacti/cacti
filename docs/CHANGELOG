@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -feature#469: Change re-index method of Data Query from Device Edit
 -feature: Support generalized date format approach in the GUI
 -feature: Use localStorage over a Cookie for Zoom setting storage
+-feature: Fully implement 'Remove Orphans' from Graph Template import process
 
 1.1.0
 -issue#337: Generic SNMP OID Graph Template damanged
