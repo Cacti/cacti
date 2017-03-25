@@ -399,9 +399,9 @@ function install_file_paths () {
 		if (config_value_exists('path_spine')) {
 			$input['path_spine']['default'] = read_config_option('path_spine');
 		}else if (!empty($which_spine)) {
-			$input['path_spine']['default'] = $which_spine;
+			$input['path_spine']['default'] = $which_spine . '/spine';
 		}else{
-			$input['path_spine']['default'] = '/usr/local/bin/spine';
+			$input['path_spine']['default'] = '/usr/local/spine/bin/spine';
 		}
 	}elseif ($config['cacti_server_os'] == 'win32') {
 		$which_spine = find_best_path('spine.exe');
@@ -409,7 +409,7 @@ function install_file_paths () {
 		if (config_value_exists('path_spine')) {
 			$input['path_spine']['default'] = read_config_option('path_spine');
 		}else if (!empty($which_spine)) {
-			$input['path_spine']['default'] = $which_spine;
+			$input['path_spine']['default'] = $which_spine . '/spine.exe';
 		}else{
 			$input['path_spine']['default'] = 'c:/spine/bin/spine.exe';
 		}
