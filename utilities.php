@@ -2466,7 +2466,8 @@ function snmpagent_utilities_run_eventlog(){
 		strURL = 'utilities.php?action=view_snmpagent_events&purge=1&header=false';
 		loadPageNoHeader(strURL);
 	}
-	$(function(data) {
+
+	$(function() {
 		$('#refresh').click(function() {
 			applyFilter();
 		});
