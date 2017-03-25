@@ -32,11 +32,6 @@ if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) 
 	</div>
 </div>
 <?php api_plugin_hook('page_bottom');?>
-<script type='text/javascript'>
-$(function() { 
-	$('#navigation').show(); 
-});
-</script>
 </body>
 </html>
 
