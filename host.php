@@ -1302,33 +1302,37 @@ function host() {
 
 	?>
 	<script type='text/javascript'>
-	function applyFilter() {
-		strURL  = 'host.php?host_status=' + $('#host_status').val();
-		strURL += '&host_template_id=' + $('#host_template_id').val();
-		strURL += '&site_id=' + $('#site_id').val();
-		strURL += '&poller_id=' + $('#poller_id').val();
-		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
-		strURL += '&page=' + $('#page').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
-	}
 
-	function clearFilter() {
-		strURL = 'host.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
-	}
+	$(function() {
+		function applyFilter() {
+			strURL  = 'host.php?host_status=' + $('#host_status').val();
+			strURL += '&host_template_id=' + $('#host_template_id').val();
+			strURL += '&site_id=' + $('#site_id').val();
+			strURL += '&poller_id=' + $('#poller_id').val();
+			strURL += '&rows=' + $('#rows').val();
+			strURL += '&filter=' + $('#filter').val();
+			strURL += '&header=false';
+			loadPageNoHeader(strURL);
+		}
 
-	$(function(data) {
-		$('#refresh').click(function() {
+		function clearFilter() {
+			strURL = 'host.php?clear=1&header=false';
+			loadPageNoHeader(strURL);
+		}
+
+		$('#rows, #site_id, #poller_id, #host_template_id, #host_status').unbind().change(function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#refresh').unbind().click(function() {
+			applyFilter();
+		});
+
+		$('#clear').unbind().click(function() {
 			clearFilter();
 		});
 
-		$('#form_devices').submit(function(event) {
+		$('#form_devices').unbind().submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1342,14 +1346,14 @@ function host() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form id='form_devices' name='form_devices' action='host.php'>
+		<form id='form_devices' action='host.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Site');?>
 					</td>
 					<td>
-						<select id='site_id' name='site_id' onChange='applyFilter()'>
+						<select id='site_id'>
 							<option value='-1'<?php if (get_request_var('site_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('site_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -1367,7 +1371,7 @@ function host() {
 						<?php print __('Data Collector');?>
 					</td>
 					<td>
-						<select id='poller_id' name='poller_id' onChange='applyFilter()'>
+						<select id='poller_id'>
 							<option value='-1'<?php if (get_request_var('poller_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							$pollers = db_fetch_assoc('SELECT id, name FROM poller ORDER BY name');
@@ -1384,7 +1388,7 @@ function host() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='host_template_id' name='host_template_id' onChange='applyFilter()'>
+						<select id='host_template_id'>
 							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -1412,13 +1416,13 @@ function host() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='host_status' name='host_status' onChange='applyFilter()'>
+						<select id='host_status'>
 							<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>><?php print __('Disabled');?></option>
@@ -1433,7 +1437,7 @@ function host() {
 						<?php print __('Devices');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows)) {
@@ -1446,7 +1450,7 @@ function host() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
+			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 	</tr>
@@ -1523,7 +1527,7 @@ function host() {
 
 	$hosts = db_fetch_assoc($sql_query);
 
-	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter') . '&host_template_id=' . get_request_var('host_template_id') . '&host_status=' . get_request_var('host_status'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 13, __('Devices'), 'page', 'main');
+	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 13, __('Devices'), 'page', 'main');
 
 	form_start('host.php', 'chk');
 
