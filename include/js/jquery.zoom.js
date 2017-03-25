@@ -666,6 +666,8 @@
 				}
 			}
 
+			zoomAction_update_session(newGraphStartTime, newGraphEndTime);
+
 			if (zoom.options.inputfieldStartTime != '' & zoom.options.inputfieldEndTime != ''){
 				/* execute zoom within "tree view" or the "preview view" */
 				$('#' + zoom.options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
@@ -750,6 +752,8 @@
 				}
 			}
 
+			zoomAction_update_session(newGraphStartTime, newGraphEndTime);
+
 			if (zoom.options.inputfieldStartTime != '' & zoom.options.inputfieldEndTime != ''){
 				$('#' + zoom.options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
@@ -767,6 +771,16 @@
 			}
 		}
 
+		/*
+		* when updating the zoom window, we have to update cacti's zoom session variables
+		*/
+		function zoomAction_update_session(newGraphStartTime, newGraphEndTime) {
+			$.get(document.location.pathname + 
+				'?action=update_timespan' + 
+				'&date1=' + unixTime2Date(newGraphStartTime) + 
+				'&date2=' + unixTime2Date(newGraphEndTime)
+			);
+		}
 
 		/*
 		* updates the css parameters of the zoom area to reflect user's interaction
