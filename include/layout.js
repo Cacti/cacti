@@ -35,6 +35,7 @@ var myHref;
 var lastPage=null;
 var statePushed=false;
 var popFired=false;
+var hostInfoHeight=0;
 
 var isMobile = {
 	Android: function() {
@@ -469,6 +470,9 @@ function applySkin() {
 	}else{
 		$('input[type="submit"], input[type="button"]').button();
 
+		// Handle re-index changes
+		$('fieldset.reindex_methods').buttonset();
+
 		// debounce submits
 		$('form').submit(function() {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
@@ -516,7 +520,7 @@ function applySkin() {
 	});
 
 	$(document).tooltip({
-		items: 'div.cactiTooltipHint, span.cactiTooltipHint, a',
+		items: 'div.cactiTooltipHint, span.cactiTooltipHint, a, span',
 		content: function() {
 			var element = $(this);
 
@@ -584,8 +588,9 @@ function loadPage(href) {
 	return false;
 }
 
-function loadPageNoHeader(href) {
+function loadPageNoHeader(href, scroll) {
 	statePushed = false;
+	scrollTop   = $(window).scrollTop();
 
 	$.get(href, function(data) {
 		$('#main').empty().hide();
@@ -604,7 +609,11 @@ function loadPageNoHeader(href) {
 
 		pushState(myTitle, href);
 
-		window.scrollTo(0, 0);
+		if (typeof scroll !== 'undefined') {
+			$(window).scrollTop(scrollTop);
+		}else{
+			window.scrollTo(0, 0);
+		}
 
 		return false;
 	});
@@ -1012,7 +1021,7 @@ function applyGraphFilter() {
 }
 
 function cleanHeader(href) {
-	href = href.replace('&header=false', '').replace('?header=false', '');
+	href = href.replace('header=false', '').replace('header=false', '').replace('&&', '&').replace('?&', '?');
 	href = href.replace('action=tree_content', 'action=tree').replace('&&', '&');
 	href = href.replace('&nostate=true', '').replace('?nostate=true', '');
 

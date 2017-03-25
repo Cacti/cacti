@@ -85,6 +85,13 @@ switch (get_request_var('action')) {
 
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 		break;
+	case 'query_change':
+		get_filter_request_var('host_id');
+
+		host_change_query();
+
+		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+		break;
 	case 'query_reload':
 		get_filter_request_var('host_id');
 
@@ -570,13 +577,7 @@ function host_add_query() {
 	get_filter_request_var('reindex_method');
 	/* ==================================================== */
 
-	db_execute_prepared('REPLACE INTO host_snmp_query 
-		(host_id, snmp_query_id, reindex_method) 
-		VALUES (?, ?, ?)', 
-		array(get_nfilter_request_var('host_id'), get_nfilter_request_var('snmp_query_id'), get_nfilter_request_var('reindex_method')));
-
-	/* recache snmp data */
-	run_data_query(get_nfilter_request_var('host_id'), get_nfilter_request_var('snmp_query_id'));
+	api_device_dq_add(get_request_var('host_id'), get_request_var('snmp_query_id'), get_request_var('reindex_method'));
 }
 
 function host_reload_query() {
@@ -595,6 +596,16 @@ function host_remove_query() {
 	/* ==================================================== */
 
 	api_device_dq_remove(get_request_var('host_id'), get_request_var('id'));
+}
+
+function host_change_query() {
+	/* ================= input validation ================= */
+	get_filter_request_var('data_query_id');
+	get_filter_request_var('host_id');
+	get_filter_request_var('reindex_method');
+	/* ==================================================== */
+
+	api_device_dq_change(get_request_var('host_id'), get_request_var('data_query_id'), get_request_var('reindex_method'));
 }
 
 function host_add_gt() {
@@ -653,7 +664,7 @@ function host_edit() {
 
 	if (!empty($host['id'])) {
 		?>
-		<table style='width:100%'>
+		<table class='hostInfoHeader' style='width:100%'>
 			<tr>
 				<td class='textInfo left'>
 					<?php print htmlspecialchars($host['description']);?> (<?php print htmlspecialchars($host['hostname']);?>)
@@ -805,7 +816,14 @@ function host_edit() {
 
 		html_start_box(__('Associated Data Queries'), '100%', '', '3', 'center', '');
 
-		html_header(array(__('Data Query Name'), __('Debugging'), __('Re-Index Method'), __('Status')), 2);
+		html_header(
+			array(
+				array('display' => __('Data Query Name'), 'align' => 'left'), 
+				array('display' => __('Re-Index Method'), 'align' => 'left'), 
+				array('display' => __('Status'), 'align' => 'left'),
+				array('display' => __('Actions'), 'align' => 'right')
+			)
+		);
 
 		if ($host['snmp_version'] == 0) {
 			$sql_where1 = ' AND snmp_query.data_input_id != 2';
@@ -858,18 +876,16 @@ function host_edit() {
 					<td style='padding: 4px;'>
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
-					<td>
-						(<span id='verbose<?php print $item['id'];?>' class='linkEditMain' data-id='<?php print $item['id'];?>'>Verbose Query</span>)
-					</td>
-					<td>
-					<?php print $reindex_types{$item['reindex_method']};?>
+					<td class='nowrap'>
+					<?php device_reindex_methods($item, $host);?>
 					</td>
 					<td>
 						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail') . "</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? '' : 's');?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? '' : 's');?>]
 					</td>
 					<td class='nowrap right' style='vertical-align:middle;'>
-						<span class='reloadquery fa fa-circle-o' id='reload<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
-						<span class='deletequery fa fa-remove' id='remove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
+						<span class='reloadquery fa fa-refresh' id='reload<?php print $item['id'];?>' title='<?php print htmlspecialchars(__('Reload Query'), ENT_QUOTES, 'UTF-8');?>' data-id='<?php print $item['id'];?>'></span>
+						<span class='verbosequery fa fa-refresh' id='verbose<?php print $item['id'];?>' title='<?php print htmlspecialchars(__('Verbose Query'), ENT_QUOTES, 'UTF-8');?>'  id='reload<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
+						<span class='deletequery fa fa-remove' id='remove<?php print $item['id'];?>' title='<?php print htmlspecialchars(__('Remove Query'), ENT_QUOTES, 'UTF-8');?>' data-id='<?php print $item['id'];?>'></span>
 					</td>
 				<?php
 				form_end_row();
@@ -920,6 +936,30 @@ function host_edit() {
 	form_save_button('host.php', 'return');
 
 	api_plugin_hook('host_edit_bottom');
+}
+
+function device_reindex_methods($item, $host) {
+	global $config, $reindex_types, $reindex_types_tips;
+
+	$i = 0;
+	foreach($reindex_types as $key => $type) {
+		if (get_selected_theme() != 'classic') {
+			if ($i == 0) {
+				print "<fieldset class='reindex_methods'>\n";
+			}
+			print "<input name='reindex_radio_" . $item['id'] . "' type='radio' data-device-id='" . $host['id'] . "' data-query-id='" . $item['id'] . "' data-reindex-method='" . $key . "' id='reindex_" . $item['id'] . "_" . $key . "'" . ($item['reindex_method'] == $key ? ' checked="checked"':'') . " />\n";
+			print "<label title='" . htmlspecialchars($reindex_types_tips[$key], ENT_QUOTES, 'UTF-8') . "' for='reindex_" . $item['id'] . "_" . $key . "'>" . $type . "</label>\n";
+		}else{
+			print $reindex_types[$item['reindex_method']];
+			break;
+		}
+
+		$i++;
+	}
+
+	if (get_selected_theme() != 'classic') {
+		print "</fieldset>\n";
+	}
 }
 
 function device_javascript() {
@@ -1110,38 +1150,51 @@ function device_javascript() {
 	}
 
 	$(function() {
+		if (hostInfoHeight > 0) {
+			if ($(window).scrollTop() == 0) {
+				$('.hostInfoHeader').css('height', '');
+			}else{
+				$('.hostInfoHeader').css('height', hostInfoHeight);
+			}
+		}
+
 		$('[id^="reload"]').click(function(data) {
-			$(this).removeClass('fa-circle-o').addClass('fa-circle-o-notch fa-spin');
+			$(this).addClass('fa-spin');
 			strURL = 'host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
-			loadPageNoHeader(strURL);
+			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="verbose"]').click(function(data) {
+			$(this).addClass('fa-spin');
 			strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
-			loadPageNoHeader(strURL);
+			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="remove"]').click(function(data) {
 			strURL = 'host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
-			loadPageNoHeader(strURL);
+			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="gtremove"]').click(function(data) {
 			strURL = 'host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
-			loadPageNoHeader(strURL);
+			loadPageNoHeader(strURL, true);
 		});
 
 		$('#add_dq').click(function() {
+			scrollTop = $(window).scrollTop();
 			$.post('host.php?action=query_add', { host_id: $('#id').val(), snmp_query_id: $('#snmp_query_id').val(), reindex_method: $('#reindex_method').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
 				$('#main').html(data);
 				applySkin();
+				$(window).scrollTop(scrollTop);
 			});
 		});
 
 		$('#add_gt').click(function() {
+			scrollTop = $(window).scrollTop();
 			$.post('host.php?action=gt_add', { host_id: $('#id').val(), graph_template_id: $('#graph_template_id').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
 				$('#main').html(data);
 				applySkin();
+				$(window).scrollTop(scrollTop);
 			});
 		});
 
@@ -1156,6 +1209,20 @@ function device_javascript() {
 
 		$.get(urlPath+'host.php?action=ping_host&id='+$('#id').val(), function(data) {
 			$('#ping_results').html(data);
+			hostInfoHeight = $('.hostInfoHeader').height();
+		});
+
+		$('input[id^="reindex_"]').change(function() {
+			strURL  = urlPath+'host.php?action=query_change&header=false';
+			strURL += '&host_id='+$(this).attr('data-device-id');
+			strURL += '&data_query_id='+$(this).attr('data-query-id');
+			strURL += '&reindex_method='+$(this).attr('data-reindex-method');
+
+			height = $('.hostInfoHeader').height();
+
+			loadPageNoHeader(strURL, true);
+
+			$('.hostInfoHeader').css('height', height);
 		});
 	});
 

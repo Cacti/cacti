@@ -263,9 +263,16 @@ $input_types_script = array(
 
 $reindex_types = array(
 	DATA_QUERY_AUTOINDEX_NONE               => __('None'),
-	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => __('Uptime Goes Backwards'),
-	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE   => __('Index Count Changed'),
-	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => __('Verify All Fields')
+	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => __('Uptime'),
+	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE   => __('Index Count'),
+	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => __('Verify All')
+);
+
+$reindex_types_tips = array(
+	DATA_QUERY_AUTOINDEX_NONE               => __('All Re-Indexing will be manual or managed through scripts or Device Automation.'),
+	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => __('When the Devices SNMP uptime goes backward, a Re-Index will be performed.'),
+	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE   => __('When the Data Query index count changes, a Re-Index will be performed.'),
+	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => __('Every polling cycle, a Re-Index will be performed.  Very expensive.')
 );
 
 $snmp_query_field_actions = array(1 =>
