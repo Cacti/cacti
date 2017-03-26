@@ -688,8 +688,8 @@ function color() {
 		'read_only' => array('display' => __('Named Color'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Is this color a named color which are read only.')),
 		'nosort1'   => array('display' => __('Color'), 'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Color as shown on the screen.')),
 		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
-		'graphs'    => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
-		'templates' => array('display' => __('Templates'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph Templates using this Color.'))
+		'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
+		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph Templates using this Color.'))
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -713,8 +713,8 @@ function color() {
 			form_selectable_cell($color['read_only'] == 'on' ? __('Yes'):__('No'), $color['id']);
 			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . $color['hex'] . ';min-width:30%');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $color['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($color['graphs']), $color['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($color['templates']), $color['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($color['graphs'], '-1'), $color['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($color['templates'], '-1'), $color['id'], '', 'text-align:right');
 			form_checkbox_cell($color['name'], $color['id'], $disabled);
 			form_end_row();
 		}

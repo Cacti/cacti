@@ -1599,9 +1599,9 @@ function tree() {
 			form_selectable_cell($sequence, $tree['id'], '', 'nowrap center');
 			form_selectable_cell(substr($tree['last_modified'],0,16), $tree['id'], '', 'text-align:right');
 			form_selectable_cell(get_username($tree['modified_by']), $tree['id'], '', 'text-align:right');
-			form_selectable_cell($tree['branches'] > 0 ? number_format_i18n($tree['branches']):'-', $tree['id'], '', 'text-align:right');
-			form_selectable_cell($tree['hosts'] > 0 ? number_format_i18n($tree['hosts']):'-', $tree['id'], '', 'text-align:right');
-			form_selectable_cell($tree['graphs'] > 0 ? number_format_i18n($tree['graphs']):'-', $tree['id'], '', 'text-align:right');
+			form_selectable_cell($tree['branches'] > 0 ? number_format_i18n($tree['branches'], '-1'):'-', $tree['id'], '', 'text-align:right');
+			form_selectable_cell($tree['hosts'] > 0 ? number_format_i18n($tree['hosts'], '-1'):'-', $tree['id'], '', 'text-align:right');
+			form_selectable_cell($tree['graphs'] > 0 ? number_format_i18n($tree['graphs'], '-1'):'-', $tree['id'], '', 'text-align:right');
 			form_checkbox_cell($tree['name'], $tree['id']);
 			form_end_row();
 

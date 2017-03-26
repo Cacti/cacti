@@ -868,8 +868,8 @@ function cdef() {
 			form_alternate_row('line' . $cdef['id'], false, $disabled);
 			form_selectable_cell(filter_value($cdef['name'], get_request_var('filter'), 'cdef.php?action=edit&id=' . $cdef['id']), $cdef['id']);
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $cdef['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($cdef['graphs']), $cdef['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($cdef['templates']), $cdef['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($cdef['graphs'], '-1'), $cdef['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($cdef['templates'], '-1'), $cdef['id'], '', 'text-align:right');
 			form_checkbox_cell($cdef['name'], $cdef['id'], $disabled);
 			form_end_row();
 		}
