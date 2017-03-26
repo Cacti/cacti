@@ -497,8 +497,7 @@ function graphs() {
 
 	$(function() {
 		$('[id^="reload"]').click(function(data) {
-			//$(this).removeClass('fa-circle-o').addClass('fa-spinner fa-spin');
-			$(this).removeClass('fa-circle-o').addClass('fa-circle-o-notch fa-spin');
+			$(this).addClass('fa-spin');
 			loadPageNoHeader('graphs_new.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val());
 		});
 
@@ -767,7 +766,7 @@ function graphs() {
 					}
 				}
 
-				print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __('Data Query [%s]', $snmp_query['name']) . "</span></div><div class='cactiTableButton'><span class='reloadquery fa fa-circle-o' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span></div></div></div>\n";
+				print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __('Data Query [%s]', $snmp_query['name']) . "</span></div><div class='cactiTableButton'><span class='reloadquery fa fa-refresh' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span></div></div></div>\n";
 
 				if ($xml_array != false) {
 					$html_dq_header = '';
