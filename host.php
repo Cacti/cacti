@@ -1199,7 +1199,7 @@ function device_javascript() {
 		});
 
 		changeHostForm();
-		$('#dbghide').unbind().click(function(data) {
+		$('#dbghide').click(function(data) {
 			$('#dqdebug').empty().fadeOut('fast');
 		});
 
@@ -1320,19 +1320,19 @@ function host() {
 			loadPageNoHeader(strURL);
 		}
 
-		$('#rows, #site_id, #poller_id, #host_template_id, #host_status').unbind().change(function() {
+		$('#rows, #site_id, #poller_id, #host_template_id, #host_status').change(function() {
 			applyFilter();
 		});
 
-		$('#refresh').unbind().click(function() {
+		$('#refresh').click(function() {
 			applyFilter();
 		});
 
-		$('#clear').unbind().click(function() {
+		$('#clear').click(function() {
 			clearFilter();
 		});
 
-		$('#form_devices').unbind().submit(function(event) {
+		$('#form_devices').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
