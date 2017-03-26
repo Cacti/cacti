@@ -1180,7 +1180,7 @@ function removeSpikesVariance(local_graph_id) {
 }
 
 function removeSpikesInRange(local_graph_id) {
-	strURL = 'spikekill.php?avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	strURL = 'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
@@ -1222,7 +1222,7 @@ function dryRunVariance(local_graph_id) {
 }
 
 function dryRunSpikesInRange(local_graph_id) {
-	strURL = 'spikekill.php?avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	strURL = 'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();

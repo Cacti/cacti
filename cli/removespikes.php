@@ -57,6 +57,7 @@ $var_kills = FALSE;
 $html      = FALSE;
 $backup    = FALSE;
 $out_set   = FALSE;
+$username  = 'OsUser:' . get_current_user();
 
 if ($using_cacti) {
 	$dmethod   = read_config_option('spikekill_method', 1);
@@ -99,12 +100,14 @@ if (sizeof($parms)) {
 				}
 
 				/* confirm the user id is accurate */
-				$user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($user));
-				if (empty($user)) {
+				$user_info = db_fetch_row_prepared('SELECT id, username FROM user_auth WHERE id = ?', array($user));
+				if (empty($user_info)) {
 					echo "FATAL: Invalid user id.\n\n";
 					display_help();
 					exit(-13);
 				}
+
+				$username = 'CactiUser:' . $user_info['username'];
 
 				$umethod   = read_user_setting('spikekill_method', $dmethod);
 				$unumspike = read_user_setting('spikekill_number', $dnumspike);
@@ -122,6 +125,8 @@ if (sizeof($parms)) {
 					$method = 1;
 				}elseif ($value == 'float') {
 					$method = 3;
+				}elseif ($value == 'fill') {
+					$method = 4;
 				}else{
 					echo "FATAL: You must specify either 'stddev' or 'variance' as methods.\n\n";
 					display_help();
@@ -402,6 +407,32 @@ if (!empty($out_start) && !$dryrun) {
 $strout .= ($html ? "<p class='spikekillNote'>":'') . "NOTE: Creating XML file '$xmlfile' from '$rrdfile'" . ($html ? "</p>\n":"\n");
 
 if ($using_cacti) {
+	if (!$dryrun) {
+		switch ($method) {
+		case 1:
+			$mm  = 'StdDev';
+			$mes = "$username, File:" . basename($rrdfile) . ", Method:$mm, StdDevs:$stddev, AvgNan:$avgnan, Kills:$numspike, Outliers:$outliers";
+			break;
+		case 2:
+			$mm  = 'Variance';
+			$mes = "$username, File:" . basename($rrdfile) . ", Method:$mm, AvgNan:$avgnan, Kills:$numspike, Outliers:$outliers, Percent:$percent";
+			break;
+		case 3:
+			$mm  = 'RangeFill';
+			$mes = "$username, File:" . basename($rrdfile) . ", Method:$mm, OutStart:$out_start, OutEnd:$out_end, AvgNan:$avgnan";
+			break;
+		case 4:
+			$mm  = 'GapFill';
+			$mes = "$username, File:" . basename($rrdfile) . ", Method:$mm, OutStart:$out_start, OutEnd:$out_end, AvgNan:$avgnan";
+			break;
+		default:
+			$mm  = 'Undefined';
+			$mes = "$username, File:" . basename($rrdfile) . ", Method:$mm";
+		}
+
+		cacti_log($mes, false, 'SPIKEKILL');
+	}
+
 	shell_exec(read_config_option('path_rrdtool') . " dump $rrdfile > $xmlfile");
 }else{
 	shell_exec("rrdtool dump $rrdfile > $xmlfile");
@@ -835,16 +866,8 @@ function calculateOverallStatistics(&$rra, &$samples) {
 
 							$rra[$rra_num][$ds_num]['outwind_killed']++;
 							$out_kills = true;
-						}else if ($method == 2) {
+						}else if ($method == 4) {
 							if ($sample > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg'] || strtolower($sample) == 'nan') {
-								debug(sprintf("Window Kill: Value '%.4e', Time '%s'", $sample, date('Y-m-d H:i', $timestamp)));
-
-								$rra[$rra_num][$ds_num]['outwind_killed']++;
-								$out_kills = true;
-							}
-						}else{
-							if (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) ||
-								($sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 								debug(sprintf("Window Kill: Value '%.4e', Time '%s'", $sample, date('Y-m-d H:i', $timestamp)));
 
 								$rra[$rra_num][$ds_num]['outwind_killed']++;
@@ -1068,22 +1091,10 @@ function updateXML(&$output, &$rra) {
 
 						$kills++;
 						$total_kills++;
-					}elseif ($method == 2) {
-						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg']) {
+					}elseif ($method == 4) {
+						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg'] || strtolower($dsvalue) == 'nan') {
 							if ($avgnan == 'avg') {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-								$dsvalue = $first_num[$ds_num];
-							}
-
-							$kills++;
-							$total_kills++;
-						}
-					}else{
-						if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
-							($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
-							if ($avgnan == 'avg') {
-								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
 							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
 								$dsvalue = $first_num[$ds_num];
 							}
@@ -1301,7 +1312,7 @@ function display_help () {
 
 	echo "Optional:\n";
 	echo "    --user          - The Cacti user account to pull settings from.  Default is to use the system settings.\n";
-	echo "    --method        - The spike removal method to use.  Options are stddev|variance|float\n";
+	echo "    --method        - The spike removal method to use.  Options are stddev|variance|fill|float\n";
 	echo "    --avgnan        - The spike replacement method to use.  Options are last|avg|nan\n";
 	echo "    --stddev        - The number of standard deviations +/- allowed\n";
 	echo "    --percent       - The sample to sample percentage variation allowed\n";
