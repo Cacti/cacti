@@ -1064,8 +1064,6 @@ function updateXML(&$output, &$rra) {
 							$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
 						}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
 							$dsvalue = $first_num[$ds_num];
-						}else{
-							$dsvalue = 'NaN';
 						}
 
 						$kills++;
@@ -1076,8 +1074,6 @@ function updateXML(&$output, &$rra) {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
 							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
 								$dsvalue = $first_num[$ds_num];
-							}else{
-								$dsvalue = 'NaN';
 							}
 
 							$kills++;
@@ -1090,8 +1086,6 @@ function updateXML(&$output, &$rra) {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
 							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
 								$dsvalue = $first_num[$ds_num];
-							}else{
-								$dsvalue = 'NaN';
 							}
 
 							$kills++;
