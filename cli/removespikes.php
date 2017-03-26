@@ -1032,27 +1032,31 @@ function updateXML(&$output, &$rra) {
 					/* do nothing, it's a NaN, and the first one */
 				}elseif(strtolower($dsvalue) == 'nan' && isset($first_num[$ds_num])) {
 					if ($method == 2) {
-						if ($avgnan == 'avg') {
-							$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-						}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-							$dsvalue = $first_num[$ds_num];
-						}else{
-							$dsvalue = 'NaN';
+						if ($kills < $numspike) {
+							if ($avgnan == 'avg') {
+								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
+							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+								$dsvalue = $first_num[$ds_num];
+							}else{
+								$dsvalue = 'NaN';
+							}
+	
+							$total_kills++;
+							$kills++;
 						}
-
-						$total_kills++;
-						$kills++;
 					}else{
-						if ($avgnan == 'avg') {
-							$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
-						}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-							$dsvalue = $first_num[$ds_num];
-						}else{
-							$dsvalue = 'NaN';
-						}
+						if ($kills < $numspike) {
+							if ($avgnan == 'avg') {
+								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
+							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+								$dsvalue = $first_num[$ds_num];
+							}else{
+								$dsvalue = 'NaN';
+							}
 
-						$total_kills++;
-						$kills++;
+							$total_kills++;
+							$kills++;
+						}
 					}
 				}elseif (!empty($out_start) && $timestamp > $out_start && $timestamp < $out_end) {
 					if ($method == 3) {
