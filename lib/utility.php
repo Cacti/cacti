@@ -66,8 +66,11 @@ function repopulate_poller_cache() {
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id) {
-	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM data_local 
-		WHERE host_id = ?  AND snmp_query_id = ?', array($host_id, $data_query_id));
+	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
+		FROM data_local 
+		WHERE host_id = ?
+		AND snmp_query_id = ?',
+		array($host_id, $data_query_id));
 
 	$i = 0;
 	$poller_items = $local_data_ids = array();
@@ -91,11 +94,18 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 		}
 	}
 
-	$poller_ids = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT poller_id FROM poller_item WHERE host_id = ?', array($host_id)), 'poller_id', 'poller_id');
+	$poller_ids = array_rekey(
+		db_fetch_assoc_prepared('SELECT DISTINCT poller_id 
+			FROM poller_item 
+			WHERE host_id = ?', 
+			array($host_id)), 
+		'poller_id', 'poller_id'
+	);
+
 	if (sizeof($poller_ids)) {
-	foreach($poller_ids as $poller_id) {
-		api_data_source_cache_crc_update($poller_id);
-	}
+		foreach($poller_ids as $poller_id) {
+			api_data_source_cache_crc_update($poller_id);
+		}
 	}
 }
 
