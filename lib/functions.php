@@ -1121,7 +1121,6 @@ function is_hex_string($result) {
    @returns - (bool) either to result is valid or not */
 function prepare_validate_result(&$result) {
 	$delim_cnt = 0;
-	$space_cnt = 0;
 
 	/* first trim the string */
 	$result = trim($result, "'\"\n\r");
@@ -1132,7 +1131,7 @@ function prepare_validate_result(&$result) {
 	}elseif ($result == 'U') {
 		return true;
 	}elseif (is_hexadecimal($result)) {
-		return hex2dec($result);
+		return hexdec($result);
 	}elseif (((substr_count($result, ':')) || (substr_count($result, '!')))) {
 		/* looking for name value pairs */
 		if (substr_count($result, ' ') == 0) {
