@@ -1150,7 +1150,7 @@ function device_javascript() {
 	}
 
 	$(function() {
-		if (hostInfoHeight > 0) {
+		if (typeof hostInfoHeight != "undefined") {
 			if ($(window).scrollTop() == 0) {
 				$('.hostInfoHeader').css('height', '');
 			}else{
