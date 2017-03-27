@@ -1560,7 +1560,7 @@ CREATE TABLE graph_template_input_defs (
   graph_template_item_id int(12) unsigned NOT NULL default '0',
   PRIMARY KEY (graph_template_input_id,graph_template_item_id),
   KEY graph_template_input_id (graph_template_input_id)
-) ENGINE=InnoDB COMMENT='Stores the relationship for what graph iitems are associated';
+) ENGINE=InnoDB COMMENT='Stores the relationship for what graph items are associated';
 
 --
 -- Dumping data for table `graph_template_input_defs`
