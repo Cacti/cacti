@@ -29,6 +29,7 @@ CREATE TABLE `aggregate_graph_templates` (
 --
 -- Table structure for table `aggregate_graph_templates_graph`
 --
+
 CREATE TABLE `aggregate_graph_templates_graph` (
   `aggregate_template_id` int(10) unsigned NOT NULL,
   `t_image_format_id` char(2) DEFAULT '',
@@ -220,7 +221,13 @@ CREATE TABLE `automation_graph_rule_items` (
 -- Dumping data for table `automation_graph_rule_items`
 --
 
-INSERT INTO `automation_graph_rule_items` VALUES (1,1,1,0,'ifOperStatus',7,'Up'),(2,1,2,1,'ifIP',16,''),(3,1,3,1,'ifHwAddr',16,''),(4,2,1,0,'ifOperStatus',7,'Up'),(5,2,2,1,'ifIP',16,''),(6,2,3,1,'ifHwAddr',16,'');
+INSERT INTO `automation_graph_rule_items` VALUES
+(1,1,1,0,'ifOperStatus',7,'Up'),
+(2,1,2,1,'ifIP',16,''),
+(3,1,3,1,'ifHwAddr',16,''),
+(4,2,1,0,'ifOperStatus',7,'Up'),
+(5,2,2,1,'ifIP',16,''),
+(6,2,3,1,'ifHwAddr',16,'');
 
 --
 -- Table structure for table `automation_graph_rules`
@@ -239,7 +246,10 @@ CREATE TABLE `automation_graph_rules` (
 -- Dumping data for table `automation_graph_rules`
 --
 
-INSERT INTO `automation_graph_rules` VALUES (1,'Traffic 64 bit Server',1,14,''),(2,'Traffic 64 bit Server Linux',1,14,''),(3,'Disk Space',8,18,'');
+INSERT INTO `automation_graph_rules` VALUES
+(1,'Traffic 64 bit Server',1,14,''),
+(2,'Traffic 64 bit Server Linux',1,14,''),
+(3,'Disk Space',8,18,'');
 
 --
 -- Table structure for table `automation_ips`
@@ -276,7 +286,14 @@ CREATE TABLE `automation_match_rule_items` (
 -- Dumping data for table `automation_match_rule_items`
 --
 
-INSERT INTO `automation_match_rule_items` VALUES (1,1,1,1,0,'h.description',14,''),(2,1,1,2,1,'h.snmp_version',12,'2'),(3,1,3,1,0,'ht.name',1,'Linux'),(4,2,1,1,0,'ht.name',1,'Linux'),(5,2,1,2,1,'h.snmp_version',12,'2'),(6,2,3,1,0,'ht.name',1,'SNMP'),(7,2,3,2,1,'gt.name',1,'Traffic');
+INSERT INTO `automation_match_rule_items` VALUES
+(1,1,1,1,0,'h.description',14,''),
+(2,1,1,2,1,'h.snmp_version',12,'2'),
+(3,1,3,1,0,'ht.name',1,'Linux'),
+(4,2,1,1,0,'ht.name',1,'Linux'),
+(5,2,1,2,1,'h.snmp_version',12,'2'),
+(6,2,3,1,0,'ht.name',1,'SNMP'),
+(7,2,3,2,1,'gt.name',1,'Traffic');
 
 --
 -- Table structure for table `automation_networks`
@@ -385,7 +402,9 @@ CREATE TABLE `automation_snmp_items` (
 -- Dumping data for table `automation_snmp_items`
 --
 
-INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,'admin','baseball','MD5','','DES','',''),(2,1,2,'2','private',161,1000,3,10,'admin','baseball','MD5','','DES','','');
+INSERT INTO `automation_snmp_items` VALUES
+(1,1,1,'2','public',161,1000,3,10,'admin','baseball','MD5','','DES','',''),
+(2,1,2,'2','private',161,1000,3,10,'admin','baseball','MD5','','DES','','');
 
 --
 -- Table structure for table `automation_templates`
@@ -406,7 +425,9 @@ CREATE TABLE `automation_templates` (
 -- Dumping data for table `automation_templates`
 --
 
-INSERT INTO `automation_templates` VALUES (1,3,2,'Linux','','',2),(2,1,2,'HP ETHERNET','','',1);
+INSERT INTO `automation_templates` VALUES
+(1,3,2,'Linux','','',2),
+(2,1,2,'HP ETHERNET','','',1);
 
 --
 -- Table structure for table `automation_tree_rule_items`
@@ -428,7 +449,11 @@ CREATE TABLE `automation_tree_rule_items` (
 -- Dumping data for table `automation_tree_rule_items`
 --
 
-INSERT INTO `automation_tree_rule_items` VALUES (1,1,1,'ht.name',1,'','^(.*)\\s*Linux\\s*(.*)$','${1}\\n${2}'),(2,1,2,'h.hostname',1,'','^(\\w*)\\s*(\\w*)\\s*(\\w*).*$',''),(3,2,1,'0',2,'on','Traffic',''),(4,2,2,'gtg.title_cache',1,'','^(.*)\\s*-\\s*Traffic -\\s*(.*)$','${1}\\n${2}');
+INSERT INTO `automation_tree_rule_items` VALUES
+(1,1,1,'ht.name',1,'','^(.*)\\s*Linux\\s*(.*)$','${1}\\n${2}'),
+(2,1,2,'h.hostname',1,'','^(\\w*)\\s*(\\w*)\\s*(\\w*).*$',''),
+(3,2,1,'0',2,'on','Traffic',''),
+(4,2,2,'gtg.title_cache',1,'','^(.*)\\s*-\\s*Traffic -\\s*(.*)$','${1}\\n${2}');
 
 --
 -- Table structure for table `automation_tree_rules`
@@ -449,7 +474,9 @@ CREATE TABLE `automation_tree_rules` (
 -- Dumping data for table `automation_tree_rules`
 --
 
-INSERT INTO `automation_tree_rules` VALUES (1,'New Device',1,0,3,0,''),(2,'New Graph',1,0,2,0,'');
+INSERT INTO `automation_tree_rules` VALUES
+(1,'New Device',1,0,3,0,''),
+(2,'New Graph',1,0,2,0,'');
 
 --
 -- Table structure for table `cdef`
@@ -467,12 +494,13 @@ CREATE TABLE cdef (
 -- Dumping data for table `cdef`
 --
 
-INSERT INTO cdef VALUES (3,'3d352eed9fa8f7b2791205b3273708c7',0,'Make Stack Negative');
-INSERT INTO cdef VALUES (4,'e961cc8ec04fda6ed4981cf5ad501aa5',0,'Make Per 5 Minutes');
-INSERT INTO cdef VALUES (12,'f1ac79f05f255c02f914c920f1038c54',0,'Total All Data Sources');
-INSERT INTO cdef VALUES (2,'73f95f8b77b5508157d64047342c421e',0,'Turn Bytes into Bits');
-INSERT INTO cdef VALUES (14,'634a23af5e78af0964e8d33b1a4ed26b',0,'Multiply by 1024');
-INSERT INTO cdef VALUES (15,'068984b5ccdfd2048869efae5166f722',0,'Total All Data Sources, Multiply by 1024');
+INSERT INTO cdef VALUES
+(3,'3d352eed9fa8f7b2791205b3273708c7',0,'Make Stack Negative'),
+(4,'e961cc8ec04fda6ed4981cf5ad501aa5',0,'Make Per 5 Minutes'),
+(12,'f1ac79f05f255c02f914c920f1038c54',0,'Total All Data Sources'),
+(2,'73f95f8b77b5508157d64047342c421e',0,'Turn Bytes into Bits'),
+(14,'634a23af5e78af0964e8d33b1a4ed26b',0,'Multiply by 1024'),
+(15,'068984b5ccdfd2048869efae5166f722',0,'Total All Data Sources, Multiply by 1024');
 
 --
 -- Table structure for table `cdef_items`
@@ -493,23 +521,27 @@ CREATE TABLE cdef_items (
 -- Dumping data for table `cdef_items`
 --
 
-INSERT INTO cdef_items VALUES (7,'9bbf6b792507bb9bb17d2af0970f9be9',2,1,4,'CURRENT_DATA_SOURCE');
-INSERT INTO cdef_items VALUES (9,'a4b8eb2c3bf4920a3ef571a7a004be53',2,2,6,'8');
-INSERT INTO cdef_items VALUES (8,'caa4e023ac2d7b1c4b4c8c4adfd55dfe',2,3,2,'3');
-INSERT INTO cdef_items VALUES (10,'c888c9fe6b62c26c4bfe23e18991731d',3,1,4,'CURRENT_DATA_SOURCE');
-INSERT INTO cdef_items VALUES (11,'1e1d0b29a94e08b648c8f053715442a0',3,3,2,'3');
-INSERT INTO cdef_items VALUES (12,'4355c197998c7f8b285be7821ddc6da4',3,2,6,'-1');
-INSERT INTO cdef_items VALUES (13,'40bb7a1143b0f2e2efca14eb356236de',4,1,4,'CURRENT_DATA_SOURCE');
-INSERT INTO cdef_items VALUES (14,'42686ea0925c0220924b7d333599cd67',4,3,2,'3');
-INSERT INTO cdef_items VALUES (15,'faf1b148b2c0e0527362ed5b8ca1d351',4,2,6,'300');
-INSERT INTO cdef_items VALUES (16,'0ef6b8a42dc83b4e43e437960fccd2ea',12,1,4,'ALL_DATA_SOURCES_NODUPS');
-INSERT INTO cdef_items VALUES (18,'86370cfa0008fe8c56b28be80ee39a40',14,1,4,'CURRENT_DATA_SOURCE');
-INSERT INTO cdef_items VALUES (19,'9a35cc60d47691af37f6fddf02064e20',14,2,6,'1024');
-INSERT INTO cdef_items VALUES (20,'5d7a7941ec0440b257e5598a27dd1688',14,3,2,'3');
-INSERT INTO cdef_items VALUES (21,'44fd595c60539ff0f5817731d9f43a85',15,1,4,'ALL_DATA_SOURCES_NODUPS');
-INSERT INTO cdef_items VALUES (22,'aa38be265e5ac31783e57ce6f9314e9a',15,2,6,'1024');
-INSERT INTO cdef_items VALUES (23,'204423d4b2598f1f7252eea19458345c',15,3,2,'3');
+INSERT INTO cdef_items VALUES
+(7,'9bbf6b792507bb9bb17d2af0970f9be9',2,1,4,'CURRENT_DATA_SOURCE'),
+(9,'a4b8eb2c3bf4920a3ef571a7a004be53',2,2,6,'8'),
+(8,'caa4e023ac2d7b1c4b4c8c4adfd55dfe',2,3,2,'3'),
+(10,'c888c9fe6b62c26c4bfe23e18991731d',3,1,4,'CURRENT_DATA_SOURCE'),
+(11,'1e1d0b29a94e08b648c8f053715442a0',3,3,2,'3'),
+(12,'4355c197998c7f8b285be7821ddc6da4',3,2,6,'-1'),
+(13,'40bb7a1143b0f2e2efca14eb356236de',4,1,4,'CURRENT_DATA_SOURCE'),
+(14,'42686ea0925c0220924b7d333599cd67',4,3,2,'3'),
+(15,'faf1b148b2c0e0527362ed5b8ca1d351',4,2,6,'300'),
+(16,'0ef6b8a42dc83b4e43e437960fccd2ea',12,1,4,'ALL_DATA_SOURCES_NODUPS'),
+(18,'86370cfa0008fe8c56b28be80ee39a40',14,1,4,'CURRENT_DATA_SOURCE'),
+(19,'9a35cc60d47691af37f6fddf02064e20',14,2,6,'1024'),
+(20,'5d7a7941ec0440b257e5598a27dd1688',14,3,2,'3'),
+(21,'44fd595c60539ff0f5817731d9f43a85',15,1,4,'ALL_DATA_SOURCES_NODUPS'),
+(22,'aa38be265e5ac31783e57ce6f9314e9a',15,2,6,'1024'),
+(23,'204423d4b2598f1f7252eea19458345c',15,3,2,'3');
 
+--
+-- Table structure for table `color_templates`
+--
 
 CREATE TABLE `color_templates` (
   `color_template_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -521,10 +553,11 @@ CREATE TABLE `color_templates` (
 -- Dumping data for table `color_templates`
 --
 
-INSERT INTO `color_templates` VALUES (1,'Yellow: light -> dark, 4 colors');
-INSERT INTO `color_templates` VALUES (2,'Red: light yellow > dark red, 8 colors');
-INSERT INTO `color_templates` VALUES (3,'Red: light -> dark, 16 colors');
-INSERT INTO `color_templates` VALUES (4,'Green: dark -> light, 16 colors');
+INSERT INTO `color_templates` VALUES
+(1,'Yellow: light -> dark, 4 colors'),
+(2,'Red: light yellow > dark red, 8 colors'),
+(3,'Red: light -> dark, 16 colors'),
+(4,'Green: dark -> light, 16 colors');
 
 --
 -- Table structure for table `color_template_items`
@@ -542,50 +575,51 @@ CREATE TABLE `color_template_items` (
 -- Dumping data for table `color_template_items`
 --
 
-INSERT INTO `color_template_items` VALUES (1,1,4,1);
-INSERT INTO `color_template_items` VALUES (2,1,24,2);
-INSERT INTO `color_template_items` VALUES (3,1,98,3);
-INSERT INTO `color_template_items` VALUES (4,1,25,4);
-INSERT INTO `color_template_items` VALUES (5,2,25,1);
-INSERT INTO `color_template_items` VALUES (6,2,29,2);
-INSERT INTO `color_template_items` VALUES (7,2,30,3);
-INSERT INTO `color_template_items` VALUES (8,2,31,4);
-INSERT INTO `color_template_items` VALUES (9,2,33,5);
-INSERT INTO `color_template_items` VALUES (10,2,35,6);
-INSERT INTO `color_template_items` VALUES (11,2,41,7);
-INSERT INTO `color_template_items` VALUES (12,2,9,8);
-INSERT INTO `color_template_items` VALUES (13,3,15,1);
-INSERT INTO `color_template_items` VALUES (14,3,31,2);
-INSERT INTO `color_template_items` VALUES (15,3,28,3);
-INSERT INTO `color_template_items` VALUES (16,3,8,4);
-INSERT INTO `color_template_items` VALUES (17,3,34,5);
-INSERT INTO `color_template_items` VALUES (18,3,33,6);
-INSERT INTO `color_template_items` VALUES (19,3,35,7);
-INSERT INTO `color_template_items` VALUES (20,3,41,8);
-INSERT INTO `color_template_items` VALUES (21,3,36,9);
-INSERT INTO `color_template_items` VALUES (22,3,42,10);
-INSERT INTO `color_template_items` VALUES (23,3,44,11);
-INSERT INTO `color_template_items` VALUES (24,3,48,12);
-INSERT INTO `color_template_items` VALUES (25,3,9,13);
-INSERT INTO `color_template_items` VALUES (26,3,49,14);
-INSERT INTO `color_template_items` VALUES (27,3,51,15);
-INSERT INTO `color_template_items` VALUES (28,3,52,16);
-INSERT INTO `color_template_items` VALUES (29,4,76,1);
-INSERT INTO `color_template_items` VALUES (30,4,84,2);
-INSERT INTO `color_template_items` VALUES (31,4,89,3);
-INSERT INTO `color_template_items` VALUES (32,4,17,4);
-INSERT INTO `color_template_items` VALUES (33,4,86,5);
-INSERT INTO `color_template_items` VALUES (34,4,88,6);
-INSERT INTO `color_template_items` VALUES (35,4,90,7);
-INSERT INTO `color_template_items` VALUES (36,4,94,8);
-INSERT INTO `color_template_items` VALUES (37,4,96,9);
-INSERT INTO `color_template_items` VALUES (38,4,93,10);
-INSERT INTO `color_template_items` VALUES (39,4,91,11);
-INSERT INTO `color_template_items` VALUES (40,4,22,12);
-INSERT INTO `color_template_items` VALUES (41,4,12,13);
-INSERT INTO `color_template_items` VALUES (42,4,95,14);
-INSERT INTO `color_template_items` VALUES (43,4,6,15);
-INSERT INTO `color_template_items` VALUES (44,4,92,16);
+INSERT INTO `color_template_items` VALUES
+(1,1,4,1),
+(2,1,24,2),
+(3,1,98,3),
+(4,1,25,4),
+(5,2,25,1),
+(6,2,29,2),
+(7,2,30,3),
+(8,2,31,4),
+(9,2,33,5),
+(10,2,35,6),
+(11,2,41,7),
+(12,2,9,8),
+(13,3,15,1),
+(14,3,31,2),
+(15,3,28,3),
+(16,3,8,4),
+(17,3,34,5),
+(18,3,33,6),
+(19,3,35,7),
+(20,3,41,8),
+(21,3,36,9),
+(22,3,42,10),
+(23,3,44,11),
+(24,3,48,12),
+(25,3,9,13),
+(26,3,49,14),
+(27,3,51,15),
+(28,3,52,16),
+(29,4,76,1),
+(30,4,84,2),
+(31,4,89,3),
+(32,4,17,4),
+(33,4,86,5),
+(34,4,88,6),
+(35,4,90,7),
+(36,4,94,8),
+(37,4,96,9),
+(38,4,93,10),
+(39,4,91,11),
+(40,4,22,12),
+(41,4,12,13),
+(42,4,95,14),
+(43,4,6,15),
+(44,4,92,16);
 
 --
 -- Table structure for table `colors`
@@ -604,442 +638,443 @@ CREATE TABLE colors (
 -- Dumping data for table `colors`
 --
 
-INSERT INTO colors VALUES (1,'Black','000000','on');
-INSERT INTO colors VALUES (2,'White','FFFFFF','on');
-INSERT INTO colors VALUES (4,'','FAFD9E','');
-INSERT INTO colors VALUES (5,'','C0C0C0','');
-INSERT INTO colors VALUES (6,'','74C366','');
-INSERT INTO colors VALUES (7,'','6DC8FE','');
-INSERT INTO colors VALUES (8,'','EA8F00','');
-INSERT INTO colors VALUES (9,'Red','FF0000','on');
-INSERT INTO colors VALUES (10,'','4444FF','');
-INSERT INTO colors VALUES (11,'Magenta','FF00FF','on');
-INSERT INTO colors VALUES (12,'Green','00FF00','on');
-INSERT INTO colors VALUES (13,'','8D85F3','');
-INSERT INTO colors VALUES (14,'','AD3B6E','');
-INSERT INTO colors VALUES (15,'','EACC00','');
-INSERT INTO colors VALUES (16,'','12B3B5','');
-INSERT INTO colors VALUES (17,'','157419','');
-INSERT INTO colors VALUES (18,'','C4FD3D','');
-INSERT INTO colors VALUES (19,'','817C4E','');
-INSERT INTO colors VALUES (20,'','002A97','');
-INSERT INTO colors VALUES (21,'','0000FF','');
-INSERT INTO colors VALUES (22,'','00CF00','');
-INSERT INTO colors VALUES (24,'','F9FD5F','');
-INSERT INTO colors VALUES (25,'','FFF200','');
-INSERT INTO colors VALUES (26,'','CCBB00','');
-INSERT INTO colors VALUES (27,'','837C04','');
-INSERT INTO colors VALUES (28,'','EAAF00','');
-INSERT INTO colors VALUES (29,'','FFD660','');
-INSERT INTO colors VALUES (30,'','FFC73B','');
-INSERT INTO colors VALUES (31,'','FFAB00','');
-INSERT INTO colors VALUES (33,'','FF7D00','');
-INSERT INTO colors VALUES (34,'','ED7600','');
-INSERT INTO colors VALUES (35,'','FF5700','');
-INSERT INTO colors VALUES (36,'','EE5019','');
-INSERT INTO colors VALUES (37,'','B1441E','');
-INSERT INTO colors VALUES (38,'','FFC3C0','');
-INSERT INTO colors VALUES (39,'','FF897C','');
-INSERT INTO colors VALUES (40,'','FF6044','');
-INSERT INTO colors VALUES (41,'','FF4105','');
-INSERT INTO colors VALUES (42,'','DA4725','');
-INSERT INTO colors VALUES (43,'','942D0C','');
-INSERT INTO colors VALUES (44,'','FF3932','');
-INSERT INTO colors VALUES (45,'','862F2F','');
-INSERT INTO colors VALUES (46,'','FF5576','');
-INSERT INTO colors VALUES (47,'','562B29','');
-INSERT INTO colors VALUES (48,'','F51D30','');
-INSERT INTO colors VALUES (49,'','DE0056','');
-INSERT INTO colors VALUES (50,'','ED5394','');
-INSERT INTO colors VALUES (51,'','B90054','');
-INSERT INTO colors VALUES (52,'','8F005C','');
-INSERT INTO colors VALUES (53,'','F24AC8','');
-INSERT INTO colors VALUES (54,'','E8CDEF','');
-INSERT INTO colors VALUES (55,'','D8ACE0','');
-INSERT INTO colors VALUES (56,'','A150AA','');
-INSERT INTO colors VALUES (57,'','750F7D','');
-INSERT INTO colors VALUES (58,'','8D00BA','');
-INSERT INTO colors VALUES (59,'','623465','');
-INSERT INTO colors VALUES (60,'','55009D','');
-INSERT INTO colors VALUES (61,'','3D168B','');
-INSERT INTO colors VALUES (62,'','311F4E','');
-INSERT INTO colors VALUES (63,'','D2D8F9','');
-INSERT INTO colors VALUES (64,'','9FA4EE','');
-INSERT INTO colors VALUES (65,'','6557D0','');
-INSERT INTO colors VALUES (66,'','4123A1','');
-INSERT INTO colors VALUES (67,'','4668E4','');
-INSERT INTO colors VALUES (68,'','0D006A','');
-INSERT INTO colors VALUES (69,'','00004D','');
-INSERT INTO colors VALUES (70,'','001D61','');
-INSERT INTO colors VALUES (71,'','00234B','');
-INSERT INTO colors VALUES (72,'','002A8F','');
-INSERT INTO colors VALUES (73,'','2175D9','');
-INSERT INTO colors VALUES (74,'','7CB3F1','');
-INSERT INTO colors VALUES (75,'','005199','');
-INSERT INTO colors VALUES (76,'','004359','');
-INSERT INTO colors VALUES (77,'','00A0C1','');
-INSERT INTO colors VALUES (78,'','007283','');
-INSERT INTO colors VALUES (79,'','00BED9','');
-INSERT INTO colors VALUES (80,'','AFECED','');
-INSERT INTO colors VALUES (81,'','55D6D3','');
-INSERT INTO colors VALUES (82,'','00BBB4','');
-INSERT INTO colors VALUES (83,'','009485','');
-INSERT INTO colors VALUES (84,'','005D57','');
-INSERT INTO colors VALUES (85,'','008A77','');
-INSERT INTO colors VALUES (86,'','008A6D','');
-INSERT INTO colors VALUES (87,'','00B99B','');
-INSERT INTO colors VALUES (88,'','009F67','');
-INSERT INTO colors VALUES (89,'','00694A','');
-INSERT INTO colors VALUES (90,'','00A348','');
-INSERT INTO colors VALUES (91,'','00BF47','');
-INSERT INTO colors VALUES (92,'','96E78A','');
-INSERT INTO colors VALUES (93,'','00BD27','');
-INSERT INTO colors VALUES (94,'','35962B','');
-INSERT INTO colors VALUES (95,'','7EE600','');
-INSERT INTO colors VALUES (96,'','6EA100','');
-INSERT INTO colors VALUES (97,'','CAF100','');
-INSERT INTO colors VALUES (98,'','F5F800','');
-INSERT INTO colors VALUES (99,'','CDCFC4','');
-INSERT INTO colors VALUES (100,'','BCBEB3','');
-INSERT INTO colors VALUES (101,'','AAABA1','');
-INSERT INTO colors VALUES (102,'','8F9286','');
-INSERT INTO colors VALUES (103,'','797C6E','');
-INSERT INTO colors VALUES (104,'','2E3127','');
-INSERT INTO colors VALUES (105,'Night','0C090A','on');
-INSERT INTO colors VALUES (106,'Gunmetal','2C3539','on');
-INSERT INTO colors VALUES (107,'Midnight','2B1B17','on');
-INSERT INTO colors VALUES (108,'Charcoal','34282C','on');
-INSERT INTO colors VALUES (109,'Dark Slate Grey','25383C','on');
-INSERT INTO colors VALUES (110,'Oil','3B3131','on');
-INSERT INTO colors VALUES (111,'Black Cat','413839','on');
-INSERT INTO colors VALUES (112,'Iridium','3D3C3A','on');
-INSERT INTO colors VALUES (113,'Black Eel','463E3F','on');
-INSERT INTO colors VALUES (114,'Black Cow','4C4646','on');
-INSERT INTO colors VALUES (115,'Gray Wolf','504A4B','on');
-INSERT INTO colors VALUES (116,'Vampire Gray','565051','on');
-INSERT INTO colors VALUES (117,'Gray Dolphin','5C5858','on');
-INSERT INTO colors VALUES (118,'Carbon Gray','625D5D','on');
-INSERT INTO colors VALUES (119,'Ash Gray','666362','on');
-INSERT INTO colors VALUES (120,'Cloudy Gray','6D6968','on');
-INSERT INTO colors VALUES (121,'Smokey Gray','726E6D','on');
-INSERT INTO colors VALUES (122,'Gray','736F6E','on');
-INSERT INTO colors VALUES (123,'Granite','837E7C','on');
-INSERT INTO colors VALUES (124,'Battleship Gray','848482','on');
-INSERT INTO colors VALUES (125,'Gray Cloud','B6B6B4','on');
-INSERT INTO colors VALUES (126,'Gray Goose','D1D0CE','on');
-INSERT INTO colors VALUES (127,'Platinum','E5E4E2','on');
-INSERT INTO colors VALUES (128,'Metallic Silver','BCC6CC','on');
-INSERT INTO colors VALUES (129,'Blue Gray','98AFC7','on');
-INSERT INTO colors VALUES (130,'Light Slate Gray','6D7B8D','on');
-INSERT INTO colors VALUES (131,'Slate Gray','657383','on');
-INSERT INTO colors VALUES (132,'Jet Gray','616D7E','on');
-INSERT INTO colors VALUES (133,'Mist Blue','646D7E','on');
-INSERT INTO colors VALUES (134,'Marble Blue','566D7E','on');
-INSERT INTO colors VALUES (135,'Slate Blue','737CA1','on');
-INSERT INTO colors VALUES (136,'Steel Blue','4863A0','on');
-INSERT INTO colors VALUES (137,'Blue Jay','2B547E','on');
-INSERT INTO colors VALUES (138,'Dark Slate Blue','2B3856','on');
-INSERT INTO colors VALUES (139,'Midnight Blue','151B54','on');
-INSERT INTO colors VALUES (140,'Navy Blue','000080','on');
-INSERT INTO colors VALUES (141,'Blue Whale','342D7E','on');
-INSERT INTO colors VALUES (142,'Lapis Blue','15317E','on');
-INSERT INTO colors VALUES (143,'Cornflower Blue','151B8D','on');
-INSERT INTO colors VALUES (144,'Earth Blue','0000A0','on');
-INSERT INTO colors VALUES (145,'Cobalt Blue','0020C2','on');
-INSERT INTO colors VALUES (146,'Blueberry Blue','0041C2','on');
-INSERT INTO colors VALUES (147,'Sapphire Blue','2554C7','on');
-INSERT INTO colors VALUES (148,'Blue Eyes','1569C7','on');
-INSERT INTO colors VALUES (149,'Royal Blue','2B60DE','on');
-INSERT INTO colors VALUES (150,'Blue Orchid','1F45FC','on');
-INSERT INTO colors VALUES (151,'Blue Lotus','6960EC','on');
-INSERT INTO colors VALUES (152,'Light Slate Blue','736AFF','on');
-INSERT INTO colors VALUES (153,'Slate Blue','357EC7','on');
-INSERT INTO colors VALUES (154,'Glacial Blue Ice','368BC1','on');
-INSERT INTO colors VALUES (155,'Silk Blue','488AC7','on');
-INSERT INTO colors VALUES (156,'Blue Ivy','3090C7','on');
-INSERT INTO colors VALUES (157,'Blue Koi','659EC7','on');
-INSERT INTO colors VALUES (158,'Columbia Blue','87AFC7','on');
-INSERT INTO colors VALUES (159,'Baby Blue','95B9C7','on');
-INSERT INTO colors VALUES (160,'Light Steel Blue','728FCE','on');
-INSERT INTO colors VALUES (161,'Ocean Blue','2B65EC','on');
-INSERT INTO colors VALUES (162,'Blue Ribbon','306EFF','on');
-INSERT INTO colors VALUES (163,'Blue Dress','157DEC','on');
-INSERT INTO colors VALUES (164,'Dodger Blue','1589FF','on');
-INSERT INTO colors VALUES (165,'Cornflower Blue','6495ED','on');
-INSERT INTO colors VALUES (166,'Sky Blue','6698FF','on');
-INSERT INTO colors VALUES (167,'Butterfly Blue','38ACEC','on');
-INSERT INTO colors VALUES (168,'Iceberg','56A5EC','on');
-INSERT INTO colors VALUES (169,'Crystal Blue','5CB3FF','on');
-INSERT INTO colors VALUES (170,'Deep Sky Blue','3BB9FF','on');
-INSERT INTO colors VALUES (171,'Denim Blue','79BAEC','on');
-INSERT INTO colors VALUES (172,'Light Sky Blue','82CAFA','on');
-INSERT INTO colors VALUES (173,'Day Sky Blue','82CAFF','on');
-INSERT INTO colors VALUES (174,'Jeans Blue','A0CFEC','on');
-INSERT INTO colors VALUES (175,'Blue Angel','B7CEEC','on');
-INSERT INTO colors VALUES (176,'Pastel Blue','B4CFEC','on');
-INSERT INTO colors VALUES (177,'Sea Blue','C2DFFF','on');
-INSERT INTO colors VALUES (178,'Powder Blue','C6DEFF','on');
-INSERT INTO colors VALUES (179,'Coral Blue','AFDCEC','on');
-INSERT INTO colors VALUES (180,'Light Blue','ADDFFF','on');
-INSERT INTO colors VALUES (181,'Robin Egg Blue','BDEDFF','on');
-INSERT INTO colors VALUES (182,'Pale Blue Lily','CFECEC','on');
-INSERT INTO colors VALUES (183,'Light Cyan','E0FFFF','on');
-INSERT INTO colors VALUES (184,'Water','EBF4FA','on');
-INSERT INTO colors VALUES (185,'Alice Blue','F0F8FF','on');
-INSERT INTO colors VALUES (186,'Azure','F0FFFF','on');
-INSERT INTO colors VALUES (187,'Light Slate','CCFFFF','on');
-INSERT INTO colors VALUES (188,'Light Aquamarine','93FFE8','on');
-INSERT INTO colors VALUES (189,'Electric Blue','9AFEFF','on');
-INSERT INTO colors VALUES (190,'Aquamarine','7FFFD4','on');
-INSERT INTO colors VALUES (191,'Cyan or Aqua','00FFFF','on');
-INSERT INTO colors VALUES (192,'Tron Blue','7DFDFE','on');
-INSERT INTO colors VALUES (193,'Blue Zircon','57FEFF','on');
-INSERT INTO colors VALUES (194,'Blue Lagoon','8EEBEC','on');
-INSERT INTO colors VALUES (195,'Celeste','50EBEC','on');
-INSERT INTO colors VALUES (196,'Blue Diamond','4EE2EC','on');
-INSERT INTO colors VALUES (197,'Tiffany Blue','81D8D0','on');
-INSERT INTO colors VALUES (198,'Cyan Opaque','92C7C7','on');
-INSERT INTO colors VALUES (199,'Blue Hosta','77BFC7','on');
-INSERT INTO colors VALUES (200,'Northern Lights Blue','78C7C7','on');
-INSERT INTO colors VALUES (201,'Medium Turquoise','48CCCD','on');
-INSERT INTO colors VALUES (202,'Turquoise','43C6DB','on');
-INSERT INTO colors VALUES (203,'Jellyfish','46C7C7','on');
-INSERT INTO colors VALUES (204,'Macaw Blue Green','43BFC7','on');
-INSERT INTO colors VALUES (205,'Light Sea Green','3EA99F','on');
-INSERT INTO colors VALUES (206,'Dark Turquoise','3B9C9C','on');
-INSERT INTO colors VALUES (207,'Sea Turtle Green','438D80','on');
-INSERT INTO colors VALUES (208,'Medium Aquamarine','348781','on');
-INSERT INTO colors VALUES (209,'Greenish Blue','307D7E','on');
-INSERT INTO colors VALUES (210,'Grayish Turquoise','5E7D7E','on');
-INSERT INTO colors VALUES (211,'Beetle Green','4C787E','on');
-INSERT INTO colors VALUES (212,'Teal','008080','on');
-INSERT INTO colors VALUES (213,'Sea Green','4E8975','on');
-INSERT INTO colors VALUES (214,'Camouflage Green','78866B','on');
-INSERT INTO colors VALUES (215,'Sage Green','848b79','on');
-INSERT INTO colors VALUES (216,'Hazel Green','617C58','on');
-INSERT INTO colors VALUES (217,'Venom Green','728C00','on');
-INSERT INTO colors VALUES (218,'Fern Green','667C26','on');
-INSERT INTO colors VALUES (219,'Dark Forrest Green','254117','on');
-INSERT INTO colors VALUES (220,'Medium Sea Green','306754','on');
-INSERT INTO colors VALUES (221,'Medium Forest Green','347235','on');
-INSERT INTO colors VALUES (222,'Seaweed Green','437C17','on');
-INSERT INTO colors VALUES (223,'Pine Green','387C44','on');
-INSERT INTO colors VALUES (224,'Jungle Green','347C2C','on');
-INSERT INTO colors VALUES (225,'Shamrock Green','347C17','on');
-INSERT INTO colors VALUES (226,'Medium Spring Green','348017','on');
-INSERT INTO colors VALUES (227,'Forest Green','4E9258','on');
-INSERT INTO colors VALUES (228,'Green Onion','6AA121','on');
-INSERT INTO colors VALUES (229,'Spring Green','4AA02C','on');
-INSERT INTO colors VALUES (230,'Lime Green','41A317','on');
-INSERT INTO colors VALUES (231,'Clover Green','3EA055','on');
-INSERT INTO colors VALUES (232,'Green Snake','6CBB3C','on');
-INSERT INTO colors VALUES (233,'Alien Green','6CC417','on');
-INSERT INTO colors VALUES (234,'Green Apple','4CC417','on');
-INSERT INTO colors VALUES (235,'Yellow Green','52D017','on');
-INSERT INTO colors VALUES (236,'Kelly Green','4CC552','on');
-INSERT INTO colors VALUES (237,'Zombie Green','54C571','on');
-INSERT INTO colors VALUES (238,'Frog Green','99C68E','on');
-INSERT INTO colors VALUES (239,'Green Peas','89C35C','on');
-INSERT INTO colors VALUES (240,'Dollar Bill Green','85BB65','on');
-INSERT INTO colors VALUES (241,'Dark Sea Green','8BB381','on');
-INSERT INTO colors VALUES (242,'Iguana Green','9CB071','on');
-INSERT INTO colors VALUES (243,'Avocado Green','B2C248','on');
-INSERT INTO colors VALUES (244,'Pistachio Green','9DC209','on');
-INSERT INTO colors VALUES (245,'Salad Green','A1C935','on');
-INSERT INTO colors VALUES (246,'Hummingbird Green','7FE817','on');
-INSERT INTO colors VALUES (247,'Nebula Green','59E817','on');
-INSERT INTO colors VALUES (248,'Stoplight Go Green','57E964','on');
-INSERT INTO colors VALUES (249,'Algae Green','64E986','on');
-INSERT INTO colors VALUES (250,'Jade Green','5EFB6E','on');
-INSERT INTO colors VALUES (251,'Emerald Green','5FFB17','on');
-INSERT INTO colors VALUES (252,'Lawn Green','87F717','on');
-INSERT INTO colors VALUES (253,'Chartreuse','8AFB17','on');
-INSERT INTO colors VALUES (254,'Dragon Green','6AFB92','on');
-INSERT INTO colors VALUES (255,'Mint green','98FF98','on');
-INSERT INTO colors VALUES (256,'Green Thumb','B5EAAA','on');
-INSERT INTO colors VALUES (257,'Light Jade','C3FDB8','on');
-INSERT INTO colors VALUES (258,'Tea Green','CCFB5D','on');
-INSERT INTO colors VALUES (259,'Green Yellow','B1FB17','on');
-INSERT INTO colors VALUES (260,'Slime Green','BCE954','on');
-INSERT INTO colors VALUES (261,'Goldenrod','EDDA74','on');
-INSERT INTO colors VALUES (262,'Harvest Gold','EDE275','on');
-INSERT INTO colors VALUES (263,'Sun Yellow','FFE87C','on');
-INSERT INTO colors VALUES (264,'Yellow','FFFF00','on');
-INSERT INTO colors VALUES (265,'Corn Yellow','FFF380','on');
-INSERT INTO colors VALUES (266,'Parchment','FFFFC2','on');
-INSERT INTO colors VALUES (267,'Cream','FFFFCC','on');
-INSERT INTO colors VALUES (268,'Lemon Chiffon','FFF8C6','on');
-INSERT INTO colors VALUES (269,'Cornsilk','FFF8DC','on');
-INSERT INTO colors VALUES (270,'Beige','F5F5DC','on');
-INSERT INTO colors VALUES (271,'Blonde','FBF6D9','on');
-INSERT INTO colors VALUES (272,'Antique White','FAEBD7','on');
-INSERT INTO colors VALUES (273,'Champagne','F7E7CE','on');
-INSERT INTO colors VALUES (274,'Blanched Almond','FFEBCD','on');
-INSERT INTO colors VALUES (275,'Vanilla','F3E5AB','on');
-INSERT INTO colors VALUES (276,'Tan Brown','ECE5B6','on');
-INSERT INTO colors VALUES (277,'Peach','FFE5B4','on');
-INSERT INTO colors VALUES (278,'Mustard','FFDB58','on');
-INSERT INTO colors VALUES (279,'Rubber Ducky Yellow','FFD801','on');
-INSERT INTO colors VALUES (280,'Bright Gold','FDD017','on');
-INSERT INTO colors VALUES (281,'Golden Brown','EAC117','on');
-INSERT INTO colors VALUES (282,'Macaroni and Cheese','F2BB66','on');
-INSERT INTO colors VALUES (283,'Saffron','FBB917','on');
-INSERT INTO colors VALUES (284,'Beer','FBB117','on');
-INSERT INTO colors VALUES (285,'Cantaloupe','FFA62F','on');
-INSERT INTO colors VALUES (286,'Bee Yellow','E9AB17','on');
-INSERT INTO colors VALUES (287,'Brown Sugar','E2A76F','on');
-INSERT INTO colors VALUES (288,'BurlyWood','DEB887','on');
-INSERT INTO colors VALUES (289,'Deep Peach','FFCBA4','on');
-INSERT INTO colors VALUES (290,'Ginger Brown','C9BE62','on');
-INSERT INTO colors VALUES (291,'School Bus Yellow','E8A317','on');
-INSERT INTO colors VALUES (292,'Sandy Brown','EE9A4D','on');
-INSERT INTO colors VALUES (293,'Fall Leaf Brown','C8B560','on');
-INSERT INTO colors VALUES (294,'Orange Gold','D4A017','on');
-INSERT INTO colors VALUES (295,'Sand','C2B280','on');
-INSERT INTO colors VALUES (296,'Cookie Brown','C7A317','on');
-INSERT INTO colors VALUES (297,'Caramel','C68E17','on');
-INSERT INTO colors VALUES (298,'Brass','B5A642','on');
-INSERT INTO colors VALUES (299,'Khaki','ADA96E','on');
-INSERT INTO colors VALUES (300,'Camel Brown','C19A6B','on');
-INSERT INTO colors VALUES (301,'Bronze','CD7F32','on');
-INSERT INTO colors VALUES (302,'Tiger Orange','C88141','on');
-INSERT INTO colors VALUES (303,'Cinnamon','C58917','on');
-INSERT INTO colors VALUES (304,'Bullet Shell','AF9B60','on');
-INSERT INTO colors VALUES (305,'Dark Goldenrod','AF7817','on');
-INSERT INTO colors VALUES (306,'Copper','B87333','on');
-INSERT INTO colors VALUES (307,'Wood','966F33','on');
-INSERT INTO colors VALUES (308,'Oak Brown','806517','on');
-INSERT INTO colors VALUES (309,'Moccasin','827839','on');
-INSERT INTO colors VALUES (310,'Army Brown','827B60','on');
-INSERT INTO colors VALUES (311,'Sandstone','786D5F','on');
-INSERT INTO colors VALUES (312,'Mocha','493D26','on');
-INSERT INTO colors VALUES (313,'Taupe','483C32','on');
-INSERT INTO colors VALUES (314,'Coffee','6F4E37','on');
-INSERT INTO colors VALUES (315,'Brown Bear','835C3B','on');
-INSERT INTO colors VALUES (316,'Red Dirt','7F5217','on');
-INSERT INTO colors VALUES (317,'Sepia','7F462C','on');
-INSERT INTO colors VALUES (318,'Orange Salmon','C47451','on');
-INSERT INTO colors VALUES (319,'Rust','C36241','on');
-INSERT INTO colors VALUES (320,'Red Fox','C35817','on');
-INSERT INTO colors VALUES (321,'Chocolate','C85A17','on');
-INSERT INTO colors VALUES (322,'Sedona','CC6600','on');
-INSERT INTO colors VALUES (323,'Papaya Orange','E56717','on');
-INSERT INTO colors VALUES (324,'Halloween Orange','E66C2C','on');
-INSERT INTO colors VALUES (325,'Pumpkin Orange','F87217','on');
-INSERT INTO colors VALUES (326,'Construction Cone Orange','F87431','on');
-INSERT INTO colors VALUES (327,'Sunrise Orange','E67451','on');
-INSERT INTO colors VALUES (328,'Mango Orange','FF8040','on');
-INSERT INTO colors VALUES (329,'Dark Orange','F88017','on');
-INSERT INTO colors VALUES (330,'Coral','FF7F50','on');
-INSERT INTO colors VALUES (331,'Basket Ball Orange','F88158','on');
-INSERT INTO colors VALUES (332,'Light Salmon','F9966B','on');
-INSERT INTO colors VALUES (333,'Tangerine','E78A61','on');
-INSERT INTO colors VALUES (334,'Dark Salmon','E18B6B','on');
-INSERT INTO colors VALUES (335,'Light Coral','E77471','on');
-INSERT INTO colors VALUES (336,'Bean Red','F75D59','on');
-INSERT INTO colors VALUES (337,'Valentine Red','E55451','on');
-INSERT INTO colors VALUES (338,'Shocking Orange','E55B3C','on');
-INSERT INTO colors VALUES (339,'Scarlet','FF2400','on');
-INSERT INTO colors VALUES (340,'Ruby Red','F62217','on');
-INSERT INTO colors VALUES (341,'Ferrari Red','F70D1A','on');
-INSERT INTO colors VALUES (342,'Fire Engine Red','F62817','on');
-INSERT INTO colors VALUES (343,'Lava Red','E42217','on');
-INSERT INTO colors VALUES (344,'Love Red','E41B17','on');
-INSERT INTO colors VALUES (345,'Grapefruit','DC381F','on');
-INSERT INTO colors VALUES (346,'Chestnut Red','C34A2C','on');
-INSERT INTO colors VALUES (347,'Cherry Red','C24641','on');
-INSERT INTO colors VALUES (348,'Mahogany','C04000','on');
-INSERT INTO colors VALUES (349,'Chilli Pepper','C11B17','on');
-INSERT INTO colors VALUES (350,'Cranberry','9F000F','on');
-INSERT INTO colors VALUES (351,'Red Wine','990012','on');
-INSERT INTO colors VALUES (352,'Burgundy','8C001A','on');
-INSERT INTO colors VALUES (353,'Chestnut','954535','on');
-INSERT INTO colors VALUES (354,'Blood Red','7E3517','on');
-INSERT INTO colors VALUES (355,'Sienna','8A4117','on');
-INSERT INTO colors VALUES (356,'Sangria','7E3817','on');
-INSERT INTO colors VALUES (357,'Firebrick','800517','on');
-INSERT INTO colors VALUES (358,'Maroon','810541','on');
-INSERT INTO colors VALUES (359,'Plum Pie','7D0541','on');
-INSERT INTO colors VALUES (360,'Velvet Maroon','7E354D','on');
-INSERT INTO colors VALUES (361,'Plum Velvet','7D0552','on');
-INSERT INTO colors VALUES (362,'Rosy Finch','7F4E52','on');
-INSERT INTO colors VALUES (363,'Puce','7F5A58','on');
-INSERT INTO colors VALUES (364,'Dull Purple','7F525D','on');
-INSERT INTO colors VALUES (365,'Rosy Brown','B38481','on');
-INSERT INTO colors VALUES (366,'Khaki Rose','C5908E','on');
-INSERT INTO colors VALUES (367,'Pink Bow','C48189','on');
-INSERT INTO colors VALUES (368,'Lipstick Pink','C48793','on');
-INSERT INTO colors VALUES (369,'Rose','E8ADAA','on');
-INSERT INTO colors VALUES (370,'Desert Sand','EDC9AF','on');
-INSERT INTO colors VALUES (371,'Pig Pink','FDD7E4','on');
-INSERT INTO colors VALUES (372,'Cotton Candy','FCDFFF','on');
-INSERT INTO colors VALUES (373,'Pink Bubblegum','FFDFDD','on');
-INSERT INTO colors VALUES (374,'Misty Rose','FBBBB9','on');
-INSERT INTO colors VALUES (375,'Pink','FAAFBE','on');
-INSERT INTO colors VALUES (376,'Light Pink','FAAFBA','on');
-INSERT INTO colors VALUES (377,'Flamingo Pink','F9A7B0','on');
-INSERT INTO colors VALUES (378,'Pink Rose','E7A1B0','on');
-INSERT INTO colors VALUES (379,'Pink Daisy','E799A3','on');
-INSERT INTO colors VALUES (380,'Cadillac Pink','E38AAE','on');
-INSERT INTO colors VALUES (381,'Carnation Pink','F778A1','on');
-INSERT INTO colors VALUES (382,'Blush Red','E56E94','on');
-INSERT INTO colors VALUES (383,'Hot Pink','F660AB','on');
-INSERT INTO colors VALUES (384,'Watermelon Pink','FC6C85','on');
-INSERT INTO colors VALUES (385,'Violet Red','F6358A','on');
-INSERT INTO colors VALUES (386,'Deep Pink','F52887','on');
-INSERT INTO colors VALUES (387,'Pink Cupcake','E45E9D','on');
-INSERT INTO colors VALUES (388,'Pink Lemonade','E4287C','on');
-INSERT INTO colors VALUES (389,'Neon Pink','F535AA','on');
-INSERT INTO colors VALUES (390,'Dimorphotheca Magenta','E3319D','on');
-INSERT INTO colors VALUES (391,'Bright Neon Pink','F433FF','on');
-INSERT INTO colors VALUES (392,'Pale Violet Red','D16587','on');
-INSERT INTO colors VALUES (393,'Tulip Pink','C25A7C','on');
-INSERT INTO colors VALUES (394,'Medium Violet Red','CA226B','on');
-INSERT INTO colors VALUES (395,'Rogue Pink','C12869','on');
-INSERT INTO colors VALUES (396,'Burnt Pink','C12267','on');
-INSERT INTO colors VALUES (397,'Bashful Pink','C25283','on');
-INSERT INTO colors VALUES (398,'Carnation Pink','C12283','on');
-INSERT INTO colors VALUES (399,'Plum','B93B8F','on');
-INSERT INTO colors VALUES (400,'Viola Purple','7E587E','on');
-INSERT INTO colors VALUES (401,'Purple Iris','571B7E','on');
-INSERT INTO colors VALUES (402,'Plum Purple','583759','on');
-INSERT INTO colors VALUES (403,'Indigo','4B0082','on');
-INSERT INTO colors VALUES (404,'Purple Monster','461B7E','on');
-INSERT INTO colors VALUES (405,'Purple Haze','4E387E','on');
-INSERT INTO colors VALUES (406,'Eggplant','614051','on');
-INSERT INTO colors VALUES (407,'Grape','5E5A80','on');
-INSERT INTO colors VALUES (408,'Purple Jam','6A287E','on');
-INSERT INTO colors VALUES (409,'Dark Orchid','7D1B7E','on');
-INSERT INTO colors VALUES (410,'Purple Flower','A74AC7','on');
-INSERT INTO colors VALUES (411,'Medium Orchid','B048B5','on');
-INSERT INTO colors VALUES (412,'Purple Amethyst','6C2DC7','on');
-INSERT INTO colors VALUES (413,'Dark Violet','842DCE','on');
-INSERT INTO colors VALUES (414,'Violet','8D38C9','on');
-INSERT INTO colors VALUES (415,'Purple Sage Bush','7A5DC7','on');
-INSERT INTO colors VALUES (416,'Lovely Purple','7F38EC','on');
-INSERT INTO colors VALUES (417,'Purple','8E35EF','on');
-INSERT INTO colors VALUES (418,'Aztech Purple','893BFF','on');
-INSERT INTO colors VALUES (419,'Medium Purple','8467D7','on');
-INSERT INTO colors VALUES (420,'Jasmine Purple','A23BEC','on');
-INSERT INTO colors VALUES (421,'Purple Daffodil','B041FF','on');
-INSERT INTO colors VALUES (422,'Tyrian Purple','C45AEC','on');
-INSERT INTO colors VALUES (423,'Crocus Purple','9172EC','on');
-INSERT INTO colors VALUES (424,'Purple Mimosa','9E7BFF','on');
-INSERT INTO colors VALUES (425,'Heliotrope Purple','D462FF','on');
-INSERT INTO colors VALUES (426,'Crimson','E238EC','on');
-INSERT INTO colors VALUES (427,'Purple Dragon','C38EC7','on');
-INSERT INTO colors VALUES (428,'Lilac','C8A2C8','on');
-INSERT INTO colors VALUES (429,'Blush Pink','E6A9EC','on');
-INSERT INTO colors VALUES (430,'Mauve','E0B0FF','on');
-INSERT INTO colors VALUES (431,'Wisteria Purple','C6AEC7','on');
-INSERT INTO colors VALUES (432,'Blossom Pink','F9B7FF','on');
-INSERT INTO colors VALUES (433,'Thistle','D2B9D3','on');
-INSERT INTO colors VALUES (434,'Periwinkle','E9CFEC','on');
-INSERT INTO colors VALUES (435,'Lavender Pinocchio','EBDDE2','on');
-INSERT INTO colors VALUES (436,'Lavender Blue','E3E4FA','on');
-INSERT INTO colors VALUES (437,'Pearl','FDEEF4','on');
-INSERT INTO colors VALUES (438,'SeaShell','FFF5EE','on');
-INSERT INTO colors VALUES (439,'Milk White','FEFCFF','on');
+INSERT INTO colors VALUES
+(1,'Black','000000','on'),
+(2,'White','FFFFFF','on'),
+(4,'','FAFD9E',''),
+(5,'','C0C0C0',''),
+(6,'','74C366',''),
+(7,'','6DC8FE',''),
+(8,'','EA8F00',''),
+(9,'Red','FF0000','on'),
+(10,'','4444FF',''),
+(11,'Magenta','FF00FF','on'),
+(12,'Green','00FF00','on'),
+(13,'','8D85F3',''),
+(14,'','AD3B6E',''),
+(15,'','EACC00',''),
+(16,'','12B3B5',''),
+(17,'','157419',''),
+(18,'','C4FD3D',''),
+(19,'','817C4E',''),
+(20,'','002A97',''),
+(21,'','0000FF',''),
+(22,'','00CF00',''),
+(24,'','F9FD5F',''),
+(25,'','FFF200',''),
+(26,'','CCBB00',''),
+(27,'','837C04',''),
+(28,'','EAAF00',''),
+(29,'','FFD660',''),
+(30,'','FFC73B',''),
+(31,'','FFAB00',''),
+(33,'','FF7D00',''),
+(34,'','ED7600',''),
+(35,'','FF5700',''),
+(36,'','EE5019',''),
+(37,'','B1441E',''),
+(38,'','FFC3C0',''),
+(39,'','FF897C',''),
+(40,'','FF6044',''),
+(41,'','FF4105',''),
+(42,'','DA4725',''),
+(43,'','942D0C',''),
+(44,'','FF3932',''),
+(45,'','862F2F',''),
+(46,'','FF5576',''),
+(47,'','562B29',''),
+(48,'','F51D30',''),
+(49,'','DE0056',''),
+(50,'','ED5394',''),
+(51,'','B90054',''),
+(52,'','8F005C',''),
+(53,'','F24AC8',''),
+(54,'','E8CDEF',''),
+(55,'','D8ACE0',''),
+(56,'','A150AA',''),
+(57,'','750F7D',''),
+(58,'','8D00BA',''),
+(59,'','623465',''),
+(60,'','55009D',''),
+(61,'','3D168B',''),
+(62,'','311F4E',''),
+(63,'','D2D8F9',''),
+(64,'','9FA4EE',''),
+(65,'','6557D0',''),
+(66,'','4123A1',''),
+(67,'','4668E4',''),
+(68,'','0D006A',''),
+(69,'','00004D',''),
+(70,'','001D61',''),
+(71,'','00234B',''),
+(72,'','002A8F',''),
+(73,'','2175D9',''),
+(74,'','7CB3F1',''),
+(75,'','005199',''),
+(76,'','004359',''),
+(77,'','00A0C1',''),
+(78,'','007283',''),
+(79,'','00BED9',''),
+(80,'','AFECED',''),
+(81,'','55D6D3',''),
+(82,'','00BBB4',''),
+(83,'','009485',''),
+(84,'','005D57',''),
+(85,'','008A77',''),
+(86,'','008A6D',''),
+(87,'','00B99B',''),
+(88,'','009F67',''),
+(89,'','00694A',''),
+(90,'','00A348',''),
+(91,'','00BF47',''),
+(92,'','96E78A',''),
+(93,'','00BD27',''),
+(94,'','35962B',''),
+(95,'','7EE600',''),
+(96,'','6EA100',''),
+(97,'','CAF100',''),
+(98,'','F5F800',''),
+(99,'','CDCFC4',''),
+(100,'','BCBEB3',''),
+(101,'','AAABA1',''),
+(102,'','8F9286',''),
+(103,'','797C6E',''),
+(104,'','2E3127',''),
+(105,'Night','0C090A','on'),
+(106,'Gunmetal','2C3539','on'),
+(107,'Midnight','2B1B17','on'),
+(108,'Charcoal','34282C','on'),
+(109,'Dark Slate Grey','25383C','on'),
+(110,'Oil','3B3131','on'),
+(111,'Black Cat','413839','on'),
+(112,'Iridium','3D3C3A','on'),
+(113,'Black Eel','463E3F','on'),
+(114,'Black Cow','4C4646','on'),
+(115,'Gray Wolf','504A4B','on'),
+(116,'Vampire Gray','565051','on'),
+(117,'Gray Dolphin','5C5858','on'),
+(118,'Carbon Gray','625D5D','on'),
+(119,'Ash Gray','666362','on'),
+(120,'Cloudy Gray','6D6968','on'),
+(121,'Smokey Gray','726E6D','on'),
+(122,'Gray','736F6E','on'),
+(123,'Granite','837E7C','on'),
+(124,'Battleship Gray','848482','on'),
+(125,'Gray Cloud','B6B6B4','on'),
+(126,'Gray Goose','D1D0CE','on'),
+(127,'Platinum','E5E4E2','on'),
+(128,'Metallic Silver','BCC6CC','on'),
+(129,'Blue Gray','98AFC7','on'),
+(130,'Light Slate Gray','6D7B8D','on'),
+(131,'Slate Gray','657383','on'),
+(132,'Jet Gray','616D7E','on'),
+(133,'Mist Blue','646D7E','on'),
+(134,'Marble Blue','566D7E','on'),
+(135,'Slate Blue','737CA1','on'),
+(136,'Steel Blue','4863A0','on'),
+(137,'Blue Jay','2B547E','on'),
+(138,'Dark Slate Blue','2B3856','on'),
+(139,'Midnight Blue','151B54','on'),
+(140,'Navy Blue','000080','on'),
+(141,'Blue Whale','342D7E','on'),
+(142,'Lapis Blue','15317E','on'),
+(143,'Cornflower Blue','151B8D','on'),
+(144,'Earth Blue','0000A0','on'),
+(145,'Cobalt Blue','0020C2','on'),
+(146,'Blueberry Blue','0041C2','on'),
+(147,'Sapphire Blue','2554C7','on'),
+(148,'Blue Eyes','1569C7','on'),
+(149,'Royal Blue','2B60DE','on'),
+(150,'Blue Orchid','1F45FC','on'),
+(151,'Blue Lotus','6960EC','on'),
+(152,'Light Slate Blue','736AFF','on'),
+(153,'Slate Blue','357EC7','on'),
+(154,'Glacial Blue Ice','368BC1','on'),
+(155,'Silk Blue','488AC7','on'),
+(156,'Blue Ivy','3090C7','on'),
+(157,'Blue Koi','659EC7','on'),
+(158,'Columbia Blue','87AFC7','on'),
+(159,'Baby Blue','95B9C7','on'),
+(160,'Light Steel Blue','728FCE','on'),
+(161,'Ocean Blue','2B65EC','on'),
+(162,'Blue Ribbon','306EFF','on'),
+(163,'Blue Dress','157DEC','on'),
+(164,'Dodger Blue','1589FF','on'),
+(165,'Cornflower Blue','6495ED','on'),
+(166,'Sky Blue','6698FF','on'),
+(167,'Butterfly Blue','38ACEC','on'),
+(168,'Iceberg','56A5EC','on'),
+(169,'Crystal Blue','5CB3FF','on'),
+(170,'Deep Sky Blue','3BB9FF','on'),
+(171,'Denim Blue','79BAEC','on'),
+(172,'Light Sky Blue','82CAFA','on'),
+(173,'Day Sky Blue','82CAFF','on'),
+(174,'Jeans Blue','A0CFEC','on'),
+(175,'Blue Angel','B7CEEC','on'),
+(176,'Pastel Blue','B4CFEC','on'),
+(177,'Sea Blue','C2DFFF','on'),
+(178,'Powder Blue','C6DEFF','on'),
+(179,'Coral Blue','AFDCEC','on'),
+(180,'Light Blue','ADDFFF','on'),
+(181,'Robin Egg Blue','BDEDFF','on'),
+(182,'Pale Blue Lily','CFECEC','on'),
+(183,'Light Cyan','E0FFFF','on'),
+(184,'Water','EBF4FA','on'),
+(185,'Alice Blue','F0F8FF','on'),
+(186,'Azure','F0FFFF','on'),
+(187,'Light Slate','CCFFFF','on'),
+(188,'Light Aquamarine','93FFE8','on'),
+(189,'Electric Blue','9AFEFF','on'),
+(190,'Aquamarine','7FFFD4','on'),
+(191,'Cyan or Aqua','00FFFF','on'),
+(192,'Tron Blue','7DFDFE','on'),
+(193,'Blue Zircon','57FEFF','on'),
+(194,'Blue Lagoon','8EEBEC','on'),
+(195,'Celeste','50EBEC','on'),
+(196,'Blue Diamond','4EE2EC','on'),
+(197,'Tiffany Blue','81D8D0','on'),
+(198,'Cyan Opaque','92C7C7','on'),
+(199,'Blue Hosta','77BFC7','on'),
+(200,'Northern Lights Blue','78C7C7','on'),
+(201,'Medium Turquoise','48CCCD','on'),
+(202,'Turquoise','43C6DB','on'),
+(203,'Jellyfish','46C7C7','on'),
+(204,'Macaw Blue Green','43BFC7','on'),
+(205,'Light Sea Green','3EA99F','on'),
+(206,'Dark Turquoise','3B9C9C','on'),
+(207,'Sea Turtle Green','438D80','on'),
+(208,'Medium Aquamarine','348781','on'),
+(209,'Greenish Blue','307D7E','on'),
+(210,'Grayish Turquoise','5E7D7E','on'),
+(211,'Beetle Green','4C787E','on'),
+(212,'Teal','008080','on'),
+(213,'Sea Green','4E8975','on'),
+(214,'Camouflage Green','78866B','on'),
+(215,'Sage Green','848b79','on'),
+(216,'Hazel Green','617C58','on'),
+(217,'Venom Green','728C00','on'),
+(218,'Fern Green','667C26','on'),
+(219,'Dark Forrest Green','254117','on'),
+(220,'Medium Sea Green','306754','on'),
+(221,'Medium Forest Green','347235','on'),
+(222,'Seaweed Green','437C17','on'),
+(223,'Pine Green','387C44','on'),
+(224,'Jungle Green','347C2C','on'),
+(225,'Shamrock Green','347C17','on'),
+(226,'Medium Spring Green','348017','on'),
+(227,'Forest Green','4E9258','on'),
+(228,'Green Onion','6AA121','on'),
+(229,'Spring Green','4AA02C','on'),
+(230,'Lime Green','41A317','on'),
+(231,'Clover Green','3EA055','on'),
+(232,'Green Snake','6CBB3C','on'),
+(233,'Alien Green','6CC417','on'),
+(234,'Green Apple','4CC417','on'),
+(235,'Yellow Green','52D017','on'),
+(236,'Kelly Green','4CC552','on'),
+(237,'Zombie Green','54C571','on'),
+(238,'Frog Green','99C68E','on'),
+(239,'Green Peas','89C35C','on'),
+(240,'Dollar Bill Green','85BB65','on'),
+(241,'Dark Sea Green','8BB381','on'),
+(242,'Iguana Green','9CB071','on'),
+(243,'Avocado Green','B2C248','on'),
+(244,'Pistachio Green','9DC209','on'),
+(245,'Salad Green','A1C935','on'),
+(246,'Hummingbird Green','7FE817','on'),
+(247,'Nebula Green','59E817','on'),
+(248,'Stoplight Go Green','57E964','on'),
+(249,'Algae Green','64E986','on'),
+(250,'Jade Green','5EFB6E','on'),
+(251,'Emerald Green','5FFB17','on'),
+(252,'Lawn Green','87F717','on'),
+(253,'Chartreuse','8AFB17','on'),
+(254,'Dragon Green','6AFB92','on'),
+(255,'Mint green','98FF98','on'),
+(256,'Green Thumb','B5EAAA','on'),
+(257,'Light Jade','C3FDB8','on'),
+(258,'Tea Green','CCFB5D','on'),
+(259,'Green Yellow','B1FB17','on'),
+(260,'Slime Green','BCE954','on'),
+(261,'Goldenrod','EDDA74','on'),
+(262,'Harvest Gold','EDE275','on'),
+(263,'Sun Yellow','FFE87C','on'),
+(264,'Yellow','FFFF00','on'),
+(265,'Corn Yellow','FFF380','on'),
+(266,'Parchment','FFFFC2','on'),
+(267,'Cream','FFFFCC','on'),
+(268,'Lemon Chiffon','FFF8C6','on'),
+(269,'Cornsilk','FFF8DC','on'),
+(270,'Beige','F5F5DC','on'),
+(271,'Blonde','FBF6D9','on'),
+(272,'Antique White','FAEBD7','on'),
+(273,'Champagne','F7E7CE','on'),
+(274,'Blanched Almond','FFEBCD','on'),
+(275,'Vanilla','F3E5AB','on'),
+(276,'Tan Brown','ECE5B6','on'),
+(277,'Peach','FFE5B4','on'),
+(278,'Mustard','FFDB58','on'),
+(279,'Rubber Ducky Yellow','FFD801','on'),
+(280,'Bright Gold','FDD017','on'),
+(281,'Golden Brown','EAC117','on'),
+(282,'Macaroni and Cheese','F2BB66','on'),
+(283,'Saffron','FBB917','on'),
+(284,'Beer','FBB117','on'),
+(285,'Cantaloupe','FFA62F','on'),
+(286,'Bee Yellow','E9AB17','on'),
+(287,'Brown Sugar','E2A76F','on'),
+(288,'BurlyWood','DEB887','on'),
+(289,'Deep Peach','FFCBA4','on'),
+(290,'Ginger Brown','C9BE62','on'),
+(291,'School Bus Yellow','E8A317','on'),
+(292,'Sandy Brown','EE9A4D','on'),
+(293,'Fall Leaf Brown','C8B560','on'),
+(294,'Orange Gold','D4A017','on'),
+(295,'Sand','C2B280','on'),
+(296,'Cookie Brown','C7A317','on'),
+(297,'Caramel','C68E17','on'),
+(298,'Brass','B5A642','on'),
+(299,'Khaki','ADA96E','on'),
+(300,'Camel Brown','C19A6B','on'),
+(301,'Bronze','CD7F32','on'),
+(302,'Tiger Orange','C88141','on'),
+(303,'Cinnamon','C58917','on'),
+(304,'Bullet Shell','AF9B60','on'),
+(305,'Dark Goldenrod','AF7817','on'),
+(306,'Copper','B87333','on'),
+(307,'Wood','966F33','on'),
+(308,'Oak Brown','806517','on'),
+(309,'Moccasin','827839','on'),
+(310,'Army Brown','827B60','on'),
+(311,'Sandstone','786D5F','on'),
+(312,'Mocha','493D26','on'),
+(313,'Taupe','483C32','on'),
+(314,'Coffee','6F4E37','on'),
+(315,'Brown Bear','835C3B','on'),
+(316,'Red Dirt','7F5217','on'),
+(317,'Sepia','7F462C','on'),
+(318,'Orange Salmon','C47451','on'),
+(319,'Rust','C36241','on'),
+(320,'Red Fox','C35817','on'),
+(321,'Chocolate','C85A17','on'),
+(322,'Sedona','CC6600','on'),
+(323,'Papaya Orange','E56717','on'),
+(324,'Halloween Orange','E66C2C','on'),
+(325,'Pumpkin Orange','F87217','on'),
+(326,'Construction Cone Orange','F87431','on'),
+(327,'Sunrise Orange','E67451','on'),
+(328,'Mango Orange','FF8040','on'),
+(329,'Dark Orange','F88017','on'),
+(330,'Coral','FF7F50','on'),
+(331,'Basket Ball Orange','F88158','on'),
+(332,'Light Salmon','F9966B','on'),
+(333,'Tangerine','E78A61','on'),
+(334,'Dark Salmon','E18B6B','on'),
+(335,'Light Coral','E77471','on'),
+(336,'Bean Red','F75D59','on'),
+(337,'Valentine Red','E55451','on'),
+(338,'Shocking Orange','E55B3C','on'),
+(339,'Scarlet','FF2400','on'),
+(340,'Ruby Red','F62217','on'),
+(341,'Ferrari Red','F70D1A','on'),
+(342,'Fire Engine Red','F62817','on'),
+(343,'Lava Red','E42217','on'),
+(344,'Love Red','E41B17','on'),
+(345,'Grapefruit','DC381F','on'),
+(346,'Chestnut Red','C34A2C','on'),
+(347,'Cherry Red','C24641','on'),
+(348,'Mahogany','C04000','on'),
+(349,'Chilli Pepper','C11B17','on'),
+(350,'Cranberry','9F000F','on'),
+(351,'Red Wine','990012','on'),
+(352,'Burgundy','8C001A','on'),
+(353,'Chestnut','954535','on'),
+(354,'Blood Red','7E3517','on'),
+(355,'Sienna','8A4117','on'),
+(356,'Sangria','7E3817','on'),
+(357,'Firebrick','800517','on'),
+(358,'Maroon','810541','on'),
+(359,'Plum Pie','7D0541','on'),
+(360,'Velvet Maroon','7E354D','on'),
+(361,'Plum Velvet','7D0552','on'),
+(362,'Rosy Finch','7F4E52','on'),
+(363,'Puce','7F5A58','on'),
+(364,'Dull Purple','7F525D','on'),
+(365,'Rosy Brown','B38481','on'),
+(366,'Khaki Rose','C5908E','on'),
+(367,'Pink Bow','C48189','on'),
+(368,'Lipstick Pink','C48793','on'),
+(369,'Rose','E8ADAA','on'),
+(370,'Desert Sand','EDC9AF','on'),
+(371,'Pig Pink','FDD7E4','on'),
+(372,'Cotton Candy','FCDFFF','on'),
+(373,'Pink Bubblegum','FFDFDD','on'),
+(374,'Misty Rose','FBBBB9','on'),
+(375,'Pink','FAAFBE','on'),
+(376,'Light Pink','FAAFBA','on'),
+(377,'Flamingo Pink','F9A7B0','on'),
+(378,'Pink Rose','E7A1B0','on'),
+(379,'Pink Daisy','E799A3','on'),
+(380,'Cadillac Pink','E38AAE','on'),
+(381,'Carnation Pink','F778A1','on'),
+(382,'Blush Red','E56E94','on'),
+(383,'Hot Pink','F660AB','on'),
+(384,'Watermelon Pink','FC6C85','on'),
+(385,'Violet Red','F6358A','on'),
+(386,'Deep Pink','F52887','on'),
+(387,'Pink Cupcake','E45E9D','on'),
+(388,'Pink Lemonade','E4287C','on'),
+(389,'Neon Pink','F535AA','on'),
+(390,'Dimorphotheca Magenta','E3319D','on'),
+(391,'Bright Neon Pink','F433FF','on'),
+(392,'Pale Violet Red','D16587','on'),
+(393,'Tulip Pink','C25A7C','on'),
+(394,'Medium Violet Red','CA226B','on'),
+(395,'Rogue Pink','C12869','on'),
+(396,'Burnt Pink','C12267','on'),
+(397,'Bashful Pink','C25283','on'),
+(398,'Carnation Pink','C12283','on'),
+(399,'Plum','B93B8F','on'),
+(400,'Viola Purple','7E587E','on'),
+(401,'Purple Iris','571B7E','on'),
+(402,'Plum Purple','583759','on'),
+(403,'Indigo','4B0082','on'),
+(404,'Purple Monster','461B7E','on'),
+(405,'Purple Haze','4E387E','on'),
+(406,'Eggplant','614051','on'),
+(407,'Grape','5E5A80','on'),
+(408,'Purple Jam','6A287E','on'),
+(409,'Dark Orchid','7D1B7E','on'),
+(410,'Purple Flower','A74AC7','on'),
+(411,'Medium Orchid','B048B5','on'),
+(412,'Purple Amethyst','6C2DC7','on'),
+(413,'Dark Violet','842DCE','on'),
+(414,'Violet','8D38C9','on'),
+(415,'Purple Sage Bush','7A5DC7','on'),
+(416,'Lovely Purple','7F38EC','on'),
+(417,'Purple','8E35EF','on'),
+(418,'Aztech Purple','893BFF','on'),
+(419,'Medium Purple','8467D7','on'),
+(420,'Jasmine Purple','A23BEC','on'),
+(421,'Purple Daffodil','B041FF','on'),
+(422,'Tyrian Purple','C45AEC','on'),
+(423,'Crocus Purple','9172EC','on'),
+(424,'Purple Mimosa','9E7BFF','on'),
+(425,'Heliotrope Purple','D462FF','on'),
+(426,'Crimson','E238EC','on'),
+(427,'Purple Dragon','C38EC7','on'),
+(428,'Lilac','C8A2C8','on'),
+(429,'Blush Pink','E6A9EC','on'),
+(430,'Mauve','E0B0FF','on'),
+(431,'Wisteria Purple','C6AEC7','on'),
+(432,'Blossom Pink','F9B7FF','on'),
+(433,'Thistle','D2B9D3','on'),
+(434,'Periwinkle','E9CFEC','on'),
+(435,'Lavender Pinocchio','EBDDE2','on'),
+(436,'Lavender Blue','E3E4FA','on'),
+(437,'Pearl','FDEEF4','on'),
+(438,'SeaShell','FFF5EE','on'),
+(439,'Milk White','FEFCFF','on');
 
 --
 -- Table structure for table `data_input`
@@ -1058,18 +1093,19 @@ CREATE TABLE data_input (
 -- Dumping data for table `data_input`
 --
 
-INSERT INTO data_input VALUES (1,'3eb92bb845b9660a7445cf9740726522','Get SNMP Data','',2);
-INSERT INTO data_input VALUES (2,'bf566c869ac6443b0c75d1c32b5a350e','Get SNMP Data (Indexed)','',3);
-INSERT INTO data_input VALUES (3,'274f4685461170b9eb1b98d22567ab5e','Unix - Get Free Disk Space','<path_cacti>/scripts/diskfree.sh <partition>',1);
-INSERT INTO data_input VALUES (4,'95ed0993eb3095f9920d431ac80f4231','Unix - Get Load Average','perl <path_cacti>/scripts/loadavg_multi.pl',1);
-INSERT INTO data_input VALUES (5,'79a284e136bb6b061c6f96ec219ac448','Unix - Get Logged In Users','perl <path_cacti>/scripts/unix_users.pl <username>',1);
-INSERT INTO data_input VALUES (6,'362e6d4768937c4f899dd21b91ef0ff8','Linux - Get Memory Usage','perl <path_cacti>/scripts/linux_memory.pl <grepstr>',1);
-INSERT INTO data_input VALUES (7,'a637359e0a4287ba43048a5fdf202066','Unix - Get System Processes','perl <path_cacti>/scripts/unix_processes.pl',1);
-INSERT INTO data_input VALUES (8,'47d6bfe8be57a45171afd678920bd399','Unix - Get TCP Connections','perl <path_cacti>/scripts/unix_tcp_connections.pl <grepstr>',1);
-INSERT INTO data_input VALUES (9,'cc948e4de13f32b6aea45abaadd287a3','Unix - Get Web Hits','perl <path_cacti>/scripts/webhits.pl <log_path>',1);
-INSERT INTO data_input VALUES (10,'8bd153aeb06e3ff89efc73f35849a7a0','Unix - Ping Host','perl <path_cacti>/scripts/ping.pl <ip>',1);
-INSERT INTO data_input VALUES (11,'80e9e4c4191a5da189ae26d0e237f015','Get Script Data (Indexed)','',4);
-INSERT INTO data_input VALUES (12,'332111d8b54ac8ce939af87a7eac0c06','Get Script Server Data (Indexed)','',6);
+INSERT INTO data_input VALUES
+(1,'3eb92bb845b9660a7445cf9740726522','Get SNMP Data','',2),
+(2,'bf566c869ac6443b0c75d1c32b5a350e','Get SNMP Data (Indexed)','',3),
+(3,'274f4685461170b9eb1b98d22567ab5e','Unix - Get Free Disk Space','<path_cacti>/scripts/diskfree.sh <partition>',1),
+(4,'95ed0993eb3095f9920d431ac80f4231','Unix - Get Load Average','perl <path_cacti>/scripts/loadavg_multi.pl',1),
+(5,'79a284e136bb6b061c6f96ec219ac448','Unix - Get Logged In Users','perl <path_cacti>/scripts/unix_users.pl <username>',1),
+(6,'362e6d4768937c4f899dd21b91ef0ff8','Linux - Get Memory Usage','perl <path_cacti>/scripts/linux_memory.pl <grepstr>',1),
+(7,'a637359e0a4287ba43048a5fdf202066','Unix - Get System Processes','perl <path_cacti>/scripts/unix_processes.pl',1),
+(8,'47d6bfe8be57a45171afd678920bd399','Unix - Get TCP Connections','perl <path_cacti>/scripts/unix_tcp_connections.pl <grepstr>',1),
+(9,'cc948e4de13f32b6aea45abaadd287a3','Unix - Get Web Hits','perl <path_cacti>/scripts/webhits.pl <log_path>',1),
+(10,'8bd153aeb06e3ff89efc73f35849a7a0','Unix - Ping Host','perl <path_cacti>/scripts/ping.pl <ip>',1),
+(11,'80e9e4c4191a5da189ae26d0e237f015','Get Script Data (Indexed)','',4),
+(12,'332111d8b54ac8ce939af87a7eac0c06','Get Script Server Data (Indexed)','',6);
 
 --
 -- Table structure for table `data_input_data`
@@ -1088,56 +1124,57 @@ CREATE TABLE data_input_data (
 -- Dumping data for table `data_input_data`
 --
 
-INSERT INTO `data_input_data` VALUES (1,4,'','');
-INSERT INTO `data_input_data` VALUES (1,5,'','');
-INSERT INTO `data_input_data` VALUES (1,6,'','');
-INSERT INTO `data_input_data` VALUES (1,19,'','');
-INSERT INTO `data_input_data` VALUES (1,20,'','');
-INSERT INTO `data_input_data` VALUES (1,22,'','');
-INSERT INTO `data_input_data` VALUES (1,23,'','');
-INSERT INTO `data_input_data` VALUES (1,24,'','');
-INSERT INTO `data_input_data` VALUES (1,25,'','');
-INSERT INTO `data_input_data` VALUES (1,26,'','');
-INSERT INTO `data_input_data` VALUES (1,27,'','');
-INSERT INTO `data_input_data` VALUES (1,30,'','');
-INSERT INTO `data_input_data` VALUES (1,31,'','');
-INSERT INTO `data_input_data` VALUES (1,32,'','');
-INSERT INTO `data_input_data` VALUES (1,33,'','');
-INSERT INTO `data_input_data` VALUES (1,34,'','');
-INSERT INTO `data_input_data` VALUES (1,58,'','');
-INSERT INTO `data_input_data` VALUES (1,59,'','');
-INSERT INTO `data_input_data` VALUES (1,68,'','');
-INSERT INTO `data_input_data` VALUES (2,4,'','');
-INSERT INTO `data_input_data` VALUES (2,5,'','');
-INSERT INTO `data_input_data` VALUES (2,6,'','');
-INSERT INTO `data_input_data` VALUES (2,19,'','');
-INSERT INTO `data_input_data` VALUES (2,20,'','');
-INSERT INTO `data_input_data` VALUES (2,22,'','');
-INSERT INTO `data_input_data` VALUES (2,23,'','');
-INSERT INTO `data_input_data` VALUES (2,24,'','');
-INSERT INTO `data_input_data` VALUES (2,25,'','');
-INSERT INTO `data_input_data` VALUES (2,26,'','');
-INSERT INTO `data_input_data` VALUES (2,27,'','');
-INSERT INTO `data_input_data` VALUES (2,30,'','');
-INSERT INTO `data_input_data` VALUES (2,31,'','');
-INSERT INTO `data_input_data` VALUES (2,32,'','');
-INSERT INTO `data_input_data` VALUES (2,33,'','');
-INSERT INTO `data_input_data` VALUES (2,34,'','');
-INSERT INTO `data_input_data` VALUES (2,58,'','');
-INSERT INTO `data_input_data` VALUES (2,59,'','');
-INSERT INTO `data_input_data` VALUES (2,68,'','');
-INSERT INTO `data_input_data` VALUES (3,4,'','');
-INSERT INTO `data_input_data` VALUES (3,5,'','');
-INSERT INTO `data_input_data` VALUES (3,6,'','');
-INSERT INTO `data_input_data` VALUES (3,19,'','');
-INSERT INTO `data_input_data` VALUES (3,20,'','');
-INSERT INTO `data_input_data` VALUES (3,22,'','');
-INSERT INTO `data_input_data` VALUES (3,23,'','');
-INSERT INTO `data_input_data` VALUES (3,24,'','');
-INSERT INTO `data_input_data` VALUES (3,25,'','');
-INSERT INTO `data_input_data` VALUES (3,26,'','');
-INSERT INTO `data_input_data` VALUES (3,27,'','');
-INSERT INTO `data_input_data` VALUES (3,30,'','');
+INSERT INTO `data_input_data` VALUES
+(1,4,'',''),
+(1,5,'',''),
+(1,6,'',''),
+(1,19,'',''),
+(1,20,'',''),
+(1,22,'',''),
+(1,23,'',''),
+(1,24,'',''),
+(1,25,'',''),
+(1,26,'',''),
+(1,27,'',''),
+(1,30,'',''),
+(1,31,'',''),
+(1,32,'',''),
+(1,33,'',''),
+(1,34,'',''),
+(1,58,'',''),
+(1,59,'',''),
+(1,68,'',''),
+(2,4,'',''),
+(2,5,'',''),
+(2,6,'',''),
+(2,19,'',''),
+(2,20,'',''),
+(2,22,'',''),
+(2,23,'',''),
+(2,24,'',''),
+(2,25,'',''),
+(2,26,'',''),
+(2,27,'',''),
+(2,30,'',''),
+(2,31,'',''),
+(2,32,'',''),
+(2,33,'',''),
+(2,34,'',''),
+(2,58,'',''),
+(2,59,'',''),
+(2,68,'',''),
+(3,4,'',''),
+(3,5,'',''),
+(3,6,'',''),
+(3,19,'',''),
+(3,20,'',''),
+(3,22,'',''),
+(3,23,'',''),
+(3,24,'',''),
+(3,25,'',''),
+(3,26,'',''),
+(3,27,'',''),
+(3,30,'','');
 
 --
 -- Table structure for table `data_input_fields`
@@ -1164,52 +1201,53 @@ CREATE TABLE data_input_fields (
 -- Dumping data for table `data_input_fields`
 --
 
-INSERT INTO `data_input_fields` VALUES (1,'92f5906c8dc0f964b41f4253df582c38',1,'SNMP IP Address','management_ip','in','',0,'hostname','','');
-INSERT INTO `data_input_fields` VALUES (2,'32285d5bf16e56c478f5e83f32cda9ef',1,'SNMP Community','snmp_community','in','',0,'snmp_community','','');
-INSERT INTO `data_input_fields` VALUES (3,'ad14ac90641aed388139f6ba86a2e48b',1,'SNMP Username','snmp_username','in','',0,'snmp_username','','on');
-INSERT INTO `data_input_fields` VALUES (4,'9c55a74bd571b4f00a96fd4b793278c6',1,'SNMP Password','snmp_password','in','',0,'snmp_password','','on');
-INSERT INTO `data_input_fields` VALUES (5,'012ccb1d3687d3edb29c002ea66e72da',1,'SNMP Version (1, 2, or 3)','snmp_version','in','',0,'snmp_version','','on');
-INSERT INTO `data_input_fields` VALUES (6,'4276a5ec6e3fe33995129041b1909762',1,'OID','oid','in','',0,'snmp_oid','','');
-INSERT INTO `data_input_fields` VALUES (7,'617cdc8a230615e59f06f361ef6e7728',2,'SNMP IP Address','management_ip','in','',0,'hostname','','');
-INSERT INTO `data_input_fields` VALUES (8,'acb449d1451e8a2a655c2c99d31142c7',2,'SNMP Community','snmp_community','in','',0,'snmp_community','','');
-INSERT INTO `data_input_fields` VALUES (9,'f4facc5e2ca7ebee621f09bc6d9fc792',2,'SNMP Username (v3)','snmp_username','in','',0,'snmp_username','','on');
-INSERT INTO `data_input_fields` VALUES (10,'1cc1493a6781af2c478fa4de971531cf',2,'SNMP Password (v3)','snmp_password','in','',0,'snmp_password','','on');
-INSERT INTO `data_input_fields` VALUES (11,'b5c23f246559df38662c255f4aa21d6b',2,'SNMP Version (1, 2, or 3)','snmp_version','in','',0,'snmp_version','','');
-INSERT INTO `data_input_fields` VALUES (12,'6027a919c7c7731fbe095b6f53ab127b',2,'Index Type','index_type','in','',0,'index_type','','');
-INSERT INTO `data_input_fields` VALUES (13,'cbbe5c1ddfb264a6e5d509ce1c78c95f',2,'Index Value','index_value','in','',0,'index_value','','');
-INSERT INTO `data_input_fields` VALUES (14,'e6deda7be0f391399c5130e7c4a48b28',2,'Output Type ID','output_type','in','',0,'output_type','','');
-INSERT INTO `data_input_fields` VALUES (15,'edfd72783ad02df128ff82fc9324b4b9',3,'Disk Partition','partition','in','',1,'','','');
-INSERT INTO `data_input_fields` VALUES (16,'8b75fb61d288f0b5fc0bd3056af3689b',3,'Kilobytes Free','kilobytes','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (17,'363588d49b263d30aecb683c52774f39',4,'1 Minute Average','1min','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (18,'ad139a9e1d69881da36fca07889abf58',4,'5 Minute Average','5min','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (19,'5db9fee64824c08258c7ff6f8bc53337',4,'10 Minute Average','10min','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (20,'c0cfd0beae5e79927c5a360076706820',5,'Username (Optional)','username','in','',1,'','','on');
-INSERT INTO `data_input_fields` VALUES (21,'52c58ad414d9a2a83b00a7a51be75a53',5,'Logged In Users','users','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (22,'05eb5d710f0814871b8515845521f8d7',6,'Grep String','grepstr','in','',1,'','','');
-INSERT INTO `data_input_fields` VALUES (23,'86cb1cbfde66279dbc7f1144f43a3219',6,'Result (in Kilobytes)','kilobytes','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (24,'d5a8dd5fbe6a5af11667c0039af41386',7,'Number of Processes','proc','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (25,'8848cdcae831595951a3f6af04eec93b',8,'Grep String','grepstr','in','',1,'','','on');
-INSERT INTO `data_input_fields` VALUES (26,'3d1288d33008430ce354e8b9c162f7ff',8,'Connections','connections','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (27,'c6af570bb2ed9c84abf32033702e2860',9,'(Optional) Log Path','log_path','in','',1,'','','on');
-INSERT INTO `data_input_fields` VALUES (28,'f9389860f5c5340c9b27fca0b4ee5e71',9,'Web Hits','webhits','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (29,'5fbadb91ad66f203463c1187fe7bd9d5',10,'IP Address','ip','in','',1,'hostname','','');
-INSERT INTO `data_input_fields` VALUES (30,'6ac4330d123c69067d36a933d105e89a',10,'Milliseconds','out_ms','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (31,'d39556ecad6166701bfb0e28c5a11108',11,'Index Type','index_type','in','',0,'index_type','','');
-INSERT INTO `data_input_fields` VALUES (32,'3b7caa46eb809fc238de6ef18b6e10d5',11,'Index Value','index_value','in','',0,'index_value','','');
-INSERT INTO `data_input_fields` VALUES (33,'74af2e42dc12956c4817c2ef5d9983f9',11,'Output Type ID','output_type','in','',0,'output_type','','');
-INSERT INTO `data_input_fields` VALUES (34,'8ae57f09f787656bf4ac541e8bd12537',11,'Output Value','output','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (35,'172b4b0eacee4948c6479f587b62e512',12,'Index Type','index_type','in','',0,'index_type','','');
-INSERT INTO `data_input_fields` VALUES (36,'30fb5d5bcf3d66bb5abe88596f357c26',12,'Index Value','index_value','in','',0,'index_value','','');
-INSERT INTO `data_input_fields` VALUES (37,'31112c85ae4ff821d3b288336288818c',12,'Output Type ID','output_type','in','',0,'output_type','','');
-INSERT INTO `data_input_fields` VALUES (38,'5be8fa85472d89c621790b43510b5043',12,'Output Value','output','out','on',0,'','','');
-INSERT INTO `data_input_fields` VALUES (39,'c1f36ee60c3dc98945556d57f26e475b',2,'SNMP Port','snmp_port','in','',0,'snmp_port','','');
-INSERT INTO `data_input_fields` VALUES (40,'fc64b99742ec417cc424dbf8c7692d36',1,'SNMP Port','snmp_port','in','',0,'snmp_port','','');
-INSERT INTO `data_input_fields` VALUES (41,'20832ce12f099c8e54140793a091af90',1,'SNMP Authenticaion Protocol (v3)','snmp_auth_protocol','in','',0,'snmp_auth_protocol','','');
-INSERT INTO `data_input_fields` VALUES (42,'c60c9aac1e1b3555ea0620b8bbfd82cb',1,'SNMP Privacy Passphrase (v3)','snmp_priv_passphrase','in','',0,'snmp_priv_passphrase','','');
-INSERT INTO `data_input_fields` VALUES (43,'feda162701240101bc74148415ef415a',1,'SNMP Privacy Protocol (v3)','snmp_priv_protocol','in','',0,'snmp_priv_protocol','','');
-INSERT INTO `data_input_fields` VALUES (44,'2cf7129ad3ff819a7a7ac189bee48ce8',2,'SNMP Authenticaion Protocol (v3)','snmp_auth_protocol','in','',0,'snmp_auth_protocol','','');
-INSERT INTO `data_input_fields` VALUES (45,'6b13ac0a0194e171d241d4b06f913158',2,'SNMP Privacy Passphrase (v3)','snmp_priv_passphrase','in','',0,'snmp_priv_passphrase','','');
-INSERT INTO `data_input_fields` VALUES (46,'3a33d4fc65b8329ab2ac46a36da26b72',2,'SNMP Privacy Protocol (v3)','snmp_priv_protocol','in','',0,'snmp_priv_protocol','','');
+INSERT INTO `data_input_fields` VALUES
+(1,'92f5906c8dc0f964b41f4253df582c38',1,'SNMP IP Address','management_ip','in','',0,'hostname','',''),
+(2,'32285d5bf16e56c478f5e83f32cda9ef',1,'SNMP Community','snmp_community','in','',0,'snmp_community','',''),
+(3,'ad14ac90641aed388139f6ba86a2e48b',1,'SNMP Username','snmp_username','in','',0,'snmp_username','','on'),
+(4,'9c55a74bd571b4f00a96fd4b793278c6',1,'SNMP Password','snmp_password','in','',0,'snmp_password','','on'),
+(5,'012ccb1d3687d3edb29c002ea66e72da',1,'SNMP Version (1, 2, or 3)','snmp_version','in','',0,'snmp_version','','on'),
+(6,'4276a5ec6e3fe33995129041b1909762',1,'OID','oid','in','',0,'snmp_oid','',''),
+(7,'617cdc8a230615e59f06f361ef6e7728',2,'SNMP IP Address','management_ip','in','',0,'hostname','',''),
+(8,'acb449d1451e8a2a655c2c99d31142c7',2,'SNMP Community','snmp_community','in','',0,'snmp_community','',''),
+(9,'f4facc5e2ca7ebee621f09bc6d9fc792',2,'SNMP Username (v3)','snmp_username','in','',0,'snmp_username','','on'),
+(10,'1cc1493a6781af2c478fa4de971531cf',2,'SNMP Password (v3)','snmp_password','in','',0,'snmp_password','','on'),
+(11,'b5c23f246559df38662c255f4aa21d6b',2,'SNMP Version (1, 2, or 3)','snmp_version','in','',0,'snmp_version','',''),
+(12,'6027a919c7c7731fbe095b6f53ab127b',2,'Index Type','index_type','in','',0,'index_type','',''),
+(13,'cbbe5c1ddfb264a6e5d509ce1c78c95f',2,'Index Value','index_value','in','',0,'index_value','',''),
+(14,'e6deda7be0f391399c5130e7c4a48b28',2,'Output Type ID','output_type','in','',0,'output_type','',''),
+(15,'edfd72783ad02df128ff82fc9324b4b9',3,'Disk Partition','partition','in','',1,'','',''),
+(16,'8b75fb61d288f0b5fc0bd3056af3689b',3,'Kilobytes Free','kilobytes','out','on',0,'','',''),
+(17,'363588d49b263d30aecb683c52774f39',4,'1 Minute Average','1min','out','on',0,'','',''),
+(18,'ad139a9e1d69881da36fca07889abf58',4,'5 Minute Average','5min','out','on',0,'','',''),
+(19,'5db9fee64824c08258c7ff6f8bc53337',4,'10 Minute Average','10min','out','on',0,'','',''),
+(20,'c0cfd0beae5e79927c5a360076706820',5,'Username (Optional)','username','in','',1,'','','on'),
+(21,'52c58ad414d9a2a83b00a7a51be75a53',5,'Logged In Users','users','out','on',0,'','',''),
+(22,'05eb5d710f0814871b8515845521f8d7',6,'Grep String','grepstr','in','',1,'','',''),
+(23,'86cb1cbfde66279dbc7f1144f43a3219',6,'Result (in Kilobytes)','kilobytes','out','on',0,'','',''),
+(24,'d5a8dd5fbe6a5af11667c0039af41386',7,'Number of Processes','proc','out','on',0,'','',''),
+(25,'8848cdcae831595951a3f6af04eec93b',8,'Grep String','grepstr','in','',1,'','','on'),
+(26,'3d1288d33008430ce354e8b9c162f7ff',8,'Connections','connections','out','on',0,'','',''),
+(27,'c6af570bb2ed9c84abf32033702e2860',9,'(Optional) Log Path','log_path','in','',1,'','','on'),
+(28,'f9389860f5c5340c9b27fca0b4ee5e71',9,'Web Hits','webhits','out','on',0,'','',''),
+(29,'5fbadb91ad66f203463c1187fe7bd9d5',10,'IP Address','ip','in','',1,'hostname','',''),
+(30,'6ac4330d123c69067d36a933d105e89a',10,'Milliseconds','out_ms','out','on',0,'','',''),
+(31,'d39556ecad6166701bfb0e28c5a11108',11,'Index Type','index_type','in','',0,'index_type','',''),
+(32,'3b7caa46eb809fc238de6ef18b6e10d5',11,'Index Value','index_value','in','',0,'index_value','',''),
+(33,'74af2e42dc12956c4817c2ef5d9983f9',11,'Output Type ID','output_type','in','',0,'output_type','',''),
+(34,'8ae57f09f787656bf4ac541e8bd12537',11,'Output Value','output','out','on',0,'','',''),
+(35,'172b4b0eacee4948c6479f587b62e512',12,'Index Type','index_type','in','',0,'index_type','',''),
+(36,'30fb5d5bcf3d66bb5abe88596f357c26',12,'Index Value','index_value','in','',0,'index_value','',''),
+(37,'31112c85ae4ff821d3b288336288818c',12,'Output Type ID','output_type','in','',0,'output_type','',''),
+(38,'5be8fa85472d89c621790b43510b5043',12,'Output Value','output','out','on',0,'','',''),
+(39,'c1f36ee60c3dc98945556d57f26e475b',2,'SNMP Port','snmp_port','in','',0,'snmp_port','',''),
+(40,'fc64b99742ec417cc424dbf8c7692d36',1,'SNMP Port','snmp_port','in','',0,'snmp_port','',''),
+(41,'20832ce12f099c8e54140793a091af90',1,'SNMP Authenticaion Protocol (v3)','snmp_auth_protocol','in','',0,'snmp_auth_protocol','',''),
+(42,'c60c9aac1e1b3555ea0620b8bbfd82cb',1,'SNMP Privacy Passphrase (v3)','snmp_priv_passphrase','in','',0,'snmp_priv_passphrase','',''),
+(43,'feda162701240101bc74148415ef415a',1,'SNMP Privacy Protocol (v3)','snmp_priv_protocol','in','',0,'snmp_priv_protocol','',''),
+(44,'2cf7129ad3ff819a7a7ac189bee48ce8',2,'SNMP Authenticaion Protocol (v3)','snmp_auth_protocol','in','',0,'snmp_auth_protocol','',''),
+(45,'6b13ac0a0194e171d241d4b06f913158',2,'SNMP Privacy Passphrase (v3)','snmp_priv_passphrase','in','',0,'snmp_priv_passphrase','',''),
+(46,'3a33d4fc65b8329ab2ac46a36da26b72',2,'SNMP Privacy Protocol (v3)','snmp_priv_protocol','in','',0,'snmp_priv_protocol','','');
 
 --
 -- Table structure for table `data_local`
@@ -1227,10 +1265,6 @@ CREATE TABLE data_local (
   KEY snmp_index (snmp_index(191)),
   KEY host_id (host_id)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `data_local`
---
 
 --
 -- Table structure for table `data_source_profiles`
@@ -1251,8 +1285,9 @@ CREATE TABLE `data_source_profiles` (
 -- Dumping data for table `data_source_profiles`
 --
 
-INSERT INTO `data_source_profiles` VALUES (1,'d62c52891f4f9688729a5bc9fad91b18','System Default',300,600,0.5,'on');
-INSERT INTO `data_source_profiles` VALUES (2,'c0dd0e46b9ca268e7ed4162d329f9215','High Collection Rate',30,1200,0.5,'');
+INSERT INTO `data_source_profiles` VALUES
+(1,'d62c52891f4f9688729a5bc9fad91b18','System Default',300,600,0.5,'on'),
+(2,'c0dd0e46b9ca268e7ed4162d329f9215','High Collection Rate',30,1200,0.5,'');
 
 --
 -- Table structure for table `data_source_profiles_cf`
@@ -1269,8 +1304,15 @@ CREATE TABLE `data_source_profiles_cf` (
 -- Dumping data for table `data_source_profiles_cf`
 --
 
-INSERT INTO `data_source_profiles_cf` VALUES (1,1),(1,2),(1,3),(1,4);
-INSERT INTO `data_source_profiles_cf` VALUES (2,1),(2,2),(2,3),(2,4);
+INSERT INTO `data_source_profiles_cf` VALUES
+(1,1),
+(1,2),
+(1,3),
+(1,4),
+(2,1),
+(2,2),
+(2,3),
+(2,4);
 
 --
 -- Table structure for table `data_source_profiles_rra`
@@ -1290,15 +1332,15 @@ CREATE TABLE `data_source_profiles_rra` (
 -- Dumping data for table `data_source_profiles_rra`
 --
 
-INSERT INTO `data_source_profiles_rra` VALUES (1,1,'Daily (5 Minute Average)',1,600);
-INSERT INTO `data_source_profiles_rra` VALUES (2,1,'Weekly (30 Minute Average)',6,700);
-INSERT INTO `data_source_profiles_rra` VALUES (3,1,'Monthly (2 Hour Average)',24,775);
-INSERT INTO `data_source_profiles_rra` VALUES (4,1,'Yearly (1 Day Average)',288,797);
-INSERT INTO `data_source_profiles_rra` VALUES (5,2,'30 Second Samples',1,1500);
-INSERT INTO `data_source_profiles_rra` VALUES (6,2,'15 Minute Average',30,1346);
-INSERT INTO `data_source_profiles_rra` VALUES (7,2,'1 Hour Average',120,1445);
-INSERT INTO `data_source_profiles_rra` VALUES (8,2,'4 Hour Average',480,4380);
-
+INSERT INTO `data_source_profiles_rra` VALUES
+(1,1,'Daily (5 Minute Average)',1,600),
+(2,1,'Weekly (30 Minute Average)',6,700),
+(3,1,'Monthly (2 Hour Average)',24,775),
+(4,1,'Yearly (1 Day Average)',288,797),
+(5,2,'30 Second Samples',1,1500),
+(6,2,'15 Minute Average',30,1346),
+(7,2,'1 Hour Average',120,1445),
+(8,2,'4 Hour Average',480,4380);
 
 --
 -- Table structure for table `data_source_purge_action`
@@ -1335,11 +1377,10 @@ CREATE TABLE `data_source_purge_temp` (
   ENGINE=InnoDB
   COMMENT='RRD Cleaner File Repository';
 
-	
 --
 -- Table structure for table `data_source_stats_daily`
 --
-	
+
 CREATE TABLE `data_source_stats_daily` (
   `local_data_id` mediumint(8) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
@@ -1433,10 +1474,6 @@ CREATE TABLE data_template (
 ) ENGINE=InnoDB;
 
 --
--- Dumping data for table `data_template`
---
-
---
 -- Table structure for table `data_template_data`
 --
 
@@ -1461,10 +1498,6 @@ CREATE TABLE data_template_data (
   KEY data_template_id (data_template_id),
   KEY data_input_id (data_input_id)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `data_template_data`
---
 
 --
 -- Table structure for table `data_template_rrd`
@@ -1530,10 +1563,6 @@ CREATE TABLE graph_local (
 ) ENGINE=InnoDB COMMENT='Creates a relationship for each item in a custom graph.';
 
 --
--- Dumping data for table `graph_local`
---
-
---
 -- Table structure for table `graph_template_input`
 --
 
@@ -1548,10 +1577,6 @@ CREATE TABLE graph_template_input (
 ) ENGINE=InnoDB COMMENT='Stores the names for graph item input groups.';
 
 --
--- Dumping data for table `graph_template_input`
---
-
---
 -- Table structure for table `graph_template_input_defs`
 --
 
@@ -1560,11 +1585,7 @@ CREATE TABLE graph_template_input_defs (
   graph_template_item_id int(12) unsigned NOT NULL default '0',
   PRIMARY KEY (graph_template_input_id,graph_template_item_id),
   KEY graph_template_input_id (graph_template_input_id)
-) ENGINE=InnoDB COMMENT='Stores the relationship for what graph iitems are associated';
-
---
--- Dumping data for table `graph_template_input_defs`
---
+) ENGINE=InnoDB COMMENT='Stores the relationship for what graph items are associated';
 
 --
 -- Table structure for table `graph_templates`
@@ -1577,10 +1598,6 @@ CREATE TABLE graph_templates (
   PRIMARY KEY (id)) 
   ENGINE=InnoDB 
   COMMENT='Contains each graph template name.';
-
---
--- Dumping data for table `graph_templates`
---
 
 --
 -- Table structure for table `graph_templates_gprint`
@@ -1598,9 +1615,10 @@ CREATE TABLE graph_templates_gprint (
 -- Dumping data for table `graph_templates_gprint`
 --
 
-INSERT INTO graph_templates_gprint VALUES (2,'e9c43831e54eca8069317a2ce8c6f751','Normal','%8.2lf %s');
-INSERT INTO graph_templates_gprint VALUES (3,'19414480d6897c8731c7dc6c5310653e','Exact Numbers','%8.0lf');
-INSERT INTO graph_templates_gprint VALUES (4,'304a778405392f878a6db435afffc1e9','Load Average','%8.2lf');
+INSERT INTO graph_templates_gprint VALUES
+(2,'e9c43831e54eca8069317a2ce8c6f751','Normal','%8.2lf %s'),
+(3,'19414480d6897c8731c7dc6c5310653e','Exact Numbers','%8.0lf'),
+(4,'304a778405392f878a6db435afffc1e9','Load Average','%8.2lf');
 
 --
 -- Table structure for table `graph_templates_graph`
@@ -1681,10 +1699,6 @@ CREATE TABLE graph_templates_graph (
 ) ENGINE=InnoDB COMMENT='Stores the actual graph data.';
 
 --
--- Dumping data for table `graph_templates_graph`
---
-
---
 -- Table structure for table `graph_templates_item`
 --
 
@@ -1716,10 +1730,6 @@ CREATE TABLE graph_templates_item (
   KEY local_graph_id_sequence (local_graph_id, sequence),
   KEY task_item_id (task_item_id)
 ) ENGINE=InnoDB COMMENT='Stores the actual graph item data.';
-
---
--- Dumping data for table `graph_templates_item`
---
 
 --
 -- Table structure for table `graph_tree`
@@ -1765,10 +1775,6 @@ CREATE TABLE graph_tree_items (
   KEY `local_graph_id` (`local_graph_id`),
   KEY `parent_position`(`parent`, `position`)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `graph_tree_items`
---
 
 --
 -- Table structure for table `host`
@@ -1830,10 +1836,6 @@ CREATE TABLE host (
 ) ENGINE=InnoDB;
 
 --
--- Dumping data for table `host`
---
-
---
 -- Table structure for table `host_graph`
 --
 
@@ -1842,10 +1844,6 @@ CREATE TABLE host_graph (
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (host_id,graph_template_id)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `host_graph`
---
 
 --
 -- Table structure for table `host_snmp_cache`
@@ -1870,10 +1868,6 @@ CREATE TABLE host_snmp_cache (
 ) ENGINE=InnoDB;
 
 --
--- Dumping data for table `host_snmp_cache`
---
-
---
 -- Table structure for table `host_snmp_query`
 --
 
@@ -1888,10 +1882,6 @@ CREATE TABLE host_snmp_query (
 ) ENGINE=InnoDB;
 
 --
--- Dumping data for table `host_snmp_query`
---
-
---
 -- Table structure for table `host_template`
 --
 
@@ -1901,10 +1891,6 @@ CREATE TABLE host_template (
   name varchar(100) NOT NULL default '',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `host_template`
---
 
 --
 -- Table structure for table `host_template_graph`
@@ -1918,10 +1904,6 @@ CREATE TABLE host_template_graph (
 ) ENGINE=InnoDB;
 
 --
--- Dumping data for table `host_template_graph`
---
-
---
 -- Table structure for table `host_template_snmp_query`
 --
 
@@ -1931,10 +1913,6 @@ CREATE TABLE host_template_snmp_query (
   PRIMARY KEY (host_template_id, snmp_query_id),
   KEY host_template_id (host_template_id)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `host_template_snmp_query`
---
 
 --
 -- Table structure for table `plugin_config`
@@ -1970,6 +1948,14 @@ CREATE TABLE `plugin_hooks` (
 ) ENGINE=InnoDB;
 
 --
+-- Dumping data for table `plugin_hooks`
+--
+
+INSERT INTO `plugin_hooks` VALUES
+(1, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1),
+(2, 'internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1);
+
+--
 -- Table structure for table `plugin_realms`
 --
 
@@ -1981,6 +1967,12 @@ CREATE TABLE `plugin_realms` (
   PRIMARY KEY (`id`),
   KEY `plugin` (`plugin`)
 ) ENGINE=InnoDB;
+
+--
+-- Dumping data for table `plugin_realms`
+--
+
+REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management');
 
 --
 -- Table structure for table `plugin_db_changes`
@@ -1996,10 +1988,6 @@ CREATE TABLE `plugin_db_changes` (
   KEY `plugin` (`plugin`),
   KEY `method` (`method`)
 ) ENGINE=InnoDB;
-
-REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management');
-INSERT INTO `plugin_hooks` VALUES (1, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1);
-INSERT INTO `plugin_hooks` VALUES (2, 'internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1);
 
 --
 -- Table structure for table `poller`
@@ -2256,11 +2244,6 @@ CREATE TABLE settings (
 ) ENGINE=InnoDB;
 
 --
--- Dumping data for table `settings`
---
-
-
---
 -- Table structure for table `settings_user`
 --
 
@@ -2270,11 +2253,6 @@ CREATE TABLE settings_user (
   value varchar(2048) NOT NULL default '',
   PRIMARY KEY (user_id, name)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `settings_user`
---
-
 
 --
 -- Table structure for table `settings_user_group`
@@ -2299,11 +2277,6 @@ CREATE TABLE settings_tree (
 ) ENGINE=InnoDB;
 
 --
--- Dumping data for table `settings_tree`
---
-
-
---
 -- Table structure for table `snmp_query`
 --
 
@@ -2320,10 +2293,6 @@ CREATE TABLE snmp_query (
 ) ENGINE=InnoDB;
 
 --
--- Dumping data for table `snmp_query`
---
-
---
 -- Table structure for table `snmp_query_graph`
 --
 
@@ -2335,10 +2304,6 @@ CREATE TABLE snmp_query_graph (
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `snmp_query_graph`
---
 
 --
 -- Table structure for table `snmp_query_graph_rrd`
@@ -2353,10 +2318,6 @@ CREATE TABLE snmp_query_graph_rrd (
   KEY data_template_rrd_id (data_template_rrd_id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `snmp_query_graph_rrd`
---
 
 --
 -- Table structure for table `snmp_query_graph_rrd_sv`
@@ -2376,10 +2337,6 @@ CREATE TABLE snmp_query_graph_rrd_sv (
 ) ENGINE=InnoDB;
 
 --
--- Dumping data for table `snmp_query_graph_rrd_sv`
---
-
---
 -- Table structure for table `snmp_query_graph_sv`
 --
 
@@ -2393,10 +2350,6 @@ CREATE TABLE snmp_query_graph_sv (
   PRIMARY KEY (id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `snmp_query_graph_sv`
---
 
 --
 -- Table structure for table `user_auth`
@@ -2438,8 +2391,9 @@ CREATE TABLE user_auth (
 -- Dumping data for table `user_auth`
 --
 
-INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','','on','on','on','on','on','',2,1,1,1,1,'on',-1,-1,'-1','',0,0,0);
-INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','','on','on','on','on','on',3,1,1,1,1,1,'',-1,-1,'-1','',0,0,0);
+INSERT INTO user_auth VALUES
+(1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','','on','on','on','on','on','',2,1,1,1,1,'on',-1,-1,'-1','',0,0,0),
+(3,'guest','43e9a4ab75570f5b',0,'Guest Account','','on','on','on','on','on',3,1,1,1,1,1,'',-1,-1,'-1','',0,0,0);
 
 --
 -- Table structure for table `user_auth_cache`
@@ -2456,10 +2410,6 @@ CREATE TABLE `user_auth_cache` (
   KEY `hostname` (`hostname`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB COMMENT='Caches Remember Me Details';
-
---
--- Dumping data for table `user_auth`
---
 
 --
 -- Table structure for table `user_auth_group`
@@ -2483,10 +2433,6 @@ CREATE TABLE `user_auth_group` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 COMMENT='Table that Contains User Groups';
 
 --
--- Dumping data for table `user_auth_group`
---
-
---
 -- Table structure for table `user_auth_group_members`
 --
 
@@ -2497,10 +2443,6 @@ CREATE TABLE `user_auth_group_members` (
   KEY `group_id` (`group_id`),
   KEY `realm_id` (`user_id`)
 ) ENGINE=InnoDB COMMENT='Table that Contains User Group Members';
-
---
--- Dumping data for table `user_auth_group_members`
---
 
 --
 -- Table structure for table `user_auth_group_perms`
@@ -2515,10 +2457,6 @@ CREATE TABLE `user_auth_group_perms` (
 ) ENGINE=InnoDB COMMENT='Table that Contains User Group Permissions';
 
 --
--- Dumping data for table `user_auth_group_perms`
---
-
---
 -- Table structure for table `user_auth_group_realm`
 --
 
@@ -2531,10 +2469,6 @@ CREATE TABLE `user_auth_group_realm` (
 ) ENGINE=InnoDB COMMENT='Table that Contains User Group Realm Permissions';
 
 --
--- Dumping data for table `user_auth_group_realm`
---
-
---
 -- Table structure for table `user_auth_perms`
 --
 
@@ -2545,11 +2479,6 @@ CREATE TABLE user_auth_perms (
   PRIMARY KEY (user_id,item_id,type),
   KEY user_id (user_id,type)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `user_auth_perms`
---
-
 
 --
 -- Table structure for table `user_auth_realm`
@@ -2566,29 +2495,30 @@ CREATE TABLE user_auth_realm (
 -- Dumping data for table `user_auth_realm`
 --
 
-INSERT INTO user_auth_realm VALUES (1,1);
-INSERT INTO user_auth_realm VALUES (2,1);
-INSERT INTO user_auth_realm VALUES (3,1);
-INSERT INTO user_auth_realm VALUES (4,1);
-INSERT INTO user_auth_realm VALUES (5,1);
-INSERT INTO user_auth_realm VALUES (7,1);
-INSERT INTO user_auth_realm VALUES (7,3);
-INSERT INTO user_auth_realm VALUES (8,1);
-INSERT INTO user_auth_realm VALUES (9,1);
-INSERT INTO user_auth_realm VALUES (10,1);
-INSERT INTO user_auth_realm VALUES (11,1);
-INSERT INTO user_auth_realm VALUES (12,1);
-INSERT INTO user_auth_realm VALUES (13,1);
-INSERT INTO user_auth_realm VALUES (14,1);
-INSERT INTO user_auth_realm VALUES (15,1);
-INSERT INTO user_auth_realm VALUES (16,1);
-INSERT INTO user_auth_realm VALUES (17,1);
-INSERT INTO user_auth_realm VALUES (18,1);
-INSERT INTO user_auth_realm VALUES (20,1);
-INSERT INTO user_auth_realm VALUES (21,1);
-INSERT INTO user_auth_realm VALUES (22,1);
-INSERT INTO user_auth_realm VALUES (23,1);
-INSERT INTO user_auth_realm VALUES (101,1);
+INSERT INTO user_auth_realm VALUES
+(1,1),
+(2,1),
+(3,1),
+(4,1),
+(5,1),
+(7,1),
+(7,3),
+(8,1),
+(9,1),
+(10,1),
+(11,1),
+(12,1),
+(13,1),
+(14,1),
+(15,1),
+(16,1),
+(17,1),
+(18,1),
+(20,1),
+(21,1),
+(22,1),
+(23,1),
+(101,1);
 
 --
 -- Table structure for table `user_log`
@@ -2606,10 +2536,6 @@ CREATE TABLE user_log (
 ) ENGINE=InnoDB;
 
 --
--- Dumping data for table `user_log`
---
-
---
 -- Table structure for table `user_domains`
 --
 
@@ -2622,10 +2548,6 @@ CREATE TABLE `user_domains` (
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`domain_id`)
 ) ENGINE=InnoDB COMMENT='Table to Hold Login Domains';
-
---
--- Dumping data for table `user_domains`
---
 
 --
 -- Table structure for table `user_domains_ldap`
@@ -2653,10 +2575,6 @@ CREATE TABLE `user_domains_ldap` (
 ) ENGINE=InnoDB COMMENT='Table to Hold Login Domains for LDAP';
 
 --
--- Dumping data for table `user_domains_ldap`
---
-
---
 -- Table structure for table `sessions`
 --
 
@@ -2667,10 +2585,6 @@ CREATE TABLE `sessions` (
   `data` mediumblob,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='Used for Database based Session Storage';
-
---
--- Dumping data for table `sessions`
---
 
 --
 -- Table structure for table `sites`
@@ -2700,10 +2614,6 @@ CREATE TABLE `sites` (
 ) ENGINE=InnoDB COMMENT='Contains information about customer sites';
 
 --
--- Dumping data for table `sites`
---
-
---
 -- Table structure for table `snmpagent_cache`
 --
 
@@ -2723,10 +2633,6 @@ CREATE TABLE `snmpagent_cache` (
 ) ENGINE=InnoDB COMMENT='SNMP MIB CACHE';
 
 --
--- Dumping data for table `snmpagent_cache`
---
-
---
 -- Table structure for table `snmpagent_mibs`
 --
 CREATE TABLE `snmpagent_mibs` (
@@ -2735,10 +2641,6 @@ CREATE TABLE `snmpagent_mibs` (
   `file` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='Registered MIB files';
-
---
--- Dumping data for table `snmpagent_mibs`
---
 
 --
 -- Table structure for table `snmpagent_cache_notifications`
@@ -2753,10 +2655,6 @@ CREATE TABLE `snmpagent_cache_notifications` (
 ) ENGINE=InnoDB COMMENT='Notifcations and related attributes';
 
 --
--- Dumping data for table `snmpagent_cache_notifications`
---
-
---
 -- Table structure for table `snmpagent_cache_textual_conventions`
 --
 
@@ -2768,10 +2666,6 @@ CREATE TABLE `snmpagent_cache_textual_conventions` (
   KEY `name` (`name`),
   KEY `mib` (`mib`)
 ) ENGINE=InnoDB COMMENT='Textual conventions';
-
---
--- Dumping data for table `snmpagent_cache_textual_conventions`
---
 
 --
 -- Table structure for table `snmpagent_managers`
@@ -2799,10 +2693,6 @@ CREATE TABLE `snmpagent_managers` (
 ) ENGINE=InnoDB COMMENT='snmp notification receivers';
 
 --
--- Dumping data for table `snmpagent_managers`
---
-
---
 -- Table structure for table `snmpagent_managers_notifications`
 --
 
@@ -2814,10 +2704,6 @@ CREATE TABLE `snmpagent_managers_notifications` (
   KEY `manager_id` (`manager_id`),
   KEY `manager_id2` (`manager_id`,`notification`)
 ) ENGINE=InnoDB COMMENT='snmp notifications to receivers';
-
---
--- Dumping data for table `snmpagent_managers_notifications`
---
 
 --
 -- Table structure for table `snmpagent_notifications_log`
@@ -2839,10 +2725,6 @@ CREATE TABLE `snmpagent_notifications_log` (
 ) ENGINE=InnoDB COMMENT='logs snmp notifications to receivers';
 
 --
--- Dumping data for table `snmpagent_notifications_log`
---
-
---
 -- Table structure for table `vdef`
 --
 
@@ -2857,13 +2739,14 @@ CREATE TABLE vdef (
 -- Dumping data for table `vdef`
 --
 
-INSERT INTO vdef VALUES(1, 'e06ed529238448773038601afb3cf278', 'Maximum');
-INSERT INTO vdef VALUES(2, 'e4872dda82092393d6459c831a50dc3b', 'Minimum');
-INSERT INTO vdef VALUES(3, '5ce1061a46bb62f36840c80412d2e629', 'Average');
-INSERT INTO vdef VALUES(4, '06bd3cbe802da6a0745ea5ba93af554a', 'Last (Current)');
-INSERT INTO vdef VALUES(5, '631c1b9086f3979d6dcf5c7a6946f104', 'First');
-INSERT INTO vdef VALUES(6, '6b5335843630b66f858ce6b7c61fc493', 'Total: Current Data Source');
-INSERT INTO vdef VALUES(7, 'c80d12b0f030af3574da68b28826cd39', '95th Percentage: Current Data Source');
+INSERT INTO vdef VALUES
+(1, 'e06ed529238448773038601afb3cf278', 'Maximum'),
+(2, 'e4872dda82092393d6459c831a50dc3b', 'Minimum'),
+(3, '5ce1061a46bb62f36840c80412d2e629', 'Average'),
+(4, '06bd3cbe802da6a0745ea5ba93af554a', 'Last (Current)'),
+(5, '631c1b9086f3979d6dcf5c7a6946f104', 'First'),
+(6, '6b5335843630b66f858ce6b7c61fc493', 'Total: Current Data Source'),
+(7, 'c80d12b0f030af3574da68b28826cd39', '95th Percentage: Current Data Source');
 
 --
 -- Table structure for table `vdef_items`
@@ -2884,21 +2767,22 @@ CREATE TABLE vdef_items (
 -- Dumping data for table `vdef_items`
 --
 
-INSERT INTO vdef_items VALUES(1, '88d33bf9271ac2bdf490cf1784a342c1', 1, 1, 4, 'CURRENT_DATA_SOURCE');
-INSERT INTO vdef_items VALUES(2, 'a307afab0c9b1779580039e3f7c4f6e5', 1, 2, 1, '1');
-INSERT INTO vdef_items VALUES(3, '0945a96068bb57c80bfbd726cf1afa02', 2, 1, 4, 'CURRENT_DATA_SOURCE');
-INSERT INTO vdef_items VALUES(4, '95a8df2eac60a89e8a8ca3ea3d019c44', 2, 2, 1, '2');
-INSERT INTO vdef_items VALUES(5, 'cc2e1c47ec0b4f02eb13708cf6dac585', 3, 1, 4, 'CURRENT_DATA_SOURCE');
-INSERT INTO vdef_items VALUES(6, 'a2fd796335b87d9ba54af6a855689507', 3, 2, 1, '3');
-INSERT INTO vdef_items VALUES(7, 'a1d7974ee6018083a2053e0d0f7cb901', 4, 1, 4, 'CURRENT_DATA_SOURCE');
-INSERT INTO vdef_items VALUES(8, '26fccba1c215439616bc1b83637ae7f3', 4, 2, 1, '5');
-INSERT INTO vdef_items VALUES(9, 'a8993b265f4c5398f4a47c44b5b37a07', 5, 1, 4, 'CURRENT_DATA_SOURCE');
-INSERT INTO vdef_items VALUES(10, '5a380d469d611719057c3695ce1e4eee', 5, 2, 1, '6');
-INSERT INTO vdef_items VALUES(11, '65cfe546b17175fad41fcca98c057feb', 6, 1, 4, 'CURRENT_DATA_SOURCE');
-INSERT INTO vdef_items VALUES(12, 'f330b5633c3517d7c62762cef091cc9e', 6, 2, 1, '7');
-INSERT INTO vdef_items VALUES(13, 'f1bf2ecf54ca0565cf39c9c3f7e5394b', 7, 1, 4, 'CURRENT_DATA_SOURCE');
-INSERT INTO vdef_items VALUES(14, '11a26f18feba3919be3af426670cba95', 7, 2, 6, '95');
-INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '8');
+INSERT INTO vdef_items VALUES
+(1, '88d33bf9271ac2bdf490cf1784a342c1', 1, 1, 4, 'CURRENT_DATA_SOURCE'),
+(2, 'a307afab0c9b1779580039e3f7c4f6e5', 1, 2, 1, '1'),
+(3, '0945a96068bb57c80bfbd726cf1afa02', 2, 1, 4, 'CURRENT_DATA_SOURCE'),
+(4, '95a8df2eac60a89e8a8ca3ea3d019c44', 2, 2, 1, '2'),
+(5, 'cc2e1c47ec0b4f02eb13708cf6dac585', 3, 1, 4, 'CURRENT_DATA_SOURCE'),
+(6, 'a2fd796335b87d9ba54af6a855689507', 3, 2, 1, '3'),
+(7, 'a1d7974ee6018083a2053e0d0f7cb901', 4, 1, 4, 'CURRENT_DATA_SOURCE'),
+(8, '26fccba1c215439616bc1b83637ae7f3', 4, 2, 1, '5'),
+(9, 'a8993b265f4c5398f4a47c44b5b37a07', 5, 1, 4, 'CURRENT_DATA_SOURCE'),
+(10, '5a380d469d611719057c3695ce1e4eee', 5, 2, 1, '6'),
+(11, '65cfe546b17175fad41fcca98c057feb', 6, 1, 4, 'CURRENT_DATA_SOURCE'),
+(12, 'f330b5633c3517d7c62762cef091cc9e', 6, 2, 1, '7'),
+(13, 'f1bf2ecf54ca0565cf39c9c3f7e5394b', 7, 1, 4, 'CURRENT_DATA_SOURCE'),
+(14, '11a26f18feba3919be3af426670cba95', 7, 2, 6, '95'),
+(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '8');
 
 --
 -- Table structure for table `version`
