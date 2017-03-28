@@ -1,9 +1,7 @@
 Cacti CHANGELOG
 
 1.1.1
--issue#457: Continuing LDAP issues with initial user creation
--issue#459: Add variable date time option to report mail subject
--issue#460: Add external_id to host variables
+-issue#457: Continued LDAP issues with initial user creation
 -issue#461: The function escapeshell arg not appropriate on Windows
 -issue#462: LDAP authorization issues: group membership check broken for 'Group Member Type' = 'Username'
 -issue#464: Change default batch spike removal limits for standard deviation and variance
@@ -12,14 +10,16 @@ Cacti CHANGELOG
 -issue#467: Reduce the number of queries in log function
 -issue#472: Schema changes to improve performance
 -issue: Back button issues due to syntax problems in JavaScript
--issue: Zoom periodically would looks it's crosshairs after zooming
--issue: Zoom would zoom out into the future when disabled
--issue: Fixing light corruption in graph_templates_item table
+-issue: Zoom periodically would loose it's crosshairs after zooming
+-issue: Zoom would zoom out into the future even when disabled
+-issue: Fixing lite corruption in graph_templates_item table
 -feature: Make SpikeKill options more consistent
--feature#469: Change re-index method of Data Query from Device Edit
+-feature#459: Add variable date time option to report mail subject
+-feature#460: Add external_id to host variables
+-feature#469: Change re-index method of Data Query from Device edit
 -feature: Support generalized date format approach in the GUI
 -feature: Use localStorage over a Cookie for Zoom setting storage
--feature: Fully implement 'Remove Orphans' from Graph Template import process
+-feature: Fully implement 'Remove Orphans' from Package import process
 
 1.1.0
 -issue#337: Generic SNMP OID Graph Template damanged
