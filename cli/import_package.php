@@ -116,9 +116,16 @@ if (sizeof($parms)) {
 
 			echo 'Read ' . strlen($data) . " bytes of Package data\n";
 
-			list($debug_data, $filestatus) = import_package($filename, $profile_id, $remove_orphans, $preview_only);
+			$result = import_package($filename, $profile_id, $remove_orphans, $preview_only);
 
-			import_display_results($debug_data, $filestatus, false, $preview_only);
+			if ($result !== false) {
+				$debug_data = $result[0];
+				$filestatus = $result[1];
+
+				import_display_results($debug_data, $filestatus, false, $preview_only);
+			}else{
+				echo "ERROR: file $filename import process failed\n\n";
+			}
 		} else {
 			echo "ERROR: file $filename is not readable, or does not exist\n\n";
 			exit(1);
