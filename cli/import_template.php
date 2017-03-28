@@ -123,7 +123,7 @@ if (sizeof($parms)) {
 
 			$debug_data = import_xml_data($xml_data, false, $id, $remove_orphans);
 
-			import_display_results($debug_data, false, $preview_only);
+			import_display_results($debug_data, array(), $preview_only);
 		} else {
 			echo "ERROR: file $filename is not readable, or does not exist\n\n";
 			exit(1);
