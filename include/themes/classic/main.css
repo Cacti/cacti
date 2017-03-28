@@ -457,6 +457,14 @@ label {
 	font-size:14px;
 }
 
+.verbosequery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color: rgba(255, 204, 0, 0.8);
+	font-size:14px;
+}
+
 .deletequery {
 	cursor:pointer;
 	padding:2px;
@@ -860,8 +868,8 @@ legend {
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
 	color: blue;
 	text-decoration: none;
-	font-weight: bold;
-	padding: 3px;
+	font-weight: normal;
+	padding: 0px;
 	white-space: nowrap;
 	cursor:pointer;
 }
@@ -869,7 +877,7 @@ legend {
 .linkEditMain:hover {
 	color: blue;
 	text-decoration: underline;
-	font-weight: bold;
+	font-weight: normal;
 }
 
 .linkOverDark, .linkOverDark:visited, .linkOverDark:active {

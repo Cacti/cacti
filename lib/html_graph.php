@@ -353,6 +353,9 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					<td align='center' colspan='6'>
 						<span id='countdown'></span>
 					</td>
+					<td>
+						<input id='future' type='hidden' value='<?php print read_config_option('allow_graph_dates_in_future');?>'></input>
+					</td>
 				</tr>
 			</table>
 		</form>

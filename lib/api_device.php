@@ -100,20 +100,69 @@ function api_device_remove_multi($device_ids) {
 	}
 }
 
+/* api_device_dq_add - adds a device->data query mapping
+   @arg $device_id - the id of the device which contains the mapping
+   @arg $data_query_id - the id of the data query to remove the mapping for 
+   @arg $reindex_method - the reindex method to user when adding the data query */
+function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
+    db_execute_prepared('REPLACE INTO host_snmp_query
+        (host_id, snmp_query_id, reindex_method)
+        VALUES (?, ?, ?)',
+        array($device_id, $data_query_id, $reindex_method));
+
+    /* recache snmp data */
+	run_data_query($device_id, $data_query_id);
+}
+
 /* api_device_dq_remove - removes a device->data query mapping
    @arg $device_id - the id of the device which contains the mapping
    @arg $data_query_id - the id of the data query to remove the mapping for */
 function api_device_dq_remove($device_id, $data_query_id) {
-	db_execute_prepared('DELETE FROM host_snmp_cache WHERE snmp_query_id = ? AND host_id = ?', array($data_query_id, $device_id));
-	db_execute_prepared('DELETE FROM host_snmp_query WHERE snmp_query_id = ? AND host_id = ?', array($data_query_id, $device_id));
-	db_execute_prepared('DELETE FROM poller_reindex  WHERE data_query_id = ? AND host_id = ?', array($data_query_id, $device_id));
+	db_execute_prepared('DELETE FROM host_snmp_cache 
+		WHERE snmp_query_id = ? 
+		AND host_id = ?', 
+		array($data_query_id, $device_id));
+
+	db_execute_prepared('DELETE FROM host_snmp_query 
+		WHERE snmp_query_id = ? 
+		AND host_id = ?', 
+		array($data_query_id, $device_id));
+
+	db_execute_prepared('DELETE FROM poller_reindex
+		WHERE data_query_id = ? 
+		AND host_id = ?', 
+		array($data_query_id, $device_id));
+}
+
+/* api_device_dq_change - changes a device->data query mapping
+   @arg $device_id - the id of the device which contains the mapping
+   @arg $data_query_id - the id of the data query to remove the mapping for 
+   @arg $reindex_method - the reindex method to use when changing the data query */
+function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
+	db_execute_prepared('INSERT INTO host_snmp_query 
+		(host_id, snmp_query_id, reindex_method) 
+		VALUES (?, ?, ?) 
+		ON DUPLICATE KEY UPDATE reindex_method=VALUES(reindex_method)', 
+		array($device_id, $data_query_id, $reindex_method));
+
+	cacti_log("INSERT INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES ($device_id, $data_query_id, $reindex_method) ON DUPLICATE KEY UPDATE reindex_method=VALUES(reindex_method)");
+
+	db_execute_prepared('DELETE FROM poller_reindex 
+		WHERE data_query_id = ? 
+		AND host_id = ?', array($data_query_id, $device_id));
+
+	/* finally rerun the data query */
+	run_data_query($device_id, $data_query_id);
 }
 
 /* api_device_gt_remove - removes a device->graph template mapping
    @arg $device_id - the id of the device which contains the mapping
    @arg $graph_template_id - the id of the graph template to remove the mapping for */
 function api_device_gt_remove($device_id, $graph_template_id) {
-	db_execute_prepared('DELETE FROM host_graph WHERE graph_template_id = ? AND host_id = ?', array($graph_template_id, $device_id));
+	db_execute_prepared('DELETE FROM host_graph 
+		WHERE graph_template_id = ? 
+		AND host_id = ?', 
+		array($graph_template_id, $device_id));
 }
 
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
@@ -198,7 +247,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 			/* change reindex method for 'None' for non-snmp devices */
 			if ($save['snmp_version'] == 0) {
 				db_execute_prepared('UPDATE host_snmp_query SET reindex_method = 0 WHERE host_id = ?', array($host_id));
-				db_execute_prepared('DELETE * FROM poller_reindex WHERE host_id = ?', array($host_id));
+				db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', array($host_id));
 			}
 
 			api_device_cache_crc_update($save['poller_id']);
@@ -369,6 +418,10 @@ function api_device_ping_device($device_id, $from_remote = false) {
 				print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
 			}else{
 				$snmp_system = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0');
+				if ($snmp_system === false || $snmp_system == 'U') {
+					print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
+					return false;
+				}
 
 				/* modify for some system descriptions */
 				/* 0000937: System output in host.php poor for Alcatel */

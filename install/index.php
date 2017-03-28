@@ -221,14 +221,14 @@ if ($step == '7') {
 
 		$host_template_id = db_fetch_cell_prepared('SELECT id FROM host_template WHERE hash = ?', array($hash));
 
-		cacti_log('Device Template for First Cacti Device is ' . $host_template_id);
-
 		// Add the host
 		if (!empty($host_template_id)) {
+			cacti_log('Device Template for First Cacti Device is ' . $host_template_id);
+
 			$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/add_device.php" . 
-				" --description=" . escapeshellarg($description) . " --ip=" . escapeshellarg($ip) . " --template=$host_template_id" . 
-				" --notes=" . escapeshellarg('Initial Cacti Device') . " --poller=1 --site=0 --avail=" . escapeshellarg($avail) .
-				" --version=$version --community=" . escapeshellarg($community));
+				" --description=" . cacti_escapeshellarg($description) . " --ip=" . cacti_escapeshellarg($ip) . " --template=$host_template_id" . 
+				" --notes=" . cacti_escapeshellarg('Initial Cacti Device') . " --poller=1 --site=0 --avail=" . cacti_escapeshellarg($avail) .
+				" --version=$version --community=" . cacti_escapeshellarg($community));
 
 			$host_id = db_fetch_cell_prepared('SELECT id 
 				FROM host 
@@ -248,10 +248,8 @@ if ($step == '7') {
 					}
 				}
 			}
-
-			cacti_log(trim($results));
 		}else{
-			cacti_log('ERROR: Device Template for your Operating System Not Found.  Please add your first device manually');
+			cacti_log('WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server.');
 		}
 	}
 	
@@ -436,6 +434,9 @@ if ($step == '7') {
 		}elseif ($cacti_versions[$i] == '1.1.0') {
 			include ('1_0_6_to_1_1_0.php');
 			upgrade_to_1_1_0();
+		}elseif ($cacti_versions[$i] == '1.1.1') {
+			include ('1_1_0_to_1_1_1.php');
+			upgrade_to_1_1_1();
 		}
 	}
 

@@ -85,6 +85,13 @@ switch (get_request_var('action')) {
 
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 		break;
+	case 'query_change':
+		get_filter_request_var('host_id');
+
+		host_change_query();
+
+		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+		break;
 	case 'query_reload':
 		get_filter_request_var('host_id');
 
@@ -570,13 +577,7 @@ function host_add_query() {
 	get_filter_request_var('reindex_method');
 	/* ==================================================== */
 
-	db_execute_prepared('REPLACE INTO host_snmp_query 
-		(host_id, snmp_query_id, reindex_method) 
-		VALUES (?, ?, ?)', 
-		array(get_nfilter_request_var('host_id'), get_nfilter_request_var('snmp_query_id'), get_nfilter_request_var('reindex_method')));
-
-	/* recache snmp data */
-	run_data_query(get_nfilter_request_var('host_id'), get_nfilter_request_var('snmp_query_id'));
+	api_device_dq_add(get_request_var('host_id'), get_request_var('snmp_query_id'), get_request_var('reindex_method'));
 }
 
 function host_reload_query() {
@@ -595,6 +596,16 @@ function host_remove_query() {
 	/* ==================================================== */
 
 	api_device_dq_remove(get_request_var('host_id'), get_request_var('id'));
+}
+
+function host_change_query() {
+	/* ================= input validation ================= */
+	get_filter_request_var('data_query_id');
+	get_filter_request_var('host_id');
+	get_filter_request_var('reindex_method');
+	/* ==================================================== */
+
+	api_device_dq_change(get_request_var('host_id'), get_request_var('data_query_id'), get_request_var('reindex_method'));
 }
 
 function host_add_gt() {
@@ -653,7 +664,7 @@ function host_edit() {
 
 	if (!empty($host['id'])) {
 		?>
-		<table style='width:100%'>
+		<table class='hostInfoHeader' style='width:100%'>
 			<tr>
 				<td class='textInfo left'>
 					<?php print htmlspecialchars($host['description']);?> (<?php print htmlspecialchars($host['hostname']);?>)
@@ -805,7 +816,14 @@ function host_edit() {
 
 		html_start_box(__('Associated Data Queries'), '100%', '', '3', 'center', '');
 
-		html_header(array(__('Data Query Name'), __('Debugging'), __('Re-Index Method'), __('Status')), 2);
+		html_header(
+			array(
+				array('display' => __('Data Query Name'), 'align' => 'left'), 
+				array('display' => __('Re-Index Method'), 'align' => 'left'), 
+				array('display' => __('Status'), 'align' => 'left'),
+				array('display' => __('Actions'), 'align' => 'right')
+			)
+		);
 
 		if ($host['snmp_version'] == 0) {
 			$sql_where1 = ' AND snmp_query.data_input_id != 2';
@@ -858,18 +876,16 @@ function host_edit() {
 					<td style='padding: 4px;'>
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
-					<td>
-						(<span id='verbose<?php print $item['id'];?>' class='linkEditMain' data-id='<?php print $item['id'];?>'>Verbose Query</span>)
-					</td>
-					<td>
-					<?php print $reindex_types{$item['reindex_method']};?>
+					<td class='nowrap'>
+					<?php device_reindex_methods($item, $host);?>
 					</td>
 					<td>
 						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail') . "</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? '' : 's');?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? '' : 's');?>]
 					</td>
 					<td class='nowrap right' style='vertical-align:middle;'>
-						<span class='reloadquery fa fa-circle-o' id='reload<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
-						<span class='deletequery fa fa-remove' id='remove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
+						<span class='reloadquery fa fa-refresh' id='reload<?php print $item['id'];?>' title='<?php print htmlspecialchars(__('Reload Query'), ENT_QUOTES, 'UTF-8');?>' data-id='<?php print $item['id'];?>'></span>
+						<span class='verbosequery fa fa-refresh' id='verbose<?php print $item['id'];?>' title='<?php print htmlspecialchars(__('Verbose Query'), ENT_QUOTES, 'UTF-8');?>'  id='reload<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
+						<span class='deletequery fa fa-remove' id='remove<?php print $item['id'];?>' title='<?php print htmlspecialchars(__('Remove Query'), ENT_QUOTES, 'UTF-8');?>' data-id='<?php print $item['id'];?>'></span>
 					</td>
 				<?php
 				form_end_row();
@@ -920,6 +936,30 @@ function host_edit() {
 	form_save_button('host.php', 'return');
 
 	api_plugin_hook('host_edit_bottom');
+}
+
+function device_reindex_methods($item, $host) {
+	global $config, $reindex_types, $reindex_types_tips;
+
+	$i = 0;
+	foreach($reindex_types as $key => $type) {
+		if (get_selected_theme() != 'classic') {
+			if ($i == 0) {
+				print "<fieldset class='reindex_methods'>\n";
+			}
+			print "<input name='reindex_radio_" . $item['id'] . "' type='radio' data-device-id='" . $host['id'] . "' data-query-id='" . $item['id'] . "' data-reindex-method='" . $key . "' id='reindex_" . $item['id'] . "_" . $key . "'" . ($item['reindex_method'] == $key ? ' checked="checked"':'') . " />\n";
+			print "<label title='" . htmlspecialchars($reindex_types_tips[$key], ENT_QUOTES, 'UTF-8') . "' for='reindex_" . $item['id'] . "_" . $key . "'>" . $type . "</label>\n";
+		}else{
+			print $reindex_types[$item['reindex_method']];
+			break;
+		}
+
+		$i++;
+	}
+
+	if (get_selected_theme() != 'classic') {
+		print "</fieldset>\n";
+	}
 }
 
 function device_javascript() {
@@ -1110,43 +1150,56 @@ function device_javascript() {
 	}
 
 	$(function() {
+		if (typeof hostInfoHeight != "undefined") {
+			if ($(window).scrollTop() == 0) {
+				$('.hostInfoHeader').css('height', '');
+			}else{
+				$('.hostInfoHeader').css('height', hostInfoHeight);
+			}
+		}
+
 		$('[id^="reload"]').click(function(data) {
-			$(this).removeClass('fa-circle-o').addClass('fa-circle-o-notch fa-spin');
+			$(this).addClass('fa-spin');
 			strURL = 'host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
-			loadPageNoHeader(strURL);
+			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="verbose"]').click(function(data) {
+			$(this).addClass('fa-spin');
 			strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
-			loadPageNoHeader(strURL);
+			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="remove"]').click(function(data) {
 			strURL = 'host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
-			loadPageNoHeader(strURL);
+			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="gtremove"]').click(function(data) {
 			strURL = 'host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
-			loadPageNoHeader(strURL);
+			loadPageNoHeader(strURL, true);
 		});
 
 		$('#add_dq').click(function() {
+			scrollTop = $(window).scrollTop();
 			$.post('host.php?action=query_add', { host_id: $('#id').val(), snmp_query_id: $('#snmp_query_id').val(), reindex_method: $('#reindex_method').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
 				$('#main').html(data);
 				applySkin();
+				$(window).scrollTop(scrollTop);
 			});
 		});
 
 		$('#add_gt').click(function() {
+			scrollTop = $(window).scrollTop();
 			$.post('host.php?action=gt_add', { host_id: $('#id').val(), graph_template_id: $('#graph_template_id').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
 				$('#main').html(data);
 				applySkin();
+				$(window).scrollTop(scrollTop);
 			});
 		});
 
 		changeHostForm();
-		$('#dbghide').unbind().click(function(data) {
+		$('#dbghide').click(function(data) {
 			$('#dqdebug').empty().fadeOut('fast');
 		});
 
@@ -1156,6 +1209,20 @@ function device_javascript() {
 
 		$.get(urlPath+'host.php?action=ping_host&id='+$('#id').val(), function(data) {
 			$('#ping_results').html(data);
+			hostInfoHeight = $('.hostInfoHeader').height();
+		});
+
+		$('input[id^="reindex_"]').change(function() {
+			strURL  = urlPath+'host.php?action=query_change&header=false';
+			strURL += '&host_id='+$(this).attr('data-device-id');
+			strURL += '&data_query_id='+$(this).attr('data-query-id');
+			strURL += '&reindex_method='+$(this).attr('data-reindex-method');
+
+			height = $('.hostInfoHeader').height();
+
+			loadPageNoHeader(strURL, true);
+
+			$('.hostInfoHeader').css('height', height);
 		});
 	});
 
@@ -1235,24 +1302,28 @@ function host() {
 
 	?>
 	<script type='text/javascript'>
-	function applyFilter() {
-		strURL  = 'host.php?host_status=' + $('#host_status').val();
-		strURL += '&host_template_id=' + $('#host_template_id').val();
-		strURL += '&site_id=' + $('#site_id').val();
-		strURL += '&poller_id=' + $('#poller_id').val();
-		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
-		strURL += '&page=' + $('#page').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
-	}
 
-	function clearFilter() {
-		strURL = 'host.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
-	}
+	$(function() {
+		function applyFilter() {
+			strURL  = 'host.php?host_status=' + $('#host_status').val();
+			strURL += '&host_template_id=' + $('#host_template_id').val();
+			strURL += '&site_id=' + $('#site_id').val();
+			strURL += '&poller_id=' + $('#poller_id').val();
+			strURL += '&rows=' + $('#rows').val();
+			strURL += '&filter=' + $('#filter').val();
+			strURL += '&header=false';
+			loadPageNoHeader(strURL);
+		}
 
-	$(function(data) {
+		function clearFilter() {
+			strURL = 'host.php?clear=1&header=false';
+			loadPageNoHeader(strURL);
+		}
+
+		$('#rows, #site_id, #poller_id, #host_template_id, #host_status').change(function() {
+			applyFilter();
+		});
+
 		$('#refresh').click(function() {
 			applyFilter();
 		});
@@ -1275,14 +1346,14 @@ function host() {
 	?>
 	<tr class='even noprint'>
 		<td>
-		<form id='form_devices' name='form_devices' action='host.php'>
+		<form id='form_devices' action='host.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Site');?>
 					</td>
 					<td>
-						<select id='site_id' name='site_id' onChange='applyFilter()'>
+						<select id='site_id'>
 							<option value='-1'<?php if (get_request_var('site_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('site_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -1300,7 +1371,7 @@ function host() {
 						<?php print __('Data Collector');?>
 					</td>
 					<td>
-						<select id='poller_id' name='poller_id' onChange='applyFilter()'>
+						<select id='poller_id'>
 							<option value='-1'<?php if (get_request_var('poller_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							$pollers = db_fetch_assoc('SELECT id, name FROM poller ORDER BY name');
@@ -1317,7 +1388,7 @@ function host() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='host_template_id' name='host_template_id' onChange='applyFilter()'>
+						<select id='host_template_id'>
 							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -1345,13 +1416,13 @@ function host() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='host_status' name='host_status' onChange='applyFilter()'>
+						<select id='host_status'>
 							<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>><?php print __('Disabled');?></option>
@@ -1366,7 +1437,7 @@ function host() {
 						<?php print __('Devices');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows)) {
@@ -1379,7 +1450,7 @@ function host() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
+			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 	</tr>
@@ -1456,7 +1527,7 @@ function host() {
 
 	$hosts = db_fetch_assoc($sql_query);
 
-	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter') . '&host_template_id=' . get_request_var('host_template_id') . '&host_status=' . get_request_var('host_status'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 13, __('Devices'), 'page', 'main');
+	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 13, __('Devices'), 'page', 'main');
 
 	form_start('host.php', 'chk');
 
@@ -1502,8 +1573,8 @@ function host() {
 			form_selectable_cell(filter_value($host['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $host['id']), $host['id']);
 			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);
 			form_selectable_cell($host['id'], $host['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($host['graphs']), $host['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($host['data_sources']), $host['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($host['graphs'], '-1'), $host['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($host['data_sources'], '-1'), $host['id'], '', 'text-align:right');
 			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['id'], '', 'text-align:center');
 			form_selectable_cell(get_timeinstate($host), $host['id'], '', 'text-align:right');
 			form_selectable_cell($uptime, $host['id'], '', 'text-align:right');

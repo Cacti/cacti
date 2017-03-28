@@ -74,6 +74,16 @@ label {
 	white-space:nowrap;
 }
 
+fieldset {
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.reindex_methods span {
+	font-size: 9px;
+}
+
 .nowrap {
 	white-space:nowrap;
 }
@@ -431,6 +441,14 @@ label {
 	padding:2px;
 	vertical-align:middle;
 	color:lime;
+	font-size:14px;
+}
+
+.verbosequery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color: rgba(255, 204, 0, 0.8);
 	font-size:14px;
 }
 
@@ -1207,6 +1225,16 @@ legend {
 th.sortable {
 	cursor:pointer;
 	line-height:10px;
+}
+
+th.primarySort, th.tablesorter-headerDesc, th.tablesorter-headerAsc {
+	background: rgba(138,155,107,1);
+	background: linear-gradient(to bottom, rgba(138,155,107,1) 0%, rgba(51,79,28,1) 100%);
+}
+
+th.secondarySort {
+	background: rgba(158,175,127,1);
+	background: linear-gradient(to bottom, rgba(158,175,127,1) 0%, rgba(71,99,48,1) 100%);
 }
 
 .tableHeader th, .tableHeader td {

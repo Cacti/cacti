@@ -492,7 +492,7 @@ function sites() {
 			form_alternate_row('line' . $site['id'], true);
 			form_selectable_cell(filter_value($site['name'], get_request_var('filter'), 'sites.php?action=edit&id=' . $site['id']), $site['id']);
 			form_selectable_cell($site['id'], $site['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($site['hosts']), $site['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($site['hosts'], '-1'), $site['id'], '', 'right');
 			form_selectable_cell($site['city'], $site['id'], '', 'left');
 			form_selectable_cell($site['state'], $site['id'], '', 'left');
 			form_selectable_cell($site['country'], $site['id'], '', 'left');

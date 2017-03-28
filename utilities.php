@@ -1859,7 +1859,7 @@ function boost_display_run_status() {
 	$detail_stats    = read_config_option('stats_detail_boost', TRUE);
 
 	$refresh['seconds'] = get_request_var('refresh');
-	$refresh['page']    = 'utilities.php?action=view_boost_status';
+	$refresh['page']    = 'utilities.php?action=view_boost_status&header=false';
 	$refresh['logout']  = 'false';
 
 	set_page_refresh($refresh);
@@ -2466,7 +2466,8 @@ function snmpagent_utilities_run_eventlog(){
 		strURL = 'utilities.php?action=view_snmpagent_events&purge=1&header=false';
 		loadPageNoHeader(strURL);
 	}
-	$(function(data) {
+
+	$(function() {
 		$('#refresh').click(function() {
 			applyFilter();
 		});

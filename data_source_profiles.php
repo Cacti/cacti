@@ -877,8 +877,8 @@ function profile() {
 			form_selectable_cell($readonly ? __('Yes') : __('No'), $profile['id'], '', 'text-align:right');
 			form_selectable_cell($sampling_intervals[$profile['step']], $profile['id'], '', 'text-align:right');
 			form_selectable_cell($heartbeats[$profile['heartbeat']], $profile['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($profile['data_sources']), $profile['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($profile['templates']), $profile['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($profile['data_sources'], '-1'), $profile['id'], '', 'text-align:right');
+			form_selectable_cell(number_format_i18n($profile['templates'], '-1'), $profile['id'], '', 'text-align:right');
 			form_checkbox_cell($profile['name'], $profile['id'], $disabled);
 			form_end_row();
 		}

@@ -15,39 +15,47 @@ var waitForFinalEvent = (function () {
   };
 })();
 
-$(window).resize(function () {
-	waitForFinalEvent(function(){
-		/* close open dropdown menues first off */
-		$('.dropdownMenu > ul').hide();
+function keepWindowSize() {
+	$(window).resize(function (event) {
+		waitForFinalEvent(function(){
+			/* close open dropdown menues first off */
+			$('.dropdownMenu > ul').hide();
 		
-		heightPage = $(window).height();
-		heightPageHead = $('#cactiPageHead').outerHeight();
-		heightPageContent = heightPage -heightPageHead +1;
-		$('body').css('height', heightPage);
-		$('#cactiContent').css('height', heightPageContent);
-		
-		/* check visibility of all tabs */
-		$('#submenu-ellipsis').empty();
-		$('.maintabs nav ul li a').each(function() {
-			id = $(this).attr('id');
-			if( $(this).offset().top !== 0 ) {
-				if( $('#' + id + '-ellipsis').length == 0 ) {
-					var str = $(this).parent().html();
-					var str2 = str.replace( id , id + '-ellipsis');
-					$('#submenu-ellipsis').prepend('<li>' + str2 + '</li>');
-				}
-			}else {
-				$('#' + id + '-ellipsis').parent().remove();
-			}
-		});
+			heightPage = $(window).height();
+			heightPageHead = $('#cactiPageHead').outerHeight();
+			heightPageContent = heightPage -heightPageHead +1;
 
-		if($("#submenu-ellipsis li").length == 0) {
-			$(".ellipsis").hide(0);
-		}else {
-			$(".ellipsis").show(0);
-		}
-	}, 200, "resize-content");
-});
+			$('body').css('height', heightPage);
+			$('#cactiContent').css('height', heightPageContent);
+		
+			$('.cactiTreeNavigationArea').css('height', heightPageContent);
+			width = parseInt($('#searcher').width())+65;
+			$('.cactiTreeNavigationArea').css('width', width+'px');
+			$('.cactiTreeNavigationArea > div').css('padding-top', '5px');
+			
+			/* check visibility of all tabs */
+			$('#submenu-ellipsis').empty();
+			$('.maintabs nav ul li a').each(function() {
+				id = $(this).attr('id');
+				if( $(this).offset().top !== 0 ) {
+					if( $('#' + id + '-ellipsis').length == 0 ) {
+						var str = $(this).parent().html();
+						var str2 = str.replace( id , id + '-ellipsis');
+						$('#submenu-ellipsis').prepend('<li>' + str2 + '</li>');
+					}
+				}else {
+					$('#' + id + '-ellipsis').parent().remove();
+				}
+			});
+
+			if($("#submenu-ellipsis li").length == 0) {
+				$(".ellipsis").hide(0);
+			}else {
+				$(".ellipsis").show(0);
+			}
+		}, 200, "resize-content");
+	});
+}
 
 $('<div id="cactiPageBottom" class="cactiPageBottom"></div>').insertAfter('#cactiContent');
 
@@ -57,6 +65,10 @@ function themeReady() {
 	var clickTimeout = false;
 	var hostOpen = false;
 
+	keepWindowSize();
+
+	console.log('help');
+	
 	// Setup the navigation menu
 	setMenuVisibility();
 

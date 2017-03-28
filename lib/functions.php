@@ -594,7 +594,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 		
 	$force_level = '';
-	$debug_files = read_config_option('selective_debug', true);
+	$debug_files = read_config_option('selective_debug');
 	if ($debug_files != '') {
 		$files = explode(',', $debug_files);
 
@@ -604,7 +604,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 
 	if (strpos($dir_name, 'plugins') !== false) {
-		$debug_plugins = read_config_option('selective_plugin_debug', true);
+		$debug_plugins = read_config_option('selective_plugin_debug');
 		if ($debug_plugins != '') {
 			$debug_plugins = explode(',', $debug_plugins);
 
@@ -620,7 +620,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	/* only log if the specificied level is reached, developer debug is special low + specific devdbg calls */
 	if ($force_level != '') {
 		$level = $force_level;
-	}elseif (read_config_option('log_verbosity', true) == POLLER_VERBOSITY_DEVDBG) {
+	}elseif (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
 		if ($level != '') {
 			if ($level != POLLER_VERBOSITY_DEVDBG) {
 				if ($level > POLLER_VERBOSITY_LOW) {
@@ -628,7 +628,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 				}
 			}
 		}
-	}elseif ($level != '' && $level >= read_config_option('log_verbosity', true)) {
+	}elseif ($level != '' && $level >= read_config_option('log_verbosity')) {
 		return;
 	}
 
@@ -1121,7 +1121,6 @@ function is_hex_string($result) {
    @returns - (bool) either to result is valid or not */
 function prepare_validate_result(&$result) {
 	$delim_cnt = 0;
-	$space_cnt = 0;
 
 	/* first trim the string */
 	$result = trim($result, "'\"\n\r");
@@ -1132,7 +1131,7 @@ function prepare_validate_result(&$result) {
 	}elseif ($result == 'U') {
 		return true;
 	}elseif (is_hexadecimal($result)) {
-		return hex2dec($result);
+		return hexdec($result);
 	}elseif (((substr_count($result, ':')) || (substr_count($result, '!')))) {
 		/* looking for name value pairs */
 		if (substr_count($result, ' ') == 0) {
@@ -1204,7 +1203,7 @@ function get_full_script_path($local_data_id) {
 
 	if (sizeof($data) > 0) {
 	foreach ($data as $item) {
-		$full_path = str_replace('<' . $item['data_name'] . '>', escapeshellarg($item['value']), $full_path);
+		$full_path = str_replace('<' . $item['data_name'] . '>', cacti_escapeshellarg($item['value']), $full_path);
 	}
 	}
 
@@ -3231,7 +3230,7 @@ function cacti_escapeshellcmd($string) {
  * @param $quote 	- true: do NOT remove quotes from result; false: do remove quotes
  * @return			- the escaped [quoted|unquoted] string
  */
-function cacti_escapeshellarg($string, $quote=true) {
+function cacti_escapeshellarg($string, $quote = true) {
 	global $config;
 	/* we must use an apostrophe to escape community names under Unix in case the user uses
 	characters that the shell might interpret. the ucd-snmp binaries on Windows flip out when
@@ -3256,7 +3255,7 @@ function cacti_escapeshellarg($string, $quote=true) {
 		}
 
 		/* ... before we add our own quotation */
-		if ( $quote ) {
+		if ($quote) {
 			return CACTI_ESCAPE_CHARACTER . $string . CACTI_ESCAPE_CHARACTER;
 		} else {
 			return $string;
@@ -3409,6 +3408,18 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	// Set the to informaiotn
 	if ($to == '') {
 		return __('Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.');
+	}
+
+	/* perform data substitution */
+	if (strpos($subject, '|date_time|') !== false) {
+		$date = db_fetch_cell('SELECT value FROM settings WHERE name="date"');
+		if (!empty($date)) {
+			$time = strtotime($date);
+		}else{
+			$time = time();
+		}
+
+		$subject = str_replace('|date_time|', date(date_time_format(), $time), $subject);
 	}
 
 	if (is_array($to)) {
@@ -4610,5 +4621,52 @@ function is_ipaddress($ip_address = '') {
 	}else{
 		return false;
 	}
+}
+
+/** date_time_format		create a format string for date/time
+ * @param string returns	date time format
+ */
+function date_time_format() {
+	global $config;
+
+	$date = '';
+
+	/* setup date format */
+	if (isset($_SESSION['sess_user_id'])) {
+		$date_fmt = read_user_setting('default_date_format');
+		$datechar = read_user_setting('default_datechar');
+	}else{
+		$date_fmt = read_config_option('default_date_format');
+		$datechar = read_config_option('default_datechar');
+	}
+
+	switch ($datechar) {
+		case GDC_HYPHEN: 	$datechar = '-'; break;
+		case GDC_SLASH: 	$datechar = '/'; break;
+		case GDC_DOT:	 	$datechar = '.'; break;
+	}
+
+	switch ($date_fmt) {
+		case GD_MO_D_Y:
+			$date = 'm' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			break;
+		case GD_MN_D_Y:
+			$date = 'M' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			break;
+		case GD_D_MO_Y:
+			$date = 'd' . $datechar . 'm' . $datechar . 'Y H:i:s';
+			break;
+		case GD_D_MN_Y:
+			$date = 'd' . $datechar . 'M' . $datechar . 'Y H:i:s';
+			break;
+		case GD_Y_MO_D:
+			$date = 'Y' . $datechar . 'm' . $datechar . 'd H:i:s';
+			break;
+		case GD_Y_MN_D:
+			$date = 'Y' . $datechar . 'M' . $datechar . 'd H:i:s';
+			break;
+	}
+
+	return $date;
 }
 

@@ -409,8 +409,8 @@ function gprint_presets() {
 			form_selectable_cell(filter_value($gp['name'], get_request_var('filter'), 'gprint_presets.php?action=edit&id=' . $gp['id']), $gp['id']);
             form_selectable_cell($gp['gprint_text'], $gp['id'], '', 'text-align:right');
             form_selectable_cell($disabled ? __('No'):__('Yes'), $gp['id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($gp['graphs']), $gp['id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($gp['templates']), $gp['id'], '', 'text-align:right');
+            form_selectable_cell(number_format_i18n($gp['graphs'], '-1'), $gp['id'], '', 'text-align:right');
+            form_selectable_cell(number_format_i18n($gp['templates'], '-1'), $gp['id'], '', 'text-align:right');
             form_checkbox_cell($gp['name'], $gp['id'], $disabled);
             form_end_row();
 		}

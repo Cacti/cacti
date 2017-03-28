@@ -22,36 +22,17 @@
  +-------------------------------------------------------------------------+
 */
 
-global $no_session_write;
+function upgrade_to_1_1_1() {
+	db_install_execute('ALTER TABLE `graph_templates_item` 
+		DROP INDEX `local_graph_id`, 
+		ADD INDEX `local_graph_id_sequence` (`local_graph_id`, `sequence`)');	
 
-$oper_mode = api_plugin_hook_function('bottom_footer', OPER_MODE_NATIVE);
-if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) {
+	db_install_execute('ALTER TABLE `graph_tree_items` 
+		DROP INDEX `parent`, 
+		ADD INDEX `parent_position` (`parent`, `position`)');
+	
+	db_install_execute('ALTER TABLE `graph_template_input_defs` 
+		COMMENT = \'Stores the relationship for what graph items are associated\';');
 
-?>
-		</div>
-	</div>
-</div>
-<?php api_plugin_hook('page_bottom');?>
-</body>
-</html>
-
-<?php
-
+	db_install_execute('UPDATE graph_templates_item SET hash="" WHERE local_graph_id>0');
 }
-
-/* we use this session var to store field values for when a save fails,
-this way we can restore the field's previous values. we reset it here, because
-they only need to be stored for a single page */
-kill_session_var("sess_field_values");
-
-/* make sure the debug log doesn't get too big */
-debug_log_clear();
-
-/* close the session */
-if (array_search(basename($_SERVER['PHP_SELF']), $no_session_write) === false) {
-	session_write_close();
-}
-
-/* close the database connection */
-db_close();
-

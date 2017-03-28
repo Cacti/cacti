@@ -74,7 +74,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 				switch($type) {
 				case 'graph_template':
-					$hash_cache += xml_to_graph_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]['version']);
+					$hash_cache += xml_to_graph_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $dep_hash_cache[$type][$i]['version'], $remove_orphans);
 					break;
 				case 'data_template':
 					$hash_cache += xml_to_data_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
@@ -254,7 +254,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 	return array($debug_data, $filestatus);
 }
 
-function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) {
+function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, $remove_orphans = false) {
 	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $hash_version_codes, $preview_only, $graph_item_types, $import_debug_info;
 
 	/* track changes */
@@ -520,9 +520,20 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version) 
 	if (isset($orphaned_items) && sizeof($orphaned_items)) {
 		$orphan_text = array();
 		foreach($orphaned_items as $item) {
-			$orphan_text[] = 'Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
+			if ($remove_orphans) {
+				$orphan_text[] = 'Removed Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
+				db_execute_prepared('DELETE FROM graph_templates_item WHERE hash = ?', array($item['hash']));				
+				db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_template_item_id = ?', array($item['id']));
+			}else{
+				$orphan_text[] = 'Found Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
+			}
 		}
 		$import_debug_info['orphans'] = $orphan_text;
+
+		if ($remove_orphans) {
+			retemplate_graphs($graph_template_id);
+			
+		}
 	}
 
 	return $hash_cache;
@@ -607,17 +618,18 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 		}
 	}
 	
-	/* use the profiles step if we are not importing a new one */
-	if ($import_as_new == false) {
+	/* set the rrd_step */
+	if ($profile_id > 0) {
 		$save['rrd_step'] = db_fetch_cell_prepared('SELECT step 
 			FROM data_source_profiles 
 			WHERE id = ?', 
 			array($profile_id));
-	}
-	
-	/* Fix for importing during installation - use the polling interval as the step if we are to use the default rra settings */
-	if (is_array($profile_id) == true)  {
-		$save['rrd_step'] = read_config_option('poller_interval');
+	}else{
+		$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+		$save['rrd_step'] = db_fetch_cell_prepared('SELECT step
+			FROM data_source_profiles
+			WHERE id = ?',
+			array($profile_id));
 	}
 
 	/* check for status changes */
@@ -1561,6 +1573,20 @@ function compare_data($save, $previous_data, $table) {
 			if (array_search($column, $ignores) !== false) continue;
 
 			if ($previous_data[$column] != $value) {
+				$cols = db_get_table_column_types($table);
+
+				if (strstr($cols[$column]['type'], 'int') !== false ||
+					strstr($cols[$column]['type'], 'float') !== false ||
+					strstr($cols[$column]['type'], 'decimal') !== false ||
+					strstr($cols[$column]['type'], 'double') !== false) {
+
+					if (empty($previous_data[$column]) && empty($value)) {
+						continue;
+					}
+				} elseif (empty($previous_data[$column]) && empty($value)) {
+					continue;
+				}
+
 				$different++;
 				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: \'' . $value . '\', Old Value: \'' . $previous_data[$column] . '\''; 
 			}

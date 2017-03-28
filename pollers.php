@@ -633,10 +633,10 @@ function pollers() {
 			form_selectable_cell($poller['hostname'], $poller['id'], '', 'right');
 			form_selectable_cell($poller_status[$poller['status']], $poller['id'], '', 'center');
 			form_selectable_cell(number_format_i18n($poller['total_time'], 2), $poller['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($poller['hosts']), $poller['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($poller['snmp']), $poller['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($poller['script']), $poller['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($poller['server']), $poller['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($poller['hosts'], '-1'), $poller['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($poller['snmp'], '-1'), $poller['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($poller['script'], '-1'), $poller['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($poller['server'], '-1'), $poller['id'], '', 'right');
 			form_selectable_cell($poller['last_update'], $poller['id'], '', 'right');
 			form_selectable_cell($poller['last_status'], $poller['id'], '', 'right');
 			form_checkbox_cell($poller['name'], $poller['id'], $disabled);

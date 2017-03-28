@@ -66,8 +66,11 @@ function repopulate_poller_cache() {
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id) {
-	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM data_local 
-		WHERE host_id = ?  AND snmp_query_id = ?', array($host_id, $data_query_id));
+	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
+		FROM data_local 
+		WHERE host_id = ?
+		AND snmp_query_id = ?',
+		array($host_id, $data_query_id));
 
 	$i = 0;
 	$poller_items = $local_data_ids = array();
@@ -91,11 +94,18 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 		}
 	}
 
-	$poller_ids = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT poller_id FROM poller_item WHERE host_id = ?', array($host_id)), 'poller_id', 'poller_id');
+	$poller_ids = array_rekey(
+		db_fetch_assoc_prepared('SELECT DISTINCT poller_id 
+			FROM poller_item 
+			WHERE host_id = ?', 
+			array($host_id)), 
+		'poller_id', 'poller_id'
+	);
+
 	if (sizeof($poller_ids)) {
-	foreach($poller_ids as $poller_id) {
-		api_data_source_cache_crc_update($poller_id);
-	}
+		foreach($poller_ids as $poller_id) {
+			api_data_source_cache_crc_update($poller_id);
+		}
 	}
 }
 
@@ -326,13 +336,13 @@ function update_poller_cache($data_source, $commit = false) {
 							/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
 							if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (function_exists('proc_open'))) {
 								$action = POLLER_ACTION_SCRIPT_PHP;
-								$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . escapeshellarg($data_source['snmp_index']), $script_queries['script_path'] . ' ' . $script_queries['script_function'], $data_source['host_id']);
+								$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . cacti_escapeshellarg($data_source['snmp_index']), $script_queries['script_path'] . ' ' . $script_queries['script_function'], $data_source['host_id']);
 							}else if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
 								$action = POLLER_ACTION_SCRIPT;
 								$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index'], $script_queries['script_path'], $data_source['host_id']);
 							}else{
 								$action = POLLER_ACTION_SCRIPT;
-								$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . escapeshellarg($data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
+								$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . cacti_escapeshellarg($data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
 							}
 						}
 

@@ -365,6 +365,20 @@ $settings = array(
             'default' => '1',
             'array' => array( '0' => __('Disabled'), '1' => __('Enabled'))
             ),
+		'default_date_format' => array(
+			'friendly_name' => __('Date Display Format'),
+			'description' => __('The System default date format to use in Cacti.'),
+			'method' => 'drop_array',
+			'array' => $dateformats,
+			'default' => GD_Y_MO_D
+			),
+		'default_datechar' => array(
+			'friendly_name' => __('Date Separator'),
+			'description' => __('The System default date separator to be used in Cacti.'),
+			'method' => 'drop_array',
+			'array' => $datechar,
+			'default' => GDC_SLASH
+			),
 		'other1_header' => array(
 			'friendly_name' => __('Other Settings'),
 			'collapsible' => 'true',
@@ -1636,7 +1650,7 @@ $settings = array(
 			A good number will be dependent on the type of data to be operated on.  We recommend a number no lower
 			than 5 Standard Deviations.'),
 			'method' => 'drop_array',
-			'default' => '5',
+			'default' => '10',
 			'array' => array(
 				3 => __('%d Standard Deviations', 3),
 				4 => __('%d Standard Deviations', 4),
@@ -1645,7 +1659,9 @@ $settings = array(
 				7 => __('%d Standard Deviations', 7),
 				8 => __('%d Standard Deviations', 8),
 				9 => __('%d Standard Deviations', 9),
-				10 => __('%d Standard Deviations', 10)
+				10 => __('%d Standard Deviations', 10),
+				15 => __('%d Standard Deviations', 15),
+				20 => __('%d Standard Deviations', 20)
 				)
 			),
 		'spikekill_percent' => array(
@@ -1654,7 +1670,7 @@ $settings = array(
 			have been removed from the sample.  For example, a Variance Percentage of 100% on an adjusted average of 50
 			would remove any sample above the quantity of 100 from the graph.'),
 			'method' => 'drop_array',
-			'default' => '500',
+			'default' => '1000',
 			'array' => array(
 				100 => '100 %',
 				200 => '200 %',
@@ -1665,7 +1681,9 @@ $settings = array(
 				700 => '700 %',
 				800 => '800 %',
 				900 => '900 %',
-				1000 => '1000 %'
+				1000 => '1000 %',
+				2000 => '2000 %',
+				3000 => '3000 %'
 				)
 			),
 		'spikekill_outliers' => array(
@@ -1777,17 +1795,17 @@ $settings_user = array(
 			'default' => ''
 			),
 		'default_date_format' => array(
-			'friendly_name' => __('Graph Date Display Format'),
-			'description' => __('The date format to use for graphs'),
+			'friendly_name' => __('Date Display Format'),
+			'description' => __('The date format to use in Cacti.'),
 			'method' => 'drop_array',
-			'array' => $graph_dateformats,
+			'array' => $dateformats,
 			'default' => GD_Y_MO_D
 			),
 		'default_datechar' => array(
-			'friendly_name' => __('Graph Date Separator'),
-			'description' => __('The date separator to be used for graphs'),
+			'friendly_name' => __('Date Separator'),
+			'description' => __('The date separator to be used in Cacti.'),
 			'method' => 'drop_array',
-			'array' => $graph_datechar,
+			'array' => $datechar,
 			'default' => GDC_SLASH
 			),
 		'page_refresh' => array(

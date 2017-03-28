@@ -32,8 +32,10 @@ var shiftPressed=false;
 var messageTimer;
 var myTitle;
 var myHref;
+var lastPage=null;
 var statePushed=false;
 var popFired=false;
+var hostInfoHeight=0;
 
 var isMobile = {
 	Android: function() {
@@ -468,6 +470,9 @@ function applySkin() {
 	}else{
 		$('input[type="submit"], input[type="button"]').button();
 
+		// Handle re-index changes
+		$('fieldset.reindex_methods').buttonset();
+
 		// debounce submits
 		$('form').submit(function() {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
@@ -515,7 +520,7 @@ function applySkin() {
 	});
 
 	$(document).tooltip({
-		items: 'div.cactiTooltipHint, span.cactiTooltipHint, a',
+		items: 'div.cactiTooltipHint, span.cactiTooltipHint, a, span',
 		content: function() {
 			var element = $(this);
 
@@ -583,8 +588,9 @@ function loadPage(href) {
 	return false;
 }
 
-function loadPageNoHeader(href) {
+function loadPageNoHeader(href, scroll) {
 	statePushed = false;
+	scrollTop   = $(window).scrollTop();
 
 	$.get(href, function(data) {
 		$('#main').empty().hide();
@@ -603,7 +609,11 @@ function loadPageNoHeader(href) {
 
 		pushState(myTitle, href);
 
-		window.scrollTo(0, 0);
+		if (typeof scroll !== 'undefined') {
+			$(window).scrollTop(scrollTop);
+		}else{
+			window.scrollTo(0, 0);
+		}
 
 		return false;
 	});
@@ -659,18 +669,6 @@ function ajaxAnchors() {
 			handlePopState();
 		}
 	});
-}
-
-function handlePopState() {
-	var href = document.location.href;
-
-	if (popFired == false) {
-		if (href.indexOf('#') == -1) {
-			document.location = href + (href.indexOf('?') > 0 ? '&nostate=true':'?nostate=true');
-		}
-	}
-
-	popFired = true;
 }
 
 function setupCollapsible() {
@@ -1023,18 +1021,16 @@ function applyGraphFilter() {
 }
 
 function cleanHeader(href) {
-	href = href.replace('&header=false', '').replace('?header=false');
+	href = href.replace('header=false', '').replace('header=false', '').replace('&&', '&').replace('?&', '?');
 	href = href.replace('action=tree_content', 'action=tree').replace('&&', '&');
-	href = href.replace('&nostate=true', '').replace('?nostate=true');
+	href = href.replace('&nostate=true', '').replace('?nostate=true', '');
 
 	return href;
 }
 
 function pushState(myTitle, myHref) {
 	if (myHref.indexOf('nostate') < 0) {
-		//console.log('called -> ' + myTitle + ', ' + myHref);
 		if (statePushed == false) {
-			//console.log('executed -> ' + myTitle + ', ' + myHref);
 			var myObject = { myTitle: myHref };
 			if (typeof window.history.pushState !== 'undefined') {
 				window.history.pushState(myObject, myTitle, cleanHeader(myHref));
@@ -1043,6 +1039,25 @@ function pushState(myTitle, myHref) {
 	}
 
 	statePushed = true;
+}
+
+function handlePopState() {
+	var href = document.location.href;
+
+	if (popFired == false) {
+		if (href.indexOf('#') == -1) {
+			if (href.indexOf('header=false') > 0) {
+				loadPageNoHeader(href + '&nostate=true');
+			}else if  (basename(href) == lastPage) {
+				loadPageNoHeader(href + (href.indexOf('?') > 0 ? '&header=false&nostate=true':'?header=false&nostate=true'));
+			}else{
+				document.location = href + (href.indexOf('?') > 0 ? '&nostate=true':'?nostate=true');
+			}
+		}
+	}
+
+	popFired = true;
+	lastPage = basename(href);
 }
 
 function applyGraphTimespan() {
@@ -1165,7 +1180,7 @@ function removeSpikesVariance(local_graph_id) {
 }
 
 function removeSpikesInRange(local_graph_id) {
-	strURL = 'spikekill.php?avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	strURL = 'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
@@ -1207,7 +1222,7 @@ function dryRunVariance(local_graph_id) {
 }
 
 function dryRunSpikesInRange(local_graph_id) {
-	strURL = 'spikekill.php?avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	strURL = 'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();

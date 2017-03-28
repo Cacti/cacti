@@ -263,9 +263,16 @@ $input_types_script = array(
 
 $reindex_types = array(
 	DATA_QUERY_AUTOINDEX_NONE               => __('None'),
-	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => __('Uptime Goes Backwards'),
-	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE   => __('Index Count Changed'),
-	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => __('Verify All Fields')
+	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => __('Uptime'),
+	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE   => __('Index Count'),
+	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => __('Verify All')
+);
+
+$reindex_types_tips = array(
+	DATA_QUERY_AUTOINDEX_NONE               => __('All Re-Indexing will be manual or managed through scripts or Device Automation.'),
+	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => __('When the Devices SNMP uptime goes backward, a Re-Index will be performed.'),
+	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE   => __('When the Data Query index count changes, a Re-Index will be performed.'),
+	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => __('Every polling cycle, a Re-Index will be performed.  Very expensive.')
 );
 
 $snmp_query_field_actions = array(1 =>
@@ -945,6 +952,7 @@ $hash_version_codes = array(
 	'1.0.5'  => '0100',
 	'1.0.6'  => '0100',
 	'1.1.0'  => '0100',
+	'1.1.1'  => '0100',
 );
 
 $hash_type_names = array(
@@ -1068,7 +1076,7 @@ $graph_weekdays = array(
 	WD_SATURDAY  => date('l', strtotime('Saturday'))
 );
 
-$graph_dateformats = array(
+$dateformats = array(
 	GD_MO_D_Y => __('Month Number, Day, Year'),
 	GD_MN_D_Y => __('Month Name, Day, Year'),
 	GD_D_MO_Y => __('Day, Month Number, Year'),
@@ -1077,7 +1085,7 @@ $graph_dateformats = array(
 	GD_Y_MN_D => __('Year, Month Name, Day')
 );
 
-$graph_datechar = array(
+$datechar = array(
 	GDC_HYPHEN => '-',
 	GDC_SLASH => '/'
 );
@@ -1497,7 +1505,6 @@ $phperrors = array (
 	16384 => 'USER_DEPRECATED',
 	32767 => 'ALL'
 );
-
 
 api_plugin_hook('config_arrays');
 
