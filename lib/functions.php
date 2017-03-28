@@ -2791,7 +2791,7 @@ function draw_navigation_text($type = 'url') {
 			$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li></ul>';
 		}
 	}elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
-        $title      = db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]));
+        	$title      = db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]));
 		$style      = db_fetch_cell_prepared('SELECT style FROM external_links WHERE id = ?', array($matches[1]));
 		if ($style == 'CONSOLE') {
 			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0' href='" . $config['url_path'] . 
@@ -2935,7 +2935,7 @@ function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
 		$hash = db_fetch_cell_prepared('SELECT hash FROM cdef_items WHERE id = ?', array($cdef_id));
 	}
 
-    if (strlen($hash) == 32 && ctype_xdigit($hash)) {
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
 	}else{
 		return generate_hash();
@@ -2967,7 +2967,7 @@ function get_hash_vdef($vdef_id, $sub_type = "vdef") {
 		$hash = db_fetch_cell_prepared('SELECT hash FROM vdef_items WHERE id = ?', array($vdef_id));
 	}
 
-    if (strlen($hash) == 32 && ctype_xdigit($hash)) {
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
 	}else{
 		return generate_hash();
@@ -2981,7 +2981,7 @@ function get_hash_vdef($vdef_id, $sub_type = "vdef") {
 function get_hash_data_source_profile($data_source_profile_id) {
 	$hash = db_fetch_cell_prepared('SELECT hash FROM data_source_profiles WHERE id = ?', array($data_source_profile_id));
 
-    if (strlen($hash) == 32 && ctype_xdigit($hash)) {
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
 	}else{
 		return generate_hash();
@@ -2994,7 +2994,7 @@ function get_hash_data_source_profile($data_source_profile_id) {
 function get_hash_host_template($host_template_id) {
 	$hash = db_fetch_cell_prepared('SELECT hash FROM host_template WHERE id = ?', array($host_template_id));
 
-    if (strlen($hash) == 32 && ctype_xdigit($hash)) {
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
 	}else{
 		return generate_hash();
@@ -3016,7 +3016,7 @@ function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
 		$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph_sv WHERE id = ?', array($data_query_id));
 	}
 
-    if (strlen($hash) == 32 && ctype_xdigit($hash)) {
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
 	}else{
 		return generate_hash();
