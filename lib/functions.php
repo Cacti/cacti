@@ -1069,7 +1069,7 @@ function is_hexadecimal($result) {
 
 	$parts = explode(':', $hexstr);
 	foreach($parts as $part) {
-		if (strlen($part != 2)) {
+		if (strlen($part) != 2) {
 			return false;
 		}
 		if (ctype_xdigit($part) == false) {
@@ -1088,7 +1088,7 @@ function is_mac_address($result) {
 }
 
 function is_hex_string($result) {
-	if ($result == '') {
+    if ($result == '') {
         return false;
     }
 
@@ -1131,12 +1131,12 @@ function prepare_validate_result(&$result) {
 		if (substr_count($result, ' ') == 0) {
 			return true;
 		} else {
-	        $delim_cnt = 0;
-		    if (substr_count($result, ':')) {
+			$delim_cnt = 0;
+			if (substr_count($result, ':')) {
 				$delim_cnt = substr_count($result, ':');
 			} elseif (strstr($result, '!')) {
 				$delim_cnt = substr_count($result, '!');
-            }
+			}
 
 			$space_cnt = substr_count($result, ' ');
 
