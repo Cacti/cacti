@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#466: Call to member function row() on a non-object in lib/snmpagent.php
 -issue#467: Reduce the number of queries in log function
 -issue#472: Schema changes to improve performance
+-issue#485: When editing a device, the ping status was not always returned
 -issue: Back button issues due to syntax problems in JavaScript
 -issue: Zoom periodically would loose it's crosshairs after zooming
 -issue: Zoom would zoom out into the future even when disabled
