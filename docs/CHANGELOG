@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.1.2
+-issue#492: Error while adding Non Data Query (cg) Graphs
+-issue#494: CLI Error while importing template
+
 1.1.1
 -issue#457: Continued LDAP issues with initial user creation
 -issue#461: The function escapeshell arg not appropriate on Windows
