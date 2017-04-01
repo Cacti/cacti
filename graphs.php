@@ -1221,9 +1221,9 @@ function graph_edit() {
 							?><span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . ($host_id > 0 ? $host_id : get_request_var('host_id')));?>'><?php print __('Edit Device.');?></a></span><br><?php
 						}
 						if ($locked) {
-							?><span class='linkMarker'>*<span class='hyperLink' id='unlockid'><?php print __('Unlock Graph.');?></span></span><?php
+							?><span class='linkMarker'>*<a href='#' class='hyperLink' id='unlockid'><?php print __('Unlock Graph.');?></a></span><?php
 						}else{
-							?><span class='linkMarker'>*<span class='hyperLink' id='lockid'><?php print __('Lock Graph.');?></span></span><?php
+							?><span class='linkMarker'>*<a href='#' class='hyperLink' id='lockid'><?php print __('Lock Graph.');?></a></span><?php
 						}
 					?>
 				</td>

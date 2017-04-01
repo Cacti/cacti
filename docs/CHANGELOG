@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#500: Generic SNMP Device Package Damaged - Unix Ping Host
 -issue#506: Undefined index: cactiStatsDeviceFailedPolls
 -issue#507: Nextwork Discovery 'export' produces no results
+-issue#509: Minor Bug with Device Ownership Selection
 
 1.1.1
 -issue#457: Continued LDAP issues with initial user creation
