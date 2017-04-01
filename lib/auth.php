@@ -1147,7 +1147,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT DISTINCT gt.id, gt.name,
+		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, gt.name,
 			$sql_select
 			FROM graph_templates_graph AS gtg 
 			INNER JOIN graph_local AS gl 
