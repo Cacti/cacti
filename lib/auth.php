@@ -1147,24 +1147,28 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, gt.name,
-			$sql_select
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
-			$sql_join
-			$sql_where
-			$sql_having
+		$graphs = db_fetch_assoc("SELECT DISTINCT id, name 
+			FROM (SELECT DISTINCT gtg.graph_template_id AS id, gt.name,
+				$sql_select
+				FROM graph_templates_graph AS gtg 
+				INNER JOIN graph_local AS gl 
+				ON gl.id=gtg.local_graph_id 
+				LEFT JOIN graph_templates AS gt 
+				ON gt.id=gl.graph_template_id 
+				LEFT JOIN host AS h 
+				ON h.id=gl.host_id 
+				$sql_join
+				$sql_where
+				$sql_having
+			) AS rs
+			WHERE name!= ''
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
 			FROM (
-				SELECT $sql_select
+				SELECT DISTINCT gtg.graph_template_id AS id, gt.name,
+				$sql_select
 				FROM graph_templates_graph AS gtg 
 				INNER JOIN graph_local AS gl 
 				ON gl.id=gtg.local_graph_id 
@@ -1177,27 +1181,33 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 				$sql_having
 			) AS rower");
 	}else{
-		$graphs = db_fetch_assoc("SELECT DISTINCT gt.id, gt.name
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
-			$sql_where
+		$graphs = db_fetch_assoc("SELECT DISTINCT id, name
+			FROM (SELECT DISTINCT gtg.graph_template_id, gt.name
+				FROM graph_templates_graph AS gtg 
+				INNER JOIN graph_local AS gl 
+				ON gl.id=gtg.local_graph_id 
+				LEFT JOIN graph_templates AS gt 
+				ON gt.id=gl.graph_template_id 
+				LEFT JOIN host AS h 
+				ON h.id=gl.host_id 
+				$sql_where
+			) AS rs
+			WHERE name != ''
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
-			$sql_where");
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
+			FROM (
+				SELECT DISTINCT gtg.graph_template_id, gt.name
+				FROM graph_templates_graph AS gtg 
+				INNER JOIN graph_local AS gl 
+				ON gl.id=gtg.local_graph_id 
+				LEFT JOIN graph_templates AS gt 
+				ON gt.id=gl.graph_template_id 
+				LEFT JOIN host AS h 
+				ON h.id=gl.host_id 
+				$sql_where
+			AS rs");
 	}
 
 	return $graphs;
