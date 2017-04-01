@@ -1161,7 +1161,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 				$sql_where
 				$sql_having
 			) AS rs
-			WHERE name!= ''
+			WHERE id > 0 AND name!= ''
 			$order_by
 			$limit");
 
@@ -1179,7 +1179,8 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 				$sql_join
 				$sql_where
 				$sql_having
-			) AS rower");
+			) AS rower
+			WHERE id > 0 AND name != ''");
 	}else{
 		$graphs = db_fetch_assoc("SELECT DISTINCT id, name
 			FROM (SELECT DISTINCT gtg.graph_template_id, gt.name
@@ -1192,7 +1193,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 				ON h.id=gl.host_id 
 				$sql_where
 			) AS rs
-			WHERE name != ''
+			WHERE id > 0 AND name != ''
 			$order_by
 			$limit");
 
@@ -1207,7 +1208,8 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 				LEFT JOIN host AS h 
 				ON h.id=gl.host_id 
 				$sql_where
-			AS rs");
+			AS rs
+			WHERE id > 0 AND name != ''");
 	}
 
 	return $graphs;
