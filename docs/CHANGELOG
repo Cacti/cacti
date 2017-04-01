@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#494: CLI Error while importing template
 -issue#499: SQL Error in Graph Automation resulting in no Graphs on Tree
 -issue#500: Generic SNMP Device Package Damaged - Unix Ping Host
+-issue#506: Undefined index: cactiStatsDeviceFailedPolls
 
 1.1.1
 -issue#457: Continued LDAP issues with initial user creation
