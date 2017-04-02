@@ -279,3 +279,45 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	}
 }
 
+function api_graph_change_device($local_graph_id, $host_id) {
+	$dqgraph = db_fetch_cell_prepared('SELECT snmp_query_id 
+		FROM graph_local 
+		WHERE id = ?', 
+		array($local_graph_id));
+
+	if (empty($dqgraph)) {
+		db_execute_prepared('UPDATE graph_local
+			SET host_id = ?
+			WHERE id = ?',
+			array($host_id, $local_graph_id));
+
+		update_graph_title_cache($local_graph_id);
+
+		/* update the data sources as well */
+		$data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id
+			FROM graph_templates_item AS gti
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id=dtr.id
+			WHERE gti.local_graph_id = ?',
+			array($local_graph_id));
+
+		if (sizeof($data_ids)) {
+			foreach($data_ids as $data_id) {
+				db_execute_prepared('UPDATE data_local 
+					SET host_id = ? 
+					WHERE id = ?', 
+					array($host_id, $data_id['local_data_id']));
+
+				db_execute_prepared('UPDATE poller_item 
+					SET host_id = ? 
+					WHERE local_data_id = ?', 
+					array($host_id, $data_id['local_data_id']));
+			}
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
