@@ -172,26 +172,35 @@ function realtime_purge_cache() {
  */
 function logrotate_rotatenow () {
 	global $config;
-	$log = $config['base_path'] . '/log/cacti.log';
+
+	$log = read_config_option('path_cactilog');
+	if ($log == '') {
+		$log = $config['base_path'] . '/log/cacti.log';
+	}
+
 	set_config_option('logrotate_lastrun', time());
 	clearstatcache();
-	if (is_writable($config['base_path'] . '/log/') && is_writable($log)) {
+
+	if (is_writable(dirname($log) . '/') && is_writable($log)) {
 		$perms = octdec(substr(decoct( fileperms($log) ), 2));
 		$owner = fileowner($log);
 		$group = filegroup($log);
+
 		if ($owner !== FALSE) {
 			$ext = date('Ymd');
+
 			if (file_exists($log . '-' . $ext)) {
 				$ext = date('YmdHis');
 			}
+
 			if (rename($log, $log . '-' . $ext)) {
 				touch($log);
 				chown($log, $owner);
 				chgrp($log, $group);
 				chmod($log, $perms);
-				cacti_log('Cacti Log Rotation - Created Log cacti.log-' . $ext);
+				cacti_log('Cacti Log Rotation - Created Log ' . basename($log) . '-' . $ext);
 			} else {
-				cacti_log('Cacti Log Rotation - ERROR: Could not rename cacti.log to ' . $log . '-' . $ext);
+				cacti_log('Cacti Log Rotation - ERROR: Could not rename ' . basename($log) . ' to ' . basename($log) . '-' . $ext);
 			}
 		} else {
 			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your log directory');
@@ -199,6 +208,7 @@ function logrotate_rotatenow () {
 	} else {
 		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Directory / Log not writable.');
 	}
+
 	logrotate_cleanold();
 }
 
@@ -208,31 +218,47 @@ function logrotate_rotatenow () {
  */
 function logrotate_cleanold () {
 	global $config;
-	$dir = scandir($config['base_path'] . '/log/');
+
+	$logfile = read_config_option('path_cactilog');
+	if ($logfile == '') {
+		$logfile = $config['base_path'] . '/log/cacti.log';
+	}
+
+	$baselogfile = basename($logfile) . '-';
+	$baseloglen  = strlen($baselogfile);
+	$dir = scandir(dirname($logfile));
+
 	$r = read_config_option('logrotate_retain');
 	if ($r == '' || $r < 0) {
 		$r = 7;
 	}
+
 	if ($r > 365) {
 		$r = 365;
 	}
+
 	if ($r == 0) {
 		return;
 	}
-	foreach ($dir as $d) {
-		if (substr($d, 0, 10) == "cacti.log-" && strlen($d) >= 18) {
-			$e = date('Ymd', time() - ($r * 86400));
-			$f = substr($d, 10, 8);
-			if ($f < $e) {
-				if (is_writable($config['base_path'] . '/log/' . $d)) {
-					@unlink($config['base_path'] . '/log/' . $d);
-					cacti_log('Cacti Log Rotation - Purging Log : ' . $d);
-				} else {
-					cacti_log('Cacti Log Rotation - ERROR: Can not purge log : ' . $d);
+
+	if (sizeof($dir)) {
+		foreach ($dir as $d) {
+			if (substr($d, 0, $baseloglen) == $baselogfile && strlen($d) >= $baseloglen + 8) {
+				$e = date('Ymd', time() - ($r * 86400));
+				$f = substr($d, 10, 8);
+
+				if ($f < $e) {
+					if (is_writable(dirname($logfile) . '/' . $d)) {
+						@unlink(dirname($logfile) . '/' . $d);
+						cacti_log('Cacti Log Rotation - Purging Log : ' . $d);
+					} else {
+						cacti_log('Cacti Log Rotation - ERROR: Can not purge log : ' . $d);
+					}
 				}
 			}
 		}
 	}
+
 	clearstatcache();
 }
 

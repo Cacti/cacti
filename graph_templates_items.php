@@ -96,23 +96,57 @@ function form_save() {
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '4',
-					'text_format' => 'Current:',
+					'text_format' => __('Current:'),
 					'hard_return' => ''
 					),
 				1 => array(
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '1',
-					'text_format' => 'Average:',
+					'text_format' => __('Average:'),
 					'hard_return' => ''
 					),
 				2 => array(
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '3',
-					'text_format' => 'Maximum:',
+					'text_format' => __('Maximum:'),
 					'hard_return' => 'on'
-					));
+					)
+			);
+		}elseif ($graph_item_types[get_nfilter_request_var('graph_type_id')] == 'LEGEND_CAMM') {
+	         /* this can be a major time saver when creating lots of graphs with the typical
+				GPRINT LAST/AVERAGE/MAX legends */
+			$items = array(
+				0 => array(
+					'color_id' => '0',
+					'graph_type_id' => '9',
+					'consolidation_function_id' => '4',
+					'text_format' => __('Current:'),
+					'hard_return' => ''
+				),
+				1 => array(
+					'color_id' => '0',
+					'graph_type_id' => '9',
+					'consolidation_function_id' => '1',
+					'text_format' => __('Average:'),
+					'hard_return' => ''
+				),
+				2 => array(
+					'color_id' => '0',
+					'graph_type_id' => '9',
+					'consolidation_function_id' => '2',
+					'text_format' => __('Minimum:'),
+					'hard_return' => ''
+				),
+				3 => array(
+					'color_id' => '0',
+					'graph_type_id' => '9',
+					'consolidation_function_id' => '3',
+					'text_format' => __('Maximum:'),
+					'hard_return' => 'on'
+				)
+			);
 		}
 
 		$sequence = get_request_var('sequence');
@@ -590,6 +624,7 @@ function item_edit() {
 			$('#row_text_format').show();
 			$('#row_hard_return').show();
 			break;
+		case '15': // LEGEND
 		case '10': // LEGEND
 			$('#row_task_item_id').show();
 			$('#row_color_id').hide();
