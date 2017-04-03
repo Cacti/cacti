@@ -100,6 +100,7 @@ define('GRAPH_ITEM_TYPE_GPRINT_LAST',       11);
 define('GRAPH_ITEM_TYPE_GPRINT_MAX',        12);
 define('GRAPH_ITEM_TYPE_GPRINT_MIN',        13);
 define('GRAPH_ITEM_TYPE_GPRINT_AVERAGE',    14);
+define('GRAPH_ITEM_TYPE_LEGEND_CAMM',       15);
 define('GRAPH_ITEM_TYPE_LINESTACK',         20);
 define('GRAPH_ITEM_TYPE_TIC',               30);
 define('GRAPH_ITEM_TYPE_TEXTALIGN',         40);

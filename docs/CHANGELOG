@@ -1,8 +1,16 @@
 Cacti CHANGELOG
 
 1.1.2
--issue#492: Error while adding Non Data Query (cg) Graphs
--issue#494: CLI Error while importing template
+-issue#492: Error while adding non data query (cg) graphs
+-issue#494: CLI error while importing template
+-issue#499: SQL error in graph automation resulting in no graphs on tree
+-issue#500: Generic SNMP device package damaged - Unix Ping Host
+-issue#505: Log rotation does not work in some cases
+-issue#506: Undefined index: cactiStatsDeviceFailedPolls
+-issue#507: Nextwork discovery 'export' produces no results
+-issue#509: Minor bug with device ownership selection
+-feature: Add new legend type that includes Current/Average/Minimum/Maximum
+-feature: Update d3.js to latest version 4.7.4
 
 1.1.1
 -issue#457: Continued LDAP issues with initial user creation
