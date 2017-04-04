@@ -467,6 +467,7 @@ function display_output_messages() {
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
 				if (isset($messages[$current_message_id]['message'])) {
+					/** @var $message */
 					eval ('$message = "' . $messages[$current_message_id]['message'] . '";');
 
 					switch ($messages[$current_message_id]['type']) {
@@ -3397,7 +3398,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	/* perform data substitution */
 	if (strpos($subject, '|date_time|') !== false) {
-		$date = db_fetch_cell('SELECT value FROM settings WHERE name="date"');
+	    $date = read_config_option('date');
 		if (!empty($date)) {
 			$time = strtotime($date);
 		}else{
@@ -3488,7 +3489,6 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	if (!is_array($from)) {
 		$fromname = '';
 		if ($from == '') {
-			$from     = read_config_option('settings_from_email');
 			$fromname = read_config_option('settings_from_name');
 			if (isset($_SERVER['HOSTNAME'])) {
 				$from = 'Cacti@' . $_SERVER['HOSTNAME'];
@@ -3551,10 +3551,10 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	if (!is_array($replyto)) {
 		if ($replyto != '') {
-			$mail->replyTo($replyto);
+			$mail->addReplyTo($replyto);
 		}
 	}else{
-		$mail->replyTo($replyto[0], $replyto[1]);
+		$mail->addReplyTo($replyto[0], $replyto[1]);
 	}
 
 	// Set the wordwrap limits
@@ -4078,7 +4078,7 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 		}
 	}
 
-    return $result;
+    return $results;
 }
 
 function get_timeinstate($host) {
