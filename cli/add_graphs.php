@@ -293,17 +293,20 @@ if (sizeof($parms)) {
 			 * add it and run it once to get the cache filled */
 
 			/* is this data query already associated (independent of the reindex method)? */
-			$exists_already = db_fetch_cell("SELECT COUNT(host_id) FROM host_snmp_query WHERE host_id=$host_id AND snmp_query_id=" . $dsGraph['snmpQueryId']);
+			$exists_already = db_fetch_cell_prepared('SELECT COUNT(host_id) 
+				FROM host_snmp_query 
+				WHERE host_id = ?
+				AND snmp_query_id = ?', 
+				array($host_id, $dsGraph['snmpQueryId']));
+
 			if ((isset($exists_already)) &&
 				($exists_already > 0)) {
 				/* yes: do nothing, everything's fine */
 			}else{
-				db_execute('REPLACE INTO host_snmp_query 
-					(host_id,snmp_query_id,reindex_method) 
-					VALUES ('. 
-						$host_id                    . ',' . 
-						$dsGraph['snmpQueryId']    . ',' . 
-						$dsGraph['reindex_method'] .  ')');
+				db_execute_prepared('REPLACE INTO host_snmp_query 
+					(host_id, snmp_query_id, reindex_method) 
+					VALUES (?, ?, ?)',
+					array($host_id, $dsGraph['snmpQueryId'], $dsGraph['reindex_method']));
 
 				/* recache snmp data, this is time consuming,
 				 * but should happen only once even if multiple graphs
@@ -322,115 +325,117 @@ if (sizeof($parms)) {
 	}
 
 	/* process the snmp fields */
-	$snmpFields = getSNMPFields($host_id, $dsGraph['snmpQueryId']);
+	if ($graph_type == 'dq' || $listSNMPFields || $listSNMPValues) {
+		$snmpFields = getSNMPFields($host_id, $dsGraph['snmpQueryId']);
 
-	if ($listSNMPFields) {
-		displaySNMPFields($snmpFields, $host_id, $quietMode);
-		exit(0);
-	}
+		if ($listSNMPFields) {
+			displaySNMPFields($snmpFields, $host_id, $quietMode);
+			exit(0);
+		}
 
-	$snmpValues = array();
+		$snmpValues = array();
 
-	/* More sanity checking */
-	/* Testing SnmpValues and snmpFields args */
-	if ($dsGraph['snmpValue'] and $dsGraph['snmpValueRegex'] ) {
-		echo "ERROR: You can't supply --snmp-value and --snmp-value-regex at the same time\n";
-		exit(1);
-	}
-
-	$nbSnmpFields      = sizeof($dsGraph['snmpField']);
-	$nbSnmpValues      = sizeof($dsGraph['snmpValue']);
-	$nbSnmpValuesRegex = sizeof($dsGraph['snmpValueRegex']);
-
-	if ($nbSnmpValues) {
-		if ($nbSnmpFields != $nbSnmpValues) {
-			echo "ERROR: number of --snmp-field and --snmp-value does not match\n";
+		/* More sanity checking */
+		/* Testing SnmpValues and snmpFields args */
+		if ($dsGraph['snmpValue'] and $dsGraph['snmpValueRegex'] ) {
+			echo "ERROR: You can't supply --snmp-value and --snmp-value-regex at the same time\n";
 			exit(1);
 		}
-	} elseif ($nbSnmpValuesRegex) {
-		if ($nbSnmpFields != $nbSnmpValuesRegex) {
-			echo "ERROR: number of --snmp-field ($nbSnmpFields) and --snmp-value-regex ($nbSnmpValuesRegex) does not match\n";
-			exit(1);
-		}
-	} else {
-		echo "ERROR: You must supply a --snmp-value or --snmp-value-regex option with --snmp-field\n";
-		exit(1);
-	}
 
-	$index_filter = 0;
-	foreach($dsGraph['snmpField'] as $snmpField) {
-		if ($snmpField != '') {
-			if (!isset($snmpFields[$snmpField] )) {
-				echo 'ERROR: Unknown snmp-field ' . $dsGraph['snmpField'] . " for host $host_id\n";
-				echo "Try --list-snmp-fields\n";
+		$nbSnmpFields      = sizeof($dsGraph['snmpField']);
+		$nbSnmpValues      = sizeof($dsGraph['snmpValue']);
+		$nbSnmpValuesRegex = sizeof($dsGraph['snmpValueRegex']);
+
+		if ($nbSnmpValues) {
+			if ($nbSnmpFields != $nbSnmpValues) {
+				echo "ERROR: number of --snmp-field and --snmp-value does not match\n";
 				exit(1);
 			}
-		}
-
-		$snmpValues = getSNMPValues($host_id, $snmpField, $dsGraph['snmpQueryId']);
-
-		$snmpValue      = '';
-		$snmpValueRegex = '';
-
-		if ($dsGraph['snmpValue']) {
-			$snmpValue 	= $dsGraph['snmpValue'][$index_filter];
+		} elseif ($nbSnmpValuesRegex) {
+			if ($nbSnmpFields != $nbSnmpValuesRegex) {
+				echo "ERROR: number of --snmp-field ($nbSnmpFields) and --snmp-value-regex ($nbSnmpValuesRegex) does not match\n";
+				exit(1);
+			}
 		} else {
-			$snmpValueRegex = $dsGraph['snmpValueRegex'][$index_filter];
-		}
-
-		if ($snmpValue) {
-			$ok = 0;
-
-			foreach ($snmpValues as $snmpValueKnown => $snmpValueSet) {
-				if ($snmpValue == $snmpValueKnown) {
-					$ok = 1;
-				}
-			}
-
-			if (! $ok) {
-				echo "ERROR: Unknown snmp-value for field $snmpField - $snmpValue\n";
-				echo "Try --snmp-field=$snmpField --list-snmp-values\n";
-				exit(1);
-			}
-		} elseif ($snmpValueRegex) {
-			$ok = 0;
-
-			foreach ($snmpValues as $snmpValueKnown => $snmpValueSet) {
-				if (preg_match("/$snmpValueRegex/", $snmpValueKnown)) {
-					$ok = 1;
-				}
-			}
-
-			if (! $ok) {
-				echo "ERROR: Unknown snmp-value for field $snmpField - $snmpValue\n";
-				echo "Try --snmp-field=$snmpField --list-snmp-values\n";
-				exit(1);
-			}
-		}
-
-		$index_filter++;
-	}
-
-	if ($listSNMPValues)  {
-		if (!$dsGraph['snmpField']) {
-			echo "ERROR: You must supply an snmp-field before you can list its values\n";
-			echo "Try --list-snmp-fields\n";
+			echo "ERROR: You must supply a --snmp-value or --snmp-value-regex option with --snmp-field\n";
 			exit(1);
 		}
 
-		if (sizeof($dsGraph['snmpField'])) {
-			foreach($dsGraph['snmpField'] as $snmpField) {
-				if ($snmpField = "") {
-					echo "ERROR: You must supply a valid snmp-field before you can list its values\n";
+		$index_filter = 0;
+		foreach($dsGraph['snmpField'] as $snmpField) {
+			if ($snmpField != '') {
+				if (!isset($snmpFields[$snmpField] )) {
+					echo 'ERROR: Unknown snmp-field ' . $dsGraph['snmpField'] . " for host $host_id\n";
 					echo "Try --list-snmp-fields\n";
 					exit(1);
 				}
-		
-				displaySNMPValues($snmpValues, $host_id, $snmpField, $quietMode);
 			}
+
+			$snmpValues = getSNMPValues($host_id, $snmpField, $dsGraph['snmpQueryId']);
+
+			$snmpValue      = '';
+			$snmpValueRegex = '';
+
+			if ($dsGraph['snmpValue']) {
+				$snmpValue 	= $dsGraph['snmpValue'][$index_filter];
+			} else {
+				$snmpValueRegex = $dsGraph['snmpValueRegex'][$index_filter];
+			}
+
+			if ($snmpValue) {
+				$ok = 0;
+
+				foreach ($snmpValues as $snmpValueKnown => $snmpValueSet) {
+					if ($snmpValue == $snmpValueKnown) {
+						$ok = 1;
+					}
+				}
+
+				if (! $ok) {
+					echo "ERROR: Unknown snmp-value for field $snmpField - $snmpValue\n";
+					echo "Try --snmp-field=$snmpField --list-snmp-values\n";
+					exit(1);
+				}
+			} elseif ($snmpValueRegex) {
+				$ok = 0;
+
+				foreach ($snmpValues as $snmpValueKnown => $snmpValueSet) {
+					if (preg_match("/$snmpValueRegex/", $snmpValueKnown)) {
+						$ok = 1;
+					}
+				}
+
+				if (! $ok) {
+					echo "ERROR: Unknown snmp-value for field $snmpField - $snmpValue\n";
+					echo "Try --snmp-field=$snmpField --list-snmp-values\n";
+					exit(1);
+				}
+			}
+
+			$index_filter++;
 		}
 
-		exit(0);
+		if ($listSNMPValues)  {
+			if (!$dsGraph['snmpField']) {
+				echo "ERROR: You must supply an snmp-field before you can list its values\n";
+				echo "Try --list-snmp-fields\n";
+				exit(1);
+			}
+
+			if (sizeof($dsGraph['snmpField'])) {
+				foreach($dsGraph['snmpField'] as $snmpField) {
+					if ($snmpField = "") {
+						echo "ERROR: You must supply a valid snmp-field before you can list its values\n";
+						echo "Try --list-snmp-fields\n";
+						exit(1);
+					}
+
+					displaySNMPValues($snmpValues, $host_id, $snmpField, $quietMode);
+				}
+			}
+
+			exit(0);
+		}
 	}
 
 	if (!isset($graphTemplates[$template_id])) {
@@ -496,29 +501,34 @@ if (sizeof($parms)) {
 	$returnArray = array();
 
 	if ($graph_type == 'cg') {
-		$existsAlready = db_fetch_cell("SELECT id FROM graph_local WHERE graph_template_id=$template_id AND host_id=$host_id");
+		$existsAlready = db_fetch_cell_prepared('SELECT id 
+			FROM graph_local 
+			WHERE graph_template_id = ? 
+			AND host_id = ?', array($template_id, $host_id));
 
 		if ((isset($existsAlready)) &&
 			($existsAlready > 0) &&
 			(!$force)) {
-			$dataSourceId  = db_fetch_cell("SELECT
+			$dataSourceId  = db_fetch_cell_prepared('SELECT
 				data_template_rrd.local_data_id
 				FROM graph_templates_item, data_template_rrd
-				WHERE graph_templates_item.local_graph_id = " . $existsAlready . "
+				WHERE graph_templates_item.local_graph_id = ?
 				AND graph_templates_item.task_item_id = data_template_rrd.id
-				LIMIT 1");
+				LIMIT 1', 
+				array($existsAlready));
 
 			echo "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)\n";
 			exit(1);
 		}else{
-			$returnArray = create_complete_graph_from_template($template_id, $host_id, '', $values['cg']);
+			$returnArray = create_complete_graph_from_template($template_id, $host_id, null, $values['cg']);
 			$dataSourceId = '';
 		}
 
 		if ($graphTitle != '') {
-			db_execute("UPDATE graph_templates_graph
-				SET title=\"$graphTitle\"
-				WHERE local_graph_id=" . $returnArray['local_graph_id']);
+			db_execute_prepared('UPDATE graph_templates_graph
+				SET title = ?
+				WHERE local_graph_id = ?',
+				array($graphTitle, $returnArray));
 
 			update_graph_title_cache($returnArray['local_graph_id']);
 		}
@@ -536,7 +546,10 @@ if (sizeof($parms)) {
 		}
 
 		/* add this graph template to the list of associated graph templates for this host */
-		db_execute('REPLACE INTO host_graph (host_id,graph_template_id) VALUES (' . $host_id . ',' . $template_id . ')');
+		db_execute_prepared('REPLACE INTO host_graph 
+			(host_id, graph_template_id) VALUES 
+			(?, ?)', 
+			array($host_id , $template_id));
 
 		echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
 	}elseif ($graph_type == 'ds') {
@@ -559,7 +572,7 @@ if (sizeof($parms)) {
 		$index_snmp_filter = 0;
 		if (sizeof($dsGraph['snmpField'])) {
 			foreach ($dsGraph['snmpField'] as $snmpField) {
-				$req  .= ' AND snmp_index in (
+				$req  .= ' AND snmp_index IN (
 					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($snmpField);
 
 				if (sizeof($dsGraph['snmpValue'])) {
@@ -578,28 +591,31 @@ if (sizeof($parms)) {
 			foreach ($snmp_indexes as $snmp_index) {
 				$snmp_query_array['snmp_index'] = $snmp_index['snmp_index'];
 
-				$existsAlready = db_fetch_cell("SELECT id
+				$existsAlready = db_fetch_cell_prepared('SELECT id
 					FROM graph_local
-					WHERE graph_template_id=$template_id
-					AND host_id=$host_id
-					AND snmp_query_id=" . $dsGraph['snmpQueryId'] . "
-					AND snmp_index='" . $snmp_query_array['snmp_index'] . "'");
+					WHERE graph_template_id = ?
+					AND host_id = ?
+					AND snmp_query_id = ?
+					AND snmp_index = ?',
+					array($template_id, $host_id, $dsGraph['snmpQueryId'], $snmp_query_array['snmp_index']));
 
 				if (isset($existsAlready) && $existsAlready > 0) {
 					if ($graphTitle != '') {
-						db_execute("UPDATE graph_templates_graph
-							SET title = \"$graphTitle\"
-							WHERE local_graph_id = $existsAlready");
+						db_execute_prepared('UPDATE graph_templates_graph
+							SET title = ?
+							WHERE local_graph_id = ?',
+							array($graphTitle, $existsAlready));
 
 						update_graph_title_cache($existsAlready);
 					}
 
-					$dataSourceId = db_fetch_cell("SELECT
+					$dataSourceId = db_fetch_cell_prepared('SELECT
 						data_template_rrd.local_data_id
 						FROM graph_templates_item, data_template_rrd
-						WHERE graph_templates_item.local_graph_id = " . $existsAlready . "
+						WHERE graph_templates_item.local_graph_id = ?
 						AND graph_templates_item.task_item_id = data_template_rrd.id
-						LIMIT 1");
+						LIMIT 1', 
+						array($existsAlready));
 
 					echo "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)\n";
 
@@ -611,19 +627,21 @@ if (sizeof($parms)) {
 				$returnArray = create_complete_graph_from_template($template_id, $host_id, $snmp_query_array, $empty);
 
 				if ($graphTitle != '') {
-					db_execute("UPDATE graph_templates_graph
-						SET title=\"$graphTitle\"
-						WHERE local_graph_id=" . $returnArray['local_graph_id']);
+					db_execute_prepared('UPDATE graph_templates_graph
+						SET title = ?
+						WHERE local_graph_id = ?', 
+						array($graphTitle, $returnArray['local_graph_id']));
 
 					update_graph_title_cache($returnArray['local_graph_id']);
 				}
 
-				$dataSourceId = db_fetch_cell("SELECT
+				$dataSourceId = db_fetch_cell_prepared('SELECT
 					data_template_rrd.local_data_id
 					FROM graph_templates_item, data_template_rrd
-					WHERE graph_templates_item.local_graph_id = " . $returnArray['local_graph_id'] . "
+					WHERE graph_templates_item.local_graph_id = ?
 					AND graph_templates_item.task_item_id = data_template_rrd.id
-					LIMIT 1");
+					LIMIT 1', 
+					array($returnArray['local_graph_id']));
 
 				foreach($returnArray['local_data_id'] as $item) {
 					push_out_host($host_id, $item);

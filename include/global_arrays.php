@@ -103,6 +103,12 @@ $messages = array(
 	32 => array(
 		'message' => __('SNMPv3 Auth Passphrases must be 8 characters or greater.'),
 		'type' => 'error'),
+	33 => array(
+		'message' => __('Some Graphs not Updated. Unable to Change Device for Data Query based Graphs.'),
+		'type' => 'error'),
+	34 => array(
+		'message' => __('Unable to Change Device for Data Query based Graphs.'),
+		'type' => 'error'),
 	'clog_purged' => array(
 		'message' => __('Cacti Log purged successfully'), 
 		'type' => 'info'),
@@ -263,9 +269,16 @@ $input_types_script = array(
 
 $reindex_types = array(
 	DATA_QUERY_AUTOINDEX_NONE               => __('None'),
-	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => __('Uptime Goes Backwards'),
-	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE   => __('Index Count Changed'),
-	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => __('Verify All Fields')
+	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => __('Uptime'),
+	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE   => __('Index Count'),
+	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => __('Verify All')
+);
+
+$reindex_types_tips = array(
+	DATA_QUERY_AUTOINDEX_NONE               => __('All Re-Indexing will be manual or managed through scripts or Device Automation.'),
+	DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME   => __('When the Devices SNMP uptime goes backward, a Re-Index will be performed.'),
+	DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE   => __('When the Data Query index count changes, a Re-Index will be performed.'),
+	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => __('Every polling cycle, a Re-Index will be performed.  Very expensive.')
 );
 
 $snmp_query_field_actions = array(1 =>
@@ -341,6 +354,7 @@ $graph_item_types = array(
 	GRAPH_ITEM_TYPE_GPRINT_MAX      => 'GPRINT:MAX',
 	GRAPH_ITEM_TYPE_GPRINT_MIN      => 'GPRINT:MIN',
 	GRAPH_ITEM_TYPE_LEGEND          => 'LEGEND',
+	GRAPH_ITEM_TYPE_LEGEND_CAMM     => 'LEGEND_CAMM',
 	GRAPH_ITEM_TYPE_LINESTACK       => 'LINE:STACK',
 	GRAPH_ITEM_TYPE_TIC             => 'TICK',
 	GRAPH_ITEM_TYPE_TEXTALIGN       => 'TEXTALIGN',
@@ -945,6 +959,8 @@ $hash_version_codes = array(
 	'1.0.5'  => '0100',
 	'1.0.6'  => '0100',
 	'1.1.0'  => '0100',
+	'1.1.1'  => '0100',
+	'1.1.2'  => '0100'
 );
 
 $hash_type_names = array(

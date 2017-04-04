@@ -1650,7 +1650,7 @@ $settings = array(
 			A good number will be dependent on the type of data to be operated on.  We recommend a number no lower
 			than 5 Standard Deviations.'),
 			'method' => 'drop_array',
-			'default' => '5',
+			'default' => '10',
 			'array' => array(
 				3 => __('%d Standard Deviations', 3),
 				4 => __('%d Standard Deviations', 4),
@@ -1659,7 +1659,9 @@ $settings = array(
 				7 => __('%d Standard Deviations', 7),
 				8 => __('%d Standard Deviations', 8),
 				9 => __('%d Standard Deviations', 9),
-				10 => __('%d Standard Deviations', 10)
+				10 => __('%d Standard Deviations', 10),
+				15 => __('%d Standard Deviations', 15),
+				20 => __('%d Standard Deviations', 20)
 				)
 			),
 		'spikekill_percent' => array(
@@ -1668,7 +1670,7 @@ $settings = array(
 			have been removed from the sample.  For example, a Variance Percentage of 100% on an adjusted average of 50
 			would remove any sample above the quantity of 100 from the graph.'),
 			'method' => 'drop_array',
-			'default' => '500',
+			'default' => '1000',
 			'array' => array(
 				100 => '100 %',
 				200 => '200 %',
@@ -1679,7 +1681,9 @@ $settings = array(
 				700 => '700 %',
 				800 => '800 %',
 				900 => '900 %',
-				1000 => '1000 %'
+				1000 => '1000 %',
+				2000 => '2000 %',
+				3000 => '3000 %'
 				)
 			),
 		'spikekill_outliers' => array(

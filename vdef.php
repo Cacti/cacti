@@ -863,8 +863,8 @@ function vdef($refresh = true) {
             form_alternate_row('line' . $vdef['id'], false, $disabled);
 			form_selectable_cell(filter_value($vdef['name'], get_request_var('filter'), 'vdef.php?action=edit&id=' . $vdef['id']), $vdef['id']);
             form_selectable_cell($disabled ? __('No'):__('Yes'), $vdef['id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($vdef['graphs']), $vdef['id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($vdef['templates']), $vdef['id'], '', 'text-align:right');
+            form_selectable_cell(number_format_i18n($vdef['graphs'], '-1'), $vdef['id'], '', 'text-align:right');
+            form_selectable_cell(number_format_i18n($vdef['templates'], '-1'), $vdef['id'], '', 'text-align:right');
             form_checkbox_cell($vdef['name'], $vdef['id'], $disabled);
             form_end_row();
         }

@@ -58,6 +58,16 @@ img {
 	vertical-align:middle;
 }
 
+fieldset {
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.reindex_methods span {
+	font-size: 9px;
+}
+
 /* links */
 
 a, a:active {
@@ -467,6 +477,14 @@ label {
 	padding:2px;
 	vertical-align:middle;
 	color: rgba(148, 179, 107, 0.8);
+	font-size:14px;
+}
+
+.verbosequery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color: rgba(255, 204, 0, 0.8);
 	font-size:14px;
 }
 

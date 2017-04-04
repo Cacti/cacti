@@ -265,6 +265,7 @@ function setMenuVisibility() {
 	storage=$.localStorage;
 
 	// Initialize the navigation settings
+	// This will setup the initial visibility of the menu
 	$('#navigation').hide();
 	$('li.menuitem').each(function() {
 		active = storage.get($(this).attr('id'));
@@ -275,6 +276,20 @@ function setMenuVisibility() {
 			}else{
 				$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
 				$(this).next('a').hide();
+			}
+		}
+
+		if ($(this).find('a.selected').length) {
+			$('li.menuitem').not('#'+$(this).attr('id')).each(function() {
+				$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
+				$(this).next('a').hide();
+				storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
+			});
+
+			if ($(this).is(':hidden')) {
+				$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
+				$(this).next('a').show();
+				storage.set($(this).closest('.menuitem').attr('id'), 'active');
 			}
 		}
 	});

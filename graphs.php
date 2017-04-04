@@ -149,6 +149,7 @@ function form_save() {
 	/* ================= input validation ================= */
 	get_filter_request_var('local_graph_id');
 	get_filter_request_var('host_id');
+	get_filter_request_var('host_id_prev');
 	get_filter_request_var('graph_template_graph_id');
 	get_filter_request_var('local_graph_template_graph_id');
 	/* ==================================================== */
@@ -245,6 +246,13 @@ function form_save() {
 
 			/* update the title cache */
 			update_graph_title_cache($local_graph_id);
+
+			/* if the host id changes, then update the graph items association too */
+			if (get_request_var('host_id') != get_request_var('host_id_prev')) {
+				if (!api_graph_change_device($local_graph_id, get_request_var('host_id'))) {
+					raise_message(34);
+				}
+			}
 		}
 
 		if ((!is_error_message()) && ($gt_id_unparsed != $gt_id_prev_unparsed)) {
@@ -519,11 +527,15 @@ function form_actions() {
 				}
 			}elseif (get_request_var('drp_action') == '5') { /* change host */
 				get_filter_request_var('host_id');
+				$failures = false;
 				for ($i=0;($i<count($selected_items));$i++) {
-					db_execute_prepared('UPDATE graph_local 
-						SET host_id = ? WHERE id = ?', 
-						array(get_nfilter_request_var('host_id'), $selected_items[$i]));
-					update_graph_title_cache($selected_items[$i]);
+					if (!api_graph_change_device($selected_items[$i], get_request_var('host_id'))) {
+						$failures = true;
+					}
+
+					if ($failures) {
+						raise_message(33);
+					}
 				}
 			}elseif (get_request_var('drp_action') == '6') { /* reapply suggested naming */
 				for ($i=0;($i<count($selected_items));$i++) {
@@ -1221,9 +1233,9 @@ function graph_edit() {
 							?><span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . ($host_id > 0 ? $host_id : get_request_var('host_id')));?>'><?php print __('Edit Device.');?></a></span><br><?php
 						}
 						if ($locked) {
-							?><span class='linkMarker'>*<span class='hyperLink' id='unlockid'><?php print __('Unlock Graph.');?></span></span><?php
+							?><span class='linkMarker'>*<a href='#' class='hyperLink' id='unlockid'><?php print __('Unlock Graph.');?></a></span><?php
 						}else{
-							?><span class='linkMarker'>*<span class='hyperLink' id='lockid'><?php print __('Lock Graph.');?></span></span><?php
+							?><span class='linkMarker'>*<a href='#' class='hyperLink' id='lockid'><?php print __('Lock Graph.');?></a></span><?php
 						}
 					?>
 				</td>

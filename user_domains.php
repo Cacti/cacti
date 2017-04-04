@@ -549,7 +549,7 @@ function domain_edit() {
 		}
 	}
 
-	$(function(data) {
+	$(function() {
 		initSearch();
 		initGroupMember();
 
@@ -661,7 +661,7 @@ function domains() {
 			loadPageNoHeader(strURL);
 		}
 
-		$(function(data) {
+		$(function() {
 			$('#refresh').click(function() {
 				applyFilter();
 			});

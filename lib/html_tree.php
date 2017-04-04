@@ -806,6 +806,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td align='center' colspan='6'>
 						<span id='countdown'></span>
 					</td>
+					<td>
+						<input id='future' type='hidden' value='<?php print read_config_option('allow_graph_dates_in_future');?>'></input>
+					</td>
 				</tr>
 			</table>
 		</form>

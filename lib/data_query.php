@@ -121,6 +121,7 @@ function run_data_query($host_id, $snmp_query_id) {
 		foreach($data_queries as $data_query) {
 			/* build array required for function call */
 			$data_query['snmp_index_on']       = get_best_data_query_index_type($host_id, $snmp_query_id);
+
 			/* as we request the output_type, 'value' gives the snmp_query_graph_id */
 			$data_query['snmp_query_graph_id'] = $data_query['value'];
 			update_snmp_index_order($data_query);
@@ -957,8 +958,11 @@ function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
    @arg $host_id - the id of the host to refresh
    @arg $data_query_id - the id of the data query to refresh */
 function update_data_query_cache($host_id, $data_query_id) {
-	$graphs = db_fetch_assoc_prepared('SELECT * FROM graph_local 
-		WHERE host_id = ?  AND snmp_query_id = ?', array($host_id, $data_query_id));
+	$graphs = db_fetch_assoc_prepared('SELECT * 
+		FROM graph_local 
+		WHERE host_id = ?
+		AND snmp_query_id = ?',
+		array($host_id, $data_query_id));
 
 	if (sizeof($graphs) > 0) {
 		foreach ($graphs as $graph) {
@@ -967,8 +971,11 @@ function update_data_query_cache($host_id, $data_query_id) {
 	}
 	query_debug_timer_offset('data_query', 'Update graph data query cache complete');
 
-	$data_sources = db_fetch_assoc_prepared('SELECT * FROM data_local 
-		WHERE host_id = ? AND snmp_query_id = ?', array($host_id, $data_query_id));
+	$data_sources = db_fetch_assoc_prepared('SELECT * 
+		FROM data_local 
+		WHERE host_id = ? 
+		AND snmp_query_id = ?', 
+		array($host_id, $data_query_id));
 
 	if (sizeof($data_sources) > 0) {
 		foreach ($data_sources as $data_source) {
@@ -992,7 +999,10 @@ function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_que
 	}
 
 	if (empty($host_id)) {
-		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array($local_graph_id));
+		$host_id = db_fetch_cell_prepared('SELECT host_id 
+			FROM graph_local 
+			WHERE id = ?', 
+			array($local_graph_id));
 	}
 
 	$field = data_query_field_list(db_fetch_cell_prepared('SELECT
@@ -1012,7 +1022,11 @@ function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_que
 	$index = data_query_index($field['index_type'], $field['index_value'], $host_id, $data_query_id);
 
 	if ($data_query_id != 0 && $index != '' && $index != $data_query_index) {
-		db_execute_prepared('UPDATE graph_local SET snmp_query_id = ?, snmp_index = ? WHERE id = ?', array($data_query_id, $index, $local_graph_id));
+		db_execute_prepared('UPDATE graph_local 
+			SET snmp_query_id = ?, 
+			snmp_index = ? 
+			WHERE id = ?', 
+			array($data_query_id, $index, $local_graph_id));
 
 		/* update graph title cache */
 		update_graph_title_cache($local_graph_id);
@@ -1047,7 +1061,11 @@ function update_data_source_data_query_cache($local_data_id, $host_id = '', $dat
 	$index = data_query_index($field['index_type'], $field['index_value'], $host_id, $data_query_id);
 
 	if ($data_query_id != 0 && $index != '' && $index != $data_query_index) {
-		db_execute_prepared('UPDATE data_local SET snmp_query_id = ?, snmp_index = ? WHERE id = ?', array($data_query_id, $index, $local_data_id));
+		db_execute_prepared('UPDATE data_local 
+			SET snmp_query_id = ?, 
+			snmp_index = ? 
+			WHERE id = ?', 
+			array($data_query_id, $index, $local_data_id));
 
 		/* update data source title cache */
 		update_data_source_title_cache($local_data_id);
@@ -1075,10 +1093,11 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	}
 
 	/* from the xml; cached in 'host_snmp_query' */
-	$sort_cache = db_fetch_row_prepared("SELECT sort_field, title_format 
+	$sort_cache = db_fetch_row_prepared('SELECT sort_field, title_format 
 		FROM host_snmp_query 
 		WHERE host_id = ?
-		AND snmp_query_id = ?", array($host_id, $data_query_id));
+		AND snmp_query_id = ?', 
+		array($host_id, $data_query_id));
 
 	/* in case no unique index is available, fallback to first field in XML */
 	if (strlen($sort_cache['sort_field']) == 0){
@@ -1093,15 +1112,16 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 
 	/* get a list of data query indexes AND the field value that we are supposed
 	to sort */
-	$sort_field_data = array_rekey(db_fetch_assoc_prepared('SELECT graph_local.snmp_index, host_snmp_cache.field_value
-		FROM (graph_local,host_snmp_cache)
-		WHERE graph_local.host_id=host_snmp_cache.host_id
-		AND graph_local.snmp_query_id=host_snmp_cache.snmp_query_id
-		AND graph_local.snmp_index=host_snmp_cache.snmp_index
-		AND graph_local.snmp_query_id = ?
-		AND graph_local.host_id = ?
-		AND host_snmp_cache.field_name = ?
-		GROUP BY graph_local.snmp_index', 
+	$sort_field_data = array_rekey(db_fetch_assoc_prepared('SELECT gl.snmp_index, hsc.field_value
+		FROM graph_local AS gl
+		INNER JOIN host_snmp_cache AS hsc
+		ON gl.host_id=hsc.host_id
+		AND gl.snmp_query_id=hsc.snmp_query_id
+		AND gl.snmp_index=hsc.snmp_index
+		WHERE gl.snmp_query_id = ?
+		AND gl.host_id = ?
+		AND hsc.field_name = ?
+		GROUP BY gl.snmp_index', 
 		array($data_query_id, $host_id, $sort_cache['sort_field'])), 'snmp_index', 'field_value');
 
 	/* sort the data using the 'data query index' sort algorithm */
@@ -1127,7 +1147,8 @@ function get_formatted_data_query_index($host_id, $data_query_id, $data_query_in
 	$sort_cache = db_fetch_row_prepared('SELECT sort_field, title_format 
 		FROM host_snmp_query 
 		WHERE host_id = ?
-		AND snmp_query_id = ?', array($host_id, $data_query_id));
+		AND snmp_query_id = ?', 
+		array($host_id, $data_query_id));
 
 	return substitute_snmp_query_data($sort_cache['title_format'], $host_id, $data_query_id, $data_query_index);
 }
@@ -1175,13 +1196,15 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 					FROM host_snmp_cache 
 					WHERE host_id = ?
 					AND snmp_query_id = ?
-					AND field_name = ?', array($host_id, $data_query_id, $field_name));
+					AND field_name = ?', 
+					array($host_id, $data_query_id, $field_name));
 			}else{
 				$field_values = db_fetch_assoc_prepared("SELECT field_value 
 					FROM host_snmp_cache 
 					WHERE host_id = ?
 					AND snmp_query_id = ?
-					AND field_name = ? AND $sql_or", array($host_id, $data_query_id, $field_name));
+					AND field_name = ? AND $sql_or", 
+					array($host_id, $data_query_id, $field_name));
 			}
 
 			/* aggregate the above list so there is no duplicates */
@@ -1245,7 +1268,10 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 	/* update the cache */
 	/* TODO: if both $sort field and $title_format are empty, this yields funny results */
 	db_execute_prepared('UPDATE host_snmp_query 
-		SET sort_field = ?, title_format = ? WHERE host_id = ? AND snmp_query_id = ?',
+		SET sort_field = ?, 
+		title_format = ? 
+		WHERE host_id = ? 
+		AND snmp_query_id = ?',
 		array($sort_field, $title_format, $host_id, $data_query_id));
 }
 
@@ -1253,7 +1279,10 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 	with a particular host. see update_data_query_sort_cache() for details about updating the cache
    @arg $host_id - the id of the host to update the cache for */
 function update_data_query_sort_cache_by_host($host_id) {
-	$data_queries = db_fetch_assoc_prepared('SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ?', array($host_id));
+	$data_queries = db_fetch_assoc_prepared('SELECT snmp_query_id 
+		FROM host_snmp_query 
+		WHERE host_id = ?', 
+		array($host_id));
 
 	if (sizeof($data_queries) > 0) {
 		foreach ($data_queries as $data_query) {
@@ -1272,7 +1301,8 @@ function get_best_data_query_index_type($host_id, $data_query_id) {
 	return db_fetch_cell_prepared('SELECT sort_field 
 		FROM host_snmp_query 
 		WHERE host_id = ?
-		AND snmp_query_id = ?', array($host_id, $data_query_id));
+		AND snmp_query_id = ?', 
+		array($host_id, $data_query_id));
 }
 
 /* get_script_query_path - builds the complete script query executable path
@@ -1355,7 +1385,8 @@ function update_snmp_index_order($data_query) {
 			AND (data_input_fields.type_code="index_type" 
 			OR data_input_fields.type_code="index_value" 
 			OR data_input_fields.type_code="output_type") 
-			AND snmp_query.id = ?', array($data_query['snmp_query_id'])), 'type_code', 'id');
+			AND snmp_query.id = ?', 
+			array($data_query['snmp_query_id'])), 'type_code', 'id');
 		
 		$snmp_cache_value = db_fetch_cell_prepared('SELECT field_value 
 			FROM host_snmp_cache 

@@ -441,14 +441,16 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 	/* find out if any graphs actual contain this item */
 	$exists = db_fetch_assoc_prepared('SELECT id 
 		FROM graph_templates_item 
-		WHERE local_graph_template_item_id = ?', array($graph_template_item_id));
+		WHERE local_graph_template_item_id = ?', 
+		array($graph_template_item_id));
 
 	if (!sizeof($exists)) {
 		/* if not, reapply the template to push out the new item */
 		$attached_graphs = db_fetch_assoc_prepared('SELECT local_graph_id 
 			FROM graph_templates_graph 
 			WHERE graph_template_id = ?
-			AND local_graph_id>0', array($graph_template_item['graph_template_id']));
+			AND local_graph_id>0', 
+			array($graph_template_item['graph_template_id']));
 
 		if (sizeof($attached_graphs)) {
 			foreach ($attached_graphs as $item) {
@@ -678,7 +680,8 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 	/* determine if we are here for the first time, or coming back */
 	$exists = db_fetch_cell_prepared('SELECT local_graph_template_graph_id 
 		FROM graph_templates_graph 
-		WHERE local_graph_id = ?', array($local_graph_id));
+		WHERE local_graph_id = ?', 
+		array($local_graph_id));
 
 	if (!$exists) {
 		$new_save = true;
@@ -762,6 +765,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 				foreach($found_item as $column => $value) {
 					switch($column) {
 					case 'local_graph_id':
+					case 'hash':
 					case 'local_graph_template_item_id':
 					case 'graph_template_id':
 					case 'sequence':
@@ -819,6 +823,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 				foreach($template_item as $column => $value) {
 					switch($column) {
 					case 'id':
+					case 'hash':
 					case 'local_graph_id':
 					case 'local_graph_template_item_id':
 					case 'graph_template_id':

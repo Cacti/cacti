@@ -113,10 +113,16 @@ function strip_domain($host) {
 
 function remote_client_authorized() {
 	/* don't allow to run from the command line */
-	if (isset($_SERVER['X-Forwarded-For'])) {
+	if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+		$client_addr = $_SERVER['HTTP_CLIENT_IP'];
+	} elseif (isset($_SERVER['X-Forwarded-For'])) {
 		$client_addr = $_SERVER['X-Forwarded-For'];
 	} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 		$client_addr = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	} elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+		$client_addr = $_SERVER['HTTP_FORWARDED_FOR'];
+	} elseif (isset($_SERVER['HTTP_FORWARDED'])) {
+		$client_addr = $_SERVER['HTTP_FORWARDED'];
 	} elseif (isset($_SERVER['REMOTE_ADDR'])) {
 		$client_addr = $_SERVER['REMOTE_ADDR'];
 	}else{

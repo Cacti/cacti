@@ -65,6 +65,16 @@ label {
 	white-space:nowrap;
 }
 
+fieldset {
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.reindex_methods span {
+	font-size: 9px;
+}
+
 .nowrap {
 	white-space:nowrap;
 }
@@ -440,6 +450,14 @@ label {
 	vertical-align:middle;
 	color:lime;
 	font-weight:bold;
+	font-size:14px;
+}
+
+.verbosequery {
+	cursor:pointer;
+	padding:2px;
+	vertical-align:middle;
+	color: rgba(255, 204, 0, 0.8);
 	font-size:14px;
 }
 

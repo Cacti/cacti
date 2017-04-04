@@ -1064,16 +1064,15 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
      ignoring space and tab, and case insensitive.
    @arg $result - the string to test
    @arg 1 if the argument is hex, 0 otherwise, and FALSE on error */
-function is_hexadecimal(&$result) {
-	$hexstr = trim($result);
-	$hexstr = str_replace(' ', ':', $hexstr);
-	$hexstr = str_replace('-', ':', $hexstr);
+function is_hexadecimal($result) {
+	$hexstr = str_replace(array(' ', '-'), ':', trim($result));
 
 	$parts = explode(':', $hexstr);
 	foreach($parts as $part) {
-		if (!preg_match('/[a-fA-F0-9]/', $part)) {
+		if (strlen($part) != 2) {
 			return false;
-		}elseif (strlen($part != 2)) {
+		}
+		if (ctype_xdigit($part) == false) {
 			return false;
 		}
 	}
@@ -1085,44 +1084,38 @@ function is_hexadecimal(&$result) {
    @arg $result - (string) some string to be evaluated
    @returns - (bool) either to result is a mac address of not */
 function is_mac_address($result) {
-	if (filter_var($result, FILTER_VALIDATE_MAC)) {
-		return true;
-	}else{
-		return false;
-	}
+	return filter_var($result, FILTER_VALIDATE_MAC);
 }
 
 function is_hex_string($result) {
-	if ($result != '') {
-		$parts = explode(' ', $result);
+    if ($result == '') {
+        return false;
+    }
 
-		/* assume if something is a hex string 
-		   it will have a length > 1 */
-		if (sizeof($parts) == 1) {
-			return false;
-		}
+    $parts = explode(' ', $result);
 
-		foreach($parts as $part) {
-			if (strlen($part) != 2) {
-				return false;
-			}elseif (!preg_match('/^([a-fA-F0-9]{2})$/', $part)) {
-				return false;
-			}
-		}
+    /* assume if something is a hex string
+       it will have a length > 1 */
+    if (sizeof($parts) == 1) {
+        return false;
+    }
 
-		return true;
-	}
+    foreach($parts as $part) {
+        if (strlen($part) != 2) {
+            return false;
+        }
+        if (ctype_xdigit($part) == false) {
+            return false;
+        }
+    }
 
-	return false;
+    return true;
 }
 
 /* prepare_validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
    @arg $result - (string) the result from the poll, the result can be modified in the call
    @returns - (bool) either to result is valid or not */
 function prepare_validate_result(&$result) {
-	$delim_cnt = 0;
-	$space_cnt = 0;
-
 	/* first trim the string */
 	$result = trim($result, "'\"\n\r");
 
@@ -1132,25 +1125,22 @@ function prepare_validate_result(&$result) {
 	}elseif ($result == 'U') {
 		return true;
 	}elseif (is_hexadecimal($result)) {
-		return hex2dec($result);
-	}elseif (((substr_count($result, ':')) || (substr_count($result, '!')))) {
+		return hexdec($result);
+	}elseif (substr_count($result, ':') || substr_count($result, '!')) {
 		/* looking for name value pairs */
 		if (substr_count($result, ' ') == 0) {
 			return true;
 		} else {
+			$delim_cnt = 0;
 			if (substr_count($result, ':')) {
 				$delim_cnt = substr_count($result, ':');
-			} else if (strstr($result, '!')) {
+			} elseif (strstr($result, '!')) {
 				$delim_cnt = substr_count($result, '!');
 			}
 
 			$space_cnt = substr_count($result, ' ');
 
-			if ($space_cnt+1 == $delim_cnt) {
-				return true;
-			} else {
-				return false;
-			}
+			return ($space_cnt+1 == $delim_cnt);
 		}
 	}else{
 		/* strip all non numeric data */
@@ -2149,12 +2139,6 @@ function draw_navigation_text($type = 'url') {
 			'url' => '', 
 			'level' => '2'
 			),
-		'graph_templates.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,graph_templates.php:', 
-			'url' => '', 
-			'level' => '2'
-			),
 		'data_templates.php:' => array(
 			'title' => __('Data Templates'), 
 			'mapping' => 'index.php:', 
@@ -2807,7 +2791,7 @@ function draw_navigation_text($type = 'url') {
 			$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li></ul>';
 		}
 	}elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
-        $title      = db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]));
+		$title      = db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]));
 		$style      = db_fetch_cell_prepared('SELECT style FROM external_links WHERE id = ?', array($matches[1]));
 		if ($style == 'CONSOLE') {
 			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0' href='" . $config['url_path'] . 
@@ -2951,7 +2935,7 @@ function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
 		$hash = db_fetch_cell_prepared('SELECT hash FROM cdef_items WHERE id = ?', array($cdef_id));
 	}
 
-	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
 	}else{
 		return generate_hash();
@@ -2964,7 +2948,7 @@ function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
 function get_hash_gprint($gprint_id) {
 	$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates_gprint WHERE id = ?', array($gprint_id));
 
-	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
 	}else{
 		return generate_hash();
@@ -2983,7 +2967,7 @@ function get_hash_vdef($vdef_id, $sub_type = "vdef") {
 		$hash = db_fetch_cell_prepared('SELECT hash FROM vdef_items WHERE id = ?', array($vdef_id));
 	}
 
-	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
 	}else{
 		return generate_hash();
@@ -2997,7 +2981,7 @@ function get_hash_vdef($vdef_id, $sub_type = "vdef") {
 function get_hash_data_source_profile($data_source_profile_id) {
 	$hash = db_fetch_cell_prepared('SELECT hash FROM data_source_profiles WHERE id = ?', array($data_source_profile_id));
 
-	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
 	}else{
 		return generate_hash();
@@ -3010,7 +2994,7 @@ function get_hash_data_source_profile($data_source_profile_id) {
 function get_hash_host_template($host_template_id) {
 	$hash = db_fetch_cell_prepared('SELECT hash FROM host_template WHERE id = ?', array($host_template_id));
 
-	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
 	}else{
 		return generate_hash();
@@ -3032,7 +3016,7 @@ function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
 		$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph_sv WHERE id = ?', array($data_query_id));
 	}
 
-	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
 	}else{
 		return generate_hash();

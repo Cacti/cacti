@@ -1,17 +1,38 @@
 Cacti CHANGELOG
 
+1.1.2
+-issue#492: Error while adding non data query (cg) graphs
+-issue#494: CLI error while importing template
+-issue#499: SQL error in graph automation resulting in no graphs on tree
+-issue#500: Generic SNMP device package damaged - Unix Ping Host
+-issue#505: Log rotation does not work in some cases
+-issue#506: Undefined index: cactiStatsDeviceFailedPolls
+-issue#507: Nextwork discovery 'export' produces no results
+-issue#509: Minor bug with device ownership selection
+-feature: Add new legend type that includes Current/Average/Minimum/Maximum
+-feature: Update d3.js to latest version 4.7.4
+
 1.1.1
--issue#457: Continuing LDAP issues with initial user creation
--issue#459: Add variable date time option to report mail subject
--issue#460: Add external_id to host variables
+-issue#457: Continued LDAP issues with initial user creation
 -issue#461: The function escapeshell arg not appropriate on Windows
 -issue#462: LDAP authorization issues: group membership check broken for 'Group Member Type' = 'Username'
+-issue#464: Change default batch spike removal limits for standard deviation and variance
 -issue#465: Less than sign inside items and labels of graph break graph
 -issue#466: Call to member function row() on a non-object in lib/snmpagent.php
 -issue#467: Reduce the number of queries in log function
 -issue#472: Schema changes to improve performance
+-issue#485: When editing a device, the ping status was not always returned
 -issue: Back button issues due to syntax problems in JavaScript
+-issue: Zoom periodically would loose it's crosshairs after zooming
+-issue: Zoom would zoom out into the future even when disabled
+-issue: Fixing lite corruption in graph_templates_item table
+-feature: Make SpikeKill options more consistent
+-feature#459: Add variable date time option to report mail subject
+-feature#460: Add external_id to host variables
+-feature#469: Change re-index method of Data Query from Device edit
 -feature: Support generalized date format approach in the GUI
+-feature: Use localStorage over a Cookie for Zoom setting storage
+-feature: Fully implement 'Remove Orphans' from Package import process
 
 1.1.0
 -issue#337: Generic SNMP OID Graph Template damanged

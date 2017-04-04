@@ -31,6 +31,7 @@ if (isset_request_var('method')) {
 		case 'stddev':
 		case 'float':
 		case 'variance':
+		case 'fill':
 			break;
 		default:
 			echo __("FATAL: Spike Kill method '%s' is Invalid\n", get_nfilter_request_var('method'));

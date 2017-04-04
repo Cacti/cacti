@@ -131,6 +131,10 @@ case 'ajax_search':
 	exit;
 
 	break;
+case 'update_timepsan':
+	// we really don't need to do anything.  The session variables have already been updated
+
+	break;
 case 'save':
 	if (is_view_allowed('graph_settings')) {
 		get_filter_request_var('columns');
