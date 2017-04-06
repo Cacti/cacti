@@ -89,30 +89,28 @@ function grow_dhtml_trees() {
 
 	if (empty($default_tree_id)) {
 		if (read_config_option('auth_method') != 0) {
-			$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+			$user = db_fetch_row_prepared('SELECT policy_trees FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
 			if ($user['policy_trees'] == 1) {
-				$default_tree_id = db_fetch_cell_prepared('SELECT id 
+				$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id 
 					FROM graph_tree
-					WHERE id NOT IN (
-						SELECT item_id 
-						FROM user_auth_perms 
-						WHERE type=2 AND user_id = ?
-					)
-					AND enabled="on"
-					ORDER BY id LIMIT 1', 
+					LEFT JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+					AND user_auth_perms.type = 2
+					AND user_auth_perms.user_id = ?
+					WHERE user_auth_perms.item_id IS NULL 
+					AND graph_tree.enabled = "on"
+					ORDER BY graph_tree.id 
+					LIMIT 1',
 					array($_SESSION['sess_user_id']));
 			}else{
-				$default_tree_id = db_fetch_cell('SELECT id 
+				$default_tree_id = db_fetch_cell('SELECT graph_tree.id 
 					FROM graph_tree
-					WHERE id IN (
-						SELECT item_id 
-						FROM user_auth_perms 
-						WHERE type=2 
-						AND user_id = ?
-					)
-					AND enabled="on"
-					ORDER BY id LIMIT 1', 
+					INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+					AND user_auth_perms.type = 2 
+					AND user_auth_perms.user_id = ?
+					WHERE graph_tree.enabled = "on"
+					ORDER BY graph_tree.id 
+					LIMIT 1',
 					array($_SESSION['sess_user_id']));
 			}
 		}
@@ -370,8 +368,6 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 	include_once($config['base_path'] . '/lib/data_query.php');
 
 	$heirarchy = get_allowed_tree_content($tree_id, $parent);
-
-	$tree = db_fetch_row_prepared('SELECT * FROM graph_tree WHERE id = ?', array($tree_id));
 
 	$dhtml_tree = array();
 

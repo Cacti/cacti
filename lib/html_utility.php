@@ -267,11 +267,7 @@ function unset_request_var($variable) {
    @arg $variable - The variable to check
    @returns - true or false */
 function isset_request_var($variable) {
-	if (isset($_REQUEST[$variable])) {
-		return true;
-	}else{
-		return false;
-	}
+	return isset($_REQUEST[$variable]);
 }
 
 /* isempty_request_var - checks to see if the $_REQUEST variable

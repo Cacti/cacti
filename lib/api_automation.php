@@ -1487,7 +1487,7 @@ function build_graph_object_sql_having($rule, $filter) {
 			$i = 0;
 
 			foreach($field_names as $column) {
-				$sql_having .= ($i == 0 ? '':' OR ') . '`' . $column['field_name'] . '`' . ' LIKE "%' . $filter . '%"';
+				$sql_having .= ($i == 0 ? '':' OR ') . '`' . implode('`.`', explode('.', $column['field_name'])) . '`' . ' LIKE "%' . $filter . '%"';
 				$i++;
 			}
 
@@ -1592,7 +1592,7 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 
 			# field name
 			if ($automation_rule_item['field'] != '') {
-				$sql_filter .= (' ' . $prefix . '`' . $automation_rule_item['field'] . '`');
+				$sql_filter .= (' ' . $prefix . '`' . implode('`.`', explode('.', $automation_rule_item['field'])) . '`');
 				#
 				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
 				if ($automation_op_array['binary'][$automation_rule_item['operator']]) {
