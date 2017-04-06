@@ -1948,10 +1948,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				break;
 			case GRAPH_ITEM_TYPE_HRULE:
-				$graph_variables['value'][$graph_item_id] = $graph_variables['value'][$graph_item_id];
-
 				/* perform variable substitution; if this does not return a number, rrdtool will FAIL! */
-				$substitute = rrdtool_escape_string(htmlspecialchars(rrd_substitute_host_query_data($graph_variables['value'][$graph_item_id], $graph, $graph_item), ENT_QUOTES, 'UTF-8'));
+				$substitute = rrd_substitute_host_query_data($graph_variables['value'][$graph_item_id], $graph, $graph_item);
+
+				$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8'));
 
 				if (is_numeric($substitute)) {
 					$graph_variables['value'][$graph_item_id] = $substitute;
