@@ -108,17 +108,25 @@ function form_save() {
 			header('Location: color.php?header=false');
 		}
 	}elseif (isset_request_var('save_component_import')) {
-		if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
-            $csv_data = file($_FILES['import_file']['tmp_name']);
-			$debug_data = color_import_processor($csv_data);
+		if (isset($_FILES['import_file']['tmp_name'])) {
+			if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
+				$csv_data = file($_FILES['import_file']['tmp_name']);
+				$debug_data = color_import_processor($csv_data);
+	
+				if (sizeof($debug_data)) {
+					$_SESSION['import_debug_info'] = $debug_data;
+				}
 
-			if (sizeof($debug_data)) {
-				$_SESSION['import_debug_info'] = $debug_data;
+				header('Location: color.php?action=import');
 			}
+		}else{
+			raise_message(35);
 
 			header('Location: color.php?action=import');
 		}
 	}
+
+	exit;
 }
 
 /* -----------------------
@@ -362,7 +370,7 @@ function color_import() {
 		<td align='left'>
 			<div>
 				<label class='import_label' for='import_file'><?php print __('Select a File'); ?></label>
-				<input class='import_button' type='file' id='import_file'>
+				<input class='import_button' type='file' id='import_file' name='import_file'>
 				<span class='import_text'></span>
 			</div>
 		</td>
