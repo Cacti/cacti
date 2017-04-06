@@ -128,7 +128,7 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 
 	if (!is_object($db_conn)) return FALSE;
 
-	$sql = trim(str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))), ';');
+	$sql = trim(str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql), ';');
 
 	cacti_log('DEVEL: SQL Exec: "' . $sql . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
@@ -218,7 +218,7 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = T
 
 	if (!is_object($db_conn)) return FALSE;
 
-	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
+	$sql = str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql);
 
 	cacti_log('DEVEL: SQL Cell: "' . $sql . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
@@ -274,7 +274,7 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = F
 
 	if (!is_object($db_conn)) return FALSE;
 
-	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
+	$sql = str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql);
 
 	if ($log) {
 		cacti_log('DEVEL: SQL Row: "' . $sql . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
@@ -335,7 +335,7 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn =
 
 	if (!is_object($db_conn)) return FALSE;
 
-	$sql = str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql)));
+	$sql = str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql);
 
 	cacti_log('DEVEL: SQL Assoc: "' . $sql . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
