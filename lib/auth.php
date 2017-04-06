@@ -276,39 +276,39 @@ function user_enable($user_id) {
 
 /* get_auth_realms - return a list of system user authentication realms */
 function get_auth_realms($login = false) {
-	static $realms = array();
+	$auth_method = read_config_option('auth_method');
 
-	$drealms       = db_fetch_assoc('SELECT * FROM user_domains WHERE enabled="on" ORDER BY domain_name');
-	$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
-	$auth_method   = read_config_option('auth_method');
+	if ($auth_method == 4) {
+		$drealms = db_fetch_assoc('SELECT domain_id, domain_name FROM user_domains WHERE enabled="on" ORDER BY domain_name');
+		if (sizeof($drealms)) {
+			if ($login) {
+				$new_realms['0'] = array('name' => __('Local'), 'selected' => false);
+				foreach($drealms as $realm) {
+					$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
+				}
 
-	if (sizeof($drealms) && $auth_method == 4) {
-		if ($login) {
-			$new_realms['0'] = array('name' => __('Local'), 'selected' => false);
-			foreach($drealms as $realm) {
-				$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
-			}
-
-			if (!empty($default_realm)) {
-				$new_realms[1000+$default_realm]['selected'] = true;
+				$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
+				if (!empty($default_realm)) {
+					$new_realms[1000+$default_realm]['selected'] = true;
+				}else{
+					$new_realms['0']['selected'] = true;
+				}
 			}else{
-				$new_realms['0']['selected'] = true;
+				$new_realms['0'] = __('Local');
+				foreach($drealms as $realm) {
+					$new_realms[1000+$realm['domain_id']] = $realm['domain_name'];
+				}
 			}
-		}else{
-			$new_realms['0'] = __('Local');
-			foreach($drealms as $realm) {
-				$new_realms[1000+$realm['domain_id']] = $realm['domain_name'];
-			}
-		}
 
-		$realms = $new_realms;
-	}else{
-		$realms = array(
-			'0' => __('Local'),
-			'3' => __('LDAP'),
-			'2' => __('Web Basic')
-		);
+			return $new_realms;
+		}
 	}
+
+	$realms = array(
+		'0' => __('Local'),
+		'3' => __('LDAP'),
+		'2' => __('Web Basic')
+	);
 
 	return $realms;
 }
@@ -376,27 +376,25 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 function is_graph_allowed($local_graph_id, $user = 0) {
 	$rows  = 0;
 
-	$graph = get_allowed_graphs('', '', '', $rows, $user, $local_graph_id);
+	get_allowed_graphs('', '', '', $rows, $user, $local_graph_id);
 
-	if ($rows > 0) {
-		return true;
-	}else{
-		return false;
-	}
+	return ($rows > 0);
 }
 
-function auth_check_perms(&$objects, $policy) {
+function auth_check_perms($objects, $policy) {
+	$objectSize = sizeof($objects);
+
 	/* policy == allow AND matches = DENY */
-	if (sizeof($objects) && $policy == 1) {
+	if ($objectSize && $policy == 1) {
 		return false;
 	/* policy == deny AND matches = ALLOW */
-	}elseif (sizeof($objects) && $policy == 2) {
+	}elseif ($objectSize && $policy == 2) {
 		return true;
 	/* policy == allow AND no matches = ALLOW */
-	}elseif (!sizeof($objects) && $policy == 1) {
+	}elseif (!$objectSize && $policy == 1) {
 		return true;
 	/* policy == deny AND no matches = DENY */
-	}elseif (!sizeof($objects) && $policy == 2) {
+	}elseif (!$objectSize && $policy == 2) {
 		return false;
 	}
 }
@@ -475,13 +473,9 @@ function is_tree_allowed($tree_id, $user = 0) {
    @returns - (bool) whether the current user is allowed the view the specified device or not */
 function is_device_allowed($host_id, $user = 0) {
 	$total_rows = 0;
-	$host = get_allowed_devices('', '', '', $total_rows, $user, $host_id);
+	get_allowed_devices('', '', '', $total_rows, $user, $host_id);
 
-	if ($total_rows > 0) {
-		return true;
-	}else{
-		return false;
-	}
+	return ($total_rows > 0);
 }
 
 /* is_graph_template_allowed - determines whether the current user is allowed to view a certain graph template
@@ -489,13 +483,9 @@ function is_device_allowed($host_id, $user = 0) {
    @returns - (bool) whether the current user is allowed the view the specified graph template or not */
 function is_graph_template_allowed($graph_template_id, $user = 0) {
 	$total_rows = 0;
-	$template = get_allowed_graph_templates('', '', '', $total_rows, $user, $graph_template_id);
+	get_allowed_graph_templates('', '', '', $total_rows, $user, $graph_template_id);
 
-	if ($total_rows > 0) {
-		return true;
-	}else{
-		return false;
-	}
+	return ($total_rows > 0);
 }
 
 /* is_view_allowed - Returns a true or false as to wether or not a specific view type is allowed
@@ -522,11 +512,7 @@ function is_view_allowed($view = 'show_tree') {
 				WHERE id = ?", 
 				array($_SESSION['sess_user_id']));
 
-			if ($value == 'on') {
-				return true;
-			}else{
-				return false;
-			}
+			return ($value == 'on');
 		}
 	}else{
 		return true;
