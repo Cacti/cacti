@@ -95,8 +95,8 @@ function grow_dhtml_trees() {
 				$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id 
 					FROM graph_tree
 					LEFT JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
-                        AND user_auth_perms.type = 2
-                        AND user_auth_perms.user_id = ?
+					AND user_auth_perms.type = 2
+					AND user_auth_perms.user_id = ?
 					WHERE user_auth_perms.item_id IS NULL 
 					AND graph_tree.enabled = "on"
 					ORDER BY graph_tree.id 
@@ -106,9 +106,9 @@ function grow_dhtml_trees() {
 				$default_tree_id = db_fetch_cell('SELECT graph_tree.id 
 					FROM graph_tree
 					INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
-						AND user_auth_perms.type = 2 
-						AND user_auth_perms.user_id = ?
-                    WHERE graph_tree.enabled = "on"
+					AND user_auth_perms.type = 2 
+					AND user_auth_perms.user_id = ?
+					WHERE graph_tree.enabled = "on"
 					ORDER BY graph_tree.id 
 					LIMIT 1',
 					array($_SESSION['sess_user_id']));
