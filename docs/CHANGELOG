@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.3
+-issue#515: Unable to import color CSV file
 -issue#519: In non-classic themes its not possible to remove Cacti log or reporting tabs
 -issue#520: SQL error in graph automation
 
