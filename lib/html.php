@@ -1330,25 +1330,29 @@ function html_show_tabs_left() {
 				);
 		}
 
-		if ($config['poller_id'] > 1) {
-			// Don't show the reports tab on other pollers
-		}else{
-			$tabs_left[] =
-				array(
-					'title' => __('Reporting'),
-					'id'	=> 'maintab-anchor-reports',
-					'image' => '',
-					'url'   => $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php'),
-				);
+		if (is_realm_allowed(21) || is_realm_allowed(22)) {
+			if ($config['poller_id'] > 1) {
+				// Don't show the reports tab on other pollers
+			}else{
+				$tabs_left[] =
+					array(
+						'title' => __('Reporting'),
+						'id'	=> 'maintab-anchor-reports',
+						'image' => '',
+						'url'   => $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php'),
+					);
+			}
 		}
 
-		$tabs_left[] =
-			array(
-				'title' => __('Cacti Log'),
-				'id'	=> 'maintab-anchor-logs',
-				'image' => '',
-				'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
-			);
+		if (is_realm_allowed(18) || is_realm_allowed(19)) {
+			$tabs_left[] =
+				array(
+					'title' => __('Cacti Log'),
+					'id'	=> 'maintab-anchor-logs',
+					'image' => '',
+					'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
+				);
+		}
 
 		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
 			// Only show external links when online
