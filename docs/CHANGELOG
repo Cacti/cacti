@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.3
+-issue#520: SQL Error in Graph Automation
+
 1.1.2
 -issue#492: Error while adding non data query (cg) graphs
 -issue#494: CLI error while importing template
