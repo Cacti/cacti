@@ -406,42 +406,6 @@ function is_error_message() {
 	return false;
 }
 
-/* is_valid_email - determines if an e-mail address passed is either a valid
-     email address or distribution list.
-   @arg $email - either email address or comma/semicolon delimited list of e-mails
-   @returns - (bool) if true the email address is syntactically correct */
-function is_valid_email($email) {
-	/* check for distribution list */
-	$comma = $semic = false;
-	if (substr_count($email, ',')) {
-		$comma = true;
-		$delim = ',';
-	}
-
-	if (substr_count($email, ';')) {
-		$semic = true;
-		$delim = ';';
-	}
-
-	if ($semic && $comma) {
-		return false;
-	}elseif ($semic || $comma) {
-		$members = explode($delim, $email);
-
-		foreach ($members as $member) {
-			if (preg_match("/^ *[0-9a-zA-Z]+[-_\.0-9a-zA-Z]*@([0-9a-zA-Z]+[-\.0-9a-zA-Z]+)+\.[a-zA-Z]+ *$/", $member)) {
-				continue;
-			}else{
-				return false;
-			}
-		}
-
-		return true;
-	}else{
-		return preg_match("/^ *[0-9a-zA-Z]+[-_\.0-9a-zA-Z]*@([0-9a-zA-Z]+[-\.0-9a-zA-Z]+)+\.[a-zA-Z]+ *$/", $email);
-	}
-}
-
 /* raise_message - mark a message to be displayed to the user once display_output_messages() is called
    @arg $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php' */
 function raise_message($message_id) {
@@ -554,30 +518,6 @@ function array_rekey($array, $key, $key_value) {
 	return $ret_array;
 }
 
-/* timer start function */
-function timer_start() {
-	global $timer_start;
-
-	$timer_start = microtime(true);
-}
-
-/* timer end/step function */
-function timer_end($message = 'default') {
-	global $timer_start;
-
-	$timer_end = microtime(true);
-
-	echo "TIMER: '$message' Time:'" . ($timer_end - $timer_start) . "' seconds\n";
-	$timer_start = $timer_end;
-}
-
-/* strip_newlines - removes \n\r from lines
-	@arg $string - the string to strip
-*/
-function strip_newlines($string) {
-	return strtr(strtr($string, "\n", "\0"), "\r","\0");
-}
-
 /* cacti_log - logs a string to Cacti's log file or optionally to the browser
    @arg $string - the string to append to the log file
    @arg $output - (bool) whether to output the log line to the browser using print() or not
@@ -593,7 +533,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		$current_file = basename(__FILE__);
 		$dir_name     = dirname(__FILE__);
 	}
-		
+
 	$force_level = '';
 	$debug_files = read_config_option('selective_debug');
 	if ($debug_files != '') {
@@ -618,19 +558,20 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		}
 	}
 
-	/* only log if the specificied level is reached, developer debug is special low + specific devdbg calls */
-	if ($force_level != '') {
-		$level = $force_level;
-	}elseif (read_config_option('log_verbosity') == POLLER_VERBOSITY_DEVDBG) {
+	/* only log if the specific level is reached, developer debug is special low + specific devdbg calls */
+	if ($force_level == '') {
 		if ($level != '') {
-			if ($level != POLLER_VERBOSITY_DEVDBG) {
-				if ($level > POLLER_VERBOSITY_LOW) {
-					return;
+			$logVerbosity = read_config_option('log_verbosity');
+			if ($logVerbosity == POLLER_VERBOSITY_DEVDBG) {
+				if ($level != POLLER_VERBOSITY_DEVDBG) {
+					if ($level > POLLER_VERBOSITY_LOW) {
+						return;
+					}
 				}
+			} elseif ($level >= $logVerbosity) {
+				return;
 			}
 		}
-	}elseif ($level != '' && $level >= read_config_option('log_verbosity')) {
-		return;
 	}
 
 	/* fill in the current date for printing in the log */
@@ -643,12 +584,12 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	/* format the message */
 	if ($environ == 'POLLER') {
 		$message = "$date - " . $environ . ': Poller[' . $config['poller_id'] . '] ' . $string . "\n";
-	}else {
+	} else {
 		$message = "$date - " . $environ . ' ' . $string . "\n";
 	}
 
 	/* Log to Logfile */
-	if ((($logdestination == 1) || ($logdestination == 2)) && (read_config_option('log_verbosity') != POLLER_VERBOSITY_NONE)) {
+	if (($logdestination == 1 || $logdestination == 2) && read_config_option('log_verbosity') != POLLER_VERBOSITY_NONE) {
 		if ($logfile == '') {
 			$logfile = $config['base_path'] . '/log/cacti.log';
 		}
@@ -664,32 +605,30 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* Log to Syslog/Eventlog */
 	/* Syslog is currently Unstable in Win32 */
-	if (($logdestination == 2) || ($logdestination == 3)) {
+	if ($logdestination == 2 || $logdestination == 3) {
 		$log_type = '';
-		if (substr_count($string,'ERROR:'))
+		if (strpos($string,'ERROR:') !== false) {
 			$log_type = 'err';
-		else if (substr_count($string,'WARNING:'))
+		} elseif (strpos($string,'WARNING:') !== false) {
 			$log_type = 'warn';
-		else if (substr_count($string,'STATS:'))
+		} elseif (strpos($string,'STATS:') !== false) {
 			$log_type = 'stat';
-		else if (substr_count($string,'NOTICE:'))
+		} elseif (strpos($string,'NOTICE:') !== false) {
 			$log_type = 'note';
+		}
 
-		if (strlen($log_type)) {
-			if ($config['cacti_server_os'] == 'win32')
+		if ($log_type != '') {
+			if ($config['cacti_server_os'] == 'win32') {
 				openlog('Cacti', LOG_NDELAY | LOG_PID, LOG_USER);
-			else
+			} else {
 				openlog('Cacti', LOG_NDELAY | LOG_PID, LOG_SYSLOG);
+			}
 
-			if (($log_type == 'err') && (read_config_option('log_perror'))) {
+			if ($log_type == 'err' && read_config_option('log_perror')) {
 				syslog(LOG_CRIT, $environ . ': ' . $string);
-			}
-
-			if (($log_type == 'warn') && (read_config_option('log_pwarn'))) {
+			} elseif ($log_type == 'warn' && read_config_option('log_pwarn')) {
 				syslog(LOG_WARNING, $environ . ': ' . $string);
-			}
-
-			if ((($log_type == 'stat') || ($log_type == 'note')) && (read_config_option('log_pstats'))) {
+			} elseif (($log_type == 'stat' || $log_type == 'note') && read_config_option('log_pstats')) {
 				syslog(LOG_INFO, $environ . ': ' . $string);
 			}
 
@@ -698,7 +637,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
    }
 
 	/* print output to standard out if required */
-	if (($output == true) && (isset($_SERVER['argv'][0]))){
+	if ($output == true && isset($_SERVER['argv'][0])) {
 		print $message;
 	}
 }
@@ -2792,8 +2731,10 @@ function draw_navigation_text($type = 'url') {
 			$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li></ul>';
 		}
 	}elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
-		$title      = db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]));
-		$style      = db_fetch_cell_prepared('SELECT style FROM external_links WHERE id = ?', array($matches[1]));
+		$externalLinks = db_fetch_row_prepared('SELECT title, style FROM external_links WHERE id = ?', array($matches[1]));
+		$title = $externalLinks['title'];
+		$style = $externalLinks['style'];
+
 		if ($style == 'CONSOLE') {
 			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0' href='" . $config['url_path'] . 
 				"index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>';

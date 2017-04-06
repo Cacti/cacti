@@ -32,13 +32,15 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	$goBack = "<td colspan='2' align='center'>[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 }
 
+$selectedTheme = get_selected_theme();
+
 print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
 print "<html>\n";
 print "<head>\n";
 print "\t<title>Permission Denied</title>\n";
 print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
+print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/main.css' type='text/css' rel='stylesheet'>\n";
+print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
 print "\t<link href='" . $config['url_path'] . "include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>\n";
 print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
@@ -47,8 +49,8 @@ print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.js'></script>\n";
-print "<script type='text/javascript'>var theme='" . get_selected_theme() . "';</script>\n";
+print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/main.js'></script>\n";
+print "<script type='text/javascript'>var theme='" . $selectedTheme . "';</script>\n";
 print "</head>\n";
 print "<body class='logoutBody'>
 	<div class='logoutLeft'></div>

@@ -941,9 +941,11 @@ function host_edit() {
 function device_reindex_methods($item, $host) {
 	global $config, $reindex_types, $reindex_types_tips;
 
+	$selectedTheme = get_selected_theme();
+
 	$i = 0;
 	foreach($reindex_types as $key => $type) {
-		if (get_selected_theme() != 'classic') {
+		if ($selectedTheme != 'classic') {
 			if ($i == 0) {
 				print "<fieldset class='reindex_methods'>\n";
 			}
@@ -957,7 +959,7 @@ function device_reindex_methods($item, $host) {
 		$i++;
 	}
 
-	if (get_selected_theme() != 'classic') {
+	if ($selectedTheme != 'classic') {
 		print "</fieldset>\n";
 	}
 }
