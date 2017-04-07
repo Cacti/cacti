@@ -576,7 +576,7 @@ function is_realm_allowed($realm) {
 		if (isset($_SESSION['sess_user_id'])) {
 			if (!user_perms_valid($_SESSION['sess_user_id'])) {
 				kill_session_var('sess_user_realms');
-				kill_session_var('sess_graph_config_array');
+				kill_session_var('sess_user_config_array');
 				kill_session_var('sess_config_array');
 			}
 

@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#519: In non-classic themes its not possible to remove Cacti log or reporting tabs
 -issue#520: SQL error in graph automation
 -issue#525: LAST GPRINT type not rendered correctly due to lack of escaping
+-issue#533: User settings not cleared after saving profile
 -issue#534: Automation issue with AS clause
 -issue: Problem rendering some HRULE's on a graph
 
