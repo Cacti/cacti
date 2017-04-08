@@ -9,7 +9,9 @@ Cacti CHANGELOG
 -issue#531: Issues with TextAlign and Tick graph items
 -issue#533: User settings not cleared after saving profile
 -issue#534: Automation issue with AS clause
+-issue#538: Unable to rename tree folder
 -issue: Problem rendering some HRULE's on a graph
+-issue: Update jsTree to 3.3.4 version
 
 1.1.2
 -issue#492: Error while adding non data query (cg) graphs
