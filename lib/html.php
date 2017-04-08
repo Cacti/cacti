@@ -863,7 +863,7 @@ function html_split_string($string, $length = 70, $forgiveness = 10) {
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
 	global $config;
 
-	include($config["include_path"] . "/global_arrays.php");
+	include($config['include_path'] . '/global_arrays.php');
 
 	print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem(__('Graph Item'),'',1);
@@ -872,28 +872,30 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		DrawMatrixHeaderItem(__('CF Type'),'',1);
 		DrawMatrixHeaderItem(__('Alpha %'),'',1);
 		DrawMatrixHeaderItem(__('Item Color'),'',4);
-	print "</tr>";
+	print '</tr>';
 
-	$group_counter = 0; $_graph_type_name = ""; $i = 0;
+	$group_counter = 0; $_graph_type_name = ''; $i = 0;
 
 	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
-			$this_row_style = ""; $use_custom_class = false; $hard_return = "";
+			$this_row_style   = ''; 
+			$use_custom_class = false; 
+			$hard_return      = '';
 
-			if ($graph_item_types{$item["graph_type_id"]} != "GPRINT") {
-				$this_row_style = "font-weight: bold;"; $use_custom_class = true;
+			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
+				$this_row_style = 'font-weight: bold;'; $use_custom_class = true;
 
 				if ($group_counter % 2 == 0) {
-					$customClass = "graphItem";
+					$customClass = 'graphItem';
 				}else{
-					$customClass = "graphItemAlternate";
+					$customClass = 'graphItemAlternate';
 				}
 
 				$group_counter++;
 			}
 
-			$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
+			$_graph_type_name = $graph_item_types{$item['graph_type_id']};
 
 			/* alternating row color */
 			if ($use_custom_class == false) {
@@ -902,43 +904,67 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				print "<tr class='$customClass'>";
 			}
 
-			print "<td>";
-			if ($disable_controls == false) { print "<a class='linkEditMain' href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") . "'>"; }
+			print '<td>';
+			if ($disable_controls == false) { print "<a class='linkEditMain' href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item['id'] . "&$url_data") . "'>"; }
 			print __('Item # %d', ($i+1));
-			if ($disable_controls == false) { print "</a>"; }
-			print "</td>\n";
+			if ($disable_controls == false) { print '</a>'; }
+			print '</td>';
 
-			if (empty($item["data_source_name"])) { $item["data_source_name"] = __('No Task'); }
+			if (empty($item['data_source_name'])) { $item['data_source_name'] = __('No Task'); }
 
 			switch (true) {
-			case preg_match("/(AREA|STACK|GPRINT|LINE[123])/", $_graph_type_name):
-				$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
+			case preg_match('/(TEXTALIGN)/', $_graph_type_name):
+				$matrix_title = 'TEXTALIGN: ' . ucfirst($item['textalign']);
 				break;
-			case preg_match("/(HRULE)/", $_graph_type_name):
-				$matrix_title = "HRULE: " . $item["value"];
+			case preg_match('/(TICK)/', $_graph_type_name):
+				$matrix_title = '(' . $item['data_source_name'] . '): ' . $item['text_format'];
 				break;
-			case preg_match("/(VRULE)/", $_graph_type_name):
-				$matrix_title = "VRULE: " . $item["value"];
+			case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
+				$matrix_title = '(' . $item['data_source_name'] . '): ' . $item['text_format'];
 				break;
-			case preg_match("/(COMMENT)/", $_graph_type_name):
-				$matrix_title = "COMMENT: " . $item["text_format"];
+			case preg_match('/(HRULE)/', $_graph_type_name):
+				$matrix_title = 'HRULE: ' . $item['value'];
+				break;
+			case preg_match('/(VRULE)/', $_graph_type_name):
+				$matrix_title = 'VRULE: ' . $item['value'];
+				break;
+			case preg_match('/(COMMENT)/', $_graph_type_name):
+				$matrix_title = 'COMMENT: ' . $item['text_format'];
 				break;
 			}
 
-			if ($item["hard_return"] == "on") {
+			if (preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
+				$hard_return = '';
+			}elseif ($item['hard_return'] == 'on') {
 				$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
 			}
 
-			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
-			print "<td style='$this_row_style'>" . $graph_item_types{$item["graph_type_id"]} . "</td>\n";
-			print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
-			if (preg_match("/(AREA|STACK|LINE[123])/", $_graph_type_name)) {
-				print "<td style='$this_row_style'>" . round((hexdec($item['alpha'])/255)*100) . "%</td>\n";
+			/* data source */
+			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . '</td>';
+
+			/* graph item type */
+			print "<td style='$this_row_style'>" . $graph_item_types{$item['graph_type_id']} . '</td>';
+			if (!preg_match('/(TICK|TEXTALIGN|HRULE|VRULE)/', $_graph_type_name)) {
+				print "<td style='$this_row_style'>" . $consolidation_functions{$item['consolidation_function_id']} . '</td>';
+			}else{
+				print '<td>' . __('N/A') . '</td>';
+			}
+
+			/* alpha type */
+			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', $_graph_type_name)) {
+				print "<td style='$this_row_style'>" . round((hexdec($item['alpha'])/255)*100) . '%</td>';
 			}else{
 				print "<td style='$this_row_style'></td>\n";
 			}
-			print "<td style='width:1%;" . ((!empty($item["hex"])) ? "background-color:#" . $item["hex"] . ";'" : "'") . "></td>\n";
-			print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
+
+
+			/* color name */
+			if (!preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
+				print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . '></td>';
+				print "<td style='$this_row_style'>" . $item['hex'] . '</td>';
+			}else{
+				print '<td></td><td></td>';
+			}
 
 			if ($disable_controls == false) {
 				print "<td style='text-align:right;padding-right:10px;'>\n";

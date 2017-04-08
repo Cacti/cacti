@@ -388,7 +388,7 @@ function item() {
 		$header_label = 'Graph Template Items [new]';
 	}else{
 		$template_item_list = db_fetch_assoc_prepared("SELECT gti.id, gti.text_format, gti.alpha,
-			gti.value, gti.hard_return, gti.graph_type_id, gti.consolidation_function_id,
+			gti.value, gti.hard_return, gti.graph_type_id, gti.consolidation_function_id, gti.textalign,
 			CONCAT_WS(' - ', dtd.name, dtr.data_source_name) AS data_source_name,
 			cdef.name AS cdef_name, colors.hex
 			FROM graph_templates_item AS gti

@@ -96,21 +96,21 @@ function form_save() {
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '4',
-					'text_format' => __('Current:'),
+					'text_format' => __('Cur:'),
 					'hard_return' => ''
 					),
 				1 => array(
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '1',
-					'text_format' => __('Average:'),
+					'text_format' => __('Avg:'),
 					'hard_return' => ''
 					),
 				2 => array(
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '3',
-					'text_format' => __('Maximum:'),
+					'text_format' => __('Max:'),
 					'hard_return' => 'on'
 					)
 			);
@@ -122,28 +122,28 @@ function form_save() {
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '4',
-					'text_format' => __('Current:'),
+					'text_format' => __('Cur:'),
 					'hard_return' => ''
 				),
 				1 => array(
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '1',
-					'text_format' => __('Average:'),
+					'text_format' => __('Avg:'),
 					'hard_return' => ''
 				),
 				2 => array(
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '2',
-					'text_format' => __('Minimum:'),
+					'text_format' => __('Min:'),
 					'hard_return' => ''
 				),
 				3 => array(
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '3',
-					'text_format' => __('Maximum:'),
+					'text_format' => __('Max:'),
 					'hard_return' => 'on'
 				)
 			);
@@ -651,10 +651,10 @@ function item_edit() {
 			$('#row_textalign').hide();
 			$('#row_shift').hide();
 			$('#row_alpha').show();
-			$('#row_consolidation_function_id').show();
+			$('#row_consolidation_function_id').hide();
 			$('#row_cdef_id').show();
 			$('#row_vdef_id').show();
-			$('#row_value').hide();
+			$('#row_value').show();
 			$('#row_gprint_id').hide();
 			$('#row_text_format').show();
 			$('#row_hard_return').show();
