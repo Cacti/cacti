@@ -1083,6 +1083,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	global $config, $consolidation_functions;
 
 	include_once($config['library_path'] . '/cdef.php');
+	include_once($config['library_path'] . '/vdef.php');
 	include_once($config['library_path'] . '/graph_variables.php');
 	include_once($config['library_path'] . '/boost.php');
 	include_once($config['library_path'] . '/xml.php');
