@@ -37,6 +37,7 @@ var statePushed=false;
 var popFired=false;
 var hostInfoHeight=0;
 var menuOpen = null;
+var menuHideResponsive = null;
 var marginLeft = null;
 var pageName;
 
@@ -591,12 +592,13 @@ function responsiveMenu(event) {
 		tree = false;
 	}
 
-
 	if ($(window).width() < 780) {
-		if (menuOpen) {
-			menuHide(tree);
-		}
-	}else if (menuOpen !== null) {
+		menuHide(tree);
+		menuHideResponsive = true;
+	}else if (menuHideResponsive == true) {
+		menuShow(tree);
+		menuHideResponsive = false;
+	}else if (menuOpen != null) {
 		if (!menuOpen) {
 			menuHide(tree);
 		}
@@ -662,7 +664,7 @@ function tuneFilter(object, width) {
 
 function menuHide(tree) {
 	if (marginLeft == null) {
-		marginLeft = $('#navigation_right').css('margin-left');
+		marginLeft = parseInt($('#navigation_right').css('margin-left'));
 	}
 
 	if (tree) {
@@ -684,10 +686,7 @@ function menuShow(tree) {
 		myClass = '.cactiConsoleNavigationArea';
 	}
 
-	if (marginLeft != null) {
-		$('#navigation_right').animate({'margin-left': marginLeft}, 20);
-	}
-
+	$('#navigation_right').animate({'margin-left': marginLeft}, 20);
 	$(myClass).show('slide', {direction: 'left'}, 20);
 
 	menuOpen = true;
