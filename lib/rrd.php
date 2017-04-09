@@ -1944,7 +1944,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				break;
 			case GRAPH_ITEM_TYPE_TIC:
 				$_fraction = (empty($graph_item['graph_type_id']) ? '' : (':' . $graph_item['value']));
-				$_legend   = (empty($graph_variables['text_format'][$graph_item_id]) ? '' : (':"' . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . '"'));
+				$_legend   = ':' . cacti_escapeshellarg(rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8')) . $hardreturn[$graph_item_id]);
 				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . $_fraction . $_legend;
 
 				break;
