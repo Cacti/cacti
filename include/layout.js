@@ -36,6 +36,7 @@ var lastPage=null;
 var statePushed=false;
 var popFired=false;
 var hostInfoHeight=0;
+var pageName;
 
 var isMobile = {
 	Android: function() {
@@ -535,6 +536,8 @@ function applySkin() {
 		shiftPressed = event.shiftKey;
 	});
 
+	pageName = basename(document.location.pathname);
+
 	// remove stray tooltips
 	$(document).tooltip('close');
 
@@ -571,11 +574,11 @@ function loadPage(href) {
 		}
 
 		var hrefParts = href.split('?');
-		var myBasename = basename(hrefParts[0]);
+		pageName = basename(hrefParts[0]);
 
-		if (myBasename != '') {
+		if (pageName != '') {
 			$('#menu').find('.pic').removeClass('selected');
-			$('#menu').find("a[href*='/"+myBasename+"']").addClass('selected');
+			$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
 		}
 
 		applySkin();
@@ -598,11 +601,11 @@ function loadPageNoHeader(href, scroll) {
 		$('#main').html(data);
 
 		var hrefParts = href.split('?');
-		var myBasename = basename(hrefParts[0]);
+		pageName = basename(hrefParts[0]);
 
-		if (myBasename != '') {
+		if (pageName != '') {
 			$('#menu').find('.pic').removeClass('selected');
-			$('#menu').find("a[href*='/"+myBasename+"']").addClass('selected');
+			$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
 		}
 
 		applySkin();

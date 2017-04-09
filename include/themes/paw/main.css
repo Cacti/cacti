@@ -1307,6 +1307,16 @@ th.sortable {
 	text-decoration: none !important;
 }
 
+.deleteMarkerDisabled {
+	color: rgba(0,0,0,0.6);
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.deleteMarkerDisabled:hover {
+	text-decoration: none !important;
+}
+
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;

@@ -4,9 +4,11 @@ Cacti CHANGELOG
 -issue#515: Unable to import color CSV file
 -issue#519: In non-classic themes its not possible to remove Cacti log or reporting tabs
 -issue#520: SQL error in graph automation
+-issue#521: Cacti allows removal of Data Query Graph Template associations when they are in use
 -issue#525: LAST GPRINT type not rendered correctly due to lack of escaping
 -issue#530: Undefined function get_vdef in lib/rrd.php
 -issue#531: Issues with TextAlign and Tick graph items
+-issue#532: Unreliable scroll height casues issues in Chrome
 -issue#533: User settings not cleared after saving profile
 -issue#534: Automation issue with AS clause
 -issue#538: Unable to rename tree folder

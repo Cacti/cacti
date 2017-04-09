@@ -219,6 +219,17 @@ label {
 	text-decoration: none !important;
 }
 
+.deleteMarkerDisabled {
+	color: grey !important;
+	height: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.deleteMarkerDisabled:hover {
+	text-decoration: none !important;
+}
+
 .drillDown {
 	cursor:pointer;
 }
