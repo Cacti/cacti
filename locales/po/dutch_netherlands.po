@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-04 11:56+0200\n"
-"PO-Revision-Date: 2017-04-08 14:43+0200\n"
+"POT-Creation-Date: 2017-04-09 18:58+0200\n"
+"PO-Revision-Date: 2017-04-09 19:40+0200\n"
+"Last-Translator: Patrick Rademaker\n"
 "Language-Team: \n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0\n"
-"Last-Translator: Patrick Rademaker\n"
-"Language: nl_NL\n"
 
 #: ../about.php:29 ../lib/functions.php:2477
 msgid "About Cacti"
@@ -30,18 +30,20 @@ msgstr "Versie %s"
 #: ../about.php:42
 msgid ""
 "Cacti is designed to be a complete graphing solution based on the RRDtool's "
-"framework. Its goal is to make a network administrator's job easier by taking "
-"care of all the necessary details necessary to create meaningful graphs."
+"framework. Its goal is to make a network administrator's job easier by "
+"taking care of all the necessary details necessary to create meaningful "
+"graphs."
 msgstr ""
-"Cacti is ontworpen om een volledige grafische oplossing te bieden op basis van "
-"RRDtool. Het doel is om het leven van een netwerkbeheerder gemakkelijker te "
-"maken door het verzorgen van alle noodzakelijke gegevens die nodig zijn om "
-"zinvolle grafieken te maken."
+"Cacti is ontworpen om een volledige grafische oplossing te bieden op basis "
+"van RRDtool. Het doel is om het leven van een netwerkbeheerder gemakkelijker "
+"te maken door het verzorgen van alle noodzakelijke gegevens die nodig zijn "
+"om zinvolle grafieken te maken."
 
 #: ../about.php:44
 #, php-format
 msgid ""
-"Please see the official %sCacti website%s for information, support, and updates."
+"Please see the official %sCacti website%s for information, support, and "
+"updates."
 msgstr ""
 "Raadpleeg de officiële %sCacti website%s voor meer informatie, support en "
 "updates."
@@ -57,8 +59,8 @@ msgstr "Bedankt"
 #: ../about.php:61
 #, php-format
 msgid ""
-"A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the "
-"very popular %sMRTG%s."
+"A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and "
+"the very popular %sMRTG%s."
 msgstr ""
 "Een zeer speciale dank aan %sTobi Oetiker%s, de maker van %sRRDtool%s en de "
 "zeer populaire %sMRTG%s."
@@ -70,8 +72,8 @@ msgstr "De gebruikers van Cacti"
 #: ../about.php:65
 msgid ""
 "Especially anyone who has taken the time to create an issue report, or "
-"otherwise help fix a Cacti related problems. Also to anyone who has contributed "
-"to supporting Cacti."
+"otherwise help fix a Cacti related problems. Also to anyone who has "
+"contributed to supporting Cacti."
 msgstr ""
 "Vooral iedereen die de tijd heeft genomen om een ​​probleem te melden, of op "
 "andere wijze Cacti gerelateerde problemen op te lossen. Ook aan iedereen die "
@@ -87,44 +89,46 @@ msgstr "Cacti is gelicentieerd onder de GNU GPL:"
 
 #: ../about.php:74
 msgid ""
-"This program is free software; you can redistribute it and/or modify it under "
-"the terms of the GNU General Public License as published by the Free Software "
-"Foundation; either version 2 of the License, or (at your option) any later "
-"version."
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version."
 msgstr ""
-"Dit programma is gratis; je mag het distribueren of aanpassen onder de termen "
-"van de GNU General Public License zoals gepubliceerd door de Free Software "
-"Foundation; uitsluitend versie 2 van de licentie, of enig latere versie."
+"Dit programma is gratis; je mag het distribueren of aanpassen onder de "
+"termen van de GNU General Public License zoals gepubliceerd door de Free "
+"Software Foundation; uitsluitend versie 2 van de licentie, of enig latere "
+"versie."
 
 #: ../about.php:76
 msgid ""
-"This program is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A "
-"PARTICULAR PURPOSE. See the GNU General Public License for more details."
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details."
 msgstr ""
-"Dit programma is gedistribueerd in de hoop dat het zinnig zal zijn, maar komt "
-"ZONDER ENIGE GARANTIE; zelfs zonder de impliciete garantie van VERKOOPBAARHEID "
-"of GESCHIKTHEID VOOR EEN BEPAALD DOEL. Zie de GNU General Public License voor "
-"meer details."
+"Dit programma is gedistribueerd in de hoop dat het zinnig zal zijn, maar "
+"komt ZONDER ENIGE GARANTIE; zelfs zonder de impliciete garantie van "
+"VERKOOPBAARHEID of GESCHIKTHEID VOOR EEN BEPAALD DOEL. Zie de GNU General "
+"Public License voor meer details."
 
 #: ../aggregate_graphs.php:40 ../aggregate_templates.php:29
 #: ../automation_graph_rules.php:32 ../automation_networks.php:31
 #: ../automation_snmp.php:29 ../automation_snmp.php:727
-#: ../automation_templates.php:29 ../automation_tree_rules.php:32 ../cdef.php:29
-#: ../cdef.php:620 ../color.php:28 ../color_templates.php:28
+#: ../automation_templates.php:29 ../automation_tree_rules.php:32
+#: ../cdef.php:29 ../cdef.php:620 ../color.php:28 ../color_templates.php:28
 #: ../color_templates.php:121 ../data_input.php:29 ../data_input.php:473
 #: ../data_input.php:511 ../data_queries.php:30 ../data_queries.php:637
-#: ../data_queries.php:734 ../data_queries.php:931 ../data_source_profiles.php:29
-#: ../data_source_profiles.php:513 ../data_sources.php:35 ../data_sources.php:893
-#: ../data_templates.php:33 ../data_templates.php:558 ../gprint_presets.php:28
-#: ../graph_templates.php:33 ../graph_templates.php:439 ../graphs.php:40
-#: ../host.php:37 ../host_templates.php:30 ../host_templates.php:486
-#: ../host_templates.php:543 ../lib/api_automation.php:1249
-#: ../lib/api_automation.php:1312 ../lib/api_automation.php:1376
-#: ../lib/html.php:834 ../lib/html_form.php:1052 ../lib/html_reports.php:1297
-#: ../links.php:28 ../managers.php:28 ../pollers.php:29 ../sites.php:28
-#: ../user_admin.php:28 ../user_domains.php:29 ../user_group_admin.php:30
-#: ../vdef.php:29
+#: ../data_queries.php:734 ../data_queries.php:931
+#: ../data_source_profiles.php:29 ../data_source_profiles.php:513
+#: ../data_sources.php:35 ../data_sources.php:893 ../data_templates.php:33
+#: ../data_templates.php:558 ../gprint_presets.php:28 ../graph_templates.php:33
+#: ../graph_templates.php:439 ../graphs.php:40 ../host.php:37
+#: ../host_templates.php:30 ../host_templates.php:486 ../host_templates.php:543
+#: ../lib/api_automation.php:1249 ../lib/api_automation.php:1312
+#: ../lib/api_automation.php:1376 ../lib/html.php:834 ../lib/html_form.php:1052
+#: ../lib/html_reports.php:1297 ../links.php:28 ../managers.php:28
+#: ../pollers.php:29 ../sites.php:28 ../user_admin.php:28
+#: ../user_domains.php:29 ../user_group_admin.php:30 ../vdef.php:29
 msgid "Delete"
 msgstr "Verwijder"
 
@@ -151,7 +155,8 @@ msgstr "Plaats in een menu (%s)"
 
 #: ../aggregate_graphs.php:314
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr "Klik op 'Volgende' om de volgende geaggregeerde grafiek te verwijderen."
+msgstr ""
+"Klik op 'Volgende' om de volgende geaggregeerde grafiek te verwijderen."
 
 #: ../aggregate_graphs.php:319 ../aggregate_graphs.php:381
 #: ../aggregate_graphs.php:406 ../aggregate_graphs.php:415
@@ -163,27 +168,31 @@ msgstr "Klik op 'Volgende' om de volgende geaggregeerde grafiek te verwijderen."
 #: ../cdef.php:283 ../cdef.php:293 ../cdef.php:345 ../color.php:183
 #: ../color_templates.php:231 ../color_templates.php:241
 #: ../color_templates_items.php:280 ../data_input.php:218 ../data_input.php:266
-#: ../data_queries.php:322 ../data_queries.php:425 ../data_source_profiles.php:266
-#: ../data_source_profiles.php:276 ../data_source_profiles.php:324
-#: ../data_sources.php:460 ../data_sources.php:470 ../data_sources.php:479
-#: ../data_sources.php:488 ../data_sources.php:497 ../data_sources.php:503
-#: ../data_templates.php:352 ../data_templates.php:362 ../data_templates.php:378
-#: ../gprint_presets.php:153 ../graph_templates.php:316 ../graph_templates.php:326
-#: ../graph_templates.php:346 ../graph_templates.php:355 ../graphs.php:774
-#: ../graphs.php:798 ../graphs.php:813 ../graphs.php:836 ../graphs.php:936
-#: ../graphs.php:979 ../graphs.php:1001 ../graphs.php:1009 ../graphs.php:1396
-#: ../host.php:425 ../host.php:434 ../host.php:476 ../host.php:485 ../host.php:494
+#: ../data_queries.php:322 ../data_queries.php:425
+#: ../data_source_profiles.php:266 ../data_source_profiles.php:276
+#: ../data_source_profiles.php:324 ../data_sources.php:460
+#: ../data_sources.php:470 ../data_sources.php:479 ../data_sources.php:488
+#: ../data_sources.php:497 ../data_sources.php:503 ../data_templates.php:352
+#: ../data_templates.php:362 ../data_templates.php:378
+#: ../gprint_presets.php:153 ../graph_templates.php:316
+#: ../graph_templates.php:326 ../graph_templates.php:346
+#: ../graph_templates.php:355 ../graphs.php:774 ../graphs.php:798
+#: ../graphs.php:813 ../graphs.php:836 ../graphs.php:936 ../graphs.php:979
+#: ../graphs.php:1001 ../graphs.php:1009 ../graphs.php:1396 ../host.php:425
+#: ../host.php:434 ../host.php:476 ../host.php:485 ../host.php:494
 #: ../host.php:508 ../host.php:522 ../host.php:531 ../host.php:539
-#: ../host_templates.php:262 ../host_templates.php:276 ../host_templates.php:287
-#: ../host_templates.php:335 ../host_templates.php:395 ../lib/clog_webapi.php:124
-#: ../lib/html_form.php:1051 ../lib/html_form.php:1063 ../lib/html_form.php:1074
-#: ../lib/html_utility.php:200 ../links.php:194 ../links.php:203 ../links.php:212
-#: ../managers.php:999 ../managers.php:1056 ../pollers.php:288 ../pollers.php:297
-#: ../pollers.php:306 ../pollers.php:315 ../sites.php:279 ../tree.php:490
-#: ../tree.php:499 ../tree.php:508 ../user_admin.php:350 ../user_admin.php:390
-#: ../user_admin.php:401 ../user_admin.php:412 ../user_admin.php:434
-#: ../user_domains.php:226 ../user_domains.php:235 ../user_domains.php:244
-#: ../user_domains.php:253 ../user_group_admin.php:394 ../user_group_admin.php:407
+#: ../host_templates.php:262 ../host_templates.php:276
+#: ../host_templates.php:287 ../host_templates.php:335
+#: ../host_templates.php:395 ../lib/clog_webapi.php:124
+#: ../lib/html_form.php:1051 ../lib/html_form.php:1063
+#: ../lib/html_form.php:1074 ../lib/html_utility.php:200 ../links.php:194
+#: ../links.php:203 ../links.php:212 ../managers.php:999 ../managers.php:1056
+#: ../pollers.php:288 ../pollers.php:297 ../pollers.php:306 ../pollers.php:315
+#: ../sites.php:279 ../tree.php:490 ../tree.php:499 ../tree.php:508
+#: ../user_admin.php:350 ../user_admin.php:390 ../user_admin.php:401
+#: ../user_admin.php:412 ../user_admin.php:434 ../user_domains.php:226
+#: ../user_domains.php:235 ../user_domains.php:244 ../user_domains.php:253
+#: ../user_group_admin.php:394 ../user_group_admin.php:407
 #: ../user_group_admin.php:418 ../vdef.php:281 ../vdef.php:333
 msgid "Cancel"
 msgstr "Annuleer"
@@ -198,28 +207,31 @@ msgstr "Annuleer"
 #: ../cdef.php:283 ../cdef.php:293 ../cdef.php:346 ../color.php:183
 #: ../color_templates.php:231 ../color_templates.php:241
 #: ../color_templates_items.php:281 ../data_input.php:218 ../data_input.php:267
-#: ../data_queries.php:322 ../data_queries.php:426 ../data_source_profiles.php:266
-#: ../data_source_profiles.php:276 ../data_source_profiles.php:325
-#: ../data_sources.php:460 ../data_sources.php:470 ../data_sources.php:479
-#: ../data_sources.php:488 ../data_sources.php:497 ../data_sources.php:503
-#: ../data_templates.php:352 ../data_templates.php:362 ../data_templates.php:378
-#: ../gprint_presets.php:153 ../graph_templates.php:316 ../graph_templates.php:326
-#: ../graph_templates.php:346 ../graph_templates.php:355 ../graphs.php:774
-#: ../graphs.php:798 ../graphs.php:813 ../graphs.php:836 ../graphs.php:936
-#: ../graphs.php:979 ../graphs.php:1001 ../graphs.php:1009 ../host.php:425
-#: ../host.php:434 ../host.php:476 ../host.php:485 ../host.php:494 ../host.php:508
+#: ../data_queries.php:322 ../data_queries.php:426
+#: ../data_source_profiles.php:266 ../data_source_profiles.php:276
+#: ../data_source_profiles.php:325 ../data_sources.php:460
+#: ../data_sources.php:470 ../data_sources.php:479 ../data_sources.php:488
+#: ../data_sources.php:497 ../data_sources.php:503 ../data_templates.php:352
+#: ../data_templates.php:362 ../data_templates.php:378
+#: ../gprint_presets.php:153 ../graph_templates.php:316
+#: ../graph_templates.php:326 ../graph_templates.php:346
+#: ../graph_templates.php:355 ../graphs.php:774 ../graphs.php:798
+#: ../graphs.php:813 ../graphs.php:836 ../graphs.php:936 ../graphs.php:979
+#: ../graphs.php:1001 ../graphs.php:1009 ../host.php:425 ../host.php:434
+#: ../host.php:476 ../host.php:485 ../host.php:494 ../host.php:508
 #: ../host.php:522 ../host.php:531 ../host.php:539 ../host_templates.php:262
-#: ../host_templates.php:276 ../host_templates.php:287 ../host_templates.php:336
-#: ../host_templates.php:396 ../lib/clog_webapi.php:125
-#: ../lib/html_reports.php:668 ../lib/html_utility.php:200 ../links.php:194
-#: ../links.php:203 ../links.php:212 ../managers.php:999 ../managers.php:1056
-#: ../pollers.php:288 ../pollers.php:297 ../pollers.php:306 ../pollers.php:315
-#: ../sites.php:279 ../tree.php:490 ../tree.php:499 ../tree.php:508
-#: ../user_admin.php:350 ../user_admin.php:390 ../user_admin.php:401
-#: ../user_admin.php:412 ../user_admin.php:434 ../user_domains.php:226
-#: ../user_domains.php:235 ../user_domains.php:244 ../user_domains.php:253
-#: ../user_group_admin.php:394 ../user_group_admin.php:407
-#: ../user_group_admin.php:418 ../vdef.php:281 ../vdef.php:334
+#: ../host_templates.php:276 ../host_templates.php:287
+#: ../host_templates.php:336 ../host_templates.php:396
+#: ../lib/clog_webapi.php:125 ../lib/html_reports.php:668
+#: ../lib/html_utility.php:200 ../links.php:194 ../links.php:203
+#: ../links.php:212 ../managers.php:999 ../managers.php:1056 ../pollers.php:288
+#: ../pollers.php:297 ../pollers.php:306 ../pollers.php:315 ../sites.php:279
+#: ../tree.php:490 ../tree.php:499 ../tree.php:508 ../user_admin.php:350
+#: ../user_admin.php:390 ../user_admin.php:401 ../user_admin.php:412
+#: ../user_admin.php:434 ../user_domains.php:226 ../user_domains.php:235
+#: ../user_domains.php:244 ../user_domains.php:253 ../user_group_admin.php:394
+#: ../user_group_admin.php:407 ../user_group_admin.php:418 ../vdef.php:281
+#: ../vdef.php:334
 msgid "Continue"
 msgstr "Volgende"
 
@@ -233,19 +245,20 @@ msgid ""
 "The selected Aggregate Graphs represent elements from more than one Graph "
 "Template."
 msgstr ""
-"De geselecteerde geaggregeerde grafiek heeft elementen uit meer dan een grafiek "
-"template."
+"De geselecteerde geaggregeerde grafiek heeft elementen uit meer dan een "
+"grafiek template."
 
 #: ../aggregate_graphs.php:347
 msgid ""
-"In order to migrate the Aggregate Graphs below to a Template based Aggregate, "
-"they must only be using one Graph Template.  Please press 'Return' and then "
-"select only Aggregate Graph that utilize the same Graph Template."
+"In order to migrate the Aggregate Graphs below to a Template based "
+"Aggregate, they must only be using one Graph Template.  Please press "
+"'Return' and then select only Aggregate Graph that utilize the same Graph "
+"Template."
 msgstr ""
-"Voordat u deze geaggregeerde grafiek kunt migreren naar een template gebaseerd "
-"aggregaat, moeten deze uitsluitend een template grafiek gebruiken. Klik op "
-"'Terug' en selecteer uitsluitend geaggregeerde grafieken die hetzelfde grafiek "
-"template gebruiken."
+"Voordat u deze geaggregeerde grafiek kunt migreren naar een template "
+"gebaseerd aggregaat, moeten deze uitsluitend een template grafiek gebruiken. "
+"Klik op 'Terug' en selecteer uitsluitend geaggregeerde grafieken die "
+"hetzelfde grafiek template gebruiken."
 
 #: ../aggregate_graphs.php:352 ../aggregate_graphs.php:392
 #: ../aggregate_graphs.php:439 ../aggregate_templates.php:316
@@ -255,23 +268,24 @@ msgstr ""
 #: ../automation_tree_rules.php:284 ../cdef.php:297 ../color.php:187
 #: ../color_templates.php:245 ../data_input.php:221 ../data_queries.php:325
 #: ../data_source_profiles.php:280 ../data_sources.php:507
-#: ../data_templates.php:382 ../gprint_presets.php:157 ../graph_templates.php:359
-#: ../graphs.php:938 ../graphs.php:988 ../graphs.php:991 ../graphs.php:1014
-#: ../host.php:543 ../host_templates.php:291 ../include/auth.php:115
-#: ../lib/html_form.php:1072 ../lib/html_utility.php:198 ../links.php:216
-#: ../managers.php:1059 ../permission_denied.php:30 ../permission_denied.php:32
-#: ../pollers.php:319 ../sites.php:283 ../tree.php:512 ../user_admin.php:439
+#: ../data_templates.php:382 ../gprint_presets.php:157
+#: ../graph_templates.php:359 ../graphs.php:938 ../graphs.php:988
+#: ../graphs.php:991 ../graphs.php:1014 ../host.php:543
+#: ../host_templates.php:291 ../include/auth.php:115 ../lib/html_form.php:1072
+#: ../lib/html_utility.php:198 ../links.php:216 ../managers.php:1059
+#: ../permission_denied.php:30 ../permission_denied.php:32 ../pollers.php:319
+#: ../sites.php:283 ../tree.php:512 ../user_admin.php:439
 #: ../user_domains.php:257 ../user_group_admin.php:422 ../vdef.php:285
 msgid "Return"
 msgstr "Terug"
 
 #: ../aggregate_graphs.php:365
 msgid ""
-"Click 'Continue' and the following Aggregate Graph(s) will be migrated to use "
-"the Aggregate Template that you choose below."
+"Click 'Continue' and the following Aggregate Graph(s) will be migrated to "
+"use the Aggregate Template that you choose below."
 msgstr ""
-"Klik op 'Volgende'  en de volgende geaggregeerde grafiek zal worden gemigreerd "
-"naar het gekozen geaggregeerde template dat u hieronder kiest."
+"Klik op 'Volgende'  en de volgende geaggregeerde grafiek zal worden "
+"gemigreerd naar het gekozen geaggregeerde template dat u hieronder kiest."
 
 #: ../aggregate_graphs.php:371
 msgid "Aggregate Template:"
@@ -288,12 +302,12 @@ msgstr ""
 #: ../aggregate_graphs.php:386
 #, php-format
 msgid ""
-"In order to migrate the Aggregate Graphs below to a Template based Aggregate, "
-"first create an Aggregate Template for the Graph Template '%s'."
+"In order to migrate the Aggregate Graphs below to a Template based "
+"Aggregate, first create an Aggregate Template for the Graph Template '%s'."
 msgstr ""
-"Voordat u de geaggregeerde grafieken hieronder kunt migreren naar een template "
-"gebaseerde aggregaat, moet u eerst een aggregaat template voor de grafiek "
-"template '%s' maken."
+"Voordat u de geaggregeerde grafieken hieronder kunt migreren naar een "
+"template gebaseerde aggregaat, moet u eerst een aggregaat template voor de "
+"grafiek template '%s' maken."
 
 #: ../aggregate_graphs.php:387
 msgid "Please press 'Return' to continue."
@@ -317,7 +331,8 @@ msgstr "Nieuwe aggregatie"
 
 #: ../aggregate_graphs.php:410
 msgid ""
-"Click 'Continue' to associate the following Graph(s) with the Aggregate Graph."
+"Click 'Continue' to associate the following Graph(s) with the Aggregate "
+"Graph."
 msgstr ""
 "Klik op 'Volgende' om de volgende grafiek met de geaggregeerde grafiek te "
 "koppelen."
@@ -341,8 +356,8 @@ msgid ""
 "Click 'Continue' to place the following Aggregate Graph(s) under the Tree "
 "Branch."
 msgstr ""
-"Klik op 'Volgende' om de volgende geaggregeerde grafiek onder de boomstructuur "
-"te plaatsen."
+"Klik op 'Volgende' om de volgende geaggregeerde grafiek onder de "
+"boomstructuur te plaatsen."
 
 #: ../aggregate_graphs.php:430 ../host.php:514
 msgid "Destination Branch:"
@@ -366,11 +381,13 @@ msgid "Graph Items [edit: %s]"
 msgstr "Grafiek items [wijzig: %s]"
 
 #: ../aggregate_graphs.php:557 ../aggregate_graphs.php:560
-#: ../lib/html_reports.php:1084 ../lib/html_reports.php:1089 ../utilities.php:1686
+#: ../lib/html_reports.php:1084 ../lib/html_reports.php:1089
+#: ../utilities.php:1686
 msgid "Details"
 msgstr "Details"
 
-#: ../aggregate_graphs.php:557 ../lib/html_reports.php:1084 ../utilities.php:306
+#: ../aggregate_graphs.php:557 ../lib/html_reports.php:1084
+#: ../utilities.php:306
 msgid "Items"
 msgstr "Items"
 
@@ -433,26 +450,29 @@ msgstr "Overeenkomende grafieken"
 #: ../automation_networks.php:1046 ../automation_snmp.php:828
 #: ../automation_templates.php:407 ../automation_tree_rules.php:713
 #: ../cdef.php:723 ../color.php:520 ../color_templates.php:437
-#: ../data_input.php:602 ../data_queries.php:1024 ../data_source_profiles.php:719
-#: ../data_sources.php:1196 ../data_templates.php:732 ../gprint_presets.php:262
+#: ../data_input.php:602 ../data_queries.php:1024
+#: ../data_source_profiles.php:719 ../data_sources.php:1196
+#: ../data_templates.php:732 ../gprint_presets.php:262
 #: ../graph_templates.php:629 ../graph_view.php:511 ../graph_view.php:795
 #: ../graphs.php:1548 ../graphs_new.php:566 ../host.php:1338
 #: ../host_templates.php:701 ../lib/api_automation.php:133
 #: ../lib/api_automation.php:460 ../lib/api_automation.php:683
 #: ../lib/api_automation.php:991 ../lib/clog_webapi.php:362
 #: ../lib/html_graph.php:206 ../lib/html_graph.php:429
-#: ../lib/html_reports.php:1382 ../lib/html_tree.php:606 ../lib/html_tree.php:881
-#: ../links.php:307 ../managers.php:150 ../managers.php:530 ../managers.php:719
-#: ../plugins.php:276 ../pollers.php:507 ../rrdcleaner.php:472 ../settings.php:200
+#: ../lib/html_reports.php:1382 ../lib/html_tree.php:606
+#: ../lib/html_tree.php:881 ../links.php:307 ../managers.php:150
+#: ../managers.php:530 ../managers.php:719 ../plugins.php:276
+#: ../pollers.php:507 ../rrdcleaner.php:472 ../settings.php:200
 #: ../settings.php:217 ../settings.php:263 ../sites.php:386 ../tree.php:629
-#: ../tree.php:664 ../tree.php:1480 ../user_admin.php:2177 ../user_admin.php:2506
-#: ../user_admin.php:2615 ../user_admin.php:2703 ../user_admin.php:2808
-#: ../user_admin.php:2895 ../user_admin.php:2982 ../user_domains.php:620
-#: ../user_group_admin.php:1742 ../user_group_admin.php:2069
-#: ../user_group_admin.php:2179 ../user_group_admin.php:2284
-#: ../user_group_admin.php:2371 ../user_group_admin.php:2458 ../utilities.php:686
-#: ../utilities.php:1042 ../utilities.php:1269 ../utilities.php:1581
-#: ../utilities.php:2269 ../utilities.php:2521 ../vdef.php:660
+#: ../tree.php:664 ../tree.php:1480 ../user_admin.php:2177
+#: ../user_admin.php:2506 ../user_admin.php:2615 ../user_admin.php:2703
+#: ../user_admin.php:2808 ../user_admin.php:2895 ../user_admin.php:2982
+#: ../user_domains.php:620 ../user_group_admin.php:1742
+#: ../user_group_admin.php:2069 ../user_group_admin.php:2179
+#: ../user_group_admin.php:2284 ../user_group_admin.php:2371
+#: ../user_group_admin.php:2458 ../utilities.php:686 ../utilities.php:1042
+#: ../utilities.php:1269 ../utilities.php:1581 ../utilities.php:2269
+#: ../utilities.php:2521 ../vdef.php:660
 msgid "Search"
 msgstr "Zoeken"
 
@@ -464,7 +484,8 @@ msgstr "Zoeken"
 #: ../lib/functions.php:1903 ../lib/html.php:1197 ../lib/html_graph.php:212
 #: ../lib/html_tree.php:659 ../lib/html_tree.php:1076 ../tree.php:1560
 #: ../user_admin.php:1229 ../user_admin.php:2534 ../user_group_admin.php:748
-#: ../user_group_admin.php:901 ../user_group_admin.php:2097 ../utilities.php:268
+#: ../user_group_admin.php:901 ../user_group_admin.php:2097
+#: ../utilities.php:268
 msgid "Graphs"
 msgstr "Grafieken"
 
@@ -481,16 +502,17 @@ msgstr "Grafieken"
 #: ../include/global_form.php:79 ../lib/api_automation.php:176
 #: ../lib/api_automation.php:470 ../lib/api_automation.php:693
 #: ../lib/api_automation.php:1034 ../lib/html_reports.php:1402 ../links.php:317
-#: ../managers.php:160 ../managers.php:540 ../plugins.php:299 ../pollers.php:517
-#: ../rrdcleaner.php:498 ../sites.php:396 ../tree.php:1490 ../user_admin.php:2187
-#: ../user_admin.php:2538 ../user_admin.php:2625 ../user_admin.php:2731
-#: ../user_admin.php:2818 ../user_admin.php:2905 ../user_admin.php:2992
-#: ../user_domains.php:32 ../user_domains.php:630 ../user_domains.php:715
-#: ../user_group_admin.php:1752 ../user_group_admin.php:2101
-#: ../user_group_admin.php:2207 ../user_group_admin.php:2294
-#: ../user_group_admin.php:2381 ../user_group_admin.php:2468 ../utilities.php:662
-#: ../utilities.php:1313 ../utilities.php:1602 ../utilities.php:2294
-#: ../utilities.php:2557 ../vdef.php:670
+#: ../managers.php:160 ../managers.php:540 ../plugins.php:299
+#: ../pollers.php:517 ../rrdcleaner.php:498 ../sites.php:396 ../tree.php:1490
+#: ../user_admin.php:2187 ../user_admin.php:2538 ../user_admin.php:2625
+#: ../user_admin.php:2731 ../user_admin.php:2818 ../user_admin.php:2905
+#: ../user_admin.php:2992 ../user_domains.php:32 ../user_domains.php:630
+#: ../user_domains.php:715 ../user_group_admin.php:1752
+#: ../user_group_admin.php:2101 ../user_group_admin.php:2207
+#: ../user_group_admin.php:2294 ../user_group_admin.php:2381
+#: ../user_group_admin.php:2468 ../utilities.php:662 ../utilities.php:1313
+#: ../utilities.php:1602 ../utilities.php:2294 ../utilities.php:2557
+#: ../vdef.php:670
 msgid "Default"
 msgstr "Standaard"
 
@@ -505,13 +527,14 @@ msgstr "Onderdeel van aggregatie"
 #: ../automation_tree_rules.php:744 ../cdef.php:750 ../color.php:553
 #: ../color_templates.php:470 ../data_input.php:623 ../data_queries.php:1045
 #: ../data_source_profiles.php:746 ../data_sources.php:1186
-#: ../data_templates.php:775 ../gprint_presets.php:289 ../graph_templates.php:656
-#: ../graph_view.php:565 ../graphs.php:1538 ../graphs_new.php:572 ../host.php:1328
-#: ../host_templates.php:728 ../lib/api_automation.php:187
-#: ../lib/api_automation.php:452 ../lib/api_automation.php:704
-#: ../lib/api_automation.php:1045 ../lib/clog_webapi.php:326
-#: ../lib/html_graph.php:190 ../lib/html_reports.php:1412 ../lib/html_tree.php:643
-#: ../links.php:326 ../managers.php:171 ../managers.php:551 ../managers.php:738
+#: ../data_templates.php:775 ../gprint_presets.php:289
+#: ../graph_templates.php:656 ../graph_view.php:565 ../graphs.php:1538
+#: ../graphs_new.php:572 ../host.php:1328 ../host_templates.php:728
+#: ../lib/api_automation.php:187 ../lib/api_automation.php:452
+#: ../lib/api_automation.php:704 ../lib/api_automation.php:1045
+#: ../lib/clog_webapi.php:326 ../lib/html_graph.php:190
+#: ../lib/html_reports.php:1412 ../lib/html_tree.php:643 ../links.php:326
+#: ../managers.php:171 ../managers.php:551 ../managers.php:738
 #: ../plugins.php:310 ../pollers.php:528 ../sites.php:407 ../tree.php:1501
 #: ../user_admin.php:2198 ../user_admin.php:2555 ../user_admin.php:2642
 #: ../user_admin.php:2748 ../user_admin.php:2835 ../user_admin.php:2922
@@ -524,8 +547,9 @@ msgstr "Ga"
 #: ../aggregate_graphs.php:974 ../aggregate_graphs.php:1306
 #: ../automation_devices.php:470 ../automation_snmp.php:849
 #: ../automation_templates.php:428 ../cdef.php:750 ../color.php:553
-#: ../data_input.php:623 ../data_queries.php:1045 ../data_source_profiles.php:746
-#: ../data_sources.php:1186 ../data_templates.php:775 ../gprint_presets.php:289
+#: ../data_input.php:623 ../data_queries.php:1045
+#: ../data_source_profiles.php:746 ../data_sources.php:1186
+#: ../data_templates.php:775 ../gprint_presets.php:289
 #: ../graph_templates.php:656 ../graph_view.php:565 ../graphs.php:1538
 #: ../graphs_new.php:572 ../host.php:1328 ../host_templates.php:728
 #: ../lib/html_graph.php:190 ../managers.php:171 ../managers.php:551
@@ -535,9 +559,9 @@ msgstr "Ga"
 #: ../user_admin.php:2922 ../user_admin.php:3009 ../user_domains.php:641
 #: ../user_group_admin.php:1763 ../user_group_admin.php:2118
 #: ../user_group_admin.php:2224 ../user_group_admin.php:2311
-#: ../user_group_admin.php:2398 ../user_group_admin.php:2485 ../utilities.php:673
-#: ../utilities.php:1006 ../utilities.php:1324 ../utilities.php:1571
-#: ../utilities.php:2305 ../utilities.php:2568
+#: ../user_group_admin.php:2398 ../user_group_admin.php:2485
+#: ../utilities.php:673 ../utilities.php:1006 ../utilities.php:1324
+#: ../utilities.php:1571 ../utilities.php:2305 ../utilities.php:2568
 msgid "Set/Refresh Filters"
 msgstr "Stel in/vernieuw filters"
 
@@ -548,14 +572,15 @@ msgstr "Stel in/vernieuw filters"
 #: ../automation_tree_rules.php:747 ../cdef.php:753 ../color.php:556
 #: ../color_templates.php:473 ../data_input.php:626 ../data_queries.php:1048
 #: ../data_source_profiles.php:749 ../data_sources.php:1189
-#: ../data_templates.php:778 ../gprint_presets.php:292 ../graph_templates.php:659
-#: ../graph_view.php:568 ../graphs.php:1541 ../graphs_new.php:573 ../host.php:1331
-#: ../host_templates.php:731 ../lib/api_automation.php:190
-#: ../lib/api_automation.php:455 ../lib/api_automation.php:707
-#: ../lib/api_automation.php:1048 ../lib/clog_webapi.php:329
-#: ../lib/html_graph.php:193 ../lib/html_graph.php:322
-#: ../lib/html_reports.php:1415 ../lib/html_tree.php:646 ../lib/html_tree.php:773
-#: ../links.php:329 ../managers.php:174 ../managers.php:554 ../managers.php:741
+#: ../data_templates.php:778 ../gprint_presets.php:292
+#: ../graph_templates.php:659 ../graph_view.php:568 ../graphs.php:1541
+#: ../graphs_new.php:573 ../host.php:1331 ../host_templates.php:731
+#: ../lib/api_automation.php:190 ../lib/api_automation.php:455
+#: ../lib/api_automation.php:707 ../lib/api_automation.php:1048
+#: ../lib/clog_webapi.php:329 ../lib/html_graph.php:193
+#: ../lib/html_graph.php:322 ../lib/html_reports.php:1415
+#: ../lib/html_tree.php:646 ../lib/html_tree.php:773 ../links.php:329
+#: ../managers.php:174 ../managers.php:554 ../managers.php:741
 #: ../plugins.php:313 ../pollers.php:531 ../sites.php:410 ../tree.php:1504
 #: ../user_admin.php:2201 ../user_admin.php:2558 ../user_admin.php:2645
 #: ../user_admin.php:2751 ../user_admin.php:2838 ../user_admin.php:2925
@@ -569,10 +594,11 @@ msgstr "Herstel"
 #: ../automation_snmp.php:852 ../automation_templates.php:431 ../cdef.php:753
 #: ../color.php:556 ../data_input.php:626 ../data_queries.php:1048
 #: ../data_source_profiles.php:749 ../data_sources.php:1189
-#: ../data_templates.php:778 ../gprint_presets.php:292 ../graph_templates.php:659
-#: ../graph_view.php:568 ../graphs.php:1541 ../graphs_new.php:573 ../host.php:1331
-#: ../host_templates.php:731 ../lib/html_graph.php:193 ../lib/html_tree.php:646
-#: ../managers.php:174 ../managers.php:554 ../managers.php:741 ../plugins.php:313
+#: ../data_templates.php:778 ../gprint_presets.php:292
+#: ../graph_templates.php:659 ../graph_view.php:568 ../graphs.php:1541
+#: ../graphs_new.php:573 ../host.php:1331 ../host_templates.php:731
+#: ../lib/html_graph.php:193 ../lib/html_tree.php:646 ../managers.php:174
+#: ../managers.php:554 ../managers.php:741 ../plugins.php:313
 #: ../pollers.php:531 ../sites.php:410 ../tree.php:1504 ../user_admin.php:2201
 #: ../user_admin.php:2558 ../user_admin.php:2645 ../user_admin.php:2751
 #: ../user_admin.php:2838 ../user_admin.php:2925 ../user_admin.php:3012
@@ -585,9 +611,9 @@ msgstr "Herstel"
 msgid "Clear Filters"
 msgstr "Stel filters opnieuw in"
 
-#: ../aggregate_graphs.php:1053 ../aggregate_graphs.php:1370 ../graph_view.php:613
-#: ../graphs.php:965 ../lib/api_automation.php:561 ../user_admin.php:1006
-#: ../user_group_admin.php:756
+#: ../aggregate_graphs.php:1053 ../aggregate_graphs.php:1370
+#: ../graph_view.php:613 ../graphs.php:965 ../lib/api_automation.php:561
+#: ../user_admin.php:1006 ../user_group_admin.php:756
 msgid "Graph Title"
 msgstr "Grafiektitel"
 
@@ -596,11 +622,11 @@ msgstr "Grafiektitel"
 #: ../data_queries.php:1126 ../data_sources.php:1348 ../data_templates.php:885
 #: ../graph_templates.php:759 ../graphs.php:1646 ../host.php:1465
 #: ../host_templates.php:813 ../lib/api_automation.php:273 ../pollers.php:599
-#: ../sites.php:478 ../tree.php:1551 ../user_admin.php:1006 ../user_admin.php:1101
-#: ../user_admin.php:1229 ../user_admin.php:1371 ../user_admin.php:1504
-#: ../user_group_admin.php:610 ../user_group_admin.php:756
-#: ../user_group_admin.php:901 ../user_group_admin.php:1044
-#: ../user_group_admin.php:1178
+#: ../sites.php:478 ../tree.php:1551 ../user_admin.php:1006
+#: ../user_admin.php:1101 ../user_admin.php:1229 ../user_admin.php:1371
+#: ../user_admin.php:1504 ../user_group_admin.php:610
+#: ../user_group_admin.php:756 ../user_group_admin.php:901
+#: ../user_group_admin.php:1044 ../user_group_admin.php:1178
 msgid "ID"
 msgstr "ID"
 
@@ -613,11 +639,12 @@ msgstr "Opgenomen in aggregatie"
 msgid "Size"
 msgstr "Grootte"
 
-#: ../aggregate_graphs.php:1066 ../cdef.php:867 ../color.php:710 ../color.php:712
-#: ../color_templates.php:561 ../data_input.php:721 ../data_queries.php:1146
-#: ../data_source_profiles.php:873 ../data_source_profiles.php:874
-#: ../data_sources.php:1392 ../data_sources.php:1393 ../data_templates.php:905
-#: ../gprint_presets.php:406 ../graph_templates.php:783 ../host_templates.php:832
+#: ../aggregate_graphs.php:1066 ../cdef.php:867 ../color.php:710
+#: ../color.php:712 ../color_templates.php:561 ../data_input.php:721
+#: ../data_queries.php:1146 ../data_source_profiles.php:873
+#: ../data_source_profiles.php:874 ../data_sources.php:1392
+#: ../data_sources.php:1393 ../data_templates.php:905 ../gprint_presets.php:406
+#: ../graph_templates.php:783 ../host_templates.php:832
 #: ../include/global_settings.php:411 ../install/index.php:629
 #: ../install/index.php:650 ../tree.php:1585 ../tree.php:1586
 #: ../user_admin.php:2266 ../user_domains.php:730 ../user_group_admin.php:1833
@@ -625,11 +652,12 @@ msgstr "Grootte"
 msgid "No"
 msgstr "Nee"
 
-#: ../aggregate_graphs.php:1066 ../cdef.php:867 ../color.php:710 ../color.php:712
-#: ../color_templates.php:561 ../data_input.php:721 ../data_queries.php:1146
-#: ../data_source_profiles.php:873 ../data_source_profiles.php:874
-#: ../data_sources.php:1392 ../data_sources.php:1393 ../data_templates.php:905
-#: ../gprint_presets.php:406 ../graph_templates.php:783 ../host_templates.php:832
+#: ../aggregate_graphs.php:1066 ../cdef.php:867 ../color.php:710
+#: ../color.php:712 ../color_templates.php:561 ../data_input.php:721
+#: ../data_queries.php:1146 ../data_source_profiles.php:873
+#: ../data_source_profiles.php:874 ../data_sources.php:1392
+#: ../data_sources.php:1393 ../data_templates.php:905 ../gprint_presets.php:406
+#: ../graph_templates.php:783 ../host_templates.php:832
 #: ../include/global_settings.php:411 ../install/index.php:628
 #: ../install/index.php:629 ../install/index.php:649 ../install/index.php:650
 #: ../tree.php:1585 ../tree.php:1586 ../user_admin.php:2264
@@ -638,7 +666,8 @@ msgstr "Nee"
 msgid "Yes"
 msgstr "Ja"
 
-#: ../aggregate_graphs.php:1072 ../graphs.php:1668 ../lib/api_automation.php:588
+#: ../aggregate_graphs.php:1072 ../graphs.php:1668
+#: ../lib/api_automation.php:588
 msgid "No Graphs Found"
 msgstr "Geen grafieken gevonden"
 
@@ -658,17 +687,18 @@ msgstr "Template"
 #: ../aggregate_graphs.php:1273 ../automation_devices.php:460
 #: ../automation_devices.php:490 ../automation_devices.php:505
 #: ../automation_devices.php:520 ../automation_graph_rules.php:710
-#: ../automation_graph_rules.php:732 ../data_sources.php:1155 ../graphs.php:1518
-#: ../graphs_items.php:275 ../graphs_items.php:296 ../host.php:1279
-#: ../host.php:1297 ../host.php:1314 ../host.php:1348
+#: ../automation_graph_rules.php:732 ../data_sources.php:1155
+#: ../graphs.php:1518 ../graphs_items.php:275 ../graphs_items.php:296
+#: ../host.php:1279 ../host.php:1297 ../host.php:1314 ../host.php:1348
 #: ../lib/api_automation.php:143 ../lib/api_automation.php:161
 #: ../lib/api_automation.php:421 ../lib/api_automation.php:438
 #: ../lib/api_automation.php:1001 ../lib/api_automation.php:1019
 #: ../lib/html.php:1439 ../lib/html_reports.php:1392 ../managers.php:519
 #: ../managers.php:729 ../user_admin.php:2516 ../user_admin.php:2713
-#: ../user_group_admin.php:2079 ../user_group_admin.php:2189 ../utilities.php:651
-#: ../utilities.php:1280 ../utilities.php:1546 ../utilities.php:1591
-#: ../utilities.php:2279 ../utilities.php:2531 ../utilities.php:2544
+#: ../user_group_admin.php:2079 ../user_group_admin.php:2189
+#: ../utilities.php:651 ../utilities.php:1280 ../utilities.php:1546
+#: ../utilities.php:1591 ../utilities.php:2279 ../utilities.php:2531
+#: ../utilities.php:2544
 msgid "Any"
 msgstr "Alle"
 
@@ -692,13 +722,14 @@ msgstr "Alle"
 #: ../include/global_settings.php:876 ../include/global_settings.php:1291
 #: ../lib/api_automation.php:144 ../lib/api_automation.php:422
 #: ../lib/api_automation.php:439 ../lib/api_automation.php:576
-#: ../lib/api_automation.php:1002 ../lib/html.php:1440 ../lib/html_graph.php:393
-#: ../lib/html_reports.php:320 ../lib/html_reports.php:361
-#: ../lib/html_reports.php:372 ../lib/html_reports.php:380
-#: ../lib/html_reports.php:389 ../lib/html_tree.php:845 ../settings.php:193
-#: ../settings.php:210 ../settings.php:233 ../user_admin.php:2517
-#: ../user_admin.php:2714 ../user_group_admin.php:2080
-#: ../user_group_admin.php:2190 ../utilities.php:1547
+#: ../lib/api_automation.php:1002 ../lib/html.php:1440
+#: ../lib/html_graph.php:393 ../lib/html_reports.php:320
+#: ../lib/html_reports.php:361 ../lib/html_reports.php:372
+#: ../lib/html_reports.php:380 ../lib/html_reports.php:389
+#: ../lib/html_tree.php:845 ../settings.php:193 ../settings.php:210
+#: ../settings.php:233 ../user_admin.php:2517 ../user_admin.php:2714
+#: ../user_group_admin.php:2080 ../user_group_admin.php:2190
+#: ../utilities.php:1547
 msgid "None"
 msgstr "Geen"
 
@@ -716,7 +747,8 @@ msgstr "Geaggregeerde template"
 
 #: ../aggregate_graphs.php:1372
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
-msgstr "Het geaggregeerde template waarop dit geaggregeerde template is gebaseerd"
+msgstr ""
+"Het geaggregeerde template waarop dit geaggregeerde template is gebaseerd"
 
 #: ../aggregate_graphs.php:1391
 msgid "No Aggregate Graphs Found"
@@ -733,7 +765,8 @@ msgstr "Overrule deze waarde"
 #: ../aggregate_templates.php:307
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgstr ""
-"Klik op 'Volgende' om de volgende geaggregeerde grafiek template te verwijderen."
+"Klik op 'Volgende' om de volgende geaggregeerde grafiek template te "
+"verwijderen."
 
 #: ../aggregate_templates.php:312
 msgid "Delete Color Template(s)"
@@ -765,8 +798,8 @@ msgid "Templates"
 msgstr "Templates"
 
 #: ../aggregate_templates.php:574 ../cdef.php:747 ../color.php:550
-#: ../color_templates.php:467 ../data_sources.php:1223 ../gprint_presets.php:286
-#: ../graph_templates.php:653 ../vdef.php:684
+#: ../color_templates.php:467 ../data_sources.php:1223
+#: ../gprint_presets.php:286 ../graph_templates.php:653 ../vdef.php:684
 msgid "Has Graphs"
 msgstr "Heeft grafieken"
 
@@ -776,17 +809,17 @@ msgstr "Templatetitel"
 
 #: ../aggregate_templates.php:641
 msgid ""
-"Aggregate Templates that are in use can not be Deleted.  In use is defined as "
-"being referenced by an Aggregate."
+"Aggregate Templates that are in use can not be Deleted.  In use is defined "
+"as being referenced by an Aggregate."
 msgstr ""
-"Geaggregeerde templates die in gebruik zijn kunnen niet worden verwijderd. In "
-"gebruik betekent dat ze zijn gekoppeld aan een aggregaat."
+"Geaggregeerde templates die in gebruik zijn kunnen niet worden verwijderd. "
+"In gebruik betekent dat ze zijn gekoppeld aan een aggregaat."
 
 #: ../aggregate_templates.php:641 ../cdef.php:850 ../color.php:687
 #: ../color_templates.php:543 ../data_input.php:703 ../data_queries.php:1127
 #: ../data_source_profiles.php:846 ../data_sources.php:1350
-#: ../data_templates.php:886 ../gprint_presets.php:388 ../graph_templates.php:763
-#: ../host_templates.php:814 ../vdef.php:843
+#: ../data_templates.php:886 ../gprint_presets.php:388
+#: ../graph_templates.php:763 ../host_templates.php:814 ../vdef.php:843
 msgid "Deletable"
 msgstr "Verwijderbaar"
 
@@ -813,8 +846,8 @@ msgstr "Uw huidige wachtwoord is niet correct. Probeert u het opnieuw."
 msgid ""
 "Your new password cannot be the same as the old password. Please try again."
 msgstr ""
-"Uw nieuwe wachtwoord kan niet hetzelfde zijn als uw oude wachtwoord. Probeert u "
-"het opnieuw."
+"Uw nieuwe wachtwoord kan niet hetzelfde zijn als uw oude wachtwoord. "
+"Probeert u het opnieuw."
 
 #: ../auth_changepassword.php:125
 msgid "Your new passwords do not match, please retype."
@@ -857,7 +890,8 @@ msgstr "Wijzig wachtwoord"
 
 #: ../auth_changepassword.php:279
 msgid "Please enter your current password and your new<br>Cacti password."
-msgstr "Voer alstublieft uw huidige wachtwoord in uw nieuwe<br>Cacti wachtwoord."
+msgstr ""
+"Voer alstublieft uw huidige wachtwoord in uw nieuwe<br>Cacti wachtwoord."
 
 #: ../auth_changepassword.php:284
 msgid "Current password"
@@ -887,8 +921,8 @@ msgid ""
 "server. Please make sure you have authentication enabled on the web server."
 msgstr ""
 "Web Basic Authentication is geconfigureerd, maar geen gebruikersnaam was "
-"doorgegeven aan de webserver. Controleer of u authenticatie heeft ingeschakeld "
-"op de webserver."
+"doorgegeven aan de webserver. Controleer of u authenticatie heeft "
+"ingeschakeld op de webserver."
 
 #: ../auth_login.php:97
 #, php-format
@@ -939,12 +973,13 @@ msgstr "Gebruikerlogin"
 msgid "Enter your Username and Password below"
 msgstr "Voer uw gebruikersnaam en wachtwoord in"
 
-#: ../auth_login.php:538 ../auth_login.php:541 ../include/global_settings.php:1162
-#: ../lib/functions.php:3711
+#: ../auth_login.php:538 ../auth_login.php:541
+#: ../include/global_settings.php:1162 ../lib/functions.php:3711
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: ../auth_login.php:546 ../include/global_form.php:1415 ../lib/functions.php:3712
+#: ../auth_login.php:546 ../include/global_form.php:1415
+#: ../lib/functions.php:3712
 msgid "Password"
 msgstr "Wachtwoord"
 
@@ -973,20 +1008,23 @@ msgid "User Account Details"
 msgstr "Details gebruikersaccount"
 
 #: ../auth_profile.php:161 ../include/global_arrays.php:493
-#: ../include/global_settings.php:1871 ../lib/html.php:1329 ../lib/html.php:1351
+#: ../include/global_settings.php:1871 ../lib/html.php:1329
+#: ../lib/html.php:1351
 msgid "Tree View"
 msgstr "Boomstructuur"
 
-#: ../auth_profile.php:165 ../include/global_arrays.php:494 ../lib/html.php:1336
-#: ../lib/html.php:1360
+#: ../auth_profile.php:165 ../include/global_arrays.php:494
+#: ../lib/html.php:1336 ../lib/html.php:1360
 msgid "List View"
 msgstr "Lijstweergave"
 
-#: ../auth_profile.php:169 ../include/global_arrays.php:495 ../lib/html.php:1343
+#: ../auth_profile.php:169 ../include/global_arrays.php:495
+#: ../lib/html.php:1343
 msgid "Preview View"
 msgstr "Voorbeeldweergave"
 
-#: ../auth_profile.php:182 ../include/global_form.php:1391 ../user_admin.php:2244
+#: ../auth_profile.php:182 ../include/global_form.php:1391
+#: ../user_admin.php:2244
 msgid "User Name"
 msgstr "Gebruikersnaam"
 
@@ -994,8 +1032,8 @@ msgstr "Gebruikersnaam"
 msgid "The login name for this user."
 msgstr "De gebruikersnaam van deze gebruiker."
 
-#: ../auth_profile.php:190 ../include/global_form.php:1399 ../user_admin.php:2245
-#: ../user_group_admin.php:610 ../utilities.php:761
+#: ../auth_profile.php:190 ../include/global_form.php:1399
+#: ../user_admin.php:2245 ../user_group_admin.php:610 ../utilities.php:761
 msgid "Full Name"
 msgstr "Volledige naam"
 
@@ -1004,7 +1042,8 @@ msgid ""
 "A more descriptive name for this user, that can include spaces or special "
 "characters."
 msgstr ""
-"Een beschrijving van deze gebruiker, mag spaties en speciale karakters bevatten."
+"Een beschrijving van deze gebruiker, mag spaties en speciale karakters "
+"bevatten."
 
 #: ../auth_profile.php:198 ../include/global_form.php:1407
 msgid "Email Address"
@@ -1060,7 +1099,7 @@ msgstr "Apparaat toevoegen"
 #: ../lib/api_automation.php:166 ../lib/api_automation.php:1024
 #: ../lib/html_utility.php:732
 msgid "Down"
-msgstr "Omhoog"
+msgstr "Offline"
 
 #: ../automation_devices.php:40 ../automation_devices.php:271
 #: ../automation_devices.php:391 ../automation_devices.php:401
@@ -1068,7 +1107,7 @@ msgstr "Omhoog"
 #: ../lib/api_automation.php:165 ../lib/api_automation.php:1023
 #: ../lib/html_utility.php:738
 msgid "Up"
-msgstr "Omlaag"
+msgstr "Online"
 
 #: ../automation_devices.php:90
 msgid "Added manually through device automation interface."
@@ -1122,7 +1161,8 @@ msgstr "U moet tenminste een apparaat selecteren."
 #: ../include/global_arrays.php:662 ../lib/api_automation.php:172
 #: ../lib/api_automation.php:466 ../lib/functions.php:2189 ../pollers.php:603
 #: ../sites.php:479 ../tree.php:1559 ../user_admin.php:2727
-#: ../user_group_admin.php:893 ../user_group_admin.php:2203 ../utilities.php:263
+#: ../user_group_admin.php:893 ../user_group_admin.php:2203
+#: ../utilities.php:263
 msgid "Devices"
 msgstr "Apparaten"
 
@@ -1151,7 +1191,8 @@ msgstr "Contactgegevens"
 #: ../include/global_form.php:1595 ../install/index.php:1008
 #: ../lib/api_automation.php:269 ../lib/api_automation.php:1140
 #: ../managers.php:219 ../tree.php:643 ../user_admin.php:1101
-#: ../user_admin.php:1229 ../user_group_admin.php:901 ../user_group_admin.php:1819
+#: ../user_admin.php:1229 ../user_group_admin.php:901
+#: ../user_group_admin.php:1819
 msgid "Description"
 msgstr "Omschrijving"
 
@@ -1174,9 +1215,9 @@ msgstr "SNMP"
 #: ../data_templates.php:890 ../host.php:721 ../host.php:808 ../host.php:1344
 #: ../host.php:1468 ../lib/api_automation.php:157 ../lib/api_automation.php:271
 #: ../lib/api_automation.php:560 ../lib/api_automation.php:1015
-#: ../lib/api_automation.php:1143 ../lib/html_reports.php:1388 ../managers.php:221
-#: ../plugins.php:282 ../plugins.php:383 ../pollers.php:601 ../user_admin.php:1229
-#: ../user_group_admin.php:901
+#: ../lib/api_automation.php:1143 ../lib/html_reports.php:1388
+#: ../managers.php:221 ../plugins.php:282 ../plugins.php:383 ../pollers.php:601
+#: ../user_admin.php:1229 ../user_group_admin.php:901
 msgid "Status"
 msgstr "Status"
 
@@ -1251,8 +1292,8 @@ msgstr "Klik op 'Volgende' om de volgende grafiekregels te verwijderen."
 
 #: ../automation_graph_rules.php:258
 msgid ""
-"Click 'Continue' to duplicate the following Rule(s). You can optionally change "
-"the title format for the new Graph Rules."
+"Click 'Continue' to duplicate the following Rule(s). You can optionally "
+"change the title format for the new Graph Rules."
 msgstr ""
 "Klik op 'Volgende' om de volgende regels te kopiëren. U kunt optioneel de "
 "indeling van de titel voor de nieuwe grafiekregels wijzigen."
@@ -1352,7 +1393,8 @@ msgstr "Data query"
 #: ../managers.php:623 ../user_admin.php:1101 ../user_admin.php:1113
 #: ../user_admin.php:2246 ../user_domains.php:340 ../user_domains.php:717
 #: ../user_group_admin.php:86 ../user_group_admin.php:610
-#: ../user_group_admin.php:625 ../user_group_admin.php:1823 ../utilities.php:2154
+#: ../user_group_admin.php:625 ../user_group_admin.php:1823
+#: ../utilities.php:2154
 msgid "Enabled"
 msgstr "Ingeschakeld"
 
@@ -1472,22 +1514,22 @@ msgstr "Zoek netwerk binnen bereik [nieuw]"
 msgid "General Settings"
 msgstr "Algemene instellingen"
 
-#: ../automation_networks.php:380 ../automation_snmp.php:646 ../data_input.php:451
-#: ../data_input.php:485 ../data_queries.php:593 ../data_queries.php:688
-#: ../data_queries.php:900 ../data_source_profiles.php:486
-#: ../graph_templates.php:422 ../include/global_form.php:35
-#: ../include/global_form.php:104 ../include/global_form.php:154
-#: ../include/global_form.php:174 ../include/global_form.php:215
-#: ../include/global_form.php:339 ../include/global_form.php:366
-#: ../include/global_form.php:473 ../include/global_form.php:930
-#: ../include/global_form.php:954 ../include/global_form.php:1242
-#: ../include/global_form.php:1262 ../include/global_form.php:1329
-#: ../include/global_form.php:1357 ../include/global_form.php:2035
-#: ../include/global_form.php:2133 ../include/global_form.php:2182
-#: ../install/index.php:568 ../install/index.php:645 ../install/index.php:1008
-#: ../lib/vdef.php:74 ../managers.php:604 ../pollers.php:52 ../sites.php:39
-#: ../user_admin.php:1101 ../user_domains.php:316 ../utilities.php:466
-#: ../utilities.php:2350
+#: ../automation_networks.php:380 ../automation_snmp.php:646
+#: ../data_input.php:451 ../data_input.php:485 ../data_queries.php:593
+#: ../data_queries.php:688 ../data_queries.php:900
+#: ../data_source_profiles.php:486 ../graph_templates.php:422
+#: ../include/global_form.php:35 ../include/global_form.php:104
+#: ../include/global_form.php:154 ../include/global_form.php:174
+#: ../include/global_form.php:215 ../include/global_form.php:339
+#: ../include/global_form.php:366 ../include/global_form.php:473
+#: ../include/global_form.php:930 ../include/global_form.php:954
+#: ../include/global_form.php:1242 ../include/global_form.php:1262
+#: ../include/global_form.php:1329 ../include/global_form.php:1357
+#: ../include/global_form.php:2035 ../include/global_form.php:2133
+#: ../include/global_form.php:2182 ../install/index.php:568
+#: ../install/index.php:645 ../install/index.php:1008 ../lib/vdef.php:74
+#: ../managers.php:604 ../pollers.php:52 ../sites.php:39 ../user_admin.php:1101
+#: ../user_domains.php:316 ../utilities.php:466 ../utilities.php:2350
 msgid "Name"
 msgstr "Naam"
 
@@ -1499,7 +1541,8 @@ msgstr "Geef dit netwerk een naam."
 msgid "New Network Discovery Range"
 msgstr "Nieuwe netwerk zoek bereik"
 
-#: ../automation_networks.php:388 ../automation_networks.php:925 ../host.php:1293
+#: ../automation_networks.php:388 ../automation_networks.php:925
+#: ../host.php:1293
 msgid "Data Collector"
 msgstr "Data Collector"
 
@@ -1517,13 +1560,13 @@ msgstr "Subnet bereik"
 
 #: ../automation_networks.php:397
 msgid ""
-"Enter valid Network Ranges separated by commas.  You may use an IP address, a "
-"Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using "
-"wildcards such as 192.168.*.*"
+"Enter valid Network Ranges separated by commas.  You may use an IP address, "
+"a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or "
+"using wildcards such as 192.168.*.*"
 msgstr ""
-"Voer een valide netwerkbereik in, gescheiden met komma's. U mag een IP adres, "
-"netwerkbereik zoals 192.168.1.0/24 of 192.168.1.0/255.255.255.0 gebruiken, of "
-"gebruik maken van wildcards zoals 192.168.*.*"
+"Voer een valide netwerkbereik in, gescheiden met komma's. U mag een IP "
+"adres, netwerkbereik zoals 192.168.1.0/24 of 192.168.1.0/255.255.255.0 "
+"gebruiken, of gebruik maken van wildcards zoals 192.168.*.*"
 
 #: ../automation_networks.php:406
 msgid "Total IP Addresses"
@@ -1539,12 +1582,12 @@ msgstr "Alternatieve DNS servers"
 
 #: ../automation_networks.php:413
 msgid ""
-"A space delimited list of alternate DNS Servers to use for DNS resolution. If "
-"blank, the poller OS will be used to resolve DNS names."
+"A space delimited list of alternate DNS Servers to use for DNS resolution. "
+"If blank, the poller OS will be used to resolve DNS names."
 msgstr ""
-"Een spatie gescheiden lijst van alternatieve DNS servers voor het ophalen van "
-"DNS gegevens. Indien niet opgegeven zal de poller de DNS servers van het OS "
-"gebruiken om DNS namen te resolven."
+"Een spatie gescheiden lijst van alternatieve DNS servers voor het ophalen "
+"van DNS gegevens. Indien niet opgegeven zal de poller de DNS servers van het "
+"OS gebruiken om DNS namen te resolven."
 
 #: ../automation_networks.php:416
 msgid "Enter IPs or FQDNs of DNS Servers"
@@ -1565,7 +1608,8 @@ msgstr "Aantal threads"
 #: ../automation_networks.php:429
 msgid "Define the number of threads to use for discovering this Network Range."
 msgstr ""
-"Definieer het aantal threads om te gebruiken voor het scannen van dit netwerk."
+"Definieer het aantal threads om te gebruiken voor het scannen van dit "
+"netwerk."
 
 #: ../automation_networks.php:432
 #, php-format
@@ -1661,8 +1705,8 @@ msgstr "Automatisch toevoegen aan Cacti"
 
 #: ../automation_networks.php:481
 msgid ""
-"For any newly discovered Devices that are reachable using SNMP and who match a "
-"Device Rule, add them to Cacti."
+"For any newly discovered Devices that are reachable using SNMP and who match "
+"a Device Rule, add them to Cacti."
 msgstr ""
 "Ieder nieuw ontdekt apparaat dat bereikbaar is via SNMP en dat aan de "
 "apparaatregels voldoet, toevoegen aan Cacti."
@@ -1672,10 +1716,11 @@ msgid "Rerun Data Queries"
 msgstr "Data Queries opnieuw uitvoeren"
 
 #: ../automation_networks.php:487
-msgid "If a device, previously added to Cacti, is found, rerun its data queries."
+msgid ""
+"If a device, previously added to Cacti, is found, rerun its data queries."
 msgstr ""
-"Als een apparaat dat eerder is toegevoegd aan Cacti, is gevonden, voer dan de "
-"data queries opnieuw uit."
+"Als een apparaat dat eerder is toegevoegd aan Cacti, is gevonden, voer dan "
+"de data queries opnieuw uit."
 
 #: ../automation_networks.php:492
 msgid "Discovery Timing"
@@ -1844,7 +1889,8 @@ msgstr "SNMP opties"
 #: ../automation_networks.php:600
 msgid "Select the SNMP Options to use for discovery of this Network Range."
 msgstr ""
-"Selecteer de SNMP opties die voor deze netwerk scan gebruikt dienen te worden."
+"Selecteer de SNMP opties die voor deze netwerk scan gebruikt dienen te "
+"worden."
 
 #: ../automation_networks.php:606 ../include/global_form.php:1179
 msgid "Ping Method"
@@ -1871,8 +1917,8 @@ msgstr "Ping timeout waarde"
 #: ../automation_networks.php:624 ../include/global_form.php:1198
 #: ../include/global_settings.php:554
 msgid ""
-"The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout "
-"value applies for SNMP pings."
+"The timeout value to use for host ICMP and UDP pinging.  This host SNMP "
+"timeout value applies for SNMP pings."
 msgstr ""
 "De timeout waarde die gebruikt moet worden voor de host ICMP en UDP ping. De "
 "host SNMP timeout waarde geldt voor de SNMP ping."
@@ -1884,8 +1930,8 @@ msgstr "Aantal keren opnieuw proberen te pingen"
 
 #: ../automation_networks.php:633 ../include/global_form.php:1207
 msgid ""
-"After an initial failure, the number of ping retries Cacti will attempt before "
-"failing."
+"After an initial failure, the number of ping retries Cacti will attempt "
+"before failing."
 msgstr "Het aantal pogingen Cacti opnieuw zal proberen te pingen."
 
 #: ../automation_networks.php:673
@@ -2020,8 +2066,8 @@ msgid ""
 "Click 'Continue' to duplicate the following SNMP Options. You can optionally "
 "change the title format for the new SNMP Options."
 msgstr ""
-"Klik op ‘Volgende’ om de volgende SNMP opties te kopiëren. U kunt optioneel het "
-"titelformaat voor de nieuwe SNMP opties wijzigen."
+"Klik op ‘Volgende’ om de volgende SNMP opties te kopiëren. U kunt optioneel "
+"het titelformaat voor de nieuwe SNMP opties wijzigen."
 
 #: ../automation_snmp.php:244
 msgid "Name Format"
@@ -2096,11 +2142,11 @@ msgstr "SNMP timeout"
 #: ../automation_snmp.php:464 ../include/global_form.php:1149
 #: ../include/global_form.php:1712
 msgid ""
-"The maximum number of milliseconds Cacti will wait for an SNMP response (does "
-"not work with php-snmp support)."
+"The maximum number of milliseconds Cacti will wait for an SNMP response "
+"(does not work with php-snmp support)."
 msgstr ""
-"Het maximaal aantal milliseconden dat Cacti wacht op een SNMP antwoord (werkt "
-"niet met php-snmp support)."
+"Het maximaal aantal milliseconden dat Cacti wacht op een SNMP antwoord "
+"(werkt niet met php-snmp support)."
 
 #: ../automation_snmp.php:472
 msgid "SNMP Retries"
@@ -2108,10 +2154,11 @@ msgstr "SNMP pogingen"
 
 #: ../automation_snmp.php:473
 msgid ""
-"The maximum number of attempts to reach a device via an SNMP readstring prior "
-"to giving up."
+"The maximum number of attempts to reach a device via an SNMP readstring "
+"prior to giving up."
 msgstr ""
-"Het maximum aantal pogingen om een apparaat via de SNMP read waarde te bereiken."
+"Het maximum aantal pogingen om een apparaat via de SNMP read waarde te "
+"bereiken."
 
 #: ../automation_snmp.php:481
 msgid "Maximum OID's Per Get Request"
@@ -2119,7 +2166,8 @@ msgstr "Maximaal aantal OID’s per GET request"
 
 #: ../automation_snmp.php:482 ../include/global_form.php:1158
 msgid ""
-"Specified the number of OIDs that can be obtained in a single SNMP Get request."
+"Specified the number of OIDs that can be obtained in a single SNMP Get "
+"request."
 msgstr ""
 "Specificeer het aantal OID’s dat in een enkele SNMP GET request mag worden "
 "opgehaald."
@@ -2276,17 +2324,17 @@ msgstr "geen"
 #: ../automation_snmp.php:715 ../automation_templates.php:540 ../cdef.php:608
 #: ../color_templates.php:109 ../data_queries.php:623 ../data_queries.php:720
 #: ../lib/api_automation.php:1236 ../lib/api_automation.php:1299
-#: ../lib/api_automation.php:1363 ../lib/html.php:823 ../lib/html_reports.php:1295
-#: ../tree.php:1570 ../tree.php:1574 ../tree.php:1577 ../tree.php:1578
-#: ../vdef.php:589
+#: ../lib/api_automation.php:1363 ../lib/html.php:823
+#: ../lib/html_reports.php:1295 ../tree.php:1570 ../tree.php:1574
+#: ../tree.php:1577 ../tree.php:1578 ../vdef.php:589
 msgid "Move Down"
 msgstr "Naar beneden"
 
 #: ../automation_snmp.php:721 ../automation_templates.php:546 ../cdef.php:614
 #: ../color_templates.php:115 ../data_queries.php:628 ../data_queries.php:725
 #: ../lib/api_automation.php:1242 ../lib/api_automation.php:1305
-#: ../lib/api_automation.php:1369 ../lib/html.php:828 ../lib/html_reports.php:1295
-#: ../vdef.php:595
+#: ../lib/api_automation.php:1369 ../lib/html.php:828
+#: ../lib/html_reports.php:1295 ../vdef.php:595
 msgid "Move Up"
 msgstr "Naar boven"
 
@@ -2364,8 +2412,8 @@ msgstr "Systeembeschrijving overeenkomst"
 #: ../automation_templates.php:309
 msgid ""
 "This is a unique string that will be matched to a devices sysDescr string to "
-"pair it to this Discovery Template.  Any Perl regular expression can be used in "
-"addition to any SQL Where expression."
+"pair it to this Discovery Template.  Any Perl regular expression can be used "
+"in addition to any SQL Where expression."
 msgstr ""
 "Dit is een unieke waarde dat gekoppeld wordt aan de sysDescr waarde van een "
 "apparaat om het te koppelen aan dit scantemplate. Iedere Perl reguliere "
@@ -2378,8 +2426,8 @@ msgstr "Systeemnaam overeenkomst"
 #: ../automation_templates.php:316
 msgid ""
 "This is a unique string that will be matched to a devices sysName string to "
-"pair it to this Automation Template.  Any Perl regular expression can be used "
-"in addition to any SQL Where expression."
+"pair it to this Automation Template.  Any Perl regular expression can be "
+"used in addition to any SQL Where expression."
 msgstr ""
 "Dit is een unieke waarde dat gekoppeld wordt aan de sysName waarde van een "
 "apparaat om het te koppelen aan dit scantemplate. Iedere Perl reguliere "
@@ -2391,9 +2439,9 @@ msgstr "Systeem OID overeenkomst"
 
 #: ../automation_templates.php:323
 msgid ""
-"This is a unique string that will be matched to a devices sysOid string to pair "
-"it to this Automation Template.  Any Perl regular expression can be used in "
-"addition to any SQL Where expression."
+"This is a unique string that will be matched to a devices sysOid string to "
+"pair it to this Automation Template.  Any Perl regular expression can be "
+"used in addition to any SQL Where expression."
 msgstr ""
 "Dit is een unieke waarde dat gekoppeld wordt aan de sysOid waarde van een "
 "apparaat om het te koppelen aan dit scantemplate. Iedere Perl reguliere "
@@ -2421,8 +2469,8 @@ msgstr "Templatenaam"
 msgid "System ObjectId Match"
 msgstr "Systeem ObjectId overeenkomst"
 
-#: ../automation_templates.php:515 ../data_queries.php:594 ../data_queries.php:689
-#: ../links.php:379 ../tree.php:1555
+#: ../automation_templates.php:515 ../data_queries.php:594
+#: ../data_queries.php:689 ../links.php:379 ../tree.php:1555
 msgid "Order"
 msgstr "Volgorde"
 
@@ -2440,8 +2488,8 @@ msgstr "Klik op 'Volgende' om de volgende regel(s) te verwijderen."
 
 #: ../automation_tree_rules.php:260
 msgid ""
-"Click 'Continue' to duplicate the following Rule(s). You can optionally change "
-"the title format for the new Rules."
+"Click 'Continue' to duplicate the following Rule(s). You can optionally "
+"change the title format for the new Rules."
 msgstr ""
 "Klik op 'Volgende' om de volgende regel(s) te kopiëren. U kunt optioneel de "
 "titel layout voor de nieuwe regel(s) wijzigen."
@@ -2512,8 +2560,8 @@ msgstr[1] "Verwijder CDEF’s"
 
 #: ../cdef.php:287
 msgid ""
-"Click 'Continue' to duplicate the following CDEF. You can optionally change the "
-"title format for the new CDEF."
+"Click 'Continue' to duplicate the following CDEF. You can optionally change "
+"the title format for the new CDEF."
 msgid_plural ""
 "Click 'Continue' to duplicate the following CDEFs. You can optionally change "
 "the title format for the new CDEFs."
@@ -2609,9 +2657,11 @@ msgstr "De naam van deze CDEF."
 
 #: ../cdef.php:850
 msgid ""
-"CDEFs that are in use cannot be Deleted.  In use is defined as being referenced "
-"by a Graph or a Graph Template."
+"CDEFs that are in use cannot be Deleted.  In use is defined as being "
+"referenced by a Graph or a Graph Template."
 msgstr ""
+"CDEF’s die in gebruik zijn kunnen niet worden verwijderd. Een CDEF is in "
+"gebruik als deze door een grafiek of grafiektemplate wordt gebruikt."
 
 #: ../cdef.php:851 ../data_queries.php:1128 ../gprint_presets.php:389
 #: ../graph_templates.php:764 ../vdef.php:844
@@ -2673,26 +2723,30 @@ msgstr "Importeer kleuren vanuit een lokaal bestand"
 
 #: ../color.php:360
 msgid ""
-"Please specify the location of the CSV file containing your Color information."
-msgstr ""
+"Please specify the location of the CSV file containing your Color "
+"information."
+msgstr "Specificeer de locatie van het CSV bestand met de kleurinformatie."
 
 #: ../color.php:364 ../lib/html_form.php:417
 msgid "Select a File"
-msgstr ""
+msgstr "Selecteer een bestand"
 
 #: ../color.php:371
 msgid "Overwrite Existing Data?"
-msgstr ""
+msgstr "Bestaande data overschrijven?"
 
 #: ../color.php:372
 msgid ""
-"Should the import process be allowed to overwrite existing data?  Please note, "
-"this does not mean delete old rows, only update duplicate rows."
+"Should the import process be allowed to overwrite existing data?  Please "
+"note, this does not mean delete old rows, only update duplicate rows."
 msgstr ""
+"Mag bestaande data door het import proces worden overschreven? Dit betekent "
+"niet dat oude rijen worden verwijderd, bestaande dubbele rijen worden alleen "
+"bijgewerkt."
 
 #: ../color.php:375
 msgid "Allow Existing Rows to be Updated?"
-msgstr ""
+msgstr "Bijwerken van bestaande rijen toestaan?"
 
 #: ../color.php:380
 msgid "Required File Format Notes"
@@ -2700,41 +2754,41 @@ msgstr ""
 
 #: ../color.php:383
 msgid "The file must contain a header row with the following column headings."
-msgstr ""
+msgstr "Het bestand moet kolomkoppen bevatten met de volgende kolomnamen."
 
 #: ../color.php:385
 msgid "<strong>name</strong> - The Color Name"
-msgstr ""
+msgstr "<strong>Naam</strong> - De kleurnaam"
 
 #: ../color.php:386
 msgid "<strong>hex</strong> - The Hex Value"
-msgstr ""
+msgstr "<strong>hex</strong> - De hex waarde"
 
 #: ../color.php:407
 #, php-format
 msgid "Colors [edit: %s]"
-msgstr ""
+msgstr "Kleuren [wijzig: %s]"
 
 #: ../color.php:409
 msgid "Colors [new]"
-msgstr ""
+msgstr "Kleuren [nieuw]"
 
 #: ../color.php:511 ../color.php:526 ../include/global_arrays.php:641
 #: ../lib/functions.php:2081
 msgid "Colors"
-msgstr ""
+msgstr "Kleuren"
 
 #: ../color.php:544
 msgid "Named Colors"
-msgstr ""
+msgstr "Benoemde kleuren"
 
 #: ../color.php:559 ../lib/html_form.php:1082
 msgid "Import"
-msgstr ""
+msgstr "Importeren"
 
 #: ../color.php:562
 msgid "Export Colors"
-msgstr ""
+msgstr "Exporteer kleuren"
 
 #: ../color.php:683
 msgid "Hex"
@@ -2742,169 +2796,182 @@ msgstr ""
 
 #: ../color.php:683
 msgid "The Hex Value for this Color."
-msgstr ""
+msgstr "De hex waarde voor deze kleur."
 
 #: ../color.php:684
 msgid "Color Name"
-msgstr ""
+msgstr "Kleurnaam"
 
 #: ../color.php:684
 msgid "The name of this Color definition."
-msgstr ""
+msgstr "De naam van deze kleurdefinitie."
 
 #: ../color.php:685
 msgid "Is this color a named color which are read only."
-msgstr ""
+msgstr "Is deze kleur als alleen lezen benoemd."
 
 #: ../color.php:685
 msgid "Named Color"
-msgstr ""
+msgstr "Benoemde kleur"
 
 #: ../color.php:686 ../include/global_arrays.php:627
 #: ../include/global_form.php:812 ../include/global_form.php:2023
 msgid "Color"
-msgstr ""
+msgstr "Kleur"
 
 #: ../color.php:686
 msgid "The Color as shown on the screen."
-msgstr ""
+msgstr "De kleur zoals getoond op het scherm."
 
 #: ../color.php:687
 msgid ""
-"Colors in use cannot be Deleted.  In use is defined as being referenced either "
-"by a Graph or a Graph Template."
+"Colors in use cannot be Deleted.  In use is defined as being referenced "
+"either by a Graph or a Graph Template."
 msgstr ""
+"In gebruik zijnde kleuren kunnen niet worden verwijderd. Een kleur is in "
+"gebruik als deze wordt gebruikt in een grafiek of grafiektemplate."
 
 #: ../color.php:688
 msgid "The number of Graph using this Color."
-msgstr ""
+msgstr "Het aantal grafieken dat deze kleur gebruikt."
 
 #: ../color.php:689
 msgid "The number of Graph Templates using this Color."
-msgstr ""
+msgstr "Het aantal grafiektemplates dat deze kleur gebruikt."
 
 #: ../color.php:719
 msgid "No Colors Found"
-msgstr ""
+msgstr "Geen kleuren gevonden"
 
 #: ../color_templates.php:72
 msgid "Color Item"
-msgstr ""
+msgstr "Kleur item"
 
 #: ../color_templates.php:73 ../lib/api_aggregate.php:1216 ../lib/html.php:751
 msgid "Item Color"
-msgstr ""
+msgstr "Kleur item"
 
 #: ../color_templates.php:92 ../lib/api_aggregate.php:1275
-#: ../lib/api_aggregate.php:1278 ../lib/api_aggregate.php:1282 ../lib/html.php:784
+#: ../lib/api_aggregate.php:1278 ../lib/api_aggregate.php:1282
+#: ../lib/html.php:784
 #, php-format
 msgid "Item # %d"
-msgstr ""
+msgstr "Item # %d"
 
 #: ../color_templates.php:131 ../graph_templates_inputs.php:222
 #: ../lib/api_aggregate.php:1334 ../lib/html.php:842
 msgid "No Items"
-msgstr ""
+msgstr "Geen items"
 
 #: ../color_templates.php:226
 msgid "Click 'Continue' to delete the following Color Template"
 msgid_plural "Click 'Continue' to delete following Color Templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Klik op ‘Volgende’ om het volgende kleurtemplate te verwijderen"
+msgstr[1] "Klik op ‘Volgende’ om de volgende kleurtemplates te verwijderen"
 
 #: ../color_templates.php:231
 msgid "Delete Color Template"
 msgid_plural "Delete Color Templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verwijder kleurtemplate"
+msgstr[1] "Verwijder kleurtemplates"
 
 #: ../color_templates.php:235
 msgid ""
-"Click 'Continue' to duplicate the following Color Template. You can optionally "
-"change the title format for the new color template."
+"Click 'Continue' to duplicate the following Color Template. You can "
+"optionally change the title format for the new color template."
 msgid_plural ""
 "Click 'Continue' to duplicate following Color Templates. You can optionally "
 "change the title format for the new color templates."
 msgstr[0] ""
+"Klik op ‘Volgende’ om het volgende kleurtemplate te dupliceren. Optioneel is "
+"het mogelijk om het formaat van de titel te wijzigen voor het nieuwe kleuren "
+"template."
 msgstr[1] ""
+"Klik op ‘Volgende’ om de volgende kleurtemplates te dupliceren. Optioneel is "
+"het mogelijk om het formaat van de titel te wijzigen voor het nieuwe kleuren "
+"template."
 
 #: ../color_templates.php:237 ../data_source_profiles.php:272
-#: ../data_templates.php:358 ../graph_templates.php:322 ../host_templates.php:268
-#: ../vdef.php:277
+#: ../data_templates.php:358 ../graph_templates.php:322
+#: ../host_templates.php:268 ../vdef.php:277
 msgid "Title Format:"
-msgstr ""
+msgstr "Titel formaat:"
 
 #: ../color_templates.php:241
 msgid "Duplicate Color Template"
 msgid_plural "Duplicate Color Templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dupliceer kleurentemplate"
+msgstr[1] "Dupliceer kleurtemplates"
 
 #: ../color_templates.php:244
 msgid "You must select at least one Color Template."
-msgstr ""
+msgstr "U moet tenminste een kleurentemplate kiezen."
 
 #: ../color_templates.php:277
 msgid "Color Template Items [new]"
-msgstr ""
+msgstr "Kleurtemplate items [nieuw]"
 
 #: ../color_templates.php:288
 #, php-format
 msgid "Color Template Items [edit: %s]"
-msgstr ""
+msgstr "Kleurtemplate items [wijzig: %s]"
 
 #: ../color_templates.php:321
 msgid "Delete Color Item"
-msgstr ""
+msgstr "Verwijder kleur item"
 
 #: ../color_templates.php:348
 #, php-format
 msgid "Color Template [edit: %s]"
-msgstr ""
+msgstr "Kleurtemplate [wijzig: %s]"
 
 #: ../color_templates.php:350
 msgid "Color Template [new]"
-msgstr ""
+msgstr "Kleurtemplate [nieuw]"
 
-#: ../color_templates.php:430 ../color_templates.php:443 ../lib/functions.php:2561
+#: ../color_templates.php:430 ../color_templates.php:443
+#: ../lib/functions.php:2561
 msgid "Color Templates"
-msgstr ""
+msgstr "Kleurtemplates"
 
 #: ../color_templates.php:543
 msgid ""
-"Color Templates that are in use cannot be Deleted. In use is defined as being "
-"referenced by an Aggregate Template."
+"Color Templates that are in use cannot be Deleted. In use is defined as "
+"being referenced by an Aggregate Template."
 msgstr ""
+"Kleurtemplates die in gebruik zijn kunnen niet worden verwijderd. Een "
+"kleurtemplate is in gebruik als het wordt gebruikt voor een geaggregeerd "
+"template."
 
 #: ../color_templates.php:568
 msgid "No Color Templates Found"
-msgstr ""
+msgstr "Geen kleurentemplates gevonden"
 
 #: ../color_templates_items.php:273
 msgid "Click 'Continue' to delete the following Color Template Color."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende kleurtemplate kleur te verwijderen."
 
 #: ../color_templates_items.php:274
 msgid "Color Name:"
-msgstr ""
+msgstr "Kleurnaam:"
 
 #: ../color_templates_items.php:275
 msgid "Color Hex:"
-msgstr ""
+msgstr "Kleur hex:"
 
 #: ../color_templates_items.php:281
 msgid "Remove Color Item"
-msgstr ""
+msgstr "Verwijder kleuritem"
 
 #: ../color_templates_items.php:339
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template Items [edit Report Item: %s]"
-msgstr ""
+msgstr "Kleurtemplate items [wijzig Report Item: %s]"
 
 #: ../color_templates_items.php:342
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template Items [new Report Item: %s]"
-msgstr ""
+msgstr "Kleurtemplate items [nieuw Report Item: %s]"
 
 #: ../data_input.php:212
 msgid "Click 'Continue' to delete the following Data Input Method"
@@ -3026,7 +3093,8 @@ msgid ""
 "referenced either by a Data Source or a Data Template."
 msgstr ""
 
-#: ../data_input.php:704 ../data_source_profiles.php:850 ../data_templates.php:887
+#: ../data_input.php:704 ../data_source_profiles.php:850
+#: ../data_templates.php:887
 msgid "Data Sources Using"
 msgstr ""
 
@@ -3038,8 +3106,9 @@ msgstr ""
 msgid "The number of Data Templates that use this Data Input Method."
 msgstr ""
 
-#: ../data_input.php:706 ../data_queries.php:1130 ../include/global_arrays.php:940
-#: ../include/global_form.php:385 ../include/global_form.php:1287
+#: ../data_input.php:706 ../data_queries.php:1130
+#: ../include/global_arrays.php:940 ../include/global_form.php:385
+#: ../include/global_form.php:1287
 msgid "Data Input Method"
 msgstr ""
 
@@ -3103,20 +3172,20 @@ msgstr ""
 msgid "Equation"
 msgstr ""
 
-#: ../data_queries.php:653 ../data_queries.php:751 ../include/global_form.php:2058
-#: ../include/global_form.php:2100 ../lib/api_automation.php:1336
-#: ../utilities.php:1396
+#: ../data_queries.php:653 ../data_queries.php:751
+#: ../include/global_form.php:2058 ../include/global_form.php:2100
+#: ../lib/api_automation.php:1336 ../utilities.php:1396
 msgid "Field Name"
-msgstr ""
+msgstr "Veldnaam"
 
 #: ../data_queries.php:659 ../data_queries.php:757
 msgid "Suggested Value"
-msgstr ""
+msgstr "Voorgestelde waarde"
 
-#: ../data_queries.php:665 ../data_queries.php:763 ../host.php:796 ../host.php:899
-#: ../host_templates.php:516 ../host_templates.php:570
+#: ../data_queries.php:665 ../data_queries.php:763 ../host.php:796
+#: ../host.php:899 ../host_templates.php:516 ../host_templates.php:570
 msgid "Add"
-msgstr ""
+msgstr "Toevoegen"
 
 #: ../data_queries.php:665
 msgid "Add Graph Title Suggested Name"
@@ -3185,8 +3254,8 @@ msgstr ""
 
 #: ../data_queries.php:1126 ../graph_templates.php:759
 msgid ""
-"The internal ID for this Graph Template.  Useful when performing automation or "
-"debugging."
+"The internal ID for this Graph Template.  Useful when performing automation "
+"or debugging."
 msgstr ""
 
 #: ../data_queries.php:1127
@@ -3324,8 +3393,8 @@ msgstr "%d Maand"
 
 #: ../data_source_profiles.php:630 ../include/global_arrays.php:1038
 #: ../include/global_arrays.php:1039 ../include/global_arrays.php:1040
-#: ../include/global_arrays.php:1041 ../rrdcleaner.php:487 ../rrdcleaner.php:488
-#: ../rrdcleaner.php:489
+#: ../include/global_arrays.php:1041 ../rrdcleaner.php:487
+#: ../rrdcleaner.php:488 ../rrdcleaner.php:489
 #, php-format
 msgid "%d Months"
 msgstr "%d Maanden"
@@ -3458,7 +3527,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../data_sources.php:452
-msgid "Delete all <strong>Graph Items</strong> that reference this Data Source."
+msgid ""
+"Delete all <strong>Graph Items</strong> that reference this Data Source."
 msgid_plural ""
 "Delete all <strong>Graph Items</strong> that reference these Data Sources."
 msgstr[0] ""
@@ -3513,7 +3583,8 @@ msgstr ""
 msgid ""
 "Click 'Continue' to re-apply the suggested name to the following Data Source."
 msgid_plural ""
-"Click 'Continue' to re-apply the suggested names to all following Data Sources."
+"Click 'Continue' to re-apply the suggested names to all following Data "
+"Sources."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3699,8 +3770,8 @@ msgstr ""
 
 #: ../data_sources.php:1347
 msgid ""
-"The name of this Data Source. Generally programtically generated from the Data "
-"Template definition."
+"The name of this Data Source. Generally programtically generated from the "
+"Data Template definition."
 msgstr ""
 
 #: ../data_sources.php:1348
@@ -3724,8 +3795,8 @@ msgstr "Actief"
 
 #: ../data_sources.php:1351
 msgid ""
-"Whether or not data will be collected for this Data Source. Controlled at the "
-"Data Template level."
+"Whether or not data will be collected for this Data Source. Controlled at "
+"the Data Template level."
 msgstr ""
 
 #: ../data_sources.php:1352
@@ -3802,7 +3873,8 @@ msgstr ""
 msgid "This field is always templated."
 msgstr ""
 
-#: ../data_templates.php:516 ../data_templates.php:590 ../data_templates.php:650
+#: ../data_templates.php:516 ../data_templates.php:590
+#: ../data_templates.php:650
 msgid "Use Per-Data Source Value (Ignore this Value)"
 msgstr ""
 
@@ -3815,8 +3887,9 @@ msgstr ""
 msgid "Value will be derived from the device if this field is left empty."
 msgstr ""
 
-#: ../data_templates.php:723 ../data_templates.php:754 ../data_templates.php:875
-#: ../include/global_arrays.php:788 ../lib/functions.php:2153
+#: ../data_templates.php:723 ../data_templates.php:754
+#: ../data_templates.php:875 ../include/global_arrays.php:788
+#: ../lib/functions.php:2153
 msgid "Data Templates"
 msgstr ""
 
@@ -3836,8 +3909,8 @@ msgstr ""
 
 #: ../data_templates.php:886
 msgid ""
-"Data Templates that are in use cannot be Deleted.  In use is defined as being "
-"referenced by a Data Source."
+"Data Templates that are in use cannot be Deleted.  In use is defined as "
+"being referenced by a Data Source."
 msgstr ""
 
 #: ../data_templates.php:887
@@ -4031,8 +4104,8 @@ msgstr ""
 
 #: ../graph_templates.php:330
 msgid ""
-"Click 'Continue' to resize the following Graph Template(s) and Graph(s) to the "
-"Height and Width below.  The defaults below are maintained in Settings."
+"Click 'Continue' to resize the following Graph Template(s) and Graph(s) to "
+"the Height and Width below.  The defaults below are maintained in Settings."
 msgstr ""
 
 #: ../graph_templates.php:339 ../lib/html_reports.php:117
@@ -4050,8 +4123,8 @@ msgstr ""
 #: ../graph_templates.php:350
 msgid ""
 "Click 'Continue' to Synchronize your Graphs the following Graph Template(s). "
-"This function is important if you have Graphs that exist with multiple versions "
-"of a Graph Template and wish to make them all common in appearance."
+"This function is important if you have Graphs that exist with multiple "
+"versions of a Graph Template and wish to make them all common in appearance."
 msgstr ""
 
 #: ../graph_templates.php:355
@@ -4125,8 +4198,8 @@ msgstr ""
 
 #: ../graph_templates.php:763
 msgid ""
-"Graph Templates that are in use cannot be Deleted.  In use is defined as being "
-"referenced by a Graph."
+"Graph Templates that are in use cannot be Deleted.  In use is defined as "
+"being referenced by a Graph."
 msgstr ""
 
 #: ../graph_templates.php:764
@@ -4184,8 +4257,9 @@ msgid "[ Custom Graph List Applied - Filter FROM List ]"
 msgstr ""
 
 #: ../graph_view.php:522 ../graph_view.php:747 ../graph_view.php:752
-#: ../lib/html_graph.php:163 ../lib/html_graph.php:381 ../lib/html_graph.php:386
-#: ../lib/html_tree.php:616 ../lib/html_tree.php:833 ../lib/html_tree.php:838
+#: ../lib/html_graph.php:163 ../lib/html_graph.php:381
+#: ../lib/html_graph.php:386 ../lib/html_tree.php:616 ../lib/html_tree.php:833
+#: ../lib/html_tree.php:838
 msgid "All Graphs & Templates"
 msgstr ""
 
@@ -4225,9 +4299,9 @@ msgstr ""
 
 #: ../graphs.php:751
 msgid ""
-"Click 'Continue' to delete the following Graph(s).  Note that if you choose to "
-"Delete Data Sources, only those Data Sources not in use elsewhere will also be "
-"Deleted."
+"Click 'Continue' to delete the following Graph(s).  Note that if you choose "
+"to Delete Data Sources, only those Data Sources not in use elsewhere will "
+"also be Deleted."
 msgstr ""
 
 #: ../graphs.php:755
@@ -4246,9 +4320,10 @@ msgstr ""
 
 #: ../graphs.php:778
 msgid ""
-"Choose a Graph Template and click 'Continue' to change the Graph Template for "
-"the following Graph(s). Please note, that only compatible Graph Templates will "
-"be displayed.  Compatible is identified by those having identical Data Sources."
+"Choose a Graph Template and click 'Continue' to change the Graph Template "
+"for the following Graph(s). Please note, that only compatible Graph "
+"Templates will be displayed.  Compatible is identified by those having "
+"identical Data Sources."
 msgstr ""
 
 #: ../graphs.php:780
@@ -4257,8 +4332,8 @@ msgstr ""
 
 #: ../graphs.php:802
 msgid ""
-"Click 'Continue' to place the following Graph(s) under the Tree Branch selected "
-"below."
+"Click 'Continue' to place the following Graph(s) under the Tree Branch "
+"selected below."
 msgstr ""
 
 #: ../graphs.php:804
@@ -4274,7 +4349,8 @@ msgid "New Device"
 msgstr ""
 
 #: ../graphs.php:831
-msgid "Click 'Continue' to re-apply suggested naming to the following Graph(s)."
+msgid ""
+"Click 'Continue' to re-apply suggested naming to the following Graph(s)."
 msgstr ""
 
 #: ../graphs.php:836
@@ -4282,7 +4358,8 @@ msgid "Reapply Suggested Naming to Graph(s)"
 msgstr ""
 
 #: ../graphs.php:852
-msgid "Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
+msgid ""
+"Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
 msgstr ""
 
 #: ../graphs.php:859
@@ -4310,8 +4387,9 @@ msgstr ""
 #: ../graphs.php:983
 msgid ""
 "There are presently no Aggregate Templates defined for this Graph Template.  "
-"Please either first create an Aggregate Template for the selected Graphs Graph "
-"Template and try again, or simply crease an un-templated Aggregate Graph."
+"Please either first create an Aggregate Template for the selected Graphs "
+"Graph Template and try again, or simply crease an un-templated Aggregate "
+"Graph."
 msgstr ""
 
 #: ../graphs.php:984
@@ -4362,9 +4440,9 @@ msgstr ""
 #: ../graphs.php:1222
 #, php-format
 msgid ""
-"Choose a Graph Template to apply to this Graph. Please note that you may only "
-"change Graph Templates to a 100% compatible Graph Template, which means that it "
-"includes identical Data Sources."
+"Choose a Graph Template to apply to this Graph. Please note that you may "
+"only change Graph Templates to a 100% compatible Graph Template, which means "
+"that it includes identical Data Sources."
 msgstr ""
 
 #: ../graphs.php:1230
@@ -4387,22 +4465,22 @@ msgstr ""
 msgid "Graph Management"
 msgstr ""
 
-#: ../graphs.php:1645 ../include/global_form.php:1824 ../lib/html_reports.php:385
-#: ../tree.php:677
+#: ../graphs.php:1645 ../include/global_form.php:1824
+#: ../lib/html_reports.php:385 ../tree.php:677
 msgid "Graph Name"
 msgstr ""
 
 #: ../graphs.php:1645
 msgid ""
 "The Title of this Graph.  Generally programatically generated from the Graph "
-"Template definition or Suggested Naming rules.  The max length of the Title is "
-"controlled under Settings->Visual."
+"Template definition or Suggested Naming rules.  The max length of the Title "
+"is controlled under Settings->Visual."
 msgstr ""
 
 #: ../graphs.php:1646
 msgid ""
-"The internal database ID for this Graph.  Useful when performing automation or "
-"debugging."
+"The internal database ID for this Graph.  Useful when performing automation "
+"or debugging."
 msgstr ""
 
 #: ../graphs.php:1647
@@ -4782,17 +4860,19 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
-#: ../host.php:1351 ../lib/api_automation.php:164 ../lib/api_automation.php:1022
+#: ../host.php:1351 ../lib/api_automation.php:164
+#: ../lib/api_automation.php:1022
 msgid "Not Up"
 msgstr ""
 
-#: ../host.php:1354 ../lib/api_automation.php:167 ../lib/api_automation.php:1025
-#: ../lib/html_utility.php:735 ../pollers.php:41
+#: ../host.php:1354 ../lib/api_automation.php:167
+#: ../lib/api_automation.php:1025 ../lib/html_utility.php:735 ../pollers.php:41
 msgid "Recovering"
 msgstr ""
 
-#: ../host.php:1355 ../lib/api_automation.php:168 ../lib/api_automation.php:1026
-#: ../lib/html_utility.php:744 ../plugins.php:166 ../utilities.php:2023
+#: ../host.php:1355 ../lib/api_automation.php:168
+#: ../lib/api_automation.php:1026 ../lib/html_utility.php:744
+#: ../plugins.php:166 ../utilities.php:2023
 msgid "Unknown"
 msgstr ""
 
@@ -4820,8 +4900,8 @@ msgstr ""
 
 #: ../host.php:1465
 msgid ""
-"The internal database ID for this Device.  Useful when performing automation or "
-"debugging."
+"The internal database ID for this Device.  Useful when performing automation "
+"or debugging."
 msgstr ""
 
 #: ../host.php:1466
@@ -4834,11 +4914,11 @@ msgstr ""
 
 #: ../host.php:1468
 msgid ""
-"The monitoring status of the Device based upon ping results.  If this Device is "
-"a special type Device, by using the hostname \"localhost\", or due to the "
-"setting to not perform an Availability Check, it will always remain Up.  When "
-"using cmd.php data collector, a Device with no Graphs, is not pinged by the "
-"data collector and will remain in an \"Unknown\" state."
+"The monitoring status of the Device based upon ping results.  If this Device "
+"is a special type Device, by using the hostname \"localhost\", or due to the "
+"setting to not perform an Availability Check, it will always remain Up.  "
+"When using cmd.php data collector, a Device with no Graphs, is not pinged by "
+"the data collector and will remain in an \"Unknown\" state."
 msgstr ""
 
 #: ../host.php:1469
@@ -4914,8 +4994,8 @@ msgstr ""
 #: ../host_templates.php:280
 msgid ""
 "Click 'Continue' to Synchronize Devices associated with the selected Device "
-"Template(s).  Note that this action may take some time depending on the number "
-"of Devices mapped to the Device Template."
+"Template(s).  Note that this action may take some time depending on the "
+"number of Devices mapped to the Device Template."
 msgstr ""
 
 #: ../host_templates.php:287
@@ -4928,8 +5008,8 @@ msgstr ""
 
 #: ../host_templates.php:329
 msgid ""
-"Click 'Continue' to delete the following Graph Template will be disassociated "
-"from the Device Template."
+"Click 'Continue' to delete the following Graph Template will be "
+"disassociated from the Device Template."
 msgstr ""
 
 #: ../host_templates.php:330
@@ -4973,8 +5053,9 @@ msgstr ""
 msgid "Add Data Query to Device Template"
 msgstr ""
 
-#: ../host_templates.php:692 ../host_templates.php:707 ../host_templates.php:803
-#: ../include/global_arrays.php:789 ../lib/functions.php:2129
+#: ../host_templates.php:692 ../host_templates.php:707
+#: ../host_templates.php:803 ../include/global_arrays.php:789
+#: ../lib/functions.php:2129
 msgid "Device Templates"
 msgstr ""
 
@@ -5054,7 +5135,8 @@ msgid "You must select at least one field."
 msgstr ""
 
 #: ../include/global_arrays.php:44
-msgid "You must have built in user authentication turned on to use this feature."
+msgid ""
+"You must have built in user authentication turned on to use this feature."
 msgstr ""
 
 #: ../include/global_arrays.php:47
@@ -5117,8 +5199,8 @@ msgstr ""
 
 #: ../include/global_arrays.php:86
 msgid ""
-"Graph Template Includes Deleted Data Input Method.  Please run Database Repair "
-"Script to Identify."
+"Graph Template Includes Deleted Data Input Method.  Please run Database "
+"Repair Script to Identify."
 msgstr ""
 
 #: ../include/global_arrays.php:89
@@ -5129,8 +5211,8 @@ msgstr ""
 
 #: ../include/global_arrays.php:92
 msgid ""
-"Device Template Not Found during Export.  Please run Database Repair Script to "
-"Identify."
+"Device Template Not Found during Export.  Please run Database Repair Script "
+"to Identify."
 msgstr ""
 
 #: ../include/global_arrays.php:95
@@ -5141,8 +5223,8 @@ msgstr ""
 
 #: ../include/global_arrays.php:98
 msgid ""
-"Graph Template Not Found during Export.  Please run Database Repair Script to "
-"Identify."
+"Graph Template Not Found during Export.  Please run Database Repair Script "
+"to Identify."
 msgstr ""
 
 #: ../include/global_arrays.php:101
@@ -5160,8 +5242,8 @@ msgstr ""
 
 #: ../include/global_arrays.php:110
 msgid ""
-"Error: If you force a password change, you must also allow the user to change "
-"their password."
+"Error: If you force a password change, you must also allow the user to "
+"change their password."
 msgstr ""
 
 #: ../include/global_arrays.php:113
@@ -5719,7 +5801,8 @@ msgid "System Utilities"
 msgstr ""
 
 #: ../include/global_arrays.php:654 ../lib/functions.php:2429
-#: ../user_admin.php:2183 ../user_group_admin.php:602 ../user_group_admin.php:2464
+#: ../user_admin.php:2183 ../user_group_admin.php:602
+#: ../user_group_admin.php:2464
 msgid "Users"
 msgstr ""
 
@@ -6422,10 +6505,10 @@ msgstr ""
 #: ../include/global_form.php:53
 msgid ""
 "How long can data be missing before RRDtool records unknown data.  \r\n"
-"\t\t\tIncrease this value if your Data Source is unstable and you wish to carry "
-"forward \r\n"
-"\t\t\told data rather than show gaps in your graphs.  This value is multiplied "
-"by the\r\n"
+"\t\t\tIncrease this value if your Data Source is unstable and you wish to "
+"carry forward \r\n"
+"\t\t\told data rather than show gaps in your graphs.  This value is "
+"multiplied by the\r\n"
 "\t\t\tX-Files Factor to determine the actual amount of time."
 msgstr ""
 
@@ -6483,8 +6566,8 @@ msgstr ""
 
 #: ../include/global_form.php:131
 msgid ""
-"Based upon the Aggregation Level, the Rows, and the Polling Interval the amount "
-"of data that will be retained in the RRA"
+"Based upon the Aggregation Level, the Rows, and the Polling Interval the "
+"amount of data that will be retained in the RRA"
 msgstr ""
 
 #: ../include/global_form.php:136
@@ -6572,8 +6655,8 @@ msgstr ""
 
 #: ../include/global_form.php:292
 msgid ""
-"If you want to require a certain regular expression to be matched against input "
-"data, enter it here (preg_match format)."
+"If you want to require a certain regular expression to be matched against "
+"input data, enter it here (preg_match format)."
 msgstr ""
 
 #: ../include/global_form.php:299
@@ -6591,8 +6674,8 @@ msgstr ""
 #: ../include/global_form.php:308
 #, php-format
 msgid ""
-"If this field should be treated specially by host templates, indicate so here. "
-"Valid keywords for this field are %s"
+"If this field should be treated specially by host templates, indicate so "
+"here. Valid keywords for this field are %s"
 msgstr ""
 
 #: ../include/global_form.php:340
@@ -6601,10 +6684,10 @@ msgstr ""
 
 #: ../include/global_form.php:371
 msgid ""
-"Choose a name for this data source.  It can include replacement variables such "
-"as |host_description| or |query_fieldName|.\r\n"
-"            For a complete list of supported replacement tags, please see the "
-"Cacti documentation."
+"Choose a name for this data source.  It can include replacement variables "
+"such as |host_description| or |query_fieldName|.\r\n"
+"            For a complete list of supported replacement tags, please see "
+"the Cacti documentation."
 msgstr ""
 
 #: ../include/global_form.php:376
@@ -6647,7 +6730,8 @@ msgid "Internal Data Source Name"
 msgstr ""
 
 #: ../include/global_form.php:427
-msgid "Choose unique name to represent this piece of data inside of the RRDfile."
+msgid ""
+"Choose unique name to represent this piece of data inside of the RRDfile."
 msgstr ""
 
 #: ../include/global_form.php:430
@@ -6676,8 +6760,8 @@ msgstr ""
 
 #: ../include/global_form.php:458
 msgid ""
-"The maximum amount of time that can pass before data is entered as 'unknown'. "
-"(Usually 2x300=600)"
+"The maximum amount of time that can pass before data is entered as "
+"'unknown'. (Usually 2x300=600)"
 msgstr ""
 
 #: ../include/global_form.php:464
@@ -6715,8 +6799,8 @@ msgstr ""
 msgid ""
 "The name that is printed on the graph.  It can include replacement variables "
 "such as |host_description| or |query_fieldName|.\r\n"
-"\t\t\tFor a complete list of supported replacement tags, please see the Cacti "
-"documentation."
+"\t\t\tFor a complete list of supported replacement tags, please see the "
+"Cacti documentation."
 msgstr ""
 
 #: ../include/global_form.php:514
@@ -6733,8 +6817,8 @@ msgstr ""
 
 #: ../include/global_form.php:526
 msgid ""
-"The type of graph that is generated; PNG, GIF or SVG.  The selection of graph "
-"image type is very RRDtool dependent."
+"The type of graph that is generated; PNG, GIF or SVG.  The selection of "
+"graph image type is very RRDtool dependent."
 msgstr ""
 
 #: ../include/global_form.php:529
@@ -6743,8 +6827,8 @@ msgstr ""
 
 #: ../include/global_form.php:533
 msgid ""
-"The height (in pixels) of the graph area within the graph. This area does not "
-"include the legend, axis legends, or title."
+"The height (in pixels) of the graph area within the graph. This area does "
+"not include the legend, axis legends, or title."
 msgstr ""
 
 #: ../include/global_form.php:537
@@ -6802,8 +6886,8 @@ msgid ""
 "limit <br>\r\n"
 "\t\t\t--alt-autoscale-min to scale to the minimum value, using a given upper "
 "limit <br>\r\n"
-"\t\t\t--alt-autoscale (with limits) to scale using both lower and upper limits "
-"(RRDtool default) <br>"
+"\t\t\t--alt-autoscale (with limits) to scale using both lower and upper "
+"limits (RRDtool default) <br>"
 msgstr ""
 
 #: ../include/global_form.php:584
@@ -6836,8 +6920,8 @@ msgstr ""
 
 #: ../include/global_form.php:611
 msgid ""
-"Use SI Units for Logarithmic Scaling instead of using exponential notation.<br>"
-"\r\n"
+"Use SI Units for Logarithmic Scaling instead of using exponential notation."
+"<br>\r\n"
 "\t\t\tNote: Linear graphs use SI notation by default."
 msgstr ""
 
@@ -6847,8 +6931,8 @@ msgstr ""
 
 #: ../include/global_form.php:618
 msgid ""
-"Do not expand the lower and upper limit if the graph contains a value outside "
-"the valid range."
+"Do not expand the lower and upper limit if the graph contains a value "
+"outside the valid range."
 msgstr ""
 
 #: ../include/global_form.php:621
@@ -6878,9 +6962,10 @@ msgstr ""
 #: ../include/global_form.php:646
 msgid ""
 "Sets the exponent value on the Y-axis for numbers. Note: This option is\r\n"
-"\t\t\tdeprecated and replaced by the --y-grid option.  In this option, Y-axis "
-"grid lines appear\r\n"
-"\t\t\tat each grid step interval.  Labels are placed every label factor lines."
+"\t\t\tdeprecated and replaced by the --y-grid option.  In this option, Y-"
+"axis grid lines appear\r\n"
+"\t\t\tat each grid step interval.  Labels are placed every label factor "
+"lines."
 msgstr ""
 
 #: ../include/global_form.php:652
@@ -6889,8 +6974,8 @@ msgstr ""
 
 #: ../include/global_form.php:656
 msgid ""
-"What unit cacti should use on the Y-axis. Use 3 to display everything in \"k\" "
-"or -6\r\n"
+"What unit cacti should use on the Y-axis. Use 3 to display everything in \"k"
+"\" or -6\r\n"
 "\t\t\tto display everything in \"u\" (micro)."
 msgstr ""
 
@@ -6900,8 +6985,8 @@ msgstr ""
 
 #: ../include/global_form.php:666
 msgid ""
-"How many digits should RRDtool assume the y-axis labels to be? You may have to "
-"use this \r\n"
+"How many digits should RRDtool assume the y-axis labels to be? You may have "
+"to use this \r\n"
 "\t\t\toption to make enough space once you start fiddling with the y-axis "
 "labeling."
 msgstr ""
@@ -6912,10 +6997,10 @@ msgstr ""
 
 #: ../include/global_form.php:673
 msgid ""
-"In order to avoid anti-aliasing blurring effects RRDtool snaps points to device "
-"\r\n"
-"\t\t\tresolution pixels, this results in a crisper appearance. If this is not "
-"to your liking, you can \r\n"
+"In order to avoid anti-aliasing blurring effects RRDtool snaps points to "
+"device \r\n"
+"\t\t\tresolution pixels, this results in a crisper appearance. If this is "
+"not to your liking, you can \r\n"
 "\t\t\tuse this switch to turn this behavior off.<br><strong>Note: </"
 "strong>Gridfitting is turned off for PDF, EPS, SVG output by default."
 msgstr ""
@@ -6928,8 +7013,8 @@ msgstr ""
 msgid ""
 "The algorithm ensures that you always have a grid, that there are enough but "
 "not too many grid lines, \r\n"
-"\t\t\tand that the grid is metric. This parameter will also ensure that you get "
-"enough decimals displayed \r\n"
+"\t\t\tand that the grid is metric. This parameter will also ensure that you "
+"get enough decimals displayed \r\n"
 "\t\t\teven if your graph goes from 69.998 to 70.001.<br><strong>Note: </"
 "strong>This parameter may interfere with --alt-autoscale options."
 msgstr ""
@@ -6944,8 +7029,8 @@ msgstr ""
 
 #: ../include/global_form.php:696
 msgid ""
-"A second axis will be drawn to the right of the graph. It is tied to the left "
-"axis via the \r\n"
+"A second axis will be drawn to the right of the graph. It is tied to the "
+"left axis via the \r\n"
 "\t\t\tscale and shift parameters."
 msgstr ""
 
@@ -6977,12 +7062,13 @@ msgstr ""
 msgid ""
 "When you setup the right axis labeling, apply a rule to the data format.  "
 "Supported formats include \"numeric\" where\r\n"
-"\t\t\tdata is treated as numeric, \"timestamp\" where values are interpreted as "
-"UNIX timestamps (number of seconds since January 1970)\r\n"
-"\t\t\tand expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  "
-"See also --units-length and --left-axis-format.  Finally\r\n"
-"\t\t\t\"duration\" where values are interpreted as duration in milliseconds.  "
-"Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
+"\t\t\tdata is treated as numeric, \"timestamp\" where values are interpreted "
+"as UNIX timestamps (number of seconds since January 1970)\r\n"
+"\t\t\tand expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S"
+"\").  See also --units-length and --left-axis-format.  Finally\r\n"
+"\t\t\t\"duration\" where values are interpreted as duration in "
+"milliseconds.  Formatting follows the rules of valstrfduration qualified "
+"PRINT/GPRINT."
 msgstr ""
 
 #: ../include/global_form.php:728
@@ -7001,8 +7087,8 @@ msgstr ""
 msgid ""
 "Pad text so that legend and graph data always line up. Note: this could cause"
 "\r\n"
-"\t\t\tgraphs to take longer to render because of the larger overhead. Also Auto "
-"Padding may not\r\n"
+"\t\t\tgraphs to take longer to render because of the larger overhead. Also "
+"Auto Padding may not\r\n"
 "\t\t\tbe accurate on all types of graphs, consistent labeling usually helps."
 msgstr ""
 
@@ -7132,10 +7218,11 @@ msgstr ""
 
 #: ../include/global_form.php:878
 msgid ""
-"All subsequent legend line(s) will be aligned as given here.  You may use this "
-"command multiple times in a single graph.\r\n"
+"All subsequent legend line(s) will be aligned as given here.  You may use "
+"this command multiple times in a single graph.\r\n"
 "\t\t\tThis command does not produce tabular layout.<br/><strong>Note: </"
-"strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/>\r\n"
+"strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/>"
+"\r\n"
 "\t\t\t<strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete "
 "this setting!"
 msgstr ""
@@ -7190,7 +7277,8 @@ msgstr ""
 
 #: ../include/global_form.php:955
 msgid ""
-"Enter a name for this graph item input, make sure it is something you recognize."
+"Enter a name for this graph item input, make sure it is something you "
+"recognize."
 msgstr ""
 
 #: ../include/global_form.php:963
@@ -7243,8 +7331,8 @@ msgstr ""
 
 #: ../include/global_form.php:1039
 msgid ""
-"The number of concurrent threads to use for polling this device.  This applies "
-"to the Spine poller only."
+"The number of concurrent threads to use for polling this device.  This "
+"applies to the Spine poller only."
 msgstr ""
 
 #: ../include/global_form.php:1046
@@ -7297,8 +7385,8 @@ msgstr ""
 
 #: ../include/global_form.php:1131
 msgid ""
-"Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to "
-"use the SNMP Engine ID being defined per SNMPv3 Notification receiver."
+"Enter the SNMP v3 Engine Id to use for this device. Leave this field empty "
+"to use the SNMP Engine ID being defined per SNMPv3 Notification receiver."
 msgstr ""
 
 #: ../include/global_form.php:1140
@@ -7320,13 +7408,14 @@ msgstr ""
 #: ../include/global_form.php:1171 ../include/global_settings.php:532
 msgid ""
 "The method Cacti will use to determine if a host is available for polling.  "
-"<br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>"
+"<br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</"
+"i>"
 msgstr ""
 
 #: ../include/global_form.php:1180
 msgid ""
-"The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root "
-"privileges.</i>"
+"The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires "
+"root privileges.</i>"
 msgstr ""
 
 #: ../include/global_form.php:1217 ../include/global_form.php:1728
@@ -7359,7 +7448,8 @@ msgid "XML Path"
 msgstr ""
 
 #: ../include/global_form.php:1279
-msgid "The full path to the XML file containing definitions for this data query."
+msgid ""
+"The full path to the XML file containing definitions for this data query."
 msgstr ""
 
 #: ../include/global_form.php:1288
@@ -7369,7 +7459,8 @@ msgid ""
 msgstr ""
 
 #: ../include/global_form.php:1307
-msgid "Choose the Graph Template to use for this Data Query Graph Template item."
+msgid ""
+"Choose the Graph Template to use for this Data Query Graph Template item."
 msgstr ""
 
 #: ../include/global_form.php:1330
@@ -7481,8 +7572,8 @@ msgstr ""
 
 #: ../include/global_form.php:1509
 msgid ""
-"Only used if you have LDAP or Web Basic Authentication enabled.  Changing this "
-"to a non-enabled realm will effectively disable the user."
+"Only used if you have LDAP or Web Basic Authentication enabled.  Changing "
+"this to a non-enabled realm will effectively disable the user."
 msgstr ""
 
 #: ../include/global_form.php:1549
@@ -7511,9 +7602,9 @@ msgstr ""
 
 #: ../include/global_form.php:1566
 msgid ""
-"If checked, Cacti will not import the template, but rather compare the imported "
-"Template to the existing Template data.  If you are acceptable of the change, "
-"you can them import."
+"If checked, Cacti will not import the template, but rather compare the "
+"imported Template to the existing Template data.  If you are acceptable of "
+"the change, you can them import."
 msgstr ""
 
 #: ../include/global_form.php:1571
@@ -7522,8 +7613,8 @@ msgstr ""
 
 #: ../include/global_form.php:1573
 msgid ""
-"If checked, Cacti will delete any Graph Items from both the Graph Template and "
-"associated Graphs that are not included in the imported Graph Template."
+"If checked, Cacti will delete any Graph Items from both the Graph Template "
+"and associated Graphs that are not included in the imported Graph Template."
 msgstr ""
 
 #: ../include/global_form.php:1590
@@ -7540,8 +7631,8 @@ msgstr ""
 
 #: ../include/global_form.php:1612
 msgid ""
-"Check this box if you temporary do not want to send SNMP notifications to this "
-"host."
+"Check this box if you temporary do not want to send SNMP notifications to "
+"this host."
 msgstr ""
 
 #: ../include/global_form.php:1619
@@ -7550,8 +7641,8 @@ msgstr ""
 
 #: ../include/global_form.php:1620
 msgid ""
-"Maximum number of day's notification log entries for this receiver need to be "
-"stored."
+"Maximum number of day's notification log entries for this receiver need to "
+"be stored."
 msgstr ""
 
 #: ../include/global_form.php:1660
@@ -7564,8 +7655,8 @@ msgstr ""
 
 #: ../include/global_form.php:1670
 msgid ""
-"Choose the SNMPv3 Authorization Protocol.<br>Note: SHA authentication support "
-"is only available if you have OpenSSL installed."
+"Choose the SNMPv3 Authorization Protocol.<br>Note: SHA authentication "
+"support is only available if you have OpenSSL installed."
 msgstr ""
 
 #: ../include/global_form.php:1677
@@ -7574,8 +7665,8 @@ msgstr ""
 
 #: ../include/global_form.php:1687
 msgid ""
-"Choose the SNMPv3 Privacy Protocol.<br>Note: DES/AES encryption support is only "
-"available if you have OpenSSL installed."
+"Choose the SNMPv3 Privacy Protocol.<br>Note: DES/AES encryption support is "
+"only available if you have OpenSSL installed."
 msgstr ""
 
 #: ../include/global_form.php:1693
@@ -7584,10 +7675,10 @@ msgstr ""
 
 #: ../include/global_form.php:1694
 msgid ""
-"Defines the unique SNMP Engine ID to identify this peer. Following format will "
-"be recommended:<br>FlexibleLength+Enterprise(8000) + IANA-Cacti(5d75) + MAC-"
-"Following(03) + YOUR-MAC-ADDRESS(e.g.:D89D67287B00).<br>Per default the locally "
-"administrated MAC 02-FF-FF-FF-FF-FF will be used."
+"Defines the unique SNMP Engine ID to identify this peer. Following format "
+"will be recommended:<br>FlexibleLength+Enterprise(8000) + IANA-Cacti(5d75) + "
+"MAC-Following(03) + YOUR-MAC-ADDRESS(e.g.:D89D67287B00).<br>Per default the "
+"locally administrated MAC 02-FF-FF-FF-FF-FF will be used."
 msgstr ""
 
 #: ../include/global_form.php:1703
@@ -7625,10 +7716,10 @@ msgstr ""
 #: ../include/global_form.php:1769 ../include/global_form.php:1852
 #: ../include/global_form.php:1954
 msgid ""
-"Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps "
-"AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 "
-"items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to "
-"LINE3 items"
+"Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph "
+"keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert "
+"to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all "
+"items convert to LINE3 items"
 msgstr ""
 
 #: ../include/global_form.php:1780 ../include/global_form.php:1863
@@ -7691,8 +7782,8 @@ msgstr ""
 
 #: ../include/global_form.php:1844 ../include/global_form.php:1946
 msgid ""
-"A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use "
-"both Host as well as Data Query replacement variables in this prefix."
+"A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may "
+"use both Host as well as Data Query replacement variables in this prefix."
 msgstr ""
 
 #: ../include/global_form.php:1924
@@ -7796,7 +7887,8 @@ msgstr ""
 
 #: ../include/global_form.php:2207
 msgid ""
-"Choose how graphs are grouped when drawn for this particular host on the tree."
+"Choose how graphs are grouped when drawn for this particular host on the "
+"tree."
 msgstr ""
 
 #: ../include/global_form.php:2217
@@ -7823,14 +7915,14 @@ msgstr ""
 
 #: ../include/global_form.php:2257
 msgid ""
-"Propagate all options on this form (except for 'Title') to all child 'Header' "
-"items."
+"Propagate all options on this form (except for 'Title') to all child "
+"'Header' items."
 msgstr ""
 
 #: ../include/global_form.php:2265
 msgid ""
-"The String Pattern (Regular Expression) to match against.<br>Enclosing '/' must "
-"<strong>NOT</strong> be provided!"
+"The String Pattern (Regular Expression) to match against.<br>Enclosing '/' "
+"must <strong>NOT</strong> be provided!"
 msgstr ""
 
 #: ../include/global_form.php:2272
@@ -7839,8 +7931,8 @@ msgstr ""
 
 #: ../include/global_form.php:2273
 msgid ""
-"The Replacement String Pattern for use as a Tree Header.<br>Refer to a Match by "
-"e.g. <strong>\\${1}</strong> for the first match!"
+"The Replacement String Pattern for use as a Tree Header.<br>Refer to a Match "
+"by e.g. <strong>\\${1}</strong> for the first match!"
 msgstr ""
 
 #: ../include/global_languages.php:571
@@ -7980,7 +8072,8 @@ msgstr ""
 
 #: ../include/global_settings.php:127
 msgid ""
-"The path to your PHP binary file (may require a php recompile to get this file)."
+"The path to your PHP binary file (may require a php recompile to get this "
+"file)."
 msgstr ""
 
 #: ../include/global_settings.php:132
@@ -7993,8 +8086,8 @@ msgstr ""
 
 #: ../include/global_settings.php:138
 msgid ""
-"The path to your Cacti log file (if blank, defaults to <path_cacti>/log/cacti."
-"log)"
+"The path to your Cacti log file (if blank, defaults to <path_cacti>/log/"
+"cacti.log)"
 msgstr ""
 
 #: ../include/global_settings.php:144
@@ -8011,7 +8104,8 @@ msgstr ""
 
 #: ../include/global_settings.php:151
 msgid ""
-"The number of days to retain old logs.  Use 0 to never remove any logs. (0-365)"
+"The number of days to retain old logs.  Use 0 to never remove any logs. "
+"(0-365)"
 msgstr ""
 
 #: ../include/global_settings.php:157
@@ -8032,8 +8126,8 @@ msgstr ""
 
 #: ../include/global_settings.php:169
 msgid ""
-"The path to Spine configuration file.  By default, in the cwd of spine, or /etc "
-"if not specified."
+"The path to Spine configuration file.  By default, in the cwd of spine, or /"
+"etc if not specified."
 msgstr ""
 
 #: ../include/global_settings.php:174 ../lib/functions.php:2291
@@ -8046,7 +8140,8 @@ msgid "RRDfile Auto Clean"
 msgstr ""
 
 #: ../include/global_settings.php:180
-msgid "Automatically Delete, Archive, or Delete RRDfiles when removed from Cacti"
+msgid ""
+"Automatically Delete, Archive, or Delete RRDfiles when removed from Cacti"
 msgstr ""
 
 #: ../include/global_settings.php:185
@@ -8113,8 +8208,8 @@ msgstr ""
 
 #: ../include/global_settings.php:243
 msgid ""
-"What level of detail do you want sent to the log file.  WARNING: Leaving in any "
-"other status than NONE or LOW can exhaust your disk space rapidly."
+"What level of detail do you want sent to the log file.  WARNING: Leaving in "
+"any other status than NONE or LOW can exhaust your disk space rapidly."
 msgstr ""
 
 #: ../include/global_settings.php:249
@@ -8134,9 +8229,9 @@ msgstr ""
 
 #: ../include/global_settings.php:257
 msgid ""
-"Select which Plugins you wish to place in Debug mode regardless of the Generic "
-"Log Level setting.  Any files used by this plugin will be treated as they are "
-"in Debug mode."
+"Select which Plugins you wish to place in Debug mode regardless of the "
+"Generic Log Level setting.  Any files used by this plugin will be treated as "
+"they are in Debug mode."
 msgstr ""
 
 #: ../include/global_settings.php:263
@@ -8145,9 +8240,9 @@ msgstr ""
 
 #: ../include/global_settings.php:264
 msgid ""
-"A comma delimited list of Device ID's that you wish to be in Debug mode during "
-"data collection.  This Debug level is only in place during the Cacti polling "
-"process."
+"A comma delimited list of Device ID's that you wish to be in Debug mode "
+"during data collection.  This Debug level is only in place during the Cacti "
+"polling process."
 msgstr ""
 
 #: ../include/global_settings.php:271
@@ -8228,10 +8323,10 @@ msgstr ""
 
 #: ../include/global_settings.php:349
 msgid ""
-"Choose 'enabled' to allow the localization of Cacti. The strict mode requires "
-"that the requested language will also be supported by all plugins being "
-"installed at your system. If that's not the fact everything will be displayed "
-"in English."
+"Choose 'enabled' to allow the localization of Cacti. The strict mode "
+"requires that the requested language will also be supported by all plugins "
+"being installed at your system. If that's not the fact everything will be "
+"displayed in English."
 msgstr ""
 
 #: ../include/global_settings.php:355
@@ -8248,9 +8343,10 @@ msgstr ""
 
 #: ../include/global_settings.php:363
 msgid ""
-"Allow to automatically determine the 'default' language of the user and provide "
-"it at login time if that language is supported by Cacti. If disabled, the "
-"default language will be in force until the user elects another language."
+"Allow to automatically determine the 'default' language of the user and "
+"provide it at login time if that language is supported by Cacti. If "
+"disabled, the default language will be in force until the user elects "
+"another language."
 msgstr ""
 
 #: ../include/global_settings.php:369
@@ -8271,11 +8367,11 @@ msgstr ""
 
 #: ../include/global_settings.php:382
 msgid ""
-"There are two methods for determining a User's Graph Permissions.  The first is "
-"'Permissive'.  Under the 'Permissive' setting, a User only needs access to "
-"either the Graph, Device or Graph Template to gain access to the Graphs that "
-"apply to them.  Under 'Restrictive', the User must have access to the Graph, "
-"the Device, and the Graph Template to gain access to the Graph."
+"There are two methods for determining a User's Graph Permissions.  The first "
+"is 'Permissive'.  Under the 'Permissive' setting, a User only needs access "
+"to either the Graph, Device or Graph Template to gain access to the Graphs "
+"that apply to them.  Under 'Restrictive', the User must have access to the "
+"Graph, the Device, and the Graph Template to gain access to the Graph."
 msgstr ""
 
 #: ../include/global_settings.php:389
@@ -8284,8 +8380,8 @@ msgstr ""
 
 #: ../include/global_settings.php:390
 msgid ""
-"If set to Simple, Graphs and Data Sources can only be created from New Graphs.  "
-"If Advanced, legacy Graph and Data Source creation is supported."
+"If set to Simple, Graphs and Data Sources can only be created from New "
+"Graphs.  If Advanced, legacy Graph and Data Source creation is supported."
 msgstr ""
 
 #: ../include/global_settings.php:395
@@ -8294,8 +8390,8 @@ msgstr ""
 
 #: ../include/global_settings.php:396
 msgid ""
-"When checked, Form and Setting Help will be show inline.  Otherwise it will be "
-"presented when hovering over the help button."
+"When checked, Form and Setting Help will be show inline.  Otherwise it will "
+"be presented when hovering over the help button."
 msgstr ""
 
 #: ../include/global_settings.php:401
@@ -8322,8 +8418,8 @@ msgstr ""
 
 #: ../include/global_settings.php:415
 msgid ""
-"Some of Cacti's interfaces support Drag-N-Drop.  If checked this option will be "
-"enabled.  Note: For visually impaired user, this option may be disabled."
+"Some of Cacti's interfaces support Drag-N-Drop.  If checked this option will "
+"be enabled.  Note: For visually impaired user, this option may be disabled."
 msgstr ""
 
 #: ../include/global_settings.php:420
@@ -8354,10 +8450,10 @@ msgstr ""
 
 #: ../include/global_settings.php:440
 msgid ""
-"When disabled, Cacti Automation will not actively create any Tree Item.This is "
-"useful when adjusting Host or Graph settings so as to avoid creating new Tree "
-"Entries each time you save an object. Invoking Rules manually will still be "
-"possible."
+"When disabled, Cacti Automation will not actively create any Tree Item.This "
+"is useful when adjusting Host or Graph settings so as to avoid creating new "
+"Tree Entries each time you save an object. Invoking Rules manually will "
+"still be possible."
 msgstr ""
 
 #: ../include/global_settings.php:448
@@ -8414,7 +8510,8 @@ msgstr ""
 
 #: ../include/global_settings.php:519
 msgid ""
-"The number times the SNMP poller will attempt to reach the host before failing."
+"The number times the SNMP poller will attempt to reach the host before "
+"failing."
 msgstr ""
 
 #: ../include/global_settings.php:526
@@ -8451,8 +8548,8 @@ msgstr ""
 
 #: ../include/global_settings.php:575
 msgid ""
-"The number of polling intervals a host must be down before logging an error and "
-"reporting host as down."
+"The number of polling intervals a host must be down before logging an error "
+"and reporting host as down."
 msgstr ""
 
 #: ../include/global_settings.php:582
@@ -8461,8 +8558,8 @@ msgstr ""
 
 #: ../include/global_settings.php:583
 msgid ""
-"The number of polling intervals a host must remain up before returning host to "
-"an up status and issuing a notice."
+"The number of polling intervals a host must remain up before returning host "
+"to an up status and issuing a notice."
 msgstr ""
 
 #: ../include/global_settings.php:592
@@ -8569,8 +8666,8 @@ msgstr ""
 #: ../include/global_settings.php:687
 msgid ""
 "Any strings that match this regex will be excluded from the user display.\r\n"
-"\t\t\t\t<strong>For example, if you want to exclude all log lines that include "
-"the words 'Admin' or 'Login'\r\n"
+"\t\t\t\t<strong>For example, if you want to exclude all log lines that "
+"include the words 'Admin' or 'Login'\r\n"
 "\t\t\t\tyou would type '(Admin || Login)'</strong>"
 msgstr ""
 
@@ -8584,7 +8681,8 @@ msgstr ""
 
 #: ../include/global_settings.php:702
 msgid ""
-"When an option is checked, users will be able to put Cacti into Real-time mode."
+"When an option is checked, users will be able to put Cacti into Real-time "
+"mode."
 msgstr ""
 
 #: ../include/global_settings.php:707 ../lib/html_reports.php:397
@@ -8609,10 +8707,11 @@ msgstr ""
 
 #: ../include/global_settings.php:722
 msgid ""
-"This is the location, on the web server where the RRDfiles and PNG files will "
-"be cached.\r\n"
+"This is the location, on the web server where the RRDfiles and PNG files "
+"will be cached.\r\n"
 "\t\t\tThis cache will be managed by the poller.\r\n"
-"\t\t\tMake sure you have the correct read and write permissions on this folder"
+"\t\t\tMake sure you have the correct read and write permissions on this "
+"folder"
 msgstr ""
 
 #: ../include/global_settings.php:731
@@ -8638,8 +8737,8 @@ msgstr ""
 #: ../include/global_settings.php:744
 msgid ""
 "When not using Theme based font control, the Pangon font-config font name to "
-"use for all Graphs. Optionally, you may leave blank and control font settings "
-"on a per object basis."
+"use for all Graphs. Optionally, you may leave blank and control font "
+"settings on a per object basis."
 msgstr ""
 
 #: ../include/global_settings.php:746 ../include/global_settings.php:761
@@ -8662,8 +8761,8 @@ msgstr ""
 
 #: ../include/global_settings.php:759
 msgid ""
-"The font to use for Graph Titles.  Enter either a valid True Type Font file or "
-"valid Pango font-config value."
+"The font to use for Graph Titles.  Enter either a valid True Type Font file "
+"or valid Pango font-config value."
 msgstr ""
 
 #: ../include/global_settings.php:765 ../include/global_settings.php:1951
@@ -8680,8 +8779,8 @@ msgstr ""
 
 #: ../include/global_settings.php:774
 msgid ""
-"The font to use for Graph Legends.  Enter either a valid True Type Font file or "
-"valid Pango font-config value."
+"The font to use for Graph Legends.  Enter either a valid True Type Font file "
+"or valid Pango font-config value."
 msgstr ""
 
 #: ../include/global_settings.php:780 ../include/global_settings.php:1964
@@ -8698,8 +8797,8 @@ msgstr ""
 
 #: ../include/global_settings.php:789
 msgid ""
-"The font to use for Graph Axis items.  Enter either a valid True Type Font file "
-"or valid Pango font-config value."
+"The font to use for Graph Axis items.  Enter either a valid True Type Font "
+"file or valid Pango font-config value."
 msgstr ""
 
 #: ../include/global_settings.php:795 ../include/global_settings.php:1977
@@ -8716,8 +8815,8 @@ msgstr ""
 
 #: ../include/global_settings.php:804
 msgid ""
-"The font to use for Graph Unit items.  Enter either a valid True Type Font file "
-"or valid Pango font-config value."
+"The font to use for Graph Unit items.  Enter either a valid True Type Font "
+"file or valid Pango font-config value."
 msgstr ""
 
 #: ../include/global_settings.php:817
@@ -8734,13 +8833,14 @@ msgstr ""
 
 #: ../include/global_settings.php:825
 msgid ""
-"The poller type to use.  This setting will take effect at next polling interval."
+"The poller type to use.  This setting will take effect at next polling "
+"interval."
 msgstr ""
 
 #: ../include/global_settings.php:832
 msgid ""
-"The polling interval in use.  This setting will effect how often RRDfiles are "
-"checked and updated.\r\n"
+"The polling interval in use.  This setting will effect how often RRDfiles "
+"are checked and updated.\r\n"
 "\t\t\t<strong><u>NOTE: If you change this value, you must re-populate the "
 "poller cache.  Failure to do so, may result in lost data.</u></strong>"
 msgstr ""
@@ -8762,8 +8862,8 @@ msgstr ""
 #: ../include/global_settings.php:847
 msgid ""
 "The number of concurrent processes to execute.  Using a higher number when "
-"using cmd.php will improve performance.  Performance improvements in spine are "
-"best resolved with the threads parameter"
+"using cmd.php will improve performance.  Performance improvements in spine "
+"are best resolved with the threads parameter"
 msgstr ""
 
 #: ../include/global_settings.php:854
@@ -8845,8 +8945,9 @@ msgstr ""
 #: ../include/global_settings.php:907
 msgid ""
 "The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  "
-"Increasing this value speeds poller performance over slow links.  The maximum "
-"value is 100 OIDs.  Decreasing this value to 0 or 1 will disable snmpbulkwalk"
+"Increasing this value speeds poller performance over slow links.  The "
+"maximum value is 100 OIDs.  Decreasing this value to 0 or 1 will disable "
+"snmpbulkwalk"
 msgstr ""
 
 #: ../include/global_settings.php:920
@@ -8855,8 +8956,8 @@ msgstr ""
 
 #: ../include/global_settings.php:921
 msgid ""
-"<blockquote><i>None</i> - No authentication will be used, all users will have "
-"full access.<br><br><i>Built-in Authentication</i> - Cacti handles user "
+"<blockquote><i>None</i> - No authentication will be used, all users will "
+"have full access.<br><br><i>Built-in Authentication</i> - Cacti handles user "
 "authentication, which allows you to create users and give them rights to "
 "different areas within Cacti.<br><br><i>Web Basic Authentication</i> - "
 "Authentication is handled by the web server. Users can be added or created "
@@ -8865,11 +8966,11 @@ msgid ""
 "Allows for authentication against a LDAP server. Users will be created "
 "automatically on first login if the Template User is defined, otherwise the "
 "defined guest permissions will be used.  If PHPs LDAP module is not enabled, "
-"LDAP Authentication will not appear as a selectable option.<br><br><i>Multiple "
-"LDAP/AD Domain Authentication</i> - Allows administrators to support multiple "
-"disparate groups from different LDAP/AD directories to access Cacti resources.  "
-"Just as LDAP Authentication, the PHP LDAP module is required to utilize this "
-"method.</blockquote>"
+"LDAP Authentication will not appear as a selectable option."
+"<br><br><i>Multiple LDAP/AD Domain Authentication</i> - Allows "
+"administrators to support multiple disparate groups from different LDAP/AD "
+"directories to access Cacti resources.  Just as LDAP Authentication, the PHP "
+"LDAP module is required to utilize this method.</blockquote>"
 msgstr ""
 
 #: ../include/global_settings.php:927
@@ -8879,8 +8980,8 @@ msgstr ""
 #: ../include/global_settings.php:928
 msgid ""
 "If a user authenticates and selects 'Keep me signed in', an authentication "
-"cookie will be created on the user's computer allowing that user to stay logged "
-"in.  The authentication cookie expires after 90 days of non-use."
+"cookie will be created on the user's computer allowing that user to stay "
+"logged in.  The authentication cookie expires after 90 days of non-use."
 msgstr ""
 
 #: ../include/global_settings.php:933
@@ -8937,7 +9038,8 @@ msgid "Require Number"
 msgstr ""
 
 #: ../include/global_settings.php:974
-msgid "This will require new passwords to contain at least 1 numerical character."
+msgid ""
+"This will require new passwords to contain at least 1 numerical character."
 msgstr ""
 
 #: ../include/global_settings.php:979
@@ -8945,7 +9047,8 @@ msgid "Require Special Character"
 msgstr ""
 
 #: ../include/global_settings.php:980
-msgid "This will require new passwords to contain at least 1 special character."
+msgid ""
+"This will require new passwords to contain at least 1 special character."
 msgstr ""
 
 #: ../include/global_settings.php:985
@@ -9027,9 +9130,9 @@ msgstr ""
 
 #: ../include/global_settings.php:1057
 msgid ""
-"An account will automatically be unlocked after this many minutes.  Even if the "
-"correct password is entered, the account will not unlock until this time limit "
-"has been met.  Max of 1440 minutes (1 Day)"
+"An account will automatically be unlocked after this many minutes.  Even if "
+"the correct password is entered, the account will not unlock until this time "
+"limit has been met.  Max of 1440 minutes (1 Day)"
 msgstr ""
 
 #: ../include/global_settings.php:1076
@@ -9074,8 +9177,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1110 ../user_domains.php:391
 msgid ""
-"Encryption that the server supports. TLS is only supported by Protocol Version "
-"3."
+"Encryption that the server supports. TLS is only supported by Protocol "
+"Version 3."
 msgstr ""
 
 #: ../include/global_settings.php:1116 ../user_domains.php:397
@@ -9095,13 +9198,13 @@ msgstr ""
 #: ../include/global_settings.php:1124
 msgid ""
 "Mode which cacti will attempt to authenticate against the LDAP server."
-"<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, "
-"just attempt to bind with the provided Distinguished Name (DN) format."
-"<br><br><i>Anonymous Searching</i> - Attempts to search for username against "
-"LDAP directory via anonymous binding to locate the user's Distinguished Name "
-"(DN).<br><br><i>Specific Searching</i> - Attempts search for username against "
-"LDAP directory via Specific Distinguished Name (DN) and Specific Password for "
-"binding to locate the user's Distinguished Name (DN)."
+"<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching "
+"occurs, just attempt to bind with the provided Distinguished Name (DN) "
+"format.<br><br><i>Anonymous Searching</i> - Attempts to search for username "
+"against LDAP directory via anonymous binding to locate the user's "
+"Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search "
+"for username against LDAP directory via Specific Distinguished Name (DN) and "
+"Specific Password for binding to locate the user's Distinguished Name (DN)."
 msgstr ""
 
 #: ../include/global_settings.php:1130 ../user_domains.php:411
@@ -9111,10 +9214,10 @@ msgstr ""
 #: ../include/global_settings.php:1131 ../user_domains.php:412
 msgid ""
 "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;"
-"@win2kdomain.local\"</i> or for OpenLDAP: <i>\"uid=&lt;username&gt;,ou=people,"
-"dc=domain,dc=local\"</i>.   \"&lt;username&gt\" is replaced with the username "
-"that was supplied at the login prompt.  This is only used when in \"No Searching"
-"\" mode."
+"@win2kdomain.local\"</i> or for OpenLDAP: <i>\"uid=&lt;username&gt;,"
+"ou=people,dc=domain,dc=local\"</i>.   \"&lt;username&gt\" is replaced with "
+"the username that was supplied at the login prompt.  This is only used when "
+"in \"No Searching\" mode."
 msgstr ""
 
 #: ../include/global_settings.php:1136 ../user_domains.php:418
@@ -9123,8 +9226,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1137 ../user_domains.php:419
 msgid ""
-"Require user to be member of group to authenticate. Group settings must be set "
-"for this to work, enabling without proper group settings will cause "
+"Require user to be member of group to authenticate. Group settings must be "
+"set for this to work, enabling without proper group settings will cause "
 "authentication failure."
 msgstr ""
 
@@ -9185,8 +9288,8 @@ msgid ""
 "Search filter to use to locate the user in the LDAP directory, such as for "
 "windows: <i>'(&amp;(objectclass=user)(objectcategory=user)"
 "(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: "
-"<i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is "
-"replaced with the username that was supplied at the login prompt. "
+"<i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' "
+"is replaced with the username that was supplied at the login prompt. "
 msgstr ""
 
 #: ../include/global_settings.php:1181 ../user_domains.php:467
@@ -9194,7 +9297,8 @@ msgid "Search Distinguished Name (DN)"
 msgstr ""
 
 #: ../include/global_settings.php:1182 ../user_domains.php:468
-msgid "Distinguished Name for Specific Searching binding to the LDAP directory."
+msgid ""
+"Distinguished Name for Specific Searching binding to the LDAP directory."
 msgstr ""
 
 #: ../include/global_settings.php:1187 ../user_domains.php:474
@@ -9230,8 +9334,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1212
 msgid ""
-"This is a Email account used for sending a test message to ensure everything is "
-"working properly."
+"This is a Email account used for sending a test message to ensure everything "
+"is working properly."
 msgstr ""
 
 #: ../include/global_settings.php:1217
@@ -9290,8 +9394,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1250
 msgid ""
-"This is the path to sendmail on your server. (Only used if Sendmail is selected "
-"as the Mail Service)"
+"This is the path to sendmail on your server. (Only used if Sendmail is "
+"selected as the Mail Service)"
 msgstr ""
 
 #: ../include/global_settings.php:1256
@@ -9322,8 +9426,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1277
 msgid ""
-"The username to authenticate with when sending via SMTP. (Leave blank if you do "
-"not require authentication.)"
+"The username to authenticate with when sending via SMTP. (Leave blank if you "
+"do not require authentication.)"
 msgstr ""
 
 #: ../include/global_settings.php:1282
@@ -9332,8 +9436,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1283
 msgid ""
-"The password to authenticate with when sending via SMTP. (Leave blank if you do "
-"not require authentication.)"
+"The password to authenticate with when sending via SMTP. (Leave blank if you "
+"do not require authentication.)"
 msgstr ""
 
 #: ../include/global_settings.php:1288
@@ -9380,8 +9484,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1323
 msgid ""
-"What level of detail do you want sent to the log file. WARNING: Leaving in any "
-"other status than NONE or LOW can exhaust your disk space rapidly."
+"What level of detail do you want sent to the log file. WARNING: Leaving in "
+"any other status than NONE or LOW can exhaust your disk space rapidly."
 msgstr ""
 
 #: ../include/global_settings.php:1329
@@ -9449,8 +9553,8 @@ msgstr ""
 #: ../include/global_settings.php:1383
 msgid ""
 "The number of consecutive hours that represent the hourly\r\n"
-"\t\t\taverage.  Keep in mind that a setting too high can result in very large "
-"memory tables"
+"\t\t\taverage.  Keep in mind that a setting too high can result in very "
+"large memory tables"
 msgstr ""
 
 #: ../include/global_settings.php:1390
@@ -9459,8 +9563,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1391
 msgid ""
-"What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is "
-"HH:MM [am/pm]"
+"What time of day should Weekly, Monthly, and Yearly Data be updated?  Format "
+"is HH:MM [am/pm]"
 msgstr ""
 
 #: ../include/global_settings.php:1398
@@ -9516,7 +9620,8 @@ msgid "System Level RRD Updater"
 msgstr ""
 
 #: ../include/global_settings.php:1438
-msgid "Before RRD On-demand Update Can be Cleared, a poller run must always pass"
+msgid ""
+"Before RRD On-demand Update Can be Cleared, a poller run must always pass"
 msgstr ""
 
 #: ../include/global_settings.php:1443
@@ -9525,8 +9630,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1444
 msgid ""
-"When you enable boost, your RRD files are only updated when they are requested "
-"by a user, or when this time period elapses."
+"When you enable boost, your RRD files are only updated when they are "
+"requested by a user, or when this time period elapses."
 msgstr ""
 
 #: ../include/global_settings.php:1451
@@ -9547,10 +9652,10 @@ msgstr ""
 msgid ""
 "To optimize performance, the boost RRD updater needs to know how many Data "
 "Source Items\r\n"
-"\t\t\tshould be retrieved in one pass.  Please be careful not to set too high "
-"as graphing performance during\r\n"
-"\t\t\tmajor updates can be compromised.  If you encounter graphing or polling "
-"slowness during updates, lower this\r\n"
+"\t\t\tshould be retrieved in one pass.  Please be careful not to set too "
+"high as graphing performance during\r\n"
+"\t\t\tmajor updates can be compromised.  If you encounter graphing or "
+"polling slowness during updates, lower this\r\n"
 "\t\t\tnumber.  The default value is 50000."
 msgstr ""
 
@@ -9560,12 +9665,12 @@ msgstr ""
 
 #: ../include/global_settings.php:1470
 msgid ""
-"When boost sends update commands to RRDtool, it must not exceed the operating "
-"systems\r\n"
+"When boost sends update commands to RRDtool, it must not exceed the "
+"operating systems\r\n"
 "\t\t\tMaximum Argument Length.  This varies by operating system and kernel "
 "level.  For example:\r\n"
-"\t\t\tWindows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux "
-"2.6.23++ unlimited"
+"\t\t\tWindows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, "
+"Linux 2.6.23++ unlimited"
 msgstr ""
 
 #: ../include/global_settings.php:1479
@@ -9583,8 +9688,8 @@ msgstr ""
 #: ../include/global_settings.php:1487
 msgid ""
 "The maximum boot poller run time allowed prior to boost issuing warning\r\n"
-"\t\t\tmessages relative to possible hardware/software issues preventing proper "
-"updates."
+"\t\t\tmessages relative to possible hardware/software issues preventing "
+"proper updates."
 msgstr ""
 
 #: ../include/global_settings.php:1494
@@ -9593,8 +9698,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1495
 msgid ""
-"Enables direct insert of records into poller output boost with results in a 25% "
-"time reduction in each poll cycle."
+"Enables direct insert of records into poller output boost with results in a "
+"25% time reduction in each poll cycle."
 msgstr ""
 
 #: ../include/global_settings.php:1500 ../utilities.php:2151
@@ -9635,8 +9740,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1538
 msgid ""
-"Choose if RRDs will be stored locally or being handled by an external RRDtool "
-"proxy server."
+"Choose if RRDs will be stored locally or being handled by an external "
+"RRDtool proxy server."
 msgstr ""
 
 #: ../include/global_settings.php:1541 ../lib/auth.php:286 ../lib/auth.php:296
@@ -9693,14 +9798,14 @@ msgstr ""
 
 #: ../include/global_settings.php:1582
 msgid ""
-"If both main and backup proxy are receivable this option allows to spread all "
-"requests against RRDtool."
+"If both main and backup proxy are receivable this option allows to spread "
+"all requests against RRDtool."
 msgstr ""
 
 #: ../include/global_settings.php:1587
 msgid ""
-"The DNS hostname or IP address of the RRDtool backup proxy server if proxy is "
-"running in MSR mode."
+"The DNS hostname or IP address of the RRDtool backup proxy server if proxy "
+"is running in MSR mode."
 msgstr ""
 
 #: ../include/global_settings.php:1593
@@ -9709,8 +9814,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1601
 msgid ""
-"The fingerprint of the current public RSA key the backup proxy is using. This "
-"required to establish a trusted connection."
+"The fingerprint of the current public RSA key the backup proxy is using. "
+"This required to establish a trusted connection."
 msgstr ""
 
 #: ../include/global_settings.php:1610
@@ -9723,10 +9828,10 @@ msgstr ""
 
 #: ../include/global_settings.php:1615
 msgid ""
-"There are two removal methods.  The first, Standard Deviation, will remove any"
-"\r\n"
-"\t\t\tsample that is X number of standard deviations away from the average of "
-"samples.  The second method,\r\n"
+"There are two removal methods.  The first, Standard Deviation, will remove "
+"any\r\n"
+"\t\t\tsample that is X number of standard deviations away from the average "
+"of samples.  The second method,\r\n"
 "\t\t\tVariance, will remove any sample that is X% more than the Variance "
 "average.  The Variance method takes\r\n"
 "\t\t\tinto account a certain number of 'outliers'.  Those are exceptional "
@@ -9748,10 +9853,10 @@ msgstr ""
 
 #: ../include/global_settings.php:1626
 msgid ""
-"There are three replacement methods.  The first method replaces the spike with "
-"the\r\n"
-"\t\t\tthe average of the data source in question.  The second method replaces "
-"the spike with a 'NaN'.\r\n"
+"There are three replacement methods.  The first method replaces the spike "
+"with the\r\n"
+"\t\t\tthe average of the data source in question.  The second method "
+"replaces the spike with a 'NaN'.\r\n"
 "\t\t\tThe last replaces the spike with the last known good value found."
 msgstr ""
 
@@ -9775,8 +9880,8 @@ msgstr ""
 msgid ""
 "Any value that is this many standard deviations above the average will be "
 "excluded.\r\n"
-"\t\t\tA good number will be dependent on the type of data to be operated on.  "
-"We recommend a number no lower\r\n"
+"\t\t\tA good number will be dependent on the type of data to be operated "
+"on.  We recommend a number no lower\r\n"
 "\t\t\tthan 5 Standard Deviations."
 msgstr ""
 
@@ -9797,8 +9902,8 @@ msgstr ""
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
 "outliers\r\n"
-"\t\t\thave been removed from the sample.  For example, a Variance Percentage of "
-"100% on an adjusted average of 50\r\n"
+"\t\t\thave been removed from the sample.  For example, a Variance Percentage "
+"of 100% on an adjusted average of 50\r\n"
 "\t\t\twould remove any sample above the quantity of 100 from the graph."
 msgstr ""
 
@@ -9810,8 +9915,8 @@ msgstr ""
 msgid ""
 "This value represents the number of high and low average samples will be "
 "removed from the\r\n"
-"\t\t\tsample set prior to calculating the Variance Average.  If you choose an "
-"outlier value of 5, then both the top\r\n"
+"\t\t\tsample set prior to calculating the Variance Average.  If you choose "
+"an outlier value of 5, then both the top\r\n"
 "\t\t\tand bottom 5 averages are removed."
 msgstr ""
 
@@ -9829,7 +9934,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1691
 msgid ""
-"This value represents the maximum number of spikes to remove from a Graph RRA."
+"This value represents the maximum number of spikes to remove from a Graph "
+"RRA."
 msgstr ""
 
 #: ../include/global_settings.php:1695 ../include/global_settings.php:1696
@@ -9846,7 +9952,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1707
 msgid ""
-"If this directory is not empty, then your original RRDfiles will be backed\r\n"
+"If this directory is not empty, then your original RRDfiles will be backed"
+"\r\n"
 "\t\t\tup to this location."
 msgstr ""
 
@@ -9860,8 +9967,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1720
 msgid ""
-"Do you wish to periodically remove spikes from your graphs?  If so, select the "
-"frequency\r\n"
+"Do you wish to periodically remove spikes from your graphs?  If so, select "
+"the frequency\r\n"
 "\t\t\tbelow."
 msgstr ""
 
@@ -9891,8 +9998,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1744
 msgid ""
-"When performing batch spike removal, only the templates selected below will be "
-"acted on."
+"When performing batch spike removal, only the templates selected below will "
+"be acted on."
 msgstr ""
 
 #: ../include/global_settings.php:1760
@@ -9901,8 +10008,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1761
 msgid ""
-"Which Graph mode you want displayed by default when you first visit the Graphs "
-"page?"
+"Which Graph mode you want displayed by default when you first visit the "
+"Graphs page?"
 msgstr ""
 
 #: ../include/global_settings.php:1767
@@ -10029,14 +10136,15 @@ msgstr ""
 
 #: ../include/global_settings.php:1878
 msgid ""
-"The number of columns to use when displaying Thumbnail graphs in Preview mode."
+"The number of columns to use when displaying Thumbnail graphs in Preview "
+"mode."
 msgstr ""
 
 #: ../include/global_settings.php:1881 ../include/global_settings.php:1888
-#: ../lib/html_graph.php:231 ../lib/html_graph.php:232 ../lib/html_graph.php:233
-#: ../lib/html_graph.php:234 ../lib/html_graph.php:235 ../lib/html_tree.php:681
-#: ../lib/html_tree.php:682 ../lib/html_tree.php:683 ../lib/html_tree.php:684
-#: ../lib/html_tree.php:685
+#: ../lib/html_graph.php:231 ../lib/html_graph.php:232
+#: ../lib/html_graph.php:233 ../lib/html_graph.php:234
+#: ../lib/html_graph.php:235 ../lib/html_tree.php:681 ../lib/html_tree.php:682
+#: ../lib/html_tree.php:683 ../lib/html_tree.php:684 ../lib/html_tree.php:685
 #, php-format
 msgid "%d Columns"
 msgstr ""
@@ -10088,8 +10196,8 @@ msgstr ""
 
 #: ../include/global_settings.php:1924
 msgid ""
-"Choose whether to expand the Graph Templates and Data Queries used by a Device "
-"on Tree."
+"Choose whether to expand the Graph Templates and Data Queries used by a "
+"Device on Tree."
 msgstr ""
 
 #: ../include/global_settings.php:1931
@@ -10137,8 +10245,8 @@ msgstr ""
 #: ../index.php:64
 #, php-format
 msgid ""
-"You are now logged into <a href=\"%s\"><b>Cacti</b></a>. You can follow these "
-"basic steps to get started."
+"You are now logged into <a href=\"%s\"><b>Cacti</b></a>. You can follow "
+"these basic steps to get started."
 msgstr ""
 
 #: ../index.php:67
@@ -10180,23 +10288,23 @@ msgstr ""
 msgid ""
 "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When "
 "<b>'online'</b>, you will be able to view and control much of the Main Cacti "
-"Web Site just as if you were logged into it.  Also, it's important to note that "
-"Remote Data Collectors are required to use the Cacti's Performance Boosting "
-"Services <b>'On Demand Updating'</b> feature, and we always recommend using "
-"Spine.  When the Remote Data Collector is <b>'offline'</b>, the Remote Data "
-"Collectos Web Site will contain much less information.  However, it will cache "
-"all updates until the Main Cacti Database and Web Server are reachable.  Then "
-"it will dump it's Boost table output back to the Main Cacti Database for "
-"updating."
+"Web Site just as if you were logged into it.  Also, it's important to note "
+"that Remote Data Collectors are required to use the Cacti's Performance "
+"Boosting Services <b>'On Demand Updating'</b> feature, and we always "
+"recommend using Spine.  When the Remote Data Collector is <b>'offline'</b>, "
+"the Remote Data Collectos Web Site will contain much less information.  "
+"However, it will cache all updates until the Main Cacti Database and Web "
+"Server are reachable.  Then it will dump it's Boost table output back to the "
+"Main Cacti Database for updating."
 msgstr ""
 
 #: ../index.php:90
 msgid ""
 "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-"
 "designed to work with Remote Data Collectors.  Therefore, Plugins such as "
-"MacTrack, and HMIB, which require direct access to devices will not work with "
-"Remote Data Collectors at this time.  However, plugins such as Thold will work "
-"so long as the Remote Data Collector is in <b>'online'</b> mode."
+"MacTrack, and HMIB, which require direct access to devices will not work "
+"with Remote Data Collectors at this time.  However, plugins such as Thold "
+"will work so long as the Remote Data Collector is in <b>'online'</b> mode."
 msgstr ""
 
 #: ../install/index.php:57 ../install/index.php:62 ../install/index.php:67
@@ -10207,27 +10315,28 @@ msgstr ""
 #: ../install/index.php:59
 #, php-format
 msgid ""
-"This installation is already up-to-date. Click <a href=\"%s\">here</a> to use "
-"Cacti."
+"This installation is already up-to-date. Click <a href=\"%s\">here</a> to "
+"use Cacti."
 msgstr ""
 
 #: ../install/index.php:64
 #, php-format
 msgid ""
-"You are attempting to install Cacti %s onto a 0.6.x database. To continue, you "
-"must create a new database, import \"cacti.sql\" into it, and update \"include/"
-"config.php\" to point to the new database."
+"You are attempting to install Cacti %s onto a 0.6.x database. To continue, "
+"you must create a new database, import \"cacti.sql\" into it, and update "
+"\"include/config.php\" to point to the new database."
 msgstr ""
 
 #: ../install/index.php:69
 #, php-format
 msgid ""
 "You have created a new database, but have not yet imported the 'cacti.sql' "
-"file. At the command line, execute the following to continue:</p><p><pre>mysql -"
-"u %s -p %s < cacti.sql</pre></p><p>This error may also be generated if the "
-"cacti database user does not have correct permissions on the Cacti database. "
-"Please ensure that the Cacti database user has the ability to SELECT, INSERT, "
-"DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
+"file. At the command line, execute the following to continue:</"
+"p><p><pre>mysql -u %s -p %s < cacti.sql</pre></p><p>This error may also be "
+"generated if the cacti database user does not have correct permissions on "
+"the Cacti database. Please ensure that the Cacti database user has the "
+"ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the "
+"Cacti database."
 msgstr ""
 
 #: ../install/index.php:71
@@ -10249,8 +10358,8 @@ msgstr ""
 msgid ""
 "On Windows, you must follow the instructions here <a target='_blank' "
 "href='https://dev.mysql.com/downloads/timezones.html'>Time zone description "
-"table</a>.  Once that is complete, you can issue the following command to grant "
-"the Cacti user access to the tables:"
+"table</a>.  Once that is complete, you can issue the following command to "
+"grant the Cacti user access to the tables:"
 msgstr ""
 
 #: ../install/index.php:78
@@ -10276,30 +10385,30 @@ msgstr ""
 
 #: ../install/index.php:522
 msgid ""
-"Thanks for taking the time to download and install Cacti, the complete graphing "
-"solution for your network. Before you can start making cool graphs, there are a "
-"few pieces of data that Cacti needs to know."
+"Thanks for taking the time to download and install Cacti, the complete "
+"graphing solution for your network. Before you can start making cool graphs, "
+"there are a few pieces of data that Cacti needs to know."
 msgstr ""
 
 #: ../install/index.php:523
 #, php-format
 msgid ""
-"Make sure you have read and followed the required steps needed to install Cacti "
-"before continuing. Install information can be found for <a href=\"%1$s\">Unix</"
-"a> and <a href=\"%2$s\">Win32</a>-based operating systems."
+"Make sure you have read and followed the required steps needed to install "
+"Cacti before continuing. Install information can be found for <a href=\"%1$s"
+"\">Unix</a> and <a href=\"%2$s\">Win32</a>-based operating systems."
 msgstr ""
 
 #: ../install/index.php:524
 #, php-format
 msgid ""
-"Also, if this is an upgrade, be sure to reading the <a href=\"%s\">Upgrade</a> "
-"information file."
+"Also, if this is an upgrade, be sure to reading the <a href=\"%s\">Upgrade</"
+"a> information file."
 msgstr ""
 
 #: ../install/index.php:525
 msgid ""
-"Cacti is licensed under the GNU General Public License, you must agree to its "
-"provisions before continuing:"
+"Cacti is licensed under the GNU General Public License, you must agree to "
+"its provisions before continuing:"
 msgstr ""
 
 #: ../install/index.php:543
@@ -10317,22 +10426,22 @@ msgstr ""
 
 #: ../install/index.php:549
 msgid ""
-"Your MySQL TimeZone database is not populated.  Please populate this database "
-"before proceeding."
+"Your MySQL TimeZone database is not populated.  Please populate this "
+"database before proceeding."
 msgstr ""
 
 #: ../install/index.php:553
 msgid ""
 "Your Cacti database login account does not have access to the MySQL TimeZone "
-"database.  Please provide the Cacti database account \"select\" access to the "
-"\"time_zone_name\" table in the \"mysql\" database, and populate MySQL's "
+"database.  Please provide the Cacti database account \"select\" access to "
+"the \"time_zone_name\" table in the \"mysql\" database, and populate MySQL's "
 "TimeZone information before proceeding."
 msgstr ""
 
 #: ../install/index.php:558
 msgid ""
-"Your Cacti database account has access to the MySQL TimeZone database and that "
-"database is populated with global TimeZone information."
+"Your Cacti database account has access to the MySQL TimeZone database and "
+"that database is populated with global TimeZone information."
 msgstr ""
 
 #: ../install/index.php:561
@@ -10341,11 +10450,12 @@ msgstr ""
 
 #: ../install/index.php:563
 msgid ""
-"Cacti requires several PHP Modules to be installed to work properly. If any of "
-"these are not installed, you will be unable to continue the installation until "
-"corrected. In addition, for optimal system performance Cacti should be run with "
-"certain MySQL system variables set.  Please follow the MySQL recommendations at "
-"your discretion.  Always seek the MySQL documentation if you have any questions."
+"Cacti requires several PHP Modules to be installed to work properly. If any "
+"of these are not installed, you will be unable to continue the installation "
+"until corrected. In addition, for optimal system performance Cacti should be "
+"run with certain MySQL system variables set.  Please follow the MySQL "
+"recommendations at your discretion.  Always seek the MySQL documentation if "
+"you have any questions."
 msgstr ""
 
 #: ../install/index.php:565
@@ -10429,8 +10539,8 @@ msgstr ""
 
 #: ../install/index.php:672
 msgid ""
-"Remote Pollers are used to access networks that are not readily accessible to "
-"the Primary Cacti Web Site."
+"Remote Pollers are used to access networks that are not readily accessible "
+"to the Primary Cacti Web Site."
 msgstr ""
 
 #: ../install/index.php:673 ../install/index.php:679
@@ -10443,14 +10553,15 @@ msgstr ""
 
 #: ../install/index.php:692
 msgid ""
-"WARNING - If you are upgrading from a previous version please close all Cacti "
-"browser sessions and clear cache before continuing"
+"WARNING - If you are upgrading from a previous version please close all "
+"Cacti browser sessions and clear cache before continuing"
 msgstr ""
 
 #: ../install/index.php:695
 msgid ""
-"The following information has been determined from Cacti's configuration file. "
-"If it is not correct, please edit \"include/config.php\" before continuing."
+"The following information has been determined from Cacti's configuration "
+"file. If it is not correct, please edit \"include/config.php\" before "
+"continuing."
 msgstr ""
 
 #: ../install/index.php:699
@@ -10491,8 +10602,8 @@ msgid ""
 "Your config.php file must be writable by \r\n"
 "\t\t\t\t\t\t\t\t\tthe web server during install in order to configure the "
 "Remote poller.  Once \r\n"
-"\t\t\t\t\t\t\t\t\tinstallation is complete, you must set this file to Read Only "
-"to prevent \r\n"
+"\t\t\t\t\t\t\t\t\tinstallation is complete, you must set this file to Read "
+"Only to prevent \r\n"
 "\t\t\t\t\t\t\t\t\tpossible security issues."
 msgstr ""
 
@@ -10519,8 +10630,8 @@ msgstr ""
 #: ../install/index.php:767
 msgid ""
 "Once you have the variables set in the config.php file, you must also\r\n"
-"\t\t\t\t\t\t\t\t\tgrant the $rdatabase_username access to the Cacti database.  "
-"Follow the same procedure you would with\r\n"
+"\t\t\t\t\t\t\t\t\tgrant the $rdatabase_username access to the Cacti "
+"database.  Follow the same procedure you would with\r\n"
 "\t\t\t\t\t\t\t\t\tany other Cacti install.  You may then press the 'Test "
 "Connection' button.  If the test is\r\n"
 "\t\t\t\t\t\t\t\t\tsuccessful you will be able to proceed and complete the "
@@ -10553,26 +10664,26 @@ msgstr ""
 
 #: ../install/index.php:902
 msgid ""
-"Please ensure the directory permissions below are correct before proceeding.  "
-"During the install, these directories need to be owned by the Web Server user.  "
-"These permission changes are required to allow the Installer to install Device "
-"Template packages which include XML and script files that will be placed in "
-"these directories.  If you choose not to install the packages, there is an "
-"'install_package.php' cli script that can be used from the command line after "
-"the install is complete."
+"Please ensure the directory permissions below are correct before "
+"proceeding.  During the install, these directories need to be owned by the "
+"Web Server user.  These permission changes are required to allow the "
+"Installer to install Device Template packages which include XML and script "
+"files that will be placed in these directories.  If you choose not to "
+"install the packages, there is an 'install_package.php' cli script that can "
+"be used from the command line after the install is complete."
 msgstr ""
 
 #: ../install/index.php:905
 msgid ""
-"After the install is complete, you can make some of these directories read only "
-"to increase security."
+"After the install is complete, you can make some of these directories read "
+"only to increase security."
 msgstr ""
 
 #: ../install/index.php:907
 msgid ""
-"These directories will be required to stay read writable after the install so "
-"that the Cacti remote synchronization process can update them as the Main Cacti "
-"Web Site changes"
+"These directories will be required to stay read writable after the install "
+"so that the Cacti remote synchronization process can update them as the Main "
+"Cacti Web Site changes"
 msgstr ""
 
 #: ../install/index.php:938
@@ -10615,8 +10726,8 @@ msgstr ""
 #: ../install/index.php:982
 msgid ""
 "If you are installing packages, once the packages are installed, you should "
-"change the scripts directory back to read only as this presents some exposure "
-"to the web site."
+"change the scripts directory back to read only as this presents some "
+"exposure to the web site."
 msgstr ""
 
 #: ../install/index.php:982 ../install/index.php:988 ../install/index.php:1024
@@ -10626,8 +10737,8 @@ msgstr ""
 #: ../install/index.php:988
 msgid ""
 "For remote pollers, it is critical that\r\n"
-"\t\t\t\t\t\t\t\tthe paths that you will be updating frequently, including the "
-"plugins, scripts,\r\n"
+"\t\t\t\t\t\t\t\tthe paths that you will be updating frequently, including "
+"the plugins, scripts,\r\n"
 "\t\t\t\t\t\t\t\tand resources paths have read/write access as the data "
 "collector will have to\r\n"
 "\t\t\t\t\t\t\t\tupdate these paths from the main web server content."
@@ -10639,10 +10750,10 @@ msgstr ""
 
 #: ../install/index.php:1000
 msgid ""
-"Please select the Device Templates that you wish to use after the Install.  If "
-"you Operating System is Windows, you need to ensure that you select the "
-"'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure "
-"you select the 'Local Linux Machine' Device Template."
+"Please select the Device Templates that you wish to use after the Install.  "
+"If you Operating System is Windows, you need to ensure that you select the "
+"'Windows Device' Template.  If your Operating System is Linux/UNIX, make "
+"sure you select the 'Local Linux Machine' Device Template."
 msgstr ""
 
 #: ../install/index.php:1002
@@ -10663,8 +10774,8 @@ msgstr ""
 
 #: ../install/index.php:1026
 msgid ""
-"Press 'Finish' to complete the installation process after selecting your Device "
-"Templates."
+"Press 'Finish' to complete the installation process after selecting your "
+"Device Templates."
 msgstr ""
 
 #: ../install/index.php:1030
@@ -10693,11 +10804,11 @@ msgstr ""
 
 #: ../install/index.php:1071
 msgid ""
-"One or more of the SQL queries needed to upgraded your Cacti installation has "
-"failed. Please see below for more details. Your Cacti MySQL user must have "
-"<strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong> "
-"permissions. You should try executing the failed queries as \"root\" to ensure "
-"that you do not have a permissions problem."
+"One or more of the SQL queries needed to upgraded your Cacti installation "
+"has failed. Please see below for more details. Your Cacti MySQL user must "
+"have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</"
+"strong> permissions. You should try executing the failed queries as \"root\" "
+"to ensure that you do not have a permissions problem."
 msgstr ""
 
 #: ../install/index.php:1071 ../utilities.php:2022 ../utilities.php:2023
@@ -10756,9 +10867,9 @@ msgstr ""
 
 #: ../lib/api_aggregate.php:1099
 msgid ""
-"The Graphs chosen for the Aggregate Graph below represent Graphs from multiple "
-"Graph Templates.  Aggregate does not support creating Aggregate Graphs from "
-"multiple Graph Templates."
+"The Graphs chosen for the Aggregate Graph below represent Graphs from "
+"multiple Graph Templates.  Aggregate does not support creating Aggregate "
+"Graphs from multiple Graph Templates."
 msgstr ""
 
 #: ../lib/api_aggregate.php:1100 ../lib/api_aggregate.php:1119
@@ -10768,7 +10879,8 @@ msgstr ""
 #: ../lib/api_aggregate.php:1118
 msgid ""
 "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  "
-"Aggregate does not support creating Aggregate Graphs from non-templated graphs."
+"Aggregate does not support creating Aggregate Graphs from non-templated "
+"graphs."
 msgstr ""
 
 #: ../lib/api_aggregate.php:1208 ../lib/functions.php:1979
@@ -10805,8 +10917,8 @@ msgstr ""
 
 #: ../lib/api_automation.php:139 ../lib/api_automation.php:997
 #: ../lib/html_reports.php:309 ../lib/html_reports.php:1229
-#: ../lib/html_reports.php:1485 ../lib/html_reports.php:1496 ../lib/rrd.php:2572
-#: ../utilities.php:301 ../utilities.php:2350
+#: ../lib/html_reports.php:1485 ../lib/html_reports.php:1496
+#: ../lib/rrd.php:2572 ../utilities.php:301 ../utilities.php:2350
 msgid "Type"
 msgstr ""
 
@@ -10872,13 +10984,16 @@ msgstr ""
 
 #: ../lib/api_automation.php:1215 ../lib/api_automation.php:1277
 #: ../lib/api_automation.php:1341 ../lib/functions.php:1973
-#: ../lib/functions.php:2039 ../lib/functions.php:2105 ../lib/functions.php:2141
-#: ../lib/functions.php:2147 ../lib/functions.php:2165 ../lib/functions.php:2183
-#: ../lib/functions.php:2201 ../lib/functions.php:2231 ../lib/functions.php:2267
-#: ../lib/functions.php:2297 ../lib/functions.php:2387 ../lib/functions.php:2573
-#: ../lib/functions.php:2597 ../lib/functions.php:2615 ../lib/functions.php:2633
-#: ../lib/functions.php:2651 ../lib/functions.php:2675
-#: ../lib/html_reports.php:1229 ../links.php:374 ../plugins.php:380
+#: ../lib/functions.php:2039 ../lib/functions.php:2105
+#: ../lib/functions.php:2141 ../lib/functions.php:2147
+#: ../lib/functions.php:2165 ../lib/functions.php:2183
+#: ../lib/functions.php:2201 ../lib/functions.php:2231
+#: ../lib/functions.php:2267 ../lib/functions.php:2297
+#: ../lib/functions.php:2387 ../lib/functions.php:2573
+#: ../lib/functions.php:2597 ../lib/functions.php:2615
+#: ../lib/functions.php:2633 ../lib/functions.php:2651
+#: ../lib/functions.php:2675 ../lib/html_reports.php:1229 ../links.php:374
+#: ../plugins.php:380
 msgid "Actions"
 msgstr ""
 
@@ -10968,7 +11083,8 @@ msgstr ""
 msgid "Contact:"
 msgstr ""
 
-#: ../lib/api_device.php:420 ../lib/functions.php:3723 ../lib/functions.php:3725
+#: ../lib/api_device.php:420 ../lib/functions.php:3723
+#: ../lib/functions.php:3725
 msgid "Ping Results"
 msgstr ""
 
@@ -11077,20 +11193,24 @@ msgstr ""
 msgid "List Mode"
 msgstr ""
 
-#: ../lib/functions.php:1943 ../lib/functions.php:1949 ../lib/functions.php:2806
-#: ../lib/html.php:1113 ../lib/html.php:1185 ../links.php:342
-#: ../user_admin.php:1636 ../user_group_admin.php:1309
+#: ../lib/functions.php:1943 ../lib/functions.php:1949
+#: ../lib/functions.php:2806 ../lib/html.php:1113 ../lib/html.php:1185
+#: ../links.php:342 ../user_admin.php:1636 ../user_group_admin.php:1309
 msgid "Console"
 msgstr ""
 
-#: ../lib/functions.php:1961 ../lib/functions.php:2003 ../lib/functions.php:2021
-#: ../lib/functions.php:2075 ../lib/functions.php:2087 ../lib/functions.php:2099
-#: ../lib/functions.php:2135 ../lib/functions.php:2159 ../lib/functions.php:2177
-#: ../lib/functions.php:2195 ../lib/functions.php:2213 ../lib/functions.php:2237
-#: ../lib/functions.php:2273 ../lib/functions.php:2393 ../lib/functions.php:2417
-#: ../lib/functions.php:2435 ../lib/functions.php:2453 ../lib/functions.php:2465
-#: ../lib/functions.php:2567 ../lib/functions.php:2591 ../lib/functions.php:2609
-#: ../lib/functions.php:2627 ../lib/functions.php:2645 ../lib/functions.php:2669
+#: ../lib/functions.php:1961 ../lib/functions.php:2003
+#: ../lib/functions.php:2021 ../lib/functions.php:2075
+#: ../lib/functions.php:2087 ../lib/functions.php:2099
+#: ../lib/functions.php:2135 ../lib/functions.php:2159
+#: ../lib/functions.php:2177 ../lib/functions.php:2195
+#: ../lib/functions.php:2213 ../lib/functions.php:2237
+#: ../lib/functions.php:2273 ../lib/functions.php:2393
+#: ../lib/functions.php:2417 ../lib/functions.php:2435
+#: ../lib/functions.php:2453 ../lib/functions.php:2465
+#: ../lib/functions.php:2567 ../lib/functions.php:2591
+#: ../lib/functions.php:2609 ../lib/functions.php:2627
+#: ../lib/functions.php:2645 ../lib/functions.php:2669
 msgid "(Edit)"
 msgstr ""
 
@@ -11102,13 +11222,15 @@ msgstr ""
 msgid "Create Graphs from Data Query"
 msgstr ""
 
-#: ../lib/functions.php:2009 ../lib/functions.php:2027 ../lib/functions.php:2123
-#: ../lib/functions.php:2219 ../lib/functions.php:2243 ../lib/functions.php:2399
+#: ../lib/functions.php:2009 ../lib/functions.php:2027
+#: ../lib/functions.php:2123 ../lib/functions.php:2219
+#: ../lib/functions.php:2243 ../lib/functions.php:2399
 msgid "(Remove)"
 msgstr ""
 
-#: ../lib/functions.php:2045 ../lib/functions.php:2051 ../lib/functions.php:2057
-#: ../lib/functions.php:2063 ../lib/functions.php:2333 ../utilities.php:1768
+#: ../lib/functions.php:2045 ../lib/functions.php:2051
+#: ../lib/functions.php:2057 ../lib/functions.php:2063
+#: ../lib/functions.php:2333 ../utilities.php:1768
 msgid "View Cacti Log"
 msgstr ""
 
@@ -11231,8 +11353,8 @@ msgstr ""
 
 #: ../lib/functions.php:3357
 msgid ""
-"Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, "
-"please set the <b>Alert e-mail</b> setting."
+"Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
+"link, please set the <b>Alert e-mail</b> setting."
 msgstr ""
 
 #: ../lib/functions.php:3658
@@ -11255,8 +11377,8 @@ msgstr ""
 
 #: ../lib/functions.php:3680
 msgid ""
-"This is a test message generated from Cacti.  This message was sent to test the "
-"configuration of your Mail Settings."
+"This is a test message generated from Cacti.  This message was sent to test "
+"the configuration of your Mail Settings."
 msgstr ""
 
 #: ../lib/functions.php:3681
@@ -11476,8 +11598,8 @@ msgstr ""
 
 #: ../lib/html_graph.php:197 ../lib/html_tree.php:650
 msgid ""
-"Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences "
-"to your profile"
+"Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift "
+"preferences to your profile"
 msgstr ""
 
 #: ../lib/html_graph.php:226 ../lib/html_tree.php:673
@@ -11489,7 +11611,8 @@ msgstr ""
 msgid "%d Column"
 msgstr ""
 
-#: ../lib/html_graph.php:239 ../lib/html_reports.php:125 ../lib/html_tree.php:690
+#: ../lib/html_graph.php:239 ../lib/html_reports.php:125
+#: ../lib/html_tree.php:690
 msgid "Thumbnails"
 msgstr ""
 
@@ -11583,9 +11706,9 @@ msgstr ""
 msgid ""
 "Choose the custom html wrapper and CSS file to use.  This file contains both "
 "html and CSS to wrap around your report.\r\n"
-"\t\tIf it contains more than simply CSS, you need to place a special <REPORT> "
-"tag inside of the file.  This format tag will be replaced by the report "
-"content.  These files are located in the 'formats' directory."
+"\t\tIf it contains more than simply CSS, you need to place a special "
+"<REPORT> tag inside of the file.  This format tag will be replaced by the "
+"report content.  These files are located in the 'formats' directory."
 msgstr ""
 
 #: ../lib/html_reports.php:73
@@ -11594,8 +11717,8 @@ msgstr ""
 
 #: ../lib/html_reports.php:74
 msgid ""
-"Defines the default font size for all text in the report including the Report "
-"Title."
+"Defines the default font size for all text in the report including the "
+"Report Title."
 msgstr ""
 
 #: ../lib/html_reports.php:81
@@ -11648,10 +11771,10 @@ msgstr ""
 
 #: ../lib/html_reports.php:138
 msgid ""
-"Start time for [first|next] mail to take place. All future mailing times will "
-"be based upon this start time. A good example would be 2:00am. The time must be "
-"in the future.  If a fractional time is used, say 2:00am, it is assumed to be "
-"in the future."
+"Start time for [first|next] mail to take place. All future mailing times "
+"will be based upon this start time. A good example would be 2:00am. The time "
+"must be in the future.  If a fractional time is used, say 2:00am, it is "
+"assumed to be in the future."
 msgstr ""
 
 #: ../lib/html_reports.php:146
@@ -11678,10 +11801,10 @@ msgstr ""
 
 #: ../lib/html_reports.php:157
 msgid ""
-"e.g. If the Report Interval is 'Month(s)', then '2' indicates Every '2 Month(s) "
-"from the next Mailtime.' Lastly, if using the Month(s) Report Intervals, the "
-"'Day of Week' and the 'Day of Month' are both calculated based upon the "
-"Mailtime you specify above."
+"e.g. If the Report Interval is 'Month(s)', then '2' indicates Every '2 "
+"Month(s) from the next Mailtime.' Lastly, if using the Month(s) Report "
+"Intervals, the 'Day of Week' and the 'Day of Month' are both calculated "
+"based upon the Mailtime you specify above."
 msgstr ""
 
 #: ../lib/html_reports.php:165
@@ -11698,8 +11821,8 @@ msgstr ""
 
 #: ../lib/html_reports.php:173
 msgid ""
-"This value will be used as the default Email subject.  The report name will be "
-"used if left blank."
+"This value will be used as the default Email subject.  The report name will "
+"be used if left blank."
 msgstr ""
 
 #: ../lib/html_reports.php:181
@@ -11768,8 +11891,8 @@ msgstr ""
 
 #: ../lib/html_reports.php:353
 msgid ""
-"A Perl compatible regular expression (REGEXP) used to select graphs to include "
-"from the tree."
+"A Perl compatible regular expression (REGEXP) used to select graphs to "
+"include from the tree."
 msgstr ""
 
 #: ../lib/html_reports.php:362
@@ -12289,8 +12412,8 @@ msgstr ""
 
 #: ../lib/reports.php:1390
 msgid ""
-"Choose the Report to associate these graphs with.  The defaults for alignment "
-"will be used for each graph in the list below."
+"Choose the Report to associate these graphs with.  The defaults for "
+"alignment will be used for each graph in the list below."
 msgstr ""
 
 #: ../lib/reports.php:1392
@@ -12492,8 +12615,8 @@ msgstr ""
 
 #: ../lib/utility.php:617
 msgid ""
-"MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to "
-"choose. Make sure you\r\n"
+"MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions "
+"to choose. Make sure you\r\n"
 "\t\t\t\trun the very latest release though which fixes a long standing low "
 "level networking\r\n"
 "\t\t\t\tissue that was casuing spine many issues with reliability."
@@ -12507,42 +12630,46 @@ msgstr ""
 
 #: ../lib/utility.php:644
 msgid ""
-"When using Cacti with languages other than English, it is important to use\r\n"
-"\t\t\t\t\tthe utf8_general_ci collation type as some characters take more than "
-"a single byte.  \r\n"
+"When using Cacti with languages other than English, it is important to use"
+"\r\n"
+"\t\t\t\t\tthe utf8_general_ci collation type as some characters take more "
+"than a single byte.  \r\n"
 "\t\t\t\t\tIf you are first just now installing Cacti, stop, make the changes "
 "and start over again.\r\n"
-"\t\t\t\t\tIf your Cacti has been running and is in production, see the internet "
-"for instructions\r\n"
+"\t\t\t\t\tIf your Cacti has been running and is in production, see the "
+"internet for instructions\r\n"
 "\t\t\t\t\ton converting your databases and tables if you plan on supporting "
 "other languages."
 msgstr ""
 
 #: ../lib/utility.php:654
 msgid ""
-"When using Cacti with languages other than English, it is important ot use\r\n"
+"When using Cacti with languages other than English, it is important ot use"
+"\r\n"
 "\t\t\t\t\tthe utf8 character set as some characters take more than a single "
 "byte.\r\n"
 "\t\t\t\t\tIf you are first just now installing Cacti, stop, make the changes "
 "and start over again.\r\n"
-"\t\t\t\t\tIf your Cacti has been running and is in production, see the internet "
-"for instructions\r\n"
+"\t\t\t\t\tIf your Cacti has been running and is in production, see the "
+"internet for instructions\r\n"
 "\t\t\t\t\ton converting your databases and tables if you plan on supporting "
 "other languages."
 msgstr ""
 
 #: ../lib/utility.php:682
 msgid ""
-"When using Cacti with languages other than English, it is important to use\r\n"
+"When using Cacti with languages other than English, it is important to use"
+"\r\n"
 "\t\t\t\t\tthe utf8mb4_unicode_ci collation type as some characters take more "
 "than a single byte."
 msgstr ""
 
 #: ../lib/utility.php:689
 msgid ""
-"When using Cacti with languages other than English, it is important ot use\r\n"
-"\t\t\t\t\tthe utf8mb4 character set as some characters take more than a single "
-"byte."
+"When using Cacti with languages other than English, it is important ot use"
+"\r\n"
+"\t\t\t\t\tthe utf8mb4 character set as some characters take more than a "
+"single byte."
 msgstr ""
 
 #: ../lib/utility.php:699
@@ -12550,25 +12677,26 @@ msgstr ""
 msgid ""
 "Depending on the number of logins and use of spine data collector, \r\n"
 "\t\t\t\t%s will need many connections.  The calculation for spine is:\r\n"
-"\t\t\t\ttotal_connections = total_processes * (total_threads + script_servers + "
-"1), then you\r\n"
-"\t\t\t\tmust leave headroom for user connections, which will change depending "
-"on the number of\r\n"
+"\t\t\t\ttotal_connections = total_processes * (total_threads + "
+"script_servers + 1), then you\r\n"
+"\t\t\t\tmust leave headroom for user connections, which will change "
+"depending on the number of\r\n"
 "\t\t\t\tconcurrent login accounts."
 msgstr ""
 
 #: ../lib/utility.php:708
 #, php-format
 msgid ""
-"If using the Cacti Performance Booster and choosing a memory storage engine,\r\n"
-"\t\t\t\tyou have to be careful to flush your Performance Booster buffer before "
-"the system runs\r\n"
-"\t\t\t\tout of memory table space.  This is done two ways, first reducing the "
-"size of your output\r\n"
+"If using the Cacti Performance Booster and choosing a memory storage engine,"
+"\r\n"
+"\t\t\t\tyou have to be careful to flush your Performance Booster buffer "
+"before the system runs\r\n"
+"\t\t\t\tout of memory table space.  This is done two ways, first reducing "
+"the size of your output\r\n"
 "\t\t\t\tcolumn to just the right size.  This column is in the tables "
 "poller_output, \r\n"
-"\t\t\t\tand poller_output_boost.  The second thing you can do is allocate more "
-"memory to memory\r\n"
+"\t\t\t\tand poller_output_boost.  The second thing you can do is allocate "
+"more memory to memory\r\n"
 "\t\t\t\ttables.  We have arbitrarily chosen a recommended value of 10% of "
 "system memory, but \r\n"
 "\t\t\t\tif you are using SSD disk drives, or have a smaller system, you may "
@@ -12608,10 +12736,10 @@ msgstr ""
 #, php-format
 msgid ""
 "When using InnoDB storage it is important to keep your table spaces\r\n"
-"\t\t\t\tseparate.  This makes managing the tables simpler for long time users "
-"of %s.\r\n"
-"\t\t\t\tIf you are running with this currently off, you can migrate to the per "
-"file storage\r\n"
+"\t\t\t\tseparate.  This makes managing the tables simpler for long time "
+"users of %s.\r\n"
+"\t\t\t\tIf you are running with this currently off, you can migrate to the "
+"per file storage\r\n"
 "\t\t\t\tby enabling the feature, and then running an alter statement on all "
 "InnoDB tables."
 msgstr ""
@@ -12619,15 +12747,16 @@ msgstr ""
 #: ../lib/utility.php:754
 #, php-format
 msgid ""
-"InnoDB will hold as much tables and indexes in system memory as is possible.\r\n"
-"\t\t\t\tTherefore, you should make the innodb_buffer_pool large enough to hold "
-"as much\r\n"
-"\t\t\t\tof the tables and index in memory.  Checking the size of the /var/lib/"
-"mysql/cacti\r\n"
+"InnoDB will hold as much tables and indexes in system memory as is possible."
+"\r\n"
+"\t\t\t\tTherefore, you should make the innodb_buffer_pool large enough to "
+"hold as much\r\n"
+"\t\t\t\tof the tables and index in memory.  Checking the size of the /var/"
+"lib/mysql/cacti\r\n"
 "\t\t\t\tdirectory will help in determining this value.  We are recommending "
 "25% of your systems\r\n"
-"\t\t\t\ttotal memory, but your requirements will vary depending on your systems "
-"size."
+"\t\t\t\ttotal memory, but your requirements will vary depending on your "
+"systems size."
 msgstr ""
 
 #: ../lib/utility.php:763
@@ -12645,8 +12774,8 @@ msgstr ""
 
 #: ../lib/utility.php:774
 msgid ""
-"Rogue queries should not for the database to go offline to others.  Kill these"
-"\r\n"
+"Rogue queries should not for the database to go offline to others.  Kill "
+"these\r\n"
 "\t\t\t\tqueries before they kill your system."
 msgstr ""
 
@@ -12654,13 +12783,14 @@ msgstr ""
 #, php-format
 msgid ""
 "Setting this value to 2 means that you will flush all transactions every\r\n"
-"\t\t\t\tsecond rather than at commit.  This allows %s to perform writing less "
-"often."
+"\t\t\t\tsecond rather than at commit.  This allows %s to perform writing "
+"less often."
 msgstr ""
 
 #: ../lib/utility.php:790
 msgid ""
-"With modern SSD type storage, having multiple io threads is advantageous for\r\n"
+"With modern SSD type storage, having multiple io threads is advantageous for"
+"\r\n"
 "\t\t\t\t\tapplications with high io characteristics."
 msgstr ""
 
@@ -12674,15 +12804,15 @@ msgstr ""
 
 #: ../lib/utility.php:804
 msgid ""
-"With modern SSD type storage, having multiple read io threads is advantageous "
-"for\r\n"
+"With modern SSD type storage, having multiple read io threads is "
+"advantageous for\r\n"
 "\t\t\t\t\tapplications with high io characteristics."
 msgstr ""
 
 #: ../lib/utility.php:810
 msgid ""
-"With modern SSD type storage, having multiple write io threads is advantageous "
-"for\r\n"
+"With modern SSD type storage, having multiple write io threads is "
+"advantageous for\r\n"
 "\t\t\t\t\tapplications with high io characteristics."
 msgstr ""
 
@@ -12691,9 +12821,10 @@ msgstr ""
 msgid ""
 "%s will divide the innodb_buffer_pool into memory regions to improve "
 "performance.\r\n"
-"\t\t\t\t\tThe max value is 64.  When your innodb_buffer_pool is less than 1GB, "
-"you should use the pool size\r\n"
-"\t\t\t\t\tdivided by 128MB.  Continue to use this equation upto the max of 64."
+"\t\t\t\t\tThe max value is 64.  When your innodb_buffer_pool is less than "
+"1GB, you should use the pool size\r\n"
+"\t\t\t\t\tdivided by 128MB.  Continue to use this equation upto the max of "
+"64."
 msgstr ""
 
 #: ../lib/utility.php:823
@@ -12812,8 +12943,8 @@ msgstr ""
 
 #: ../links.php:517
 msgid ""
-"Under which Console heading should this item appear? (All External Link menus "
-"will appear between Configuration and Utilities)"
+"Under which Console heading should this item appear? (All External Link "
+"menus will appear between Configuration and Utilities)"
 msgstr ""
 
 #: ../links.php:521
@@ -12842,8 +12973,8 @@ msgstr ""
 
 #: ../links.php:540
 msgid ""
-"The file that contains the content for this page. This file needs to be in the "
-"Cacti 'include/content/' directory."
+"The file that contains the content for this page. This file needs to be in "
+"the Cacti 'include/content/' directory."
 msgstr ""
 
 #: ../links.php:544
@@ -12853,9 +12984,9 @@ msgstr ""
 #: ../links.php:546
 msgid ""
 "The valid URL to use for this external link.  Must include the type, for "
-"example http://www.cacti.net.  Note that many websites do not allow them to be "
-"embedded in an iframe from a foreign site, and therefore External Linking may "
-"not work."
+"example http://www.cacti.net.  Note that many websites do not allow them to "
+"be embedded in an iframe from a foreign site, and therefore External Linking "
+"may not work."
 msgstr ""
 
 #: ../links.php:564
@@ -12892,7 +13023,8 @@ msgstr ""
 msgid "SNMP Notification Receivers"
 msgstr ""
 
-#: ../managers.php:156 ../managers.php:228 ../managers.php:536 ../managers.php:788
+#: ../managers.php:156 ../managers.php:228 ../managers.php:536
+#: ../managers.php:788
 msgid "Receivers"
 msgstr ""
 
@@ -13061,8 +13193,8 @@ msgstr ""
 
 #: ../plugins.php:381
 msgid ""
-"The name for this Plugin.  The name is controlled by the directory it resides "
-"in."
+"The name for this Plugin.  The name is controlled by the directory it "
+"resides in."
 msgstr ""
 
 #: ../plugins.php:382
@@ -13091,8 +13223,8 @@ msgstr ""
 
 #: ../plugins.php:386
 msgid ""
-"The load order of the Plugin.  You can change the load order by first sorting "
-"by it, then moving a Plugin either up or down."
+"The load order of the Plugin.  You can change the load order by first "
+"sorting by it, then moving a Plugin either up or down."
 msgstr ""
 
 #: ../plugins.php:412
@@ -13162,8 +13294,8 @@ msgstr ""
 #: ../pollers.php:62
 msgid ""
 "The hostname for Data Collector.  It may have to be a Fully Qualified Domain "
-"name for the remote Pollers to contact it for activities such as re-indexing, "
-"Real-time graphing, etc."
+"name for the remote Pollers to contact it for activities such as re-"
+"indexing, Real-time graphing, etc."
 msgstr ""
 
 #: ../pollers.php:71
@@ -13262,7 +13394,8 @@ msgstr[1] ""
 
 #: ../pollers.php:310
 msgid ""
-"Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
+"Click 'Continue' to Synchronize the Remote Data Collector for Offline "
+"Operation."
 msgid_plural ""
 "Click 'Continue' to Synchronize the Remote Data Collectors for Offline "
 "Operation."
@@ -13424,9 +13557,9 @@ msgctxt "filter: use"
 msgid "Go"
 msgstr ""
 
-#: ../rrdcleaner.php:512 ../user_group_admin.php:1766 ../user_group_admin.php:2121
-#: ../user_group_admin.php:2227 ../user_group_admin.php:2314
-#: ../user_group_admin.php:2401 ../vdef.php:690
+#: ../rrdcleaner.php:512 ../user_group_admin.php:1766
+#: ../user_group_admin.php:2121 ../user_group_admin.php:2227
+#: ../user_group_admin.php:2314 ../user_group_admin.php:2401 ../vdef.php:690
 msgctxt "filter: reset"
 msgid "Clear"
 msgstr ""
@@ -13713,8 +13846,8 @@ msgstr ""
 
 #: ../templates_export.php:145
 msgid ""
-"Some templates rely on other items in Cacti to function properly. It is highly "
-"recommended that you select this box or the resulting import may fail."
+"Some templates rely on other items in Cacti to function properly. It is "
+"highly recommended that you select this box or the resulting import may fail."
 msgstr ""
 
 #: ../templates_export.php:154
@@ -13869,8 +14002,8 @@ msgstr ""
 
 #: ../tree.php:1551
 msgid ""
-"The internal database ID for this Tree.  Useful when performing automation or "
-"debugging."
+"The internal database ID for this Tree.  Useful when performing automation "
+"or debugging."
 msgstr ""
 
 #: ../tree.php:1552
@@ -13989,10 +14122,10 @@ msgstr ""
 
 #: ../user_admin.php:420
 msgid ""
-"Click 'Continue' to overwrite the User(s) settings with the selected template "
-"User settings and permissions.  The original users Full Name, Password, Realm "
-"and Enable status will be retained, all other fields will be overwritten from "
-"Template User."
+"Click 'Continue' to overwrite the User(s) settings with the selected "
+"template User settings and permissions.  The original users Full Name, "
+"Password, Realm and Enable status will be retained, all other fields will be "
+"overwritten from Template User."
 msgstr ""
 
 #: ../user_admin.php:423
@@ -14041,8 +14174,9 @@ msgid "Default Graph Policy for this User"
 msgstr ""
 
 #: ../user_admin.php:1006 ../user_admin.php:1229 ../user_admin.php:1371
-#: ../user_admin.php:1504 ../user_group_admin.php:756 ../user_group_admin.php:901
-#: ../user_group_admin.php:1044 ../user_group_admin.php:1178
+#: ../user_admin.php:1504 ../user_group_admin.php:756
+#: ../user_group_admin.php:901 ../user_group_admin.php:1044
+#: ../user_group_admin.php:1178
 msgid "Effective Policy"
 msgstr ""
 
@@ -14353,8 +14487,8 @@ msgstr ""
 
 #: ../user_domains.php:317
 msgid ""
-"Enter a meaningful name for this domain. This will be the name that appears in "
-"the Login Realm during login."
+"Enter a meaningful name for this domain. This will be the name that appears "
+"in the Login Realm during login."
 msgstr ""
 
 #: ../user_domains.php:323
@@ -14386,13 +14520,13 @@ msgstr ""
 #: ../user_domains.php:405
 msgid ""
 "Mode which cacti will attempt to authenticate against the LDAP server."
-"<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, "
-"just attempt to bind with the provided Distinguished Name (DN) format."
-"<br><br><i>Anonymous Searching</i> - Attempts to search for username against "
-"LDAP directory via anonymous binding to locate the users Distinguished Name "
-"(DN).<br><br><i>Specific Searching</i> - Attempts search for username against "
-"LDAP directory via Specific Distinguished Name (DN) and Specific Password for "
-"binding to locate the users Distinguished Name (DN)."
+"<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching "
+"occurs, just attempt to bind with the provided Distinguished Name (DN) "
+"format.<br><br><i>Anonymous Searching</i> - Attempts to search for username "
+"against LDAP directory via anonymous binding to locate the users "
+"Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search "
+"for username against LDAP directory via Specific Distinguished Name (DN) and "
+"Specific Password for binding to locate the users Distinguished Name (DN)."
 msgstr ""
 
 #: ../user_domains.php:454
@@ -14406,8 +14540,8 @@ msgid ""
 "Search filter to use to locate the user in the LDAP directory, such as for "
 "windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)"
 "(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>"
-"\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is "
-"replaced with the username that was supplied at the login prompt."
+"\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" "
+"is replaced with the username that was supplied at the login prompt."
 msgstr ""
 
 #: ../user_domains.php:500
@@ -14634,8 +14768,8 @@ msgstr ""
 
 #: ../utilities.php:164
 msgid ""
-"NET-SNMP Not Installed or its paths are not set.  Please install if you wish to "
-"monitor SNMP enabled devices."
+"NET-SNMP Not Installed or its paths are not set.  Please install if you wish "
+"to monitor SNMP enabled devices."
 msgstr ""
 
 #: ../utilities.php:170
@@ -14645,15 +14779,15 @@ msgstr ""
 #: ../utilities.php:170
 #, php-format
 msgid ""
-"ERROR: Installed RRDtool version does not match configured version.<br>Please "
-"visit the %s and select the correct RRDtool Utility Version."
+"ERROR: Installed RRDtool version does not match configured version."
+"<br>Please visit the %s and select the correct RRDtool Utility Version."
 msgstr ""
 
 #: ../utilities.php:174
 #, php-format
 msgid ""
-"ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" graph(s) "
-"and/or templates have GIF set as the image format."
+"ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" "
+"graph(s) and/or templates have GIF set as the image format."
 msgstr ""
 
 #: ../utilities.php:194
@@ -14740,7 +14874,8 @@ msgid "PHP Information"
 msgstr ""
 
 #: ../utilities.php:391
-msgid "PHP Version 5.5.0+ is recommended due to strong password hashing support."
+msgid ""
+"PHP Version 5.5.0+ is recommended due to strong password hashing support."
 msgstr ""
 
 #: ../utilities.php:396
@@ -14762,14 +14897,15 @@ msgstr ""
 #: ../utilities.php:449
 #, php-format
 msgid ""
-"It is highly suggested that you alter you php.ini memory_limit to %s or higher."
+"It is highly suggested that you alter you php.ini memory_limit to %s or "
+"higher."
 msgstr ""
 
 #: ../utilities.php:450
 msgid ""
 "This suggested memory value is calculated based on the number of data source "
-"present and is only to be used as a suggestion, actual values may vary system "
-"to system based on requirements."
+"present and is only to be used as a suggestion, actual values may vary "
+"system to system based on requirements."
 msgstr ""
 
 #: ../utilities.php:458
@@ -14949,9 +15085,9 @@ msgstr ""
 
 #: ../utilities.php:1762
 msgid ""
-"Cacti technical support page.  Used by developers and technical support persons "
-"to assist with issues in Cacti.  Includes checks for common configuration "
-"issues."
+"Cacti technical support page.  Used by developers and technical support "
+"persons to assist with issues in Cacti.  Includes checks for common "
+"configuration issues."
 msgstr ""
 
 #: ../utilities.php:1766
@@ -14984,9 +15120,9 @@ msgstr ""
 
 #: ../utilities.php:1796
 msgid ""
-"The Data Query Cache stores information gathered from Data Query input types. "
-"The values from these fields can be used in the text area of Graphs for "
-"Legends, Vertical Labels, and GPRINTS as well as in CDEF's."
+"The Data Query Cache stores information gathered from Data Query input "
+"types. The values from these fields can be used in the text area of Graphs "
+"for Legends, Vertical Labels, and GPRINTS as well as in CDEF's."
 msgstr ""
 
 #: ../utilities.php:1801
@@ -15025,8 +15161,8 @@ msgstr ""
 #: ../utilities.php:1820
 msgid ""
 "When you delete Data Sources from Cacti, the corresponding RRDfiles are not "
-"removed automatically.  Use this utility to facilitate the removal of these old "
-"files."
+"removed automatically.  Use this utility to facilitate the removal of these "
+"old files."
 msgstr ""
 
 #: ../utilities.php:1823
@@ -15047,8 +15183,8 @@ msgstr ""
 
 #: ../utilities.php:1836
 msgid ""
-"The SNMP cache will be cleared and re-generated if you select this option. Note "
-"that it takes another poller run to restore the SNMP cache completely."
+"The SNMP cache will be cleared and re-generated if you select this option. "
+"Note that it takes another poller run to restore the SNMP cache completely."
 msgstr ""
 
 #: ../utilities.php:1841
@@ -15278,8 +15414,8 @@ msgstr[1] ""
 
 #: ../vdef.php:275
 msgid ""
-"Click 'Continue' to duplicate the following VDEF. You can optionally change the "
-"title format for the new VDEF."
+"Click 'Continue' to duplicate the following VDEF. You can optionally change "
+"the title format for the new VDEF."
 msgid_plural ""
 "Click 'Continue' to duplicate following VDEFs. You can optionally change the "
 "title format for the new VDEFs."
@@ -15342,8 +15478,8 @@ msgstr ""
 
 #: ../vdef.php:843
 msgid ""
-"VDEFs that are in use cannot be Deleted. In use is defined as being referenced "
-"by a Graph or a Graph Template."
+"VDEFs that are in use cannot be Deleted. In use is defined as being "
+"referenced by a Graph or a Graph Template."
 msgstr ""
 
 #: ../vdef.php:844
