@@ -686,7 +686,9 @@ function menuShow(tree) {
 		myClass = '.cactiConsoleNavigationArea';
 	}
 
-	$('#navigation_right').animate({'margin-left': marginLeft}, 20);
+	if (marginLeft != null) {
+		$('#navigation_right').animate({'margin-left': marginLeft}, 20);
+	}
 	$(myClass).show('slide', {direction: 'left'}, 20);
 
 	menuOpen = true;
