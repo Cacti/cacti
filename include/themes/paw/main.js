@@ -23,7 +23,7 @@ function keepWindowSize() {
 		
 			heightPage = $(window).height();
 			heightPageHead = $('#cactiPageHead').outerHeight();
-			heightPageContent = heightPage -heightPageHead +1;
+			heightPageContent = heightPage - heightPageHead + 1;
 
 			$('body').css('height', heightPage);
 			$('#cactiContent').css('height', heightPageContent);
@@ -32,13 +32,13 @@ function keepWindowSize() {
 			$('#submenu-ellipsis').empty();
 			$('.maintabs nav ul li a').each(function() {
 				id = $(this).attr('id');
-				if( $(this).offset().top !== 0 ) {
-					if( $('#' + id + '-ellipsis').length == 0 ) {
+				if ($(this).offset().top !== 0) {
+					if ( $('#' + id + '-ellipsis').length == 0 ) {
 						var str = $(this).parent().html();
 						var str2 = str.replace( id , id + '-ellipsis');
 						$('#submenu-ellipsis').prepend('<li>' + str2 + '</li>');
 					}
-				}else {
+				} else {
 					$('#' + id + '-ellipsis').parent().remove();
 				}
 			});
@@ -72,8 +72,6 @@ function themeReady() {
 
 	keepWindowSize();
 
-	console.log('help');
-	
 	// Setup the navigation menu
 	setMenuVisibility();
 
