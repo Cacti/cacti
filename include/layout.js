@@ -36,6 +36,8 @@ var lastPage=null;
 var statePushed=false;
 var popFired=false;
 var hostInfoHeight=0;
+var menuOpen = true;
+var marginLeft = null;
 var pageName;
 
 var isMobile = {
@@ -457,6 +459,8 @@ function cactiReturnTo(href) {
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attrbute 'on()' */
 function applySkin() {
+	pageName = basename($(location).attr('pathname'));
+
 	if (typeof requestURI !== 'undefined') {
 		pushState(myTitle, requestURI);
 	}
@@ -504,6 +508,10 @@ function applySkin() {
 		themeReady();
 	}
 
+	tuneFilter();
+
+	setupResponsiveMenuAndTabs();
+
 	// Add tooltips to graph drilldowns
 	$('.drillDown').tooltip({
 		content: function() {
@@ -536,12 +544,146 @@ function applySkin() {
 		shiftPressed = event.shiftKey;
 	});
 
-	pageName = basename(document.location.pathname);
-
 	// remove stray tooltips
 	$(document).tooltip('close');
 
 	$('#main').show();
+}
+
+function setupResponsiveMenuAndTabs() {
+	$('a[id^="maintab-anchor"]').unbind().click(function(event) {
+		event.preventDefault();
+
+		if ($('.cactiTreeNavigationArea').length > 0) {
+			tree = true;
+		}else{
+			tree = false;
+		}
+
+		if ($(this).hasClass('selected')) {
+			if (menuOpen) {
+				menuHide(tree);
+			}else{
+				menuShow(tree);
+			}
+		}else if (pageName == basename($(this).attr('href'))) {
+			if (menuOpen) {
+				menuHide(tree);
+			}else{
+				menuShow(tree);
+			}
+		}else{
+			document.location = $(this).attr('href');
+		}
+	});	
+
+	$(window).resize(function(event) {
+		responsiveMenu(event);
+	});
+
+	responsiveMenu(null);
+}
+
+function responsiveMenu(event) {
+	if ($('.cactiTreeNavigationArea').length > 0) {
+		tree = true;
+	}else{
+		tree = false;
+	}
+
+	if (menuOpen !== null) {
+		if (!menuOpen) {
+			menuHide(tree);
+		}
+	}else if ($(window).width() < 780) {
+		if (menuOpen) {
+			menuHide(tree);
+		}
+	}else if (!menuOpen) {
+		menuShow(tree);
+	}
+
+	if (event !== null && !$(event.target).hasClass('ui-resizable')) {
+		if (tree) {
+			$('.cactiTreeNavigationArea').css('height', document.body.scrollHeight);
+		}else{
+			$('.cactiConsoleNavigationArea').css('height', document.body.scrollHeight);
+		}
+	}
+
+	$('.filterTable').each(function() {
+		tuneFilter($(this), $('#main').width());
+	});
+}
+
+function tuneFilter(object, width) {
+	filter = 'input[id="refresh"], input[id="clear"], input[id="save"], input[id="tsrefresh"], input[id="tsclear"]';
+	buttons = $(object).find(filter).length;
+
+	if ($(object).width() > width) {
+		$($(object).find('td').get().reverse()).each(function() {
+			if (!$(this).find(filter).length) {
+				// always show two objects
+				if ($(object).find('td:visible').length - buttons > 2) {
+					$(this).hide();
+
+					if ($(this).closest('td').prev().find('input, select').length == 0) {
+						$(this).closest('td').prev().hide();
+					}
+				}
+			}
+
+			if ($(object).width() < width) {
+				return false;
+			}
+		});
+	}else{
+		$($(object).find('td').get()).each(function() {
+			if (!$(this).find(filter).length) {
+				$(this).show();
+				if ($(this).next('td').find('input, select').length > 0) {
+					$(this).next('td').show();
+				}
+			}
+
+			if ($(object).width() > width) {
+				$(this).hide();
+				if ($(this).next('td').find('input, select').length > 0) {
+					$(this).next('td').hide();
+				}
+				
+				return false;
+			}
+		});
+	}
+}
+
+function menuHide(tree) {
+	if (marginLeft == null) {
+		marginLeft = $('#navigation_right').css('margin-left');
+	}
+
+	if (tree) {
+		myClass = '.cactiTreeNavigationArea';
+	}else{
+		myClass = '.cactiConsoleNavigationArea';
+	}
+
+	$('#navigation_right').animate({'margin-left': '0px'}, 20);
+	$(myClass).hide('slide', {direction: 'left'}, 20);
+	menuOpen = false;
+}
+
+function menuShow(tree) {
+	if (tree) {
+		myClass = '.cactiTreeNavigationArea';
+	}else{
+		myClass = '.cactiConsoleNavigationArea';
+	}
+
+	$('#navigation_right').animate({'margin-left': marginLeft}, 20);
+	$(myClass).show('slide', {direction: 'left'}, 20);
+	menuOpen = true;
 }
 
 function loadPage(href) {

@@ -27,6 +27,10 @@ td, th, select {
 	margin: 0px;
 }
 
+th {
+	border-right: 1px groove white;
+}
+
 img {
 	border:none;
 	vertical-align:middle;
@@ -1082,7 +1086,6 @@ legend {
 	vertical-align:middle;
 	text-align:left;
 	border-right: 1px groove #efefef;
-	background-color: #6d88ad;
 	font-size:11px;
 }
 

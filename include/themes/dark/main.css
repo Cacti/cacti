@@ -743,6 +743,7 @@ ul#breadcrumbs {
 }
 
 .cactiContent {
+	clear: both;
 	background: #161616 none repeat scroll 0 0;
 	width: 100%;
 	vertical-align: top;
@@ -1180,6 +1181,7 @@ legend {
 
 .filterTable td:first-child {
 	width:55px;
+	min-width:55px;
 }
 
 .formItemDescription {

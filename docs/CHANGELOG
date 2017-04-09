@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#533: User settings not cleared after saving profile
 -issue#534: Automation issue with AS clause
 -issue#538: Unable to rename tree folder
+-issue#541: Issues with mobile graph viewing
 -issue: Problem rendering some HRULE's on a graph
 -issue: Update jsTree to 3.3.4 version
 
