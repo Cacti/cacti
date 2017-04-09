@@ -37,7 +37,7 @@ var statePushed=false;
 var popFired=false;
 var hostInfoHeight=0;
 var menuOpen = true;
-var marginLeft = null;
+var marginLeft = false;
 var pageName;
 
 var isMobile = {
@@ -591,11 +591,13 @@ function responsiveMenu(event) {
 		tree = false;
 	}
 
-	if (menuOpen !== null) {
+	if (menuOpen !== false) {
 		if (!menuOpen) {
 			menuHide(tree);
 		}
-	}else if ($(window).width() < 780) {
+	}
+
+	if ($(window).width() < 780) {
 		if (menuOpen) {
 			menuHide(tree);
 		}
@@ -659,7 +661,7 @@ function tuneFilter(object, width) {
 }
 
 function menuHide(tree) {
-	if (marginLeft == null) {
+	if (marginLeft === false) {
 		marginLeft = $('#navigation_right').css('margin-left');
 	}
 
@@ -671,6 +673,7 @@ function menuHide(tree) {
 
 	$('#navigation_right').animate({'margin-left': '0px'}, 20);
 	$(myClass).hide('slide', {direction: 'left'}, 20);
+
 	menuOpen = false;
 }
 
@@ -683,6 +686,7 @@ function menuShow(tree) {
 
 	$('#navigation_right').animate({'margin-left': marginLeft}, 20);
 	$(myClass).show('slide', {direction: 'left'}, 20);
+
 	menuOpen = true;
 }
 
