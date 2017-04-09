@@ -36,8 +36,8 @@ var lastPage=null;
 var statePushed=false;
 var popFired=false;
 var hostInfoHeight=0;
-var menuOpen = true;
-var marginLeft = false;
+var menuOpen = null;
+var marginLeft = null;
 var pageName;
 
 var isMobile = {
@@ -591,25 +591,25 @@ function responsiveMenu(event) {
 		tree = false;
 	}
 
-	if (menuOpen !== false) {
-		if (!menuOpen) {
-			menuHide(tree);
-		}
-	}
 
 	if ($(window).width() < 780) {
 		if (menuOpen) {
 			menuHide(tree);
 		}
-	}else if (!menuOpen) {
-		menuShow(tree);
+	}else if (menuOpen !== null) {
+		if (!menuOpen) {
+			menuHide(tree);
+		}
+	}else{
+		menuShow(tree)
 	}
 
-	if (event !== null && !$(event.target).hasClass('ui-resizable')) {
+	if (event != null && !$(event.target).hasClass('ui-resizable')) {
+		height = Math.max(document.body.scrollHeight, $(window).height());
 		if (tree) {
-			$('.cactiTreeNavigationArea').css('height', document.body.scrollHeight);
+			$('.cactiTreeNavigationArea').css('height', height);
 		}else{
-			$('.cactiConsoleNavigationArea').css('height', document.body.scrollHeight);
+			$('.cactiConsoleNavigationArea').css('height', height);
 		}
 	}
 
@@ -661,7 +661,7 @@ function tuneFilter(object, width) {
 }
 
 function menuHide(tree) {
-	if (marginLeft === false) {
+	if (marginLeft == null) {
 		marginLeft = $('#navigation_right').css('margin-left');
 	}
 
@@ -684,7 +684,10 @@ function menuShow(tree) {
 		myClass = '.cactiConsoleNavigationArea';
 	}
 
-	$('#navigation_right').animate({'margin-left': marginLeft}, 20);
+	if (marginLeft != null) {
+		$('#navigation_right').animate({'margin-left': marginLeft}, 20);
+	}
+
 	$(myClass).show('slide', {direction: 'left'}, 20);
 
 	menuOpen = true;
@@ -697,7 +700,7 @@ function loadPage(href) {
 		var htmlObject  = $(html);
 		var matches     = html.match(/<title>(.*?)<\/title>/);
 
-		if (matches !== null) {
+		if (matches != null) {
 			var htmlTitle   = matches[1];
 			var breadCrumbs = htmlObject.find('#breadcrumbs').html();
 			var content     = htmlObject.find('#main').html();
@@ -758,7 +761,7 @@ function loadPageNoHeader(href, scroll) {
 
 		pushState(myTitle, href);
 
-		if (typeof scroll !== 'undefined') {
+		if (typeof scroll != 'undefined') {
 			$(window).scrollTop(scrollTop);
 		}else{
 			window.scrollTo(0, 0);
