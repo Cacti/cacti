@@ -899,15 +899,21 @@ function data_query_edit() {
 		print "<tr class='tableHeader'>
 			<th class='tableSubHeaderColumn'>" . __('Name') . "</th>
 			<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
+			<th class='tableSubHeaderColumn right'>" . __('Graphs Using') . "</th>
 			<th class='tableSubHeaderColumn right'>" . __('Mapping ID') . "</th>
 			<th class='tableSubHeaderColumn right' style='width:60px;'>" . __('Action') . "</td>
 		</tr>";
 
-		$snmp_query_graphs = db_fetch_assoc_prepared('SELECT sqg.id, gt.name AS graph_template_name, sqg.name
+		$snmp_query_graphs = db_fetch_assoc_prepared('SELECT sqg.id, 
+			gt.name AS graph_template_name, sqg.name, COUNT(gl.id) AS graphs
 			FROM snmp_query_graph AS sqg
 			LEFT JOIN graph_templates AS gt
-			ON (sqg.graph_template_id = gt.id)
+			ON sqg.graph_template_id = gt.id
+			LEFT JOIN graph_local AS gl
+			ON gl.snmp_query_graph_id = sqg.id
+			AND gl.graph_template_id = sqg.graph_template_id
 			WHERE sqg.snmp_query_id = ?
+			GROUP BY sqg.id
 			ORDER BY sqg.name', array($snmp_query['id']));
 
 		if (sizeof($snmp_query_graphs)) {
@@ -925,11 +931,19 @@ function data_query_edit() {
 						<?php print htmlspecialchars($snmp_query_graph['graph_template_name']);?>
 					</td>
 					<td class='right'>
-						<?php print $snmp_query_graph['id'];?>
+						<?php print number_format_i18n($snmp_query_graph['graphs'], '-1');?>
 					</td>
+					<td class='right'>
+						<?php print $snmp_query_graph['id'];?>
+					</td><?php if ($snmp_query_graph['graphs'] == 0) {?>
 					<td class='right'>
 							<a class='delete deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
 					</td>
+					<?php }else{ ?>
+					<td class='right'>
+							<a class='deleteMarkerDisabled fa fa-remove' title='<?php print __('Mapped Graph Templates with Graphs are read only');?>' href='#'></a>
+					</td>
+					<?php } ?>
 				</tr>
 				<?php
 			}
