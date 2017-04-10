@@ -599,13 +599,15 @@ function responsiveMenu(event) {
 		menuHide(tree);
 		menuHideResponsive = true;
 	}else if (menuHideResponsive == true) {
-		menuShow(tree);
-		menuHideResponsive = false;
+		if (!menuOpen) {
+			menuShow(tree);
+			menuHideResponsive = false;
+		}
 	}else if (menuOpen != null) {
 		if (!menuOpen) {
 			menuHide(tree);
 		}
-	}else{
+	}else if (!menuOpen) {
 		menuShow(tree)
 	}
 
