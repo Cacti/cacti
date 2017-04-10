@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -issue#541: Issues with mobile graph viewing
 -issue: Problem rendering some HRULE's on a graph
 -issue: Update jsTree to 3.3.4 version
+-feature: Add responsive tables, filters, and menus
 
 1.1.2
 -issue#492: Error while adding non data query (cg) graphs
