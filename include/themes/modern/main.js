@@ -8,15 +8,6 @@ function themeReady() {
 	$('#navigation').css('height', ($(window).height()-80)+'px');
 	$('#navigation_right').css('height', ($(window).height()-80)+'px');
 
-	$(window).resize(function(event) {
-		$('body').css('height', $(window).height());
-
-		if (!$(event.target).hasClass('ui-resizable')) {
-			$('#navigation').css('height', ($(window).height()-80)+'px');
-			$('#navigation_right').css('height', ($(window).height()-80)+'px');
-		}
-	});
-
 	// Setup the navigation menu
 	setMenuVisibility();
 

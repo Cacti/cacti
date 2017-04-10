@@ -33,26 +33,28 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 $using_guest_account = false;
 
 //<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+$selectedTheme = get_selected_theme();
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-	<meta content='width=720, initial-scale=0.8, maximum-scale=2.0, minimum-scale=0.5' name='viewport'>
+	<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.zoom.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery-ui.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/default/style.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.multiselect.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.timepicker.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.colorpicker.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/c3.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/pace.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/jquery.zoom.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/jquery-ui.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/default/style.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/jquery.multiselect.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/jquery.timepicker.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/jquery.colorpicker.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/c3.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/pace.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/favicon.ico' rel='shortcut icon'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/main.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js'></script>
@@ -77,7 +79,7 @@ $using_guest_account = false;
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/pace.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/realtime.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/main.js'></script>
 	<?php api_plugin_hook('page_head'); ?>
 </head>
 <body>

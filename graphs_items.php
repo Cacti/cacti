@@ -90,23 +90,56 @@ function form_save() {
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '4',
-					'text_format' => 'Current:',
+					'text_format' => 'Cur:',
 					'hard_return' => ''
 					),
 				1 => array(
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '1',
-					'text_format' => 'Average:',
+					'text_format' => 'Avg:',
 					'hard_return' => ''
 					),
 				2 => array(
 					'color_id' => '0',
 					'graph_type_id' => '9',
 					'consolidation_function_id' => '3',
-					'text_format' => 'Maximum:',
+					'text_format' => 'Max:',
 					'hard_return' => 'on'
 					));
+		}elseif ($graph_item_types[get_nfilter_request_var('graph_type_id')] == 'LEGEND_CAMM') {
+	         /* this can be a major time saver when creating lots of graphs with the typical
+				GPRINT LAST/AVERAGE/MAX legends */
+			$items = array(
+				0 => array(
+					'color_id' => '0',
+					'graph_type_id' => '9',
+					'consolidation_function_id' => '4',
+					'text_format' => __('Cur:'),
+					'hard_return' => ''
+				),
+				1 => array(
+					'color_id' => '0',
+					'graph_type_id' => '9',
+					'consolidation_function_id' => '1',
+					'text_format' => __('Avg:'),
+					'hard_return' => ''
+				),
+				2 => array(
+					'color_id' => '0',
+					'graph_type_id' => '9',
+					'consolidation_function_id' => '2',
+					'text_format' => __('Min:'),
+					'hard_return' => ''
+				),
+				3 => array(
+					'color_id' => '0',
+					'graph_type_id' => '9',
+					'consolidation_function_id' => '3',
+					'text_format' => __('Max:'),
+					'hard_return' => 'on'
+				)
+			);
 		}
 
 		$sequence = get_nfilter_request_var('sequence');
@@ -149,7 +182,7 @@ function form_save() {
 				}
    			}
 
-			$save['dashes']         = form_input_validate((isset_request_var('dashes') ? get_nfilter_request_var('dashes') : ''), 'dashes', '^[0-9]+[,0-9]*$', true, 3);
+			$save['dashes']         = form_input_validate((isset_request_var('dashes') ? get_nfilter_request_var('dashes') : ''), 'dashes', '', true, 3);
             $save['dash_offset']    = form_input_validate((isset_request_var('dash_offset') ? get_nfilter_request_var('dash_offset') : ''), 'dash_offset', '^[0-9]+$', true, 3);
 			$save['cdef_id']        = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
 			$save['vdef_id']        = form_input_validate(get_nfilter_request_var('vdef_id'), 'vdef_id', '^[0-9]+$', true, 3);
@@ -581,10 +614,10 @@ function item_edit() {
 			$('#row_textalign').hide();
 			$('#row_shift').hide();
 			$('#row_alpha').show();
-			$('#row_consolidation_function_id').show();
+			$('#row_consolidation_function_id').hide();
 			$('#row_cdef_id').show();
 			$('#row_vdef_id').show();
-			$('#row_value').hide();
+			$('#row_value').show();
 			$('#row_gprint_id').hide();
 			$('#row_text_format').show();
 			$('#row_hard_return').show();

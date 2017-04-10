@@ -1083,6 +1083,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	global $config, $consolidation_functions;
 
 	include_once($config['library_path'] . '/cdef.php');
+	include_once($config['library_path'] . '/vdef.php');
 	include_once($config['library_path'] . '/graph_variables.php');
 	include_once($config['library_path'] . '/boost.php');
 	include_once($config['library_path'] . '/xml.php');
@@ -1850,7 +1851,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			case GRAPH_ITEM_TYPE_GPRINT:
 				$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8'));
 
-				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . ':' . $consolidation_functions{$graph_item['consolidation_function_id']} . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
+				if ($graph_item['vdef_id'] == '0') {
+					$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . ':' . $consolidation_functions{$graph_item['consolidation_function_id']} . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
+				}else{
+					$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
+				}
 
 				break;
 			case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
@@ -1870,9 +1875,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8'));
 
 					if ($graph_item['vdef_id'] == '0') {
-						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':LAST:' . ($graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
+						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':LAST:' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
 					}else{
-						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]). ' ';
+						$txt_graph_items .= 'GPRINT:' . $data_source_name . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
 					}
 				}
 
@@ -1943,7 +1948,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				break;
 			case GRAPH_ITEM_TYPE_TIC:
 				$_fraction = (empty($graph_item['graph_type_id']) ? '' : (':' . $graph_item['value']));
-				$_legend   = (empty($graph_variables['text_format'][$graph_item_id]) ? '' : (':"' . $graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id] . '"'));
+				$_legend   = ':' . cacti_escapeshellarg(rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8')) . $hardreturn[$graph_item_id]);
 				$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . $_fraction . $_legend;
 
 				break;

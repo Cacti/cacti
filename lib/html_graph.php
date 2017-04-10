@@ -316,10 +316,10 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __('Shift Time Forward');?>'></i>
 					</td>
 					<td>
-						<input type='button' value='<?php print __('Refresh');?>' name='button_refresh_x' title='<?php print __('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
+						<input id='tsrefresh' type='button' value='<?php print __('Refresh');?>' name='button_refresh_x' title='<?php print __('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
 					</td>
 					<td>
-						<input type='button' value='<?php print __('Clear');?>' title='<?php print __('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
+						<input id='tsclear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
 					</td>
 				</tr>
 				<tr id='realtime' style='display:none;'>

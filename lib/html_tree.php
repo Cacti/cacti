@@ -638,10 +638,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</select>
 					</td>
 					<td>
-						<input type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filter');?>' onClick='applyGraphFilter()'>
+						<input id='refresh' type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filter');?>' onClick='applyGraphFilter()'>
 					</td>
 					<td>
-						<input type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearGraphFilter()'>
+						<input id='clear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearGraphFilter()'>
 					</td>
 					<?php if (is_view_allowed('graph_settings')) {?>
 					<td>
@@ -765,10 +765,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __('Shift Time Forward');?>'></i>
 					</td>
 					<td>
-						<input type='button' name='button_refresh_x' value='<?php print __('Refresh');?>' title='<?php print __('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
+						<input id='tsrefresh' type='button' value='<?php print __('Refresh');?>' title='<?php print __('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
 					</td>
 					<td>
-						<input type='button' name='button_clear' value='<?php print __('Clear');?>' title='<?php print __('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
+						<input id='tsclear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
 					</td>
 				</tr>
 				<tr id='realtime' style='display:none;'>

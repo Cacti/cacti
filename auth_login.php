@@ -507,6 +507,8 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 	return;
 }
 
+$selectedTheme = get_selected_theme();
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -515,11 +517,11 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='robots' content='noindex,nofollow'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery-ui.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/jquery-ui.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/favicon.ico' rel='shortcut icon'>
-    <link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/main.css' type='text/css' rel='stylesheet'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
+    <link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js' language='javascript'></script>
@@ -528,8 +530,8 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.metadata.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.js'></script>
-	<script type='text/javascript'>var theme='<?php print get_selected_theme();?>';</script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/main.js'></script>
+	<script type='text/javascript'>var theme='<?php print $selectedTheme;?>';</script>
 	<script type='text/javascript'>
 	$(function() {
 			$('#login_username').focus();
