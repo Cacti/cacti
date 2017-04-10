@@ -43,6 +43,7 @@ var pageName;
 var columnsHidden = 0;
 var lastColumnsHidden = 0;
 var lastWidth = 0;
+var lastMain = 0;
 
 var isMobile = {
 	Android: function() {
@@ -551,7 +552,7 @@ function applySkin() {
 	// remove stray tooltips
 	$(document).tooltip('close');
 
-	$('#main').show();
+	$('#main').show().delay(10).trigger('resize');
 }
 
 function setupResponsiveMenuAndTabs() {
@@ -595,6 +596,16 @@ function responsiveMenu(event) {
 		tree = false;
 	}
 
+	if (event == null) {
+		if (lastMain > 0) {
+			mainWidth = lastMain;
+		}else{
+			mainWidth = $('#main').width();
+		}
+	}else{
+		mainWidth = $('#main').width();
+	}
+
 	if ($(window).width() < 780) {
 		menuHide(tree);
 		menuHideResponsive = true;
@@ -621,13 +632,13 @@ function responsiveMenu(event) {
 	}
 
 	$('.filterTable').each(function() {
-		tuneFilter($(this), $('#main').width());
+		tuneFilter($(this), mainWidth);
 	});
 
 	$('.cactiTable').find('th').each(function() {
 		object = $(this).closest('.cactiTable');
 
-		tuneTable(object, $('#main').width());
+		tuneTable(object, mainWidth);
 	});
 }
 
@@ -669,7 +680,6 @@ function tuneTable(object, width) {
 
 			if ($(object).width() >= width) {
 				lastColumnsHidden = columnsHidden = $(object).find('th:hidden').length;
-//				return false;
 			}
 
 			column++;
