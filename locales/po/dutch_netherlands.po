@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-09 18:58+0200\n"
-"PO-Revision-Date: 2017-04-09 19:40+0200\n"
+"PO-Revision-Date: 2017-04-10 09:26+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -2977,26 +2977,28 @@ msgstr "Kleurtemplate items [nieuw Report Item: %s]"
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
 msgstr[0] ""
+"Klik op ‘Volgende’ om de volgende data invoer methode te verwijderen"
 msgstr[1] ""
+"Klik op ‘Volgende’ om de volgende data invoer methoden te verwijderen"
 
 #: ../data_input.php:218
 msgid "Delete Data Input Method"
 msgid_plural "Delete Data Input Methods"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verwijder data invoer methode"
+msgstr[1] "Verwijder data invoer methoden"
 
 #: ../data_input.php:220
 msgid "You must select at least one data input method."
-msgstr ""
+msgstr "U moet op zijn minst een data invoer methode selecteren."
 
 #: ../data_input.php:259
 msgid "Click 'Continue' to delete the following Data Input Field."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om het volgende data invoer veld te verwijderen"
 
 #: ../data_input.php:260
 #, php-format
 msgid "Field Name: %s"
-msgstr ""
+msgstr "Veldnaam: %s"
 
 #: ../data_input.php:261
 #, php-format
@@ -3005,42 +3007,42 @@ msgstr ""
 
 #: ../data_input.php:267 ../host_templates.php:336 ../host_templates.php:396
 msgid "Remove Data Input Field"
-msgstr ""
+msgstr "Verwijder data invoer veld"
 
 #: ../data_input.php:362
 #, php-format
 msgid "Output Fields [edit: %s]"
-msgstr ""
+msgstr "Uitvoer veld [wijzig: %s]"
 
 #: ../data_input.php:363 ../include/global_form.php:461
 msgid "Output Field"
-msgstr ""
+msgstr "Uitvoer veld"
 
 #: ../data_input.php:365
 #, php-format
 msgid "Input Fields [edit: %s]"
-msgstr ""
+msgstr "Invoer veld [wijzig: %s]"
 
 #: ../data_input.php:366
 msgid "Input Field"
-msgstr ""
+msgstr "Invoer veld"
 
 #: ../data_input.php:432
 #, php-format
 msgid "Data Input Methods [edit: %s]"
-msgstr ""
+msgstr "Data invoer methode [wijzig: %s]"
 
 #: ../data_input.php:434
 msgid "Data Input Methods [new]"
-msgstr ""
+msgstr "Data invoer methode [nieuw]"
 
 #: ../data_input.php:449
 msgid "Input Fields"
-msgstr ""
+msgstr "Invoer veld"
 
 #: ../data_input.php:452 ../data_input.php:486
 msgid "Field Order"
-msgstr ""
+msgstr "Veldvolgorde"
 
 #: ../data_input.php:453 ../data_input.php:487 ../include/global_form.php:275
 msgid "Friendly Name"
@@ -3048,50 +3050,53 @@ msgstr ""
 
 #: ../data_input.php:467 ../data_input.php:502
 msgid "(Not In Use)"
-msgstr ""
+msgstr "(Niet in gebruik)"
 
 #: ../data_input.php:479
 msgid "No Input Fields"
-msgstr ""
+msgstr "Geen invoer velden"
 
 #: ../data_input.php:483
 msgid "Output Fields"
-msgstr ""
+msgstr "Uitvoer velden"
 
 #: ../data_input.php:488
 msgid "Update RRA"
-msgstr ""
+msgstr "RRA bijwerken"
 
 #: ../data_input.php:517
 msgid "No Output Fields"
-msgstr ""
+msgstr "Geen uitvoer velden"
 
 #: ../data_input.php:539 ../host_templates.php:601
 msgid "Delete Data Input Field"
-msgstr ""
+msgstr "Verwijder data invoer veld"
 
 #: ../data_input.php:593 ../include/global_arrays.php:620
 #: ../include/global_arrays.php:776 ../lib/functions.php:2225
 msgid "Data Input Methods"
-msgstr ""
+msgstr "Data invoer methoden"
 
 #: ../data_input.php:608 ../data_input.php:693
 msgid "Input Methods"
-msgstr ""
+msgstr "Invoer methoden"
 
 #: ../data_input.php:702
 msgid "Data Input Name"
-msgstr ""
+msgstr "Data invoer naam"
 
 #: ../data_input.php:702
 msgid "The name of this Data Input Method."
-msgstr ""
+msgstr "De naam van deze data invoer methode."
 
 #: ../data_input.php:703
 msgid ""
 "Data Inputs that are in use cannot be Deleted. In use is defined as being "
 "referenced either by a Data Source or a Data Template."
 msgstr ""
+"Data invoer velden die in gebruik zijn kunnen niet worden verwijderd. Een "
+"data invoer veld is in gebruik als deze is gekoppeld aan een data source of "
+"data template."
 
 #: ../data_input.php:704 ../data_source_profiles.php:850
 #: ../data_templates.php:887
@@ -3100,77 +3105,81 @@ msgstr ""
 
 #: ../data_input.php:704
 msgid "The number of Data Sources that use this Data Input Method."
-msgstr ""
+msgstr "Het aantal data bronnen dat deze data invoer methode gebruiken."
 
 #: ../data_input.php:705
 msgid "The number of Data Templates that use this Data Input Method."
-msgstr ""
+msgstr "Het aantal data templates dat deze data invoer methode gebruiken."
 
 #: ../data_input.php:706 ../data_queries.php:1130
 #: ../include/global_arrays.php:940 ../include/global_form.php:385
 #: ../include/global_form.php:1287
 msgid "Data Input Method"
-msgstr ""
+msgstr "Data invoer methode"
 
 #: ../data_input.php:706
 msgid "The method used to gather information for this Data Input Method."
 msgstr ""
+"De methode die moet worden gebruikt om informatie te verzamelen over deze "
+"data invoer methode."
 
 #: ../data_input.php:729
 msgid "No Data Input Methods Found"
-msgstr ""
+msgstr "Geen data invoer methoden gevonden"
 
 #: ../data_queries.php:316
 msgid "Click 'Continue' to delete the following Data Query."
 msgid_plural "Click 'Continue' to delete following Data Queries."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Klik op ‘Volgende’ om de volgende data query te verwijderen."
+msgstr[1] "Klik op ‘Volgende’ om de volgende data queries te verwijderen."
 
 #: ../data_queries.php:322
 msgid "Delete Data Query"
 msgid_plural "Delete Data Query"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verwijder data query"
+msgstr[1] "Verwijder data queries"
 
 #: ../data_queries.php:324
 msgid "You must select at least one data query."
-msgstr ""
+msgstr "U moet op zijn minst een data query selecteren."
 
 #: ../data_queries.php:419
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
 msgstr ""
+"Klik op ‘Volgende’ om de volgende data query grafiek koppeling te "
+"verwijderen."
 
 #: ../data_queries.php:420
 #, php-format
 msgid "Graph Name: %s"
-msgstr ""
+msgstr "Grafieknaam: %s"
 
 #: ../data_queries.php:426 ../vdef.php:334
 msgid "Remove VDEF Item"
-msgstr ""
+msgstr "Verwijder VDEF item"
 
 #: ../data_queries.php:479
 #, php-format
 msgid "Associated Graph/Data Templates [edit: %s]"
-msgstr ""
+msgstr "Gekoppelde grafiek/data templates [wijzig: %s]"
 
 #: ../data_queries.php:502
 msgid "Associated Data Templates"
-msgstr ""
+msgstr "Gekoppelde data templates"
 
 #: ../data_queries.php:549 ../data_sources.php:832 ../data_templates.php:501
 #: ../include/global_arrays.php:625 ../include/global_form.php:797
 #: ../lib/api_aggregate.php:1213 ../lib/html.php:747
 msgid "Data Source"
-msgstr ""
+msgstr "Data bron"
 
 #: ../data_queries.php:584
 msgid "Suggested Values - Graph Names"
-msgstr ""
+msgstr "Gesuggereerde waarden - Grafiek namen"
 
 #: ../data_queries.php:595 ../data_queries.php:690
 msgid "Equation"
-msgstr ""
+msgstr "Vergelijking"
 
 #: ../data_queries.php:653 ../data_queries.php:751
 #: ../include/global_form.php:2058 ../include/global_form.php:2100
@@ -3189,42 +3198,42 @@ msgstr "Toevoegen"
 
 #: ../data_queries.php:665
 msgid "Add Graph Title Suggested Name"
-msgstr ""
+msgstr "Voorgestelde naam van grafiek titel toevoegen"
 
 #: ../data_queries.php:674
 msgid "Suggested Values - Data Source Names"
-msgstr ""
+msgstr "Voorgestelde waarden - Data bron namen"
 
 #: ../data_queries.php:763
 msgid "Add Data Source Name Suggested Name"
-msgstr ""
+msgstr "Voorgestelde data bron naam toevoegen"
 
 #: ../data_queries.php:866
 #, php-format
 msgid "Data Queries [edit: %s]"
-msgstr ""
+msgstr "Data queries [wijzig: %s]"
 
 #: ../data_queries.php:868
 msgid "Data Queries [new]"
-msgstr ""
+msgstr "Data queries [nieuw]"
 
 #: ../data_queries.php:886
 msgid "Successfully located XML file"
-msgstr ""
+msgstr "XML bestand gevonden"
 
 #: ../data_queries.php:889
 msgid "Could not locate XML file."
-msgstr ""
+msgstr "XML bestand niet gevonden."
 
 #: ../data_queries.php:897 ../host.php:719 ../host_templates.php:467
 #: ../lib/functions.php:2279
 msgid "Associated Graph Templates"
-msgstr ""
+msgstr "Gekoppelde grafiektemplates"
 
 #: ../data_queries.php:901 ../graph_templates.php:758 ../graphs_new.php:615
 #: ../host.php:721 ../lib/api_automation.php:563
 msgid "Graph Template Name"
-msgstr ""
+msgstr "Nama grafiektemplate"
 
 #: ../data_queries.php:902
 msgid "Mapping ID"
@@ -3232,67 +3241,75 @@ msgstr ""
 
 #: ../data_queries.php:937
 msgid "No Graph Templates Defined."
-msgstr ""
+msgstr "Geen grafiektemplate gedefinieerd."
 
 #: ../data_queries.php:961
 msgid "Delete Associated Graph"
-msgstr ""
+msgstr "Verwijder gekoppelde grafiek"
 
 #: ../data_queries.php:1015 ../data_queries.php:1030 ../data_queries.php:1116
 #: ../include/global_arrays.php:619 ../include/global_arrays.php:777
 #: ../lib/api_automation.php:1030 ../lib/functions.php:2261
 msgid "Data Queries"
-msgstr ""
+msgstr "Data queries"
 
 #: ../data_queries.php:1125 ../host.php:808 ../utilities.php:1396
 msgid "Data Query Name"
-msgstr ""
+msgstr "Data query naam"
 
 #: ../data_queries.php:1125
 msgid "The name of this Data Query."
-msgstr ""
+msgstr "De naam van deze data query."
 
 #: ../data_queries.php:1126 ../graph_templates.php:759
 msgid ""
 "The internal ID for this Graph Template.  Useful when performing automation "
 "or debugging."
 msgstr ""
+"Het interne ID voor deze grafiektemplate. Handig voor automation of "
+"debugging."
 
 #: ../data_queries.php:1127
 msgid ""
 "Data Queries that are in use cannot be Deleted. In use is defined as being "
 "referenced by either a Graph or a Graph Template."
 msgstr ""
+"Data queries die in gebruik zijn kunnen niet worden verwijderd. Een data "
+"query is in gebruik als deze wordt gebruikt in een grafiek of "
+"grafiektemplate."
 
 #: ../data_queries.php:1128
 msgid "The number of Graphs using this Data Query."
-msgstr ""
+msgstr "Het aantal grafieken dat deze data query gebruikt."
 
 #: ../data_queries.php:1129
 msgid "The number of Graphs Templates using this Data Query."
-msgstr ""
+msgstr "Het aantal grafiektemplates dat deze data query gebruikt."
 
 #: ../data_queries.php:1130
 msgid ""
 "The Data Input Method used to collect data for Data Sources associated with "
 "this Data Query."
 msgstr ""
+"De data invoer methode die gebruikt wordt om data the verzamelen voor de "
+"data bronnen die gekoppeld zijn met deze data query."
 
 #: ../data_queries.php:1154
 msgid "No Data Queries Found"
-msgstr ""
+msgstr "Geen data queries gevonden"
 
 #: ../data_source_profiles.php:261
 msgid "Click 'Continue' to delete the following Data Source Profile"
 msgid_plural "Click 'Continue' to delete following Data Source Profiles"
-msgstr[0] ""
+msgstr[0] "Klik op ‘Volgende’ om het volgende data bron profiel te verwijderen"
 msgstr[1] ""
+"Klik op ‘Volgende’ om de volgende data bron profielen te verwijderen"
 
 #: ../data_source_profiles.php:266
 msgid "Delete Data Source Profile"
 msgid_plural "Delete Data Source Profiles"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verwijder data bron profiel"
+msgstr[1] "Verwijder data bron profielen"
 
 #: ../data_source_profiles.php:270
 msgid ""
@@ -3302,60 +3319,67 @@ msgid_plural ""
 "Click 'Continue' to duplicate following Data Source Profiles. You can "
 "optionally change the title format for the new Data Source Profiles."
 msgstr[0] ""
+"Klik op ‘Volgende’ om het volgende data bron profiel te dupliceren. "
+"Optioneel is het mogelijk om het titel formaat voor het nieuwe data bron "
+"profiel te wijzigen."
 msgstr[1] ""
+"Klik op ‘Volgende’ om de volgende data bron profielen te dupliceren. "
+"Optioneel is het mogelijk om het titel formaat voor de nieuwe data bron "
+"profielen te wijzigen."
 
 #: ../data_source_profiles.php:276
 msgid "Duplicate Data Source Profile"
 msgid_plural "Duplicate Date Source Profiles"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dupliceer data bron profiel"
+msgstr[1] "Dupliceer data bron profielen"
 
 #: ../data_source_profiles.php:279
 msgid "You must select at least one Data Source Profile."
-msgstr ""
+msgstr "U moet op zijn minst een data bron profiel selecteren."
 
 #: ../data_source_profiles.php:318
 msgid "Click 'Continue' to delete the following Data Source Profile RRA."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende dat bron profiel RRA te verwijderen."
 
 #: ../data_source_profiles.php:319
 #, php-format
 msgid "Profile Name: %s"
-msgstr ""
+msgstr "Profielnaam: %s"
 
 #: ../data_source_profiles.php:325
 msgid "Remove Data Source Profile RRA"
-msgstr ""
+msgstr "Verwijder data bron profiel RRA"
 
 #: ../data_source_profiles.php:374 ../data_source_profiles.php:384
 msgid "Each Insert is New Row"
-msgstr ""
+msgstr "Iedere invoer is een nieuwe rij"
 
 #: ../data_source_profiles.php:393
 #, php-format
 msgid "RRA [edit: %s]"
-msgstr ""
+msgstr "RRA [wijzig: %s]"
 
 #: ../data_source_profiles.php:460
 #, php-format
 msgid "Data Source Profile [edit: %s]"
-msgstr ""
+msgstr "Data bron profiel [wijzig: %s]"
 
 #: ../data_source_profiles.php:462
 msgid "Data Source Profile [new]"
-msgstr ""
+msgstr "Data bron profiel [nieuw]"
 
 #: ../data_source_profiles.php:480
 msgid "Data Source Profile RRAs (press save to update timespans)"
 msgstr ""
+"Data bron profiel RRA’s (Klik op ‘Opslaan’ om de tijdperiode bij te werken)"
 
 #: ../data_source_profiles.php:482
 msgid "Data Source Profile RRAs (Read Only)"
-msgstr ""
+msgstr "Data bron profiel RRA’s (alleen lezen)"
 
 #: ../data_source_profiles.php:487
 msgid "Effective Timespan"
-msgstr ""
+msgstr "Effectieve tijdperiode"
 
 #: ../data_source_profiles.php:488
 msgid "Steps"
@@ -3369,11 +3393,11 @@ msgstr "Rijen"
 
 #: ../data_source_profiles.php:535
 msgid "Select Consolidation Function(s)"
-msgstr ""
+msgstr "Kies een of meerdere consolidatie functie(s)"
 
 #: ../data_source_profiles.php:561
 msgid "Delete Data Source Profile Item"
-msgstr ""
+msgstr "Verwijder data bron profiel item"
 
 #: ../data_source_profiles.php:621 ../include/global_arrays.php:1043
 #: ../include/global_settings.php:1002
@@ -3436,33 +3460,36 @@ msgstr "1 Uur"
 
 #: ../data_source_profiles.php:710 ../include/global_arrays.php:784
 msgid "Data Source Profiles"
-msgstr ""
+msgstr "Data bron profielen"
 
 #: ../data_source_profiles.php:725 ../data_source_profiles.php:835
 msgid "Profiles"
-msgstr ""
+msgstr "Profielen"
 
 #: ../data_source_profiles.php:743 ../data_templates.php:772
 msgid "Has Data Sources"
-msgstr ""
+msgstr "Heeft data bronnen"
 
 #: ../data_source_profiles.php:844
 msgid "Data Source Profile Name"
-msgstr ""
+msgstr "Data bron profielnaam"
 
 #: ../data_source_profiles.php:845
 msgid "Is this the default Profile for all new Data Templates?"
-msgstr ""
+msgstr "Is dit het standaard profiel voor alle nieuwe data templates?"
 
 #: ../data_source_profiles.php:846
 msgid ""
 "Profiles that are in use cannot be Deleted. In use is defined as being "
 "referenced by a Data Source or a Data Template."
 msgstr ""
+"Profielen die in gebruik zijn kunnen niet worden verwijderd. Een profiel is "
+"in gebruik als deze wordt gebruikt door een data source of data template."
 
 #: ../data_source_profiles.php:847
 msgid "Profiles that are in use by Data Sources become read only for now."
 msgstr ""
+"Profielen die in gebruik zijn door een data bron worden ‘alleen lezen’."
 
 #: ../data_source_profiles.php:847 ../include/global_form.php:190
 msgid "Read Only"
@@ -3475,7 +3502,7 @@ msgstr "Poller interval"
 
 #: ../data_source_profiles.php:848
 msgid "The Polling Frequency for the Profile"
-msgstr ""
+msgstr "De pollerfrequentie voor het profiel"
 
 #: ../data_source_profiles.php:849 ../include/global_form.php:52
 #: ../include/global_form.php:453
@@ -3487,18 +3514,20 @@ msgid ""
 "The Amount of Time, in seconds, without good data before Data is stored as "
 "Unknown"
 msgstr ""
+"De hoeveelheid tijd, in seconden, zonder goede data voordat data opgeslagen "
+"wordt als onbekend"
 
 #: ../data_source_profiles.php:850
 msgid "The number of Data Sources using this Profile."
-msgstr ""
+msgstr "Het aantal data bronnen die dit profiel gebruiken."
 
 #: ../data_source_profiles.php:851
 msgid "The number of Data Templates using this Profile."
-msgstr ""
+msgstr "Het aantal data templates die dit profiel gebruiken."
 
 #: ../data_source_profiles.php:883
 msgid "No Data Source Profiles"
-msgstr ""
+msgstr "Geen data bron profielen"
 
 #: ../data_sources.php:36 ../data_sources.php:470 ../graphs.php:50
 msgid "Change Device"
@@ -3506,25 +3535,25 @@ msgstr "Wijzig apparaat"
 
 #: ../data_sources.php:37 ../graphs.php:51
 msgid "Reapply Suggested Names"
-msgstr ""
+msgstr "Gesuggereerde namen opnieuw toepassen"
 
 #: ../data_sources.php:438
 msgid "Click 'Continue' to delete the following Data Source"
 msgid_plural "Click 'Continue' to delete following Data Sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Klik op ‘Volgende’ om de volgende data bron te verwijderen"
+msgstr[1] "Klik op ‘Volgende’ om de volgende data bronnen te verwijderen"
 
 #: ../data_sources.php:442
 msgid "The following graph is using these data sources:"
 msgid_plural "The following graphs are using these data sources:"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "De volgende grafiek gebruikt deze data bronnen:"
+msgstr[1] "De volgende grafieken gebruiken deze data bronnen:"
 
 #: ../data_sources.php:451
 msgid "Leave the <strong>Graph</strong> untouched."
 msgid_plural "Leave all <strong>Graphs</strong> untouched."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Laat de <strong>grafiek</strong> ongewijzigd."
+msgstr[1] "Laat de <strong>grafieken</strong> ongewijzigd."
 
 #: ../data_sources.php:452
 msgid ""
