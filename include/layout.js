@@ -643,22 +643,26 @@ function responsiveMenu(event) {
 }
 
 function tuneTable(object, width) {
-	var rows = $(object).find('tr').length;
+	rows         = $(object).find('tr').length;
+	width        = parseInt(width);
+	tableWidth   = parseInt($(object).width());
+	reducedWidth = 0;
 
 	if (rows > 101) return false;
 
-	if ($(object).width() > width) {
+	if (tableWidth > width) {
 		column = $(object).find('th').length;
 		id     = $(object).attr('id');
 
 		$($(object).find('th').get().reverse()).each(function() {
 			if (!$(this).hasClass('tableSubHeaderCheckbox') && $(this).is(':visible')) {
-				$('#'+id+' td:nth-child('+column+')').hide();
+				reducedWidth += parseInt($(this).width());
 				$('#'+id+' th:nth-child('+column+')').hide();
+				$('#'+id+' td:nth-child('+column+')').hide();
 				columnsHidden++;
 			}
 
-			if ($(object).width() <= width) {
+			if (tableWidth-reducedWidth < width) {
 				lastColumnsHidden = columnsHidden;
 				lastWidth = $(object).width();
 				return false;
