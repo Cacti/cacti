@@ -25,6 +25,10 @@ td, th {
 	margin: 0px;
 }
 
+th {
+	white-space: nowrap;
+}
+
 img {
 	border:none;
 	vertical-align:middle;
