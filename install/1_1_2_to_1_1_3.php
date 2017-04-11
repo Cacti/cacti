@@ -72,4 +72,14 @@ function upgrade_to_1_1_3() {
 			DROP INDEX `vdef_id`, 
 			ADD INDEX `vdef_id_sequence` (`vdef_id`, `sequence`)'
 	);
+
+	db_install_execute(
+		'ALTER TABLE `graph_templates_item`
+  			ADD INDEX `lgi_gti` (`local_graph_id`, `graph_template_id`)'
+	);
+
+	db_install_execute(
+		'ALTER TABLE `poller_item`
+  			ADD INDEX `poller_id_host_id` (`poller_id`, `host_id`)'
+	);
 }
