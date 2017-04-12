@@ -1686,9 +1686,8 @@ function user_realms_edit($header_label) {
 			print "<td class='realms' colspan='" . (5-$j) . "'></td>\n";
 			print "</tr>\n";
 		}
-
-		print "</table></td></tr>\n";
 	}
+	print "</tr></table></td></tr>\n";
 
 	/* do plugin realms */
 	$realms = db_fetch_assoc('SELECT pc.name, pr.id AS realm_id, pr.display
