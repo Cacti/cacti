@@ -41,14 +41,9 @@ var menuHideResponsive = null;
 var marginLeft = null;
 var pageName;
 var columnsHidden = 0;
-var lastColumnsHidden = 0;
-var lastWidth = [];
+var lastColumnsHidden = {};
+var lastWidth = {};
 var lastMain = 0;
-
-// Resize delaying
-var myTime;
-var myDelay = 1000;
-var myTimeout = false;
 
 var isMobile = {
 	Android: function() {
@@ -557,7 +552,20 @@ function applySkin() {
 	// remove stray tooltips
 	$(document).tooltip('close');
 
-	$('#main').show().delay(10).trigger('resize');
+	$('#main').show();
+
+	var showPage = $('#main').map(function(i, el) {
+		var dfd = $.Deferred();
+		$(el).show(function() {
+			dfd.resolve();
+		});
+
+		return dfd;
+	});
+
+	$.when.apply(this, showPage).done(function() {
+		responsiveMenu(null);
+	});
 }
 
 function setupResponsiveMenuAndTabs() {
@@ -588,26 +596,15 @@ function setupResponsiveMenuAndTabs() {
 	});	
 
 	$(window).resize(function(event) {
-		myTime = new Date();
-		if (myTimeout === false) {
-			myTimeout = true;
-			setTimeout(function() { responsiveMenu(event)}, event);
-		}
+		responsiveMenu(event);
 	});
 
-	responsiveMenu(null);
+	$(window).on('orientationchange', function() {
+		responsiveMenu(null);
+	});
 }
 
 function responsiveMenu(event) {
-	if (event !== null) {
-		if (new Date() - myTime < myDelay) {
-			setTimeout(function() { responsiveMenu(event)}, event);
-		}else{
-			myTimeout = false;
-			return false;
-		}
-	}
-		
 	if ($('.cactiTreeNavigationArea').length > 0) {
 		tree = true;
 	}else{
@@ -662,19 +659,32 @@ function responsiveMenu(event) {
 	});
 }
 
+function countHiddenCols(object) {
+	hidden = 0;
+	$(object).find('th').each(function() {
+		if ($(this).css('display') == 'none') {
+			hidden++;
+		}
+	});
+
+	return hidden;
+}
+
 function tuneTable(object, width) {
-	rows         = $(object).find('tr').length;
-	width        = parseInt(width);
-	tableWidth   = parseInt($(object).width());
-	reducedWidth = 0;
-	id           = $(object).attr('id');
+	rows           = $(object).find('tr').length;
+	width          = parseInt(width);
+	tableWidth     = parseInt($(object).width());
+	totalCols      = $(object).find('th').length;
+	reducedWidth   = 0;
+	columnsHidden  = countHiddenCols(object);
+	visibleColumns = totalCols - columnsHidden;
+	id             = $(object).attr('id');
 
 	if (rows > 101) return false;
 
+	//console.log('totCols: '+totalCols+', hidCols: '+columnsHidden+', visCols: '+visibleColumns+', tabWid: '+tableWidth+', wid: '+width+', redWid: '+reducedWidth);
 	if (tableWidth > width) {
-		column = $(object).find('th').length;
-		id     = $(object).attr('id');
-		totalC = column;
+		column = totalCols;
 		hasCheckbox = $(object).find('th.tableSubHeaderCheckbox').length;
 
 		if (hasCheckbox) {
@@ -691,17 +701,18 @@ function tuneTable(object, width) {
 				columnsHidden++;
 			}
 			
-			visibleColumns = totalC - columnsHidden;
-			//console.log('VisCols: '+visibleColumns+', tableWidth: '+tableWidth+', width: '+width+', reducedWidth: '+reducedWidth);
+			visibleColumns = totalCols - columnsHidden;
 
 			if (tableWidth-reducedWidth < width || visibleColumns <= minColumns) {
-				lastColumnsHidden = columnsHidden;
+				lastColumnsHidden[id] = columnsHidden;
 				lastWidth[id] = $(object).width();
 				return false;
 			}
 
 			column--;
 		});
+
+		lastWidth[id] = $(object).width();
 	} else if ($(object).width() > lastWidth[id]+40 && columnsHidden > 0) {
 		column = 1;
 		id     = $(object).attr('id');
@@ -715,11 +726,13 @@ function tuneTable(object, width) {
 			}
 
 			if ($(object).width() >= width) {
-				lastColumnsHidden = columnsHidden = $(object).find('th:hidden').length;
+				lastColumnsHidden[id] = columnsHidden = $(object).find('th:hidden').length;
 			}
 
 			column++;
 		});
+
+		lastWidth[id] = $(object).width();
 	}
 }
 
@@ -836,7 +849,11 @@ function loadPage(href) {
 
 		applySkin();
 
-		window.scrollTo(0, 0);
+		if (isMobile.any() != null) {
+			window.scrollTo(0,1);
+		}else{
+			window.scrollTo(0,0);
+		}
 
 		return false;
 	});
@@ -846,7 +863,6 @@ function loadPage(href) {
 
 function loadPageNoHeader(href, scroll) {
 	statePushed = false;
-	scrollTop   = $(window).scrollTop();
 
 	$.get(href, function(data) {
 		$('#main').empty().hide();
@@ -865,10 +881,10 @@ function loadPageNoHeader(href, scroll) {
 
 		pushState(myTitle, href);
 
-		if (typeof scroll != 'undefined') {
-			$(window).scrollTop(scrollTop);
+		if (isMobile.any() != null) {
+			window.scrollTo(0,1);
 		}else{
-			window.scrollTo(0, 0);
+			window.scrollTo(0,0);
 		}
 
 		return false;
@@ -1002,6 +1018,8 @@ function setupSpecialKeys() {
 
 	if (!isMobile.any()) {
 		$('#filter, #rfilter').focus();
+	}else{
+		$('#filter, #rfilter').prop('size', '15');
 	}
 }
 
@@ -1205,8 +1223,9 @@ function setTitleAndHref() {
 }
 
 $(function() {
-	statePushed = false;
-	popFired = false;
+	var statePushed = false;
+	var popFired    = false;
+	var tapped      = false
 
 	setTitleAndHref();
 
@@ -1215,6 +1234,23 @@ $(function() {
 	applySkin();
 
 	$('#navigation_right').show();
+
+	if (isMobile.any() != null) {
+		$(window).on('touchstart', function(event) {
+			if (!tapped) {
+				tapped = setTimeout(function() { tapped=null; }, 300);
+			}else{
+				clearTimeout(tapped);
+				tapped = null;
+
+				if (screenfull.enabled) {
+					screenfull.request();
+				}
+			}
+		});
+	}
+
+	responsiveMenu(null);
 });
 
 /* Graph related javascript functions */

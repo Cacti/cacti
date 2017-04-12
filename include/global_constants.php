@@ -376,7 +376,7 @@ if ($database_type == 'mysql') {
 	define('SQL_NO_CACHE', '');
 }
 
-define('MAX_DISPLAY_PAGES', 7);
+define('MAX_DISPLAY_PAGES', 5);
 define('CHECKED', 'on');
 
 define('FILTER_VALIDATE_IS_REGEX',          99999);
