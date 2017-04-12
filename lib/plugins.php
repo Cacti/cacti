@@ -612,18 +612,17 @@ function api_plugin_register_hook ($plugin, $hook, $function, $file) {
 
 	if (!count($exists)) {
 		$settings = array('config_settings', 'config_arrays', 'config_form');
-
-		if (!in_array($hook, $settings)) {
-			db_execute_prepared('INSERT INTO plugin_hooks 
-				(name, hook, function, file) 
-				VALUES (?, ?, ?, ?)', 
-				array($plugin, $hook, $function, $file));
-		} else {
-			db_execute_prepared('INSERT INTO plugin_hooks 
-				(name, hook, function, file, status) 
-				VALUES (?, ?, ?, ?, 1)', 
-				array($plugin, $hook, $function, $file));
-		}
+		$status = (!in_array($hook, $settings) ? 0 : 1);
+		db_execute_prepared('INSERT INTO plugin_hooks 
+			(name, hook, function, file, status) 
+			VALUES (?, ?, ?, ?, ?)', 
+			array($plugin, $hook, $function, $file, $status));
+	} else {
+		db_execute_prepared("UPDATE plugin_hooks
+			SET function = ?,
+			file = ?
+			WHERE name = ? AND hook = ?", 
+			array($function, $file, $plugin, $hook));
 	}
 }
 
@@ -699,6 +698,12 @@ function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {
 				}
 			}
 		}
+	} else {
+		db_execute_prepared('UPDATE plugin_realms 
+			SET display = ?
+			WHERE plugin = ?
+			AND file = ?', 
+			array($display, $plugin, $file));
 	}
 }
 

@@ -1071,7 +1071,7 @@ legend {
 
 
 .tableHeader {
-	background-color: #6d88ad;
+	background-color: #6d88ad !important;
 }
 
 .tableHeader td {
@@ -1087,6 +1087,7 @@ legend {
 	text-align:left;
 	border-right: 1px groove #efefef;
 	font-size:11px;
+	background-color: #6d88ad !important;
 }
 
 .tableHeader th:last-child {

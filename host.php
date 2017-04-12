@@ -712,7 +712,7 @@ function host_edit() {
 					<span style='padding:3px;' name='dqdbg'><?php print __('Data Query Debug Information');?></span>
 				</div>
 				<div class='cactiTableButton'>
-					<a id='dbghide' class='linkOverDark'><?php print __('Hide');?></a>
+					<a id='dbghide' class='linkOverDark' href='#'><?php print __('Hide');?></a>
 				</div>
 			</div>
 			<table class='cactiTable'>

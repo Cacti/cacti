@@ -42,8 +42,13 @@ var marginLeft = null;
 var pageName;
 var columnsHidden = 0;
 var lastColumnsHidden = 0;
-var lastWidth = 0;
+var lastWidth = [];
 var lastMain = 0;
+
+// Resize delaying
+var myTime;
+var myDelay = 1000;
+var myTimeout = false;
 
 var isMobile = {
 	Android: function() {
@@ -583,13 +588,26 @@ function setupResponsiveMenuAndTabs() {
 	});	
 
 	$(window).resize(function(event) {
-		responsiveMenu(event);
+		myTime = new Date();
+		if (myTimeout === false) {
+			myTimeout = true;
+			setTimeout(function() { responsiveMenu(event)}, event);
+		}
 	});
 
 	responsiveMenu(null);
 }
 
 function responsiveMenu(event) {
+	if (event !== null) {
+		if (new Date() - myTime < myDelay) {
+			setTimeout(function() { responsiveMenu(event)}, event);
+		}else{
+			myTimeout = false;
+			return false;
+		}
+	}
+		
 	if ($('.cactiTreeNavigationArea').length > 0) {
 		tree = true;
 	}else{
@@ -635,10 +653,12 @@ function responsiveMenu(event) {
 		tuneFilter($(this), mainWidth);
 	});
 
-	$('.cactiTable').find('th').each(function() {
-		object = $(this).closest('.cactiTable');
+	$('.cactiTable').each(function() {
+		$(this).find('th:first-child').each(function() {
+			object = $(this).closest('.cactiTable');
 
-		tuneTable(object, mainWidth);
+			tuneTable(object, mainWidth);
+		});
 	});
 }
 
@@ -647,12 +667,21 @@ function tuneTable(object, width) {
 	width        = parseInt(width);
 	tableWidth   = parseInt($(object).width());
 	reducedWidth = 0;
+	id           = $(object).attr('id');
 
 	if (rows > 101) return false;
 
 	if (tableWidth > width) {
 		column = $(object).find('th').length;
 		id     = $(object).attr('id');
+		totalC = column;
+		hasCheckbox = $(object).find('th.tableSubHeaderCheckbox').length;
+
+		if (hasCheckbox) {
+			minColumns = 2;
+		}else{
+			minColumns = 2;
+		}
 
 		$($(object).find('th').get().reverse()).each(function() {
 			if (!$(this).hasClass('tableSubHeaderCheckbox') && $(this).is(':visible')) {
@@ -661,22 +690,25 @@ function tuneTable(object, width) {
 				$('#'+id+' td:nth-child('+column+')').hide();
 				columnsHidden++;
 			}
+			
+			visibleColumns = totalC - columnsHidden;
+			//console.log('VisCols: '+visibleColumns+', tableWidth: '+tableWidth+', width: '+width+', reducedWidth: '+reducedWidth);
 
-			if (tableWidth-reducedWidth < width) {
+			if (tableWidth-reducedWidth < width || visibleColumns <= minColumns) {
 				lastColumnsHidden = columnsHidden;
-				lastWidth = $(object).width();
+				lastWidth[id] = $(object).width();
 				return false;
 			}
 
 			column--;
 		});
-	} else if ($(object).width() > lastWidth+40 && columnsHidden > 0) {
+	} else if ($(object).width() > lastWidth[id]+40 && columnsHidden > 0) {
 		column = 1;
 		id     = $(object).attr('id');
 
 		$($(object).find('th').get()).each(function() {
 			if (!$(this).hasClass('tableSubHeaderCheckbox') && $(this).is(':hidden')) {
-				if (lastWidth+$(this).width() < width) {
+				if (lastWidth[id]+$(this).width() < width) {
 					$('#'+id+' td:nth-child('+column+')').show();
 					$('#'+id+' th:nth-child('+column+')').show();
 				}
