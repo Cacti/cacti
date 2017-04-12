@@ -45,6 +45,11 @@ var lastColumnsHidden = 0;
 var lastWidth = [];
 var lastMain = 0;
 
+// Resize delaying
+var myTime;
+var myDelay = 1000;
+var myTimeout = false;
+
 var isMobile = {
 	Android: function() {
 		return navigator.userAgent.match(/Android/i);
@@ -583,13 +588,26 @@ function setupResponsiveMenuAndTabs() {
 	});	
 
 	$(window).resize(function(event) {
-		responsiveMenu(event);
+		myTime = new Date();
+		if (myTimeout === false) {
+			myTimeout = true;
+			setTimeout(function() { responsiveMenu(event)}, event);
+		}
 	});
 
 	responsiveMenu(null);
 }
 
 function responsiveMenu(event) {
+	if (event !== null) {
+		if (new Date() - myTime < myDelay) {
+			setTimeout(function() { responsiveMenu(event)}, event);
+		}else{
+			myTimeout = false;
+			return false;
+		}
+	}
+		
 	if ($('.cactiTreeNavigationArea').length > 0) {
 		tree = true;
 	}else{
