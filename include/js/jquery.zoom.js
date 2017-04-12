@@ -149,18 +149,15 @@
 		function zoom_init(image) {
 			var $this = image;
 
-			zoomElements_remove();
+			if($('#zoom-container').hasClass('zoom_active_' + $this.attr('id'))) {
+				zoomElements_remove();
+				zoomFunction_init($this);
+			}
 
 			$this.parent().disableSelection();
 			$this.off().mouseover(
 				function(){
-					if ($("#zoom-box").length != 0) {
-						if ($("#zoom-box").offset().top == parseInt($this.offset().top) + parseInt($this.attr('graph_top')) && $("#zoom-box").offset().left == parseInt($this.offset().left) + parseInt($this.attr('graph_left'))) {
-							return;
-						} else {
-							zoomElements_remove();
-						}
-					}
+					zoomElements_remove();
 					zoomFunction_init($this);
 				}
 			);
@@ -177,7 +174,6 @@
 			if (zoom.custom.zoomMode == undefined) zoom.custom.zoomMode = 'quick';
 			if (zoom.custom.zoomOutPositioning == undefined) zoom.custom.zoomOutPositioning = 'center';
 			if (zoom.custom.zoomOutFactor == undefined) zoom.custom.zoomOutFactor = '2';
-			if (zoom.custom.zoomMarkers == undefined) zoom.custom.zoomMarkers = true;
 			if (zoom.custom.zoomTimestamps == undefined) zoom.custom.zoomTimestamps = 'auto';
 			if (zoom.custom.zoom3rdMouseButton == undefined) zoom.custom.zoom3rdMouseButton = false;
 			storage.set(zoom.options.cookieName, serialize(zoom.custom));
@@ -192,7 +188,8 @@
 			/* fetch all attributes that rrdgraph provides */
 			zoom.image.data 			= atob( zoom.initiator.attr('src').split(',')[1] );
 			zoom.image.type 			= (zoom.initiator.attr('src').split(';')[0] == 'data:image/svg+xml' )? 'svg' : 'png';
-			zoom.image.id				= zoom.initiator.attr('id').replace('graph_', '');
+			zoom.image.reference		= zoom.initiator.attr('id');
+			zoom.image.id				= zoom.image.reference.replace('graph_', '');
 			zoom.image.name 			= 'cacti_' + zoom.image.id + '.' + zoom.image.type;
 			zoom.image.legend			= ($('#thumbnails').length != 0 && $('#thumbnails').is(':checked')) ? false : true;
 			zoom.image.top				= parseInt(zoom.initiator.offset().top);
@@ -226,7 +223,7 @@
 				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
 				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
 				$("<div id='zoom-container'></div>").appendTo("body").delay(1000);
-				$("#zoom-container").css({ top:zoom.image.top+'px', left:zoom.image.left+'px', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' });
+				$("#zoom-container").css({ top:zoom.image.top+'px', left:zoom.image.left+'px', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' }).removeClass().addClass('zoom_active_' + zoom.image.reference);
 			}
 
 			// add a hidden anchor to use for downloads
@@ -274,7 +271,7 @@
 					+ '<div class="first_li">'
 					+ 		'<div class="ui-icon ui-icon-zoomout zoomContextMenuAction__zoom_out"></div>'
 					+ 		'<span class="zoomContextMenuAction__zoom_out">Zoom Out (2x)</span>'
-					+ 		'<div class="inner_li advanced_mode">'
+					+ 		'<div class="inner_li">'
 					+ 			'<span class="zoomContextMenuAction__zoom_out__2">2x</span>'
 					+ 			'<span class="zoomContextMenuAction__zoom_out__4">4x</span>'
 					+ 			'<span class="zoomContextMenuAction__zoom_out__8">8x</span>'
@@ -299,16 +296,10 @@
 					+ 			'<span class="zoomContextMenuAction__link">Copy graph link</span>'
 					+ 		'</div>'
 					+ '</div>'
-					+ '<div class="first_li advanced_mode">'
+					+ '<div class="first_li">'
 					+ 		'<div class="ui-icon ui-icon-wrench"></div><span>Settings</span>'
 					+ 			'<div class="inner_li">'
-					+ 				'<div class="sec_li" style="display:none;"><span>Markers</span>'
-					+ 					'<div class="inner_li advanced_mode">'
-					+ 						'<span class="zoomContextMenuAction__set_zoomMarkers__on">Enabled</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoomMarkers__off">Disabled</span>'
-					+ 					'</div>'
-					+ 				'</div>'
-					+ 				'<div class="sec_li"><span>Timestamps</span></span>'
+					+ 				'<div class="sec_li advanced_mode"><span>Timestamps</span></span>'
 					+ 					'<div class="inner_li advanced_mode">'
 					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__on">Always On</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__auto">Auto</span>'
@@ -317,7 +308,7 @@
 					+ 				'</div>'
 					+ 				'<div class="sep_li"></div>'
 					+ 				'<div class="sec_li"><span>Zoom Out Factor</span>'
-					+ 					'<div class="inner_li advanced_mode">'
+					+ 					'<div class="inner_li">'
 					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__2">2x</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__4">4x</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__8">8x</span>'
@@ -326,13 +317,13 @@
 					+ 					'</div>'
 					+ 				'</div>'
 					+ 				'<div class="sec_li"><span>Zoom Out Positioning</span>'
-					+ 					'<div class="inner_li advanced_mode">'
+					+ 					'<div class="inner_li">'
 					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__begin">Begin with</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__center">Center</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__end">End with</span>'
 					+ 					'</div>'
 					+ 				'</div>'
-					+ 				'<div class="sec_li"><span>3rd Mouse Button</span>'
+					+ 				'<div class="sec_li advanced_mode"><span>3rd Mouse Button</span>'
 					+ 					'<div class="inner_li advanced_mode">'
 					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_in">Zoom in</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_out">Zoom out</span>'
@@ -667,13 +658,17 @@
 			}
 
 			zoomAction_update_session(newGraphStartTime, newGraphEndTime);
+			/* hide Zoom without destroying its container */
+			$("#zoom-container").html('');
 
 			if (zoom.options.inputfieldStartTime != '' & zoom.options.inputfieldEndTime != ''){
+				zoom.initiator.attr('graph_start', newGraphStartTime);
+				zoom.initiator.attr('graph_end', newGraphEndTime);
+
 				/* execute zoom within "tree view" or the "preview view" */
 				$('#' + zoom.options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
-				zoomElements_remove();
 				if (graph_start !== null && graph_end !== null) {
 					graph_start = newGraphStartTime;
 					graph_end = newGraphEndTime;
@@ -753,12 +748,17 @@
 			}
 
 			zoomAction_update_session(newGraphStartTime, newGraphEndTime);
+			/* hide Zoom without destroying its container */
+			$("#zoom-container").html('');
 
 			if (zoom.options.inputfieldStartTime != '' & zoom.options.inputfieldEndTime != ''){
+				zoom.initiator.attr('graph_start', newGraphStartTime);
+				zoom.initiator.attr('graph_end', newGraphEndTime);
+
+				/* execute zoom within "tree view" or the "preview view" */
 				$('#' + zoom.options.inputfieldStartTime).val(unixTime2Date(newGraphStartTime));
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
-				zoomElements_remove();
 				if (graph_start !== null && graph_end !== null) {
 					graph_start = newGraphStartTime;
 					graph_end = newGraphEndTime;
@@ -811,16 +811,14 @@
 
 			/* sync menu with cookie parameters */
 			$(".zoomContextMenuAction__set_zoomMode__" + zoom.custom.zoomMode).addClass("zoom-menu-highlight");
-			$(".zoomContextMenuAction__set_zoomMarkers__" + ((zoom.custom.zoomMarkers === true) ? "on" : "off") ).addClass("zoom-menu-highlight");
 			$(".zoomContextMenuAction__set_zoomTimestamps__" + ((zoom.custom.zoomTimestamps == 'auto') ? "auto" : ((zoom.custom.zoomTimestamps) ? "on" : "off" ))).addClass("zoom-menu-highlight");
 			$(".zoomContextMenuAction__set_zoomOutFactor__" + zoom.custom.zoomOutFactor).addClass("zoom-menu-highlight");
 			$(".zoomContextMenuAction__set_zoomOutPositioning__" + zoom.custom.zoomOutPositioning).addClass("zoom-menu-highlight");
 			$(".zoomContextMenuAction__set_zoom3rdMouseButton__" + ((zoom.custom.zoom3rdMouseButton === false) ? "off" : zoom.custom.zoom3rdMouseButton) ).addClass("zoom-menu-highlight");
+			$(".zoomContextMenuAction__zoom_out").text("Zoom Out (" + zoom.custom.zoomOutFactor + "x)");
 
 			if (zoom.custom.zoomMode == "quick") {
-				$("#zoom-menu > .advanced_mode").hide();
-			} else {
-				$(".zoomContextMenuAction__zoom_out").text("Zoom Out (" + zoom.custom.zoomOutFactor + "x)");
+				$(".advanced_mode").hide();
 			}
 
 			/* init click on events */
@@ -885,15 +883,13 @@
 
 						if (value == "quick") {
 							// reset menu
-							$("#zoom-menu > .advanced_mode").hide();
-							$(".zoomContextMenuAction__zoom_out").text("Zoom Out (2x)");
+							$(".advanced_mode").hide();
 
 							zoom.custom.zoomMode			= 'quick';
 							storage.set(zoom.options.cookieName, serialize(zoom.custom));
 						} else {
 							// switch to advanced mode
-							$("#zoom-menu > .advanced_mode").show();
-							$(".zoomContextMenuAction__zoom_out").text("Zoom Out (" +  + zoom.custom.zoomOutFactor + "x)");
+							$(".sec_li.advanced_mode").show();
 
 							zoom.custom.zoomMode			= 'advanced';
 							storage.set(zoom.options.cookieName, serialize(zoom.custom));
@@ -901,13 +897,6 @@
 						zoomElements_reset();
 						zoomAction_init(zoom.initiator);
 
-					}
-					break;
-				case "markers":
-					if ( zoom.custom.zoomMarkers != value) {
-						zoom.custom.zoomMarkers = value;
-						storage.set(zoom.options.cookieName, serialize(zoom.custom));
-						$('[class*=zoomContextMenuAction__set_zoomMarkers__]').toggleClass('zoom-menu-highlight');
 					}
 					break;
 				case "timestamps":
@@ -960,7 +949,7 @@
 					break;
 				case "zoom_out":
 					if (value == undefined) {
-						value = (zoom.custom.zoomMode != "quick") ? zoom.custom.zoomOutFactor : 2;
+						value = zoom.custom.zoomOutFactor;
 					}
 					zoomAction_zoom_out(value);
 					break;
