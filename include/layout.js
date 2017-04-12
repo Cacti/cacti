@@ -66,6 +66,31 @@ var isMobile = {
 	}
 };
 
+/* simple ajax request queueing */
+jQuery.ajaxQ = (function(){
+	var id = 0, Q = {};
+
+	jQuery(document).ajaxSend(function(e, jqx){
+		jqx._id = ++id;
+		Q[jqx._id] = jqx;
+	});
+
+	jQuery(document).ajaxComplete(function(e, jqx){
+		delete Q[jqx._id];
+	});
+
+	return {
+		abortAll: function(){
+		var r = [];
+		jQuery.each(Q, function(i, jqx){
+			r.push(jqx._id);
+			jqx.abort();
+		});
+		return r;
+		}
+	};
+})();
+
 /** basename - this function will return the basename
  *  of the php script called
  *  @args path - the document.url
@@ -134,7 +159,7 @@ $.fn.bindFirst = function(which, handler) {
 	registered.unshift(registered.pop());
 
 	events[which] = registered;
-}
+};
 
 /** replaceOptions - function replaces the options in a select dropdown */
 $.fn.replaceOptions = function(options, selected) {
@@ -156,7 +181,7 @@ $.fn.replaceOptions = function(options, selected) {
 		}
 		self.append($option);
 	});
-}
+};
 
 /** textWidth - This function will return the natural width of a string
  *  without any wrapping. */
@@ -171,7 +196,7 @@ $.fn.textWidth = function(text){
 	var width = html.width();
 	html.remove();
 	return width;
-}
+};
 
 /** classes - This function will return an array of all
  *  classes of an element */
@@ -268,7 +293,7 @@ $.tablesorter.addParser({
 (function($) {
     $.fn.hasScrollBar = function() {
         return this.get(0).scrollHeight > this.outerHeight();
-    }
+    };
 })(jQuery);
 
 /** Mini jquery plugin to create a bind to show/hide events */
@@ -634,7 +659,7 @@ function responsiveMenu(event) {
 			menuHide(tree);
 		}
 	}else if (!menuOpen) {
-		menuShow(tree)
+		menuShow(tree);
 	}
 
 	if (event != null && !$(event.target).hasClass('ui-resizable')) {
@@ -1010,7 +1035,7 @@ function setupUserMenu() {
 
 function setupSpecialKeys() {
 	$('#filter, #rfilter').unbind('keypress').attr('title', 'Press Ctrl+Shift+X to Clear Filter');
-	$('#filter, #rfilter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
+	$('#filter, #rfilter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close'); }).on('click', function() { $(this).tooltip('close'); });
 
 	$('#filter, #rfilter').bind('keypress', 'ctrl+shift+x', function() {
 		$('#filter, #rfilter').val('').css('text-align', 'left').submit();
@@ -1039,7 +1064,7 @@ function setupSortable() {
 				sortAdd='&add=reset';
 			}
 			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false'+sortAdd, function(data) {
-				$('#main').empty().hide()
+				$('#main').empty().hide();
 				$('div[class^="ui-"]').remove();
 				$('#main').html(data);
 				applySkin();
@@ -1048,7 +1073,7 @@ function setupSortable() {
 	});
 
 	// Setup tool tips for all titles to match the jQueryUI theme
-	$('i, th, img, input, label, select, button').tooltip({ closed: true }).on('focus', function() { $('#filter, #rfilter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
+	$('i, th, img, input, label, select, button').tooltip({ closed: true }).on('focus', function() { $('#filter, #rfilter').tooltip('close'); }).on('click', function() { $(this).tooltip('close'); });
 }
 
 function setupBreadcrumbs() {
@@ -1192,7 +1217,7 @@ function setupPageTimeout() {
 				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
 
 				$.get(refreshPage, function(data) {
-					$('#main').empty().hide()
+					$('#main').empty().hide();
 					$('div[class^="ui-"]').remove();
 					$('#main').html(data);
 					applySkin();
@@ -1225,7 +1250,7 @@ function setTitleAndHref() {
 $(function() {
 	var statePushed = false;
 	var popFired    = false;
-	var tapped      = false
+	var tapped      = false;
 
 	setTitleAndHref();
 
@@ -1266,8 +1291,9 @@ function clearGraphFilter() {
 
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
+	$.ajaxQ.abortAll();
 	$.get(new_href+'&header=false', function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1301,8 +1327,9 @@ function applyGraphFilter() {
 
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
+	$.ajaxQ.abortAll();
 	$.get(new_href+'&header=false', function(data) {
-		$('#main').hide()
+		$('#main').hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 
@@ -1356,10 +1383,11 @@ function applyGraphTimespan() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 
+	$.ajaxQ.abortAll();
 	$.get(new_href+'?action='+pageAction+'&header=false'+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val(), function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1379,8 +1407,9 @@ function refreshGraphTimespanFilter() {
 
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1400,8 +1429,9 @@ function timeshiftGraphFilterLeft() {
 
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1421,8 +1451,9 @@ function timeshiftGraphFilterRight() {
 
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1441,8 +1472,9 @@ function clearGraphTimespanFilter() {
 
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1571,12 +1603,14 @@ function redrawGraph(graph_id) {
 }
 
 function initializeGraphs() {
+	$.ajaxQ.abortAll();
 	$('a[id$="_mrtg"]').unbind('click').click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
+		$.ajaxQ.abortAll();
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
-			$('#main').empty().hide()
+			$('#main').empty().hide();
 			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">Time Graph View</a></li>');
 			$('#zoom-container').remove();
 			$('div[class^="ui-"]').remove();
@@ -1642,7 +1676,7 @@ function initializeGraphs() {
 				});
 				realtimeArray[data.local_graph_id] = false;
 		});
-	})
+	});
 
 	$('#realtimeoff').unbind('click').click(function() {
 		stopRealtime();
@@ -1656,8 +1690,9 @@ function initializeGraphs() {
 		event.preventDefault();
 		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
+		$.ajaxQ.abortAll();
 		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()), function(data) {
-			$('#main').empty().hide()
+			$('#main').empty().hide();
 			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
 			$('#breadcrumbs').append('<li><a id="nav_util" href="#">Utility View</a></li>');
