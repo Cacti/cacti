@@ -39,7 +39,8 @@ function upgrade_to_1_1_4() {
 			ADD INDEX `mib_name` (`mib`, `name`)'
 	);
 
-	if (empty(db_fetch_cell("SHOW KEYS FROM host WHERE Column_name LIKE 'hostname'"))) {
+	$result = db_fetch_cell("SHOW KEYS FROM host WHERE Column_name LIKE 'hostname'");
+	if (empty($result)) {
 		db_install_execute(
 			'ALTER TABLE `host` ADD INDEX (`hostname`)'
 		);
