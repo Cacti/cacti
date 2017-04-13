@@ -440,6 +440,9 @@ if ($step == '7') {
 		}elseif ($cacti_versions[$i] == '1.1.2') {
 			include ('1_1_1_to_1_1_2.php');
 			upgrade_to_1_1_2();
+		}elseif ($cacti_versions[$i] == '1.1.3') {
+			include ('1_1_2_to_1_1_3.php');
+			upgrade_to_1_1_3();
 		}
 	}
 
