@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#538: Unable to rename tree folder
 -issue#541: Issues with mobile graph viewing
 -issue#555: DSStats SQL insert errors due to data collection issues
+-issue#563: Division by zero in removespikes.php
 -issue: Fixed rendering issues with HRULE's on graphs
 -issue: Update jsTree to 3.3.4 version
 -feature: Improved responsiveness UI tables, filters, and menus
