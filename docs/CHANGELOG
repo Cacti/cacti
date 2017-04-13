@@ -8,14 +8,15 @@ Cacti CHANGELOG
 -issue#525: LAST GPRINT type not rendered correctly due to lack of escaping
 -issue#530: Undefined function get_vdef in lib/rrd.php
 -issue#531: Issues with TextAlign and Tick graph items
--issue#532: Unreliable scroll height casues issues in Chrome
+-issue#532: Unreliable scroll height causes issues in Chrome
 -issue#533: User settings not cleared after saving profile
 -issue#534: Automation issue with AS clause
 -issue#538: Unable to rename tree folder
 -issue#541: Issues with mobile graph viewing
--issue: Problem rendering some HRULE's on a graph
+-issue#555: DSStats SQL insert errors due to data collection issues
+-issue: Fixed rendering issues with HRULE's on graphs
 -issue: Update jsTree to 3.3.4 version
--feature: Add responsive tables, filters, and menus
+-feature: Improved responsiveness UI tables, filters, and menus
 
 1.1.2
 -issue#492: Error while adding non data query (cg) graphs

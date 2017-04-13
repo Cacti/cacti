@@ -376,6 +376,9 @@ function auth_display_custom_error_message($message) {
 	print "<html>\n<head>\n";
 	print '     <title>' . 'Cacti' . "</title>\n";
 	print "     <meta http-equiv='Content-Type' content='text/html;charset=utf-8'>";
+	print "		<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>\n";
+	print "		<meta name='apple-mobile-web-app-capable' content='yes'>\n";
+	print "		<meta name='mobile-web-app-capable' content='yes'>\n";
 	print "     <meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>";
 	print "     <link href=\"include/main.css\" type=\"text/css\" rel=\"stylesheet\">";
 	print "</head>\n";
@@ -516,6 +519,9 @@ $selectedTheme = get_selected_theme();
 	<title><?php print api_plugin_hook_function('login_title', __('Login to Cacti'));?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
+	<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>
+	<meta name='apple-mobile-web-app-capable' content='yes'>
+	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name='robots' content='noindex,nofollow'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/jquery-ui.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>

@@ -33,6 +33,7 @@ $fields_site_edit = array(
 	'spacer0' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Site Information'),
+		'collapsible' => 'true'
 	),
 	'name' => array(
 		'method' => 'textbox',

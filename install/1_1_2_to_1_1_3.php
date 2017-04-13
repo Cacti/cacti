@@ -23,5 +23,4 @@
 */
 
 function upgrade_to_1_1_3() {
-
 }

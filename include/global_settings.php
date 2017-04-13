@@ -439,6 +439,7 @@ $settings = array(
 		'automation_header' => array(
 			'friendly_name' => __('Automation'),
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'automation_graphs_enabled' => array(
 			'method' => 'checkbox',
@@ -929,6 +930,7 @@ $settings = array(
 		'auth_header' => array(
 			'friendly_name' => __('General'),
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'auth_method' => array(
 			'friendly_name' => __('Authentication Method'),
@@ -1208,6 +1210,7 @@ $settings = array(
 		'settings_web_url' => array(
 			'friendly_name' => __('URL Linking'),
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'base_url' => array(
 			'friendly_name' => __('Server Base URL'),
@@ -1623,6 +1626,7 @@ $settings = array(
 		'spikekill_header' => array(
 			'friendly_name' => __('Spike Kill Settings'),
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'spikekill_method' => array(
 			'friendly_name' => __('Removal Method'),
@@ -1732,6 +1736,7 @@ $settings = array(
 		'spikekill_batch_header' => array(
 			'friendly_name' => __('Batch Spike Kill Settings'),
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'spikekill_batch' => array(
 			'friendly_name' => __('Removal Schedule'),
