@@ -928,6 +928,22 @@ legend {
 	# margin-top: 10px;
 }
 
+.cactiGraphContentArea span[align="center"] {
+	color: #9d9d9d;
+}
+
+.cactiGraphContentArea .tableHeader > td{
+	color: white;
+    text-align: left;
+    padding: 3px 5px;
+    width: 100%;
+    font-size: 13px;
+    font-weight: 600;
+	text-transform: none;
+    border-color: #222;
+    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+    background-repeat: repeat-x;
+}
 
 .cactiGraphContentAreaPreview {
 	height: 100%;
@@ -1963,10 +1979,6 @@ tr#realtime td:first-child {
 	-moz-border-radius-bottomleft: 0px !important;
 	-moz-border-radius-topright: 0px !important;
 	-moz-border-radius-topleft: 0px !important;
-}
-
-#graph_view_tree_content2_child > tbody > .tableHeader {
-	background: transparent;
 }
 
 .menu_glyph {
