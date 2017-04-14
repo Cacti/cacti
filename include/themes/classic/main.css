@@ -899,7 +899,7 @@ legend {
 	color: white;
 	font-weight: normal;
 	text-decoration: none;
-	cursor;pointer;
+	cursor: pointer;
 }
 
 .linkOverDark:hover {
