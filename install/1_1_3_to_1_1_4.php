@@ -55,7 +55,7 @@ function upgrade_to_1_1_4() {
 
 	db_install_execute(
 		'ALTER TABLE `snmpagent_notifications_log` 
-			DROP INDEX `manager_id`
+			DROP INDEX `manager_id`,
 			DROP INDEX `manager_id2`,
 			ADD INDEX `manager_id_notification` (`manager_id`,`notification`)'
 	);
