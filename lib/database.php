@@ -913,7 +913,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 
 	cacti_log("DEVEL: SQL Save on table '$table_name': \"" . serialize($array_items) . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
-	while (list($key, $value) = each($array_items)) {
+	foreach ($array_items as $key => $value) {
 		if (strstr($cols[$key]['type'], 'int') !== false || 
 			strstr($cols[$key]['type'], 'float') !== false || 
 			strstr($cols[$key]['type'], 'double') !== false || 

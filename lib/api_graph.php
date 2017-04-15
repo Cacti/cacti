@@ -214,8 +214,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	$save['graph_template_id']             = (!empty($_local_graph_id) ? $graph_template_graph['graph_template_id'] : $graph_template_id);
 	$save['title_cache']                   = $graph_template_graph['title_cache'];
 
-	reset($struct_graph);
-	while (list($field, $array) = each($struct_graph)) {
+	foreach ($struct_graph as $field => $array) {
 		if ($array['method'] == 'spacer') continue;
 		$save{$field} = $graph_template_graph{$field};
 		$save{'t_' . $field} = $graph_template_graph{'t_' . $field};
@@ -227,7 +226,6 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	if (sizeof($graph_template_items)) {
 		foreach ($graph_template_items as $graph_template_item) {
 			unset($save);
-			reset($struct_graph_item);
 
 			$save['id']                           = 0;
 			/* save a hash only for graph_template copy operations */
@@ -236,7 +234,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			$save['graph_template_id']            = (!empty($_local_graph_id) ? $graph_template_item['graph_template_id'] : $graph_template_id);
 			$save['local_graph_template_item_id'] = (isset($graph_template_item['local_graph_template_item_id']) ? $graph_template_item['local_graph_template_item_id'] : 0);
 
-			while (list($field, $array) = each($struct_graph_item)) {
+			foreach ($struct_graph_item as $field => $array) {
 				$save{$field} = $graph_template_item{$field};
 			}
 

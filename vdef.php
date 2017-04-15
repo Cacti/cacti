@@ -168,8 +168,7 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 	$save['hash'] = get_hash_vdef(0);
 
 	$fields_vdef_edit = preset_vdef_form_list();
-	reset($fields_vdef_edit);
-	while (list($field, $array) = each($fields_vdef_edit)) {
+	foreach ($fields_vdef_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method'])) {
 			$save[$field] = $vdef[$field];
 		}
@@ -411,7 +410,7 @@ function vdef_item_edit() {
 		<td>
 			<select id='type_select'>
 				<?php
-				while (list($var, $val) = each($vdef_item_types)) {
+				foreach ($vdef_item_types as $var => $val) {
 					print "<option value='" . htmlspecialchars('vdef.php?action=item_edit' . (isset_request_var('id') ? '&id=' . get_request_var('id') : '') . '&vdef_id=' . get_request_var('vdef_id') . '&type_select=' . $var) . "'"; if ($var == $current_type) { print ' selected'; } print ">$val</option>\n";
 				}
 				?>

@@ -738,8 +738,7 @@ function display_new_graphs($rule, $url) {
 	$xml_array = get_data_query_array($rule['snmp_query_id']);
 	if ($xml_array != false) {
 		/* loop through once so we can find out how many input fields there are */
-		reset($xml_array['fields']);
-		while (list($field_name, $field_array) = each($xml_array['fields'])) {
+		foreach ($xml_array['fields'] as $field_name => $field_array) {
 			if ($field_array['direction'] == 'input') {
 				$num_input_fields++;
 
@@ -810,14 +809,13 @@ function display_new_graphs($rule, $url) {
 		$new_fields['automation_host'] = array('name' => __('Hostname'), 'direction' => 'input');
 		$new_fields['status']          = array('name' => __('Device Status'), 'direction' => 'input');
 		$xml_array['fields']           = $new_fields + $xml_array['fields'];
-		reset($xml_array['fields']);
 
 		$field_names = get_field_names($rule['snmp_query_id']);
 		array_unshift($field_names, array('field_name' => 'status'));
 		array_unshift($field_names, array('field_name' => 'automation_host'));
 
 		$display_text = array();
-		while (list($field_name, $field_array) = each($xml_array['fields'])) {
+		foreach ($xml_array['fields'] as $field_name => $field_array) {
 			if ($field_array['direction'] == 'input') {
 				foreach($field_names as $row) {
 					if ($row['field_name'] == $field_name) {
@@ -849,8 +847,7 @@ function display_new_graphs($rule, $url) {
 					$style = ' style="color: blue"';
 				}
 				$column_counter = 0;
-				reset($xml_array['fields']);
-				while (list($field_name, $field_array) = each($xml_array['fields'])) {
+				foreach ($xml_array['fields'] as $field_name => $field_array) {
 					if ($field_array['direction'] == 'input') {
 						if (in_array($field_name, $fields)) {
 							if (isset($row[$field_name])) {
@@ -1396,8 +1393,7 @@ function duplicate_automation_graph_rules($_id, $_title) {
 
 	$fields_automation_graph_rules_edit = $fields_automation_graph_rules_edit1 + $fields_automation_graph_rules_edit2 + $fields_automation_graph_rules_edit3;
 	$save = array();
-	reset($fields_automation_graph_rules_edit);
-	while (list($field, $array) = each($fields_automation_graph_rules_edit)) {
+	foreach ($fields_automation_graph_rules_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method'])) {
 			$save[$field] = $rule[$field];
 		}
@@ -1440,8 +1436,7 @@ function duplicate_automation_tree_rules($_id, $_title) {
 
 	$fields_automation_tree_rules_edit = $fields_automation_tree_rules_edit1 + $fields_automation_tree_rules_edit2 + $fields_automation_tree_rules_edit3;
 	$save = array();
-	reset($fields_automation_tree_rules_edit);
-	while (list($field, $array) = each($fields_automation_tree_rules_edit)) {
+	foreach ($fields_automation_tree_rules_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method'])) {
 			$save[$field] = $rule[$field];
 		}

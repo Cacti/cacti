@@ -168,7 +168,7 @@ function form_save() {
 
 				db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array($snmp_query_graph_id));
 
-				while (list($var, $val) = each($_POST)) {
+				foreach ($_POST as $var => $val) {
 					if (preg_match('/^dsdt_([0-9]+)_([0-9]+)_check/i', $var)) {
 						$data_template_id = preg_replace('/^dsdt_([0-9]+)_([0-9]+).+/', "\\1", $var);
 						$data_template_rrd_id = preg_replace('/^dsdt_([0-9]+)_([0-9]+).+/', "\\2", $var);
@@ -230,7 +230,7 @@ function form_save() {
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
 
-		while (list($var, $val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^svds_([0-9]+)_text/i', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -557,7 +557,7 @@ function data_query_item_edit() {
 									$xml_outputs = array();
 
 									if (isset($snmp_queries['fields']) && sizeof($snmp_queries['fields'])) {
-										while (list($field_name, $field_array) = each($snmp_queries['fields'])) {
+										foreach ($snmp_queries['fields'] as $field_name => $field_array) {
 											if ($field_array['direction'] == 'output') {
 												$xml_outputs[$field_name] = $field_name . ' (' . $field_array['name'] . ')';
 											}

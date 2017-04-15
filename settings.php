@@ -31,7 +31,7 @@ get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_sear
 
 switch (get_request_var('action')) {
 case 'save':
-	while (list($field_name, $field_array) = each($settings{get_request_var('tab')})) {
+	foreach ($settings{get_request_var('tab')} as $field_name => $field_array) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
 		}elseif ($field_array['method'] == 'checkbox') {
@@ -41,7 +41,7 @@ case 'save':
 				db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, '')", array($field_name));
 			}
 		}elseif ($field_array['method'] == 'checkbox_group') {
-			while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 				if (isset_request_var($sub_field_name)) {
 					db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, 'on')", array($sub_field_name));
 				}else{
@@ -56,7 +56,7 @@ case 'save':
 				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
 			}
 		}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-			while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 				if (isset_request_var($sub_field_name)) {
 					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($sub_field_name, get_nfilter_request_var($sub_field_name)));
 				}
@@ -139,11 +139,11 @@ default:
 
 	$form_array = array();
 
-	while (list($field_name, $field_array) = each($settings[$current_tab])) {
+	foreach ($settings[$current_tab] as $field_name => $field_array) {
 		$form_array += array($field_name => $field_array);
 
 		if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-			while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 				if (config_value_exists($sub_field_name)) {
 					$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 				}

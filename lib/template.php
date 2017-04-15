@@ -166,8 +166,7 @@ function push_out_data_source_item($data_template_rrd_id) {
 	}
 
 	/* loop through each data source column name (from the above array) */
-	reset($struct_data_source_item);
-	while (list($field_name, $field_array) = each($struct_data_source_item)) {
+	foreach ($struct_data_source_item as $field_name => $field_array) {
 		/* are we allowed to push out the column? */
 		if (((empty($data_template_rrd{'t_' . $field_name})) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_rrd{'t_' . $field_name})) && (isset($data_template_rrd[$field_name])))) {
 			db_execute_prepared("UPDATE data_template_rrd 
@@ -190,8 +189,7 @@ function push_out_data_source($data_template_data_id) {
 	if (empty($data_template_data['data_template_id'])) { return 0; }
 
 	/* loop through each data source column name (from the above array) */
-	reset($struct_data_source);
-	while (list($field_name, $field_array) = each($struct_data_source)) {
+	foreach ($struct_data_source as $field_name => $field_array) {
 		/* are we allowed to push out the column? */
 		if (((empty($data_template_data{'t_' . $field_name})) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_data{'t_' . $field_name})) && (isset($data_template_data[$field_name])))) {
 			db_execute_prepared("UPDATE data_template_data 
@@ -248,8 +246,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	$save['data_template_id']            = $data_template_id;
 
 	/* loop through the 'templated field names' to find to the rest... */
-	reset($struct_data_source);
-	while (list($field_name, $field_array) = each($struct_data_source)) {
+	foreach ($struct_data_source as $field_name => $field_array) {
 		/* handle the data source profile */
 		if ($field_name == 'rrd_step' && sizeof($profile)) {
 			$save[$field_name] = $profile['step'];
@@ -288,7 +285,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 				$save['local_data_id']              = $local_data_id;
 				$save['data_template_id']           = $template_rrd['data_template_id'];
 
-				while (list($field_name, $field_array) = each($struct_data_source_item)) {
+				foreach ($struct_data_source_item as $field_name => $field_array) {
 					/* handle the data source profile */
 					if ($field_name == 'rrd_heartbeat' && sizeof($profile)) {
 						$save[$field_name] = $profile['heartbeat'];
@@ -333,11 +330,12 @@ function push_out_graph($graph_template_graph_id) {
 		WHERE id = ?', array($graph_template_graph_id));
 
 	/* must be a graph template */
-	if ($graph_template_graph['graph_template_id'] == 0) { return 0; }
+	if ($graph_template_graph['graph_template_id'] == 0) {
+		return 0;
+	}
 
 	/* loop through each graph column name (from the above array) */
-	reset($struct_graph);
-	while (list($field_name, $field_array) = each($struct_graph)) {
+	foreach ($struct_graph as $field_name => $field_array) {
 		/* are we allowed to push out the column? */
 		if (isset($graph_template_graph{'t_' . $field_name}) && empty($graph_template_graph{'t_' . $field_name})) {
 			if ($field_array['method'] != 'spacer') {
@@ -396,7 +394,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 			GROUP BY local_graph_id");
 	}else{
 		$i = 0;
-		while (list($item_id, $item_id) = each($session_members)) {
+		foreach ($session_members as $item_id => $item_id) {
 			$new_session_members[$i] = $item_id;
 			$i++;
 		}
@@ -473,8 +471,7 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 	$graph_item_inputs = array_rekey($graph_item_inputs, 'column_name', 'graph_template_item_id');
 
 	/* loop through each graph item column name (from the above array) */
-	reset($struct_graph_item);
-	while (list($field_name, $field_array) = each($struct_graph_item)) {
+	foreach ($struct_graph_item as $field_name => $field_array) {
 		/* are we allowed to push out the column? */
 		if ($local_graph_id == 0) {
 			if (!isset($graph_item_inputs[$field_name])) {
@@ -696,8 +693,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 	$save['graph_template_id']             = $graph_template_id;
 
 	/* loop through the 'templated field names' to find to the rest... */
-	reset($struct_graph);
-	while (list($field_name, $field_array) = each($struct_graph)) {
+	foreach ($struct_graph as $field_name => $field_array) {
 		$value_type = "t_$field_name";
 
 		if ($field_array['method'] != 'spacer') {
@@ -1065,7 +1061,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	/* suggested values: graph */
 	if (isset($suggested_vals[$graph_template_id]['graph_template'])) {
-		while (list($field_name, $field_value) = each($suggested_vals[$graph_template_id]['graph_template'])) {
+		foreach ($suggested_vals[$graph_template_id]['graph_template'] as $field_name => $field_value) {
 			db_execute_prepared('UPDATE graph_templates_graph 
 				SET ' . $field_name . ' = ? 
 				WHERE local_graph_id= ?', 
@@ -1075,8 +1071,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	/* suggested values: graph item */
 	if (isset($suggested_vals[$graph_template_id]['graph_template_item'])) {
-		while (list($graph_template_item_id, $field_array) = each($suggested_vals[$graph_template_id]['graph_template_item'])) {
-			while (list($field_name, $field_value) = each($field_array)) {
+		foreach ($suggested_vals[$graph_template_id]['graph_template_item'] as $graph_template_item_id => $field_array) {
+			foreach ($field_array as $field_name => $field_value) {
 				$graph_item_id = db_fetch_cell_prepared('SELECT id 
 					FROM graph_templates_item 
 					WHERE local_graph_template_item_id = ?
@@ -1248,8 +1244,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 				/* suggested values: data source */
 				if (isset($suggested_vals[$graph_template_id]['data_template']{$data_template['id']})) {
-					reset($suggested_vals[$graph_template_id]['data_template']{$data_template['id']});
-					while (list($field_name, $field_value) = each($suggested_vals[$graph_template_id]['data_template']{$data_template['id']})) {
+					foreach ($suggested_vals[$graph_template_id]['data_template']{$data_template['id']} as $field_name => $field_value) {
 						db_execute_prepared("UPDATE data_template_data
 							SET $field_name = ?
 							WHERE local_data_id = ?", 
@@ -1259,9 +1254,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 				/* suggested values: data source item */
 				if (isset($suggested_vals[$graph_template_id]['data_template_item'])) {
-					reset($suggested_vals[$graph_template_id]['data_template_item']);
-					while (list($data_template_item_id, $field_array) = each($suggested_vals[$graph_template_id]['data_template_item'])) {
-						while (list($field_name, $field_value) = each($field_array)) {
+					foreach ($suggested_vals[$graph_template_id]['data_template_item'] as $data_template_item_id => $field_array) {
+						foreach ($field_array as $field_name => $field_value) {
 							$data_source_item_id = db_fetch_cell_prepared('SELECT id 
 								FROM data_template_rrd 
 								WHERE local_data_template_rrd_id = ?
@@ -1278,8 +1272,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 				/* suggested values: custom data */
 				if (isset($suggested_vals[$graph_template_id]['custom_data']{$data_template['id']})) {
-					reset($suggested_vals[$graph_template_id]['custom_data']{$data_template['id']});
-					while (list($data_input_field_id, $field_value) = each($suggested_vals[$graph_template_id]['custom_data']{$data_template['id']})) {
+					foreach ($suggested_vals[$graph_template_id]['custom_data']{$data_template['id']} as $data_input_field_id => $field_value) {
 						db_execute_prepared('REPLACE INTO data_input_data 
 							(data_input_field_id, data_template_data_id, t_value, value) 
 							VALUES (?, ?, "", ?)', 

@@ -308,7 +308,6 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 
 	unset($save);
 	unset($struct_data_source['data_source_path']);
-	reset($struct_data_source);
 
 	/* create new entry: data_template_data */
 	$save['id']                          = 0;
@@ -317,7 +316,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	$save['data_template_id']            = (!empty($_local_data_id) ? $data_template_data['data_template_id'] : $data_template_id);
 	$save['name_cache']                  = $data_template_data['name_cache'];
 
-	while (list($field, $array) = each($struct_data_source)) {
+	foreach ($struct_data_source as $field => $array) {
 		$save{$field} = $data_template_data{$field};
 
 		if ($array['flags'] != 'ALWAYSTEMPLATE') {
@@ -329,40 +328,39 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 
 	/* create new entry(s): data_template_rrd */
 	if (sizeof($data_template_rrds) > 0) {
-	foreach ($data_template_rrds as $data_template_rrd) {
-		unset($save);
-		reset($struct_data_source_item);
+		foreach ($data_template_rrds as $data_template_rrd) {
+			unset($save);
 
-		$save['id']                         = 0;
-		$save['local_data_id']              = (isset($local_data_id) ? $local_data_id : 0);
-		$save['local_data_template_rrd_id'] = (isset($data_template_rrd['local_data_template_rrd_id']) ? $data_template_rrd['local_data_template_rrd_id'] : 0);
-		$save['data_template_id']           = (!empty($_local_data_id) ? $data_template_rrd['data_template_id'] : $data_template_id);
-		if ($save['local_data_id'] == 0) {
-			$save['hash']                   = get_hash_data_template($data_template_rrd['local_data_template_rrd_id'], 'data_template_item');
-		} else {
-			$save['hash'] = '';
-		}
-
-		while (list($field, $array) = each($struct_data_source_item)) {
-			$save{$field} = $data_template_rrd{$field};
-
-			if (isset($data_template_rrd{'t_' . $field})) {
-				$save{'t_' . $field} = $data_template_rrd{'t_' . $field};
+			$save['id']                         = 0;
+			$save['local_data_id']              = (isset($local_data_id) ? $local_data_id : 0);
+			$save['local_data_template_rrd_id'] = (isset($data_template_rrd['local_data_template_rrd_id']) ? $data_template_rrd['local_data_template_rrd_id'] : 0);
+			$save['data_template_id']           = (!empty($_local_data_id) ? $data_template_rrd['data_template_id'] : $data_template_id);
+			if ($save['local_data_id'] == 0) {
+				$save['hash']                   = get_hash_data_template($data_template_rrd['local_data_template_rrd_id'], 'data_template_item');
+			} else {
+				$save['hash'] = '';
 			}
-		}
 
-		$data_template_rrd_id = sql_save($save, 'data_template_rrd');
-	}
+			foreach ($struct_data_source_item as $field => $array) {
+				$save{$field} = $data_template_rrd{$field};
+
+				if (isset($data_template_rrd{'t_' . $field})) {
+					$save{'t_' . $field} = $data_template_rrd{'t_' . $field};
+				}
+			}
+
+			$data_template_rrd_id = sql_save($save, 'data_template_rrd');
+		}
 	}
 
 	/* create new entry(s): data_input_data */
 	if (sizeof($data_input_datas) > 0) {
-	foreach ($data_input_datas as $data_input_data) {
-		db_execute_prepared('INSERT INTO data_input_data 
-			(data_input_field_id, data_template_data_id, t_value, value) 
-			VALUES (?, ?, ?, ?)',
-			array($data_input_data['data_input_field_id'], $data_template_data_id, $data_input_data['t_value'], $data_input_data['value']));
-	}
+		foreach ($data_input_datas as $data_input_data) {
+			db_execute_prepared('INSERT INTO data_input_data 
+				(data_input_field_id, data_template_data_id, t_value, value) 
+				VALUES (?, ?, ?, ?)',
+				array($data_input_data['data_input_field_id'], $data_template_data_id, $data_input_data['t_value'], $data_input_data['value']));
+		}
 	}
 
 	if (!empty($_local_data_id)) {

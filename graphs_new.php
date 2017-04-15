@@ -78,7 +78,7 @@ function save_default_query_option() {
 function form_save() {
 	if (isset_request_var('save_component_graph')) {
 		/* summarize the 'create graph from host template/snmp index' stuff into an array */
-		while (list($var, $val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^cg_(\d+)$/', $var, $matches)) {
 				$selected_graphs['cg']{$matches[1]}{$matches[1]} = true;
 			}elseif (preg_match('/^cg_g$/', $var)) {
@@ -158,7 +158,7 @@ function host_new_graphs_save($host_id) {
 	$selected_graphs_array = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
 
 	/* form an array that contains all of the data on the previous form */
-	while (list($var, $val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^g_(\d+)_(\d+)_(\w+)/', $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: field_name */
 			if (empty($matches[1])) { /* this is a new graph from template field */
 				$values['cg']{$matches[2]}['graph_template']{$matches[3]} = $val;
@@ -209,10 +209,10 @@ function host_new_graphs_save($host_id) {
 
 	debug_log_clear('new_graphs');
 
-	while (list($form_type, $form_array) = each($selected_graphs_array)) {
+	foreach ($selected_graphs_array as $form_type => $form_array) {
 		$current_form_type = $form_type;
 
-		while (list($form_id1, $form_array2) = each($form_array)) {
+		foreach ($form_array as $form_id1 => $form_array2) {
 			/* enumerate information from the arrays stored in post variables */
 
 			/* ================= input validation ================= */
@@ -222,7 +222,7 @@ function host_new_graphs_save($host_id) {
 			if ($form_type == 'cg') {
 				$graph_template_id = $form_id1;
 			}elseif ($form_type == 'sg') {
-				while (list($form_id2, $form_array3) = each($form_array2)) {
+				foreach ($form_array2 as $form_id2 => $form_array3) {
 					/* ================= input validation ================= */
 					input_validate_input_number($form_id2);
 					/* ==================================================== */
@@ -256,7 +256,7 @@ function host_new_graphs_save($host_id) {
 					debug_log_insert('new_graphs', __('ERROR: no Data Source associated. Check Template'));
 				}
 			}elseif ($current_form_type == 'sg') {
-				while (list($snmp_index, $true) = each($snmp_index_array)) {
+				foreach ($snmp_index_array as $snmp_index => $true) {
 					$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
 
 					$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg']{$snmp_query_array['snmp_query_id']});
@@ -289,8 +289,8 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 	$snmp_query_id = 0;
 	$num_output_fields = array();
 
-	while (list($form_type, $form_array) = each($selected_graphs_array)) {
-		while (list($form_id1, $form_array2) = each($form_array)) {
+	foreach ($selected_graphs_array as $form_type => $form_array) {
+		foreach ($form_array as $form_id1 => $form_array2) {
 			/* ================= input validation ================= */
 			input_validate_input_number($form_id1);
 			/* ==================================================== */
@@ -300,7 +300,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 
 				html_start_box("Create Graph from '" . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template_id)) . "'", '100%', '', '3', 'center', '');
 			}elseif ($form_type == 'sg') {
-				while (list($form_id2, $form_array3) = each($form_array2)) {
+				foreach ($form_array2 as $form_id2 => $form_array3) {
 					/* ================= input validation ================= */
 					input_validate_input_number($snmp_query_id);
 					input_validate_input_number($form_id2);
@@ -717,7 +717,7 @@ function graphs() {
 				if ($xml_array != false) {
 					/* loop through once so we can find out how many input fields there are */
 					reset($xml_array['fields']);
-					while (list($field_name, $field_array) = each($xml_array['fields'])) {
+					foreach ($xml_array['fields'] as $field_name => $field_array) {
 						if ($field_array['direction'] == 'input') {
 							$num_input_fields++;
 
@@ -874,7 +874,7 @@ function graphs() {
 
 						html_start_box('', '100%', '', '3', 'center', '');
 
-						while (list($field_name, $field_array) = each($xml_array['fields'])) {
+						foreach ($xml_array['fields'] as $field_name => $field_array) {
 							if ($field_array['direction'] == 'input' && sizeof($field_names)) {
 								foreach($field_names as $row) {
 									if ($row['field_name'] == $field_name) {
@@ -904,8 +904,7 @@ function graphs() {
 								print "<tr id='dqline$query_row' class='selectable " . (($row_counter % 2 == 0) ? 'odd' : 'even') . "'>"; $i++;
 
 								$column_counter = 0;
-								reset($xml_array['fields']);
-								while (list($field_name, $field_array) = each($xml_array['fields'])) {
+								foreach ($xml_array['fields'] as $field_name => $field_array) {
 									if ($field_array['direction'] == 'input') {
 										if (in_array($field_name, $fields)) {
 											if (isset($row[$field_name])) {

@@ -283,7 +283,7 @@ function displaySNMPValues($values, $hostId, $field, $quietMode = FALSE) {
 		echo "Known values for $field for host $hostId: (name)\n";
 	}
 
-	while (list($value, $foo) = each($values)) {
+	foreach ($values as $value => $foo) {
 		echo "$value\n";
 	}
 

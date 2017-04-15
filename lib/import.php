@@ -37,7 +37,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		return $info_array;
 	}
 
-	while (list($hash, $hash_array) = each($xml_array)) {
+	foreach ($xml_array as $hash => $hash_array) {
 		/* parse information from the hash */
 		$parsed_hash = parse_xml_hash($hash);
 
@@ -59,8 +59,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	/* the order of the $hash_type_codes array is ordered such that the items
 	with the most dependencies are last and the items with no dependencies are first.
 	this means dependencies will just magically work themselves out :) */
-	reset($hash_type_codes);
-	while (list($type, $code) = each($hash_type_codes)) {
+	foreach ($hash_type_codes as $type => $code) {
 		/* do we have any matches for this type? */
 		if (isset($dep_hash_cache[$type])) {
 			/* yes we do. loop through each match for this type */
@@ -313,8 +312,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 	$save['graph_template_id'] = $graph_template_id;
 
-	reset($struct_graph);
-	while (list($field_name, $field_array) = each($struct_graph)) {
+	foreach ($struct_graph as $field_name => $field_array) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array['graph']{'t_' . $field_name})) {
 			$save{'t_' . $field_name} = $xml_array['graph']{'t_' . $field_name};
@@ -361,7 +359,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 			$orphaned_items = array();
 		}
 
-		while (list($item_hash, $item_array) = each($xml_array['items'])) {
+		foreach ($xml_array['items'] as $item_hash => $item_array) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
 
@@ -394,8 +392,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 			$save['hash']              = $parsed_hash['hash'];
 			$save['graph_template_id'] = $graph_template_id;
 
-			reset($struct_graph_item);
-			while (list($field_name, $field_array) = each($struct_graph_item)) {
+			foreach ($struct_graph_item as $field_name => $field_array) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					/* is the value of this field a hash or not? */
@@ -443,7 +440,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 	/* import into: graph_template_input */
 	if (is_array($xml_array['inputs'])) {
-		while (list($item_hash, $item_array) = each($xml_array['inputs'])) {
+		foreach ($xml_array['inputs'] as $item_hash => $item_array) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
 
@@ -470,8 +467,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 			$save['hash']              = $parsed_hash['hash'];
 			$save['graph_template_id'] = $graph_template_id;
 
-			reset($fields_graph_template_input_edit);
-			while (list($field_name, $field_array) = each($fields_graph_template_input_edit)) {
+			foreach ($fields_graph_template_input_edit as $field_name => $field_array) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					$save[$field_name] = xml_character_decode($item_array[$field_name]);
@@ -603,8 +599,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	$save['data_template_id'] = $data_template_id;
 	$save['data_source_profile_id'] = $profile_id;
 
-	reset($struct_data_source);
-	while (list($field_name, $field_array) = each($struct_data_source)) {
+	foreach ($struct_data_source as $field_name => $field_array) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array['ds']{'t_' . $field_name})) {
 			$save{'t_' . $field_name} = $xml_array['ds']{'t_' . $field_name};
@@ -648,7 +643,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 
 	/* import into: data_template_rrd */
 	if (is_array($xml_array['items'])) {
-		while (list($item_hash, $item_array) = each($xml_array['items'])) {
+		foreach ($xml_array['items'] as $item_hash => $item_array) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
 
@@ -676,8 +671,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 			$save['hash']             = $parsed_hash['hash'];
 			$save['data_template_id'] = $data_template_id;
 
-			reset($struct_data_source_item);
-			while (list($field_name, $field_array) = each($struct_data_source_item)) {
+			foreach ($struct_data_source_item as $field_name => $field_array) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array{'t_' . $field_name})) {
 					$save{'t_' . $field_name} = $item_array{'t_' . $field_name};
@@ -723,7 +717,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	/* import into: data_input_data */
 	if (!$preview_only) {
 		if (is_array($xml_array['data'])) {
-			while (list($item_hash, $item_array) = each($xml_array['data'])) {
+			foreach ($xml_array['data'] as $item_hash => $item_array) {
 				unset($save);
 				$save['data_template_data_id'] = $data_template_data_id;
 				$save['data_input_field_id']   = resolve_hash_to_id($item_array['data_input_field_id'], $hash_cache);
@@ -780,8 +774,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 	$save['id']     = (empty($_data_query_id) ? '0' : $_data_query_id);
 	$save['hash']   = $hash;
 
-	reset($fields_data_query_edit);
-	while (list($field_name, $field_array) = each($fields_data_query_edit)) {
+	foreach ($fields_data_query_edit as $field_name => $field_array) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
 			/* is the value of this field a hash or not? */
@@ -810,7 +803,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 
 	/* import into: snmp_query_graph */
 	if (is_array($xml_array['graphs'])) {
-		while (list($item_hash, $item_array) = each($xml_array['graphs'])) {
+		foreach ($xml_array['graphs'] as $item_hash => $item_array) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
 
@@ -837,8 +830,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 			$save['hash']          = $parsed_hash['hash'];
 			$save['snmp_query_id'] = $data_query_id;
 
-			reset($fields_data_query_item_edit);
-			while (list($field_name, $field_array) = each($fields_data_query_item_edit)) {
+			foreach ($fields_data_query_item_edit as $field_name => $field_array) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					/* is the value of this field a hash or not? */
@@ -860,7 +852,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 
 				/* import into: snmp_query_graph_rrd */
 				if (is_array($item_array['rrd'])) {
-					while (list($sub_item_hash, $sub_item_array) = each($item_array['rrd'])) {
+					foreach ($item_array['rrd'] as $sub_item_hash => $sub_item_array) {
 						unset($save);
 						$save['snmp_query_graph_id']  = $data_query_graph_id;
 						$save['data_template_id']     = resolve_hash_to_id($sub_item_array['data_template_id'], $hash_cache);
@@ -878,7 +870,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 
 			/* import into: snmp_query_graph_sv */
 			if (is_array($item_array['sv_graph'])) {
-				while (list($sub_item_hash, $sub_item_array) = each($item_array['sv_graph'])) {
+				foreach ($item_array['sv_graph'] as $sub_item_hash => $sub_item_array) {
 					/* parse information from the hash */
 					$parsed_hash = parse_xml_hash($sub_item_hash);
 
@@ -923,7 +915,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 
 			/* import into: snmp_query_graph_rrd_sv */
 			if (is_array($item_array['sv_data_source'])) {
-				while (list($sub_item_hash, $sub_item_array) = each($item_array['sv_data_source'])) {
+				foreach ($item_array['sv_data_source'] as $sub_item_hash => $sub_item_array) {
 					/* parse information from the hash */
 					$parsed_hash = parse_xml_hash($sub_item_hash);
 
@@ -1001,8 +993,7 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	$save['id']   = (empty($_gprint_preset_id) ? '0' : $_gprint_preset_id);
 	$save['hash'] = $hash;
 
-	reset($fields_grprint_presets_edit);
-	while (list($field_name, $field_array) = each($fields_grprint_presets_edit)) {
+	foreach ($fields_grprint_presets_edit as $field_name => $field_array) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
 			$save[$field_name] = xml_character_decode($xml_array[$field_name]);
@@ -1035,8 +1026,7 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 		$save['id']   = 0;
 		$save['hash'] = get_hash_data_source_profile(0);
 
-		reset($fields_profile_edit);
-		while (list($field_name, $field_array) = each($fields_profile_edit)) {
+		foreach ($fields_profile_edit as $field_name => $field_array) {
 			/* make sure this field exists in the xml array first */
 			if (isset($xml_array[$field_name])) {
 				$save[$field_name] = xml_character_decode($xml_array[$field_name]);
@@ -1072,14 +1062,13 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 
 			/* import into: data_source_profiles_rra */
 			if (is_array($xml_array['items'])) {
-				while (list($item_name, $item_array) = each($xml_array['items'])) {
+				foreach ($xml_array['items'] as $item_name => $item_array) {
 					unset($save);
 
 					$save['id']                     = 0;
 					$save['data_source_profile_id'] = $dsp_id;
 
-					reset($fields_profile_rra_edit);
-					while (list($field_name, $field_array) = each($fields_profile_rra_edit)) {
+					foreach ($fields_profile_rra_edit as $field_name => $field_array) {
 						/* make sure this field exists in the xml array first */
 						if (isset($item_array[$field_name])) {
 							$save[$field_name] = xml_character_decode($item_array[$field_name]);
@@ -1129,8 +1118,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 	$save['id']   = (empty($_host_template_id) ? '0' : $_host_template_id);
 	$save['hash'] = $hash;
 
-	reset($fields_host_template_edit);
-	while (list($field_name, $field_array) = each($fields_host_template_edit)) {
+	foreach ($fields_host_template_edit as $field_name => $field_array) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
 			$save[$field_name] = xml_character_decode($xml_array[$field_name]);
@@ -1226,8 +1214,7 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	$save['id']   = (empty($_cdef_id) ? '0' : $_cdef_id);
 	$save['hash'] = $hash;
 
-	reset($fields_cdef_edit);
-	while (list($field_name, $field_array) = each($fields_cdef_edit)) {
+	foreach ($fields_cdef_edit as $field_name => $field_array) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
 			$save[$field_name] = xml_character_decode($xml_array[$field_name]);
@@ -1249,7 +1236,7 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 
 	/* import into: cdef_items */
 	if (is_array($xml_array['items'])) {
-		while (list($item_hash, $item_array) = each($xml_array['items'])) {
+		foreach ($xml_array['items'] as $item_hash => $item_array) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
 
@@ -1276,8 +1263,7 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 			$save['hash']    = $parsed_hash['hash'];
 			$save['cdef_id'] = $cdef_id;
 
-			reset($fields_cdef_item_edit);
-			while (list($field_name, $field_array) = each($fields_cdef_item_edit)) {
+			foreach ($fields_cdef_item_edit as $field_name => $field_array) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					/* check, if an inherited cdef as to be decoded (value == 5)
@@ -1352,8 +1338,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	$save['hash'] = $hash;
 
 	$fields_vdef_edit = preset_vdef_form_list();
-	reset($fields_vdef_edit);
-	while (list($field_name, $field_array) = each($fields_vdef_edit)) {
+	foreach ($fields_vdef_edit as $field_name => $field_array) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
 			$save[$field_name] = xml_character_decode($xml_array[$field_name]);
@@ -1375,7 +1360,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 
 	/* import into: vdef_items */
 	if (is_array($xml_array['items'])) {
-		while (list($item_hash, $item_array) = each($xml_array['items'])) {
+		foreach ($xml_array['items'] as $item_hash => $item_array) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
 
@@ -1403,8 +1388,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 			$save['vdef_id'] = $vdef_id;
 
 			$fields_vdef_item_edit = preset_vdef_item_form_list();
-			reset($fields_vdef_item_edit);
-			while (list($field_name, $field_array) = each($fields_vdef_item_edit)) {
+			foreach ($fields_vdef_item_edit as $field_name => $field_array) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					$save[$field_name] = xml_character_decode($item_array[$field_name]);
@@ -1459,8 +1443,7 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	$save['id']   = (empty($_data_input_id) ? '0' : $_data_input_id);
 	$save['hash'] = $hash;
 
-	reset($fields_data_input_edit);
-	while (list($field_name, $field_array) = each($fields_data_input_edit)) {
+	foreach ($fields_data_input_edit as $field_name => $field_array) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
 			/* fix issue with data input method importing and white spaces */
@@ -1489,7 +1472,7 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 
 	/* import into: data_input_fields */
 	if (is_array($xml_array['fields'])) {
-		while (list($item_hash, $item_array) = each($xml_array['fields'])) {
+		foreach ($xml_array['fields'] as $item_hash => $item_array) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
 
@@ -1516,8 +1499,7 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			$save['hash']          = $parsed_hash['hash'];
 			$save['data_input_id'] = $data_input_id;
 
-			reset($fields_data_input_field_edit);
-			while (list($field_name, $field_array) = each($fields_data_input_field_edit)) {
+			foreach ($fields_data_input_field_edit as $field_name => $field_array) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					$save[$field_name] = xml_character_decode($item_array[$field_name]);
@@ -1690,8 +1672,7 @@ function check_hash_type($hash_type) {
 	/* lets not mess up the pointer for other people */
 	$local_hash_type_codes = $hash_type_codes;
 
-	reset($local_hash_type_codes);
-	while (list($type, $code) = each($local_hash_type_codes)) {
+	foreach ($local_hash_type_codes as $type => $code) {
 		if ($code == $hash_type) {
 			$current_type = $type;
 		}
@@ -1710,8 +1691,7 @@ function check_hash_version($hash_version) {
 
 	$i = 0;
 
-	reset($hash_version_codes);
-	while (list($version, $code) = each($hash_version_codes)) {
+	foreach ($hash_version_codes as $version => $code) {
 		if ($version == $config['cacti_version']) {
 			$current_version_index = $i;
 		}
@@ -1746,8 +1726,7 @@ function get_version_index($string_version) {
 
 	$i = 0;
 
-	reset($hash_version_codes);
-	while (list($version, $code) = each($hash_version_codes)) {
+	foreach ($hash_version_codes as $version => $code) {
 		if ($string_version == $version) {
 			return $i;
 		}
@@ -1800,10 +1779,10 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 			}
 		}
 
-		while (list($type, $type_array) = each($import_debug_info)) {
+		foreach ($import_debug_info as $type => $type_array) {
 			print "<p><strong>" . $hash_type_names[$type] . "</strong></p>\n";
 
-			while (list($index, $vals) = each($type_array)) {
+			foreach ($type_array as $index => $vals) {
 				if ($vals['result'] == 'success') {
 					$result_text = "<span class='success'>" . __('[success]') . "</span>";
 				}elseif ($vals['result'] == 'fail') {
@@ -1851,7 +1830,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 					$dep_errors = false;
 
 					if ((isset($vals['dep'])) && (sizeof($vals['dep']) > 0)) {
-						while (list($dep_hash, $dep_status) = each($vals['dep'])) {
+						foreach ($vals['dep'] as $dep_hash => $dep_status) {
 							if ($dep_status == 'met') {
 								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . "</span>";
 							}else{

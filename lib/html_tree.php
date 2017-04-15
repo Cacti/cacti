@@ -422,7 +422,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 
 										if ($data_query['id'] > 0) {
 											$dhtml_tree[] = "\t\t\t\t\t\t\t<ul>\n";
-											while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+											foreach ($sort_field_data as $snmp_index => $sort_field_value) {
 												$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-dq-' . $data_query['id'] . '-' . urlencode($snmp_index) . "' data-jstree='{ \"type\" : \"graph\" }'><a class='treepick' href='" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=dqi:' . $data_query['id'] . ':' . $snmp_index) . "'>" . htmlspecialchars($sort_field_value) . "</a></li>\n";
 											}
 
@@ -1059,10 +1059,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					}
 
 					/* using the sorted data as they key; grab each snmp index from the master list */
-					while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+					foreach ($sort_field_data as $snmp_index => $sort_field_value) {
 						/* render each graph for the current data query index */
 						if (isset($snmp_index_to_graph[$snmp_index])) {
-							while (list($local_graph_id, $graph_title) = each($snmp_index_to_graph[$snmp_index])) {
+							foreach ($snmp_index_to_graph[$snmp_index] as $local_graph_id => $graph_title) {
 								/* reformat the array so it's compatable with the html_graph* area functions */
 								array_push($graph_list, array('data_query_name' => $data_query['name'], 'sort_field_value' => $sort_field_value, 'local_graph_id' => $local_graph_id, 'title_cache' => $graph_title, 'height' => $graphs_height[$graph['local_graph_id']], 'width' => $graphs_width[$graph['local_graph_id']]));
 							}

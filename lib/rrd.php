@@ -608,39 +608,38 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
-	while (list($rrd_path, $rrd_fields) = each($update_cache_array)) {
+	foreach ($update_cache_array as $rrd_path => $rrd_fields) {
 		$create_rrd_file = false;
 
-		if ((is_array($rrd_fields['times'])) && (sizeof($rrd_fields['times']))) {
-		
-		/* create the rrd if one does not already exist */
-		if(read_config_option('storage_location')) {
-			$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
-		}else {
-			$file_exists = file_exists($rrd_path);
-		}
+		if (is_array($rrd_fields['times']) && sizeof($rrd_fields['times'])) {
+			/* create the rrd if one does not already exist */
+			if (read_config_option('storage_location')) {
+				$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
+			} else {
+				$file_exists = file_exists($rrd_path);
+			}
 
-		if($file_exists === false) {
-			rrdtool_function_create($rrd_fields['local_data_id'], false, $rrdtool_pipe);
-			$create_rrd_file = true;
-		}
+			if ($file_exists === false) {
+				rrdtool_function_create($rrd_fields['local_data_id'], false, $rrdtool_pipe);
+				$create_rrd_file = true;
+			}
 
 			ksort($rrd_fields['times']);
 
-			while (list($update_time, $field_array) = each($rrd_fields['times'])) {
+			foreach ($rrd_fields['times'] as $update_time => $field_array) {
 				if (empty($update_time)) {
 					/* default the rrdupdate time to now */
 					$current_rrd_update_time = 'N';
-				}else if ($create_rrd_file == true) {
+				} elseif ($create_rrd_file == true) {
 					/* for some reason rrdtool will not let you update using times less than the
 					rrd create time */
 					$current_rrd_update_time = 'N';
-				}else{
+				} else {
 					$current_rrd_update_time = $update_time;
 				}
 
 				$i = 0; $rrd_update_template = ''; $rrd_update_values = $current_rrd_update_time . ':';
-				while (list($field_name, $value) = each($field_array)) {
+				foreach ($field_array as $field_name => $value) {
 					$rrd_update_template .= $field_name;
 
 					/* if we have "invalid data", give rrdtool an Unknown (U) */
@@ -668,14 +667,15 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 }
 
 function rrdtool_function_tune($rrd_tune_array) {
-	global $config;
+	global $config, $data_source_types;
 
 	include($config['include_path'] . '/global_arrays.php');
 
 	$data_source_name = get_data_source_item_name($rrd_tune_array['data_source_id']);
-	$data_source_type = $data_source_types{$rrd_tune_array['data-source-type']};
+	$data_source_type = $data_source_types[$rrd_tune_array['data-source-type']];
 	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
 
+	$rrd_tune = '';
 	if ($rrd_tune_array['heartbeat'] != '') {
 		$rrd_tune .= " --heartbeat $data_source_name:" . $rrd_tune_array['heartbeat'];
 	}
@@ -1375,7 +1375,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 			/* loop through each field that we want to substitute values for:
 			currently: text format and value */
-			while (list($field_name, $field_array) = each($variable_fields)) {
+			foreach ($variable_fields as $field_name => $field_array) {
 				/* certain fields do not require values when the legend is not to be shown */
 				if (($field_array['process_no_legend'] == false) && (isset($graph_data_array['graph_nolegend']))) {
 					continue;
@@ -2152,9 +2152,9 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 		include($rrdtheme);
 		
 		if (isset($rrdcolors)) {
-		foreach($rrdcolors as $colortag => $color) {
-			$graph_opts .= '--color ' . strtoupper($colortag) . '#' . strtoupper($color) . RRD_NL;
-		}
+			foreach($rrdcolors as $colortag => $color) {
+				$graph_opts .= '--color ' . strtoupper($colortag) . '#' . strtoupper($color) . RRD_NL;
+			}
 		}
 
 		if (isset($rrdborder) && $rrdversion >= 1.4) {

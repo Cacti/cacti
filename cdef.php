@@ -192,8 +192,7 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 	$save['id']   = 0;
 	$save['hash'] = get_hash_cdef(0);
 
-	reset($fields_cdef_edit);
-	while (list($field, $array) = each($fields_cdef_edit)) {
+	foreach ($fields_cdef_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method'])) {
 			$save[$field] = $cdef[$field];
 		}
@@ -446,7 +445,7 @@ function item_edit() {
 		<td>
 			<select id='type_select'>
 				<?php
-				while (list($var, $val) = each($cdef_item_types)) {
+				foreach ($cdef_item_types as $var => $val) {
 					print "<option value='cdef.php?action=item_edit" . get_request_var('id') . '&cdef_id=' . get_request_var('cdef_id') . "&type_select=$var'"; if ($var == $current_type) { print ' selected'; } print ">$val</option>\n";
 				}
 				?>

@@ -32,7 +32,7 @@
      for the extact syntax of this array */
 function draw_edit_form($array) {
 	if (sizeof($array) > 0) {
-		while (list($top_branch, $top_children) = each($array)) {
+		foreach ($array as $top_branch => $top_children) {
 			if ($top_branch == 'config') {
 				$config_array = $top_children;
 			}elseif ($top_branch == 'fields') {
@@ -43,7 +43,7 @@ function draw_edit_form($array) {
 
 	$i = 0;
 	if (sizeof($fields_array) > 0) {
-		while (list($field_name, $field_array) = each($fields_array)) {
+		foreach ($fields_array as $field_name => $field_array) {
 			if ($i == 0) {
 				if (!isset($config_array['no_form_tag'])) {
 					print "<tr style='display:none;'><td><form method='post' autocomplete='off' action='" . ((isset($config_array['post_to'])) ? $config_array['post_to'] : basename($_SERVER['PHP_SELF'])) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . "></td></tr>\n";
@@ -312,7 +312,7 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'checkbox_group':
 		print "<div id='${field_name}_group' class='checkboxgroup'>\n";
-		while (list($check_name, $check_array) = each($field_array['items'])) {
+		foreach ($field_array['items'] as $check_name => $check_array) {
 			form_checkbox(
 				$check_name, 
 				$check_array['value'], 
@@ -329,7 +329,7 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'radio':
-		while (list($radio_index, $radio_array) = each($field_array['items'])) {
+		foreach ($field_array['items'] as $radio_index => $radio_array) {
 			form_radio_button(
 				$field_name, 
 				$field_array['value'], 

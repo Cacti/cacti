@@ -766,7 +766,7 @@ function graph_edit() {
 
 			$form_array = array();
 
-			while (list($field_name, $field_array) = each($struct_graph)) {
+			foreach ($struct_graph as $field_name => $field_array) {
 				if ($field_array['method'] != 'spacer') {
 					if ($field_name != 'title') {
 						$form_array += array($field_name => $struct_graph[$field_name]);
