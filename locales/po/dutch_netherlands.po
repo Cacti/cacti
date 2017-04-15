@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-09 18:58+0200\n"
-"PO-Revision-Date: 2017-04-10 09:26+0200\n"
+"POT-Creation-Date: 2017-04-12 17:15+0200\n"
+"PO-Revision-Date: 2017-04-12 17:40+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0\n"
+"X-Generator: Poedit 2.0.1\n"
 
 #: ../about.php:29 ../lib/functions.php:2477
 msgid "About Cacti"
@@ -2750,7 +2750,7 @@ msgstr "Bijwerken van bestaande rijen toestaan?"
 
 #: ../color.php:380
 msgid "Required File Format Notes"
-msgstr ""
+msgstr "Verplichte bestandsformaat opmerkingen"
 
 #: ../color.php:383
 msgid "The file must contain a header row with the following column headings."
@@ -3101,7 +3101,7 @@ msgstr ""
 #: ../data_input.php:704 ../data_source_profiles.php:850
 #: ../data_templates.php:887
 msgid "Data Sources Using"
-msgstr ""
+msgstr "Databron gebruikt"
 
 #: ../data_input.php:704
 msgid "The number of Data Sources that use this Data Input Method."
@@ -3561,52 +3561,61 @@ msgid ""
 msgid_plural ""
 "Delete all <strong>Graph Items</strong> that reference these Data Sources."
 msgstr[0] ""
+"Verwijder alle <strong>grafiekitems</strong> die gekoppeld zijn aan deze "
+"data bron."
 msgstr[1] ""
+"Verwijder alle <strong>grafiekitems</strong> die gekoppeld zijn aan deze "
+"data bronnen."
 
 #: ../data_sources.php:453
 msgid "Delete all <strong>Graphs</strong> that reference this Data Source."
 msgid_plural ""
 "Delete all <strong>Graphs</strong> that reference these Data Sources."
 msgstr[0] ""
+"Verwijder alle <strong>grafieken</strong> die gekoppeld zijn aan deze data "
+"bron."
 msgstr[1] ""
+"Verwijder alle <strong>grafieken</strong> die gekoppeld zijn aan deze data "
+"bronnen."
 
 #: ../data_sources.php:460
 msgid "Delete Data Source"
 msgid_plural "Delete Data Sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verwijder data bron"
+msgstr[1] "Verwijder data bronnen"
 
 #: ../data_sources.php:464
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] ""
+msgstr[0] "Kies een nieuw apparaat voor deze data bron en klik op ‘Volgende’."
 msgstr[1] ""
+"Kies een nieuw apparaat voor deze data bronnen en klik op ‘Volgende’"
 
 #: ../data_sources.php:466
 msgid "New Device:"
-msgstr ""
+msgstr "Nieuw apparaat:"
 
 #: ../data_sources.php:474
 msgid "Click 'Continue' to enable the following Data Source."
 msgid_plural "Click 'Continue' to enable all following Data Sources."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Klik op  Volgende’ om de volgende data bron te activeren."
+msgstr[1] "Klik op  Volgende’ om de volgende data bronnen te activeren."
 
 #: ../data_sources.php:479
 msgid "Enable Data Source"
 msgid_plural "Enable Data Sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Activeer data bron"
+msgstr[1] "Activeer data bronnen"
 
 #: ../data_sources.php:483
 msgid "Click 'Continue' to disable the following Data Source."
 msgid_plural "Click 'Continue' to disable all following Data Sources."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Klik op ‘Volgende’ om de volgende data bron uit te schakelen."
+msgstr[1] "Klik op ‘Volgende’ om de volgende data bronnen uit te schakelen."
 
 #: ../data_sources.php:488
 msgid "Disable Data Source"
-msgstr ""
+msgstr "Deactiveer data bron"
 
 #: ../data_sources.php:492
 msgid ""
@@ -3615,15 +3624,19 @@ msgid_plural ""
 "Click 'Continue' to re-apply the suggested names to all following Data "
 "Sources."
 msgstr[0] ""
+"Klik op ‘Volgende’ om de voorgestelde naam voor de volgende data bron "
+"opnieuw toe te passen."
 msgstr[1] ""
+"Klik op ‘Volgende’ om de gesuggereerde namen voor de volgende data bron "
+"opnieuw toe te passen."
 
 #: ../data_sources.php:497
 msgid "Reapply Suggested Naming to Data Source"
-msgstr ""
+msgstr "Voorgestelde naam voor data bron opnieuw toepassen"
 
 #: ../data_sources.php:506
 msgid "You must select at least one data source."
-msgstr ""
+msgstr "U moet tenminste een data bron selecteren."
 
 #: ../data_sources.php:562 ../data_templates.php:618
 #, php-format
@@ -3641,7 +3654,7 @@ msgstr ""
 
 #: ../data_sources.php:593
 msgid "Nothing Entered"
-msgstr ""
+msgstr "Er is niets ingevoerd"
 
 #: ../data_sources.php:608 ../data_templates.php:662
 msgid "No Input Fields for the Selected Data Input Source"
@@ -3679,7 +3692,7 @@ msgstr ""
 
 #: ../data_sources.php:717
 msgid "Edit Data Template."
-msgstr ""
+msgstr "Wijzig datatemplate."
 
 #: ../data_sources.php:720 ../graphs.php:1192
 msgid "Edit Device."
@@ -3763,7 +3776,7 @@ msgstr "1 Minuut"
 #: ../data_sources.php:1141 ../graphs_items.php:259
 #, php-format
 msgid "Data Sources [%s]"
-msgstr ""
+msgstr "Data bronnen [%s]"
 
 #: ../data_sources.php:1141
 msgid "No Device"
@@ -3791,11 +3804,11 @@ msgstr "Overerfd"
 #: ../lib/functions.php:2171 ../user_admin.php:1229 ../user_group_admin.php:901
 #: ../utilities.php:273
 msgid "Data Sources"
-msgstr ""
+msgstr "Data bronnen"
 
 #: ../data_sources.php:1347 ../utilities.php:1685
 msgid "Data Source Name"
-msgstr ""
+msgstr "Data bron naam"
 
 #: ../data_sources.php:1347
 msgid ""
@@ -3849,7 +3862,7 @@ msgstr ""
 
 #: ../data_templates.php:352
 msgid "Delete Data Template(s)"
-msgstr ""
+msgstr "Verwijder datatemplate(s)"
 
 #: ../data_templates.php:356
 msgid ""
@@ -3920,11 +3933,11 @@ msgstr ""
 #: ../data_templates.php:875 ../include/global_arrays.php:788
 #: ../lib/functions.php:2153
 msgid "Data Templates"
-msgstr ""
+msgstr "Data templates"
 
 #: ../data_templates.php:884
 msgid "Data Template Name"
-msgstr ""
+msgstr "Data template naam"
 
 #: ../data_templates.php:884
 msgid "The name of this Data Template."
@@ -3948,7 +3961,7 @@ msgstr ""
 
 #: ../data_templates.php:888
 msgid "Input Method"
-msgstr ""
+msgstr "Invoer methode"
 
 #: ../data_templates.php:888
 msgid "The method that is used to place Data into the Data Source RRDfile."
@@ -3956,7 +3969,7 @@ msgstr ""
 
 #: ../data_templates.php:889
 msgid "Profile Name"
-msgstr ""
+msgstr "Profielnaam"
 
 #: ../data_templates.php:889
 msgid "The default Data Source Profile for this Data Template."
@@ -3970,7 +3983,7 @@ msgstr ""
 
 #: ../data_templates.php:914
 msgid "No Data Templates Found"
-msgstr ""
+msgstr "Geen data template gevonden"
 
 #: ../gprint_presets.php:148
 msgid "Click 'Continue' to delete the folling GPRINT Preset(s)."
@@ -4038,7 +4051,7 @@ msgstr ""
 
 #: ../graph.php:125
 msgid "CSV Export"
-msgstr ""
+msgstr "Exporteer CSV"
 
 #: ../graph.php:126
 msgid "Real-time"
@@ -4092,7 +4105,7 @@ msgstr ""
 
 #: ../graph_realtime.php:249 ../lib/html_graph.php:327 ../lib/html_tree.php:778
 msgid "Window"
-msgstr ""
+msgstr "Venster"
 
 #: ../graph_realtime.php:279
 #, php-format
@@ -4109,7 +4122,7 @@ msgstr ""
 
 #: ../graph_templates.php:36
 msgid "Sync Graphs"
-msgstr ""
+msgstr "Synchroniseer grafieken"
 
 #: ../graph_templates.php:311
 msgid ""
@@ -4119,7 +4132,7 @@ msgstr ""
 
 #: ../graph_templates.php:316
 msgid "Delete Graph Template(s)"
-msgstr ""
+msgstr "Verwijder grafiektemplate(s)"
 
 #: ../graph_templates.php:320
 msgid ""
@@ -4139,11 +4152,11 @@ msgstr ""
 
 #: ../graph_templates.php:339 ../lib/html_reports.php:117
 msgid "Graph Height"
-msgstr ""
+msgstr "Grafiekhoogte"
 
 #: ../graph_templates.php:341 ../lib/html_reports.php:109
 msgid "Graph Width"
-msgstr ""
+msgstr "Grafiekbreedte"
 
 #: ../graph_templates.php:346
 msgid "Resize Selected Graph Template(s)"
@@ -4175,16 +4188,16 @@ msgstr ""
 
 #: ../graph_templates.php:445
 msgid "No Inputs"
-msgstr ""
+msgstr "Geen invoer"
 
 #: ../graph_templates.php:493
 #, php-format
 msgid "Template [edit: %s]"
-msgstr ""
+msgstr "Template [wijzig: %s]"
 
 #: ../graph_templates.php:495
 msgid "Template [new]"
-msgstr ""
+msgstr "Template [nieuw]"
 
 #: ../graph_templates.php:511
 msgid "Graph Template Options"
@@ -4199,7 +4212,7 @@ msgstr ""
 #: ../include/global_arrays.php:787 ../lib/functions.php:2093
 #: ../user_group_admin.php:1036
 msgid "Graph Templates"
-msgstr ""
+msgstr "Grafiektemplates"
 
 #: ../graph_templates.php:758
 msgid "The name of this Graph Template."
@@ -4223,7 +4236,7 @@ msgstr ""
 
 #: ../graph_templates.php:762
 msgid "Vertical Label"
-msgstr ""
+msgstr "Verticaal label"
 
 #: ../graph_templates.php:763
 msgid ""
@@ -4246,7 +4259,7 @@ msgstr ""
 
 #: ../graph_templates_inputs.php:193
 msgid "Associated Graph Items"
-msgstr ""
+msgstr "Gekoppelde grafiekitems"
 
 #: ../graph_templates_inputs.php:194
 msgid "Select the graph items that you want to accept user input for."
@@ -4259,15 +4272,15 @@ msgstr ""
 
 #: ../graph_view.php:236
 msgid "YOU DO NOT HAVE RIGHTS FOR TREE VIEW"
-msgstr ""
+msgstr "U HEEFT GEEN RECHTEN VOOR DE BOOMSTRUCTUURWEERGAVE"
 
 #: ../graph_view.php:314
 msgid "YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW"
-msgstr ""
+msgstr "U HEEFT GEEN RECHTEN VOOR DE VOORVERTONINGWEERGAVE"
 
 #: ../graph_view.php:320
 msgid "Graph Preview Filters"
-msgstr ""
+msgstr "Grafiek voorvertoning filters"
 
 #: ../graph_view.php:320
 msgid "[ Custom Graph List Applied - Filtering from List ]"
@@ -4290,29 +4303,29 @@ msgstr ""
 #: ../lib/html_graph.php:386 ../lib/html_tree.php:616 ../lib/html_tree.php:833
 #: ../lib/html_tree.php:838
 msgid "All Graphs & Templates"
-msgstr ""
+msgstr "Alle grafiektemplates"
 
 #: ../graph_view.php:571 ../graph_view.php:631
 msgid "View"
-msgstr ""
+msgstr "Weergeven"
 
 #: ../graph_view.php:571 ../graph_view.php:631 ../include/global_arrays.php:768
 #: ../lib/clog_webapi.php:227
 msgid "View Graphs"
-msgstr ""
+msgstr "Toon grafieken"
 
 #: ../graph_view.php:613
 msgid "Graph Size"
-msgstr ""
+msgstr "Grafiekgrootte"
 
 #: ../graph_view.php:749 ../lib/html_graph.php:383 ../lib/html_tree.php:835
 #: ../settings.php:223
 msgid "Templates Selected"
-msgstr ""
+msgstr "Templates geselecteerd"
 
 #: ../graphs.php:45 ../graphs.php:798 ../lib/functions.php:1967
 msgid "Change Graph Template"
-msgstr ""
+msgstr "Wijzig grafiektemplate"
 
 #: ../graphs.php:52
 msgid "Create Aggregate Graph"
@@ -4357,7 +4370,7 @@ msgstr ""
 
 #: ../graphs.php:780
 msgid "New Graph Template"
-msgstr ""
+msgstr "Nieuw grafiektemplate"
 
 #: ../graphs.php:802
 msgid ""
@@ -4375,7 +4388,7 @@ msgstr ""
 
 #: ../graphs.php:819
 msgid "New Device"
-msgstr ""
+msgstr "Nieuw apparaat"
 
 #: ../graphs.php:831
 msgid ""
@@ -4397,7 +4410,7 @@ msgstr ""
 
 #: ../graphs.php:888
 msgid "Please confirm"
-msgstr ""
+msgstr "Bevestig alstublieft"
 
 #: ../graphs.php:936
 msgid "Resize Selected Graph(s)"
@@ -4452,7 +4465,7 @@ msgstr ""
 
 #: ../graphs.php:1189
 msgid "Edit Graph Template."
-msgstr ""
+msgstr "Wijzig grafiektemplate."
 
 #: ../graphs.php:1195
 msgid "Unlock Graph."
@@ -4464,7 +4477,7 @@ msgstr "Vergrendel grafiek."
 
 #: ../graphs.php:1221
 msgid "Selected Graph Template"
-msgstr ""
+msgstr "Geselecteerde grafiektemplate"
 
 #: ../graphs.php:1222
 #, php-format
@@ -4484,20 +4497,20 @@ msgstr ""
 
 #: ../graphs.php:1271
 msgid "Graph Fields"
-msgstr ""
+msgstr "Grafiekveld"
 
 #: ../graphs.php:1272
 msgid "Graph Item Fields"
-msgstr ""
+msgstr "Grafiek item veld"
 
 #: ../graphs.php:1504 ../lib/functions.php:1955
 msgid "Graph Management"
-msgstr ""
+msgstr "Beheer grafiek"
 
 #: ../graphs.php:1645 ../include/global_form.php:1824
 #: ../lib/html_reports.php:385 ../tree.php:677
 msgid "Graph Name"
-msgstr ""
+msgstr "Grafieknaam"
 
 #: ../graphs.php:1645
 msgid ""
@@ -4522,26 +4535,26 @@ msgstr ""
 
 #: ../graphs_items.php:257
 msgid "Data Sources [No Device]"
-msgstr ""
+msgstr "Data bron [geen apparaat]"
 
 #: ../graphs_items.php:292 ../include/global_arrays.php:939
 #: ../include/global_form.php:1531
 msgid "Data Template"
-msgstr ""
+msgstr "Data template"
 
 #: ../graphs_items.php:344
 #, php-format
 msgid "Graph Items [graph: %s]"
-msgstr ""
+msgstr "Grafiekitems [grafiek: %s]"
 
 #: ../graphs_new.php:75
 msgid "Default Settings Saved"
-msgstr ""
+msgstr "Standaardinstellingen opgeslagen"
 
 #: ../graphs_new.php:245 ../graphs_new.php:261
 #, php-format
 msgid "Created graph: %s"
-msgstr ""
+msgstr "Grafiek: %s gemaakt"
 
 #: ../graphs_new.php:253 ../graphs_new.php:269
 msgid "ERROR: no Data Source associated. Check Template"
@@ -4592,7 +4605,7 @@ msgstr ""
 
 #: ../graphs_new.php:518
 msgid "Graph Types"
-msgstr ""
+msgstr "Grafiektype"
 
 #: ../graphs_new.php:523
 msgid "Graph Template Based"
@@ -4604,7 +4617,7 @@ msgstr "Wijzig dit apparaat"
 
 #: ../graphs_new.php:560
 msgid "Create New Device"
-msgstr ""
+msgstr "Maak nieuw apparaat"
 
 #: ../graphs_new.php:616 ../graphs_new.php:891 ../user_admin.php:1576
 #: ../user_group_admin.php:1251
@@ -4618,12 +4631,12 @@ msgstr "Maken"
 
 #: ../graphs_new.php:682
 msgid "(Select a graph type to create)"
-msgstr ""
+msgstr "(Selecteer een type grafiek om te maken)"
 
 #: ../graphs_new.php:767
 #, php-format
 msgid "Data Query [%s]"
-msgstr ""
+msgstr "Data query [%s]"
 
 #: ../graphs_new.php:887
 msgid "From there you can get more information."
@@ -4653,7 +4666,7 @@ msgstr ""
 
 #: ../graphs_new.php:963
 msgid "Make selection default"
-msgstr ""
+msgstr "Maak standaardselectie"
 
 #: ../graphs_new.php:963
 msgid "Set Default"
@@ -4661,11 +4674,11 @@ msgstr "Stel in als standaard"
 
 #: ../host.php:40
 msgid "Change Device Settings"
-msgstr ""
+msgstr "Wijzig apparaat instellingen"
 
 #: ../host.php:41
 msgid "Clear Statistics"
-msgstr ""
+msgstr "Statistieken opschonen"
 
 #: ../host.php:43
 msgid "Sync to Device Template"
@@ -4673,19 +4686,19 @@ msgstr ""
 
 #: ../host.php:420
 msgid "Click 'Continue' to enable the following Device(s)."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende appara(a)t(en) in te schakelen."
 
 #: ../host.php:425
 msgid "Enable Device(s)"
-msgstr ""
+msgstr "Appara(a)t(en) inschakelen"
 
 #: ../host.php:429
 msgid "Click 'Continue' to disable the following Device(s)."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende appara(a)t(en) uit te schakelen."
 
 #: ../host.php:434
 msgid "Disable Device(s)"
-msgstr ""
+msgstr "Appara(a)t(en) uitschakelen"
 
 #: ../host.php:438
 msgid ""
@@ -4696,7 +4709,7 @@ msgstr ""
 
 #: ../host.php:461
 msgid "Update this Field"
-msgstr ""
+msgstr "Dit veld bijwerken"
 
 #: ../host.php:476
 msgid "Change Device(s) SNMP Options"
@@ -4718,7 +4731,7 @@ msgstr ""
 
 #: ../host.php:494
 msgid "Synchronize Device(s)"
-msgstr ""
+msgstr "Synchroniseer appara(a)t(en)"
 
 #: ../host.php:498
 msgid "Click 'Continue' to delete the following Device(s)."
@@ -4736,7 +4749,7 @@ msgstr ""
 
 #: ../host.php:508
 msgid "Delete Device(s)"
-msgstr ""
+msgstr "Verwijder appara(a)t(en)"
 
 #: ../host.php:512
 msgid ""
@@ -4762,32 +4775,32 @@ msgstr ""
 
 #: ../host.php:638
 msgid "Device [new]"
-msgstr ""
+msgstr "Apparaat [nieuw]"
 
 #: ../host.php:644
 #, php-format
 msgid "Device [edit: %s]"
-msgstr ""
+msgstr "Apparaat [wijzig: %s]"
 
 #: ../host.php:646
 msgid "Disable Device Debug"
-msgstr ""
+msgstr "Apparaat debug uitschakelen"
 
 #: ../host.php:648
 msgid "Enable Device Debug"
-msgstr ""
+msgstr "Apparaat debug inschakelen"
 
 #: ../host.php:662
 msgid "Create Graphs for this Device"
-msgstr ""
+msgstr "Maak grafieken voor dit apparaat"
 
 #: ../host.php:664
 msgid "Data Source List"
-msgstr ""
+msgstr "Data bron lijst"
 
 #: ../host.php:665
 msgid "Graph List"
-msgstr ""
+msgstr "Grafieklijst"
 
 #: ../host.php:671
 msgid "Contacting Device"
@@ -4799,11 +4812,11 @@ msgstr ""
 
 #: ../host.php:704 ../templates_import.php:141
 msgid "Hide"
-msgstr ""
+msgstr "Verbergen"
 
 #: ../host.php:771
 msgid "Edit"
-msgstr ""
+msgstr "Wijzig"
 
 #: ../host.php:771
 msgid "Is Being Graphed"
@@ -4843,11 +4856,11 @@ msgstr ""
 
 #: ../host.php:868
 msgid "Fail"
-msgstr ""
+msgstr "Mislukt"
 
 #: ../host.php:868 ../lib/functions.php:3720 ../lib/functions.php:3725
 msgid "Success"
-msgstr ""
+msgstr "Gelukt"
 
 #: ../host.php:878
 msgid "No Associated Data Queries."
@@ -4855,59 +4868,59 @@ msgstr ""
 
 #: ../host.php:887 ../host_templates.php:560
 msgid "Add Data Query"
-msgstr ""
+msgstr "Data query toevoegen"
 
 #: ../host.php:899
 msgid "Add Data Query to Device"
-msgstr ""
+msgstr "Data query toevoegen aan apparaat"
 
 #: ../host.php:1008 ../include/global_arrays.php:388
 msgid "Ping and SNMP Uptime"
-msgstr ""
+msgstr "Ping en SNMP uptime"
 
 #: ../host.php:1009 ../include/global_arrays.php:390
 msgid "SNMP Uptime"
-msgstr ""
+msgstr "SNMP uptime"
 
 #: ../host.php:1010 ../include/global_arrays.php:393
 msgid "Ping"
-msgstr ""
+msgstr "Ping"
 
 #: ../host.php:1011 ../include/global_arrays.php:389
 msgid "Ping or SNMP Uptime"
-msgstr ""
+msgstr "Ping of SNMP uptime"
 
 #: ../host.php:1012 ../include/global_arrays.php:391
 msgid "SNMP Desc"
-msgstr ""
+msgstr "SNMP Desc"
 
 #: ../host.php:1013
 msgid "SNMP GetNext"
-msgstr ""
+msgstr "SNMP GetNext"
 
 #: ../host.php:1275 ../include/global_settings.php:296
 msgid "Site"
-msgstr ""
+msgstr "Website"
 
 #: ../host.php:1351 ../lib/api_automation.php:164
 #: ../lib/api_automation.php:1022
 msgid "Not Up"
-msgstr ""
+msgstr "Niet online"
 
 #: ../host.php:1354 ../lib/api_automation.php:167
 #: ../lib/api_automation.php:1025 ../lib/html_utility.php:735 ../pollers.php:41
 msgid "Recovering"
-msgstr ""
+msgstr "Herstellende"
 
 #: ../host.php:1355 ../lib/api_automation.php:168
 #: ../lib/api_automation.php:1026 ../lib/html_utility.php:744
 #: ../plugins.php:166 ../utilities.php:2023
 msgid "Unknown"
-msgstr ""
+msgstr "Onbekend"
 
 #: ../host.php:1463 ../lib/api_automation.php:557
 msgid "Device Description"
-msgstr ""
+msgstr "Apparaatbeschrijving"
 
 #: ../host.php:1463
 msgid "The name by which this Device will be referred to."
@@ -4925,7 +4938,7 @@ msgstr ""
 #: ../lib/api_automation.php:1141 ../managers.php:222 ../pollers.php:82
 #: ../pollers.php:600 ../user_admin.php:1229 ../user_group_admin.php:901
 msgid "Hostname"
-msgstr ""
+msgstr "Hostname"
 
 #: ../host.php:1465
 msgid ""
@@ -4952,7 +4965,7 @@ msgstr ""
 
 #: ../host.php:1469
 msgid "In State"
-msgstr ""
+msgstr "In staat"
 
 #: ../host.php:1469
 msgid "The amount of time that this Device has been in its current state."
@@ -4964,7 +4977,7 @@ msgstr ""
 
 #: ../host.php:1471
 msgid "Poll Time"
-msgstr ""
+msgstr "Poll tijd"
 
 #: ../host.php:1471
 msgid "The amount of time it takes to collect data from this Device."
@@ -4972,7 +4985,7 @@ msgstr ""
 
 #: ../host.php:1472
 msgid "Current (ms)"
-msgstr ""
+msgstr "Huidig (ms)"
 
 #: ../host.php:1472
 msgid "The current ping time in milliseconds to reach the Device."
@@ -4980,7 +4993,7 @@ msgstr ""
 
 #: ../host.php:1473
 msgid "Average (ms)"
-msgstr ""
+msgstr "Gemiddeld (ms)"
 
 #: ../host.php:1473
 msgid ""
@@ -4990,7 +5003,7 @@ msgstr ""
 
 #: ../host.php:1474
 msgid "Availability"
-msgstr ""
+msgstr "Beschikbaarheid"
 
 #: ../host.php:1474
 msgid ""
@@ -5000,7 +5013,7 @@ msgstr ""
 
 #: ../host_templates.php:32
 msgid "Sync Devices"
-msgstr ""
+msgstr "Synchroniseer apparaten"
 
 #: ../host_templates.php:257
 msgid "Click 'Continue' to delete the following Device Template(s)."
@@ -5008,7 +5021,7 @@ msgstr ""
 
 #: ../host_templates.php:262
 msgid "Delete Device Template(s)"
-msgstr ""
+msgstr "Verwijder apparaattemplate(s)"
 
 #: ../host_templates.php:266
 msgid ""
@@ -5018,7 +5031,7 @@ msgstr ""
 
 #: ../host_templates.php:276
 msgid "Duplicate Device Template(s)"
-msgstr ""
+msgstr "Dupliceer apparaattemplate(s)"
 
 #: ../host_templates.php:280
 msgid ""
@@ -5029,7 +5042,7 @@ msgstr ""
 
 #: ../host_templates.php:287
 msgid "Sync Devices to Device Template(s)"
-msgstr ""
+msgstr "Synchroniseer apparaten naar apparaattemplate(s)"
 
 #: ../host_templates.php:290
 msgid "You must select at least one host template."
@@ -5044,7 +5057,7 @@ msgstr ""
 #: ../host_templates.php:330
 #, php-format
 msgid "Graph Template Name: %s"
-msgstr ""
+msgstr "Grafiek template naam: %s"
 
 #: ../host_templates.php:389
 msgid ""
@@ -5055,16 +5068,16 @@ msgstr ""
 #: ../host_templates.php:390
 #, php-format
 msgid "Data Query Name: %s"
-msgstr ""
+msgstr "Data bron naam: %s"
 
 #: ../host_templates.php:443
 #, php-format
 msgid "Device Templates [edit: %s]"
-msgstr ""
+msgstr "Apparaattemplate [wijzig: %s]"
 
 #: ../host_templates.php:445
 msgid "Device Templates [new]"
-msgstr ""
+msgstr "Apparaattemplate [nieuw]"
 
 #: ../host_templates.php:462
 msgid "Default Submit Button"
@@ -5086,7 +5099,7 @@ msgstr ""
 #: ../host_templates.php:803 ../include/global_arrays.php:789
 #: ../lib/functions.php:2129
 msgid "Device Templates"
-msgstr ""
+msgstr "Apparaattemplate"
 
 #: ../host_templates.php:725
 msgid "Has Devices"
@@ -5128,11 +5141,11 @@ msgstr ""
 #: ../include/auth.php:115 ../include/auth.php:117 ../permission_denied.php:30
 #: ../permission_denied.php:32
 msgid "Login Again"
-msgstr ""
+msgstr "Log nogmaals in"
 
 #: ../include/auth.php:123 ../include/auth.php:144 ../permission_denied.php:58
 msgid "Permission Denied"
-msgstr ""
+msgstr "Toegang geweigerd"
 
 #: ../include/auth.php:146 ../permission_denied.php:60
 msgid ""
@@ -5145,7 +5158,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:29
 msgid "Save Successful."
-msgstr ""
+msgstr "Succesvol opgeslagen."
 
 #: ../include/global_arrays.php:32
 msgid "Save Failed."
@@ -5174,7 +5187,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:50
 msgid "Username already in use."
-msgstr ""
+msgstr "Gebruikersnaam is al in gebruik."
 
 #: ../include/global_arrays.php:53
 msgid "XML: Cacti version does not exist."
@@ -5194,7 +5207,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:65
 msgid "Username already exists."
-msgstr ""
+msgstr "Gebruikersnaam bestaat al."
 
 #: ../include/global_arrays.php:68
 msgid "Username change not permitted for designated template or guest user."
@@ -5314,68 +5327,68 @@ msgstr ""
 
 #: ../include/global_arrays.php:140
 msgid "Report Saved"
-msgstr ""
+msgstr "Rapport opgeslagen"
 
 #: ../include/global_arrays.php:143
 msgid "Report Save Failed"
-msgstr ""
+msgstr "Rapport niet opgeslagen"
 
 #: ../include/global_arrays.php:146
 msgid "Report Item Saved"
-msgstr ""
+msgstr "Rapportitem opgeslagen"
 
 #: ../include/global_arrays.php:149
 msgid "Report Item Save Failed"
-msgstr ""
+msgstr "Rapportitem niet opgeslagen"
 
 #: ../include/global_arrays.php:241 ../include/global_arrays.php:547
 msgid "Function"
-msgstr ""
+msgstr "Functie"
 
 #: ../include/global_arrays.php:242 ../include/global_arrays.php:549
 msgid "Special Data Source"
-msgstr ""
+msgstr "Speciale data bron"
 
 #: ../include/global_arrays.php:243 ../include/global_arrays.php:551
 msgid "Custom String"
-msgstr ""
+msgstr "Aangepaste waarde"
 
 #: ../include/global_arrays.php:251 ../include/global_arrays.php:260
 msgid "SNMP Get"
-msgstr ""
+msgstr "SNMP get"
 
 #: ../include/global_arrays.php:252
 msgid "SNMP Query"
-msgstr ""
+msgstr "SNMP query"
 
 #: ../include/global_arrays.php:253 ../include/global_arrays.php:261
 msgid "Script/Command"
-msgstr ""
+msgstr "Script/Opdracht"
 
 #: ../include/global_arrays.php:254
 msgid "Script Query"
-msgstr ""
+msgstr "Script query"
 
 #: ../include/global_arrays.php:255 ../include/global_arrays.php:262
 #: ../utilities.php:1594
 msgid "Script Server"
-msgstr ""
+msgstr "Script server"
 
 #: ../include/global_arrays.php:256
 msgid "Script Query - Script Server"
-msgstr ""
+msgstr "Script query - Script server"
 
 #: ../include/global_arrays.php:267
 msgid "Uptime Goes Backwards"
-msgstr ""
+msgstr "Uptime gaat achteruit"
 
 #: ../include/global_arrays.php:268
 msgid "Index Count Changed"
-msgstr ""
+msgstr "Index gewijzigd"
 
 #: ../include/global_arrays.php:269
 msgid "Verify All Fields"
-msgstr ""
+msgstr "Verifieer alle velden"
 
 #: ../include/global_arrays.php:273
 msgid "SNMP Field Name (Dropdown)"
@@ -5391,154 +5404,155 @@ msgstr ""
 
 #: ../include/global_arrays.php:294 ../include/global_arrays.php:300
 msgid "Normal"
-msgstr ""
+msgstr "Normaal"
 
 #: ../include/global_arrays.php:295
 msgid "Light"
-msgstr ""
+msgstr "Licht"
 
 #: ../include/global_arrays.php:296 ../include/global_arrays.php:301
 msgid "Mono"
-msgstr ""
+msgstr "Mono"
 
 #: ../include/global_arrays.php:305
 msgid "North"
-msgstr ""
+msgstr "Noord"
 
 #: ../include/global_arrays.php:306
 msgid "South"
-msgstr ""
+msgstr "Zuid"
 
 #: ../include/global_arrays.php:307
 msgid "West"
-msgstr ""
+msgstr "West"
 
 #: ../include/global_arrays.php:308
 msgid "East"
-msgstr ""
+msgstr "Oost"
 
 #: ../include/global_arrays.php:313
 msgid "Left"
-msgstr ""
+msgstr "Links"
 
 #: ../include/global_arrays.php:314
 msgid "Right"
-msgstr ""
+msgstr "Rechts"
 
 #: ../include/global_arrays.php:315
 msgid "Justified"
-msgstr ""
+msgstr "Uitgelijnd"
 
 #: ../include/global_arrays.php:316
 msgid "Center"
-msgstr ""
+msgstr "Centraal"
 
 #: ../include/global_arrays.php:320
 msgid "Top -> Down"
-msgstr ""
+msgstr "Boven -> Beneden"
 
 #: ../include/global_arrays.php:321
 msgid "Bottom -> Up"
-msgstr ""
+msgstr "Beneden -> Boven"
 
 #: ../include/global_arrays.php:325
 msgid "Numeric"
-msgstr ""
+msgstr "Numeriek"
 
 #: ../include/global_arrays.php:326
 msgid "Timestamp"
-msgstr ""
+msgstr "Timestamp"
 
 #: ../include/global_arrays.php:327
 msgid "Duration"
-msgstr ""
+msgstr "Duur"
 
 #: ../include/global_arrays.php:358
 msgid "Not In Use"
-msgstr ""
+msgstr "Niet in gebruik"
 
 #: ../include/global_arrays.php:359 ../include/global_arrays.php:360
 #: ../include/global_arrays.php:361 ../include/global_arrays.php:517
 #: ../include/global_arrays.php:518
 #, php-format
 msgid "Version %d"
-msgstr ""
+msgstr "versie %d"
 
 #: ../include/global_arrays.php:365
 msgid "MD5 (default)"
-msgstr ""
+msgstr "MD5 (standaard)"
 
 #: ../include/global_arrays.php:366
 msgid "SHA"
-msgstr ""
+msgstr "SHA"
 
 #: ../include/global_arrays.php:370
 msgid "[None]"
-msgstr ""
+msgstr "[Geen]"
 
 #: ../include/global_arrays.php:371
 msgid "DES (default)"
-msgstr ""
+msgstr "DES (standaard)"
 
 #: ../include/global_arrays.php:372
 msgid "AES"
-msgstr ""
+msgstr "AES"
 
 #: ../include/global_arrays.php:381
 msgid "Logfile Only"
-msgstr ""
+msgstr "Uitsluitend logbestand "
 
 #: ../include/global_arrays.php:382
 msgid "Logfile and Syslog/Eventlog"
-msgstr ""
+msgstr "Logbestand en syslog/eventlog"
 
 #: ../include/global_arrays.php:383
 msgid "Syslog/Eventlog Only"
-msgstr ""
+msgstr "Uitsluitend syslog/eventlog"
 
 #: ../include/global_arrays.php:392
 msgid "SNMP getNext"
-msgstr ""
+msgstr "SNMP getNext"
 
 #: ../include/global_arrays.php:397
 msgid "ICMP Ping"
-msgstr ""
+msgstr "ICMP ping"
 
 #: ../include/global_arrays.php:398
 msgid "TCP Ping"
-msgstr ""
+msgstr "TCP ping"
 
 #: ../include/global_arrays.php:399
 msgid "UDP Ping"
-msgstr ""
+msgstr "UDP ping"
 
 #: ../include/global_arrays.php:403
 msgid "NONE - Syslog Only if Selected"
-msgstr ""
+msgstr "GEEN - Uitsluitend syslog indien geselecteerd"
 
 #: ../include/global_arrays.php:404
 msgid "LOW - Statistics and Errors"
-msgstr ""
+msgstr "LAAG - Statistieken en foutmeldingen"
 
 #: ../include/global_arrays.php:405
 msgid "MEDIUM - Statistics, Errors and Results"
-msgstr ""
+msgstr "MEDIUM - Statistieken, foutmeldingen en resultaten"
 
 #: ../include/global_arrays.php:406
 msgid "HIGH - Statistics, Errors, Results and Major I/O Events"
 msgstr ""
+"HOOG - Statistieken, foutmeldingen, resultaten en grote I/O gebeurtenissen"
 
 #: ../include/global_arrays.php:407
 msgid "DEBUG - Statistics, Errors, Results, I/O and Program Flow"
-msgstr ""
+msgstr "DEBUG - Statistieken, foutmeldingen, resultaten, I/O en programma flow"
 
 #: ../include/global_arrays.php:408
 msgid "DEVEL - Developer DEBUG Level"
-msgstr ""
+msgstr "DEVEL - Ontwikkelaar DEBUG meldingen"
 
 #: ../include/global_arrays.php:417
 msgid "Selected Poller Interval"
-msgstr ""
+msgstr "Selecteer poller interval"
 
 #: ../include/global_arrays.php:432 ../include/global_arrays.php:433
 #: ../include/global_arrays.php:434 ../include/global_arrays.php:435
@@ -5546,23 +5560,23 @@ msgstr ""
 #: ../include/global_arrays.php:468 ../include/global_arrays.php:469
 #, php-format
 msgid "Every %d Seconds"
-msgstr ""
+msgstr "Iedere %d seconden"
 
 #: ../include/global_arrays.php:436 ../include/global_arrays.php:470
 #: ../include/global_arrays.php:484
 msgid "Every Minute"
-msgstr ""
+msgstr "Iedere minuut"
 
 #: ../include/global_arrays.php:437 ../include/global_arrays.php:438
 #: ../include/global_arrays.php:439 ../include/global_arrays.php:440
 #: ../include/global_arrays.php:471 ../include/global_arrays.php:485
 #, php-format
 msgid "Every %d Minutes"
-msgstr ""
+msgstr "Iedere %d minuten"
 
 #: ../include/global_arrays.php:441
 msgid "Every Hour"
-msgstr ""
+msgstr "Ieder uur"
 
 #: ../include/global_arrays.php:442 ../include/global_arrays.php:443
 #: ../include/global_arrays.php:1400 ../include/global_arrays.php:1401
@@ -5571,47 +5585,47 @@ msgstr ""
 #: ../include/global_settings.php:1727
 #, php-format
 msgid "Every %d Hours"
-msgstr ""
+msgstr "Iedere %d uren"
 
 #: ../include/global_arrays.php:462 ../include/global_settings.php:1073
 msgid "1 Day"
-msgstr ""
+msgstr "1 Dag"
 
 #: ../include/global_arrays.php:475
 msgid "1 Thread (default)"
-msgstr ""
+msgstr "1 Thread (standaard)"
 
 #: ../include/global_arrays.php:500
 msgid "Builtin Authentication"
-msgstr ""
+msgstr "Ingebouwde authenticatie"
 
 #: ../include/global_arrays.php:501
 msgid "Web Basic Authentication"
-msgstr ""
+msgstr "Web basic authenticatie"
 
 #: ../include/global_arrays.php:505
 msgid "LDAP Authentication"
-msgstr ""
+msgstr "LDAP authenticatie"
 
 #: ../include/global_arrays.php:506
 msgid "Multiple LDAP/AD Domains"
-msgstr ""
+msgstr "Meerdere LDAP/AD domeinen"
 
 #: ../include/global_arrays.php:510 ../lib/auth.php:287
 msgid "LDAP"
-msgstr ""
+msgstr "LDAP"
 
 #: ../include/global_arrays.php:511
 msgid "Active Directory"
-msgstr ""
+msgstr "Active Directory"
 
 #: ../include/global_arrays.php:523 ../include/global_settings.php:1291
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #: ../include/global_arrays.php:524 ../include/global_settings.php:1291
 msgid "TLS"
-msgstr ""
+msgstr "TLS"
 
 #: ../include/global_arrays.php:528
 msgid "No Searching"
@@ -5666,7 +5680,7 @@ msgstr ""
 #: ../include/global_arrays.php:578 ../include/global_arrays.php:624
 #: ../include/global_arrays.php:1225 ../include/global_arrays.php:1389
 msgid "Graph"
-msgstr ""
+msgstr "Grafiek"
 
 #: ../include/global_arrays.php:584
 msgid "Data Query Index"
