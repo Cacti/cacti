@@ -36,7 +36,6 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	$database_total_queries = 0;
 
 	$i = 0;
-	$error = '';
 	if (isset($database_sessions["$device:$port:$db_name"])) {
 		return $database_sessions["$device:$port:$db_name"];
 	}
@@ -48,8 +47,8 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$device = '127.0.0.1';
 		}
 
-		$flags[PDO::ATTR_PERSISTENT] =  true;
-		$flags[PDO::MYSQL_ATTR_FOUND_ROWS] =  true;
+		$flags[PDO::ATTR_PERSISTENT] = true;
+		$flags[PDO::MYSQL_ATTR_FOUND_ROWS] = true;
 		if ($db_ssl) {
 			// PDO requires paths to certificates for SSL support, will have to figure out the best way to handle this
 			// I believe they can instead setup these parameters in their mysql config file in [client]
@@ -89,27 +88,29 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 /* db_close - closes the open connection
    @returns - the result of the close command */
-function db_close($db_conn = FALSE) {
+function db_close($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	$db_conn = null;
 	$database_sessions["$database_hostname:$database_port:$database_default"] = null;
 
-	return TRUE;
+	return true;
 }
 
 /* db_execute - run an sql query and do not return any output
    @param $sql - the sql query to execute
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
-function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
+function db_execute($sql, $log = true, $db_conn = false) {
 	return db_execute_prepared($sql, array(), $log, $db_conn);
 }
 
@@ -117,20 +118,22 @@ function db_execute($sql, $log = TRUE, $db_conn = FALSE) {
    @param $sql - the sql query to execute
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
-function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
+function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
 	$database_total_queries++;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	$sql = trim(str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql), ';');
 
-	cacti_log('DEVEL: SQL Exec: "' . $sql . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	cacti_log('DEVEL: SQL Exec: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	$errors = 0;
 	$db_conn->affected_rows = 0;
@@ -153,13 +156,13 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 			$db_conn->affected_rows = $query->rowCount();
 			$query->closeCursor();
 			unset($query);
-			return TRUE;
+			return true;
 		} elseif ($log) {
 			if ($en == 1213 || $en == 1205) { 
 				$errors++;
 				if ($errors > 30) {
-					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", TRUE, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					return FALSE;
+					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+					return false;
 				} else {
 					usleep(500000);
 					continue;
@@ -168,26 +171,26 @@ function db_execute_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FAL
 				if (strlen($sql) > 1024) {
 					$sql = substr($sql, 0, 1024) . '...';
 				}
-				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", FALSE, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], FALSE, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 				cacti_debug_backtrace('SQL');
-				return FALSE;
+				return false;
 			} else {
 				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", FALSE, 'DBCALL');
-				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], FALSE);
+				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], false);
 				cacti_debug_backtrace('SQL');
-				return FALSE;
+				return false;
 			}
 		}else{
 			$query->closeCursor();
 			unset($query);
-			return FALSE;
+			return false;
 		}
 	}
 
 	unset($query);
 
-	return FALSE;
+	return false;
 }
 
 
@@ -207,20 +210,22 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
    @param $col_name - use this column name instead of the first one
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
-function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = TRUE, $db_conn = FALSE) {
+function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
 	$database_total_queries++;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	$sql = str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql);
 
-	cacti_log('DEVEL: SQL Cell: "' . $sql . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	cacti_log('DEVEL: SQL Cell: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	$db_conn->affected_rows = 0;
 	$query = $db_conn->prepare($sql);
@@ -239,23 +244,25 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = T
 				return reset($q[0]);
 			}
 		}
-		return FALSE;
+		return false;
 	}else if ($log) {
-		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
-		cacti_log('ERROR: SQL Cell Failed!, Error: ' . $errorinfo[2], FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log('ERROR: SQL Cell Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_debug_backtrace('SQL');
 	}
 
-	if (isset($query)) unset($query);
+	if (isset($query)) {
+		unset($query);
+	}
 
-	return FALSE;
+	return false;
 }
 
 /* db_fetch_row - run a 'select' sql query and return the first row found
    @param $sql - the sql query to execute
    @param $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
-function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
+function db_fetch_row($sql, $log = true, $db_conn = false) {
 	return db_fetch_row_prepared($sql, array(), $log, $db_conn);
 }
 
@@ -263,21 +270,23 @@ function db_fetch_row($sql, $log = TRUE, $db_conn = FALSE) {
    @param $sql - the sql query to execute
    @param $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
-function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
+function db_fetch_row_prepared($sql, $parms = array(), $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
 	$database_total_queries++;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	$sql = str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql);
 
 	if ($log) {
-		cacti_log('DEVEL: SQL Row: "' . $sql . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log('DEVEL: SQL Row: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 	}
 
 	$db_conn->affected_rows = 0;
@@ -302,12 +311,14 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = F
 			return array();
 		}
 	}elseif ($log) {
-		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
-		cacti_log('ERROR: SQL Row Failed!, Error: ' . $errorinfo[2], FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log('ERROR: SQL Row Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_debug_backtrace('SQL');
 	}
 
-	if (isset($query)) unset($query);
+	if (isset($query)) {
+		unset($query);
+	}
 
 	return array();
 }
@@ -316,7 +327,7 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = TRUE, $db_conn = F
    @param $sql - the sql query to execute
    @param $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
-function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
+function db_fetch_assoc($sql, $log = true, $db_conn = false) {
 	return db_fetch_assoc_prepared($sql, array(), $log, $db_conn);
 }
 
@@ -324,20 +335,22 @@ function db_fetch_assoc($sql, $log = TRUE, $db_conn = FALSE) {
    @param $sql - the sql query to execute
    @param $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
-function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn = FALSE) {
+function db_fetch_assoc_prepared($sql, $parms = array(), $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
 	$database_total_queries++;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	$sql = str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql);
 
-	cacti_log('DEVEL: SQL Assoc: "' . $sql . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	cacti_log('DEVEL: SQL Assoc: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	$db_conn->affected_rows = 0;
 	$query = $db_conn->prepare($sql);
@@ -354,8 +367,8 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn =
 		}
 		return $a;
 	}elseif ($log) {
-		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', FALSE, 'DBCALL');
-		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $errorinfo[2], FALSE, 'DBCALL');
+		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', false, 'DBCALL');
+		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $errorinfo[2], false, 'DBCALL');
 		cacti_debug_backtrace('SQL');
 	}
 
@@ -365,8 +378,8 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = TRUE, $db_conn =
 }
 
 /* db_fetch_insert_id - get the last insert_id or auto incriment
-   @returns - the id of the last auto incriment row that was created */
-function db_fetch_insert_id($db_conn = FALSE) {
+   @returns - the id of the last auto increment row that was created */
+function db_fetch_insert_id($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -378,20 +391,22 @@ function db_fetch_insert_id($db_conn = FALSE) {
 		return $db_conn->lastInsertId();
 	}
 
-	return FALSE;
+	return false;
 }
 
 /* db_affected_rows - return the number of rows affected by the last transaction
  * @returns - the number of rows affected by the last transaction */
-function db_affected_rows($db_conn = FALSE) {
+function db_affected_rows($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	return $db_conn->affected_rows;
 }
@@ -401,15 +416,17 @@ function db_affected_rows($db_conn = FALSE) {
    @param $column - array of column data ex: array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
-function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
+function db_add_column($table, $column, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
 	$columns = array();
@@ -462,15 +479,17 @@ function db_add_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
    @param $column - column name
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
-function db_remove_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
+function db_remove_column($table, $column, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
 	$columns = array();
@@ -486,33 +505,12 @@ function db_remove_column ($table, $column, $log = TRUE, $db_conn = FALSE) {
 	return true;
 }
 
-/* db_add_index - adds a new index to a table
-   @param $table - the name of the table
-   @param $type - the type of the index
-   @param $key - the name of the index
-   @param $columns - an array that defines the columns to include in the index
-   @returns - (bool) the result of the operation true or false */
-function db_add_index($table, $type, $key, $columns) {
-	if (!is_array($columns)) {
-		$columns = array($columns);
-	}
-	
-	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' `' . $key . '`(`' . implode('`,`', $columns) . '`)';
-
-	if (db_index_exists($table, $key, false)) {
-		$type = str_ireplace('UNIQUE ', '', $type);
-		db_execute("ALTER TABLE $table DROP $type $key");
-	}
-
-	return db_execute($sql);
-}
-
 /* db_index_exists - checks whether an index exists
    @param $table - the name of the table
    @param $index - the name of the index
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
-function db_index_exists($table, $index, $log = TRUE, $db_conn = FALSE) {
+function db_index_exists($table, $index, $log = true, $db_conn = false) {
 	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM `$table`", $log, $db_conn), "Key_name", "Key_name");
 	return in_array($index, $_keys);
 }
@@ -521,7 +519,7 @@ function db_index_exists($table, $index, $log = TRUE, $db_conn = FALSE) {
    @param $table - the name of the table
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
-function db_table_exists($table, $log = TRUE, $db_conn = FALSE) {
+function db_table_exists($table, $log = true, $db_conn = false) {
 	return (db_fetch_cell("SHOW TABLES LIKE '$table'", '', $log, $db_conn) ? true : false);
 }
 
@@ -533,7 +531,9 @@ function db_cacti_initialized($is_web = true) {
 
 	$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 
-	if (!is_object($db_conn)) return FALSE;
+	if (!is_object($db_conn)) {
+		return FALSE;
+	}
 
 	$query = $db_conn->prepare('SELECT cacti FROM version');
 	$query->execute();
@@ -564,22 +564,24 @@ function db_cacti_initialized($is_web = true) {
    @param $column - the name of the column
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
-function db_column_exists($table, $column, $log = TRUE, $db_conn = FALSE) {
+function db_column_exists($table, $column, $log = true, $db_conn = false) {
 	return (db_fetch_cell("SHOW columns FROM `$table` LIKE '$column'", '', $log, $db_conn) ? true : false);
 }
 
 /* db_get_table_column_types - returns all the types for each column of a table
    @param $table - the name of the table
    @returns - (array) an array of column types indexed by the column names */
-function db_get_table_column_types($table, $db_conn = FALSE) {
+function db_get_table_column_types($table, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table", false, $db_conn);
 	$cols    = array();
@@ -592,15 +594,17 @@ function db_get_table_column_types($table, $db_conn = FALSE) {
 	return $cols;
 }
 
-function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $db_conn = FALSE) {
+function db_update_table($table, $data, $removecolumns = false, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	if (!db_table_exists($table, $log, $db_conn)) {
 		return db_table_create ($table, $data, $log, $db_conn);
@@ -667,10 +671,10 @@ function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $d
 
 	foreach ($allindexes as $n => $index) {
 		if ($n != 'PRIMARY' && isset($data['keys'])) {
-			$removeindex = TRUE;
+			$removeindex = true;
 			foreach ($data['keys'] as $k) {
 				if ($k['name'] == $n) {
-					$removeindex = FALSE;
+					$removeindex = false;
 					$add = array_diff($k['columns'], $index);
 					$del = array_diff($index, $k['columns']);
 					if (!empty($add) || !empty($del)) {
@@ -720,7 +724,7 @@ function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $d
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -729,15 +733,17 @@ function db_update_table ($table, $data, $removecolumns = FALSE, $log = TRUE, $d
    @param $data - data array
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
-function db_table_create ($table, $data, $log = TRUE, $db_conn = FALSE) {
+function db_table_create($table, $data, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	if (!db_table_exists($table, $log, $db_conn)) {
 		$c = 0;
@@ -776,15 +782,15 @@ function db_table_create ($table, $data, $log = TRUE, $db_conn = FALSE) {
 		}
 
 		if (isset($data['keys']) && sizeof($data['keys'])) {
-		foreach ($data['keys'] as $key) {
-			if (isset($key['name'])) {
-				if (is_array($key['columns'])) {
-					$sql .= ",\n KEY `" . $key['name'] . '` (`' . implode('`,`', $key['columns']) . '`)';
-				} else {
-					$sql .= ",\n KEY `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+			foreach ($data['keys'] as $key) {
+				if (isset($key['name'])) {
+					if (is_array($key['columns'])) {
+						$sql .= ",\n KEY `" . $key['name'] . '` (`' . implode('`,`', $key['columns']) . '`)';
+					} else {
+						$sql .= ",\n KEY `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+					}
 				}
 			}
-		}
 		}
 		$sql .= ') ENGINE = ' . $data['type'];
 
@@ -810,7 +816,7 @@ function db_table_create ($table, $data, $log = TRUE, $db_conn = FALSE) {
    @returns - a string that can be placed in a SQL OR statement */
 function array_to_sql_or($array, $sql_column) {
 	/* if the last item is null; pop it off */
-	if (end($array) === NULL) {
+	if (end($array) === null) {
 		array_pop($array);
 	}
 
@@ -827,7 +833,7 @@ function array_to_sql_or($array, $sql_column) {
    @param $keyCols - a string or array of primary keys
    @param $autoQuote - whether to use intelligent quoting or not
    @returns - the auto incriment id column (if applicable) */
-function db_replace($table_name, $array_items, $keyCols, $db_conn = FALSE) {
+function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -835,7 +841,7 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = FALSE) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
-	cacti_log("DEVEL: SQL Replace on table '$table_name': \"" . serialize($array_items) . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	cacti_log("DEVEL: SQL Replace on table '$table_name': \"" . serialize($array_items) . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	_db_replace($db_conn, $table_name, $array_items, $keyCols);
 
@@ -851,9 +857,11 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
 
-	if (!is_object($db_conn)) return FALSE;
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
 
 	if (!is_array($keyCols)) {
 		$keyCols = array($keyCols);
@@ -890,7 +898,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
 	$return_code = db_execute($sql, true, $db_conn);
 
 	if (!$return_code) {
-		cacti_log("ERROR: SQL Save Failed for Table '$table'.  SQL:'" . $sql . "'", FALSE, 'DBCALL');
+		cacti_log("ERROR: SQL Save Failed for Table '$table'.  SQL:'" . $sql . "'", false, 'DBCALL');
 	}
 
 	return db_fetch_insert_id($db_conn);
@@ -901,7 +909,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
    @param $table_name - the name of the table to make the replacement in
    @param $key_cols - the primary key(s)
    @returns - the auto incriment id column (if applicable) */
-function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, $db_conn = FALSE) {
+function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -911,9 +919,9 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 
 	$cols = db_get_table_column_types($table_name, $db_conn);
 
-	cacti_log("DEVEL: SQL Save on table '$table_name': \"" . serialize($array_items) . '"', FALSE, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	cacti_log("DEVEL: SQL Save on table '$table_name': \"" . serialize($array_items) . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
-	while (list($key, $value) = each($array_items)) {
+	foreach ($array_items as $key => $value) {
 		if (strstr($cols[$key]['type'], 'int') !== false || 
 			strstr($cols[$key]['type'], 'float') !== false || 
 			strstr($cols[$key]['type'], 'double') !== false || 
@@ -949,26 +957,13 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 				return str_replace('"', '', $array_items[$key_cols]);
 			}
 		}
-		return FALSE;
+		return false;
 	} else {
 		return $replace_result;
 	}
 }
 
-/* sql_sanitize - removes and quotes unwanted chars in values passed for use in SQL statements
-   @param $value - value to sanitize
-   @return - fixed value */
-function sql_sanitize($value) {
-	$value = db_qstr($value);
-
-	return $value;
-}
-
-/* sql_column_exists - checks if a named column exists in the table specified
-   @param $table_name - table to check
-   @param $column_name - column name
-   @return true or false; */
-function sql_column_exists($table_name, $column_name, $db_conn = FALSE) {
+function db_qstr($s, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -976,174 +971,15 @@ function sql_column_exists($table_name, $column_name, $db_conn = FALSE) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
-	$columns = db_fetch_assoc("SHOW COLUMNS FROM `$table_name`", false, $db_conn);
-
-	foreach ($columns as $column) {
-		if ($column_name === $column['name']) {
-			return true;
-		}
+	if (is_null($s)) {
+		return 'NULL';
 	}
-
-	return false;
-}
-
-/* sql_function_timestamp - abstracts timestamp function across databases
-   @return - fixed value */
-function sql_function_timestamp($db_conn = FALSE) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
-
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
-
-	return 'NOW()';
-
-	//if (isset($db_conn->sysTimeStamp)) {
-	//	return $db_conn->sysTimeStamp;
-	//}
-
-	//return "'".date('Y-m-d H:i:s')."'";
-}
-
-/* sql_function_substr - abstracts substring function across databases
-   @return - fixed value */
-function sql_function_substr($db_conn = FALSE) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
-
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
-
-	return 'substring';
-
-//	if (isset($db_conn->substr)) {
-//		return $db_conn->substr;
-//	}
-
-//	switch($db_conn->databaseType) {
-//		case 'oci805':
-//		case 'oci8':
-//		case 'oci8po':
-//		case 'oracle':
-//			return 'substr';
-//			break;
-//		case 'postgres64':
-//		case 'postgres7':
-//		case 'postgres':
-//			return 'substr';
-//			break;
-//		case 'db2':
-//		case 'fbsql':
-//		case 'firebird':
-//		case 'ibase':
-//			default:
-//			return 'substr';
-//	}
-}
-
-/* sql_function_concat - abstracts concatenation function across databases
-   @return - fixed value */
-function sql_function_concat($db_conn = FALSE) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
-
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
-
-	//if (method_exists($db_conn, 'Concat')) {
-	//	$args = func_get_args();
-	//	return call_user_func_array(array(&$db_conn, 'Concat'), $args);
-	//}
-
-	return "concat('".implode("','", func_get_args())."')";
-}
-
-/* sql_function_replace - abstracts replace function across databases
-   @return - fixed value */
-function sql_function_replace($db_conn = FALSE) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
-
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
-
-	return 'replace';
-
-//	switch($db_conn->databaseType) {
-//		case 'mssql':
-//		case 'mssqlpo':
-//			return 'replace';
-//			break;
-//		case 'mysql':
-//		case 'mysqli':
-//		case 'mysqlt':
-//			return 'replace';
-//			break;
-//		case 'oci805':
-//		case 'oci8':
-//		case 'oci8po':
-//		case 'oracle':
-//			return 'replace';
-//			break;
-//		case 'postgres64':
-//		case 'postgres7':
-//		case 'postgres':
-//			return 'replace';
-//			break;
-//		case 'db2':
-//		case 'firebird':
-//		case 'ibase':
-//		default:
-//			return 'replace';
-//	}
-}
-
-/* sql_function_dateformat - abstracts dateformat function across databases
-   @return - fixed value */
-function sql_function_dateformat($fmt, $col = false, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
-
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
-
-	return 'date_format';
-
-//	if (method_exists($db_conn, 'SQLDate')) {
-//		return call_user_func_array(array(&$db_conn, 'SQLDate'), array($fmt,$col));
-//	}
-//
-//	switch($db_conn->databaseType) {
-//		default:
-//			return 'date_format';
-//	}
-}
-
-function db_qstr($s, $db_conn = FALSE) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
-
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-	}
-
-	$replaceQuote = "\\'";
-
-	if (is_null($s)) return 'NULL';
 
 	if (is_object($db_conn)) {
 		return $db_conn->quote($s);
 	}
 
-	if ($replaceQuote == "\\'") {
-		$s = str_replace(array('\\', "\0"), array('\\\\', "\\\0"), $s);
-	}
+	$s = str_replace(array('\\', "\0", "'"), array('\\\\', "\\\0", "\\'"), $s);
 
-	return  "'" . str_replace("'",$replaceQuote, $s) . "'";
+	return  "'" . $s . "'";
 }
-
