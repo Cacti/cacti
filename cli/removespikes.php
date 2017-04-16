@@ -789,7 +789,11 @@ function calculateVarianceAverages(&$rra, &$samples) {
 					sort($ds, SORT_NUMERIC);
 					$myds = array_slice($myds, $outliers);
 
-					$rra[$rra_num][$ds_num]['variance_avg'] = array_sum($myds) / sizeof($myds);
+					if (sizeof($myds)) {
+						$rra[$rra_num][$ds_num]['variance_avg'] = array_sum($myds) / sizeof($myds);
+					}else{
+						$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
+					}
 				}
 			}else{
 				if (isset($rra[$rra_num][$ds_num]['sumofsamples']) && isset($rra[$rra_num][$ds_num]['numsamples'])) {

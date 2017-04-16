@@ -25,6 +25,10 @@ td, th {
 	margin: 0px;
 }
 
+th {
+	white-space: nowrap;
+}
+
 img {
 	border:none;
 	vertical-align:middle;
@@ -266,7 +270,7 @@ fieldset {
 }
 
 .deviceUnmonitored {
-	color: rgba(250, 253, 158) !important;
+	color: rgba(250, 253, 158, 0.8) !important;
 }
 
 .deviceWarning {
@@ -1307,6 +1311,16 @@ th.sortable {
 	text-decoration: none !important;
 }
 
+.deleteMarkerDisabled {
+	color: rgba(0,0,0,0.6);
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.deleteMarkerDisabled:hover {
+	text-decoration: none !important;
+}
+
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;
@@ -1370,7 +1384,7 @@ div#gtabs {
 .maintabs {
 	line-height: 35px;
 	float: left;
-	width:50%;
+	width:80%;
 	overflow:hidden;
 }
 

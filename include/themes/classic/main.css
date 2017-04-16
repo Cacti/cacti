@@ -27,6 +27,10 @@ td, th, select {
 	margin: 0px;
 }
 
+th {
+	border-right: 1px groove white;
+}
+
 img {
 	border:none;
 	vertical-align:middle;
@@ -219,6 +223,17 @@ label {
 	text-decoration: none !important;
 }
 
+.deleteMarkerDisabled {
+	color: grey !important;
+	height: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.deleteMarkerDisabled:hover {
+	text-decoration: none !important;
+}
+
 .drillDown {
 	cursor:pointer;
 }
@@ -302,7 +317,7 @@ label {
 }
 
 .deviceUnmonitored {
-	color: rgba(250, 253, 158) !important;
+	color: rgba(250, 253, 158, 0.8) !important;
 }
 
 .deviceWarning {
@@ -884,7 +899,7 @@ legend {
 	color: white;
 	font-weight: normal;
 	text-decoration: none;
-	cursor;pointer;
+	cursor: pointer;
 }
 
 .linkOverDark:hover {
@@ -1056,7 +1071,7 @@ legend {
 
 
 .tableHeader {
-	background-color: #6d88ad;
+	background-color: #6d88ad !important;
 }
 
 .tableHeader td {
@@ -1071,8 +1086,8 @@ legend {
 	vertical-align:middle;
 	text-align:left;
 	border-right: 1px groove #efefef;
-	background-color: #6d88ad;
 	font-size:11px;
+	background-color: #6d88ad !important;
 }
 
 .tableHeader th:last-child {

@@ -23,30 +23,35 @@ function keepWindowSize() {
 		
 			heightPage = $(window).height();
 			heightPageHead = $('#cactiPageHead').outerHeight();
-			heightPageContent = heightPage -heightPageHead +1;
+			heightPageContent = heightPage - heightPageHead + 1;
 
 			$('body').css('height', heightPage);
 			$('#cactiContent').css('height', heightPageContent);
 		
-			$('.cactiTreeNavigationArea').css('height', heightPageContent);
-			width = parseInt($('#searcher').width())+65;
-			$('.cactiTreeNavigationArea').css('width', width+'px');
-			$('.cactiTreeNavigationArea > div').css('padding-top', '5px');
-			
 			/* check visibility of all tabs */
 			$('#submenu-ellipsis').empty();
 			$('.maintabs nav ul li a').each(function() {
 				id = $(this).attr('id');
-				if( $(this).offset().top !== 0 ) {
-					if( $('#' + id + '-ellipsis').length == 0 ) {
+				if ($(this).offset().top !== 0) {
+					if ( $('#' + id + '-ellipsis').length == 0 ) {
 						var str = $(this).parent().html();
 						var str2 = str.replace( id , id + '-ellipsis');
 						$('#submenu-ellipsis').prepend('<li>' + str2 + '</li>');
 					}
-				}else {
+				} else {
 					$('#' + id + '-ellipsis').parent().remove();
 				}
 			});
+
+			// Resize from dark theme
+			if (!$(event.target).hasClass('ui-resizable')) {
+				if (menuOpen) {
+					$('#navigation').css('height', ($(window).height())+'px');
+					width = parseInt($('#searcher').width())+65;
+					$('#navigation').css('width', width+'px');
+					$('#navigation > div').css('padding-top', '5px');
+				}
+			}
 
 			if($("#submenu-ellipsis li").length == 0) {
 				$(".ellipsis").hide(0);
@@ -67,8 +72,6 @@ function themeReady() {
 
 	keepWindowSize();
 
-	console.log('help');
-	
 	// Setup the navigation menu
 	setMenuVisibility();
 

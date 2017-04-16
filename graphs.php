@@ -1076,24 +1076,21 @@ function item() {
 		$header_label = __('Graph Items [new]');
 	}else{
 		$template_item_list = db_fetch_assoc_prepared('SELECT
-			graph_templates_item.id,
-			graph_templates_item.text_format,
-			graph_templates_item.value,
-			graph_templates_item.hard_return,
-			graph_templates_item.graph_type_id,
-			graph_templates_item.alpha,
-			graph_templates_item.consolidation_function_id,
-			data_template_rrd.data_source_name,
-			cdef.name AS cdef_name,
-			colors.hex
-			FROM graph_templates_item
-			LEFT JOIN data_template_rrd ON (graph_templates_item.task_item_id = data_template_rrd.id)
-			LEFT JOIN data_local ON (data_template_rrd.local_data_id = data_local.id)
-			LEFT JOIN data_template_data ON (data_local.id = data_template_data.local_data_id)
-			LEFT JOIN cdef ON (cdef_id = cdef.id)
-			LEFT JOIN colors ON (color_id = colors.id)
-			WHERE graph_templates_item.local_graph_id = ?
-			ORDER BY graph_templates_item.sequence', array(get_request_var('id')));
+			gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id, gti.alpha, gti.textalign,
+			gti.consolidation_function_id, dtr.data_source_name, cd.name AS cdef_name, c.hex
+			FROM graph_templates_item AS gti
+			LEFT JOIN data_template_rrd AS dtr
+			ON (gti.task_item_id = dtr.id)
+			LEFT JOIN data_local AS dl
+			ON (dtr.local_data_id = dl.id)
+			LEFT JOIN data_template_data AS dtd
+			ON (dl.id = dtd.local_data_id)
+			LEFT JOIN cdef AS cd
+			ON (cdef_id = cd.id)
+			LEFT JOIN colors AS c
+			ON (color_id = c.id)
+			WHERE gti.local_graph_id = ?
+			ORDER BY gti.sequence', array(get_request_var('id')));
 
 		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('Graph Items [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));

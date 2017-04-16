@@ -1487,7 +1487,7 @@ function build_graph_object_sql_having($rule, $filter) {
 			$i = 0;
 
 			foreach($field_names as $column) {
-				$sql_having .= ($i == 0 ? '':' OR ') . '`' . $column['field_name'] . '`' . ' LIKE "%' . $filter . '%"';
+				$sql_having .= ($i == 0 ? '':' OR ') . '`' . implode('`.`', explode('.', $column['field_name'])) . '`' . ' LIKE "%' . $filter . '%"';
 				$i++;
 			}
 
@@ -1501,17 +1501,14 @@ function build_graph_object_sql_having($rule, $filter) {
 function build_data_query_sql($rule) {
 	cacti_log(__FUNCTION__ . ' called: ' . serialize($rule), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	$sql_query = '';
-
 	$field_names = get_field_names($rule['snmp_query_id']);
-	$sql_query  = 'SELECT h.hostname AS automation_host, host_id, h.disabled, h.status, snmp_query_id, snmp_index ';
-	$num_visible_fields = sizeof($field_names);
+	$sql_query = 'SELECT h.hostname AS automation_host, host_id, h.disabled, h.status, snmp_query_id, snmp_index ';
 	$i = 0;
 
 	if (sizeof($field_names) > 0) {
 		foreach($field_names as $column) {
 			$field_name = $column['field_name'];
-			$sql_query .= ", MAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS $field_name";
+			$sql_query .= ", MAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS '$field_name'";
 			$i++;
 		}
 	}
@@ -1537,7 +1534,7 @@ function build_data_query_sql($rule) {
 
 function build_matching_objects_filter($rule_id, $rule_type) {
 	cacti_log(__FUNCTION__ . " called rule id: $rule_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
-	
+
 	$sql_filter = '';
 
 	/* create an SQL which queries all host related tables in a huge join
@@ -1592,7 +1589,7 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 
 			# field name
 			if ($automation_rule_item['field'] != '') {
-				$sql_filter .= (' ' . $prefix . '`' . $automation_rule_item['field'] . '`');
+				$sql_filter .= (' ' . $prefix . '`' . implode('`.`', explode('.', $automation_rule_item['field'])) . '`');
 				#
 				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
 				if ($automation_op_array['binary'][$automation_rule_item['operator']]) {
@@ -1794,8 +1791,6 @@ function get_field_names($snmp_query_id) {
 	
 	/* get the unique field values from the database */
 	$sql = 'SELECT DISTINCT field_name FROM host_snmp_cache WHERE snmp_query_id=' . $snmp_query_id;
-	$field_names = db_fetch_assoc($sql);
-
 	return db_fetch_assoc($sql);
 }
 

@@ -89,30 +89,28 @@ function grow_dhtml_trees() {
 
 	if (empty($default_tree_id)) {
 		if (read_config_option('auth_method') != 0) {
-			$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+			$user = db_fetch_row_prepared('SELECT policy_trees FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
 			if ($user['policy_trees'] == 1) {
-				$default_tree_id = db_fetch_cell_prepared('SELECT id 
+				$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id 
 					FROM graph_tree
-					WHERE id NOT IN (
-						SELECT item_id 
-						FROM user_auth_perms 
-						WHERE type=2 AND user_id = ?
-					)
-					AND enabled="on"
-					ORDER BY id LIMIT 1', 
+					LEFT JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+					AND user_auth_perms.type = 2
+					AND user_auth_perms.user_id = ?
+					WHERE user_auth_perms.item_id IS NULL 
+					AND graph_tree.enabled = "on"
+					ORDER BY graph_tree.id 
+					LIMIT 1',
 					array($_SESSION['sess_user_id']));
 			}else{
-				$default_tree_id = db_fetch_cell('SELECT id 
+				$default_tree_id = db_fetch_cell('SELECT graph_tree.id 
 					FROM graph_tree
-					WHERE id IN (
-						SELECT item_id 
-						FROM user_auth_perms 
-						WHERE type=2 
-						AND user_id = ?
-					)
-					AND enabled="on"
-					ORDER BY id LIMIT 1', 
+					INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+					AND user_auth_perms.type = 2 
+					AND user_auth_perms.user_id = ?
+					WHERE graph_tree.enabled = "on"
+					ORDER BY graph_tree.id 
+					LIMIT 1',
 					array($_SESSION['sess_user_id']));
 			}
 		}
@@ -370,8 +368,6 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 	include_once($config['base_path'] . '/lib/data_query.php');
 
 	$heirarchy = get_allowed_tree_content($tree_id, $parent);
-
-	$tree = db_fetch_row_prepared('SELECT * FROM graph_tree WHERE id = ?', array($tree_id));
 
 	$dhtml_tree = array();
 
@@ -642,10 +638,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</select>
 					</td>
 					<td>
-						<input type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filter');?>' onClick='applyGraphFilter()'>
+						<input id='refresh' type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filter');?>' onClick='applyGraphFilter()'>
 					</td>
 					<td>
-						<input type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearGraphFilter()'>
+						<input id='clear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearGraphFilter()'>
 					</td>
 					<?php if (is_view_allowed('graph_settings')) {?>
 					<td>
@@ -769,10 +765,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __('Shift Time Forward');?>'></i>
 					</td>
 					<td>
-						<input type='button' name='button_refresh_x' value='<?php print __('Refresh');?>' title='<?php print __('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
+						<input id='tsrefresh' type='button' value='<?php print __('Refresh');?>' title='<?php print __('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
 					</td>
 					<td>
-						<input type='button' name='button_clear' value='<?php print __('Clear');?>' title='<?php print __('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
+						<input id='tsclear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
 					</td>
 				</tr>
 				<tr id='realtime' style='display:none;'>

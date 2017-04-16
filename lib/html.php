@@ -370,7 +370,9 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
    @arg $object - the object types that is being displayed
    @arg $page_var - the object types that is being displayed
    @arg $return_to - paint the resulting page into this dom object */
-function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = 'Rows', $page_var = 'page', $return_to = '') {
+function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = '', $page_var = 'page', $return_to = '') {
+	if ($object == '') $object = __('Rows');
+
 	if ($total_rows > $rows_per_page) {
 		if (substr_count($base_url, '?') == 0) {
 			$base_url = trim($base_url) . '?';
@@ -385,7 +387,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</a>":"") . "
 			</div>
 			<div class='navBarNavigationCenter'>
-				" . __('Showing %s %d to %d of %s [ %s ]', $object, (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
+				" . __('%d to %d of %s [ %s ]', (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
 			</div>
 			<div class='navBarNavigationNext'>
 				" . (($current_page*$rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":"") . "
@@ -394,7 +396,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 	}elseif ($total_rows > 0) {
 		$nav = "<div class='navBarNavigation'>
 			<div class='navBarNavigationNone'>
-				" . __('Showing All %d %s', $total_rows, $object) . "
+				" . __('All %d %s', $total_rows, $object) . "
 			</div>
 		</div>\n";
 	}else{
@@ -863,7 +865,7 @@ function html_split_string($string, $length = 70, $forgiveness = 10) {
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
 	global $config;
 
-	include($config["include_path"] . "/global_arrays.php");
+	include($config['include_path'] . '/global_arrays.php');
 
 	print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem(__('Graph Item'),'',1);
@@ -872,28 +874,30 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		DrawMatrixHeaderItem(__('CF Type'),'',1);
 		DrawMatrixHeaderItem(__('Alpha %'),'',1);
 		DrawMatrixHeaderItem(__('Item Color'),'',4);
-	print "</tr>";
+	print '</tr>';
 
-	$group_counter = 0; $_graph_type_name = ""; $i = 0;
+	$group_counter = 0; $_graph_type_name = ''; $i = 0;
 
 	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
-			$this_row_style = ""; $use_custom_class = false; $hard_return = "";
+			$this_row_style   = ''; 
+			$use_custom_class = false; 
+			$hard_return      = '';
 
-			if ($graph_item_types{$item["graph_type_id"]} != "GPRINT") {
-				$this_row_style = "font-weight: bold;"; $use_custom_class = true;
+			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
+				$this_row_style = 'font-weight: bold;'; $use_custom_class = true;
 
 				if ($group_counter % 2 == 0) {
-					$customClass = "graphItem";
+					$customClass = 'graphItem';
 				}else{
-					$customClass = "graphItemAlternate";
+					$customClass = 'graphItemAlternate';
 				}
 
 				$group_counter++;
 			}
 
-			$_graph_type_name = $graph_item_types{$item["graph_type_id"]};
+			$_graph_type_name = $graph_item_types{$item['graph_type_id']};
 
 			/* alternating row color */
 			if ($use_custom_class == false) {
@@ -902,43 +906,67 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				print "<tr class='$customClass'>";
 			}
 
-			print "<td>";
-			if ($disable_controls == false) { print "<a class='linkEditMain' href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item["id"] . "&$url_data") . "'>"; }
+			print '<td>';
+			if ($disable_controls == false) { print "<a class='linkEditMain' href='" . htmlspecialchars("$filename?action=item_edit&id=" . $item['id'] . "&$url_data") . "'>"; }
 			print __('Item # %d', ($i+1));
-			if ($disable_controls == false) { print "</a>"; }
-			print "</td>\n";
+			if ($disable_controls == false) { print '</a>'; }
+			print '</td>';
 
-			if (empty($item["data_source_name"])) { $item["data_source_name"] = __('No Task'); }
+			if (empty($item['data_source_name'])) { $item['data_source_name'] = __('No Task'); }
 
 			switch (true) {
-			case preg_match("/(AREA|STACK|GPRINT|LINE[123])/", $_graph_type_name):
-				$matrix_title = "(" . $item["data_source_name"] . "): " . $item["text_format"];
+			case preg_match('/(TEXTALIGN)/', $_graph_type_name):
+				$matrix_title = 'TEXTALIGN: ' . ucfirst($item['textalign']);
 				break;
-			case preg_match("/(HRULE)/", $_graph_type_name):
-				$matrix_title = "HRULE: " . $item["value"];
+			case preg_match('/(TICK)/', $_graph_type_name):
+				$matrix_title = '(' . $item['data_source_name'] . '): ' . $item['text_format'];
 				break;
-			case preg_match("/(VRULE)/", $_graph_type_name):
-				$matrix_title = "VRULE: " . $item["value"];
+			case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
+				$matrix_title = '(' . $item['data_source_name'] . '): ' . $item['text_format'];
 				break;
-			case preg_match("/(COMMENT)/", $_graph_type_name):
-				$matrix_title = "COMMENT: " . $item["text_format"];
+			case preg_match('/(HRULE)/', $_graph_type_name):
+				$matrix_title = 'HRULE: ' . $item['value'];
+				break;
+			case preg_match('/(VRULE)/', $_graph_type_name):
+				$matrix_title = 'VRULE: ' . $item['value'];
+				break;
+			case preg_match('/(COMMENT)/', $_graph_type_name):
+				$matrix_title = 'COMMENT: ' . $item['text_format'];
 				break;
 			}
 
-			if ($item["hard_return"] == "on") {
+			if (preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
+				$hard_return = '';
+			}elseif ($item['hard_return'] == 'on') {
 				$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
 			}
 
-			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
-			print "<td style='$this_row_style'>" . $graph_item_types{$item["graph_type_id"]} . "</td>\n";
-			print "<td style='$this_row_style'>" . $consolidation_functions{$item["consolidation_function_id"]} . "</td>\n";
-			if (preg_match("/(AREA|STACK|LINE[123])/", $_graph_type_name)) {
-				print "<td style='$this_row_style'>" . round((hexdec($item['alpha'])/255)*100) . "%</td>\n";
+			/* data source */
+			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . '</td>';
+
+			/* graph item type */
+			print "<td style='$this_row_style'>" . $graph_item_types{$item['graph_type_id']} . '</td>';
+			if (!preg_match('/(TICK|TEXTALIGN|HRULE|VRULE)/', $_graph_type_name)) {
+				print "<td style='$this_row_style'>" . $consolidation_functions{$item['consolidation_function_id']} . '</td>';
+			}else{
+				print '<td>' . __('N/A') . '</td>';
+			}
+
+			/* alpha type */
+			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', $_graph_type_name)) {
+				print "<td style='$this_row_style'>" . round((hexdec($item['alpha'])/255)*100) . '%</td>';
 			}else{
 				print "<td style='$this_row_style'></td>\n";
 			}
-			print "<td style='width:1%;" . ((!empty($item["hex"])) ? "background-color:#" . $item["hex"] . ";'" : "'") . "></td>\n";
-			print "<td style='$this_row_style'>" . $item["hex"] . "</td>\n";
+
+
+			/* color name */
+			if (!preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
+				print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . '></td>';
+				print "<td style='$this_row_style'>" . $item['hex'] . '</td>';
+			}else{
+				print '<td></td><td></td>';
+			}
 
 			if ($disable_controls == false) {
 				print "<td style='text-align:right;padding-right:10px;'>\n";
@@ -1330,25 +1358,29 @@ function html_show_tabs_left() {
 				);
 		}
 
-		if ($config['poller_id'] > 1) {
-			// Don't show the reports tab on other pollers
-		}else{
-			$tabs_left[] =
-				array(
-					'title' => __('Reporting'),
-					'id'	=> 'maintab-anchor-reports',
-					'image' => '',
-					'url'   => $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php'),
-				);
+		if (is_realm_allowed(21) || is_realm_allowed(22)) {
+			if ($config['poller_id'] > 1) {
+				// Don't show the reports tab on other pollers
+			}else{
+				$tabs_left[] =
+					array(
+						'title' => __('Reporting'),
+						'id'	=> 'maintab-anchor-reports',
+						'image' => '',
+						'url'   => $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php'),
+					);
+			}
 		}
 
-		$tabs_left[] =
-			array(
-				'title' => __('Cacti Log'),
-				'id'	=> 'maintab-anchor-logs',
-				'image' => '',
-				'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
-			);
+		if (is_realm_allowed(18) || is_realm_allowed(19)) {
+			$tabs_left[] =
+				array(
+					'title' => __('Cacti Log'),
+					'id'	=> 'maintab-anchor-logs',
+					'image' => '',
+					'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
+				);
+		}
 
 		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
 			// Only show external links when online

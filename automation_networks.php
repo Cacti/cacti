@@ -392,6 +392,7 @@ function network_edit() {
 	'spacer0' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('General Settings'),
+		'collapsible' => 'true'
 		),
 	'name' => array(
 		'method' => 'textbox',
@@ -508,6 +509,7 @@ function network_edit() {
 	'spacer2' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Discovery Timing'),
+		'collapsible' => 'true'
 		),
 	'start_at' => array(
 		'method' => 'textbox',
@@ -611,6 +613,7 @@ function network_edit() {
 	'spacer1' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Reachability Settings'),
+		'collapsible' => 'true'
 		),
 	'snmp_id' => array(
 		'method' => 'drop_sql',

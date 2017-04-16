@@ -287,7 +287,7 @@ fieldset {
 }
 
 .deviceUnmonitored {
-	color: rgba(250, 253, 158) !important;
+	color: rgba(250, 253, 158, 0.8) !important;
 }
 
 .deviceWarning {
@@ -1485,6 +1485,17 @@ th.secondarySort {
 }
 
 .deleteMarker:hover {
+	text-decoration: none !important;
+}
+
+.deleteMarkerDisabled {
+	color: grey !important;
+	height: 14px !important;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+.deleteMarkerDisabled:hover {
 	text-decoration: none !important;
 }
 
