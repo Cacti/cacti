@@ -1,5 +1,10 @@
 /* main styles */
 
+html {
+	height: 100%;
+	width: 100%;
+}
+
 body, table, tr, td, textarea {
 	font-family: 'Segoe UI', 'Segoe UI Web Regular', 'Segoe UI Symbol', 'Helvetica Neue', 'BBAlpha Sans', 'S60 Sans', Arial, sans-serif;
 	font-size: 12px;
@@ -742,51 +747,44 @@ fieldset {
 }
 
 .loginLeft, .logoutLeft {
-	width:33%;
-	float:left;
+	display: none;
 }
 
 .loginCenter, .logoutCenter {
-	-moz-border-radius:10px;
-	border-radius:10px;
-	position:relative;
-	padding:30px 0px 5px 20px;
-	background-color:white;
-	top:30%;
-	max-width:360px;
-	max-height:300px;
-	margin-left:auto;
-	margin-right:auto;
-	background: rgba(255,255,255,1);
-	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
-	background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
+	position: absolute;
+	background-color: transparent;
+	width: 300px;
+	height: 200px;
+    top: 45%;
+    left: 50%;
+    padding: 10px 15px;
+    margin: -100px 0 0 -150px;
 }
 
 .cactiLoginLogo, .cactiLogoutLogo {
-	position:relative;
-	height:0px;
-	z-index:2;
-	margin-left: 305px;
-	margin-bottom: 10px;
-	color: #276DA5;
-	font-size: 34px;
+	display: none;
 }
 
 .loginArea, .logoutArea {
-	-moz-border-radius:10px;
-	border-radius:10px;
-	position:relative;
-	min-height:200px;
+	color: #9d9d9d;
 }
 
 .cactiLoginTable td {
 	padding-bottom:6px;
 	padding-right:6px;
+}
+
+.cactiLoginTable input.ui-button{
+	border: 1px solid #93CEFF;
+	color: #93CEFF;
+	background: transparent;
+	outline-style: none;
+}
+
+.cactiLoginTable input.ui-button:hover{
+	color: #FFFFFF;
+	border: 1px solid #FFFFFF;
+	background: #5CB85C;
 }
 
 .loginErrors, .logoutErrors {
@@ -795,24 +793,28 @@ fieldset {
 }
 
 legend {
+	color: #93CEFF;
 	font-size:22px;
 	font-weight:bold;
 }
 
 .loginRight, .logoutRight {
+	display: none;
 	width:33%;
 	float:right;
 }
 
 .loginBody, .logoutBody {
+	height: 100% !important;
+	width: 100% !important;
 	background: #064072;
 	background-image: linear-gradient(#064072,#000000);
 }
 
 .versionInfo {
-	padding-top:5px;
-	float:right;
-	margin-top:10px;
+	position: fixed;
+	right: 5px;
+	bottom: 5px;
 	color: #5CB85C;
 }
 
