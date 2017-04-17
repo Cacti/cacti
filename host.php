@@ -753,7 +753,7 @@ function host_edit() {
 			INNER JOIN data_template_rrd AS dtr
 			ON gti.task_item_id=dtr.id
 			INNER JOIN data_template_data AS dtd
-			ON dtd.id=dtr.data_template_id
+			ON dtd.data_template_id=dtr.data_template_id
 			WHERE sqg.name IS NULL 
 			AND gti.local_graph_id=0
 			AND dtr.local_data_id=0
