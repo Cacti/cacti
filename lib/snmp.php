@@ -833,7 +833,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 			$output .= chr(hexdec($part));
 		}
 
-		$string = $output;
+		$string = number_format($output, 0, '', '');
 	}elseif (preg_match('/hex-/i', $string)) {
 		$output = '';
 
@@ -864,7 +864,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 			}
 		}
 
-		$string = $output;
+		$string = number_format($output, 0, '', '');
 	}elseif (preg_match('/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/i', $string)) {
 		$octet = '';
 
