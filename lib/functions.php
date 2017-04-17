@@ -3327,11 +3327,20 @@ function general_header() {
 }
 
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
-	$full_name = db_fetch_cell_prepared('SELECT full_name FROM user_auth WHERE email_address = ?', array($from));
-	if (empty($full_name)) {
-		$fromname = $from;
+	if ($from == '') {
+		$from     = read_config_option('settings_from_email');
+		$fromname = read_config_option('settings_from_name');
 	}else{
-		$fromname = $full_name;
+		$full_name = db_fetch_cell_prepared('SELECT full_name 
+			FROM user_auth 
+			WHERE email_address = ?', 
+			array($from));
+
+		if (empty($full_name)) {
+			$fromname = $from;
+		}else{
+			$fromname = $full_name;
+		}
 	}
 
 	$from = array($from, $fromname);

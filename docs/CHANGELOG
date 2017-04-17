@@ -2,6 +2,9 @@ Cacti CHANGELOG
 
 1.1.4
 -issue:#573: Missing Graph Template dropdown items
+-issue: Ping email does not use a from email address
+-issue: Automation does not recognize default size or poller
+-feature: Reorganize defaults to place more defaults on device defaults page
 
 1.1.3
 -issue#515: Unable to import color CSV file
