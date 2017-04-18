@@ -460,7 +460,8 @@ CREATE TABLE cdef (
   hash varchar(32) NOT NULL default '',
   system mediumint(8) unsigned NOT NULL DEFAULT '0',
   name varchar(255) NOT NULL default '',
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  KEY `hash` (`hash`)
 ) ENGINE=InnoDB;
 
 --
@@ -486,7 +487,7 @@ CREATE TABLE cdef_items (
   type tinyint(2) NOT NULL default '0',
   value varchar(150) NOT NULL default '',
   PRIMARY KEY (id),
-  KEY cdef_id (cdef_id)
+  KEY cdef_id_sequence (`cdef_id`,`sequence`)
 ) ENGINE=InnoDB;
 
 --
@@ -1714,7 +1715,8 @@ CREATE TABLE graph_templates_item (
   PRIMARY KEY (id),
   KEY graph_template_id (graph_template_id),
   KEY local_graph_id_sequence (local_graph_id, sequence),
-  KEY task_item_id (task_item_id)
+  KEY task_item_id (task_item_id),
+  KEY `lgi_gti` (`local_graph_id`,`graph_template_id`)
 ) ENGINE=InnoDB COMMENT='Stores the actual graph item data.';
 
 --
@@ -2060,38 +2062,39 @@ CREATE TABLE `poller_data_template_field_mappings` (
 --
 
 CREATE TABLE poller_item (
-  local_data_id mediumint(8) unsigned NOT NULL default '0',
-  poller_id int(10) unsigned NOT NULL default '1',
-  host_id mediumint(8) unsigned NOT NULL default '0',
-  action tinyint(2) unsigned NOT NULL default '1',
-  present tinyint NOT NULL DEFAULT '1',
-  last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  hostname varchar(100) NOT NULL default '',
-  snmp_community varchar(100) NOT NULL default '',
-  snmp_version tinyint(1) unsigned NOT NULL default '0',
-  snmp_username varchar(50) NOT NULL default '',
-  snmp_password varchar(50) NOT NULL default '',
-  snmp_auth_protocol varchar(5) NOT NULL default '',
-  snmp_priv_passphrase varchar(200) NOT NULL default '',
-  snmp_priv_protocol varchar(6) NOT NULL default '',
-  snmp_context varchar(64) default '',
-  snmp_engine_id varchar(64) default '',
-  snmp_port mediumint(5) unsigned NOT NULL default '161',
-  snmp_timeout mediumint(8) unsigned NOT NULL default '0',
-  rrd_name varchar(19) NOT NULL default '',
-  rrd_path varchar(255) NOT NULL default '',
-  rrd_num tinyint(2) unsigned NOT NULL default '0',
-  rrd_step mediumint(8) NOT NULL default '300',
-  rrd_next_step mediumint(8) NOT NULL default '0',
-  arg1 TEXT default NULL,
-  arg2 varchar(255) default NULL,
-  arg3 varchar(255) default NULL,
-  PRIMARY KEY (local_data_id,rrd_name),
-  KEY local_data_id (local_data_id),
-  KEY host_id (host_id),
-  KEY rrd_next_step (rrd_next_step),
-  KEY action (action),
-  KEY present (present)
+  `local_data_id` mediumint(8) unsigned NOT NULL default '0',
+  `poller_id` int(10) unsigned NOT NULL default '1',
+  `host_id` mediumint(8) unsigned NOT NULL default '0',
+  `action` tinyint(2) unsigned NOT NULL default '1',
+  `present` tinyint NOT NULL DEFAULT '1',
+  `last_updated` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `hostname` varchar(100) NOT NULL default '',
+  `snmp_community` varchar(100) NOT NULL default '',
+  `snmp_version` tinyint(1) unsigned NOT NULL default '0',
+  `snmp_username` varchar(50) NOT NULL default '',
+  `snmp_password` varchar(50) NOT NULL default '',
+  `snmp_auth_protocol` varchar(5) NOT NULL default '',
+  `snmp_priv_passphrase` varchar(200) NOT NULL default '',
+  `snmp_priv_protocol` varchar(6) NOT NULL default '',
+  `snmp_context` varchar(64) default '',
+  `snmp_engine_id` varchar(64) default '',
+  `snmp_port` mediumint(5) unsigned NOT NULL default '161',
+  `snmp_timeout` mediumint(8) unsigned NOT NULL default '0',
+  `rrd_name` varchar(19) NOT NULL default '',
+  `rrd_path` varchar(255) NOT NULL default '',
+  `rrd_num` tinyint(2) unsigned NOT NULL default '0',
+  `rrd_step` mediumint(8) NOT NULL default '300',
+  `rrd_next_step` mediumint(8) NOT NULL default '0',
+  `arg1` TEXT default NULL,
+  `arg2` varchar(255) default NULL,
+  `arg3` varchar(255) default NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`),
+  KEY `local_data_id` (`local_data_id`),
+  KEY `host_id` (`host_id`),
+  KEY `rrd_next_step` (`rrd_next_step`),
+  KEY `action` (`action`),
+  KEY `present` (`present`),
+  KEY `poller_id_host_id` (`poller_id`,`host_id`)
 ) ENGINE=InnoDB;
 
 --
@@ -2495,7 +2498,6 @@ CREATE TABLE `user_auth_group_members` (
   `group_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`group_id`,`user_id`),
-  KEY `group_id` (`group_id`),
   KEY `realm_id` (`user_id`)
 ) ENGINE=InnoDB COMMENT='Table that Contains User Group Members';
 
@@ -2527,7 +2529,6 @@ CREATE TABLE `user_auth_group_realm` (
   `group_id` int(10) unsigned NOT NULL,
   `realm_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`group_id`,`realm_id`),
-  KEY `group_id` (`group_id`),
   KEY `realm_id` (`realm_id`)
 ) ENGINE=InnoDB COMMENT='Table that Contains User Group Realm Permissions';
 
@@ -2596,14 +2597,13 @@ INSERT INTO user_auth_realm VALUES (101,1);
 --
 
 CREATE TABLE user_log (
-  username varchar(50) NOT NULL default '0',
-  user_id mediumint(8) NOT NULL default '0',
-  time timestamp NOT NULL default '0000-00-00 00:00:00',
-  result tinyint(1) NOT NULL default '0',
-  ip varchar(40) NOT NULL default '',
-  PRIMARY KEY (username,user_id,time),
-  KEY username (username),
-  KEY user_id (user_id)
+  `username` varchar(50) NOT NULL default '0',
+  `user_id` mediumint(8) NOT NULL default '0',
+  `time` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `result` tinyint(1) NOT NULL default '0',
+  `ip` varchar(40) NOT NULL default '',
+  PRIMARY KEY (`username`,`user_id`,`time`),
+  KEY user_id (`user_id`)
 ) ENGINE=InnoDB;
 
 --
@@ -2720,7 +2720,7 @@ CREATE TABLE `snmpagent_cache` (
   `description` varchar(5000) NOT NULL DEFAULT '',
   PRIMARY KEY (`oid`),
   KEY `name` (`name`),
-  KEY `mib` (`mib`)
+  KEY `mib_name` (`mib`,`name`)
 ) ENGINE=InnoDB COMMENT='SNMP MIB CACHE';
 
 --
@@ -2812,8 +2812,7 @@ CREATE TABLE `snmpagent_managers_notifications` (
   `notification` varchar(180) NOT NULL,
   `mib` varchar(191) NOT NULL,
   KEY `mib` (`mib`),
-  KEY `manager_id` (`manager_id`),
-  KEY `manager_id2` (`manager_id`,`notification`)
+  KEY `manager_id_notification` (`manager_id`,`notification`)
 ) ENGINE=InnoDB COMMENT='snmp notifications to receivers';
 
 --
@@ -2835,8 +2834,7 @@ CREATE TABLE `snmpagent_notifications_log` (
   PRIMARY KEY (`id`),
   KEY `time` (`time`),
   KEY `severity` (`severity`),
-  KEY `manager_id` (`manager_id`),
-  KEY `manager_id2` (`manager_id`,`notification`)
+  KEY `manager_id_notification` (`manager_id`,`notification`)
 ) ENGINE=InnoDB COMMENT='logs snmp notifications to receivers';
 
 --
@@ -2851,7 +2849,8 @@ CREATE TABLE vdef (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(255) NOT NULL default '',
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  KEY `hash` (`hash`)
 ) ENGINE=InnoDB COMMENT='vdef';
 
 --
@@ -2871,14 +2870,14 @@ INSERT INTO vdef VALUES(7, 'c80d12b0f030af3574da68b28826cd39', '95th Percentage:
 --
 
 CREATE TABLE vdef_items (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  hash varchar(32) NOT NULL default '',
-  vdef_id mediumint(8) unsigned NOT NULL default '0',
-  sequence mediumint(8) unsigned NOT NULL default '0',
-  type tinyint(2) NOT NULL default '0',
-  value varchar(150) NOT NULL default '',
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `hash` varchar(32) NOT NULL default '',
+  `vdef_id` mediumint(8) unsigned NOT NULL default '0',
+  `sequence` mediumint(8) unsigned NOT NULL default '0',
+  `type` tinyint(2) NOT NULL default '0',
+  `value` varchar(150) NOT NULL default '',
   PRIMARY KEY (id),
-  KEY vdef_id (vdef_id)
+  KEY `vdef_id_sequence` (`vdef_id`,`sequence`)
 ) ENGINE=InnoDB COMMENT='vdef items';
 
 --
