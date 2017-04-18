@@ -96,8 +96,6 @@ function push_out_data_source_custom_data($data_template_id) {
 	$did_vals  = '';
 	if (sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
-			reset($input_fields);
-			
 			if (sizeof($input_fields)) {
 				foreach ($input_fields as $input_field) {
 					if ($data_source['id'] == $input_field['data_template_data_id'] &&
@@ -278,7 +276,6 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 		if (sizeof($template_rrds_list)) {
 			foreach ($template_rrds_list as $template_rrd) {
 				unset($save);
-				reset($struct_data_source_item);
 
 				$save['id'] = 0;
 				$save['local_data_template_rrd_id'] = $template_rrd['id'];
@@ -738,7 +735,6 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 	if (sizeof($template_items_list)) {
 		foreach ($template_items_list as $template_item) {
 			unset($save);
-			reset($struct_graph_item);
 
 			$save['local_graph_template_item_id'] = $template_item['id'];
 			$save['local_graph_id']               = $local_graph_id;

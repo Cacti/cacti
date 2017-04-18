@@ -93,7 +93,7 @@ function form_save() {
 				}
 
 				if ((isset($new_members)) && (sizeof($new_members) > 0)) {
-					foreach ($new_members as $item_id => $item_id) {
+					foreach ($new_members as $item_id) {
 						push_out_graph_input($graph_template_input_id, $item_id, (isset($new_members) ? $new_members : array()));
 					}
 				}

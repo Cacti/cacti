@@ -338,7 +338,6 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 
 	if (sizeof($values_array)) {
 		foreach ($values_array as $rrd) {
-			reset($struct_data_source_item);
 			$form_array = array();
 
 			/* if the user specifies a title, we only want to draw that. if not, we should create our

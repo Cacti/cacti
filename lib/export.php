@@ -44,7 +44,6 @@ function graph_template_to_xml($graph_template_id) {
 	$xml_text .= '<hash_' . $hash['graph_template'] . ">\n\t<name>" . xml_character_encode($graph_template['name']) . "</name>\n\t<graph>\n";
 
 	/* XML Branch: <graph> */
-	reset($struct_graph);
 	foreach ($struct_graph as $field_name => $field_array) {
 		if ($field_array['method'] != 'spacer') {
 			$xml_text .= "\t\t<t_$field_name>" . xml_character_encode($graph_template_graph{'t_' . $field_name}) . "</t_$field_name>\n";
@@ -484,15 +483,15 @@ function data_source_profile_to_xml($data_source_profile_id) {
 	/* XML Branch: <cf_items> */
 	$i = 0;
 	if (sizeof($profile_cf) > 0) {
-	foreach ($profile_cf as $item) {
-		$xml_text .= $item['consolidation_function_id'];
+		foreach ($profile_cf as $item) {
+			$xml_text .= $item['consolidation_function_id'];
 
-		if (($i+1) < sizeof($profile_cf)) {
-			$xml_text .= '|';
+			if (($i+1) < sizeof($profile_cf)) {
+				$xml_text .= '|';
+			}
+
+			$i++;
 		}
-
-		$i++;
-	}
 	}
 
 	$xml_text .= "</cf_items>\n";
@@ -502,8 +501,6 @@ function data_source_profile_to_xml($data_source_profile_id) {
 	$i = 0;
 	if (sizeof($profile_rra)) {
 		foreach ($profile_rra as $item) {
-			reset($fields_profile_rra_edit);
-
 			$xml_text .= "\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 			foreach ($fields_profile_rra_edit as $field_name => $field_array) {
 				if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden' && ($field_array['method'] != 'other')) && ($field_array['method'] != 'spacer')) {

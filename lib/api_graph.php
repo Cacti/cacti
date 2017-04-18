@@ -205,7 +205,6 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	}
 
 	unset($save);
-	reset($struct_graph);
 
 	/* create new entry: graph_templates_graph */
 	$save['id']                            = 0;

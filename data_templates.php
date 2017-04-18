@@ -210,7 +210,6 @@ function form_save() {
 
 				db_execute_prepared('DELETE FROM data_input_data WHERE data_template_data_id = ?', array($data_template_data_id));
 
-				reset($input_fields);
 				if (sizeof($input_fields)) {
 					foreach ($input_fields as $input_field) {
 						$form_value = 'value_' . $input_field['data_name'];

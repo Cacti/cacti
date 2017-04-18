@@ -716,7 +716,6 @@ function graphs() {
 
 				if ($xml_array != false) {
 					/* loop through once so we can find out how many input fields there are */
-					reset($xml_array['fields']);
 					foreach ($xml_array['fields'] as $field_name => $field_array) {
 						if ($field_array['direction'] == 'input') {
 							$num_input_fields++;

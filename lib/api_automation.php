@@ -1861,7 +1861,6 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 
 			$_fields_rule_item_edit = $fields_automation_graph_rule_item_edit;
 			$xml_array = get_data_query_array($automation_rule['snmp_query_id']);
-			reset($xml_array['fields']);
 			$fields = array();
 			if(sizeof($xml_array)) {
 				foreach($xml_array['fields'] as $key => $value) {

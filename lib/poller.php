@@ -458,7 +458,6 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		}
 
 		/* make sure each .rrd file has complete data */
-		reset($results);
 		$k = 0;
 		$data_ids = array();
 		foreach ($results as $item) {

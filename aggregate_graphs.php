@@ -319,8 +319,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Graph(s)') . "'>";
 		}elseif (get_request_var('drp_action') == '2') { /* migrate to aggregate */
 			/* determine the common graph template if any */
-			reset($_POST);
-			while (list($var,$val) = each($_POST)) {
+			foreach ($_POST as $var => $val) {
 				if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 					$local_graph_ids[] = $matches[1];
 				}

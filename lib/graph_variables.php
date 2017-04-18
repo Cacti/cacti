@@ -79,10 +79,8 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 			/* this is used to later sum, max and total the data sources used on the graph */
 			/* Loop fetch array index  */
 			$dsi_name_to_id = array();
-			reset($fetch_array);
 			for ($i=0; $i<count($fetch_array); $i++) {
 				/* Go through data souce names */
-				reset($fetch_array[$i]['data_source_names']);
 				foreach ($fetch_array[$i]['data_source_names'] as $ds_name) {
 					$dsi_name_to_id[$ds_name][] = $i;
 				}
