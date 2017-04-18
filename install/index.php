@@ -865,7 +865,7 @@ $enabled = '1';
 						$input = install_file_paths();
 						/* find the appropriate value for each 'config name' above by config.php, database,
 						 * or a default for fall back */
-						while (list($name, $array) = each($input)) {
+						foreach ($input as $name => $array) {
 							if (isset($input[$name])) {
 								$current_value = $array['default'];
 
@@ -911,7 +911,7 @@ $enabled = '1';
 
 						$input = install_file_paths();
 						/* get all items on the form and write values for them  */
-						while (list($name, $array) = each($input)) {
+						foreach ($input as $name => $array) {
 							if (isset_request_var($name)) {
 								db_execute_prepared("REPLACE INTO settings (name,value) VALUES (?, ?)", array($name, get_nfilter_request_var($name)));
 							}
@@ -1062,9 +1062,9 @@ $enabled = '1';
 						$sqltext[2] = '<span style="color: grey; font-weight: bold; font-size: 12px;">' . __('[Not Ran]') . '</span>&nbsp;';
 
 						if (isset($_SESSION['sess_sql_install_cache'])) {
-							while (list($index, $arr1) = each($_SESSION['sess_sql_install_cache'])) {
-								while (list($version, $arr2) = each($arr1)) {
-									while (list($status, $sql) = each($arr2)) {
+							foreach ($_SESSION['sess_sql_install_cache'] as $index => $arr1) {
+								foreach ($arr1 as $version => $arr2) {
+									foreach ($arr2 as $status => $sql) {
 										if ($current_version != $version) {
 											$version_index = array_search($version, $cacti_versions);
 											$upgrade_results .= '<p><strong>' . (isset($cacti_versions{$version_index-1}) ? $cacti_versions{$version_index-1}:'')  . ' -> ' . $cacti_versions{$version_index} . "</strong></p>\n";

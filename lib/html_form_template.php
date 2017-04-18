@@ -47,7 +47,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 		WHERE graph_template_id = ?
 		AND local_graph_id=0', array($graph_template_id));
 
-	while (list($field_name, $field_array) = each($struct_graph)) {
+	foreach ($struct_graph as $field_name => $field_array) {
 		/* find our field name */
 		$form_field_name = str_replace('|field|', $field_name, $field_name_format);
 
@@ -249,7 +249,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 		WHERE data_template_id = ?
 		AND local_data_id=0', array($data_template_id));
 
-	while (list($field_name, $field_array) = each($struct_data_source)) {
+	foreach ($struct_data_source as $field_name => $field_array) {
 		/* find our field name */
 		$form_field_name = str_replace('|field|', $field_name, $field_name_format);
 
@@ -338,7 +338,6 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 
 	if (sizeof($values_array)) {
 		foreach ($values_array as $rrd) {
-			reset($struct_data_source_item);
 			$form_array = array();
 
 			/* if the user specifies a title, we only want to draw that. if not, we should create our
@@ -355,7 +354,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					WHERE id = ?', array($rrd['local_data_template_rrd_id']));
 			}
 
-			while (list($field_name, $field_array) = each($struct_data_source_item)) {
+			foreach ($struct_data_source_item as $field_name => $field_array) {
 				/* find our field name */
 				$form_field_name = str_replace('|field|', $field_name, $field_name_format);
 				$form_field_name = str_replace('|id|', $rrd['id'], $form_field_name);

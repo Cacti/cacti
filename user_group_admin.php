@@ -554,7 +554,7 @@ function form_save() {
 	}elseif (isset_request_var('save_component_realm_perms')) {
 		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', array(get_filter_request_var('id')));
 
-		while (list($var, $val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^[section]/i', $var)) {
 				if (substr($var, 0, 7) == 'section') {
 				    db_execute_prepared('REPLACE INTO user_auth_group_realm (group_id, realm_id) VALUES (?, ?)', array(get_request_var('id'), substr($var, 7)));
@@ -569,10 +569,10 @@ function form_save() {
 		header('Location: user_group_admin.php?action=edit&header=false&tab=realms&id=' . get_request_var('id'));
 		exit;
 	}elseif (isset_request_var('save_component_graph_settings')) {
-		while (list($tab_short_name, $tab_fields) = each($settings_user)) {
-			while (list($field_name, $field_array) = each($tab_fields)) {
+		foreach ($settings_user as $tab_short_name => $tab_fields) {
+			foreach ($tab_fields as $field_name => $field_array) {
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', array(get_filter_request_var('id'), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
 					}
 				}else{
@@ -1527,18 +1527,18 @@ function user_group_settings_edit($header_label) {
 
 	html_start_box( __('User Settings %s', $header_label), '100%', '', '3', 'center', '');
 
-	while (list($tab_short_name, $tab_fields) = each($settings_user)) {
+	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		$collapsible = true;
 
 		print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><td colspan='2' style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
 
 		$form_array = array();
 
-		while (list($field_name, $field_array) = each($tab_fields)) {
+		foreach ($tab_fields as $field_name => $field_array) {
 			$form_array += array($field_name => $tab_fields[$field_name]);
 
 			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-				while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 					if (graph_config_value_exists($sub_field_name, get_request_var('id'))) {
 						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 					}

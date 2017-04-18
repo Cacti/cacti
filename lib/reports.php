@@ -34,8 +34,7 @@ function duplicate_reports($_id, $_title) {
 	$reports_items = db_fetch_assoc_prepared('SELECT * FROM reports_items WHERE report_id = ?', array($_id));
 
 	$save = array();
-	reset($fields_reports_edit);
-	while (list($field, $array) = each($fields_reports_edit)) {
+	foreach ($fields_reports_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method']) &&
 			!preg_match('/^spacer/', $array['method'])) {
 			$save[$field] = $report[$field];
@@ -1081,10 +1080,10 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 
 						/* using the sorted data as they key; grab each snmp index from the master list */
 						$graph_list = array();
-						while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+						foreach ($sort_field_data as $snmp_index => $sort_field_value) {
 							/* render each graph for the current data query index */
 							if (isset($snmp_index_to_graph[$snmp_index])) {
-								while (list($local_graph_id, $graph_title) = each($snmp_index_to_graph[$snmp_index])) {
+								foreach ($snmp_index_to_graph[$snmp_index] as $local_graph_id => $graph_title) {
 									/* reformat the array so it's compatable with the html_graph* area functions */
 									array_push($graph_list, array('local_graph_id' => $local_graph_id, 'title_cache' => $graph_title));
 								}

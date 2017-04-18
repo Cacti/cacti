@@ -1066,7 +1066,7 @@ function draw_menu($user_menu = "") {
 							$draw_sub_items = false;
 						}
 
-						while (list($item_sub_url, $item_sub_title) = each($item_title)) {
+						foreach ($item_title as $item_sub_url => $item_sub_title) {
 							$item_sub_url = $config['url_path'] . $item_sub_url;
 
 							/* always draw the first item (parent), only draw the children if we are viewing a page

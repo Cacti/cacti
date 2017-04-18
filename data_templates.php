@@ -210,7 +210,6 @@ function form_save() {
 
 				db_execute_prepared('DELETE FROM data_input_data WHERE data_template_data_id = ?', array($data_template_data_id));
 
-				reset($input_fields);
 				if (sizeof($input_fields)) {
 					foreach ($input_fields as $input_field) {
 						$form_value = 'value_' . $input_field['data_name'];
@@ -505,7 +504,7 @@ function template_edit() {
 
 	$form_array = array();
 
-	while (list($field_name, $field_array) = each($struct_data_source)) {
+	foreach ($struct_data_source as $field_name => $field_array) {
 		$form_array += array($field_name => $struct_data_source[$field_name]);
 
 		if ($field_array['flags'] == 'ALWAYSTEMPLATE') {
@@ -581,7 +580,7 @@ function template_edit() {
 
 	$form_array = array();
 
-	while (list($field_name, $field_array) = each($struct_data_source_item)) {
+	foreach ($struct_data_source_item as $field_name => $field_array) {
 		$form_array += array($field_name => $struct_data_source_item[$field_name]);
 
 		$form_array[$field_name]['value'] = (isset($template_rrd) ? $template_rrd[$field_name] : '');

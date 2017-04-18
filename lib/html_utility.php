@@ -42,7 +42,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 
 	/* loop through each available field */
 	if (sizeof($form_array)) {
-	while (list($field_name, $field_array) = each($form_array)) {
+	foreach ($form_array as $field_name => $field_array) {
 		/* loop through each sub-field that we are going to check for variables */
 		foreach ($check_fields as $field_to_check) {
 			if (isset($field_array[$field_to_check]) && (is_array($form_array[$field_name][$field_to_check]))) {
