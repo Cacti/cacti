@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.1.4
 -issue#573: Missing Graph Template dropdown items
 -issue#575: Very large hex strings result in scientific notation that RRDtool rejects
+-issue#579: Problems logging in using nginx web server
 -issue: Ping email does not use a from email address
 -issue: Automation does not recognize default size or poller
 -feature: Reorganize defaults to place more defaults on device defaults page
