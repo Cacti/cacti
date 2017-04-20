@@ -951,10 +951,10 @@ function utilities_php_modules() {
 }
 
 function memory_bytes($val) {
-	$val = trim($val);
+	$val  = trim($val);
 	$last = strtolower($val{strlen($val)-1});
+	$val  = trim($val, 'GMKgmk');
 	switch($last) {
-		// The 'G' modifier is available since PHP 5.1.0
 		case 'g':
 			$val *= 1024;
 		case 'm':
