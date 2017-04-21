@@ -1605,10 +1605,6 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 				<?php if (!$nonone) {?><option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 				<?php
 
-				if ($sql_where != '' && strpos($sql_where, 'WHERE') === false) { 
-					$sql_where = 'WHERE ' . $sql_where;
-				}
-
 				$devices = get_allowed_devices($sql_where);
 
 				if (sizeof($devices)) {
