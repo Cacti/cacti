@@ -2737,7 +2737,7 @@ function automation_add_tree ($host_id, $tree) {
 
 function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$sql_where  = '';
-	$sql_where .= $sysDescr  != '' ? 'WHERE (sysDescr="" OR "' . $sysDescr . '" RLIKE sysDescr OR sysDescr LIKE "%' . $sysDescr . '%")':'';
+	$sql_where .= $sysDescr  != '' ? 'WHERE ((sysDescr="" AND "' . $sysDescr  . '" = "")' . 'OR "' . $sysDescr . '" RLIKE sysDescr OR sysDescr LIKE "%' . $sysDescr . '%")':'';
 	$sql_where .= $sysObject != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysOid="" OR "' . $sysObject . '" RLIKE sysOid OR sysOid LIKE "%' . $sysObject . '%")':'';
 	$sql_where .= $sysName   != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysName="" OR "' . $sysName . '" RLIKE sysName OR sysName LIKE "%' . $sysName . '%")':'';
 
