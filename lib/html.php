@@ -998,7 +998,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 function draw_menu($user_menu = "") {
 	global $config, $user_auth_realm_filenames, $menu, $menu_glyphs;
 
-	if (strlen($user_menu == 0)) {
+	if (!is_array($user_menu)) {
 		$user_menu = $menu;
 	}
 
