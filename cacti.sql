@@ -1158,7 +1158,7 @@ CREATE TABLE data_input_fields (
   allow_nulls char(2) default NULL,
   PRIMARY KEY (id),
   KEY data_input_id (data_input_id),
-  KEY type_code (type_code)
+  KEY type_code_data_input_id (type_code, data_input_id)
 ) ENGINE=InnoDB;
 
 --
@@ -1226,7 +1226,7 @@ CREATE TABLE data_local (
   KEY data_template_id (data_template_id),
   KEY snmp_query_id (snmp_query_id),
   KEY snmp_index (snmp_index(191)),
-  KEY host_id (host_id)
+  KEY host_id_snmp_query_id (host_id, snmp_query_id)
 ) ENGINE=InnoDB;
 
 --
