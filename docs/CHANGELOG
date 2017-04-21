@@ -10,10 +10,12 @@ Cacti CHANGELOG
 -issue#587: Data Collector setting under Network Discovery is not being used
 -issue#588: Devices with blank sysDescr are added to the first Device Template in error
 -issue#590: Unable to create a plugin based menu
+-issue#591: Row selection in Device Automation Templates not sane with drag-n-drop enabled
 -issue: Ping email does not use a from email address
 -issue: Automation does not recognize default size or poller
 -issue: Unable to drag-n-drop on automation templates pages when enabled
 -feature: Reorganize defaults to place more defaults on device defaults page
+-feature: Update jQuery tableDnD to version 0.9
 
 1.1.3
 -issue#515: Unable to import color CSV file
