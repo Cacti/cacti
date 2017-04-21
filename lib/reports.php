@@ -397,7 +397,6 @@ function generate_report($report, $force = false) {
 		$headers
 	);
 
-	session_start();
 	if (strlen($error)) {
 		if (isset_request_var('id')) {
 			$_SESSION['reports_error'] = "Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'";

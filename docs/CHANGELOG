@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#573: Missing Graph Template dropdown items
 -issue#575: Very large hex strings result in scientific notation that RRDtool rejects
 -issue#579: Problems logging in using nginx web server
+-issue#581: session_start() warnings when manually sending reports
 -issue#584: Issues reporting memory recommendation on utilities page
 -issue#586: Overrunning pollers can cause system load spikes
 -issue#587: Data Collector setting under Network Discovery is not being used
