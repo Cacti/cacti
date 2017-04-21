@@ -131,7 +131,7 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print("DEBUG: " . $message . "\n");
+		print('DEBUG: ' . $message . "\n");
 	}
 }
 
@@ -142,15 +142,13 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 
 global $poller_id, $sessions, $downhosts;
 
-$start = date('Y-m-d H:i:s'); // for runtime measurement
-
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '512M');
 
 $no_http_headers = true;
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 $first     = NULL;
@@ -724,6 +722,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 				}
 			}
 		} /* Next Cache Item */
+
+		/* check for an over running poller */
+		$now = microtime(true);
+		if ($now - $start > $polling_interval) {
+			cacti_log('WARNING: cmd.php poller over ran its polling intervale and therefore ending');
+			break;
+		}
 	} /* End foreach */
 
 	if ($output_count > 0) {
