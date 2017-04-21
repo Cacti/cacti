@@ -278,7 +278,6 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 		}
 
 		/* make sure each .rrd file has complete data */
-		reset($results);
 		foreach ($results as $item) {
 			db_execute_prepared('DELETE FROM poller_output_realtime
 				WHERE local_data_id = ? 

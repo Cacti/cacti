@@ -156,7 +156,6 @@ function user_setting_exists($config_name, $user_id) {
 function read_default_user_setting($config_name) {
 	global $config, $settings_user;
 
-	reset($settings_user);
 	foreach ($settings_user as $tab_array) {
 		if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
 			return $tab_array[$config_name]['default'];
@@ -271,7 +270,6 @@ function read_default_config_option($config_name) {
 	global $config, $settings;
 
 	if (is_array($settings)) {
-		reset($settings);
 		foreach ($settings as $tab_array) {
 			if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
 				return $tab_array[$config_name]['default'];
@@ -3327,11 +3325,20 @@ function general_header() {
 }
 
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
-	$full_name = db_fetch_cell_prepared('SELECT full_name FROM user_auth WHERE email_address = ?', array($from));
-	if (empty($full_name)) {
-		$fromname = $from;
+	if ($from == '') {
+		$from     = read_config_option('settings_from_email');
+		$fromname = read_config_option('settings_from_name');
 	}else{
-		$fromname = $full_name;
+		$full_name = db_fetch_cell_prepared('SELECT full_name 
+			FROM user_auth 
+			WHERE email_address = ?', 
+			array($from));
+
+		if (empty($full_name)) {
+			$fromname = $from;
+		}else{
+			$fromname = $full_name;
+		}
 	}
 
 	$from = array($from, $fromname);

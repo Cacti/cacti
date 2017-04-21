@@ -231,8 +231,7 @@ function form_actions() {
 				}
 			}elseif (get_request_var('drp_action') == '4') { /* change device options */
 				for ($i=0;($i<count($selected_items));$i++) {
-					reset($fields_host_edit);
-					while (list($field_name, $field_array) = each($fields_host_edit)) {
+					foreach ($fields_host_edit as $field_name => $field_array) {
 						if (isset_request_var("t_$field_name")) {
 							db_execute_prepared("UPDATE host SET $field_name = ? WHERE id = ?", array(get_nfilter_request_var($field_name), $selected_items[$i]));
 							if ($field_name == 'host_template_id') {
@@ -449,7 +448,7 @@ function form_actions() {
 
 			$form_array = array();
 
-			while (list($field_name, $field_array) = each($fields_host_edit)) {
+			foreach ($fields_host_edit as $field_name => $field_array) {
 				if ((preg_match('/^snmp_/', $field_name)) ||
 					(preg_match('/^ping_/', $field_name)) ||
 					($field_name == 'poller_id') ||
@@ -753,7 +752,7 @@ function host_edit() {
 			INNER JOIN data_template_rrd AS dtr
 			ON gti.task_item_id=dtr.id
 			INNER JOIN data_template_data AS dtd
-			ON dtd.id=dtr.data_template_id
+			ON dtd.data_template_id=dtr.data_template_id
 			WHERE sqg.name IS NULL 
 			AND gti.local_graph_id=0
 			AND dtr.local_data_id=0

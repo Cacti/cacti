@@ -74,7 +74,7 @@ function form_save() {
 				$db_selected_graph_item = array_rekey(db_fetch_assoc_prepared('SELECT graph_template_item_id FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_template_input_id)), 'graph_template_item_id', 'graph_template_item_id');
 
 				/* list all select graph items for use down below */
-				while (list($var, $val) = each($_POST)) {
+				foreach ($_POST as $var => $val) {
 					if (preg_match("/^i_(\d+)$/", $var, $matches)) {
 						/* ================= input validation ================= */
 						input_validate_input_number($matches[1]);
@@ -93,7 +93,7 @@ function form_save() {
 				}
 
 				if ((isset($new_members)) && (sizeof($new_members) > 0)) {
-					while (list($item_id, $item_id) = each($new_members)) {
+					foreach ($new_members as $item_id) {
 						push_out_graph_input($graph_template_input_id, $item_id, (isset($new_members) ? $new_members : array()));
 					}
 				}
@@ -145,7 +145,7 @@ function input_edit() {
 	$header_label = __('Graph Item Inputs [edit graph: %s]' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
 
 	/* get a list of all graph item field names and populate an array for user display */
-	while (list($field_name, $field_array) = each($struct_graph_item)) {
+	foreach ($struct_graph_item as $field_name => $field_array) {
 		if ($field_array['method'] != 'view') {
 			$graph_template_items[$field_name] = $field_array['friendly_name'];
 		}

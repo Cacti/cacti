@@ -456,6 +456,7 @@ function discoverDevices($network_id, $thread) {
 					$device['snmp_status']          = 0;
 					$device['ping_status']          = 0;
 					$device['snmp_id']              = $network['snmp_id'];
+					$device['poller_id']            = $network['poller_id'];
 					$device['snmp_version']         = '';
 					$device['snmp_port']            = '';
 					$device['snmp_readstring']      = '';
@@ -571,6 +572,7 @@ function discoverDevices($network_id, $thread) {
 								$device['os']                   = $fos['name'];
 								$device['host_template']        = $fos['host_template'];
 								$device['availability_method']  = $fos['availability_method'];
+
 								$host_id = automation_add_device($device);
 
 								$stats['added']++;

@@ -833,12 +833,12 @@ function format_snmp_string($string, $snmp_oid_included) {
 			$output .= chr(hexdec($part));
 		}
 
-		$string = $output;
-	}elseif (preg_match('/(hex-string:)/i', $string)) {
+		$string = number_format($output, 0, '', '');
+	}elseif (preg_match('/hex-/i', $string)) {
 		$output = '';
 
 		/* strip off the 'Hex-STRING:' */
-		$string = preg_replace('/hex-string: ?/i', '', $string);
+		$string = preg_replace('/hex- ?/i', '', $string);
 
 		/* normalize some forms */
 		$string = str_replace(' ', ':', $string);
@@ -860,11 +860,11 @@ function format_snmp_string($string, $snmp_oid_included) {
 
 				$output .= chr(hexdec($part));
 			} else {
-				$output .= ($output != '' ? ':':'') . $output;
+				$output .= ($output != '' ? ':' : '') . $part;
 			}
 		}
 
-		$string = $output;
+		$string = number_format($output, 0, '', '');
 	}elseif (preg_match('/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/i', $string)) {
 		$octet = '';
 

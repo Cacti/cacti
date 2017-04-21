@@ -135,8 +135,7 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 	$save['id']   = 0;
 	$save['hash'] = get_hash_host_template(0);
 
-	reset($fields_host_template_edit);
-	while (list($field, $array) = each($fields_host_template_edit)) {
+	foreach ($fields_host_template_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method'])) {
 			$save[$field] = $host_template[$field];
 		}

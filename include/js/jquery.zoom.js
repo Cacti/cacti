@@ -689,7 +689,7 @@
 		*/
 		function setCustomFilterActionActionAndDate() {
 			onChange = $('#predefined_timespan').attr('onchange');
-			if (typeof $('#predefined_timespan').selectmenu == 'function') {
+			if (typeof $('#predefined_timespan').selectmenu() == 'function') {
 				$('#predefined_timespan').val('0').selectmenu('refresh');
 			} else{
 				$('#predefined_timespan').val('0');

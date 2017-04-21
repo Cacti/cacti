@@ -998,7 +998,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 function draw_menu($user_menu = "") {
 	global $config, $user_auth_realm_filenames, $menu, $menu_glyphs;
 
-	if (strlen($user_menu == 0)) {
+	if (!is_array($user_menu)) {
 		$user_menu = $menu;
 	}
 
@@ -1066,7 +1066,7 @@ function draw_menu($user_menu = "") {
 							$draw_sub_items = false;
 						}
 
-						while (list($item_sub_url, $item_sub_title) = each($item_title)) {
+						foreach ($item_title as $item_sub_url => $item_sub_title) {
 							$item_sub_url = $config['url_path'] . $item_sub_url;
 
 							/* always draw the first item (parent), only draw the children if we are viewing a page
@@ -1604,10 +1604,6 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 				<?php if (!$noany) {?><option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
 				<?php if (!$nonone) {?><option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 				<?php
-
-				if ($sql_where != '' && strpos($sql_where, 'WHERE') === false) { 
-					$sql_where = 'WHERE ' . $sql_where;
-				}
 
 				$devices = get_allowed_devices($sql_where);
 

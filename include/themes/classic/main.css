@@ -317,7 +317,7 @@ label {
 }
 
 .deviceUnmonitored {
-	color: rgba(250, 253, 158) !important;
+	color: rgba(250, 253, 158, 0.8) !important;
 }
 
 .deviceWarning {
@@ -899,7 +899,7 @@ legend {
 	color: white;
 	font-weight: normal;
 	text-decoration: none;
-	cursor;pointer;
+	cursor: pointer;
 }
 
 .linkOverDark:hover {

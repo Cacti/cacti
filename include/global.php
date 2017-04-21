@@ -169,11 +169,20 @@ include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 
-if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) {
+if (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF'] != '') {
+	$filename = basename($_SERVER['PHP_SELF']);
+}elseif (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
+	$filename = basename($_SERVER['SCRIPT_NAME']);
+}else{
+	$filename = null;
+}
+
+if ((isset($no_http_headers) && $no_http_headers == true) || in_array($filename, $no_http_header_files, true)) {
 	$is_web = false;
-}elseif ($_SERVER['PHP_SELF'] != '') {
+}else{
 	$is_web = true;
 }
+
 $config['is_web'] = $is_web;
 
 /* set poller mode */
@@ -261,7 +270,7 @@ if ($is_web) {
 	/* we never run with magic quotes on */
 	if (get_magic_quotes_gpc()) {
 		$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-		while (list($key, $val) = each($process)) {
+		foreach ($process as $key => $val) {
 			foreach ($val as $k => $v) {
 				unset($process[$key][$k]);
 				if (is_array($v)) {

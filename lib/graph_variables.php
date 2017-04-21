@@ -46,11 +46,11 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 
 		$i = 0;
 		/* do a fetch for each data source */
-		while (list($ldi, $ldi_value) = each($local_data_id)) {
+		foreach ($local_data_id as $ldi => $ldi_value) {
 			$fetch_array[$i] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
 			/* clean up unwanted data source items */
 			if (! empty($fetch_array[$i])) {
-				while (list($id, $name) = each($fetch_array[$i]['data_source_names'])) {
+				foreach ($fetch_array[$i]['data_source_names'] as $id => $name) {
 					/* get rid of the Nth max for now since we'll need to re-calculate it later */
 					if ($name == 'nth_percentile_maximum') {
 						unset($fetch_array[$i]['data_source_names'][$id]);
@@ -79,10 +79,8 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 			/* this is used to later sum, max and total the data sources used on the graph */
 			/* Loop fetch array index  */
 			$dsi_name_to_id = array();
-			reset($fetch_array);
 			for ($i=0; $i<count($fetch_array); $i++) {
 				/* Go through data souce names */
-				reset($fetch_array[$i]['data_source_names']);
 				foreach ($fetch_array[$i]['data_source_names'] as $ds_name) {
 					$dsi_name_to_id[$ds_name][] = $i;
 				}

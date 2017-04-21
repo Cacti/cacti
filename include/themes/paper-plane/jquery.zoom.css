@@ -163,18 +163,21 @@
 
 
 .zoom-menu {
-	border:1px solid #aaa;
+	border:1px solid #222;
 	position:absolute;
-	background:#fff;
+	background:#F7F7F7;
 	display:none;
-	font-size: 1em;
+	font-family: Verdana,Arial,sans-serif;
+	font-size: 12px;
+	font-weight: light;
 	z-index:auto;
+	color: #000000;
 }
 
 .zoom-menu .first_li span {
 	width:115px;
 	display:block;
-	padding:5px 10px;
+	padding: 4px 15px;
 	cursor:pointer
 }
 
@@ -185,7 +188,7 @@
 	border:1px solid #aaa;
 	border-left:1px solid #ccc;
 	margin-top:-28px;
-	background:#fff;
+	background:#F7F7F7;
 }
 
 .zoom-menu .sep_li {
@@ -213,12 +216,20 @@
 }
 
 .zoom-menu-hover {
-	background: #E0EDFE;
+	background: #5CB85C;
 	cursor: pointer;
 }
 
+.zoom-menu-hover>span {
+	color: #FFFFFF;
+}
+
+.zoom-menu span:hover{
+	color: #FFFFFF;
+}
+
 .zoom-menu-highlight {
-	background: #E0EDFE;
+	#background: #E0EDFE;
 }
 
 .zoom-hidden {

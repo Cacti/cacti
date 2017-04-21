@@ -347,7 +347,7 @@ function item_edit() {
 
 	$form_array = array();
 
-	while (list($field_name, $field_array) = each($struct_graph_item)) {
+	foreach ($struct_graph_item as $field_name => $field_array) {
 		$form_array += array($field_name => $struct_graph_item[$field_name]);
 
 		/* should we draw an override checkbox */

@@ -738,8 +738,7 @@ function display_new_graphs($rule, $url) {
 	$xml_array = get_data_query_array($rule['snmp_query_id']);
 	if ($xml_array != false) {
 		/* loop through once so we can find out how many input fields there are */
-		reset($xml_array['fields']);
-		while (list($field_name, $field_array) = each($xml_array['fields'])) {
+		foreach ($xml_array['fields'] as $field_name => $field_array) {
 			if ($field_array['direction'] == 'input') {
 				$num_input_fields++;
 
@@ -810,14 +809,13 @@ function display_new_graphs($rule, $url) {
 		$new_fields['automation_host'] = array('name' => __('Hostname'), 'direction' => 'input');
 		$new_fields['status']          = array('name' => __('Device Status'), 'direction' => 'input');
 		$xml_array['fields']           = $new_fields + $xml_array['fields'];
-		reset($xml_array['fields']);
 
 		$field_names = get_field_names($rule['snmp_query_id']);
 		array_unshift($field_names, array('field_name' => 'status'));
 		array_unshift($field_names, array('field_name' => 'automation_host'));
 
 		$display_text = array();
-		while (list($field_name, $field_array) = each($xml_array['fields'])) {
+		foreach ($xml_array['fields'] as $field_name => $field_array) {
 			if ($field_array['direction'] == 'input') {
 				foreach($field_names as $row) {
 					if ($row['field_name'] == $field_name) {
@@ -849,8 +847,7 @@ function display_new_graphs($rule, $url) {
 					$style = ' style="color: blue"';
 				}
 				$column_counter = 0;
-				reset($xml_array['fields']);
-				while (list($field_name, $field_array) = each($xml_array['fields'])) {
+				foreach ($xml_array['fields'] as $field_name => $field_array) {
 					if ($field_array['direction'] == 'input') {
 						if (in_array($field_name, $fields)) {
 							if (isset($row[$field_name])) {
@@ -1396,8 +1393,7 @@ function duplicate_automation_graph_rules($_id, $_title) {
 
 	$fields_automation_graph_rules_edit = $fields_automation_graph_rules_edit1 + $fields_automation_graph_rules_edit2 + $fields_automation_graph_rules_edit3;
 	$save = array();
-	reset($fields_automation_graph_rules_edit);
-	while (list($field, $array) = each($fields_automation_graph_rules_edit)) {
+	foreach ($fields_automation_graph_rules_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method'])) {
 			$save[$field] = $rule[$field];
 		}
@@ -1440,8 +1436,7 @@ function duplicate_automation_tree_rules($_id, $_title) {
 
 	$fields_automation_tree_rules_edit = $fields_automation_tree_rules_edit1 + $fields_automation_tree_rules_edit2 + $fields_automation_tree_rules_edit3;
 	$save = array();
-	reset($fields_automation_tree_rules_edit);
-	while (list($field, $array) = each($fields_automation_tree_rules_edit)) {
+	foreach ($fields_automation_tree_rules_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method'])) {
 			$save[$field] = $rule[$field];
 		}
@@ -1866,7 +1861,6 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 
 			$_fields_rule_item_edit = $fields_automation_graph_rule_item_edit;
 			$xml_array = get_data_query_array($automation_rule['snmp_query_id']);
-			reset($xml_array['fields']);
 			$fields = array();
 			if(sizeof($xml_array)) {
 				foreach($xml_array['fields'] as $key => $value) {
@@ -2662,7 +2656,8 @@ function automation_add_device($device, $web = false) {
 	$template_id          = $device['host_template'];
 	$snmp_sysName         = preg_split('/[\s.]+/', $device['snmp_sysName'], -1, PREG_SPLIT_NO_EMPTY);
 	$description          = (isset($snmp_sysName[0]) != '' ? $snmp_sysName[0] : ($device['hostname'] == '' ? $device['ip'] : $device['hostname']));
-	$poller_id            = isset($device['poller_id']) ? $device['poller_id'] : db_fetch_cell('SELECT id FROM poller ORDER BY id ASC LIMIT 0,1', 'id');
+	$poller_id            = isset($device['poller_id']) ? $device['poller_id'] : read_config_option('default_poller');
+	$site_id              = isset($device['site_id']) ? $device['site_id'] : read_config_option('default_site');
 	$ip                   = isset($device['ip']) ? $device['ip']:$device['ip_address'];
 	$community            = $device['community'];
 	$snmp_ver             = $device['snmp_version'];
@@ -2672,11 +2667,11 @@ function automation_add_device($device, $web = false) {
 	$snmp_timeout         = isset($device['snmp_timeout']) ? $device['snmp_timeout']:read_config_option('snmp_timeout');
 	$disable              = '';
 	$availability_method  = isset($device['availability_method']) ? $device['availability_method']:read_config_option('availability_method');
-	$ping_method          = isset($device['ping_method']) ? $device['ping_method']:read_config_option('ping_method');
-	$ping_port            = isset($device['ping_port']) ? $device['ping_port']:read_config_option('ping_port');
-	$ping_timeout         = isset($device['ping_timeout']) ? $device['ping_timeout']:read_config_option('ping_timeout');
-	$ping_retries         = isset($device['ping_retries']) ? $device['ping_retries']:read_config_option('ping_retries');
-	$notes                = isset($device['notes']) ? $device['notes']:'Added by Discovery Plugin';
+	$ping_method          = isset($device['ping_method']) ? $device['ping_method'] : read_config_option('ping_method');
+	$ping_port            = isset($device['ping_port']) ? $device['ping_port'] : read_config_option('ping_port');
+	$ping_timeout         = isset($device['ping_timeout']) ? $device['ping_timeout'] : read_config_option('ping_timeout');
+	$ping_retries         = isset($device['ping_retries']) ? $device['ping_retries'] : read_config_option('ping_retries');
+	$notes                = isset($device['notes']) ? $device['notes'] : __('Added by Cacti Automation');
 	$snmp_auth_protocol   = $device['snmp_auth_protocol'];
 	$snmp_priv_passphrase = $device['snmp_priv_passphrase'];
 	$snmp_priv_protocol   = $device['snmp_priv_protocol'];
@@ -2692,7 +2687,7 @@ function automation_add_device($device, $web = false) {
 		$snmp_port, $snmp_timeout, $disable, $availability_method,
 		$ping_method, $ping_port, $ping_timeout, $ping_retries,
 		$notes, $snmp_auth_protocol, $snmp_priv_passphrase,
-		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id);
+		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id, $site_id);
 
 	if ($host_id) {
 		if (!$web) {
@@ -2742,7 +2737,7 @@ function automation_add_tree ($host_id, $tree) {
 
 function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$sql_where  = '';
-	$sql_where .= $sysDescr  != '' ? 'WHERE (sysDescr="" OR "' . $sysDescr . '" RLIKE sysDescr OR sysDescr LIKE "%' . $sysDescr . '%")':'';
+	$sql_where .= $sysDescr  != '' ? 'WHERE ((sysDescr="" AND "' . $sysDescr  . '" = "")' . 'OR "' . $sysDescr . '" RLIKE sysDescr OR sysDescr LIKE "%' . $sysDescr . '%")':'';
 	$sql_where .= $sysObject != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysOid="" OR "' . $sysObject . '" RLIKE sysOid OR sysOid LIKE "%' . $sysObject . '%")':'';
 	$sql_where .= $sysName   != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysName="" OR "' . $sysName . '" RLIKE sysName OR sysName LIKE "%' . $sysName . '%")':'';
 
