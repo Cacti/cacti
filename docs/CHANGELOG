@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#590: Unable to create a plugin based menu
 -issue: Ping email does not use a from email address
 -issue: Automation does not recognize default size or poller
+-issue: Unable to drag-n-drop on automation templates pages when enabled
 -feature: Reorganize defaults to place more defaults on device defaults page
 
 1.1.3

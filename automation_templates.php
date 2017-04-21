@@ -79,9 +79,8 @@ function automation_template_dnd() {
 
 	if (!isset_request_var('template_ids') || !is_array(get_nfilter_request_var('template_ids'))) exit;
 
-	/* template table contains two row defined as 'nodrag&nodrop' */
-	unset($_REQUEST['template_ids'][0]);
-	unset($_REQUEST['template_ids'][1]);
+	/* template table contains one row defined as 'nodrag&nodrop' */
+//	unset($_REQUEST['template_ids'][0]);
 
 	/* delivered template ids has to be exactly the same like we have stored */
 	$old_order = array();
@@ -96,18 +95,26 @@ function automation_template_dnd() {
 	$items = db_fetch_assoc('SELECT id, sequence FROM automation_templates ORDER BY sequence');
 
 	if (sizeof($items)) {
+		$i = 1;
 		foreach($items as $item) {
-			$old_order[$item['sequence']] = $item['id'];
+			$old_order[$i] = $item['id'];
+			$i++;
 		}
 	} else {
+		header('Location: automation_templates.php?header=false');
 		exit;
 	}
 
-	if (sizeof(array_diff($new_order, $old_order))>0) exit;
+	/* perform some sanity checks */
+	if (sizeof(array_diff($new_order, $old_order)) > 0) {
+		header('Location: automation_templates.php?header=false');
+		exit;
+	}
 
-	/* the set of sequence numbers has to be the same too */
-	if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
-	/* ==================================================== */
+	if (sizeof(array_diff_key($new_order, $old_order))>0) {
+		header('Location: automation_templates.php?header=false');
+		exit;
+	}
 
 	foreach($new_order as $sequence => $id) {
 		input_validate_input_number($sequence);
