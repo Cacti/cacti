@@ -1970,27 +1970,6 @@ function automation_hook_graph_template($host_id, $graph_template_id) {
 	automation_execute_graph_template($host_id, $graph_template_id);
 }
 
-
-/**
- * hook executed for a new device on a tree
- * @param $host_id - data passed from hook
- */
-function automation_hook_device_create_tree($host_id) {
-	global $config;
-
-	cacti_log(__FUNCTION__ . ' called: ' . $host_id, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
-	
-	if (read_config_option('automation_tree_enabled') == '') {
-		cacti_log(__FUNCTION__ . ' Device[' . $host_id . '] - skipped: Tree Creation Switch is: ' . (read_config_option('automation_tree_enabled') == '' ? 'off' : 'on'), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
-		return;
-	}
-
-	automation_execute_device_create_tree($host_id);
-
-	/* make sure, the next plugin gets required $data */
-	return($host_id);
-}
-
 /**
  * hook executed for a new graph on a tree
  * @param $data - data passed from hook
