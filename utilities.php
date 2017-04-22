@@ -497,9 +497,9 @@ function utilities_view_tech($php_info = '') {
 		html_section_header(__('PHP Module Information'), 2);
 		form_alternate_row();
 		$php_info = str_replace(
-				array('width="600"', 'th colspan="2"', ','),
-				array('', 'th class="subHeaderColumn"', ', '),
-				$php_info
+            array('width="600"', 'th colspan="2"', ','),
+            array('', 'th class="subHeaderColumn"', ', '),
+            $php_info
 		);
 		print "<td colspan='2'>" . $php_info . "</td>\n";
 
