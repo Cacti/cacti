@@ -457,6 +457,7 @@ function discoverDevices($network_id, $thread) {
 					$device['ping_status']          = 0;
 					$device['snmp_id']              = $network['snmp_id'];
 					$device['poller_id']            = $network['poller_id'];
+					$device['site_id']              = $network['site_id'];
 					$device['snmp_version']         = '';
 					$device['snmp_port']            = '';
 					$device['snmp_readstring']      = '';

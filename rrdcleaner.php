@@ -438,7 +438,7 @@ function do_rrd() {
 	/* install the rrdclean error handler */
 	set_error_handler('rrdclean_error_handler');
 
-	while (list ($var, $val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_(.*)$/', $var, $matches)) {
 			/* recreate the file name */
 			$unused_file = db_fetch_row_prepared('SELECT id, name, local_data_id 

@@ -2703,7 +2703,7 @@ function draw_navigation_text($type = 'url') {
 			$leaf_sub  = '';
 
 			if (isset_request_var('tree_id')) {
-				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_request_var('tree_id')));
+				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_filter_request_var('tree_id')));
 			}else{
 				$tree_name = '';
 			}

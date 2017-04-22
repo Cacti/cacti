@@ -102,7 +102,7 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('associate_host')) {
-		while (list($var,$val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -126,7 +126,7 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_graph')) {
-		while (list($var,$val) = each($_POST)) {
+	    foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -150,7 +150,7 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_template')) {
-		while (list($var,$val) = each($_POST)) {
+        foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -174,7 +174,7 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_groups')) {
-		while (list($var,$val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -197,7 +197,7 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_tree')) {
-		while (list($var,$val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -307,7 +307,7 @@ function form_actions() {
 	$user_list = '';
 	$user_array = array();
 	$i = 0;
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
