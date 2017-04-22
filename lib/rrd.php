@@ -1499,38 +1499,44 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					if (preg_match('/ALL_DATA_SOURCES_DUPS/', $cdef_string)) {
 						$magic_item['ALL_DATA_SOURCES_DUPS'] = '';
 					}
+
 					if (preg_match('/ALL_DATA_SOURCES_NODUPS/', $cdef_string)) {
 						$magic_item['ALL_DATA_SOURCES_NODUPS'] = '';
 					}
+
 					if (preg_match('/SIMILAR_DATA_SOURCES_DUPS/', $cdef_string)) {
 						$magic_item['SIMILAR_DATA_SOURCES_DUPS'] = '';
 					}
+
 					if (preg_match('/SIMILAR_DATA_SOURCES_NODUPS/', $cdef_string)) {
 						$magic_item['SIMILAR_DATA_SOURCES_NODUPS'] = '';
 					}
+
 					if (preg_match('/COUNT_ALL_DS_DUPS/', $cdef_string)) {
 						$magic_item['COUNT_ALL_DS_DUPS'] = '';
 					}
+
 					if (preg_match('/COUNT_ALL_DS_NODUPS/', $cdef_string)) {
 						$magic_item['COUNT_ALL_DS_NODUPS'] = '';
 					}
+
 					if (preg_match('/COUNT_SIMILAR_DS_DUPS/', $cdef_string)) {
 						$magic_item['COUNT_SIMILAR_DS_DUPS'] = '';
 					}
+
 					if (preg_match('/COUNT_SIMILAR_DS_NODUPS/', $cdef_string)) {
 						$magic_item['COUNT_SIMILAR_DS_NODUPS'] = '';
 					}
 
 					/* loop over all graph items */
-					for ($t=0;($t<count($graph_items));$t++) {
-
+					foreach($graph_items as $gi_check) {
 						/* only work on graph items, omit GRPINTs, COMMENTs and stuff */
-						if ((preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types{$graph_items[$t]['graph_type_id']})) && (!empty($graph_items[$t]['data_template_rrd_id']))) {
+						if ((preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types{$gi_check['graph_type_id']})) && (!empty($gi_check['data_template_rrd_id']))) {
 							/* if the user screws up CF settings, PHP will generate warnings if left unchecked */
 
 							/* matching consolidation function? */
-							if (isset($cf_ds_cache{$graph_items[$t]['data_template_rrd_id']}[$cf_id])) {
-								$def_name = generate_graph_def_name(strval($cf_ds_cache{$graph_items[$t]['data_template_rrd_id']}[$cf_id]));
+							if (isset($cf_ds_cache[$gi_check['data_template_rrd_id']][$cf_id])) {
+								$def_name = generate_graph_def_name(strval($cf_ds_cache{$gi_check['data_template_rrd_id']}[$cf_id]));
 
 								/* do we need ALL_DATA_SOURCES_DUPS? */
 								if (isset($magic_item['ALL_DATA_SOURCES_DUPS'])) {
@@ -1557,30 +1563,29 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 								}
 
 								/* check for SIMILAR data sources */
-								if ($graph_item['data_source_name'] == $graph_items[$t]['data_source_name']) {
-
+								if ($graph_item['data_source_name'] == $gi_check['data_source_name']) {
 									/* do we need SIMILAR_DATA_SOURCES_DUPS? */
-									if (isset($magic_item['SIMILAR_DATA_SOURCES_DUPS']) && ($graph_item['data_source_name'] == $graph_items[$t]['data_source_name'])) {
+									if (isset($magic_item['SIMILAR_DATA_SOURCES_DUPS']) && ($graph_item['data_source_name'] == $gi_check['data_source_name'])) {
 										$magic_item['SIMILAR_DATA_SOURCES_DUPS'] .= ($count_similar_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 									}
 
 									/* do we need COUNT_SIMILAR_DS_DUPS? */
-									if (isset($magic_item['COUNT_SIMILAR_DS_DUPS']) && ($graph_item['data_source_name'] == $graph_items[$t]['data_source_name'])) {
+									if (isset($magic_item['COUNT_SIMILAR_DS_DUPS']) && ($graph_item['data_source_name'] == $gi_check['data_source_name'])) {
 										$magic_item['COUNT_SIMILAR_DS_DUPS'] .= ($count_similar_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
 									}
 
 									$count_similar_ds_dups++;
 
 									/* check if this item also qualifies for NODUPS  */
-									if(!isset($sources_seen{$graph_items[$t]['data_template_rrd_id']})) {
+									if(!isset($sources_seen[$gi_check['data_template_rrd_id']])) {
 										if (isset($magic_item['SIMILAR_DATA_SOURCES_NODUPS'])) {
 											$magic_item['SIMILAR_DATA_SOURCES_NODUPS'] .= ($count_similar_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 										}
-										if (isset($magic_item['COUNT_SIMILAR_DS_NODUPS']) && ($graph_item['data_source_name'] == $graph_items[$t]['data_source_name'])) {
+										if (isset($magic_item['COUNT_SIMILAR_DS_NODUPS']) && ($graph_item['data_source_name'] == $gi_check['data_source_name'])) {
 											$magic_item['COUNT_SIMILAR_DS_NODUPS'] .= ($count_similar_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
 										}
 										$count_similar_ds_nodups++;
-										$sources_seen{$graph_items[$t]['data_template_rrd_id']} = TRUE;
+										$sources_seen[$gi_check['data_template_rrd_id']] = TRUE;
 									}
 								} # SIMILAR data sources
 							} # matching consolidation function?
@@ -1592,24 +1597,31 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					if ($count_all_ds_dups > 1 && isset($magic_item['ALL_DATA_SOURCES_DUPS'])) {
 						$magic_item['ALL_DATA_SOURCES_DUPS'] .= str_repeat(',+', ($count_all_ds_dups - 2)) . ',+';
 					}
+
 					if ($count_all_ds_nodups > 1 && isset($magic_item['ALL_DATA_SOURCES_NODUPS'])) {
 						$magic_item['ALL_DATA_SOURCES_NODUPS'] .= str_repeat(',+', ($count_all_ds_nodups - 2)) . ',+';
 					}
+
 					if ($count_similar_ds_dups > 1 && isset($magic_item['SIMILAR_DATA_SOURCES_DUPS'])) {
 						$magic_item['SIMILAR_DATA_SOURCES_DUPS'] .= str_repeat(',+', ($count_similar_ds_dups - 2)) . ',+';
 					}
+
 					if ($count_similar_ds_nodups > 1 && isset($magic_item['SIMILAR_DATA_SOURCES_NODUPS'])) {
 						$magic_item['SIMILAR_DATA_SOURCES_NODUPS'] .= str_repeat(',+', ($count_similar_ds_nodups - 2)) . ',+';
 					}
+
 					if ($count_all_ds_dups > 1 && isset($magic_item['COUNT_ALL_DS_DUPS'])) {
 						$magic_item['COUNT_ALL_DS_DUPS'] .= str_repeat(',+', ($count_all_ds_dups - 2)) . ',+';
 					}
+
 					if ($count_all_ds_nodups > 1 && isset($magic_item['COUNT_ALL_DS_NODUPS'])) {
 						$magic_item['COUNT_ALL_DS_NODUPS'] .= str_repeat(',+', ($count_all_ds_nodups - 2)) . ',+';
 					}
+
 					if ($count_similar_ds_dups > 1 && isset($magic_item['COUNT_SIMILAR_DS_DUPS'])) {
 						$magic_item['COUNT_SIMILAR_DS_DUPS'] .= str_repeat(',+', ($count_similar_ds_dups - 2)) . ',+';
 					}
+
 					if ($count_similar_ds_nodups > 1 && isset($magic_item['COUNT_SIMILAR_DS_NODUPS'])) {
 						$magic_item['COUNT_SIMILAR_DS_NODUPS'] .= str_repeat(',+', ($count_similar_ds_nodups - 2)) . ',+';
 					}
@@ -1618,20 +1630,31 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				/* allow automatic rate calculations on raw guage data */
 				if (isset($graph_item['local_data_id'])) {
 					$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
+				}else{
+					$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', read_config_option('poller_interval'), $cdef_string);
 				}
 
-				$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval((isset($cf_ds_cache{$graph_item['data_template_rrd_id']}[$cf_id]) ? $cf_ds_cache{$graph_item['data_template_rrd_id']}[$cf_id] : '0'))), $cdef_string);
+				$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval((isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id]) ? $cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id] : '0'))), $cdef_string);
 
 				/* ALL|SIMILAR_DATA_SOURCES(NO)?DUPS are to be replaced here */
 				if (isset($magic_item['ALL_DATA_SOURCES_DUPS'])) {
 					$cdef_string = str_replace('ALL_DATA_SOURCES_DUPS', $magic_item['ALL_DATA_SOURCES_DUPS'], $cdef_string);
 				}
+
 				if (isset($magic_item['ALL_DATA_SOURCES_NODUPS'])) {
 					$cdef_string = str_replace('ALL_DATA_SOURCES_NODUPS', $magic_item['ALL_DATA_SOURCES_NODUPS'], $cdef_string);
 				}
+
 				if (isset($magic_item['SIMILAR_DATA_SOURCES_DUPS'])) {
 					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_DUPS', $magic_item['SIMILAR_DATA_SOURCES_DUPS'], $cdef_string);
 				}
+
+				if (isset($graph_item['local_data_id'])) {
+					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_NODUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
+				}else{
+					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_NODUPS_PI', read_config_option('poller_id'), $cdef_string);
+				}
+
 				if (isset($magic_item['SIMILAR_DATA_SOURCES_NODUPS'])) {
 					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_NODUPS', $magic_item['SIMILAR_DATA_SOURCES_NODUPS'], $cdef_string);
 				}
@@ -1666,7 +1689,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$cdef_graph_defs .= " \\\n";
 
 				/* the CDEF cache is so we do not create duplicate CDEF's on a graph */
-				$cdef_cache{$graph_item['cdef_id']}{$graph_item['data_template_rrd_id']}[$cf_id] = "$i";
+				$cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id] = $i;
 			}
 
 			/* add the cdef string to the end of the def string */
@@ -1679,15 +1702,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* make vdef string here, copied from cdef stuff */
 			$vdef_graph_defs = '';
 
-			if ((!empty($graph_item['vdef_id'])) && (!isset($vdef_cache{$graph_item['vdef_id']}{$graph_item['cdef_id']}{$graph_item['data_template_rrd_id']}[$cf_id]))) {
-				$vdef_string = $graph_variables['vdef_cache']{$graph_item['graph_templates_item_id']};
+			if ((!empty($graph_item['vdef_id'])) && (!isset($vdef_cache[$graph_item['vdef_id']][$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]))) {
+				$vdef_string = $graph_variables['vdef_cache'][$graph_item['graph_templates_item_id']];
 				/* do we refer to a CDEF within this VDEF? */
 				if ($graph_item['cdef_id'] != '0') {
 					/* 'calculated' VDEF: use (cached) CDEF as base, only way to get calculations into VDEFs */
-					$vdef_string = 'cdef' . str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval(isset($cdef_cache{$graph_item['cdef_id']}{$graph_item['data_template_rrd_id']}[$cf_id]) ? $cdef_cache{$graph_item['cdef_id']}{$graph_item['data_template_rrd_id']}[$cf_id] : '0')), $vdef_string);
+					$vdef_string = 'cdef' . str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval(isset($cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]) ? $cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id] : '0')), $vdef_string);
 				} else {
 					/* 'pure' VDEF: use DEF as base */
-					$vdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval(isset($cf_ds_cache{$graph_item['data_template_rrd_id']}[$cf_id]) ? $cf_ds_cache{$graph_item['data_template_rrd_id']}[$cf_id] : '0')), $vdef_string);
+					$vdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval(isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id]) ? $cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id] : '0')), $vdef_string);
 				}
 
 				# TODO: It would be possible to refer to a CDEF, but that's all. So ALL_DATA_SOURCES_NODUPS and stuff can't be used directly!
@@ -1704,7 +1727,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				/* the VDEF cache is so we do not create duplicate VDEF's on a graph,
 				* but take info account, that same VDEF may use different CDEFs
 				* so index over VDEF_ID, CDEF_ID per DATA_TEMPLATE_RRD_ID, lvm */
-				$vdef_cache{$graph_item['vdef_id']}{$graph_item['cdef_id']}{$graph_item['data_template_rrd_id']}[$cf_id] = "$i";
+				$vdef_cache[$graph_item['vdef_id']][$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id] = $i;
 			}
 
 			/* add the cdef string to the end of the def string */
@@ -1721,7 +1744,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 			if ((!isset($graph_data_array['graph_nolegend'])) && ($graph['auto_padding'] == 'on')) {
 				/* only applies to AREA, STACK and LINEs */
-				if (preg_match('/(AREA|STACK|LINE[123]|TICK)/', $graph_item_types{$graph_item['graph_type_id']})) {
+				if (preg_match('/(AREA|STACK|LINE[123]|TICK)/', $graph_item_types[$graph_item['graph_type_id']])) {
 					$text_format_length = mb_strlen($graph_variables['text_format'][$graph_item_id], 'UTF-8');
 
 					$pad_number = $padding_estimate;
@@ -1754,23 +1777,23 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$pad_number = $max_length;
 				}
 
-				$last_graph_type = $graph_item_types{$graph_item['graph_type_id']};
+				$last_graph_type = $graph_item_types[$graph_item['graph_type_id']];
 			}
 
 			/* we put this in a variable so it can be manipulated before mainly used
 			if we want to skip it, like below */
-			$current_graph_item_type = $graph_item_types{$graph_item['graph_type_id']};
+			$current_graph_item_type = $graph_item_types[$graph_item['graph_type_id']];
 
 			/* IF this graph item has a data source... get a DEF name for it, or the cdef if that applies
 			to this graph item */
 			if ($graph_item['cdef_id'] == '0') {
-				if (isset($cf_ds_cache{$graph_item['data_template_rrd_id']}[$cf_id])) {
+				if (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id])) {
 					$data_source_name = generate_graph_def_name(strval($cf_ds_cache{$graph_item['data_template_rrd_id']}[$cf_id]));
 				}else{
 					$data_source_name = '';
 				}
 			}else{
-				$data_source_name = 'cdef' . generate_graph_def_name(strval($cdef_cache{$graph_item['cdef_id']}{$graph_item['data_template_rrd_id']}[$cf_id]));
+				$data_source_name = 'cdef' . generate_graph_def_name(strval($cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]));
 			}
 
 			/* IF this graph item has a data source... get a DEF name for it, or the vdef if that applies
@@ -1778,7 +1801,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			if ($graph_item['vdef_id'] == '0') {
 				/* do not overwrite $data_source_name that stems from cdef above */
 			}else{
-				$data_source_name = 'vdef' . generate_graph_def_name(strval($vdef_cache{$graph_item['vdef_id']}{$graph_item['cdef_id']}{$graph_item['data_template_rrd_id']}[$cf_id]));
+				$data_source_name = 'vdef' . generate_graph_def_name(strval($vdef_cache[$graph_item['vdef_id']][$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]));
 			}
 
 			/* to make things easier... if there is no text format set; set blank text */
@@ -1835,14 +1858,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						}
 
 						# create rrdtool specific command line
-						$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $comment_arg . ' ';
+						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $comment_arg . ' ';
 					}
 
 					break;
 				case GRAPH_ITEM_TYPE_TEXTALIGN:
 					if (!isset($graph_data_array['graph_nolegend'])) {
 						if (!empty($graph_item['textalign'])) {
-							$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $graph_item['textalign'];
+							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $graph_item['textalign'];
 						}
 					}
 
@@ -1851,9 +1874,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8'));
 
 					if ($graph_item['vdef_id'] == '0') {
-						$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . ':' . $consolidation_functions{$graph_item['consolidation_function_id']} . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
+						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . ':' . $consolidation_functions[$graph_item['consolidation_function_id']] . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
 					}else{
-						$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
+						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
 					}
 
 					break;
@@ -1908,7 +1931,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				case GRAPH_ITEM_TYPE_AREA:
 					$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):'', ENT_QUOTES, 'UTF-8'));
 
-					$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id]) . ' ';
+					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id]) . ' ';
 
 					if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      # create a SHIFT statement
 						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
@@ -1930,7 +1953,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				case GRAPH_ITEM_TYPE_LINE3:
 					$graph_variables['text_format'][$graph_item_id] = rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''), ENT_QUOTES, 'UTF-8');
 
-					$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id]) . ' ';
+					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id]) . ' ';
 
 					if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      # create a SHIFT statement
 						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
@@ -1948,7 +1971,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				case GRAPH_ITEM_TYPE_TIC:
 					$_fraction = (empty($graph_item['graph_type_id']) ? '' : (':' . $graph_item['value']));
 					$_legend   = ':' . cacti_escapeshellarg(rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8')) . $hardreturn[$graph_item_id]);
-					$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $data_source_name . $graph_item_color_code . $_fraction . $_legend;
+					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . $_fraction . $_legend;
 
 					break;
 				case GRAPH_ITEM_TYPE_HRULE:
@@ -1977,21 +2000,21 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						$value = $graph_item['value'];
 					}
 
-					$txt_graph_items .= $graph_item_types{$graph_item['graph_type_id']} . ':' . $value . $graph_item_color_code . ':' . cacti_escapeshellarg(rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8')) . $hardreturn[$graph_item_id]) . $dash;
+					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $value . $graph_item_color_code . ':' . cacti_escapeshellarg(rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8')) . $hardreturn[$graph_item_id]) . $dash;
 
 					break;
 				default:
 					$need_rrd_nl = FALSE;
 				}
 			}else{
-				if (preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', $graph_item_types{$graph_item['graph_type_id']})) {
+				if (preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', $graph_item_types[$graph_item['graph_type_id']])) {
 					/* give all export items a name */
 					if (trim($graph_variables['text_format'][$graph_item_id]) == '') {
 						$legend_name = 'col' . $j . '-' . $data_source_name;
 					}else{
 						$legend_name = $graph_variables['text_format'][$graph_item_id];
 					}
-					$stacked_columns['col' . $j] = ($graph_item_types{$graph_item['graph_type_id']} == 'STACK') ? 1 : 0;
+					$stacked_columns['col' . $j] = ($graph_item_types[$graph_item['graph_type_id']] == 'STACK') ? 1 : 0;
 					$j++;
 
 					$txt_graph_items .= 'XPORT:' . cacti_escapeshellarg($data_source_name) . ':' . str_replace(':', '', cacti_escapeshellarg($legend_name)) ;
