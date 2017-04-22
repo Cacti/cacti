@@ -42,13 +42,13 @@ if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) 
 /* we use this session var to store field values for when a save fails,
 this way we can restore the field's previous values. we reset it here, because
 they only need to be stored for a single page */
-kill_session_var("sess_field_values");
+kill_session_var('sess_field_values');
 
 /* make sure the debug log doesn't get too big */
 debug_log_clear();
 
 /* close the session */
-if (array_search(basename($_SERVER['PHP_SELF']), $no_session_write) === false) {
+if (array_search(get_current_page(), $no_session_write) === false) {
 	session_write_close();
 }
 

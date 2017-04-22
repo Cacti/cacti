@@ -33,7 +33,7 @@
 function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text, $add_label = 'Add') {
 	static $table_suffix = 1;
 
-	$table_prefix = basename($_SERVER['PHP_SELF'], '.php');;
+	$table_prefix = basename(get_current_page(), '.php');;
 	if (!isempty_request_var('report')) {
 		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('report'));
 	} elseif (!isempty_request_var('tab')) {
@@ -553,7 +553,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " style='padding:4px;text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
 		}else{
 			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " class='sortable" . ($isSort ? " $isSort":'') . "' style='padding:4px;text-align:$align;'>";
-			print "<div class='sortinfo' sort-page='" . ($url == '' ? htmlspecialchars($_SERVER['PHP_SELF']):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
+			print "<div class='sortinfo' sort-page='" . ($url == '' ? htmlspecialchars(get_current_page(false)):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 
 		$i++;
@@ -605,7 +605,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	}
 
 	/* default to the 'current' file */
-	if ($form_action == '') { $form_action = basename($_SERVER['PHP_SELF']); }
+	if ($form_action == '') { $form_action = get_current_page(); }
 
 	print "<tr class='tableHeader'>\n";
 
@@ -762,7 +762,7 @@ function html_section_header($header_item, $last_item_colspan = 1) {
    @arg $form_action - the url to post the 'select all' form to */
 function html_header_checkbox($header_items, $include_form = true, $form_action = "", $resizable = true) {
 	/* default to the 'current' file */
-	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
+	if ($form_action == "") { $form_action = get_current_page(); }
 
 	print "<tr class='tableHeader " . (!$resizable ? 'tableFixed':'') . "'>\n";
 
@@ -1060,7 +1060,7 @@ function draw_menu($user_menu = "") {
 
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames{basename($item_url)})) {
 						/* if the current page exists in the sub-items array, draw each sub-item */
-						if (array_key_exists(basename($_SERVER["PHP_SELF"]), $item_title) == true) {
+						if (array_key_exists(get_current_page(), $item_title) == true) {
 							$draw_sub_items = true;
 						}else{
 							$draw_sub_items = false;
@@ -1072,7 +1072,7 @@ function draw_menu($user_menu = "") {
 							/* always draw the first item (parent), only draw the children if we are viewing a page
 							that is contained in the sub-items array */
 							if (($i == 0) || ($draw_sub_items)) {
-								if (basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) {
+								if (get_current_page() == basename($item_sub_url)) {
 									print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
 								}else{
 									print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
@@ -1086,7 +1086,7 @@ function draw_menu($user_menu = "") {
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames{basename($item_url)})) {
 						/* draw normal (non sub-item) menu item */
 						$item_url = $config['url_path'] . $item_url;
-						if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
+						if (get_current_page() == basename($item_url)) {
 							print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
 						}else{
 							print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
@@ -1267,7 +1267,7 @@ function html_show_tabs_left() {
 
 	if (get_selected_theme() == 'classic') {
 		if ($show_console_tab == true) {
-			?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(basename($_SERVER['PHP_SELF'])) ? '_down':'');?>.gif" alt="<?php print __('Console');?>"></a><?php
+			?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(get_current_page()) ? '_down':'');?>.gif" alt="<?php print __('Console');?>"></a><?php
 		}
 
 		if (is_realm_allowed(7)) {
@@ -1275,7 +1275,7 @@ function html_show_tabs_left() {
 				// Don't show graphs tab when offline
 			}else{
 				?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php
-				$file = basename($_SERVER['PHP_SELF']);
+				$file = get_current_page();
 				if ($file == "graph_view.php" || $file == "graph.php") {
 					print "_down";
 				} 
@@ -1450,7 +1450,7 @@ function html_show_tabs_left() {
 		}
 
 		$i = 0;
-		$me_base = basename($_SERVER['PHP_SELF']);
+		$me_base = get_current_page();
 		foreach($tabs_left as $tab) {
 			$tab_base = basename($tab['url']);
 			if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
@@ -1548,7 +1548,7 @@ function html_graph_tabs_right($current_user) {
 				if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
 					$tabs_right[$i]['selected'] = true;
 				}
-			}elseif (strstr($_SERVER['PHP_SELF'], $tab['url'])) {
+			}elseif (strstr(get_current_page(false), $tab['url'])) {
 				$tabs_right[$i]['selected'] = true;
 			}
 

@@ -130,7 +130,7 @@ $selectedTheme = get_selected_theme();
 	<?php if (read_config_option('auth_method') != 0) {?><div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div><?php }?>
 </div>
 <div id='cactiContent' class='cactiContent'>
-	<?php if (basename($_SERVER['PHP_SELF']) == 'graph_view.php' && (get_nfilter_request_var('action') == 'tree' || (isset_request_var('view_type') && get_nfilter_request_var('view_type') == 'tree'))) { ?>
+	<?php if (get_current_page() == 'graph_view.php' && (get_nfilter_request_var('action') == 'tree' || (isset_request_var('view_type') && get_nfilter_request_var('view_type') == 'tree'))) { ?>
 	<div id='navigation' class='cactiTreeNavigationArea'><?php grow_dhtml_trees();?></div>
 	<div id='navigation_right' class='cactiGraphContentArea'>
 	<?php }else{ ?>

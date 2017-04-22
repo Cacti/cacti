@@ -527,6 +527,12 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	if (isset($_SERVER['PHP_SELF'])) {
 		$current_file = basename($_SERVER['PHP_SELF']);
 		$dir_name     = dirname($_SERVER['PHP_SELF']);
+	}elseif (isset($_SERVER['SCRIPT_NAME'])) {
+		$current_file = basename($_SERVER['SCRIPT_NAME']);
+		$dir_name     = dirname($_SERVER['SCRIPT_NAME']);
+	}elseif (isset($_SERVER['SCRIPT_FILENAME'])) {
+		$current_file = basename($_SERVER['SCRIPT_FILENAME']);
+		$dir_name     = dirname($_SERVER['SCRIPT_FILENAME']);
 	}else{
 		$current_file = basename(__FILE__);
 		$dir_name     = dirname(__FILE__);
@@ -2602,7 +2608,7 @@ function draw_navigation_text($type = 'url') {
 
 	$nav =  api_plugin_hook_function('draw_navigation_text', $nav);
 
-	$current_page = basename($_SERVER['PHP_SELF']);
+	$current_page = get_current_page();
 
 	if (!isempty_request_var('action')) {
 		get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));
@@ -2614,7 +2620,7 @@ function draw_navigation_text($type = 'url') {
 	if (isset($nav[$current_page . ':' . $current_action])) {
 		$current_array = $nav{$current_page . ':' . $current_action};
 	}else{
-		$current_array = array('mapping' => 'index.php:', 'title' => ucwords(str_replace('_', ' ', basename($_SERVER['PHP_SELF'], '.php'))), 'level' => 1);
+		$current_array = array('mapping' => 'index.php:', 'title' => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))), 'level' => 1);
 	}
 
 	$current_mappings = explode(',', $current_array['mapping']);
@@ -2789,8 +2795,36 @@ function get_browser_query_string() {
 	if (!empty($_SERVER['REQUEST_URI'])) {
 		return sanitize_uri($_SERVER['REQUEST_URI']);
 	}else{
-		return sanitize_uri(basename($_SERVER['PHP_SELF']) . (empty($_SERVER['QUERY_STRING']) ? '' : '?' . $_SERVER['QUERY_STRING']));
+		return sanitize_uri(get_current_page() . (empty($_SERVER['QUERY_STRING']) ? '' : '?' . $_SERVER['QUERY_STRING']));
 	}
+}
+
+/* get_current_page - returns the basename of the current page in a web server friendly way
+   @returns - the basename of the current script file */
+function get_current_page($basename = true) {
+	if (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF'] != '') {
+		if ($basename) {
+			return basename($_SERVER['PHP_SELF']);
+		}else{
+			return $_SERVER['PHP_SELF'];
+		}
+	}elseif (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
+		if ($basename) {
+			return basename($_SERVER['SCRIPT_NAME']);
+		}else{
+			return $_SERVER['SCRIPT_NAME'];
+		}
+	}elseif (isset($_SERVER['SCRIPT_FILENAME']) && $_SERVER['SCRIPT_FILENAME'] != '') {
+		if ($basename) {
+			return basename($_SERVER['SCRIPT_FILENAME']);
+		}else{
+			return $_SERVER['SCRIPT_FILENAME'];
+		}
+	}else{
+		cacti_log('ERROR: unable to determine current_page');
+	}
+
+	return false;
 }
 
 /* get_hash_graph_template - returns the current unique hash for a graph template

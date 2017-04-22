@@ -169,13 +169,7 @@ include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 
-if (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF'] != '') {
-	$filename = basename($_SERVER['PHP_SELF']);
-}elseif (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
-	$filename = basename($_SERVER['SCRIPT_NAME']);
-}else{
-	$filename = null;
-}
+$filename = get_current_page();
 
 if ((isset($no_http_headers) && $no_http_headers == true) || in_array($filename, $no_http_header_files, true)) {
 	$is_web = false;
@@ -243,13 +237,6 @@ register_shutdown_function('CactiShutdownHandler');
 db_cacti_initialized($is_web);
 
 if ($is_web) {
-	/* Sanity Check on "Corrupt" PHP_SELF */
-	if ($_SERVER['SCRIPT_NAME'] != $_SERVER['PHP_SELF']) {
-		echo "\nInvalid PHP_SELF Path \n";
-		db_close();
-		exit;
-	}
-
 	/* set the maximum post size */
 	ini_set('post_max_size', '8M');
 	ini_set('max_input_vars', '5000');

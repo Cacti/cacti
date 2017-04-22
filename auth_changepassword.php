@@ -282,7 +282,7 @@ print "<body class='loginBody'>
 		<div class='loginArea'>
 			<div class='cactiLogoutLogo'></div>
 			<legend>" . __('Change Password') . "</legend>
-			<form name='login' method='post' action='" . basename($_SERVER['PHP_SELF']) . "'>
+			<form name='login' method='post' action='" . get_current_page() . "'>
 				<input type='hidden' name='action' value='changepassword'>
 				<input type='hidden' name='ref' value='" . sanitize_uri(get_request_var('ref')) . "'>
 				<input type='hidden' name='name' value='" . (isset($user['username']) ? $user['username'] : '') . "'>

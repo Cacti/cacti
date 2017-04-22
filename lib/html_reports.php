@@ -877,7 +877,7 @@ function reports_item_edit() {
 	/* set the default item alignment */
 	$fields_reports_item_edit['font_size']['default'] = $report['font_size'];
 
-	print "<form method='post' action='" .  basename($_SERVER['PHP_SELF']) . "' name='reports_item_edit'>\n";
+	print "<form method='post' action='" . get_current_page() . "' name='reports_item_edit'>\n";
 
 	# ready for displaying the fields
 	html_start_box("<strong>Report Item</strong> $header_label", '100%', '', '3', 'center', '');
