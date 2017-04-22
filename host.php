@@ -146,7 +146,7 @@ function add_tree_names_to_actions_array() {
 
 	if (sizeof($trees)) {
 		foreach ($trees as $tree) {
-			$device_actions{'tr_' . $tree['id']} = 'Place on a Tree (' . $tree['name'] . ')';
+			$device_actions['tr_' . $tree['id']] = 'Place on a Tree (' . $tree['name'] . ')';
 		}
 	}
 }
@@ -203,11 +203,11 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '2') { /* Enable Selected Devices */
-				for ($i=0;($i<count($selected_items));$i++) {
-					db_execute_prepared("UPDATE host SET disabled = '' WHERE id = ?", array($selected_items[$i]));
+				foreach ($selected_items as $selected_item) {
+					db_execute_prepared("UPDATE host SET disabled = '' WHERE id = ?", array($selected_item));
 
 					/* update poller cache */
-					$data_sources = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE host_id = ?', array($selected_items[$i]));
+					$data_sources = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE host_id = ?', array($selected_item));
 					$poller_items = $local_data_ids = array();
 
 					if (sizeof($data_sources)) {
@@ -222,38 +222,38 @@ function form_actions() {
 					}
 				}
 			}elseif (get_request_var('drp_action') == '3') { /* Disable Selected Devices */
-				for ($i=0;($i<count($selected_items));$i++) {
-					db_execute_prepared("UPDATE host SET disabled='on' WHERE id = ?", array($selected_items[$i]));
+				foreach ($selected_items as $selected_item) {
+					db_execute_prepared("UPDATE host SET disabled='on' WHERE id = ?", array($selected_item));
 
 					/* update poller cache */
-					db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', array($selected_items[$i]));
-					db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', array($selected_items[$i]));
+					db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', array($selected_item));
+					db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', array($selected_item));
 				}
 			}elseif (get_request_var('drp_action') == '4') { /* change device options */
-				for ($i=0;($i<count($selected_items));$i++) {
+				foreach ($selected_items as $selected_item) {
 					foreach ($fields_host_edit as $field_name => $field_array) {
 						if (isset_request_var("t_$field_name")) {
-							db_execute_prepared("UPDATE host SET $field_name = ? WHERE id = ?", array(get_nfilter_request_var($field_name), $selected_items[$i]));
+							db_execute_prepared("UPDATE host SET $field_name = ? WHERE id = ?", array(get_nfilter_request_var($field_name), $selected_item));
 							if ($field_name == 'host_template_id') {
-								api_device_update_host_template($selected_items[$i], get_nfilter_request_var($field_name));
+								api_device_update_host_template($selected_item, get_nfilter_request_var($field_name));
 							}
 						}
 					}
 
-					push_out_host($selected_items[$i]);
+					push_out_host($selected_item);
 				}
 			}elseif (get_request_var('drp_action') == '5') { /* Clear Statisitics for Selected Devices */
-				for ($i=0;($i<count($selected_items));$i++) {
+				foreach ($selected_items as $selected_item) {
 					db_execute_prepared("UPDATE host SET min_time = '9.99999', max_time = '0', cur_time = '0', avg_time = '0',
 						total_polls = '0', failed_polls = '0',	availability = '100.00'
-						where id = ?", array($selected_items[$i]));
+						where id = ?", array($selected_item));
 				}
 			}elseif (get_request_var('drp_action') == '7') { /* sync to device template */
-				for ($i=0;($i<count($selected_items));$i++) {
-					$device_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', array($selected_items[$i]));
+				foreach ($selected_items as $selected_item) {
+					$device_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', array($selected_item));
 
 					if ($device_template_id > 0) {
-						api_device_update_host_template($selected_items[$i], $device_template_id);
+						api_device_update_host_template($selected_item, $device_template_id);
 					}
 				}
 			}elseif (get_request_var('drp_action') == '1') { /* delete */
@@ -265,7 +265,7 @@ function form_actions() {
 				$graphs_to_act_on       = array();
 				$devices_to_act_on      = array();
 
-				for ($i=0; $i<count($selected_items); $i++) {
+				foreach ($selected_items as $selected_item) {
 					$data_sources = db_fetch_assoc('SELECT
 						data_local.id AS local_data_id
 						FROM data_local
@@ -290,7 +290,7 @@ function form_actions() {
 						}
 					}
 
-					$devices_to_act_on[] = $selected_items[$i];
+					$devices_to_act_on[] = $selected_item;
 				}
 
 				switch (get_nfilter_request_var('delete_type')) {
@@ -317,8 +317,8 @@ function form_actions() {
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
 
-				for ($i=0;($i<count($selected_items));$i++) {
-					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_HOST, get_nfilter_request_var('tree_item_id'), '', 0, $selected_items[$i], 1, 1, false);
+				foreach ($selected_items as $selected_item) {
+					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_HOST, get_nfilter_request_var('tree_item_id'), '', 0, $selected_item, 1, 1, false);
 				}
 			}elseif (get_request_var('drp_action') == 6) { /* automation */
 				cacti_log(__FUNCTION__ . ' called, action: ' . get_request_var('drp_action'), true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
@@ -326,9 +326,7 @@ function form_actions() {
 				cacti_log(__FUNCTION__ . ', items: ' . get_nfilter_request_var('selected_items'), true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				/* work on all selected hosts */
-				for ($i=0;($i<count($selected_items));$i++) {
-					$host_id = $selected_items[$i];
-
+				foreach ($selected_items as $host_id) {
 					cacti_log(__FUNCTION__ . ' Host[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					/* select all graph templates associated with this host, but exclude those where
@@ -394,19 +392,18 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$host_list = ''; $i = 0;
+	$host_list = '';
+	$host_array = array();
 
 	/* loop through each of the host templates selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
+    foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
 			$host_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($matches[1]))) . '</li>';
-			$host_array[$i] = $matches[1];
-
-			$i++;
+			$host_array[] = $matches[1];
 		}
 	}
 
@@ -537,8 +534,8 @@ function form_actions() {
 			$save_html = "<input type='button' value='" . __('Cancel'). "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Run Automation on Device(s)') . "'>";
 		} else {
 			$save['drp_action'] = get_request_var('drp_action');
-			$save['host_list'] = $host_list;
-			$save['host_array'] = (isset($host_array)? $host_array : array());
+			$save['host_list']  = $host_list;
+			$save['host_array'] = $host_array;
 
 			api_plugin_hook_function('device_action_prepare', $save);
 
@@ -552,7 +549,7 @@ function form_actions() {
 	print "<tr>
 		<td colspan='2' class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
+			<input type='hidden' name='selected_items' value='" . serialize($host_array) . "'>
 			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
@@ -730,35 +727,31 @@ function host_edit() {
 
 		html_header(array(__('Graph Template Name'), __('Status')), 2);
 
-//		if ($host['snmp_version'] == 0) {
-//			$sql_where = ' AND dtd.data_input_id NOT IN (1,2)';
-//		}else{
-			$sql_where = '';
-//		}
-
 		$selected_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT gt.id, gt.name
 			FROM graph_templates AS gt
-			INNER JOIN host_graph AS hg
-			ON gt.id = hg.graph_template_id
+			INNER JOIN host_graph AS hg ON gt.id = hg.graph_template_id
 			WHERE hg.host_id = ?
 			ORDER BY gt.name", array(get_request_var('id')));
 
-		$available_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT gt.id, gt.name
-			FROM graph_templates AS gt
-			LEFT JOIN snmp_query_graph AS sqg
-			ON sqg.graph_template_id = gt.id
-			INNER JOIN graph_templates_item AS gti
-			ON gti.graph_template_id=gt.id
-			INNER JOIN data_template_rrd AS dtr
-			ON gti.task_item_id=dtr.id
-			INNER JOIN data_template_data AS dtd
-			ON dtd.data_template_id=dtr.data_template_id
-			WHERE sqg.name IS NULL 
-			AND gti.local_graph_id=0
-			AND dtr.local_data_id=0
-			$sql_where
-			AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
-			ORDER BY gt.name", array(get_request_var('id')));
+		$available_graph_templates = db_fetch_assoc_prepared(
+			"SELECT result.id, result.name, graph_local.id AS graph_local_id  
+			 FROM (
+				 SELECT DISTINCT gt.id, gt.name
+				 FROM graph_templates AS gt
+				 LEFT JOIN snmp_query_graph AS sqg ON sqg.graph_template_id = gt.id
+				 INNER JOIN graph_templates_item AS gti ON gti.graph_template_id = gt.id
+				 INNER JOIN data_template_rrd AS dtr ON gti.task_item_id = dtr.id
+				 INNER JOIN data_template_data AS dtd ON dtd.data_template_id = dtr.data_template_id
+				 WHERE sqg.name IS NULL 
+				 AND gti.local_graph_id = 0
+				 AND dtr.local_data_id = 0
+				 AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
+			 ) AS result
+			 LEFT JOIN graph_local ON graph_local.graph_template_id = result.id
+				 AND graph_local.host_id = ?
+			 ORDER BY result.name",
+			array(get_request_var('id'), get_request_var('id'))
+		);
 
 		$i = 0;
 		if (sizeof($selected_graph_templates)) {
@@ -768,17 +761,13 @@ function host_edit() {
 				form_alternate_row("gt$i", true);
 
 				/* get status information for this graph template */
-				$is_being_graphed = (sizeof(db_fetch_assoc_prepared('SELECT id 
-					FROM graph_local 
-					WHERE graph_template_id = ? 
-					AND host_id = ?', array($item['id'], get_request_var('id')))) > 0) ? true : false;
-
+				$is_being_graphed = $item['graph_local_id'] > 0;
 				?>
 					<td style="padding: 4px;">
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td>
-						<?php print (($is_being_graphed == true) ? "<span class='beingGraphed'>" . __('Is Being Graphed') . "</span> (<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . db_fetch_cell_prepared('SELECT id FROM graph_local WHERE graph_template_id = ? AND host_id = ? LIMIT 0,1', array($item['id'], get_request_var('id')))) . "'>" . __('Edit') . "</a>)" : "<span class='notBeingGraphed'>" . __('Not Being Graphed') ."</span>");?>
+						<?php print (($is_being_graphed == true) ? "<span class='beingGraphed'>" . __('Is Being Graphed') . "</span> (<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $item['graph_local_id']) . "'>" . __('Edit') . "</a>)" : "<span class='notBeingGraphed'>" . __('Not Being Graphed') ."</span>");?>
 					</td>
 					<td class='nowrap right'>
 						<span title='<?php print __('Delete Graph Template Association');?>' class='deletequery fa fa-remove' id='gtremove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
@@ -1553,7 +1542,6 @@ function host() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	$i = 0;
 	if (sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			if ($host['disabled'] == '' && 

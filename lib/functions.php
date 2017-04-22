@@ -499,13 +499,13 @@ function kill_session_var($var_name) {
 function array_rekey($array, $key, $key_value) {
 	$ret_array = array();
 
-	if (sizeof($array) > 0) {
+	if (is_array($array)) {
 		foreach ($array as $item) {
 			$item_key = $item[$key];
 
 			if (is_array($key_value)) {
-				for ($i=0; $i<count($key_value); $i++) {
-					$ret_array[$item_key]{$key_value[$i]} = $item{$key_value[$i]};
+				foreach ($key_value as $value) {
+					$ret_array[$item_key][$value] = $item[$value];
 				}
 			} else {
 				$ret_array[$item_key] = $item[$key_value];
