@@ -267,7 +267,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 	if ($poller_id == '1') {
 		$polling_hosts = array_merge(
-			array(0 => array('id' => '0')), 
+			array(0 => array('id' => '0')),
 			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id 
 				FROM host 
 				WHERE poller_id = ?
@@ -351,21 +351,20 @@ while ($poller_runs_completed < $poller_runs) {
 			ON po.local_data_id=dl.id
 			LEFT JOIN host AS h
 			ON dl.host_id=h.id
-			WHERE h.poller_id = ? OR h.id IS NULL LIMIT ' . $issues_limit, array($poller_id));
-	}else{
-		if ($config['connection'] == 'online') {
-			$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name 
-				FROM poller_output AS po
-				LEFT JOIN data_local AS dl
-				ON po.local_data_id=dl.id
-				LEFT JOIN host AS h
-				ON dl.host_id=h.id
-				WHERE (h.poller_id = ? OR h.id IS NULL)
-				AND time < FROM_UNIXTIME(UNIX_TIMESTAMP()-600)
-				LIMIT ' . $issues_limit, array($poller_id));
-		}else{
-			$issues = array();
-		}
+			WHERE h.poller_id = ? OR h.id IS NULL 
+			LIMIT ' . $issues_limit, array($poller_id));
+	} elseif ($config['connection'] == 'online') {
+		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name 
+			FROM poller_output AS po
+			LEFT JOIN data_local AS dl
+			ON po.local_data_id=dl.id
+			LEFT JOIN host AS h
+			ON dl.host_id=h.id
+			WHERE (h.poller_id = ? OR h.id IS NULL)
+			AND time < FROM_UNIXTIME(UNIX_TIMESTAMP()-600)
+			LIMIT ' . $issues_limit, array($poller_id));
+	} else{
+		$issues = array();
 	}
 
 	if (sizeof($issues)) {
@@ -400,7 +399,7 @@ while ($poller_runs_completed < $poller_runs) {
 	/* mainline */
 	if (read_config_option('poller_enabled') == 'on') {
 		/* determine the number of hosts to process per file */
-		$hosts_per_process = ceil(sizeof($polling_hosts) / $concurrent_processes );
+		$hosts_per_process = ceil(($poller_id == '1' ? sizeof($polling_hosts)-1 : sizeof($polling_hosts)) / $concurrent_processes );
 
 		$items_launched    = 0;
 
@@ -523,7 +522,7 @@ while ($poller_runs_completed < $poller_runs) {
 				}
 
 				log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-					sizeof($polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
+					($poller_id == '1' ? sizeof($polling_hosts) - 1 : sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
 
 				break;
 			}else {
@@ -546,10 +545,10 @@ while ($poller_runs_completed < $poller_runs) {
 
 					api_plugin_hook_function('poller_exiting');
 					log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-						sizeof($polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
+						($poller_id == '1' ? sizeof($polling_hosts) - 1 : sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
 
 					break;
-				}else if (microtime(true) - $mtb < 1) {
+				} elseif (microtime(true) - $mtb < 1) {
 					sleep(1);
 				}
 			}
