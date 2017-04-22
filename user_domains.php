@@ -194,10 +194,11 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$d_list = ''; $d_array = array();
+	$d_list = '';
+	$d_array = array();
 
 	/* loop through each of the data queries and process them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);

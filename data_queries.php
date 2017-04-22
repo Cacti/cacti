@@ -288,7 +288,7 @@ function form_actions() {
 	$dq_list = ''; $i = 0;
 
 	/* loop through each of the data queries and process them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);

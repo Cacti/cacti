@@ -164,7 +164,7 @@ function form_actions() {
 	/* setup some variables */
 	$at_list = ''; $i = 0;
 
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
