@@ -373,16 +373,16 @@ function automation_graph_rules_item_edit() {
 
 	$(function() {
 		toggle_operation();
-	toggle_operator();
+		toggle_operator();
 	});
 
 	function toggle_operation() {
 		if ($('#operation').val() == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
-			$('#field').val() = '';
+			$('#field').val('');
 			$('#field').prop('disabled', true);
-			$('#operator').val() = 0;
+			$('#operator').val(0);
 			$('#operator').prop('disabled', true);
-			$('#pattern').val() = '';
+			$('#pattern').val('');
 			$('#pattern').prop('disabled', true);
 		} else {
 			$('#field').prop('disabled', false);
