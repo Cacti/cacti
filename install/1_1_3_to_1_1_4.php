@@ -32,6 +32,18 @@ function upgrade_to_1_1_4() {
 	);
 
 	db_install_execute(
+		'ALTER TABLE `data_input_fields` 
+			DROP INDEX `type_code`,
+			ADD INDEX `type_code_data_input_id` (`type_code`, `data_input_id`)'
+	);
+
+	db_install_execute(
+		'ALTER TABLE `data_local` 
+			DROP INDEX `host_id`,
+			ADD INDEX `host_id_snmp_query_id` (`host_id`, `snmp_query_id`)'
+	);
+
+	db_install_execute(
 		'ALTER TABLE `snmpagent_cache` 
 			DROP INDEX `mib`,
 			ADD INDEX `mib_name` (`mib`, `name`)'
