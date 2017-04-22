@@ -23,9 +23,7 @@
 */
 
 function upgrade_to_1_1_4() {
-	db_install_execute(
-		'ALTER TABLE `cdef` ADD INDEX (`hash`)'
-	);
+	db_install_execute('ALTER TABLE `cdef` ADD INDEX (`hash`)');
 
 	db_install_execute(
 		'ALTER TABLE `cdef_items` 
@@ -41,9 +39,7 @@ function upgrade_to_1_1_4() {
 
 	$result = db_fetch_cell("SHOW KEYS FROM host WHERE Column_name LIKE 'hostname'");
 	if (empty($result)) {
-		db_install_execute(
-			'ALTER TABLE `host` ADD INDEX (`hostname`)'
-		);
+		db_install_execute('ALTER TABLE `host` ADD INDEX (`hostname`)');
 	}
 
 	db_install_execute(
@@ -60,21 +56,10 @@ function upgrade_to_1_1_4() {
 			ADD INDEX `manager_id_notification` (`manager_id`,`notification`)'
 	);
 
-	db_install_execute(
-		'ALTER TABLE `user_auth_group_members` DROP INDEX `group_id`'
-	);
-
-	db_install_execute(
-		'ALTER TABLE `user_auth_group_realm` DROP INDEX `group_id`'
-	);
-
-	db_install_execute(
-		'ALTER TABLE `user_log` DROP INDEX `username`'
-	);
-
-	db_install_execute(
-		'ALTER TABLE `vdef` ADD INDEX `hash` (`hash`)'
-	);
+	db_install_execute('ALTER TABLE `user_auth_group_members` DROP INDEX `group_id`');
+	db_install_execute('ALTER TABLE `user_auth_group_realm` DROP INDEX `group_id`');
+	db_install_execute('ALTER TABLE `user_log` DROP INDEX `username`');
+	db_install_execute('ALTER TABLE `vdef` ADD INDEX `hash` (`hash`)');
 
 	db_install_execute(
 		'ALTER TABLE `vdef_items` 
@@ -87,8 +72,7 @@ function upgrade_to_1_1_4() {
   			ADD INDEX `lgi_gti` (`local_graph_id`, `graph_template_id`)'
 	);
 
-	db_install_execute(
-		'ALTER TABLE `poller_item`
-  			ADD INDEX `poller_id_host_id` (`poller_id`, `host_id`)'
-	);
+	db_install_execute('ALTER TABLE `poller_item` ADD INDEX `poller_id_host_id` (`poller_id`, `host_id`)');
+
+	db_install_execute('ALTER TABLE `automation_networks` ADD COLUMN `site_id` INT UNSIGNED DEFAULT "1" AFTER `poller_id`');
 }
