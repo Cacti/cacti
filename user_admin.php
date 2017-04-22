@@ -126,7 +126,7 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_graph')) {
-	    foreach ($_POST as $var => $val) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -150,7 +150,7 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_template')) {
-        foreach ($_POST as $var => $val) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
