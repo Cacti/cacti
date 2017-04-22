@@ -598,20 +598,21 @@ $host_group_types = array(
 );
 
 $custom_data_source_types = array(
-	'CURRENT_DATA_SOURCE'         => __('Current Graph Item Data Source'),
-	'CURRENT_DATA_SOURCE_PI'      => __('Current Graph Item Polling Interval'),
-	'ALL_DATA_SOURCES_NODUPS'     => __('All Data Sources (Do not Include Duplicates)'),
-	'ALL_DATA_SOURCES_DUPS'       => __('All Data Sources (Include Duplicates)'),
-	'SIMILAR_DATA_SOURCES_NODUPS' => __('All Similar Data Sources (Do not Include Duplicates)'),
-	'SIMILAR_DATA_SOURCES_DUPS'   => __('All Similar Data Sources (Include Duplicates)'),
-	'CURRENT_DS_MINIMUM_VALUE'    => __('Current Data Source Item: Minimum Value'),
-	'CURRENT_DS_MAXIMUM_VALUE'    => __('Current Data Source Item: Maximum Value'),
-	'CURRENT_GRAPH_MINIMUM_VALUE' => __('Graph: Lower Limit'),
-	'CURRENT_GRAPH_MAXIMUM_VALUE' => __('Graph: Upper Limit'),
-	'COUNT_ALL_DS_NODUPS'         => __('Count of All Data Sources (Do not Include Duplicates)'),
-	'COUNT_ALL_DS_DUPS'           => __('Count of All Data Sources (Include Duplicates)'),
-	'COUNT_SIMILAR_DS_NODUPS'     => __('Count of All Similar Data Sources (Do not Include Duplicates)'),
-	'COUNT_SIMILAR_DS_DUPS'	      => __('Count of All Similar Data Sources (Include Duplicates)')
+	'CURRENT_DATA_SOURCE'            => __('Current Graph Item Data Source'),
+	'CURRENT_DATA_SOURCE_PI'         => __('Current Graph Item Polling Interval'),
+	'ALL_DATA_SOURCES_NODUPS'        => __('All Data Sources (Do not Include Duplicates)'),
+	'ALL_DATA_SOURCES_DUPS'          => __('All Data Sources (Include Duplicates)'),
+	'SIMILAR_DATA_SOURCES_NODUPS'    => __('All Similar Data Sources (Do not Include Duplicates)'),
+	'SIMILAR_DATA_SOURCES_NODUPS_PI' => __('All Similar Data Sources (Do not Include Duplicates) Polling Interval'),
+	'SIMILAR_DATA_SOURCES_DUPS'      => __('All Similar Data Sources (Include Duplicates)'),
+	'CURRENT_DS_MINIMUM_VALUE'       => __('Current Data Source Item: Minimum Value'),
+	'CURRENT_DS_MAXIMUM_VALUE'       => __('Current Data Source Item: Maximum Value'),
+	'CURRENT_GRAPH_MINIMUM_VALUE'    => __('Graph: Lower Limit'),
+	'CURRENT_GRAPH_MAXIMUM_VALUE'    => __('Graph: Upper Limit'),
+	'COUNT_ALL_DS_NODUPS'            => __('Count of All Data Sources (Do not Include Duplicates)'),
+	'COUNT_ALL_DS_DUPS'              => __('Count of All Data Sources (Include Duplicates)'),
+	'COUNT_SIMILAR_DS_NODUPS'        => __('Count of All Similar Data Sources (Do not Include Duplicates)'),
+	'COUNT_SIMILAR_DS_DUPS'	         => __('Count of All Similar Data Sources (Include Duplicates)')
 );
 
 if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
