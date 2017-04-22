@@ -396,7 +396,7 @@ function form_actions() {
 	$host_array = array();
 
 	/* loop through each of the host templates selected on the previous page and get more info about them */
-    foreach ($_POST as $var => $val) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
