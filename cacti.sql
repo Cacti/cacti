@@ -285,6 +285,7 @@ INSERT INTO `automation_match_rule_items` VALUES (1,1,1,1,0,'h.description',14,'
 CREATE TABLE `automation_networks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `poller_id` int(10) unsigned DEFAULT '1',
+  `site_id` int(10) unsigned DEFAULT '1',
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT 'The name for this network',
   `subnet_range` varchar(255) NOT NULL DEFAULT '' COMMENT 'Defined subnet ranges for discovery',
   `dns_servers` varchar(128) NOT NULL DEFAULT '' COMMENT 'DNS Servers to use for name resolution',
@@ -322,7 +323,7 @@ CREATE TABLE `automation_networks` (
 -- Dumping data for table `automation_networks`
 --
 
-INSERT INTO `automation_networks` VALUES (1,1,'Test Network','192.168.1.0/24','','',1,'on','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
+INSERT INTO `automation_networks` VALUES (1,1,1,'Test Network','192.168.1.0/24','','',1,'on','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
 
 --
 -- Table structure for table `automation_processes`
@@ -1158,7 +1159,7 @@ CREATE TABLE data_input_fields (
   allow_nulls char(2) default NULL,
   PRIMARY KEY (id),
   KEY data_input_id (data_input_id),
-  KEY type_code (type_code)
+  KEY type_code_data_input_id (type_code, data_input_id)
 ) ENGINE=InnoDB;
 
 --
@@ -1226,7 +1227,7 @@ CREATE TABLE data_local (
   KEY data_template_id (data_template_id),
   KEY snmp_query_id (snmp_query_id),
   KEY snmp_index (snmp_index(191)),
-  KEY host_id (host_id)
+  KEY host_id_snmp_query_id (host_id, snmp_query_id)
 ) ENGINE=InnoDB;
 
 --

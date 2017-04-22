@@ -464,7 +464,6 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 	return true;
 }
 
-
 /**
  * determine, if the given tree has graphs; taking permissions into account
  * @param int $tree_id			- tree id
@@ -486,34 +485,48 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 		$sql_swhere = " AND gtg.title_cache REGEXP '" . $search_key . "'";
 	}
 
-	if ($branch_id>0) {
-		$sql_where .= ' AND gti.parent=' . $branch_id;
-	} else {
-		$sql_where .= ' AND parent=0';
+	$device_id = db_fetch_cell_prepared('SELECT host_id 
+		FROM graph_tree_items 
+		WHERE id = ?', 
+		array($branch_id));
+
+	if ($device_id > 0) {
+		$graphs = array_rekey(db_fetch_assoc("SELECT gl.id
+			FROM graph_local AS gl
+			INNER JOIN graph_templates_graph AS gtg
+			ON gtg.local_graph_id=gl.id
+			WHERE gl.host_id = $device_id
+			$sql_swhere"), 'id', 'id');
+	}else{
+		if ($branch_id > 0) {
+			$sql_where .= ' AND gti.parent=' . $branch_id;
+		} else {
+			$sql_where .= ' AND parent=0';
+		}
+
+		$graphs = array_rekey(db_fetch_assoc("SELECT gl.id
+			FROM graph_local AS gl
+			INNER JOIN graph_tree_items AS gti
+			ON gti.local_graph_id=gl.id
+			INNER JOIN graph_templates_graph AS gtg
+			ON gtg.local_graph_id=gti.local_graph_id
+			WHERE gti.local_graph_id>0 
+			AND graph_tree_id=$tree_id 
+			$sql_where
+			$sql_swhere"), 'id', 'id');
+
+		/* get host graphs first */
+		$graphs = array_merge($graphs, array_rekey(db_fetch_assoc("SELECT gl.id 
+			FROM graph_local AS gl
+			INNER JOIN graph_tree_items AS gti
+			ON gl.host_id=gti.host_id
+			INNER JOIN graph_templates_graph AS gtg
+			ON gtg.local_graph_id=gl.id
+			WHERE gti.graph_tree_id=$tree_id 
+			AND gti.host_id>0
+			$sql_where
+			$sql_swhere"), 'id', 'id'));
 	}
-
-	$graphs = array_rekey(db_fetch_assoc("SELECT gl.id
-		FROM graph_local AS gl
-		INNER JOIN graph_tree_items AS gti
-		ON gti.local_graph_id=gl.id
-		INNER JOIN graph_templates_graph AS gtg
-		ON gtg.local_graph_id=gti.local_graph_id
-		WHERE gti.local_graph_id>0 
-		AND graph_tree_id=$tree_id 
-		$sql_where
-		$sql_swhere"), 'id', 'id');
-
-	/* get host graphs first */
-	$graphs = array_merge($graphs, array_rekey(db_fetch_assoc("SELECT gl.id 
-		FROM graph_local AS gl
-		INNER JOIN graph_tree_items AS gti
-		ON gl.host_id=gti.host_id
-		INNER JOIN graph_templates_graph AS gtg
-		ON gtg.local_graph_id=gl.id
-		WHERE gti.graph_tree_id=$tree_id 
-		AND gti.host_id>0
-		$sql_where
-		$sql_swhere"), 'id', 'id'));
 
 	/* verify permissions */
 	if (sizeof($graphs)) {
@@ -538,9 +551,18 @@ function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$
 	global $alignment;
 	include_once($config['base_path'] . '/lib/time.php');
 
-	$outstr        = '';
-	$report        = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array($reports_id));
-	$reports_items = db_fetch_assoc_prepared('SELECT * FROM reports_items WHERE report_id = ? ORDER BY sequence', array($report['id']));
+	$outstr = '';
+	$report = db_fetch_row_prepared('SELECT * 
+		FROM reports 
+		WHERE id = ?', 
+		array($reports_id));
+
+	$reports_items = db_fetch_assoc_prepared('SELECT * 
+		FROM reports_items 
+		WHERE report_id = ? 
+		ORDER BY sequence', 
+		array($report['id']));
+
 	$format_data   = '';
 	$report_tag    = false;
 	$format_ok     = false;
@@ -767,9 +789,15 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 
 	/* check if we have enough data */
 	if (isset($_SESSION['sess_current_user'])) {
-		$user = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+		$user = db_fetch_cell_prepared('SELECT id 
+			FROM user_auth 
+			WHERE id = ?', 
+			array($_SESSION['sess_user_id']));
 	} else {
-		$user = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($report['user_id']));
+		$user = db_fetch_cell_prepared('SELECT id 
+			FROM user_auth 
+			WHERE id = ?', 
+			array($report['user_id']));
 	}
 
 	$timespan = array();
@@ -781,8 +809,18 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 		return; 
 	}
 
+	$device_id = db_fetch_cell_prepared('SELECT host_id 
+		FROM graph_tree_items 
+		WHERE id = ?', 
+		array($parent));
+
 	$outstr          = '';
-	$leaves = db_fetch_assoc_prepared("SELECT * FROM graph_tree_items WHERE parent = ?", array($parent));
+
+	if ($device_id == 0) {
+		$leaves = db_fetch_assoc_prepared("SELECT * FROM graph_tree_items WHERE parent = ?", array($parent));
+	}else{
+		$leaves = db_fetch_assoc_prepared("SELECT * FROM graph_tree_items WHERE id = ?", array($parent));
+	}
 
 	if (sizeof($leaves)) {
 	foreach ($leaves as $leaf) {

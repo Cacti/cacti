@@ -506,7 +506,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
  *
  */
 function aggregate_validate_graph_items($posted, &$graph_items) {
-	while (list($var,$val) = each($posted)) {
+	foreach ($_POST as $var => $val) {
 		/* work on color_templates */
 		if (preg_match('/^agg_color_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */

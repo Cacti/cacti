@@ -311,7 +311,7 @@ if ((bool)ini_get('register_globals')) {
 	unset($input['input']);
 	unset($input['not_unset']);
 
-	while (list($var,) = @each($input)) {
+	foreach ($input as $var => $val) {
 		if (!in_array($var, $not_unset)) {
 			unset($$var);
 		}
@@ -361,5 +361,5 @@ if ($is_web) {
 api_plugin_hook('config_insert');
 
 /* current cacti version */
-$config['cacti_version'] = '1.1.3';
+$config['cacti_version'] = '1.1.4';
 
