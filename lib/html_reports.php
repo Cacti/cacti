@@ -338,7 +338,8 @@ $fields_reports_item_edit = array(
 			FROM graph_tree_items
 			INNER JOIN host
 			ON host.id=graph_tree_items.host_id
-			WHERE graph_tree_id=|arg1:tree_id|)
+			WHERE graph_tree_id=|arg1:tree_id|
+			GROUP BY name)
 			ORDER BY name"),
 	'tree_cascade' => array(
 		'friendly_name' => __('Cascade to Branches'),
@@ -637,7 +638,7 @@ function reports_form_actions() {
 	/* setup some variables */
 	$reports_list = ''; $i = 0;
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);

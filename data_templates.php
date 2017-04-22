@@ -320,7 +320,7 @@ function form_actions() {
 	$ds_list = ''; $i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -458,11 +458,11 @@ function template_rrd_add() {
 	$children = db_fetch_assoc_prepared('SELECT local_data_id FROM data_template_data WHERE data_template_id = ? AND local_data_id > 0', array(get_request_var('id')));
 
 	if (sizeof($children) > 0) {
-	foreach ($children as $item) {
-		db_execute_prepared("INSERT IGNORE INTO data_template_rrd 
-			(local_data_template_rrd_id, local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
-			VALUES (?, ?, ?, 0, 0, 600, 1, ?)", array($data_template_rrd_id, $item['local_data_id'], get_request_var('id'), $dsname));
-	}
+        foreach ($children as $item) {
+            db_execute_prepared("INSERT IGNORE INTO data_template_rrd 
+                (local_data_template_rrd_id, local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
+                VALUES (?, ?, ?, 0, 0, 600, 1, ?)", array($data_template_rrd_id, $item['local_data_id'], get_request_var('id'), $dsname));
+        }
 	}
 
 	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");

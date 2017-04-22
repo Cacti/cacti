@@ -228,7 +228,7 @@ function automation_graph_rules_form_actions() {
 	/* setup some variables */
 	$automation_graph_rules_list = ''; $i = 0;
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -373,16 +373,16 @@ function automation_graph_rules_item_edit() {
 
 	$(function() {
 		toggle_operation();
-	toggle_operator();
+		toggle_operator();
 	});
 
 	function toggle_operation() {
 		if ($('#operation').val() == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
-			$('#field').val() = '';
+			$('#field').val('');
 			$('#field').prop('disabled', true);
-			$('#operator').val() = 0;
+			$('#operator').val(0);
 			$('#operator').prop('disabled', true);
-			$('#pattern').val() = '';
+			$('#pattern').val('');
 			$('#pattern').prop('disabled', true);
 		} else {
 			$('#field').prop('disabled', false);

@@ -499,13 +499,13 @@ function kill_session_var($var_name) {
 function array_rekey($array, $key, $key_value) {
 	$ret_array = array();
 
-	if (sizeof($array) > 0) {
+	if (is_array($array)) {
 		foreach ($array as $item) {
 			$item_key = $item[$key];
 
 			if (is_array($key_value)) {
-				for ($i=0; $i<count($key_value); $i++) {
-					$ret_array[$item_key]{$key_value[$i]} = $item{$key_value[$i]};
+				foreach ($key_value as $value) {
+					$ret_array[$item_key][$value] = $item[$value];
 				}
 			} else {
 				$ret_array[$item_key] = $item[$key_value];
@@ -2703,7 +2703,7 @@ function draw_navigation_text($type = 'url') {
 			$leaf_sub  = '';
 
 			if (isset_request_var('tree_id')) {
-				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_request_var('tree_id')));
+				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_filter_request_var('tree_id')));
 			}else{
 				$tree_name = '';
 			}
