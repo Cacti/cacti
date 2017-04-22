@@ -249,10 +249,16 @@ if ($run) {
 				}
 			}
 
-			$rows = db_fetch_assoc("SELECT * 
-				FROM poller_output_boost 
-				WHERE time $operator '$purge_time' 
-				ORDER BY time ASC", true, $local_db_cnn_id);
+			if ($purge_time == 0) {
+				$rows = db_fetch_assoc("SELECT * 
+					FROM poller_output_boost 
+					ORDER BY time ASC", true, $local_db_cnn_id);
+			}else{
+				$rows = db_fetch_assoc("SELECT * 
+					FROM poller_output_boost 
+					WHERE time $operator '$purge_time' 
+					ORDER BY time ASC", true, $local_db_cnn_id);
+			}
 
 			if (sizeof($rows)) {
 				$count     = 0;
@@ -283,7 +289,11 @@ if ($run) {
 				}
 
 				/* remove the recovery records */
-				db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'", true, $local_db_cnn_id);
+				if ($purge_time == 0) {
+					db_execute("DELETE FROM poller_output_boost", true, $local_db_cnn_id);
+				}else{
+					db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'", true, $local_db_cnn_id);
+				}
 			}
 
 			sleep($sleep_time);

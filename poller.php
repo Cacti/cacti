@@ -143,9 +143,6 @@ if (function_exists('pcntl_signal')) {
 
 api_plugin_hook('poller_top');
 
-// Flush the boost table if in recovery mode
-poller_recovery_flush_boost($poller_id);
-
 // Prime the poller_resource_cache for multiple pollers
 update_resource_cache($poller_id);
 
@@ -627,6 +624,9 @@ while ($poller_runs_completed < $poller_runs) {
 	}else{
 		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . $loop_end-$loop_start-$poller_interval . ' seconds', true, 'POLLER', $level);
 	}
+
+	// Flush the boost table if in recovery mode
+	poller_recovery_flush_boost($poller_id);
 }
 
 function poller_enabled_check($poller_id) {
