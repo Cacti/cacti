@@ -338,7 +338,8 @@ $fields_reports_item_edit = array(
 			FROM graph_tree_items
 			INNER JOIN host
 			ON host.id=graph_tree_items.host_id
-			WHERE graph_tree_id=|arg1:tree_id|)
+			WHERE graph_tree_id=|arg1:tree_id|
+			GROUP BY name)
 			ORDER BY name"),
 	'tree_cascade' => array(
 		'friendly_name' => __('Cascade to Branches'),
