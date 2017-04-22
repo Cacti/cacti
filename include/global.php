@@ -361,5 +361,5 @@ if ($is_web) {
 api_plugin_hook('config_insert');
 
 /* current cacti version */
-$config['cacti_version'] = '1.1.3';
+$config['cacti_version'] = '1.1.4';
 
