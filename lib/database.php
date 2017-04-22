@@ -505,6 +505,27 @@ function db_remove_column($table, $column, $log = true, $db_conn = false) {
 	return true;
 }
 
+/* db_add_index - adds a new index to a table
+   @param $table - the name of the table
+   @param $type - the type of the index
+   @param $key - the name of the index
+   @param $columns - an array that defines the columns to include in the index
+   @returns - (bool) the result of the operation true or false */
+function db_add_index($table, $type, $key, $columns) {
+	if (!is_array($columns)) {
+		$columns = array($columns);
+	}
+
+	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' `' . $key . '`(`' . implode('`,`', $columns) . '`)';
+
+	if (db_index_exists($table, $key, false)) {
+		$type = str_ireplace('UNIQUE ', '', $type);
+		db_execute("ALTER TABLE $table DROP $type $key");
+	}
+
+	return db_execute($sql);
+}
+
 /* db_index_exists - checks whether an index exists
    @param $table - the name of the table
    @param $index - the name of the index
