@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue: Fixed number of hosts in poller stats for first poller
 -issue: Fixed screenwidth issue in tab PHP-Info of Utilities module
 -issue: Recovery poller could get stuck in some situations
+-issue: Fix JavaScript errors when managing Aggregate Graphs
 -feature: Reorganize defaults to place more defaults on device defaults page
 -feature: Update jQuery tableDnD to version 0.9
 -feature: Make Cacti more tolerant of empty PHP_SELF found on some web servers

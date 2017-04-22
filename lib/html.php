@@ -886,7 +886,8 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			$hard_return      = '';
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
-				$this_row_style = 'font-weight: bold;'; $use_custom_class = true;
+				$this_row_style = 'font-weight: bold;'; 
+				$use_custom_class = true;
 
 				if ($group_counter % 2 == 0) {
 					$customClass = 'graphItem';

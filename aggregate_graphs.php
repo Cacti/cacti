@@ -682,11 +682,9 @@ function graph_edit() {
 				'#total_type',
 				'#total_prefix',
 				'#order_type',
-
-				'select[name^="agg_color"]',
-				'input[name^="agg_total"]',
-				'input[name^="agg_skip"]',
-
+				'select[id^="agg_color"]',
+				'input[id^="agg_total"]',
+				'input[id^="agg_skip"]',
 				'#image_format_id',
 				'#height',
 				'#width',
@@ -703,7 +701,6 @@ function graph_edit() {
 				'#base_value',
 				'#unit_value',
 				'#unit_exponent_value',
-
 				'#alt_y_grid',
 				'#right_axis',
 				'#right_axis_label',
@@ -729,19 +726,79 @@ function graph_edit() {
 					$('#row_template_propogation').hide();
 					$('#row_spacer0').hide();
 				}
+
+				$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
+					id = $(this).attr('id');
+
+					if (id.indexOf('skip') > 0) {
+						altId = id.replace('skip', 'total');
+					}else{
+						altId = id.replace('total', 'skip');
+					}
+
+					if ($('#'+id).is(':checked')) {
+						$('#'+altId).prop('checked', false);
+					}else{
+						$('#'+altId).prop('checked', true);
+					}
+
+					changeTotals();
+				});
+
+				$('#total').change(function() {
+					changeTotals();
+				});
+
+				$('#total_type').change(function() {
+					changeTotalsType();
+				});
+
+				$('#template_propogation').change(function() {
+					if (!$('#template_propogation').is(':checked')) {
+						for (var i = 0; i < templated_selectors.length; i++) {
+							$(templated_selectors[i]).prop('disabled', false);
+						}
+					}else{
+						for (var i = 0; i < templated_selectors.length; i++) {
+							$(templated_selectors[i]).prop('disabled', true);
+						}
+					}
+				});
 			});
 
-			$('#template_propogation').change(function() {
-				if (!$('#template_propogation').is(':checked')) {
-					for (var i = 0; i < templated_selectors.length; i++) {
-						$( templated_selectors[i] ).prop('disabled', false);
+			function changeTotals() {
+				switch ($('#total').val()) {
+					case '<?php print AGGREGATE_TOTAL_NONE;?>':
+						$('#row_total_type').hide();
+						$('#row_total_prefix').hide();
+						$('#row_order_type').show();
+						break;
+					case '<?php print AGGREGATE_TOTAL_ALL;?>':
+						$('#row_total_type').show();
+						$('#row_total_prefix').show();
+						$('#row_order_type').show();
+						changeTotalsType();
+						break;
+					case '<?php print AGGREGATE_TOTAL_ONLY;?>':
+						$('#row_total_type').show();
+						$('#row_total_prefix').show();
+						//$('#order_type').prop('disabled', true);
+						changeTotalsType();
+						break;
+				}
+			}
+
+			function changeTotalsType() {
+				if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR;?>) {
+					if ($('#total_prefix').val() == '') {
+						$('#total_prefix').attr('value', '<?php print __('Total');?>');
 					}
-				}else{
-					for (var i = 0; i < templated_selectors.length; i++) {
-						$( templated_selectors[i] ).prop('disabled', true);
+				} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL;?>) {
+					if ($('#total_prefix').val() == '') {
+						$('#total_prefix').attr('value', '<?php print __('All Items');?>');
 					}
 				}
-			});
+			}
 			</script>
 			<?php
 			print '</div>';
