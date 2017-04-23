@@ -727,30 +727,38 @@ function host_edit() {
 
 		html_header(array(__('Graph Template Name'), __('Status')), 2);
 
-		$selected_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT gt.id, gt.name
-			FROM graph_templates AS gt
-			INNER JOIN host_graph AS hg ON gt.id = hg.graph_template_id
-			WHERE hg.host_id = ?
-			ORDER BY gt.name", array(get_request_var('id')));
-
-		$available_graph_templates = db_fetch_assoc_prepared(
-			"SELECT result.id, result.name, graph_local.id AS graph_local_id  
-			 FROM (
-				 SELECT DISTINCT gt.id, gt.name
-				 FROM graph_templates AS gt
-				 LEFT JOIN snmp_query_graph AS sqg ON sqg.graph_template_id = gt.id
-				 INNER JOIN graph_templates_item AS gti ON gti.graph_template_id = gt.id
-				 INNER JOIN data_template_rrd AS dtr ON gti.task_item_id = dtr.id
-				 INNER JOIN data_template_data AS dtd ON dtd.data_template_id = dtr.data_template_id
-				 WHERE sqg.name IS NULL 
-				 AND gti.local_graph_id = 0
-				 AND dtr.local_data_id = 0
-				 AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
-			 ) AS result
-			 LEFT JOIN graph_local ON graph_local.graph_template_id = result.id
-				 AND graph_local.host_id = ?
-			 ORDER BY result.name",
+		$selected_graph_templates = db_fetch_assoc_prepared("
+			SELECT result.id, result.name, graph_local.id AS graph_local_id  
+			FROM (
+				SELECT DISTINCT gt.id, gt.name
+				FROM graph_templates AS gt
+				INNER JOIN host_graph AS hg 
+				ON gt.id = hg.graph_template_id
+				WHERE hg.host_id = ?
+			) AS result
+			LEFT JOIN graph_local 
+			ON graph_local.graph_template_id = result.id
+			AND graph_local.host_id = ?
+			ORDER BY result.name",
 			array(get_request_var('id'), get_request_var('id'))
+		);
+
+		$available_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT gt.id, gt.name
+			FROM graph_templates AS gt
+			LEFT JOIN snmp_query_graph AS sqg 
+			ON sqg.graph_template_id = gt.id
+			INNER JOIN graph_templates_item AS gti 
+			ON gti.graph_template_id = gt.id
+			INNER JOIN data_template_rrd AS dtr 
+			ON gti.task_item_id = dtr.id
+			INNER JOIN data_template_data AS dtd 
+			ON dtd.data_template_id = dtr.data_template_id
+			WHERE sqg.name IS NULL 
+			AND gti.local_graph_id = 0
+			AND dtr.local_data_id = 0
+			AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
+			ORDER BY gt.name",
+			array(get_request_var('id'))
 		);
 
 		$i = 0;
