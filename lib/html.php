@@ -30,8 +30,12 @@
    @arg $align - the HTML alignment to use for the box (center, left, or right)
    @arg $add_text - the url to use when the user clicks 'Add' in the upper-right
      corner of the box ("" for no 'Add' link) */
-function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text, $add_label = 'Add') {
+function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text, $add_label = false) {
 	static $table_suffix = 1;
+
+	if ($add_label === false) {
+		$add_label = __('Add');
+	}
 
 	$table_prefix = basename(get_current_page(), '.php');;
 	if (!isempty_request_var('report')) {
@@ -1123,7 +1127,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		<div>
 			<span class='actionsDropdownArrow'><img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''></span>
 			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
-			<span class='actionsDropdownButton'><input id='submit' type='submit' value='Go' title='<?php print __('Execute Action');?>'></span>
+			<span class='actionsDropdownButton'><input id='submit' type='submit' value='<?php print __('Go');?>' title='<?php print __('Execute Action');?>'></span>
 		</div>
 	</div>
 	<input type='hidden' id='action' name='action' value='actions'>
