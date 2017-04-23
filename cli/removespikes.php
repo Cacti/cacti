@@ -570,7 +570,7 @@ foreach($output as $line) {
 
 				if (!isset($rra[$rra_num][$ds_num]['sumofsamples'])) {
 					$rra[$rra_num][$ds_num]['sumofsamples'] = $dsvalue;
-				}else{
+				}elseif (is_numeric($dsvalue)) {
 					$rra[$rra_num][$ds_num]['sumofsamples'] += $dsvalue;
 				}
 
@@ -884,7 +884,7 @@ function calculateOverallStatistics(&$rra, &$samples) {
 
 						$rra[$rra_num][$ds_num]['stddev_killed']++;
 						$std_kills = true;
-					}else{
+					}elseif (is_numeric($sample)) {
 						$rra[$rra_num][$ds_num]['numnksamples']++;
 						$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 					}
