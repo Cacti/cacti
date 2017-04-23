@@ -793,7 +793,7 @@ function template() {
 		<script type='text/javascript'>
 		function applyFilter() {
 			strURL  = 'data_templates.php?header=false';
-			strURL += '&filter='+$('#filter').val();
+			strURL += '&filter='+escape($('#filter').val());
 			strURL += '&rows='+$('#rows').val();
 			strURL += '&profile='+$('#profile').val();
 			strURL += '&page='+$('#page').val();

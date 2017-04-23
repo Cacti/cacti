@@ -1308,7 +1308,7 @@ function host() {
 			strURL += '&site_id=' + $('#site_id').val();
 			strURL += '&poller_id=' + $('#poller_id').val();
 			strURL += '&rows=' + $('#rows').val();
-			strURL += '&filter=' + $('#filter').val();
+			strURL += '&filter=' + escape($('#filter').val());
 			strURL += '&header=false';
 			loadPageNoHeader(strURL);
 		}

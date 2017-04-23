@@ -279,7 +279,7 @@ function pages() {
 	<script type='text/javascript'>
 	function applyFilter() {
 		strURL  = 'links.php?rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}

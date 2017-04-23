@@ -1065,7 +1065,7 @@ function data_query() {
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'data_queries.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			strURL = 'data_queries.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 			loadPageNoHeader(strURL);
 		}
 

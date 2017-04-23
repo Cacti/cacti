@@ -416,6 +416,7 @@ function display_output_messages() {
 	global $config, $messages;
 
 	$debug_message = debug_log_return('new_graphs');
+	$message       = '';
 
 	if ($debug_message != '') {
 		print "<div id='message' class='textInfo messageBox'>";

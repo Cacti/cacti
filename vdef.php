@@ -695,7 +695,7 @@ function vdef_filter() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'vdef.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
+				strURL = 'vdef.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
 				loadPageNoHeader(strURL);
 			}
 

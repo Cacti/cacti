@@ -92,7 +92,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&rowsd=' + $('#rowsd').val();
-		strURL += '&filterd=' + $('#filterd').val();
+		strURL += '&filterd=' + escape($('#filterd').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -372,7 +372,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	function applyFilter() {
 		strURL  = '<?php print $url;?>' + '&host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -644,7 +644,7 @@ function display_new_graphs($rule, $url) {
 	function applyFilter() {
 		strURL  = '<?php print $url;?>';
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -947,7 +947,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}

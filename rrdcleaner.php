@@ -529,7 +529,7 @@ function filter() {
 			<script type="text/javascript">
 			function refreshForm() {
 				strURL = 'rrdcleaner.php?header=false'+
-					'&filter='+$('#filter').val()+
+					'&filter='+escape($('#filter').val())+
 					'&age='+$('#age').val()+
 					'&rows='+$('#rows').val();
 				loadPageNoHeader(strURL);

@@ -959,7 +959,7 @@ function aggregate_items() {
 		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&matching=' + $('#matching').is(':checked');
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -1277,7 +1277,7 @@ function aggregate_graph() {
 		strURL  = 'aggregate_graphs.php';
 		strURL += '?rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);

@@ -576,7 +576,7 @@ function color() {
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
-				strURL = 'color.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&named='+$('#named').is(':checked')+'&header=false';
+				strURL = 'color.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&named='+$('#named').is(':checked')+'&header=false';
 				loadPageNoHeader(strURL);
 			}
 

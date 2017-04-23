@@ -109,7 +109,7 @@ function manager(){
 	?>
 	<script type="text/javascript">
 	function applyFilter() {
-		strURL  = 'managers.php?filter=' + $('#filter').val();
+		strURL  = 'managers.php?filter=' + escape($('#filter').val());
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
@@ -478,10 +478,10 @@ function manager_notifications($id){
 	<script type="text/javascript">
 
 	function applyFilter() {
-		strURL  = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&filter=' + $('#filter').val();
+		strURL  = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>';
 		strURL += '&mib=' + $('#mib').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 
@@ -707,7 +707,7 @@ function manager_logs($id) {
 
 	function applyFilter(objForm) {
 		strURL  = '?header=false&severity=' + $('#severity').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&action=edit&tab=logs&id=<?php print get_request_var('id'); ?>';
 		loadPageNoHeader(strURL);
 	}

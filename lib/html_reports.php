@@ -1543,7 +1543,7 @@ function reports() {
 	function applyFilter() {
 		strURL  = '<?php print get_reports_page();?>?header=false&status=' + $('#status').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		loadPageNoHeader(strURL);
 	}
 

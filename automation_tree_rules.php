@@ -756,7 +756,7 @@ function automation_tree_rules() {
 			function applyFilter() {
 				strURL = 'automation_tree_rules.php' +
 					'?status='+$('#status').val() +
-					'&filter='+$('#filter').val() +
+					'&filter='+escape($('#filter').val()) +
 					'&rows='+$('#rows').val() +
 					'&page='+$('#page').val() +
 					'&header=false';

@@ -651,7 +651,7 @@ function domains() {
 		<script type='text/javascript'>
 		function applyFilter() {
 			strURL  = 'user_domains.php?rows=' + $('#rows').val();
-			strURL += '&filter=' + $('#filter').val();
+			strURL += '&filter=' + escape($('#filter').val());
 			strURL += '&page=' + $('#page').val();
 			strURL += '&header=false';
 			loadPageNoHeader(strURL);

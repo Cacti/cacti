@@ -2129,7 +2129,7 @@ function user() {
 
 	function applyFilter() {
 		strURL  = 'user_admin.php?rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -2481,7 +2481,7 @@ function graph_filter($header_label) {
 		strURL += '&page=' + $('#page').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2590,7 +2590,7 @@ function group_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2678,7 +2678,7 @@ function device_filter($header_label) {
 		strURL += '&page=' + $('#page').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2783,7 +2783,7 @@ function template_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2870,7 +2870,7 @@ function tree_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2957,7 +2957,7 @@ function member_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}

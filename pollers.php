@@ -537,7 +537,7 @@ function pollers() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'pollers.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+				strURL = 'pollers.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 				loadPageNoHeader(strURL);
 			}
 

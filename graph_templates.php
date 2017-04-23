@@ -663,7 +663,7 @@ function template() {
 		var disabled = true;
 
 		function applyFilter() {
-			strURL = 'graph_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
+			strURL = 'graph_templates.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
 			loadPageNoHeader(strURL);
 		}
 

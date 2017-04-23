@@ -685,7 +685,7 @@ function aggregate_template() {
 		strURL += '?rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}

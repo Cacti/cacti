@@ -758,7 +758,7 @@ function cdef() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'cdef.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
+				strURL = 'cdef.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
 				loadPageNoHeader(strURL);
 			}
 

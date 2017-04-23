@@ -298,7 +298,7 @@ function gprint_presets() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'gprint_presets.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
+				strURL = 'gprint_presets.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
 				loadPageNoHeader(strURL);
 			}
 
