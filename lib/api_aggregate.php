@@ -263,7 +263,9 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 					$graph_item['cdef_id'] = $make0_cdef;
 
 					# try to pick the best totaling cf id
-					$graph_item['consolidation_function_id'] = db_fetch_cell('SELECT DISTINCT consolidation_function_id FROM graph_templates_item WHERE color_id>0 AND ' . array_to_sql_or($member_graphs, 'local_graph_id') . ' LIMIT 1');
+					$graph_item['consolidation_function_id'] = db_fetch_cell('SELECT DISTINCT consolidation_function_id 
+						FROM graph_templates_item 
+						WHERE color_id>0 AND ' . array_to_sql_or($member_graphs, 'local_graph_id') . ' LIMIT 1');
 				}
 			}
 

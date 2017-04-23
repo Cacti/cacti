@@ -985,13 +985,33 @@ function form_actions() {
 					}
 				}
 
-				$().ready(function() {
+				$(function() {
 					$('#aggregate_total').change(function() {
 						changeTotals();
 					});
 
 					$('#aggregate_total_type').change(function() {
 						changeTotalsType();
+					});
+
+					$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
+						id = $(this).attr('id');
+
+						if (id.indexOf('skip') > 0) {
+							altId = id.replace('skip', 'total');
+						}else{
+							altId = id.replace('total', 'skip');
+						}
+
+						if ($('#'+id).is(':checked')) {
+							$('#'+altId).prop('checked', false);
+						}else{
+							$('#'+altId).prop('checked', true);
+						}
+					});
+
+					$('input[id^="agg_skip"]').each(function() {
+						$(this).prop('checked', true);
 					});
 
 					changeTotals();
