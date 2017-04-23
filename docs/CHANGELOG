@@ -14,6 +14,8 @@ Cacti CHANGELOG
 -issue#589: Automation discovery does not allow site association
 -issue#590: Unable to create a plugin based menu
 -issue#591: Row selection in Device Automation Templates not sane with drag-n-drop enabled
+-issue#601: Resolving some translation issues
+-issue#604: Unexpected backtrace on regular expression filters
 -issue#605: Remove Spikes non-numeric data causes warnings
 -issue: Ping email does not use a from email address
 -issue: Automation does not recognize default size or poller
