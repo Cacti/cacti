@@ -430,8 +430,7 @@ function display_output_messages() {
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
 				if (isset($messages[$current_message_id]['message'])) {
-					/** @var $message */
-					eval ('$message = "' . $messages[$current_message_id]['message'] . '";');
+					$message = $messages[$current_message_id]['message'];
 
 					switch ($messages[$current_message_id]['type']) {
 					case 'info':

@@ -736,6 +736,8 @@ function validate_is_regex($regex) {
 		return true;
 	}
 
+	restore_error_handler();
+
 	$track_errors = ini_get('track_errors');
 	ini_set('track_errors', 1); 
 
@@ -757,6 +759,8 @@ function validate_is_regex($regex) {
 	);
 
 	$error = preg_last_error();
+
+	set_error_handler('CactiErrorHandler');
 
 	if (empty($error)) {
 		return $php_error;
