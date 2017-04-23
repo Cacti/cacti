@@ -116,4 +116,20 @@ function upgrade_to_1_1_4() {
 	if (!db_column_exists('automation_networks', 'site_id')) {
 		db_install_execute('ALTER TABLE `automation_networks` ADD COLUMN `site_id` INT UNSIGNED DEFAULT "1" AFTER `poller_id`');
 	}
+
+	if (!db_column_exists('graph_tree_items', 'site_id')) {
+		db_install_execute(
+			'ALTER TABLE `graph_tree_items` 
+				ADD COLUMN `site_id` INT UNSIGNED DEFAULT "0" AFTER `host_id`,
+				ADD INDEX `site_id` (`site_id`)'
+		);
+	}
+
+	if (!db_column_exists('graph_tree_items', 'graph_regex')) {
+		db_install_execute(
+			'ALTER TABLE `graph_tree_items` 
+				ADD COLUMN `graph_regex` VARCHAR(60) DEFAULT "" AFTER `sort_children_type`,
+				ADD COLUMN `host_regex` VARCHAR(60) DEFAULT "" AFTER `graph_regex`'
+		);
+	}
 }
