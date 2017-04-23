@@ -576,6 +576,10 @@ function discoverDevices($network_id, $thread) {
 
 								$host_id = automation_add_device($device);
 
+								if (!empty($host_id)) {
+									automation_update_device($host_id);
+								}
+
 								$stats['added']++;
 							}elseif ($fos == false) {
 								automation_debug(", Template: Not found, Not adding to Cacti");

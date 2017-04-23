@@ -31,6 +31,7 @@ include_once('./lib/api_graph.php');
 include_once('./lib/snmp.php');
 include_once('./lib/ping.php');
 include_once('./lib/data_query.php');
+include_once('./lib/api_automation.php');
 include_once('./lib/api_device.php');
 
 $device_actions = array(
@@ -327,55 +328,7 @@ function form_actions() {
 
 				/* work on all selected hosts */
 				foreach ($selected_items as $host_id) {
-					cacti_log(__FUNCTION__ . ' Host[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-
-					/* select all graph templates associated with this host, but exclude those where
-					*  a graph already exists (table graph_local has a known entry for this host/template) */
-					$sql = 'SELECT gt.*
-						FROM graph_templates AS gt
-						INNER JOIN host_graph AS hg
-						ON gt.id=hg.graph_template_id
-						WHERE hg.host_id=' . $host_id . ' 
-						AND gt.id NOT IN (
-							SELECT gl.graph_template_id 
-							FROM graph_local AS gl
-							WHERE host_id=' . $host_id . '
-						)';
-
-					$graph_templates = db_fetch_assoc($sql);
-
-					cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], sql: ' . $sql, true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-
-					/* create all graph template graphs */
-					if (sizeof($graph_templates)) {
-						foreach ($graph_templates as $graph_template) {
-							cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], graph: ' . $graph_template['id'], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-
-							automation_execute_graph_template($host_id, $graph_template['id']);
-						}
-					}
-
-					/* all associated data queries */
-					$data_queries = db_fetch_assoc_prepared('SELECT sq.*,
-						hsq.reindex_method 
-						FROM snmp_query AS sq
-						INNER JOIN host_snmp_query AS hsq
-						ON sq.id=hsq.snmp_query_id
-						WHERE hsq.host_id = ?', array($host_id));
-
-					/* create all data query graphs */
-					if (sizeof($data_queries)) {
-						foreach ($data_queries as $data_query) {
-							cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], dq[' . $data_query['id'] . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-
-							automation_execute_data_query($host_id, $data_query['id']);
-						}
-					}
-
-					/* now handle tree rules for that host */
-					cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], create_tree for host: ' . $host_id, true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-
-					automation_execute_device_create_tree($host_id);
+					automation_update_device($host_id);
 				}
 			} else {
 				api_plugin_hook_function('device_action_execute', get_nfilter_request_var('drp_action'));
