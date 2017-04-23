@@ -2716,9 +2716,9 @@ function automation_add_tree ($host_id, $tree) {
 
 function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$sql_where  = '';
-	$sql_where .= trim($sysDescr)  != '' ? 'WHERE ("' . $sysDescr . '" RLIKE sysDescr OR "' . $sysDescr . '" LIKE CONCAT("%", sysDesc, "%"))':'';
-	$sql_where .= trim($sysObject) != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' ("' . $sysObject . '" RLIKE sysOid OR "' .$sysOobject . '" LIKE CONCAT("%", sysOid, "%"))':'';
-	$sql_where .= trim($sysName)   != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' ("' . $sysName . '" RLIKE sysName OR "' . $sysName . '" LIKE CONCAT("%", sysName, "%"))':'';
+	$sql_where .= trim($sysDescr)  != '' ? 'WHERE (' . db_qstr($sysDescr) . ' RLIKE sysDescr OR ' . db_qstr($sysDescr) . ' LIKE CONCAT("%", sysDescr, "%"))':'';
+	$sql_where .= trim($sysObject) != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (' . db_qstr($sysObject) . ' RLIKE sysOid OR ' . db_qstr($sysObject) . ' LIKE CONCAT("%", sysOid, "%"))':'';
+	$sql_where .= trim($sysName)   != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (' . db_qstr($sysName) . ' RLIKE sysName OR ' . db_qstr($sysName) . ' LIKE CONCAT("%", sysName, "%"))':'';
 
 	$result = db_fetch_row("SELECT at.*,ht.name 
 		FROM automation_templates AS at 
