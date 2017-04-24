@@ -396,7 +396,7 @@ function form_actions() {
 	$ds_list = ''; $i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -833,7 +833,7 @@ function ds_edit() {
 
 		$form_array = array();
 
-		while (list($field_name, $field_array) = each($struct_data_source)) {
+		foreach ($struct_data_source as $field_name => $field_array) {
 			$form_array += array($field_name => $struct_data_source[$field_name]);
 
 			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){
@@ -921,7 +921,7 @@ function ds_edit() {
 
 		$form_array = array();
 
-		while (list($field_name, $field_array) = each($struct_data_source_item)) {
+		foreach ($struct_data_source_item as $field_name => $field_array) {
 			$form_array += array($field_name => $struct_data_source_item[$field_name]);
 
 			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){

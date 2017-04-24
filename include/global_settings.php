@@ -292,29 +292,6 @@ $settings = array(
 			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
-		'default_site' => array(
-			'friendly_name' => __('Site'),
-			'description' => __('The default Site for all new Devices.'),
-			'method' => 'drop_sql',
-			'default' => '1',
-			'none_value' => __('None'),
-			'sql' => 'SELECT id, name FROM sites ORDER BY name',
-			),
-		'default_poller' => array(
-			'friendly_name' => __('Poller'),
-			'description' => __('The default Poller for all new Devices.'),
-			'method' => 'drop_sql',
-			'default' => '1',
-			'none_value' => __('None'),
-			'sql' => 'SELECT id, name FROM poller ORDER BY name',
-			),
-		'reindex_method' => array(
-			'friendly_name' => __('Re-index Method for Data Queries'),
-			'description' => __('The default Re-index Method to use for all Data Queries.'),
-			'method' => 'drop_array',
-			'default' => '1',
-			'array' => $reindex_types,
-			),
 		'default_has' => array(
 			'friendly_name' => __('Has Graphs/Data Sources Checked'),
 			'description' => __('Should the Has Graphs and Has Data Sources be Checked by Default.'),
@@ -459,6 +436,34 @@ $settings = array(
 			),
 		),
 	'snmp' => array(
+		'general_header' => array(
+			'friendly_name' => __('General Defaults'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'default_site' => array(
+			'friendly_name' => __('Site'),
+			'description' => __('The default Site for all new Devices.'),
+			'method' => 'drop_sql',
+			'default' => '1',
+			'none_value' => __('None'),
+			'sql' => 'SELECT id, name FROM sites ORDER BY name',
+			),
+		'default_poller' => array(
+			'friendly_name' => __('Poller'),
+			'description' => __('The default Poller for all new Devices.'),
+			'method' => 'drop_sql',
+			'default' => '1',
+			'none_value' => __('None'),
+			'sql' => 'SELECT id, name FROM poller ORDER BY name',
+			),
+		'reindex_method' => array(
+			'friendly_name' => __('Re-index Method for Data Queries'),
+			'description' => __('The default Re-index Method to use for all Data Queries.'),
+			'method' => 'drop_array',
+			'default' => '1',
+			'array' => $reindex_types,
+			),
 		'snmp_header' => array(
 			'friendly_name' => __('SNMP Defaults'),
 			'method' => 'spacer',

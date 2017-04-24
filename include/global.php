@@ -169,11 +169,14 @@ include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 
-if ((isset($no_http_headers) && $no_http_headers == true) || in_array(basename($_SERVER['PHP_SELF']), $no_http_header_files, true)) {
+$filename = get_current_page();
+
+if ((isset($no_http_headers) && $no_http_headers == true) || in_array($filename, $no_http_header_files, true)) {
 	$is_web = false;
-}elseif ($_SERVER['PHP_SELF'] != '') {
+}else{
 	$is_web = true;
 }
+
 $config['is_web'] = $is_web;
 
 /* set poller mode */
@@ -234,13 +237,6 @@ register_shutdown_function('CactiShutdownHandler');
 db_cacti_initialized($is_web);
 
 if ($is_web) {
-	/* Sanity Check on "Corrupt" PHP_SELF */
-	if ($_SERVER['SCRIPT_NAME'] != $_SERVER['PHP_SELF']) {
-		echo "\nInvalid PHP_SELF Path \n";
-		db_close();
-		exit;
-	}
-
 	/* set the maximum post size */
 	ini_set('post_max_size', '8M');
 	ini_set('max_input_vars', '5000');
@@ -261,7 +257,7 @@ if ($is_web) {
 	/* we never run with magic quotes on */
 	if (get_magic_quotes_gpc()) {
 		$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-		while (list($key, $val) = each($process)) {
+		foreach ($process as $key => $val) {
 			foreach ($val as $k => $v) {
 				unset($process[$key][$k]);
 				if (is_array($v)) {
@@ -302,7 +298,7 @@ if ((bool)ini_get('register_globals')) {
 	unset($input['input']);
 	unset($input['not_unset']);
 
-	while (list($var,) = @each($input)) {
+	foreach ($input as $var => $val) {
 		if (!in_array($var, $not_unset)) {
 			unset($$var);
 		}
@@ -352,5 +348,5 @@ if ($is_web) {
 api_plugin_hook('config_insert');
 
 /* current cacti version */
-$config['cacti_version'] = '1.1.3';
+$config['cacti_version'] = '1.1.4';
 

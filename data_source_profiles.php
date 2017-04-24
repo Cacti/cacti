@@ -235,7 +235,7 @@ function form_actions() {
 	$profile_list = ''; $i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST AS $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -755,7 +755,7 @@ function profile() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'data_source_profiles.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_data='+$('#has_data').is(':checked')+'&header=false';
+				strURL = 'data_source_profiles.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_data='+$('#has_data').is(':checked')+'&header=false';
 				loadPageNoHeader(strURL);
 			}
 

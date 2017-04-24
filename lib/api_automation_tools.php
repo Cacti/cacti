@@ -221,7 +221,7 @@ function displayQueryTypes($types, $quietMode = FALSE) {
 		echo "Known SNMP Query Types: (id, name)\n";
 	}
 
-	while (list($id, $name) = each ($types)) {
+	foreach ($types as $id => $name) {
 		echo $id . "\t" . $name . "\n";
 	}
 
@@ -269,7 +269,7 @@ function displaySNMPFields($fields, $hostId, $quietMode = FALSE) {
 		echo "Known SNMP Fields for host-id $hostId: (name)\n";
 	}
 
-	while (list($field, $values) = each ($fields)) {
+	foreach ($fields as $field => $values) {
 		echo $field . "\n";
 	}
 
@@ -283,7 +283,7 @@ function displaySNMPValues($values, $hostId, $field, $quietMode = FALSE) {
 		echo "Known values for $field for host $hostId: (name)\n";
 	}
 
-	while (list($value, $foo) = each($values)) {
+	foreach ($values as $value => $foo) {
 		echo "$value\n";
 	}
 
@@ -297,7 +297,7 @@ function displaySNMPQueries($queries, $quietMode = FALSE) {
 		echo "Known SNMP Queries:(id, name)\n";
 	}
 
-	while (list($id, $name) = each ($queries)) {
+	foreach ($queries as $id => $name) {
 		echo $id . "\t" . $name . "\n";
 	}
 
@@ -327,7 +327,7 @@ function displayGraphTemplates($templates, $quietMode = FALSE) {
 		echo "Known Graph Templates:(id, name)\n";
 	}
 
-	while (list($id, $name) = each ($templates)) {
+	foreach ($templates as $id => $name) {
 		echo $id . "\t" . $name . "\n";
 	}
 

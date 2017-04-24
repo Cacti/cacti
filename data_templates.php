@@ -210,7 +210,6 @@ function form_save() {
 
 				db_execute_prepared('DELETE FROM data_input_data WHERE data_template_data_id = ?', array($data_template_data_id));
 
-				reset($input_fields);
 				if (sizeof($input_fields)) {
 					foreach ($input_fields as $input_field) {
 						$form_value = 'value_' . $input_field['data_name'];
@@ -321,7 +320,7 @@ function form_actions() {
 	$ds_list = ''; $i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -408,14 +407,18 @@ function template_rrd_remove() {
 	get_filter_request_var('data_template_id');
 	/* ==================================================== */
 
-	$children = db_fetch_assoc_prepared('SELECT id FROM data_template_rrd WHERE local_data_template_rrd_id = ? OR id = ?', array(get_request_var('id'), get_request_var('id')));
+	$children = db_fetch_assoc_prepared('SELECT id 
+		FROM data_template_rrd 
+		WHERE local_data_template_rrd_id = ? 
+		OR id = ?', 
+		array(get_request_var('id'), get_request_var('id')));
 
-	if (sizeof($children) > 0) {
-	foreach ($children as $item) {
-		db_execute_prepared('DELETE FROM data_template_rrd WHERE id = ?', array($item['id']));
-		db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE data_template_rrd_id = ?', array($item['id']));
-		db_execute_prepared('UPDATE graph_templates_item SET task_item_id = 0 WHERE task_item_id = ?', array($item['id']));
-	}
+	if (sizeof($children)) {
+		foreach ($children as $item) {
+			db_execute_prepared('DELETE FROM data_template_rrd WHERE id = ?', array($item['id']));
+			db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE data_template_rrd_id = ?', array($item['id']));
+			db_execute_prepared('UPDATE graph_templates_item SET task_item_id = 0 WHERE task_item_id = ?', array($item['id']));
+		}
 	}
 
 	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('data_template_id'));
@@ -456,14 +459,19 @@ function template_rrd_add() {
 	$data_template_rrd_id = db_fetch_insert_id();
 
 	/* add this data template item to each data source using this data template */
-	$children = db_fetch_assoc_prepared('SELECT local_data_id FROM data_template_data WHERE data_template_id = ? AND local_data_id > 0', array(get_request_var('id')));
+	$children = db_fetch_assoc_prepared('SELECT local_data_id 
+		FROM data_template_data 
+		WHERE data_template_id = ? 
+		AND local_data_id > 0', 
+		array(get_request_var('id')));
 
-	if (sizeof($children) > 0) {
-	foreach ($children as $item) {
-		db_execute_prepared("INSERT IGNORE INTO data_template_rrd 
-			(local_data_template_rrd_id, local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
-			VALUES (?, ?, ?, 0, 0, 600, 1, ?)", array($data_template_rrd_id, $item['local_data_id'], get_request_var('id'), $dsname));
-	}
+	if (sizeof($children)) {
+		foreach ($children as $item) {
+			db_execute_prepared('INSERT IGNORE INTO data_template_rrd 
+				(local_data_template_rrd_id, local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
+				VALUES (?, ?, ?, 0, 0, 600, 1, ?)', 
+				array($data_template_rrd_id, $item['local_data_id'], get_request_var('id'), $dsname));
+		}
 	}
 
 	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
@@ -505,7 +513,7 @@ function template_edit() {
 
 	$form_array = array();
 
-	while (list($field_name, $field_array) = each($struct_data_source)) {
+	foreach ($struct_data_source as $field_name => $field_array) {
 		$form_array += array($field_name => $struct_data_source[$field_name]);
 
 		if ($field_array['flags'] == 'ALWAYSTEMPLATE') {
@@ -581,7 +589,7 @@ function template_edit() {
 
 	$form_array = array();
 
-	while (list($field_name, $field_array) = each($struct_data_source_item)) {
+	foreach ($struct_data_source_item as $field_name => $field_array) {
 		$form_array += array($field_name => $struct_data_source_item[$field_name]);
 
 		$form_array[$field_name]['value'] = (isset($template_rrd) ? $template_rrd[$field_name] : '');
@@ -785,7 +793,7 @@ function template() {
 		<script type='text/javascript'>
 		function applyFilter() {
 			strURL  = 'data_templates.php?header=false';
-			strURL += '&filter='+$('#filter').val();
+			strURL += '&filter='+escape($('#filter').val());
 			strURL += '&rows='+$('#rows').val();
 			strURL += '&profile='+$('#profile').val();
 			strURL += '&page='+$('#page').val();

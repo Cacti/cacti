@@ -129,8 +129,6 @@ function associate($data_template_id, $data_rra, $debug, $quiet) {
 						FROM data_template_data_rra
 						WHERE data_template_data_id=" . $data_source["id"]);
 
-			reset($data_rra);
-
 			if (sizeof($data_rra) > 0) {
 				foreach ($data_rra as $rra) {
 					db_execute("INSERT INTO data_template_data_rra

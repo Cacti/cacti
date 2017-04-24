@@ -285,7 +285,7 @@ function form_actions() {
 	$graph_list = ''; $i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -509,7 +509,7 @@ function template_edit() {
 
 	$form_array = array();
 
-	while (list($field_name, $field_array) = each($struct_graph)) {
+	foreach ($struct_graph as $field_name => $field_array) {
 		$form_array += array($field_name => $struct_graph[$field_name]);
 
 		if ($form_array[$field_name]['method'] != 'spacer') {
@@ -663,7 +663,7 @@ function template() {
 		var disabled = true;
 
 		function applyFilter() {
-			strURL = 'graph_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
+			strURL = 'graph_templates.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
 			loadPageNoHeader(strURL);
 		}
 

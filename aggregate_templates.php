@@ -284,7 +284,7 @@ function aggregate_form_actions() {
 	$aggregate_list = ''; $i = 0;
 
 	/* loop through each of the color templates selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -420,23 +420,20 @@ function aggregate_template_edit() {
 			changeTotalsType();
 		});
 
-		$('[id^="agg_skip"]').change(function() {
-			pieces=$(this).attr('id').split('_');
-			total_id='agg_total_'+pieces[2];
+		$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
+			id = $(this).attr('id');
 
-			if ($(this).is(':checked')) {
-				$('#'+total_id).removeAttr('checked');
-			}
-		});
-
-		$('[id^="agg_total"]').change(function() {
-			pieces=$(this).attr('id').split('_');
-			skip_id='agg_skip_'+pieces[2];
-
-			if ($(this).is(':checked')) {
-				$('#'+skip_id).removeAttr('checked');
+			if (id.indexOf('skip') > 0) {
+				altId = id.replace('skip', 'total');
+			}else{
+				altId = id.replace('total', 'skip');
 			}
 
+			if ($('#'+id).is(':checked')) {
+				$('#'+altId).prop('checked', false);
+			}else{
+				$('#'+altId).prop('checked', true);
+			}
 		});
 
 		changeTotals();
@@ -688,7 +685,7 @@ function aggregate_template() {
 		strURL += '?rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}

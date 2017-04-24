@@ -102,7 +102,7 @@ function export() {
 						<td>
 							<select id='export_type'>
 								<?php
-								while (list($key, $array) = each($export_types)) {
+								foreach ($export_types as $key => $array) {
 									print "<option value='$key'"; if (get_nfilter_request_var('export_type') == $key) { print ' selected'; } print '>' . htmlspecialchars($array['name'], ENT_QUOTES) . "</option>\n";
 								}
 								?>

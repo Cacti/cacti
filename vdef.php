@@ -168,8 +168,7 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 	$save['hash'] = get_hash_vdef(0);
 
 	$fields_vdef_edit = preset_vdef_form_list();
-	reset($fields_vdef_edit);
-	while (list($field, $array) = each($fields_vdef_edit)) {
+	foreach ($fields_vdef_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method'])) {
 			$save[$field] = $vdef[$field];
 		}
@@ -242,7 +241,7 @@ function vdef_form_actions() {
 	$vdef_list = '';
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -411,7 +410,7 @@ function vdef_item_edit() {
 		<td>
 			<select id='type_select'>
 				<?php
-				while (list($var, $val) = each($vdef_item_types)) {
+				foreach ($vdef_item_types as $var => $val) {
 					print "<option value='" . htmlspecialchars('vdef.php?action=item_edit' . (isset_request_var('id') ? '&id=' . get_request_var('id') : '') . '&vdef_id=' . get_request_var('vdef_id') . '&type_select=' . $var) . "'"; if ($var == $current_type) { print ' selected'; } print ">$val</option>\n";
 				}
 				?>
@@ -696,7 +695,7 @@ function vdef_filter() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'vdef.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
+				strURL = 'vdef.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
 				loadPageNoHeader(strURL);
 			}
 

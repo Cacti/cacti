@@ -456,6 +456,8 @@ function discoverDevices($network_id, $thread) {
 					$device['snmp_status']          = 0;
 					$device['ping_status']          = 0;
 					$device['snmp_id']              = $network['snmp_id'];
+					$device['poller_id']            = $network['poller_id'];
+					$device['site_id']              = $network['site_id'];
 					$device['snmp_version']         = '';
 					$device['snmp_port']            = '';
 					$device['snmp_readstring']      = '';
@@ -571,7 +573,54 @@ function discoverDevices($network_id, $thread) {
 								$device['os']                   = $fos['name'];
 								$device['host_template']        = $fos['host_template'];
 								$device['availability_method']  = $fos['availability_method'];
+
 								$host_id = automation_add_device($device);
+
+								if (!empty($host_id)) {
+									if (isset($device['snmp_sysDescr']) && $device['snmp_sysDescr'] != '') {
+										db_execute_prepared('UPDATE host 
+											SET snmp_sysDescr = ? 
+											WHERE id = ?', 
+											array($device['snmp_sysDescr'], $host_id));
+									}
+
+									if (isset($device['snmp_sysObjectID']) && $device['snmp_sysObjectID'] != '') {
+										db_execute_prepared('UPDATE host 
+											SET snmp_sysObjectID = ? 
+											WHERE id = ?', 
+											array($device['snmp_sysObjectID'], $host_id));
+									}
+
+									if (isset($device['snmp_sysUptime']) && $device['snmp_sysUptime'] != '') {
+										db_execute_prepared('UPDATE host 
+											SET snmp_sysUptimeInstance = ? 
+											WHERE id = ?', 
+											array($device['snmp_sysUptime'], $host_id));
+									}
+
+									if (isset($device['snmp_sysContact']) && $device['snmp_sysContact'] != '') {
+										db_execute_prepared('UPDATE host 
+											SET snmp_sysContact = ? 
+											WHERE id = ?', 
+											array($device['snmp_sysContact'], $host_id));
+									}
+
+									if (isset($device['snmp_sysName']) && $device['snmp_sysName'] != '') {
+										db_execute_prepared('UPDATE host 
+											SET snmp_sysName = ? 
+											WHERE id = ?', 
+											array($device['snmp_sysName'], $host_id));
+									}
+
+									if (isset($device['snmp_sysLocation']) && $device['snmp_sysLocation'] != '') {
+										db_execute_prepared('UPDATE host 
+											SET snmp_sysLocation = ? 
+											WHERE id = ?', 
+											array($device['snmp_sysLocation'], $host_id));
+									}
+
+									automation_update_device($host_id);
+								}
 
 								$stats['added']++;
 							}elseif ($fos == false) {

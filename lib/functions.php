@@ -156,7 +156,6 @@ function user_setting_exists($config_name, $user_id) {
 function read_default_user_setting($config_name) {
 	global $config, $settings_user;
 
-	reset($settings_user);
 	foreach ($settings_user as $tab_array) {
 		if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
 			return $tab_array[$config_name]['default'];
@@ -271,7 +270,6 @@ function read_default_config_option($config_name) {
 	global $config, $settings;
 
 	if (is_array($settings)) {
-		reset($settings);
 		foreach ($settings as $tab_array) {
 			if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
 				return $tab_array[$config_name]['default'];
@@ -418,6 +416,7 @@ function display_output_messages() {
 	global $config, $messages;
 
 	$debug_message = debug_log_return('new_graphs');
+	$message       = '';
 
 	if ($debug_message != '') {
 		print "<div id='message' class='textInfo messageBox'>";
@@ -431,8 +430,7 @@ function display_output_messages() {
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
 				if (isset($messages[$current_message_id]['message'])) {
-					/** @var $message */
-					eval ('$message = "' . $messages[$current_message_id]['message'] . '";');
+					$message = $messages[$current_message_id]['message'];
 
 					switch ($messages[$current_message_id]['type']) {
 					case 'info':
@@ -501,13 +499,13 @@ function kill_session_var($var_name) {
 function array_rekey($array, $key, $key_value) {
 	$ret_array = array();
 
-	if (sizeof($array) > 0) {
+	if (is_array($array)) {
 		foreach ($array as $item) {
 			$item_key = $item[$key];
 
 			if (is_array($key_value)) {
-				for ($i=0; $i<count($key_value); $i++) {
-					$ret_array[$item_key]{$key_value[$i]} = $item{$key_value[$i]};
+				foreach ($key_value as $value) {
+					$ret_array[$item_key][$value] = $item[$value];
 				}
 			} else {
 				$ret_array[$item_key] = $item[$key_value];
@@ -529,6 +527,12 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	if (isset($_SERVER['PHP_SELF'])) {
 		$current_file = basename($_SERVER['PHP_SELF']);
 		$dir_name     = dirname($_SERVER['PHP_SELF']);
+	}elseif (isset($_SERVER['SCRIPT_NAME'])) {
+		$current_file = basename($_SERVER['SCRIPT_NAME']);
+		$dir_name     = dirname($_SERVER['SCRIPT_NAME']);
+	}elseif (isset($_SERVER['SCRIPT_FILENAME'])) {
+		$current_file = basename($_SERVER['SCRIPT_FILENAME']);
+		$dir_name     = dirname($_SERVER['SCRIPT_FILENAME']);
 	}else{
 		$current_file = basename(__FILE__);
 		$dir_name     = dirname(__FILE__);
@@ -2604,7 +2608,7 @@ function draw_navigation_text($type = 'url') {
 
 	$nav =  api_plugin_hook_function('draw_navigation_text', $nav);
 
-	$current_page = basename($_SERVER['PHP_SELF']);
+	$current_page = get_current_page();
 
 	if (!isempty_request_var('action')) {
 		get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));
@@ -2616,7 +2620,7 @@ function draw_navigation_text($type = 'url') {
 	if (isset($nav[$current_page . ':' . $current_action])) {
 		$current_array = $nav{$current_page . ':' . $current_action};
 	}else{
-		$current_array = array('mapping' => 'index.php:', 'title' => ucwords(str_replace('_', ' ', basename($_SERVER['PHP_SELF'], '.php'))), 'level' => 1);
+		$current_array = array('mapping' => 'index.php:', 'title' => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))), 'level' => 1);
 	}
 
 	$current_mappings = explode(',', $current_array['mapping']);
@@ -2705,7 +2709,7 @@ function draw_navigation_text($type = 'url') {
 			$leaf_sub  = '';
 
 			if (isset_request_var('tree_id')) {
-				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_request_var('tree_id')));
+				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_filter_request_var('tree_id')));
 			}else{
 				$tree_name = '';
 			}
@@ -2791,8 +2795,36 @@ function get_browser_query_string() {
 	if (!empty($_SERVER['REQUEST_URI'])) {
 		return sanitize_uri($_SERVER['REQUEST_URI']);
 	}else{
-		return sanitize_uri(basename($_SERVER['PHP_SELF']) . (empty($_SERVER['QUERY_STRING']) ? '' : '?' . $_SERVER['QUERY_STRING']));
+		return sanitize_uri(get_current_page() . (empty($_SERVER['QUERY_STRING']) ? '' : '?' . $_SERVER['QUERY_STRING']));
 	}
+}
+
+/* get_current_page - returns the basename of the current page in a web server friendly way
+   @returns - the basename of the current script file */
+function get_current_page($basename = true) {
+	if (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF'] != '') {
+		if ($basename) {
+			return basename($_SERVER['PHP_SELF']);
+		}else{
+			return $_SERVER['PHP_SELF'];
+		}
+	}elseif (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
+		if ($basename) {
+			return basename($_SERVER['SCRIPT_NAME']);
+		}else{
+			return $_SERVER['SCRIPT_NAME'];
+		}
+	}elseif (isset($_SERVER['SCRIPT_FILENAME']) && $_SERVER['SCRIPT_FILENAME'] != '') {
+		if ($basename) {
+			return basename($_SERVER['SCRIPT_FILENAME']);
+		}else{
+			return $_SERVER['SCRIPT_FILENAME'];
+		}
+	}else{
+		cacti_log('ERROR: unable to determine current_page');
+	}
+
+	return false;
 }
 
 /* get_hash_graph_template - returns the current unique hash for a graph template
@@ -3327,11 +3359,20 @@ function general_header() {
 }
 
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
-	$full_name = db_fetch_cell_prepared('SELECT full_name FROM user_auth WHERE email_address = ?', array($from));
-	if (empty($full_name)) {
-		$fromname = $from;
+	if ($from == '') {
+		$from     = read_config_option('settings_from_email');
+		$fromname = read_config_option('settings_from_name');
 	}else{
-		$fromname = $full_name;
+		$full_name = db_fetch_cell_prepared('SELECT full_name 
+			FROM user_auth 
+			WHERE email_address = ?', 
+			array($from));
+
+		if (empty($full_name)) {
+			$fromname = $from;
+		}else{
+			$fromname = $full_name;
+		}
 	}
 
 	$from = array($from, $fromname);

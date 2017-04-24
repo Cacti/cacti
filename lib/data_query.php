@@ -261,8 +261,7 @@ function query_script_host($host_id, $snmp_query_id) {
 	/* set an array to host all updates */
 	$output_array = array();
 
-
-	while (list($field_name, $field_array) = each($script_queries['fields'])) {
+	foreach ($script_queries['fields'] as $field_name => $field_array) {
 		if ($field_array['direction'] == 'input') {
 			$rewrite_value = isset($field_array['rewrite_value']) ? $field_array['rewrite_value'] : NULL;
 			$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ': '') . $script_queries['arg_query'] . ' ' . $field_array['query_name'], $script_queries['script_path'], $host_id);
@@ -427,7 +426,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	rewrite_snmp_enum_value(NULL);
 
-	while (list($field_name, $field_array) = each($snmp_queries['fields'])) {
+	foreach ($snmp_queries['fields'] as $field_name => $field_array) {
 		if ($field_array['source'] != 'index' && $field_array['direction'] == 'input' && $field_array['method'] != 'get' &&
 			(isset($field_array['rewrite_index']) || isset($field_array['oid_suffix']))) {
 			$field_array['method'] = 'get';
@@ -1129,7 +1128,7 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 
 	$sorted_results = array();
 
-	while (list($snmp_index, $sort_field_value) = each($sort_field_data)) {
+	foreach ($sort_field_data as $snmp_index => $sort_field_value) {
 		$sorted_results[$snmp_index] = substitute_snmp_query_data($sort_cache['title_format'], $host_id, $data_query_id, $snmp_index);
 	}
 
@@ -1188,7 +1187,7 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 	}
 
 	/* list each of the input fields for this snmp query */
-	while (list($field_name, $field_array) = each($raw_xml['fields'])) {
+	foreach ($raw_xml['fields'] as $field_name => $field_array) {
 		if ($field_array['direction'] == 'input') {
 			/* create a list of all values for this index */
 			if (sizeof($data_query_index_array) == 0) {
@@ -1344,7 +1343,7 @@ function verify_index_order($raw_xml) {
 	$xml_inputs = array();
 
 	/* list each of the input fields for this snmp query */
-	while (list($field_name, $field_array) = each($raw_xml['fields'])) {
+	foreach ($raw_xml['fields'] as $field_name => $field_array) {
 		if ($field_array['direction'] == 'input') {
 			/* create a list of all values for this index */
 			array_push($xml_inputs, $field_name);

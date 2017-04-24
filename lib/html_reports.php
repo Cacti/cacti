@@ -338,7 +338,8 @@ $fields_reports_item_edit = array(
 			FROM graph_tree_items
 			INNER JOIN host
 			ON host.id=graph_tree_items.host_id
-			WHERE graph_tree_id=|arg1:tree_id|)
+			WHERE graph_tree_id=|arg1:tree_id|
+			GROUP BY name)
 			ORDER BY name"),
 	'tree_cascade' => array(
 		'friendly_name' => __('Cascade to Branches'),
@@ -637,7 +638,7 @@ function reports_form_actions() {
 	/* setup some variables */
 	$reports_list = ''; $i = 0;
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -876,7 +877,7 @@ function reports_item_edit() {
 	/* set the default item alignment */
 	$fields_reports_item_edit['font_size']['default'] = $report['font_size'];
 
-	print "<form method='post' action='" .  basename($_SERVER['PHP_SELF']) . "' name='reports_item_edit'>\n";
+	print "<form method='post' action='" . get_current_page() . "' name='reports_item_edit'>\n";
 
 	# ready for displaying the fields
 	html_start_box("<strong>Report Item</strong> $header_label", '100%', '', '3', 'center', '');
@@ -1542,7 +1543,7 @@ function reports() {
 	function applyFilter() {
 		strURL  = '<?php print get_reports_page();?>?header=false&status=' + $('#status').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		loadPageNoHeader(strURL);
 	}
 

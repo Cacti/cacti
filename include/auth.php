@@ -38,7 +38,7 @@ if ($version != $config['cacti_version'] && $config['poller_id'] == 1) {
 	exit;
 }
 
-if (basename($_SERVER['PHP_SELF']) == 'logout.php') {
+if (get_current_page() == 'logout.php') {
 	return true;
 }
 
@@ -84,8 +84,8 @@ if (read_config_option('auth_method') != 0) {
 	}elseif (!empty($_SESSION['sess_user_id'])) {
 		$realm_id = 0;
 
-		if (isset($user_auth_realm_filenames{basename($_SERVER['PHP_SELF'])})) {
-			$realm_id = $user_auth_realm_filenames{basename($_SERVER['PHP_SELF'])};
+		if (isset($user_auth_realm_filenames[get_current_page()])) {
+			$realm_id = $user_auth_realm_filenames[get_current_page()];
 		}
 
 		if ($realm_id > 0) {
