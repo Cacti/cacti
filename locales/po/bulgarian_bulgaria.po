@@ -1,0 +1,251 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Cacti\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-01 17:28+0200\n"
+"PO-Revision-Date: 2009-06-09 20:53+0100\n"
+"Last-Translator: Andreas Braun <browniebraun@cacti.cc>\n"
+"Language-Team: Bulgarian <bg@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Bulgarian\n"
+"X-Poedit-Country: BULGARIA\n"
+
+msgid "(Edit)"
+msgstr "(Редактирай)"
+
+msgid "(Remove)"
+msgstr "(Изтрий)"
+
+msgid "About Cacti"
+msgstr "За cacti"
+
+msgid "Actions"
+msgstr "Действия"
+
+msgid "Active"
+msgstr "Активен"
+
+msgid "Add"
+msgstr "Добави"
+
+msgid "Associated Graph Templates"
+msgstr "Асоциирани шаблони за графики"
+
+msgid "Associated RRA's"
+msgstr "Асоциирани RRA"
+
+msgid "Cacti Settings"
+msgstr "Настройки на cacti"
+
+msgid "Choose a name for this data source."
+msgstr "Изберете име за този източник на данни."
+
+msgid ""
+"Choose unique name to represent this piece of data inside of the rrd file."
+msgstr "Изберете уникално име, което да означава тези данни вътре в rrd файла."
+
+msgid "Clear Poller Cache"
+msgstr "Зачистване на кеша на събиращия скрипт"
+
+msgid "Console"
+msgstr "Административна конзола"
+
+msgid "Create Graphs from Data Query"
+msgstr "Създаване на графики от автоматизирано събиране на данни"
+
+msgid "Create New Graphs"
+msgstr "Създаване на нови графики"
+
+msgid "Data Input Fields"
+msgstr "Полета за въвеждане на данни"
+
+msgid "Data Input Methods"
+msgstr "Методи за въвеждане на данни"
+
+msgid "Data Queries"
+msgstr "Автоматизирани данни"
+
+msgid "Data Query"
+msgstr "Вземане на данни"
+
+msgid "Data Source Path"
+msgstr "Път до източник на данни"
+
+msgid "Data Source Type"
+msgstr "Вид на източника на данни"
+
+msgid "Data Sources"
+msgstr "Източници на данни"
+
+msgid "Devices"
+msgstr "Устройства"
+
+msgid "Edit (Graph Permissions)"
+msgstr "Редактирай (Права за графики)"
+
+msgid "Edit (Graph Settings)"
+msgstr "Редактирай (Настройки на графики)"
+
+msgid "Edit (Realm Permissions)"
+msgstr "Редактирай (Права за realm)"
+
+msgid "Enter the UDP port number to use for SNMP (default is 161)."
+msgstr "Въведете UDP порт номер който да се използва за SNMP (стандартно 161)"
+
+msgid "Export Results"
+msgstr "Експортиране на резултати"
+
+msgid "Export Templates"
+msgstr "Експортиране на шаблони"
+
+msgid "Graph"
+msgstr "Графика"
+
+msgid "Graph Item Inputs"
+msgstr "Въвеждане на елементи на графика"
+
+msgid "Graph Items"
+msgstr "Графични елементи"
+
+msgid "Graph Management"
+msgstr "Управление на графики"
+
+msgid "Graph Template Items"
+msgstr "Шаблони за елементи на графиката"
+
+msgid "Graph Templates"
+msgstr "Шаблони за графики"
+
+msgid "Graph Tree Items"
+msgstr "Елементи на графичното дърво"
+
+msgid "Graph Trees"
+msgstr "Дърво на графики"
+
+msgid "Graphs"
+msgstr "Графики"
+
+msgid "Heartbeat"
+msgstr "Heartbeat"
+
+msgid "How data is represented in the RRA."
+msgstr "Как данните са представени вътре в RRA."
+
+msgid "Import Templates"
+msgstr "Импортиране на шаблони"
+
+msgid "Internal Data Source Name"
+msgstr "Вътрешно име на източника на данни"
+
+msgid "List Mode"
+msgstr "Списъчен изглед"
+
+msgid "Maximum Value"
+msgstr "Максимална стойност"
+
+msgid "Minimum Value"
+msgstr "Минимална стойност"
+
+msgid "Name"
+msgstr "Име"
+
+msgid "Next"
+msgstr "Следващ"
+
+msgid "Password"
+msgstr "Парола"
+
+msgid "Pollers"
+msgstr "Събиращи скриптове"
+
+msgid "Preview Mode"
+msgstr "Общ изглед"
+
+msgid "Properties"
+msgstr "Параметри"
+
+msgid "Round Robin Archives"
+msgstr "Round Robin Archives"
+
+msgid "SNMP Community"
+msgstr "SNMP Общност"
+
+msgid "SNMP Port"
+msgstr "SNMP Порт"
+
+msgid "SNMP Timeout"
+msgstr "SNMP изтекло време"
+
+msgid "SNMP Version"
+msgstr "SNMP Версия"
+
+msgid "Script"
+msgstr "Скрипт"
+
+msgid "Select All"
+msgstr "Избери всички"
+
+msgid "Settings"
+msgstr "Настойки"
+
+msgid "Step"
+msgstr "Стъпка"
+
+msgid "The amount of time in seconds between expected updates."
+msgstr "Времето в секунди между очаквани промени."
+
+msgid "The full path to the RRD file."
+msgstr "Пълния път до RRD файл."
+
+msgid ""
+"The maximum number of milliseconds Cacti will wait for an SNMP response "
+"(does not work with php-snmp support)."
+msgstr ""
+"Максималното време в милисекунди, което Cacti да чака SNMP отговор (не "
+"работи със php-snmp поддръжка)."
+
+msgid "The maximum value of data that is allowed to be collected."
+msgstr "Максималната стойност на данните, което е разрешено да бъде прието."
+
+msgid "The minimum value of data that is allowed to be collected."
+msgstr "Минималната стойност на данните, което е разрешено да бъде прието."
+
+msgid "The name given to this data template."
+msgstr "Името зададено за този шаблон за данни"
+
+msgid "The script/source used to gather data for this data source."
+msgstr ""
+"Скриптът/източникът използван за събиране на данни за този източник на данни."
+
+msgid "Tree Mode"
+msgstr "Дървовиден изглед"
+
+msgid "User Management"
+msgstr "Права на потребители"
+
+msgid "Username"
+msgstr "Потребител"
+
+msgid "Utilities"
+msgstr "Приложения"
+
+msgid "View Poller Cache"
+msgstr "Виж кеш на събиращия скрипт"
+
+msgid "View SNMP Cache"
+msgstr "Виж SNMP кеша"
+
+msgid ""
+"Which RRA's to use when entering data. (It is recommended that you select "
+"all of these values)."
+msgstr ""
+"Кои RRA да се ползват при въвеждане на данни. (Препоръчва се да изберете "
+"всяка една от тези стойност)."
+
+msgid "Zoom"
+msgstr "Увеличение"
+
+msgid "Zoom Graph"
+msgstr "Увеличение на графиката"

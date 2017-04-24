@@ -1,0 +1,940 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: cacti\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-01 17:28+0200\n"
+"PO-Revision-Date: 2009-06-09 20:54+0100\n"
+"Last-Translator: Andreas Braun <browniebraun@cacti.cc>\n"
+"Language-Team: Japanese <ja@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Japanese\n"
+"X-Poedit-Country: JAPAN\n"
+
+msgid "(Edit)"
+msgstr "(編集)"
+
+msgid "(Remove)"
+msgstr "(削除)"
+
+msgid "A name for this data query."
+msgstr "この問い合わせの名前です。"
+
+msgid "A useful name for this CDEF."
+msgstr "この CDEF の名前です。"
+
+msgid "A useful name for this graph tree."
+msgstr "このグラフツリーの名前です。"
+
+msgid "ACCESS DENIED"
+msgstr "アクセスが拒否されました"
+
+msgid "About Cacti"
+msgstr "Cacti について"
+
+msgid "Access Denied"
+msgstr "アクセス拒否されました"
+
+msgid "Access Denied, please contact you Cacti Administrator."
+msgstr "アクセス拒否されました。Cacti 管理者に連絡してください。"
+
+msgid "Account Options"
+msgstr "アカウントオプション"
+
+msgid "Actions"
+msgstr "操作"
+
+msgid "Active"
+msgstr "操作"
+
+msgid "Add"
+msgstr "追加"
+
+msgid "All Data Sources (Don't Include Duplicates)"
+msgstr "すべてのデータソース(複製を含まない)"
+
+msgid "All Data Sources (Include Duplicates)"
+msgstr "すべてのデータソース(複製を含む)"
+
+msgid "Allow Empty Input"
+msgstr "空の値を許可する"
+
+msgid "Allow Graph Export"
+msgstr "グラフのエクスポートを許可する"
+
+msgid "Alphabetic Ordering"
+msgstr "英字順"
+
+msgid "Another CDEF"
+msgstr "別の CDEF"
+
+msgid "Are You Sure?"
+msgstr "本当にしますか?"
+
+msgid "Are you sure you want to delete the following graphs?"
+msgstr "次のグラフを本当に削除しますか?"
+
+msgid "Are you sure you want to delete the following users?"
+msgstr "次のユーザーを本当に削除しますか?"
+
+msgid "Associated Data Queries"
+msgstr "連想データ照会"
+
+msgid "Associated Graph Templates"
+msgstr "関連グラフテンプレート"
+
+msgid "Authentication Method"
+msgstr "認証方法"
+
+msgid "Average (ms)"
+msgstr "平均 (ミリ秒)"
+
+msgid "Builtin Authentication"
+msgstr "組み込み認証"
+
+msgid "CDEF"
+msgstr "CDEF"
+
+msgid "CDEF Items"
+msgstr "CDEF 項目"
+
+msgid "CDEFs"
+msgstr "CDEF"
+
+msgid "Cacti Settings"
+msgstr "Cacti 設定"
+
+msgid "Cancel"
+msgstr "取り消し"
+
+msgid "Change Graph Template"
+msgstr "新規グラフテンプレートを変更する"
+
+msgid "Change Host"
+msgstr "ホストを変更"
+
+msgid "Change Poller"
+msgstr "収集の変更"
+
+msgid "Change SNMP Options"
+msgstr "SNMP オプションを変更"
+
+msgid "Choose the parent for this header/graph."
+msgstr "このヘッダー/グラフの親を選択します。"
+
+msgid "Clear Statistics"
+msgstr "統計を消去"
+
+msgid "Color"
+msgstr "色"
+
+msgid "Colors"
+msgstr "色"
+
+msgid "Console"
+msgstr "コンソール"
+
+msgid "Console Access"
+msgstr "コンソールアクセス"
+
+msgid "Convert to Graph Template"
+msgstr "グラフテンプレートに変換する"
+
+msgid "Copy"
+msgstr "コピー"
+
+msgid "Create"
+msgstr "作成"
+
+msgid "Create New Graphs"
+msgstr "新規グラフを作成"
+
+msgid "Current (ms)"
+msgstr "現在 (ミリ秒)"
+
+msgid "Current Data Source Item: Minimum Value"
+msgstr "現在のデータソース項目: 最小値"
+
+msgid "Current Graph Item Data Source"
+msgstr "現在のグラフ項目のデータソース"
+
+msgid "Custom String"
+msgstr "カスタム文字列"
+
+msgid "DES (default)"
+msgstr "DES (デフォルト)"
+
+msgid "Data Input"
+msgstr "データ入力"
+
+msgid "Data Input Fields"
+msgstr "データの入力項目"
+
+msgid "Data Input Method"
+msgstr "データの入力方法"
+
+msgid "Data Input Methods"
+msgstr "データの入力方法"
+
+msgid "Data Queries"
+msgstr "データ問合せ"
+
+msgid "Data Query"
+msgstr "データ問合せ"
+
+msgid "Data Query Name"
+msgstr "データ照会名"
+
+msgid "Data Source"
+msgstr "データソース"
+
+msgid "Data Source Item"
+msgstr "データソース項目"
+
+msgid "Data Source Path"
+msgstr "データソースのパス"
+
+msgid "Data Source Type"
+msgstr "データソースの種類"
+
+msgid "Data Sources"
+msgstr "データソース"
+
+msgid "Default Graph Policy"
+msgstr "デフォルトグラフポリシ"
+
+msgid "Default Graph Tree"
+msgstr "デフォルトのグラフツリー"
+
+msgid "Default Policy"
+msgstr "デフォルトポリシ"
+
+msgid "Default RRA"
+msgstr "デフォルト RRA"
+
+msgid "Default View Mode"
+msgstr "デフォルト表示モード"
+
+msgid "Delete"
+msgstr "削除"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "Device"
+msgstr "デバイス"
+
+msgid "Devices"
+msgstr "デバイス"
+
+msgid "Disable"
+msgstr "無効"
+
+msgid "Disabled"
+msgstr "無効"
+
+msgid "Duplicate"
+msgstr "複製"
+
+msgid "Edit (Graph Permissions)"
+msgstr "編集 (グラフ権限)"
+
+msgid "Edit (Graph Settings)"
+msgstr "編集 (グラフ設定)"
+
+msgid "Edit (Realm Permissions)"
+msgstr "編集 (領域権限)"
+
+msgid "Enable"
+msgstr "有効"
+
+msgid "Enabled"
+msgstr "有効"
+
+msgid "Encryption"
+msgstr "暗号化"
+
+msgid "Enter the custom GPRINT string here."
+msgstr "カスタム GRPINT 文字列をここに入力します。"
+
+msgid "Error"
+msgstr "エラー"
+
+msgid "Event Logging"
+msgstr "イベントのログ記録"
+
+msgid "Export Data"
+msgstr "データをエクスポートする"
+
+msgid "Export Method"
+msgstr "エクスポート方法"
+
+msgid "Export Results"
+msgstr "エクスポート結果"
+
+msgid "Export Templates"
+msgstr "テンプレートエクスポート"
+
+msgid "FTP Host"
+msgstr "FTP ホスト"
+
+msgid "FTP Options"
+msgstr "FTP オプション"
+
+msgid "FTP Password"
+msgstr "FTP パスワード"
+
+msgid "FTP Port"
+msgstr "FTP ポート"
+
+msgid "FTP User"
+msgstr "FTP ユーザー"
+
+msgid "Failure Count"
+msgstr "失敗回数"
+
+msgid "Field Type"
+msgstr "項目の種類"
+
+msgid "Full Name"
+msgstr "フルネーム"
+
+msgid "Function"
+msgstr "機能"
+
+msgid "GPRINT Presets"
+msgstr "GPRINT プリセット"
+
+msgid "GPRINT Text"
+msgstr "GPRINT テキスト"
+
+msgid "General"
+msgstr "一般"
+
+msgid "Global Settings"
+msgstr "グラフ設定"
+
+msgid "Graph"
+msgstr "グラフ"
+
+msgid "Graph Date Display Format"
+msgstr "グラフの日付の表示形式"
+
+msgid "Graph Export"
+msgstr "グラフエクスポート"
+
+msgid "Graph Grouping Style"
+msgstr "グラフのグループスタイル"
+
+msgid "Graph Item Type"
+msgstr "グラフ項目の種類"
+
+msgid "Graph Items"
+msgstr "グラフ項目"
+
+msgid "Graph Management"
+msgstr "グラフ管理"
+
+msgid "Graph Options"
+msgstr "グラフオプション"
+
+msgid "Graph Permissions"
+msgstr "グラフ権限"
+
+msgid "Graph Permissions (By Graph Template)"
+msgstr "グラフ権限 (グラフテンプレートより)"
+
+msgid "Graph Permissions (By Graph)"
+msgstr "グラフ権限 (グラフより)"
+
+msgid "Graph Settings"
+msgstr "グラフ設定"
+
+msgid "Graph Template"
+msgstr "グラフのテンプレート"
+
+msgid "Graph Template Items"
+msgstr "グラフテンプレートの項目"
+
+msgid "Graph Template Name"
+msgstr "グラフテンプレート名"
+
+msgid "Graph Templates"
+msgstr "グラフテンプレート"
+
+msgid "Graph Thumbnails"
+msgstr "グラフサムネイル"
+
+msgid "Graph Title"
+msgstr "グラフの題名"
+
+msgid "Graph Tree Items"
+msgstr "グラフツリーの項目"
+
+msgid "Graph Trees"
+msgstr "グラフツリー"
+
+msgid "Graph: Lower Limit"
+msgstr "グラフ: 下限"
+
+msgid "Graph: Upper Limit"
+msgstr "グラフ: 上限"
+
+msgid "Graphs"
+msgstr "グラフ"
+
+msgid "Guest User"
+msgstr "ゲストユーザー"
+
+msgid "Heartbeat"
+msgstr "ハートビート"
+
+msgid "Hex Value"
+msgstr "16 進値"
+
+msgid "Host"
+msgstr "ホスト"
+
+msgid "Hostname"
+msgstr "ホスト名"
+
+msgid "Hosts"
+msgstr "ホスト"
+
+msgid "ICMP Ping"
+msgstr "ICMP Ping"
+
+msgid "Import Data"
+msgstr "データをインポートする"
+
+msgid "Import Template from Local File"
+msgstr "ローカルファイルからテンプレートをインポート"
+
+msgid "Import Template from Text"
+msgstr "テキストからテンプレートをインポート"
+
+msgid "Import Templates"
+msgstr "テンプレートインポート"
+
+msgid "Import/Export"
+msgstr "インポート/エクスポート"
+
+msgid "Include Dependencies"
+msgstr "依存性を含む"
+
+msgid "Input Fields"
+msgstr "入力項目"
+
+msgid "Input Type"
+msgstr "入力タイプ"
+
+msgid "Item"
+msgstr "項目"
+
+msgid "LDAP"
+msgstr "LDAP"
+
+msgid "Last Login"
+msgstr "最終ログイン"
+
+msgid "Legend Font File"
+msgstr "凡例のフォントファイル"
+
+msgid "Legend Font Size"
+msgstr "凡例のフォントサイズ"
+
+msgid "List Mode"
+msgstr "一覧モード"
+
+msgid "List View Mode"
+msgstr "一覧表示モード"
+
+msgid "Local"
+msgstr "ローカル"
+
+msgid "Logfile Only"
+msgstr "ログファイルのみ"
+
+msgid "Logging"
+msgstr "ログイン"
+
+msgid "Login"
+msgstr "ログイン"
+
+msgid "Login Options"
+msgstr "ログイン設定"
+
+msgid "Logout"
+msgstr "ログアウト"
+
+msgid "Logout User"
+msgstr "ユーザーログアウト"
+
+msgid "Lower Limit"
+msgstr "下限"
+
+msgid "MD5 (default)"
+msgstr "MD5 (デフォルト)"
+
+msgid "Manual Ordering (No Sorting)"
+msgstr "手動整列 (ソートしません)"
+
+msgid "Maximum Field Length"
+msgstr "項目の最大長"
+
+msgid "Maximum Log Size"
+msgstr "最大ログサイズ"
+
+msgid "Maximum Title Length"
+msgstr "題名の最大長"
+
+msgid "Maximum Value"
+msgstr "最大値"
+
+msgid "Minimum Value"
+msgstr "最小値"
+
+msgid "Mode"
+msgstr "モード"
+
+msgid "Name"
+msgstr "名前"
+
+msgid "New Graph Template:"
+msgstr "新規グラフテンプレート:"
+
+msgid "New Graphs"
+msgstr "新規グラフ"
+
+msgid "Next"
+msgstr "次に"
+
+msgid "No"
+msgstr "いいえ"
+
+msgid "No Data Input Methods"
+msgstr "データの入力方法がありません。"
+
+msgid "No Data Sources"
+msgstr "データソースがありません"
+
+msgid "No Graph Templates"
+msgstr "グラフテンプレートがありません"
+
+msgid "No Graphs"
+msgstr "グラフがありません"
+
+msgid "No Graphs Found"
+msgstr "グラフが見つかりません"
+
+msgid "No Graphs Trees"
+msgstr "グラフツリーがありません"
+
+msgid "No Hosts"
+msgstr "ホストがありません"
+
+msgid "No Trees"
+msgstr "ツリーがありません"
+
+msgid "None"
+msgstr "なし"
+
+msgid "Numeric Ordering"
+msgstr "数字順"
+
+msgid "Operator"
+msgstr "操作"
+
+msgid "Output Fields"
+msgstr "出力項目"
+
+msgid "Output Format"
+msgstr "出力書式"
+
+msgid "Output to the Browser (raw XML)"
+msgstr "ブラウザーへ出力 (生 XML)"
+
+msgid "Output to the Browser (within Cacti)"
+msgstr "ブラウザーへ出力 (Cacti で)"
+
+msgid "PHP Binary Path"
+msgstr "PHP バイナリパス"
+
+msgid "PHP Information"
+msgstr "PHP の情報"
+
+msgid "Parent Item"
+msgstr "親の項目"
+
+msgid "Password"
+msgstr "パスワード"
+
+msgid "Password for the remote ftp account (leave empty for blank)."
+msgstr "リモート ftp アカウントのパスワード(パスワードなしは空にします)"
+
+msgid "Password:"
+msgstr "パスワード:"
+
+msgid "Passwords do not match, please retype."
+msgstr "パスワードが一致しません。もう一度入力してください。"
+
+msgid "Paths"
+msgstr "パス"
+
+msgid "Ping Timeout Value"
+msgstr "Ping のタイムアウト値"
+
+msgid "Ping Type"
+msgstr "Ping の種類"
+
+msgid "Please enter your Cacti user name and password below:"
+msgstr "下記に Cacti ユーザー名とパスワードを入力してください:"
+
+msgid "Poller Cache Administration"
+msgstr "収集キャッシュ管理"
+
+msgid "Poller Warnings"
+msgstr "収集の警告"
+
+msgid "Pollers"
+msgstr "収集"
+
+msgid "Port SSL"
+msgstr "SSL ポート"
+
+msgid "Port Standard"
+msgstr "標準ポート"
+
+msgid "Preview Mode"
+msgstr "プレビューモード"
+
+msgid "Previous"
+msgstr "前に"
+
+msgid "Properties"
+msgstr "プロパティ"
+
+msgid "Protocol Version"
+msgstr "プロトコルバージョン"
+
+msgid "Protocol Version that the server supports."
+msgstr "サーバーがサポートするプロトコルのバージョンです。"
+
+msgid "RRAs"
+msgstr "RRA"
+
+msgid "RRDTool Binary Path"
+msgstr "RRDTool バイナリパス"
+
+msgid "RRDTool Default Font Path"
+msgstr "RRDTおおｌ デフォルトフォントのパス"
+
+msgid "RRDTool Utility Version"
+msgstr "RRDTool ユーティリティバージョン"
+
+msgid "Re-Index Method"
+msgstr "再索引方法"
+
+msgid "Realm"
+msgstr "領域"
+
+msgid "Realm Permissions"
+msgstr "領域権限"
+
+msgid "Required Tool Versions"
+msgstr "要求するツールのバージョン"
+
+msgid "Rows Per Page"
+msgstr "ページ毎の行数"
+
+msgid "SHA"
+msgstr "SHA"
+
+msgid "SNMP"
+msgstr "SNMP"
+
+msgid "SNMP Community"
+msgstr "SNMP コミュニティ"
+
+msgid "SNMP Field Name (Dropdown)"
+msgstr "SNMP フィールド名(ドロップダウン)"
+
+msgid "SNMP Field Value (From User)"
+msgstr "SNMP フィールド値 (From User)"
+
+msgid "SNMP Output Type (Dropdown)"
+msgstr "SNMP 出力の種類 (ドロップダウン)"
+
+msgid "SNMP Port"
+msgstr "SNMP ポート"
+
+msgid "SNMP Timeout"
+msgstr "SNMP タイムアウト"
+
+msgid "SNMP Utility Version"
+msgstr "SNMP ユーティリティバージョン"
+
+msgid "Sanitize remote directory"
+msgstr "リモートディレクトリのサニタイズ"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Save Failed."
+msgstr "保存に失敗しました。"
+
+msgid "Save Successful."
+msgstr "保存に成功しました。"
+
+msgid "Script"
+msgstr "スクリプト"
+
+msgid "Search Filter"
+msgstr "検索フィルター"
+
+msgid "Search Password"
+msgstr "検索パスワード"
+
+msgid "Select All"
+msgstr "すべて選択"
+
+msgid "Selected Graph Template"
+msgstr "選択済グラフテンプレート"
+
+msgid "Server"
+msgstr "サーバー"
+
+msgid "Settings"
+msgstr "設定"
+
+msgid "Show the default console screen."
+msgstr "デフォルトでコンソール画面を表示します。"
+
+msgid "Show the default graph screen."
+msgstr "デフォルトでグラフ画面を表示します。"
+
+msgid "Size"
+msgstr "サイズ"
+
+msgid "Sorting Type"
+msgstr "ソートの種類"
+
+msgid "Status"
+msgstr "状態"
+
+msgid "Step"
+msgstr "ステップ"
+
+msgid "System Utilities"
+msgstr "システムユーティリティ"
+
+msgid "Template Name"
+msgstr "テンプレート名"
+
+msgid "The font file to be used for Graph Legend items"
+msgstr "グラフの凡例項目で使用するフォントファイル"
+
+msgid "The login name for this user."
+msgstr "このユーザーのログイン名です。"
+
+msgid "The maximum number of characters to display for a data source title."
+msgstr "データソースタイトルの単一ページで表示する行数です。<"
+
+msgid "The name given to this data template."
+msgstr "このデータテンプレートに名前を与えてください。"
+
+msgid "The number of rows to display on a single page for data sources."
+msgstr "データソース一覧の単一ページで表示する行数です。"
+
+msgid "The path to the rrdtool binary."
+msgstr "rrdtool バイナリへのパスです。"
+
+msgid "The path to your snmpget binary."
+msgstr "snmpget バイナリへのパスです。"
+
+msgid "The path to your snmpwalk binary."
+msgstr "snmpwalk バイナリへのパスです。"
+
+msgid "The size of the font used for Graph Legend items"
+msgstr "グラフの凡例項目で使用するフォントサイズ"
+
+msgid "Thumbnail Columns"
+msgstr "サムネイルの列数"
+
+msgid "Thumbnail Height"
+msgstr "サムネイルの高さ"
+
+msgid "Thumbnail Sections"
+msgstr "サムネイルセクション"
+
+msgid "Thumbnail Width"
+msgstr "サムネイルの幅"
+
+msgid "Timing"
+msgstr "タイミング"
+
+msgid "Title"
+msgstr "題名"
+
+msgid "Title Font File"
+msgstr "題名のフォントファイル"
+
+msgid "Title Font Size"
+msgstr "題名のフォントサイズ"
+
+msgid "Title Format:"
+msgstr "題名の書式:"
+
+msgid "To disable the following devices, press the \"yes\" button below."
+msgstr "次のデバイスを無効にする場合、下の「はい」ボタンを押します。"
+
+msgid "To enable the following devices, press the \"yes\" button below."
+msgstr "次のデバイスを有効にする場合、下の「はい」ボタンを押します。"
+
+msgid "Tree Item Type"
+msgstr "ツリー項目の種類"
+
+msgid "Tree Item Value"
+msgstr "ツリー項目の値"
+
+msgid "Tree Items"
+msgstr "ツリー項目"
+
+msgid "Tree Mode"
+msgstr "ツリーモード"
+
+msgid "Tree Permissions"
+msgstr "ツリー権限"
+
+msgid "Tree View (Dual Pane)"
+msgstr "ツリービュー (二重ペイン)"
+
+msgid "Tree View (Single Pane)"
+msgstr "ツリー表示 (単一ペイン)"
+
+msgid "Tree View Mode"
+msgstr "ツリー表示モードツリーモード"
+
+msgid "UDP Ping"
+msgstr "UDP Ping"
+
+msgid "Unit Font File"
+msgstr "単位のフォントファイル"
+
+msgid "Unit Font Size"
+msgstr "単位のフォントサイズ"
+
+msgid "Update Data Sources"
+msgstr "データソースを更新する"
+
+msgid "Update Graph Templates"
+msgstr "グラフテンプレートを更新する"
+
+msgid "Update Graphs"
+msgstr "グラフを更新する"
+
+msgid "Update RRD File"
+msgstr "RRD ファイルを更新する"
+
+msgid "Update Round Robin Archives"
+msgstr "RRA を更新する"
+
+msgid "Upper Limit"
+msgstr "上限"
+
+msgid "Use passive mode"
+msgstr "パッシブモードを使う"
+
+msgid "User Account Disabled"
+msgstr "ユーザーアカウントは無効です"
+
+msgid "User Administration"
+msgstr "ユーザー管理"
+
+msgid "User Has Rights to List View"
+msgstr "ユーザーは一覧表示の権限を持っている"
+
+msgid "User Has Rights to Preview View"
+msgstr "ユーザーはプレビュー表示の権限を持っている"
+
+msgid "User Has Rights to Tree View"
+msgstr "ユーザーはツリー表示の権限を持っている"
+
+msgid "User Management"
+msgstr "ユーザー管理"
+
+msgid "User Must Change Password at Next Login"
+msgstr "ユーザーは次のログインでパスワードを変えなければならない"
+
+msgid "User Name"
+msgstr "ユーザー名"
+
+msgid "User Name:"
+msgstr "ユーザー名:"
+
+msgid "User Template"
+msgstr "ユーザーテンプレート"
+
+msgid "Username"
+msgstr "ユーザー名"
+
+msgid "Username already in use."
+msgstr "ユーザー名は既に使用されています。"
+
+msgid "Utilities"
+msgstr "ユーティリティ"
+
+msgid "Value"
+msgstr "値"
+
+msgid "Version"
+msgstr "バージョン"
+
+msgid "Version 1"
+msgstr "バージョン 1"
+
+msgid "Version 2"
+msgstr "バージョン 2"
+
+msgid "Version 3"
+msgstr "バージョン 3"
+
+msgid "Vertical Label"
+msgstr "垂直のラベル"
+
+msgid "View Graphs"
+msgstr "グラフを表示する"
+
+msgid "View SNMP Cache"
+msgstr "SNMP キャッシュを閲覧する"
+
+msgid "Web Basic Authentication"
+msgstr "ウェブ Basic 認証"
+
+msgid "XML parse error."
+msgstr "XML の解析エラーです。"
+
+msgid "XML: Cacti version does not exist."
+msgstr "XML: Cacti バージョンが存在しません。"
+
+msgid "XML: Generated with a newer version of Cacti."
+msgstr "XML: Cacti のより新しいバージョンで生成されました。"
+
+msgid "XML: Hash version does not exist."
+msgstr "XML: ハッシュバージョンが存在しません。"
+
+msgid "Yes"
+msgstr "はい"
+
+msgid "[edit: "
+msgstr "[編集: "
+
+msgid "[new]"
+msgstr "[新規]"
+
+msgid "snmpget Binary Path"
+msgstr "snmpget バイナリパス"
+
+msgid "snmpwalk Binary Path"
+msgstr "snmpwalk バイナリパス"

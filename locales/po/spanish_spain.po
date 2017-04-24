@@ -1,0 +1,1803 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Cacti\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-01 17:28+0200\n"
+"PO-Revision-Date: 2009-06-09 20:53+0100\n"
+"Last-Translator: Andreas Braun <browniebraun@cacti.cc>\n"
+"Language-Team: es <es@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: SPAIN\n"
+
+msgid "(Edit)"
+msgstr "(Editar)"
+
+msgid "(Remove)"
+msgstr "(Eliminar)"
+
+msgid "*** Forced Password Change ***"
+msgstr "*** Cambio de Contraseña Forzoso ***"
+
+msgid "1 Day"
+msgstr "1 Día"
+
+msgid "1 Month"
+msgstr "1 Mes"
+
+msgid "1 Week"
+msgstr "1 Semana"
+
+msgid "1 Year"
+msgstr "1 Año"
+
+msgid ""
+"A more descriptive name for this user, that can include spaces or special "
+"characters."
+msgstr ""
+"Un nombre más descriptivo para este usuario, se pueden incluir espacios \n"
+"y caracteres especiales."
+
+msgid "A name for this associated graph."
+msgstr "Un nombre para esta gráfica asociada."
+
+msgid "A name for this data query."
+msgstr "Un nombre para esta consulta de información."
+
+msgid "A useful name for this CDEF."
+msgstr "Un nombre útil para este CDEF."
+
+msgid "A useful name for this graph tree."
+msgstr "Un nombre útil para este árbol de gráficas."
+
+msgid "ACCESS DENIED"
+msgstr "ACCESO DENEGADO"
+
+msgid "About Cacti"
+msgstr "Acerca de Cacti"
+
+msgid "Access Denied, please contact you Cacti Administrator."
+msgstr "Acceso denegado, favor de contactar al administrador del sistema."
+
+msgid "Access Denied, user account disabled."
+msgstr "Acceso denegado, la cuenta de usuario esta deshabilitada."
+
+msgid "Account Options"
+msgstr "Opciones de cuenta"
+
+msgid "Actions"
+msgstr "Acciones"
+
+msgid "Active"
+msgstr "Activo"
+
+msgid "Add"
+msgstr "Agregar"
+
+msgid "Add Graph Template:"
+msgstr "Añadir plantilla de gráfica:"
+
+msgid "All Data Sources (Don't Include Duplicates)"
+msgstr "Todas las Fuentes de información (No incluir duplicadas)"
+
+msgid "All Data Sources (Include Duplicates)"
+msgstr "Todas las Fuentes de información (Incluir duplicadas)"
+
+msgid "All Similar Data Sources (Don't Include Duplicates)"
+msgstr "Todas las Fuentes de información similares (No incluir duplicadas)"
+
+msgid "Allow Empty Input"
+msgstr "Permitir entradas en blanco"
+
+msgid "Allow Graph Export"
+msgstr "Permitir exportar gráficas"
+
+msgid "Allow this User to Keep Custom Graph Settings"
+msgstr "Permitir a este usuario guardar opciones personalizadas de gráficas"
+
+msgid "Alphabetic Ordering"
+msgstr "Ordenamiento Alfabético"
+
+msgid "Anonymous Searching"
+msgstr "Búsqueda anónima"
+
+msgid "Another CDEF"
+msgstr "Otro CDEF"
+
+msgid "Any"
+msgstr "Cualquiera"
+
+msgid "Are You Sure?"
+msgstr "¿Esta seguro?"
+
+msgid "Are you sure you want to delete the CDEF"
+msgstr "¿Esta seguro de querer borrar el CDEF?"
+
+msgid "Are you sure you want to delete the Data Query Graph"
+msgstr "¿Esta seguro de querer eliminar la Gráfica de Consulta de Información?"
+
+msgid "Are you sure you want to delete the field"
+msgstr "¿Esta seguro de querer eliminar el campo?"
+
+msgid "Are you sure you want to delete the following data sources?"
+msgstr "¿Esta seguro de querer eliminar las siguientes fuentes de información?"
+
+msgid "Are you sure you want to delete the following devices?"
+msgstr "¿Esta seguro de querer eliminar los siguientes dispositivos?"
+
+msgid "Are you sure you want to delete the following graphs?"
+msgstr "Esta seguro de querer eliminar las siguientes gráficas?"
+
+msgid "Are you sure you want to delete the following users?"
+msgstr "¿Esta seguro de querer eliminar lo siguientes usuarios?"
+
+msgid "Are you sure you want to delete the input item"
+msgstr "¿Esta seguro de querer eliminar el elemento de entrada?"
+
+msgid "Associated Data Queries"
+msgstr "Consultas de información asociadas"
+
+msgid "Associated Graph Items"
+msgstr "Elementos de gráficas asociados"
+
+msgid "Associated Graph Templates"
+msgstr "Plantillas de gráfica asociadas"
+
+msgid "Associated RRA's"
+msgstr "RRAs asociados"
+
+msgid "Authentication Method"
+msgstr "Método de autenticación"
+
+msgid "Auto Padding"
+msgstr "Rellenado automático"
+
+msgid "Availability"
+msgstr "Disponibilidad"
+
+msgid "Average (ms)"
+msgstr "Tiempo promedio (ms)"
+
+msgid "Axis Font File"
+msgstr "Archivo de fuente para los ejes"
+
+msgid "Axis Font Size"
+msgstr "Tamaño de fuente de los ejes"
+
+msgid "Builtin Authentication"
+msgstr "Autenticación Interna"
+
+msgid "CDEF"
+msgstr "CDEF"
+
+msgid "CDEF Function"
+msgstr "Función CDEF"
+
+msgid "CDEF Items"
+msgstr "Elementos CDEF"
+
+msgid "CDEF's"
+msgstr "Los CDEF"
+
+msgid "CDEFs"
+msgstr "CDEFs"
+
+msgid "Cacti Settings"
+msgstr "Opciones de Cacti"
+
+msgid "Cacti Variables"
+msgstr "Variables de Cacti"
+
+msgid "Cacti has imported the following items:"
+msgstr "Cacti ha importado los siguientes elementos:"
+
+msgid "Cacti is licensed under the GNU GPL:"
+msgstr "Cacti tiene la licencia GNU GPL:"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Change Availability Options"
+msgstr "Cambiar opciones de disponibilidad"
+
+msgid "Change Graph Template"
+msgstr "Cambiar Plantilla de gráfica"
+
+msgid "Change Host"
+msgstr "Cambiar equipo"
+
+msgid "Change Poller"
+msgstr "Cambiar colector"
+
+msgid "Change SNMP Options"
+msgstr "Cambiar opciones SNMP"
+
+msgid "Check this if you want to connect in passive mode to the FTP server."
+msgstr "Seleccione esto si desea conectarse en modo pasivo al servidor FTP."
+
+msgid "Choose a graph from this list to add it to the tree."
+msgstr "Elija una gráfica de esta lista para añadirla al árbol."
+
+msgid "Choose a name for this data source."
+msgstr "Asigne un nombre para esta fuente de información."
+
+msgid "Choose how children of this branch will be sorted."
+msgstr "Elija como serán ordenados los hijos de esta rama."
+
+msgid "Choose how items in this tree will be sorted."
+msgstr "Seleccione cuántos elementos de éste árbol serán ordenados."
+
+msgid "Choose the device that this graph belongs to."
+msgstr "Seleccione el dispositivo al cual pertenece esta gráfica."
+
+msgid "Choose the exact item to export to XML."
+msgstr "Elija el elemento preciso para exportar a XML."
+
+msgid "Choose the format to output the resulting XML file in."
+msgstr ""
+"Seleccione el formato en el cual se generará el archivo XML resultante."
+
+msgid "Choose the parent for this header/graph."
+msgstr "Eliga el padre para este encabezado/gráfica."
+
+msgid "Choose what type of tree item this is."
+msgstr "Eliga que de tipo de elemento de árbol se trata."
+
+msgid "Choose when to export graphs."
+msgstr "Seleccione cuando exportar gráficas"
+
+msgid "Choose which export method to use."
+msgstr "Selecciones que método de exportación utilizar."
+
+msgid "Classic (export every x times)"
+msgstr "Modo clásico (exportar cada x número de ocasiones)"
+
+msgid "Classic (local path)"
+msgstr "Clásico (a una ruta local)"
+
+msgid "Clear"
+msgstr "Despejar"
+
+msgid "Clear Poller Cache"
+msgstr "Eliminar el cache del colector"
+
+msgid "Clear Statistics"
+msgstr "Borrar estadísticas"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Colors"
+msgstr "Colores"
+
+msgid "Confirm:"
+msgstr "Confirmación:"
+
+msgid "Console"
+msgstr "Consola"
+
+msgid "Console Access"
+msgstr "Acceso de Consola"
+
+msgid "Consolidation Function"
+msgstr "Función de consolidación"
+
+msgid "Consolidation Functions"
+msgstr "Funciones de consolidación"
+
+msgid "Convert to Graph Template"
+msgstr "Convertir a Plantilla de gráfica"
+
+msgid "Copy"
+msgstr "Copiar"
+
+msgid "Could not locate XML file."
+msgstr "No fue posible localizar el archivo XML"
+
+msgid "Create"
+msgstr "Crear"
+
+msgid "Create Graphs from Data Query"
+msgstr "Crear gráficas desde consulta de información"
+
+msgid "Create New Graphs"
+msgstr "Crear nuevas gráficas"
+
+msgid "Create:"
+msgstr "Crear: "
+
+msgid "Current (ms)"
+msgstr "Tiempo actual (ms)"
+
+msgid "Current Data Source Item: Maximum Value"
+msgstr "Elemento de Fuente de información actual: Valor Máximo"
+
+msgid "Current Data Source Item: Minimum Value"
+msgstr "Elemento de Fuente de información actual: Valor Mínimo"
+
+msgid "Current Graph Item Data Source"
+msgstr "Fuente de información de elemento de gráfica actual."
+
+msgid "Custom"
+msgstr "Personalizado"
+
+msgid "Custom String"
+msgstr "Texto Personalizado"
+
+msgid "DEBUG - Statistics, Errors, Results, I/O and Program Flow"
+msgstr "DEBUG - Estadísticas, Errores, Resultados, E/S y flujo de programa."
+
+msgid "Daily at specified time"
+msgstr "Diariamente a la hora especificada"
+
+msgid "Data Input"
+msgstr "Ingreso de información"
+
+msgid "Data Input Fields"
+msgstr "Campos de entrada de información"
+
+msgid "Data Input Method"
+msgstr "Método de ingreso de información"
+
+msgid "Data Input Methods"
+msgstr "Métodos de entrada de información"
+
+msgid "Data Queries"
+msgstr "Consultas de información"
+
+msgid "Data Query"
+msgstr "Consulta de información"
+
+msgid "Data Query Debug Information"
+msgstr "Información de debug de consulta de información"
+
+msgid "Data Query Name"
+msgstr "Nombre de consulta de información"
+
+msgid "Data Query:"
+msgstr "Consulta de información:"
+
+msgid "Data Source"
+msgstr "Fuente de información"
+
+msgid "Data Source Fields"
+msgstr "Campos de fuente de información"
+
+msgid "Data Source Item"
+msgstr "Elemento de fuente de información"
+
+msgid "Data Source Item Fields"
+msgstr "Campos de elementos de fuente de información"
+
+msgid "Data Source Path"
+msgstr "Ruta de esta fuente de información."
+
+msgid "Data Source Type"
+msgstr "Tipo de fuente de información"
+
+msgid "Data Sources"
+msgstr "Fuentes de información"
+
+msgid "Debugging"
+msgstr "Debuggeando"
+
+msgid "Default"
+msgstr "Por Defecto"
+
+msgid "Default Graph Policy"
+msgstr "Política de gráficas por defecto"
+
+msgid "Default Graph Tree"
+msgstr "Árbol de gráficas por defecto"
+
+msgid "Default Policy"
+msgstr "Política por defecto"
+
+msgid "Default RRA"
+msgstr "Archivo RRA por defecto"
+
+msgid "Default SNMP timeout in milli-seconds."
+msgstr "Máximo tiempo de espera para SNMP en mili segundos."
+
+msgid "Default UDP port to be used for SNMP Calls.  Typically 161."
+msgstr ""
+"Puerto UDP por defecto para realizar llamadas SNMP. Típicamente el 161."
+
+msgid "Default View Mode"
+msgstr "Modo de vista por Defecto"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Delete Data Query Association"
+msgstr "Eliminar asociación de consulta de información"
+
+msgid "Delete Graph Template Association"
+msgstr "Eliminar asociación de plantilla de gráfica"
+
+msgid "Delete all <strong>data sources</strong> referenced by these graphs."
+msgstr ""
+"Eliminar todas las <strong>fuentes de información</strong> referenciadas "
+"porestas gráficas."
+
+msgid "Description"
+msgstr "Descripción"
+
+msgid "Destination Branch:"
+msgstr "Rama destino:"
+
+msgid "Device"
+msgstr "Dispositivo"
+
+msgid "Device:"
+msgstr "Equipo:"
+
+msgid "Devices"
+msgstr "Dispositivos"
+
+msgid "Disable"
+msgstr "Deshabilitar"
+
+msgid "Disabled"
+msgstr "Deshabilitado"
+
+msgid "Disabled (no exporting)"
+msgstr "Deshabilitado (no se permite exportar)"
+
+msgid "Distinguished Name (DN)"
+msgstr "Nombre Distinguible (DN)"
+
+msgid "Down"
+msgstr "Caido"
+
+msgid "Downed Device Detection"
+msgstr "Detección de equipo caído"
+
+msgid "Duplicate"
+msgstr "Duplicar"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Edit (Graph Permissions)"
+msgstr "Editar (Permisos de gráficas)"
+
+msgid "Edit (Graph Settings)"
+msgstr "Editar (Opciones de gráficas)"
+
+msgid "Edit (Realm Permissions)"
+msgstr "Editar (Permisos de acceso)"
+
+msgid "Enable"
+msgstr "Habilitar"
+
+msgid "Enabled"
+msgstr "Habilitado"
+
+msgid "Encryption"
+msgstr "Encripción"
+
+msgid "End Date Selector"
+msgstr "Finalizar selector de fecha"
+
+msgid ""
+"Enter a name for this GPRINT preset, make sure it is something you recognize."
+msgstr ""
+"Capture un nombre para esta preconfiguración GPRINT, asegúrese de "
+"asignaralgo que reconozca."
+
+msgid "Enter the UDP port number to use for SNMP (default is 161)."
+msgstr "Capture el puerto UDP que utilizara con SNMP (por defecto es el 161)"
+
+msgid "Enter the custom GPRINT string here."
+msgstr "Capture el texto para GPRINT personalizado aqui."
+
+msgid "Error in data query."
+msgstr "Error en consulta de información."
+
+msgid "Error parsing XML file into an array."
+msgstr "Error al transferir el archivo XML a un arreglo"
+
+msgid "Event Logging"
+msgstr "Hacer bitácora de eventos"
+
+msgid "Every Minute"
+msgstr "Cada Minuto"
+
+msgid "Export Data"
+msgstr "Exportar Información"
+
+msgid "Export Every x Times"
+msgstr "Exportar cada x número de ocasiones"
+
+msgid "Export Method"
+msgstr "Método de exportación"
+
+msgid "Export Results"
+msgstr "Exportar Resultados"
+
+msgid "Export Template"
+msgstr "Exportar plantilla"
+
+msgid "Export Templates"
+msgstr "Exportar Plantillas"
+
+msgid "Export timing"
+msgstr "Tiempo de exportación"
+
+msgid "FTP Host"
+msgstr "Equipo FTP"
+
+msgid "FTP Options"
+msgstr "Opciones de FTP"
+
+msgid "FTP Password"
+msgstr "Contraseña de FTP"
+
+msgid "FTP Port"
+msgstr "Puerto de FTP"
+
+msgid "FTP User"
+msgstr "Usuario de FTP"
+
+msgid "Fail"
+msgstr "Fallo"
+
+msgid "Failure Count"
+msgstr "Cuenta de fallas"
+
+msgid "Field Name:"
+msgstr "Nombre de campo:"
+
+msgid "Field Type"
+msgstr "Tipo de campo"
+
+msgid "Forces the legend to the next line after this item."
+msgstr "Forza la leyenda a la siguiente linea despues de este elemento."
+
+msgid "Found Dependency:"
+msgstr "Se encontró dependencia:"
+
+msgid "Found item [%s='%s'] index: %s"
+msgstr "Elemento encontrado [%s='%s'] índice %s"
+
+msgid "Friendly Name"
+msgstr "Nombre amigable"
+
+msgid "Full Name"
+msgstr "Nombre completo"
+
+msgid "Function"
+msgstr "Función"
+
+msgid "GPRINT Presets"
+msgstr "Preconfiguración GPRINT"
+
+msgid "GPRINT Text"
+msgstr "Texto GPRINT"
+
+msgid "General"
+msgstr "General"
+
+msgid "Global Settings"
+msgstr "Configuración Global"
+
+msgid "Go"
+msgstr "Ir"
+
+msgid "Graph"
+msgstr "Gráfica"
+
+msgid "Graph Date Display Format"
+msgstr "Formato de desplegado de fecha en las gráficas"
+
+msgid "Graph Date Separator"
+msgstr "Separador de fecha en las gráficas"
+
+msgid "Graph Export"
+msgstr "Exportar gráficas"
+
+msgid "Graph Fields"
+msgstr "Campos de gráfica"
+
+msgid "Graph Grouping Style"
+msgstr "Estilo de agrupamiento de gráficas"
+
+msgid "Graph Item"
+msgstr "Elemento de gráfica"
+
+msgid "Graph Item Fields"
+msgstr "Campos de elementos de gráfica"
+
+msgid "Graph Item Inputs"
+msgstr "Entradas de elementos de gráficas"
+
+msgid "Graph Item Type"
+msgstr "Tipo de elemento de gráfica"
+
+msgid "Graph Items"
+msgstr "Elementos de gráficas"
+
+msgid "Graph Management"
+msgstr "Administración de Gráficas"
+
+msgid "Graph Options"
+msgstr "Opciones de gráficas"
+
+msgid "Graph Permissions"
+msgstr "Permisos de gráficas"
+
+msgid "Graph Permissions (By Graph Template)"
+msgstr "Permisos de gráficas (Por plantilla de gráfica)"
+
+msgid "Graph Permissions (By Graph)"
+msgstr "Permisos de gráficas (por gráfica)"
+
+msgid "Graph Settings"
+msgstr "Configuración de gráficas"
+
+msgid "Graph Source/Properties"
+msgstr "Propiedades y fuente de gráfica"
+
+msgid "Graph Template"
+msgstr "Plantilla de gráfica"
+
+msgid "Graph Template Items"
+msgstr "Elementos de plantillas de gráficas"
+
+msgid "Graph Template Name"
+msgstr "Nombre de plantilla de gráfica"
+
+msgid "Graph Template:"
+msgstr "Plantilla de gráfica:"
+
+msgid "Graph Templates"
+msgstr "Plantillas de gráficas"
+
+msgid "Graph Thumbnails"
+msgstr "Vistas pequeñas de gráficas"
+
+msgid "Graph Title"
+msgstr "Título de gráfica"
+
+msgid "Graph Tree Items"
+msgstr "Elementos del árbol de gráficas"
+
+msgid "Graph Trees"
+msgstr "Árboles de gráficas"
+
+msgid ""
+"Graph policies will be evaluated in the order shown until a match is found."
+msgstr ""
+"Las políticas de gráficas serán evaluadas en el order mostrado hasta "
+"encontraralguna incidencia."
+
+msgid "Graph settings control how graphs are displayed for this user."
+msgstr ""
+"Las opciones de gráficas controlan como serán desplegadas para este usuario."
+
+msgid "Graph: Lower Limit"
+msgstr "Límite Inferior de Gráfica"
+
+msgid "Graph: Upper Limit"
+msgstr "Límite Superior de Gráfica"
+
+msgid "Graphs"
+msgstr "Gráficos"
+
+msgid "Graphs Per-Page"
+msgstr "Gráficas por página"
+
+msgid "Guest User"
+msgstr "Usuario invitado"
+
+msgid "HIGH - Statistics, Errors, Results and Major I/O Events"
+msgstr "ALTA - Estadísticas, Errores, Resultados y eventos importantes de E/S"
+
+msgid "Heartbeat"
+msgstr "Señal de vida"
+
+msgid "Hex Value"
+msgstr "Valor Hexadecimal"
+
+msgid "Host"
+msgstr "Equipo"
+
+msgid "Hostname"
+msgstr "Nombre de equipo"
+
+msgid "Hostname:"
+msgstr "Nombre de equipo:"
+
+msgid "Hosts"
+msgstr "Equipos"
+
+msgid "Hourly at specified minutes"
+msgstr "Cada hora a los minutos especificados"
+
+msgid "How data is represented in the RRA."
+msgstr "Como se representará la información en el RRA."
+
+msgid "How data is to be entered in RRA's."
+msgstr "Como se agregará la información a los archivos RRA"
+
+msgid "How many data points are needed to put data into the RRA."
+msgstr ""
+"Cuántos puntos de información son necesarios para agregarse al archivo RRA."
+
+msgid "How many generations data is kept in the RRA."
+msgstr "Cuántas generaciones de información son almacenadas en el archivo RRA."
+
+msgid "How many seconds to display in graph for this RRA."
+msgstr "Cuántos segundos se deplegarpan en la gráfica para el archivo RRA."
+
+msgid "How will Cacti handle event logging."
+msgstr "Como manejará Cacti la bitácora de eventos."
+
+msgid "ICMP Ping"
+msgstr "Ping por ICMP"
+
+msgid ""
+"If the XML file containing template data is located on your local machine, "
+"select it here."
+msgstr ""
+"Si el archivo XML que contiene la plantilla se encuentra en la máquina \n"
+"local, seleccionelo aqui."
+
+msgid "If this item is a header, enter a title here."
+msgstr "Si este elemento es un encabezado, capture un nombre aqui."
+
+msgid ""
+"If you want to require a certain regular expression to be matched againt "
+"input data, enter it here (PCRE format)."
+msgstr ""
+"Si desea requerir que una cierta cantidad de expresiones regulares "
+"coincidancon la información de entrada, captúrelas aqui (en formato PCRE)."
+
+msgid "Import Data"
+msgstr "Importar Información"
+
+msgid "Import Results"
+msgstr "Importar resultados"
+
+msgid "Import Template from Local File"
+msgstr "Importar plantilla de archivo local"
+
+msgid "Import Template from Text"
+msgstr "Importar plantilla de texto plano"
+
+msgid "Import Templates"
+msgstr "Importar Plantillas"
+
+msgid "Import/Export"
+msgstr "Importar/Exportar"
+
+msgid "Include Dependencies"
+msgstr "Incluir dependencias"
+
+msgid "Index Count Changed"
+msgstr "Índice de cuenta cambiado"
+
+msgid "Input Fields"
+msgstr "Campos de entrada"
+
+msgid "Input String"
+msgstr "Texto de Entrada"
+
+msgid "Input Type"
+msgstr "Tipo de entrada"
+
+msgid "Insert Hard Return"
+msgstr "Regreso forzado de inserción"
+
+msgid "Internal Data Source Name"
+msgstr "Nombre interno para fuente de información"
+
+msgid "Interval"
+msgstr "Intervalo"
+
+msgid "Is Being Graphed"
+msgstr "Está siendo graficado"
+
+msgid "Item"
+msgstr "Elemento"
+
+msgid "LDAP"
+msgstr "LDAP"
+
+msgid "LDAP Authentication"
+msgstr "Autenticación vía LDAP"
+
+msgid "LDAP Error: "
+msgstr "Error de LDAP: "
+
+msgid "LDAP Search Error: "
+msgstr "Error de búsqueda LDAP: "
+
+msgid "LOW - Statistics and Errors"
+msgstr "BAJA - Estadísticas y Errores"
+
+msgid "Last Day"
+msgstr "El último día"
+
+msgid "Last Half Hour"
+msgstr "La última media hora"
+
+msgid "Last Hour"
+msgstr "La última hora"
+
+msgid "Last Login"
+msgstr "Último ingreso"
+
+msgid "Last Month"
+msgstr "El último mes"
+
+msgid "Last Week"
+msgstr "La última semana"
+
+msgid "Last Year"
+msgstr "El último año"
+
+msgid ""
+"Leave all graphs and data sources untouched.  Data sources will be disabled "
+"however."
+msgstr ""
+"Dejar todas las gráficas y fuentes de información sin modificar. Sin "
+"embargo\n"
+"se deshabilitarán las fuentes de información."
+
+msgid "Leave the data sources untouched."
+msgstr "Dejar las fuentes de información sin modificar."
+
+msgid "Leave the graphs untouched."
+msgstr "No modificar las gráficas."
+
+msgid "Legend Font File"
+msgstr "Archivo de fuente para leyenda"
+
+msgid "Legend Font Size"
+msgstr "Tamaño de fuente de leyenda"
+
+msgid "License"
+msgstr "Licencia"
+
+msgid "List Mode"
+msgstr "Modo de Lista"
+
+msgid "List View"
+msgstr "Vista en lista"
+
+msgid "List View Mode"
+msgstr "Modo de vista en lista"
+
+msgid "Local"
+msgstr "Local"
+
+msgid "Located input field '%s' [get]"
+msgstr "Se localizó el campo de ingreso '%s' [get]"
+
+msgid "Logged in as"
+msgstr "Ingresó como"
+
+msgid "Logging"
+msgstr "Hacer bitácora"
+
+msgid "Login"
+msgstr "Inicio de sesión"
+
+msgid "Login Options"
+msgstr "Opciones de ingreso"
+
+msgid "Logout"
+msgstr "Salir"
+
+msgid "Logout User"
+msgstr "Salida de Usuario"
+
+msgid "Lower Limit"
+msgstr "Límite inferior"
+
+msgid "MD5 (default)"
+msgstr "Encripción MD5 (por defecto)"
+
+msgid "MEDIUM - Statistics, Errors and Results"
+msgstr "MEDIA - Estadísticas, Errores y Resultados"
+
+msgid "Manual Ordering (No Sorting)"
+msgstr "Ordenamiento manual"
+
+msgid "Maximum Concurrent Poller Processes"
+msgstr "Número máximo de procesos de colector concurrentes."
+
+msgid "Maximum Field Length"
+msgstr "Longitud máxima de campo"
+
+msgid "Maximum Log Size"
+msgstr "Tamaño máximo de bitácora"
+
+msgid "Maximum Retention Period"
+msgstr "Periodo máximo de retención"
+
+msgid "Maximum Title Length"
+msgstr "Longitud máxima de título"
+
+msgid "Maximum Value"
+msgstr "Valor máximo"
+
+msgid "Method:"
+msgstr "Método:"
+
+msgid "Minimum Value"
+msgstr "Valor mínimo"
+
+msgid "Mode"
+msgstr "Modo"
+
+msgid "N/A"
+msgstr "NO DISPONIBLE"
+
+msgid "NONE - Syslog Only if Selected"
+msgstr "Ninguna - Únicamente bitácora de sistema"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Never"
+msgstr "Nunca"
+
+msgid "New Graph Template:"
+msgstr "Nueva Plantilla de gráfica:"
+
+msgid "New Graphs"
+msgstr "Nuevas Gráficas"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "No"
+msgstr "No"
+
+msgid "No Data Input Methods"
+msgstr "No exiten métodos de salida"
+
+msgid "No Data Sources"
+msgstr "No hay fuentes de información"
+
+msgid "No Graph Templates"
+msgstr "No se encontraron plantillas de gráficas"
+
+msgid "No Graphs"
+msgstr "No hay gráficas"
+
+msgid "No Graphs Found"
+msgstr "No se encontraron gráficas"
+
+msgid "No Graphs Trees"
+msgstr "No se encontraron árboles de gráficas."
+
+msgid "No Host"
+msgstr "No hay equipo"
+
+msgid "No Hosts"
+msgstr "No hay equipos asociados"
+
+msgid "No Inputs"
+msgstr "No se encontraron entradas"
+
+msgid "No Items"
+msgstr "No hay elementos"
+
+msgid "No Output Fields"
+msgstr "No exiten campos de salida"
+
+msgid "No SNMP data returned"
+msgstr "No se recibió información vía SNMP"
+
+msgid "No Searching"
+msgstr "No buscar"
+
+msgid "No Trees"
+msgstr "No hay árboles"
+
+msgid "No User"
+msgstr "No existe usuario"
+
+msgid "No associated data queries."
+msgstr "No hay consultas de información asociadas."
+
+msgid "No associated graph templates."
+msgstr "No se tienen plantillas de gráficas asociadas."
+
+msgid "None"
+msgstr "Ninguno"
+
+msgid "Not Being Graphed"
+msgstr "No está siendo graficado"
+
+msgid "Not Selected"
+msgstr "No Seleccionado"
+
+msgid "Numeric Ordering"
+msgstr "Ordenamiento Numérico"
+
+msgid "Operator"
+msgstr "Operador"
+
+msgid "Output Fields"
+msgstr "Campos de salida"
+
+msgid "Output Format"
+msgstr "Formato de salida"
+
+msgid "Output to the Browser (raw XML)"
+msgstr "Generar dentro del navegador (a XML)"
+
+msgid "Output to the Browser (within Cacti)"
+msgstr "Generar dentro del navegador (dentro de Cacti)"
+
+msgid "Overwrite events as needed"
+msgstr "Sobreescribir eventos como sea necesario"
+
+msgid "Overwrite events older than the maximum days"
+msgstr "Sobreescribir eventos mas antiguos que el máximo de días"
+
+msgid "PHP Binary Path"
+msgstr "Ruta al binario de PHP"
+
+msgid "PHP Information"
+msgstr "Información PHP"
+
+msgid "PHP SNMP Support:"
+msgstr "Soporte SNMP en PHP:"
+
+msgid "Page Refresh"
+msgstr "Recarga de página"
+
+msgid "Parent Item"
+msgstr "Elemento padre"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Password:"
+msgstr "Contraseña:"
+
+msgid "Passwords do not match, please retype."
+msgstr "Las contraseñas no coinciden, favor de recapturar."
+
+msgid "Paths"
+msgstr "Rutas"
+
+msgid "Ping Timeout Value"
+msgstr "Valor de tiempo de espera de Ping"
+
+msgid "Ping Type"
+msgstr "Tipo de ping"
+
+msgid "Place on a Tree"
+msgstr "Colocar en un árbol"
+
+msgid "Please enter a new password for cacti:"
+msgstr "Favor de capturar una contraseña nueva para Cacti:"
+
+msgid "Please enter your Cacti user name and password below:"
+msgstr "Favor de ingresar su nombre de usuario y contraseña abajo:"
+
+msgid "Poller"
+msgstr "Colector"
+
+msgid "Poller Cache Administration"
+msgstr "Administración del cache de colector"
+
+msgid "Poller Type"
+msgstr "Tipo de colector"
+
+msgid "Poller Warnings"
+msgstr "Advertencias de colector"
+
+msgid "Poller:"
+msgstr "Colector:"
+
+msgid "Pollers"
+msgstr "Colectores"
+
+msgid "Port SSL"
+msgstr "Puerto para SSL"
+
+msgid "Port Standard"
+msgstr "Puerto estandar"
+
+msgid "Presets:"
+msgstr "Preconfiguración:"
+
+msgid "Preview Mode"
+msgstr "Modo de Vista Previa"
+
+msgid "Preview View"
+msgstr "Vista previa"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Prompt user before item deletion."
+msgstr "Solicitar confirmación del usuario antes de borrar un elemento."
+
+msgid "Propagate Changes"
+msgstr "Propagar cambios"
+
+msgid "Properties"
+msgstr "Propiedades"
+
+msgid "Protocol Version"
+msgstr "Versión de protocolo"
+
+msgid "Protocol Version that the server supports."
+msgstr "La versión de protocolo que soporta el servidor."
+
+msgid "RRAs"
+msgstr "RRAs"
+
+msgid "RRDTool Binary Path"
+msgstr "Ruta al binario de RRDTool"
+
+msgid "RRDTool Default Font Path"
+msgstr "Ruta por defecto a las fuentes de RRDTool"
+
+msgid "RRDTool Says:"
+msgstr "RRDTool Reporta:"
+
+msgid "RRDTool Utility Version"
+msgstr "Versión de utilería de RRDTool"
+
+msgid "Re-Index Method"
+msgstr "Método de re ordenación"
+
+msgid "Realm"
+msgstr "Permisos"
+
+msgid "Realm Permissions"
+msgstr "Permisos de acceso"
+
+msgid ""
+"Realm permissions control which sections of Cacti this user will have access "
+"to."
+msgstr ""
+"Los permisos de acceso controlan las secciones de Cacti que tendrá acceso "
+"esteusuario."
+
+msgid "Reapply Suggested Names"
+msgstr "Volver a aplicar los nombres sugeridos"
+
+msgid "Recovering"
+msgstr "Recuperando"
+
+msgid "Recovery Count"
+msgstr "Cuenta de recuperación"
+
+msgid "Referrals"
+msgstr "Referentes"
+
+msgid "Regular Expression Match"
+msgstr "Coincidencia de Expresión Regular"
+
+msgid "Reload Associated Query"
+msgstr "Refrescar la consulta asociada"
+
+msgid "Reload Data Query"
+msgstr "Recargar consulta de información"
+
+msgid "Required Tool Versions"
+msgstr "Versiones de herramientas requeridas"
+
+msgid "Return to Cacti"
+msgstr "Regresar a Cacti"
+
+msgid "Round Robin Archive"
+msgstr "Archivo Round Robin"
+
+msgid "Round Robin Archives"
+msgstr "Archivos Round Robin Archive"
+
+msgid "Rows"
+msgstr "Hileras"
+
+msgid "Rows Per Page"
+msgstr "Hileras por página"
+
+msgid "SHA"
+msgstr "Encripción SHA"
+
+msgid "SNMP"
+msgstr "SNMP"
+
+msgid "SNMP Community"
+msgstr "Comunidad SNMP"
+
+msgid "SNMP Field Name (Dropdown)"
+msgstr "Nombre de campo SNMP (Menú de caída)"
+
+msgid "SNMP Field Value (From User)"
+msgstr "Valor de campo SNMP (De usuario)"
+
+msgid "SNMP Information"
+msgstr "Información SNMP"
+
+msgid "SNMP Output Type (Dropdown)"
+msgstr "Tipo de salida de SNMO (Menú de caída)"
+
+msgid "SNMP Port"
+msgstr "Puerto SNMP"
+
+msgid "SNMP Timeout"
+msgstr "Tiempo de espera para SNMP agotado"
+
+msgid "SNMP Utility Version"
+msgstr "Versión de utilería de SNMP"
+
+msgid "SNMP Version"
+msgstr "Versión de SNMP"
+
+msgid "SSL"
+msgstr "SSL"
+
+msgid "Sanitize remote directory"
+msgstr "Limpiar el directorio remoto"
+
+msgid "Save"
+msgstr "Salvar"
+
+msgid "Save Failed."
+msgstr "Guardado fallido."
+
+msgid "Save File Locally"
+msgstr "Guardar archivo localmente"
+
+msgid "Save Successful."
+msgstr "Guardado exitoso."
+
+msgid "Script"
+msgstr "Script"
+
+msgid "Search Base"
+msgstr "Base de búsqueda"
+
+msgid "Search Distingished Name (DN)"
+msgstr "Buscar Nombre Distinguible (DN)"
+
+msgid "Search Filter"
+msgstr "Filtro de Búsqueda"
+
+msgid "Search Password"
+msgstr "Buscar Contraseña"
+
+msgid "Search:"
+msgstr "Busqueda:"
+
+msgid "Select All"
+msgstr "Seleccionar todo"
+
+msgid "Select a graph type:"
+msgstr "Eliga un tipo de gráfica:"
+
+msgid "Selected Graph Template"
+msgstr "Plantilla de gráfica seleccionada"
+
+msgid "Server"
+msgstr "Servidor"
+
+msgid "Set any graph-specific options here."
+msgstr "Configure opciones para cualquier gráfica en específico aqui."
+
+msgid "Set any user account-specific options here."
+msgstr ""
+"Configure opciones para cualquier cuenta de usuario en específico aqui."
+
+msgid "Settings"
+msgstr "Opciones"
+
+msgid "Show the default console screen."
+msgstr "Mostrar la pantalla por defecto de consola."
+
+msgid "Show the default graph screen."
+msgstr "Mostrar la pantalla por defecto de gráficas."
+
+msgid "Show the page that user pointed their browser to."
+msgstr "Mostrar la pagina a la que el usuario apunto su navegador."
+
+msgid "Showing Rows"
+msgstr "Desplegando hileras"
+
+msgid "Size"
+msgstr "Tamaño"
+
+msgid "Sorting Type"
+msgstr "Tipo de orden"
+
+msgid "Special Data Source"
+msgstr "Fuente de información especial"
+
+msgid "Specific Searching"
+msgstr "Búsqueda específica"
+
+msgid "Start Date Selector"
+msgstr "Iniciar selector de fecha"
+
+msgid "Status"
+msgstr "Estatus"
+
+msgid "Step"
+msgstr "Paso"
+
+msgid "Steps"
+msgstr "Pasos"
+
+msgid "Stop logging if maximum log size is exceeded"
+msgstr "Detener la bitácora si el tamaño máximo es excedido"
+
+msgid "Success"
+msgstr "Éxito"
+
+msgid "Successfully located XML file"
+msgstr "Archivo XML localizado exitosamente"
+
+msgid "System Utilities"
+msgstr "Utilerías de Sistema"
+
+msgid "TLS"
+msgstr "TLS"
+
+msgid "Template Name"
+msgstr "Nombre de plantilla"
+
+msgid "Template Title"
+msgstr "Título de la plantilla"
+
+msgid "The amount of time in seconds between expected updates."
+msgstr "La cantidad de tiempo en segundos entre actualizaciones."
+
+msgid "The amount of unknown data that can still be regarded as known."
+msgstr ""
+"La cantidad de información desconocida que pudiera ser considerada conocida."
+
+msgid "The color to use for the legend."
+msgstr "El color a utilizar para la leyenda."
+
+msgid "The date format to use for graphs"
+msgstr "El formato de fecha a utilizar en las gráficas"
+
+msgid "The date separator to be used for graphs"
+msgstr "El separador para las fechas que será utilizado en las gráficas"
+
+msgid "The default graph tree to use when displaying graphs in tree mode."
+msgstr ""
+"El árbol de gráficas por defecto a utilizar cuando se utilize el modode "
+"vista de árbol."
+
+msgid "The dns hostname or ip address of the server."
+msgstr "El nombre por DNS o la dirección IP del servidor."
+
+msgid "The following data sources are in use by these graphs:"
+msgstr ""
+"Las siguientes fuentes de información están siendo utilizadas para estas "
+"gráficas:"
+
+msgid "The font file to be used for Graph Axis items"
+msgstr "El archivo de fuente a utilizar para los ejes de las gráficas"
+
+msgid "The font file to be used for Graph Legend items"
+msgstr "El archivo de fuente a utilizar para los elementos de leyendas"
+
+msgid "The font file to use for Graph Titles"
+msgstr "El archivo de fuente a utilizar para los títulos de las gráficas"
+
+msgid "The full path to the RRD file."
+msgstr "La ruta completa al archivo RRD."
+
+msgid ""
+"The full path to the XML file containing definitions for this data query."
+msgstr ""
+"La ruta completa al archivo XML que contiene la definición para esta "
+"consultade información."
+
+msgid "The height of thumbnail graphs in pixels."
+msgstr "La altura de modo previo de gráficas en pixeles."
+
+msgid "The hex value for this color; valid range: 000000-FFFFFF."
+msgstr "El valor hexadecimal para este color; rango válido: 000000-FFFFFF."
+
+msgid "The label vertically printed to the left of the graph."
+msgstr "La etiqueta que es verticalmente impresa a la izquierda de la gráfica."
+
+msgid "The login name for this user."
+msgstr "El nombre de login para este usuario."
+
+msgid "The maximum number of characters to display for a graph title."
+msgstr ""
+"El número máximo de caracteres a desplegar para el título de una gráfica."
+
+msgid ""
+"The maximum number of milliseconds Cacti will wait for an SNMP response "
+"(does not work with php-snmp support)."
+msgstr ""
+"El número máximo de milisegundos que Cacti esperará por una repuesta SNMP(no "
+"aplica para php-snmp)."
+
+msgid "The maximum value of data that is allowed to be collected."
+msgstr "El valor máximo de informacion que será aceptable recabar."
+
+msgid "The minimum value of data that is allowed to be collected."
+msgstr "El valor mínimo de informacion que será aceptable recabar."
+
+msgid "The name given to this data template."
+msgstr "El nombre asignado a esta plantilla de información."
+
+msgid "The name given to this graph template."
+msgstr "El nombre asignado a esta plantilla de gráfica."
+
+msgid "The name that is printed on the graph."
+msgstr "El nombre que es impreso en la gráfica."
+
+msgid "The number of columns to use when displaying thumbnail graphs."
+msgstr "El número de columnas a utilizar al desplegar modo previo de gráficas"
+
+msgid "The number of graphs to display on one page in list view mode."
+msgstr "El número de gráficas a desplegar en una pantalla en modo de lista."
+
+msgid "The number of graphs to display on one page in preview mode."
+msgstr "El número de gráficas a desplegar en una pantalla en modo previo."
+
+msgid "The number of rows to display on a single page for data sources."
+msgstr ""
+"El número máximo de hileras a desplegar en una sola página para fuentes de\n"
+"información."
+
+msgid "The number of seconds between automatic page refreshes."
+msgstr "El número de segundos entre cada recarga automática de página."
+
+msgid "The path to the rrdtool binary."
+msgstr "La ruta al binario de rrdtool."
+
+msgid "The path to your snmpget binary."
+msgstr "La ruta al binario de snmpget"
+
+msgid "The path to your snmpwalk binary."
+msgstr "La ruta al binario de snmpwalk"
+
+msgid "The script/source used to gather data for this data source."
+msgstr ""
+"El origen o script utilizado para reunir informacion en esta fuente de datos."
+
+msgid "The size of the font used for Graph Axis"
+msgstr "El tamaño de la fuente utilizada pata los ejes de las gráficas"
+
+msgid "The size of the font used for Graph Legend items"
+msgstr "El tamaño de la fuente utilizada pata los elementos de leyendas"
+
+msgid "The size of the font used for Graph Titles"
+msgstr "El tamaño de la fuente utilizada pata los títulos de gráficas"
+
+msgid "The size of the font used for Graph Units"
+msgstr "El tamaño de la fuente utilizada pata las unidades de gráficas"
+
+msgid ""
+"The type of SNMP you have installed.  Required if you are using SNMP v2c or "
+"don't have embedded SNMP support in PHP."
+msgstr ""
+"El tipo de SNMP que tiene instalado. Requerido si esta utilizando SNMP v2c "
+"o\n"
+"su PHP no tiene soporte para SNMP integrado."
+
+msgid "The version of RRDTool that you have installed."
+msgstr "La versión de RRDTool que tiene instalada."
+
+msgid "The width of thumbnail graphs in pixels."
+msgstr "El ancho de modo previo de gráficas en pixeles."
+
+msgid ""
+"This is the data that is being passed to the poller each time it runs. This "
+"data is then in turn executed/interpreted and the results are fed into the "
+"rrd files for graphing or the database for display."
+msgstr ""
+"Esta es la información que es enviada al colector cada ocasión que corre.\n"
+"Esta información posteriormente es ejecutada o interpretada y los "
+"resultados\n"
+"son ingresados a los archivos rrd para su graficación o a la base de datos \n"
+"para ser desplegados."
+
+msgid "This script is only meant to run at the command line."
+msgstr "Este script unicamente puede ser ejecutado desde la línea de comando."
+
+msgid "Thumbnail Columns"
+msgstr "Columnas de modo previo"
+
+msgid "Thumbnail Height"
+msgstr "Altura de modo previo"
+
+msgid "Thumbnail Sections"
+msgstr "Secciones de modo previo"
+
+msgid "Thumbnail Width"
+msgstr "Ancho de modo previo"
+
+msgid "Timespan"
+msgstr "Periodo de tiempo"
+
+msgid "Timing"
+msgstr "Tiempo"
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Title Font File"
+msgstr "Archivo de fuente para Título"
+
+msgid "Title Font Size"
+msgstr "Tamaño de fuente de título"
+
+msgid "Title Format:"
+msgstr "Formato de título:"
+
+msgid ""
+"To clear the counters for the following devices, press the \"yes\" button "
+"below."
+msgstr ""
+"Para limpiar los contadores para los siguientes dispositivos, oprima el botón"
+"\"si\" abajo."
+
+msgid "To end your Cacti session please close your web browser."
+msgstr "Para finalizar su sesión de Cacti favor de cerrar su navegador web."
+
+msgid "Tree Item Type"
+msgstr "Tipo de elemento de árbol"
+
+msgid "Tree Item Value"
+msgstr "Valor de elemento de árbol"
+
+msgid "Tree Items"
+msgstr "Elementos de árbol."
+
+msgid "Tree Mode"
+msgstr "Modo de Árbol"
+
+msgid "Tree Permissions"
+msgstr "Permisos de Árbol"
+
+msgid "Tree View"
+msgstr "Vista de Árbol"
+
+msgid "Tree View (Dual Pane)"
+msgstr "Vista de Árbol (Recuadro doble)"
+
+msgid "Tree View (Single Pane)"
+msgstr "Vista de Árbol (Recuadro sencillo)"
+
+msgid "Tree View Mode"
+msgstr "Modo de vista de árbol"
+
+msgid "Trees"
+msgstr "Árboles"
+
+msgid "UDP Ping"
+msgstr "Ping por UDP"
+
+msgid "Unit Font File"
+msgstr "Archivo de fuente para unidades"
+
+msgid "Unit Font Size"
+msgstr "Tamaño de fuente de las unidades"
+
+msgid "Unknown"
+msgstr "Desconocido"
+
+msgid "Unknown Index"
+msgstr "Índice desconocido"
+
+msgid "Unmet Dependency:"
+msgstr "Dependencia no cumplida:"
+
+msgid "Up"
+msgstr "Arriba"
+
+msgid "Update Data Sources"
+msgstr "Actualizar Fuentes de información"
+
+msgid "Update Graph Templates"
+msgstr "Actualizar Plantillas de gráficas"
+
+msgid "Update Graphs"
+msgstr "Actualizar gráficas"
+
+msgid "Update RRD File"
+msgstr "Actualizar este archivo RRD"
+
+msgid "Update Round Robin Archives"
+msgstr "Actualizar Archivos Round Robin"
+
+msgid "Update this Field"
+msgstr "Actualizar este campo"
+
+msgid "Upper Limit"
+msgstr "Límite superior"
+
+msgid "Uptime Goes Backwards"
+msgstr "El tiempo de disponibilidad va en cuenta regresiva"
+
+msgid "Uptime:"
+msgstr "Tiempo de operacion:"
+
+msgid "Use Logarithmic y-axis scaling"
+msgstr "Utilizar escalamiento logarítmico en el eje Y"
+
+msgid "Use passive mode"
+msgstr "Utilizar modo pasivo"
+
+msgid "User Account Disabled"
+msgstr "Cuenta de usuario deshabilitada"
+
+msgid "User Administration"
+msgstr "Administración de Usuarios"
+
+msgid "User Has Rights to List View"
+msgstr "El usuario tiene privilegios para la vista de lista"
+
+msgid "User Has Rights to Preview View"
+msgstr "El usuario tiene privilegios para la vista previa"
+
+msgid "User Has Rights to Tree View"
+msgstr "El usuario tiene privilegios para la vista de árbol"
+
+msgid "User Management"
+msgstr "Administración de Usuarios"
+
+msgid "User Must Change Password at Next Login"
+msgstr "El usuario debe cambiar su contraeña en su siguiente ingreso"
+
+msgid "User Name"
+msgstr "Nombre de Usuario"
+
+msgid "User Name:"
+msgstr "Nombre de usuario:"
+
+msgid "User Template"
+msgstr "Plantilla de usuario"
+
+msgid "Username"
+msgstr "Nombre de Usuario"
+
+msgid "Username already in use."
+msgstr "El nombre de usuario ya está siendo utilizado."
+
+msgid "Utilities"
+msgstr "Utilerias"
+
+msgid "Value"
+msgstr "Valor"
+
+msgid "Verbose Query"
+msgstr "Consulta explícita"
+
+msgid "Verify All Fields"
+msgstr "Varificar todos los campos"
+
+msgid "Version"
+msgstr "Versión"
+
+msgid "Version 1"
+msgstr "Versión 1"
+
+msgid "Version 2"
+msgstr "Versión 2"
+
+msgid "Version 3"
+msgstr "Versión 3"
+
+msgid "Vertical Label"
+msgstr "Etiqueta Vertical"
+
+msgid "View Graphs"
+msgstr "Ver gráficas"
+
+msgid "View Poller Cache"
+msgstr "Ver el cache del colector"
+
+msgid "View SNMP Cache"
+msgstr "Ver el cache de SNMP"
+
+msgid "Viewing Graph"
+msgstr "Visualizando gráfica"
+
+msgid "Viewing Graph Properties"
+msgstr "Visualizando propiedades de gráfica"
+
+msgid "Visual"
+msgstr "Visualizaciones"
+
+msgid "Web Basic Authentication"
+msgstr "Autenticación básica via servidor web"
+
+msgid "What to do when this user logs in."
+msgstr "Que hacer cuando ese usuario ingresa."
+
+msgid "What would you like to export?"
+msgstr "Que desea exportar_"
+
+msgid "Which sections of Cacti thumbnail graphs should be used for."
+msgstr "En que secciones de Cacti se debe utilizar el modo previo de gráficas."
+
+msgid "X-Files Factor"
+msgstr "Factor Archivos X"
+
+msgid "XML Path"
+msgstr "Ruta XML"
+
+msgid "XML file parsed ok."
+msgstr "Archivo XML transferido correctamente."
+
+msgid "XML parse error."
+msgstr "Error de transferencia de XML"
+
+msgid "XML: Cacti version does not exist."
+msgstr "XML: La versión de Cacti no existe."
+
+msgid "XML: Cannot locate type code."
+msgstr "XML: No es posible localizar el código de tipo."
+
+msgid "XML: Generated with a newer version of Cacti."
+msgstr "XML: Fue generado con una versión más reciente de Cacti."
+
+msgid "YOU DO NOT HAVE RIGHTS FOR LIST VIEW"
+msgstr "NO TIENE PRIVILEGIOS PARA VISTA DE LISTA"
+
+msgid "YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW"
+msgstr "NO TIENE PRIVILEGIOS PARA VISTA PREVIA"
+
+msgid "YOU DO NOT HAVE RIGHTS FOR TREE VIEW"
+msgstr "NO TIENE PRIVILEGIOS PARA VISTA DE ÁRBOL"
+
+msgid "YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS"
+msgstr "USTED NO TIENE PERMISOS PARA CAMBIAR LA CONFIGURACIÓN DE GRÁFICAS"
+
+msgid "Yes"
+msgstr "Si"
+
+msgid "You must select at least one field."
+msgstr "Se debe seleccionar por lo menos un campo."
+
+msgid "Your passwords do not match, please retype:"
+msgstr "Sus contraseñas no coinciden, favor de recapturar:"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Zoom Graph"
+msgstr "Hacer zoom en gráfica"
+
+msgid "Zooming Graph"
+msgstr "Haciendo zoom en gráfica"
+
+msgid "[edit: "
+msgstr "[editar: "
+
+msgid "[fail]"
+msgstr "[fallo]"
+
+msgid "[new]"
+msgstr "[nuevo]"
+
+msgid "[success]"
+msgstr "[exito]"
+
+msgid "[update]"
+msgstr "[actualización]"
+
+msgid "of"
+msgstr "de"
+
+msgid "snmpget Binary Path"
+msgstr "Ruta al binario de snmpget"
+
+msgid "snmpwalk Binary Path"
+msgstr "Ruta al binario de snmpwalk"

@@ -1,0 +1,3488 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Cacti Chinese Language File\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-01 17:28+0200\n"
+"PO-Revision-Date: 2010-04-20 20:29+0100\n"
+"Last-Translator: Andreas Braun <browniebraun@cacti.cc>\n"
+"Language-Team: Chinese <cb-hh@163.com>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: CHINA\n"
+
+msgid ""
+"   changes both SNMP version and timeout for all devices related to the "
+"device template id of 7"
+msgstr "所有设备模板都与该设备的SNMP版本和超时有关"
+
+msgid ""
+"   changes the SNMP community string for all (matching) devices from "
+"'public' to 'secret' using a custom delimiter of '#'"
+msgstr "从public到sevret，使用自定义分隔符‘#’来分隔所有设备的SNMP团体名。"
+
+msgid "  1) Create the Structured Path, if Necessary"
+msgstr "  1) 如果有必要，创建此结构路径"
+
+msgid "  1) Disables the Cacti Poller"
+msgstr "  1) 关闭 Cacti 轮询"
+
+msgid "  1) Enable Structured Paths in the Console (Settings->Paths)"
+msgstr "  1) 在控制台上开启结构路径 (设置->路径)"
+
+msgid "  1) Re-enable the Cacti Poller"
+msgstr "  1) 重新开启 Cacti 轮询"
+
+msgid "  lists all available data queries"
+msgstr "列出所有可用的数据查询"
+
+msgid "  lists all devices related to a device template id of 1"
+msgstr "列出设备模板的ID为1相关的所有设备"
+
+msgid " (Not In Use)"
+msgstr " (不使用)"
+
+msgid " Failed"
+msgstr "保存失败"
+
+msgid " Successful"
+msgstr "保存成功"
+
+msgid " [new]"
+msgstr "[新建]"
+
+msgid " [success]"
+msgstr " [成功]"
+
+msgid "\" does not exist."
+msgstr "\" 不存在。"
+
+msgid "%d Days"
+msgstr "%d 天"
+
+msgid "%d Graphs"
+msgstr "%d 图片"
+
+msgid "%d Hours"
+msgstr "%d 时"
+
+msgid "%d Lines"
+msgstr "%d 行"
+
+msgid "%d Minutes"
+msgstr "%d 分"
+
+msgid "%d Months"
+msgstr "%d 月"
+
+msgid "%d Rows"
+msgstr "%d 行"
+
+msgid "%d Seconds"
+msgstr "%d 秒"
+
+msgid "%d Years"
+msgstr "%d 年"
+
+msgid "%s Threads"
+msgstr "%s 线程"
+
+msgid "' does not exist."
+msgstr "'不存在"
+
+msgid "(Edit)"
+msgstr "(编辑)"
+
+msgid "(Remove)"
+msgstr "(删除)"
+
+msgid "*** Forced Password Change ***"
+msgstr "*** 强制修改密码 ***"
+
+msgid "1 Day"
+msgstr "1 天"
+
+msgid "1 Thread (default)"
+msgstr "单线程 (默认)"
+
+msgid "<graph_title>"
+msgstr "<图片标题>"
+
+msgid "<graph_title> Template"
+msgstr "<图片标题> 模板"
+
+msgid "<template_title>"
+msgstr "<模板标题>"
+
+msgid "A name for this data query."
+msgstr "数据查询名称。"
+
+msgid "A useful icon to use to associate with this Device Template."
+msgstr "为此设备模板选择一个图标。"
+
+msgid "A useful name for this CDEF."
+msgstr "CDEF 的名称。"
+
+msgid "A useful name for this VDEF."
+msgstr "VDEF 的名称。"
+
+msgid "A useful name for this X-Axis Preset."
+msgstr "X-Axis 的名称"
+
+msgid "A useful name for this device template."
+msgstr "设备模板的名称"
+
+msgid "A useful name for this graph tree."
+msgstr "图形树的名称。"
+
+msgid "ACCESS DENIED"
+msgstr "拒绝访问"
+
+msgid "About Cacti"
+msgstr "关于Cacti"
+
+msgid "Access Denied"
+msgstr "访问拒绝"
+
+msgid "Access Denied, please contact you Cacti Administrator."
+msgstr "访问拒绝，请联系Cacti管理员。"
+
+msgid "Access Denied, user account disabled."
+msgstr "拒绝访问，用户帐号被禁用。"
+
+msgid "Accessible"
+msgstr "允许访问"
+
+msgid "Account Options"
+msgstr "账户选项"
+
+msgid "Action:"
+msgstr "操作："
+
+msgid "Actions"
+msgstr "操作"
+
+msgid "Active"
+msgstr "活跃"
+
+msgid "Add"
+msgstr "添加"
+
+msgid "Add Data Query"
+msgstr "添加数据查询"
+
+msgid "Add Data Query:"
+msgstr "添加数据查询："
+
+msgid "Add Graph Template"
+msgstr "添加图片模板"
+
+msgid "Add Graph Template:"
+msgstr "添加图片模板"
+
+msgid "Address"
+msgstr "地址"
+
+msgid "All Data Sources (Don't Include Duplicates)"
+msgstr "所有数据源 (不包含重复的)"
+
+msgid "All Data Sources (Include Duplicates)"
+msgstr "所有数据源 (包含重复的)"
+
+msgid "All Similar Data Sources (Include Duplicates)"
+msgstr "所有类型的数据源(包括重复)"
+
+msgid "All Types"
+msgstr "所有类型"
+
+msgid "Allow Empty Input"
+msgstr "允许空输入"
+
+msgid "Allow Graph Export"
+msgstr "允许图形输出"
+
+msgid "Allow Graph to extend to Future"
+msgstr "允许图片延伸到将来"
+
+msgid "Alphabetic"
+msgstr "拼音"
+
+msgid "Alphabetic Ordering"
+msgstr "字母排序"
+
+msgid "Alternate Name"
+msgstr "备用名"
+
+msgid "Alternate Poller Path"
+msgstr "备用poller路径"
+
+msgid "Alternative Y Grid"
+msgstr "备用Y坐标"
+
+msgid "Amman"
+msgstr "Amman"
+
+msgid "Another CDEF"
+msgstr "其他 CDEF"
+
+msgid "Arctic"
+msgstr "操作"
+
+msgid "Are You Sure?"
+msgstr "确定？"
+
+msgid "Are you sure you want to add the following Data Query:"
+msgstr "确定添加以下数据查询？"
+
+msgid "Are you sure you want to add the following Graph Template:"
+msgstr "确定添加以下图片模板？"
+
+msgid "Are you sure you want to delete the CDEF"
+msgstr "确定删除此CDEF ？"
+
+msgid "Are you sure you want to delete the Data Query Graph"
+msgstr "确定删除此数据查询图片？"
+
+msgid "Are you sure you want to delete the device"
+msgstr "确定删除此设备？"
+
+msgid "Are you sure you want to delete the device item"
+msgstr "确定删除此设备组？"
+
+msgid "Are you sure you want to delete the field"
+msgstr "确定删除此域？"
+
+msgid "Are you sure you want to delete the following CDEFs?"
+msgstr "确定删除以下CDEFs ？"
+
+msgid "Are you sure you want to delete the following GPRINT presets?"
+msgstr "确定删除以下图形预设的 GPRINT ？"
+
+msgid "Are you sure you want to delete the following RRAs?"
+msgstr "确定删除以下 RRAs ？"
+
+msgid "Are you sure you want to delete the following VDEFs?"
+msgstr "确定删除以下 VDEFs ？"
+
+msgid "Are you sure you want to delete the following X-Axis Presets?"
+msgstr "确定删除以下预设 X-Axis ？"
+
+msgid "Are you sure you want to delete the following data input methods?"
+msgstr "确定删除以下数据输入方法？"
+
+msgid "Are you sure you want to delete the following data queries?"
+msgstr "确定删除以下数据查询？"
+
+msgid "Are you sure you want to delete the following data sources?"
+msgstr "确定删除以下数据源？"
+
+msgid "Are you sure you want to delete the following devices?"
+msgstr "确定删除以下设备？"
+
+msgid "Are you sure you want to delete the following graphs?"
+msgstr "确定要删除以下图形？"
+
+msgid "Are you sure you want to delete the following site(s)?"
+msgstr "确定删除以下 site(s) ？"
+
+msgid "Are you sure you want to delete the following users?"
+msgstr "确定要删除以下用户？"
+
+msgid "Are you sure you want to delete the graph item"
+msgstr "确定删除此图形组？"
+
+msgid "Are you sure you want to delete the header item"
+msgstr "确定删除此头项目？"
+
+msgid "Are you sure you want to delete the input item"
+msgstr " 确定删除此输入组？"
+
+msgid "Are you sure you want to delete the site"
+msgstr " 确定删除此站点？"
+
+msgid "Are you sure you want to delete the tree"
+msgstr "确定删除此树？"
+
+msgid "Are you sure you want to disable the following users?"
+msgstr "确定关闭以下用户？"
+
+msgid "Are you sure you want to enable the following users?"
+msgstr "确定启用以下用户？"
+
+msgid "Arrow"
+msgstr "箭头"
+
+msgid "Associated Data Queries"
+msgstr "关联数据查询"
+
+msgid "Associated Data Source Templates"
+msgstr "关联的数据源模板"
+
+msgid "Associated Graph Items"
+msgstr "关联相关图形"
+
+msgid "Associated Graph Templates"
+msgstr "关联图形模板"
+
+msgid "Associated Graph/Data Source Templates"
+msgstr "关联图形/数据源模板"
+
+msgid "Associated RRA's"
+msgstr "关联 RRA's"
+
+msgid "Associated XML Field"
+msgstr "关联 XML 域"
+
+msgid "Asuncion"
+msgstr "Asuncion"
+
+msgid "Athens"
+msgstr "操作"
+
+msgid "Atikokan"
+msgstr "操作"
+
+msgid "Authentication"
+msgstr "认证"
+
+msgid "Authentication Method"
+msgstr "认证方法"
+
+msgid "Authentication Realm"
+msgstr "认证域"
+
+msgid "Auto Language Detection"
+msgstr "自动检测语言"
+
+msgid "Auto Scale"
+msgstr "自动缩放"
+
+msgid "Auto Scale Options"
+msgstr "自动缩放选项"
+
+msgid "Availability"
+msgstr "可用性"
+
+msgid "Available for RRDTool 1.2.x and above"
+msgstr "RRDTool 1.2.x 或以上可用"
+
+msgid "Availbility/SNMP Settings"
+msgstr "Availbility/SNMP 设置"
+
+msgid "Average (ms)"
+msgstr "平均 (秒)"
+
+msgid "Average Length"
+msgstr "平均长度"
+
+msgid "Average:"
+msgstr "平均："
+
+msgid "Azores"
+msgstr "追加："
+
+msgid "Base Value"
+msgstr "16进制"
+
+msgid "Belem"
+msgstr "领域"
+
+msgid "Belize"
+msgstr "Belize"
+
+msgid "Berlin"
+msgstr "Berlin"
+
+msgid "Bermuda"
+msgstr "Bermuda"
+
+msgid "Blue:"
+msgstr "值："
+
+msgid "Bogota"
+msgstr "Bogota"
+
+msgid "Border"
+msgstr "边界"
+
+msgid "Brussels"
+msgstr "Brussels"
+
+msgid "Builtin\tAuthentication"
+msgstr "内置认证"
+
+msgid "Builtin Authentication"
+msgstr "内置认证"
+
+msgid "CDEF"
+msgstr "CDEF"
+
+msgid "CDEF Function"
+msgstr "CDEF 功能"
+
+msgid "CDEF Item Type"
+msgstr "CDEF 类型"
+
+msgid "CDEF Item Value"
+msgstr "CDEF 值"
+
+msgid "CDEF Items"
+msgstr "CDEF 項目"
+
+msgid "CDEF Title"
+msgstr "CDEF 标题"
+
+msgid "CDEF's"
+msgstr "CDEF's"
+
+msgid "CDEFs"
+msgstr "CDEF"
+
+msgid "CDP Prep Value (0)"
+msgstr "CDP 预设值(0)"
+
+msgid "CF Type"
+msgstr "CF 类型"
+
+msgid "CSV Export"
+msgstr "CSV 导出"
+
+msgid "Cacti Log File Cleared"
+msgstr "Cacti 清除日志"
+
+msgid "Cacti Log File Path"
+msgstr "Cacti 日志文件路径"
+
+msgid "Cacti OS"
+msgstr "Cacti OS"
+
+msgid "Cacti Settings"
+msgstr "Cacti 设置"
+
+msgid "Cacti System Log"
+msgstr "Cacti 系统日志"
+
+msgid "Cacti System Log Size and Control"
+msgstr "Cacti 系统日志大小和控制"
+
+msgid "Cacti System Utilities"
+msgstr "Cacti 系统工具"
+
+msgid "Cacti User Copy Utility"
+msgstr "Cacti 用户复制工具"
+
+msgid "Cacti Variables"
+msgstr "Cacti Variables"
+
+msgid "Cacti Version"
+msgstr "Cacti 版本"
+
+msgid "Cairo"
+msgstr "Cairo"
+
+msgid "Canary"
+msgstr "Canary"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Cancun"
+msgstr "Cancun"
+
+msgid "Canvas"
+msgstr "Canvas"
+
+msgid "Cayenne"
+msgstr "Cayenne"
+
+msgid "Cayman"
+msgstr "Cayman"
+
+msgid "Center"
+msgstr "Center"
+
+msgid "Ceuta"
+msgstr "Ceuta"
+
+msgid "Chagos"
+msgstr "Chagos"
+
+msgid "Change Data Source Template"
+msgstr "修改数据源模板"
+
+msgid "Change Graph Template"
+msgstr "修改图形模板"
+
+msgid "Change Host"
+msgstr "修改主机"
+
+msgid "Change Poller"
+msgstr "修改 Poller"
+
+msgid "Change SNMP Options"
+msgstr "SNMP 修改选项"
+
+msgid "Change Site"
+msgstr "改变站点"
+
+msgid "Check this box to disable all checks for this device."
+msgstr "选中此复选框来禁用该设备的所有检查。"
+
+msgid "Chongqing"
+msgstr "重庆"
+
+msgid "Choose a new device for these graphs:"
+msgstr "为此图形选择一个新的设备："
+
+msgid "Choose an action:"
+msgstr "选择操作："
+
+msgid "Choose the SNMP version for this device."
+msgstr "为此设备选择SNMP版本号。"
+
+msgid "Choose the SNMPv3 Authorization Protocol."
+msgstr "选择SNMPv3的授权协议。"
+
+msgid "Choose the SNMPv3 Privacy Passphrase."
+msgstr "选择SNMPv3的隐私密码。"
+
+msgid "Choose the SNMPv3 Privacy Protocol."
+msgstr "选择SNMPv3的隐私协议。"
+
+msgid "Choose the parent for this header/graph."
+msgstr "Choose the parent for this header/graph."
+
+msgid "Choose the site that is to be associated with this device."
+msgstr "选择一个站点来关联此设备。"
+
+msgid ""
+"Choose what type of device, device template this is. The device template "
+"will govern what kinds of data should be gathered from this type of device."
+msgstr ""
+"为此类型的设备选择适合的它的设备模板，此模板能够管理收集此类设备的相关数据的"
+"其他模板。"
+
+msgid "City"
+msgstr "城市"
+
+msgid "Classic (export every x times)"
+msgstr "经典(每x时间输出)"
+
+msgid "Clear"
+msgstr "清除"
+
+msgid "Clear Cacti Log File"
+msgstr "清除Cacti日志"
+
+msgid "Clear Statistics"
+msgstr "清除统计"
+
+msgid "Clear User Log File"
+msgstr "清除Cacti用户日志"
+
+msgid "Cocos"
+msgstr "Cocos"
+
+msgid "Collation"
+msgstr "校验"
+
+msgid "Colombo"
+msgstr "Colombo"
+
+msgid "Color"
+msgstr "颜色"
+
+msgid "Color Actions"
+msgstr "颜色操作"
+
+msgid "Colors"
+msgstr "颜色"
+
+msgid "Command"
+msgstr "命令"
+
+msgid "Comment"
+msgstr "评论"
+
+msgid "Community:"
+msgstr "团体名："
+
+msgid "Comoro"
+msgstr "Comoro"
+
+msgid "Conakry"
+msgstr "Conakry"
+
+msgid "Concurrent Processes"
+msgstr "并发进程"
+
+msgid "Configuration"
+msgstr "系统配置"
+
+msgid "Configuration Settings"
+msgstr "配置设置"
+
+msgid "Confirm"
+msgstr "确认"
+
+msgid "Console"
+msgstr "控制台"
+
+msgid "Console Access"
+msgstr "控制台访问"
+
+msgid "Convert to Data Source Template"
+msgstr "转换为数据源模板"
+
+msgid "Convert to Graph Template"
+msgstr "转换为图形模板"
+
+msgid "Copy"
+msgstr "复制"
+
+msgid "Count of All Data Sources (Don't Include Duplicates)"
+msgstr "所有数据源（不包括重复的）"
+
+msgid "Count of All Data Sources (Include Duplicates)"
+msgstr "所有数据源（包括重复的）"
+
+msgid "Count of All Similar Data Sources (Don't Include Duplicates)"
+msgstr "所有类似的数据源（不包括重复的）"
+
+msgid "Count of All Similar Data Sources (Include Duplicates)"
+msgstr "所有类似的数据源（包括重复的）"
+
+msgid "Country"
+msgstr "国家"
+
+msgid "Create"
+msgstr "创建"
+
+msgid "Create Graph from '%s'"
+msgstr "创建图形 '%s'"
+
+msgid "Create New Graphs"
+msgstr "创建新图形"
+
+msgid "Create:"
+msgstr "创建："
+
+msgid "Current (ms)"
+msgstr "当前 (秒)"
+
+msgid "Current Data Source Item: Minimum Value"
+msgstr "当前数据源项：最小值"
+
+msgid "Current Graph Item Data Source"
+msgstr "当前图形数据源"
+
+msgid "Current:"
+msgstr "当前："
+
+msgid "Currie"
+msgstr "Currie"
+
+msgid "Custom"
+msgstr "自定义"
+
+msgid "Custom Data"
+msgstr "自定义数据"
+
+msgid "Custom Legend"
+msgstr "自定义图例"
+
+msgid "Custom String"
+msgstr "自定义字符串"
+
+msgid "DB Processes"
+msgstr "数据库过程"
+
+msgid "DES (default)"
+msgstr "DES (默认)"
+
+msgid "Darwin"
+msgstr "Darwin"
+
+msgid "Data Collection"
+msgstr "数据采集"
+
+msgid "Data Input"
+msgstr "数据导入"
+
+msgid "Data Input Fields"
+msgstr "数据导入项"
+
+msgid "Data Input Method"
+msgstr "数据导入方法"
+
+msgid "Data Input Methods"
+msgstr "数据导入方法"
+
+msgid "Data Length"
+msgstr "数据长度"
+
+msgid "Data Queries"
+msgstr "数据查询"
+
+msgid "Data Query"
+msgstr "数据查询"
+
+msgid "Data Query Graph Rows"
+msgstr "数据查询图形行数"
+
+msgid "Data Query Index"
+msgstr "数据查询索引"
+
+msgid "Data Query Name"
+msgstr "数据查询名称"
+
+msgid "Data Query:"
+msgstr "数据查询："
+
+msgid "Data Source"
+msgstr "数据源"
+
+msgid "Data Source Debug"
+msgstr "数据源调试"
+
+msgid "Data Source Fields"
+msgstr "数据源字段"
+
+msgid "Data Source Item"
+msgstr "数据源项"
+
+msgid "Data Source Item Fields"
+msgstr "数据源项字段"
+
+msgid "Data Source Item Type"
+msgstr "数据源的项目类型"
+
+msgid "Data Source Items"
+msgstr "数据源的项目"
+
+msgid "Data Source Name"
+msgstr "数据源名称"
+
+msgid "Data Source Path"
+msgstr "数据源路径"
+
+msgid "Data Source Template"
+msgstr "数据源模板"
+
+msgid "Data Source Template Active"
+msgstr "数据源模板活跃"
+
+msgid "Data Source Template Selection"
+msgstr "数据源模板选择"
+
+msgid "Data Source Template:"
+msgstr "数据源模板："
+
+msgid "Data Source Templates"
+msgstr "数据源模板"
+
+msgid "Data Source Type"
+msgstr "数据源类型"
+
+msgid "Data Source: %d"
+msgstr "数据源模板: %d"
+
+msgid "Data Sources"
+msgstr "数据源"
+
+msgid "Data Template Item"
+msgstr "数据模板项目"
+
+msgid "Data Template Items"
+msgstr "数据模板项目"
+
+msgid "Database"
+msgstr "数据库"
+
+msgid "Date"
+msgstr "日期"
+
+msgid "Davis"
+msgstr "Davis"
+
+msgid "Day"
+msgstr "天"
+
+msgid "Debug Mode"
+msgstr "调试模式"
+
+msgid "Default"
+msgstr "默认"
+
+msgid "Default Dropdown Selector"
+msgstr "默认下拉选择"
+
+msgid "Default Graph Policy"
+msgstr "默认图形策略"
+
+msgid "Default Graph Tree"
+msgstr "默认图形树"
+
+msgid "Default Graph View Timeshift"
+msgstr "默认图形查看时间平移"
+
+msgid "Default Graph View Timespan"
+msgstr "默认图形查看时间跨度"
+
+msgid "Default Language"
+msgstr "默认语言"
+
+msgid "Default Policy"
+msgstr "默认策略"
+
+msgid "Default RRA"
+msgstr "默认RRA"
+
+msgid "Default RRDtool 1.2.x++ Fonts"
+msgstr "RRDtool 1.2.x++ 默认字体"
+
+msgid "Default RRDtool Colortags"
+msgstr "RRDTool 1.2 默认颜色"
+
+msgid "Default SNMP read community for all new devices."
+msgstr "所有新设备的默认SNMP团体名。"
+
+msgid "Default SNMP version for all new devices."
+msgstr "所有新设备的默认SNMP版本。"
+
+msgid "Default Time Zone"
+msgstr "默认时区"
+
+msgid "Default View Mode"
+msgstr "默认显示方式"
+
+msgid "Default language for this system."
+msgstr "系统默认语言。"
+
+msgid "Default time zone for this system."
+msgstr "系统默认时区。"
+
+msgid "Delete"
+msgstr "删除"
+
+msgid "Delete Data Source: %d"
+msgstr "删除数据源：%d"
+
+msgid "Delete Graph Template Association"
+msgstr "删除图形模板关联"
+
+msgid "Delete Graph(s): "
+msgstr "删除图形："
+
+msgid "Delete this Item"
+msgstr "删除此项目"
+
+msgid "Deletion Verification"
+msgstr "删除验证"
+
+msgid "Denver"
+msgstr "Denver"
+
+msgid "Descending"
+msgstr "降序"
+
+msgid "Description"
+msgstr "描述"
+
+msgid "Device"
+msgstr "设备模板"
+
+msgid "Device Group Style:"
+msgstr "设备组风格："
+
+msgid "Device Node Id"
+msgstr "设备节点ID"
+
+msgid "Device Template"
+msgstr "设备模板"
+
+msgid "Device Template:"
+msgstr "设备模板："
+
+msgid "Device Templates"
+msgstr "设备模板"
+
+msgid "Device Type"
+msgstr "设备类型"
+
+msgid "Device Up/Down Settings"
+msgstr "设备UP/DOWN设定"
+
+msgid "Device node options:"
+msgstr "设备节点的选择："
+
+msgid "Device:"
+msgstr "设备："
+
+msgid "Devices"
+msgstr "设备"
+
+msgid "Disable"
+msgstr "关闭"
+
+msgid "Disable Device"
+msgstr "关闭设备"
+
+msgid "Disable Graph Export"
+msgstr "关闭图形导出"
+
+msgid "Disabled"
+msgstr "关闭"
+
+msgid "Douala"
+msgstr "Douala"
+
+msgid "Duplicate"
+msgstr "Duplicate"
+
+msgid "Dushanbe"
+msgstr "Dushanbe"
+
+msgid "ERROR: FILE NOT FOUND"
+msgstr "错误：文件没找到"
+
+msgid "ERROR: Failed to add this device"
+msgstr "错误：无法添加此设备"
+
+msgid "ERROR: IS DIR"
+msgstr "ERROR: IS DIR"
+
+msgid "ERROR: Invalid Graph Template item id (%s)"
+msgstr "错误：无效的图形模板项目编号(%s)"
+
+msgid "ERROR: Invalid SNMP Authentication Protocol: (%s)"
+msgstr "错误：无效的SNMP认证协议：(%s)"
+
+msgid "ERROR: Invalid SNMP Privacy Protocol: (%s)"
+msgstr "错误：无效的SNMP隐私协议： (%s)"
+
+msgid "ERROR: No valid graph template given"
+msgstr "错误：没有有效的图形模板"
+
+msgid "ERROR: This user id does not exist (%s)"
+msgstr "错误：此用户ID不存在(%s)"
+
+msgid "ERROR: Unknown Graph Template ID (%d)\n"
+msgstr "错误：未知的图形模板ID项目(%d)\n"
+
+msgid "Easter"
+msgstr "Easter"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Edit (Graph Permissions)"
+msgstr "编辑 (图形权限)"
+
+msgid "Edit (Graph Settings)"
+msgstr "编辑 (图形设定)"
+
+msgid "Edit (Realm Permissions)"
+msgstr "编辑（域权限）"
+
+msgid "Edit Data Source Template"
+msgstr "编辑数据源模板"
+
+msgid "Edit Host"
+msgstr "编辑主机"
+
+msgid "Edit Template"
+msgstr "编辑模板"
+
+msgid "Efate"
+msgstr "Efate"
+
+msgid "Effective User Name"
+msgstr "有效的用户名"
+
+msgid "Enable"
+msgstr "启用"
+
+msgid "Enable Graph Export"
+msgstr "启用图形导出"
+
+msgid "Enable Template Propagation"
+msgstr "启用模板扩展"
+
+msgid "Enabled"
+msgstr "启用"
+
+msgid "Encryption"
+msgstr "加密"
+
+msgid "End"
+msgstr "结束"
+
+msgid "Enter a meaningful name for this data input method."
+msgstr "为这些数据输入方法输入一个有意义的名称。"
+
+msgid "Enter a name for this |arg1:| field."
+msgstr "为 |arg1:| 输入一个名称。"
+
+msgid "Enter a value for this CDEF item."
+msgstr "为 CDEF 输入一个值。"
+
+msgid "Enter a value for this VDEF item."
+msgstr "为 VDEF 输入一个值。"
+
+msgid "Enter notes to this device."
+msgstr "为此设备输入一个注释。"
+
+msgid "Enter the SNMP Context to use for this device."
+msgstr "为此设备输入SNMP相关信息。"
+
+msgid "Enter the custom GPRINT string here."
+msgstr "输入自定义GPRINT字符串。"
+
+msgid ""
+"Enter the password for this user twice. Remember that passwords are case "
+"sensitive!"
+msgstr "输入两次此用户的密码。请记住，密码区分大小写！"
+
+msgid "Error"
+msgstr "错误"
+
+msgid "Error in data query."
+msgstr "数据查询错误。"
+
+msgid "Error:"
+msgstr "错误："
+
+msgid "Errors"
+msgstr "错误"
+
+msgid "Event Count"
+msgstr "事件数"
+
+msgid "Event Log Emailing"
+msgstr "通过电子邮件发送事件日志"
+
+msgid "Event Logging"
+msgstr "事件日志记录"
+
+msgid "Expand Devices"
+msgstr "展开设备"
+
+msgid "Expand Tree devices"
+msgstr "展开设备树"
+
+msgid "Export"
+msgstr "导出"
+
+msgid "Export Data"
+msgstr "导出数据"
+
+msgid "Export Every x Times"
+msgstr "导出每x时间"
+
+msgid "Export Method"
+msgstr "导出方法"
+
+msgid "Export Results"
+msgstr "导出结果"
+
+msgid "Export Template"
+msgstr "导出模板"
+
+msgid "Export Templates"
+msgstr "导出模板"
+
+msgid "Export timing"
+msgstr "导出时间"
+
+msgid "External"
+msgstr "外部"
+
+msgid "FATAL: Database or Table does not exist"
+msgstr "错误：数据库或表不存在"
+
+msgid "FTP Host"
+msgstr "FTP 主机"
+
+msgid "FTP Options"
+msgstr "FTP 选项"
+
+msgid "FTP Password"
+msgstr "FTP 密码"
+
+msgid "FTP Port"
+msgstr "FTP 端口"
+
+msgid "FTP User"
+msgstr "FTP 用户名"
+
+msgid "Failed"
+msgstr "失败"
+
+msgid "Failure Count"
+msgstr "错误次数"
+
+msgid "Field"
+msgstr "域"
+
+msgid "Field '%s':"
+msgstr "域'%s'："
+
+msgid "Field Name:"
+msgstr "域名称："
+
+msgid "Field Order"
+msgstr "字段顺序"
+
+msgid "Field Type"
+msgstr "字段类型"
+
+msgid "Field Value:"
+msgstr "字段值："
+
+msgid "Field [|arg1:|]"
+msgstr "字段 [|arg2:|]"
+
+msgid "Fields"
+msgstr "字段"
+
+msgid "Filter"
+msgstr "过滤"
+
+msgid "Font"
+msgstr "字体"
+
+msgid "Font Render Mode"
+msgstr "字体渲染模式"
+
+msgid "For cg graphs:"
+msgstr "CG图形："
+
+msgid "For ds graphs:"
+msgstr "DS图形："
+
+msgid "Found Dependency:"
+msgstr "查找依赖："
+
+msgid "Found Dependency: "
+msgstr "查找依赖："
+
+msgid "Found type"
+msgstr "查找类型"
+
+msgid "Frame"
+msgstr "框架"
+
+msgid "Friendly Name"
+msgstr "友好名称"
+
+msgid "From Data Source Template"
+msgstr "从数据源模板"
+
+msgid "From Host:"
+msgstr "从主机："
+
+msgid "Full Name"
+msgstr "全名"
+
+msgid "Full Size Mode"
+msgstr "全尺寸模式"
+
+msgid "Fully qualified hostname or IP address for this device."
+msgstr "此设备的合法主机名或者IP地址。"
+
+msgid "Funafuti"
+msgstr "Funafuti"
+
+msgid "Function"
+msgstr "功能"
+
+msgid "GPRINT"
+msgstr "GPRINT"
+
+msgid "GPRINT Presets"
+msgstr "GPRINT预设"
+
+msgid "GPRINT Text"
+msgstr "GPRINT 文本"
+
+msgid "GPRINT Type"
+msgstr "GPRINT 类型"
+
+msgid "General"
+msgstr "一般"
+
+msgid "General Device Options"
+msgstr "一般设备选项"
+
+msgid "General Device Template Options"
+msgstr "一般设备模板选项"
+
+msgid "General Information"
+msgstr "一般信息"
+
+msgid "General Poller Options"
+msgstr "一般POLLER选项"
+
+msgid "General Settings"
+msgstr "一般设定"
+
+msgid "German"
+msgstr "German"
+
+msgid "Give this device a meaningful description."
+msgstr "给此设备一个有意义的描述。"
+
+msgid "Give this poller a meaningful description."
+msgstr "给此轮询一个有意义的描述。"
+
+msgid "Global Settings"
+msgstr "全局设定"
+
+msgid "Graph"
+msgstr "图形模板"
+
+msgid "Graph Color Tags"
+msgstr "图形的颜色标签"
+
+msgid "Graph Configuration"
+msgstr "图形配置"
+
+msgid "Graph Creation"
+msgstr "图形创建"
+
+msgid "Graph Date Display Format"
+msgstr "图形日期显示格式"
+
+msgid "Graph End Timestamp"
+msgstr "图形结尾时间戳"
+
+msgid "Graph Export"
+msgstr "图形导出"
+
+msgid "Graph Export Messages"
+msgstr "图形导出信息"
+
+msgid "Graph Fields"
+msgstr "图形字段"
+
+msgid "Graph Fonts"
+msgstr "图形字体"
+
+msgid "Graph Grouping Style"
+msgstr "图形分组风格"
+
+msgid "Graph Height:"
+msgstr "图形高度："
+
+msgid "Graph Id"
+msgstr "图形ID"
+
+msgid "Graph Item"
+msgstr "图形项"
+
+msgid "Graph Item Fields"
+msgstr "图形项字段"
+
+msgid "Graph Item Inputs"
+msgstr "图形项输入"
+
+msgid "Graph Item Type"
+msgstr "图形项类型"
+
+msgid "Graph Items"
+msgstr "图形项"
+
+msgid "Graph Legend Item#1"
+msgstr "图例#1"
+
+msgid "Graph Legend Item#2"
+msgstr "图例#2"
+
+msgid "Graph Legend Item#3"
+msgstr "图例#3"
+
+msgid "Graph Legend Item#4"
+msgstr "图例#4"
+
+msgid "Graph Management"
+msgstr "图形管理"
+
+msgid "Graph Options"
+msgstr "图形操作"
+
+msgid "Graph Permissions"
+msgstr "图形权限"
+
+msgid "Graph Permissions (By Device)"
+msgstr "图形权限 (设备)"
+
+msgid "Graph Permissions (By Graph Template)"
+msgstr "图形权限 (图形模板)"
+
+msgid "Graph Permissions (By Graph)"
+msgstr "图形权限 (图形)"
+
+msgid "Graph Preview"
+msgstr "图形预览"
+
+msgid "Graph Render Mode"
+msgstr "图形渲染模式"
+
+msgid "Graph Settings"
+msgstr "图形设定"
+
+msgid "Graph Source/Properties"
+msgstr "图形源/属性"
+
+msgid "Graph Template"
+msgstr "图形模板"
+
+msgid "Graph Template Based"
+msgstr "图形模板基础"
+
+msgid "Graph Template Cacti Specifics"
+msgstr "图形模板细节"
+
+msgid "Graph Template Color"
+msgstr "图形模板颜色"
+
+msgid "Graph Template Grid"
+msgstr "图形模板坐标"
+
+msgid "Graph Template Id"
+msgstr "图形模板ID"
+
+msgid "Graph Template Items"
+msgstr "图形模板项"
+
+msgid "Graph Template Labels"
+msgstr "图形模板标签"
+
+msgid "Graph Template Legend"
+msgstr "图形模板图例"
+
+msgid "Graph Template Limits"
+msgstr "图形模板限制"
+
+msgid "Graph Template Misc"
+msgstr "图形模板杂项"
+
+msgid "Graph Template Name"
+msgstr "图形模板名称"
+
+msgid "Graph Template Right Axis Settings"
+msgstr "图形模板右轴设置"
+
+msgid "Graph Template Selection"
+msgstr "图形模板选项"
+
+msgid "Graph Template Size"
+msgstr "图形模板大小"
+
+msgid "Graph Template:"
+msgstr "图形模板："
+
+msgid "Graph Templates"
+msgstr "图形模板"
+
+msgid "Graph Thumbnails"
+msgstr "图形缩略图"
+
+msgid "Graph Title"
+msgstr "图形标题"
+
+msgid "Graph Tree Items"
+msgstr "图形树项"
+
+msgid "Graph Trees"
+msgstr "图形树"
+
+msgid "Graph Width:"
+msgstr "图形宽度："
+
+msgid "Graph node options:"
+msgstr "图形节点选项："
+
+msgid "Graph: %d"
+msgstr "图形：%d"
+
+msgid "Graph: Lower Limit"
+msgstr "图形：下限"
+
+msgid "Graph: Shift End Time"
+msgstr "图形：偏移结束时间"
+
+msgid "Graph: Upper Limit"
+msgstr "图形：上限"
+
+msgid "Graphs"
+msgstr "图形"
+
+msgid "Graphs Per-Page"
+msgstr "每页图形数量"
+
+msgid "Graphs/Page:"
+msgstr "图形/页："
+
+msgid "Greek"
+msgstr "Greek"
+
+msgid "Green:"
+msgstr "绿色："
+
+msgid "Grid"
+msgstr "格子"
+
+msgid "Grid Dash"
+msgstr "网格划线"
+
+msgid "Group Member Type"
+msgstr "组成员类型"
+
+msgid "Guest User"
+msgstr "来宾用户"
+
+msgid "Guest user \""
+msgstr "来宾用户 \""
+
+msgid "Harbin"
+msgstr "哈尔滨"
+
+msgid "Header node options:"
+msgstr "Header node options:"
+
+msgid "Heartbeat"
+msgstr "心跳"
+
+msgid "Height"
+msgstr "Height"
+
+msgid "Help"
+msgstr "帮助"
+
+msgid "Hex Value"
+msgstr "16进制"
+
+msgid "Hobart"
+msgstr "Hobart"
+
+msgid "Hong Kong"
+msgstr "香港"
+
+msgid "Host"
+msgstr "主机"
+
+msgid "Host Id"
+msgstr "主机ID"
+
+msgid "Host:"
+msgstr "主机："
+
+msgid "Hostname"
+msgstr "主机名"
+
+msgid "Hostname:"
+msgstr "主机名："
+
+msgid "Hosts"
+msgstr "主机"
+
+msgid "Hour"
+msgstr "时"
+
+msgid "ICMP Ping"
+msgstr "ICMP Ping"
+
+msgid "Id of Tree"
+msgstr "数ID"
+
+msgid "Id of Tree|Node"
+msgstr "数|节点ID"
+
+msgid "Image"
+msgstr "图片"
+
+msgid "Image Format"
+msgstr "图片格式"
+
+msgid "Import"
+msgstr "导入"
+
+msgid "Import Data"
+msgstr "导入数据"
+
+msgid "Import RRA Settings"
+msgstr "RRA 导入设定"
+
+msgid "Import Results"
+msgstr "导入结果"
+
+msgid "Import Template from Local File"
+msgstr "从本地文件导入模板"
+
+msgid "Import Template from Text"
+msgstr "从文本导入模板"
+
+msgid "Import Templates"
+msgstr "导入模板"
+
+msgid "Import/Export"
+msgstr "导入/导出"
+
+msgid "Include Dependencies"
+msgstr "依赖性"
+
+msgid "Index Length"
+msgstr "索引长度"
+
+msgid "Informational"
+msgstr "信息"
+
+msgid "Input Fields"
+msgstr "导入字段"
+
+msgid "Input String"
+msgstr "导入字符串"
+
+msgid "Input Type"
+msgstr "导入类型"
+
+msgid "Installed"
+msgstr "安装"
+
+msgid "Interlaced"
+msgstr "交错"
+
+msgid "Internal Data Source Name"
+msgstr "内部数据源名称"
+
+msgid "Interval"
+msgstr "间隔"
+
+msgid "Invalid User Name/Password Please Retype"
+msgstr "无效的用户名/密码请重新输入"
+
+msgid "Item"
+msgstr "项"
+
+msgid "Item Color"
+msgstr "项目颜色"
+
+msgid "Item Filter"
+msgstr "项目筛选"
+
+msgid "Item Name"
+msgstr "项目名称"
+
+msgid "Item Value"
+msgstr "项目值"
+
+msgid "Items"
+msgstr "项目"
+
+msgid "Known Graph Templates: (id, name)"
+msgstr "已知图形模板： (id, name)"
+
+msgid "Known Trees: (id, sort method, name)"
+msgstr "已知树：(id, sort method, name)"
+
+msgid "LDAP"
+msgstr "LDAP"
+
+msgid "LDAP Authentication"
+msgstr "LDAP 验证"
+
+msgid "LDAP General Settings"
+msgstr "LDAP 一般设定"
+
+msgid "LDAP Group Settings"
+msgstr "LDAP 组设定"
+
+msgid "LDAP Specific Search Settings"
+msgstr "LDAP 具体的搜索设置"
+
+msgid "Label Format"
+msgstr "Label 格式"
+
+msgid "Language Information"
+msgstr "语言信息"
+
+msgid "Language Mode"
+msgstr "语言模式"
+
+msgid "Language Support"
+msgstr "语言支持"
+
+msgid "Last %d Days"
+msgstr "最后 %d 天"
+
+msgid "Last %d Hours"
+msgstr "最后 %d 小时"
+
+msgid "Last %d Months"
+msgstr "最后 %d 月"
+
+msgid "Last %d Weeks"
+msgstr "最后 %d 周"
+
+msgid "Last %d Years"
+msgstr "最后 %d 年"
+
+msgid "Last DS"
+msgstr "上一个 DS"
+
+msgid "Last Hour"
+msgstr "最后一小时"
+
+msgid "Last Login"
+msgstr "上次登录"
+
+msgid "Last Month"
+msgstr "最后一月"
+
+msgid "Last Run Statistics"
+msgstr "上次运行统计"
+
+msgid "Last Updated"
+msgstr "最后更新"
+
+msgid "Last Week"
+msgstr "最后一周"
+
+msgid "Last Year"
+msgstr "最后一年"
+
+msgid "Legend"
+msgstr "图例"
+
+msgid "Legend Font File"
+msgstr "图例字体文件"
+
+msgid "Legend Font Size"
+msgstr "图例字体大小"
+
+msgid "Legend Position"
+msgstr "图例位置"
+
+msgid "Light"
+msgstr "Light"
+
+msgid "Lisbon"
+msgstr "Lisbon"
+
+msgid "List"
+msgstr "列表"
+
+msgid "List Mode"
+msgstr "列表模式"
+
+msgid "List Options:"
+msgstr "列表选项："
+
+msgid "List View"
+msgstr "列表视图"
+
+msgid "List View Mode"
+msgstr "列表视图模式"
+
+msgid "List graph"
+msgstr "列表图"
+
+msgid "Lists all available Device Templates"
+msgstr "列出所有可用的设备模板"
+
+msgid "Local"
+msgstr "本地"
+
+msgid "Local Graph Id"
+msgstr "本地图形ID"
+
+msgid "Location:"
+msgstr "位置："
+
+msgid "Log Administration"
+msgstr "日志管理"
+
+msgid "Log Control Mechanism"
+msgstr "登录控制机制"
+
+msgid "Log Destination"
+msgstr "日志目标"
+
+msgid "Log Email Level"
+msgstr "日志邮件等级"
+
+msgid "Log File"
+msgstr "日志文件"
+
+msgid "Log File Destination"
+msgstr "日志文件地址"
+
+msgid "Log File Filters"
+msgstr "日志文件过滤"
+
+msgid "Log Management"
+msgstr "日志管理"
+
+msgid "Logfile Only"
+msgstr "仅日志文件"
+
+msgid "Logfile and Syslog/Eventlog"
+msgstr "日志文件和Syslog/Eventlog"
+
+msgid "Logged in as"
+msgstr "当前登录用户为："
+
+msgid "Login"
+msgstr "登录"
+
+msgid "Login Again"
+msgstr "重新登录"
+
+msgid "Login Options"
+msgstr "登录设定"
+
+msgid "Logout"
+msgstr "退出"
+
+msgid "Logout User"
+msgstr "退出用户"
+
+msgid "Lower Limit"
+msgstr "下限"
+
+msgid "MD5 (default)"
+msgstr "MD5 (默认)"
+
+msgid "Management"
+msgstr "管理"
+
+msgid "Manual Ordering (No Sorting)"
+msgstr "手动排列 (不排列)"
+
+msgid "Marquesas"
+msgstr "Marquesas"
+
+msgid "Maseru"
+msgstr "Maseru"
+
+msgid "Max Threads"
+msgstr "最大线程"
+
+msgid "Maximum"
+msgstr "最大值"
+
+msgid "Maximum Field Length"
+msgstr "字段长度最大值"
+
+msgid "Maximum Log Size"
+msgstr "日志大小最大值"
+
+msgid "Maximum Title Length"
+msgstr "标题长度最大值"
+
+msgid "Maximum Value"
+msgstr "最大值"
+
+msgid "Maximum:"
+msgstr "最大值："
+
+msgid "Mendoza"
+msgstr "Mendoza"
+
+msgid "Merge (default)"
+msgstr "合并 (默认)"
+
+msgid "Method:"
+msgstr "方式："
+
+msgid "Midway"
+msgstr "中途"
+
+msgid "Minimal Heartbeat"
+msgstr "最小心跳"
+
+msgid "Minimum"
+msgstr "最小"
+
+msgid "Minimum Value"
+msgstr "最小值"
+
+msgid "Minute"
+msgstr "分钟"
+
+msgid "Mode"
+msgstr "模式"
+
+msgid "Module Name:"
+msgstr "模块名称："
+
+msgid "Monaco"
+msgstr "Monaco"
+
+msgid "Moncton"
+msgstr "Moncton"
+
+msgid "Monday"
+msgstr "星期一"
+
+msgid "Mono"
+msgstr "Mono"
+
+msgid "Monterrey"
+msgstr "Monterrey"
+
+msgid "Month"
+msgstr "月"
+
+msgid "Montreal"
+msgstr "Montreal"
+
+msgid "MySQL Process Information"
+msgstr "MySQL的进程信息"
+
+msgid "MySQL Table Information"
+msgstr "MySQL的表信息"
+
+msgid "NOTE: Updating Data Query ID "
+msgstr "注意：更新数据查询ID"
+
+msgid "Name"
+msgstr "名称"
+
+msgid "Natural"
+msgstr "自然"
+
+msgid "Natural Ordering"
+msgstr "自然排序"
+
+msgid "Ndjamena"
+msgstr "Ndjamena"
+
+msgid "New Data Source Template:"
+msgstr "新的数据源模板："
+
+msgid "New Device"
+msgstr "新设备"
+
+msgid "New Full Name:"
+msgstr "新的全名："
+
+msgid "New Graph Template:"
+msgstr "新的图形模板："
+
+msgid "New Graphs"
+msgstr "新图形"
+
+msgid "New Host:"
+msgstr "新主机："
+
+msgid "New Realm:"
+msgstr "New Realm:"
+
+msgid "New Salem"
+msgstr "New Salem"
+
+msgid "New User: %s"
+msgstr "新用户：%s"
+
+msgid "New Username:"
+msgstr "新用户名："
+
+msgid "New York"
+msgstr "New York"
+
+msgid "Next"
+msgstr "下一步"
+
+msgid "Niamey"
+msgstr "Niamey"
+
+msgid "No"
+msgstr "不"
+
+msgid "No Access"
+msgstr "禁止访问"
+
+msgid "No Associated Graph Templates."
+msgstr "没有关联的图形模板。"
+
+msgid "No CDEF's"
+msgstr "No CDEF's"
+
+msgid "No Data Input Methods"
+msgstr "无数据导入方法"
+
+msgid "No Data Queries"
+msgstr "无数据查询"
+
+msgid "No Data Source Templates"
+msgstr "无数据源模板"
+
+msgid "No Data Sources"
+msgstr "无数据源"
+
+msgid "No Device Templates"
+msgstr "无设备模板"
+
+msgid "No Devices"
+msgstr "无设备"
+
+msgid "No Graph Templates"
+msgstr "无图形模板"
+
+msgid "No Graph Templates Defined."
+msgstr "无图形模板定义。"
+
+msgid "No Graphs"
+msgstr "无图形"
+
+msgid "No Graphs Found"
+msgstr "没有找到图形"
+
+msgid "No Graphs Trees"
+msgstr "无图形数据"
+
+msgid "No Host"
+msgstr "无主机"
+
+msgid "No Hosts"
+msgstr "无主机"
+
+msgid "No Input Fields"
+msgstr "无法导入字段"
+
+msgid "No Inputs"
+msgstr "无法导入"
+
+msgid "No Items"
+msgstr "无项目"
+
+msgid "No Language Files Loaded."
+msgstr "没有语言文件加载。"
+
+msgid "No Output Fields"
+msgstr "无输出字段"
+
+msgid "No Pollers Defined"
+msgstr "没有Pollers定义"
+
+msgid "No RRAs"
+msgstr "无 RRAs"
+
+msgid "No Records Found"
+msgstr "没有相关记录"
+
+msgid "No SNMP Records"
+msgstr "没有SNMP记录"
+
+msgid "No Sites"
+msgstr "无站点"
+
+msgid "No Task"
+msgstr "没有任务"
+
+msgid "No Trees"
+msgstr "没有树"
+
+msgid "No User"
+msgstr "没有用户"
+
+msgid "No Users"
+msgstr "没有用户"
+
+msgid "No VDEF's"
+msgstr "没有 VDEF's"
+
+msgid "No X-Axis Preset Items"
+msgstr "没有 X-Axis 预置项目"
+
+msgid "No associated data queries."
+msgstr "没有相关的数据查询。"
+
+msgid "No associated graph templates."
+msgstr "没有相关的图形模板。"
+
+msgid "Node"
+msgstr "节点"
+
+msgid "Node options:"
+msgstr "节点操作："
+
+msgid "Nome"
+msgstr "Nome"
+
+msgid "None"
+msgstr "空"
+
+msgid "None (Not Recommended)"
+msgstr "空 (不推荐)"
+
+msgid "North"
+msgstr "North"
+
+msgid "North Dakota"
+msgstr "North Dakota"
+
+msgid "Not Being Graphed"
+msgstr "Not Being Graphed"
+
+msgid "Not Defined"
+msgstr "Not Defined"
+
+msgid "Not In Use"
+msgstr "不使用"
+
+msgid "Not Selected"
+msgstr "Not Selected"
+
+msgid "Note:"
+msgstr "Note:"
+
+msgid "Note: "
+msgstr "Note: "
+
+msgid "Notes"
+msgstr "注释"
+
+msgid "Nothing Entered"
+msgstr "Nothing Entered"
+
+msgid "Noumea"
+msgstr "Noumea"
+
+msgid "Number of Collection Threads"
+msgstr "采集线程数"
+
+msgid "Number of PHP Script Servers"
+msgstr "Number of PHP Script Servers"
+
+msgid "Numeric"
+msgstr "Numeric"
+
+msgid "Numeric Ordering"
+msgstr "数字排序"
+
+msgid "Only Graph"
+msgstr "Only Graph"
+
+msgid "Operator"
+msgstr "操作"
+
+msgid "Optional:"
+msgstr "Optional:"
+
+msgid "Other Defaults"
+msgstr "Other Defaults"
+
+msgid "Output Field"
+msgstr "Output Field"
+
+msgid "Output Fields"
+msgstr "数据字段"
+
+msgid "Output Format"
+msgstr "输出方法"
+
+msgid "Output to the Browser (raw XML)"
+msgstr "输出到浏览器（原始XML）"
+
+msgid "Output to the Browser (within Cacti)"
+msgstr "输出到浏览器 (Cacti内)"
+
+msgid "PHP Binary Path"
+msgstr "PHP 路径"
+
+msgid "PHP Info"
+msgstr "PHP Info"
+
+msgid "PHP Information"
+msgstr "PHP的信息"
+
+msgid "PHP Module Information"
+msgstr "PHP的模块信息"
+
+msgid "PHP SNMP"
+msgstr "PHP SNMP"
+
+msgid "PHP SNMP Support:"
+msgstr "PHP SNMP Support:"
+
+msgid "PHP Servers"
+msgstr "PHP服务器"
+
+msgid "PHP Version"
+msgstr "PHP 版本"
+
+msgid "PHP uname"
+msgstr "PHP uname"
+
+msgid "PNG Output OK"
+msgstr "PNG 输出 OK"
+
+msgid "Palau"
+msgstr "Palau"
+
+msgid "Palme"
+msgstr "Palme"
+
+msgid "Palmer"
+msgstr "Palmer"
+
+msgid "Parent Item"
+msgstr "父项"
+
+msgid "Parent Node Id"
+msgstr "父节点ID"
+
+msgid "Paris"
+msgstr "Paris"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Password for the remote ftp account (leave empty for blank)."
+msgstr "远程FTP帐户（密码留空白空）。"
+
+msgid "Password:"
+msgstr "密码："
+
+msgid "Passwords do not match, please retype."
+msgstr "密码不匹配，请重新输入。"
+
+msgid "Paths"
+msgstr "路径"
+
+msgid "Perth"
+msgstr "Perth"
+
+msgid "Ping"
+msgstr "Ping"
+
+msgid "Ping Method"
+msgstr "Ping 模式"
+
+msgid "Ping Port"
+msgstr "Ping 端口"
+
+msgid "Ping Results"
+msgstr "Ping 结果"
+
+msgid "Ping Retry Count"
+msgstr "Ping 重复次数"
+
+msgid "Ping Timeout Value"
+msgstr "Ping 超时时间"
+
+msgid "Ping Type"
+msgstr "Ping 类型"
+
+msgid "Please enter a new password for cacti:"
+msgstr "请输入一个新密码："
+
+msgid "Please enter your Cacti user name and password below:"
+msgstr "请在下面输入您的用户名和密码："
+
+msgid "Plugin Management"
+msgstr "插件管理"
+
+msgid "Polish"
+msgstr "Polish"
+
+msgid "Poll Time"
+msgstr "轮询时间"
+
+msgid "Poller Cache Administration"
+msgstr "轮询缓存管理"
+
+msgid "Poller Cache Items"
+msgstr "轮询缓存项目"
+
+msgid "Poller Errors"
+msgstr "轮询错误"
+
+msgid "Poller Information"
+msgstr "轮询信息"
+
+msgid "Poller Interval"
+msgstr "轮询间隔"
+
+msgid "Poller Items"
+msgstr "轮询项目"
+
+msgid "Poller Logging Level"
+msgstr "轮询日志记录级别"
+
+msgid "Poller Statistics"
+msgstr "轮询统计"
+
+msgid "Poller Syslog/Eventlog Selection"
+msgstr "轮询系统日志/事件日志"
+
+msgid "Poller Warnings"
+msgstr "轮询警告"
+
+msgid "Poller:"
+msgstr "轮询："
+
+msgid "Pollers"
+msgstr "轮询"
+
+msgid "Ponape"
+msgstr "Ponape"
+
+msgid "Port SSL"
+msgstr "SSL 端口"
+
+msgid "Port Standard"
+msgstr "端口标准"
+
+msgid "Port of Spain"
+msgstr "Port of Spain"
+
+msgid "Porto Velho"
+msgstr "Porto Velho"
+
+msgid "Portuguese"
+msgstr "Portuguese"
+
+msgid "Portuguese (Brazil)"
+msgstr "Portuguese (Brazil)"
+
+msgid "Prague"
+msgstr "Prague"
+
+msgid "Presentation Method"
+msgstr "演示方法"
+
+msgid "Presets"
+msgstr "预置"
+
+msgid "Presets:"
+msgstr "预置："
+
+msgid "Preview"
+msgstr "预览"
+
+msgid "Preview Mode"
+msgstr "预览模式"
+
+msgid "Preview View"
+msgstr "预览查看"
+
+msgid "Previous"
+msgstr "上一页"
+
+msgid "Previous Day"
+msgstr "上一天"
+
+msgid "Previous Month"
+msgstr "上一月"
+
+msgid "Previous Week"
+msgstr "上一周"
+
+msgid "Previous Year"
+msgstr "上一年"
+
+msgid "Properties"
+msgstr "属性"
+
+msgid "Protocol Version"
+msgstr "协议版本"
+
+msgid "Protocol Version that the server supports."
+msgstr "协议版本的服务器支持。"
+
+msgid "Qatar"
+msgstr "Qatar"
+
+msgid "Query Id"
+msgstr "查询ID"
+
+msgid "Query Name"
+msgstr "查询名称"
+
+msgid "Query Name:"
+msgstr "查询名称："
+
+msgid "RPN for a COMPUTE DS Item Type (RRDTool 1.2.x and above)"
+msgstr "逆波兰表达式 (RRDTool 1.2.x 或以上)"
+
+msgid "RRA Id"
+msgstr "RRA Id"
+
+msgid "RRAs"
+msgstr "RRA"
+
+msgid "RRD File Information"
+msgstr "RRD文件信息"
+
+msgid "RRD Info Mode"
+msgstr "RRD的信息模式"
+
+msgid "RRDTool Binary Path"
+msgstr "RRDtool 路径"
+
+msgid "RRDTool Default Font Path"
+msgstr "RRDtool的默认字体路径"
+
+msgid "RRDTool Says:"
+msgstr "RRDTool 说："
+
+msgid "RRDTool Utility Version"
+msgstr "RRDtool的实用工具版本"
+
+msgid "RRDTool Version"
+msgstr "RRDTool 的版本"
+
+msgid "Re-Index Method"
+msgstr "重新编制索引方法"
+
+msgid "Re-Index Method:"
+msgstr "重新编制索引方法："
+
+msgid "Re-Index Value Changed"
+msgstr "重新编制索引值更改"
+
+msgid "Realm"
+msgstr "域"
+
+msgid "Realm Permissions"
+msgstr "域权限"
+
+msgid "Realm:"
+msgstr "域："
+
+msgid "Recife"
+msgstr "Recife"
+
+msgid "Recovering"
+msgstr "恢复中"
+
+msgid "Red:"
+msgstr "红："
+
+msgid "Referrals"
+msgstr "Referrals"
+
+msgid "Refresh"
+msgstr "刷新"
+
+msgid "Refresh:"
+msgstr "刷新："
+
+msgid "Reindex Method"
+msgstr "重新建立方法"
+
+msgid "Reload Data Query"
+msgstr "重新载入数据查询"
+
+msgid "Reorder"
+msgstr "重新排序"
+
+msgid "Require Group Membership"
+msgstr "需求成员"
+
+msgid "Require SSL Encryption"
+msgstr "需要SSL加密"
+
+msgid "Required Tool Paths"
+msgstr "所需工具的路径"
+
+msgid "Required Tool Versions"
+msgstr "所需工具版本"
+
+msgid "Required:"
+msgstr "要求："
+
+msgid "Resize Graphs"
+msgstr "调整图形大小"
+
+msgid "Resolute"
+msgstr "Resolute"
+
+msgid "Result"
+msgstr "结果"
+
+msgid "Return"
+msgstr "返回"
+
+msgid "Return to Cacti"
+msgstr "返回到 Cacti"
+
+msgid "Reunion"
+msgstr "Reunion"
+
+msgid "Riga"
+msgstr "Riga"
+
+msgid "Right"
+msgstr "右"
+
+msgid "Right Axis"
+msgstr "右轴"
+
+msgid "Right Axis Format"
+msgstr "右轴格式"
+
+msgid "Right Axis Label"
+msgstr "右轴标签"
+
+msgid "Right Axis Settings"
+msgstr "右轴设置"
+
+msgid "Row"
+msgstr "行"
+
+msgid "Row Format"
+msgstr "行格式"
+
+msgid "Rows Per Page"
+msgstr "每页行"
+
+msgid "Rows:"
+msgstr "行数："
+
+msgid "Running data query"
+msgstr "运行数据查询"
+
+msgid "SHA"
+msgstr "SHA"
+
+msgid "SNMP"
+msgstr "SNMP"
+
+msgid "SNMP Cache Items"
+msgstr "SNMP的缓存项"
+
+msgid "SNMP Community"
+msgstr "SNMP的团体名"
+
+msgid "SNMP Context"
+msgstr "SNMP的文本"
+
+msgid "SNMP Defaults"
+msgstr "SNMP的默认值"
+
+msgid "SNMP Field Name (Dropdown)"
+msgstr "SNMP的字段名称（下拉）"
+
+msgid "SNMP Field Value (From User)"
+msgstr "SNMP的字段值（用户）"
+
+msgid "SNMP Information"
+msgstr "SNMP信息"
+
+msgid "SNMP Options"
+msgstr "SNMP的选项"
+
+msgid "SNMP Output Type (Dropdown)"
+msgstr "SNMP的输出类型（下拉）"
+
+msgid "SNMP Password (v3)"
+msgstr "SNMP 密码 (v3)"
+
+msgid "SNMP Port"
+msgstr "SNMP 端口"
+
+msgid "SNMP Port Number"
+msgstr "SNMP 端口号"
+
+msgid "SNMP Privacy Passphrase (v3)"
+msgstr "SNMP 隐私密码 (v3)"
+
+msgid "SNMP Privacy Protocol (v3)"
+msgstr "SNMP 隐私协议 (v3)"
+
+msgid "SNMP Query:"
+msgstr "SNMP查询："
+
+msgid "SNMP Retries"
+msgstr "SNMP 重试"
+
+msgid "SNMP Timeout"
+msgstr "SNMP 超时"
+
+msgid "SNMP Username (v3)"
+msgstr "SNMP 用户名 (v3)"
+
+msgid "SNMP Utility Version"
+msgstr "SNMP的实际版本"
+
+msgid "SNMP Version"
+msgstr "SNMP版本"
+
+msgid "SNMP Version:"
+msgstr "SNMP版本："
+
+msgid "SNMP read community for this device."
+msgstr "此设备的SNMP团体名。"
+
+msgid "SNMP v3 username for this device."
+msgstr "此设备的SNMP v3的用户名。"
+
+msgid "Salta"
+msgstr "Salta"
+
+msgid "Sanitize remote directory"
+msgstr "远程杀毒目录"
+
+msgid "Santarem"
+msgstr "Santarem"
+
+msgid "Sat"
+msgstr "Sat"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Save Failed."
+msgstr "保存失败。"
+
+msgid "Save File Locally"
+msgstr "局部保存文件"
+
+msgid "Save Successful."
+msgstr "保存成功。"
+
+msgid "Script"
+msgstr "脚本"
+
+msgid "Script Server"
+msgstr "脚本服务器"
+
+msgid "Script Server:"
+msgstr "脚本服务器："
+
+msgid "Script Timeout"
+msgstr "脚本超时"
+
+msgid "Script and Script Server Timeout Value"
+msgstr "脚本和脚本服务器超时值"
+
+msgid "Script:"
+msgstr "脚本："
+
+msgid "Search Filter"
+msgstr "搜索过滤器"
+
+msgid "Search Password"
+msgstr "查询密码"
+
+msgid "Search:"
+msgstr "搜索："
+
+msgid "Second"
+msgstr "第二个"
+
+msgid "Select All"
+msgstr "选择全部"
+
+msgid "Select a Graph Hierarchy"
+msgstr "选择一个图形层"
+
+msgid "Select a graph type:"
+msgstr "选择一个图形类型："
+
+msgid "Selected"
+msgstr "选择"
+
+msgid "Selected Data Source Template"
+msgstr "选择数据源模板"
+
+msgid "Selected Graph Template"
+msgstr "选择图形模板"
+
+msgid "Server"
+msgstr "サーバー"
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "Severity Logging Level"
+msgstr "Severity Logging Level"
+
+msgid "ShadeA"
+msgstr "ShadeA"
+
+msgid "ShadeB"
+msgstr "ShadeB"
+
+msgid "Show Graph Title"
+msgstr "Show Graph Title"
+
+msgid "Show the default console screen."
+msgstr "控制台默认显示"
+
+msgid "Show the default graph screen."
+msgstr "图形默认显示"
+
+msgid "Showing All Graphs"
+msgstr "显示所有图形"
+
+msgid "Showing Graphs"
+msgstr "显示图形"
+
+msgid "Showing Rows"
+msgstr "显示行"
+
+msgid "Singapore"
+msgstr "Singapore"
+
+msgid "Site"
+msgstr "站点"
+
+msgid "Site Filters"
+msgstr "站点过滤"
+
+msgid "Site Information"
+msgstr "站点信息"
+
+msgid "Site Name"
+msgstr "站点名称"
+
+msgid "Site:"
+msgstr "站点："
+
+msgid "Sites"
+msgstr "站点"
+
+msgid "Size"
+msgstr "大小"
+
+msgid "Slope Mode"
+msgstr "Slope Mode"
+
+msgid "Sort Children Type:"
+msgstr "Sort Children Type:"
+
+msgid "Sort Field"
+msgstr "Sort Field"
+
+msgid "Sort Method"
+msgstr "Sort Method"
+
+msgid "Sorting Type"
+msgstr "排序方式"
+
+msgid "Special Data Source"
+msgstr "Special Data Source"
+
+msgid "Special Type Code"
+msgstr "Special Type Code"
+
+msgid "Spine Poller File Path"
+msgstr "Spine Poller 路径"
+
+msgid "St Kitts"
+msgstr "St Kitts"
+
+msgid "Stanley"
+msgstr "Stanley"
+
+msgid "Start"
+msgstr "开始"
+
+msgid "State"
+msgstr "状态"
+
+msgid "Stats"
+msgstr "状态"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Status:"
+msgstr "状态："
+
+msgid "Step"
+msgstr "跳数"
+
+msgid "Structured RRA Path (/device_id/local_data_id.rrd)"
+msgstr "RRA 路径结构 (/device_id/local_data_id.rrd)"
+
+msgid "Success"
+msgstr "成功"
+
+msgid "Suggested Values: Data Source Templates"
+msgstr "Suggested Values: Data Source Templates"
+
+msgid "Suggested Values: Graph Templates"
+msgstr "Suggested Values: Graph Templates"
+
+msgid "Supplemental Data Source Template Data"
+msgstr "Supplemental Data Source Template Data"
+
+msgid "Supplemental Graph Template Data"
+msgstr "Supplemental Graph Template Data"
+
+msgid "Swift Current"
+msgstr "Swift Current"
+
+msgid "Syslog Server"
+msgstr "Syslog Server"
+
+msgid "Syslog Server Settings"
+msgstr "Syslog Server Settings"
+
+msgid "Syslog/Eventlog Only"
+msgstr "Syslog/Eventlog Only"
+
+msgid "System"
+msgstr "System"
+
+msgid "System Default"
+msgstr "System Default"
+
+msgid "System Log Settings"
+msgstr "System Log Settings"
+
+msgid "System Utilities"
+msgstr "系统工具"
+
+msgid "TCP Ping"
+msgstr "TCP Ping"
+
+msgid "TCP or UDP port to attempt connection."
+msgstr "TCP or UDP port to attempt connection."
+
+msgid "TCP/UDP port for Non SSL communications."
+msgstr "TCP/UDP port for Non SSL communications."
+
+msgid "TCP/UDP port for SSL communications."
+msgstr "TCP/UDP port for SSL communications."
+
+msgid "Tabulator Width"
+msgstr "Tabulator Width"
+
+msgid "Taipei"
+msgstr "Taipei"
+
+msgid "Tehran"
+msgstr "Tehran"
+
+msgid "Tell City"
+msgstr "Tell City"
+
+msgid "Tell_City"
+msgstr "Tell_City"
+
+msgid "Template Name"
+msgstr "模板名称"
+
+msgid "Template Title"
+msgstr "模板标题"
+
+msgid "Template User:"
+msgstr "Template User:"
+
+msgid "Template User: %s\n"
+msgstr "Template User: %s\n"
+
+msgid "Template Username:"
+msgstr "Template Username:"
+
+msgid "Template user '"
+msgstr "Template user '"
+
+msgid "Template:"
+msgstr "模板："
+
+msgid "Templates"
+msgstr "模板"
+
+msgid "Text Format"
+msgstr "Text Format"
+
+msgid "The Device Template to Refresh"
+msgstr "The Device Template to Refresh"
+
+msgid "The SNMP v3 Password for polling devices."
+msgstr "The SNMP v3 Password for polling devices."
+
+msgid "The SNMP v3 Username for polling devices."
+msgstr "The SNMP v3 Username for polling devices."
+
+msgid "The data source to use for this graph item."
+msgstr "The data source to use for this graph item."
+
+msgid "The font file to be used for Graph Legend items"
+msgstr "图形图例的字体"
+
+msgid "The font file to be used for Graph Unit items"
+msgstr "图形组的字体"
+
+msgid "The font file to be used for Graph Watermarks"
+msgstr "图形水印的字体"
+
+msgid "The label for the right axis."
+msgstr "右轴标签。"
+
+msgid "The login name for this user."
+msgstr "登录用户名。"
+
+msgid "The maximum number of characters to display for a data source title."
+msgstr "数据源标题显示的最大字符数。"
+
+msgid "The name given to this data template."
+msgstr "数据模板的名称。"
+
+msgid ""
+"The number of concurrent threads to use for polling this device type.  This "
+"applies to the Spine poller only."
+msgstr "轮询此设备的线程数。仅适用于使用Spine轮询方式。"
+
+msgid "The number of rows to display on a single page for data sources."
+msgstr "每页显示数据源的行数。"
+
+msgid "The number of rows to display on a single page for devices."
+msgstr "每页显示设备的行数。"
+
+msgid "The number of rows to display on a single page for sites."
+msgstr "每页站点显示的行数。"
+
+msgid "The path to Spine binary."
+msgstr "Spine 路径。"
+
+msgid "The path to the rrdtool binary."
+msgstr "rrdtool 路径。"
+
+msgid "The path to your snmpbulkwalk binary."
+msgstr "snmpbulkwalk 路径。"
+
+msgid "The path to your snmpget binary."
+msgstr "snmpget 路径。"
+
+msgid "The path to your snmpgetnext binary."
+msgstr "snmpgetnext 的路径。"
+
+msgid "The path to your snmpwalk binary."
+msgstr "snmpwalk 的路径。"
+
+msgid "The size of the font used for Graph Legend items"
+msgstr "图例中使用的字体大小"
+
+msgid "The size of the font used for Graph Watermarks"
+msgstr "图形水印中使用的字体大小"
+
+msgid "This Day"
+msgstr "今天"
+
+msgid "This Month"
+msgstr "本月"
+
+msgid "This Week"
+msgstr "本周"
+
+msgid "This Year"
+msgstr "今年"
+
+msgid "Thule"
+msgstr "Thule"
+
+msgid "Thumbnail Columns"
+msgstr "缩略图列数"
+
+msgid "Thumbnail Height"
+msgstr "缩略图高度"
+
+msgid "Thumbnail Sections"
+msgstr "缩略图"
+
+msgid "Thumbnail Settings"
+msgstr "缩略图设置"
+
+msgid "Thumbnail Width"
+msgstr "缩略图宽度"
+
+msgid "Thumbnails:"
+msgstr "缩略图："
+
+msgid "Time"
+msgstr "Time"
+
+msgid "Timing"
+msgstr "Timing"
+
+msgid "Tirane"
+msgstr "Tirane"
+
+msgid "Title"
+msgstr "标题"
+
+msgid "Title Font File"
+msgstr "标题字体"
+
+msgid "Title Font Size"
+msgstr "标题字体大小"
+
+msgid "Title Format"
+msgstr "标题格式"
+
+msgid "Title Format:"
+msgstr "标题格式："
+
+msgid "To disable the following devices, press the \"yes\" button below."
+msgstr "要禁用一下设备，请点击 \"yes\" 按钮。"
+
+msgid "To enable the following devices, press the \"yes\" button below."
+msgstr "要启用一下设备，请点击 \"yes\" 按钮。"
+
+msgid "Tree"
+msgstr "Tree"
+
+msgid "Tree Isolation"
+msgstr "Tree Isolation"
+
+msgid "Tree Item Type"
+msgstr "Tree Item Type"
+
+msgid "Tree Item Value"
+msgstr "Tree Item Value"
+
+msgid "Tree Items"
+msgstr "Tree Items"
+
+msgid "Tree Mode"
+msgstr "Tree Mode"
+
+msgid "Tree Permissions"
+msgstr "Tree Permissions"
+
+msgid "Tree Presentation"
+msgstr "Tree Presentation"
+
+msgid "Tree Settings"
+msgstr "Tree Settings"
+
+msgid "Tree View"
+msgstr "Tree View"
+
+msgid "Tree View (Dual Pane)"
+msgstr "Tree View (Dual Pane)"
+
+msgid "Tree View (Single Pane)"
+msgstr "Tree View (Single Pane)"
+
+msgid "Tree View Mode"
+msgstr "Tree View Mode"
+
+msgid "Tree options:"
+msgstr "Tree options:"
+
+msgid "Trees"
+msgstr "Trees"
+
+msgid "Trees:"
+msgstr "Trees:"
+
+msgid "Try --list-graph-templates"
+msgstr "Try --list-graph-templates"
+
+msgid "Tunis"
+msgstr "Tunis"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Type of value you want to see in the legend."
+msgstr "Type of value you want to see in the legend."
+
+msgid "Type:"
+msgstr "类型："
+
+msgid "UDP Ping"
+msgstr "UDP Ping"
+
+msgid "Unit Exponent Value"
+msgstr "Unit Exponent Value"
+
+msgid "Unit Font File"
+msgstr "单位字体"
+
+msgid "Unit Font Size"
+msgstr "单位字体大小"
+
+msgid "Unit Length"
+msgstr "单位长度"
+
+msgid "Unmet Dependency:"
+msgstr "Unmet Dependency:"
+
+msgid "Unmet Dependency: "
+msgstr "Unmet Dependency: "
+
+msgid "Update CDEF's and VDEF's"
+msgstr "Update CDEF's and VDEF's"
+
+msgid "Update Data Source Templates"
+msgstr "Update Data Source Templates"
+
+msgid "Update Data Sources"
+msgstr "更新数据源"
+
+msgid "Update Device Templates"
+msgstr "更新设备模板"
+
+msgid "Update Graph Templates"
+msgstr "更新图形模板"
+
+msgid "Update Graphs"
+msgstr "更新图形"
+
+msgid "Update RRA"
+msgstr "更新 RRA"
+
+msgid "Update RRD File"
+msgstr "更新 RRD 文件"
+
+msgid "Update Re-Index Method"
+msgstr "Update Re-Index Method"
+
+msgid "Update Round Robin Archives"
+msgstr "Update Round Robin Archives"
+
+msgid "Update System Trees"
+msgstr "Update System Trees"
+
+msgid "Update User Tees"
+msgstr "Update User Tees"
+
+msgid "Updated graph-id: (%d)"
+msgstr "Updated graph-id: (%d)"
+
+msgid "Upper Limit"
+msgstr "上限"
+
+msgid "Use passive mode"
+msgstr "使用被动模式"
+
+msgid "Use this Field"
+msgstr "Use this Field"
+
+msgid "User"
+msgstr "User"
+
+msgid "User Account Disabled"
+msgstr "用户被禁用"
+
+msgid "User Administration"
+msgstr "用户管理"
+
+msgid "User Has Rights to List View"
+msgstr "用户有权查看的列表"
+
+msgid "User Has Rights to Preview View"
+msgstr "用户有权查看的预览图"
+
+msgid "User Has Rights to Tree View"
+msgstr "用户有权查看的图形树"
+
+msgid "User Management"
+msgstr "用户管理"
+
+msgid "User Must Change Password at Next Login"
+msgstr "用户必须在下次登录时修改密码"
+
+msgid "User Name"
+msgstr "用户名"
+
+msgid "User Name:"
+msgstr "用户名："
+
+msgid "User Removed"
+msgstr "删除用户"
+
+msgid "User Template"
+msgstr "用户模板"
+
+msgid "User copied..."
+msgstr "复制用户"
+
+msgid "User:"
+msgstr "用户名："
+
+msgid "Username"
+msgstr "用户名"
+
+msgid "Username already exists."
+msgstr "用户名已经存在。"
+
+msgid "Username already in use."
+msgstr "用户名已被使用。"
+
+msgid "Username:"
+msgstr "用户名："
+
+msgid "Users to update:"
+msgstr "用户更新："
+
+msgid "Using System Defaults"
+msgstr "使用系统默认值"
+
+msgid "Utilities"
+msgstr "Utilities"
+
+msgid "VDEF Function"
+msgstr "VDEF Function"
+
+msgid "VDEF Item Type"
+msgstr "VDEF Item Type"
+
+msgid "VDEF Item Value"
+msgstr "VDEF Item Value"
+
+msgid "VDEF Items"
+msgstr "VDEF Items"
+
+msgid "VDEF Title"
+msgstr "VDEF Title"
+
+msgid "VDEF's"
+msgstr "VDEF's"
+
+msgid "VDEFs"
+msgstr "VDEFs"
+
+msgid "Vaduz"
+msgstr "Vaduz"
+
+msgid "Valid Device Templates: (id, name)"
+msgstr "Valid Device Templates: (id, name)"
+
+msgid "Value"
+msgstr "值"
+
+msgid "Verify all Fields"
+msgstr "Verify all Fields"
+
+msgid "Version"
+msgstr "版本"
+
+msgid "Version 1"
+msgstr "版本 1"
+
+msgid "Version 2"
+msgstr "版本 2"
+
+msgid "Version 3"
+msgstr "版本 3"
+
+msgid "Vertical Label"
+msgstr "垂直标签"
+
+msgid "View"
+msgstr "查看图形"
+
+msgid "View Cacti Log File"
+msgstr "查看Cacti日志文件"
+
+msgid "View Graphs"
+msgstr "查看图形"
+
+msgid "View Poller Cache"
+msgstr "查看Poller缓存"
+
+msgid "View SNMP Cache"
+msgstr "查看SNMP缓存"
+
+msgid "View User Log"
+msgstr "查看用户登录日志"
+
+msgid "View User Log File"
+msgstr "查看用户登录日志"
+
+msgid "Viewing Graph"
+msgstr "查看图形"
+
+msgid "Viewing Graph Properties"
+msgstr "查看图片属性"
+
+msgid "Visual"
+msgstr "外观"
+
+msgid "Vostok"
+msgstr "Vostok"
+
+msgid "WARNING: Function does not exist\n"
+msgstr "警告：函数不存在\n"
+
+msgid "Warning"
+msgstr "警告"
+
+msgid "Warnings"
+msgstr "警告"
+
+msgid "Watermark"
+msgstr "水印"
+
+msgid "Watermark Font File"
+msgstr "水印字体"
+
+msgid "Watermark Font Size"
+msgstr "水印字体大小"
+
+msgid "Web Basic Authentication"
+msgstr "Web基本身份验证"
+
+msgid "Week"
+msgstr "周"
+
+msgid "West"
+msgstr "West"
+
+msgid "What would you like to export?"
+msgstr "What would you like to export?"
+
+msgid "Width"
+msgstr "Width"
+
+msgid "Windhoek"
+msgstr "Windhoek"
+
+msgid "Would you like to copy this user?"
+msgstr "Would you like to copy this user?"
+
+msgid "X Files Factor"
+msgstr "X Files Factor"
+
+msgid "X Grid"
+msgstr "X Grid"
+
+msgid "X-Axis Items"
+msgstr "X-Axis Items"
+
+msgid "X-Axis Presets"
+msgstr "X-Axis Presets"
+
+msgid "XML Path"
+msgstr "XML 路径"
+
+msgid "XML file parsed ok."
+msgstr "XML 文件解析成功。"
+
+msgid "XML parse error."
+msgstr "XML 的解析错误。"
+
+msgid "XML: Cacti version does not exist."
+msgstr "XML: Cacti 版本不存在。"
+
+msgid "XML: Generated with a newer version of Cacti."
+msgstr "XML: 此xml是用新版本的Cacti生成的。"
+
+msgid "XML: Hash version does not exist."
+msgstr "XML: Hash 版本不存在。"
+
+msgid "Y Grid"
+msgstr "Y Grid"
+
+msgid "Year"
+msgstr "年"
+
+msgid "Yerevan"
+msgstr "Yerevan"
+
+msgid "Yes"
+msgstr "确定"
+
+msgid ""
+"You must first select a Data Input Method.  Please select 'Return' to return "
+"to the previous menu."
+msgstr "您必须先选择一个数据导入方法。按“返回”键返回上一个菜单。"
+
+msgid ""
+"You must first select a Data Query.  Please select 'Return' to return to the "
+"previous menu."
+msgstr "您必须先选择一个数据查询。按“返回”键返回上一个菜单。"
+
+msgid ""
+"You must first select a Data Source Template.  Please select 'Return' to "
+"return to the previous menu."
+msgstr "您必须先选择一个数据源模板。按“返回”键返回上一个菜单。"
+
+msgid ""
+"You must first select a Data Source.  Please select 'Return' to return to "
+"the previous menu."
+msgstr "您必须先选择一个数据源。按“返回”键返回上一个菜单。"
+
+msgid ""
+"You must first select a Device Template.  Please select 'Return' to return "
+"to the previous menu."
+msgstr "您必须先选择一个设备模板。按“返回”键返回上一个菜单。"
+
+msgid ""
+"You must first select a Device.  Please select 'Return' to return to the "
+"previous menu."
+msgstr "您必须先选择一个设备。按“返回”键返回上一个菜单。"
+
+msgid ""
+"You must first select a Graph Template.  Please select 'Return' to return to "
+"the previous menu."
+msgstr "您必须先选择一个图形模板。按“返回”键返回上一个菜单。"
+
+msgid ""
+"You must first select a Graph.  Please select 'Return' to return to the "
+"previous menu."
+msgstr "您必须先选择一个图形。按“返回”键返回上一个菜单。"
+
+msgid ""
+"You must first select a Poller.  Please select 'Return' to return to the "
+"previous menu."
+msgstr "您必须先选择一个轮询。按“返回”键返回上一个菜单。"
+
+msgid "You must select at least one CDEF."
+msgstr "You must select at least one CDEF."
+
+msgid "You must select at least one GPRINT preset."
+msgstr "You must select at least one GPRINT preset."
+
+msgid "You must select at least one RRA."
+msgstr "You must select at least one RRA."
+
+msgid "You must select at least one VDEF."
+msgstr "You must select at least one VDEF."
+
+msgid "You must select at least one site."
+msgstr "You must select at least one site."
+
+msgid "Your passwords do not match, please retype:"
+msgstr "Your passwords do not match, please retype:"
+
+msgid "Zoom Graph"
+msgstr "Zoom Graph"
+
+msgid "Zooming Graph"
+msgstr "Zooming Graph"
+
+msgid "[None]"
+msgstr "[None]"
+
+msgid "[data input:"
+msgstr "[data input:"
+
+msgid "[device:"
+msgstr "[device:"
+
+msgid "[device: "
+msgstr "[device: "
+
+msgid "[edit graph: "
+msgstr "[edit graph: "
+
+msgid "[edit: "
+msgstr "[編集: "
+
+msgid "[edit: %s]"
+msgstr "[edit: %s]"
+
+msgid "[new]"
+msgstr "[新建]"
+
+msgid "_Sep_"
+msgstr "_Sep_"
+
+msgid "alpha"
+msgstr "alpha"
+
+msgid "and select the correct RRDTool Utility Version."
+msgstr "and select the correct RRDTool Utility Version."
+
+msgid "delete all related data sources"
+msgstr "delete all related data sources"
+
+msgid "denotes the device template to be used"
+msgstr "denotes the device template to be used"
+
+msgid "device"
+msgstr "device"
+
+msgid "direction"
+msgstr "direction"
+
+msgid "disabled"
+msgstr "disabled"
+
+msgid "file does not exist."
+msgstr "file does not exist."
+
+msgid "format"
+msgstr "format"
+
+msgid "general"
+msgstr "general"
+
+msgid "graph"
+msgstr "graph"
+
+msgid "graph_export.csv"
+msgstr "graph_export.csv"
+
+msgid "graph_template"
+msgstr "graph_template"
+
+msgid "mode"
+msgstr "mode"
+
+msgid "natural"
+msgstr "natural"
+
+msgid "no write permissions."
+msgstr "no write permissions."
+
+msgid "on:off"
+msgstr "on:off"
+
+msgid "ping timeout"
+msgstr "ping timeout"
+
+msgid "pixels"
+msgstr "pixels"
+
+msgid "poller"
+msgstr "poller"
+
+msgid "position"
+msgstr "position"
+
+msgid "snmp authentication protocol for snmpv3"
+msgstr "snmp authentication protocol for snmpv3"
+
+msgid "snmp privacy passphrase for snmpv3"
+msgstr "snmp privacy passphrase for snmpv3"
+
+msgid "snmp privacy protocol for snmpv3"
+msgstr "snmp privacy protocol for snmpv3"
+
+msgid "snmp timeout"
+msgstr "snmp timeout"
+
+msgid "snmp version"
+msgstr "snmp version"
+
+msgid "snmpbulkwalk Binary Path"
+msgstr "snmpbulkwalk 路径"
+
+msgid "snmpget Binary Path"
+msgstr "snmpget 路径"
+
+msgid "snmpgetnext Binary Path"
+msgstr "snmpgetnext 路径"
+
+msgid "snmpwalk Binary Path"
+msgstr "snmpwalk 路径"
+
+msgid "string"
+msgstr "string"
+
+msgid "the numerical ID of the graph template"
+msgstr "the numerical ID of the graph template"
+
+msgid "to Export"
+msgstr "to Export"
+
+msgid "tree"
+msgstr "tree"

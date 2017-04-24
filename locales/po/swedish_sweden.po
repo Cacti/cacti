@@ -1,0 +1,462 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-01 17:28+0200\n"
+"PO-Revision-Date: 2009-06-09 20:56+0100\n"
+"Last-Translator: Andreas Braun <browniebraun@cacti.cc>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+
+msgid "*** Forced Password Change ***"
+msgstr "*** Forcerar ändring av lösenord ***"
+
+msgid "1 Day"
+msgstr "1 dag"
+
+msgid "1 Month"
+msgstr "1 månad"
+
+msgid "1 Week"
+msgstr "1 vecka"
+
+msgid "1 Year"
+msgstr "1 år"
+
+msgid "About Cacti"
+msgstr "Om Cacti"
+
+msgid "Access Denied"
+msgstr "Åtkomst nekad"
+
+msgid "Access Denied, please contact you Cacti Administrator."
+msgstr "Åtkomst nekad, kontakta din Cacti administratör."
+
+msgid "Access Denied, user account disabled."
+msgstr "Åtkomst nekad, användarkonto avstängt."
+
+msgid "Active"
+msgstr "Aktiv"
+
+msgid "Add"
+msgstr "Lägg till"
+
+msgid "Any"
+msgstr "Vilken som helst"
+
+msgid "Are You Sure?"
+msgstr "Är du säker?"
+
+msgid "Are you sure you want to delete the field"
+msgstr "Är du säker på att du vill ta bort fältet?"
+
+msgid "Availability"
+msgstr "Åtkomstbarhet"
+
+msgid "Average (ms)"
+msgstr "Genomsnitt"
+
+msgid "Cacti Settings"
+msgstr "Inställningar för Cacti"
+
+msgid "Cacti has imported the following items:"
+msgstr "Cacti har importerat följande:"
+
+msgid "Cacti is licensed under the GNU GPL:"
+msgstr "Cacti är licensierat under GNU GPL:"
+
+msgid "Choose the exact item to export to XML."
+msgstr "Välj specifik del att exportera till XML."
+
+msgid "Choose the format to output the resulting XML file in."
+msgstr "Väj format för för den XML-fil som skrivs."
+
+msgid "Clear"
+msgstr "Rensa"
+
+msgid "Confirm:"
+msgstr "Bekräfta:"
+
+msgid "Create"
+msgstr "Skapa"
+
+msgid "Create:"
+msgstr "Skapa:"
+
+msgid "Current (ms)"
+msgstr "Nuvarande"
+
+msgid "DEBUG - Statistics, Errors, Results, I/O and Program Flow"
+msgstr "DEBUG - Statistik, fel, resultat, I/O och programflöde"
+
+msgid "Data Queries"
+msgstr "Dataförfrågningar"
+
+msgid "Data Query"
+msgstr "Dataförfrågning"
+
+msgid "Data Source"
+msgstr "Datakälla"
+
+msgid "Data Sources"
+msgstr "Datakällor"
+
+msgid "Default SNMP timeout in milli-seconds."
+msgstr "Fördefinierad SNMP timeout i millisekunder."
+
+msgid "Default UDP port to be used for SNMP Calls.  Typically 161."
+msgstr "Fördefinierad UDP-port för SNMP förfrågningar. Vanligen 161"
+
+msgid "Delete"
+msgstr "Ta bort"
+
+msgid "Description"
+msgstr "Beskrivning"
+
+msgid "Devices"
+msgstr "Enheter"
+
+msgid "Down"
+msgstr "Nere"
+
+msgid "Duplicate"
+msgstr "Duplicera"
+
+msgid "Enabled"
+msgstr "Aktiverad"
+
+msgid "Event Logging"
+msgstr "Eventloggning"
+
+msgid "Every Minute"
+msgstr "Varje minut"
+
+msgid "Export Template"
+msgstr "Exportera mall"
+
+msgid "Export Templates"
+msgstr "Exportera mallar"
+
+msgid "Found Dependency:"
+msgstr "Hittade beroende:"
+
+msgid "Function"
+msgstr "Funktion"
+
+msgid "General"
+msgstr "Allmän"
+
+msgid "Go"
+msgstr "Utför"
+
+msgid "Graph Template"
+msgstr "Grafmall"
+
+msgid "Graph Templates"
+msgstr "Grafmallar"
+
+msgid "Graph Thumbnails"
+msgstr "Miniatyrgrafer"
+
+msgid "Graph Title"
+msgstr "Graftitel"
+
+msgid "Graph Trees"
+msgstr "Grafträd"
+
+msgid "Graphs"
+msgstr "Grafer"
+
+msgid "HIGH - Statistics, Errors, Results and Major I/O Events"
+msgstr "HÖG - Statistik, fel, resultat och större I/O händelser"
+
+msgid "Hostname"
+msgstr "Värdnamn"
+
+msgid ""
+"How Cacti controls the log size.  The default is to overwrite as needed."
+msgstr ""
+"Hur Cacti kontrollerar loggstorleken. Normalt är att skriva över om det "
+"behövs."
+
+msgid "How will Cacti handle event logging."
+msgstr "Hur Cacti hanterar eventloggning."
+
+msgid ""
+"If the XML file containing template data is located on your local machine, "
+"select it here."
+msgstr ""
+"Om XML-filen som innehåller mallen finns på din lokala maskin, välj den här."
+
+msgid "Import Results"
+msgstr "Importera resultat"
+
+msgid "Import Template from Local File"
+msgstr "Importera mall från lokal fil"
+
+msgid "Import Template from Text"
+msgstr "Importera mall från text"
+
+msgid "Import Templates"
+msgstr "Importera mallar"
+
+msgid "Include Dependencies"
+msgstr "Inkludera beroenden"
+
+msgid "Input Type"
+msgstr "Typ"
+
+msgid "LDAP Error: "
+msgstr "LDAP fel:"
+
+msgid "LDAP Search Error: "
+msgstr "LDAP sökfel:"
+
+msgid "LOW - Statistics and Errors"
+msgstr "LÅG - Statistik och fel"
+
+msgid "License"
+msgstr "Licens"
+
+msgid "List View"
+msgstr "Listvy"
+
+msgid "Logged in as"
+msgstr "Inloggad som"
+
+msgid "Logging"
+msgstr "Loggning"
+
+msgid "Login"
+msgstr "Logga in"
+
+msgid "Logout"
+msgstr "Logga ut"
+
+msgid "Logout User"
+msgstr "Logga ut användare"
+
+msgid "MEDIUM - Statistics, Errors and Results"
+msgstr "MEDIUM - Statistik, fel och resultat"
+
+msgid "Maximum Log Size"
+msgstr "Maximal loggstorlek"
+
+msgid "Maximum Retention Period"
+msgstr "Maximal kvarhållningsperiod"
+
+msgid "NONE - Syslog Only if Selected"
+msgstr "INGEN - Enbart syslog om vald"
+
+msgid "Name"
+msgstr "Namn"
+
+msgid "New Graphs"
+msgstr "Nya grafer"
+
+msgid "Next"
+msgstr "Nästa"
+
+msgid "No"
+msgstr "Nej"
+
+msgid "No Data Sources"
+msgstr "Inga datakällor"
+
+msgid "No Graphs Found"
+msgstr "Inga grafer funna"
+
+msgid "No Host"
+msgstr "Ingen värd"
+
+msgid "No Hosts"
+msgstr "Inga värdar"
+
+msgid "None"
+msgstr "Ingen"
+
+msgid "Output Format"
+msgstr "Format för utdata"
+
+msgid "Output to the Browser (raw XML)"
+msgstr "Skriv direkt till webbläsaren (rå XML)"
+
+msgid "Output to the Browser (within Cacti)"
+msgstr "Skriv direkt till webbläsaren (i Cacti)"
+
+msgid "Overwrite events as needed"
+msgstr "Skriv över händelse om det behövs"
+
+msgid "Overwrite events older than the maximum days"
+msgstr "Skriv över händelser äldre än maximal kvarhållningsperiod"
+
+msgid "Password:"
+msgstr "Lösenord:"
+
+msgid "Please enter a new password for cacti:"
+msgstr "Skriv in ett nytt lösenord för cacti:"
+
+msgid "Please enter your Cacti user name and password below:"
+msgstr "Skriv in ditt Cacti användarnamn och lösenord nedan:"
+
+msgid "Poller Warnings"
+msgstr "Insamlingsvarningar"
+
+msgid "Pollers"
+msgstr "Insamlare"
+
+msgid "Preview View"
+msgstr "Förhandsgrandskning"
+
+msgid "Previous"
+msgstr "Föregående"
+
+msgid "Prompt user before item deletion."
+msgstr "Fråga användare innan borttagning av något i Cacti."
+
+msgid "RRDTool Utility Version"
+msgstr "RRDTool version"
+
+msgid "Recovering"
+msgstr "Påväg upp"
+
+msgid "Reload Associated Query"
+msgstr "Ladda om associerad fråga"
+
+msgid "Required Tool Versions"
+msgstr "Versioner på verktyg som krävs"
+
+msgid "Return to Cacti"
+msgstr "Återgå till Cacti"
+
+msgid "Rows"
+msgstr "Rader"
+
+msgid "SNMP Utility Version"
+msgstr "SNMP version"
+
+msgid "Save"
+msgstr "Spara"
+
+msgid "Save File Locally"
+msgstr "Spara fil lokalt"
+
+msgid "Search:"
+msgstr "Sök:"
+
+msgid "Select All"
+msgstr "Markera alla"
+
+msgid "Showing Rows"
+msgstr "Visar rader"
+
+msgid "Size"
+msgstr "Storlek"
+
+msgid "Steps"
+msgstr "Steg"
+
+msgid "Stop logging if maximum log size is exceeded"
+msgstr "Sluta logga om max loggstorlek nås"
+
+msgid "System Utilities"
+msgstr "Systemtillbehör"
+
+msgid "Template Name"
+msgstr "Mallnamn"
+
+msgid "Template Title"
+msgstr "Mallens titel"
+
+msgid ""
+"The type of SNMP you have installed.  Required if you are using SNMP v2c or "
+"don't have embedded SNMP support in PHP."
+msgstr ""
+"Anger vilken typ av SNMP du har installerad. Behövs om du använder SNMP v2c "
+"eller om du inte har inbyggd SNMP support i PHP."
+
+msgid "The version of RRDTool that you have installed."
+msgstr "Versionen av RRDTool som är installerad."
+
+msgid "This script is only meant to run at the command line."
+msgstr "Detta scriptet skall endast köras i ett skal."
+
+msgid "Timespan"
+msgstr "Tidsspann"
+
+msgid "To end your Cacti session please close your web browser."
+msgstr "För att avsluta din Cacti session, stäng ner din webbläsare."
+
+msgid "Tree View"
+msgstr "Trädvy"
+
+msgid "Unknown"
+msgstr "Okänd"
+
+msgid "Unmet Dependency:"
+msgstr "Hittade ej beroende:"
+
+msgid "Up"
+msgstr "Uppe"
+
+msgid "Update Data Sources"
+msgstr "Uppdatera datakällor"
+
+msgid "Update Graphs"
+msgstr "Uppdatera grafer"
+
+msgid "Update this Field"
+msgstr "Uppdatera det här fältet"
+
+msgid "User Account Disabled"
+msgstr "Användare spärrad"
+
+msgid "User Administration"
+msgstr "Användaradministration"
+
+msgid "User Management"
+msgstr "Användarhantering"
+
+msgid "User Name:"
+msgstr "Användarnamn:"
+
+msgid "Utilities"
+msgstr "Tillbehör"
+
+msgid "Value"
+msgstr "Värde"
+
+msgid "View Graphs"
+msgstr "Se grafer"
+
+msgid "What would you like to export?"
+msgstr "Vad vill du exportera?"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "Your passwords do not match, please retype:"
+msgstr "Dina lösenord matchar inte, prova igen:"
+
+msgid "[edit: "
+msgstr "[redigera: "
+
+msgid "[fail]"
+msgstr "[lyckades ej]"
+
+msgid "[new]"
+msgstr "[nytt]"
+
+msgid "[success]"
+msgstr "[lyckad]"
+
+msgid "[update]"
+msgstr "[uppdatera]"
+
+msgid "of"
+msgstr "av"
