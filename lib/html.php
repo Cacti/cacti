@@ -1055,6 +1055,14 @@ function draw_menu($user_menu = "") {
 			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$glyph<span>$header_name</span></a>\n";
 			print "<ul role='menu' id='${id}_div' style='display:block;'>\n";
 
+			/* break out the URL and variables */
+			$url_array = parse_url($_SERVER['REQUEST_URI']);
+			if (isset($url_array['query'])) {
+				parse_str($url_array['query'], $url_parts);
+			}else{
+				$url_parts = array();
+			}
+
 			/* pass 2: loop through each top level item and render it */
 			foreach ($header_array as $item_url => $item_title) {
 				$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
@@ -1078,7 +1086,7 @@ function draw_menu($user_menu = "") {
 							/* always draw the first item (parent), only draw the children if we are viewing a page
 							that is contained in the sub-items array */
 							if (($i == 0) || ($draw_sub_items)) {
-								if (get_current_page() == basename($item_sub_url)) {
+								if (basename($url_array['path']) == basename($item_sub_url) && (!isset($url_parts['action']) || strpos($url_array['query'], 'action=' . $url_parts['action']) !== false)) {
 									print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
 								}else{
 									print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
@@ -1092,7 +1100,8 @@ function draw_menu($user_menu = "") {
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames{basename($item_url)})) {
 						/* draw normal (non sub-item) menu item */
 						$item_url = $config['url_path'] . $item_url;
-						if (get_current_page() == basename($item_url)) {
+//						if (get_current_page() == basename($item_url)) {
+						if (basename($url_array['path']) == basename($item_url) && (!isset($url_parts['action']) || strpos($url_array['query'], 'action=' . $url_parts['action']) !== false)) {
 							print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
 						}else{
 							print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";

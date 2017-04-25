@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.1.5
 -issue#580: Data collection warnings when using cmd.php
 -issue#606: Replace <path_php_binary> in data input methods
+-issue#607: Allow draw_menu to specify multiple actions for the same URL
 -issue#608: Spaces adjacent to double quotes are eliminated during data input method import
 -issue#609: Honor the column setting in graph tree view mode
 -issue#610: Change Graph Template action not available
