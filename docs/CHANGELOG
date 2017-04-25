@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#611: Cacti Installation Wizard - Spine page incorrect on Windows
 -issue#612: Uncaught Error: Call to a member function row() on a string
 -issue#613: Network Automation, now requires a site or your are unable to save rules
+-issue#619: Export logging option in settings no longer used
 
 1.1.4
 -issue#524: Reporting not working when Tree branch is device
