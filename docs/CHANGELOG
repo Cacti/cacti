@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#608: Spaces adjacent to double quotes are eliminated during data input method import
 -issue#609: Honor the column setting in graph tree view mode
 -issue#610: Change Graph Template action not available
+-issue#613: Network Automation, now requires a site or your are unable to save rules
 
 1.1.4
 -issue#524: Reporting not working when Tree branch is device
