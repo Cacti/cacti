@@ -643,6 +643,10 @@ function dsstats_poller_output(&$rrd_update_array) {
 							$last_delim = ', ';
 						}
 
+						if ($currentval == '') {
+							$currentval = 'NULL';
+						}
+
 						/* setupt the output buffer for the cache first */
 						$cachebuf .=
 							$cache_delim . '(' .
@@ -743,11 +747,11 @@ function dsstats_memory_limit() {
 function dsstats_poller_bottom () {
 	global $config;
 
-	include_once($config['library_path'] . '/poller.php');
-
-	chdir($config['base_path']);
-
 	if (read_config_option('dsstats_enable') == 'on') {
+		include_once($config['library_path'] . '/poller.php');
+
+		chdir($config['base_path']);
+
 		$command_string = read_config_option('path_php_binary');
 		if (read_config_option('path_dsstats_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
@@ -762,4 +766,3 @@ function dsstats_poller_bottom () {
 		exec_background($command_string, $extra_args);
 	}
 }
-

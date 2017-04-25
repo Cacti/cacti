@@ -72,8 +72,8 @@ function form_save() {
 
 	// Save the users graph settings if they have permission
 	if (is_view_allowed('graph_settings') == true) {
-		while (list($tab_short_name, $tab_fields) = each($settings_user)) {
-			while (list($field_name, $field_array) = each($tab_fields)) {
+		foreach ($settings_user as $tab_short_name => $tab_fields) {
+			foreach ($tab_fields as $field_name => $field_array) {
 				/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
 				if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_nfilter_request_var($field_name))) {
 					set_request_var($field_name, $field_array['default']);
@@ -86,7 +86,7 @@ function form_save() {
 						db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $field_name));
 					}
 				}elseif ($field_array['method'] == 'checkbox_group') {
-					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						if (isset_request_var($sub_field_name)) {
 							db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $sub_field_name));
 						}else{
@@ -101,7 +101,7 @@ function form_save() {
 						db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
 					}
 				}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						if (isset_request_var($sub_field_name)) {
 							db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_nfilter_request_var($sub_field_name)));
 						}
@@ -238,18 +238,18 @@ function settings() {
 
 		html_start_box( __('User Settings'), '100%', '', '3', 'center', '');
 
-		while (list($tab_short_name, $tab_fields) = each($settings_user)) {
+		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			$collapsible = true;
 
 			print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><td colspan='2' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
 
 			$form_array = array();
 
-			while (list($field_name, $field_array) = each($tab_fields)) {
+			foreach ($tab_fields as $field_name => $field_array) {
 				$form_array += array($field_name => $tab_fields[$field_name]);
 
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						if (graph_config_value_exists($sub_field_name, $_SESSION['sess_user_id'])) {
 							$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 						}

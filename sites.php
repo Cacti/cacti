@@ -33,6 +33,7 @@ $fields_site_edit = array(
 	'spacer0' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Site Information'),
+		'collapsible' => 'true'
 	),
 	'name' => array(
 		'method' => 'textbox',
@@ -248,7 +249,7 @@ function form_actions() {
 	$site_list = ''; $i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -416,7 +417,7 @@ function sites() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'sites.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+				strURL = 'sites.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 				loadPageNoHeader(strURL);
 			}
 

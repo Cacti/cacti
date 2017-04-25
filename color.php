@@ -155,16 +155,17 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$color_list = ''; $i = 0;
+	$color_list = '';
+	$i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array($matches[1]));
+			$color = db_fetch_row_prepared('SELECT name, hex FROM colors WHERE id = ?', array($matches[1]));
 
 			$color_list .= '<li>' . ($color['name'] != '' ? htmlspecialchars($color['name']): __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
 			$color_array[$i] = $matches[1];
@@ -575,7 +576,7 @@ function color() {
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
-				strURL = 'color.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&named='+$('#named').is(':checked')+'&header=false';
+				strURL = 'color.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&named='+$('#named').is(':checked')+'&header=false';
 				loadPageNoHeader(strURL);
 			}
 

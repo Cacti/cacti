@@ -1,5 +1,47 @@
 Cacti CHANGELOG
 
+1.1.5
+-issue#580: Data collection warnings when using cmd.php
+-issue#592: Incorrectly formatted HTML
+-issue#606: Replace <path_php_binary> in data input methods
+-issue#607: Allow draw_menu to specify multiple actions for the same URL
+-issue#608: Spaces adjacent to double quotes are eliminated during data input method import
+-issue#609: Honor the column setting in graph tree view mode
+-issue#610: Change Graph Template action not available
+-issue#611: Cacti Installation Wizard - Spine page incorrect on Windows
+-issue#612: Uncaught Error: Call to a member function row() on a string
+-issue#613: Network Automation, now requires a site or your are unable to save rules
+-issue#615: Data Input field length too short for longer scripts
+-issue#619: Export logging option in settings no longer used
+
+1.1.4
+-issue#524: Reporting not working when Tree branch is device
+-issue#560: Add 'Duplicate' and 'Convert to Graph Template' back to Graph Management page for Advanced mode
+-issue#573: Missing Graph Template dropdown items
+-issue#575: Very large hex strings result in scientific notation that RRDtool rejects
+-issue#579: Problems logging in using nginx web server
+-issue#581: session_start() warnings when manually sending reports
+-issue#584: Issues reporting memory recommendation on utilities page
+-issue#586: Overrunning pollers can cause system load spikes
+-issue#587: Data Collector setting under Network Discovery is not being used
+-issue#588: Devices with blank sysDescr are added to the first Device Template in error
+-issue#589: Automation discovery does not allow site association
+-issue#590: Unable to create a plugin based menu
+-issue#591: Row selection in Device Automation Templates not sane with drag-n-drop enabled
+-issue#601: Resolving some translation issues
+-issue#604: Unexpected backtrace on regular expression filters
+-issue#605: Remove Spikes non-numeric data causes warnings
+-issue: Ping email does not use a from email address
+-issue: Automation does not recognize default size or poller
+-issue: Unable to drag-n-drop on automation templates pages when enabled
+-issue: Fixed number of hosts in poller stats for first poller
+-issue: Fixed screenwidth issue in tab PHP-Info of Utilities module
+-issue: Recovery poller could get stuck in some situations
+-issue: Fix JavaScript errors when managing Aggregate Graphs
+-feature: Reorganize defaults to place more on device defaults page
+-feature: Update jQuery tableDnD to version 0.9
+-feature: More tolerant of empty PHP_SELF found with some web servers
+
 1.1.3
 -issue#515: Unable to import color CSV file
 -issue#519: In non-classic themes its not possible to remove Cacti log or reporting tabs
@@ -8,12 +50,16 @@ Cacti CHANGELOG
 -issue#525: LAST GPRINT type not rendered correctly due to lack of escaping
 -issue#530: Undefined function get_vdef in lib/rrd.php
 -issue#531: Issues with TextAlign and Tick graph items
--issue#532: Unreliable scroll height casues issues in Chrome
+-issue#532: Unreliable scroll height causes issues in Chrome
 -issue#533: User settings not cleared after saving profile
 -issue#534: Automation issue with AS clause
 -issue#538: Unable to rename tree folder
--issue: Problem rendering some HRULE's on a graph
+-issue#541: Issues with mobile graph viewing
+-issue#555: DSStats SQL insert errors due to data collection issues
+-issue#563: Division by zero in removespikes.php
+-issue: Fixed rendering issues with HRULE's on graphs
 -issue: Update jsTree to 3.3.4 version
+-feature: Improved responsiveness UI tables, filters, and menus
 
 1.1.2
 -issue#492: Error while adding non data query (cg) graphs

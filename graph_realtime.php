@@ -218,7 +218,9 @@ $selectedTheme = get_selected_theme();
 <html>
 <head>
     <meta http-equiv='X-UA-Compatible' content='edge'>
-    <meta content='width=720, initial-scale=1.2, maximum-scale=1.2, minimum-scale=1.2' name='viewport'>
+	<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>
+	<meta name='apple-mobile-web-app-capable' content='yes'>
+	<meta name='mobile-web-app-capable' content='yes'>
 	<title><?php print __('Cacti Real-time Graphing');?></title>
     <meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
     <link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/main.css' type='text/css' rel='stylesheet'>

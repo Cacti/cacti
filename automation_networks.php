@@ -138,6 +138,7 @@ function api_networks_save($post) {
 		/* general information */
 		$save['name']          = form_input_validate($post['name'], 'name', '', false, 3);
 		$save['poller_id']     = form_input_validate($post['poller_id'], 'poller_id', '^[0-9]+$', false, 3);
+		$save['site_id']       = form_input_validate($post['site_id'], 'site_id', '^[0-9]+$', false, 3);
 		$save['subnet_range']  = form_input_validate($post['subnet_range'], 'subnet_range', '', false, 3);
 		$save['dns_servers']   = form_input_validate($post['dns_servers'], 'dns_servers', '', true, 3);
 
@@ -285,7 +286,7 @@ function form_actions() {
 	$networks_list = ''; $i = 0;
 
 	/* loop through each of the device types selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -392,6 +393,7 @@ function network_edit() {
 	'spacer0' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('General Settings'),
+		'collapsible' => 'true'
 		),
 	'name' => array(
 		'method' => 'textbox',
@@ -408,6 +410,15 @@ function network_edit() {
 		'value' => '|arg1:poller_id|',
 		'default' => read_config_option('default_poller'),
 		'sql' => 'SELECT id, name FROM poller ORDER BY name',
+		),
+	'site_id' => array(
+		'method' => 'drop_sql',
+		'friendly_name' => __('Associated Site'),
+		'description' => __('Choose the Cacti Site that you wish to associate discovered Devices with.'),
+		'value' => '|arg1:site_id|',
+		'default' => read_config_option('default_site'),
+		'sql' => 'SELECT id, name FROM sites ORDER BY name',
+		'none_value' => __('None')
 		),
 	'subnet_range' => array(
 		'method' => 'textarea',
@@ -508,6 +519,7 @@ function network_edit() {
 	'spacer2' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Discovery Timing'),
+		'collapsible' => 'true'
 		),
 	'start_at' => array(
 		'method' => 'textbox',
@@ -611,6 +623,7 @@ function network_edit() {
 	'spacer1' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Reachability Settings'),
+		'collapsible' => 'true'
 		),
 	'snmp_id' => array(
 		'method' => 'drop_sql',
@@ -1078,7 +1091,7 @@ function networks_filter() {
 			<script type='text/javascript'>
 			function applyFilter() {
 				strURL  = '?rows=' + $('#rows').val();
-				strURL += '&filter=' + $('#filter').val();
+				strURL += '&filter=' + escape($('#filter').val());
 				strURL += '&page=' + $('#page').val();
 				strURL += '&header=false';
 

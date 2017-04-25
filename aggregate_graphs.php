@@ -179,14 +179,16 @@ function form_save() {
 				db_fetch_assoc_prepared('SELECT id, sequence 
 					FROM graph_templates_item 
 					WHERE local_graph_id=0 
-					AND graph_template_id = ?', array($graph_template_id)),
+					AND graph_template_id = ?
+					ORDER BY sequence', array($graph_template_id)),
 				'id', array('sequence')
 			);
 			/* get existing aggregate template items */
 			$aggregate_graph_items_old = array_rekey(
 				db_fetch_assoc_prepared('SELECT * 
 					FROM aggregate_graphs_graph_item 
-					WHERE aggregate_graph_id = ?', array($aggregate_graph_id)),
+					WHERE aggregate_graph_id = ?
+					ORDER BY sequence', array($aggregate_graph_id)),
 				'graph_templates_item_id', array('aggregate_graph_id', 'graph_templates_item_id', 'sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total')
 			);
 
@@ -195,6 +197,7 @@ function form_save() {
 
 			$items_changed = false;
 			$items_to_save = array();
+			$sequence = 1;
 			foreach($graph_templates_items as $item_id => $data) {
 				$item_new = array();
 				$item_new['aggregate_graph_id'] = $aggregate_graph_id;
@@ -203,7 +206,7 @@ function form_save() {
 				$item_new['color_template'] = isset($data['color_template']) ? $data['color_template']:0;
 				$item_new['item_skip']      = isset($data['item_skip']) ? 'on':'';
 				$item_new['item_total']     = isset($data['item_total']) ? 'on':'';
-				$item_new['sequence']       = isset($data['sequence']) ? $data['sequence']:-1;
+				$item_new['sequence']       = $sequence;
 
 				/* compare with old item to see if we need to push out. */
 				if (!isset($aggregate_graph_items_old[$item_id])) {
@@ -220,11 +223,12 @@ function form_save() {
 					$item_new = array_merge($aggregate_graph_items_old[$item_id], $item_new);
 				}
 				$items_to_save[] = $item_new;
+
+				$sequence++;
 			}
 
 			if ($items_changed) {
 				aggregate_graph_items_save($items_to_save, 'aggregate_graphs_graph_item');
-
 			}
 
 			if ($save_me || $items_changed) {
@@ -285,7 +289,7 @@ function form_actions() {
 	$graph_list = ''; $i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -319,8 +323,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Graph(s)') . "'>";
 		}elseif (get_request_var('drp_action') == '2') { /* migrate to aggregate */
 			/* determine the common graph template if any */
-			reset($_POST);
-			while (list($var,$val) = each($_POST)) {
+			foreach ($_POST as $var => $val) {
 				if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 					$local_graph_ids[] = $matches[1];
 				}
@@ -618,7 +621,7 @@ function graph_edit() {
 		html_start_box(__('Aggregate Preview [%s]', $header_label), '100%', '', '3', 'center', '');
 		?>
 		<tr class='even'><td class='center'>
-			<img src='<?php print htmlspecialchars($config['url_path'] . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id'));?>' alt=''>
+			<img src='<?php print htmlspecialchars($config['url_path'] . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&random=' . mt_rand());?>' alt=''>
 		</td></tr>
 		<?php
 		if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {
@@ -683,11 +686,9 @@ function graph_edit() {
 				'#total_type',
 				'#total_prefix',
 				'#order_type',
-
-				'select[name^="agg_color"]',
-				'input[name^="agg_total"]',
-				'input[name^="agg_skip"]',
-
+				'select[id^="agg_color"]',
+				'input[id^="agg_total"]',
+				'input[id^="agg_skip"]',
 				'#image_format_id',
 				'#height',
 				'#width',
@@ -704,7 +705,6 @@ function graph_edit() {
 				'#base_value',
 				'#unit_value',
 				'#unit_exponent_value',
-
 				'#alt_y_grid',
 				'#right_axis',
 				'#right_axis_label',
@@ -730,19 +730,79 @@ function graph_edit() {
 					$('#row_template_propogation').hide();
 					$('#row_spacer0').hide();
 				}
+
+				$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
+					id = $(this).attr('id');
+
+					if (id.indexOf('skip') > 0) {
+						altId = id.replace('skip', 'total');
+					}else{
+						altId = id.replace('total', 'skip');
+					}
+
+					if ($('#'+id).is(':checked')) {
+						$('#'+altId).prop('checked', false);
+					}else{
+						$('#'+altId).prop('checked', true);
+					}
+
+					changeTotals();
+				});
+
+				$('#total').change(function() {
+					changeTotals();
+				});
+
+				$('#total_type').change(function() {
+					changeTotalsType();
+				});
+
+				$('#template_propogation').change(function() {
+					if (!$('#template_propogation').is(':checked')) {
+						for (var i = 0; i < templated_selectors.length; i++) {
+							$(templated_selectors[i]).prop('disabled', false);
+						}
+					}else{
+						for (var i = 0; i < templated_selectors.length; i++) {
+							$(templated_selectors[i]).prop('disabled', true);
+						}
+					}
+				});
 			});
 
-			$('#template_propogation').change(function() {
-				if (!$('#template_propogation').is(':checked')) {
-					for (var i = 0; i < templated_selectors.length; i++) {
-						$( templated_selectors[i] ).prop('disabled', false);
+			function changeTotals() {
+				switch ($('#total').val()) {
+					case '<?php print AGGREGATE_TOTAL_NONE;?>':
+						$('#row_total_type').hide();
+						$('#row_total_prefix').hide();
+						$('#row_order_type').show();
+						break;
+					case '<?php print AGGREGATE_TOTAL_ALL;?>':
+						$('#row_total_type').show();
+						$('#row_total_prefix').show();
+						$('#row_order_type').show();
+						changeTotalsType();
+						break;
+					case '<?php print AGGREGATE_TOTAL_ONLY;?>':
+						$('#row_total_type').show();
+						$('#row_total_prefix').show();
+						//$('#order_type').prop('disabled', true);
+						changeTotalsType();
+						break;
+				}
+			}
+
+			function changeTotalsType() {
+				if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR;?>) {
+					if ($('#total_prefix').val() == '') {
+						$('#total_prefix').attr('value', '<?php print __('Total');?>');
 					}
-				}else{
-					for (var i = 0; i < templated_selectors.length; i++) {
-						$( templated_selectors[i] ).prop('disabled', true);
+				} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL;?>) {
+					if ($('#total_prefix').val() == '') {
+						$('#total_prefix').attr('value', '<?php print __('All Items');?>');
 					}
 				}
-			});
+			}
 			</script>
 			<?php
 			print '</div>';
@@ -766,7 +826,7 @@ function graph_edit() {
 
 			$form_array = array();
 
-			while (list($field_name, $field_array) = each($struct_graph)) {
+			foreach ($struct_graph as $field_name => $field_array) {
 				if ($field_array['method'] != 'spacer') {
 					if ($field_name != 'title') {
 						$form_array += array($field_name => $struct_graph[$field_name]);
@@ -903,7 +963,7 @@ function aggregate_items() {
 		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&matching=' + $('#matching').is(':checked');
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -1221,7 +1281,7 @@ function aggregate_graph() {
 		strURL  = 'aggregate_graphs.php';
 		strURL += '?rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);

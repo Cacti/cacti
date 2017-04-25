@@ -257,6 +257,9 @@ print "<html>\n";
 print "<head>\n";
 print "\t<title>" . __('Change Password') . "</title>\n";
 print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
+print "\t<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>\n";
+print "\t<meta name='apple-mobile-web-app-capable' content='yes'>\n";
+print "\t<meta name='mobile-web-app-capable' content='yes'>\n";
 print "\t<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>\n";
 print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
 print "\t<link href='" . $config['url_path'] . "include/" .  "/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>\n";
@@ -279,7 +282,7 @@ print "<body class='loginBody'>
 		<div class='loginArea'>
 			<div class='cactiLogoutLogo'></div>
 			<legend>" . __('Change Password') . "</legend>
-			<form name='login' method='post' action='" . basename($_SERVER['PHP_SELF']) . "'>
+			<form name='login' method='post' action='" . get_current_page() . "'>
 				<input type='hidden' name='action' value='changepassword'>
 				<input type='hidden' name='ref' value='" . sanitize_uri(get_request_var('ref')) . "'>
 				<input type='hidden' name='name' value='" . (isset($user['username']) ? $user['username'] : '') . "'>

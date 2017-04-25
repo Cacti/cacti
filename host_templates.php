@@ -135,8 +135,7 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 	$save['id']   = 0;
 	$save['hash'] = get_hash_host_template(0);
 
-	reset($fields_host_template_edit);
-	while (list($field, $array) = each($fields_host_template_edit)) {
+	foreach ($fields_host_template_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method'])) {
 			$save[$field] = $host_template[$field];
 		}
@@ -231,7 +230,7 @@ function form_actions() {
 	$host_list = ''; $i = 0;
 
 	/* loop through each of the host templates selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -737,7 +736,7 @@ function template() {
 		</td>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'host_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_hosts='+$('#has_hosts').is(':checked')+'&header=false';
+			strURL = 'host_templates.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_hosts='+$('#has_hosts').is(':checked')+'&header=false';
 			loadPageNoHeader(strURL);
 		}
 

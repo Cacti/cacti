@@ -102,7 +102,7 @@ function form_actions() {
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('associate_host')) {
-		while (list($var,$val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -126,7 +126,7 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_graph')) {
-		while (list($var,$val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -150,7 +150,7 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_template')) {
-		while (list($var,$val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -174,7 +174,7 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_groups')) {
-		while (list($var,$val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -197,7 +197,7 @@ function form_actions() {
 		header('Location: user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_nfilter_request_var('id'));
 		exit;
 	}elseif (isset_request_var('associate_tree')) {
-		while (list($var,$val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
@@ -307,7 +307,7 @@ function form_actions() {
 	$user_list = '';
 	$user_array = array();
 	$i = 0;
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -606,7 +606,7 @@ function form_save() {
 	}elseif (isset_request_var('save_component_realm_perms')) {
 		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', array(get_nfilter_request_var('id')));
 
-		while (list($var, $val) = each($_POST)) {
+		foreach ($_POST as $var => $val) {
 			if (preg_match('/^[section]/i', $var)) {
 				if (substr($var, 0, 7) == 'section') {
 					db_execute_prepared('REPLACE INTO user_auth_realm 
@@ -621,10 +621,10 @@ function form_save() {
 
 		raise_message(1);
 	}elseif (isset_request_var('save_component_graph_settings')) {
-		while (list($tab_short_name, $tab_fields) = each($settings_user)) {
-			while (list($field_name, $field_array) = each($tab_fields)) {
+		foreach ($settings_user as $tab_short_name => $tab_fields) {
+			foreach ($tab_fields as $field_name => $field_array) {
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-					while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						db_execute_prepared('REPLACE INTO settings_user 
 							(user_id, name, value) 
 							VALUES (?, ?, ?)', 
@@ -1686,9 +1686,8 @@ function user_realms_edit($header_label) {
 			print "<td class='realms' colspan='" . (5-$j) . "'></td>\n";
 			print "</tr>\n";
 		}
-
-		print "</table></td></tr>\n";
 	}
+	print "</tr></table></td></tr>\n";
 
 	/* do plugin realms */
 	$realms = db_fetch_assoc('SELECT pc.name, pr.id AS realm_id, pr.display
@@ -1790,18 +1789,18 @@ function settings_edit($header_label) {
 
 	html_start_box(__('User Settings %s', $header_label), '100%', '', '3', 'center', '');
 
-	while (list($tab_short_name, $tab_fields) = each($settings_user)) {
+	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		$collapsible = true;
 
         print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><td colspan='2' style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
 
 		$form_array = array();
 
-		while (list($field_name, $field_array) = each($tab_fields)) {
+		foreach ($tab_fields as $field_name => $field_array) {
 			$form_array += array($field_name => $tab_fields[$field_name]);
 
 			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-				while (list($sub_field_name, $sub_field_array) = each($field_array['items'])) {
+				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 					if (graph_config_value_exists($sub_field_name, get_request_var('id'))) {
 						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 					}
@@ -2130,7 +2129,7 @@ function user() {
 
 	function applyFilter() {
 		strURL  = 'user_admin.php?rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -2482,7 +2481,7 @@ function graph_filter($header_label) {
 		strURL += '&page=' + $('#page').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2591,7 +2590,7 @@ function group_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2679,7 +2678,7 @@ function device_filter($header_label) {
 		strURL += '&page=' + $('#page').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2784,7 +2783,7 @@ function template_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2871,7 +2870,7 @@ function tree_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2958,7 +2957,7 @@ function member_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}

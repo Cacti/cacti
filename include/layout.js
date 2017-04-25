@@ -36,7 +36,14 @@ var lastPage=null;
 var statePushed=false;
 var popFired=false;
 var hostInfoHeight=0;
+var menuOpen = null;
+var menuHideResponsive = null;
+var marginLeft = null;
 var pageName;
+var columnsHidden = 0;
+var lastColumnsHidden = {};
+var lastWidth = {};
+var lastMain = 0;
 
 var isMobile = {
 	Android: function() {
@@ -58,6 +65,31 @@ var isMobile = {
 		return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
 	}
 };
+
+/* simple ajax request queueing */
+jQuery.ajaxQ = (function(){
+	var id = 0, Q = {};
+
+	jQuery(document).ajaxSend(function(e, jqx){
+		jqx._id = ++id;
+		Q[jqx._id] = jqx;
+	});
+
+	jQuery(document).ajaxComplete(function(e, jqx){
+		delete Q[jqx._id];
+	});
+
+	return {
+		abortAll: function(){
+		var r = [];
+		jQuery.each(Q, function(i, jqx){
+			r.push(jqx._id);
+			jqx.abort();
+		});
+		return r;
+		}
+	};
+})();
 
 /** basename - this function will return the basename
  *  of the php script called
@@ -127,7 +159,7 @@ $.fn.bindFirst = function(which, handler) {
 	registered.unshift(registered.pop());
 
 	events[which] = registered;
-}
+};
 
 /** replaceOptions - function replaces the options in a select dropdown */
 $.fn.replaceOptions = function(options, selected) {
@@ -149,7 +181,7 @@ $.fn.replaceOptions = function(options, selected) {
 		}
 		self.append($option);
 	});
-}
+};
 
 /** textWidth - This function will return the natural width of a string
  *  without any wrapping. */
@@ -164,7 +196,7 @@ $.fn.textWidth = function(text){
 	var width = html.width();
 	html.remove();
 	return width;
-}
+};
 
 /** classes - This function will return an array of all
  *  classes of an element */
@@ -261,7 +293,7 @@ $.tablesorter.addParser({
 (function($) {
     $.fn.hasScrollBar = function() {
         return this.get(0).scrollHeight > this.outerHeight();
-    }
+    };
 })(jQuery);
 
 /** Mini jquery plugin to create a bind to show/hide events */
@@ -457,6 +489,8 @@ function cactiReturnTo(href) {
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attrbute 'on()' */
 function applySkin() {
+	pageName = basename($(location).attr('pathname'));
+
 	if (typeof requestURI !== 'undefined') {
 		pushState(myTitle, requestURI);
 	}
@@ -504,6 +538,10 @@ function applySkin() {
 		themeReady();
 	}
 
+	tuneFilter();
+
+	setupResponsiveMenuAndTabs();
+
 	// Add tooltips to graph drilldowns
 	$('.drillDown').tooltip({
 		content: function() {
@@ -536,12 +574,265 @@ function applySkin() {
 		shiftPressed = event.shiftKey;
 	});
 
-	pageName = basename(document.location.pathname);
-
 	// remove stray tooltips
 	$(document).tooltip('close');
 
 	$('#main').show();
+
+	var showPage = $('#main').map(function(i, el) {
+		var dfd = $.Deferred();
+		$(el).show(function() {
+			dfd.resolve();
+		});
+
+		return dfd;
+	});
+
+	$.when.apply(this, showPage).done(function() {
+		responsiveMenu(null);
+	});
+}
+
+function setupResponsiveMenuAndTabs() {
+	$('a[id^="maintab-anchor"]').unbind().click(function(event) {
+		event.preventDefault();
+
+		if ($('.cactiTreeNavigationArea').length > 0) {
+			tree = true;
+		}else{
+			tree = false;
+		}
+
+		if ($(this).hasClass('selected')) {
+			if (menuOpen) {
+				menuHide(tree);
+			}else{
+				menuShow(tree);
+			}
+		}else if (pageName == basename($(this).attr('href'))) {
+			if (menuOpen) {
+				menuHide(tree);
+			}else{
+				menuShow(tree);
+			}
+		}else{
+			document.location = $(this).attr('href');
+		}
+	});	
+
+	$(window).resize(function(event) {
+		responsiveMenu(event);
+	});
+
+	$(window).on('orientationchange', function() {
+		responsiveMenu(null);
+	});
+}
+
+function responsiveMenu(event) {
+	if ($('.cactiTreeNavigationArea').length > 0) {
+		tree = true;
+	}else{
+		tree = false;
+	}
+
+	if (event == null) {
+		if (lastMain > 0) {
+			mainWidth = lastMain;
+		}else{
+			mainWidth = $('#main').width();
+		}
+	}else{
+		mainWidth = $('#main').width();
+	}
+
+	if ($(window).width() < 780) {
+		menuHide(tree);
+		menuHideResponsive = true;
+	}else if (menuHideResponsive == true) {
+		if (!menuOpen) {
+			menuShow(tree);
+			menuHideResponsive = false;
+		}
+	}else if (menuOpen != null) {
+		if (!menuOpen) {
+			menuHide(tree);
+		}
+	}else if (!menuOpen) {
+		menuShow(tree);
+	}
+
+	if (event != null && !$(event.target).hasClass('ui-resizable')) {
+		height = Math.max(document.body.scrollHeight, $(window).height());
+		if (tree) {
+			$('.cactiTreeNavigationArea').css('height', height);
+		}else{
+			$('.cactiConsoleNavigationArea').css('height', height);
+		}
+	}
+
+	$('.filterTable').each(function() {
+		tuneFilter($(this), mainWidth);
+	});
+
+	$('.cactiTable').each(function() {
+		$(this).find('th:first-child').each(function() {
+			object = $(this).closest('.cactiTable');
+
+			tuneTable(object, mainWidth);
+		});
+	});
+}
+
+function countHiddenCols(object) {
+	hidden = 0;
+	$(object).find('th').each(function() {
+		if ($(this).css('display') == 'none') {
+			hidden++;
+		}
+	});
+
+	return hidden;
+}
+
+function tuneTable(object, width) {
+	rows           = $(object).find('tr').length;
+	width          = parseInt(width);
+	tableWidth     = parseInt($(object).width());
+	totalCols      = $(object).find('th').length;
+	reducedWidth   = 0;
+	columnsHidden  = countHiddenCols(object);
+	visibleColumns = totalCols - columnsHidden;
+	id             = $(object).attr('id');
+
+	if (rows > 101) return false;
+
+	//console.log('totCols: '+totalCols+', hidCols: '+columnsHidden+', visCols: '+visibleColumns+', tabWid: '+tableWidth+', wid: '+width+', redWid: '+reducedWidth);
+	if (tableWidth > width) {
+		column = totalCols;
+		hasCheckbox = $(object).find('th.tableSubHeaderCheckbox').length;
+
+		if (hasCheckbox) {
+			minColumns = 2;
+		}else{
+			minColumns = 2;
+		}
+
+		$($(object).find('th').get().reverse()).each(function() {
+			if (!$(this).hasClass('tableSubHeaderCheckbox') && $(this).is(':visible')) {
+				reducedWidth += parseInt($(this).width());
+				$('#'+id+' th:nth-child('+column+')').hide();
+				$('#'+id+' td:nth-child('+column+')').hide();
+				columnsHidden++;
+			}
+			
+			visibleColumns = totalCols - columnsHidden;
+
+			if (tableWidth-reducedWidth < width || visibleColumns <= minColumns) {
+				lastColumnsHidden[id] = columnsHidden;
+				lastWidth[id] = $(object).width();
+				return false;
+			}
+
+			column--;
+		});
+
+		lastWidth[id] = $(object).width();
+	} else if ($(object).width() > lastWidth[id]+40 && columnsHidden > 0) {
+		column = 1;
+		id     = $(object).attr('id');
+
+		$($(object).find('th').get()).each(function() {
+			if (!$(this).hasClass('tableSubHeaderCheckbox') && $(this).is(':hidden')) {
+				if (lastWidth[id]+$(this).width() < width) {
+					$('#'+id+' td:nth-child('+column+')').show();
+					$('#'+id+' th:nth-child('+column+')').show();
+				}
+			}
+
+			if ($(object).width() >= width) {
+				lastColumnsHidden[id] = columnsHidden = $(object).find('th:hidden').length;
+			}
+
+			column++;
+		});
+
+		lastWidth[id] = $(object).width();
+	}
+}
+
+function tuneFilter(object, width) {
+	filter = 'input[id="refresh"], input[id="clear"], input[id="save"], input[id="tsrefresh"], input[id="tsclear"]';
+	buttons = $(object).find(filter).length;
+
+	if ($(object).width() > width) {
+		$($(object).find('td').get().reverse()).each(function() {
+			if (!$(this).find(filter).length) {
+				// always show two objects
+				if ($(object).find('td:visible').length - buttons > 2) {
+					$(this).hide();
+
+					if ($(this).closest('td').prev().find('input, select').length == 0) {
+						$(this).closest('td').prev().hide();
+					}
+				}
+			}
+
+			if ($(object).width() < width) {
+				return false;
+			}
+		});
+	}else{
+		$($(object).find('td').get()).each(function() {
+			if (!$(this).find(filter).length) {
+				$(this).show();
+				if ($(this).next('td').find('input, select').length > 0) {
+					$(this).next('td').show();
+				}
+			}
+
+			if ($(object).width() > width) {
+				$(this).hide();
+				if ($(this).next('td').find('input, select').length > 0) {
+					$(this).next('td').hide();
+				}
+				
+				return false;
+			}
+		});
+	}
+}
+
+function menuHide(tree) {
+	if (marginLeft == null) {
+		marginLeft = parseInt($('#navigation_right').css('margin-left'));
+	}
+
+	if (tree) {
+		myClass = '.cactiTreeNavigationArea';
+	}else{
+		myClass = '.cactiConsoleNavigationArea';
+	}
+
+	$('#navigation_right').animate({'margin-left': '0px'}, 20);
+	$(myClass).hide('slide', {direction: 'left'}, 20);
+
+	menuOpen = false;
+}
+
+function menuShow(tree) {
+	if (tree) {
+		myClass = '.cactiTreeNavigationArea';
+	}else{
+		myClass = '.cactiConsoleNavigationArea';
+	}
+
+	if (marginLeft != null) {
+		$('#navigation_right').animate({'margin-left': marginLeft}, 20);
+	}
+	$(myClass).show('slide', {direction: 'left'}, 20);
+
+	menuOpen = true;
 }
 
 function loadPage(href) {
@@ -551,7 +842,7 @@ function loadPage(href) {
 		var htmlObject  = $(html);
 		var matches     = html.match(/<title>(.*?)<\/title>/);
 
-		if (matches !== null) {
+		if (matches != null) {
 			var htmlTitle   = matches[1];
 			var breadCrumbs = htmlObject.find('#breadcrumbs').html();
 			var content     = htmlObject.find('#main').html();
@@ -577,13 +868,22 @@ function loadPage(href) {
 		pageName = basename(hrefParts[0]);
 
 		if (pageName != '') {
-			$('#menu').find('.pic').removeClass('selected');
-			$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+			if ($('#menu').find("a[href*='"+href+"']").length > 0) {
+				$('#menu').find('.pic').removeClass('selected');
+				$('#menu').find("a[href*='"+href+"']").addClass('selected');
+			}else{ 
+				$('#menu').find('.pic').removeClass('selected');
+				$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+			}
 		}
 
 		applySkin();
 
-		window.scrollTo(0, 0);
+		if (isMobile.any() != null) {
+			window.scrollTo(0,1);
+		}else{
+			window.scrollTo(0,0);
+		}
 
 		return false;
 	});
@@ -593,7 +893,6 @@ function loadPage(href) {
 
 function loadPageNoHeader(href, scroll) {
 	statePushed = false;
-	scrollTop   = $(window).scrollTop();
 
 	$.get(href, function(data) {
 		$('#main').empty().hide();
@@ -612,10 +911,10 @@ function loadPageNoHeader(href, scroll) {
 
 		pushState(myTitle, href);
 
-		if (typeof scroll !== 'undefined') {
-			$(window).scrollTop(scrollTop);
+		if (isMobile.any() != null) {
+			window.scrollTo(0,1);
 		}else{
-			window.scrollTo(0, 0);
+			window.scrollTo(0,0);
 		}
 
 		return false;
@@ -741,7 +1040,7 @@ function setupUserMenu() {
 
 function setupSpecialKeys() {
 	$('#filter, #rfilter').unbind('keypress').attr('title', 'Press Ctrl+Shift+X to Clear Filter');
-	$('#filter, #rfilter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
+	$('#filter, #rfilter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close'); }).on('click', function() { $(this).tooltip('close'); });
 
 	$('#filter, #rfilter').bind('keypress', 'ctrl+shift+x', function() {
 		$('#filter, #rfilter').val('').css('text-align', 'left').submit();
@@ -749,6 +1048,8 @@ function setupSpecialKeys() {
 
 	if (!isMobile.any()) {
 		$('#filter, #rfilter').focus();
+	}else{
+		$('#filter, #rfilter').prop('size', '15');
 	}
 }
 
@@ -768,7 +1069,7 @@ function setupSortable() {
 				sortAdd='&add=reset';
 			}
 			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false'+sortAdd, function(data) {
-				$('#main').empty().hide()
+				$('#main').empty().hide();
 				$('div[class^="ui-"]').remove();
 				$('#main').html(data);
 				applySkin();
@@ -777,7 +1078,7 @@ function setupSortable() {
 	});
 
 	// Setup tool tips for all titles to match the jQueryUI theme
-	$('i, th, img, input, label, select, button').tooltip({ closed: true }).on('focus', function() { $('#filter, #rfilter').tooltip('close') }).on('click', function() { $(this).tooltip('close'); });
+	$('i, th, img, input, label, select, button').tooltip({ closed: true }).on('focus', function() { $('#filter, #rfilter').tooltip('close'); }).on('click', function() { $(this).tooltip('close'); });
 }
 
 function setupBreadcrumbs() {
@@ -921,7 +1222,7 @@ function setupPageTimeout() {
 				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
 
 				$.get(refreshPage, function(data) {
-					$('#main').empty().hide()
+					$('#main').empty().hide();
 					$('div[class^="ui-"]').remove();
 					$('#main').html(data);
 					applySkin();
@@ -952,8 +1253,9 @@ function setTitleAndHref() {
 }
 
 $(function() {
-	statePushed = false;
-	popFired = false;
+	var statePushed = false;
+	var popFired    = false;
+	var tapped      = false;
 
 	setTitleAndHref();
 
@@ -962,6 +1264,23 @@ $(function() {
 	applySkin();
 
 	$('#navigation_right').show();
+
+	if (isMobile.any() != null) {
+		$(window).on('touchstart', function(event) {
+			if (!tapped) {
+				tapped = setTimeout(function() { tapped=null; }, 300);
+			}else{
+				clearTimeout(tapped);
+				tapped = null;
+
+				if (screenfull.enabled) {
+					screenfull.request();
+				}
+			}
+		});
+	}
+
+	responsiveMenu(null);
 });
 
 /* Graph related javascript functions */
@@ -977,8 +1296,9 @@ function clearGraphFilter() {
 
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
+	$.ajaxQ.abortAll();
 	$.get(new_href+'&header=false', function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1012,8 +1332,9 @@ function applyGraphFilter() {
 
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
+	$.ajaxQ.abortAll();
 	$.get(new_href+'&header=false', function(data) {
-		$('#main').hide()
+		$('#main').hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 
@@ -1067,10 +1388,11 @@ function applyGraphTimespan() {
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 
+	$.ajaxQ.abortAll();
 	$.get(new_href+'?action='+pageAction+'&header=false'+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val(), function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1090,8 +1412,9 @@ function refreshGraphTimespanFilter() {
 
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1111,8 +1434,9 @@ function timeshiftGraphFilterLeft() {
 
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1132,8 +1456,9 @@ function timeshiftGraphFilterRight() {
 
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1152,8 +1477,9 @@ function clearGraphTimespanFilter() {
 
 	var href     = graphPage+'?action='+pageAction+'&header=false';
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
-		$('#main').empty().hide()
+		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
 		applySkin();
@@ -1282,12 +1608,14 @@ function redrawGraph(graph_id) {
 }
 
 function initializeGraphs() {
+	$.ajaxQ.abortAll();
 	$('a[id$="_mrtg"]').unbind('click').click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
+		$.ajaxQ.abortAll();
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
-			$('#main').empty().hide()
+			$('#main').empty().hide();
 			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">Time Graph View</a></li>');
 			$('#zoom-container').remove();
 			$('div[class^="ui-"]').remove();
@@ -1317,11 +1645,8 @@ function initializeGraphs() {
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
 
-	if (isThumb) {
-		myWidth = (mainWidth-(30*myColumns))/myColumns;
-	}
+	myWidth = (mainWidth-(30*myColumns))/myColumns;
 
-	//$('div[id^="wrapper_"]').each(function() {
 	$('.graphWrapper').each(function() {
 		graph_id=$(this).attr('id').replace('wrapper_','');
 		graph_height=$(this).attr('graph_height');
@@ -1335,7 +1660,7 @@ function initializeGraphs() {
 			'&graph_width='+graph_width+
 			(isThumb ? '&graph_nolegend=true':''),
 			function(data) {
-				if (isThumb && myWidth < data.image_width) {
+				if (myWidth < data.image_width) {
 					ratio=myWidth/data.image_width;
 					data.image_width  *= ratio;
 					data.image_height *= ratio;
@@ -1353,7 +1678,7 @@ function initializeGraphs() {
 				});
 				realtimeArray[data.local_graph_id] = false;
 		});
-	})
+	});
 
 	$('#realtimeoff').unbind('click').click(function() {
 		stopRealtime();
@@ -1367,8 +1692,9 @@ function initializeGraphs() {
 		event.preventDefault();
 		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
+		$.ajaxQ.abortAll();
 		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()), function(data) {
-			$('#main').empty().hide()
+			$('#main').empty().hide();
 			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
 			$('#breadcrumbs').append('<li><a id="nav_util" href="#">Utility View</a></li>');

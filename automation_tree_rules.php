@@ -230,7 +230,7 @@ function automation_tree_rules_form_actions() {
 	$automation_tree_rules_list = ''; $i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -756,7 +756,7 @@ function automation_tree_rules() {
 			function applyFilter() {
 				strURL = 'automation_tree_rules.php' +
 					'?status='+$('#status').val() +
-					'&filter='+$('#filter').val() +
+					'&filter='+escape($('#filter').val()) +
 					'&rows='+$('#rows').val() +
 					'&page='+$('#page').val() +
 					'&header=false';

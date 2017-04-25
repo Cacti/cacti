@@ -8,22 +8,13 @@ function themeReady() {
 	$('#navigation').css('height', ($(window).height()-80)+'px');
 	$('#navigation_right').css('height', ($(window).height()-80)+'px');
 
-	$(window).resize(function(event) {
-		$('body').css('height', $(window).height());
-
-		if (!$(event.target).hasClass('ui-resizable')) {
-			$('#navigation').css('height', ($(window).height()-80)+'px');
-			$('#navigation_right').css('height', ($(window).height()-80)+'px');
-		}
-	});
-
 	// Setup the navigation menu
 	setMenuVisibility();
 
 	// Add nice search filter to filters
-	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a search term').parent('td').css('white-space', 'nowrap');
+	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
 
-	$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a regular expression').parent('td').css('white-space', 'nowrap');
+	$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 

@@ -45,7 +45,7 @@ $cacti_versions = array('0.8', '0.8.1', '0.8.2', '0.8.2a', '0.8.3', '0.8.3a', '0
 	'0.8.6', '0.8.6a', '0.8.6b', '0.8.6c', '0.8.6d', '0.8.6e', '0.8.6f', '0.8.6g', '0.8.6h', '0.8.6i', '0.8.6j', '0.8.6k',
 	'0.8.7', '0.8.7a', '0.8.7b', '0.8.7c', '0.8.7d', '0.8.7e', '0.8.7f', '0.8.7g', '0.8.7h', '0.8.7i',
 	'0.8.8', '0.8.8a', '0.8.8b', '0.8.8c', '0.8.8d', '0.8.8e', '0.8.8f', '0.8.8g', '0.8.8h', '1.0.0',
-	'1.0.1', '1.0.2', '1.0.3', '1.0.4', '1.0.5', '1.0.6', '1.1.0', '1.1.1', '1.1.2');
+	'1.0.1', '1.0.2', '1.0.3', '1.0.4', '1.0.5', '1.0.6', '1.1.0', '1.1.1', '1.1.2', '1.1.3', '1.1.4');
 
 $old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
 
@@ -440,6 +440,15 @@ if ($step == '7') {
 		}elseif ($cacti_versions[$i] == '1.1.2') {
 			include ('1_1_1_to_1_1_2.php');
 			upgrade_to_1_1_2();
+		}elseif ($cacti_versions[$i] == '1.1.3') {
+			include ('1_1_2_to_1_1_3.php');
+			upgrade_to_1_1_3();
+		}elseif ($cacti_versions[$i] == '1.1.4') {
+			include ('1_1_3_to_1_1_4.php');
+			upgrade_to_1_1_4();
+		}elseif ($cacti_versions[$i] == '1.1.5') {
+			include ('1_1_4_to_1_1_5.php');
+			upgrade_to_1_1_5();
 		}
 	}
 
@@ -859,7 +868,7 @@ $enabled = '1';
 						$input = install_file_paths();
 						/* find the appropriate value for each 'config name' above by config.php, database,
 						 * or a default for fall back */
-						while (list($name, $array) = each($input)) {
+						foreach ($input as $name => $array) {
 							if (isset($input[$name])) {
 								$current_value = $array['default'];
 
@@ -905,7 +914,7 @@ $enabled = '1';
 
 						$input = install_file_paths();
 						/* get all items on the form and write values for them  */
-						while (list($name, $array) = each($input)) {
+						foreach ($input as $name => $array) {
 							if (isset_request_var($name)) {
 								db_execute_prepared("REPLACE INTO settings (name,value) VALUES (?, ?)", array($name, get_nfilter_request_var($name)));
 							}
@@ -1056,9 +1065,9 @@ $enabled = '1';
 						$sqltext[2] = '<span style="color: grey; font-weight: bold; font-size: 12px;">' . __('[Not Ran]') . '</span>&nbsp;';
 
 						if (isset($_SESSION['sess_sql_install_cache'])) {
-							while (list($index, $arr1) = each($_SESSION['sess_sql_install_cache'])) {
-								while (list($version, $arr2) = each($arr1)) {
-									while (list($status, $sql) = each($arr2)) {
+							foreach ($_SESSION['sess_sql_install_cache'] as $index => $arr1) {
+								foreach ($arr1 as $version => $arr2) {
+									foreach ($arr2 as $status => $sql) {
 										if ($current_version != $version) {
 											$version_index = array_search($version, $cacti_versions);
 											$upgrade_results .= '<p><strong>' . (isset($cacti_versions{$version_index-1}) ? $cacti_versions{$version_index-1}:'')  . ' -> ' . $cacti_versions{$version_index} . "</strong></p>\n";

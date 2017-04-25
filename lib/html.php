@@ -30,10 +30,14 @@
    @arg $align - the HTML alignment to use for the box (center, left, or right)
    @arg $add_text - the url to use when the user clicks 'Add' in the upper-right
      corner of the box ("" for no 'Add' link) */
-function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text, $add_label = 'Add') {
+function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text, $add_label = false) {
 	static $table_suffix = 1;
 
-	$table_prefix = basename($_SERVER['PHP_SELF'], '.php');;
+	if ($add_label === false) {
+		$add_label = __('Add');
+	}
+
+	$table_prefix = basename(get_current_page(), '.php');;
 	if (!isempty_request_var('report')) {
 		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('report'));
 	} elseif (!isempty_request_var('tab')) {
@@ -120,10 +124,11 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 				if ($print) {
 					print "<tr class='templateHeader'>
-						<td colspan='3' class='textHeaderDark'>
+						<td colspan='$columns' class='textHeaderDark'>
 							" . __('Graph Template:') . ' ' . htmlspecialchars($graph['graph_template_name']) . "
 						</td>
 					</tr>\n";
+					$i = 0;
 				}
 			}elseif (isset($graph['data_query_name'])) {
 				if (isset($prev_data_query_name)) {
@@ -167,7 +172,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 			}
 
 			if ($i == 0) {
-				form_alternate_row();
+				print "<tr class='formRow'>\n";
 				$start = false;
 			}
 
@@ -288,7 +293,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			}
 
 			if ($i == 0) {
-				form_alternate_row();
+				print "<tr class='formRow'>\n";
 				$start = false;
 			}
 
@@ -370,7 +375,9 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
    @arg $object - the object types that is being displayed
    @arg $page_var - the object types that is being displayed
    @arg $return_to - paint the resulting page into this dom object */
-function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = 'Rows', $page_var = 'page', $return_to = '') {
+function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = '', $page_var = 'page', $return_to = '') {
+	if ($object == '') $object = __('Rows');
+
 	if ($total_rows > $rows_per_page) {
 		if (substr_count($base_url, '?') == 0) {
 			$base_url = trim($base_url) . '?';
@@ -385,7 +392,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</a>":"") . "
 			</div>
 			<div class='navBarNavigationCenter'>
-				" . __('Showing %s %d to %d of %s [ %s ]', $object, (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
+				" . __('%d to %d of %s [ %s ]', (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
 			</div>
 			<div class='navBarNavigationNext'>
 				" . (($current_page*$rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":"") . "
@@ -394,7 +401,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 	}elseif ($total_rows > 0) {
 		$nav = "<div class='navBarNavigation'>
 			<div class='navBarNavigationNone'>
-				" . __('Showing All %d %s', $total_rows, $object) . "
+				" . __('All %d %s', $total_rows, $object) . "
 			</div>
 		</div>\n";
 	}else{
@@ -551,7 +558,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " style='padding:4px;text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
 		}else{
 			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " class='sortable" . ($isSort ? " $isSort":'') . "' style='padding:4px;text-align:$align;'>";
-			print "<div class='sortinfo' sort-page='" . ($url == '' ? htmlspecialchars($_SERVER['PHP_SELF']):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
+			print "<div class='sortinfo' sort-page='" . ($url == '' ? htmlspecialchars(get_current_page(false)):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 
 		$i++;
@@ -603,7 +610,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	}
 
 	/* default to the 'current' file */
-	if ($form_action == '') { $form_action = basename($_SERVER['PHP_SELF']); }
+	if ($form_action == '') { $form_action = get_current_page(); }
 
 	print "<tr class='tableHeader'>\n";
 
@@ -760,7 +767,7 @@ function html_section_header($header_item, $last_item_colspan = 1) {
    @arg $form_action - the url to post the 'select all' form to */
 function html_header_checkbox($header_items, $include_form = true, $form_action = "", $resizable = true) {
 	/* default to the 'current' file */
-	if ($form_action == "") { $form_action = basename($_SERVER["PHP_SELF"]); }
+	if ($form_action == "") { $form_action = get_current_page(); }
 
 	print "<tr class='tableHeader " . (!$resizable ? 'tableFixed':'') . "'>\n";
 
@@ -884,7 +891,8 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			$hard_return      = '';
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
-				$this_row_style = 'font-weight: bold;'; $use_custom_class = true;
+				$this_row_style = 'font-weight: bold;'; 
+				$use_custom_class = true;
 
 				if ($group_counter % 2 == 0) {
 					$customClass = 'graphItem';
@@ -899,7 +907,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			/* alternating row color */
 			if ($use_custom_class == false) {
-				form_alternate_row();
+				print "<tr class='formRow'>\n";
 			}else{
 				print "<tr class='$customClass'>";
 			}
@@ -992,11 +1000,55 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	}
 }
 
+function is_menu_pick_active($menu_url) {
+	static $url_array, $url_parts;
+
+	$menu_parts = array();
+
+	/* break out the URL and variables */
+	if (!sizeof($url_array)) {
+		$url_array = parse_url($_SERVER['REQUEST_URI']);
+		if (isset($url_array['query'])) {
+			parse_str($url_array['query'], $url_parts);
+		}else{
+			$url_parts = array();
+		}
+	}
+
+	$menu_array = parse_url($menu_url);
+
+	if (basename($url_array['path']) == basename($menu_array['path'])) {
+		if (isset($menu_array['query'])) {
+			parse_str($menu_array['query'], $menu_parts);
+		}else{
+			$menu_parts = array();
+		}
+
+		if (isset($menu_parts['id'])) {
+			if (isset($url_parts['id'])) {
+				if ($menu_parts['id'] == $url_parts['id']) {
+					return true;
+				}
+			}
+		}elseif (isset($menu_parts['action'])) {
+			if (isset($url_parts['action'])) {
+				if ($menu_parts['action'] == $url_parts['action']) {
+					return true;
+				}
+			}
+		}else{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 /* draw_menu - draws the cacti menu for display in the console */
 function draw_menu($user_menu = "") {
 	global $config, $user_auth_realm_filenames, $menu, $menu_glyphs;
 
-	if (strlen($user_menu == 0)) {
+	if (!is_array($user_menu)) {
 		$user_menu = $menu;
 	}
 
@@ -1058,19 +1110,19 @@ function draw_menu($user_menu = "") {
 
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames{basename($item_url)})) {
 						/* if the current page exists in the sub-items array, draw each sub-item */
-						if (array_key_exists(basename($_SERVER["PHP_SELF"]), $item_title) == true) {
+						if (array_key_exists(get_current_page(), $item_title) == true) {
 							$draw_sub_items = true;
 						}else{
 							$draw_sub_items = false;
 						}
 
-						while (list($item_sub_url, $item_sub_title) = each($item_title)) {
+						foreach ($item_title as $item_sub_url => $item_sub_title) {
 							$item_sub_url = $config['url_path'] . $item_sub_url;
 
 							/* always draw the first item (parent), only draw the children if we are viewing a page
 							that is contained in the sub-items array */
 							if (($i == 0) || ($draw_sub_items)) {
-								if (basename($_SERVER["PHP_SELF"]) == basename($item_sub_url)) {
+								if (is_menu_pick_active($item_sub_url)) {
 									print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
 								}else{
 									print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
@@ -1084,7 +1136,7 @@ function draw_menu($user_menu = "") {
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames{basename($item_url)})) {
 						/* draw normal (non sub-item) menu item */
 						$item_url = $config['url_path'] . $item_url;
-						if (basename($_SERVER["PHP_SELF"]) == basename($item_url)) {
+						if (is_menu_pick_active($item_url)) {
 							print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
 						}else{
 							print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
@@ -1110,7 +1162,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	global $config;
 
 	if (!isset($actions_array[0])) {
-		$my_actions[0]  = 'Choose an action';
+		$my_actions[0]  = __('Choose an action');
 		$my_actions    += $actions_array;
 		$actions_array  = $my_actions;
 	}
@@ -1120,7 +1172,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		<div>
 			<span class='actionsDropdownArrow'><img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''></span>
 			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
-			<span class='actionsDropdownButton'><input id='submit' type='submit' value='Go' title='<?php print __('Execute Action');?>'></span>
+			<span class='actionsDropdownButton'><input id='submit' type='submit' value='<?php print __('Go');?>' title='<?php print __('Execute Action');?>'></span>
 		</div>
 	</div>
 	<input type='hidden' id='action' name='action' value='actions'>
@@ -1265,7 +1317,7 @@ function html_show_tabs_left() {
 
 	if (get_selected_theme() == 'classic') {
 		if ($show_console_tab == true) {
-			?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(basename($_SERVER['PHP_SELF'])) ? '_down':'');?>.gif" alt="<?php print __('Console');?>"></a><?php
+			?><a href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(get_current_page()) ? '_down':'');?>.gif" alt="<?php print __('Console');?>"></a><?php
 		}
 
 		if (is_realm_allowed(7)) {
@@ -1273,7 +1325,7 @@ function html_show_tabs_left() {
 				// Don't show graphs tab when offline
 			}else{
 				?><a href="<?php echo $config['url_path']; ?>graph_view.php"><img src="<?php echo $config['url_path']; ?>images/tab_graphs<?php
-				$file = basename($_SERVER['PHP_SELF']);
+				$file = get_current_page();
 				if ($file == "graph_view.php" || $file == "graph.php") {
 					print "_down";
 				} 
@@ -1448,7 +1500,7 @@ function html_show_tabs_left() {
 		}
 
 		$i = 0;
-		$me_base = basename($_SERVER['PHP_SELF']);
+		$me_base = get_current_page();
 		foreach($tabs_left as $tab) {
 			$tab_base = basename($tab['url']);
 			if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
@@ -1546,7 +1598,7 @@ function html_graph_tabs_right($current_user) {
 				if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
 					$tabs_right[$i]['selected'] = true;
 				}
-			}elseif (strstr($_SERVER['PHP_SELF'], $tab['url'])) {
+			}elseif (strstr(get_current_page(false), $tab['url'])) {
 				$tabs_right[$i]['selected'] = true;
 			}
 
@@ -1602,10 +1654,6 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 				<?php if (!$noany) {?><option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
 				<?php if (!$nonone) {?><option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 				<?php
-
-				if ($sql_where != '' && strpos($sql_where, 'WHERE') === false) { 
-					$sql_where = 'WHERE ' . $sql_where;
-				}
 
 				$devices = get_allowed_devices($sql_where);
 

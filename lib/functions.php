@@ -156,13 +156,12 @@ function user_setting_exists($config_name, $user_id) {
 function read_default_user_setting($config_name) {
 	global $config, $settings_user;
 
-	reset($settings_user);
-	while (list($tab_name, $tab_array) = each($settings_user)) {
-		if ((isset($tab_array[$config_name])) && (isset($tab_array[$config_name]['default']))) {
+	foreach ($settings_user as $tab_array) {
+		if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
 			return $tab_array[$config_name]['default'];
-		}else{
-			while (list($field_name, $field_array) = each($tab_array)) {
-				if ((isset($field_array['items'])) && (isset($field_array['items'][$config_name])) && (isset($field_array['items'][$config_name]['default']))) {
+		} else {
+            foreach ($tab_array as $field_array) {
+				if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
 					return $field_array['items'][$config_name]['default'];
 				}
 			}
@@ -271,13 +270,12 @@ function read_default_config_option($config_name) {
 	global $config, $settings;
 
 	if (is_array($settings)) {
-		reset($settings);
-		while (list($tab_name, $tab_array) = each($settings)) {
-			if ((isset($tab_array[$config_name])) && (isset($tab_array[$config_name]['default']))) {
+		foreach ($settings as $tab_array) {
+			if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
 				return $tab_array[$config_name]['default'];
-			}else{
-				while (list($field_name, $field_array) = each($tab_array)) {
-					if ((isset($field_array['items'])) && (isset($field_array['items'][$config_name])) && (isset($field_array['items'][$config_name]['default']))) {
+			} else {
+				foreach ($tab_array as $field_array) {
+					if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
 						return $field_array['items'][$config_name]['default'];
 					}
 				}
@@ -415,7 +413,7 @@ function raise_message($message_id) {
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
      the message cache */
 function display_output_messages() {
-	global $config, $messages;
+	global $messages;
 
 	$debug_message = debug_log_return('new_graphs');
 
@@ -431,8 +429,7 @@ function display_output_messages() {
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
 				if (isset($messages[$current_message_id]['message'])) {
-					/** @var $message */
-					eval ('$message = "' . $messages[$current_message_id]['message'] . '";');
+					$message = $messages[$current_message_id]['message'];
 
 					switch ($messages[$current_message_id]['type']) {
 					case 'info':
@@ -501,18 +498,18 @@ function kill_session_var($var_name) {
 function array_rekey($array, $key, $key_value) {
 	$ret_array = array();
 
-	if (sizeof($array) > 0) {
-	foreach ($array as $item) {
-		$item_key = $item[$key];
+	if (is_array($array)) {
+		foreach ($array as $item) {
+			$item_key = $item[$key];
 
-		if (is_array($key_value)) {
-			for ($i=0; $i<count($key_value); $i++) {
-				$ret_array[$item_key]{$key_value[$i]} = $item{$key_value[$i]};
+			if (is_array($key_value)) {
+				foreach ($key_value as $value) {
+					$ret_array[$item_key][$value] = $item[$value];
+				}
+			} else {
+				$ret_array[$item_key] = $item[$key_value];
 			}
-		}else{
-			$ret_array[$item_key] = $item[$key_value];
 		}
-	}
 	}
 
 	return $ret_array;
@@ -529,6 +526,12 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	if (isset($_SERVER['PHP_SELF'])) {
 		$current_file = basename($_SERVER['PHP_SELF']);
 		$dir_name     = dirname($_SERVER['PHP_SELF']);
+	}elseif (isset($_SERVER['SCRIPT_NAME'])) {
+		$current_file = basename($_SERVER['SCRIPT_NAME']);
+		$dir_name     = dirname($_SERVER['SCRIPT_NAME']);
+	}elseif (isset($_SERVER['SCRIPT_FILENAME'])) {
+		$current_file = basename($_SERVER['SCRIPT_FILENAME']);
+		$dir_name     = dirname($_SERVER['SCRIPT_FILENAME']);
 	}else{
 		$current_file = basename(__FILE__);
 		$dir_name     = dirname(__FILE__);
@@ -653,31 +656,33 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		 $line_size - (int constant)  the average line size to use estimate bytes
 									  to seek up from EOF.  Defaults to 256 bytes */
 function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', $line_size = 256) {
+	if (!file_exists($file_name)) {
+		touch($file_name);
+		return array();
+	}
+
+	if (!is_readable($file_name)) {
+		echo __('Error %s is not readable', $file_name);
+		return array();
+	}
+
 	$file_array = array();
+	$fp = fopen($file_name, 'r');
 
-	if (file_exists($file_name) && is_readable($file_name)) {
-		$fp = fopen($file_name, 'r');
+	/* load up the lines into an array */
+	$i = 0;
+	while (1) {
+		$line = fgets($fp);
 
-		/* reset back the number of bytes */
-		if ($number_of_lines > 0) {
-			$total_bytes = fseek($fp, -($number_of_lines * $line_size), SEEK_END);
-		}
-
-		/* load up the lines into an array */
-		$i = 0;
-		while (1) {
-			$line    = fgets($fp);
-			$display = true;
-
-			/* determine if we are to display the line */
-			switch ($message_type) {
+		/* determine if we are to display the line */
+		switch ($message_type) {
 			case -1: /* all */
 				$display = true;
 				break;
 			case 5: /* sql calls */
 				if (substr_count($line, ' SQL ')) {
 					$display=true;
-				}else{
+				} else {
 					$display=false;
 				}
 
@@ -685,7 +690,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 			case 1: /* stats */
 				if (substr_count($line, 'STATS')) {
 					$display=true;
-				}else{
+				} else {
 					$display=false;
 				}
 
@@ -693,7 +698,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 			case 2: /* warnings */
 				if (substr_count($line, 'WARN')) {
 					$display=true;
-				}else{
+				} else {
 					$display=false;
 				}
 
@@ -701,7 +706,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 			case 3: /* errors */
 				if (substr_count($line, 'ERROR')) {
 					$display=true;
-				}else{
+				} else {
 					$display=false;
 				}
 
@@ -709,7 +714,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 			case 4: /* debug */
 				if (substr_count($line, 'DEBUG')) {
 					$display=true;
-				}else{
+				} else {
 					$display=false;
 				}
 
@@ -721,36 +726,28 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 			default: /* all other lines */
 				$display=true;
 				break;
-			}
+		}
 
-			/* match any lines that match the search string */
-			if (strlen($filter)) {
-				if ((substr_count(strtolower($line), strtolower($filter))) ||
-					(preg_match('/' . $filter . '/i', $line))) {
-					$display=true;
-				}else{
-					$display=false;
-				}
-			}
-
-			if (feof($fp)) {
-				break;
-			}else if ($display) {
-				$file_array[$i] = $line;
-				$i++;
+		/* match any lines that match the search string */
+		if ($filter != '') {
+			if (substr_count(strtolower($line), strtolower($filter)) || preg_match('/' . $filter . '/i', $line)) {
+				$display=true;
+			} else {
+				$display=false;
 			}
 		}
 
-		$file_array = array_slice($file_array, -$number_of_lines, count($file_array));
-
-		fclose($fp);
-	}elseif (! file_exists($file_name)) {
-		touch($file_name);
-	}else{
-		echo __('Error %s is not readable', $file_name);
+		if (feof($fp)) {
+			break;
+		} elseif ($display) {
+			$file_array[$i] = $line;
+			$i++;
+		}
 	}
 
-	return $file_array;
+	fclose($fp);
+
+	return array_slice($file_array, -$number_of_lines, count($file_array));
 }
 
 /* update_host_status - updates the host table with informaton about it's status.
@@ -778,7 +775,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		if (empty($hosts[$host_id]['status_fail_date'])) {
                     $hosts[$host_id]['status_fail_date'] = date('Y-m-d H:i:s');
 		}
-		    
+
 		/* update total polls, failed polls and availability */
 		$hosts[$host_id]['failed_polls']++;
 		$hosts[$host_id]['total_polls']++;
@@ -1028,28 +1025,28 @@ function is_mac_address($result) {
 }
 
 function is_hex_string($result) {
-    if ($result == '') {
-        return false;
-    }
+	if ($result == '') {
+		return false;
+	}
 
-    $parts = explode(' ', $result);
+	$parts = explode(' ', $result);
 
-    /* assume if something is a hex string
-       it will have a length > 1 */
-    if (sizeof($parts) == 1) {
-        return false;
-    }
+	/* assume if something is a hex string
+	   it will have a length > 1 */
+	if (sizeof($parts) == 1) {
+		return false;
+	}
 
-    foreach($parts as $part) {
-        if (strlen($part) != 2) {
-            return false;
-        }
-        if (ctype_xdigit($part) == false) {
-            return false;
-        }
-    }
+	foreach($parts as $part) {
+		if (strlen($part) != 2) {
+			return false;
+		}
+		if (ctype_xdigit($part) == false) {
+			return false;
+		}
+	}
 
-    return true;
+	return true;
 }
 
 /* prepare_validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
@@ -1133,20 +1130,18 @@ function get_full_script_path($local_data_id) {
 	$full_path = $data_source['input_string'];
 
 	if (sizeof($data) > 0) {
-	foreach ($data as $item) {
-		$full_path = str_replace('<' . $item['data_name'] . '>', cacti_escapeshellarg($item['value']), $full_path);
-	}
+		foreach ($data as $item) {
+			$full_path = str_replace('<' . $item['data_name'] . '>', cacti_escapeshellarg($item['value']), $full_path);
+		}
 	}
 
-	$full_path = str_replace('<path_cacti>', $config['base_path'], $full_path);
-	$full_path = str_replace('<path_snmpget>', read_config_option('path_snmpget'), $full_path);
-	$full_path = str_replace('<path_php_binary>', read_config_option('path_php_binary'), $full_path);
+	$search    = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
+	$replace   = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
+	$full_path = str_replace($search, $replace, $full_path);
 
 	/* sometimes a certain input value will not have anything entered... null out these fields
 	in the input string so we don't mess up the script */
-	$full_path = preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path);
-
-	return $full_path;
+	return preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path);
 }
 
 /* get_data_source_item_name - gets the name of a data source item or generates a new one if one does not
@@ -1226,9 +1221,12 @@ function stri_replace($find, $replace, $string) {
 
 	$pos = 0;
 
-	foreach ($parts as $key=>$part) {
-		$parts[$key] = substr($string, $pos, strlen($part));
-		$pos += strlen($part) + strlen($find);
+	$findLength = strlen($find);
+	foreach ($parts as $key => $part) {
+		$partLength = strlen($part);
+
+		$parts[$key] = substr($string, $pos, $partLength);
+		$pos += $partLength + $findLength;
 	}
 
 	return (join($replace, $parts));
@@ -1265,14 +1263,13 @@ function clean_up_file_name($string) {
 function clean_up_path($path) {
 	global $config;
 
-	if ($config['cacti_server_os'] == 'unix' or read_config_option('using_cygwin') == 'on' or read_config_option('storage_location')) {
-		$path = str_replace("\\", '/', $path);
-	}elseif ($config['cacti_server_os'] == 'win32') {
-		$path = str_replace('/', "\\", $path);
-
+	if ($config['cacti_server_os'] == 'win32') {
+		return str_replace('/', "\\", $path);
+	} elseif ($config['cacti_server_os'] == 'unix' || read_config_option('using_cygwin') == 'on' || read_config_option('storage_location')) {
+		return str_replace("\\", '/', $path);
+	} else {
+		return $path;
 	}
-
-	return $path;
 }
 
 /* get_data_source_title - returns the title of a data source without using the title cache
@@ -1343,10 +1340,6 @@ function get_username($user_id) {
 function generate_data_source_path($local_data_id) {
 	global $config;
 
-	$host_part = ''; $ds_part = '';
-
-	$extended_paths = read_config_option('extended_paths');
-
 	/* try any prepend the name with the host description */
 	$host = db_fetch_row_prepared('SELECT
 		host.id,
@@ -1360,9 +1353,9 @@ function generate_data_source_path($local_data_id) {
 	$host_id   = $host['id'];
 
 	/* put it all together using the local_data_id at the end */
-	if ($extended_paths == 'on') {
+	if (read_config_option('extended_paths') == 'on') {
 		$new_path = "<path_rra>/$host_id/$local_data_id.rrd";
-	}else{
+	} else {
 		if (!empty($host_name)) {
 			$host_part = strtolower(clean_up_file_name($host_name)) . '_';
 		}
@@ -1371,7 +1364,10 @@ function generate_data_source_path($local_data_id) {
 		$data_source_rrd_name = db_fetch_cell_prepared('SELECT data_source_name
 			FROM data_template_rrd
 			WHERE local_data_id = ?
-			ORDER BY id', array($local_data_id));
+			ORDER BY id
+			LIMIT 1',
+			array($local_data_id)
+		);
 
 		if (!empty($data_source_rrd_name)) {
 			$ds_part = strtolower(clean_up_file_name($data_source_rrd_name));
@@ -1489,9 +1485,9 @@ function generate_graph_def_name($graph_item_id) {
 	$lookup_table = array('a','b','c','d','e','f','g','h','i','j');
 
 	$result = '';
-
-	for ($i=0; $i<strlen(strval($graph_item_id)); $i++) {
-		$result .= $lookup_table{substr(strval($graph_item_id), $i, 1)};
+    $strValGII = strval($graph_item_id);
+	for ($i=0; $i<strlen($strValGII); $i++) {
+		$result .= $lookup_table{substr($strValGII, $i, 1)};
 	}
 
 	if ($result == 'cf') {
@@ -1533,11 +1529,9 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 
 	if (empty($graph_item['local_graph_id'])) {
 		$sql_where = 'graph_template_id = ' . $graph_item['graph_template_id'] . ' AND local_graph_id = 0';
-	}else{
+	} else {
 		$sql_where = 'local_graph_id = ' . $graph_item['local_graph_id'];
 	}
-
-	$graph_items = db_fetch_assoc_prepared("SELECT id, sequence FROM graph_templates_item WHERE $sql_where ORDER BY sequence");
 
 	/* get a list of parent+children of our target group */
 	$target_graph_group_array = get_graph_group($target_id);
@@ -1556,47 +1550,48 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 	/* start the sequence at '1' */
 	$sequence_counter = 1;
 
+	$graph_items = db_fetch_assoc_prepared("SELECT id, sequence FROM graph_templates_item WHERE $sql_where ORDER BY sequence");
 	if (sizeof($graph_items) > 0) {
-	foreach ($graph_items as $item) {
-		/* check to see if we are at the "target" spot in the loop; if we are, update the sequences and move on */
-		if ($target_id == $item['id']) {
-			if ($direction == 'next') {
-				$group_array1 = $target_graph_group_array;
-				$group_array2 = $graph_group_array;
-			}elseif ($direction == 'previous') {
-				$group_array1 = $graph_group_array;
-				$group_array2 = $target_graph_group_array;
-			}
-
-			while (list($sequence,$graph_template_item_id) = each($group_array1)) {
-				db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE id = ?', array($sequence_counter, $graph_template_item_id));
-
-				/* propagate to ALL graphs using this template */
-				if (empty($graph_item['local_graph_id'])) {
-					db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE local_graph_template_item_id = ?', array($sequence_counter, $graph_template_item_id));
+		foreach ($graph_items as $item) {
+			/* check to see if we are at the "target" spot in the loop; if we are, update the sequences and move on */
+			if ($target_id == $item['id']) {
+				if ($direction == 'next') {
+					$group_array1 = $target_graph_group_array;
+					$group_array2 = $graph_group_array;
+				} elseif ($direction == 'previous') {
+					$group_array1 = $graph_group_array;
+					$group_array2 = $target_graph_group_array;
 				}
 
-				$sequence_counter++;
-			}
+				foreach ($group_array1 as $graph_template_item_id) {
+					db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE id = ?', array($sequence_counter, $graph_template_item_id));
 
-			while (list($sequence,$graph_template_item_id) = each($group_array2)) {
-				db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE id = ?', array($sequence_counter, $graph_template_item_id));
+					/* propagate to ALL graphs using this template */
+					if (empty($graph_item['local_graph_id'])) {
+						db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE local_graph_template_item_id = ?', array($sequence_counter, $graph_template_item_id));
+					}
 
-				/* propagate to ALL graphs using this template */
-				if (empty($graph_item['local_graph_id'])) {
-					db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE local_graph_template_item_id = ?', array($sequence_counter, $graph_template_item_id));
+					$sequence_counter++;
 				}
 
+				foreach ($group_array2 as $graph_template_item_id) {
+					db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE id = ?', array($sequence_counter, $graph_template_item_id));
+
+					/* propagate to ALL graphs using this template */
+					if (empty($graph_item['local_graph_id'])) {
+						db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE local_graph_template_item_id = ?', array($sequence_counter, $graph_template_item_id));
+					}
+
+					$sequence_counter++;
+				}
+			}
+
+			/* make sure to "ignore" the items that we handled above */
+			if ((!isset($graph_group_array{$item['id']})) && (!isset($target_graph_group_array{$item['id']}))) {
+				db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE id = ?', array($sequence_counter, $item['id']));
 				$sequence_counter++;
 			}
 		}
-
-		/* make sure to "ignore" the items that we handled above */
-		if ((!isset($graph_group_array{$item['id']})) && (!isset($target_graph_group_array{$item['id']}))) {
-			db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE id = ?', array($sequence_counter, $item['id']));
-			$sequence_counter++;
-		}
-	}
 	}
 }
 
@@ -1628,15 +1623,15 @@ function get_graph_group($graph_template_item_id) {
 	$graph_items = db_fetch_assoc("SELECT id, graph_type_id FROM graph_templates_item WHERE sequence > " . $graph_item['sequence'] . " AND $sql_where ORDER BY sequence");
 
 	if (sizeof($graph_items) > 0) {
-	foreach ($graph_items as $item) {
-		if ($graph_item_types{$item['graph_type_id']} == 'GPRINT') {
-			/* a child must be a GPRINT */
-			$graph_item_children_array{$item['id']} = $item['id'];
-		}else{
-			/* if not a GPRINT then get out */
-			return $graph_item_children_array;
+		foreach ($graph_items as $item) {
+			if ($graph_item_types{$item['graph_type_id']} == 'GPRINT') {
+				/* a child must be a GPRINT */
+				$graph_item_children_array{$item['id']} = $item['id'];
+			} else {
+				/* if not a GPRINT then get out */
+				return $graph_item_children_array;
+			}
 		}
-	}
 	}
 
 	return $graph_item_children_array;
@@ -1754,13 +1749,7 @@ function exec_into_array($command_line) {
 	$err = 0;
 	exec($command_line,$out,$err);
 
-	$command_array = array();
-
-	for($i=0; list($key, $value) = each($out); $i++) {
-		$command_array[$i] = $value;
-	}
-
-	return $command_array;
+	return array_values($out);
 }
 
 /* get_web_browser - determines the current web browser in use by the client
@@ -1801,7 +1790,7 @@ function draw_login_status($using_guest_account = false) {
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'><li><a href='" . $config['url_path'] . "index.php'>" . __('Login as Regular User') . "</a></li></ul>\n";
 		api_plugin_hook('nav_login_after');
 	}elseif (isset($_SESSION['sess_user_id']) && $using_guest_account == false) {
-		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+		$user = db_fetch_row_prepared('SELECT username, password_change, realm FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 		api_plugin_hook('nav_login_before');
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . htmlspecialchars($user['username'], ENT_QUOTES) . 
 			"</span></div><div><ul class='menuoptions' style='display:none;'>" . 
@@ -2617,7 +2606,7 @@ function draw_navigation_text($type = 'url') {
 
 	$nav =  api_plugin_hook_function('draw_navigation_text', $nav);
 
-	$current_page = basename($_SERVER['PHP_SELF']);
+	$current_page = get_current_page();
 
 	if (!isempty_request_var('action')) {
 		get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));
@@ -2629,7 +2618,7 @@ function draw_navigation_text($type = 'url') {
 	if (isset($nav[$current_page . ':' . $current_action])) {
 		$current_array = $nav{$current_page . ':' . $current_action};
 	}else{
-		$current_array = array('mapping' => 'index.php:', 'title' => ucwords(str_replace('_', ' ', basename($_SERVER['PHP_SELF'], '.php'))), 'level' => 1);
+		$current_array = array('mapping' => 'index.php:', 'title' => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))), 'level' => 1);
 	}
 
 	$current_mappings = explode(',', $current_array['mapping']);
@@ -2681,11 +2670,8 @@ function draw_navigation_text($type = 'url') {
 	}
 
 	if (isset_request_var('tree_id') || isset_request_var('leaf_id')) {
-		$leaf_sub  = '';
-		$leaf_name = '';
-		$tree_name = '';
 		if (isset_request_var('leaf_id') && get_nfilter_request_var('leaf_id') != '') {
-			$leaf = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE id = ?', array(get_filter_request_var('leaf_id')));
+			$leaf = db_fetch_row_prepared('SELECT host_id, title, graph_tree_id FROM graph_tree_items WHERE id = ?', array(get_filter_request_var('leaf_id')));
 
 			if (sizeof($leaf)) {
 				if ($leaf['host_id'] > 0) {
@@ -2697,6 +2683,7 @@ function draw_navigation_text($type = 'url') {
 				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($leaf['graph_tree_id']));
 			}else{
 				$leaf_name = 'Leaf';
+				$tree_name = '';
 			}
 
 			if (isset_request_var('host_group_data') && get_nfilter_request_var('host_group_data') != '') {
@@ -2717,9 +2704,10 @@ function draw_navigation_text($type = 'url') {
 			}
 		}else{
 			$leaf_name = '';
+			$leaf_sub  = '';
 
 			if (isset_request_var('tree_id')) {
-				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_request_var('tree_id')));
+				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_filter_request_var('tree_id')));
 			}else{
 				$tree_name = '';
 			}
@@ -2765,12 +2753,14 @@ function draw_navigation_text($type = 'url') {
    @arg $text - the text to substitute in
    @returns - the original navigation text with all substitutions made */
 function resolve_navigation_variables($text) {
+	$graphTitle = get_graph_title(get_filter_request_var('local_graph_id'));
+
 	if (preg_match_all("/\|([a-zA-Z0-9_]+)\|/", $text, $matches)) {
 		for ($i=0; $i<count($matches[1]); $i++) {
 			switch ($matches[1][$i]) {
-			case 'current_graph_title':
-				$text = str_replace('|' . $matches[1][$i] . '|', get_graph_title(get_filter_request_var('local_graph_id')), $text);
-				break;
+				case 'current_graph_title':
+					$text = str_replace('|' . $matches[1][$i] . '|', $graphTitle, $text);
+					break;
 			}
 		}
 	}
@@ -2803,8 +2793,36 @@ function get_browser_query_string() {
 	if (!empty($_SERVER['REQUEST_URI'])) {
 		return sanitize_uri($_SERVER['REQUEST_URI']);
 	}else{
-		return sanitize_uri(basename($_SERVER['PHP_SELF']) . (empty($_SERVER['QUERY_STRING']) ? '' : '?' . $_SERVER['QUERY_STRING']));
+		return sanitize_uri(get_current_page() . (empty($_SERVER['QUERY_STRING']) ? '' : '?' . $_SERVER['QUERY_STRING']));
 	}
+}
+
+/* get_current_page - returns the basename of the current page in a web server friendly way
+   @returns - the basename of the current script file */
+function get_current_page($basename = true) {
+	if (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF'] != '') {
+		if ($basename) {
+			return basename($_SERVER['PHP_SELF']);
+		}else{
+			return $_SERVER['PHP_SELF'];
+		}
+	}elseif (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
+		if ($basename) {
+			return basename($_SERVER['SCRIPT_NAME']);
+		}else{
+			return $_SERVER['SCRIPT_NAME'];
+		}
+	}elseif (isset($_SERVER['SCRIPT_FILENAME']) && $_SERVER['SCRIPT_FILENAME'] != '') {
+		if ($basename) {
+			return basename($_SERVER['SCRIPT_FILENAME']);
+		}else{
+			return $_SERVER['SCRIPT_FILENAME'];
+		}
+	}else{
+		cacti_log('ERROR: unable to determine current_page');
+	}
+
+	return false;
 }
 
 /* get_hash_graph_template - returns the current unique hash for a graph template
@@ -2812,12 +2830,19 @@ function get_browser_query_string() {
    @arg $sub_type (optional) return the hash for a particlar sub-type of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template') {
-	if ($sub_type == 'graph_template') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates WHERE id = ?', array($graph_template_id));
-	}elseif ($sub_type == 'graph_template_item') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates_item WHERE id = ?', array($graph_template_id));
-	}elseif ($sub_type == 'graph_template_input') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM graph_template_input WHERE id = ?', array($graph_template_id));
+	switch ($sub_type) {
+		case 'graph_template':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates WHERE id = ?', array($graph_template_id));
+			break;
+		case 'graph_template_item':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates_item WHERE id = ?', array($graph_template_id));
+			break;
+		case 'graph_template_input':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM graph_template_input WHERE id = ?', array($graph_template_id));
+			break;
+		default:
+			return generate_hash();
+			break;
 	}
 
 	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
@@ -2832,10 +2857,16 @@ function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template
    @arg $sub_type (optional) return the hash for a particlar sub-type of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_template($data_template_id, $sub_type = 'data_template') {
-	if ($sub_type == 'data_template') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM data_template WHERE id = ?', array($data_template_id));
-	}elseif ($sub_type == 'data_template_item') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM data_template_rrd WHERE id = ?', array($data_template_id));
+	switch ($sub_type) {
+		case 'data_template':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM data_template WHERE id = ?', array($data_template_id));
+			break;
+		case 'data_template_item':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM data_template_rrd WHERE id = ?', array($data_template_id));
+			break;
+		default:
+			return generate_hash();
+			break;
 	}
 
 	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
@@ -2850,10 +2881,16 @@ function get_hash_data_template($data_template_id, $sub_type = 'data_template') 
    @arg $sub_type (optional) return the hash for a particlar sub-type of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
-	if ($sub_type == 'data_input_method') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM data_input WHERE id = ?', array($data_input_id));
-	}elseif ($sub_type == 'data_input_field') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM data_input_fields WHERE id = ?', array($data_input_id));
+	switch ($sub_type) {
+		case 'data_input_method':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM data_input WHERE id = ?', array($data_input_id));
+			break;
+		case 'data_input_field':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM data_input_fields WHERE id = ?', array($data_input_id));
+			break;
+		default:
+			return generate_hash();
+			break;
 	}
 
 	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
@@ -2868,13 +2905,20 @@ function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
    @arg $sub_type (optional) return the hash for a particlar sub-type of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
-	if (! is_numeric($cdef_id)) {
-		$cdef_id = -1;
+	if (!is_numeric($cdef_id)) {
+		return generate_hash();
 	}
-	if ($sub_type == 'cdef') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM cdef WHERE id = ?', array($cdef_id));
-	}elseif ($sub_type == 'cdef_item') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM cdef_items WHERE id = ?', array($cdef_id));
+
+	switch ($sub_type) {
+		case 'cdef':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM cdef WHERE id = ?', array($cdef_id));
+			break;
+		case 'cdef_item':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM cdef_items WHERE id = ?', array($cdef_id));
+			break;
+		default:
+			return generate_hash();
+			break;
 	}
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
@@ -2903,10 +2947,16 @@ function get_hash_gprint($gprint_id) {
  * @param $sub_type (optional) return the hash for a particlar sub-type of this type
  * @returns - a 128-bit, hexadecimal hash */
 function get_hash_vdef($vdef_id, $sub_type = "vdef") {
-	if ($sub_type == "vdef") {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM vdef WHERE id = ?', array($vdef_id));
-	}elseif ($sub_type == "vdef_item") {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM vdef_items WHERE id = ?', array($vdef_id));
+	switch ($sub_type) {
+		case 'vdef':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM vdef WHERE id = ?', array($vdef_id));
+			break;
+		case 'vdef_item':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM vdef_items WHERE id = ?', array($vdef_id));
+			break;
+		default:
+			return generate_hash();
+			break;
 	}
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
@@ -2948,14 +2998,22 @@ function get_hash_host_template($host_template_id) {
    @arg $sub_type (optional) return the hash for a particlar sub-type of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
-	if ($sub_type == 'data_query') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query WHERE id = ?', array($data_query_id));
-	}elseif ($sub_type == 'data_query_graph') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph WHERE id = ?', array($data_query_id));
-	}elseif ($sub_type == 'data_query_sv_data_source') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph_rrd_sv WHERE id = ?', array($data_query_id));
-	}elseif ($sub_type == 'data_query_sv_graph') {
-		$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph_sv WHERE id = ?', array($data_query_id));
+	switch ($sub_type) {
+		case 'data_query':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query WHERE id = ?', array($data_query_id));
+			break;
+		case 'data_query_graph':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph WHERE id = ?', array($data_query_id));
+			break;
+		case 'data_query_sv_data_source':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph_rrd_sv WHERE id = ?', array($data_query_id));
+			break;
+		case 'data_query_sv_graph':
+			$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph_sv WHERE id = ?', array($data_query_id));
+			break;
+		default:
+			return generate_hash();
+			break;
 	}
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
@@ -2978,8 +3036,6 @@ function get_hash_version($type) {
 /* generate_hash - generates a new unique hash
    @returns - a 128-bit, hexadecimal hash */
 function generate_hash() {
-	global $config;
-
 	return md5(session_id() . microtime() . rand(0,1000));
 }
 
@@ -3216,17 +3272,17 @@ function set_page_refresh($refresh) {
 }
 
 function bottom_footer() {
-	global $config, $refresh;
+	global $config;
 
 	include($config['base_path'] . '/include/global_session.php');
 
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		include($config['base_path'] . '/include/bottom_footer.php');
-
-		/* display output messgages */
+		/* display output messages */
 		display_messages();
+
+		include($config['base_path'] . '/include/bottom_footer.php');
 	}else{
-		/* display output messgages */
+		/* display output messages */
 		display_messages();
 
 		/* we use this session var to store field values for when a save fails,
@@ -3301,11 +3357,20 @@ function general_header() {
 }
 
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
-	$full_name = db_fetch_cell_prepared('SELECT full_name FROM user_auth WHERE email_address = ?', array($from));
-	if (empty($full_name)) {
-		$fromname = $from;
+	if ($from == '') {
+		$from     = read_config_option('settings_from_email');
+		$fromname = read_config_option('settings_from_name');
 	}else{
-		$fromname = $full_name;
+		$full_name = db_fetch_cell_prepared('SELECT full_name 
+			FROM user_auth 
+			WHERE email_address = ?', 
+			array($from));
+
+		if (empty($full_name)) {
+			$fromname = $from;
+		}else{
+			$fromname = $full_name;
+		}
 	}
 
 	$from = array($from, $fromname);
@@ -3566,9 +3631,9 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	/* process custom headers */
 	if (is_array($headers) && sizeof($headers)) {
-	foreach($headers as $name => $value) {
-		$mail->addCustomHeader($name, $value);
-	}
+		foreach($headers as $name => $value) {
+			$mail->addCustomHeader($name, $value);
+		}
 	}
 
 	// Set both html and non-html bodies
@@ -3968,13 +4033,13 @@ function cacti_debug_backtrace($entry = '', $html = false) {
  *  @returns - either the Nth percentile, the elements for a whisker chart,
  *            or false if there is insufficient data to determine. */
 function calculate_percentiles($data, $percentile = 95, $whisker = false) {
-    if ($percentile > 0 && $percentile < 1) {
-        $p = $percentile;
-    }elseif ($percentile > 1 && $percentile <= 100) {
-        $p = $percentile * .01;
-    }else {
-        return false;
-    }
+	if ($percentile > 0 && $percentile < 1) {
+		$p = $percentile;
+	}elseif ($percentile > 1 && $percentile <= 100) {
+		$p = $percentile * .01;
+	}else {
+		return false;
+	}
 
 	if ($whisker) {
 		$tiles = array(
@@ -4019,7 +4084,7 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 		}
 	}
 
-    return $results;
+	return $results;
 }
 
 function get_timeinstate($host) {
@@ -4153,7 +4218,7 @@ function get_classic_tabimage($text, $down = false) {
 }
 
 function cacti_oid_numeric_format() {
-    if (function_exists('snmp_set_oid_output_format')) {
+	if (function_exists('snmp_set_oid_output_format')) {
 		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
 	}elseif (function_exists("snmp_set_oid_numeric_print")) {
 		snmp_set_oid_numeric_print(TRUE);
@@ -4240,7 +4305,7 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 			cacti_debug_backtrace('PHP ERROR STRICT');
 			break;
 		default:
-       		cacti_log($error, false, 'ERROR');
+			cacti_log($error, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR');
 	}
 

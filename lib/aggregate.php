@@ -652,7 +652,6 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 
 			# is the new cdef already present?
 			$new_cdef_id = '';
-			reset($cdefs);
 			foreach ($cdefs as $cdef) {
 				cacti_log(__FUNCTION__ . ' verify matching cdef: ' . $cdef['id'] . ' on: ' . $cdef['cdef_text'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 

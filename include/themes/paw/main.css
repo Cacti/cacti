@@ -25,6 +25,10 @@ td, th {
 	margin: 0px;
 }
 
+th {
+	white-space: nowrap;
+}
+
 img {
 	border:none;
 	vertical-align:middle;
@@ -266,7 +270,7 @@ fieldset {
 }
 
 .deviceUnmonitored {
-	color: rgba(250, 253, 158) !important;
+	color: rgba(250, 253, 158, 0.8) !important;
 }
 
 .deviceWarning {
@@ -1380,7 +1384,7 @@ div#gtabs {
 .maintabs {
 	line-height: 35px;
 	float: left;
-	width:50%;
+	width:80%;
 	overflow:hidden;
 }
 

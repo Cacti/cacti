@@ -319,7 +319,7 @@ label {
 }
 
 .deviceUnmonitored {
-	color: rgba(250, 253, 158) !important;
+	color: rgba(250, 253, 158, 0.8) !important;
 }
 
 .deviceWarning {
@@ -497,7 +497,7 @@ label {
 }
 
 .odd {
-	background: none repeat scroll 0 0 #080808;
+	background: none repeat scroll 0 0 #202020;
 	border: none;
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
@@ -743,6 +743,7 @@ ul#breadcrumbs {
 }
 
 .cactiContent {
+	clear: both;
 	background: #161616 none repeat scroll 0 0;
 	width: 100%;
 	vertical-align: top;
@@ -1180,6 +1181,7 @@ legend {
 
 .filterTable td:first-child {
 	width:55px;
+	min-width:55px;
 }
 
 .formItemDescription {

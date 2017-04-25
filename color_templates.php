@@ -203,7 +203,7 @@ function aggregate_color_form_actions() {
 	$color_list = ''; $i = 0;
 
 	/* loop through each of the color templates selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -589,7 +589,7 @@ function aggregate_color_template() {
 		strURL  = 'color_templates.php';
 		strURL += '?rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);

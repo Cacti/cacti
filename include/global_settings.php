@@ -223,10 +223,6 @@ $settings = array(
 					'friendly_name' => __('Graph Syntax'),
 					'default' => ''
 					),
-				'log_export' => array(
-					'friendly_name' => __('Graph Export'),
-					'default' => ''
-					),
 				'developer_mode' => array(
 					'friendly_name' => __('Developer Mode'),
 					'default' => ''
@@ -291,29 +287,6 @@ $settings = array(
 			'friendly_name' => __('Other Defaults'),
 			'collapsible' => 'true',
 			'method' => 'spacer',
-			),
-		'default_site' => array(
-			'friendly_name' => __('Site'),
-			'description' => __('The default Site for all new Devices.'),
-			'method' => 'drop_sql',
-			'default' => '1',
-			'none_value' => __('None'),
-			'sql' => 'SELECT id, name FROM sites ORDER BY name',
-			),
-		'default_poller' => array(
-			'friendly_name' => __('Poller'),
-			'description' => __('The default Poller for all new Devices.'),
-			'method' => 'drop_sql',
-			'default' => '1',
-			'none_value' => __('None'),
-			'sql' => 'SELECT id, name FROM poller ORDER BY name',
-			),
-		'reindex_method' => array(
-			'friendly_name' => __('Re-index Method for Data Queries'),
-			'description' => __('The default Re-index Method to use for all Data Queries.'),
-			'method' => 'drop_array',
-			'default' => '1',
-			'array' => $reindex_types,
 			),
 		'default_has' => array(
 			'friendly_name' => __('Has Graphs/Data Sources Checked'),
@@ -439,6 +412,7 @@ $settings = array(
 		'automation_header' => array(
 			'friendly_name' => __('Automation'),
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'automation_graphs_enabled' => array(
 			'method' => 'checkbox',
@@ -458,6 +432,34 @@ $settings = array(
 			),
 		),
 	'snmp' => array(
+		'general_header' => array(
+			'friendly_name' => __('General Defaults'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'default_site' => array(
+			'friendly_name' => __('Site'),
+			'description' => __('The default Site for all new Devices.'),
+			'method' => 'drop_sql',
+			'default' => '1',
+			'none_value' => __('None'),
+			'sql' => 'SELECT id, name FROM sites ORDER BY name',
+			),
+		'default_poller' => array(
+			'friendly_name' => __('Poller'),
+			'description' => __('The default Poller for all new Devices.'),
+			'method' => 'drop_sql',
+			'default' => '1',
+			'none_value' => __('None'),
+			'sql' => 'SELECT id, name FROM poller ORDER BY name',
+			),
+		'reindex_method' => array(
+			'friendly_name' => __('Re-index Method for Data Queries'),
+			'description' => __('The default Re-index Method to use for all Data Queries.'),
+			'method' => 'drop_array',
+			'default' => '1',
+			'array' => $reindex_types,
+			),
 		'snmp_header' => array(
 			'friendly_name' => __('SNMP Defaults'),
 			'method' => 'spacer',
@@ -929,6 +931,7 @@ $settings = array(
 		'auth_header' => array(
 			'friendly_name' => __('General'),
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'auth_method' => array(
 			'friendly_name' => __('Authentication Method'),
@@ -1208,6 +1211,7 @@ $settings = array(
 		'settings_web_url' => array(
 			'friendly_name' => __('URL Linking'),
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'base_url' => array(
 			'friendly_name' => __('Server Base URL'),
@@ -1623,6 +1627,7 @@ $settings = array(
 		'spikekill_header' => array(
 			'friendly_name' => __('Spike Kill Settings'),
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'spikekill_method' => array(
 			'friendly_name' => __('Removal Method'),
@@ -1732,6 +1737,7 @@ $settings = array(
 		'spikekill_batch_header' => array(
 			'friendly_name' => __('Batch Spike Kill Settings'),
 			'method' => 'spacer',
+			'collapsible' => 'true'
 			),
 		'spikekill_batch' => array(
 			'friendly_name' => __('Removal Schedule'),
