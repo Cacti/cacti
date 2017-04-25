@@ -1000,6 +1000,50 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	}
 }
 
+function is_menu_pick_active($menu_url) {
+	static $url_array, $url_parts;
+
+	$menu_parts = array();
+
+	/* break out the URL and variables */
+	if (!sizeof($url_array)) {
+		$url_array = parse_url($_SERVER['REQUEST_URI']);
+		if (isset($url_array['query'])) {
+			parse_str($url_array['query'], $url_parts);
+		}else{
+			$url_parts = array();
+		}
+	}
+
+	$menu_array = parse_url($menu_url);
+
+	if (basename($url_array['path']) == basename($menu_array['path'])) {
+		if (isset($menu_array['query'])) {
+			parse_str($menu_array['query'], $menu_parts);
+		}else{
+			$menu_parts = array();
+		}
+
+		if (isset($menu_parts['id'])) {
+			if (isset($url_parts['id'])) {
+				if ($menu_parts['id'] == $url_parts['id']) {
+					return true;
+				}
+			}
+		}elseif (isset($menu_parts['action'])) {
+			if (isset($url_parts['action'])) {
+				if ($menu_parts['action'] == $url_parts['action']) {
+					return true;
+				}
+			}
+		}else{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 /* draw_menu - draws the cacti menu for display in the console */
 function draw_menu($user_menu = "") {
 	global $config, $user_auth_realm_filenames, $menu, $menu_glyphs;
@@ -1055,14 +1099,6 @@ function draw_menu($user_menu = "") {
 			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$glyph<span>$header_name</span></a>\n";
 			print "<ul role='menu' id='${id}_div' style='display:block;'>\n";
 
-			/* break out the URL and variables */
-			$url_array = parse_url($_SERVER['REQUEST_URI']);
-			if (isset($url_array['query'])) {
-				parse_str($url_array['query'], $url_parts);
-			}else{
-				$url_parts = array();
-			}
-
 			/* pass 2: loop through each top level item and render it */
 			foreach ($header_array as $item_url => $item_title) {
 				$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
@@ -1086,7 +1122,7 @@ function draw_menu($user_menu = "") {
 							/* always draw the first item (parent), only draw the children if we are viewing a page
 							that is contained in the sub-items array */
 							if (($i == 0) || ($draw_sub_items)) {
-								if (basename($url_array['path']) == basename($item_sub_url) && (!isset($url_parts['action']) || strpos($url_array['query'], 'action=' . $url_parts['action']) !== false)) {
+								if (is_menu_pick_active($item_sub_url)) {
 									print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
 								}else{
 									print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
@@ -1100,8 +1136,7 @@ function draw_menu($user_menu = "") {
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames{basename($item_url)})) {
 						/* draw normal (non sub-item) menu item */
 						$item_url = $config['url_path'] . $item_url;
-//						if (get_current_page() == basename($item_url)) {
-						if (basename($url_array['path']) == basename($item_url) && (!isset($url_parts['action']) || strpos($url_array['query'], 'action=' . $url_parts['action']) !== false)) {
+						if (is_menu_pick_active($item_url)) {
 							print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
 						}else{
 							print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";

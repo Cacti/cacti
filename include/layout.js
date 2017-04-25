@@ -868,8 +868,13 @@ function loadPage(href) {
 		pageName = basename(hrefParts[0]);
 
 		if (pageName != '') {
-			$('#menu').find('.pic').removeClass('selected');
-			$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+			if ($('#menu').find("a[href*='"+href+"']").length > 0) {
+				$('#menu').find('.pic').removeClass('selected');
+				$('#menu').find("a[href*='"+href+"']").addClass('selected');
+			}else{ 
+				$('#menu').find('.pic').removeClass('selected');
+				$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+			}
 		}
 
 		applySkin();
