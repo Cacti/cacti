@@ -1449,6 +1449,8 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			/* fix issue with data input method importing and white spaces */
 			if ($field_name == 'input_string') {
 				$xml_array[$field_name] = str_replace('><', '> <', $xml_array[$field_name]);
+				$xml_array[$field_name] = str_replace('>""<', '>" "<', $xml_array[$field_name]);
+				$xml_array[$field_name] = str_replace('>\'\'<', '>\' \'<', $xml_array[$field_name]);
 			}
 
 			$save[$field_name] = xml_character_decode($xml_array[$field_name]);

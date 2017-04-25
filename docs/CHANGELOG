@@ -1,5 +1,11 @@
 Cacti CHANGELOG
 
+1.1.5
+-issue#580: Data collection warnings when using cmd.php
+-issue#606: Replace <path_php_binary> in data input methods
+-issue#608: Spaces adjacent to double quotes are eliminated during data input method import
+-issue#609: Honor the column setting in graph tree view mode
+
 1.1.4
 -issue#524: Reporting not working when Tree branch is device
 -issue#560: Add 'Duplicate' and 'Convert to Graph Template' back to Graph Management page for Advanced mode

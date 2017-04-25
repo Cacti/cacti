@@ -124,10 +124,11 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 				if ($print) {
 					print "<tr class='templateHeader'>
-						<td colspan='3' class='textHeaderDark'>
+						<td colspan='$columns' class='textHeaderDark'>
 							" . __('Graph Template:') . ' ' . htmlspecialchars($graph['graph_template_name']) . "
 						</td>
 					</tr>\n";
+					$i = 0;
 				}
 			}elseif (isset($graph['data_query_name'])) {
 				if (isset($prev_data_query_name)) {
@@ -171,7 +172,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 			}
 
 			if ($i == 0) {
-				form_alternate_row();
+				print "<tr class='formRow'>\n";
 				$start = false;
 			}
 
@@ -292,7 +293,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			}
 
 			if ($i == 0) {
-				form_alternate_row();
+				print "<tr class='formRow'>\n";
 				$start = false;
 			}
 
@@ -906,7 +907,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			/* alternating row color */
 			if ($use_custom_class == false) {
-				form_alternate_row();
+				print "<tr class='formRow'>\n";
 			}else{
 				print "<tr class='$customClass'>";
 			}

@@ -1136,9 +1136,8 @@ function get_full_script_path($local_data_id) {
 		}
 	}
 
-	$search = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
-	$replace = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
-
+	$search    = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
+	$replace   = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
 	$full_path = str_replace($search, $replace, $full_path);
 
 	/* sometimes a certain input value will not have anything entered... null out these fields
