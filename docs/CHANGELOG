@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#613: Network Automation, now requires a site or your are unable to save rules
 -issue#615: Data Input field length too short for longer scripts
 -issue#619: Export logging option in settings no longer used
+-issue: List for creating a Graph type shows already added Graph Templates
 
 1.1.4
 -issue#524: Reporting not working when Tree branch is device
