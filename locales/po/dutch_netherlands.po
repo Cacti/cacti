@@ -5,12 +5,12 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-25 15:22+0200\n"
-"PO-Revision-Date: 2017-04-25 17:57+0200\n"
+"POT-Creation-Date: 2017-04-25 18:16+0200\n"
+"PO-Revision-Date: 2017-04-25 18:17+0200\n"
 "Last-Translator: Patrick Rademaker\n"
-"Language-Team: \n"
+"Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5334,7 +5334,6 @@ msgid "Aggregated Device"
 msgstr "Geaggregeerd voorbeeld [%s]"
 
 #: ../graph_view.php:637
-#| msgid "No Device"
 msgid "Non-Device"
 msgstr ""
 
@@ -5410,9 +5409,6 @@ msgid "New Graph Template"
 msgstr "Nieuw grafiektemplate"
 
 #: ../graphs.php:846
-#| msgid ""
-#| "Click 'Continue' to duplicate the following Rule(s). You can optionally "
-#| "change the title format for the new Graph Rules."
 msgid ""
 "Click 'Continue' to duplicate the following Graph(s). You can optionally "
 "change the title format for the new Graph(s)."
@@ -5427,19 +5423,12 @@ msgid "Duplicate Graph(s)"
 msgstr "Dupliceer grafiek(en)"
 
 #: ../graphs.php:857
-#| msgid ""
-#| "Click 'Continue' to duplicate the following Color Template. You can "
-#| "optionally change the title format for the new color template."
-#| msgid_plural ""
-#| "Click 'Continue' to duplicate following Color Templates. You can "
-#| "optionally change the title format for the new color templates."
 msgid ""
 "Click 'Continue' to convert the following Graph(s) into Graph Template(s).  "
 "You can optionally change the title format for the new Graph Template(s)."
 msgstr ""
 
 #: ../graphs.php:860
-#| msgid "Graph Template"
 msgid "<graph_title> Template"
 msgstr ""
 
@@ -5515,7 +5504,7 @@ msgstr ""
 
 #: ../graphs.php:1098
 msgid "You must select at least one Graph."
-msgstr ""
+msgstr "U moet tenminste een grafiek selecteren."
 
 #: ../graphs.php:1238
 #, php-format
@@ -5842,7 +5831,7 @@ msgstr ""
 #: ../plugins/mactrack/mactrack_devices.php:237
 #: ../plugins/routerconfigs/router-accounts.php:169
 msgid "You must select at least one device."
-msgstr ""
+msgstr "U moet tenminste een apparaat selecteren."
 
 #: ../host.php:598
 msgid "Device [new]"
@@ -5966,7 +5955,6 @@ msgid "Success"
 msgstr "Gelukt"
 
 #: ../host.php:835
-#| msgid "Data Query"
 msgid "Reload Query"
 msgstr ""
 
@@ -6328,7 +6316,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:41
 msgid "You must select at least one field."
-msgstr ""
+msgstr "U moet tenminste een veld selecteren."
 
 #: ../include/global_arrays.php:44
 msgid ""
@@ -6526,7 +6514,6 @@ msgid "Script Server"
 msgstr "Script server"
 
 #: ../include/global_arrays.php:280
-#| msgid "Index Count Changed"
 msgid "Index Count"
 msgstr ""
 
@@ -7530,7 +7517,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:1283
 msgid "Year(s)"
-msgstr ""
+msgstr "Ja(a)r(en)"
 
 #: ../include/global_arrays.php:1287
 msgid "Keep Graph Types"
@@ -8888,7 +8875,6 @@ msgid ""
 msgstr ""
 
 #: ../include/global_form.php:1555
-#| msgid "Discovery Threads"
 msgid "Discovery Rules"
 msgstr ""
 
@@ -12061,7 +12047,7 @@ msgstr ""
 
 #: ../install/index.php:962 ../install/index.php:972 ../install/index.php:982
 msgid "Writable"
-msgstr ""
+msgstr "Schrijfbaar"
 
 #: ../install/index.php:964 ../install/index.php:974 ../install/index.php:984
 msgid "Not Writable"
@@ -13577,7 +13563,7 @@ msgstr ""
 
 #: ../lib/import.php:229
 msgid "written"
-msgstr ""
+msgstr "geschreven"
 
 #: ../lib/import.php:231
 msgid "could not open"
@@ -13593,7 +13579,7 @@ msgstr ""
 
 #: ../lib/import.php:246
 msgid "writable"
-msgstr ""
+msgstr "schrijfbaar"
 
 #: ../lib/import.php:1760
 msgid "Import Preview Results"
@@ -14736,7 +14722,6 @@ msgid "cli"
 msgstr ""
 
 #: ../plugins/audit/audit.php:322
-#| msgid "Export to a file"
 msgid "Export Log Events"
 msgstr ""
 
@@ -14749,7 +14734,6 @@ msgid "Audit Events"
 msgstr ""
 
 #: ../plugins/audit/audit.php:428
-#| msgid "Rule Name"
 msgid "Page Name"
 msgstr ""
 
@@ -14797,12 +14781,10 @@ msgid "The time the Event took place."
 msgstr ""
 
 #: ../plugins/audit/audit.php:491
-#| msgid "No SNMP Option Sets Found"
 msgid "No Audit Log Events Found"
 msgstr ""
 
 #: ../plugins/audit/audit.php:511
-#| msgid "Rule Details."
 msgid "Audit Event Details"
 msgstr ""
 
@@ -14829,7 +14811,6 @@ msgid "Audit Log Settings"
 msgstr ""
 
 #: ../plugins/audit/setup.php:284
-#| msgid "Enabled"
 msgid "Enable Audit Log"
 msgstr ""
 
@@ -14866,7 +14847,6 @@ msgid "Number of Graphs per Page"
 msgstr ""
 
 #: ../plugins/cycle/cycle.php:78
-#| msgid "No Graphs Found"
 msgid "Number of Graph Columns"
 msgstr ""
 
@@ -14907,7 +14887,6 @@ msgid "Refresh Graphs Now"
 msgstr ""
 
 #: ../plugins/cycle/cycle.php:129 ../plugins/monitor/monitor.php:474
-#| msgid "User Settings"
 msgid "Save Filter Settings"
 msgstr ""
 
@@ -14916,7 +14895,6 @@ msgid "Next Update In"
 msgstr ""
 
 #: ../plugins/cycle/cycle_ajax.php:80
-#| msgid "Select Template"
 msgid "Select Tree to View"
 msgstr ""
 
@@ -14947,12 +14925,10 @@ msgid "Set"
 msgstr "Set"
 
 #: ../plugins/cycle/cycle_ajax.php:110
-#| msgid "Network Filters"
 msgid "Set Filter"
 msgstr ""
 
 #: ../plugins/cycle/cycle_ajax.php:140
-#| msgid "Graph Creation Criteria"
 msgid "No Graphs Found Matching Criteria"
 msgstr ""
 
@@ -14994,7 +14970,6 @@ msgid "Cycle Graphs"
 msgstr ""
 
 #: ../plugins/cycle/setup.php:153
-#| msgid "Poller Interval"
 msgid "Delay Interval"
 msgstr ""
 
@@ -15031,7 +15006,6 @@ msgid "This is the font size in pixels for the title. (1 - 100)"
 msgstr ""
 
 #: ../plugins/cycle/setup.php:203
-#| msgid "Title Format"
 msgid "Title Font Face"
 msgstr ""
 
@@ -15040,7 +15014,6 @@ msgid "This is the font face for the title."
 msgstr ""
 
 #: ../plugins/cycle/setup.php:209
-#| msgid "Title Format"
 msgid "Title Font Color"
 msgstr ""
 
@@ -15079,7 +15052,6 @@ msgid "Specific List"
 msgstr ""
 
 #: ../plugins/cycle/setup.php:232
-#| msgid "Graph List"
 msgid "Custom Graph List"
 msgstr ""
 
@@ -15114,7 +15086,6 @@ msgid "Cycling"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:26
-#| msgid "LOW - Statistics and Errors"
 msgid "Statistics Reports"
 msgstr ""
 
@@ -15169,12 +15140,10 @@ msgid "Source AS"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:40 ../plugins/flowview/flowview.php:711
-#| msgid "Destination Branch:"
 msgid "Destination AS"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:41
-#| msgid "Destination Branch:"
 msgid "Source/Destination AS"
 msgstr ""
 
@@ -15183,12 +15152,10 @@ msgid "IP ToS"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:43 ../plugins/flowview/flowview.php:729
-#| msgid "Data Source Profiles"
 msgid "Source Prefix"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:44 ../plugins/flowview/flowview.php:730
-#| msgid "Destination Branch:"
 msgid "Destination Prefix"
 msgstr ""
 
@@ -15201,7 +15168,6 @@ msgid "Print Reports"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:50
-#| msgid "Poll Time"
 msgid "Flow Times"
 msgstr ""
 
@@ -15218,12 +15184,10 @@ msgid "1 Line with Tags"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:54
-#| msgid "New Aggregate"
 msgid "AS Aggregation"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:55
-#| msgid "Part of Aggregate"
 msgid "Protocol Port Aggregation"
 msgstr ""
 
@@ -15232,12 +15196,10 @@ msgid "Source Prefix Aggregation"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:57
-#| msgid "Destination Branch:"
 msgid "Destination Prefix Aggregation"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:58
-#| msgid "Part of Aggregate"
 msgid "Prefix Aggregation"
 msgstr ""
 
@@ -15631,7 +15593,6 @@ msgid "Dest AS"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:283 ../plugins/flowview/flowview.php:717
-#| msgid "OS"
 msgid "TOS"
 msgstr ""
 
@@ -15652,7 +15613,6 @@ msgid "Dest IF"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:291 ../plugins/flowview/arrays.php:293
-#| msgid "Port"
 msgid "Dest Port"
 msgstr ""
 
@@ -15662,7 +15622,6 @@ msgid "End Time"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:291
-#| msgid "Fail"
 msgid "Fl"
 msgstr ""
 
@@ -15671,7 +15630,6 @@ msgid "Src IF"
 msgstr ""
 
 #: ../plugins/flowview/arrays.php:291 ../plugins/flowview/arrays.php:293
-#| msgid "SNMP Port"
 msgid "Src Port"
 msgstr ""
 
@@ -15749,7 +15707,6 @@ msgid "Note:"
 msgstr ""
 
 #: ../plugins/flowview/flowview.php:310
-#| msgid "Report Saved"
 msgid "Report Parameters"
 msgstr ""
 
@@ -15797,7 +15754,6 @@ msgid "Update"
 msgstr ""
 
 #: ../plugins/flowview/flowview.php:590
-#| msgid "Report Saved"
 msgid "Filter Saved"
 msgstr ""
 
@@ -15810,7 +15766,6 @@ msgid "Interface"
 msgstr ""
 
 #: ../plugins/flowview/flowview.php:704
-#| msgid "AES"
 msgid "AS"
 msgstr ""
 
@@ -15831,7 +15786,6 @@ msgid "NetFlow version 7"
 msgstr ""
 
 #: ../plugins/flowview/flowview_devices.php:57
-#| msgid "New Aggregate"
 msgid "NetFlow AS Aggregation"
 msgstr ""
 
@@ -15848,7 +15802,6 @@ msgid "NetFlow Destination Prefix Aggregation"
 msgstr ""
 
 #: ../plugins/flowview/flowview_devices.php:61
-#| msgid "New Aggregate"
 msgid "NetFlow Prefix Aggregation"
 msgstr ""
 
@@ -15865,7 +15818,6 @@ msgid "NetFlow Full Flow"
 msgstr ""
 
 #: ../plugins/flowview/flowview_devices.php:65
-#| msgid "New Aggregate"
 msgid "NetFlow ToS AS Aggregation"
 msgstr ""
 
@@ -15945,7 +15897,6 @@ msgid "Directory Structure that will be used for the flows for this device."
 msgstr ""
 
 #: ../plugins/flowview/flowview_devices.php:138
-#| msgid "SNMP Version"
 msgid "NetFlow Version"
 msgstr ""
 
@@ -15965,7 +15916,6 @@ msgstr ""
 
 #: ../plugins/flowview/flowview_devices.php:154
 #: ../plugins/flowview/flowview_devices.php:433
-#| msgid "Location"
 msgid "Rotation"
 msgstr ""
 
@@ -16040,7 +15990,6 @@ msgid "Every Month"
 msgstr "Iedere maand"
 
 #: ../plugins/flowview/flowview_schedules.php:56
-#| msgid "Schedule"
 msgid "New Schedule"
 msgstr ""
 
@@ -16062,7 +16011,6 @@ msgid "Name of the query to run."
 msgstr ""
 
 #: ../plugins/flowview/flowview_schedules.php:77
-#| msgid "Poller Interval"
 msgid "Send Interval"
 msgstr ""
 
@@ -16087,22 +16035,18 @@ msgid "Email addresses (command delimited) to send this NetFlow Scan to."
 msgstr ""
 
 #: ../plugins/flowview/flowview_schedules.php:190
-#| msgid "Click 'Continue' to delete the following Rule(s)."
 msgid "Click 'Continue' to delete the following Schedule(s)."
 msgstr ""
 
 #: ../plugins/flowview/flowview_schedules.php:197
-#| msgid "Click 'Continue' to enable the following Rule(s)."
 msgid "Click 'Continue' to send the following Schedule(s) now."
 msgstr ""
 
 #: ../plugins/flowview/flowview_schedules.php:204
-#| msgid "Click 'Continue' to disable the following Rule(s)."
 msgid "Click 'Continue' to Disable the following Schedule(s)."
 msgstr ""
 
 #: ../plugins/flowview/flowview_schedules.php:211
-#| msgid "Click 'Continue' to enable the following Rule(s)."
 msgid "Click 'Continue' to Enable the following Schedule(s)."
 msgstr ""
 
@@ -16113,24 +16057,20 @@ msgstr ""
 #: ../plugins/flowview/flowview_schedules.php:313
 #: ../plugins/flowview/functions.php:105 ../plugins/flowview/functions.php:169
 #, php-format
-#| msgid "Report Saved"
 msgid "Report: %s"
 msgstr ""
 
 #: ../plugins/flowview/flowview_schedules.php:397
-#| msgid "Schedule"
 msgid "FlowView Schedules"
 msgstr ""
 
 #: ../plugins/flowview/flowview_schedules.php:411
 #: ../plugins/flowview/flowview_schedules.php:465
 #: ../plugins/flowview/functions.php:319 ../plugins/flowview/setup.php:98
-#| msgid "Schedule"
 msgid "Schedules"
 msgstr ""
 
 #: ../plugins/flowview/flowview_schedules.php:474
-#| msgid "Schedule Type"
 msgid "Schedule Title"
 msgstr ""
 
@@ -16172,7 +16112,6 @@ msgid "Show/Hide"
 msgstr "Toon/verberg"
 
 #: ../plugins/flowview/functions.php:132
-#| msgid "Enable"
 msgid "Table"
 msgstr ""
 
@@ -16202,12 +16141,10 @@ msgid "Manage Listeners"
 msgstr ""
 
 #: ../plugins/flowview/functions.php:319
-#| msgid "Schedule"
 msgid "Manage Schedules"
 msgstr ""
 
 #: ../plugins/flowview/functions.php:347
-#| msgid "Cacti Developers"
 msgid "Cacti Flowview"
 msgstr ""
 
@@ -16374,7 +16311,6 @@ msgid "FlowView"
 msgstr ""
 
 #: ../plugins/flowview/setup.php:129
-#| msgid "SNMP Query"
 msgid "New Query"
 msgstr ""
 
@@ -16395,7 +16331,6 @@ msgid "This is the path to a temporary directory to do work."
 msgstr ""
 
 #: ../plugins/flowview/setup.php:165
-#| msgid "Active Directory"
 msgid "Flows Directory"
 msgstr ""
 
@@ -16440,32 +16375,24 @@ msgid "Hourly"
 msgstr "Ieder uur"
 
 #: ../plugins/gexport/gexport.php:249
-#| msgid ""
-#| "Click 'Continue' to delete the following Data Query Graph Association."
 msgid "Click 'Continue' to delete the following Graph Export Definition."
 msgid_plural "Click 'Continue' to delete following Graph Export Definitions."
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../plugins/gexport/gexport.php:258
-#| msgid "Click 'Continue' to disable the following Data Source."
-#| msgid_plural "Click 'Continue' to disable all following Data Sources."
 msgid "Click 'Continue' to disable the following Graph Export Definition."
 msgid_plural "Click 'Continue' to disable following Graph Export Definitions."
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../plugins/gexport/gexport.php:267
-#| msgid "Click 'Continue' to enable the following Data Source."
-#| msgid_plural "Click 'Continue' to enable all following Data Sources."
 msgid "Click 'Continue' to enable the following Graph Export Definition."
 msgid_plural "Click 'Continue' to enable following Graph Export Definitions."
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../plugins/gexport/gexport.php:276
-#| msgid ""
-#| "Click 'Continue' to delete the following Data Query Graph Association."
 msgid "Click 'Continue' to run the following Graph Export Definition now."
 msgid_plural "Click 'Continue' to run following Graph Export Definitions now."
 msgstr[0] ""
@@ -16477,17 +16404,14 @@ msgstr ""
 
 #: ../plugins/gexport/gexport.php:341
 #, php-format
-#| msgid "Graph Items [edit: %s]"
 msgid "Graph Export Definition [edit: %s]"
 msgstr ""
 
 #: ../plugins/gexport/gexport.php:343
-#| msgid "Graph Items [new]"
 msgid "Graph Export Definition [new]"
 msgstr ""
 
 #: ../plugins/gexport/gexport.php:369
-#| msgid "Select Template"
 msgid "Select Tree(s)"
 msgstr ""
 
@@ -16500,7 +16424,6 @@ msgid "All Trees Selected"
 msgstr ""
 
 #: ../plugins/gexport/gexport.php:415
-#| msgid "Select a File"
 msgid "Select Site(s)"
 msgstr ""
 
@@ -16513,7 +16436,6 @@ msgid "All Sites Selected"
 msgstr "Alle locaties geselecteerd"
 
 #: ../plugins/gexport/gexport.php:551
-#| msgid "Graph Configuration"
 msgid "Graph Export Definitions"
 msgstr ""
 
@@ -16549,12 +16471,10 @@ msgid "Export Name"
 msgstr "Exportnaam"
 
 #: ../plugins/gexport/gexport.php:705 ../plugins/gexport/setup.php:197
-#| msgid "The name of this Color definition."
 msgid "The name of this Graph Export Definition."
 msgstr ""
 
 #: ../plugins/gexport/gexport.php:706
-#| msgid "The name of this Color definition."
 msgid "The internal ID of the Graph Export Definition."
 msgstr ""
 
@@ -16596,7 +16516,6 @@ msgid "The last runtime for the Graph Export."
 msgstr ""
 
 #: ../plugins/gexport/gexport.php:715
-#| msgid "The number of Graphs Templates using this Data Query."
 msgid "The number of Graphs Exported on the last run."
 msgstr ""
 
@@ -16605,7 +16524,6 @@ msgid "The last time that this Graph Export was started."
 msgstr ""
 
 #: ../plugins/gexport/gexport.php:717
-#| msgid "Last Started"
 msgid "Last Errored"
 msgstr ""
 
@@ -16626,7 +16544,6 @@ msgid "Sec"
 msgstr "Sec"
 
 #: ../plugins/gexport/gexport.php:799
-#| msgid "No Graph Templates Defined."
 msgid "No Graph Export Definitions"
 msgstr ""
 
@@ -16635,12 +16552,10 @@ msgid "Export Cacti Graphs Settings"
 msgstr ""
 
 #: ../plugins/gexport/setup.php:184
-#| msgid "Graph Types"
 msgid "Graph Exports"
 msgstr ""
 
 #: ../plugins/gexport/setup.php:205
-#| msgid "Input Method"
 msgid "Export Method"
 msgstr ""
 
@@ -16680,7 +16595,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/gexport/setup.php:235
-#| msgid "Ping Method"
 msgid "Presentation Method"
 msgstr ""
 
@@ -16697,7 +16611,6 @@ msgid "Export Timing"
 msgstr "Export timing"
 
 #: ../plugins/gexport/setup.php:250
-#| msgid "Ping Method"
 msgid "Timing Method"
 msgstr ""
 
@@ -16726,7 +16639,6 @@ msgstr ""
 #: ../plugins/gexport/setup.php:276 ../plugins/gexport/setup.php:277
 #: ../plugins/gexport/setup.php:278
 #, php-format
-#| msgid "Every %d Minutes"
 msgid "Every %d Polling Cycles"
 msgstr ""
 
@@ -16756,7 +16668,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/gexport/setup.php:302
-#| msgid "General Settings"
 msgid "Graph Selection & Settings"
 msgstr ""
 
@@ -16795,7 +16706,6 @@ msgid "The Site for Cacti Graphs to be Exported from."
 msgstr ""
 
 #: ../plugins/gexport/setup.php:343
-#| msgid "Graph Width"
 msgid "Graph Thumbnail Width"
 msgstr ""
 
@@ -16804,7 +16714,6 @@ msgid "The default width of Thumbnail Graphs in pixels."
 msgstr ""
 
 #: ../plugins/gexport/setup.php:352
-#| msgid "Graph Height"
 msgid "Graph Thumbnail Height"
 msgstr ""
 
@@ -16829,7 +16738,6 @@ msgid "The number of columns to use by default when displaying Graphs."
 msgstr ""
 
 #: ../plugins/gexport/setup.php:378
-#| msgid "The number of Graphs using this Data Query."
 msgid "Choose the number of Graphs Per Page to display."
 msgstr ""
 
@@ -16848,7 +16756,6 @@ msgid "Export Location Information"
 msgstr ""
 
 #: ../plugins/gexport/setup.php:399
-#| msgid "Active Directory"
 msgid "Export Directory"
 msgstr ""
 
@@ -16859,7 +16766,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/gexport/setup.php:406
-#| msgid "Active Directory"
 msgid "Local Scratch Directory"
 msgstr ""
 
@@ -16871,7 +16777,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/gexport/setup.php:414
-#| msgid "SNMP Options"
 msgid "Remote Options"
 msgstr ""
 
@@ -16937,17 +16842,14 @@ msgid "Operating System"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:39
-#| msgid "Device Name"
 msgid "Device Driver"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:40
-#| msgid "Action"
 msgid "Application"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:45
-#| msgid "Enable"
 msgid "Runnable"
 msgstr ""
 
@@ -16980,7 +16882,6 @@ msgstr ""
 #: ../plugins/hmib/hmib.php:866 ../plugins/hmib/hmib.php:1171
 #: ../plugins/hmib/hmib.php:1476 ../plugins/hmib/hmib.php:1901
 #: ../plugins/hmib/hmib_types.php:987
-#| msgid "This Type"
 msgid "OS Type"
 msgstr ""
 
@@ -17007,7 +16908,6 @@ msgstr ""
 #: ../plugins/mikrotik/mikrotik.php:961 ../plugins/mikrotik/mikrotik.php:1194
 #: ../plugins/mikrotik/mikrotik.php:1492
 #: ../plugins/mikrotik/mikrotik_users.php:357
-#| msgid "Last Started"
 msgid "Last Seen"
 msgstr ""
 
@@ -17025,7 +16925,6 @@ msgid "Edit Device"
 msgstr "Wijzig apparaat"
 
 #: ../plugins/hmib/hmib.php:400
-#| msgid "No Networks Found"
 msgid "No Process History Found"
 msgstr ""
 
@@ -17080,17 +16979,14 @@ msgid "Hardware Inventory"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:1043
-#| msgid "Description"
 msgid "Hardware Description"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:1044
-#| msgid "Graph Type"
 msgid "Hardware Type"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:1068
-#| msgid "No Graphs Found"
 msgid "No Hardware Found"
 msgstr ""
 
@@ -17103,12 +16999,10 @@ msgid "Volumes"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:1348
-#| msgid "Description"
 msgid "Storage Description"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:1349
-#| msgid "Graph Type"
 msgid "Storage Type"
 msgstr ""
 
@@ -17129,12 +17023,10 @@ msgid "Alloc (KB)"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:1379
-#| msgid "No Devices Found"
 msgid "No Storage Devices Found"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:1467 ../plugins/mikrotik/mikrotik.php:1625
-#| msgid "Device Template"
 msgid "Device Filter"
 msgstr ""
 
@@ -17184,7 +17076,6 @@ msgid "View Software Inventory"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:1731 ../plugins/mikrotik/mikrotik.php:1841
-#| msgid "No Graph Templates Defined."
 msgid "No Graphs Defined"
 msgstr ""
 
@@ -17193,7 +17084,6 @@ msgid "Software Inventory"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:2000 ../plugins/hmib/hmib.php:2070
-#| msgid "Action"
 msgid "Applications"
 msgstr ""
 
@@ -17202,7 +17092,6 @@ msgid "Package"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:2101
-#| msgid "No Networks Found"
 msgid "No Software Packages Found"
 msgstr ""
 
@@ -17262,7 +17151,6 @@ msgid "Device Type Summary Statistics"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:2365
-#| msgid "Login"
 msgid "Logins"
 msgstr ""
 
@@ -17291,7 +17179,6 @@ msgid "Avg Swap"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:2372
-#| msgid "Max OIDS"
 msgid "Max Swap"
 msgstr ""
 
@@ -17307,12 +17194,10 @@ msgstr ""
 #: ../plugins/hmib/hmib.php:2599
 #: ../plugins/mactrack/mactrack_view_sites.php:268
 #: ../plugins/mactrack/mactrack_view_sites.php:323
-#| msgid "New Device"
 msgid "View Devices"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:2434
-#| msgid "No Device"
 msgid "No Device Types"
 msgstr ""
 
@@ -17325,7 +17210,6 @@ msgid "Process Summary Statistics"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:2546
-#| msgid "Profile Name"
 msgid "Process Name"
 msgstr ""
 
@@ -17334,7 +17218,6 @@ msgid "Num Paths"
 msgstr ""
 
 #: ../plugins/hmib/hmib.php:2548 ../plugins/hmib/hmib_types.php:884
-#| msgid "Hostname"
 msgid "Hosts"
 msgstr ""
 
@@ -17361,7 +17244,6 @@ msgid "Custom Graph List Applied - Filtering from List"
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:226
-#| msgid "Click 'Continue' to delete the following Rule(s)."
 msgid "Click 'Continue' to Delete the following Host Type(s)"
 msgstr ""
 
@@ -17370,12 +17252,6 @@ msgid "Delete Host Type(s)"
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:235
-#| msgid ""
-#| "Click 'Continue' to duplicate the following Color Template. You can "
-#| "optionally change the title format for the new color template."
-#| msgid_plural ""
-#| "Click 'Continue' to duplicate following Color Templates. You can "
-#| "optionally change the title format for the new color templates."
 msgid ""
 "Click 'Continue' to Duplicate the following Host Type(s). You may optionally "
 "change the description for the new Host Type(s).  Otherwise, do not change "
@@ -17387,7 +17263,6 @@ msgid "Host Type Prefix:"
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:241
-#| msgid "Duplicate Device Template(s)"
 msgid "Duplicate Host Type(s)"
 msgstr ""
 
@@ -17407,7 +17282,6 @@ msgid "There were %d Device Types Added!"
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:400
-#| msgid "No Networks Found"
 msgid "No New Host Types Found!"
 msgstr ""
 
@@ -17416,7 +17290,6 @@ msgid "Import Host MIB OS Types"
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:428
-#| msgid "Import Colors from Local File"
 msgid "Import Device Types from Local File"
 msgstr ""
 
@@ -17427,9 +17300,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:437
-#| msgid ""
-#| "Should the import process be allowed to overwrite existing data?  Please "
-#| "note, this does not mean delete old rows, only update duplicate rows."
 msgid ""
 "Should the import process be allowed to overwrite existing data?  Please "
 "note, this does not mean delete old row, only replace duplicate rows."
@@ -17440,7 +17310,6 @@ msgid "A common name for the Host Type.  For example, Windows 7"
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:451
-#| msgid "Choose the SNMP version for this host."
 msgid "The OS version for the Host Type"
 msgstr ""
 
@@ -17486,7 +17355,6 @@ msgid "Device Scanning Function Options"
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:752
-#| msgid "Give this Network a meaningful name."
 msgid "Give this Host Type a meaningful name."
 msgstr ""
 
@@ -17508,7 +17376,6 @@ msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:794
 #, php-format
-#| msgid "SNMP Options [edit: %s]"
 msgid "Host MIB OS Types [edit: %s]"
 msgstr ""
 
@@ -17521,12 +17388,10 @@ msgid "Host MIB OS Type Filters"
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:873 ../plugins/hmib/setup.php:589
-#| msgid "Graph Types"
 msgid "OS Types"
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:882
-#| msgid "Hostname"
 msgid "Host Type Name"
 msgstr ""
 
@@ -17535,7 +17400,6 @@ msgid "OS Version"
 msgstr "OS Versie"
 
 #: ../plugins/hmib/hmib_types.php:885
-#| msgid "SNMP Get"
 msgid "SNMP ObjectID"
 msgstr ""
 
@@ -17544,7 +17408,6 @@ msgid "SNMP Sys Description Match"
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:902
-#| msgid "No Data Templates Found"
 msgid "No Host Types Found"
 msgstr ""
 
@@ -17562,7 +17425,6 @@ msgid "Scan for New or Unknown Device Types"
 msgstr ""
 
 #: ../plugins/hmib/hmib_types.php:1011
-#| msgid "Import Colors from Local File"
 msgid "Import Host Types from a CSV File"
 msgstr ""
 
@@ -17579,7 +17441,6 @@ msgid "Plugin -> Host MIB Admin"
 msgstr ""
 
 #: ../plugins/hmib/setup.php:358
-#| msgid "General Settings"
 msgid "Host MIB General Settings"
 msgstr ""
 
@@ -17594,7 +17455,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/hmib/setup.php:368 ../plugins/mikrotik/setup.php:588
-#| msgid "Automatically Add to Cacti"
 msgid "Automatically Discover Cacti Devices"
 msgstr ""
 
@@ -17605,7 +17465,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/hmib/setup.php:374 ../plugins/mikrotik/setup.php:594
-#| msgid "Automatically Add to Cacti"
 msgid "Automatically Purge Devices"
 msgstr ""
 
@@ -17634,7 +17493,6 @@ msgstr ""
 #: ../plugins/hmib/setup.php:392 ../plugins/hmib/setup.php:393
 #: ../plugins/hmib/setup.php:394 ../plugins/hmib/setup.php:395
 #, php-format
-#| msgid "Graph Types"
 msgid "%d Types"
 msgstr ""
 
@@ -17685,12 +17543,10 @@ msgid "How often do you want to look for new Cacti Devices?"
 msgstr ""
 
 #: ../plugins/hmib/setup.php:437
-#| msgid "Graph Configuration"
 msgid "Host Graph Automation"
 msgstr ""
 
 #: ../plugins/hmib/setup.php:441 ../plugins/mikrotik/setup.php:633
-#| msgid "Automatically Add to Cacti"
 msgid "Automatically Add New Graphs"
 msgstr ""
 
@@ -17735,7 +17591,6 @@ msgid "How often do you want to scan for Storage performance data?"
 msgstr ""
 
 #: ../plugins/hmib/setup.php:485
-#| msgid "No Devices Found"
 msgid "Device Frequency"
 msgstr ""
 
@@ -17780,7 +17635,6 @@ msgid "Host MIB Software Inventory"
 msgstr ""
 
 #: ../plugins/hmib/setup.php:601
-#| msgid "Has Graphs"
 msgid "Host MIB Graphs"
 msgstr ""
 
@@ -17852,7 +17706,6 @@ msgid "View Interface Graphs"
 msgstr ""
 
 #: ../plugins/mactrack/lib/mactrack_functions.php:2439
-#| msgid "Device Selection Criteria"
 msgid "Device Not in Cacti"
 msgstr ""
 
@@ -17863,7 +17716,6 @@ msgstr ""
 
 #: ../plugins/mactrack/lib/mactrack_functions.php:2537
 #, php-format
-#| msgid "Device [edit: %s]"
 msgid "Device Rescan '%s'"
 msgstr ""
 
@@ -17879,18 +17731,15 @@ msgstr ""
 
 #: ../plugins/mactrack/lib/mactrack_functions.php:2605
 #, php-format
-#| msgid "Device [edit: %s]"
 msgid "Device Enable '%s'"
 msgstr ""
 
 #: ../plugins/mactrack/lib/mactrack_functions.php:2624
 #, php-format
-#| msgid "Device Name"
 msgid "Device Disable '%d'"
 msgstr ""
 
 #: ../plugins/mactrack/lib/mactrack_functions.php:2735
-#| msgid "Not Detected"
 msgid "Not Recorded"
 msgstr ""
 
@@ -17920,7 +17769,6 @@ msgid "View Interfaces"
 msgstr ""
 
 #: ../plugins/mactrack/lib/mactrack_functions.php:2799
-#| msgid "New Device"
 msgid "Rescan Device"
 msgstr ""
 
@@ -17948,7 +17796,6 @@ msgstr "Toon apparaateigenschappen"
 #: ../plugins/mactrack/lib/mactrack_functions.php:3040
 #: ../plugins/mactrack/mactrack_devices.php:1117
 #: ../plugins/mactrack/mactrack_view_devices.php:408
-#| msgid "Schedule Type"
 msgid "SubType"
 msgstr ""
 
@@ -17983,7 +17830,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_device_types.php:273
-#| msgid "Device Templates [edit: %s]"
 msgid "Device Type Prefix:"
 msgstr ""
 
@@ -17992,7 +17838,6 @@ msgid "Cisco"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_device_types.php:446
-#| msgid "No Devices Found"
 msgid "No New Device Types Found!"
 msgstr ""
 
@@ -18034,17 +17879,14 @@ msgstr ""
 
 #: ../plugins/mactrack/mactrack_device_types.php:841
 #, php-format
-#| msgid "Device Templates [edit: %s]"
 msgid "MacTrack Device Types [edit: %s]"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_device_types.php:843
-#| msgid "Device Templates [new]"
 msgid "MacTrack Device Types [new]"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_device_types.php:911
-#| msgid "Graph Preview Filters"
 msgid "MacTrack Device Type Filters"
 msgstr ""
 
@@ -18052,12 +17894,10 @@ msgstr ""
 #: ../plugins/mactrack/mactrack_device_types.php:986
 #: ../plugins/mactrack/setup.php:1318 ../plugins/routerconfigs/functions.php:34
 #: ../plugins/routerconfigs/router-devtypes.php:320
-#| msgid "Device Templates"
 msgid "Device Types"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_device_types.php:932
-#| msgid "Device Description"
 msgid "Device Type Description"
 msgstr ""
 
@@ -18069,7 +17909,6 @@ msgstr ""
 #: ../plugins/mactrack/setup.php:1356
 #: ../plugins/routerconfigs/router-devices.php:101
 #: ../plugins/routerconfigs/router-devices.php:484
-#| msgid "Device Template"
 msgid "Device Type"
 msgstr ""
 
@@ -18094,12 +17933,10 @@ msgid "No MacTrack Device Types"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_device_types.php:1001
-#| msgid "Script Query"
 msgid "Submit Query"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_device_types.php:1004
-#| msgid "Clear Filtered"
 msgid "Clear Filtered Results"
 msgstr ""
 
@@ -18108,7 +17945,6 @@ msgid "Scan Active Devices for Unknown Device Types"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_device_types.php:1010
-#| msgid "Import Colors from Local File"
 msgid "Import Device Types from a CSV File"
 msgstr ""
 
@@ -18124,7 +17960,6 @@ msgid "Vendor"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_devices.php:34
-#| msgid "SNMP Options"
 msgid "Change SNMP Options"
 msgstr ""
 
@@ -18186,12 +18021,10 @@ msgstr ""
 
 #: ../plugins/mactrack/mactrack_devices.php:853
 #, php-format
-#| msgid "Device [edit: %s]"
 msgid "MacTrack Devices [edit: %s]"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_devices.php:856
-#| msgid "Device [new]"
 msgid "MacTrack Devices [new]"
 msgstr ""
 
@@ -18211,7 +18044,6 @@ msgstr ""
 #: ../plugins/mactrack/mactrack_sites.php:446
 #: ../plugins/mactrack/mactrack_view_devices.php:276
 #: ../plugins/mactrack/mactrack_view_sites.php:250
-#| msgid "User Settings"
 msgid "User Ports"
 msgstr ""
 
@@ -18224,13 +18056,11 @@ msgstr ""
 
 #: ../plugins/mactrack/mactrack_devices.php:1030
 #: ../plugins/mactrack/mactrack_view_devices.php:278
-#| msgid "Ping Port"
 msgid "Trunk Ports"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_devices.php:1031
 #: ../plugins/mactrack/mactrack_view_devices.php:279
-#| msgid "Active"
 msgid "Active Macs"
 msgstr ""
 
@@ -18241,7 +18071,6 @@ msgstr "Laatste duur"
 
 #: ../plugins/mactrack/mactrack_devices.php:1042
 #: ../plugins/mactrack/mactrack_view_devices.php:340
-#| msgid "No Device"
 msgid "No MacTrack Devices"
 msgstr ""
 
@@ -18265,7 +18094,6 @@ msgstr ""
 
 #: ../plugins/mactrack/mactrack_macauth.php:237
 #, php-format
-#| msgid "Graph Items [edit: %s]"
 msgid "MacTrack MacAuth [edit: %s]"
 msgstr ""
 
@@ -18324,7 +18152,6 @@ msgstr ""
 
 #: ../plugins/mactrack/mactrack_macwatch.php:245
 #, php-format
-#| msgid "Graph Items [edit: %s]"
 msgid "MacTrack MacWatch [edit: %s]"
 msgstr ""
 
@@ -18342,7 +18169,6 @@ msgid "Watches"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_macwatch.php:328
-#| msgid "Graph Name"
 msgid "Watch Name"
 msgstr ""
 
@@ -18352,7 +18178,6 @@ msgid "Ticket Number"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_macwatch.php:331
-#| msgid "Description"
 msgid "Watch Description"
 msgstr ""
 
@@ -18383,12 +18208,10 @@ msgid "MacTrack Site [edit: %s]"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_sites.php:379
-#| msgid "Graph Items [new]"
 msgid "MacTrack Site [new]"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_sites.php:411
-#| msgid "Graph Preview Filters"
 msgid "MacTrack Site Filters"
 msgstr ""
 
@@ -18409,7 +18232,6 @@ msgstr ""
 
 #: ../plugins/mactrack/mactrack_sites.php:449
 #: ../plugins/mactrack/mactrack_view_sites.php:253
-#| msgid "Devices"
 msgid "Device Errors"
 msgstr ""
 
@@ -18445,9 +18267,6 @@ msgid "Are you sure you want to delete the following SNMP Options?"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_snmp.php:220
-#| msgid ""
-#| "Click 'Continue' to duplicate the following SNMP Options. You can "
-#| "optionally change the title format for the new SNMP Options."
 msgid ""
 "When you click save, the following SNMP Options will be duplicated. You can "
 "optionally change the title format for the new SNMP Options."
@@ -18455,7 +18274,6 @@ msgstr ""
 
 #: ../plugins/mactrack/mactrack_snmp.php:286
 #, php-format
-#| msgid "SNMP Options [edit: %s]"
 msgid "SNMP Options [edit %s]"
 msgstr ""
 
@@ -18466,18 +18284,15 @@ msgstr ""
 
 #: ../plugins/mactrack/mactrack_snmp.php:369
 #, php-format
-#| msgid "SNMP Options [edit: %s]"
 msgid "SNMP Option Set [edit: %s]"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_snmp.php:371
-#| msgid "SNMP Options [new]"
 msgid "SNMP Option Set [new]"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_snmp.php:392
 #: ../plugins/mactrack/mactrack_snmp.php:484 ../plugins/mactrack/setup.php:1163
-#| msgid "SNMP Options"
 msgid "MacTrack SNMP Options"
 msgstr ""
 
@@ -18486,27 +18301,22 @@ msgid "Max OIDs"
 msgstr "Maximum aantal OID’s"
 
 #: ../plugins/mactrack/mactrack_snmp.php:403
-#| msgid "Auth Protocol"
 msgid "Auth Proto"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_snmp.php:404
-#| msgid "Priv Protocol"
 msgid "Priv Proto"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_snmp.php:508
-#| msgid "SNMP Options"
 msgid "SNMP Settings"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_snmp.php:515
-#| msgid "SNMP Option Set"
 msgid "Title of SNMP Option Set"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_snmp.php:528
-#| msgid "SNMP Option Sets"
 msgid "No SNMP Option Sets"
 msgstr ""
 
@@ -18544,7 +18354,6 @@ msgid "Running Processes:"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_utilities.php:241
-#| msgid "Last Started"
 msgid "Last Time Poller Started:"
 msgstr ""
 
@@ -18561,12 +18370,10 @@ msgid "Approx. Next DB Maintenance:"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_utilities.php:249
-#| msgid "Rule Details."
 msgid "Run Time Details"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_utilities.php:251
-#| msgid "Last Runtime"
 msgid "Last Poller Runtime:"
 msgstr ""
 
@@ -18627,7 +18434,6 @@ msgid "The DNS Resolver is Running"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_utilities.php:275
-#| msgid "Last Started"
 msgid "Date Started"
 msgstr ""
 
@@ -18709,7 +18515,6 @@ msgstr ""
 #: ../plugins/mactrack/mactrack_view_macs.php:655
 #: ../plugins/mactrack/mactrack_view_macs.php:676
 #: ../plugins/mactrack/mactrack_view_macs.php:795
-#| msgid "Device Name"
 msgid "Switch Name"
 msgstr ""
 
@@ -18720,7 +18525,6 @@ msgstr ""
 #: ../plugins/mactrack/mactrack_view_macs.php:656
 #: ../plugins/mactrack/mactrack_view_macs.php:677
 #: ../plugins/mactrack/mactrack_view_macs.php:796
-#| msgid "Hostname"
 msgid "Switch Hostname"
 msgstr ""
 
@@ -18737,7 +18541,6 @@ msgstr ""
 #: ../plugins/mactrack/mactrack_view_arp.php:309
 #: ../plugins/mactrack/mactrack_view_arp.php:319
 #: ../plugins/mactrack/mactrack_view_macs.php:658
-#| msgid "Hostname"
 msgid "ED DNS Hostname"
 msgstr ""
 
@@ -18758,7 +18561,6 @@ msgstr "ED MACadres"
 #: ../plugins/mactrack/mactrack_view_macs.php:660
 #: ../plugins/mactrack/mactrack_view_macs.php:680
 #: ../plugins/mactrack/mactrack_view_macs.php:805
-#| msgid "User Name"
 msgid "Vendor Name"
 msgstr ""
 
@@ -18772,7 +18574,6 @@ msgid "You must first choose a Site, Device or other search criteria."
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_view_arp.php:371
-#| msgid "No Tree Rules Found"
 msgid "No MacTrack IP Results Found"
 msgstr ""
 
@@ -18792,7 +18593,6 @@ msgid "Device Tracking - Device Report View"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_view_devices.php:159
-#| msgid "Unknown Template"
 msgid "Unknown Device Type"
 msgstr ""
 
@@ -18823,12 +18623,10 @@ msgid "Device Tracking - Network Interfaces View"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_view_interfaces.php:320
-#| msgid "No Data Queries Found"
 msgid "No MacTrack Interfaces Found"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_view_interfaces.php:417
-#| msgid "Poller Interval"
 msgid "All Interfaces"
 msgstr ""
 
@@ -18912,7 +18710,6 @@ msgid "Maximum Date"
 msgstr ""
 
 #: ../plugins/mactrack/mactrack_view_ips.php:234
-#| msgid "No Tree Rules Found"
 msgid "No MacTrack Site IP Ranges Found"
 msgstr ""
 
@@ -18945,7 +18742,7 @@ msgstr "Weet u zeker dat u het volgende MAC adres wilt intrekken?"
 
 #: ../plugins/mactrack/mactrack_view_macs.php:173
 msgid "You must select at least one MAC Address."
-msgstr ""
+msgstr "U moet tenminste een MAC adres selecteren."
 
 #: ../plugins/mactrack/mactrack_view_macs.php:176
 msgid "You are not permitted to change Mac Authorizations."
@@ -18999,7 +18796,6 @@ msgstr "VLAN naam"
 #: ../plugins/mactrack/mactrack_view_macs.php:685
 #: ../plugins/mactrack/mactrack_view_macs.php:812
 #: ../plugins/mactrack/mactrack_view_macs.php:814
-#| msgid "Last Started"
 msgid "Last Scan Date"
 msgstr ""
 
@@ -19064,7 +18860,6 @@ msgstr "Toon IP adressen"
 #: ../plugins/mactrack/setup.php:1316 ../plugins/mactrack/setup.php:1317
 #: ../plugins/mactrack/setup.php:1318 ../plugins/mactrack/setup.php:1319
 #: ../plugins/mactrack/setup.php:1320
-#| msgid "Device Name"
 msgid "Device Tracking"
 msgstr ""
 
@@ -19140,7 +18935,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:937
-#| msgid "Not Detected"
 msgid "Auto Detect"
 msgstr ""
 
@@ -19219,7 +19013,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1008
-#| msgid "Poller Interval"
 msgid "DNS Prime Interval"
 msgstr ""
 
@@ -19243,7 +19036,6 @@ msgid "The source Email address for MacTrack Emails."
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1028
-#| msgid "Data Source Profile Name"
 msgid "Source Email Name"
 msgstr ""
 
@@ -19292,8 +19084,6 @@ msgid "MacTrack ArpWatch Settings"
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1069
-#| msgid "Enable Data Source"
-#| msgid_plural "Enable Data Sources"
 msgid "Enable ArpWatch"
 msgstr ""
 
@@ -19316,7 +19106,6 @@ msgid "SNMP Presets"
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1087
-#| msgid "Automation SNMP Options"
 msgid "Update Policy for SNMP Options"
 msgstr ""
 
@@ -19338,7 +19127,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1159
-#| msgid "Matching Devices."
 msgid "MacTrack Devices"
 msgstr ""
 
@@ -19387,7 +19175,6 @@ msgid "MacTrack View IP Ranges"
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1187
-#| msgid "Create New Device"
 msgid "MacTrack View Devices"
 msgstr ""
 
@@ -19408,7 +19195,6 @@ msgid "Truncate Port Results Table"
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1192
-#| msgid "Migrate Aggregate to use a Template"
 msgid "Truncate Aggregated Port Results Table"
 msgstr ""
 
@@ -19508,7 +19294,6 @@ msgid "Mac Authorizations"
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1343
-#| msgid "Give this Network a meaningful name."
 msgid "Give this device type a meaningful description."
 msgstr ""
 
@@ -19517,7 +19302,6 @@ msgid "Fill in the name for the vendor of this device type."
 msgstr "Voer de naam van de fabrikant in voor dit apparaattype."
 
 #: ../plugins/mactrack/setup.php:1357
-#| msgid "Choose what type of CDEF item this is."
 msgid "Choose the type of device."
 msgstr ""
 
@@ -19576,7 +19360,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1406
-#| msgid "SNMP Name"
 msgid "SNMP Walk"
 msgstr ""
 
@@ -19615,12 +19398,10 @@ msgid "Enter the SNMP v3 Engine ID to use for this device."
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1575
-#| msgid "General Settings"
 msgid "General Device Settings"
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1580
-#| msgid "Give this Network a meaningful name."
 msgid "Give this device a meaningful name."
 msgstr ""
 
@@ -19637,12 +19418,10 @@ msgid "Given MacTrack Host is connected to this Cacti Host."
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1602
-#| msgid "Schedule Type"
 msgid "Scan Type"
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1603
-#| msgid "Choose what type of CDEF item this is."
 msgid "Choose the scan type you wish to perform on this device."
 msgstr ""
 
@@ -19651,7 +19430,6 @@ msgid "Choose the site to associate with this device."
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1618
-#| msgid "Device Name"
 msgid "Device Notes"
 msgstr ""
 
@@ -19681,7 +19459,6 @@ msgid "Select a set of SNMP options to try."
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1666
-#| msgid "General Settings"
 msgid "Read Strings"
 msgstr ""
 
@@ -19690,7 +19467,6 @@ msgid "<strong>DEPRECATED:</strong> SNMP community strings"
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1672
-#| msgid "Reachability Settings"
 msgid "Specific SNMP Settings"
 msgstr ""
 
@@ -19699,12 +19475,10 @@ msgid "Connectivity Options"
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1685
-#| msgid "This Type"
 msgid "Terminal Type"
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1686
-#| msgid "Choose the Availability Method to use for Discovered Devices."
 msgid "Choose the terminal type that you use to connect to this device."
 msgstr ""
 
@@ -19756,7 +19530,6 @@ msgid "The principal customer contact name and number for this site."
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1771
-#| msgid "Contact"
 msgid "NetOps Contact"
 msgstr ""
 
@@ -19784,7 +19557,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/mactrack/setup.php:1813
-#| msgid "General Settings"
 msgid "General Mac Address Tracking Settings"
 msgstr ""
 
@@ -19856,13 +19628,11 @@ msgstr ""
 
 #: ../plugins/maint/maint.php:38 ../plugins/thold/notify_lists.php:36
 #: ../plugins/thold/notify_lists.php:874 ../plugins/thold/notify_lists.php:1154
-#| msgid "Associate Graph(s)"
 msgid "Associate"
 msgstr ""
 
 #: ../plugins/maint/maint.php:39 ../plugins/thold/notify_lists.php:37
 #: ../plugins/thold/notify_lists.php:874 ../plugins/thold/notify_lists.php:1154
-#| msgid "Dis-Associate Graph(s)"
 msgid "Disassociate"
 msgstr ""
 
@@ -19883,7 +19653,6 @@ msgid "WebSeer"
 msgstr ""
 
 #: ../plugins/maint/maint.php:274
-#| msgid "Click 'Continue' to delete the following Rule(s)."
 msgid "Click 'Continue' to Update the following Maintenance Schedule(s)."
 msgstr ""
 
@@ -19911,24 +19680,17 @@ msgstr "Appara(a)t(en)"
 
 #: ../plugins/maint/maint.php:333
 #, php-format
-#| msgid ""
-#| "Click 'Continue' to associate the following Graph(s) with the Aggregate "
-#| "Graph."
 msgid ""
 "Click 'Continue' to associate the following Device(s) with the Maintenance "
 "Schedule '<b>%s</b>'."
 msgstr ""
 
 #: ../plugins/maint/maint.php:338 ../plugins/maint/maint.php:398
-#| msgid "Associated Data Templates"
 msgid "Associate Maintenance Schedule(s)"
 msgstr ""
 
 #: ../plugins/maint/maint.php:342
 #, php-format
-#| msgid ""
-#| "Click 'Continue' to associate the following Graph(s) with the Aggregate "
-#| "Graph."
 msgid ""
 "Click 'Continue' to disassociate the following Device(s) with the "
 "Maintenance Schedule '<b>%s</b>'."
@@ -19940,9 +19702,6 @@ msgstr ""
 
 #: ../plugins/maint/maint.php:393
 #, php-format
-#| msgid ""
-#| "Click 'Continue' to associate the following Graph(s) with the Aggregate "
-#| "Graph."
 msgid ""
 "Click 'Continue' to associate the Device(s) below with the Maintenance "
 "Schedule '<b>%s</b>'."
@@ -19950,9 +19709,6 @@ msgstr ""
 
 #: ../plugins/maint/maint.php:402
 #, php-format
-#| msgid ""
-#| "Click 'Continue' to associate the following Graph(s) with the Aggregate "
-#| "Graph."
 msgid ""
 "Click 'Continue' to disassociate the Devices(s) below with the Maintenance "
 "Schedule '<b>%s</b>'."
@@ -19960,12 +19716,10 @@ msgstr ""
 
 #: ../plugins/maint/maint.php:438
 #, php-format
-#| msgid "General Settings"
 msgid "General Settings [edit: %s]"
 msgstr ""
 
 #: ../plugins/maint/maint.php:440
-#| msgid "General Settings"
 msgid "General Settings [new]"
 msgstr ""
 
@@ -19974,12 +19728,10 @@ msgid "New Maintenance Schedule"
 msgstr ""
 
 #: ../plugins/maint/maint.php:501
-#| msgid "Schedule Type"
 msgid "Schedule Name"
 msgstr ""
 
 #: ../plugins/maint/maint.php:505
-#| msgid "Give this Network a meaningful name."
 msgid "Provide the Maintenance Schedule a meaningful name"
 msgstr ""
 
@@ -20020,31 +19772,26 @@ msgid "Maintenance Schedules"
 msgstr ""
 
 #: ../plugins/maint/maint.php:657
-#| msgid "Enabled"
 msgid "End"
 msgstr ""
 
 #: ../plugins/maint/maint.php:694 ../plugins/maint/maint.php:982
 #: ../plugins/maint/maint.php:1178
-#| msgid "Schedule"
 msgid "No Schedules"
 msgstr ""
 
 #: ../plugins/maint/maint.php:780
 #, php-format
-#| msgid "Associated Data Templates"
 msgid "Associated Devices %s"
 msgstr ""
 
 #: ../plugins/maint/maint.php:835 ../plugins/maint/maint.php:1101
 #: ../plugins/thold/notify_lists.php:732 ../plugins/thold/notify_lists.php:983
 #: ../plugins/thold/notify_lists.php:1217
-#| msgid "Associate Graph(s)"
 msgid "Associated"
 msgstr ""
 
 #: ../plugins/maint/maint.php:930 ../plugins/maint/maint.php:1159
-#| msgid "Associated Graph Templates"
 msgid "Associated Schedules"
 msgstr ""
 
@@ -20061,22 +19808,18 @@ msgid "Thresholds"
 msgstr ""
 
 #: ../plugins/maint/maint.php:972 ../plugins/maint/maint.php:1169
-#| msgid "Schedule"
 msgid "Current Schedule"
 msgstr ""
 
 #: ../plugins/maint/maint.php:995 ../plugins/thold/notify_lists.php:851
-#| msgid "No Devices Found"
 msgid "No Associated Devices Found"
 msgstr ""
 
 #: ../plugins/maint/maint.php:1068
-#| msgid "Associated Graph Items"
 msgid "Associated Web URL's "
 msgstr ""
 
 #: ../plugins/maint/maint.php:1083
-#| msgid "SNMP Rules"
 msgid "Rules"
 msgstr ""
 
@@ -20107,7 +19850,6 @@ msgid "Queues"
 msgstr ""
 
 #: ../plugins/mikrotik/mikrotik.php:138
-#| msgid "Created Trees"
 msgid "Queue Trees"
 msgstr ""
 
@@ -20125,7 +19867,6 @@ msgid "Wireless Routes"
 msgstr ""
 
 #: ../plugins/mikrotik/mikrotik.php:255
-#| msgid "In State"
 msgid "Interface Stats"
 msgstr ""
 
@@ -20150,17 +19891,14 @@ msgid "Tx Packets"
 msgstr ""
 
 #: ../plugins/mikrotik/mikrotik.php:425
-#| msgid "LDAP Error: %s"
 msgid "Rx Errors"
 msgstr ""
 
 #: ../plugins/mikrotik/mikrotik.php:426
-#| msgid "LDAP Error: %s"
 msgid "Tx Errors"
 msgstr ""
 
 #: ../plugins/mikrotik/mikrotik.php:458
-#| msgid "No Devices Found"
 msgid "No Interfaces Found"
 msgstr ""
 
@@ -20209,7 +19947,6 @@ msgid "Drps Out"
 msgstr ""
 
 #: ../plugins/mikrotik/mikrotik.php:764 ../plugins/mikrotik/mikrotik.php:1821
-#| msgid "No Data Queries Found"
 msgid "No Simple Queues Found"
 msgstr ""
 
@@ -20238,7 +19975,6 @@ msgid "Total Packets"
 msgstr "Totaal pakketten"
 
 #: ../plugins/mikrotik/mikrotik.php:991 ../plugins/mikrotik/mikrotik.php:1827
-#| msgid "No Data Queries Found"
 msgid "No Queue Trees Found"
 msgstr ""
 
@@ -20370,7 +20106,6 @@ msgid "View Wireless Aps"
 msgstr ""
 
 #: ../plugins/mikrotik/mikrotik.php:1833
-#| msgid "No Tree Rules Found"
 msgid "No Wireless Aps Found"
 msgstr ""
 
@@ -20388,7 +20123,6 @@ msgid "Please Select Data Query First from Console->Settings->Host MIB First"
 msgstr ""
 
 #: ../plugins/mikrotik/mikrotik_users.php:140
-#| msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
 msgid "Click 'Continue' to Delete the following Users(s) and their Graph(s)."
 msgstr ""
 
@@ -20403,7 +20137,6 @@ msgstr ""
 
 #: ../plugins/mikrotik/mikrotik_users.php:291
 #: ../plugins/mikrotik/mikrotik_users.php:369
-#| msgid "Active"
 msgid "Inactive"
 msgstr ""
 
@@ -20425,7 +20158,6 @@ msgid "MikroTik"
 msgstr ""
 
 #: ../plugins/mikrotik/setup.php:578
-#| msgid "General Settings"
 msgid "MikroTik General Settings"
 msgstr ""
 
@@ -20450,7 +20182,6 @@ msgid "MikroTik Auto Discovery Frequency"
 msgstr ""
 
 #: ../plugins/mikrotik/setup.php:629
-#| msgid "Device Automation Templates"
 msgid "Device Graph Automation"
 msgstr ""
 
@@ -20473,7 +20204,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/mikrotik/setup.php:670
-#| msgid "Define the collection frequency."
 msgid "MikroTik Device Collection Frequencies"
 msgstr ""
 
@@ -20574,7 +20304,6 @@ msgid "MikroTik Credentials"
 msgstr ""
 
 #: ../plugins/mikrotik/setup.php:1177
-#| msgid "Read Only"
 msgid "Read Only User"
 msgstr ""
 
@@ -20638,7 +20367,6 @@ msgid "Down (Muted/Acked)"
 msgstr ""
 
 #: ../plugins/monitor/monitor.php:65
-#| msgid "Availability"
 msgid "No Availability Check"
 msgstr ""
 
@@ -20663,7 +20391,6 @@ msgid "Large"
 msgstr ""
 
 #: ../plugins/monitor/monitor.php:379
-#| msgid "Purge Discovered Devices"
 msgid "All Monitored Devices"
 msgstr ""
 
@@ -20702,12 +20429,10 @@ msgid ""
 msgstr ""
 
 #: ../plugins/monitor/monitor.php:417
-#| msgid "This Type"
 msgid "View Type"
 msgstr ""
 
 #: ../plugins/monitor/monitor.php:419 ../plugins/monitor/setup.php:467
-#| msgid "Profiles"
 msgid "Tiles"
 msgstr ""
 
@@ -20716,17 +20441,14 @@ msgid "Tiles & Time"
 msgstr ""
 
 #: ../plugins/monitor/monitor.php:423
-#| msgid "Using Grouping"
 msgid "Device Grouping"
 msgstr ""
 
 #: ../plugins/monitor/monitor.php:432
-#| msgid "Select Template"
 msgid "Select Tree"
 msgstr ""
 
 #: ../plugins/monitor/monitor.php:437 ../plugins/monitor/monitor.php:867
-#| msgid "No Device"
 msgid "Non-Tree Devices"
 msgstr ""
 
@@ -20743,7 +20465,6 @@ msgid "All Criticalities"
 msgstr ""
 
 #: ../plugins/monitor/monitor.php:461
-#| msgid "Device [new]"
 msgid "Device Icon Size"
 msgstr ""
 
@@ -20796,7 +20517,6 @@ msgid "Reset"
 msgstr ""
 
 #: ../plugins/monitor/monitor.php:1010
-#| msgid "Not Up"
 msgid "Just Up"
 msgstr ""
 
@@ -20871,7 +20591,6 @@ msgid "Agent Uptime:"
 msgstr "Agent uptime:"
 
 #: ../plugins/monitor/monitor.php:1159
-#| msgid "Description"
 msgid "Sys Description:"
 msgstr ""
 
@@ -20915,7 +20634,6 @@ msgstr ""
 
 #: ../plugins/monitor/setup.php:261
 #, php-format
-#| msgid "Click 'Continue' to disable the following Device(s)."
 msgid "Click 'Continue' to %s monitoring on these Device(s)"
 msgstr ""
 
@@ -20943,7 +20661,6 @@ msgid "Indefinately"
 msgstr ""
 
 #: ../plugins/monitor/setup.php:355 ../plugins/monitor/setup.php:382
-#| msgid "User Settings"
 msgid "Monitor Settings"
 msgstr ""
 
@@ -21015,7 +20732,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/monitor/setup.php:428
-#| msgid "Every Hour"
 msgid "Every Occurrence"
 msgstr ""
 
@@ -21024,7 +20740,6 @@ msgid "This is the time in seconds before the page refreshes.  (1 - 300)"
 msgstr ""
 
 #: ../plugins/monitor/setup.php:449
-#| msgid "Using Grouping"
 msgid "Grouping"
 msgstr ""
 
@@ -21049,7 +20764,6 @@ msgid "Monitor"
 msgstr ""
 
 #: ../plugins/monitor/setup.php:512
-#| msgid "Index Count Changed"
 msgid "Do not Change"
 msgstr ""
 
@@ -21070,7 +20784,6 @@ msgid "Device Monitoring Settings"
 msgstr "Apparaat monitoring instellingen"
 
 #: ../plugins/monitor/setup.php:543
-#| msgid "No Device"
 msgid "Monitor Device"
 msgstr ""
 
@@ -21079,7 +20792,6 @@ msgid "Check this box to monitor this Device on the Monitor Tab."
 msgstr ""
 
 #: ../plugins/monitor/setup.php:550
-#| msgid "Device Description"
 msgid "Device Criticality"
 msgstr ""
 
@@ -21101,7 +20813,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/monitor/setup.php:568
-#| msgid "Ping Method"
 msgid "Ping Alert Threshold"
 msgstr ""
 
@@ -21137,7 +20848,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/monitor/setup.php:594 ../plugins/thold/includes/settings.php:419
-#| msgid "Device Name"
 msgid "Down Device Message"
 msgstr ""
 
@@ -21156,7 +20866,6 @@ msgid "WARNING: Export Errors Encountered. Refresh Browser Window for Details!"
 msgstr ""
 
 #: ../plugins/package/package.php:388
-#| msgid "Data Templates"
 msgid "Package Templates"
 msgstr ""
 
@@ -21194,14 +20903,12 @@ msgid "Nuralize"
 msgstr ""
 
 #: ../plugins/package/package.php:460
-#| msgid "The number of Data Templates that use this Data Input Method."
 msgid ""
 "Re-Hash all Graph and Data Template's as well as Data Input Methods and Data "
 "Queries."
 msgstr ""
 
 #: ../plugins/package/package.php:463
-#| msgid "Graph Templates"
 msgid "Nuralize Templates"
 msgstr ""
 
@@ -21234,7 +20941,6 @@ msgid "Package Cacti Template"
 msgstr ""
 
 #: ../plugins/package/setup.php:104
-#| msgid "Data Template"
 msgid "Package Template"
 msgstr ""
 
@@ -21281,7 +20987,6 @@ msgstr ""
 
 #: ../plugins/routerconfigs/router-accounts.php:53
 #: ../plugins/wmi/wmi_accounts.php:48
-#| msgid "Give this Network a meaningful name."
 msgid "Give this account a meaningful name that will be displayed."
 msgstr ""
 
@@ -21303,7 +21008,6 @@ msgid "Your Enable Password, if required."
 msgstr ""
 
 #: ../plugins/routerconfigs/router-accounts.php:161
-#| msgid "Click 'Continue' to delete the following Rule(s)."
 msgid "Click Continue to delete the following account(s)."
 msgstr ""
 
@@ -21318,12 +21022,10 @@ msgid "Accounts"
 msgstr ""
 
 #: ../plugins/routerconfigs/router-accounts.php:276
-#| msgid "Graph Management"
 msgid "Account Management"
 msgstr ""
 
 #: ../plugins/routerconfigs/router-accounts.php:296
-#| msgid "No Colors Found"
 msgid "No Router Accounts Found"
 msgstr ""
 
@@ -21359,7 +21061,6 @@ msgstr ""
 
 #: ../plugins/routerconfigs/router-backups.php:142
 #: ../plugins/routerconfigs/router-devices.php:489
-#| msgid "Last Check"
 msgid "Last Change"
 msgstr ""
 
@@ -21375,7 +21076,6 @@ msgid "View Config"
 msgstr ""
 
 #: ../plugins/routerconfigs/router-backups.php:181
-#| msgid "No Graphs Found"
 msgid "No Router Backups Found"
 msgstr ""
 
@@ -21397,7 +21097,6 @@ msgid "Backup"
 msgstr ""
 
 #: ../plugins/routerconfigs/router-devices.php:64
-#| msgid "Enable Device(s)"
 msgid "Enable Device"
 msgstr ""
 
@@ -21425,12 +21124,10 @@ msgid "How often to Backup this device."
 msgstr ""
 
 #: ../plugins/routerconfigs/router-devices.php:102
-#| msgid "Choose what type of CDEF item this is."
 msgid "Choose the type of device that the router is."
 msgstr ""
 
 #: ../plugins/routerconfigs/router-devices.php:109
-#| msgid "LDAP Authentication"
 msgid "Authentication Account"
 msgstr ""
 
@@ -21449,17 +21146,14 @@ msgid "Router Config for %s (%s)<br><br>"
 msgstr ""
 
 #: ../plugins/routerconfigs/router-devices.php:324
-#| msgid "Click 'Continue' to enable the following Device(s)."
 msgid "Click 'Continue' to Delete the following device(s)."
 msgstr ""
 
 #: ../plugins/routerconfigs/router-devices.php:333
-#| msgid "Click 'Continue' to enable the following Device(s)."
 msgid "Click 'Continue' to Enable the following device(s)."
 msgstr ""
 
 #: ../plugins/routerconfigs/router-devices.php:342
-#| msgid "Click 'Continue' to disable the following Device(s)."
 msgid "Click 'Continue' to Disable the following device(s)."
 msgstr ""
 
@@ -21477,7 +21171,6 @@ msgid "Router: [new]"
 msgstr "Router: [nieuw]"
 
 #: ../plugins/routerconfigs/router-devices.php:476
-#| msgid "Graph Management"
 msgid "Router Device Management"
 msgstr ""
 
@@ -21491,7 +21184,6 @@ msgstr "Laatste backup"
 
 #: ../plugins/routerconfigs/router-devices.php:508
 #: ../plugins/routerconfigs/router-devtypes.php:49
-#| msgid "Not Detected"
 msgid "Auto-Detect"
 msgstr ""
 
@@ -21514,17 +21206,14 @@ msgid "Current"
 msgstr "Huidig"
 
 #: ../plugins/routerconfigs/router-devices.php:530
-#| msgid "No Devices Found"
 msgid "No Router Devices Found"
 msgstr ""
 
 #: ../plugins/routerconfigs/router-devtypes.php:66
-#| msgid "SNMP v3 username for this device."
 msgid "Name of this device type."
 msgstr ""
 
 #: ../plugins/routerconfigs/router-devtypes.php:73
-#| msgid "Username"
 msgid "Username Prompt"
 msgstr ""
 
@@ -21584,7 +21273,6 @@ msgid "Check end in config?"
 msgstr ""
 
 #: ../plugins/routerconfigs/router-devtypes.php:206
-#| msgid "Click 'Continue' to enable the following Device(s)."
 msgid "When you click 'Continue', the following device(s) will be deleted."
 msgstr ""
 
@@ -21601,7 +21289,6 @@ msgid "Edit Device Type"
 msgstr "Wijzig apparaattype"
 
 #: ../plugins/routerconfigs/router-devtypes.php:362
-#| msgid "No Devices Found"
 msgid "No Router Device Types Found"
 msgstr ""
 
@@ -21673,7 +21360,6 @@ msgid "The number of days to retain old backups."
 msgstr ""
 
 #: ../plugins/routerconfigs/setup.php:321
-#| msgid "No Device"
 msgid "Router Devices"
 msgstr ""
 
@@ -21682,7 +21368,6 @@ msgid "View Debug"
 msgstr ""
 
 #: ../plugins/routerconfigs/setup.php:384
-#| msgid "User Account Details"
 msgid "Router Accounts"
 msgstr ""
 
@@ -21853,7 +21538,6 @@ msgstr ""
 
 #: ../plugins/syslog/setup.php:626
 #, php-format
-#| msgid "User Settings"
 msgid "Syslog %s Settings"
 msgstr ""
 
@@ -21885,7 +21569,6 @@ msgid "Syslog"
 msgstr ""
 
 #: ../plugins/syslog/setup.php:744
-#| msgid "Enabled"
 msgid "Syslog Enabled"
 msgstr ""
 
@@ -21932,7 +21615,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/syslog/setup.php:773
-#| msgid "Hostname"
 msgid "Validate Hostnames"
 msgstr ""
 
@@ -21951,7 +21633,6 @@ msgid "This is the time in seconds before the page refreshes."
 msgstr ""
 
 #: ../plugins/syslog/setup.php:788
-#| msgid "Report Saved"
 msgid "Max Report Records"
 msgstr ""
 
@@ -22020,12 +21701,10 @@ msgid "Ends with"
 msgstr ""
 
 #: ../plugins/syslog/setup.php:956
-#| msgid "Hostname"
 msgid "Hostname is"
 msgstr ""
 
 #: ../plugins/syslog/setup.php:957
-#| msgid "Reachability Settings"
 msgid "Facility is"
 msgstr ""
 
@@ -22034,24 +21713,20 @@ msgid "SQL Expression"
 msgstr ""
 
 #: ../plugins/syslog/setup.php:986
-#| msgid "Tree Rules"
 msgid "Alert Rules"
 msgstr ""
 
 #: ../plugins/syslog/setup.php:986 ../plugins/syslog/setup.php:987
 #: ../plugins/syslog/setup.php:988 ../plugins/syslog/setup.php:993
 #: ../plugins/thold/includes/settings.php:327
-#| msgid "User Settings"
 msgid "Syslog Settings"
 msgstr ""
 
 #: ../plugins/syslog/setup.php:987
-#| msgid "Tree Rules"
 msgid "Removal Rules"
 msgstr ""
 
 #: ../plugins/syslog/setup.php:988
-#| msgid "Report Saved"
 msgid "Report Rules"
 msgstr ""
 
@@ -22081,7 +21756,6 @@ msgid "Syslog Utilities"
 msgstr ""
 
 #: ../plugins/syslog/setup.php:1114
-#| msgid "Purge Discovered Devices"
 msgid "Purge Syslog Devices"
 msgstr ""
 
@@ -22111,12 +21785,10 @@ msgid "System Logs"
 msgstr ""
 
 #: ../plugins/syslog/syslog.php:110
-#| msgid "User Login"
 msgid "Alert Logs"
 msgstr ""
 
 #: ../plugins/syslog/syslog.php:119
-#| msgid "Select All"
 msgid "Selected Alert"
 msgstr ""
 
@@ -22135,7 +21807,6 @@ msgstr ""
 #: ../plugins/syslog/syslog.php:269 ../plugins/syslog/syslog.php:418
 #: ../plugins/syslog/syslog.php:1403 ../plugins/syslog/syslog.php:1411
 #: ../plugins/syslog/syslog.php:1493
-#| msgid "Availability"
 msgid "Facility"
 msgstr ""
 
@@ -22164,7 +21835,6 @@ msgid "Records"
 msgstr ""
 
 #: ../plugins/syslog/syslog.php:300
-#| msgid "No Color Templates Found"
 msgid "No Syslog Statistics Found"
 msgstr ""
 
@@ -22187,7 +21857,6 @@ msgid "Select Device(s)"
 msgstr "Selecteer appara(a)t(en)"
 
 #: ../plugins/syslog/syslog.php:854
-#| msgid "Device Template"
 msgid "Devices Selected"
 msgstr ""
 
@@ -22355,7 +22024,6 @@ msgstr ""
 #: ../plugins/syslog/syslog.php:1487 ../plugins/syslog/syslog_alerts.php:365
 #: ../plugins/syslog/syslog_alerts.php:686
 #: ../plugins/syslog/syslog_process.php:334
-#| msgid "User Name"
 msgid "Alert Name"
 msgstr ""
 
@@ -22368,7 +22036,6 @@ msgid "No Alert Log Messages"
 msgstr ""
 
 #: ../plugins/syslog/syslog_alerts.php:142
-#| msgid "Click 'Continue' to delete the following Rule(s)."
 msgid "Click 'Continue' to Delete the following Syslog Alert Rule(s)."
 msgstr ""
 
@@ -22377,7 +22044,6 @@ msgid "Delete Syslog Alert Rule(s)"
 msgstr ""
 
 #: ../plugins/syslog/syslog_alerts.php:152
-#| msgid "Click 'Continue' to disable the following Rule(s)."
 msgid "Click 'Continue' to Disable the following Syslog Alert Rule(s)."
 msgstr ""
 
@@ -22386,7 +22052,6 @@ msgid "Disable Syslog Alert Rule(s)"
 msgstr ""
 
 #: ../plugins/syslog/syslog_alerts.php:162
-#| msgid "Click 'Continue' to enable the following Rule(s)."
 msgid "Click 'Continue' to Enable the following Syslog Alert Rule(s)."
 msgstr ""
 
@@ -22400,7 +22065,6 @@ msgstr ""
 
 #: ../plugins/syslog/syslog_alerts.php:304
 #, php-format
-#| msgid "RRA [edit: %s]"
 msgid "Alert Edit [edit: %s]"
 msgstr ""
 
@@ -22424,7 +22088,6 @@ msgid "Month"
 msgstr "Maand"
 
 #: ../plugins/syslog/syslog_alerts.php:361
-#| msgid "Rule Details."
 msgid "Alert Details"
 msgstr ""
 
@@ -22437,7 +22100,6 @@ msgid "What is the Severity Level of this Alert?"
 msgstr ""
 
 #: ../plugins/syslog/syslog_alerts.php:381
-#| msgid "Ping Method"
 msgid "Reporting Method"
 msgstr ""
 
@@ -22495,7 +22157,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/syslog/syslog_alerts.php:418
-#| msgid "Enabled"
 msgid "Alert Enabled"
 msgstr ""
 
@@ -22523,7 +22184,6 @@ msgid "Space for Notes on the Alert"
 msgstr ""
 
 #: ../plugins/syslog/syslog_alerts.php:444
-#| msgid "Action"
 msgid "Alert Actions"
 msgstr ""
 
@@ -22551,7 +22211,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/syslog/syslog_alerts.php:468
-#| msgid "Script/Command"
 msgid "Alert Command"
 msgstr ""
 
@@ -22578,7 +22237,6 @@ msgstr ""
 #: ../plugins/syslog/syslog_alerts.php:691
 #: ../plugins/syslog/syslog_removal.php:612
 #: ../plugins/syslog/syslog_reports.php:597
-#| msgid "Graph Type"
 msgid "Match Type"
 msgstr ""
 
@@ -22635,7 +22293,6 @@ msgid "Cacti Syslog Plugin Threshold Alert '%s'"
 msgstr ""
 
 #: ../plugins/syslog/syslog_process.php:334
-#| msgid "Custom String"
 msgid "Match String"
 msgstr ""
 
@@ -22690,7 +22347,6 @@ msgid "Reprocess"
 msgstr ""
 
 #: ../plugins/syslog/syslog_removal.php:151
-#| msgid "Click 'Continue' to delete the following Rule(s)."
 msgid "Click 'Continue' to Delete the following Syslog Removal Rule(s)."
 msgstr ""
 
@@ -22699,7 +22355,6 @@ msgid "Delete Syslog Removal Rule(s)"
 msgstr ""
 
 #: ../plugins/syslog/syslog_removal.php:161
-#| msgid "Click 'Continue' to disable the following Rule(s)."
 msgid "Click 'Continue' to Disable the following Syslog Removal Rule(s)."
 msgstr ""
 
@@ -22708,7 +22363,6 @@ msgid "Disable Syslog Removal Rule(s)"
 msgstr ""
 
 #: ../plugins/syslog/syslog_removal.php:171
-#| msgid "Click 'Continue' to enable the following Rule(s)."
 msgid "Click 'Continue' to Enable the following Syslog Removal Rule(s)."
 msgstr ""
 
@@ -22717,7 +22371,6 @@ msgid "Enable Syslog Removal Rule(s)"
 msgstr ""
 
 #: ../plugins/syslog/syslog_removal.php:181
-#| msgid "Click 'Continue' to enable the following Rule(s)."
 msgid "Click 'Continue' to Re-process the following Syslog Removal Rule(s)."
 msgstr ""
 
@@ -22736,7 +22389,6 @@ msgstr ""
 
 #: ../plugins/syslog/syslog_removal.php:328
 #, php-format
-#| msgid "Tree Rule Selection [edit: %s]"
 msgid "Removal Rule Edit [edit: %s]"
 msgstr ""
 
@@ -22755,12 +22407,10 @@ msgid "New Removal Rule"
 msgstr ""
 
 #: ../plugins/syslog/syslog_removal.php:351
-#| msgid "Rule Details."
 msgid "Removal Rule Details"
 msgstr ""
 
 #: ../plugins/syslog/syslog_removal.php:355
-#| msgid "Rule Name"
 msgid "Removal Rule Name"
 msgstr ""
 
@@ -22803,7 +22453,6 @@ msgid "Syslog Removal Rule Filters"
 msgstr ""
 
 #: ../plugins/syslog/syslog_removal.php:610
-#| msgid "Rule Name"
 msgid "Removal Name"
 msgstr ""
 
@@ -22855,7 +22504,6 @@ msgstr ""
 
 #: ../plugins/syslog/syslog_reports.php:306
 #: ../plugins/syslog/syslog_reports.php:311
-#| msgid "Report Saved"
 msgid "New Report Record"
 msgstr ""
 
@@ -22910,7 +22558,6 @@ msgid "Comma delimited list of Email addresses to send the report to."
 msgstr ""
 
 #: ../plugins/syslog/syslog_reports.php:395
-#| msgid "Report Saved"
 msgid "Report Notes"
 msgstr ""
 
@@ -22923,12 +22570,10 @@ msgid "Syslog Report Filters"
 msgstr ""
 
 #: ../plugins/syslog/syslog_reports.php:601
-#| msgid "Last Started"
 msgid "Last Sent"
 msgstr ""
 
 #: ../plugins/syslog/syslog_reports.php:623
-#| msgid "No Graph Templates Defined."
 msgid "No Syslog Reports Defined"
 msgstr ""
 
@@ -23073,7 +22718,6 @@ msgid "High / Low"
 msgstr ""
 
 #: ../plugins/thold/includes/arrays.php:293
-#| msgid "Device Description"
 msgid "Baseline Deviation"
 msgstr ""
 
@@ -23131,7 +22775,6 @@ msgid "Thresholds - Normal"
 msgstr ""
 
 #: ../plugins/thold/includes/settings.php:39
-#| msgid "Recovering"
 msgid "Thresholds - Recovering"
 msgstr ""
 
@@ -23140,7 +22783,6 @@ msgid "Recent Thresholds"
 msgstr ""
 
 #: ../plugins/thold/includes/settings.php:41
-#| msgid "Report Save Failed"
 msgid "Recent Device Failures"
 msgstr ""
 
@@ -23150,7 +22792,6 @@ msgstr ""
 #: ../plugins/thold/includes/settings.php:46
 #: ../plugins/thold/includes/settings.php:47
 #: ../plugins/thold/thold_templates.php:1381
-#| msgid "Color Templates"
 msgid "Threshold Templates"
 msgstr ""
 
@@ -23184,12 +22825,10 @@ msgstr ""
 
 #: ../plugins/thold/includes/settings.php:120
 #: ../plugins/thold/notify_lists.php:488 ../plugins/thold/notify_lists.php:831
-#| msgid "Graph List"
 msgid "Global List"
 msgstr ""
 
 #: ../plugins/thold/includes/settings.php:121
-#| msgid "List View"
 msgid "List Below"
 msgstr ""
 
@@ -23221,7 +22860,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/thold/includes/settings.php:195
-#| msgid "Created Trees"
 msgid "Auto Create Thresholds"
 msgstr ""
 
@@ -23265,7 +22903,6 @@ msgid "Enable logging of all Threshold failures to the Cacti Log."
 msgstr ""
 
 #: ../plugins/thold/includes/settings.php:230
-#| msgid "Data Sources Using"
 msgid "Show Data Source in Log"
 msgstr ""
 
@@ -23407,12 +23044,10 @@ msgid "This is the facility level that your syslog messages will be sent as."
 msgstr ""
 
 #: ../plugins/thold/includes/settings.php:359
-#| msgid "SNMP Option Sets"
 msgid "SNMP Notification Presets"
 msgstr ""
 
 #: ../plugins/thold/includes/settings.php:363
-#| msgid "SNMP Options"
 msgid "SNMP Notifications"
 msgstr ""
 
@@ -23444,7 +23079,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/thold/includes/settings.php:379
-#| msgid "Device Description"
 msgid "SNMP Event Description"
 msgstr ""
 
@@ -23460,7 +23094,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/thold/includes/settings.php:388
-#| msgid "Automation SNMP Options"
 msgid "Emailing Options"
 msgstr ""
 
@@ -23624,7 +23257,6 @@ msgid "Delete Notification List(s)"
 msgstr ""
 
 #: ../plugins/thold/notify_lists.php:297
-#| msgid "Click 'Continue' to delete the following SNMP Option(s)."
 msgid "Click 'Continue' to Duplicate the following Notification List(s)."
 msgstr ""
 
@@ -23683,9 +23315,6 @@ msgstr ""
 
 #: ../plugins/thold/notify_lists.php:358
 #, php-format
-#| msgid ""
-#| "Click 'Continue' to disassociate the following Graph(s) from the "
-#| "Aggregate."
 msgid ""
 "Click 'Continue' to Disassociate the Notification List '<b>%s</b>' from the "
 "Thresholds Template(s) below."
@@ -23712,9 +23341,6 @@ msgstr ""
 
 #: ../plugins/thold/notify_lists.php:411
 #, php-format
-#| msgid ""
-#| "Click 'Continue' to associate the following Graph(s) with the Aggregate "
-#| "Graph."
 msgid ""
 "Click 'Continue' to Associate the Notification List '<b>%s</b>' with the "
 "Threshold(s) below."
@@ -23722,9 +23348,6 @@ msgstr ""
 
 #: ../plugins/thold/notify_lists.php:422
 #, php-format
-#| msgid ""
-#| "Click 'Continue' to disassociate the following Graph(s) from the "
-#| "Aggregate."
 msgid ""
 "Click 'Continue' to Disassociate the Notification List '<b>%s</b>' from the "
 "Thresholds(s) below."
@@ -23736,9 +23359,6 @@ msgstr ""
 
 #: ../plugins/thold/notify_lists.php:476
 #, php-format
-#| msgid ""
-#| "Click 'Continue' to associate the following Graph(s) with the Aggregate "
-#| "Graph."
 msgid ""
 "Click 'Continue' to Associate the Notification List '<b>%s</b>' with the "
 "Device(s) below."
@@ -23754,16 +23374,12 @@ msgstr ""
 
 #: ../plugins/thold/notify_lists.php:486
 #, php-format
-#| msgid ""
-#| "Click 'Continue' to disassociate the following Graph(s) from the "
-#| "Aggregate."
 msgid ""
 "Click 'Continue' to Disassociate the Notification List '<b>%s</b>' from the "
 "Device(s) below."
 msgstr ""
 
 #: ../plugins/thold/notify_lists.php:574
-#| msgid "General Settings"
 msgid "List General Settings"
 msgstr ""
 
@@ -23797,7 +23413,6 @@ msgid "Current and Global List(s)"
 msgstr ""
 
 #: ../plugins/thold/notify_lists.php:926
-#| msgid "Associate Graph(s)"
 msgid "Associated Thresholds"
 msgstr ""
 
@@ -23849,7 +23464,6 @@ msgid "No Thresholds"
 msgstr ""
 
 #: ../plugins/thold/notify_lists.php:1185
-#| msgid "Associated Data Templates"
 msgid "Associated Templates"
 msgstr ""
 
@@ -23891,7 +23505,6 @@ msgid "Toggle Threshold VRULES %s"
 msgstr ""
 
 #: ../plugins/thold/setup.php:207 ../plugins/thold/thold_webapi.php:485
-#| msgid "Created Trees"
 msgid "Create Threshold"
 msgstr ""
 
@@ -23900,7 +23513,6 @@ msgid "Threshold Alert/Warning Values"
 msgstr ""
 
 #: ../plugins/thold/setup.php:603
-#| msgid "Click 'Continue' to enable the following Device(s)."
 msgid ""
 "Click 'Continue' to apply all appropriate Thresholds to these Device(s)."
 msgstr ""
@@ -23935,13 +23547,11 @@ msgstr "Weet u zeker dat u drempelwaarden voor deze data bron wilt maken?"
 
 #: ../plugins/thold/setup.php:908 ../plugins/thold/setup.php:1166
 #: ../plugins/thold/thold_webapi.php:240
-#| msgid "All Graphs & Templates"
 msgid "Available Threshold Templates"
 msgstr ""
 
 #: ../plugins/thold/setup.php:913 ../plugins/thold/setup.php:1171
 #: ../plugins/thold/thold_webapi.php:245
-#| msgid "Selected Graph Template"
 msgid "Select a Threshold Template"
 msgstr ""
 
@@ -23964,7 +23574,6 @@ msgid "There are no Threshold Templates associated with the following Graphs"
 msgstr ""
 
 #: ../plugins/thold/setup.php:1243 ../plugins/thold/setup.php:1291
-#| msgid "Associated Graph Templates"
 msgid "Associated Threshold Templates"
 msgstr ""
 
@@ -23977,7 +23586,6 @@ msgid "Threshold Does Not Exist"
 msgstr ""
 
 #: ../plugins/thold/setup.php:1284 ../plugins/thold/setup.php:1316
-#| msgid "Associated Graph Templates"
 msgid "No Associated Threshold Templates."
 msgstr ""
 
@@ -23990,12 +23598,6 @@ msgid "Add Threshold Template to Device Template"
 msgstr ""
 
 #: ../plugins/thold/setup.php:1380
-#| msgid ""
-#| "Click 'Continue' to duplicate the following Color Template. You can "
-#| "optionally change the title format for the new color template."
-#| msgid_plural ""
-#| "Click 'Continue' to duplicate following Color Templates. You can "
-#| "optionally change the title format for the new color templates."
 msgid ""
 "Click 'Continue' to delete the following Threshold Template will be "
 "disassociated from the Device Template."
@@ -24003,7 +23605,6 @@ msgstr ""
 
 #: ../plugins/thold/setup.php:1381
 #, php-format
-#| msgid "Graph Template Name: %s"
 msgid "Threshold Template Name: %s"
 msgstr ""
 
@@ -24018,12 +23619,10 @@ msgid ""
 msgstr ""
 
 #: ../plugins/thold/thold.php:362
-#| msgid "Aggregate Template"
 msgid "Propagate Template"
 msgstr ""
 
 #: ../plugins/thold/thold.php:418
-#| msgid "Graph Management"
 msgid "Threshold Management"
 msgstr ""
 
@@ -24036,7 +23635,6 @@ msgid "Return to Defaults"
 msgstr "Standaardinstellingen"
 
 #: ../plugins/thold/thold.php:510
-#| msgid "Name"
 msgid "DSName"
 msgstr ""
 
@@ -24081,12 +23679,10 @@ msgid "%d Triggers"
 msgstr ""
 
 #: ../plugins/thold/thold.php:757
-#| msgid "Device Description"
 msgid "Data Source Description:"
 msgstr ""
 
 #: ../plugins/thold/thold.php:758
-#| msgid "Associate Graph(s)"
 msgid "Associated Graph (Graphs using this RRD):"
 msgstr ""
 
@@ -24120,7 +23716,6 @@ msgid "%s%%"
 msgstr ""
 
 #: ../plugins/thold/thold.php:855
-#| msgid "Down"
 msgid "BL Down:"
 msgstr ""
 
@@ -24161,7 +23756,6 @@ msgid "Threshold Name"
 msgstr ""
 
 #: ../plugins/thold/thold.php:1022
-#| msgid "Give this Network a meaningful name."
 msgid "Provide the Thresholds a meaningful name"
 msgstr ""
 
@@ -24214,7 +23808,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/thold/thold.php:1063 ../plugins/thold/thold_templates.php:783
-#| msgid "This Type"
 msgid "Threshold Type"
 msgstr ""
 
@@ -24303,7 +23896,6 @@ msgid "Breach Count"
 msgstr ""
 
 #: ../plugins/thold/thold.php:1158 ../plugins/thold/thold.php:1194
-#| msgid "The number of Data Sources using this Profile."
 msgid "The number of times the data source must be in breach of the Threshold."
 msgstr ""
 
@@ -24322,7 +23914,6 @@ msgid "Alert - Time Based Settings"
 msgstr ""
 
 #: ../plugins/thold/thold.php:1205
-#| msgid "User Settings"
 msgid "Baseline Settings"
 msgstr ""
 
@@ -24337,7 +23928,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/thold/thold.php:1216
-#| msgid "Description"
 msgid "Deviation UP"
 msgstr ""
 
@@ -24475,7 +24065,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/thold/thold.php:1348 ../plugins/thold/thold_templates.php:1064
-#| msgid "Details"
 msgid "Alert Emails"
 msgstr ""
 
@@ -24532,7 +24121,6 @@ msgstr ""
 
 #: ../plugins/thold/thold_functions.php:2433
 #: ../plugins/thold/thold_functions.php:2479
-#| msgid "Login to Cacti"
 msgid "Link to Graph in Cacti"
 msgstr ""
 
@@ -24638,7 +24226,6 @@ msgid "Disable Threshold"
 msgstr "Drempelwaarde uitschakelen"
 
 #: ../plugins/thold/thold_graph.php:380
-#| msgid "Enabled"
 msgid "Enable Threshold"
 msgstr ""
 
@@ -24715,12 +24302,10 @@ msgid "Log Entries"
 msgstr ""
 
 #: ../plugins/thold/thold_graph.php:907
-#| msgid "Device Description"
 msgid "Event Description"
 msgstr ""
 
 #: ../plugins/thold/thold_graph.php:908
-#| msgid "Item Value"
 msgid "Alert Value"
 msgstr ""
 
@@ -24733,7 +24318,6 @@ msgid "Restoral Event"
 msgstr ""
 
 #: ../plugins/thold/thold_graph.php:935
-#| msgid "No Colors Found"
 msgid "No Threshold Logs Found"
 msgstr ""
 
@@ -24791,7 +24375,6 @@ msgstr ""
 
 #: ../plugins/thold/thold_templates.php:874
 #: ../plugins/thold/thold_templates.php:910
-#| msgid "Ping Retry Count"
 msgid "Trigger Count"
 msgstr ""
 
@@ -24923,7 +24506,6 @@ msgid "DS Name"
 msgstr ""
 
 #: ../plugins/thold/thold_templates.php:1550
-#| msgid "No Color Templates Found"
 msgid "No Threshold Templates"
 msgstr ""
 
@@ -24978,7 +24560,6 @@ msgid "The following Graph has no Threshold Templates associated with them."
 msgstr ""
 
 #: ../plugins/thold/thold_webapi.php:221
-#| msgid "Press 'Continue' to delete the following Graph Rules."
 msgid ""
 "Press 'Continue' after you have selected the Threshold Template to utilize."
 msgstr ""
@@ -25006,7 +24587,6 @@ msgid "Create a Threshold Template"
 msgstr ""
 
 #: ../plugins/thold/thold_webapi.php:287
-#| msgid "Created Trees"
 msgid "Create a new Threshold"
 msgstr ""
 
@@ -25023,7 +24603,6 @@ msgid "Please select a Graph"
 msgstr ""
 
 #: ../plugins/thold/thold_webapi.php:404
-#| msgid "Please press 'Return' to continue."
 msgid "Please press 'Create' to activate your Threshold"
 msgstr ""
 
@@ -25042,7 +24621,6 @@ msgid "Cacti Master"
 msgstr ""
 
 #: ../plugins/webseer/poller_webseer.php:174
-#| msgid "Script Server"
 msgid "Cacti Remote Server"
 msgstr ""
 
@@ -25122,7 +24700,6 @@ msgid "Query [new]"
 msgstr "Query [nieuw]"
 
 #: ../plugins/webseer/webseer_edit.php:159
-#| msgid "Device Name"
 msgid "Service Check Name"
 msgstr ""
 
@@ -25295,12 +24872,10 @@ msgstr ""
 
 #: ../plugins/wmi/functions.php:29 ../plugins/wmi/wmi_queries.php:273
 #: ../plugins/wmi/wmi_queries.php:389 ../plugins/wmi/wmi_tools.php:333
-#| msgid "Data Queries"
 msgid "Queries"
 msgstr ""
 
 #: ../plugins/wmi/setup.php:39
-#| msgid "Graph Management"
 msgid "WMI Management"
 msgstr ""
 
@@ -25309,7 +24884,6 @@ msgid "WMI Data"
 msgstr ""
 
 #: ../plugins/wmi/setup.php:262
-#| msgid "Data Query"
 msgid "WMI Data Query"
 msgstr ""
 
@@ -25320,17 +24894,14 @@ msgstr ""
 #: ../plugins/wmi/setup.php:281 ../plugins/wmi/setup.php:314
 #: ../plugins/wmi/setup.php:328 ../plugins/wmi/wmi_queries.php:259
 #: ../plugins/wmi/wmi_queries.php:395
-#| msgid "Data Queries"
 msgid "WMI Queries"
 msgstr ""
 
 #: ../plugins/wmi/setup.php:293 ../plugins/wmi/setup.php:307
-#| msgid "LDAP Authentication"
 msgid "WMI Autenication"
 msgstr ""
 
 #: ../plugins/wmi/setup.php:300
-#| msgid "LDAP Authentication"
 msgid "WMI Autenication -> Edit"
 msgstr ""
 
@@ -25343,12 +24914,10 @@ msgid "WMI Tools"
 msgstr ""
 
 #: ../plugins/wmi/setup.php:381
-#| msgid "User Account Details"
 msgid "WMI Account Options"
 msgstr ""
 
 #: ../plugins/wmi/setup.php:386
-#| msgid "LDAP Authentication"
 msgid "WMI Authentication Account"
 msgstr ""
 
@@ -25357,9 +24926,8 @@ msgid "Choose an account to use when Authenticating via WMI"
 msgstr ""
 
 #: ../plugins/wmi/setup.php:401
-#| msgid "User Settings"
 msgid "WMI Settings"
-msgstr ""
+msgstr "WMI instellingen"
 
 #: ../plugins/wmi/setup.php:405
 msgid "Auto Create WMI Queries"
@@ -25372,7 +24940,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/wmi/setup.php:424 ../plugins/wmi/setup.php:472
-#| msgid "Associated Data Templates"
 msgid "Associated WMI Queries"
 msgstr ""
 
@@ -25381,7 +24948,6 @@ msgid "WMI Query Exists"
 msgstr ""
 
 #: ../plugins/wmi/setup.php:448
-#| msgid "Guest user %s does not exist."
 msgid "WMI Query Does Not Exist"
 msgstr ""
 
@@ -25390,18 +24956,14 @@ msgid "No Associated WMI Queries."
 msgstr ""
 
 #: ../plugins/wmi/setup.php:514
-#| msgid "Add Data Query"
 msgid "Add WMI Query"
 msgstr ""
 
 #: ../plugins/wmi/setup.php:520
-#| msgid "Add Data Query to Device"
 msgid "Add WMI Query to Device Template"
 msgstr ""
 
 #: ../plugins/wmi/setup.php:561
-#| msgid ""
-#| "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgid ""
 "Click 'Continue' to delete the following WMI Queries will be disassociated "
 "from the Device Template."
@@ -25409,7 +24971,6 @@ msgstr ""
 
 #: ../plugins/wmi/setup.php:562
 #, php-format
-#| msgid "Data Query Name: %s"
 msgid "WMI Query Name: %s"
 msgstr ""
 
@@ -25424,7 +24985,6 @@ msgid ""
 msgstr ""
 
 #: ../plugins/wmi/wmi_accounts.php:146
-#| msgid "Press 'Continue' to delete the following Graph Rules."
 msgid "Press 'Continue' to delete the following accounts."
 msgstr ""
 
@@ -25434,7 +24994,6 @@ msgstr "U moet tenminste een account selecteren."
 
 #: ../plugins/wmi/wmi_accounts.php:215
 #, php-format
-#| msgid "RRA [edit: %s]"
 msgid "Account [edit: %s]"
 msgstr "Account [wijzig: %s]"
 
@@ -25447,17 +25006,14 @@ msgid "WMI Accounts"
 msgstr ""
 
 #: ../plugins/wmi/wmi_accounts.php:389
-#| msgid "No Colors Found"
 msgid "No Accounts Found"
 msgstr "Geen accounts gevonden"
 
 #: ../plugins/wmi/wmi_queries.php:47
-#| msgid "Give this Network a meaningful name."
 msgid "Give this query a meaningful name that will be displayed."
 msgstr ""
 
 #: ../plugins/wmi/wmi_queries.php:53
-#| msgid "Define the collection frequency."
 msgid "Collection Frequency"
 msgstr ""
 
@@ -25473,12 +25029,10 @@ msgstr ""
 
 #: ../plugins/wmi/wmi_queries.php:68 ../plugins/wmi/wmi_queries.php:401
 #: ../plugins/wmi/wmi_tools.php:321
-#| msgid "Name"
 msgid "Namespace"
 msgstr ""
 
 #: ../plugins/wmi/wmi_queries.php:69
-#| msgid "The name of this Data Query."
 msgid "The Namespace for this Query."
 msgstr ""
 
@@ -25840,7 +25394,7 @@ msgstr[1] ""
 
 #: ../pollers.php:318 ../sites.php:283
 msgid "You must select at least one Site."
-msgstr ""
+msgstr "U moet tenminste een locatie selecteren."
 
 #: ../pollers.php:351 ../sites.php:316
 #, php-format
@@ -26528,7 +26082,7 @@ msgstr ""
 
 #: ../user_admin.php:437
 msgid "You must select at least one user."
-msgstr ""
+msgstr "U moet tenminste een gebruiker selecteren."
 
 #: ../user_admin.php:812 ../user_group_admin.php:728
 msgid "Allow"
@@ -27091,7 +26645,7 @@ msgstr[1] ""
 
 #: ../user_group_admin.php:490
 msgid "You must select at least one Group."
-msgstr ""
+msgstr "U moet tenminste een groep selecteren."
 
 #: ../user_group_admin.php:675
 msgid "Login Name"
@@ -27817,7 +27371,7 @@ msgstr[1] "Dupliceer VDEF’s"
 
 #: ../vdef.php:283
 msgid "You must select at least one VDEF."
-msgstr ""
+msgstr "U moet tenminste een VDEF selecteren."
 
 #: ../vdef.php:325
 msgid "Click 'Continue' to delete the following VDEF's."
