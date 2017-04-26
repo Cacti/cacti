@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.1.6
+-issue#620: The table poller_data_template_field_mappings can get out of sync when manipulating data templates
+-issue#622: Can not connect to MySQL over a socket
+
 1.1.5
 -issue#580: Data collection warnings when using cmd.php
 -issue#592: Incorrectly formatted HTML
