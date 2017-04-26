@@ -1051,7 +1051,7 @@ CREATE TABLE data_input (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(200) NOT NULL default '',
-  input_string varchar(255) default NULL,
+  input_string varchar(512) default NULL,
   type_id tinyint(2) NOT NULL default '0',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;

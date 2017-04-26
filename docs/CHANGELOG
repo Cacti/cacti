@@ -1,5 +1,19 @@
 Cacti CHANGELOG
 
+1.1.5
+-issue#580: Data collection warnings when using cmd.php
+-issue#592: Incorrectly formatted HTML
+-issue#606: Replace <path_php_binary> in data input methods
+-issue#607: Allow draw_menu to specify multiple actions for the same URL
+-issue#608: Spaces adjacent to double quotes are eliminated during data input method import
+-issue#609: Honor the column setting in graph tree view mode
+-issue#610: Change Graph Template action not available
+-issue#611: Cacti Installation Wizard - Spine page incorrect on Windows
+-issue#612: Uncaught Error: Call to a member function row() on a string
+-issue#613: Network Automation, now requires a site or your are unable to save rules
+-issue#615: Data Input field length too short for longer scripts
+-issue#619: Export logging option in settings no longer used
+
 1.1.4
 -issue#524: Reporting not working when Tree branch is device
 -issue#560: Add 'Duplicate' and 'Convert to Graph Template' back to Graph Management page for Advanced mode

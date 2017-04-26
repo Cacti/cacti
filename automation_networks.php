@@ -418,6 +418,7 @@ function network_edit() {
 		'value' => '|arg1:site_id|',
 		'default' => read_config_option('default_site'),
 		'sql' => 'SELECT id, name FROM sites ORDER BY name',
+		'none_value' => __('None')
 		),
 	'subnet_range' => array(
 		'method' => 'textarea',

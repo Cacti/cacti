@@ -44,7 +44,7 @@ $graph_actions = array(
 	1  => __('Delete'),
 );
 
-if (get_nfilter_request_var('template_id') > 0) {
+if (get_nfilter_request_var('template_id') != '-1' && get_nfilter_request_var('template_id') != '0') {
 	$graph_actions += array(
 		2  => __('Change Graph Template'),
 	);

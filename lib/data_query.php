@@ -181,7 +181,10 @@ function get_data_query_array($snmp_query_id) {
 	/* load the array into memory if it hasn't been done yet */
 	if (!isset($data_query_xml_arrays[$snmp_query_id])) {
 		$xml_file_path = db_fetch_cell_prepared('SELECT xml_path FROM snmp_query WHERE id = ?', array($snmp_query_id));
-		$xml_file_path = str_replace('<path_cacti>', $config['base_path'], $xml_file_path);
+
+		$search        = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
+		$replace       = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
+		$xml_file_path = str_replace($search, $replace, $xml_file_path);
 
 		if (!file_exists($xml_file_path)) {
 			query_debug_timer_offset('data_query', "Could not find data query XML file at '$xml_file_path'");

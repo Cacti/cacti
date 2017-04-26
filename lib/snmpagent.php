@@ -263,7 +263,9 @@ function snmpagent_poller_bottom() {
 				'cactiStatsTotalsDeviceStatusCounter' => 0
 			);
 
-			$mc->table('cactiStatsTotalsDeviceStatusTable')->row($index)->replace($values);
+			if ($mc->table('cactiStatsTotalsDeviceStatusTable') != 'ERROR') {
+				$mc->table('cactiStatsTotalsDeviceStatusTable')->row($index)->replace($values);
+			}
 		}
 	}
 

@@ -413,10 +413,9 @@ function raise_message($message_id) {
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
      the message cache */
 function display_output_messages() {
-	global $config, $messages;
+	global $messages;
 
 	$debug_message = debug_log_return('new_graphs');
-	$message       = '';
 
 	if ($debug_message != '') {
 		print "<div id='message' class='textInfo messageBox'>";
@@ -1136,9 +1135,8 @@ function get_full_script_path($local_data_id) {
 		}
 	}
 
-	$search = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
-	$replace = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
-
+	$search    = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
+	$replace   = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
 	$full_path = str_replace($search, $replace, $full_path);
 
 	/* sometimes a certain input value will not have anything entered... null out these fields
@@ -3274,17 +3272,17 @@ function set_page_refresh($refresh) {
 }
 
 function bottom_footer() {
-	global $config, $refresh;
+	global $config;
 
 	include($config['base_path'] . '/include/global_session.php');
 
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		include($config['base_path'] . '/include/bottom_footer.php');
-
-		/* display output messgages */
+		/* display output messages */
 		display_messages();
+
+		include($config['base_path'] . '/include/bottom_footer.php');
 	}else{
-		/* display output messgages */
+		/* display output messages */
 		display_messages();
 
 		/* we use this session var to store field values for when a save fails,
