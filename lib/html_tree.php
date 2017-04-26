@@ -408,12 +408,14 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 								foreach ($data_queries as $data_query) {
 									if ($data_query['id'] == 0) {
 										$non_template_graphs = $ntg;
+										$sort_field_data     = array();
 									} else {
 										$non_template_graphs = array();
+
+										/* fetch a list of field names that are sorted by the preferred sort field */
+										$sort_field_data     = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 									}
 
-									/* fetch a list of field names that are sorted by the preferred sort field */
-									$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 									if (($data_query['id'] == 0 && sizeof($non_template_graphs)) ||
 										($data_query['id'] > 0 && sizeof($sort_field_data) > 0)
 									) {
