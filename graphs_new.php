@@ -673,7 +673,7 @@ function graphs() {
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
-		$available_graph_templates = db_fetch_assoc('SELECT
+		$available_graph_templates = db_fetch_assoc_prepared('SELECT
 			graph_templates.id, graph_templates.name
 			FROM snmp_query_graph 
 			RIGHT JOIN graph_templates
