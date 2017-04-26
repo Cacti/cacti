@@ -223,10 +223,6 @@ $settings = array(
 					'friendly_name' => __('Graph Syntax'),
 					'default' => ''
 					),
-				'log_export' => array(
-					'friendly_name' => __('Graph Export'),
-					'default' => ''
-					),
 				'developer_mode' => array(
 					'friendly_name' => __('Developer Mode'),
 					'default' => ''

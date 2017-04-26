@@ -496,8 +496,11 @@ function utilities_view_tech($php_info = '') {
 	}else{
 		html_section_header(__('PHP Module Information'), 2);
 		form_alternate_row();
-		$php_info = str_replace('width="600"', '', $php_info);
-		$php_info = str_replace('th colspan="2"', 'th class="subHeaderColumn"', $php_info);
+		$php_info = str_replace(
+			array('width="600"', 'th colspan="2"', ','),
+			array('', 'th class="subHeaderColumn"', ', '),
+			$php_info
+		);
 		print "<td colspan='2'>" . $php_info . "</td>\n";
 
 		form_end_row();
@@ -608,7 +611,7 @@ function utilities_view_user_log() {
 		strURL  = urlPath+'utilities.php?username=' + $('#username').val();
 		strURL += '&result=' + $('#result').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&page=' + $('#page').val();
 		strURL += '&action=view_user_log';
 		strURL += '&header=false';
@@ -1230,7 +1233,7 @@ function utilities_view_snmp_cache() {
 	function applyFilter() {
 		strURL  = urlPath+'utilities.php?host_id=' + $('#host_id').val();
 		strURL += '&snmp_query_id=' + $('#snmp_query_id').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&action=view_snmp_cache';
@@ -1503,7 +1506,7 @@ function utilities_view_poller_cache() {
 		strURL += '&action=view_poller_cache';
 		strURL += '&host_id=' + $('#host_id').val();
 		strURL += '&template_id=' + $('#template_id').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
@@ -2207,7 +2210,7 @@ function snmpagent_utilities_run_cache() {
 		strURL  = 'utilities.php?action=view_snmpagent_cache';
 		strURL += '&mib=' + $('#mib').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -2451,7 +2454,7 @@ function snmpagent_utilities_run_eventlog(){
 		strURL += '&severity=' + $('#severity').val();
 		strURL += '&receiver=' + $('#receiver').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);

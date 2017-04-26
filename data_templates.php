@@ -245,6 +245,12 @@ function form_save() {
 				push_out_host(0, 0, $data_template_id);
 
 				/* push out field mappings for the data collector */
+				/* its important to delete first due to the possibility that
+				 * the field names were changed */
+				db_execute('DELETE FROM poller_data_template_field_mappings 
+					WHERE data_template_id = ?', 
+					array($data_template_id));
+
 				db_execute_prepared('REPLACE INTO poller_data_template_field_mappings
 					SELECT dtr.data_template_id, 
 					dif.data_name, 
@@ -255,7 +261,8 @@ function form_save() {
 					ON dtr.data_input_field_id = dif.id
 					WHERE dtr.local_data_id = 0
 					AND dtr.data_template_id = ?
-					GROUP BY dtr.data_template_id, dif.data_name', array($data_template_id));
+					GROUP BY dtr.data_template_id, dif.data_name', 
+					array($data_template_id));
 			}
 		}
 
@@ -407,14 +414,18 @@ function template_rrd_remove() {
 	get_filter_request_var('data_template_id');
 	/* ==================================================== */
 
-	$children = db_fetch_assoc_prepared('SELECT id FROM data_template_rrd WHERE local_data_template_rrd_id = ? OR id = ?', array(get_request_var('id'), get_request_var('id')));
+	$children = db_fetch_assoc_prepared('SELECT id 
+		FROM data_template_rrd 
+		WHERE local_data_template_rrd_id = ? 
+		OR id = ?', 
+		array(get_request_var('id'), get_request_var('id')));
 
-	if (sizeof($children) > 0) {
-	foreach ($children as $item) {
-		db_execute_prepared('DELETE FROM data_template_rrd WHERE id = ?', array($item['id']));
-		db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE data_template_rrd_id = ?', array($item['id']));
-		db_execute_prepared('UPDATE graph_templates_item SET task_item_id = 0 WHERE task_item_id = ?', array($item['id']));
-	}
+	if (sizeof($children)) {
+		foreach ($children as $item) {
+			db_execute_prepared('DELETE FROM data_template_rrd WHERE id = ?', array($item['id']));
+			db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE data_template_rrd_id = ?', array($item['id']));
+			db_execute_prepared('UPDATE graph_templates_item SET task_item_id = 0 WHERE task_item_id = ?', array($item['id']));
+		}
 	}
 
 	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('data_template_id'));
@@ -455,14 +466,19 @@ function template_rrd_add() {
 	$data_template_rrd_id = db_fetch_insert_id();
 
 	/* add this data template item to each data source using this data template */
-	$children = db_fetch_assoc_prepared('SELECT local_data_id FROM data_template_data WHERE data_template_id = ? AND local_data_id > 0', array(get_request_var('id')));
+	$children = db_fetch_assoc_prepared('SELECT local_data_id 
+		FROM data_template_data 
+		WHERE data_template_id = ? 
+		AND local_data_id > 0', 
+		array(get_request_var('id')));
 
-	if (sizeof($children) > 0) {
-        foreach ($children as $item) {
-            db_execute_prepared("INSERT IGNORE INTO data_template_rrd 
-                (local_data_template_rrd_id, local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
-                VALUES (?, ?, ?, 0, 0, 600, 1, ?)", array($data_template_rrd_id, $item['local_data_id'], get_request_var('id'), $dsname));
-        }
+	if (sizeof($children)) {
+		foreach ($children as $item) {
+			db_execute_prepared('INSERT IGNORE INTO data_template_rrd 
+				(local_data_template_rrd_id, local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
+				VALUES (?, ?, ?, 0, 0, 600, 1, ?)', 
+				array($data_template_rrd_id, $item['local_data_id'], get_request_var('id'), $dsname));
+		}
 	}
 
 	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
@@ -784,7 +800,7 @@ function template() {
 		<script type='text/javascript'>
 		function applyFilter() {
 			strURL  = 'data_templates.php?header=false';
-			strURL += '&filter='+$('#filter').val();
+			strURL += '&filter='+escape($('#filter').val());
 			strURL += '&rows='+$('#rows').val();
 			strURL += '&profile='+$('#profile').val();
 			strURL += '&page='+$('#page').val();

@@ -485,7 +485,7 @@ function graphs() {
 	function applyFilter() {
 		strURL  = '?graph_type=' + $('#graph_type').val();
 		strURL += '&host_id=' + $('#host_id').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);

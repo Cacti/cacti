@@ -63,6 +63,16 @@ function repopulate_poller_cache() {
 		api_data_source_cache_crc_update($poller_id);
 	}
 	}
+
+	/* update the field mappings for the poller */
+	db_execute("TRUNCATE TABLE poller_data_template_field_mappings");
+	db_execute("INSERT IGNORE INTO poller_data_template_field_mappings
+		SELECT dtr.data_template_id, dif.data_name, GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_input_fields AS dif
+		ON dtr.data_input_field_id = dif.id
+		WHERE dtr.local_data_id=0
+		GROUP BY dtr.data_template_id, dif.data_name");
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id) {

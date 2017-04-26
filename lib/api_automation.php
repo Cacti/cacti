@@ -92,7 +92,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&rowsd=' + $('#rowsd').val();
-		strURL += '&filterd=' + $('#filterd').val();
+		strURL += '&filterd=' + escape($('#filterd').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -372,7 +372,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	function applyFilter() {
 		strURL  = '<?php print $url;?>' + '&host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -644,7 +644,7 @@ function display_new_graphs($rule, $url) {
 	function applyFilter() {
 		strURL  = '<?php print $url;?>';
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -947,7 +947,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -1970,27 +1970,6 @@ function automation_hook_graph_template($host_id, $graph_template_id) {
 	automation_execute_graph_template($host_id, $graph_template_id);
 }
 
-
-/**
- * hook executed for a new device on a tree
- * @param $host_id - data passed from hook
- */
-function automation_hook_device_create_tree($host_id) {
-	global $config;
-
-	cacti_log(__FUNCTION__ . ' called: ' . $host_id, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
-	
-	if (read_config_option('automation_tree_enabled') == '') {
-		cacti_log(__FUNCTION__ . ' Device[' . $host_id . '] - skipped: Tree Creation Switch is: ' . (read_config_option('automation_tree_enabled') == '' ? 'off' : 'on'), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
-		return;
-	}
-
-	automation_execute_device_create_tree($host_id);
-
-	/* make sure, the next plugin gets required $data */
-	return($host_id);
-}
-
 /**
  * hook executed for a new graph on a tree
  * @param $data - data passed from hook
@@ -2737,9 +2716,9 @@ function automation_add_tree ($host_id, $tree) {
 
 function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$sql_where  = '';
-	$sql_where .= $sysDescr  != '' ? 'WHERE ((sysDescr="" AND "' . $sysDescr  . '" = "")' . 'OR "' . $sysDescr . '" RLIKE sysDescr OR sysDescr LIKE "%' . $sysDescr . '%")':'';
-	$sql_where .= $sysObject != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysOid="" OR "' . $sysObject . '" RLIKE sysOid OR sysOid LIKE "%' . $sysObject . '%")':'';
-	$sql_where .= $sysName   != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysName="" OR "' . $sysName . '" RLIKE sysName OR sysName LIKE "%' . $sysName . '%")':'';
+	$sql_where .= trim($sysDescr)  != '' ? 'WHERE (' . db_qstr($sysDescr) . ' RLIKE sysDescr OR ' . db_qstr($sysDescr) . ' LIKE CONCAT("%", sysDescr, "%"))':'';
+	$sql_where .= trim($sysObject) != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (' . db_qstr($sysObject) . ' RLIKE sysOid OR ' . db_qstr($sysObject) . ' LIKE CONCAT("%", sysOid, "%"))':'';
+	$sql_where .= trim($sysName)   != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (' . db_qstr($sysName) . ' RLIKE sysName OR ' . db_qstr($sysName) . ' LIKE CONCAT("%", sysName, "%"))':'';
 
 	$result = db_fetch_row("SELECT at.*,ht.name 
 		FROM automation_templates AS at 
@@ -3605,3 +3584,56 @@ function ping_netbios_name($ip, $timeout_ms = 1000) {
 		}
 	}
 }
+
+function automation_update_device($host_id) {
+	cacti_log(__FUNCTION__ . ' Host[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+
+	/* select all graph templates associated with this host, but exclude those where
+	*  a graph already exists (table graph_local has a known entry for this host/template) */
+	$sql = 'SELECT gt.*
+		FROM graph_templates AS gt
+		INNER JOIN host_graph AS hg
+		ON gt.id=hg.graph_template_id
+		WHERE hg.host_id=' . $host_id . ' 
+		AND gt.id NOT IN (
+			SELECT gl.graph_template_id 
+			FROM graph_local AS gl
+			WHERE host_id=' . $host_id . '
+		)';
+
+	$graph_templates = db_fetch_assoc($sql);
+
+	cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], sql: ' . $sql, true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+
+	/* create all graph template graphs */
+	if (sizeof($graph_templates)) {
+		foreach ($graph_templates as $graph_template) {
+			cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], graph: ' . $graph_template['id'], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+
+			automation_execute_graph_template($host_id, $graph_template['id']);
+		}
+	}
+
+	/* all associated data queries */
+	$data_queries = db_fetch_assoc_prepared('SELECT sq.*,
+		hsq.reindex_method 
+		FROM snmp_query AS sq
+		INNER JOIN host_snmp_query AS hsq
+		ON sq.id=hsq.snmp_query_id
+		WHERE hsq.host_id = ?', array($host_id));
+
+	/* create all data query graphs */
+	if (sizeof($data_queries)) {
+		foreach ($data_queries as $data_query) {
+			cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], dq[' . $data_query['id'] . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+
+			automation_execute_data_query($host_id, $data_query['id']);
+		}
+	}
+
+	/* now handle tree rules for that host */
+	cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], create_tree for host: ' . $host_id, true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+
+	automation_execute_device_create_tree($host_id);
+}
+

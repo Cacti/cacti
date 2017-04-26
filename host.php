@@ -31,6 +31,7 @@ include_once('./lib/api_graph.php');
 include_once('./lib/snmp.php');
 include_once('./lib/ping.php');
 include_once('./lib/data_query.php');
+include_once('./lib/api_automation.php');
 include_once('./lib/api_device.php');
 
 $device_actions = array(
@@ -327,55 +328,7 @@ function form_actions() {
 
 				/* work on all selected hosts */
 				foreach ($selected_items as $host_id) {
-					cacti_log(__FUNCTION__ . ' Host[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-
-					/* select all graph templates associated with this host, but exclude those where
-					*  a graph already exists (table graph_local has a known entry for this host/template) */
-					$sql = 'SELECT gt.*
-						FROM graph_templates AS gt
-						INNER JOIN host_graph AS hg
-						ON gt.id=hg.graph_template_id
-						WHERE hg.host_id=' . $host_id . ' 
-						AND gt.id NOT IN (
-							SELECT gl.graph_template_id 
-							FROM graph_local AS gl
-							WHERE host_id=' . $host_id . '
-						)';
-
-					$graph_templates = db_fetch_assoc($sql);
-
-					cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], sql: ' . $sql, true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-
-					/* create all graph template graphs */
-					if (sizeof($graph_templates)) {
-						foreach ($graph_templates as $graph_template) {
-							cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], graph: ' . $graph_template['id'], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-
-							automation_execute_graph_template($host_id, $graph_template['id']);
-						}
-					}
-
-					/* all associated data queries */
-					$data_queries = db_fetch_assoc_prepared('SELECT sq.*,
-						hsq.reindex_method 
-						FROM snmp_query AS sq
-						INNER JOIN host_snmp_query AS hsq
-						ON sq.id=hsq.snmp_query_id
-						WHERE hsq.host_id = ?', array($host_id));
-
-					/* create all data query graphs */
-					if (sizeof($data_queries)) {
-						foreach ($data_queries as $data_query) {
-							cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], dq[' . $data_query['id'] . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-
-							automation_execute_data_query($host_id, $data_query['id']);
-						}
-					}
-
-					/* now handle tree rules for that host */
-					cacti_log(__FUNCTION__ . ' Host[' . $host_id . '], create_tree for host: ' . $host_id, true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-
-					automation_execute_device_create_tree($host_id);
+					automation_update_device($host_id);
 				}
 			} else {
 				api_plugin_hook_function('device_action_execute', get_nfilter_request_var('drp_action'));
@@ -396,7 +349,7 @@ function form_actions() {
 	$host_array = array();
 
 	/* loop through each of the host templates selected on the previous page and get more info about them */
-    foreach ($_POST as $var => $val) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
@@ -727,30 +680,38 @@ function host_edit() {
 
 		html_header(array(__('Graph Template Name'), __('Status')), 2);
 
-		$selected_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT gt.id, gt.name
-			FROM graph_templates AS gt
-			INNER JOIN host_graph AS hg ON gt.id = hg.graph_template_id
-			WHERE hg.host_id = ?
-			ORDER BY gt.name", array(get_request_var('id')));
-
-		$available_graph_templates = db_fetch_assoc_prepared(
-			"SELECT result.id, result.name, graph_local.id AS graph_local_id  
-			 FROM (
-				 SELECT DISTINCT gt.id, gt.name
-				 FROM graph_templates AS gt
-				 LEFT JOIN snmp_query_graph AS sqg ON sqg.graph_template_id = gt.id
-				 INNER JOIN graph_templates_item AS gti ON gti.graph_template_id = gt.id
-				 INNER JOIN data_template_rrd AS dtr ON gti.task_item_id = dtr.id
-				 INNER JOIN data_template_data AS dtd ON dtd.data_template_id = dtr.data_template_id
-				 WHERE sqg.name IS NULL 
-				 AND gti.local_graph_id = 0
-				 AND dtr.local_data_id = 0
-				 AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
-			 ) AS result
-			 LEFT JOIN graph_local ON graph_local.graph_template_id = result.id
-				 AND graph_local.host_id = ?
-			 ORDER BY result.name",
+		$selected_graph_templates = db_fetch_assoc_prepared("
+			SELECT result.id, result.name, graph_local.id AS graph_local_id  
+			FROM (
+				SELECT DISTINCT gt.id, gt.name
+				FROM graph_templates AS gt
+				INNER JOIN host_graph AS hg 
+				ON gt.id = hg.graph_template_id
+				WHERE hg.host_id = ?
+			) AS result
+			LEFT JOIN graph_local 
+			ON graph_local.graph_template_id = result.id
+			AND graph_local.host_id = ?
+			ORDER BY result.name",
 			array(get_request_var('id'), get_request_var('id'))
+		);
+
+		$available_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT gt.id, gt.name
+			FROM graph_templates AS gt
+			LEFT JOIN snmp_query_graph AS sqg 
+			ON sqg.graph_template_id = gt.id
+			INNER JOIN graph_templates_item AS gti 
+			ON gti.graph_template_id = gt.id
+			INNER JOIN data_template_rrd AS dtr 
+			ON gti.task_item_id = dtr.id
+			INNER JOIN data_template_data AS dtd 
+			ON dtd.data_template_id = dtr.data_template_id
+			WHERE sqg.name IS NULL 
+			AND gti.local_graph_id = 0
+			AND dtr.local_data_id = 0
+			AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
+			ORDER BY gt.name",
+			array(get_request_var('id'))
 		);
 
 		$i = 0;
@@ -1300,7 +1261,7 @@ function host() {
 			strURL += '&site_id=' + $('#site_id').val();
 			strURL += '&poller_id=' + $('#poller_id').val();
 			strURL += '&rows=' + $('#rows').val();
-			strURL += '&filter=' + $('#filter').val();
+			strURL += '&filter=' + escape($('#filter').val());
 			strURL += '&header=false';
 			loadPageNoHeader(strURL);
 		}

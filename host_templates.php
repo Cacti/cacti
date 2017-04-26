@@ -736,7 +736,7 @@ function template() {
 		</td>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'host_templates.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_hosts='+$('#has_hosts').is(':checked')+'&header=false';
+			strURL = 'host_templates.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_hosts='+$('#has_hosts').is(':checked')+'&header=false';
 			loadPageNoHeader(strURL);
 		}
 

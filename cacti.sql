@@ -1051,7 +1051,7 @@ CREATE TABLE data_input (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(200) NOT NULL default '',
-  input_string varchar(255) default NULL,
+  input_string varchar(512) default NULL,
   type_id tinyint(2) NOT NULL default '0',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -1761,11 +1761,15 @@ CREATE TABLE graph_tree_items (
   local_graph_id mediumint(8) unsigned NOT NULL DEFAULT '0',
   title varchar(255) DEFAULT NULL,
   host_id mediumint(8) unsigned NOT NULL DEFAULT '0',
+  site_id int unsigned DEFAULT '0',
   host_grouping_type tinyint(3) unsigned NOT NULL DEFAULT '1',
   sort_children_type tinyint(3) unsigned NOT NULL DEFAULT '1',
+  graph_regex varchar(60) DEFAULT '',
+  host_regex varchar(60) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `graph_tree_id` (`graph_tree_id`),
   KEY `host_id` (`host_id`),
+  KEY `site_id` (`site_id`),
   KEY `local_graph_id` (`local_graph_id`),
   KEY `parent_position`(`parent`, `position`)
 ) ENGINE=InnoDB;

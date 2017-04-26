@@ -858,7 +858,7 @@ function automation_snmp() {
 	</tr>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL = 'automation_snmp.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+		strURL = 'automation_snmp.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 		loadPageNoHeader(strURL);
 	}
 
@@ -970,7 +970,7 @@ function automation_snmp() {
 	<script type='text/javascript'>
 	function applyFilter() {
 		strURL  = 'automation_snmp.php?header=false&rows=' + $('#rows').val();
-		strURL += strURL + '&filter=' + $('#filter').val();
+		strURL += strURL + '&filter=' + escape($('#filter').val());
 		loadPageNoHeader(strURL);
 	}
 	</script>

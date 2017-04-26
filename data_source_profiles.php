@@ -755,7 +755,7 @@ function profile() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'data_source_profiles.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_data='+$('#has_data').is(':checked')+'&header=false';
+				strURL = 'data_source_profiles.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_data='+$('#has_data').is(':checked')+'&header=false';
 				loadPageNoHeader(strURL);
 			}
 

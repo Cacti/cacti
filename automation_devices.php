@@ -579,7 +579,7 @@ function draw_filter() {
 			strURL += '&network=' + $('#network').val();
 			strURL += '&snmp=' + $('#snmp').val();
 			strURL += '&os=' + $('#os').val();
-			strURL += '&filter=' + $('#filter').val();
+			strURL += '&filter=' + escape($('#filter').val());
 			strURL += '&rows=' + $('#rows').val();
 
 			loadPageNoHeader(strURL);

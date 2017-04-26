@@ -238,7 +238,7 @@ function update_show_current () {
 	?>
 	<script type="text/javascript">
 	function applyFilter() {
-		strURL = 'plugins.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&state='+$('#state').val()+'&header=false';
+		strURL = 'plugins.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&state='+$('#state').val()+'&header=false';
 		loadPageNoHeader(strURL);
 	}
 

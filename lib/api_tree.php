@@ -314,16 +314,16 @@ function api_tree_delete_node_content($tree_id, $leaf_id) {
 		WHERE graph_tree_id = ? AND parent = ?', array($tree_id, $leaf_id));
 
 	if (sizeof($children)) {
-	foreach($children as $child) {
-		if ($child['host_id'] == 0 && $child['graph_id'] == 0) {
-			api_tree_delete_node_content($tree_id, $child['id']);
-		}
+		foreach($children as $child) {
+			if ($child['host_id'] == 0 && $child['graph_id'] == 0) {
+				api_tree_delete_node_content($tree_id, $child['id']);
+			}
 
-		db_execute_prepared('DELETE 
-			FROM graph_tree_items 
-			WHERE graph_tree_id = ?
-			AND id = ?', array($tree_id, $child['id']));
-	}
+			db_execute_prepared('DELETE 
+				FROM graph_tree_items 
+				WHERE graph_tree_id = ?
+				AND id = ?', array($tree_id, $child['id']));
+		}
 	}
 }
 
@@ -373,10 +373,10 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 
 		$position = $new_position + 1;
 		if (sizeof($others)) {
-		foreach($others as $other) {
-			db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($position, $other['id']));
-			$position++;
-		}
+			foreach($others as $other) {
+				db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($position, $other['id']));
+				$position++;
+			}
 		}
 
 		api_tree_sort_branch($data['leaf_id'], $tree_id);
@@ -395,10 +395,10 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 
 		$position = $new_position + 1;
 		if (sizeof($others)) {
-		foreach($others as $other) {
-			db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($position, $other['id']));
-			$position++;
-		}
+			foreach($others as $other) {
+				db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($position, $other['id']));
+				$position++;
+			}
 		}
 
 		api_tree_sort_branch($data['leaf_id'], $tree_id);
@@ -422,24 +422,24 @@ function api_tree_parse_node_data($variable) {
 		// Process the 'id' variable
 		$ndata   = explode('_', $variable);
 		if (sizeof($ndata)) {
-		foreach($ndata as $data) {
-			list($type, $tid) = explode(':', $data);
+			foreach($ndata as $data) {
+				list($type, $tid) = explode(':', $data);
 
-			/* watch out for monkey business */
-			input_validate_input_number($tid);
+				/* watch out for monkey business */
+				input_validate_input_number($tid);
 
-			switch ($type) {
-				case 'tbranch':
-					$leaf_id  = $tid;
-					break;
-				case 'tgraph':
-					$graph_id = $tid;
-					break;
-				case 'thost':
-					$host_id  = $tid;
-					break;
+				switch ($type) {
+					case 'tbranch':
+						$leaf_id  = $tid;
+						break;
+					case 'tgraph':
+						$graph_id = $tid;
+						break;
+					case 'thost':
+						$host_id  = $tid;
+						break;
+				}
 			}
-		}
 		}
 	}
 
@@ -483,44 +483,38 @@ function api_tree_rename_node($tree_id, $node_id = '', $text = '') {
 		return;
 	}
 
-	$data  = api_tree_parse_node_data($node_id);
-
-	$oname = api_tree_get_branch_name($tree_id, $data['leaf_id']);
-
-	$exists_id = api_tree_branch_exists($tree_id, $data['parent'], $text);
-
 	// Initialize some variables
 	$leaf_id  = 0;
 	$graph_id = 0;
 	$host_id  = 0;
 
 	// Process the 'id' variable
-	$ndata   = explode('_', $node_id);
+	$ndata = explode('_', $node_id);
 	if (sizeof($ndata)) {
-	foreach($ndata as $data) {
-		list($type, $tid) = explode(':', $data);
+		foreach($ndata as $data) {
+			list($type, $tid) = explode(':', $data);
 
-		/* watch out for monkey business */
-		input_validate_input_number($tid);
+			/* watch out for monkey business */
+			input_validate_input_number($tid);
 
-		switch ($type) {
-			case 'tbranch':
-				$leaf_id  = $tid;
-				break;
-			case 'tgraph':
-				$graph_id = $tid;
-				break;
-			case 'thost':
-				$host_id  = $tid;
-				break;
+			switch ($type) {
+				case 'tbranch':
+					$leaf_id  = $tid;
+					break;
+				case 'tgraph':
+					$graph_id = $tid;
+					break;
+				case 'thost':
+					$host_id  = $tid;
+					break;
+			}
 		}
-	}
 	}
 
 	if (isset($leaf_id) && $leaf_id > 0) {
 		if ($host_id > 0 || $graph_id > 0) {
 			// Ignore.  Need to customize context
-		}else{
+		} else {
 			db_execute_prepared('UPDATE graph_tree_items 
 				SET title = ? 
 				WHERE graph_tree_id = ? 
@@ -551,26 +545,26 @@ function api_tree_get_main($tree_id, $parent = 0) {
 			$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
 			if (sizeof($heirarchy)) {
-			foreach($heirarchy as $h) {
-				print $h;
-			}
+				foreach($heirarchy as $h) {
+					print $h;
+				}
 			}
 		}else{
 			$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
 			if (sizeof($heirarchy)) {
-			foreach($heirarchy as $h) {
-				print $h;
-			}
+				foreach($heirarchy as $h) {
+					print $h;
+				}
 			}
 		}
 	}else{
 		$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
 		if (sizeof($heirarchy)) {
-		foreach($heirarchy as $h) {
-			print $h;
-		}
+			foreach($heirarchy as $h) {
+				print $h;
+			}
 		}
 	}
 
@@ -595,9 +589,9 @@ function api_tree_get_node($tree_id, $node_id) {
 	}
 
 	if (sizeof($heirarchy)) {
-	foreach($heirarchy as $h) {
-		print $h;
-	}
+		foreach($heirarchy as $h) {
+			print $h;
+		}
 	}
 }
 
@@ -621,8 +615,6 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 	input_validate_input_number($parent_tree_item_id);
 
 	//api_tree_get_lock('tree-lock', 10);
-
-	$position = db_fetch_cell_prepared('SELECT MAX(position)+1 FROM graph_tree_items WHERE parent = ? AND graph_tree_id = ?', array($parent_tree_item_id, $tree_id));
 
 	if ($local_graph_id > 0) {
 		$exists = db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE local_graph_id = ? AND parent = ? AND graph_tree_id = ?', array($local_graph_id, $parent_tree_item_id, $tree_id));
@@ -698,7 +690,7 @@ function naturally_sort_graphs($a, $b) {
  * @arg $leaf_id - the leaf_id of the element
  * @returns - the ordering of the parent leaf/branch */
 function api_tree_get_branch_ordering($leaf_id) {
-	$leaf = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE id = ?', array($leaf_id));
+	$leaf = db_fetch_row_prepared('SELECT sort_children_type, parent, graph_tree_id FROM graph_tree_items WHERE id = ?', array($leaf_id));
 
 	if (sizeof($leaf)) {
 		if ($leaf['sort_children_type'] == 0) {

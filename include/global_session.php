@@ -88,4 +88,6 @@ if (isset($_SESSION['refresh'])) {
 	var urlPath='<?php print $config['url_path'];?>';
 	var previousPage='';
 	var requestURI='<?php print $_SERVER['REQUEST_URI'];?>';
+	var searchFilter='<?php print __('Enter a search term');?>';
+	var searchRFilter='<?php print __('Enter a regular expression');?>';
 </script>

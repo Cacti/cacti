@@ -878,7 +878,9 @@ function data_query_edit() {
 	html_end_box();
 
 	if (!empty($snmp_query['id'])) {
-		$xml_filename = str_replace('<path_cacti>', $config['base_path'], $snmp_query['xml_path']);
+		$search       = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
+		$replace      = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
+		$xml_filename = str_replace($search, $replace, $snmp_query['xml_path']);
 
 		if ((file_exists($xml_filename)) && (is_file($xml_filename))) {
 			$text = "<font color='#0d7c09'>" . __('Successfully located XML file') . "</font>";
@@ -1065,7 +1067,7 @@ function data_query() {
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'data_queries.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			strURL = 'data_queries.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 			loadPageNoHeader(strURL);
 		}
 

@@ -417,7 +417,7 @@ function sites() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'sites.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+				strURL = 'sites.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 				loadPageNoHeader(strURL);
 			}
 

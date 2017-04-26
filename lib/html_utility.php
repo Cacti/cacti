@@ -423,7 +423,13 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 		}
 
 		if ($value === false) {
-			die_html_input_error($name, get_nfilter_request_var($name));
+			if ($filter == FILTER_VALIDATE_IS_REGEX) {
+				$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($name), $cusom_error);
+				set_request_var($name, '');
+				raise_message('custom_error');
+			}else{
+				die_html_input_error($name, get_nfilter_request_var($name));
+			}
 		}else{
 			set_request_var($name, $value);
 
@@ -590,7 +596,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					if ($valid === true) {
 						$value = $_REQUEST[$variable];
 					}else{
-						$value = FALSE;
+						$value = false;
 						$custom_error = $valid;
 					}
 				}elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
@@ -632,8 +638,14 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
 				}
 
-				if ($value === FALSE) {
-					die_html_input_error($variable, $_REQUEST[$variable], $custom_error);
+				if ($value === false) {
+					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
+						$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($variable), $custom_error);
+						set_request_var($variable, '');
+						raise_message('custom_error');
+					}else{
+						die_html_input_error($variable, get_nfilter_request_var($variable), $custom_error);
+					}
 				}else{
 					set_request_var($variable, $value);
 				}
@@ -724,6 +736,8 @@ function validate_is_regex($regex) {
 		return true;
 	}
 
+	restore_error_handler();
+
 	$track_errors = ini_get('track_errors');
 	ini_set('track_errors', 1); 
 
@@ -745,6 +759,8 @@ function validate_is_regex($regex) {
 	);
 
 	$error = preg_last_error();
+
+	set_error_handler('CactiErrorHandler');
 
 	if (empty($error)) {
 		return $php_error;

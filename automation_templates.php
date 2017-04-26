@@ -442,7 +442,7 @@ function template() {
 			<script type='text/javascript'>
 			function applyFilter() {
 				strURL = 'automation_templates.php' + 
-					'?filter='     + $('#filter').val()+
+					'?filter='     + escape($('#filter').val())+
 					'&rows='       + $('#rows').val()+
 					'&page='       + $('#page').val()+
 					'&has_graphs=' + $('#has_graphs').is(':checked')+

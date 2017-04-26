@@ -589,7 +589,7 @@ function aggregate_color_template() {
 		strURL  = 'color_templates.php';
 		strURL += '?rows=' + $('#rows').val();
 		strURL += '&page=' + $('#page').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);

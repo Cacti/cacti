@@ -413,7 +413,7 @@ function raise_message($message_id) {
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
      the message cache */
 function display_output_messages() {
-	global $config, $messages;
+	global $messages;
 
 	$debug_message = debug_log_return('new_graphs');
 
@@ -429,8 +429,7 @@ function display_output_messages() {
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
 				if (isset($messages[$current_message_id]['message'])) {
-					/** @var $message */
-					eval ('$message = "' . $messages[$current_message_id]['message'] . '";');
+					$message = $messages[$current_message_id]['message'];
 
 					switch ($messages[$current_message_id]['type']) {
 					case 'info':
@@ -527,6 +526,12 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	if (isset($_SERVER['PHP_SELF'])) {
 		$current_file = basename($_SERVER['PHP_SELF']);
 		$dir_name     = dirname($_SERVER['PHP_SELF']);
+	}elseif (isset($_SERVER['SCRIPT_NAME'])) {
+		$current_file = basename($_SERVER['SCRIPT_NAME']);
+		$dir_name     = dirname($_SERVER['SCRIPT_NAME']);
+	}elseif (isset($_SERVER['SCRIPT_FILENAME'])) {
+		$current_file = basename($_SERVER['SCRIPT_FILENAME']);
+		$dir_name     = dirname($_SERVER['SCRIPT_FILENAME']);
 	}else{
 		$current_file = basename(__FILE__);
 		$dir_name     = dirname(__FILE__);
@@ -1130,9 +1135,8 @@ function get_full_script_path($local_data_id) {
 		}
 	}
 
-	$search = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
-	$replace = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
-
+	$search    = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
+	$replace   = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
 	$full_path = str_replace($search, $replace, $full_path);
 
 	/* sometimes a certain input value will not have anything entered... null out these fields
@@ -2602,7 +2606,7 @@ function draw_navigation_text($type = 'url') {
 
 	$nav =  api_plugin_hook_function('draw_navigation_text', $nav);
 
-	$current_page = basename($_SERVER['PHP_SELF']);
+	$current_page = get_current_page();
 
 	if (!isempty_request_var('action')) {
 		get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));
@@ -2614,7 +2618,7 @@ function draw_navigation_text($type = 'url') {
 	if (isset($nav[$current_page . ':' . $current_action])) {
 		$current_array = $nav{$current_page . ':' . $current_action};
 	}else{
-		$current_array = array('mapping' => 'index.php:', 'title' => ucwords(str_replace('_', ' ', basename($_SERVER['PHP_SELF'], '.php'))), 'level' => 1);
+		$current_array = array('mapping' => 'index.php:', 'title' => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))), 'level' => 1);
 	}
 
 	$current_mappings = explode(',', $current_array['mapping']);
@@ -2789,8 +2793,36 @@ function get_browser_query_string() {
 	if (!empty($_SERVER['REQUEST_URI'])) {
 		return sanitize_uri($_SERVER['REQUEST_URI']);
 	}else{
-		return sanitize_uri(basename($_SERVER['PHP_SELF']) . (empty($_SERVER['QUERY_STRING']) ? '' : '?' . $_SERVER['QUERY_STRING']));
+		return sanitize_uri(get_current_page() . (empty($_SERVER['QUERY_STRING']) ? '' : '?' . $_SERVER['QUERY_STRING']));
 	}
+}
+
+/* get_current_page - returns the basename of the current page in a web server friendly way
+   @returns - the basename of the current script file */
+function get_current_page($basename = true) {
+	if (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF'] != '') {
+		if ($basename) {
+			return basename($_SERVER['PHP_SELF']);
+		}else{
+			return $_SERVER['PHP_SELF'];
+		}
+	}elseif (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
+		if ($basename) {
+			return basename($_SERVER['SCRIPT_NAME']);
+		}else{
+			return $_SERVER['SCRIPT_NAME'];
+		}
+	}elseif (isset($_SERVER['SCRIPT_FILENAME']) && $_SERVER['SCRIPT_FILENAME'] != '') {
+		if ($basename) {
+			return basename($_SERVER['SCRIPT_FILENAME']);
+		}else{
+			return $_SERVER['SCRIPT_FILENAME'];
+		}
+	}else{
+		cacti_log('ERROR: unable to determine current_page');
+	}
+
+	return false;
 }
 
 /* get_hash_graph_template - returns the current unique hash for a graph template
@@ -3240,17 +3272,17 @@ function set_page_refresh($refresh) {
 }
 
 function bottom_footer() {
-	global $config, $refresh;
+	global $config;
 
 	include($config['base_path'] . '/include/global_session.php');
 
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		include($config['base_path'] . '/include/bottom_footer.php');
-
-		/* display output messgages */
+		/* display output messages */
 		display_messages();
+
+		include($config['base_path'] . '/include/bottom_footer.php');
 	}else{
-		/* display output messgages */
+		/* display output messages */
 		display_messages();
 
 		/* we use this session var to store field values for when a save fails,

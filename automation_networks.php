@@ -418,6 +418,7 @@ function network_edit() {
 		'value' => '|arg1:site_id|',
 		'default' => read_config_option('default_site'),
 		'sql' => 'SELECT id, name FROM sites ORDER BY name',
+		'none_value' => __('None')
 		),
 	'subnet_range' => array(
 		'method' => 'textarea',
@@ -1090,7 +1091,7 @@ function networks_filter() {
 			<script type='text/javascript'>
 			function applyFilter() {
 				strURL  = '?rows=' + $('#rows').val();
-				strURL += '&filter=' + $('#filter').val();
+				strURL += '&filter=' + escape($('#filter').val());
 				strURL += '&page=' + $('#page').val();
 				strURL += '&header=false';
 

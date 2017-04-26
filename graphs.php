@@ -44,7 +44,7 @@ $graph_actions = array(
 	1  => __('Delete'),
 );
 
-if (get_nfilter_request_var('template_id') > 0) {
+if (get_nfilter_request_var('template_id') != '-1' && get_nfilter_request_var('template_id') != '0') {
 	$graph_actions += array(
 		2  => __('Change Graph Template'),
 	);
@@ -53,10 +53,17 @@ if (get_nfilter_request_var('template_id') > 0) {
 $graph_actions += array(
 	5  => __('Change Device'),
 	6  => __('Reapply Suggested Names'),
-    9  => __('Create Aggregate Graph'),
-    10 => __('Create Aggregate from Template'),
+	9  => __('Create Aggregate Graph'),
+	10 => __('Create Aggregate from Template'),
 	8  => __('Apply Automation Rules')
 );
+
+if (read_config_option('grds_creation_method') == 1) {
+	$graph_actions += array(
+		3 => __('Duplicate'),
+		4 => __('Convert to Graph Template')
+	);
+}
 
 $graph_actions = api_plugin_hook_function('graphs_action_array', $graph_actions);
 
@@ -519,6 +526,14 @@ function form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					change_graph_template($selected_items[$i], $gt_id_unparsed, true);
 				}
+			}elseif (get_request_var('drp_action') == '3') { /* duplicate */
+				for ($i=0;($i<count($selected_items));$i++) {
+					duplicate_graph($selected_items[$i], 0, get_nfilter_request_var('title_format'));
+				}
+			}elseif (get_request_var('drp_action') == '4') { /* graph -> graph template */
+				for ($i=0;($i<count($selected_items));$i++) {
+					graph_to_graph_template($selected_items[$i], get_nfilter_request_var('title_format'));
+				}
 			}elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { /* place on tree */
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
@@ -825,6 +840,28 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Change Graph Template') . "'>";
+		}elseif (get_request_var('drp_action') == '3') { /* duplicate */
+			print "<tr>
+				<td class='textArea'>
+					<p>" . __('Click \'Continue\' to duplicate the following Graph(s). You can optionally change the title format for the new Graph(s).') . "</p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
+					<p>" . __('Title Format') . "<br>"; 
+			form_text_box('title_format', __('<graph_title> (1)'), '', '255', '30', 'text'); 
+			print "</p>
+				</td>
+			</tr>\n";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Duplicate Graph(s)') . "'>";
+		}elseif (get_request_var('drp_action') == '4') { /* graph -> graph template */
+			print "<tr>
+				<td class='textArea'>
+					<p>" . __('Click \'Continue\' to convert the following Graph(s) into Graph Template(s).  You can optionally change the title format for the new Graph Template(s).') . "</p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
+					<p>" . __('Title Format') . "<br>"; 
+			form_text_box('title_format', __('<graph_title> Template'), '', '255', '30', 'text'); 
+			print "</p>
+				</td>
+			</tr>\n";
+			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Convert to Graph Template') . "'>";
 		} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { /* place on tree */
 			print "<tr>
 				<td class='textArea'>
@@ -948,13 +985,33 @@ function form_actions() {
 					}
 				}
 
-				$().ready(function() {
+				$(function() {
 					$('#aggregate_total').change(function() {
 						changeTotals();
 					});
 
 					$('#aggregate_total_type').change(function() {
 						changeTotalsType();
+					});
+
+					$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
+						id = $(this).attr('id');
+
+						if (id.indexOf('skip') > 0) {
+							altId = id.replace('skip', 'total');
+						}else{
+							altId = id.replace('total', 'skip');
+						}
+
+						if ($('#'+id).is(':checked')) {
+							$('#'+altId).prop('checked', false);
+						}else{
+							$('#'+altId).prop('checked', true);
+						}
+					});
+
+					$('input[id^="agg_skip"]').each(function() {
+						$(this).prop('checked', true);
 					});
 
 					changeTotals();

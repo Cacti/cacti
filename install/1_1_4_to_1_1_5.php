@@ -22,36 +22,6 @@
  +-------------------------------------------------------------------------+
 */
 
-global $no_session_write;
-
-$oper_mode = api_plugin_hook_function('bottom_footer', OPER_MODE_NATIVE);
-if (($oper_mode == OPER_MODE_NATIVE) || ($oper_mode == OPER_MODE_IFRAME_NONAV)) {
-
-?>
-		</div>
-	</div>
-</div>
-<?php api_plugin_hook('page_bottom');?>
-</body>
-</html>
-
-<?php
-
+function upgrade_to_1_1_5() {
+	db_install_execute('ALTER TABLE data_input MODIFY COLUMN input_string varchar(512) default NULL');
 }
-
-/* we use this session var to store field values for when a save fails,
-this way we can restore the field's previous values. we reset it here, because
-they only need to be stored for a single page */
-kill_session_var('sess_field_values');
-
-/* make sure the debug log doesn't get too big */
-debug_log_clear();
-
-/* close the session */
-if (array_search(get_current_page(), $no_session_write) === false) {
-	session_write_close();
-}
-
-/* close the database connection */
-db_close();
-

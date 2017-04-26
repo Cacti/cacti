@@ -263,7 +263,9 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 					$graph_item['cdef_id'] = $make0_cdef;
 
 					# try to pick the best totaling cf id
-					$graph_item['consolidation_function_id'] = db_fetch_cell('SELECT DISTINCT consolidation_function_id FROM graph_templates_item WHERE color_id>0 AND ' . array_to_sql_or($member_graphs, 'local_graph_id') . ' LIMIT 1');
+					$graph_item['consolidation_function_id'] = db_fetch_cell('SELECT DISTINCT consolidation_function_id 
+						FROM graph_templates_item 
+						WHERE color_id>0 AND ' . array_to_sql_or($member_graphs, 'local_graph_id') . ' LIMIT 1');
 				}
 			}
 
@@ -1224,10 +1226,13 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
-			$this_row_style = ''; $use_custom_class = false; $hard_return = '';
+			$this_row_style = ''; 
+			$use_custom_class = false; 
+			$hard_return = '';
 
-			if ($graph_item_types{$item['graph_type_id']} != 'GPRINT') {
-				$this_row_style = 'font-weight: bold;'; $use_custom_class = true;
+			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
+				$this_row_style = 'font-weight: bold;'; 
+				$use_custom_class = true;
 
 				if ($group_counter % 2 == 0) {
 					$customClass  = 'graphItem';
@@ -1243,12 +1248,22 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			$force_skip = false;
 
 			switch (true) {
+				case preg_match('/(TEXTALIGN)/', $_graph_type_name):
+					$matrix_title = 'TEXTALIGN: ' . ucfirst($item['textalign']);
+					break;
+				case preg_match('/(TICK)/', $_graph_type_name):
+					$matrix_title = '(' . $item['data_source_name'] . '): ' . $item['text_format'];
+					break;
 				case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
 					$matrix_title = $item['text_format'];
 					break;
-				case preg_match('/(HRULE|VRULE)/', $_graph_type_name):
+				case preg_match('/(HRULE)/', $_graph_type_name):
 					$force_skip = true;
 					$matrix_title = 'HRULE: ' . $item['value'];
+					break;
+				case preg_match('/(VRULE)/', $_graph_type_name):
+					$force_skip = true;
+					$matrix_title = 'VRULE: ' . $item['value'];
 					break;
 				case preg_match('/(COMMENT)/', $_graph_type_name):
 					$force_skip = true;
@@ -1286,6 +1301,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			if ($item['hard_return'] == 'on') {
 				$hard_return = '<strong><font color="#FF0000">&lt;HR&gt;</font></strong>';
 			}
+
 			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
 
 			/* column 'Graph Item Type' */

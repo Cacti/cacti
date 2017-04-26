@@ -868,8 +868,13 @@ function loadPage(href) {
 		pageName = basename(hrefParts[0]);
 
 		if (pageName != '') {
-			$('#menu').find('.pic').removeClass('selected');
-			$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+			if ($('#menu').find("a[href*='"+href+"']").length > 0) {
+				$('#menu').find('.pic').removeClass('selected');
+				$('#menu').find("a[href*='"+href+"']").addClass('selected');
+			}else{ 
+				$('#menu').find('.pic').removeClass('selected');
+				$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+			}
 		}
 
 		applySkin();
@@ -1640,11 +1645,8 @@ function initializeGraphs() {
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
 
-	if (isThumb) {
-		myWidth = (mainWidth-(30*myColumns))/myColumns;
-	}
+	myWidth = (mainWidth-(30*myColumns))/myColumns;
 
-	//$('div[id^="wrapper_"]').each(function() {
 	$('.graphWrapper').each(function() {
 		graph_id=$(this).attr('id').replace('wrapper_','');
 		graph_height=$(this).attr('graph_height');
@@ -1658,7 +1660,7 @@ function initializeGraphs() {
 			'&graph_width='+graph_width+
 			(isThumb ? '&graph_nolegend=true':''),
 			function(data) {
-				if (isThumb && myWidth < data.image_width) {
+				if (myWidth < data.image_width) {
 					ratio=myWidth/data.image_width;
 					data.image_width  *= ratio;
 					data.image_height *= ratio;

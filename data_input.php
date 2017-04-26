@@ -649,7 +649,7 @@ function data() {
 		<script type='text/javascript'>
 
 		function applyFilter() {
-			strURL = 'data_input.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			strURL = 'data_input.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
 			loadPageNoHeader(strURL);
 		}
 
