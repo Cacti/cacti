@@ -629,25 +629,26 @@ function get_allowed_tree_level($tree_id, $parent_id, $user = 0) {
 		ON gt.id = gti.graph_tree_id
 		LEFT JOIN host AS h
 		ON h.id = gti.host_id
-		WHERE graph_tree_id = ?
-		AND parent = ?
-		ORDER BY position ASC', array($tree_id, $parent_id));
+		WHERE gti.graph_tree_id = ?
+		AND gti.parent = ?
+		ORDER BY gti.position ASC', array($tree_id, $parent_id)
+	);
 
-	$i     = 0;
+	$i = 0;
 	if (sizeof($items)) {
-	foreach($items as $item) {
-		if ($item['host_id'] > 0) {
-			if (!is_device_allowed($item['host_id'], $user)) {
-				unset($items[$i]);
+		foreach($items as $item) {
+			if ($item['host_id'] > 0) {
+				if (!is_device_allowed($item['host_id'], $user)) {
+					unset($items[$i]);
+				}
+			} elseif($item['local_graph_id'] > 0) {
+				if (!is_graph_allowed($item['local_graph_id'], $user)) {
+					unset($items[$i]);
+				}
 			}
-		}elseif($item['local_graph_id'] > 0) {
-			if (!is_graph_allowed($item['local_graph_id'], $user)) {
-				unset($items[$i]);
-			}
-		}
 
-		$i++;
-	}
+			$i++;
+		}
 	}
 
 	return $items;
@@ -773,17 +774,21 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 
 		/* get policies for all groups and user */
 		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, 
-			policy_graphs, policy_hosts, policy_graph_templates 
+			uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates 
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
-			WHERE uag.enabled = 'on' AND uagm.user_id = ?", 
-			array($user));
+			WHERE uag.enabled = 'on' 
+			AND uagm.user_id = ?",
+			array($user)
+		);
 
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 
 			policy_graphs, policy_hosts, policy_graph_templates 
-			FROM user_auth WHERE id = ?", 
-			array($user));
+			FROM user_auth 
+			WHERE id = ?",
+			array($user)
+		);
 		
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
@@ -939,11 +944,14 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 
 		/* get policies for all groups and user */
 		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 
-			'group' AS type, policy_graphs, policy_hosts, policy_graph_templates 
+			'group' AS type, uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates 
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
-			WHERE uag.enabled = 'on' AND uagm.user_id = ?", array($user));
+			WHERE uag.enabled = 'on'
+			AND uagm.user_id = ?",
+			array($user)
+		);
 
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id = ?", array($user));
 		
@@ -1091,11 +1099,14 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 
 		/* get policies for all groups and user */
 		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 
-			'group' AS type, policy_graphs, policy_hosts, policy_graph_templates 
+			'group' AS type, uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates 
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
-			WHERE uag.enabled = 'on' AND uagm.user_id = ?", array($user));
+			WHERE uag.enabled = 'on'
+			AND uagm.user_id = ?",
+			array($user)
+		);
 
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id = ?", array($user));
 		
@@ -1336,7 +1347,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 
 		/* get policies for all groups and user */
 		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, 
-			policy_graphs, policy_hosts, policy_graph_templates 
+			uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates 
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
@@ -1524,9 +1535,9 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	}
 
 	if (sizeof($hosts)) {
-	foreach($hosts as $host) {
-		$return[] = array('label' => $host['description'], 'value' => $host['description'], 'id' => $host['id']);
-	}
+		foreach($hosts as $host) {
+			$return[] = array('label' => $host['description'], 'value' => $host['description'], 'id' => $host['id']);
+		}
 	}
 
 	print json_encode($return);
