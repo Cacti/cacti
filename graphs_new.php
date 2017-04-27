@@ -673,14 +673,19 @@ function graphs() {
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
-		$available_graph_templates = db_fetch_assoc_prepared('SELECT
-			graph_templates.id, graph_templates.name
-			FROM snmp_query_graph 
-			RIGHT JOIN graph_templates
-			ON snmp_query_graph.graph_template_id = graph_templates.id
-			WHERE snmp_query_graph.name IS NULL
-			AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
-			ORDER BY graph_templates.name',
+		$available_graph_templates = db_fetch_assoc_prepared('
+			(
+				SELECT graph_templates.id, graph_templates.name
+				FROM graph_templates
+				LEFT JOIN snmp_query_graph
+				ON snmp_query_graph.graph_template_id = graph_templates.id
+				WHERE snmp_query_graph.name IS NULL
+				AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
+				AND graph_templates.multiple = 0
+			) UNION (
+				SELECT id, name FROM graph_templates WHERE multiple = 1
+			)
+			ORDER BY name',
 			array(get_request_var('host_id'))
 		);
 
