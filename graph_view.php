@@ -49,8 +49,7 @@ function get_matching_nodes() {
 	$filter = '%' . get_nfilter_request_var('str') . '%';
 
 	if (get_nfilter_request_var('str') != '') {
-		$matching = db_fetch_assoc_prepared("SELECT gti.id, gti.parent, 
-			gti.graph_tree_id, IF(gti.title != '', '1', '0') AS node
+		$matching = db_fetch_assoc_prepared("SELECT gti.parent, gti.graph_tree_id
 			FROM graph_tree_items AS gti 
 			LEFT JOIN host AS h
 			ON h.id=gti.host_id
@@ -61,22 +60,18 @@ function get_matching_nodes() {
 			OR h.hostname LIKE ?
 			OR gti.title LIKE ?",
 			array($filter, $filter, $filter, $filter));
-	}else{
-		$matching = db_fetch_assoc("SELECT gti.id, gti.parent, 
-			gti.graph_tree_id, IF(gti.title != '', '1', '0') AS node
-			FROM graph_tree_items AS gti 
-			LEFT JOIN host AS h
-			ON h.id=gti.host_id
-			LEFT JOIN graph_templates_graph AS gtg
-			ON gtg.local_graph_id=gti.local_graph_id AND gtg.local_graph_id>0");
+	} else {
+		$matching = db_fetch_assoc("SELECT parent, graph_tree_id FROM graph_tree_items");
 	}
 
 	if (sizeof($matching)) {
 		foreach($matching as $row) {
 			while ($row['parent'] != '0') {
 				$match[] = 'tbranch-' . $row['parent'];
-				$row = db_fetch_row_prepared('SELECT id, parent, graph_tree_id FROM graph_tree_items WHERE id = ?', array($row['parent']));
-				if (!sizeof($row)) break;
+				$row = db_fetch_row_prepared('SELECT parent, graph_tree_id FROM graph_tree_items WHERE id = ?', array($row['parent']));
+				if (!sizeof($row)) {
+				    break;
+				}
 			}
 
 			if (sizeof($row)) {
@@ -95,7 +90,7 @@ function get_matching_nodes() {
 				if (isset($match[$level])) {
 					if ($level == 0) {
 						$final_array[$match[$level]][$match[$level]] = 1;
-					}else{
+					} else {
 						$final_array[$match[0]][$match[$level]] = 1;
 					}
 					$found++;
@@ -103,10 +98,14 @@ function get_matching_nodes() {
 			}
 			$level++;
 
-			if ($found == 0) break;
+			if ($found == 0) {
+			    break;
+			}
 		}
 
 		if (sizeof($final_array)) {
+			$fa = array();
+
 			foreach($final_array as $key => $matches) {
 				foreach($matches as $branch => $dnc) {
 					$fa[] = $branch;
@@ -131,7 +130,7 @@ case 'ajax_search':
 	exit;
 
 	break;
-case 'update_timepsan':
+case 'update_timespan':
 	// we really don't need to do anything.  The session variables have already been updated
 
 	break;
@@ -561,9 +560,9 @@ case 'list':
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows) > 0) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								}
 							}
 							?>
 						</select>
