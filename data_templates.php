@@ -245,6 +245,12 @@ function form_save() {
 				push_out_host(0, 0, $data_template_id);
 
 				/* push out field mappings for the data collector */
+				/* its important to delete first due to the possibility that
+				 * the field names were changed */
+				db_execute('DELETE FROM poller_data_template_field_mappings 
+					WHERE data_template_id = ?', 
+					array($data_template_id));
+
 				db_execute_prepared('REPLACE INTO poller_data_template_field_mappings
 					SELECT dtr.data_template_id, 
 					dif.data_name, 
@@ -255,7 +261,8 @@ function form_save() {
 					ON dtr.data_input_field_id = dif.id
 					WHERE dtr.local_data_id = 0
 					AND dtr.data_template_id = ?
-					GROUP BY dtr.data_template_id, dif.data_name', array($data_template_id));
+					GROUP BY dtr.data_template_id, dif.data_name', 
+					array($data_template_id));
 			}
 		}
 

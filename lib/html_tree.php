@@ -285,7 +285,7 @@ function get_tree_path() {
 
 			$linknode = db_fetch_row_prepared('SELECT * 
 				FROM graph_tree_items 
-				WHERE id = ?', 
+				WHERE id = ?',
 				array($node));
 
 			if (sizeof($linknode)) {
@@ -362,7 +362,7 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $graphing = false) {
 	return $dhtml_tree;
 }
 
-function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) {
+function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 	global $config;
 
 	include_once($config['base_path'] . '/lib/data_query.php');
@@ -388,7 +388,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 									$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . "-gt-" . $graph_template['id'] . "' data-jstree='{ \"type\" : \"graph_template\" }'><a href='" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=gt:' . $graph_template['id']) . "'>" . htmlspecialchars($graph_template['name']) . "</a></li>\n";
 								}
 							}
-						}else if ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
+						} elseif ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
 							$data_queries = db_fetch_assoc_prepared('SELECT sq.id, sq.name
 								FROM graph_local AS gl
 								INNER JOIN snmp_query AS sq
@@ -403,20 +403,25 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 							));
 
 							if (sizeof($data_queries)) {
+								$ntg = get_allowed_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
+
 								foreach ($data_queries as $data_query) {
-									/* fetch a list of field names that are sorted by the preferred sort field */
-									$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 									if ($data_query['id'] == 0) {
-										$non_template_graphs = get_allowed_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
-									}else{
-										$non_template_graphs = 0;
+										$non_template_graphs = $ntg;
+										$sort_field_data     = array();
+									} else {
+										$non_template_graphs = array();
+
+										/* fetch a list of field names that are sorted by the preferred sort field */
+										$sort_field_data     = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 									}
-	
-									if ((($data_query['id'] == 0) && (sizeof($non_template_graphs))) ||
-										(($data_query['id'] > 0) && (sizeof($sort_field_data) > 0))) {
+
+									if (($data_query['id'] == 0 && sizeof($non_template_graphs)) ||
+										($data_query['id'] > 0 && sizeof($sort_field_data) > 0)
+									) {
 										if ($data_query['name'] != 'Non Query Based') {
 											$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . "-dq-" . $data_query['id'] . "' data-jstree='{ \"type\" : \"data_query\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . "&hgd=dq:" . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
-										}else{
+										} else {
 											$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-dq-' . $data_query['id'] . "' data-jstree='{ \"type\" : \"data_query\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . "&hgd=dq:" . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
 										}
 
@@ -440,7 +445,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 					}
 	
 					$dhtml_tree[] = "\t\t\t\t</li>\n";
-				}else{ //It's not a host
+				} else { //It's not a host
 					$children = db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_tree_items WHERE parent = ? AND local_graph_id=0', array($leaf['id']));
 
 					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . htmlspecialchars($leaf['title']) . "</a></li>\n";
@@ -448,7 +453,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0, $export = false) 
 			}
 	
 			$dhtml_tree[] = "\t\t\t</ul>\n";
-		}else{
+		} else {
 			$dhtml_tree[] = "<ul>\n";
 			foreach($heirarchy as $h) {
 				$dhtml_tree[] = "<li id='tree_anchor-" . $h['tree_id'] . "' data-jstree='{ \"type\" : \"tree\" }' class='jstree-closed'><a href='" . htmlspecialchars('graph_view.php?action=tree&node=tree_anchor-' . $h['tree_id'] . '&hgd=') . "'>" . htmlspecialchars($h['title']) . "</a></li>\n";
@@ -660,9 +665,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<select id='graphs' onChange='applyGraphFilter()'>
 							<?php
 							if (sizeof($graphs_per_page) > 0) {
-							foreach ($graphs_per_page as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
+								foreach ($graphs_per_page as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								}
 							}
 							?>
 						</select>
