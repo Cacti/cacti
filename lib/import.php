@@ -282,6 +282,10 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	$save['hash'] = $hash;
 	$save['name'] = $xml_array['name'];
 
+	if (isset($xml_array['multiple'])) {
+		$save['multiple'] = $xml_array['multiple'];
+	}
+
 	/* check for status changes */
 	$status += compare_data($save, $previous_data, 'graph_templates');
 

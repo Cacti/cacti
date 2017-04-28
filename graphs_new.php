@@ -535,9 +535,9 @@ function graphs() {
 							array($host['id']));
 
 						if (sizeof($snmp_queries) > 0) {
-						foreach ($snmp_queries as $query) {
-							print "<option value='" . $query['id'] . "'"; if (get_request_var('graph_type') == $query['id']) { print ' selected'; } print '>' . $query['name'] . "</option>\n";
-						}
+							foreach ($snmp_queries as $query) {
+								print "<option value='" . $query['id'] . "'"; if (get_request_var('graph_type') == $query['id']) { print ' selected'; } print '>' . $query['name'] . "</option>\n";
+							}
 						}
 						?>
 					</select>
@@ -618,15 +618,6 @@ function graphs() {
 				<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all_cg' title='" . __('Select All') . "' onClick='SelectAll(\"sg\",this.checked)'></th>\n
 			</tr>\n";
 
-		$graph_templates = db_fetch_assoc_prepared('SELECT
-			gt.id AS graph_template_id,
-			gt.name AS graph_template_name
-			FROM host_graph AS hg
-			INNER JOIN graph_templates AS gt
-			ON hg.graph_template_id=gt.id
-			WHERE hg.host_id = ?
-			ORDER BY gt.name', array(get_request_var('host_id')));
-
 		if (!isempty_request_var('host_id')) {
 			$template_graphs = db_fetch_assoc_prepared('SELECT
 				gl.graph_template_id
@@ -651,6 +642,17 @@ function graphs() {
 			}
 		}
 
+		$graph_templates = db_fetch_assoc_prepared('SELECT
+			gt.id AS graph_template_id,
+			gt.name AS graph_template_name
+			FROM host_graph AS hg
+			INNER JOIN graph_templates AS gt
+			ON hg.graph_template_id=gt.id
+			WHERE hg.host_id = ?
+			ORDER BY gt.name',
+			array(get_request_var('host_id'))
+		);
+
 		/* create a row for each graph template associated with the host template */
 		if (sizeof($graph_templates)) {
 			foreach ($graph_templates as $graph_template) {
@@ -671,11 +673,21 @@ function graphs() {
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
-		$available_graph_templates = db_fetch_assoc('SELECT
-			graph_templates.id, graph_templates.name
-			FROM snmp_query_graph RIGHT JOIN graph_templates
-			ON (snmp_query_graph.graph_template_id = graph_templates.id)
-			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name');
+		$available_graph_templates = db_fetch_assoc_prepared('
+			(
+				SELECT graph_templates.id, graph_templates.name
+				FROM graph_templates
+				LEFT JOIN snmp_query_graph
+				ON snmp_query_graph.graph_template_id = graph_templates.id
+				WHERE snmp_query_graph.name IS NULL
+				AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
+				AND graph_templates.multiple = ""
+			) UNION (
+				SELECT id, name FROM graph_templates WHERE multiple = "on"
+			)
+			ORDER BY name',
+			array(get_request_var('host_id'))
+		);
 
 		/* create a row at the bottom that lets the user create any graph they choose */
 		print "<tr class='even'>
@@ -756,8 +768,8 @@ function graphs() {
 						$cg_ctr = 0;
 						if (sizeof($created_graphs)) {
 							foreach ($created_graphs as $created_graph) {
-								$script .= (($cg_ctr > 0) ? ',' : '') . "'" . encode_data_query_index($created_graph['snmp_index']) . "'";
-								$cg_ctr++;
+								$script .= ($cg_ctr > 0 ? ',' : '') . "'" . encode_data_query_index($created_graph['snmp_index']) . "'";
+								++$cg_ctr;
 							}
 						}
 
@@ -769,9 +781,6 @@ function graphs() {
 
 				if ($xml_array != false) {
 					$html_dq_header = '';
-					$snmp_query_indexes = array();
-
-					reset($xml_array['fields']);
 
 					/* if there is a where clause, get the matching snmp_indexes */
 					$sql_where = '';
