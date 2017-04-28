@@ -23,15 +23,26 @@
 */
 
 function upgrade_to_1_1_6() {
-	db_install_execute('ALTER TABLE `data_input` MODIFY COLUMN `input_string` varchar(512) default NULL');
-
-	db_install_execute("ALTER TABLE `snmp_query_graph` ADD KEY `graph_template_id_name` (`graph_template_id`, `name`)");
-
-	db_install_execute(
-		"ALTER TABLE `graph_templates` 
-			ADD `multiple` TINYINT(1) UNSIGNED NULL DEFAULT '0' AFTER `name`,
-			ADD KEY `multiple_name` (`multiple`, `name`)"
+	db_install_execute('ALTER TABLE `data_input` 
+		MODIFY COLUMN `input_string` varchar(512) default NULL'
 	);
 
-	db_execute_prepared("UPDATE graph_templates SET multiple = 1 WHERE hash = '010b90500e1fc6a05abfd542940584d0'");
+	if (!db_index_exists('snmp_query_graph', 'graph_template_id_name')) {
+		db_install_execute("ALTER TABLE `snmp_query_graph` 
+			ADD INDEX `graph_template_id_name` (`graph_template_id`, `name`)"
+		);
+	}
+
+	if (!db_index_exists('graph_templates', 'multiple_name')) {
+		db_install_execute(
+			"ALTER TABLE `graph_templates` 
+				ADD `multiple` TINYINT(1) UNSIGNED NULL DEFAULT '0' AFTER `name`,
+				ADD KEY `multiple_name` (`multiple`, `name`)"
+		);
+	}
+
+	db_execute_prepared("UPDATE graph_templates 
+		SET multiple = 1 
+		WHERE hash = '010b90500e1fc6a05abfd542940584d0'"
+	);
 }
