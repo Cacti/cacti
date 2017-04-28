@@ -1385,8 +1385,10 @@ function update_snmp_index_order($data_query) {
 			data_input_fields.id, 
 			data_input_fields.type_code
 			FROM snmp_query
-			INNER JOIN data_input ON snmp_query.data_input_id = data_input.id
-			INNER JOIN data_input_fields ON data_input.id = data_input_fields.data_input_id 
+			INNER JOIN data_input
+			ON snmp_query.data_input_id = data_input.id
+			INNER JOIN data_input_fields
+			ON data_input.id = data_input_fields.data_input_id 
 			WHERE data_input_fields.type_code IN('index_type', 'index_value', 'output_type') 
 			AND snmp_query.id = ?",
 			array($data_query['snmp_query_id'])), 'type_code', 'id');
