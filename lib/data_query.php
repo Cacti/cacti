@@ -107,10 +107,13 @@ function run_data_query($host_id, $snmp_query_id) {
 		dl.snmp_index, dtd.local_data_id, dtd.data_input_id,
 		did.data_template_data_id, did.data_input_field_id, did.value
 		FROM data_local AS dl
-		INNER JOIN data_template_data AS dtd ON dl.id = dtd.local_data_id
-		INNER JOIN data_input_fields AS dif ON dtd.data_input_id = dif.data_input_id
-		LEFT JOIN data_input_data AS did ON dtd.id = did.data_template_data_id
-			AND dif.id = did.data_input_field_id
+		INNER JOIN data_template_data AS dtd 
+		ON dl.id = dtd.local_data_id
+		INNER JOIN data_input_fields AS dif
+		ON dtd.data_input_id = dif.data_input_id
+		LEFT JOIN data_input_data AS did
+		ON dtd.id = did.data_template_data_id
+		AND dif.id = did.data_input_field_id
 		WHERE dif.type_code = "output_type"
 		AND dl.snmp_query_id = ?
 		AND dl.host_id = ?',
