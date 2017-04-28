@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.1.6
 -issue#620: The table poller_data_template_field_mappings can get out of sync when manipulating data templates
 -issue#622: Can not connect to MySQL over a socket
+-issue: List for creating a Graph type shows already added Graph Templates
 
 1.1.5
 -issue#580: Data collection warnings when using cmd.php
