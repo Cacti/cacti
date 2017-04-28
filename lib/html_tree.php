@@ -337,9 +337,7 @@ function get_tree_path() {
 	}
 }
 
-function draw_dhtml_tree_level($tree_id, $parent = 0, $graphing = false) {
-	global $config;
-
+function draw_dhtml_tree_level($tree_id, $parent = 0) {
 	$dhtml_tree = array();
 
 	$heirarchy = get_allowed_tree_level($tree_id, $parent);
@@ -349,9 +347,9 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $graphing = false) {
 		foreach ($heirarchy as $leaf) {
 			if ($leaf['host_id'] > 0) {  //It's a host
 				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>Device: " . htmlspecialchars($leaf['hostname']) . "</li>\n";
-			}elseif ($leaf['local_graph_id'] > 0) {
+			} elseif ($leaf['local_graph_id'] > 0) {
 				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>Graph: " . htmlspecialchars(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
-			}else{ //It's not a host
+			} else { //It's not a host
 				$dhtml_tree[] = "\t\t\t\t<li class='jstree-closed' id='tbranch:" . $leaf['id'] . "'>" . htmlspecialchars($leaf['title']) . "</li>\n";
 			}
 		}
@@ -466,11 +464,9 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 }
 
 function create_dhtml_tree() {
-	global $config;
-
 	$dhtml_tree = array();
 
-	$tree_list = get_graph_tree_array();
+	$tree_list = get_allowed_trees();
 
 	if (sizeof($tree_list)) {
 		foreach ($tree_list as $tree) {

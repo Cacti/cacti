@@ -471,9 +471,9 @@ function is_tree_allowed($tree_id, $user = 0) {
 /* is_device_allowed - determines whether the current user is allowed to view a certain device
    @arg $host_id - (int) the ID of the device to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified device or not */
-function is_device_allowed($host_id, $user = 0) {
+function is_device_allowed($host_id) {
 	$total_rows = 0;
-	get_allowed_devices('', '', '', $total_rows, $user, $host_id);
+	get_allowed_devices('', '', '', $total_rows, 0, $host_id);
 
 	return ($total_rows > 0);
 }
@@ -621,7 +621,7 @@ function is_realm_allowed($realm) {
 	}
 }
 
-function get_allowed_tree_level($tree_id, $parent_id, $user = 0) {
+function get_allowed_tree_level($tree_id, $parent_id) {
 	$items = db_fetch_assoc_prepared('SELECT gti.id, gti.title, gti.host_id, 
 		gti.local_graph_id, gti.host_grouping_type, h.description AS hostname
 		FROM graph_tree_items AS gti
@@ -638,11 +638,11 @@ function get_allowed_tree_level($tree_id, $parent_id, $user = 0) {
 	if (sizeof($items)) {
 		foreach($items as $item) {
 			if ($item['host_id'] > 0) {
-				if (!is_device_allowed($item['host_id'], $user)) {
+				if (!is_device_allowed($item['host_id'])) {
 					unset($items[$i]);
 				}
 			} elseif($item['local_graph_id'] > 0) {
-				if (!is_graph_allowed($item['local_graph_id'], $user)) {
+				if (!is_graph_allowed($item['local_graph_id'])) {
 					unset($items[$i]);
 				}
 			}
@@ -654,27 +654,15 @@ function get_allowed_tree_level($tree_id, $parent_id, $user = 0) {
 	return $items;
 }
 
-function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order_by = '', $limit = '', &$total_rows = 0, $user = 0) {
-	if ($limit != '') {
-		$limit = "LIMIT $limit";
-	}
+function get_allowed_tree_content($tree_id, $parent = 0) {
+	$sql_where = "WHERE gti.local_graph_id=0 AND gti.parent=$parent AND gti.graph_tree_id=$tree_id";
 
-	if ($order_by != '') {
-		$order_by = "ORDER BY $order_by";
-	}
-
-	if ($sql_where != '') {
-		$sql_where = "WHERE gti.local_graph_id=0 AND gti.parent=$parent AND gti.graph_tree_id=$tree_id AND (" . $sql_where . ')';
-	}else{
-		$sql_where = "WHERE gti.local_graph_id=0 AND gti.parent=$parent AND gti.graph_tree_id=$tree_id";
-	}
+	$trees = array_rekey(
+		get_allowed_trees(false, ''),
+		'id', 'name'
+	);
 
 	if ($tree_id > 0) {
-		$trees = array_rekey(
-			get_allowed_trees(false, false, '', '', '', $total_rows, $user),
-			'id', 'name'
-		);
-
 		if (sizeof($trees)) {
 			$sql_where .= ' AND gt.id IN (' . implode(', ', array_keys($trees)) . ')';
 		}
@@ -688,21 +676,13 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 			ON h.id = gti.host_id
 			$sql_where
 			ORDER BY gti.position");
-	}else{
-		$trees = array_rekey(
-			get_allowed_trees(false, false, '', '', '', $total_rows, $user),
-			'id', 'name'
-		);
-
-		if (sizeof($trees)) {
-			$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id, 
-				'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname
-				FROM graph_tree AS gt
-				WHERE enabled='on'
-				AND gt.id IN (" . implode(', ', array_keys($trees)) . ")
-				ORDER BY gt.sequence");
-		}else{
-		}
+	} elseif (sizeof($trees)) {
+		$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id, 
+			'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname
+			FROM graph_tree AS gt
+			WHERE enabled='on'
+			AND gt.id IN (" . implode(', ', array_keys($trees)) . ")
+			ORDER BY gt.sequence");
 	}
 
 	if (read_config_option('auth_method') != 0) {
@@ -713,62 +693,43 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 					if (is_device_allowed($h['host_id'])) {
 						$new_heirarchy[] = $h;
 					}
-				}elseif ($h['id'] == 0) {
+				} elseif ($h['id'] == 0) {
 					if (!is_tree_branch_empty($h['tree_id'], $h['id'])) {
 						if (is_tree_allowed($h['tree_id'])) {
 							$new_heirarchy[] = $h;
 						}
 					}
-				}elseif (!is_tree_branch_empty($h['tree_id'], $h['id'])) {
+				} elseif (!is_tree_branch_empty($h['tree_id'], $h['id'])) {
 					$new_heirarchy[] = $h;
 				}
 			}
 		}
 
 		return $new_heirarchy;
-	}else{
+	} else {
 		return $heirarchy;
 	}
 }
 
-function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '', $order_by = 'gti.position', $limit = '', &$total_rows = 0, $user = 0) {
-	if ($limit != '') {
-		$limit = "LIMIT $limit";
-	}
-
-	if ($order_by != '') {
-		$order_by = "ORDER BY $order_by";
-	}
-
-	if (strlen($sql_where)) {
+function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '') {
+	if ($sql_where != '') {
 		$sql_where = " AND ($sql_where)";
 	}
 
+	$order_by = 'ORDER BY gti.position';
+
 	$sql_where = "WHERE (gti.graph_tree_id=$tree_id AND gti.parent=$leaf_id)" . $sql_where;
 
-	$i          = 0;
-	$sql_having = '';
-	$sql_select = '';
-	$sql_join   = '';
-
-	if ($user == -1) {
-		$auth_method = 0;
-	}else{
-		$auth_method = read_config_option('auth_method');
-	}
-
-	if ($auth_method != 0) {
-		if ($user == 0) {
-			if (isset($_SESSION['sess_user_id'])) {
-				$user = $_SESSION['sess_user_id'];
-			}else{
-				return array();
-			}
+	if (read_config_option('auth_method') != 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user = $_SESSION['sess_user_id'];
+		} else {
+			return array();
 		}
 
 		if (read_config_option('graph_auth_method') == 1) {
 			$sql_operator = 'OR';
-		}else{
+		} else {
 			$sql_operator = 'AND';
 		}
 
@@ -789,42 +750,47 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 			WHERE id = ?",
 			array($user)
 		);
-		
+
+		$i          = 0;
+		$sql_having = '';
+		$sql_select = '';
+		$sql_join   = '';
+
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
-				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NULL";
-			}else{
-				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NOT NULL";
+				$sql_having .= ($sql_having != '' ? ' OR ':'') . "(user$i IS NULL";
+			} else {
+				$sql_having .= ($sql_having != '' ? ' OR ':'') . "(user$i IS NOT NULL";
 			}
 
 			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
-			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$sql_select .= ($sql_select != '' ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
 			if ($policy['policy_hosts'] == 1) {
 				$sql_having .= " OR (user$i IS NULL";
-			}else{
+			} else {
 				$sql_having .= " OR (user$i IS NOT NULL";
 			}
 
 			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
-			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$sql_select .= ($sql_select != '' ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
 			if ($policy['policy_graph_templates'] == 1) {
 				$sql_having .= " $sql_operator user$i IS NULL))";
-			}else{
+			} else {
 				$sql_having .= " $sql_operator user$i IS NOT NULL))";
 			}
 
 			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
-			$sql_select .= (strlen($sql_select) ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$sql_select .= ($sql_select != '' ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 		}
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gtg.local_graph_id, 
+		return db_fetch_assoc("SELECT gti.id, gti.title, gtg.local_graph_id, 
 			h.description, gt.name AS template_name, gtg.title_cache, 
 			gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
@@ -840,27 +806,9 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 			$sql_join
 			$sql_where
 			$sql_having
-			$order_by
-			$limit");
-
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM (
-				SELECT $sql_select
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id = gtg.local_graph_id 
-				INNER JOIN graph_tree_items AS gti
-				ON gti.local_graph_id = gl.id
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id = gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id = gl.host_id 
-				$sql_join
-				$sql_where
-				$sql_having
-			) AS rower");
-	}else{
-		$graphs = db_fetch_assoc("SELECT 
+			$order_by");
+	} else {
+		return db_fetch_assoc("SELECT 
 			gti.id, gti.title, 
 			gtg.local_graph_id, 
 			h.description, 
@@ -880,23 +828,8 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 			LEFT JOIN host AS h 
 			ON h.id = gl.host_id 
 			$sql_where
-			$order_by
-			$limit");
-
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			INNER JOIN graph_tree_items AS gti
-			ON gti.local_graph_id=gl.id
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
-			$sql_where");
+			$order_by");
 	}
-
-	return $graphs;
 }
 
 function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $limit = '', &$total_rows = 0, $user = 0, $graph_id = 0) {
@@ -1212,33 +1145,16 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 	return $graphs;
 }
 
-function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0) {
-	if ($limit != '') {
-		$limit = "LIMIT $limit";
-	}
-
+function get_allowed_trees($return_sql = false, $order_by = 'name') {
 	if ($order_by != '') {
 		$order_by = "ORDER BY $order_by";
 	}
 
-	$i          = 0;
-	$sql_where1 = '';
-	$sql_select = '';
-	$sql_join   = '';
-
-	if ($user == -1) {
-		$auth_method = 0;
-	}else{
-		$auth_method = read_config_option('auth_method');
-	}
-
-	if ($auth_method != 0) {
-		if ($user == 0) {
-			if (isset($_SESSION['sess_user_id'])) {
-				$user = $_SESSION['sess_user_id'];
-			}else{
-				return array();
-			}
+	if (read_config_option('auth_method') != 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user = $_SESSION['sess_user_id'];
+		} else {
+			return array();
 		}
 
 		/* get policies for all groups and user */
@@ -1248,11 +1164,15 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 			WHERE uag.enabled = 'on' AND uagm.user_id = ?", array($user));
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' as type, policy_trees FROM user_auth WHERE id = ?", array($user));
 
+		$i          = 0;
+		$sql_where1 = '';
+		$sql_join   = '';
+
 		foreach($policies as $policy) {
 			if ($policy['policy_trees'] == '1') {
-				$sql_where1 .= (strlen($sql_where1) ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NULL";
-			}elseif ($policy['policy_trees'] == '2') {
-				$sql_where1 .= (strlen($sql_where1) ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NOT NULL";
+				$sql_where1 .= ($sql_where1 != '' ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NULL";
+			} elseif ($policy['policy_trees'] == '2') {
+				$sql_where1 .= ($sql_where1 != '' ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NOT NULL";
 			}
 
 			$sql_join .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'group' ? 'group_':'') . "perms AS uap$i
@@ -1261,45 +1181,28 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 			$i++;
 		}
 
-		if (strlen($sql_where)) {
-			$sql_where = 'WHERE ' . ($edit == false ? '(gt.enabled="on") AND ':'') . '(' . $sql_where . ') AND (' . $sql_where1 . ')';
-		}else{
-			$sql_where = 'WHERE ' . ($edit == false ? '(gt.enabled="on") AND ':'') . '(gt.enabled="on") AND (' . $sql_where1 . ')';
-		}
+		$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where1 . ')';
 
 		$sql = "SELECT id, name 
 			FROM graph_tree AS gt
 			$sql_join
 			$sql_where
-			$order_by
-			$limit";
+			$order_by";
 
 		if ($return_sql) {
 			return $sql;
-		}else{
-			$trees = db_fetch_assoc($sql);
-
-			$total_rows = db_fetch_cell("SELECT COUNT(gt.id) 
-				FROM graph_tree AS gt
-				$sql_join
-				$sql_where");
+		} else {
+			return db_fetch_assoc($sql);
 		}
-	}else{
-		if (strlen($sql_where)) {
-			$sql_where = "WHERE enabled='on' AND $sql_where";
-		}else{
-			$sql_where = "WHERE enabled='on'";
-		}
+	} else {
+		$sql_where = "WHERE enabled='on'";
 
 		if ($return_sql) {
 			return "SELECT id, name FROM graph_tree $sql_where $order_by";
-		}else{
-			$trees      = db_fetch_assoc("SELECT id, name FROM graph_tree AS gt $sql_where $order_by");
-			$total_rows = db_fetch_cell("SELECT COUNT(*) FROM graph_tree AS gt $sql_where");
+		} else {
+			return db_fetch_assoc("SELECT id, name FROM graph_tree AS gt $sql_where $order_by");
 		}
 	}
-
-	return $trees;
 }
 
 function get_allowed_devices($sql_where = '', $order_by = 'description', $limit = '', &$total_rows = 0, $user = 0, $host_id = 0) {
