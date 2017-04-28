@@ -190,16 +190,33 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 
 		$graph_template_graph['title'] = str_replace('<graph_title>', $graph_template_graph['title'], $graph_title);
 	}elseif (!empty($_graph_template_id)) {
-		$graph_template        = db_fetch_row_prepared('SELECT * FROM graph_templates WHERE id = ?', array($_graph_template_id));
-		$graph_template_graph  = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE graph_template_id = ? AND local_graph_id=0', array($_graph_template_id));
+		$graph_template        = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates 
+			WHERE id = ?', 
+			array($_graph_template_id));
 
-		$graph_template_items  = db_fetch_assoc_prepared('SELECT * FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id=0', array($_graph_template_id));
-		$graph_template_inputs = db_fetch_assoc_prepared('SELECT * FROM graph_template_input WHERE graph_template_id = ?', array($_graph_template_id));
+		$graph_template_graph  = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates_graph 
+			WHERE graph_template_id = ? 
+			AND local_graph_id=0', 
+			array($_graph_template_id));
+
+		$graph_template_items  = db_fetch_assoc_prepared('SELECT * 
+			FROM graph_templates_item 
+			WHERE graph_template_id = ? 
+			AND local_graph_id=0', 
+			array($_graph_template_id));
+
+		$graph_template_inputs = db_fetch_assoc_prepared('SELECT * 
+			FROM graph_template_input 
+			WHERE graph_template_id = ?', 
+			array($_graph_template_id));
 
 		/* create new entry: graph_templates */
-		$save['id']   = 0;
-		$save['hash'] = get_hash_graph_template(0);
-		$save['name'] = str_replace('<template_title>', $graph_template['name'], $graph_title);
+		$save['id']       = 0;
+		$save['hash']     = get_hash_graph_template(0);
+		$save['name']     = str_replace('<template_title>', $graph_template['name'], $graph_title);
+		$save['multiple'] = $graph_template['multiple'];
 
 		$graph_template_id = sql_save($save, 'graph_templates');
 	}
