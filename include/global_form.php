@@ -933,6 +933,14 @@ $fields_graph_template_template_edit = array(
 		'max_length' => '150',
 		'size' => '80'
 		),
+	'multiple' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Multiple Instances'),
+		'description' => __('Check this checkbox if there can be more than one Graph of this type per Device.'),
+		'value' => '|arg1:multiple|',
+		'default' => '',
+		'form_id' => false
+		),
 	'graph_template_id' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg2:graph_template_id|'
@@ -1531,6 +1539,11 @@ $fields_user_user_edit_host = array(
 	);
 
 $export_types = array(
+	'host_template' => array(
+		'name' => __('Device Template'),
+		'title_sql' => 'SELECT name FROM host_template WHERE id=|id|',
+		'dropdown_sql' => 'SELECT id,name FROM host_template ORDER BY name'
+		),
 	'graph_template' => array(
 		'name' => __('Graph Template'),
 		'title_sql' => 'SELECT name FROM graph_templates WHERE id=|id|',
@@ -1541,15 +1554,25 @@ $export_types = array(
 		'title_sql' => 'SELECT name FROM data_template WHERE id=|id|',
 		'dropdown_sql' => 'SELECT id,name FROM data_template ORDER BY name'
 		),
-	'host_template' => array(
-		'name' => __('Device Template'),
-		'title_sql' => 'SELECT name FROM host_template WHERE id=|id|',
-		'dropdown_sql' => 'SELECT id,name FROM host_template ORDER BY name'
-		),
 	'data_query' => array(
 		'name' => __('Data Query'),
 		'title_sql' => 'SELECT name FROM snmp_query WHERE id=|id|',
 		'dropdown_sql' => 'SELECT id,name FROM snmp_query ORDER BY name'
+		),
+	'automation_devices' => array(
+		'name' => __('Discovery Rules'),
+		'title_sql' => 'SELECT CONCAT(ht.name, " (", at.sysDescr, ")") AS name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id=|id|',
+		'dropdown_sql' => 'SELECT at.id, CONCAT(ht.name, " (", at.sysDescr, ")") AS name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template ORDER BY name'
+		),
+	'automation_graphs' => array(
+		'name' => __('Graph Rules'),
+		'title_sql' => 'SELECT name FROM automation_graph_rules WHERE id=|id|',
+		'dropdown_sql' => 'SELECT id, name FROM automation_graph_rules ORDER BY name'
+		),
+	'automation_trees' => array(
+		'name' => __('Tree Rules'),
+		'title_sql' => 'SELECT name FROM automation_tree_rules WHERE id=|id|',
+		'dropdown_sql' => 'SELECT id, name FROM automation_tree_rules ORDER BY name'
 		)
 	);
 

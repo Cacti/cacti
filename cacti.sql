@@ -1576,7 +1576,7 @@ CREATE TABLE graph_templates (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `hash` char(32) NOT NULL default '',
   `name` char(255) NOT NULL default '',
-  `multiple` tinyint(1) unsigned NULL default '0',
+  `multiple` char(2) NOT NULL default '',
   PRIMARY KEY (`id`),
   KEY `multiple_name` (`multiple`, `name`)
 ) ENGINE=InnoDB COMMENT='Contains each graph template name.';

@@ -681,9 +681,9 @@ function graphs() {
 				ON snmp_query_graph.graph_template_id = graph_templates.id
 				WHERE snmp_query_graph.name IS NULL
 				AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
-				AND graph_templates.multiple = 0
+				AND graph_templates.multiple = ""
 			) UNION (
-				SELECT id, name FROM graph_templates WHERE multiple = 1
+				SELECT id, name FROM graph_templates WHERE multiple = "on"
 			)
 			ORDER BY name',
 			array(get_request_var('host_id'))
