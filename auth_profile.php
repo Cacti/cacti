@@ -233,7 +233,7 @@ function settings() {
 
 	if (is_view_allowed('graph_settings') == true) {
 		if (read_config_option('auth_method') != 0) {
-			$settings_user['tree']['default_tree_id']['sql'] = get_allowed_trees(true);
+			$settings_user['tree']['default_tree_id']['sql'] = get_allowed_trees(false, true);
 		}
 
 		html_start_box( __('User Settings'), '100%', '', '3', 'center', '');
