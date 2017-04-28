@@ -7,15 +7,13 @@
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL40' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
 -- Table structure for table `aggregate_graph_templates`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `aggregate_graph_templates` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL,
@@ -26,29 +24,24 @@ CREATE TABLE `aggregate_graph_templates` (
   `total_type` int(10) unsigned NOT NULL,
   `total_prefix` varchar(64) NOT NULL,
   `order_type` int(10) unsigned NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created` timestamp NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `graph_template_id` (`graph_template_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Template Definitions for Aggregate Graphs';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Template Definitions for Aggregate Graphs';
 
 --
 -- Dumping data for table `aggregate_graph_templates`
 --
 
-LOCK TABLES `aggregate_graph_templates` WRITE;
 /*!40000 ALTER TABLE `aggregate_graph_templates` DISABLE KEYS */;
 /*!40000 ALTER TABLE `aggregate_graph_templates` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aggregate_graph_templates_graph`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `aggregate_graph_templates_graph` (
   `aggregate_template_id` int(10) unsigned NOT NULL,
   `t_image_format_id` char(2) DEFAULT '',
@@ -112,24 +105,19 @@ CREATE TABLE `aggregate_graph_templates_graph` (
   `t_legend_direction` char(2) DEFAULT '0',
   `legend_direction` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`aggregate_template_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Aggregate Template Graph Data';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Aggregate Template Graph Data';
 
 --
 -- Dumping data for table `aggregate_graph_templates_graph`
 --
 
-LOCK TABLES `aggregate_graph_templates_graph` WRITE;
 /*!40000 ALTER TABLE `aggregate_graph_templates_graph` DISABLE KEYS */;
 /*!40000 ALTER TABLE `aggregate_graph_templates_graph` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aggregate_graph_templates_item`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `aggregate_graph_templates_item` (
   `aggregate_template_id` int(10) unsigned NOT NULL,
   `graph_templates_item_id` int(10) unsigned NOT NULL,
@@ -142,24 +130,19 @@ CREATE TABLE `aggregate_graph_templates_item` (
   `item_skip` char(2) NOT NULL,
   `item_total` char(2) NOT NULL,
   PRIMARY KEY (`aggregate_template_id`,`graph_templates_item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Aggregate Template Graph Items';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Aggregate Template Graph Items';
 
 --
 -- Dumping data for table `aggregate_graph_templates_item`
 --
 
-LOCK TABLES `aggregate_graph_templates_item` WRITE;
 /*!40000 ALTER TABLE `aggregate_graph_templates_item` DISABLE KEYS */;
 /*!40000 ALTER TABLE `aggregate_graph_templates_item` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aggregate_graphs`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `aggregate_graphs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `aggregate_template_id` int(10) unsigned NOT NULL,
@@ -173,31 +156,26 @@ CREATE TABLE `aggregate_graphs` (
   `total_type` int(10) unsigned NOT NULL,
   `total_prefix` varchar(64) NOT NULL,
   `order_type` int(10) unsigned NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created` timestamp NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `aggregate_template_id` (`aggregate_template_id`),
   KEY `local_graph_id` (`local_graph_id`),
   KEY `title_format` (`title_format`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Aggregate Graph Definitions';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Aggregate Graph Definitions';
 
 --
 -- Dumping data for table `aggregate_graphs`
 --
 
-LOCK TABLES `aggregate_graphs` WRITE;
 /*!40000 ALTER TABLE `aggregate_graphs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `aggregate_graphs` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aggregate_graphs_graph_item`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `aggregate_graphs_graph_item` (
   `aggregate_graph_id` int(10) unsigned NOT NULL,
   `graph_templates_item_id` int(10) unsigned NOT NULL,
@@ -210,47 +188,37 @@ CREATE TABLE `aggregate_graphs_graph_item` (
   `item_skip` char(2) NOT NULL,
   `item_total` char(2) NOT NULL,
   PRIMARY KEY (`aggregate_graph_id`,`graph_templates_item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Aggregate Graph Graph Items';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Aggregate Graph Graph Items';
 
 --
 -- Dumping data for table `aggregate_graphs_graph_item`
 --
 
-LOCK TABLES `aggregate_graphs_graph_item` WRITE;
 /*!40000 ALTER TABLE `aggregate_graphs_graph_item` DISABLE KEYS */;
 /*!40000 ALTER TABLE `aggregate_graphs_graph_item` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `aggregate_graphs_items`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `aggregate_graphs_items` (
   `aggregate_graph_id` int(10) unsigned NOT NULL,
   `local_graph_id` int(10) unsigned NOT NULL,
   `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`aggregate_graph_id`,`local_graph_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Aggregate Graph Items';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Aggregate Graph Items';
 
 --
 -- Dumping data for table `aggregate_graphs_items`
 --
 
-LOCK TABLES `aggregate_graphs_items` WRITE;
 /*!40000 ALTER TABLE `aggregate_graphs_items` DISABLE KEYS */;
 /*!40000 ALTER TABLE `aggregate_graphs_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_devices`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_devices` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `network_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -279,24 +247,19 @@ CREATE TABLE `automation_devices` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ip` (`ip`),
   KEY `hostname` (`hostname`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table of Discovered Devices';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Table of Discovered Devices';
 
 --
 -- Dumping data for table `automation_devices`
 --
 
-LOCK TABLES `automation_devices` WRITE;
 /*!40000 ALTER TABLE `automation_devices` DISABLE KEYS */;
 /*!40000 ALTER TABLE `automation_devices` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_graph_rule_items`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_graph_rule_items` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `rule_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -306,14 +269,12 @@ CREATE TABLE `automation_graph_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COMMENT='Automation Graph Rule Items';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=7 COMMENT='Automation Graph Rule Items';
 
 --
 -- Dumping data for table `automation_graph_rule_items`
 --
 
-LOCK TABLES `automation_graph_rule_items` WRITE;
 /*!40000 ALTER TABLE `automation_graph_rule_items` DISABLE KEYS */;
 INSERT INTO `automation_graph_rule_items` (`id`, `rule_id`, `sequence`, `operation`, `field`, `operator`, `pattern`) VALUES (1,1,1,0,'ifOperStatus',7,'Up');
 INSERT INTO `automation_graph_rule_items` (`id`, `rule_id`, `sequence`, `operation`, `field`, `operator`, `pattern`) VALUES (2,1,2,1,'ifIP',16,'');
@@ -322,14 +283,11 @@ INSERT INTO `automation_graph_rule_items` (`id`, `rule_id`, `sequence`, `operati
 INSERT INTO `automation_graph_rule_items` (`id`, `rule_id`, `sequence`, `operation`, `field`, `operator`, `pattern`) VALUES (5,2,2,1,'ifIP',16,'');
 INSERT INTO `automation_graph_rule_items` (`id`, `rule_id`, `sequence`, `operation`, `field`, `operator`, `pattern`) VALUES (6,2,3,1,'ifHwAddr',16,'');
 /*!40000 ALTER TABLE `automation_graph_rule_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_graph_rules`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_graph_rules` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
@@ -337,27 +295,22 @@ CREATE TABLE `automation_graph_rules` (
   `graph_type_id` smallint(3) unsigned NOT NULL DEFAULT '0',
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COMMENT='Automation Graph Rules';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=5 COMMENT='Automation Graph Rules';
 
 --
 -- Dumping data for table `automation_graph_rules`
 --
 
-LOCK TABLES `automation_graph_rules` WRITE;
 /*!40000 ALTER TABLE `automation_graph_rules` DISABLE KEYS */;
 INSERT INTO `automation_graph_rules` (`id`, `name`, `snmp_query_id`, `graph_type_id`, `enabled`) VALUES (1,'Traffic 64 bit Server',1,14,'');
 INSERT INTO `automation_graph_rules` (`id`, `name`, `snmp_query_id`, `graph_type_id`, `enabled`) VALUES (2,'Traffic 64 bit Server Linux',1,14,'');
 INSERT INTO `automation_graph_rules` (`id`, `name`, `snmp_query_id`, `graph_type_id`, `enabled`) VALUES (3,'Disk Space',8,18,'');
 /*!40000 ALTER TABLE `automation_graph_rules` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_ips`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_ips` (
   `ip_address` varchar(20) NOT NULL DEFAULT '',
   `hostname` varchar(100) DEFAULT NULL,
@@ -367,24 +320,19 @@ CREATE TABLE `automation_ips` (
   `thread` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`ip_address`),
   KEY `pid` (`pid`)
-) ENGINE=MEMORY DEFAULT CHARSET=latin1 COMMENT='List of discoverable ip addresses used for scanning';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=MEMORY COMMENT='List of discoverable ip addresses used for scanning';
 
 --
 -- Dumping data for table `automation_ips`
 --
 
-LOCK TABLES `automation_ips` WRITE;
 /*!40000 ALTER TABLE `automation_ips` DISABLE KEYS */;
 /*!40000 ALTER TABLE `automation_ips` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_match_rule_items`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_match_rule_items` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `rule_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -395,14 +343,12 @@ CREATE TABLE `automation_match_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 COMMENT='Automation Match Rule Items';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=10 COMMENT='Automation Match Rule Items';
 
 --
 -- Dumping data for table `automation_match_rule_items`
 --
 
-LOCK TABLES `automation_match_rule_items` WRITE;
 /*!40000 ALTER TABLE `automation_match_rule_items` DISABLE KEYS */;
 INSERT INTO `automation_match_rule_items` (`id`, `rule_id`, `rule_type`, `sequence`, `operation`, `field`, `operator`, `pattern`) VALUES (1,1,1,1,0,'h.description',14,'');
 INSERT INTO `automation_match_rule_items` (`id`, `rule_id`, `rule_type`, `sequence`, `operation`, `field`, `operator`, `pattern`) VALUES (2,1,1,2,1,'h.snmp_version',12,'2');
@@ -412,14 +358,11 @@ INSERT INTO `automation_match_rule_items` (`id`, `rule_id`, `rule_type`, `sequen
 INSERT INTO `automation_match_rule_items` (`id`, `rule_id`, `rule_type`, `sequence`, `operation`, `field`, `operator`, `pattern`) VALUES (6,2,3,1,0,'ht.name',1,'SNMP');
 INSERT INTO `automation_match_rule_items` (`id`, `rule_id`, `rule_type`, `sequence`, `operation`, `field`, `operator`, `pattern`) VALUES (7,2,3,2,1,'gt.name',1,'Traffic');
 /*!40000 ALTER TABLE `automation_match_rule_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_networks`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_networks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `poller_id` int(10) unsigned DEFAULT '1',
@@ -455,25 +398,20 @@ CREATE TABLE `automation_networks` (
   `rerun_data_queries` char(2) DEFAULT NULL COMMENT 'Rerun data queries or not for existing hosts',
   PRIMARY KEY (`id`),
   KEY `poller_id` (`poller_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='Stores scanning subnet definitions';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=2 COMMENT='Stores scanning subnet definitions';
 
 --
 -- Dumping data for table `automation_networks`
 --
 
-LOCK TABLES `automation_networks` WRITE;
 /*!40000 ALTER TABLE `automation_networks` DISABLE KEYS */;
 INSERT INTO `automation_networks` (`id`, `poller_id`, `site_id`, `name`, `subnet_range`, `dns_servers`, `enabled`, `snmp_id`, `enable_netbios`, `add_to_cacti`, `total_ips`, `up_hosts`, `snmp_hosts`, `ping_method`, `ping_port`, `ping_timeout`, `ping_retries`, `sched_type`, `threads`, `run_limit`, `start_at`, `next_start`, `recur_every`, `day_of_week`, `month`, `day_of_month`, `monthly_week`, `monthly_day`, `last_runtime`, `last_started`, `last_status`, `rerun_data_queries`) VALUES (1,1,1,'Test Network','192.168.1.0/24','','',1,'on','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 09:23:22','','on');
 /*!40000 ALTER TABLE `automation_networks` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_processes`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_processes` (
   `pid` int(8) unsigned NOT NULL,
   `poller_id` int(10) unsigned DEFAULT '1',
@@ -485,47 +423,37 @@ CREATE TABLE `automation_processes` (
   `snmp_hosts` int(10) unsigned DEFAULT '0',
   `heartbeat` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`pid`,`network_id`)
-) ENGINE=MEMORY DEFAULT CHARSET=latin1 COMMENT='Table tracking active poller processes';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=MEMORY COMMENT='Table tracking active poller processes';
 
 --
 -- Dumping data for table `automation_processes`
 --
 
-LOCK TABLES `automation_processes` WRITE;
 /*!40000 ALTER TABLE `automation_processes` DISABLE KEYS */;
 /*!40000 ALTER TABLE `automation_processes` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_snmp`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_snmp` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COMMENT='Group of SNMP Option Sets';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=3 COMMENT='Group of SNMP Option Sets';
 
 --
 -- Dumping data for table `automation_snmp`
 --
 
-LOCK TABLES `automation_snmp` WRITE;
 /*!40000 ALTER TABLE `automation_snmp` DISABLE KEYS */;
 INSERT INTO `automation_snmp` (`id`, `name`) VALUES (1,'Default Option Set');
 /*!40000 ALTER TABLE `automation_snmp` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_snmp_items`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_snmp_items` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `snmp_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -544,26 +472,21 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_context` varchar(64) DEFAULT '',
   `snmp_engine_id` varchar(64) DEFAULT '',
   PRIMARY KEY (`id`,`snmp_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COMMENT='Set of SNMP Options';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=3 COMMENT='Set of SNMP Options';
 
 --
 -- Dumping data for table `automation_snmp_items`
 --
 
-LOCK TABLES `automation_snmp_items` WRITE;
 /*!40000 ALTER TABLE `automation_snmp_items` DISABLE KEYS */;
 INSERT INTO `automation_snmp_items` (`id`, `snmp_id`, `sequence`, `snmp_version`, `snmp_readstring`, `snmp_port`, `snmp_timeout`, `snmp_retries`, `max_oids`, `snmp_username`, `snmp_password`, `snmp_auth_protocol`, `snmp_priv_passphrase`, `snmp_priv_protocol`, `snmp_context`, `snmp_engine_id`) VALUES (1,1,1,'2','public',161,1000,3,10,'admin','baseball','MD5','','DES','','');
 INSERT INTO `automation_snmp_items` (`id`, `snmp_id`, `sequence`, `snmp_version`, `snmp_readstring`, `snmp_port`, `snmp_timeout`, `snmp_retries`, `max_oids`, `snmp_username`, `snmp_password`, `snmp_auth_protocol`, `snmp_priv_passphrase`, `snmp_priv_protocol`, `snmp_context`, `snmp_engine_id`) VALUES (2,1,2,'2','private',161,1000,3,10,'admin','baseball','MD5','','DES','','');
 /*!40000 ALTER TABLE `automation_snmp_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_templates`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_templates` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
   `host_template` int(8) NOT NULL DEFAULT '0',
@@ -573,26 +496,21 @@ CREATE TABLE `automation_templates` (
   `sysOid` varchar(60) DEFAULT '',
   `sequence` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COMMENT='Templates of SNMP Sys variables used for automation';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=3 COMMENT='Templates of SNMP Sys variables used for automation';
 
 --
 -- Dumping data for table `automation_templates`
 --
 
-LOCK TABLES `automation_templates` WRITE;
 /*!40000 ALTER TABLE `automation_templates` DISABLE KEYS */;
 INSERT INTO `automation_templates` (`id`, `host_template`, `availability_method`, `sysDescr`, `sysName`, `sysOid`, `sequence`) VALUES (1,3,2,'Linux','','',2);
 INSERT INTO `automation_templates` (`id`, `host_template`, `availability_method`, `sysDescr`, `sysName`, `sysOid`, `sequence`) VALUES (2,1,2,'HP ETHERNET','','',1);
 /*!40000 ALTER TABLE `automation_templates` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_tree_rule_items`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_tree_rule_items` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `rule_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -603,28 +521,23 @@ CREATE TABLE `automation_tree_rule_items` (
   `search_pattern` varchar(255) NOT NULL DEFAULT '',
   `replace_pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COMMENT='Automation Tree Rule Items';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=5 COMMENT='Automation Tree Rule Items';
 
 --
 -- Dumping data for table `automation_tree_rule_items`
 --
 
-LOCK TABLES `automation_tree_rule_items` WRITE;
 /*!40000 ALTER TABLE `automation_tree_rule_items` DISABLE KEYS */;
 INSERT INTO `automation_tree_rule_items` (`id`, `rule_id`, `sequence`, `field`, `sort_type`, `propagate_changes`, `search_pattern`, `replace_pattern`) VALUES (1,1,1,'ht.name',1,'','^(.*)\\s*Linux\\s*(.*)$','${1}\\n${2}');
 INSERT INTO `automation_tree_rule_items` (`id`, `rule_id`, `sequence`, `field`, `sort_type`, `propagate_changes`, `search_pattern`, `replace_pattern`) VALUES (2,1,2,'h.hostname',1,'','^(\\w*)\\s*(\\w*)\\s*(\\w*).*$','');
 INSERT INTO `automation_tree_rule_items` (`id`, `rule_id`, `sequence`, `field`, `sort_type`, `propagate_changes`, `search_pattern`, `replace_pattern`) VALUES (3,2,1,'0',2,'on','Traffic','');
 INSERT INTO `automation_tree_rule_items` (`id`, `rule_id`, `sequence`, `field`, `sort_type`, `propagate_changes`, `search_pattern`, `replace_pattern`) VALUES (4,2,2,'gtg.title_cache',1,'','^(.*)\\s*-\\s*Traffic -\\s*(.*)$','${1}\\n${2}');
 /*!40000 ALTER TABLE `automation_tree_rule_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `automation_tree_rules`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `automation_tree_rules` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
@@ -634,26 +547,21 @@ CREATE TABLE `automation_tree_rules` (
   `host_grouping_type` smallint(3) unsigned NOT NULL DEFAULT '0',
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COMMENT='Automation Tree Rules';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=4 COMMENT='Automation Tree Rules';
 
 --
 -- Dumping data for table `automation_tree_rules`
 --
 
-LOCK TABLES `automation_tree_rules` WRITE;
 /*!40000 ALTER TABLE `automation_tree_rules` DISABLE KEYS */;
 INSERT INTO `automation_tree_rules` (`id`, `name`, `tree_id`, `tree_item_id`, `leaf_type`, `host_grouping_type`, `enabled`) VALUES (1,'New Device',1,0,3,0,'');
 INSERT INTO `automation_tree_rules` (`id`, `name`, `tree_id`, `tree_item_id`, `leaf_type`, `host_grouping_type`, `enabled`) VALUES (2,'New Graph',1,0,2,0,'');
 /*!40000 ALTER TABLE `automation_tree_rules` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `cdef`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cdef` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -661,14 +569,12 @@ CREATE TABLE `cdef` (
   `name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `hash` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=16;
 
 --
 -- Dumping data for table `cdef`
 --
 
-LOCK TABLES `cdef` WRITE;
 /*!40000 ALTER TABLE `cdef` DISABLE KEYS */;
 INSERT INTO `cdef` (`id`, `hash`, `system`, `name`) VALUES (2,'73f95f8b77b5508157d64047342c421e',0,'Turn Bytes into Bits');
 INSERT INTO `cdef` (`id`, `hash`, `system`, `name`) VALUES (3,'3d352eed9fa8f7b2791205b3273708c7',0,'Make Stack Negative');
@@ -677,14 +583,11 @@ INSERT INTO `cdef` (`id`, `hash`, `system`, `name`) VALUES (12,'f1ac79f05f255c02
 INSERT INTO `cdef` (`id`, `hash`, `system`, `name`) VALUES (14,'634a23af5e78af0964e8d33b1a4ed26b',0,'Multiply by 1024');
 INSERT INTO `cdef` (`id`, `hash`, `system`, `name`) VALUES (15,'068984b5ccdfd2048869efae5166f722',0,'Total All Data Sources, Multiply by 1024');
 /*!40000 ALTER TABLE `cdef` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `cdef_items`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cdef_items` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -694,14 +597,12 @@ CREATE TABLE `cdef_items` (
   `value` varchar(150) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `cdef_id_sequence` (`cdef_id`,`sequence`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=24;
 
 --
 -- Dumping data for table `cdef_items`
 --
 
-LOCK TABLES `cdef_items` WRITE;
 /*!40000 ALTER TABLE `cdef_items` DISABLE KEYS */;
 INSERT INTO `cdef_items` (`id`, `hash`, `cdef_id`, `sequence`, `type`, `value`) VALUES (7,'9bbf6b792507bb9bb17d2af0970f9be9',2,1,4,'CURRENT_DATA_SOURCE');
 INSERT INTO `cdef_items` (`id`, `hash`, `cdef_id`, `sequence`, `type`, `value`) VALUES (8,'caa4e023ac2d7b1c4b4c8c4adfd55dfe',2,3,2,'3');
@@ -720,28 +621,23 @@ INSERT INTO `cdef_items` (`id`, `hash`, `cdef_id`, `sequence`, `type`, `value`) 
 INSERT INTO `cdef_items` (`id`, `hash`, `cdef_id`, `sequence`, `type`, `value`) VALUES (22,'aa38be265e5ac31783e57ce6f9314e9a',15,2,6,'1024');
 INSERT INTO `cdef_items` (`id`, `hash`, `cdef_id`, `sequence`, `type`, `value`) VALUES (23,'204423d4b2598f1f7252eea19458345c',15,3,2,'3');
 /*!40000 ALTER TABLE `cdef_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `color_template_items`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `color_template_items` (
   `color_template_item_id` int(12) unsigned NOT NULL AUTO_INCREMENT,
   `color_template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `color_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`color_template_item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1 COMMENT='Color Items for Color Templates';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=45 COMMENT='Color Items for Color Templates';
 
 --
 -- Dumping data for table `color_template_items`
 --
 
-LOCK TABLES `color_template_items` WRITE;
 /*!40000 ALTER TABLE `color_template_items` DISABLE KEYS */;
 INSERT INTO `color_template_items` (`color_template_item_id`, `color_template_id`, `color_id`, `sequence`) VALUES (1,1,4,1);
 INSERT INTO `color_template_items` (`color_template_item_id`, `color_template_id`, `color_id`, `sequence`) VALUES (2,1,24,2);
@@ -788,40 +684,32 @@ INSERT INTO `color_template_items` (`color_template_item_id`, `color_template_id
 INSERT INTO `color_template_items` (`color_template_item_id`, `color_template_id`, `color_id`, `sequence`) VALUES (43,4,6,15);
 INSERT INTO `color_template_items` (`color_template_item_id`, `color_template_id`, `color_id`, `sequence`) VALUES (44,4,92,16);
 /*!40000 ALTER TABLE `color_template_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `color_templates`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `color_templates` (
   `color_template_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`color_template_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COMMENT='Color Templates';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=5 COMMENT='Color Templates';
 
 --
 -- Dumping data for table `color_templates`
 --
 
-LOCK TABLES `color_templates` WRITE;
 /*!40000 ALTER TABLE `color_templates` DISABLE KEYS */;
 INSERT INTO `color_templates` (`color_template_id`, `name`) VALUES (1,'Yellow: light -> dark, 4 colors');
 INSERT INTO `color_templates` (`color_template_id`, `name`) VALUES (2,'Red: light yellow > dark red, 8 colors');
 INSERT INTO `color_templates` (`color_template_id`, `name`) VALUES (3,'Red: light -> dark, 16 colors');
 INSERT INTO `color_templates` (`color_template_id`, `name`) VALUES (4,'Green: dark -> light, 16 colors');
 /*!40000 ALTER TABLE `color_templates` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `colors`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `colors` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(40) DEFAULT '',
@@ -829,14 +717,12 @@ CREATE TABLE `colors` (
   `read_only` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `hex` (`hex`)
-) ENGINE=InnoDB AUTO_INCREMENT=440 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=440;
 
 --
 -- Dumping data for table `colors`
 --
 
-LOCK TABLES `colors` WRITE;
 /*!40000 ALTER TABLE `colors` DISABLE KEYS */;
 INSERT INTO `colors` (`id`, `name`, `hex`, `read_only`) VALUES (1,'Black','000000','on');
 INSERT INTO `colors` (`id`, `name`, `hex`, `read_only`) VALUES (2,'White','FFFFFF','on');
@@ -1275,14 +1161,11 @@ INSERT INTO `colors` (`id`, `name`, `hex`, `read_only`) VALUES (437,'Pearl','FDE
 INSERT INTO `colors` (`id`, `name`, `hex`, `read_only`) VALUES (438,'SeaShell','FFF5EE','on');
 INSERT INTO `colors` (`id`, `name`, `hex`, `read_only`) VALUES (439,'Milk White','FEFCFF','on');
 /*!40000 ALTER TABLE `colors` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_input`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_input` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -1290,14 +1173,12 @@ CREATE TABLE `data_input` (
   `input_string` varchar(512) DEFAULT NULL,
   `type_id` tinyint(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=13;
 
 --
 -- Dumping data for table `data_input`
 --
 
-LOCK TABLES `data_input` WRITE;
 /*!40000 ALTER TABLE `data_input` DISABLE KEYS */;
 INSERT INTO `data_input` (`id`, `hash`, `name`, `input_string`, `type_id`) VALUES (1,'3eb92bb845b9660a7445cf9740726522','Get SNMP Data','',2);
 INSERT INTO `data_input` (`id`, `hash`, `name`, `input_string`, `type_id`) VALUES (2,'bf566c869ac6443b0c75d1c32b5a350e','Get SNMP Data (Indexed)','',3);
@@ -1312,14 +1193,11 @@ INSERT INTO `data_input` (`id`, `hash`, `name`, `input_string`, `type_id`) VALUE
 INSERT INTO `data_input` (`id`, `hash`, `name`, `input_string`, `type_id`) VALUES (11,'80e9e4c4191a5da189ae26d0e237f015','Get Script Data (Indexed)','',4);
 INSERT INTO `data_input` (`id`, `hash`, `name`, `input_string`, `type_id`) VALUES (12,'332111d8b54ac8ce939af87a7eac0c06','Get Script Server Data (Indexed)','',6);
 /*!40000 ALTER TABLE `data_input` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_input_data`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_input_data` (
   `data_input_field_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `data_template_data_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -1327,14 +1205,12 @@ CREATE TABLE `data_input_data` (
   `value` text,
   PRIMARY KEY (`data_input_field_id`,`data_template_data_id`),
   KEY `t_value` (`t_value`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `data_input_data`
 --
 
-LOCK TABLES `data_input_data` WRITE;
 /*!40000 ALTER TABLE `data_input_data` DISABLE KEYS */;
 INSERT INTO `data_input_data` (`data_input_field_id`, `data_template_data_id`, `t_value`, `value`) VALUES (1,4,'','');
 INSERT INTO `data_input_data` (`data_input_field_id`, `data_template_data_id`, `t_value`, `value`) VALUES (1,5,'','');
@@ -1387,14 +1263,11 @@ INSERT INTO `data_input_data` (`data_input_field_id`, `data_template_data_id`, `
 INSERT INTO `data_input_data` (`data_input_field_id`, `data_template_data_id`, `t_value`, `value`) VALUES (3,27,'','');
 INSERT INTO `data_input_data` (`data_input_field_id`, `data_template_data_id`, `t_value`, `value`) VALUES (3,30,'','');
 /*!40000 ALTER TABLE `data_input_data` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_input_fields`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_input_fields` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -1410,14 +1283,12 @@ CREATE TABLE `data_input_fields` (
   PRIMARY KEY (`id`),
   KEY `data_input_id` (`data_input_id`),
   KEY `type_code_data_input_id` (`type_code`,`data_input_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=47;
 
 --
 -- Dumping data for table `data_input_fields`
 --
 
-LOCK TABLES `data_input_fields` WRITE;
 /*!40000 ALTER TABLE `data_input_fields` DISABLE KEYS */;
 INSERT INTO `data_input_fields` (`id`, `hash`, `data_input_id`, `name`, `data_name`, `input_output`, `update_rra`, `sequence`, `type_code`, `regexp_match`, `allow_nulls`) VALUES (1,'92f5906c8dc0f964b41f4253df582c38',1,'SNMP IP Address','management_ip','in','',0,'hostname','','');
 INSERT INTO `data_input_fields` (`id`, `hash`, `data_input_id`, `name`, `data_name`, `input_output`, `update_rra`, `sequence`, `type_code`, `regexp_match`, `allow_nulls`) VALUES (2,'32285d5bf16e56c478f5e83f32cda9ef',1,'SNMP Community','snmp_community','in','',0,'snmp_community','','');
@@ -1466,14 +1337,11 @@ INSERT INTO `data_input_fields` (`id`, `hash`, `data_input_id`, `name`, `data_na
 INSERT INTO `data_input_fields` (`id`, `hash`, `data_input_id`, `name`, `data_name`, `input_output`, `update_rra`, `sequence`, `type_code`, `regexp_match`, `allow_nulls`) VALUES (45,'6b13ac0a0194e171d241d4b06f913158',2,'SNMP Privacy Passphrase (v3)','snmp_priv_passphrase','in','',0,'snmp_priv_passphrase','','');
 INSERT INTO `data_input_fields` (`id`, `hash`, `data_input_id`, `name`, `data_name`, `input_output`, `update_rra`, `sequence`, `type_code`, `regexp_match`, `allow_nulls`) VALUES (46,'3a33d4fc65b8329ab2ac46a36da26b72',2,'SNMP Privacy Protocol (v3)','snmp_priv_protocol','in','',0,'snmp_priv_protocol','','');
 /*!40000 ALTER TABLE `data_input_fields` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_local`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_local` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `data_template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -1485,24 +1353,19 @@ CREATE TABLE `data_local` (
   KEY `snmp_query_id` (`snmp_query_id`),
   KEY `snmp_index` (`snmp_index`(191)),
   KEY `host_id_snmp_query_id` (`host_id`,`snmp_query_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `data_local`
 --
 
-LOCK TABLES `data_local` WRITE;
 /*!40000 ALTER TABLE `data_local` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_local` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_profiles`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_profiles` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -1512,39 +1375,32 @@ CREATE TABLE `data_source_profiles` (
   `x_files_factor` double DEFAULT '0.5',
   `default` char(2) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COMMENT='Stores Data Source Profiles';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=3 COMMENT='Stores Data Source Profiles';
 
 --
 -- Dumping data for table `data_source_profiles`
 --
 
-LOCK TABLES `data_source_profiles` WRITE;
 /*!40000 ALTER TABLE `data_source_profiles` DISABLE KEYS */;
 INSERT INTO `data_source_profiles` (`id`, `hash`, `name`, `step`, `heartbeat`, `x_files_factor`, `default`) VALUES (1,'d62c52891f4f9688729a5bc9fad91b18','System Default',300,600,0.5,'on');
 INSERT INTO `data_source_profiles` (`id`, `hash`, `name`, `step`, `heartbeat`, `x_files_factor`, `default`) VALUES (2,'c0dd0e46b9ca268e7ed4162d329f9215','High Collection Rate',30,1200,0.5,'');
 /*!40000 ALTER TABLE `data_source_profiles` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_profiles_cf`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_profiles_cf` (
   `data_source_profile_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `consolidation_function_id` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`data_source_profile_id`,`consolidation_function_id`),
   KEY `data_source_profile_id` (`data_source_profile_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Maps the Data Source Profile Consolidation Functions';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Maps the Data Source Profile Consolidation Functions';
 
 --
 -- Dumping data for table `data_source_profiles_cf`
 --
 
-LOCK TABLES `data_source_profiles_cf` WRITE;
 /*!40000 ALTER TABLE `data_source_profiles_cf` DISABLE KEYS */;
 INSERT INTO `data_source_profiles_cf` (`data_source_profile_id`, `consolidation_function_id`) VALUES (1,1);
 INSERT INTO `data_source_profiles_cf` (`data_source_profile_id`, `consolidation_function_id`) VALUES (1,2);
@@ -1555,14 +1411,11 @@ INSERT INTO `data_source_profiles_cf` (`data_source_profile_id`, `consolidation_
 INSERT INTO `data_source_profiles_cf` (`data_source_profile_id`, `consolidation_function_id`) VALUES (2,3);
 INSERT INTO `data_source_profiles_cf` (`data_source_profile_id`, `consolidation_function_id`) VALUES (2,4);
 /*!40000 ALTER TABLE `data_source_profiles_cf` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_profiles_rra`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_profiles_rra` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `data_source_profile_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -1571,14 +1424,12 @@ CREATE TABLE `data_source_profiles_rra` (
   `rows` int(10) unsigned NOT NULL DEFAULT '700',
   PRIMARY KEY (`id`),
   KEY `data_source_profile_id` (`data_source_profile_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COMMENT='Stores RRA Definitions for Data Source Profiles';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=9 COMMENT='Stores RRA Definitions for Data Source Profiles';
 
 --
 -- Dumping data for table `data_source_profiles_rra`
 --
 
-LOCK TABLES `data_source_profiles_rra` WRITE;
 /*!40000 ALTER TABLE `data_source_profiles_rra` DISABLE KEYS */;
 INSERT INTO `data_source_profiles_rra` (`id`, `data_source_profile_id`, `name`, `steps`, `rows`) VALUES (1,1,'Daily (5 Minute Average)',1,600);
 INSERT INTO `data_source_profiles_rra` (`id`, `data_source_profile_id`, `name`, `steps`, `rows`) VALUES (2,1,'Weekly (30 Minute Average)',6,700);
@@ -1589,14 +1440,11 @@ INSERT INTO `data_source_profiles_rra` (`id`, `data_source_profile_id`, `name`, 
 INSERT INTO `data_source_profiles_rra` (`id`, `data_source_profile_id`, `name`, `steps`, `rows`) VALUES (7,2,'1 Hour Average',120,1445);
 INSERT INTO `data_source_profiles_rra` (`id`, `data_source_profile_id`, `name`, `steps`, `rows`) VALUES (8,2,'4 Hour Average',480,4380);
 /*!40000 ALTER TABLE `data_source_profiles_rra` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_purge_action`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_purge_action` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL DEFAULT '',
@@ -1604,24 +1452,19 @@ CREATE TABLE `data_source_purge_action` (
   `action` tinyint(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='RRD Cleaner File Actions';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='RRD Cleaner File Actions';
 
 --
 -- Dumping data for table `data_source_purge_action`
 --
 
-LOCK TABLES `data_source_purge_action` WRITE;
 /*!40000 ALTER TABLE `data_source_purge_action` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_source_purge_action` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_purge_temp`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_purge_temp` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name_cache` varchar(255) NOT NULL DEFAULT '',
@@ -1636,216 +1479,171 @@ CREATE TABLE `data_source_purge_temp` (
   KEY `local_data_id` (`local_data_id`),
   KEY `in_cacti` (`in_cacti`),
   KEY `data_template_id` (`data_template_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='RRD Cleaner File Repository';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='RRD Cleaner File Repository';
 
 --
 -- Dumping data for table `data_source_purge_temp`
 --
 
-LOCK TABLES `data_source_purge_temp` WRITE;
 /*!40000 ALTER TABLE `data_source_purge_temp` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_source_purge_temp` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_stats_daily`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_stats_daily` (
   `local_data_id` mediumint(8) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `average` double DEFAULT NULL,
   `peak` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `data_source_stats_daily`
 --
 
-LOCK TABLES `data_source_stats_daily` WRITE;
 /*!40000 ALTER TABLE `data_source_stats_daily` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_source_stats_daily` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_stats_hourly`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_stats_hourly` (
   `local_data_id` mediumint(8) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `average` double DEFAULT NULL,
   `peak` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `data_source_stats_hourly`
 --
 
-LOCK TABLES `data_source_stats_hourly` WRITE;
 /*!40000 ALTER TABLE `data_source_stats_hourly` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_source_stats_hourly` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_stats_hourly_cache`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_stats_hourly_cache` (
   `local_data_id` mediumint(8) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `value` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`time`,`rrd_name`),
-  KEY `time` (`time`) USING BTREE
-) ENGINE=MEMORY DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  KEY `time` (`time`)
+) TYPE=MEMORY;
 
 --
 -- Dumping data for table `data_source_stats_hourly_cache`
 --
 
-LOCK TABLES `data_source_stats_hourly_cache` WRITE;
 /*!40000 ALTER TABLE `data_source_stats_hourly_cache` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_source_stats_hourly_cache` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_stats_hourly_last`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_stats_hourly_last` (
   `local_data_id` mediumint(8) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `value` double DEFAULT NULL,
   `calculated` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
-) ENGINE=MEMORY DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=MEMORY;
 
 --
 -- Dumping data for table `data_source_stats_hourly_last`
 --
 
-LOCK TABLES `data_source_stats_hourly_last` WRITE;
 /*!40000 ALTER TABLE `data_source_stats_hourly_last` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_source_stats_hourly_last` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_stats_monthly`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_stats_monthly` (
   `local_data_id` mediumint(8) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `average` double DEFAULT NULL,
   `peak` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `data_source_stats_monthly`
 --
 
-LOCK TABLES `data_source_stats_monthly` WRITE;
 /*!40000 ALTER TABLE `data_source_stats_monthly` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_source_stats_monthly` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_stats_weekly`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_stats_weekly` (
   `local_data_id` mediumint(8) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `average` double DEFAULT NULL,
   `peak` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `data_source_stats_weekly`
 --
 
-LOCK TABLES `data_source_stats_weekly` WRITE;
 /*!40000 ALTER TABLE `data_source_stats_weekly` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_source_stats_weekly` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_source_stats_yearly`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_source_stats_yearly` (
   `local_data_id` mediumint(8) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `average` double DEFAULT NULL,
   `peak` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `data_source_stats_yearly`
 --
 
-LOCK TABLES `data_source_stats_yearly` WRITE;
 /*!40000 ALTER TABLE `data_source_stats_yearly` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_source_stats_yearly` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_template`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_template` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
   `name` varchar(150) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `data_template`
 --
 
-LOCK TABLES `data_template` WRITE;
 /*!40000 ALTER TABLE `data_template` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_template` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_template_data`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_template_data` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `local_data_template_data_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -1866,24 +1664,19 @@ CREATE TABLE `data_template_data` (
   KEY `local_data_id` (`local_data_id`),
   KEY `data_template_id` (`data_template_id`),
   KEY `data_input_id` (`data_input_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `data_template_data`
 --
 
-LOCK TABLES `data_template_data` WRITE;
 /*!40000 ALTER TABLE `data_template_data` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_template_data` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `data_template_rrd`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `data_template_rrd` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -1907,24 +1700,19 @@ CREATE TABLE `data_template_rrd` (
   KEY `local_data_id` (`local_data_id`),
   KEY `data_template_id` (`data_template_id`),
   KEY `local_data_template_rrd_id` (`local_data_template_rrd_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `data_template_rrd`
 --
 
-LOCK TABLES `data_template_rrd` WRITE;
 /*!40000 ALTER TABLE `data_template_rrd` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_template_rrd` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `external_links`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `external_links` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `sortorder` int(11) NOT NULL DEFAULT '0',
@@ -1934,24 +1722,19 @@ CREATE TABLE `external_links` (
   `style` varchar(10) NOT NULL DEFAULT '',
   `extendedstyle` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Contains external links that are embedded into Cacti';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Contains external links that are embedded into Cacti';
 
 --
 -- Dumping data for table `external_links`
 --
 
-LOCK TABLES `external_links` WRITE;
 /*!40000 ALTER TABLE `external_links` DISABLE KEYS */;
 /*!40000 ALTER TABLE `external_links` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `graph_local`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `graph_local` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `graph_template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -1965,24 +1748,19 @@ CREATE TABLE `graph_local` (
   KEY `snmp_query_id` (`snmp_query_id`),
   KEY `snmp_query_graph_id` (`snmp_query_graph_id`),
   KEY `snmp_index` (`snmp_index`(191))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Creates a relationship for each item in a custom graph.';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Creates a relationship for each item in a custom graph.';
 
 --
 -- Dumping data for table `graph_local`
 --
 
-LOCK TABLES `graph_local` WRITE;
 /*!40000 ALTER TABLE `graph_local` DISABLE KEYS */;
 /*!40000 ALTER TABLE `graph_local` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `graph_template_input`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `graph_template_input` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -1991,97 +1769,77 @@ CREATE TABLE `graph_template_input` (
   `description` text,
   `column_name` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Stores the names for graph item input groups.';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Stores the names for graph item input groups.';
 
 --
 -- Dumping data for table `graph_template_input`
 --
 
-LOCK TABLES `graph_template_input` WRITE;
 /*!40000 ALTER TABLE `graph_template_input` DISABLE KEYS */;
 /*!40000 ALTER TABLE `graph_template_input` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `graph_template_input_defs`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `graph_template_input_defs` (
   `graph_template_input_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `graph_template_item_id` int(12) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`graph_template_input_id`,`graph_template_item_id`),
   KEY `graph_template_input_id` (`graph_template_input_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Stores the relationship for what graph items are associated';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Stores the relationship for what graph items are associated';
 
 --
 -- Dumping data for table `graph_template_input_defs`
 --
 
-LOCK TABLES `graph_template_input_defs` WRITE;
 /*!40000 ALTER TABLE `graph_template_input_defs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `graph_template_input_defs` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `graph_templates`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `graph_templates` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` char(32) NOT NULL DEFAULT '',
   `name` char(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Contains each graph template name.';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Contains each graph template name.';
 
 --
 -- Dumping data for table `graph_templates`
 --
 
-LOCK TABLES `graph_templates` WRITE;
 /*!40000 ALTER TABLE `graph_templates` DISABLE KEYS */;
 /*!40000 ALTER TABLE `graph_templates` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `graph_templates_gprint`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `graph_templates_gprint` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
   `name` varchar(100) NOT NULL DEFAULT '',
   `gprint_text` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=5;
 
 --
 -- Dumping data for table `graph_templates_gprint`
 --
 
-LOCK TABLES `graph_templates_gprint` WRITE;
 /*!40000 ALTER TABLE `graph_templates_gprint` DISABLE KEYS */;
 INSERT INTO `graph_templates_gprint` (`id`, `hash`, `name`, `gprint_text`) VALUES (2,'e9c43831e54eca8069317a2ce8c6f751','Normal','%8.2lf %s');
 INSERT INTO `graph_templates_gprint` (`id`, `hash`, `name`, `gprint_text`) VALUES (3,'19414480d6897c8731c7dc6c5310653e','Exact Numbers','%8.0lf');
 INSERT INTO `graph_templates_gprint` (`id`, `hash`, `name`, `gprint_text`) VALUES (4,'304a778405392f878a6db435afffc1e9','Load Average','%8.2lf');
 /*!40000 ALTER TABLE `graph_templates_gprint` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `graph_templates_graph`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `graph_templates_graph` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `local_graph_template_graph_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -2154,24 +1912,19 @@ CREATE TABLE `graph_templates_graph` (
   KEY `local_graph_id` (`local_graph_id`),
   KEY `graph_template_id` (`graph_template_id`),
   KEY `title_cache` (`title_cache`(191))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Stores the actual graph data.';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Stores the actual graph data.';
 
 --
 -- Dumping data for table `graph_templates_graph`
 --
 
-LOCK TABLES `graph_templates_graph` WRITE;
 /*!40000 ALTER TABLE `graph_templates_graph` DISABLE KEYS */;
 /*!40000 ALTER TABLE `graph_templates_graph` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `graph_templates_item`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `graph_templates_item` (
   `id` int(12) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -2200,24 +1953,19 @@ CREATE TABLE `graph_templates_item` (
   KEY `local_graph_id_sequence` (`local_graph_id`,`sequence`),
   KEY `task_item_id` (`task_item_id`),
   KEY `lgi_gti` (`local_graph_id`,`graph_template_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Stores the actual graph item data.';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Stores the actual graph item data.';
 
 --
 -- Dumping data for table `graph_templates_item`
 --
 
-LOCK TABLES `graph_templates_item` WRITE;
 /*!40000 ALTER TABLE `graph_templates_item` DISABLE KEYS */;
 /*!40000 ALTER TABLE `graph_templates_item` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `graph_tree`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `graph_tree` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `enabled` char(2) DEFAULT 'on',
@@ -2231,25 +1979,20 @@ CREATE TABLE `graph_tree` (
   `modified_by` int(10) unsigned DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `sequence` (`sequence`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=2;
 
 --
 -- Dumping data for table `graph_tree`
 --
 
-LOCK TABLES `graph_tree` WRITE;
 /*!40000 ALTER TABLE `graph_tree` DISABLE KEYS */;
 INSERT INTO `graph_tree` (`id`, `enabled`, `locked`, `locked_date`, `sort_type`, `name`, `sequence`, `user_id`, `last_modified`, `modified_by`) VALUES (1,'on',0,'0000-00-00 00:00:00',1,'Default Tree',1,1,'0000-00-00 00:00:00',1);
 /*!40000 ALTER TABLE `graph_tree` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `graph_tree_items`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `graph_tree_items` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `parent` bigint(20) unsigned DEFAULT NULL,
@@ -2269,24 +2012,19 @@ CREATE TABLE `graph_tree_items` (
   KEY `site_id` (`site_id`),
   KEY `local_graph_id` (`local_graph_id`),
   KEY `parent_position` (`parent`,`position`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `graph_tree_items`
 --
 
-LOCK TABLES `graph_tree_items` WRITE;
 /*!40000 ALTER TABLE `graph_tree_items` DISABLE KEYS */;
 /*!40000 ALTER TABLE `graph_tree_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `host`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `poller_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2334,52 +2072,42 @@ CREATE TABLE `host` (
   `total_polls` int(12) unsigned DEFAULT '0',
   `failed_polls` int(12) unsigned DEFAULT '0',
   `availability` decimal(8,5) NOT NULL DEFAULT '100.00000',
-  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_updated` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   KEY `poller_id` (`poller_id`),
   KEY `site_id` (`site_id`),
   KEY `external_id` (`external_id`),
   KEY `disabled` (`disabled`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `host`
 --
 
-LOCK TABLES `host` WRITE;
 /*!40000 ALTER TABLE `host` DISABLE KEYS */;
 /*!40000 ALTER TABLE `host` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `host_graph`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host_graph` (
   `host_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `graph_template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`host_id`,`graph_template_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `host_graph`
 --
 
-LOCK TABLES `host_graph` WRITE;
 /*!40000 ALTER TABLE `host_graph` DISABLE KEYS */;
 /*!40000 ALTER TABLE `host_graph` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `host_snmp_cache`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host_snmp_cache` (
   `host_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `snmp_query_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -2388,7 +2116,7 @@ CREATE TABLE `host_snmp_cache` (
   `snmp_index` varchar(191) NOT NULL DEFAULT '',
   `oid` text NOT NULL,
   `present` tinyint(4) NOT NULL DEFAULT '1',
-  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_updated` timestamp NOT NULL,
   PRIMARY KEY (`host_id`,`snmp_query_id`,`field_name`,`snmp_index`),
   KEY `host_id` (`host_id`,`field_name`),
   KEY `snmp_index` (`snmp_index`),
@@ -2396,24 +2124,19 @@ CREATE TABLE `host_snmp_cache` (
   KEY `field_value` (`field_value`(191)),
   KEY `snmp_query_id` (`snmp_query_id`),
   KEY `present` (`present`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `host_snmp_cache`
 --
 
-LOCK TABLES `host_snmp_cache` WRITE;
 /*!40000 ALTER TABLE `host_snmp_cache` DISABLE KEYS */;
 /*!40000 ALTER TABLE `host_snmp_cache` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `host_snmp_query`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host_snmp_query` (
   `host_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `snmp_query_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -2422,93 +2145,73 @@ CREATE TABLE `host_snmp_query` (
   `reindex_method` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`host_id`,`snmp_query_id`),
   KEY `host_id` (`host_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `host_snmp_query`
 --
 
-LOCK TABLES `host_snmp_query` WRITE;
 /*!40000 ALTER TABLE `host_snmp_query` DISABLE KEYS */;
 /*!40000 ALTER TABLE `host_snmp_query` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `host_template`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host_template` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
   `name` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `host_template`
 --
 
-LOCK TABLES `host_template` WRITE;
 /*!40000 ALTER TABLE `host_template` DISABLE KEYS */;
 /*!40000 ALTER TABLE `host_template` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `host_template_graph`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host_template_graph` (
   `host_template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `graph_template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`host_template_id`,`graph_template_id`),
   KEY `host_template_id` (`host_template_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `host_template_graph`
 --
 
-LOCK TABLES `host_template_graph` WRITE;
 /*!40000 ALTER TABLE `host_template_graph` DISABLE KEYS */;
 /*!40000 ALTER TABLE `host_template_graph` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `host_template_snmp_query`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host_template_snmp_query` (
   `host_template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `snmp_query_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`host_template_id`,`snmp_query_id`),
   KEY `host_template_id` (`host_template_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `host_template_snmp_query`
 --
 
-LOCK TABLES `host_template_snmp_query` WRITE;
 /*!40000 ALTER TABLE `host_template_snmp_query` DISABLE KEYS */;
 /*!40000 ALTER TABLE `host_template_snmp_query` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `plugin_config`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `plugin_config` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
   `directory` varchar(32) NOT NULL DEFAULT '',
@@ -2520,24 +2223,19 @@ CREATE TABLE `plugin_config` (
   PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `directory` (`directory`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `plugin_config`
 --
 
-LOCK TABLES `plugin_config` WRITE;
 /*!40000 ALTER TABLE `plugin_config` DISABLE KEYS */;
 /*!40000 ALTER TABLE `plugin_config` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `plugin_db_changes`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `plugin_db_changes` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `plugin` varchar(16) NOT NULL DEFAULT '',
@@ -2547,24 +2245,19 @@ CREATE TABLE `plugin_db_changes` (
   PRIMARY KEY (`id`),
   KEY `plugin` (`plugin`),
   KEY `method` (`method`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `plugin_db_changes`
 --
 
-LOCK TABLES `plugin_db_changes` WRITE;
 /*!40000 ALTER TABLE `plugin_db_changes` DISABLE KEYS */;
 /*!40000 ALTER TABLE `plugin_db_changes` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `plugin_hooks`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `plugin_hooks` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL DEFAULT '',
@@ -2575,26 +2268,21 @@ CREATE TABLE `plugin_hooks` (
   PRIMARY KEY (`id`),
   KEY `hook` (`hook`),
   KEY `status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=3;
 
 --
 -- Dumping data for table `plugin_hooks`
 --
 
-LOCK TABLES `plugin_hooks` WRITE;
 /*!40000 ALTER TABLE `plugin_hooks` DISABLE KEYS */;
 INSERT INTO `plugin_hooks` (`id`, `name`, `hook`, `file`, `function`, `status`) VALUES (1,'internal','config_arrays','','plugin_config_arrays',1);
 INSERT INTO `plugin_hooks` (`id`, `name`, `hook`, `file`, `function`, `status`) VALUES (2,'internal','draw_navigation_text','','plugin_draw_navigation_text',1);
 /*!40000 ALTER TABLE `plugin_hooks` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `plugin_realms`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `plugin_realms` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
   `plugin` varchar(32) NOT NULL DEFAULT '',
@@ -2602,25 +2290,20 @@ CREATE TABLE `plugin_realms` (
   `display` varchar(64) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `plugin` (`plugin`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=2;
 
 --
 -- Dumping data for table `plugin_realms`
 --
 
-LOCK TABLES `plugin_realms` WRITE;
 /*!40000 ALTER TABLE `plugin_realms` DISABLE KEYS */;
 INSERT INTO `plugin_realms` (`id`, `plugin`, `file`, `display`) VALUES (1,'internal','plugins.php','Plugin Management');
 /*!40000 ALTER TABLE `plugin_realms` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `poller`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `poller` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `disabled` char(2) DEFAULT '',
@@ -2641,81 +2324,66 @@ CREATE TABLE `poller` (
   `last_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `last_status` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='Pollers for Cacti';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=2 COMMENT='Pollers for Cacti';
 
 --
 -- Dumping data for table `poller`
 --
 
-LOCK TABLES `poller` WRITE;
 /*!40000 ALTER TABLE `poller` DISABLE KEYS */;
 INSERT INTO `poller` (`id`, `disabled`, `name`, `notes`, `status`, `hostname`, `dbdefault`, `dbhost`, `dbuser`, `dbpass`, `dbport`, `dbssl`, `total_time`, `snmp`, `script`, `server`, `last_update`, `last_status`) VALUES (1,'','Main Poller','',0,'localhost','cacti','cacti','','',3306,'',0,0,0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `poller` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `poller_command`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `poller_command` (
   `poller_id` smallint(5) unsigned NOT NULL DEFAULT '1',
   `time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `action` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `command` varchar(191) NOT NULL DEFAULT '',
-  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_updated` timestamp NOT NULL,
   PRIMARY KEY (`poller_id`,`action`,`command`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `poller_command`
 --
 
-LOCK TABLES `poller_command` WRITE;
 /*!40000 ALTER TABLE `poller_command` DISABLE KEYS */;
 /*!40000 ALTER TABLE `poller_command` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `poller_data_template_field_mappings`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `poller_data_template_field_mappings` (
   `data_template_id` int(10) unsigned NOT NULL DEFAULT '0',
   `data_name` varchar(25) NOT NULL DEFAULT '',
   `data_source_names` varchar(191) NOT NULL DEFAULT '',
-  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_updated` timestamp NOT NULL,
   PRIMARY KEY (`data_template_id`,`data_name`,`data_source_names`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Tracks mapping of Data Templates to their Data Source Names';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Tracks mapping of Data Templates to their Data Source Names';
 
 --
 -- Dumping data for table `poller_data_template_field_mappings`
 --
 
-LOCK TABLES `poller_data_template_field_mappings` WRITE;
 /*!40000 ALTER TABLE `poller_data_template_field_mappings` DISABLE KEYS */;
 /*!40000 ALTER TABLE `poller_data_template_field_mappings` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `poller_item`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `poller_item` (
   `local_data_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `poller_id` int(10) unsigned NOT NULL DEFAULT '1',
   `host_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `action` tinyint(2) unsigned NOT NULL DEFAULT '1',
   `present` tinyint(4) NOT NULL DEFAULT '1',
-  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_updated` timestamp NOT NULL,
   `hostname` varchar(100) NOT NULL DEFAULT '',
   `snmp_community` varchar(100) NOT NULL DEFAULT '',
   `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -2743,94 +2411,74 @@ CREATE TABLE `poller_item` (
   KEY `action` (`action`),
   KEY `present` (`present`),
   KEY `poller_id_host_id` (`poller_id`,`host_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `poller_item`
 --
 
-LOCK TABLES `poller_item` WRITE;
 /*!40000 ALTER TABLE `poller_item` DISABLE KEYS */;
 /*!40000 ALTER TABLE `poller_item` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `poller_output`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `poller_output` (
   `local_data_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `rrd_name` varchar(19) NOT NULL DEFAULT '',
   `time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `output` text NOT NULL,
-  PRIMARY KEY (`local_data_id`,`rrd_name`,`time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  PRIMARY KEY (`local_data_id`,`rrd_name`,`time`)
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `poller_output`
 --
 
-LOCK TABLES `poller_output` WRITE;
 /*!40000 ALTER TABLE `poller_output` DISABLE KEYS */;
 /*!40000 ALTER TABLE `poller_output` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `poller_output_boost`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `poller_output_boost` (
   `local_data_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `rrd_name` varchar(19) NOT NULL DEFAULT '',
   `time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `output` varchar(512) NOT NULL,
-  PRIMARY KEY (`local_data_id`,`time`,`rrd_name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  PRIMARY KEY (`local_data_id`,`time`,`rrd_name`)
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `poller_output_boost`
 --
 
-LOCK TABLES `poller_output_boost` WRITE;
 /*!40000 ALTER TABLE `poller_output_boost` DISABLE KEYS */;
 /*!40000 ALTER TABLE `poller_output_boost` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `poller_output_boost_processes`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `poller_output_boost_processes` (
   `sock_int_value` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `status` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`sock_int_value`)
-) ENGINE=MEMORY DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=MEMORY;
 
 --
 -- Dumping data for table `poller_output_boost_processes`
 --
 
-LOCK TABLES `poller_output_boost_processes` WRITE;
 /*!40000 ALTER TABLE `poller_output_boost_processes` DISABLE KEYS */;
 /*!40000 ALTER TABLE `poller_output_boost_processes` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `poller_output_realtime`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `poller_output_realtime` (
   `local_data_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `rrd_name` varchar(19) NOT NULL DEFAULT '',
@@ -2839,24 +2487,19 @@ CREATE TABLE `poller_output_realtime` (
   `poller_id` varchar(256) NOT NULL DEFAULT '1',
   PRIMARY KEY (`local_data_id`,`rrd_name`,`time`),
   KEY `poller_id` (`poller_id`(191))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `poller_output_realtime`
 --
 
-LOCK TABLES `poller_output_realtime` WRITE;
 /*!40000 ALTER TABLE `poller_output_realtime` DISABLE KEYS */;
 /*!40000 ALTER TABLE `poller_output_realtime` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `poller_reindex`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `poller_reindex` (
   `host_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `data_query_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -2867,24 +2510,19 @@ CREATE TABLE `poller_reindex` (
   `arg1` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`host_id`,`data_query_id`),
   KEY `present` (`present`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `poller_reindex`
 --
 
-LOCK TABLES `poller_reindex` WRITE;
 /*!40000 ALTER TABLE `poller_reindex` DISABLE KEYS */;
 /*!40000 ALTER TABLE `poller_reindex` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `poller_resource_cache`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `poller_resource_cache` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `resource_type` varchar(20) DEFAULT NULL,
@@ -2894,24 +2532,19 @@ CREATE TABLE `poller_resource_cache` (
   `contents` longblob,
   PRIMARY KEY (`id`),
   UNIQUE KEY `path` (`path`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Caches all scripts, resources files, and plugins';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Caches all scripts, resources files, and plugins';
 
 --
 -- Dumping data for table `poller_resource_cache`
 --
 
-LOCK TABLES `poller_resource_cache` WRITE;
 /*!40000 ALTER TABLE `poller_resource_cache` DISABLE KEYS */;
 /*!40000 ALTER TABLE `poller_resource_cache` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `poller_time`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `poller_time` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(11) unsigned NOT NULL DEFAULT '0',
@@ -2919,24 +2552,19 @@ CREATE TABLE `poller_time` (
   `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `end_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `poller_time`
 --
 
-LOCK TABLES `poller_time` WRITE;
 /*!40000 ALTER TABLE `poller_time` DISABLE KEYS */;
 /*!40000 ALTER TABLE `poller_time` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `reports`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `reports` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -2964,24 +2592,19 @@ CREATE TABLE `reports` (
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `mailtime` (`mailtime`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Cacri Reporting Reports';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Cacri Reporting Reports';
 
 --
 -- Dumping data for table `reports`
 --
 
-LOCK TABLES `reports` WRITE;
 /*!40000 ALTER TABLE `reports` DISABLE KEYS */;
 /*!40000 ALTER TABLE `reports` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `reports_items`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `reports_items` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `report_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -3001,139 +2624,109 @@ CREATE TABLE `reports_items` (
   `sequence` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `report_id` (`report_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Cacti Reporting Items';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Cacti Reporting Items';
 
 --
 -- Dumping data for table `reports_items`
 --
 
-LOCK TABLES `reports_items` WRITE;
 /*!40000 ALTER TABLE `reports_items` DISABLE KEYS */;
 /*!40000 ALTER TABLE `reports_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `sessions`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sessions` (
   `id` varchar(32) NOT NULL,
   `remote_addr` varchar(25) NOT NULL DEFAULT '',
   `access` int(10) unsigned DEFAULT NULL,
   `data` mediumblob,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Used for Database based Session Storage';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Used for Database based Session Storage';
 
 --
 -- Dumping data for table `sessions`
 --
 
-LOCK TABLES `sessions` WRITE;
 /*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `settings`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `settings` (
   `name` varchar(50) NOT NULL DEFAULT '',
   `value` varchar(2048) NOT NULL DEFAULT '',
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `settings`
 --
 
-LOCK TABLES `settings` WRITE;
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `settings_tree`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `settings_tree` (
   `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `graph_tree_item_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`,`graph_tree_item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `settings_tree`
 --
 
-LOCK TABLES `settings_tree` WRITE;
 /*!40000 ALTER TABLE `settings_tree` DISABLE KEYS */;
 /*!40000 ALTER TABLE `settings_tree` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `settings_user`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `settings_user` (
   `user_id` smallint(8) unsigned NOT NULL DEFAULT '0',
   `name` varchar(50) NOT NULL DEFAULT '',
   `value` varchar(2048) NOT NULL DEFAULT '',
   PRIMARY KEY (`user_id`,`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `settings_user`
 --
 
-LOCK TABLES `settings_user` WRITE;
 /*!40000 ALTER TABLE `settings_user` DISABLE KEYS */;
 /*!40000 ALTER TABLE `settings_user` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `settings_user_group`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `settings_user_group` (
   `group_id` smallint(8) unsigned NOT NULL DEFAULT '0',
   `name` varchar(50) NOT NULL DEFAULT '',
   `value` varchar(2048) NOT NULL DEFAULT '',
   PRIMARY KEY (`group_id`,`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Stores the Default User Group Graph Settings';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Stores the Default User Group Graph Settings';
 
 --
 -- Dumping data for table `settings_user_group`
 --
 
-LOCK TABLES `settings_user_group` WRITE;
 /*!40000 ALTER TABLE `settings_user_group` DISABLE KEYS */;
 /*!40000 ALTER TABLE `settings_user_group` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `sites`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sites` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
@@ -3155,24 +2748,19 @@ CREATE TABLE `sites` (
   KEY `postal_code` (`postal_code`),
   KEY `country` (`country`),
   KEY `alternate_id` (`alternate_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Contains information about customer sites';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Contains information about customer sites';
 
 --
 -- Dumping data for table `sites`
 --
 
-LOCK TABLES `sites` WRITE;
 /*!40000 ALTER TABLE `sites` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sites` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmp_query`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmp_query` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -3183,24 +2771,19 @@ CREATE TABLE `snmp_query` (
   `data_input_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `snmp_query`
 --
 
-LOCK TABLES `snmp_query` WRITE;
 /*!40000 ALTER TABLE `snmp_query` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmp_query` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmp_query_graph`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmp_query_graph` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -3208,24 +2791,19 @@ CREATE TABLE `snmp_query_graph` (
   `name` varchar(100) NOT NULL DEFAULT '',
   `graph_template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `snmp_query_graph`
 --
 
-LOCK TABLES `snmp_query_graph` WRITE;
 /*!40000 ALTER TABLE `snmp_query_graph` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmp_query_graph` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmp_query_graph_rrd`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmp_query_graph_rrd` (
   `snmp_query_graph_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `data_template_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -3234,24 +2812,19 @@ CREATE TABLE `snmp_query_graph_rrd` (
   PRIMARY KEY (`snmp_query_graph_id`,`data_template_id`,`data_template_rrd_id`),
   KEY `data_template_rrd_id` (`data_template_rrd_id`),
   KEY `snmp_query_graph_id` (`snmp_query_graph_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `snmp_query_graph_rrd`
 --
 
-LOCK TABLES `snmp_query_graph_rrd` WRITE;
 /*!40000 ALTER TABLE `snmp_query_graph_rrd` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmp_query_graph_rrd` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmp_query_graph_rrd_sv`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmp_query_graph_rrd_sv` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -3263,24 +2836,19 @@ CREATE TABLE `snmp_query_graph_rrd_sv` (
   PRIMARY KEY (`id`),
   KEY `snmp_query_graph_id` (`snmp_query_graph_id`),
   KEY `data_template_id` (`data_template_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `snmp_query_graph_rrd_sv`
 --
 
-LOCK TABLES `snmp_query_graph_rrd_sv` WRITE;
 /*!40000 ALTER TABLE `snmp_query_graph_rrd_sv` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmp_query_graph_rrd_sv` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmp_query_graph_sv`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmp_query_graph_sv` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -3290,24 +2858,19 @@ CREATE TABLE `snmp_query_graph_sv` (
   `text` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `snmp_query_graph_id` (`snmp_query_graph_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `snmp_query_graph_sv`
 --
 
-LOCK TABLES `snmp_query_graph_sv` WRITE;
 /*!40000 ALTER TABLE `snmp_query_graph_sv` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmp_query_graph_sv` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmpagent_cache`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmpagent_cache` (
   `oid` varchar(191) NOT NULL,
   `name` varchar(191) NOT NULL,
@@ -3321,48 +2884,38 @@ CREATE TABLE `snmpagent_cache` (
   PRIMARY KEY (`oid`),
   KEY `name` (`name`),
   KEY `mib_name` (`mib`,`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='SNMP MIB CACHE';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='SNMP MIB CACHE';
 
 --
 -- Dumping data for table `snmpagent_cache`
 --
 
-LOCK TABLES `snmpagent_cache` WRITE;
 /*!40000 ALTER TABLE `snmpagent_cache` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmpagent_cache` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmpagent_cache_notifications`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmpagent_cache_notifications` (
   `name` varchar(191) NOT NULL,
   `mib` varchar(255) NOT NULL,
   `attribute` varchar(255) NOT NULL,
   `sequence_id` smallint(6) NOT NULL,
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Notifcations and related attributes';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Notifcations and related attributes';
 
 --
 -- Dumping data for table `snmpagent_cache_notifications`
 --
 
-LOCK TABLES `snmpagent_cache_notifications` WRITE;
 /*!40000 ALTER TABLE `snmpagent_cache_notifications` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmpagent_cache_notifications` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmpagent_cache_textual_conventions`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmpagent_cache_textual_conventions` (
   `name` varchar(191) NOT NULL,
   `mib` varchar(191) NOT NULL,
@@ -3370,24 +2923,19 @@ CREATE TABLE `snmpagent_cache_textual_conventions` (
   `description` varchar(5000) NOT NULL DEFAULT '',
   KEY `name` (`name`),
   KEY `mib` (`mib`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Textual conventions';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Textual conventions';
 
 --
 -- Dumping data for table `snmpagent_cache_textual_conventions`
 --
 
-LOCK TABLES `snmpagent_cache_textual_conventions` WRITE;
 /*!40000 ALTER TABLE `snmpagent_cache_textual_conventions` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmpagent_cache_textual_conventions` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmpagent_managers`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmpagent_managers` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
   `hostname` varchar(100) NOT NULL,
@@ -3407,71 +2955,56 @@ CREATE TABLE `snmpagent_managers` (
   `notes` text,
   PRIMARY KEY (`id`),
   KEY `hostname` (`hostname`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='snmp notification receivers';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='snmp notification receivers';
 
 --
 -- Dumping data for table `snmpagent_managers`
 --
 
-LOCK TABLES `snmpagent_managers` WRITE;
 /*!40000 ALTER TABLE `snmpagent_managers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmpagent_managers` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmpagent_managers_notifications`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmpagent_managers_notifications` (
   `manager_id` int(8) NOT NULL,
   `notification` varchar(180) NOT NULL,
   `mib` varchar(191) NOT NULL,
   KEY `mib` (`mib`),
   KEY `manager_id_notification` (`manager_id`,`notification`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='snmp notifications to receivers';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='snmp notifications to receivers';
 
 --
 -- Dumping data for table `snmpagent_managers_notifications`
 --
 
-LOCK TABLES `snmpagent_managers_notifications` WRITE;
 /*!40000 ALTER TABLE `snmpagent_managers_notifications` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmpagent_managers_notifications` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmpagent_mibs`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmpagent_mibs` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL DEFAULT '',
   `file` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Registered MIB files';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Registered MIB files';
 
 --
 -- Dumping data for table `snmpagent_mibs`
 --
 
-LOCK TABLES `snmpagent_mibs` WRITE;
 /*!40000 ALTER TABLE `snmpagent_mibs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmpagent_mibs` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `snmpagent_notifications_log`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `snmpagent_notifications_log` (
   `id` int(12) NOT NULL AUTO_INCREMENT,
   `time` int(24) NOT NULL,
@@ -3484,24 +3017,19 @@ CREATE TABLE `snmpagent_notifications_log` (
   KEY `time` (`time`),
   KEY `severity` (`severity`),
   KEY `manager_id_notification` (`manager_id`,`notification`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='logs snmp notifications to receivers';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='logs snmp notifications to receivers';
 
 --
 -- Dumping data for table `snmpagent_notifications_log`
 --
 
-LOCK TABLES `snmpagent_notifications_log` WRITE;
 /*!40000 ALTER TABLE `snmpagent_notifications_log` DISABLE KEYS */;
 /*!40000 ALTER TABLE `snmpagent_notifications_log` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_auth`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_auth` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL DEFAULT '0',
@@ -3532,54 +3060,44 @@ CREATE TABLE `user_auth` (
   KEY `username` (`username`),
   KEY `realm` (`realm`),
   KEY `enabled` (`enabled`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=4;
 
 --
 -- Dumping data for table `user_auth`
 --
 
-LOCK TABLES `user_auth` WRITE;
 /*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
 INSERT INTO `user_auth` (`id`, `username`, `password`, `realm`, `full_name`, `email_address`, `must_change_password`, `password_change`, `show_tree`, `show_list`, `show_preview`, `graph_settings`, `login_opts`, `policy_graphs`, `policy_trees`, `policy_hosts`, `policy_graph_templates`, `enabled`, `lastchange`, `lastlogin`, `password_history`, `locked`, `failed_attempts`, `lastfail`, `reset_perms`) VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','','on','on','on','on','on','',2,1,1,1,1,'on',-1,-1,'-1','',0,0,0);
 INSERT INTO `user_auth` (`id`, `username`, `password`, `realm`, `full_name`, `email_address`, `must_change_password`, `password_change`, `show_tree`, `show_list`, `show_preview`, `graph_settings`, `login_opts`, `policy_graphs`, `policy_trees`, `policy_hosts`, `policy_graph_templates`, `enabled`, `lastchange`, `lastlogin`, `password_history`, `locked`, `failed_attempts`, `lastfail`, `reset_perms`) VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','','on','on','on','on','on','3',1,1,1,1,1,'',-1,-1,'-1','',0,0,0);
 /*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_auth_cache`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_auth_cache` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   `hostname` varchar(100) NOT NULL DEFAULT '',
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_update` timestamp NOT NULL,
   `token` varchar(191) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `tokenkey` (`token`),
   KEY `hostname` (`hostname`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Caches Remember Me Details';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Caches Remember Me Details';
 
 --
 -- Dumping data for table `user_auth_cache`
 --
 
-LOCK TABLES `user_auth_cache` WRITE;
 /*!40000 ALTER TABLE `user_auth_cache` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_auth_cache` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_auth_group`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_auth_group` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
@@ -3595,131 +3113,104 @@ CREATE TABLE `user_auth_group` (
   `policy_graph_templates` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `enabled` char(2) NOT NULL DEFAULT 'on',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table that Contains User Groups';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Table that Contains User Groups';
 
 --
 -- Dumping data for table `user_auth_group`
 --
 
-LOCK TABLES `user_auth_group` WRITE;
 /*!40000 ALTER TABLE `user_auth_group` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_auth_group` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_auth_group_members`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_auth_group_members` (
   `group_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`group_id`,`user_id`),
   KEY `realm_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table that Contains User Group Members';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Table that Contains User Group Members';
 
 --
 -- Dumping data for table `user_auth_group_members`
 --
 
-LOCK TABLES `user_auth_group_members` WRITE;
 /*!40000 ALTER TABLE `user_auth_group_members` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_auth_group_members` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_auth_group_perms`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_auth_group_perms` (
   `group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `item_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `type` tinyint(2) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`group_id`,`item_id`,`type`),
   KEY `group_id` (`group_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table that Contains User Group Permissions';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Table that Contains User Group Permissions';
 
 --
 -- Dumping data for table `user_auth_group_perms`
 --
 
-LOCK TABLES `user_auth_group_perms` WRITE;
 /*!40000 ALTER TABLE `user_auth_group_perms` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_auth_group_perms` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_auth_group_realm`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_auth_group_realm` (
   `group_id` int(10) unsigned NOT NULL,
   `realm_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`group_id`,`realm_id`),
   KEY `realm_id` (`realm_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table that Contains User Group Realm Permissions';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Table that Contains User Group Realm Permissions';
 
 --
 -- Dumping data for table `user_auth_group_realm`
 --
 
-LOCK TABLES `user_auth_group_realm` WRITE;
 /*!40000 ALTER TABLE `user_auth_group_realm` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_auth_group_realm` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_auth_perms`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_auth_perms` (
   `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `item_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `type` tinyint(2) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`,`item_id`,`type`),
   KEY `user_id` (`user_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `user_auth_perms`
 --
 
-LOCK TABLES `user_auth_perms` WRITE;
 /*!40000 ALTER TABLE `user_auth_perms` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_auth_perms` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_auth_realm`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_auth_realm` (
   `realm_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`realm_id`,`user_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `user_auth_realm`
 --
 
-LOCK TABLES `user_auth_realm` WRITE;
 /*!40000 ALTER TABLE `user_auth_realm` DISABLE KEYS */;
 INSERT INTO `user_auth_realm` (`realm_id`, `user_id`) VALUES (1,1);
 INSERT INTO `user_auth_realm` (`realm_id`, `user_id`) VALUES (2,1);
@@ -3745,14 +3236,11 @@ INSERT INTO `user_auth_realm` (`realm_id`, `user_id`) VALUES (23,1);
 INSERT INTO `user_auth_realm` (`realm_id`, `user_id`) VALUES (101,1);
 INSERT INTO `user_auth_realm` (`realm_id`, `user_id`) VALUES (7,3);
 /*!40000 ALTER TABLE `user_auth_realm` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_domains`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_domains` (
   `domain_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `domain_name` varchar(20) NOT NULL,
@@ -3761,24 +3249,19 @@ CREATE TABLE `user_domains` (
   `defdomain` tinyint(3) NOT NULL DEFAULT '0',
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`domain_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table to Hold Login Domains';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Table to Hold Login Domains';
 
 --
 -- Dumping data for table `user_domains`
 --
 
-LOCK TABLES `user_domains` WRITE;
 /*!40000 ALTER TABLE `user_domains` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_domains` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_domains_ldap`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_domains_ldap` (
   `domain_id` int(10) unsigned NOT NULL,
   `server` varchar(128) NOT NULL,
@@ -3798,24 +3281,19 @@ CREATE TABLE `user_domains_ldap` (
   `specific_dn` varchar(128) NOT NULL,
   `specific_password` varchar(128) NOT NULL,
   PRIMARY KEY (`domain_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table to Hold Login Domains for LDAP';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB COMMENT='Table to Hold Login Domains for LDAP';
 
 --
 -- Dumping data for table `user_domains_ldap`
 --
 
-LOCK TABLES `user_domains_ldap` WRITE;
 /*!40000 ALTER TABLE `user_domains_ldap` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_domains_ldap` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user_log`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_log` (
   `username` varchar(50) NOT NULL DEFAULT '0',
   `user_id` mediumint(8) NOT NULL DEFAULT '0',
@@ -3824,38 +3302,31 @@ CREATE TABLE `user_log` (
   `ip` varchar(40) NOT NULL DEFAULT '',
   PRIMARY KEY (`username`,`user_id`,`time`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `user_log`
 --
 
-LOCK TABLES `user_log` WRITE;
 /*!40000 ALTER TABLE `user_log` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_log` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `vdef`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `vdef` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `hash` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 COMMENT='vdef';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=8 COMMENT='vdef';
 
 --
 -- Dumping data for table `vdef`
 --
 
-LOCK TABLES `vdef` WRITE;
 /*!40000 ALTER TABLE `vdef` DISABLE KEYS */;
 INSERT INTO `vdef` (`id`, `hash`, `name`) VALUES (1,'e06ed529238448773038601afb3cf278','Maximum');
 INSERT INTO `vdef` (`id`, `hash`, `name`) VALUES (2,'e4872dda82092393d6459c831a50dc3b','Minimum');
@@ -3865,14 +3336,11 @@ INSERT INTO `vdef` (`id`, `hash`, `name`) VALUES (5,'631c1b9086f3979d6dcf5c7a694
 INSERT INTO `vdef` (`id`, `hash`, `name`) VALUES (6,'6b5335843630b66f858ce6b7c61fc493','Total: Current Data Source');
 INSERT INTO `vdef` (`id`, `hash`, `name`) VALUES (7,'c80d12b0f030af3574da68b28826cd39','95th Percentage: Current Data Source');
 /*!40000 ALTER TABLE `vdef` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `vdef_items`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `vdef_items` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
@@ -3882,14 +3350,12 @@ CREATE TABLE `vdef_items` (
   `value` varchar(150) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `vdef_id_sequence` (`vdef_id`,`sequence`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1 COMMENT='vdef items';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB AUTO_INCREMENT=16 COMMENT='vdef items';
 
 --
 -- Dumping data for table `vdef_items`
 --
 
-LOCK TABLES `vdef_items` WRITE;
 /*!40000 ALTER TABLE `vdef_items` DISABLE KEYS */;
 INSERT INTO `vdef_items` (`id`, `hash`, `vdef_id`, `sequence`, `type`, `value`) VALUES (1,'88d33bf9271ac2bdf490cf1784a342c1',1,1,4,'CURRENT_DATA_SOURCE');
 INSERT INTO `vdef_items` (`id`, `hash`, `vdef_id`, `sequence`, `type`, `value`) VALUES (2,'a307afab0c9b1779580039e3f7c4f6e5',1,2,1,'1');
@@ -3907,29 +3373,23 @@ INSERT INTO `vdef_items` (`id`, `hash`, `vdef_id`, `sequence`, `type`, `value`) 
 INSERT INTO `vdef_items` (`id`, `hash`, `vdef_id`, `sequence`, `type`, `value`) VALUES (14,'11a26f18feba3919be3af426670cba95',7,2,6,'95');
 INSERT INTO `vdef_items` (`id`, `hash`, `vdef_id`, `sequence`, `type`, `value`) VALUES (15,'e7ae90275bc1efada07c19ca3472d9db',7,3,1,'8');
 /*!40000 ALTER TABLE `vdef_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `version`
 --
 
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `version` (
   `cacti` char(20) NOT NULL DEFAULT '',
   PRIMARY KEY (`cacti`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) TYPE=InnoDB;
 
 --
 -- Dumping data for table `version`
 --
 
-LOCK TABLES `version` WRITE;
 /*!40000 ALTER TABLE `version` DISABLE KEYS */;
 INSERT INTO `version` (`cacti`) VALUES ('new_install');
 /*!40000 ALTER TABLE `version` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -3937,4 +3397,4 @@ UNLOCK TABLES;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-28  9:52:47
+-- Dump completed on 2017-04-28 10:35:24
