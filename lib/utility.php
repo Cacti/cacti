@@ -390,7 +390,7 @@ function update_poller_cache($data_source, $commit = false) {
 }
 
 function push_out_data_input_method($data_input_id) {
-	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
+	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' data_local.*
 		FROM data_local
 		INNER JOIN (
 			SELECT DISTINCT local_data_id
@@ -467,9 +467,11 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 	$buffer       = '';
 
 	if (sizeof($poller_items)) {
-		foreach($poller_items AS $record) {
+		foreach($poller_items as $record) {
 			/* take care of invalid entries */
-			if (strlen($record) == 0) continue;
+			if (strlen($record) == 0) {
+				continue;
+			}
 
 			if ($buf_count == 0) {
 				$delim = ' ';
@@ -481,7 +483,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 
 			$buf_len += strlen($record);
 
-			if (($overhead + $buf_len) > ($max_packet - 1024)) {
+			if ($overhead + $buf_len > $max_packet - 1024) {
 				db_execute($sql_prefix . $buffer . $sql_suffix);
 
 				$buffer    = '';
@@ -576,9 +578,11 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			 - the field is set to 'templated' */
 			if (sizeof($template_fields{$data_source['local_data_template_data_id']})) {
 				foreach ($template_fields[$data_source['local_data_template_data_id']] as $template_field) {
-					if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code'])) && ($template_field['value'] == '') && ($template_field['t_value'] == '')) {
+					if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['value'] == '' && $template_field['t_value'] == '') {
 						// handle special case type_code
-						if ($template_field['type_code'] == 'host_id') $template_field['type_code'] = 'id';
+						if ($template_field['type_code'] == 'host_id') {
+							$template_field['type_code'] = 'id';
+						}
 
 						db_execute_prepared('REPLACE INTO data_input_data 
 							(data_input_field_id, data_template_data_id, value) 
