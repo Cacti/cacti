@@ -109,7 +109,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 		foreach ($graph_array as $graph) {
 			if ($i == 0) {
-				print "<tr class='formRow'>\n";
+				print "<tr class='tableRow'>\n";
 			}
 
 			?>
@@ -224,7 +224,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			}
 
 			if ($i == 0) {
-				print "<tr class='formRow'>\n";
+				print "<tr class='tableRow'>\n";
 				$start = false;
 			}
 
@@ -390,6 +390,13 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 
 	$i = 1;
 	foreach ($header_items as $db_column => $display_array) {
+		$isSort = '';
+		if (isset($display_array['nohide'])) {
+			$nohide = 'nohide';
+		}else{
+			$nohide = '';
+		}
+
 		if (array_key_exists('display', $display_array)) {
 			$display_text = $display_array['display'];
 			if ($sort_column == $db_column) {
@@ -422,8 +429,6 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 					}else{
 						$direction = 'ASC';
 					}
-
-					$isSort = false;
 				}
 			}
 
@@ -470,7 +475,6 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 				}
 
 				$display_text = $display_array[0];
-				$isSort = false;
 			}
 
 			$align = 'left';
@@ -486,9 +490,9 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " style='padding:4px;text-align:$align;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " class='$nohide $align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
 		}else{
-			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " class='sortable" . ($isSort ? " $isSort":'') . "' style='padding:4px;text-align:$align;'>";
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " class='sortable $align $nohide $isSort'>";
 			print "<div class='sortinfo' sort-page='" . ($url == '' ? htmlspecialchars(get_current_page(false)):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 
@@ -546,7 +550,14 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	print "<tr class='tableHeader'>\n";
 
 	foreach($header_items as $db_column => $display_array) {
-		$icon = '';
+		$isSort = '';
+		if (isset($display_array['nohide'])) {
+			$nohide = 'nohide';
+		}else{
+			$nohide = '';
+		}
+
+		$icon   = '';
 		if (array_key_exists('display', $display_array)) {
 			$display_text = $display_array['display'];
 			if ($sort_column == $db_column) {
@@ -573,8 +584,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 						$isSort = 'secondarySort';
 					}
 				}else{
-					$icon   = '';
-					$isSort = false;
+					$icon = '';
 					if (isset($display_array['sort'])) {
 						$direction = $display_array['sort'];
 					}else{
@@ -621,9 +631,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 						$isSort = 'secondarySort';
 					}
 				}else{
-					$icon   = '';
-					$isSort = false;
-
+					$icon = '';
 					$direction = $display_array[1];
 				}
 
@@ -643,9 +651,9 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " style='text-align:$align;'>" . $display_text . "</th>\n";
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " class='$align $nohide'>" . $display_text . "</th>\n";
 		}else{
-			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " class='sortable" . ($isSort ? " $isSort":'') . "' style='text-align:$align;'>";
+			print '<th ' . ($tip != '' ? "title='" . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . "'":'') . " class='sortable $align $nohide $isSort'>";
 			print "<div class='sortinfo' sort-page='" . htmlspecialchars($form_action, ENT_QUOTES, 'UTF-8') . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
 		}
 	}
@@ -663,12 +671,27 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 function html_header($header_items, $last_item_colspan = 1) {
 	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>\n";
 
-	for ($i=0; $i<count($header_items); $i++) {
-		if (is_array($header_items[$i])) {
-			print "<th style='text-align:" . $header_items[$i]['align'] . ";' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i]['display'] . "</th>\n";
+	$i = 0;
+	foreach($header_items as $item) {
+		if (is_array($item)) {
+			if (isset($item['nohide'])) {
+				$nohide = 'nohide';
+			}else{
+				$nohide = '';
+			}
+
+			if (isset($item['align'])) {
+				$align = $item['align'];
+			}else{
+				$align = 'left';
+			}
+
+			print "<th class='$nohide $align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item['display'] . "</th>\n";
 		}else{
-			print "<th style='text-align:left;' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $header_items[$i] . "</th>\n";
+			print "<th class='$align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item . "</th>\n";
 		}
+
+		$i++;
 	}
 
 	print "</tr>\n";
@@ -702,11 +725,23 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 
 	print "<tr class='tableHeader " . (!$resizable ? 'tableFixed':'') . "'>\n";
 
-	for ($i=0; $i<count($header_items); $i++) {
-		if (is_array($header_items[$i])) {
-			print "<th style='padding:4px;text-align:" . $header_items[$i]['align'] . ";'>" . $header_items[$i]['display'] . "</td>";
+	foreach($header_items as $item) {
+		if (is_array($item)) {
+			if (isset($item['nohide'])) {
+				$nohide = 'nohide';
+			} else {
+				$nohide = '';
+			}
+
+			if (isset($item['align'])) {
+				$align = $item['align'];
+			} else {
+				$align = 'left';
+			}
+
+			print "<th class='$align $nohide'>" . $item['display'] . "</td>";
 		}else{
-			print "<th style='padding:4px;text-align:left;'>" . $header_items[$i] . "</th>\n";
+			print "<th class='left'>" . $item . "</th>\n";
 		}
 	}
 
@@ -838,9 +873,9 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			/* alternating row color */
 			if ($use_custom_class == false) {
-				print "<tr class='formRow'>\n";
+				print "<tr class='tableRow'>\n";
 			}else{
-				print "<tr class='$customClass'>";
+				print "<tr class='tableRow $customClass'>";
 			}
 
 			print '<td>';
