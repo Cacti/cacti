@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#615: Data Input field length too short for longer scripts
 -issue#619: Export logging option in settings no longer used
 -issue#635: Error when saving change to data template
+-issue#637: When displaying tree graphs, use the same layout as preview mode
 
 1.1.4
 -issue#524: Reporting not working when Tree branch is device

@@ -107,73 +107,9 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 			print $header;
 		}
 
-		$start = true;
 		foreach ($graph_array as $graph) {
-			if (isset($graph['graph_template_name'])) {
-				if (isset($prev_graph_template_name)) {
-					if ($prev_graph_template_name != $graph['graph_template_name']) {
-						$print  = true;
-						$prev_graph_template_name = $graph['graph_template_name'];
-					}else{
-						$print = false;
-					}
-				}else{
-					$print  = true;
-					$prev_graph_template_name = $graph['graph_template_name'];
-				}
-
-				if ($print) {
-					print "<tr class='templateHeader'>
-						<td colspan='$columns' class='textHeaderDark'>
-							" . __('Graph Template:') . ' ' . htmlspecialchars($graph['graph_template_name']) . "
-						</td>
-					</tr>\n";
-					$i = 0;
-				}
-			}elseif (isset($graph['data_query_name'])) {
-				if (isset($prev_data_query_name)) {
-					if ($prev_data_query_name != $graph['data_query_name']) {
-						$print  = true;
-						$prev_data_query_name = $graph['data_query_name'];
-					}else{
-						$print = false;
-					}
-				}else{
-					$print  = true;
-					$prev_data_query_name = $graph['data_query_name'];
-				}
-
-				if ($print) {
-					if (!$start) {
-						while(($i % $columns) != 0) {
-							print "<td style='text-align:center;width:" . round(100 / $columns, 2) . "%;'></td>\n";
-							$i++;
-						}
-
-						print "</tr>\n";
-					}
-
-					print "<tr class='tableHeader'>
-							<td colspan='$columns' class='graphSubHeaderColumn textHeaderDark'>" . __('Data Query:') . ' ' . $graph['data_query_name'] . "</td>
-						</tr>\n";
-					$i = 0;
-				}
-
-				if (!isset($prev_sort_field_value) || $prev_sort_field_value != $graph['sort_field_value']){
-					$prev_sort_field_value = $graph['sort_field_value'];
-					print "<tr class='templateHeader'>
-						<td colspan='$columns' class='textHeaderDark'>
-							" . $graph['sort_field_value'] . "
-						</td>
-					</tr>\n";
-					$i = 0;
-					$j = 0;
-				}
-			}
-
 			if ($i == 0) {
 				print "<tr class='formRow'>\n";
-				$start = false;
 			}
 
 			?>
@@ -195,24 +131,19 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 			<?php
 
 			$i++;
-			$k++;
 
-			if (($i % $columns) == 0 && ($k < $num_graphs)) {
-				$i=0;
-				$j++;
+			if (($i % $columns) == 0) {
+				$i = 0;
 				print "</tr>\n";
-				$start = true;
 			}
 		}
 
-		if (!$start) {
-			while(($i % $columns) != 0) {
-				print "<td style='text-align:center;width:" . round(100 / $columns, 2) . "%;'></td>";
-				$i++;
-			}
-
-			print "</tr>\n";
+		while(($i % $columns) != 0) {
+			print "<td style='text-align:center;width:" . round(100 / $columns, 2) . "%;'></td>";
+			$i++;
 		}
+
+		print "</tr>\n";
 	}else{
 		if ($no_graphs_message != '') {
 			print "<td><em>$no_graphs_message</em></td>";
