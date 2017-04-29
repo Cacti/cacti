@@ -1251,9 +1251,8 @@ function upgrade_to_1_0_0() {
 	db_install_add_column ('colors', array('name' => 'name', 'type' => 'varchar(40)', 'default' => '', 'after' => 'id'));
 	db_install_add_column ('colors', array('name' => 'read_only', 'type' => 'char(2)', 'default' => '', 'after' => 'hex'));
 
-	if (file_exists(dirname(__FILE__) . '/import_colors.php')) {
-		shell_exec('php -q ' . dirname(__FILE__) . '/import_colors.php');
-	}
+	// import remaining colors into database
+	import_colors();
 	
 	db_install_execute("ALTER TABLE settings MODIFY COLUMN value varchar(2048) NOT NULL default ''");
 	if (db_table_exists('settings_graphs', false)) {
