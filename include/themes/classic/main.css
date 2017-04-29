@@ -11,6 +11,15 @@ body, table, tr, td, textarea {
 	font-size: 10px;
 }
 
+textarea {
+	padding: 5px;
+	width: 400px;
+	height: 100px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 body {
 	background-color: #ffffff;
 	background-repeat: repeat-y;
@@ -23,7 +32,7 @@ table {
 }
 
 td, th, select {
-	padding: 2px;
+	padding: 0px;
 	margin: 0px;
 }
 
@@ -62,6 +71,17 @@ th .fa {
 	height: 100%;
 }
 
+input {
+	padding: 0.4em;
+	font-size: 12px;
+	max-width: 400px;
+}
+
+select {
+	padding: 0.5em 0.5em 0.5em 0.5em;
+	font-size: 12px;
+}
+
 tr.selected {
 	background-color: khaki;
 }
@@ -84,6 +104,8 @@ label {
 
 .center {
 	text-align:center !important;
+	margin-left:auto;
+	margin-right:auto;
 }
 
 .usermenudown {
@@ -146,6 +168,10 @@ label {
 }
 
 .running {
+	color:orange;
+}
+
+.errored {
 	color:red;
 	font-weight:bold;
 }
@@ -646,6 +672,7 @@ ul#breadcrumbs {
 }
 
 .cactiContent {
+	clear: both;
 	width: 100%;
 	height: 100%;
 	vertical-align: top;
@@ -790,7 +817,7 @@ legend {
 	float: right;
 	margin-top: 1px;
 	margin-left: 3px;
-	display: table-cell;
+	display: table-column;
 }
 
 .actionsDropdownArrow {
@@ -999,7 +1026,7 @@ legend {
 	text-align: left;
 	padding: 2px 0px;
 	height: 16px;
-	display: table-cell;
+	display: table-column;
 	width: 90%;
 	background-color: #00438c;
 }
@@ -1008,7 +1035,7 @@ legend {
 	float: right;
 	padding: 2px 0px;
 	height: 16px;
-	display: table-cell;
+	display: table-column;
 	text-align: right;
 	width: 10%;
 	background-color: #00438c;
@@ -1030,13 +1057,131 @@ legend {
 
 .filterTable td:first-child {
 	width:55px;
+	min-width:55px;
 }
 
-.formItemDescription {
+.filterTable td {
+	padding: 2px;
 }
 
-.formItemName {
+.formRow {
+	display: table;
+	width: 100%;
+	line-height: 30px;
+}
+
+.formColumn {
+	float: left;
+	display: table-column;
+}
+
+.formColumnLeft {
+	float: left;
+	display: table-column;
+	padding-left: 4px;
+	width: 28%;
+}
+
+.formColumnRight {
+	float: left;
+	display: table-column;
+	width: 70%;
+}
+
+.formData {
+	display: inline-block;
+	float: left;
+}
+
+.formFieldName {
+	display: inline-block;
+	color: #444;
+	float: left;
+	text-align: left;
+	white-space: nowrap;
+}
+
+.formFieldDescription {
+	float: left;
+	text-align: left;
+}
+
+.formTooltip {
+	display: inline-block;
+	padding-left: 4px;
+}
+
+.formHeader {
+	float: left;
+	width: 100%;
+	text-align: left;
+	line-height: 20px;
+	color: #ffffff;
 	font-weight:bold;
+	cursor: pointer;
+	vertical-align:middle;
+	text-align:left;
+	border-right: 1px groove #efefef;
+	font-size:11px;
+	background-color: #6d88ad !important;
+}
+
+.formHeaderText {
+	padding-left: 3px;
+}
+
+.formHeaderAnchor {
+	float:right;
+	padding-right:4px;
+}
+
+.hostInfoHeader {
+	width: 100%;
+}
+
+@media screen and (max-width: 640px) {
+	.formRow {
+		display: table;
+		width: 100%;
+		line-height: 30px;
+	}
+
+	.formColumn {
+		float: left;
+		display: table-row;
+	}
+
+	.formColumnLeft {
+		float: left;
+		display: table-row;
+		width: 100%;
+	}
+
+	.formColumnRight {
+		float: left;
+		display: table-row;
+		width: 100%;
+}
+
+	.formFieldName {
+		color: #444;
+		float: left;
+		text-align: left;
+		white-space: nowrap;
+	}
+
+	.formData {
+		float: left;
+	}
+
+	.hostInfoHeader {
+		overflow: hidden;
+	}
+
+	.queryAdd, .templateAdd, .navBar, #ping_results {
+		display: none;
+}
+
 }
 
 .graphItem {
@@ -1106,6 +1251,7 @@ legend {
 	vertical-align:middle;
 	text-align:left;
 	cursor:pointer;
+	padding-left: 3px;
 }
 
 .graphSubHeaderColumn {
@@ -1318,7 +1464,7 @@ legend {
     float:left !important;
     padding:5px 4px;
     text-decoration:none;
-    font-size: 11px;
+    font-size: 9px;
 	border-color: #999 #666 !important;
     border-style: solid solid none;
     border-width: 1px 1px medium;
@@ -1329,6 +1475,9 @@ div#tabs {
 	padding-bottom: 0px;
 	float: left;
 	vertical-align: bottom;
+	height: 38px;
+	overflow: hidden;
+	width: 60%;
 }
 
 td#tabs {
@@ -1347,6 +1496,8 @@ div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
 	float:right;
+	height: 38px;
+	overflow: hidden;
 }
 
 .tabs {

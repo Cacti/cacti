@@ -1,5 +1,20 @@
 /* main styles */
 
+::-webkit-scrollbar {
+    width: 8px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(22,22,6,0.7); 
+    border-radius: 6px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+	background: rgba(49,68,43,0.8); 
+    -webkit-box-shadow: inset 0 0 4px rgba(49,68,43,0.5); 
+}
+
 html, body {
 	height: 100%;
 	width: 100%;
@@ -14,6 +29,15 @@ body, table, tr, td, textarea {
 	color: #000000;
 }
 
+textarea {
+	padding: 5px;
+	width: 400px;
+	height: 100px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 body {
 	background-color: snow;
 	background-repeat: repeat-y;
@@ -26,13 +50,23 @@ table {
 }
 
 td, th {
-	padding: 2px;
+	padding: 0px;
 	margin: 0px;
 }
 
 img {
 	border:none;
 	vertical-align:middle;
+}
+
+fieldset {
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.reindex_methods span {
+	font-size: 9px;
 }
 
 /* links */
@@ -62,8 +96,15 @@ th i.fa {
 	z-index: 3;
 }
 
-input, select {
-	padding: 0.4em 0.4em 0.4em 0.4em;
+input {
+	padding: 0.4em;
+	font-size: 12px;
+	max-width: 400px;
+}
+
+select {
+	padding: 0.5em 0.5em 0.5em 0.5em;
+	font-size: 12px;
 }
 
 *:focus {
@@ -74,15 +115,6 @@ label {
 	white-space:nowrap;
 }
 
-fieldset {
-	border: none;
-	padding: 0px;
-	margin: 0px;
-}
-
-.reindex_methods span {
-	font-size: 9px;
-}
 
 .nowrap {
 	white-space:nowrap;
@@ -102,6 +134,8 @@ fieldset {
 
 .center {
 	text-align:center !important;
+	margin-left:auto;
+	margin-right:auto;
 }
 
 .usermenudown {
@@ -170,6 +204,10 @@ fieldset {
 }
 
 .running {
+	color:orange;
+}
+
+.errored {
 	color:red;
 }
 
@@ -708,6 +746,7 @@ ul#breadcrumbs {
 }
 
 .cactiContent {
+	clear: both;
 	width: 100%;
 	vertical-align: top;
 	padding-top: 56px;
@@ -1080,7 +1119,6 @@ legend {
 	background: -o-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
 	background: -ms-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
 	background: linear-gradient(to bottom, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313', GradientType=0 );
 }
 
 .templateHeader td {
@@ -1169,13 +1207,128 @@ legend {
 
 .filterTable td:first-child {
 	width:55px;
+	min-width:55px;
 }
 
-.formItemDescription {
+.filterTable td {
+	padding: 2px;
 }
 
-.formItemName {
-	font-weight:normal;
+.formRow {
+	display: table;
+	width: 100%;
+	line-height: 30px;
+}
+
+.formColumn {
+	float: left;
+	display: table-column;
+}
+
+.formColumnLeft {
+	float: left;
+	display: table-column;
+	width: 30%;
+}
+
+.formColumnRight {
+	float: left;
+	display: table-column;
+	width: 70%;
+}
+
+.formData {
+	display: inline-block;
+	float: left;
+}
+
+.formFieldName {
+	display: inline-block;
+	color: #444;
+	float: left;
+	text-align: left;
+	white-space: nowrap;
+	padding-left: 3px;
+}
+
+.formFieldDescription {
+	float: left;
+	text-align: left;
+}
+
+.formTooltip {
+	display: inline-block;
+	padding-left: 4px;
+}
+
+.formHeader {
+	float: left;
+	width: 100%;
+	text-align: left;
+	line-height: 20px;
+	background: rgba(138,179,105,1);
+	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+}
+
+.formHeaderText {
+	padding-left: 3px;
+}
+
+.formHeaderAnchor {
+	float:right;
+	padding-right:4px;
+}
+
+.hostInfoHeader {
+	width: 100%;
+}
+
+@media screen and (max-width: 640px) {
+	.formRow {
+		display: table;
+		width: 100%;
+		line-height: 30px;
+	}
+
+	.formColumn {
+		float: left;
+		display: table-row;
+	}
+
+	.formColumnLeft {
+		float: left;
+		display: table-row;
+		width: 100%;
+	}
+
+	.formColumnRight {
+		float: left;
+		display: table-row;
+		width: 100%;
+	}
+
+	.formFieldName {
+		color: #444;
+		float: left;
+		text-align: left;
+		white-space: nowrap;
+		padding-left: 3px;
+	}
+
+	.formData {
+		float: left;
+	}
+
+	.hostInfoHeader {
+		overflow: hidden;
+	}
+
+	.queryAdd, .templateAdd, .navBar, #ping_results {
+		display: none;
+	}
 }
 
 .graphItem {
@@ -1278,7 +1431,7 @@ th.secondarySort {
 	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 }
 
-.formRow {
+.tableRow {
 	line-height: 20px;
 }
 
@@ -1567,6 +1720,11 @@ div#gtabs {
 	height: 30px;
 }
 
+.maintabs {
+	overflow: hidden;
+	height: 25px;
+}
+
 .tabs a, .maintabs a {
 	-moz-border-radius:5px 5px 0 0;
 	border-radius:5px 5px 0 0;
@@ -1788,6 +1946,10 @@ ul#nav {
 	opacity: 0.95;
 	border-radius: 5px !important;
 	border: transparent;
+}
+
+.ui-button-text-only .ui-button-text {
+    padding: 0.4em;
 }
 
 div.preformatted {

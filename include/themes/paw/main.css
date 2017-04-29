@@ -14,6 +14,17 @@ body {
     overflow: hidden;
 }
 
+textarea {
+	font-family: 'Segoe UI', 'Segoe UI Web Regular', 'Segoe UI Symbol', 'Helvetica Neue', 'BBAlpha Sans', 'S60 Sans', Arial, sans-serif;
+	font-size: 1.0em;
+	padding: 5px;
+	width: 400px;
+	height: 100px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 table {
 	border-collapse: collapse; border-spacing: 0; 
 	border: none;
@@ -21,7 +32,7 @@ table {
 }
 
 td, th {
-	padding: 2px;
+	padding: 0px;
 	margin: 0px;
 }
 
@@ -32,6 +43,16 @@ th {
 img {
 	border:none;
 	vertical-align:middle;
+}
+
+fieldset {
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.reindex_methods span {
+	font-size: 9px;
 }
 
 /* links */
@@ -69,15 +90,6 @@ label {
 	white-space:nowrap;
 }
 
-fieldset {
-	border: none;
-	padding: 0px;
-	margin: 0px;
-}
-
-.reindex_methods span {
-	font-size: 9px;
-}
 
 .nowrap {
 	white-space:nowrap;
@@ -1026,13 +1038,122 @@ legend {
 
 .filterTable td:first-child {
 	width:55px;
+	min-width:55px;
 }
 
-.formItemDescription {
+.filterTable td {
+	padding: 2px;
 }
 
-.formItemName {
-	font-weight:bold;
+.formRow {
+	display: table;
+	width: 100%;
+	line-height: 40px;
+}
+
+.formColumn {
+	float: left;
+	display: table-column;
+}
+
+.formColumnLeft {
+	float: left;
+	display: table-column;
+	width: 30%;
+}
+
+.formColumnRight {
+	float: left;
+	display: table-column;
+	width: 70%;
+}
+
+.formData {
+	display: inline-block;
+	float: left;
+}
+
+.formFieldName {
+	display: inline-block;
+	color: #000000;
+	float: left;
+	text-align: left;
+	white-space: nowrap;
+	padding-left: 3px;
+}
+
+.formFieldDescription {
+	float: left;
+	text-align: left;
+}
+
+.formTooltip {
+	display: inline-block;
+}
+
+.formHeader {
+	float: left;
+	width: 100%;
+	text-align: left;
+	line-height: 25px;
+
+}
+
+.formHeaderAnchor {
+	float:right;
+	padding-right:4px;
+}
+
+.hostInfoHeader {
+	width: 100%;
+}
+
+@media screen and (max-width: 640px) {
+	.formRow {
+		display: table;
+		width: 100%;
+		line-height: 30px;
+	}
+
+	.formColumn {
+		float: left;
+		display: table-row;
+		color: #000000;
+	}
+
+	.formColumnLeft {
+		float: left;
+		display: table-row;
+		width: 100%;
+		color: #000000;
+	}
+
+	.formColumnRight {
+		float: left;
+		display: table-row;
+		width: 100%;
+		color: #000000;
+	}
+
+	.formFieldName {
+		color: snow;
+		float: left;
+		text-align: left;
+		white-space: nowrap;
+		padding-left: 3px;
+	}
+
+	.formData {
+		float: left;
+}
+
+	.hostInfoHeader {
+		overflow: hidden;
+	}
+
+	.queryAdd, .templateAdd, .navBar, #ping_results {
+		display: none;
+	}
 }
 
 .graphItem {

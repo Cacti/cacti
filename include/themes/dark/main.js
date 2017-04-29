@@ -82,6 +82,8 @@ function themeReady() {
 		$('.import_text').html(fileText);
 	}
 
+	maxWidth = 280;
+
 	$('select').each(function() {
 		if ($(this).prop('multiple') != true) {
 			$(this).selectmenu({
@@ -104,7 +106,12 @@ function themeReady() {
 				});
 
 				minWidth+=80;
-				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', '400px').css('width','');
+
+				if (minWidth > maxWidth) {
+					minWidth = maxWidth;
+				}
+
+				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', maxWidth+'px').css('width','');
 				$('#'+id+'-menu').css('max-height', '250px');
 			});
 		}else{
