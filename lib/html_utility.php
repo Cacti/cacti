@@ -42,41 +42,41 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 
 	/* loop through each available field */
 	if (sizeof($form_array)) {
-	foreach ($form_array as $field_name => $field_array) {
-		/* loop through each sub-field that we are going to check for variables */
-		foreach ($check_fields as $field_to_check) {
-			if (isset($field_array[$field_to_check]) && (is_array($form_array[$field_name][$field_to_check]))) {
-				/* if the field/sub-field combination is an array, resolve it recursively */
-				$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
-			}elseif (isset($field_array[$field_to_check]) && (!is_array($field_array[$field_to_check])) && (preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $field_array[$field_to_check], $matches))) {
-				$string = $field_array[$field_to_check];
-				while ( 1 ) {
-					/* an empty field name in the variable means don't treat this as an array */
-					if ($matches[2] == '') {
-						if (is_array(${$matches[1]})) {
-							/* the existing value is already an array, leave it alone */
-							$form_array[$field_name][$field_to_check] = ${$matches[1]};
-							break;
-						}else{
-							/* the existing value is probably a single variable */
-							$form_array[$field_name][$field_to_check] = str_replace($matches[0], ${$matches[1]}, $field_array[$field_to_check]);
-							break;
-						}
-					}else{
-						/* copy the value down from the array/key specified in the variable */
-						$string = str_replace($matches[0], ((isset(${$matches[1]}{$matches[2]})) ? ${$matches[1]}{$matches[2]} : ''), $string);
+		foreach ($form_array as $field_name => $field_array) {
+			/* loop through each sub-field that we are going to check for variables */
+			foreach ($check_fields as $field_to_check) {
+				if (isset($field_array[$field_to_check]) && is_array($form_array[$field_name][$field_to_check])) {
+					/* if the field/sub-field combination is an array, resolve it recursively */
+					$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
+				} elseif (isset($field_array[$field_to_check]) && !is_array($field_array[$field_to_check]) && preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $field_array[$field_to_check], $matches)) {
+					$string = $field_array[$field_to_check];
+					while ( 1 ) {
+						/* an empty field name in the variable means don't treat this as an array */
+						if ($matches[2] == '') {
+							if (is_array(${$matches[1]})) {
+								/* the existing value is already an array, leave it alone */
+								$form_array[$field_name][$field_to_check] = ${$matches[1]};
+								break;
+							} else {
+								/* the existing value is probably a single variable */
+								$form_array[$field_name][$field_to_check] = str_replace($matches[0], ${$matches[1]}, $field_array[$field_to_check]);
+								break;
+							}
+						} else {
+							/* copy the value down from the array/key specified in the variable */
+							$string = str_replace($matches[0], (isset(${$matches[1]}{$matches[2]}) ? ${$matches[1]}{$matches[2]} : ''), $string);
 
-						$matches = array();
-						preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
-						if (!sizeof($matches)) {
-							$form_array[$field_name][$field_to_check] = $string;
-							break;
+							$matches = array();
+							preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
+							if (!sizeof($matches)) {
+								$form_array[$field_name][$field_to_check] = $string;
+								break;
+							}
 						}
 					}
 				}
 			}
 		}
-	}
 	}
 
 	return $form_array;
@@ -90,21 +90,21 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
    @arg $row_id - used to allow js and ajax actions on this object
    @returns - the background color used for this particular row */
 function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = '') {
-	if (($row_value % 2) == 1) {
+	if ($row_value % 2 == 1) {
 			$class='odd';
 			$current_color = $row_color1;
-	}else{
+	} else {
 		if ($row_color2 == '' || $row_color2 == 'E5E5E5') {
 			$class = 'even';
-		}else{
+		} else {
 			$class = 'even-alternate';
 		}
 		$current_color = $row_color1;
 	}
 
-	if (strlen($row_id)) {
+	if ($row_id != '') {
 		print "<tr class='$class selectable formRow' id='$row_id'>\n";
-	}else{
+	} else {
 		print "<tr class='$class formRow'>\n";
 	}
 
@@ -118,25 +118,23 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
 function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	static $i = 1;
 
-	if (($i % 2) == 1) {
+	if ($i % 2 == 1) {
 		$class = 'odd';
-	}else{
-		if ($light) {
-			$class = 'even-alternate';
-		}else{
-			$class = 'even';
-		}
+	} elseif ($light) {
+		$class = 'even-alternate';
+	} else {
+		$class = 'even';
 	}
 
 	$i++;
 
-	if (strlen($row_id) && substr($row_id,0,4) != 'row_' && !$disabled) {
+	if ($row_id != '' && !$disabled && substr($row_id, 0, 4) != 'row_') {
 		print "<tr class='$class selectable formRow' id='$row_id'>\n";
-	}elseif (substr($row_id,0,4) == 'row_') {
+	} elseif (substr($row_id, 0, 4) == 'row_') {
 		print "<tr class='$class formRow' id='$row_id'>\n";
-	}elseif (strlen($row_id)) {
+	} elseif ($row_id != '') {
 		print "<tr class='$class formRow' id='$row_id'>\n";
-	}else{
+	} else {
 		print "<tr class='$class formRow'>\n";
 	}
 }
@@ -206,11 +204,7 @@ function form_confim_buttons($post_variable, $item_array, $save_message, $return
    @arg $html_boolean - the value of the HTML checkbox
    @returns - true or false based on the value of the HTML checkbox */
 function html_boolean($html_boolean) {
-	if ($html_boolean == "on") {
-		return true;
-	}else{
-		return false;
-	}
+	return ($html_boolean == "on");
 }
 
 /* html_boolean_friendly - returns the natural language equivalent of an HTML
@@ -221,7 +215,7 @@ function html_boolean($html_boolean) {
 function html_boolean_friendly($html_boolean) {
 	if ($html_boolean == "on") {
 		return "Selected";
-	}else{
+	} else {
 		return "Not Selected";
 	}
 }
@@ -238,11 +232,9 @@ function get_checkbox_style() {
    @arg $default - The default action is not set
    @returns - null */
 function set_default_action($default = '') {
-	global $_CACTI_REQUEST;
-
-	if (!isset_request_var('action')) { 
+	if (!isset_request_var('action')) {
 		set_request_var('action', $default);
-	}else{
+	} else {
 		set_request_var('action', $_REQUEST['action']);
 	}
 }
@@ -791,16 +783,9 @@ function load_current_session_value($request_var_name, $session_var_name, $defau
    @arg $status - the status type of the device as defined in global_constants.php
    @returns - a string containing html that represents the device's current status */
 function get_colored_device_status($disabled, $status) {
-	$status_colors = array(
-		HOST_DOWN       => 'deviceDown',
-		HOST_ERROR      => 'deviceError',
-		HOST_RECOVERING => 'deviceRecovering',
-		HOST_UP         => 'deviceUp'
-	);
-
 	if ($disabled) {
 		return "<span class='deviceDisabled'>" . __('Disabled') . "</span>";
-	}else{
+	} else {
 		switch ($status) {
 			case HOST_DOWN:
 				return "<span class='deviceDown'>" . __('Down') . "</span>"; 
