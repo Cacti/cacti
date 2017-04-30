@@ -19,12 +19,12 @@ html, body {
 	height: 100%;
 	width: 100%;
 	margin: 0px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 body {
 	background: #161616 none repeat scroll 0 0;
 	color: #bbbfc2;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 12px;
 }
 
@@ -40,6 +40,11 @@ textarea {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 1.0em;
 	padding: 5px;
+	width: 400px;
+	height: 100px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 table {
@@ -49,7 +54,7 @@ table {
 }
 
 td, th {
-	padding: 2px;
+	padding: 0px;
 	margin: 0px;
 }
 
@@ -96,7 +101,13 @@ th i.fa {
 	z-index: 3;
 }
 
-input, select {
+input {
+	padding: 0.5em 0.5em 0.5em 0.5em;
+	font-size: 12px;
+	max-width: 400px;
+}
+
+select {
 	padding: 0.5em 0.5em 0.5em 0.5em;
 	font-size: 12px;
 }
@@ -1131,6 +1142,7 @@ legend {
 	color: snow;
 	font-weight: normal;
 	padding: 2px;
+	white-space: nowrap;
 }
 
 .cactiTable {
@@ -1154,6 +1166,10 @@ legend {
 	background: -webkit-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -ms-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
+}
+
+.cactiTableTitle span {
+	padding-left: 3px;
 }
 
 .cactiTableButton {
@@ -1184,11 +1200,119 @@ legend {
 	min-width:55px;
 }
 
-.formItemDescription {
+.filterTable td {
+	padding: 2px;
 }
 
-.formItemName {
-	color:snow;
+.formRow {
+	display: table;
+	width: 100%;
+	line-height: 35px;
+}
+
+.formColumn {
+	float: left;
+	display: table-column;
+}
+
+.formColumnLeft {
+	float: left;
+	display: table-column;
+	width: 30%;
+}
+
+.formColumnRight {
+	float: left;
+	display: table-column;
+	width: 70%;
+}
+
+.formData {
+	display: inline-block;
+	float: left;
+}
+
+.formFieldName {
+	display: inline-block;
+	color: snow;
+	float: left;
+	text-align: left;
+	white-space: nowrap;
+	padding-left: 3px;
+}
+
+.formFieldDescription {
+	float: left;
+	text-align: left;
+}
+
+.formTooltip {
+	display: inline-block;
+}
+
+.formHeader {
+	float: left;
+	width: 100%;
+	text-align: left;
+	line-height: 25px;
+	background: -moz-linear-gradient(top,  #45484d 0%, #000000 100%); /* FF3.6+ */
+	background: -webkit-linear-gradient(top,  #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #45484d 0%,#000000 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #45484d 0%,#000000 100%); /* IE10+ */
+}
+
+.formHeaderAnchor {
+	float:right;
+	padding-right:4px;
+}
+
+.hostInfoHeader {
+	width: 100%;
+}
+
+@media screen and (max-width: 640px) {
+	.formRow {
+		display: table;
+		width: 100%;
+		line-height: 30px;
+	}
+
+	.formColumn {
+		float: left;
+		display: table-row;
+	}
+
+	.formColumnLeft {
+		float: left;
+		display: table-row;
+		width: 100%;
+	}
+
+	.formColumnRight {
+		float: left;
+		display: table-row;
+		width: 100%;
+	}
+
+	.formFieldName {
+		color: snow;
+		float: left;
+		text-align: left;
+		white-space: nowrap;
+		padding-left: 3px;
+	}
+
+	.formData {
+		float: left;
+	}
+
+	.hostInfoHeader {
+		overflow: hidden;
+	}
+
+	.queryAdd, .templateAdd, .navBar, #ping_results {
+		display: none;
+	}
 }
 
 .graphItem {
@@ -1271,6 +1395,7 @@ th.secondarySort {
 	vertical-align:middle;
 	text-align:left;
 	cursor:pointer;
+	padding-left: 3px;
 }
 
 .graphSubHeaderColumn {
@@ -1540,6 +1665,7 @@ div#tabs {
 	vertical-align: bottom;
 	position: fixed;
 	top: 5px;
+	width: 70%;
 }
 
 td#tabs {
@@ -1564,6 +1690,11 @@ div#gtabs {
 	right: 5px;
 	top: 5px;
 	height: 30px;
+}
+
+.maintabs {
+	overflow: hidden;
+	height: 25px;
 }
 
 .tabs a, .maintabs a {
@@ -1762,6 +1893,10 @@ ul#nav {
 	opacity: 0.95;
 	border-radius: 5px !important;
 	border: transparent;
+}
+
+.ui-button-text-only .ui-button-text {
+    padding: 0.4em;
 }
 
 div.preformatted {

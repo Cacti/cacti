@@ -1768,16 +1768,6 @@ function get_web_browser() {
 	}
 }
 
-/* get_graph_tree_array - returns a list of graph trees taking permissions into account if
-     necessary
-   @arg $return_sql - (bool) Whether to return the SQL to create the dropdown rather than an array
-	@arg $force_refresh - (bool) Force the refresh of the array from the database
-	@arg $edit - (bool) Shows the content even though the graph may not be published
-   @returns - (array) an array containing a list of graph trees */
-function get_graph_tree_array($return_sql = false, $force_refresh = false, $edit = false) {
-	return get_allowed_trees($edit, $return_sql);
-}
-
 /* draw_login_status - provides a consistent login status page for all pages that use it */
 function draw_login_status($using_guest_account = false) {
 	global $config;

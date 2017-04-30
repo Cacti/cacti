@@ -1573,12 +1573,13 @@ CREATE TABLE graph_template_input_defs (
 --
 
 CREATE TABLE graph_templates (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  hash char(32) NOT NULL default '',
-  name char(255) NOT NULL default '',
-  PRIMARY KEY (id)) 
-  ENGINE=InnoDB 
-  COMMENT='Contains each graph template name.';
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `hash` char(32) NOT NULL default '',
+  `name` char(255) NOT NULL default '',
+  `multiple` char(2) NOT NULL default '',
+  PRIMARY KEY (`id`),
+  KEY `multiple_name` (`multiple`, `name`)
+) ENGINE=InnoDB COMMENT='Contains each graph template name.';
 
 --
 -- Dumping data for table `graph_templates`
@@ -2342,7 +2343,8 @@ CREATE TABLE snmp_query_graph (
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   name varchar(100) NOT NULL default '',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  KEY `graph_template_id_name` (`graph_template_id`, `name`)
 ) ENGINE=InnoDB;
 
 --
