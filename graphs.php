@@ -1187,7 +1187,7 @@ function item() {
    ------------------------------------ */
 
 function graph_edit() {
-	global $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
+	global $config, $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -1239,13 +1239,13 @@ function graph_edit() {
 			exit;
 		}
 
-		$header_label = __('Graph Template Selection [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));
+		$header_label = __('Graph [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));
 
 		if ($graph['graph_template_id'] == '0') {
 			$use_graph_template = 'false';
 		}
 	}else{
-		$header_label = __('Graph Template Selection [new]');
+		$header_label = __('Graph [new]');
 		$use_graph_template = false;
 
 		if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0) {
@@ -1378,12 +1378,13 @@ function graph_edit() {
 		item();
 	}
 
+	$graph['src'] = htmlspecialchars($config['url_path'] . 'graph_json.php?local_graph_id=' . get_request_var('id') . '&rra_id=0&graph_start=' . (time()-86400) . '&graph_end=-300&v=' . mt_rand());
+
 	if (!isempty_request_var('id')) {
 		?>
 		<table style='width:100%;'>
 			<tr>
-				<td class="textInfo center" colspan="2">
-					<img <?php print ($graph['image_format_id'] == 3 ? "style='width:" . $graph['width'] . "px;height:" . $graph['height'] . "px;'":"");?> src="<?php print htmlspecialchars('graph_image.php?action=edit&disable_cache=true&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&v=' . mt_rand());?>" alt="">
+				<td id='graphLocation' class='textInfo center' colspan='2'>
 				</td>
 				<?php
 				if ((isset($_SESSION['graph_debug_mode'])) && (isset_request_var('id'))) {
@@ -1391,9 +1392,9 @@ function graph_edit() {
 					$graph_data_array['print_source'] = 1;
 					?>
 					<td>
-						<span class="textInfo"><?php print __('RRDTool Command:');?></span><br>
+						<span class='textInfo'><?php print __('RRDTool Command:');?></span><br>
 						<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
-						<span class="textInfo"><?php print __('RRDTool Says:');?></span><br>
+						<span class='textInfo'><?php print __('RRDTool Says:');?></span><br>
 						<?php unset($graph_data_array['print_source']);?>
 						<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
 					</td>
@@ -1449,9 +1450,10 @@ function graph_edit() {
 	?>
 	<script type='text/javascript'>
 
-	var locked=<?php print ($locked ? 'true':'false');?>;
-
-	dynamic();
+	var locked         = <?php print ($locked ? 'true':'false');?>;
+	var imageSource    = '<?php print $graph['src'];?>';
+	var originalWidth  = null;
+	var originalHeight = null;
 
 	function dynamic() {
 		if ($('#scale_log_units').is(':checked')) {
@@ -1472,6 +1474,8 @@ function graph_edit() {
 	}
 
 	$(function() {
+		dynamic();
+
 		$('#unlockid').click(function(event) {
 			event.preventDefault;
 
@@ -1484,11 +1488,43 @@ function graph_edit() {
 			});
 		});
 
+		$.getJSON(imageSource, function(data) {
+			$('#graphLocation').html("<img class='cactiGraphImage' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+			$(window).trigger('resize');
+		});
+
 		$('#lockid').click(function(event) {
 			event.preventDefault;
 
 			loadPageNoHeader('graphs.php?action=lock&header=false&id='+$('#local_graph_id').val());
 		});
+
+		$(window).resize(function() {
+			imageWidth    = $('.cactiGraphImage').width();
+			imageHeight   = $('.cactiGraphImage').height();
+			aspectRatio   = imageWidth/imageHeight;
+
+			if (imageWidth > 0 && originalWidth == null) {
+				originalWidth = imageWidth;
+				originalHeight = imageHeight;
+			}
+
+			$('.cactiGraphImage').hide();
+
+			mainSize      = $('#main').width();
+
+			if (imageWidth > mainSize || mainSize < originalWidth) {
+				newWidth    = mainSize - 40;
+				aspectRatio = imageWidth / imageHeight;
+				imageWidth  = newWidth;
+				imageHeight = newWidth / aspectRatio;
+				$('.cactiGraphImage').css({ width: imageWidth, height: imageHeight });
+			} else if (mainSize > originalWidth) {
+				$('.cactiGraphImage').css({ width: originalWidth, height: originalHeight });
+			}
+
+			$('.cactiGraphImage').show();
+		}).trigger('resize');
 	});
 
 	if (locked) {
