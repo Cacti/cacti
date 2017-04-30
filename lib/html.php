@@ -25,12 +25,12 @@
 /* html_start_box - draws the start of an HTML box with an optional title
    @arg $title - the title of this box ("" for no title)
    @arg $width - the width of the box in pixels or percent
-   @arg $background_color - deprecated
+   @arg $div - end with a starting div
    @arg $cell_padding - the amount of cell padding to use inside of the box
    @arg $align - the HTML alignment to use for the box (center, left, or right)
    @arg $add_text - the url to use when the user clicks 'Add' in the upper-right
      corner of the box ("" for no 'Add' link) */
-function html_start_box($title, $width, $background_color, $cell_padding, $align, $add_text, $add_label = false) {
+function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, $add_label = false) {
 	static $table_suffix = 1;
 
 	if ($add_label === false) {
@@ -48,19 +48,25 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 	$table_id = $table_prefix . $table_suffix;
 
 	if ($title != '') {
-	?>
-	<div id='<?php print $table_id;?>' class='cactiTable' style='width:<?php print $width;?>;text-align:<?php print $align;?>;'>
-		<div>
-			<div class='cactiTableTitle'><span><?php if ($title != "") { print $title; }?></span></div>
-			<div class='cactiTableButton'><span><?php if ($add_text != "") {?><a class="linkOverDark" href="<?php print htmlspecialchars($add_text);?>"><?php print $add_label;?></a><?php }?></span></div>
-		</div>
-		<table id='<?php print $table_id . '_child';?>' class='cactiTable' style='padding:<?php print $cell_padding;?>px;'>
-	<?php
+		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
+		print "<div>";
+		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
+		print "<div class='cactiTableButton'><span>" . ($add_text != '' ? "<a class='linkOverDark' href='" . htmlspecialchars($add_text) . "'>" . $add_label . '</a>':'') . '</span></div>';
+		print '</div>';
+
+		if ($div === true) {
+			print "<div id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+		}else{
+			print "<table id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+		}
 	}else{
-	?>
-	<div id='<?php print $table_id;?>' class='cactiTable' style='width:<?php print $width;?>;text-align:<?php print $align;?>;'>
-		<table id='<?php print $table_id . '_child';?>' class='cactiTable' style='padding:<?php print $cell_padding;?>px;'>
-	<?php
+		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
+
+		if ($div === true) {
+			print "<div id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+		}else{
+			print "<table id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+		}
 	}
 
 	$table_suffix++;
@@ -68,12 +74,19 @@ function html_start_box($title, $width, $background_color, $cell_padding, $align
 
 /* html_end_box - draws the end of an HTML box
    @arg $trailing_br (bool) - whether to draw a trailing <br> tag after ending
+   @arg $div (bool) - div type table
      the box */
-function html_end_box($trailing_br = true) { ?>
-		</table>
-	</div>
-	<?php if ($trailing_br == true) { print "<div class='break'></div>"; } ?>
-<?php }
+function html_end_box($trailing_br = true, $div = false) {
+	if ($div) {
+		print "</div></div>\n";
+	}else {
+		print "</table></div>\n";
+	}
+
+	if ($trailing_br == true) {
+		print "<div class='break'></div>";
+	}
+}
 
 /* html_graph_area - draws an area the contains full sized graphs
    @arg $graph_array - the array to contains graph information. for each graph in the
