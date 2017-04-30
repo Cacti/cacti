@@ -1159,8 +1159,6 @@ legend {
 	width: 100%;
 	margin-left:auto; 
 	margin-right:auto;
-	display: table;
-	height: 25px;
 	color: snow;
 }
 
@@ -1374,8 +1372,7 @@ legend {
 }
 
 .break {
-	height:8px;
-	display:inline-block;
+	height:4px;
 }
 
 .next {
