@@ -55,7 +55,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print '</div>';
 
 		if ($div === true) {
-			print "<div id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+			print "<div id='$table_id" . "_child' class='cactiTable'>";
 		}else{
 			print "<table id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
 		}
@@ -63,7 +63,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 
 		if ($div === true) {
-			print "<div id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
+			print "<div id='$table_id" . "_child' class='cactiTable'>";
 		}else{
 			print "<table id='$table_id" . "_child' class='cactiTable' style='padding:" . $cell_padding . "px;'>";
 		}
