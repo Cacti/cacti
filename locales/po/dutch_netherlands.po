@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-30 10:14+0200\n"
-"PO-Revision-Date: 2017-04-30 10:40+0200\n"
+"PO-Revision-Date: 2017-04-30 21:42+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -3798,20 +3798,20 @@ msgstr ""
 
 #: ../data_sources.php:822
 msgid "Data Source Fields"
-msgstr ""
+msgstr "Data bron velden"
 
 #: ../data_sources.php:823
 msgid "Data Source Item Fields"
-msgstr ""
+msgstr "Data bron item velden"
 
 #: ../data_sources.php:824
 msgid "Custom Data"
-msgstr ""
+msgstr "Aangepaste data"
 
 #: ../data_sources.php:908
 #, php-format
 msgid "Data Source Item %s"
-msgstr ""
+msgstr "Data bron item %s"
 
 #: ../data_sources.php:911
 msgid "New"
@@ -4211,7 +4211,7 @@ msgstr "seconden over."
 
 #: ../graph_templates.php:35
 msgid "Resize"
-msgstr ""
+msgstr "Grootte wijzigen"
 
 #: ../graph_templates.php:36
 msgid "Sync Graphs"
@@ -4361,21 +4361,21 @@ msgstr ""
 #: ../graph_templates_items.php:99 ../graph_templates_items.php:125
 #: ../graphs_items.php:118
 msgid "Cur:"
-msgstr ""
+msgstr "Hui:"
 
 #: ../graph_templates_items.php:106 ../graph_templates_items.php:132
 #: ../graphs_items.php:125
 msgid "Avg:"
-msgstr ""
+msgstr "Gem:"
 
 #: ../graph_templates_items.php:113 ../graph_templates_items.php:146
 #: ../graphs_items.php:139
 msgid "Max:"
-msgstr ""
+msgstr "Max:"
 
 #: ../graph_templates_items.php:139 ../graphs_items.php:132
 msgid "Min:"
-msgstr ""
+msgstr "Min:"
 
 #: ../graph_templates_items.php:391
 #, php-format
@@ -4400,7 +4400,7 @@ msgstr ""
 
 #: ../graph_view.php:423
 msgid "YOU DO NOT HAVE RIGHTS FOR LIST VIEW"
-msgstr ""
+msgstr "U HEEFT GEEN RECHTEN TOT DE LIJSTWEERGAVE"
 
 #: ../graph_view.php:510
 msgid "Graph List View Filters"
@@ -4440,7 +4440,7 @@ msgstr ""
 
 #: ../graph_view.php:638
 msgid "Not Applicable"
-msgstr ""
+msgstr "Niet van toepassing"
 
 #: ../graph_view.php:773 ../lib/html_graph.php:386 ../lib/html_tree.php:832
 #: ../settings.php:223
@@ -5016,7 +5016,7 @@ msgstr ""
 #: ../lib/functions.php:2594 ../lib/html_reports.php:1230 ../links.php:377
 #: ../plugins.php:374
 msgid "Actions"
-msgstr ""
+msgstr "Acties"
 
 #: ../host.php:832
 msgid "Fail"
@@ -5279,7 +5279,7 @@ msgstr "Apparaattemplate"
 
 #: ../host_templates.php:724
 msgid "Has Devices"
-msgstr ""
+msgstr "Heeft apparaten"
 
 #: ../host_templates.php:814 ../lib/api_automation.php:272
 #: ../lib/api_automation.php:559 ../lib/api_automation.php:1139
@@ -5338,7 +5338,7 @@ msgstr "Succesvol opgeslagen."
 
 #: ../include/global_arrays.php:32
 msgid "Save Failed."
-msgstr ""
+msgstr "Opslaan mislukt."
 
 #: ../include/global_arrays.php:35
 msgid "Save Failed: Field Input Error (Check Red Fields)."
@@ -5359,7 +5359,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:47
 msgid "XML parse error."
-msgstr ""
+msgstr "XML parsefout."
 
 #: ../include/global_arrays.php:50
 msgid "Username already in use."
@@ -5367,19 +5367,19 @@ msgstr "Gebruikersnaam is al in gebruik."
 
 #: ../include/global_arrays.php:53
 msgid "XML: Cacti version does not exist."
-msgstr ""
+msgstr "XML: Cacti versie bestaat niet."
 
 #: ../include/global_arrays.php:56
 msgid "XML: Hash version does not exist."
-msgstr ""
+msgstr "XML: Hash versie bestaat niet."
 
 #: ../include/global_arrays.php:59
 msgid "XML: Generated with a newer version of Cacti."
-msgstr ""
+msgstr "XML: Gegenereerd met een nieuwere versie van Cacti."
 
 #: ../include/global_arrays.php:62
 msgid "XML: Cannot locate type code."
-msgstr ""
+msgstr "XML: Type code kon niet worden gevonden."
 
 #: ../include/global_arrays.php:65
 msgid "Username already exists."
@@ -5465,7 +5465,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:113
 msgid "Cacti Log purged successfully"
-msgstr ""
+msgstr "Cacti log succesvol geleegd"
 
 #: ../include/global_arrays.php:116
 msgid ""
@@ -5855,7 +5855,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:597 ../lib/rrd.php:2602
 msgid "Header"
-msgstr ""
+msgstr "Kolomkop"
 
 #: ../include/global_arrays.php:598 ../include/global_arrays.php:645
 #: ../include/global_arrays.php:1267 ../include/global_arrays.php:1431
@@ -5928,24 +5928,24 @@ msgstr ""
 
 #: ../include/global_arrays.php:628
 msgid "New Graphs"
-msgstr ""
+msgstr "Nieuwe grafieken"
 
 #: ../include/global_arrays.php:630 ../include/global_arrays.php:682
 #: ../include/global_arrays.php:699
 msgid "Management"
-msgstr ""
+msgstr "Onderhoud"
 
 #: ../include/global_arrays.php:632 ../sites.php:378 ../sites.php:393
 #: ../sites.php:472
 msgid "Sites"
-msgstr ""
+msgstr "Locaties"
 
 #: ../include/global_arrays.php:633 ../include/global_arrays.php:814
 #: ../tree.php:1476 ../tree.php:1491 ../tree.php:1549 ../user_admin.php:2909
 #: ../user_admin.php:2996 ../user_group_admin.php:1235
 #: ../user_group_admin.php:2441
 msgid "Trees"
-msgstr ""
+msgstr "Boomstructuren"
 
 #: ../include/global_arrays.php:636
 msgid "Aggregates"
@@ -5954,12 +5954,12 @@ msgstr ""
 #: ../include/global_arrays.php:638 ../include/global_arrays.php:685
 #: ../include/global_arrays.php:700
 msgid "Data Collection"
-msgstr ""
+msgstr "Data verzameling"
 
 #: ../include/global_arrays.php:639 ../include/global_arrays.php:686
 #: ../pollers.php:498
 msgid "Data Collectors"
-msgstr ""
+msgstr "Data verzamelaars"
 
 #: ../include/global_arrays.php:647
 msgid "Aggregate"
@@ -5968,7 +5968,7 @@ msgstr ""
 #: ../include/global_arrays.php:650 ../include/global_arrays.php:702
 #: ../include/global_settings.php:413
 msgid "Automation"
-msgstr ""
+msgstr "Automatisering"
 
 #: ../include/global_arrays.php:652
 msgid "Discovered Devices"
@@ -5976,59 +5976,59 @@ msgstr ""
 
 #: ../include/global_arrays.php:653
 msgid "Device Rules"
-msgstr ""
+msgstr "Apparaatregels"
 
 #: ../include/global_arrays.php:658 ../include/global_arrays.php:703
 #: ../lib/html_graph.php:255 ../lib/html_tree.php:700
 msgid "Presets"
-msgstr ""
+msgstr "Voorinstellingen"
 
 #: ../include/global_arrays.php:659
 msgid "Data Profiles"
-msgstr ""
+msgstr "Data profielen"
 
 #: ../include/global_arrays.php:661 ../lib/functions.php:2300 ../vdef.php:651
 #: ../vdef.php:665 ../vdef.php:836
 msgid "VDEFs"
-msgstr ""
+msgstr "VDEF’s"
 
 #: ../include/global_arrays.php:665 ../include/global_arrays.php:704
 msgid "Import/Export"
-msgstr ""
+msgstr "Importeren/exporteren"
 
 #: ../include/global_arrays.php:666 ../lib/functions.php:2414
 #: ../templates_import.php:115
 msgid "Import Templates"
-msgstr ""
+msgstr "Importeer templates"
 
 #: ../include/global_arrays.php:667 ../lib/functions.php:2402
 #: ../templates_export.php:94
 msgid "Export Templates"
-msgstr ""
+msgstr "Exporteer templates"
 
 #: ../include/global_arrays.php:669 ../include/global_arrays.php:688
 #: ../include/global_arrays.php:705 ../lib/plugins.php:763
 msgid "Configuration"
-msgstr ""
+msgstr "Configuratie"
 
 #: ../include/global_arrays.php:670 ../include/global_arrays.php:689
 msgid "Settings"
-msgstr ""
+msgstr "Instellingen"
 
 #: ../include/global_arrays.php:671 ../lib/functions.php:2348
 #: ../user_admin.php:2182 ../user_group_admin.php:667
 #: ../user_group_admin.php:2528
 msgid "Users"
-msgstr ""
+msgstr "Gebruikers"
 
 #: ../include/global_arrays.php:672 ../lib/functions.php:2378
 msgid "User Groups"
-msgstr ""
+msgstr "Gebruiker groepen"
 
 #: ../include/global_arrays.php:673 ../lib/functions.php:2366
 #: ../user_domains.php:612 ../user_domains.php:705
 msgid "User Domains"
-msgstr ""
+msgstr "Gebruiker domeinen"
 
 #: ../include/global_arrays.php:675 ../include/global_arrays.php:691
 #: ../include/global_arrays.php:706 ../lib/functions.php:2228
@@ -6047,7 +6047,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:729
 msgid "All Lines"
-msgstr ""
+msgstr "Alle regels"
 
 #: ../include/global_arrays.php:730 ../include/global_arrays.php:731
 #: ../include/global_arrays.php:732 ../include/global_arrays.php:733
@@ -6057,11 +6057,11 @@ msgstr ""
 #: ../include/global_arrays.php:740 ../include/global_arrays.php:741
 #, php-format
 msgid "%d Lines"
-msgstr ""
+msgstr "%d Regels"
 
 #: ../include/global_arrays.php:796
 msgid "Never"
-msgstr ""
+msgstr "Nooit"
 
 #: ../include/global_arrays.php:800
 msgid "Console Access"
@@ -6097,11 +6097,11 @@ msgstr ""
 
 #: ../include/global_arrays.php:824
 msgid "Export Data"
-msgstr ""
+msgstr "Exporteer data"
 
 #: ../include/global_arrays.php:825
 msgid "Import Data"
-msgstr ""
+msgstr "Importeer data"
 
 #: ../include/global_arrays.php:827 ../include/global_settings.php:665
 msgid "Log Management"
@@ -6474,7 +6474,7 @@ msgstr "Ja(a)r(en)"
 
 #: ../include/global_arrays.php:1288
 msgid "Keep Graph Types"
-msgstr ""
+msgstr "Behoud grafiektypen"
 
 #: ../include/global_arrays.php:1289
 msgid "Keep Type and STACK"
@@ -6518,7 +6518,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:1308
 msgid "No Reordering"
-msgstr ""
+msgstr "Niet herstructureren"
 
 #: ../include/global_arrays.php:1309
 msgid "Data Source, Graph"
@@ -6594,15 +6594,15 @@ msgstr "is niet leeg"
 
 #: ../include/global_arrays.php:1333
 msgid "matches regular expression"
-msgstr ""
+msgstr "komt overeen met reguliere expressie"
 
 #: ../include/global_arrays.php:1334
 msgid "does not match regular expression"
-msgstr ""
+msgstr "komt niet overeen met reguliere expressie"
 
 #: ../include/global_arrays.php:1436
 msgid "Fixed String"
-msgstr "vaste waarde"
+msgstr "Vaste waarde"
 
 #: ../include/global_arrays.php:1441
 msgid "Every 1 Hour"
@@ -6722,11 +6722,11 @@ msgstr ""
 
 #: ../include/global_form.php:40
 msgid "New Profile"
-msgstr ""
+msgstr "Nieuw profiel"
 
 #: ../include/global_form.php:44
 msgid "Polling Interval"
-msgstr ""
+msgstr "Polling interval"
 
 #: ../include/global_form.php:45
 msgid "The frequency that data will be collected from the Data Source?"
@@ -6764,7 +6764,7 @@ msgstr ""
 
 #: ../include/global_form.php:86
 msgid "RRDfile Size (in Bytes)"
-msgstr ""
+msgstr "RRD bestand grootte (in bytes)"
 
 #: ../include/global_form.php:87
 msgid ""
@@ -6774,7 +6774,7 @@ msgstr ""
 
 #: ../include/global_form.php:109
 msgid "New Profile RRA"
-msgstr ""
+msgstr "Nieuw RRA profiel"
 
 #: ../include/global_form.php:113
 msgid "Aggregation Level"
@@ -6802,7 +6802,7 @@ msgstr ""
 
 #: ../include/global_form.php:136
 msgid "RRA Size (in Bytes)"
-msgstr ""
+msgstr "RRA grootte (in bytes)"
 
 #: ../include/global_form.php:137
 msgid ""
@@ -6812,19 +6812,19 @@ msgstr ""
 
 #: ../include/global_form.php:155
 msgid "A useful name for this CDEF."
-msgstr ""
+msgstr "Een handige naam voor deze CDEF."
 
 #: ../include/global_form.php:175
 msgid "The name of this Color."
-msgstr ""
+msgstr "De naam van deze kleur."
 
 #: ../include/global_form.php:182
 msgid "Hex Value"
-msgstr ""
+msgstr "Hex waarde"
 
 #: ../include/global_form.php:183
 msgid "The hex value for this color; valid range: 000000-FFFFFF."
-msgstr ""
+msgstr "De hex waarde voor deze kleur; geldige reeks: 000000-FFFFFF."
 
 #: ../include/global_form.php:191
 msgid "Any named color should be read only."
@@ -6836,7 +6836,7 @@ msgstr ""
 
 #: ../include/global_form.php:223
 msgid "Input Type"
-msgstr ""
+msgstr "Invoer type"
 
 #: ../include/global_form.php:224
 msgid ""
@@ -6845,7 +6845,7 @@ msgstr ""
 
 #: ../include/global_form.php:230
 msgid "Input String"
-msgstr ""
+msgstr "Invoer waarde"
 
 #: ../include/global_form.php:231
 msgid ""
@@ -6856,7 +6856,7 @@ msgstr ""
 #: ../include/global_form.php:252 ../include/global_form.php:263
 #, php-format
 msgid "Field [%s]"
-msgstr ""
+msgstr "Veld [%s]"
 
 #: ../include/global_form.php:253
 #, php-format
@@ -6873,7 +6873,7 @@ msgstr ""
 
 #: ../include/global_form.php:283
 msgid "Update RRDfile"
-msgstr ""
+msgstr "RRD bestand bijwerken"
 
 #: ../include/global_form.php:284
 msgid "Whether data from this output field is to be entered into the RRDfile."
@@ -6881,7 +6881,7 @@ msgstr ""
 
 #: ../include/global_form.php:291
 msgid "Regular Expression Match"
-msgstr ""
+msgstr "Reguliere expressie overeenkomst"
 
 #: ../include/global_form.php:292
 msgid ""
@@ -6891,7 +6891,7 @@ msgstr ""
 
 #: ../include/global_form.php:299
 msgid "Allow Empty Input"
-msgstr ""
+msgstr "Sta lege invoer toe"
 
 #: ../include/global_form.php:300
 msgid "Check here if you want to allow NULL input in this field from the user."
@@ -6941,7 +6941,7 @@ msgstr ""
 
 #: ../include/global_form.php:402
 msgid "Step"
-msgstr ""
+msgstr "Stap"
 
 #: ../include/global_form.php:407
 msgid "The amount of time in seconds between expected updates."
@@ -6949,7 +6949,7 @@ msgstr ""
 
 #: ../include/global_form.php:411
 msgid "Data Source Active"
-msgstr ""
+msgstr "Data bron actief"
 
 #: ../include/global_form.php:414
 msgid "Whether Cacti should gather data for this data source or not."
@@ -6957,7 +6957,7 @@ msgstr ""
 
 #: ../include/global_form.php:422
 msgid "Internal Data Source Name"
-msgstr ""
+msgstr "Interne data bron naam"
 
 #: ../include/global_form.php:427
 msgid ""
@@ -6982,7 +6982,7 @@ msgstr ""
 
 #: ../include/global_form.php:446
 msgid "Data Source Type"
-msgstr ""
+msgstr "Data bron type"
 
 #: ../include/global_form.php:450
 msgid "How data is represented in the RRA."
@@ -6996,7 +6996,7 @@ msgstr ""
 
 #: ../include/global_form.php:464
 msgid "Not Selected"
-msgstr ""
+msgstr "Niet geselecteerd"
 
 #: ../include/global_form.php:465
 msgid ""
@@ -7011,7 +7011,7 @@ msgstr ""
 
 #: ../include/global_form.php:481
 msgid "GPRINT Text"
-msgstr ""
+msgstr "GPRINT tekst"
 
 #: ../include/global_form.php:482
 msgid "Enter the custom GPRINT string here."
@@ -7023,7 +7023,7 @@ msgstr ""
 
 #: ../include/global_form.php:505
 msgid "Title (--title)"
-msgstr ""
+msgstr "Titel (--title)"
 
 #: ../include/global_form.php:509
 msgid ""
@@ -7035,7 +7035,7 @@ msgstr ""
 
 #: ../include/global_form.php:514
 msgid "Vertical Label (--vertical-label)"
-msgstr ""
+msgstr "Verticaal label (—vertical-label)"
 
 #: ../include/global_form.php:518
 msgid "The label vertically printed to the left of the graph."
@@ -7053,7 +7053,7 @@ msgstr ""
 
 #: ../include/global_form.php:529
 msgid "Height (--height)"
-msgstr ""
+msgstr "Hoogte (--height)"
 
 #: ../include/global_form.php:533
 msgid ""
@@ -7063,7 +7063,7 @@ msgstr ""
 
 #: ../include/global_form.php:537
 msgid "Width (--width)"
-msgstr ""
+msgstr "Breedte (--width)"
 
 #: ../include/global_form.php:541
 msgid ""
@@ -7073,7 +7073,7 @@ msgstr ""
 
 #: ../include/global_form.php:545
 msgid "Base Value (--base)"
-msgstr ""
+msgstr "Basis waarde (--base)"
 
 #: ../include/global_form.php:549
 msgid "Should be set to 1024 for memory and 1000 for traffic measurements."
@@ -7091,11 +7091,11 @@ msgstr ""
 
 #: ../include/global_form.php:560
 msgid "Scaling Options"
-msgstr ""
+msgstr "Schaalopties"
 
 #: ../include/global_form.php:565
 msgid "Auto Scale"
-msgstr ""
+msgstr "Automatisch schalen"
 
 #: ../include/global_form.php:568
 msgid ""
@@ -7167,7 +7167,7 @@ msgstr ""
 
 #: ../include/global_form.php:621
 msgid "Upper Limit (--upper-limit)"
-msgstr ""
+msgstr "Bovenwaarde (--upper-limit)"
 
 #: ../include/global_form.php:625
 msgid "The maximum vertical value for the graph."
@@ -7175,7 +7175,7 @@ msgstr ""
 
 #: ../include/global_form.php:629
 msgid "Lower Limit (--lower-limit)"
-msgstr ""
+msgstr "Onderwaarde (--lower-limit)"
 
 #: ../include/global_form.php:633
 msgid "The minimum vertical value for the graph."
@@ -7183,7 +7183,7 @@ msgstr ""
 
 #: ../include/global_form.php:637
 msgid "Grid Options"
-msgstr ""
+msgstr "Rasteropties"
 
 #: ../include/global_form.php:642
 msgid "Unit Grid Value (--unit/--y-grid)"
@@ -7270,7 +7270,7 @@ msgstr ""
 
 #: ../include/global_form.php:705
 msgid "The label for the right axis."
-msgstr ""
+msgstr "Het label voor de rechter as."
 
 #: ../include/global_form.php:708
 msgid "Right Axis Format (--right-axis-format &lt;format&gt;)"
@@ -7307,7 +7307,7 @@ msgstr ""
 
 #: ../include/global_form.php:739
 msgid "Legend Options"
-msgstr ""
+msgstr "Legenda opties"
 
 #: ../include/global_form.php:744
 msgid "Auto Padding"
@@ -7397,7 +7397,7 @@ msgstr ""
 
 #: ../include/global_form.php:833
 msgid "CDEF Function"
-msgstr ""
+msgstr "CDEF functie"
 
 #: ../include/global_form.php:838
 msgid "A CDEF (math) function to apply to this item on the graph or legend."
@@ -7405,7 +7405,7 @@ msgstr ""
 
 #: ../include/global_form.php:841
 msgid "VDEF Function"
-msgstr ""
+msgstr "VDEF functie"
 
 #: ../include/global_form.php:846
 msgid "A VDEF (math) function to apply to this item on the graph legend."
@@ -7423,7 +7423,7 @@ msgstr ""
 
 #: ../include/global_form.php:855 ../lib/rrd.php:2636 ../utilities.php:2331
 msgid "Value"
-msgstr ""
+msgstr "Waarde"
 
 #: ../include/global_form.php:860
 msgid ""
@@ -7444,7 +7444,7 @@ msgstr ""
 
 #: ../include/global_form.php:873
 msgid "Text Alignment (TEXTALIGN)"
-msgstr ""
+msgstr "Tekst uitlijning (TEXTALIGN)"
 
 #: ../include/global_form.php:878
 msgid ""
@@ -7459,7 +7459,7 @@ msgstr ""
 
 #: ../include/global_form.php:883
 msgid "Text Format"
-msgstr ""
+msgstr "Tekst opmaak"
 
 #: ../include/global_form.php:888
 msgid "Text that will be displayed on the legend for this graph item."
@@ -7503,7 +7503,7 @@ msgstr ""
 
 #: ../include/global_form.php:931
 msgid "The name given to this graph template."
-msgstr ""
+msgstr "De naam voor deze grafiektemplate."
 
 #: ../include/global_form.php:955
 msgid ""
@@ -7519,11 +7519,11 @@ msgstr ""
 
 #: ../include/global_form.php:970
 msgid "Field Type"
-msgstr ""
+msgstr "Veld type"
 
 #: ../include/global_form.php:971
 msgid "How data is to be represented on the graph."
-msgstr ""
+msgstr "Hoe data wordt weergegeven in de grafiek."
 
 #: ../include/global_form.php:994
 msgid "General Device Options"
@@ -7567,7 +7567,7 @@ msgstr ""
 
 #: ../include/global_form.php:1046
 msgid "Disable Device"
-msgstr ""
+msgstr "Apparaat uitschakelen"
 
 #: ../include/global_form.php:1047
 msgid "Check this box to disable all checks for this host."
@@ -7655,11 +7655,11 @@ msgstr ""
 #: ../include/global_form.php:1221 ../include/global_form.php:1757
 #: ../pollers.php:70
 msgid "Notes"
-msgstr ""
+msgstr "Notities"
 
 #: ../include/global_form.php:1222 ../include/global_form.php:1758
 msgid "Enter notes to this host."
-msgstr ""
+msgstr "Notities voor deze host."
 
 #: ../include/global_form.php:1229
 msgid "External ID"
@@ -7720,7 +7720,7 @@ msgstr ""
 
 #: ../include/global_form.php:1381
 msgid "Publish"
-msgstr ""
+msgstr "Publiceren"
 
 #: ../include/global_form.php:1382
 msgid "Should this Tree be published for users to access?"
@@ -7742,7 +7742,7 @@ msgstr ""
 
 #: ../include/global_form.php:1439 ../tree.php:1561
 msgid "Locked"
-msgstr ""
+msgstr "Vergrendeld"
 
 #: ../include/global_form.php:1440
 msgid "Determines if the user account is locked."
@@ -7750,7 +7750,7 @@ msgstr ""
 
 #: ../include/global_form.php:1445
 msgid "Account Options"
-msgstr ""
+msgstr "Account opties"
 
 #: ../include/global_form.php:1447
 msgid "Set any user account specific options here."
@@ -7766,7 +7766,7 @@ msgstr ""
 
 #: ../include/global_form.php:1470
 msgid "Graph Options"
-msgstr ""
+msgstr "Grafiek opties"
 
 #: ../include/global_form.php:1472
 msgid "Set any graph specific options here."
@@ -7774,35 +7774,35 @@ msgstr ""
 
 #: ../include/global_form.php:1476
 msgid "User Has Rights to Tree View"
-msgstr ""
+msgstr "Gebruiker heeft rechten tot de boomstructuur weergave"
 
 #: ../include/global_form.php:1482
 msgid "User Has Rights to List View"
-msgstr ""
+msgstr "Gebruiker heeft rechter tot de lijstweergave"
 
 #: ../include/global_form.php:1488
 msgid "User Has Rights to Preview View"
-msgstr ""
+msgstr "Gebruiker heeft rechten tot voorvertoningweergave"
 
 #: ../include/global_form.php:1495 ../user_group_admin.php:130
 msgid "Login Options"
-msgstr ""
+msgstr "Loginopties"
 
 #: ../include/global_form.php:1498
 msgid "What to do when this user logs in."
-msgstr ""
+msgstr "Wat te doen als deze gebruiker inlogt."
 
 #: ../include/global_form.php:1503
 msgid "Show the page that user pointed their browser to."
-msgstr ""
+msgstr "Toon de pagina die de gebruiker in de browser heeft opgegeven."
 
 #: ../include/global_form.php:1507
 msgid "Show the default console screen."
-msgstr ""
+msgstr "Toon de standaard console pagina."
 
 #: ../include/global_form.php:1511
 msgid "Show the default graph screen."
-msgstr ""
+msgstr "Toon de standaard grafiek pagina."
 
 #: ../include/global_form.php:1517 ../utilities.php:765
 msgid "Authentication Realm"
@@ -7940,7 +7940,7 @@ msgstr ""
 #: ../include/global_form.php:1776 ../include/global_form.php:2035
 #: ../links.php:379
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: ../include/global_form.php:1777
 msgid "The new Title of the aggregated Graph."
@@ -7949,7 +7949,7 @@ msgstr ""
 #: ../include/global_form.php:1784 ../include/global_form.php:1867
 #: ../include/global_form.php:1969
 msgid "Prefix"
-msgstr ""
+msgstr "Voorvoegsel"
 
 #: ../include/global_form.php:1785
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts."
@@ -8105,11 +8105,11 @@ msgstr ""
 
 #: ../include/global_form.php:2194 ../include/global_form.php:2252
 msgid "Enable Rule"
-msgstr ""
+msgstr "Activeer regel"
 
 #: ../include/global_form.php:2195 ../include/global_form.php:2253
 msgid "Check this box to enable this rule."
-msgstr ""
+msgstr "Activeer deze boks om deze regel in te schakelen."
 
 #: ../include/global_form.php:2215
 msgid "Choose a Tree for the new Tree Items."
@@ -8209,7 +8209,7 @@ msgstr ""
 
 #: ../include/global_settings.php:39
 msgid "Paths"
-msgstr ""
+msgstr "Paden"
 
 #: ../include/global_settings.php:40
 msgid "Device Defaults"
@@ -8221,11 +8221,11 @@ msgstr ""
 
 #: ../include/global_settings.php:42
 msgid "Data Storage"
-msgstr ""
+msgstr "Data opslag"
 
 #: ../include/global_settings.php:43
 msgid "Visual"
-msgstr ""
+msgstr "Visueel"
 
 #: ../include/global_settings.php:44 ../lib/functions.php:3767
 #: ../lib/functions.php:3772
@@ -8238,15 +8238,15 @@ msgstr ""
 
 #: ../include/global_settings.php:46
 msgid "Performance"
-msgstr ""
+msgstr "Performance"
 
 #: ../include/global_settings.php:47
 msgid "Spikes"
-msgstr ""
+msgstr "Pieken"
 
 #: ../include/global_settings.php:48
 msgid "Mail/Reporting/DNS"
-msgstr ""
+msgstr "Mail/Rapportage/DNS"
 
 #: ../include/global_settings.php:52
 msgid "Time Spanning/Shifting"
@@ -8258,11 +8258,11 @@ msgstr ""
 
 #: ../include/global_settings.php:54
 msgid "Tree Settings"
-msgstr ""
+msgstr "Boomstructuur instellingen"
 
 #: ../include/global_settings.php:55
 msgid "Graph Fonts"
-msgstr ""
+msgstr "Grafiek lettertypes"
 
 #: ../include/global_settings.php:85
 msgid "Required Tool Paths"
@@ -8350,7 +8350,7 @@ msgstr ""
 
 #: ../include/global_settings.php:150
 msgid "Log Retention"
-msgstr ""
+msgstr "Log retentie"
 
 #: ../include/global_settings.php:151
 msgid ""
@@ -8442,7 +8442,7 @@ msgstr ""
 
 #: ../include/global_settings.php:227
 msgid "Developer Mode"
-msgstr ""
+msgstr "Ontwikkelmodus"
 
 #: ../include/global_settings.php:233
 msgid "Log Settings"
@@ -8503,17 +8503,17 @@ msgstr ""
 
 #: ../include/global_settings.php:273
 msgid "Statistics"
-msgstr ""
+msgstr "Statistieken"
 
 #: ../include/global_settings.php:277 ../lib/clog_webapi.php:323
 #: ../utilities.php:1002
 msgid "Warnings"
-msgstr ""
+msgstr "Waarschuwingen"
 
 #: ../include/global_settings.php:281 ../lib/clog_webapi.php:324
 #: ../utilities.php:1003
 msgid "Errors"
-msgstr ""
+msgstr "Foutmeldingen"
 
 #: ../include/global_settings.php:287
 msgid "Other Defaults"
@@ -8549,7 +8549,7 @@ msgstr ""
 
 #: ../include/global_settings.php:321
 msgid "Language Support"
-msgstr ""
+msgstr "Taal support"
 
 #: ../include/global_settings.php:322
 msgid ""
@@ -8561,15 +8561,15 @@ msgstr ""
 
 #: ../include/global_settings.php:328
 msgid "Language"
-msgstr ""
+msgstr "Taal"
 
 #: ../include/global_settings.php:329
 msgid "Default language for this system."
-msgstr ""
+msgstr "Standaard taal voor het systeem."
 
 #: ../include/global_settings.php:335
 msgid "Auto Language Detection"
-msgstr ""
+msgstr "Automatische taal detectie"
 
 #: ../include/global_settings.php:336
 msgid ""
@@ -8589,7 +8589,7 @@ msgstr ""
 
 #: ../include/global_settings.php:349 ../include/global_settings.php:1811
 msgid "Date Separator"
-msgstr ""
+msgstr "Datum scheidingsteken"
 
 #: ../include/global_settings.php:350
 msgid "The System default date separator to be used in Cacti."
@@ -8597,11 +8597,11 @@ msgstr ""
 
 #: ../include/global_settings.php:356
 msgid "Other Settings"
-msgstr ""
+msgstr "Andere instellingen"
 
 #: ../include/global_settings.php:361 ../utilities.php:258
 msgid "RRDtool Version"
-msgstr ""
+msgstr "RRDtool versie"
 
 #: ../include/global_settings.php:362
 msgid "The version of RRDtool that you have installed."
@@ -8650,7 +8650,7 @@ msgstr ""
 
 #: ../include/global_settings.php:394
 msgid "Hide Cacti Console"
-msgstr ""
+msgstr "Verberg Cacti console"
 
 #: ../include/global_settings.php:395
 msgid ""
@@ -8670,7 +8670,7 @@ msgstr ""
 
 #: ../include/global_settings.php:407
 msgid "Force Connections over HTTPS"
-msgstr ""
+msgstr "Forceer HTTPS verbinding"
 
 #: ../include/global_settings.php:408
 msgid ""
@@ -8708,15 +8708,15 @@ msgstr "Algemene standaard waarden"
 
 #: ../include/global_settings.php:442
 msgid "The default Site for all new Devices."
-msgstr ""
+msgstr "De standaard locatie voor alle nieuwe apparaten."
 
 #: ../include/global_settings.php:450
 msgid "The default Poller for all new Devices."
-msgstr ""
+msgstr "De standaard poller voor alle nieuwe apparaten."
 
 #: ../include/global_settings.php:457
 msgid "Re-index Method for Data Queries"
-msgstr ""
+msgstr "Herindexeer methode voor data queries"
 
 #: ../include/global_settings.php:458
 msgid "The default Re-index Method to use for all Data Queries."
@@ -8736,7 +8736,7 @@ msgstr ""
 
 #: ../include/global_settings.php:483
 msgid "Username (v3)"
-msgstr ""
+msgstr "Gebruikersnaam (v3)"
 
 #: ../include/global_settings.php:484
 msgid "The SNMP v3 Username for polling hosts."
@@ -8744,7 +8744,7 @@ msgstr ""
 
 #: ../include/global_settings.php:490
 msgid "Password (v3)"
-msgstr ""
+msgstr "Wachtwoord (v3)"
 
 #: ../include/global_settings.php:491
 msgid "The SNMP v3 Password for polling hosts."
@@ -8768,11 +8768,13 @@ msgstr ""
 
 #: ../include/global_settings.php:526
 msgid "Port Number"
-msgstr ""
+msgstr "Poortnummer"
 
 #: ../include/global_settings.php:527
 msgid "Default UDP port to be used for SNMP Calls.  Typically, 161."
 msgstr ""
+"De standaard UDP poort die gebruikt wordt voor SNMP. Normaalgesproken is dit "
+"161."
 
 #: ../include/global_settings.php:535
 msgid ""
@@ -8830,12 +8832,12 @@ msgstr ""
 
 #: ../include/global_settings.php:608
 msgid "Theme Settings"
-msgstr ""
+msgstr "Thema instellingen"
 
 #: ../include/global_settings.php:613 ../include/global_settings.php:756
 #: ../include/global_settings.php:1777
 msgid "Theme"
-msgstr ""
+msgstr "Thema"
 
 #: ../include/global_settings.php:614 ../include/global_settings.php:1778
 msgid "Please select one of the available Themes to skin your Cacti with."
@@ -8843,11 +8845,11 @@ msgstr ""
 
 #: ../include/global_settings.php:620
 msgid "Table Settings"
-msgstr ""
+msgstr "Tabel instellingen"
 
 #: ../include/global_settings.php:625
 msgid "Rows Per Page"
-msgstr ""
+msgstr "Rijen per pagina"
 
 #: ../include/global_settings.php:626
 msgid "The default number of rows to display on for a table."
@@ -8961,7 +8963,7 @@ msgstr ""
 
 #: ../include/global_settings.php:730 ../utilities.php:1886
 msgid "Refresh Interval"
-msgstr ""
+msgstr "Vernieuwingsinterval"
 
 #: ../include/global_settings.php:731
 msgid "This is the time between graph updates."
@@ -8969,7 +8971,7 @@ msgstr ""
 
 #: ../include/global_settings.php:737
 msgid "Cache Directory"
-msgstr ""
+msgstr "Cache directorie"
 
 #: ../include/global_settings.php:738
 msgid ""
@@ -8994,11 +8996,11 @@ msgstr ""
 
 #: ../include/global_settings.php:756
 msgid "System"
-msgstr ""
+msgstr "Systeem"
 
 #: ../include/global_settings.php:759
 msgid "Default Font"
-msgstr ""
+msgstr "Standaard lettertype"
 
 #: ../include/global_settings.php:760
 msgid ""
@@ -9167,11 +9169,11 @@ msgstr ""
 
 #: ../include/global_settings.php:893 ../utilities.php:193
 msgid "Summary"
-msgstr ""
+msgstr "Samenvatting"
 
 #: ../include/global_settings.php:894
 msgid "Detailed"
-msgstr ""
+msgstr "Gedetailleerd"
 
 #: ../include/global_settings.php:898
 msgid "Maximum Threads per Process"
@@ -9252,11 +9254,11 @@ msgstr ""
 
 #: ../include/global_settings.php:950
 msgid "Special Users"
-msgstr ""
+msgstr "Speciale gebruikers"
 
 #: ../include/global_settings.php:955
 msgid "Guest User"
-msgstr ""
+msgstr "Gastgebruiker"
 
 #: ../include/global_settings.php:956
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
@@ -9265,11 +9267,11 @@ msgstr ""
 #: ../include/global_settings.php:958 ../include/global_settings.php:966
 #: ../user_domains.php:335
 msgid "No User"
-msgstr ""
+msgstr "Geen gebruiker"
 
 #: ../include/global_settings.php:963 ../user_domains.php:331
 msgid "User Template"
-msgstr ""
+msgstr "Gebruiker template"
 
 #: ../include/global_settings.php:964
 msgid ""
@@ -9283,7 +9285,7 @@ msgstr ""
 
 #: ../include/global_settings.php:976
 msgid "Minimum Length"
-msgstr ""
+msgstr "Minimale lengte"
 
 #: ../include/global_settings.php:977
 msgid "This is minimal length of allowed passwords."
@@ -9355,7 +9357,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1040
 msgid "1 Change"
-msgstr ""
+msgstr "1 Wijziging"
 
 #: ../include/global_settings.php:1041 ../include/global_settings.php:1042
 #: ../include/global_settings.php:1043 ../include/global_settings.php:1044
@@ -9365,34 +9367,34 @@ msgstr ""
 #: ../include/global_settings.php:1051
 #, php-format
 msgid "%d Changes"
-msgstr ""
+msgstr "%d Wijzigingen"
 
 #: ../include/global_settings.php:1054
 msgid "Account Locking"
-msgstr ""
+msgstr "Account blokkade"
 
 #: ../include/global_settings.php:1059
 msgid "Lock Accounts"
-msgstr ""
+msgstr "Blokkeer accounts"
 
 #: ../include/global_settings.php:1060
 msgid "Lock an account after this many failed attempts in 1 hour."
-msgstr ""
+msgstr "Blokkeer een account na dit aantal foutieve logins in 1 uur."
 
 #: ../include/global_settings.php:1065
 msgid "1 Attempt"
-msgstr ""
+msgstr "1 Poging"
 
 #: ../include/global_settings.php:1066 ../include/global_settings.php:1067
 #: ../include/global_settings.php:1068 ../include/global_settings.php:1069
 #: ../include/global_settings.php:1070
 #, php-format
 msgid "%d Attempts"
-msgstr ""
+msgstr "%d Pogingen"
 
 #: ../include/global_settings.php:1073
 msgid "Auto Unlock"
-msgstr ""
+msgstr "Automatisch deblokkeren"
 
 #: ../include/global_settings.php:1074
 msgid ""
@@ -9407,7 +9409,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1097 ../user_domains.php:358
 msgid "Server"
-msgstr ""
+msgstr "Server"
 
 #: ../include/global_settings.php:1098
 msgid "The DNS hostname or IP address of the server."
@@ -11098,22 +11100,22 @@ msgstr ""
 #: ../install/index.php:1113
 msgctxt "Dialog: previous"
 msgid "Previous"
-msgstr ""
+msgstr "Vorige"
 
 #: ../install/index.php:1114
 msgctxt "Dialog: complete"
 msgid "Finish"
-msgstr ""
+msgstr "Afronden"
 
 #: ../install/index.php:1114
 msgctxt "Dialog: go to the next page"
 msgid "Next"
-msgstr ""
+msgstr "Volgende"
 
 #: ../install/index.php:1115
 msgctxt "Dialog: test connection"
 msgid "Test Connection"
-msgstr ""
+msgstr "Test verbinding"
 
 #: ../install/index.php:1115
 msgid "Test remote database connection"
@@ -13744,12 +13746,12 @@ msgstr ""
 #: ../rrdcleaner.php:30 ../tree.php:31
 msgctxt "dropdown action"
 msgid "Delete"
-msgstr ""
+msgstr "Verwijderen"
 
 #: ../rrdcleaner.php:31
 msgctxt "dropdown action"
 msgid "Archive"
-msgstr ""
+msgstr "Archiveren"
 
 #: ../rrdcleaner.php:347
 msgid "RRD File Name"
@@ -13805,14 +13807,14 @@ msgstr ""
 #: ../user_group_admin.php:2549
 msgctxt "filter: use"
 msgid "Go"
-msgstr ""
+msgstr "Ga"
 
 #: ../rrdcleaner.php:515 ../user_group_admin.php:1830
 #: ../user_group_admin.php:2185 ../user_group_admin.php:2291
 #: ../user_group_admin.php:2378 ../user_group_admin.php:2465
 msgctxt "filter: reset"
 msgid "Clear"
-msgstr ""
+msgstr "Herstel"
 
 #: ../rrdcleaner.php:518
 msgid "Rescan"
@@ -14123,37 +14125,37 @@ msgstr ""
 #: ../tree.php:32
 msgctxt "dropdown action"
 msgid "Publish"
-msgstr ""
+msgstr "Publiceren"
 
 #: ../tree.php:33
 msgctxt "dropdown action"
 msgid "Un Publish"
-msgstr ""
+msgstr "Depubliceren"
 
 #: ../tree.php:258
 msgctxt "ordering of tree items"
 msgid "inherit"
-msgstr ""
+msgstr "overerven"
 
 #: ../tree.php:261
 msgctxt "ordering of tree items"
 msgid "manual"
-msgstr ""
+msgstr "handmatig"
 
 #: ../tree.php:264
 msgctxt "ordering of tree items"
 msgid "alpha"
-msgstr ""
+msgstr "alphanumeriek"
 
 #: ../tree.php:267
 msgctxt "ordering of tree items"
 msgid "natural"
-msgstr ""
+msgstr "natuurlijk"
 
 #: ../tree.php:270
 msgctxt "ordering of tree items"
 msgid "numeric"
-msgstr ""
+msgstr "numeriek"
 
 #: ../tree.php:485
 msgid "Click 'Continue' to delete the following Tree."
@@ -15068,7 +15070,7 @@ msgstr ""
 #: ../user_group_admin.php:2552
 msgctxt "filter reset"
 msgid "Clear"
-msgstr ""
+msgstr "Herstel"
 
 #: ../utilities.php:164
 msgid ""
@@ -15373,35 +15375,35 @@ msgstr ""
 
 #: ../utilities.php:1599
 msgid "Script"
-msgstr ""
+msgstr "Script"
 
 #: ../utilities.php:1715 ../utilities.php:1720
 msgid "SNMP Version:"
-msgstr ""
+msgstr "SNMP versie:"
 
 #: ../utilities.php:1716
 msgid "Community:"
-msgstr ""
+msgstr "Community:"
 
 #: ../utilities.php:1717 ../utilities.php:1721
 msgid "OID:"
-msgstr ""
+msgstr "OID:"
 
 #: ../utilities.php:1721
 msgid "User:"
-msgstr ""
+msgstr "Gebruiker:"
 
 #: ../utilities.php:1724
 msgid "Script:"
-msgstr ""
+msgstr "Script:"
 
 #: ../utilities.php:1726
 msgid "Script Server:"
-msgstr ""
+msgstr "Script server:"
 
 #: ../utilities.php:1739
 msgid "RRD:"
-msgstr ""
+msgstr "RRD:"
 
 #: ../utilities.php:1758
 msgid "Tecnical Support"
@@ -15596,7 +15598,7 @@ msgstr ""
 #: ../utilities.php:2074
 #, php-format
 msgid "%d Bytes"
-msgstr ""
+msgstr "%d Bytes"
 
 #: ../utilities.php:2074
 msgid "Max Record Length:"
@@ -15604,7 +15606,7 @@ msgstr ""
 
 #: ../utilities.php:2080 ../utilities.php:2081
 msgid "Unlimited"
-msgstr ""
+msgstr "Onbeperkt"
 
 #: ../utilities.php:2086
 msgid "Max Allowed Boost Table Size:"
@@ -15620,7 +15622,7 @@ msgstr ""
 
 #: ../utilities.php:2096
 msgid "Last Start Time:"
-msgstr ""
+msgstr "Laatste starttijd:"
 
 #: ../utilities.php:2099
 msgid "Last Run Duration:"
@@ -15629,12 +15631,12 @@ msgstr ""
 #: ../utilities.php:2100
 #, php-format
 msgid "%d minutes"
-msgstr ""
+msgstr "%d minuten"
 
 #: ../utilities.php:2100
 #, php-format
 msgid "%d seconds"
-msgstr ""
+msgstr "%d seconden"
 
 #: ../utilities.php:2101
 #, php-format
@@ -15647,7 +15649,7 @@ msgstr ""
 
 #: ../utilities.php:2108 ../utilities.php:2114
 msgid "MBytes"
-msgstr ""
+msgstr "Megabytes"
 
 #: ../utilities.php:2108
 msgid "Peak Poller Memory:"
@@ -15691,27 +15693,27 @@ msgstr ""
 
 #: ../utilities.php:2138
 msgid "Cache Directory:"
-msgstr ""
+msgstr "Gecachete directorie:"
 
 #: ../utilities.php:2141
 msgid "Cached Files:"
-msgstr ""
+msgstr "Gecachete bestanden:"
 
 #: ../utilities.php:2144
 msgid "Cached Files Size:"
-msgstr ""
+msgstr "Omvang gecachete bestanden:"
 
 #: ../utilities.php:2241
 msgid "SNMPAgent Cache"
-msgstr ""
+msgstr "SNMPAgent cache"
 
 #: ../utilities.php:2271
 msgid "OIDs"
-msgstr ""
+msgstr "OID’s"
 
 #: ../utilities.php:2351
 msgid "Column Data"
-msgstr ""
+msgstr "Kolomdata"
 
 #: ../utilities.php:2351
 msgid "Scalar"
@@ -15719,26 +15721,26 @@ msgstr ""
 
 #: ../utilities.php:2494
 msgid "SNMPAgent Notification Log"
-msgstr ""
+msgstr "SNMPAgent notificatie log"
 
 #: ../utilities.php:2522 ../utilities.php:2606
 msgid "Receiver"
-msgstr ""
+msgstr "Ontvanger"
 
 #: ../utilities.php:2598
 msgid "Log Entries"
-msgstr ""
+msgstr "Log regels"
 
 #: ../utilities.php:2613
 #, php-format
 msgid "Severity Level: %s"
-msgstr ""
+msgstr "Gevoeligheidsniveau: %s"
 
 #: ../vdef.php:265
 msgid "Click 'Continue' to delete the following VDEF."
 msgid_plural "Click 'Continue' to delete following VDEFs."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Klik op ‘Volgende’ om de volgende VDEF te verwijderen."
+msgstr[1] "Klik op ‘Volgende’ om de volgende VDEF’s te verwijderen."
 
 #: ../vdef.php:270
 msgid "Delete VDEF"
@@ -15754,7 +15756,11 @@ msgid_plural ""
 "Click 'Continue' to duplicate following VDEFs. You can optionally change the "
 "title format for the new VDEFs."
 msgstr[0] ""
+"Klik op volgende om de volgende VDEF te dupliceren. Optioneel kunt u de "
+"titel opmaak wijzigen voor de nieuwe VDEF."
 msgstr[1] ""
+"Klik op volgende om de volgende VDEF’s te dupliceren. Optioneel kunt u de "
+"titel opmaak wijzigen voor de nieuwe VDEF’s."
 
 #: ../vdef.php:280
 msgid "Duplicate VDEF"
@@ -15768,71 +15774,73 @@ msgstr "U moet tenminste een VDEF selecteren."
 
 #: ../vdef.php:325
 msgid "Click 'Continue' to delete the following VDEF's."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende VDEF’s te verwijderen."
 
 #: ../vdef.php:390
 #, php-format
 msgid "VDEF Items [edit: %s]"
-msgstr ""
+msgstr "VDEF items [wijzig: %s]"
 
 #: ../vdef.php:392
 msgid "VDEF Items [new]"
-msgstr ""
+msgstr "VDEF items [nieuw]"
 
 #: ../vdef.php:408
 msgid "Choose what type of VDEF item this is."
-msgstr ""
+msgstr "Kies wat voor type VDEF item dit is."
 
 #: ../vdef.php:408
 msgid "VDEF Item Type"
-msgstr ""
+msgstr "VDEF item type."
 
 #: ../vdef.php:430
 msgid "Enter a value for this VDEF item."
-msgstr ""
+msgstr "Voer een waarde in voor dit VDEF item."
 
 #: ../vdef.php:430
 msgid "VDEF Item Value"
-msgstr ""
+msgstr "VDEF item waarde"
 
 #: ../vdef.php:535
 #, php-format
 msgid "VDEFs [edit: %s]"
-msgstr ""
+msgstr "VDEF’s [wijzig: %s]"
 
 #: ../vdef.php:537
 msgid "VDEFs [new]"
-msgstr ""
+msgstr "VDEF’s [nieuw]"
 
 #: ../vdef.php:600 ../vdef.php:639
 msgid "Delete VDEF Item"
-msgstr ""
+msgstr "Verwijder VDEF item."
 
 #: ../vdef.php:845
 msgid "The name of this VDEF."
-msgstr ""
+msgstr "De naam van deze VDEF."
 
 #: ../vdef.php:845
 msgid "VDEF Name"
-msgstr ""
+msgstr "VDEF naam"
 
 #: ../vdef.php:846
 msgid ""
 "VDEFs that are in use cannot be Deleted. In use is defined as being "
 "referenced by a Graph or a Graph Template."
 msgstr ""
+"VDEF’s die in gebruik zijn kunnen niet worden verwijderd. In gebruik wordt "
+"gedefinieerd als gekoppeld aan een grafiek of grafiektemplate."
 
 #: ../vdef.php:847
 msgid "The number of Graphs using this VDEF."
-msgstr ""
+msgstr "Het aantal grafieken dat deze VDEF gebruiken."
 
 #: ../vdef.php:848
 msgid "The number of Graphs Templates using this VDEF."
-msgstr ""
+msgstr "Het aantal grafiektemplates die deze VDEF gebruiken."
 
 #: ../vdef.php:871
 msgid "No VDEFs"
-msgstr ""
+msgstr "Geen VDEF’s"
 
 #~ msgid "IP Address:"
 #~ msgstr "IP adres:"
