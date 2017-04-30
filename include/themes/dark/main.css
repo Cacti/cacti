@@ -1263,6 +1263,10 @@ legend {
 .formSubCheckbox label {
 }
 
+.formCheckbox {
+	vertical-align: -15%;
+}
+
 .formFieldName {
 	display: inline-block;
 	color: snow;
@@ -1279,6 +1283,7 @@ legend {
 
 .formTooltip {
 	display: inline-block;
+	padding-left: 4px;
 }
 
 .formHeader {
@@ -1369,7 +1374,7 @@ legend {
 }
 
 .break {
-	height:6px;
+	height:8px;
 	display:inline-block;
 }
 
@@ -1421,7 +1426,7 @@ th.secondarySort {
 	background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(187, 227, 154, 0.2) 0%, rgba(168, 199, 127, 0.2) 100%) repeat scroll 0 0;
 }
 
-.tableHeader th {
+.tableHeader th, .tableHeader td {
 	color: snow;
 	cursor: pointer;
 	vertical-align:middle;
@@ -1740,8 +1745,8 @@ div#gtabs {
 	float:left !important;
 	padding:5px;
 	text-decoration:none;
+	font-size: 11px;
 	vertical-align:bottom;
-	font-size: 12px;
 }
 
 .tabs a:hover, .maintabs a:hover {
