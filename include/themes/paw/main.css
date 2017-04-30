@@ -1033,6 +1033,8 @@ legend {
 
 .cactiTableButton span, .cactiTableTitle span {
 	padding: 0px 5px 0px 5px;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .cactiDebugTable {

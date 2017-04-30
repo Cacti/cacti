@@ -1151,10 +1151,8 @@ table.cactiTable {
 	font-size: 13px;
 	font-weight: 600;
     border-color: #222;
-
     background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
     background-repeat: repeat-x;
-
 }
 
 .cactiTableButton {
@@ -1172,6 +1170,8 @@ table.cactiTable {
 
 .cactiTableButton span, .cactiTableTitle span {
 	padding: 0px 5px 0px 5px;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .cactiDebugTable {
@@ -1385,8 +1385,9 @@ th.sortable {
 }
 
 .tableSubHeaderColumn {
-
-	cursor:pointer;
+	cursor: pointer;
+	text-align: left;
+	padding: 3px;
 	outline-style: none;
 }
 
