@@ -3,7 +3,10 @@ Cacti CHANGELOG
 1.1.6
 -issue#620: The table poller_data_template_field_mappings can get out of sync when manipulating data templates
 -issue#622: Can not connect to MySQL over a socket
+-issue#635: Error when saving change to data template
+-issue#637: When displaying tree graphs, use the same layout as preview mode
 -issue: List for creating a Graph type shows already added Graph Templates
+-feature: Dutch translations
 
 1.1.5
 -issue#580: Data collection warnings when using cmd.php
@@ -18,8 +21,6 @@ Cacti CHANGELOG
 -issue#613: Network Automation, now requires a site or your are unable to save rules
 -issue#615: Data Input field length too short for longer scripts
 -issue#619: Export logging option in settings no longer used
--issue#635: Error when saving change to data template
--issue#637: When displaying tree graphs, use the same layout as preview mode
 
 1.1.4
 -issue#524: Reporting not working when Tree branch is device
