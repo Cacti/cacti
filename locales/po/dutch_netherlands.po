@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-27 10:05+0200\n"
-"PO-Revision-Date: 2017-04-27 10:06+0200\n"
+"POT-Creation-Date: 2017-04-30 10:14+0200\n"
+"PO-Revision-Date: 2017-04-30 10:40+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -3925,7 +3925,7 @@ msgstr ""
 
 #: ../data_sources.php:1402
 msgid "No Data Sources Found"
-msgstr ""
+msgstr "Geen data bron gevonden"
 
 #: ../data_templates.php:35
 msgid "Change Profile"
@@ -3954,7 +3954,7 @@ msgstr ""
 
 #: ../data_templates.php:368
 msgid "Duplicate Data Template(s)"
-msgstr ""
+msgstr "Dupliceer data template(s)"
 
 #: ../data_templates.php:372
 msgid ""
@@ -3964,7 +3964,7 @@ msgstr ""
 
 #: ../data_templates.php:374
 msgid "New Data Source Profile"
-msgstr ""
+msgstr "Nieuw data bron profiel"
 
 #: ../data_templates.php:380
 msgid ""
@@ -3983,11 +3983,11 @@ msgstr ""
 #: ../data_templates.php:499
 #, php-format
 msgid "Data Templates [edit: %s]"
-msgstr ""
+msgstr "Data template [wijzig: %s]"
 
 #: ../data_templates.php:501
 msgid "Data Templates [new]"
-msgstr ""
+msgstr "Data template [nieuw]"
 
 #: ../data_templates.php:527
 msgid "This field is always templated."
@@ -4001,7 +4001,7 @@ msgstr ""
 #: ../data_templates.php:586
 #, php-format
 msgid "Data Source Item [%s]"
-msgstr ""
+msgstr "Data bron item [%s]"
 
 #: ../data_templates.php:669
 msgid "Value will be derived from the device if this field is left empty."
@@ -4019,7 +4019,7 @@ msgstr "Data template naam"
 
 #: ../data_templates.php:902
 msgid "The name of this Data Template."
-msgstr ""
+msgstr "De naam voor dit data template."
 
 #: ../data_templates.php:903
 msgid ""
@@ -4035,7 +4035,7 @@ msgstr ""
 
 #: ../data_templates.php:905
 msgid "The number of Data Sources using this Data Template."
-msgstr ""
+msgstr "Het aantal data bronnen die dit data template gebruiken."
 
 #: ../data_templates.php:906
 msgid "Input Method"
@@ -4044,6 +4044,8 @@ msgstr "Invoer methode"
 #: ../data_templates.php:906
 msgid "The method that is used to place Data into the Data Source RRDfile."
 msgstr ""
+"De methode die wordt gebruikt om data in het data bron RRD-bestand te "
+"plaatsen."
 
 #: ../data_templates.php:907
 msgid "Profile Name"
@@ -4051,7 +4053,7 @@ msgstr "Profielnaam"
 
 #: ../data_templates.php:907
 msgid "The default Data Source Profile for this Data Template."
-msgstr ""
+msgstr "Het standaard data source profiel voor dit data template."
 
 #: ../data_templates.php:908
 msgid ""
@@ -4069,37 +4071,37 @@ msgstr ""
 
 #: ../gprint_presets.php:153
 msgid "Delete GPRINT Preset(s)"
-msgstr ""
+msgstr "Verwijder GRPINT voorinstelling(en)"
 
 #: ../gprint_presets.php:156
 msgid "You must select at least one GPRINT Preset."
-msgstr ""
+msgstr "U moet op zijn minst een GPRINT voorinstelling selecteren."
 
 #: ../gprint_presets.php:185
 #, php-format
 msgid "GPRINT Presets [edit: %s]"
-msgstr ""
+msgstr "GPRINT voorinstelling [wijzig: %s]"
 
 #: ../gprint_presets.php:187
 msgid "GPRINT Presets [new]"
-msgstr ""
+msgstr "GPRINT voorinstelling [nieuw]"
 
 #: ../gprint_presets.php:253 ../lib/functions.php:1922
 msgid "GPRINT Presets"
-msgstr ""
+msgstr "GEPRINT voorinstelling"
 
 #: ../gprint_presets.php:268 ../gprint_presets.php:381
 #: ../include/global_arrays.php:663
 msgid "GPRINTs"
-msgstr ""
+msgstr "GEPRINTs"
 
 #: ../gprint_presets.php:390
 msgid "GPRINT Preset Name"
-msgstr ""
+msgstr "Naam GEPRINT voorinstelling"
 
 #: ../gprint_presets.php:390
 msgid "The name of this GPRINT Preset."
-msgstr ""
+msgstr "De naam voor deze GPRINT voorinstelling."
 
 #: ../gprint_presets.php:391
 msgid "Format"
@@ -4107,7 +4109,7 @@ msgstr "Formaat"
 
 #: ../gprint_presets.php:391
 msgid "The GPRINT format string."
-msgstr ""
+msgstr "De GPRINT opmaak waarde."
 
 #: ../gprint_presets.php:392
 msgid ""
@@ -4117,15 +4119,15 @@ msgstr ""
 
 #: ../gprint_presets.php:393
 msgid "The number of Graphs using this GPRINT."
-msgstr ""
+msgstr "Het aantal grafieken die deze GPRINT gebruiken."
 
 #: ../gprint_presets.php:394
 msgid "The number of Graphs Templates using this GPRINT."
-msgstr ""
+msgstr "Het aantal grafiek templates die deze GPRINT gebruiken."
 
 #: ../gprint_presets.php:418
 msgid "No GPRINT Presets"
-msgstr ""
+msgstr "Geen GPRINT voorinstelling"
 
 #: ../graph.php:94
 msgid "Viewing Graph"
@@ -4133,7 +4135,7 @@ msgstr ""
 
 #: ../graph.php:124 ../lib/html.php:348
 msgid "Graph Details, Zooming and Debugging Utilities"
-msgstr ""
+msgstr "Grafiek details, zoom en debug utilities"
 
 #: ../graph.php:125
 msgid "CSV Export"
@@ -4141,7 +4143,7 @@ msgstr "Exporteer CSV"
 
 #: ../graph.php:126
 msgid "Real-time"
-msgstr ""
+msgstr "Real-time"
 
 #: ../graph.php:179
 msgid "Utility View"
@@ -4153,11 +4155,11 @@ msgstr ""
 
 #: ../graph.php:290
 msgid "Graph Source/Properties"
-msgstr ""
+msgstr "Grafiek bron/eigenschappen"
 
 #: ../graph.php:294
 msgid "Graph Data"
-msgstr ""
+msgstr "Grafiekdata"
 
 #: ../graph.php:307 ../graph_realtime.php:267 ../lib/clog_webapi.php:341
 #: ../lib/html_graph.php:319 ../lib/html_tree.php:764 ../lib/html_tree.php:784
@@ -4167,27 +4169,32 @@ msgstr "Vernieuwen"
 
 #: ../graph.php:429
 msgid "RRDtool Graph Syntax"
-msgstr ""
+msgstr "RRDtool grafiek syntax"
 
 #: ../graph_realtime.php:195
 msgid "Real-time has been disabled by your administrator."
-msgstr ""
+msgstr "Real-time is uitgeschakeld door uw beheerder."
 
 #: ../graph_realtime.php:202
 msgid ""
 "The Image Cache Directory does not exist.  Please first create it and set "
 "permissions and then attempt to open another Real-time graph."
 msgstr ""
+"De afbeeldingen cache directorie bestaat niet. Maak deze directorie eerst en "
+"stel de rechten correct in. Probeer hierna opnieuw een real-time grafiek te "
+"openen."
 
 #: ../graph_realtime.php:209
 msgid ""
 "The Image Cache Directory is not writable.  Please set permissions and then "
 "attempt to open another Real-time graph."
 msgstr ""
+"De afbeeldingen cache directorie is niet schrijfbaar. Stel de rechten "
+"correct in en probeer hierna opnieuw een real-time grafiek te openen."
 
 #: ../graph_realtime.php:224
 msgid "Cacti Real-time Graphing"
-msgstr ""
+msgstr "Cacti real-time grafieken"
 
 #: ../graph_realtime.php:253 ../lib/html_graph.php:327 ../lib/html_tree.php:772
 msgid "Window"
@@ -4228,7 +4235,7 @@ msgstr ""
 
 #: ../graph_templates.php:326
 msgid "Duplicate Graph Template(s)"
-msgstr ""
+msgstr "Dupliceer grafiek template(s)"
 
 #: ../graph_templates.php:330
 msgid ""
@@ -4257,11 +4264,11 @@ msgstr ""
 
 #: ../graph_templates.php:355
 msgid "Synchronize Graphs to Graph Template(s)"
-msgstr ""
+msgstr "Synchroniseer grafieken naar (een) grafiek template(s)"
 
 #: ../graph_templates.php:358
 msgid "ERROR: You must select at least one graph template."
-msgstr ""
+msgstr "FOUT: U moet op zijn minst een grafiek template selecteren."
 
 #: ../graph_templates.php:412
 #, php-format
@@ -6114,19 +6121,19 @@ msgstr ""
 
 #: ../include/global_arrays.php:978
 msgid "CDEF"
-msgstr ""
+msgstr "CDEF"
 
 #: ../include/global_arrays.php:979
 msgid "CDEF Item"
-msgstr ""
+msgstr "CDEF Item"
 
 #: ../include/global_arrays.php:980
 msgid "GPRINT Preset"
-msgstr ""
+msgstr "GPRINT voorinstelling"
 
 #: ../include/global_arrays.php:983
 msgid "Data Input Field"
-msgstr ""
+msgstr "Data invoer veld"
 
 #: ../include/global_arrays.php:984 ../include/global_form.php:394
 #: ../include/global_form.php:1602
@@ -6147,63 +6154,63 @@ msgstr ""
 
 #: ../include/global_arrays.php:991
 msgid "VDEF"
-msgstr ""
+msgstr "VDEF"
 
 #: ../include/global_arrays.php:992
 msgid "VDEF Item"
-msgstr ""
+msgstr "VDEF item"
 
 #: ../include/global_arrays.php:1036
 msgid "Last Half Hour"
-msgstr ""
+msgstr "Afgelopen half uur"
 
 #: ../include/global_arrays.php:1037
 msgid "Last Hour"
-msgstr ""
+msgstr "Afgelopen uur"
 
 #: ../include/global_arrays.php:1038 ../include/global_arrays.php:1039
 #: ../include/global_arrays.php:1040 ../include/global_arrays.php:1041
 #, php-format
 msgid "Last %d Hours"
-msgstr ""
+msgstr "Afgelopen %d uren"
 
 #: ../include/global_arrays.php:1042
 msgid "Last Day"
-msgstr ""
+msgstr "Afgelopen dag"
 
 #: ../include/global_arrays.php:1043 ../include/global_arrays.php:1044
 #: ../include/global_arrays.php:1045
 #, php-format
 msgid "Last %d Days"
-msgstr ""
+msgstr "Afgelopen %d dagen"
 
 #: ../include/global_arrays.php:1046
 msgid "Last Week"
-msgstr ""
+msgstr "Afgelopen week"
 
 #: ../include/global_arrays.php:1047
 #, php-format
 msgid "Last %d Weeks"
-msgstr ""
+msgstr "Afgelopen %d weken"
 
 #: ../include/global_arrays.php:1048
 msgid "Last Month"
-msgstr ""
+msgstr "Afgelopen maand"
 
 #: ../include/global_arrays.php:1049 ../include/global_arrays.php:1050
 #: ../include/global_arrays.php:1051 ../include/global_arrays.php:1052
 #, php-format
 msgid "Last %d Months"
-msgstr ""
+msgstr "Afgelopen %d maanden"
 
 #: ../include/global_arrays.php:1053
 msgid "Last Year"
-msgstr ""
+msgstr "Afgelopen jaar"
 
 #: ../include/global_arrays.php:1054
 #, php-format
 msgid "Last %d Years"
-msgstr ""
+msgstr "Afgelopen %d jaren"
 
 #: ../include/global_arrays.php:1055
 msgid "Day Shift"
@@ -6211,70 +6218,70 @@ msgstr ""
 
 #: ../include/global_arrays.php:1056
 msgid "This Day"
-msgstr ""
+msgstr "Vandaag"
 
 #: ../include/global_arrays.php:1057
 msgid "This Week"
-msgstr ""
+msgstr "Deze week"
 
 #: ../include/global_arrays.php:1058
 msgid "This Month"
-msgstr ""
+msgstr "Deze maand"
 
 #: ../include/global_arrays.php:1059
 msgid "This Year"
-msgstr ""
+msgstr "Dit jaar"
 
 #: ../include/global_arrays.php:1060
 msgid "Previous Day"
-msgstr ""
+msgstr "Vorige dag"
 
 #: ../include/global_arrays.php:1061
 msgid "Previous Week"
-msgstr ""
+msgstr "Vorige week"
 
 #: ../include/global_arrays.php:1062
 msgid "Previous Month"
-msgstr ""
+msgstr "Vorige maand"
 
 #: ../include/global_arrays.php:1063
 msgid "Previous Year"
-msgstr ""
+msgstr "Vorig jaar"
 
 #: ../include/global_arrays.php:1067
 #, php-format
 msgid "%d Min"
-msgstr ""
+msgstr "%d Min"
 
 #: ../include/global_arrays.php:1084 ../include/global_settings.php:1018
 #: ../rrdcleaner.php:493
 #, php-format
 msgid "%d Year"
-msgstr ""
+msgstr "%d Jaar"
 
 #: ../include/global_arrays.php:1099
 msgid "Month Number, Day, Year"
-msgstr ""
+msgstr "Maand nummer, dag, jaar"
 
 #: ../include/global_arrays.php:1100
 msgid "Month Name, Day, Year"
-msgstr ""
+msgstr "Maand naam, dag, jaar"
 
 #: ../include/global_arrays.php:1101
 msgid "Day, Month Number, Year"
-msgstr ""
+msgstr "Dag, maand nummer, jaar"
 
 #: ../include/global_arrays.php:1102
 msgid "Day, Month Name, Year"
-msgstr ""
+msgstr "Dag, maand naam, jaar"
 
 #: ../include/global_arrays.php:1103
 msgid "Year, Month Number, Day"
-msgstr ""
+msgstr "Jaar, maand nummer, dag"
 
 #: ../include/global_arrays.php:1104
 msgid "Year, Month Name, Day"
-msgstr ""
+msgstr "Jaar, maand naam, dag"
 
 #: ../include/global_arrays.php:1113
 msgid "After Boost"
@@ -6287,22 +6294,22 @@ msgstr ""
 #: ../include/global_arrays.php:1185 ../include/global_arrays.php:1186
 #, php-format
 msgid "%d MBytes"
-msgstr ""
+msgstr "%d MBytes"
 
 #: ../include/global_arrays.php:1128 ../include/global_arrays.php:1187
 msgid "1 GByte"
-msgstr ""
+msgstr "1 GByte"
 
 #: ../include/global_arrays.php:1129 ../include/global_arrays.php:1188
 #, php-format
 msgid "%s GBytes"
-msgstr ""
+msgstr "%s GBytes"
 
 #: ../include/global_arrays.php:1130 ../include/global_arrays.php:1131
 #: ../include/global_arrays.php:1189 ../include/global_arrays.php:1190
 #, php-format
 msgid "%d GBytes"
-msgstr ""
+msgstr "%d GBytes"
 
 #: ../include/global_arrays.php:1144
 msgid "2,000 Data Source Items"
@@ -6342,36 +6349,36 @@ msgstr ""
 
 #: ../include/global_arrays.php:1169
 msgid "2 Hours"
-msgstr ""
+msgstr "2 uur"
 
 #: ../include/global_arrays.php:1170
 msgid "4 Hours"
-msgstr ""
+msgstr "4 uur"
 
 #: ../include/global_arrays.php:1171
 msgid "6 Hours"
-msgstr ""
+msgstr "6 uur"
 
 #: ../include/global_arrays.php:1178
 #, php-format
 msgid "%s Hours"
-msgstr ""
+msgstr "%s Uren"
 
 #: ../include/global_arrays.php:1197
 #, php-format
 msgid "%s Minutes"
-msgstr ""
+msgstr "%s Minuten"
 
 #: ../include/global_arrays.php:1217
 msgid "1 Megabyte"
-msgstr ""
+msgstr "1 Megabyte"
 
 #: ../include/global_arrays.php:1218 ../include/global_arrays.php:1219
 #: ../include/global_arrays.php:1220 ../include/global_arrays.php:1221
 #: ../include/global_arrays.php:1222 ../include/global_arrays.php:1223
 #, php-format
 msgid "%d Megabytes"
-msgstr ""
+msgstr "%d Megabytes"
 
 #: ../include/global_arrays.php:1235
 msgid "Take Ownership"
@@ -6379,15 +6386,15 @@ msgstr ""
 
 #: ../include/global_arrays.php:1239
 msgid "Inline PNG Image"
-msgstr ""
+msgstr "Inline PNG afbeelding"
 
 #: ../include/global_arrays.php:1245
 msgid "Inline JPEG Image"
-msgstr ""
+msgstr "Inline JPEG afbeelding"
 
 #: ../include/global_arrays.php:1246
 msgid "Inline GIF Image"
-msgstr ""
+msgstr "Inline GIF afbeelding"
 
 #: ../include/global_arrays.php:1249
 msgid "Attached PNG Image"
@@ -6415,7 +6422,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:1265
 msgid "Text"
-msgstr ""
+msgstr "Tekst"
 
 #: ../include/global_arrays.php:1266 ../include/global_form.php:2214
 msgid "Tree"
@@ -6423,43 +6430,43 @@ msgstr ""
 
 #: ../include/global_arrays.php:1268
 msgid "Horizontal Rule"
-msgstr ""
+msgstr "Horizontale lijn"
 
 #: ../include/global_arrays.php:1272
 msgid "left"
-msgstr ""
+msgstr "links"
 
 #: ../include/global_arrays.php:1273
 msgid "center"
-msgstr ""
+msgstr "midden"
 
 #: ../include/global_arrays.php:1274
 msgid "right"
-msgstr ""
+msgstr "rechts"
 
 #: ../include/global_arrays.php:1278
 msgid "Minute(s)"
-msgstr ""
+msgstr "Minu(u)t(en)"
 
 #: ../include/global_arrays.php:1279
 msgid "Hour(s)"
-msgstr ""
+msgstr "U(u)r(en)"
 
 #: ../include/global_arrays.php:1280
 msgid "Day(s)"
-msgstr ""
+msgstr "Dag(en)"
 
 #: ../include/global_arrays.php:1281
 msgid "Week(s)"
-msgstr ""
+msgstr "We(e)k(en)"
 
 #: ../include/global_arrays.php:1282
 msgid "Month(s), Day of Month"
-msgstr ""
+msgstr "Maand(en), dag van de maand"
 
 #: ../include/global_arrays.php:1283
 msgid "Month(s), Day of Week"
-msgstr ""
+msgstr "Maand(en), dag van de week"
 
 #: ../include/global_arrays.php:1284
 msgid "Year(s)"
@@ -6491,7 +6498,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:1297
 msgid "No Totals"
-msgstr ""
+msgstr "Geen totalen"
 
 #: ../include/global_arrays.php:1298
 msgid "Print all Legend Items"
@@ -6515,75 +6522,75 @@ msgstr ""
 
 #: ../include/global_arrays.php:1309
 msgid "Data Source, Graph"
-msgstr ""
+msgstr "Data bron, grafiek"
 
 #: ../include/global_arrays.php:1310
 msgid "Graph, Data Source"
-msgstr ""
+msgstr "Grafiek, data bron"
 
 #: ../include/global_arrays.php:1317
 msgid "contains"
-msgstr ""
+msgstr "bevat"
 
 #: ../include/global_arrays.php:1318
 msgid "does not contain"
-msgstr ""
+msgstr "bevat niet"
 
 #: ../include/global_arrays.php:1319
 msgid "begins with"
-msgstr ""
+msgstr "begint met"
 
 #: ../include/global_arrays.php:1320
 msgid "does not begin with"
-msgstr ""
+msgstr "begint niet met"
 
 #: ../include/global_arrays.php:1321
 msgid "ends with"
-msgstr ""
+msgstr "eindigt met"
 
 #: ../include/global_arrays.php:1322
 msgid "does not end with"
-msgstr ""
+msgstr "eindigt niet met"
 
 #: ../include/global_arrays.php:1323
 msgid "matches"
-msgstr ""
+msgstr "komt overeen"
 
 #: ../include/global_arrays.php:1324
 msgid "does not match with"
-msgstr ""
+msgstr "komt niet overeen"
 
 #: ../include/global_arrays.php:1325
 msgid "is less than"
-msgstr ""
+msgstr "is kleiner dan"
 
 #: ../include/global_arrays.php:1326
 msgid "is less than or equal"
-msgstr ""
+msgstr "is kleiner dan of gelijk aan"
 
 #: ../include/global_arrays.php:1327
 msgid "is greater than"
-msgstr ""
+msgstr "is groter dan"
 
 #: ../include/global_arrays.php:1328
 msgid "is greater than or equal"
-msgstr ""
+msgstr "is groter dan of gelijk aan"
 
 #: ../include/global_arrays.php:1329
 msgid "is unknown"
-msgstr ""
+msgstr "is onbekend"
 
 #: ../include/global_arrays.php:1330
 msgid "is not unknown"
-msgstr ""
+msgstr "is niet onbekend"
 
 #: ../include/global_arrays.php:1331
 msgid "is empty"
-msgstr ""
+msgstr "is leeg"
 
 #: ../include/global_arrays.php:1332
 msgid "is not empty"
-msgstr ""
+msgstr "is niet leeg"
 
 #: ../include/global_arrays.php:1333
 msgid "matches regular expression"
@@ -6595,34 +6602,34 @@ msgstr ""
 
 #: ../include/global_arrays.php:1436
 msgid "Fixed String"
-msgstr ""
+msgstr "vaste waarde"
 
 #: ../include/global_arrays.php:1441
 msgid "Every 1 Hour"
-msgstr ""
+msgstr "Ieder uur"
 
 #: ../include/global_arrays.php:1447
 msgid "Every Day"
-msgstr ""
+msgstr "Iedere dag"
 
 #: ../include/global_arrays.php:1448
 msgid "Every Week"
-msgstr ""
+msgstr "Iedere week"
 
 #: ../include/global_arrays.php:1449 ../include/global_arrays.php:1450
 #, php-format
 msgid "Every %d Weeks"
-msgstr ""
+msgstr "Iedere %d weken"
 
 #: ../include/global_arrays.php:1475
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
-msgstr ""
+msgstr "Jan"
 
 #: ../include/global_arrays.php:1476
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
-msgstr ""
+msgstr "Feb"
 
 #: ../include/global_arrays.php:1477
 msgctxt "A short textual representation of a month, three letters"
@@ -6632,7 +6639,7 @@ msgstr "Maa"
 #: ../include/global_arrays.php:1478
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
-msgstr ""
+msgstr "Apr"
 
 #: ../include/global_arrays.php:1479
 msgctxt "A short textual representation of a month, three letters"
@@ -6642,22 +6649,22 @@ msgstr "Mei"
 #: ../include/global_arrays.php:1480
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
-msgstr ""
+msgstr "Jun"
 
 #: ../include/global_arrays.php:1481
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
-msgstr ""
+msgstr "Jul"
 
 #: ../include/global_arrays.php:1482
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
-msgstr ""
+msgstr "Aug"
 
 #: ../include/global_arrays.php:1483
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
-msgstr ""
+msgstr "Sep"
 
 #: ../include/global_arrays.php:1484
 msgctxt "A short textual representation of a month, three letters"
@@ -6667,12 +6674,12 @@ msgstr "Okt"
 #: ../include/global_arrays.php:1485
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
-msgstr ""
+msgstr "Nov"
 
 #: ../include/global_arrays.php:1486
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
-msgstr ""
+msgstr "Dec"
 
 #: ../include/global_arrays.php:1500
 msgctxt "A textual representation of a day, three letters"
