@@ -1034,7 +1034,7 @@ function draw_menu($user_menu = "") {
 	//print "<pre>";print_r($_SERVER);print "</pre>";
 	//print "<pre>";print_r($user_menu);print "</pre>";exit;
 
-	print "<tr><td><table><tr><td><div id='menu'><ul id='nav' role='menu' tabindex='0'>\n";
+	print "<tr><td><table><tr><td><div id='menu'><ul id='nav' role='menu'>\n";
 
 	/* loop through each header */
 	$i = 0;
@@ -1102,9 +1102,9 @@ function draw_menu($user_menu = "") {
 							that is contained in the sub-items array */
 							if (($i == 0) || ($draw_sub_items)) {
 								if (is_menu_pick_active($item_sub_url)) {
-									print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
+									print "<li><a role='menuitem' class='pic selected' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
 								}else{
-									print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
+									print "<li><a role='menuitem' class='pic' href='" . htmlspecialchars($item_sub_url) . "'>$item_sub_title</a></li>\n";
 								}
 							}
 
@@ -1116,9 +1116,9 @@ function draw_menu($user_menu = "") {
 						/* draw normal (non sub-item) menu item */
 						$item_url = $config['url_path'] . $item_url;
 						if (is_menu_pick_active($item_url)) {
-							print "<li><a role='menuitem' tabindex='-1' class='pic selected' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
+							print "<li><a role='menuitem' class='pic selected' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
 						}else{
-							print "<li><a role='menuitem' tabindex='-1' class='pic' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
+							print "<li><a role='menuitem' class='pic' href='" . htmlspecialchars($item_url) . "'>$item_title</a></li>\n";
 						}
 					}
 				}
@@ -1498,7 +1498,7 @@ function html_show_tabs_left() {
 
 		print "<div class='maintabs'><nav><ul role='tablist'>\n";
 		foreach($tabs_left as $tab) {
-			print "<li role='tab'><a id='" . (isset($tab['id']) ? $tab['id'] : 'maintab-anchor-' . $i) . "' class='lefttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "' tabindex='-1'>" . $tab['title'] . "</a></li>\n";
+			print "<li><a id='" . (isset($tab['id']) ? $tab['id'] : 'maintab-anchor-' . $i) . "' class='lefttab" . (isset($tab['selected']) ? ' selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 
 			$i++;
 		}
@@ -1591,7 +1591,7 @@ function html_graph_tabs_right($current_user) {
 				if (isset($tab['image']) && $tab['image'] != '') {
 					print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 				}else{
-					print "<li role='tab' tabindex='1'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+					print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 				}
 				break;
 			case 'list':

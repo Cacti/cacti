@@ -568,7 +568,7 @@ function template_edit() {
 			print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
 			foreach ($template_data_rrds as $template_data_rrd) {
-				print "<li role='tab' tabindex='$i'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i+1) . ": " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a><a class='deleteMarker fa fa-remove' title='" . __('Delete') . "' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
+				print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i+1) . ": " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a><a class='deleteMarker fa fa-remove' title='" . __('Delete') . "' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
 
 				$i++;
 			}
@@ -632,6 +632,8 @@ function template_edit() {
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
+			$class = 'odd';
+
 			foreach ($fields as $field) {
 				$data_input_data = db_fetch_row_prepared('SELECT t_value, value 
 					FROM data_input_data 
@@ -654,11 +656,17 @@ function template_edit() {
 					$help = $field['name'];
 				}
 
-				print "<div class='formRow'>";
+				print "<div class='formRow $class'>";
+
+				if ($class == 'odd') {
+					$class = 'even';
+				}else{
+					$class = 'odd';
+				}
 
 				?>
 				<div class='formColumnLeft'>
-					<div class='formFieldName'><?php print htmlspecialchars($field['name']);?><?php print display_tooltip($help);?><br>
+					<div class='formFieldName'><?php print htmlspecialchars($field['name']);?><div class='formTooltip'><?php print display_tooltip($help);?></div><br>
 
 						<div class='formSubCheckbox'><?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, __('Use Per-Data Source Value (Ignore this Value)'), '', '', get_request_var('id'));?></div>
 					</div>

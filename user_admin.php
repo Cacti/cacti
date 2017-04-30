@@ -1929,7 +1929,7 @@ function user_edit() {
 		print "<div class='tabs'><nav><ul role='tablist'>\n";
 
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") . 
+			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") . 
 				" href='" . htmlspecialchars($config['url_path'] .
 				'user_admin.php?action=user_edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
