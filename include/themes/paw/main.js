@@ -76,8 +76,17 @@ function themeReady() {
 	setMenuVisibility();
 
 	// Add nice search filter to filters
-	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
-	$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="filter"]').length > 0) {
+		$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	}
+
+	if ($('input[id="filterd"]').length > 0) {
+		$('input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	}
+
+	if ($('input[id="rfilter"]').length > 0) {
+		$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
+	}
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 
