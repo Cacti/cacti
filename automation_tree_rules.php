@@ -566,7 +566,7 @@ function automation_tree_rules_edit() {
 
 	form_start('automation_tree_rules.php', 'form_automation_tree_rule_edit');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	if (!isempty_request_var('id')) {
 		/* display whole rule */
@@ -585,7 +585,7 @@ function automation_tree_rules_edit() {
 	form_hidden_box('item_id', (isset($rule['item_id']) ? $rule['item_id'] : '0'), '');
 	form_hidden_box('save_component_automation_tree_rule', '1', '');
 
-	html_end_box();
+	html_end_box(true, true);
 
 	/*
 	 * display the rule items -------------------------------------------------------------------------------

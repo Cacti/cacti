@@ -931,6 +931,8 @@ function form_actions() {
 				}
 				print "</tr>\n";
 
+				print "<tr><td>";
+
 				$ttitle = $graph_array[0];
 
 				/* aggregate form */
@@ -949,6 +951,8 @@ function form_actions() {
 
 				# draw all graph items of first graph, including a html_start_box
 				draw_aggregate_graph_items_list(0, $graph_template);
+
+				print "</td></tr>";
 
 				# again, a new html_start_box. Using the one from above would yield ugly formatted NO and YES buttons
 				html_start_box(__('Please confirm'), '100%', '', '3', 'center', '');
@@ -1300,7 +1304,7 @@ function graph_edit() {
 
 	form_start('graphs.php');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	$gtsql = get_common_graph_templates($graph);
 
@@ -1357,16 +1361,16 @@ function graph_edit() {
 			)
 		);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if (!empty($graph['graph_template_id'])) {
-		html_start_box(__('Supplemental Graph Template Data'), '100%', '', '3', 'center', '');
+		html_start_box(__('Supplemental Graph Template Data'), '100%', true, '3', 'center', '');
 
-		draw_nontemplated_fields_graph($graph['graph_template_id'], $graph, '|field|', '<strong>' . __('Graph Fields') . '</strong>', true, true, 0);
-		draw_nontemplated_fields_graph_item($graph['graph_template_id'], get_request_var('id'), '|field|_|id|', '<strong>' . __('Graph Item Fields') . '</strong>', true, $locked);
+		draw_nontemplated_fields_graph($graph['graph_template_id'], $graph, '|field|', __('Graph Fields'), true, true, 0);
+		draw_nontemplated_fields_graph_item($graph['graph_template_id'], get_request_var('id'), '|field|_|id|', __('Graph Item Fields'), true, $locked);
 
-		html_end_box();
+		html_end_box(true, true);
 	}
 
 	/* graph item list goes here */
@@ -1403,7 +1407,7 @@ function graph_edit() {
 	}
 
 	if (((isset_request_var('id')) || (isset_request_var('new'))) && (empty($graph['graph_template_id']))) {
-		html_start_box(__('Graph Configuration'), '100%', '', '3', 'center', '');
+		html_start_box(__('Graph Configuration'), '100%', true, '3', 'center', '');
 
 		$form_array = array();
 
@@ -1428,7 +1432,7 @@ function graph_edit() {
 			)
 		);
 
-		html_end_box();
+		html_end_box(true, true);
 	}
 
 	if ((isset_request_var('id')) || (isset_request_var('new'))) {

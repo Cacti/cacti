@@ -562,7 +562,7 @@ function cdef_edit() {
 
 	form_start('cdef.php', 'cdef');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -571,7 +571,7 @@ function cdef_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
 		html_start_box('', '100%', '', '3', 'center', '');

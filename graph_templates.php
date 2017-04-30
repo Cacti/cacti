@@ -495,7 +495,7 @@ function template_edit() {
 
 	form_start('graph_templates.php', 'graph_templates');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -504,9 +504,9 @@ function template_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
-	html_start_box(__('Graph Template Options'), '100%', '', '3', 'center', '');
+	html_start_box(__('Graph Template Options'), '100%', true, '3', 'center', '');
 
 	$form_array = array();
 
@@ -535,7 +535,8 @@ function template_edit() {
 	);
 
 	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
-	html_end_box();
+
+	html_end_box(true, true);
 
 	form_save_button('graph_templates.php', 'return');
 

@@ -355,7 +355,7 @@ function template_edit() {
 
 	form_start('automation_templates.php', 'form_network');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -364,7 +364,7 @@ function template_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('automation_templates.php');
 }

@@ -420,7 +420,7 @@ function color_edit() {
 
 	form_start('color.php', 'color');
 
-	html_start_box( $header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -428,7 +428,7 @@ function color_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('color.php');
 

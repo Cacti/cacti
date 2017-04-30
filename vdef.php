@@ -539,7 +539,7 @@ function vdef_edit() {
 
 	form_start('vdef.php', 'vdef_edit');
 
-	html_start_box( $header_label, '100%', '', '3', 'center', '');
+	html_start_box( $header_label, '100%', true, '3', 'center', '');
 
 	$preset_vdef_form_list = preset_vdef_form_list();
 	draw_edit_form(
@@ -549,7 +549,7 @@ function vdef_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('id', (isset($vdef['id']) ? $vdef['id'] : '0'), '');
 	form_hidden_box('save_component_vdef', '1', '');

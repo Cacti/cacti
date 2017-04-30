@@ -503,7 +503,7 @@ function template_edit() {
 
 	form_start('data_templates.php', 'data_templates');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => 'true'),
@@ -511,9 +511,9 @@ function template_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
-	html_start_box(__('Data Source'), '100%', '', '3', 'center', '');
+	html_start_box(__('Data Source'), '100%', true, '3', 'center', '');
 
 	/* make sure 'data source path' doesn't show up for a template... we should NEVER template this field */
 	unset($struct_data_source['data_source_path']);
@@ -530,7 +530,7 @@ function template_edit() {
 				'name' => 't_' . $field_name,
 				'friendly_name' => __('Use Per-Data Source Value (Ignore this Value)'),
 				'value' => (isset($template_data{'t_' . $field_name}) ? $template_data{'t_' . $field_name} : '')
-				);
+			);
 		}
 
 		$form_array[$field_name]['value'] = (isset($template_data[$field_name]) ? $template_data[$field_name] : '');
@@ -544,7 +544,7 @@ function template_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	/* fetch ALL rrd's for this data source */
 	if (!isempty_request_var('id')) {
@@ -568,9 +568,7 @@ function template_edit() {
 			print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
 			foreach ($template_data_rrds as $template_data_rrd) {
-				print "<li tole='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "'>
-					<a role='presentation' tabindex='-1' " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i+1) . ": " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a>
-					<a class='deleteMarker fa fa-remove' title='" . __('Delete') . "' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
+				print "<li role='tab' tabindex='$i'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i+1) . ": " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a><a class='deleteMarker fa fa-remove' title='" . __('Delete') . "' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
 
 				$i++;
 			}
@@ -583,7 +581,7 @@ function template_edit() {
 		}
 	}
 
-	html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '')), '100%', '', '0', 'center', (!isempty_request_var('id') ? 'data_templates.php?action=rrd_add&id=' . get_request_var('id'):''), 'New');
+	html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? htmlspecialchars($template_rrd['data_source_name']) : '')), '100%', true, '0', 'center', (!isempty_request_var('id') ? 'data_templates.php?action=rrd_add&id=' . get_request_var('id'):''), 'New');
 
 	/* data input fields list */
 	if ((empty($template_data['data_input_id'])) ||
@@ -619,7 +617,7 @@ function template_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	$i = 0;
 	if (!isempty_request_var('id')) {
@@ -630,7 +628,7 @@ function template_edit() {
 			AND input_output="in" ORDER BY name', 
 			array($template_data['data_input_id']));
 
-		html_start_box(__('Custom Data [data input: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($template_data['data_input_id'])))), '100%', '', '3', 'center', '');
+		html_start_box(__('Custom Data [data input: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($template_data['data_input_id'])))), '100%', true, '3', 'center', '');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -656,28 +654,29 @@ function template_edit() {
 					$help = $field['name'];
 				}
 
-				form_alternate_row();
+				print "<div class='formRow'>";
 
 				?>
-				<td style='width:50%;'>
-					<strong><?php print htmlspecialchars($field['name']);?></strong><?php print display_tooltip($help);?><br>
+				<div class='formColumnLeft'>
+					<div class='formFieldName'><?php print htmlspecialchars($field['name']);?><?php print display_tooltip($help);?><br>
 
-					<?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, __('Use Per-Data Source Value (Ignore this Value)'), '', '', get_request_var('id'));?>
-				</td>
-				<td>
+						<div class='formSubCheckbox'><?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, __('Use Per-Data Source Value (Ignore this Value)'), '', '', get_request_var('id'));?></div>
+					</div>
+				</div>
+				<div class='formColumnRight'>
 					<?php form_text_box('value_' . $field['data_name'], $old_value, '', '');?>
 					<?php if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code'])) && ($old_tvalue  == '')) { print "<br><em>" . __('Value will be derived from the device if this field is left empty.') . "</em>\n"; } ?>
-				</td>
+				</div>
 				<?php
-				form_end_row();
+				print "</div>";
 
 				$i++;
 			}
 		}else{
-			print '<tr><td><em>' . __('No Input Fields for the Selected Data Input Source') . '</em></td></tr>';
+			print '<div style="width:100%;float:left;"><em>' . __('No Input Fields for the Selected Data Input Source') . '</em></div>';
 		}
 
-		html_end_box();
+		html_end_box(true, true);
 	}
 
 	form_save_button('data_templates.php', 'return');

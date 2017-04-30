@@ -364,7 +364,7 @@ function aggregate_template_edit() {
 
 	form_start('aggregate_templates.php', 'template_edit');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -373,7 +373,7 @@ function aggregate_template_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	if (isset($template)) {
 		draw_aggregate_graph_items_list(0, $template['graph_template_id'], $template);

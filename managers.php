@@ -345,7 +345,7 @@ function manager_edit() {
 		default:
 			form_start('managers.php');
 
-			html_start_box($header_label, '100%', '', '3', 'center', '');
+			html_start_box($header_label, '100%', true, '3', 'center', '');
 
 			draw_edit_form(
 				array(
@@ -354,7 +354,7 @@ function manager_edit() {
 				)
 			);
 
-			html_end_box();
+			html_end_box(true, true);
 
 			form_save_button('managers.php', 'return');
 

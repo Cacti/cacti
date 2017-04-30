@@ -678,7 +678,11 @@ function host_edit() {
 	if (!empty($host['id'])) {
 		html_start_box(__('Associated Graph Templates'), '100%', '', '3', 'center', '');
 
-		html_header(array(__('Graph Template Name'), __('Status')), 2);
+		html_header(
+			array(
+				array('display' => __('Graph Template Name'), 'align' => 'left', 'nohide' => true),
+				array('display' => __('Status'), 'align' => 'left', 'nohide' => true)
+			), 2);
 
 		$selected_graph_templates = db_fetch_assoc_prepared("
 			SELECT result.id, result.name, graph_local.id AS graph_local_id  
@@ -724,10 +728,10 @@ function host_edit() {
 				/* get status information for this graph template */
 				$is_being_graphed = $item['graph_local_id'] > 0;
 				?>
-					<td style="padding: 4px;">
+					<td class='nowrap' style="padding: 4px;">
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
-					<td>
+					<td class='nowrap'>
 						<?php print (($is_being_graphed == true) ? "<span class='beingGraphed'>" . __('Is Being Graphed') . "</span> (<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $item['graph_local_id']) . "'>" . __('Edit') . "</a>)" : "<span class='notBeingGraphed'>" . __('Not Being Graphed') ."</span>");?>
 					</td>
 					<td class='nowrap right'>
@@ -744,15 +748,15 @@ function host_edit() {
 		?>
 		<tr class='odd'>
 			<td class='saveRow' colspan='3'>
-				<table style='width:20%;'>
+				<table>
 					<tr style='line-height:10px;'>
-						<td class='nowrap' style='padding-right:15px;'>
+						<td class='nowrap templateAdd' style='padding-right:15px;'>
 							<?php print __('Add Graph Template');?>
 						</td>
-						<td>
+						<td class='noHide'>
 							<?php form_dropdown('graph_template_id',$available_graph_templates,'name','id','','','');?>
 						</td>
-						<td>
+						<td class='noHide'>
 							<input type='button' value='<?php print __('Add');?>' id='add_gt' title='<?php print __('Add Graph Template to Device');?>'>
 						</td>
 					</tr>
@@ -767,8 +771,8 @@ function host_edit() {
 
 		html_header(
 			array(
-				array('display' => __('Data Query Name'), 'align' => 'left'), 
-				array('display' => __('Re-Index Method'), 'align' => 'left'), 
+				array('display' => __('Data Query Name'), 'align' => 'left', 'nohide' => true), 
+				array('display' => __('Re-Index Method'), 'align' => 'left', 'nohide' => true), 
 				array('display' => __('Status'), 'align' => 'left'),
 				array('display' => __('Actions'), 'align' => 'right')
 			)
@@ -822,7 +826,7 @@ function host_edit() {
 				$status = 'success';
 
 				?>
-					<td style='padding: 4px;'>
+					<td style='padding:4px;'>
 						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
 					</td>
 					<td class='nowrap'>
@@ -855,7 +859,7 @@ function host_edit() {
 			<td class='saveRow' colspan='5'>
 				<table style='width:20%'>
 					<tr style='line-height:10px;'>
-						<td class='nowrap' style='padding-right:15px;'>
+						<td class='nowrap queryAdd' style='padding-right:15px;'>
 							<?php print __('Add Data Query');?>
 						</td>
 						<td>

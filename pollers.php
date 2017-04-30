@@ -355,7 +355,7 @@ function poller_edit() {
 
 	form_start('pollers.php', 'poller');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	if (isset($poller) && sizeof($poller)) {
 		if ($poller['id'] == 1) {
@@ -376,12 +376,22 @@ function poller_edit() {
 		)
 	);
 
+	$tip_text = __('Remote Data Collectors must be able to communicate to the Main Data Collector, and vice versa.  Use this button to verify that the Main Data Collector can communicate to this Remote Data Collector.');
+
+	if (read_config_option('hide_form_description') == 'on') {
+		$tooltip = '<br><span class="formFieldDescription">' . $tip_text . '</span>';
+	}else{
+		$tooltip = '<div class="formTooltip">' . str_replace("\n", '', display_tooltip($tip_text)) . '</div>';
+	}
+
+	$row_html = '<div class="formRow odd"><div class="formColumnLeft"><div class="formFieldName">' . __('Test Database Connection') . $tooltip . '</div></div><div class="formColumnRight"><input id="dbtest" type="button" value="' . __('Test Connection') . '"><span id="results"></span></div></div>';
+
 	if (isset($poller) && sizeof($poller)) {
 		if ($poller['id'] > 1) {
 			?>
 			<script type='text/javascript'>
 			$(function() {
-				$('#row_dbssl').after('<tr class="odd"><td style="width:50%"></td><td><input id="dbtest" type="button" value="Test Database Connection"><span id="results"></span></td></tr>')
+				$('#row_dbssl').after('<?php print $row_html;?>');
 				applySkin();
 
 				$('#dbtest').click(function() {
@@ -410,7 +420,7 @@ function poller_edit() {
 		}
 	}
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('pollers.php', 'return');
 }

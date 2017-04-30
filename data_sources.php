@@ -729,7 +729,7 @@ function ds_edit() {
 
 	form_start('data_sources.php', 'data_source');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	if (sizeof($data_template)) {
 		$data_sources = db_fetch_cell_prepared('SELECT 
@@ -811,13 +811,13 @@ function ds_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	/* only display the "inputs" area if we are using a data template for this data source */
 	if (!empty($data['data_template_id'])) {
 		$template_data_rrds = db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE local_data_id = ? ORDER BY data_source_name', array(get_request_var('id')));
 
-		html_start_box( __('Supplemental Data Template Data'), '100%', '', '3', 'center', '');
+		html_start_box( __('Supplemental Data Template Data'), '100%', true, '3', 'center', '');
 
 		draw_nontemplated_fields_data_source($data['data_template_id'], $data['local_data_id'], $data, '|field|', __('Data Source Fields'), true, true, 0);
 		draw_nontemplated_fields_data_source_item($data['data_template_id'], $template_data_rrds, '|field|_|id|', __('Data Source Item Fields'), true, true, true, 0);
@@ -825,11 +825,11 @@ function ds_edit() {
 
 		form_hidden_box('save_component_data','1','');
 
-		html_end_box();
+		html_end_box(true, true);
 	}
 
 	if (((isset_request_var('id')) || (isset_request_var('new'))) && (empty($data['data_template_id']))) {
-		html_start_box( __('Data Source'), '100%', '', '3', 'center', '');
+		html_start_box( __('Data Source'), '100%', true, '3', 'center', '');
 
 		$form_array = array();
 
@@ -857,7 +857,7 @@ function ds_edit() {
 			)
 		);
 
-		html_end_box();
+		html_end_box(true, true);
 
 		/* fetch ALL rrd's for this data source */
 		if (!isempty_request_var('id')) {
@@ -901,16 +901,16 @@ function ds_edit() {
 			}
 		}
 
-		html_start_box('', '100%', '', '3', 'center', '');
+		html_start_box('', '100%', true, '3', 'center', '');
 
-		print "<tr>
-			<td class='textHeaderDark left'>
+		print "<div class='tableHeader'>
+			<div class='tableSubHeaderColumn left'>
 				" . __('Data Source Item %s', $header_label) . "
-			</td>
-			<td class='textHeaderDark right'>
+			</div>
+			<div class='tableSubHeaderColumn right'>
 				" . ((!isempty_request_var('id') && (empty($data_template['id']))) ? "<a class='linkOverDark' href='" . htmlspecialchars('data_sources.php?action=rrd_add&id=' . get_request_var('id')) . "'>" . __('New') . "</a>&nbsp;" : '') . "
-			</td>
-		</tr>\n";
+			</div>
+		</div>\n";
 
 		/* data input fields list */
 		if ((empty($data['data_input_id'])) || (db_fetch_cell_prepared('SELECT type_id FROM data_input WHERE id = ?', array($data['data_input_id'])) > '1')) {
@@ -953,7 +953,7 @@ function ds_edit() {
 			)
 		);
 
-		html_end_box();
+		html_end_box(true, true);
 
 		/* data source data goes here */
 		data_edit(false);

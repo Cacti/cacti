@@ -564,9 +564,9 @@ function edit_page() {
 	form_start('links.php');
 
 	if (isset($data['title'])) {
-		html_start_box(__('External Links [edit: %s]', $data['title']), '100%', '', '3', 'center', '');
+		html_start_box(__('External Links [edit: %s]', $data['title']), '100%', true, '3', 'center', '');
 	}else{
-		html_start_box(__('External Links [new]'), '100%', '', '3', 'center', '');
+		html_start_box(__('External Links [new]'), '100%', true, '3', 'center', '');
 	}
 
 	draw_edit_form(
@@ -576,7 +576,7 @@ function edit_page() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('links.php', 'save');
 

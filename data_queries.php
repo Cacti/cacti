@@ -480,7 +480,7 @@ function data_query_item_edit() {
 
 	form_start('data_queries.php', 'data_queries');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -488,7 +488,7 @@ function data_query_item_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	?>
 	<script type='text/javascript'>
@@ -517,7 +517,7 @@ function data_query_item_edit() {
 		if (sizeof($data_templates)) {
 		foreach ($data_templates as $data_template) {
 			print "<tr class='tableHeader'>
-					<th>Data Template - " . $data_template['name'] . '</th>
+					<th class='tableSubHeaderColumn'>" . __('Data Template - %s', $data_template['name']) . '</th>
 				</tr>';
 
 			$data_template_rrds = db_fetch_assoc_prepared('SELECT
@@ -868,14 +868,14 @@ function data_query_edit() {
 
 	form_start('data_queries.php', 'data_queries');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_data_query_edit, (isset($snmp_query) ? $snmp_query : array()))
 		));
 
-	html_end_box();
+	html_end_box(false, true);
 
 	if (!empty($snmp_query['id'])) {
 		$search       = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
@@ -883,16 +883,16 @@ function data_query_edit() {
 		$xml_filename = str_replace($search, $replace, $snmp_query['xml_path']);
 
 		if ((file_exists($xml_filename)) && (is_file($xml_filename))) {
-			$text = "<font color='#0d7c09'>" . __('Successfully located XML file') . "</font>";
+			$text = "<span class='deviceUp'>" . __('Successfully located XML file') . "</span>";
 			$xml_file_exists = true;
 		}else{
-			$text = "<font class='txtErrorText'>" . __('Could not locate XML file.') . "</font>";
+			$text = "<span class='deviceDown'>" . __('Could not locate XML file.') . "</span>";
 			$xml_file_exists = false;
 		}
 
 		html_start_box('', '100%', '', '3', 'center', '');
-		print "<tr class='tableRow'><td>$text</td></tr>";
-		html_end_box();
+		print "<tr class='tableRow debug'><td>$text</td></tr>";
+		html_end_box(false);
 
 		html_start_box( __('Associated Graph Templates'), '100%', '', '3', 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
 
@@ -901,7 +901,7 @@ function data_query_edit() {
 			<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
 			<th class='tableSubHeaderColumn right'>" . __('Graphs Using') . "</th>
 			<th class='tableSubHeaderColumn right'>" . __('Mapping ID') . "</th>
-			<th class='tableSubHeaderColumn right' style='width:60px;'>" . __('Action') . "</td>
+			<th class='tableSubHeaderColumn right' style='width:60px;'>" . __('Action') . "</th>
 		</tr>";
 
 		$snmp_query_graphs = db_fetch_assoc_prepared('SELECT sqg.id, 

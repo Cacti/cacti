@@ -189,7 +189,7 @@ function gprint_presets_edit() {
 
 	form_start('gprint_presets.php', 'gprint_presets');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -198,7 +198,7 @@ function gprint_presets_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('gprint_presets.php');
 }

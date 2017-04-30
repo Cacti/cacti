@@ -59,9 +59,9 @@ function draw_edit_form($array) {
 				form_hidden_box($field_name, $field_array['value'], '0', true);
 				print '</div>';
 			}elseif ($field_array['method'] == 'spacer') {
-				if ($i > 0) {
-					print '</div>';
-				}
+//				if ($i > 0) {
+//					print '</div>';
+//				}
 
 				$collapsible = (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true');
 
@@ -79,11 +79,10 @@ function draw_edit_form($array) {
 					}
 				}
 
-				// Make a form row
+				// Make a form cell
 				print "<div class='formColumnLeft'>";
 
 				print "<div class='formFieldName'>" . $field_array['friendly_name'];
-
 				if (read_config_option('hide_form_description') == 'on') {
 					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? $field_array['description'] : '') . "</span>\n";
 				}else{
@@ -91,10 +90,10 @@ function draw_edit_form($array) {
 					print display_tooltip((isset($field_array['description'])) ? $field_array['description'] : '');
 					print '</div>';
 				}
-				print '</div>';
 
 				if (isset($field_array['sub_checkbox'])) {
 					print '<br>';
+					print '<div class="formSubCheckbox">';
 					form_checkbox($field_array['sub_checkbox']['name'],
 						$field_array['sub_checkbox']['value'],
 						$field_array['sub_checkbox']['friendly_name'],
@@ -102,9 +101,11 @@ function draw_edit_form($array) {
 						((isset($field_array['sub_checkbox']['form_id'])) 	? $field_array['sub_checkbox']['form_id'] : ''),
 						((isset($field_array['sub_checkbox']['class'])) 	? $field_array['sub_checkbox']['class'] : ''),
 						((isset($field_array['sub_checkbox']['on_change'])) ? $field_array['sub_checkbox']['on_change'] : ''));
+					print '</div>';
 				}
+				print '</div>';
 
-				// End form title column
+				// End form cell
 				print '</div>'; 
 
 				// New form column for content
@@ -353,6 +354,7 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'radio':
+		print "<div style='formRadio'>";
 		foreach ($field_array['items'] as $radio_index => $radio_array) {
 			form_radio_button(
 				$field_name, 
@@ -366,6 +368,7 @@ function draw_edit_control($field_name, &$field_array) {
 
 			print '<br>';
 		}
+		print "</div>";
 
 		break;
 	case 'custom':
@@ -790,7 +793,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$checked = " aria-checked='false'";
 	}
 
-	print "<input type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . ">" . ($form_caption != '' ? " <label for='$form_name'>$form_caption</label>\n":"");
+	print "<input type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . ">" . ($form_caption != '' ? " <label class='formCheckboxLabel' for='$form_name'>$form_caption</label>\n":"");
 }
 
 /* form_radio_button - draws a standard html radio button

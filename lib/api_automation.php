@@ -1942,7 +1942,7 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 
 	form_start($module, 'form_automation_global_item_edit');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -1951,7 +1951,7 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 }
 
 /**

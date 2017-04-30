@@ -447,7 +447,7 @@ function template_edit() {
 
 	form_start('host_templates.php', 'form_network');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -460,7 +460,7 @@ function template_edit() {
 	 * submit action */
 	echo "<div style='display:none;'><input type='submit' value='" . __('Default Submit Button') . "'></div>";
 
-	html_end_box();
+	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
 		html_start_box(__('Associated Graph Templates'), '100%', '', '3', 'center', '');
@@ -498,10 +498,10 @@ function template_edit() {
 			<td colspan='2'>
 				<table>
 					<tr style='line-height:10px'>
-						<td style='padding-right: 15px;'>
+						<td class='nowrap templateAdd'>
 							<?php print __('Add Graph Template');?>
 						</td>
-						<td>
+						<td class='noHide'>
 							<?php form_dropdown('graph_template_id', db_fetch_assoc_prepared('SELECT gt.id, gt.name
 								FROM graph_templates AS gt 
 								LEFT JOIN host_template_graph AS htg
@@ -511,7 +511,7 @@ function template_edit() {
 								AND gt.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
 								ORDER BY gt.name', array(get_request_var('id'))),'name','id','','','');?>
 						</td>
-						<td>
+						<td class='noHide'>
 							<input type='button' value='<?php print __('Add');?>' id='add_gt' title='<?php print __('Add Graph Template to Device Template');?>'>
 						</td>
 					</tr>
@@ -555,7 +555,7 @@ function template_edit() {
 			<td colspan='2'>
 				<table>
 					<tr style='line-height:10px;'>
-						<td style='padding-right: 15px;'>
+						<td class='nowrap queryAdd'>
 							<?php print __('Add Data Query');?>
 						</td>
 						<td>

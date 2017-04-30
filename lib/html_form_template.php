@@ -74,7 +74,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 			}
 		}else{
 			if (($draw_any_items == false) && ($header_title != '')) {
-				print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
+				print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 			}
 
 			$draw_any_items = true;
@@ -196,7 +196,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 				unset($form_array[$form_field_name]);
 			}else{
 				if (($draw_any_items == false) && ($header_title != '')) {
-					print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
+					print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 				}
 
 				$draw_any_items = true;
@@ -283,7 +283,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 			}
 		}else{
 			if (($draw_any_items == false) && ($header_title != '')) {
-				print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
+				print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 			}
 
 			$draw_any_items = true;
@@ -385,9 +385,9 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					}
 				}else{
 					if (($draw_any_items == false) && ($draw_title_for_each_item == false) && ($header_title != '')) {
-						print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
+						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 					}elseif (($draw_any_items == false) && ($draw_title_for_each_item == true) && ($header_title != '')) {
-						print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title [" . $rrd['data_source_name'] . "]</td></tr>\n";
+						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title [" . $rrd['data_source_name'] . "]</div></div>\n";
 					}
 
 					$draw_any_items = true;
@@ -514,22 +514,18 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 				}
 			}else{
 				if (($draw_any_items == false) && ($header_title != '')) {
-					print "<tr class='tableHeader'><td colspan='2' class='tableSubHeaderColumn'>$header_title</td></tr>\n";
+					print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 				}
 
-				if ($alternate_colors == true) {
-					form_alternate_row();
-				}else{
-					print "<tr class='odd'>\n";
-				}
+				print "<div class='formRow'>\n";
 
-				print "<td style='width:50%;'><strong>" . $field['name'] . "</strong></td>\n";
-				print '<td>';
+				print "<div class='formColumnLeft'>" . $field['name'] . "</div>\n";
+				print "<div class='formColumnRight'>";
 
 				draw_custom_data_row($form_field_name, $field['id'], $data['id'], $old_value);
 
-				print '</td>';
-				print "</tr>\n";
+				print '</div>';
+				print "</div>\n";
 
 				$draw_any_items = true;
 				$i++;
@@ -563,7 +559,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			GROUP BY host_snmp_cache.field_name', array($data_template_data_id));
 
 		if (sizeof($index_type) == 0) {
-			print "<em>Data query data sources must be created through <a href='" . htmlspecialchars('graphs_new.php') . "'>New Graphs</a>.</em>\n";
+			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='" . htmlspecialchars('graphs_new.php') . "'>" . __('New Graphs') . ".</a>") . "</em>\n";
 		}else{
 			form_dropdown($field_name, $index_type, 'field_name', 'field_name', $current_value, '', '', '');
 		}
@@ -578,7 +574,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			GROUP BY snmp_query_graph.id', array($data_template_data_id));
 
 		if (sizeof($output_type) == 0) {
-			print "<em>Data query data sources must be created through <a href='" . htmlspecialchars('graphs_new.php') . "'>New Graphs</a>.</em>\n";
+			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='" . htmlspecialchars('graphs_new.php') . "'>" . __('New Graphs') . ".</a>") . "</em>\n";
 		}else{
 			form_dropdown($field_name, $output_type, 'name', 'id', $current_value, '', '', '');
 		}

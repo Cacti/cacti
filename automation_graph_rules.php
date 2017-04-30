@@ -551,7 +551,7 @@ function automation_graph_rules_edit() {
 	if ($_SESSION['automation_graph_rules_show_rule']) {
 		form_start('automation_graph_rules.php', 'automation_graph_rules');
 
-		html_start_box($header_label, '100%', '', '3', 'center', '');
+		html_start_box($header_label, '100%', true, '3', 'center', '');
 
 		if (!isempty_request_var('id')) {
 			/* display whole rule */
@@ -566,7 +566,8 @@ function automation_graph_rules_edit() {
 			'fields' => inject_form_variables($form_array, (isset($rule) ? $rule : array()))
 		));
 
-		html_end_box();
+		html_end_box(true, true);
+
 		form_hidden_box('id', (isset($rule['id']) ? $rule['id'] : '0'), '');
 		form_hidden_box('item_id', (isset($rule['item_id']) ? $rule['item_id'] : '0'), '');
 		form_hidden_box('save_component_automation_graph_rule', '1', '');

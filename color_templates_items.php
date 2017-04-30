@@ -344,14 +344,14 @@ function aggregate_color_item_edit() {
 
 	form_start('color_templates_items.php', 'aggregate_color_item_edit');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($struct_color_template_item, (isset($template_item) ? $template_item : array()))
 	));
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('color_template_item_id', (array_key_exists('color_template_item_id', $template_item) ? $template_item['color_template_item_id'] : '0'), '');
 	form_hidden_box('color_template_id', get_request_var('color_template_id'), '0');

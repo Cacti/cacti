@@ -1365,7 +1365,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 function draw_aggregate_template_graph_config($aggregate_template_id, $graph_template_id) {
 	global $struct_graph;
 
-	html_start_box(__('Graph Configuration'), '100%', '', '3', 'center', '');
+	html_start_box(__('Graph Configuration'), '100%', true, '3', 'center', '');
 
 	$aggregate_templates_graph = db_fetch_row_prepared('SELECT * FROM aggregate_graph_templates_graph WHERE aggregate_template_id = ?', array($aggregate_template_id));
 	$graph_templates_graph     = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE graph_template_id = ?', array($graph_template_id));
@@ -1406,37 +1406,38 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 		)
 	);
 
+	html_end_box(false, true);
+
 	/* some javascript do dinamically disable non-overriden fields */
-?>
-<script type='text/javascript'>
+	?>
+	<script type='text/javascript'>
 
-$(function() {
-	setFieldsDisabled();
-});
-
-// disable all items with sub-checkboxes except
-// where sub-checkbox checked
-function setFieldsDisabled() {
-	$('tr[id*="row_"]').each(function() {
-		fieldName = this.id.substr(4);
-		cbName = 't_'+fieldName;
-		if ($('#'+cbName).size() > 0) {
-			$('#'+fieldName).prop('disabled', !$('#'+cbName).is(':checked'));
-		}
+	$(function() {
+		setFieldsDisabled();
 	});
-}
 
-// enable or disable form field based on state of corresponding checkbox
-function toggleFieldEnabled(cb) {
-	prefix = 't_';
-	if (cb.name.substr(0,prefix.length) == prefix) {
-		fieldName = cb.name.substr(prefix.length);
-		$('#'+fieldName).prop('disabled', !cb.checked);
+	// disable all items with sub-checkboxes except
+	// where sub-checkbox checked
+	function setFieldsDisabled() {
+		$('tr[id*="row_"]').each(function() {
+			fieldName = this.id.substr(4);
+			cbName = 't_'+fieldName;
+			if ($('#'+cbName).size() > 0) {
+				$('#'+fieldName).prop('disabled', !$('#'+cbName).is(':checked'));
+			}
+		});
 	}
-}
 
-</script>
-<?php
-		html_end_box(false);
+	// enable or disable form field based on state of corresponding checkbox
+	function toggleFieldEnabled(cb) {
+		prefix = 't_';
+		if (cb.name.substr(0,prefix.length) == prefix) {
+			fieldName = cb.name.substr(prefix.length);
+			$('#'+fieldName).prop('disabled', !cb.checked);
+		}
+	}
+
+	</script>
+	<?php
 }
 

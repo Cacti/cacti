@@ -571,7 +571,7 @@ function tree_edit() {
 	// Remove inherit from the main tree option
 	unset($fields_tree_edit['sort_type']['array'][0]);
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	if (!sizeof($tree)) {
 		unset($fields_tree_edit['enabled']);
@@ -584,7 +584,7 @@ function tree_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	$lockdiv = '';
 

@@ -1787,12 +1787,12 @@ function settings_edit($header_label) {
 
 	form_start('user_admin.php');
 
-	html_start_box(__('User Settings %s', $header_label), '100%', '', '3', 'center', '');
+	html_start_box(__('User Settings %s', $header_label), '100%', true, '3', 'center', '');
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		$collapsible = true;
 
-        print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><td colspan='2' style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
+        print "<div class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</div></div>\n";
 
 		$form_array = array();
 
@@ -1824,7 +1824,7 @@ function settings_edit($header_label) {
 		);
 	}
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('id', get_request_var('id'), '');
 	form_hidden_box('tab', 'settings', '');
