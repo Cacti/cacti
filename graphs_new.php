@@ -117,26 +117,6 @@ function form_save() {
 	}
 }
 
-/* ---------------------
-    Misc Functions
-   --------------------- */
-
-function draw_edit_form_row($field_array, $field_name, $previous_value) {
-	$field_array['value'] = $previous_value;
-
-	draw_edit_form(
-		array(
-			'config' => array(
-				'no_form_tag' => true,
-				'force_row_color' => 'F5F5F5'
-			),
-			'fields' => array(
-				$field_name => $field_array
-			)
-		)
-	);
-}
-
 /* -------------------
     Data Query Functions
    ------------------- */
