@@ -617,7 +617,7 @@ label {
 .cactiPageHead {
 	background: #a9a9a9 url("./images/cacti_logo.svg") no-repeat scroll right 40% / 400px auto;
 	border-bottom:1px solid #00438c;
-	height:37px;
+	height:36px;
 	width:100%;
 }
 
@@ -627,7 +627,7 @@ label {
 	padding-bottom: 0px;
 	float:right;
 	width:400px;
-	height:37px;
+	height:36px;
 	z-index:-1;
 }
 
@@ -635,7 +635,7 @@ label {
 	padding-bottom:0px;
 	float:right;
 	width:0px;
-	height:37px;
+	height:36px;
 	z-index:-1;
 }
 
@@ -1521,7 +1521,7 @@ div#tabs {
 	padding-bottom: 0px;
 	float: left;
 	vertical-align: bottom;
-	height: 38px;
+	height: 36px;
 	overflow: hidden;
 	width: 60%;
 }
@@ -1533,7 +1533,7 @@ td#tabs {
 }
 
 .cactiGraphHeaderBackground {
-	height: 37px;
+	height: 36px;
 	float:right;
 	z-index:-1;
 }
@@ -1542,7 +1542,7 @@ div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
 	float:right;
-	height: 38px;
+	height: 36px;
 	overflow: hidden;
 }
 
