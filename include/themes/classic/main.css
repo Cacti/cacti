@@ -45,6 +45,16 @@ img {
 	vertical-align:middle;
 }
 
+fieldset {
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.reindex_methods span {
+	font-size: 9px;
+}
+
 /* links */
 
 a, a:active, a:visited {
@@ -518,6 +528,10 @@ label {
 .odd {
 	background: none repeat scroll 0 0 #F5F5F5;
     border: none;
+}
+
+.odd td, .even td, .even-alternate td {
+	padding: 2px;
 }
 
 .even {
@@ -1005,6 +1019,7 @@ legend {
 	font-size: 10px;
 	color: #ffffff;
 	font-weight: bold;
+	padding: 0px;
 }
 
 .tableBody {
@@ -1012,6 +1027,7 @@ legend {
 }
 
 .cactiTable {
+	display: table;
 	width: 100%;
 	border-width: 0px;
 	border-color: #00438c;
@@ -1047,6 +1063,10 @@ legend {
 	font-weight: bold;
 }
 
+.cactiTable td {
+	padding: 2px;
+}
+
 .cactiDebugTable {
 	width: 100%;
 }
@@ -1073,6 +1093,7 @@ legend {
 .formColumn {
 	float: left;
 	display: table-column;
+	text-align: left;
 }
 
 .formColumnLeft {
@@ -1080,17 +1101,41 @@ legend {
 	display: table-column;
 	padding-left: 4px;
 	width: 28%;
+	text-align: left;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
 	width: 70%;
+	text-align: left;
 }
 
 .formData {
 	display: inline-block;
 	float: left;
+	text-align: left;
+}
+
+.formRadio {
+	line-height: 22px;
+}
+
+.formSubCheckbox {
+	line-height: 20px;
+	float: left;
+}
+
+.formSubCheckbox input {
+	margin: 0px;
+	vertical-align: -10%;
+}
+
+.formSubCheckbox label {
+}
+
+.formCheckbox {
+	vertical-align: -15%;
 }
 
 .formFieldName {
@@ -1099,6 +1144,7 @@ legend {
 	float: left;
 	text-align: left;
 	white-space: nowrap;
+	padding-left: 3px;
 }
 
 .formFieldDescription {
@@ -1115,7 +1161,6 @@ legend {
 	float: left;
 	width: 100%;
 	text-align: left;
-	line-height: 20px;
 	color: #ffffff;
 	font-weight:bold;
 	cursor: pointer;
@@ -1127,7 +1172,7 @@ legend {
 }
 
 .formHeaderText {
-	padding-left: 3px;
+	padding: 3px;
 }
 
 .formHeaderAnchor {
@@ -1137,6 +1182,10 @@ legend {
 
 .hostInfoHeader {
 	width: 100%;
+}
+
+.queryAdd, .templateAdd {
+	padding: 3px;
 }
 
 @media screen and (max-width: 640px) {
@@ -1155,12 +1204,14 @@ legend {
 		float: left;
 		display: table-row;
 		width: 100%;
+		text-align: left;
 	}
 
 	.formColumnRight {
 		float: left;
 		display: table-row;
 		width: 100%;
+		text-align: left;
 }
 
 	.formFieldName {
@@ -1168,6 +1219,7 @@ legend {
 		float: left;
 		text-align: left;
 		white-space: nowrap;
+		padding-left: 3px;
 	}
 
 	.formData {
@@ -1194,6 +1246,7 @@ legend {
 
 .break {
 	height:8px;
+	display:inline-block;
 }
 
 .next {
@@ -1233,6 +1286,7 @@ legend {
 	border-right: 1px groove #efefef;
 	font-size:11px;
 	background-color: #6d88ad !important;
+	padding: 2px;
 }
 
 .tableHeader th:last-child {
@@ -1251,7 +1305,7 @@ legend {
 	vertical-align:middle;
 	text-align:left;
 	cursor:pointer;
-	padding-left: 3px;
+	padding: 3px;
 }
 
 .graphSubHeaderColumn {
@@ -1284,8 +1338,8 @@ legend {
 	color: white;
 	width: 100%;
 	text-align:center;
-	display:inline-block;
-	margin-bottom: -3px;
+	vertical-align: middle;
+	display: table;
 	margin-left:auto;
 	margin-right:auto;
 	background-color: #00438c;
@@ -1306,48 +1360,39 @@ legend {
 	font-weight: bold;
 	float: left;
 	white-space: nowrap;
-	display: block;
+	display: table-cell;
 	width: 10%;
 	padding: 2px 0px;
-	height: 16px;
 	vertical-align: middle;
 }
 
 .navBarNavigationCenter {
 	text-align: center;
-	display: block;
-	float: left;
+	display: table-cell;
 	white-space: nowrap;
 	width:80%;
 	padding: 2px 0px;
-	height: 16px;
 	margin-top: auto;
 }
 
 .navBarNavigationCenter span {
 	vertical-align: middle;
+	display: table-cell;
 }
 
 .navBarNavigationNext {
 	text-align: right;
-	cursor: pointer;
-	font-weight: bold;
-	float: right;
 	white-space: nowrap;
-	display: block;
+	display: table-cell;
 	width: 10%;
-	padding: 2px 0px;
-	height: 16px;
 	vertical-align: middle;
 }
 
 .navBarNavigationNone {
 	text-align: center;
-	display: block;
-	float: left;
+	display: table-cell;
 	white-space: nowrap;
 	width:100%;
-	padding: 2px 0px;
 	height: 16px;
 	margin-top: auto;
 }
@@ -1652,8 +1697,8 @@ div.preformatted {
 
 ul.pagination {
 	display: inline-block;
-	padding: 0;
-	margin: 0;
+	padding: 0px;
+	margin: 0px;
 	vertical-align:middle;
 }
 
@@ -1667,6 +1712,7 @@ ul.pagination li a {
 	padding: 0px 2px 2px 2px;
 	text-decoration: none;
 	margin: 0px 1px;
+	vertical-align: -40%;
 }
 
 ul.pagination li span {
