@@ -656,15 +656,31 @@ function ds_edit() {
 	api_plugin_hook('data_source_edit_top');
 
 	$use_data_template = true;
-	$host_id = 0;
+	$host_id           = 0;
+	$data_template     = array();
 
 	if (!isempty_request_var('id')) {
-		$data_local = db_fetch_row_prepared('SELECT host_id, data_template_id FROM data_local WHERE id = ?', array(get_request_var('id')));
-		$data       = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE local_data_id = ?', array(get_request_var('id')));
+		$data_local = db_fetch_row_prepared('SELECT host_id, data_template_id 
+			FROM data_local 
+			WHERE id = ?', 
+			array(get_request_var('id')));
+
+		$data = db_fetch_row_prepared('SELECT * 
+			FROM data_template_data 
+			WHERE local_data_id = ?', 
+			array(get_request_var('id')));
 
 		if (isset($data_local['data_template_id']) && $data_local['data_template_id'] >= 0) {
-			$data_template      = db_fetch_row_prepared('SELECT id, name FROM data_template WHERE id = ?', array($data_local['data_template_id']));
-			$data_template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', array($data_local['data_template_id']));
+			$data_template = db_fetch_row_prepared('SELECT id, name 
+				FROM data_template 
+				WHERE id = ?', 
+				array($data_local['data_template_id']));
+
+			$data_template_data = db_fetch_row_prepared('SELECT * 
+				FROM data_template_data 
+				WHERE data_template_id = ? 
+				AND local_data_id = 0', 
+				array($data_local['data_template_id']));
 		} else {
 			$_SESSION['sess_messages'] = __('Data Source %d does not exist.', get_request_var('id'));
 			header ('Location: data_sources.php');
@@ -759,6 +775,14 @@ function ds_edit() {
 		$dtsql = 'SELECT id, name FROM data_template ORDER BY name';
 	}
 
+	if (get_request_var('host_id') > 0) {
+		$value = db_fetch_cell_prepared('SELECT description 
+			FROM host WHERE id = ?', 
+			(isset_request_var('host_id') ? array(get_request_var('host_id')) : (isset($data_local['host_id']) ? array($data_local['host_id']):array(0))));
+	}else{
+		$value = '';
+	}
+
 	$form_array = array(
 		'data_template_id' => array(
 			'method' => 'drop_sql',
@@ -772,11 +796,11 @@ function ds_edit() {
 			'method' => 'drop_callback',
 			'friendly_name' => __('Device'),
 			'description' => __('Choose the Device that this Data Source belongs to.'),
-			'none_value' => 'None',
+			'none_value' => __('None'),
 			'sql' => 'SELECT id, description as name FROM host ORDER BY name',
 			'action' => 'ajax_hosts_noany',
 			'id' => (isset_request_var('host_id') ? get_request_var('host_id') : (isset($data_local['host_id']) ? $data_local['host_id']:0)),
-			'value' => db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', (isset_request_var('host_id') ? array(get_request_var('host_id')) : (isset($data_local['host_id']) ? array($data_local['host_id']):array(0)))),
+			'value' => $value
 			),
 		'_data_template_id' => array(
 			'method' => 'hidden',
@@ -1133,7 +1157,13 @@ function ds() {
 	<?php
 
 	if (read_config_option('grds_creation_method') == 1 ) {
-		$add_url = htmlspecialchars('data_sources.php?action=ds_edit&host_id=' . get_request_var('host_id'));
+		if (get_request_var('host_id') == '-1') {
+			$new_host_id = 0;
+		}else{
+			$new_host_id = get_request_var('host_id');
+		}
+
+		$add_url = htmlspecialchars('data_sources.php?action=ds_edit&host_id=' . $new_host_id);
 	}else{
 		$add_url = '';
 	}
