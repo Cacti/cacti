@@ -1172,7 +1172,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			WHERE id > 0 AND name != ''");
 	}else{
 		$graphs = db_fetch_assoc("SELECT DISTINCT id, name
-			FROM (SELECT DISTINCT gtg.graph_template_id, gt.name
+			FROM (SELECT DISTINCT gtg.graph_template_id AS id, gt.name
 				FROM graph_templates_graph AS gtg 
 				INNER JOIN graph_local AS gl 
 				ON gl.id=gtg.local_graph_id 
@@ -1188,7 +1188,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 
 		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
 			FROM (
-				SELECT DISTINCT gtg.graph_template_id, gt.name
+				SELECT DISTINCT gtg.graph_template_id AS id, gt.name
 				FROM graph_templates_graph AS gtg 
 				INNER JOIN graph_local AS gl 
 				ON gl.id=gtg.local_graph_id 
