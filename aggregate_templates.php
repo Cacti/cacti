@@ -545,7 +545,7 @@ function aggregate_template() {
 					</td>
 					<td>
 						<select id="rows" onChange="applyFilter()">
-						<option value="-1"';
+						<option value="-1" ';
 
 	if (get_request_var("rows") == "-1") {
 		$filter_html .= 'selected';

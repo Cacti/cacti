@@ -421,7 +421,7 @@ function item_edit() {
 		$values[$current_type] = $cdef['value'];
 	}
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box(__('CDEF Preview'), '100%', '', '3', 'center', '');
 	draw_cdef_preview(get_request_var('cdef_id'));
 	html_end_box();
 
@@ -439,7 +439,7 @@ function item_edit() {
 
 	form_alternate_row();?>
 		<td style='width:50%;'>
-			<font class='textEditTitle'><?php print __('CDEF Item Type');?></font><br>
+			<span class='textEditTitle'><?php print __('CDEF Item Type');?></span><br>
 			<?php print __('Choose what type of CDEF item this is.');?>
 		</td>
 		<td>
@@ -461,7 +461,7 @@ function item_edit() {
 	</tr>
 	<?php form_alternate_row();?>
 		<td style='width:50%;'>
-			<font class='textEditTitle'><?php print __('CDEF Item Value');?></font><br>
+			<span class='textEditTitle'><?php print __('CDEF Item Value');?></span><br>
 			<?php print __('Enter a value for this CDEF item.');?>
 		</td>
 		<td>

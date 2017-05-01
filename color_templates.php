@@ -74,7 +74,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 		array('display' => __('Hex'), 'align' => 'left', 'nohide' => true),
 	);
 
-	html_header($display_text, 3);
+	html_header($display_text, 2);
 
 	$i = 1;
 	$total_items = sizeof($item_list);
@@ -446,7 +446,7 @@ function aggregate_color_template() {
 							</td>
 							<td>
 								<select id="rows" onChange="applyFilter()">
-								<option value="-1"';
+								<option value="-1" ';
 	if (get_request_var('rows') == '-1') {
 		$filter_html .= 'selected';
 	}

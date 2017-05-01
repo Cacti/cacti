@@ -558,14 +558,14 @@ function template_edit() {
 						<td class='nowrap queryAdd'>
 							<?php print __('Add Data Query');?>
 						</td>
-						<td>
+						<td class='noHide'>
 							<?php form_dropdown('snmp_query_id', db_fetch_assoc_prepared('SELECT snmp_query.id, snmp_query.name
 								FROM snmp_query LEFT JOIN host_template_snmp_query
 								ON (snmp_query.id = host_template_snmp_query.snmp_query_id AND host_template_snmp_query.host_template_id = ?)
 								WHERE host_template_snmp_query.host_template_id is null
 								ORDER BY snmp_query.name', array(get_request_var('id'))),'name','id','','','');?>
 						</td>
-						<td>
+						<td class='noHide'>
 							<input type='button' value='<?php print __('Add');?>' id='add_dq' title='<?php print __('Add Data Query to Device Template');?>'>
 						</td>
 					</tr>

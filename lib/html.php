@@ -132,7 +132,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 					<tr>
 						<td>
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
-							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span align='center'>" . htmlspecialchars($graph['title_cache']) . '</span>' : '');?>
+							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . htmlspecialchars($graph['title_cache']) . '</span>' : '');?>
 						</td>
 						<td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php graph_drilldown_icons($graph['local_graph_id']);?>
@@ -247,7 +247,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 					<tr>
 						<td>
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
-							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span align='center'>" . htmlspecialchars($graph['title_cache']) . '</span>' : '');?>
+							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . htmlspecialchars($graph['title_cache']) . '</span>' : '');?>
 						</td>
 						<td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails');?>
@@ -752,7 +752,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 				$align = 'left';
 			}
 
-			print "<th class='$align $nohide'>" . $item['display'] . "</td>";
+			print "<th class='$align $nohide'>" . $item['display'] . "</th>";
 		}else{
 			print "<th class='left'>" . $item . "</th>\n";
 		}
@@ -923,7 +923,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			if (preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
 				$hard_return = '';
 			}elseif ($item['hard_return'] == 'on') {
-				$hard_return = "<strong><font color=\"#FF0000\">&lt;HR&gt;</font></strong>";
+				$hard_return = "<span style='font-weight:bold;color:#FF0000;'>&lt;HR&gt;</span>";
 			}
 
 			/* data source */

@@ -271,7 +271,7 @@ function display_discovery_page() {
 	$status = array("<span class='deviceDown'>" . __('Down') . '</span>',"<span class='deviceUp'>" . __('Up') . '</span>');
 	if (sizeof($results)) {
 		foreach($results as $host) {
-			form_alternate_row('line' . $host['network_id'], true);
+			form_alternate_row('line' . base64_encode($host['ip']), true);
 
 			if ($host['sysUptime'] != 0) {
 				$days = intval($host['sysUptime']/8640000);

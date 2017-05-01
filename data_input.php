@@ -262,7 +262,7 @@ function field_remove_confirm() {
 		</td>
 	</tr>
 	<tr>
-		<td align='right'>
+		<td class='right'>
 			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
 			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove Data Input Field');?>'>
 		</td>
@@ -486,7 +486,7 @@ function data_edit() {
 					<td>
 						<?php print htmlspecialchars($field['name']);?>
 					</td>
-					<td align="right">
+					<td class="right">
 						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __('Delete');?>'></a>
 					</td>
 					<?php
@@ -524,7 +524,7 @@ function data_edit() {
 					<td>
 						<?php print html_boolean_friendly($field['update_rra']);?>
 					</td>
-					<td align="right">
+					<td class="right">
 						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __('Delete');?>'></a>
 					</td>
 				<?php

@@ -60,7 +60,7 @@ function form_save() {
 		if (get_nfilter_request_var('output_format') == '1') {
 			top_header();
 
-			print "<table width='100%' align='center'><tr><td><pre>" . htmlspecialchars($xml_data) . '</pre></td></tr></table>';
+			print "<table style='width:100%;' class='center'><tr><td><pre>" . htmlspecialchars($xml_data) . '</pre></td></tr></table>';
 
 			bottom_footer();
 		}elseif (get_nfilter_request_var('output_format') == '2') {
@@ -125,13 +125,13 @@ function export() {
 
 	html_end_box();
 
-	print "<form id='export' method='post' action='templates_export.php'>\n";
+	form_start('templates_export.php', 'export');
 
 	html_start_box( __('Available Templates [%s]', $export_types{get_nfilter_request_var('export_type')}['name']), '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
-		<td width='50%'>
-			<font class='textEditTitle'><?php print __('%s to Export', $export_types{get_nfilter_request_var('export_type')}['name']); ?></font><br>
+		<td style='width:50%;'>
+			<span class='textEditTitle'><?php print __('%s to Export', $export_types{get_nfilter_request_var('export_type')}['name']); ?></span><br>
 			<?php print __('Choose the exact item to export to XML.'); ?>
 		</td>
 		<td>
@@ -140,8 +140,8 @@ function export() {
 	</tr>
 
 	<?php form_alternate_row(); ?>
-		<td width='50%'>
-			<font class='textEditTitle'><?php print __('Include Dependencies'); ?></font><br>
+		<td style='width:50%;'>
+			<span class='textEditTitle'><?php print __('Include Dependencies'); ?></span><br>
 			<?php print __('Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail.');?>
 		</td>
 		<td>
@@ -150,8 +150,8 @@ function export() {
 	</tr>
 
 	<?php form_alternate_row(); ?>
-		<td width='50%'>
-			<font class='textEditTitle'><?php print __('Output Format');?></font><br>
+		<td style='width:50%;'>
+			<span class='textEditTitle'><?php print __('Output Format');?></span><br>
 			<?php print __('Choose the format to output the resulting XML file in.');?>
 		</td>
 		<td>
