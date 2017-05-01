@@ -1299,7 +1299,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			print "</td>\n";
 
 			if ($item['hard_return'] == 'on') {
-				$hard_return = '<strong><font color="#FF0000">&lt;HR&gt;</font></strong>';
+				$hard_return = '<strong><span style="color:#FF0000;">&lt;HR&gt;</span></strong>';
 			}
 
 			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
@@ -1336,10 +1336,9 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 				print '</td>';
 			}else{
 				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '></td>';
-				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'></td>";
-				print "<span style='width:1%;text-align:center;display:none;'><input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '></span>';
-				print "<span style='width:1%;text-align:center;display:none;'><input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'></span>";
-				
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'>";
+				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '>';
+				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'></td>";
 			}
 	
 			print '</tr>';
