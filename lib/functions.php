@@ -2672,7 +2672,7 @@ function draw_navigation_text($type = 'url') {
 
 				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($leaf['graph_tree_id']));
 			}else{
-				$leaf_name = 'Leaf';
+				$leaf_name = __('Leaf');
 				$tree_name = '';
 			}
 
@@ -2706,7 +2706,7 @@ function draw_navigation_text($type = 'url') {
 		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . $leaf_name:'') . ($leaf_sub != '' ? ':' . $leaf_sub . ')':($leaf_name != '' ? ')':''));
 
 		if ($tree_title != '') {
-			$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li></ul>';
+			$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li>';
 		}
 	}elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
 		$externalLinks = db_fetch_row_prepared('SELECT title, style FROM external_links WHERE id = ?', array($matches[1]));
@@ -2716,13 +2716,12 @@ function draw_navigation_text($type = 'url') {
 		if ($style == 'CONSOLE') {
 			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0' href='" . $config['url_path'] . 
 				"index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>';
-			$current_nav .= "<li><a id='nav_1' href='#'>Link " . $title . '</a></li></ul>';
+			$current_nav .= "<li><a id='nav_1' href='#'>Link " . $title . '</a></li>';
 		}else{
-			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . $title . '</a></li></ul>';
+			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . $title . '</a></li>';
 		}
 		$tree_title = '';
 	}else{
-		$current_nav .= '</ul>';
 		$tree_title = '';
 	}
 
@@ -2730,6 +2729,8 @@ function draw_navigation_text($type = 'url') {
 
 	/* keep a cache for each level we encounter */
 	$nav_level_cache{$current_array['level']} = array('id' => $current_page . ':' . $current_action, 'url' => get_browser_query_string());
+	$current_nav .= '</ul>';
+
 	$_SESSION['sess_nav_level_cache'] = $nav_level_cache;
 
 	if ($type == 'url') {

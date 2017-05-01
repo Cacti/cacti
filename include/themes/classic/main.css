@@ -737,6 +737,10 @@ ul#breadcrumbs {
 	width:100%;
 }
 
+.treeArea {
+	vertical-align: top;
+}
+
 .cactiLogo {
 	padding-top:20px;
 	background: #f5f5f5 url('./images/cacti_logo.svg') no-repeat 30px;	display:block;
@@ -747,7 +751,6 @@ ul#breadcrumbs {
 	margin-left:2px;
 	margin-right:2px;
 }
-
 
 .loginLeft, .logoutLeft {
 	width:33%;

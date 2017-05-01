@@ -966,6 +966,10 @@ legend {
 	width:100%;
 }
 
+.treeArea {
+	vertical-align: top;
+}
+
 .cactiGraphContentArea {
 	background: snow url('./../../../images/shadow.gif') repeat-x center top;
 	padding-top: 10px;

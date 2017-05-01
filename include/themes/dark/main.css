@@ -975,7 +975,11 @@ legend {
 }
 
 .treeTable {
-	width:100%;
+	width: 100%;
+}
+
+.treeArea {
+	vertical-align: top;
 }
 
 .cactiGraphContentArea {

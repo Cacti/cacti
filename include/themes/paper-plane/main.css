@@ -924,6 +924,10 @@ legend {
 	width:100%;
 }
 
+.treeArea {
+	vertical-align: top;
+}
+
 .cactiGraphContentArea {
 	height: 100%;
 	overflow-y: auto !important;

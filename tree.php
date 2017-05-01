@@ -612,7 +612,7 @@ function tree_edit() {
 	if (!isempty_request_var('id')) {
 		print $lockdiv;
 
-		print "<table class='treeTable' valign='top'><tr valign='top'><td class='treeArea'>\n";
+		print "<table class='treeTable'><tr><td class='treeArea'>\n";
 
 		html_start_box( __('Tree Items'), '100%', '', '3', 'center', '');
 
@@ -624,9 +624,9 @@ function tree_edit() {
 
 		html_start_box( __('Available Devices'), '100%', '', '3', 'center', '');
 		?>
-		<tr id='treeFilter' class='even noprint'>
+		<tr class='even noprint'>
 			<td>
-			<form id='form_tree' action='tree.php'>
+			<form id='form_tree_devices' action='tree.php'>
 				<table class='filterTable'>
 					<tr>
 						<td>
@@ -659,9 +659,9 @@ function tree_edit() {
 
 		html_start_box( __('Available Graphs'), '100%', '', '3', 'center', '');
 		?>
-		<tr id='treeFilter' class='even noprint'>
+		<tr class='even noprint'>
 			<td>
-			<form id='form_tree' action='tree.php'>
+			<form id='form_tree_graphs' action='tree.php'>
 				<table class='filterTable'>
 					<tr>
 						<td>

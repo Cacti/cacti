@@ -1278,10 +1278,10 @@ function graph_edit() {
 		?>
 		<table style='width:100%;'>
 			<tr>
-				<td class='textInfo left' colspan='2' valign='top'>
+				<td class='textInfo left' style='vertical-align:top'>
 					<?php print htmlspecialchars(get_graph_title(get_request_var('id')));?>
 				</td>
-				<td class='textInfo right' align='right' valign='top'>
+				<td class='textInfo right' style='vertical-align:top;'>
 					<span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?action=graph_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1'));?>'><?php print $message;?></a></span><br>
 					<?php
 						if (!empty($graph['graph_template_id'])) {
@@ -1356,10 +1356,10 @@ function graph_edit() {
 
 	draw_edit_form(
 		array(
-			'config' => array(),
+			'config' => array('no_form_tag' => true),
 			'fields' => $form_array
-			)
-		);
+		)
+	);
 
 	html_end_box(true, true);
 
@@ -1384,7 +1384,7 @@ function graph_edit() {
 		?>
 		<table style='width:100%;'>
 			<tr>
-				<td id='graphLocation' class='textInfo center' colspan='2'>
+				<td id='graphLocation' class='textInfo center'>
 				</td>
 				<?php
 				if ((isset($_SESSION['graph_debug_mode'])) && (isset_request_var('id'))) {
@@ -1444,6 +1444,7 @@ function graph_edit() {
 	}
 
 	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
+
 	form_save_button('graphs.php');
 
 	//Now we need some javascript to make it dynamic

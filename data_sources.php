@@ -722,18 +722,18 @@ function ds_edit() {
 		?>
 		<table style='width:100%'>
 			<tr>
-				<td class='textInfo left' colspan='2' valign='top'>
+				<td class='textInfo left' style='vertical-align:top;'>
 					<?php print htmlspecialchars(get_data_source_title(get_request_var('id')));?>
 				</td>
-				<td class='textInfo right' valign='top'>
-					<span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&debug=' . (isset($_SESSION['ds_debug_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_debug_mode']) ? __('Turn Off Data Source Debug Mode.') : __('Turn On Data Source Debug Mode.'));?></a><br>
-					<span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&info=' . (isset($_SESSION['ds_info_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_info_mode']) ? __('Turn Off Data Source Info Mode.') : __('Turn On Data Source Info Mode.'));?></a><br>
+				<td class='textInfo right' style='vertical-align:top;'>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&debug=' . (isset($_SESSION['ds_debug_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_debug_mode']) ? __('Turn Off Data Source Debug Mode.') : __('Turn On Data Source Debug Mode.'));?></a><br>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&info=' . (isset($_SESSION['ds_info_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_info_mode']) ? __('Turn Off Data Source Info Mode.') : __('Turn On Data Source Info Mode.'));?></a><br>
 					<?php
 						if (!empty($data_template['id'])) {
-							?><span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'><?php print __('Edit Data Template.');?></a><br><?php
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'><?php print __('Edit Data Template.');?></a><br><?php
 						}
 						if (!isempty_request_var('host_id') || !empty($data_local['host_id'])) {
-							?><span class='linkMarker'>*<a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset_request_var('host_id') ? get_request_var('host_id') : $data_local['host_id']));?>'><?php print __('Edit Device.');?></a><br><?php
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset_request_var('host_id') ? get_request_var('host_id') : $data_local['host_id']));?>'><?php print __('Edit Device.');?></a><br><?php
 						}
 					?>
 				</td>
