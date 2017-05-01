@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-30 10:14+0200\n"
-"PO-Revision-Date: 2017-05-01 16:02+0200\n"
+"PO-Revision-Date: 2017-05-01 22:10+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -4432,7 +4432,7 @@ msgstr "Grafiekgrootte"
 
 #: ../graph_view.php:634
 msgid "Aggregated Device"
-msgstr "Geaggregeerd voorbeeld [%s]"
+msgstr "Geaggregeerd apparaat"
 
 #: ../graph_view.php:637
 msgid "Non-Device"
@@ -4880,7 +4880,7 @@ msgstr ""
 
 #: ../host.php:441
 msgid "Clear Statistics on Device(s)"
-msgstr "Reset de statistieken"
+msgstr "Reset de statistieken van appara(a)t(en)"
 
 #: ../host.php:445
 msgid ""
@@ -5484,6 +5484,8 @@ msgstr ""
 msgid ""
 "Graph not found.  Either it has been deleted or your database needs repair."
 msgstr ""
+"Grafiek niet gevonden. Of het is verwijderd of uw database moet worden "
+"gerepareerd."
 
 #: ../include/global_arrays.php:104
 msgid "SNMPv3 Auth Passphrases must be 8 characters or greater."
@@ -5507,6 +5509,8 @@ msgid ""
 "Error: If you force a password change, you must also allow the user to "
 "change their password."
 msgstr ""
+"Fout: Als je forceert om een wachtwoord te wijzigen moet je de gebruiker ook "
+"de rechten geven om het wachtwoord te wijzigen."
 
 #: ../include/global_arrays.php:119
 msgid "Error: You are not allowed to change your password."
@@ -5526,7 +5530,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:131
 msgid "Invalid Timestamp. Select timestamp in the future."
-msgstr ""
+msgstr "Ongeldige tijd. Selecteer een tijd in de toekomst."
 
 #: ../include/global_arrays.php:134
 msgid "Data Collector(s) Synchronized for Offline Operation"
@@ -6078,7 +6082,7 @@ msgstr ""
 #: ../include/global_arrays.php:803 ../links.php:90 ../links.php:301
 #: ../links.php:370 ../links.php:483
 msgid "External Links"
-msgstr ""
+msgstr "Externe links"
 
 #: ../include/global_arrays.php:729
 msgid "All Lines"
@@ -7634,7 +7638,7 @@ msgstr "Kies het SNMPv3 privé wachtwoord."
 
 #: ../include/global_form.php:1114
 msgid "Choose the SNMPv3 privacy protocol."
-msgstr "Kies het SNMPv3 privacy protocol"
+msgstr "Kies het SNMPv3 privacy protocol."
 
 #: ../include/global_form.php:1121
 msgid "SNMP Context (v3)"
@@ -7668,7 +7672,7 @@ msgstr ""
 
 #: ../include/global_form.php:1170 ../include/global_settings.php:547
 msgid "Downed Device Detection"
-msgstr ""
+msgstr "Offline apparaat detectie"
 
 #: ../include/global_form.php:1171 ../include/global_settings.php:548
 msgid ""
@@ -8118,8 +8122,9 @@ msgstr ""
 
 #: ../include/global_form.php:2098 ../include/global_form.php:2140
 #: ../include/global_form.php:2288
+#, fuzzy
 msgid "Matching Pattern"
-msgstr ""
+msgstr "Overeenkomende patronen"
 
 #: ../include/global_form.php:2099 ../include/global_form.php:2141
 msgid "The Pattern to be matched against."
@@ -8244,7 +8249,7 @@ msgstr ""
 #: ../include/global_settings.php:932 ../include/global_settings.php:1550
 #: ../managers.php:39 ../user_admin.php:1904 ../user_group_admin.php:1642
 msgid "General"
-msgstr ""
+msgstr "Generiek"
 
 #: ../include/global_settings.php:39
 msgid "Paths"
@@ -8367,7 +8372,7 @@ msgstr ""
 
 #: ../include/global_settings.php:132
 msgid "Logging"
-msgstr ""
+msgstr "Logging"
 
 #: ../include/global_settings.php:137
 msgid "Cacti Log Path"
@@ -8457,11 +8462,12 @@ msgstr ""
 
 #: ../include/global_settings.php:206
 msgid "Log Destination"
-msgstr ""
+msgstr "Log bestemming"
 
 #: ../include/global_settings.php:207
+#, fuzzy
 msgid "How will Cacti handle event logging."
-msgstr ""
+msgstr "Hoe Cacti omgaat met gebeurtenis registratie."
 
 #: ../include/global_settings.php:213
 msgid "Web Events"
@@ -8485,7 +8491,7 @@ msgstr "Ontwikkelmodus"
 
 #: ../include/global_settings.php:233
 msgid "Log Settings"
-msgstr ""
+msgstr "Log instellingen"
 
 #: ../include/global_settings.php:238
 msgid "Generic Log Level"
@@ -10040,7 +10046,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1529
 msgid "Location for Image Files"
-msgstr ""
+msgstr "Locatie voor afbeeldingen"
 
 #: ../include/global_settings.php:1530
 msgid ""
@@ -10090,7 +10096,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1578 ../include/global_settings.php:1610
 msgid "Proxy Port Number"
-msgstr ""
+msgstr "Proxy poortnummer"
 
 #: ../include/global_settings.php:1579
 msgid "TCP port for encrypted communication."
@@ -10621,7 +10627,7 @@ msgstr ""
 #: ../install/index.php:57 ../install/index.php:62 ../install/index.php:67
 #: ../install/index.php:307 ../lib/html_utility.php:815
 msgid "Error"
-msgstr ""
+msgstr "Fout"
 
 #: ../install/index.php:59
 #, php-format
@@ -10685,6 +10691,8 @@ msgid ""
 "Invalid Cacti version <strong>%1$s</strong>, cannot upgrade to <strong>%2$s</"
 "strong>"
 msgstr ""
+"Ongeldige Cacti versie <strong>%s$s</strong>, kan niet upgraden naar <strong>"
+"%2$s</strong>"
 
 #: ../install/index.php:536
 msgid "Cacti Installation Wizard"
@@ -10733,7 +10741,7 @@ msgstr ""
 #: ../install/index.php:573 ../install/index.php:577 ../install/index.php:764
 #: ../install/index.php:772
 msgid "ERROR:"
-msgstr ""
+msgstr "FOUT:"
 
 #: ../install/index.php:573
 msgid ""
@@ -10782,7 +10790,7 @@ msgstr ""
 #: ../install/index.php:592 ../install/index.php:669 ../plugins.php:41
 #: ../plugins.php:288 ../utilities.php:415
 msgid "Installed"
-msgstr ""
+msgstr "Geïnstalleerd"
 
 #: ../install/index.php:592
 msgid "Required"
@@ -10822,7 +10830,7 @@ msgstr ""
 
 #: ../install/index.php:686
 msgid "Installation Type"
-msgstr ""
+msgstr "Installatie type"
 
 #: ../install/index.php:688
 msgid "Please select the type of installation"
@@ -10971,7 +10979,7 @@ msgstr ""
 
 #: ../install/index.php:924
 msgid "Directory Permission Checks"
-msgstr ""
+msgstr "Directorie permissiecontrole"
 
 #: ../install/index.php:926
 msgid ""
@@ -11082,7 +11090,7 @@ msgstr ""
 
 #: ../install/index.php:1032
 msgid "Homepage"
-msgstr ""
+msgstr "Homepage"
 
 #: ../install/index.php:1050
 msgid ""
@@ -11221,14 +11229,14 @@ msgstr ""
 
 #: ../lib/api_automation.php:124
 msgid "Matching Devices"
-msgstr ""
+msgstr "Overeenkomende apparaten"
 
 #: ../lib/api_automation.php:139 ../lib/api_automation.php:994
 #: ../lib/html_reports.php:309 ../lib/html_reports.php:1230
 #: ../lib/html_reports.php:1486 ../lib/html_reports.php:1497
 #: ../lib/rrd.php:2631 ../utilities.php:301 ../utilities.php:2331
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: ../lib/api_automation.php:299
 msgid "No Matching Devices"
@@ -11237,7 +11245,7 @@ msgstr ""
 #: ../lib/api_automation.php:408 ../lib/api_automation.php:674
 #: ../lib/api_automation.php:799
 msgid "Matching Objects"
-msgstr ""
+msgstr "Overeenkomende objecten"
 
 #: ../lib/api_automation.php:562
 msgid "Graph ID"
@@ -11256,11 +11264,11 @@ msgstr ""
 #: ../lib/api_automation.php:760
 #, php-format
 msgid "Matching Objects [ %s ]"
-msgstr ""
+msgstr "Overeenkomende objecten [ %s ]"
 
 #: ../lib/api_automation.php:810
 msgid "Device Status"
-msgstr ""
+msgstr "Apparaat status"
 
 #: ../lib/api_automation.php:832
 msgid "There are no Objects that match this rule."
@@ -11268,11 +11276,11 @@ msgstr ""
 
 #: ../lib/api_automation.php:876
 msgid "Error in data query"
-msgstr ""
+msgstr "Fout in data query"
 
 #: ../lib/api_automation.php:980
 msgid "Matching Items"
-msgstr ""
+msgstr "Overeenkomende items"
 
 #: ../lib/api_automation.php:1142
 msgid "Resulting Branch"
@@ -11284,7 +11292,7 @@ msgstr ""
 
 #: ../lib/api_automation.php:1209 ../lib/api_automation.php:1271
 msgid "Field"
-msgstr ""
+msgstr "Veld"
 
 #: ../lib/api_automation.php:1211 ../lib/api_automation.php:1273
 msgid "Pattern"
@@ -11363,7 +11371,7 @@ msgstr ""
 
 #: ../lib/api_device.php:448
 msgid "hours"
-msgstr ""
+msgstr "uren"
 
 #: ../lib/api_device.php:448
 msgid "minutes"
@@ -11371,11 +11379,11 @@ msgstr ""
 
 #: ../lib/api_device.php:449
 msgid "Hostname:"
-msgstr ""
+msgstr "Hostname:"
 
 #: ../lib/api_device.php:450
 msgid "Location:"
-msgstr ""
+msgstr "Locatie:"
 
 #: ../lib/api_device.php:451
 msgid "Contact:"
@@ -11406,17 +11414,17 @@ msgstr ""
 
 #: ../lib/clog_webapi.php:155 ../utilities.php:975
 msgid "Log Filters"
-msgstr ""
+msgstr "Log filters"
 
 #: ../lib/clog_webapi.php:178
 #, php-format
 msgid "Log [Total Lines: %d %s - Additional Filter in Affect]"
-msgstr ""
+msgstr "Log [Totaal aantal lijnen: %d %s - Extra filter actief]"
 
 #: ../lib/clog_webapi.php:180
 #, php-format
 msgid "Log [Total Lines: %d %s - No Other Filter in Affect]"
-msgstr ""
+msgstr "Log [Totaal aantal lijnen: %d %s - Geen ander filter actief]"
 
 #: ../lib/clog_webapi.php:282 ../utilities.php:1133
 msgid "LINE LIMIT OF 1000 LINES REACHED!!"
@@ -11457,11 +11465,11 @@ msgstr ""
 #: ../lib/functions.php:665
 #, php-format
 msgid "Error %s is not readable"
-msgstr ""
+msgstr "Fout %s is niet leesbaar"
 
 #: ../lib/functions.php:1790 ../lib/functions.php:1795
 msgid "Logged in as"
-msgstr ""
+msgstr "Ingelogd als"
 
 #: ../lib/functions.php:1790
 msgid "Login as Regular User"
@@ -11469,15 +11477,15 @@ msgstr ""
 
 #: ../lib/functions.php:1790
 msgid "guest"
-msgstr ""
+msgstr "ast"
 
 #: ../lib/functions.php:1797
 msgid "Edit Profile"
-msgstr ""
+msgstr "Wijzig profiel"
 
 #: ../lib/functions.php:1799
 msgid "Logout"
-msgstr ""
+msgstr "Uitloggen"
 
 #: ../lib/functions.php:1816 ../lib/functions.php:1822
 msgid "User Profile (Edit)"
@@ -11489,7 +11497,7 @@ msgstr ""
 
 #: ../lib/functions.php:1846
 msgid "List Mode"
-msgstr ""
+msgstr "Lijst modus"
 
 #: ../lib/functions.php:1868 ../lib/functions.php:1874
 #: ../lib/functions.php:2728 ../lib/html.php:1320 ../lib/html.php:1392
@@ -11550,7 +11558,7 @@ msgstr ""
 
 #: ../lib/functions.php:2222
 msgid "List unused Files"
-msgstr ""
+msgstr "Lijst van ongebruikte bestanden"
 
 #: ../lib/functions.php:2234 ../lib/functions.php:2246 ../utilities.php:1773
 msgid "View Poller Cache"
@@ -11606,7 +11614,7 @@ msgstr ""
 
 #: ../lib/functions.php:2408
 msgid "Export Results"
-msgstr ""
+msgstr "Exporteer resultaten"
 
 #: ../lib/functions.php:2420 ../lib/functions.php:2450 ../lib/html.php:1341
 #: ../lib/html.php:1343 ../lib/html.php:1417
@@ -11663,7 +11671,7 @@ msgstr ""
 #: ../lib/functions.php:3718
 #, php-format
 msgid "HELO failed: %s"
-msgstr ""
+msgstr "HELO mislukt: %s"
 
 #: ../lib/functions.php:3721
 #, php-format
@@ -11865,7 +11873,7 @@ msgstr ""
 
 #: ../lib/html_form.php:463
 msgid "File Found"
-msgstr ""
+msgstr "Bestand gevonden"
 
 #: ../lib/html_form.php:465
 msgid "Path is a Directory and not a File"
@@ -11873,7 +11881,7 @@ msgstr ""
 
 #: ../lib/html_form.php:469
 msgid "File is Not Found"
-msgstr ""
+msgstr "Bestand is niet gevonden"
 
 #: ../lib/html_form.php:472
 msgid "Enter a valid file path"
@@ -11881,7 +11889,7 @@ msgstr ""
 
 #: ../lib/html_form.php:508
 msgid "Directory Found"
-msgstr ""
+msgstr "Directorie gevonden"
 
 #: ../lib/html_form.php:510
 msgid "Path is a File and not a Directory"
@@ -11889,7 +11897,7 @@ msgstr ""
 
 #: ../lib/html_form.php:514
 msgid "Directory is Not found"
-msgstr ""
+msgstr "Directorie is niet gevonden"
 
 #: ../lib/html_form.php:517
 msgid "Enter a valid directory path"
@@ -11926,7 +11934,7 @@ msgstr ""
 #: ../lib/html_graph.php:282 ../lib/html_reports.php:1484
 #: ../lib/html_reports.php:1495 ../lib/html_tree.php:727
 msgid "From"
-msgstr ""
+msgstr "Van"
 
 #: ../lib/html_graph.php:288 ../lib/html_tree.php:733
 msgid "Start Date Selector"
@@ -11963,7 +11971,7 @@ msgstr ""
 
 #: ../lib/html_graph.php:339
 msgid "Interval"
-msgstr ""
+msgstr "Interval"
 
 #: ../lib/html_graph.php:351 ../lib/html_tree.php:796
 msgid "Stop"
@@ -12042,7 +12050,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:96
 msgid "Graph Settings"
-msgstr ""
+msgstr "Grafiek instellingen"
 
 #: ../lib/html_reports.php:101
 msgid "Graph Columns"
@@ -12066,7 +12074,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:132
 msgid "Email Frequency"
-msgstr ""
+msgstr "E-mail frequentie"
 
 #: ../lib/html_reports.php:137
 msgid "Next Timestamp for Sending Mail Report"
@@ -12094,7 +12102,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:155
 msgid "Interval Frequency"
-msgstr ""
+msgstr "Interval frequentie"
 
 #: ../lib/html_reports.php:156
 msgid ""
@@ -12112,7 +12120,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:165
 msgid "Email Sender/Receiver Details"
-msgstr ""
+msgstr "E-mail zender/ontvanger gegevens"
 
 #: ../lib/html_reports.php:170
 msgid "Subject"
@@ -12316,7 +12324,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:1085
 msgid "Events"
-msgstr ""
+msgstr "Gebeurtenissen"
 
 #: ../lib/html_reports.php:1087 ../lib/import.php:1799 ../user_admin.php:1922
 msgid "[new]"
@@ -12344,7 +12352,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:1230
 msgid "Item Details"
-msgstr ""
+msgstr "Item details"
 
 #: ../lib/html_reports.php:1230
 msgid "Timespan"
@@ -12385,11 +12393,11 @@ msgstr ""
 
 #: ../lib/html_reports.php:1481 ../lib/html_reports.php:1492
 msgid "Frequency"
-msgstr ""
+msgstr "Frequentie"
 
 #: ../lib/html_reports.php:1482 ../lib/html_reports.php:1493
 msgid "Last Run"
-msgstr ""
+msgstr "Laatste run"
 
 #: ../lib/html_reports.php:1483 ../lib/html_reports.php:1494
 msgid "Next Run"
@@ -12405,7 +12413,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:1520
 msgid "Invalid"
-msgstr ""
+msgstr "Ongeldig"
 
 #: ../lib/html_reports.php:1527
 msgid "No Reports Found"
@@ -12421,7 +12429,7 @@ msgstr ""
 
 #: ../lib/html_tree.php:592
 msgid "Device:"
-msgstr ""
+msgstr "Apparaat:"
 
 #: ../lib/html_tree.php:595
 msgid "Applied"
@@ -12429,7 +12437,7 @@ msgstr ""
 
 #: ../lib/html_tree.php:595
 msgid "Filter"
-msgstr ""
+msgstr "Filter"
 
 #: ../lib/html_tree.php:595
 msgid "Graph Filters"
@@ -12538,7 +12546,7 @@ msgstr ""
 
 #: ../lib/import.php:1837
 msgid "Found Dependency:"
-msgstr ""
+msgstr "Gevonden afhankelijkheden:"
 
 #: ../lib/import.php:1839
 msgid "Unmet Dependency:"
@@ -12570,7 +12578,7 @@ msgstr ""
 
 #: ../lib/ldap.php:297
 msgid "Insufficient access"
-msgstr ""
+msgstr "Onvoldoende toegang"
 
 #: ../lib/ldap.php:304
 msgid "Group DN could not be found to compare"
@@ -12578,7 +12586,7 @@ msgstr ""
 
 #: ../lib/ldap.php:321 ../lib/ldap.php:505
 msgid "Protocol Error"
-msgstr ""
+msgstr "Protocol fout"
 
 #: ../lib/ldap.php:325
 msgid "Authentication Failure"
@@ -12586,11 +12594,11 @@ msgstr ""
 
 #: ../lib/ldap.php:329 ../lib/ldap.php:515
 msgid "Insufficient Access"
-msgstr ""
+msgstr "Onvoldoende toegang"
 
 #: ../lib/ldap.php:333 ../lib/ldap.php:520
 msgid "Unable to Connect to Server"
-msgstr ""
+msgstr "Verbinding met de server mislukt"
 
 #: ../lib/ldap.php:337 ../lib/ldap.php:525
 msgid "Connection Timeout"
@@ -12606,7 +12614,7 @@ msgstr ""
 
 #: ../lib/ldap.php:400 ../lib/ldap.php:479
 msgid "User found"
-msgstr ""
+msgstr "Gebruiker gevonden"
 
 #: ../lib/ldap.php:407
 msgid "Specific DN and Password required"
@@ -12626,7 +12634,7 @@ msgstr ""
 
 #: ../lib/ldap.php:510
 msgid "Invalid Credentials"
-msgstr ""
+msgstr "Ongeldige inloggegevens"
 
 #: ../lib/ldap.php:537
 msgid "Unable to create LDAP connection object"
@@ -12634,16 +12642,16 @@ msgstr ""
 
 #: ../lib/ping.php:118
 msgid "ICMP Ping timed out"
-msgstr ""
+msgstr "ICMP ping timed out"
 
 #: ../lib/ping.php:187 ../lib/ping.php:205
 #, php-format
 msgid "ICMP Ping Success (%s ms)"
-msgstr ""
+msgstr "ICMP Ping succes (%s ms)"
 
 #: ../lib/ping.php:192 ../lib/ping.php:210
 msgid "ICMP ping Timed out"
-msgstr ""
+msgstr "ICMP ping timed out"
 
 #: ../lib/ping.php:217 ../lib/ping.php:411 ../lib/ping.php:507
 msgid "Destination address not specified"
@@ -12651,25 +12659,25 @@ msgstr ""
 
 #: ../lib/ping.php:312 ../lib/ping.php:423
 msgid "default"
-msgstr ""
+msgstr "standaaard"
 
 #: ../lib/ping.php:340
 msgid "PHP version does not support IPv6"
-msgstr ""
+msgstr "PHP versie ondersteund geen IPv6"
 
 #: ../lib/ping.php:361
 #, php-format
 msgid "UDP ping error: %s"
-msgstr ""
+msgstr "UDP ping fout: %s"
 
 #: ../lib/ping.php:394
 #, php-format
 msgid "UDP Ping Success (%s ms)"
-msgstr ""
+msgstr "UDP ping succesvol (%s ms)"
 
 #: ../lib/ping.php:451
 msgid "PHP binary does not support IPv6"
-msgstr ""
+msgstr "PHP binary ondersteund geen IPv6"
 
 #: ../lib/ping.php:474
 #, php-format
@@ -12679,11 +12687,11 @@ msgstr ""
 #: ../lib/ping.php:488
 #, php-format
 msgid "TCP Ping Success (%s ms)"
-msgstr ""
+msgstr "TCP ping succesvol (%s ms)"
 
 #: ../lib/ping.php:497
 msgid "TCP ping timed out"
-msgstr ""
+msgstr "TCP ping timed out"
 
 #: ../lib/ping.php:520
 msgid "Ping not performed due to setting."
@@ -12704,15 +12712,15 @@ msgstr ""
 
 #: ../lib/reports.php:883
 msgid "Host:"
-msgstr ""
+msgstr "Host:"
 
 #: ../lib/reports.php:888
 msgid "Graph:"
-msgstr ""
+msgstr "Grafiek:"
 
 #: ../lib/reports.php:989
 msgid "(No Graph Template)"
-msgstr ""
+msgstr "(Geen grafiektemplate)"
 
 #: ../lib/reports.php:1408
 msgid "Add to Report"
@@ -12834,7 +12842,7 @@ msgstr ""
 
 #: ../lib/rrd.php:2634
 msgid "Max"
-msgstr ""
+msgstr "Max"
 
 #: ../lib/rrd.php:2635
 msgid "Last DS"
@@ -12875,12 +12883,12 @@ msgstr ""
 
 #: ../lib/rrd.php:2799
 msgid "Error while parsing the XML of rrdtool dump"
-msgstr ""
+msgstr "Fout tijdens het parsen van de RRDtool dump XML"
 
 #: ../lib/rrd.php:2831 ../lib/rrd.php:2886 ../lib/rrd.php:2942
 #, php-format
 msgid "ERROR while writing XML file: %s"
-msgstr ""
+msgstr "FOUT tijdens het schrijven van XML bestand: %s"
 
 #: ../lib/rrd.php:2840
 #, php-format
@@ -12894,7 +12902,7 @@ msgstr ""
 
 #: ../lib/rrd.php:2869 ../lib/rrd.php:2925
 msgid "Error while parsing the XML of RRDtool dump"
-msgstr ""
+msgstr "Fout tijdens het parsen van de RRDtool dump XML"
 
 #: ../lib/rrd.php:2895
 #, php-format
@@ -12904,7 +12912,7 @@ msgstr ""
 #: ../lib/rrd.php:2951
 #, php-format
 msgid "Deleted rra(s) from rrd file: %s"
-msgstr ""
+msgstr "Verwijderd rra(s) van rrd bestand: %s"
 
 #: ../lib/rrd.php:2953
 #, php-format
@@ -13162,7 +13170,7 @@ msgstr ""
 
 #: ../links.php:205
 msgid "Disable Page(s)"
-msgstr ""
+msgstr "Deactiveer pagina(’s)"
 
 #: ../links.php:209
 msgid "Click 'Continue' to Delete the following Page(s)."
@@ -13178,7 +13186,7 @@ msgstr ""
 
 #: ../links.php:315
 msgid "Links"
-msgstr ""
+msgstr "Links"
 
 #: ../links.php:328
 msgid "Apply Filter"
@@ -13211,7 +13219,7 @@ msgstr ""
 
 #: ../links.php:392
 msgid "Edit Page"
-msgstr ""
+msgstr "Wijzig pagina"
 
 #: ../links.php:395
 msgid "View Page"
@@ -13296,11 +13304,11 @@ msgstr ""
 #: ../links.php:567
 #, php-format
 msgid "External Links [edit: %s]"
-msgstr ""
+msgstr "Externe links [wijzig: %s]"
 
 #: ../links.php:569
 msgid "External Links [new]"
-msgstr ""
+msgstr "Externe links [nieuw]"
 
 #: ../logout.php:70 ../logout.php:119
 msgid "Automatic Logout"
@@ -13334,7 +13342,7 @@ msgstr ""
 
 #: ../managers.php:223
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 #: ../managers.php:257
 msgid "No SNMP Notification Receivers"
@@ -13442,11 +13450,11 @@ msgstr ""
 
 #: ../plugins.php:28
 msgid "Install"
-msgstr ""
+msgstr "Installatie"
 
 #: ../plugins.php:31
 msgid "Uninstall"
-msgstr ""
+msgstr "De-installeer"
 
 #: ../plugins.php:36
 msgid "Not Compatible"
@@ -13537,7 +13545,7 @@ msgstr ""
 
 #: ../plugins.php:424
 msgid "ERROR: Directory Missing"
-msgstr ""
+msgstr "FOUT: Directorie ontbreekt"
 
 #: ../plugins.php:434
 msgid "Order Before Previous Plugin"
@@ -13549,15 +13557,15 @@ msgstr ""
 
 #: ../plugins.php:463
 msgid "Install Plugin"
-msgstr ""
+msgstr "Installeer plugin"
 
 #: ../plugins.php:467 ../plugins.php:471 ../plugins.php:474
 msgid "Uninstall Plugin"
-msgstr ""
+msgstr "De-installeer plugin"
 
 #: ../plugins.php:468
 msgid "Disable Plugin"
-msgstr ""
+msgstr "Deactiveer plugin"
 
 #: ../plugins.php:475
 msgid "Enable Plugin"
@@ -13569,7 +13577,7 @@ msgstr ""
 
 #: ../pollers.php:32
 msgid "Full Sync"
-msgstr ""
+msgstr "Volledige synchronisatie"
 
 #: ../pollers.php:36
 msgid "New/Idle"
@@ -13777,7 +13785,7 @@ msgstr ""
 
 #: ../pollers.php:610
 msgid "Last Finished"
-msgstr ""
+msgstr "Laatst geëindigd"
 
 #: ../pollers.php:610
 msgid "The last time this Data Collector completed."
@@ -13785,7 +13793,7 @@ msgstr ""
 
 #: ../pollers.php:611
 msgid "Last Update"
-msgstr ""
+msgstr "Laatste update"
 
 #: ../pollers.php:611
 msgid "The last time this Data Collector checked in with the main Cacti site."
@@ -13823,7 +13831,7 @@ msgstr ""
 
 #: ../rrdcleaner.php:352
 msgid "Last Modified"
-msgstr ""
+msgstr "Laatste keer bewerkt"
 
 #: ../rrdcleaner.php:353
 msgid "Size [KB]"
@@ -13831,7 +13839,7 @@ msgstr ""
 
 #: ../rrdcleaner.php:364 ../rrdcleaner.php:365
 msgid "Deleted"
-msgstr ""
+msgstr "Verwijderd"
 
 #: ../rrdcleaner.php:373
 msgid "No unused RRD Files"
@@ -13843,7 +13851,7 @@ msgstr ""
 
 #: ../rrdcleaner.php:397
 msgid "Last Scan:"
-msgstr ""
+msgstr "Laatste scan:"
 
 #: ../rrdcleaner.php:481
 msgid "Time Since Update"
@@ -14027,7 +14035,7 @@ msgstr ""
 
 #: ../sites.php:113
 msgid "example 38.889488"
-msgstr ""
+msgstr "voorbeeld 38.889488"
 
 #: ../sites.php:119
 msgid "Longitude"
@@ -14039,7 +14047,7 @@ msgstr ""
 
 #: ../sites.php:122
 msgid "example -77.0374678"
-msgstr ""
+msgstr "voorbeeld -77.0374678"
 
 #: ../sites.php:128
 msgid "Site Notes"
@@ -14078,8 +14086,8 @@ msgstr[1] ""
 #: ../sites.php:280
 msgid "Delete Site"
 msgid_plural "Delete Sites"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verwijder locatie"
+msgstr[1] "Verwijder locaties"
 
 #: ../sites.php:481
 msgid "Site Name"
@@ -14345,7 +14353,7 @@ msgstr ""
 
 #: ../tree.php:1560
 msgid "Published"
-msgstr ""
+msgstr "Gepubliceerd"
 
 #: ../tree.php:1560
 msgid "Unpublished Trees cannot be viewed from the Graph tab"
@@ -14367,7 +14375,7 @@ msgstr ""
 
 #: ../tree.php:1564
 msgid "Last Edited"
-msgstr ""
+msgstr "Laatst bewerkt"
 
 #: ../tree.php:1564
 msgid "The date that this Tree was last edited."
@@ -14375,7 +14383,7 @@ msgstr ""
 
 #: ../tree.php:1565
 msgid "Edited By"
-msgstr ""
+msgstr "Gewijzigd door"
 
 #: ../tree.php:1565
 msgid "The last user to have modified this Tree."
@@ -14411,7 +14419,7 @@ msgstr ""
 
 #: ../user_admin.php:350
 msgid "Delete User(s)"
-msgstr ""
+msgstr "Verwijder gebruiker(s)"
 
 #: ../user_admin.php:360
 msgid "Click 'Continue' to copy the selected User to a new User below."
@@ -14427,7 +14435,7 @@ msgstr ""
 
 #: ../user_admin.php:377
 msgid "Full Name:"
-msgstr ""
+msgstr "Volledige naam:"
 
 #: ../user_admin.php:384
 msgid "Realm:"
@@ -14451,7 +14459,7 @@ msgstr ""
 
 #: ../user_admin.php:412
 msgid "Disable User(s)"
-msgstr ""
+msgstr "Uitgeschakelde gebruiker(s)"
 
 #: ../user_admin.php:420
 msgid ""
@@ -14658,7 +14666,7 @@ msgstr ""
 
 #: ../user_admin.php:1906
 msgid "Group Membership"
-msgstr ""
+msgstr "Groepslidmaatschap"
 
 #: ../user_admin.php:1907 ../user_group_admin.php:1645
 msgid "Graph Perms"
@@ -14711,7 +14719,7 @@ msgstr ""
 
 #: ../user_admin.php:2253
 msgid "Last Login"
-msgstr ""
+msgstr "Laatste login"
 
 #: ../user_admin.php:2274
 msgid "Unavailable"
@@ -14733,12 +14741,12 @@ msgstr ""
 #: ../user_admin.php:2614
 #, php-format
 msgid "Group Membership %s"
-msgstr ""
+msgstr "Groepslidmaatschap %s"
 
 #: ../user_admin.php:2629 ../user_group_admin.php:1812
 #: ../user_group_admin.php:1872
 msgid "Groups"
-msgstr ""
+msgstr "Groepen"
 
 #: ../user_admin.php:2702 ../user_group_admin.php:2234
 #, php-format
@@ -14774,8 +14782,8 @@ msgstr[1] ""
 #: ../user_domains.php:227
 msgid "Delete User Domain"
 msgid_plural "Delete User Domains"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verwijder gebruiker domein"
+msgstr[1] "Verwijder gebruiker domeinen"
 
 #: ../user_domains.php:231
 msgid "Click 'Continue' to disable the following User Domain."
@@ -14786,8 +14794,8 @@ msgstr[1] ""
 #: ../user_domains.php:236
 msgid "Disable User Domain"
 msgid_plural "Disable User Domains"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Deactiveer gebruiker domein"
+msgstr[1] "Deactiveer gebruiker domeinen"
 
 #: ../user_domains.php:240
 msgid "Click 'Continue' to enable the following User Domain."
@@ -14883,19 +14891,19 @@ msgstr ""
 
 #: ../user_domains.php:501
 msgid "Domain Properties"
-msgstr ""
+msgstr "Domein eigenschappen"
 
 #: ../user_domains.php:627
 msgid "Domains"
-msgstr ""
+msgstr "Domeinen"
 
 #: ../user_domains.php:714
 msgid "Domain Name"
-msgstr ""
+msgstr "Domeinnaam"
 
 #: ../user_domains.php:715
 msgid "Domain Type"
-msgstr ""
+msgstr "Domein type"
 
 #: ../user_domains.php:717
 msgid "Effective User"
@@ -14931,7 +14939,7 @@ msgstr ""
 
 #: ../user_group_admin.php:73 ../user_group_admin.php:1881
 msgid "Group Name"
-msgstr ""
+msgstr "Groepnaam"
 
 #: ../user_group_admin.php:74
 msgid "The name of this Group."
@@ -14939,7 +14947,7 @@ msgstr ""
 
 #: ../user_group_admin.php:80
 msgid "Group Description"
-msgstr ""
+msgstr "Groep beschrijving"
 
 #: ../user_group_admin.php:81
 msgid ""
@@ -14996,8 +15004,8 @@ msgstr[1] ""
 #: ../user_group_admin.php:446
 msgid "Delete User Group"
 msgid_plural "Delete User Groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verwijder gebruikersgroep"
+msgstr[1] "Verwijder gebruikersgroepen"
 
 #: ../user_group_admin.php:454
 msgid "Click 'Continue' to Copy the following User Group to a new User Group."
@@ -15008,7 +15016,7 @@ msgstr[1] ""
 
 #: ../user_group_admin.php:460
 msgid "Group Prefix:"
-msgstr ""
+msgstr "Groep voorvoegsel:"
 
 #: ../user_group_admin.php:461
 msgid "New Group"
@@ -15041,8 +15049,8 @@ msgstr[1] ""
 #: ../user_group_admin.php:487
 msgid "Disable User Group"
 msgid_plural "Disable User Groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Deactiveer gebruikersgroep"
+msgstr[1] "Deactiveer gebruikersgroepen"
 
 #: ../user_group_admin.php:490
 msgid "You must select at least one Group."
@@ -15050,7 +15058,7 @@ msgstr "U moet tenminste een groep selecteren."
 
 #: ../user_group_admin.php:675
 msgid "Login Name"
-msgstr ""
+msgstr "Loginnaam"
 
 #: ../user_group_admin.php:675
 msgid "Membership"
@@ -15058,7 +15066,7 @@ msgstr ""
 
 #: ../user_group_admin.php:686
 msgid "Group Member"
-msgstr ""
+msgstr "Groepsleden"
 
 #: ../user_group_admin.php:696
 msgid "No Matching Group Members Found"
@@ -15079,7 +15087,7 @@ msgstr ""
 #: ../user_group_admin.php:755 ../user_group_admin.php:896
 #: ../user_group_admin.php:1044 ../user_group_admin.php:1185
 msgid "Update"
-msgstr ""
+msgstr "Bijwerken"
 
 #: ../user_group_admin.php:1039
 msgid "Default Graph Template policy for this User Group"
@@ -15217,7 +15225,7 @@ msgstr ""
 
 #: ../utilities.php:342
 msgid "Max OID"
-msgstr ""
+msgstr "Max OID"
 
 #: ../utilities.php:347
 msgid "Last Run Statistics"
@@ -15308,11 +15316,11 @@ msgstr ""
 
 #: ../utilities.php:632 ../utilities.php:763
 msgid "User"
-msgstr ""
+msgstr "Gebruiker"
 
 #: ../utilities.php:637
 msgid "Deleted/Invalid"
-msgstr ""
+msgstr "Verwijderd/Ongeldig"
 
 #: ../utilities.php:650 ../utilities.php:767
 msgid "Result"
@@ -15328,7 +15336,7 @@ msgstr ""
 
 #: ../utilities.php:657
 msgid "Failed"
-msgstr ""
+msgstr "Mislukt"
 
 #: ../utilities.php:661
 msgid "Attempts"
@@ -15363,7 +15371,7 @@ msgstr ""
 
 #: ../utilities.php:768
 msgid "IP Address"
-msgstr ""
+msgstr "IP-adres"
 
 #: ../utilities.php:784
 msgid "(User Removed)"
@@ -15371,17 +15379,18 @@ msgstr ""
 
 #: ../utilities.php:1015
 msgid "Purge Log"
-msgstr ""
+msgstr "Logbestand legen"
 
 #: ../utilities.php:1068
 #, php-format
 msgid "Log [Total Lines: %d - Non-Matching Items Hidden]"
 msgstr ""
+"Log [Totaal aantal lijnen: %d - Niet overeenkomende items zijn verborgen]"
 
 #: ../utilities.php:1070
 #, php-format
 msgid "Log [Total Lines: %d - All Items Shown]"
-msgstr ""
+msgstr "Log [Totaal aantal lijnen: %d - Alle items worden getoond]"
 
 #: ../utilities.php:1166
 #, php-format
@@ -15411,11 +15420,11 @@ msgstr ""
 #: ../utilities.php:1396 ../utilities.php:1604 ../utilities.php:1684
 #: ../utilities.php:2325 ../utilities.php:2535
 msgid "Entries"
-msgstr ""
+msgstr "Regels"
 
 #: ../utilities.php:1402
 msgid "Field Value"
-msgstr ""
+msgstr "Veld waarde"
 
 #: ../utilities.php:1402
 msgid "Index"
@@ -15605,7 +15614,7 @@ msgstr ""
 
 #: ../utilities.php:2007
 msgid "Directory Does NOT Exist!!"
-msgstr ""
+msgstr "Directorie bestaat NIET!!"
 
 #: ../utilities.php:2014
 msgid "Current Boost Status"
@@ -15678,7 +15687,7 @@ msgstr "Laatste starttijd:"
 
 #: ../utilities.php:2099
 msgid "Last Run Duration:"
-msgstr ""
+msgstr "Laatste run duur:"
 
 #: ../utilities.php:2100
 #, php-format
@@ -15843,7 +15852,7 @@ msgstr "Kies wat voor type VDEF item dit is."
 
 #: ../vdef.php:408
 msgid "VDEF Item Type"
-msgstr "VDEF item type."
+msgstr "VDEF item type"
 
 #: ../vdef.php:430
 msgid "Enter a value for this VDEF item."
@@ -15864,7 +15873,7 @@ msgstr "VDEF’s [nieuw]"
 
 #: ../vdef.php:600 ../vdef.php:639
 msgid "Delete VDEF Item"
-msgstr "Verwijder VDEF item."
+msgstr "Verwijder VDEF item"
 
 #: ../vdef.php:845
 msgid "The name of this VDEF."
