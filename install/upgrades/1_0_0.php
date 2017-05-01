@@ -1707,13 +1707,13 @@ function upgrade_to_1_0_0() {
 				&& file_exists($config['base_path'] . "/plugins/$plugin/INFO") 
 				&& !in_array($plugin, $plugins_integrated)) {
 					$info = parse_ini_file($config['base_path'] . "/plugins/$plugin/INFO", true);
-					if (isset($info['info']['compat']) && version_compare($config['cacti_version'], $info['info']['compat']) > -1) {
+					if (isset($info['info']['compat']) && version_compare(CACTI_VERSION, $info['info']['compat']) > -1) {
 						$disable = false;
 					}
 			}
 			if ($disable) {
-				echo "Disabling $plugin version $version as it is not compatible with Cacti " . $config['cacti_version'] . "\n";
-				db_install_add_cache(1, "Disabling $plugin version $version as it is not compatible with Cacti " . $config['cacti_version']);
+				echo "Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION . "\n";
+				db_install_add_cache(1, "Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION);
 				api_plugin_disable_all($plugin);
 			}
 		}

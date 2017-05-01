@@ -236,7 +236,7 @@ function utilities_view_tech($php_info = '') {
 
 		form_alternate_row();
 		print '<td>' . __('Cacti Version') . "</td>\n";
-		print '<td>' . $config['cacti_version'] . "</td>\n";
+		print '<td>' . CACTI_VERSION . "</td>\n";
 		form_end_row();
 
 		form_alternate_row();

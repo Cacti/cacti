@@ -32,7 +32,7 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 
 <tr class='tableHeader'>
 	<td class='tableSubHeaderColumn' colspan="2">
-		<font class='textSubHeaderDark'><?php print __('Version %s', $config["cacti_version"]); ?></font>
+		<font class='textSubHeaderDark'><?php print __('Version %s', CACTI_VERSION); ?></font>
 	</td>
 </tr>
 <tr>
@@ -41,7 +41,7 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 		
 		<p><?php print __('Cacti is designed to be a complete graphing solution based on the RRDtool\'s framework. Its goal is to make a network administrator\'s job easier by taking care of all the necessary details necessary to create meaningful graphs.'); ?></p>
 
-		<p><?php print __('Please see the official %sCacti website%s for information, support, and updates.', '<a href="http://www.cacti.net/?version=' . $config['cacti_version'] . '">', '</a>'); ?></p>
+		<p><?php print __('Please see the official %sCacti website%s for information, support, and updates.', '<a href="http://www.cacti.net/?version=' . CACTI_VERSION . '">', '</a>'); ?></p>
 
 		<p><strong><?php print __('Cacti Developers'); ?></strong><br>
 		<ul type="disc">

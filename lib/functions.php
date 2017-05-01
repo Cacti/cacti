@@ -3019,9 +3019,9 @@ function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
      'data_input_method','cdef','vdef','gprint_preset','data_query','host_template')
    @returns - a 24-bit hexadecimal hash (8-bits for type, 16-bits for version) */
 function get_hash_version($type) {
-	global $hash_type_codes, $hash_version_codes, $config;
+	global $hash_type_codes, $cacti_version_codes, $config;
 
-	return $hash_type_codes[$type] . $hash_version_codes{$config['cacti_version']};
+	return $hash_type_codes[$type] . $cacti_version_codes[CACTI_VERSION];
 }
 
 /* generate_hash - generates a new unique hash
