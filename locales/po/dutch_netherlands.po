@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-30 10:14+0200\n"
-"PO-Revision-Date: 2017-05-01 22:10+0200\n"
+"PO-Revision-Date: 2017-05-01 22:17+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -10270,7 +10270,7 @@ msgstr ""
 #: ../include/global_settings.php:1724 ../include/global_settings.php:1725
 #, php-format
 msgid "%d Samples"
-msgstr ""
+msgstr "%d Voorbeelden"
 
 #: ../include/global_settings.php:1729
 msgid "RRDfile Backup Directory"
@@ -10569,17 +10569,17 @@ msgstr ""
 #: ../index.php:67
 #, php-format
 msgid "<a href=\"%s\">Create devices</a> for network"
-msgstr ""
+msgstr "<a href=“%s”>Creëer apparaten</a> voor netwerk"
 
 #: ../index.php:68
 #, php-format
 msgid "<a href=\"%s\">Create graphs</a> for your new devices"
-msgstr ""
+msgstr "<a href=“%s”>Creëer grafieken</a> voor uw nieuwe apparaten"
 
 #: ../index.php:69
 #, php-format
 msgid "<a href=\"%s\">View</a> your new graphs"
-msgstr ""
+msgstr "<a href=“%s”>Toon</a> uw nieuwe grafieken"
 
 #: ../index.php:78
 msgid "Offline"
@@ -11108,11 +11108,11 @@ msgstr ""
 
 #: ../install/index.php:1063
 msgid "[Fail]"
-msgstr ""
+msgstr "[Mislukt]"
 
 #: ../install/index.php:1064
 msgid "[Success]"
-msgstr ""
+msgstr "[Succesvol]"
 
 #: ../install/index.php:1065
 msgid "[Not Ran]"
@@ -11518,7 +11518,7 @@ msgstr ""
 #: ../lib/functions.php:2528 ../lib/functions.php:2546
 #: ../lib/functions.php:2564 ../lib/functions.php:2588
 msgid "(Edit)"
-msgstr ""
+msgstr "(Wijzig)"
 
 #: ../lib/functions.php:1910
 msgid "Create New Graphs"
@@ -11532,7 +11532,7 @@ msgstr ""
 #: ../lib/functions.php:2048 ../lib/functions.php:2138
 #: ../lib/functions.php:2162 ../lib/functions.php:2318
 msgid "(Remove)"
-msgstr ""
+msgstr "(Verwijder)"
 
 #: ../lib/functions.php:1970 ../lib/functions.php:1976
 #: ../lib/functions.php:1982 ../lib/functions.php:1988
@@ -11554,7 +11554,7 @@ msgstr ""
 
 #: ../lib/functions.php:2174 ../lib/functions.php:2204
 msgid "(Remove Item)"
-msgstr ""
+msgstr "(Verwijder item)"
 
 #: ../lib/functions.php:2222
 msgid "List unused Files"
@@ -11837,7 +11837,7 @@ msgstr ""
 #: ../lib/html.php:1766
 #, php-format
 msgid "%d Spikes"
-msgstr ""
+msgstr "%d Pieken"
 
 #: ../lib/html.php:1773
 msgid "Remove StdDev"
@@ -11920,7 +11920,7 @@ msgstr ""
 #: ../lib/html_graph.php:230 ../lib/html_tree.php:675
 #, php-format
 msgid "%d Column"
-msgstr ""
+msgstr "%d Kolom"
 
 #: ../lib/html_graph.php:239 ../lib/html_reports.php:125
 #: ../lib/html_tree.php:684
@@ -12320,7 +12320,7 @@ msgstr ""
 #: ../lib/html_reports.php:1084 ../user_admin.php:1920
 #, php-format
 msgid "[edit: %s]"
-msgstr ""
+msgstr "[wijzig %s]"
 
 #: ../lib/html_reports.php:1085
 msgid "Events"
@@ -12328,7 +12328,7 @@ msgstr "Gebeurtenissen"
 
 #: ../lib/html_reports.php:1087 ../lib/import.php:1799 ../user_admin.php:1922
 msgid "[new]"
-msgstr ""
+msgstr "[nieuw]"
 
 #: ../lib/html_reports.php:1119
 msgid "Send Report"
@@ -12526,11 +12526,11 @@ msgstr ""
 
 #: ../lib/import.php:1789
 msgid "[success]"
-msgstr ""
+msgstr "[succesvol]"
 
 #: ../lib/import.php:1791
 msgid "[fail]"
-msgstr ""
+msgstr "[mislukt]"
 
 #: ../lib/import.php:1793
 msgid "[preview]"
@@ -12538,11 +12538,11 @@ msgstr ""
 
 #: ../lib/import.php:1797
 msgid "[updated]"
-msgstr ""
+msgstr "[bijgewerkt]"
 
 #: ../lib/import.php:1801
 msgid "[unchanged]"
-msgstr ""
+msgstr "[ongewijzigd]"
 
 #: ../lib/import.php:1837
 msgid "Found Dependency:"
@@ -12724,7 +12724,7 @@ msgstr "(Geen grafiektemplate)"
 
 #: ../lib/reports.php:1408
 msgid "Add to Report"
-msgstr ""
+msgstr "Toevoegen aan rapport"
 
 #: ../lib/reports.php:1426
 msgid ""
@@ -15074,7 +15074,7 @@ msgstr ""
 
 #: ../user_group_admin.php:710
 msgid "Add to Group"
-msgstr ""
+msgstr "Toevoegen aan groep"
 
 #: ../user_group_admin.php:711
 msgid "Remove from Group"
@@ -15201,7 +15201,7 @@ msgstr ""
 #: ../utilities.php:311
 #, php-format
 msgid "Action[%s]"
-msgstr ""
+msgstr "Actie[%s]"
 
 #: ../utilities.php:316
 msgid "No items to poll"
@@ -15375,7 +15375,7 @@ msgstr "IP-adres"
 
 #: ../utilities.php:784
 msgid "(User Removed)"
-msgstr ""
+msgstr "(Gebruiker verwijderd)"
 
 #: ../utilities.php:1015
 msgid "Purge Log"
