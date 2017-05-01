@@ -2111,9 +2111,9 @@ CREATE TABLE poller_output (
   local_data_id mediumint(8) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
   time timestamp NOT NULL default '0000-00-00 00:00:00',
-  output text NOT NULL,
+  output varchar(512) NOT NULL default '',
   PRIMARY KEY (local_data_id, rrd_name, time) /*!50060 USING BTREE */
-) ENGINE=InnoDB;
+) ENGINE=MEMORY;
 
 --
 -- Table structure for table `poller_output_boost`
