@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -feature: Responsive Graphs page
 -feature: Convert forms from table based to div based for responsive design
 -feature: Better support for phones and tablets
+-feature: Simplified installation code to facilitate easier release cycle
 
 1.1.5
 -issue#580: Data collection warnings when using cmd.php
