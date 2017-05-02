@@ -139,29 +139,31 @@ default:
 
 	$form_array = array();
 
-	foreach ($settings[$current_tab] as $field_name => $field_array) {
-		$form_array += array($field_name => $field_array);
+	if (isset($settings[$current_tab])) {
+		foreach ($settings[$current_tab] as $field_name => $field_array) {
+			$form_array += array($field_name => $field_array);
 
-		if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-				if (config_value_exists($sub_field_name)) {
-					$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
+			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
+					if (config_value_exists($sub_field_name)) {
+						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
+					}
+
+					$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value 
+						FROM settings 
+						WHERE name = ?', 
+						array($sub_field_name));
+				}
+			}else{
+				if (config_value_exists($field_name)) {
+					$form_array[$field_name]['form_id'] = 1;
 				}
 
-				$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value 
+				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value 
 					FROM settings 
 					WHERE name = ?', 
-					array($sub_field_name));
+					array($field_name));
 			}
-		}else{
-			if (config_value_exists($field_name)) {
-				$form_array[$field_name]['form_id'] = 1;
-			}
-
-			$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value 
-				FROM settings 
-				WHERE name = ?', 
-				array($field_name));
 		}
 	}
 
