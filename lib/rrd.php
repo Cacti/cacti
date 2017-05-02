@@ -644,10 +644,14 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 					$rrd_update_values = $update_time . ':';
 				}
 
-				$i = 0;
 				$rrd_update_template = '';
 
 				foreach ($field_array as $field_name => $value) {
+					if ($rrd_update_template != '') {
+						$rrd_update_template .= ':';
+						$rrd_update_values .= ':';
+					}
+
 					$rrd_update_template .= $field_name;
 
 					/* if we have "invalid data", give rrdtool an Unknown (U) */
@@ -656,13 +660,6 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 					}
 
 					$rrd_update_values .= $value;
-
-					if ($i+1 < count($field_array)) {
-						$rrd_update_template .= ':';
-						$rrd_update_values .= ':';
-					}
-
-					$i++;
 				}
 
 				rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
