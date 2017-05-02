@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.1.6
 -issue#620: The table poller_data_template_field_mappings can get out of sync when manipulating data templates
 -issue#622: Can not connect to MySQL over a socket
+-issue#628: Cacti upgrade process is complex and error pront for developers
 -issue#635: Error when saving change to data template
 -issue#637: When displaying tree graphs, use the same layout as preview mode
 -issue#646: When a plugin is disabled during page operations, warnings can appear
