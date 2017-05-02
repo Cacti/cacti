@@ -451,7 +451,7 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 }
 
 function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '') {
-	global $config;
+	global $config, $data_source_types, $consolidation_functions;
 
 	include ($config['include_path'] . '/global_arrays.php');
 
@@ -460,12 +460,11 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 	/* ok, if that passes lets check to make sure an rra does not already
 	exist, the last thing we want to do is overright data! */
 	if ($show_source != true) {
-		if(read_config_option('storage_location')) {
-			$file_exists = rrdtool_execute("file_exists $data_source_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
-		}else {
-			$file_exists = file_exists($data_source_path);
-		}
-		if ($file_exists == true) {
+		if (read_config_option('storage_location')) {
+			if (rrdtool_execute("file_exists $data_source_path", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER')) {
+				return -1;
+			}
+		} elseif (file_exists($data_source_path)) {
 			return -1;
 		}
 	}
@@ -479,7 +478,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 
 	$rras = db_fetch_assoc_prepared('SELECT dtd.rrd_step, dsp.x_files_factor,
 		dspr.steps, dspr.rows, dspc.consolidation_function_id,
-		(dspr.rows*dspr.steps) as rra_order
+		(dspr.rows*dspr.steps) AS rra_order
 		FROM data_template_data AS dtd
 		LEFT JOIN data_source_profiles AS dsp
 		ON dtd.data_source_profile_id=dsp.id
@@ -490,7 +489,8 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 		WHERE dtd.local_data_id = ?
 		AND (dspr.steps IS NOT NULL OR dspr.rows IS NOT NULL)
 		ORDER BY dspc.consolidation_function_id, rra_order', 
-		array($local_data_id));
+		array($local_data_id)
+	);
 
 	/* if we find that this DS has no RRA associated; get out */
 	if (sizeof($rras) <= 0) {
@@ -502,62 +502,66 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 	$create_ds = RRD_NL . '--step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
 	/* query the data sources to be used in this .rrd file */
-	$data_sources = db_fetch_assoc_prepared('SELECT dtr.id, dtr.rrd_heartbeat,
-		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_type_id
-		FROM data_template_rrd AS dtr
-		WHERE dtr.local_data_id = ?
+	$data_sources = db_fetch_assoc_prepared('SELECT id, rrd_heartbeat,
+		rrd_minimum, rrd_maximum, data_source_type_id
+		FROM data_template_rrd
+		WHERE local_data_id = ?
 		ORDER BY local_data_template_rrd_id', 
-		array($local_data_id));
+		array($local_data_id)
+	);
+
+	$data_local = db_fetch_row_prepared('SELECT host_id, snmp_query_id, snmp_index FROM data_local WHERE id = ?', array($local_data_id));
+
+	$highSpeed = db_fetch_cell_prepared('SELECT field_value
+		FROM host_snmp_cache
+		WHERE host_id = ?
+		AND snmp_query_id = ?
+		AND snmp_index = ?
+		AND field_name="ifHighSpeed"',
+		array($data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index'])
+	);
+
+	$ssqdIfSpeed = substitute_snmp_query_data('|query_ifSpeed|', $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 
 	/* ONLY make a new DS entry if:
 	- There is multiple data sources and this item is not the main one.
 	- There is only one data source (then use it) */
 
 	if (sizeof($data_sources)) {
-	foreach ($data_sources as $data_source) {
-		/* use the cacti ds name by default or the user defined one, if entered */
-		$data_source_name = get_data_source_item_name($data_source['id']);
+		foreach ($data_sources as $data_source) {
+			/* use the cacti ds name by default or the user defined one, if entered */
+			$data_source_name = get_data_source_item_name($data_source['id']);
 
-		if (empty($data_source['rrd_maximum'])) {
-			/* in case no maximum is given, use "Undef" value */
-			$data_source['rrd_maximum'] = 'U';
-		} elseif (strpos($data_source['rrd_maximum'], '|query_') !== false) {
-			/* in case a query variable is given, evaluate it */
-			$data_local = db_fetch_row_prepared('SELECT * FROM data_local WHERE id = ?', array($local_data_id));
+			if (empty($data_source['rrd_maximum'])) {
+				/* in case no maximum is given, use "Undef" value */
+				$data_source['rrd_maximum'] = 'U';
+			} elseif (strpos($data_source['rrd_maximum'], '|query_') !== false) {
+				/* in case a query variable is given, evaluate it */
+				if ($data_source['rrd_maximum'] == '|query_ifSpeed|' || $data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
+					if (!empty($highSpeed)) {
+						$data_source['rrd_maximum'] = $highSpeed * 1000000;
+					} else {
+						$data_source['rrd_maximum'] = $ssqdIfSpeed;
 
-			if ($data_source['rrd_maximum'] == '|query_ifSpeed|' || $data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
-				$highSpeed = db_fetch_cell_prepared('SELECT field_value
-					FROM host_snmp_cache
-					WHERE host_id = ?
-					AND snmp_query_id = ?
-					AND snmp_index = ?
-					AND field_name="ifHighSpeed"',
-					array($data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']));
-
-				if (!empty($highSpeed)) {
-					$data_source['rrd_maximum'] = $highSpeed * 1000000;
-				}else{
-					$data_source['rrd_maximum'] = substitute_snmp_query_data('|query_ifSpeed|',$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
-
-					if (empty($data_source['rrd_maximum']) || $data_source['rrd_maximum'] == '|query_ifSpeed|') {
-						$data_source['rrd_maximum'] = '10000000000000';
+						if (empty($data_source['rrd_maximum']) || $data_source['rrd_maximum'] == '|query_ifSpeed|') {
+							$data_source['rrd_maximum'] = '10000000000000';
+						}
 					}
+				} else {
+					$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'], $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 				}
-			}else{
-				$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'],$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
+			} elseif ($data_source['rrd_maximum'] != 'U' && (int)$data_source['rrd_maximum'] <= (int)$data_source['rrd_minimum']) {
+				/* max > min required, but take care of an "Undef" value */
+				$data_source['rrd_maximum'] = (int)$data_source['rrd_minimum']+1;
 			}
-		} elseif (($data_source['rrd_maximum'] != 'U') && (int)$data_source['rrd_maximum']<=(int)$data_source['rrd_minimum']) {
-			/* max > min required, but take care of an "Undef" value */
-			$data_source['rrd_maximum'] = (int)$data_source['rrd_minimum']+1;
-		}
 
-		/* min==max==0 won't work with rrdtool */
-		if ($data_source['rrd_minimum'] == 0 && $data_source['rrd_maximum'] == 0) {
-			$data_source['rrd_maximum'] = 'U';
-		}
+			/* min==max==0 won't work with rrdtool */
+			if ($data_source['rrd_minimum'] == 0 && $data_source['rrd_maximum'] == 0) {
+				$data_source['rrd_maximum'] = 'U';
+			}
 
-		$create_ds .= "DS:$data_source_name:" . $data_source_types[$data_source['data_source_type_id']] . ':' . $data_source['rrd_heartbeat'] . ':' . $data_source['rrd_minimum'] . ':' . $data_source['rrd_maximum'] . RRD_NL;
-	}
+			$create_ds .= "DS:$data_source_name:" . $data_source_types[$data_source['data_source_type_id']] . ':' . $data_source['rrd_heartbeat'] . ':' . $data_source['rrd_minimum'] . ':' . $data_source['rrd_maximum'] . RRD_NL;
+		}
 	}
 
 	$create_rra = '';
@@ -573,33 +577,34 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 		if (read_config_option('storage_location')) {
 			if (false === rrdtool_execute("is_dir " . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') ) {
 				if (false === rrdtool_execute("mkdir " . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER') ) {
-					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
+					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}
-		}elseif (!is_dir(dirname($data_source_path)) && $config['is_web'] == false) {
+		} elseif ($config['is_web'] == false && !is_dir(dirname($data_source_path))) {
 			if (mkdir(dirname($data_source_path), 0775)) {
 				if ($config['cacti_server_os'] != 'win32') {
 					$owner_id = fileowner($config['rra_path']);
 					$group_id = filegroup($config['rra_path']);
 
-					if ((chown(dirname($data_source_path), $owner_id)) &&
-						(chgrp(dirname($data_source_path), $group_id))) {
+					if (chown(dirname($data_source_path), $owner_id) &&
+						chgrp(dirname($data_source_path), $group_id)
+					) {
 						/* permissions set ok */
-					}else{
-						cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
+					} else{
+						cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", false);
 					}
 				}
-			}else{
-				cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
+			} else {
+				cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 			}
-		}else{
-			cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", FALSE);
+		} else {
+			cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", false);
 		}
 	}
 
 	if ($show_source == true) {
 		return read_config_option('path_rrdtool') . ' create' . RRD_NL . "$data_source_path$create_ds$create_rra";
-	}else{
+	} else {
 		rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 	}
 }
@@ -807,7 +812,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 }
 
 function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array) {
-	global $config;
+	global $config, $image_types;
 
 	include($config['include_path'] . '/global_arrays.php');
 
@@ -1082,7 +1087,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 }
 
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = '', &$xport_meta = array(), $user = 0) {
-	global $config, $consolidation_functions;
+	global $config, $consolidation_functions, $graph_item_types;
 
 	include_once($config['library_path'] . '/cdef.php');
 	include_once($config['library_path'] . '/vdef.php');
@@ -2370,8 +2375,6 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 		local_data_template_data_id, rrd_step, data_source_profile_id
 		FROM data_template_data 
 		WHERE local_data_id = ?', array($data_source_id));
-
-	$cacti_file = get_data_source_path($data_source_id, true);
 
 	/* get cacti DS information */
 	$cacti_ds_array = db_fetch_assoc_prepared('SELECT data_source_name, data_source_type_id, 
