@@ -292,6 +292,8 @@ function load_i18n_gettext_wrappers(){
 	}
 	
 	function __x(){
+		global $l10n;
+
 		$args = func_get_args();
 		$num  = func_num_args();
 		
@@ -304,14 +306,14 @@ function load_i18n_gettext_wrappers(){
 			
 			$msgid = reset($args);
 			$xmsgid = $context . chr(4) . $msgid;
-			
+
 			$args[0] = $xmsgid;
 			
-			if($num == 2) {
+			if($num == 1) {
 				/* pure text string without placeholders and a change of the default textdomain */
 				$msgstr = __gettext($args[0]);
 			}else {
-				/* get gettext string */
+				/* get gettext string */		
 				$msgstr = isset($l10n[$args[$num-1]]) 	? __gettext($args[0], $args[$num-1])
 														: __gettext($args[0]);			
 			}
