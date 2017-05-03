@@ -88,7 +88,7 @@
 			</listitem>
 		</itemizedlist>
 	</chapter>
-	<chapter id="install_unix">
+	<chapter id="install-unix">
 		<title>Installing Under Unix</title>
 			<para>
 				Please make sure, the following packages are installed
@@ -97,7 +97,7 @@
 				<application>mysqld</application> are started at system
 				startup.
 			</para>
-			<sect1 id="rpm_packages">
+			<sect1 id="rpm-packages">
 				<title>Required Packages for RPM-based Operating Systems</title>
 				<itemizedlist>
 					<listitem>
@@ -137,7 +137,7 @@
 					</listitem>
 				</itemizedlist>
 			</sect1>
-			<sect1 id="bsd_ports">
+			<sect1 id="bsd-ports">
 				<title>Ports for FreeBSD</title>
 				<itemizedlist>
 					<listitem>
@@ -172,7 +172,7 @@
 					</listitem>
 				</itemizedlist>
 			</sect1>
-			<sect1 id="unix_configure_php">
+			<sect1 id="unix-configure-php">
 				<title>Configure PHP</title>
 					<para>Please ensure, that PHP support is either builtin or installed for the following PHP extension modules:</para>
 					<itemizedlist>
@@ -288,7 +288,7 @@ extension=snmp.so</userinput></screen>
 					</para>
 					<screen><userinput>file_uploads = On</userinput></screen>
 			</sect1>
-			<sect1 id="unix_configure_httpd">
+			<sect1 id="unix-configure-httpd">
 				<title>Configure the Webserver (Apache)</title>
 					<para>
 						Please find the file <filename>/etc/httpd/conf/httpd.conf</filename>
@@ -312,7 +312,7 @@ AddType text/html .php
 # indexes.
 DirectoryIndex index.php</userinput></screen>
 			</sect1>
-			<sect1 id="unix_configure_mysql">
+			<sect1 id="unix-configure-mysql">
 				<title>Configure MySQL</title>
 					<para>
 						Set a password for the root user
@@ -320,7 +320,7 @@ DirectoryIndex index.php</userinput></screen>
 <screen><prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root password somepassword</userinput>
 <prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root --password reload</userinput></screen>
 			</sect1>
-			<sect1 id="unix_configure_cacti">
+			<sect1 id="unix-configure-cacti">
 				<title>Install and Configure Cacti</title>
 				<orderedlist>
 					<listitem>
@@ -393,7 +393,7 @@ $database_password = "cacti";</userinput></screen>
 					</listitem>
 				</orderedlist>
 			</sect1>
-			<sect1 id="unix_configure_spine">
+			<sect1 id="unix-configure-spine">
 				<title>(Optional) Install and Configure <application>Spine</application></title>
 				<para>
 					<application>Spine</application> is a very fast poller engine, written in C.
@@ -429,7 +429,7 @@ DB_User		cactiuser
 DB_Password	cacti
 DB_Port		3306</userinput></screen>
 			</sect1>
-			<sect1 id="unix_apply_patches">
+			<sect1 id="unix-apply-patches">
 				<title>Apply Patches</title>
 					<para>
 						Please visit the Cacti website at http://www.cacti.net/download_patches.php
@@ -452,7 +452,7 @@ DB_Port		3306</userinput></screen>
 					<para>or the like, it is very likely that your permissions are wrong.</para>
 			</sect1>
 	</chapter>
-	<chapter id="install_windows">
+	<chapter id="install-windows">
 	<title>Installing Under Windows</title>
 		<orderedlist>
 			<title>Software Components Required</title>
@@ -1073,12 +1073,12 @@ $database_password = "cacti";</userinput></screen>
 
 <part id="basics">
 	<title>Basics</title>
-	<chapter id="operating_principles">
+	<chapter id="operating-principles">
 		<title>Principles of Operation</title>
 		<para>
 			Cacti operation may be divided into three different tasks:
 		</para>
-		<figure id="principles_of_operation">
+		<figure id="principles-of-operation">
 			<title>Principles of Operation</title>
 				<mediaobject>
 				<imageobject>
@@ -1086,7 +1086,7 @@ $database_password = "cacti";</userinput></screen>
 				</imageobject>
 			</mediaobject>
 		</figure>
-		<sect1 id="Data_Retrieval">
+		<sect1 id="Data-Retrieval">
 		<title>Data Retrieval</title>
 			<para>
 				First task is to retrieve data. Cacti will do so using its Poller.
@@ -1106,7 +1106,7 @@ $database_password = "cacti";</userinput></screen>
 				retrieving data to scripts, script queries and more.
 			</para>
 		</sect1>
-		<sect1 id="Data_Storage">
+		<sect1 id="Data-Storage">
 		<title>Data Storage</title>
 			<para>
 				There are lots of different approaches for this task. Some may
@@ -1129,7 +1129,7 @@ $database_password = "cacti";</userinput></screen>
 				AVERAGE, MAXIMUM, MINIMUM and LAST.
 			</para>
 		</sect1>
-		<sect1 id="Data_Presentation">
+		<sect1 id="Data-Presentation">
 		<title>Data Presentation</title>
 			<para>
 				One of the most appreciated features of <ulink url="http://www.rrdtool.org/"><application>RRDTool</application>
@@ -1147,7 +1147,7 @@ $database_password = "cacti";</userinput></screen>
 			</para>
 		</sect1>
 	</chapter>
-	<chapter id="graph_overview">
+	<chapter id="graph-overview">
 		<title>Graph Overview</title>
 		<para>
 			Almost everything in Cacti is somehow related to a graph. At any time, you can list all available
@@ -1172,7 +1172,7 @@ $database_password = "cacti";</userinput></screen>
 			are provided in that section of the manual.
 		</para>
 	</chapter>
-	<chapter id="graph_howto">
+	<chapter id="graph-howto">
 		<title>How to Graph Your Network</title>
 		<para>
 			At this point, you probably realize that graphing is Cacti's greatest strength. Cacti has many powerful
@@ -1183,7 +1183,7 @@ $database_password = "cacti";</userinput></screen>
 			The next two sections will outline the two basic steps which are typically required to create graphs for
 			most devices.
 		</para>
-		<sect1 id="new_device">
+		<sect1 id="new-device">
 			<title>Creating a Device</title>
 			<para>
 				The first step to creating graphs for your network is adding a device for each network device that
@@ -1200,7 +1200,7 @@ $database_password = "cacti";</userinput></screen>
 				template you choose will not lock you into any particular configuration, it will just provide
 				more intelligent defaults for that type of host.
 			</para>
-			<figure id="img_device_new">
+			<figure id="img-device-new">
 				<title>Adding a New Device</title>
 
 				<mediaobject>
@@ -1373,7 +1373,7 @@ $database_password = "cacti";</userinput></screen>
 				graph template or data query applies to your device, you can check the Cacti templates repository
 				or create your own if nothing currently exists.
 			</para>
-			<sect2 id='snmp_info'>
+			<sect2 id='snmp-info'>
 				<title>A Word About SNMP</title>
 				<para>
 					The SNMP version that you choose can have a great effect on how SNMP works for you in
@@ -1424,7 +1424,7 @@ $database_password = "cacti";</userinput></screen>
 					</tgroup>
 				</table>
 			</sect2>
-			<sect2 id='snmp_v3'>
+			<sect2 id='snmp-v3'>
 			<title>SNMP V3 Options Explained</title>
 				<para>SNMP supports authentication and encryption features
 				when using SNMP protocol version 3 known as
@@ -1549,7 +1549,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			</sect2>
 		</sect1>
 
-		<sect1 id="new_graphs">
+		<sect1 id="new-graphs">
 			<title>Creating the Graphs</title>
 			<para>
 				Now that you have created some devices, it is time to create graphs for these devices. To
@@ -1557,7 +1557,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				heading. If you're still at the device edit screen, select <guilabel>Create Graphs for this Host</guilabel> to
 				see a screen similar to the image pictured below.
 			</para>
-			<figure id="img_graph_new">
+			<figure id="img-graph-new">
 				<title>Creating New Graphs</title>
 
 				<mediaobject>
@@ -1596,9 +1596,9 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			</para>
 		</sect1>
 	</chapter>
-	<chapter id="graph_viewing">
+	<chapter id="graph-viewing">
 		<title>Viewing Graphs</title>
-		<sect1 id="new_graph_trees">
+		<sect1 id="new-graph-trees">
 			<title>Graph Trees</title>
 			<para>
 				A graph tree can be thought of as a hierarchical way of organizing your graphs. Each graph tree
@@ -1606,7 +1606,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				Multiple graph trees or branches within a single tree can be combined to form a very powerful way
 				of organizing your graphs.
 			</para>
-			<sect2 id="new_graph_tree">
+			<sect2 id="new-graph-tree">
 				<title>Creating a Graph Tree</title>
 				<para>
 					To create a new graph tree, select the <guilabel>Graph Trees</guilabel> menu item under the
@@ -1647,7 +1647,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					<para>Once you type a name, click the <guilabel>Create</guilabel> button to
 					continue. You will be redirected to a page similar to the one below, but without all of the items.
 				</para>
-				<figure id="img_graph_tree_new">
+				<figure id="img-graph-tree-new">
 					<title>Editing a Graph Tree</title>
 
 					<mediaobject>
@@ -1673,7 +1673,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			</sect2>
 		</sect1>
 	</chapter>
-	<chapter id="user_management">
+	<chapter id="user-management">
 		<title>User Management</title>
 		<para>
 			In addition to giving you the tools to create sophisticated graphs, Cacti enables you to create users
@@ -1681,7 +1681,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			actions, as well as graph viewing settings. There are also two levels of permissions control, realm
 			permissions and graph permissions which enable you to control what the user can see and change.
 		</para>
-		<figure id="img_user_list">
+		<figure id="img-user-list">
 			<title>User Management</title>
 
 			<mediaobject>
@@ -1704,14 +1704,14 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 
 
 
-		<sect1 id="edit_existing_user">
+		<sect1 id="edit-existing-user">
 			<title>Editing an existing User</title>
 			<para>
 				To edit an existing user, select the <guilabel>User Management</guilabel> item under the
 				<guilabel>Utilities</guilabel> heading on the Cacti menu. Once at the user management screen,
 				click username of the user you wish to edit. You will see a screen that looks similar to the image below.
 			</para>
-			<figure id="img_user_edit">
+			<figure id="img-user-edit">
 				<title>Editing a User</title>
 
 				<mediaobject>
@@ -1770,7 +1770,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					</tbody>
 				</tgroup>
 			</table>
-			<sect2 id="realm_permissions">
+			<sect2 id="realm-permissions">
 				<title>Realm Permissions</title>
 				<para>
 					Realm permissions control which areas of Cacti a user can access. You can edit a user's realm
@@ -1787,7 +1787,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					Access</guilabel> and any additional realms that you see fit.
 				</para>
 			</sect2>
-			<sect2 id="graph_permissions">
+			<sect2 id="graph-permissions">
 				<title>Graph Permissions</title>
 				<para>
 					Graph permissions control which graphs a user is allowed to view, it does not apply to editing graphs.
@@ -1811,7 +1811,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					very complex results.
 				</para>
 			</sect2>
-			<sect2 id="graph_settings">
+			<sect2 id="graph-settings">
 				<title>Graph Settings</title>
 				<para>
 					Cacti stores certain graph viewing settings for each user, which enables each user to view graphs in an optimal
@@ -1826,14 +1826,14 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			</sect2>
 
 		</sect1>
-		<sect1 id="create_new_user">
+		<sect1 id="create-new-user">
 			<title>Creating a New User</title>
 			<para>
 				To create a new user, select the <guilabel>User Management</guilabel> item under the
 				<guilabel>Utilities</guilabel> heading on the Cacti menu. Once at the user management screen,
 				click <guilabel>Add</guilabel>.
 			</para>
-			<figure id="img_user_new">
+			<figure id="img-user-new">
 				<title>Adding a User</title>
 
 				<mediaobject>
@@ -1850,9 +1850,9 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				of these items are described in editing existing users section of the manual.
 			</para>
 		</sect1>
-		<sect1 id="copying_user">
+		<sect1 id="copying-user">
 			<title>Copying a user</title>
-			<figure id="img_user_copy_1">
+			<figure id="img-user-copy-1">
 				<title>Copy a User Part 1</title>
 
 				<mediaobject>
@@ -1868,7 +1868,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				selection box, click <guilabel>Go</guilabel> to continue.  If you select multiple users,
 				only the first selected user will be used as the source user.
 			</para>
-			<figure id="img_user_copy_2">
+			<figure id="img-user-copy-2">
 				<title>Copy a User Part 2</title>
 
 				<mediaobject>
@@ -1885,9 +1885,9 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				<guilabel>Batch Copy</guilabel>.
 			</para>
 		</sect1>
-		<sect1 id="enable_disable_users">
+		<sect1 id="enable-disable-users">
 			<title>Enable/Disable Users</title>
-			<figure id="img_user_enable_disable_1">
+			<figure id="img-user-enable-disable-1">
 				<title>Enable/Disable Users Part 1</title>
 
 				<mediaobject>
@@ -1902,7 +1902,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				screen, select the user(s) you would like to enable or disable and select enable or disable from the
 				<guilabel>Action</guilabel> selection box, click <guilabel>Go</guilabel> to continue.
 			</para>
-			<figure id="img_user_enable_disable_2">
+			<figure id="img-user-enable-disable-2">
 				<title>Enable/Disable Users Part 2</title>
 
 				<mediaobject>
@@ -1917,14 +1917,14 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				you will not be able to return.
 			</para>
 		</sect1>
-		<sect1 id="batch_copy_users">
+		<sect1 id="batch-copy-users">
 			<title>Batch Copy Users</title>
 			<para>
 				Batch Copy is a helpful utility that helps Cacti Administrators maintain users.  Because Cacti
 				does not yet support groups, it is important that there is some way to mass update users.  This
 				what Batch Copy does for you.
 			</para>
-			<figure id="img_user_batch_copy_1">
+			<figure id="img-user-batch-copy-1">
 				<title>Batch Copy Users Part 1</title>
 
 				<mediaobject>
@@ -1939,7 +1939,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				screen, select the user(s) you would like to batch copy information to and select "Batch Copy" from the
 				<guilabel>Action</guilabel> selection box, click <guilabel>Go</guilabel> to continue.
 			</para>
-			<figure id="img_user_batch_copy_2">
+			<figure id="img-user-batch-copy-2">
 				<title>Batch Copy Users Part 2</title>
 
 				<mediaobject>
@@ -1958,9 +1958,9 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				the selected template user.
 			</para>
 		</sect1>
-		<sect1 id="delete_users">
+		<sect1 id="delete-users">
 			<title>Delete Users</title>
-			<figure id="img_user_delete_1">
+			<figure id="img-user-delete-1">
 				<title>Delete Users Part 1</title>
 
 				<mediaobject>
@@ -1975,7 +1975,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				screen, select the user(s) you would like to delete and select delete from the
 				<guilabel>Action</guilabel> selection box, click <guilabel>Go</guilabel> to continue.
 			</para>
-			<figure id="img_user_delete_2">
+			<figure id="img-user-delete-2">
 				<title>Delete Users Part 2</title>
 
 				<mediaobject>
@@ -1989,7 +1989,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				perform the action.  Deleting your own account is possible and not recommended.
 			</para>
 		</sect1>
-		<sect1 id="guest_access">
+		<sect1 id="guest-access">
 			<title>Guest (Anonymous) Access </title>
 			<para>
 				By default in 0.8.7 and later of Cacti, Guest or Anonymous access is disabled.  This is
@@ -2010,9 +2010,9 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 	</chapter>
 </part>
 
-<part id="advanced_topics">
+<part id="advanced-topics">
 	<title>Advanced Topics</title>
-	<chapter id="graph_snmp_oid">
+	<chapter id="graph-snmp-oid">
 		<title>Graph a Single SNMP OID</title>
 		<para>
 			When dealing with SNMP-enabled devices, there are often times when you want to graph the value of a single
@@ -2089,14 +2089,14 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			inside of Cacti.
 		</para>
 	</chapter>
-	<chapter id="data_input_methods">
+	<chapter id="data-input-methods">
 		<title>Data Input Methods</title>
 		<para>
 			Data input methods allow Cacti to retrieve data to insert into data sources and ultimately put on a graph.
 			There are different ways for Cacti to retrieve data, the most popular being through an external script or from
 			SNMP.
 		</para>
-		<sect1 id="new_data_input_method">
+		<sect1 id="new-data-input-method">
 			<title>Creating a Data Input Method</title>
 			<para>
 				To create a new data input method, select the <guilabel>Data Input Methods</guilabel> option under
@@ -2142,7 +2142,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				is used to define each field that you expect back from the script. <emphasis>All data input methods must have at least one output field
 				defined</emphasis>, but may have more for a script.
 			</para>
-			<sect2 id='data_input_fields'>
+			<sect2 id='data-input-fields'>
 				<title>Data Input Fields</title>
 				<para>
 					To define a new field, click <guilabel>Add</guilabel> next to the input or output field boxes. You
@@ -2195,7 +2195,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				</para>
 			</sect2>
 		</sect1>
-		<sect1 id="making_scripts_work_with_cacti">
+		<sect1 id="making-scripts-work-with-cacti">
 			<title>Making Your Scripts Work With Cacti</title>
 			<para>
 				The simplest way to extend Cacti's data gathering functionality is through external scripts. Cacti comes
@@ -2251,7 +2251,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			</para>
 		</sect1>
 	</chapter>
-	<chapter id="data_queries">
+	<chapter id="data-queries">
 		<title>Data Queries</title>
 		<para>
 			Data queries are not a replacement for data input methods in Cacti. Instead they provide an easy way to
@@ -2281,7 +2281,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			could be thought of as the actual query. The second part is a definition within Cacti, which tells
 			Cacti where to find the XML file and associates the data query with one or more graph templates.
 		</para>
-		<sect1 id="new_data_query">
+		<sect1 id="new-data-query">
 			<title>Creating a Data Query</title>
 			<para>
 				Once you have created the XML file that defines your data query, you must add the data query
@@ -2326,7 +2326,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				information to fill in. If you receive a red warning that says 'XML File Does Not Exist', correct
 				the value specified in the 'XML Path' field.
 			</para>
-			<sect2 id="data_queries_associated_graph_templates">
+			<sect2 id="data-queries-associated-graph-templates">
 				<title>Associated Graph Templates</title>
 				<para>
 					Every data query must have at least one graph template associated with it, and possibly
@@ -2382,7 +2382,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				</para>
 			</sect2>
 		</sect1>
-		<sect1 id="snmp_query_xml">
+		<sect1 id="snmp-query-xml">
 			<title>SNMP Query XML Syntax</title>
 			<programlisting>&lt;query&gt;
    &lt;name&gt;Get SNMP Interfaces&lt;/name&gt;
@@ -2486,7 +2486,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				</tgroup>
 			</table>
 		</sect1>
-		<sect1 id="script_query_xml">
+		<sect1 id="script-query-xml">
 			<title>Script Query XML Syntax</title>
 			<programlisting>&lt;query&gt;
    &lt;name&gt;Get Unix Mounted Partitions&lt;/name&gt;
@@ -2621,7 +2621,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 		<para>There's no need to create all Templates on your own! Apart from the fact,
 		that many common templates are provided out-of-the-box, there's a very simple
 		machnism to <guimenu>Import Templates</guimenu> and to <guimenu>Export Templates</guimenu>.</para>
-		<sect1 id="data_templates">
+		<sect1 id="data-templates">
 			<title>Data Templates</title>
 			<para>
 				In Cacti, a data template provides a skeleton for an actual data source. If you have many data
@@ -2631,7 +2631,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				Pay attention to not append new Data Source Items to already existing rrd files.
 				There's no <command>rrdtool</command> command to achieve this!
 			</para>
-			<sect2 id="creating_data_templates">
+			<sect2 id="creating-data-templates">
 				<title>Creating a Data Template</title>
 				<para>
 					To create a new data template, select <guilabel>Data Templates</guilabel> under the
@@ -2710,7 +2710,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					When you are finished filling in values for the data template, click <guilabel>Create</guilabel> and
 					you will be presented with a screen similar to the data source edit screen.
 				</para>
-				<figure id="img_data_template_new">
+				<figure id="img-data-template-new">
 					<title>Adding a Data Template</title>
 
 					<mediaobject>
@@ -2719,7 +2719,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 						</imageobject>
 					</mediaobject>
 				</figure>
-				<sect3 id="data_template_items">
+				<sect3 id="data-template-items">
 					<title>Data Source Items</title>
 					<para>
 						Like a graph, a data source can have more than one items. This is useful in situations where a
@@ -2775,7 +2775,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 						</tgroup>
 					</table>
 				</sect3>
-				<sect3 id="custom_data">
+				<sect3 id="custom-data">
 					<title>Custom Data</title>
 					<para>
 						Assuming you selected a data input source on the previous screen, you should now be presented
@@ -2791,7 +2791,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					</para>
 				</sect3>
 			</sect2>
-			<sect2 id="applying_data_templates">
+			<sect2 id="applying-data-templates">
 				<title>Applying Data Templates to Data Sources</title>
 				<para>
 					Applying a data template to a data source is a very simple process. The first thing you
@@ -2815,7 +2815,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				</caution>
 			</sect2>
 		</sect1>
-		<sect1 id="graph_templates">
+		<sect1 id="graph-templates">
 			<title>Graph Templates</title>
 			<para>
 				In Cacti, a graph template provides a skeleton for an actual graph. If you have many graphs that
@@ -2823,7 +2823,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				graph is attached to a particular graph template, all changes made to the graph template will
 				propagate out to all of its graphs, unless <guilabel>Use Per-Graph Value</guilabel> has been checked.
 			</para>
-			<sect2 id="creating_graph_templates">
+			<sect2 id="creating-graph-templates">
 				<title>Creating a Graph Template</title>
 				<para>
 					To create a new graph template, select <guilabel>Graph Templates</guilabel> under the
@@ -2994,7 +2994,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					When you are finished filling in values for the graph template, click <guilabel>Create</guilabel>
 					and you will be presented with a page similar to the graph edit page.
 				</para>
-				<figure id="img_graph_template_new">
+				<figure id="img-graph-template-new">
 					<title>Adding a Graph Template</title>
 
 					<mediaobject>
@@ -3003,7 +3003,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 						</imageobject>
 					</mediaobject>
 				</figure>
-				<sect3 id="graph_items">
+				<sect3 id="graph-items">
 					<title>Graph Items</title>
 					<para>
 						The first thing you should do is create graph items for this graph template, just like for a regular graph.
@@ -3068,7 +3068,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 						</tgroup>
 					</table>
 				</sect3>
-				<sect3 id="graph_item_inputs">
+				<sect3 id="graph-item-inputs">
 					<title>Graph Item Inputs</title>
 					<para>
 						After creating graph items for your template, you will need to create some graph item inputs. Graph item inputs are
@@ -3112,7 +3112,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					</table>
 				</sect3>
 			</sect2>
-			<sect2 id="applying_graph_templates">
+			<sect2 id="applying-graph-templates">
 				<title>Applying Graph Templates to Graphs</title>
 				<para>
 					Applying a graph template to a graph is a very simple process. The first thing you must do is select the graph you
@@ -3134,7 +3134,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				</para>
 			</sect2>
 		</sect1>
-		<sect1 id="host_templates">
+		<sect1 id="host-templates">
 			<title>Host Templates</title>
 			<para>
 				Host templates in Cacti serve a different purpose then data and graph templates. Instead of
@@ -3142,7 +3142,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				data queries with a given host type. This way when you assign a host template to a host, all
 				of the relevant graphs to that host type are only one click away from the user.
 			</para>
-			<sect2 id="host_template_new">
+			<sect2 id="host-template-new">
 				<title>Adding a Host Template</title>
 				<para>
 					To create a new host template in Cacti, select the <guilabel>Host Templates</guilabel>
@@ -3154,7 +3154,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					templates or data queries with the host template. Simply select something from the
 					dropdown menu and click <guilabel>Add</guilabel> to associate it with your host template.
 				</para>
-				<figure id="img_host_template_new">
+				<figure id="img-host-template-new">
 					<title>Adding a Host Template</title>
 
 					<mediaobject>
@@ -3165,7 +3165,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				</figure>
 			</sect2>
 		</sect1>
-		<sect1 id="template_import">
+		<sect1 id="template-import">
 		<title>Import Templates</title>
 			<para>Assume, you're searching for a specific set of templates to
 			monitor a special type of device. Apart from designing templates
@@ -3175,7 +3175,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			required definitions for a data template and a graph template. Depending on
 			the goal of the original author, he/she may have provided a host template
 			as well as part of this XML file.</para>
-				<figure id="img_import_templates">
+				<figure id="img-import-templates">
 					<title>Import Templates</title>
 
 					<mediaobject>
@@ -3201,11 +3201,11 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			hold the version of the Cacti system that generated this XML set. Cacti will
 			import only, if your current Cacti version equals or is higher than the exporting one.</para>
 		</sect1>
-		<sect1 id="template_export">
+		<sect1 id="template-export">
 		<title>Export Templates</title>
 			<para>Now that you know how to import, you may want to know in which way to
 			export as well. Selecting the <guimenu>Export Templates</guimenu> gives</para>
-				<figure id="img_export_templates">
+				<figure id="img-export-templates">
 					<title>Export Templates</title>
 
 					<mediaobject>
@@ -3220,7 +3220,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			data query). Output may be written to the browser or to a file for uploading.</para>
 		</sect1>
 	</chapter>
-	<chapter id="php_script_server">
+	<chapter id="php-script-server">
 		<title>PHP Script Server</title>
 		<para>
 			The PHP Script Server is a new feature in Cacti 0.8.6.  This new feature allows for the rapid
@@ -3238,7 +3238,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 			Since PHP scripts are so powerful, this new feature in Cacti, makes it an excellent choice for
 			collecting non-SNMP and SNMP based data.
 		</para>
-		<sect1 id="using_script_server">
+		<sect1 id="using-script-server">
 			<title>Using the Script Server</title>
 			<para>
 				Cacti 0.8.6 contains two sample script server routines.  They are for the collection of HostMib CPU
@@ -3254,7 +3254,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				CPU and HostMib Partitions Data Queries.  To migrate you must follow the step below.
 			</para>
 		</sect1>
-		<sect1 id="upgrade_using_hostmib_data_queries">
+		<sect1 id="upgrade-using-hostmib-data-queries">
 			<title>Upgrade Steps for the Example HostMib Data Queries</title>
 			<para>
 				If you are using the two built in script queries, "SNMP - Get Mounted Partitions" and "SNMP - Get
@@ -3329,13 +3329,13 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 				example HostMIB Data Queries.
 			</para>
 		</sect1>
-		<sect1 id="migration_php_scripts_to_script_server">
+		<sect1 id="migration-php-scripts-to-script-server">
 			<title>Migration of Existing PHP Scripts to Script Server</title>
 			<para>
 				If you have other PHP scripts that you wish to migrate, you must follow the steps below to
 				migrate your scripts to the PHP Script Server required format.
 			</para>
-			<sect2 id='script_file_changes'>
+			<sect2 id='script-file-changes'>
 				<title>Script File Changes</title>
 				<para>
 					Each PHP Script file must be changed to the new Script Server format.  The changes are
@@ -3429,7 +3429,7 @@ print $b;
 					</listitem>
 				</orderedlist>
 			</sect2>
-			<sect2 id='xml_file_changes'>
+			<sect2 id='xml-file-changes'>
 				<title>XML File Changes</title>
 				<para>
 					If you are using a "Script Query" type function, then you must also change your XML file.  Please reference
@@ -3462,7 +3462,7 @@ print $b;
 					</listitem>
 				</orderedlist>
 			</sect2>
-			<sect2 id='data_query_data_template_changes'>
+			<sect2 id='data-query-data-template-changes'>
 				<title>Data Query & Data Template Changes</title>
 				<para>
 					Your Data Queries and Data Templates must be also changed.  Although somewhat self explanatory by
@@ -3489,7 +3489,7 @@ print $b;
 				</para>
 			</sect2>
 		</sect1>
-		<sect1 id="testing_script_in_script_server">
+		<sect1 id="testing-script-in-script-server">
 			<title>Testing Your Script in the Script Server</title>
 			<para>
 				To test your script in the script server, simply follow the instructions below.  When you have
@@ -3533,7 +3533,7 @@ print $b;
 			</para>
 		</sect1>
 	</chapter>
-	<chapter id="using_spine">
+	<chapter id="using-spine">
 		<title><application>Spine</application></title>
 		<para>
 			<application>Spine</application> is the fast replacement for cmd.php. It is written in C to ensure ultimate
@@ -3599,11 +3599,11 @@ print $b;
 	</chapter>
 </part>
 
-<part id="cacti_help">
+<part id="cacti-help">
 	<title>Help</title>
-	<chapter id="how_to">
+	<chapter id="how-to">
 		<title>How To</title>
-		<sect1 id="script_to_graph">
+		<sect1 id="script-to-graph">
 			<title>Simplest Method of Going from Script to Graph (Walkthrough)</title>
 			<authorblurb>
 				<para>
@@ -4510,13 +4510,13 @@ disk /</userinput></screen>
 	<title>Reference</title>
 	<chapter id="variables">
 		<title>Variables</title>
-		<sect1 id="graph_variables">
+		<sect1 id="graph-variables">
 			<title>Graph Variables</title>
 			<para>
 				The following variables can be used in the <guilabel>Text Format</guilabel> and <guilabel>Value</guilabel> graph
 				item fields. Below is a description of each of these variables.
 			</para>
-			<sect2 id="variable_date_time">
+			<sect2 id="variable-date-time">
 				<title>Date/Time</title>
 				<screen><userinput>|date_time|</userinput></screen>
 				<para>
@@ -4524,7 +4524,7 @@ disk /</userinput></screen>
 					<application>MRTG</application>'s "graph last updated" feature.
 				</para>
 			</sect2>
-			<sect2 id="variable_data_source_title">
+			<sect2 id="variable-data-source-title">
 				<title>Data Source Title</title>
 				<screen><userinput>|data_source_title|</userinput></screen>
 				<para>
@@ -4534,7 +4534,7 @@ disk /</userinput></screen>
 					which can be reused with large numbers of data sources.
 					See attached examples to understand usage.
 				</para>
-				<figure id="data_source_title_template">
+				<figure id="data-source-title-template">
 					<title>Example of a Graph Template using |data_source_title|</title>
 						<mediaobject>
 						<imageobject>
@@ -4542,7 +4542,7 @@ disk /</userinput></screen>
 						</imageobject>
 					</mediaobject>
 				</figure>
-				<figure id="data_source_title_example1">
+				<figure id="data-source-title-example1">
 					<title>Example 1 of a Graph making use of |data_source_title|</title>
 						<mediaobject>
 						<imageobject>
@@ -4550,7 +4550,7 @@ disk /</userinput></screen>
 						</imageobject>
 					</mediaobject>
 				</figure>
-				<figure id="data_source_title_example2">
+				<figure id="data-source-title-example2">
 					<title>Example 2 of a Graph making use of |data_source_title|</title>
 						<mediaobject>
 						<imageobject>
@@ -4559,7 +4559,7 @@ disk /</userinput></screen>
 					</mediaobject>
 				</figure>
 			</sect2>
-			<sect2 id="variable_data_query">
+			<sect2 id="variable-data-query">
 				<title>Data Query Fields</title>
 				<screen><userinput>|query_field_name|</userinput></screen>
 				<para>
@@ -4579,7 +4579,7 @@ disk /</userinput></screen>
 					</para>
 				</example>
 			</sect2>
-			<sect2 id="variable_Nth_percentile">
+			<sect2 id="variable-Nth-percentile">
 				<title>Nth Percentile</title>
 				<screen><userinput>|[0-9]:(bits|bytes):[0-9]:(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):[0-9]|</userinput></screen>
 				<para>
@@ -4693,7 +4693,7 @@ disk /</userinput></screen>
 					</para>
 				</example>
 			</sect2>
-			<sect2 id="variable_bandwidth_summation">
+			<sect2 id="variable-bandwidth-summation">
 				<title>Bandwidth Summation</title>
 				<screen><userinput>|sum:([0-9]|auto):(current|total):([0-9]):([0-9]+|auto)|</userinput></screen>
 				<para>
@@ -4744,7 +4744,7 @@ disk /</userinput></screen>
 				</example>
 			</sect2>
 		</sect1>
-		<sect1 id="host_variables">
+		<sect1 id="host-variables">
 			<title>Host Variables</title>
 			<para>
 				Host variables represent host data and can be placed in graph or data source titles. The following
@@ -4827,9 +4827,9 @@ disk /</userinput></screen>
 			</table>
 		</sect1>
 	</chapter>
-	<chapter id="rrdtool_features">
+	<chapter id="rrdtool-features">
 		<title>RRDTool Specific Features</title>
-		<sect1 id="gprint_presets">
+		<sect1 id="gprint-presets">
 			<title>GPRINT Presets</title>
 			<para>
 				A GPRINT is a graph item type that enables you to print the values of data sources on a graph.
@@ -4837,7 +4837,7 @@ disk /</userinput></screen>
 				numbers are controlled by a printf-like format string. Cacti enables you to keep a global list
 				of these strings that can be applied to any graph item throughout Cacti.
 			</para>
-			<sect2 id="add_new_gprint_preset">
+			<sect2 id="add-new-gprint-preset">
 				<title>Creating a GPRINT Preset</title>
 				<para>
 					To create a new GPRINT preset, select the <guilabel>Graph Management</guilabel> menu item under the
@@ -4856,7 +4856,7 @@ disk /</userinput></screen>
 				CDEF comes straight from <application>RRDTool</application>, and are written in reverse polish notation (RPN). For more
 				information regarding the syntax of CDEFs, check out the <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph_data.en.html">CDEF tutorial</ulink>.
 			</para>
-			<sect2 id="add_new_cdef">
+			<sect2 id="add-new-cdef">
 				<title>Creating a CDEF</title>
 				<para>
 					To create a new CDEF in Cacti, select the <guilabel>Graph Management</guilabel> option under
@@ -4904,7 +4904,7 @@ disk /</userinput></screen>
 					</tgroup>
 				</table>
 			</sect2>
-			<sect2 id="cdef_special_data_source">
+			<sect2 id="cdef-special-data-source">
 				<title>Special Data Source</title>
 				<para>The <guilabel>Special Data Souce</guilabel> selection introduces some variables not known
 				to plain vanilla rrdtool. Let's spend some few words of them to unleash their power.</para>
@@ -4982,7 +4982,7 @@ disk /</userinput></screen>
 				</para>
 				<screen>CDEF=SIMILAR_DATA_SOURCES_NODUPS,COUNT_SIMILAR_DS_NODUPS,/</screen>
 			</sect2>
-			<sect2 id="cdef_special_data_source_examples">
+			<sect2 id="cdef-special-data-source-examples">
 				<title>Using Special Data Source</title>
 				<para>Let's have some examples:</para>
 				<example>
@@ -5350,7 +5350,7 @@ GPRINT:cdefcd:MAX:"Maximum\:%8.2lf%s\n" </screen>
 					appearing twice in those cdefs as expected.</para>
 				</example>
 			</sect2>
-			<sect2 id="cdef_more_examples">
+			<sect2 id="cdef-more-examples">
 				<title>More CDEF Examples</title>
 				<example>
 					<title>Disk Usage as a Percentage</title>
@@ -5468,7 +5468,7 @@ rebuild_poller_cache.php</screen>
 				as output from various scripts. They will vary between different
 				installations. So don't bother, if your numbers will vary</para>
 			</caution>
-		<sect1 id="cli_rebuild_poller_cache">
+		<sect1 id="cli-rebuild-poller-cache">
 		<title>Rebuild Poller Cache</title>
 			<para>The poller cache holds all commands that cacti will issue during
 			the polling process in an internal format. It is possible, to review
@@ -5527,7 +5527,7 @@ WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take qui
 			</caution>
 
 		</sect1>
-		<sect1 id="cli_poller_reindex_hosts">
+		<sect1 id="cli-poller-reindex-hosts">
 		<title>Re-Index Hosts</title>
 			<para>Re-Indexing is required only for SNMP/Script Data Queries.
 			Remember, that whan applying a Data Query to a Host, a
@@ -5625,7 +5625,7 @@ DEBUG: Data query number '1' host: '2' SNMP Query Id: '1' ending</screen>
 				during a reindex operation</para>
 			</caution>
 		</sect1>
-		<sect1 id="cli_poller_output_empty">
+		<sect1 id="cli-poller-output-empty">
 		<title>Empty Poller Output Table</title>
 			<para>During normal poller operation, all retrieved results
 			are intermediately stored in the table named <structname>poller_output</structname>
@@ -5681,10 +5681,10 @@ There were 21, RRD updates made this pass
 			you may find additional debug messages that usually show up in
 			<filename>cacti.log</filename></para>
 		</sect1>
-		<sect1 id="cli_poller_graphs_reapply_names">
+		<sect1 id="cli-poller-graphs-reapply-names">
 		<title>Reapply Suggested Names to Graphs</title>
 			<para>For a general understanding of suggested names used with data queries,
-			please see <xref linkend="data_queries_associated_graph_templates"/>.
+			please see <xref linkend="data-queries-associated-graph-templates"/>.
 			Be aware, that changes to the <userinput>Suggested Names</userinput>
 			section of a data query will not automatically be propagated to
 			all existing graphs. This is, where <application>poller_graphs_reapply_names.php</application>
@@ -5721,10 +5721,10 @@ DEBUG: Graph Rename Done for Graph 'Localhost - Used Space - /boot'</screen>
 			<para>Please notice my miss-spelling of the word <quote>Space</quote>.
 			The <userinput>-s=</userinput> option is not case sensitive.</para>
 		</sect1>
-		<sect1 id="cli_copy_user">
+		<sect1 id="cli-copy-user">
 		<title>Copy Local Cacti Users</title>
 			<para>For use and understanding the
-			limitation of this script, it is of importance to read <xref linkend="user_management">.
+			limitation of this script, it is of importance to read <xref linkend="user-management">.
 			In case you're using local cacti user definitions, you may copy
 			a template user to a new user. Don't use this script for
 			<application>LDAP</application> or Web Basic users.</para>
@@ -5752,7 +5752,7 @@ admin  	        Administrator  	Yes  		Local  	ALLOW  			Sunday, October 07, 200
 guest 	        Guest Account 	Yes 		Local 	ALLOW 			N/A
 Harry Potter 	Guest Account 	Yes 		Local 	ALLOW 			N/A</screen>
 		</sect1>
-		<sect1 id="cli_add_device">
+		<sect1 id="cli-add-device">
 		<title>Add a New Device</title>
 			<para>While it is an easy task to add a new device from the panels,
 			this would be a tedious task for creating dozens of hundreds of devices
@@ -5799,7 +5799,7 @@ List Options:
     --quiet - batch mode value return</screen>
 			<para>Wow, that's quite a lot of options. To better understand it's use,
 			let's first stick to the listing options</para>
-			<sect2 id="cli_add_device_list_host_template">
+			<sect2 id="cli-add-device-list-host-template">
 			<title>List all Host Templates</title>
 				<screen><prompt>shell&gt;</prompt>php -q add_device.php --list-host-templates
 
@@ -5822,7 +5822,7 @@ Valid Host Templates: (id, name)
 				as host template <guimenuitem>None</guimenuitem>, please provide the parameter
 				<userinput>--template=0</userinput> or omit this parameter.</para>
 			</sect2>
-			<sect2 id="cli_add_device_list_communities">
+			<sect2 id="cli-add-device-list-communities">
 			<title>List all Community Strings</title>
 				<screen><prompt>shell&gt;</prompt>php -q add_device.php --list-communities
 
@@ -5832,7 +5832,7 @@ public
 snmp-get</screen>
 				<para>Of course, your list will vary</para>
 			</sect2>
-			<sect2 id="cli_add_device_simple">
+			<sect2 id="cli-add-device-simple">
 			<title>Create a New Device</title>
 				<para>Now, let's set up the most basic command to add a new device. The description shall be
 				<userinput>"Device Add Test"</userinput>, the ip will be given as a FQDN, <userinput>router.mydomain.com</userinput>.
@@ -5851,7 +5851,7 @@ Device Add Test 	0 	0 		Unknown router.mydomain.com 	0 		0 		100</screen>
 				in this case, for the next steps.</para>
 			</sect2>
 		</sect1>
-		<sect1 id="cli_add_data_query">
+		<sect1 id="cli-add-data-query">
 		<title>Associate a Data Query to an existing Host</title>
 			<para>It is recommended to maintain data query associations by maintaining
 			host templates. Each time, a data query is added to a host template,
@@ -5886,7 +5886,7 @@ List Options:
 
 If the data query was already associated, it will be reindexed.</screen>
 			<para>Let's first stick to the listing options</para>
-			<sect2 id="cli_add_data_query_list_hosts">
+			<sect2 id="cli-add-data-query-list-hosts">
 			<title>List all Hosts</title>
 				<screen><prompt>shell&gt;</prompt>php -q add_data_query.php --list-hosts
 
@@ -5894,7 +5894,7 @@ Known Hosts: (id, hostname, template, description)
 1       127.0.0.1       8       Localhost
 11      router          3       router.mydomain.com</screen>
 			</sect2>
-			<sect2 id="cli_add_data_query_list_data_queries">
+			<sect2 id="cli-add-data-query-list-data-queries">
 			<title>List all Data Queries</title>
 				<screen><prompt>shell&gt;</prompt>php -q add_data_query.php --list-data-queries
 
@@ -5908,7 +5908,7 @@ Known SNMP Queries:(id, name)
 8       SNMP - Get Mounted Partitions
 9       SNMP - Get Processor Information</screen>
 			</sect2>
-			<sect2 id="cli_add_data_query_example">
+			<sect2 id="cli-add-data-query-example">
 			<title>Add a Data Query</title>
 				<screen><prompt>shell&gt;</prompt>php -q add_data_query.php --host-id=11 --data-query-id=1 --reindex-method=fields
 
@@ -5919,7 +5919,7 @@ Success - Host (11: router.mydomain.com) data query (1: SNMP - Interface Statist
 			column, e.g. <emphasis>Success [41 Items, 5 Rows]</emphasis>.</para>
 			</sect2>
 		</sect1>
-		<sect1 id="cli_add_graph_template">
+		<sect1 id="cli-add-graph-template">
 		<title>Associate a Graph Template to an existing Host</title>
 			<para>It is recommended to maintain graph template associations by maintaining
 			host templates. Each time, a graph template is added to a host template,
@@ -5948,7 +5948,7 @@ List Options:
     --list-graph-templates
     --quiet - batch mode value return</screen>
 			<para>Let's first stick to the listing options</para>
-			<sect2 id="cli_add_graph_template_list_hosts">
+			<sect2 id="cli-add-graph-template-list-hosts">
 			<title>List all Hosts</title>
 				<screen><prompt>shell&gt;</prompt>php -q add_graph_template.php --list-hosts
 
@@ -5956,7 +5956,7 @@ Known Hosts: (id, hostname, template, description)
 1       127.0.0.1       8       Localhost
 11      router          3       router.mydomain.com</screen>
 			</sect2>
-			<sect2 id="cli_add_graph_template_list_graph_templates">
+			<sect2 id="cli-add-graph-template-list-graph-templates">
 			<title>List all Graph Template</title>
 				<screen><prompt>shell&gt;</prompt>php -q add_graph_template.php --list-graph-templates
 
@@ -5973,14 +5973,14 @@ Known Graph Templates:(id, name)
 11      ucd/net - Load Average
 ...</screen>
 			</sect2>
-			<sect2 id="cli_add_graph_template_example">
+			<sect2 id="cli-add-graph-template-example">
 			<title>Add a Graph Template</title>
 				<screen><prompt>shell&gt;</prompt>php -q add_graph_template.php --host-id=11 --graph-template-id=7
 
 Success: Graph Template associated for host: (11: router) - graph-template: (7: Unix - Ping Latency)</screen>
 			</sect2>
 		</sect1>
-		<sect1 id="cli_add_graphs">
+		<sect1 id="cli-add-graphs">
 		<title>Add a New Graph</title>
 			<para>You won't stop now as you've just created a device from cli.
 			Surely, the task of setting up graphs is the next step. This is done using
@@ -6042,7 +6042,7 @@ List Options:
 				Error messages are not issued to indicate this typo; instead you will
 				see the general help screen.</para>
 			</caution>
-			<sect2 id="cli_add_graphs_list_cg">
+			<sect2 id="cli-add-graphs-list-cg">
 			<title>List Options for Associated Graph Templates</title>
 				<para>The first list option, <userinput>--list-hosts</userinput>,
 				is required only if you do not know the <userinput>id</userinput>
@@ -6082,7 +6082,7 @@ Known Graph Templates:(id, name)
 13	ucd/net - Memory Usage...
 </screen>
 			</sect2>
-			<sect2 id="cli_add_graphs_list_ds">
+			<sect2 id="cli-add-graphs-list-ds">
 			<title>List Options for Associated Data Queries</title>
 				<para>First task is to find all id's for available data queries.</para>
 				<screen><prompt>shell&gt;</prompt>php -q add_graphs.php --host-id=2 --list-snmp-queries
@@ -6142,7 +6142,7 @@ Up</screen>
 				<para>This is no surprise, of course. Now, all paarmeters required for
 				creating a new graph are determined.</para>
 			</sect2>
-			<sect2 id="cli_add_graphs_cg">
+			<sect2 id="cli-add-graphs-cg">
 			<title>Add Non-Indexed Graphs</title>
 				<para>We will create a graph for <userinput>ucd/net - CPU Usage</userinput>. Above,
 				we've identified the graph template it to be <userinput>4</userinput>.
@@ -6156,7 +6156,7 @@ Device Add Test - CPU Usage 	ucd/net - CPU Usage 	120x500</screen>
 				<para>If the graph template was not associated with that host before, it is now added
 				to the list of <guimenu>Associated Graph Templates</guimenu>.</para>
 			</sect2>
-			<sect2 id="cli_add_graphs_ds">
+			<sect2 id="cli-add-graphs-ds">
 			<title>Add Indexed Graphs</title>
 				<para>First, let's sum up the id's of all resources required for this
 				task:</para>
@@ -6217,7 +6217,7 @@ Device Add Test - Traffic - lo  	Interface - Traffic (bits/sec)  	120x500</scree
 				by entering the optional parameter <parameter>--reindex-method</parameter>.</para>
 			</sect2>
 		</sect1>
-		<sect1 id="cli_add_tree">
+		<sect1 id="cli-add-tree">
 		<title>Add Items to a Tree</title>
 			<para>Now, that we've created some nice graphs, they should be put
 			the graph trees. This is done using <filename>add_tree.php</filename>.
@@ -6262,7 +6262,7 @@ List Options:
     --list-nodes --tree-id=[ID]
     --list-rras
     --list-graphs --host-id=[ID]</screen>
-			<sect2 id="cli_add_tree_list_hosts">
+			<sect2 id="cli-add-tree-list-hosts">
 			<title>List Hosts</title>
 	       		<para>The first try is dedicated to the list option
 				<userinput>--list-hosts</userinput>. It goes like</para>
@@ -6274,7 +6274,7 @@ Known Hosts: (id, hostname, template, description)
 ...
 11      router.mydomain.com	3       Device Add Test</screen>
 			</sect2>
-			<sect2 id="cli_add_tree_list_trees">
+			<sect2 id="cli-add-tree-list-trees">
 			<title>List Trees</title>
         		<para>Now, let us
 	           <userinput>--list-trees</userinput>. It goes like</para>
@@ -6284,7 +6284,7 @@ Known Trees:
 id      sort method                     name
 1       Manual Ordering (No Sorting)    Default Tree</screen>
 			</sect2>
-			<sect2 id="cli_add_tree_list_nodes">
+			<sect2 id="cli-add-tree-list-nodes">
 			<title>List Nodes</title>
 				<para>Listing all existend node of a given tree is done by</para
 				<screen><prompt>shell&gt;</prompt>php -q add_tree.php --list-nodes --tree-id=1
@@ -6295,7 +6295,7 @@ Host    7       127.0.0.1       Graph Template
 Host    9       gandalf 	Graph Template
 Host    12      gandalf 	Graph Template</screen>
 			</sect2>
-			<sect2 id="cli_add_tree_list_rras">
+			<sect2 id="cli-add-tree-list-rras">
 			<title>List RRAs</title>
 				<para>For special tree add options, you will require the id of
 				the RRA definition to completly specify the add request. That's
@@ -6310,7 +6310,7 @@ id      steps   rows    timespan        name
 3       24      775     2678400         Monthly (2 Hour Average)
 4       288     797     33053184        Yearly (1 Day Average)</screen>
 			</sect2>
-			<sect2 id="cli_add_tree_list_graphs">
+			<sect2 id="cli-add-tree-list-graphs">
 			<title>List Graphs for given Hosts</title>
 				<para>To be able to add a Graph, the id of that very graph is required.
 				Thus, a <userinput>--list-graphs --host-id=[id]</userinput> option was implemented</para>
@@ -6329,7 +6329,7 @@ Known Host Graphs: (id, name, template)
 37      Localhost - Used Space - /sys   	Host MIB - Available Disk Space
 38      Localhost - Used Space - /boot  	Host MIB - Available Disk Space</screen>
 			</sect2>
-			<sect2 id="cli_add_tree_tree">
+			<sect2 id="cli-add-tree-tree">
 			<title>Add a new Tree</title>
 				<para>Cacti comes with a single tree, named
 				<guimenuitem>Default Tree</guimenuitem>. Console entry
@@ -6344,7 +6344,7 @@ Tree Created - tree-id: (6)</screen>
 Test Tree Add</screen>
 				<para>as expected.</para>
 			</sect2>
-			<sect2 id="cli_add_tree_header">
+			<sect2 id="cli-add-tree-header">
 			<title>Add a new Header Node to a Tree</title>
 				<para>Now, that a new tree has been created, you may want to add
 				a new header to that very tree. Use</para>
@@ -6362,7 +6362,7 @@ Added Node node-id: (21)</screen>
 
 Added Node node-id: (22)</screen>
 			</sect2>
-			<sect2 id="cli_add_tree_host">
+			<sect2 id="cli-add-tree-host">
 			<title>Add a new Host Node to a Tree</title>
 				<para>We will distinguish several options adding a host to a tree.
 				First, let's add a Host directly to a tree. For this example, we use
@@ -6385,7 +6385,7 @@ Added Node node-id: (24)</screen>
 
 Added Node node-id: (25)</screen>
 			</sect2>
-			<sect2 id="cli_add_tree_graph">
+			<sect2 id="cli-add-tree-graph">
 			<title>Add a new Graph Node to a Tree</title>
 				<para>Like above, instead of hosts it is possible to add a single
 				graph to a tree or a (sub)header of any tree. Of course, you again will
@@ -6409,7 +6409,7 @@ Added Node node-id: (28)</screen>
 				<guimenuitem>Yearly (1 Day Average)</guimenuitem>.</para>
 			</sect2>
 		</sect1>
-		<sect1 id="cli_add_perms">
+		<sect1 id="cli-add-perms">
 		<title>Add Graph Permissions</title>
 			<para>This script is used to specify special graph permissions to users.
 			The list of parameters is displyed as usual when calling the script with
@@ -6430,7 +6430,7 @@ List Options:
     --list-trees
     --list-graph-templates
     --list-graphs --host-id=[ID]</screen>
-			<sect2 id="cli_add_perms_list_users">
+			<sect2 id="cli-add-perms-list-users">
 			<title>List Users</title>
 	       		<para>The list of users is retrieved by calling the script with the parameter
 				<userinput>--list-users</userinput>. It goes like</para>
@@ -6441,7 +6441,7 @@ id      username        full_name
 1       admin   Administrator
 3       guest   Guest Account</screen>
 			</sect2>
-			<sect2 id="cli_add_perms_list_trees">
+			<sect2 id="cli-add-perms-list-trees">
 			<title>List Trees</title>
 	       		<para>The list of trees is retrieved by calling the script with the parameter
 				<userinput>--list-trees</userinput>. It goes like</para>
@@ -6451,7 +6451,7 @@ Known Trees:
 id      sort method                     name
 1       Manual Ordering (No Sorting)    Default Tree</screen>
 			</sect2>
-			<sect2 id="cli_add_perms_list_graph_templates">
+			<sect2 id="cli-add-perms-list-graph-templates">
 			<title>List Graph Templates</title>
 	       		<para>The list of available graph templates is retrieved by calling the script with the parameter
 				<userinput>--list-graph-templates</userinput>. It goes like</para>
@@ -6468,7 +6468,7 @@ Known Graph Templates:(id, name)
 9       Unix - Load Average
 ...</screen>
 			</sect2>
-			<sect2 id="cli_add_perms_list_graphs">
+			<sect2 id="cli-add-perms-list-graphs">
 			<title>List Graphs for given Hosts</title>
 				<para>To be able to add a permissions to a specific Graph,
 				the id of that very graph is required.
@@ -6488,7 +6488,7 @@ Known Host Graphs: (id, name, template)
 37      Localhost - Used Space - /sys   	Host MIB - Available Disk Space
 38      Localhost - Used Space - /boot  	Host MIB - Available Disk Space</screen>
 			</sect2>
-			<sect2 id="cli_add_perms_user">
+			<sect2 id="cli-add-perms-user">
 			<title>Add Graph Permissions to specific Users</title>
 				<para>There are various ways to define graph permissions
 				to specific users. First, we will add graph permissions
@@ -6542,7 +6542,7 @@ Known Host Graphs: (id, name, template)
 		Unfortunately, there are several reasons for this result.
 		The following is a step-by-step procedure recommended for debugging.</para>
 
-		<sect1 id="check_log_file">
+		<sect1 id="check-log-file">
 		<title>Check Cacti Log File</title>
 			<para>Please have a look at your cacti log file.
 			Usually, you'll find it at <filename>&lt;path_cacti&gt;/log/cacti.log</filename>.
@@ -6561,7 +6561,7 @@ Known Host Graphs: (id, name, template)
 			to deliver that many OID's at a time. Therefore,
 			we can reduce the number for those older/underpowered devices.</para>
 		</sect1>
-		<sect1 id="check_data_gathering">
+		<sect1 id="check-data-gathering">
 		<title>Check Basic Data Gathering</title>
 			<para>For scripts, run them as cactiuser from cli to
 			check basic functionality. E.g. for a perl script
@@ -6579,7 +6579,7 @@ Known Host Graphs: (id, name, template)
 			<screen>snmpget -c very-secret -v 2c target-host .1.3.6.1.4.something
 .... (check output)</screen>
 		</sect1>
-		<sect1 id="check_cacti_poller">
+		<sect1 id="check-cacti-poller">
 		<title>Check cacti's poller</title>
 			<para>First make sure that crontab always shows poller.php.
 			This program will either call cmd.php, the PHP based poller
@@ -6618,7 +6618,7 @@ Known Host Graphs: (id, name, template)
 			for the next polling interval. And there's no need to manually
 			search for the failing host between hundreds of lines of output.</para>
 		</sect1>
-		<sect1 id="check_mysql_updating">
+		<sect1 id="check-mysql-updating">
 		<title>Check MySQL updating</title>
 			<para>In most cases, this step make be skipped.
 			You may want to return to this step, if the next one
@@ -6631,7 +6631,7 @@ Known Host Graphs: (id, name, template)
 			from cli. This may as well be done from some tool like
 			phpMyAdmin. Check the sql return code.</para>
 		</sect1>
-		<sect1 id="check_rrd_updating">
+		<sect1 id="check-rrd-updating">
 		<title>Check rrd file updating</title>
 			<para>Down in the same log, you should find some</para>
 			<screen>rrdtool update &lt;filename&gt; --template ...</screen>
@@ -6643,7 +6643,7 @@ Known Host Graphs: (id, name, template)
 			from Utilities and search for your target.
 			Does the query show up here?</para>
 		</sect1>
-		<sect1 id="check_rrd_owner">
+		<sect1 id="check-rrd-owner">
 		<title>Check rrd file ownership</title>
 			<para>If rrd files were created e.g. with root ownership,
 			a poller running as cactiuser will not be able to update
@@ -6659,7 +6659,7 @@ ls -l localhost*
 			<para>Run the following command to cure this problem</para>
 			<screen>chown cactiuser:cactiuser *.rrd</screen>
 		</sect1>
-		<sect1 id="check_rrd_numbers">
+		<sect1 id="check-rrd-numbers">
 		<title>Check rrd file numbers</title>
 			<para>You're perhaps wondering about this step,
 			if the former was ok. But due to data sources
@@ -6702,7 +6702,7 @@ ds[loss].max = 1.0000000000e+02</screen>
 			and by using rrdtool tune for all existing rrd files
 			of this type.</para>
 		</sect1>
-		<sect1 id="check_rrd_graph">
+		<sect1 id="check-rrd-graph">
 		<title>Check rrdtool graph statement</title>
 			<para>Last resort would be to check, that the correct
 			data sources are used.
@@ -6713,7 +6713,7 @@ ds[loss].max = 1.0000000000e+02</screen>
 			the rrd file and data source to be used. You may check, that
 			all of them are as wanted.</para>
 		</sect1>
-		<sect1 id="debug_miscellaneous">
+		<sect1 id="debug-miscellaneous">
 		<title>Miscellaneous</title>
 			<para>Up to current cacti 0.8.6h, table
 			<userinput>poller_output</userinput> may increase beyond
@@ -6731,7 +6731,7 @@ ds[loss].max = 1.0000000000e+02</screen>
 			(memory size, truncating poller_output).</para>
 		</sect1>
 
-		<sect1 id="debug_rpm_installation">
+		<sect1 id="debug-rpm-installation">
 		<title>RPM Installation?</title>
 			<para>Most rpm installations will setup the crontab entry now.
 			If you've followed the installation instructions to the
@@ -6761,7 +6761,7 @@ ds[loss].max = 1.0000000000e+02</screen>
 */5 * * * *     /usr/bin/php -q /var/www/html/cacti/poller.php > /var/local/log/poller.log 2>&1</screen>
 		</sect1>
 
-		<sect1 id="check_zero_values">
+		<sect1 id="check-zero-values">
 		<title>Not NaN, but 0 (zero) values?</title>
 			<para>Pay attention to custom scripts. It is required,
 			that external commands called from there are in the <filename>$PATH</filename>

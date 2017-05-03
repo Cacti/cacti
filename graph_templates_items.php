@@ -390,7 +390,7 @@ function item_edit() {
 
 	$header_label = __('Graph Template Items [edit graph: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	if (!isempty_request_var('id')) {
 		$template_item = db_fetch_row_prepared('SELECT * 
@@ -461,7 +461,7 @@ function item_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('graph_template_item_id', (isset($template_item) ? $template_item['id'] : '0'), '');
 	form_hidden_box('graph_template_id', get_request_var('graph_template_id'), '0');

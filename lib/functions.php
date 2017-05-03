@@ -1768,16 +1768,6 @@ function get_web_browser() {
 	}
 }
 
-/* get_graph_tree_array - returns a list of graph trees taking permissions into account if
-     necessary
-   @arg $return_sql - (bool) Whether to return the SQL to create the dropdown rather than an array
-	@arg $force_refresh - (bool) Force the refresh of the array from the database
-	@arg $edit - (bool) Shows the content even though the graph may not be published
-   @returns - (array) an array containing a list of graph trees */
-function get_graph_tree_array($return_sql = false, $force_refresh = false, $edit = false) {
-	return get_allowed_trees($edit, $return_sql);
-}
-
 /* draw_login_status - provides a consistent login status page for all pages that use it */
 function draw_login_status($using_guest_account = false) {
 	global $config;
@@ -2682,7 +2672,7 @@ function draw_navigation_text($type = 'url') {
 
 				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($leaf['graph_tree_id']));
 			}else{
-				$leaf_name = 'Leaf';
+				$leaf_name = __('Leaf');
 				$tree_name = '';
 			}
 
@@ -2716,7 +2706,7 @@ function draw_navigation_text($type = 'url') {
 		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . $leaf_name:'') . ($leaf_sub != '' ? ':' . $leaf_sub . ')':($leaf_name != '' ? ')':''));
 
 		if ($tree_title != '') {
-			$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li></ul>';
+			$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li>';
 		}
 	}elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
 		$externalLinks = db_fetch_row_prepared('SELECT title, style FROM external_links WHERE id = ?', array($matches[1]));
@@ -2726,13 +2716,12 @@ function draw_navigation_text($type = 'url') {
 		if ($style == 'CONSOLE') {
 			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0' href='" . $config['url_path'] . 
 				"index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>';
-			$current_nav .= "<li><a id='nav_1' href='#'>Link " . $title . '</a></li></ul>';
+			$current_nav .= "<li><a id='nav_1' href='#'>Link " . $title . '</a></li>';
 		}else{
-			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . $title . '</a></li></ul>';
+			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . $title . '</a></li>';
 		}
 		$tree_title = '';
 	}else{
-		$current_nav .= '</ul>';
 		$tree_title = '';
 	}
 
@@ -2740,6 +2729,8 @@ function draw_navigation_text($type = 'url') {
 
 	/* keep a cache for each level we encounter */
 	$nav_level_cache{$current_array['level']} = array('id' => $current_page . ':' . $current_action, 'url' => get_browser_query_string());
+	$current_nav .= '</ul>';
+
 	$_SESSION['sess_nav_level_cache'] = $nav_level_cache;
 
 	if ($type == 'url') {
@@ -3028,9 +3019,9 @@ function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
      'data_input_method','cdef','vdef','gprint_preset','data_query','host_template')
    @returns - a 24-bit hexadecimal hash (8-bits for type, 16-bits for version) */
 function get_hash_version($type) {
-	global $hash_type_codes, $hash_version_codes, $config;
+	global $hash_type_codes, $cacti_version_codes, $config;
 
-	return $hash_type_codes[$type] . $hash_version_codes{$config['cacti_version']};
+	return $hash_type_codes[$type] . $cacti_version_codes[CACTI_VERSION];
 }
 
 /* generate_hash - generates a new unique hash

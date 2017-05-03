@@ -510,7 +510,7 @@ function automation_graph_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print ($_SESSION['automation_graph_rules_show_rule'] == true ? __('Don\'t Show'):__('Show'));?> <?php print __('Rule Details.');?></a></span><br>
+		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print ($_SESSION['automation_graph_rules_show_rule'] == true ? __('Don\'t Show'):__('Show'));?> <?php print __('Rule Details.');?></a></span><br>
 		</td>
 	</tr>
 </table>
@@ -525,7 +525,7 @@ function automation_graph_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' align='right' valign='top'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Devices.');?></a></span><br>
+		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Devices.');?></a></span><br>
 		</td>
 	</tr>
 </table>
@@ -540,7 +540,7 @@ function automation_graph_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' align='right' valign='top'>
+		<td class='textInfo right' style='vertical-align:top;'>
 			<span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Objects.');?></a></span><br>
 		</td>
 	</tr>
@@ -551,7 +551,7 @@ function automation_graph_rules_edit() {
 	if ($_SESSION['automation_graph_rules_show_rule']) {
 		form_start('automation_graph_rules.php', 'automation_graph_rules');
 
-		html_start_box($header_label, '100%', '', '3', 'center', '');
+		html_start_box($header_label, '100%', true, '3', 'center', '');
 
 		if (!isempty_request_var('id')) {
 			/* display whole rule */
@@ -566,7 +566,8 @@ function automation_graph_rules_edit() {
 			'fields' => inject_form_variables($form_array, (isset($rule) ? $rule : array()))
 		));
 
-		html_end_box();
+		html_end_box(true, true);
+
 		form_hidden_box('id', (isset($rule['id']) ? $rule['id'] : '0'), '');
 		form_hidden_box('item_id', (isset($rule['item_id']) ? $rule['item_id'] : '0'), '');
 		form_hidden_box('save_component_automation_graph_rule', '1', '');
@@ -795,8 +796,6 @@ function automation_graph_rules() {
 	<?php
 
 	html_end_box();
-
-	form_end();
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('filter'))) {

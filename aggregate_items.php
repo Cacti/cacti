@@ -343,7 +343,7 @@ function item_edit() {
 			$template_item[$field_name] = $item_overrides[$field_name];
 	}
 
-	html_start_box(__('Override Values for Graph Item'), '100%', '', '3', 'center', '');
+	html_start_box(__('Override Values for Graph Item'), '100%', true, '3', 'center', '');
 
 	$form_array = array();
 
@@ -385,7 +385,7 @@ function item_edit() {
 	form_hidden_box('aggregate_graph_id', get_request_var('aggregate_graph_id'), '0');
 	form_hidden_box('aggregate_template_id', get_request_var('aggregate_template_id'), '0');
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button($config['url_path'] . "$page_name?action=edit&id=" . get_request_var('local_graph_id'));
 

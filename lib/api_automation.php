@@ -1227,7 +1227,7 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td>' . 	((isset($item['operator']) && $item['operator'] > 0) ? $automation_op_array['display']{$item['operator']} : '') . '</td>';
 			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
 
-			$form_data .= '<td style="white-space:nowrap" class="right">';
+			$form_data .= '<td class="right nowrap">';
 
 			if ($i != sizeof($items)-1) {
 				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
@@ -1290,7 +1290,7 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td>' . 	(($item['operator'] > 0 || $item['operator'] == '') ? $automation_op_array['display']{$item['operator']} : '') . '</td>';
 			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
 
-			$form_data .= '<td style="white-space:nowrap" class="right">';
+			$form_data .= '<td class="right nowrap">';
 
 			if ($i != sizeof($items)-1) {
 				$form_data .= '<a class="pic fa fa-awwow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
@@ -1305,7 +1305,7 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			}
 			$form_data .= '</td>';
 
-			$form_data .= '<td style="white-space:nowrap" class="right">
+			$form_data .= '<td class="right nowrap">
 				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Delete') . '"></a></td>
 			</tr>';
 
@@ -1369,7 +1369,7 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			}
 			$form_data .= '</td>';
 
-			$form_data .= '<td style="white-space:nowrap" style="width:1%;">
+			$form_data .= '<td class="nowrap" style="width:1%;">
 				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Delete') . '"></a></td>
 			</tr>';
 
@@ -1942,7 +1942,7 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 
 	form_start($module, 'form_automation_global_item_edit');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -1951,7 +1951,7 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 }
 
 /**

@@ -680,7 +680,7 @@ function network_edit() {
 
 	form_start('automation_networks.php', 'form_network');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -689,7 +689,7 @@ function network_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('save_component_network', '1', '');
 	form_hidden_box('id', !isempty_request_var('id') ? get_request_var('id'):0, 0);

@@ -117,26 +117,6 @@ function form_save() {
 	}
 }
 
-/* ---------------------
-    Misc Functions
-   --------------------- */
-
-function draw_edit_form_row($field_array, $field_name, $previous_value) {
-	$field_array['value'] = $previous_value;
-
-	draw_edit_form(
-		array(
-			'config' => array(
-				'no_form_tag' => true,
-				'force_row_color' => 'F5F5F5'
-			),
-			'fields' => array(
-				$field_name => $field_array
-			)
-		)
-	);
-}
-
 /* -------------------
     Data Query Functions
    ------------------- */
@@ -298,7 +278,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 			if ($form_type == 'cg') {
 				$graph_template_id = $form_id1;
 
-				html_start_box("Create Graph from '" . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template_id)) . "'", '100%', '', '3', 'center', '');
+				html_start_box(__("Create Graph from %s", db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template_id))), '100%', '', '3', 'center', '');
 			}elseif ($form_type == 'sg') {
 				foreach ($form_array2 as $form_id2 => $form_array3) {
 					/* ================= input validation ================= */
@@ -557,7 +537,7 @@ function graphs() {
 						?>
 					</select>
 				</td>
-				<td rowspan='3' class='textInfo' style='text-align:right;vertical-align:top;width:100%;'>
+				<td class='textInfo' style='text-align:right;vertical-align:top;width:100%;'>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . get_request_var('host_id'));?>'><?php print __('Edit this Device');?></a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit');?>'><?php print __('Create New Device');?></a><br>
 					<?php api_plugin_hook('graphs_new_top_links'); ?>
@@ -691,7 +671,7 @@ function graphs() {
 
 		/* create a row at the bottom that lets the user create any graph they choose */
 		print "<tr class='even'>
-			<td width='1'><i>" . __('Create') . "</i></td>
+			<td style='width:1%;'><i>" . __('Create') . "</i></td>
 			<td class='left'>";
 			form_dropdown('cg_g', $available_graph_templates, 'name', 'id', '', __('(Select a graph type to create)'), '', 'textArea');
 
@@ -994,7 +974,6 @@ function graphs() {
 	form_hidden_box('save_component_graph', '1', '');
 
 	if (!isempty_request_var('host_id')) {
-		form_hidden_box('host_id', $host['id'], '0');
 		form_hidden_box('host_template_id', $host['host_template_id'], '0');
 	}
 

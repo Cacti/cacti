@@ -1,26 +1,26 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Cacti Russian Language File\n"
+"Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-26 20:04-0400\n"
-"PO-Revision-Date: 2010-04-12 18:40+0100\n"
-"Last-Translator: Dmitry Novikov <nerosketch@gmail.com>\n"
-"Language-Team: KPbIC <Cacti>\n"
-"Language: ru\n"
+"PO-Revision-Date: 2009-06-09 20:53+0100\n"
+"Last-Translator: Andreas Braun <browniebraun@cacti.cc>\n"
+"Language-Team: Bulgarian <bg@li.org>\n"
+"Language: bg\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Russian\n"
-"X-Poedit-Country: RUSSIA\n"
+"X-Poedit-Language: Bulgarian\n"
+"X-Poedit-Country: BULGARIA\n"
 
 #: ../about.php:29 ../lib/functions.php:2396
 msgid "About Cacti"
-msgstr "О Cacti"
+msgstr "За cacti"
 
 #: ../about.php:35 ../index.php:73 ../logout.php:77
-#, php-format
+#, fuzzy, php-format
 msgid "Version %s"
-msgstr "Версия %s"
+msgstr "SNMP Версия"
 
 #: ../about.php:42
 msgid ""
@@ -29,9 +29,6 @@ msgid ""
 "taking care of all the necessary details necessary to create meaningful "
 "graphs."
 msgstr ""
-"Cacti - это полнофункциональное графическое решение на основе RRDtool Его "
-"цель - упростить работу администратора сети, забота о всех необходимых "
-"деталях, И графики"
 
 #: ../about.php:44
 #, php-format
@@ -39,16 +36,14 @@ msgid ""
 "Please see the official %sCacti website%s for information, support, and "
 "updates."
 msgstr ""
-"Пожалуйста посетите оффициальный сайт %sCacti website%s, там вы найдёте "
-"необходимую информацию, поддержку, и оповещения об обновлениях"
 
 #: ../about.php:46
 msgid "Cacti Developers"
-msgstr "Разработчики Cacti"
+msgstr ""
 
 #: ../about.php:58
 msgid "Thanks"
-msgstr "Благодарности"
+msgstr ""
 
 #: ../about.php:61
 #, php-format
@@ -56,12 +51,10 @@ msgid ""
 "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and "
 "the very popular %sMRTG%s."
 msgstr ""
-"Отдельная благодарность %sTobi Oetiker%s, создателю %sRRDtool%s и очень "
-"популярной библиотеки %sMRTG%s."
 
 #: ../about.php:64
 msgid "The users of Cacti"
-msgstr "Пользователи Cacti"
+msgstr ""
 
 #: ../about.php:65
 msgid ""
@@ -69,17 +62,14 @@ msgid ""
 "otherwise help fix a Cacti related problems. Also to anyone who has "
 "contributed to supporting Cacti."
 msgstr ""
-"Особенно тем, кто нашел время, чтобы создать отчет о проблеме, или как-то "
-"иначе помог исправить проблемы, связанные с Кактусом. Также всем, кто внес "
-"вклад в поддержку Кактуса."
 
 #: ../about.php:70
 msgid "License"
-msgstr "Лицензионное соглашение"
+msgstr ""
 
 #: ../about.php:72
 msgid "Cacti is licensed under the GNU GPL:"
-msgstr "Cacti лицензирован под GNU GPL:"
+msgstr ""
 
 #: ../about.php:74
 msgid ""
@@ -88,10 +78,6 @@ msgid ""
 "Software Foundation; either version 2 of the License, or (at your option) "
 "any later version."
 msgstr ""
-"Это приложение является свободным программным обеспечением; Вы можете "
-"распространять его и/или изменять в соответствии с условиями GNU General "
-"Public License, опубликованной Free Software Foundation; Либо 2ой версии "
-"лицензии (по вашему выбору), любой более поздней версии."
 
 #: ../about.php:76
 msgid ""
@@ -100,10 +86,6 @@ msgid ""
 "FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
 "more details."
 msgstr ""
-"Эта программа распространяется в надежде, что она будет полезна, но БЕЗ "
-"КАКИХ-ЛИБО ГАРАНТИЙ; Даже без подразумеваемых гарантий КОММЕРЧЕСКОЙ ЦЕННОСТИ "
-"или ПРИГОДНОСТИ ДЛЯ ОПРЕДЕЛЕННОЙ ЦЕЛИ. Для получения дополнительной "
-"информации см. GNU General Public License."
 
 #: ../aggregate_graphs.php:40 ../aggregate_templates.php:29
 #: ../automation_graph_rules.php:32 ../automation_networks.php:31
@@ -125,7 +107,7 @@ msgstr ""
 #: ../tree.php:1264 ../user_admin.php:28 ../user_domains.php:29
 #: ../user_group_admin.php:30 ../vdef.php:29
 msgid "Delete"
-msgstr "Удалить"
+msgstr ""
 
 #: ../aggregate_graphs.php:41
 msgid "Migrate Aggregate to use a Template"
@@ -136,8 +118,9 @@ msgid "Create New Aggregate from Aggregates"
 msgstr ""
 
 #: ../aggregate_graphs.php:46
+#, fuzzy
 msgid "Associate with Aggregate"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../aggregate_graphs.php:47
 msgid "Disassociate with Aggregate"
@@ -146,7 +129,7 @@ msgstr ""
 #: ../aggregate_graphs.php:80 ../graphs.php:128
 #, php-format
 msgid "Place on a Tree (%s)"
-msgstr "Поместить в дерево (%s)"
+msgstr ""
 
 #: ../aggregate_graphs.php:318
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
@@ -191,7 +174,7 @@ msgstr ""
 #: ../user_group_admin.php:476 ../user_group_admin.php:487 ../vdef.php:270
 #: ../vdef.php:280 ../vdef.php:332
 msgid "Cancel"
-msgstr "Отмена"
+msgstr ""
 
 #: ../aggregate_graphs.php:323 ../aggregate_graphs.php:384
 #: ../aggregate_graphs.php:409 ../aggregate_graphs.php:418
@@ -230,12 +213,13 @@ msgstr "Отмена"
 #: ../user_group_admin.php:476 ../user_group_admin.php:487 ../vdef.php:270
 #: ../vdef.php:280 ../vdef.php:333
 msgid "Continue"
-msgstr "Продолжить"
+msgstr ""
 
 #: ../aggregate_graphs.php:323 ../aggregate_graphs.php:384
 #: ../aggregate_graphs.php:409 ../graphs.php:818
+#, fuzzy
 msgid "Delete Graph(s)"
-msgstr "Удалить график(и)"
+msgstr "Създаване на нови графики"
 
 #: ../aggregate_graphs.php:349
 msgid ""
@@ -268,7 +252,7 @@ msgstr ""
 #: ../sites.php:284 ../tree.php:512 ../user_admin.php:439
 #: ../user_domains.php:258 ../user_group_admin.php:491 ../vdef.php:284
 msgid "Return"
-msgstr "Вернуть"
+msgstr ""
 
 #: ../aggregate_graphs.php:368
 msgid ""
@@ -277,8 +261,9 @@ msgid ""
 msgstr ""
 
 #: ../aggregate_graphs.php:374
+#, fuzzy
 msgid "Aggregate Template:"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../aggregate_graphs.php:388
 msgid ""
@@ -295,7 +280,7 @@ msgstr ""
 
 #: ../aggregate_graphs.php:390
 msgid "Please press 'Return' to continue."
-msgstr "Пожалуйста нажмите 'Вернуть' для продолжения"
+msgstr ""
 
 #: ../aggregate_graphs.php:401
 msgid ""
@@ -318,8 +303,9 @@ msgid ""
 msgstr ""
 
 #: ../aggregate_graphs.php:418
+#, fuzzy
 msgid "Associate Graph(s)"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../aggregate_graphs.php:422
 msgid ""
@@ -327,8 +313,9 @@ msgid ""
 msgstr ""
 
 #: ../aggregate_graphs.php:427
+#, fuzzy
 msgid "Dis-Associate Graph(s)"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../aggregate_graphs.php:431
 msgid ""
@@ -338,52 +325,56 @@ msgstr ""
 
 #: ../aggregate_graphs.php:433 ../host.php:470
 msgid "Destination Branch:"
-msgstr "Ветка назначения"
+msgstr ""
 
 #: ../aggregate_graphs.php:438 ../graphs.php:879
+#, fuzzy
 msgid "Place Graph(s) on Tree"
-msgstr "Поместить график(и) на дерево"
+msgstr "Дърво на графики"
 
 #: ../aggregate_graphs.php:441
 msgid "You must select at least one graph."
-msgstr "Вы должны выбрать хотябы один график"
+msgstr ""
 
 #: ../aggregate_graphs.php:476 ../graphs.php:1133
+#, fuzzy
 msgid "Graph Items [new]"
-msgstr "Графики [новый]"
+msgstr "Графични елементи"
 
 #: ../aggregate_graphs.php:492 ../graphs.php:1153
-#, php-format
+#, fuzzy, php-format
 msgid "Graph Items [edit: %s]"
-msgstr "Графики [редактировать %s]"
+msgstr "Графични елементи"
 
 #: ../aggregate_graphs.php:560 ../aggregate_graphs.php:563
 #: ../lib/html_reports.php:1085 ../lib/html_reports.php:1090
 #: ../utilities.php:1692
 msgid "Details"
-msgstr "Детали"
+msgstr ""
 
 #: ../aggregate_graphs.php:560 ../lib/html_reports.php:1085
 #: ../utilities.php:306
+#, fuzzy
 msgid "Items"
-msgstr "Элементы"
+msgstr "Графични елементи"
 
 #: ../aggregate_graphs.php:560 ../aggregate_graphs.php:563 ../lib/html.php:1580
 #: ../lib/html_reports.php:1085
+#, fuzzy
 msgid "Preview"
-msgstr "Предпросмотр"
+msgstr "Общ изглед"
 
 #: ../aggregate_graphs.php:607
 msgid "Turn Off Graph Debug Mode"
-msgstr "Отключить режим отладки для графиков"
+msgstr ""
 
 #: ../aggregate_graphs.php:609
 msgid "Turn On Graph Debug Mode"
-msgstr "Включить режим отладки для графиков"
+msgstr ""
 
 #: ../aggregate_graphs.php:615 ../aggregate_graphs.php:880
 msgid "Show Item Details"
-msgstr "Показать подробности"
+msgstr ""
 
 #: ../aggregate_graphs.php:621
 #, php-format
@@ -399,9 +390,9 @@ msgid "RRDTool Says:"
 msgstr ""
 
 #: ../aggregate_graphs.php:660
-#, php-format
+#, fuzzy, php-format
 msgid "Aggregate Graph %s"
-msgstr ""
+msgstr "Създаване на нови графики"
 
 #: ../aggregate_graphs.php:798 ../lib/api_aggregate.php:1221
 msgid "Total"
@@ -410,25 +401,25 @@ msgstr ""
 #: ../aggregate_graphs.php:802
 #, fuzzy
 msgid "All Items"
-msgstr "Элементы"
+msgstr "Графични елементи"
 
 #: ../aggregate_graphs.php:825 ../graphs.php:1406 ../lib/api_aggregate.php:1368
 msgid "Graph Configuration"
-msgstr "Настройки графика"
+msgstr ""
 
 #: ../aggregate_graphs.php:875 ../automation_graph_rules.php:513
 #: ../automation_graph_rules.php:528 ../automation_graph_rules.php:544
 #: ../automation_tree_rules.php:379 ../automation_tree_rules.php:529
 msgid "Show"
-msgstr "Показать"
+msgstr ""
 
 #: ../aggregate_graphs.php:877
 msgid "Hide Item Details"
-msgstr "Скрыть подробности"
+msgstr ""
 
 #: ../aggregate_graphs.php:998
 msgid "Matching Graphs"
-msgstr "Сопоставление графиков"
+msgstr ""
 
 #: ../aggregate_graphs.php:1007 ../aggregate_graphs.php:1326
 #: ../aggregate_templates.php:538 ../automation_devices.php:448
@@ -460,7 +451,7 @@ msgstr "Сопоставление графиков"
 #: ../utilities.php:1275 ../utilities.php:1587 ../utilities.php:2250
 #: ../utilities.php:2503 ../vdef.php:659
 msgid "Search"
-msgstr "Найти"
+msgstr ""
 
 #: ../aggregate_graphs.php:1013 ../aggregate_graphs.php:1111
 #: ../aggregate_graphs.php:1354 ../color_templates.php:547
@@ -500,11 +491,11 @@ msgstr "Графики"
 #: ../utilities.php:1608 ../utilities.php:2275 ../utilities.php:2539
 #: ../vdef.php:669
 msgid "Default"
-msgstr "Стандартно"
+msgstr ""
 
 #: ../aggregate_graphs.php:1031
 msgid "Part of Aggregate"
-msgstr "Часть совокупности"
+msgstr ""
 
 #: ../aggregate_graphs.php:1034 ../aggregate_graphs.php:1369
 #: ../aggregate_templates.php:574 ../automation_devices.php:468
@@ -526,7 +517,7 @@ msgstr "Часть совокупности"
 #: ../user_admin.php:2756 ../user_admin.php:2843 ../user_admin.php:2930
 #: ../user_admin.php:3017
 msgid "Go"
-msgstr "Выполнить"
+msgstr ""
 
 #: ../aggregate_graphs.php:1034 ../aggregate_graphs.php:1369
 #: ../automation_devices.php:468 ../automation_snmp.php:847
@@ -547,7 +538,7 @@ msgstr "Выполнить"
 #: ../utilities.php:676 ../utilities.php:1009 ../utilities.php:1330
 #: ../utilities.php:1577 ../utilities.php:2286 ../utilities.php:2550
 msgid "Set/Refresh Filters"
-msgstr "Установить/Обновить фильтры"
+msgstr ""
 
 #: ../aggregate_graphs.php:1037 ../aggregate_graphs.php:1372
 #: ../aggregate_templates.php:577 ../automation_devices.php:471
@@ -570,7 +561,7 @@ msgstr "Установить/Обновить фильтры"
 #: ../user_admin.php:2759 ../user_admin.php:2846 ../user_admin.php:2933
 #: ../user_admin.php:3020 ../user_domains.php:645
 msgid "Clear"
-msgstr "Очистить"
+msgstr ""
 
 #: ../aggregate_graphs.php:1037 ../aggregate_graphs.php:1372
 #: ../automation_snmp.php:850 ../automation_templates.php:436 ../cdef.php:752
@@ -591,13 +582,14 @@ msgstr "Очистить"
 #: ../utilities.php:1333 ../utilities.php:1580 ../utilities.php:2289
 #: ../utilities.php:2551
 msgid "Clear Filters"
-msgstr "Очистить фильтры"
+msgstr ""
 
 #: ../aggregate_graphs.php:1116 ../aggregate_graphs.php:1435
 #: ../graph_view.php:620 ../graphs.php:1051 ../lib/api_automation.php:561
 #: ../user_admin.php:1006 ../user_group_admin.php:821
+#, fuzzy
 msgid "Graph Title"
-msgstr "Название Графика"
+msgstr "Дърво на графики"
 
 #: ../aggregate_graphs.php:1117 ../aggregate_graphs.php:1436
 #: ../automation_graph_rules.php:857 ../automation_tree_rules.php:845
@@ -610,7 +602,7 @@ msgstr "Название Графика"
 #: ../user_group_admin.php:821 ../user_group_admin.php:966
 #: ../user_group_admin.php:1109 ../user_group_admin.php:1243
 msgid "ID"
-msgstr "ИД"
+msgstr ""
 
 #: ../aggregate_graphs.php:1118
 msgid "Included in Aggregate"
@@ -619,7 +611,7 @@ msgstr ""
 #: ../aggregate_graphs.php:1119 ../aggregate_graphs.php:1438
 #: ../graph_templates.php:763 ../graphs.php:1746
 msgid "Size"
-msgstr "Размер"
+msgstr ""
 
 #: ../aggregate_graphs.php:1129 ../cdef.php:869 ../color.php:722
 #: ../color.php:724 ../color_templates.php:564 ../data_input.php:741
@@ -632,7 +624,7 @@ msgstr "Размер"
 #: ../user_admin.php:2268 ../user_domains.php:731 ../user_group_admin.php:1897
 #: ../vdef.php:864
 msgid "No"
-msgstr "Нет"
+msgstr ""
 
 #: ../aggregate_graphs.php:1129 ../cdef.php:869 ../color.php:722
 #: ../color.php:724 ../color_templates.php:564 ../data_input.php:741
@@ -646,25 +638,27 @@ msgstr "Нет"
 #: ../user_domains.php:729 ../user_domains.php:731 ../user_group_admin.php:1895
 #: ../vdef.php:864
 msgid "Yes"
-msgstr "Да"
+msgstr ""
 
 #: ../aggregate_graphs.php:1135 ../graphs.php:1766
 #: ../lib/api_automation.php:588
 msgid "No Graphs Found"
-msgstr "Графики не найдены"
+msgstr ""
 
 #: ../aggregate_graphs.php:1317 ../aggregate_graphs.php:1426
 #: ../lib/functions.php:2522
+#, fuzzy
 msgid "Aggregate Graphs"
-msgstr ""
+msgstr "Създаване на нови графики"
 
 #: ../aggregate_graphs.php:1332 ../data_sources.php:1151 ../graph_view.php:525
 #: ../graphs.php:1609 ../host.php:1339 ../lib/api_automation.php:434
 #: ../lib/html_graph.php:159 ../lib/html_tree.php:610 ../rrdcleaner.php:351
 #: ../user_admin.php:2520 ../user_admin.php:2717 ../user_group_admin.php:2139
 #: ../user_group_admin.php:2249 ../utilities.php:1548
+#, fuzzy
 msgid "Template"
-msgstr "Шаблон"
+msgstr "Шаблони за графики"
 
 #: ../aggregate_graphs.php:1336 ../automation_devices.php:458
 #: ../automation_devices.php:488 ../automation_devices.php:503
@@ -682,7 +676,7 @@ msgstr "Шаблон"
 #: ../utilities.php:1597 ../utilities.php:2260 ../utilities.php:2513
 #: ../utilities.php:2526
 msgid "Any"
-msgstr "Любой"
+msgstr ""
 
 #: ../aggregate_graphs.php:1337 ../aggregate_graphs.php:1450
 #: ../automation_graph_rules.php:867 ../automation_graph_rules.php:868
@@ -713,7 +707,7 @@ msgstr "Любой"
 #: ../user_group_admin.php:2144 ../user_group_admin.php:2254
 #: ../utilities.php:1553
 msgid "None"
-msgstr "Нет"
+msgstr ""
 
 #: ../aggregate_graphs.php:1435
 msgid "The title for the Aggregate Graphs"
@@ -724,8 +718,9 @@ msgid "The internal database identifier for this object"
 msgstr ""
 
 #: ../aggregate_graphs.php:1437 ../graphs.php:1055
+#, fuzzy
 msgid "Aggregate Template"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../aggregate_graphs.php:1437
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
@@ -748,8 +743,9 @@ msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgstr ""
 
 #: ../aggregate_templates.php:312
+#, fuzzy
 msgid "Delete Color Template(s)"
-msgstr ""
+msgstr "Експортиране на шаблони"
 
 #: ../aggregate_templates.php:315
 msgid "You must select at least one Aggregate Graph Template."
@@ -766,26 +762,30 @@ msgstr ""
 
 #: ../aggregate_templates.php:531 ../aggregate_templates.php:631
 #: ../lib/functions.php:2504
+#, fuzzy
 msgid "Aggregate Templates"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../aggregate_templates.php:544 ../automation_templates.php:418
 #: ../automation_templates.php:503 ../color_templates.php:548
 #: ../include/global_arrays.php:643 ../include/global_arrays.php:701
 #: ../install/index.php:1031 ../user_admin.php:2822
 #: ../user_group_admin.php:2354
+#, fuzzy
 msgid "Templates"
-msgstr "Шаблоны"
+msgstr "Шаблони за графики"
 
 #: ../aggregate_templates.php:571 ../cdef.php:746 ../color.php:559
 #: ../color_templates.php:467 ../data_sources.php:1223
 #: ../gprint_presets.php:286 ../graph_templates.php:650 ../vdef.php:683
+#, fuzzy
 msgid "Has Graphs"
-msgstr ""
+msgstr "Графики"
 
 #: ../aggregate_templates.php:640 ../color_templates.php:545
+#, fuzzy
 msgid "Template Title"
-msgstr "Название шаблона"
+msgstr "Шаблони за елементи на графиката"
 
 #: ../aggregate_templates.php:641
 msgid ""
@@ -799,20 +799,22 @@ msgstr ""
 #: ../data_templates.php:904 ../gprint_presets.php:392
 #: ../graph_templates.php:761 ../host_templates.php:816 ../vdef.php:846
 msgid "Deletable"
-msgstr "Удаляемый"
+msgstr ""
 
 #: ../aggregate_templates.php:642 ../cdef.php:853 ../color.php:700
 #: ../data_queries.php:902 ../data_queries.php:1145 ../gprint_presets.php:393
 #: ../graph_templates.php:762 ../vdef.php:847
+#, fuzzy
 msgid "Graphs Using"
-msgstr ""
+msgstr "Графики"
 
 #: ../aggregate_templates.php:643 ../graph_view.php:620
 #: ../include/global_arrays.php:603 ../include/global_arrays.php:986
 #: ../include/global_form.php:1315 ../include/global_form.php:1540
 #: ../lib/html_reports.php:377 ../tree.php:1286
+#, fuzzy
 msgid "Graph Template"
-msgstr "Шаблон Графика"
+msgstr "Шаблони за графики"
 
 #: ../aggregate_templates.php:665
 msgid "No Aggregate Templates Found"
@@ -867,8 +869,9 @@ msgstr ""
 
 #: ../auth_changepassword.php:258 ../auth_changepassword.php:284
 #: ../include/global_form.php:1457 ../lib/functions.php:1798
+#, fuzzy
 msgid "Change Password"
-msgstr ""
+msgstr "Парола"
 
 #: ../auth_changepassword.php:290
 msgid "Please enter your current password and your new<br>Cacti password."
@@ -879,8 +882,9 @@ msgid "Current password"
 msgstr ""
 
 #: ../auth_changepassword.php:299
+#, fuzzy
 msgid "New password"
-msgstr ""
+msgstr "Парола"
 
 #: ../auth_changepassword.php:303
 msgid "Confirm new password"
@@ -889,7 +893,7 @@ msgstr ""
 #: ../auth_changepassword.php:307 ../lib/html_form.php:1069
 #: ../lib/html_form.php:1078 ../lib/html_graph.php:197 ../lib/html_tree.php:648
 msgid "Save"
-msgstr " Сохранить "
+msgstr ""
 
 #: ../auth_changepassword.php:316 ../auth_login.php:649
 #, php-format
@@ -938,12 +942,13 @@ msgid "Access Denied, please contact you Cacti Administrator."
 msgstr ""
 
 #: ../auth_login.php:519
+#, fuzzy
 msgid "Login to Cacti"
-msgstr ""
+msgstr "За cacti"
 
 #: ../auth_login.php:552
 msgid "User Login"
-msgstr "Аутентификация"
+msgstr ""
 
 #: ../auth_login.php:564
 msgid "Enter your Username and Password below"
@@ -952,12 +957,12 @@ msgstr ""
 #: ../auth_login.php:570 ../auth_login.php:573
 #: ../include/global_settings.php:1179 ../lib/functions.php:3768
 msgid "Username"
-msgstr "Имя Пользователя"
+msgstr "Потребител"
 
 #: ../auth_login.php:578 ../include/global_form.php:1424
 #: ../lib/functions.php:3769
 msgid "Password"
-msgstr "Пароль"
+msgstr "Парола"
 
 #: ../auth_login.php:590 ../include/global_settings.php:1559
 #: ../lib/auth.php:285 ../lib/auth.php:297 ../lib/auth.php:308
@@ -974,15 +979,15 @@ msgstr ""
 
 #: ../auth_login.php:621
 msgid "Keep me signed in"
-msgstr "Оставаться в сети"
+msgstr ""
 
 #: ../auth_login.php:627
 msgid "Login"
-msgstr "Вход"
+msgstr ""
 
 #: ../auth_login.php:640
 msgid "Invalid User Name/Password Please Retype"
-msgstr "Не верный логин или пароль, попробуйте ещё раз"
+msgstr ""
 
 #: ../auth_login.php:643
 msgid "User Account Disabled"
@@ -995,32 +1000,38 @@ msgstr ""
 #: ../auth_profile.php:161 ../include/global_arrays.php:513
 #: ../include/global_settings.php:1895 ../lib/html.php:1540
 #: ../lib/html.php:1562
+#, fuzzy
 msgid "Tree View"
-msgstr ""
+msgstr "Дървовиден изглед"
 
 #: ../auth_profile.php:165 ../include/global_arrays.php:514
 #: ../lib/html.php:1547 ../lib/html.php:1571
+#, fuzzy
 msgid "List View"
-msgstr ""
+msgstr "Списъчен изглед"
 
 #: ../auth_profile.php:169 ../include/global_arrays.php:515
 #: ../lib/html.php:1554
+#, fuzzy
 msgid "Preview View"
-msgstr ""
+msgstr "Общ изглед"
 
 #: ../auth_profile.php:182 ../include/global_form.php:1400
 #: ../user_admin.php:2246
+#, fuzzy
 msgid "User Name"
-msgstr "Имя Пользователя"
+msgstr "Потребител"
 
 #: ../auth_profile.php:183 ../include/global_form.php:1401
+#, fuzzy
 msgid "The login name for this user."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../auth_profile.php:190 ../include/global_form.php:1408
 #: ../user_admin.php:2247 ../user_group_admin.php:675 ../utilities.php:764
+#, fuzzy
 msgid "Full Name"
-msgstr "Полное Имя"
+msgstr "Име"
 
 #: ../auth_profile.php:191 ../include/global_form.php:1409
 msgid ""
@@ -1053,8 +1064,9 @@ msgid "Clear all your Login Session Tokens."
 msgstr ""
 
 #: ../auth_profile.php:239 ../user_admin.php:1911 ../user_group_admin.php:1649
+#, fuzzy
 msgid "User Settings"
-msgstr ""
+msgstr "Настойки"
 
 #: ../auth_profile.php:292
 msgid "Private Data Cleared"
@@ -1073,8 +1085,9 @@ msgid "User Sessions Cleared"
 msgstr ""
 
 #: ../automation_devices.php:31
+#, fuzzy
 msgid "Add Device"
-msgstr ""
+msgstr "Устройства"
 
 #: ../automation_devices.php:39 ../automation_devices.php:271
 #: ../automation_devices.php:389 ../automation_devices.php:399
@@ -1097,8 +1110,9 @@ msgid "Added manually through device automation interface."
 msgstr ""
 
 #: ../automation_devices.php:106
+#, fuzzy
 msgid "Added to Cacti"
-msgstr ""
+msgstr "За cacti"
 
 #: ../automation_devices.php:106 ../automation_devices.php:108
 #: ../data_sources.php:773 ../graph_view.php:620 ../graphs.php:1324
@@ -1106,8 +1120,9 @@ msgstr ""
 #: ../include/global_arrays.php:644 ../include/global_arrays.php:1432
 #: ../lib/api_automation.php:417 ../lib/functions.php:3763 ../lib/html.php:1650
 #: ../lib/html.php:1680 ../lib/html_reports.php:368 ../utilities.php:1402
+#, fuzzy
 msgid "Device"
-msgstr "Устройство"
+msgstr "Устройства"
 
 #: ../automation_devices.php:108
 msgid "Not Added to Cacti"
@@ -1119,11 +1134,12 @@ msgstr ""
 
 #: ../automation_devices.php:183 ../pollers.php:592
 msgid "Pollers"
-msgstr "Регистраторы"
+msgstr "Събиращи скриптове"
 
 #: ../automation_devices.php:187
+#, fuzzy
 msgid "Select Template"
-msgstr ""
+msgstr "Експортиране на шаблони"
 
 #: ../automation_devices.php:193 ../automation_templates.php:307
 #: ../automation_templates.php:513
@@ -1131,8 +1147,9 @@ msgid "Availability Method"
 msgstr ""
 
 #: ../automation_devices.php:199
+#, fuzzy
 msgid "Add Device(s)"
-msgstr ""
+msgstr "Устройства"
 
 #: ../automation_devices.php:202
 msgid "You must select at least one Device."
@@ -1149,24 +1166,27 @@ msgid "Devices"
 msgstr "Устройства"
 
 #: ../automation_devices.php:248
+#, fuzzy
 msgid "Device Name"
-msgstr "Имя устройства"
+msgstr "Устройства"
 
 #: ../automation_devices.php:249
 msgid "IP"
-msgstr "IP"
-
-#: ../automation_devices.php:250
-msgid "SNMP Name"
 msgstr ""
 
+#: ../automation_devices.php:250
+#, fuzzy
+msgid "SNMP Name"
+msgstr "SNMP изтекло време"
+
 #: ../automation_devices.php:251 ../include/global_settings.php:1555
+#, fuzzy
 msgid "Location"
-msgstr "Местоположение"
+msgstr "Действия"
 
 #: ../automation_devices.php:252
 msgid "Contact"
-msgstr "Контакт"
+msgstr ""
 
 #: ../automation_devices.php:253 ../include/global_form.php:962
 #: ../include/global_form.php:998 ../include/global_form.php:1279
@@ -1176,21 +1196,22 @@ msgstr "Контакт"
 #: ../user_admin.php:1229 ../user_group_admin.php:966
 #: ../user_group_admin.php:1883
 msgid "Description"
-msgstr "Описание"
+msgstr ""
 
 #: ../automation_devices.php:254 ../automation_devices.php:499
 msgid "OS"
-msgstr "ОС"
+msgstr ""
 
 #: ../automation_devices.php:255 ../host.php:1497
 #: ../include/global_arrays.php:279
 msgid "Uptime"
-msgstr "Аптайм"
+msgstr ""
 
 #: ../automation_devices.php:256 ../automation_devices.php:514
 #: ../utilities.php:1598
+#, fuzzy
 msgid "SNMP"
-msgstr "SNMP"
+msgstr "SNMP Порт"
 
 #: ../automation_devices.php:257 ../automation_devices.php:484
 #: ../automation_graph_rules.php:728 ../automation_networks.php:964
@@ -1202,19 +1223,20 @@ msgstr "SNMP"
 #: ../managers.php:224 ../plugins.php:282 ../plugins.php:377 ../pollers.php:604
 #: ../user_admin.php:1229 ../user_group_admin.php:966
 msgid "Status"
-msgstr "Статус"
+msgstr ""
 
 #: ../automation_devices.php:258
 msgid "Last Check"
-msgstr "Последняя проверка"
+msgstr ""
 
 #: ../automation_devices.php:285 ../automation_devices.php:614
 msgid "Not Detected"
 msgstr ""
 
 #: ../automation_devices.php:303 ../host.php:1539
+#, fuzzy
 msgid "No Devices Found"
-msgstr "Устройства не найдены"
+msgstr "Устройства"
 
 #: ../automation_devices.php:439
 msgid "Discovery Filters"
@@ -1222,19 +1244,20 @@ msgstr ""
 
 #: ../automation_devices.php:454
 msgid "Network"
-msgstr "Сеть"
+msgstr ""
 
 #: ../automation_devices.php:471
 msgid "Reset fields to defaults"
-msgstr "Сбросить поля по умолчанию"
+msgstr ""
 
 #: ../automation_devices.php:474 ../color.php:571 ../lib/html_form.php:1084
+#, fuzzy
 msgid "Export"
-msgstr "Экспорт"
+msgstr "Експортиране на резултати"
 
 #: ../automation_devices.php:474
 msgid "Export to a file"
-msgstr "Экспорт в файл"
+msgstr ""
 
 #: ../automation_devices.php:477 ../lib/clog_webapi.php:119
 #: ../lib/clog_webapi.php:336 ../managers.php:747
@@ -1250,7 +1273,7 @@ msgstr ""
 #: ../data_templates.php:34 ../graph_templates.php:34 ../graphs.php:63
 #: ../host_templates.php:31 ../vdef.php:30
 msgid "Duplicate"
-msgstr "Дублировать"
+msgstr ""
 
 #: ../automation_graph_rules.php:30 ../automation_networks.php:33
 #: ../automation_tree_rules.php:30 ../data_sources.php:38 ../host.php:39
@@ -1258,7 +1281,7 @@ msgstr "Дублировать"
 #: ../managers.php:35 ../plugins.php:29 ../pollers.php:31 ../user_admin.php:30
 #: ../user_domains.php:31 ../user_domains.php:402 ../user_group_admin.php:32
 msgid "Enable"
-msgstr "Включить"
+msgstr ""
 
 #: ../automation_graph_rules.php:31 ../automation_networks.php:32
 #: ../automation_tree_rules.php:31 ../data_sources.php:39 ../host.php:40
@@ -1266,7 +1289,7 @@ msgstr "Включить"
 #: ../pollers.php:30 ../user_admin.php:31 ../user_domains.php:30
 #: ../user_group_admin.php:33
 msgid "Disable"
-msgstr "Выключить"
+msgstr ""
 
 #: ../automation_graph_rules.php:251
 msgid "Press 'Continue' to delete the following Graph Rules."
@@ -1285,7 +1308,7 @@ msgstr ""
 
 #: ../automation_graph_rules.php:260 ../automation_tree_rules.php:262
 msgid "rule_name"
-msgstr "rule_name"
+msgstr ""
 
 #: ../automation_graph_rules.php:266 ../automation_tree_rules.php:268
 msgid "Click 'Continue' to enable the following Rule(s)."
@@ -1309,7 +1332,7 @@ msgstr ""
 
 #: ../automation_graph_rules.php:414 ../automation_tree_rules.php:471
 msgid "Are You Sure?"
-msgstr "Вы уверены?"
+msgstr ""
 
 #: ../automation_graph_rules.php:414
 #, php-format
@@ -1354,14 +1377,15 @@ msgstr ""
 #: ../automation_graph_rules.php:691 ../automation_graph_rules.php:738
 #: ../automation_graph_rules.php:847 ../include/global_arrays.php:654
 #: ../include/global_form.php:1560 ../lib/functions.php:2558
+#, fuzzy
 msgid "Graph Rules"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../automation_graph_rules.php:706 ../automation_graph_rules.php:858
 #: ../include/global_arrays.php:989 ../include/global_form.php:1550
 #: ../include/global_form.php:2165
 msgid "Data Query"
-msgstr ""
+msgstr "Вземане на данни"
 
 #: ../automation_graph_rules.php:733 ../automation_graph_rules.php:860
 #: ../automation_networks.php:496 ../automation_tree_rules.php:850
@@ -1377,7 +1401,7 @@ msgstr ""
 #: ../user_group_admin.php:690 ../user_group_admin.php:1887
 #: ../utilities.php:2135
 msgid "Enabled"
-msgstr "Включено"
+msgstr ""
 
 #: ../automation_graph_rules.php:734 ../automation_networks.php:979
 #: ../automation_tree_rules.php:868 ../data_sources.php:1182
@@ -1393,15 +1417,17 @@ msgstr "Включено"
 #: ../pollers.php:40 ../user_admin.php:1113 ../user_domains.php:402
 #: ../user_group_admin.php:690 ../utilities.php:2135
 msgid "Disabled"
-msgstr "Выключен"
+msgstr ""
 
 #: ../automation_graph_rules.php:856 ../automation_tree_rules.php:844
+#, fuzzy
 msgid "Rule Name"
-msgstr ""
+msgstr "Име"
 
 #: ../automation_graph_rules.php:856
+#, fuzzy
 msgid "The name of this rule."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../automation_graph_rules.php:857
 msgid ""
@@ -1412,8 +1438,9 @@ msgstr ""
 #: ../automation_graph_rules.php:859 ../include/global_form.php:1792
 #: ../include/global_form.php:1875 ../include/global_form.php:1977
 #: ../include/global_form.php:2176
+#, fuzzy
 msgid "Graph Type"
-msgstr ""
+msgstr "Дърво на графики"
 
 #: ../automation_graph_rules.php:882
 msgid "No Graph Rules Found"
@@ -1509,8 +1536,9 @@ msgstr ""
 #: ../automation_networks.php:395 ../include/global_form.php:1844
 #: ../include/global_form.php:1944 ../include/global_settings.php:51
 #: ../lib/html_reports.php:30
+#, fuzzy
 msgid "General Settings"
-msgstr "Основые Настройки"
+msgstr "Настройки на cacti"
 
 #: ../automation_networks.php:400 ../automation_snmp.php:644
 #: ../data_input.php:468 ../data_input.php:502 ../data_queries.php:593
@@ -1529,7 +1557,7 @@ msgstr "Основые Настройки"
 #: ../managers.php:607 ../pollers.php:52 ../sites.php:40 ../user_admin.php:1101
 #: ../user_domains.php:317 ../utilities.php:466 ../utilities.php:2331
 msgid "Name"
-msgstr "Имя"
+msgstr "Име"
 
 #: ../automation_networks.php:401
 msgid "Give this Network a meaningful name."
@@ -1553,7 +1581,7 @@ msgstr ""
 #: ../automation_networks.php:416
 #, fuzzy
 msgid "Associated Site"
-msgstr "Ассоциирование RRA"
+msgstr "Асоциирани RRA"
 
 #: ../automation_networks.php:417
 msgid ""
@@ -1683,7 +1711,7 @@ msgstr ""
 #: ../include/global_settings.php:1089
 #, php-format
 msgid "%d Hours"
-msgstr "%d Часа(ов)"
+msgstr ""
 
 #: ../automation_networks.php:497
 msgid "Enable this Network Range Enabled."
@@ -1708,8 +1736,9 @@ msgid ""
 msgstr ""
 
 #: ../automation_networks.php:515
+#, fuzzy
 msgid "Rerun Data Queries"
-msgstr ""
+msgstr "Автоматизирани данни"
 
 #: ../automation_networks.php:516
 msgid ""
@@ -1747,37 +1776,37 @@ msgstr ""
 #: ../automation_networks.php:554 ../automation_networks.php:612
 #: ../include/global_arrays.php:1490
 msgid "Sunday"
-msgstr "Воскресенье"
+msgstr ""
 
 #: ../automation_networks.php:555 ../automation_networks.php:613
 #: ../include/global_arrays.php:1491
 msgid "Monday"
-msgstr "Понедельник"
+msgstr ""
 
 #: ../automation_networks.php:556 ../automation_networks.php:614
 #: ../include/global_arrays.php:1492
 msgid "Tuesday"
-msgstr "Вторник"
+msgstr ""
 
 #: ../automation_networks.php:557 ../automation_networks.php:615
 #: ../include/global_arrays.php:1493
 msgid "Wednesday"
-msgstr "Среда"
+msgstr ""
 
 #: ../automation_networks.php:558 ../automation_networks.php:616
 #: ../include/global_arrays.php:1494
 msgid "Thursday"
-msgstr "Четверг"
+msgstr ""
 
 #: ../automation_networks.php:559 ../automation_networks.php:617
 #: ../include/global_arrays.php:1495
 msgid "Friday"
-msgstr "Пятница"
+msgstr ""
 
 #: ../automation_networks.php:560 ../automation_networks.php:618
 #: ../include/global_arrays.php:1496
 msgid "Saturday"
-msgstr "Суббота"
+msgstr ""
 
 #: ../automation_networks.php:567
 msgid "Months of Year"
@@ -1872,13 +1901,15 @@ msgid "Day(s) of Week"
 msgstr ""
 
 #: ../automation_networks.php:625
+#, fuzzy
 msgid "Reachability Settings"
-msgstr ""
+msgstr "Настройки на cacti"
 
 #: ../automation_networks.php:630 ../include/global_arrays.php:656
 #: ../include/global_form.php:1054 ../include/global_form.php:1651
+#, fuzzy
 msgid "SNMP Options"
-msgstr ""
+msgstr "SNMP Версия"
 
 #: ../automation_networks.php:631
 msgid "Select the SNMP Options to use for discovery of this Network Range."
@@ -1894,8 +1925,9 @@ msgstr ""
 
 #: ../automation_networks.php:646 ../include/global_form.php:1189
 #: ../include/global_settings.php:561
+#, fuzzy
 msgid "Ping Port"
-msgstr ""
+msgstr "SNMP Порт"
 
 #: ../automation_networks.php:648 ../include/global_form.php:1191
 msgid "TCP or UDP port to attempt connection."
@@ -1903,8 +1935,9 @@ msgstr ""
 
 #: ../automation_networks.php:654 ../include/global_form.php:1197
 #: ../include/global_settings.php:569
+#, fuzzy
 msgid "Ping Timeout Value"
-msgstr ""
+msgstr "Минимална стойност"
 
 #: ../automation_networks.php:655 ../include/global_form.php:1198
 #: ../include/global_settings.php:570
@@ -1971,7 +2004,7 @@ msgstr ""
 #: ../automation_networks.php:943 ../automation_networks.php:1067
 #: ../include/global_arrays.php:651
 msgid "Networks"
-msgstr "Сети"
+msgstr ""
 
 #: ../automation_networks.php:960
 msgid "Network Name"
@@ -1998,8 +2031,9 @@ msgid "Progress"
 msgstr ""
 
 #: ../automation_networks.php:966
+#, fuzzy
 msgid "Up/SNMP Hosts"
-msgstr ""
+msgstr "SNMP Порт"
 
 #: ../automation_networks.php:967
 msgid "Threads"
@@ -2033,15 +2067,16 @@ msgstr ""
 #: ../utilities.php:2108 ../utilities.php:2111 ../utilities.php:2114
 #: ../utilities.php:2120 ../utilities.php:2351
 msgid "N/A"
-msgstr "Н/Д"
+msgstr ""
 
 #: ../automation_networks.php:1036
 msgid "No Networks Found"
 msgstr ""
 
 #: ../automation_networks.php:1085
+#, fuzzy
 msgid "Clear Filtered"
-msgstr ""
+msgstr "Зачистване на кеша на събиращия скрипт"
 
 #: ../automation_snmp.php:225
 msgid "You must select at least one SNMP Option."
@@ -2062,21 +2097,23 @@ msgid "Name Format"
 msgstr ""
 
 #: ../automation_snmp.php:242
+#, fuzzy
 msgid "name"
-msgstr ""
+msgstr "Потребител"
 
 #: ../automation_snmp.php:348
 msgid "Click 'Continue' to delete the following SNMP Option Item."
 msgstr ""
 
 #: ../automation_snmp.php:349
+#, fuzzy
 msgid "SNMP Option:"
-msgstr ""
+msgstr "SNMP Версия"
 
 #: ../automation_snmp.php:350
-#, php-format
+#, fuzzy, php-format
 msgid "SNMP Version: <b>%s</b>"
-msgstr ""
+msgstr "SNMP Версия"
 
 #: ../automation_snmp.php:351
 #, php-format
@@ -2099,15 +2136,16 @@ msgstr ""
 #: ../automation_snmp.php:434 ../include/global_form.php:1059
 #: ../include/global_form.php:1656
 msgid "SNMP Version"
-msgstr "Версия SNMP"
+msgstr "SNMP Версия"
 
 #: ../automation_snmp.php:435
 msgid "Choose the SNMP version for this host."
 msgstr ""
 
 #: ../automation_snmp.php:443
+#, fuzzy
 msgid "SNMP Community String"
-msgstr ""
+msgstr "SNMP Общност"
 
 #: ../automation_snmp.php:444
 msgid "Fill in the SNMP read community for this device."
@@ -2116,7 +2154,7 @@ msgstr ""
 #: ../automation_snmp.php:452 ../include/global_form.php:1139
 #: ../include/global_form.php:1726
 msgid "SNMP Port"
-msgstr ""
+msgstr "SNMP Порт"
 
 #: ../automation_snmp.php:453
 msgid "The UDP/TCP Port to poll the SNMP agent on."
@@ -2125,7 +2163,7 @@ msgstr ""
 #: ../automation_snmp.php:461 ../include/global_form.php:1148
 #: ../include/global_form.php:1735
 msgid "SNMP Timeout"
-msgstr ""
+msgstr "SNMP изтекло време"
 
 #: ../automation_snmp.php:462 ../include/global_form.php:1149
 #: ../include/global_form.php:1736
@@ -2133,10 +2171,13 @@ msgid ""
 "The maximum number of milliseconds Cacti will wait for an SNMP response "
 "(does not work with php-snmp support)."
 msgstr ""
+"Максималното време в милисекунди, което Cacti да чака SNMP отговор (не "
+"работи със php-snmp поддръжка)."
 
 #: ../automation_snmp.php:470
+#, fuzzy
 msgid "SNMP Retries"
-msgstr ""
+msgstr "SNMP Версия"
 
 #: ../automation_snmp.php:471
 msgid ""
@@ -2156,8 +2197,9 @@ msgstr ""
 
 #: ../automation_snmp.php:488 ../include/global_form.php:1078
 #: ../include/global_form.php:1675
+#, fuzzy
 msgid "SNMP Username (v3)"
-msgstr "SNMP Имя Пользователя (v3)"
+msgstr "Потребител"
 
 #: ../automation_snmp.php:489 ../include/global_form.php:1079
 #: ../include/global_form.php:1676
@@ -2165,8 +2207,9 @@ msgid "SNMP v3 username for this device."
 msgstr ""
 
 #: ../automation_snmp.php:497 ../include/global_form.php:1087
+#, fuzzy
 msgid "SNMP Password (v3)"
-msgstr "SNMP Пароль (v3)"
+msgstr "Парола"
 
 #: ../automation_snmp.php:498
 msgid "SNMP v3 password for this device."
@@ -2200,12 +2243,14 @@ msgid "Choose the SNMPv3 Privacy Protocol."
 msgstr ""
 
 #: ../automation_snmp.php:531
+#, fuzzy
 msgid "SNMP Context"
-msgstr ""
+msgstr "SNMP Общност"
 
 #: ../automation_snmp.php:532
+#, fuzzy
 msgid "Enter the SNMP Context to use for this device."
-msgstr ""
+msgstr "Въведете UDP порт номер който да се използва за SNMP (стандартно 161)"
 
 #: ../automation_snmp.php:544 ../include/global_form.php:921
 #: ../include/global_form.php:2106 ../include/global_form.php:2148
@@ -2248,20 +2293,24 @@ msgstr ""
 #: ../automation_snmp.php:673 ../include/auth.php:154
 #: ../include/global_settings.php:469 ../permission_denied.php:67
 #: ../plugins.php:379
+#, fuzzy
 msgid "Version"
-msgstr "Версия"
+msgstr "SNMP Версия"
 
 #: ../automation_snmp.php:674 ../include/global_settings.php:476
+#, fuzzy
 msgid "Community"
-msgstr ""
+msgstr "SNMP Общност"
 
 #: ../automation_snmp.php:675 ../lib/functions.php:3764
+#, fuzzy
 msgid "Port"
-msgstr ""
+msgstr "SNMP Порт"
 
 #: ../automation_snmp.php:676 ../include/global_settings.php:518
+#, fuzzy
 msgid "Timeout"
-msgstr ""
+msgstr "SNMP изтекло време"
 
 #: ../automation_snmp.php:677 ../include/global_settings.php:534
 msgid "Retries"
@@ -2272,12 +2321,14 @@ msgid "Max OIDS"
 msgstr ""
 
 #: ../automation_snmp.php:679
+#, fuzzy
 msgid "Auth Username"
-msgstr ""
+msgstr "Потребител"
 
 #: ../automation_snmp.php:680
+#, fuzzy
 msgid "Auth Password"
-msgstr ""
+msgstr "Парола"
 
 #: ../automation_snmp.php:681
 msgid "Auth Protocol"
@@ -2296,8 +2347,9 @@ msgid "Context"
 msgstr ""
 
 #: ../automation_snmp.php:685 ../data_queries.php:904 ../utilities.php:1593
+#, fuzzy
 msgid "Action"
-msgstr ""
+msgstr "Действия"
 
 #: ../automation_snmp.php:698
 msgid "none"
@@ -2329,8 +2381,9 @@ msgid "Delete SNMP Option Item"
 msgstr ""
 
 #: ../automation_snmp.php:832
+#, fuzzy
 msgid "SNMP Rules"
-msgstr ""
+msgstr "SNMP Версия"
 
 #: ../automation_snmp.php:921
 msgid "SNMP Option Sets"
@@ -2375,8 +2428,9 @@ msgstr ""
 #: ../automation_templates.php:300 ../include/global_arrays.php:990
 #: ../include/global_form.php:1030 ../include/global_form.php:1535
 #: ../lib/html_reports.php:359
+#, fuzzy
 msgid "Device Template"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../automation_templates.php:301
 msgid "Select a Device Template that Devices will be matched to."
@@ -2434,8 +2488,9 @@ msgstr ""
 
 #: ../automation_templates.php:512 ../data_sources.php:1355 ../graphs.php:1745
 #: ../user_admin.php:1371 ../user_group_admin.php:1109
+#, fuzzy
 msgid "Template Name"
-msgstr "Имя Шаблона"
+msgstr "Шаблони за елементи на графиката"
 
 #: ../automation_templates.php:516
 msgid "System ObjectId Match"
@@ -2447,8 +2502,9 @@ msgid "Order"
 msgstr ""
 
 #: ../automation_templates.php:530
+#, fuzzy
 msgid "Unknown Template"
-msgstr ""
+msgstr "Експортиране на шаблони"
 
 #: ../automation_templates.php:565
 msgid "No Automation Device Templates Found"
@@ -2465,8 +2521,9 @@ msgid ""
 msgstr ""
 
 #: ../automation_tree_rules.php:379
+#, fuzzy
 msgid "Created Trees"
-msgstr ""
+msgstr "Дърво на графики"
 
 #: ../automation_tree_rules.php:471
 #, php-format
@@ -2489,8 +2546,9 @@ msgstr ""
 #: ../automation_tree_rules.php:706 ../automation_tree_rules.php:731
 #: ../automation_tree_rules.php:835 ../include/global_arrays.php:655
 #: ../include/global_form.php:1565 ../lib/functions.php:2582
+#, fuzzy
 msgid "Tree Rules"
-msgstr ""
+msgstr "Дървовиден изглед"
 
 #: ../automation_tree_rules.php:846
 msgid "Hook into Tree"
@@ -2517,18 +2575,16 @@ msgid "No Tree Rules Found"
 msgstr ""
 
 #: ../cdef.php:277
-#, fuzzy
 msgid "Click 'Continue' to delete the following CDEF."
 msgid_plural "Click 'Continue' to delete all following CDEFs."
-msgstr[0] "Вы уверены что хотите удалить следующие VDEF"
-msgstr[1] "Вы уверены что хотите удалить следующие VDEF"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../cdef.php:282
-#, fuzzy
 msgid "Delete CDEF"
 msgid_plural "Delete CDEFs"
-msgstr[0] "Удалить"
-msgstr[1] "Удалить"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../cdef.php:286
 msgid ""
@@ -2541,11 +2597,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../cdef.php:292
-#, fuzzy
 msgid "Duplicate CDEF"
 msgid_plural "Duplicate CDEFs"
-msgstr[0] "Дублировать"
-msgstr[1] "Дублировать"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../cdef.php:295
 msgid "You must select at least one CDEF."
@@ -2599,8 +2654,9 @@ msgid "CDEF Items"
 msgstr ""
 
 #: ../cdef.php:585 ../vdef.php:565
+#, fuzzy
 msgid "Item Value"
-msgstr ""
+msgstr "Максимална стойност"
 
 #: ../cdef.php:598 ../vdef.php:579
 #, php-format
@@ -2617,8 +2673,9 @@ msgid "CDEFs"
 msgstr ""
 
 #: ../cdef.php:851
+#, fuzzy
 msgid "CDEF Name"
-msgstr ""
+msgstr "Име"
 
 #: ../cdef.php:851 ../data_source_profiles.php:847
 msgid "The name of this CDEF."
@@ -2637,8 +2694,9 @@ msgstr ""
 #: ../cdef.php:854 ../color.php:701 ../data_input.php:725
 #: ../data_queries.php:1146 ../data_source_profiles.php:854
 #: ../gprint_presets.php:394 ../vdef.php:848
+#, fuzzy
 msgid "Templates Using"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../cdef.php:854
 msgid "The number of Graphs Templates using this CDEF."
@@ -2657,18 +2715,16 @@ msgid "Unnamed Color"
 msgstr ""
 
 #: ../color.php:187
-#, fuzzy
 msgid "Click 'Continue' to delete the following Color"
 msgid_plural "Click 'Continue' to delete the following Colors"
-msgstr[0] "Вы уверены что хотите удалить этих пользователей?"
-msgstr[1] "Вы уверены что хотите удалить этих пользователей?"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../color.php:192
-#, fuzzy
 msgid "Delete Color"
 msgid_plural "Delete Colors"
-msgstr[0] "Удалить"
-msgstr[1] "Удалить"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../color.php:195
 msgid "You must select at least one Color."
@@ -2679,8 +2735,9 @@ msgid "Cacti has imported the following items:"
 msgstr ""
 
 #: ../color.php:365 ../color.php:568
+#, fuzzy
 msgid "Import Colors"
-msgstr ""
+msgstr "Импортиране на шаблони"
 
 #: ../color.php:368
 msgid "Import Colors from Local File"
@@ -2693,8 +2750,9 @@ msgid ""
 msgstr ""
 
 #: ../color.php:373 ../lib/html_form.php:417
+#, fuzzy
 msgid "Select a File"
-msgstr ""
+msgstr "Избери всички"
 
 #: ../color.php:380
 msgid "Overwrite Existing Data?"
@@ -2738,7 +2796,7 @@ msgstr ""
 #: ../color.php:520 ../color.php:535 ../include/global_arrays.php:662
 #: ../lib/functions.php:2006
 msgid "Colors"
-msgstr "Цвета"
+msgstr ""
 
 #: ../color.php:553
 msgid "Named Colors"
@@ -2746,11 +2804,12 @@ msgstr ""
 
 #: ../color.php:568 ../lib/html_form.php:1082
 msgid "Import"
-msgstr "Импорт"
+msgstr ""
 
 #: ../color.php:571
+#, fuzzy
 msgid "Export Colors"
-msgstr ""
+msgstr "Експортиране на резултати"
 
 #: ../color.php:695
 msgid "Hex"
@@ -2779,7 +2838,7 @@ msgstr ""
 #: ../color.php:698 ../include/global_arrays.php:648
 #: ../include/global_form.php:812 ../include/global_form.php:2047
 msgid "Color"
-msgstr "Цвет"
+msgstr ""
 
 #: ../color.php:698
 msgid "The Color as shown on the screen."
@@ -2820,8 +2879,9 @@ msgstr ""
 
 #: ../color_templates.php:131 ../graph_templates_inputs.php:222
 #: ../lib/api_aggregate.php:1350 ../lib/html.php:999
+#, fuzzy
 msgid "No Items"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../color_templates.php:226
 msgid "Click 'Continue' to delete the following Color Template"
@@ -2830,11 +2890,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../color_templates.php:231
-#, fuzzy
 msgid "Delete Color Template"
 msgid_plural "Delete Color Templates"
-msgstr[0] "Удалить шаблоны графиков"
-msgstr[1] "Удалить шаблоны графиков"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../color_templates.php:235
 msgid ""
@@ -2856,21 +2915,22 @@ msgstr ""
 #, fuzzy
 msgid "Duplicate Color Template"
 msgid_plural "Duplicate Color Templates"
-msgstr[0] "Продублировать шаблоны графиков"
-msgstr[1] "Продублировать шаблоны графиков"
+msgstr[0] "Асоциирани шаблони за графики"
+msgstr[1] "Асоциирани шаблони за графики"
 
 #: ../color_templates.php:244
 msgid "You must select at least one Color Template."
 msgstr ""
 
 #: ../color_templates.php:277
+#, fuzzy
 msgid "Color Template Items [new]"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../color_templates.php:288
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template Items [edit: %s]"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../color_templates.php:321
 msgid "Delete Color Item"
@@ -2882,13 +2942,15 @@ msgid "Color Template [edit: %s]"
 msgstr ""
 
 #: ../color_templates.php:350
+#, fuzzy
 msgid "Color Template [new]"
-msgstr ""
+msgstr "Експортиране на шаблони"
 
 #: ../color_templates.php:430 ../color_templates.php:443
 #: ../lib/functions.php:2480
+#, fuzzy
 msgid "Color Templates"
-msgstr ""
+msgstr "Експортиране на шаблони"
 
 #: ../color_templates.php:546
 msgid ""
@@ -2897,8 +2959,9 @@ msgid ""
 msgstr ""
 
 #: ../color_templates.php:571
+#, fuzzy
 msgid "No Color Templates Found"
-msgstr ""
+msgstr "Експортиране на шаблони"
 
 #: ../color_templates_items.php:273
 msgid "Click 'Continue' to delete the following Color Template Color."
@@ -2936,8 +2999,8 @@ msgstr[1] ""
 #, fuzzy
 msgid "Delete Data Input Method"
 msgid_plural "Delete Data Input Methods"
-msgstr[0] "Метод Ввода Данных"
-msgstr[1] "Метод Ввода Данных"
+msgstr[0] "Методи за въвеждане на данни"
+msgstr[1] "Методи за въвеждане на данни"
 
 #: ../data_input.php:220
 msgid "You must select at least one data input method."
@@ -2958,8 +3021,9 @@ msgid "Friendly Name: %s"
 msgstr ""
 
 #: ../data_input.php:267 ../host_templates.php:335 ../host_templates.php:395
+#, fuzzy
 msgid "Remove Data Input Field"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../data_input.php:362
 #, php-format
@@ -2967,46 +3031,53 @@ msgid "Output Fields [edit: %s]"
 msgstr ""
 
 #: ../data_input.php:363 ../include/global_form.php:461
+#, fuzzy
 msgid "Output Field"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../data_input.php:365
-#, php-format
+#, fuzzy, php-format
 msgid "Input Fields [edit: %s]"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../data_input.php:366
+#, fuzzy
 msgid "Input Field"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../data_input.php:432
-#, php-format
+#, fuzzy, php-format
 msgid "Data Input Methods [edit: %s]"
-msgstr ""
+msgstr "Методи за въвеждане на данни"
 
 #: ../data_input.php:434
+#, fuzzy
 msgid "Data Input Methods [new]"
-msgstr ""
+msgstr "Методи за въвеждане на данни"
 
 #: ../data_input.php:444 ../include/global_arrays.php:264
+#, fuzzy
 msgid "SNMP Get"
-msgstr ""
+msgstr "SNMP Порт"
 
 #: ../data_input.php:447 ../include/global_arrays.php:265
+#, fuzzy
 msgid "SNMP Query"
-msgstr ""
+msgstr "SNMP Версия"
 
 #: ../data_input.php:450 ../include/global_arrays.php:267
+#, fuzzy
 msgid "Script Query"
-msgstr ""
+msgstr "Скрипт"
 
 #: ../data_input.php:453 ../include/global_arrays.php:269
 msgid "Script Query - Script Server"
 msgstr ""
 
 #: ../data_input.php:466
+#, fuzzy
 msgid "Input Fields"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../data_input.php:469 ../data_input.php:503
 msgid "Field Order"
@@ -3021,41 +3092,48 @@ msgid "(Not In Use)"
 msgstr ""
 
 #: ../data_input.php:496
+#, fuzzy
 msgid "No Input Fields"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../data_input.php:500
+#, fuzzy
 msgid "Output Fields"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../data_input.php:505
 msgid "Update RRA"
 msgstr ""
 
 #: ../data_input.php:534
+#, fuzzy
 msgid "No Output Fields"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../data_input.php:556 ../host_templates.php:600
+#, fuzzy
 msgid "Delete Data Input Field"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../data_input.php:610 ../include/global_arrays.php:641
 #: ../include/global_arrays.php:809 ../lib/functions.php:2144
 msgid "Data Input Methods"
-msgstr "Метод Ввода Данных"
+msgstr "Методи за въвеждане на данни"
 
 #: ../data_input.php:625 ../data_input.php:713
+#, fuzzy
 msgid "Input Methods"
-msgstr ""
+msgstr "Методи за въвеждане на данни"
 
 #: ../data_input.php:722
+#, fuzzy
 msgid "Data Input Name"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../data_input.php:722
+#, fuzzy
 msgid "The name of this Data Input Method."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../data_input.php:723
 msgid ""
@@ -3065,8 +3143,9 @@ msgstr ""
 
 #: ../data_input.php:724 ../data_source_profiles.php:853
 #: ../data_templates.php:905
+#, fuzzy
 msgid "Data Sources Using"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../data_input.php:724
 msgid "The number of Data Sources that use this Data Input Method."
@@ -3079,29 +3158,33 @@ msgstr ""
 #: ../data_input.php:726 ../data_queries.php:1147
 #: ../include/global_arrays.php:982 ../include/global_form.php:385
 #: ../include/global_form.php:1296
+#, fuzzy
 msgid "Data Input Method"
-msgstr "Метод Ввода Данных"
+msgstr "Методи за въвеждане на данни"
 
 #: ../data_input.php:726
+#, fuzzy
 msgid "The method used to gather information for this Data Input Method."
 msgstr ""
+"Скриптът/източникът използван за събиране на данни за този източник на данни."
 
 #: ../data_input.php:749
+#, fuzzy
 msgid "No Data Input Methods Found"
-msgstr ""
+msgstr "Методи за въвеждане на данни"
 
 #: ../data_queries.php:316
-#, fuzzy
 msgid "Click 'Continue' to delete the following Data Query."
 msgid_plural "Click 'Continue' to delete following Data Queries."
-msgstr[0] "Вы уверены что хотите удалить этих пользователей?"
-msgstr[1] "Вы уверены что хотите удалить этих пользователей?"
-
-#: ../data_queries.php:322
-msgid "Delete Data Query"
-msgid_plural "Delete Data Query"
 msgstr[0] ""
 msgstr[1] ""
+
+#: ../data_queries.php:322
+#, fuzzy
+msgid "Delete Data Query"
+msgid_plural "Delete Data Query"
+msgstr[0] "Вземане на данни"
+msgstr[1] "Вземане на данни"
 
 #: ../data_queries.php:324
 msgid "You must select at least one data query."
@@ -3112,28 +3195,30 @@ msgid "Click 'Continue' to delete the following Data Query Graph Association."
 msgstr ""
 
 #: ../data_queries.php:420
-#, php-format
+#, fuzzy, php-format
 msgid "Graph Name: %s"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../data_queries.php:426 ../vdef.php:333
 msgid "Remove VDEF Item"
 msgstr ""
 
 #: ../data_queries.php:479
-#, php-format
+#, fuzzy, php-format
 msgid "Associated Graph/Data Templates [edit: %s]"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../data_queries.php:502
+#, fuzzy
 msgid "Associated Data Templates"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../data_queries.php:549 ../data_sources.php:832 ../data_templates.php:516
 #: ../include/global_arrays.php:646 ../include/global_form.php:797
 #: ../lib/api_aggregate.php:1215 ../lib/html.php:877
+#, fuzzy
 msgid "Data Source"
-msgstr "Источник Данных"
+msgstr "Източници на данни"
 
 #: ../data_queries.php:584
 msgid "Suggested Values - Graph Names"
@@ -3141,13 +3226,13 @@ msgstr ""
 
 #: ../data_queries.php:595 ../data_queries.php:688
 msgid "Equation"
-msgstr "Уравнение"
+msgstr ""
 
 #: ../data_queries.php:653 ../data_queries.php:749
 #: ../include/global_form.php:2082 ../include/global_form.php:2124
 #: ../lib/api_automation.php:1333 ../utilities.php:1402
 msgid "Field Name"
-msgstr "Имя поля"
+msgstr ""
 
 #: ../data_queries.php:659 ../data_queries.php:755
 msgid "Suggested Value"
@@ -3157,28 +3242,30 @@ msgstr ""
 #: ../host.php:871 ../host_templates.php:515 ../host_templates.php:569
 #: ../lib/html.php:37
 msgid "Add"
-msgstr "Добавить"
+msgstr "Добави"
 
 #: ../data_queries.php:665
 msgid "Add Graph Title Suggested Name"
 msgstr ""
 
 #: ../data_queries.php:674
+#, fuzzy
 msgid "Suggested Values - Data Source Names"
-msgstr ""
+msgstr "Вътрешно име на източника на данни"
 
 #: ../data_queries.php:761
 msgid "Add Data Source Name Suggested Name"
 msgstr ""
 
 #: ../data_queries.php:864
-#, php-format
+#, fuzzy, php-format
 msgid "Data Queries [edit: %s]"
-msgstr ""
+msgstr "Автоматизирани данни"
 
 #: ../data_queries.php:866
+#, fuzzy
 msgid "Data Queries [new]"
-msgstr ""
+msgstr "Автоматизирани данни"
 
 #: ../data_queries.php:886
 msgid "Successfully located XML file"
@@ -3191,12 +3278,13 @@ msgstr ""
 #: ../data_queries.php:897 ../host.php:679 ../host_templates.php:466
 #: ../lib/functions.php:2198
 msgid "Associated Graph Templates"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../data_queries.php:901 ../graph_templates.php:759 ../graphs_new.php:617
 #: ../host.php:681 ../lib/api_automation.php:563
+#, fuzzy
 msgid "Graph Template Name"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../data_queries.php:903
 msgid "Mapping ID"
@@ -3207,26 +3295,30 @@ msgid "Mapped Graph Templates with Graphs are read only"
 msgstr ""
 
 #: ../data_queries.php:951
+#, fuzzy
 msgid "No Graph Templates Defined."
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../data_queries.php:975
+#, fuzzy
 msgid "Delete Associated Graph"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../data_queries.php:1029 ../data_queries.php:1044 ../data_queries.php:1133
 #: ../include/global_arrays.php:640 ../include/global_arrays.php:810
 #: ../lib/api_automation.php:1027 ../lib/functions.php:2180
 msgid "Data Queries"
-msgstr ""
+msgstr "Автоматизирани данни"
 
 #: ../data_queries.php:1142 ../host.php:770 ../utilities.php:1402
+#, fuzzy
 msgid "Data Query Name"
-msgstr ""
+msgstr "Вземане на данни"
 
 #: ../data_queries.php:1142
+#, fuzzy
 msgid "The name of this Data Query."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../data_queries.php:1143 ../graph_templates.php:760
 msgid ""
@@ -3255,8 +3347,9 @@ msgid ""
 msgstr ""
 
 #: ../data_queries.php:1171
+#, fuzzy
 msgid "No Data Queries Found"
-msgstr ""
+msgstr "Автоматизирани данни"
 
 #: ../data_source_profiles.php:261
 msgid "Click 'Continue' to delete the following Data Source Profile"
@@ -3265,10 +3358,11 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../data_source_profiles.php:266
+#, fuzzy
 msgid "Delete Data Source Profile"
 msgid_plural "Delete Data Source Profiles"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Вътрешно име на източника на данни"
+msgstr[1] "Вътрешно име на източника на данни"
 
 #: ../data_source_profiles.php:270
 msgid ""
@@ -3313,13 +3407,14 @@ msgid "RRA [edit: %s]"
 msgstr ""
 
 #: ../data_source_profiles.php:460
-#, php-format
+#, fuzzy, php-format
 msgid "Data Source Profile [edit: %s]"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../data_source_profiles.php:462
+#, fuzzy
 msgid "Data Source Profile [new]"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../data_source_profiles.php:480
 msgid "Data Source Profile RRAs (press save to update timespans)"
@@ -3334,14 +3429,15 @@ msgid "Effective Timespan"
 msgstr ""
 
 #: ../data_source_profiles.php:488
+#, fuzzy
 msgid "Steps"
-msgstr ""
+msgstr "Стъпка"
 
 #: ../data_source_profiles.php:489 ../graphs_new.php:546
 #: ../include/global_form.php:121 ../lib/html.php:379 ../lib/rrd.php:2667
 #: ../pollers.php:513 ../utilities.php:468 ../utilities.php:1315
 msgid "Rows"
-msgstr "Строк"
+msgstr ""
 
 #: ../data_source_profiles.php:535
 msgid "Select Consolidation Function(s)"
@@ -3355,11 +3451,11 @@ msgstr ""
 #: ../include/global_settings.php:1019
 #, php-format
 msgid "%d Years"
-msgstr "%d Года"
+msgstr ""
 
 #: ../data_source_profiles.php:621
 msgid "1 Year"
-msgstr "1 Год"
+msgstr ""
 
 #: ../data_source_profiles.php:630 ../include/global_arrays.php:1079
 #: ../rrdcleaner.php:489
@@ -3373,7 +3469,7 @@ msgstr ""
 #: ../rrdcleaner.php:491 ../rrdcleaner.php:492
 #, php-format
 msgid "%d Months"
-msgstr "%d Месяца"
+msgstr ""
 
 #: ../data_source_profiles.php:639 ../include/global_arrays.php:1077
 #: ../rrdcleaner.php:485 ../rrdcleaner.php:486
@@ -3385,7 +3481,7 @@ msgstr ""
 #: ../rrdcleaner.php:487 ../rrdcleaner.php:488
 #, php-format
 msgid "%d Weeks"
-msgstr "%d Недели"
+msgstr ""
 
 #: ../data_source_profiles.php:648 ../include/global_arrays.php:1073
 #, php-format
@@ -3400,7 +3496,7 @@ msgstr ""
 #: ../include/global_settings.php:1030 ../include/global_settings.php:1031
 #, php-format
 msgid "%d Days"
-msgstr "%d Дня(ей)"
+msgstr ""
 
 #: ../data_source_profiles.php:656 ../include/global_arrays.php:442
 #: ../include/global_arrays.php:477 ../include/global_arrays.php:1114
@@ -3408,23 +3504,26 @@ msgstr "%d Дня(ей)"
 #: ../include/global_arrays.php:1177 ../include/global_arrays.php:1203
 #: ../include/global_settings.php:1085
 msgid "1 Hour"
-msgstr "1 Час"
+msgstr ""
 
 #: ../data_source_profiles.php:710 ../include/global_arrays.php:817
+#, fuzzy
 msgid "Data Source Profiles"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../data_source_profiles.php:725 ../data_source_profiles.php:838
 msgid "Profiles"
 msgstr ""
 
 #: ../data_source_profiles.php:743 ../data_templates.php:787
+#, fuzzy
 msgid "Has Data Sources"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../data_source_profiles.php:847
+#, fuzzy
 msgid "Data Source Profile Name"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../data_source_profiles.php:848
 msgid "Is this the default Profile for all new Data Templates?"
@@ -3447,7 +3546,7 @@ msgstr ""
 #: ../data_source_profiles.php:851 ../data_sources.php:1352
 #: ../include/global_settings.php:847
 msgid "Poller Interval"
-msgstr "Частота Опроса"
+msgstr ""
 
 #: ../data_source_profiles.php:851
 msgid "The Polling Frequency for the Profile"
@@ -3456,7 +3555,7 @@ msgstr ""
 #: ../data_source_profiles.php:852 ../include/global_form.php:52
 #: ../include/global_form.php:453
 msgid "Heartbeat"
-msgstr ""
+msgstr "Heartbeat"
 
 #: ../data_source_profiles.php:852
 msgid ""
@@ -3473,16 +3572,18 @@ msgid "The number of Data Templates using this Profile."
 msgstr ""
 
 #: ../data_source_profiles.php:886
+#, fuzzy
 msgid "No Data Source Profiles"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../data_sources.php:36 ../data_sources.php:470 ../graphs.php:54
+#, fuzzy
 msgid "Change Device"
-msgstr ""
+msgstr "Устройства"
 
 #: ../data_sources.php:37 ../graphs.php:55
 msgid "Reapply Suggested Names"
-msgstr "Применить Предлагаемые Имена"
+msgstr ""
 
 #: ../data_sources.php:438
 msgid "Click 'Continue' to delete the following Data Source"
@@ -3521,18 +3622,20 @@ msgstr[1] ""
 #, fuzzy
 msgid "Delete Data Source"
 msgid_plural "Delete Data Sources"
-msgstr[0] "Источник Данных"
-msgstr[1] "Источник Данных"
+msgstr[0] "Източници на данни"
+msgstr[1] "Източници на данни"
 
 #: ../data_sources.php:464
+#, fuzzy
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Изберете име за този източник на данни."
+msgstr[1] "Изберете име за този източник на данни."
 
 #: ../data_sources.php:466
+#, fuzzy
 msgid "New Device:"
-msgstr ""
+msgstr "Устройства"
 
 #: ../data_sources.php:474
 msgid "Click 'Continue' to enable the following Data Source."
@@ -3544,8 +3647,8 @@ msgstr[1] ""
 #, fuzzy
 msgid "Enable Data Source"
 msgid_plural "Enable Data Sources"
-msgstr[0] "Источник Данных"
-msgstr[1] "Источник Данных"
+msgstr[0] "Източници на данни"
+msgstr[1] "Източници на данни"
 
 #: ../data_sources.php:483
 msgid "Click 'Continue' to disable the following Data Source."
@@ -3554,8 +3657,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../data_sources.php:488
+#, fuzzy
 msgid "Disable Data Source"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../data_sources.php:492
 msgid ""
@@ -3585,8 +3689,9 @@ msgid "(From Device: %s)"
 msgstr ""
 
 #: ../data_sources.php:592
+#, fuzzy
 msgid "(From Data Template)"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../data_sources.php:593
 msgid "Nothing Entered"
@@ -3627,16 +3732,19 @@ msgid "Turn On Data Source Info Mode."
 msgstr ""
 
 #: ../data_sources.php:717
+#, fuzzy
 msgid "Edit Data Template."
-msgstr ""
+msgstr "Експортиране на шаблони"
 
 #: ../data_sources.php:720 ../graphs.php:1287
+#, fuzzy
 msgid "Edit Device."
-msgstr ""
+msgstr "Устройства"
 
 #: ../data_sources.php:765
+#, fuzzy
 msgid "Selected Data Template"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../data_sources.php:766
 #, php-format
@@ -3647,37 +3755,41 @@ msgid ""
 msgstr ""
 
 #: ../data_sources.php:774
+#, fuzzy
 msgid "Choose the Device that this Data Source belongs to."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../data_sources.php:820
 msgid "Supplemental Data Template Data"
 msgstr ""
 
 #: ../data_sources.php:822
+#, fuzzy
 msgid "Data Source Fields"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../data_sources.php:823
+#, fuzzy
 msgid "Data Source Item Fields"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../data_sources.php:824
 msgid "Custom Data"
 msgstr ""
 
 #: ../data_sources.php:908
-#, php-format
+#, fuzzy, php-format
 msgid "Data Source Item %s"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../data_sources.php:911
 msgid "New"
-msgstr "Новый"
+msgstr ""
 
 #: ../data_sources.php:970
+#, fuzzy
 msgid "Data Source Debug"
-msgstr ""
+msgstr "Вид на източника на данни"
 
 #: ../data_sources.php:990
 msgid "RRDtool Tune Info"
@@ -3710,13 +3822,14 @@ msgid "1 Minute"
 msgstr ""
 
 #: ../data_sources.php:1141 ../graphs_items.php:292
-#, php-format
+#, fuzzy, php-format
 msgid "Data Sources [%s]"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../data_sources.php:1141
+#, fuzzy
 msgid "No Device"
-msgstr ""
+msgstr "Устройства"
 
 #: ../data_sources.php:1180 ../data_sources.php:1206 ../data_sources.php:1222
 #: ../data_templates.php:757 ../graph_view.php:782 ../graphs_new.php:524
@@ -3725,7 +3838,7 @@ msgstr ""
 #: ../settings.php:192 ../settings.php:209 ../settings.php:232
 #: ../utilities.php:636 ../utilities.php:1000
 msgid "All"
-msgstr "Все"
+msgstr ""
 
 #: ../data_sources.php:1202 ../data_templates.php:753
 msgid "Profile"
@@ -3740,11 +3853,12 @@ msgstr ""
 #: ../lib/functions.php:2090 ../user_admin.php:1229 ../user_group_admin.php:966
 #: ../utilities.php:273
 msgid "Data Sources"
-msgstr "Источники Данных"
+msgstr "Източници на данни"
 
 #: ../data_sources.php:1350 ../utilities.php:1691
+#, fuzzy
 msgid "Data Source Name"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../data_sources.php:1350
 msgid ""
@@ -3759,8 +3873,10 @@ msgid ""
 msgstr ""
 
 #: ../data_sources.php:1352
+#, fuzzy
 msgid "The frequency that data is collected for this Data Source."
 msgstr ""
+"Скриптът/източникът използван за събиране на данни за този източник на данни."
 
 #: ../data_sources.php:1353
 msgid "If this Data Source is no long in use by Graphs, it can be Deleted."
@@ -3769,7 +3885,7 @@ msgstr ""
 #: ../data_sources.php:1354 ../data_templates.php:927 ../plugins.php:38
 #: ../plugins.php:287
 msgid "Active"
-msgstr "Активный"
+msgstr "Активен"
 
 #: ../data_sources.php:1354
 msgid ""
@@ -3782,8 +3898,9 @@ msgid "The Data Template that this Data Source was based upon."
 msgstr ""
 
 #: ../data_sources.php:1402
+#, fuzzy
 msgid "No Data Sources Found"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../data_templates.php:35
 msgid "Change Profile"
@@ -3811,8 +3928,9 @@ msgid "template_title"
 msgstr ""
 
 #: ../data_templates.php:368
+#, fuzzy
 msgid "Duplicate Data Template(s)"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../data_templates.php:372
 msgid ""
@@ -3821,8 +3939,9 @@ msgid ""
 msgstr ""
 
 #: ../data_templates.php:374
+#, fuzzy
 msgid "New Data Source Profile"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../data_templates.php:380
 msgid ""
@@ -3831,8 +3950,9 @@ msgid ""
 msgstr ""
 
 #: ../data_templates.php:384
+#, fuzzy
 msgid "Change Data Source Profile"
-msgstr ""
+msgstr "Вътрешно име на източника на данни"
 
 #: ../data_templates.php:387
 msgid "You must select at least one data template."
@@ -3844,12 +3964,14 @@ msgid "Data Templates [edit: %s]"
 msgstr ""
 
 #: ../data_templates.php:501
+#, fuzzy
 msgid "Data Templates [new]"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../data_templates.php:527
+#, fuzzy
 msgid "This field is always templated."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../data_templates.php:531 ../data_templates.php:605
 #: ../data_templates.php:665
@@ -3857,9 +3979,9 @@ msgid "Use Per-Data Source Value (Ignore this Value)"
 msgstr ""
 
 #: ../data_templates.php:586
-#, php-format
+#, fuzzy, php-format
 msgid "Data Source Item [%s]"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../data_templates.php:669
 msgid "Value will be derived from the device if this field is left empty."
@@ -3868,16 +3990,19 @@ msgstr ""
 #: ../data_templates.php:738 ../data_templates.php:769
 #: ../data_templates.php:893 ../include/global_arrays.php:821
 #: ../lib/functions.php:2072
+#, fuzzy
 msgid "Data Templates"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../data_templates.php:902
+#, fuzzy
 msgid "Data Template Name"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../data_templates.php:902
+#, fuzzy
 msgid "The name of this Data Template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../data_templates.php:903
 msgid ""
@@ -3892,12 +4017,14 @@ msgid ""
 msgstr ""
 
 #: ../data_templates.php:905
+#, fuzzy
 msgid "The number of Data Sources using this Data Template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../data_templates.php:906
+#, fuzzy
 msgid "Input Method"
-msgstr ""
+msgstr "Методи за въвеждане на данни"
 
 #: ../data_templates.php:906
 msgid "The method that is used to place Data into the Data Source RRDfile."
@@ -3908,8 +4035,9 @@ msgid "Profile Name"
 msgstr ""
 
 #: ../data_templates.php:907
+#, fuzzy
 msgid "The default Data Source Profile for this Data Template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../data_templates.php:908
 msgid ""
@@ -3918,8 +4046,9 @@ msgid ""
 msgstr ""
 
 #: ../data_templates.php:932
+#, fuzzy
 msgid "No Data Templates Found"
-msgstr ""
+msgstr "Експортиране на шаблони"
 
 #: ../gprint_presets.php:148
 msgid "Click 'Continue' to delete the folling GPRINT Preset(s)."
@@ -3960,9 +4089,8 @@ msgid "The name of this GPRINT Preset."
 msgstr ""
 
 #: ../gprint_presets.php:391
-#, fuzzy
 msgid "Format"
-msgstr "формат"
+msgstr ""
 
 #: ../gprint_presets.php:391
 msgid "The GPRINT format string."
@@ -4003,26 +4131,29 @@ msgid "Real-time"
 msgstr ""
 
 #: ../graph.php:179
+#, fuzzy
 msgid "Utility View"
-msgstr ""
+msgstr "Приложения"
 
 #: ../graph.php:277
 msgid "Graph Utility View"
 msgstr ""
 
 #: ../graph.php:290
+#, fuzzy
 msgid "Graph Source/Properties"
-msgstr ""
+msgstr "Елементи на графичното дърво"
 
 #: ../graph.php:294
+#, fuzzy
 msgid "Graph Data"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../graph.php:307 ../graph_realtime.php:267 ../lib/clog_webapi.php:341
 #: ../lib/html_graph.php:319 ../lib/html_tree.php:764 ../lib/html_tree.php:784
 #: ../utilities.php:1020 ../utilities.php:1897
 msgid "Refresh"
-msgstr "Обновить"
+msgstr ""
 
 #: ../graph.php:429
 msgid "RRDtool Graph Syntax"
@@ -4050,7 +4181,7 @@ msgstr ""
 
 #: ../graph_realtime.php:253 ../lib/html_graph.php:327 ../lib/html_tree.php:772
 msgid "Window"
-msgstr "Окно"
+msgstr ""
 
 #: ../graph_realtime.php:283
 #, php-format
@@ -4063,11 +4194,12 @@ msgstr ""
 
 #: ../graph_templates.php:35
 msgid "Resize"
-msgstr "Изменить размер"
+msgstr ""
 
 #: ../graph_templates.php:36
+#, fuzzy
 msgid "Sync Graphs"
-msgstr ""
+msgstr "Графики"
 
 #: ../graph_templates.php:311
 msgid ""
@@ -4076,8 +4208,9 @@ msgid ""
 msgstr ""
 
 #: ../graph_templates.php:316
+#, fuzzy
 msgid "Delete Graph Template(s)"
-msgstr "Удалить шаблоны графиков"
+msgstr "Шаблони за графики"
 
 #: ../graph_templates.php:320
 msgid ""
@@ -4086,8 +4219,9 @@ msgid ""
 msgstr ""
 
 #: ../graph_templates.php:326
+#, fuzzy
 msgid "Duplicate Graph Template(s)"
-msgstr "Продублировать шаблоны графиков"
+msgstr "Асоциирани шаблони за графики"
 
 #: ../graph_templates.php:330
 msgid ""
@@ -4096,16 +4230,19 @@ msgid ""
 msgstr ""
 
 #: ../graph_templates.php:339 ../lib/html_reports.php:117
+#, fuzzy
 msgid "Graph Height"
-msgstr "Высота графика"
+msgstr "Графични елементи"
 
 #: ../graph_templates.php:341 ../lib/html_reports.php:109
+#, fuzzy
 msgid "Graph Width"
-msgstr "Ширина графика"
+msgstr "Графични елементи"
 
 #: ../graph_templates.php:346
+#, fuzzy
 msgid "Resize Selected Graph Template(s)"
-msgstr "Изменить размер выбранных шаблонов"
+msgstr "Асоциирани шаблони за графики"
 
 #: ../graph_templates.php:350
 msgid ""
@@ -4115,21 +4252,22 @@ msgid ""
 msgstr ""
 
 #: ../graph_templates.php:355
+#, fuzzy
 msgid "Synchronize Graphs to Graph Template(s)"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../graph_templates.php:358
 msgid "ERROR: You must select at least one graph template."
-msgstr "ОШИБКА: Вы должны выбрать как минимум один шаблон графика."
+msgstr ""
 
 #: ../graph_templates.php:412
-#, php-format
+#, fuzzy, php-format
 msgid "Graph Template Items [edit: %s]"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../graph_templates.php:419 ../lib/functions.php:2042
 msgid "Graph Item Inputs"
-msgstr ""
+msgstr "Въвеждане на елементи на графика"
 
 #: ../graph_templates.php:445
 msgid "No Inputs"
@@ -4138,15 +4276,16 @@ msgstr ""
 #: ../graph_templates.php:490
 #, php-format
 msgid "Template [edit: %s]"
-msgstr "Шаблон [редактировать: %s]"
+msgstr ""
 
 #: ../graph_templates.php:492
 msgid "Template [new]"
-msgstr "Шаблон [новый]"
+msgstr ""
 
 #: ../graph_templates.php:508
+#, fuzzy
 msgid "Graph Template Options"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../graph_templates.php:523
 msgid "Use Per-Graph Value (Ignore this Value)"
@@ -4157,11 +4296,12 @@ msgstr ""
 #: ../include/global_arrays.php:820 ../lib/functions.php:2018
 #: ../user_group_admin.php:1101
 msgid "Graph Templates"
-msgstr "Шаблоны Графиков"
+msgstr "Шаблони за графики"
 
 #: ../graph_templates.php:759
+#, fuzzy
 msgid "The name of this Graph Template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../graph_templates.php:761
 msgid ""
@@ -4170,8 +4310,9 @@ msgid ""
 msgstr ""
 
 #: ../graph_templates.php:762
+#, fuzzy
 msgid "The number of Graphs using this Graph Template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../graph_templates.php:763
 msgid "The default size of the resulting Graphs."
@@ -4179,7 +4320,7 @@ msgstr ""
 
 #: ../graph_templates.php:764
 msgid "Image Format"
-msgstr "Формат Изображения"
+msgstr ""
 
 #: ../graph_templates.php:764
 msgid "The default image format for the resulting Graphs."
@@ -4191,20 +4332,22 @@ msgstr ""
 
 #: ../graph_templates.php:765
 msgid "Vertical Label"
-msgstr "Вертикальная Метка"
+msgstr ""
 
 #: ../graph_templates.php:791
+#, fuzzy
 msgid "No Graph Templates Found"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../graph_templates_inputs.php:145
-#, php-format
+#, fuzzy, php-format
 msgid "Graph Item Inputs [edit graph: %s]"
-msgstr ""
+msgstr "Въвеждане на елементи на графика"
 
 #: ../graph_templates_inputs.php:193
+#, fuzzy
 msgid "Associated Graph Items"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../graph_templates_inputs.php:194
 msgid "Select the graph items that you want to accept user input for."
@@ -4230,21 +4373,22 @@ msgid "Min:"
 msgstr ""
 
 #: ../graph_templates_items.php:391
-#, php-format
+#, fuzzy, php-format
 msgid "Graph Template Items [edit graph: %s]"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../graph_view.php:243
 msgid "YOU DO NOT HAVE RIGHTS FOR TREE VIEW"
-msgstr "У ВАС НЕДОСТАТОЧНО ПРАВ ДЛЯ ПРОСМОТРА ДЕРЕВА"
+msgstr ""
 
 #: ../graph_view.php:321
 msgid "YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW"
 msgstr ""
 
 #: ../graph_view.php:327
+#, fuzzy
 msgid "Graph Preview Filters"
-msgstr ""
+msgstr "Елементи на графичното дърво"
 
 #: ../graph_view.php:327
 msgid "[ Custom Graph List Applied - Filtering from List ]"
@@ -4266,30 +4410,34 @@ msgstr ""
 #: ../lib/html_graph.php:163 ../lib/html_graph.php:384
 #: ../lib/html_graph.php:389 ../lib/html_tree.php:614 ../lib/html_tree.php:830
 #: ../lib/html_tree.php:835
+#, fuzzy
 msgid "All Graphs & Templates"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../graph_view.php:578 ../graph_view.php:655
 msgid "View"
-msgstr "Вид"
+msgstr ""
 
 #: ../graph_view.php:578 ../graph_view.php:655 ../include/global_arrays.php:801
 #: ../lib/clog_webapi.php:231
+#, fuzzy
 msgid "View Graphs"
-msgstr ""
+msgstr "Графики"
 
 #: ../graph_view.php:620
+#, fuzzy
 msgid "Graph Size"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../graph_view.php:634
+#, fuzzy
 msgid "Aggregated Device"
-msgstr ""
+msgstr "Създаване на нови графики"
 
 #: ../graph_view.php:637
 #, fuzzy
 msgid "Non-Device"
-msgstr "Нет Устройств"
+msgstr "Устройства"
 
 #: ../graph_view.php:638
 msgid "Not Applicable"
@@ -4301,29 +4449,33 @@ msgid "Templates Selected"
 msgstr ""
 
 #: ../graphs.php:49 ../graphs.php:842 ../lib/functions.php:1892
+#, fuzzy
 msgid "Change Graph Template"
-msgstr "Изменение Шаблона Графика"
+msgstr "Шаблони за графики"
 
 #: ../graphs.php:56
+#, fuzzy
 msgid "Create Aggregate Graph"
-msgstr ""
+msgstr "Създаване на нови графики"
 
 #: ../graphs.php:57
+#, fuzzy
 msgid "Create Aggregate from Template"
-msgstr ""
+msgstr "Създаване на графики от автоматизирано събиране на данни"
 
 #: ../graphs.php:58 ../graphs.php:1087 ../host.php:43
 msgid "Apply Automation Rules"
 msgstr ""
 
 #: ../graphs.php:64 ../graphs.php:864
+#, fuzzy
 msgid "Convert to Graph Template"
-msgstr "Преобразовать в Шаблон Графика"
+msgstr "Шаблони за графики"
 
 #: ../graphs.php:176 ../graphs_new.php:248 ../graphs_new.php:264
-#, php-format
+#, fuzzy, php-format
 msgid "Created graph: %s"
-msgstr ""
+msgstr "Създаване на нови графики"
 
 #: ../graphs.php:184 ../graphs_new.php:256 ../graphs_new.php:272
 msgid "ERROR: no Data Source associated. Check Template"
@@ -4359,8 +4511,9 @@ msgid ""
 msgstr ""
 
 #: ../graphs.php:824
+#, fuzzy
 msgid "New Graph Template"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../graphs.php:846
 msgid ""
@@ -4375,7 +4528,7 @@ msgstr ""
 #: ../graphs.php:853
 #, fuzzy
 msgid "Duplicate Graph(s)"
-msgstr "Продублировать шаблоны графиков"
+msgstr "Асоциирани шаблони за графики"
 
 #: ../graphs.php:857
 msgid ""
@@ -4386,7 +4539,7 @@ msgstr ""
 #: ../graphs.php:860
 #, fuzzy
 msgid "<graph_title> Template"
-msgstr "Шаблон Графика"
+msgstr "Шаблони за графики"
 
 #: ../graphs.php:868
 msgid ""
@@ -4403,8 +4556,9 @@ msgid "Choose a new Device for these Graph(s) and click 'Continue'."
 msgstr ""
 
 #: ../graphs.php:885
+#, fuzzy
 msgid "New Device"
-msgstr ""
+msgstr "Устройства"
 
 #: ../graphs.php:897
 msgid ""
@@ -4463,13 +4617,14 @@ msgid "You must select at least one Graph."
 msgstr ""
 
 #: ../graphs.php:1238
-#, php-format
+#, fuzzy, php-format
 msgid "Graph Template Selection [edit: %s]"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../graphs.php:1244
+#, fuzzy
 msgid "Graph Template Selection [new]"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../graphs.php:1269
 msgid "Turn Off Graph Debug Mode."
@@ -4480,20 +4635,24 @@ msgid "Turn On Graph Debug Mode."
 msgstr ""
 
 #: ../graphs.php:1284
+#, fuzzy
 msgid "Edit Graph Template."
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../graphs.php:1290
+#, fuzzy
 msgid "Unlock Graph."
-msgstr ""
+msgstr "Увеличение на графиката"
 
 #: ../graphs.php:1292
+#, fuzzy
 msgid "Lock Graph."
-msgstr ""
+msgstr "Увеличение на графиката"
 
 #: ../graphs.php:1316
+#, fuzzy
 msgid "Selected Graph Template"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../graphs.php:1317
 #, php-format
@@ -4508,25 +4667,29 @@ msgid "Choose the Device that this Graph belongs to."
 msgstr ""
 
 #: ../graphs.php:1364
+#, fuzzy
 msgid "Supplemental Graph Template Data"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../graphs.php:1366
+#, fuzzy
 msgid "Graph Fields"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../graphs.php:1367
+#, fuzzy
 msgid "Graph Item Fields"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../graphs.php:1599 ../lib/functions.php:1880
 msgid "Graph Management"
-msgstr "Управление графиками"
+msgstr "Управление на графики"
 
 #: ../graphs.php:1743 ../include/global_form.php:1848
 #: ../lib/html_reports.php:386 ../tree.php:681
+#, fuzzy
 msgid "Graph Name"
-msgstr ""
+msgstr "Управление на графики"
 
 #: ../graphs.php:1743
 msgid ""
@@ -4550,47 +4713,50 @@ msgid "The size of this Graph when not in Preview mode."
 msgstr ""
 
 #: ../graphs_items.php:290
+#, fuzzy
 msgid "Data Sources [No Device]"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../graphs_items.php:325 ../include/global_arrays.php:981
 #: ../include/global_form.php:1545
+#, fuzzy
 msgid "Data Template"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../graphs_items.php:377
-#, php-format
+#, fuzzy, php-format
 msgid "Graph Items [graph: %s]"
-msgstr ""
+msgstr "Въвеждане на елементи на графика"
 
 #: ../graphs_new.php:75
+#, fuzzy
 msgid "Default Settings Saved"
-msgstr ""
+msgstr "Настройки на cacti"
 
 #: ../graphs_new.php:322
-#, php-format
+#, fuzzy, php-format
 msgid "Created %s Graphs from %s"
-msgstr ""
+msgstr "Създаване на графики от автоматизирано събиране на данни"
 
 #: ../graphs_new.php:324
-#, php-format
+#, fuzzy, php-format
 msgid "Created 1 Graph from %s"
-msgstr ""
+msgstr "Създаване на нови графики"
 
 #: ../graphs_new.php:365
-#, php-format
+#, fuzzy, php-format
 msgid "Graph [Template: %s]"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../graphs_new.php:366
-#, php-format
+#, fuzzy, php-format
 msgid "Graph Items [Template: %s]"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../graphs_new.php:371
-#, php-format
+#, fuzzy, php-format
 msgid "Data Source [Template: %s]"
-msgstr ""
+msgstr "Вид на източника на данни"
 
 #: ../graphs_new.php:381
 #, php-format
@@ -4611,40 +4777,43 @@ msgid "New Graphs for None Host Type"
 msgstr ""
 
 #: ../graphs_new.php:520
+#, fuzzy
 msgid "Graph Types"
-msgstr ""
+msgstr "Дърво на графики"
 
 #: ../graphs_new.php:525
+#, fuzzy
 msgid "Graph Template Based"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../graphs_new.php:561
 msgid "Edit this Device"
 msgstr ""
 
 #: ../graphs_new.php:562
+#, fuzzy
 msgid "Create New Device"
-msgstr ""
+msgstr "Създаване на нови графики"
 
 #: ../graphs_new.php:618 ../graphs_new.php:892 ../user_admin.php:1576
 #: ../user_group_admin.php:1316
 msgid "Select All"
-msgstr "Выбрать Все"
+msgstr "Избери всички"
 
 #: ../graphs_new.php:682 ../include/global_arrays.php:627
 #: ../include/global_arrays.php:698 ../lib/html_form.php:1067
 #: ../lib/html_form.php:1080 ../tree.php:1025
 msgid "Create"
-msgstr "Создать"
+msgstr ""
 
 #: ../graphs_new.php:684
 msgid "(Select a graph type to create)"
 msgstr ""
 
 #: ../graphs_new.php:768
-#, php-format
+#, fuzzy, php-format
 msgid "Data Query [%s]"
-msgstr ""
+msgstr "Вземане на данни"
 
 #: ../graphs_new.php:888
 msgid "From there you can get more information."
@@ -4681,8 +4850,9 @@ msgid "Set Default"
 msgstr ""
 
 #: ../host.php:41
+#, fuzzy
 msgid "Change Device Settings"
-msgstr ""
+msgstr "Настройки на cacti"
 
 #: ../host.php:42
 msgid "Clear Statistics"
@@ -4697,8 +4867,9 @@ msgid "Click 'Continue' to enable the following Device(s)."
 msgstr ""
 
 #: ../host.php:381
+#, fuzzy
 msgid "Enable Device(s)"
-msgstr ""
+msgstr "Устройства"
 
 #: ../host.php:385
 msgid "Click 'Continue' to disable the following Device(s)."
@@ -4756,8 +4927,9 @@ msgid "Delete all associated Graph(s) and Data Source(s)."
 msgstr ""
 
 #: ../host.php:464
+#, fuzzy
 msgid "Delete Device(s)"
-msgstr ""
+msgstr "Устройства"
 
 #: ../host.php:468
 msgid ""
@@ -4782,8 +4954,9 @@ msgid "You must select at least one device."
 msgstr ""
 
 #: ../host.php:598
+#, fuzzy
 msgid "Device [new]"
-msgstr ""
+msgstr "Устройства"
 
 #: ../host.php:604
 #, php-format
@@ -4799,16 +4972,19 @@ msgid "Enable Device Debug"
 msgstr ""
 
 #: ../host.php:622
+#, fuzzy
 msgid "Create Graphs for this Device"
-msgstr ""
+msgstr "Създаване на графики от автоматизирано събиране на данни"
 
 #: ../host.php:624
+#, fuzzy
 msgid "Data Source List"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../host.php:625
+#, fuzzy
 msgid "Graph List"
-msgstr ""
+msgstr "Графики"
 
 #: ../host.php:631
 msgid "Contacting Device"
@@ -4823,8 +4999,9 @@ msgid "Hide"
 msgstr ""
 
 #: ../host.php:731 ../tree.php:1145 ../tree.php:1219 ../tree.php:1306
+#, fuzzy
 msgid "Edit"
-msgstr ""
+msgstr "(Редактирай)"
 
 #: ../host.php:731
 msgid "Is Being Graphed"
@@ -4835,24 +5012,29 @@ msgid "Not Being Graphed"
 msgstr ""
 
 #: ../host.php:734
+#, fuzzy
 msgid "Delete Graph Template Association"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../host.php:741 ../host_templates.php:493
+#, fuzzy
 msgid "No associated graph templates."
-msgstr "Нет ассоциированых шаблонов графиков"
+msgstr "Асоциирани шаблони за графики"
 
 #: ../host.php:750 ../host_templates.php:502
+#, fuzzy
 msgid "Add Graph Template"
-msgstr "Добавить Шаблон Графика"
+msgstr "Шаблони за графики"
 
 #: ../host.php:756
+#, fuzzy
 msgid "Add Graph Template to Device"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../host.php:766 ../host_templates.php:525
+#, fuzzy
 msgid "Associated Data Queries"
-msgstr ""
+msgstr "Автоматизирани данни"
 
 #: ../host.php:771 ../host.php:865
 msgid "Re-Index Method"
@@ -4871,7 +5053,7 @@ msgstr ""
 #: ../lib/functions.php:2594 ../lib/html_reports.php:1230 ../links.php:377
 #: ../plugins.php:374
 msgid "Actions"
-msgstr ""
+msgstr "Действия"
 
 #: ../host.php:832
 msgid "Fail"
@@ -4879,39 +5061,45 @@ msgstr ""
 
 #: ../host.php:832 ../lib/functions.php:3777 ../lib/functions.php:3782
 msgid "Success"
-msgstr "Выполненно"
+msgstr ""
 
 #: ../host.php:835
+#, fuzzy
 msgid "Reload Query"
-msgstr ""
+msgstr "Вземане на данни"
 
 #: ../host.php:836
 msgid "Verbose Query"
 msgstr ""
 
 #: ../host.php:837
+#, fuzzy
 msgid "Remove Query"
-msgstr ""
+msgstr "(Изтрий)"
 
 #: ../host.php:843
+#, fuzzy
 msgid "No Associated Data Queries."
-msgstr ""
+msgstr "Автоматизирани данни"
 
 #: ../host.php:859 ../host_templates.php:559
+#, fuzzy
 msgid "Add Data Query"
-msgstr ""
+msgstr "Вземане на данни"
 
 #: ../host.php:871
+#, fuzzy
 msgid "Add Data Query to Device"
-msgstr ""
+msgstr "Автоматизирани данни"
 
 #: ../host.php:1006 ../include/global_arrays.php:408
 msgid "Ping and SNMP Uptime"
 msgstr ""
 
 #: ../host.php:1007 ../include/global_arrays.php:410
+#, fuzzy
 msgid "SNMP Uptime"
-msgstr ""
+msgstr "SNMP изтекло време"
 
 #: ../host.php:1008 ../include/global_arrays.php:413
 msgid "Ping"
@@ -4922,8 +5110,9 @@ msgid "Ping or SNMP Uptime"
 msgstr ""
 
 #: ../host.php:1010 ../include/global_arrays.php:411
+#, fuzzy
 msgid "SNMP Desc"
-msgstr ""
+msgstr "SNMP Версия"
 
 #: ../host.php:1011
 msgid "SNMP GetNext"
@@ -4931,7 +5120,7 @@ msgstr ""
 
 #: ../host.php:1304 ../include/global_settings.php:441
 msgid "Site"
-msgstr "Узел"
+msgstr ""
 
 #: ../host.php:1380 ../lib/api_automation.php:164
 #: ../lib/api_automation.php:1019
@@ -4968,8 +5157,9 @@ msgstr ""
 #: ../lib/api_automation.php:558 ../lib/api_automation.php:809
 #: ../lib/api_automation.php:1138 ../managers.php:225 ../pollers.php:82
 #: ../pollers.php:603 ../user_admin.php:1229 ../user_group_admin.php:966
+#, fuzzy
 msgid "Hostname"
-msgstr ""
+msgstr "Потребител"
 
 #: ../host.php:1492
 msgid ""
@@ -4999,32 +5189,36 @@ msgid "In State"
 msgstr ""
 
 #: ../host.php:1496
+#, fuzzy
 msgid "The amount of time that this Device has been in its current state."
-msgstr ""
+msgstr "Времето в секунди между очаквани промени."
 
 #: ../host.php:1497
 msgid "The current amount of time that the host has been up."
 msgstr ""
 
 #: ../host.php:1498
+#, fuzzy
 msgid "Poll Time"
-msgstr "Время Опроса"
+msgstr "Събиращи скриптове"
 
 #: ../host.php:1498
+#, fuzzy
 msgid "The amount of time it takes to collect data from this Device."
-msgstr ""
+msgstr "Времето в секунди между очаквани промени."
 
 #: ../host.php:1499
 msgid "Current (ms)"
-msgstr "Текущий (мс)"
+msgstr ""
 
 #: ../host.php:1499
+#, fuzzy
 msgid "The current ping time in milliseconds to reach the Device."
-msgstr ""
+msgstr "Времето в секунди между очаквани промени."
 
 #: ../host.php:1500
 msgid "Average (ms)"
-msgstr "Срейдний (мс)"
+msgstr ""
 
 #: ../host.php:1500
 msgid ""
@@ -5034,7 +5228,7 @@ msgstr ""
 
 #: ../host.php:1501
 msgid "Availability"
-msgstr "Доступность"
+msgstr ""
 
 #: ../host.php:1501
 msgid ""
@@ -5043,8 +5237,9 @@ msgid ""
 msgstr ""
 
 #: ../host_templates.php:32
+#, fuzzy
 msgid "Sync Devices"
-msgstr ""
+msgstr "Устройства"
 
 #: ../host_templates.php:256
 msgid "Click 'Continue' to delete the following Device Template(s)."
@@ -5086,9 +5281,9 @@ msgid ""
 msgstr ""
 
 #: ../host_templates.php:329
-#, php-format
+#, fuzzy, php-format
 msgid "Graph Template Name: %s"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../host_templates.php:388
 msgid ""
@@ -5097,9 +5292,9 @@ msgid ""
 msgstr ""
 
 #: ../host_templates.php:389
-#, php-format
+#, fuzzy, php-format
 msgid "Data Query Name: %s"
-msgstr ""
+msgstr "Автоматизирани данни"
 
 #: ../host_templates.php:442
 #, php-format
@@ -5115,8 +5310,9 @@ msgid "Default Submit Button"
 msgstr ""
 
 #: ../host_templates.php:515
+#, fuzzy
 msgid "Add Graph Template to Device Template"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../host_templates.php:550
 msgid "No associated data queries."
@@ -5129,12 +5325,14 @@ msgstr ""
 #: ../host_templates.php:691 ../host_templates.php:706
 #: ../host_templates.php:805 ../include/global_arrays.php:822
 #: ../lib/functions.php:2054
+#, fuzzy
 msgid "Device Templates"
-msgstr "Шаблон Устройства"
+msgstr "Шаблони за графики"
 
 #: ../host_templates.php:724
+#, fuzzy
 msgid "Has Devices"
-msgstr ""
+msgstr "Устройства"
 
 #: ../host_templates.php:814 ../lib/api_automation.php:272
 #: ../lib/api_automation.php:559 ../lib/api_automation.php:1139
@@ -5142,8 +5340,9 @@ msgid "Device Template Name"
 msgstr ""
 
 #: ../host_templates.php:814
+#, fuzzy
 msgid "The name of this Device Template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../host_templates.php:815
 msgid ""
@@ -5158,12 +5357,14 @@ msgid ""
 msgstr ""
 
 #: ../host_templates.php:817
+#, fuzzy
 msgid "Devices Using"
-msgstr ""
+msgstr "Устройства"
 
 #: ../host_templates.php:817
+#, fuzzy
 msgid "The number of Devices using this Device Template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../host_templates.php:840
 msgid "No Device Templates Found"
@@ -5382,30 +5583,33 @@ msgid "Report Item Save Failed"
 msgstr ""
 
 #: ../include/global_arrays.php:254 ../include/global_arrays.php:567
+#, fuzzy
 msgid "Function"
-msgstr ""
+msgstr "Действия"
 
 #: ../include/global_arrays.php:255 ../include/global_arrays.php:569
+#, fuzzy
 msgid "Special Data Source"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:256 ../include/global_arrays.php:571
 msgid "Custom String"
 msgstr ""
 
 #: ../include/global_arrays.php:266 ../include/global_arrays.php:273
+#, fuzzy
 msgid "Script/Command"
-msgstr ""
+msgstr "Скрипт"
 
 #: ../include/global_arrays.php:268 ../include/global_arrays.php:274
 #: ../utilities.php:1600
+#, fuzzy
 msgid "Script Server"
-msgstr "Сервер Скриптов"
+msgstr "Скрипт"
 
 #: ../include/global_arrays.php:280
-#, fuzzy
 msgid "Index Count"
-msgstr "Счетчик Событий"
+msgstr ""
 
 #: ../include/global_arrays.php:281
 msgid "Verify All"
@@ -5456,27 +5660,27 @@ msgstr ""
 
 #: ../include/global_arrays.php:324
 msgid "North"
-msgstr "Север"
+msgstr ""
 
 #: ../include/global_arrays.php:325
 msgid "South"
-msgstr "Юг"
+msgstr ""
 
 #: ../include/global_arrays.php:326
 msgid "West"
-msgstr "Запад"
+msgstr ""
 
 #: ../include/global_arrays.php:327
 msgid "East"
-msgstr "Восток"
+msgstr ""
 
 #: ../include/global_arrays.php:332
 msgid "Left"
-msgstr "Лево"
+msgstr ""
 
 #: ../include/global_arrays.php:333
 msgid "Right"
-msgstr "Право"
+msgstr ""
 
 #: ../include/global_arrays.php:334
 msgid "Justified"
@@ -5484,15 +5688,15 @@ msgstr ""
 
 #: ../include/global_arrays.php:335
 msgid "Center"
-msgstr "Центр"
+msgstr ""
 
 #: ../include/global_arrays.php:339
 msgid "Top -> Down"
-msgstr "Верх -> Низ"
+msgstr ""
 
 #: ../include/global_arrays.php:340
 msgid "Bottom -> Up"
-msgstr "Низ -> Верх"
+msgstr ""
 
 #: ../include/global_arrays.php:344 ../tree.php:1129
 msgid "Numeric"
@@ -5513,9 +5717,9 @@ msgstr ""
 #: ../include/global_arrays.php:379 ../include/global_arrays.php:380
 #: ../include/global_arrays.php:381 ../include/global_arrays.php:537
 #: ../include/global_arrays.php:538
-#, php-format
+#, fuzzy, php-format
 msgid "Version %d"
-msgstr ""
+msgstr "SNMP Версия"
 
 #: ../include/global_arrays.php:385
 msgid "MD5 (default)"
@@ -5628,7 +5832,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:482 ../include/global_settings.php:1090
 msgid "1 Day"
-msgstr "1 День"
+msgstr ""
 
 #: ../include/global_arrays.php:495
 msgid "1 Thread (default)"
@@ -5715,15 +5919,17 @@ msgstr ""
 #: ../include/global_arrays.php:598 ../include/global_arrays.php:645
 #: ../include/global_arrays.php:1267 ../include/global_arrays.php:1431
 msgid "Graph"
-msgstr "График"
+msgstr "Графика"
 
 #: ../include/global_arrays.php:604 ../tree.php:1295
+#, fuzzy
 msgid "Data Query Index"
-msgstr ""
+msgstr "Вземане на данни"
 
 #: ../include/global_arrays.php:608
+#, fuzzy
 msgid "Current Graph Item Data Source"
-msgstr ""
+msgstr "Създаване на графики от автоматизирано събиране на данни"
 
 #: ../include/global_arrays.php:609
 msgid "Current Graph Item Polling Interval"
@@ -5782,25 +5988,28 @@ msgid "Count of All Similar Data Sources (Include Duplicates)"
 msgstr ""
 
 #: ../include/global_arrays.php:628
+#, fuzzy
 msgid "New Graphs"
-msgstr "Новый график"
+msgstr "Графики"
 
 #: ../include/global_arrays.php:630 ../include/global_arrays.php:682
 #: ../include/global_arrays.php:699
+#, fuzzy
 msgid "Management"
-msgstr "Управление"
+msgstr "Права на потребители"
 
 #: ../include/global_arrays.php:632 ../sites.php:378 ../sites.php:393
 #: ../sites.php:472
 msgid "Sites"
-msgstr "Узлы"
+msgstr ""
 
 #: ../include/global_arrays.php:633 ../include/global_arrays.php:814
 #: ../tree.php:1476 ../tree.php:1491 ../tree.php:1549 ../user_admin.php:2909
 #: ../user_admin.php:2996 ../user_group_admin.php:1235
 #: ../user_group_admin.php:2441
+#, fuzzy
 msgid "Trees"
-msgstr "Деревья"
+msgstr "Дърво на графики"
 
 #: ../include/global_arrays.php:636
 msgid "Aggregates"
@@ -5809,7 +6018,7 @@ msgstr ""
 #: ../include/global_arrays.php:638 ../include/global_arrays.php:685
 #: ../include/global_arrays.php:700
 msgid "Data Collection"
-msgstr "Коллекции Данных"
+msgstr ""
 
 #: ../include/global_arrays.php:639 ../include/global_arrays.php:686
 #: ../pollers.php:498
@@ -5823,15 +6032,16 @@ msgstr ""
 #: ../include/global_arrays.php:650 ../include/global_arrays.php:702
 #: ../include/global_settings.php:413
 msgid "Automation"
-msgstr "Автоматизация"
+msgstr ""
 
 #: ../include/global_arrays.php:652
 msgid "Discovered Devices"
 msgstr ""
 
 #: ../include/global_arrays.php:653
+#, fuzzy
 msgid "Device Rules"
-msgstr ""
+msgstr "Устройства"
 
 #: ../include/global_arrays.php:658 ../include/global_arrays.php:703
 #: ../lib/html_graph.php:255 ../lib/html_tree.php:700
@@ -5839,8 +6049,9 @@ msgid "Presets"
 msgstr ""
 
 #: ../include/global_arrays.php:659
+#, fuzzy
 msgid "Data Profiles"
-msgstr ""
+msgstr "Автоматизирани данни"
 
 #: ../include/global_arrays.php:661 ../lib/functions.php:2300 ../vdef.php:651
 #: ../vdef.php:665 ../vdef.php:836
@@ -5849,32 +6060,33 @@ msgstr ""
 
 #: ../include/global_arrays.php:665 ../include/global_arrays.php:704
 msgid "Import/Export"
-msgstr "Импорт/Экспорт"
+msgstr ""
 
 #: ../include/global_arrays.php:666 ../lib/functions.php:2414
 #: ../templates_import.php:115
 msgid "Import Templates"
-msgstr "Импорт Шаблонов"
+msgstr "Импортиране на шаблони"
 
 #: ../include/global_arrays.php:667 ../lib/functions.php:2402
 #: ../templates_export.php:94
 msgid "Export Templates"
-msgstr "Экспорт Шаблонов"
+msgstr "Експортиране на шаблони"
 
 #: ../include/global_arrays.php:669 ../include/global_arrays.php:688
 #: ../include/global_arrays.php:705 ../lib/plugins.php:763
 msgid "Configuration"
-msgstr "Конфигурация"
+msgstr ""
 
 #: ../include/global_arrays.php:670 ../include/global_arrays.php:689
 msgid "Settings"
-msgstr "Настройки"
+msgstr "Настойки"
 
 #: ../include/global_arrays.php:671 ../lib/functions.php:2348
 #: ../user_admin.php:2182 ../user_group_admin.php:667
 #: ../user_group_admin.php:2528
+#, fuzzy
 msgid "Users"
-msgstr ""
+msgstr "Потребител"
 
 #: ../include/global_arrays.php:672 ../lib/functions.php:2378
 msgid "User Groups"
@@ -5888,17 +6100,18 @@ msgstr ""
 #: ../include/global_arrays.php:675 ../include/global_arrays.php:691
 #: ../include/global_arrays.php:706 ../lib/functions.php:2228
 msgid "Utilities"
-msgstr "Утилиты"
+msgstr "Приложения"
 
 #: ../include/global_arrays.php:676 ../include/global_arrays.php:692
+#, fuzzy
 msgid "System Utilities"
-msgstr "Системные Утилиты"
+msgstr "Приложения"
 
 #: ../include/global_arrays.php:677 ../include/global_arrays.php:720
 #: ../include/global_arrays.php:803 ../links.php:90 ../links.php:301
 #: ../links.php:370 ../links.php:483
 msgid "External Links"
-msgstr "Внешние ссылки"
+msgstr ""
 
 #: ../include/global_arrays.php:729
 msgid "All Lines"
@@ -5912,15 +6125,16 @@ msgstr ""
 #: ../include/global_arrays.php:740 ../include/global_arrays.php:741
 #, php-format
 msgid "%d Lines"
-msgstr "%d Линий"
+msgstr ""
 
 #: ../include/global_arrays.php:796
 msgid "Never"
 msgstr ""
 
 #: ../include/global_arrays.php:800
+#, fuzzy
 msgid "Console Access"
-msgstr ""
+msgstr "Административна конзола"
 
 #: ../include/global_arrays.php:802
 msgid "Update Profile"
@@ -5928,15 +6142,16 @@ msgstr ""
 
 #: ../include/global_arrays.php:805 ../user_admin.php:2161
 msgid "User Management"
-msgstr "Управление Пользователями"
+msgstr "Права на потребители"
 
 #: ../include/global_arrays.php:806
 msgid "Settings and Utilities"
 msgstr ""
 
 #: ../include/global_arrays.php:807
+#, fuzzy
 msgid "Automation Settings"
-msgstr ""
+msgstr "Настройки на cacti"
 
 #: ../include/global_arrays.php:812
 msgid "Sites/Devices/Data Sources/Data Collectors"
@@ -5951,24 +6166,28 @@ msgid "Colors/GPrints/CDEFs/VDEFs"
 msgstr ""
 
 #: ../include/global_arrays.php:824
+#, fuzzy
 msgid "Export Data"
-msgstr ""
+msgstr "Експортиране на шаблони"
 
 #: ../include/global_arrays.php:825
+#, fuzzy
 msgid "Import Data"
-msgstr ""
+msgstr "Импортиране на шаблони"
 
 #: ../include/global_arrays.php:827 ../include/global_settings.php:665
+#, fuzzy
 msgid "Log Management"
-msgstr ""
+msgstr "Права на потребители"
 
 #: ../include/global_arrays.php:828
 msgid "Log Viewing"
 msgstr ""
 
 #: ../include/global_arrays.php:830
+#, fuzzy
 msgid "Reports Management"
-msgstr ""
+msgstr "Права на потребители"
 
 #: ../include/global_arrays.php:831
 msgid "Reports Creation"
@@ -5987,25 +6206,30 @@ msgid "GPRINT Preset"
 msgstr ""
 
 #: ../include/global_arrays.php:983
+#, fuzzy
 msgid "Data Input Field"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../include/global_arrays.php:984 ../include/global_form.php:394
 #: ../include/global_form.php:1602
+#, fuzzy
 msgid "Data Source Profile"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../include/global_arrays.php:985
+#, fuzzy
 msgid "Data Template Item"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../include/global_arrays.php:987
+#, fuzzy
 msgid "Graph Template Item"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../include/global_arrays.php:988
+#, fuzzy
 msgid "Graph Template Input"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../include/global_arrays.php:991
 msgid "VDEF"
@@ -6017,55 +6241,56 @@ msgstr ""
 
 #: ../include/global_arrays.php:1036
 msgid "Last Half Hour"
-msgstr "Последние 30 Минут"
+msgstr ""
 
 #: ../include/global_arrays.php:1037
 msgid "Last Hour"
-msgstr "Последний Час"
+msgstr ""
 
 #: ../include/global_arrays.php:1038 ../include/global_arrays.php:1039
 #: ../include/global_arrays.php:1040 ../include/global_arrays.php:1041
 #, php-format
 msgid "Last %d Hours"
-msgstr "Последние %d Часов"
+msgstr ""
 
 #: ../include/global_arrays.php:1042
 msgid "Last Day"
-msgstr "Последние День"
+msgstr ""
 
 #: ../include/global_arrays.php:1043 ../include/global_arrays.php:1044
 #: ../include/global_arrays.php:1045
 #, php-format
 msgid "Last %d Days"
-msgstr "Последние %d Дня(ей)"
+msgstr ""
 
 #: ../include/global_arrays.php:1046
 msgid "Last Week"
-msgstr "Последняя Неделя"
+msgstr ""
 
 #: ../include/global_arrays.php:1047
 #, php-format
 msgid "Last %d Weeks"
-msgstr "Последние %d Недели(ь)"
+msgstr ""
 
 #: ../include/global_arrays.php:1048
+#, fuzzy
 msgid "Last Month"
-msgstr "Последний Месяц"
+msgstr "Списъчен изглед"
 
 #: ../include/global_arrays.php:1049 ../include/global_arrays.php:1050
 #: ../include/global_arrays.php:1051 ../include/global_arrays.php:1052
 #, php-format
 msgid "Last %d Months"
-msgstr "Последние %d Месяца(ев)"
+msgstr ""
 
 #: ../include/global_arrays.php:1053
 msgid "Last Year"
-msgstr "Последний Год"
+msgstr ""
 
 #: ../include/global_arrays.php:1054
 #, php-format
 msgid "Last %d Years"
-msgstr "Последние %d Года"
+msgstr ""
 
 #: ../include/global_arrays.php:1055
 msgid "Day Shift"
@@ -6089,19 +6314,20 @@ msgstr ""
 
 #: ../include/global_arrays.php:1060
 msgid "Previous Day"
-msgstr "Предыдущий День"
+msgstr ""
 
 #: ../include/global_arrays.php:1061
 msgid "Previous Week"
-msgstr "Предыдущая Неделя"
+msgstr ""
 
 #: ../include/global_arrays.php:1062
+#, fuzzy
 msgid "Previous Month"
-msgstr "Предыдущий Месяц"
+msgstr "Общ изглед"
 
 #: ../include/global_arrays.php:1063
 msgid "Previous Year"
-msgstr "Предыдущий Год"
+msgstr ""
 
 #: ../include/global_arrays.php:1067
 #, php-format
@@ -6153,91 +6379,99 @@ msgstr ""
 
 #: ../include/global_arrays.php:1128 ../include/global_arrays.php:1187
 msgid "1 GByte"
-msgstr "1 Гбайт"
+msgstr ""
 
 #: ../include/global_arrays.php:1129 ../include/global_arrays.php:1188
 #, php-format
 msgid "%s GBytes"
-msgstr "%s Гбайт"
+msgstr ""
 
 #: ../include/global_arrays.php:1130 ../include/global_arrays.php:1131
 #: ../include/global_arrays.php:1189 ../include/global_arrays.php:1190
 #, php-format
 msgid "%d GBytes"
-msgstr "%d Гбайт"
+msgstr ""
 
 #: ../include/global_arrays.php:1144
+#, fuzzy
 msgid "2,000 Data Source Items"
-msgstr "2,000 Элементов источников данных"
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:1145
+#, fuzzy
 msgid "5,000 Data Source Items"
-msgstr "5,000 Элементов источников данных"
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:1146
+#, fuzzy
 msgid "10,000 Data Source Items"
-msgstr "10,000 Элементов источников данных"
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:1147
+#, fuzzy
 msgid "15,000 Data Source Items"
-msgstr "15,000 Элементов источников данных"
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:1148
+#, fuzzy
 msgid "25,000 Data Source Items"
-msgstr "25,000 Элементов источников данных"
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:1149
 msgid "50,000 Data Source Items (Default)"
-msgstr "50,000 Элементов источников данных"
+msgstr ""
 
 #: ../include/global_arrays.php:1150
+#, fuzzy
 msgid "100,000 Data Source Items"
-msgstr "100,000 Элементов источников данных"
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:1151
+#, fuzzy
 msgid "200,000 Data Source Items"
-msgstr "200,000 Элементов источников данных"
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:1152
+#, fuzzy
 msgid "400,000 Data Source Items"
-msgstr "400,000 Элементов источников данных"
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:1169
 msgid "2 Hours"
-msgstr "2 Часа"
+msgstr ""
 
 #: ../include/global_arrays.php:1170
 msgid "4 Hours"
-msgstr "4 Часа"
+msgstr ""
 
 #: ../include/global_arrays.php:1171
 msgid "6 Hours"
-msgstr "6 Часов"
+msgstr ""
 
 #: ../include/global_arrays.php:1178
 #, php-format
 msgid "%s Hours"
-msgstr "%s Часов "
+msgstr ""
 
 #: ../include/global_arrays.php:1197
 #, php-format
 msgid "%s Minutes"
-msgstr "%s Минут"
+msgstr ""
 
 #: ../include/global_arrays.php:1217
 msgid "1 Megabyte"
-msgstr "1 Мегабайт"
+msgstr ""
 
 #: ../include/global_arrays.php:1218 ../include/global_arrays.php:1219
 #: ../include/global_arrays.php:1220 ../include/global_arrays.php:1221
 #: ../include/global_arrays.php:1222 ../include/global_arrays.php:1223
 #, php-format
 msgid "%d Megabytes"
-msgstr "%d Мегабайт"
+msgstr ""
 
 #: ../include/global_arrays.php:1235
 msgid "Take Ownership"
-msgstr "Стать владельцем"
+msgstr ""
 
 #: ../include/global_arrays.php:1239
 msgid "Inline PNG Image"
@@ -6277,11 +6511,12 @@ msgstr ""
 
 #: ../include/global_arrays.php:1265
 msgid "Text"
-msgstr "Текст"
+msgstr ""
 
 #: ../include/global_arrays.php:1266 ../include/global_form.php:2214
+#, fuzzy
 msgid "Tree"
-msgstr "Дерево"
+msgstr "Дървовиден изглед"
 
 #: ../include/global_arrays.php:1268
 msgid "Horizontal Rule"
@@ -6301,19 +6536,19 @@ msgstr ""
 
 #: ../include/global_arrays.php:1278
 msgid "Minute(s)"
-msgstr "Минут(а)"
+msgstr ""
 
 #: ../include/global_arrays.php:1279
 msgid "Hour(s)"
-msgstr "Час(ов)"
+msgstr ""
 
 #: ../include/global_arrays.php:1280
 msgid "Day(s)"
-msgstr "День(дней)"
+msgstr ""
 
 #: ../include/global_arrays.php:1281
 msgid "Week(s)"
-msgstr "Недель"
+msgstr ""
 
 #: ../include/global_arrays.php:1282
 msgid "Month(s), Day of Month"
@@ -6328,8 +6563,9 @@ msgid "Year(s)"
 msgstr ""
 
 #: ../include/global_arrays.php:1288
+#, fuzzy
 msgid "Keep Graph Types"
-msgstr "Сохранять типы графиков"
+msgstr "Дърво на графики"
 
 #: ../include/global_arrays.php:1289
 msgid "Keep Type and STACK"
@@ -6364,24 +6600,28 @@ msgid "Print totaling Legend Items Only"
 msgstr ""
 
 #: ../include/global_arrays.php:1303
+#, fuzzy
 msgid "Total Similar Data Sources"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:1304
+#, fuzzy
 msgid "Total All Data Sources"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:1308
 msgid "No Reordering"
 msgstr ""
 
 #: ../include/global_arrays.php:1309
+#, fuzzy
 msgid "Data Source, Graph"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../include/global_arrays.php:1310
+#, fuzzy
 msgid "Graph, Data Source"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../include/global_arrays.php:1317
 msgid "contains"
@@ -6476,141 +6716,102 @@ msgstr ""
 msgid "Every %d Weeks"
 msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "cairo-dock-plug-ins"
 #: ../include/global_arrays.php:1475
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
-msgstr "Янв"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "cairo-dock-plug-ins"
 #: ../include/global_arrays.php:1476
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
-msgstr "Фев"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "cairo-dock-plug-ins"
 #: ../include/global_arrays.php:1477
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
-msgstr "Мар"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "cairo-dock-plug-ins"
 #: ../include/global_arrays.php:1478
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
-msgstr "Апр"
+msgstr ""
 
 #: ../include/global_arrays.php:1479
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
-msgstr "_Май_"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "cairo-dock-plug-ins"
 #: ../include/global_arrays.php:1480
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
-msgstr "Июн"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "celestia"
 #: ../include/global_arrays.php:1481
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
-msgstr "июл"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "cairo-dock-plug-ins"
 #: ../include/global_arrays.php:1482
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
-msgstr "Авг"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "cairo-dock-plug-ins"
 #: ../include/global_arrays.php:1483
 #, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
-msgstr "Сен"
+msgstr "Стъпка"
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "cairo-dock-plug-ins"
 #: ../include/global_arrays.php:1484
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Oct"
-msgstr "Окт"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "cairo-dock-plug-ins"
 #: ../include/global_arrays.php:1485
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
-msgstr "Ноя"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "cairo-dock-plug-ins"
 #: ../include/global_arrays.php:1486
 #, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
-msgstr "Дек"
+msgstr "Устройства"
 
 #: ../include/global_arrays.php:1500
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
-msgstr "Вс."
+msgstr ""
 
 #: ../include/global_arrays.php:1501
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
-msgstr "Пн."
+msgstr ""
 
 #: ../include/global_arrays.php:1502
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
-msgstr "Вт."
+msgstr ""
 
 #: ../include/global_arrays.php:1503
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
-msgstr "Ср."
+msgstr ""
 
 #: ../include/global_arrays.php:1504
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
-msgstr "Чт."
+msgstr ""
 
 #: ../include/global_arrays.php:1505
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
-msgstr "Пт."
+msgstr ""
 
 #: ../include/global_arrays.php:1506
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
-msgstr "Сб."
+msgstr ""
 
 #: ../include/global_form.php:36
 msgid "A useful name for this Data Storage and Polling Profile."
@@ -6651,8 +6852,9 @@ msgid "Consolidation Functions"
 msgstr ""
 
 #: ../include/global_form.php:73 ../include/global_form.php:105
+#, fuzzy
 msgid "How data is to be entered in RRAs."
-msgstr ""
+msgstr "Как данните са представени вътре в RRA."
 
 #: ../include/global_form.php:80
 msgid "Is this the default storage profile?"
@@ -6683,8 +6885,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_form.php:122
+#, fuzzy
 msgid "How many generations data is kept in the RRA."
-msgstr ""
+msgstr "Как данните са представени вътре в RRA."
 
 #: ../include/global_form.php:130
 msgid "Effective Retention"
@@ -6711,12 +6914,14 @@ msgid "A useful name for this CDEF."
 msgstr ""
 
 #: ../include/global_form.php:175
+#, fuzzy
 msgid "The name of this Color."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../include/global_form.php:182
+#, fuzzy
 msgid "Hex Value"
-msgstr ""
+msgstr "Максимална стойност"
 
 #: ../include/global_form.php:183
 msgid "The hex value for this color; valid range: 000000-FFFFFF."
@@ -6727,8 +6932,9 @@ msgid "Any named color should be read only."
 msgstr ""
 
 #: ../include/global_form.php:216 ../include/global_form.php:276
+#, fuzzy
 msgid "Enter a meaningful name for this data input method."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../include/global_form.php:223
 msgid "Input Type"
@@ -6806,7 +7012,7 @@ msgstr ""
 
 #: ../include/global_form.php:340
 msgid "The name given to this data template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../include/global_form.php:371
 msgid ""
@@ -6818,15 +7024,17 @@ msgstr ""
 
 #: ../include/global_form.php:376
 msgid "Data Source Path"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../include/global_form.php:381
+#, fuzzy
 msgid "The full path to the RRDfile."
-msgstr ""
+msgstr "Пълния път до RRD файл."
 
 #: ../include/global_form.php:390
 msgid "The script/source used to gather data for this data source."
 msgstr ""
+"Скриптът/източникът използван за събиране на данни за този източник на данни."
 
 #: ../include/global_form.php:396 ../include/global_form.php:1604
 msgid ""
@@ -6837,28 +7045,32 @@ msgstr ""
 
 #: ../include/global_form.php:402
 msgid "Step"
-msgstr "Шаг"
+msgstr "Стъпка"
 
 #: ../include/global_form.php:407
 msgid "The amount of time in seconds between expected updates."
-msgstr ""
+msgstr "Времето в секунди между очаквани промени."
 
 #: ../include/global_form.php:411
+#, fuzzy
 msgid "Data Source Active"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../include/global_form.php:414
+#, fuzzy
 msgid "Whether Cacti should gather data for this data source or not."
 msgstr ""
+"Скриптът/източникът използван за събиране на данни за този източник на данни."
 
 #: ../include/global_form.php:422
 msgid "Internal Data Source Name"
-msgstr ""
+msgstr "Вътрешно име на източника на данни"
 
 #: ../include/global_form.php:427
+#, fuzzy
 msgid ""
 "Choose unique name to represent this piece of data inside of the RRDfile."
-msgstr ""
+msgstr "Изберете уникално име, което да означава тези данни вътре в rrd файла."
 
 #: ../include/global_form.php:430
 msgid "Minimum Value (\"U\" for No Minimum)"
@@ -6866,7 +7078,7 @@ msgstr ""
 
 #: ../include/global_form.php:435
 msgid "The minimum value of data that is allowed to be collected."
-msgstr ""
+msgstr "Минималната стойност на данните, което е разрешено да бъде прието."
 
 #: ../include/global_form.php:438
 msgid "Maximum Value (\"U\" for No Maximum)"
@@ -6874,15 +7086,15 @@ msgstr ""
 
 #: ../include/global_form.php:443
 msgid "The maximum value of data that is allowed to be collected."
-msgstr ""
+msgstr "Максималната стойност на данните, което е разрешено да бъде прието."
 
 #: ../include/global_form.php:446
 msgid "Data Source Type"
-msgstr ""
+msgstr "Вид на източника на данни"
 
 #: ../include/global_form.php:450
 msgid "How data is represented in the RRA."
-msgstr ""
+msgstr "Как данните са представени вътре в RRA."
 
 #: ../include/global_form.php:458
 msgid ""
@@ -6935,7 +7147,7 @@ msgstr ""
 
 #: ../include/global_form.php:518
 msgid "The label vertically printed to the left of the graph."
-msgstr "Вертикальная метка пишется слева от графика"
+msgstr ""
 
 #: ../include/global_form.php:522
 msgid "Image Format (--imgformat)"
@@ -7146,8 +7358,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_form.php:686
+#, fuzzy
 msgid "Axis Options"
-msgstr ""
+msgstr "Действия"
 
 #: ../include/global_form.php:691
 msgid "Right Axis (--right-axis &lt;scale:shift&gt;)"
@@ -7260,12 +7473,14 @@ msgstr ""
 
 #: ../include/global_form.php:790 ../lib/api_aggregate.php:1216
 #: ../lib/html.php:878
+#, fuzzy
 msgid "Graph Item Type"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../include/global_form.php:794
+#, fuzzy
 msgid "How data for this item is represented visually on the graph."
-msgstr ""
+msgstr "Как данните са представени вътре в RRA."
 
 #: ../include/global_form.php:809
 msgid "The data source to use for this graph item."
@@ -7273,7 +7488,7 @@ msgstr ""
 
 #: ../include/global_form.php:816
 msgid "The color to use for the legend."
-msgstr "Цвет используемый для легенды"
+msgstr ""
 
 #: ../include/global_form.php:819
 msgid "Opacity/Alpha Channel"
@@ -7285,11 +7500,12 @@ msgstr ""
 
 #: ../include/global_form.php:826 ../lib/rrd.php:2666
 msgid "Consolidation Function"
-msgstr "Функция Консолидации"
+msgstr ""
 
 #: ../include/global_form.php:830
+#, fuzzy
 msgid "How data for this item is represented statistically on the graph."
-msgstr ""
+msgstr "Как данните са представени вътре в RRA."
 
 #: ../include/global_form.php:833
 msgid "CDEF Function"
@@ -7319,7 +7535,7 @@ msgstr ""
 
 #: ../include/global_form.php:855 ../lib/rrd.php:2636 ../utilities.php:2331
 msgid "Value"
-msgstr "Значение"
+msgstr ""
 
 #: ../include/global_form.php:860
 msgid ""
@@ -7355,7 +7571,7 @@ msgstr ""
 
 #: ../include/global_form.php:883
 msgid "Text Format"
-msgstr "Формат Текста"
+msgstr ""
 
 #: ../include/global_form.php:888
 msgid "Text that will be displayed on the legend for this graph item."
@@ -7398,8 +7614,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_form.php:931
+#, fuzzy
 msgid "The name given to this graph template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../include/global_form.php:955
 msgid ""
@@ -7418,8 +7635,9 @@ msgid "Field Type"
 msgstr ""
 
 #: ../include/global_form.php:971
+#, fuzzy
 msgid "How data is to be represented on the graph."
-msgstr ""
+msgstr "Как данните са представени вътре в RRA."
 
 #: ../include/global_form.php:994
 msgid "General Device Options"
@@ -7470,12 +7688,13 @@ msgid "Check this box to disable all checks for this host."
 msgstr ""
 
 #: ../include/global_form.php:1060 ../include/global_form.php:1657
+#, fuzzy
 msgid "Choose the SNMP version for this device."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../include/global_form.php:1068 ../include/global_form.php:1665
 msgid "SNMP Community"
-msgstr ""
+msgstr "SNMP Общност"
 
 #: ../include/global_form.php:1069 ../include/global_form.php:1666
 msgid "SNMP read community for this device."
@@ -7517,7 +7736,7 @@ msgstr ""
 
 #: ../include/global_form.php:1140
 msgid "Enter the UDP port number to use for SNMP (default is 161)."
-msgstr ""
+msgstr "Въведете UDP порт номер който да се използва за SNMP (стандартно 161)"
 
 #: ../include/global_form.php:1157
 msgid "Maximum OIDs Per Get Request"
@@ -7558,21 +7777,22 @@ msgid "Enter notes to this host."
 msgstr ""
 
 #: ../include/global_form.php:1229
-#, fuzzy
 msgid "External ID"
-msgstr "Внешние ссылки"
+msgstr ""
 
 #: ../include/global_form.php:1230
 msgid "External ID for linking Cacti data to external monitoring systems."
 msgstr ""
 
 #: ../include/global_form.php:1252
+#, fuzzy
 msgid "A useful name for this host template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../include/global_form.php:1272
+#, fuzzy
 msgid "A name for this data query."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../include/global_form.php:1280
 msgid "A description for this data query."
@@ -7599,12 +7819,14 @@ msgid ""
 msgstr ""
 
 #: ../include/global_form.php:1339
+#, fuzzy
 msgid "A name for this associated graph."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../include/global_form.php:1367
+#, fuzzy
 msgid "A useful name for this graph tree."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../include/global_form.php:1374 ../include/global_form.php:2272
 #: ../lib/api_automation.php:1334 ../tree.php:1279
@@ -7646,8 +7868,9 @@ msgid "Determines if the user account is locked."
 msgstr ""
 
 #: ../include/global_form.php:1445
+#, fuzzy
 msgid "Account Options"
-msgstr ""
+msgstr "Действия"
 
 #: ../include/global_form.php:1447
 msgid "Set any user account specific options here."
@@ -7662,8 +7885,9 @@ msgid "Maintain Custom Graph and User Settings"
 msgstr ""
 
 #: ../include/global_form.php:1470
+#, fuzzy
 msgid "Graph Options"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../include/global_form.php:1472
 msgid "Set any graph specific options here."
@@ -7712,12 +7936,14 @@ msgid ""
 msgstr ""
 
 #: ../include/global_form.php:1555
+#, fuzzy
 msgid "Discovery Rules"
-msgstr ""
+msgstr "Устройства"
 
 #: ../include/global_form.php:1573
+#, fuzzy
 msgid "Import Template from Local File"
-msgstr ""
+msgstr "Импортиране на шаблони"
 
 #: ../include/global_form.php:1574
 msgid ""
@@ -7726,8 +7952,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_form.php:1579
+#, fuzzy
 msgid "Import Template from Text"
-msgstr ""
+msgstr "Импортиране на шаблони"
 
 #: ../include/global_form.php:1580
 msgid ""
@@ -7775,8 +8002,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_form.php:1643
+#, fuzzy
 msgid "Maximum Log Size"
-msgstr ""
+msgstr "Максимална стойност"
 
 #: ../include/global_form.php:1644
 msgid ""
@@ -7821,8 +8049,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_form.php:1727
+#, fuzzy
 msgid "The UDP port to be used for SNMP traps. Typically, 162."
-msgstr ""
+msgstr "Въведете UDP порт номер който да се използва за SNMP (стандартно 161)"
 
 #: ../include/global_form.php:1743
 msgid "SNMP Message Type"
@@ -7837,7 +8066,7 @@ msgstr ""
 #: ../include/global_form.php:1776 ../include/global_form.php:2035
 #: ../links.php:379
 msgid "Title"
-msgstr "Название"
+msgstr ""
 
 #: ../include/global_form.php:1777
 msgid "The new Title of the aggregated Graph."
@@ -7916,8 +8145,9 @@ msgid "Is this to carry the template?"
 msgstr ""
 
 #: ../include/global_form.php:1863
+#, fuzzy
 msgid "Aggregate Graph Settings"
-msgstr ""
+msgstr "Редактирай (Настройки на графики)"
 
 #: ../include/global_form.php:1868 ../include/global_form.php:1970
 msgid ""
@@ -7926,16 +8156,19 @@ msgid ""
 msgstr ""
 
 #: ../include/global_form.php:1948
+#, fuzzy
 msgid "Aggregate Template Name"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../include/global_form.php:1949
+#, fuzzy
 msgid "Please name this Aggregate Template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../include/global_form.php:1956
+#, fuzzy
 msgid "Source Graph Template"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../include/global_form.php:1957
 msgid "The Graph Template that this Aggregate Template is based upon."
@@ -7946,16 +8179,18 @@ msgid "Aggregate Template Settings"
 msgstr ""
 
 #: ../include/global_form.php:2039
+#, fuzzy
 msgid "The name of this Color Template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../include/global_form.php:2050
 msgid "A nice Color"
 msgstr ""
 
 #: ../include/global_form.php:2060
+#, fuzzy
 msgid "A useful name for this Template."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../include/global_form.php:2074 ../include/global_form.php:2116
 #: ../lib/api_automation.php:1208 ../lib/api_automation.php:1270
@@ -7989,8 +8224,9 @@ msgid "Sequence."
 msgstr ""
 
 #: ../include/global_form.php:2158 ../include/global_form.php:2207
+#, fuzzy
 msgid "A useful name for this Rule."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../include/global_form.php:2166
 msgid "Choose a Data Query to apply to this rule."
@@ -8009,8 +8245,9 @@ msgid "Check this box to enable this rule."
 msgstr ""
 
 #: ../include/global_form.php:2215
+#, fuzzy
 msgid "Choose a Tree for the new Tree Items."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../include/global_form.php:2222
 msgid "Leaf Item Type"
@@ -8106,19 +8343,22 @@ msgstr ""
 
 #: ../include/global_settings.php:39
 msgid "Paths"
-msgstr "Путь"
+msgstr ""
 
 #: ../include/global_settings.php:40
+#, fuzzy
 msgid "Device Defaults"
-msgstr ""
+msgstr "Устройства"
 
 #: ../include/global_settings.php:41 ../include/global_settings.php:449
+#, fuzzy
 msgid "Poller"
-msgstr "Регистратор"
+msgstr "Събиращи скриптове"
 
 #: ../include/global_settings.php:42
+#, fuzzy
 msgid "Data Storage"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../include/global_settings.php:43
 msgid "Visual"
@@ -8127,11 +8367,12 @@ msgstr ""
 #: ../include/global_settings.php:44 ../lib/functions.php:3767
 #: ../lib/functions.php:3772
 msgid "Authentication"
-msgstr "Аутентификация"
+msgstr ""
 
 #: ../include/global_settings.php:45
+#, fuzzy
 msgid "Data Source Statistics"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../include/global_settings.php:46
 msgid "Performance"
@@ -8150,16 +8391,19 @@ msgid "Time Spanning/Shifting"
 msgstr ""
 
 #: ../include/global_settings.php:53
+#, fuzzy
 msgid "Graph Thumbnail Settings"
-msgstr ""
+msgstr "Редактирай (Настройки на графики)"
 
 #: ../include/global_settings.php:54
+#, fuzzy
 msgid "Tree Settings"
-msgstr ""
+msgstr "Настойки"
 
 #: ../include/global_settings.php:55
+#, fuzzy
 msgid "Graph Fonts"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../include/global_settings.php:85
 msgid "Required Tool Paths"
@@ -8210,8 +8454,9 @@ msgid "RRDtool Binary Path"
 msgstr ""
 
 #: ../include/global_settings.php:121
+#, fuzzy
 msgid "The path to the rrdtool binary."
-msgstr ""
+msgstr "Пълния път до RRD файл."
 
 #: ../include/global_settings.php:126
 msgid "PHP Binary Path"
@@ -8228,8 +8473,9 @@ msgid "Logging"
 msgstr ""
 
 #: ../include/global_settings.php:137
+#, fuzzy
 msgid "Cacti Log Path"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../include/global_settings.php:138
 msgid ""
@@ -8256,8 +8502,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:157
+#, fuzzy
 msgid "Alternate Poller Path"
-msgstr ""
+msgstr "Зачистване на кеша на събиращия скрипт"
 
 #: ../include/global_settings.php:162
 msgid "Spine Binary File Location"
@@ -8334,16 +8581,19 @@ msgid "SNMP Messages"
 msgstr ""
 
 #: ../include/global_settings.php:223
+#, fuzzy
 msgid "Graph Syntax"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../include/global_settings.php:227
+#, fuzzy
 msgid "Developer Mode"
-msgstr ""
+msgstr "Общ изглед"
 
 #: ../include/global_settings.php:233
+#, fuzzy
 msgid "Log Settings"
-msgstr ""
+msgstr "Настойки"
 
 #: ../include/global_settings.php:238
 msgid "Generic Log Level"
@@ -8425,28 +8675,31 @@ msgid "Should the Has Graphs and Has Data Sources be Checked by Default."
 msgstr ""
 
 #: ../include/global_settings.php:298
+#, fuzzy
 msgid "Graph Template Image Format"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../include/global_settings.php:299
 msgid "The default Image Format to be used for all new Graph Templates."
 msgstr ""
 
 #: ../include/global_settings.php:305
+#, fuzzy
 msgid "Graph Template Height"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../include/global_settings.php:306 ../include/global_settings.php:314
 msgid "The default Graph Width to be used for all new Graph Templates."
 msgstr ""
 
 #: ../include/global_settings.php:313
+#, fuzzy
 msgid "Graph Template Width"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../include/global_settings.php:321
 msgid "Language Support"
-msgstr "Поддерфиваемые Языки"
+msgstr ""
 
 #: ../include/global_settings.php:322
 msgid ""
@@ -8466,7 +8719,7 @@ msgstr ""
 
 #: ../include/global_settings.php:335
 msgid "Auto Language Detection"
-msgstr "Автоматическое Определение Языка"
+msgstr ""
 
 #: ../include/global_settings.php:336
 msgid ""
@@ -8493,8 +8746,9 @@ msgid "The System default date separator to be used in Cacti."
 msgstr ""
 
 #: ../include/global_settings.php:356
+#, fuzzy
 msgid "Other Settings"
-msgstr ""
+msgstr "Настойки"
 
 #: ../include/global_settings.php:361 ../utilities.php:258
 msgid "RRDtool Version"
@@ -8505,8 +8759,9 @@ msgid "The version of RRDtool that you have installed."
 msgstr ""
 
 #: ../include/global_settings.php:368
+#, fuzzy
 msgid "Graph Permission Method"
-msgstr ""
+msgstr "Редактирай (Права за графики)"
 
 #: ../include/global_settings.php:369
 msgid ""
@@ -8518,8 +8773,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:376
+#, fuzzy
 msgid "Graph/Data Source Creation Method"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../include/global_settings.php:377
 msgid ""
@@ -8602,7 +8858,7 @@ msgstr ""
 #: ../include/global_settings.php:436
 #, fuzzy
 msgid "General Defaults"
-msgstr "Основые Настройки"
+msgstr "Устройства"
 
 #: ../include/global_settings.php:442
 msgid "The default Site for all new Devices."
@@ -8621,8 +8877,9 @@ msgid "The default Re-index Method to use for all Data Queries."
 msgstr ""
 
 #: ../include/global_settings.php:464
+#, fuzzy
 msgid "SNMP Defaults"
-msgstr ""
+msgstr "SNMP изтекло време"
 
 #: ../include/global_settings.php:470
 msgid "Default SNMP version for all new hosts."
@@ -8633,16 +8890,18 @@ msgid "Default SNMP read community for all new hosts."
 msgstr ""
 
 #: ../include/global_settings.php:483
+#, fuzzy
 msgid "Username (v3)"
-msgstr ""
+msgstr "Потребител"
 
 #: ../include/global_settings.php:484
 msgid "The SNMP v3 Username for polling hosts."
 msgstr ""
 
 #: ../include/global_settings.php:490
+#, fuzzy
 msgid "Password (v3)"
-msgstr ""
+msgstr "Парола"
 
 #: ../include/global_settings.php:491
 msgid "The SNMP v3 Password for polling hosts."
@@ -8669,8 +8928,9 @@ msgid "Port Number"
 msgstr ""
 
 #: ../include/global_settings.php:527
+#, fuzzy
 msgid "Default UDP port to be used for SNMP Calls.  Typically, 161."
-msgstr ""
+msgstr "Въведете UDP порт номер който да се използва за SNMP (стандартно 161)"
 
 #: ../include/global_settings.php:535
 msgid ""
@@ -8703,8 +8963,9 @@ msgid "The number of times Cacti will attempt to ping a host before failing."
 msgstr ""
 
 #: ../include/global_settings.php:585
+#, fuzzy
 msgid "Up/Down Settings"
-msgstr ""
+msgstr "Настойки"
 
 #: ../include/global_settings.php:590
 msgid "Failure Count"
@@ -8727,8 +8988,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:608
+#, fuzzy
 msgid "Theme Settings"
-msgstr ""
+msgstr "Настойки"
 
 #: ../include/global_settings.php:613 ../include/global_settings.php:756
 #: ../include/global_settings.php:1777
@@ -8740,8 +9002,9 @@ msgid "Please select one of the available Themes to skin your Cacti with."
 msgstr ""
 
 #: ../include/global_settings.php:620
+#, fuzzy
 msgid "Table Settings"
-msgstr ""
+msgstr "Настойки"
 
 #: ../include/global_settings.php:625
 msgid "Rows Per Page"
@@ -8756,24 +9019,27 @@ msgid "Graph/Data Source/Data Query Settings"
 msgstr ""
 
 #: ../include/global_settings.php:637
+#, fuzzy
 msgid "Maximum Title Length"
-msgstr ""
+msgstr "Максимална стойност"
 
 #: ../include/global_settings.php:638
 msgid "The maximum allowable Graph or Data Source titles."
 msgstr ""
 
 #: ../include/global_settings.php:645
+#, fuzzy
 msgid "Data Source Field Length"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../include/global_settings.php:646
 msgid "The maximum Data Query field length."
 msgstr ""
 
 #: ../include/global_settings.php:653
+#, fuzzy
 msgid "Graph Creation"
-msgstr ""
+msgstr "Дърво на графики"
 
 #: ../include/global_settings.php:658
 msgid "Default Graph Type"
@@ -8788,8 +9054,9 @@ msgid "All Types"
 msgstr ""
 
 #: ../include/global_settings.php:662
+#, fuzzy
 msgid "By Template/Data Query"
-msgstr ""
+msgstr "Вземане на данни"
 
 #: ../include/global_settings.php:670
 msgid "Default Log Tail Lines"
@@ -8820,8 +9087,9 @@ msgid "Test to place at the bottom center of every Graph."
 msgstr ""
 
 #: ../include/global_settings.php:697
+#, fuzzy
 msgid "Log Viewer Settings"
-msgstr ""
+msgstr "Настройки на cacti"
 
 #: ../include/global_settings.php:702
 msgid "Exclusion Regex"
@@ -8836,8 +9104,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:712
+#, fuzzy
 msgid "Real-time Graphs"
-msgstr ""
+msgstr "Създаване на нови графики"
 
 #: ../include/global_settings.php:717
 msgid "Enable Real-time Graphing"
@@ -8850,8 +9119,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:723 ../lib/html_reports.php:398
+#, fuzzy
 msgid "Graph Timespan"
-msgstr ""
+msgstr "Дърво на графики"
 
 #: ../include/global_settings.php:724
 msgid "This timespan you wish to see on the default graph."
@@ -8992,8 +9262,9 @@ msgid "If you wish to stop the polling process completely, uncheck this box."
 msgstr ""
 
 #: ../include/global_settings.php:840
+#, fuzzy
 msgid "Poller Type"
-msgstr ""
+msgstr "Събиращи скриптове"
 
 #: ../include/global_settings.php:841
 msgid ""
@@ -9150,11 +9421,11 @@ msgstr ""
 
 #: ../include/global_settings.php:950
 msgid "Special Users"
-msgstr "Специальный пользователь"
+msgstr ""
 
 #: ../include/global_settings.php:955
 msgid "Guest User"
-msgstr "Гость"
+msgstr ""
 
 #: ../include/global_settings.php:956
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
@@ -9166,8 +9437,9 @@ msgid "No User"
 msgstr ""
 
 #: ../include/global_settings.php:963 ../user_domains.php:331
+#, fuzzy
 msgid "User Template"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../include/global_settings.php:964
 msgid ""
@@ -9180,8 +9452,9 @@ msgid "Local Account Complexity Requirements"
 msgstr ""
 
 #: ../include/global_settings.php:976
+#, fuzzy
 msgid "Minimum Length"
-msgstr ""
+msgstr "Минимална стойност"
 
 #: ../include/global_settings.php:977
 msgid "This is minimal length of allowed passwords."
@@ -9236,16 +9509,18 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1022
+#, fuzzy
 msgid "Expire Password"
-msgstr ""
+msgstr "Парола"
 
 #: ../include/global_settings.php:1023
 msgid "This is maximum number of days before a password is set to expire."
 msgstr ""
 
 #: ../include/global_settings.php:1034
+#, fuzzy
 msgid "Password History"
-msgstr ""
+msgstr "Парола"
 
 #: ../include/global_settings.php:1035
 msgid "Remember this number of old passwords and disallow re-using them."
@@ -9300,8 +9575,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1093
+#, fuzzy
 msgid "LDAP General Settings"
-msgstr ""
+msgstr "Редактирай (Настройки на графики)"
 
 #: ../include/global_settings.php:1097 ../user_domains.php:358
 msgid "Server"
@@ -9328,8 +9604,9 @@ msgid "TCP/UDP port for SSL communications."
 msgstr ""
 
 #: ../include/global_settings.php:1119 ../user_domains.php:384
+#, fuzzy
 msgid "Protocol Version"
-msgstr ""
+msgstr "SNMP Версия"
 
 #: ../include/global_settings.php:1120 ../user_domains.php:385
 msgid "Protocol Version that the server supports."
@@ -9356,8 +9633,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1140 ../user_domains.php:405
+#, fuzzy
 msgid "Mode"
-msgstr ""
+msgstr "Списъчен изглед"
 
 #: ../include/global_settings.php:1141
 msgid ""
@@ -9396,8 +9674,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1159 ../user_domains.php:425
+#, fuzzy
 msgid "LDAP Group Settings"
-msgstr ""
+msgstr "Редактирай (Настройки на графики)"
 
 #: ../include/global_settings.php:1163 ../user_domains.php:429
 msgid "Group Distinguished Name (DN)"
@@ -9466,8 +9745,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1204 ../user_domains.php:475
+#, fuzzy
 msgid "Search Password"
-msgstr ""
+msgstr "Парола"
 
 #: ../include/global_settings.php:1205 ../user_domains.php:476
 msgid "Password for Specific Searching binding to the LDAP directory."
@@ -9491,8 +9771,6 @@ msgid ""
 "Emailing Options<div id=\"emailtest\" class=\"emailtest textSubHeaderDark"
 "\">Send a Test Email</div>"
 msgstr ""
-"Параметры отправки по электронной почте<div id=\"emailtest\" class="
-"\"emailtest textSubHeaderDark\">Отправить тестовое сообщение</div>"
 
 #: ../include/global_settings.php:1229
 msgid "Test Email"
@@ -9505,16 +9783,17 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1235
+#, fuzzy
 msgid "Mail Services"
-msgstr "Почтовые службы"
+msgstr "Устройства"
 
 #: ../include/global_settings.php:1236
 msgid "Which mail service to use in order to send mail"
-msgstr "Какую почтовую службу использовать для отправки почты"
+msgstr ""
 
 #: ../include/global_settings.php:1238 ../include/global_settings.php:1239
 msgid "PHP Mail() Function"
-msgstr "PHP Mail() Функция"
+msgstr ""
 
 #: ../include/global_settings.php:1239 ../lib/functions.php:3755
 msgid "SMTP"
@@ -9526,25 +9805,24 @@ msgstr ""
 
 #: ../include/global_settings.php:1242 ../lib/html_reports.php:186
 msgid "From Email Address"
-msgstr "Email адрес отправителя"
+msgstr ""
 
 #: ../include/global_settings.php:1243
 msgid "This is the Email address that the Email will appear from."
-msgstr "Это адрес электронной почты, который будет отображаться в письме."
+msgstr ""
 
 #: ../include/global_settings.php:1248 ../lib/html_reports.php:178
+#, fuzzy
 msgid "From Name"
-msgstr "От кого"
+msgstr "Име"
 
 #: ../include/global_settings.php:1249
 msgid "This is the actual name that the Email will appear from."
 msgstr ""
-"Это фактическое имя, которое будет отображаться в сообщении электронной "
-"почты."
 
 #: ../include/global_settings.php:1254
 msgid "Word Wrap"
-msgstr "Перенос Строк"
+msgstr ""
 
 #: ../include/global_settings.php:1255
 msgid ""
@@ -9554,11 +9832,11 @@ msgstr ""
 
 #: ../include/global_settings.php:1262
 msgid "Sendmail Options"
-msgstr "Sendmail Опции"
+msgstr ""
 
 #: ../include/global_settings.php:1267 ../lib/functions.php:3750
 msgid "Sendmail Path"
-msgstr "Sendmail Путь"
+msgstr ""
 
 #: ../include/global_settings.php:1268
 msgid ""
@@ -9581,16 +9859,18 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1286
+#, fuzzy
 msgid "SMTP Port"
-msgstr ""
+msgstr "SNMP Порт"
 
 #: ../include/global_settings.php:1287
 msgid "The port on the SMTP Server to use."
 msgstr ""
 
 #: ../include/global_settings.php:1294
+#, fuzzy
 msgid "SMTP Username"
-msgstr "SMTP Имя пользователя"
+msgstr "Потребител"
 
 #: ../include/global_settings.php:1295
 msgid ""
@@ -9599,8 +9879,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1300
+#, fuzzy
 msgid "SMTP Password"
-msgstr "SMTP Пароль"
+msgstr "Парола"
 
 #: ../include/global_settings.php:1301
 msgid ""
@@ -9614,11 +9895,12 @@ msgstr ""
 
 #: ../include/global_settings.php:1307
 msgid "The encryption method to use for the Email."
-msgstr "Метод шифрования для Email"
+msgstr ""
 
 #: ../include/global_settings.php:1313
+#, fuzzy
 msgid "SMTP Timeout"
-msgstr "SMTP таймаут"
+msgstr "SNMP изтекло време"
 
 #: ../include/global_settings.php:1314
 msgid "Please enter the SMTP timeout in seconds."
@@ -9639,8 +9921,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1333
+#, fuzzy
 msgid "Maximum E-Mail Size"
-msgstr ""
+msgstr "Максимална стойност"
 
 #: ../include/global_settings.php:1334
 msgid "The maximum size of the E-Mail message including all attachements."
@@ -9685,8 +9968,9 @@ msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
 msgstr ""
 
 #: ../include/global_settings.php:1372
+#, fuzzy
 msgid "DNS Timeout"
-msgstr ""
+msgstr "SNMP изтекло време"
 
 #: ../include/global_settings.php:1373
 msgid ""
@@ -9695,8 +9979,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1382
+#, fuzzy
 msgid "Data Sources Statistics"
-msgstr ""
+msgstr "Път до източник на данни"
 
 #: ../include/global_settings.php:1387
 msgid "Enable Data Source Statistics Collection"
@@ -9807,8 +10092,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1469
+#, fuzzy
 msgid "Maximum Records"
-msgstr ""
+msgstr "Максимална стойност"
 
 #: ../include/global_settings.php:1470
 msgid ""
@@ -9986,8 +10272,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1628
+#, fuzzy
 msgid "Spike Kill Settings"
-msgstr ""
+msgstr "Настройки на cacti"
 
 #: ../include/global_settings.php:1633
 msgid "Removal Method"
@@ -10125,8 +10412,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1738
+#, fuzzy
 msgid "Batch Spike Kill Settings"
-msgstr ""
+msgstr "Настройки на cacti"
 
 #: ../include/global_settings.php:1743
 msgid "Removal Schedule"
@@ -10149,7 +10437,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1757
 msgid "Base Time"
-msgstr "Базовое время"
+msgstr ""
 
 #: ../include/global_settings.php:1758
 msgid ""
@@ -10160,8 +10448,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1766
+#, fuzzy
 msgid "Graph Templates to Spike Kill"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../include/global_settings.php:1768
 msgid ""
@@ -10170,8 +10459,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1784
+#, fuzzy
 msgid "Default View Mode"
-msgstr ""
+msgstr "Общ изглед"
 
 #: ../include/global_settings.php:1785
 msgid ""
@@ -10180,8 +10470,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1791
+#, fuzzy
 msgid "User Language"
-msgstr "Язык пользователя"
+msgstr "Права на потребители"
 
 #: ../include/global_settings.php:1792
 msgid "Defines the preferred GUI language."
@@ -10189,7 +10480,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1798
 msgid "Show Graph Title"
-msgstr "Показать название графика"
+msgstr ""
 
 #: ../include/global_settings.php:1799
 msgid ""
@@ -10198,8 +10489,9 @@ msgid ""
 msgstr ""
 
 #: ../include/global_settings.php:1805
+#, fuzzy
 msgid "The date format to use in Cacti."
-msgstr ""
+msgstr "Пълния път до RRD файл."
 
 #: ../include/global_settings.php:1812
 msgid "The date separator to be used in Cacti."
@@ -10207,7 +10499,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1818
 msgid "Page Refresh"
-msgstr "Обновить страницу"
+msgstr ""
 
 #: ../include/global_settings.php:1819
 msgid "The number of seconds between automatic page refreshes."
@@ -10287,7 +10579,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1891 ../lib/functions.php:1852
 msgid "Preview Mode"
-msgstr ""
+msgstr "Общ изглед"
 
 #: ../include/global_settings.php:1901
 msgid "Preview Thumbnail Columns"
@@ -10339,19 +10631,21 @@ msgstr ""
 
 #: ../include/global_settings.php:1933
 msgid "Default Tree"
-msgstr "Дерево по умолчанию"
+msgstr ""
 
 #: ../include/global_settings.php:1934
 msgid "The default graph tree to use when displaying graphs in tree mode."
 msgstr ""
 
 #: ../include/global_settings.php:1940
+#, fuzzy
 msgid "Graphs Per Page"
-msgstr ""
+msgstr "Дърво на графики"
 
 #: ../include/global_settings.php:1947
+#, fuzzy
 msgid "Expand Devices"
-msgstr ""
+msgstr "Устройства"
 
 #: ../include/global_settings.php:1948
 msgid ""
@@ -10407,35 +10701,33 @@ msgid ""
 "You are now logged into <a href=\"%s\"><b>Cacti</b></a>. You can follow "
 "these basic steps to get started."
 msgstr ""
-"Вы вошли в <a href=\"%s\"><b>Cacti</b></a>. Вы можете проделать эти простые "
-"шаги для начала."
 
 #: ../index.php:67
 #, php-format
 msgid "<a href=\"%s\">Create devices</a> for network"
-msgstr "<a href=\"%s\">Создайте устройства</a> для сети"
+msgstr ""
 
 #: ../index.php:68
 #, php-format
 msgid "<a href=\"%s\">Create graphs</a> for your new devices"
-msgstr "<a href=\"%s\">Создайте график</a> для вашего нового устройства"
+msgstr ""
 
 #: ../index.php:69
 #, php-format
 msgid "<a href=\"%s\">View</a> your new graphs"
-msgstr "<a href=\"%s\">Посмотрите</a> ваши новые графики"
+msgstr ""
 
 #: ../index.php:78
 msgid "Offline"
-msgstr "Не в сети"
+msgstr ""
 
 #: ../index.php:78
 msgid "Online"
-msgstr "В сети"
+msgstr ""
 
 #: ../index.php:78
 msgid "Recovery"
-msgstr "Восстанавливается"
+msgstr ""
 
 #: ../index.php:78
 msgid "Remote Data Collector Status:"
@@ -10632,15 +10924,16 @@ msgstr ""
 #: ../install/index.php:592 ../install/index.php:669 ../plugins.php:41
 #: ../plugins.php:288 ../utilities.php:415
 msgid "Installed"
-msgstr "Установленно"
+msgstr ""
 
 #: ../install/index.php:592
 msgid "Required"
 msgstr ""
 
 #: ../install/index.php:594 ../utilities.php:387
+#, fuzzy
 msgid "PHP Version"
-msgstr "Версия PHP"
+msgstr "SNMP Версия"
 
 #: ../install/index.php:659
 msgid "Optional PHP Module Support"
@@ -10801,7 +11094,7 @@ msgstr ""
 
 #: ../install/index.php:815 ../install/index.php:831 ../lib/html.php:398
 msgid "Next"
-msgstr "Следующая"
+msgstr "Следващ"
 
 #: ../install/index.php:840
 msgid "Upgrade"
@@ -10877,8 +11170,9 @@ msgid ""
 msgstr ""
 
 #: ../install/index.php:998
+#, fuzzy
 msgid "Check Permissions"
-msgstr ""
+msgstr "Редактирай (Права за графики)"
 
 #: ../install/index.php:1000
 msgid "All folders are writable"
@@ -10941,8 +11235,9 @@ msgid ""
 msgstr ""
 
 #: ../install/index.php:1054
+#, fuzzy
 msgid "Upgrade Results"
-msgstr ""
+msgstr "Експортиране на резултати"
 
 #: ../install/index.php:1056
 msgid "You Cacti database has been upgraded.  You can view the results below."
@@ -11003,27 +11298,23 @@ msgstr ""
 #, fuzzy
 msgctxt "Dialog: previous"
 msgid "Previous"
-msgstr "Предыдущая"
+msgstr "Общ изглед"
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "claws-mail"
 #: ../install/index.php:1114
-#, fuzzy
 msgctxt "Dialog: complete"
 msgid "Finish"
-msgstr "Готово"
+msgstr ""
 
 #: ../install/index.php:1114
 #, fuzzy
 msgctxt "Dialog: go to the next page"
 msgid "Next"
-msgstr "Следующая"
+msgstr "Следващ"
 
 #: ../install/index.php:1115
-#, fuzzy
 msgctxt "Dialog: test connection"
 msgid "Test Connection"
-msgstr "Коллекции Данных"
+msgstr ""
 
 #: ../install/index.php:1115
 msgid "Test remote database connection"
@@ -11053,38 +11344,41 @@ msgstr ""
 
 #: ../lib/api_aggregate.php:1210 ../lib/functions.php:1904
 msgid "Graph Items"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../lib/api_aggregate.php:1210 ../lib/functions.php:2036
 msgid "Graph Template Items"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../lib/api_aggregate.php:1214 ../lib/html.php:876
+#, fuzzy
 msgid "Graph Item"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../lib/api_aggregate.php:1217 ../lib/html.php:879
 msgid "CF Type"
 msgstr ""
 
 #: ../lib/api_aggregate.php:1219
+#, fuzzy
 msgid "Color Template"
-msgstr ""
+msgstr "Експортиране на шаблони"
 
 #: ../lib/api_aggregate.php:1220
 msgid "Skip"
 msgstr ""
 
 #: ../lib/api_automation.php:124
+#, fuzzy
 msgid "Matching Devices"
-msgstr ""
+msgstr "Устройства"
 
 #: ../lib/api_automation.php:139 ../lib/api_automation.php:994
 #: ../lib/html_reports.php:309 ../lib/html_reports.php:1230
 #: ../lib/html_reports.php:1486 ../lib/html_reports.php:1497
 #: ../lib/rrd.php:2631 ../utilities.php:301 ../utilities.php:2331
 msgid "Type"
-msgstr "Тип"
+msgstr ""
 
 #: ../lib/api_automation.php:299
 msgid "No Matching Devices"
@@ -11096,8 +11390,9 @@ msgid "Matching Objects"
 msgstr ""
 
 #: ../lib/api_automation.php:562
+#, fuzzy
 msgid "Graph ID"
-msgstr ""
+msgstr "Графика"
 
 #: ../lib/api_automation.php:689
 msgid "Objects"
@@ -11115,8 +11410,9 @@ msgid "Matching Objects [ %s ]"
 msgstr ""
 
 #: ../lib/api_automation.php:810
+#, fuzzy
 msgid "Device Status"
-msgstr ""
+msgstr "Устройства"
 
 #: ../lib/api_automation.php:832
 msgid "There are no Objects that match this rule."
@@ -11127,8 +11423,9 @@ msgid "Error in data query"
 msgstr ""
 
 #: ../lib/api_automation.php:980
+#, fuzzy
 msgid "Matching Items"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../lib/api_automation.php:1142
 msgid "Resulting Branch"
@@ -11140,7 +11437,7 @@ msgstr ""
 
 #: ../lib/api_automation.php:1209 ../lib/api_automation.php:1271
 msgid "Field"
-msgstr "Поле"
+msgstr ""
 
 #: ../lib/api_automation.php:1211 ../lib/api_automation.php:1273
 msgid "Pattern"
@@ -11181,8 +11478,9 @@ msgid "Rule Item [new rule item for %s: %s]"
 msgstr ""
 
 #: ../lib/api_automation.php:2653
+#, fuzzy
 msgid "Added by Cacti Automation"
-msgstr ""
+msgstr "За cacti"
 
 #: ../lib/api_device.php:398
 msgid "Device is Disabled"
@@ -11193,8 +11491,9 @@ msgid "Device Availability Check Bypassed"
 msgstr ""
 
 #: ../lib/api_device.php:406
+#, fuzzy
 msgid "SNMP Information"
-msgstr ""
+msgstr "SNMP Версия"
 
 #: ../lib/api_device.php:410
 msgid "SNMP not in use"
@@ -11202,8 +11501,9 @@ msgstr ""
 
 #: ../lib/api_device.php:418 ../lib/api_device.php:422
 #: ../lib/api_device.php:434
+#, fuzzy
 msgid "SNMP error"
-msgstr ""
+msgstr "SNMP Порт"
 
 #: ../lib/api_device.php:441
 msgid "System:"
@@ -11230,8 +11530,9 @@ msgid "Hostname:"
 msgstr ""
 
 #: ../lib/api_device.php:450
+#, fuzzy
 msgid "Location:"
-msgstr ""
+msgstr "Действия"
 
 #: ../lib/api_device.php:451
 msgid "Contact:"
@@ -11239,8 +11540,9 @@ msgstr ""
 
 #: ../lib/api_device.php:480 ../lib/functions.php:3780
 #: ../lib/functions.php:3782
+#, fuzzy
 msgid "Ping Results"
-msgstr ""
+msgstr "Експортиране на резултати"
 
 #: ../lib/api_device.php:485
 msgid "No Ping or SNMP Availability Check in Use"
@@ -11276,7 +11578,7 @@ msgstr ""
 
 #: ../lib/clog_webapi.php:282 ../utilities.php:1133
 msgid "LINE LIMIT OF 1000 LINES REACHED!!"
-msgstr "ДОСТИГНУЛ ЛИМИТ В 1000 СТРОК!!"
+msgstr ""
 
 #: ../lib/clog_webapi.php:305 ../utilities.php:984
 msgid "Tail Lines"
@@ -11284,7 +11586,7 @@ msgstr ""
 
 #: ../lib/clog_webapi.php:317 ../utilities.php:996
 msgid "Message Type"
-msgstr "Тип сообщения"
+msgstr ""
 
 #: ../lib/clog_webapi.php:322 ../utilities.php:1001
 msgid "Stats"
@@ -11304,7 +11606,7 @@ msgstr ""
 
 #: ../lib/clog_webapi.php:357 ../utilities.php:1036
 msgid "Newest First"
-msgstr "Новые Сначала"
+msgstr ""
 
 #: ../lib/clog_webapi.php:358 ../utilities.php:1037
 msgid "Oldest First"
@@ -11317,7 +11619,7 @@ msgstr ""
 
 #: ../lib/functions.php:1790 ../lib/functions.php:1795
 msgid "Logged in as"
-msgstr "Вошел как"
+msgstr ""
 
 #: ../lib/functions.php:1790
 msgid "Login as Regular User"
@@ -11333,7 +11635,7 @@ msgstr ""
 
 #: ../lib/functions.php:1799
 msgid "Logout"
-msgstr "Выход"
+msgstr ""
 
 #: ../lib/functions.php:1816 ../lib/functions.php:1822
 msgid "User Profile (Edit)"
@@ -11341,17 +11643,17 @@ msgstr ""
 
 #: ../lib/functions.php:1834 ../lib/functions.php:1840
 msgid "Tree Mode"
-msgstr ""
+msgstr "Дървовиден изглед"
 
 #: ../lib/functions.php:1846
 msgid "List Mode"
-msgstr ""
+msgstr "Списъчен изглед"
 
 #: ../lib/functions.php:1868 ../lib/functions.php:1874
 #: ../lib/functions.php:2728 ../lib/html.php:1320 ../lib/html.php:1392
 #: ../links.php:344 ../user_admin.php:1636 ../user_group_admin.php:1374
 msgid "Console"
-msgstr "Консоль"
+msgstr "Административна конзола"
 
 #: ../lib/functions.php:1886 ../lib/functions.php:1928
 #: ../lib/functions.php:1946 ../lib/functions.php:2000
@@ -11366,43 +11668,44 @@ msgstr "Консоль"
 #: ../lib/functions.php:2528 ../lib/functions.php:2546
 #: ../lib/functions.php:2564 ../lib/functions.php:2588
 msgid "(Edit)"
-msgstr ""
+msgstr "(Редактирай)"
 
 #: ../lib/functions.php:1910
 msgid "Create New Graphs"
-msgstr ""
+msgstr "Създаване на нови графики"
 
 #: ../lib/functions.php:1916
 msgid "Create Graphs from Data Query"
-msgstr ""
+msgstr "Създаване на графики от автоматизирано събиране на данни"
 
 #: ../lib/functions.php:1934 ../lib/functions.php:1952
 #: ../lib/functions.php:2048 ../lib/functions.php:2138
 #: ../lib/functions.php:2162 ../lib/functions.php:2318
 msgid "(Remove)"
-msgstr ""
+msgstr "(Изтрий)"
 
 #: ../lib/functions.php:1970 ../lib/functions.php:1976
 #: ../lib/functions.php:1982 ../lib/functions.php:1988
 #: ../lib/functions.php:2252
 msgid "View Cacti Log"
-msgstr "Просмотреть логи Cacti"
+msgstr ""
 
 #: ../lib/functions.php:1994
 msgid "Graph Trees"
-msgstr ""
+msgstr "Дърво на графики"
 
 #: ../lib/functions.php:2126
 msgid "Round Robin Archives"
-msgstr ""
+msgstr "Round Robin Archives"
 
 #: ../lib/functions.php:2168
 msgid "Data Input Fields"
-msgstr ""
+msgstr "Полета за въвеждане на данни"
 
 #: ../lib/functions.php:2174 ../lib/functions.php:2204
+#, fuzzy
 msgid "(Remove Item)"
-msgstr ""
+msgstr "(Изтрий)"
 
 #: ../lib/functions.php:2222
 msgid "List unused Files"
@@ -11410,11 +11713,12 @@ msgstr ""
 
 #: ../lib/functions.php:2234 ../lib/functions.php:2246 ../utilities.php:1773
 msgid "View Poller Cache"
-msgstr ""
+msgstr "Виж кеш на събиращия скрипт"
 
 #: ../lib/functions.php:2240 ../utilities.php:1777
+#, fuzzy
 msgid "View Data Query Cache"
-msgstr ""
+msgstr "Виж кеш на събиращия скрипт"
 
 #: ../lib/functions.php:2258 ../utilities.php:1161
 msgid "Clear Cacti Log"
@@ -11430,15 +11734,16 @@ msgstr ""
 
 #: ../lib/functions.php:2276 ../utilities.php:1757
 msgid "Technical Support"
-msgstr "Техническая Поддержка"
+msgstr ""
 
 #: ../lib/functions.php:2282 ../utilities.php:1870
 msgid "Boost Status"
 msgstr ""
 
 #: ../lib/functions.php:2288
+#, fuzzy
 msgid "View SNMP Agent Cache"
-msgstr ""
+msgstr "Виж SNMP кеша"
 
 #: ../lib/functions.php:2294
 msgid "View SNMP Agent Notification Log"
@@ -11454,52 +11759,58 @@ msgstr ""
 
 #: ../lib/functions.php:2342
 msgid "Cacti Settings"
-msgstr ""
+msgstr "Настройки на cacti"
 
 #: ../lib/functions.php:2360 ../lib/functions.php:2390
+#, fuzzy
 msgid "(Action)"
-msgstr ""
+msgstr "Действия"
 
 #: ../lib/functions.php:2408
 msgid "Export Results"
-msgstr ""
+msgstr "Експортиране на резултати"
 
 #: ../lib/functions.php:2420 ../lib/functions.php:2450 ../lib/html.php:1341
 #: ../lib/html.php:1343 ../lib/html.php:1417
 msgid "Reporting"
-msgstr "Отчёты"
+msgstr ""
 
 #: ../lib/functions.php:2426 ../lib/functions.php:2456
 msgid "Report Add"
-msgstr "Добавить отчёт"
+msgstr ""
 
 #: ../lib/functions.php:2432 ../lib/functions.php:2462
+#, fuzzy
 msgid "Report Delete"
-msgstr "Удалить отчёт"
+msgstr "Експортиране на шаблони"
 
 #: ../lib/functions.php:2438 ../lib/functions.php:2468
 msgid "Report Edit"
-msgstr "Изменить отчёт"
+msgstr ""
 
 #: ../lib/functions.php:2444 ../lib/functions.php:2474
 msgid "Report Edit Item"
 msgstr ""
 
 #: ../lib/functions.php:2498
+#, fuzzy
 msgid "Color Template Items"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../lib/functions.php:2540
+#, fuzzy
 msgid "Aggregate Items"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../lib/functions.php:2576
+#, fuzzy
 msgid "Graph Rule Items"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../lib/functions.php:2600
+#, fuzzy
 msgid "Tree Rule Items"
-msgstr ""
+msgstr "Елементи на графичното дърво"
 
 #: ../lib/functions.php:2699
 msgid "Non Query Based"
@@ -11590,12 +11901,14 @@ msgstr ""
 
 #: ../lib/html.php:128 ../lib/html_tree.php:579 ../lib/html_tree.php:582
 #: ../lib/html_tree.php:585
+#, fuzzy
 msgid "Graph Template:"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../lib/html.php:157 ../lib/html.php:289
+#, fuzzy
 msgid "Data Query:"
-msgstr ""
+msgstr "Вземане на данни"
 
 #: ../lib/html.php:349
 msgid "CSV Export of Graph Data"
@@ -11614,8 +11927,9 @@ msgid "Kill Spikes in Graphs"
 msgstr ""
 
 #: ../lib/html.php:392
+#, fuzzy
 msgid "Previous"
-msgstr "Предыдущая"
+msgstr "Общ изглед"
 
 #: ../lib/html.php:395
 #, php-format
@@ -11623,9 +11937,9 @@ msgid "%d to %d of %s [ %s ]"
 msgstr ""
 
 #: ../lib/html.php:404
-#, fuzzy, php-format
+#, php-format
 msgid "All %d %s"
-msgstr "Показаны все %d %s"
+msgstr ""
 
 #: ../lib/html.php:410
 #, php-format
@@ -11633,8 +11947,9 @@ msgid "No %s Found"
 msgstr ""
 
 #: ../lib/html.php:722 ../lib/html.php:782
+#, fuzzy
 msgid "Select All Rows"
-msgstr ""
+msgstr "Избери всички"
 
 #: ../lib/html.php:880
 msgid "Alpha %"
@@ -11645,17 +11960,17 @@ msgid "No Task"
 msgstr ""
 
 #: ../lib/html.php:1165
-#, fuzzy
 msgid "Choose an action"
-msgstr "Выбирите действие:"
+msgstr ""
 
 #: ../lib/html.php:1175
 msgid "Execute Action"
 msgstr ""
 
 #: ../lib/html.php:1350 ../lib/html.php:1352 ../lib/html.php:1428
+#, fuzzy
 msgid "Cacti Log"
-msgstr "Cacti Лог"
+msgstr "Настройки на cacti"
 
 #: ../lib/html.php:1742
 msgid "Nan's"
@@ -11820,7 +12135,7 @@ msgstr ""
 
 #: ../lib/html_graph.php:339
 msgid "Interval"
-msgstr "Интервал"
+msgstr ""
 
 #: ../lib/html_graph.php:351 ../lib/html_tree.php:796
 msgid "Stop"
@@ -11890,20 +12205,23 @@ msgid "Defines the default Alignment for Text and Graphs."
 msgstr ""
 
 #: ../lib/html_reports.php:89
+#, fuzzy
 msgid "Graph Linked"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../lib/html_reports.php:92
 msgid "Should the Graphs be linked back to the Cacti site?"
 msgstr ""
 
 #: ../lib/html_reports.php:96
+#, fuzzy
 msgid "Graph Settings"
-msgstr "Свойства графиков"
+msgstr "Редактирай (Настройки на графики)"
 
 #: ../lib/html_reports.php:101
+#, fuzzy
 msgid "Graph Columns"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../lib/html_reports.php:105
 msgid "The number of Graph columns."
@@ -11976,8 +12294,9 @@ msgid "Subject"
 msgstr ""
 
 #: ../lib/html_reports.php:172
+#, fuzzy
 msgid "Cacti Report"
-msgstr ""
+msgstr "Настройки на cacti"
 
 #: ../lib/html_reports.php:173
 msgid ""
@@ -12022,16 +12341,18 @@ msgid "Item Type to be added."
 msgstr ""
 
 #: ../lib/html_reports.php:317
+#, fuzzy
 msgid "Graph Tree"
-msgstr ""
+msgstr "Дърво на графики"
 
 #: ../lib/html_reports.php:321
 msgid "Select a Tree to use."
 msgstr ""
 
 #: ../lib/html_reports.php:326
+#, fuzzy
 msgid "Graph Tree Branch"
-msgstr ""
+msgstr "Дърво на графики"
 
 #: ../lib/html_reports.php:330
 msgid "Select a Tree Branch to use."
@@ -12064,8 +12385,9 @@ msgid "Select a Device to specify a Graph"
 msgstr ""
 
 #: ../lib/html_reports.php:380
+#, fuzzy
 msgid "Select a Graph Template for the host"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../lib/html_reports.php:389
 msgid "The Graph to use for this report item."
@@ -12169,7 +12491,7 @@ msgstr ""
 #: ../lib/html_reports.php:1084 ../user_admin.php:1920
 #, php-format
 msgid "[edit: %s]"
-msgstr "[редакция: %s"
+msgstr ""
 
 #: ../lib/html_reports.php:1085
 msgid "Events"
@@ -12177,7 +12499,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:1087 ../lib/import.php:1799 ../user_admin.php:1922
 msgid "[new]"
-msgstr "[новый]"
+msgstr ""
 
 #: ../lib/html_reports.php:1119
 msgid "Send Report"
@@ -12188,8 +12510,9 @@ msgid "Report Details"
 msgstr ""
 
 #: ../lib/html_reports.php:1174
+#, fuzzy
 msgid "Report Items"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../lib/html_reports.php:1195
 msgid "Scheduled Events"
@@ -12249,8 +12572,9 @@ msgid "Last Run"
 msgstr ""
 
 #: ../lib/html_reports.php:1483 ../lib/html_reports.php:1494
+#, fuzzy
 msgid "Next Run"
-msgstr ""
+msgstr "Следващ"
 
 #: ../lib/html_reports.php:1491
 msgid "Report Title"
@@ -12266,7 +12590,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:1527
 msgid "No Reports Found"
-msgstr "Отчёты не найдены"
+msgstr ""
 
 #: ../lib/html_tree.php:590 ../lib/reports.php:873
 msgid "Tree:"
@@ -12277,8 +12601,9 @@ msgid "Leaf:"
 msgstr ""
 
 #: ../lib/html_tree.php:592
+#, fuzzy
 msgid "Device:"
-msgstr "Устройство:"
+msgstr "Устройства"
 
 #: ../lib/html_tree.php:595
 msgid "Applied"
@@ -12286,11 +12611,12 @@ msgstr ""
 
 #: ../lib/html_tree.php:595
 msgid "Filter"
-msgstr "Фильтр"
+msgstr ""
 
 #: ../lib/html_tree.php:595
+#, fuzzy
 msgid "Graph Filters"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../lib/html_tree.php:641
 msgid "Set/Refresh Filter"
@@ -12342,12 +12668,14 @@ msgid "writable"
 msgstr ""
 
 #: ../lib/import.php:1760
+#, fuzzy
 msgid "Import Preview Results"
-msgstr ""
+msgstr "Експортиране на резултати"
 
 #: ../lib/import.php:1760
+#, fuzzy
 msgid "Import Results"
-msgstr ""
+msgstr "Експортиране на резултати"
 
 #: ../lib/import.php:1764
 msgid "Cacti would make the following changes if the Package was imported:"
@@ -12362,8 +12690,9 @@ msgid "Package Files"
 msgstr ""
 
 #: ../lib/import.php:1773
+#, fuzzy
 msgid "[preview] "
-msgstr ""
+msgstr "Общ изглед"
 
 #: ../lib/import.php:1778
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -12375,11 +12704,11 @@ msgstr ""
 
 #: ../lib/import.php:1789
 msgid "[success]"
-msgstr "[выполненно]"
+msgstr ""
 
 #: ../lib/import.php:1791
 msgid "[fail]"
-msgstr "[ошибка]"
+msgstr ""
 
 #: ../lib/import.php:1793
 msgid "[preview]"
@@ -12499,8 +12828,9 @@ msgid "ICMP Ping Success (%s ms)"
 msgstr ""
 
 #: ../lib/ping.php:192 ../lib/ping.php:210
+#, fuzzy
 msgid "ICMP ping Timed out"
-msgstr ""
+msgstr "SNMP изтекло време"
 
 #: ../lib/ping.php:217 ../lib/ping.php:411 ../lib/ping.php:507
 msgid "Destination address not specified"
@@ -12556,20 +12886,23 @@ msgid "Plugin cannot be installed."
 msgstr ""
 
 #: ../lib/plugins.php:763 ../lib/plugins.php:770
+#, fuzzy
 msgid "Plugin Management"
-msgstr "Управление Плагинами"
+msgstr "Права на потребители"
 
 #: ../lib/reports.php:883
 msgid "Host:"
 msgstr ""
 
 #: ../lib/reports.php:888
+#, fuzzy
 msgid "Graph:"
-msgstr ""
+msgstr "Графика"
 
 #: ../lib/reports.php:989
+#, fuzzy
 msgid "(No Graph Template)"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../lib/reports.php:1408
 msgid "Add to Report"
@@ -12586,12 +12919,14 @@ msgid "Report:"
 msgstr ""
 
 #: ../lib/reports.php:1435
+#, fuzzy
 msgid "Graph Timespan:"
-msgstr ""
+msgstr "Дърво на графики"
 
 #: ../lib/reports.php:1438
+#, fuzzy
 msgid "Graph Alignment:"
-msgstr ""
+msgstr "Управление на графики"
 
 #: ../lib/reports.php:1520
 #, php-format
@@ -12678,12 +13013,14 @@ msgid "RRD File Information"
 msgstr ""
 
 #: ../lib/rrd.php:2630
+#, fuzzy
 msgid "Data Source Items"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../lib/rrd.php:2632
+#, fuzzy
 msgid "Minimal Heartbeat"
-msgstr ""
+msgstr "Heartbeat"
 
 #: ../lib/rrd.php:2633
 msgid "Min"
@@ -12702,8 +13039,9 @@ msgid "Unknown Sec"
 msgstr ""
 
 #: ../lib/rrd.php:2665
+#, fuzzy
 msgid "Round Robin Archive"
-msgstr ""
+msgstr "Round Robin Archives"
 
 #: ../lib/rrd.php:2668
 msgid "Cur Row"
@@ -12728,7 +13066,7 @@ msgstr ""
 #: ../lib/rrd.php:2749
 #, php-format
 msgid "rename %s to %s"
-msgstr "переименовать %s в %s"
+msgstr ""
 
 #: ../lib/rrd.php:2799
 msgid "Error while parsing the XML of rrdtool dump"
@@ -13051,12 +13389,14 @@ msgid "Top Tab"
 msgstr ""
 
 #: ../links.php:346 ../user_admin.php:1638 ../user_group_admin.php:1376
+#, fuzzy
 msgid "Bottom Console"
-msgstr ""
+msgstr "Административна конзола"
 
 #: ../links.php:347 ../user_admin.php:1639 ../user_group_admin.php:1377
+#, fuzzy
 msgid "Top Console"
-msgstr ""
+msgstr "Административна конзола"
 
 #: ../links.php:378
 msgid "Page"
@@ -13071,8 +13411,9 @@ msgid "Edit Page"
 msgstr ""
 
 #: ../links.php:395
+#, fuzzy
 msgid "View Page"
-msgstr ""
+msgstr "Виж SNMP кеша"
 
 #: ../links.php:419
 msgid "Sort for Ordering"
@@ -13083,8 +13424,9 @@ msgid "No Pages Found"
 msgstr ""
 
 #: ../links.php:509
+#, fuzzy
 msgid "Console Menu"
-msgstr ""
+msgstr "Административна конзола"
 
 #: ../links.php:510
 msgid "Bottom of Console Page"
@@ -13173,8 +13515,9 @@ msgid "Please close your browser or %sLogin Again%s"
 msgstr ""
 
 #: ../managers.php:40 ../managers.php:226
+#, fuzzy
 msgid "Notifications"
-msgstr ""
+msgstr "Действия"
 
 #: ../managers.php:41 ../managers.php:227
 msgid "Logs"
@@ -13245,7 +13588,7 @@ msgstr ""
 
 #: ../managers.php:795 ../utilities.php:2606
 msgid "Time"
-msgstr "Время"
+msgstr ""
 
 #: ../managers.php:795 ../utilities.php:2606
 msgid "Varbinds"
@@ -13311,7 +13654,7 @@ msgstr ""
 
 #: ../plugins.php:37 ../plugins.php:291 ../utilities.php:417
 msgid "Not Installed"
-msgstr "Не Установленно"
+msgstr ""
 
 #: ../plugins.php:39
 msgid "Awaiting Configuration"
@@ -13441,8 +13784,9 @@ msgid "Data Collector Information"
 msgstr ""
 
 #: ../pollers.php:53
+#, fuzzy
 msgid "The primary name for this Data Collector."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../pollers.php:56
 msgid "New Data Collector"
@@ -13468,16 +13812,18 @@ msgid "Remote Database Connection"
 msgstr ""
 
 #: ../pollers.php:83
+#, fuzzy
 msgid "The hostname for the remote database server."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../pollers.php:91
 msgid "Remote Database Name"
 msgstr ""
 
 #: ../pollers.php:92
+#, fuzzy
 msgid "The name of the remote database."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../pollers.php:100
 msgid "Remote Database User"
@@ -13524,11 +13870,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../pollers.php:288
-#, fuzzy
 msgid "Delete Data Collector"
 msgid_plural "Delete Data Collectors"
-msgstr[0] "Коллекции Данных"
-msgstr[1] "Коллекции Данных"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../pollers.php:292
 msgid "Click 'Continue' to disable the following Data Collector."
@@ -13537,11 +13882,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../pollers.php:297
-#, fuzzy
 msgid "Disable Data Collector"
 msgid_plural "Disable Data Collectors"
-msgstr[0] "Коллекции Данных"
-msgstr[1] "Коллекции Данных"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../pollers.php:301
 msgid "Click 'Continue' to enable the following Data Collector."
@@ -13550,11 +13894,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../pollers.php:306 ../pollers.php:315
-#, fuzzy
 msgid "Enable Data Collector"
 msgid_plural "Enable Data Collectors"
-msgstr[0] "Коллекции Данных"
-msgstr[1] "Коллекции Данных"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../pollers.php:310
 msgid ""
@@ -13584,8 +13927,9 @@ msgid "Collector Name"
 msgstr ""
 
 #: ../pollers.php:601
+#, fuzzy
 msgid "The Name of this Data Collector."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../pollers.php:602
 msgid "The unique id associated with this Data Collector."
@@ -13612,16 +13956,18 @@ msgid "The number of Devices associated with this Data Collector."
 msgstr ""
 
 #: ../pollers.php:607
+#, fuzzy
 msgid "SNMP Gets"
-msgstr ""
+msgstr "SNMP Порт"
 
 #: ../pollers.php:607
 msgid "The number of SNMP gets associated with this Collector."
 msgstr ""
 
 #: ../pollers.php:608
+#, fuzzy
 msgid "Scripts"
-msgstr ""
+msgstr "Скрипт"
 
 #: ../pollers.php:608
 msgid "The number of script calls associated with this Data Collector."
@@ -13640,8 +13986,9 @@ msgid "Last Finished"
 msgstr ""
 
 #: ../pollers.php:610
+#, fuzzy
 msgid "The last time this Data Collector completed."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../pollers.php:611
 msgid "Last Update"
@@ -13656,38 +14003,37 @@ msgid "No Data Collectors Found"
 msgstr ""
 
 #: ../rrdcleaner.php:30 ../tree.php:31
-#, fuzzy
 msgctxt "dropdown action"
 msgid "Delete"
-msgstr "Удалить"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "amule"
 #: ../rrdcleaner.php:31
-#, fuzzy
 msgctxt "dropdown action"
 msgid "Archive"
-msgstr "Архив"
+msgstr ""
 
 #: ../rrdcleaner.php:347
 msgid "RRD File Name"
 msgstr ""
 
 #: ../rrdcleaner.php:348
+#, fuzzy
 msgid "DS Name"
-msgstr ""
+msgstr "Име"
 
 #: ../rrdcleaner.php:349
 msgid "DS ID"
 msgstr ""
 
 #: ../rrdcleaner.php:350
+#, fuzzy
 msgid "Template ID"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../rrdcleaner.php:352
+#, fuzzy
 msgid "Last Modified"
-msgstr ""
+msgstr "Списъчен изглед"
 
 #: ../rrdcleaner.php:353
 msgid "Size [KB]"
@@ -13721,26 +14067,25 @@ msgstr ""
 #: ../user_group_admin.php:2182 ../user_group_admin.php:2288
 #: ../user_group_admin.php:2375 ../user_group_admin.php:2462
 #: ../user_group_admin.php:2549
-#, fuzzy
 msgctxt "filter: use"
 msgid "Go"
-msgstr "Выполнить"
+msgstr ""
 
 #: ../rrdcleaner.php:515 ../user_group_admin.php:1830
 #: ../user_group_admin.php:2185 ../user_group_admin.php:2291
 #: ../user_group_admin.php:2378 ../user_group_admin.php:2465
-#, fuzzy
 msgctxt "filter: reset"
 msgid "Clear"
-msgstr "Очистить"
+msgstr ""
 
 #: ../rrdcleaner.php:518
 msgid "Rescan"
 msgstr ""
 
 #: ../rrdcleaner.php:521
+#, fuzzy
 msgid "Delete All"
-msgstr ""
+msgstr "Избери всички"
 
 #: ../rrdcleaner.php:521
 msgid "Delete All Unknown RRDfiles"
@@ -13755,29 +14100,32 @@ msgid "Archive All Unknown RRDfiles"
 msgstr ""
 
 #: ../settings.php:138
-#, php-format
+#, fuzzy, php-format
 msgid "Cacti Settings (%s)"
-msgstr ""
+msgstr "Настройки на cacti"
 
 #: ../settings.php:187
+#, fuzzy
 msgid "Select Plugin(s)"
-msgstr ""
+msgstr "Избери всички"
 
 #: ../settings.php:189
 msgid "Plugins Selected"
 msgstr ""
 
 #: ../settings.php:204
+#, fuzzy
 msgid "Select File(s)"
-msgstr ""
+msgstr "Избери всички"
 
 #: ../settings.php:206
 msgid "Files Selected"
 msgstr ""
 
 #: ../settings.php:221
+#, fuzzy
 msgid "Select Template(s)"
-msgstr ""
+msgstr "Експортиране на шаблони"
 
 #: ../settings.php:226
 msgid "All Templates Selected"
@@ -13793,11 +14141,12 @@ msgstr ""
 
 #: ../sites.php:35
 msgid "Site Information"
-msgstr "Данные Узла"
+msgstr ""
 
 #: ../sites.php:41
+#, fuzzy
 msgid "The primary name for the Site."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../sites.php:44
 msgid "New Site"
@@ -13805,7 +14154,7 @@ msgstr ""
 
 #: ../sites.php:49
 msgid "Address1"
-msgstr "Адрес1"
+msgstr ""
 
 #: ../sites.php:50
 msgid "The primary address for the Site."
@@ -13817,7 +14166,7 @@ msgstr ""
 
 #: ../sites.php:58
 msgid "Address2"
-msgstr "Адрес2"
+msgstr ""
 
 #: ../sites.php:59
 msgid "Additional address information for the Site."
@@ -13829,7 +14178,7 @@ msgstr ""
 
 #: ../sites.php:67 ../sites.php:484
 msgid "City"
-msgstr "Город"
+msgstr ""
 
 #: ../sites.php:68
 msgid "The city or locality for the Site."
@@ -13841,11 +14190,12 @@ msgstr ""
 
 #: ../sites.php:76 ../sites.php:485
 msgid "State"
-msgstr "Область"
+msgstr ""
 
 #: ../sites.php:77
+#, fuzzy
 msgid "The state for the Site."
-msgstr ""
+msgstr "Пълния път до RRD файл."
 
 #: ../sites.php:79
 msgid "Enter the state"
@@ -13853,7 +14203,7 @@ msgstr ""
 
 #: ../sites.php:85
 msgid "Postal/Zip Code"
-msgstr "Индекс"
+msgstr ""
 
 #: ../sites.php:86
 msgid "The postal or zip code for the Site."
@@ -13865,7 +14215,7 @@ msgstr ""
 
 #: ../sites.php:94 ../sites.php:486
 msgid "Country"
-msgstr "Страна"
+msgstr ""
 
 #: ../sites.php:95
 msgid "The country for the Site."
@@ -13909,7 +14259,7 @@ msgstr ""
 
 #: ../sites.php:128
 msgid "Site Notes"
-msgstr "Описание узла"
+msgstr ""
 
 #: ../sites.php:131
 msgid "Additional area use for random notes related to this Site."
@@ -13920,8 +14270,9 @@ msgid "Enter some useful information about the Site."
 msgstr ""
 
 #: ../sites.php:139
+#, fuzzy
 msgid "Alternate Name"
-msgstr "Другое Имя"
+msgstr "Вътрешно име на източника на данни"
 
 #: ../sites.php:140
 msgid "Used for cases where a Site has an alternate named used to describe it"
@@ -13942,19 +14293,20 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../sites.php:280
-#, fuzzy
 msgid "Delete Site"
 msgid_plural "Delete Sites"
-msgstr[0] "Удалить"
-msgstr[1] "Удалить"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../sites.php:481
+#, fuzzy
 msgid "Site Name"
-msgstr "Имя Узла"
+msgstr "Име"
 
 #: ../sites.php:481
+#, fuzzy
 msgid "The name of this Site."
-msgstr ""
+msgstr "Името зададено за този шаблон за данни"
 
 #: ../sites.php:482
 msgid "The unique id associated with this Site."
@@ -14051,37 +14403,25 @@ msgctxt "dropdown action"
 msgid "Un Publish"
 msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "gnome-orca"
 #: ../tree.php:258
-#, fuzzy
 msgctxt "ordering of tree items"
 msgid "inherit"
-msgstr "по наследству"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "debian"
 #: ../tree.php:261
-#, fuzzy
 msgctxt "ordering of tree items"
 msgid "manual"
-msgstr "ручной"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "gimp"
 #: ../tree.php:264
-#, fuzzy
 msgctxt "ordering of tree items"
 msgid "alpha"
-msgstr "альфа-канал"
+msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "i18n"
 #: ../tree.php:267
-#, fuzzy
 msgctxt "ordering of tree items"
 msgid "natural"
-msgstr "природный"
+msgstr ""
 
 #: ../tree.php:270
 msgctxt "ordering of tree items"
@@ -14089,18 +14429,16 @@ msgid "numeric"
 msgstr ""
 
 #: ../tree.php:485
-#, fuzzy
 msgid "Click 'Continue' to delete the following Tree."
 msgid_plural "Click 'Continue' to delete following Trees."
-msgstr[0] "Вы уверены что хотите удалить этих пользователей?"
-msgstr[1] "Вы уверены что хотите удалить этих пользователей?"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../tree.php:490
-#, fuzzy
 msgid "Delete Tree"
 msgid_plural "Delete Trees"
-msgstr[0] "Дерево по умолчанию"
-msgstr[1] "Дерево по умолчанию"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../tree.php:494
 msgid "Click 'Continue' to publish the following Tree."
@@ -14136,8 +14474,9 @@ msgid "Trees [edit: %s]"
 msgstr ""
 
 #: ../tree.php:566
+#, fuzzy
 msgid "Trees [new]"
-msgstr ""
+msgstr "Дървовиден изглед"
 
 #: ../tree.php:592
 msgid "Edit Tree"
@@ -14166,8 +14505,9 @@ msgid "To edit the tree, you must first unlock it and then lock it as yourself"
 msgstr ""
 
 #: ../tree.php:617
+#, fuzzy
 msgid "Tree Items"
-msgstr ""
+msgstr "Елементи на графичното дърво"
 
 #: ../tree.php:625
 msgid "Available Devices"
@@ -14180,40 +14520,33 @@ msgstr ""
 #: ../tree.php:1039
 #, fuzzy
 msgid "Rename"
-msgstr "Имя Пользователя"
+msgstr "Потребител"
 
 #: ../tree.php:1066
 #, fuzzy
 msgid "Branch Sorting"
-msgstr "Свойства графиков"
+msgstr "Редактирай (Настройки на графики)"
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "gnome-orca"
 #: ../tree.php:1073
-#, fuzzy
 msgid "Inherit"
-msgstr "по наследству"
+msgstr ""
 
 #: ../tree.php:1101
 msgid "Alphabetic"
 msgstr ""
 
-# Translation for this string generated by http://littlesvr.ca/ostd/
-# based on translation from "i18n"
 #: ../tree.php:1115
-#, fuzzy
 msgid "Natural"
-msgstr "природный"
+msgstr ""
 
 #: ../tree.php:1152 ../tree.php:1226 ../tree.php:1313
-#, fuzzy
 msgid "Cut"
-msgstr "Страна"
+msgstr ""
 
 #: ../tree.php:1167 ../tree.php:1241 ../tree.php:1328 ../user_admin.php:29
 #: ../user_group_admin.php:31
 msgid "Copy"
-msgstr "Копировать"
+msgstr ""
 
 #: ../tree.php:1185
 msgid "Paste"
@@ -14224,8 +14557,9 @@ msgid "The name by which this Tree will be referred to as."
 msgstr ""
 
 #: ../tree.php:1558 ../user_admin.php:1504 ../user_group_admin.php:1243
+#, fuzzy
 msgid "Tree Name"
-msgstr ""
+msgstr "Дървовиден изглед"
 
 #: ../tree.php:1559
 msgid ""
@@ -14288,8 +14622,9 @@ msgid "The total number of individual Graphs in this Tree."
 msgstr ""
 
 #: ../tree.php:1608
+#, fuzzy
 msgid "No Trees Found"
-msgstr ""
+msgstr "Дървовиден изглед"
 
 #: ../user_admin.php:32
 msgid "Batch Copy"
@@ -14308,12 +14643,14 @@ msgid "Click 'Continue' to copy the selected User to a new User below."
 msgstr ""
 
 #: ../user_admin.php:365
+#, fuzzy
 msgid "Template Username:"
-msgstr ""
+msgstr "Потребител"
 
 #: ../user_admin.php:370
+#, fuzzy
 msgid "Username:"
-msgstr "Имя Пользователя:"
+msgstr "Потребител"
 
 #: ../user_admin.php:377
 msgid "Full Name:"
@@ -14352,8 +14689,9 @@ msgid ""
 msgstr ""
 
 #: ../user_admin.php:423
+#, fuzzy
 msgid "Template User:"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../user_admin.php:429
 msgid "User(s) to update:"
@@ -14432,8 +14770,9 @@ msgid "Member"
 msgstr ""
 
 #: ../user_admin.php:1101
+#, fuzzy
 msgid "Policies (Graph/Device/Template)"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../user_admin.php:1110 ../user_group_admin.php:688
 msgid "Non Member"
@@ -14494,20 +14833,23 @@ msgid "No Matching Devices Found"
 msgstr ""
 
 #: ../user_admin.php:1297 ../user_group_admin.php:1034
+#, fuzzy
 msgid "Default Graph Template Policy"
-msgstr ""
+msgstr "Шаблони за графики"
 
 #: ../user_admin.php:1302
 msgid "Default Graph Template Policy for this User"
 msgstr ""
 
 #: ../user_admin.php:1371 ../user_group_admin.php:1109
+#, fuzzy
 msgid "Total Graphs"
-msgstr ""
+msgstr "Графики"
 
 #: ../user_admin.php:1398 ../user_group_admin.php:1136
+#, fuzzy
 msgid "No Matching Graph Templates Found"
-msgstr ""
+msgstr "Асоциирани шаблони за графики"
 
 #: ../user_admin.php:1436 ../user_group_admin.php:1175
 msgid "Default Tree Policy"
@@ -14522,58 +14864,67 @@ msgid "No Matching Trees Found"
 msgstr ""
 
 #: ../user_admin.php:1575 ../user_group_admin.php:1315
+#, fuzzy
 msgid "User Permissions"
-msgstr ""
+msgstr "Редактирай (Права за графики)"
 
 #: ../user_admin.php:1642 ../user_group_admin.php:1380
+#, fuzzy
 msgid "External Link Permissions"
-msgstr ""
+msgstr "Редактирай (Права за realm)"
 
 #: ../user_admin.php:1699 ../user_group_admin.php:1437
+#, fuzzy
 msgid "Plugin Permissions"
-msgstr ""
+msgstr "Редактирай (Права за графики)"
 
 #: ../user_admin.php:1755
 msgid "Legacy 1.x Plugins"
 msgstr ""
 
 #: ../user_admin.php:1790 ../user_group_admin.php:1528
-#, php-format
+#, fuzzy, php-format
 msgid "User Settings %s"
-msgstr ""
+msgstr "Настойки"
 
 #: ../user_admin.php:1905 ../user_group_admin.php:1644
+#, fuzzy
 msgid "Permissions"
-msgstr ""
+msgstr "Редактирай (Права за графики)"
 
 #: ../user_admin.php:1906
 msgid "Group Membership"
 msgstr ""
 
 #: ../user_admin.php:1907 ../user_group_admin.php:1645
+#, fuzzy
 msgid "Graph Perms"
-msgstr ""
+msgstr "Графични елементи"
 
 #: ../user_admin.php:1908 ../user_group_admin.php:1646
+#, fuzzy
 msgid "Device Perms"
-msgstr ""
+msgstr "Устройства"
 
 #: ../user_admin.php:1909 ../user_group_admin.php:1647
+#, fuzzy
 msgid "Template Perms"
-msgstr ""
+msgstr "Шаблони за елементи на графиката"
 
 #: ../user_admin.php:1910 ../user_group_admin.php:1648
+#, fuzzy
 msgid "Tree Perms"
-msgstr ""
+msgstr "Дървовиден изглед"
 
 #: ../user_admin.php:1952
-#, php-format
+#, fuzzy, php-format
 msgid "User Management %s"
-msgstr ""
+msgstr "Права на потребители"
 
 #: ../user_admin.php:1984
+#, fuzzy
 msgid "Password Too Short"
-msgstr ""
+msgstr "Парола"
 
 #: ../user_admin.php:1989
 msgid "Password Validation Passes"
@@ -14584,16 +14935,18 @@ msgid "Passwords do Not Match"
 msgstr ""
 
 #: ../user_admin.php:2006
+#, fuzzy
 msgid "Passwords Match"
-msgstr ""
+msgstr "Парола"
 
 #: ../user_admin.php:2250 ../user_group_admin.php:1884
 msgid "Graph Policy"
 msgstr ""
 
 #: ../user_admin.php:2251 ../user_group_admin.php:1885
+#, fuzzy
 msgid "Device Policy"
-msgstr ""
+msgstr "Устройства"
 
 #: ../user_admin.php:2252 ../user_group_admin.php:1886
 msgid "Template Policy"
@@ -14601,21 +14954,20 @@ msgstr ""
 
 #: ../user_admin.php:2253
 msgid "Last Login"
-msgstr "Последний Вход"
+msgstr ""
 
 #: ../user_admin.php:2274
-#, fuzzy
 msgid "Unavailable"
-msgstr "Доступность"
+msgstr ""
 
 #: ../user_admin.php:2290
 msgid "No Users Found"
 msgstr ""
 
 #: ../user_admin.php:2505 ../user_group_admin.php:2124
-#, php-format
+#, fuzzy, php-format
 msgid "Graph Permissions %s"
-msgstr ""
+msgstr "Редактирай (Права за графики)"
 
 #: ../user_admin.php:2560 ../user_admin.php:2647
 msgid "Show All"
@@ -14632,9 +14984,9 @@ msgid "Groups"
 msgstr ""
 
 #: ../user_admin.php:2702 ../user_group_admin.php:2234
-#, php-format
+#, fuzzy, php-format
 msgid "Devices Permission %s"
-msgstr ""
+msgstr "Редактирай (Права за realm)"
 
 #: ../user_admin.php:2753 ../user_admin.php:2840 ../user_admin.php:2927
 #: ../user_group_admin.php:2179 ../user_group_admin.php:2285
@@ -14643,25 +14995,24 @@ msgid "Show Exceptions"
 msgstr ""
 
 #: ../user_admin.php:2807 ../user_group_admin.php:2339
-#, php-format
+#, fuzzy, php-format
 msgid "Template Permission %s"
-msgstr ""
+msgstr "Редактирай (Права за realm)"
 
 #: ../user_admin.php:2894 ../user_admin.php:2981 ../user_group_admin.php:2426
-#, php-format
+#, fuzzy, php-format
 msgid "Tree Permission %s"
-msgstr ""
+msgstr "Редактирай (Права за графики)"
 
 #: ../user_admin.php:3014
 msgid "Show Exceptions<"
 msgstr ""
 
 #: ../user_domains.php:222
-#, fuzzy
 msgid "Click 'Continue' to delete the following User Domain."
 msgid_plural "Click 'Continue' to delete following User Domains."
-msgstr[0] "Вы уверены что хотите удалить этих пользователей?"
-msgstr[1] "Вы уверены что хотите удалить этих пользователей?"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../user_domains.php:227
 msgid "Delete User Domain"
@@ -14670,11 +15021,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../user_domains.php:231
-#, fuzzy
 msgid "Click 'Continue' to disable the following User Domain."
 msgid_plural "Click 'Continue' to disable following User Domains."
-msgstr[0] "Вы уверены что хотите выключить этих пользователей?"
-msgstr[1] "Вы уверены что хотите выключить этих пользователей?"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../user_domains.php:236
 msgid "Disable User Domain"
@@ -14726,8 +15076,9 @@ msgid "Domains Type"
 msgstr ""
 
 #: ../user_domains.php:325
+#, fuzzy
 msgid "Choose what type of domain this is."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../user_domains.php:332
 msgid ""
@@ -14775,8 +15126,9 @@ msgid ""
 msgstr ""
 
 #: ../user_domains.php:501
+#, fuzzy
 msgid "Domain Properties"
-msgstr ""
+msgstr "Параметри"
 
 #: ../user_domains.php:627
 msgid "Domains"
@@ -14811,8 +15163,9 @@ msgid "Show the Page that the User pointed their browser to"
 msgstr ""
 
 #: ../user_group_admin.php:47
+#, fuzzy
 msgid "Show the Console"
-msgstr ""
+msgstr "Административна конзола"
 
 #: ../user_group_admin.php:51
 msgid "Show the default Graph Screen"
@@ -14827,8 +15180,9 @@ msgid "Group Name"
 msgstr ""
 
 #: ../user_group_admin.php:74
+#, fuzzy
 msgid "The name of this Group."
-msgstr ""
+msgstr "Изберете име за този източник на данни."
 
 #: ../user_group_admin.php:80
 msgid "Group Description"
@@ -14869,8 +15223,9 @@ msgid "Should Users of this Group have access to the Graph List?"
 msgstr ""
 
 #: ../user_group_admin.php:122
+#, fuzzy
 msgid "Graph Preview Rights"
-msgstr ""
+msgstr "Елементи на графичното дърво"
 
 #: ../user_group_admin.php:124
 msgid "Should Users of this Group have access to the Graph Preview?"
@@ -14881,18 +15236,16 @@ msgid "What to do when a User from this User Group logs in."
 msgstr ""
 
 #: ../user_group_admin.php:441
-#, fuzzy
 msgid "Click 'Continue' to delete the following User Group"
 msgid_plural "Click 'Continue' to delete following User Groups"
-msgstr[0] "Вы уверены что хотите удалить этих пользователей?"
-msgstr[1] "Вы уверены что хотите удалить этих пользователей?"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../user_group_admin.php:446
-#, fuzzy
 msgid "Delete User Group"
 msgid_plural "Delete User Groups"
-msgstr[0] "Удалить график(и)"
-msgstr[1] "Удалить график(и)"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../user_group_admin.php:454
 msgid "Click 'Continue' to Copy the following User Group to a new User Group."
@@ -14908,7 +15261,7 @@ msgstr ""
 #: ../user_group_admin.php:461
 #, fuzzy
 msgid "New Group"
-msgstr "Новый график"
+msgstr "Графики"
 
 #: ../user_group_admin.php:465
 msgid "Copy User Group"
@@ -14917,11 +15270,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../user_group_admin.php:471
-#, fuzzy
 msgid "Click 'Continue' to enable the following User Group."
 msgid_plural "Click 'Continue' to enable following User Groups."
-msgstr[0] "Вы уверены что хотите включить этих пользователей?"
-msgstr[1] "Вы уверены что хотите включить этих пользователей?"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../user_group_admin.php:476
 msgid "Enable User Group"
@@ -14930,11 +15282,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../user_group_admin.php:482
-#, fuzzy
 msgid "Click 'Continue' to disable the following User Group."
 msgid_plural "Click 'Continue' to disable following User Groups."
-msgstr[0] "Вы уверены что хотите выключить этих пользователей?"
-msgstr[1] "Вы уверены что хотите выключить этих пользователей?"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../user_group_admin.php:487
 msgid "Disable User Group"
@@ -14992,17 +15343,19 @@ msgid "Members"
 msgstr ""
 
 #: ../user_group_admin.php:1655
-#, php-format
+#, fuzzy, php-format
 msgid "User Group Management [edit: %s]"
-msgstr ""
+msgstr "Права на потребители"
 
 #: ../user_group_admin.php:1657
+#, fuzzy
 msgid "User Group Management [new]"
-msgstr ""
+msgstr "Права на потребители"
 
 #: ../user_group_admin.php:1791
+#, fuzzy
 msgid "User Group Management"
-msgstr ""
+msgstr "Права на потребители"
 
 #: ../user_group_admin.php:1912
 msgid "No User Groups Found"
@@ -15018,10 +15371,9 @@ msgid "Show Members"
 msgstr ""
 
 #: ../user_group_admin.php:2552
-#, fuzzy
 msgctxt "filter reset"
 msgid "Clear"
-msgstr "Очистить"
+msgstr ""
 
 #: ../utilities.php:164
 msgid ""
@@ -15030,8 +15382,9 @@ msgid ""
 msgstr ""
 
 #: ../utilities.php:170
+#, fuzzy
 msgid "Configuration Settings"
-msgstr "Настройки"
+msgstr "Настройки на cacti"
 
 #: ../utilities.php:170
 #, php-format
@@ -15049,11 +15402,11 @@ msgstr ""
 
 #: ../utilities.php:194
 msgid "Database"
-msgstr "База Данных"
+msgstr ""
 
 #: ../utilities.php:195
 msgid "PHP Info"
-msgstr "Информация по PHP"
+msgstr ""
 
 #: ../utilities.php:202
 #, php-format
@@ -15062,37 +15415,40 @@ msgstr ""
 
 #: ../utilities.php:229
 msgid "General Information"
-msgstr "Основная Информация"
+msgstr ""
 
 #: ../utilities.php:231 ../utilities.php:766
 msgid "Date"
-msgstr "Дата"
+msgstr ""
 
 #: ../utilities.php:238
+#, fuzzy
 msgid "Cacti Version"
-msgstr "Версия Cacti"
+msgstr "Настройки на cacti"
 
 #: ../utilities.php:243
+#, fuzzy
 msgid "Cacti OS"
-msgstr "ОС"
+msgstr "Настройки на cacti"
 
 #: ../utilities.php:253
+#, fuzzy
 msgid "NET-SNMP Version"
-msgstr ""
+msgstr "SNMP Версия"
 
 #: ../utilities.php:281 ../utilities.php:314
 #, fuzzy, php-format
 msgid "Total: %s"
-msgstr "Итого:"
+msgstr "Графики"
 
 #: ../utilities.php:288
 msgid "Poller Information"
 msgstr ""
 
 #: ../utilities.php:311
-#, php-format
+#, fuzzy, php-format
 msgid "Action[%s]"
-msgstr ""
+msgstr "Действия"
 
 #: ../utilities.php:316
 msgid "No items to poll"
@@ -15100,7 +15456,7 @@ msgstr ""
 
 #: ../utilities.php:322
 msgid "Concurrent Processes"
-msgstr "Количество Конкурирующих процессов"
+msgstr ""
 
 #: ../utilities.php:327
 msgid "Max Threads"
@@ -15111,8 +15467,9 @@ msgid "PHP Servers"
 msgstr ""
 
 #: ../utilities.php:337
+#, fuzzy
 msgid "Script Timeout"
-msgstr ""
+msgstr "SNMP изтекло време"
 
 #: ../utilities.php:342
 msgid "Max OID"
@@ -15128,7 +15485,7 @@ msgstr ""
 
 #: ../utilities.php:384
 msgid "PHP Information"
-msgstr "Информация PHP"
+msgstr ""
 
 #: ../utilities.php:391
 msgid ""
@@ -15137,7 +15494,7 @@ msgstr ""
 
 #: ../utilities.php:396
 msgid "PHP OS"
-msgstr "ОС PHP"
+msgstr ""
 
 #: ../utilities.php:401
 msgid "PHP uname"
@@ -15191,7 +15548,7 @@ msgstr ""
 
 #: ../utilities.php:473
 msgid "Comment"
-msgstr "Комментарий"
+msgstr ""
 
 #: ../utilities.php:491
 msgid "Unable to retrieve table status"
@@ -15199,23 +15556,25 @@ msgstr ""
 
 #: ../utilities.php:497
 msgid "PHP Module Information"
-msgstr "Информация о модуле PHP"
+msgstr ""
 
 #: ../utilities.php:623
 msgid "User Login History"
 msgstr ""
 
 #: ../utilities.php:632 ../utilities.php:763
+#, fuzzy
 msgid "User"
-msgstr "Пользователь"
+msgstr "Потребител"
 
 #: ../utilities.php:637
 msgid "Deleted/Invalid"
 msgstr ""
 
 #: ../utilities.php:650 ../utilities.php:767
+#, fuzzy
 msgid "Result"
-msgstr ""
+msgstr "Експортиране на резултати"
 
 #: ../utilities.php:655
 msgid "Success - Pswd"
@@ -15227,7 +15586,7 @@ msgstr ""
 
 #: ../utilities.php:657
 msgid "Failed"
-msgstr "Ошибка"
+msgstr ""
 
 #: ../utilities.php:661
 msgid "Attempts"
@@ -15236,18 +15595,16 @@ msgstr ""
 #: ../utilities.php:676 ../utilities.php:1009 ../utilities.php:1330
 #: ../utilities.php:1577 ../utilities.php:2286 ../utilities.php:2550
 #: ../vdef.php:686
-#, fuzzy
 msgctxt "Button: use filter settings"
 msgid "Go"
-msgstr "Выполнить"
+msgstr ""
 
 #: ../utilities.php:679 ../utilities.php:1012 ../utilities.php:1333
 #: ../utilities.php:1580 ../utilities.php:2289 ../utilities.php:2551
 #: ../vdef.php:689
-#, fuzzy
 msgctxt "Button: reset filter settings"
 msgid "Clear"
-msgstr "Очистить"
+msgstr ""
 
 #: ../utilities.php:682 ../utilities.php:1015 ../utilities.php:2552
 msgctxt "Button: delete all table entries"
@@ -15267,8 +15624,9 @@ msgid "IP Address"
 msgstr ""
 
 #: ../utilities.php:784
+#, fuzzy
 msgid "(User Removed)"
-msgstr ""
+msgstr "(Изтрий)"
 
 #: ../utilities.php:1015
 msgid "Purge Log"
@@ -15302,8 +15660,9 @@ msgid "Error: Unable to clear log, file does not exist."
 msgstr ""
 
 #: ../utilities.php:1266
+#, fuzzy
 msgid "Data Query Cache Items"
-msgstr ""
+msgstr "Автоматизирани данни"
 
 #: ../utilities.php:1282
 msgid "Query Name"
@@ -15323,45 +15682,50 @@ msgid "Index"
 msgstr ""
 
 #: ../utilities.php:1538
+#, fuzzy
 msgid "Poller Cache Items"
-msgstr ""
+msgstr "Виж кеш на събиращия скрипт"
 
 #: ../utilities.php:1599
 msgid "Script"
 msgstr "Скрипт"
 
 #: ../utilities.php:1715 ../utilities.php:1720
+#, fuzzy
 msgid "SNMP Version:"
-msgstr "Версия SNMP:"
+msgstr "SNMP Версия"
 
 #: ../utilities.php:1716
+#, fuzzy
 msgid "Community:"
-msgstr ""
+msgstr "SNMP Общност"
 
 #: ../utilities.php:1717 ../utilities.php:1721
 msgid "OID:"
 msgstr ""
 
 #: ../utilities.php:1721
+#, fuzzy
 msgid "User:"
-msgstr "Пользователь:"
+msgstr "Потребител"
 
 #: ../utilities.php:1724
+#, fuzzy
 msgid "Script:"
-msgstr "Скрипт:"
+msgstr "Скрипт"
 
 #: ../utilities.php:1726
+#, fuzzy
 msgid "Script Server:"
-msgstr ""
+msgstr "Скрипт"
 
 #: ../utilities.php:1739
 msgid "RRD:"
 msgstr ""
 
 #: ../utilities.php:1758
-#, fuzzy
 msgid "Tecnical Support"
-msgstr "Техническая Поддержка"
+msgstr ""
 
 #: ../utilities.php:1760
 msgid ""
@@ -15406,8 +15770,9 @@ msgid ""
 msgstr ""
 
 #: ../utilities.php:1781
+#, fuzzy
 msgid "Rebuild Poller Cache"
-msgstr ""
+msgstr "Виж кеш на събиращия скрипт"
 
 #: ../utilities.php:1783
 msgid ""
@@ -15417,8 +15782,9 @@ msgid ""
 msgstr ""
 
 #: ../utilities.php:1787
+#, fuzzy
 msgid "Boost Utilities"
-msgstr ""
+msgstr "Приложения"
 
 #: ../utilities.php:1788
 msgid "View Boost Status"
@@ -15431,8 +15797,9 @@ msgid ""
 msgstr ""
 
 #: ../utilities.php:1794
+#, fuzzy
 msgid "RRD Utilities"
-msgstr ""
+msgstr "Приложения"
 
 #: ../utilities.php:1795
 msgid "RRDfile Cleaner"
@@ -15446,20 +15813,23 @@ msgid ""
 msgstr ""
 
 #: ../utilities.php:1801
+#, fuzzy
 msgid "SNMPAgent Utilities"
-msgstr ""
+msgstr "Приложения"
 
 #: ../utilities.php:1802
+#, fuzzy
 msgid "View SNMPAgent Cache"
-msgstr ""
+msgstr "Виж SNMP кеша"
 
 #: ../utilities.php:1804
 msgid "This shows all objects being handled by the SNMPAgent."
 msgstr ""
 
 #: ../utilities.php:1806
+#, fuzzy
 msgid "Rebuild SNMPAgent Cache"
-msgstr ""
+msgstr "Виж SNMP кеша"
 
 #: ../utilities.php:1808
 msgid ""
@@ -15482,8 +15852,9 @@ msgid "Allows Administrators to maintain SNMP notification receivers."
 msgstr ""
 
 #: ../utilities.php:1822
+#, fuzzy
 msgid "Cacti System Utilities"
-msgstr "Утилиты Cacti"
+msgstr "Настройки на cacti"
 
 #: ../utilities.php:1946
 msgid "Overrun Warning"
@@ -15518,8 +15889,9 @@ msgid "Boost On-demand Updating:"
 msgstr ""
 
 #: ../utilities.php:2020
+#, fuzzy
 msgid "Total Data Sources:"
-msgstr ""
+msgstr "Източници на данни"
 
 #: ../utilities.php:2024
 msgid "Pending Boost Records:"
@@ -15630,8 +16002,9 @@ msgid "Next Start Time:"
 msgstr ""
 
 #: ../utilities.php:2126
+#, fuzzy
 msgid "Maximum Records:"
-msgstr ""
+msgstr "Максимална стойност"
 
 #: ../utilities.php:2126
 msgid "Records"
@@ -15658,8 +16031,9 @@ msgid "Cached Files Size:"
 msgstr ""
 
 #: ../utilities.php:2241
+#, fuzzy
 msgid "SNMPAgent Cache"
-msgstr ""
+msgstr "Виж SNMP кеша"
 
 #: ../utilities.php:2271
 msgid "OIDs"
@@ -15691,18 +16065,17 @@ msgid "Severity Level: %s"
 msgstr ""
 
 #: ../vdef.php:265
-#, fuzzy
 msgid "Click 'Continue' to delete the following VDEF."
 msgid_plural "Click 'Continue' to delete following VDEFs."
-msgstr[0] "Вы уверены что хотите удалить следующие VDEF"
-msgstr[1] "Вы уверены что хотите удалить следующие VDEF"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../vdef.php:270
 #, fuzzy
 msgid "Delete VDEF"
 msgid_plural "Delete VDEFs"
-msgstr[0] "Удалить"
-msgstr[1] "Удалить"
+msgstr[0] "Избери всички"
+msgstr[1] "Избери всички"
 
 #: ../vdef.php:274
 msgid ""
@@ -15715,15 +16088,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../vdef.php:280
-#, fuzzy
 msgid "Duplicate VDEF"
 msgid_plural "Duplicate VDEFs"
-msgstr[0] "Дублировать"
-msgstr[1] "Дублировать"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../vdef.php:283
 msgid "You must select at least one VDEF."
-msgstr "Вы должны выбрать хотябы один VDEF"
+msgstr ""
 
 #: ../vdef.php:325
 msgid "Click 'Continue' to delete the following VDEF's."
@@ -15772,8 +16144,9 @@ msgid "The name of this VDEF."
 msgstr ""
 
 #: ../vdef.php:845
+#, fuzzy
 msgid "VDEF Name"
-msgstr ""
+msgstr "Име"
 
 #: ../vdef.php:846
 msgid ""
@@ -15793,439 +16166,16 @@ msgstr ""
 msgid "No VDEFs"
 msgstr ""
 
-#~ msgid "%d Rows"
-#~ msgstr "%d Строк"
-
-#~ msgid "1 Month"
-#~ msgstr "1 Месяц"
-
-#~ msgid "1 Week"
-#~ msgstr "1 Неделя"
-
-#~ msgid "30 Min"
-#~ msgstr "30 Мин."
-
-#~ msgid "ACCESS DENIED"
-#~ msgstr "ДОСТУП ЗАПРЕЩЕН"
-
-#~ msgid "Accessible"
-#~ msgstr "Разрешено"
-
-#~ msgid "Action:"
-#~ msgstr "Действие:"
-
-#~ msgid "Address"
-#~ msgstr "Адрес"
-
-#~ msgid "Are you sure you want to delete the following graphs?"
-#~ msgstr "Вы уверены что хотите удалить выбраные графики ?"
-
-#~ msgid "Are you sure you want to delete the following site(s)?"
-#~ msgstr "Вы уверены что хотите удалить следующий(ие) узел(ы)"
-
-#~ msgid "Are you sure you want to delete the site"
-#~ msgstr "Вы уверены что хотите удалить этот узел?"
-
-#~ msgid "Available for RRDTool 1.2.x and above"
-#~ msgstr "Доступно для RRDTool 1.2.x и выше"
-
-#~ msgid "Average:"
-#~ msgstr "Среднее:"
-
-#~ msgid "Blue:"
-#~ msgstr "Голубой:"
-
-#~ msgid "Cacti Log File Cleared"
-#~ msgstr "Лог Cacti Очищен"
-
-#~ msgid "Clear Cacti Log File"
-#~ msgstr "Очистить Лог Cacti"
-
-#~ msgid "Color tag of the font."
-#~ msgstr "Цвет шрифта"
-
-#~ msgid "Current Language"
-#~ msgstr "Текущий Язык"
-
-#~ msgid "Current:"
-#~ msgstr "Текущее:"
-
-#~ msgid "Custom Legend"
-#~ msgstr "Выбор Легенды"
-
-#~ msgid "DB Info"
-#~ msgstr "Информация по БД"
-
-#~ msgid "Default Language"
-#~ msgstr "Язык по Умолчанию"
-
-#~ msgid "Default Policy"
-#~ msgstr "Правило По Умолчанию"
-
-#~ msgid "Default Time Zone"
-#~ msgstr "Стандартный Часовой Пояс"
-
-#~ msgid "Device Template:"
-#~ msgstr "Шаблон Устройства:"
-
-#~ msgid "Device Type"
-#~ msgstr "Тип устройства"
-
-#~ msgid "ERROR: DIR NOT FOUND"
-#~ msgstr "ОШИБКА: ДИРЕКТОРИЯ НЕ НАЙДЕНА"
-
-#~ msgid "ERROR: FILE NOT FOUND"
-#~ msgstr "ОШИБКА: ФАЙЛ НЕ НАЙДЕН"
-
-#~ msgid "ERROR: IS DIR"
-#~ msgstr "ОШИБКА: ЭТО ДИРЕКТОРИЯ"
-
-#~ msgid "ERROR: IS FILE"
-#~ msgstr "ОШИБКА: ЭТО ФАЙЛ"
-
-#~ msgid "ERROR: Installed RRDTool version does not match configured version."
-#~ msgstr ""
-#~ "ОШИБКА: Установленная версия RRDTool не совпадает со сконфигурированной"
-
-#~ msgid "End"
-#~ msgstr "Конец"
-
-#~ msgid "English"
-#~ msgstr "Английский"
-
-#~ msgid "Error: Unable to clear log, "
-#~ msgstr "Ошибка: Невозможно очистить лог, "
-
-#~ msgid "Font"
-#~ msgstr "Шрифт"
-
-#~ msgid "From:"
-#~ msgstr "От:"
-
-#~ msgid "General Technical Support Information"
-#~ msgstr "Основная Техническая Информация "
-
-#~ msgid "Graph Template Labels"
-#~ msgstr "Метка Шаблона Графика"
-
-#~ msgid "Green:"
-#~ msgstr "Зеленый:"
-
-#~ msgid "Help"
-#~ msgstr "Помощь"
-
-#~ msgid "Hide/Unhide Menu"
-#~ msgstr "Скрыть/Открыть Меню"
-
-#~ msgid "Image"
-#~ msgstr "Изображение"
-
-#~ msgid "Import RRA Settings"
-#~ msgstr "Импорт свойств RRA"
-
-#~ msgid "Info"
-#~ msgstr "Информация"
-
-#~ msgid "Japanese"
-#~ msgstr "日本語"
-
-#~ msgid "Languages"
-#~ msgstr "Языковые параметры"
-
-#~ msgid "Legend"
-#~ msgstr "Легенда"
-
-#~ msgid "Legend Position"
-#~ msgstr "Позиция Легенды"
-
-#~ msgid "List"
-#~ msgstr "Лист"
-
-#~ msgid "Loaded Language Files"
-#~ msgstr "Загруженные Языковые Файлы"
-
-#~ msgid "Logarithmic Scaling"
-#~ msgstr "Логарифмическая Шкала"
-
-#~ msgid "Logout User"
-#~ msgstr "Выход"
-
-#~ msgid "Maximum"
-#~ msgstr "Максимум"
-
-#~ msgid "Maximum Value"
-#~ msgstr "Максимальное Значение"
-
-#~ msgid "Maximum:"
-#~ msgstr "Максимальное:"
-
-#~ msgid "Method:"
-#~ msgstr "Метод:"
-
-#~ msgid "Minimum"
-#~ msgstr "Минимум"
-
-#~ msgid "Minimum Value"
-#~ msgstr "Минимальное Значение"
-
-#~ msgid "Module Name:"
-#~ msgstr "Имя Модуля"
-
-#~ msgid "New Full Name:"
-#~ msgstr "Новое Полное Имя:"
-
-#~ msgid "New Username:"
-#~ msgstr "Новое Имя Пользователя:"
-
-#~ msgid "No Access"
-#~ msgstr "Нет Доступа"
-
-#~ msgid "No Graph Templates"
-#~ msgstr "Нет Шаблонов Графиков"
-
-#~ msgid "No Graphs"
-#~ msgstr "Нет Графиков"
-
-#~ msgid "No Language Files Loaded."
-#~ msgstr "Языковые Файлы Не Загружены"
-
-#~ msgid "No Records Found"
-#~ msgstr "Записи Не Найдены"
-
-#~ msgid "No Trees"
-#~ msgstr "Нет Деревьев"
-
-#~ msgid "No Users"
-#~ msgstr "Нет Пользователей"
-
-#~ msgid "No VDEF's"
-#~ msgstr "Нет VDEF"
-
-#~ msgid "Note: "
-#~ msgstr "Примечание:"
-
-#~ msgid "OK: DIR FOUND"
-#~ msgstr "ОК: ДИРЕКТОРИЯ НАЙДЕНА"
-
-#~ msgid "OK: FILE FOUND"
-#~ msgstr "ОК: ФАЙЛ НАЙДЕН"
-
-#~ msgid "Only Graph"
-#~ msgstr "Только График"
-
-#~ msgid "Page Top"
-#~ msgstr "Начало Страницы"
-
-#~ msgid "Password:"
-#~ msgstr "Пароль:"
-
-#~ msgid "Please enter a new password for cacti:"
-#~ msgstr "Пожайлуста введите новый пароль для cacti"
-
-#~ msgid "Please enter your Cacti user name and password below:"
-#~ msgstr "Пожайлуста введите Ваши логин и пароль:"
-
-#~ msgid "Please visit the"
-#~ msgstr "Пожайлуста посетите"
-
-#~ msgid "Poller:"
-#~ msgstr "Регистратор:"
-
-#~ msgid "RRDTool Utility Version"
-#~ msgstr "Версия RRDTool"
-
-#~ msgid "RRDTool Version"
-#~ msgstr "Версия RRDTool"
-
-#~ msgid "Red:"
-#~ msgstr "Красный:"
-
-#~ msgid "Redirect all HTTP connections to HTTPS."
-#~ msgstr "Перенаправление всех HTTP соединений на HTTPS"
-
-#~ msgid "Require SSL Encryption"
-#~ msgstr "Необходимо SSL шифрование"
-
-#~ msgid "Resize Graphs"
-#~ msgstr "Изменение Размеров Графиков"
-
-#~ msgid "Rows:"
-#~ msgstr "Строк:"
-
-#~ msgid "Russian"
-#~ msgstr "Русский"
-
-#~ msgid "SNMP Utility Version"
-#~ msgstr "Версия SNMP"
-
-#~ msgid "Search:"
-#~ msgstr "Поиск:"
-
-#~ msgid "Show Device Details"
-#~ msgstr "Детали устройства"
-
-#~ msgid "Showing All Graphs"
-#~ msgstr "Показаны Все Графики"
-
-#~ msgid "Showing Graphs"
-#~ msgstr "Показать Графики"
-
-#~ msgid "Showing Rows"
-#~ msgstr "Показать Строки"
-
-#~ msgid "Site Filters"
-#~ msgstr "Фильтр узлов"
-
-#~ msgid "Site:"
-#~ msgstr "Узел:"
-
-#~ msgid "Some sites not removed as they contain devices!"
-#~ msgstr "Узел нельзя удалить если он содержит устройства!"
-
-#~ msgid "Start"
-#~ msgstr "Начать"
-
-#~ msgid "Status:"
-#~ msgstr "Статус:"
-
-#~ msgid "Supported Languages"
-#~ msgstr "Поддерживаемые Языки"
-
-#~ msgid "Template:"
-#~ msgstr "Шаблон:"
-
-#~ msgid "The full path to the RRD file."
-#~ msgstr "Полный путь к RRD файлам"
-
-#~ msgid "The version of RRDTool that you have installed."
-#~ msgstr "Версия RRDTool которую вы установили."
-
-#~ msgid "Time Zone Support"
-#~ msgstr "Поддержка Часового Пояса"
-
-#~ msgid "To:"
-#~ msgstr "По:"
-
-#~ msgid "Total Lines:"
-#~ msgstr "Всего Строк:"
-
-#~ msgid "Trees:"
-#~ msgstr "Деревья:"
-
-#~ msgid "Type:"
-#~ msgstr "Тип:"
-
-#~ msgid "Update Device Templates"
-#~ msgstr "Обновление Шаблонов Устройств"
-
-#~ msgid "User Name:"
-#~ msgstr "Логин:"
-
-#~ msgid "VDEF Title"
-#~ msgstr "Название VDEF"
-
-#~ msgid "View Cacti Log File"
-#~ msgstr "Посмотреть Лог Cacti"
-
-#~ msgid "WARNING: Function does not exist\n"
-#~ msgstr "Внимание: Функция не существует\n"
-
-#~ msgid "Watermark"
-#~ msgstr "Водяной Знак"
-
-#~ msgid "Width"
-#~ msgstr "Ширина"
-
-#~ msgid "Would you like to copy this user?"
-#~ msgstr "Хотите скопировать этого пользователя?"
-
-#~ msgid "YOU DO NOT HAVE RIGHTS TO CHANGE GRAPH SETTINGS"
-#~ msgstr "У ВАС НЕДОСТАТОЧНО ПРАВ ДЛЯ ИЗМЕНЕНИЯ СВОЙСТВ ГРАФИКА"
+#, fuzzy
+#~ msgid "Graph Export"
+#~ msgstr "Графични елементи"
 
 #~ msgid ""
-#~ "You must first select a Device Template.  Please select 'Return' to "
-#~ "return to the previous menu."
+#~ "Which RRA's to use when entering data. (It is recommended that you select "
+#~ "all of these values)."
 #~ msgstr ""
-#~ "Сначала вы должны выбрать Шаблон Устройства. Пожайлуста нажмите 'Назад' "
-#~ "для возврата в предыдущее меню."
+#~ "Кои RRA да се ползват при въвеждане на данни. (Препоръчва се да изберете "
+#~ "всяка една от тези стойност)."
 
-#~ msgid "Your passwords do not match, please retype:"
-#~ msgstr "Ваши пароли не совпадают, пожайлуста повторите:"
-
-#~ msgid "[edit: "
-#~ msgstr "[редакция:"
-
-#~ msgid "[update]"
-#~ msgstr "[обновлено]"
-
-#~ msgid "_Apr_"
-#~ msgstr "_Апр_"
-
-#~ msgid "_Aug_"
-#~ msgstr "_Авг_"
-
-#~ msgid "_Dec_"
-#~ msgstr "_Дек_"
-
-#~ msgid "_Feb_"
-#~ msgstr "_Фев_"
-
-#~ msgid "_Jan_"
-#~ msgstr "_Янв_"
-
-#~ msgid "_Jul_"
-#~ msgstr "_Июль_"
-
-#~ msgid "_Jun_"
-#~ msgstr "_Июнь_"
-
-#~ msgid "_Mar_"
-#~ msgstr "_Март_"
-
-#~ msgid "_Nov_"
-#~ msgstr "_Ноя_"
-
-#~ msgid "_Oct_"
-#~ msgstr "_Окт_"
-
-#~ msgid "_Sep_"
-#~ msgstr "_Сен_"
-
-#~ msgid "and select the correct RRDTool Utility Version."
-#~ msgstr "и выбирите корректную версию RRDTool"
-
-#~ msgid "file does not exist."
-#~ msgstr "файл не существует."
-
-#~ msgid "limit"
-#~ msgstr "лимит"
-
-#~ msgid "loading"
-#~ msgstr "загрузка"
-
-#~ msgid "mode"
-#~ msgstr "режим"
-
-#~ msgid "no write permissions."
-#~ msgstr "нет права на запись."
-
-#~ msgid "of"
-#~ msgstr "из"
-
-#~ msgid "on:off"
-#~ msgstr "вкл.:выкл."
-
-#~ msgid "position"
-#~ msgstr "позиция"
-
-#~ msgid "string"
-#~ msgstr "строка"
-
-#~ msgid "threshold"
-#~ msgstr "порог"
-
-#~ msgid "to"
-#~ msgstr "по"
-
-#~ msgid "width"
-#~ msgstr "ширина"
+#~ msgid "Zoom"
+#~ msgstr "Увеличение"

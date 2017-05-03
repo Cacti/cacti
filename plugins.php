@@ -169,7 +169,7 @@ function plugins_load_temp_table() {
 					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['longname'] = ucfirst($file);
 					$cinfo[$file]['status'] = 0;
 					$pluginslist[] = $file;
-					if (!isset($info['info']['compat']) || version_compare($config['cacti_version'], $info['info']['compat']) < 0) {
+					if (!isset($info['info']['compat']) || version_compare(CACTI_VERSION, $info['info']['compat']) < 0) {
 						$cinfo[$file]['status'] = -1;
 					}
 				} else {
@@ -264,7 +264,7 @@ function update_show_current () {
 	</script>
 	<?php
 
-	html_start_box( __('Plugin Management (Cacti Version: %s)', $config['cacti_version']), '100%', '', '3', 'center', '');
+	html_start_box(__('Plugin Management'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>

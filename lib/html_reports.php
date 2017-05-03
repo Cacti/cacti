@@ -829,9 +829,9 @@ function reports_item_edit() {
 	if (isset_request_var('item_id') && (get_request_var('item_id') > 0)) {
 		$reports_item = db_fetch_row_prepared('SELECT * FROM reports_items WHERE id = ?', array(get_request_var('item_id')));
 
-		$header_label = '[edit Report Item: ' . $report['name'] . ']';
+		$header_label = __('Report Item [edit Report: %s]', $report['name']);
 	}else{
-		$header_label = '[new Report Item: ' . $report['name'] . ']';
+		$header_label = __('Report Item [new Report: %s]', $report['name']);
 		$reports_item = array();
 		$reports_item['report_id'] = get_request_var('id');
 		$reports_item['sequence']  = get_sequence('', 'sequence', 'reports_items', 'report_id=' . get_request_var('id'));
@@ -880,14 +880,14 @@ function reports_item_edit() {
 	print "<form method='post' action='" . get_current_page() . "' name='reports_item_edit'>\n";
 
 	# ready for displaying the fields
-	html_start_box("<strong>Report Item</strong> $header_label", '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
 		'fields' => inject_form_variables($fields_reports_item_edit, (isset($reports_item) ? $reports_item : array()), (isset($report) ? $report : array()))
 	));
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('id', (isset($reports_item['id']) ? $reports_item['id'] : '0'), '');
 	form_hidden_box('report_id', (isset($reports_item['report_id']) ? $reports_item['report_id'] : '0'), '');
@@ -1035,6 +1035,7 @@ function reports_item_edit() {
 function reports_edit() {
 	global $config;
 	global $fields_reports_edit;
+
 	include_once($config['base_path'] . '/lib/reports.php');
 
 	/* ================= input validation and session storage ================= */
@@ -1105,7 +1106,7 @@ function reports_edit() {
 		print "<div class='tabs'><nav><ul role='tablist'>\n";
 
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") . 
+			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") . 
 				" href='" . htmlspecialchars($config['url_path'] .
 				get_reports_page() . '?action=edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
@@ -1124,15 +1125,17 @@ function reports_edit() {
 
 	switch(get_request_var('tab')) {
 	case 'details':
-		print '<form name="report" action="' . get_reports_page() . '" method="post">';
-		html_start_box(__('Report Details') . " $header_label", '100%', '', '3', 'center', '');
+		form_start(get_reports_page());
+
+		html_start_box(__('Details') . " $header_label", '100%', true, '3', 'center', '');
 
 		draw_edit_form(array(
 			'config' => array('no_form_tag' => true),
 			'fields' => inject_form_variables($fields_reports_edit, $report)
 		));
 
-		html_end_box();
+		html_end_box(true, true);
+
 		form_hidden_box('id', (isset($report['id']) ? $report['id'] : '0'), '');
 		form_hidden_box('save_component_report', '1', '');
 
@@ -1171,7 +1174,7 @@ function reports_edit() {
 
 		break;
 	case 'items':
-		html_start_box(__('Report Items') . " $header_label", '100%', '', '3', 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
+		html_start_box(__('Items') . " $header_label", '100%', '', '3', 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
 
 		/* display the items */
 		if (!empty($report['id'])) {

@@ -423,7 +423,7 @@ function automation_snmp_item_edit() {
 
 	form_start('automation_snmp.php', 'automation_item_edit');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	/* this is snmp we are talking about here */
 	unset($snmp_versions[0]);
@@ -551,7 +551,8 @@ function automation_snmp_item_edit() {
 		'fields' => inject_form_variables($fields_automation_snmp_item_edit, (isset($automation_snmp_item) ? $automation_snmp_item : array()))
 	));
 
-	html_end_box();
+	html_end_box(true, true);
+
 	form_hidden_box('item_id', (isset_request_var('item_id') ? get_request_var('item_id') : '0'), '');
 	form_hidden_box('id', (isset($automation_snmp_item['snmp_id']) ? $automation_snmp_item['snmp_id'] : '0'), '');
 	form_hidden_box('save_component_automation_snmp_item', '1', '');
@@ -628,14 +629,14 @@ function automation_snmp_edit() {
 	if (!isempty_request_var('id')) {
 		$snmp_group = db_fetch_row_prepared('SELECT * FROM automation_snmp where id = ?', array(get_request_var('id')));
 		# setup header
-		$header_label = '[' . __('edit') . ': ' . $snmp_group['name'] . ']';
+		$header_label = __('SNMP Option Set [edit: %s]', $snmp_group['name']);
 	}else{
-		$header_label = '[' . __('new') . ']';
+		$header_label = __('SNMP Option Set [new]');
 	}
 
 	form_start('automation_snmp.php', 'automation_snmp_group');
 
-	html_start_box(__('SNMP Option Set') . ' '. $header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
     /* file: automation_snmp.php, action: edit */
 	$fields_automation_snmp_edit = array(
@@ -656,7 +657,8 @@ function automation_snmp_edit() {
 		'fields' => inject_form_variables($fields_automation_snmp_edit, $snmp_group)
 	));
 
-	html_end_box();
+	html_end_box(true, true);
+
 	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id'): '0'), '');
 	form_hidden_box('save_component_automation_snmp', '1', '');
 

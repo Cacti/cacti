@@ -14,6 +14,17 @@ body {
     overflow: hidden;
 }
 
+textarea {
+	font-family: 'Segoe UI', 'Segoe UI Web Regular', 'Segoe UI Symbol', 'Helvetica Neue', 'BBAlpha Sans', 'S60 Sans', Arial, sans-serif;
+	font-size: 1.0em;
+	padding: 5px;
+	width: 400px;
+	height: 100px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 table {
 	border-collapse: collapse; border-spacing: 0; 
 	border: none;
@@ -21,7 +32,7 @@ table {
 }
 
 td, th {
-	padding: 2px;
+	padding: 0px;
 	margin: 0px;
 }
 
@@ -32,6 +43,16 @@ th {
 img {
 	border:none;
 	vertical-align:middle;
+}
+
+fieldset {
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.reindex_methods span {
+	font-size: 9px;
 }
 
 /* links */
@@ -69,15 +90,6 @@ label {
 	white-space:nowrap;
 }
 
-fieldset {
-	border: none;
-	padding: 0px;
-	margin: 0px;
-}
-
-.reindex_methods span {
-	font-size: 9px;
-}
 
 .nowrap {
 	white-space:nowrap;
@@ -479,6 +491,10 @@ fieldset {
     border: none;
 }
 
+.odd td, .even td, .even-alternate td {
+	padding: 2px;
+}
+
 .even {
 	background: none repeat scroll 0 0 #E5E5E5;
     border: none;
@@ -820,6 +836,10 @@ legend {
 	width:100%;
 }
 
+.treeArea {
+	vertical-align: top;
+}
+
 .cactiGraphContentArea {
 	height: 100%;
 	overflow-y: auto !important;
@@ -978,9 +998,12 @@ legend {
 	font-size: 11px;
 	color: white;
 	font-weight: bold;
+	padding: 0px;
+	white-space: nowrap;
 }
 
 .cactiTable {
+	display: table;
 	width: 100%;
 	margin-left:auto; 
 	margin-right:auto;
@@ -1014,6 +1037,8 @@ legend {
 
 .cactiTableButton span, .cactiTableTitle span {
 	padding: 0px 5px 0px 5px;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .cactiDebugTable {
@@ -1026,13 +1051,164 @@ legend {
 
 .filterTable td:first-child {
 	width:55px;
+	min-width:55px;
 }
 
-.formItemDescription {
+.filterTable td {
+	padding: 2px;
 }
 
-.formItemName {
-	font-weight:bold;
+.formRow {
+	display: table;
+	width: 100%;
+	line-height: 35px;
+}
+
+.formColumn {
+	float: left;
+	display: table-column;
+	text-align: left;
+}
+
+.formColumnLeft {
+	float: left;
+	display: table-column;
+	width: 30%;
+	text-align: left;
+}
+
+.formColumnRight {
+	float: left;
+	display: table-column;
+	width: 70%;
+	text-align: left;
+}
+
+.formData {
+	display: inline-block;
+	float: left;
+	text-align: left;
+}
+
+.formRadio {
+	line-height: 22px;
+}
+
+.formSubCheckbox {
+	line-height: 20px;
+	float: left;
+}
+
+.formSubCheckbox input {
+	margin: 0px;
+	vertical-align: -10%;
+}
+
+.formSubCheckbox label {
+}
+
+.formCheckbox {
+	vertical-align: -15%;
+}
+
+.formFieldName {
+	display: inline-block;
+	color: #000000;
+	float: left;
+	text-align: left;
+	white-space: nowrap;
+	padding-left: 3px;
+}
+
+.formFieldDescription {
+	float: left;
+	text-align: left;
+}
+
+.formTooltip {
+	display: inline-block;
+	padding-left: 4px;
+}
+
+.formHeader {
+	float: left;
+	width: 100%;
+	text-align: left;
+	line-height: 25px;
+	background: rgba(0, 0, 0, 0.55) none repeat scroll 0 0;
+    color: white;
+	font-weight: bold;
+}
+
+.formHeaderText {
+	padding-left: 3px;
+}
+
+.formHeaderAnchor {
+	float:right;
+	padding-right:4px;
+}
+
+.hostInfoHeader {
+	width: 100%;
+}
+
+.queryAdd, .templateAdd {
+	padding: 3px;
+}
+
+@media screen and (max-width: 640px) {
+	.formRow {
+		display: table;
+		width: 100%;
+		line-height: 35px;
+	}
+
+	.formColumn {
+		float: left;
+		display: table-row;
+		color: #000000;
+	}
+
+	.formColumnLeft {
+		float: left;
+		display: table-row;
+		width: 100%;
+		color: #000000;
+		text-align: left;
+	}
+
+	.formColumnRight {
+		float: left;
+		display: table-row;
+		width: 100%;
+		color: #000000;
+		text-align: left;
+	}
+
+	.formFieldName {
+		color: snow;
+		float: left;
+		text-align: left;
+		white-space: nowrap;
+		padding-left: 3px;
+	}
+
+	.formData {
+		float: left;
+}
+
+	.hostInfoHeader {
+		overflow: hidden;
+	}
+
+	.queryAdd, .templateAdd, .navBar, #ping_results {
+		display: none;
+	}
+
+	.ui-button-text-only .ui-button-text {
+		padding: 0.4em;
+	}
 }
 
 .graphItem {
@@ -1044,7 +1220,7 @@ legend {
 }
 
 .break {
-	height:8px;
+	height:4px;
 }
 
 .next {
@@ -1077,11 +1253,13 @@ th.sortable {
 
 .tableHeader th {
 	color: white;
-	font-weight:bold;
+
 	cursor: pointer;
 	vertical-align:middle;
 	text-align:left;
 	font-size: 11px;
+	font-weight:bold;
+	padding: 2px;
 }
 
 .tableHeader th div {
@@ -1103,6 +1281,7 @@ th.sortable {
 	vertical-align:middle;
 	text-align:left;
 	cursor:pointer;
+	padding: 3px;
 }
 
 .graphSubHeaderColumn {
@@ -1135,10 +1314,10 @@ th.sortable {
 }
 
 .navBarNavigation {
+	display: table;
 	color: rgba(0,0,0,0.9);
 	width: 100%
 	text-align:center;
-	margin-bottom: -3px;
 	height: 20px;
 	margin-left:auto;
 	margin-right:auto;
@@ -1146,39 +1325,31 @@ th.sortable {
 
 .navBarNavigationPrevious {
 	text-align: left;
-	cursor: pointer;
-	font-weight: bold;
-	float: left;
 	white-space: nowrap;
-	display: block;
+	display: table-cell;
 	width: 10%;
-	padding: 2px 0px;
 	height: 20px;
 	vertical-align: middle;
 }
 
 .navBarNavigationCenter {
 	text-align: center;
-	display: block;
-	float: left;
+	display: table-cell;
 	white-space: nowrap;
 	width: 80%;
-	padding: 2px 0px;
 	height: 20px;
 	margin-top: auto;
 }
 
 .navBarNavigationCenter span {
 	vertical-align: middle;
+	display: table-cell;
 }
 
 .navBarNavigationNext {
 	text-align: right;
-	cursor: pointer;
-	font-weight: bold;
-	float: right;
 	white-space: nowrap;
-	display: block;
+	display: table-cell;
 	width: 10%;
 	padding: 2px 0px;
 	height: 20px;
@@ -1187,11 +1358,9 @@ th.sortable {
 
 .navBarNavigationNone {
 	text-align: center;
-	display: block;
-	float: left;
+	display: table-cell;
 	white-space: nowrap;
 	width:100%;
-	padding: 2px 0px;
 	height: 20px;
 	margin-top: auto;
 }
@@ -1664,6 +1833,7 @@ ul.pagination li a {
 	padding: 0px 2px 2px 2px;
 	text-decoration: none;
 	margin: 0px 1px;
+	vertical-align: -40%;
 }
 
 ul.pagination li span {

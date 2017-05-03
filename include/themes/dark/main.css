@@ -19,12 +19,12 @@ html, body {
 	height: 100%;
 	width: 100%;
 	margin: 0px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 body {
 	background: #161616 none repeat scroll 0 0;
 	color: #bbbfc2;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 12px;
 }
 
@@ -40,6 +40,11 @@ textarea {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 1.0em;
 	padding: 5px;
+	width: 400px;
+	height: 100px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 table {
@@ -49,7 +54,7 @@ table {
 }
 
 td, th {
-	padding: 2px;
+	padding: 0px;
 	margin: 0px;
 }
 
@@ -96,7 +101,18 @@ th i.fa {
 	z-index: 3;
 }
 
-input, select {
+input {
+	padding: 0.5em 0.5em 0.5em 0.5em;
+	font-size: 12px;
+	max-width: 400px;
+}
+
+#host_id_wrap {
+	line-height: 25px;
+	padding-left: 4px;
+}
+
+select {
 	padding: 0.5em 0.5em 0.5em 0.5em;
 	font-size: 12px;
 }
@@ -500,6 +516,10 @@ label {
 	background: none repeat scroll 0 0 #202020;
 	border: none;
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.odd td, .even td, .even-alternate td {
+	padding: 2px;
 }
 
 .even {
@@ -955,7 +975,11 @@ legend {
 }
 
 .treeTable {
-	width:100%;
+	width: 100%;
+}
+
+.treeArea {
+	vertical-align: top;
 }
 
 .cactiGraphContentArea {
@@ -1130,15 +1154,15 @@ legend {
 	font-size: 11px;
 	color: snow;
 	font-weight: normal;
-	padding: 2px;
+	padding: 0px;
+	white-space: nowrap;
 }
 
 .cactiTable {
+	display: table;
 	width: 100%;
 	margin-left:auto; 
 	margin-right:auto;
-	display: table;
-	height: 25px;
 	color: snow;
 }
 
@@ -1154,6 +1178,12 @@ legend {
 	background: -webkit-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -ms-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
+}
+
+.cactiTableTitle span {
+	padding-left: 3px;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .cactiTableButton {
@@ -1184,11 +1214,159 @@ legend {
 	min-width:55px;
 }
 
-.formItemDescription {
+.filterTable td {
+	padding: 2px;
 }
 
-.formItemName {
-	color:snow;
+.formRow {
+	display: table;
+	width: 100%;
+	line-height: 35px;
+}
+
+.formColumn {
+	float: left;
+	display: table-column;
+	text-align: left;
+}
+
+.formColumnLeft {
+	float: left;
+	display: table-column;
+	width: 30%;
+	text-align: left;
+}
+
+.formColumnRight {
+	float: left;
+	display: table-column;
+	width: 70%;
+	text-align: left;
+}
+
+.formData {
+	display: inline-block;
+	float: left;
+	text-align: left;
+}
+
+.formRadio {
+	line-height: 22px;
+}
+
+.formSubCheckbox {
+	line-height: 20px;
+	float: left;
+}
+
+.formSubCheckbox input {
+	margin: 0px;
+	vertical-align: -10%;
+}
+
+.formSubCheckbox label {
+}
+
+.formCheckbox {
+	vertical-align: -15%;
+}
+
+.formFieldName {
+	display: inline-block;
+	color: snow;
+	float: left;
+	text-align: left;
+	white-space: nowrap;
+	padding-left: 3px;
+}
+
+.formFieldDescription {
+	float: left;
+	text-align: left;
+}
+
+.formTooltip {
+	display: inline-block;
+	padding-left: 4px;
+}
+
+.formHeader {
+	float: left;
+	width: 100%;
+	text-align: left;
+	line-height: 25px;
+	background: -moz-linear-gradient(top,  #45484d 0%, #000000 100%); /* FF3.6+ */
+	background: -webkit-linear-gradient(top,  #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #45484d 0%,#000000 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #45484d 0%,#000000 100%); /* IE10+ */
+}
+
+.formHeaderText {
+	padding-left: 3px;
+}
+
+.formHeaderAnchor {
+	float:right;
+	padding-right:4px;
+}
+
+.hostInfoHeader {
+	width: 100%;
+}
+
+.queryAdd, .templateAdd {
+	padding: 3px;
+}
+
+@media screen and (max-width: 640px) {
+	.formRow {
+		display: table;
+		width: 100%;
+		line-height: 35px;
+	}
+
+	.formColumn {
+		float: left;
+		display: table-row;
+	}
+
+	.formColumnLeft {
+		float: left;
+		display: table-row;
+		width: 100%;
+		text-align: left;
+	}
+
+	.formColumnRight {
+		float: left;
+		display: table-row;
+		width: 100%;
+		text-align: left;
+	}
+
+	.formFieldName {
+		color: snow;
+		float: left;
+		text-align: left;
+		white-space: nowrap;
+		padding-left: 3px;
+	}
+
+	.formData {
+		float: left;
+	}
+
+	.hostInfoHeader {
+		overflow: hidden;
+	}
+
+	.queryAdd, .templateAdd, .navBar, #ping_results {
+		display: none;
+	}
+
+	.ui-button-text-only .ui-button-text {
+		padding: 0.4em;
+	}
 }
 
 .graphItem {
@@ -1200,7 +1378,7 @@ legend {
 }
 
 .break {
-	height:8px;
+	height:4px;
 }
 
 .next {
@@ -1251,13 +1429,14 @@ th.secondarySort {
 	background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(187, 227, 154, 0.2) 0%, rgba(168, 199, 127, 0.2) 100%) repeat scroll 0 0;
 }
 
-.tableHeader th {
+.tableHeader th, .tableHeader td {
 	color: snow;
 	cursor: pointer;
 	vertical-align:middle;
 	text-align:left;
 	font-size: 12px;
 	font-weight: normal;
+	padding: 2px;
 }
 
 .tableHeader th div {
@@ -1271,6 +1450,7 @@ th.secondarySort {
 	vertical-align:middle;
 	text-align:left;
 	cursor:pointer;
+	padding: 3px;
 }
 
 .graphSubHeaderColumn {
@@ -1311,9 +1491,8 @@ th.secondarySort {
 	color: snow;
 	width: 100%;
 	text-align: center;
-	display:inline-block;
-	margin-bottom: -3px;
-	height: 25px;
+	vertical-align: middle;
+	display: table;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1324,52 +1503,41 @@ th.secondarySort {
 
 .navBarNavigationPrevious {
 	text-align: left;
-	cursor: pointer;
-	font-weight: bold;
-	float: left;
 	white-space: nowrap;
-	display: block;
+	display: table-cell;
 	width: 10%;
-	padding: 2px 0px;
 	height: 20px;
 	vertical-align: middle;
 }
 
 .navBarNavigationCenter {
 	text-align: center;
-	display: block;
-	float: left;
+	display: table-cell;
 	white-space: nowrap;
 	width: 80%;
-	padding: 2px 0px;
 	height: 20px;
 	margin-top: auto;
 }
 
 .navBarNavigationCenter span {
 	vertical-align: middle;
+	display: table-cell;
 }
 
 .navBarNavigationNext {
 	text-align: right;
-	cursor: pointer;
-	font-weight: bold;
-	float: right;
 	white-space: nowrap;
-	display: block;
+	display: table-cell;
 	width: 10%;
-	padding: 2px 0px;
 	height: 20px;
 	vertical-align: middle;
 }
 
 .navBarNavigationNone {
 	text-align: center;
-	display: block;
-	float: left;
+	display: table-cell;
 	white-space: nowrap;
 	width:100%;
-	padding: 2px 0px;
 	height: 20px;
 	margin-top: auto;
 }
@@ -1540,6 +1708,7 @@ div#tabs {
 	vertical-align: bottom;
 	position: fixed;
 	top: 5px;
+	width: 70%;
 }
 
 td#tabs {
@@ -1566,6 +1735,11 @@ div#gtabs {
 	height: 30px;
 }
 
+.maintabs {
+	overflow: hidden;
+	height: 25px;
+}
+
 .tabs a, .maintabs a {
 	-moz-border-radius:5px 5px 0 0;
 	border-radius:5px 5px 0 0;
@@ -1574,6 +1748,7 @@ div#gtabs {
 	float:left !important;
 	padding:5px;
 	text-decoration:none;
+	font-size: 11px;
 	vertical-align:bottom;
 }
 
@@ -1771,8 +1946,8 @@ div.preformatted {
 
 ul.pagination {
 	display: inline-block;
-	padding: 0;
-	margin: 0;
+	padding: 1px;
+	margin: 2px;
 	vertical-align:middle;
 }
 
@@ -1786,6 +1961,7 @@ ul.pagination li a {
 	padding: 0px 2px 2px 2px;
 	text-decoration: none;
 	margin: 0px 1px;
+	vertical-align: -40%;
 }
 
 ul.pagination li span {

@@ -147,7 +147,7 @@ function settings() {
 
 	form_start('auth_profile.php');
 
-	html_start_box( __('User Account Details'), '100%', '', '3', 'center', '');
+	html_start_box( __('User Account Details'), '100%', true, '3', 'center', '');
 
 	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
@@ -229,19 +229,19 @@ function settings() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	if (is_view_allowed('graph_settings') == true) {
 		if (read_config_option('auth_method') != 0) {
-			$settings_user['tree']['default_tree_id']['sql'] = get_graph_tree_array(true);
+			$settings_user['tree']['default_tree_id']['sql'] = get_allowed_trees(false, true);
 		}
 
-		html_start_box( __('User Settings'), '100%', '', '3', 'center', '');
+		html_start_box( __('User Settings'), '100%', true, '3', 'center', '');
 
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			$collapsible = true;
 
-			print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><td colspan='2' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
+			print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</div></div>\n";
 
 			$form_array = array();
 
@@ -275,7 +275,9 @@ function settings() {
 				);
 		}
 
-		html_end_box();
+		print "</td></tr>\n";
+
+		html_end_box(true, true);
 	}
 
 	?>

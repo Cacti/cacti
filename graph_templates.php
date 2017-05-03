@@ -436,7 +436,7 @@ function item() {
 			<td>
 				<a class='linkEditMain' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'><?php print htmlspecialchars($item['name']);?></a>
 			</td>
-			<td align='right'>
+			<td class='right'>
 				<a class='deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'></a>
 			</td>
 		</tr>
@@ -495,7 +495,7 @@ function template_edit() {
 
 	form_start('graph_templates.php', 'graph_templates');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -504,9 +504,9 @@ function template_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
-	html_start_box(__('Graph Template Options'), '100%', '', '3', 'center', '');
+	html_start_box(__('Graph Template Options'), '100%', true, '3', 'center', '');
 
 	$form_array = array();
 
@@ -535,7 +535,8 @@ function template_edit() {
 	);
 
 	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
-	html_end_box();
+
+	html_end_box(true, true);
 
 	form_save_button('graph_templates.php', 'return');
 

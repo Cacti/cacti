@@ -328,7 +328,7 @@ function vdef_item_remove_confirm() {
 		</td>
 	</tr>
 	<tr>
-		<td align='right'>
+		<td class='right'>
 			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
 			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
 		</td>
@@ -382,9 +382,9 @@ function vdef_item_edit() {
 		$values[$current_type] = $vdef['value'];
 	}
 
-	print '<div>';
+	html_start_box(__('VDEF Preview'), '100%', '', '3', 'center', '');
 	draw_vdef_preview(get_request_var('vdef_id'));
-	print '</div>';
+	html_end_box();
 
 	if (!isempty_request_var('vdef_id')) {
 		$header_label = __('VDEF Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM vdef WHERE id = ?', array(get_request_var('vdef_id'))) );
@@ -405,7 +405,7 @@ function vdef_item_edit() {
 	}
 
 	form_alternate_row();
-	print '<td width="50%"><font class="textEditTitle">' . __('VDEF Item Type') . '</font><br>'	. __('Choose what type of VDEF item this is.') .'</td>';
+	print '<td style="width:50%"><span class="textEditTitle">' . __('VDEF Item Type') . '</span><br>' . __('Choose what type of VDEF item this is.') .'</td>';
 	?>
 		<td>
 			<select id='type_select'>
@@ -427,7 +427,7 @@ function vdef_item_edit() {
 	form_end_row();
 
 	form_alternate_row();
-	print '<td width="50%"><font class="textEditTitle">' . __('VDEF Item Value') . '</font><br>' . __('Enter a value for this VDEF item.') . '</td>';
+	print '<td style="width:50%;"><span class="textEditTitle">' . __('VDEF Item Value') . '</span><br>' . __('Enter a value for this VDEF item.') . '</td>';
 	?>
 		<td>
 			<?php
@@ -539,7 +539,7 @@ function vdef_edit() {
 
 	form_start('vdef.php', 'vdef_edit');
 
-	html_start_box( $header_label, '100%', '', '3', 'center', '');
+	html_start_box( $header_label, '100%', true, '3', 'center', '');
 
 	$preset_vdef_form_list = preset_vdef_form_list();
 	draw_edit_form(
@@ -549,7 +549,7 @@ function vdef_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('id', (isset($vdef['id']) ? $vdef['id'] : '0'), '');
 	form_hidden_box('save_component_vdef', '1', '');
@@ -581,7 +581,7 @@ function vdef_edit() {
 				<td>
 					<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item['id']);?></strong>
 				</td>
-				<td align='right' style='text-align:right'>
+				<td class='right'>
 					<?php
 					if (read_config_option('drag_and_drop') == '') {
 						if ($i < $total_items && $total_items > 1) {

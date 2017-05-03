@@ -241,7 +241,7 @@ function get_files() {
  * Display all rrd file entries
  */
 function list_rrd() {
-	global $config, $item_rows, $ds_actions, $rra_path, $hash_version_codes;
+	global $config, $item_rows, $ds_actions, $rra_path;
  
 	/* suppress warnings */
 	error_reporting(0);

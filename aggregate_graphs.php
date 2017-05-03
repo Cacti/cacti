@@ -585,7 +585,7 @@ function graph_edit() {
 	if (sizeof($aggregate_tabs)) {
 		foreach (array_keys($aggregate_tabs) as $tab_short_name) {
 			if ($tab_short_name == 'details' || (!isempty_request_var('id'))) {
-				print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "'><a tabindex='-1' role='presentation' class='tab " . ($tab_short_name == $current_tab ? "selected'" : "'") . 
+				print "<li class='subTab'><a class='tab " . ($tab_short_name == $current_tab ? "selected'" : "'") . 
 					" href='" . htmlspecialchars($config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . get_request_var('id') . "&tab=$tab_short_name") . "'>" . $aggregate_tabs[$tab_short_name] . "</a></li>\n";
 			}
 
@@ -657,7 +657,7 @@ function graph_edit() {
 		if (sizeof($template)) {
 			print "<div id='templated'>";
 
-			html_start_box(__('Aggregate Graph %s', $header_label), '100%', '', '3', 'center', '');
+			html_start_box(__('Aggregate Graph %s', $header_label), '100%', true, '3', 'center', '');
 
 			/* add template propagation to the structure */
 			draw_edit_form(
@@ -667,7 +667,7 @@ function graph_edit() {
 				)
 			);
 
-			html_end_box(false);
+			html_end_box(true, true);
 
 			if (isset($template)) {
 				draw_aggregate_graph_items_list(0, $template['graph_template_id'], $aginfo);
@@ -822,7 +822,7 @@ function graph_edit() {
 		}
 
 		if (empty($graphs['graph_template_id'])) {
-			html_start_box(__('Graph Configuration'), '100%', '', '3', 'center', '');
+			html_start_box(__('Graph Configuration'), '100%', true, '3', 'center', '');
 
 			$form_array = array();
 
@@ -851,7 +851,7 @@ function graph_edit() {
 				)
 			);
 
-			html_end_box(false);
+			html_end_box(true, true);
 		}
 
 		form_hidden_box('save_component_graph','1','');

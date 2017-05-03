@@ -112,7 +112,7 @@ function import() {
 		$display_hideme = true;
 	}
 
-	html_start_box(__('Import Templates'), '100%', '', '3', 'center', '');
+	html_start_box(__('Import Templates'), '100%', true, '3', 'center', '');
 
 	$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
 	if (empty($default_profile)) {
@@ -128,7 +128,7 @@ function import() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('save_component_import','1','');
 

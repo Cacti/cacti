@@ -486,26 +486,26 @@ function domain_edit() {
 
 	form_start('user_domains.php');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array(),
 		'fields' => inject_form_variables($fields_domain_edit, (isset($domain) ? $domain : array()))
 		));
 
-	html_end_box();
+	html_end_box(true, true);
 
 	if (!isempty_request_var('domain_id')) {
 		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array(get_request_var('domain_id')));
 
-		html_start_box( __('Domain Properties'), '100%', '', '3', 'center', '');
+		html_start_box( __('Domain Properties'), '100%', true, '3', 'center', '');
 
 		draw_edit_form(array(
 			'config' => array(),
 			'fields' => inject_form_variables($fields_domain_ldap_edit, (isset($domain) ? $domain : array()))
 			));
 
-		html_end_box();
+		html_end_box(true, true);
 	}
 
 	?>

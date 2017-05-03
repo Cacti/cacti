@@ -262,7 +262,7 @@ function field_remove_confirm() {
 		</td>
 	</tr>
 	<tr>
-		<td align='right'>
+		<td class='right'>
 			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
 			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove Data Input Field');?>'>
 		</td>
@@ -368,7 +368,7 @@ function field_edit() {
 
 	form_start('data_input.php', 'data_input');
 
-	html_start_box($header_name, '100%', '', '3', 'center', '');
+	html_start_box($header_name, '100%', true, '3', 'center', '');
 
 	$form_array = array();
 
@@ -395,7 +395,7 @@ function field_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('data_input.php?action=edit&id=' . get_request_var('data_input_id'));
 }
@@ -436,7 +436,7 @@ function data_edit() {
 
 	form_start('data_input.php', 'data_input');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	if (isset($data_input)) {
 		switch ($data_input['type_id']) {
@@ -460,7 +460,7 @@ function data_edit() {
 		'fields' => inject_form_variables($fields_data_input_edit, (isset($data_input) ? $data_input : array()))
 		));
 
-	html_end_box();
+	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
 		html_start_box( __('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . htmlspecialchars(get_request_var('id')));
@@ -486,7 +486,7 @@ function data_edit() {
 					<td>
 						<?php print htmlspecialchars($field['name']);?>
 					</td>
-					<td align="right">
+					<td class="right">
 						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __('Delete');?>'></a>
 					</td>
 					<?php
@@ -524,7 +524,7 @@ function data_edit() {
 					<td>
 						<?php print html_boolean_friendly($field['update_rra']);?>
 					</td>
-					<td align="right">
+					<td class="right">
 						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __('Delete');?>'></a>
 					</td>
 				<?php

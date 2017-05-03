@@ -390,7 +390,7 @@ function item_edit() {
 
 	form_start('data_source_profiles.php', 'form_rra');
 
-	html_start_box( __('RRA [edit: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')))) ), '100%', '', '3', 'center', '');
+	html_start_box( __('RRA [edit: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')))) ), '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -398,7 +398,7 @@ function item_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('profile_id', get_request_var('profile_id'), '');
 
@@ -427,13 +427,13 @@ function item_edit() {
 
 	function get_size() {
 		$.get('data_source_profiles.php?action=ajax_size&type=rra&id='+profile_id+'&rows='+$('#rows').val(), function(data) {
-			$('#size').html(data);
+			$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
 		});
 	}
 
 	function get_span() {
 		$.get('data_source_profiles.php?action=ajax_span&profile_id='+profile_id+'&span='+$('#steps').val()+'&rows='+$('#rows').val(), function(data) {
-			$('#timespan').html(data);
+			$('#row_timespan').find('.formColumnRight').empty().html('<em>'+data+'</em>');
 		});
 	}
 	</script>
@@ -465,7 +465,7 @@ function profile_edit() {
 
 	form_start('data_source_profiles.php', 'profile');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -473,7 +473,7 @@ function profile_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
 		if (!$readonly) {
@@ -577,7 +577,7 @@ function profile_edit() {
 	function get_size() {
 		checked = $('#consolidation_function_id').multiselect('getChecked').length;
 		$.get('data_source_profiles.php?action=ajax_size&type=profile&id='+profile_id+'&cfs='+checked, function(data) {
-			$('#size').html(data);
+			$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
 		});
 	}
 

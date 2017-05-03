@@ -378,7 +378,7 @@ function item_edit() {
 
 	form_start('graphs_items.php', 'greph_edit');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	if (!isempty_request_var('local_graph_id')) {
@@ -440,7 +440,7 @@ function item_edit() {
 	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
 	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
 

@@ -23,10 +23,10 @@
 */
 
 function upgrade_to_0_8_6() {
-	include("../lib/data_query.php");
-	include("../lib/tree.php");
-	include("../lib/import.php");
-	include("../lib/poller.php");
+	include_once("../../lib/data_query.php");
+	include_once("../../lib/tree.php");
+	include_once("../../lib/import.php");
+	include_once("../../lib/poller.php");
 
 	db_install_execute("DROP TABLE `snmp_query_field`;");
 	db_install_execute("DROP TABLE `data_input_data_cache`;");

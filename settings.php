@@ -117,45 +117,53 @@ default:
 	$_SESSION['sess_settings_tab'] = $current_tab;
 
 	/* draw the categories tabs on the top of the page */
-	print "<table><tr><td style='padding-bottom:0px;'>\n";
+	print "<div>\n";
 	print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
 	if (sizeof($tabs) > 0) {
 		$i = 0;
 
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
+			print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
 
 			$i++;
 		}
 	}
 
 	print "</ul></nav></div>\n";
-	print "</tr></table><table style='width:100%;'><tr><td style='padding:0px;'>\n";
+	print "</div>\n";
 
 	form_start('settings.php', 'chk');
 
-	html_start_box( __('Cacti Settings (%s)', $tabs[$current_tab]), '100%', '', '3', 'center', '');
+	html_start_box( __('Cacti Settings (%s)', $tabs[$current_tab]), '100%', true, '3', 'center', '');
 
 	$form_array = array();
 
-	foreach ($settings[$current_tab] as $field_name => $field_array) {
-		$form_array += array($field_name => $field_array);
+	if (isset($settings[$current_tab])) {
+		foreach ($settings[$current_tab] as $field_name => $field_array) {
+			$form_array += array($field_name => $field_array);
 
-		if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-				if (config_value_exists($sub_field_name)) {
-					$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
+			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
+					if (config_value_exists($sub_field_name)) {
+						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
+					}
+
+					$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value 
+						FROM settings 
+						WHERE name = ?', 
+						array($sub_field_name));
+				}
+			}else{
+				if (config_value_exists($field_name)) {
+					$form_array[$field_name]['form_id'] = 1;
 				}
 
-				$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', array($sub_field_name));
+				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value 
+					FROM settings 
+					WHERE name = ?', 
+					array($field_name));
 			}
-		}else{
-			if (config_value_exists($field_name)) {
-				$form_array[$field_name]['form_id'] = 1;
-			}
-
-			$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', array($field_name));
 		}
 	}
 
@@ -166,15 +174,11 @@ default:
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('tab', $current_tab, '');
 
 	form_save_button('', 'save');
-
-	form_end();
-
-	print "</td></tr></table>\n";
 
 	?>
 	<script type='text/javascript'>

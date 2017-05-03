@@ -41,8 +41,13 @@ function upgrade_to_1_1_6() {
 		);
 	}
 
-	db_execute_prepared("UPDATE graph_templates 
+	db_install_execute("UPDATE graph_templates 
 		SET multiple = 'on' 
 		WHERE hash = '010b90500e1fc6a05abfd542940584d0'"
+	);
+
+	db_install_execute("ALTER TABLE poller_output
+		MODIFY COLUMN output VARCHAR(512) NOT NULL default '',
+		ENGINE=MEMORY"
 	);
 }

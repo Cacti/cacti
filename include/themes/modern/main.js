@@ -12,9 +12,17 @@ function themeReady() {
 	setMenuVisibility();
 
 	// Add nice search filter to filters
-	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="filter"]').length > 0) {
+		$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	}
 
-	$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="filterd"]').length > 0) {
+		$('input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	}
+
+	if ($('input[id="rfilter"]').length > 0) {
+		$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
+	}
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 
@@ -73,6 +81,8 @@ function themeReady() {
 		$('.import_text').html(fileText);
 	}
 
+	maxWidth = 280;
+
 	$('select').each(function() {
 		if ($(this).prop('multiple') != true) {
 			$(this).selectmenu({
@@ -95,7 +105,12 @@ function themeReady() {
 				});
 
 				minWidth+=80;
-				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', '400px').css('width','');
+
+				if (minWidth > maxWidth) {
+					minWidth = maxWidth;
+				}
+
+				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', maxWidth+'px').css('width','');
 				$('#'+id+'-menu').css('max-height', '250px');
 			});
 		}else{

@@ -33,7 +33,7 @@ if (!isset($config['cacti_db_version'])) {
 	$version = $config['cacti_db_version'];
 }
 
-if ($version != $config['cacti_version'] && $config['poller_id'] == 1) {
+if ($version != CACTI_VERSION && $config['poller_id'] == 1) {
 	header ('Location: ' . $config['url_path'] . 'install/');
 	exit;
 }

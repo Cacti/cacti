@@ -298,9 +298,9 @@ function manager_edit() {
 
 		foreach (array_keys($tabs_manager_edit) as $tab_short_name) {
 			if (($id == 0 & $tab_short_name != 'general')){
-				print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' href='#' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') . "'>" . $tabs_manager_edit[$tab_short_name] . "</a></li>\n";
+				print "<li class='subTab'><a href='#' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') . "'>" . $tabs_manager_edit[$tab_short_name] . "</a></li>\n";
 			}else {
-				print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') .
+				print "<li class='subTab'><a " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') .
 					" href='" . htmlspecialchars($config['url_path'] .
 					'managers.php?action=edit&id=' . get_request_var('id') .
 					'&tab=' . $tab_short_name) .
@@ -345,7 +345,7 @@ function manager_edit() {
 		default:
 			form_start('managers.php');
 
-			html_start_box($header_label, '100%', '', '3', 'center', '');
+			html_start_box($header_label, '100%', true, '3', 'center', '');
 
 			draw_edit_form(
 				array(
@@ -354,7 +354,7 @@ function manager_edit() {
 				)
 			);
 
-			html_end_box();
+			html_end_box(true, true);
 
 			form_save_button('managers.php', 'return');
 

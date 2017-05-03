@@ -320,7 +320,7 @@ function site_edit() {
 
 	form_start('sites.php', 'site');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -329,7 +329,7 @@ function site_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('sites.php', 'return');
 }

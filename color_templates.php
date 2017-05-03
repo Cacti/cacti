@@ -69,11 +69,12 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 	global $struct_color_template_item;
 
 	$display_text = array(
-		array('display' => __('Color Item'), 'align' => 'left'),
-		array('display' => __('Item Color'), 'align' => 'left'),
+		array('display' => __('Color Item'), 'align' => 'left', 'nohide' => true),
+		array('display' => __('Color'), 'align' => 'left', 'nohide' => true),
+		array('display' => __('Hex'), 'align' => 'left', 'nohide' => true),
 	);
 
-	html_header($display_text, 4);
+	html_header($display_text, 2);
 
 	$i = 1;
 	$total_items = sizeof($item_list);
@@ -97,9 +98,9 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 
 			print "</td>\n";
 
-			print "<td style='width:1%;" . ((isset($item['hex'])) ? "background-color:#" . $item['hex'] . ";'" : "") . "></td>\n";
+			print "<td style='" . ((isset($item['hex'])) ? "background-color:#" . $item['hex'] . ";'" : "") . "></td>\n";
 
-			print "<td style='font-weight:bold;'>" . $item['hex'] . "</td>\n";
+			print "<td>" . $item['hex'] . "</td>\n";
 
 			if ($disable_controls == false) {
 				print "<td class='right nowrap'>";
@@ -352,7 +353,7 @@ function aggregate_color_template_edit() {
 
 	form_start('color_templates.php', 'color_template_edit');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -361,7 +362,8 @@ function aggregate_color_template_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
+
 	form_hidden_box('color_template_id', (isset($template['color_template_id']) ? $template['color_template_id'] : '0'), '');
 	form_hidden_box('save_component_color', '1', '');
 
@@ -444,7 +446,7 @@ function aggregate_color_template() {
 							</td>
 							<td>
 								<select id="rows" onChange="applyFilter()">
-								<option value="-1"';
+								<option value="-1" ';
 	if (get_request_var('rows') == '-1') {
 		$filter_html .= 'selected';
 	}

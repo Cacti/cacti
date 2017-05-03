@@ -23,7 +23,7 @@
 */
 
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false) {
-	global $config, $hash_type_codes, $hash_version_codes, $preview_only, $remove_orphans, $import_debug_info;
+	global $config, $hash_type_codes, $cacti_version_codes, $preview_only, $remove_orphans, $import_debug_info;
 
 	include_once($config['library_path'] . '/xml.php');
 
@@ -68,10 +68,10 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 				cacti_log('$dep_hash_cache[$type][$i][\'type\']: ' . $dep_hash_cache[$type][$i]['type'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 				cacti_log('$dep_hash_cache[$type][$i][\'version\']: ' . $dep_hash_cache[$type][$i]['version'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
-				cacti_log('$hash_version_codes{$dep_hash_cache[$type][$i][\'version\']}: ' . $hash_version_codes{$dep_hash_cache[$type][$i]['version']}, false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+				cacti_log('$cacti_version_codes{$dep_hash_cache[$type][$i][\'version\']}: ' . $cacti_version_codes{$dep_hash_cache[$type][$i]['version']}, false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 				cacti_log('$dep_hash_cache[$type][$i][\'hash\']: ' . $dep_hash_cache[$type][$i]['hash'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 
-				$hash_array = $xml_array['hash_' . $hash_type_codes{$dep_hash_cache[$type][$i]['type']} . $hash_version_codes{$dep_hash_cache[$type][$i]['version']} . $dep_hash_cache[$type][$i]['hash']];
+				$hash_array = $xml_array['hash_' . $hash_type_codes{$dep_hash_cache[$type][$i]['type']} . $cacti_version_codes{$dep_hash_cache[$type][$i]['version']} . $dep_hash_cache[$type][$i]['hash']];
 
 				switch($type) {
 				case 'graph_template':
@@ -259,7 +259,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 }
 
 function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, $remove_orphans = false) {
-	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $hash_version_codes, $preview_only, $graph_item_types, $import_debug_info;
+	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $cacti_version_codes, $preview_only, $graph_item_types, $import_debug_info;
 
 	/* track changes */
 	$status = 0;
@@ -1693,12 +1693,12 @@ function check_hash_type($hash_type) {
 }
 
 function check_hash_version($hash_version) {
-	global $hash_version_codes, $config;
+	global $cacti_version_codes, $config;
 
 	$i = 0;
 
-	foreach ($hash_version_codes as $version => $code) {
-		if ($version == $config['cacti_version']) {
+	foreach ($cacti_version_codes as $version => $code) {
+		if ($version == CACTI_VERSION) {
 			$current_version_index = $i;
 		}
 
@@ -1728,11 +1728,11 @@ function check_hash_version($hash_version) {
 }
 
 function get_version_index($string_version) {
-	global $hash_version_codes;
+	global $cacti_version_codes;
 
 	$i = 0;
 
-	foreach ($hash_version_codes as $version => $code) {
+	foreach ($cacti_version_codes as $version => $code) {
 		if ($string_version == $version) {
 			return $i;
 		}

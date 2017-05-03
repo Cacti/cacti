@@ -26,9 +26,25 @@
    !!! IMPORTANT !!!
 
    The following defaults are not to be altered.  Please refer to
-   include/config.php for user configurable database settings.
+   include/config.php for user configurable settings.
 
 */
+
+/* load cacti version from file */
+$cacti_version_file = dirname(__FILE__) . '/cacti_version';
+
+if (! file_exists($cacti_version_file)) {
+	die ('ERROR: failed to find cacti version file');
+}
+
+$cacti_version = file_get_contents($cacti_version_file, false);
+if ($cacti_version === false) {
+	die ('ERROR: failed to load cacti version file');
+}
+$cacti_version = trim($cacti_version);
+
+/* define cacti version */
+define('CACTI_VERSION', $cacti_version);
 
 /* Default database settings*/
 $database_type = 'mysql';
@@ -54,14 +70,6 @@ include(dirname(__FILE__) . '/config.php');
 if (isset($config['cacti_version'])) {
 	die('Invalid include/config.php file detected.');
 	exit;
-}
-
-/* display ALL errors,
- * but suppress deprecated warnings as a workaround until 088 */
-if (defined('E_DEPRECATED')) {
-	error_reporting(E_ALL ^ E_DEPRECATED);
-}else{
-	error_reporting(E_ALL);
 }
 
 /* set the local for international users */
@@ -111,7 +119,7 @@ if (isset($poller_id)) {
 }
 
 /* check for an empty database port */
-if ($database_port == '') {
+if (empty($database_port)) {
 	$database_port = '3306';
 }
 
@@ -171,13 +179,10 @@ include_once($config['include_path'] . '/global_constants.php');
 
 $filename = get_current_page();
 
+$config['is_web'] = true;
 if ((isset($no_http_headers) && $no_http_headers == true) || in_array($filename, $no_http_header_files, true)) {
-	$is_web = false;
-}else{
-	$is_web = true;
+	$config['is_web'] = false;
 }
-
-$config['is_web'] = $is_web;
 
 /* set poller mode */
 global $local_db_cnn_id, $remote_db_cnn_id;
@@ -208,9 +213,9 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$config['connection'] = 'offline';
 	}
 } elseif (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl)) {
-	print $is_web ? '<p>':'';
+	print $config['is_web'] ? '<p>':'';
 	print 'FATAL: Connection to Cacti database failed. Please insure the database is running and your credentials in config.php are valid.';
-	print $is_web ? '</p>':'';
+	print $config['is_web'] ? '</p>':'';
 	exit;
 }else{
 	/* gather the existing cactidb version */
@@ -234,9 +239,9 @@ set_error_handler('CactiErrorHandler');
 register_shutdown_function('CactiShutdownHandler');
 
 /* verify the cacti database is initialized before moving past here */
-db_cacti_initialized($is_web);
+db_cacti_initialized($config['is_web']);
 
-if ($is_web) {
+if ($config['is_web']) {
 	/* set the maximum post size */
 	ini_set('post_max_size', '8M');
 	ini_set('max_input_vars', '5000');
@@ -326,7 +331,7 @@ include_once($config['library_path'] . '/aggregate.php');
 include_once($config['library_path'] . '/api_automation.php');
 
 /* cross site request forgery library */
-if ($is_web) {
+if ($config['is_web']) {
 	function csrf_startup() {
 		global $config;
 		csrf_conf('rewrite-js', $config['url_path'] . 'include/csrf/csrf-magic.js');
@@ -347,6 +352,6 @@ if ($is_web) {
 
 api_plugin_hook('config_insert');
 
-/* current cacti version */
-$config['cacti_version'] = '1.1.6';
+/* set config cacti_version for plugins */
+$config['cacti_version'] = CACTI_VERSION;;
 
