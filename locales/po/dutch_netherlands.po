@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-30 10:14+0200\n"
-"PO-Revision-Date: 2017-05-01 22:17+0200\n"
+"PO-Revision-Date: 2017-05-03 22:07+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -3937,6 +3937,9 @@ msgid ""
 "attached to these templates will become individual Data Source(s) and all "
 "Templating benefits will be removed."
 msgstr ""
+"Klik op ‘Volgende’ om de volgende data template(s) te verwijderen. Alle data "
+"bronnen die aan deze templates zijn gekoppeld zullen losstaande data bronnen "
+"worden en alle template voordelen zullen worden opgeheven."
 
 #: ../data_templates.php:358
 msgid "Delete Data Template(s)"
@@ -3961,6 +3964,8 @@ msgid ""
 "Click 'Continue' to change the default Data Source Profile for the following "
 "Data Template(s)."
 msgstr ""
+"Klik op ‘Volgende’ om het standaard data bron profiel voor het/de "
+"geselecteerde data template(s) te wijzigen."
 
 #: ../data_templates.php:374
 msgid "New Data Source Profile"
@@ -4068,6 +4073,7 @@ msgstr "Geen data template gevonden"
 #: ../gprint_presets.php:148
 msgid "Click 'Continue' to delete the folling GPRINT Preset(s)."
 msgstr ""
+"Klik op ‘Volgende’ om de volgende GPRINT voorinstelling(en) te verwijderen."
 
 #: ../gprint_presets.php:153
 msgid "Delete GPRINT Preset(s)"
@@ -4116,6 +4122,8 @@ msgid ""
 "GPRINTs that are in use cannot be Deleted.  In use is defined as being "
 "referenced by either a Graph or a Graph Template."
 msgstr ""
+"GPRINT’s kunnen niet worden verwijderd als deze in gebruik zijn. In gebruik "
+"wordt gedefinieerd als gekoppeld aan een grafiek of grafiek template."
 
 #: ../gprint_presets.php:393
 msgid "The number of Graphs using this GPRINT."
@@ -4474,7 +4482,7 @@ msgstr "Grafiek: %s gemaakt"
 
 #: ../graphs.php:184 ../graphs_new.php:256 ../graphs_new.php:272
 msgid "ERROR: no Data Source associated. Check Template"
-msgstr ""
+msgstr "FOUT: geen data bron gekoppeld. Controleer template"
 
 #: ../graphs.php:795
 msgid ""
@@ -4517,7 +4525,7 @@ msgstr ""
 
 #: ../graphs.php:849
 msgid "<graph_title> (1)"
-msgstr ""
+msgstr "<graph_title> (1)"
 
 #: ../graphs.php:853
 msgid "Duplicate Graph(s)"
@@ -4528,10 +4536,13 @@ msgid ""
 "Click 'Continue' to convert the following Graph(s) into Graph Template(s).  "
 "You can optionally change the title format for the new Graph Template(s)."
 msgstr ""
+"Klik op ‘Volgende’ om om de volgende grafiek(en) in grafiek template(s) te "
+"converteren. Optioneel kunt u de naam van het/de nieuwe grafiek template(s) "
+"wijzigen."
 
 #: ../graphs.php:860
 msgid "<graph_title> Template"
-msgstr ""
+msgstr "<graph_title> Template"
 
 #: ../graphs.php:868
 msgid ""
@@ -4545,7 +4556,7 @@ msgstr ""
 
 #: ../graphs.php:883
 msgid "Choose a new Device for these Graph(s) and click 'Continue'."
-msgstr ""
+msgstr "Kies een nieuw apparaat voor deze grafiek(en) en klik op ‘Volgende’."
 
 #: ../graphs.php:885
 msgid "New Device"
@@ -4647,10 +4658,13 @@ msgid ""
 "only change Graph Templates to a 100% compatible Graph Template, which means "
 "that it includes identical Data Sources."
 msgstr ""
+"Kies een grafiektemplate om toe te passen voor deze grafiek. Let op dat u "
+"alleen een grafiek template kunt wijzigen naar een 100% compatible grafiek "
+"template, dit houdt in dat het dezelfde data bronnen bevat."
 
 #: ../graphs.php:1325
 msgid "Choose the Device that this Graph belongs to."
-msgstr ""
+msgstr "Kies het apparaat waar deze grafiek toe behoort."
 
 #: ../graphs.php:1364
 msgid "Supplemental Graph Template Data"
@@ -5514,7 +5528,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:119
 msgid "Error: You are not allowed to change your password."
-msgstr ""
+msgstr "Fout: U mag uw wachtwoord niet wijzigen."
 
 #: ../include/global_arrays.php:122
 msgid "Error: LDAP/AD based password change not supported."
@@ -5522,11 +5536,11 @@ msgstr ""
 
 #: ../include/global_arrays.php:125
 msgid "Error: Unable to clear log, no write permissions"
-msgstr ""
+msgstr "Fout: logbestand legen mislukt, geen schrijfrechten"
 
 #: ../include/global_arrays.php:128
 msgid "Error: Unable to clear log, file does not exist"
-msgstr ""
+msgstr "Fout: logbestand legen mislukt. Het bestand bestaat niet"
 
 #: ../include/global_arrays.php:131
 msgid "Invalid Timestamp. Select timestamp in the future."
@@ -5882,7 +5896,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:591
 msgid "Alphabetic Ordering"
-msgstr ""
+msgstr "Alfabetisch sorteren"
 
 #: ../include/global_arrays.php:592
 msgid "Natural Ordering"
@@ -5903,7 +5917,7 @@ msgstr "Grafiek"
 
 #: ../include/global_arrays.php:604 ../tree.php:1295
 msgid "Data Query Index"
-msgstr ""
+msgstr "Data query index"
 
 #: ../include/global_arrays.php:608
 msgid "Current Graph Item Data Source"
@@ -5915,23 +5929,23 @@ msgstr ""
 
 #: ../include/global_arrays.php:610
 msgid "All Data Sources (Do not Include Duplicates)"
-msgstr ""
+msgstr "Alle data bronnen (Dubbelen uitgesloten)"
 
 #: ../include/global_arrays.php:611
 msgid "All Data Sources (Include Duplicates)"
-msgstr ""
+msgstr "Alle data bronnen (Inclusief dubbelen)"
 
 #: ../include/global_arrays.php:612
 msgid "All Similar Data Sources (Do not Include Duplicates)"
-msgstr ""
+msgstr "Alle vergelijkbare data bronnen (Dubbelen uitgesloten)"
 
 #: ../include/global_arrays.php:613
 msgid "All Similar Data Sources (Do not Include Duplicates) Polling Interval"
-msgstr ""
+msgstr "Alle vergelijkbare data bronnen (Dubbelen uitgesloten) Poller interval"
 
 #: ../include/global_arrays.php:614
 msgid "All Similar Data Sources (Include Duplicates)"
-msgstr ""
+msgstr "Alle vergelijkbare data bronnen (Inclusief dubbelen)"
 
 #: ../include/global_arrays.php:615
 msgid "Current Data Source Item: Minimum Value"
@@ -6132,7 +6146,7 @@ msgstr "Haal pieken uit grafieken"
 
 #: ../include/global_arrays.php:818
 msgid "Colors/GPrints/CDEFs/VDEFs"
-msgstr ""
+msgstr "Kleuren/GPrints/CDEF’s/VDEF’s"
 
 #: ../include/global_arrays.php:824
 msgid "Export Data"
@@ -6958,6 +6972,10 @@ msgid ""
 "            For a complete list of supported replacement tags, please see "
 "the Cacti documentation."
 msgstr ""
+"Kies een naam voor deze data bron. Het kan variabelen bevatten zoals |"
+"host_description| of | query_fieldName|.\n"
+"            Voor een complete lijst van ondersteunde variabelen, bekijk "
+"alstublieft de handleiding."
 
 #: ../include/global_form.php:376
 msgid "Data Source Path"
@@ -7054,7 +7072,7 @@ msgstr "GPRINT tekst"
 
 #: ../include/global_form.php:482
 msgid "Enter the custom GPRINT string here."
-msgstr ""
+msgstr "Voer de aangepaste GPRINT waarde in."
 
 #: ../include/global_form.php:500
 msgid "Common Options"
@@ -7145,7 +7163,7 @@ msgstr ""
 
 #: ../include/global_form.php:573
 msgid "Auto Scale Options"
-msgstr ""
+msgstr "Opties voor automatisch schalen"
 
 #: ../include/global_form.php:576
 msgid ""
@@ -7350,7 +7368,7 @@ msgstr "Legenda opties"
 
 #: ../include/global_form.php:744
 msgid "Auto Padding"
-msgstr ""
+msgstr "Automatisch uitvullen"
 
 #: ../include/global_form.php:747
 msgid ""
@@ -7473,7 +7491,7 @@ msgstr ""
 
 #: ../include/global_form.php:865
 msgid "GPRINT Type"
-msgstr ""
+msgstr "GPRINT type"
 
 #: ../include/global_form.php:869
 msgid ""
@@ -7610,11 +7628,11 @@ msgstr "Apparaat uitschakelen"
 
 #: ../include/global_form.php:1047
 msgid "Check this box to disable all checks for this host."
-msgstr ""
+msgstr "Activeer deze box om alle controles voor deze host uit te schakelen."
 
 #: ../include/global_form.php:1060 ../include/global_form.php:1657
 msgid "Choose the SNMP version for this device."
-msgstr ""
+msgstr "Kies de SNMP versie voor dit apparaat."
 
 #: ../include/global_form.php:1068 ../include/global_form.php:1665
 msgid "SNMP Community"
@@ -7661,6 +7679,8 @@ msgstr ""
 #: ../include/global_form.php:1140
 msgid "Enter the UDP port number to use for SNMP (default is 161)."
 msgstr ""
+"Voer het UDP poortnummer in voor het gebruik voor SNMP (standaard is dit "
+"161)."
 
 #: ../include/global_form.php:1157
 msgid "Maximum OIDs Per Get Request"
@@ -7689,7 +7709,7 @@ msgstr ""
 
 #: ../include/global_form.php:1217 ../include/global_form.php:1752
 msgid "Additional Options"
-msgstr ""
+msgstr "Additionele opties"
 
 #: ../include/global_form.php:1221 ../include/global_form.php:1757
 #: ../pollers.php:70
@@ -7919,6 +7939,8 @@ msgid ""
 "Check this box if you temporary do not want to send SNMP notifications to "
 "this host."
 msgstr ""
+"Activeer deze box als u tijdelijk geen SNMP notificaties naar deze host wilt "
+"sturen."
 
 #: ../include/global_form.php:1643
 msgid "Maximum Log Size"
@@ -7943,6 +7965,8 @@ msgid ""
 "Choose the SNMPv3 Authorization Protocol.<br>Note: SHA authentication "
 "support is only available if you have OpenSSL installed."
 msgstr ""
+"Kies het SNMPv3 authenticatie protocol.<br>Let op: Ondersteuning voor SHA "
+"authenticatie is alleen beschikbaar als u OpenSSL heeft geinstalleerd."
 
 #: ../include/global_form.php:1701
 msgid "SNMP Privacy Password (v3)"
@@ -7953,6 +7977,8 @@ msgid ""
 "Choose the SNMPv3 Privacy Protocol.<br>Note: DES/AES encryption support is "
 "only available if you have OpenSSL installed."
 msgstr ""
+"Kies het SNMPv3 privacy protocol.<br>Let op: Ondersteuning voor DES/AES "
+"encryptie is alleen beschikbaar als u OpenSSL heeft geinstalleerd."
 
 #: ../include/global_form.php:1717
 msgid "SNMP Engine ID"
@@ -8097,11 +8123,11 @@ msgstr ""
 
 #: ../include/global_form.php:2050
 msgid "A nice Color"
-msgstr ""
+msgstr "Een mooie kleur"
 
 #: ../include/global_form.php:2060
 msgid "A useful name for this Template."
-msgstr ""
+msgstr "Een naam voor dit template."
 
 #: ../include/global_form.php:2074 ../include/global_form.php:2116
 #: ../lib/api_automation.php:1208 ../lib/api_automation.php:1270
@@ -8141,11 +8167,12 @@ msgstr ""
 
 #: ../include/global_form.php:2166
 msgid "Choose a Data Query to apply to this rule."
-msgstr ""
+msgstr "Kies een data query om toe te passen op deze regel."
 
 #: ../include/global_form.php:2177
 msgid "Choose any of the available Graph Types to apply to this rule."
 msgstr ""
+"Kies een van de beschikbare grafiek types om op deze regel toe te passen."
 
 #: ../include/global_form.php:2194 ../include/global_form.php:2252
 msgid "Enable Rule"
@@ -8257,7 +8284,7 @@ msgstr "Paden"
 
 #: ../include/global_settings.php:40
 msgid "Device Defaults"
-msgstr ""
+msgstr "Apparaat standaardinstellingen"
 
 #: ../include/global_settings.php:41 ../include/global_settings.php:449
 msgid "Poller"
@@ -8274,7 +8301,7 @@ msgstr "Visueel"
 #: ../include/global_settings.php:44 ../lib/functions.php:3767
 #: ../lib/functions.php:3772
 msgid "Authentication"
-msgstr ""
+msgstr "Authenticatie"
 
 #: ../include/global_settings.php:45
 msgid "Data Source Statistics"
@@ -8376,7 +8403,7 @@ msgstr "Logging"
 
 #: ../include/global_settings.php:137
 msgid "Cacti Log Path"
-msgstr ""
+msgstr "Cacti log pad"
 
 #: ../include/global_settings.php:138
 msgid ""
@@ -8448,7 +8475,7 @@ msgstr ""
 
 #: ../include/global_settings.php:192
 msgid "Archive directory"
-msgstr ""
+msgstr "Archiefdirectorie"
 
 #: ../include/global_settings.php:193
 msgid ""
@@ -8773,11 +8800,11 @@ msgstr ""
 
 #: ../include/global_settings.php:470
 msgid "Default SNMP version for all new hosts."
-msgstr ""
+msgstr "Standaard SNMP versie voor alle nieuwe hosts."
 
 #: ../include/global_settings.php:477
 msgid "Default SNMP read community for all new hosts."
-msgstr ""
+msgstr "Standaard SNMP read community voor alle nieuwe apparaten."
 
 #: ../include/global_settings.php:483
 msgid "Username (v3)"
@@ -8809,7 +8836,7 @@ msgstr ""
 
 #: ../include/global_settings.php:519
 msgid "Default SNMP timeout in milli-seconds."
-msgstr ""
+msgstr "Standaard SNMP timeout in milliseconden."
 
 #: ../include/global_settings.php:526
 msgid "Port Number"
@@ -8934,7 +8961,7 @@ msgstr ""
 
 #: ../include/global_settings.php:662
 msgid "All Types"
-msgstr ""
+msgstr "Alle types"
 
 #: ../include/global_settings.php:662
 msgid "By Template/Data Query"
@@ -9160,7 +9187,7 @@ msgstr ""
 
 #: ../include/global_settings.php:855
 msgid "Cron Interval"
-msgstr ""
+msgstr "Cron interval"
 
 #: ../include/global_settings.php:856
 msgid ""
@@ -9181,7 +9208,7 @@ msgstr ""
 
 #: ../include/global_settings.php:870
 msgid "Balance Process Load"
-msgstr ""
+msgstr "Balanceer proces belasting"
 
 #: ../include/global_settings.php:871
 msgid ""
@@ -9265,7 +9292,7 @@ msgstr ""
 
 #: ../include/global_settings.php:937
 msgid "Authentication Method"
-msgstr ""
+msgstr "Authenticatie methode"
 
 #: ../include/global_settings.php:938
 msgid ""
@@ -9376,7 +9403,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1008
 msgid "Expire Inactive Accounts"
-msgstr ""
+msgstr "Laat inactieve accounts vervallen"
 
 #: ../include/global_settings.php:1009
 msgid ""
@@ -9386,7 +9413,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1022
 msgid "Expire Password"
-msgstr ""
+msgstr "Laat wachtwoord vervallen"
 
 #: ../include/global_settings.php:1023
 msgid "This is maximum number of days before a password is set to expire."
@@ -9858,7 +9885,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1387
 msgid "Enable Data Source Statistics Collection"
-msgstr ""
+msgstr "Data bron statistiekverzameling inschakelen"
 
 #: ../include/global_settings.php:1388
 msgid "Should Data Source Statistics be collected for this Cacti system?"
@@ -9866,7 +9893,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1393
 msgid "Daily Update Frequency"
-msgstr ""
+msgstr "Dagelijkse updatefrequentie"
 
 #: ../include/global_settings.php:1394
 msgid "How frequent should Daily Stats be updated?"
@@ -10217,7 +10244,7 @@ msgstr ""
 #: ../include/global_settings.php:1668 ../include/global_settings.php:1669
 #, php-format
 msgid "%d Standard Deviations"
-msgstr ""
+msgstr "%d standaardafwijkingen"
 
 #: ../include/global_settings.php:1673 ../lib/html.php:1752
 msgid "Variance Percentage"
@@ -10296,6 +10323,9 @@ msgid ""
 "the frequency\n"
 "\t\t\tbelow."
 msgstr ""
+"Wilt u periodiek pieken uit uw grafieken verwijderen? Als u dit wilt, "
+"selecteer dan hieronder\n"
+"\t\t\tde frequentie."
 
 #: ../include/global_settings.php:1752
 msgid "Once a Day"
@@ -10381,7 +10411,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1834
 msgid "Default Time Range"
-msgstr ""
+msgstr "Standaard tijdperiode"
 
 #: ../include/global_settings.php:1835
 msgid "The default RRA to use in rare occasions."
@@ -10729,6 +10759,8 @@ msgid ""
 "Cacti is licensed under the GNU General Public License, you must agree to "
 "its provisions before continuing:"
 msgstr ""
+"Cacti is gelicentieerd onder de GNU Public License, u moet hiermee akkoord "
+"gaan voordat ik verder kunt gaan:"
 
 #: ../install/index.php:567
 msgid "Pre-installation Checks"
@@ -10776,6 +10808,12 @@ msgid ""
 "recommendations at your discretion.  Always seek the MySQL documentation if "
 "you have any questions."
 msgstr ""
+"Cacti heeft verschillende PHP modules nodig om goed te kunnen werken. Als "
+"een module niet is geïnstalleerd kunt u niet doorgaan met de installatie "
+"totdat u dit heeft gecorrigeerd. Als aanvulling, voor een optimaal Cacti "
+"systeem moet MySQL geconfigureerd zijn met bepaalde configuratie "
+"instellingen. Volg alstublieft de MySQL aanbevelingen. Raadpleeg de MySQL "
+"handleiding als u hierover vragen heeft."
 
 #: ../install/index.php:589
 msgid ""
@@ -10846,7 +10884,7 @@ msgstr ""
 
 #: ../install/index.php:695
 msgid "Choose this for the Primary Cacti Web Site."
-msgstr ""
+msgstr "Kies dit voor de primaire Cacti website."
 
 #: ../install/index.php:695 ../install/index.php:709
 msgid "New Primary Server"
@@ -10890,17 +10928,17 @@ msgstr ""
 #: ../install/index.php:725 ../install/index.php:754
 #, php-format
 msgid "Database: <b>%s</b>"
-msgstr ""
+msgstr "Database: <b>%s</b>"
 
 #: ../install/index.php:726 ../install/index.php:755
 #, php-format
 msgid "Database User: <b>%s</b>"
-msgstr ""
+msgstr "Database gebruiker: <b>%s</b>"
 
 #: ../install/index.php:727 ../install/index.php:756
 #, php-format
 msgid "Database Hostname: <b>%s</b>"
-msgstr ""
+msgstr "Database hostname: <b>%s</b>"
 
 #: ../install/index.php:728 ../install/index.php:757
 #, php-format
@@ -10997,6 +11035,8 @@ msgid ""
 "After the install is complete, you can make some of these directories read "
 "only to increase security."
 msgstr ""
+"Nadat de installatie is voltooid, kunt u een aantal van deze directories "
+"alleen-lezen markeren om het beveiligingsniveau te verhogen."
 
 #: ../install/index.php:931
 msgid ""
@@ -11036,11 +11076,11 @@ msgstr ""
 
 #: ../install/index.php:998
 msgid "Check Permissions"
-msgstr ""
+msgstr "Controleer rechten"
 
 #: ../install/index.php:1000
 msgid "All folders are writable"
-msgstr ""
+msgstr "Alle directories zijn schrijfbaar"
 
 #: ../install/index.php:1006
 msgid ""
@@ -11086,7 +11126,7 @@ msgstr ""
 
 #: ../install/index.php:1032 ../plugins.php:378
 msgid "Author"
-msgstr ""
+msgstr "Auteur"
 
 #: ../install/index.php:1032
 msgid "Homepage"
@@ -11205,7 +11245,7 @@ msgstr ""
 
 #: ../lib/api_aggregate.php:1210 ../lib/functions.php:1904
 msgid "Graph Items"
-msgstr ""
+msgstr "Grafiekitems"
 
 #: ../lib/api_aggregate.php:1210 ../lib/functions.php:2036
 msgid "Graph Template Items"
@@ -11213,15 +11253,16 @@ msgstr ""
 
 #: ../lib/api_aggregate.php:1214 ../lib/html.php:876
 msgid "Graph Item"
-msgstr ""
+msgstr "Grafiekitem"
 
 #: ../lib/api_aggregate.php:1217 ../lib/html.php:879
+#, fuzzy
 msgid "CF Type"
-msgstr ""
+msgstr "CF type"
 
 #: ../lib/api_aggregate.php:1219
 msgid "Color Template"
-msgstr ""
+msgstr "Kleur template"
 
 #: ../lib/api_aggregate.php:1220
 msgid "Skip"
@@ -11249,7 +11290,7 @@ msgstr "Overeenkomende objecten"
 
 #: ../lib/api_automation.php:562
 msgid "Graph ID"
-msgstr ""
+msgstr "Grafiek ID"
 
 #: ../lib/api_automation.php:689
 msgid "Objects"
@@ -11338,7 +11379,7 @@ msgstr "Toegevoegd door Cacti automation"
 
 #: ../lib/api_device.php:398
 msgid "Device is Disabled"
-msgstr ""
+msgstr "Apparaat is uitgeschakeld"
 
 #: ../lib/api_device.php:399
 msgid "Device Availability Check Bypassed"
@@ -11367,7 +11408,7 @@ msgstr ""
 
 #: ../lib/api_device.php:448
 msgid "days"
-msgstr ""
+msgstr "dagen"
 
 #: ../lib/api_device.php:448
 msgid "hours"
@@ -11387,7 +11428,7 @@ msgstr "Locatie:"
 
 #: ../lib/api_device.php:451
 msgid "Contact:"
-msgstr ""
+msgstr "Contactpersoon:"
 
 #: ../lib/api_device.php:480 ../lib/functions.php:3780
 #: ../lib/functions.php:3782
@@ -11522,11 +11563,11 @@ msgstr "(Wijzig)"
 
 #: ../lib/functions.php:1910
 msgid "Create New Graphs"
-msgstr ""
+msgstr "Nieuwe grafieken maken"
 
 #: ../lib/functions.php:1916
 msgid "Create Graphs from Data Query"
-msgstr ""
+msgstr "Grafieken maken vanuit een data query"
 
 #: ../lib/functions.php:1934 ../lib/functions.php:1952
 #: ../lib/functions.php:2048 ../lib/functions.php:2138
@@ -11550,7 +11591,7 @@ msgstr ""
 
 #: ../lib/functions.php:2168
 msgid "Data Input Fields"
-msgstr ""
+msgstr "Data invoer velden"
 
 #: ../lib/functions.php:2174 ../lib/functions.php:2204
 msgid "(Remove Item)"
@@ -11570,7 +11611,7 @@ msgstr ""
 
 #: ../lib/functions.php:2258 ../utilities.php:1161
 msgid "Clear Cacti Log"
-msgstr ""
+msgstr "Cacti log leegmaken"
 
 #: ../lib/functions.php:2264 ../utilities.php:1766
 msgid "View User Log"
@@ -11578,7 +11619,7 @@ msgstr ""
 
 #: ../lib/functions.php:2270
 msgid "Clear User Log"
-msgstr ""
+msgstr "Gebruikerslog leegmaken"
 
 #: ../lib/functions.php:2276 ../utilities.php:1757
 msgid "Technical Support"
@@ -11606,11 +11647,11 @@ msgstr ""
 
 #: ../lib/functions.php:2342
 msgid "Cacti Settings"
-msgstr ""
+msgstr "Cacti instellingen"
 
 #: ../lib/functions.php:2360 ../lib/functions.php:2390
 msgid "(Action)"
-msgstr ""
+msgstr "(Actie)"
 
 #: ../lib/functions.php:2408
 msgid "Export Results"
@@ -11639,7 +11680,7 @@ msgstr ""
 
 #: ../lib/functions.php:2498
 msgid "Color Template Items"
-msgstr ""
+msgstr "Kleur template items"
 
 #: ../lib/functions.php:2540
 msgid "Aggregate Items"
@@ -11666,7 +11707,7 @@ msgstr ""
 #: ../lib/functions.php:3714
 #, php-format
 msgid "Authentication failed: %s"
-msgstr ""
+msgstr "Authenticatie mislukt: %s"
 
 #: ../lib/functions.php:3718
 #, php-format
@@ -11676,7 +11717,7 @@ msgstr "HELO mislukt: %s"
 #: ../lib/functions.php:3721
 #, php-format
 msgid "Connect failed: %s"
-msgstr ""
+msgstr "Mislukte verbindingen: %s"
 
 #: ../lib/functions.php:3724
 msgid "SMTP error: "
@@ -11698,7 +11739,7 @@ msgstr ""
 
 #: ../lib/functions.php:3741
 msgid "Checking Configuration...<br>"
-msgstr ""
+msgstr "Configuratie controleren…<br>"
 
 #: ../lib/functions.php:3748
 msgid "PHP's Mailer Class"
@@ -11730,7 +11771,7 @@ msgstr ""
 
 #: ../lib/functions.php:3797
 msgid "Cacti Test Message"
-msgstr ""
+msgstr "Cacti testbericht"
 
 #: ../lib/functions.php:3799
 msgid "Success!"
@@ -11743,15 +11784,15 @@ msgstr ""
 #: ../lib/html.php:128 ../lib/html_tree.php:579 ../lib/html_tree.php:582
 #: ../lib/html_tree.php:585
 msgid "Graph Template:"
-msgstr ""
+msgstr "Grafiektemplate:"
 
 #: ../lib/html.php:157 ../lib/html.php:289
 msgid "Data Query:"
-msgstr ""
+msgstr "Data query:"
 
 #: ../lib/html.php:349
 msgid "CSV Export of Graph Data"
-msgstr ""
+msgstr "CSV export van grafiekdata"
 
 #: ../lib/html.php:350
 msgid "Time Graph View"
@@ -11772,12 +11813,12 @@ msgstr ""
 #: ../lib/html.php:395
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr ""
+msgstr "%d tot %d van %s [ %s ]"
 
 #: ../lib/html.php:404
 #, php-format
 msgid "All %d %s"
-msgstr ""
+msgstr "Alle %d %s"
 
 #: ../lib/html.php:410
 #, php-format
@@ -11790,7 +11831,7 @@ msgstr ""
 
 #: ../lib/html.php:880
 msgid "Alpha %"
-msgstr ""
+msgstr "Alpha %"
 
 #: ../lib/html.php:921
 msgid "No Task"
@@ -11798,7 +11839,7 @@ msgstr ""
 
 #: ../lib/html.php:1165
 msgid "Choose an action"
-msgstr ""
+msgstr "Kies een actie"
 
 #: ../lib/html.php:1175
 msgid "Execute Action"
@@ -11806,7 +11847,7 @@ msgstr ""
 
 #: ../lib/html.php:1350 ../lib/html.php:1352 ../lib/html.php:1428
 msgid "Cacti Log"
-msgstr ""
+msgstr "Cacti log"
 
 #: ../lib/html.php:1742
 msgid "Nan's"
@@ -11819,7 +11860,7 @@ msgstr ""
 #: ../lib/html.php:1748
 #, php-format
 msgid "%s Standard Deviations"
-msgstr ""
+msgstr "%s standaardafwijkingen"
 
 #: ../lib/html.php:1758
 msgid "Variance Outliers"
@@ -11828,7 +11869,7 @@ msgstr ""
 #: ../lib/html.php:1760
 #, php-format
 msgid "%d Outliers"
-msgstr ""
+msgstr "%d Uitschieters"
 
 #: ../lib/html.php:1764
 msgid "Kills Per RRA"
@@ -11885,7 +11926,7 @@ msgstr "Bestand is niet gevonden"
 
 #: ../lib/html_form.php:472
 msgid "Enter a valid file path"
-msgstr ""
+msgstr "Voer een geldig bestandslocatie in"
 
 #: ../lib/html_form.php:508
 msgid "Directory Found"
@@ -11901,7 +11942,7 @@ msgstr "Directorie is niet gevonden"
 
 #: ../lib/html_form.php:517
 msgid "Enter a valid directory path"
-msgstr ""
+msgstr "Voer een geldige directorie in"
 
 #: ../lib/html_form.php:1012
 msgid "NO FONT VERIFICATION POSSIBLE"
@@ -11915,7 +11956,7 @@ msgstr ""
 
 #: ../lib/html_graph.php:226 ../lib/html_tree.php:671
 msgid "Columns"
-msgstr ""
+msgstr "Kolommen"
 
 #: ../lib/html_graph.php:230 ../lib/html_tree.php:675
 #, php-format
@@ -11929,7 +11970,7 @@ msgstr ""
 
 #: ../lib/html_graph.php:261 ../lib/html_tree.php:706
 msgid "Custom"
-msgstr ""
+msgstr "Aangepast"
 
 #: ../lib/html_graph.php:282 ../lib/html_reports.php:1484
 #: ../lib/html_reports.php:1495 ../lib/html_tree.php:727
@@ -11987,15 +12028,15 @@ msgstr ""
 
 #: ../lib/html_reports.php:38
 msgid "Give this Report a descriptive Name"
-msgstr ""
+msgstr "Geef dit rapport een beschrijvende naam"
 
 #: ../lib/html_reports.php:43
 msgid "Enable Report"
-msgstr ""
+msgstr "Rapportage inschakelen"
 
 #: ../lib/html_reports.php:46
 msgid "Check this box to enable this Report."
-msgstr ""
+msgstr "Activeer deze box om dit rapport te activeren."
 
 #: ../lib/html_reports.php:51
 msgid "Output Formatting"
@@ -12008,6 +12049,7 @@ msgstr ""
 #: ../lib/html_reports.php:59
 msgid "Check this box if you want to use custom html and CSS for the report."
 msgstr ""
+"Activeer deze box als u aangepaste HTML en CSS in dit rapport wilt gebruiken."
 
 #: ../lib/html_reports.php:64
 msgid "Format File to Use"
@@ -12024,7 +12066,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:73
 msgid "Default Text Font Size"
-msgstr ""
+msgstr "Standaard Textgrootte"
 
 #: ../lib/html_reports.php:74
 msgid ""
@@ -12042,7 +12084,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:89
 msgid "Graph Linked"
-msgstr ""
+msgstr "Gekoppelde grafieken"
 
 #: ../lib/html_reports.php:92
 msgid "Should the Graphs be linked back to the Cacti site?"
@@ -12054,7 +12096,7 @@ msgstr "Grafiek instellingen"
 
 #: ../lib/html_reports.php:101
 msgid "Graph Columns"
-msgstr ""
+msgstr "Grafiek kolommen"
 
 #: ../lib/html_reports.php:105
 msgid "The number of Graph columns."
@@ -12128,7 +12170,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:172
 msgid "Cacti Report"
-msgstr ""
+msgstr "Cacti rapportage"
 
 #: ../lib/html_reports.php:173
 msgid ""
@@ -12154,7 +12196,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:205
 msgid "BCC Address(es)"
-msgstr ""
+msgstr "BCC adres(sen)"
 
 #: ../lib/html_reports.php:211
 msgid "Blind carbon copy. Please separate multiple addresses by comma (,)"
@@ -12232,11 +12274,11 @@ msgstr ""
 
 #: ../lib/html_reports.php:406 ../lib/html_reports.php:1230
 msgid "Alignment"
-msgstr ""
+msgstr "Uitlijning"
 
 #: ../lib/html_reports.php:409
 msgid "Alignment of the Item"
-msgstr ""
+msgstr "Uitlijning van het item"
 
 #: ../lib/html_reports.php:413
 msgid "Fixed Text"
@@ -12244,11 +12286,11 @@ msgstr ""
 
 #: ../lib/html_reports.php:416
 msgid "Enter descriptive Text"
-msgstr ""
+msgstr "Voer een beschrijvende tekst in"
 
 #: ../lib/html_reports.php:420 ../lib/html_reports.php:1230
 msgid "Font Size"
-msgstr ""
+msgstr "Lettertypegrootte"
 
 #: ../lib/html_reports.php:424
 msgid "Font Size of the Item"
@@ -12264,7 +12306,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:674
 msgid "Click 'Continue' to delete the following Report(s)."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende rapportage(s) te verwijderen."
 
 #: ../lib/html_reports.php:681
 msgid "Click 'Continue' to take ownership of the following Report(s)."
@@ -12282,7 +12324,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:700
 msgid "Click 'Continue' to enable the following Report(s)."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende rapportage(s) in te schakelen."
 
 #: ../lib/html_reports.php:702
 msgid ""
@@ -12291,11 +12333,11 @@ msgstr ""
 
 #: ../lib/html_reports.php:708
 msgid "Click 'Continue' to disable the following Reports."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende rapportage(s) uit te schakelen."
 
 #: ../lib/html_reports.php:715
 msgid "Click 'Continue' to send the following Report(s) now."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende rapportage(s) direct te versturen."
 
 #: ../lib/html_reports.php:761
 #, php-format
@@ -12372,7 +12414,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:1376
 msgid "Administrator Level"
-msgstr ""
+msgstr "Beheerdersniveau"
 
 #: ../lib/html_reports.php:1376
 #, php-format
@@ -12433,7 +12475,7 @@ msgstr "Apparaat:"
 
 #: ../lib/html_tree.php:595
 msgid "Applied"
-msgstr ""
+msgstr "Toegepast"
 
 #: ../lib/html_tree.php:595
 msgid "Filter"
@@ -12441,7 +12483,7 @@ msgstr "Filter"
 
 #: ../lib/html_tree.php:595
 msgid "Graph Filters"
-msgstr ""
+msgstr "Grafiek filters"
 
 #: ../lib/html_tree.php:641
 msgid "Set/Refresh Filter"
@@ -12478,7 +12520,7 @@ msgstr "geschreven"
 
 #: ../lib/import.php:231
 msgid "could not open"
-msgstr ""
+msgstr "kon niet worden geopend"
 
 #: ../lib/import.php:237
 msgid "not exists"
@@ -12503,10 +12545,12 @@ msgstr ""
 #: ../lib/import.php:1764
 msgid "Cacti would make the following changes if the Package was imported:"
 msgstr ""
+"Cacti zal de volgende wijzigingen aanbrengen als het pakket wordt "
+"geïmporteerd:"
 
 #: ../lib/import.php:1766
 msgid "Cacti has imported the following items for the Package:"
-msgstr ""
+msgstr "Cacti heeft de volgende items voor het pakket geïmporteerd:"
 
 #: ../lib/import.php:1769
 msgid "Package Files"
@@ -12519,10 +12563,12 @@ msgstr ""
 #: ../lib/import.php:1778
 msgid "Cacti would make the following changes if the Template was imported:"
 msgstr ""
+"Cacti zal de volgende wijzigingen aanbrengen als het template wordt "
+"geïmporteerd:"
 
 #: ../lib/import.php:1780
 msgid "Cacti has imported the following items for the Template:"
-msgstr ""
+msgstr "Cacti heeft de volgende items voor het template geïmporteerd:"
 
 #: ../lib/import.php:1789
 msgid "[success]"
@@ -12574,7 +12620,7 @@ msgstr ""
 
 #: ../lib/ldap.php:294 ../lib/ldap.php:313
 msgid "Authentication Success"
-msgstr ""
+msgstr "Authenticatie succesvol"
 
 #: ../lib/ldap.php:297
 msgid "Insufficient access"
@@ -12590,7 +12636,7 @@ msgstr "Protocol fout"
 
 #: ../lib/ldap.php:325
 msgid "Authentication Failure"
-msgstr ""
+msgstr "Authenticatiefout"
 
 #: ../lib/ldap.php:329 ../lib/ldap.php:515
 msgid "Insufficient Access"
@@ -12655,7 +12701,7 @@ msgstr "ICMP ping timed out"
 
 #: ../lib/ping.php:217 ../lib/ping.php:411 ../lib/ping.php:507
 msgid "Destination address not specified"
-msgstr ""
+msgstr "Geadresseerde is niet gespecificeerd"
 
 #: ../lib/ping.php:312 ../lib/ping.php:423
 msgid "default"
@@ -12742,7 +12788,7 @@ msgstr ""
 
 #: ../lib/reports.php:1438
 msgid "Graph Alignment:"
-msgstr ""
+msgstr "Grafiek uitlijning:"
 
 #: ../lib/reports.php:1520
 #, php-format
@@ -12858,7 +12904,7 @@ msgstr ""
 
 #: ../lib/rrd.php:2668
 msgid "Cur Row"
-msgstr ""
+msgstr "Huidige rij"
 
 #: ../lib/rrd.php:2669
 msgid "PDP per Row"
@@ -12898,7 +12944,7 @@ msgstr ""
 #: ../lib/rrd.php:2842 ../lib/rrd.php:2897
 #, php-format
 msgid "ERROR: RRDfile %s not writeable"
-msgstr ""
+msgstr "FOUT: RRD bestand %s is niet schrijfbaar"
 
 #: ../lib/rrd.php:2869 ../lib/rrd.php:2925
 msgid "Error while parsing the XML of RRDtool dump"
@@ -12917,7 +12963,7 @@ msgstr "Verwijderd rra(s) van rrd bestand: %s"
 #: ../lib/rrd.php:2953
 #, php-format
 msgid "ERROR: RRD file %s not writeable"
-msgstr ""
+msgstr "FOUT: RRD bestand %s is niet schrijfbaar"
 
 #: ../lib/rrd.php:3158
 #, php-format
@@ -12995,6 +13041,15 @@ msgid ""
 "depending on the number of\n"
 "\t\t\t\tconcurrent login accounts."
 msgstr ""
+"Afhankelijk van het aantal logins en het gebruik van de Spine data "
+"collector, \n"
+"\t\t\t\theeft %s een aantal verbindingen nodig. De berekening voor Spine "
+"is:\n"
+"\t\t\t\ttotaal_aantal_verbindingen = totaal_aantal_processen * "
+"(totaal_aantal_threads + script_servers + 1), en dan\n"
+"\t\t\t\theeft u nog ruimte nodig voor gebruikersverbindingen, deze zullen "
+"variëren door het aantal gelijktijdige\n"
+"\t\t\t\tverbindingen van gebruikeraccounts."
 
 #: ../lib/utility.php:726
 #, php-format
@@ -13146,7 +13201,7 @@ msgstr ""
 
 #: ../lib/utility.php:841
 msgid "Documentation"
-msgstr ""
+msgstr "Documentatie"
 
 #: ../lib/utility.php:841
 msgid "Note: Many changes below require a database restart"
@@ -13154,19 +13209,19 @@ msgstr ""
 
 #: ../lib/vdef.php:75
 msgid "A useful name for this VDEF."
-msgstr ""
+msgstr "Een naam voor deze VDEF."
 
 #: ../links.php:191
 msgid "Click 'Continue' to Enable the following Page(s)."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende pagina(’s) in te schakelen."
 
 #: ../links.php:196
 msgid "Enable Page(s)"
-msgstr ""
+msgstr "Activeer pagina(’s)"
 
 #: ../links.php:200
 msgid "Click 'Continue' to Disable the following Page(s)."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende pagina(’s) uit te schakelen."
 
 #: ../links.php:205
 msgid "Disable Page(s)"
@@ -13174,11 +13229,11 @@ msgstr "Deactiveer pagina(’s)"
 
 #: ../links.php:209
 msgid "Click 'Continue' to Delete the following Page(s)."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende pagina(’s) te verwijderen."
 
 #: ../links.php:214
 msgid "Delete Page(s)"
-msgstr ""
+msgstr "Verwijder pagina(’s)"
 
 #: ../links.php:217
 msgid "You must select at least one page."
@@ -13190,7 +13245,7 @@ msgstr "Links"
 
 #: ../links.php:328
 msgid "Apply Filter"
-msgstr ""
+msgstr "Filter toepassen"
 
 #: ../links.php:331
 msgid "Reset filters"
@@ -13277,7 +13332,7 @@ msgstr ""
 
 #: ../links.php:538
 msgid "Content File/URL"
-msgstr ""
+msgstr "Content bestand/URL"
 
 #: ../links.php:542
 msgid "Web URL Below"
@@ -13312,7 +13367,7 @@ msgstr "Externe links [nieuw]"
 
 #: ../logout.php:70 ../logout.php:119
 msgid "Automatic Logout"
-msgstr ""
+msgstr "Automatisch uitloggen"
 
 #: ../logout.php:72 ../logout.php:121
 msgid "You have been logged out of Cacti due to a session timeout."
@@ -13466,11 +13521,11 @@ msgstr ""
 
 #: ../plugins.php:39
 msgid "Awaiting Configuration"
-msgstr ""
+msgstr "In afwachting van configuratie"
 
 #: ../plugins.php:40
 msgid "Awaiting Upgrade"
-msgstr ""
+msgstr "In afwachting van upgrade"
 
 #: ../plugins.php:167
 msgid "Not Stated"
@@ -13483,11 +13538,11 @@ msgstr ""
 
 #: ../plugins.php:289
 msgid "Active/Installed"
-msgstr ""
+msgstr "Actief/geinstalleerd"
 
 #: ../plugins.php:290
 msgid "Configuration Issues"
-msgstr ""
+msgstr "Configuratieproblemen"
 
 #: ../plugins.php:295 ../plugins.php:365
 msgid "Plugins"
@@ -13569,7 +13624,7 @@ msgstr "Deactiveer plugin"
 
 #: ../plugins.php:475
 msgid "Enable Plugin"
-msgstr ""
+msgstr "Activeer plugin"
 
 #: ../plugins.php:478
 msgid "Plugin is not compatible"
@@ -13672,7 +13727,13 @@ msgid_plural ""
 "will be disassociated from these Data Collectors and mapped back to the Main "
 "Cacti Data Collector."
 msgstr[0] ""
+"Klik op ‘Volgende’ om de volgende data collector te verwijderen. Let op, "
+"alle apparaten die gebruik maken van deze data collector zullen worden "
+"ontkoppeld en worden gekoppeld aan de hoofd Cacti data collector."
 msgstr[1] ""
+"Klik op ‘Volgende’ om alle volgende data collectoren te verwijderen. Let op, "
+"alle apparaten die gebruik maken van deze data collectoren zullen worden "
+"ontkoppeld en worden gekoppeld aan de hoofd Cacti data collector."
 
 #: ../pollers.php:288
 msgid "Delete Data Collector"
@@ -13689,8 +13750,8 @@ msgstr[1] ""
 #: ../pollers.php:297
 msgid "Disable Data Collector"
 msgid_plural "Disable Data Collectors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Data collector uitschakelen"
+msgstr[1] "Data collectoren uitschakelen"
 
 #: ../pollers.php:301
 msgid "Click 'Continue' to enable the following Data Collector."
@@ -13701,8 +13762,8 @@ msgstr[1] ""
 #: ../pollers.php:306 ../pollers.php:315
 msgid "Enable Data Collector"
 msgid_plural "Enable Data Collectors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Data collector inschakelen"
+msgstr[1] "Data collectoren inschakelen"
 
 #: ../pollers.php:310
 msgid ""
@@ -13882,7 +13943,7 @@ msgstr ""
 
 #: ../rrdcleaner.php:521
 msgid "Delete All"
-msgstr ""
+msgstr "Alles verwijderen"
 
 #: ../rrdcleaner.php:521
 msgid "Delete All Unknown RRDfiles"
@@ -13890,16 +13951,16 @@ msgstr ""
 
 #: ../rrdcleaner.php:522
 msgid "Archive All"
-msgstr ""
+msgstr "Alles archiveren"
 
 #: ../rrdcleaner.php:522
 msgid "Archive All Unknown RRDfiles"
-msgstr ""
+msgstr "Archiveer alle onbekende RRD bestanden"
 
 #: ../settings.php:138
 #, php-format
 msgid "Cacti Settings (%s)"
-msgstr ""
+msgstr "Cacti instellingen (%s)"
 
 #: ../settings.php:187
 msgid "Select Plugin(s)"
@@ -13915,7 +13976,7 @@ msgstr ""
 
 #: ../settings.php:206
 msgid "Files Selected"
-msgstr ""
+msgstr "Bestanden geselecteerd"
 
 #: ../settings.php:221
 msgid "Select Template(s)"
@@ -13923,7 +13984,7 @@ msgstr ""
 
 #: ../settings.php:226
 msgid "All Templates Selected"
-msgstr ""
+msgstr "Alle templates geselected"
 
 #: ../settings.php:277
 msgid "Poller Interval must be less than Cron Interval"
@@ -13947,7 +14008,7 @@ msgstr ""
 
 #: ../sites.php:49
 msgid "Address1"
-msgstr ""
+msgstr "Adres 1"
 
 #: ../sites.php:50
 msgid "The primary address for the Site."
@@ -13955,11 +14016,11 @@ msgstr ""
 
 #: ../sites.php:52
 msgid "Enter the Site Address"
-msgstr ""
+msgstr "Voer het locatie adres in"
 
 #: ../sites.php:58
 msgid "Address2"
-msgstr ""
+msgstr "Adres 2"
 
 #: ../sites.php:59
 msgid "Additional address information for the Site."
@@ -13971,7 +14032,7 @@ msgstr ""
 
 #: ../sites.php:67 ../sites.php:484
 msgid "City"
-msgstr ""
+msgstr "Stad"
 
 #: ../sites.php:68
 msgid "The city or locality for the Site."
@@ -13979,7 +14040,7 @@ msgstr ""
 
 #: ../sites.php:70
 msgid "Enter the City or Locality"
-msgstr ""
+msgstr "Voer stad of plaatsnaam in"
 
 #: ../sites.php:76 ../sites.php:485
 msgid "State"
@@ -13991,7 +14052,7 @@ msgstr ""
 
 #: ../sites.php:79
 msgid "Enter the state"
-msgstr ""
+msgstr "Voer de gemeente in"
 
 #: ../sites.php:85
 msgid "Postal/Zip Code"
@@ -14003,11 +14064,11 @@ msgstr ""
 
 #: ../sites.php:88
 msgid "Enter the postal code"
-msgstr ""
+msgstr "Voer de postcide in"
 
 #: ../sites.php:94 ../sites.php:486
 msgid "Country"
-msgstr ""
+msgstr "Land"
 
 #: ../sites.php:95
 msgid "The country for the Site."
@@ -14015,7 +14076,7 @@ msgstr ""
 
 #: ../sites.php:97
 msgid "Enter the country"
-msgstr ""
+msgstr "Voer het land in"
 
 #: ../sites.php:103
 msgid "TimeZone"
@@ -14063,7 +14124,7 @@ msgstr ""
 
 #: ../sites.php:139
 msgid "Alternate Name"
-msgstr ""
+msgstr "Bijnaam"
 
 #: ../sites.php:140
 msgid "Used for cases where a Site has an alternate named used to describe it"
@@ -14081,7 +14142,11 @@ msgid_plural ""
 "Click 'Continue' to delete all following Sites.  Note, all devices will be "
 "disassociated from this site."
 msgstr[0] ""
+"Klik op ‘Volgende’ om de volgende locatie te verwijderen. Let op, alle "
+"apparaten worden losgekoppeld van deze locatie."
 msgstr[1] ""
+"Klik op ‘Volgende’ om alle volgende locaties te verwijderen. Let op, alle "
+"apparaten worden losgekoppeld van deze locaties."
 
 #: ../sites.php:280
 msgid "Delete Site"
@@ -14146,7 +14211,7 @@ msgstr ""
 #: ../templates_export.php:134
 #, php-format
 msgid "%s to Export"
-msgstr ""
+msgstr "%s om te exporteren"
 
 #: ../templates_export.php:135
 msgid "Choose the exact item to export to XML."
@@ -14298,11 +14363,11 @@ msgstr ""
 
 #: ../tree.php:625
 msgid "Available Devices"
-msgstr ""
+msgstr "Beschikbare apparaten"
 
 #: ../tree.php:660
 msgid "Available Graphs"
-msgstr ""
+msgstr "Beschikbare grafieken"
 
 #: ../tree.php:1039
 msgid "Rename"
@@ -14318,7 +14383,7 @@ msgstr ""
 
 #: ../tree.php:1101
 msgid "Alphabetic"
-msgstr ""
+msgstr "Alfabetisch"
 
 #: ../tree.php:1115
 msgid "Natural"
@@ -14331,7 +14396,7 @@ msgstr ""
 #: ../tree.php:1167 ../tree.php:1241 ../tree.php:1328 ../user_admin.php:29
 #: ../user_group_admin.php:31
 msgid "Copy"
-msgstr ""
+msgstr "Kopiëren"
 
 #: ../tree.php:1185
 msgid "Paste"
@@ -14424,6 +14489,8 @@ msgstr "Verwijder gebruiker(s)"
 #: ../user_admin.php:360
 msgid "Click 'Continue' to copy the selected User to a new User below."
 msgstr ""
+"Klik op ‘Volgende’ om de geselecteerde gebruiker naar een nieuwe gebruiker "
+"te kopiëren."
 
 #: ../user_admin.php:365
 msgid "Template Username:"
@@ -14443,19 +14510,19 @@ msgstr ""
 
 #: ../user_admin.php:390
 msgid "Copy User"
-msgstr ""
+msgstr "Kopieer gebruiker"
 
 #: ../user_admin.php:396
 msgid "Click 'Continue' to enable the selected User(s)."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de geselecteerde gebruiker(s) in te schakelen."
 
 #: ../user_admin.php:401
 msgid "Enable User(s)"
-msgstr ""
+msgstr "Gebruiker(s) inschakelen"
 
 #: ../user_admin.php:407
 msgid "Click 'Continue' to disable the selected User(s)."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de geselecteerde gebruiker(s) uit te schakelen."
 
 #: ../user_admin.php:412
 msgid "Disable User(s)"
@@ -14487,11 +14554,11 @@ msgstr "U moet tenminste een gebruiker selecteren."
 
 #: ../user_admin.php:812 ../user_group_admin.php:728
 msgid "Allow"
-msgstr ""
+msgstr "Toestaan"
 
 #: ../user_admin.php:813 ../user_group_admin.php:729
 msgid "Deny"
-msgstr ""
+msgstr "Weigeren"
 
 #: ../user_admin.php:838
 msgid ""
@@ -14543,11 +14610,11 @@ msgstr ""
 #: ../user_group_admin.php:1152 ../user_group_admin.php:1156
 #: ../user_group_admin.php:1284 ../user_group_admin.php:1288
 msgid "Grant Access"
-msgstr ""
+msgstr "Toegang toestaan"
 
 #: ../user_admin.php:1101 ../user_admin.php:1110
 msgid "Member"
-msgstr ""
+msgstr "Lid"
 
 #: ../user_admin.php:1101
 msgid "Policies (Graph/Device/Template)"
@@ -14561,13 +14628,13 @@ msgstr ""
 #: ../user_admin.php:2284 ../user_group_admin.php:1904
 #: ../user_group_admin.php:1905 ../user_group_admin.php:1906
 msgid "ALLOW"
-msgstr ""
+msgstr "TOESTAAN"
 
 #: ../user_admin.php:1112 ../user_admin.php:2282 ../user_admin.php:2283
 #: ../user_admin.php:2284 ../user_group_admin.php:1904
 #: ../user_group_admin.php:1905 ../user_group_admin.php:1906
 msgid "DENY"
-msgstr ""
+msgstr "WEIGEREN"
 
 #: ../user_admin.php:1118
 msgid "No Matching User Groups Found"
@@ -14596,7 +14663,7 @@ msgstr ""
 #: ../user_group_admin.php:1120 ../user_group_admin.php:1128
 #: ../user_group_admin.php:1254 ../user_group_admin.php:1262
 msgid "Access Granted"
-msgstr ""
+msgstr "Toegang verleend"
 
 #: ../user_admin.php:1242 ../user_admin.php:1246 ../user_admin.php:1384
 #: ../user_admin.php:1388 ../user_admin.php:1517 ../user_admin.php:1521
@@ -14605,7 +14672,7 @@ msgstr ""
 #: ../user_group_admin.php:1122 ../user_group_admin.php:1126
 #: ../user_group_admin.php:1256 ../user_group_admin.php:1260
 msgid "Access Restricted"
-msgstr ""
+msgstr "Toegang beperkt"
 
 #: ../user_admin.php:1259 ../user_group_admin.php:996
 msgid "No Matching Devices Found"
@@ -14670,11 +14737,11 @@ msgstr "Groepslidmaatschap"
 
 #: ../user_admin.php:1907 ../user_group_admin.php:1645
 msgid "Graph Perms"
-msgstr ""
+msgstr "Grafiek rechten"
 
 #: ../user_admin.php:1908 ../user_group_admin.php:1646
 msgid "Device Perms"
-msgstr ""
+msgstr "Apparaat rechten"
 
 #: ../user_admin.php:1909 ../user_group_admin.php:1647
 msgid "Template Perms"
@@ -14711,7 +14778,7 @@ msgstr ""
 
 #: ../user_admin.php:2251 ../user_group_admin.php:1885
 msgid "Device Policy"
-msgstr ""
+msgstr "Apparaat beleid"
 
 #: ../user_admin.php:2252 ../user_group_admin.php:1886
 msgid "Template Policy"
@@ -14732,7 +14799,7 @@ msgstr ""
 #: ../user_admin.php:2505 ../user_group_admin.php:2124
 #, php-format
 msgid "Graph Permissions %s"
-msgstr ""
+msgstr "Grafiek rechten %s"
 
 #: ../user_admin.php:2560 ../user_admin.php:2647
 msgid "Show All"
@@ -14751,7 +14818,7 @@ msgstr "Groepen"
 #: ../user_admin.php:2702 ../user_group_admin.php:2234
 #, php-format
 msgid "Devices Permission %s"
-msgstr ""
+msgstr "Apparaat rechten %s"
 
 #: ../user_admin.php:2753 ../user_admin.php:2840 ../user_admin.php:2927
 #: ../user_group_admin.php:2179 ../user_group_admin.php:2285
@@ -14776,8 +14843,9 @@ msgstr ""
 #: ../user_domains.php:222
 msgid "Click 'Continue' to delete the following User Domain."
 msgid_plural "Click 'Continue' to delete following User Domains."
-msgstr[0] ""
+msgstr[0] "Klik op ‘Volgende’ om het volgende gebruikersdomein te verwijderen."
 msgstr[1] ""
+"Klik op ‘Volgende’ om de volgende gebruikersdomeinen te verwijderen."
 
 #: ../user_domains.php:227
 msgid "Delete User Domain"
@@ -14789,7 +14857,9 @@ msgstr[1] "Verwijder gebruiker domeinen"
 msgid "Click 'Continue' to disable the following User Domain."
 msgid_plural "Click 'Continue' to disable following User Domains."
 msgstr[0] ""
+"Klik op ‘Volgende’ om het volgende gebruikersdomein uit te schakelen."
 msgstr[1] ""
+"Klik op ‘Volgende’ om de volgende gebruikersdomeinen uit te schakelen."
 
 #: ../user_domains.php:236
 msgid "Disable User Domain"
@@ -14799,13 +14869,13 @@ msgstr[1] "Deactiveer gebruiker domeinen"
 
 #: ../user_domains.php:240
 msgid "Click 'Continue' to enable the following User Domain."
-msgstr ""
+msgstr "Klik op ‘Volgende’ om de volgende gebruikersdomeinen in te schakelen."
 
 #: ../user_domains.php:245
 msgid "Enabled User Domain"
 msgid_plural "Enable User Domains"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gebruikersdomein inschakelen"
+msgstr[1] "Gebruikersdomeinen inschakelen"
 
 #: ../user_domains.php:249
 msgid ""
@@ -14842,7 +14912,7 @@ msgstr ""
 
 #: ../user_domains.php:325
 msgid "Choose what type of domain this is."
-msgstr ""
+msgstr "Kies wat voor type domein dit is."
 
 #: ../user_domains.php:332
 msgid ""
@@ -14954,6 +15024,8 @@ msgid ""
 "A more descriptive name for this group, that can include spaces or special "
 "characters."
 msgstr ""
+"Een meer beschrijvende naam voor deze groep, deze mag spaties en speciale "
+"karakters bevatten."
 
 #: ../user_group_admin.php:93
 msgid "General Group Options"
@@ -14998,8 +15070,8 @@ msgstr ""
 #: ../user_group_admin.php:441
 msgid "Click 'Continue' to delete the following User Group"
 msgid_plural "Click 'Continue' to delete following User Groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Klik op ‘Volgende’ om de volgende gebruikersgroep te verwijderen"
+msgstr[1] "Klik op ‘Volgende’ om de volgende gebruikersgroepen te verwijderen"
 
 #: ../user_group_admin.php:446
 msgid "Delete User Group"
@@ -15012,7 +15084,11 @@ msgid "Click 'Continue' to Copy the following User Group to a new User Group."
 msgid_plural ""
 "Click 'Continue' to Copy following User Groups to new User Groups."
 msgstr[0] ""
+"Klik op ‘Volgende’ om de volgende gebruikersgroep naar een nieuwe "
+"gebruikersgroep te kopiëren."
 msgstr[1] ""
+"Klik op ‘Volgende’ om de volgende gebruikersgroepen naar nieuwe "
+"gebruikersgroepen te kopiëren."
 
 #: ../user_group_admin.php:460
 msgid "Group Prefix:"
@@ -15025,14 +15101,15 @@ msgstr "Nieuwe groep"
 #: ../user_group_admin.php:465
 msgid "Copy User Group"
 msgid_plural "Copy User Groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kopieer gebruikersgroep"
+msgstr[1] "Kopieer gebruikersgroepen"
 
 #: ../user_group_admin.php:471
 msgid "Click 'Continue' to enable the following User Group."
 msgid_plural "Click 'Continue' to enable following User Groups."
-msgstr[0] ""
+msgstr[0] "Klik op ‘Volgende’ om de volgende gebruikersgroep in te schakelen."
 msgstr[1] ""
+"Klik op ‘Volgende’ om de volgende gebruikersgroepen in te schakelen."
 
 #: ../user_group_admin.php:476
 msgid "Enable User Group"
@@ -15043,8 +15120,9 @@ msgstr[1] ""
 #: ../user_group_admin.php:482
 msgid "Click 'Continue' to disable the following User Group."
 msgid_plural "Click 'Continue' to disable following User Groups."
-msgstr[0] ""
+msgstr[0] "Klik op ‘Volgende’ om de volgende gebruikersgroep uit te schakelen."
 msgstr[1] ""
+"Klik op ‘Volgende’ om de volgende gebruikersgroepen uit te schakelen."
 
 #: ../user_group_admin.php:487
 msgid "Disable User Group"
@@ -15099,7 +15177,7 @@ msgstr ""
 
 #: ../user_group_admin.php:1643 ../user_group_admin.php:1882
 msgid "Members"
-msgstr ""
+msgstr "Leden"
 
 #: ../user_group_admin.php:1655
 #, php-format
@@ -15140,7 +15218,7 @@ msgstr ""
 
 #: ../utilities.php:170
 msgid "Configuration Settings"
-msgstr ""
+msgstr "Configuratieinstellingen"
 
 #: ../utilities.php:170
 #, php-format
@@ -15158,7 +15236,7 @@ msgstr ""
 
 #: ../utilities.php:194
 msgid "Database"
-msgstr ""
+msgstr "Database"
 
 #: ../utilities.php:195
 msgid "PHP Info"
@@ -15175,15 +15253,15 @@ msgstr ""
 
 #: ../utilities.php:231 ../utilities.php:766
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 #: ../utilities.php:238
 msgid "Cacti Version"
-msgstr ""
+msgstr "Cacti versie"
 
 #: ../utilities.php:243
 msgid "Cacti OS"
-msgstr ""
+msgstr "Cacti OS"
 
 #: ../utilities.php:253
 msgid "NET-SNMP Version"
@@ -15209,7 +15287,7 @@ msgstr ""
 
 #: ../utilities.php:322
 msgid "Concurrent Processes"
-msgstr ""
+msgstr "Gelijktijdige processen"
 
 #: ../utilities.php:327
 msgid "Max Threads"
@@ -15284,7 +15362,7 @@ msgstr ""
 
 #: ../utilities.php:469
 msgid "Avg Row Length"
-msgstr ""
+msgstr "Gemiddelde rijlengte"
 
 #: ../utilities.php:470
 msgid "Data Length"
@@ -15300,7 +15378,7 @@ msgstr ""
 
 #: ../utilities.php:473
 msgid "Comment"
-msgstr ""
+msgstr "Opmerking"
 
 #: ../utilities.php:491
 msgid "Unable to retrieve table status"
@@ -15340,7 +15418,7 @@ msgstr "Mislukt"
 
 #: ../utilities.php:661
 msgid "Attempts"
-msgstr ""
+msgstr "Pogingen"
 
 #: ../utilities.php:676 ../utilities.php:1009 ../utilities.php:1330
 #: ../utilities.php:1577 ../utilities.php:2286 ../utilities.php:2550
@@ -15395,19 +15473,19 @@ msgstr "Log [Totaal aantal lijnen: %d - Alle items worden getoond]"
 #: ../utilities.php:1166
 #, php-format
 msgid "%s - WEBUI: Cacti Log Cleared from Web Management Interface."
-msgstr ""
+msgstr "%s - WEBUI: Cacti log geleegd vanaf de webinterface."
 
 #: ../utilities.php:1168
 msgid "Cacti Log Cleared"
-msgstr ""
+msgstr "Cacti log leeggemaakt"
 
 #: ../utilities.php:1170
 msgid "Error: Unable to clear log, no write permissions."
-msgstr ""
+msgstr "Fout: logbestand legen mislukt, geen schrijfrechten."
 
 #: ../utilities.php:1173
 msgid "Error: Unable to clear log, file does not exist."
-msgstr ""
+msgstr "Fout: logbestand legen mislukt. Het bestand bestaat niet."
 
 #: ../utilities.php:1266
 msgid "Data Query Cache Items"
@@ -15476,6 +15554,9 @@ msgid ""
 "persons to assist with issues in Cacti.  Includes checks for common "
 "configuration issues."
 msgstr ""
+"Cacti technische support pagina. Gebruikt door developers en technische "
+"supportmedewerkers om u te assisteren bij problemen met Cacti. Dit omvat "
+"controles voor configuratieproblemen."
 
 #: ../utilities.php:1762
 msgid "Log Administration"
@@ -15610,7 +15691,7 @@ msgstr ""
 
 #: ../utilities.php:2003
 msgid "Cannot open directory"
-msgstr ""
+msgstr "Kan de directorie niet openen"
 
 #: ../utilities.php:2007
 msgid "Directory Does NOT Exist!!"
@@ -15654,7 +15735,7 @@ msgstr ""
 
 #: ../utilities.php:2046
 msgid "Avg Bytes/Record:"
-msgstr ""
+msgstr "Gemiddeld aantal bytes/rij:"
 
 #: ../utilities.php:2074
 #, php-format
