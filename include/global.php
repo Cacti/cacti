@@ -322,6 +322,7 @@ include_once($config['include_path'] . '/global_settings.php');
 include_once($config['include_path'] . '/global_form.php');
 include_once($config['library_path'] . '/html.php');
 include_once($config['library_path'] . '/html_form.php');
+include_once($config['library_path'] . '/html_filter.php');
 include_once($config['library_path'] . '/html_utility.php');
 include_once($config['library_path'] . '/html_validate.php');
 include_once($config['library_path'] . '/variables.php');
