@@ -59,10 +59,6 @@ function draw_edit_form($array) {
 				form_hidden_box($field_name, $field_array['value'], '0', true);
 				print '</div>';
 			}elseif ($field_array['method'] == 'spacer') {
-//				if ($i > 0) {
-//					print '</div>';
-//				}
-
 				$collapsible = (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true');
 
 				print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><div class='formHeaderText'>" . $field_array['friendly_name'] . ($collapsible ? "<div class='formHeaderAnchor'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
@@ -413,6 +409,15 @@ function draw_edit_control($field_name, &$field_array) {
 		);
 
 		break;
+	case 'submit':
+		form_submit(
+			$field_name, 
+			((isset($field_array['value'])) ? $field_array['value'] : ''),
+			((isset($field_array['title'])) ? $field_array['title'] : ''),
+			((isset($field_array['on_click'])) ? $field_array['on_click'] : '')
+		);
+
+		break;
 	default:
 		print '<em>' . htmlspecialchars($field_array['value'], ENT_QUOTES, 'UTF-8') . '</em>';
 
@@ -429,6 +434,20 @@ function draw_edit_control($field_name, &$field_array) {
    @arg $action - the onClick action for the button */
 function form_button($form_name, $value, $title = '', $action = '') {
 	print "<input type='button' " . 
+		"id='$form_name' " . 
+		"name='$form_name' " . 
+		"value='$value' " . 
+		($action!='' ? "onClick='$action'":"") . 
+		($title!='' ? "title='$title'":"") . ">";
+}
+
+/* form_button - draws a standard button form element
+   @arg $form_name - the name of this form element
+   @arg $value - the display value for the button
+   @arg $title - the hover title for the button
+   @arg $action - the onClick action for the button */
+function form_submit($form_name, $value, $title = '', $action = '') {
+	print "<input type='submit' " . 
 		"id='$form_name' " . 
 		"name='$form_name' " . 
 		"value='$value' " . 
