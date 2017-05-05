@@ -1340,6 +1340,7 @@ table.cactiTable {
 }
 
 .tableHeader {
+	display: table-row;
 	color: #000000;
 	background: #FFFFFF;
 	font-weight: 700;

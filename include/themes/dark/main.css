@@ -1154,7 +1154,7 @@ legend {
 	font-size: 11px;
 	color: snow;
 	font-weight: normal;
-	padding: 0px;
+	padding: 3px;
 	white-space: nowrap;
 }
 
@@ -1233,14 +1233,14 @@ legend {
 .formColumnLeft {
 	float: left;
 	display: table-column;
-	width: 30%;
+	width: 50%;
 	text-align: left;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
-	width: 70%;
+	width: 50%;
 	text-align: left;
 }
 
@@ -1405,6 +1405,7 @@ legend {
 }
 
 .tableHeader {
+	display: table-row;
 	background: -moz-linear-gradient(top,  #45484d 0%, #000000 100%); /* FF3.6+ */
 	background: -webkit-linear-gradient(top,  #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
 	background: -o-linear-gradient(top,  #45484d 0%,#000000 100%); /* Opera 11.10+ */
@@ -1436,7 +1437,8 @@ th.secondarySort {
 	text-align:left;
 	font-size: 12px;
 	font-weight: normal;
-	padding: 2px;
+	padding: 4px !important;
+	line-height: 12px;
 }
 
 .tableHeader th div {
@@ -1451,6 +1453,7 @@ th.secondarySort {
 	text-align:left;
 	cursor:pointer;
 	padding: 3px;
+	white-space: nowrap;
 }
 
 .graphSubHeaderColumn {
