@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -feature: Convert forms from table based to div based for responsive design
 -feature: Better support for phones and tablets
 -feature: Simplified installation code to facilitate easier release cycle
+-feature: Updating Tablesorter to v2.28.9, adding widgets and pager
 
 1.1.5
 -issue#580: Data collection warnings when using cmd.php
