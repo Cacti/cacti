@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue: Fix and undefined variable on data source page when first creating a manual data source
 -issue: Remove tabindex and other non-required manual aria controls from pages
 -issue: Table type and column type in poller_output table wrong
+-issue: FILTER_VALIDATE_MAC not defined on PHP less than 5.5
 -feature: Dutch translations
 -feature: Responsive Graphs page
 -feature: Convert forms from table based to div based for responsive design

@@ -32,7 +32,7 @@
 function title_trim($text, $max_length) {
 	if (strlen($text) > $max_length) {
 		return substr($text, 0, $max_length) . '...';
-	}else{
+	} else {
 		return $text;
 	}
 }
@@ -49,7 +49,7 @@ function cacti_htmlspecialchars($value) {
 
 	if (strpos($value, '<script') !== false) {
 		return htmlspecialchars($value, ENT_QUOTES, $charset, false);
-	}else{
+	} else {
 		return $value;
 	}
 }
@@ -141,7 +141,7 @@ function user_setting_exists($config_name, $user_id) {
 
 		if ($value > 0) {
 			$user_setting_values[$config_name] = true;
-		}else{
+		} else {
 			$user_setting_values[$config_name] = false;
 		}
 	}
@@ -194,12 +194,12 @@ function read_user_setting($config_name, $default = false, $force = FALSE) {
 
 		if (sizeof($db_setting)) {
 			return $db_setting['value'];
-		}elseif ($default !== false) {
+		} elseif ($default !== false) {
 			return $default;
-		}else{
+		} else {
 			return read_default_user_setting($config_name);
 		}
-	}else{
+	} else {
 		$effective_uid = 0;
 	}
 
@@ -218,15 +218,15 @@ function read_user_setting($config_name, $default = false, $force = FALSE) {
 
 		if (sizeof($db_setting)) {
 			$user_config_array[$config_name] = $db_setting['value'];
-		}elseif ($default !== false) {
+		} elseif ($default !== false) {
 			$user_config_array[$config_name] = $default;
-		}else{
+		} else {
 			$user_config_array[$config_name] = read_default_user_setting($config_name);
 		}
 
 		if (isset($_SESSION)) {
 			$_SESSION['sess_user_config_array']   = $user_config_array;
-		}else{
+		} else {
 			$config['config_user_settings_array'] = $user_config_array;
 		}
 	}
@@ -254,7 +254,7 @@ function config_value_exists($config_name) {
 
 		if ($value > 0) {
 			$config_values[$config_name] = true;
-		}else{
+		} else {
 			$config_values[$config_name] = false;
 		}
 	}
@@ -302,13 +302,13 @@ function read_config_option($config_name, $force = FALSE) {
 
 		if (isset($db_setting['value'])) {
 			$config_array[$config_name] = $db_setting['value'];
-		}else{
+		} else {
 			$config_array[$config_name] = read_default_config_option($config_name);
 		}
 
 		if (isset($_SESSION)) {
 			$_SESSION['sess_config_array']  = $config_array;
-		}else{
+		} else {
 			$config['config_options_array'] = $config_array;
 		}
 	}
@@ -322,7 +322,7 @@ function read_config_option($config_name, $force = FALSE) {
 function get_selected_theme() {
 	if (isset($_SESSION['selected_theme'])) {
 		return $_SESSION['selected_theme'];
-	}elseif (isset($_SESSION['sess_user_id'])) {
+	} elseif (isset($_SESSION['sess_user_id'])) {
 		$theme = db_fetch_cell_prepared("SELECT value FROM settings_user WHERE name='selected_theme' AND user_id = ?", array($_SESSION['sess_user_id']));
 
 		if (!empty($theme)) {
@@ -423,7 +423,7 @@ function display_output_messages() {
 		print '</div>';
 
 		debug_log_clear('new_graphs');
-	}elseif (isset($_SESSION['sess_messages'])) {
+	} elseif (isset($_SESSION['sess_messages'])) {
 		$error_message = is_error_message();
 
 		if (is_array($_SESSION['sess_messages'])) {
@@ -448,11 +448,11 @@ function display_output_messages() {
 						print '</div>';
 						break;
 					}
-				}else{
+				} else {
 					cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
 				}
 			}
-		}else{
+		} else {
 			display_custom_error_message($_SESSION['sess_messages']);
 		}
 	}
@@ -526,13 +526,13 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	if (isset($_SERVER['PHP_SELF'])) {
 		$current_file = basename($_SERVER['PHP_SELF']);
 		$dir_name     = dirname($_SERVER['PHP_SELF']);
-	}elseif (isset($_SERVER['SCRIPT_NAME'])) {
+	} elseif (isset($_SERVER['SCRIPT_NAME'])) {
 		$current_file = basename($_SERVER['SCRIPT_NAME']);
 		$dir_name     = dirname($_SERVER['SCRIPT_NAME']);
-	}elseif (isset($_SERVER['SCRIPT_FILENAME'])) {
+	} elseif (isset($_SERVER['SCRIPT_FILENAME'])) {
 		$current_file = basename($_SERVER['SCRIPT_FILENAME']);
 		$dir_name     = dirname($_SERVER['SCRIPT_FILENAME']);
-	}else{
+	} else {
 		$current_file = basename(__FILE__);
 		$dir_name     = dirname(__FILE__);
 	}
@@ -790,7 +790,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 			}else {
 				$hosts[$host_id]['status_last_error'] = $ping->snmp_response . ', ' . $ping->ping_response;
 			}
-		}elseif ($ping_availability == AVAIL_SNMP) {
+		} elseif ($ping_availability == AVAIL_SNMP) {
 			if (($hosts[$host_id]['snmp_community'] == '') && ($hosts[$host_id]['snmp_version'] != 3)) {
 				$hosts[$host_id]['status_last_error'] = 'Device does not require SNMP';
 			}else {
@@ -863,15 +863,15 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 				/* calculate the average of the two times */
 				$ping_time = ($ping->snmp_status + $ping->ping_status) / 2;
 			}
-		}elseif ($ping_availability == AVAIL_SNMP) {
+		} elseif ($ping_availability == AVAIL_SNMP) {
 			if (($hosts[$host_id]['snmp_community'] == '') && ($hosts[$host_id]['snmp_version'] != 3)) {
 				$ping_time = 0.000;
 			}else {
 				$ping_time = $ping->snmp_status;
 			}
-		}elseif ($ping_availability == AVAIL_NONE) {
+		} elseif ($ping_availability == AVAIL_NONE) {
 			$ping_time = 0.000;
-		}else{
+		} else {
 			$ping_time = $ping->ping_status;
 		}
 
@@ -938,7 +938,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		} elseif ($ping_availability == AVAIL_SNMP) {
 			if (($hosts[$host_id]['snmp_community'] == '') && ($hosts[$host_id]['snmp_version'] != 3)) {
 				cacti_log("Device[$host_id] SNMP: Device does not require SNMP", $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
-			}else{
+			} else {
 				cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 			}
 		} else {
@@ -1021,7 +1021,15 @@ function is_hexadecimal($result) {
    @arg $result - (string) some string to be evaluated
    @returns - (bool) either to result is a mac address of not */
 function is_mac_address($result) {
-	return filter_var($result, FILTER_VALIDATE_MAC);
+	if (!defined('FILTER_VALIDATE_MAC')) {
+		if (preg_match('/^([0-9a-f]{1,2}[\.:-]){5}([0-9a-f]{1,2})$/i', $result)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return filter_var($result, FILTER_VALIDATE_MAC);
+	}
 }
 
 function is_hex_string($result) {
@@ -1059,11 +1067,11 @@ function prepare_validate_result(&$result) {
 	/* clean off ugly non-numeric data */
 	if (is_numeric($result)) {
 		return true;
-	}elseif ($result == 'U') {
+	} elseif ($result == 'U') {
 		return true;
-	}elseif (is_hexadecimal($result)) {
+	} elseif (is_hexadecimal($result)) {
 		return hexdec($result);
-	}elseif (substr_count($result, ':') || substr_count($result, '!')) {
+	} elseif (substr_count($result, ':') || substr_count($result, '!')) {
 		/* looking for name value pairs */
 		if (substr_count($result, ' ') == 0) {
 			return true;
@@ -1079,7 +1087,7 @@ function prepare_validate_result(&$result) {
 
 			return ($space_cnt+1 == $delim_cnt);
 		}
-	}else{
+	} else {
 		/* strip all non numeric data */
 		$result = preg_replace('/[^0-9,.+-]/', '', $result);
 
@@ -1165,7 +1173,7 @@ function get_data_source_item_name($data_template_rrd_id) {
 		$data_source_name = substr(strtolower($data_source_name),0,(19-strlen($data_template_rrd_id))) . $data_template_rrd_id;
 
 		return $data_source_name;
-	}else{
+	} else {
 		return $data_source['data_source_name'];
 	}
 }
@@ -1189,10 +1197,10 @@ function get_data_source_path($local_data_id, $expand_paths) {
 			if (empty($data_source['data_source_path'])) {
 				/* no custom path was specified */
 				$data_source_path = generate_data_source_path($local_data_id);
-			}else{
+			} else {
 				if (!strstr($data_source['data_source_path'], '/')) {
 					$data_source_path = '<path_rra>/' . $data_source['data_source_path'];
-				}else{
+				} else {
 					$data_source_path = $data_source['data_source_path'];
 				}
 			}
@@ -1206,7 +1214,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 
 			return $data_source_path;
 		}
-	}else{
+	} else {
 		return $data_source_path_cache[$local_data_id];
 	}
 }
@@ -1288,7 +1296,7 @@ function get_data_source_title($local_data_id) {
 	if ((strstr($data['name'], '|')) && (!empty($data['host_id']))) {
 		$data['name'] = substitute_data_input_data($data['name'], '', $local_data_id);
 		return expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
-	}else{
+	} else {
 		return $data['name'];
 	}
 }
@@ -1325,10 +1333,10 @@ function get_graph_title($local_graph_id) {
 		if ((strstr($graph['title'], '|')) && (!empty($graph['host_id']))) {
 			$graph['title'] = substitute_data_input_data($graph['title'], $graph, 0);
 			return expand_title($graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index'], $graph['title']);
-		}else{
+		} else {
 			return $graph['title'];
 		}
-	}else{
+	} else {
 		return '';
 	}
 }
@@ -1376,7 +1384,7 @@ function generate_data_source_path($local_data_id) {
 
 		if (!empty($data_source_rrd_name)) {
 			$ds_part = strtolower(clean_up_file_name($data_source_rrd_name));
-		}else{
+		} else {
 			$ds_part = 'ds';
 		}
 
@@ -1497,7 +1505,7 @@ function generate_graph_def_name($graph_item_id) {
 
 	if ($result == 'cf') {
 		return 'zcf';
-	}else{
+	} else {
 		return $result;
 	}
 }
@@ -1545,7 +1553,7 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 	if (sizeof($target_graph_group_array) == 0) {
 		if ($direction == 'next') {
 			move_item_down('graph_templates_item', $graph_template_item_id, $sql_where);
-		}elseif ($direction == 'previous') {
+		} elseif ($direction == 'previous') {
 			move_item_up('graph_templates_item', $graph_template_item_id, $sql_where);
 		}
 
@@ -1611,7 +1619,7 @@ function get_graph_group($graph_template_item_id) {
 
 	if (empty($graph_item['local_graph_id'])) {
 		$sql_where = 'graph_template_id = ' . $graph_item['graph_template_id'] . ' AND local_graph_id = 0';
-	}else{
+	} else {
 		$sql_where = 'local_graph_id = ' . $graph_item['local_graph_id'];
 	}
 
@@ -1651,14 +1659,14 @@ function get_graph_parent($graph_template_item_id, $direction) {
 
 	if (empty($graph_item['local_graph_id'])) {
 		$sql_where = 'graph_template_id = ' . $graph_item['graph_template_id'] . ' AND local_graph_id = 0';
-	}else{
+	} else {
 		$sql_where = 'local_graph_id = ' . $graph_item['local_graph_id'];
 	}
 
 	if ($direction == 'next') {
 		$sql_operator = '>';
 		$sql_order = 'ASC';
-	}elseif ($direction == 'previous') {
+	} elseif ($direction == 'previous') {
 		$sql_operator = '<';
 		$sql_order = 'DESC';
 	}
@@ -1667,7 +1675,7 @@ function get_graph_parent($graph_template_item_id, $direction) {
 
 	if (empty($next_parent_id)) {
 		return 0;
-	}else{
+	} else {
 		return $next_parent_id;
 	}
 }
@@ -1683,7 +1691,7 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 	if ($direction == 'next') {
 		$sql_operator = '>';
 		$sql_order = 'ASC';
-	}elseif ($direction == 'previous') {
+	} elseif ($direction == 'previous') {
 		$sql_operator = '<';
 		$sql_order = 'DESC';
 	}
@@ -1693,7 +1701,7 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 
 	if (empty($new_item_id)) {
 		return $startid;
-	}else{
+	} else {
 		return $new_item_id;
 	}
 }
@@ -1710,10 +1718,10 @@ function get_sequence($id, $field, $table_name, $group_query) {
 
 		if ($data['seq'] == '') {
 			return 1;
-		}else{
+		} else {
 			return $data['seq'];
 		}
-	}else{
+	} else {
 		$data = db_fetch_row_prepared("SELECT $field FROM $table_name WHERE id = ?", array($id));
 		return $data[$field];
 	}
@@ -1763,12 +1771,12 @@ function get_web_browser() {
 	if (!empty($_SERVER['HTTP_USER_AGENT'])) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], 'Mozilla') && (!(stristr($_SERVER['HTTP_USER_AGENT'], 'compatible')))) {
 			return 'moz';
-		}elseif (stristr($_SERVER['HTTP_USER_AGENT'], 'MSIE')) {
+		} elseif (stristr($_SERVER['HTTP_USER_AGENT'], 'MSIE')) {
 			return 'ie';
-		}else{
+		} else {
 			return 'other';
 		}
-	}else{
+	} else {
 		return 'other';
 	}
 }
@@ -1784,7 +1792,7 @@ function draw_login_status($using_guest_account = false) {
 		api_plugin_hook('nav_login_before');
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'><li><a href='" . $config['url_path'] . "index.php'>" . __('Login as Regular User') . "</a></li></ul>\n";
 		api_plugin_hook('nav_login_after');
-	}elseif (isset($_SESSION['sess_user_id']) && $using_guest_account == false) {
+	} elseif (isset($_SESSION['sess_user_id']) && $using_guest_account == false) {
 		$user = db_fetch_row_prepared('SELECT username, password_change, realm FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 		api_plugin_hook('nav_login_before');
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . htmlspecialchars($user['username'], ENT_QUOTES) . 
@@ -2612,7 +2620,7 @@ function draw_navigation_text($type = 'url') {
 	/* find the current page in the big array */
 	if (isset($nav[$current_page . ':' . $current_action])) {
 		$current_array = $nav{$current_page . ':' . $current_action};
-	}else{
+	} else {
 		$current_array = array('mapping' => 'index.php:', 'title' => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))), 'level' => 1);
 	}
 
@@ -2630,13 +2638,13 @@ function draw_navigation_text($type = 'url') {
 			$url = $nav{basename($current_mappings[$i])}['url'];
 
 			if (basename($url) == 'graph_view.php') continue;
-		}elseif (isset($nav_level_cache{$i}) && !empty($nav_level_cache{$i}['url'])) {
+		} elseif (isset($nav_level_cache{$i}) && !empty($nav_level_cache{$i}['url'])) {
 			/* found a match in the url cache for this level */
 			$url = $nav_level_cache{$i}['url'];
-		}elseif (!empty($current_array['url'])) {
+		} elseif (!empty($current_array['url'])) {
 			/* found a default url in the above array */
 			$url = $current_array['url'];
-		}else{
+		} else {
 			/* default to no url */
 			$url = '';
 		}
@@ -2647,7 +2655,7 @@ function draw_navigation_text($type = 'url') {
 				$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}['id']}['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
 				$title       .= htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}['id']}['title'])) . ' -> ';
 			}
-		}else{
+		} else {
 			/* there is no '?' - pull from the above array */
 			$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{basename($current_mappings[$i])}['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
 			$title       .= htmlspecialchars(resolve_navigation_variables($nav{basename($current_mappings[$i])}['title'])) . ' -> ';
@@ -2658,7 +2666,7 @@ function draw_navigation_text($type = 'url') {
 
 	if ($nav_count) {
 		$current_nav .= "<li><a id='nav_$i' href=#>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
-	}else{
+	} else {
 		$current_array = $nav[$current_page . ':' . $current_action];
 		$url           = (isset($current_array['url']) ? $current_array['url']:'');
 		$current_nav  .= "<li><a id='nav_$i' href='$url'>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
@@ -2671,12 +2679,12 @@ function draw_navigation_text($type = 'url') {
 			if (sizeof($leaf)) {
 				if ($leaf['host_id'] > 0) {
 					$leaf_name = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($leaf['host_id']));
-				}else{
+				} else {
 					$leaf_name = $leaf['title'];
 				}
 
 				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($leaf['graph_tree_id']));
-			}else{
+			} else {
 				$leaf_name = __('Leaf');
 				$tree_name = '';
 			}
@@ -2687,23 +2695,23 @@ function draw_navigation_text($type = 'url') {
 
 				if ($parts[0] == 'graph_template') {
 					$leaf_sub = db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($parts[1]));
-				}else{
+				} else {
 					if ($parts[1] > 0) {
 						$leaf_sub = db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($parts[1]));
-					}else{
+					} else {
 						$leaf_sub = __('Non Query Based');
 					}
 				}
-			}else{
+			} else {
 				$leaf_sub = '';
 			}
-		}else{
+		} else {
 			$leaf_name = '';
 			$leaf_sub  = '';
 
 			if (isset_request_var('tree_id')) {
 				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_filter_request_var('tree_id')));
-			}else{
+			} else {
 				$tree_name = '';
 			}
 		}
@@ -2713,7 +2721,7 @@ function draw_navigation_text($type = 'url') {
 		if ($tree_title != '') {
 			$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li>';
 		}
-	}elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
+	} elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
 		$externalLinks = db_fetch_row_prepared('SELECT title, style FROM external_links WHERE id = ?', array($matches[1]));
 		$title = $externalLinks['title'];
 		$style = $externalLinks['style'];
@@ -2722,11 +2730,11 @@ function draw_navigation_text($type = 'url') {
 			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0' href='" . $config['url_path'] . 
 				"index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>';
 			$current_nav .= "<li><a id='nav_1' href='#'>Link " . $title . '</a></li>';
-		}else{
+		} else {
 			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . $title . '</a></li>';
 		}
 		$tree_title = '';
-	}else{
+	} else {
 		$tree_title = '';
 	}
 
@@ -2740,7 +2748,7 @@ function draw_navigation_text($type = 'url') {
 
 	if ($type == 'url') {
 		return $current_nav;
-	}else{
+	} else {
 		return $title;
 	}
 }
@@ -2788,7 +2796,7 @@ function get_associated_rras($local_graph_id, $sql_where = '') {
 function get_browser_query_string() {
 	if (!empty($_SERVER['REQUEST_URI'])) {
 		return sanitize_uri($_SERVER['REQUEST_URI']);
-	}else{
+	} else {
 		return sanitize_uri(get_current_page() . (empty($_SERVER['QUERY_STRING']) ? '' : '?' . $_SERVER['QUERY_STRING']));
 	}
 }
@@ -2799,22 +2807,22 @@ function get_current_page($basename = true) {
 	if (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF'] != '') {
 		if ($basename) {
 			return basename($_SERVER['PHP_SELF']);
-		}else{
+		} else {
 			return $_SERVER['PHP_SELF'];
 		}
-	}elseif (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
+	} elseif (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
 		if ($basename) {
 			return basename($_SERVER['SCRIPT_NAME']);
-		}else{
+		} else {
 			return $_SERVER['SCRIPT_NAME'];
 		}
-	}elseif (isset($_SERVER['SCRIPT_FILENAME']) && $_SERVER['SCRIPT_FILENAME'] != '') {
+	} elseif (isset($_SERVER['SCRIPT_FILENAME']) && $_SERVER['SCRIPT_FILENAME'] != '') {
 		if ($basename) {
 			return basename($_SERVER['SCRIPT_FILENAME']);
-		}else{
+		} else {
 			return $_SERVER['SCRIPT_FILENAME'];
 		}
-	}else{
+	} else {
 		cacti_log('ERROR: unable to determine current_page');
 	}
 
@@ -2843,7 +2851,7 @@ function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template
 
 	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
 		return $hash;
-	}else{
+	} else {
 		return generate_hash();
 	}
 }
@@ -2867,7 +2875,7 @@ function get_hash_data_template($data_template_id, $sub_type = 'data_template') 
 
 	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
 		return $hash;
-	}else{
+	} else {
 		return generate_hash();
 	}
 }
@@ -2891,7 +2899,7 @@ function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
 
 	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
 		return $hash;
-	}else{
+	} else {
 		return generate_hash();
 	}
 }
@@ -2919,7 +2927,7 @@ function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
-	}else{
+	} else {
 		return generate_hash();
 	}
 }
@@ -2932,7 +2940,7 @@ function get_hash_gprint($gprint_id) {
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
-	}else{
+	} else {
 		return generate_hash();
 	}
 }
@@ -2957,7 +2965,7 @@ function get_hash_vdef($vdef_id, $sub_type = "vdef") {
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
-	}else{
+	} else {
 		return generate_hash();
 	}
 }
@@ -2971,7 +2979,7 @@ function get_hash_data_source_profile($data_source_profile_id) {
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
-	}else{
+	} else {
 		return generate_hash();
 	}
 }
@@ -2984,7 +2992,7 @@ function get_hash_host_template($host_template_id) {
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
-	}else{
+	} else {
 		return generate_hash();
 	}
 }
@@ -3014,7 +3022,7 @@ function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
-	}else{
+	} else {
 		return generate_hash();
 	}
 }
@@ -3060,7 +3068,7 @@ function debug_log_insert($type, $text) {
 		}
 
 		array_push($_SESSION['debug_log'][$type], $text);
-	}else{
+	} else {
 		if (!isset($config['debug_log'][$type])) {
 			$config['debug_log'][$type] = array();
 		}
@@ -3075,7 +3083,7 @@ function debug_log_insert($type, $text) {
 function debug_log_clear($type = '') {
 	if ($type == '') {
 		kill_session_var('debug_log');
-	}else{
+	} else {
 		if (isset($_SESSION['debug_log'])) {
 			unset($_SESSION['debug_log'][$type]);
 		}
@@ -3096,7 +3104,7 @@ function debug_log_return($type) {
 			}
 			$log_text .= '</table>';
 		}
-	}else{
+	} else {
 		if (isset($_SESSION['debug_log'][$type])) {
 			$log_text .= "<table style='width:100%;'>";
 			foreach($_SESSION['debug_log'][$type] as $key => $val) {
@@ -3173,14 +3181,14 @@ function sanitize_unserialize_selected_items($items) {
 			foreach ($items as $item) {
 				if (is_array($item)) {
 					return false;
-				}elseif (!is_numeric($item) && ($item != '')) {
+				} elseif (!is_numeric($item) && ($item != '')) {
 					return false;
 				}
 			}
-		}else{
+		} else {
 			return false;
 		}
-	}else{
+	} else {
 		return false;
 	}
 
@@ -3192,7 +3200,7 @@ function cacti_escapeshellcmd($string) {
 
 	if ($config['cacti_server_os'] == 'unix') {
 		return escapeshellcmd($string);
-	}else{
+	} else {
 		$replacements = "#&;`|*?<>^()[]{}$\\";
 
 		for ($i=0; $i < strlen($replacements); $i++) {
@@ -3222,7 +3230,7 @@ function cacti_escapeshellarg($string, $quote = true) {
 			# remove first and last char
 			return substr($string, 1, (strlen($string)-2));
 		}
-	}else{
+	} else {
 		/* escapeshellarg takes care of different quotation for both linux and windows,
 		 * but unfortunately, it blanks out percent signs
 		 * we want to keep them, e.g. for GPRINT format strings
@@ -3255,10 +3263,10 @@ function set_page_refresh($refresh) {
 	if (isset($refresh['logout'])) {
 		if ($refresh['logout'] == 'true' || $refresh['logout'] === true) {
 			$_SESSION['refresh']['logout']  = 'true';
-		}else{
+		} else {
 			$_SESSION['refresh']['logout']  = 'false';
 		}
-	}else{
+	} else {
 		$_SESSION['refresh']['logout']  = 'true';
 	}
 
@@ -3277,7 +3285,7 @@ function bottom_footer() {
 		display_messages();
 
 		include($config['base_path'] . '/include/bottom_footer.php');
-	}else{
+	} else {
 		/* display output messages */
 		display_messages();
 
@@ -3356,7 +3364,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 	if ($from == '') {
 		$from     = read_config_option('settings_from_email');
 		$fromname = read_config_option('settings_from_name');
-	}else{
+	} else {
 		$full_name = db_fetch_cell_prepared('SELECT full_name 
 			FROM user_auth 
 			WHERE email_address = ?', 
@@ -3364,7 +3372,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 
 		if (empty($full_name)) {
 			$fromname = $from;
-		}else{
+		} else {
 			$fromname = $full_name;
 		}
 	}
@@ -3403,7 +3411,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	    $date = read_config_option('date');
 		if (!empty($date)) {
 			$time = strtotime($date);
-		}else{
+		} else {
 			$time = time();
 		}
 
@@ -3412,13 +3420,13 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	if (is_array($to)) {
 		$toText = $to[1] . ' <' . $to[0] . '>';
-	}else{
+	} else {
 		$toText = $to;
 	}
 
 	if (is_array($from)) {
 		$fromText = $from[1] . ' <' . $from[0] . '>';
-	}else{
+	} else {
 		$fromText = $from;
 	}
 
@@ -3433,7 +3441,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	$timeout = read_config_option('settings_smtp_timeout');
 	if (empty($timeout) || $timeout < 0 || $timeout > 300) {
 		$mail->Timeout = 5;
-	}else{
+	} else {
 		$mail->Timeout = $timeout;
 	}
 
@@ -3466,7 +3474,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 			if (read_config_option('settings_smtp_password') != '') {
 				$mail->Password = read_config_option('settings_smtp_password');
 			}
-		}else{
+		} else {
 			$mail->SMTPAuth = false;
 		}
 
@@ -3474,7 +3482,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$timeout = read_config_option('settings_smtp_timeout');
 		if (empty($timeout) || $timeout < 0 || $timeout > 300) {
 			$mail->Timeout = 10;
-		}else{
+		} else {
 			$mail->Timeout = $timeout;
 		}
 
@@ -3504,7 +3512,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		}
 
 		$mail->setFrom($from, $fromname);
-	}else{
+	} else {
 		$mail->setFrom($from[0], $from[1]);
 	}
 
@@ -3517,7 +3525,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$mail->addAddress($t);
 			}
 		}
-	}else{
+	} else {
 		foreach($to as $email => $name) {
 			$mail->addAddress($email, $name);
 		}
@@ -3531,7 +3539,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$mail->addCC($c);
 			}
 		}
-	}else{
+	} else {
 		foreach($cc as $email => $name) {
 			$mail->addCC($email, $name);
 		}
@@ -3545,7 +3553,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$mail->addBCC($bc);
 			}
 		}
-	}else{
+	} else {
 		foreach($bcc as $email => $name) {
 			$mail->addBCC($email, $name);
 		}
@@ -3555,7 +3563,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		if ($replyto != '') {
 			$mail->addReplyTo($replyto);
 		}
-	}else{
+	} else {
 		$mail->addReplyTo($replyto[0], $replyto[1]);
 	}
 
@@ -3563,9 +3571,9 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	$wordwrap = read_config_option('settings_wordwrap');
 	if ($wordwrap == '') {
 		$wordwrap = 76;
-	}elseif ($wordwrap > 9999) {
+	} elseif ($wordwrap > 9999) {
 		$wordwrap = 9999;
-	}elseif ($wordwrap < 0) {
+	} elseif ($wordwrap < 0) {
 		$wordwrap = 76;
 	}
 
@@ -3595,7 +3603,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$body = str_replace('<GRAPH>' . $attachment['local_graph_id'] . '>', "<img src='" . $attachment['filename'] . "' ><br>Could not open!<br>" . $attachment['filename'], $body);
 			}
 		}
-	}elseif (is_array($attachments) && sizeof($attachments) && substr_count($body, '<GRAPH:') > 0) {
+	} elseif (is_array($attachments) && sizeof($attachments) && substr_count($body, '<GRAPH:') > 0) {
 		foreach($attachments as $attachment) {
 			if ($attachment['attachment'] != '') {
 				/* get content id and create attachment */
@@ -3640,10 +3648,10 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$mail->isHTML(true);
 		$mail->Body    = $text['html'];
 		$mail->AltBody = $text['text'];
-	}elseif ($attachments == '' && $html == false) {
+	} elseif ($attachments == '' && $html == false) {
 		if ($body_text != '') {
 			$body = $body_text;
-		}else{
+		} else {
 			$body = str_replace('<br>',  "\n", $body);
 			$body = str_replace('<BR>',  "\n", $body);
 			$body = str_replace('</BR>', "\n", $body);
@@ -3670,7 +3678,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		cacti_log("Mail Sucessfully Sent to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER'); 
 
 		return '';
-	}else{
+	} else {
 		cacti_log("Mail Failed to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
 
 		return $mail->ErrorInfo;
@@ -3774,7 +3782,7 @@ function email_test() {
 
 		if ($ping_results != 1) {
 			$mail .= '<b>' . __('Ping Results') . '</b>: ' . $ping_results . '<br>';
-		}else{
+		} else {
 			$mail .= '<b>' . __('Ping Results') . '</b>: ' . __('Success') . '<br>';
 		}
 	}
@@ -3794,7 +3802,7 @@ function email_test() {
 		if ($errors == '') {
 			$errors = __('Success!');
 		}
-	}else{
+	} else {
 		print __('Message Not Sent due to ping failure.'). '<br><br>';
 	}
 
@@ -3927,7 +3935,7 @@ function clog_admin() {
 
 	if ($_SESSION["sess_clog_level"] == CLOG_PERM_ADMIN) {
 		return true;
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -3937,23 +3945,23 @@ function clog_authorized() {
 		if (isset($_SESSION['sess_user_id'])) {
 			if (is_realm_allowed(18)) {
 				$_SESSION['sess_clog_level'] = CLOG_PERM_ADMIN;
-			}else{
+			} else {
 				if (is_realm_allowed(19)) {
 					$_SESSION['sess_clog_level'] = CLOG_PERM_USER;
 				}else {
 					$_SESSION['sess_clog_level'] = CLOG_PERM_NONE;
 				}
 			}
-		}else{
+		} else {
 			$_SESSION['sess_clog_level'] = CLOG_PERM_NONE;
 		}
 	}
 
 	if ($_SESSION['sess_clog_level'] == CLOG_PERM_USER) {
 		return true;
-	}elseif ($_SESSION['sess_clog_level'] == CLOG_PERM_ADMIN) {
+	} elseif ($_SESSION['sess_clog_level'] == CLOG_PERM_ADMIN) {
 		return true;
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -3984,7 +3992,7 @@ function update_system_mibs($host_id) {
 						array($value, $host_id));
 				}
 			}
-		}else{
+		} else {
 			cacti_log("WARNING: Unable to open session for System Mib collection for Device[$host_id]", false, 'POLLER');
 		}
 	}
@@ -3998,13 +4006,13 @@ function cacti_debug_backtrace($entry = '', $html = false) {
 	foreach ($callers as $c) {
 		if (isset($c['file'])) {
 			$file = str_replace($config['base_path'], '', $c['file']);
-		}else{
+		} else {
 			$file = '';
 		}
 
 		if (isset($c['line'])) {
 			$line = $c['line'];
-		}else{
+		} else {
 			$line = '';
 		}
 		$func = $c['function'];
@@ -4031,7 +4039,7 @@ function cacti_debug_backtrace($entry = '', $html = false) {
 function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 	if ($percentile > 0 && $percentile < 1) {
 		$p = $percentile;
-	}elseif ($percentile > 1 && $percentile <= 100) {
+	} elseif ($percentile > 1 && $percentile <= 100) {
 		$p = $percentile * .01;
 	}else {
 		return false;
@@ -4045,7 +4053,7 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 			'90th' => 0.90,
 			'95th' => 0.95,
 		);
-	}else{
+	} else {
 		$tiles = array(
 			'custom' => $p
 		);
@@ -4075,7 +4083,7 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 
 		if ($index == 'custom') {
 			return $ptile;
-		}else{
+		} else {
 			$results[$index] = $ptile;
 		}
 	}
@@ -4087,23 +4095,23 @@ function get_timeinstate($host) {
 	$interval = read_config_option('poller_interval');
 	if ($host['status_event_count'] > 0) {
 		$time = $host['status_event_count'] * $interval;
-	}elseif (strtotime($host['status_rec_date']) > 943916400) {
+	} elseif (strtotime($host['status_rec_date']) > 943916400) {
 		$time = time() - strtotime($host['status_rec_date']);
-	}else{
+	} else {
 		$time = $host['snmp_sysUpTimeInstance']/100;
 	}
 
 	if ($time > 86400) {
 		$days  = floor($time/86400);
 		$time %= 86400;
-	}else{
+	} else {
 		$days  = 0;
 	}
 
 	if ($time > 3600) {
 		$hours = floor($time/3600);
 		$time  %= 3600;
-	}else{
+	} else {
 		$hours = 0;
 	}
 
@@ -4208,7 +4216,7 @@ function get_classic_tabimage($text, $down = false) {
 		ob_end_clean();
 
 		return("data:image/gif;base64," . base64_encode($image));
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -4216,7 +4224,7 @@ function get_classic_tabimage($text, $down = false) {
 function cacti_oid_numeric_format() {
 	if (function_exists('snmp_set_oid_output_format')) {
 		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
-	}elseif (function_exists("snmp_set_oid_numeric_print")) {
+	} elseif (function_exists("snmp_set_oid_numeric_print")) {
 		snmp_set_oid_numeric_print(TRUE);
 	}
 }
@@ -4354,7 +4362,7 @@ function enable_device_debug($host_id) {
 		if (array_search($host_id, $devices) === false) {
 			set_config_option('selective_device_debug', $device_debug . ',' . $host_id);
 		}
-	}else{
+	} else {
 		set_config_option('selective_device_debug', $host_id);
 	}
 }
@@ -4404,7 +4412,7 @@ function is_device_debug_enabled($host_id) {
 function get_url_type() {
 	if (read_config_option('force_https') == 'on') {
 		return 'https';
-	}else{
+	} else {
 		return 'http';
 	}
 }
@@ -4511,7 +4519,7 @@ function repair_system_data_input_methods($step = 'import') {
 										WHERE data_input_field_id = ?
 										AND data_template_data_id = ?',
 										array($mfid['data_input_field_id'], $mfid['data_template_data_id']));
-								}else{
+								} else {
 									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
 									db_execute_prepared('UPDATE data_input_data 
@@ -4521,7 +4529,7 @@ function repair_system_data_input_methods($step = 'import') {
 										array($good_field_id, $mfid['data_input_field_id'], $mfid['data_template_data_id']));
 								}
 							}
-						}else{
+						} else {
 							cacti_log('No Bad Data Input Data Records', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 						}
 
@@ -4550,7 +4558,7 @@ function repair_system_data_input_methods($step = 'import') {
 										WHERE data_input_field_id = ?
 										AND id = ?', 
 										array($mfid['data_input_field_id'], $mfid['id']));
-								}else{
+								} else {
 									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
 									db_execute_prepared('UPDATE data_template_rrd 
@@ -4560,17 +4568,17 @@ function repair_system_data_input_methods($step = 'import') {
 										array($good_field_id, $mfid['data_input_field_id'], $mfid['id']));
 								}
 							}
-						}else{
+						} else {
 							cacti_log('No Bad Data Template RRD Records', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 						}
 
 						db_execute_prepared('DELETE FROM data_input_fields WHERE hash = ?', array($bhash['hash']));
-					}else{
+					} else {
 						cacti_log('WARNING: Could not find Cacti default matching hash for unknown system hash "' . $bhash['hash'] . '" for ' . $data_input_id . '.  No repair performed.');
 					}
 				}
 			}
-		}else{
+		} else {
 			cacti_log("Could not find hash '" . $hash . "' for Data Input", false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 		}
 	}
@@ -4586,10 +4594,10 @@ if ($config['cacti_server_os'] == 'win32' && !function_exists('posix_kill')) {
 				foreach($procs as $proc) {
 					$proc->Terminate();
 				}
-			}else{
+			} else {
 				return true;
 			}
-		}else{
+		} else {
 			return false;
 		}
 	}
@@ -4600,12 +4608,12 @@ function is_ipaddress($ip_address = '') {
 	if (function_exists('filter_var')) {
 		if (filter_var($ip_address, FILTER_VALIDATE_IP) !== false) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
-	}elseif (inet_pton($ip_address) !== false) {
+	} elseif (inet_pton($ip_address) !== false) {
 		return true;
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -4622,7 +4630,7 @@ function date_time_format() {
 	if (isset($_SESSION['sess_user_id'])) {
 		$date_fmt = read_user_setting('default_date_format');
 		$datechar = read_user_setting('default_datechar');
-	}else{
+	} else {
 		$date_fmt = read_config_option('default_date_format');
 		$datechar = read_config_option('default_datechar');
 	}
