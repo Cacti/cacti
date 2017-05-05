@@ -2870,7 +2870,7 @@ CREATE TABLE vdef (
   name varchar(255) NOT NULL default '',
   PRIMARY KEY (id),
   KEY `hash` (`hash`),
-  ADD INDEX `name` (`name`)
+  KEY `name` (`name`)
 ) ENGINE=InnoDB COMMENT='vdef';
 
 --
