@@ -974,6 +974,7 @@ function graphs() {
 	form_hidden_box('save_component_graph', '1', '');
 
 	if (!isempty_request_var('host_id')) {
+		form_hidden_box('host_id', $host['id'], '0');
 		form_hidden_box('host_template_id', $host['host_template_id'], '0');
 	}
 
