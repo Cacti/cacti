@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-05 13:28+0200\n"
-"PO-Revision-Date: 2017-05-05 14:20+0200\n"
+"PO-Revision-Date: 2017-05-05 15:36+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -4155,7 +4155,7 @@ msgstr "Real-time"
 
 #: ../graph.php:179
 msgid "Utility View"
-msgstr ""
+msgstr "Gereedschappenoverzicht"
 
 #: ../graph.php:277
 msgid "Graph Utility View"
@@ -4977,11 +4977,11 @@ msgstr "Maak grafieken voor dit apparaat"
 
 #: ../host.php:624
 msgid "Data Source List"
-msgstr "Data bron lijst"
+msgstr "Lijst met data bronnen"
 
 #: ../host.php:625
 msgid "Graph List"
-msgstr "Grafieklijst"
+msgstr "Lijst met grafieken"
 
 #: ../host.php:631
 msgid "Contacting Device"
@@ -5439,6 +5439,8 @@ msgstr "Gebruikersnaam bestaat al."
 #: ../include/global_arrays.php:68
 msgid "Username change not permitted for designated template or guest user."
 msgstr ""
+"Het wijzigen van de gebruikersnaam is niet toegestaan vanwege het "
+"rechtenprofiel of als u een gastgebruiker bent."
 
 #: ../include/global_arrays.php:71
 msgid "User delete not permitted for designated template or guest user."
@@ -6088,7 +6090,7 @@ msgstr "Gebruiker domeinen"
 #: ../include/global_arrays.php:675 ../include/global_arrays.php:691
 #: ../include/global_arrays.php:706 ../lib/functions.php:2228
 msgid "Utilities"
-msgstr ""
+msgstr "Gereedschappen"
 
 #: ../include/global_arrays.php:676 ../include/global_arrays.php:692
 msgid "System Utilities"
@@ -7605,27 +7607,31 @@ msgstr ""
 
 #: ../include/global_form.php:1021
 msgid "Device Site Association"
-msgstr ""
+msgstr "Locatie van het apparaat"
 
 #: ../include/global_form.php:1022
 msgid "What Site is this Device associated with."
-msgstr ""
+msgstr "Met welke locatie is dit apparaat gekoppeld."
 
 #: ../include/global_form.php:1031
 msgid ""
 "Choose the Device Template to use to define the default Graph Templates and "
 "Data Queries associated with this Device."
 msgstr ""
+"Kies het apparaat template om de standaard grafiek templates en data queries "
+"te creëeren voor dit apparaat."
 
 #: ../include/global_form.php:1038
 msgid "Number of Collection Threads"
-msgstr ""
+msgstr "Aantal verzamel threads"
 
 #: ../include/global_form.php:1039
 msgid ""
 "The number of concurrent threads to use for polling this device.  This "
 "applies to the Spine poller only."
 msgstr ""
+"Het aantal gelijktijdige processen om dit apparaat te pollen. Dit is alleen "
+"van toepassing op de Spine poller."
 
 #: ../include/global_form.php:1046
 msgid "Disable Device"
@@ -8255,19 +8261,19 @@ msgstr ""
 
 #: ../include/global_languages.php:589
 msgid " T"
-msgstr ""
+msgstr " T"
 
 #: ../include/global_languages.php:591
 msgid " G"
-msgstr ""
+msgstr " G"
 
 #: ../include/global_languages.php:593
 msgid " M"
-msgstr ""
+msgstr " M"
 
 #: ../include/global_languages.php:595
 msgid " K"
-msgstr ""
+msgstr " K"
 
 #: ../include/global_session.php:91
 msgid "Enter a search term"
@@ -10939,6 +10945,8 @@ msgid ""
 "WARNING - If you are upgrading from a previous version please close all "
 "Cacti browser sessions and clear cache before continuing"
 msgstr ""
+"WAARSCHUWING - Als u upgrade van een vorige versie, sluit dan alle Cacti "
+"browserschermen en schoon de lokale cache op voordat u doorgaat."
 
 #: ../install/index.php:719
 msgid ""
@@ -11207,7 +11215,7 @@ msgstr ""
 #: ../install/index.php:1095 ../utilities.php:2003 ../utilities.php:2004
 #: ../utilities.php:2007 ../utilities.php:2008
 msgid "WARNING:"
-msgstr ""
+msgstr "WAARSCHUWING:"
 
 #: ../install/index.php:1102
 msgid "Important Upgrade Notice"
@@ -11419,7 +11427,7 @@ msgstr ""
 
 #: ../lib/api_device.php:406
 msgid "SNMP Information"
-msgstr ""
+msgstr "SNMP informatie"
 
 #: ../lib/api_device.php:410
 msgid "SNMP not in use"
@@ -11562,7 +11570,7 @@ msgstr "Uitloggen"
 
 #: ../lib/functions.php:1816 ../lib/functions.php:1822
 msgid "User Profile (Edit)"
-msgstr ""
+msgstr "Gebruikersprofiel (bewerken)"
 
 #: ../lib/functions.php:1834 ../lib/functions.php:1840
 msgid "Tree Mode"
@@ -11611,7 +11619,7 @@ msgstr "(Verwijder)"
 #: ../lib/functions.php:1982 ../lib/functions.php:1988
 #: ../lib/functions.php:2252
 msgid "View Cacti Log"
-msgstr ""
+msgstr "Toon Cacti log"
 
 #: ../lib/functions.php:1994
 msgid "Graph Trees"
@@ -11635,11 +11643,11 @@ msgstr "Lijst van ongebruikte bestanden"
 
 #: ../lib/functions.php:2234 ../lib/functions.php:2246 ../utilities.php:1773
 msgid "View Poller Cache"
-msgstr ""
+msgstr "Toon poller cache"
 
 #: ../lib/functions.php:2240 ../utilities.php:1777
 msgid "View Data Query Cache"
-msgstr ""
+msgstr "Toon data query cache"
 
 #: ../lib/functions.php:2258 ../utilities.php:1161
 msgid "Clear Cacti Log"
@@ -11647,7 +11655,7 @@ msgstr "Cacti log leegmaken"
 
 #: ../lib/functions.php:2264 ../utilities.php:1766
 msgid "View User Log"
-msgstr ""
+msgstr "Toon gebruikerslog"
 
 #: ../lib/functions.php:2270
 msgid "Clear User Log"
@@ -11663,19 +11671,19 @@ msgstr ""
 
 #: ../lib/functions.php:2288
 msgid "View SNMP Agent Cache"
-msgstr ""
+msgstr "Toon SNMP agent cache"
 
 #: ../lib/functions.php:2294
 msgid "View SNMP Agent Notification Log"
-msgstr ""
+msgstr "Toon SNMP agent notificatie log"
 
 #: ../lib/functions.php:2324
 msgid "VDEF Items"
-msgstr ""
+msgstr "VDEF Items"
 
 #: ../lib/functions.php:2330
 msgid "View SNMP Notification Receivers"
-msgstr ""
+msgstr "Toon SNMP notificatie ontvangers"
 
 #: ../lib/functions.php:2342
 msgid "Cacti Settings"
@@ -13315,7 +13323,7 @@ msgstr "Wijzig pagina"
 
 #: ../links.php:395
 msgid "View Page"
-msgstr ""
+msgstr "Toon pagina"
 
 #: ../links.php:419
 msgid "Sort for Ordering"
@@ -14235,10 +14243,12 @@ msgstr ""
 #: ../templates_export.php:68
 msgid "WARNING: Export Errors Encountered. Refresh Browser Window for Details!"
 msgstr ""
+"WAARSCHUWING: Er zijn export fouten opgetreden. Vernieuw het browserscherm "
+"voor details!"
 
 #: ../templates_export.php:101
 msgid "What would you like to export?"
-msgstr ""
+msgstr "Wat wilt u exporteren?"
 
 #: ../templates_export.php:130
 #, php-format
@@ -14535,7 +14545,7 @@ msgstr ""
 
 #: ../user_admin.php:370
 msgid "Username:"
-msgstr ""
+msgstr "Gebruikersnaam:"
 
 #: ../user_admin.php:377
 msgid "Full Name:"
@@ -14579,7 +14589,7 @@ msgstr ""
 
 #: ../user_admin.php:429
 msgid "User(s) to update:"
-msgstr ""
+msgstr "Gebruiker(s) om bij te werken:"
 
 #: ../user_admin.php:434
 msgid "Reset User(s) Settings"
@@ -14751,7 +14761,7 @@ msgstr ""
 
 #: ../user_admin.php:1575 ../user_group_admin.php:1315
 msgid "User Permissions"
-msgstr ""
+msgstr "Gebruikersrechten"
 
 #: ../user_admin.php:1642 ../user_group_admin.php:1380
 msgid "External Link Permissions"
@@ -14768,7 +14778,7 @@ msgstr ""
 #: ../user_admin.php:1790 ../user_group_admin.php:1528
 #, php-format
 msgid "User Settings %s"
-msgstr ""
+msgstr "Gebruikersinstellingen %s"
 
 #: ../user_admin.php:1905 ../user_group_admin.php:1644
 msgid "Permissions"
@@ -15109,6 +15119,7 @@ msgstr ""
 #: ../user_group_admin.php:133
 msgid "What to do when a User from this User Group logs in."
 msgstr ""
+"Wat moet er gebeuren als een gebruiker uit deze gebruikersgroep inlogt?"
 
 #: ../user_group_admin.php:441
 msgid "Click 'Continue' to delete the following User Group"
@@ -15682,7 +15693,7 @@ msgstr ""
 
 #: ../utilities.php:1802
 msgid "View SNMPAgent Cache"
-msgstr ""
+msgstr "Toon SNMPAgent cache"
 
 #: ../utilities.php:1804
 msgid "This shows all objects being handled by the SNMPAgent."
@@ -15700,7 +15711,7 @@ msgstr ""
 
 #: ../utilities.php:1810
 msgid "View SNMPAgent Notification Log"
-msgstr ""
+msgstr "Toon SNMP agent notificatie log"
 
 #: ../utilities.php:1812
 msgid ""
