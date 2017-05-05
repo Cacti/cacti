@@ -1197,7 +1197,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 				LEFT JOIN host AS h 
 				ON h.id=gl.host_id 
 				$sql_where
-			AS rs
+			) AS rs
 			WHERE id > 0 AND name != ''");
 	}
 
