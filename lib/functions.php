@@ -1300,6 +1300,13 @@ function get_device_name($host_id) {
 	return db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
 }
 
+/* get_color - returns the hex color value from the cacti colors table
+   @arg $color_id - (int) the ID of the cacti color 
+   @returns - the hex color value */
+function get_color($color_id) {
+	return db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($color_id));
+}
+
 /* get_graph_title - returns the title of a graph without using the title cache
    @arg $local_graph_id - (int) the ID of the graph to get a title for
    @returns - the graph title */
@@ -1341,9 +1348,7 @@ function generate_data_source_path($local_data_id) {
 	global $config;
 
 	/* try any prepend the name with the host description */
-	$host = db_fetch_row_prepared('SELECT
-		host.id,
-		host.description
+	$host = db_fetch_row_prepared('SELECT host.id, host.description
 		FROM (host, data_local)
 		WHERE data_local.host_id = host.id
 		AND data_local.id = ?
