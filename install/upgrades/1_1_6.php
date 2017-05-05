@@ -27,9 +27,15 @@ function upgrade_to_1_1_6() {
 		MODIFY COLUMN `input_string` varchar(512) default NULL'
 	);
 
+	if (!db_index_exists('data_input', 'name_type_id')) {
+		db_install_execute('ALTER TABLE `data_input` 
+			ADD KEY `name_type_id` (`name`, `type_id`)'
+		);
+	}
+
 	if (!db_index_exists('snmp_query_graph', 'graph_template_id_name')) {
 		db_install_execute("ALTER TABLE `snmp_query_graph` 
-			ADD INDEX `graph_template_id_name` (`graph_template_id`, `name`)"
+			ADD KEY `graph_template_id_name` (`graph_template_id`, `name`)"
 		);
 	}
 
@@ -50,4 +56,76 @@ function upgrade_to_1_1_6() {
 		MODIFY COLUMN output VARCHAR(512) NOT NULL default '',
 		ENGINE=MEMORY"
 	);
+
+	if (!db_index_exists('graph_templates_gprint', 'name')) {
+		db_install_execute("ALTER TABLE `graph_templates_gprint` 
+			ADD KEY `name` (`name`)"
+		);
+	}
+
+	if (!db_index_exists('data_source_profiles', 'name')) {
+		db_install_execute("ALTER TABLE `data_source_profiles` 
+			ADD KEY `name` (`name`)"
+		);
+	}
+
+	if (!db_index_exists('cdef', 'name')) {
+		db_install_execute("ALTER TABLE `cdef`
+			ADD KEY `name` (`name`)"
+		);
+	}
+
+	if (!db_index_exists('vdef', 'name')) {
+		db_install_execute("ALTER TABLE `vdef`
+			ADD KEY `name` (`name`)"
+		);
+	}
+
+	if (!db_index_exists('poller', 'name')) {
+		db_install_execute("ALTER TABLE `poller`
+			ADD KEY `name` (`name`)"
+		);
+	}
+
+	if (!db_index_exists('host_template', 'name')) {
+		db_install_execute("ALTER TABLE `host_template`
+			ADD KEY `name` (`name`)"
+		);
+	}
+
+	if (!db_index_exists('data_template', 'name')) {
+		db_install_execute("ALTER TABLE `data_template`
+			ADD KEY `name` (`name`)"
+		);
+	}
+
+	if (!db_index_exists('automation_tree_rules', 'name')) {
+		db_install_execute("ALTER TABLE `automation_tree_rules`
+			ADD KEY `name` (`name`)"
+		);
+	}
+
+	if (!db_index_exists('automation_graph_rules', 'name')) {
+		db_install_execute("ALTER TABLE `automation_graph_rules`
+			ADD KEY `name` (`name`)"
+		);
+	}
+
+	if (!db_index_exists('graph_templates', 'name')) {
+		db_install_execute("ALTER TABLE `graph_templates`
+			ADD KEY `name` (`name`)"
+		);
+	}
+
+	if (!db_index_exists('graph_tree', 'name')) {
+		db_install_execute("ALTER TABLE `graph_tree`
+			ADD KEY `name` (`name`)"
+		);
+	}
+
+	if (!db_index_exists('snmp_query_graph', 'snmp_query_id_name')) {
+		db_install_execute("ALTER TABLE `snmp_query_graph`
+			ADD KEY `snmp_query_id_name` (`snmp_query_id`, `name`)"
+		);
+	}
 }

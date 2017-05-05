@@ -782,37 +782,43 @@ function host_edit() {
 
 		if ($host['snmp_version'] == 0) {
 			$sql_where1 = ' AND snmp_query.data_input_id != 2';
-			$sql_where2 = ' WHERE snmp_query.data_input_id != 2';
-		}else{
+			$sql_where2 = ' WHERE snmp_query.data_input_id != 2 AND';
+		} else {
 			$sql_where1 = '';
-			$sql_where2 = '';
+			$sql_where2 = ' WHERE';
 		}
 
+		$sql_where2 .= ' snmp_query.id NOT IN(SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ' . get_request_var('id') . ')';
+
 		$selected_data_queries = db_fetch_assoc_prepared("SELECT snmp_query.id,
-			snmp_query.name, host_snmp_query.reindex_method
-			FROM (snmp_query, host_snmp_query)
-			WHERE snmp_query.id = host_snmp_query.snmp_query_id
+			snmp_query.name, host_snmp_query.reindex_method, items.items, rows.rows
+			FROM snmp_query
+			INNER JOIN host_snmp_query
+			ON snmp_query.id = host_snmp_query.snmp_query_id
 			AND host_snmp_query.host_id = ?
+			LEFT JOIN (
+				SELECT snmp_query_id, COUNT(*) AS items
+				FROM host_snmp_cache
+				WHERE host_id = ?
+				GROUP BY snmp_query_id
+			) AS items
+			ON items.snmp_query_id = snmp_query.id
+			LEFT JOIN (
+				SELECT snmp_query_id, COUNT(DISTINCT snmp_index) AS rows
+				FROM host_snmp_cache
+				WHERE host_id = ?
+				GROUP BY snmp_query_id
+			) AS rows
+			ON rows.snmp_query_id = snmp_query.id
 			$sql_where1
-			ORDER BY snmp_query.name", array(get_request_var('id')));
+			ORDER BY snmp_query.name",
+			array(get_request_var('id'), get_request_var('id'), get_request_var('id'))
+		);
 
 		$available_data_queries = db_fetch_assoc("SELECT snmp_query.id, snmp_query.name
 			FROM snmp_query
 			$sql_where2
 			ORDER BY snmp_query.name");
-
-		$keeper = array();
-		if (sizeof($available_data_queries)) {
-			foreach ($available_data_queries as $item) {
-				if (sizeof(db_fetch_assoc_prepared('SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array(get_request_var('id'), $item['id']))) > 0) {
-					/* do nothing */
-				} else {
-					array_push($keeper, $item);
-				}
-			}
-		}
-
-		$available_data_queries = $keeper;
 
 		$i = 0;
 		if (sizeof($selected_data_queries)) {
@@ -820,10 +826,6 @@ function host_edit() {
 				$i++;
 
 				form_alternate_row("dg$i", true);
-
-				/* get status information for this data query */
-				$num_dq_items = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ?', array(get_request_var('id'), $item['id'])));
-				$num_dq_rows  = sizeof(db_fetch_assoc_prepared('SELECT snmp_index FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? GROUP BY snmp_index', array(get_request_var('id'), $item['id'])));
 
 				$status = 'success';
 
@@ -835,7 +837,7 @@ function host_edit() {
 					<?php device_reindex_methods($item, $host);?>
 					</td>
 					<td>
-						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail') . "</span>");?> [<?php print $num_dq_items;?> Item<?php print ($num_dq_items == 1 ? '' : 's');?>, <?php print $num_dq_rows;?> Row<?php print ($num_dq_rows == 1 ? '' : 's');?>]
+						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail') . "</span>");?> [<?php print $item['items'];?> Item<?php print ($item['items'] == 1 ? '' : 's');?>, <?php print $item['rows'];?> Row<?php print ($item['rows'] == 1 ? '' : 's');?>]
 					</td>
 					<td class='nowrap right' style='vertical-align:middle;'>
 						<span class='reloadquery fa fa-refresh' id='reload<?php print $item['id'];?>' title='<?php print htmlspecialchars(__('Reload Query'), ENT_QUOTES, 'UTF-8');?>' data-id='<?php print $item['id'];?>'></span>

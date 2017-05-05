@@ -384,7 +384,7 @@ $struct_data_source = array(
 	'data_input_id' => array(
 		'friendly_name' => __('Data Input Method'),
 		'method' => 'drop_sql',
-		'sql' => 'SELECT id,name FROM data_input ORDER BY name',
+		'sql' => 'SELECT id, name FROM data_input ORDER BY name',
 		'default' => '',
 		'none_value' => __('None'),
 		'description' => __('The script/source used to gather data for this data source.'),
@@ -707,7 +707,7 @@ $struct_graph = array(
 	'right_axis_format' => array(
 		'friendly_name' => __('Right Axis Format (--right-axis-format &lt;format&gt;)'),
 		'method' => 'drop_sql',
-		'sql' => 'select id,name from graph_templates_gprint order by name',
+		'sql' => 'SELECT id, name FROM graph_templates_gprint ORDER BY name',
 		'default' => '',
 		'none_value' => __('None'),
 		'description' => __('By default, the format of the axis labels gets determined automatically. 
@@ -832,7 +832,7 @@ $struct_graph_item = array(
 	'cdef_id' => array(
 		'friendly_name' => __('CDEF Function'),
 		'method' => 'drop_sql',
-		'sql' => 'SELECT id,name FROM cdef ORDER BY name',
+		'sql' => 'SELECT id, name FROM cdef ORDER BY name',
 		'default' => '0',
 		'none_value' => __('None'),
 		'description' => __('A CDEF (math) function to apply to this item on the graph or legend.')
@@ -864,7 +864,7 @@ $struct_graph_item = array(
 	'gprint_id' => array(
 		'friendly_name' => __('GPRINT Type'),
 		'method' => 'drop_sql',
-		'sql' => 'SELECT id,name FROM graph_templates_gprint ORDER BY name',
+		'sql' => 'SELECT id, name FROM graph_templates_gprint ORDER BY name',
 		'default' => '2',
 		'description' => __('If this graph item is a GPRINT, you can optionally choose another format
 			here. You can define additional types under "GPRINT Presets".')
@@ -1031,7 +1031,7 @@ $fields_host_edit = array(
 		'value' => '|arg1:site_id|',
 		'none_value' => __('None'),
 		'default' => read_config_option('default_site'),
-		'sql' => 'SELECT id,name FROM sites ORDER BY name',
+		'sql' => 'SELECT id, name FROM sites ORDER BY name',
 		),
 	'host_template_id' => array(
 		'method' => 'drop_sql',
@@ -1039,7 +1039,7 @@ $fields_host_edit = array(
 		'description' => __('Choose the Device Template to use to define the default Graph Templates and Data Queries associated with this Device.'),
 		'value' => '|arg1:host_template_id|',
 		'none_value' => __('None'),
-		'sql' => 'SELECT id,name FROM host_template ORDER BY name',
+		'sql' => 'SELECT id, name FROM host_template ORDER BY name',
 		),
 	'device_threads' => array(
 		'method' => 'drop_array',
@@ -1304,7 +1304,7 @@ $fields_data_query_edit = array(
 		'friendly_name' => __('Data Input Method'),
 		'description' => __('Choose the input method for this Data Query.  This input method defines how data is collected for each Device associated with the Data Query.'),
 		'value' => '|arg1:data_input_id|',
-		'sql' => 'SELECT id,name FROM data_input WHERE type_id IN(3,4,6) ORDER BY name',
+		'sql' => 'SELECT id, name FROM data_input WHERE type_id IN(3,4,6) ORDER BY name',
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
@@ -1323,23 +1323,26 @@ $fields_data_query_item_edit = array(
 		'friendly_name' => __('Graph Template'),
 		'description' => __('Choose the Graph Template to use for this Data Query Graph Template item.'),
 		'value' => '|arg1:graph_template_id|',
-		'sql' => 'SELECT DISTINCT gt.id, gt.name
+		'sql' => 'SELECT gt.id, gt.name
 			FROM graph_templates AS gt
-			INNER JOIN graph_templates_graph AS gtg
-			ON gt.id=gtg.graph_template_id
-			AND gtg.local_graph_id=0
-			INNER JOIN graph_templates_item AS gti
-			ON gtg.graph_template_id=gti.graph_template_id
-			AND gti.local_graph_id=0
-			INNER JOIN data_template_rrd AS dtr
-			ON gti.task_item_id=dtr.id
-			AND dtr.local_data_id=0
-			INNER JOIN data_template_data AS dtd
-			ON dtd.data_template_id=dtr.data_template_id
-			AND dtd.local_data_id=0
-			INNER JOIN data_input AS di
-			ON di.id=dtd.data_input_id
-			WHERE di.id in (2,11,12) ORDER BY gt.name',
+			WHERE gt.id IN(
+				SELECT gtg.graph_template_id 
+				FROM graph_templates_graph AS gtg 
+				INNER JOIN graph_templates_item AS gti
+				ON gtg.graph_template_id=gti.graph_template_id 
+				AND gti.local_graph_id = 0
+				INNER JOIN data_template_rrd AS dtr
+				ON gti.task_item_id=dtr.id
+				AND dtr.local_data_id = 0
+				INNER JOIN data_template_data AS dtd
+				ON dtd.data_template_id=dtr.data_template_id 
+				AND dtd.local_data_id = 0
+				INNER JOIN data_input AS di
+				ON di.id = dtd.data_input_id
+				WHERE di.id in (2, 11, 12) 
+				ORDER BY gt.name 
+			)
+			ORDER BY gt.name',
 		),
 	'name' => array(
 		'method' => 'textbox',
@@ -1542,22 +1545,22 @@ $export_types = array(
 	'host_template' => array(
 		'name' => __('Device Template'),
 		'title_sql' => 'SELECT name FROM host_template WHERE id=|id|',
-		'dropdown_sql' => 'SELECT id,name FROM host_template ORDER BY name'
+		'dropdown_sql' => 'SELECT id, name FROM host_template ORDER BY name'
 		),
 	'graph_template' => array(
 		'name' => __('Graph Template'),
 		'title_sql' => 'SELECT name FROM graph_templates WHERE id=|id|',
-		'dropdown_sql' => 'SELECT id,name FROM graph_templates ORDER BY name'
+		'dropdown_sql' => 'SELECT id, name FROM graph_templates ORDER BY name'
 		),
 	'data_template' => array(
 		'name' => __('Data Template'),
 		'title_sql' => 'SELECT name FROM data_template WHERE id=|id|',
-		'dropdown_sql' => 'SELECT id,name FROM data_template ORDER BY name'
+		'dropdown_sql' => 'SELECT id, name FROM data_template ORDER BY name'
 		),
 	'data_query' => array(
 		'name' => __('Data Query'),
 		'title_sql' => 'SELECT name FROM snmp_query WHERE id=|id|',
-		'dropdown_sql' => 'SELECT id,name FROM snmp_query ORDER BY name'
+		'dropdown_sql' => 'SELECT id, name FROM snmp_query ORDER BY name'
 		),
 	'automation_devices' => array(
 		'name' => __('Discovery Rules'),
@@ -1610,7 +1613,7 @@ $fields_template_import = array(
 		'friendly_name' => __('Data Source Profile'),
 		'method' => 'drop_sql',
 		'description' => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
-		'sql' => "SELECT * FROM (SELECT '0' AS id, 'Create New From Template' AS name UNION SELECT id, name FROM data_source_profiles ORDER BY name) AS rs",
+		'sql' => "SELECT '0' AS id, 'Create New From Template' AS name UNION SELECT id, name FROM data_source_profiles ORDER BY name",
 		'value' => '',
 		'default' => '1'
 		),
@@ -2189,8 +2192,6 @@ $fields_automation_graph_rules_edit2 = array(
 			'snmp_query_graph.id, ' .
 			'snmp_query_graph.name ' .
 			'FROM snmp_query_graph ' .
-			'LEFT JOIN graph_templates ' .
-			'ON (snmp_query_graph.graph_template_id=graph_templates.id) ' .
 			'WHERE snmp_query_graph.snmp_query_id=|arg1:snmp_query_id| ' .
 			'ORDER BY snmp_query_graph.name'
 	)
