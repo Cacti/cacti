@@ -644,10 +644,12 @@ function host_edit() {
 		$fields_host_edit['host_template_id']['value'] = get_filter_request_var('host_template_id');
 	}
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($fields_host_edit, (isset($host) ? $host : array()))
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_host_edit, (isset($host) ? $host : array()))
+		)
+	);
 
 	html_end_box(true, true);
 
