@@ -1242,6 +1242,7 @@ legend {
 }
 
 .tableHeader {
+	display: table-row;
 	color: white;
 	background: rgba(0,0,0,0.55);
 }
