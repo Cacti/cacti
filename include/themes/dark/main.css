@@ -1445,6 +1445,7 @@ th.secondarySort {
 	display:block;
 	padding-right:8px;
 	font-size:12px;
+	white-space: nowrap;
 }
 
 .tableSubHeaderColumn {
@@ -1453,7 +1454,6 @@ th.secondarySort {
 	text-align:left;
 	cursor:pointer;
 	padding: 3px;
-	white-space: nowrap;
 }
 
 .graphSubHeaderColumn {
@@ -1915,6 +1915,10 @@ ul#nav {
 
 .clogLimit {
 	background-color: rgba(255, 255, 0, 0.2);
+}
+
+.clogStats td, .clogDebug td, .clogSQL td, .clogWarning td, .clogError td, .clogLimit td {
+	padding: 3px;
 }
 
 @media print {
