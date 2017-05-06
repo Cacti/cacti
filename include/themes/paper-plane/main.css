@@ -1209,13 +1209,13 @@ table.cactiTable {
 .formColumnLeft {
 	float: left;
 	display: table-column;
-	width: 30%;
+	width: 50%;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
-	width: 70%;
+	width: 50%;
 }
 
 .formData {
@@ -1228,13 +1228,15 @@ table.cactiTable {
 	color: snow;
 	float: left;
 	text-align: left;
-	white-space: nowrap;
+	font-weight: bold;
 	padding-left: 3px;
 }
 
 .formFieldDescription {
 	float: left;
 	text-align: left;
+	font-weight: normal;
+	line-height: 14px;
 }
 
 .formTooltip {

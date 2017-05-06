@@ -1276,13 +1276,15 @@ legend {
 	color: snow;
 	float: left;
 	text-align: left;
-	white-space: nowrap;
+	font-weight: normal;
 	padding-left: 3px;
 }
 
 .formFieldDescription {
 	float: left;
+	font-weight: normal;
 	text-align: left;
+	line-height: 14px;
 }
 
 .formTooltip {
