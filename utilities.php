@@ -1066,7 +1066,7 @@ function utilities_view_logfile() {
 
 	if (get_request_var('message_type') > 0) {
 		$start_string = __('Log [Total Lines: %d - Non-Matching Items Hidden]', sizeof($logcontents));
-	}else{
+	} else {
 		$start_string = __('Log [Total Lines: %d - All Items Shown]', sizeof($logcontents));
 	}
 
@@ -1079,46 +1079,45 @@ function utilities_view_logfile() {
 		$host_start = strpos($item, 'Device[');
 		$ds_start   = strpos($item, 'DS[');
 
-		$new_item = '';
-
-		if ((!$host_start) && (!$ds_start)) {
+		if (!$host_start && !$ds_start) {
 			$new_item = cacti_htmlspecialchars($item);
-		}else{
+		} else {
+			$new_item = '';
 			while ($host_start) {
 				$host_end   = strpos($item, ']', $host_start);
 				$host_id    = substr($item, $host_start+7, $host_end-($host_start+7));
-				$new_item   = $new_item . cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars('host.php?action=edit&id=' . $host_id) . "'>" . cacti_htmlspecialchars(substr($item, $host_start + 7, $host_end-($host_start + 7))) . '</a>';
+				$new_item  .= cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars('host.php?action=edit&id=' . $host_id) . "'>" . cacti_htmlspecialchars(substr($item, $host_start + 7, $host_end-($host_start + 7))) . '</a>';
 				$item       = substr($item, $host_end);
 				$host_start = strpos($item, 'Device[');
 			}
 
 			$ds_start = strpos($item, 'DS[');
 			while ($ds_start) {
-				$ds_end   = strpos($item, ']', $ds_start);
-				$ds_id    = substr($item, $ds_start+3, $ds_end-($ds_start+3));
-				$new_item = $new_item . cacti_htmlspecialchars(substr($item, 0, $ds_start + 3)) . "<a href='" . cacti_htmlspecialchars('data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . cacti_htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>';
-				$item     = substr($item, $ds_end);
-				$ds_start = strpos($item, 'DS[');
+				$ds_end    = strpos($item, ']', $ds_start);
+				$ds_id     = substr($item, $ds_start+3, $ds_end-($ds_start+3));
+				$new_item .= cacti_htmlspecialchars(substr($item, 0, $ds_start + 3)) . "<a href='" . cacti_htmlspecialchars('data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . cacti_htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>';
+				$item      = substr($item, $ds_end);
+				$ds_start  = strpos($item, 'DS[');
 			}
 
-			$new_item = $new_item . cacti_htmlspecialchars($item);
+			$new_item .= cacti_htmlspecialchars($item);
 		}
 
 		/* get the background color */
-		if ((substr_count($new_item, 'ERROR')) || (substr_count($new_item, 'FATAL'))) {
+		if (substr_count($new_item, 'ERROR') || substr_count($new_item, 'FATAL')) {
 			$class = 'clogError';
-		}elseif (substr_count($new_item, 'WARN')) {
+		} elseif (substr_count($new_item, 'WARN')) {
 			$class = 'clogWarning';
-		}elseif (substr_count($new_item, ' SQL ')) {
+		} elseif (substr_count($new_item, ' SQL ')) {
 			$class = 'clogSQL';
-		}elseif (substr_count($new_item, 'DEBUG')) {
+		} elseif (substr_count($new_item, 'DEBUG')) {
 			$class = 'clogDebug';
-		}elseif (substr_count($new_item, 'STATS')) {
+		} elseif (substr_count($new_item, 'STATS')) {
 			$class = 'clogStats';
-		}else{
+		} else {
 			if ($linecolor) {
 				$class = 'odd';
-			}else{
+			} else {
 				$class = 'even';
 			}
 			$linecolor = !$linecolor;
@@ -1129,7 +1128,7 @@ function utilities_view_logfile() {
 		$j++;
 		$i++;
 
-		if ($j > 1000) {
+		if ($j >= 1000) {
 			print "<tr class='clogLimit'><td>>>>>" . __('LINE LIMIT OF 1000 LINES REACHED!!') . "<<<<</td></tr>\n";
 
 			break;

@@ -652,10 +652,8 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	@arg $file_name - (char constant) the name of the file to tail
 		 $line_cnt  - (int constant)  the number of lines to count
 		 $message_type - (int constant) the type of message to return
-		 $filter - (char) the filtering expression to search for
-		 $line_size - (int constant)  the average line size to use estimate bytes
-									  to seek up from EOF.  Defaults to 256 bytes */
-function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', $line_size = 256) {
+		 $filter - (char) the filtering expression to search for */
+function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '') {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
@@ -671,9 +669,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 
 	/* load up the lines into an array */
 	$i = 0;
-	while (1) {
-		$line = fgets($fp);
-
+	while (($line = fgets($fp)) !== false) {
 		/* determine if we are to display the line */
 		switch ($message_type) {
 			case -1: /* all */
@@ -741,13 +737,20 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 			break;
 		} elseif ($display) {
 			$file_array[$i] = $line;
+
+			//To prevent large files loaded fully into memory, we only keep the needed lines
+			if ($number_of_lines > 0 && $i >= $number_of_lines) {
+				//We unset() the first item in the array, because array_shift() is to slow
+				unset($file_array[$i-$number_of_lines]);
+			}
+
 			$i++;
 		}
 	}
 
 	fclose($fp);
 
-	return array_slice($file_array, -$number_of_lines, count($file_array));
+	return $file_array;
 }
 
 /* update_host_status - updates the host table with informaton about it's status.
