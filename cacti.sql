@@ -233,7 +233,7 @@ CREATE TABLE `automation_graph_rules` (
   `graph_type_id` smallint(3) unsigned NOT NULL DEFAULT '0',
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`(171))
 ) ENGINE=InnoDB AUTO_INCREMENT=5 COMMENT='Automation Graph Rules';
 
 --
@@ -445,7 +445,7 @@ CREATE TABLE `automation_tree_rules` (
   `host_grouping_type` smallint(3) unsigned NOT NULL DEFAULT '0',
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`(171))
 ) ENGINE=InnoDB AUTO_INCREMENT=4 COMMENT='Automation Tree Rules';
 
 --
@@ -465,7 +465,7 @@ CREATE TABLE cdef (
   name varchar(255) NOT NULL default '',
   PRIMARY KEY (id),
   KEY `hash` (`hash`),
-  KEY `name` (`name`)
+  KEY `name` (`name`(171))
 ) ENGINE=InnoDB;
 
 --
@@ -1057,7 +1057,7 @@ CREATE TABLE data_input (
   input_string varchar(512) default NULL,
   type_id tinyint(2) NOT NULL default '0',
   PRIMARY KEY (id),
-  KEY `name_type_id` (`name`, `type_id`)
+  KEY `name_type_id` (`name`(171), `type_id`)
 ) ENGINE=InnoDB;
 
 --
@@ -1251,7 +1251,7 @@ CREATE TABLE `data_source_profiles` (
   `x_files_factor` double DEFAULT '0.5',
   `default` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`(171))
 ) ENGINE=InnoDB COMMENT='Stores Data Source Profiles';
 
 --
@@ -1584,8 +1584,8 @@ CREATE TABLE graph_templates (
   `name` char(255) NOT NULL default '',
   `multiple` char(2) NOT NULL default '',
   PRIMARY KEY (`id`),
-  KEY `multiple_name` (`multiple`, `name`),
-  KEY `name` (`name`)
+  KEY `multiple_name` (`multiple`, `name`(171)),
+  KEY `name` (`name`(171))
 ) ENGINE=InnoDB COMMENT='Contains each graph template name.';
 
 --
@@ -1750,7 +1750,7 @@ CREATE TABLE graph_tree (
   modified_by int(10) unsigned DEFAULT '1',
   PRIMARY KEY (id),
   KEY `sequence` (`sequence`),
-  KEY `name` (`name`)
+  KEY `name` (`name`(171))
 ) ENGINE=InnoDB;
 
 --
@@ -2870,7 +2870,7 @@ CREATE TABLE vdef (
   name varchar(255) NOT NULL default '',
   PRIMARY KEY (id),
   KEY `hash` (`hash`),
-  KEY `name` (`name`)
+  KEY `name` (`name`(171))
 ) ENGINE=InnoDB COMMENT='vdef';
 
 --

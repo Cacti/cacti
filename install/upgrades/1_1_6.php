@@ -29,7 +29,7 @@ function upgrade_to_1_1_6() {
 
 	if (!db_index_exists('data_input', 'name_type_id')) {
 		db_install_execute('ALTER TABLE `data_input` 
-			ADD KEY `name_type_id` (`name`, `type_id`)'
+			ADD KEY `name_type_id` (`name`(171), `type_id`)'
 		);
 	}
 
@@ -43,7 +43,7 @@ function upgrade_to_1_1_6() {
 		db_install_execute(
 			"ALTER TABLE `graph_templates` 
 				ADD `multiple` CHAR(2) NOT NULL DEFAULT '' AFTER `name`,
-				ADD KEY `multiple_name` (`multiple`, `name`)"
+				ADD KEY `multiple_name` (`multiple`, `name`(171))"
 		);
 	}
 
@@ -65,19 +65,19 @@ function upgrade_to_1_1_6() {
 
 	if (!db_index_exists('data_source_profiles', 'name')) {
 		db_install_execute("ALTER TABLE `data_source_profiles` 
-			ADD KEY `name` (`name`)"
+			ADD KEY `name` (`name`(171))"
 		);
 	}
 
 	if (!db_index_exists('cdef', 'name')) {
 		db_install_execute("ALTER TABLE `cdef`
-			ADD KEY `name` (`name`)"
+			ADD KEY `name` (`name`(171))"
 		);
 	}
 
 	if (!db_index_exists('vdef', 'name')) {
 		db_install_execute("ALTER TABLE `vdef`
-			ADD KEY `name` (`name`)"
+			ADD KEY `name` (`name`(171))"
 		);
 	}
 
@@ -101,25 +101,25 @@ function upgrade_to_1_1_6() {
 
 	if (!db_index_exists('automation_tree_rules', 'name')) {
 		db_install_execute("ALTER TABLE `automation_tree_rules`
-			ADD KEY `name` (`name`)"
+			ADD KEY `name` (`name`(171))"
 		);
 	}
 
 	if (!db_index_exists('automation_graph_rules', 'name')) {
 		db_install_execute("ALTER TABLE `automation_graph_rules`
-			ADD KEY `name` (`name`)"
+			ADD KEY `name` (`name`(171))"
 		);
 	}
 
 	if (!db_index_exists('graph_templates', 'name')) {
 		db_install_execute("ALTER TABLE `graph_templates`
-			ADD KEY `name` (`name`)"
+			ADD KEY `name` (`name`(171))"
 		);
 	}
 
 	if (!db_index_exists('graph_tree', 'name')) {
 		db_install_execute("ALTER TABLE `graph_tree`
-			ADD KEY `name` (`name`)"
+			ADD KEY `name` (`name`(171))"
 		);
 	}
 
