@@ -1970,6 +1970,10 @@ ul#nav {
 	background-color: #EACC00;
 }
 
+.clogStats td, .clogDebug td, .clogSQL td, .clogWarning td, .clogError td, .clogLimit td {
+	padding: 3px;
+}
+
 @media print {
 	.noprint { display:none }
 }
