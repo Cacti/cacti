@@ -285,7 +285,9 @@ function settings() {
 
 	var themeFonts=<?php print read_config_option('font_method');?>;
 	var themeChanged = false;
+	var langChanged = false;
 	var currentTheme = '<?php print get_selected_theme();?>';
+	var currentLang  = '<?php print read_config_option('user_language');?>';
 
 	function clearPrivateData() {
 		$.localStorage.removeAll();
@@ -372,11 +374,19 @@ function settings() {
 		}
 	}
 
-	function themeChanger() {
+	function themeChange() {
 		if ($('#selected_theme').val() != currentTheme) {
 			themeChanged = true;
 		}else{
 			themeChanged = false;
+		}
+	}
+
+	function langChange() {
+		if ($('#user_language').val() != currentLang) {
+			langChanged = true;
+		}else{
+			langChanged = false;
 		}
 	}
 
@@ -388,7 +398,7 @@ function settings() {
 
 		$('input[value="Save"]').unbind().click(function(event) {
 			event.preventDefault();
-            if (themeChanged != true) {
+            if (themeChanged != true && langChanged != true) {
                 $.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
 					loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
                 });
@@ -400,7 +410,11 @@ function settings() {
 		});
 
 		$('#selected_theme').change(function() {
-			themeChanger();
+			themeChange();
+		});
+
+		$('#user_language').change(function() {
+			langChange();
 		});
 
 		$('input[value="Return"]').unbind().click(function(event) {

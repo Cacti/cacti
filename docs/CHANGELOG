@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue: Remove tabindex and other non-required manual aria controls from pages
 -issue: Table type and column type in poller_output table wrong
 -issue: FILTER_VALIDATE_MAC not defined on PHP less than 5.5
+-issue: When changing your language Cacti would not do a full page refresh
 -feature#106: Paginated CLOG and log administration
 -feature: Dutch translations
 -feature: Responsive Graphs page
