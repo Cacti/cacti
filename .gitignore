@@ -1,0 +1,8 @@
+# Ignore vim swap files
+*.swp
+# Ignore Cacti config
+include/config.php
+# Ignore Cacti log files
+log/cacti.log
+# Ignore Cacti rrd files
+rra/**
