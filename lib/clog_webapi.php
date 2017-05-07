@@ -70,25 +70,25 @@ function clog_view_logfile() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'tail_lines' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => read_config_option('num_rows_log')
-			),
+		),
 		'message_type' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '-1'
-			),
+		),
 		'refresh' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => read_config_option('log_refresh_interval')
-			),
+		),
 		'reverse' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX, 
-			'default' => '' 
-			)
+			'filter' => FILTER_VALIDATE_IS_REGEX,
+			'default' => ''
+		)
 	);
 
 	$clogAdmin = clog_admin();
@@ -150,7 +150,7 @@ function clog_view_logfile() {
 
 		form_end();
 
-		return;	
+		return;
 	}
 
 	html_start_box(__('Log Filters'), '100%', '', '3', 'center', '');
@@ -158,14 +158,18 @@ function clog_view_logfile() {
 	html_end_box();
 
 	/* read logfile into an array and display */
-	$logcontents   = tail_file($logfile, get_request_var('tail_lines'), get_request_var('message_type'), get_request_var('rfilter'));
-	$exclude_regex = read_config_option('clog_exclude', true);
+	$total_rows      = 0;
+	$page_nr         = isset_request_var('page') ? get_request_var('page') : 1;
+	$number_of_lines = get_request_var('tail_lines') < 0 ? MAX_DISPLAY_ROWS : get_request_var('tail_lines');
+
+	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows);
 
 	if (get_request_var('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
 	}
 
 	if (!$clogAdmin) {
+		$exclude_regex = read_config_option('clog_exclude', true);
 		if ($exclude_regex != '') {
 			$ad_filter = ' - Admin Filter in Affect';
 		} else {
@@ -176,16 +180,31 @@ function clog_view_logfile() {
 	}
 
 	if (get_request_var('message_type') > 0) {
-		$start_string = __('Log [Total Lines: %d %s - Additional Filter in Affect]', sizeof($logcontents), $ad_filter);
+		$start_string = __('Log [Total Lines: %d %s - Additional Filter in Affect]', $total_rows, $ad_filter);
 	} else {
-		$start_string = __('Log [Total Lines: %d %s - No Other Filter in Affect]', sizeof($logcontents), $ad_filter);
+		$start_string = __('Log [Total Lines: %d %s - No Other Filter in Affect]', $total_rows, $ad_filter);
 	}
+
+	$rfilter      = get_request_var('rfilter');
+	$reverse      = get_request_var('reverse');
+	$refresh      = get_request_var('refresh');
+	$message_type = get_request_var('message_type');
+	$tail_lines   = get_request_var('tail_lines');
+	$base_url     = 'clog.php?rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refresh.'&message_type='.$message_type.'&tail_lines='.$tail_lines;
+
+	$nav          = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page');
+
+	echo $nav;
 
 	html_start_box($start_string, '100%', '', '3', 'center', '');
 
-	$i = 0;
-	$j = 0;
 	$linecolor = false;
+
+	$hosts = db_fetch_assoc_prepared('SELECT id, description FROM host');
+	$hostDescriptions = array();
+	foreach ($hosts as $host) {
+		$hostDescriptions[$host['id']] = cacti_htmlspecialchars($host['description']);
+	}
 
 	foreach ($logcontents as $item) {
 		$host_start = strpos($item, 'Device[');
@@ -199,8 +218,7 @@ function clog_view_logfile() {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start + 7, $host_end - ($host_start + 7));
 				$new_item   .= cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
-				$host_description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
-				$new_item   .= '] Description[' . cacti_htmlspecialchars($host_description) . '';
+				$new_item   .= '] Description[' . $hostDescriptions[$host_id];
 				$item        = substr($item, $host_end);
 				$host_start  = strpos($item, 'Device[');
 			}
@@ -244,15 +262,15 @@ function clog_view_logfile() {
 		}
 
 		/* get the background color */
-		if (substr_count($new_item, 'ERROR') || substr_count($new_item, 'FATAL')) {
+		if (strpos($new_item, 'ERROR') !== false || strpos($new_item, 'FATAL') !== false) {
 			$class = 'clogError';
-		} elseif (substr_count($new_item, 'WARN')) {
+		} elseif (strpos($new_item, 'WARN') !== false) {
 			$class = 'clogWarning';
-		} elseif (substr_count($new_item, ' SQL ')) {
+		} elseif (strpos($new_item, ' SQL ') !== false) {
 			$class = 'clogSQL';
-		} elseif (substr_count($new_item, 'DEBUG')) {
+		} elseif (strpos($new_item, 'DEBUG') !== false) {
 			$class = 'clogDebug';
-		} elseif (substr_count($new_item, 'STATS')) {
+		} elseif (strpos($new_item, 'STATS') !== false) {
 			$class = 'clogStats';
 		} else {
 			if ($linecolor) {
@@ -270,23 +288,13 @@ function clog_view_logfile() {
 			</td>
 		</tr>
 		<?php
-		$j++;
-		$i++;
-
-		if ($j >= 1000) {
-			?>
-			<tr class='even'>
-				<td>
-					<?php print '>>>>  ' . __('LINE LIMIT OF 1000 LINES REACHED!!') . '  <<<<';?>
-				</td>
-			</tr>
-			<?php
-
-			break;
-		}
 	}
 
 	html_end_box();
+
+	if ($total_rows) {
+		echo $nav;
+	}
 
 	bottom_footer();
 }
@@ -306,7 +314,11 @@ function filter() {
 						<select id='tail_lines' name='tail_lines'>
 							<?php
 							foreach($log_tail_lines AS $tail_lines => $display_text) {
-								print "<option value='" . $tail_lines . "'"; if (get_request_var('tail_lines') == $tail_lines) { print ' selected'; } print '>' . $display_text . "</option>\n";
+								print "<option value='" . $tail_lines . "'";
+								if (get_request_var('tail_lines') == $tail_lines) {
+									print ' selected';
+								}
+								print '>' . $display_text . "</option>\n";
 							}
 							?>
 						</select>
@@ -342,7 +354,11 @@ function filter() {
 						<select id='refresh' name='refresh'>
 							<?php
 							foreach($page_refresh_interval AS $seconds => $display_text) {
-								print "<option value='" . $seconds . "'"; if (get_request_var('refresh') == $seconds) { print ' selected'; } print '>' . $display_text . "</option>\n";
+								print "<option value='" . $seconds . "'";
+								if (get_request_var('refresh') == $seconds) {
+									print ' selected';
+								}
+								print '>' . $display_text . "</option>\n";
 							}
 							?>
 						</select>

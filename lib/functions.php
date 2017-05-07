@@ -649,11 +649,13 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	  It is used in 0.8.6 to speed the viewing of the Cacti log file, which
 	  can be problematic in the 0.8.6 branch.
 
-	@arg $file_name - (char constant) the name of the file to tail
-		 $line_cnt  - (int constant)  the number of lines to count
+	@arg $file_name    - (char constant) the name of the file to tail
+		 $line_cnt     - (int constant)  the number of lines to count
 		 $message_type - (int constant) the type of message to return
-		 $filter - (char) the filtering expression to search for */
-function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '') {
+		 $filter       - (char) the filtering expression to search for
+		 $page_nr      - (int) the page we want to show rows for
+		 $total_rows   - (int) the total number of rows in the logfile */
+function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', $page_nr = 1, &$total_rows) {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
@@ -664,93 +666,82 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		return array();
 	}
 
-	$file_array = array();
 	$fp = fopen($file_name, 'r');
 
+	/* Count all lines in the logfile */
+	$total_rows = 0;
+	while (($line = fgets($fp)) !== false) {
+		if (determine_display_log_entry($message_type, $line, $filter)) {
+			++$total_rows;
+		}
+	}
+
+	/* rewind file pointer, to start all over */
+	rewind($fp);
+
+	$start = $total_rows - ($page_nr * $number_of_lines);
+	$end   = $start + $number_of_lines;
+
+	if ($start < 0) {
+		$start = 0;
+	}
+
 	/* load up the lines into an array */
+	$file_array = array();
 	$i = 0;
 	while (($line = fgets($fp)) !== false) {
-		/* determine if we are to display the line */
-		switch ($message_type) {
-			case -1: /* all */
-				$display = true;
-				break;
-			case 5: /* sql calls */
-				if (substr_count($line, ' SQL ')) {
-					$display=true;
-				} else {
-					$display=false;
-				}
+		$display = determine_display_log_entry($message_type, $line, $filter);
 
-				break;
-			case 1: /* stats */
-				if (substr_count($line, 'STATS')) {
-					$display=true;
-				} else {
-					$display=false;
-				}
-
-				break;
-			case 2: /* warnings */
-				if (substr_count($line, 'WARN')) {
-					$display=true;
-				} else {
-					$display=false;
-				}
-
-				break;
-			case 3: /* errors */
-				if (substr_count($line, 'ERROR')) {
-					$display=true;
-				} else {
-					$display=false;
-				}
-
-				break;
-			case 4: /* debug */
-				if (substr_count($line, 'DEBUG')) {
-					$display=true;
-				} else {
-					$display=false;
-				}
-
-				if (substr_count($line, ' SQL ')) {
-					$display=false;
-				}
-
-				break;
-			default: /* all other lines */
-				$display=true;
-				break;
+		if ($display === false) {
+			continue;
 		}
-
-		/* match any lines that match the search string */
-		if ($filter != '') {
-			if (substr_count(strtolower($line), strtolower($filter)) || preg_match('/' . $filter . '/i', $line)) {
-				$display=true;
-			} else {
-				$display=false;
-			}
+		if ($i < $start) {
+			++$i;
+			continue;
 		}
-
-		if (feof($fp)) {
+		if ($i >= $end) {
 			break;
-		} elseif ($display) {
-			$file_array[$i] = $line;
-
-			//To prevent large files loaded fully into memory, we only keep the needed lines
-			if ($number_of_lines > 0 && $i >= $number_of_lines) {
-				//We unset() the first item in the array, because array_shift() is to slow
-				unset($file_array[$i-$number_of_lines]);
-			}
-
-			$i++;
 		}
+
+		++$i;
+		$file_array[$i] = $line;
 	}
 
 	fclose($fp);
 
 	return $file_array;
+}
+
+function determine_display_log_entry($message_type, $line, $filter) {
+	/* determine if we are to display the line */
+	switch ($message_type) {
+		case 1: /* stats */
+			$display = (strpos($line, 'STATS') !== false);
+			break;
+		case 2: /* warnings */
+			$display = (strpos($line, 'WARN') !== false);
+			break;
+		case 3: /* errors */
+			$display = (strpos($line, 'ERROR') !== false);
+			break;
+		case 4: /* debug */
+			$display = (strpos($line, 'DEBUG') !== false && strpos($line, ' SQL ') === false);
+			break;
+		case 5: /* sql calls */
+			$display = (strpos($line, ' SQL ') !== false);
+			break;
+		default: /* all other lines */
+		case -1: /* all */
+			$display = true;
+			break;
+	}
+
+	/* match any lines that match the search string */
+	if ($display === true && $filter != '') {
+		return (strpos(strtolower($line), strtolower($filter)) !== false || preg_match('/' . $filter . '/i', $line));
+	}
+
+	return $display;
 }
 
 /* update_host_status - updates the host table with informaton about it's status.

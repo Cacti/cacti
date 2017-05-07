@@ -1058,22 +1058,35 @@ function utilities_view_logfile() {
 	html_end_box();
 
 	/* read logfile into an array and display */
-	$logcontents = tail_file($logfile, get_request_var('tail_lines'), get_request_var('message_type'), get_request_var('rfilter'));
+	$total_rows      = 0;
+	$page_nr         = isset_request_var('page') ? get_request_var('page') : 1;
+	$number_of_lines = get_request_var('tail_lines') < 0 ? MAX_DISPLAY_ROWS : get_request_var('tail_lines');
+
+	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows);
 
 	if (get_request_var('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
 	}
 
 	if (get_request_var('message_type') > 0) {
-		$start_string = __('Log [Total Lines: %d - Non-Matching Items Hidden]', sizeof($logcontents));
+		$start_string = __('Log [Total Lines: %d - Non-Matching Items Hidden]', $number_of_lines);
 	} else {
-		$start_string = __('Log [Total Lines: %d - All Items Shown]', sizeof($logcontents));
+		$start_string = __('Log [Total Lines: %d - All Items Shown]', $number_of_lines);
 	}
+
+	$rfilter      = get_request_var('rfilter');
+	$reverse      = get_request_var('reverse');
+	$refresh      = get_request_var('refresh');
+	$message_type = get_request_var('message_type');
+	$tail_lines   = get_request_var('tail_lines');
+	$base_url     = 'utilities.php?action=view_logfile&rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refresh.'&message_type='.$message_type.'&tail_lines='.$tail_lines;
+
+	$nav          = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page');
+
+	echo $nav;
 
 	html_start_box($start_string, '100%', '', '3', 'center', '');
 
-	$i = 0;
-	$j = 0;
 	$linecolor = false;
 	foreach ($logcontents as $item) {
 		$host_start = strpos($item, 'Device[');
@@ -1085,8 +1098,8 @@ function utilities_view_logfile() {
 			$new_item = '';
 			while ($host_start) {
 				$host_end   = strpos($item, ']', $host_start);
-				$host_id    = substr($item, $host_start+7, $host_end-($host_start+7));
-				$new_item  .= cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars('host.php?action=edit&id=' . $host_id) . "'>" . cacti_htmlspecialchars(substr($item, $host_start + 7, $host_end-($host_start + 7))) . '</a>';
+				$host_id    = substr($item, $host_start + 7, $host_end - ($host_start + 7));
+				$new_item  .= cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars('host.php?action=edit&id=' . $host_id) . "'>" . cacti_htmlspecialchars(substr($item, $host_start + 7, $host_end - ($host_start + 7))) . '</a>';
 				$item       = substr($item, $host_end);
 				$host_start = strpos($item, 'Device[');
 			}
@@ -1094,8 +1107,8 @@ function utilities_view_logfile() {
 			$ds_start = strpos($item, 'DS[');
 			while ($ds_start) {
 				$ds_end    = strpos($item, ']', $ds_start);
-				$ds_id     = substr($item, $ds_start+3, $ds_end-($ds_start+3));
-				$new_item .= cacti_htmlspecialchars(substr($item, 0, $ds_start + 3)) . "<a href='" . cacti_htmlspecialchars('data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . cacti_htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>';
+				$ds_id     = substr($item, $ds_start + 3, $ds_end - ($ds_start + 3));
+				$new_item .= cacti_htmlspecialchars(substr($item, 0, $ds_start + 3)) . "<a href='" . cacti_htmlspecialchars('data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . cacti_htmlspecialchars(substr($item, $ds_start + 3, $ds_end - ($ds_start + 3))) . '</a>';
 				$item      = substr($item, $ds_end);
 				$ds_start  = strpos($item, 'DS[');
 			}
@@ -1104,15 +1117,15 @@ function utilities_view_logfile() {
 		}
 
 		/* get the background color */
-		if (substr_count($new_item, 'ERROR') || substr_count($new_item, 'FATAL')) {
+		if (strpos($new_item, 'ERROR') !== false || strpos($new_item, 'FATAL') !== false) {
 			$class = 'clogError';
-		} elseif (substr_count($new_item, 'WARN')) {
+		} elseif (strpos($new_item, 'WARN') !== false) {
 			$class = 'clogWarning';
-		} elseif (substr_count($new_item, ' SQL ')) {
+		} elseif (strpos($new_item, ' SQL ') !== false) {
 			$class = 'clogSQL';
-		} elseif (substr_count($new_item, 'DEBUG')) {
+		} elseif (strpos($new_item, 'DEBUG') !== false) {
 			$class = 'clogDebug';
-		} elseif (substr_count($new_item, 'STATS')) {
+		} elseif (strpos($new_item, 'STATS') !== false) {
 			$class = 'clogStats';
 		} else {
 			if ($linecolor) {
@@ -1124,18 +1137,13 @@ function utilities_view_logfile() {
 		}
 
 		print "<tr class='" . $class . "'><td>" . $new_item . "</td></tr>\n";
-
-		$j++;
-		$i++;
-
-		if ($j >= 1000) {
-			print "<tr class='clogLimit'><td>>>>>" . __('LINE LIMIT OF 1000 LINES REACHED!!') . "<<<<</td></tr>\n";
-
-			break;
-		}
 	}
 
 	html_end_box();
+
+	if ($total_rows) {
+		echo $nav;
+	}
 
 	bottom_footer();
 }
