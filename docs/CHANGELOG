@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#637: When displaying tree graphs, use the same layout as preview mode
 -issue#646: When a plugin is disabled during page operations, warnings can appear
 -issue#651: Unable to view cacti log (because of allowed memory size exhausted)
+-issue#657: Error in log when host is down, using icmp and using cmd.php on FreeBSD
 -issue: List for creating a Graph type shows already added Graph Templates
 -issue: Fix and undefined variable on data source page when first creating a manual data source
 -issue: Remove tabindex and other non-required manual aria controls from pages
