@@ -6,3 +6,5 @@ include/config.php
 log/cacti.log
 # Ignore Cacti rrd files
 rra/**
+# Ignore Cacti cache files (comment out to commit new directory)
+cache/**
