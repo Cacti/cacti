@@ -128,4 +128,6 @@ function upgrade_to_1_1_6() {
 			ADD KEY `snmp_query_id_name` (`snmp_query_id`, `name`)"
 		);
 	}
+
+	db_install_execute("INSERT INTO settings SET `name` = 'max_display_rows', `value` = 1000");
 }
