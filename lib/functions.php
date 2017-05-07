@@ -1159,20 +1159,23 @@ function get_full_script_path($local_data_id) {
    @arg $data_template_rrd_id - (int) the ID of the data source item
    @returns - the name of the data source item or an empty string for an error */
 function get_data_source_item_name($data_template_rrd_id) {
-	if (empty($data_template_rrd_id)) { return ''; }
+	if (empty($data_template_rrd_id)) {
+		return '';
+	}
 
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		data_template_rrd.data_source_name,
 		data_template_data.name
-		FROM (data_template_rrd, data_template_data)
-		WHERE data_template_rrd.local_data_id = data_template_data.local_data_id
-		AND data_template_rrd.id = ?', array($data_template_rrd_id));
+		FROM data_template_rrd
+		INNER JOIN data_template_data ON data_template_rrd.local_data_id = data_template_data.local_data_id
+		WHERE data_template_rrd.id = ?', array($data_template_rrd_id)
+	);
 
 	/* use the cacti ds name by default or the user defined one, if entered */
 	if (empty($data_source['data_source_name'])) {
 		/* limit input to 19 characters */
 		$data_source_name = clean_up_name($data_source['name']);
-		$data_source_name = substr(strtolower($data_source_name),0,(19-strlen($data_template_rrd_id))) . $data_template_rrd_id;
+		$data_source_name = substr(strtolower($data_source_name), 0, (19-strlen($data_template_rrd_id))) . $data_template_rrd_id;
 
 		return $data_source_name;
 	} else {

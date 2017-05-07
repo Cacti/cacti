@@ -1073,14 +1073,14 @@ legend {
 .formColumnLeft {
 	float: left;
 	display: table-column;
-	width: 30%;
+	width: 50%;
 	text-align: left;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
-	width: 70%;
+	width: 50%;
 	text-align: left;
 }
 
@@ -1116,13 +1116,15 @@ legend {
 	color: #000000;
 	float: left;
 	text-align: left;
-	white-space: nowrap;
+	font-weight: bold;
 	padding-left: 3px;
 }
 
 .formFieldDescription {
 	float: left;
 	text-align: left;
+	font-weight: normal;
+	line-height: 14px;
 }
 
 .formTooltip {
@@ -1786,6 +1788,10 @@ ul#nav {
 
 .clogLimit {
 	background-color: #EACC00;
+}
+
+.clogStats td, .clogDebug td, .clogSQL td, .clogWarning td, .clogError td, .clogLimit td {
+	padding: 3px;
 }
 
 @media print {

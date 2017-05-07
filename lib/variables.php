@@ -119,8 +119,6 @@ function update_graph_title_cache($local_graph_id) {
    @arg $string - the string to clean out unsubstituted variables for
    @returns - the cleaned up string */
 function null_out_substitutions($string) {
-	global $regexps;
-
 	return preg_replace("/\|host_" . VALID_HOST_FIELDS . "\|( - )?/i", '', $string);
 }
 
