@@ -675,7 +675,7 @@ $settings = array(
 			),
 		'max_display_rows' => array(
 			'friendly_name' => __('Maximum number of rows per page'),
-			'description' => __("User defined number of lines for the Cacti log file to tail when selected 'All lines'."),
+			'description' => __("User defined number of lines for the CLOG to tail when selecting 'All lines'."),
 			'method' => 'textbox',
 			'max_length' => 5,
 			'size' => 5,
