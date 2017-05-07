@@ -86,7 +86,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 	if (isset($data['host']) && ($data['host'] < 0 || !is_numeric($data['host']))) {
 		cacti_log('ERROR: Copy node host data invalid, Function copy_node', false);
 		return;
-	}elseif(isset($data['graph']) && ($data['graph'] < 0 || !is_numeric($data['graph']))) {
+	} elseif(isset($data['graph']) && ($data['graph'] < 0 || !is_numeric($data['graph']))) {
 		cacti_log('ERROR: Copy node graph data invalid, Function copy_node', false);
 		return;
 	}
@@ -110,7 +110,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 			print 'tbranch:' . $exists;
 			return;
 		}
-	}elseif ($data['graph'] > 0) {
+	} elseif ($data['graph'] > 0) {
 		$exists = db_fetch_cell_prepared('SELECT id 
 			FROM graph_tree_items 
 			WHERE parent = ?
@@ -122,7 +122,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 			print 'tbranch:' . $exists;
 			return;
 		}
-	}else{
+	} else {
 		$title = db_fetch_cell_prepared('SELECT title 
 			FROM graph_tree_items 
 			WHERE id = ?', array($data['leaf_id']));
@@ -159,7 +159,7 @@ function api_tree_get_lock($lockname, $timeout = 10) {
 
 		if ($locked) {
 			return true;
-		}else{
+		} else {
 			sleep(1);
 		}
 	}
@@ -203,7 +203,7 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = 'New Branc
 		$exists_id = api_tree_branch_exists($tree_id, $data['leaf_id'], $title);
 		if ($exists_id == false) {
 			break;
-		}else{
+		} else {
 			$found = true;
 			$i++;
 		}
@@ -240,7 +240,7 @@ function api_tree_branch_exists($tree_id, $parent, $title) {
 
 	if ($id > 0) {
 		return $id;
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -255,7 +255,7 @@ function api_tree_host_exists($tree_id, $parent, $host_id) {
 
 	if ($id > 0) {
 		return $id;
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -270,7 +270,7 @@ function api_tree_graph_exists($tree_id, $parent, $local_graph_id) {
 
 	if ($id > 0) {
 		return $id;
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -350,9 +350,9 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 	if (empty($new_parent)) {
 		cacti_log("ERROR: Invalid Parent Node '$new_parent' for NodeID: '$node_id', Function move_node", false);
 		return;
-	}elseif ($new_parent == '#') {
+	} elseif ($new_parent == '#') {
 		$pdata['leaf_id'] = 0;
-	}else{
+	} else {
 		$pdata = api_tree_parse_node_data($new_parent);
 	}
 
@@ -380,7 +380,7 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 		}
 
 		api_tree_sort_branch($data['leaf_id'], $tree_id);
-	}elseif (isset($data['leaf_id']) && $data['leaf_id'] > 0 && isset($pdata['leaf_id']) && $pdata['leaf_id'] >= 0) {
+	} elseif (isset($data['leaf_id']) && $data['leaf_id'] > 0 && isset($pdata['leaf_id']) && $pdata['leaf_id'] >= 0) {
 		db_execute_prepared('UPDATE graph_tree_items
 			SET position = ? 
 			WHERE graph_tree_id = ?
@@ -402,7 +402,7 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 		}
 
 		api_tree_sort_branch($data['leaf_id'], $tree_id);
-	}else{
+	} else {
 		cacti_log('Invalid Source Destination Branches, Function move_node', false);
 	}
 
@@ -445,7 +445,7 @@ function api_tree_parse_node_data($variable) {
 
 	if ($leaf_id > 0) {
 		$parent = db_fetch_cell_prepared('SELECT parent FROM graph_tree_items WHERE id = ?', array($leaf_id));
-	}else{
+	} else {
 		$parent = '0';
 	}
 
@@ -549,7 +549,7 @@ function api_tree_get_main($tree_id, $parent = 0) {
 					print $h;
 				}
 			}
-		}else{
+		} else {
 			$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
 			if (sizeof($heirarchy)) {
@@ -558,7 +558,7 @@ function api_tree_get_main($tree_id, $parent = 0) {
 				}
 			}
 		}
-	}else{
+	} else {
 		$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
 		if (sizeof($heirarchy)) {
@@ -580,7 +580,7 @@ function api_tree_get_main($tree_id, $parent = 0) {
 function api_tree_get_node($tree_id, $node_id) {
 	if ($node_id == '#') {
 		$heirarchy = draw_dhtml_tree_level($tree_id, 0);
-	}else{
+	} else {
 		$data  = api_tree_parse_node_data($node_id);
 		$id    = $data['leaf_id'];
 
@@ -621,7 +621,7 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 		if ($exists) {
 			return false;
 		}
-	}elseif ($host_id > 0) {
+	} elseif ($host_id > 0) {
 		$exists = db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE host_id = ? AND parent = ? AND graph_tree_id = ?', array($host_id, $parent_tree_item_id, $tree_id));
 		if ($exists) {
 			return false;
@@ -646,7 +646,7 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 			raise_message(1);
 
 			api_tree_sort_branch($tree_item_id, $tree_id);
-		}else{
+		} else {
 			raise_message(2);
 		}
 	}
@@ -665,11 +665,11 @@ function api_tree_get_item_type($tree_item_id) {
 
 	if (!sizeof($tree_item)) {
 		return '';
-	}elseif ($tree_item['local_graph_id'] > 0) {
+	} elseif ($tree_item['local_graph_id'] > 0) {
 		return 'graph';
-	}elseif ($tree_item['title'] != '') {
+	} elseif ($tree_item['title'] != '') {
 		return 'header';
-	}elseif ($tree_item['host_id'] > 0) {
+	} elseif ($tree_item['host_id'] > 0) {
 		return 'host';
 	}
 
@@ -698,13 +698,13 @@ function api_tree_get_branch_ordering($leaf_id) {
 
 			if ($parent > 0) {
 				return api_tree_get_branch_ordering($parent);
-			}else{
+			} else {
 				return db_fetch_cell_prepared('SELECT sort_type FROM graph_tree WHERE id = ?', array($leaf['graph_tree_id']));
 			}
-		}else{
+		} else {
 			return $leaf['sort_children_type'];
 		}
-	}else{
+	} else {
 		return 1;
 	}
 }
@@ -752,16 +752,16 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 		$pdata   = db_fetch_row_prepared('SELECT parent, graph_tree_id FROM graph_tree_items WHERE id = ?', array($leaf_id));
 		$parent  = $pdata['parent'];
 		$tree_id = $pdata['graph_tree_id'];
-	}elseif ($tree_id > 0) {
+	} elseif ($tree_id > 0) {
 		$parent        = 0;
-	}else{
+	} else {
 		cacti_log('Error Sorting Tree');
 		return;
 	}
 
 	if ($parent > 0) {
 		$sort_style = api_tree_get_branch_ordering($parent);
-	}else{
+	} else {
 		$sort_style = db_fetch_cell_prepared('SELECT sort_type FROM graph_tree WHERE id = ?', array($tree_id));
 	}
 
@@ -781,12 +781,12 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 	if (sizeof($sort_array)) {
 		if ($sort_style == TREE_ORDERING_NUMERIC) {
 			asort($sort_array, SORT_NUMERIC);
-		}elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
+		} elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
 			// Let's let the database do it!
-		}elseif ($sort_style == TREE_ORDERING_NATURAL) {
+		} elseif ($sort_style == TREE_ORDERING_NATURAL) {
 			if (defined('SORT_FLAG_CASE')) {
 				asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
-			}else{
+			} else {
 				natcasesort($sort_array);
 			}
 		}
@@ -823,12 +823,12 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 	if (sizeof($sort_array)) {
 		if ($sort_style == TREE_ORDERING_NUMERIC) {
 			asort($sort_array, SORT_NUMERIC);
-		}elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
+		} elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
 			// Let's let the database do it!
-		}elseif ($sort_style == TREE_ORDERING_NATURAL) {
+		} elseif ($sort_style == TREE_ORDERING_NATURAL) {
 			if (defined('SORT_FLAG_CASE')) {
 				asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
-			}else{
+			} else {
 				natcasesort($sort_array);
 			}
 		}
@@ -856,12 +856,12 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 	if (sizeof($sort_array)) {
 		if ($sort_style == TREE_ORDERING_NUMERIC) {
 			asort($sort_array, SORT_NUMERIC);
-		}elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
+		} elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
 			// Let's let the database do it!
-		}elseif ($sort_style == TREE_ORDERING_NATURAL) {
+		} elseif ($sort_style == TREE_ORDERING_NATURAL) {
 			if (defined('SORT_FLAG_CASE')) {
 				asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
-			}else{
+			} else {
 				natcasesort($sort_array);
 			}
 		}

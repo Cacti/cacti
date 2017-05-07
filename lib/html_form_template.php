@@ -60,19 +60,19 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 
 		if ($field_array['method'] == 'spacer') {
 			unset($form_array[$form_field_name]);
-		}elseif (isset($graph_template['t_' . $field_name]) && $graph_template['t_' . $field_name] != 'on') {
+		} elseif (isset($graph_template['t_' . $field_name]) && $graph_template['t_' . $field_name] != 'on') {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]['method'] = 'hidden';
-			}else{
+			} else {
 				unset($form_array[$form_field_name]);
 			}
-		}elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ? AND field_name = ?', array($snmp_query_graph_id, $field_name))) > 0)) {
+		} elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ? AND field_name = ?', array($snmp_query_graph_id, $field_name))) > 0)) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]['method'] = 'hidden';
-			}else{
+			} else {
 				unset($form_array[$form_field_name]);
 			}
-		}else{
+		} else {
 			if (($draw_any_items == false) && ($header_title != '')) {
 				print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 			}
@@ -84,7 +84,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 	/* setup form options */
 	if ($alternate_colors == true) {
 		$form_config_array = array('no_form_tag' => true);
-	}else{
+	} else {
 		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
 	}
 
@@ -153,7 +153,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 					AND graph_template_input_defs.graph_template_input_id = ?
 					AND graph_templates_item.local_graph_id = ?
 					LIMIT 1', array( $item['id'], $local_graph_id));
-			}else{
+			} else {
 				$current_def_value = db_fetch_row_prepared('SELECT
 					graph_templates_item.' . $item['column_name'] . ',
 					graph_templates_item.id
@@ -194,7 +194,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			source fields because they are basically meaningless at this point */
 			if ((empty($local_graph_id)) && ($item['column_name'] == 'task_item_id')) {
 				unset($form_array[$form_field_name]);
-			}else{
+			} else {
 				if (($draw_any_items == false) && ($header_title != '')) {
 					print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 				}
@@ -207,7 +207,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 	/* setup form options */
 	if ($alternate_colors == true) {
 		$form_config_array = array('no_form_tag' => true);
-	}else{
+	} else {
 		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
 	}
 
@@ -266,22 +266,22 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 		if (($current_template_flag != 'on') || ($current_flag == 'ALWAYSTEMPLATE')) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]['method'] = 'hidden';
-			}else{
+			} else {
 				unset($form_array[$form_field_name]);
 			}
-		}elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', array($snmp_query_graph_id, $data_template_id, $field_name))) > 0)) {
+		} elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', array($snmp_query_graph_id, $data_template_id, $field_name))) > 0)) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]['method'] = 'hidden';
-			}else{
+			} else {
 				unset($form_array[$form_field_name]);
 			}
-		}elseif ((empty($local_data_id)) && ($field_name == 'data_source_path')) {
+		} elseif ((empty($local_data_id)) && ($field_name == 'data_source_path')) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]['method'] = 'hidden';
-			}else{
+			} else {
 				unset($form_array[$form_field_name]);
 			}
-		}else{
+		} else {
 			if (($draw_any_items == false) && ($header_title != '')) {
 				print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 			}
@@ -293,7 +293,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 	/* setup form options */
 	if ($alternate_colors == true) {
 		$form_config_array = array('no_form_tag' => true);
-	}else{
+	} else {
 		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
 	}
 
@@ -332,7 +332,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 	/* setup form options */
 	if ($alternate_colors == true) {
 		$form_config_array = array('no_form_tag' => true);
-	}else{
+	} else {
 		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
 	}
 
@@ -348,7 +348,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 
 			if (empty($rrd['local_data_id'])) { /* this is a template */
 				$data_template_rrd = $rrd;
-			}else{ /* this is not a template */
+			} else { /* this is not a template */
 				$data_template_rrd = db_fetch_row_prepared('SELECT * 
 					FROM data_template_rrd 
 					WHERE id = ?', array($rrd['local_data_template_rrd_id']));
@@ -374,19 +374,19 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 				if ($data_template_rrd{'t_' . $field_name} != 'on') {
 					if ($include_hidden_fields == true) {
 						$form_array[$form_field_name]['method'] = 'hidden';
-					}else{
+					} else {
 						unset($form_array[$form_field_name]);
 					}
-				}elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', array($snmp_query_graph_id, $data_template_id, $field_name))) > 0)) {
+				} elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', array($snmp_query_graph_id, $data_template_id, $field_name))) > 0)) {
 					if ($include_hidden_fields == true) {
 						$form_array[$form_field_name]['method'] = 'hidden';
-					}else{
+					} else {
 						unset($form_array[$form_field_name]);
 					}
-				}else{
+				} else {
 					if (($draw_any_items == false) && ($draw_title_for_each_item == false) && ($header_title != '')) {
 						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
-					}elseif (($draw_any_items == false) && ($draw_title_for_each_item == true) && ($header_title != '')) {
+					} elseif (($draw_any_items == false) && ($draw_title_for_each_item == true) && ($header_title != '')) {
 						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title [" . $rrd['data_source_name'] . "]</div></div>\n";
 					}
 
@@ -480,14 +480,14 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 
 			if (sizeof($data_input_data)) {
 				$old_value = $data_input_data['value'];
-			}else{
+			} else {
 				$old_value = '';
 			}
 
 			/* if data template then get t_value from template, else always allow user input */
 			if (empty($data['data_template_id'])) {
 				$can_template = 'on';
-			}else{
+			} else {
 				$can_template = db_fetch_cell_prepared('SELECT t_value 
 					FROM data_input_data 
 					WHERE data_template_data_id = ? 
@@ -502,17 +502,17 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 				if ($include_hidden_fields == true) {
 					form_hidden_box($form_field_name, $old_value, '');
 				}
-			}elseif ((!empty($snmp_query_id)) && (preg_match('/^(index_type|index_value|output_type)$/i', $field['type_code']))) {
+			} elseif ((!empty($snmp_query_id)) && (preg_match('/^(index_type|index_value|output_type)$/i', $field['type_code']))) {
 				/* no data query fields */
 				if ($include_hidden_fields == true) {
 					form_hidden_box($form_field_name, $old_value, '');
 				}
-			}elseif (empty($can_template)) {
+			} elseif (empty($can_template)) {
 				/* no templated fields */
 				if ($include_hidden_fields == true) {
 					form_hidden_box($form_field_name, $old_value, '');
 				}
-			}else{
+			} else {
 				if (($draw_any_items == false) && ($header_title != '')) {
 					print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 				}
@@ -560,10 +560,10 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 
 		if (sizeof($index_type) == 0) {
 			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='" . htmlspecialchars('graphs_new.php') . "'>" . __('New Graphs') . ".</a>") . "</em>\n";
-		}else{
+		} else {
 			form_dropdown($field_name, $index_type, 'field_name', 'field_name', $current_value, '', '', '');
 		}
-	}elseif (($field['type_code'] == 'output_type') && (db_fetch_cell_prepared('SELECT local_data_id FROM data_template_data WHERE id = ?', array($data_template_data_id)) > 0)) {
+	} elseif (($field['type_code'] == 'output_type') && (db_fetch_cell_prepared('SELECT local_data_id FROM data_template_data WHERE id = ?', array($data_template_data_id)) > 0)) {
 		$output_type = db_fetch_assoc_prepared('SELECT
 			snmp_query_graph.id,
 			snmp_query_graph.name
@@ -575,10 +575,10 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 
 		if (sizeof($output_type) == 0) {
 			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='" . htmlspecialchars('graphs_new.php') . "'>" . __('New Graphs') . ".</a>") . "</em>\n";
-		}else{
+		} else {
 			form_dropdown($field_name, $output_type, 'name', 'id', $current_value, '', '', '');
 		}
-	}else{
+	} else {
 		form_text_box($field_name, $current_value, '', '');
 	}
 }

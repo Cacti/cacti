@@ -87,7 +87,7 @@ if (sizeof($parms)) {
 /* we need to rerun the upgrade, force the current version */
 if ($forcever == '') {
 	$old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
-}else{
+} else {
 	$old_cacti_version = $forcever;
 }
 

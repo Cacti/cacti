@@ -87,7 +87,7 @@ $extra_args     = '-q "./snmpagent_mibcache.php"';
 if(strstr(PHP_OS, 'WIN')) {
 	/* windows part missing */
 	pclose(popen("start \"CactiSNMPCache\" /I /B \"" . $php . "\" " . $extra_args, "r"));
-}else{
+} else {
 	exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
 	if(!sizeof($output)) {
 		exec($php . " " . $extra_args . " > /dev/null &");

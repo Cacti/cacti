@@ -104,7 +104,7 @@ if (sizeof($parms)) {
 				$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 			}
 		}
-	}else{
+	} else {
 		$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 	}
 

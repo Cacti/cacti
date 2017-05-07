@@ -30,7 +30,7 @@ function test_database_connection() {
 	if (is_object($connection)) {
 		db_close($connection);
 		print 'Connection Successful';
-	}else{
+	} else {
 		print 'Connection Failed';
 	}
 }
@@ -116,7 +116,7 @@ function db_install_add_cache ($status, $sql) {
 		$sql_install_cache = (isset($_SESSION['sess_sql_install_cache']) ? $_SESSION['sess_sql_install_cache'] : array());
 		$sql_install_cache{sizeof($sql_install_cache)}[$upgrade_version][$status] = $sql;
 		$_SESSION['sess_sql_install_cache'] = $sql_install_cache;
-	}else{
+	} else {
 		$sql_install_cache = (isset($session['sess_sql_install_cache']) ? $session['sess_sql_install_cache'] : array());
 		$sql_install_cache{sizeof($sql_install_cache)}[$upgrade_version][$status] = $sql;
 		$session['sess_sql_install_cache'] = $sql_install_cache;
@@ -148,7 +148,7 @@ function find_best_path($binary_name) {
 			'd:/progra~1/spine', 
 			'd:/progra~1/spine/bin'
 		);
-	}else{
+	} else {
 		$search_paths = array(
 			'/bin', 
 			'/sbin', 
@@ -225,17 +225,17 @@ function install_file_paths () {
 			$input['path_rrdtool']['default'] = read_config_option('path_rrdtool');
 		}else if (!empty($which_rrdtool)) {
 			$input['path_rrdtool']['default'] = $which_rrdtool;
-		}else{
+		} else {
 			$input['path_rrdtool']['default'] = '/usr/local/bin/rrdtool';
 		}
-	}elseif ($config['cacti_server_os'] == 'win32') {
+	} elseif ($config['cacti_server_os'] == 'win32') {
 		$which_rrdtool = find_best_path('rrdtool.exe');
 
 		if (config_value_exists('path_rrdtool')) {
 			$input['path_rrdtool']['default'] = read_config_option('path_rrdtool');
 		}else if (!empty($which_rrdtool)) {
 			$input['path_rrdtool']['default'] = $which_rrdtool;
-		}else{
+		} else {
 			$input['path_rrdtool']['default'] = 'c:/rrdtool/rrdtool.exe';
 		}
 	}
@@ -250,17 +250,17 @@ function install_file_paths () {
 			$input['path_php_binary']['default'] = read_config_option('path_php_binary');
 		}else if (!empty($which_php)) {
 			$input['path_php_binary']['default'] = $which_php;
-		}else{
+		} else {
 			$input['path_php_binary']['default'] = '/usr/bin/php';
 		}
-	}elseif ($config['cacti_server_os'] == 'win32') {
+	} elseif ($config['cacti_server_os'] == 'win32') {
 		$which_php = find_best_path('php.exe');
 
 		if (config_value_exists('path_php_binary')) {
 			$input['path_php_binary']['default'] = read_config_option('path_php_binary');
 		}else if (!empty($which_php)) {
 			$input['path_php_binary']['default'] = $which_php;
-		}else{
+		} else {
 			$input['path_php_binary']['default'] = 'c:/php/php.exe';
 		}
 	}
@@ -275,17 +275,17 @@ function install_file_paths () {
 			$input['path_snmpwalk']['default'] = read_config_option('path_snmpwalk');
 		}else if (!empty($which_snmpwalk)) {
 			$input['path_snmpwalk']['default'] = $which_snmpwalk;
-		}else{
+		} else {
 			$input['path_snmpwalk']['default'] = '/usr/local/bin/snmpwalk';
 		}
-	}elseif ($config['cacti_server_os'] == 'win32') {
+	} elseif ($config['cacti_server_os'] == 'win32') {
 		$which_snmpwalk = find_best_path('snmpwalk.exe');
 
 		if (config_value_exists('path_snmpwalk')) {
 			$input['path_snmpwalk']['default'] = read_config_option('path_snmpwalk');
 		}else if (!empty($which_snmpwalk)) {
 			$input['path_snmpwalk']['default'] = $which_snmpwalk;
-		}else{
+		} else {
 			$input['path_snmpwalk']['default'] = 'c:/net-snmp/bin/snmpwalk.exe';
 		}
 	}
@@ -300,17 +300,17 @@ function install_file_paths () {
 			$input['path_snmpget']['default'] = read_config_option('path_snmpget');
 		}else if (!empty($which_snmpget)) {
 			$input['path_snmpget']['default'] = $which_snmpget;
-		}else{
+		} else {
 			$input['path_snmpget']['default'] = '/usr/local/bin/snmpget';
 		}
-	}elseif ($config['cacti_server_os'] == 'win32') {
+	} elseif ($config['cacti_server_os'] == 'win32') {
 		$which_snmpget = find_best_path('snmpget.exe');
 
 		if (config_value_exists('path_snmpget')) {
 			$input['path_snmpget']['default'] = read_config_option('path_snmpget');
 		}else if (!empty($which_snmpget)) {
 			$input['path_snmpget']['default'] = $which_snmpget;
-		}else{
+		} else {
 			$input['path_snmpget']['default'] = 'c:/net-snmp/bin/snmpget.exe';
 		}
 	}
@@ -325,17 +325,17 @@ function install_file_paths () {
 			$input['path_snmpbulkwalk']['default'] = read_config_option('path_snmpbulkwalk');
 		}else if (!empty($which_snmpbulkwalk)) {
 			$input['path_snmpbulkwalk']['default'] = $which_snmpbulkwalk;
-		}else{
+		} else {
 			$input['path_snmpbulkwalk']['default'] = '/usr/local/bin/snmpbulkwalk';
 		}
-	}elseif ($config['cacti_server_os'] == 'win32') {
+	} elseif ($config['cacti_server_os'] == 'win32') {
 		$which_snmpbulkwalk = find_best_path('snmpbulkwalk.exe');
 
 		if (config_value_exists('path_snmpbulkwalk')) {
 			$input['path_snmpbulkwalk']['default'] = read_config_option('path_snmpbulkwalk');
 		}else if (!empty($which_snmpbulkwalk)) {
 			$input['path_snmpbulkwalk']['default'] = $which_snmpbulkwalk;
-		}else{
+		} else {
 			$input['path_snmpbulkwalk']['default'] = 'c:/net-snmp/bin/snmpbulkwalk.exe';
 		}
 	}
@@ -350,17 +350,17 @@ function install_file_paths () {
 			$input['path_snmpgetnext']['default'] = read_config_option('path_snmpgetnext');
 		}else if (!empty($which_snmpgetnext)) {
 			$input['path_snmpgetnext']['default'] = $which_snmpgetnext;
-		}else{
+		} else {
 			$input['path_snmpgetnext']['default'] = '/usr/local/bin/snmpgetnext';
 		}
-	}elseif ($config['cacti_server_os'] == 'win32') {
+	} elseif ($config['cacti_server_os'] == 'win32') {
 		$which_snmpgetnext = find_best_path('snmpgetnext.exe');
 
 		if (config_value_exists('path_snmpgetnext')) {
 			$input['path_snmpgetnext']['default'] = read_config_option('path_snmpgetnext');
 		}else if (!empty($which_snmpgetnext)) {
 			$input['path_snmpgetnext']['default'] = $which_snmpgetnext;
-		}else{
+		} else {
 			$input['path_snmpgetnext']['default'] = 'c:/net-snmp/bin/snmpgetnext.exe';
 		}
 	}
@@ -375,17 +375,17 @@ function install_file_paths () {
 			$input['path_snmptrap']['default'] = read_config_option('path_snmptrap');
 		}else if (!empty($which_snmptrap)) {
 			$input['path_snmptrap']['default'] = $which_snmptrap;
-		}else{
+		} else {
 			$input['path_snmptrap']['default'] = '/usr/local/bin/snmptrap';
 		}
-	}elseif ($config['cacti_server_os'] == 'win32') {
+	} elseif ($config['cacti_server_os'] == 'win32') {
 		$which_snmptrap = find_best_path('snmptrap.exe');
 
 		if (config_value_exists('path_snmptrap')) {
 			$input['path_snmptrap']['default'] = read_config_option('path_snmptrap');
 		}else if (!empty($which_snmptrap)) {
 			$input['path_snmptrap']['default'] = $which_snmptrap;
-		}else{
+		} else {
 			$input['path_snmptrap']['default'] = 'c:/net-snmp/bin/snmptrap.exe';
 		}
 	}
@@ -400,17 +400,17 @@ function install_file_paths () {
 			$input['path_spine']['default'] = read_config_option('path_spine');
 		}else if (!empty($which_spine)) {
 			$input['path_spine']['default'] = $which_spine . '/spine';
-		}else{
+		} else {
 			$input['path_spine']['default'] = '/usr/local/spine/bin/spine';
 		}
-	}elseif ($config['cacti_server_os'] == 'win32') {
+	} elseif ($config['cacti_server_os'] == 'win32') {
 		$which_spine = find_best_path('spine.exe');
 
 		if (config_value_exists('path_spine')) {
 			$input['path_spine']['default'] = read_config_option('path_spine');
 		}else if (!empty($which_spine)) {
 			$input['path_spine']['default'] = $which_spine;
-		}else{
+		} else {
 			$input['path_spine']['default'] = 'c:/spine/bin/spine.exe';
 		}
 	}
@@ -473,7 +473,7 @@ function remote_update_config_file() {
 	if (is_object($connection)) {
 		if (function_exists('gethostname')) {
 			$hostname = gethostname();
-		}else{
+		} else {
 			$hostname = php_uname('n');
 		}
 
@@ -501,7 +501,7 @@ function remote_update_config_file() {
 					foreach($file_array as $line) {
 						if (strpos(trim($line), "\$poller_id") !== false) {
 							$newfile[] = "\$poller_id = $poller_id;\n";
-						}else{
+						} else {
 							$newfile[] = $line;
 						}
 					}
@@ -544,7 +544,7 @@ function import_colors() {
 
 			if (!empty($id)) {
 				db_execute("UPDATE colors SET name='$name', read_only='on' WHERE hex='$hex'");
-			}else{
+			} else {
 				db_execute("INSERT INTO colors (name, hex, read_only) VALUES ('$name', '$hex', 'on')");
 			}
 		}

@@ -56,7 +56,7 @@ function get_vdef($vdef_id, $display = false) {
 			if ($vdef_item['type'] == 5) {
 				$current_vdef_id = $vdef_item['value'];
 				$vdef_string .= get_vdef($current_vdef_id, $display);
-			}else{
+			} else {
 				$vdef_string .= get_vdef_item_name($vdef_item['id']);
 			}
 

@@ -41,10 +41,10 @@ function usort_data_query_index($a, $b) {
 		if ((is_numeric($arr_a[$i])) && (is_numeric($arr_b[$i]))) {
 			if (intval($arr_a[$i]) > intval($arr_b[$i])) {
 				return 1;
-			}elseif (intval($arr_a[$i]) < intval($arr_b[$i])) {
+			} elseif (intval($arr_a[$i]) < intval($arr_b[$i])) {
 				return -1;
 			}
-		}else{
+		} else {
 			$cmp = strcmp(strval($arr_a[$i]), strval($arr_b[$i]));
 
 			if (($cmp > 0) || ($cmp < 0)) {
@@ -55,7 +55,7 @@ function usort_data_query_index($a, $b) {
 
 	if (count($arr_a) < count($arr_b)) {
 		return 1;
-	}elseif (count($arr_a) > count($arr_b)) {
+	} elseif (count($arr_a) > count($arr_b)) {
 		return -1;
 	}
 
@@ -70,9 +70,9 @@ function usort_data_query_index($a, $b) {
 function usort_numeric($a, $b) {
 	if (intval($a) > intval($b)) {
 		return 1;
-	}elseif (intval($a) < intval($b)) {
+	} elseif (intval($a) < intval($b)) {
 		return -1;
-	}else{
+	} else {
 		return 0;
 	}
 }

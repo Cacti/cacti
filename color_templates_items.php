@@ -105,7 +105,7 @@ function aggregate_color_item_form_save() {
 				$color_template_item_id = sql_save($save, 'color_template_items', 'color_template_item_id');
 				if ($color_template_item_id) {
 					raise_message(1);
-				}else{
+				} else {
 					raise_message(2);
 				}
 			}
@@ -116,7 +116,7 @@ function aggregate_color_item_form_save() {
 		if (is_error_message()) {
 			header('Location: color_templates_items.php?header=false&action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? get_nfilter_request_var('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . get_nfilter_request_var('color_template_id'));
 			exit;
-		}else{
+		} else {
 			header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . get_nfilter_request_var('color_template_id'));
 			exit;
 		}
@@ -337,7 +337,7 @@ function aggregate_color_item_edit() {
 	if (isset_request_var('color_template_item_id') && (get_request_var('color_template_item_id') > 0)) {
 		$template_item = db_fetch_row_prepared('SELECT * FROM color_template_items WHERE color_template_item_id = ?', array(get_request_var('color_template_item_id')));
 		$header_label = __('Color Template Items [edit Report Item: %s]', $template['name']);
-	}else{
+	} else {
 		$template_item = array();
 		$header_label = __('Color Template Items [new Report Item: %s]', $template['name']);
 	}

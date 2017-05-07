@@ -63,7 +63,7 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 
 			if ($selected_tree_item_id == $leaf['id']) {
 				$html_selected = ' selected';
-			}else{
+			} else {
 				$html_selected = '';
 			}
 
@@ -102,7 +102,7 @@ function grow_dhtml_trees() {
 					ORDER BY graph_tree.id 
 					LIMIT 1',
 					array($_SESSION['sess_user_id']));
-			}else{
+			} else {
 				$default_tree_id = db_fetch_cell('SELECT graph_tree.id 
 					FROM graph_tree
 					INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
@@ -114,7 +114,7 @@ function grow_dhtml_trees() {
 					array($_SESSION['sess_user_id']));
 			}
 		}
-	}else{
+	} else {
 		$default_tree_id = db_fetch_cell('SELECT id FROM graph_tree ORDER BY sequence LIMIT 1');
 	}
 
@@ -130,7 +130,7 @@ function grow_dhtml_trees() {
 	<?php
 	if (isset_request_var('hyper')) {
 		$path = get_tree_path();
-	}elseif (!isset_request_var('node')) {
+	} elseif (!isset_request_var('node')) {
 		$path = array('tree_anchor-' . $default_tree_id . '-anchor');
 		set_request_var('hyper', 'true');
 	}
@@ -141,7 +141,7 @@ function grow_dhtml_trees() {
 	function resizeGraphContent() {
 		if ('<?php print get_selected_theme();?>' != 'classic') {
 			$('.cactiGraphContentArea').css('margin-left', parseInt($('#navigation').width()+10)+'px');
-		}else{
+		} else {
 			width = $(document).width() - $('.cactiTreeNavigationArea').width() - 22;
 			$('.cactiGraphContentArea').css('width', width).css('float', 'right');
 		}
@@ -176,7 +176,7 @@ function grow_dhtml_trees() {
 					if (data.node.id.search('tree_anchor') >= 0) {
 						href=$('#'+data.node.id).find('a:first').attr('href');
 						//href=$('#'+data.node.id).find('a:first').attr('href')+"&node=0";
-					}else{
+					} else {
 						//href=$('#'+data.node.id).find('a:first').attr('href')+"&node="+data.node.id.replace('tbranch-','');
 						href=$('#'+data.node.id).find('a:first').attr('href');
 					}
@@ -318,7 +318,7 @@ function get_tree_path() {
 							FROM graph_tree_items
 							WHERE id = ?',
 							array($linknode['parent']));
-					}else{
+					} else {
 						break;
 					}
 				}
@@ -326,13 +326,13 @@ function get_tree_path() {
 				$rnodes = array_reverse($rnodes);
 				$nodes = array_merge($nodes, $rnodes);
 			}
-		}elseif (strpos(get_request_var('node'), 'tree_anchor') !== false) {
+		} elseif (strpos(get_request_var('node'), 'tree_anchor') !== false) {
 			$parts = explode('-', get_request_var('node'));
 			$nodes[] = 'tree_anchor-' . $parts[1] . '_anchor';
 		}
 
 		return $nodes;
-	}else{
+	} else {
 		return array();
 	}
 }
@@ -579,10 +579,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if ($host_group_data_array[0] == 'gt') {
 		$host_group_data_name = '<strong>' . __('Graph Template:'). '</strong> ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($host_group_data_array[1]));
 		$graph_template_id = $host_group_data_array[1];
-	}elseif ($host_group_data_array[0] == 'dq') {
+	} elseif ($host_group_data_array[0] == 'dq') {
 		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($host_group_data_array[1])));
 		$data_query_id = $host_group_data_array[1];
-	}elseif ($host_group_data_array[0] == 'dqi') {
+	} elseif ($host_group_data_array[0] == 'dqi') {
 		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($host_group_data_array[1]))) . '-> ' . (empty($host_group_data_array[2]) ? 'Template Based' : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
 		$data_query_id = $host_group_data_array[1];
 		$data_query_index = $host_group_data_array[2];
@@ -884,7 +884,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			if (date1Open) {
 				date1Open = false;
 				$('#date1').datetimepicker('hide');
-			}else{
+			} else {
 				date1Open = true;
 				$('#date1').datetimepicker('show');
 			}
@@ -894,7 +894,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			if (date2Open) {
 				date2Open = false;
 				$('#date2').datetimepicker('hide');
-			}else{
+			} else {
 				date2Open = true;
 				$('#date2').datetimepicker('show');
 			}
@@ -964,7 +964,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		}
 
 		$graph_list = get_allowed_tree_header_graphs($tree_id, $leaf_id, $sql_where);
-	}elseif ($leaf_type == 'host') {
+	} elseif ($leaf_type == 'host') {
 		/* graph template grouping */
 		if ($leaf['host_grouping_type'] == HOST_GROUPING_GRAPH_TEMPLATE) {
 			$sql_where = 'gl.host_id=' . $leaf['host_id'] . (empty($graph_template_id) ? '' : ' AND gl.graph_template_id=' . $graph_template_id);
@@ -1004,7 +1004,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				}
 			}
 		/* data query index grouping */
-		}elseif ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
+		} elseif ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
 			$data_queries = db_fetch_assoc("SELECT sq.id, sq.name
 				FROM graph_local AS gl
 				INNER JOIN snmp_query AS sq
@@ -1093,7 +1093,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	if (get_request_var('thumbnails') == 'true' || get_request_var('thumbnails') == 'on') {
 		html_graph_thumbnail_area($new_graph_list, '', 'view_type=tree&graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
-	}else{
+	} else {
 		html_graph_area($new_graph_list, '', 'view_type=tree&graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
 	}
 

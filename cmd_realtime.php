@@ -120,7 +120,7 @@ if (sizeof($polling_items)) {
 		}else {
 			$using_proc_function = false;
 		}
-	}else{
+	} else {
 		$using_proc_function = false;
 	}
 
@@ -135,7 +135,7 @@ if (sizeof($polling_items)) {
 		if ($col_poller_id > 1) {
 			$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($col_poller_id));
 			$output = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=polldata&host_id=' . $host_id . '&local_data_id=' . $data_source . '&poller_id=' . $poller_id);
-		}else{
+		} else {
 			switch ($item['action']) {
 			case POLLER_ACTION_SNMP: /* snmp */
 				if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
@@ -149,7 +149,7 @@ if (sizeof($polling_items)) {
 
 					if ($session === false) {
 						$output = 'U';
-					}else{
+					} else {
 						$output = cacti_snmp_session_get($session, $item['arg1']);
 						$session->close();
 					}
@@ -193,7 +193,7 @@ if (sizeof($polling_items)) {
 
 						$output = 'U';
 					}
-				}else{
+				} else {
 					$output = 'U';
 				}
 

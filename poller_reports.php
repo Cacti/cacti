@@ -142,7 +142,7 @@ $number_sent = 0;
 # fetch all enabled reports that have a stratime in the past
 if (!$force) {
 	$reports = db_fetch_assoc_prepared('SELECT * FROM reports WHERE mailtime < ? AND enabled="on"', array($t));
-}else{
+} else {
 	$reports = db_fetch_assoc("SELECT * FROM reports WHERE enabled='on'");
 }
 reports_log('Cacti Reports reports found: ' . sizeof($reports), true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);

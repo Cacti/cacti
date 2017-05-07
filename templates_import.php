@@ -54,32 +54,32 @@ function form_save() {
 		if (trim(get_nfilter_request_var('import_text') != '')) {
 			/* textbox input */
 			$xml_data = get_nfilter_request_var('import_text');
-		}elseif (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
+		} elseif (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
 			/* file upload */
 			$fp = fopen($_FILES['import_file']['tmp_name'],'r');
 			$xml_data = fread($fp,filesize($_FILES['import_file']['tmp_name']));
 			fclose($fp);
-		}else{
+		} else {
 			header('Location: templates_import.php'); exit;
 		}
 
 		if (get_filter_request_var('import_data_source_profile') == '0') {
 			$import_as_new = true;
 			$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
-		}else{
+		} else {
 			$import_as_new = false;
 			$profile_id = get_request_var('import_data_source_profile');
 		}
 
 		if (get_nfilter_request_var('preview_only') == 'on') {
 			$preview_only = true;
-		}else{
+		} else {
 			$preview_only = false;
 		}
 
 		if (isset_request_var('remove_orphans') && get_nfilter_request_var('remove_orphans') == 'on') {
 			$remove_orphans = true;
-		}else{
+		} else {
 			$remove_orphans = false;
 		}
 

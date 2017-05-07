@@ -50,10 +50,10 @@ function clog_purge_logfile() {
 			fwrite($log_fh, "$timestamp - WEBUI: Cacti Log Cleared from Web Management Interface\n");
 			fclose($log_fh);
 			raise_message('clog_purged');
-		}else{
+		} else {
 			raise_message('clog_permissions');
 		}
-	}else{
+	} else {
 		raise_message('clog_missing');
 	}
 }

@@ -257,11 +257,11 @@ function load_i18n_gettext_wrappers(){
 			return false;
 
 		/* convert pure text strings */
-		}elseif ($num == 1) {
+		} elseif ($num == 1) {
 			return __gettext($args[0]);
 
 		/* convert pure text strings by using a different textdomain */
-		}elseif ($num == 2 && isset($l10n[$args[1]])) {
+		} elseif ($num == 2 && isset($l10n[$args[1]])) {
 			return __gettext($args[0], $args[1]);
 
 		/* convert stings including one or more placeholders */
@@ -386,11 +386,11 @@ function load_i18n_fallback_wrappers(){
 			return false;
 
 		/* convert pure text strings */
-		}elseif ($num == 1) {
+		} elseif ($num == 1) {
 			return $args[0];
 
 		/* convert pure text strings by using a different textdomain */
-		}elseif ($num == 2 && isset($l10n[$args[1]])) {
+		} elseif ($num == 2 && isset($l10n[$args[1]])) {
 			return $args[0];
 
 		/* convert stings including one or more placeholders */
@@ -546,7 +546,7 @@ function read_user_i18n_setting($config_name) {
 		if (strlen($effective_uid) == 0) {
 			$effective_uid = 0;
 		}
-	}else{
+	} else {
 		$effective_uid = 0;
 	}
 
@@ -560,7 +560,7 @@ function read_user_i18n_setting($config_name) {
 	
 	if (isset($db_setting['value'])) {
 		return $db_setting['value'];
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -581,14 +581,14 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 		numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
 
 		return numfmt_format($fmt, $number);
-	}else{
+	} else {
 		$origlocales = explode(';', setlocale(LC_ALL, 0));
 		setlocale(LC_ALL, $cacti_locale . '_' . $country);
 		$locale = localeconv();
 
 		if ($decimals == -1) {
 			$number =  number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
-		}elseif ($number>=pow($baseu, 4)) {
+		} elseif ($number>=pow($baseu, 4)) {
 			$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
 		} elseif($number>=pow($baseu, 3)) {
 			$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');

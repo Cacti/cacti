@@ -53,7 +53,7 @@ $command = implode(' ', $parms);
 /* execute the command */
 if ($config['cacti_server_os'] == 'win32') {
 	$handle = popen($command, 'rb');
-}else{
+} else {
 	$handle = popen($command, 'r');
 }
 
@@ -62,7 +62,7 @@ $result = fread($handle, 1024);
 
 if (!strlen(trim($result))) {
 	$result = 'OK';
-}else{
+} else {
 	if (substr_count($result, "\r")) {
 		$result = str_replace("\r", '', $result);
 	}
@@ -70,7 +70,7 @@ if (!strlen(trim($result))) {
 
 	if (sizeof($result_array)) {
 		$result = $result_array[sizeof($result_array)-2];
-	}else{
+	} else {
 		$result = 'ERROR: Detected unknown error';
 	}
 }

@@ -114,7 +114,7 @@ function form_save() {
 					'hard_return' => 'on'
 					)
 			);
-		}elseif ($graph_item_types[get_nfilter_request_var('graph_type_id')] == 'LEGEND_CAMM') {
+		} elseif ($graph_item_types[get_nfilter_request_var('graph_type_id')] == 'LEGEND_CAMM') {
 	         /* this can be a major time saver when creating lots of graphs with the typical
 				GPRINT LAST/AVERAGE/MAX legends */
 			$items = array(
@@ -277,7 +277,7 @@ function form_save() {
 						/* make sure all current graphs using this graph input are aware of this change */
 						push_out_graph_input($orig_data_source_to_input{get_nfilter_request_var('task_item_id')}, $graph_template_item_id, array($graph_template_item_id => $graph_template_item_id));
 					}
-				}else{
+				} else {
 					raise_message(2);
 				}
 			}
@@ -288,7 +288,7 @@ function form_save() {
 		if (is_error_message()) {
 			header('Location: graph_templates_items.php?header=false&action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_nfilter_request_var('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_nfilter_request_var('graph_template_id'));
 			exit;
-		}else{
+		} else {
 			header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_nfilter_request_var('graph_template_id'));
 			exit;
 		}
@@ -312,7 +312,7 @@ function item_movedown() {
 
 	if ((!empty($next_id)) && (isset($arr{get_request_var('id')}))) {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'next');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		/* this is so we know the "other" graph item to propagate the changes to */
 		$next_item = get_item('graph_templates_item', 'sequence', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0', 'next');
 
@@ -337,7 +337,7 @@ function item_moveup() {
 
 	if ((!empty($next_id)) && (isset($arr{get_request_var('id')}))) {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'previous');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		/* this is so we know the "other" graph item to propagate the changes to */
 		$last_item = get_item('graph_templates_item', 'sequence', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0', 'previous');
 
@@ -410,7 +410,7 @@ function item_edit() {
 
 		if (sizeof($default) > 0) {
 			$struct_graph_item['task_item_id']['default'] = $default['task_item_id'];
-		}else{
+		} else {
 			$struct_graph_item['task_item_id']['default'] = 0;
 		}
 	}
@@ -480,7 +480,7 @@ function item_edit() {
 		$('#shift').click(function(data) {
 			if ($('#shift').is(':checked')) {
 				$('#row_value').show();
-			}else{
+			} else {
 				$('#row_value').hide();
 			}
 		});

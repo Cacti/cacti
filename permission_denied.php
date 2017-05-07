@@ -28,7 +28,7 @@ $version = db_fetch_cell('SELECT cacti FROM version');
 
 if (isset($_SERVER['HTTP_REFERER'])) {
 	$goBack = "<td colspan='2' align='center'>[<a href='" . htmlspecialchars($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
-}else{
+} else {
 	$goBack = "<td colspan='2' align='center'>[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 }
 

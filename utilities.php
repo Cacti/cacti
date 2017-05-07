@@ -160,7 +160,7 @@ function utilities_view_tech($php_info = '') {
 	/* Get SNMP cli version */
 	if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
 		$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
-	}else{
+	} else {
 		$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . "</span>";
 	}
 
@@ -279,7 +279,7 @@ function utilities_view_tech($php_info = '') {
 				$data_total += $item['total'];
 			}
 			print __('Total: %s', number_format_i18n($data_total, -1));
-		}else{
+		} else {
 			print "<span class='deviceDown'>0</span>";
 		}
 		print "</td>\n";
@@ -312,7 +312,7 @@ function utilities_view_tech($php_info = '') {
 				$total += $item['total'];
 			}
 			print __('Total: %s', number_format_i18n($total, -1));
-		}else{
+		} else {
 			print "<span class='deviceDown'>" . __('No items to poll') . "</span>";
 		}
 		print "</td>\n";
@@ -360,7 +360,7 @@ function utilities_view_tech($php_info = '') {
 					print "<td>$name</td>\n";
 					print '<td>' . number_format_i18n($value/1000, 2) . " MB</td>\n";
 					form_end_row();
-				}else{
+				} else {
 					switch($name) {
 					case 'SwapTotal':
 					case 'SwapFree':
@@ -387,7 +387,7 @@ function utilities_view_tech($php_info = '') {
 		print "<td>" . __('PHP Version') . "</td>\n";
 		if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
 			print '<td>' . PHP_VERSION . "</td>\n";
-		}else{
+		} else {
 			print '<td>' . PHP_VERSION . "</br><span class='deviceDown'>" . __('PHP Version 5.5.0+ is recommended due to strong password hashing support.') . "</span></td>\n";
 		}
 		form_end_row();
@@ -402,7 +402,7 @@ function utilities_view_tech($php_info = '') {
 		print '<td>';
 		if (function_exists('php_uname')) {
 			print php_uname();
-		}else{
+		} else {
 			print __('N/A');
 		}
 		print "</td>\n";
@@ -454,7 +454,7 @@ function utilities_view_tech($php_info = '') {
 		form_end_row();
 
 		utilities_get_mysql_recommendations();
-	}elseif (get_request_var('tab') == 'database') {
+	} elseif (get_request_var('tab') == 'database') {
 		html_section_header(__('MySQL Table Information - Sizes in KBytes'), 2);
 
 		form_alternate_row();
@@ -487,13 +487,13 @@ function utilities_view_tech($php_info = '') {
 			}
 
 			print "</table>\n";
-		}else{
+		} else {
 			print __('Unable to retrieve table status');
 		}
 		print "</td>\n";
 
 		form_end_row();
-	}else{
+	} else {
 		html_section_header(__('PHP Module Information'), 2);
 		form_alternate_row();
 		$php_info = str_replace(
@@ -572,7 +572,7 @@ function utilities_view_user_log() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -707,7 +707,7 @@ function utilities_view_user_log() {
 	/* filter by username */
 	if (get_request_var('username') == '-2') {
 		$sql_where = 'WHERE ul.username NOT IN (SELECT DISTINCT username FROM user_auth)';
-	}elseif (get_request_var('username') != '-1') {
+	} elseif (get_request_var('username') != '-1') {
 		$sql_where = "WHERE ul.username='" . get_request_var('username') . "'";
 	}
 
@@ -715,7 +715,7 @@ function utilities_view_user_log() {
 	if (get_request_var('result') != '-1') {
 		if (strlen($sql_where)) {
 			$sql_where .= ' AND ul.result=' . get_request_var('result');
-		}else{
+		} else {
 			$sql_where = 'WHERE ul.result=' . get_request_var('result');
 		}
 	}
@@ -727,7 +727,7 @@ function utilities_view_user_log() {
 				OR ul.time LIKE '%" . get_request_var('filter') . "%'
 				OR ua.full_name LIKE '%" . get_request_var('filter') . "%'
 				OR ul.ip LIKE '%" . get_request_var('filter') . "%')";
-		}else{
+		} else {
 			$sql_where = "WHERE (ul.username LIKE '%" . get_request_var('filter') . "%'
 				OR ul.time LIKE '%" . get_request_var('filter') . "%'
 				OR ua.full_name LIKE '%" . get_request_var('filter') . "%'
@@ -780,7 +780,7 @@ function utilities_view_user_log() {
 			<td class='nowrap'>
 				<?php if (isset($item['full_name'])) {
 						print filter_value($item['full_name'], get_request_var('filter'));
-					}else{
+					} else {
 						print __('(User Removed)');
 					}
 				?>
@@ -788,7 +788,7 @@ function utilities_view_user_log() {
 			<td class='nowrap'>
 				<?php if (isset($auth_realms[$item['realm']])) {
 						print filter_value($auth_realms[$item['realm']], get_request_var('filter'));
-					}else{
+					} else {
 						print __('N/A');
 					}
 				?>
@@ -912,7 +912,7 @@ function utilities_view_logfile() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -1173,10 +1173,10 @@ function utilities_clear_logfile() {
 			fwrite($log_fh, __('%s - WEBUI: Cacti Log Cleared from Web Management Interface.', $timestamp) . "\n");
 			fclose($log_fh);
 			print '<tr><td>' . __('Cacti Log Cleared') . '</td></tr>';
-		}else{
+		} else {
 			print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, no write permissions.') . "<b></td></tr>";
 		}
-	}else{
+	} else {
 		print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, file does not exist.'). "</b></td></tr>";
 	}
 	html_end_box();
@@ -1224,7 +1224,7 @@ function utilities_view_snmp_cache() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -1300,7 +1300,7 @@ function utilities_view_snmp_cache() {
 									INNER JOIN host AS h
 									ON hsc.host_id=h.id
 									ORDER by sq.name');
-							}else{
+							} else {
 								$snmp_queries = db_fetch_assoc_prepared("SELECT DISTINCT sq.id, sq.name
 									FROM host_snmp_cache AS hsc
 									INNER JOIN snmp_query AS sq
@@ -1355,16 +1355,16 @@ function utilities_view_snmp_cache() {
 	/* filter by host */
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('host_id') == '0') {
+	} elseif (get_request_var('host_id') == '0') {
 		$sql_where .= ' AND h.id=0';
-	}elseif (!isempty_request_var('host_id')) {
+	} elseif (!isempty_request_var('host_id')) {
 		$sql_where .= ' AND h.id=' . get_request_var('host_id');
 	}
 
 	/* filter by query name */
 	if (get_request_var('snmp_query_id') == '-1') {
 		/* Show all items */
-	}elseif (!isempty_request_var('snmp_query_id')) {
+	} elseif (!isempty_request_var('snmp_query_id')) {
 		$sql_where .= ' AND hsc.snmp_query_id=' . get_request_var('snmp_query_id');
 	}
 
@@ -1495,7 +1495,7 @@ function utilities_view_poller_cache() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -1561,7 +1561,7 @@ function utilities_view_poller_cache() {
 							<?php
 							if (get_request_var('host_id') > 0) {
 								$sql_where = 'WHERE dl.host_id = ' . get_request_var('host_id');
-							}else{
+							} else {
 								$sql_where = '';
 							}
 
@@ -1642,17 +1642,17 @@ function utilities_view_poller_cache() {
 
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('host_id') == '0') {
+	} elseif (get_request_var('host_id') == '0') {
 		$sql_where .= ' AND pi.host_id = 0';
-	}elseif (!isempty_request_var('host_id')) {
+	} elseif (!isempty_request_var('host_id')) {
 		$sql_where .= ' AND pi.host_id = ' . get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('template_id') == '0') {
+	} elseif (get_request_var('template_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' dtd.data_template_id=0';
-	}elseif (!isempty_request_var('template_id')) {
+	} elseif (!isempty_request_var('template_id')) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' dl.data_template_id=' . get_request_var('template_id');
 	}
 
@@ -1705,7 +1705,7 @@ function utilities_view_poller_cache() {
 	foreach ($poller_cache as $item) {
 		if ($i % 2 == 0) {
 			$class = 'odd';
-		}else{
+		} else {
 			$class = 'even';
 		}
 		print "<tr class='$class'>\n";
@@ -1722,14 +1722,14 @@ function utilities_view_poller_cache() {
 						__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
 						__('Community:') . ' ' . $item['snmp_community'] . ', ' .
 						__('OID:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
-				}else{
+				} else {
 					$details =
 						__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
 						__('User:') . ' ' . $item['snmp_username'] . ', ' . __('OID:') . ' ' . $item['arg1'];
 				}
-			}elseif ($item['action'] == 1) {
+			} elseif ($item['action'] == 1) {
 					$details = __('Script:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
-			}else{
+			} else {
 					$details = __('Script Server:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
 			}
 
@@ -1953,7 +1953,7 @@ function boost_display_run_status() {
 		elseif (substr_count($boost_status_array[0], 'overrun')) $boost_status_text = __('Overrun Warning');
 		elseif (substr_count($boost_status_array[0], 'timeout')) $boost_status_text = __('Timed Out');
 		else   $boost_status_text = __('Other');
-	}else{
+	} else {
 		$boost_status_text = __('Never Run');
 		$boost_status_date = '';
 	}
@@ -1967,7 +1967,7 @@ function boost_display_run_status() {
 
 		$stats_rrds = explode(':', $stats_boost_array[1]);
 		$boost_rrds_updated = $stats_rrds[1];
-	}else{
+	} else {
 		$boost_last_run_duration = '';
 		$boost_rrds_updated = '';
 	}
@@ -2006,11 +2006,11 @@ function boost_display_run_status() {
 
 			$directory_size = boost_file_size_display($directory_size);
 			$cache_files    = $cache_files . ' Files';
-		}else{
+		} else {
 			$directory_size = '<strong>' . __('WARNING:') . '</strong>' . __('Cannot open directory');
 			$cache_files    = '<strong>' . __('WARNING:') . '</strong> ' . __('Unknown');
 		}
-	}else{
+	} else {
 		$directory_size = '<strong>' . __('WARNING:') . '</strong> ' . __('Directory Does NOT Exist!!');
 		$cache_files    = '<strong>' . __('WARNING:') . '</strong> ' . __('N/A');
 	}
@@ -2058,21 +2058,21 @@ function boost_display_run_status() {
 		$parts = explode(':', $output_length);
 		if ((time()-1200) > $parts[0]) {
 			$ref = TRUE;
-		}else{
+		} else {
 			$ref = FALSE;
 		}
-	}else{
+	} else {
 		$ref = TRUE;
 	}
 
 	if ($ref) {
 		if (strcmp($engine, 'MEMORY') == 0) {
 			$max_length = db_fetch_cell('SELECT MAX(LENGTH(output)) FROM poller_output_boost');
-		}else{
+		} else {
 			$max_length = '0';
 		}
 		db_execute("REPLACE INTO settings (name, value) VALUES ('boost_max_output_length', '" . time() . ':' . $max_length . "')");
-	}else{
+	} else {
 		$max_length = $parts[1];
 	}
 
@@ -2086,7 +2086,7 @@ function boost_display_run_status() {
 	if (strcmp($engine, 'MEMORY')) {
 		$max_table_allowed = __('Unlimited');
 		$max_table_records = __('Unlimited');
-	}else{
+	} else {
 		$max_table_allowed = boost_file_size_display($max_data_length, 2);
 		$max_table_records = number_format_i18n(($avg_row_length ? $max_data_length/$avg_row_length : 0), 3, 1000);
 	}
@@ -2207,7 +2207,7 @@ function snmpagent_utilities_run_cache() {
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -2310,7 +2310,7 @@ function snmpagent_utilities_run_cache() {
 	/* filter by host */
 	if (get_request_var('mib') == '-1') {
 		/* Show all items */
-	}elseif (!isempty_request_var('mib')) {
+	} elseif (!isempty_request_var('mib')) {
 		$sql_where .= " AND snmpagent_cache.mib='" . get_request_var('mib') . "'";
 	}
 
@@ -2450,7 +2450,7 @@ function snmpagent_utilities_run_eventlog(){
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -2578,7 +2578,7 @@ function snmpagent_utilities_run_eventlog(){
 	/* filter by severity */
 	if (get_request_var('severity') == '-1') {
 	/* Show all items */
-	}elseif (!isempty_request_var('severity')) {
+	} elseif (!isempty_request_var('severity')) {
 		$sql_where .= " AND snl.severity='" . get_request_var('severity') . "'";
 	}
 
@@ -2631,7 +2631,7 @@ function snmpagent_utilities_run_eventlog(){
 
 			form_end_row();
 		}
-	}else{
+	} else {
 		print '<tr><td colspan="5"><em>' . __('No SNMP Notification Log Entries') . '</em></td></tr>';
 	}
 

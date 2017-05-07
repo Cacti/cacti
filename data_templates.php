@@ -153,7 +153,7 @@ function form_save() {
 						$not_required = true;
 					}else if ($input_field['allow_nulls'] == 'on') {
 						$not_required = true;
-					}else{
+					} else {
 						$not_required = false;
 					}
 
@@ -167,7 +167,7 @@ function form_save() {
 
 			if ($data_template_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
@@ -178,7 +178,7 @@ function form_save() {
 
 			if ($data_template_data_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
@@ -197,7 +197,7 @@ function form_save() {
 
 			if ($data_template_rrd_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
@@ -218,7 +218,7 @@ function form_save() {
 							/* save the data into the 'host_template_data' table */
 							if (isset_request_var('t_value_' . $input_field['data_name'])) {
 								$template_this_item = 'on';
-							}else{
+							} else {
 								$template_this_item = '';
 							}
 
@@ -228,7 +228,7 @@ function form_save() {
 								$value = get_nfilter_request_var($form_value);
 								if (is_array($value)) {
 									$value = trim($value[0]);
-								}else{
+								} else {
 									$value = trim($value);
 								}
 
@@ -286,7 +286,7 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { // delete
 				db_execute('DELETE FROM data_template_data WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
 				db_execute('DELETE FROM data_template_rrd WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
 				db_execute('DELETE FROM snmp_query_graph_rrd WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
@@ -297,11 +297,11 @@ function form_actions() {
 				db_execute('UPDATE data_template_data set local_data_template_data_id=0,data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
 				db_execute('UPDATE data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
 				db_execute('UPDATE data_local set data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
-			}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_duplicate_data_source(0, $selected_items[$i], get_nfilter_request_var('title_format'));
 				}
-			}elseif (get_nfilter_request_var('drp_action') == '3') { /* change data source profile */
+			} elseif (get_nfilter_request_var('drp_action') == '3') { // change data source profile
 				$step = db_fetch_cell_prepared('SELECT step 
 					FROM data_source_profiles 
 					WHERE id = ?', 
@@ -347,7 +347,7 @@ function form_actions() {
 	html_start_box($ds_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($ds_array) && sizeof($ds_array)) {
-		if (get_request_var('drp_action') == '1') { /* delete */
+		if (get_request_var('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed.') . "</p>
@@ -356,7 +356,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Data Template(s)') . "'>";
-		}elseif (get_request_var('drp_action') == '2') { /* duplicate */
+		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Data Template(s). You can optionally change the title format for the new Data Template(s).') . "</p>
@@ -366,7 +366,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Duplicate Data Template(s)') . "'>";
-		}elseif (get_request_var('drp_action') == '3') { /* change profile */
+		} elseif (get_request_var('drp_action') == '3') { // change profile
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to change the default Data Source Profile for the following Data Template(s).') . "</p>
@@ -383,7 +383,7 @@ function form_actions() {
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Change Data Source Profile') . "'>";
 		}
-	}else{
+	} else {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one data template.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -451,7 +451,7 @@ function template_rrd_add() {
 
 		if (empty($exists)) {
 			break;
-		}else{
+		} else {
 			$i++;
 			$dsname = 'ds (' . $i . ')';
 
@@ -497,7 +497,7 @@ function template_edit() {
 		$template = db_fetch_row_prepared('SELECT * FROM data_template WHERE id = ?', array(get_request_var('id')));
 
 		$header_label = __('Data Templates [edit: %s]', htmlspecialchars($template['name']));
-	}else{
+	} else {
 		$header_label = __('Data Templates [new]');
 	}
 
@@ -525,7 +525,7 @@ function template_edit() {
 
 		if ($field_array['flags'] == 'ALWAYSTEMPLATE') {
 			$form_array[$field_name]['description'] .= '<br><em>' . __('This field is always templated.') . '</em>';
-		}else{
+		} else {
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
 				'friendly_name' => __('Use Per-Data Source Value (Ignore this Value)'),
@@ -576,7 +576,7 @@ function template_edit() {
 			print "
 			</ul></nav>\n
 			</div>\n";
-		}elseif (sizeof($template_data_rrds) == 1) {
+		} elseif (sizeof($template_data_rrds) == 1) {
 			set_request_var('view_rrd', $template_data_rrds[0]['id']);
 		}
 	}
@@ -588,7 +588,7 @@ function template_edit() {
 		((db_fetch_cell_prepared('SELECT type_id FROM data_input WHERE id = ?', array($template_data['data_input_id'])) != '1') &&
 		(db_fetch_cell_prepared('SELECT type_id FROM data_input WHERE id = ?', array($template_data['data_input_id'])) != '5'))) {
 		unset($struct_data_source_item['data_input_field_id']);
-	}else{
+	} else {
 		$struct_data_source_item['data_input_field_id']['sql'] = "SELECT id,CONCAT(data_name,' - ',name) AS name FROM data_input_fields WHERE data_input_id=" . $template_data['data_input_id'] . " AND input_output='out' AND update_rra='on' ORDER BY data_name,name";
 	}
 
@@ -643,16 +643,16 @@ function template_edit() {
 				if (sizeof($data_input_data)) {
 					$old_value  = $data_input_data['value'];
 					$old_tvalue = $data_input_data['t_value'];
-				}else{
+				} else {
 					$old_value  = '';
 					$old_tvalue = '';
 				}
 
 				if ($field['data_name'] == 'management_ip') {
 					$help = $fields_host_edit['hostname']['description'];
-				}elseif (isset($fields_host_edit[$field['data_name']])) {
+				} elseif (isset($fields_host_edit[$field['data_name']])) {
 					$help = $fields_host_edit[$field['data_name']]['description'];
-				}else{
+				} else {
 					$help = $field['name'];
 				}
 
@@ -660,7 +660,7 @@ function template_edit() {
 
 				if ($class == 'odd') {
 					$class = 'even';
-				}else{
+				} else {
 					$class = 'odd';
 				}
 
@@ -680,7 +680,7 @@ function template_edit() {
 
 				$i++;
 			}
-		}else{
+		} else {
 			print '<div style="width:100%;float:left;"><em>' . __('No Input Fields for the Selected Data Input Source') . '</em></div>';
 		}
 
@@ -738,7 +738,7 @@ function template() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -848,7 +848,7 @@ function template() {
 	$rows_where = '';
 	if (get_request_var('filter') != '') {
 		$sql_where = " WHERE (dt.name like '%" . get_request_var('filter') . "%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
@@ -858,7 +858,7 @@ function template() {
 
 	if (get_request_var('has_data') == 'true') {
 		$sql_having = 'HAVING data_sources>0';
-	}else{
+	} else {
 		$sql_having = '';
 	}
 
@@ -921,7 +921,7 @@ function template() {
 		foreach ($template_list as $template) {
 			if ($template['data_sources'] > 0) {
 				$disabled = true;
-			}else{
+			} else {
 				$disabled = false;
 			}
 			form_alternate_row('line' . $template['id'], true, $disabled);
@@ -935,7 +935,7 @@ function template() {
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr class='tableRow'><td colspan='6'><em>" . __('No Data Templates Found') . "</em></td></tr>\n";
 	}
 	html_end_box(false);

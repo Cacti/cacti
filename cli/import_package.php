@@ -104,7 +104,7 @@ if (sizeof($parms)) {
 			echo "FATAL: Data Source Profile ID " . $profile_id . " does not exist!\n";
 			exit(1);
 		}
-	}else{
+	} else {
 		$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 	}
 	
@@ -123,7 +123,7 @@ if (sizeof($parms)) {
 				$filestatus = $result[1];
 
 				import_display_results($debug_data, $filestatus, false, $preview_only);
-			}else{
+			} else {
 				echo "ERROR: file $filename import process failed\n\n";
 			}
 		} else {

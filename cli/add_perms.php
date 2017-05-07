@@ -41,7 +41,7 @@ if (sizeof($parms) == 0) {
 	display_help();
 
 	exit(1);
-}else{
+} else {
 	$userId    = 0;
 
 	/* TODO replace magic numbers by global constants, treat user_admin as well */
@@ -76,7 +76,7 @@ if (sizeof($parms) == 0) {
 			/* TODO replace magic numbers by global constants, treat user_admin as well */
 			if ( ($value == 'graph') || ($value == 'tree') || ($value == 'host') || ($value == 'graph_template')) {
 				$itemType = $itemTypes[$value];
-			}else{
+			} else {
 				echo "ERROR: Invalid Item Type: ($value)\n\n";
 				display_help();
 				exit(1);

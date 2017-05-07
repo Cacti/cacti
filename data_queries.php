@@ -132,13 +132,13 @@ function form_save() {
 				raise_message(1);
 
 				update_replication_crc(0, 'poller_replicate_snmp_query_crc');
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		header('Location: data_queries.php?header=false&action=edit&id=' . (empty($snmp_query_id) ? get_request_var('id') : $snmp_query_id));
-	}elseif (isset_request_var('save_component_snmp_query_item') && !isset_request_var('svg_x') && !isset_request_var('svds_x')) {
+	} elseif (isset_request_var('save_component_snmp_query_item') && !isset_request_var('svg_x') && !isset_request_var('svds_x')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('snmp_query_id');
@@ -186,17 +186,17 @@ function form_save() {
 
 				if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
 					$header = '&header=false';
-				}else{
+				} else {
 					$header = '';
 				}
-			}else{
+			} else {
 				raise_message(2);
 				$header = '';
 			}
 		}
 
 		header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . (empty($snmp_query_graph_id) ? get_request_var('id') : $snmp_query_graph_id) . '&snmp_query_id=' . get_request_var('snmp_query_id'));
-	}elseif (isset_request_var('svg_x') && !isempty_request_var('svg_text') && !isempty_request_var('svg_field')) {
+	} elseif (isset_request_var('svg_x') && !isempty_request_var('svg_text') && !isempty_request_var('svg_field')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('snmp_query_id');
@@ -218,12 +218,12 @@ function form_save() {
 
 		if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
 			$header = '&header=false';
-		}else{
+		} else {
 			$header = '';
 		}
 
 		header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
-	}elseif (isset_request_var('svds_x')) {
+	} elseif (isset_request_var('svds_x')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('snmp_query_id');
@@ -249,7 +249,7 @@ function form_save() {
 
 				if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
 					$header = '&header=false';
-				}else{
+				} else {
 					$header = '';
 				}
 
@@ -320,7 +320,7 @@ function form_actions() {
 		}
 
 		$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Query', sizeof($dq_array)) . "'>";
-	}else{
+	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one data query.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -536,7 +536,7 @@ function data_query_item_edit() {
 			foreach ($data_template_rrds as $data_template_rrd) {
 				if (empty($data_template_rrd['snmp_query_graph_id'])) {
 					$old_value = '';
-				}else{
+				} else {
 					$old_value = 'on';
 				}
 
@@ -621,12 +621,12 @@ function data_query_item_edit() {
 				<td class='center'>
 					<?php if ($show_down) {?>
 					<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
-					<?php }else{?>
+					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
 					<?php if ($show_up) {?>
 					<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
-					<?php }else{?>
+					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
 				</td>
@@ -642,7 +642,7 @@ function data_query_item_edit() {
 
 				$i++;
 			}
-		}else{
+		} else {
 			print "<tr><td colspan='4'><em>" . __('No Suggested Values Found') . "</em></td></tr>";
 		}
 
@@ -719,12 +719,12 @@ function data_query_item_edit() {
 						<td class='center'>
 							<?php if ($show_down) {?>
 							<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id='. $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
-							<?php }else{?>
+							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
 							<?php if ($show_up) {?>
 							<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
-							<?php }else{?>
+							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
 						</td>
@@ -871,7 +871,7 @@ function data_query_edit() {
 	if (!isempty_request_var('id')) {
 		$snmp_query = db_fetch_row_prepared('SELECT * FROM snmp_query WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('Data Queries [edit: %s]', htmlspecialchars($snmp_query['name']));
-	}else{
+	} else {
 		$header_label = __('Data Queries [new]');
 	}
 
@@ -894,7 +894,7 @@ function data_query_edit() {
 		if ((file_exists($xml_filename)) && (is_file($xml_filename))) {
 			$text = "<span class='deviceUp'>" . __('Successfully located XML file') . "</span>";
 			$xml_file_exists = true;
-		}else{
+		} else {
 			$text = "<span class='deviceDown'>" . __('Could not locate XML file.') . "</span>";
 			$xml_file_exists = false;
 		}
@@ -932,7 +932,7 @@ function data_query_edit() {
 					<td>
 					<?php if ($xml_file_exists) {?>
 						<a class='linkEditMain' href="<?php print htmlspecialchars('data_queries.php?action=item_edit&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><?php print htmlspecialchars($snmp_query_graph['name']);?></a>
-					<?php }else{ ?>
+					<?php } else { ?>
 						<span class='noLinkEditMain' title='Association Read Only until XML file located'><?php print htmlspecialchars($snmp_query_graph['name']);?></span>
 					<?php } ?>
 					</td>
@@ -948,7 +948,7 @@ function data_query_edit() {
 					<td class='right'>
 							<a class='delete deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
 					</td>
-					<?php }else{ ?>
+					<?php } else { ?>
 					<td class='right'>
 							<a class='deleteMarkerDisabled fa fa-remove' title='<?php print __('Mapped Graph Templates with Graphs are read only');?>' href='#'></a>
 					</td>
@@ -956,7 +956,7 @@ function data_query_edit() {
 				</tr>
 				<?php
 			}
-		}else{
+		} else {
 				print "<tr class='tableRow'><td><em>" . __('No Graph Templates Defined.') . "</em></td></tr>";
 		}
 
@@ -1031,7 +1031,7 @@ function data_query() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -1109,7 +1109,7 @@ function data_query() {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('filter'))) {
 		$sql_where = "WHERE (sq.name like '%%" . get_request_var('filter') . "%%' OR di.name like '%%" . get_request_var('filter') . "%%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
@@ -1162,7 +1162,7 @@ function data_query() {
 		foreach ($snmp_queries as $snmp_query) {
 			if ($snmp_query['graphs'] == 0 && $snmp_query['templates'] == 0) {
 				$disabled = false;
-			}else{
+			} else {
 				$disabled = true;
 			}
 
@@ -1176,7 +1176,7 @@ function data_query() {
 			form_checkbox_cell($snmp_query['name'], $snmp_query['id'], $disabled);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr class='tableRow'><td colspan='5'><em>" . __('No Data Queries Found') . "</em></td></tr>";
 	}
 

@@ -91,7 +91,7 @@ function check_auth_cookie() {
 
 					if (empty($found)) {
 						return false;
-					}else{
+					} else {
 						set_auth_cookie($user_info);
 
 						cacti_log("LOGIN: User '" . $user_info['username'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
@@ -143,7 +143,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 			$user_auth['full_name'] = $user_exist['full_name'];
 			$user_auth['must_change_password'] = $user_exist['must_change_password'];
 			$user_auth['enabled']   = $user_exist['enabled'];
-		}else{
+		} else {
 			/* User already exists, duplicate users are bad */
 			raise_message(19);
 			return false;
@@ -290,10 +290,10 @@ function get_auth_realms($login = false) {
 				$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
 				if (!empty($default_realm)) {
 					$new_realms[1000+$default_realm]['selected'] = true;
-				}else{
+				} else {
 					$new_realms['0']['selected'] = true;
 				}
-			}else{
+			} else {
 				$new_realms['0'] = __('Local');
 				foreach($drealms as $realm) {
 					$new_realms[1000+$realm['domain_id']] = $realm['domain_name'];
@@ -330,7 +330,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 		$sql_policy_and .= "$sql_and(user_auth_perms.type != 1 OR user_auth_perms.type is null)";
 		$sql_and = ' AND ';
 		$sql_null = 'is null';
-	}elseif ($policy_graphs == '2') {
+	} elseif ($policy_graphs == '2') {
 		$sql_policy_or .= "$sql_or(user_auth_perms.type = 1 OR user_auth_perms.type is not null)";
 		$sql_or = ' OR ';
 		$sql_null = 'is not null';
@@ -339,7 +339,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 	if ($policy_hosts == '1') {
 		$sql_policy_and .= "$sql_and((user_auth_perms.type != 3) OR (user_auth_perms.type is null))";
 		$sql_and = ' AND ';
-	}elseif ($policy_hosts == '2') {
+	} elseif ($policy_hosts == '2') {
 		$sql_policy_or .= "$sql_or((user_auth_perms.type = 3) OR (user_auth_perms.type is not null))";
 		$sql_or = ' OR ';
 	}
@@ -347,7 +347,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 	if ($policy_graph_templates == '1') {
 		$sql_policy_and .= "$sql_and((user_auth_perms.type != 4) OR (user_auth_perms.type is null))";
 		$sql_and = ' AND ';
-	}elseif ($policy_graph_templates == '2') {
+	} elseif ($policy_graph_templates == '2') {
 		$sql_policy_or .= "$sql_or((user_auth_perms.type = 4) OR (user_auth_perms.type is not null))";
 		$sql_or = ' OR ';
 	}
@@ -365,7 +365,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 
 	if (empty($sql)) {
 		return '';
-	}else{
+	} else {
 		return '(' . $sql . ')';
 	}
 }
@@ -388,13 +388,13 @@ function auth_check_perms($objects, $policy) {
 	if ($objectSize && $policy == 1) {
 		return false;
 	/* policy == deny AND matches = ALLOW */
-	}elseif ($objectSize && $policy == 2) {
+	} elseif ($objectSize && $policy == 2) {
 		return true;
 	/* policy == allow AND no matches = ALLOW */
-	}elseif (!$objectSize && $policy == 1) {
+	} elseif (!$objectSize && $policy == 1) {
 		return true;
 	/* policy == deny AND no matches = DENY */
-	}elseif (!$objectSize && $policy == 2) {
+	} elseif (!$objectSize && $policy == 2) {
 		return false;
 	}
 }
@@ -405,7 +405,7 @@ function auth_check_perms($objects, $policy) {
 function is_tree_allowed($tree_id, $user = 0) {
 	if ($user == -1) {
 		$auth_method = 0;
-	}else{
+	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
@@ -413,7 +413,7 @@ function is_tree_allowed($tree_id, $user = 0) {
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
-			}else{
+			} else {
 				return array();
 			}
 		}
@@ -457,13 +457,13 @@ function is_tree_allowed($tree_id, $user = 0) {
 				}
 
 				return false;
-			}else{
+			} else {
 				return false;
 			}
-		}else{
+		} else {
 			return true;
 		}
-	}else{
+	} else {
 		return true;
 	}
 }
@@ -502,11 +502,11 @@ function is_view_allowed($view = 'show_tree') {
 
 		if (isset($values[3])) {
 			return false;
-		}elseif (isset($values['on'])) {
+		} elseif (isset($values['on'])) {
 			return true;
-		}elseif (isset($values[2])) {
+		} elseif (isset($values[2])) {
 			return true;
-		}else{
+		} else {
 			$value = db_fetch_cell_prepared("SELECT $view 
 				FROM user_auth 
 				WHERE id = ?", 
@@ -514,7 +514,7 @@ function is_view_allowed($view = 'show_tree') {
 
 			return ($value == 'on');
 		}
-	}else{
+	} else {
 		return true;
 	}
 }
@@ -582,7 +582,7 @@ function is_realm_allowed($realm) {
 
 			if (isset($_SESSION['sess_user_realms'][$realm])) {
 				return true;
-			}elseif (read_config_option('auth_method') != 0) {
+			} elseif (read_config_option('auth_method') != 0) {
 				if (version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
 					$user_realm = db_fetch_cell_prepared('SELECT realm_id 
 						FROM user_auth_realm 
@@ -597,7 +597,7 @@ function is_realm_allowed($realm) {
 						ON uag.id = uagm.group_id
 						WHERE uag.enabled = \'on\' AND uagr.realm_id = ?
 						AND uagm.user_id = ?', array($_SESSION['sess_user_id'], $realm, $realm, $_SESSION['sess_user_id']));
-				}else{
+				} else {
 					$user_realm = db_fetch_cell_prepared('SELECT realm_id 
 						FROM user_auth_realm 
 						WHERE user_id = ?
@@ -607,16 +607,16 @@ function is_realm_allowed($realm) {
 				if (!empty($user_realm)) {
 					$_SESSION['sess_user_realms'][$realm] = $realm;
 					return true;
-				}else{
+				} else {
 					return false;
 				}
-			}else{
+			} else {
 				$_SESSION['sess_user_realms'][$realm] = $realm;
 			}
-		}else{
+		} else {
 			return false;
 		}
-	}else{
+	} else {
 		return true;
 	}
 }
@@ -851,7 +851,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 				$sql_where
 				$sql_having
 			) AS rower");
-	}else{
+	} else {
 		$graphs = db_fetch_assoc("SELECT 
 			gti.id, gti.title, 
 			gtg.local_graph_id, 
@@ -915,7 +915,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 
 	if ($user == -1) {
 		$auth_method = 0;
-	}else{
+	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
@@ -923,14 +923,14 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
-			}else{
+			} else {
 				return array();
 			}
 		}
 
 		if (read_config_option('graph_auth_method') == 1) {
 			$sql_operator = 'OR';
-		}else{
+		} else {
 			$sql_operator = 'AND';
 		}
 
@@ -950,7 +950,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
 				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NULL";
-			}else{
+			} else {
 				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NOT NULL";
 			}
 
@@ -960,7 +960,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 
 			if ($policy['policy_hosts'] == 1) {
 				$sql_having .= " OR (user$i IS NULL";
-			}else{
+			} else {
 				$sql_having .= " OR (user$i IS NOT NULL";
 			}
 
@@ -970,7 +970,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 
 			if ($policy['policy_graph_templates'] == 1) {
 				$sql_having .= " $sql_operator user$i IS NULL))";
-			}else{
+			} else {
 				$sql_having .= " $sql_operator user$i IS NOT NULL))";
 			}
 
@@ -1011,7 +1011,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 				$sql_where
 				$sql_having
 			) AS rower");
-	}else{
+	} else {
 		$graphs = db_fetch_assoc("SELECT 
 			gtg.local_graph_id, 
 			h.description, 
@@ -1070,7 +1070,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 
 	if ($user == -1) {
 		$auth_method = 0;
-	}else{
+	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
@@ -1078,14 +1078,14 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
-			}else{
+			} else {
 				return array();
 			}
 		}
 
 		if (read_config_option('graph_auth_method') == 1) {
 			$sql_operator = 'OR';
-		}else{
+		} else {
 			$sql_operator = 'AND';
 		}
 
@@ -1105,7 +1105,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
 				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NULL";
-			}else{
+			} else {
 				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NOT NULL";
 			}
 
@@ -1115,7 +1115,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 
 			if ($policy['policy_hosts'] == 1) {
 				$sql_having .= " OR (user$i IS NULL";
-			}else{
+			} else {
 				$sql_having .= " OR (user$i IS NOT NULL";
 			}
 
@@ -1125,7 +1125,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 
 			if ($policy['policy_graph_templates'] == 1) {
 				$sql_having .= " $sql_operator user$i IS NULL))";
-			}else{
+			} else {
 				$sql_having .= " $sql_operator user$i IS NOT NULL))";
 			}
 
@@ -1170,7 +1170,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 				$sql_having
 			) AS rower
 			WHERE id > 0 AND name != ''");
-	}else{
+	} else {
 		$graphs = db_fetch_assoc("SELECT DISTINCT id, name
 			FROM (SELECT DISTINCT gtg.graph_template_id AS id, gt.name
 				FROM graph_templates_graph AS gtg 
@@ -1223,7 +1223,7 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
-			}else{
+			} else {
 				return array();
 			}
 		}
@@ -1317,7 +1317,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 
 	if ($user == -1) {
 		$auth_method = 0;
-	}else{
+	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
@@ -1325,14 +1325,14 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
-			}else{
+			} else {
 				return array();
 			}
 		}
 
 		if (read_config_option('graph_auth_method') == 1) {
 			$sql_operator = 'OR';
-		}else{
+		} else {
 			$sql_operator = 'AND';
 		}
 
@@ -1352,7 +1352,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
 				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NULL";
-			}else{
+			} else {
 				$sql_having .= (strlen($sql_having) ? ' OR ':'') . "(user$i IS NOT NULL";
 			}
 
@@ -1362,7 +1362,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 
 			if ($policy['policy_hosts'] == 1) {
 				$sql_having .= " OR (user$i IS NULL";
-			}else{
+			} else {
 				$sql_having .= " OR (user$i IS NOT NULL";
 			}
 
@@ -1372,7 +1372,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 
 			if ($policy['policy_graph_templates'] == 1) {
 				$sql_having .= " $sql_operator user$i IS NULL))";
-			}else{
+			} else {
 				$sql_having .= " $sql_operator user$i IS NOT NULL))";
 			}
 
@@ -1422,7 +1422,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 				$sql_where
 				$sql_having
 			) AS rower");
-	}else{
+	} else {
 		$host_list = db_fetch_assoc("SELECT h1.*
 			FROM host AS h1
 			INNER JOIN (
@@ -1485,7 +1485,7 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 				foreach($dqg as $t) {
 					$new_templates[] = array('id' => 'dq_' . $t['id'], 'name' => $t['name']);
 				}
-			}else{
+			} else {
 				$new_templates[] = array('id' => 'cg_' . $t['id'], 'name' => $t['name']);
 			}
 		}
@@ -1713,10 +1713,10 @@ function user_perms_valid($user_id) {
 			}
 
 			$_SESSION['sess_user_perms_key'] = $key;
-		}else{
+		} else {
 			$_SESSION['sess_user_perms_key'] = $valid;
 		}
-	}else{
+	} else {
 		$valid = true;
 		$_SESSION['sess_user_perms_key'] = $valid;
 	}

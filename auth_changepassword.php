@@ -28,7 +28,7 @@ include('./include/global.php');
 if (!isset($_SESSION['sess_user_id'])) {
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . $_SERVER['HTTP_REFERER']);
-	}else{
+	} else {
 		header('Location: index.php');
 	}
 	header('Location: index.php');
@@ -43,7 +43,7 @@ if ($auth_method != 1 && $user['realm'] != 0) {
 	raise_message('nodomainpassword');
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . $_SERVER['HTTP_REFERER']);
-	}else{
+	} else {
 		header('Location: index.php');
 	}
 	exit;
@@ -59,7 +59,7 @@ if ($user['password_change'] != 'on') {
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . $_SERVER['HTTP_REFERER']);
-	}else{
+	} else {
 		header('Location: index.php');
 	}
 	exit;
@@ -96,7 +96,7 @@ case 'changepassword':
 	// Get password options for the new password
 	if (function_exists('password_hash')) {
 		$password_new = password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
-	}else{
+	} else {
 		$password_new = '';
 	}
 	$password_old = md5(get_nfilter_request_var('password'));
@@ -114,7 +114,7 @@ case 'changepassword':
 			$bad_password = true;
 			$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . "</span>";
 		}
-	}else{
+	} else {
 		if ($user['password'] != $current_password_old) {
 			$bad_password = true;
 			$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . "</span>";
@@ -188,7 +188,7 @@ case 'changepassword':
 		if (basename(get_nfilter_request_var('ref')) == 'auth_changepassword.php' || basename(get_nfilter_request_var('ref')) == '') {
 			if ($has_console) {
 				set_request_var('ref', 'index.php');
-			}else{
+			} else {
 				set_request_var('ref', 'graph_view.php');
 			}
 		}
@@ -204,12 +204,12 @@ case 'changepassword':
 				default:
 					api_plugin_hook_function('login_options_navigate', $user['login_opts']);
 			}
-		}else{
+		} else {
 			header('Location: graph_view.php');
 		}
 		exit;
 
-	}else{
+	} else {
 		$bad_password = true;
 	}
 

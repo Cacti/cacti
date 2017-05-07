@@ -116,7 +116,7 @@ function getSNMPFields($hostId, $snmp_query_id = '') {
 
 	if ($snmp_query_id != '') {
 		$sql_where = " AND snmp_query_id=$snmp_query_id";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
@@ -140,7 +140,7 @@ function getSNMPValues($hostId, $field, $snmp_query_id = '') {
 
 	if ($snmp_query_id != '') {
 		$sql_where = " AND snmp_query_id=$snmp_query_id";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
@@ -407,7 +407,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 						echo $node['id']."\t";
 						if ($parentNode == 0) {
 							echo "N/A\t";
-						}else{
+						} else {
 							echo $parentNode . "\t";
 						}
 
@@ -425,7 +425,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 						echo $node['id'] . "\t";
 						if ($parentNode == 0) {
 							echo "N/A\t";
-						}else{
+						} else {
 							echo $parentNode . "\t";
 						}
 
@@ -445,7 +445,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 						echo $node['id'] . "\t";
 						if ($parentNode == 0) {
 							echo "N/A\t";
-						}else{
+						} else {
 							echo $parentNode . "\t";
 						}
 
