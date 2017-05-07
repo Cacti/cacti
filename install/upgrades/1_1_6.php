@@ -50,4 +50,6 @@ function upgrade_to_1_1_6() {
 		MODIFY COLUMN output VARCHAR(512) NOT NULL default '',
 		ENGINE=MEMORY"
 	);
+
+	db_install_execute("INSERT INTO settings SET `name` = 'max_display_rows', `value` = 1000;");
 }

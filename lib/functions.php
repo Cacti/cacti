@@ -712,6 +712,14 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 	return $file_array;
 }
 
+/**
+ * Function to determine if we display the line
+ *
+ * @param int $message_type
+ * @param string $line
+ * @param string $filter
+ * @return bool
+ */
 function determine_display_log_entry($message_type, $line, $filter) {
 	/* determine if we are to display the line */
 	switch ($message_type) {

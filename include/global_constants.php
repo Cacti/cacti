@@ -377,7 +377,6 @@ if ($database_type == 'mysql') {
 }
 
 define('MAX_DISPLAY_PAGES', 5);
-define('MAX_DISPLAY_ROWS', 1000);
 define('CHECKED', 'on');
 
 define('FILTER_VALIDATE_IS_REGEX',          99999);

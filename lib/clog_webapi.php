@@ -160,7 +160,7 @@ function clog_view_logfile() {
 	/* read logfile into an array and display */
 	$total_rows      = 0;
 	$page_nr         = isset_request_var('page') ? get_request_var('page') : 1;
-	$number_of_lines = get_request_var('tail_lines') < 0 ? MAX_DISPLAY_ROWS : get_request_var('tail_lines');
+	$number_of_lines = get_request_var('tail_lines') < 0 ? read_config_option('max_display_rows') : get_request_var('tail_lines');
 
 	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows);
 
