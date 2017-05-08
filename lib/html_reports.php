@@ -450,25 +450,25 @@ function reports_form_save() {
 			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', array(get_nfilter_request_var('id')));
 		}
 
-		$save['id']				= get_nfilter_request_var('id');
-		$save['name']			= form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['email']			= form_input_validate(get_nfilter_request_var('email'), 'email', '', false, 3);
-		$save['enabled']		= (isset_request_var('enabled') ? 'on' : '');
+		$save['id']            = get_nfilter_request_var('id');
+		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['email']         = form_input_validate(get_nfilter_request_var('email'), 'email', '', false, 3);
+		$save['enabled']       = (isset_request_var('enabled') ? 'on' : '');
 
-		$save['cformat']		= (isset_request_var('cformat') ? 'on' : '');
-		$save['format_file']	= get_nfilter_request_var('format_file');
-		$save['font_size']		= form_input_validate(get_nfilter_request_var('font_size'), 'font_size', '^[0-9]+$', false, 3);
-		$save['alignment']		= form_input_validate(get_nfilter_request_var('alignment'), 'alignment', '^[0-9]+$', false, 3);
-		$save['graph_linked']	= (isset_request_var('graph_linked') ? 'on' : '');
+		$save['cformat']       = (isset_request_var('cformat') ? 'on' : '');
+		$save['format_file']   = get_nfilter_request_var('format_file');
+		$save['font_size']     = form_input_validate(get_nfilter_request_var('font_size'), 'font_size', '^[0-9]+$', false, 3);
+		$save['alignment']     = form_input_validate(get_nfilter_request_var('alignment'), 'alignment', '^[0-9]+$', false, 3);
+		$save['graph_linked']  = (isset_request_var('graph_linked') ? 'on' : '');
 
-		$save['graph_columns']	= form_input_validate(get_nfilter_request_var('graph_columns'), 'graph_columns', '^[0-9]+$', false, 3);
-		$save['graph_width']	= form_input_validate(get_nfilter_request_var('graph_width'), 'graph_width', '^[0-9]+$', false, 3);
-		$save['graph_height']	= form_input_validate(get_nfilter_request_var('graph_height'), 'graph_height', '^[0-9]+$', false, 3);
-		$save['thumbnails'] 	= form_input_validate((isset_request_var('thumbnails') ? get_nfilter_request_var('thumbnails'):''), 'thumbnails', '', true, 3);
+		$save['graph_columns'] = form_input_validate(get_nfilter_request_var('graph_columns'), 'graph_columns', '^[0-9]+$', false, 3);
+		$save['graph_width']   = form_input_validate(get_nfilter_request_var('graph_width'), 'graph_width', '^[0-9]+$', false, 3);
+		$save['graph_height']  = form_input_validate(get_nfilter_request_var('graph_height'), 'graph_height', '^[0-9]+$', false, 3);
+		$save['thumbnails']    = form_input_validate((isset_request_var('thumbnails') ? get_nfilter_request_var('thumbnails'):''), 'thumbnails', '', true, 3);
 
-		$save['intrvl']	 	= form_input_validate(get_nfilter_request_var('intrvl'), 'intrvl', '^[-+]?[0-9]+$', false, 3);
-		$save['count']	 	= form_input_validate(get_nfilter_request_var('count'), 'count', '^[0-9]+$', false, 3);
-		$save['offset']	 	= '0';
+		$save['intrvl']        = form_input_validate(get_nfilter_request_var('intrvl'), 'intrvl', '^[-+]?[0-9]+$', false, 3);
+		$save['count']         = form_input_validate(get_nfilter_request_var('count'), 'count', '^[0-9]+$', false, 3);
+		$save['offset']        = '0';
 
 		/* adjust mailtime according to rules */
 		$timestamp = strtotime(get_nfilter_request_var('mailtime'));
@@ -477,22 +477,24 @@ function reports_form_save() {
 		} elseif (($timestamp + read_config_option('poller_interval')) < $now) {
 			$timestamp += 86400;
 
-		/* if the time is far into the past, make it the correct time, but tomorrow */
-		if (($timestamp + read_config_option('poller_interval')) < $now) {
+			/* if the time is far into the past, make it the correct time, but tomorrow */
+			if (($timestamp + read_config_option('poller_interval')) < $now) {
 				$timestamp = strtotime('12:00am') + 86400 + date('H', $timestamp) * 3600 + date('i', $timestamp) * 60 + date('s', $timestamp);
-		}
+			}
+
 			$_SESSION['reports_message'] = __('Date/Time moved to the same time Tomorrow');
 
 			raise_message('reports_message');
 		}
 
-		$save['mailtime'] = form_input_validate($timestamp, 'mailtime', '^[0-9]+$', false, 3);
+		$save['mailtime']     = form_input_validate($timestamp, 'mailtime', '^[0-9]+$', false, 3);
 
 		if (strlen(get_nfilter_request_var('subject'))) {
 			$save['subject'] = get_nfilter_request_var('subject');
 		} else {
 			$save['subject'] = $save['name'];
 		}
+
 		$save['from_name']        = get_nfilter_request_var('from_name');
 		$save['from_email']       = get_nfilter_request_var('from_email');
 		$save['bcc']              = get_nfilter_request_var('bcc');
@@ -596,12 +598,12 @@ function reports_form_actions() {
 					reports_log(__FUNCTION__ . ', duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					duplicate_reports($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
-			} elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { // enable 
+			} elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { // enable
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', enable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					db_execute_prepared('UPDATE reports SET enabled="on" WHERE id = ?', array($selected_items[$i]));
 				}
-			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { // disable 
+			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { // disable
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', disable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					db_execute_prepared('UPDATE reports SET enabled="" WHERE id = ?', array($selected_items[$i]));
@@ -668,7 +670,7 @@ function reports_form_actions() {
 	} else {
 		$save_html = "<input type='submit' value='" . __('Continue') . "' name='save'>";
 
-		if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete 
+		if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Report(s).') . "</p>
@@ -1374,7 +1376,7 @@ function reports() {
 		}
 	}
 
-	print '<form id="form_report" action="' . get_reports_page() . '">';
+	form_start(get_reports_page(), 'form_report');
 
 	html_start_box(__('Reports [%s]', (is_reports_admin() ? __('Administrator Level'):__('User Level'))), '100%', '', '3', 'center', get_reports_page() . '?action=edit&tab=details');
 
@@ -1426,7 +1428,7 @@ function reports() {
 
 	html_end_box(TRUE);
 
-	print "</form>\n";
+	form_end();
 
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('filter'))) {
