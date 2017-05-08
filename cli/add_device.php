@@ -114,7 +114,7 @@ if (sizeof($parms)) {
 			if (sizeof($parms) == 1) {
 				display_version();
 				exit;
-			}else{
+			} else {
 				$snmp_ver = trim($value);
 			}
 
@@ -236,7 +236,7 @@ if (sizeof($parms)) {
 		case '--ping_port':
 			if (is_numeric($value) && ($value > 0)) {
 				$ping_port = $value;
-			}else{
+			} else {
 				echo "ERROR: Invalid Ping Port: ($value)\n\n";
 				display_help();
 				exit(1);
@@ -246,7 +246,7 @@ if (sizeof($parms)) {
 		case '--ping_retries':
 			if (is_numeric($value) && ($value > 0)) {
 				$ping_retries = $value;
-			}else{
+			} else {
 				echo "ERROR: Invalid Ping Retries: ($value)\n\n";
 				display_help();
 				exit(1);
@@ -256,7 +256,7 @@ if (sizeof($parms)) {
 		case '--max_oids':
 			if (is_numeric($value) && ($value > 0)) {
 				$max_oids = $value;
-			}else{
+			} else {
 				echo "ERROR: Invalid Max OIDS: ($value)\n\n";
 				display_help();
 				exit(1);
@@ -340,16 +340,16 @@ if (sizeof($parms)) {
 			if ($phost['snmp_community'] != $community) {
 				if ($proxy) {
 					// assuming an snmp-proxy
-				}else{
+				} else {
 					echo "ERROR: This IP ($id) already exists in the database and --proxy was not specified.\n";
 					exit(1);
 				}
-			}else{
+			} else {
 				$fail = true;
 			}
-		}elseif ($phost['snmp_version'] != $snmp_ver) {
+		} elseif ($phost['snmp_version'] != $snmp_ver) {
 			// assumeing a proxy
-		}elseif ($phost['snmp_version'] == '3' && $snmp_ver == '3') {
+		} elseif ($phost['snmp_version'] == '3' && $snmp_ver == '3') {
 			$changed = 0;
 			$changed += ($phost['snmp_usernanem'] != $username ? 1:0);
 			$changed += ($phost['snmp_context'] != $snmp_context ? 1:0);
@@ -360,14 +360,14 @@ if (sizeof($parms)) {
 			if ($changed > 0) {
 				if ($proxy) {
 					// assuming a proxy
-				}else{
+				} else {
 					echo "ERROR: This IP ($id) already exists in the database and --proxy was not specified.\n";
 					exit(1);
 				}
-			}else{
+			} else {
 				$fail = true;
 			}
-		}else{
+		} else {
 			$fail = true;
 		}
 
@@ -392,7 +392,7 @@ if (sizeof($parms)) {
 	if ($snmp_ver < 0 || $snmp_ver > 3) {
 		echo "ERROR: Invalid snmp version ($snmp_ver)\n";
  		exit(1);
-	}elseif ($snmp_ver > 0) {
+	} elseif ($snmp_ver > 0) {
 		if ($snmp_port <= 1 || $snmp_port > 65534) {
 			echo "ERROR: Invalid port.  Valid values are from 1-65534\n";
 			exit(1);
@@ -407,7 +407,7 @@ if (sizeof($parms)) {
 	/* community/user/password verification */
 	if ($snmp_ver < 3) {
 		/* snmp community can be blank */
-	}else{
+	} else {
 		if ($snmp_username == "" || $snmp_password == "") {
 			echo "ERROR: When using snmpv3 you must supply an username and password\n";
 			exit(1);
@@ -422,7 +422,7 @@ if (sizeof($parms)) {
 
 	if ($disable == 0) {
 		$disable = "";
-	}else{
+	} else {
 		$disable = "on";
 	}
 
@@ -443,7 +443,7 @@ if (sizeof($parms)) {
 		echo "Success - new device-id: ($host_id)\n";
 		exit(0);
 	}
-}else{
+} else {
 	display_help();
 	exit(0);
 }

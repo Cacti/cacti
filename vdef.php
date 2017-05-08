@@ -120,13 +120,13 @@ function vdef_form_save() {
 
 			if ($vdef_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		header('Location: vdef.php?action=edit&header=false&id=' . (empty($vdef_id) ? get_request_var('id') : $vdef_id));
-	}elseif (isset_request_var('save_component_item')) {
+	} elseif (isset_request_var('save_component_item')) {
 		$sequence = get_sequence(get_filter_request_var('id'), 'sequence', 'vdef_items', 'vdef_id=' . get_filter_request_var('vdef_id'));
 
 		$save['id']       = get_filter_request_var('id');
@@ -141,14 +141,14 @@ function vdef_form_save() {
 
 			if ($vdef_item_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		if (is_error_message()) {
 			header('Location: vdef.php?action=item_edit&header=false&vdef_id=' . get_request_var('vdef_id') . '&id=' . (empty($vdef_item_id) ? get_request_var('id') : $vdef_item_id));
-		}else{
+		} else {
 			header('Location: vdef.php?action=edit&header=false&id=' . get_request_var('vdef_id'));
 		}
 	}
@@ -205,7 +205,7 @@ function vdef_form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') === '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') === '1') { // delete
 				/* do a referential integrity check */
 				if (sizeof($selected_items)) {
 				foreach($selected_items as $vdef_id) {
@@ -221,7 +221,7 @@ function vdef_form_actions() {
 					db_execute('DELETE FROM vdef WHERE ' . array_to_sql_or($vdef_ids, 'id'));
 					db_execute('DELETE FROM vdef_items WHERE ' . array_to_sql_or($vdef_ids, 'vdef_id'));
 				}
-			}elseif (get_nfilter_request_var('drp_action') === '2') { /* duplicate */
+			} elseif (get_nfilter_request_var('drp_action') === '2') { // duplicate
 				for ($i=0;($i<count($selected_items));$i++) {
 					/* ================= input validation ================= */
 					input_validate_input_number($selected_items[$i]);
@@ -259,7 +259,7 @@ function vdef_form_actions() {
 	html_start_box($vdef_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($vdef_array)) {
-		if (get_nfilter_request_var('drp_action') === '1') { /* delete */
+		if (get_nfilter_request_var('drp_action') === '1') { // delete
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __n('Click \'Continue\' to delete the following VDEF.', 'Click \'Continue\' to delete following VDEFs.', sizeof($vdef_array)) . "</p>
@@ -268,7 +268,7 @@ function vdef_form_actions() {
 				</tr>\n";
 
 			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', sizeof($vdef_array)) . "'>";
-		}elseif (get_nfilter_request_var('drp_action') === '2') { /* duplicate */
+		} elseif (get_nfilter_request_var('drp_action') === '2') { // duplicate
 			print "	<tr>
 					<td class='topBoxAlt'>
 						<p>" . __n('Click \'Continue\' to duplicate the following VDEF. You can optionally change the title format for the new VDEF.', 'Click \'Continue\' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs.', sizeof($vdef_array)) . "</p>
@@ -279,7 +279,7 @@ function vdef_form_actions() {
 
 			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', sizeof($vdef_array)) . "'>";
 		}
-	}else{
+	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one VDEF.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -398,9 +398,9 @@ function vdef_item_edit() {
 
 	if (isset_request_var('type_select')) {
 		$current_type = get_request_var('type_select');
-	}elseif (isset($vdef['type'])) {
+	} elseif (isset($vdef['type'])) {
 		$current_type = $vdef['type'];
-	}else{
+	} else {
 		$current_type = CVDEF_ITEM_TYPE_FUNCTION;
 	}
 
@@ -533,7 +533,7 @@ function vdef_edit() {
 	if (!isempty_request_var('id')) {
 		$vdef = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('VDEFs [edit: %s]', $vdef['name']);
-	}else{
+	} else {
 		$header_label = __('VDEFs [new]');
 	}
 
@@ -586,13 +586,13 @@ function vdef_edit() {
 					if (read_config_option('drag_and_drop') == '') {
 						if ($i < $total_items && $total_items > 1) {
 							echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
-						}else{
+						} else {
 							echo '<span class="moveArrowNone"></span>';
 						}
 
 						if ($i > 1 && $i <= $total_items) {
 							echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
-						}else{
+						} else {
 							echo '<span class="moveArrowNone"></span>';
 						}
 					}
@@ -735,13 +735,13 @@ function get_vdef_records(&$total_rows, &$rows) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (rs.name LIKE '%" . get_request_var('filter') . "%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
 		$sql_having = 'HAVING graphs>0';
-	}else{
+	} else {
 		$sql_having = '';
 	}
 
@@ -827,7 +827,7 @@ function vdef($refresh = true) {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -855,7 +855,7 @@ function vdef($refresh = true) {
         foreach ($vdefs as $vdef) {
             if ($vdef['graphs'] == 0 && $vdef['templates'] == 0) {
                 $disabled = false;
-            }else{
+            } else {
                 $disabled = true;
             }
 
@@ -867,7 +867,7 @@ function vdef($refresh = true) {
             form_checkbox_cell($vdef['name'], $vdef['id'], $disabled);
             form_end_row();
         }
-    }else{
+    } else {
         print "<tr class='tableRow'><td colspan='4'><em>" . __('No VDEFs') . "</em></td></tr>\n";
     }
 

@@ -133,10 +133,10 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	if ((strstr($title, '|')) && (!empty($host_id))) {
 		if (($snmp_query_id != '0') && ($snmp_index != '')) {
 			return substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, '|', '|', $host_id)), $host_id, $snmp_query_id, $snmp_index, read_config_option('max_data_query_field_length'));
-		}else{
+		} else {
 			return null_out_substitutions(substitute_host_data($title, '|', '|', $host_id));
 		}
-	}else{
+	} else {
 		return null_out_substitutions($title);
 	}
 }
@@ -290,13 +290,13 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 
 			if (sizeof($local_data_ids)) {
 				$data_template_data_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_data WHERE local_data_id IN (' . implode(',', $local_data_ids) . ')');
-			}else{
+			} else {
 				$data_template_data_id = 0;
 			}
-		}else{
+		} else {
 			$data_template_data_id = 0;
 		}
-	}else{
+	} else {
 		$data_template_data_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
 	}
 

@@ -435,7 +435,7 @@ $enabled = '1';
 						<span><input type='checkbox' id='accept' name='accept'></span><span><label for='accept'>Accept GPL License Agreement</label></span><br><br>
 					<?php 	
 					/* checkdependencies */
-					}elseif ($step == '2') { 
+					} elseif ($step == '2') { 
 						$enabled = '1';
 
 						print '<h2>' . __('Pre-installation Checks') .'</h2>';
@@ -447,7 +447,7 @@ $enabled = '1';
 								print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your MySQL TimeZone database is not populated.  Please populate this database before proceeding.') . '</p>';
 								$enabled = '0';
 							}
-						}else{
+						} else {
 							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account "select" access to the "time_zone_name" table in the "mysql" database, and populate MySQL\'s TimeZone information before proceeding.') . '</p>';
 							$enabled = '0';
 						}
@@ -486,7 +486,7 @@ $enabled = '1';
 								array('name' => 'gd',        'installed' => false),
 								array('name' => 'zlib',      'installed' => false)
 							);
-						}elseif (version_compare(PHP_VERSION, '5.4.5') < 0) {
+						} elseif (version_compare(PHP_VERSION, '5.4.5') < 0) {
 							$extensions = array( 
 								array('name' => 'session',   'installed' => false),
 								array('name' => 'sockets',   'installed' => false),
@@ -501,7 +501,7 @@ $enabled = '1';
 								array('name' => 'gd',        'installed' => false),
 								array('name' => 'zlib',      'installed' => false)
 							);
-						}else{
+						} else {
 							$extensions = array( 
 								array('name' => 'com_dotnet','installed' => false),
 								array('name' => 'session',   'installed' => false),
@@ -556,7 +556,7 @@ $enabled = '1';
 						utilities_get_mysql_recommendations();
 						html_end_box(false);
 					/* install/upgrade */
-					}elseif ($step == '3') {
+					} elseif ($step == '3') {
 						print '<h2>' . __('Installation Type') . '</h2>';
 
 						print '<h4>' . __('Please select the type of installation') . '</h4>';
@@ -577,7 +577,7 @@ $enabled = '1';
 									<option value="3"' . (($default_install_type == '3') ? ' selected' : '') . '>' . __('Upgrade Previous Cacti') . '</option>
 								</select>
 							</p>';
-						}else{
+						} else {
 							print '<p>
 								<select id="install_type" name="install_type">
 									<option value="1"' . (($default_install_type == '1') ? ' selected' : '') . '>' . __('New Primary Server') . '</option>
@@ -609,7 +609,7 @@ $enabled = '1';
 
 						if (is_writable($config['base_path'] . '/include/config.php')) {
 							$good_write = true;
-						}else{
+						} else {
 							$good_write = false;
 						}
 
@@ -618,7 +618,7 @@ $enabled = '1';
 							isset($rdatabase_hostname) &&
 							isset($rdatabase_port)) {
 							$remote_good = true;
-						}else{
+						} else {
 							$remote_good = false;
 						}
 
@@ -631,7 +631,7 @@ $enabled = '1';
 								. __('Port: <b>%s</b>', $rdatabase_port) . '<br>'
 								. __('Server Operating System Type: <b>%s</b>', $config['cacti_server_os']) . '<br>'
 							. '</p>';
-						}else{
+						} else {
 							print '<h4>' . __('Remote Poller Cacti database connection information') . '</h4>';
 
 							if (!$good_write) {
@@ -697,7 +697,7 @@ $enabled = '1';
 									$('#test').button().show();
 									if (test_good) {
 										$('#next').prop('disabled', false).button('enable');
-									}else{
+									} else {
 										$('#next').button('disable');
 									}
 									<?php } else { ?>
@@ -734,7 +734,7 @@ $enabled = '1';
 						</script>
 						<?php
 				 	/* settingscheck */
-					}elseif ($step == '4') {
+					} elseif ($step == '4') {
 						print '<h2>' . __('Critical Binary Locations and Versions') . '</h2>';
 
 						print '<p>' . __('Make sure all of these values are correct before continuing.') . '</p>';						
@@ -755,7 +755,7 @@ $enabled = '1';
 
 								if (!empty($array['friendly_name'])) {
 									print ': ' . $array['description'];
-								}else{
+								} else {
 									print '<strong>' . $array['description'] . '</strong>';
 								}
 
@@ -780,7 +780,7 @@ $enabled = '1';
 						}
 						
 				 	/* settings-install */
-					}elseif ($step == '5') { 
+					} elseif ($step == '5') { 
 						include_once('../lib/data_query.php');
 						include_once('../lib/utility.php');
 
@@ -801,7 +801,7 @@ $enabled = '1';
 
 						if (get_request_var('install_type') == 1) {
 							print '<p>' . __('After the install is complete, you can make some of these directories read only to increase security.') . '</p>';						
-						}else{
+						} else {
 							print '<p>' . __('These directories will be required to stay read writable after the install so that the Cacti remote synchronization process can update them as the Main Cacti Web Site changes') . '</p>';
 						}
 
@@ -852,7 +852,7 @@ $enabled = '1';
 									$writable = false;
 								}
 							}
-						}else{
+						} else {
 							print '<p><strong>' . __('Required Writable after Install Complete') . '</strong></p>';
 							foreach($remote_paths as $path) {
 								if (is_writable($path)) {
@@ -868,7 +868,7 @@ $enabled = '1';
 						if (($config['cacti_server_os'] == 'unix') && isset($writable)) {
 							print '<p>' . __('Make sure your webserver has read and write access to the entire folder structure.<br> Example: chown -R apache.apache %s/resource/', $config['base_path']) . '</p>';
 							print '<p>' . __('For SELINUX-users make sure that you have the correct permissions or set \'setenforce 0\' temporarily.') . '</p><br>';
-						}elseif (($config['cacti_server_os'] == 'win32') && isset($writable)){
+						} elseif (($config['cacti_server_os'] == 'win32') && isset($writable)){
 							print __('Check Permissions');
 						}else {
 							print '<font color="#008000">' . __('All folders are writable') . '</font><br><br>';
@@ -880,7 +880,7 @@ $enabled = '1';
 							print __('NOTE:') . '</font></strong> ' . __('If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site.');
 
 							print '</p>';
-						}else{
+						} else {
 							print '<p><strong><font color="#FF0000">';
 
 							print __('NOTE:') . '</font></strong> ' . __('For remote pollers, it is critical that
@@ -892,7 +892,7 @@ $enabled = '1';
 						}
 
 					/* template-import */
-					}elseif ($step == '6') {
+					} elseif ($step == '6') {
 						print '<h2>' . __('Template Setup') . '</h2>';
 
 						print '<p>' . __('Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the \'Windows Device\' Template.  If your Operating System is Linux/UNIX, make sure you select the \'Local Linux Machine\' Device Template.') . '</p>';
@@ -924,7 +924,7 @@ $enabled = '1';
 						print __('Press \'Finish\' to complete the installation process after selecting your Device Templates.') . '</p>';
 					
 					/* upgrade */
-					}elseif ($step == '8') {
+					} elseif ($step == '8') {
 						print '<h2>' . __('Upgrade Results') . '</h2>';
 
 						print '<p>' . __('You Cacti database has been upgraded.  You can view the results below.') . '</p>';
@@ -961,7 +961,7 @@ $enabled = '1';
 							}
 
 							kill_session_var('sess_sql_install_cache');
-						}else{
+						} else {
 							print '<em>' . __('No SQL queries have been executed.') . '</em>';
 						}
 
@@ -972,7 +972,7 @@ $enabled = '1';
 						print $upgrade_results;
 
 					/* upgrade-oldversion */
-					}elseif ($step == '9') {
+					} elseif ($step == '9') {
 						print '<p style="font-size: 16px; font-weight: bold; color: red;">' . __('Important Upgrade Notice') . '</p>';
 						print '<p>' . __('Before you continue with the installation, you <strong>must</strong> update your <tt>/etc/crontab</tt> file to point to <tt>poller.php</tt> instead of <tt>cmd.php</tt>.') . '</p>';
 						print '<p>' . __('See the sample crontab entry below with the change made in red. Your crontab line will look slightly different based upon your setup.') . '</p>';
@@ -985,7 +985,7 @@ $enabled = '1';
 				<tr>
 					<td class='saveRow' style='text-align:left'>
 						<?php if ($step > 1) {?><input id='previous' type='button' value='<?php print __x('Dialog: previous', 'Previous'); ?>'><?php }?>
-						<input id='next' type='submit' value='<?php if ($step == '9'){ print __x('Dialog: complete', 'Finish'); }else{ print __x('Dialog: go to the next page', 'Next'); }?>'>
+						<input id='next' type='submit' value='<?php if ($step == '9'){ print __x('Dialog: complete', 'Finish'); } else { print __x('Dialog: go to the next page', 'Next'); }?>'>
 						<input id='test' type='button' style='display:none' title='<?php print __('Test remote database connection');?>' value='<?php print __x('Dialog: test connection', 'Test Connection'); ?>'>
 						<input type='hidden' id='previous_step' name='previous_step' value='<?php print $previous_step;?>'>
 					</td>
@@ -1024,7 +1024,7 @@ $(function() {
 	$('#accept').click(function() {
 		if ($(this).is(':checked')) {
 			$('#next').button('enable');
-		}else{
+		} else {
 			$('#next').button('disable');
 		}
 	});
@@ -1033,14 +1033,14 @@ $(function() {
 		// script is handled in the step
 	}else if (enabled) {
 		$('#next').button('enable');
-	}else{
+	} else {
 		$('#next').button('disable');
 	}
 
 	if ($('#accept').length) {
 		if ($('#accept').is(':checked')) {
 			$('#next').button('enable');
-		}else{
+		} else {
 			$('#next').button('disable');
 		}
 	}
@@ -1050,7 +1050,7 @@ $(function() {
 			$('#testdb').button('disable');
 		}else if ($('#database_hostname').val() == '127.0.0.1') {
 			$('#testdb').button('disable');
-		}else{
+		} else {
 			$('#testdb').button('enable');
 		}
 	});

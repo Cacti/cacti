@@ -23,7 +23,7 @@ function ss_sql() {
 
 	if ($database_password != "") {
 		$result = `mysqladmin --host=$database_hostname --user=$database_username --password=$database_password status`;
-	}else{
+	} else {
 		$result = `mysqladmin --host=$database_hostname --user=$database_username status`;
 	}
 

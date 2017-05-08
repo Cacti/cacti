@@ -140,7 +140,7 @@ function upgrade_to_0_8_6() {
 					/* we key tier==0 off of '1' and tier>0 off of '0' */
 					if (!isset($tier_counter[$tier])) {
 						$tier_counter[$tier] = 1;
-					}else{
+					} else {
 						$tier_counter[$tier]++;
 					}
 

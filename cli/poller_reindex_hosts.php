@@ -86,7 +86,7 @@ if (sizeof($parms)) {
 				exit;
 		}
 	}
-}else{
+} else {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
 	exit;
@@ -97,7 +97,7 @@ if (strtolower($host_id) == 'all') {
 	$sql_where = '';
 }else if (is_numeric($host_id) && $host_id > 0) {
 	$sql_where = ' WHERE host_id = ' . $host_id;
-}else{
+} else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
 	exit;
@@ -108,7 +108,7 @@ if (strtolower($query_id) == 'all') {
 	/* do nothing */
 }else if (is_numeric($query_id) && $query_id > 0) {
 	$sql_where .= (strlen($sql_where) ? ' AND snmp_query_id=' . $query_id : ' WHERE snmp_query_id=' . $query_id);
-}else{
+} else {
 	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
 	display_help();
 	exit;

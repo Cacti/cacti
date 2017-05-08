@@ -112,7 +112,7 @@ function form_save() {
 
 			if ($host_template_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
@@ -204,18 +204,18 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { // delete
 				db_execute('DELETE FROM host_template WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM host_template_snmp_query WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
 				db_execute('DELETE FROM host_template_graph WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
 
 				/* "undo" any device that is currently using this template */
 				db_execute('UPDATE host SET host_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
-			}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_host_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
-			}elseif (get_nfilter_request_var('drp_action') == '3') { /* sync */
+			} elseif (get_nfilter_request_var('drp_action') == '3') { // sync
 				for ($i=0;($i<count($selected_items));$i++) {
 					api_device_template_sync_template($selected_items[$i]);
 				}
@@ -250,7 +250,7 @@ function form_actions() {
 	html_start_box($host_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($host_array) && sizeof($host_array)) {
-		if (get_request_var('drp_action') == '1') { /* delete */
+		if (get_request_var('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Device Template(s).') . "</p>
@@ -259,7 +259,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Device Template(s)') . "'>";
-		}elseif (get_request_var('drp_action') == '2') { /* duplicate */
+		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Device Template(s).  Optionally change the title for the new Device Template(s).') ."</p>
@@ -273,7 +273,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Duplicate Device Template(s)') ."'>";
-		}elseif (get_request_var('drp_action') == '3') { /* sync devices */
+		} elseif (get_request_var('drp_action') == '3') { // sync devices
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to Synchronize Devices associated with the selected Device Template(s).  Note that this action may take some time depending on the number of Devices mapped to the Device Template.') ."</p>
@@ -285,7 +285,7 @@ function form_actions() {
 
 			$save_html = "<input type='button' value='" . __('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Sync Devices to Device Template(s)') ."'>";
 		}
-	}else{
+	} else {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one host template.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -440,7 +440,7 @@ function template_edit() {
 	if (!isempty_request_var('id')) {
 		$host_template = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('Device Templates [edit: %s]', htmlspecialchars($host_template['name']));
-	}else{
+	} else {
 		$header_label = __('Device Templates [new]');
 		set_request_var('id', 0);
 	}
@@ -489,7 +489,7 @@ function template_edit() {
 
 				$i++;
 			}
-		}else{ 
+		} else { 
 			print '<tr><td><em>' . __('No associated graph templates.') . '</em></td></tr>'; 
 		}
 
@@ -546,7 +546,7 @@ function template_edit() {
 
 				$i++;
 			}
-		}else{ 
+		} else { 
 			print '<tr><td><em>' . __('No associated data queries.') . '</em></td></tr>'; 
 		}
 
@@ -684,7 +684,7 @@ function template() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -768,13 +768,13 @@ function template() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (host_template.name LIKE '%%" . get_request_var('filter') . "%%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
 	if (get_request_var('has_hosts') == 'true') {
 		$sql_having = 'HAVING hosts>0';
-	}else{
+	} else {
 		$sql_having = '';
 	}
 
@@ -824,7 +824,7 @@ function template() {
 		foreach ($template_list as $template) {
 			if ($template['hosts'] > 0) {
 				$disabled = true;
-			}else{
+			} else {
 				$disabled = false;
 			}
 
@@ -836,7 +836,7 @@ function template() {
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Device Templates Found') . "</em></td></tr>\n";
 	}
 	html_end_box(false);

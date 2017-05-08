@@ -82,25 +82,25 @@ function form_save() {
 				if ($field_array['method'] == 'checkbox') {
 					if (isset_request_var($field_name)) {
 						db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $field_name));
-					}else{
+					} else {
 						db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $field_name));
 					}
-				}elseif ($field_array['method'] == 'checkbox_group') {
+				} elseif ($field_array['method'] == 'checkbox_group') {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						if (isset_request_var($sub_field_name)) {
 							db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $sub_field_name));
-						}else{
+						} else {
 							db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $sub_field_name));
 						}
 					}
-				}elseif ($field_array['method'] == 'textbox_password') {
+				} elseif ($field_array['method'] == 'textbox_password') {
 					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
 						raise_message(4);
 						break;
-					}elseif (isset_request_var($field_name)) {
+					} elseif (isset_request_var($field_name)) {
 						db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
 					}
-				}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+				} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						if (isset_request_var($sub_field_name)) {
 							db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_nfilter_request_var($sub_field_name)));
@@ -171,7 +171,7 @@ function settings() {
 
 	if (sizeof($graph_views)) {
 		$settings_user['general']['default_view_mode']['array'] = $graph_views;
-	}else{
+	} else {
 		unset($settings_user['general']['default_view_mode']);
 	}
 
@@ -256,7 +256,7 @@ function settings() {
 
 						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($sub_field_name, $_SESSION['sess_user_id']));
 					}
-				}else{
+				} else {
 					if (graph_config_value_exists($field_name, $_SESSION['sess_user_id'])) {
 						$form_array[$field_name]['form_id'] = 1;
 					}
@@ -344,7 +344,7 @@ function settings() {
 				$('#row_axis_font').hide();
 				$('#row_unit_size').hide();
 				$('#row_unit_font').hide();
-		}else{
+		} else {
 			var custom_fonts = $('#custom_fonts').is(':checked');
 
 			switch(custom_fonts) {
@@ -377,7 +377,7 @@ function settings() {
 	function themeChange() {
 		if ($('#selected_theme').val() != currentTheme) {
 			themeChanged = true;
-		}else{
+		} else {
 			themeChanged = false;
 		}
 	}
@@ -385,7 +385,7 @@ function settings() {
 	function langChange() {
 		if ($('#user_language').val() != currentLang) {
 			langChanged = true;
-		}else{
+		} else {
 			langChanged = false;
 		}
 	}
@@ -402,7 +402,7 @@ function settings() {
                 $.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
 					loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
                 });
-            }else{
+            } else {
                 $.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
                     document.location = 'auth_profile.php?newtheme=1';
                 });

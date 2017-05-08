@@ -63,14 +63,14 @@ function form_save() {
 			print "<table style='width:100%;' class='center'><tr><td><pre>" . htmlspecialchars($xml_data) . '</pre></td></tr></table>';
 
 			bottom_footer();
-		}elseif (get_nfilter_request_var('output_format') == '2') {
+		} elseif (get_nfilter_request_var('output_format') == '2') {
 			header('Content-type: application/xml');
 			if ($export_errors) echo __('WARNING: Export Errors Encountered. Refresh Browser Window for Details!') . "\n";
 			print $xml_data;
-		}elseif (get_nfilter_request_var('output_format') == '3') {
+		} elseif (get_nfilter_request_var('output_format') == '3') {
 			if ($export_errors) {
 				header('Location: templates_export.php');
-			}else{
+			} else {
 				header('Content-type: application/xml');
 				header('Content-Disposition: attachment; filename=cacti_' . get_nfilter_request_var('export_type') . '_' . strtolower(clean_up_file_name(db_fetch_cell(str_replace('|id|', get_nfilter_request_var('export_item_id'), $export_types{get_nfilter_request_var('export_type')}['title_sql'])))) . '.xml');
 				print $xml_data;

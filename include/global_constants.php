@@ -372,7 +372,7 @@ define('AUTOMATION_ACTION_TREE_DELETE', 99);
 
 if ($database_type == 'mysql') {
 	define('SQL_NO_CACHE', 'SQL_NO_CACHE');
-}else{
+} else {
 	define('SQL_NO_CACHE', '');
 }
 

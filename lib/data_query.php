@@ -76,11 +76,11 @@ function run_data_query($host_id, $snmp_query_id) {
 
 	if ($type_id == DATA_INPUT_TYPE_SNMP_QUERY) {
 		$result = query_snmp_host($host_id, $snmp_query_id);
-	}elseif ($type_id == DATA_INPUT_TYPE_SCRIPT_QUERY) {
+	} elseif ($type_id == DATA_INPUT_TYPE_SCRIPT_QUERY) {
 		$result = query_script_host($host_id, $snmp_query_id);
-	}elseif ($type_id == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
+	} elseif ($type_id == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
 		$result = query_script_host($host_id, $snmp_query_id);
-	}else{
+	} else {
 		$result = false;
 		$arguments = array(
 			'result' => $result, 
@@ -92,7 +92,7 @@ function run_data_query($host_id, $snmp_query_id) {
 
 		if (isset($arguments['result']) && $arguments['result'] !== false) {
 			$result = $arguments['result'];
-		}else{
+		} else {
 			query_debug_timer_offset('data_query', "Unknown type = '$type_id'");
 			unset($result);
 		}
@@ -151,7 +151,7 @@ function run_data_query($host_id, $snmp_query_id) {
 
 		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
 		query_debug_timer_offset('data_query', 'Plugin hooks complete');
-	}else{
+	} else {
 		if ($config['connection'] == 'online') {
 			automation_execute_data_query($host_id, $snmp_query_id);
 			query_debug_timer_offset('data_query', 'Automation execute data query complete');
@@ -163,7 +163,7 @@ function run_data_query($host_id, $snmp_query_id) {
 		if (!isset($_SESSION)) {
 			$config['debug_log']['result'] = $result;
 			print json_encode($config['debug_log']);
-		}else{
+		} else {
 			$_SESSION['debug_log']['result'] = $result;
 			print json_encode($_SESSION['debug_log']);
 
@@ -494,12 +494,12 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					if(isset($field_array['rewrite_index'])){
 						if(isset($rewritten_indexes[$index])){
 							$oid_suffix = $rewritten_indexes[$index];
-						}else{
+						} else {
 							// we failed to build rewritten index. warnings are sent already, just skip this index silently
 							continue;
 						}
 						$oid .= '.' . $oid_suffix;
-					}else{
+					} else {
 						$oid .= '.' . $index;
 					}
 
@@ -804,7 +804,7 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 		foreach($chain_indexes as $key => $values){
 			if(isset($values[$num_index]) && preg_match('/^[0-9.]+$/', $values[$num_index])){
 				$index = str_replace("|query_$key|", trim($values[$num_index]), $index);
-			}else{
+			} else {
 				$errmsg[] = "@'" . $num_index . "': could not load value of '$key'";
 			}
 		}
@@ -847,7 +847,7 @@ function rewrite_snmp_enum_value($field_name, $value=NULL, $map=NULL){
 			$newmap[$item['match']] = $item['replace'];
 		}
 		$map = $newmap;
-	}else{
+	} else {
 		$map = unserialize($map);
 	}
 	if($map === FALSE || !is_array($map)){
@@ -862,7 +862,7 @@ function rewrite_snmp_enum_value($field_name, $value=NULL, $map=NULL){
 					$src = '/' . str_replace('/', '\/', $matches[2]) . '/i';
 				else
 					$src = '/' . str_replace('/', '\/', $matches[1]) . '/';
-			}else{
+			} else {
 				$src = '/^' . str_replace('/^', '\/', $src) . '$/';
 			}
 			$mapcache[$field_name][$src] = $dst;
@@ -921,7 +921,7 @@ function data_query_field_list($data_template_data_id) {
 
 	if ((!isset($field['index_type'])) || (!isset($field['index_value'])) || (!isset($field['output_type']))) {
 		return 0;
-	}else{
+	} else {
 		return $field;
 	}
 }
@@ -1187,7 +1187,7 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 	if (isset($raw_xml['index_type'])) {
 		if ($raw_xml['index_type'] == 'nonunique') {
 			$nonunique = 1;
-		}else{
+		} else {
 			$nonunique = 0;
 		}
 	} else {
@@ -1205,7 +1205,7 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 					AND snmp_query_id = ?
 					AND field_name = ?', 
 					array($host_id, $data_query_id, $field_name));
-			}else{
+			} else {
 				$field_values = db_fetch_assoc_prepared("SELECT field_value 
 					FROM host_snmp_cache 
 					WHERE host_id = ?
@@ -1237,7 +1237,7 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 			}
 		}
 	/* the xml file does not contain a field list, ignore the order */
-	}else{
+	} else {
 		foreach($xml_outputs as $output) {
 			$return_array[] = $output;
 		}
@@ -1261,7 +1261,7 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 	/* something is probably wrong with the data query */
 	if (sizeof($valid_index_types) == 0) {
 		$sort_field = '';
-	}else{
+	} else {
 		/* grab the first field off the list */
 		$sort_field = $valid_index_types[0];
 	}
@@ -1269,7 +1269,7 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 	/* substitute variables */
 	if (isset($raw_xml['index_title_format'])) {
 		$title_format = str_replace('|chosen_order_field|', "|query_$sort_field|", $raw_xml['index_title_format']);
-	}else{
+	} else {
 		$title_format = "|query_$sort_field|";
 	}
 
@@ -1327,7 +1327,7 @@ function get_script_query_path($args, $script_path, $host_id) {
 	/* get any extra arguments that need to be passed to the script */
 	if (!empty($args)) {
 		$extra_arguments = substitute_host_data($args, '|', '|', $host_id);
-	}else{
+	} else {
 		$extra_arguments = '';
 	}
 

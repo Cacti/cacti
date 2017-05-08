@@ -113,13 +113,13 @@ function form_automation_snmp_save() {
 			$id = sql_save($save, 'automation_snmp');
 			if ($id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		header('Location: automation_snmp.php?header=false&action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
-	}elseif (isset_request_var('save_component_automation_snmp_item')) {
+	} elseif (isset_request_var('save_component_automation_snmp_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('item_id');
 		get_filter_request_var('id');
@@ -147,14 +147,14 @@ function form_automation_snmp_save() {
 
 			if ($item_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		if (is_error_message()) {
 			header('Location: automation_snmp.php?header=false&action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . (empty($item_id) ? get_filter_request_var('id') : $item_id));
-		}else{
+		} else {
 			header('Location: automation_snmp.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		}
 	} else {
@@ -182,7 +182,7 @@ function form_automation_snmp_actions() {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM automation_snmp WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM automation_snmp_items WHERE ' . str_replace('id', 'snmp_id', array_to_sql_or($selected_items, 'id')));
-			}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_mactrack($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
@@ -224,7 +224,7 @@ function form_automation_snmp_actions() {
 	if (!isset($automation_array)) {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one SNMP Option.') . "</span></td></tr>\n";
 		$save_html = '';
-	}else{
+	} else {
 		$save_html = "<input type='submit' value='" . __('Continue') . "' name='save'>";
 
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
@@ -234,7 +234,7 @@ function form_automation_snmp_actions() {
 					<div class='itemlist'><ul>$snmp_groups</ul></div>
 				</td>
 			</tr>\n";
-		}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options.') . "</p>
@@ -414,7 +414,7 @@ function automation_snmp_item_edit() {
 			WHERE id = ?', array(get_request_var('item_id')));
 
 		$header_label = __('SNMP Options [edit: %s]', htmlspecialchars($snmp_option['name']));
-	}else{
+	} else {
 		$header_label = __('SNMP Options [new]');
 		$automation_snmp_item = array();
 		$automation_snmp_item['snmp_id'] = get_request_var('id');
@@ -630,7 +630,7 @@ function automation_snmp_edit() {
 		$snmp_group = db_fetch_row_prepared('SELECT * FROM automation_snmp where id = ?', array(get_request_var('id')));
 		# setup header
 		$header_label = __('SNMP Option Set [edit: %s]', $snmp_group['name']);
-	}else{
+	} else {
 		$header_label = __('SNMP Option Set [new]');
 	}
 
@@ -713,13 +713,13 @@ function automation_snmp_edit() {
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items && $total_items > 1) {
 						$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __('Move Down') . '"></a>';
-					}else{
+					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
 						$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __('Move Up') . '"></a>';
-					}else{
+					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 				}
@@ -811,7 +811,7 @@ function automation_snmp() {
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -888,7 +888,7 @@ function automation_snmp() {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('filter'))) {
 		$sql_where = "WHERE (automation_snmp.name LIKE '%" . get_request_var('filter') . "%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
@@ -953,7 +953,7 @@ function automation_snmp() {
 
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr><td><em>" . __('No SNMP Option Sets Found') . "</em></td></tr>\n";
 	}
 

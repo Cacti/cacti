@@ -728,7 +728,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'links.php'     => __('External Links'),
 			)
 	);
-}else{
+} else {
 	$menu = array(
 		__('Management') => array(
 			'host.php'             => __('Devices')

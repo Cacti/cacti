@@ -114,7 +114,7 @@ $selectedTheme = get_selected_theme();
 	<div id='navigation_right' class='cactiConsoleContentArea'>
 		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;display:none;' id='main' role='main'>
-<?php }else{ ?>
+<?php } else { ?>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
 		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;display:none;' id='main' role='main'>

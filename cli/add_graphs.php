@@ -302,7 +302,7 @@ if (sizeof($parms)) {
 			if ((isset($exists_already)) &&
 				($exists_already > 0)) {
 				/* yes: do nothing, everything's fine */
-			}else{
+			} else {
 				db_execute_prepared('REPLACE INTO host_snmp_query 
 					(host_id, snmp_query_id, reindex_method) 
 					VALUES (?, ?, ?)',
@@ -465,7 +465,7 @@ if (sizeof($parms)) {
 					$compound = explode(':', $option_value[0]);
 					$data_template_id = $compound[0];
 					$field_name       = $compound[1];
-				}else{
+				} else {
 					$field_name       = $option_value[0];
 				}
 
@@ -519,7 +519,7 @@ if (sizeof($parms)) {
 
 			echo "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)\n";
 			exit(1);
-		}else{
+		} else {
 			$returnArray = create_complete_graph_from_template($template_id, $host_id, null, $values['cg']);
 			$dataSourceId = '';
 		}
@@ -539,7 +539,7 @@ if (sizeof($parms)) {
 
 				if (strlen($dataSourceId)) {
 					$dataSourceId .= ', ' . $item;
-				}else{
+				} else {
 					$dataSourceId = $item;
 				}
 			}
@@ -552,7 +552,7 @@ if (sizeof($parms)) {
 			array($host_id , $template_id));
 
 		echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
-	}elseif ($graph_type == 'ds') {
+	} elseif ($graph_type == 'ds') {
 		if (($dsGraph['snmpQueryId'] == '') || ($dsGraph['snmpQueryType'] == '') || (sizeof($dsGraph['snmpField']) == 0) ) {
 			echo "ERROR: For graph-type of 'ds' you must supply more options\n";
 			display_help();
@@ -648,14 +648,14 @@ if (sizeof($parms)) {
 
 					if (strlen($dataSourceId)) {
 						$dataSourceId .= ', ' . $item;
-					}else{
+					} else {
 						$dataSourceId = $item;
 					}
 				}
 
 				echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
 			}
-		}else{
+		} else {
 			$err_msg = 'ERROR: Could not find snmp-field ' . implode(',', $dsGraph['snmpField']) . ' (';
 
 			if (sizeof($dsGraph['snmpValue'])) {
@@ -669,13 +669,13 @@ if (sizeof($parms)) {
 			echo 'Try --host-id=' . $host_id . " --list-snmp-fields\n";
 			exit(1);
 		}
-	}else{
+	} else {
 		echo "ERROR: Graph Types must be either 'cg' or 'ds'\n";
 		exit(1);
 	}
 
 	exit(0);
-}else{
+} else {
 	display_help();
 	exit(1);
 }

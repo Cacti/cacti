@@ -34,37 +34,37 @@ case 'save':
 	foreach ($settings{get_request_var('tab')} as $field_name => $field_array) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
-		}elseif ($field_array['method'] == 'checkbox') {
+		} elseif ($field_array['method'] == 'checkbox') {
 			if (isset_request_var($field_name)) {
 				db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, 'on')", array($field_name));
-			}else{
+			} else {
 				db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, '')", array($field_name));
 			}
-		}elseif ($field_array['method'] == 'checkbox_group') {
+		} elseif ($field_array['method'] == 'checkbox_group') {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 				if (isset_request_var($sub_field_name)) {
 					db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, 'on')", array($sub_field_name));
-				}else{
+				} else {
 					db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, '')", array($sub_field_name));
 				}
 			}
-		}elseif ($field_array['method'] == 'textbox_password') {
+		} elseif ($field_array['method'] == 'textbox_password') {
 			if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
 				raise_message(4);
 				break;
-			}elseif (!isempty_request_var($field_name)) {
+			} elseif (!isempty_request_var($field_name)) {
 				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
 			}
-		}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+		} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 				if (isset_request_var($sub_field_name)) {
 					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($sub_field_name, get_nfilter_request_var($sub_field_name)));
 				}
 			}
-		}elseif (isset_request_var($field_name)) {
+		} elseif (isset_request_var($field_name)) {
 			if (is_array(get_nfilter_request_var($field_name))) {
 				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, implode(',', get_nfilter_request_var($field_name))));
-			}else{
+			} else {
 				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
 			}
 		}
@@ -91,7 +91,7 @@ case 'save':
 
 	if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
 		header('Location: settings.php?header=false&tab=' . get_request_var('tab'));
-	}else{
+	} else {
 		header('Location: settings.php?tab=' . get_request_var('tab'));
 	}
 
@@ -107,11 +107,11 @@ default:
 		/* there is no selected tab; select the first one */
 		if (isset($_SESSION['sess_settings_tab'])) {
 			$current_tab = $_SESSION['sess_settings_tab'];
-		}else{
+		} else {
 			$current_tab = array_keys($tabs);
 			$current_tab = $current_tab[0];
 		}
-	}else{
+	} else {
 		$current_tab = get_request_var('tab');
 	}
 	$_SESSION['sess_settings_tab'] = $current_tab;
@@ -154,7 +154,7 @@ default:
 						WHERE name = ?', 
 						array($sub_field_name));
 				}
-			}else{
+			} else {
 				if (config_value_exists($field_name)) {
 					$form_array[$field_name]['form_id'] = 1;
 				}
@@ -289,7 +289,7 @@ default:
 					$('#main').hide().html(data);
 					applySkin();
 				});
-			}else{
+			} else {
 				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
 					document.location = 'settings.php?newtheme=1&tab='+$('#tab').val();
 				});
@@ -476,7 +476,7 @@ default:
 	function initBoostCache() {
 		if ($('#boost_png_cache_enable').is(':checked')){
 			$('#row_boost_png_cache_directory').show();
-		}else{
+		} else {
 			$('#row_boost_png_cache_directory').hide();
 		}
 	}
@@ -490,7 +490,7 @@ default:
 			$('#row_boost_poller_mem_limit').show();
 			$('#row_boost_rrd_update_max_runtime').show();
 			$('#row_boost_redirect').show();
-		}else{
+		} else {
 			$('#row_boost_rrd_update_interval').hide();
 			$('#row_boost_rrd_update_max_records').hide();
 			$('#row_boost_rrd_update_max_records_per_select').hide();
@@ -504,7 +504,7 @@ default:
 	function themeChanger() {
 		if ($('#selected_theme').val() != currentTheme) {
 			themeChanged = true;
-		}else{
+		} else {
 			themeChanged = false;
 		}
 	}
@@ -520,7 +520,7 @@ default:
 			$('#row_axis_font').hide();
 			$('#row_unit_size').hide();
 			$('#row_unit_font').hide();
-		}else{
+		} else {
 			$('#row_path_rrdtool_default_font').show();
 			$('#row_title_size').show();
 			$('#row_legend_size').show();
@@ -538,7 +538,7 @@ default:
 			$('#row_realtime_gwindow').show();
 			$('#row_realtime_interval').show();
 			$('#row_realtime_cache_path').show();
-		}else{
+		} else {
 			$('#row_realtime_gwindow').hide();
 			$('#row_realtime_interval').hide();
 			$('#row_realtime_cache_path').hide();
@@ -550,10 +550,10 @@ default:
 			$('#row_rrd_autoclean_method').show();
 			if ($('#rrd_autoclean_method').val() == '3') {
 				$('#row_rrd_archive').show();
-			}else{
+			} else {
 				$('#row_rrd_archive').hide();
 			}
-		}else{
+		} else {
 			$('#row_rrd_autoclean_method').hide();
 			$('#row_rrd_archive').hide();
 		}
@@ -584,7 +584,7 @@ default:
 				$('#row_ldap_specific_password').show();
 				break;
 			}
-		}else{
+		} else {
 			$('#row_ldap_search_base_header').hide();
 			$('#row_ldap_search_base').hide();
 			$('#row_ldap_search_filter').hide();
@@ -600,13 +600,13 @@ default:
 				$('#row_ldap_group_dn').show();
 				$('#row_ldap_group_attrib').show();
 				$('#row_ldap_group_member_type').show();
-			}else{
+			} else {
 				$('#row_ldap_group_header').hide();
 				$('#row_ldap_group_dn').hide();
 				$('#row_ldap_group_attrib').hide();
 				$('#row_ldap_group_member_type').hide();
 			}
-		}else{
+		} else {
 			$('#row_ldap_group_header').hide();
 			$('#row_ldap_group_dn').hide();
 			$('#row_ldap_group_attrib').hide();

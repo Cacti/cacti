@@ -154,7 +154,7 @@ function form_selectable_cell($contents, $id, $width='', $style_or_class = '', $
 			if ($width != '') {
 				$output .= " style='width:$width;'";
 			}
-		}else{
+		} else {
 			$output = "style='" . $style_or_class;
 			if ($width != '') {
 				$output .= ($output != '' ? ';':'') . "width:$width;";
@@ -165,7 +165,7 @@ function form_selectable_cell($contents, $id, $width='', $style_or_class = '', $
 
 	if ($title != '') {
 		$wrapper = "<span class='cactiTooltipHint' style='padding:0px;margin:0px;' title='" . str_replace(array('"', "'"), '', $title) . "'>" . $contents . "</span>";
-	}else{
+	} else {
 		$wrapper = $contents;
 	}
 
@@ -307,7 +307,7 @@ function get_request_var($name, $default = '') {
 
 	if (isset($_CACTI_REQUEST[$name])) {
 		return $_CACTI_REQUEST[$name];
-	}elseif (isset_request_var($name)) {
+	} elseif (isset_request_var($name)) {
 		if ($developer == 'on') {
 			html_log_input_error($name);
 		}
@@ -345,36 +345,36 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 			set_request_var($name, get_nfilter_request_var($name));
 
 			return get_request_var($name);
-		}elseif (get_nfilter_request_var($name) == 'undefined') {
+		} elseif (get_nfilter_request_var($name) == 'undefined') {
 			if (isset($options['default'])) {
 				set_request_var($name, $options['default']);
 
 				return $options['default'];
-			}else{
+			} else {
 				set_request_var($name, '');
 
 				return '';
 			}
-		}else{
+		} else {
 			if (get_nfilter_request_var($name) == '0') {
 				$value = '0';
-			}elseif (get_nfilter_request_var($name) == 'undefined') {
+			} elseif (get_nfilter_request_var($name) == 'undefined') {
 				if (isset($options['default'])) {
 					$value = $options['default'];
-				}else{
+				} else {
 					$value = '';
 				}
-			}elseif (isempty_request_var($name)) {
+			} elseif (isempty_request_var($name)) {
 				$value = '';
-			}elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
+			} elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
 				$valid = validate_is_regex($_REQUEST[$name]);
 				if ($valid === true) {
 					$value = $_REQUEST[$name];
-				}else{
+				} else {
 					$value = FALSE;
 					$custom_error = $valid;
 				}
-			}elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
+			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
 				$valid = true;
 				if (is_array($_REQUEST[$name])) {
 					foreach($_REQUEST[$name] AS $number) {
@@ -383,16 +383,16 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 							break;
 						}
 					}
-				}else{
+				} else {
 					$valid = false;
 				}
 
 				if ($valid == true) {
 					$value = $_REQUEST[$name];
-				}else{
+				} else {
 					$value = false;
 				}
-			}elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
+			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 				$valid = true;
 				$values = explode(',', $_REQUEST[$name]);
 				foreach($values AS $number) {
@@ -404,12 +404,12 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 
 				if ($valid == true) {
 					$value = $_REQUEST[$name];
-				}else{
+				} else {
 					$value = false;
 				}
-			}elseif (!sizeof($options)) {
+			} elseif (!sizeof($options)) {
 				$value = filter_var($_REQUEST[$name], $filter);
-			}else{
+			} else {
 				$value = filter_var($_REQUEST[$name], $filter, $options);
 			}
 		}
@@ -419,20 +419,20 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($name), $cusom_error);
 				set_request_var($name, '');
 				raise_message('custom_error');
-			}else{
+			} else {
 				die_html_input_error($name, get_nfilter_request_var($name));
 			}
-		}else{
+		} else {
 			set_request_var($name, $value);
 
 			return $value;
 		}
-	}else{
+	} else {
 		if (isset($options['default'])) {
 			set_request_var($name, $options['default']);
 
 			return $options['default'];
-		}else{
+		} else {
 			return;
 		}
 	}
@@ -450,9 +450,9 @@ function get_nfilter_request_var($name, $default = '') {
 
 	if (isset($_CACTI_REQUEST[$name])) {
 		return $_CACTI_REQUEST[$name];
-	}elseif (isset($_REQUEST[$name])) {
+	} elseif (isset($_REQUEST[$name])) {
 		return $_REQUEST[$name];
-	}else{
+	} else {
 		return $default;
 	}
 }
@@ -546,9 +546,9 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 			if ($sess_prefix != '') {
 				if (isset($options['session'])) {
 					$session_variable = $options['session'];
-				}elseif ($variable != 'rows') {
+				} elseif ($variable != 'rows') {
 					$session_variable = $sess_prefix . '_' . $variable;
-				}else{
+				} else {
 					$session_variable = 'sess_default_rows';
 				}
 
@@ -556,9 +556,9 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 				if (isset_request_var('clear')) {
 					kill_session_var($session_variable);
 					unset_request_var($variable);
-				}elseif (isset_request_var('reset')) {
+				} elseif (isset_request_var('reset')) {
 					kill_session_var($session_variable);
-				}elseif (isset($options['pageset'])) {
+				} elseif (isset($options['pageset'])) {
 					$changed += check_changed($variable, $session_variable);
 				}
 			}
@@ -566,32 +566,32 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 			if (!isset_request_var($variable)) {
 				if ($sess_prefix != '' && isset($_SESSION[$session_variable])) {
 					set_request_var($variable, $_SESSION[$session_variable]);
-				}elseif (isset($options['default'])) {
+				} elseif (isset($options['default'])) {
 					set_request_var($variable, $options['default']);
-				}else{
+				} else {
 					cacti_log("Filter Variable: $variable, Must have a default and none is set", false);
 					set_request_var($variable, '');
 				}
-			}else{
+			} else {
 				if (get_nfilter_request_var($variable) == '0') {
 					$value = '0';
-				}elseif (get_nfilter_request_var($variable) == 'undefined') {
+				} elseif (get_nfilter_request_var($variable) == 'undefined') {
 					if (isset($options['default'])) {
 						$value = $options['default'];
-					}else{
+					} else {
 						$value = '';
 					}
-				}elseif (isempty_request_var($variable)) {
+				} elseif (isempty_request_var($variable)) {
 					$value = '';
-				}elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
+				} elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
 					$valid = validate_is_regex($_REQUEST[$variable]);
 					if ($valid === true) {
 						$value = $_REQUEST[$variable];
-					}else{
+					} else {
 						$value = false;
 						$custom_error = $valid;
 					}
-				}elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
+				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
 					$valid = true;
 					if (is_array($_REQUEST[$variable])) {
 						foreach($_REQUEST[$variable] AS $number) {
@@ -600,16 +600,16 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 								break;
 							}
 						}
-					}else{
+					} else {
 						$valid = false;
 					}
 
 					if ($valid == true) {
 						$value = $_REQUEST[$variable];
-					}else{
+					} else {
 						$value = false;
 					}
-				}elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
+				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 					$valid = true;
 					$values = explode(',', $_REQUEST[$variable]);
 					foreach($values AS $number) {
@@ -621,12 +621,12 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 
 					if ($valid == true) {
 						$value = $_REQUEST[$variable];
-					}else{
+					} else {
 						$value = false;
 					}
-				}elseif (!isset($options['options'])) {
+				} elseif (!isset($options['options'])) {
 					$value = filter_var($_REQUEST[$variable], $options['filter']);
-				}else{
+				} else {
 					$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
 				}
 
@@ -635,10 +635,10 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 						$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($variable), $custom_error);
 						set_request_var($variable, '');
 						raise_message('custom_error');
-					}else{
+					} else {
 						die_html_input_error($variable, get_nfilter_request_var($variable), $custom_error);
 					}
-				}else{
+				} else {
 					set_request_var($variable, $value);
 				}
 			}
@@ -646,7 +646,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 			if ($sess_prefix != '') {
 				if (isset_request_var($variable)) {
 					$_SESSION[$session_variable] = get_request_var($variable);
-				}elseif (isset($_SESSION[$session_variable])) {
+				} elseif (isset($_SESSION[$session_variable])) {
 					set_request_var($variable, $_SESSION[$session_variable]);
 				}
 			}
@@ -673,7 +673,7 @@ function update_order_string($inplace = false) {
 		foreach($_SESSION['sort_data'][$page] as $column => $direction) {
 			if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
 				$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
-			}else{
+			} else {
 				$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
 			}
 		}
@@ -682,24 +682,24 @@ function update_order_string($inplace = false) {
 		if (isset_request_var('clear')) {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
-		}elseif (isset_request_var('add') && get_nfilter_request_var('add') == 'reset') {
+		} elseif (isset_request_var('add') && get_nfilter_request_var('add') == 'reset') {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
 
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
 			$_SESSION['sort_string'][$page] = 'ORDER BY ' . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
-		}elseif (isset_request_var('sort_column')) {
+		} elseif (isset_request_var('sort_column')) {
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
 			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
 				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
 					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
-				}else{
+				} else {
 					$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
 				}
 			}
 			$_SESSION['sort_string'][$page] .= $order;
-		}else{
+		} else {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
 		}
@@ -713,7 +713,7 @@ function get_order_string() {
 
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
-	}else{
+	} else {
 		return 'ORDER BY ' . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
 	}
 }
@@ -776,7 +776,7 @@ function validate_is_regex($regex) {
 
 	if (empty($error)) {
 		return $php_error;
-	}else{
+	} else {
 		return $errors[$error];
 	}
 }
@@ -790,9 +790,9 @@ function validate_is_regex($regex) {
 function load_current_session_value($request_var_name, $session_var_name, $default_value) {
 	if (isset_request_var($request_var_name)) {
 		$_SESSION[$session_var_name] = get_request_var($request_var_name);
-	}elseif (isset($_SESSION[$session_var_name])) {
+	} elseif (isset($_SESSION[$session_var_name])) {
 		set_request_var($request_var_name, $_SESSION[$session_var_name]);
-	}else{
+	} else {
 		set_request_var($request_var_name, $default_value);
 	}
 }
@@ -832,7 +832,7 @@ function get_colored_device_status($disabled, $status) {
 function get_current_graph_start() {
 	if (isset($_SESSION['sess_current_timespan_begin_now'])) {
 		return $_SESSION['sess_current_timespan_begin_now'];
-	}else{
+	} else {
 		return '-' . DEFAULT_TIMESPAN;
 	}
 }
@@ -843,7 +843,7 @@ function get_current_graph_start() {
 function get_current_graph_end() {
 	if (isset($_SESSION['sess_current_timespan_end_now'])) {
 		return $_SESSION['sess_current_timespan_end_now'];
-	}else{
+	} else {
 		return '0';
 	}
 }
@@ -869,7 +869,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	if (strpos($url, '?') !== false) {
 		$url . '&';
-	}else{
+	} else {
 		$url . '?';
 	}
 
@@ -877,7 +877,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	if ($rows_per_page <= 0) {
 		$total_pages = 0;
-	}else{
+	} else {
 		$total_pages = ceil($total_rows / $rows_per_page);
 	}
 
@@ -907,7 +907,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		if ($page_number < $pages_per_screen) {
 			if ($current_page == $page) {
 				$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($page);return false'>$page</a></li>";
-			}else{
+			} else {
 				$url_page_select .= "<li><a href='#' onClick='goto$page_var($page);return false'>$page</a></li>";
 			}
 		}
@@ -921,9 +921,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	$url_page_select .= '</ul>';
 
 	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; $.get('${url}header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); if (typeof initializeGraphs == 'function') initializeGraphs();}); }</script>";
-	}else{
-		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; document.location='$url$page_var='+pageNo+url_add }</script>";
+		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('${url}header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); if (typeof initializeGraphs == 'function') initializeGraphs();}); }</script>";
+	} else {
+		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$url$page_var='+pageNo+url_add }</script>";
 	}
 
 	return $url_page_select;

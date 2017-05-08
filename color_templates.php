@@ -108,13 +108,13 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items && $total_items > 1) {
 						echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __('Move Down') . '"></a>';
-					}else{
+					} else {
 						echo '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
 						echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __('Move Up') . '"></a>';
-					}else{
+					} else {
 						echo '<span class="moveArrowNone"></span>';
 					}
 				}
@@ -128,7 +128,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 
 			$i++;
 		}
-	}else{
+	} else {
 		print "<tr><td colspan='7'><em>" . __('No Items') . "</em></td></tr>";
 	}
 }
@@ -158,7 +158,7 @@ function aggregate_color_form_save() {
 
 			if ($color_template_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
@@ -189,7 +189,7 @@ function aggregate_color_form_actions() {
 			if (get_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM color_templates WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
 				db_execute('DELETE FROM color_template_items WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
-			}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_color_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
@@ -230,7 +230,7 @@ function aggregate_color_form_actions() {
 			</tr>\n";
 	
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', sizeof($color_array)) . "'>";
-		}elseif (get_request_var('drp_action') == '2') { /* duplicate */
+		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to duplicate the following Color Template. You can optionally change the title format for the new color template.', 'Click \'Continue\' to duplicate following Color Templates. You can optionally change the title format for the new color templates.', sizeof($color_array)) . "</p>
@@ -241,7 +241,7 @@ function aggregate_color_form_actions() {
 	
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', sizeof($color_array)) . "'>";
 		}
-	}else{
+	} else {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Color Template.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -276,7 +276,7 @@ function aggregate_color_item() {
 		$template_item_list = array();
 
 		$header_label = __('Color Template Items [new]');
-	}else{
+	} else {
 		$template_item_list = db_fetch_assoc_prepared('SELECT
 			cti.color_template_id, cti.color_template_item_id, cti.sequence, colors.hex
 			FROM color_template_items AS cti
@@ -347,7 +347,7 @@ function aggregate_color_template_edit() {
 	if (!isempty_request_var('color_template_id')) {
 		$template = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id')));
 		$header_label = __('Color Template [edit: %s]', $template['name']);
-	}else{
+	} else {
 		$header_label = __('Color Template [new]');
 	}
 
@@ -423,7 +423,7 @@ function aggregate_color_template() {
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -556,7 +556,7 @@ function aggregate_color_template() {
 		foreach ($template_list as $template) {
 			if ($template['templates'] > 0) {
 				$disabled = true;
-			}else{
+			} else {
 				$disabled = false;
 			}
 
@@ -569,7 +569,7 @@ function aggregate_color_template() {
 			form_checkbox_cell($template['name'], $template['color_template_id'], $disabled);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr><td><em>" . __('No Color Templates Found') ."</em></td></tr>\n";
 	}
 

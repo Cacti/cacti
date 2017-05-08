@@ -103,7 +103,7 @@ class CactiTableFilter {
 	public function set_filter_row($array, $index = false) {
 		if ($index === false) {
 			$this->filter_array['rows'][] = $array;
-		}else{
+		} else {
 			$this->filter_array['rows'][$index] = $array;
 		}
 	}
@@ -207,7 +207,7 @@ class CactiTableFilter {
 
 		if (strpos('?', $applyFilter) === false) {
 			$separator = '?';
-		}else{
+		} else {
 			$separator = '&';
 		}
 
@@ -301,7 +301,7 @@ class CactiTableFilter {
 
 						if (isset($field_array['default'])) {
 							$filters[$field_name]['default'] = $field_array['default'];
-						}else{
+						} else {
 							$filters[$field_name]['default'] = '';
 						}
 

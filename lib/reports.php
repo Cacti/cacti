@@ -452,7 +452,7 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 
 			if (substr($line, 0, 1) != '#') {
 				$output .= $line . "\n";
-			}elseif (strstr($line, 'Theme:') !== false) {
+			} elseif (strstr($line, 'Theme:') !== false) {
 				$tparts = explode(':', $line);
 				$theme  = trim($tparts[1]);
 			}
@@ -497,7 +497,7 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 			ON gtg.local_graph_id=gl.id
 			WHERE gl.host_id = $device_id
 			$sql_swhere"), 'id', 'id');
-	}else{
+	} else {
 		if ($branch_id > 0) {
 			$sql_where .= ' AND gti.parent=' . $branch_id;
 		} else {
@@ -818,7 +818,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 
 	if ($device_id == 0) {
 		$leaves = db_fetch_assoc_prepared("SELECT * FROM graph_tree_items WHERE parent = ?", array($parent));
-	}else{
+	} else {
 		$leaves = db_fetch_assoc_prepared("SELECT * FROM graph_tree_items WHERE id = ?", array($parent));
 	}
 

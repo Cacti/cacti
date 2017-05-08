@@ -99,7 +99,7 @@ if (strtolower($host_id) == 'all') {
 	$sql_where = '';
 }else if (is_numeric($host_id)) {
 	$sql_where = ' WHERE id=' . $host_id;
-}else{
+} else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n\n";
 	display_help();
 	exit;
@@ -108,7 +108,7 @@ if (strtolower($host_id) == 'all') {
 /* determine data queries to rerun */
 if (is_numeric($template)) {
 	$sql_where .= (strlen($sql_where) ? " AND host_template_id=$template": "WHERE host_template_id=$template");
-}else{
+} else {
 	print "ERROR: You must specify a Host Template to proceed.\n\n";
 	display_help();
 	exit;
@@ -152,7 +152,7 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 		}
 	}
 	}
-}else{
+} else {
 	echo "ERROR: The selected Host Template does not exist, try --list-host-templates\n\n";
 	exit(1);
 }

@@ -137,15 +137,15 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 
 		if ($plugin_capabilities === false) {
 			$function($args);
-		}elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
+		} elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
 			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
 				$function($args);
 			}
-		}elseif (isset($required_capabilities[$hook])) {
+		} elseif (isset($required_capabilities[$hook])) {
 			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
 				$function($args);
 			}
-		}else{
+		} else {
 			$function($args);
 		}
 
@@ -157,7 +157,7 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 				}
 			}
 		}
-	}else{
+	} else {
 		$function($args);
 	}
 
@@ -189,19 +189,19 @@ function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
 		if ($plugin_capabilities === false) {
 			$ret = $function($ret);
 		// run if hooks is remote_collect and we support it
-		}elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
+		} elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
 			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
 				$ret = $function($ret);
 			}
 		// run if hooks is remote_collect and we support it
-		}elseif (isset($required_capabilities[$hook])) {
+		} elseif (isset($required_capabilities[$hook])) {
 			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
 				$ret = $function($ret);
 			}
-		}else{
+		} else {
 			$ret = $function($ret);
 		}
-	}else{
+	} else {
 		$ret = $function($ret);
 	}
 
@@ -274,7 +274,7 @@ function api_plugin_remote_capabilities($plugin) {
 
 	if (isset($info_data[$plugin]) && isset($info_data[$plugin]['capabilities'])) {
 		return $info_data[$plugin]['capabilities'];
-	}else{
+	} else {
 		return 'online_view:0 online_mgmt:0 offline_view:0 offline_mgmt:0 remote_collect:0';
 	}
 
@@ -286,7 +286,7 @@ function api_plugin_has_capability($plugin, $capability) {
 
 	if (strpos($capabilities, "$capability:1") !== false) {
 		return true;
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -505,9 +505,9 @@ function api_plugin_install ($plugin) {
 		$name = $info['longname'];
 		if (isset($info['homepage'])) {
 			$webpage = $info['homepage'];
-		}elseif (isset($info['webpage'])) {
+		} elseif (isset($info['webpage'])) {
 			$webpage = $info['webpage'];
-		}else{
+		} else {
 			$webpage = 'Not Stated';
 		}
 		$author = $info['author'];

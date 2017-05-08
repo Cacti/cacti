@@ -85,7 +85,7 @@ if (get_request_var('action') == 'timeout') {
 	</script>
 	</body>
 	</html>\n";
-}elseif (read_config_option('auth_method') == '2') {
+} elseif (read_config_option('auth_method') == '2') {
 	clear_auth_cookie();
 
 	if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
@@ -133,7 +133,7 @@ if (get_request_var('action') == 'timeout') {
 	</script>
 	</body>
 	</html>\n";
-}else{
+} else {
 	/* Default action */
 	clear_auth_cookie();
 

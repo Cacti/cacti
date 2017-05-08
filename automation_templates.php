@@ -194,7 +194,7 @@ function form_actions() {
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Automation Template(s)') . "'>";
 		}
-	}else{
+	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Automation Template.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -236,14 +236,14 @@ function form_save() {
 
 			if ($template_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		if (is_error_message() || isempty_request_var('id')) {
 			header('Location: automation_templates.php?header=false&id=' . (empty($template_id) ? get_nfilter_request_var('id') : $template_id));
-		}else{
+		} else {
 			header('Location: automation_templates.php?header=false');
 		}
 	}
@@ -348,7 +348,7 @@ function template_edit() {
 	if (!isempty_request_var('id')) {
 		$host_template = db_fetch_row_prepared('SELECT * FROM automation_templates WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('Automation Templates [edit: %s]', htmlspecialchars($template_names[$host_template['host_template']]));
-	}else{
+	} else {
 		$header_label = __('Automation Templates [new]');
 		set_request_var('id', 0);
 	}
@@ -396,7 +396,7 @@ function template() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -482,7 +482,7 @@ function template() {
 			"sysName LIKE '%" . get_request_var('filter') . "%' OR " . 
 			"sysDescr LIKE '%" . get_request_var('filter') . "%' OR " . 
 			"sysOID LIKE '%" . get_request_var('filter') . "%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
@@ -528,7 +528,7 @@ function template() {
 		foreach ($dts as $dt) {
 			if ($dt['name'] == '') {
 				$name = __('Unknown Template');
-			}else{
+			} else {
 				$name = $dt['name'];
 			}
 
@@ -543,13 +543,13 @@ function template() {
 				$add_text = '';
 				if ($i < $total_items && $total_items > 1) {
 					$add_text .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __('Move Down') . '"></a>';
-				}else{
+				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
 					$add_text .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __('Move Up') . '"></a>';
-				}else{
+				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
@@ -561,7 +561,7 @@ function template() {
 
 			$i++;
 		}
-	}else{
+	} else {
 		print "<tr><td><em>" . __('No Automation Device Templates Found') . "</em></td></tr>\n";
 	}
 

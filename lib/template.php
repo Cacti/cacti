@@ -105,7 +105,7 @@ function push_out_data_source_custom_data($data_template_id) {
 							/* this is not a 'host field', so we should either push out the value if it is templated */
 							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
 							$did_cnt++;
-						}elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) { # templated input field deviates from currenmt data source, so update required
+						} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) { # templated input field deviates from currenmt data source, so update required
 							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
 							$did_cnt++;
 						}
@@ -233,7 +233,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 
 	if (empty($exists)) {
 		$new_save = true;
-	}else{
+	} else {
 		$new_save = false;
 	}
 
@@ -248,10 +248,10 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 		/* handle the data source profile */
 		if ($field_name == 'rrd_step' && sizeof($profile)) {
 			$save[$field_name] = $profile['step'];
-		}elseif ((isset($data[$field_name])) || (isset($template_data[$field_name]))) {
+		} elseif ((isset($data[$field_name])) || (isset($template_data[$field_name]))) {
 			if ((!empty($template_data{'t_' . $field_name})) && ($new_save == false)) {
 				$save[$field_name] = $data[$field_name];
-			}else{
+			} else {
 				$save[$field_name] = $template_data[$field_name];
 			}
 		}
@@ -270,7 +270,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 
 	if (sizeof($data_rrds_list)) {
 		/* this data source already has 'child' items */
-	}else{
+	} else {
 		/* this data source does NOT have 'child' items; loop through each item in the template
 		and write it exactly to each item */
 		if (sizeof($template_rrds_list)) {
@@ -286,7 +286,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 					/* handle the data source profile */
 					if ($field_name == 'rrd_heartbeat' && sizeof($profile)) {
 						$save[$field_name] = $profile['heartbeat'];
-					}else{
+					} else {
 						$save[$field_name] = $template_rrd[$field_name];
 					}
 				}
@@ -379,7 +379,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 	item included in this input to be included in the sql query */
 	if (isset($include_items)) {
 		$sql_include_items = 'AND ' . array_to_sql_or($include_items, 'local_graph_template_item_id');
-	}else{
+	} else {
 		$sql_include_items = 'AND 0=1';
 	}
 
@@ -389,7 +389,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 			WHERE graph_template_id=' . $graph_input['graph_template_id'] . " $sql_include_items 
 			AND local_graph_id>0 
 			GROUP BY local_graph_id");
-	}else{
+	} else {
 		$i = 0;
 		foreach ($session_members as $item_id => $item_id) {
 			$new_session_members[$i] = $item_id;
@@ -477,7 +477,7 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 					WHERE local_graph_template_item_id = ?", 
 					array($graph_template_item[$field_name], $graph_template_item['id']));
 			}
-		}else{
+		} else {
 			if (!isset($graph_item_inputs[$field_name])) {
 				db_execute_prepared("UPDATE graph_templates_item 
 					SET $field_name = ? 
@@ -504,7 +504,7 @@ function update_graph_data_source_output_type($local_graph_id, $output_type_id) 
 		$local_data_id = db_fetch_cell("SELECT DISTINCT local_data_id 
 			FROM data_template_rrd 
 			WHERE id IN($task_items)");
-	}else{
+	} else {
 		$local_data_id = 0;
 	}
 
@@ -546,11 +546,11 @@ function parse_graph_template_id($value) {
 		$template_parts = explode('_', $value);
 		if (is_numeric($template_parts[0]) && is_numeric($template_parts[1])) {
 			return array('graph_template_id' => $template_parts[0], 'output_type_id' => $template_parts[1]);
-		}else{
+		} else {
 			cacti_log('ERROR: Unable to parse graph_template_id with value ' . $value, false, 'WEBUI');
 			exit;
 		}
-	}else{
+	} else {
 		return array('graph_template_id' => $value);
 	}
 }
@@ -571,14 +571,14 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 					WHERE graph_template_id = ?
 					AND local_graph_template_item_id = ?', 
 					array($item['sequence'], $graph_template_id, $item['id']));
-			}elseif ($local_graph_id == 0) {
+			} elseif ($local_graph_id == 0) {
 				db_execute_prepared('UPDATE graph_templates_item 
 					SET sequence = ? 
 					WHERE graph_template_id = ? 
 					AND local_graph_id > 0
 					AND local_graph_template_item_id = ?', 
 					array($item['sequence'], $graph_template_id, $item['id']));
-			}else{
+			} else {
 				db_execute_prepared('UPDATE graph_templates_item 
 					SET sequence = ? 
 					WHERE graph_template_id = ? 
@@ -601,7 +601,7 @@ function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
 			FROM graph_local 
 			WHERE graph_template_id = ?', 
 			array($graph_template_id));
-	}else{
+	} else {
 		$graphs = db_fetch_assoc_prepared('SELECT id 
 			FROM graph_local 
 			WHERE graph_template_id = ?
@@ -632,7 +632,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 
 	if (isset($template_data['output_type_id'])) {
 		$output_type_id = $template_data['output_type_id'];
-	}else{
+	} else {
 		$output_type_id = 0;
 	}
 
@@ -657,13 +657,13 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 		$changed = true;
 	}else if (sizeof($graph_list) && $graph_template_id != $graph_list['graph_template_id']) {
 		$changed = true;
-	}else{
+	} else {
 		$changed = false;
 	}
 
 	if ($graph_template_id == 0) {
 		$template_graph_list = $graph_list;
-	}else{
+	} else {
 		$template_graph_list = db_fetch_row_prepared('SELECT * 
 			FROM graph_templates_graph 
 			WHERE local_graph_id = 0 
@@ -679,7 +679,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 
 	if (!$exists) {
 		$new_save = true;
-	}else{
+	} else {
 		$new_save = false;
 	}
 
@@ -696,7 +696,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 		if ($field_array['method'] != 'spacer') {
 			if ((!empty($template_graph_list[$value_type])) && ($new_save == false)) {
 				$save[$field_name] = $graph_list[$field_name];
-			}else{
+			} else {
 				$save[$field_name] = $template_graph_list[$field_name];
 			}
 		}
@@ -712,7 +712,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 
 	if ($graph_template_id == 0) {
 		$template_items_list = $graph_items_list;
-	}else{
+	} else {
 		$template_items_list = db_fetch_assoc_prepared('SELECT * 
 			FROM graph_templates_item 
 			WHERE local_graph_id=0 
@@ -769,16 +769,16 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 							strstr($cols[$column]['type'], 'double') !== false) {
 							if (!empty($value)) {
 								$save[$column] = $value;
-							}else{
+							} else {
 								$save[$column] = 0;
 							}
-						}else{
+						} else {
 							$save[$column] = $value;
 						}
 						break;
 					}
 				}
-			}else{
+			} else {
 				/* no graph item at this position, tack it on */
 				$save['id'] = 0;
 
@@ -805,10 +805,10 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 
 					if (!empty($task_item_id)) {
 						$save['task_item_id'] = $task_item_id;
-					}else{
+					} else {
 						$save['task_item_id'] = 0;
 					}
-				}else{
+				} else {
 					$save['task_item_id'] = 0;
 				}
 
@@ -829,10 +829,10 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 							strstr($cols[$column]['type'], 'double') !== false) {
 							if (!empty($value)) {
 								$save[$column] = $value;
-							}else{
+							} else {
 								$save[$column] = 0;
 							}
-						}else{
+						} else {
 							$save[$column] = $value;
 						}
 						break;
@@ -1046,7 +1046,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 							/* once we find a working value, stop */
 							$suggested_values_graph[$graph_template_id][$suggested_value['field_name']] = true;
-						}else{
+						} else {
 							cacti_log('ERROR: Suggested value column error.  Column ' . $suggested_value['field_name'] . ' for Data Query ID ' . $snmp_query_array['snmp_query_id'] . ' and Graph Template ID ' . $graph_template_id .  ' is not a compatible field name.  Please correct this suggested value mapping', false);
 						}
 					}
@@ -1106,7 +1106,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 			if (sizeof($previous_data_source)) {
 				$cache_array['local_data_id'][$data_template['id']] = $previous_data_source['id'];
-			}else{
+			} else {
 				unset($save);
 
 				$save['id']               = 0;
@@ -1132,7 +1132,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 							ORDER BY `default` 
 							DESC LIMIT 1');
 					}
-				}else{
+				} else {
 					$profile_id = 0;
 					$profile    = array();
 				}
@@ -1404,7 +1404,7 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 				$snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'],
 				$input_fields));
 */
-	}else{
+	} else {
 		return array();
 
 //		Commenting out as 'previous should only apply to data query graphs'

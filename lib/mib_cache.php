@@ -239,7 +239,7 @@ class MibCache{
 						foreach($entries as $entry) { $result[$entry['name']] = $entry['value']; }
 						return $result;
 					}
-				}elseif (is_string($column)) {
+				} elseif (is_string($column)) {
 					/* fetch only the value of a given column */
 					$filter = $oid_entry . '.%.' . $this->active_table_entry;
 
@@ -249,7 +249,7 @@ class MibCache{
 						AND oid LIKE ? 
 						LIMIT 1', 
 						array($column, $filter));
-				}elseif (is_array($column) && sizeof($column)>0) {
+				} elseif (is_array($column) && sizeof($column)>0) {
 					$filter = $oid_entry . '.%.' . $this->active_table_entry;
 
 					/* fetch all values of specific columns given for that MIB table row */
@@ -295,7 +295,7 @@ class MibCache{
 				}else {
 					return $entries;
 				}
-			}elseif (is_string($column)) {
+			} elseif (is_string($column)) {
 				/* fetch only the values of one single column */
 				$filter = $oid_entry . '.%.%';
 
@@ -305,7 +305,7 @@ class MibCache{
 					AND oid LIKE ? 
 					ORDER BY oid", 
 					array($column, $filter));
-			}elseif (is_array($column) && sizeof($column)>0) {
+			} elseif (is_array($column) && sizeof($column)>0) {
 				/* fetch values of specific columns given */
 				$filter = $oid_entry . '.%.%';
 

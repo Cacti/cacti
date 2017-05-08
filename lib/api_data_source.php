@@ -182,7 +182,7 @@ function api_data_source_disable_multi($local_data_ids) {
 		foreach($local_data_ids as $local_data_id) {
 			if ($i == 0) {
 				$ids_to_disable .= $local_data_id;
-			}else{
+			} else {
 				$ids_to_disable .= ', ' . $local_data_id;
 			}
 
@@ -291,7 +291,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 		$local_data_id = sql_save($save, 'data_local');
 
 		$data_template_data['name'] = str_replace('<ds_title>', $data_template_data['name'], $data_source_title);
-	}elseif (!empty($_data_template_id)) {
+	} elseif (!empty($_data_template_id)) {
 		$data_template      = db_fetch_row_prepared('SELECT * FROM data_template WHERE id = ?', array($_data_template_id));
 		$data_template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE data_template_id = ? AND local_data_id=0', array($_data_template_id));
 

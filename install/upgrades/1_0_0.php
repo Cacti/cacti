@@ -32,7 +32,7 @@ function upgrade_to_1_0_0() {
 
 	if (sizeof($default_engine)) {
 		$engine = $default_engine['Value'];
-	}else{
+	} else {
 		$engine = 'MyISAM';
 	}
 
@@ -484,7 +484,7 @@ function upgrade_to_1_0_0() {
 		foreach($realms as $r) {
 			if ($r['file'] == 'clog.php') {
 				db_execute("UPDATE user_auth_realm SET realm_id=18 WHERE realm_id=" . ($r['id']+100));
-			}elseif ($r['file'] == 'clog_user.php') {
+			} elseif ($r['file'] == 'clog_user.php') {
 				db_execute("UPDATE user_auth_realm SET realm_id=19 WHERE realm_id=" . ($r['id']+100));
 			}
 		}
@@ -1228,7 +1228,7 @@ function upgrade_to_1_0_0() {
 				if ($first) {
 					$keephex = $hex['id'];
 					$first   = false;
-				}else{
+				} else {
 					db_execute_prepared('UPDATE graph_templates_item 
 						SET color_id = ? 
 						WHERE color_id = ?', 
@@ -1765,7 +1765,7 @@ function upgrade_to_1_0_0() {
 	if (db_fetch_cell('SELECT name FROM settings WHERE name = "graph_wathermark"', 'name') == 'graph_wathermark') {
 		if (db_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = "graph_wathermark"') == 0) {
 			db_install_execute('UPDATE settings SET name = "graph_watermark" WHERE name = "graph_wathermark"');
-		}else{
+		} else {
 			db_install_execute('DELETE FROM settings WHERE name = "graph_wathermark"');
 		}
 	}

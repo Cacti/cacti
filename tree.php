@@ -196,13 +196,13 @@ function get_host_sort_type() {
 					$sort_type = db_fetch_cell_prepared('SELECT host_grouping_type FROM graph_tree_items WHERE id = ?', array($branch));
 					if ($sort_type == HOST_GROUPING_GRAPH_TEMPLATE) {
 						print 'hsgt';
-					}else{
+					} else {
 						print 'hsdq';
 					}
 				}
 			}
 		}
-	}else{
+	} else {
 		return '';
 	}
 }
@@ -228,7 +228,7 @@ function set_host_sort_type() {
 
 					if (get_request_var('type') == 'hsgt') {
 						$type = HOST_GROUPING_GRAPH_TEMPLATE;
-					}else{
+					} else {
 						$type = HOST_GROUPING_DATA_QUERY_INDEX;
 					}
 
@@ -277,7 +277,7 @@ function get_branch_sort_type() {
 			}
 		}
 		}
-	}else{
+	} else {
 		print '';
 	}
 }
@@ -353,7 +353,7 @@ function form_save() {
 
 		if (get_filter_request_var('id') > 0) {
 			$prev_order = db_fetch_cell_prepared('SELECT sort_type FROM graph_tree WHERE id = ?', array(get_request_var('id')));
-		}else{
+		} else {
 			$prev_order = 1;
 		}
 
@@ -379,7 +379,7 @@ function form_save() {
 						sort_recursive(0, $tree_id);
 					}
 				}
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
@@ -433,16 +433,16 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			if (get_nfilter_request_var('drp_action') == '1') { // delete 
 				db_execute('DELETE FROM graph_tree WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM graph_tree_items WHERE ' . array_to_sql_or($selected_items, 'graph_tree_id'));
-			}elseif (get_nfilter_request_var('drp_action') == '2') { /* publish */
+			} elseif (get_nfilter_request_var('drp_action') == '2') { // publish
 				db_execute("UPDATE graph_tree 
 					SET enabled='on',
 					last_modified=NOW(),
 					modified_by=" . $_SESSION['sess_user_id'] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
-			}elseif (get_nfilter_request_var('drp_action') == '3') { /* un-publish */
+			} elseif (get_nfilter_request_var('drp_action') == '3') { // un-publish
 				db_execute("UPDATE graph_tree 
 					SET enabled='',
 					last_modified=NOW(),
@@ -479,7 +479,7 @@ function form_actions() {
 	html_start_box($tree_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($tree_array) && sizeof($tree_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+		if (get_nfilter_request_var('drp_action') == '1') { // delete 
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Tree.', 'Click \'Continue\' to delete following Trees.', sizeof($tree_array)) . "</p>
@@ -488,7 +488,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Tree', 'Delete Trees', sizeof($tree_array)) . "'>";
-		}elseif (get_nfilter_request_var('drp_action') == '2') { /* publish */
+		} elseif (get_nfilter_request_var('drp_action') == '2') { // publish
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to publish the following Tree.', 'Click \'Continue\' to publish following Trees.', sizeof($tree_array)) . "</p>
@@ -497,7 +497,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Publish Tree', 'Publish Trees', sizeof($tree_array)) . "'>";
-		}elseif (get_nfilter_request_var('drp_action') == '3') { /* un-publish */
+		} elseif (get_nfilter_request_var('drp_action') == '3') { // un-publish
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to un-publish the following Tree.', 'Click \'Continue\' to un-publish following Trees.', sizeof($tree_array)) . "</p>
@@ -507,7 +507,7 @@ function form_actions() {
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Un-publish Tree', 'Un-publish Trees', sizeof($tree_array)) . "'>";
 		}
-	}else{
+	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Tree.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -556,11 +556,11 @@ function tree_edit() {
 		// Reset the cookie state if tree id has changed
 		if (isset($_SESSION['sess_tree_id']) && $_SESSION['sess_tree_id'] != get_request_var('id')) {
 			$select_first = true;
-		}else{
+		} else {
 			$select_first = false;
 		}
 		$_SESSION['sess_tree_id'] = get_request_var('id');
-	}else{
+	} else {
 		$tree = array();
 
 		$header_label = __('Trees [new]');
@@ -591,16 +591,16 @@ function tree_edit() {
 	if (isset($tree['locked']) && $tree['locked'] == 0) {
 		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='lock' type='button' value='" . __('Edit Tree') . "'></td><td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree button.') . "</td></tr></table></div>\n";
 		$editable = false;
-	}elseif (isset($tree['locked']) && $tree['locked'] == 1) {
+	} elseif (isset($tree['locked']) && $tree['locked'] == 1) {
 		$lockdiv = "<div style='padding:3px;'><table><tr><td><input id='unlock' type='button' value='" . __('Finish Editing Tree') . "'></td><td><input id='addbranch' type='button' value='" . __('Add Root Branch') . "' onClick='createNode()'></td><td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %1$s by %2$s.', $tree['locked_date'], get_username($tree['modified_by']));
 		if ($tree['modified_by'] == $_SESSION['sess_user_id']) {
 			$editable = true;
 			$lockdiv .= '</td></tr></table></div>';
-		}else{
+		} else {
 			$editable = false;
 			$lockdiv .= __('To edit the tree, you must first unlock it and then lock it as yourself') . '</td></tr></table></div>';
 		}
-	}else{
+	} else {
 		$tree['id'] = 0;
 		$editable = true;
 	}
@@ -696,7 +696,7 @@ function tree_edit() {
 		<?php
 		if ($select_first) {
 			print "var reset=true;\n";
-		}else{
+		} else {
 			print "var reset=false;\n";
 		}
 		?>
@@ -733,7 +733,7 @@ function tree_edit() {
 		function setHostSortIcon(nodeid) {
 			if (hostSortInfo[nodeid]) {
 				// Already set
-			}else{
+			} else {
 				$.get('tree.php?action=get_host_sort&nodeid='+nodeid, function(data) {
 					hostSortInfo[nodeid] = data;
 				});
@@ -743,7 +743,7 @@ function tree_edit() {
 		function setBranchSortIcon(nodeid) {
 			if (branchSortInfo[nodeid]) {
 				// Already set
-			}else{
+			} else {
 				$.get('tree.php?action=get_branch_sort&nodeid='+nodeid, function(data) {
 					branchSortInfo[nodeid] = data;
 				});
@@ -753,7 +753,7 @@ function tree_edit() {
 		function getHostSortIcon(type, nodeid) {
 			if (hostSortInfo[nodeid] == type) {
 				return 'fa fa-check';
-			}else{
+			} else {
 				return 'false';
 			}
 		}
@@ -761,7 +761,7 @@ function tree_edit() {
 		function getBranchSortIcon(type, nodeid) {
 			if (branchSortInfo[nodeid] == type) {
 				return 'fa fa-check';
-			}else{
+			} else {
 				return 'false';
 			}
 		}
@@ -784,7 +784,7 @@ function tree_edit() {
 		$(function() {
 			<?php if ($editable == false) {?>
 			$('select, input').not('#lock').prop('disabled', true);
-			<?php }else{?>
+			<?php } else {?>
 			$('select, input').prop('disabled', false);
 			<?php }?>
 
@@ -847,7 +847,7 @@ function tree_edit() {
 							return graphContext(node.id);
 						}else if (dataType == 'host') {
 							return hostContext(node.id);
-						}else{
+						} else {
 							return branchContext(node.id);
 						}
 					}
@@ -908,7 +908,7 @@ function tree_edit() {
 						if (d.result == 'false') {
 							data.instance.set_text(data.node, d.text);
 							data.instance.edit(data.node);
-						}else{
+						} else {
 							var st = data.instance.get_state();
 							data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
 						}
@@ -926,7 +926,7 @@ function tree_edit() {
 
 				if (oid.search('thost') >= 0) {
 					set = hostsDropSet;
-				}else{
+				} else {
 					set = graphsDropSet;
 				}
 
@@ -942,17 +942,17 @@ function tree_edit() {
 
 					if (oid.search('thost') >= 0) {
 						$('#hosts').jstree().deselect_all();
-					}else{
+					} else {
 						$('#graphs').jstree().deselect_all();
 					}
-				}else{
+				} else {
 					$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
 						.always(function () {
 							var st = data.instance.get_state();
 							data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
 						});
 				}
-			})<?php }else{?>.children().bind('contextmenu', function(event) {
+			})<?php } else {?>.children().bind('contextmenu', function(event) {
 				return false;
 			})<?php }?>;
 
@@ -998,14 +998,14 @@ function tree_edit() {
 				.on('select_node.jstree', function(e, data) {
 					if (type == 'graphs') {
 						graphsDropSet = data;
-					}else{
+					} else {
 						hostsDropSet  = data;
 					}
 				})
 				.on('deselect_node.jstree', function(e,data) {
 					if (type == 'graphs') {
 						graphsDropSet = data;
-					}else{
+					} else {
 						hostsDropSet  = data;
 					}
 				})<?php }?>;
@@ -1358,7 +1358,7 @@ function tree_edit() {
 function display_hosts() {
 	if (get_request_var('filter') != '') {
 		$sql_where = "h.hostname LIKE '%" . get_request_var('filter') . "%' OR h.description LIKE '%" . get_request_var('filter') . "%'";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
@@ -1374,7 +1374,7 @@ function display_hosts() {
 function display_graphs() {
 	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (title_cache LIKE '%" . get_request_var('filter') . "%' OR gt.name LIKE '%" . get_request_var('filter') . "%') AND local_graph_id>0";
-	}else{
+	} else {
 		$sql_where = 'WHERE local_graph_id>0';
 	}
 
@@ -1436,7 +1436,7 @@ function tree() {
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -1521,7 +1521,7 @@ function tree() {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('filter'))) {
 		$sql_where = "WHERE (t.name LIKE '%" . get_request_var('filter') . "%' OR ti.title LIKE '%" . get_request_var('filter') . "%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
@@ -1577,11 +1577,11 @@ function tree() {
 				if ($i == 1) {
 					$sequence .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __('Move Down') . '"></a>';
 					$sequence .= '<span class="moveArrowNone"></span>';
-				}elseif ($i == sizeof($trees)) {
+				} elseif ($i == sizeof($trees)) {
 					$sequence .= '<span class="moveArrowNone"></span>';
 					$sequence .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __('Move Down') . '"></a>';
 					
-				}else{
+				} else {
 					$sequence .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __('Move Down') . '"></a>';
 					$sequence .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __('Move Down') . '"></a>';
 				}
@@ -1604,7 +1604,7 @@ function tree() {
 
 			$i++;
 		}
-	}else{
+	} else {
 		print "<tr class='tableRow'><td colspan='11'><em>" . __('No Trees Found') . "</em></td></tr>";
 	}
 	html_end_box(false);

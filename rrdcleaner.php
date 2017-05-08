@@ -191,7 +191,7 @@ function get_files() {
 	if (substr_count($arc_path, $rra_path)) {
 		$archive = true;
 		$arcbase = basename($arc_path);
-	}else{
+	} else {
 		$archive = false;
 		$arcbase = '';
 	}
@@ -289,7 +289,7 @@ function list_rrd() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -307,7 +307,7 @@ function list_rrd() {
 
 	if (get_request_var('age') == 0) {
 		$sql_where .= " AND last_mod>='" . date("Y-m-d H:i:s", time()-(86400*7)) . "'";
-	}else{
+	} else {
 		$sql_where .= " AND last_mod<='" . date("Y-m-d H:i:s", (time() - $secsback)) . "'";
 	}
 

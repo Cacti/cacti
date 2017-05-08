@@ -109,16 +109,16 @@ function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
 	if (($rrd_step != $poller_interval) && (isset($poller_interval))){
 		if (!isset($config['rrd_step_counter'])) {
 			$rrd_step_counter = read_config_option('rrd_step_counter');
-		}else{
+		} else {
 			$rrd_step_counter = $config['rrd_step_counter'];
 		}
 
 		if ($num_rrd_items == 1) {
 			$config['rrd_num_counter'] = 0;
-		}else{
+		} else {
 			if (!isset($config['rrd_num_counter'])) {
 				$config['rrd_num_counter'] = 1;
-			}else{
+			} else {
 				$config['rrd_num_counter']++;
 			}
 		}
@@ -127,13 +127,13 @@ function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
 
 		if (($modulus < 1) || ($rrd_step_counter == 0)) {
 			$rrd_next_step = 0;
-		}else{
+		} else {
 			$rrd_next_step = $poller_interval * ($rrd_step_counter % $modulus);
 		}
 
 		if ($num_rrd_items == 1) {
 			$rrd_step_counter++;
-		}else{
+		} else {
 			if ($num_rrd_items == $config['rrd_num_counter']) {
 				$rrd_step_counter++;
 				$config['rrd_num_counter'] = 0;

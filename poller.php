@@ -180,7 +180,7 @@ if (isset($poller_interval)) {
 	$sql_where   = 'WHERE rrd_next_step<=0 AND poller_id = ' . $poller_id;
 
 	define('MAX_POLLER_RUNTIME', $poller_runs * $poller_interval - 2);
-}else{
+} else {
 	$sql_where   = 'WHERE poller_id = ' . $poller_id;
 	$poller_runs = 1;
 	define('MAX_POLLER_RUNTIME', 298);
@@ -201,20 +201,20 @@ if (isset($items_perhost) && sizeof($items_perhost)) {
 	if ($items_per_process == 0) {
 		$process_leveling = 'off';
 	}
-}else{
+} else {
 	$process_leveling = 'off';
 }
 
 /* some text formatting for platform specific vocabulary */
 if ($config['cacti_server_os'] == 'unix') {
 	$task_type = 'Cron';
-}else{
+} else {
 	$task_type = 'Scheduled Task';
 }
 
 if ($debug) {
 	$level = POLLER_VERBOSITY_NONE;
-}else{
+} else {
 	$level = POLLER_VERBOSITY_MEDIUM;
 }
 
@@ -228,7 +228,7 @@ cacti_log("NOTE: Poller Int: '$poller_interval', $task_type Int: '$cron_interval
 /* our cron can run at either 1 or 5 minute intervals */
 if ($poller_interval <= 60) {
 	$min_period = '60';
-}else{
+} else {
 	$min_period = '300';
 }
 
@@ -270,7 +270,7 @@ while ($poller_runs_completed < $poller_runs) {
 				WHERE poller_id = ?
 				AND disabled="" 
 				ORDER BY id', array($poller_id)));
-	}else{
+	} else {
 		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id 
 			FROM host 
 			WHERE poller_id = ? 
@@ -411,7 +411,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$command_string = read_config_option('path_spine');
 			if (read_config_option('path_spine_config') != '' && file_exists(read_config_option('path_spine_config'))) {
 				$extra_args     = ' -C ' . read_config_option('path_spine_config');
-			}else{
+			} else {
 				$extra_args     = '';
 			}
 
@@ -423,7 +423,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$extra_args     = '-q "' . $config['base_path'] . '/cmd.php"';
 			$method         = 'cmd.php';
 			$total_procs    = $concurrent_processes;
-		}else{
+		} else {
 			$command_string = read_config_option('path_php_binary');
 			$extra_args     = '-q "' . strtolower($config['base_path'] . '/cmd.php"');
 			$method         = 'cmd.php';
@@ -447,7 +447,7 @@ while ($poller_runs_completed < $poller_runs) {
 					$last_host    = $item['id'];
 					$change_proc  = true;
 				}
-			}else{
+			} else {
 				if (isset($items_perhost[$item['id']])) {
 					$items_launched += $items_perhost[$item['id']];
 				}
@@ -574,7 +574,7 @@ while ($poller_runs_completed < $poller_runs) {
 				chdir($webroot);
 			}
 		}
-	}else{
+	} else {
 		cacti_log('NOTE: There are no items in your poller for this polling cycle!', true, 'POLLER', $level);
 	}
 
@@ -621,7 +621,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 			api_plugin_hook('poller_top');
 		}
-	}else{
+	} else {
 		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . $loop_end-$loop_start-$poller_interval . ' seconds', true, 'POLLER', $level);
 	}
 
@@ -714,7 +714,7 @@ if ($poller_id == 1) {
 	automation_poller_bottom();
 	poller_maintenance();
 	api_plugin_hook('poller_bottom');
-}else{
+} else {
 	automation_poller_bottom();
 	poller_maintenance();
 }

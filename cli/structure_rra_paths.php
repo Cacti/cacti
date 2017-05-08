@@ -161,7 +161,7 @@ foreach ($data_sources as $info) {
 		if ($config['cacti_server_os'] != 'win32') {
 			if (chown($new_rrd_path, $owner_id) && chgrp($new_rrd_path, $group_id)) {
 				echo "NOTE: Permissions set for '$new_rrd_path'\n";
-			}else{
+			} else {
 				/* turn on the poller */
 				enable_poller();
 

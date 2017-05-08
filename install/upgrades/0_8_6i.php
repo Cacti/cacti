@@ -41,13 +41,13 @@ function upgrade_to_0_8_6i() {
 
 	if ($snmp_index > 0) {
 		db_install_execute("REPLACE INTO `data_input_fields` VALUES ($snmp_index, 'c1f36ee60c3dc98945556d57f26e475b',2,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
-	}else{
+	} else {
 		db_install_execute("REPLACE INTO `data_input_fields` VALUES (0, 'c1f36ee60c3dc98945556d57f26e475b',2,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
 	}
 
 	if ($snmp_get > 0) {
 		db_install_execute("REPLACE INTO `data_input_fields` VALUES ($snmp_get, 'fc64b99742ec417cc424dbf8c7692d36',1,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
-	}else{
+	} else {
 		db_install_execute("REPLACE INTO `data_input_fields` VALUES (0, 'fc64b99742ec417cc424dbf8c7692d36',1,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
 	}
 }

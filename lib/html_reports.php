@@ -241,7 +241,7 @@ if (read_config_option('auth_method') != 0) {
 		AND host_template_id=|arg1:host_template_id|
 		' . (empty($sql_where) ? '' : "AND $sql_where") . '
 		ORDER BY name';
-}else{
+} else {
 	$hosts_sql = "SELECT DISTINCT host.id, CONCAT_WS('',host.description,' (',host.hostname,')') as name
 		FROM host
 		WHERE host_template_id=|arg1:host_template_id|
@@ -260,7 +260,7 @@ if (read_config_option('auth_method') != 0) {
 		AND host_id=|arg1:host_id|
 		' . (empty($sql_where) ? '' : "AND $sql_where") . '
 		ORDER BY name';
-}else{
+} else {
 	$templates_sql = 'SELECT DISTINCT graph_templates.id, graph_templates.name
 		FROM graph_templates
 		WHERE host_id=|arg1:host_id|
@@ -284,7 +284,7 @@ if (read_config_option('auth_method') != 0) {
 		}
 
 		$sql_where = (strlen($sql_in) ? "WHERE id NOT IN ($sql_in)":'');
-	}else{
+	} else {
 		$include_trees = db_fetch_assoc_prepared('SELECT item_id
 			FROM user_auth_perms
 			WHERE user_id = ?
@@ -300,7 +300,7 @@ if (read_config_option('auth_method') != 0) {
 	}
 
 	$trees_sql = "SELECT id, name FROM graph_tree $sql_where ORDER BY name";
-}else{
+} else {
 	$trees_sql = 'SELECT id, name FROM graph_tree ORDER BY name';
 }
 
@@ -446,7 +446,7 @@ function reports_form_save() {
 
 		if (isempty_request_var('id')) {
 			$save['user_id'] = $_SESSION['sess_user_id'];
-		}else{
+		} else {
 			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', array(get_nfilter_request_var('id')));
 		}
 
@@ -464,11 +464,11 @@ function reports_form_save() {
 		$save['graph_columns']	= form_input_validate(get_nfilter_request_var('graph_columns'), 'graph_columns', '^[0-9]+$', false, 3);
 		$save['graph_width']	= form_input_validate(get_nfilter_request_var('graph_width'), 'graph_width', '^[0-9]+$', false, 3);
 		$save['graph_height']	= form_input_validate(get_nfilter_request_var('graph_height'), 'graph_height', '^[0-9]+$', false, 3);
-		$save['thumbnails']		= form_input_validate((isset_request_var('thumbnails') ? get_nfilter_request_var('thumbnails'):''), 'thumbnails', '', true, 3);
+		$save['thumbnails'] 	= form_input_validate((isset_request_var('thumbnails') ? get_nfilter_request_var('thumbnails'):''), 'thumbnails', '', true, 3);
 
-		$save['intrvl']			= form_input_validate(get_nfilter_request_var('intrvl'), 'intrvl', '^[-+]?[0-9]+$', false, 3);
-		$save['count']			= form_input_validate(get_nfilter_request_var('count'), 'count', '^[0-9]+$', false, 3);
-		$save['offset']			= '0';
+		$save['intrvl']	 	= form_input_validate(get_nfilter_request_var('intrvl'), 'intrvl', '^[-+]?[0-9]+$', false, 3);
+		$save['count']	 	= form_input_validate(get_nfilter_request_var('count'), 'count', '^[0-9]+$', false, 3);
+		$save['offset']	 	= '0';
 
 		/* adjust mailtime according to rules */
 		$timestamp = strtotime(get_nfilter_request_var('mailtime'));
@@ -477,7 +477,7 @@ function reports_form_save() {
 		} elseif (($timestamp + read_config_option('poller_interval')) < $now) {
 			$timestamp += 86400;
 
-			/* if the time is far into the past, make it the correct time, but tomorrow */
+		/* if the time is far into the past, make it the correct time, but tomorrow */
 		if (($timestamp + read_config_option('poller_interval')) < $now) {
 				$timestamp = strtotime('12:00am') + 86400 + date('H', $timestamp) * 3600 + date('i', $timestamp) * 60 + date('s', $timestamp);
 		}
@@ -486,11 +486,11 @@ function reports_form_save() {
 			raise_message('reports_message');
 		}
 
-		$save['mailtime']     = form_input_validate($timestamp, 'mailtime', '^[0-9]+$', false, 3);
+		$save['mailtime'] = form_input_validate($timestamp, 'mailtime', '^[0-9]+$', false, 3);
 
 		if (strlen(get_nfilter_request_var('subject'))) {
-			$save['subject']          = get_nfilter_request_var('subject');
-		}else{
+			$save['subject'] = get_nfilter_request_var('subject');
+		} else {
 			$save['subject'] = $save['name'];
 		}
 		$save['from_name']        = get_nfilter_request_var('from_name');
@@ -518,14 +518,14 @@ function reports_form_save() {
 
 			if ($id) {
 				raise_message('reports_save');
-			}else{
+			} else {
 				raise_message('reports_save_failed');
 			}
 		}
 
 		header('Location: ' . get_reports_page() . '?action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
 		exit;
-	}elseif (isset_request_var('save_component_report_item')) {
+	} elseif (isset_request_var('save_component_report_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('report_id');
 		get_filter_request_var('id');
@@ -555,7 +555,7 @@ function reports_form_save() {
 
 			if ($item_id) {
 				raise_message('reports_item_save');
-			}else{
+			} else {
 				raise_message('reports_item_save_failed');
 			}
 		}
@@ -583,30 +583,30 @@ function reports_form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { /* delete */
+			if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete
 				db_execute('DELETE FROM reports WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM reports_items WHERE ' . str_replace('id', 'report_id', array_to_sql_or($selected_items, 'id')));
-			}elseif (get_nfilter_request_var('drp_action') == REPORTS_OWN) { /* take ownership */
+			} elseif (get_nfilter_request_var('drp_action') == REPORTS_OWN) { // take ownership
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION['sess_user_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					db_execute_prepared('UPDATE reports SET user_id = ? WHERE id = ?', array($_SESSION['sess_user_id'], $selected_items[$i]));
 				}
-			}elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
+			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { // duplicate
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					duplicate_reports($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
-			}elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { /* enable */
+			} elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { // enable 
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', enable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					db_execute_prepared('UPDATE reports SET enabled="on" WHERE id = ?', array($selected_items[$i]));
 				}
-			}elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { /* disable */
+			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { // disable 
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', disable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 					db_execute_prepared('UPDATE reports SET enabled="" WHERE id = ?', array($selected_items[$i]));
 				}
-			}elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { /* send now */
+			} elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { // send now
 				include_once($config['base_path'] . '/lib/reports.php');
 				$message = '';
 
@@ -665,24 +665,24 @@ function reports_form_actions() {
 	if (!isset($reports_array)) {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Report.') . "</span></td></tr>\n";
 		$save_html = '';
-	}else{
+	} else {
 		$save_html = "<input type='submit' value='" . __('Continue') . "' name='save'>";
 
-		if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { /* delete */
+		if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete 
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Report(s).') . "</p>
 					<div class='itemlist'><ul>$reports_list</ul></div>
 				</td>
 			</tr>\n";
-		}elseif (is_reports_admin() && get_nfilter_request_var('drp_action') == REPORTS_OWN) { /* take ownership */
+		} elseif (is_reports_admin() && get_nfilter_request_var('drp_action') == REPORTS_OWN) { // take ownership
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to take ownership of the following Report(s).') . "</p>
 					<div class='itemlist'><ul>$reports_list</ul></div>
 				</td>
 			</tr>\n";
-		}elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { /* duplicate */
+		} elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { // duplicate
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Report(s).  You may optionally change the title for the new Reports') . ".</p>
@@ -694,7 +694,7 @@ function reports_form_actions() {
 			print "</p>
 				</td>
 			</tr>\n";
-		}elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { /* enable */
+		} elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { // enable
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to enable the following Report(s).') . "</p>
@@ -702,14 +702,14 @@ function reports_form_actions() {
 					<p>" . __('Please be certain that those Report(s) have successfully been tested first!') . "</p>
 				</td>
 			</tr>\n";
-		}elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { /* disable */
+		} elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { // disable
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to disable the following Reports.') . "</p>
 					<div class='itemlist'><ul>$reports_list</ul></div>
 				</td>
 			</tr>\n";
-		}elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { /* send now */
+		} elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { // send now
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to send the following Report(s) now.') . "</p>
@@ -751,7 +751,7 @@ function reports_send($id) {
 
 	if (!sizeof($report)) {
 		/* set error condition */
-	}elseif ($report['user_id'] == $_SESSION['sess_user_id']) {
+	} elseif ($report['user_id'] == $_SESSION['sess_user_id']) {
 		reports_log(__FUNCTION__ . ', send now, report_id: ' . $id, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 		/* use report name as default EMail title */
 		if (!strlen($report['subject'])) {
@@ -762,22 +762,22 @@ function reports_send($id) {
 			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
-		}elseif (!strlen($report['subject'])) {
+		} elseif (!strlen($report['subject'])) {
 			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set an e-mail subject',  $report['name']);
 			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
-		}elseif (!strlen($report['from_name'])) {
+		} elseif (!strlen($report['from_name'])) {
 			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set an e-mail From Name',  $report['name']);
 			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
-		}elseif (!strlen($report['from_email'])) {
+		} elseif (!strlen($report['from_email'])) {
 			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set an e-mail from address',  $report['name']);
 			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
-		}else{
+		} else {
 			generate_report($report, true);
 		}
 	}
@@ -830,7 +830,7 @@ function reports_item_edit() {
 		$reports_item = db_fetch_row_prepared('SELECT * FROM reports_items WHERE id = ?', array(get_request_var('item_id')));
 
 		$header_label = __('Report Item [edit Report: %s]', $report['name']);
-	}else{
+	} else {
 		$header_label = __('Report Item [new Report: %s]', $report['name']);
 		$reports_item = array();
 		$reports_item['report_id'] = get_request_var('id');
@@ -944,7 +944,7 @@ function reports_item_edit() {
 			$('#row_item_text').show();
 			if (useCss) {
 				$('#row_font_size').hide();
-			}else{
+			} else {
 				$('#row_font_size').show();
 			}
 		} else if ($('#item_type').val() == '<?php print REPORTS_ITEM_TREE;?>') {
@@ -961,7 +961,7 @@ function reports_item_edit() {
 			$('#row_item_text').hide();
 			if (useCss) {
 				$('#row_font_size').hide();
-			}else{
+			} else {
 				$('#row_font_size').show();
 			}
 		} else {
@@ -1005,7 +1005,7 @@ function reports_item_edit() {
 					"<?php print ((isset($timespan["begin_now"])) ? "&graph_start=" . $timespan["begin_now"]:"");?>"+
 					"<?php print ((isset($timespan["end_now"])) ? "&graph_end=" . $timespan["end_now"]:"");?>"+
 					"&rra_id=0'>");
-		}else{
+		} else {
 			$('#graphdiv').hide();
 			$('#graph').html('');
 		}
@@ -1071,7 +1071,7 @@ function reports_edit() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -1084,7 +1084,7 @@ function reports_edit() {
 		# setup header
 		$header_label = __('[edit: %s]', $report['name']);
 		$tabs = array('details' => __('Details'), 'items' => __('Items'), 'preview' => __('Preview'), 'events' => __('Events'));
-	}else{
+	} else {
 		$header_label = __('[new]');
 		# initialize mailtime with current timestamp
 		$report['mailtime'] = date(reports_date_time_format(), floor(time() / read_config_option('poller_interval')) * read_config_option('poller_interval'));
@@ -1145,7 +1145,7 @@ function reports_edit() {
 			if (cformat && cformat.checked) {
 				$('#row_font_size').hide();
 				$('#row_format_file').show();
-			}else{
+			} else {
 				$('#row_font_size').show();
 				$('#row_format_file').hide();
 			}
@@ -1251,7 +1251,7 @@ function display_reports_items($report_id) {
 			case REPORTS_ITEM_TREE:
 				if ($item['branch_id'] > 0) {
 					$branch_details = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE id = ?', array($item['branch_id']));
-				}else{
+				} else {
 					$branch_details = array();
 				}
 
@@ -1261,12 +1261,12 @@ function display_reports_items($report_id) {
 				if ($item['branch_id'] > 0) {
 					if ($branch_details['host_id'] > 0) {
 						$item_details .= ', Device: ' . db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($branch_details['host_id']));
-					}else{
+					} else {
 						$item_details .= ', Branch: ' . $branch_details['title'];
 
 						if ($item['tree_cascade'] == 'on') {
 							$item_details .= ' ' . __('(All Branches)');
-						}else{
+						} else {
 							$item_details .= ' ' . __('(Current Branch)');
 						}
 					}
@@ -1364,7 +1364,7 @@ function reports() {
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -1431,22 +1431,22 @@ function reports() {
 	/* form the 'where' clause for our main sql query */
 	if (strlen(get_request_var('filter'))) {
 		$sql_where = "WHERE (reports.name LIKE '%%" . get_request_var('filter') . "%%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
 	if (get_request_var('status') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('status') == '-2') {
+	} elseif (get_request_var('status') == '-2') {
 		$sql_where .= (strlen($sql_where) ? " AND reports.enabled='on'" : " WHERE reports.enabled='on'");
-	}elseif (get_request_var('status') == '-3') {
+	} elseif (get_request_var('status') == '-3') {
 		$sql_where .= (strlen($sql_where) ? " AND reports.enabled=''" : " WHERE reports.enabled=''");
 	}
 
 	/* account for permissions */
 	if (is_reports_admin()) {
 		$sql_join = 'LEFT JOIN user_auth ON user_auth.id=reports.user_id';
-	}else{
+	} else {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' user_auth.id=' . $_SESSION['sess_user_id'];
 		$sql_join = 'INNER JOIN user_auth ON user_auth.id=reports.user_id';
 	}
@@ -1489,7 +1489,7 @@ function reports() {
 			'attachment_type' => array('display' => __('Type'),        'align' => 'left', 'sort' => 'ASC'),
 			'enabled'         => array('display' => __('Enabled'),     'align' => 'left', 'sort' => 'ASC'),
 		);
-	}else{
+	} else {
 		$display_text = array(
 			'name'            => array('display' => __('Report Title'), 'align' => 'left', 'sort' => 'ASC'),
 			'cint'            => array('display' => __('Frequency'),    'align' => 'left', 'sort' => 'ASC'),
@@ -1526,7 +1526,7 @@ function reports() {
 
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr><td><em>" . __('No Reports Found') . "</em></td></tr>\n";
 	}
 

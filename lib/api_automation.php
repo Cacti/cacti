@@ -76,7 +76,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rowsd') == -1) {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rowsd');
 	}
 
@@ -202,17 +202,17 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filterd') != '') {
 		$sql_where = "WHERE (h.hostname LIKE '%" . get_request_var('filterd') . "%' OR h.description LIKE '%" . get_request_var('filterd') . "%' OR ht.name LIKE '%" . get_request_var('filterd') . "%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
 	if (get_request_var('host_status') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('host_status') == '-2') {
+	} elseif (get_request_var('host_status') == '-2') {
 		$sql_where .= (strlen($sql_where) ? " AND h.disabled='on'" : "WHERE h.disabled='on'");
-	}elseif (get_request_var('host_status') == '-3') {
+	} elseif (get_request_var('host_status') == '-3') {
 		$sql_where .= (strlen($sql_where) ? " AND h.disabled=''" : "WHERE h.disabled=''");
-	}elseif (get_request_var('host_status') == '-4') {
+	} elseif (get_request_var('host_status') == '-4') {
 		$sql_where .= (strlen($sql_where) ? " AND (h.status!='3' or h.disabled='on')" : "WHERE (h.status!='3' or h.disabled='on')");
 	}else {
 		$sql_where .= (strlen($sql_where) ? ' AND (h.status=' . get_request_var('host_status') . " AND h.disabled = '')" : "WHERE (h.status=" . get_request_var('host_status') . " AND h.disabled = '')");
@@ -220,9 +220,9 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	if (get_request_var('host_template_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('host_template_id') == '0') {
+	} elseif (get_request_var('host_template_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND h.host_template_id=0' : 'WHERE h.host_template_id=0');
-	}elseif (!isempty_request_var('host_template_id')) {
+	} elseif (!isempty_request_var('host_template_id')) {
 		$sql_where .= (strlen($sql_where) ? ' AND h.host_template_id=' . get_request_var('host_template_id') : 'WHERE h.host_template_id=' . get_request_var('host_template_id'));
 	}
 
@@ -295,7 +295,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 			form_selectable_cell((isset($host_data_sources[$host['host_id']]) ? $host_data_sources[$host['host_id']] : 0), $host['host_id']);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr><td colspan='8'><em>" . __('No Matching Devices') . "</em></td></tr>";
 	}
 
@@ -362,7 +362,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -493,23 +493,23 @@ function display_matching_graphs($rule, $rule_type, $url) {
 			" OR gt.name LIKE '%" . get_request_var('filter') . "%'" . 
 			" OR h.description LIKE '%" . get_request_var('filter') . "%'" . 
 			" OR h.hostname LIKE '%" . get_request_var('filter') . "%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('host_id') == '0') {
+	} elseif (get_request_var('host_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=0';
-	}elseif (!isempty_request_var('host_id')) {
+	} elseif (!isempty_request_var('host_id')) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('template_id') == '0') {
+	} elseif (get_request_var('template_id') == '0') {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
-	}elseif (!isempty_request_var('template_id')) {
+	} elseif (!isempty_request_var('template_id')) {
 		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') .' gtg.graph_template_id=' . get_request_var('template_id');
 	}
 
@@ -584,7 +584,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 			form_selectable_cell(filter_value($template_name, get_request_var('filter')), $graph['local_graph_id']);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print '<tr><td><em>' . __('No Graphs Found') . '</em></td></tr>';
 	}
 
@@ -635,7 +635,7 @@ function display_new_graphs($rule, $url) {
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -830,7 +830,7 @@ function display_new_graphs($rule, $url) {
 
 		if (!sizeof($snmp_query_indexes)) {
 			print "<tr colspan='6'><td>" . __('There are no Objects that match this rule.') . "</td></tr>\n";
-		}else{
+		} else {
 			print "<tr colspan='6'>" . $html_dq_header . "</tr>\n";
 		}
 
@@ -856,7 +856,7 @@ function display_new_graphs($rule, $url) {
 								} else {
 									print "<td><span id='text$row_counter" . '_' . $column_counter . "' $style>" . filter_value($row[$field_name], get_request_var('filter')) . "</span></td>";
 								}
-							}else{
+							} else {
 								print "<td><span id='text$row_counter" . '_' . $column_counter . "' $style></span></td>";
 							}
 							$column_counter++;
@@ -930,7 +930,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -1082,11 +1082,11 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	if (get_request_var('host_status') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('host_status') == '-2') {
+	} elseif (get_request_var('host_status') == '-2') {
 		$sql_where .= " AND h.disabled='on'";
-	}elseif (get_request_var('host_status') == '-3') {
+	} elseif (get_request_var('host_status') == '-3') {
 		$sql_where .= " AND h.disabled=''";
-	}elseif (get_request_var('host_status') == '-4') {
+	} elseif (get_request_var('host_status') == '-4') {
 		$sql_where .= " AND (h.status!='3' or h.disabled='on')";
 	}else {
 		$sql_where .= ' AND (h.status=' . get_request_var('host_status') . " AND h.disabled = '')";
@@ -1094,9 +1094,9 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	if (get_request_var('host_template_id') == '-1') {
 		/* Show all items */
-	}elseif (get_request_var('host_template_id') == '0') {
+	} elseif (get_request_var('host_template_id') == '0') {
 		$sql_where .= ' AND h.host_template_id=0';
-	}elseif (!isempty_request_var('host_template_id')) {
+	} elseif (!isempty_request_var('host_template_id')) {
 		$sql_where .= ' AND h.host_template_id=' . get_request_var('host_template_id');
 	}
 
@@ -1177,7 +1177,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			form_selectable_cell($repl, $template['host_id']);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr><td colspan='6'><em>" . __('No Items Found') . "</em></td></tr>";
 	}
 
@@ -1231,13 +1231,13 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 
 			if ($i != sizeof($items)-1) {
 				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
-			}else{
+			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
 				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
-			}else{
+			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
@@ -1294,13 +1294,13 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 
 			if ($i != sizeof($items)-1) {
 				$form_data .= '<a class="pic fa fa-awwow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
-			}else{
+			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
 				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
-			}else{
+			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
@@ -1358,13 +1358,13 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			$form_data .= '<td class="right">';
 			if ($i != sizeof($items)-1) {
 				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
-			}else{
+			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
 				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
-			}else{
+			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
@@ -1934,7 +1934,7 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 		$automation_item = db_fetch_row("SELECT * FROM $item_table WHERE id=$rule_item_id $sql_and");
 
 		$header_label = __('Rule Item [edit rule item for %s: %s]', $title, $automation_rule['name']);
-	}else{
+	} else {
 		$header_label = __('Rule Item [new rule item for %s: %s]', $title, $automation_rule['name']);
 		$automation_item = array();
 		$automation_item['sequence'] = get_sequence('', 'sequence', $item_table, 'rule_id=' . $rule_id . $sql_and);
@@ -2083,7 +2083,7 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 
 		cacti_log('NOTE: ' . $function . ' Device[' . $host_id . "] Graph - Already Exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)", false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 		return;
-	}else{
+	} else {
 		# input fields are not supported
 		$suggested_values = array();
 		$returnArray = create_complete_graph_from_template($graph_template_id, $host_id, array(), $suggested_values);
@@ -2096,7 +2096,7 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 
 					if (strlen($dataSourceId)) {
 						$dataSourceId .= ', ' . $item;
-					}else{
+					} else {
 						$dataSourceId = $item;
 					}
 				}
@@ -2367,7 +2367,7 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 
 					if (strlen($data_source_id)) {
 						$data_source_id .= ', ' . $item;
-					}else{
+					} else {
 						$data_source_id = $item;
 					}
 				}
@@ -2516,7 +2516,7 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 	if (api_tree_branch_exists($rule['tree_id'], $parent_tree_item_id, $title)) {
 		$new_item = api_tree_get_branch_id($rule['tree_id'], $parent_tree_item_id, $title);
 		cacti_log('NOTE: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Already Exists', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
-	}else{
+	} else {
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HEADER, $parent_tree_item_id,
 			$title, $local_graph_id, $host_id, $rule['host_grouping_type'], $item['sort_type'], $propagate);
 
@@ -2558,7 +2558,7 @@ function create_device_node($host_id, $parent, $rule) {
 			array($host_id, $parent, $rule['tree_id']));
 
 		cacti_log('NOTE: ' . $function . ' Device[' . $host_id . '] Tree Item - Already Exists', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
-	}else{
+	} else {
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HOST, $parent, $title, 
 			$local_graph_id, $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
 
@@ -2600,7 +2600,7 @@ function create_graph_node($graph_id, $parent, $rule) {
 			array($graph_id, $parent, $rule['tree_id']));
 
 		cacti_log('NOTE: ' . $function . ' Graph[' . $graph_id . '] Tree Item - Already Exists', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
-	}else{
+	} else {
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_GRAPH, $parent, $title, 
 			$graph_id, $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
 
@@ -2688,7 +2688,7 @@ function automation_add_device($device, $web = false) {
 		}
 
 		db_execute_prepared('DELETE FROM automation_devices WHERE ip = ? LIMIT 1', array($ip));
-	}else{
+	} else {
 		if (!$web) {
 			automation_debug(' - Failed');
 		}
@@ -2729,7 +2729,7 @@ function automation_find_os($sysDescr, $sysObject, $sysName) {
 
 	if (sizeof($result)) {
 		return $result;
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -2744,7 +2744,7 @@ function automation_debug($text) {
 		if (strstr($text, "\n") !== false) {
 			cacti_log(trim($message . $text), false, "AUTOM8"); 
 			$message = '';
-		}else{
+		} else {
 			$message .= $text;
 		}
 	}
@@ -3096,7 +3096,7 @@ function automation_valid_snmp_device(&$device) {
 		}
 
 		$session->close();
-	}else{
+	} else {
 		automation_debug(' No response');
 	}
 
@@ -3232,7 +3232,7 @@ function api_automation_is_time_to_start($network_id) {
 
 				break;
 			}
-		}else{
+		} else {
 			if ($now > $next) {
 				while($now > $next) {
 					$next += $recur;
@@ -3272,7 +3272,7 @@ function api_automation_is_time_to_start($network_id) {
 
 				return true;
 			}
-		}else{
+		} else {
 			if ($now > $next) {
 				while(true) {
 					$next += $day;
@@ -3308,7 +3308,7 @@ function api_automation_is_time_to_start($network_id) {
 		$last   = array_search('32', $days);
 		if ($last !== false && $last > 0) {
 			$last = true;
-		}else{
+		} else {
 			$last = false;
 		}
 
@@ -3336,7 +3336,7 @@ function api_automation_is_time_to_start($network_id) {
 
 				return true;
 			}
-		}else{
+		} else {
 			if ($now > $next) {
 				while(true) {
 					$next += $day;
@@ -3452,7 +3452,7 @@ function api_automation_is_time_to_start($network_id) {
 
 				return true;
 			}
-		}else{
+		} else {
 			if ($now > $next) {
 				while(true) {
 					$next += $day;
@@ -3579,7 +3579,7 @@ function ping_netbios_name($ip, $timeout_ms = 1000) {
 			}
 
 			return trim(strtolower($host));
-		}else{
+		} else {
 			return false;
 		}
 	}
