@@ -117,15 +117,15 @@ function api_networks_discover($network_id) {
 		if (!$running) {
 			if ($config['poller_id'] == $poller_id) {
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force");
-			}else{
+			} else {
 				$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($poller_id));
 				$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id);
 			}
-		}else{
+		} else {
 			$_SESSION['automation_message'] = "Can Not Restart Discovery for Discovery in Progress for Network '$name'";
 			raise_message('automation_message');
 		}
-	}else{
+	} else {
 		$_SESSION['automation_message'] = "Can Not Perform Discovery for Disabled Network '$name'";
 		raise_message('automation_message');
 	}
@@ -185,13 +185,13 @@ function api_networks_save($post) {
 				$_SESSION['automation_message'] = __('ERROR: You must specificy the day of the week.  Disabling Network %s!.', $net);
 				raise_message('automation_message');
 			}
-		}elseif ($save['sched_type'] == '4') {
+		} elseif ($save['sched_type'] == '4') {
 			if ($save['month'] == '' || $save['day_of_month'] == '') {
 				$save['enabled'] = '';
 				$_SESSION['automation_message'] = __('ERROR: You must specificy both the Months and Days of Month.  Disabling Network %s!.', $net);
 				raise_message('automation_message');
 			}
-		}elseif ($save['sched_type'] == '5') {
+		} elseif ($save['sched_type'] == '5') {
 			if ($save['month'] == '' || $save['monthly_day'] == '' || $save['monthly_week'] == '') {
 				$save['enabled'] = '';
 				$_SESSION['automation_message'] = __('ERROR: You must specificy the Months, Weeks of Months, and Days of Week.  Disabling Network %s!.', $net);
@@ -210,7 +210,7 @@ function api_networks_save($post) {
 			$ips = automation_calculate_total_ips($networks, $i);
 			if ($ips !== false) {
 				$total_ips += $ips;
-			}else{
+			} else {
 				$continue = false;
 				$_SESSION['automation_message'] = __("ERROR: Network '%s' is Invalid.", $net);
 				raise_message('automation_message');
@@ -229,7 +229,7 @@ function api_networks_save($post) {
 	
 				if ($network_id) {
 					raise_message(1);
-				}else{
+				} else {
 					raise_message(2);
 				}
 			}
@@ -258,19 +258,19 @@ function form_actions() {
 				foreach($selected_items as $item) {
 					api_networks_remove($item);
 				}
-			}elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
+			} elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
 				foreach($selected_items as $item) {
 					api_networks_enable($item);
 				}
-			}elseif (get_nfilter_request_var('drp_action') == '2') { /* disable */
+			} elseif (get_nfilter_request_var('drp_action') == '2') { /* disable */
 				foreach($selected_items as $item) {
 					api_networks_disable($item);
 				}
-			}elseif (get_nfilter_request_var('drp_action') == '4') { /* run now */
+			} elseif (get_nfilter_request_var('drp_action') == '4') { /* run now */
 				foreach($selected_items as $item) {
 					api_networks_discover($item);
 				}
-			}elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel */
+			} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel */
 				foreach($selected_items as $item) {
 					api_networks_cancel($item);
 				}
@@ -313,28 +313,28 @@ function form_actions() {
 				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>\n";
-	}elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
+	} elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to enable the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>\n";
-	}elseif (get_nfilter_request_var('drp_action') == '2') { /* disable */
+	} elseif (get_nfilter_request_var('drp_action') == '2') { /* disable */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to disable the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>\n";
-	}elseif (get_nfilter_request_var('drp_action') == '4') { /* discover now */
+	} elseif (get_nfilter_request_var('drp_action') == '4') { /* discover now */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to discover the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>\n";
-	}elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */
+	} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to cancel on going Network Discovery(s).') . "</p>
@@ -346,7 +346,7 @@ function form_actions() {
 	if (!isset($networks_array)) {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Network.') . "</span></td></tr>\n";
 		$save_html = '';
-	}else{
+	} else {
 		$save_html = "<input type='submit' value='" . __('Continue') . "' name='save'>";
 	}
 
@@ -384,7 +384,7 @@ function network_edit() {
 	if (!isempty_request_var('id')) {
 		$network = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('Network Discovery Range [edit: %s]', htmlspecialchars($network['name']));
-	}else{
+	} else {
 		$header_label = __('Network Discovery Range [new]');
 	}
 
@@ -680,7 +680,7 @@ function network_edit() {
 
 	form_start('automation_networks.php', 'form_network');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -689,7 +689,7 @@ function network_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('save_component_network', '1', '');
 	form_hidden_box('id', !isempty_request_var('id') ? get_request_var('id'):0, 0);
@@ -872,7 +872,7 @@ function get_networks(&$sql_where, $rows, $apply_limits = TRUE) {
 
 	if ($apply_limits) {
 		$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
-	}else{
+	} else {
 		$sql_limit = '';
 	}
 
@@ -924,9 +924,9 @@ function networks() {
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
-	}elseif (get_request_var('rows') == -2) {
+	} elseif (get_request_var('rows') == -2) {
 		$rows = 99999999;
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -980,7 +980,7 @@ function networks() {
 				$progress = "0/0/0";
 				$status   = array();
 				$updown['up'] = $updown['snmp'] = '0';
-			}else{
+			} else {
 				$running = db_fetch_cell_prepared('SELECT COUNT(*) FROM automation_processes WHERE network_id = ?', array($network['id']));
 
 				if ($running > 0) {
@@ -996,7 +996,7 @@ function networks() {
 
 					if (empty($status['total'])) {
 						$progress = "0/0/0";
-					}else{
+					} else {
 						$progress = $status['pending'] . '/' . $status['running'] . '/' . $status['done'];
 					}
 
@@ -1008,7 +1008,7 @@ function networks() {
 						$updown['up']   = 0;
 						$updown['snmp'] = 0;
 					}
-				}else{
+				} else {
 					$updown['up']   = $network['up_hosts'];
 					$updown['snmp'] = $network['snmp_hosts'];
 
@@ -1032,7 +1032,7 @@ function networks() {
 			form_checkbox_cell($network['name'], $network['id']);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr><td colspan='10'><em>" . __('No Networks Found') . "</em></td></tr>";
 	}
 	html_end_box(false);

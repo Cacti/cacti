@@ -98,7 +98,7 @@ $packet_data  = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'max_allowed_packet'", 
 
 if (isset($packet_data['Value'])) {
 	$max_allowed_packet = $packet_data['Value'];
-}else{
+} else {
 	$max_allowed_packet = 1E6;
 }
 
@@ -175,10 +175,10 @@ if (!empty($recovery_pid)) {
 	$pid = posix_kill($recovery_pid, 0);
 	if ($pid === false) {
 		$run = true;
-	}else{
+	} else {
 		$run = false;
 	}
-}else{
+} else {
 	$run = true;
 }
 
@@ -223,13 +223,13 @@ if ($run) {
 					if ($i == $total_records) {
 						if ($end_count > 1) {
 							$operator = '<=';
-						}else{
+						} else {
 							$operator = '<';
 						}
 
 						$end_count++;
 						$sleep_time = 3;
-					}else{
+					} else {
 						$operator = '<=';
 						$sleep_time = 0;
 					}
@@ -237,10 +237,10 @@ if ($run) {
 					$purge_time = $time;
 
 					break;
-				}elseif ($i == $total_records) {
+				} elseif ($i == $total_records) {
 					if ($end_count > 1) {
 						$operator = '<=';
-					}else{
+					} else {
 						$operator = '<';
 					}
 
@@ -253,7 +253,7 @@ if ($run) {
 				$rows = db_fetch_assoc("SELECT * 
 					FROM poller_output_boost 
 					ORDER BY time ASC", true, $local_db_cnn_id);
-			}else{
+			} else {
 				$rows = db_fetch_assoc("SELECT * 
 					FROM poller_output_boost 
 					WHERE time $operator '$purge_time' 
@@ -291,7 +291,7 @@ if ($run) {
 				/* remove the recovery records */
 				if ($purge_time == 0) {
 					db_execute("DELETE FROM poller_output_boost", true, $local_db_cnn_id);
-				}else{
+				} else {
 					db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'", true, $local_db_cnn_id);
 				}
 			}
@@ -304,7 +304,7 @@ if ($run) {
 	db_execute_prepared('UPDATE poller 
 		SET status="2" 
 		WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
-}else{
+} else {
 	debug('Recovery process still running, exiting');
 	cacti_log('Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid);
 	exit(1);

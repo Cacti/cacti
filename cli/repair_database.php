@@ -201,7 +201,7 @@ if ($total_rows > 0 && !$force) {
 	echo "\nWARNING: Cacti Template Problems found in your Database.  Using the '--force' option will remove\n";
 	echo "the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you \n";
 	echo "should contact your support organization prior to proceeding with that repair.\n\n";
-}elseif ($total_rows == 0) {
+} elseif ($total_rows == 0) {
 	echo "NOTE: No Invalid Cacti Template Records found in your Database\n\n";
 }
 

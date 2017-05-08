@@ -36,6 +36,16 @@ img {
 	vertical-align:middle;
 }
 
+fieldset {
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.reindex_methods span {
+	font-size: 9px;
+}
+
 /* links */
 
 a, a:active, a:visited {
@@ -91,15 +101,6 @@ label {
 	white-space:nowrap;
 }
 
-fieldset {
-	border: none;
-	padding: 0px;
-	margin: 0px;
-}
-
-.reindex_methods span {
-	font-size: 9px;
-}
 
 .nowrap {
 	white-space:nowrap;
@@ -502,7 +503,7 @@ fieldset {
     border: none;
 }
 
-.odd.formRow{
+.odd.tableRow{
 	color: #000000;
 	background: none repeat scroll 0 0 #fbfdff;
 }
@@ -511,7 +512,7 @@ fieldset {
 	border: none;
 }
 
-.even.formRow{
+.even.tableRow{
 	color: #000000;
 	background: none repeat scroll 0 0 #FFFFFF;
 }
@@ -522,12 +523,12 @@ fieldset {
     #box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
-.even-alternate.formRow{
+.even-alternate.tableRow{
 	color: #000000;
 	background: none repeat scroll 0 0 #FFFFFF;
 }
 
-.formRow {
+.tableRow {
 	padding: 4px 5px !important;
 }
 
@@ -923,6 +924,10 @@ legend {
 	width:100%;
 }
 
+.treeArea {
+	vertical-align: top;
+}
+
 .cactiGraphContentArea {
 	height: 100%;
 	overflow-y: auto !important;
@@ -996,11 +1001,11 @@ legend {
 	background: none !important;
 }
 
-#graph_view_preview2 .formRow{
+#graph_view_preview2 .tableRow{
 	background: none !important;
 }
 
-#graph_view_tree_content2 .formRow{
+#graph_view_tree_content2 .tableRow{
 	background: none !important;
 }
 
@@ -1150,10 +1155,8 @@ table.cactiTable {
 	font-size: 13px;
 	font-weight: 600;
     border-color: #222;
-
     background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
     background-repeat: repeat-x;
-
 }
 
 .cactiTableButton {
@@ -1171,6 +1174,8 @@ table.cactiTable {
 
 .cactiTableButton span, .cactiTableTitle span {
 	padding: 0px 5px 0px 5px;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .cactiDebugTable {
@@ -1183,13 +1188,127 @@ table.cactiTable {
 
 .filterTable td:first-child {
 	width:55px;
+	min-width:55px;
 }
 
-.formItemDescription {
+.filterTable td {
+	padding: 2px;
 }
 
-.formItemName {
-	font-weight:bold;
+.formRow {
+	display: table;
+	width: 100%;
+	line-height: 35px;
+}
+
+.formColumn {
+	float: left;
+	display: table-column;
+}
+
+.formColumnLeft {
+	float: left;
+	display: table-column;
+	width: 50%;
+}
+
+.formColumnRight {
+	float: left;
+	display: table-column;
+	width: 50%;
+}
+
+.formData {
+	display: inline-block;
+	float: left;
+}
+
+.formFieldName {
+	display: inline-block;
+	color: snow;
+	float: left;
+	text-align: left;
+	font-weight: bold;
+	padding-left: 3px;
+}
+
+.formFieldDescription {
+	float: left;
+	text-align: left;
+	font-weight: normal;
+	line-height: 14px;
+}
+
+.formTooltip {
+	display: inline-block;
+}
+
+.formHeader {
+	float: left;
+	width: 100%;
+	text-align: left;
+	line-height: 25px;
+	text-transform: none;
+    background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+   	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+    background-repeat: repeat-x;
+    border-bottom: 1px solid #000;
+}
+
+.formHeaderAnchor {
+	float:right;
+	padding-right:4px;
+}
+
+.hostInfoHeader {
+	width: 100%;
+}
+
+@media screen and (max-width: 640px) {
+	.formRow {
+		display: table;
+		width: 100%;
+		line-height: 30px;
+	}
+
+	.formColumn {
+		float: left;
+		display: table-row;
+	}
+
+	.formColumnLeft {
+		float: left;
+		display: table-row;
+		width: 100%;
+	}
+
+	.formColumnRight {
+		float: left;
+		display: table-row;
+		width: 100%;
+	}
+
+	.formFieldName {
+		color: snow;
+		color: #000000;
+		float: left;
+		text-align: left;
+		white-space: nowrap;
+		padding-left: 3px;
+	}
+
+	.formData {
+		float: left;
+	}
+
+	.hostInfoHeader {
+		overflow: hidden;
+	}
+
+	.queryAdd, .templateAdd, .navBar, #ping_results {
+		display: none;
+	}
 }
 
 .graphItem {
@@ -1223,6 +1342,7 @@ table.cactiTable {
 }
 
 .tableHeader {
+	display: table-row;
 	color: #000000;
 	background: #FFFFFF;
 	font-weight: 700;
@@ -1272,8 +1392,9 @@ th.sortable {
 }
 
 .tableSubHeaderColumn {
-
-	cursor:pointer;
+	cursor: pointer;
+	text-align: left;
+	padding: 3px;
 	outline-style: none;
 }
 
@@ -1593,8 +1714,9 @@ div#gtabs {
 .maintabs {
 	line-height: 32px;
 	float: left;
-	width:50%;
-	overflow:hidden;
+	width: 50%;
+	overflow: hidden;
+	height: 32px;
 }
 
 .maintabs a {
@@ -1850,6 +1972,10 @@ ul#nav {
 
 .clogLimit {
 	background-color: #EACC00;
+}
+
+.clogStats td, .clogDebug td, .clogSQL td, .clogWarning td, .clogError td, .clogLimit td {
+	padding: 3px;
 }
 
 @media print {

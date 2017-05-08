@@ -129,7 +129,7 @@ class Net_Ping
 			 * this prevents from command injection as well*/
 			if ($this->is_ipaddress($this->host['hostname'])) {
 				$host_ip = $this->host['hostname'];
-			}else{
+			} else {
 				/* again, as a side effect, prevention from command injection */
 				$host_ip = gethostbyname($this->host['hostname']);
 
@@ -164,7 +164,7 @@ class Net_Ping
 				$result = shell_exec('ping -i ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 			}else if (substr_count(strtolower(PHP_OS), 'winnt')) {
 				$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
-			}else{
+			} else {
 				/* please know, that when running SELinux, httpd will throw
 				 * ping: cap_set_proc: Permission denied
 				 * as it now tries to open an ICMP socket and fails 
@@ -187,13 +187,13 @@ class Net_Ping
 					$this->ping_response = __('ICMP Ping Success (%s ms)', $results[1]);
 
 					return true;
-				}else{
+				} else {
 					$this->status = 'down';
 					$this->ping_response = __('ICMP ping Timed out');
 
 					return false;
 				}
-			}else{
+			} else {
 				$position = strpos($result, 'Minimum');
 
 				if ($position > 0) {
@@ -205,14 +205,14 @@ class Net_Ping
 					$this->ping_response = __('ICMP Ping Success (%s ms)', $this->ping_status);
 
 					return true;
-				}else{
+				} else {
 					$this->status = 'down';
 					$this->ping_response = __('ICMP ping Timed out');
 
 					return false;
 				}
 			}
-		}else{
+		} else {
 			$this->ping_status   = 'down';
 			$this->ping_response = __('Destination address not specified');
 
@@ -280,7 +280,7 @@ class Net_Ping
 		if (($this->avail_method == AVAIL_SNMP_GET_NEXT) &&
 			(version_compare('5', phpversion(), '<'))) {
 			$output = cacti_snmp_session_getnext($session, $oid);
-		}else{
+		} else {
 			$output = cacti_snmp_session_get($session, $oid);
 		}
 
@@ -296,7 +296,7 @@ class Net_Ping
 			$this->snmp_response = 'Device responded to SNMP';
 
 			return true;
-		}else{
+		} else {
 			$this->snmp_status   = 'down';
 			$this->snmp_response = 'Device did not respond to SNMP';
 
@@ -322,7 +322,7 @@ class Net_Ping
 			/* determine the host's ip address */
 			if ($this->is_ipaddress($this->host['hostname'])) {
 				$host_ip = $this->host['hostname'];
-			}else{
+			} else {
 				$host_ip = gethostbyname($this->host['hostname']);
 
 				if (!$this->is_ipaddress($host_ip)) {
@@ -336,14 +336,14 @@ class Net_Ping
 			if (substr_count($host_ip,':') > 0) {
 				if (defined('AF_INET6')) {
 					$this->socket = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
-				}else{
+				} else {
 					$this->ping_response = __('PHP version does not support IPv6');
 					$this->ping_status   = 'down';
 					cacti_log('WARNING: IPv6 host detected, PHP version does not support IPv6');
 
 					return false;
 				}
-			}else{
+			} else {
 				$this->socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
 			}
 
@@ -433,7 +433,7 @@ class Net_Ping
 			/* determine the host's ip address */
 			if ($this->is_ipaddress($this->host['hostname'])) {
 				$host_ip = $this->host['hostname'];
-			}else{
+			} else {
 				$host_ip = gethostbyname($this->host['hostname']);
 
 				if (!$this->is_ipaddress($host_ip)) {
@@ -447,14 +447,14 @@ class Net_Ping
 			if (substr_count($host_ip,':') > 0) {
 				if (defined('AF_INET6')) {
 					$this->socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP);
-				}else{
+				} else {
 					$this->ping_response = __('PHP binary does not support IPv6');
 					$this->ping_status   = 'down';
 					cacti_log('WARNING: IPv6 host detected, PHP version does not support IPv6');
 
 					return false;
 				}
-			}else{
+			} else {
 				$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 			}
 
@@ -535,13 +535,13 @@ class Net_Ping
 
 		if (($retries <= 0) || ($retries > 5)) {
 			$this->retries = 2;
-		}else{
+		} else {
 			$this->retries = $retries;
 		}
 
 		if ($timeout <= 0) {
 			$this->timeout = 500;
-		}else{
+		} else {
 			$this->timeout = $timeout;
 		}
 
@@ -577,7 +577,7 @@ class Net_Ping
 				   due to backward compatibility issues */
 				$snmp_result = true;
 				$this->snmp_status = 0.000;
-			}else{
+			} else {
 				$snmp_result = $this->ping_snmp();
 			}
 		}
@@ -587,26 +587,26 @@ class Net_Ping
 				if (($this->host['snmp_community'] == '') && ($this->host['snmp_version'] != 3)) {
 					if ($ping_result) {
 						return true;
-					}else{
+					} else {
 						return false;
 					}
-				}elseif ($snmp_result) {
+				} elseif ($snmp_result) {
 					return true;
-				}elseif ($ping_result) {
+				} elseif ($ping_result) {
 					return true;
-				}else{
+				} else {
 					return false;
 				}
 			case AVAIL_SNMP_AND_PING:
 				if (($this->host['snmp_community'] == '') && ($this->host['snmp_version'] != 3)) {
 					if ($ping_result) {
 						return true;
-					}else{
+					} else {
 						return false;
 					}
-				}elseif (($snmp_result) && ($ping_result)) {
+				} elseif (($snmp_result) && ($ping_result)) {
 					return true;
-				}else{
+				} else {
 					return false;
 				}
 			case AVAIL_SNMP:
@@ -614,13 +614,13 @@ class Net_Ping
 			case AVAIL_SNMP_GET_SYSDESC:
 				if ($snmp_result) {
 					return true;
-				}else{
+				} else {
 					return false;
 				}
 			case AVAIL_PING:
 				if ($ping_result) {
 					return true;
-				}else{
+				} else {
 					return false;
 				}
 			default:
@@ -633,12 +633,12 @@ class Net_Ping
 		if (function_exists('filter_var')) {
 			if (filter_var($ip_address, FILTER_VALIDATE_IP) !== false) {
 				return true;
-			}else{
+			} else {
 				return false;
 			}
-		}elseif (inet_pton($ip_address) !== false) {
+		} elseif (inet_pton($ip_address) !== false) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}

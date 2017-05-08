@@ -51,7 +51,7 @@ if (read_config_option('auth_method') != 0) {
 	if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = ?', array($_SESSION['sess_user_id']))) == 0) {
 		$show_console_tab = false;
 	}
-}else{
+} else {
 	$current_user = 0;
 }
 
@@ -106,6 +106,8 @@ $selectedTheme = get_selected_theme();
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.timepicker.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.colorpicker.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.widgets.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.pager.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.metadata.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.sparkline.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/Chart.js'></script>
@@ -133,7 +135,7 @@ $selectedTheme = get_selected_theme();
 	<?php if (get_current_page() == 'graph_view.php' && (get_nfilter_request_var('action') == 'tree' || (isset_request_var('view_type') && get_nfilter_request_var('view_type') == 'tree'))) { ?>
 	<div id='navigation' class='cactiTreeNavigationArea'><?php grow_dhtml_trees();?></div>
 	<div id='navigation_right' class='cactiGraphContentArea'>
-	<?php }else{ ?>
+	<?php } else { ?>
 	<div id='navigation_right' class='cactiGraphContentAreaPreview'>
 	<?php } ?>
 		<div class='messageContainer' id='message_container'><?php print display_output_messages();?></div>

@@ -37,7 +37,7 @@ function upgrade_to_1_0_5() {
 
 	if (!sizeof($duplicates)) {
 		db_install_execute('ALTER TABLE poller_reindex DROP PRIMARY KEY, ADD PRIMARY KEY (host_id, data_query_id)');
-	}else{
+	} else {
 		$nonhostzero = db_fetch_assoc('SELECT host_id, data_query_id, count(*) AS totals 
 			FROM poller_reindex 
 			GROUP BY host_id, data_query_id
@@ -59,7 +59,7 @@ function upgrade_to_1_0_5() {
 				AND poller_reindex.data_query_id=host_snmp_query.snmp_query_id
 				WHERE host_snmp_query.host_id IS NULL');
 			db_install_execute('ALTER TABLE poller_reindex DROP PRIMARY KEY, ADD PRIMARY KEY (host_id, data_query_id)');
-		}else{
+		} else {
 			cacti_log('WARNING: Unable to ajust poller_reindex table for UTF8mb4 Character Set.  Consider deleting host_id 0.', false, 'UPGRADE');
 		}
 	}

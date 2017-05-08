@@ -59,7 +59,7 @@ switch (get_request_var('action')) {
 
 		if (get_request_var('span') == 1) {
 			print get_span(get_request_var('rows') * $sampling_interval);
-		}else{
+		} else {
 			print get_span(get_request_var('rows') * get_request_var('span'));
 		}
 
@@ -159,13 +159,13 @@ function form_save() {
 				}
 
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		header('Location: data_source_profiles.php?header=false&action=edit&id=' . (empty($profile_id) ? get_request_var('id') : $profile_id));
-	}elseif (isset_request_var('save_component_rra')) {
+	} elseif (isset_request_var('save_component_rra')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('profile_id');
@@ -187,14 +187,14 @@ function form_save() {
 
 			if ($profile_rra_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		if (is_error_message()) {
 			header('Location: data_source_profiles.php?header=false&action=item_edit&profile_id=' . get_request_var('profile_id') . '&id=' . (empty($profile_rra_id) ? get_request_var('id') : $profile_rra_id));
-		}else{
+		} else {
 			header('Location: data_source_profiles.php?header=false&action=edit&id=' . get_request_var('profile_id'));
 		}
 	}
@@ -216,11 +216,11 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var('drp_action') == '1') { /* delete */
+			if (get_request_var('drp_action') == '1') { // delete
 				db_execute('DELETE FROM data_source_profiles WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM data_source_profiles_rra WHERE ' . array_to_sql_or($selected_items, 'data_source_profile_id'));
 				db_execute('DELETE FROM data_source_profiles_cf WHERE ' . array_to_sql_or($selected_items, 'data_source_profile_id'));
-			}elseif (get_request_var('drp_action') == '2') { /* duplicate */
+			} elseif (get_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_data_source_profile($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
@@ -255,7 +255,7 @@ function form_actions() {
 	html_start_box($profile_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 	if (isset($profile_array) && sizeof($profile_array)) {
-		if (get_request_var('drp_action') == '1') { /* delete */
+		if (get_request_var('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Data Source Profile', 'Click \'Continue\' to delete following Data Source Profiles', sizeof($profile_array)) . "</p>
@@ -264,7 +264,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', sizeof($profile_array)) . "'>";
-		}elseif (get_request_var('drp_action') == '2') { /* duplicate */
+		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile', 'Click \'Continue\' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles.', sizeof($profile_array)) . "</p>
@@ -275,7 +275,7 @@ function form_actions() {
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Duplicate Data Source Profile', 'Duplicate Date Source Profiles', sizeof($profile_array)) . "'>";
 		}
-	}else{
+	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Data Source Profile.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -372,17 +372,17 @@ function item_edit() {
 
 		if ($rra['steps'] == '1') {
 			$fields_profile_rra_edit['steps']['array'] = array('1' => __('Each Insert is New Row'));
-		}else{
+		} else {
 			unset($aggregation_levels[1]);
 			$fields_profile_rra_edit['steps']['array'] = $aggregation_levels;
 		}
 		$fields_profile_rra_edit['steps']['value'] = $rra['steps'] * $sampling_interval;
-	}else{
+	} else {
 		$oneguy = db_fetch_cell_prepared('SELECT id FROM data_source_profiles_rra WHERE data_source_profile_id = ? AND steps=1', array(get_request_var('profile_id')));
 
 		if (empty($oneguy)) {
 			$fields_profile_rra_edit['steps']['array'] = array('1' => __('Each Insert is New Row'));
-		}else{
+		} else {
 			unset($aggregation_levels[1]);
 			$fields_profile_rra_edit['steps']['array'] = $aggregation_levels;
 		}
@@ -390,7 +390,7 @@ function item_edit() {
 
 	form_start('data_source_profiles.php', 'form_rra');
 
-	html_start_box( __('RRA [edit: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')))) ), '100%', '', '3', 'center', '');
+	html_start_box( __('RRA [edit: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')))) ), '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -398,7 +398,7 @@ function item_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_hidden_box('profile_id', get_request_var('profile_id'), '');
 
@@ -427,13 +427,13 @@ function item_edit() {
 
 	function get_size() {
 		$.get('data_source_profiles.php?action=ajax_size&type=rra&id='+profile_id+'&rows='+$('#rows').val(), function(data) {
-			$('#size').html(data);
+			$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
 		});
 	}
 
 	function get_span() {
 		$.get('data_source_profiles.php?action=ajax_span&profile_id='+profile_id+'&span='+$('#steps').val()+'&rows='+$('#rows').val(), function(data) {
-			$('#timespan').html(data);
+			$('#row_timespan').find('.formColumnRight').empty().html('<em>'+data+'</em>');
 		});
 	}
 	</script>
@@ -458,14 +458,14 @@ function profile_edit() {
 			WHERE data_source_profile_id = ? AND local_data_id > 0', array(get_request_var('id')));
 
 		$header_label = __('Data Source Profile [edit: %s]', htmlspecialchars($profile['name']) . ($readonly ? ' (Read Only)':''));
-	}else{
+	} else {
 		$header_label = __('Data Source Profile [new]');
 		$readonly     = false;
 	}
 
 	form_start('data_source_profiles.php', 'profile');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -473,12 +473,12 @@ function profile_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
 		if (!$readonly) {
 			html_start_box( __('Data Source Profile RRAs (press save to update timespans)'), '100%', '', '3', 'center', 'data_source_profiles.php?action=item_edit&profile_id=' . $profile['id']);
-		}else{
+		} else {
 			html_start_box( __('Data Source Profile RRAs (Read Only)'), '100%', '', '3', 'center', '');
 		}
 
@@ -565,7 +565,7 @@ function profile_edit() {
 				});
 			});
 		}).css('cursor', 'pointer');
-		<?php }else{ ?>
+		<?php } else { ?>
 		$('#step').prop('disabled', true);
 		$('#x_files_factor').prop('disabled', true);
 		$('#heartbeat').prop('disabled', true);
@@ -577,7 +577,7 @@ function profile_edit() {
 	function get_size() {
 		checked = $('#consolidation_function_id').multiselect('getChecked').length;
 		$.get('data_source_profiles.php?action=ajax_size&type=profile&id='+profile_id+'&cfs='+checked, function(data) {
-			$('#size').html(data);
+			$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
 		});
 	}
 
@@ -600,7 +600,7 @@ function get_size($id, $type, $cfs = '') {
 		$rows = db_fetch_cell_prepared('SELECT SUM(rows) FROM data_source_profiles_rra WHERE data_source_profile_id = ?', array($id));
 
 		return number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000) . " KBytes per Data Source, and $header Bytes for the Header.";
-	}else{
+	} else {
 		$cfs  = db_fetch_cell_prepared('SELECT COUNT(*) FROM data_source_profiles_cf WHERE data_source_profile_id = ?', array($id));
 		$rows = get_filter_request_var('rows');
 
@@ -703,7 +703,7 @@ function profile() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -793,13 +793,13 @@ function profile() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
 	if (get_request_var('has_data') == 'true') {
 		$sql_having = 'HAVING data_sources>0';
-	}else{
+	} else {
 		$sql_having = '';
 	}
 
@@ -860,13 +860,13 @@ function profile() {
 		foreach ($profile_list as $profile) {
 			if ($profile['data_sources'] == 0 && $profile['templates'] == 0) {
 				$disabled = false;
-			}else{
+			} else {
 				$disabled = true;
 			}
 
 			if ($profile['data_sources']) {
 				$readonly = true;
-			}else{
+			} else {
 				$readonly = false;
 			}
 
@@ -882,7 +882,7 @@ function profile() {
 			form_checkbox_cell($profile['name'], $profile['id'], $disabled);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Data Source Profiles') . "</em></td></tr>\n";
 	}
 	html_end_box(false);

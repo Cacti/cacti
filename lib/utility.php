@@ -63,6 +63,16 @@ function repopulate_poller_cache() {
 		api_data_source_cache_crc_update($poller_id);
 	}
 	}
+
+	/* update the field mappings for the poller */
+	db_execute("TRUNCATE TABLE poller_data_template_field_mappings");
+	db_execute("INSERT IGNORE INTO poller_data_template_field_mappings
+		SELECT dtr.data_template_id, dif.data_name, GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_input_fields AS dif
+		ON dtr.data_input_field_id = dif.id
+		WHERE dtr.local_data_id=0
+		GROUP BY dtr.data_template_id, dif.data_name");
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id) {
@@ -140,7 +150,7 @@ function update_poller_cache($data_source, $commit = false) {
 			if (strlen($field['output_type'])) {
 				$output_type_sql = ' AND snmp_query_graph_rrd.snmp_query_graph_id = ?';
 				$params[] = $field['output_type'];
-			}else{
+			} else {
 				$output_type_sql = '';
 			}
 			$params[] = $data_input['data_template_id'];
@@ -166,7 +176,7 @@ function update_poller_cache($data_source, $commit = false) {
 				}else if (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
 					$action = POLLER_ACTION_SCRIPT;
 					$script_path = read_config_option('path_php_binary') . ' -q ' . get_full_script_path($data_source['id']);
-				}else{
+				} else {
 					$action = POLLER_ACTION_SCRIPT;
 					$script_path = get_full_script_path($data_source['id']);
 				}
@@ -181,7 +191,7 @@ function update_poller_cache($data_source, $commit = false) {
 				if ($num_output_fields == 1) {
 					$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_rrd WHERE local_data_id = ?', array($data_source['id']));
 					$data_source_item_name = get_data_source_item_name($data_template_rrd_id);
-				}else{
+				} else {
 					$data_source_item_name = '';
 				}
 
@@ -318,11 +328,11 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (sizeof($host_fields)) {
 					if (sizeof($data_template_fields)) {
-					foreach($data_template_fields as $key => $value) {
-						if (!isset($host_fields[$key])) {
-							$host_fields[$key] = $value;
+						foreach($data_template_fields as $key => $value) {
+							if (!isset($host_fields[$key])) {
+								$host_fields[$key] = $value;
+							}
 						}
-					}
 					}
 				} elseif (sizeof($data_template_fields)) {
 					$host_fields = $data_template_fields;
@@ -340,7 +350,7 @@ function update_poller_cache($data_source, $commit = false) {
 							}else if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
 								$action = POLLER_ACTION_SCRIPT;
 								$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index'], $script_queries['script_path'], $data_source['host_id']);
-							}else{
+							} else {
 								$action = POLLER_ACTION_SCRIPT;
 								$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . cacti_escapeshellarg($data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
 							}
@@ -351,7 +361,7 @@ function update_poller_cache($data_source, $commit = false) {
 						}
 					}
 				}
-			}else{
+			} else {
 				$arguments = array(
 					'poller_items' => $poller_items, 
 					'data_source'  => $data_source, 
@@ -368,7 +378,7 @@ function update_poller_cache($data_source, $commit = false) {
 				}
 			}
 		}
-	}else{
+	} else {
 		cacti_log('WARNING: Repopulate Poller Cache found Data Input Missing for Data Source ' . $data_source['id'] . '.  Database may be corrupted');
 	}
 
@@ -380,13 +390,14 @@ function update_poller_cache($data_source, $commit = false) {
 }
 
 function push_out_data_input_method($data_input_id) {
-	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM data_local
-		WHERE id IN (
+	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' data_local.*
+		FROM data_local
+		INNER JOIN (
 			SELECT DISTINCT local_data_id
 			FROM data_template_data
 			WHERE data_input_id = ?
-			AND local_data_id>0
-		)', array($data_input_id));
+			AND local_data_id > 0
+		) AS data_template_data ON data_template_data.local_data_id = data_local.id', array($data_input_id));
 
 	$poller_items = array();
 	$_my_local_data_ids = array();
@@ -456,30 +467,32 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 	$buffer       = '';
 
 	if (sizeof($poller_items)) {
-	foreach($poller_items AS $record) {
-		/* take care of invalid entries */
-		if (strlen($record) == 0) continue;
+		foreach($poller_items as $record) {
+			/* take care of invalid entries */
+			if (strlen($record) == 0) {
+				continue;
+			}
 
-		if ($buf_count == 0) {
-			$delim = ' ';
-		} else {
-			$delim = ', ';
+			if ($buf_count == 0) {
+				$delim = ' ';
+			} else {
+				$delim = ', ';
+			}
+
+			$buffer .= $delim . $record;
+
+			$buf_len += strlen($record);
+
+			if ($overhead + $buf_len > $max_packet - 1024) {
+				db_execute($sql_prefix . $buffer . $sql_suffix);
+
+				$buffer    = '';
+				$buf_len   = 0;
+				$buf_count = 0;
+			} else {
+				$buf_count++;
+			}
 		}
-
-		$buffer .= $delim . $record;
-
-		$buf_len += strlen($record);
-
-		if (($overhead + $buf_len) > ($max_packet - 1024)) {
-			db_execute($sql_prefix . $buffer . $sql_suffix);
-
-			$buffer    = '';
-			$buf_len   = 0;
-			$buf_count = 0;
-		} else {
-			$buf_count++;
-		}
-	}
 	}
 
 	if ($buf_count > 0) {
@@ -489,7 +502,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 	/* remove stale records FROM the poller cache */
 	if (sizeof($ids)) {
 		db_execute("DELETE FROM poller_item WHERE present=0 AND local_data_id IN ($ids)");
-	}else{
+	} else {
 		/* only handle explicitely given local_data_ids */
 	}
 }
@@ -538,54 +551,56 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 
 	/* loop through each matching data source */
 	if (sizeof($data_sources)) {
-	foreach ($data_sources as $data_source) {
-		/* set the host information */
-		if (!isset($hosts[$data_source['host_id']])) {
-			$hosts[$data_source['host_id']] = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($data_source['host_id']));
-		}
-		$host = $hosts[$data_source['host_id']];
+		foreach ($data_sources as $data_source) {
+			/* set the host information */
+			if (!isset($hosts[$data_source['host_id']])) {
+				$hosts[$data_source['host_id']] = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($data_source['host_id']));
+			}
+			$host = $hosts[$data_source['host_id']];
 
-		/* get field information FROM the data template */
-		if (!isset($template_fields{$data_source['local_data_template_data_id']})) {
-			$template_fields{$data_source['local_data_template_data_id']} = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
-				did.value, did.t_value, dif.id, dif.type_code
-				FROM data_input_fields AS dif
-				LEFT JOIN data_input_data AS did
-				ON dif.id=did.data_input_field_id
-				WHERE dif.data_input_id = ?
-				AND did.data_template_data_id = ?
-				AND (did.t_value="" OR did.t_value is null)
-				AND dif.input_output="in"', 
-				array($data_source['data_input_id'], $data_source['local_data_template_data_id']));
-		}
+			/* get field information FROM the data template */
+			if (!isset($template_fields{$data_source['local_data_template_data_id']})) {
+				$template_fields{$data_source['local_data_template_data_id']} = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
+					did.value, did.t_value, dif.id, dif.type_code
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE dif.data_input_id = ?
+					AND did.data_template_data_id = ?
+					AND (did.t_value="" OR did.t_value is null)
+					AND dif.input_output="in"',
+					array($data_source['data_input_id'], $data_source['local_data_template_data_id']));
+			}
 
-		/* loop through each field contained in the data template and push out a host value if:
-		 - the field is a valid "host field"
-		 - the value of the field is empty
-		 - the field is set to 'templated' */
-		if (sizeof($template_fields{$data_source['local_data_template_data_id']})) {
-			foreach ($template_fields[$data_source['local_data_template_data_id']] as $template_field) {
-				if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code'])) && ($template_field['value'] == '') && ($template_field['t_value'] == '')) {
-					// handle special case type_code
-					if ($template_field['type_code'] == 'host_id') $template_field['type_code'] = 'id';
+			/* loop through each field contained in the data template and push out a host value if:
+			 - the field is a valid "host field"
+			 - the value of the field is empty
+			 - the field is set to 'templated' */
+			if (sizeof($template_fields{$data_source['local_data_template_data_id']})) {
+				foreach ($template_fields[$data_source['local_data_template_data_id']] as $template_field) {
+					if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['value'] == '' && $template_field['t_value'] == '') {
+						// handle special case type_code
+						if ($template_field['type_code'] == 'host_id') {
+							$template_field['type_code'] = 'id';
+						}
 
-					db_execute_prepared('REPLACE INTO data_input_data 
-						(data_input_field_id, data_template_data_id, value) 
-						VALUES (?, ?, ?)',
-						array($template_field['id'], $data_source['id'], $host[$template_field['type_code']]));
+						db_execute_prepared('REPLACE INTO data_input_data 
+							(data_input_field_id, data_template_data_id, value) 
+							VALUES (?, ?, ?)',
+							array($template_field['id'], $data_source['id'], $host[$template_field['type_code']]));
+					}
 				}
 			}
+
+			/* flag an update to the poller cache as well */
+			$local_data_ids[] = $data_source['local_data_id'];
+
+			/* create a new compatible structure */
+			$data = $data_source;
+			$data['id'] = $data['local_data_id'];
+
+			$poller_items = array_merge($poller_items, update_poller_cache($data));
 		}
-
-		/* flag an update to the poller cache as well */
-		$local_data_ids[] = $data_source['local_data_id'];
-
-		/* create a new compatible structure */
-		$data = $data_source;
-		$data['id'] = $data['local_data_id'];
-
-		$poller_items = array_merge($poller_items, update_poller_cache($data));
-	}
 	}
 
 	if (sizeof($local_data_ids)) {
@@ -609,10 +624,10 @@ function utilities_get_mysql_recommendations() {
 
 		if (isset($variables['innodb_version'])) {
 			$link_ver = substr($variables['innodb_version'], 0, 3);
-		}else{
+		} else {
 			$link_ver = '5.5';
 		}
-	}else{
+	} else {
 		$database = 'MySQL';
 		$version  = $variables['version'];
 		$link_ver = substr($variables['version'], 0, 3);
@@ -666,7 +681,7 @@ function utilities_get_mysql_recommendations() {
 					on converting your databases and tables if you plan on supporting other languages.')
 				)
 		);
-	}else{
+	} else {
 		if (version_compare($link_ver, '5.2', '>=')) {
 			if (!isset($variables['innodb_version'])) {
 				$recommendations += array(
@@ -799,7 +814,7 @@ function utilities_get_mysql_recommendations() {
 					applications with high io characteristics.')
 				)
 		);
-	}else{
+	} else {
 		$recommendations += array(
 			'innodb_flush_log_at_timeout' => array(
 				'value'   => '3',
@@ -853,7 +868,7 @@ function utilities_get_mysql_recommendations() {
 				if ($variables[$name] < $value) {
 					if (isset($r['class']) && $r['class'] == 'warning') {
 						$class = 'textWarning';
-					}else{
+					} else {
 						$class = 'textError';
 					}
 				}
@@ -868,7 +883,7 @@ function utilities_get_mysql_recommendations() {
 				if (version_compare($variables[$name], $r['value'], '<')) {
 					if (isset($r['class']) && $r['class'] == 'warning') {
 						$class = 'textWarning';
-					}else{
+					} else {
 						$class = 'textError';
 					}
 				}
@@ -883,7 +898,7 @@ function utilities_get_mysql_recommendations() {
 				if (!isset($variables[$name]) || $variables[$name] != $r['value']) {
 					if (isset($r['class']) && $r['class'] == 'warning') {
 						$class = 'textWarning';
-					}else{
+					} else {
 						$class = 'textError';
 					}
 				}
@@ -897,16 +912,16 @@ function utilities_get_mysql_recommendations() {
 			case 'pmem':
 				if (isset($memInfo['MemTotal'])) {
 					$totalMem = $memInfo['MemTotal'];
-				}elseif (isset($memInfo['TotalVisibleMemorySize'])) {
+				} elseif (isset($memInfo['TotalVisibleMemorySize'])) {
 					$totalMem = $memInfo['TotalVisibleMemorySize'];
-				}else{
+				} else {
 					break;
 				}
 
 				if ($variables[$name] < ($r['value']*$totalMem/100)) {
 					if (isset($r['class']) && $r['class'] == 'warning') {
 						$class = 'textWarning';
-					}else{
+					} else {
 						$class = 'textError';
 					}
 				}
@@ -969,13 +984,13 @@ function memory_bytes($val) {
 function memory_readable($val) {
 	if ($val < 1024) {
 		$val_label = 'bytes';
-	}elseif ($val < 1048576) {
+	} elseif ($val < 1048576) {
 		$val_label = 'K';
 		$val /= 1024;
-	}elseif ($val < 1073741824) {
+	} elseif ($val < 1073741824) {
 		$val_label = 'M';
 		$val /= 1048576;
-	}else{
+	} else {
 		$val_label = 'G';
 		$val /= 1073741824;
 	}
@@ -1000,15 +1015,15 @@ function utilities_get_system_memory() {
 				$memInfo[$key] = $values[1];
 			}
 		}
-	}else{
+	} else {
 		$file = '';
 		if (file_exists('/proc/meminfo')) {
 			$file = '/proc/meminfo';
-		}elseif(file_exists('/linux/proc/meminfo')) {
+		} elseif(file_exists('/linux/proc/meminfo')) {
 			$file = '/linux/proc/meminfo';
-		}elseif(file_exists('/compat/linux/proc/meminfo')) {
+		} elseif(file_exists('/compat/linux/proc/meminfo')) {
 			$file = '/compat/linux/proc/meminfo';
-		}elseif(file_exists('/usr/compat/linux/proc/meminfo')) {
+		} elseif(file_exists('/usr/compat/linux/proc/meminfo')) {
 			$file = '/usr/compat/linux/proc/meminfo';
 		}
 
@@ -1021,7 +1036,7 @@ function utilities_get_system_memory() {
 					$memInfo[$key] = round($val * 1000,0);
 				}
 			}
-		}elseif (file_exists('/usr/bin/free')) {
+		} elseif (file_exists('/usr/bin/free')) {
 			$menInfo   = array();
 			$output    = array();
 			$exit_code = 0;

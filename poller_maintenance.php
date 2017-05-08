@@ -126,7 +126,7 @@ if ($config['poller_id'] == 1) {
 	/* removing security tokens older than 90 days */
 	if (read_config_option('auth_cache_enabled') == 'on') {
 		db_execute_prepared('DELETE FROM user_auth_cache WHERE last_update < ?', array(date('Y-m-d H:i:s', time()-(86400*90))));
-	}else{
+	} else {
 		db_execute('TRUNCATE TABLE user_auth_cache');
 	}
 
@@ -398,7 +398,7 @@ function rrdclean_create_path($path) {
 				@chown($path, $owner_id);
 				@chgrp($path, $group_id);
 			}
-		}else{
+		} else {
 			cacti_log("ERROR: RRDfile Maintenance unable to create directory '" . $path . "'", false, 'MAINT');
 		}
 	}

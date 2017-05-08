@@ -30,7 +30,7 @@ if ($script == 'graph_view.php' || $script == 'graph.php') {
 		$refreshIsLogout = 'true';
 	}else if (isset_request_var('action') && get_nfilter_request_var('action') == 'zoom') {
 		$refreshIsLogout = 'true';
-	}else{
+	} else {
 		$refresh = api_plugin_hook_function('top_graph_refresh', read_user_setting('page_refresh'));
 		$refreshIsLogout = 'false';
 	}
@@ -38,7 +38,7 @@ if ($script == 'graph_view.php' || $script == 'graph.php') {
 	$refresh = api_plugin_hook_function('top_graph_refresh', $refresh);
 	if (empty($refresh)) {
 		$refreshIsLogout = 'true';
-	}else{
+	} else {
 		$refreshIsLogout = 'false';
 	}
 }
@@ -46,28 +46,28 @@ if ($script == 'graph_view.php' || $script == 'graph.php') {
 if (isset($_SESSION['refresh'])) {
 	if (isset($_SESSION['refresh']['seconds'])) {
 		$myrefresh['seconds'] = $_SESSION['refresh']['seconds'];
-	}else{
+	} else {
 		$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
 	}
 
     if (isset($_SESSION['refresh']['logout'])) {
         $refreshIsLogout = $_SESSION['refresh']['logout'];
-    }else{
+    } else {
 		$refreshIsLogout = 'true';
 	}
 
     if (isset($_SESSION['refresh']['page'])) {
         $myrefresh['page'] = $_SESSION['refresh']['page'];
-    }else{
+    } else {
 		$myrefresh['page'] = $config['url_path'] . 'logout.php?action=timeout';
 	}
 
 	unset($_SESSION['refresh']);
-}elseif (isset($refresh) && is_array($refresh)) {
+} elseif (isset($refresh) && is_array($refresh)) {
 	$refreshIsLogout = 'false';
 	$myrefresh['seconds'] = $refresh['seconds'];
 	$myrefresh['page']    = (strpos($refresh['page'], '?') ? '&':'?') . 'header=false';
-}elseif (isset($refresh)) {
+} elseif (isset($refresh)) {
 	$refreshIsLogout = 'false';
 	$myrefresh['seconds'] = $refresh;
 	$myrefresh['page']    = $_SERVER['REQUEST_URI'] . (strpos($_SERVER['REQUEST_URI'], '?') ? '&':'?') . 'header=false';;
@@ -75,7 +75,7 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = 'index.php';
 	$refreshIsLogout = 'false';
-}else{
+} else {
 	$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
 	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
 	$refreshIsLogout = 'true';

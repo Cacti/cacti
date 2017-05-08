@@ -1,5 +1,20 @@
 /* main styles */
 
+::-webkit-scrollbar {
+    width: 8px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(22,22,6,0.7); 
+    border-radius: 6px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+	background: rgba(49,68,43,0.8); 
+    -webkit-box-shadow: inset 0 0 4px rgba(49,68,43,0.5); 
+}
+
 html, body {
 	height: 100%;
 	width: 100%;
@@ -14,6 +29,15 @@ body, table, tr, td, textarea {
 	color: #000000;
 }
 
+textarea {
+	padding: 5px;
+	width: 400px;
+	height: 100px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 body {
 	background-color: snow;
 	background-repeat: repeat-y;
@@ -26,13 +50,23 @@ table {
 }
 
 td, th {
-	padding: 2px;
+	padding: 0px;
 	margin: 0px;
 }
 
 img {
 	border:none;
 	vertical-align:middle;
+}
+
+fieldset {
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.reindex_methods span {
+	font-size: 9px;
 }
 
 /* links */
@@ -62,8 +96,20 @@ th i.fa {
 	z-index: 3;
 }
 
-input, select {
-	padding: 0.4em 0.4em 0.4em 0.4em;
+input {
+	padding: 0.4em;
+	font-size: 12px;
+	max-width: 400px;
+}
+
+#host_id_wrap {
+	line-height: 25px;
+	padding-left: 4px;
+}
+
+select {
+	padding: 0.5em 0.5em 0.5em 0.5em;
+	font-size: 12px;
 }
 
 *:focus {
@@ -74,15 +120,6 @@ label {
 	white-space:nowrap;
 }
 
-fieldset {
-	border: none;
-	padding: 0px;
-	margin: 0px;
-}
-
-.reindex_methods span {
-	font-size: 9px;
-}
 
 .nowrap {
 	white-space:nowrap;
@@ -102,6 +139,8 @@ fieldset {
 
 .center {
 	text-align:center !important;
+	margin-left:auto;
+	margin-right:auto;
 }
 
 .usermenudown {
@@ -170,6 +209,10 @@ fieldset {
 }
 
 .running {
+	color:orange;
+}
+
+.errored {
 	color:red;
 }
 
@@ -466,6 +509,10 @@ fieldset {
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
+.odd td, .even td, .even-alternate td {
+	padding: 2px;
+}
+
 .even {
 	background: none repeat scroll 0 0 #E5E5E5;
     border: none;
@@ -708,6 +755,7 @@ ul#breadcrumbs {
 }
 
 .cactiContent {
+	clear: both;
 	width: 100%;
 	vertical-align: top;
 	padding-top: 56px;
@@ -918,6 +966,10 @@ legend {
 	width:100%;
 }
 
+.treeArea {
+	vertical-align: top;
+}
+
 .cactiGraphContentArea {
 	background: snow url('./../../../images/shadow.gif') repeat-x center top;
 	padding-top: 10px;
@@ -1080,7 +1132,6 @@ legend {
 	background: -o-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
 	background: -ms-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
 	background: linear-gradient(to bottom, rgba(76,76,76,1) 0%, rgba(89,89,89,1) 12%, rgba(102,102,102,1) 25%, rgba(71,71,71,1) 39%, rgba(44,44,44,1) 50%, rgba(0,0,0,1) 51%, rgba(17,17,17,1) 60%, rgba(43,43,43,1) 76%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313', GradientType=0 );
 }
 
 .templateHeader td {
@@ -1091,10 +1142,12 @@ legend {
 	font-size: 11px;
 	color: snow;
 	font-weight: normal;
-	padding: 2px;
+	padding: 0px;
+	white-space: nowrap;
 }
 
 .cactiTable {
+	display: table;
 	width: 100%;
 	margin-left:auto; 
 	margin-right:auto;
@@ -1153,6 +1206,8 @@ legend {
 
 .cactiTableButton span, .cactiTableTitle span {
 	padding: 0px 5px 0px 5px;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .cactiTableButton span a {
@@ -1169,13 +1224,171 @@ legend {
 
 .filterTable td:first-child {
 	width:55px;
+	min-width:55px;
 }
 
-.formItemDescription {
+.filterTable td {
+	padding: 2px;
 }
 
-.formItemName {
-	font-weight:normal;
+.formRow {
+	display: table;
+	width: 100%;
+	line-height: 30px;
+}
+
+.formColumn {
+	float: left;
+	display: table-column;
+	text-align: left;
+}
+
+.formColumnLeft {
+	float: left;
+	display: table-column;
+	width: 49%;
+	text-align: left;
+	padding-left: 3px;
+}
+
+.formColumnRight {
+	float: left;
+	display: table-column;
+	width: 50%;
+	text-align: left;
+}
+
+.formData {
+	display: inline-block;
+	float: left;
+	text-align: left;
+}
+
+.formRadio {
+	line-height: 22px;
+}
+
+.formSubCheckbox {
+	line-height: 20px;
+	float: left;
+}
+
+.formSubCheckbox input {
+	margin: 0px;
+	vertical-align: -10%;
+}
+
+.formSubCheckbox label {
+}
+
+.formCheckboxLabel {
+	color: #444;
+}
+
+.formCheckbox {
+	vertical-align: -15%;
+}
+
+.formFieldName {
+	display: inline-block;
+	color: #444;
+	float: left;
+	text-align: left;
+	font-weight: bold;
+	vertical-align: top;
+	padding-left: 0px;
+}
+
+.formFieldDescription {
+	float: left;
+	text-align: left;
+	font-weight: normal;
+	line-height: 14px;
+}
+
+.formTooltip {
+	display: inline-block;
+	padding-left: 4px;
+}
+
+.formHeader {
+	float: left;
+	width: 100%;
+	text-align: left;
+	line-height: 20px;
+	background: rgba(138,179,105,1);
+	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+}
+
+.formHeaderText {
+	padding-left: 3px;
+}
+
+.formHeaderAnchor {
+	float:right;
+	padding-right:4px;
+}
+
+.hostInfoHeader {
+	width: 100%;
+}
+
+.queryAdd, .templateAdd {
+	padding: 3px;
+}
+
+@media screen and (max-width: 640px) {
+	.formRow {
+		display: table;
+		width: 100%;
+		line-height: 35px;
+	}
+
+	.formColumn {
+		float: left;
+		display: table-row;
+	}
+
+	.formColumnLeft {
+		float: left;
+		display: table-row;
+		width: 100%;
+		text-align: left;
+	}
+
+	.formColumnRight {
+		float: left;
+		display: table-row;
+		width: 100%;
+		text-align: left;
+	}
+
+	.formFieldName {
+		color: #444;
+		float: left;
+		text-align: left;
+		white-space: nowrap;
+		padding-left: 3px;
+	}
+
+	.formData {
+		float: left;
+	}
+
+	.hostInfoHeader {
+		overflow: hidden;
+	}
+
+	.queryAdd, .templateAdd, .navBar, #ping_results {
+		display: none;
+	}
+
+	.ui-button-text-only .ui-button-text {
+		padding: 0.4em;
+	}
 }
 
 .graphItem {
@@ -1187,7 +1400,7 @@ legend {
 }
 
 .break {
-	height:8px;
+	height:4px;
 }
 
 .next {
@@ -1215,6 +1428,7 @@ legend {
 }
 
 .tableHeader {
+	display: table-row;
 	background: rgba(138,179,105,1);
 	background: -moz-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
@@ -1244,6 +1458,7 @@ th.secondarySort {
 	text-align:left;
 	font-size: 11px;
 	font-weight:normal;
+	padding: 2px;
 }
 
 .tableHeader th div {
@@ -1256,8 +1471,8 @@ th.secondarySort {
 	color: snow;
 	vertical-align: middle;
 	text-align: left;
+	cursor:pointer;
 	padding: 3px;
-	cursor: pointer;
 }
 
 .graphSubHeaderColumn {
@@ -1278,7 +1493,7 @@ th.secondarySort {
 	background: linear-gradient(to bottom, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 }
 
-.formRow {
+.tableRow {
 	line-height: 20px;
 }
 
@@ -1302,9 +1517,8 @@ th.secondarySort {
 	color: white;
 	width: 100%;
 	text-align:center;
-	display:inline-block;
-	margin-bottom: -3px;
-	height: 22px;
+	vertical-align: middle;
+	display: table;
 	background: rgba(98,125,77,1);
 	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
@@ -1320,41 +1534,32 @@ th.secondarySort {
 
 .navBarNavigationPrevious {
 	text-align: left;
-	cursor: pointer;
-	font-weight: bold;
-	float: left;
 	white-space: nowrap;
 	display: block;
 	width: 10%;
-	padding: 2px 0px;
 	height: 20px;
 	vertical-align: middle;
 }
 
 .navBarNavigationCenter {
 	text-align: center;
-	display: block;
-	float: left;
+	display: table-cell;
 	white-space: nowrap;
 	width:80%;
-	padding: 2px 0px;
 	height: 20px;
 	margin-top: auto;
 }
 
 .navBarNavigationCenter span {
 	vertical-align: middle;
+	display: table-cell;
 }
 
 .navBarNavigationNext {
 	text-align:right;
-	cursor:pointer;
-	font-weight: bold;
-	float: right;
 	white-space: nowrap;
-	display: block;
+	display: table-cell;
 	width: 10%;
-	padding: 2px 0px;
 	height: 20px;
 	vertical-align: middle;
 
@@ -1362,11 +1567,9 @@ th.secondarySort {
 
 .navBarNavigationNone {
 	text-align: center;
-	display: block;
-	float: left;
+	display: table-cell;
 	white-space: nowrap;
 	width:100%;
-	padding: 2px 0px;
 	height: 20px;
 	margin-top: auto;
 }
@@ -1541,6 +1744,7 @@ div#tabs {
 	left: 5px;
 	top: 5px;
 	height: 30px;
+	width: 70%;
 }
 
 td#tabs {
@@ -1565,6 +1769,11 @@ div#gtabs {
 	right: 5px;
 	top: 5px;
 	height: 30px;
+}
+
+.maintabs {
+	overflow: hidden;
+	height: 25px;
 }
 
 .tabs a, .maintabs a {
@@ -1765,6 +1974,10 @@ ul#nav {
 	background-color: #EACC00;
 }
 
+.clogStats td, .clogDebug td, .clogSQL td, .clogWarning td, .clogError td, .clogLimit td {
+	padding: 3px;
+}
+
 @media print {
 	.noprint { display:none }
 }
@@ -1790,6 +2003,7 @@ ul#nav {
 	border: transparent;
 }
 
+
 div.preformatted {
 	font-family: monospace;
 	white-space: pre;
@@ -1797,8 +2011,8 @@ div.preformatted {
 
 ul.pagination {
 	display: inline-block;
-	padding: 0;
-	margin: 0;
+	padding: 1px;
+	margin: 2px;
 	vertical-align:middle;
 }
 
@@ -1812,6 +2026,7 @@ ul.pagination li a {
 	padding: 0px 2px 2px 2px;
 	text-decoration: none;
 	margin: 0px 1px;
+	vertical-align: -40%;
 }
 
 ul.pagination li span {

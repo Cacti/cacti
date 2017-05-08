@@ -70,7 +70,7 @@ if (read_config_option('hide_console') != '1') {
 			</ul>
 		</td>
 		<td class="textAreaNotes top right">
-			<strong><?php print __('Version %s', $config['cacti_version']);?></strong>
+			<strong><?php print __('Version %s', CACTI_VERSION);?></strong>
 		</td>
 	</tr>
 	<?php if ($config['poller_id'] > 1) {?>

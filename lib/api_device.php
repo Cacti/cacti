@@ -64,7 +64,7 @@ function api_device_remove_multi($device_ids) {
 		foreach($device_ids as $device_id) {
 			if ($i == 0) {
 				$devices_to_delete .= $device_id;
-			}else{
+			} else {
 				$devices_to_delete .= ', ' . $device_id;
 			}
 
@@ -178,7 +178,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	/* fetch some cache variables */
 	if (empty($id)) {
 		$_host_template_id = 0;
-	}else{
+	} else {
 		$_host_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', array($id));
 	}
 
@@ -261,7 +261,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 			/* update title cache for graph and data source */
 			update_data_source_title_cache_from_host($host_id);
 			update_graph_title_cache_from_host($host_id);
-		}else{
+		} else {
 			raise_message(2);
 		}
 
@@ -284,14 +284,14 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 							if ((chown($host_dir, $owner_id)) &&
 								(chgrp($host_dir, $group_id))) {
 								/* permissions set ok */
-							}else{
+							} else {
 								cacti_log("ERROR: Unable to set directory permissions for '" . $host_dir . "'", FALSE);
 							}
 						}
-					}else{
+					} else {
 						cacti_log("ERROR: Unable to create directory '" . $host_dir . "'", FALSE);
 					}
-				}else{
+				} else {
 					cacti_log("ERROR: Unable to create directory due to missing write permissions '" . $host_dir . "'", FALSE);
 				}
 			}
@@ -357,7 +357,7 @@ function api_device_update_host_template($host_id, $host_template_id) {
 function api_device_template_sync_template($device_template, $down_devices = false) {
 	if ($down_devices == true) {
 		$status_where = '';
-	}else{
+	} else {
 		$status_where = ' AND status IN(3,2)';
 	}
 
@@ -397,7 +397,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 	if ($host['disabled'] == 'on') {
 		print __('Device is Disabled') . '<br>';
 		print __('Device Availability Check Bypassed') . '<br>';
-	}elseif ($am == AVAIL_SNMP || $am == AVAIL_SNMP_GET_NEXT ||
+	} elseif ($am == AVAIL_SNMP || $am == AVAIL_SNMP_GET_NEXT ||
 		$am == AVAIL_SNMP_GET_SYSDESC || $am == AVAIL_SNMP_AND_PING ||
 		$am == AVAIL_SNMP_OR_PING) {
 
@@ -408,7 +408,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 
 		if (($host['snmp_community'] == '' && $host['snmp_username'] == '') || $host['snmp_version'] == 0) {
 			print "<span style='color: #ab3f1e; font-weight: bold;'>" . __('SNMP not in use') . "</span>\n";
-		}else{
+		} else {
 			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
  				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
  				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
@@ -416,7 +416,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 
 			if ($session === false) {
 				print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
-			}else{
+			} else {
 				$snmp_system = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0');
 				if ($snmp_system === false || $snmp_system == 'U') {
 					print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
@@ -432,7 +432,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 
 				if ($snmp_system == '') {
 					print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
-				}else{
+				} else {
 					$snmp_uptime     = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
 					$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
 					$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
@@ -472,7 +472,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 		if ($ping_results == true) {
 			$host_down = false;
 			$class     = 'hostUp';
-		}else{
+		} else {
 			$host_down = true;
 			$class     = 'hostDown';
 		}

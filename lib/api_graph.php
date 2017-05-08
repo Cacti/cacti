@@ -45,7 +45,7 @@ function api_graph_remove_multi($local_graph_ids) {
 		foreach($local_graph_ids as $local_graph_id) {
 			if ($i == 0) {
 				$ids_to_delete .= $local_graph_id;
-			}else{
+			} else {
 				$ids_to_delete .= ', ' . $local_graph_id;
 			}
 
@@ -189,17 +189,34 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 		$local_graph_id = sql_save($save, 'graph_local');
 
 		$graph_template_graph['title'] = str_replace('<graph_title>', $graph_template_graph['title'], $graph_title);
-	}elseif (!empty($_graph_template_id)) {
-		$graph_template        = db_fetch_row_prepared('SELECT * FROM graph_templates WHERE id = ?', array($_graph_template_id));
-		$graph_template_graph  = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE graph_template_id = ? AND local_graph_id=0', array($_graph_template_id));
+	} elseif (!empty($_graph_template_id)) {
+		$graph_template        = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates 
+			WHERE id = ?', 
+			array($_graph_template_id));
 
-		$graph_template_items  = db_fetch_assoc_prepared('SELECT * FROM graph_templates_item WHERE graph_template_id = ? AND local_graph_id=0', array($_graph_template_id));
-		$graph_template_inputs = db_fetch_assoc_prepared('SELECT * FROM graph_template_input WHERE graph_template_id = ?', array($_graph_template_id));
+		$graph_template_graph  = db_fetch_row_prepared('SELECT * 
+			FROM graph_templates_graph 
+			WHERE graph_template_id = ? 
+			AND local_graph_id=0', 
+			array($_graph_template_id));
+
+		$graph_template_items  = db_fetch_assoc_prepared('SELECT * 
+			FROM graph_templates_item 
+			WHERE graph_template_id = ? 
+			AND local_graph_id=0', 
+			array($_graph_template_id));
+
+		$graph_template_inputs = db_fetch_assoc_prepared('SELECT * 
+			FROM graph_template_input 
+			WHERE graph_template_id = ?', 
+			array($_graph_template_id));
 
 		/* create new entry: graph_templates */
-		$save['id']   = 0;
-		$save['hash'] = get_hash_graph_template(0);
-		$save['name'] = str_replace('<template_title>', $graph_template['name'], $graph_title);
+		$save['id']       = 0;
+		$save['hash']     = get_hash_graph_template(0);
+		$save['name']     = str_replace('<template_title>', $graph_template['name'], $graph_title);
+		$save['multiple'] = $graph_template['multiple'];
 
 		$graph_template_id = sql_save($save, 'graph_templates');
 	}

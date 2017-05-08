@@ -107,7 +107,7 @@ function form_save() {
 					'text_format' => 'Max:',
 					'hard_return' => 'on'
 					));
-		}elseif ($graph_item_types[get_nfilter_request_var('graph_type_id')] == 'LEGEND_CAMM') {
+		} elseif ($graph_item_types[get_nfilter_request_var('graph_type_id')] == 'LEGEND_CAMM') {
 	         /* this can be a major time saver when creating lots of graphs with the typical
 				GPRINT LAST/AVERAGE/MAX legends */
 			$items = array(
@@ -183,7 +183,7 @@ function form_save() {
    			}
 
 			$save['dashes']         = form_input_validate((isset_request_var('dashes') ? get_nfilter_request_var('dashes') : ''), 'dashes', '', true, 3);
-            $save['dash_offset']    = form_input_validate((isset_request_var('dash_offset') ? get_nfilter_request_var('dash_offset') : ''), 'dash_offset', '^[0-9]+$', true, 3);
+			$save['dash_offset']    = form_input_validate((isset_request_var('dash_offset') ? get_nfilter_request_var('dash_offset') : ''), 'dash_offset', '^[0-9]+$', true, 3);
 			$save['cdef_id']        = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
 			$save['vdef_id']        = form_input_validate(get_nfilter_request_var('vdef_id'), 'vdef_id', '^[0-9]+$', true, 3);
 			$save['shift']          = form_input_validate((isset_request_var('shift') ? get_nfilter_request_var('shift') : ''), 'shift', '^((on)|)$', true, 3);
@@ -200,7 +200,7 @@ function form_save() {
 
 				if ($graph_template_item_id) {
 					raise_message(1);
-				}else{
+				} else {
 					raise_message(2);
 				}
 			}
@@ -211,7 +211,7 @@ function form_save() {
 		if (is_error_message()) {
 			header('Location: graphs.php?header=false&action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_nfilter_request_var('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_nfilter_request_var('local_graph_id'));
 			exit;
-		}else{
+		} else {
 			header('Location: graphs.php?header=false&action=graph_edit&id=' . get_nfilter_request_var('local_graph_id'));
 			exit;
 		}
@@ -235,7 +235,7 @@ function item_movedown() {
 
 	if ((!empty($next_id)) && (isset($arr{get_request_var('id')}))) {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'next');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		move_item_down('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
 	}
 }
@@ -253,7 +253,7 @@ function item_moveup() {
 
 	if ((!empty($previous_id)) && (isset($arr{get_request_var('id')}))) {
 		move_graph_group(get_request_var('id'), $arr, $previous_id, 'previous');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		move_item_up('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
 	}
 }
@@ -288,7 +288,7 @@ function item_edit() {
 
 	if (empty($host['hostname'])) {
 		$header = __('Data Sources [No Device]');
-	}else{
+	} else {
 		$header = __('Data Sources [%s]', $host['hostname']);
 	}
 
@@ -350,17 +350,17 @@ function item_edit() {
 
 	if (get_request_var('host_id') > 0) {
 		$sql_where = 'h.id=' . get_request_var('host_id');
-	}elseif (get_request_var('host_id') == 0) {
+	} elseif (get_request_var('host_id') == 0) {
 		$sql_where = 'h.id IS NULL';
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
 	if (get_request_var('data_template_id') == '-1') {
 		$sql_where .= '';
-	}elseif (get_request_var('data_template_id') == '0') {
+	} elseif (get_request_var('data_template_id') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'dl.data_template_id=0';
-	}elseif (!isempty_request_var('data_template_id')) {
+	} elseif (!isempty_request_var('data_template_id')) {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'dl.data_template_id=' . get_request_var('data_template_id');
 	}
 
@@ -378,7 +378,7 @@ function item_edit() {
 
 	form_start('graphs_items.php', 'greph_edit');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	if (!isempty_request_var('local_graph_id')) {
@@ -389,7 +389,7 @@ function item_edit() {
 
 		if (sizeof($default) > 0) {
 			$struct_graph_item['task_item_id']['default'] = $default['task_item_id'];
-		}else{
+		} else {
 			$struct_graph_item['task_item_id']['default'] = 0;
 		}
 
@@ -440,7 +440,7 @@ function item_edit() {
 	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
 	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
 
@@ -451,7 +451,7 @@ function item_edit() {
 		$('#shift').click(function(data) {
 			if ($('#shift').is(':checked')) {
 				$('#row_value').show();
-			}else{
+			} else {
 				$('#row_value').hide();
 			}
 		});

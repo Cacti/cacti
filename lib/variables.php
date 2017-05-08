@@ -119,8 +119,6 @@ function update_graph_title_cache($local_graph_id) {
    @arg $string - the string to clean out unsubstituted variables for
    @returns - the cleaned up string */
 function null_out_substitutions($string) {
-	global $regexps;
-
 	return preg_replace("/\|host_" . VALID_HOST_FIELDS . "\|( - )?/i", '', $string);
 }
 
@@ -135,10 +133,10 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	if ((strstr($title, '|')) && (!empty($host_id))) {
 		if (($snmp_query_id != '0') && ($snmp_index != '')) {
 			return substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, '|', '|', $host_id)), $host_id, $snmp_query_id, $snmp_index, read_config_option('max_data_query_field_length'));
-		}else{
+		} else {
 			return null_out_substitutions(substitute_host_data($title, '|', '|', $host_id));
 		}
-	}else{
+	} else {
 		return null_out_substitutions($title);
 	}
 }
@@ -168,45 +166,82 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 			$_SESSION['sess_host_cache_array'][$host_id] = $host;
 		}
 
-		$string = str_replace($l_escape_string . 'host_management_ip' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['hostname'], $string); /* for compatability */
-		$string = str_replace($l_escape_string . 'host_hostname' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['hostname'], $string);
-		$string = str_replace($l_escape_string . 'host_description' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['description'], $string);
-		$string = str_replace($l_escape_string . 'host_notes' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['notes'], $string);
-		$string = str_replace($l_escape_string . 'host_polling_time' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['polling_time'], $string);
-		$string = str_replace($l_escape_string . 'host_avg_time' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['avg_time'], $string);
-		$string = str_replace($l_escape_string . 'host_cur_time' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['cur_time'], $string);
-		$string = str_replace($l_escape_string . 'host_availability' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['availability'], $string);
+		$search  = array();
+		$replace = array();
+
+		$search[]  = $l_escape_string . 'host_management_ip' . $r_escape_string; /* for compatibility */
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['hostname']; /* for compatibility */
+
+		$search[]  = $l_escape_string . 'host_hostname' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['hostname'];
+		$search[]  = $l_escape_string . 'host_description' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['description'];
+		$search[]  = $l_escape_string . 'host_notes' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['notes'];
+		$search[]  = $l_escape_string . 'host_polling_time' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['polling_time'];
+		$search[]  = $l_escape_string . 'host_avg_time' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['avg_time'];
+		$search[]  = $l_escape_string . 'host_cur_time' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['cur_time'];
+		$search[]  = $l_escape_string . 'host_availability' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['availability'];
 
 		/* snmp connectivity information */
-		$string = str_replace($l_escape_string . 'host_snmp_community' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_community'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_version' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_version'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_username' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_username'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_password' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_password'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_auth_protocol' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_auth_protocol'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_priv_passphrase' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_priv_passphrase'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_priv_protocol' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_priv_protocol'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_context' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_context'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_engine_id' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_engine_id'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_port' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_port'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_timeout' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_timeout'], $string);
+		$search[]  = $l_escape_string . 'host_snmp_community' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_community'];
+		$search[]  = $l_escape_string . 'host_snmp_version' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_version'];
+		$search[]  = $l_escape_string . 'host_snmp_username' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_username'];
+		$search[]  = $l_escape_string . 'host_snmp_password' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_password'];
+		$search[]  = $l_escape_string . 'host_snmp_auth_protocol' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_auth_protocol'];
+		$search[]  = $l_escape_string . 'host_snmp_priv_passphrase' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_priv_passphrase'];
+		$search[]  = $l_escape_string . 'host_snmp_priv_protocol' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_priv_protocol'];
+		$search[]  = $l_escape_string . 'host_snmp_context' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_context'];
+		$search[]  = $l_escape_string . 'host_snmp_engine_id' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_engine_id'];
+		$search[]  = $l_escape_string . 'host_snmp_port' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_port'];
+		$search[]  = $l_escape_string . 'host_snmp_timeout' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_timeout'];
 
 		/* snmp system information */
-		$string = str_replace($l_escape_string . 'host_snmp_sysDescr' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysDescr'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_sysObjectID' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysObjectID'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_sysContact' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysContact'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_sysLocation' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysLocation'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_sysName' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysName'], $string);
-		$string = str_replace($l_escape_string . 'host_snmp_sysUpTimeInstance' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysUpTimeInstance'], $string);
+		$search[]  = $l_escape_string . 'host_snmp_sysDescr' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysDescr'];
+		$search[]  = $l_escape_string . 'host_snmp_sysObjectID' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysObjectID'];
+		$search[]  = $l_escape_string . 'host_snmp_sysContact' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysContact'];
+		$search[]  = $l_escape_string . 'host_snmp_sysLocation' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysLocation'];
+		$search[]  = $l_escape_string . 'host_snmp_sysName' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysName'];
+		$search[]  = $l_escape_string . 'host_snmp_sysUpTimeInstance' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['snmp_sysUpTimeInstance'];
 
-		$string = str_replace($l_escape_string . 'host_ping_retries' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['ping_retries'], $string);
-		$string = str_replace($l_escape_string . 'host_max_oids' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['max_oids'], $string);
-		$string = str_replace($l_escape_string . 'host_id' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['id'], $string);
+		$search[]  = $l_escape_string . 'host_ping_retries' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['ping_retries'];
+		$search[]  = $l_escape_string . 'host_max_oids' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['max_oids'];
+		$search[]  = $l_escape_string . 'host_id' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['id'];
 
 		/* handle the external id */
-		$string = str_replace($l_escape_string . 'host_external_id' . $r_escape_string, $_SESSION['sess_host_cache_array'][$host_id]['external_id'], $string);
+		$search[]  = $l_escape_string . 'host_external_id' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['external_id'];
 
-		$temp = api_plugin_hook_function('substitute_host_data', 
-			array('string' => $string, 'l_escape_string' => $l_escape_string, 'r_escape_string' => $r_escape_string, 'host_id' => $host_id));
+		$string = str_replace($search, $replace, $string);
+
+		$temp = api_plugin_hook_function(
+			'substitute_host_data',
+			array('string' => $string, 'l_escape_string' => $l_escape_string, 'r_escape_string' => $r_escape_string, 'host_id' => $host_id)
+		);
 
 		$string = $temp['string'];
 	}
@@ -255,13 +290,13 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 
 			if (sizeof($local_data_ids)) {
 				$data_template_data_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_data WHERE local_data_id IN (' . implode(',', $local_data_ids) . ')');
-			}else{
+			} else {
 				$data_template_data_id = 0;
 			}
-		}else{
+		} else {
 			$data_template_data_id = 0;
 		}
-	}else{
+	} else {
 		$data_template_data_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
 	}
 

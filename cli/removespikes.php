@@ -39,7 +39,7 @@ chdir($dir);
 if (file_exists('../include/global.php')) {
 	include_once('../include/global.php');
 	$using_cacti = true;
-}else{
+} else {
 	$using_cacti = false;
 }
 
@@ -66,7 +66,7 @@ if ($using_cacti) {
 	$dpercent  = read_config_option('spikekill_percent', 500);
 	$doutliers = read_config_option('spikekill_outliers', 5);
 	$davgnan   = read_config_option('spikekill_avgnan', 'last');
-}else{
+} else {
 	$dmethod   = 1; // Standard Deviation
 	$dnumspike = 10;
 	$dstddev   = 10;
@@ -83,7 +83,7 @@ if (sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
-		}else{
+		} else {
 			$arg = $parameter;
 			$value = '';
 		}
@@ -121,13 +121,13 @@ if (sizeof($parms)) {
 			case '-M':
 				if ($value == 'variance') {
 					$method = 2;
-				}elseif ($value == 'stddev') {
+				} elseif ($value == 'stddev') {
 					$method = 1;
-				}elseif ($value == 'float') {
+				} elseif ($value == 'float') {
 					$method = 3;
-				}elseif ($value == 'fill') {
+				} elseif ($value == 'fill') {
 					$method = 4;
-				}else{
+				} else {
 					echo "FATAL: You must specify either 'stddev' or 'variance' as methods.\n\n";
 					display_help();
 					exit(-11);
@@ -140,11 +140,11 @@ if (sizeof($parms)) {
 
 				if ($value == 'avg') {
 					$avgnan = 'avg';
-				}elseif ($value == 'last') {
+				} elseif ($value == 'last') {
 					$avgnan = 'last';
-				}elseif ($value == 'nan') {
+				} elseif ($value == 'nan') {
 					$avgnan = 'nan';
-				}else{
+				} else {
 					echo "FATAL: You must specify either 'last', 'avg' or 'nan' as replacement methods.\n\n";
 					display_help();
 					exit(-10);
@@ -180,7 +180,7 @@ if (sizeof($parms)) {
 			case '--outlier-start':
 				if (!is_numeric($value)) {
 					$out_start = strtotime($value);
-				}else{
+				} else {
 					$out_start = $value;
 				}
 
@@ -194,7 +194,7 @@ if (sizeof($parms)) {
 			case '--outlier-end':
 				if (!is_numeric($value)) {
 					$out_end   = strtotime($value);
-				}else{
+				} else {
 					$out_end   = $value;
 				}
 
@@ -280,7 +280,7 @@ if (sizeof($parms)) {
 if (!isset($avgnan)) {
 	if (!isset($uavgnan)) {
 		$avgnan = $davgnan;
-	}else{
+	} else {
 		$avgnan = $uavgnan;
 	}
 }
@@ -288,7 +288,7 @@ if (!isset($avgnan)) {
 if (!isset($method)) {
 	if (!isset($umethod)) {
 		$method = $dmethod;
-	}else{
+	} else {
 		$method = $umethod;
 	}
 }
@@ -296,7 +296,7 @@ if (!isset($method)) {
 if (!isset($numspike)) {
 	if (!isset($unumspike)) {
 		$numspike = $dnumspike;
-	}else{
+	} else {
 		$numspike = $unumspike;
 	}
 }
@@ -304,7 +304,7 @@ if (!isset($numspike)) {
 if (!isset($stddev)) {
 	if (!isset($ustddev)) {
 		$stddev = $dstddev;
-	}else{
+	} else {
 		$stddev = $ustddev;
 	}
 }
@@ -312,7 +312,7 @@ if (!isset($stddev)) {
 if (!isset($percent)) {
 	if (!isset($upercent)) {
 		$percent = $dpercent;
-	}else{
+	} else {
 		$percent = $upercent;
 	}
 }
@@ -320,7 +320,7 @@ if (!isset($percent)) {
 if (!isset($outliers)) {
 	if (!isset($uoutliers)) {
 		$outliers = $doutliers;
-	}else{
+	} else {
 		$outliers = $uoutliers;
 	}
 }
@@ -362,14 +362,14 @@ if ($rrdfile == '') {
 if (!$using_cacti) {
 	if (substr_count(PHP_OS, 'WIN')) {
 		$response = shell_exec('rrdtool.exe');
-	}else{
+	} else {
 		$response = shell_exec('rrdtool');
 	}
 
 	if (strlen($response)) {
 		$response_array = explode(' ', $response);
 		echo 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . "\n";
-	}else{
+	} else {
 		echo "FATAL: RRDTool not found in path.  Please insure RRDTool can be found in your path!\n";
 		exit(-1);
 	}
@@ -382,16 +382,16 @@ if ($using_cacti) {
 		$tempdir  = getenv('TEMP');
 		$xmlfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
 		$bakfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
-	}else{
+	} else {
 		$tempdir = '/tmp';
 		$xmlfile = '/tmp/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
 		$bakfile = '/tmp/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
 	}
-}elseif (substr_count(PHP_OS, 'WIN')) {
+} elseif (substr_count(PHP_OS, 'WIN')) {
 	$tempdir  = getenv('TEMP');
 	$xmlfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
 	$bakfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
-}else{
+} else {
 	$tempdir = '/tmp';
 	$xmlfile = '/tmp/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
 	$bakfile = '/tmp/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
@@ -434,7 +434,7 @@ if ($using_cacti) {
 	}
 
 	shell_exec(read_config_option('path_rrdtool') . " dump $rrdfile > $xmlfile");
-}else{
+} else {
 	shell_exec("rrdtool dump $rrdfile > $xmlfile");
 }
 
@@ -444,10 +444,10 @@ if (file_exists($xmlfile)) {
 
 	/* remove the temp file */
 	unlink($xmlfile);
-}else{
+} else {
 	if ($using_cacti) {
 		$strout .= ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!" . ($html ? "</td></tr>\n":"\n");
-	}else{
+	} else {
 		$strout .= ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "FATAL: RRDtool Command Failed.  Please insure your RRDtool install is valid!" . ($html ? "</td></tr>\n":"\n");
 	}
 
@@ -460,7 +460,7 @@ if (file_exists($xmlfile)) {
 if ($backup && !$dryrun) {
 	if (copy($rrdfile, $bakfile)) {
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . "NOTE: RRDfile '$rrdfile' backed up to '$bakfile'" . ($html ? "</p>\n":"\n");
-	}else{
+	} else {
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . "FATAL: RRDfile Backup of '$rrdfile' to '$bakfile' FAILED!" . ($html ? "</p>\n":"\n");
 
 		print $strout;
@@ -535,7 +535,7 @@ foreach($output as $line) {
 			$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
 			$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
 			$timestamp = trim($timestamp_part);
-		}else{
+		} else {
 			$timestamp = 0;
 		}
 
@@ -550,27 +550,27 @@ foreach($output as $line) {
 			if ($timestamp > 0) {
 				if (!empty($out_start) && $timestamp < $out_start) {
 					$process = true;
-				}elseif (!empty($out_end) && $timestamp > $out_end) {
+				} elseif (!empty($out_end) && $timestamp > $out_end) {
 					$process = true;
-				}elseif (empty($out_start)) {
+				} elseif (empty($out_start)) {
 					$process = true;
-				}else{
+				} else {
 					$process = false;
 				}
-			}else{
+			} else {
 				$process = true;
 			}
 
 			if (strtolower($dsvalue) != 'nan' && $process) {
 				if (!isset($rra[$rra_num][$ds_num]['numsamples'])) {
 					$rra[$rra_num][$ds_num]['numsamples'] = 1;
-				}else{
+				} else {
 					$rra[$rra_num][$ds_num]['numsamples']++;
 				}
 
 				if (!isset($rra[$rra_num][$ds_num]['sumofsamples'])) {
 					$rra[$rra_num][$ds_num]['sumofsamples'] = $dsvalue;
-				}elseif (is_numeric($dsvalue)) {
+				} elseif (is_numeric($dsvalue)) {
 					$rra[$rra_num][$ds_num]['sumofsamples'] += $dsvalue;
 				}
 
@@ -590,34 +590,34 @@ foreach($output as $line) {
 			/* store the sample for standard deviation calculation */
 			if ($timestamp == 0) {
 				$samples[$rra_num][$ds_num][] = $dsvalue;
-			}else{
+			} else {
 				$samples[$rra_num][$ds_num][$timestamp] = $dsvalue;
 			}
 
 			if (!isset($rra[$rra_num][$ds_num]['totalsamples'])) {
 				$rra[$rra_num][$ds_num]['totalsamples'] = 1;
-			}else{
+			} else {
 				$rra[$rra_num][$ds_num]['totalsamples']++;
 			}
 
 			$ds_num++;
 		}
-	}elseif (substr_count($line, '<rra>')) {
+	} elseif (substr_count($line, '<rra>')) {
 		$in_rra = true;
-	}elseif (substr_count($line, '<min>')) {
+	} elseif (substr_count($line, '<min>')) {
 		$ds_min[] = trim(str_replace('<min>', '', str_replace('</min>', '', trim($line))));
-	}elseif (substr_count($line, '<max>')) {
+	} elseif (substr_count($line, '<max>')) {
 		$ds_max[] = trim(str_replace('<max>', '', str_replace('</max>', '', trim($line))));
-	}elseif (substr_count($line, '<name>')) {
+	} elseif (substr_count($line, '<name>')) {
 		$ds_name[] = trim(str_replace('<name>', '', str_replace('</name>', '', trim($line))));
-	}elseif (substr_count($line, '<cf>')) {
+	} elseif (substr_count($line, '<cf>')) {
 		$rra_cf[] = trim(str_replace('<cf>', '', str_replace('</cf>', '', trim($line))));
-	}elseif (substr_count($line, '<pdp_per_row>')) {
+	} elseif (substr_count($line, '<pdp_per_row>')) {
 		$rra_pdp[] = trim(str_replace('<pdp_per_row>', '', str_replace('</pdp_per_row>', '', trim($line))));
-	}elseif (substr_count($line, '</rra>')) {
+	} elseif (substr_count($line, '</rra>')) {
 		$in_rra = false;
 		$rra_num++;
-	}elseif (substr_count($line, '<step>')) {
+	} elseif (substr_count($line, '<step>')) {
 		$step = trim(str_replace('<step>', '', str_replace('</step>', '', trim($line))));
 	}
 }
@@ -660,23 +660,23 @@ if ($method == 1) {
 		if (!$dryrun) {
 			$new_output = updateXML($output, $rra);
 		}
-	}elseif (!empty($out_start)) {
+	} elseif (!empty($out_start)) {
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
 			"NOTE: NO Window Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
-	}else{
+	} else {
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
 			"NOTE: NO Standard Deviation found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}
-}else{
+} else {
 	/* variance subroutine */
 	if ($var_kills || $out_kills) {
 		if (!$dryrun) {
 			$new_output = updateXML($output, $rra);
 		}
-	}elseif (!empty($out_start)) {
+	} elseif (!empty($out_start)) {
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
 			"NOTE: NO Window Fills found in '$rrdfile'" . ($html ? "</p>\n":"\n");
-	}else{
+	} else {
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
 			"NOTE: NO Variance Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}
@@ -690,19 +690,19 @@ if (!$dryrun) {
 				createRRDFileFromXML($xmlfile, $rrdfile);
 				$strout .= ($html ? "<p class='spikekillNote'>":'') . 
 					"NOTE: Spikes Found and Remediated.  Total Spikes ($total_kills)" . ($html ? "</p>\n":"\n");
-			}else{
+			} else {
 				$strout .= ($html ? "<p class='spikekillNote'>":'') . 
 					"FATAL: Unable to backup '$rrdfile'" . ($html ? "</p>\n":"\n");
 			}
-		}else{
+		} else {
 			$strout .= ($html ? "<p class='spikekillNote'>":'') . 
 				"FATAL: Unable to write XML file '$xmlfile'" . ($html ? "</p>\n":"\n");
 		}
-	}else{
+	} else {
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
 			"NOTE: No Spikes Found.  No remediation performed." . ($html ? "</p>\n":"\n");
 	}
-}else{
+} else {
 	$strout .= ($html ? "<p class='spikekillNote'>":'') . 
 		"NOTE: Dryrun requested.  No updates performed" . ($html ? "</p>\n":"\n");
 }
@@ -712,7 +712,7 @@ $strout .= ($html ? "</table>":'');
 if ($using_cacti) {
 	if ($total_kills > 0) {
 		cacti_log("WARNING: Removed '$total_kills' Spikes from '$rrdfile', Method:'$method'", false, 'WEBUI');
-	}elseif($debug) {
+	} elseif($debug) {
 		cacti_log("NOTE: Removed '$total_kills' Spikes from '$rrdfile', Method:'$method'", false, 'WEBUI');
 	}
 }
@@ -729,7 +729,7 @@ function createRRDFileFromXML($xmlfile, $rrdfile) {
 
 	if ($using_cacti) {
 		$response = shell_exec(read_config_option("path_rrdtool") . " restore -f -r $xmlfile $rrdfile");
-	}else{
+	} else {
 		$response = shell_exec("rrdtool restore -f -r $xmlfile $rrdfile");
 	}
 
@@ -751,13 +751,13 @@ function backupRRDFile($rrdfile) {
 		if ($backupdir == '') {
 			$backupdir = $tempdir;
 		}
-	}else{
+	} else {
 		$backupdir = $tempdir;
 	}
 
 	if (file_exists($backupdir . '/' . basename($rrdfile))) {
 		$newfile = basename($rrdfile) . '.' . $seed;
-	}else{
+	} else {
 		$newfile = basename($rrdfile);
 	}
 
@@ -777,7 +777,7 @@ function calculateVarianceAverages(&$rra, &$samples) {
 			if (empty($out_start)) {
 				if (sizeof($ds) < $outliers * 3) {
 					$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
-				}else{
+				} else {
 					$myds = $ds;
 					$myds = array_filter($myds, 'removeNanFromSamples');
 
@@ -791,18 +791,18 @@ function calculateVarianceAverages(&$rra, &$samples) {
 
 					if (sizeof($myds)) {
 						$rra[$rra_num][$ds_num]['variance_avg'] = array_sum($myds) / sizeof($myds);
-					}else{
+					} else {
 						$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
 					}
 				}
-			}else{
+			} else {
 				if (isset($rra[$rra_num][$ds_num]['sumofsamples']) && isset($rra[$rra_num][$ds_num]['numsamples'])) {
 					if ($rra[$rra_num][$ds_num]['numsamples'] > 0) {
 						$rra[$rra_num][$ds_num]['variance_avg'] = $rra[$rra_num][$ds_num]['sumofsamples'] / $rra[$rra_num][$ds_num]['numsamples'];
-					}else{
+					} else {
 						$rra[$rra_num][$ds_num]['variance_avg'] = 0;
 					}
-				}else{
+				} else {
 					$rra[$rra_num][$ds_num]['variance_avg'] = 0;
 				}
 			}
@@ -835,10 +835,10 @@ function calculateOverallStatistics(&$rra, &$samples) {
 				if (isset($rra[$rra_num][$ds_num]['sumofsamples']) && isset($rra[$rra_num][$ds_num]['numsamples'])) {
 					if ($rra[$rra_num][$ds_num]['numsamples'] > 0) {
 						$rra[$rra_num][$ds_num]['average'] = $rra[$rra_num][$ds_num]['sumofsamples'] / $rra[$rra_num][$ds_num]['numsamples'];
-					}else{
+					} else {
 						$rra[$rra_num][$ds_num]['average'] = 0;
 					}
-				}else{
+				} else {
 					$rra[$rra_num][$ds_num]['average'] = 0;
 				}
 
@@ -884,7 +884,7 @@ function calculateOverallStatistics(&$rra, &$samples) {
 
 						$rra[$rra_num][$ds_num]['stddev_killed']++;
 						$std_kills = true;
-					}elseif (is_numeric($sample)) {
+					} elseif (is_numeric($sample)) {
 						$rra[$rra_num][$ds_num]['numnksamples']++;
 						$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 					}
@@ -906,7 +906,7 @@ function calculateOverallStatistics(&$rra, &$samples) {
 				if ($rra[$rra_num][$ds_num]['numnksamples'] > 0) {
 					$rra[$rra_num][$ds_num]['avgnksamples'] = $rra[$rra_num][$ds_num]['sumnksamples'] / $rra[$rra_num][$ds_num]['numnksamples'];
 				}
-			}else{
+			} else {
 				$rra[$rra_num][$ds_num]['standard_deviation'] = 'N/A';
 				$rra[$rra_num][$ds_num]['average']            = 'N/A';
 				$rra[$rra_num][$ds_num]['min_cutoff']         = 'N/A';
@@ -980,7 +980,7 @@ function outputStatistics($rra) {
 			}
 
 			$strout .= "\n";
-		}else{
+		} else {
 			$strout .= sprintf("<tr class='tableHeader'><th style='width:10%%;'>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
 				'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
 				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindFilled', 'StdDevAvg', 'VarAvg');
@@ -1040,7 +1040,7 @@ function updateXML(&$output, &$rra) {
 				$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
 				$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
 				$timestamp = trim($timestamp_part);
-			}else{
+			} else {
 				$timestamp = 0;
 			}
 
@@ -1057,21 +1057,21 @@ function updateXML(&$output, &$rra) {
 
 				if (strtolower($dsvalue) == 'nan' && !isset($first_num[$ds_num])) {
 					/* do nothing, it's a NaN, and the first one */
-				}elseif (!empty($out_start) && $timestamp > $out_start && $timestamp < $out_end) {
+				} elseif (!empty($out_start) && $timestamp > $out_start && $timestamp < $out_end) {
 					if ($method == 3) {
 						if ($avgnan == 'avg') {
 							$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-						}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+						} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
 							$dsvalue = $first_num[$ds_num];
 						}
 
 						$kills++;
 						$total_kills++;
-					}elseif ($method == 4) {
+					} elseif ($method == 4) {
 						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg'] || strtolower($dsvalue) == 'nan') {
 							if ($avgnan == 'avg') {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+							} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
 								$dsvalue = $first_num[$ds_num];
 							}
 
@@ -1079,27 +1079,27 @@ function updateXML(&$output, &$rra) {
 							$total_kills++;
 						}
 					}
-				}elseif(strtolower($dsvalue) == 'nan' && isset($first_num[$ds_num])) {
+				} elseif(strtolower($dsvalue) == 'nan' && isset($first_num[$ds_num])) {
 					if ($method == 2) {
 						if ($kills < $numspike) {
 							if ($avgnan == 'avg') {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+							} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
 								$dsvalue = $first_num[$ds_num];
-							}else{
+							} else {
 								$dsvalue = 'NaN';
 							}
 	
 							$total_kills++;
 							$kills++;
 						}
-					}else{
+					} else {
 						if ($kills < $numspike) {
 							if ($avgnan == 'avg') {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
-							}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+							} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
 								$dsvalue = $first_num[$ds_num];
-							}else{
+							} else {
 								$dsvalue = 'NaN';
 							}
 
@@ -1107,16 +1107,16 @@ function updateXML(&$output, &$rra) {
 							$kills++;
 						}
 					}
-				}else{
+				} else {
 					$first_num[$ds_num] = $dsvalue;
 					if ($method == 2) {
 						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg']) {
 							if ($kills < $numspike) {
 								if ($avgnan == 'avg') {
 									$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-								}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+								} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
 									$dsvalue = $first_num[$ds_num];
-								}else{
+								} else {
 									$dsvalue = 'NaN';
 								}
 
@@ -1124,15 +1124,15 @@ function updateXML(&$output, &$rra) {
 								$total_kills++;
 							}
 						}
-					}else{
+					} else {
 						if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
 							($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 							if ($kills < $numspike) {
 								if ($avgnan == 'avg') {
 									$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
-								}elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
+								} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
 									$dsvalue = $first_num[$ds_num];
-								}else{
+								} else {
 									$dsvalue = 'NaN';
 								}
 
@@ -1150,7 +1150,7 @@ function updateXML(&$output, &$rra) {
 			$out_row .= '</row>';
 
 			$new_array[] = $out_row;
-		}else{
+		} else {
 			if (substr_count($line, '</rra>')) {
 				$ds_minmax = array();
 				$rra_num++;
@@ -1176,18 +1176,18 @@ function removeComments(&$output) {
 			$line = trim($line);
 			if ($line == '') {
 				continue;
-			}else{
+			} else {
 				/* is there a comment, remove it */
 				$oline = $line;
 
 				$comment_start = strpos($line, '<!--');
 				if ($comment_start === false) {
 					/* do nothing no line */
-				}else{
+				} else {
 					$comment_end = strpos($line, '-->');
 					if ($comment_start == 0) {
 						$line = trim(substr($line, $comment_end+3));
-					}else{
+					} else {
 						$line = trim(substr($line,0,$comment_start-1) . substr($line,$comment_end+3));
 					}
 
@@ -1218,17 +1218,17 @@ function displayTime($pdp) {
 
 	if ($total_time < 60) {
 		return $total_time . ' secs';
-	}else{
+	} else {
 		$total_time = $total_time / 60;
 
 		if ($total_time < 60) {
 			return $total_time . ' mins';
-		}else{
+		} else {
 			$total_time = $total_time / 60;
 
 			if ($total_time < 24) {
 				return $total_time . ' hours';
-			}else{
+			} else {
 				$total_time = $total_time / 24;
 
 				return $total_time . ' days';

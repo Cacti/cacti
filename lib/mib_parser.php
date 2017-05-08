@@ -272,7 +272,7 @@ class MibParser extends MibCache {
 				if($tokens[$index+1] == '{') {
 					$index++;
 					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '{', '}'));
-				}elseif($tokens[$index+1] == '(') {
+				} elseif($tokens[$index+1] == '(') {
 					$index++;
 					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '(', ')'));
 				}
@@ -283,7 +283,7 @@ class MibParser extends MibCache {
 				if($tokens[$index+1] == '{') {
 					$index++;
 					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '{', '}'));
-				}elseif($tokens[$index+1] == '(') {
+				} elseif($tokens[$index+1] == '(') {
 					$index++;
 					$ret = array($ret=>MibParser::parse_bracket_token($tokens, $index, '(', ')'));
 				}
@@ -381,7 +381,7 @@ class MibParser extends MibCache {
 					elseif($tokens[$index] == 'DESCRIPTION')
 					{
 						$rec['DESCRIPTION'] = MibParser::parse_simple_token($tokens, $index);
-					}elseif($tokens[$index] == 'INDEX')
+					} elseif($tokens[$index] == 'INDEX')
 						$rec['INDEX'] = MibParser::parse_simple_token($tokens, $index);
 					elseif($tokens[$index] == 'MAX-ACCESS')
 						$rec['MAX-ACCESS'] = MibParser::parse_simple_token($tokens, $index, array('read-only', 'not-accessible', 'read-write', 'read-create', 'accessible-for-notify'));
@@ -454,12 +454,12 @@ class MibParser extends MibCache {
 
 					if($otype == "OBJECT-GROUP" && isset($object['OBJECTS'])) {
 						$this->oids[$object['NAME']]['objects'] = array_diff($object['OBJECTS'], array(','));
-					}elseif($otype == "NOTIFICATION-GROUP" && isset($object['NOTIFICATIONS'])) {
+					} elseif($otype == "NOTIFICATION-GROUP" && isset($object['NOTIFICATIONS'])) {
 						$this->oids[$object['NAME']]['notifications'] = array_diff($object['NOTIFICATIONS'], array(','));
-					}elseif($otype == "NOTIFICATION-TYPE" && isset($object['OBJECTS'])) {
+					} elseif($otype == "NOTIFICATION-TYPE" && isset($object['OBJECTS'])) {
 						$this->oids[$object['NAME']]['objects'] = array_diff($object['OBJECTS'], array(','));
 					}
-				}elseif($object["VALUE"] == "TEXTUAL-CONVENTION") {
+				} elseif($object["VALUE"] == "TEXTUAL-CONVENTION") {
 					$syntax = NULL;
 					if(isset($object['SYNTAX'])) {
 						$syntax = is_array($object['SYNTAX']) ? key($object['SYNTAX']) : $object['SYNTAX'];

@@ -130,7 +130,7 @@ function snmpagent_data_source_action_bottom($data){
 		$mc->object('cactiStatsTotalsDataSources')->set(snmpagent_read('cactiStatsTotalsDataSources'));
 		$mc->object('cactiStatsTotalsGraphs')->set(snmpagent_read('cactiStatsTotalsGraphs'));
 		$mc->object('cactiStatsLastUpdate')->set(time());
-	}elseif ($action == '4') {
+	} elseif ($action == '4') {
 		/* duplicate data sources */
 		$mc->object('cactiStatsTotalsDataSources')->set(snmpagent_read('cactiStatsTotalsDataSources'));
 		$mc->object('cactiStatsLastUpdate')->set(time());
@@ -145,7 +145,7 @@ function snmpagent_graphs_action_bottom($data){
 		$mc->object('cactiStatsTotalsDataSources')->set(snmpagent_read('cactiStatsTotalsDataSources'));
 		$mc->object('cactiStatsTotalsGraphs')->set(snmpagent_read('cactiStatsTotalsGraphs'));
 		$mc->object('cactiStatsLastUpdate')->set(time());
-	}elseif ($action == '3') {
+	} elseif ($action == '3') {
 		/* duplicate graphs */
 		$mc->object('cactiStatsTotalsGraphs')->set(snmpagent_read('cactiStatsTotalsGraphs'));
 		$mc->object('cactiStatsLastUpdate')->set(time());
@@ -284,7 +284,7 @@ function snmpagent_poller_bottom() {
 		foreach($mc_devices as $mc_device) {
 			if (isset($mc_device['cactiApplDeviceStatus'])) {
 				$mc_dstatus[$mc_device['cactiApplDeviceIndex']] = $mc_device['cactiApplDeviceStatus'];
-			}else{
+			} else {
 				$mc_dstatus[$mc_device['cactiApplDeviceIndex']] = 0;
 			}
 		}
@@ -330,7 +330,7 @@ function snmpagent_poller_bottom() {
 
 				if (isset($mc_dstatus[$device['id']]) && $mc_dstatus[$device['id']] == HOST_UP && $device['status'] == HOST_DOWN ) {
 					snmpagent_notification('cactiNotifyDeviceDown', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_HIGH, $overwrite);
-				}elseif (isset($mc_dstatus[$device['id']]) && $mc_dstatus[$device['id']] == HOST_DOWN && $device['status'] == HOST_RECOVERING ){
+				} elseif (isset($mc_dstatus[$device['id']]) && $mc_dstatus[$device['id']] == HOST_DOWN && $device['status'] == HOST_RECOVERING ){
 					snmpagent_notification('cactiNotifyDeviceRecovering', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_MEDIUM, $overwrite);
 				}
 			}
@@ -772,7 +772,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 
 					if ( $notification_manager['snmp_auth_password'] && $notification_manager['snmp_priv_password']) {
 						$snmp_security_level = 'authPriv';
-					}elseif ( $notification_manager['snmp_auth_password'] && !$notification_manager['snmp_priv_password']) {
+					} elseif ( $notification_manager['snmp_auth_password'] && !$notification_manager['snmp_priv_password']) {
 						$snmp_security_level = 'authNoPriv';
 					}else {
 						$snmp_security_level = 'noAuthNoPriv';

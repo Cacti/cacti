@@ -55,7 +55,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 	if (isset_request_var('header')) {
 		$option = 'header=false';
-	}else{
+	} else {
 		$option = '';
 	}
 
@@ -67,7 +67,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 			if ($_SESSION['sess_plugins_state'] != '-3') {
 				header('Location: plugins.php?state=5' . ($option != '' ? '&' . $option:''));
-			}else{
+			} else {
 				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			}
 			exit;
@@ -138,7 +138,7 @@ function plugins_load_temp_table() {
 
 	if (isset($_SESSION['plugin_temp_table'])) {
 		$table = $_SESSION['plugin_temp_table'];
-	}else{
+	} else {
 		$table = 'plugin_temp_table_' . rand();
 	}
 	$x = 0;
@@ -149,7 +149,7 @@ function plugins_load_temp_table() {
 			db_execute("TRUNCATE $table");
 			db_execute("INSERT INTO $table SELECT * FROM plugin_config");
 			break;
-		}else{
+		} else {
 			$table = 'plugin_temp_table_' . rand();
 		}
 		$x++;
@@ -169,7 +169,7 @@ function plugins_load_temp_table() {
 					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['longname'] = ucfirst($file);
 					$cinfo[$file]['status'] = 0;
 					$pluginslist[] = $file;
-					if (!isset($info['info']['compat']) || version_compare($config['cacti_version'], $info['info']['compat']) < 0) {
+					if (!isset($info['info']['compat']) || version_compare(CACTI_VERSION, $info['info']['compat']) < 0) {
 						$cinfo[$file]['status'] = -1;
 					}
 				} else {
@@ -264,7 +264,7 @@ function update_show_current () {
 	</script>
 	<?php
 
-	html_start_box( __('Plugin Management (Cacti Version: %s)', $config['cacti_version']), '100%', '', '3', 'center', '');
+	html_start_box(__('Plugin Management'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -332,14 +332,14 @@ function update_show_current () {
 	if (get_request_var('state') > -3) {
 		if (get_request_var('state') == 5) {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' status IN(1,4)';
-		}else{
+		} else {
 			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' status=' . get_request_var('state');
 		}
 	}
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -387,12 +387,12 @@ function update_show_current () {
 		foreach ($plugins as $plugin) {
 			if ((isset($plugins[$j+1]) && $plugins[$j+1]['status'] < 0) || (!isset($plugins[$j+1]))) {
 				$last_plugin = true;
-			}else{
+			} else {
 				$last_plugin = false;
 			}
 			if ($plugin['status'] <= 0 || (get_request_var('sort_column') != 'id')) {
 				$load_ordering = false;
-			}else{
+			} else {
 				$load_ordering = true;
 			}
 
@@ -402,7 +402,7 @@ function update_show_current () {
 
 			$j++;
 		}
-	}else{
+	} else {
 		print '<tr><td><em>' . __('No Plugins Found') . '</em></td></tr>';
 	}
 
@@ -432,16 +432,16 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 		$row .= "<td class='nowrap right'>";
 		if (!$first_plugin) {
 			$row .= "<a class='pic fa fa-caret-up moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __('Order Before Previous Plugin') . "'></a>";
-		}else{
+		} else {
 			$row .= '<span class="moveArrowNone"></span>';
 		}
 		if (!$last_plugin) {
 			$row .= "<a class='pic fa fa-caret-down moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='" . __('Order After Next Plugin') . "'></a>";
-		}else{
+		} else {
 			$row .= '<span class="moveArrowNone"></span>';
 		}
 		$row .= "</td>\n";
-	}else{
+	} else {
 		$row .= "<td></td>\n";
 	}
 

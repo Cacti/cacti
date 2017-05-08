@@ -102,7 +102,7 @@ function manager(){
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -253,7 +253,7 @@ function manager(){
 			form_checkbox_cell($item['description'], $item['id']);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print '<tr><td><em>' . __('No SNMP Notification Receivers') . '</em></td></tr>';
 	}
 
@@ -286,7 +286,7 @@ function manager_edit() {
 	if ($id) {
 		$manager = db_fetch_row_prepared('SELECT * FROM snmpagent_managers WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('SNMP Notification Receiver [edit: %s]', htmlspecialchars($manager['description']));
-	}else{
+	} else {
 		$header_label = __('SNMP Notification Receiver [new]');
 	}
 
@@ -298,9 +298,9 @@ function manager_edit() {
 
 		foreach (array_keys($tabs_manager_edit) as $tab_short_name) {
 			if (($id == 0 & $tab_short_name != 'general')){
-				print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' href='#' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') . "'>" . $tabs_manager_edit[$tab_short_name] . "</a></li>\n";
+				print "<li class='subTab'><a href='#' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') . "'>" . $tabs_manager_edit[$tab_short_name] . "</a></li>\n";
 			}else {
-				print "<li role='tab' tabindex='$i' aria-controls='tabs-" . ($i+1) . "' class='subTab'><a role='presentation' tabindex='-1' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') .
+				print "<li class='subTab'><a " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') .
 					" href='" . htmlspecialchars($config['url_path'] .
 					'managers.php?action=edit&id=' . get_request_var('id') .
 					'&tab=' . $tab_short_name) .
@@ -345,7 +345,7 @@ function manager_edit() {
 		default:
 			form_start('managers.php');
 
-			html_start_box($header_label, '100%', '', '3', 'center', '');
+			html_start_box($header_label, '100%', true, '3', 'center', '');
 
 			draw_edit_form(
 				array(
@@ -354,7 +354,7 @@ function manager_edit() {
 				)
 			);
 
-			html_end_box();
+			html_end_box(true, true);
 
 			form_save_button('managers.php', 'return');
 
@@ -470,7 +470,7 @@ function manager_notifications($id){
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -571,7 +571,7 @@ function manager_notifications($id){
 	/* filter by host */
 	if (get_request_var('mib') == '-1') {
 		/* Show all items */
-	}elseif (!isempty_request_var('mib')) {
+	} elseif (!isempty_request_var('mib')) {
 		$sql_where .= " AND snmpagent_cache.mib='" . get_request_var('mib') . "'";
 	}
 	/* filter by search string */
@@ -628,7 +628,7 @@ function manager_notifications($id){
 			form_end_row();
 		}
 		print $nav;
-	}else{
+	} else {
 		print '<tr><td><em>' . __('No SNMP Notifications') . '</em></td></tr>';
 	}
 
@@ -698,7 +698,7 @@ function manager_logs($id) {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -764,7 +764,7 @@ function manager_logs($id) {
 	/* filter by severity */
 	if (get_request_var('severity') == '-1') {
 		/* Show all items */
-	}elseif (!isempty_request_var('severity')) {
+	} elseif (!isempty_request_var('severity')) {
 		$sql_where .= " AND snmpagent_notifications_log.severity='" . get_request_var('severity') . "'";
 	}
 
@@ -815,7 +815,7 @@ function manager_logs($id) {
 			form_end_row();
 		}
 		print $nav;
-	}else{
+	} else {
 		print '<tr><td><em>' . __('No SNMP Notification Log Entries') . '</em></td></tr>';
 	}
 
@@ -922,20 +922,20 @@ function form_actions(){
 			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 			if ($selected_items != false) {
-				if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+				if (get_nfilter_request_var('drp_action') == '1') { // delete 
 					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',' ,$selected_items) . ')');
 					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
 					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
-				}elseif (get_nfilter_request_var('drp_action') == '2') { /* enable */
+				} elseif (get_nfilter_request_var('drp_action') == '2') { // enable
 					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . implode(',' ,$selected_items) . ')');
-				}elseif (get_nfilter_request_var('drp_action') == '3') { /* disable */
+				} elseif (get_nfilter_request_var('drp_action') == '3') { // disable
 					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . implode(',' ,$selected_items) . ')');
 				}
 
 				header('Location: managers.php?header=false');
 				exit;
 			}
-		}elseif (isset_request_var('action_receiver_notifications')) {
+		} elseif (isset_request_var('action_receiver_notifications')) {
 			/* ================= input validation ================= */
 			get_filter_request_var('id');
 			/* ==================================================== */
@@ -943,13 +943,13 @@ function form_actions(){
 			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 			if ($selected_items != false) {
-				if (get_nfilter_request_var('drp_action') == '0') { /* disable */
+				if (get_nfilter_request_var('drp_action') == '0') { // disable
 					foreach($selected_items as $mib => $notifications) {
 						foreach($notifications as $notification => $state) {
 							db_execute_prepared('DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = ? AND `mib` = ? AND `notification` = ? LIMIT 1', array(get_nfilter_request_var('id'), $mib, $notification));
 						}
 					}
-				}elseif (get_nfilter_request_var('drp_action') == '1') { /* enable */
+				} elseif (get_nfilter_request_var('drp_action') == '1') { // enable
 					foreach($selected_items as $mib => $notifications) {
 						foreach($notifications as $notification => $state) {
 							db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $notification), $mib);
@@ -984,11 +984,11 @@ function form_actions(){
 			html_start_box($manager_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
 			if (sizeof($selected_items)) {
-				if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+				if (get_nfilter_request_var('drp_action') == '1') { // delete
 					$msg = __n('Click \'Continue\' to delete the following Notification Receiver', 'Click \'Continue\' to delete following Notification Receiver', sizeof($selected_items));
-				}elseif (get_nfilter_request_var('drp_action') == '2') { /* enable */
+				} elseif (get_nfilter_request_var('drp_action') == '2') { // enable
 					$msg = __n('Click \'Continue\' to enable the following Notification Receiver', 'Click \'Continue\' to enable following Notification Receiver', sizeof($selected_items));
-				}elseif (get_nfilter_request_var('drp_action') == '3') { /* disable */
+				} elseif (get_nfilter_request_var('drp_action') == '3') { // disable
 					$msg = __n('Click \'Continue\' to disable the following Notification Receiver', 'Click \'Continue\' to disable following Notification Receiver', sizeof($selected_items));
 				}
 			

@@ -1,5 +1,28 @@
 Cacti CHANGELOG
 
+1.1.6
+-issue#620: The table poller_data_template_field_mappings can get out of sync when manipulating data templates
+-issue#622: Can not connect to MySQL over a socket
+-issue#628: Cacti upgrade process is complex and error pront for developers
+-issue#635: Error when saving change to data template
+-issue#637: When displaying tree graphs, use the same layout as preview mode
+-issue#646: When a plugin is disabled during page operations, warnings can appear
+-issue#651: Unable to view cacti log (because of allowed memory size exhausted)
+-issue#657: Error in log when host is down, using icmp and using cmd.php on FreeBSD
+-issue: List for creating a Graph type shows already added Graph Templates
+-issue: Fix and undefined variable on data source page when first creating a manual data source
+-issue: Remove tabindex and other non-required manual aria controls from pages
+-issue: Table type and column type in poller_output table wrong
+-issue: FILTER_VALIDATE_MAC not defined on PHP less than 5.5
+-issue: When changing your language Cacti would not do a full page refresh
+-feature#106: Paginated CLOG and log administration
+-feature: Dutch translations
+-feature: Responsive Graphs page
+-feature: Convert forms from table based to div based for responsive design
+-feature: Better support for phones and tablets
+-feature: Simplified installation code to facilitate easier release cycle
+-feature: Updating Tablesorter to v2.28.9, adding widgets and pager
+
 1.1.5
 -issue#580: Data collection warnings when using cmd.php
 -issue#592: Incorrectly formatted HTML

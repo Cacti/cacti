@@ -60,7 +60,7 @@ if (!isset_request_var('image_format')) {
 		$gtype = 'svg+xml';
 		break;
 	}
-}else{
+} else {
 	switch(strtolower(get_nfilter_request_var('image_format'))) {
 	case 'png':
 		$gtype = 'png';
@@ -121,10 +121,10 @@ if (isset_request_var('graph_theme')) {
 if (isset_request_var('rra_id')) {
 	if (get_nfilter_request_var('rra_id') == 'all') {
 		$rra_id = 'all';
-	}else{
+	} else {
 		$rra_id = get_filter_request_var('rra_id');
 	}
-}else{
+} else {
 	$rra_id = null;
 }
 
@@ -136,7 +136,7 @@ if ($output !== false && $output != '') {
 
 	header('Content-type: image/'. $gtype);
 	print $output;
-}else{
+} else {
 	ob_start();
 
 	/* get the error string */
@@ -147,7 +147,7 @@ if ($output !== false && $output != '') {
 
 	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
 		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
-	}else{
+	} else {
 		$image = rrdtool_create_error_image($error);
 	}
 
@@ -157,7 +157,7 @@ if ($output !== false && $output != '') {
 
 	if ($image !== false) {
 		print $image;
-	}else{
+	} else {
 		print file_get_contents(__DIR__ . '/images/cacti_error_image.png');
 	}
 }

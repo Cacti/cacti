@@ -60,7 +60,7 @@ function get_children($vals, &$i) {
 			in its array, so we need to check for this first */
 			if (isset($vals[$i]['value'])) {
 				$children{($vals[$i]['tag'])} = $vals[$i]['value'];
-			}else{
+			} else {
 				$children{($vals[$i]['tag'])} = '';
 			}
 
@@ -89,7 +89,7 @@ function rrdxport2array($data) {
 	if (sizeof($array)){
 		if ((substr(trim($array[0]),0,1)) == '<') {
 			/* continue */
-		}else{
+		} else {
 			$new_array = array();
 			foreach($array as $element) {
 				if ((substr(trim($element),0,1)) == '<') {
@@ -156,7 +156,7 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 					default:
 						$children{($vals[$i]['tag'])} = $vals[$i]['value'];
 				}
-			}else{
+			} else {
 				$children{($vals[$i]['tag'])} = '';
 			}
 

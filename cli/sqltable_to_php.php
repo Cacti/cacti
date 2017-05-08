@@ -95,7 +95,7 @@ function sqltable_to_php ($table, $create) {
 				$tables[] = $t;
 			}
 		}
-	}else{
+	} else {
 		echo "ERROR: Obtaining list of tables from $database_default\n";
 		exit;
 	}
@@ -140,7 +140,7 @@ function sqltable_to_php ($table, $create) {
 
 				$text .= ");\n";
 			}
-		}else{
+		} else {
 			echo "ERROR: Obtaining list of columns from $table\n";
 			exit;
 		}
@@ -164,7 +164,7 @@ function sqltable_to_php ($table, $create) {
 					$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => array('" . implode("','", $k) . "'));\n";
 				}
 			}
-		}else{
+		} else {
 			//echo "ERROR: Obtaining list of indexes from $table\n";
 			//exit;
 		}
@@ -178,7 +178,7 @@ function sqltable_to_php ($table, $create) {
 			} else {
 				$text .= "db_update_table ('$table', \$data, false);\n";
 			}
-		}else{
+		} else {
 			echo "ERROR: Unable to get tables details from Information Schema\n";
 			exit;
 		}

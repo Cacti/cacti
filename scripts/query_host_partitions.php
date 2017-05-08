@@ -49,7 +49,7 @@ if ($snmp_version == 3) {
 	$snmp_priv_passphrase = $snmp[9];
 	$snmp_priv_protocol   = $snmp[10];
 	$snmp_context         = $snmp[11];
-}else{
+} else {
 	$snmp_community = $snmp[5];
 }
 
@@ -66,7 +66,7 @@ if ($cmd == "index") {
 /*
  * process NUM_INDEXES requests
  */
-}elseif ($cmd == "num_indexes") {
+} elseif ($cmd == "num_indexes") {
 	$return_arr = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 
 	print sizeof($return_arr) . "\n";	
@@ -74,7 +74,7 @@ if ($cmd == "index") {
 /*
  * process QUERY requests
  */
-}elseif ($cmd == "query") {
+} elseif ($cmd == "query") {
 	$arg = $_SERVER["argv"][5];
 
 	$arr_index = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids["index"], $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
@@ -87,7 +87,7 @@ if ($cmd == "index") {
 /*
  * process GET requests
  */
-}elseif ($cmd == "get") {
+} elseif ($cmd == "get") {
 	$arg = $_SERVER["argv"][5];
 	$index = $_SERVER["argv"][6];
 
@@ -96,7 +96,7 @@ if ($cmd == "index") {
 		$sau = db_fetch_cell("SELECT field_value FROM host_snmp_cache WHERE host_id=$host_id AND field_name='hrStorageAllocationUnits' AND snmp_index='$index'");
 
 		print (cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol,$snmp_priv_passphrase,$snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, SNMP_POLLER)* $sau);
-	}else{
+	} else {
 		print (cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol,$snmp_priv_passphrase,$snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, SNMP_POLLER));
 	}
 }else {

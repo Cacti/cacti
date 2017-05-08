@@ -88,7 +88,7 @@ $polling_interval = read_config_option('poller_interval');
 if (!empty($polling_interval)) {
 	$num_polling_items = db_fetch_cell_prepared('SELECT count(*) FROM poller_item WHERE rrd_next_step <= 0 AND poller_id = ?', array($config['poller_id']), 'count(*)');
 	define('MAX_POLLER_RUNTIME', $polling_interval);
-}else{
+} else {
 	$num_polling_items = db_fetch_cell_prepared('SELECT count(*) FROM poller_item WHERE poller_id = ?', array($config['poller_id']), 'count(*)');
 	define('MAX_POLLER_RUNTIME', 300);
 }
@@ -122,7 +122,7 @@ cacti_log('DEBUG: SERVER: ' . $environ, false, 'PHPSVR', POLLER_VERBOSITY_DEBUG)
 if ($config['cacti_server_os'] == 'win32') {
 	cacti_log('DEBUG: GETCWD: ' . strtolower(strtr(getcwd(),"\\",'/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 	cacti_log('DEBUG: DIRNAM: ' . strtolower(strtr(dirname(__FILE__),"\\",'/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
-}else{
+} else {
 	cacti_log('DEBUG: GETCWD: ' . strtr(getcwd(),"\\",'/'), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 	cacti_log('DEBUG: DIRNAM: ' . strtr(dirname(__FILE__),"\\",'/'), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 }
@@ -178,7 +178,7 @@ while (1) {
 						$parameters = trim($input_string);
 						break 2;
 					}
-				}else{
+				} else {
 					break;
 				}
 
@@ -235,7 +235,7 @@ while (1) {
 				fflush(STDOUT);
 			}
 		}
-	}else{
+	} else {
 		cacti_log('ERROR: Input Expected, Script Server Terminating', false, 'PHPSVR');
 		fputs(STDOUT, "ERROR: Input Expected, Script Server Terminating\n");
 		fflush(STDOUT);
@@ -285,15 +285,15 @@ function parseArgs($string, &$str_list, $debug = false) {
 			if (!$indelim) {
 				if (!$escaping) {
 					$indelim = true;
-				}else{
+				} else {
 					$curstr .= $char;
 					$escaping = false;
 				}
-			}elseif (!$escaping) {
+			} elseif (!$escaping) {
 				$str_list[] = $curstr;
 				$curstr     = '';
 				$indelim    = false;
-			}elseif ($escaping) {
+			} elseif ($escaping) {
 				$curstr  .= $char;
 				$escaping = false;
 			}
@@ -303,7 +303,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 			if ($escaping) {
 				$curstr  .= $char;
 				$escaping = false;
-			}else{
+			} else {
 				$escaping = true;
 			}
 
@@ -312,9 +312,9 @@ function parseArgs($string, &$str_list, $debug = false) {
 			if ($escaping) {
 				$parse_ok = false;
 				$msg = 'Parse error attempting to parse string';
-			}elseif ($indelim) {
+			} elseif ($indelim) {
 				$curstr .= $char;
-			}elseif (strlen($curstr)) {
+			} elseif (strlen($curstr)) {
 				$str_list[] = $curstr;
 				$curstr = '';
 			}
@@ -329,7 +329,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 			if ($escaping) {
 				$parse_ok = false;
 				$msg   = 'Parse error attempting to parse string';
-			}else{
+			} else {
 				$curstr .= $char;
 			}
 			break;
@@ -348,7 +348,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 
 	if (!$parse_ok) {
 		echo 'ERROR: ' . $msg . " '" . $string . "'\n";
-	}elseif (strlen($curstr)) {
+	} elseif (strlen($curstr)) {
 		$str_list[] = $curstr;
 	}
 

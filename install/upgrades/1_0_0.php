@@ -32,7 +32,7 @@ function upgrade_to_1_0_0() {
 
 	if (sizeof($default_engine)) {
 		$engine = $default_engine['Value'];
-	}else{
+	} else {
 		$engine = 'MyISAM';
 	}
 
@@ -484,7 +484,7 @@ function upgrade_to_1_0_0() {
 		foreach($realms as $r) {
 			if ($r['file'] == 'clog.php') {
 				db_execute("UPDATE user_auth_realm SET realm_id=18 WHERE realm_id=" . ($r['id']+100));
-			}elseif ($r['file'] == 'clog_user.php') {
+			} elseif ($r['file'] == 'clog_user.php') {
 				db_execute("UPDATE user_auth_realm SET realm_id=19 WHERE realm_id=" . ($r['id']+100));
 			}
 		}
@@ -1228,7 +1228,7 @@ function upgrade_to_1_0_0() {
 				if ($first) {
 					$keephex = $hex['id'];
 					$first   = false;
-				}else{
+				} else {
 					db_execute_prepared('UPDATE graph_templates_item 
 						SET color_id = ? 
 						WHERE color_id = ?', 
@@ -1251,9 +1251,8 @@ function upgrade_to_1_0_0() {
 	db_install_add_column ('colors', array('name' => 'name', 'type' => 'varchar(40)', 'default' => '', 'after' => 'id'));
 	db_install_add_column ('colors', array('name' => 'read_only', 'type' => 'char(2)', 'default' => '', 'after' => 'hex'));
 
-	if (file_exists(dirname(__FILE__) . '/import_colors.php')) {
-		shell_exec('php -q ' . dirname(__FILE__) . '/import_colors.php');
-	}
+	// import remaining colors into database
+	import_colors();
 	
 	db_install_execute("ALTER TABLE settings MODIFY COLUMN value varchar(2048) NOT NULL default ''");
 	if (db_table_exists('settings_graphs', false)) {
@@ -1708,13 +1707,13 @@ function upgrade_to_1_0_0() {
 				&& file_exists($config['base_path'] . "/plugins/$plugin/INFO") 
 				&& !in_array($plugin, $plugins_integrated)) {
 					$info = parse_ini_file($config['base_path'] . "/plugins/$plugin/INFO", true);
-					if (isset($info['info']['compat']) && version_compare($config['cacti_version'], $info['info']['compat']) > -1) {
+					if (isset($info['info']['compat']) && version_compare(CACTI_VERSION, $info['info']['compat']) > -1) {
 						$disable = false;
 					}
 			}
 			if ($disable) {
-				echo "Disabling $plugin version $version as it is not compatible with Cacti " . $config['cacti_version'] . "\n";
-				db_install_add_cache(1, "Disabling $plugin version $version as it is not compatible with Cacti " . $config['cacti_version']);
+				echo "Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION . "\n";
+				db_install_add_cache(1, "Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION);
 				api_plugin_disable_all($plugin);
 			}
 		}
@@ -1766,7 +1765,7 @@ function upgrade_to_1_0_0() {
 	if (db_fetch_cell('SELECT name FROM settings WHERE name = "graph_wathermark"', 'name') == 'graph_wathermark') {
 		if (db_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = "graph_wathermark"') == 0) {
 			db_install_execute('UPDATE settings SET name = "graph_watermark" WHERE name = "graph_wathermark"');
-		}else{
+		} else {
 			db_install_execute('DELETE FROM settings WHERE name = "graph_wathermark"');
 		}
 	}

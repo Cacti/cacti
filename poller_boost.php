@@ -107,7 +107,7 @@ function output_rrd_data($start_time, $force = FALSE) {
 	if (!function_exists('memory_get_peak_usage')) {
 		$get_memory   = true;
 		$memory_used  = memory_get_usage();
-	}else{
+	} else {
 		$get_memory   = false;
 	}
 
@@ -156,7 +156,7 @@ function output_rrd_data($start_time, $force = FALSE) {
 					$memory_used = $cur_memory;
 				}
 			}
-		}else{
+		} else {
 			break;
 		}
 
@@ -172,7 +172,7 @@ function output_rrd_data($start_time, $force = FALSE) {
 	/* log memory usage */
 	if (function_exists('memory_get_peak_usage')) {
 		db_execute("REPLACE INTO settings (name, value) VALUES ('boost_peak_memory', '" . memory_get_peak_usage() . "')");
-	}else{
+	} else {
 		db_execute("REPLACE INTO settings (name, value) VALUES ('boost_peak_memory', '" . $memory_used . "')");
 	}
 
@@ -344,7 +344,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 		$next_run_time = $current_time + $seconds_offset;
 		db_execute("REPLACE INTO settings (name, value) VALUES ('boost_last_run_time', '" . date('Y-m-d G:i:s', $current_time) . "')");
 		$last_run_time = $current_time;
-	}else{
+	} else {
 		$next_run_time = $last_run_time + $seconds_offset;
 	}
 	$time_till_next_run = $next_run_time - $current_time;
@@ -376,7 +376,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 
 	/* store the next run time so that people understand */
 	db_execute("REPLACE INTO settings (name, value) VALUES ('boost_next_run_time', '" . date('Y-m-d G:i:s', $next_run_time) . "')");
-}else{
+} else {
 	/* turn off the system level updates */
 	if (read_config_option('boost_rrd_update_system_enable') == 'on') {
 		db_execute("REPLACE INTO settings (name,value)

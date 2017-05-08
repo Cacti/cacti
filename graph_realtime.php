@@ -113,7 +113,7 @@ case 'countdown':
 	/* override: graph end */
 	if (!isempty_request_var('graph_end')) {
 		$graph_data_array['graph_end'] = get_request_var('graph_end');
-	}else{
+	} else {
 		$graph_data_array['graph_end'] = time();
 	}
 
@@ -179,13 +179,13 @@ $init = '';
 
 if (!isset($_SESSION['sess_realtime_ds_step'])) {
 	load_current_session_value('ds_step', 'sess_realtime_ds_step', read_config_option('realtime_interval'));
-}else{
+} else {
 	set_request_var('ds_step', $_SESSION['sess_realtime_ds_step']);
 }
 
 if (!isset($_SESSION['sess_realtime_graph_start'])) {
 	load_current_session_value('graph_start', 'sess_realtime_graph_start', read_config_option('realtime_gwindow'));
-}else{
+} else {
 	set_request_var('graph_start', $_SESSION['sess_realtime_graph_start']);
 }
 
@@ -196,14 +196,14 @@ if (read_config_option('realtime_enabled') == '') {
 	print "</body>\n";
 	print "</html>\n";
 	exit;
-}elseif (!is_dir(read_config_option('realtime_cache_path'))) {
+} elseif (!is_dir(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
 	print "	<p><strong>" . __('The Image Cache Directory does not exist.  Please first create it and set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
 	exit;
-}elseif (!is_writable(read_config_option('realtime_cache_path'))) {
+} elseif (!is_writable(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
 	print "	<p><strong>" . __('The Image Cache Directory is not writable.  Please set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
@@ -320,7 +320,7 @@ $selectedTheme = get_selected_theme();
 			if (browser == 'IE') {
 				width  = width  + 30;
 				height = height + 110;
-			}else{
+			} else {
 				width  = width  + 40;
 				height = height + 170;
 			}
@@ -329,7 +329,7 @@ $selectedTheme = get_selected_theme();
 				if (browser == 'FF') {
 					window.outerHeight = height;
 					window.outerWidth  = width;
-				}else{
+				} else {
 					window.resizeTo(width, height);
 				}
 

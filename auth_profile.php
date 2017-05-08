@@ -82,25 +82,25 @@ function form_save() {
 				if ($field_array['method'] == 'checkbox') {
 					if (isset_request_var($field_name)) {
 						db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $field_name));
-					}else{
+					} else {
 						db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $field_name));
 					}
-				}elseif ($field_array['method'] == 'checkbox_group') {
+				} elseif ($field_array['method'] == 'checkbox_group') {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						if (isset_request_var($sub_field_name)) {
 							db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $sub_field_name));
-						}else{
+						} else {
 							db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $sub_field_name));
 						}
 					}
-				}elseif ($field_array['method'] == 'textbox_password') {
+				} elseif ($field_array['method'] == 'textbox_password') {
 					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
 						raise_message(4);
 						break;
-					}elseif (isset_request_var($field_name)) {
+					} elseif (isset_request_var($field_name)) {
 						db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
 					}
-				}elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+				} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						if (isset_request_var($sub_field_name)) {
 							db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_nfilter_request_var($sub_field_name)));
@@ -147,7 +147,7 @@ function settings() {
 
 	form_start('auth_profile.php');
 
-	html_start_box( __('User Account Details'), '100%', '', '3', 'center', '');
+	html_start_box( __('User Account Details'), '100%', true, '3', 'center', '');
 
 	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
@@ -171,7 +171,7 @@ function settings() {
 
 	if (sizeof($graph_views)) {
 		$settings_user['general']['default_view_mode']['array'] = $graph_views;
-	}else{
+	} else {
 		unset($settings_user['general']['default_view_mode']);
 	}
 
@@ -229,19 +229,19 @@ function settings() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	if (is_view_allowed('graph_settings') == true) {
 		if (read_config_option('auth_method') != 0) {
-			$settings_user['tree']['default_tree_id']['sql'] = get_graph_tree_array(true);
+			$settings_user['tree']['default_tree_id']['sql'] = get_allowed_trees(false, true);
 		}
 
-		html_start_box( __('User Settings'), '100%', '', '3', 'center', '');
+		html_start_box( __('User Settings'), '100%', true, '3', 'center', '');
 
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			$collapsible = true;
 
-			print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><td colspan='2' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</td></tr>\n";
+			print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div class='formHeaderText'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</div></div>\n";
 
 			$form_array = array();
 
@@ -256,7 +256,7 @@ function settings() {
 
 						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($sub_field_name, $_SESSION['sess_user_id']));
 					}
-				}else{
+				} else {
 					if (graph_config_value_exists($field_name, $_SESSION['sess_user_id'])) {
 						$form_array[$field_name]['form_id'] = 1;
 					}
@@ -275,7 +275,9 @@ function settings() {
 				);
 		}
 
-		html_end_box();
+		print "</td></tr>\n";
+
+		html_end_box(true, true);
 	}
 
 	?>
@@ -283,7 +285,9 @@ function settings() {
 
 	var themeFonts=<?php print read_config_option('font_method');?>;
 	var themeChanged = false;
+	var langChanged = false;
 	var currentTheme = '<?php print get_selected_theme();?>';
+	var currentLang  = '<?php print read_config_option('user_language');?>';
 
 	function clearPrivateData() {
 		$.localStorage.removeAll();
@@ -340,7 +344,7 @@ function settings() {
 				$('#row_axis_font').hide();
 				$('#row_unit_size').hide();
 				$('#row_unit_font').hide();
-		}else{
+		} else {
 			var custom_fonts = $('#custom_fonts').is(':checked');
 
 			switch(custom_fonts) {
@@ -370,11 +374,19 @@ function settings() {
 		}
 	}
 
-	function themeChanger() {
+	function themeChange() {
 		if ($('#selected_theme').val() != currentTheme) {
 			themeChanged = true;
-		}else{
+		} else {
 			themeChanged = false;
+		}
+	}
+
+	function langChange() {
+		if ($('#user_language').val() != currentLang) {
+			langChanged = true;
+		} else {
+			langChanged = false;
 		}
 	}
 
@@ -386,11 +398,11 @@ function settings() {
 
 		$('input[value="Save"]').unbind().click(function(event) {
 			event.preventDefault();
-            if (themeChanged != true) {
+            if (themeChanged != true && langChanged != true) {
                 $.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
 					loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
                 });
-            }else{
+            } else {
                 $.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
                     document.location = 'auth_profile.php?newtheme=1';
                 });
@@ -398,7 +410,11 @@ function settings() {
 		});
 
 		$('#selected_theme').change(function() {
-			themeChanger();
+			themeChange();
+		});
+
+		$('#user_language').change(function() {
+			langChange();
 		});
 
 		$('input[value="Return"]').unbind().click(function(event) {

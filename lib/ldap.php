@@ -163,7 +163,7 @@ class Ldap {
 		$this->referrals  = read_config_option('ldap_referrals');
 		if (read_config_option('ldap_group_require') == 'on') {
 			$this->group_require = true;
-		}else{
+		} else {
 			$this->group_require = false;
 		}
 		$this->group_dn          = read_config_option('ldap_group_dn');
@@ -219,7 +219,7 @@ class Ldap {
 		if ($this->encryption == '1') {
 			/* This only works with OpenLDAP, I'm pretty sure this will not work with Solaris, Tony */
 			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
-		}else{
+		} else {
 			$ldap_conn = ldap_connect($this->host, $this->port);
 		}
 
@@ -283,7 +283,7 @@ class Ldap {
 						if ($first_entry !== false) {
 							$true_dn             = ldap_get_dn($ldap_conn, $first_entry);
 							$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $true_dn);
-						}else{
+						} else {
 							$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->username);
 						}
 					}
@@ -307,41 +307,41 @@ class Ldap {
 						restore_error_handler();
 						return $output;
 					}
-				}else{
+				} else {
 					/* Auth ok - No group membership required */
 					$output['error_num'] = '0';
 					$output['error_text'] = __('Authentication Success');
 				}
-			}else{
+			} else {
 				/* unable to bind */
 				$ldap_error = ldap_errno($ldap_conn);
 				if ($ldap_error == 0x03) {
 					/* protocol error */
 					$output['error_num'] = '7';
 					$output['error_text'] = __('Protocol Error');
-				}elseif ($ldap_error == 0x31) {
+				} elseif ($ldap_error == 0x31) {
 					/* invalid credentials */
 					$output['error_num'] = '1';
 					$output['error_text'] = __('Authentication Failure');
-				}elseif ($ldap_error == 0x32) {
+				} elseif ($ldap_error == 0x32) {
 					/* insuffient access */
 					$output['error_num'] = '8';
 					$output['error_text'] = __('Insufficient Access');
-				}elseif ($ldap_error == 0x51) {
+				} elseif ($ldap_error == 0x51) {
 					/* unable to connect to server */
 					$output['error_num'] = '9';
 					$output['error_text'] = __('Unable to Connect to Server');
-				}elseif ($ldap_error == 0x55) {
+				} elseif ($ldap_error == 0x55) {
 					/* timeout */
 					$output['error_num'] = '10';
 					$output['error_text'] = __('Connection Timeout');
-				}else{
+				} else {
 					/* general bind error */
 					$output['error_num'] = '11';
 					$output['error_text'] = __('General Bind Error, LDAP result:') . ' ' . ldap_error($ldap_conn);
 				}
 			}
-		}else{
+		} else {
 			/* Error intializing LDAP */
 			$output['error_num'] = '6';
 			$output['error_text'] = __('Unable to Create LDAP Object');
@@ -362,7 +362,7 @@ class Ldap {
 	function GetMask() {
 		if (!defined('ENT_HTML401')) {
 			return ENT_COMPAT;
-		}else{
+		} else {
 			return ENT_COMPAT | ENT_HTML401;
 		}
 	}
@@ -399,7 +399,7 @@ class Ldap {
 			$output['error_num'] = '0';
 			$output['error_text'] = __('User found');
 			return $output;
-		}elseif ($this->mode == '2') {
+		} elseif ($this->mode == '2') {
 			/* Specific */
 			if (empty($this->specific_dn) || empty($this->specific_password)) {
 				$output['dn'] = $this->dn;
@@ -407,7 +407,7 @@ class Ldap {
 				$output['error_text'] = __('Specific DN and Password required');
 				return $output;
 			}
-		}elseif ($this->mode == '1'){
+		} elseif ($this->mode == '1'){
 			/* assume anonymous */
 			$this->specific_dn       = '';
 			$this->specific_password = '';
@@ -423,7 +423,7 @@ class Ldap {
 		if ($this->encryption == '1') {
 			/* This only works with OpenLDAP, I'm pretty sure this will not work with Solaris, Tony */
 			$ldap_conn = @ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
-		}else{
+		} else {
 			$ldap_conn = @ldap_connect($this->host, $this->port);
 		}
 
@@ -478,24 +478,24 @@ class Ldap {
 						$output['error_num'] = '0';
 						$output['error_text'] = __('User found');
 						cacti_log("LDAP_SEARCH: User found, DN '%s'" . $output['dn'], false, 'AUTH');
-					}elseif ($ldap_entries['count'] > 1) {
+					} elseif ($ldap_entries['count'] > 1) {
 						/* more than 1 result */
 						$output['dn'] = '';
 						$output['error_num'] = '13';
 						$output['error_text'] = __('More than one matching user found');
-					}else{
+					} else {
 						/* no search results */
 						$output['dn'] = '';
 						$output['error_num'] = '3';
 						$output['error_text'] = __('Unable to find users DN');
 					}
-				}else{
+				} else {
 					/* no search results, user not found*/
 					$output['dn'] = '';
 					$output['error_num'] = '3';
 					$output['error_text'] = __('Unable to find users DN');
 				}
-			}else{
+			} else {
 				/* unable to bind */
 				$ldap_error = ldap_errno($ldap_conn);
 				if ($ldap_error == 0x03) {
@@ -503,34 +503,34 @@ class Ldap {
 					$output['dn'] = '';
 					$output['error_num'] = '6';
 					$output['error_text'] = __('Protocol Error');
-				}elseif ($ldap_error == 0x31) {
+				} elseif ($ldap_error == 0x31) {
 					/* invalid credentials */
 					$output['dn'] = '';
 					$output['error_num'] = '7';
 					$output['error_text'] = __('Invalid Credentials');
-				}elseif ($ldap_error == 0x32) {
+				} elseif ($ldap_error == 0x32) {
 					/* insuffient access */
 					$output['dn'] = '';
 					$output['error_num'] = '8';
 					$output['error_text'] = __('Insufficient Access');
-				}elseif ($ldap_error == 0x51) {
+				} elseif ($ldap_error == 0x51) {
 					/* unable to connect to server */
 					$output['dn'] = '';
 					$output['error_num'] = '9';
 					$output['error_text'] = __('Unable to Connect to Server');
-				}elseif ($ldap_error == 0x55) {
+				} elseif ($ldap_error == 0x55) {
 					/* timeout */
 					$output['dn'] = '';
 					$output['error_num'] = '10';
 					$output['error_text'] = __('Connection Timeout');
-				}else{
+				} else {
 					/* general bind error */
 					$output['dn'] = '';
 					$output['error_num'] = '11';
 					$output['error_text'] = __('General Bind Error, LDAP result:') . ' ' . ldap_error($ldap_conn);
 				}
 			}
-		}else{
+		} else {
 			/* unable to setup connection */
 			$output['dn'] = '';
 			$output['error_num'] = '2';

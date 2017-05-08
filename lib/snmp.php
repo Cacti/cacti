@@ -71,7 +71,7 @@ function cacti_snmp_session($hostname, $community, $version, $username, $passwor
 	if ($priv_proto == '[None]') {
 		$sec_level = 'authNoPriv';
 		$priv_proto = '';
-	}else{
+	} else {
 		$sec_level = 'authPriv';
 	}
 	
@@ -118,13 +118,13 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 
 		if ($version == '1') {
 			$snmp_value = snmpget($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
-		}elseif ($version == '2') {
+		} elseif ($version == '2') {
 			$snmp_value = snmp2_get($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
-		}else{
+		} else {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				$sec_level = 'authNoPriv';
 				$priv_proto = '';
-			}else{
+			} else {
 				$sec_level = 'authPriv';
 			}
 
@@ -134,7 +134,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		if ($snmp_value === false) {
 			cacti_log("WARNING: SNMP Error:'$snmp_error', Device:'$hostname', OID:'$oid'", false);
 			$snmp_value = 'U';
-		}else{
+		} else {
 			$snmp_value = format_snmp_string($snmp_value, false);
 		}
 	}else {
@@ -145,32 +145,32 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 
 		if ($version == '1') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
-		}elseif ($version == '2') {
+		} elseif ($version == '2') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
 			$version = '2c'; /* ucd/net snmp prefers this over '2' */
-		}elseif ($version == '3') {
+		} elseif ($version == '3') {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				$sec_level = 'authNoPriv';
 				$priv_proto = '';
-			}else{
+			} else {
 				$sec_level = 'authPriv';
 			}
 
 			if (strlen($priv_pass)) {
 				$priv_pass = '-X ' . snmp_escape_string($priv_pass) . ' -x ' . snmp_escape_string($priv_proto);
-			}else{
+			} else {
 				$priv_pass = '';
 			}
 
 			if (strlen($context)) {
 				$context = '-n ' . snmp_escape_string($context);
-			}else{
+			} else {
 				$context = '';
 			}
 
 			if (strlen($contextEngineID)) {
 				$contextEngineID = '-e ' . snmp_escape_string($contextEngineID);
-			}else{
+			} else {
 				$contextEngineID = '';
 			}
 
@@ -202,7 +202,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 		if (substr_count($snmp_value, 'Timeout:')) {
 			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false);
 			$snmp_value = 'U';
-		}else{
+		} else {
 			$snmp_value = format_snmp_string($snmp_value, false);
 		}
 	}
@@ -244,13 +244,13 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $username, $p
 
 		if ($version == '1') {
 			$snmp_value = snmpget($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
-		}elseif ($version == '2') {
+		} elseif ($version == '2') {
 			$snmp_value = snmp2_get($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
-		}else{
+		} else {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				$sec_level = 'authNoPriv';
 				$priv_proto = '';
-			}else{
+			} else {
 				$sec_level = 'authPriv';
 			}
 
@@ -269,32 +269,32 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $username, $p
 
 		if ($version == '1') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
-		}elseif ($version == '2') {
+		} elseif ($version == '2') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
 			$version = '2c'; /* ucd/net snmp prefers this over '2' */
-		}elseif ($version == '3') {
+		} elseif ($version == '3') {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				$sec_level = 'authNoPriv';
 				$priv_proto = '';
-			}else{
+			} else {
 				$sec_level = 'authPriv';
 			}
 
 			if (strlen($priv_pass)) {
 				$priv_pass = '-X ' . snmp_escape_string($priv_pass) . ' -x ' . snmp_escape_string($priv_proto);
-			}else{
+			} else {
 				$priv_pass = '';
 			}
 
 			if (strlen($context)) {
 				$context = '-n ' . snmp_escape_string($context);
-			}else{
+			} else {
 				$context = '';
 			}
 
 			if (strlen($contextEngineID)) {
 				$contextEngineID = '-e ' . snmp_escape_string($contextEngineID);
-			}else{
+			} else {
 				$contextEngineID = '';
 			}
 
@@ -358,13 +358,13 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 
 		if ($version == '1') {
 			$snmp_value = snmpgetnext($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
-		}elseif ($version == '2') {
+		} elseif ($version == '2') {
 			$snmp_value = snmp2_getnext($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
-		}else{
+		} else {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				$sec_level = 'authNoPriv';
 				$priv_proto = '';
-			}else{
+			} else {
 				$sec_level = 'authPriv';
 			}
 
@@ -374,7 +374,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 		if ($snmp_value === false) {
 			cacti_log("WARNING: SNMP Error:'$snmp_error', Device:'$hostname', OID:'$oid'", false);
 			$snmp_value = 'U';
-		}else{
+		} else {
 			$snmp_value = format_snmp_string($snmp_value, false);
 		}
 	} else {
@@ -385,32 +385,32 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 
 		if ($version == '1') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
-		}elseif ($version == '2') {
+		} elseif ($version == '2') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
 			$version = '2c'; /* ucd/net snmp prefers this over '2' */
-		}elseif ($version == '3') {
+		} elseif ($version == '3') {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				$sec_level = 'authNoPriv';
 				$priv_proto = '';
-			}else{
+			} else {
 				$sec_level = 'authPriv';
 			}
 
 			if (strlen($priv_pass)) {
 				$priv_pass = '-X ' . snmp_escape_string($priv_pass) . ' -x ' . snmp_escape_string($priv_proto);
-			}else{
+			} else {
 				$priv_pass = '';
 			}
 
 			if (strlen($context)) {
 				$context = '-n ' . snmp_escape_string($context);
-			}else{
+			} else {
 				$context = '';
 			}
 
 			if (strlen($contextEngineID)) {
 				$contextEngineID = '-e ' . snmp_escape_string($contextEngineID);
-			}else{
+			} else {
 				$contextEngineID = '';
 			}
 
@@ -477,7 +477,7 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 			$oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.5' || $oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.14' ||
 			$oid == '.1.3.6.1.4.1.9.9.23.1.2.1.1.6') {
 			/* do nothing */
-		}elseif ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
+		} elseif ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
 			cacti_log('WARNING: SNMP Error:\'Timeout (' . ($info['timeout']/1000) . " ms)', Device:'" . $info['hostname'] . "', OID:'$oid'", false);
 		}
 
@@ -543,7 +543,7 @@ function cacti_snmp_session_getnext($session, $oid) {
 
 	if (is_array($oid)) {
 		$oid = implode(',', $oid);
-	}elseif ($out === false) {
+	} elseif ($out === false) {
 		if ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
 			cacti_log('WARNING: SNMP Error:\'Timeout (' . ($info['timeout']/1000) . " ms)', Device:'" . $info['hostname'] . "', OID:'$oid'", false);
 		}
@@ -617,13 +617,13 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 
 		if ($version == '1') {
 			$temp_array = snmprealwalk($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
-		}elseif ($version == 2) {
+		} elseif ($version == 2) {
 			$temp_array = snmp2_real_walk($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
-		}else{
+		} else {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				$sec_level = 'authNoPriv';
 				$priv_proto = '';
-			}else{
+			} else {
 				$sec_level = 'authPriv';
 			}
 
@@ -633,11 +633,11 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 		if ($temp_array === false) {
 			if ($temp_array === false) {
 				cacti_log("WARNING: SNMP Error:'$snmp_error', Device:'$hostname', OID:'$oid'", false);
-			}elseif ($oid == '.1.3.6.1.2.1.47.1.1.1.1.2' || $oid == '1.3.6.1.4.1.9.9.68.1.2.2.1.2' || 
+			} elseif ($oid == '.1.3.6.1.2.1.47.1.1.1.1.2' || $oid == '1.3.6.1.4.1.9.9.68.1.2.2.1.2' ||
 				$oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.5' || $oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.14' ||
 				$oid == '.1.3.6.1.4.1.9.9.23.1.2.1.1.6') {
 				/* do nothing */
-			}else{
+			} else {
 				cacti_log("WARNING: SNMP Error, Device:'$hostname', OID:'$oid'", false);
 			}
 		}
@@ -662,38 +662,38 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 				$o++;
 			}
 		}
-	}else{
+	} else {
 		/* ucd/net snmp want the timeout in seconds */
 		$timeout = ceil($timeout / 1000);
 
 		if ($version == '1') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
-		}elseif ($version == '2') {
+		} elseif ($version == '2') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
 			$version = '2c'; /* ucd/net snmp prefers this over '2' */
-		}elseif ($version == '3') {
+		} elseif ($version == '3') {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				$sec_level = 'authNoPriv';
 				$priv_proto = '';
-			}else{
+			} else {
 				$sec_level = 'authPriv';
 			}
 
 			if (strlen($priv_pass)) {
 				$priv_pass = '-X ' . snmp_escape_string($priv_pass) . ' -x ' . snmp_escape_string($priv_proto);
-			}else{
+			} else {
 				$priv_pass = '';
 			}
 
 			if (strlen($context)) {
 				$context = '-n ' . snmp_escape_string($context);
-			}else{
+			} else {
 				$context = '';
 			}
 
 			if (strlen($contextEngineID)) {
 				$contextEngineID = '-e ' . snmp_escape_string($contextEngineID);
-			}else{
+			} else {
 				$contextEngineID = '';
 			}
 
@@ -708,7 +708,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 
 		if (read_config_option('oid_increasing_check_disable') == 'on') {
 			$oidCheck = '-Cc';
-		}else{
+		} else {
 			$oidCheck = '';
 		}
 
@@ -722,7 +722,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 				' '        . $oidCheck . ' ' .
 				cacti_escapeshellarg($hostname) . ':' . $port . ' ' . 
 				cacti_escapeshellarg($oid));
-		}else{
+		} else {
 			$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option('path_snmpwalk')) . 
 				' -O QnU ' . $snmp_auth . 
 				' -v '     . $version . 
@@ -754,7 +754,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 					$snmp_array[$i]['oid']   = trim(preg_replace('/(.*) =.*/', "\\1", $value));
 					$snmp_array[$i]['value'] = format_snmp_string($value, true);
 					$i++;
-				}else{
+				} else {
 					$snmp_array[$i-1]['value'] .= $value;
 				}
 			}
@@ -782,7 +782,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 		}else {
 			$string = trim(implode('=', $string_array));
 		}
-	}else{
+	} else {
 		$string = trim($string);
 	}
 
@@ -810,7 +810,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 		$string = strrev($string);
 		if ($position = strpos($string, ':')) {
 			$string = trim(strrev(substr($string, 0, $position)));
-		}else{
+		} else {
 			$string = trim(strrev($string));
 		}
 	}
@@ -835,10 +835,10 @@ function format_snmp_string($string, $snmp_oid_included) {
 
 		if (is_numeric($output)) {
 			$string = number_format($output, 0, '', '');
-		}else{
+		} else {
 			$string = $output;
 		}
-	}elseif (preg_match('/hex-/i', $string)) {
+	} elseif (preg_match('/hex-/i', $string)) {
 		$output = '';
 
 		/* strip off the 'Hex-STRING:' */
@@ -853,7 +853,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 
 		if (is_mac_address($string)) {
 			$mac = true;
-		}else{
+		} else {
 			$mac = false;
 		}
 
@@ -870,10 +870,10 @@ function format_snmp_string($string, $snmp_oid_included) {
 
 		if (is_numeric($output)) {
 			$string = number_format($output, 0, '', '');
-		}else{
+		} else {
 			$string = $output;
 		}
-	}elseif (preg_match('/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/i', $string)) {
+	} elseif (preg_match('/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/i', $string)) {
 		$octet = '';
 
 		/* strip off the 'hex:' */
@@ -893,7 +893,7 @@ function format_snmp_string($string, $snmp_oid_included) {
 
 		/* copy the final result and make it upper case */
 		$string = strtoupper($octet);
-	}elseif (preg_match('/Timeticks:\s\((\d+)\)\s/', $string, $matches)) {
+	} elseif (preg_match('/Timeticks:\s\((\d+)\)\s/', $string, $matches)) {
 		$string = $matches[1];
 	}
 
@@ -913,7 +913,7 @@ function snmp_escape_string($string) {
 	if (! defined('SNMP_ESCAPE_CHARACTER')) {
 		if ($config['cacti_server_os'] == 'win32') {
 			define('SNMP_ESCAPE_CHARACTER', '"');
-		}else{
+		} else {
 			define('SNMP_ESCAPE_CHARACTER', "'");
 		}
 	}
@@ -939,7 +939,7 @@ function snmp_get_method($version = 1) {
 		return SNMP_METHOD_PHP;
 	}else if (file_exists(read_config_option('path_snmpget'))) {
 		return SNMP_METHOD_BINARY;
-	}else{
+	} else {
 		/* looks like snmp is broken */
 		return SNMP_METHOD_BINARY;
 	}

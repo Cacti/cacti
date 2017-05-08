@@ -54,7 +54,7 @@ function set_default_graph_action() {
 			default:
 				break;
 			}
-		}elseif (in_array($_SESSION['sess_graph_view_action'], array('tree', 'list', 'preview'))) {
+		} elseif (in_array($_SESSION['sess_graph_view_action'], array('tree', 'list', 'preview'))) {
 			if (is_view_allowed('show_' . $_SESSION['sess_graph_view_action'])) {
 				set_request_var('action', $_SESSION['sess_graph_view_action']);
 			}
@@ -64,11 +64,11 @@ function set_default_graph_action() {
 	if (!isset_request_var('action')) {
 		if (is_view_allowed('show_tree')) {
 			set_request_var('action', 'tree');
-		}elseif (is_view_allowed('show_preview')) {
+		} elseif (is_view_allowed('show_preview')) {
 			set_request_var('action', 'preview');
-		}elseif (is_view_allowed('show_list')) {
+		} elseif (is_view_allowed('show_list')) {
 			set_request_var('action', 'list');
-		}else{
+		} else {
 			set_request_var('action', '');
 		}
 	}
@@ -437,7 +437,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				if (date1Open) {
 					date1Open = false;
 					$('#date1').datetimepicker('hide');
-				}else{
+				} else {
 					date1Open = true;
 					$('#date1').datetimepicker('show');
 				}
@@ -447,7 +447,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				if (date2Open) {
 					date2Open = false;
 					$('#date2').datetimepicker('hide');
-				}else{
+				} else {
 					date2Open = true;
 					$('#date2').datetimepicker('show');
 				}

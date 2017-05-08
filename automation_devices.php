@@ -104,7 +104,7 @@ function form_actions() {
 
 					if ($host_id) {
 						$message = "<span class='deviceUp'>" . __('Device') . ' ' . htmlspecialchars($description) . ' ' . __('Added to Cacti') . '</span><br>';
-					}else{
+					} else {
 						$message = "<span class='deviceDown'>" . __('Device') . ' ' . htmlspecialchars($description) . ' ' . __('Not Added to Cacti') . '</span><br>';
 					}
 				}
@@ -198,7 +198,7 @@ function form_actions() {
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Add Device(s)') . "'>";
 		}
-	}else{
+	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Device.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -271,7 +271,7 @@ function display_discovery_page() {
 	$status = array("<span class='deviceDown'>" . __('Down') . '</span>',"<span class='deviceUp'>" . __('Up') . '</span>');
 	if (sizeof($results)) {
 		foreach($results as $host) {
-			form_alternate_row('line' . $host['network_id'], true);
+			form_alternate_row('line' . base64_encode($host['ip']), true);
 
 			if ($host['sysUptime'] != 0) {
 				$days = intval($host['sysUptime']/8640000);
@@ -299,7 +299,7 @@ function display_discovery_page() {
 			form_checkbox_cell($host['ip'], $host['id']);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr><td colspan=12><em>" . __('No Devices Found') . "</em></td></tr>";
 	}
 
@@ -642,7 +642,7 @@ function purge_discovery_results() {
 function snmp_data($item) {
 	if ($item == '') {
 		return 'N/A';
-	}else{
+	} else {
 		return htmlspecialchars(str_replace(':',' ', $item));
 	}
 }
@@ -650,7 +650,7 @@ function snmp_data($item) {
 function export_data($item) {
 	if ($item == '') {
 		return 'N/A';
-	}else{
+	} else {
 		return $item;
 	}
 }

@@ -42,41 +42,41 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 
 	/* loop through each available field */
 	if (sizeof($form_array)) {
-	foreach ($form_array as $field_name => $field_array) {
-		/* loop through each sub-field that we are going to check for variables */
-		foreach ($check_fields as $field_to_check) {
-			if (isset($field_array[$field_to_check]) && (is_array($form_array[$field_name][$field_to_check]))) {
-				/* if the field/sub-field combination is an array, resolve it recursively */
-				$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
-			}elseif (isset($field_array[$field_to_check]) && (!is_array($field_array[$field_to_check])) && (preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $field_array[$field_to_check], $matches))) {
-				$string = $field_array[$field_to_check];
-				while ( 1 ) {
-					/* an empty field name in the variable means don't treat this as an array */
-					if ($matches[2] == '') {
-						if (is_array(${$matches[1]})) {
-							/* the existing value is already an array, leave it alone */
-							$form_array[$field_name][$field_to_check] = ${$matches[1]};
-							break;
-						}else{
-							/* the existing value is probably a single variable */
-							$form_array[$field_name][$field_to_check] = str_replace($matches[0], ${$matches[1]}, $field_array[$field_to_check]);
-							break;
-						}
-					}else{
-						/* copy the value down from the array/key specified in the variable */
-						$string = str_replace($matches[0], ((isset(${$matches[1]}{$matches[2]})) ? ${$matches[1]}{$matches[2]} : ''), $string);
+		foreach ($form_array as $field_name => $field_array) {
+			/* loop through each sub-field that we are going to check for variables */
+			foreach ($check_fields as $field_to_check) {
+				if (isset($field_array[$field_to_check]) && is_array($form_array[$field_name][$field_to_check])) {
+					/* if the field/sub-field combination is an array, resolve it recursively */
+					$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
+				} elseif (isset($field_array[$field_to_check]) && !is_array($field_array[$field_to_check]) && preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $field_array[$field_to_check], $matches)) {
+					$string = $field_array[$field_to_check];
+					while ( 1 ) {
+						/* an empty field name in the variable means don't treat this as an array */
+						if ($matches[2] == '') {
+							if (is_array(${$matches[1]})) {
+								/* the existing value is already an array, leave it alone */
+								$form_array[$field_name][$field_to_check] = ${$matches[1]};
+								break;
+							} else {
+								/* the existing value is probably a single variable */
+								$form_array[$field_name][$field_to_check] = str_replace($matches[0], ${$matches[1]}, $field_array[$field_to_check]);
+								break;
+							}
+						} else {
+							/* copy the value down from the array/key specified in the variable */
+							$string = str_replace($matches[0], (isset(${$matches[1]}{$matches[2]}) ? ${$matches[1]}{$matches[2]} : ''), $string);
 
-						$matches = array();
-						preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
-						if (!sizeof($matches)) {
-							$form_array[$field_name][$field_to_check] = $string;
-							break;
+							$matches = array();
+							preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
+							if (!sizeof($matches)) {
+								$form_array[$field_name][$field_to_check] = $string;
+								break;
+							}
 						}
 					}
 				}
 			}
 		}
-	}
 	}
 
 	return $form_array;
@@ -90,22 +90,22 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
    @arg $row_id - used to allow js and ajax actions on this object
    @returns - the background color used for this particular row */
 function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = '') {
-	if (($row_value % 2) == 1) {
+	if ($row_value % 2 == 1) {
 			$class='odd';
 			$current_color = $row_color1;
-	}else{
+	} else {
 		if ($row_color2 == '' || $row_color2 == 'E5E5E5') {
 			$class = 'even';
-		}else{
+		} else {
 			$class = 'even-alternate';
 		}
 		$current_color = $row_color1;
 	}
 
-	if (strlen($row_id)) {
-		print "<tr class='$class selectable formRow' id='$row_id'>\n";
-	}else{
-		print "<tr class='$class formRow'>\n";
+	if ($row_id != '') {
+		print "<tr class='$class selectable tableRow' id='$row_id'>\n";
+	} else {
+		print "<tr class='$class tableRow'>\n";
 	}
 
 	return $current_color;
@@ -118,26 +118,24 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
 function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	static $i = 1;
 
-	if (($i % 2) == 1) {
+	if ($i % 2 == 1) {
 		$class = 'odd';
-	}else{
-		if ($light) {
-			$class = 'even-alternate';
-		}else{
-			$class = 'even';
-		}
+	} elseif ($light) {
+		$class = 'even-alternate';
+	} else {
+		$class = 'even';
 	}
 
 	$i++;
 
-	if (strlen($row_id) && substr($row_id,0,4) != 'row_' && !$disabled) {
-		print "<tr class='$class selectable formRow' id='$row_id'>\n";
-	}elseif (substr($row_id,0,4) == 'row_') {
-		print "<tr class='$class formRow' id='$row_id'>\n";
-	}elseif (strlen($row_id)) {
-		print "<tr class='$class formRow' id='$row_id'>\n";
-	}else{
-		print "<tr class='$class formRow'>\n";
+	if ($row_id != '' && !$disabled && substr($row_id, 0, 4) != 'row_') {
+		print "<tr class='$class selectable tableRow' id='$row_id'>\n";
+	} elseif (substr($row_id, 0, 4) == 'row_') {
+		print "<tr class='$class tableRow' id='$row_id'>\n";
+	} elseif ($row_id != '') {
+		print "<tr class='$class tableRow' id='$row_id'>\n";
+	} else {
+		print "<tr class='$class tableRow'>\n";
 	}
 }
 
@@ -156,7 +154,7 @@ function form_selectable_cell($contents, $id, $width='', $style_or_class = '', $
 			if ($width != '') {
 				$output .= " style='width:$width;'";
 			}
-		}else{
+		} else {
 			$output = "style='" . $style_or_class;
 			if ($width != '') {
 				$output .= ($output != '' ? ';':'') . "width:$width;";
@@ -167,7 +165,7 @@ function form_selectable_cell($contents, $id, $width='', $style_or_class = '', $
 
 	if ($title != '') {
 		$wrapper = "<span class='cactiTooltipHint' style='padding:0px;margin:0px;' title='" . str_replace(array('"', "'"), '', $title) . "'>" . $contents . "</span>";
-	}else{
+	} else {
 		$wrapper = $contents;
 	}
 
@@ -206,11 +204,7 @@ function form_confim_buttons($post_variable, $item_array, $save_message, $return
    @arg $html_boolean - the value of the HTML checkbox
    @returns - true or false based on the value of the HTML checkbox */
 function html_boolean($html_boolean) {
-	if ($html_boolean == "on") {
-		return true;
-	}else{
-		return false;
-	}
+	return ($html_boolean == "on");
 }
 
 /* html_boolean_friendly - returns the natural language equivalent of an HTML
@@ -221,7 +215,7 @@ function html_boolean($html_boolean) {
 function html_boolean_friendly($html_boolean) {
 	if ($html_boolean == "on") {
 		return "Selected";
-	}else{
+	} else {
 		return "Not Selected";
 	}
 }
@@ -238,11 +232,9 @@ function get_checkbox_style() {
    @arg $default - The default action is not set
    @returns - null */
 function set_default_action($default = '') {
-	global $_CACTI_REQUEST;
-
-	if (!isset_request_var('action')) { 
+	if (!isset_request_var('action')) {
 		set_request_var('action', $default);
-	}else{
+	} else {
 		set_request_var('action', $_REQUEST['action']);
 	}
 }
@@ -315,7 +307,7 @@ function get_request_var($name, $default = '') {
 
 	if (isset($_CACTI_REQUEST[$name])) {
 		return $_CACTI_REQUEST[$name];
-	}elseif (isset_request_var($name)) {
+	} elseif (isset_request_var($name)) {
 		if ($developer == 'on') {
 			html_log_input_error($name);
 		}
@@ -353,36 +345,36 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 			set_request_var($name, get_nfilter_request_var($name));
 
 			return get_request_var($name);
-		}elseif (get_nfilter_request_var($name) == 'undefined') {
+		} elseif (get_nfilter_request_var($name) == 'undefined') {
 			if (isset($options['default'])) {
 				set_request_var($name, $options['default']);
 
 				return $options['default'];
-			}else{
+			} else {
 				set_request_var($name, '');
 
 				return '';
 			}
-		}else{
+		} else {
 			if (get_nfilter_request_var($name) == '0') {
 				$value = '0';
-			}elseif (get_nfilter_request_var($name) == 'undefined') {
+			} elseif (get_nfilter_request_var($name) == 'undefined') {
 				if (isset($options['default'])) {
 					$value = $options['default'];
-				}else{
+				} else {
 					$value = '';
 				}
-			}elseif (isempty_request_var($name)) {
+			} elseif (isempty_request_var($name)) {
 				$value = '';
-			}elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
+			} elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
 				$valid = validate_is_regex($_REQUEST[$name]);
 				if ($valid === true) {
 					$value = $_REQUEST[$name];
-				}else{
+				} else {
 					$value = FALSE;
 					$custom_error = $valid;
 				}
-			}elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
+			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
 				$valid = true;
 				if (is_array($_REQUEST[$name])) {
 					foreach($_REQUEST[$name] AS $number) {
@@ -391,16 +383,16 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 							break;
 						}
 					}
-				}else{
+				} else {
 					$valid = false;
 				}
 
 				if ($valid == true) {
 					$value = $_REQUEST[$name];
-				}else{
+				} else {
 					$value = false;
 				}
-			}elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
+			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 				$valid = true;
 				$values = explode(',', $_REQUEST[$name]);
 				foreach($values AS $number) {
@@ -412,12 +404,12 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 
 				if ($valid == true) {
 					$value = $_REQUEST[$name];
-				}else{
+				} else {
 					$value = false;
 				}
-			}elseif (!sizeof($options)) {
+			} elseif (!sizeof($options)) {
 				$value = filter_var($_REQUEST[$name], $filter);
-			}else{
+			} else {
 				$value = filter_var($_REQUEST[$name], $filter, $options);
 			}
 		}
@@ -427,20 +419,20 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($name), $cusom_error);
 				set_request_var($name, '');
 				raise_message('custom_error');
-			}else{
+			} else {
 				die_html_input_error($name, get_nfilter_request_var($name));
 			}
-		}else{
+		} else {
 			set_request_var($name, $value);
 
 			return $value;
 		}
-	}else{
+	} else {
 		if (isset($options['default'])) {
 			set_request_var($name, $options['default']);
 
 			return $options['default'];
-		}else{
+		} else {
 			return;
 		}
 	}
@@ -458,9 +450,9 @@ function get_nfilter_request_var($name, $default = '') {
 
 	if (isset($_CACTI_REQUEST[$name])) {
 		return $_CACTI_REQUEST[$name];
-	}elseif (isset($_REQUEST[$name])) {
+	} elseif (isset($_REQUEST[$name])) {
 		return $_REQUEST[$name];
-	}else{
+	} else {
 		return $default;
 	}
 }
@@ -554,9 +546,9 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 			if ($sess_prefix != '') {
 				if (isset($options['session'])) {
 					$session_variable = $options['session'];
-				}elseif ($variable != 'rows') {
+				} elseif ($variable != 'rows') {
 					$session_variable = $sess_prefix . '_' . $variable;
-				}else{
+				} else {
 					$session_variable = 'sess_default_rows';
 				}
 
@@ -564,9 +556,9 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 				if (isset_request_var('clear')) {
 					kill_session_var($session_variable);
 					unset_request_var($variable);
-				}elseif (isset_request_var('reset')) {
+				} elseif (isset_request_var('reset')) {
 					kill_session_var($session_variable);
-				}elseif (isset($options['pageset'])) {
+				} elseif (isset($options['pageset'])) {
 					$changed += check_changed($variable, $session_variable);
 				}
 			}
@@ -574,32 +566,32 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 			if (!isset_request_var($variable)) {
 				if ($sess_prefix != '' && isset($_SESSION[$session_variable])) {
 					set_request_var($variable, $_SESSION[$session_variable]);
-				}elseif (isset($options['default'])) {
+				} elseif (isset($options['default'])) {
 					set_request_var($variable, $options['default']);
-				}else{
+				} else {
 					cacti_log("Filter Variable: $variable, Must have a default and none is set", false);
 					set_request_var($variable, '');
 				}
-			}else{
+			} else {
 				if (get_nfilter_request_var($variable) == '0') {
 					$value = '0';
-				}elseif (get_nfilter_request_var($variable) == 'undefined') {
+				} elseif (get_nfilter_request_var($variable) == 'undefined') {
 					if (isset($options['default'])) {
 						$value = $options['default'];
-					}else{
+					} else {
 						$value = '';
 					}
-				}elseif (isempty_request_var($variable)) {
+				} elseif (isempty_request_var($variable)) {
 					$value = '';
-				}elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
+				} elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
 					$valid = validate_is_regex($_REQUEST[$variable]);
 					if ($valid === true) {
 						$value = $_REQUEST[$variable];
-					}else{
+					} else {
 						$value = false;
 						$custom_error = $valid;
 					}
-				}elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
+				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
 					$valid = true;
 					if (is_array($_REQUEST[$variable])) {
 						foreach($_REQUEST[$variable] AS $number) {
@@ -608,16 +600,16 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 								break;
 							}
 						}
-					}else{
+					} else {
 						$valid = false;
 					}
 
 					if ($valid == true) {
 						$value = $_REQUEST[$variable];
-					}else{
+					} else {
 						$value = false;
 					}
-				}elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
+				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 					$valid = true;
 					$values = explode(',', $_REQUEST[$variable]);
 					foreach($values AS $number) {
@@ -629,12 +621,12 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 
 					if ($valid == true) {
 						$value = $_REQUEST[$variable];
-					}else{
+					} else {
 						$value = false;
 					}
-				}elseif (!isset($options['options'])) {
+				} elseif (!isset($options['options'])) {
 					$value = filter_var($_REQUEST[$variable], $options['filter']);
-				}else{
+				} else {
 					$value = filter_var($_REQUEST[$variable], $options['filter'], $options['options']);
 				}
 
@@ -643,10 +635,10 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 						$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($variable), $custom_error);
 						set_request_var($variable, '');
 						raise_message('custom_error');
-					}else{
+					} else {
 						die_html_input_error($variable, get_nfilter_request_var($variable), $custom_error);
 					}
-				}else{
+				} else {
 					set_request_var($variable, $value);
 				}
 			}
@@ -654,7 +646,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 			if ($sess_prefix != '') {
 				if (isset_request_var($variable)) {
 					$_SESSION[$session_variable] = get_request_var($variable);
-				}elseif (isset($_SESSION[$session_variable])) {
+				} elseif (isset($_SESSION[$session_variable])) {
 					set_request_var($variable, $_SESSION[$session_variable]);
 				}
 			}
@@ -671,48 +663,72 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 
 /* update_order_string - creates a sort string for standard Cacti tables
    @returns - null */
-function update_order_string() {
-	$page  = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
-	if (isset_request_var('action')) {
-		$page .= '_' . get_nfilter_request_var('action');
-	}
-
-	if (isset_request_var('tab')) {
-		$page .= '_' . get_nfilter_request_var('tab');
-	}
+function update_order_string($inplace = false) {
+	$page = get_order_string_page();
 
 	$order = '';
 
-	if (isset_request_var('clear')) {
-		unset($_SESSION['sort_data'][$page]);
-		unset($_SESSION['sort_string'][$page]);
-	}elseif (isset_request_var('add') && get_nfilter_request_var('add') == 'reset') {
-		unset($_SESSION['sort_data'][$page]);
-		unset($_SESSION['sort_string'][$page]);
-
-		$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
-		$_SESSION['sort_string'][$page] = 'ORDER BY ' . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
-	}elseif (isset_request_var('sort_column')) {
-		$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
+	if ($inplace) {
 		$_SESSION['sort_string'][$page] = 'ORDER BY ';
 		foreach($_SESSION['sort_data'][$page] as $column => $direction) {
 			if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
 				$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
-			}else{
+			} else {
 				$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
 			}
 		}
 		$_SESSION['sort_string'][$page] .= $order;
-	}else{
-		unset($_SESSION['sort_data'][$page]);
-		unset($_SESSION['sort_string'][$page]);
+	} else {
+		if (isset_request_var('clear')) {
+			unset($_SESSION['sort_data'][$page]);
+			unset($_SESSION['sort_string'][$page]);
+		} elseif (isset_request_var('add') && get_nfilter_request_var('add') == 'reset') {
+			unset($_SESSION['sort_data'][$page]);
+			unset($_SESSION['sort_string'][$page]);
+
+			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
+			$_SESSION['sort_string'][$page] = 'ORDER BY ' . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
+		} elseif (isset_request_var('sort_column')) {
+			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
+			$_SESSION['sort_string'][$page] = 'ORDER BY ';
+			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
+				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
+					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
+				} else {
+					$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
+				}
+			}
+			$_SESSION['sort_string'][$page] .= $order;
+		} else {
+			unset($_SESSION['sort_data'][$page]);
+			unset($_SESSION['sort_string'][$page]);
+		}
 	}
 }
 
 /* get_order_string - returns a valid order string for a table 
    @returns - the order string */
 function get_order_string() {
-	$page = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+	$page = get_order_string_page();
+
+	if (isset($_SESSION['sort_string'][$page])) {
+		return $_SESSION['sort_string'][$page];
+	} else {
+		return 'ORDER BY ' . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
+	}
+}
+
+function remove_column_from_order_string($column) {
+	$page = get_order_string_page();
+
+	if (isset($_SESSIION['sort_data'][$page][$column])) {
+		unset($_SESSIION['sort_data'][$page][$column]);
+		update_order_string(true);
+	}
+}
+
+function get_order_string_page() {
+	$page = str_replace('.php', '', get_current_page());
 
 	if (isset_request_var('action')) {
 		$page .= '_' . get_nfilter_request_var('action');
@@ -722,11 +738,7 @@ function get_order_string() {
 		$page .= '_' . get_nfilter_request_var('tab');
 	}
 
-	if (isset($_SESSION['sort_string'][$page])) {
-		return $_SESSION['sort_string'][$page];
-	}else{
-		return 'ORDER BY ' . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
-	}
+	return $page;
 }
 
 function validate_is_regex($regex) {
@@ -764,7 +776,7 @@ function validate_is_regex($regex) {
 
 	if (empty($error)) {
 		return $php_error;
-	}else{
+	} else {
 		return $errors[$error];
 	}
 }
@@ -778,9 +790,9 @@ function validate_is_regex($regex) {
 function load_current_session_value($request_var_name, $session_var_name, $default_value) {
 	if (isset_request_var($request_var_name)) {
 		$_SESSION[$session_var_name] = get_request_var($request_var_name);
-	}elseif (isset($_SESSION[$session_var_name])) {
+	} elseif (isset($_SESSION[$session_var_name])) {
 		set_request_var($request_var_name, $_SESSION[$session_var_name]);
-	}else{
+	} else {
 		set_request_var($request_var_name, $default_value);
 	}
 }
@@ -791,16 +803,9 @@ function load_current_session_value($request_var_name, $session_var_name, $defau
    @arg $status - the status type of the device as defined in global_constants.php
    @returns - a string containing html that represents the device's current status */
 function get_colored_device_status($disabled, $status) {
-	$status_colors = array(
-		HOST_DOWN       => 'deviceDown',
-		HOST_ERROR      => 'deviceError',
-		HOST_RECOVERING => 'deviceRecovering',
-		HOST_UP         => 'deviceUp'
-	);
-
 	if ($disabled) {
 		return "<span class='deviceDisabled'>" . __('Disabled') . "</span>";
-	}else{
+	} else {
 		switch ($status) {
 			case HOST_DOWN:
 				return "<span class='deviceDown'>" . __('Down') . "</span>"; 
@@ -827,7 +832,7 @@ function get_colored_device_status($disabled, $status) {
 function get_current_graph_start() {
 	if (isset($_SESSION['sess_current_timespan_begin_now'])) {
 		return $_SESSION['sess_current_timespan_begin_now'];
-	}else{
+	} else {
 		return '-' . DEFAULT_TIMESPAN;
 	}
 }
@@ -838,7 +843,7 @@ function get_current_graph_start() {
 function get_current_graph_end() {
 	if (isset($_SESSION['sess_current_timespan_end_now'])) {
 		return $_SESSION['sess_current_timespan_end_now'];
-	}else{
+	} else {
 		return '0';
 	}
 }
@@ -864,7 +869,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	if (strpos($url, '?') !== false) {
 		$url . '&';
-	}else{
+	} else {
 		$url . '?';
 	}
 
@@ -872,7 +877,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	if ($rows_per_page <= 0) {
 		$total_pages = 0;
-	}else{
+	} else {
 		$total_pages = ceil($total_rows / $rows_per_page);
 	}
 
@@ -902,7 +907,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		if ($page_number < $pages_per_screen) {
 			if ($current_page == $page) {
 				$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($page);return false'>$page</a></li>";
-			}else{
+			} else {
 				$url_page_select .= "<li><a href='#' onClick='goto$page_var($page);return false'>$page</a></li>";
 			}
 		}
@@ -916,9 +921,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	$url_page_select .= '</ul>';
 
 	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; $.get('${url}header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); if (typeof initializeGraphs == 'function') initializeGraphs();}); }</script>";
-	}else{
-		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') }else{ var url_add=''; }; document.location='$url$page_var='+pageNo+url_add }</script>";
+		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('${url}header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); if (typeof initializeGraphs == 'function') initializeGraphs();}); }</script>";
+	} else {
+		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$url$page_var='+pageNo+url_add }</script>";
 	}
 
 	return $url_page_select;

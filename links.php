@@ -82,7 +82,7 @@ case 'save':
 	if ($save['style'] == 'CONSOLE') {
 		if ($consolesection == '__NEW__') {
 			$extendedstyle = $consolenewsection;
-		}else{
+		} else {
 			$extendedstyle = $consolesection;
 		}
 
@@ -102,7 +102,7 @@ case 'save':
 
 		header('Location: links.php?header=false');
 		exit;
-	}else{
+	} else {
 		raise_message(2);
 
 		header('Location: links.php?action=edit&header=false&id=' . (isset_request_var('id') ? get_filter_request_var('id'):''));
@@ -140,15 +140,15 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '3') { /* Enable Page */
+			if ($_POST['drp_action'] == '3') { // Enable Page
 				for ($i=0;($i<count($selected_items));$i++) {
 					db_execute_prepared("UPDATE external_links SET enabled='on' WHERE id = ?", array($selected_items[$i]));
 				}
-			}elseif ($_POST['drp_action'] == '2') { /* Disable Page */
+			} elseif ($_POST['drp_action'] == '2') { // Disable Page
 				for ($i=0;($i<count($selected_items));$i++) {
 					db_execute_prepared("UPDATE external_links SET enabled='' WHERE id = ?", array($selected_items[$i]));
 				}
-			}elseif ($_POST['drp_action'] == '1') { /* Delete Page */
+			} elseif ($_POST['drp_action'] == '1') { // Delete Page
 				for ($i=0;($i<count($selected_items));$i++) {
 					db_execute_prepared('DELETE FROM external_links WHERE id = ?', array($selected_items[$i]));
 					db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($selected_items[$i]+10000));
@@ -185,7 +185,7 @@ function form_actions() {
 	html_start_box($actions[get_request_var_post('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($pages) && sizeof($pages)) {
-		if (get_request_var('drp_action') == '3') { /* Enable Pages */
+		if (get_request_var('drp_action') == '3') { // Enable Pages
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to Enable the following Page(s).') . "</p>
@@ -194,7 +194,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Enable Page(s)') . "'>";
-		}elseif (get_request_var('drp_action') == '2') { /* Disable Pages */
+		} elseif (get_request_var('drp_action') == '2') { // Disable Pages
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to Disable the following Page(s).') . "</p>
@@ -203,7 +203,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Disable Page(s)') . "'>";
-		}elseif (get_request_var('drp_action') == '1') { /* Delete Pages*/
+		} elseif (get_request_var('drp_action') == '1') { // Delete Pages
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to Delete the following Page(s).') . "</p>
@@ -213,7 +213,7 @@ function form_actions() {
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Page(s)') . "'>";
 		}
-	}else{
+	} else {
 		print "<tr><td><span class='textError'>" . __('You must select at least one page.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -271,7 +271,7 @@ function pages() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -349,7 +349,7 @@ function pages() {
 
 	if (strlen(get_request_var('filter'))) {
 		$sql_where = " WHERE title LIKE '%" . get_request_var('filter') . "%' OR contentfile LIKE '%" . get_request_var('filter') . "%'";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
@@ -404,18 +404,18 @@ function pages() {
 			if (get_request_var('sort_column') == 'sortorder') {
 				if ($i != 0) {
 					$sort = '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id='.$page['id']) . '"></a>';
-				}else{
+				} else {
 					$sort = '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i == sizeof($pages)-1) {
 					$sort .= '<span class="moveArrowNone"></span>';
-				}else{
+				} else {
 					$sort .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
 				form_selectable_cell($sort, $page['id'], '', 'center');
-			}else{
+			} else {
 				form_selectable_cell(__('Sort for Ordering'), $page['id']);
 			}
 
@@ -424,7 +424,7 @@ function pages() {
 
 			$i++;
 		}
-	}else{
+	} else {
 		print "<tr><td><em>" . __('No Pages Found') . "</em></td></tr>\n";
 	}
 
@@ -491,7 +491,7 @@ function edit_page() {
 
 	if (isset_request_var('id')) {
 		$data = db_fetch_row_prepared('SELECT * FROM external_links WHERE id = ?', array(get_filter_request_var('id')));
-	}else{
+	} else {
 		$data = array();
 	}
 
@@ -564,9 +564,9 @@ function edit_page() {
 	form_start('links.php');
 
 	if (isset($data['title'])) {
-		html_start_box(__('External Links [edit: %s]', $data['title']), '100%', '', '3', 'center', '');
-	}else{
-		html_start_box(__('External Links [new]'), '100%', '', '3', 'center', '');
+		html_start_box(__('External Links [edit: %s]', $data['title']), '100%', true, '3', 'center', '');
+	} else {
+		html_start_box(__('External Links [new]'), '100%', true, '3', 'center', '');
 	}
 
 	draw_edit_form(
@@ -576,7 +576,7 @@ function edit_page() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('links.php', 'save');
 
@@ -609,7 +609,7 @@ function edit_page() {
 		if ($('#consolesection').val() == '__NEW__') {
 			$('#row_consolenewsection').show();
 			$('#consolenewsection').focus();
-		}else{
+		} else {
 			$('#row_consolenewsection').hide();
 		}
 	}
@@ -617,7 +617,7 @@ function edit_page() {
 	function changeFilename() {
 		if ($('#filename').val() == 0) {
 			$('#row_fileurl').show();
-		}else{
+		} else {
 			$('#row_fileurl').hide();
 		}
 	}

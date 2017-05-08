@@ -25,20 +25,20 @@ function ss_net_snmp_disk_io($host_id_or_hostname) {
 
 	if (!is_numeric($host_id_or_hostname)) {
 		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE hostname = ?', array($host_id_or_hostname));
-	}else{
+	} else {
 		$host_id = $host_id_or_hostname;
 	}
 
 	if ($config['cacti_server_os'] == 'win32') {
 		$tmpdir = getenv('TEMP');
-	}else{
+	} else {
 		$tmpdir = '/tmp';
 	}
 
 	if ($environ != 'realtime') {
 		$tmpdir = $tmpdir . '/cacti/net-snmp-devio';
 		$tmpfile = $host_id . '_io';
-	}else{
+	} else {
 		$tmpdir = $tmpdir . '/cacti/net-snmp-devio';
 		$tmpfile = $host_id . '_' . $poller_id . '_io_rt';
 	}
@@ -132,13 +132,13 @@ function ss_net_snmp_disk_io($host_id_or_hostname) {
 			if (array_key_exists($index, $indexes)) {
 				if (!isset($previous['uptime'])) {
 					$reads = 'U';
-				}elseif ($current['uptime'] < $previous['uptime']) {
+				} elseif ($current['uptime'] < $previous['uptime']) {
 					$reads = 'U';
-				}elseif (!isset($previous["dr$index"])) {
+				} elseif (!isset($previous["dr$index"])) {
 					$reads = 'U';
-				}elseif ($previous["dr$index"] > $measure['value']) {
+				} elseif ($previous["dr$index"] > $measure['value']) {
 					$reads += $measure['value'] + 4294967295 - $previous["dr$index"] - $previous["dr$index"];
-				}else{
+				} else {
 					$reads += $measure['value'] - $previous["dr$index"];
 				}
 
@@ -170,13 +170,13 @@ function ss_net_snmp_disk_io($host_id_or_hostname) {
 			if (array_key_exists($index, $indexes)) {
 				if (!isset($previous['uptime'])) {
 					$writes = 'U';
-				}elseif ($current['uptime'] < $previous['uptime']) {
+				} elseif ($current['uptime'] < $previous['uptime']) {
 					$writes = 'U';
-				}elseif (!isset($previous["dw$index"])) {
+				} elseif (!isset($previous["dw$index"])) {
 					$writes = 'U';
-				}elseif ($previous["dw$index"] > $measure['value']) {
+				} elseif ($previous["dw$index"] > $measure['value']) {
 					$writes += $measure['value'] + 4294967295 - $previous["dw$index"] - $previous["dw$index"];
-				}else{
+				} else {
 					$writes += $measure['value'] - $previous["dw$index"];
 				}
 
@@ -190,7 +190,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname) {
 
 	if ($found) {
 		return "reads:$reads writes:$writes";
-	}else{
+	} else {
 		return 'reads:0 writes:0';
 	}
 }

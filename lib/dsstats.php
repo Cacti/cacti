@@ -62,7 +62,7 @@ function dsstats_get_and_store_ds_avgpeak_values($interval) {
 			$rrdfile = str_replace('<path_rra>', $config['rra_path'], $file['data_source_path']);
 
 			$stats[$file['local_data_id']] = dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes);
-		}else{
+		} else {
 			$data_source_name = db_fetch_cell_prepared('SELECT name_cache FROM data_template_data WHERE local_data_id = ?', array($file['local_data_id']));
 			cacti_log("WARNING: Data Source '$data_source_name' is damaged and contains no path.  Please delete and re-create both the Graph and Data Source.", false, 'DSSTATS');
 		}
@@ -99,7 +99,7 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 		foreach($stats as $rrd_name => $avgpeak_stats) {
 			if ($i == 1) {
 				$delim = ' ';
-			}else{
+			} else {
 				$delim = ', ';
 			}
 
@@ -116,7 +116,7 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 				$outbuf     = '';
 				$out_length = 0;
 				$i          = 1;
-			}else{
+			} else {
 				$i++;
 			}
 		}
@@ -489,7 +489,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {
 		error_reporting(E_ALL ^ E_DEPRECATED);
-	}else{
+	} else {
 		error_reporting(E_ALL);
 	}
 
@@ -550,7 +550,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 						if (!isset($ds_types[$result['rrd_name']]['data_source_type_id'])) {
 							$polling_interval = db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($data_source['local_data_id']));
 							$ds_type          = db_fetch_cell_prepared('SELECT data_source_type_id FROM data_template_rrd WHERE local_data_id = ?', array($data_source['local_data_id']));
-						}else{
+						} else {
 							$polling_interval = $ds_types[$result['rrd_name']]['rrd_step'];
 							$ds_type          = $ds_types[$result['rrd_name']]['data_source_type_id'];
 						}
@@ -608,7 +608,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 								if ($result['output'] != 'NULL') {
 									$currentval = abs($result['output']);
 									$lastval    = $currentval;
-								}else{
+								} else {
 									$currentval = 'NULL';
 									$lastval    = $currentval;
 								}
@@ -618,7 +618,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 								if ($result['output'] != 'NULL') {
 									$currentval = $result['output'];
 									$lastval    = $result['output'] == 'U' ? 'NULL' : $result['output'];
-								}else{
+								} else {
 									$currentval = 'NULL';
 									$lastval    = $currentval;
 								}

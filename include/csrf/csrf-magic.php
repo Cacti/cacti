@@ -289,12 +289,12 @@ function csrf_callback($tokens) {
 
 		if (strpos($_SERVER['HTTP_REFERER'], '?') !== false) {
 			$add = '&';
-		}else{
+		} else {
 			$add = '?';
 		}
 
 		header('Location:' . $_SERVER['HTTP_REFERER'] . (strpos($_SERVER['HTTP_REFERER'], 'header=false')) !== 'false' ? $add . '&header=false':'');
-	}else{
+	} else {
 		header('logout.php');
 		exit;
 		header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
@@ -356,7 +356,7 @@ function csrf_check_token($token) {
 
 			if (isset($_SERVER['IP_ADDRESS'])) {
 	            return $value === csrf_hash($_SERVER['IP_ADDRESS'], $time);
-			}elseif (isset($_SERVER['SERVER_ADDR'])) {
+			} elseif (isset($_SERVER['SERVER_ADDR'])) {
 				return $value === csrf_hash(gethostbyname($_SERVER['REMOTE_ADDR']), $time);
 			}
     }

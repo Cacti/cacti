@@ -36,7 +36,7 @@ include_once($config['base_path'] . '/lib/auth.php');
 if (empty($_SERVER['argv'][1]) ){
 	display_help();
 	exit;
-}else{
+} else {
 	switch($_SERVER['argv'][1]) {
 		case '--help':
 		case '-H':

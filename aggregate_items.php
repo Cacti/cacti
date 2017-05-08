@@ -132,7 +132,7 @@ function form_save() {
 
 				if ($graph_template_item_id) {
 					raise_message(1);
-				}else{
+				} else {
 					raise_message(2);
 				}
 			}
@@ -143,7 +143,7 @@ function form_save() {
 		if (is_error_message()) {
 			header('Location: ' . $config['url_path'] . 'aggregate_items.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_filter_request_var('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_filter_request_var('local_graph_id'));
 			exit;
-		}else{
+		} else {
 			header('Location: ' . $config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . get_filter_request_var('local_graph_id'));
 			exit;
 		}
@@ -195,7 +195,7 @@ function form_save_aggregate() {
 		$sql_where = 'graph_templates_item_id = ' . get_filter_request_var('graph_template_item_id') . ' AND ';
 		if ($save_to == 'aggregate_graph_templates_item') {
 			$sql_where .= 'aggregate_template_id=' . get_filter_request_var('aggregate_template_id');
-		}else{
+		} else {
 			$sql_where .= 'aggregate_graph_id=' . get_filter_request_var('aggregate_graph_id');
 		}
 		$sql = "UPDATE $save_to $sql_set WHERE $sql_where LIMIT 1";
@@ -203,7 +203,7 @@ function form_save_aggregate() {
 
 		if ($success) {
 			raise_message(1);
-		}else{
+		} else {
 			raise_message(2);
 		}
 
@@ -218,7 +218,7 @@ function form_save_aggregate() {
 	if (is_error_message()) {
 		header('Location: ' . $config['url_path'] . $location_failure);
 		exit;
-	}else{
+	} else {
 		header('Location: ' . $config['url_path'] . $location_success);
 		exit;
 	}
@@ -241,7 +241,7 @@ function item_movedown() {
 
 	if ((!empty($next_id)) && (isset($arr{get_request_var('id')}))) {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'next');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		move_item_down('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
 	}
 }
@@ -259,7 +259,7 @@ function item_moveup() {
 
 	if ((!empty($previous_id)) && (isset($arr{get_request_var('id')}))) {
 		move_graph_group(get_request_var('id'), $arr, $previous_id, 'previous');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
 		move_item_up('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
 	}
 }
@@ -292,7 +292,7 @@ function item_edit() {
 		$id_field   = 'aggregate_graph_id';
 		$table_name = 'aggregate_graphs_graph_item';
 		$page_name  = 'aggregate_graphs.php';
-	}elseif (!isempty_request_var('aggregate_template_id')) {
+	} elseif (!isempty_request_var('aggregate_template_id')) {
 		$id_field   = 'aggregate_template_id';
 		$table_name = 'aggregate_graph_templates_item';
 		$page_name  = 'aggregate_templates.php';
@@ -343,7 +343,7 @@ function item_edit() {
 			$template_item[$field_name] = $item_overrides[$field_name];
 	}
 
-	html_start_box(__('Override Values for Graph Item'), '100%', '', '3', 'center', '');
+	html_start_box(__('Override Values for Graph Item'), '100%', true, '3', 'center', '');
 
 	$form_array = array();
 
@@ -385,7 +385,7 @@ function item_edit() {
 	form_hidden_box('aggregate_graph_id', get_request_var('aggregate_graph_id'), '0');
 	form_hidden_box('aggregate_template_id', get_request_var('aggregate_template_id'), '0');
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button($config['url_path'] . "$page_name?action=edit&id=" . get_request_var('local_graph_id'));
 

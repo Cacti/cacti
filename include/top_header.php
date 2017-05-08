@@ -73,6 +73,8 @@ $selectedTheme = get_selected_theme();
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.timepicker.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.colorpicker.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.widgets.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.pager.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.metadata.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.sparkline.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/Chart.js'></script>
@@ -112,7 +114,7 @@ $selectedTheme = get_selected_theme();
 	<div id='navigation_right' class='cactiConsoleContentArea'>
 		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;display:none;' id='main' role='main'>
-<?php }else{ ?>
+<?php } else { ?>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
 		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;display:none;' id='main' role='main'>

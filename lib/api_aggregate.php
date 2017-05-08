@@ -123,7 +123,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 		$graph_data['id']          = 0;
 		$graph_data['title']       = $graph_title;
 		$graph_data['title_cache'] = $graph_title;
-	}elseif ($aggregate_template_id > 0) {
+	} elseif ($aggregate_template_id > 0) {
 		/* this graph exists and is templated from aggregate template,
 		 * use template data */
 		$graph_data = $template_data;
@@ -204,7 +204,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 		$graph_items = db_fetch_assoc_prepared('SELECT * FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence', array($_old_graph_id));
 
 		$graph_local = db_fetch_row_prepared('SELECT host_id, graph_template_id, snmp_query_id, snmp_index FROM graph_local WHERE id = ?', array($_old_graph_id));
-	}else{
+	} else {
 		$graph_items = db_fetch_assoc_prepared('SELECT * FROM graph_templates_item WHERE local_graph_id = ?  AND graph_template_id = ? ORDER BY sequence', array($_old_graph_id, $_graph_template_id));
 
 		$graph_local = array();
@@ -380,7 +380,7 @@ function aggregate_graph_items_save($items, $table) {
 	if ($table == 'aggregate_graphs_graph_item') {
 		$defaults['aggregate_graph_id'] = null;
 		$id_field = 'aggregate_graph_id';
-	}elseif ($table == 'aggregate_graph_templates_item') {
+	} elseif ($table == 'aggregate_graph_templates_item') {
 		$defaults['aggregate_template_id'] = null;
 		$id_field = 'aggregate_template_id';
 	}else {
@@ -517,7 +517,7 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 			$graph_templates_item_id = str_replace('agg_color_', '', $var);
 			if (isset($graph_items[$graph_templates_item_id])) {
 				$graph_items[$graph_templates_item_id]['color_template'] = $val;
-			}else{
+			} else {
 				cacti_log('Something fubar in agg_color');
 			}
 		}
@@ -530,7 +530,7 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 			$graph_templates_item_id = str_replace('agg_skip_', '', $var);
 			if (isset($graph_items[$graph_templates_item_id])) {
 				$graph_items[$graph_templates_item_id]['item_skip'] = $val;
-			}else{
+			} else {
 				cacti_log('Something fubar in agg_skip');
 			}
 		}
@@ -543,7 +543,7 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 			$graph_templates_item_id = str_replace('agg_total_', '', $var);
 			if (isset($graph_items[$graph_templates_item_id])) {
 				$graph_items[$graph_templates_item_id]['item_total'] = $val;
-			}else{
+			} else {
 				cacti_log('Something fubar in agg_total');
 			}
 		}
@@ -752,7 +752,7 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 		$attribs['total_prefix']         = $template_data['total_prefix'];
 		$attribs['reorder']              = $template_data['order_type'];
 		$attribs['item_no']              = db_fetch_cell_prepared('SELECT COUNT(*) FROM aggregate_graphs_graph_item WHERE aggregate_graph_id = ?', array($id));
-	}else{
+	} else {
 		$attribs['graph_title'] = '';
 
 		$attribs['skipped_items'] = array_rekey(
@@ -821,7 +821,7 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 	$aggregate_graphs = array();
 	if ($local_graph_id > 0) {
 		$aggregate_graphs[] = $local_graph_id;
-	}else{
+	} else {
 		$graphs = db_fetch_assoc_prepared('SELECT local_graph_id FROM aggregate_graphs WHERE aggregate_template_id = ?', array($aggregate_template_id));
 
 		if (sizeof($graphs)) {
@@ -902,7 +902,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 			$local_graph_id = aggregate_graph_save($example_graph_id, $graph_template_id, $graph_title, $aggregate_template);
 			$save1['id']    = '';
 			$new_aggregate  = true;
-		}else{
+		} else {
 			# update graph params of existing aggregate graph
 			$local_graph_id = aggregate_graph_save($local_graph_id, $graph_template_id, $graph_title, $aggregate_template);
 			$save1['id']    = db_fetch_cell_prepared('SELECT id FROM aggregate_graphs WHERE local_graph_id = ?', array($local_graph_id));
@@ -1129,7 +1129,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			});
 			</script>
 			<?php
-		}else{
+		} else {
 			$graph_template = $used_graph_templates[0]['id'];
 
 			return true;
@@ -1187,12 +1187,12 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			$current_vals = db_fetch_assoc_prepared('SELECT * FROM aggregate_graphs_graph_item WHERE aggregate_graph_id = ?', array($_object['id']));
 			$item_editor_link_param = 'aggregate_graph_id='.$_object['id'].'&local_graph_id='.$_object['local_graph_id'];
 			$is_templated = false;
-		}elseif (isset($_object['aggregate_template_id'])) {
+		} elseif (isset($_object['aggregate_template_id'])) {
 			/* this is aggregate graph from aggregate template */
 			$current_vals = db_fetch_assoc_prepared('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id = ?', array($_object['aggregate_template_id']));
 			$item_editor_link_param = 'aggregate_template_id='.$_object['aggregate_template_id'];
 			$is_templated = true;
-		}else{
+		} else {
 			/* this is aggregate template */
 			$current_vals = db_fetch_assoc_prepared('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id = ?', array($_object['id']));
 			$item_editor_link_param = 'aggregate_template_id='.$_object['id'];
@@ -1236,7 +1236,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 
 				if ($group_counter % 2 == 0) {
 					$customClass  = 'graphItem';
-				}else{
+				} else {
 					$customClass  = 'graphItemAlternate';
 				}
 
@@ -1279,7 +1279,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			/* alternating row color */
 			if ($use_custom_class == false) {
 				form_alternate_row();
-			}else{
+			} else {
 				print "<tr class='$customClass'>";
 			}
 
@@ -1288,7 +1288,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			if ($is_edit == false) {
 				/* no existing aggregate graph/template */
 				print __('Item # %d', ($i+1));
-			}elseif (isset($_object['template_propogation']) && $_object['template_propogation']) {
+			} elseif (isset($_object['template_propogation']) && $_object['template_propogation']) {
 				/* existing aggregate graph with template propagation enabled */
 				print __('Item # %d', ($i+1));
 			}else {
@@ -1299,7 +1299,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			print "</td>\n";
 
 			if ($item['hard_return'] == 'on') {
-				$hard_return = '<strong><font color="#FF0000">&lt;HR&gt;</font></strong>';
+				$hard_return = '<strong><span style="color:#FF0000;">&lt;HR&gt;</span></strong>';
 			}
 
 			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
@@ -1334,19 +1334,18 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 				print "<td style='width:1%;text-align:center;'>";
 				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
 				print '</td>';
-			}else{
+			} else {
 				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '></td>';
-				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'></td>";
-				print "<span style='width:1%;text-align:center;display:none;'><input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '></span>';
-				print "<span style='width:1%;text-align:center;display:none;'><input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'></span>";
-				
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'>";
+				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '>';
+				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'></td>";
 			}
 	
 			print '</tr>';
 
 			$i++;
 		}
-	}else{
+	} else {
 		print "<tr><td colspan='7'><em>" . __('No Items') . "</em></td></tr>";
 	}
 
@@ -1365,7 +1364,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 function draw_aggregate_template_graph_config($aggregate_template_id, $graph_template_id) {
 	global $struct_graph;
 
-	html_start_box(__('Graph Configuration'), '100%', '', '3', 'center', '');
+	html_start_box(__('Graph Configuration'), '100%', true, '3', 'center', '');
 
 	$aggregate_templates_graph = db_fetch_row_prepared('SELECT * FROM aggregate_graph_templates_graph WHERE aggregate_template_id = ?', array($aggregate_template_id));
 	$graph_templates_graph     = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE graph_template_id = ?', array($graph_template_id));
@@ -1383,7 +1382,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 			(based on value of t_$field_name of aggregate_template_graph) */
 			if (sizeof($aggregate_templates_graph) && $aggregate_templates_graph['t_'.$field_name] == 'on') {
 				$value = $aggregate_templates_graph[$field_name];
-			}else{
+			} else {
 				$value = $graph_templates_graph[$field_name];
 			}
 
@@ -1394,7 +1393,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 				'value' => (sizeof($aggregate_templates_graph) ? $aggregate_templates_graph{'t_' . $field_name} : ''),
 				'on_change' => 'toggleFieldEnabled(this);'
 			);
-		}else{
+		} else {
 			$form_array += array($field_name => $struct_graph[$field_name]);
 		}
 	}
@@ -1406,37 +1405,38 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 		)
 	);
 
+	html_end_box(false, true);
+
 	/* some javascript do dinamically disable non-overriden fields */
-?>
-<script type='text/javascript'>
+	?>
+	<script type='text/javascript'>
 
-$(function() {
-	setFieldsDisabled();
-});
-
-// disable all items with sub-checkboxes except
-// where sub-checkbox checked
-function setFieldsDisabled() {
-	$('tr[id*="row_"]').each(function() {
-		fieldName = this.id.substr(4);
-		cbName = 't_'+fieldName;
-		if ($('#'+cbName).size() > 0) {
-			$('#'+fieldName).prop('disabled', !$('#'+cbName).is(':checked'));
-		}
+	$(function() {
+		setFieldsDisabled();
 	});
-}
 
-// enable or disable form field based on state of corresponding checkbox
-function toggleFieldEnabled(cb) {
-	prefix = 't_';
-	if (cb.name.substr(0,prefix.length) == prefix) {
-		fieldName = cb.name.substr(prefix.length);
-		$('#'+fieldName).prop('disabled', !cb.checked);
+	// disable all items with sub-checkboxes except
+	// where sub-checkbox checked
+	function setFieldsDisabled() {
+		$('tr[id*="row_"]').each(function() {
+			fieldName = this.id.substr(4);
+			cbName = 't_'+fieldName;
+			if ($('#'+cbName).size() > 0) {
+				$('#'+fieldName).prop('disabled', !$('#'+cbName).is(':checked'));
+			}
+		});
 	}
-}
 
-</script>
-<?php
-		html_end_box(false);
+	// enable or disable form field based on state of corresponding checkbox
+	function toggleFieldEnabled(cb) {
+		prefix = 't_';
+		if (cb.name.substr(0,prefix.length) == prefix) {
+			fieldName = cb.name.substr(prefix.length);
+			$('#'+fieldName).prop('disabled', !cb.checked);
+		}
+	}
+
+	</script>
+	<?php
 }
 

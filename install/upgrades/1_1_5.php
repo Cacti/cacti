@@ -23,5 +23,5 @@
 */
 
 function upgrade_to_1_1_5() {
-	db_install_execute('ALTER TABLE data_input MODIFY COLUMN input_string varchar(512) default NULL');
+	//Queries failed in upgrade to 1.1.5 -> Moved to 1.1.6
 }

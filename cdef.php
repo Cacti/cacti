@@ -139,13 +139,13 @@ function form_save() {
 
 			if ($cdef_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		header('Location: cdef.php?header=false&action=edit&id=' . (empty($cdef_id) ? get_nfilter_request_var('id') : $cdef_id));
-	}elseif (isset_request_var('save_component_item')) {
+	} elseif (isset_request_var('save_component_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('cdef_id');
@@ -166,14 +166,14 @@ function form_save() {
 
 			if ($cdef_item_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		if (is_error_message()) {
 			header('Location: cdef.php?header=false&action=item_edit&cdef_id=' . get_nfilter_request_var('cdef_id') . '&id=' . (empty($cdef_item_id) ? get_nfilter_request_var('id') : $cdef_item_id));
-		}else{
+		} else {
 			header('Location: cdef.php?header=false&action=edit&id=' . get_nfilter_request_var('cdef_id'));
 		}
 	}
@@ -236,7 +236,7 @@ function form_actions() {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM cdef WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM cdef_items WHERE ' . array_to_sql_or($selected_items, 'cdef_id'));
-			}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					duplicate_cdef($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
@@ -280,7 +280,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', sizeof($cdef_array)) . "'>";
-		}elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to duplicate the following CDEF. You can optionally change the title format for the new CDEF.', 'Click \'Continue\' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs.', sizeof($cdef_array)) . "</p>
@@ -291,7 +291,7 @@ function form_actions() {
 
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Duplicate CDEF', 'Duplicate CDEFs', sizeof($cdef_array)) . "'>";
 		}
-	}else{
+	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one CDEF.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -421,7 +421,7 @@ function item_edit() {
 		$values[$current_type] = $cdef['value'];
 	}
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box(__('CDEF Preview'), '100%', '', '3', 'center', '');
 	draw_cdef_preview(get_request_var('cdef_id'));
 	html_end_box();
 
@@ -431,15 +431,15 @@ function item_edit() {
 
 	if (isset_request_var('type_select')) {
 		$current_type = get_request_var('type_select');
-	}elseif (isset($cdef['type'])) {
+	} elseif (isset($cdef['type'])) {
 		$current_type = $cdef['type'];
-	}else{
+	} else {
 		$current_type = '1';
 	}
 
 	form_alternate_row();?>
 		<td style='width:50%;'>
-			<font class='textEditTitle'><?php print __('CDEF Item Type');?></font><br>
+			<span class='textEditTitle'><?php print __('CDEF Item Type');?></span><br>
 			<?php print __('Choose what type of CDEF item this is.');?>
 		</td>
 		<td>
@@ -461,7 +461,7 @@ function item_edit() {
 	</tr>
 	<?php form_alternate_row();?>
 		<td style='width:50%;'>
-			<font class='textEditTitle'><?php print __('CDEF Item Value');?></font><br>
+			<span class='textEditTitle'><?php print __('CDEF Item Value');?></span><br>
 			<?php print __('Enter a value for this CDEF item.');?>
 		</td>
 		<td>
@@ -556,13 +556,13 @@ function cdef_edit() {
 	if (!isempty_request_var('id')) {
 		$cdef = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('CDEF [edit: %s]', htmlspecialchars($cdef['name']));
-	}else{
+	} else {
 		$header_label = __('CDEF [new]');
 	}
 
 	form_start('cdef.php', 'cdef');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -571,7 +571,7 @@ function cdef_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
 		html_start_box('', '100%', '', '3', 'center', '');
@@ -605,13 +605,13 @@ function cdef_edit() {
 						if (read_config_option('drag_and_drop') == '') {
 							if ($i < $total_items && $total_items > 0) {
 								echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __('Move Down') . '"></a>';
-							}else{
+							} else {
 								echo '<span class="moveArrowNone"></span>';
 							}
 	
 							if ($i > 1 && $i <= $total_items) {
 								echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] .	'&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __('Move Up') . '"></a>';
-							}else{
+							} else {
 								echo '<span class="moveArrowNone"></span>';
 							}
 						}
@@ -706,7 +706,7 @@ function cdef() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -796,13 +796,13 @@ function cdef() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' AND system=0)";
-	}else{
+	} else {
 		$sql_where = 'WHERE system=0';
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
 		$sql_having = 'HAVING graphs>0';
-	}else{
+	} else {
 		$sql_having = '';
 	}
 
@@ -860,7 +860,7 @@ function cdef() {
 		foreach ($cdef_list as $cdef) {
 			if ($cdef['graphs'] == 0 && $cdef['templates'] == 0) {
 				$disabled = false;
-			}else{
+			} else {
 				$disabled = true;
 			}
 
@@ -872,7 +872,7 @@ function cdef() {
 			form_checkbox_cell($cdef['name'], $cdef['id'], $disabled);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr class='tableRow'><td colspan='4'><em>" . __('No CDEFs') . "</em></td></tr>\n";
 	}
 

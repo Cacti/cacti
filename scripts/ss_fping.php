@@ -63,7 +63,7 @@ function ss_fping($hostname, $ping_sweeps=6, $ping_type="ICMP", $port=80) {
 
 		if (!$result) {
 			$failed_results++;
-		}else{
+		} else {
 			$time[$i] = $ping->ping_status;
 			$total_time += $ping->ping_status;
 			if ($ping->ping_status < $min) $min = $ping->ping_status;
@@ -85,7 +85,7 @@ function ss_fping($hostname, $ping_sweeps=6, $ping_type="ICMP", $port=80) {
 
 	if ($failed_results == $ping_sweeps) {
 		return "min:U avg:U max:U dev:U loss:100.00";
-	}else{
+	} else {
 		$loss = ($failed_results/$ping_sweeps) * 100;
 		$avg = $total_time/($ping_sweeps-$failed_results);
 

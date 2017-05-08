@@ -109,7 +109,7 @@ if (!isset_request_var('stdout')) {
 
 if (isset_request_var('format') && get_nfilter_request_var('format') == 'table') {
 	$html = true;
-}else{
+} else {
 	$html = false;
 }
 
@@ -142,7 +142,7 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 			$header .= ',"' . $xport_array['meta']['legend']['col' . $i] . '"';
 		}
 		print $header . "\n";
-	}else{
+	} else {
 		$second = "align='right' colspan='2'";
 		print "<table align='center' width='100%' style='border: 1px solid #bbbbbb;'><tr><td>\n";
 		print "<table class='cactiTable' align='center' width='100%'>\n";
@@ -161,7 +161,7 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 			foreach($xport_meta['NthPercentile'] as $item) {
 				if ($class == 'even') {
 					$class = 'odd';
-				}else{
+				} else {
 					$class = 'even';
 				}
 				print "<tr class='$class'><td>Nth Percentile</td><td align='left'>" . $item['value'] . "</td><td align='right'>" . $item['format'] . "</td></tr>\n";
@@ -171,7 +171,7 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 			foreach($xport_meta['Summation'] as $item) {
 				if ($class == 'even') {
 					$class = 'odd';
-				}else{
+				} else {
 					$class = 'even';
 				}
 				print "<tr class='$class'><td>Summation</td><td align='left'>" . $item['value'] . "</td><td align='right'>" . $item['format'] . "</td></tr>\n";
@@ -200,16 +200,16 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 			print $data . "\n";
 			$j++;
 		}
-	}else{
+	} else {
 		$j = 1;
 		foreach($xport_array['data'] as $row) {
 			print "<tr><td align='left'>" . date('Y-m-d H:i:s', (isset($row["timestamp"]) ? $row["timestamp"] : $xport_array["meta"]["start"] + $j*$xport_array["meta"]["step"])) . "</td>";
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				if ($row['col' . $i] > 1) {
 					print "<td align='right'>" . trim(number_format_i18n(round($row['col' . $i],3))) . "</td>";
-				}elseif($row['col' . $i] == 0) {
+				} elseif($row['col' . $i] == 0) {
 					print "<td align='right'>-</td>";
-				}else{
+				} else {
 					print "<td align='right'>" . round($row['col' . $i],4) . "</td>";
 				}
 			}

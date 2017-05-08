@@ -60,7 +60,11 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 	while ($i <= $retries) {
 		try {
-			$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
+			if (file_exists($device)) {
+				$cnn_id = new PDO("$db_type:unix_socket=$device;dbname=$db_name;charset=utf8", $user, $pass, $flags);
+			} else {
+				$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
+			}
 			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
 			// MySQL 5.7 forces NO_ZERO_DATE on
@@ -144,10 +148,10 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
 		if ($query->errorCode()) {
 			$errorinfo = $query->errorInfo();
 			$en = $errorinfo[1];
-		}elseif ($db_conn->errorCode()) {
+		} elseif ($db_conn->errorCode()) {
 			$errorinfo = $db_conn->errorInfo();
 			$en = $errorinfo[1];
-		}else{
+		} else {
 			$en = '';
 		}
 
@@ -181,7 +185,7 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
 				cacti_debug_backtrace('SQL');
 				return false;
 			}
-		}else{
+		} else {
 			$query->closeCursor();
 			unset($query);
 			return false;
@@ -306,11 +310,11 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = true, $db_conn = f
 			} else {
 				return array();
 			}
-		}else{
+		} else {
 			$query->closeCursor();
 			return array();
 		}
-	}elseif ($log) {
+	} elseif ($log) {
 		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_log('ERROR: SQL Row Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_debug_backtrace('SQL');
@@ -366,7 +370,7 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = true, $db_conn =
 			$a = array();
 		}
 		return $a;
-	}elseif ($log) {
+	} elseif ($log) {
 		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', false, 'DBCALL');
 		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $errorinfo[2], false, 'DBCALL');
 		cacti_debug_backtrace('SQL');
@@ -451,7 +455,7 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 		if (isset($column['default'])) {
 			if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 				$sql .= ' default CURRENT_TIMESTAMP';
-			}else{
+			} else {
 				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
 			}
 		}
@@ -951,20 +955,20 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 				if ($cols[$key]['null'] == 'YES') {
 					// TODO: We should make 'NULL', but there are issues that need to be addressed first
 					$array_items[$key] = 0;
-				}elseif (strpos($cols[$key]['extra'], 'auto_increment') !== false) {
+				} elseif (strpos($cols[$key]['extra'], 'auto_increment') !== false) {
 					$array_items[$key] = 0;
-				}elseif ($cols[$key]['default'] == '') {
+				} elseif ($cols[$key]['default'] == '') {
 					// TODO: We should make 'NULL', but there are issues that need to be addressed first
 					$array_items[$key] = 0;
-				}else{
+				} else {
 					$array_items[$key] = $cols[$key]['default'];
 				}
-			}elseif (empty($value)) {
+			} elseif (empty($value)) {
 				$array_items[$key] = 0;
-			}else{
+			} else {
 				$array_items[$key] = $value;
 			}
-		}else{
+		} else {
 			$array_items[$key] = db_qstr($value);
 		}
 	}

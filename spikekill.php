@@ -77,7 +77,7 @@ if (is_realm_allowed(1043)) {
 	}
 
 	print json_encode(array('local_graph_id' => get_request_var('local_graph_id'), 'results' => $results));
-}else{
+} else {
 	echo __("FATAL: Spike Kill Not Allowed\n");
 }
 

@@ -81,24 +81,24 @@ function form_save() {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^cg_(\d+)$/', $var, $matches)) {
 				$selected_graphs['cg']{$matches[1]}{$matches[1]} = true;
-			}elseif (preg_match('/^cg_g$/', $var)) {
+			} elseif (preg_match('/^cg_g$/', $var)) {
 				if (get_nfilter_request_var('cg_g') > 0) {
 					$selected_graphs['cg']{get_nfilter_request_var('cg_g')}{get_nfilter_request_var('cg_g')} = true;
 				}
-			}elseif (preg_match('/^sg_(\d+)_([a-f0-9]{32})$/', $var, $matches)) {
+			} elseif (preg_match('/^sg_(\d+)_([a-f0-9]{32})$/', $var, $matches)) {
 				$selected_graphs['sg']{$matches[1]}{get_nfilter_request_var('sgg_' . $matches[1])}{$matches[2]} = true;
 			}
 		}
 
 		if (!isset_request_var('host_id')) {
 			$host_id = 0;
-		}else{
+		} else {
 			$host_id = get_filter_request_var('host_id');
 		}
 
 		if (!isset_request_var('host_template_id')) {
 			$host_template_id = 0;
-		}else{
+		} else {
 			$host_template_id = get_filter_request_var('host_template_id');
 		}
 
@@ -115,26 +115,6 @@ function form_save() {
 
 		header('Location: graphs_new.php?host_id=' . get_filter_request_var('host_id') . '&header=false');
 	}
-}
-
-/* ---------------------
-    Misc Functions
-   --------------------- */
-
-function draw_edit_form_row($field_array, $field_name, $previous_value) {
-	$field_array['value'] = $previous_value;
-
-	draw_edit_form(
-		array(
-			'config' => array(
-				'no_form_tag' => true,
-				'force_row_color' => 'F5F5F5'
-			),
-			'fields' => array(
-				$field_name => $field_array
-			)
-		)
-	);
 }
 
 /* -------------------
@@ -159,13 +139,13 @@ function host_new_graphs_save($host_id) {
 
 	/* form an array that contains all of the data on the previous form */
 	foreach ($_POST as $var => $val) {
-		if (preg_match('/^g_(\d+)_(\d+)_(\w+)/', $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: field_name */
-			if (empty($matches[1])) { /* this is a new graph from template field */
+		if (preg_match('/^g_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: field_name
+			if (empty($matches[1])) { // this is a new graph from template field
 				$values['cg']{$matches[2]}['graph_template']{$matches[3]} = $val;
-			}else{ /* this is a data query field */
+			} else { // this is a data query field
 				$values['sg']{$matches[1]}{$matches[2]}['graph_template']{$matches[3]} = $val;
 			}
-		}elseif (preg_match('/^gi_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name */
+		} elseif (preg_match('/^gi_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[3]);
 			/* ==================================================== */
@@ -179,29 +159,29 @@ function host_new_graphs_save($host_id) {
 			/* loop through each item affected and update column data */
 			if (sizeof($item_list) > 0) {
 			foreach ($item_list as $item) {
-				if (empty($matches[1])) { /* this is a new graph from template field */
+				if (empty($matches[1])) { // this is a new graph from template field
 					$values['cg']{$matches[2]}['graph_template_item']{$item['graph_template_item_id']}{$matches[4]} = $val;
-				}else{ /* this is a data query field */
+				} else { // this is a data query field
 					$values['sg']{$matches[1]}{$matches[2]}['graph_template_item']{$item['graph_template_item_id']}{$matches[4]} = $val;
 				}
 			}
 			}
-		}elseif (preg_match('/^d_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:field_name */
-			if (empty($matches[1])) { /* this is a new graph from template field */
+		} elseif (preg_match('/^d_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:field_nam
+			if (empty($matches[1])) { // this is a new graph from template field
 				$values['cg']{$matches[2]}['data_template']{$matches[3]}{$matches[4]} = $val;
-			}else{ /* this is a data query field */
+			} else { // this is a data query field
 				$values['sg']{$matches[1]}{$matches[2]}['data_template']{$matches[3]}{$matches[4]} = $val;
 			}
-		}elseif (preg_match('/^c_(\d+)_(\d+)_(\d+)_(\d+)/', $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:data_input_field_id */
-			if (empty($matches[1])) { /* this is a new graph from template field */
+		} elseif (preg_match('/^c_(\d+)_(\d+)_(\d+)_(\d+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:data_input_field_id
+			if (empty($matches[1])) { // this is a new graph from template field
 				$values['cg']{$matches[2]}['custom_data']{$matches[3]}{$matches[4]} = $val;
-			}else{ /* this is a data query field */
+			} else { // this is a data query field
 				$values['sg']{$matches[1]}{$matches[2]}['custom_data']{$matches[3]}{$matches[4]} = $val;
 			}
-		}elseif (preg_match('/^di_(\d+)_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { /* 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:local_data_template_rrd_id, 5:field_name */
-			if (empty($matches[1])) { /* this is a new graph from template field */
+		} elseif (preg_match('/^di_(\d+)_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:local_data_template_rrd_id, 5:field_name
+			if (empty($matches[1])) { // this is a new graph from template field
 				$values['cg']{$matches[2]}['data_template_item']{$matches[4]}{$matches[5]} = $val;
-			}else{ /* this is a data query field */
+			} else { // this is a data query field
 				$values['sg']{$matches[1]}{$matches[2]}['data_template_item']{$matches[4]}{$matches[5]} = $val;
 			}
 		}
@@ -221,7 +201,7 @@ function host_new_graphs_save($host_id) {
 
 			if ($form_type == 'cg') {
 				$graph_template_id = $form_id1;
-			}elseif ($form_type == 'sg') {
+			} elseif ($form_type == 'sg') {
 				foreach ($form_array2 as $form_id2 => $form_array3) {
 					/* ================= input validation ================= */
 					input_validate_input_number($form_id2);
@@ -255,7 +235,7 @@ function host_new_graphs_save($host_id) {
 				} else {
 					debug_log_insert('new_graphs', __('ERROR: no Data Source associated. Check Template'));
 				}
-			}elseif ($current_form_type == 'sg') {
+			} elseif ($current_form_type == 'sg') {
 				foreach ($snmp_index_array as $snmp_index => $true) {
 					$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
 
@@ -298,8 +278,8 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 			if ($form_type == 'cg') {
 				$graph_template_id = $form_id1;
 
-				html_start_box("Create Graph from '" . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template_id)) . "'", '100%', '', '3', 'center', '');
-			}elseif ($form_type == 'sg') {
+				html_start_box(__("Create Graph from %s", db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template_id))), '100%', '', '3', 'center', '');
+			} elseif ($form_type == 'sg') {
 				foreach ($form_array2 as $form_id2 => $form_array3) {
 					/* ================= input validation ================= */
 					input_validate_input_number($snmp_query_id);
@@ -320,7 +300,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 
 				if ($num_graphs > 1) {
 					$header = __('Created %s Graphs from %s', $num_graphs, htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($snmp_query_id))));
-				}else{
+				} else {
 					$header = __('Created 1 Graph from %s', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($snmp_query_id))));
 				}
 
@@ -455,7 +435,7 @@ function graphs() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -465,11 +445,11 @@ function graphs() {
 		if (sizeof($host)) {
 			$header =  __('New Graphs for [ %s ]', htmlspecialchars($host['description']) . ' (' . htmlspecialchars($host['hostname']) . ') ' . 
 			(!empty($host['host_template_id']) ? htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($host['host_template_id']))):''));
-		}else{
+		} else {
 			$header =  __('New Graphs for [ All Devices ]');
 			$host['id'] = -1;
 		}
-	}else{
+	} else {
 		$host['id'] = 0;
 		$header = __('New Graphs for None Host Type');
 	}
@@ -535,9 +515,9 @@ function graphs() {
 							array($host['id']));
 
 						if (sizeof($snmp_queries) > 0) {
-						foreach ($snmp_queries as $query) {
-							print "<option value='" . $query['id'] . "'"; if (get_request_var('graph_type') == $query['id']) { print ' selected'; } print '>' . $query['name'] . "</option>\n";
-						}
+							foreach ($snmp_queries as $query) {
+								print "<option value='" . $query['id'] . "'"; if (get_request_var('graph_type') == $query['id']) { print ' selected'; } print '>' . $query['name'] . "</option>\n";
+							}
 						}
 						?>
 					</select>
@@ -557,7 +537,7 @@ function graphs() {
 						?>
 					</select>
 				</td>
-				<td rowspan='3' class='textInfo' style='text-align:right;vertical-align:top;width:100%;'>
+				<td class='textInfo' style='text-align:right;vertical-align:top;width:100%;'>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . get_request_var('host_id'));?>'><?php print __('Edit this Device');?></a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit');?>'><?php print __('Create New Device');?></a><br>
 					<?php api_plugin_hook('graphs_new_top_links'); ?>
@@ -618,15 +598,6 @@ function graphs() {
 				<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' name='all_cg' title='" . __('Select All') . "' onClick='SelectAll(\"sg\",this.checked)'></th>\n
 			</tr>\n";
 
-		$graph_templates = db_fetch_assoc_prepared('SELECT
-			gt.id AS graph_template_id,
-			gt.name AS graph_template_name
-			FROM host_graph AS hg
-			INNER JOIN graph_templates AS gt
-			ON hg.graph_template_id=gt.id
-			WHERE hg.host_id = ?
-			ORDER BY gt.name', array(get_request_var('host_id')));
-
 		if (!isempty_request_var('host_id')) {
 			$template_graphs = db_fetch_assoc_prepared('SELECT
 				gl.graph_template_id
@@ -646,10 +617,21 @@ function graphs() {
 				}
 
 				$script .= ");\n";
-			}else{
+			} else {
 				$script .= 'var gt_created_graphs = new Array();';
 			}
 		}
+
+		$graph_templates = db_fetch_assoc_prepared('SELECT
+			gt.id AS graph_template_id,
+			gt.name AS graph_template_name
+			FROM host_graph AS hg
+			INNER JOIN graph_templates AS gt
+			ON hg.graph_template_id=gt.id
+			WHERE hg.host_id = ?
+			ORDER BY gt.name',
+			array(get_request_var('host_id'))
+		);
 
 		/* create a row for each graph template associated with the host template */
 		if (sizeof($graph_templates)) {
@@ -671,15 +653,25 @@ function graphs() {
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
-		$available_graph_templates = db_fetch_assoc('SELECT
-			graph_templates.id, graph_templates.name
-			FROM snmp_query_graph RIGHT JOIN graph_templates
-			ON (snmp_query_graph.graph_template_id = graph_templates.id)
-			WHERE (((snmp_query_graph.name) Is Null)) ORDER BY graph_templates.name');
+		$available_graph_templates = db_fetch_assoc_prepared('
+			(
+				SELECT graph_templates.id, graph_templates.name
+				FROM graph_templates
+				LEFT JOIN snmp_query_graph
+				ON snmp_query_graph.graph_template_id = graph_templates.id
+				WHERE snmp_query_graph.name IS NULL
+				AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
+				AND graph_templates.multiple = ""
+			) UNION (
+				SELECT id, name FROM graph_templates WHERE multiple = "on"
+			)
+			ORDER BY name',
+			array(get_request_var('host_id'))
+		);
 
 		/* create a row at the bottom that lets the user create any graph they choose */
 		print "<tr class='even'>
-			<td width='1'><i>" . __('Create') . "</i></td>
+			<td style='width:1%;'><i>" . __('Create') . "</i></td>
 			<td class='left'>";
 			form_dropdown('cg_g', $available_graph_templates, 'name', 'id', '', __('(Select a graph type to create)'), '', 'textArea');
 
@@ -705,7 +697,7 @@ function graphs() {
 
 				if (!get_request_var('changed')) {
 					$page = get_filter_request_var('page' . $snmp_query['id']);
-				}else{
+				} else {
 					$page = 1;
 				}
 
@@ -756,8 +748,8 @@ function graphs() {
 						$cg_ctr = 0;
 						if (sizeof($created_graphs)) {
 							foreach ($created_graphs as $created_graph) {
-								$script .= (($cg_ctr > 0) ? ',' : '') . "'" . encode_data_query_index($created_graph['snmp_index']) . "'";
-								$cg_ctr++;
+								$script .= ($cg_ctr > 0 ? ',' : '') . "'" . encode_data_query_index($created_graph['snmp_index']) . "'";
+								++$cg_ctr;
 							}
 						}
 
@@ -769,9 +761,6 @@ function graphs() {
 
 				if ($xml_array != false) {
 					$html_dq_header = '';
-					$snmp_query_indexes = array();
-
-					reset($xml_array['fields']);
 
 					/* if there is a where clause, get the matching snmp_indexes */
 					$sql_where = '';
@@ -788,7 +777,7 @@ function graphs() {
 							foreach($indexes as $index) {
 								if (strlen($sql_where)) {
 									$sql_where .= ", '" . $index['snmp_index'] . "'";
-								}else{
+								} else {
 									$sql_where .= " AND snmp_index IN('" . $index['snmp_index'] . "'";
 								}
 							}
@@ -807,10 +796,10 @@ function graphs() {
 								$sql_order = 'ORDER BY snmp_index';
 							}else if ($xml_array['index_order_type'] == 'natural') {
 								$sql_order = 'ORDER BY INET_ATON(snmp_index)';
-							}else{
+							} else {
 								$sql_order = '';
 							}
-						}else{
+						} else {
 							$sql_order = '';
 						}
 
@@ -886,7 +875,7 @@ function graphs() {
 
 						if (!sizeof($snmp_query_indexes)) {
 							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a href='" . htmlspecialchars('host.php?action=query_verbose&header=true&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . "</a> " . __('From there you can get more information.') . "</td></tr>\n";
-						}else{
+						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header
 									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __('Select All') . "' onClick='SelectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'></th>\n
@@ -908,7 +897,7 @@ function graphs() {
 										if (in_array($field_name, $fields)) {
 											if (isset($row[$field_name])) {
 												print "<td><span id='text$query_row" . '_' . $column_counter . "'>" . filter_value($row[$field_name], get_request_var('filter')) . '</span></td>';
-											}else{
+											} else {
 												print "<td><span id='text$query_row" . '_' . $column_counter . "'></span></td>";
 											}
 
@@ -925,12 +914,12 @@ function graphs() {
 								$row_counter++;
 							}
 						}
-					}else{
+					} else {
 						html_start_box('', '100%', '', '3', 'center', '');
 
 						print "<tr class='odd'><td class='textError'>" . __('Search Returned no Rows.') . "</td></tr>\n";
 					}
-				}else{
+				} else {
 					html_start_box('', '100%', '', '3', 'center', '');
 
 					print "<tr class='odd'><td class='textError'>" . __('Error in data query.') . "</td></tr>\n";
@@ -947,7 +936,7 @@ function graphs() {
 
 				if (sizeof($data_query_graphs) == 1) {
 					echo "<input type='hidden' id='sgg_" . $snmp_query['id'] . "' name='sgg_" . $snmp_query['id'] . "' value='" . $data_query_graphs[0]['id'] . "'>\n";
-				}elseif (sizeof($data_query_graphs) > 1) {
+				} elseif (sizeof($data_query_graphs) > 1) {
 					print "<div class='break'></div>\n";
 
 					html_start_box('', '100%', '', '3', 'center', '');

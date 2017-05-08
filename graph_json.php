@@ -49,7 +49,7 @@ if ($debug == false) {
 
 	get_filter_request_var('graph_theme', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 	/* ==================================================== */
-}else{
+} else {
 	set_request_var('graph_width', 700);
 	set_request_var('graph_height', 200);
 	set_request_var('title_font_size', 10);
@@ -107,10 +107,10 @@ if (isset_request_var('graph_theme')) {
 if (isset_request_var('rra_id')) {
 	if (get_nfilter_request_var('rra_id') == 'all') {
 		$rra_id = 'all';
-	}else{
+	} else {
 		$rra_id = get_filter_request_var('rra_id');
 	}
-}else{
+} else {
 	$rra_id = null;
 }
 
@@ -134,7 +134,7 @@ if (!isset_request_var('image_format')) {
 		$gtype = 'png';
 		break;
 	}
-}else{
+} else {
 	switch(strtolower(get_nfilter_request_var('image_format'))) {
 	case 'png':
 		$graph_data_array['image_format'] = 'png';
@@ -154,11 +154,11 @@ if ($config['poller_id'] == 1) {
 	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
 
 	ob_end_clean();
-}else{
+} else {
 	if (isset_request_var('rra_id')) {
 		if (get_nfilter_request_var('rra_id') == 'all') {
 			$rra_id = 'all';
-		}else{
+		} else {
 			$rra_id = get_filter_request_var('rra_id');
 		}
 	}
@@ -209,6 +209,7 @@ if ($output !== false && $output != '') {
 	ob_start();
 
     $graph_data_array['get_error'] = true;
+
     rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
 
 	$error = ob_get_contents();
@@ -217,21 +218,33 @@ if ($output !== false && $output != '') {
 
 	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
 		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
-	}else{
+	} else {
 		$image = rrdtool_create_error_image($error);
 	}
 
-	if (isset($graph_data_array['graph_nolegend'])) {
-		$oarray['image_width']  = $graph_data_array['graph_width']  * 1.24;
-		$oarray['image_height'] = $graph_data_array['graph_height'] * 1.45;
-	}else{
-		$oarray['image_width']  = $graph_data_array['graph_width']  * 1.15;
-		$oarray['image_height'] = $graph_data_array['graph_height'] * 1.8;
+	if (isset($graph_data_array['graph_width'])) {
+		if (isset($graph_data_array['graph_nolegend'])) {
+			$oarray['image_width']  = $graph_data_array['graph_width']  * 1.24;
+			$oarray['image_height'] = $graph_data_array['graph_height'] * 1.45;
+		} else {
+			$oarray['image_width']  = $graph_data_array['graph_width']  * 1.15;
+			$oarray['image_height'] = $graph_data_array['graph_height'] * 1.8;
+		}
+	} else {
+		$oarray['image_width']  = db_fetch_cell_prepared('SELECT width 
+			FROM graph_templates_graph 
+			WHERE local_graph_id = ?', 
+			array(get_request_var('local_graph_id')));
+
+		$oarray['image_height']  = db_fetch_cell_prepared('SELECT height 
+			FROM graph_templates_graph 
+			WHERE local_graph_id = ?', 
+			array(get_request_var('local_graph_id')));
 	}
 
 	if ($image !== false) {
 		$oarray['image'] = base64_encode($image);
-	}else{
+	} else {
 		$oarray['image'] = base64_encode(file_get_contents(__DIR__ . '/images/cacti_error_image.png'));
 	}
 }

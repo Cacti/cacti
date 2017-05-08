@@ -11,6 +11,15 @@ body, table, tr, td, textarea {
 	font-size: 10px;
 }
 
+textarea {
+	padding: 5px;
+	width: 400px;
+	height: 100px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 body {
 	background-color: #ffffff;
 	background-repeat: repeat-y;
@@ -23,7 +32,7 @@ table {
 }
 
 td, th, select {
-	padding: 2px;
+	padding: 0px;
 	margin: 0px;
 }
 
@@ -34,6 +43,16 @@ th {
 img {
 	border:none;
 	vertical-align:middle;
+}
+
+fieldset {
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.reindex_methods span {
+	font-size: 9px;
 }
 
 /* links */
@@ -62,6 +81,17 @@ th .fa {
 	height: 100%;
 }
 
+input {
+	padding: 0.4em;
+	font-size: 12px;
+	max-width: 400px;
+}
+
+select {
+	padding: 0.5em 0.5em 0.5em 0.5em;
+	font-size: 12px;
+}
+
 tr.selected {
 	background-color: khaki;
 }
@@ -84,6 +114,8 @@ label {
 
 .center {
 	text-align:center !important;
+	margin-left:auto;
+	margin-right:auto;
 }
 
 .usermenudown {
@@ -146,6 +178,10 @@ label {
 }
 
 .running {
+	color:orange;
+}
+
+.errored {
 	color:red;
 	font-weight:bold;
 }
@@ -494,6 +530,10 @@ label {
     border: none;
 }
 
+.odd td, .even td, .even-alternate td {
+	padding: 2px;
+}
+
 .even {
 	background: none repeat scroll 0 0 #E5E5E5;
     border: none;
@@ -577,7 +617,7 @@ label {
 .cactiPageHead {
 	background: #a9a9a9 url("./images/cacti_logo.svg") no-repeat scroll right 40% / 400px auto;
 	border-bottom:1px solid #00438c;
-	height:37px;
+	height:36px;
 	width:100%;
 }
 
@@ -587,7 +627,7 @@ label {
 	padding-bottom: 0px;
 	float:right;
 	width:400px;
-	height:37px;
+	height:36px;
 	z-index:-1;
 }
 
@@ -595,7 +635,7 @@ label {
 	padding-bottom:0px;
 	float:right;
 	width:0px;
-	height:37px;
+	height:36px;
 	z-index:-1;
 }
 
@@ -646,6 +686,7 @@ ul#breadcrumbs {
 }
 
 .cactiContent {
+	clear: both;
 	width: 100%;
 	height: 100%;
 	vertical-align: top;
@@ -696,6 +737,10 @@ ul#breadcrumbs {
 	width:100%;
 }
 
+.treeArea {
+	vertical-align: top;
+}
+
 .cactiLogo {
 	padding-top:20px;
 	background: #f5f5f5 url('./images/cacti_logo.svg') no-repeat 30px;	display:block;
@@ -706,7 +751,6 @@ ul#breadcrumbs {
 	margin-left:2px;
 	margin-right:2px;
 }
-
 
 .loginLeft, .logoutLeft {
 	width:33%;
@@ -790,7 +834,7 @@ legend {
 	float: right;
 	margin-top: 1px;
 	margin-left: 3px;
-	display: table-cell;
+	display: table-column;
 }
 
 .actionsDropdownArrow {
@@ -978,6 +1022,7 @@ legend {
 	font-size: 10px;
 	color: #ffffff;
 	font-weight: bold;
+	padding: 0px;
 }
 
 .tableBody {
@@ -985,6 +1030,7 @@ legend {
 }
 
 .cactiTable {
+	display: table;
 	width: 100%;
 	border-width: 0px;
 	border-color: #00438c;
@@ -999,7 +1045,7 @@ legend {
 	text-align: left;
 	padding: 2px 0px;
 	height: 16px;
-	display: table-cell;
+	display: table-column;
 	width: 90%;
 	background-color: #00438c;
 }
@@ -1008,7 +1054,7 @@ legend {
 	float: right;
 	padding: 2px 0px;
 	height: 16px;
-	display: table-cell;
+	display: table-column;
 	text-align: right;
 	width: 10%;
 	background-color: #00438c;
@@ -1018,6 +1064,12 @@ legend {
 	padding: 0px 3px 0px 3px;
 	font-size: 11px;
 	font-weight: bold;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.cactiTable td {
+	padding: 2px;
 }
 
 .cactiDebugTable {
@@ -1030,13 +1082,165 @@ legend {
 
 .filterTable td:first-child {
 	width:55px;
+	min-width:55px;
 }
 
-.formItemDescription {
+.filterTable td {
+	padding: 2px;
 }
 
-.formItemName {
+.formRow {
+	display: table-row;
+	width: 100%;
+	line-height: 30px;
+}
+
+.formColumn {
+	float: left;
+	display: table-column;
+	text-align: left;
+}
+
+.formColumnLeft {
+	float: left;
+	display: table-column;
+	padding-left: 4px;
+	width: 40%;
+	text-align: left;
+}
+
+.formColumnRight {
+	float: left;
+	display: table-column;
+	width: 58%;
+	text-align: left;
+}
+
+.formData {
+	display: inline-block;
+	float: left;
+	text-align: left;
+}
+
+.formRadio {
+	line-height: 22px;
+}
+
+.formSubCheckbox {
+	line-height: 20px;
+	float: left;
+}
+
+.formSubCheckbox input {
+	margin: 0px;
+	vertical-align: -10%;
+}
+
+.formSubCheckbox label {
+}
+
+.formCheckbox {
+	vertical-align: -15%;
+}
+
+.formFieldName {
+	display: inline-block;
+	color: #444;
+	float: left;
+	text-align: left;
+	font-weight: bold;
+	padding-left: 3px;
+}
+
+.formFieldDescription {
+	float: left;
+	font-weight: normal;
+	text-align: left;
+	line-height: 14px;
+}
+
+.formTooltip {
+	display: inline-block;
+	padding-left: 4px;
+}
+
+.formHeader {
+	float: left;
+	width: 100%;
+	text-align: left;
+	color: #ffffff;
 	font-weight:bold;
+	cursor: pointer;
+	vertical-align:middle;
+	text-align:left;
+	border-right: 1px groove #efefef;
+	font-size:11px;
+	background-color: #6d88ad !important;
+}
+
+.formHeaderText {
+	padding: 3px;
+}
+
+.formHeaderAnchor {
+	float:right;
+	padding-right:4px;
+}
+
+.hostInfoHeader {
+	width: 100%;
+}
+
+.queryAdd, .templateAdd {
+	padding: 3px;
+}
+
+@media screen and (max-width: 640px) {
+	.formRow {
+		display: table;
+		width: 100%;
+		line-height: 30px;
+	}
+
+	.formColumn {
+		float: left;
+		display: table-row;
+	}
+
+	.formColumnLeft {
+		float: left;
+		display: table-row;
+		width: 100%;
+		text-align: left;
+	}
+
+	.formColumnRight {
+		float: left;
+		display: table-row;
+		width: 100%;
+		text-align: left;
+}
+
+	.formFieldName {
+		color: #444;
+		float: left;
+		text-align: left;
+		white-space: nowrap;
+		padding-left: 3px;
+	}
+
+	.formData {
+		float: left;
+	}
+
+	.hostInfoHeader {
+		overflow: hidden;
+	}
+
+	.queryAdd, .templateAdd, .navBar, #ping_results {
+		display: none;
+}
+
 }
 
 .graphItem {
@@ -1048,7 +1252,7 @@ legend {
 }
 
 .break {
-	height:8px;
+	height:4px;
 }
 
 .next {
@@ -1071,6 +1275,7 @@ legend {
 
 
 .tableHeader {
+	display: table-row;
 	background-color: #6d88ad !important;
 }
 
@@ -1088,6 +1293,7 @@ legend {
 	border-right: 1px groove #efefef;
 	font-size:11px;
 	background-color: #6d88ad !important;
+	padding: 2px;
 }
 
 .tableHeader th:last-child {
@@ -1106,6 +1312,7 @@ legend {
 	vertical-align:middle;
 	text-align:left;
 	cursor:pointer;
+	padding: 3px;
 }
 
 .graphSubHeaderColumn {
@@ -1138,8 +1345,8 @@ legend {
 	color: white;
 	width: 100%;
 	text-align:center;
-	display:inline-block;
-	margin-bottom: -3px;
+	vertical-align: middle;
+	display: table;
 	margin-left:auto;
 	margin-right:auto;
 	background-color: #00438c;
@@ -1158,50 +1365,40 @@ legend {
 	text-align: left;
 	cursor: pointer;
 	font-weight: bold;
-	float: left;
 	white-space: nowrap;
-	display: block;
+	display: table-cell;
 	width: 10%;
 	padding: 2px 0px;
-	height: 16px;
 	vertical-align: middle;
 }
 
 .navBarNavigationCenter {
 	text-align: center;
-	display: block;
-	float: left;
+	display: table-cell;
 	white-space: nowrap;
 	width:80%;
 	padding: 2px 0px;
-	height: 16px;
 	margin-top: auto;
 }
 
 .navBarNavigationCenter span {
 	vertical-align: middle;
+	display: table-cell;
 }
 
 .navBarNavigationNext {
 	text-align: right;
-	cursor: pointer;
-	font-weight: bold;
-	float: right;
 	white-space: nowrap;
-	display: block;
+	display: table-cell;
 	width: 10%;
-	padding: 2px 0px;
-	height: 16px;
 	vertical-align: middle;
 }
 
 .navBarNavigationNone {
 	text-align: center;
-	display: block;
-	float: left;
+	display: table-cell;
 	white-space: nowrap;
 	width:100%;
-	padding: 2px 0px;
 	height: 16px;
 	margin-top: auto;
 }
@@ -1318,7 +1515,7 @@ legend {
     float:left !important;
     padding:5px 4px;
     text-decoration:none;
-    font-size: 11px;
+    font-size: 9px;
 	border-color: #999 #666 !important;
     border-style: solid solid none;
     border-width: 1px 1px medium;
@@ -1329,6 +1526,9 @@ div#tabs {
 	padding-bottom: 0px;
 	float: left;
 	vertical-align: bottom;
+	height: 36px;
+	overflow: hidden;
+	width: 60%;
 }
 
 td#tabs {
@@ -1338,7 +1538,7 @@ td#tabs {
 }
 
 .cactiGraphHeaderBackground {
-	height: 37px;
+	height: 36px;
 	float:right;
 	z-index:-1;
 }
@@ -1347,6 +1547,8 @@ div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
 	float:right;
+	height: 36px;
+	overflow: hidden;
 }
 
 .tabs {
@@ -1468,6 +1670,10 @@ ul#nav {
 	background-color: #EACC00;
 }
 
+.clogStats td, .clogDebug td, .clogSQL td, .clogWarning td, .clogError td, .clogLimit td {
+	padding: 3px;
+}
+
 @media print {
 	.noprint { display:none }
 }
@@ -1501,8 +1707,8 @@ div.preformatted {
 
 ul.pagination {
 	display: inline-block;
-	padding: 0;
-	margin: 0;
+	padding: 0px;
+	margin: 0px;
 	vertical-align:middle;
 }
 
@@ -1516,6 +1722,7 @@ ul.pagination li a {
 	padding: 0px 2px 2px 2px;
 	text-decoration: none;
 	margin: 0px 1px;
+	vertical-align: -40%;
 }
 
 ul.pagination li span {
