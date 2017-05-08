@@ -1069,9 +1069,9 @@ function utilities_view_logfile() {
 	}
 
 	if (get_request_var('message_type') > 0) {
-		$start_string = __('Log [Total Lines: %d - Non-Matching Items Hidden]', $number_of_lines);
+		$start_string = __('Log [Total Lines: %d - Non-Matching Items Hidden]', $total_rows);
 	} else {
-		$start_string = __('Log [Total Lines: %d - All Items Shown]', $number_of_lines);
+		$start_string = __('Log [Total Lines: %d - All Items Shown]', $total_rows);
 	}
 
 	$rfilter      = get_request_var('rfilter');
