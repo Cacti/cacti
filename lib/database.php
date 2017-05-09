@@ -110,6 +110,39 @@ function db_close($db_conn = false) {
 	return true;
 }
 
+/* db_prepare_statement - prepare a sql query and return a prepared statement
+   @param $sql - the sql query to execute
+   @param $log - whether to log error messages, defaults to true
+   @returns - PDOStatement on succes or false for error
+ */
+function db_prepare_statement($sql, $log = true, $db_conn = false) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	if ($sql instanceof PDOStatement) {
+		return $sql;
+	}
+	$sql = db_strip_control_chars($sql);
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
+
+	if ($query = $db_conn->prepare($sql)) {
+		return $query;
+	} elseif ($log && $db_conn->errorCode()) {
+		$errorinfo = $db_conn->errorInfo();
+		$en = $errorinfo[1];
+		cacti_log("ERROR: SQL Prepare Failed!, Error:$en, SQL:\"" . $sql . '"', false, 'DBCALL');
+		cacti_log('ERROR: SQL Prepare Failed!, Error: ' . $errorinfo[2], false, 'DBCALL');
+	}
+	return false;
+}
+
 /* db_execute - run an sql query and do not return any output
    @param $sql - the sql query to execute
    @param $log - whether to log error messages, defaults to true
@@ -123,34 +156,21 @@ function db_execute($sql, $log = true, $db_conn = false) {
    @param $log - whether to log error messages, defaults to true
    @returns - '1' for success, '0' for error */
 function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = false) {
-	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
+	global $database_total_queries;
 	$database_total_queries++;
 
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-
-		if (!is_object($db_conn)) {
-			return false;
-		}
+	if (!$query = db_prepare_statement($sql, $log, $db_conn)) {
+		return false;
 	}
 
-	$sql = db_strip_control_chars($sql);
-
-	cacti_log('DEVEL: SQL Exec: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	cacti_log('DEVEL: SQL Exec: "' . $query->queryString . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	$errors = 0;
-	$db_conn->affected_rows = 0;
 
 	while (true) {
-		$query = $db_conn->prepare($sql);
-
 		$query->execute($parms);
 		if ($query->errorCode()) {
 			$errorinfo = $query->errorInfo();
-			$en = $errorinfo[1];
-		} elseif ($db_conn->errorCode()) {
-			$errorinfo = $db_conn->errorInfo();
 			$en = $errorinfo[1];
 		} else {
 			$en = '';
@@ -158,7 +178,6 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
 
 		if ($en == '') {
 			// With PDO, we have to free this up
-			$db_conn->affected_rows = $query->rowCount();
 			$query->closeCursor();
 			unset($query);
 
@@ -167,8 +186,7 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
 			if ($en == 1213 || $en == 1205) { 
 				$errors++;
 				if ($errors > 30) {
-					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . $sql . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-
+					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . $query->queryString . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 					return false;
 				} else {
 					usleep(500000);
@@ -179,14 +197,13 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
 				if (strlen($sql) > 1024) {
 					$sql = substr($sql, 0, 1024) . '...';
 				}
-
-				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . $query->queryString . "'", false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 				cacti_debug_backtrace('SQL');
 
 				return false;
 			} else {
-				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:'" . $sql . "'", FALSE, 'DBCALL');
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . $query->queryString . "'", FALSE, 'DBCALL');
 				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], false);
 				cacti_debug_backtrace('SQL');
 
@@ -223,29 +240,19 @@ function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = true, $db_conn = false) {
-	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
+	global $database_total_queries;
 	$database_total_queries++;
 
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-
-		if (!is_object($db_conn)) {
-			return false;
-		}
+	if (!$query = db_prepare_statement($sql, $log, $db_conn)) {
+		return false;
 	}
 
-	$sql = db_strip_control_chars($sql);
+	cacti_log('DEVEL: SQL Cell: "' . $query->queryString . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
-	cacti_log('DEVEL: SQL Cell: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
-
-	$db_conn->affected_rows = 0;
-	$query = $db_conn->prepare($sql);
 	$query->execute($parms);
 	$errorinfo = $query->errorInfo();
 	$en = $errorinfo[1];
 	if ($en == '') {
-		$db_conn->affected_rows = $query->rowCount();
 		$q = $query->fetchAll(PDO::FETCH_BOTH);
 		$query->closeCursor();
 		unset($query);
@@ -258,7 +265,7 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = t
 		}
 		return false;
 	}else if ($log) {
-		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:\"" . $query->queryString . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_log('ERROR: SQL Cell Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_debug_backtrace('SQL');
 	}
@@ -283,31 +290,21 @@ function db_fetch_row($sql, $log = true, $db_conn = false) {
    @param $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
 function db_fetch_row_prepared($sql, $parms = array(), $log = true, $db_conn = false) {
-	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
+	global $database_total_queries;
 	$database_total_queries++;
 
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-
-		if (!is_object($db_conn)) {
-			return false;
-		}
+        if (!$query = db_prepare_statement($sql, $log, $db_conn)) {
+		return false;
 	}
-
-	$sql = db_strip_control_chars($sql);
 
 	if ($log) {
-		cacti_log('DEVEL: SQL Row: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log('DEVEL: SQL Row: "' . $query->queryString . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 	}
 
-	$db_conn->affected_rows = 0;
-	$query = $db_conn->prepare($sql);
 	$query->execute($parms);
 	$errorinfo = $query->errorInfo();
 	$en = $errorinfo[1];
 	if ($en == '') {
-		$db_conn->affected_rows = $query->rowCount();
 
 		if ($query->rowCount()) {
 			$q = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -323,7 +320,7 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = true, $db_conn = f
 			return array();
 		}
 	} elseif ($log) {
-		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:\"" . $query->queryString . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_log('ERROR: SQL Row Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_debug_backtrace('SQL');
 	}
@@ -343,34 +340,27 @@ function db_fetch_assoc($sql, $log = true, $db_conn = false) {
 	return db_fetch_assoc_prepared($sql, array(), $log, $db_conn);
 }
 
+
+
 /* db_fetch_assoc_prepared - run a 'select' sql query and return all rows found
    @param $sql - the sql query to execute
    @param $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc_prepared($sql, $parms = array(), $log = true, $db_conn = false) {
-	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries;
+	global $database_total_queries;
 	$database_total_queries++;
 
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-
-		if (!is_object($db_conn)) {
-			return false;
-		}
+	if (! $query = db_prepare_statement($sql, $log, $db_conn)) {
+		return array();
 	}
 
-	$sql = db_strip_control_chars($sql);
 
-	cacti_log('DEVEL: SQL Assoc: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	cacti_log('DEVEL: SQL Assoc: "' . $query->queryString . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
-	$db_conn->affected_rows = 0;
-	$query = $db_conn->prepare($sql);
 	$query->execute($parms);
 	$errorinfo = $query->errorInfo();
 	$en = $errorinfo[1];
 	if ($en == '') {
-		$db_conn->affected_rows = $query->rowCount();
 		$a = $query->fetchAll(PDO::FETCH_ASSOC);
 		$query->closeCursor();
 		unset($query);
@@ -379,7 +369,7 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = true, $db_conn =
 		}
 		return $a;
 	} elseif ($log) {
-		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL');
+		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:\"" . $query->queryString . '"', false, 'DBCALL');
 		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $errorinfo[2], false, 'DBCALL');
 		cacti_debug_backtrace('SQL');
 	}
@@ -404,23 +394,6 @@ function db_fetch_insert_id($db_conn = false) {
 	}
 
 	return false;
-}
-
-/* db_affected_rows - return the number of rows affected by the last transaction
- * @returns - the number of rows affected by the last transaction */
-function db_affected_rows($db_conn = false) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
-
-	/* check for a connection being passed, if not use legacy behavior */
-	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
-
-		if (!is_object($db_conn)) {
-			return false;
-		}
-	}
-
-	return $db_conn->affected_rows;
 }
 
 /* db_add_column - add a column to table

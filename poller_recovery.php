@@ -195,13 +195,16 @@ if ($run) {
 		WHERE id= ?', array($poller_id), true, $remote_db_cnn_id);
 
 	while (true) {
-		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries 
-			FROM poller_output_boost 
-			GROUP BY time', true, $local_db_cnn_id);
+                $query = db_prepare_statement('SELECT time, count(*) AS entries
+			FROM poller_output_boost
+                        GROUP BY time', true, $local_db_cnn_id);
+		$time_records  = db_fetch_assoc($query, true, $local_db_cnn_id);
 
 		debug('There are ' . sizeof($time_records) . ' in the recovery database');
 
-		$total_records = db_affected_rows();
+                $total_records = $query->rowCount();
+                $query->closeCursor();
+                unset($query);
 		$found         = 0;
 
 		if (!sizeof($time_records)) {
