@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-05 13:28+0200\n"
-"PO-Revision-Date: 2017-05-09 15:29+0200\n"
+"PO-Revision-Date: 2017-05-09 19:05+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -250,7 +250,7 @@ msgid ""
 "Template."
 msgstr ""
 "De geselecteerde geaggregeerde grafiek heeft elementen uit meer dan een "
-"grafiek template."
+"grafiektemplate."
 
 #: ../aggregate_graphs.php:350
 msgid ""
@@ -262,7 +262,7 @@ msgstr ""
 "Voordat u deze geaggregeerde grafiek kunt migreren naar een template "
 "gebaseerd aggregaat, moeten deze uitsluitend een template grafiek gebruiken. "
 "Klik op 'Terug' en selecteer uitsluitend geaggregeerde grafieken die "
-"hetzelfde grafiek template gebruiken."
+"hetzelfde grafiektemplate gebruiken."
 
 #: ../aggregate_graphs.php:355 ../aggregate_graphs.php:395
 #: ../aggregate_graphs.php:442 ../aggregate_templates.php:316
@@ -311,7 +311,7 @@ msgid ""
 msgstr ""
 "Voordat u de geaggregeerde grafieken hieronder kunt migreren naar een "
 "template gebaseerde aggregaat, moet u eerst een aggregaat template voor de "
-"grafiek template '%s' maken."
+"grafiektemplate '%s' maken."
 
 #: ../aggregate_graphs.php:390
 msgid "Please press 'Return' to continue."
@@ -773,7 +773,7 @@ msgstr "Overrule deze waarde"
 #: ../aggregate_templates.php:307
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgstr ""
-"Klik op 'Volgende' om de volgende geaggregeerde grafiek template te "
+"Klik op 'Volgende' om de volgende geaggregeerde grafiektemplate te "
 "verwijderen."
 
 #: ../aggregate_templates.php:312
@@ -782,7 +782,7 @@ msgstr "Verwijder kleuren template(s)"
 
 #: ../aggregate_templates.php:315
 msgid "You must select at least one Aggregate Graph Template."
-msgstr "U moet tenminste een geaggregeerde grafiek template selecteren."
+msgstr "U moet tenminste een geaggregeerde grafiektemplate selecteren."
 
 #: ../aggregate_templates.php:351
 #, php-format
@@ -3790,7 +3790,7 @@ msgstr ""
 
 #: ../data_sources.php:774
 msgid "Choose the Device that this Data Source belongs to."
-msgstr ""
+msgstr "Kies het apparaat waartoe deze data bron behoort."
 
 #: ../data_sources.php:820
 msgid "Supplemental Data Template Data"
@@ -3819,7 +3819,7 @@ msgstr "Nieuw"
 
 #: ../data_sources.php:970
 msgid "Data Source Debug"
-msgstr ""
+msgstr "Data bron debug"
 
 #: ../data_sources.php:990
 msgid "RRDtool Tune Info"
@@ -3907,6 +3907,8 @@ msgstr ""
 #: ../data_sources.php:1353
 msgid "If this Data Source is no long in use by Graphs, it can be Deleted."
 msgstr ""
+"Als deze data bron niet langer gebruikt wordt in grafieken, dan kan deze "
+"worden verwijderd."
 
 #: ../data_sources.php:1354 ../data_templates.php:927 ../plugins.php:38
 #: ../plugins.php:287
@@ -3979,11 +3981,11 @@ msgstr ""
 
 #: ../data_templates.php:384
 msgid "Change Data Source Profile"
-msgstr ""
+msgstr "Wijzig data bron profiel"
 
 #: ../data_templates.php:387
 msgid "You must select at least one data template."
-msgstr "U moet op het zijn minst een data template selecteren."
+msgstr "U moet op zijn minst een data template selecteren."
 
 #: ../data_templates.php:499
 #, php-format
@@ -4123,7 +4125,7 @@ msgid ""
 "referenced by either a Graph or a Graph Template."
 msgstr ""
 "GPRINT's kunnen niet worden verwijderd als deze in gebruik zijn. In gebruik "
-"wordt gedefinieerd als gekoppeld aan een grafiek of grafiek template."
+"wordt gedefinieerd als gekoppeld aan een grafiek of grafiektemplate."
 
 #: ../gprint_presets.php:393
 msgid "The number of Graphs using this GPRINT."
@@ -4131,7 +4133,7 @@ msgstr "Het aantal grafieken die deze GPRINT gebruiken."
 
 #: ../gprint_presets.php:394
 msgid "The number of Graphs Templates using this GPRINT."
-msgstr "Het aantal grafiek templates die deze GPRINT gebruiken."
+msgstr "Het aantal grafiektemplates die deze GPRINT gebruiken."
 
 #: ../gprint_presets.php:418
 msgid "No GPRINT Presets"
@@ -4243,7 +4245,7 @@ msgstr ""
 
 #: ../graph_templates.php:326
 msgid "Duplicate Graph Template(s)"
-msgstr "Dupliceer grafiek template(s)"
+msgstr "Dupliceer grafiektemplate(s)"
 
 #: ../graph_templates.php:330
 msgid ""
@@ -4272,16 +4274,16 @@ msgstr ""
 
 #: ../graph_templates.php:355
 msgid "Synchronize Graphs to Graph Template(s)"
-msgstr "Synchroniseer grafieken naar (een) grafiek template(s)"
+msgstr "Synchroniseer grafieken naar (een) grafiektemplate(s)"
 
 #: ../graph_templates.php:358
 msgid "ERROR: You must select at least one graph template."
-msgstr "FOUT: U moet op zijn minst een grafiek template selecteren."
+msgstr "FOUT: U moet op zijn minst een grafiektemplate selecteren."
 
 #: ../graph_templates.php:412
 #, php-format
 msgid "Graph Template Items [edit: %s]"
-msgstr ""
+msgstr "Grafiektemplate items [wijzig %s]"
 
 #: ../graph_templates.php:419 ../lib/functions.php:2042
 msgid "Graph Item Inputs"
@@ -4536,8 +4538,8 @@ msgid ""
 "Click 'Continue' to convert the following Graph(s) into Graph Template(s).  "
 "You can optionally change the title format for the new Graph Template(s)."
 msgstr ""
-"Klik op 'Volgende' om de volgende grafiek(en) in grafiek template(s) te "
-"converteren. Optioneel kunt u de naam van het/de nieuwe grafiek template(s) "
+"Klik op 'Volgende' om de volgende grafiek(en) in grafiektemplate(s) te "
+"converteren. Optioneel kunt u de naam van het/de nieuwe grafiektemplate(s) "
 "wijzigen."
 
 #: ../graphs.php:860
@@ -4661,8 +4663,8 @@ msgid ""
 "that it includes identical Data Sources."
 msgstr ""
 "Kies een grafiektemplate om toe te passen voor deze grafiek. Let op dat u "
-"alleen een grafiek template kunt wijzigen naar een 100% compatible grafiek "
-"template, dit houdt in dat het dezelfde data bronnen bevat."
+"alleen een grafiektemplate kunt wijzigen naar een 100% compatible "
+"grafiektemplate, dit houdt in dat het dezelfde data bronnen bevat."
 
 #: ../graphs.php:1325
 msgid "Choose the Device that this Graph belongs to."
@@ -5017,11 +5019,11 @@ msgstr "Geen gekoppelde grafiektemplates."
 
 #: ../host.php:750 ../host_templates.php:502
 msgid "Add Graph Template"
-msgstr "Grafiek template toevoegen"
+msgstr "Grafiektemplate toevoegen"
 
 #: ../host.php:756
 msgid "Add Graph Template to Device"
-msgstr "Grafiek template toevoegen aan apparaat"
+msgstr "Grafiektemplate toevoegen aan apparaat"
 
 #: ../host.php:766 ../host_templates.php:525
 msgid "Associated Data Queries"
@@ -5275,7 +5277,7 @@ msgstr ""
 #: ../host_templates.php:329
 #, php-format
 msgid "Graph Template Name: %s"
-msgstr "Grafiek template naam: %s"
+msgstr "Grafiektemplate naam: %s"
 
 #: ../host_templates.php:388
 msgid ""
@@ -7618,8 +7620,8 @@ msgid ""
 "Choose the Device Template to use to define the default Graph Templates and "
 "Data Queries associated with this Device."
 msgstr ""
-"Kies het apparaat template om de standaard grafiek templates en data queries "
-"te creëeren voor dit apparaat."
+"Kies het apparaat template om de standaard grafiektemplates en data queries "
+"te creëren voor dit apparaat."
 
 #: ../include/global_form.php:1038
 msgid "Number of Collection Threads"
@@ -11290,7 +11292,7 @@ msgstr "Grafiekitems"
 
 #: ../lib/api_aggregate.php:1210 ../lib/functions.php:2036
 msgid "Graph Template Items"
-msgstr "Grafiek template items"
+msgstr "Grafiektemplate items"
 
 #: ../lib/api_aggregate.php:1214 ../lib/html.php:876
 msgid "Graph Item"
@@ -14617,8 +14619,8 @@ msgid ""
 "the Graph"
 msgstr ""
 "<b>Let op:</b> Grafiekrechten zijn permissief. Dit betekent dat de gebruiker "
-"op zijn minst toegang moet hebben tot een grafiek, apparaat of grafiek "
-"template om toegang te krijgen tot de grafiek"
+"op zijn minst toegang moet hebben tot een grafiek, apparaat of "
+"grafiektemplate om toegang te krijgen tot de grafiek"
 
 #: ../user_admin.php:840
 msgid ""

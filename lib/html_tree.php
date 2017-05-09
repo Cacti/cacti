@@ -118,7 +118,7 @@ function grow_dhtml_trees() {
 		$default_tree_id = db_fetch_cell('SELECT id FROM graph_tree ORDER BY sequence LIMIT 1');
 	}
 
-	print "<div style='white-space:nowrap'><span style='padding-right:4px;'>Search</span><input id='searcher' style='padding:2px;font-size:12px;max-width:200px;' type='text' size='35'><hr></div>\n";
+	print "<div style='white-space:nowrap'><span style='padding-right:4px;'>" . __('Search') . "</span><input id='searcher' style='padding:2px;font-size:12px;max-width:200px;' type='text' size='35'><hr></div>\n";
 
 	$dhtml_tree = create_dhtml_tree();
 	if (sizeof($dhtml_tree)) {
@@ -346,9 +346,9 @@ function draw_dhtml_tree_level($tree_id, $parent = 0) {
 		$dhtml_tree[] = "\t\t\t<ul>\n";
 		foreach ($heirarchy as $leaf) {
 			if ($leaf['host_id'] > 0) {  //It's a host
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>Device: " . htmlspecialchars($leaf['hostname']) . "</li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>" . __('Device') . ": " . htmlspecialchars($leaf['hostname']) . "</li>\n";
 			} elseif ($leaf['local_graph_id'] > 0) {
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>Graph: " . htmlspecialchars(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . __('Graph') . ": " . htmlspecialchars(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
 			} else { //It's not a host
 				$dhtml_tree[] = "\t\t\t\t<li class='jstree-closed' id='tbranch:" . $leaf['id'] . "'>" . htmlspecialchars($leaf['title']) . "</li>\n";
 			}
@@ -374,7 +374,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 			$dhtml_tree[] = "\t\t\t<ul>\n";
 			foreach ($heirarchy as $leaf) {
 				if ($leaf['host_id'] > 0) {  //It's a host
-					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">Device: ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
+					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . __('Device') . ': ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
 
 					if (read_user_setting('expand_hosts') == 'on') {
 						$dhtml_tree[] = "\t\t\t\t\t<ul>\n";
