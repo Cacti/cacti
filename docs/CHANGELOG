@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.7
+-issue#655: Data source not displaying device name
+
 1.1.6
 -issue#620: The table poller_data_template_field_mappings can get out of sync when manipulating data templates
 -issue#622: Can not connect to MySQL over a socket
