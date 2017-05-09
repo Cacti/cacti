@@ -2223,7 +2223,6 @@ $fields_automation_tree_rules_edit1 = array(
 		'friendly_name' => __('Tree'),
 		'description' => __('Choose a Tree for the new Tree Items.'),
 		'value' => '|arg1:tree_id|',
-		'on_change' => 'applyTreeChange()',
 		'sql' => 'SELECT id, name FROM graph_tree ORDER BY name'
 	),
 	'leaf_type' => array(
