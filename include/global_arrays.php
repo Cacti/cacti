@@ -1226,11 +1226,11 @@ $attachment_sizes = array(
 );
 
 $reports_actions = array(
-	REPORTS_SEND_NOW  => 'Send Now',
-	REPORTS_DUPLICATE => 'Duplicate',
-	REPORTS_ENABLE    => 'Enable',
-	REPORTS_DISABLE   => 'Disable',
-	REPORTS_DELETE    => 'Delete',
+	REPORTS_SEND_NOW  => __('Send Now'),
+	REPORTS_DUPLICATE => __('Duplicate'),
+	REPORTS_ENABLE    => __('Enable'),
+	REPORTS_DISABLE   => __('Disable'),
+	REPORTS_DELETE    => __('Delete'),
 );
 
 if (is_realm_allowed(22)) {

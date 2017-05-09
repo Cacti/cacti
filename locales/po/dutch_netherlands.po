@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-05 13:28+0200\n"
-"PO-Revision-Date: 2017-05-09 12:21+0200\n"
+"PO-Revision-Date: 2017-05-09 15:29+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -8328,7 +8328,7 @@ msgstr "Pieken"
 
 #: ../include/global_settings.php:48
 msgid "Mail/Reporting/DNS"
-msgstr "Mail/Rapportage/DNS"
+msgstr "Mail/Rapportages/DNS"
 
 #: ../include/global_settings.php:52
 msgid "Time Spanning/Shifting"
@@ -8924,7 +8924,7 @@ msgstr "Thema"
 
 #: ../include/global_settings.php:614 ../include/global_settings.php:1778
 msgid "Please select one of the available Themes to skin your Cacti with."
-msgstr ""
+msgstr "Selecteer een van de beschikbare thema's om Cacti in weer te geven."
 
 #: ../include/global_settings.php:620
 msgid "Table Settings"
@@ -8936,7 +8936,7 @@ msgstr "Rijen per pagina"
 
 #: ../include/global_settings.php:626
 msgid "The default number of rows to display on for a table."
-msgstr ""
+msgstr "Het standaard aantal rijen dat in een tabel wordt getoond."
 
 #: ../include/global_settings.php:632
 msgid "Graph/Data Source/Data Query Settings"
@@ -8964,7 +8964,7 @@ msgstr ""
 
 #: ../include/global_settings.php:658
 msgid "Default Graph Type"
-msgstr ""
+msgstr "Standaard grafiek type"
 
 #: ../include/global_settings.php:659
 msgid "When creating graphs, what Graph Type would you like pre-selected?"
@@ -9820,7 +9820,7 @@ msgstr "Voer de SMTP timeout in seconden in."
 
 #: ../include/global_settings.php:1321
 msgid "Reporting Presets"
-msgstr ""
+msgstr "Rapportage instellingen"
 
 #: ../include/global_settings.php:1326
 msgid "Default Graph Image Format"
@@ -11037,11 +11037,11 @@ msgstr ""
 
 #: ../install/index.php:815 ../install/index.php:831 ../lib/html.php:398
 msgid "Next"
-msgstr ""
+msgstr "Volgende"
 
 #: ../install/index.php:840
 msgid "Upgrade"
-msgstr ""
+msgstr "Upgrade"
 
 #: ../install/index.php:853
 msgid "Remote Database: "
@@ -11053,7 +11053,7 @@ msgstr ""
 
 #: ../install/index.php:866
 msgid "Make sure all of these values are correct before continuing."
-msgstr ""
+msgstr "Zorg ervoor dat al deze waarden correct zijn voordat u doorgaat."
 
 #: ../install/index.php:924
 msgid "Directory Permission Checks"
@@ -11095,7 +11095,7 @@ msgstr "Schrijfbaar"
 
 #: ../install/index.php:967 ../install/index.php:977 ../install/index.php:987
 msgid "Not Writable"
-msgstr ""
+msgstr "Niet schrijfbaar"
 
 #: ../install/index.php:972 ../install/index.php:982
 msgid "Required Writable after Install Complete"
@@ -11132,7 +11132,7 @@ msgstr ""
 #: ../install/index.php:1006 ../install/index.php:1012
 #: ../install/index.php:1048
 msgid "NOTE:"
-msgstr ""
+msgstr "LET OP:"
 
 #: ../install/index.php:1012
 msgid ""
@@ -11180,7 +11180,7 @@ msgstr ""
 
 #: ../install/index.php:1054
 msgid "Upgrade Results"
-msgstr ""
+msgstr "Upgrade resultaten"
 
 #: ../install/index.php:1056
 msgid "You Cacti database has been upgraded.  You can view the results below."
@@ -11260,7 +11260,7 @@ msgstr "Test verbinding"
 
 #: ../install/index.php:1115
 msgid "Test remote database connection"
-msgstr ""
+msgstr "Database verbinding testen"
 
 #: ../lib/aggregate.php:42
 msgid "Display Graphs from this Aggregate"
@@ -11290,7 +11290,7 @@ msgstr "Grafiekitems"
 
 #: ../lib/api_aggregate.php:1210 ../lib/functions.php:2036
 msgid "Graph Template Items"
-msgstr ""
+msgstr "Grafiek template items"
 
 #: ../lib/api_aggregate.php:1214 ../lib/html.php:876
 msgid "Graph Item"
@@ -11306,7 +11306,7 @@ msgstr "Kleur template"
 
 #: ../lib/api_aggregate.php:1220
 msgid "Skip"
-msgstr ""
+msgstr "Overslaan"
 
 #: ../lib/api_automation.php:124
 msgid "Matching Devices"
@@ -11321,7 +11321,7 @@ msgstr "Type"
 
 #: ../lib/api_automation.php:299
 msgid "No Matching Devices"
-msgstr ""
+msgstr "Geen overeenkomende apparaten"
 
 #: ../lib/api_automation.php:408 ../lib/api_automation.php:674
 #: ../lib/api_automation.php:799
@@ -11334,7 +11334,7 @@ msgstr "Grafiek ID"
 
 #: ../lib/api_automation.php:689
 msgid "Objects"
-msgstr ""
+msgstr "Objecten"
 
 #: ../lib/api_automation.php:760
 msgid ""
@@ -11369,7 +11369,7 @@ msgstr ""
 
 #: ../lib/api_automation.php:1181
 msgid "No Items Found"
-msgstr ""
+msgstr "Geen items gevonden"
 
 #: ../lib/api_automation.php:1209 ../lib/api_automation.php:1271
 msgid "Field"
@@ -11431,20 +11431,20 @@ msgstr "SNMP informatie"
 
 #: ../lib/api_device.php:410
 msgid "SNMP not in use"
-msgstr ""
+msgstr "SNMP niet in gebruik"
 
 #: ../lib/api_device.php:418 ../lib/api_device.php:422
 #: ../lib/api_device.php:434
 msgid "SNMP error"
-msgstr ""
+msgstr "SNMP fout"
 
 #: ../lib/api_device.php:441
 msgid "System:"
-msgstr ""
+msgstr "Systeem:"
 
 #: ../lib/api_device.php:447
 msgid "Uptime:"
-msgstr ""
+msgstr "Uptime:"
 
 #: ../lib/api_device.php:448
 msgid "days"
@@ -11456,7 +11456,7 @@ msgstr "uren"
 
 #: ../lib/api_device.php:448
 msgid "minutes"
-msgstr ""
+msgstr "minuten"
 
 #: ../lib/api_device.php:449
 msgid "Hostname:"
@@ -11473,7 +11473,7 @@ msgstr "Contactpersoon:"
 #: ../lib/api_device.php:480 ../lib/functions.php:3780
 #: ../lib/functions.php:3782
 msgid "Ping Results"
-msgstr ""
+msgstr "Ping resultaten"
 
 #: ../lib/api_device.php:485
 msgid "No Ping or SNMP Availability Check in Use"
@@ -11488,10 +11488,13 @@ msgid ""
 "Click 'Continue' to purge the Cacti log file.<br><br><br>Note: If logging is "
 "set to Cacti and Syslog, the log information will remain in Syslog."
 msgstr ""
+"Klik op 'Volgende' om het Cacti log bestand te legen.<br><br><br>Let op: Als "
+"logging is ingesteld op Cacti en Syslog, dan zal de log informatie "
+"beschikbaar blijven in de Syslog."
 
 #: ../lib/clog_webapi.php:129
 msgid "Purge cacti.log"
-msgstr ""
+msgstr "Cacti.log legen"
 
 #: ../lib/clog_webapi.php:155 ../utilities.php:975
 msgid "Log Filters"
@@ -11509,39 +11512,39 @@ msgstr "Log [Totaal aantal lijnen: %d %s - Geen ander filter actief]"
 
 #: ../lib/clog_webapi.php:282 ../utilities.php:1133
 msgid "LINE LIMIT OF 1000 LINES REACHED!!"
-msgstr ""
+msgstr "LIMIT VAN 1000 REGELS BEREIKT!!"
 
 #: ../lib/clog_webapi.php:305 ../utilities.php:984
 msgid "Tail Lines"
-msgstr ""
+msgstr "Aantal rijen"
 
 #: ../lib/clog_webapi.php:317 ../utilities.php:996
 msgid "Message Type"
-msgstr ""
+msgstr "Bericht type"
 
 #: ../lib/clog_webapi.php:322 ../utilities.php:1001
 msgid "Stats"
-msgstr ""
+msgstr "Statistieken"
 
 #: ../lib/clog_webapi.php:325 ../utilities.php:1004
 msgid "Debug"
-msgstr ""
+msgstr "Debug"
 
 #: ../lib/clog_webapi.php:326 ../utilities.php:1005
 msgid "SQL Calls"
-msgstr ""
+msgstr "SQL commando's"
 
 #: ../lib/clog_webapi.php:353 ../utilities.php:1032
 msgid "Display Order"
-msgstr ""
+msgstr "Weergavevolgorde"
 
 #: ../lib/clog_webapi.php:357 ../utilities.php:1036
 msgid "Newest First"
-msgstr ""
+msgstr "Nieuwste eerst"
 
 #: ../lib/clog_webapi.php:358 ../utilities.php:1037
 msgid "Oldest First"
-msgstr ""
+msgstr "Oudste eerst"
 
 #: ../lib/functions.php:665
 #, php-format
@@ -11554,11 +11557,11 @@ msgstr "Ingelogd als"
 
 #: ../lib/functions.php:1790
 msgid "Login as Regular User"
-msgstr ""
+msgstr "Log in als reguliere gebruiker"
 
 #: ../lib/functions.php:1790
 msgid "guest"
-msgstr "ast"
+msgstr "Gast"
 
 #: ../lib/functions.php:1797
 msgid "Edit Profile"
@@ -11584,7 +11587,7 @@ msgstr "Lijst modus"
 #: ../lib/functions.php:2728 ../lib/html.php:1320 ../lib/html.php:1392
 #: ../links.php:344 ../user_admin.php:1636 ../user_group_admin.php:1374
 msgid "Console"
-msgstr ""
+msgstr "Console"
 
 #: ../lib/functions.php:1886 ../lib/functions.php:1928
 #: ../lib/functions.php:1946 ../lib/functions.php:2000
@@ -11663,7 +11666,7 @@ msgstr "Gebruikerslog leegmaken"
 
 #: ../lib/functions.php:2276 ../utilities.php:1757
 msgid "Technical Support"
-msgstr ""
+msgstr "Technische ondersteuning"
 
 #: ../lib/functions.php:2282 ../utilities.php:1870
 msgid "Boost Status"
@@ -11700,23 +11703,23 @@ msgstr "Exporteer resultaten"
 #: ../lib/functions.php:2420 ../lib/functions.php:2450 ../lib/html.php:1341
 #: ../lib/html.php:1343 ../lib/html.php:1417
 msgid "Reporting"
-msgstr ""
+msgstr "Rapportages"
 
 #: ../lib/functions.php:2426 ../lib/functions.php:2456
 msgid "Report Add"
-msgstr ""
+msgstr "Rapportage toevoegen"
 
 #: ../lib/functions.php:2432 ../lib/functions.php:2462
 msgid "Report Delete"
-msgstr ""
+msgstr "Rapportage verwijderen"
 
 #: ../lib/functions.php:2438 ../lib/functions.php:2468
 msgid "Report Edit"
-msgstr ""
+msgstr "Rapportage wijzigen"
 
 #: ../lib/functions.php:2444 ../lib/functions.php:2474
 msgid "Report Edit Item"
-msgstr ""
+msgstr "Rapportageitem wijzen"
 
 #: ../lib/functions.php:2498
 msgid "Color Template Items"
@@ -11761,7 +11764,7 @@ msgstr "Mislukte verbindingen: %s"
 
 #: ../lib/functions.php:3724
 msgid "SMTP error: "
-msgstr ""
+msgstr "SMTP fout: "
 
 #: ../lib/functions.php:3737
 msgid ""
@@ -11775,7 +11778,7 @@ msgstr "Uw e-mail instellingen zijn momenteel als volgt"
 
 #: ../lib/functions.php:3739
 msgid "Method"
-msgstr ""
+msgstr "Methode"
 
 #: ../lib/functions.php:3741
 msgid "Checking Configuration...<br>"
@@ -11863,7 +11866,7 @@ msgstr "Alle %d %s"
 #: ../lib/html.php:410
 #, php-format
 msgid "No %s Found"
-msgstr ""
+msgstr "Geen %s gevonden"
 
 #: ../lib/html.php:722 ../lib/html.php:782
 msgid "Select All Rows"
@@ -11986,7 +11989,7 @@ msgstr "Voer een geldige directorie in"
 
 #: ../lib/html_form.php:1012
 msgid "NO FONT VERIFICATION POSSIBLE"
-msgstr ""
+msgstr "GEEN LETTERTYPE VERIFICATIE MOGELIJK"
 
 #: ../lib/html_graph.php:197 ../lib/html_tree.php:648
 msgid ""
@@ -12024,7 +12027,7 @@ msgstr ""
 #: ../lib/html_graph.php:291 ../lib/html_reports.php:1485
 #: ../lib/html_reports.php:1496 ../lib/html_tree.php:736
 msgid "To"
-msgstr ""
+msgstr "Aan"
 
 #: ../lib/html_graph.php:297 ../lib/html_tree.php:742
 msgid "End Date Selector"
@@ -12056,15 +12059,15 @@ msgstr "Interval"
 
 #: ../lib/html_graph.php:351 ../lib/html_tree.php:796
 msgid "Stop"
-msgstr ""
+msgstr "Stop"
 
 #: ../lib/html_reports.php:35 ../lib/html_reports.php:1479
 msgid "Report Name"
-msgstr ""
+msgstr "Rapportagenaam"
 
 #: ../lib/html_reports.php:37
 msgid "New Report"
-msgstr ""
+msgstr "Nieuwe rapportage"
 
 #: ../lib/html_reports.php:38
 msgid "Give this Report a descriptive Name"
@@ -12459,19 +12462,19 @@ msgstr "Beheerdersniveau"
 #: ../lib/html_reports.php:1376
 #, php-format
 msgid "Reports [%s]"
-msgstr ""
+msgstr "Rapportages [%s]"
 
 #: ../lib/html_reports.php:1376
 msgid "User Level"
-msgstr ""
+msgstr "Gebruikersniveau"
 
 #: ../lib/html_reports.php:1471
 msgid "Reports"
-msgstr ""
+msgstr "Rapportages"
 
 #: ../lib/html_reports.php:1480 ../tree.php:1562
 msgid "Owner"
-msgstr ""
+msgstr "Eigenaar"
 
 #: ../lib/html_reports.php:1481 ../lib/html_reports.php:1492
 msgid "Frequency"
@@ -12483,15 +12486,15 @@ msgstr "Laatste run"
 
 #: ../lib/html_reports.php:1483 ../lib/html_reports.php:1494
 msgid "Next Run"
-msgstr ""
+msgstr "Volgende run"
 
 #: ../lib/html_reports.php:1491
 msgid "Report Title"
-msgstr ""
+msgstr "Rapportage titel"
 
 #: ../lib/html_reports.php:1519
 msgid "Multiple"
-msgstr ""
+msgstr "Meerdere"
 
 #: ../lib/html_reports.php:1520
 msgid "Invalid"
@@ -12499,7 +12502,7 @@ msgstr "Ongeldig"
 
 #: ../lib/html_reports.php:1527
 msgid "No Reports Found"
-msgstr ""
+msgstr "Geen rapportages gevonden"
 
 #: ../lib/html_tree.php:590 ../lib/reports.php:873
 msgid "Tree:"
@@ -13331,11 +13334,11 @@ msgstr ""
 
 #: ../links.php:428
 msgid "No Pages Found"
-msgstr ""
+msgstr "Geen pagina's gevonden"
 
 #: ../links.php:509
 msgid "Console Menu"
-msgstr ""
+msgstr "Console menu"
 
 #: ../links.php:510
 msgid "Bottom of Console Page"
@@ -13641,7 +13644,7 @@ msgstr ""
 
 #: ../plugins.php:406
 msgid "No Plugins Found"
-msgstr ""
+msgstr "Geen plugins gevonden"
 
 #: ../plugins.php:424
 msgid "ERROR: Directory Missing"
@@ -13949,11 +13952,11 @@ msgstr "Verwijderd"
 
 #: ../rrdcleaner.php:373
 msgid "No unused RRD Files"
-msgstr ""
+msgstr "Er zijn geen ongebruikte RRD bestanden"
 
 #: ../rrdcleaner.php:395
 msgid "Total Size [MB]:"
-msgstr ""
+msgstr "Totale omvang [MB]:"
 
 #: ../rrdcleaner.php:397
 msgid "Last Scan:"
@@ -13965,7 +13968,7 @@ msgstr ""
 
 #: ../rrdcleaner.php:497
 msgid "RRDfiles"
-msgstr ""
+msgstr "RRD bestanden"
 
 #: ../rrdcleaner.php:512 ../user_domains.php:642 ../user_group_admin.php:1827
 #: ../user_group_admin.php:2182 ../user_group_admin.php:2288
@@ -14229,7 +14232,7 @@ msgstr ""
 
 #: ../sites.php:504
 msgid "No Sites Found"
-msgstr ""
+msgstr "Geen locaties gevonden"
 
 #: ../spikekill.php:37
 #, php-format
@@ -14438,7 +14441,7 @@ msgstr "Natuurlijk"
 
 #: ../tree.php:1152 ../tree.php:1226 ../tree.php:1313
 msgid "Cut"
-msgstr ""
+msgstr "Knippen"
 
 #: ../tree.php:1167 ../tree.php:1241 ../tree.php:1328 ../user_admin.php:29
 #: ../user_group_admin.php:31
@@ -14447,7 +14450,7 @@ msgstr "Kopiëren"
 
 #: ../tree.php:1185
 msgid "Paste"
-msgstr ""
+msgstr "Plakken"
 
 #: ../tree.php:1558
 msgid "The name by which this Tree will be referred to as."
@@ -14615,7 +14618,7 @@ msgid ""
 msgstr ""
 "<b>Let op:</b> Grafiekrechten zijn permissief. Dit betekent dat de gebruiker "
 "op zijn minst toegang moet hebben tot een grafiek, apparaat of grafiek "
-"template om toegang te krijgen tot de grafiek."
+"template om toegang te krijgen tot de grafiek"
 
 #: ../user_admin.php:840
 msgid ""
@@ -14624,7 +14627,7 @@ msgid ""
 msgstr ""
 "<b>Let op:</b> De grafiekrechten zijn beperkt. Dit betekent dat de gebruiker "
 "toegang moet hebben tot de grafiek, het apparaat en de grafiektemplate om "
-"toegang tot de grafiek te krijgen."
+"toegang tot de grafiek te krijgen"
 
 #: ../user_admin.php:844 ../user_group_admin.php:745
 msgid "Default Graph Policy"
@@ -14847,7 +14850,7 @@ msgstr "Onbeschikbaar"
 
 #: ../user_admin.php:2290
 msgid "No Users Found"
-msgstr ""
+msgstr "Geen gebruikers gevonden"
 
 #: ../user_admin.php:2505 ../user_group_admin.php:2124
 #, php-format
@@ -14856,7 +14859,7 @@ msgstr "Grafiek rechten %s"
 
 #: ../user_admin.php:2560 ../user_admin.php:2647
 msgid "Show All"
-msgstr ""
+msgstr "Toon alles"
 
 #: ../user_admin.php:2614
 #, php-format
@@ -15038,7 +15041,7 @@ msgstr ""
 
 #: ../user_domains.php:736
 msgid "No User Domains Found"
-msgstr ""
+msgstr "Geen gebruikersdomeinen gevonden"
 
 #: ../user_group_admin.php:39 ../user_group_admin.php:58
 msgid "Defer to the Users Setting"
@@ -15248,7 +15251,7 @@ msgstr ""
 
 #: ../user_group_admin.php:1912
 msgid "No User Groups Found"
-msgstr ""
+msgstr "Geen gebruikersgroepen gevonden"
 
 #: ../user_group_admin.php:2513
 #, php-format
