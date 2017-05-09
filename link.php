@@ -41,7 +41,7 @@ if (!sizeof($page)) {
 			$link_nav['link.php:']['title']   = $page['title'];
 			$link_nav['link.php:']['mapping'] = '';
 			general_header();
-		}else{
+		} else {
 			$link_nav['link.php:']['title']   = $page['title'];
 			$link_nav['link.php:']['mapping'] = 'index.php:';
 			top_header();
@@ -62,7 +62,7 @@ if (!sizeof($page)) {
 
 			print '</div>';
 		}
-	}else{
+	} else {
 		print 'ERROR: Page is not authorized.';
 	}
 

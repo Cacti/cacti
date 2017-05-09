@@ -85,7 +85,7 @@ function form_save() {
 						if (isset($db_selected_graph_item{$matches[1]})) {
 							/* is selected and exists in the db; old item */
 							$old_members{$matches[1]} = $matches[1];
-						}else{
+						} else {
 							/* is selected and does not exist the db; new item */
 							$new_members{$matches[1]} = $matches[1];
 						}
@@ -105,7 +105,7 @@ function form_save() {
 						db_execute_prepared('INSERT INTO graph_template_input_defs (graph_template_input_id, graph_template_item_id) VALUES (?, ?)', array($graph_template_input_id, $graph_template_item_id));
 					}
 				}
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
@@ -113,7 +113,7 @@ function form_save() {
 		if (is_error_message()) {
 			header('Location: graph_templates_inputs.php?header=false&action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? get_nfilter_request_var('graph_template_input_id') : $graph_template_input_id) . '&graph_template_id=' . get_nfilter_request_var('graph_template_id'));
 			exit;
-		}else{
+		} else {
 			header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_nfilter_request_var('graph_template_id'));
 			exit;
 		}
@@ -197,7 +197,7 @@ function input_edit() {
 		foreach ($item_list as $item) {
 			if ($item['graph_template_input_id'] == '') {
 				$old_value = '';
-			}else{
+			} else {
 				$old_value = 'on';
 				$any_selected_item = $item['graph_templates_item_id'];
 			}
@@ -205,7 +205,7 @@ function input_edit() {
 			if ($graph_item_types{$item['graph_type_id']} == 'GPRINT') {
 				$start_bold = '';
 				$end_bold = '';
-			}else{
+			} else {
 				$start_bold = '<strong>';
 				$end_bold = '</strong>';
 			}
@@ -218,7 +218,7 @@ function input_edit() {
 		}
 
 		print '</div>';
-	}else{
+	} else {
 		print "<div style='width:100%;text-align:center'><em>" . __('No Items') . "</em></div>";
 	}
 

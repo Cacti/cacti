@@ -55,7 +55,7 @@ $extra_args     = " \"./snmpagent_mibcachechild.php\"";
 while(1) {
 	if(strstr(PHP_OS, "WIN")) {
 		popen("start \"CactiSNMPCacheChild\" /I \"" . $php . "\" " . $extra_args, "r");
-	}else{
+	} else {
 		exec($php . " " . $extra_args . " > /dev/null &");
 	}
 	sleep(30 - time() % 30);

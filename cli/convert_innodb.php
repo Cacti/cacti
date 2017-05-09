@@ -109,10 +109,10 @@ if (sizeof($tables)) {
 				echo "Converting Table -> '" . $table['Name'] . "'";
 				$status = db_execute('ALTER TABLE ' . $table['Name'] . ' ENGINE=Innodb');
 				echo ($status == 0 ? ' Failed' : ' Successful') . "\n";
-			}else{
+			} else {
 				echo "Skipping Table -> '" . $table['Name'] . " too many rows '" . $table['Rows'] . "'\n";
 			}
-		}else{
+		} else {
 			echo "Skipping Table ->'" . $table['Name'] . "\n";
 		}
 	}

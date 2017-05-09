@@ -45,7 +45,7 @@ function api_graph_remove_multi($local_graph_ids) {
 		foreach($local_graph_ids as $local_graph_id) {
 			if ($i == 0) {
 				$ids_to_delete .= $local_graph_id;
-			}else{
+			} else {
 				$ids_to_delete .= ', ' . $local_graph_id;
 			}
 
@@ -189,7 +189,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 		$local_graph_id = sql_save($save, 'graph_local');
 
 		$graph_template_graph['title'] = str_replace('<graph_title>', $graph_template_graph['title'], $graph_title);
-	}elseif (!empty($_graph_template_id)) {
+	} elseif (!empty($_graph_template_id)) {
 		$graph_template        = db_fetch_row_prepared('SELECT * 
 			FROM graph_templates 
 			WHERE id = ?', 

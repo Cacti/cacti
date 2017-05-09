@@ -131,7 +131,7 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 				SELECT id 
 				FROM aggregate_graphs 
 				WHERE ' . array_to_sql_or($graphs, 'local_graph_id') . ')');
-	}else{
+	} else {
 		$agg_template = db_fetch_row_prepared('SELECT * FROM aggregate_graph_templates WHERE id = ?', array($agg_template_id));
 
 		/* unset when dealing with a template */
@@ -256,10 +256,10 @@ function get_next_sequence($id, $field, $table_name, $group_query, $key_field='i
 
 		if ($data['seq'] == '') {
 			return 1;
-		}else{
+		} else {
 			return $data['seq'];
 		}
-	}else{
+	} else {
 		$data = db_fetch_row("SELECT $field FROM $table_name WHERE $key_field = id");
 		return $data[$field];
 	}
@@ -456,7 +456,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 			} elseif ($item_index > 1 && $old_graph_type == GRAPH_ITEM_TYPE_AREA) {
 				/* if the graph type is a stack and the item is 1, it must be converted to area */
 				return GRAPH_ITEM_TYPE_STACK;
-			}elseif ($graph_index == 0 && $old_graph_type == GRAPH_ITEM_TYPE_AREA) {
+			} elseif ($graph_index == 0 && $old_graph_type == GRAPH_ITEM_TYPE_AREA) {
 				/* don't change (multi-)AREAs on the first graph */
 				return $old_graph_type;
 			} else {

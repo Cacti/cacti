@@ -70,7 +70,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 		if (empty($fetch_array[0]['data_source_names'])) {
 			/* here to avoid warning on non-exist file */
 			$fetch_array = array();
-		}else{
+		} else {
 			$sum_array['data_source_names'] = $fetch_array[0]['data_source_names'];
 		}
 
@@ -97,12 +97,12 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 						for ($j=0; $j<count($fetch_array[$id]['values'][$fetch_id]); $j++) {
 							if (isset($fetch_array[$id]['values'][$fetch_id][$j])) {
 								$value = $fetch_array[$id]['values'][$fetch_id][$j];
-							}else{
+							} else {
 								$value = 0;
 							}
 							if (isset($sum_array['values'][$i][$j])) {
 								$sum_array['values'][$i][$j] += $value;
-							}else{
+							} else {
 								$sum_array['values'][$i][$j] = $value;
 							}
 						}
@@ -124,7 +124,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 					}
 					if (isset($sum_array['values'][$num_ds][$k])) {
 						$sum_array['values'][$num_ds][$k] = max($value, $sum_array['values'][$num_ds][$k]);
-					}else{
+					} else {
 						$sum_array['values'][$num_ds][$k] = max($value, 0);
 					}
 					/* sum of all ds rows */
@@ -135,7 +135,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 
 					if (isset($sum_array['values'][$num_ds + 1][$k])) {
 						$sum_array['values'][$num_ds + 1][$k] += $value;
-					}else{
+					} else {
 						$sum_array['values'][$num_ds + 1][$k] = $value;
 					}
 
@@ -148,7 +148,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 		}
 
 		$fetch_array = $sum_array;
-	}else{
+	} else {
 		/* No array, just calculate the 95th for the data source */
 		$fetch_array = @rrdtool_function_fetch($local_data_id, $start_seconds, $end_seconds, $resolution);
 	}
@@ -156,7 +156,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 	/* loop through each data source */
 	if (empty($fetch_array['data_source_names'])) {
 		$return_array = array();
-	}else{
+	} else {
 		for ($i=0; $i<count($fetch_array['data_source_names']); $i++) {
 			if (isset($fetch_array['values'][$i])) {
 				$values_array = $fetch_array['values'][$i];
@@ -184,7 +184,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 					if (($return_array{'nth_percentile_aggregate_total'} < $values_array[$target])) {
 						$return_array{'nth_percentile_aggregate_total'} = $values_array[$target];
 					}
-				}else{
+				} else {
 					$return_array{'nth_percentile_aggregate_total'} = $values_array[$target];
 				}
 			}
@@ -233,7 +233,7 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 
 			if (count($fetch_array['values'][$i]) != 0) {
 				$sum = ($sum * $ds_steps * $rra_steps);
-			}else{
+			} else {
 				$sum = 0;
 			}
 
@@ -279,13 +279,13 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 	/* Get the Nth percentile values */
 	if (($regexp_match_array[4] == 'current') || ($regexp_match_array[4] == 'max')) {
 		$nth_cache{$graph_item['local_data_id']} = nth_percentile($graph_item['local_data_id'], $graph_start, $graph_end, $regexp_match_array[1]);
-	}elseif (($regexp_match_array[4] == 'total') || ($regexp_match_array[4] == 'total_peak') || ($regexp_match_array[4] == 'all_max_current') || ($regexp_match_array[4] == 'all_max_peak')) {
+	} elseif (($regexp_match_array[4] == 'total') || ($regexp_match_array[4] == 'total_peak') || ($regexp_match_array[4] == 'all_max_current') || ($regexp_match_array[4] == 'all_max_peak')) {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if (!empty($graph_items[$t]['local_data_id'])) {
 				$nth_cache{$graph_items[$t]['local_data_id']} = nth_percentile($graph_items[$t]['local_data_id'], $graph_start, $graph_end, $regexp_match_array[1]);
 			}
 		}
-	}elseif (($regexp_match_array[4] == 'aggregate') || ($regexp_match_array[4] == 'aggregate_sum') || ($regexp_match_array[4] == 'aggregate_max')) {
+	} elseif (($regexp_match_array[4] == 'aggregate') || ($regexp_match_array[4] == 'aggregate_sum') || ($regexp_match_array[4] == 'aggregate_max')) {
 		$local_data_array = array();
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types{$graph_items[$t]['graph_type_id']})) && (!empty($graph_items[$t]['data_template_rrd_id']))) {
@@ -316,7 +316,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 			$nth = ($regexp_match_array[2] == 'bits') ? $nth * 8 : $nth;
 			$nth /= pow(10,intval($regexp_match_array[3]));
 		}
-	}elseif ($regexp_match_array[4] == 'total') {
+	} elseif ($regexp_match_array[4] == 'total') {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types{$graph_items[$t]['graph_type_id']})) && (!empty($graph_items[$t]['data_template_rrd_id']))) {
 				if (! empty($nth_cache{$graph_items[$t]['local_data_id']}{$graph_items[$t]['data_source_name']})) {
@@ -329,13 +329,13 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 
 			}
 		}
-	}elseif ($regexp_match_array[4] == 'max') {
+	} elseif ($regexp_match_array[4] == 'max') {
 		if (! empty($nth_cache{$graph_item['local_data_id']}['nth_percentile_maximum'])) {
 			$nth = $nth_cache{$graph_item['local_data_id']}['nth_percentile_maximum'];
 			$nth = ($regexp_match_array[2] == 'bits') ? $nth * 8 : $nth;
 			$nth /= pow(10,intval($regexp_match_array[3]));
 		}
-	}elseif ($regexp_match_array[4] == 'total_peak') {
+	} elseif ($regexp_match_array[4] == 'total_peak') {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types{$graph_items[$t]['graph_type_id']})) && (!empty($graph_items[$t]['data_template_rrd_id']))) {
 				if (! empty($nth_cache{$graph_items[$t]['local_data_id']}['nth_percentile_maximum'])) {
@@ -347,7 +347,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 				}
 			}
 		}
-	}elseif ($regexp_match_array[4] == 'all_max_current') {
+	} elseif ($regexp_match_array[4] == 'all_max_current') {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types{$graph_items[$t]['graph_type_id']})) && (!empty($graph_items[$t]['data_template_rrd_id']))) {
 				if (! empty($ninety_fifth_cache{$graph_items[$t]['local_data_id']}{$graph_items[$t]['data_source_name']})) {
@@ -361,7 +361,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 				}
 			}
 		}
-	}elseif ($regexp_match_array[4] == 'all_max_peak') {
+	} elseif ($regexp_match_array[4] == 'all_max_peak') {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types{$graph_items[$t]['graph_type_id']})) && (!empty($graph_items[$t]['data_template_rrd_id']))) {
 				if (! empty($nth_cache{$graph_items[$t]['local_data_id']}['nth_percentile_maximum'])) {
@@ -375,21 +375,21 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 				}
 			}
 		}
-	}elseif (($regexp_match_array[4] == 'aggregate') || ($regexp_match_array[4] == 'aggregate_current')) {
+	} elseif (($regexp_match_array[4] == 'aggregate') || ($regexp_match_array[4] == 'aggregate_current')) {
 		if (! empty($nth_cache{0}['nth_percentile_aggregate_total'])) {
 			$local_nth = $nth_cache{0}['nth_percentile_aggregate_total'];
 			$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
 			$local_nth /= pow(10,intval($regexp_match_array[3]));
 			$nth = $local_nth;
 		}
-	}elseif ($regexp_match_array[4] == 'aggregate_max') {
+	} elseif ($regexp_match_array[4] == 'aggregate_max') {
 		if (! empty($nth_cache{0}['nth_percentile_aggregate_max'])) {
 			$local_nth = $nth_cache{0}['nth_percentile_aggregate_max'];
 			$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
 			$local_nth /= pow(10,intval($regexp_match_array[3]));
 			$nth = $local_nth;
 		}
-	}elseif ($regexp_match_array[4] == 'aggregate_sum') {
+	} elseif ($regexp_match_array[4] == 'aggregate_sum') {
 		if (! empty($nth_cache{0}['nth_percentile_aggregate_sum'])) {
 			$local_nth = $nth_cache{0}['nth_percentile_aggregate_sum'];
 			$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
@@ -401,7 +401,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 	/* determine the floating point precision */
 	if (is_numeric($regexp_match_array[5])) {
 		$round_to = $regexp_match_array[5];
-	}else{
+	} else {
 		$round_to = 2;
 	}
 
@@ -439,19 +439,19 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 
 	if (is_numeric($regexp_match_array[4])) {
 		$summation_timespan_start = -$regexp_match_array[4];
-	}else{
+	} else {
 		$summation_timespan_start = $graph_start;
 	}
 
 	if ($regexp_match_array[2] == 'current') {
 		$summation_cache{$graph_item['local_data_id']} = bandwidth_summation($graph_item['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
-	}elseif ($regexp_match_array[2] == 'total') {
+	} elseif ($regexp_match_array[2] == 'total') {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if (!empty($graph_items[$t]['local_data_id'])) {
 				$summation_cache{$graph_items[$t]['local_data_id']} = bandwidth_summation($graph_items[$t]['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
 			}
 		}
-	}elseif ($regexp_match_array[2] == 'atomic') {
+	} elseif ($regexp_match_array[2] == 'atomic') {
 		$summation_cache{$graph_item['local_data_id']} = bandwidth_summation($graph_item['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, 1);
 	}
 
@@ -461,10 +461,10 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 	if (($regexp_match_array[2] == 'current') || ($regexp_match_array[2] == 'atomic')) {
 		if (isset($summation_cache{$graph_item['local_data_id']}{$graph_item['data_source_name']})) {
 			$summation = $summation_cache{$graph_item['local_data_id']}{$graph_item['data_source_name']};
-		}else{
+		} else {
 			$summation = 0;
 		}
-	}elseif ($regexp_match_array[2] == 'total') {
+	} elseif ($regexp_match_array[2] == 'total') {
 		for ($t=0;($t<count($graph_items));$t++) {
 			if ((preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types{$graph_items[$t]['graph_type_id']})) && (!empty($graph_items[$t]['data_template_rrd_id']))) {
 				if (isset($summation_cache{$graph_items[$t]['local_data_id']}{$graph_items[$t]['data_source_name']})) {
@@ -476,19 +476,19 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 
 	if (preg_match('/\d+/', $regexp_match_array[1])) {
 		$summation /= pow(10,intval($regexp_match_array[1]));
-	}elseif ($regexp_match_array[1] == 'auto') {
+	} elseif ($regexp_match_array[1] == 'auto') {
 		if ($summation < 1000) {
 			$summation_label = 'B';
-		}elseif ($summation < 1000000) {
+		} elseif ($summation < 1000000) {
 			$summation_label = 'KB';
 			$summation /= 1000;
-		}elseif ($summation < 1000000000) {
+		} elseif ($summation < 1000000000) {
 			$summation_label = 'MB';
 			$summation /= 1000000;
-		}elseif ($summation < 1000000000000) {
+		} elseif ($summation < 1000000000000) {
 			$summation_label = 'GB';
 			$summation /= 1000000000;
-		}else{
+		} else {
 			$summation_label = 'TB';
 			$summation /= 1000000000000;
 		}
@@ -497,14 +497,14 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 	/* determine the floating point precision */
 	if (is_numeric($regexp_match_array[3])) {
 		$round_to = $regexp_match_array[3];
-	}else{
+	} else {
 		$round_to = 2;
 	}
 
 	/* substitute in the final result and round off to two decimal digits */
 	if (isset($summation_label)) {
 		return round($summation, $round_to) . " $summation_label";
-	}else{
+	} else {
 		return round($summation, $round_to);
 	}
 }

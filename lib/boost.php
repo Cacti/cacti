@@ -32,13 +32,13 @@ function boost_file_size_display($file_size, $digits = 2) {
 			if ($file_size > 1024) {
 				$file_size = $file_size / 1024;
 				$file_suffix = ' GBytes';
-			}else{
+			} else {
 				$file_suffix = ' MBytes';
 			}
-		}else{
+		} else {
 			$file_suffix = ' KBytes';
 		}
-	}else{
+	} else {
 		$file_suffix = ' Bytes';
 	}
 
@@ -104,7 +104,7 @@ function boost_check_correct_enabled() {
 			db_execute("REPLACE INTO settings (name,value)
 				VALUES ('boost_rrd_update_system_enable','on')");
 		}
-	}else{
+	} else {
 		restore_error_handler();
 		return false;
 	}
@@ -119,7 +119,7 @@ function boost_poller_on_demand(&$results) {
 		/* suppress warnings */
 		if (defined('E_DEPRECATED')) {
 			error_reporting(E_ALL ^ E_DEPRECATED);
-		}else{
+		} else {
 			error_reporting(E_ALL);
 		}
 
@@ -148,7 +148,7 @@ function boost_poller_on_demand(&$results) {
 				foreach($results as $result) {
 					if ($i == 1) {
 						$delim = '';
-					}else{
+					} else {
 						$delim = ',';
 					}
 
@@ -166,7 +166,7 @@ function boost_poller_on_demand(&$results) {
 						$outbuf     = $outbuf2;
 						$out_length = strlen($outbuf2);
 						$i          = 1;
-					}else{
+					} else {
 						$outbuf .= $outbuf2;
 						$i++;
 					}
@@ -178,7 +178,7 @@ function boost_poller_on_demand(&$results) {
 			}
 
 			$return_value = false;
-		}else{
+		} else {
 			$return_value = true;
 		}
 
@@ -186,7 +186,7 @@ function boost_poller_on_demand(&$results) {
 		restore_error_handler();
 
 		return $return_value;
-	}else{
+	} else {
 		return true;
 	}
 }
@@ -202,10 +202,10 @@ function boost_poller_id_check() {
 		if ($config['connection'] == 'online') {
 			if ($storage_location == 0) {
 				return false;
-			}else{
+			} else {
 				return true;
 			}
-		}else{
+		} else {
 			return false;
 		}
 	}
@@ -228,7 +228,7 @@ function boost_fetch_cache_check($local_data_id) {
 		/* suppress warnings */
 		if (defined('E_DEPRECATED')) {
 			error_reporting(E_ALL ^ E_DEPRECATED);
-		}else{
+		} else {
 			error_reporting(E_ALL);
 		}
 
@@ -254,13 +254,13 @@ function boost_fetch_cache_check($local_data_id) {
 function boost_return_cached_image(&$graph_data_array) {
 	if (isset($graph_data_array['export_csv'])) {
 		return false;
-	}elseif (isset($graph_data_array['export_realtime'])) {
+	} elseif (isset($graph_data_array['export_realtime'])) {
 		return false;
-	}elseif (isset($graph_data_array['disable_cache']) && $graph_data_array['disable_cache'] == true) {
+	} elseif (isset($graph_data_array['disable_cache']) && $graph_data_array['disable_cache'] == true) {
 		return false;
-	}elseif (read_config_option('boost_png_cache_enable') == 'on' && boost_determine_caching_state()) {
+	} elseif (read_config_option('boost_png_cache_enable') == 'on' && boost_determine_caching_state()) {
 		return true;
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -274,7 +274,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 	/* suppressnwarnings */
 	if (defined('E_DEPRECATED')) {
 		error_reporting(E_ALL ^ E_DEPRECATED);
-	}else{
+	} else {
 		error_reporting(E_ALL);
 	}
 
@@ -331,7 +331,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 
 	if (isset($_SESSION['sess_current_timespan'])) {
 		$timespan = $_SESSION['sess_current_timespan'];
-	}else{
+	} else {
 		$timespan = 0;
 	}
 
@@ -349,7 +349,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 				if (is_writable($cache_directory)) {
 					if ($rra_id > 0) {
 						$cache_file = $cache_directory . '/' . get_selected_theme() . '_lgi_' . $local_graph_id . '_rrai_' . $rra_id;
-					}else{
+					} else {
 						$cache_file = $cache_directory . '/' . get_selected_theme() . '_lgi_' . $local_graph_id . '_rrai_' . $rra_id . '_tsi_' . $timespan;
 					}
 
@@ -362,7 +362,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 
 					if (isset($graph_data_array['graph_nolegend'])) {
 						$cache_file .= '_thumb.png';
-					}else{
+					} else {
 						$cache_file .= '.png';
 					}
 
@@ -388,20 +388,20 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 								$mc->object('boostStatsLastUpdate')->set( time() );
 
 								return $output;
-							}else{
+							} else {
 								cacti_log("Attempting to open cache file '$cache_file' failed", false, 'BOOST', POLLER_VERBOSITY_DEBUG);
 							}
-						}else{
+						} else {
 							cacti_log("Boost Cache PNG Expired.  Image '$cache_file' will be recreated", false, 'BOOST', POLLER_VERBOSITY_DEBUG);
 						}
 					}
-				}else{
+				} else {
 					cacti_log('ERROR: Boost Cache Directory is not writable!  Can not cache images', false, 'BOOST');
 				}
-			}else{
+			} else {
 				cacti_log('ERROR: Boost Cache Directory does not exist! Can not cache images', false, 'BOOST');
 			}
-		}else{
+		} else {
 			cacti_log('ERROR: Boost Cache Directory variable is not set! Can not cache images', false, 'BOOST');
 		}
 	}
@@ -416,7 +416,7 @@ function boost_prep_graph_array($graph_data_array) {
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {
 		error_reporting(E_ALL ^ E_DEPRECATED);
-	}else{
+	} else {
 		error_reporting(E_ALL);
 	}
 
@@ -446,7 +446,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {
 		error_reporting(E_ALL ^ E_DEPRECATED);
-	}else{
+	} else {
 		error_reporting(E_ALL);
 	}
 
@@ -455,7 +455,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 
 	if (isset($_SESSION['sess_current_timespan'])) {
 		$timespan = $_SESSION['sess_current_timespan'];
-	}else{
+	} else {
 		$timespan = 0;
 	}
 
@@ -469,7 +469,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 			if (is_dir($cache_directory)) {
 				if ($rra_id > 0) {
 					$cache_file = $cache_directory . '/' . get_selected_theme() . '_lgi_' . $local_graph_id . '_rrai_' . $rra_id;
-				}else{
+				} else {
 					$cache_file = $cache_directory . '/' . get_selected_theme() . '_lgi_' . $local_graph_id . '_rrai_' . $rra_id . '_tsi_' . $timespan;
 				}
 
@@ -482,7 +482,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 
 				if (isset($graph_data_array['graph_nolegend'])) {
 					$cache_file .= '_thumb.png';
-				}else{
+				} else {
 					$cache_file .= '.png';
 				}
 
@@ -499,13 +499,13 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 							$mc->object('boostStatsLastUpdate')->set( time() );
 						}
 					}
-				}else{
+				} else {
 					cacti_log('ERROR: Boost Cache Directory is not writable!  Can not cache images', false, 'BOOST');
 				}
-			}else{
+			} else {
 				cacti_log('ERROR: Boost Cache Directory does not exist! Can not cache images', false, 'BOOST');
 			}
-		}else{
+		} else {
 			cacti_log('ERROR: Boost Cache Directory variable is not set! Can not cache images', false, 'BOOST');
 		}
 	}
@@ -525,7 +525,7 @@ function boost_timer($area, $type) {
 
 	if ($type == BOOST_TIMER_START) {
 		$boost_stats_log[$area][BOOST_TIMER_START] = $btime;
-	}elseif ($type == BOOST_TIMER_END) {
+	} elseif ($type == BOOST_TIMER_END) {
 		if (isset($boost_stats_log[$area][BOOST_TIMER_START])) {
 			if (!isset($boost_stats_log[$area][BOOST_TIMER_TOTAL])) {
 				$boost_stats_log[$area][BOOST_TIMER_TOTAL] = 0;
@@ -581,7 +581,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {
 		error_reporting(E_ALL ^ E_DEPRECATED);
-	}else{
+	} else {
 		error_reporting(E_ALL);
 	}
 
@@ -602,7 +602,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
 			usleep(50000);
 		}
-	}else{
+	} else {
 		$single_local_data_id = false;
 
 		$poller_interval     = read_config_option('poller_interval');
@@ -777,7 +777,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			if ($time <= $last_update){
 				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", false, 'BOOST');
 				$value = 'DNP';
-			}else{
+			} else {
 				$value = trim($item['output']);
 			}
 
@@ -804,13 +804,13 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			/* single one value output */
 			if (strcmp($value, 'DNP') == 0) {
 				/* continue, bad time */
-			}elseif ((is_numeric($value)) || (strcmp($value, 'U') == 0)) {
+			} elseif ((is_numeric($value)) || (strcmp($value, 'U') == 0)) {
 				$outbuf .= ':' . $value;
 				$vals_in_buffer++;
-			}elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($value))) {
+			} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($value))) {
 				$outbuf .= ':' . hexdec($value);
 				$vals_in_buffer++;
-			}elseif (strlen($value)) {
+			} elseif (strlen($value)) {
 				/* break out multiple value output to an array */
 				$values = explode(' ', $value);
 
@@ -842,9 +842,9 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 							if (is_numeric($matches[2]) || ($matches[2] == 'U')) {
 								$outbuf .= ':' . $matches[2];
-							}elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[2]))) {
+							} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[2]))) {
 								$outbuf .= ':' . hexdec($matches[2]);
-							}else{
+							} else {
 								$outbuf .= ':U';
 							}
 						}
@@ -857,7 +857,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 				if ($multi_ok) {
 					$vals_in_buffer++;
 				}
-			}else{
+			} else {
 				cacti_log('WARNING: Local Data Id [' . $item['local_data_id'] . '] Contains an empty value', false, 'BOOST');
 			}
 		}
@@ -943,19 +943,19 @@ function boost_determine_caching_state() {
 		$action == 'edit'       ||
 		$action == 'graph_edit') {
 		$cache = false;
-	}else{
+	} else {
 		$cache = true;
 	}
 
 	if (!isset($_SESSION['custom'])) {
 		$custom = false;
-	}else{
+	} else {
 		$custom = $_SESSION['custom'];
 	}
 
 	if (($cache) && (!$custom)) {
 		return true;
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -988,7 +988,7 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 
 			if ($ds_name['rrd_name'] == '') {
 				$ds_null[] = $ds_name['data_source_name'];
-			}elseif ($ds_name['rrd_name'] == $ds_name['data_source_name']) {
+			} elseif ($ds_name['rrd_name'] == $ds_name['data_source_name']) {
 				$ds_nnull[] = $ds_name['data_source_name'];
 				$all_nulls = false;
 			}
@@ -997,7 +997,7 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 
 	if ($all_nulls) {
 		$rrd_template = implode(':', $ds_null);
-	}else{
+	} else {
 		$rrd_template = implode(':', $ds_nnull);
 	}
 
@@ -1094,10 +1094,10 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 
 					if (!empty($highSpeed)) {
 						$data_source['rrd_maximum'] = $highSpeed * 1000000;
-					}else{
+					} else {
 						$data_source['rrd_maximum'] = substitute_snmp_query_data('|query_ifSpeed|',$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 					}
-				}else{
+				} else {
 					$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'],$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 				}
 			} elseif (($data_source['rrd_maximum'] != 'U') && (int)$data_source['rrd_maximum']<=(int)$data_source['rrd_minimum']) {
@@ -1130,7 +1130,7 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
 				}
 			}
-		}elseif (!is_dir(dirname($data_source_path)) && $config['is_web'] == false) {
+		} elseif (!is_dir(dirname($data_source_path)) && $config['is_web'] == false) {
 			if (mkdir(dirname($data_source_path), 0775)) {
 				if ($config['cacti_server_os'] != 'win32') {
 					$owner_id      = fileowner($config['rra_path']);
@@ -1139,21 +1139,21 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 					if ((chown(dirname($data_source_path), $owner_id)) &&
 						(chgrp(dirname($data_source_path), $group_id))) {
 						/* permissions set ok */
-					}else{
+					} else {
 						cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
 					}
 				}
-			}else{
+			} else {
 				cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
 			}
-		}else{
+		} else {
 			cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", FALSE);
 		}
 	}
 
 	if ($show_source == true) {
 		return read_config_option('path_rrdtool') . ' create' . RRD_NL . "$data_source_path$create_ds$create_rra";
-	}else{
+	} else {
 		return rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 	}
 }
@@ -1175,7 +1175,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	/* create the rrd if one does not already exist */
 	if(read_config_option('storage_location')) {
 		$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
-	}else{
+	} else {
 		$file_exists = file_exists($rrd_path);
 	}
 
@@ -1213,10 +1213,10 @@ function boost_poller_bottom () {
 		if (read_config_option('path_boost_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
 				$extra_args = '-q ' . $config['base_path'] . '/poller_boost.php >> ' . read_config_option('path_boost_log') . ' 2>&1';
-			}else{
+			} else {
 				$extra_args = '-q ' . $config['base_path'] . '/poller_boost.php >> ' . read_config_option('path_boost_log');
 			}
-		}else{
+		} else {
 			$extra_args = '-q ' . $config['base_path'] . '/poller_boost.php';
 		}
 
@@ -1261,7 +1261,7 @@ function boost_update_snmp_statistics () {
 		$max_length = db_fetch_cell('SELECT MAX(LENGTH(output)) FROM poller_output_boost');
 		$max_table_allowed = $max_data_length;
 		$max_table_records = ($avg_row_length ? round($max_data_length/$avg_row_length, 0) : 0);
-	}else{
+	} else {
 		$max_length = '0';
 		$max_table_allowed = '-1';
 		$max_table_records = '0';

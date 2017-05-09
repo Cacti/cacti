@@ -151,7 +151,7 @@ if (sizeof($parms)) {
 		($exists_already > 0)) {
 		echo "ERROR: Graph Template is already associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
 		exit(1);
-	}else{
+	} else {
 		db_execute("replace into host_graph (host_id,graph_template_id) values (" . $host_id . "," . $graph_template_id . ")");
 
 		automation_hook_graph_template($host_id, $graph_template_id);
@@ -166,7 +166,7 @@ if (sizeof($parms)) {
 		echo "Success: Graph Template associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
 		exit(0);
 	}
-}else{
+} else {
 	display_help();
 	exit(0);
 }

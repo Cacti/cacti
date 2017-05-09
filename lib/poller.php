@@ -31,7 +31,7 @@ function exec_poll($command) {
 	if (function_exists('popen')) {
 		if ($config['cacti_server_os'] == 'unix') {
 			$fp = popen($command, 'r');
-		}else{
+		} else {
 			$fp = popen($command, 'rb');
 		}
 
@@ -44,7 +44,7 @@ function exec_poll($command) {
 		$output = fgets($fp, 8192);
 
 		pclose($fp);
-	}else{
+	} else {
 		$output = `$command`;
 	}
 
@@ -84,14 +84,14 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			}
 		}
 	/* execute the old fashion way */
-	}else{
+	} else {
 		/* formulate command */
 		$command = read_config_option('path_php_binary') . ' ' . $command;
 
 		if (function_exists('popen')) {
 			if ($config['cacti_server_os'] == 'unix')  {
 				$fp = popen($command, 'r');
-			}else{
+			} else {
 				$fp = popen($command, 'rb');
 			}
 
@@ -104,7 +104,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			$output = fgets($fp, 8192);
 
 			pclose($fp);
-		}else{
+		} else {
 			$output = `$command`;
 		}
 	}
@@ -124,10 +124,10 @@ function exec_background($filename, $args = '') {
 	if (file_exists($filename)) {
 		if ($config['cacti_server_os'] == 'win32') {
 			pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, 'r'));
-		}else{
+		} else {
 			exec($filename . ' ' . $args . ' > /dev/null &');
 		}
-	}elseif (file_exists_2gb($filename)) {
+	} elseif (file_exists_2gb($filename)) {
 		exec($filename . ' ' . $args . ' > /dev/null &');
 	}
 }
@@ -142,7 +142,7 @@ function file_exists_2gb($filename) {
 	if ($config['cacti_server_os'] != 'win32') {
 		system("test -f $filename", $rval);
 		return ($rval == 0);
-	}else{
+	} else {
 		return 0;
 	}
 }
@@ -182,9 +182,9 @@ function update_reindex_cache($host_id, $data_query_id) {
 			if ($host['snmp_version'] > 0) {
 				if (isset($data_query_xml['oid_uptime'])) {
 					$oid_uptime = $data_query_xml['oid_uptime'];
-				}elseif (isset($data_query_xml['uptime_oid'])) {
+				} elseif (isset($data_query_xml['uptime_oid'])) {
 					$oid_uptime = $data_query_xml['uptime_oid'];
-				}else{
+				} else {
 					$oid_uptime = '.1.3.6.1.2.1.1.3.0';
 				}
 
@@ -361,10 +361,10 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		$rows = db_fetch_cell('SELECT COUNT(*) FROM poller_output');
 		if ($rows > $max_rows && $have_deleted_rows === true) {
 			$limit = ' LIMIT ' . $max_rows;
-		}else{
+		} else {
 			$limit = '';
 		}
-	}else{
+	} else {
 		$limit = 'LIMIT ' . $max_rows;
 	}
 
@@ -406,23 +406,23 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 			if ((is_numeric($value)) || ($value == 'U')) {
 				$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = $value;
 			/* special case of one value output: hexadecimal to decimal conversion */
-			}elseif (is_hexadecimal($value)) {
+			} elseif (is_hexadecimal($value)) {
 				/* attempt to accomodate 32bit and 64bit systems */
 				$value = str_replace(' ', '', $value);
 				if (strlen($value) <= 8 || ((2147483647+1) == intval(2147483647+1))) {
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = hexdec($value);
-				}elseif (function_exists('bcpow')) {
+				} elseif (function_exists('bcpow')) {
 					$dec = 0;
 					$vallen = strlen($value);
 					for ($i = 1; $i <= $vallen; $i++) {
 						$dec = bcadd($dec, bcmul(strval(hexdec($value[$i - 1])), bcpow('16', strval($vallen - $i))));
 					}
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = $dec;
-				}else{
+				} else {
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = 'U';
 				}
 			/* multiple value output */
-			}elseif (strpos($value, ':') !== false) {
+			} elseif (strpos($value, ':') !== false) {
 				$values = preg_split('/\s+/', $value);
 
 				foreach($values as $value) {
@@ -436,7 +436,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 
 							if (strpos($field_map, ',') !== false) {
 								$fields = explode(',', $field_map);
-							}else{
+							} else {
 								$fields[] = $field_map;
 							}
 
@@ -475,7 +475,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 						$data_ids = array();
 						$k = 0;
 					}
-				}else{
+				} else {
 					unset($rrd_update_array[$rrd_path]['times'][$unix_time]);
 				}
 			}
@@ -546,7 +546,7 @@ function update_resource_cache($poller_id = 1) {
 				$pathinfo = pathinfo($path['path']);
 				if (isset($pathinfo['extension'])) {
 					$extension = strtolower($pathinfo['extension']);
-				}else{
+				} else {
 					$extension = '';
 				}
 
@@ -559,7 +559,7 @@ function update_resource_cache($poller_id = 1) {
 				if (!$exclude) {
 					cache_in_path($path['path'], $type, $path['recursive']);
 				}
-			}else{
+			} else {
 				cacti_log("ERROR: Unable to read the " . $type . " path '" . $path['path'] . "'", false, 'POLLER');
 			}
 		}
@@ -573,11 +573,11 @@ function update_resource_cache($poller_id = 1) {
 			}
 		}
 		}
-	}elseif ($poller_id > 1) {
+	} elseif ($poller_id > 1) {
 		foreach($paths as $type => $path) {
 			if (is_writable($path['path'])) {
 				resource_cache_out($type, $path);
-			}else{
+			} else {
 				cacti_log("FATAL: Unable to write to the " . $type . " path '" . $path['path'] . "'", false, 'POLLER');
 			}
 		}
@@ -628,21 +628,21 @@ function update_db_from_path($path, $type, $recursive = true) {
 				if ($recursive) {
 					update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
 				}
-			}elseif ($entry == '.') {
+			} elseif ($entry == '.') {
 				continue;
-			}elseif ($entry == '..') {
+			} elseif ($entry == '..') {
 				continue;
-			}elseif ($entry == '.git') {
+			} elseif ($entry == '.git') {
 				continue;
-			}elseif ($entry == '') {
+			} elseif ($entry == '') {
 				continue;
-			}elseif (basename($path) == 'config.php') {
+			} elseif (basename($path) == 'config.php') {
 				continue;
-			}else{
+			} else {
 				$pathinfo = pathinfo($entry);
 				if (isset($pathinfo['extension'])) {
 					$extension = strtolower($pathinfo['extension']);
-				}else{
+				} else {
 					$extension = '';
 				}
 
@@ -692,7 +692,7 @@ function resource_cache_out($type, $path) {
 
 				if (file_exists($mypath)) {
 					$md5sum = md5_file($mypath);
-				}else{
+				} else {
 					$md5sum = '';
 				}
 
@@ -727,18 +727,18 @@ function resource_cache_out($type, $path) {
 										cacti_log("INFO: Updating '" . $mypath . "' from Cache!", false, 'POLLER');
 										if (is_writable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
 											file_put_contents($mypath, $contents);
-										}else{
+										} else {
 											cacti_log("ERROR: Cache in cannot write to '" . $mypath . "', purge this location");
 										}
-									}else{
+									} else {
 										cacti_log("ERROR: PHP Source File '" . $mypath . "' from Cache has a Syntax error!", false, 'POLLER');
 									}
 
 									unlink($tmpfile);
-								}else{
+								} else {
 									cacti_log("ERROR: Unable to write file '" . $tmpfile . "' for PHP Syntax verification", false, 'POLLER');
 								}
-							}else{
+							} else {
 								cacti_log("ERROR: Cache in cannot write to '" . $tmpfile . "', purge this location");
 							}
 						} elseif (is_writeable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
@@ -774,17 +774,17 @@ function md5sum_path($path, $recursive = true) {
     while (($entry = $pobject->read()) !== false) {
 		if ($entry == '.') {
 			continue;
-		}elseif ($entry == '..') {
+		} elseif ($entry == '..') {
 			continue;
-		}elseif ($entry == '.git') {
+		} elseif ($entry == '.git') {
 			continue;
-		}elseif ($entry == '') {
+		} elseif ($entry == '') {
 			continue;
-		}else{
+		} else {
 			$pathinfo = pathinfo($entry);
 			if (isset($pathinfo['extension'])) {
 				$extension = strtolower($pathinfo['extension']);
-			}else{
+			} else {
 				$extension = '';
 			}
 
@@ -830,7 +830,7 @@ function replicate_out($remote_poller_id = 1) {
 			raise_message('poller_noconnect');
 			return false;
 		}
-	}else{
+	} else {
 		// We only allow sync from the main cacti server
 		raise_message('poller_nosync');
 		return false;
@@ -1037,7 +1037,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 		foreach($columns as $index => $c) {
 			if (!db_column_exists($table, $c, false, $conn)) {
 				$skipcols[$index] = $c;
-			}else{
+			} else {
 				$prefix .= ($colcnt > 0 ? ', ':'') . $c;
 				$colcnt++;
 			}
@@ -1073,7 +1073,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 		}
 
 		cacti_log('NOTE: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated');
-	}else{
+	} else {
 		cacti_log('NOTE: Table ' . $table . ' Not Replicated to Remote Poller ' . $remote_poller_id . ' Due to No Rows Found');
 	}
 }

@@ -43,7 +43,7 @@ function sig_handler($signo) {
 			if ($thread > 0) {
 				clearTask($network_id, getmypid());
 				exit;
-			}elseif($thread == 0 && !$master) {
+			} elseif($thread == 0 && !$master) {
 				$pids = array_rekey(db_fetch_assoc_prepared("SELECT pid 
 					FROM automation_processes 
 					WHERE network_id = ?
@@ -58,7 +58,7 @@ function sig_handler($signo) {
 				clearTask($network_id, getmypid());
 
 				db_execute_prepared('DELETE FROM automation_ips WHERE network_id = ?', array($network_id));
-			}else{
+			} else {
 				$pids = array_rekey(db_fetch_assoc_prepared("SELECT pid 
 					FROM automation_processes 
 					WHERE poller_id = ?
@@ -211,7 +211,7 @@ if ($master) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
 				$launched++;
-			}else{
+			} else {
 				automation_debug("Not time to Run Discovery for '" . $network['name'] . "'\n");
 			}
 		}
@@ -239,7 +239,7 @@ if (!$master && $thread == 0) {
 			if (isProcessRunning($pid)) {
 				killProcess($pid);
 				print "NOTE: Killing Process $pid\n";
-			}else{
+			} else {
 				print "NOTE: Process $pid claims to be running but not found\n";
 			}
 		}
@@ -313,7 +313,7 @@ if (!$master && $thread == 0) {
 
 		sleep(5);
 	}
-}else{
+} else {
 	registerTask($network_id, getmypid(), $poller_id);
 	discoverDevices($network_id, $thread);
 	endTask($network_id, getmypid());
@@ -372,7 +372,7 @@ function discoverDevices($network_id, $thread) {
 					$device['hostname']      = $dnsname;
 					$device['dnsname']       = $dnsname;
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
-				}elseif ($network['enable_netbios'] == 'on') {
+				} elseif ($network['enable_netbios'] == 'on') {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found, Checking NetBIOS:");
 					$netbios = ping_netbios_name($device['ip_address']);
 					if ($netbios === false) {
@@ -380,7 +380,7 @@ function discoverDevices($network_id, $thread) {
 						$device['hostname']      = $device['ip_address'];
 						$device['dnsname']       = '';
 						$device['dnsname_short'] = '';
-					}else{
+					} else {
 						automation_debug(" Found: '" . $netbios . "'");
 
 						db_execute_prepared('UPDATE automation_ips 
@@ -391,13 +391,13 @@ function discoverDevices($network_id, $thread) {
 						$device['dnsname']       = $netbios;
 						$device['dnsname_short'] = $netbios;
 					}
-				}else{
+				} else {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found");
 					$device['hostname']      = $device['ip_address'];
 					$device['dnsname']       = '';
 					$device['dnsname_short'] = '';
 				}
-			}else{
+			} else {
 				$dnsname = @gethostbyaddr($device['ip_address']);
 				$device['hostname'] = $dnsname;
 				if ($dnsname != $device['ip_address']) {
@@ -410,7 +410,7 @@ function discoverDevices($network_id, $thread) {
 
 					$device['dnsname']       = $dnsname;
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
-				}elseif ($network['enable_netbios'] == 'on') {
+				} elseif ($network['enable_netbios'] == 'on') {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found, Checking NetBIOS:");
 					$netbios = ping_netbios_name($device['ip_address']);
 					if ($netbios === false) {
@@ -418,7 +418,7 @@ function discoverDevices($network_id, $thread) {
 						$device['hostname']      = $device['ip_address'];
 						$device['dnsname']       = '';
 						$device['dnsname_short'] = '';
-					}else{
+					} else {
 						automation_debug(" Found: '" . $netbios . "'");
 
 						db_execute_prepared('UPDATE automation_ips 
@@ -429,7 +429,7 @@ function discoverDevices($network_id, $thread) {
 						$device['dnsname']       = $netbios;
 						$device['dnsname_short'] = $netbios;
 					}
-				}else{
+				} else {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found");
 					$device['hostname']      = $device['ip_address'];
 					$device['dnsname']       = '';
@@ -492,7 +492,7 @@ function discoverDevices($network_id, $thread) {
 					if (!$result) {
 						automation_debug(" No response");
 						updateDownDevice($network_id, $device['ip_address']);
-					}else{
+					} else {
 						automation_debug(" Responded");
 						$stats['ping']++;
 						addUpDevice($network_id, getmypid());
@@ -513,7 +513,7 @@ function discoverDevices($network_id, $thread) {
 							if ($snmp_sysName_short == '') {
 								$snmp_sysName_short = $parts[0];
 							}
-						}else{
+						} else {
 							$snmp_sysName_short = $snmp_sysName;
 						}
 						
@@ -623,9 +623,9 @@ function discoverDevices($network_id, $thread) {
 								}
 
 								$stats['added']++;
-							}elseif ($fos == false) {
+							} elseif ($fos == false) {
 								automation_debug(", Template: Not found, Not adding to Cacti");
-							}else{
+							} else {
 								automation_debug(", Template: " . $fos['name']);
 								$device['os'] = $fos['name'];
 								automation_debug(", Skipped: Add to Cacti disabled");
@@ -683,7 +683,7 @@ function discoverDevices($network_id, $thread) {
 						automation_debug(", Alive no SNMP!");
 
 						markIPDone($device['ip_address'], $network_id);
-					}else{
+					} else {
 						markIPDone($device['ip_address'], $network_id);
 					}
 
@@ -704,7 +704,7 @@ function discoverDevices($network_id, $thread) {
 				automation_debug(", Status: Already in Cacti\n");
 				markIPDone($device['ip_address'], $network_id);
 			}
-		}else{
+		} else {
 			// no more ips to scan
 			break;
 		}

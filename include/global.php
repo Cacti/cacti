@@ -114,7 +114,7 @@ $config['php_snmp_support'] = function_exists('snmpget');
 /* Set the poller_id */
 if (isset($poller_id)) {
 	$config['poller_id'] = $poller_id;
-}else{
+} else {
 	$config['poller_id'] = 1;
 }
 
@@ -134,7 +134,7 @@ define('URL_PATH', $url_path);
 if ($config['cacti_server_os'] == 'win32') {
 	$config['base_path']    = str_replace("\\", "/", substr(dirname(__FILE__),0,-8));
 	$config['library_path'] = $config['base_path'] . '/lib';
-}else{
+} else {
 	$config['base_path']    = preg_replace("/(.*)[\/]include/", "\\1", dirname(__FILE__));
 	$config['library_path'] = preg_replace("/(.*[\/])include/", "\\1lib", dirname(__FILE__));
 }
@@ -144,13 +144,13 @@ $config['rra_path'] = $config['base_path'] . '/rra';
 /* for multiple pollers, we need to know this location */
 if (!isset($scripts_path)) {
 	$config['scripts_path'] = $config['base_path'] . '/scripts';
-}else{
+} else {
 	$config['scripts_path'] = $scripts_path;
 }
 
 if (!isset($resource_path)) {
 	$config['resource_path'] = $config['base_path'] . '/resource';
-}else{
+} else {
 	$config['resource_path'] = $resource_path;
 }
 
@@ -209,7 +209,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$database_ssl       = $rdatabase_ssl;
 
 		$config['connection'] = 'online';
-	}else{
+	} else {
 		$config['connection'] = 'offline';
 	}
 } elseif (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl)) {
@@ -217,7 +217,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	print 'FATAL: Connection to Cacti database failed. Please insure the database is running and your credentials in config.php are valid.';
 	print $config['is_web'] ? '</p>':'';
 	exit;
-}else{
+} else {
 	/* gather the existing cactidb version */
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
 }
@@ -231,7 +231,7 @@ if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 
 if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions')) {
 	include(dirname(__FILE__) . '/session.php');
-}else{
+} else {
 	$cacti_db_session = false;
 }
 
@@ -279,7 +279,7 @@ if ($config['is_web']) {
 	/* make sure to start only only Cacti session at a time */
 	if (!isset($_SESSION['cacti_cwd'])) {
 		$_SESSION['cacti_cwd'] = $config['base_path'];
-	}else{
+	} else {
 		if ($_SESSION['cacti_cwd'] != $config['base_path']) {
 			session_unset();
 			session_destroy();

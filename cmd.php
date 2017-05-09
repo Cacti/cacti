@@ -49,11 +49,11 @@ function debug_level($host_id, $level) {
 		if (is_device_debug_enabled($host_id)) {
 			$debug_levels[$host_id] = POLLER_VERBOSITY_NONE;
 			return POLLER_VERBOSITY_NONE;
-		}else{
+		} else {
 			$debug_levels[$host_id] = $level;
 			return $level;
 		}
-	}else{
+	} else {
 		return $debug_levels[$host_id];
 	}
 }
@@ -216,13 +216,13 @@ if (sizeof($parms)) {
 if ($first == NULL || $last == NULL ) {
 	cacti_log('FATAL: You must either a host range, or no range at all using --first=N --last=N syntax!', true, 'POLLER');
 	exit(-1);
-}elseif (!is_numeric($first) || $first <0) {
+} elseif (!is_numeric($first) || $first <0) {
 	cacti_log('FATAL: The first host in the host range is invalid!', true, 'POLLER');
 	exit(-1);
-}elseif (!is_numeric($last) || $last <0) {
+} elseif (!is_numeric($last) || $last <0) {
 	cacti_log('FATAL: The last host in the host range is invalid!', true, 'POLLER');
 	exit(-1);
-}elseif ($last < $first) {
+} elseif ($last < $first) {
 	cacti_log('FATAL: The first host must always be less or equal to the last host!=', true, 'POLLER');
 	exit(-1);
 }
@@ -231,7 +231,7 @@ if ($first == NULL || $last == NULL ) {
 if (!is_numeric($poller_id) || $poller_id < 1) {
 	cacti_log('FATAL: The poller needs to be a positive numeric value', true, 'POLLER');
 	exit(-1);
-}else{
+} else {
 	$exists = db_fetch_cell_prepared('SELECT COUNT(*) FROM host WHERE poller_id = ?', array($poller_id));
 
 	if (empty($exists)) {
@@ -273,7 +273,7 @@ if ($allhost) {
 			AND action IN (?, ?)
 			AND rrd_next_step<=0', 
 			array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT));
-	}else{
+	} else {
 		$polling_items       = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
 			FROM poller_item 
 			WHERE poller_id = ?
@@ -311,7 +311,7 @@ if ($allhost) {
 			WHERE poller_id = ? 
 			AND rrd_next_step < 0', array($polling_interval, $poller_id));
 	}
-}else{
+} else {
 	$print_data_to_stdout = false;
 	if ($first <= $last) {
 		/* address potential exploits */
@@ -361,7 +361,7 @@ if ($allhost) {
 				AND host_id >= ? 
 				AND host_id <= ?', 
 				array($polling_interval, $poller_id, $first, $last));
-		}else{
+		} else {
 			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
 					FROM poller_item
 					WHERE poller_id = ? 
@@ -376,7 +376,7 @@ if ($allhost) {
 					AND host_id <= ?', 
 					array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT, $first, $last));
 		}
-	}else{
+	} else {
 		print "ERROR: Invalid Arguments.  The first argument must be less than or equal to the first.\n";
 		print "USAGE: CMD.PHP [[first_host] [second_host]]\n";
 
@@ -416,7 +416,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 		}
 
 		$using_proc_function = true;
-	}else{
+	} else {
 		$using_proc_function = false;
 	}
 
@@ -453,7 +453,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 				if ($mibs && $hosts[$host_id]['availability_method'] != 0 && $hosts[$host_id]['availability_method'] != 3) {
 					update_system_mibs($host_id);
 				}
-			}else{
+			} else {
 				$host_down = true;
 				update_host_status(HOST_DOWN, $host_id, $hosts, $ping, $hosts[$host_id]['availability_method'], $print_data_to_stdout);
 
@@ -481,7 +481,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 
 							if (isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
 								$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $index_item['arg1']);
-							}else{
+							} else {
 								$output = 'U';
 							}
 
@@ -529,7 +529,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 
 							if (isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
 								$output = sizeof(cacti_snmp_session_walk($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $index_item['arg1']));
-							}else{
+							} else {
 								$output = 'U';
 							}
 
@@ -634,7 +634,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 
 					if (isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
 						$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $item['arg1']);
-					}else{
+					} else {
 						$output = 'U';
 					}
 
@@ -700,7 +700,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 				if (($set_spike_kill) && (!substr_count($output, ':'))) {
 					$output_array[] = sprintf('(%d, %s, %s, "U")', $item['local_data_id'], db_qstr($item['rrd_name']), db_qstr($host_update_time));
 				/* otherwise, just insert the value received from the poller */
-				}else{
+				} else {
 					$output_array[] = sprintf('(%d, %s, %s, %s)', $item['local_data_id'], db_qstr($item['rrd_name']), db_qstr($host_update_time), db_qstr($output));
 				}
 
@@ -717,7 +717,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 
 					$output_array = array();
 					$output_count = 0;
-				}else{
+				} else {
 					$output_count++;
 				}
 			}
@@ -763,7 +763,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 		round($end-$start,4),
 		$poller_id,
 		$host_count), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
-}else{
+} else {
 	cacti_log('NOTE: There are no items in your poller for this polling cycle!', true, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 }
 

@@ -45,7 +45,7 @@ if ($snmp_version == 3) {
 	$snmp_priv_passphrase = $snmp[9];
 	$snmp_priv_protocol   = $snmp[10];
 	$snmp_context         = $snmp[11];
-}else{
+} else {
 	$snmp_community = $snmp[5];
 }
 
@@ -62,7 +62,7 @@ if ($cmd == "index") {
 /*
  * process NUM_INDEXES requests
  */
-}elseif ($cmd == "num_indexes") {
+} elseif ($cmd == "num_indexes") {
 	$arr_index = get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER);
 	
 	print sizeof($arr_index) . "\n";	
@@ -70,7 +70,7 @@ if ($cmd == "index") {
 /*
  * process QUERY requests
  */
-}elseif ($cmd == "query") {
+} elseif ($cmd == "query") {
 	$arg = $_SERVER["argv"][5];
 
 	$arr_index = get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
@@ -79,11 +79,11 @@ if ($cmd == "index") {
 	for ($i=0;($i<sizeof($arr_index));$i++) {
 		if ($arg == "usage") {
 			print $arr_index[$i] . "!" . $arr[$i] . "\n";
-		}elseif ($arg == "index") {
+		} elseif ($arg == "index") {
 			print $arr_index[$i] . "!" . $arr_index[$i] . "\n";
 		}
 	}
-}elseif ($cmd == "get") {
+} elseif ($cmd == "get") {
 	$arg = $_SERVER["argv"][5];
 	$index = $_SERVER["argv"][6];
 

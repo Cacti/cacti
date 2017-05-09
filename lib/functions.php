@@ -856,6 +856,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 			(!is_numeric($ping->ping_status))) {
 			$ping->ping_status = 0.000;
 		}
+
 		/* determine the ping statistic to set and do so */
 		if (($ping_availability == AVAIL_SNMP_AND_PING) ||
 			($ping_availability == AVAIL_SNMP_OR_PING)) {
@@ -880,19 +881,21 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		/* update times as required */
 		if (is_numeric($ping_time)) {
 			$hosts[$host_id]['cur_time'] = $ping_time;
+
+			/* maximum time */
+			if ($ping_time > $hosts[$host_id]['max_time']) {
+				$hosts[$host_id]['max_time'] = $ping_time;
+			}
+
+			/* minimum time */
+			if ($ping_time < $hosts[$host_id]['min_time']) {
+				$hosts[$host_id]['min_time'] = $ping_time;
+			}
+
+			/* average time */
+			$hosts[$host_id]['avg_time'] = (($hosts[$host_id]['total_polls']-1-$hosts[$host_id]['failed_polls'])
+				* $hosts[$host_id]['avg_time'] + $ping_time) / ($hosts[$host_id]['total_polls']-$hosts[$host_id]['failed_polls']);
 		}
-
-		/* maximum time */
-		if (is_numeric($ping_time) && $ping_time > $hosts[$host_id]['max_time'])
-			$hosts[$host_id]['max_time'] = $ping_time;
-
-		/* minimum time */
-		if (is_numeric($ping_time) && $ping_time < $hosts[$host_id]['min_time'])
-			$hosts[$host_id]['min_time'] = $ping_time;
-
-		/* average time */
-		$hosts[$host_id]['avg_time'] = (($hosts[$host_id]['total_polls']-1-$hosts[$host_id]['failed_polls'])
-			* $hosts[$host_id]['avg_time'] + $ping_time) / ($hosts[$host_id]['total_polls']-$hosts[$host_id]['failed_polls']);
 
 		/* the host was down, now it's recovering */
 		if (($hosts[$host_id]['status'] == HOST_DOWN) || ($hosts[$host_id]['status'] == HOST_RECOVERING )) {

@@ -107,13 +107,13 @@ function form_save() {
 				}
 
 				push_out_data_input_method($data_input_id);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? get_nfilter_request_var('id') : $data_input_id));
-	}elseif (isset_request_var('save_component_field')) {
+	} elseif (isset_request_var('save_component_field')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('data_input_id');
@@ -144,14 +144,14 @@ function form_save() {
 				}
 
 				update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		if (is_error_message()) {
 			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_request_var('input_output') : ''));
-		}else{
+		} else {
 			header('Location: data_input.php?header=false&action=edit&id=' . get_request_var('data_input_id'));
 		}
 	}
@@ -216,7 +216,7 @@ function form_actions() {
 		}
 
 		$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', sizeof($di_array)) . "'>";
-	}else{
+	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one data input method.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
@@ -336,7 +336,7 @@ function field_edit() {
 
 	if (!isempty_request_var('type')) {
 		$current_field_type = get_request_var('type');
-	}else{
+	} else {
 		$current_field_type = $field['input_output'];
 	}
 
@@ -361,7 +361,7 @@ function field_edit() {
 	if ($current_field_type == 'out') {
 		$header_name = __('Output Fields [edit: %s]', htmlspecialchars($data_input['name']));
 		$dfield      = __('Output Field');
-	}elseif ($current_field_type == 'in') {
+	} elseif ($current_field_type == 'in') {
 		$header_name = __('Input Fields [edit: %s]', htmlspecialchars($data_input['name']));
 		$dfield      = __('Input Field');
 	}
@@ -375,14 +375,14 @@ function field_edit() {
 	/* field name */
 	if ((($data_input['type_id'] == '1') || ($data_input['type_id'] == '5')) && ($current_field_type == 'in')) { /* script */
 		$form_array = inject_form_variables($fields_data_input_field_edit_1, $dfield, $array_field_names, (isset($field) ? $field : array()));
-	}elseif ($current_field_type == 'out' || ($data_input['type_id'] != 1 && $data_input['type_id'] != 5)) {
+	} elseif ($current_field_type == 'out' || ($data_input['type_id'] != 1 && $data_input['type_id'] != 5)) {
 		$form_array = inject_form_variables($fields_data_input_field_edit_2, $dfield, (isset($field) ? $field : array()));
 	}
 
 	/* ONLY if the field is an input */
 	if ($current_field_type == 'in') {
 		unset($fields_data_input_field_edit['update_rra']);
-	}elseif ($current_field_type == 'out') {
+	} elseif ($current_field_type == 'out') {
 		unset($fields_data_input_field_edit['regexp_match']);
 		unset($fields_data_input_field_edit['allow_nulls']);
 		unset($fields_data_input_field_edit['type_code']);
@@ -430,7 +430,7 @@ function data_edit() {
 	if (!isempty_request_var('id')) {
 		$data_input = db_fetch_row_prepared('SELECT * FROM data_input WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('Data Input Methods [edit: %s]', htmlspecialchars($data_input['name']));
-	}else{
+	} else {
 		$header_label = __('Data Input Methods [new]');
 	}
 
@@ -492,7 +492,7 @@ function data_edit() {
 					<?php
 				form_end_row();
 			}
-		}else{
+		} else {
 			print '<tr><td><em>' . __('No Input Fields') . '</em></td></tr>';
 		}
 		html_end_box();
@@ -530,7 +530,7 @@ function data_edit() {
 				<?php
 				form_end_row();
 			}
-		}else{
+		} else {
 			print '<tr><td><em>' . __('No Output Fields') . '</em></td></tr>';
 		}
 
@@ -603,7 +603,7 @@ function data() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -683,7 +683,7 @@ function data() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (di.name like '%" . get_request_var('filter') . "%')";
-	}else{
+	} else {
 		$sql_where = '';
 	}
 
@@ -733,7 +733,7 @@ function data() {
 			/* hide system types */
 			if ($data_input['templates'] > 0 || $data_input['data_sources'] > 0) {
 				$disabled = true;
-			}else{
+			} else {
 				$disabled = false;
 			}
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
@@ -745,7 +745,7 @@ function data() {
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);
 			form_end_row();
 		}
-	}else{
+	} else {
 		print "<tr><td colspan='5'><em>" . __('No Data Input Methods Found') . "</em></td></tr>";
 	}
 

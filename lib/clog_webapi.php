@@ -50,10 +50,10 @@ function clog_purge_logfile() {
 			fwrite($log_fh, "$timestamp - WEBUI: Cacti Log Cleared from Web Management Interface\n");
 			fclose($log_fh);
 			raise_message('clog_purged');
-		}else{
+		} else {
 			raise_message('clog_permissions');
 		}
-	}else{
+	} else {
 		raise_message('clog_missing');
 	}
 }
@@ -218,7 +218,7 @@ function clog_view_logfile() {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start + 7, $host_end - ($host_start + 7));
 				$new_item   .= cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
-				$new_item   .= '] Description[' . $hostDescriptions[$host_id];
+				$new_item   .= '] Description[' . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id] : '');
 				$item        = substr($item, $host_end);
 				$host_start  = strpos($item, 'Device[');
 			}

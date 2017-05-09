@@ -53,7 +53,7 @@ if (!isset_request_var('rra_id')) {
 
 if (get_request_var('rra_id') == 'all' || isempty_request_var('rra_id')) {
 	$sql_where = ' AND dspr.id IS NOT NULL';
-}else{
+} else {
 	$sql_where = ' AND dspr.id=' . get_request_var('rra_id');
 }
 
@@ -211,7 +211,7 @@ case 'zoom':
 			WHERE dspr.id = ?', array(get_request_var('rra_id')));
 
 		$rra['timespan'] = $rra['steps'] * $rra['step'] * $rra['rows'];
-	}else{
+	} else {
 		$rra = db_fetch_row_prepared('SELECT dspr.id, step, steps, dspr.name, rows
 			FROM data_source_profiles_rra AS dspr
 			INNER JOIN data_source_profiles AS dsp
@@ -239,7 +239,7 @@ case 'zoom':
 
 	if (isset_request_var('graph_end') && (get_request_var('graph_end') <= $now - $seconds_between_graph_updates)) {
 		$graph_end = get_request_var('graph_end');
-	}else{
+	} else {
 		$graph_end = $now - $seconds_between_graph_updates;
 	}
 
@@ -249,7 +249,7 @@ case 'zoom':
 		}else {
 			$graph_start = get_request_var('graph_start');
 		}
-	}else{
+	} else {
 		$graph_start = $now + $timespan;
 	}
 
@@ -265,7 +265,7 @@ case 'zoom':
 
 	if (read_user_setting('custom_fonts') == 'on' & read_user_setting('title_size') != '') {
 		$title_font_size = read_user_setting('title_size');
-	}elseif (read_config_option('title_size') != '') {
+	} elseif (read_config_option('title_size') != '') {
 		$title_font_size = read_config_option('title_size');
 	}else {
 	 	$title_font_size = 10;

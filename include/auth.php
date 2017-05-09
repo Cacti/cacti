@@ -29,7 +29,7 @@ include('./include/global.php');
 if (!isset($config['cacti_db_version'])) {
 	$version = db_fetch_cell('SELECT cacti FROM version');
 	$config['cacti_db_version'] = $version;
-}else{
+} else {
 	$version = $config['cacti_db_version'];
 }
 
@@ -81,7 +81,7 @@ if (read_config_option('auth_method') != 0) {
 	if (empty($_SESSION['sess_user_id'])) {
 		include($config['base_path'] . '/auth_login.php');
 		exit;
-	}elseif (!empty($_SESSION['sess_user_id'])) {
+	} elseif (!empty($_SESSION['sess_user_id'])) {
 		$realm_id = 0;
 
 		if (isset($user_auth_realm_filenames[get_current_page()])) {
@@ -106,14 +106,14 @@ if (read_config_option('auth_method') != 0) {
 					AND uagm.user_id = ?
 					AND uagr.realm_id = ?
 				) AS authorized', array($_SESSION['sess_user_id'], $realm_id, $_SESSION['sess_user_id'], $realm_id));
-		}else{
+		} else {
 			$authorized = false;
 		}
 
 		if ($realm_id != -1 && !$authorized) {
 			if (isset($_SERVER['HTTP_REFERER'])) {
 				$goBack = "<td colspan='2' align='center'>[<a href='" . htmlspecialchars($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
-			}else{
+			} else {
 				$goBack = "<td colspan='2' align='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
 

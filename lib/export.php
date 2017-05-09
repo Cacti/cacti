@@ -67,15 +67,15 @@ function graph_template_to_xml($graph_template_id) {
 			foreach ($struct_graph_item as $field_name => $field_array) {
 				if (($field_name == 'task_item_id') && (!empty($item{$field_name}))) {
 					$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('data_template_item') . get_hash_data_template($item{$field_name}, 'data_template_item') . "</$field_name>\n";
-				}elseif (($field_name == 'cdef_id') && (!empty($item{$field_name}))) {
+				} elseif (($field_name == 'cdef_id') && (!empty($item{$field_name}))) {
 					$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('cdef') . get_hash_cdef($item{$field_name}) . "</$field_name>\n";
-				}elseif (($field_name == 'vdef_id') && (!empty($item{$field_name}))) {
+				} elseif (($field_name == 'vdef_id') && (!empty($item{$field_name}))) {
 					$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('vdef') . get_hash_vdef($item{$field_name}) . "</$field_name>\n";
-				}elseif (($field_name == 'gprint_id') && (!empty($item{$field_name}))) {
+				} elseif (($field_name == 'gprint_id') && (!empty($item{$field_name}))) {
 					$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('gprint_preset') . get_hash_gprint($item{$field_name}) . "</$field_name>\n";
-				}elseif (($field_name == 'color_id') && (!empty($item{$field_name}))) {
+				} elseif (($field_name == 'color_id') && (!empty($item{$field_name}))) {
 					$xml_text .= "\t\t\t<$field_name>" . db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($item[$field_name])) . "</$field_name>\n";
-				}else{
+				} else {
 					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
 				}
 			}
@@ -164,9 +164,9 @@ function data_template_to_xml($data_template_id) {
 
 		if (($field_name == 'data_input_id') && (!empty($data_template_data{$field_name}))) {
 			$xml_text .= "\t\t<$field_name>hash_" . get_hash_version('data_input_method') . get_hash_data_input($data_template_data{$field_name}) . "</$field_name>\n";
-		}elseif (($field_name == 'data_source_profile_id') && (!empty($data_template_data{$field_name}))) {
+		} elseif (($field_name == 'data_source_profile_id') && (!empty($data_template_data{$field_name}))) {
 			$xml_text .= "\t\t<$field_name>hash_" . get_hash_version('data_source_profile') . get_hash_data_source_profile($data_template_data{$field_name}) . "</$field_name>\n";
-		}else{
+		} else {
 			if (isset($data_template_data{$field_name})) {
 				$xml_text .= "\t\t<$field_name>" . xml_character_encode($data_template_data{$field_name}) . "</$field_name>\n";
 			}
@@ -193,7 +193,7 @@ function data_template_to_xml($data_template_id) {
 
 				if (($field_name == 'data_input_field_id') && (!empty($item{$field_name}))) {
 					$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('data_input_field') . get_hash_data_input($item{$field_name}, 'data_input_field') . "</$field_name>\n";
-				}else{
+				} else {
 					if (isset($item{$field_name})) {
 						$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
 					}
@@ -275,7 +275,7 @@ function data_input_method_to_xml($data_input_id) {
 			foreach ($fields_data_input_field_edit as $field_name => $field_array) {
 				if (($field_name == 'input_output') && (!empty($item{$field_name}))) {
 					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
-				}else{
+				} else {
 					if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 						$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
 					}
@@ -610,7 +610,7 @@ function data_query_to_xml($data_query_id) {
 	foreach ($fields_data_query_edit as $field_name => $field_array) {
 		if (($field_name == 'data_input_id') && (!empty($snmp_query{$field_name}))) {
 			$xml_text .= "\t<$field_name>hash_" . get_hash_version('data_input_method') . get_hash_data_input($snmp_query{$field_name}) . "</$field_name>\n";
-		}else{
+		} else {
 			if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 				$xml_text .= "\t<$field_name>" . xml_character_encode($snmp_query{$field_name}) . "</$field_name>\n";
 			}
@@ -631,7 +631,7 @@ function data_query_to_xml($data_query_id) {
 			foreach ($fields_data_query_item_edit as $field_name => $field_array) {
 				if (($field_name == 'graph_template_id') && (!empty($item{$field_name}))) {
 					$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('graph_template') . get_hash_graph_template($item{$field_name}) . "</$field_name>\n";
-				}else{
+				} else {
 					if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 						$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item{$field_name}) . "</$field_name>\n";
 					}
@@ -939,7 +939,7 @@ function get_item_xml($type, $id, $follow_deps) {
 	if ($follow_deps == true) {
 		/* follow all dependencies recursively */
 		$dep_array = resolve_dependencies($type, $id, array());
-	}else{
+	} else {
 		/* we are not supposed to resolve dependencies */
 		$dep_array[$type][$id] = $id;
 	}
