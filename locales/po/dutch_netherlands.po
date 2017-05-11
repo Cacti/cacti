@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-05 13:28+0200\n"
-"PO-Revision-Date: 2017-05-09 19:05+0200\n"
+"PO-Revision-Date: 2017-05-11 15:42+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -8467,7 +8467,7 @@ msgstr ""
 #: ../include/global_settings.php:174 ../lib/functions.php:2210
 #: ../rrdcleaner.php:296
 msgid "RRD Cleaner"
-msgstr ""
+msgstr "RRD Opruimen"
 
 #: ../include/global_settings.php:179
 msgid "RRDfile Auto Clean"
@@ -11812,7 +11812,7 @@ msgstr ""
 
 #: ../lib/functions.php:3793
 msgid "Sending Message..."
-msgstr ""
+msgstr "Bericht wordt verstuurt..."
 
 #: ../lib/functions.php:3797
 msgid "Cacti Test Message"
@@ -11872,7 +11872,7 @@ msgstr "Geen %s gevonden"
 
 #: ../lib/html.php:722 ../lib/html.php:782
 msgid "Select All Rows"
-msgstr ""
+msgstr "Selecteer alle rijen"
 
 #: ../lib/html.php:880
 msgid "Alpha %"
@@ -12053,7 +12053,7 @@ msgstr ""
 
 #: ../lib/html_graph.php:322 ../lib/html_tree.php:767
 msgid "Return to the default time span"
-msgstr ""
+msgstr "Stel de standaard tijdperiode in"
 
 #: ../lib/html_graph.php:339
 msgid "Interval"
@@ -12419,7 +12419,7 @@ msgstr "[nieuw]"
 
 #: ../lib/html_reports.php:1119
 msgid "Send Report"
-msgstr ""
+msgstr "Verstuur rapport"
 
 #: ../lib/html_reports.php:1128
 msgid "Report Details"
@@ -12908,16 +12908,16 @@ msgstr ""
 #: ../lib/rrd.php:2570
 #, php-format
 msgid "RRA '%s' missing in RRDfile"
-msgstr ""
+msgstr "RRA '%s' ontbreekt in het RRD bestand"
 
 #: ../lib/rrd.php:2579
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
-msgstr ""
+msgstr "RRA '%s' ontbreekt in de Cacti definitie"
 
 #: ../lib/rrd.php:2598
 msgid "RRD File Information"
-msgstr ""
+msgstr "RRD bestandsinformatie"
 
 #: ../lib/rrd.php:2630
 msgid "Data Source Items"
@@ -13832,11 +13832,11 @@ msgstr "U moet tenminste een locatie selecteren."
 #: ../pollers.php:351 ../sites.php:316
 #, php-format
 msgid "Site [edit: %s]"
-msgstr ""
+msgstr "Locatie [wijzig: %s]"
 
 #: ../pollers.php:353 ../sites.php:318
 msgid "Site [new]"
-msgstr ""
+msgstr "Locatie [nieuw]"
 
 #: ../pollers.php:601
 msgid "Collector Name"
@@ -13880,7 +13880,7 @@ msgstr ""
 
 #: ../pollers.php:608
 msgid "Scripts"
-msgstr ""
+msgstr "Scripts"
 
 #: ../pollers.php:608
 msgid "The number of script calls associated with this Data Collector."
@@ -13888,7 +13888,7 @@ msgstr ""
 
 #: ../pollers.php:609
 msgid "Servers"
-msgstr ""
+msgstr "Servers"
 
 #: ../pollers.php:609
 msgid "The number of script server calls associated with this Data Collector."
@@ -13926,7 +13926,7 @@ msgstr "Archiveren"
 
 #: ../rrdcleaner.php:347
 msgid "RRD File Name"
-msgstr ""
+msgstr "RRD bestandsnaam"
 
 #: ../rrdcleaner.php:348
 msgid "DS Name"
@@ -13946,7 +13946,7 @@ msgstr "Laatste keer bewerkt"
 
 #: ../rrdcleaner.php:353
 msgid "Size [KB]"
-msgstr ""
+msgstr "Omvang [KB]"
 
 #: ../rrdcleaner.php:364 ../rrdcleaner.php:365
 msgid "Deleted"
@@ -14014,7 +14014,7 @@ msgstr "Cacti instellingen (%s)"
 
 #: ../settings.php:187
 msgid "Select Plugin(s)"
-msgstr ""
+msgstr "Selecteer plugin(s)"
 
 #: ../settings.php:189
 msgid "Plugins Selected"
@@ -14022,7 +14022,7 @@ msgstr ""
 
 #: ../settings.php:204
 msgid "Select File(s)"
-msgstr ""
+msgstr "Selecteer bestand(en)"
 
 #: ../settings.php:206
 msgid "Files Selected"
@@ -14030,7 +14030,7 @@ msgstr "Bestanden geselecteerd"
 
 #: ../settings.php:221
 msgid "Select Template(s)"
-msgstr ""
+msgstr "Selecteer template(s)"
 
 #: ../settings.php:226
 msgid "All Templates Selected"
@@ -14046,7 +14046,7 @@ msgstr ""
 
 #: ../sites.php:35
 msgid "Site Information"
-msgstr ""
+msgstr "Locatie informatie"
 
 #: ../sites.php:41
 msgid "The primary name for the Site."
@@ -14162,7 +14162,7 @@ msgstr "voorbeeld -77.0374678"
 
 #: ../sites.php:128
 msgid "Site Notes"
-msgstr ""
+msgstr "Locatie aantekeningen"
 
 #: ../sites.php:131
 msgid "Additional area use for random notes related to this Site."
@@ -14206,7 +14206,7 @@ msgstr[1] "Verwijder locaties"
 
 #: ../sites.php:481
 msgid "Site Name"
-msgstr ""
+msgstr "Locatienaam"
 
 #: ../sites.php:481
 msgid "The name of this Site."
@@ -14297,7 +14297,7 @@ msgstr ""
 
 #: ../templates_export.php:161
 msgid "Save File Locally"
-msgstr ""
+msgstr "Bestand lokaal opslaan"
 
 #: ../tree.php:32
 msgctxt "dropdown action"
@@ -14658,7 +14658,7 @@ msgstr ""
 #: ../user_group_admin.php:1157 ../user_group_admin.php:1283
 #: ../user_group_admin.php:1289
 msgid "Revoke Access"
-msgstr ""
+msgstr "Rechten intrekken"
 
 #: ../user_admin.php:1036 ../user_admin.php:1040 ../user_admin.php:1275
 #: ../user_admin.php:1279 ../user_admin.php:1414 ../user_admin.php:1418
@@ -15358,7 +15358,7 @@ msgstr ""
 
 #: ../utilities.php:337
 msgid "Script Timeout"
-msgstr ""
+msgstr "Script timeout"
 
 #: ../utilities.php:342
 msgid "Max OID"
