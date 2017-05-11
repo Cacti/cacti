@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.7
 -issue#655: Data source not displaying device name
+-feature: Updated Dutch language
 
 1.1.6
 -issue#620: The table poller_data_template_field_mappings can get out of sync when manipulating data templates
