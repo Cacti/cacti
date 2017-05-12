@@ -532,7 +532,7 @@ $settings = array(
 			),
 		'snmp_retries' => array(
 			'friendly_name' => __('Retries'),
-			'description' => __('The number times the SNMP poller will attempt to reach the host before failing.'),
+			'description' => __('The number of times the SNMP poller will attempt to reach the host before failing.'),
 			'method' => 'textbox',
 			'default' => '3',
 			'max_length' => '10',
