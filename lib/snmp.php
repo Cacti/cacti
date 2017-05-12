@@ -23,7 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-define('REGEXP_SNMP_TRIM', '/(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddress|string|integer):/i');
+define("REGEXP_SNMP_TRIM", "/(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddress|string|integer):|(up|down)\(|\)$/i");
 
 define('SNMP_METHOD_PHP', 1);
 define('SNMP_METHOD_BINARY', 2);
@@ -858,15 +858,19 @@ function format_snmp_string($string, $snmp_oid_included) {
 		}
 
 		/* convert the hex string into an ascii string */
-		foreach($parts as $part) {
-			if ($mac == false) {
-				if ($part == '00') break;
+                foreach($parts as $part) {
+                        if ($mac == false) {
+                                $output .= ($output != '' ? ':' : '');
+                                if ($part == '00') {
+                                  $output .= '00';
+                                } else  {
+                                  $output .= str_pad($part, 2, "0", STR_PAD_LEFT);
+                                }
 
-				$output .= chr(hexdec($part));
-			} else {
-				$output .= ($output != '' ? ':' : '') . $part;
-			}
-		}
+                        } else {
+                                $output .= ($output != '' ? ':' : '') . $part;
+                        }
+                }
 
 		if (is_numeric($output)) {
 			$string = number_format($output, 0, '', '');
