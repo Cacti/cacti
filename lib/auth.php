@@ -322,11 +322,9 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 	if ($policy_graphs == '1') {
 		$sql_policy_and .= "$sql_and(user_auth_perms.type != 1 OR user_auth_perms.type is null)";
 		$sql_and = ' AND ';
-		$sql_null = 'is null';
 	} elseif ($policy_graphs == '2') {
 		$sql_policy_or .= "$sql_or(user_auth_perms.type = 1 OR user_auth_perms.type is not null)";
 		$sql_or = ' OR ';
-		$sql_null = 'is not null';
 	}
 
 	if ($policy_hosts == '1') {
@@ -339,10 +337,8 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 
 	if ($policy_graph_templates == '1') {
 		$sql_policy_and .= "$sql_and((user_auth_perms.type != 4) OR (user_auth_perms.type is null))";
-		$sql_and = ' AND ';
 	} elseif ($policy_graph_templates == '2') {
 		$sql_policy_or .= "$sql_or((user_auth_perms.type = 4) OR (user_auth_perms.type is not null))";
-		$sql_or = ' OR ';
 	}
 
 	$sql_and = '';
@@ -413,7 +409,7 @@ function is_tree_allowed($tree_id, $user = 0) {
 
 		$policy = db_fetch_cell_prepared('SELECT policy_trees
 			FROM user_auth
-			WHERE id = ?', 
+			WHERE id = ?',
 			array($user)
 		);
 
@@ -430,7 +426,7 @@ function is_tree_allowed($tree_id, $user = 0) {
 			return true;
 		}
 
-		$groups = db_fetch_assoc_prepared("SELECT uag.*
+		$groups = db_fetch_assoc_prepared("SELECT uag.policy_trees
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
@@ -786,13 +782,13 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
-				$sql_having .= ($sql_having != '' ? ' OR ':'') . "(user$i IS NULL";
+				$sql_having .= ($sql_having != '' ? ' OR ' : '') . "(user$i IS NULL";
 			} else {
-				$sql_having .= ($sql_having != '' ? ' OR ':'') . "(user$i IS NOT NULL";
+				$sql_having .= ($sql_having != '' ? ' OR ' : '') . "(user$i IS NOT NULL";
 			}
 
 			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
-			$sql_select .= ($sql_select != '' ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
 			if ($policy['policy_hosts'] == 1) {
@@ -802,7 +798,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 			}
 
 			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
-			$sql_select .= ($sql_select != '' ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 
 			if ($policy['policy_graph_templates'] == 1) {
@@ -812,7 +808,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 			}
 
 			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
-			$sql_select .= ($sql_select != '' ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$i." . $policy['type'] . "_id AS user$i";
 			$i++;
 		}
 
@@ -857,7 +853,8 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		);
 	} else {
 		$graphs = db_fetch_assoc("SELECT 
-			gti.id, gti.title, 
+			gti.id,
+			gti.title, 
 			gtg.local_graph_id, 
 			h.description, 
 			gt.name AS template_name, 
@@ -907,7 +904,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	}
 
 	if ($graph_id > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ':' ') . " gl.id = $graph_id";
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.id = $graph_id";
 	}
 
 	if ($sql_where != '') {
@@ -1370,9 +1367,9 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 			array($user)
 		);
 
-		$i    = 0;
+		$i          = 0;
 		$sql_select = '';
-		$sql_join = '';
+		$sql_join   = '';
 		$sql_having = '';
 
 		foreach($policies as $policy) {
