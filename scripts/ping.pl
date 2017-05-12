@@ -14,19 +14,19 @@ if (($host =~ tr/:://) == 0) {
 }
 
 # Addition2
-($host) = $host =~ /^([\w.-]+)$/;
+($host) = $host =~ /^([\w.:-]+)$/;
 
 # always have the language in english
 $ENV{LANG}='en_US.UTF-8';
 
 # old linux version use 'icmp_seq'
 # newer use 'icmp_req' instead
-open(PROCESS, "ping -c 1 $host 2>&1 | grep -E '(icmp_[s|r]eq.*time|unknown host|Unknown host)' 2>/dev/null |");
+open(PROCESS, "ping -c 1 $host 2>&1 | grep -E '(icmp_[s|r]eq.*time|unknown host|Unknown host|not supported)' 2>/dev/null |");
 $ping = <PROCESS>;
 close(PROCESS);
 chomp($ping);
 
-if (($ping =~ 'unknown host') || ($ping =~ 'Unknown host')) {
+if (($ping =~ 'unknown host') || ($ping =~ 'Unknown host') ||  ($ping =~ 'not supported')) {
 	if ((-f '/bin/ping6') || (-f '/sbin/ping6')) {
 		open(PROCESS, "ping6 -c 1 $host 2>&1 | grep 'icmp_[s|r]eq.*time' 2>/dev/null |");
 		$ping = <PROCESS>;
