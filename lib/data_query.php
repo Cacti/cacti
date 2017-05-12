@@ -762,7 +762,7 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 	foreach($oid_items as $item){
 		$matches = array();
 		if(preg_match('/^\|query_([^|]+)\|$/', $item, $matches)){
-			$iv = mysql_real_escape_string($matches[1]);
+			$iv = db_qstr($matches[1]);
 			if(is_array($fields_processed) && !in_array($iv, $fields_processed)){
 				$errmsg[] = "rewrite_index='$rewrite_index': '$iv' is not processed yet, could not use it as index source";
 					continue;

@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.7
 -issue#655: Data source not displaying device name
+-issue#687: Cacti DB access not compatible with PHP 7
 -feature: Updated Dutch language
 
 1.1.6
