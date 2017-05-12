@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.7
 -issue#655: Data source not displaying device name
+-issue#680: Sort order in Time Graph View
 -feature: Updated Dutch language
 
 1.1.6
