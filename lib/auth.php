@@ -393,12 +393,10 @@ function auth_check_perms($objects, $policy) {
    @returns - (bool) whether the current user is allowed the view the specified graph tree or not */
 function is_tree_allowed($tree_id, $user = 0) {
 	if ($user == -1) {
-		$auth_method = 0;
-	} else {
-		$auth_method = read_config_option('auth_method');
+		return true;
 	}
 
-	if ($auth_method != 0) {
+	if (read_config_option('auth_method') != 0) {
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
@@ -421,11 +419,11 @@ function is_tree_allowed($tree_id, $user = 0) {
 			array($user, $tree_id)
 		);
 
-		/* check for group perms */
 		if (auth_check_perms($trees, $policy)) {
 			return true;
 		}
 
+		/* check for group perms */
 		$groups = db_fetch_assoc_prepared("SELECT uag.policy_trees
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
@@ -439,7 +437,7 @@ function is_tree_allowed($tree_id, $user = 0) {
 			return false;
 		}
 
-		foreach($groups as $g) {
+		foreach ($groups as $g) {
 			if (auth_check_perms($trees, $g['policy_trees'])) {
 				return true;
 			}
@@ -1158,7 +1156,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 				$sql_having
 			) AS rs
 			WHERE id > 0
-			AND name!= ''
+			AND name != ''
 			$order_by
 			$limit"
 		);
