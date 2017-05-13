@@ -65,29 +65,26 @@ function getHosts() {
 function getInputFields($templateId) {
 	$fields    = array();
 
-	$tmpArray = db_fetch_assoc_prepared("SELECT DISTINCT
-		data_input_fields.data_name AS `name`,
-		data_input_fields.name AS `description`,
-		data_input_data.value AS `default`,
-		data_template_data.data_template_id,
-		data_input_fields.id AS `data_input_field_id`
-		FROM data_input_data
-		INNER JOIN (((data_template_rrd
-		INNER JOIN (graph_templates
-		INNER JOIN graph_templates_item
-		ON graph_templates.id = graph_templates_item.graph_template_id)
-		ON data_template_rrd.id = graph_templates_item.task_item_id)
-		INNER JOIN data_template_data
-		ON data_template_rrd.data_template_id = data_template_data.data_template_id)
-		INNER JOIN data_input_fields
-		ON data_template_data.data_input_id = data_input_fields.data_input_id)
-		ON (data_input_data.data_template_data_id = data_template_data.id)
-		AND (data_input_data.data_input_field_id = data_input_fields.id)
-		WHERE (((graph_templates.id) = ?)
-		AND (data_template_rrd.local_data_id = 0)
-		AND (data_template_data.local_data_id = 0)
-		AND ((data_input_data.t_value) = 'on')
-		AND ((data_input_fields.input_output) = 'in'))", array($templateId));
+	$tmpArray = db_fetch_assoc_prepared("SELECT DISTINCT dif.data_name AS `name`, dif.name AS `description`,
+		did.value AS `default`, dtd.data_template_id, dif.id AS `data_input_field_id`
+		FROM data_input_fields AS dif
+		INNER JOIN data_input_data AS did
+		ON did.data_input_field_id = dif.id
+		INNER JOIN data_template_data AS dtd
+		ON did.data_template_data_id = dtd.id
+		AND dtd.data_input_id = dif.data_input_id
+		INNER JOIN data_template_rrd AS dtr
+		ON dtr.data_template_id = dtd.data_template_id
+		INNER JOIN graph_templates_item AS gti
+		ON dtr.id = gti.task_item_id
+		INNER JOIN graph_templates AS gt
+		ON gt.id = gti.graph_template_id
+		WHERE gt.id = ?
+		AND dtr.local_data_id = 0
+		AND dtd.local_data_id = 0
+		AND did.t_value = 'on'
+		AND dif.input_output IN ('in', 'inout')", 
+		array($templateId));
 
 	if (sizeof($tmpArray)) {
 		foreach ($tmpArray as $row) {
