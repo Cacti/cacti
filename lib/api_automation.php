@@ -2276,30 +2276,6 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 		AND host_id=' . $host_id . ' 
 		GROUP BY snmp_query_id, snmp_index';
 
-#	$sql_filter	= '';
-#	if(sizeof($automation_rule_items)) {
-#		$sql_filter = ' WHERE';
-#		foreach($automation_rule_items as $automation_rule_item) {
-#			# AND|OR
-#			if ($automation_rule_item['operation'] != AUTOMATION_OPER_NULL) {
-#				$sql_filter .= ' ' . $automation_oper[$automation_rule_item['operation']];
-#			}
-#			# right bracket ')' does not come with a field
-#			if ($automation_rule_item['operation'] == AUTOMATION_OPER_RIGHT_BRACKET) {
-#				continue;
-#			}
-#			# field name
-#			if ($automation_rule_item['field'] != '') {
-#				$sql_filter .= (' a.' . $automation_rule_item['field']);
-#				#
-#				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
-#				if ($automation_op_array['binary'][$automation_rule_item['operator']]) {
-#					$sql_filter .= (''' . $automation_op_array['pre'][$automation_rule_item['operator']]  . mysql_real_escape_string($automation_rule_item['pattern']) . $automation_op_array['post'][$automation_rule_item['operator']] . ''');
-#				}
-#			}
-#		}
-#	}
-
 	$sql_filter = build_rule_item_filter($automation_rule_items, ' a.');
 
 	if (sizeof($sql_filter)) $sql_filter = ' WHERE' . $sql_filter;
