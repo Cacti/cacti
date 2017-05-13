@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#680: Sort order in Time Graph View
 -issue#687: Cacti DB access not compatible with PHP 7
 -feature: Updated Dutch language
+-feature: Updating PHPMailer to 5.2.23
 
 1.1.6
 -issue#620: The table poller_data_template_field_mappings can get out of sync when manipulating data templates
