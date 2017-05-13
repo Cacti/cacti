@@ -1123,7 +1123,8 @@ function get_full_script_path($local_data_id) {
 		data_input.input_string
 		FROM (data_template_data, data_input)
 		WHERE data_template_data.data_input_id = data_input.id
-		AND data_template_data.local_data_id = ?', array($local_data_id));
+		AND data_template_data.local_data_id = ?', 
+		array($local_data_id));
 
 	/* snmp-actions don't have paths */
 	if (($data_source['type_id'] == DATA_INPUT_TYPE_SNMP) || ($data_source['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY)) {
@@ -1138,11 +1139,12 @@ function get_full_script_path($local_data_id) {
 		ON (data_input_fields.id = data_input_data.data_input_field_id)
 		WHERE data_input_fields.data_input_id  = ?
 		AND data_input_data.data_template_data_id = ?
-		AND data_input_fields.input_output = 'in'", array($data_source['data_input_id'], $data_source['id']));
+		AND data_input_fields.input_output = 'in'",
+		array($data_source['data_input_id'], $data_source['id']));
 
 	$full_path = $data_source['input_string'];
 
-	if (sizeof($data) > 0) {
+	if (sizeof($data)) {
 		foreach ($data as $item) {
 			$full_path = str_replace('<' . $item['data_name'] . '>', cacti_escapeshellarg($item['value']), $full_path);
 		}
@@ -1530,7 +1532,13 @@ function generate_data_input_field_sequences($string, $data_input_id) {
 		for ($i=0; ($i < count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 				$j++;
-				db_execute_prepared("UPDATE data_input_fields set sequence = ? WHERE data_input_id = ? AND input_output = 'in' and data_name = ?", array($j, $data_input_id, $matches[1][$i]));
+
+				db_execute_prepared("UPDATE data_input_fields
+					SET sequence = ?
+					WHERE data_input_id = ?
+					AND input_output IN ('in')
+					AND data_name = ?",
+					array($j, $data_input_id, $matches[1][$i]));
 			}
 		}
 

@@ -401,10 +401,10 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 							WHERE data_template_id = ? 
 							AND local_data_id=0', array($rrd['data_template_id']));
 
-						$form_array[$form_field_name]['sql'] = "SELECT id,CONCAT(data_name,' - ',name) AS name 
+						$form_array[$form_field_name]['sql'] = "SELECT id, CONCAT(data_name,' - ',name) AS name 
 							FROM data_input_fields 
 							WHERE data_input_id=" . $data_input_id . " 
-							AND input_output='out' 
+							AND input_output = 'out'
 							AND update_rra='on' 
 							ORDER BY data_name,name";
 					}
@@ -464,7 +464,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 	$fields = db_fetch_assoc_prepared('SELECT * 
 		FROM data_input_fields 
 		WHERE data_input_id = ? 
-		AND input_output="in" 
+		AND input_output = "in"
 		ORDER BY sequence', 
 		array($data['data_input_id']));
 

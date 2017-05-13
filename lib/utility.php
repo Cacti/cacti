@@ -184,7 +184,7 @@ function update_poller_cache($data_source, $commit = false) {
 				$num_output_fields = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id 
 					FROM data_input_fields 
 					WHERE data_input_id = ? 
-					AND input_output="out" 
+					AND input_output = "out"
 					AND update_rra="on"', 
 					array($data_input['id'])));
 
@@ -568,7 +568,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 					WHERE dif.data_input_id = ?
 					AND did.data_template_data_id = ?
 					AND (did.t_value="" OR did.t_value is null)
-					AND dif.input_output="in"',
+					AND dif.input_output = "in"',
 					array($data_source['data_input_id'], $data_source['local_data_template_data_id']));
 			}
 

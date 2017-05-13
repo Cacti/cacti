@@ -307,7 +307,8 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 			INNER JOIN data_input_data AS did
 			ON dif.id = did.data_input_field_id
 			WHERE data_template_data_id = ?
-			AND input_output = 'in'", array($data_template_data_id));
+			AND input_output = 'in'", 
+			array($data_template_data_id));
 
 		if (sizeof($data)) {
 			foreach ($data as $item) {
