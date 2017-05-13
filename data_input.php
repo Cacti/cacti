@@ -126,7 +126,7 @@ function form_save() {
 		$save['data_input_id'] = get_request_var('data_input_id');
 		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['data_name']     = form_input_validate(get_nfilter_request_var('data_name'), 'data_name', '', false, 3);
-		$save['input_output']  = get_request_var('input_output');
+		$save['input_output']  = get_nfilter_request_var('input_output');
 		$save['update_rra']    = form_input_validate((isset_request_var('update_rra') ? get_nfilter_request_var('update_rra') : ''), 'update_rra', '', true, 3);
 		$save['sequence']      = get_request_var('sequence');
 		$save['type_code']     = form_input_validate((isset_request_var('type_code') ? get_nfilter_request_var('type_code') : ''), 'type_code', '', true, 3);
