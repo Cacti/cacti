@@ -2796,7 +2796,11 @@ function get_associated_rras($local_graph_id, $sql_where = '') {
 		LEFT JOIN data_source_profiles_rra AS dspr
 		ON dsp.id=dspr.data_source_profile_id
 		AND dtd.local_data_id != 0
-		WHERE gti.local_graph_id = ? $sql_where", array($local_graph_id));
+		WHERE gti.local_graph_id = ?
+		$sql_where
+		ORDER BY dspr.steps",
+		array($local_graph_id)
+	);
 }
 
 /* get_browser_query_string - returns the full url, including args requested by the browser
