@@ -739,7 +739,7 @@ function display_new_graphs($rule, $url) {
 	if ($xml_array != false) {
 		/* loop through once so we can find out how many input fields there are */
 		foreach ($xml_array['fields'] as $field_name => $field_array) {
-			if ($field_array['direction'] == 'input') {
+			if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 				$num_input_fields++;
 
 				if (!isset($total_rows)) {
@@ -816,7 +816,7 @@ function display_new_graphs($rule, $url) {
 
 		$display_text = array();
 		foreach ($xml_array['fields'] as $field_name => $field_array) {
-			if ($field_array['direction'] == 'input') {
+			if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 				foreach($field_names as $row) {
 					if ($row['field_name'] == $field_name) {
 						$display_text[] = $field_array['name'];
@@ -848,7 +848,7 @@ function display_new_graphs($rule, $url) {
 				}
 				$column_counter = 0;
 				foreach ($xml_array['fields'] as $field_name => $field_array) {
-					if ($field_array['direction'] == 'input') {
+					if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 						if (in_array($field_name, $fields)) {
 							if (isset($row[$field_name])) {
 								if ($field_name == 'status') {
@@ -1727,7 +1727,7 @@ function get_created_graphs($rule) {
 
 	# rearrange items to ease indexed access
 	$items = array();
-	if(sizeof($graphs)) {
+	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			$items{$graph['host_id']}{$graph['snmp_index']} = $graph['snmp_index'];
 		}
@@ -1853,19 +1853,24 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 			break;
 
 		case AUTOMATION_RULE_TYPE_GRAPH_ACTION:
-			$title = 'Create Graph Rule';
-			$tables = array(AUTOMATION_RULE_TABLE_XML);
+			$title      = 'Create Graph Rule';
+			$tables     = array(AUTOMATION_RULE_TABLE_XML);
 			$item_table = 'automation_graph_rule_items';
-			$sql_and = '';
-			$automation_rule = db_fetch_row_prepared('SELECT * FROM automation_graph_rules WHERE id = ?', array($rule_id));
+			$sql_and    = '';
+
+			$automation_rule = db_fetch_row_prepared('SELECT * 
+				FROM automation_graph_rules 
+				WHERE id = ?', 
+				array($rule_id));
 
 			$_fields_rule_item_edit = $fields_automation_graph_rule_item_edit;
 			$xml_array = get_data_query_array($automation_rule['snmp_query_id']);
 			$fields = array();
-			if(sizeof($xml_array)) {
+
+			if (sizeof($xml_array)) {
 				foreach($xml_array['fields'] as $key => $value) {
 					# ... work on all input fields
-					if(isset($value['direction']) && (strtolower($value['direction']) == 'input')) {
+					if (isset($value['direction']) && ($value['direction'] == 'input' || $value['direction'] == 'input-output')) {
 						$fields[$key] = $key . ' - ' . $value['name'];
 					}
 				}

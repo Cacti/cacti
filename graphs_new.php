@@ -709,7 +709,7 @@ function graphs() {
 				if ($xml_array != false) {
 					/* loop through once so we can find out how many input fields there are */
 					foreach ($xml_array['fields'] as $field_name => $field_array) {
-						if ($field_array['direction'] == 'input') {
+						if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 							$num_input_fields++;
 
 							if (!isset($total_rows)) {
@@ -863,7 +863,7 @@ function graphs() {
 						html_start_box('', '100%', '', '3', 'center', '');
 
 						foreach ($xml_array['fields'] as $field_name => $field_array) {
-							if ($field_array['direction'] == 'input' && sizeof($field_names)) {
+							if (($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && sizeof($field_names)) {
 								foreach($field_names as $row) {
 									if ($row['field_name'] == $field_name) {
 										$html_dq_header .= "<th class='tableSubHeaderColumn'>" . $field_array['name'] . "</th>\n";
@@ -893,7 +893,7 @@ function graphs() {
 
 								$column_counter = 0;
 								foreach ($xml_array['fields'] as $field_name => $field_array) {
-									if ($field_array['direction'] == 'input') {
+									if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 										if (in_array($field_name, $fields)) {
 											if (isset($row[$field_name])) {
 												print "<td><span id='text$query_row" . '_' . $column_counter . "'>" . filter_value($row[$field_name], get_request_var('filter')) . '</span></td>';
