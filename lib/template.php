@@ -56,7 +56,7 @@ function push_out_data_source_custom_data($data_template_id) {
 		ON data_input_fields.id = data_input_data.data_input_field_id 
 		INNER JOIN data_template_data 
 		ON data_template_data.id = data_input_data.data_template_data_id
-		WHERE (data_input_fields.input_output="in")
+		WHERE (data_input_fields.input_output = "in")
 		AND (data_input_data.t_value="" OR data_input_data.t_value IS NULL)
 		AND (data_input_data.data_template_data_id = ?)
 		AND (data_template_data.local_data_template_data_id=0)', 
@@ -85,7 +85,7 @@ function push_out_data_source_custom_data($data_template_id) {
 		ON data_input_fields.id = data_input_data.data_input_field_id 
 		INNER JOIN data_template_data 
 		ON data_template_data.id = data_input_data.data_template_data_id 
-		WHERE (data_input_fields.input_output='in') 
+		WHERE (data_input_fields.input_output = 'in')
 		$dif_in_str 
 		AND (data_input_data.t_value='' OR data_input_data.t_value IS NULL)
 		AND (data_template_data.local_data_template_data_id=" . $data_template_data['id'] . ')');
@@ -518,7 +518,7 @@ function update_graph_data_source_output_type($local_graph_id, $output_type_id) 
 		$output_type_field_id = db_fetch_cell_prepared('SELECT id
 			FROM data_input_fields
 			WHERE data_input_id = ?
-			AND input_output="in"
+			AND input_output = "in"
 			AND type_code="output_type"
 			ORDER BY sequence',
 			array($data['data_input_id']));
@@ -1358,7 +1358,7 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			WHERE snmp_query_graph_id = ?', 
 			array($snmp_query_array['snmp_query_graph_id']));
 
-		$exists = db_fetch_row_prepared('SELECT dl.*, 
+		return db_fetch_row_prepared('SELECT dl.*, 
 			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields 
 			FROM data_local AS dl 
 			INNER JOIN data_template_data AS dtd 
@@ -1367,7 +1367,7 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			ON dif.data_input_id=dtd.data_input_id 
 			INNER JOIN snmp_query_graph_rrd AS sqgr 
 			ON sqgr.data_template_id=dtd.data_template_id 
-			WHERE input_output="in" 
+			WHERE input_output = "in"
 			AND type_code="output_type" 
 			AND dl.host_id = ? 
 			AND dl.data_template_id = ?
@@ -1378,42 +1378,8 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			array($host_id, $data_template['id'], 
 				$snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'],
 				$input_fields));
-
-// Commented out for testing of faster method to determine duplicated graphs
-/*		$exists = db_fetch_row_prepared('SELECT dl.*, 
-			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields 
-			FROM data_local AS dl 
-			INNER JOIN data_template_data AS dtd 
-			ON dl.id=dtd.local_data_id 
-			INNER JOIN data_input_fields AS dif 
-			ON dif.data_input_id=dtd.data_input_id 
-			INNER JOIN data_input_data AS did 
-			ON did.data_template_data_id=dtd.id 
-			AND did.data_input_field_id=dif.id 
-			INNER JOIN snmp_query_graph_rrd AS sqgr 
-			ON sqgr.snmp_query_graph_id=did.value 
-			WHERE input_output="in" 
-			AND type_code="output_type" 
-			AND dl.host_id = ? 
-			AND dl.data_template_id = ?
-			AND dl.snmp_query_id = ?
-			AND dl.snmp_index = ?
-			GROUP BY dtd.local_data_id
-			HAVING local_data_id IS NOT NULL AND input_fields = ?',
-			array($host_id, $data_template['id'], 
-				$snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'],
-				$input_fields));
-*/
 	} else {
 		return array();
-
-//		Commenting out as 'previous should only apply to data query graphs'
-//		$exists = db_fetch_row_prepared('SELECT * 
-//			FROM data_local 
-//			WHERE host_id = ? 
-//			AND data_template_id = ?', 
-//			array($host_id, $data_template['id']));
 	}
-
-	return $exists;
 }
+
