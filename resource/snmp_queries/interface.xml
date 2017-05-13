@@ -18,8 +18,8 @@
 		<ifOperStatus>
 			<name>Status</name>
 			<method>walk</method>
-			<source>value</source>
-			<direction>input</direction>
+			<source>VALUE/REGEXP:[a-zA-Z]{1,}\(([1-]{1})+\)$</source>
+			<direction>output</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.8</oid>
 		</ifOperStatus>
 		<ifDescr>
