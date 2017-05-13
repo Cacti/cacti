@@ -45,21 +45,22 @@ ini_set('max_execution_time', '0');
 $cacti_versions = array_keys($cacti_version_codes);
 
 $old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
+$old_cacti_version = trim($old_cacti_version);
 
 /* do a version check */
 if ($old_cacti_version == CACTI_VERSION) {
 	print '<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
-		<p style="font-family: Verdana, Arial; font-size: 12px;">' 
+		<p style="font-family: Verdana, Arial; font-size: 12px;">'
 		. __('This installation is already up-to-date. Click <a href="%s">here</a> to use Cacti.', '../index.php') . '</p>';
 	exit;
 } elseif (preg_match('/^0\.6/', $old_cacti_version)) {
 	print '<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
-		<p style="font-family: Verdana, Arial; font-size: 12px;">' 
+		<p style="font-family: Verdana, Arial; font-size: 12px;">'
 		. __('You are attempting to install Cacti %s onto a 0.6.x database. To continue, you must create a new database, import "cacti.sql" into it, and update "include/config.php" to point to the new database.', CACTI_VERSION) . '</p>';
 	exit;
 } elseif (empty($old_cacti_version)) {
 	print '<p style="font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;">' . __('Error') . '</p>
-		<p style="font-family: Verdana, Arial; font-size: 12px;">' 
+		<p style="font-family: Verdana, Arial; font-size: 12px;">'
 		. __("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:</p><p><pre>mysql -u %s -p %s < cacti.sql</pre></p><p>This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database.", $database_username, $database_default) . '</p>';
 
 	print '<p>' . __("In Cacti %s, you must also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table", CACTI_VERSION) . '</p>';
@@ -219,21 +220,21 @@ if ($step == '7') {
 		if (!empty($host_template_id)) {
 			cacti_log('Device Template for First Cacti Device is ' . $host_template_id);
 
-			$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/add_device.php" . 
-				" --description=" . cacti_escapeshellarg($description) . " --ip=" . cacti_escapeshellarg($ip) . " --template=$host_template_id" . 
+			$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/add_device.php" .
+				" --description=" . cacti_escapeshellarg($description) . " --ip=" . cacti_escapeshellarg($ip) . " --template=$host_template_id" .
 				" --notes=" . cacti_escapeshellarg('Initial Cacti Device') . " --poller=1 --site=0 --avail=" . cacti_escapeshellarg($avail) .
 				" --version=$version --community=" . cacti_escapeshellarg($community));
 
-			$host_id = db_fetch_cell_prepared('SELECT id 
-				FROM host 
-				WHERE host_template_id = ? 
-				LIMIT 1', 
+			$host_id = db_fetch_cell_prepared('SELECT id
+				FROM host
+				WHERE host_template_id = ?
+				LIMIT 1',
 				array($host_template_id));
 
 			if (!empty($host_id)) {
-				$templates = db_fetch_assoc_prepared('SELECT * 
-					FROM host_graph 
-					WHERE host_id = ?', 
+				$templates = db_fetch_assoc_prepared('SELECT *
+					FROM host_graph
+					WHERE host_id = ?',
 					array($host_id));
 
 				if (sizeof($templates)) {
@@ -269,8 +270,8 @@ if ($step == '7') {
 				run_data_query($host_id, 6);
 			}
 
-			/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and up-to-date */ 	 
-			repopulate_poller_cache(); 	 
+			/* it's always a good idea to re-populate the poller cache to make sure everything is refreshed and up-to-date */
+			repopulate_poller_cache();
 
 			/* fill up the snmpcache */
 			snmpagent_cache_rebuilt();
@@ -306,16 +307,16 @@ if ($step == '7') {
 	}
 
 	// loop through versions from old version to the current, performing updates for each version in the chain
-	foreach ($cacti_version_codes as $cacti_version => $hash_code)  {
+	foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 
 		// skip versions old than the database version
-		if (version_compare($old_cacti_version, $cacti_version, '>=')) {
+		if (version_compare($old_cacti_version, $cacti_upgrade_version, '>=')) {
 			continue;
 		}
 
 		// construct version upgrade include path
-		$upgrade_file = dirname(__FILE__) . '/upgrades/' . str_replace('.', '_', $cacti_version) . '.php';
-		$upgrade_function = 'upgrade_to_' . str_replace('.', '_', $cacti_version);
+		$upgrade_file = dirname(__FILE__) . '/upgrades/' . str_replace('.', '_', $cacti_upgrade_version) . '.php';
+		$upgrade_function = 'upgrade_to_' . str_replace('.', '_', $cacti_upgrade_version);
 
 		// check for upgrade version file, then include, check for function and execute
 		if (file_exists($upgrade_file)) {
@@ -435,7 +436,7 @@ $enabled = '1';
 						<span><input type='checkbox' id='accept' name='accept'></span><span><label for='accept'>Accept GPL License Agreement</label></span><br><br>
 					<?php 	
 					/* checkdependencies */
-					} elseif ($step == '2') { 
+					} elseif ($step == '2') {
 						$enabled = '1';
 
 						print '<h2>' . __('Pre-installation Checks') .'</h2>';
@@ -471,7 +472,7 @@ $enabled = '1';
 						form_end_row();
 
 						if ($config['cacti_server_os'] == 'unix') {
-							$extensions = array( 
+							$extensions = array(
 								array('name' => 'posix',     'installed' => false),
 								array('name' => 'session',   'installed' => false),
 								array('name' => 'sockets',   'installed' => false),
@@ -487,7 +488,7 @@ $enabled = '1';
 								array('name' => 'zlib',      'installed' => false)
 							);
 						} elseif (version_compare(PHP_VERSION, '5.4.5') < 0) {
-							$extensions = array( 
+							$extensions = array(
 								array('name' => 'session',   'installed' => false),
 								array('name' => 'sockets',   'installed' => false),
 								array('name' => 'PDO',       'installed' => false),
@@ -502,7 +503,7 @@ $enabled = '1';
 								array('name' => 'zlib',      'installed' => false)
 							);
 						} else {
-							$extensions = array( 
+							$extensions = array(
 								array('name' => 'com_dotnet','installed' => false),
 								array('name' => 'session',   'installed' => false),
 								array('name' => 'sockets',   'installed' => false),
@@ -555,117 +556,110 @@ $enabled = '1';
 						html_start_box('<strong> ' . __('Recommended MySQL System Variable Settings') . '</strong>', '30', 0, '', '', false);
 						utilities_get_mysql_recommendations();
 						html_end_box(false);
-					/* install/upgrade */
 					} elseif ($step == '3') {
+						// install/upgrade
 						print '<h2>' . __('Installation Type') . '</h2>';
 
-						print '<h4>' . __('Please select the type of installation') . '</h4>';
-
-						print '<p>' . __('Note that when upgrading, you only will receive the Upgrade selection.') . '</p>';
-
-						print '<p>' . __('You have three Cacti installation options to choose from:') . '</p>';
-
-						print '<p><ul>';
-						print '<li><b><i>' . __('New Primary Server') . '</i></b> - ' . __('Choose this for the Primary Cacti Web Site.') . '</li>';
-						print '<li><b><i>' . __('New Remote Poller')  . '</i></b> - ' . __('Remote Pollers are used to access networks that are not readily accessible to the Primary Cacti Web Site.') . '</li>';
-						print '<li><b><i>' . __('Upgrade Previous Cacti') . '</i></b> - ' . __('Use this option to upgrade a previous release of Cacti') . '</li>';
-						print '</ul></p>';
-
 						if ($default_install_type == '3') {
-							print '<p>
-								<select id="install_type" name="install_type">
-									<option value="3"' . (($default_install_type == '3') ? ' selected' : '') . '>' . __('Upgrade Previous Cacti') . '</option>
-								</select>
-							</p>';
+							// upgrade
+							print '<input type="hidden" id="install_type" name="install_type" value="3">';
+							print '<h4>' . __('Upgrade from <strong>%s</strong> to <strong>%s</strong>', $old_cacti_version, CACTI_VERSION) . '</h4>';
+							print '<p> <font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing') . '</font></p>';
 						} else {
+							// new install
+							print '<h4>' . __('Please select the type of installation') . '</h4>';
+
+							print '<p>' . __('Installation options:') . '</p>';
+
+							print '<p><ul>';
+							print '<li><b><i>' . __('New Primary Server') . '</i></b> - ' . __('Choose this for the Primary site.') . '</li>';
+							print '<li><b><i>' . __('New Remote Poller')  . '</i></b> - ' . __('Remote Pollers are used to access networks that are not readily accessible to the Primary site.') . '</li>';
+							print '</ul></p>';
+
 							print '<p>
 								<select id="install_type" name="install_type">
 									<option value="1"' . (($default_install_type == '1') ? ' selected' : '') . '>' . __('New Primary Server') . '</option>
 									<option value="2"' . (($default_install_type == '2') ? ' selected' : '') . '>' . __('New Remote Poller') . '</option>
 								</select>
 							</p>';
-						}
 
-						if ($default_install_type == '3') {
-							print '<p> <font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing') . '</font></p>';
-						} 
-				
-						print '<p>' . __('The following information has been determined from Cacti\'s configuration file. If it is not correct, please edit "include/config.php" before continuing.') . '</p>';
+							print '<p>' . __('The following information has been determined from Cacti\'s configuration file. If it is not correct, please edit "include/config.php" before continuing.') . '</p>';
 
-						print '<div id="local_database" style="display:none;">';
+							print '<div id="local_database" style="display:none;">';
 
-						print '<h4>' . __('Local Cacti database connection information') . '</h4>';
-						print '<p class="code">'
-							. __('Database: <b>%s</b>', $database_default) . '<br>'
-							. __('Database User: <b>%s</b>', $database_username) . '<br>'
-							. __('Database Hostname: <b>%s</b>', $database_hostname) . '<br>'
-							. __('Port: <b>%s</b>', $database_port) . '<br>'
-							. __('Server Operating System Type: <b>%s</b>', $config['cacti_server_os']) . '<br>'
-						. '</p>';
-
-						print '</div>';
-
-						print '<div id="remote_database" style="display:none;">';
-
-						if (is_writable($config['base_path'] . '/include/config.php')) {
-							$good_write = true;
-						} else {
-							$good_write = false;
-						}
-
-						if (isset($rdatabase_default) && 
-							isset($rdatabase_username) && 
-							isset($rdatabase_hostname) &&
-							isset($rdatabase_port)) {
-							$remote_good = true;
-						} else {
-							$remote_good = false;
-						}
-
-						if ($remote_good && $good_write) {
-							print '<h4>' . __('Remote Poller Cacti database connection information') . '</h4>';
+							print '<h4>' . __('Local Cacti database connection information') . '</h4>';
 							print '<p class="code">'
-								. __('Database: <b>%s</b>', $rdatabase_default) . '<br>'
-								. __('Database User: <b>%s</b>', $rdatabase_username) . '<br>'
-								. __('Database Hostname: <b>%s</b>', $rdatabase_hostname) . '<br>'
-								. __('Port: <b>%s</b>', $rdatabase_port) . '<br>'
+								. __('Database: <b>%s</b>', $database_default) . '<br>'
+								. __('Database User: <b>%s</b>', $database_username) . '<br>'
+								. __('Database Hostname: <b>%s</b>', $database_hostname) . '<br>'
+								. __('Port: <b>%s</b>', $database_port) . '<br>'
 								. __('Server Operating System Type: <b>%s</b>', $config['cacti_server_os']) . '<br>'
 							. '</p>';
-						} else {
-							print '<h4>' . __('Remote Poller Cacti database connection information') . '</h4>';
 
-							if (!$good_write) {
-								print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your config.php file must be writable by 
-									the web server during install in order to configure the Remote poller.  Once 
-									installation is complete, you must set this file to Read Only to prevent 
-									possible security issues.');
-								print '</p>';
+							print '</div>';
+
+							print '<div id="remote_database" style="display:none;">';
+
+							if (is_writable($config['base_path'] . '/include/config.php')) {
+								$good_write = true;
+							} else {
+								$good_write = false;
 							}
-	
-							if (!$remote_good) {
-								print '<p class="textError">' . __('ERROR:') . '</strong> ' . __('Your Remote Cacti Poller information has not 
-									been included in your config.php file.  Please review the config.php.dist, and 
-									set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  
-									These variables must be set and point back to your Primary Cacti database server.
-									Correct this and try again.') . '</p>';
 
-								print '<p>' . __('The variables that must be set include the following:') . '</p>';
-								print '<ul>';
-								print '<li>$rdatabase_type     = \'mysql\';</li>';
-								print '<li>$rdatabase_default  = \'cacti\';</li>';
-								print '<li>$rdatabase_hostname = \'localhost\';</li>';
-								print '<li>$rdatabase_username = \'cactiuser\';</li>';
-								print '<li>$rdatabase_password = \'cactiuser\';</li>';
-								print '<li>$rdatabase_port     = \'3306\';</li>';
-								print '<li>$rdatabase_ssl      = false;</li>';
-								print '</ul>';
+							if (isset($rdatabase_default) &&
+								isset($rdatabase_username) &&
+								isset($rdatabase_hostname) &&
+								isset($rdatabase_port)) {
+								$remote_good = true;
+							} else {
+								$remote_good = false;
+							}
 
-								print '<p>' . __('You must also set the $poller_id variable in the config.php.') . '</p>';
+							if ($remote_good && $good_write) {
+								print '<h4>' . __('Remote Poller Cacti database connection information') . '</h4>';
+								print '<p class="code">'
+									. __('Database: <b>%s</b>', $rdatabase_default) . '<br>'
+									. __('Database User: <b>%s</b>', $rdatabase_username) . '<br>'
+									. __('Database Hostname: <b>%s</b>', $rdatabase_hostname) . '<br>'
+									. __('Port: <b>%s</b>', $rdatabase_port) . '<br>'
+									. __('Server Operating System Type: <b>%s</b>', $config['cacti_server_os']) . '<br>'
+								. '</p>';
+							} else {
+								print '<h4>' . __('Remote Poller Cacti database connection information') . '</h4>';
 
-								print '<p>' . __('Once you have the variables set in the config.php file, you must also
-									grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with
-									any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is
-									successful you will be able to proceed and complete the install.') . '</p>';
+								if (!$good_write) {
+									print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your config.php file must be writable by
+										the web server during install in order to configure the Remote poller.  Once
+										installation is complete, you must set this file to Read Only to prevent
+										possible security issues.');
+									print '</p>';
+								}
+
+								if (!$remote_good) {
+									print '<p class="textError">' . __('ERROR:') . '</strong> ' . __('Your Remote Cacti Poller information has not
+										been included in your config.php file.  Please review the config.php.dist, and
+										set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.
+										These variables must be set and point back to your Primary Cacti database server.
+										Correct this and try again.') . '</p>';
+
+									print '<p>' . __('The variables that must be set include the following:') . '</p>';
+									print '<ul>';
+									print '<li>$rdatabase_type     = \'mysql\';</li>';
+									print '<li>$rdatabase_default  = \'cacti\';</li>';
+									print '<li>$rdatabase_hostname = \'localhost\';</li>';
+									print '<li>$rdatabase_username = \'cactiuser\';</li>';
+									print '<li>$rdatabase_password = \'cactiuser\';</li>';
+									print '<li>$rdatabase_port     = \'3306\';</li>';
+									print '<li>$rdatabase_ssl      = false;</li>';
+									print '</ul>';
+
+									print '<p>' . __('You must also set the $poller_id variable in the config.php.') . '</p>';
+
+									print '<p>' . __('Once you have the variables set in the config.php file, you must also
+										grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with
+										any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is
+										successful you will be able to proceed and complete the install.') . '</p>';
+								}
 							}
 						}
 
@@ -780,7 +774,7 @@ $enabled = '1';
 						}
 						
 				 	/* settings-install */
-					} elseif ($step == '5') { 
+					} elseif ($step == '5') {
 						include_once('../lib/data_query.php');
 						include_once('../lib/utility.php');
 
@@ -927,51 +921,47 @@ $enabled = '1';
 					} elseif ($step == '8') {
 						print '<h2>' . __('Upgrade Results') . '</h2>';
 
-						print '<p>' . __('You Cacti database has been upgraded.  You can view the results below.') . '</p>';
-
 						$current_version  = '';
-						$upgrade_results = '';
 						$failed_sql_query = false;
 						$cacti_versions = array_keys($cacti_version_codes);
 
-						$sqltext = array();
-						$sqltext[0] = '<span style="color: red; font-weight: bold; font-size: 12px;">' . __('[Fail]') . '</span>&nbsp;';
-						$sqltext[1] = '<span style="color: green; font-weight: bold; font-size: 12px;">' . __('[Success]') . '</span>&nbsp;';
-						$sqltext[2] = '<span style="color: grey; font-weight: bold; font-size: 12px;">' . __('[Not Ran]') . '</span>&nbsp;';
+						$sqltext = array(
+							0 => '<span style="color: red; font-weight: bold; font-size: 12px;">' . __('[Fail]') . '</span>&nbsp;',
+							1 => '<span style="color: green; font-weight: bold; font-size: 12px;">' . __('[Success]') . '</span>&nbsp;',
+							2 => '<span style="color: grey; font-weight: bold; font-size: 12px;">' . __('[Skipped]') . '</span>&nbsp;',
+						);
 
-						if (isset($_SESSION['sess_sql_install_cache']) && is_array($_SESSION['sess_sql_install_cache'])) {
-							foreach ($_SESSION['sess_sql_install_cache'] as $arr1) {
-								foreach ($arr1 as $version => $arr2) {
-									foreach ($arr2 as $status => $sql) {
-										if ($current_version != $version) {
-											$version_index = array_search($version, $cacti_versions);
-											$upgrade_results .= '<p><strong>' . (isset($cacti_versions[$version_index - 1]) ? $cacti_versions[$version_index - 1] : '')  . ' -> ' . $cacti_versions[$version_index] . "</strong></p>\n";
-										}
-										$upgrade_results .= "<p class='code'>" . $sqltext[$status] . nl2br($sql) . "</p>\n";
+						if (isset($_SESSION['cacti_db_install_cache']) && is_array($_SESSION['cacti_db_install_cache'])) {
+							print '<h3>' . __('Database upgrade completed!') . '<h3>';
+							$upgrade_results = '';
+							foreach ($_SESSION['cacti_db_install_cache'] as $cacti_upgrade_version => $actions) {
+								// output version header
+								$upgrade_results .= '<h4>Version: ' . $cacti_upgrade_version . '</h4>' . PHP_EOL;
 
-										/* if there are one or more failures, make a note because we are going to print
-										out a warning to the user later on */
-										if ($status == 0) {
-											$failed_sql_query = true;
-										}
+								// show results from version upgrade
+								foreach ($actions as $action) {
+									$upgrade_results .= "<p class='code'>" . $sqltext[$action['status']] . '<br>' . nl2br($action['sql']) . "</p>" . PHP_EOL;
 
-										$current_version = $version;
+									// set sql failure if status set to zero on any action
+									if ($action['status'] == 0) {
+										$failed_sql_query = true;
 									}
 								}
+								$upgrade_results .= '<br>';
 							}
 
-							kill_session_var('sess_sql_install_cache');
+							kill_session_var('cacti_db_install_cache');
+
+							if ($failed_sql_query == true) {
+								print '<p><strong><font color="#FF0000">' . __('WARNING:') . '</font></strong> ' . __('One or more of the SQL queries needed to upgraded your Cacti installation has failed. Please see below for more details. Your Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong> permissions. You should try executing the failed queries as "root" to ensure that you do not have a permissions problem.') . '</p>' . PHP_EOL;
+							}
+
+							print $upgrade_results;
 						} else {
-							print '<em>' . __('No SQL queries have been executed.') . '</em>';
+							print '<em>' . __('No database action needed.') . '</em>';
 						}
 
-						if ($failed_sql_query == true) {
-							print '<p><strong><font color="#FF0000">' . __('WARNING:') . '</font></strong> ' . __('One or more of the SQL queries needed to upgraded your Cacti installation has failed. Please see below for more details. Your Cacti MySQL user must have <strong>SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE, and DROP</strong> permissions. You should try executing the failed queries as "root" to ensure that you do not have a permissions problem.') . "</p>\n";
-						}
-
-						print $upgrade_results;
-
-					/* upgrade-oldversion */
+					// upgrade-oldversion
 					} elseif ($step == '9') {
 						print '<p style="font-size: 16px; font-weight: bold; color: red;">' . __('Important Upgrade Notice') . '</p>';
 						print '<p>' . __('Before you continue with the installation, you <strong>must</strong> update your <tt>/etc/crontab</tt> file to point to <tt>poller.php</tt> instead of <tt>cmd.php</tt>.') . '</p>';
@@ -979,7 +969,7 @@ $enabled = '1';
 						print '<p><tt>*/5 * * * * cactiuser php /var/www/html/cacti/<span style="font-weight: bold; color: red;">poller.php</span> &gt; /dev/null 2&gt;&amp;1</tt></p>';
 						print '<p>' . __('Once you have made this change, please click Finish to continue.') . '</p>';
 
-					}?>
+					} ?>
 					</td>
 				</tr>
 				<tr>

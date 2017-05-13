@@ -23,15 +23,15 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
+// do NOT run this script through a web browser
 if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
    die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-/* We are not talking to the browser */
+// We are not talking to the browser
 $no_http_headers = true;
 
-/* allow the upgrade script to run for as long as it needs to */
+// allow the upgrade script to run for as long as it needs to
 ini_set('max_execution_time', '0');
 
 include(dirname(__FILE__) . '/../include/global.php');
@@ -39,16 +39,16 @@ include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/utility.php');
 include_once($config['base_path'] . '/install/functions.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
 global $debug, $cli_upgrade, $session;
 
-$debug       = true;
-$cli_upgrade = true;
-$session     = array();
-$forcever    = '';
+$debug = FALSE;
+$cli_upgrade = TRUE;
+$session = array();
+$force_version = NULL;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -60,121 +60,141 @@ if (sizeof($parms)) {
 		}
 
 		switch ($arg) {
-			case '--forcever':
-				$forcever = $value;
+			case '--force_version':
+				$force_version = $value;
 				break;
 			case '-d':
 			case '--debug':
 				$debug = TRUE;
 				break;
-			case '--version':
-			case '-V':
-			case '-v':
-				display_version();
+			case '--database_version':
+				display_database_version();
+				exit;
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
 				exit;
 			default:
-				echo "ERROR: Invalid Parameter " . $parameter . PHP_EOL . PHP_EOL;
+				print "ERROR: Invalid Parameter " . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 				exit;
 		}
 	}
 }
 
-/* we need to rerun the upgrade, force the current version */
-if ($forcever == '') {
+// we need to rerun the upgrade, force the current version
+if (empty($force_version)) {
 	$old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
 } else {
-	$old_cacti_version = $forcever;
+	$old_cacti_version = $force_version;
 }
+$old_cacti_version = trim($old_cacti_version);
 
-/* try to find current (old) version in the array */
-$old_version_index = (array_key_exists($old_cacti_version, $cacti_version_codes) ? $old_cacti_version : '');
-
-/* do a version check */
+// do a version check
 if ($old_cacti_version == CACTI_VERSION) {
-	echo "Your Cacti is already up to date." . PHP_EOL;
+	print "Your Cacti is already up to date." . PHP_EOL;
 	exit;
-} elseif ($old_cacti_version < 0.7) {
-	echo 'You are attempting to install cacti ' . CACTI_VERSION . ' onto a 0.6.x database.' . PHP_EOL . "To continue, you must create a new database, import 'cacti.sql' into it," . PHP_EOL . "and\tupdate 'include/config.php' to point to the new database." . PHP_EOL;
+} 
+if (version_compare($old_cacti_version, '0.7', '<')) {
+	print 'You are attempting to install cacti ' . CACTI_VERSION . ' onto a 0.6.x database.' . PHP_EOL . "To continue, you must create a new database, import 'cacti.sql' into it," . PHP_EOL . "and\tupdate 'include/config.php' to point to the new database." . PHP_EOL;
 	exit;
-} elseif (empty($old_cacti_version)) {
-	echo "You have created a new database, but have not yet imported the 'cacti.sql' file." . PHP_EOL;
+} 
+if (empty($old_cacti_version)) {
+	print "You have created a new database, but have not yet imported the 'cacti.sql' file." . PHP_EOL;
 	exit;
-} elseif ($old_version_index == '') {
-	echo "Invalid Cacti version $old_cacti_version, cannot upgrade to " . CACTI_VERSION . PHP_EOL;
+} 
+if ($old_cacti_version == 'new_install') {
+	print "You can not upgrade a new installation" . PHP_EOL;
+	exit;
+}
+if (! array_key_exists($old_cacti_version, $cacti_version_codes)) {
+	print "Invalid Cacti version $old_cacti_version, cannot upgrade to " . CACTI_VERSION . PHP_EOL;
 	exit;
 }
 
 // loop through versions from old version to the current, performing updates for each version in the chain
-foreach ($cacti_version_codes as $cacti_version => $hash_code)  {
+foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 
 	// skip versions old than the database version
-	if (version_compare($old_cacti_version, $cacti_version, '>=')) {
+	if (version_compare($old_cacti_version, $cacti_upgrade_version, '>=')) {
 		continue;
 	}
 
 	// construct version upgrade include path
-	$upgrade_file = dirname(__FILE__) . '/../install/upgrades/' . str_replace('.', '_', $cacti_version) . '.php';
-	$upgrade_function = 'upgrade_to_' . str_replace('.', '_', $cacti_version);
+	$upgrade_file = dirname(__FILE__) . '/../install/upgrades/' . str_replace('.', '_', $cacti_upgrade_version) . '.php';
+	$upgrade_function = 'upgrade_to_' . str_replace('.', '_', $cacti_upgrade_version);
 
 	// check for upgrade version file, then include, check for function and execute
-	echo 'Upgrading to ' . $cacti_version . ' ';
+	print 'Upgrading to ' . $cacti_upgrade_version . ' ';
 	if (file_exists($upgrade_file)) {
 		include($upgrade_file);
-		echo PHP_EOL;
+		print PHP_EOL;
 		if (function_exists($upgrade_function)) {
 			call_user_func($upgrade_function);
-			db_install_errors($cacti_version);
+			print_upgrade_results($cacti_upgrade_version);
 		} else {
-			echo 'Error: upgrade function (' . $upgrade_function . ') not found' . PHP_EOL;;
+			print 'Error: upgrade function (' . $upgrade_function . ') not found' . PHP_EOL;;
 		}
 	} else {
-		echo "no actions" . PHP_EOL;
+		print "no actions" . PHP_EOL;
 	}
 
-	if (CACTI_VERSION == $cacti_version) {
+	if (CACTI_VERSION == $cacti_upgrade_version) {
 		break;
 	}
 }
 
 db_execute("UPDATE version SET cacti = '" . CACTI_VERSION . "'");
 
-function db_install_errors($cacti_version) {
-	global $session;
+/*
+ * Print upgrade results for requested version
+ */
+function print_upgrade_results($cacti_version) {
+	global $session, $debug;
 
-	if (sizeof($session)) {	
-		foreach ($session as $sc) {
-			if (isset($sc[$cacti_version])) {
-				foreach ($sc[$cacti_version] as $value => $sql) {
-					if ($value == 0) {
-						echo "    DB Error: " . $sql . PHP_EOL;
-					}
-				}
+	// if sessions are working for cli, use it
+	if (isset($_SESSION)) {
+		$session = $_SESSION;
+	}
+
+	if (array_key_exists($cacti_version, $session['cacti_db_install_cache'])) {
+		foreach ($session['cacti_db_install_cache'][$cacti_version] as $action) {
+			if ($action['status'] == 0) {
+				print "    DB Error: " . $action['sql'] . PHP_EOL;
+			} elseif ($debug) {
+				print "    DB Success: " . $action['sql'] . PHP_EOL;
 			}
 		}
 	}
 }
 
-/*  display_version - displays version information */
-function display_version() {
-    $version = db_fetch_cell('SELECT cacti FROM version');
-    echo "Cacti Database Upgrade Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+/* 
+ * Display database version information
+ */
+function display_database_version() {
+	$version = db_fetch_cell('SELECT cacti FROM version');
+	print 'Database Version: ' . trim($version) . PHP_EOL;
 }
 
-/*  display_help - displays the usage of the function */
+/* 
+ * Display cli help
+ */
 function display_help () {
-    display_version();
-
-    echo PHP_EOL . "usage: upgrade_database.php [--debug] [--forcever=VERSION]" . PHP_EOL . PHP_EOL;
-	echo "A command line version of the Cacti database upgrade tool.  You must execute" . PHP_EOL;
-	echo "this command as a super user, or someone who can write a PHP session file." . PHP_EOL;
-	echo "Typically, this user account will be apache, www-run, or root." . PHP_EOL . PHP_EOL;
-	echo "If you are running a beta or alpha version of Cacti and need to rerun" . PHP_EOL;
-	echo "the upgrade script, simply set the forcever to the previous release." . PHP_EOL . PHP_EOL;
-    echo "--forcever - Force the starting version, say " . CACTI_VERSION . PHP_EOL;
-    echo "--debug    - Display verbose output during execution" . PHP_EOL . PHP_EOL;
+	print 'Cacti Database Upgrade Utility, Version ' . CACTI_VERSION . ', ' . COPYRIGHT_YEARS . PHP_EOL;
+	print PHP_EOL;
+	print "usage: upgrade_database.php [--debug] [--force_version=VERSION] [--database_version]" . PHP_EOL;
+	print PHP_EOL;
+	print "--force_version    - Force the starting version, say " . CACTI_VERSION . PHP_EOL;
+	print "--database_version - Display database version and exit" . PHP_EOL;
+	print "--debug            - Display verbose output during execution" . PHP_EOL;
+	print PHP_EOL;
+	print PHP_EOL;
+	print "Command line Cacti database upgrade tool.  You must execute" . PHP_EOL;
+	print "this command as a super user, or someone who can write a PHP session file." . PHP_EOL;
+	print "Typically, this user account will be apache, www-run, or root." . PHP_EOL;
+	print PHP_EOL;
+	print "If you are running a beta or alpha version of Cacti and need to rerun" . PHP_EOL;
+	print "the upgrade script, simply set the force_version to the previous version." . PHP_EOL;
+	print PHP_EOL;
 }

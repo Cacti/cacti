@@ -110,16 +110,27 @@ function db_install_drop_column ($table, $column) {
 }
 
 function db_install_add_cache ($status, $sql) {
-	global $upgrade_version, $session;
+	global $cacti_upgrade_version, $session;
 
+	// check if web upgrade or cli
 	if (isset($_SESSION)) {
-		$sql_install_cache = (isset($_SESSION['sess_sql_install_cache']) ? $_SESSION['sess_sql_install_cache'] : array());
-		$sql_install_cache{sizeof($sql_install_cache)}[$upgrade_version][$status] = $sql;
-		$_SESSION['sess_sql_install_cache'] = $sql_install_cache;
+		// add query to upgrade results array by version to the web session
+		if (! array_key_exists('cacti_db_install_cache', $_SESSION)) {
+			$_SESSION['cacti_db_install_cache'] = array();
+		}
+		if (! array_key_exists($cacti_upgrade_version, $_SESSION['cacti_db_install_cache'])) {
+			$_SESSION['cacti_db_install_cache'][$cacti_upgrade_version] = array();
+		}
+		$_SESSION['cacti_db_install_cache'][$cacti_upgrade_version][] = array('status' => $status, 'sql' => $sql);
 	} else {
-		$sql_install_cache = (isset($session['sess_sql_install_cache']) ? $session['sess_sql_install_cache'] : array());
-		$sql_install_cache{sizeof($sql_install_cache)}[$upgrade_version][$status] = $sql;
-		$session['sess_sql_install_cache'] = $sql_install_cache;
+		// add query to upgrade results array by version to the cli global session
+		if (! array_key_exists('cacti_db_install_cache', $session)) {
+			$session['cacti_db_install_cache'] = array();
+		}
+		if (! array_key_exists($cacti_upgrade_version, $session['cacti_db_install_cache'])) {
+			$session['cacti_db_install_cache'][$cacti_upgrade_version] = array();
+		}
+		$session['cacti_db_install_cache'][$cacti_upgrade_version][] = array('status' => $status, 'sql' => $sql);
 	}
 }
 
