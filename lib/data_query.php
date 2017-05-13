@@ -225,7 +225,7 @@ function query_script_host($host_id, $snmp_query_id) {
 
 	if (!verify_index_order($script_queries)) {
 		query_debug_timer_offset('data_query', 'Invalid field &lt;index_order&gt;' . $script_queries['index_order'] . '&lt;/index_order&gt;');
-		query_debug_timer_offset('data_query', 'Must contain &lt;direction&gt;input&lt;/direction&gt; fields only');
+		query_debug_timer_offset('data_query', 'Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt; fields only');
 		return false;
 	}
 
@@ -268,7 +268,7 @@ function query_script_host($host_id, $snmp_query_id) {
 	$output_array = array();
 
 	foreach ($script_queries['fields'] as $field_name => $field_array) {
-		if ($field_array['direction'] == 'input') {
+		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 			$rewrite_value = isset($field_array['rewrite_value']) ? $field_array['rewrite_value'] : NULL;
 			$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ': '') . $script_queries['arg_query'] . ' ' . $field_array['query_name'], $script_queries['script_path'], $host_id);
 
@@ -292,6 +292,7 @@ function query_script_host($host_id, $snmp_query_id) {
 			debug_log_insert_section_end('data_query');
 		}
 	}
+
 	if (sizeof($output_array)) {
 		data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
 	}
@@ -369,7 +370,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	if (!verify_index_order($snmp_queries)) {
 		query_debug_timer_offset('data_query', 'Invalid field &lt;index_order&gt;' . $snmp_queries['index_order'] . '&lt;/index_order&gt;');
-		query_debug_timer_offset('data_query', 'Must contain &lt;direction&gt;input&lt;/direction&gt; fields only');
+		query_debug_timer_offset('data_query', 'Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt; fields only');
 		return false;
 	}
 
@@ -433,7 +434,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	rewrite_snmp_enum_value(NULL);
 
 	foreach ($snmp_queries['fields'] as $field_name => $field_array) {
-		if ($field_array['source'] != 'index' && $field_array['direction'] == 'input' && $field_array['method'] != 'get' &&
+		if ($field_array['source'] != 'index' && ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && $field_array['method'] != 'get' &&
 			(isset($field_array['rewrite_index']) || isset($field_array['oid_suffix']))) {
 			$field_array['method'] = 'get';
 			debug_log_insert('data_query', "Fixing wrong 'method' field for '$field_name' since 'rewrite_index' or 'oid_suffix' is defined");
@@ -447,7 +448,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 				$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $value, '');
 			}
-		} elseif (($field_array['method'] == 'get') && ($field_array['direction'] == 'input')) {
+		} elseif (($field_array['method'] == 'get') && ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output')) {
 			query_debug_timer_offset('data_query', "Located input field '$field_name' [get]");
 
 			if ($field_array['source'] == 'value' && !isset($field_array['rewrite_index'])) {
@@ -552,7 +553,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $index, $oid);
 				}
 			} 
-		} elseif (($field_array['method'] == 'walk') && ($field_array['direction'] == 'input')) {
+		} elseif ($field_array['method'] == 'walk' && ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output')) {
 			debug_log_insert_section_start('data_query', "Click to show data query output for field '$field_name'");
 
 			query_debug_timer_offset('data_query', "Located input field '$field_name' [walk]");
@@ -561,7 +562,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 			query_debug_timer_offset('data_query', "Executing SNMP walk for data @ '" . $field_array['oid'] . "'");
 
-			if (preg_match('/^VALUE\/TABLE:(.*)/',$field_array["source"],$matches)) {
+			if (preg_match('/^VALUE\/TABLE:(.*)/',$field_array['source'],$matches)) {
 				preg_match_all('/([^:]+):([^:]+)/',$matches[1],$match_temp);
 				$const_table = array_combine($match_temp[1],$match_temp[2]);
 			}
@@ -1196,7 +1197,7 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 
 	/* list each of the input fields for this snmp query */
 	foreach ($raw_xml['fields'] as $field_name => $field_array) {
-		if ($field_array['direction'] == 'input') {
+		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 			/* create a list of all values for this index */
 			if (sizeof($data_query_index_array) == 0) {
 				$field_values = db_fetch_assoc_prepared('SELECT field_value 
@@ -1353,7 +1354,7 @@ function verify_index_order($raw_xml) {
 
 	/* list each of the input fields for this snmp query */
 	foreach ($raw_xml['fields'] as $field_name => $field_array) {
-		if ($field_array['direction'] == 'input') {
+		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 			/* create a list of all values for this index */
 			array_push($xml_inputs, $field_name);
 		}

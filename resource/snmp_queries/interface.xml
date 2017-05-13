@@ -19,7 +19,7 @@
 			<name>Status</name>
 			<method>walk</method>
 			<source>value</source>
-			<direction>input</direction>
+			<direction>input-output</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.8</oid>
 		</ifOperStatus>
 		<ifDescr>

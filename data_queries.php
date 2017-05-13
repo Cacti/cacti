@@ -529,7 +529,8 @@ function data_query_item_edit() {
 				AND sqgr.data_template_id = ?
 				WHERE dtr.data_template_id = ?
 				AND dtr.local_data_id = 0
-				ORDER BY dtr.data_source_name', array(get_request_var('id'), $data_template['id'], $data_template['id']));
+				ORDER BY dtr.data_source_name', 
+				array(get_request_var('id'), $data_template['id'], $data_template['id']));
 
 			$i = 0;
 			if (sizeof($data_template_rrds)) {
@@ -558,7 +559,7 @@ function data_query_item_edit() {
 
 									if (isset($snmp_queries['fields']) && sizeof($snmp_queries['fields'])) {
 										foreach ($snmp_queries['fields'] as $field_name => $field_array) {
-											if ($field_array['direction'] == 'output') {
+											if ($field_array['direction'] == 'output' || $field_array['direction'] == 'input-output') {
 												$xml_outputs[$field_name] = $field_name . ' (' . $field_array['name'] . ')';
 											}
 										}
