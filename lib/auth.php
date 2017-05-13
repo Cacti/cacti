@@ -76,7 +76,9 @@ function check_auth_cookie() {
 		if ($user != '') {
 			$user_info = db_fetch_row_prepared('SELECT id, username 
 				FROM user_auth 
-				WHERE username = ?', array($user));
+				WHERE username = ?',
+				array($user)
+			);
 
 			if (!empty($user_info)) {
 				if (isset($parts[1])) {
@@ -84,7 +86,10 @@ function check_auth_cookie() {
 
 					$found  = db_fetch_cell_prepared('SELECT user_id 
 						FROM user_auth_cache 
-						WHERE user_id = ? AND token = ?', array($user_info['id'], $secret));
+						WHERE user_id = ?
+						AND token = ?',
+						array($user_info['id'], $secret)
+					);
 
 					if (empty($found)) {
 						return false;
@@ -96,7 +101,9 @@ function check_auth_cookie() {
 						db_execute_prepared('INSERT IGNORE INTO user_log 
 							(username, user_id, result, ip, time) 
 							VALUES 
-							(?, ?, 2, ?, NOW())', array($user, $user_info['id'], $_SERVER['REMOTE_ADDR']));
+							(?, ?, 2, ?, NOW())',
+							array($user, $user_info['id'], $_SERVER['REMOTE_ADDR'])
+						);
 						return $user_info['id'];
 					}
 				}
@@ -320,25 +327,25 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 	$sql_policy_and = '';
 
 	if ($policy_graphs == '1') {
-		$sql_policy_and .= "$sql_and(user_auth_perms.type != 1 OR user_auth_perms.type is null)";
+		$sql_policy_and .= "$sql_and(user_auth_perms.type != 1 OR user_auth_perms.type IS NULL)";
 		$sql_and = ' AND ';
 	} elseif ($policy_graphs == '2') {
-		$sql_policy_or .= "$sql_or(user_auth_perms.type = 1 OR user_auth_perms.type is not null)";
+		$sql_policy_or .= "$sql_or(user_auth_perms.type = 1 OR user_auth_perms.type IS NOT NULL)";
 		$sql_or = ' OR ';
 	}
 
 	if ($policy_hosts == '1') {
-		$sql_policy_and .= "$sql_and((user_auth_perms.type != 3) OR (user_auth_perms.type is null))";
+		$sql_policy_and .= "$sql_and((user_auth_perms.type != 3) OR (user_auth_perms.type IS NULL))";
 		$sql_and = ' AND ';
 	} elseif ($policy_hosts == '2') {
-		$sql_policy_or .= "$sql_or((user_auth_perms.type = 3) OR (user_auth_perms.type is not null))";
+		$sql_policy_or .= "$sql_or((user_auth_perms.type = 3) OR (user_auth_perms.type IS NOT NULL))";
 		$sql_or = ' OR ';
 	}
 
 	if ($policy_graph_templates == '1') {
-		$sql_policy_and .= "$sql_and((user_auth_perms.type != 4) OR (user_auth_perms.type is null))";
+		$sql_policy_and .= "$sql_and((user_auth_perms.type != 4) OR (user_auth_perms.type IS NULL))";
 	} elseif ($policy_graph_templates == '2') {
-		$sql_policy_or .= "$sql_or((user_auth_perms.type = 4) OR (user_auth_perms.type is not null))";
+		$sql_policy_or .= "$sql_or((user_auth_perms.type = 4) OR (user_auth_perms.type IS NOT NULL))";
 	}
 
 	$sql_and = '';
@@ -513,8 +520,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 			 WHERE graph_tree_id = ?
 			 AND parent = ?',
 			array($tree_id, $parent)
-		),
-		'local_graph_id', 'local_graph_id'
+		), 'local_graph_id', 'local_graph_id'
 	);
 	if (sizeof($graphs) && sizeof(get_allowed_graphs('gl.id IN(' . implode(',', $graphs) . ')')) > 0) {
 		return false;
@@ -527,8 +533,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 			 WHERE graph_tree_id = ?
 			 AND parent = ?',
 			array($tree_id, $parent)
-		),
-		'host_id', 'host_id'
+		), 'host_id', 'host_id'
 	);
 	if (sizeof($hosts) && sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')')) > 0) {
 		return false;
@@ -1561,7 +1566,7 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	print json_encode($return);
 }
 
-function secpass_login_process () {
+function secpass_login_process() {
 	$users = db_fetch_assoc('SELECT username FROM user_auth WHERE realm = 0');
 	$username = sanitize_search_string(get_nfilter_request_var('login_username'));
 
