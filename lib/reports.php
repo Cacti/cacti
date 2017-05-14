@@ -488,8 +488,9 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 
 	$device_id = db_fetch_cell_prepared('SELECT host_id 
 		FROM graph_tree_items 
-		WHERE id = ?', 
-		array($branch_id));
+		WHERE id = ?
+		AND graph_tree_id = ?', 
+		array($branch_id, $tree_id));
 
 	if ($device_id > 0) {
 		$graphs = array_rekey(db_fetch_assoc("SELECT gl.id
@@ -547,9 +548,10 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
  * @param int $output		- type of output
  * @return string			- generated html output
  */
-function reports_generate_html ($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$theme = '') {
+function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$theme = '') {
 	global $config, $colors;
 	global $alignment;
+
 	include_once($config['base_path'] . '/lib/time.php');
 
 	$outstr = '';
@@ -716,6 +718,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	$tree_branches = db_fetch_assoc_prepared('SELECT id
 		FROM graph_tree_items 
 		WHERE parent = ? 
+		AND host_id = 0
 		AND local_graph_id = 0
 		AND graph_tree_id = ?
 		ORDER BY position', array($branch_id, $item['tree_id']));
@@ -812,15 +815,24 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 
 	$device_id = db_fetch_cell_prepared('SELECT host_id 
 		FROM graph_tree_items 
-		WHERE id = ?', 
-		array($parent));
+		WHERE id = ?
+		AND graph_tree_id = ?', 
+		array($parent, $tree_id));
 
 	$outstr          = '';
 
 	if ($device_id == 0) {
-		$leaves = db_fetch_assoc_prepared("SELECT * FROM graph_tree_items WHERE parent = ?", array($parent));
+		$leaves = db_fetch_assoc_prepared('SELECT * 
+			FROM graph_tree_items 
+			WHERE graph_tree_id = ? 
+			AND parent = ?', 
+			array($tree_id, $parent));
 	} else {
-		$leaves = db_fetch_assoc_prepared("SELECT * FROM graph_tree_items WHERE id = ?", array($parent));
+		$leaves = db_fetch_assoc_prepared('SELECT * 
+			FROM graph_tree_items 
+			WHERE graph_tree_id = ? 
+			AND id = ?', 
+			array($tree_id, $parent));
 	}
 
 	if (sizeof($leaves)) {
