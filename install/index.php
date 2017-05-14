@@ -44,8 +44,7 @@ ini_set('max_execution_time', '0');
 
 $cacti_versions = array_keys($cacti_version_codes);
 
-$old_cacti_version = db_fetch_cell('SELECT cacti FROM version');
-$old_cacti_version = trim($old_cacti_version);
+$old_cacti_version = get_cacti_version();
 
 /* do a version check */
 if ($old_cacti_version == CACTI_VERSION) {

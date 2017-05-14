@@ -4696,3 +4696,14 @@ function date_time_format() {
 	return $date;
 }
 
+/** get_cacti_version    Generic function to get the cacti version */
+function get_cacti_version() {
+	static $version = '';
+
+	if ($version == '') {
+		$version = trim(db_fetch_cell('SELECT cacti FROM version LIMIT 1'));
+	}
+
+	return $version;
+}
+

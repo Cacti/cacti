@@ -139,7 +139,7 @@ if (sizeof($data_queries)) {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
+	$version = get_cacti_version();
 	echo "Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
 	echo "usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]] [--host-descr=[description]]\n";
 	echo "                           [-d] [-h] [--help] [-v] [--version]\n\n";

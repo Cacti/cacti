@@ -34,7 +34,7 @@ api_plugin_hook('logout_pre_session_destroy');
 setcookie(session_name(), '', time() - 3600, $config['url_path']);
 session_destroy();
 
-$version = db_fetch_cell('SELECT cacti FROM version');
+$version = get_cacti_version();
 
 api_plugin_hook('logout_post_session_destroy');
 
