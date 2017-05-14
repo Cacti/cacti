@@ -1529,7 +1529,7 @@ function reports() {
 		$date_format = reports_date_time_format();
 
 		foreach ($reports_list as $report) {
-			if (reports_html_account_exists($report['user_id'])) {
+			if (!reports_html_account_exists($report['user_id'])) {
 				reports_html_report_disable($report['id']);
 				$report['enabled'] = '';
 			}
