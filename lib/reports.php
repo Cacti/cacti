@@ -757,7 +757,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	}
 
 	if ($report['graph_linked'] == 'on' ) {
-		$out = "<a href='" . htmlspecialchars(read_config_option('base_url') . $config['url_path'] . 'graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
+		$out = "<a href='" . htmlspecialchars(read_config_option('base_url') . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
 	}
 
 	return $out . "\n";
