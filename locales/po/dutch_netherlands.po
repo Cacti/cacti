@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-14 10:40+0200\n"
-"PO-Revision-Date: 2017-05-14 10:40+0200\n"
+"PO-Revision-Date: 2017-05-14 11:16+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -2662,10 +2662,8 @@ msgid "Remove CDEF Item"
 msgstr "Verwijder CDEF item"
 
 #: ../cdef.php:424
-#, fuzzy
-#| msgid "Preview"
 msgid "CDEF Preview"
-msgstr "Voorbeeld"
+msgstr "CDEF Voorbeeld"
 
 #: ../cdef.php:430
 #, php-format
@@ -3248,10 +3246,9 @@ msgid "Associated Data Templates"
 msgstr "Gekoppelde data templates"
 
 #: ../data_queries.php:520
-#, fuzzy, php-format
-#| msgid "Data Templates"
+#, php-format
 msgid "Data Template - %s"
-msgstr "Data templates"
+msgstr "Data template - %s"
 
 #: ../data_queries.php:549 ../data_sources.php:881 ../data_templates.php:516
 #: ../include/global_arrays.php:697 ../include/global_form.php:797
@@ -3268,10 +3265,8 @@ msgid "Equation"
 msgstr "Vergelijking"
 
 #: ../data_queries.php:646 ../data_queries.php:745
-#, fuzzy
-#| msgid "Suggested Value"
 msgid "No Suggested Values Found"
-msgstr "Voorgestelde waarde"
+msgstr "Geen voorgestelde waarde gevonden"
 
 #: ../data_queries.php:655 ../data_queries.php:754
 #: ../include/global_form.php:2093 ../include/global_form.php:2135
@@ -4640,16 +4635,13 @@ msgid "You must select at least one Graph."
 msgstr "U moet tenminste een grafiek selecteren."
 
 #: ../graphs.php:1242
-#, fuzzy, php-format
-#| msgid "Graph Items [edit: %s]"
+#, php-format
 msgid "Graph [edit: %s]"
-msgstr "Grafiek items [wijzig: %s]"
+msgstr "Grafiek [wijzig: %s]"
 
 #: ../graphs.php:1248
-#, fuzzy
-#| msgid "Graph Items [new]"
 msgid "Graph [new]"
-msgstr "Grafiek items [nieuw]"
+msgstr "Grafiek [nieuw]"
 
 #: ../graphs.php:1273
 msgid "Turn Off Graph Debug Mode."
@@ -4751,10 +4743,9 @@ msgid "Default Settings Saved"
 msgstr "Standaardinstellingen opgeslagen"
 
 #: ../graphs_new.php:281
-#, fuzzy, php-format
-#| msgid "Created 1 Graph from %s"
+#, php-format
 msgid "Create Graph from %s"
-msgstr "1 Grafiek gemaakt van %s"
+msgstr "Maak grafiek van %s"
 
 #: ../graphs_new.php:302
 #, php-format
@@ -5924,7 +5915,7 @@ msgstr ""
 
 #: ../include/global_arrays.php:641
 msgid "Manual Ordering (No Sorting)"
-msgstr ""
+msgstr "Handmatig sorteren (Geen sortering)"
 
 #: ../include/global_arrays.php:642
 msgid "Alphabetic Ordering"
@@ -6124,7 +6115,7 @@ msgstr "Gereedschappen"
 
 #: ../include/global_arrays.php:727 ../include/global_arrays.php:743
 msgid "System Utilities"
-msgstr ""
+msgstr "Systeem gereedschappen"
 
 #: ../include/global_arrays.php:728 ../include/global_arrays.php:771
 #: ../include/global_arrays.php:854 ../links.php:90 ../links.php:301
@@ -6156,11 +6147,11 @@ msgstr ""
 
 #: ../include/global_arrays.php:853
 msgid "Update Profile"
-msgstr ""
+msgstr "Profiel bijwerken"
 
 #: ../include/global_arrays.php:856 ../user_admin.php:2161
 msgid "User Management"
-msgstr ""
+msgstr "Gebruikersbeheer"
 
 #: ../include/global_arrays.php:857
 msgid "Settings and Utilities"
@@ -7600,10 +7591,8 @@ msgid "The name given to this graph template."
 msgstr "De naam voor deze grafiektemplate."
 
 #: ../include/global_form.php:938
-#, fuzzy
-#| msgid "Multiple"
 msgid "Multiple Instances"
-msgstr "Meerdere"
+msgstr "Meerdere instanties"
 
 #: ../include/global_form.php:939
 msgid ""
@@ -8201,9 +8190,8 @@ msgstr ""
 
 #: ../include/global_form.php:2109 ../include/global_form.php:2151
 #: ../include/global_form.php:2297
-#, fuzzy
 msgid "Matching Pattern"
-msgstr "Overeenkomende patronen"
+msgstr "Overeenkomend patroon"
 
 #: ../include/global_form.php:2110 ../include/global_form.php:2152
 msgid "The Pattern to be matched against."
@@ -11846,11 +11834,11 @@ msgstr "Configuratie controleren…<br>"
 
 #: ../lib/functions.php:3760
 msgid "PHP's Mailer Class"
-msgstr ""
+msgstr "PHP's Mailer Class"
 
 #: ../lib/functions.php:3766
 msgid "Method: SMTP"
-msgstr ""
+msgstr "Methode: SMTP"
 
 #: ../lib/functions.php:3781
 msgid "Not Shown for Security Reasons"
@@ -12011,16 +11999,12 @@ msgid "Dry Run Float Range"
 msgstr ""
 
 #: ../lib/html_filter.php:82
-#, fuzzy
-#| msgid "Apply Filter"
 msgid "Apply filter to table"
-msgstr "Filter toepassen"
+msgstr "Filter toepassen op tabel"
 
 #: ../lib/html_filter.php:87
-#, fuzzy
-#| msgid "Reset fields to defaults"
 msgid "Reset filter to default values"
-msgstr "Stel velden opnieuw in"
+msgstr "Herstel filter naar standaard waarden"
 
 #: ../lib/html_form.php:509
 msgid "File Found"
@@ -12028,7 +12012,7 @@ msgstr "Bestand gevonden"
 
 #: ../lib/html_form.php:511
 msgid "Path is a Directory and not a File"
-msgstr ""
+msgstr "Het pad is een directorie en geen bestand"
 
 #: ../lib/html_form.php:515
 msgid "File is Not Found"
@@ -12044,7 +12028,7 @@ msgstr "Directorie gevonden"
 
 #: ../lib/html_form.php:556
 msgid "Path is a File and not a Directory"
-msgstr ""
+msgstr "Het pad is een bestand en geen directorie"
 
 #: ../lib/html_form.php:560
 msgid "Directory is Not found"
@@ -12475,16 +12459,14 @@ msgid "Unable to send Report '%s'.  Please set an e-mail from address"
 msgstr ""
 
 #: ../lib/html_reports.php:834
-#, fuzzy, php-format
-#| msgid "Report Edit [edit: %s]"
+#, php-format
 msgid "Report Item [edit Report: %s]"
-msgstr "Rapportage wijzigen [wijzig: %s]"
+msgstr "Rapportage item [wijzig rapport: %s]"
 
 #: ../lib/html_reports.php:836
-#, fuzzy, php-format
-#| msgid "Color Template Items [new Report Item: %s]"
+#, php-format
 msgid "Report Item [new Report: %s]"
-msgstr "Kleurtemplate items [nieuw Rapportitem: %s]"
+msgstr "Rapport item [nieuw rapport: %s]"
 
 #: ../lib/html_reports.php:1087 ../user_admin.php:1920
 #, php-format
@@ -12647,11 +12629,11 @@ msgstr "kon niet worden geopend"
 
 #: ../lib/import.php:237
 msgid "not exists"
-msgstr ""
+msgstr "bestaat niet"
 
 #: ../lib/import.php:240 ../lib/import.php:244
 msgid "not writable"
-msgstr ""
+msgstr "niet schrijfbaar"
 
 #: ../lib/import.php:246
 msgid "writable"
@@ -12727,7 +12709,7 @@ msgstr ""
 
 #: ../lib/ldap.php:204 ../lib/ldap.php:384
 msgid "No username defined"
-msgstr ""
+msgstr "Geen gebruikersnaam gedefinieerd"
 
 #: ../lib/ldap.php:232
 msgid "Protocol Error, Unable to set version"
@@ -12873,11 +12855,11 @@ msgstr ""
 
 #: ../lib/plugins.php:486
 msgid "Plugin cannot be installed."
-msgstr ""
+msgstr "Plugin kan niet worden geïnstalleerd."
 
 #: ../lib/plugins.php:763 ../lib/plugins.php:770 ../plugins.php:267
 msgid "Plugin Management"
-msgstr ""
+msgstr "Plugin beheer"
 
 #: ../lib/reports.php:883
 msgid "Host:"
@@ -13377,7 +13359,7 @@ msgstr "Filter toepassen"
 
 #: ../links.php:331
 msgid "Reset filters"
-msgstr ""
+msgstr "Filters herstellen"
 
 #: ../links.php:345 ../links.php:508 ../user_admin.php:1637
 #: ../user_group_admin.php:1375
@@ -13394,11 +13376,11 @@ msgstr ""
 
 #: ../links.php:378
 msgid "Page"
-msgstr ""
+msgstr "Pagina"
 
 #: ../links.php:380 ../links.php:500 ../links.php:505
 msgid "Style"
-msgstr ""
+msgstr "Stijl"
 
 #: ../links.php:392
 msgid "Edit Page"
@@ -13579,7 +13561,7 @@ msgstr ""
 
 #: ../managers.php:795 ../utilities.php:2613
 msgid "Time"
-msgstr ""
+msgstr "Tijd"
 
 #: ../managers.php:795 ../utilities.php:2613
 msgid "Varbinds"
@@ -13633,7 +13615,7 @@ msgstr "U moet op zijn minst een melding object selecteren."
 
 #: ../plugins.php:28
 msgid "Install"
-msgstr "Installatie"
+msgstr "Installeer"
 
 #: ../plugins.php:31
 msgid "Uninstall"
@@ -13641,11 +13623,11 @@ msgstr "De-installeer"
 
 #: ../plugins.php:36
 msgid "Not Compatible"
-msgstr ""
+msgstr "Niet compatible"
 
 #: ../plugins.php:37 ../plugins.php:291 ../utilities.php:417
 msgid "Not Installed"
-msgstr ""
+msgstr "Niet geïnstalleerd"
 
 #: ../plugins.php:39
 msgid "Awaiting Configuration"
@@ -13669,7 +13651,7 @@ msgstr "Configuratieproblemen"
 
 #: ../plugins.php:295 ../plugins.php:365
 msgid "Plugins"
-msgstr ""
+msgstr "Plugins"
 
 #: ../plugins.php:374
 msgid ""
@@ -13693,7 +13675,7 @@ msgstr ""
 
 #: ../plugins.php:376
 msgid "Plugin Description"
-msgstr ""
+msgstr "Plugin beschrijving"
 
 #: ../plugins.php:377
 msgid "The status of this Plugin."
@@ -13919,15 +13901,10 @@ msgid ""
 msgstr ""
 
 #: ../pollers.php:387
-#, fuzzy
-#| msgctxt "Dialog: test connection"
-#| msgid "Test Connection"
 msgid "Test Connection"
 msgstr "Test verbinding"
 
 #: ../pollers.php:387
-#, fuzzy
-#| msgid "Test remote database connection"
 msgid "Test Database Connection"
 msgstr "Database verbinding testen"
 
@@ -14082,7 +14059,7 @@ msgstr "Herstel"
 
 #: ../rrdcleaner.php:518
 msgid "Rescan"
-msgstr ""
+msgstr "Opnieuw scannen"
 
 #: ../rrdcleaner.php:521
 msgid "Delete All"
@@ -14090,7 +14067,7 @@ msgstr "Alles verwijderen"
 
 #: ../rrdcleaner.php:521
 msgid "Delete All Unknown RRDfiles"
-msgstr ""
+msgstr "Verwijder alle onbekende RRD bestanden"
 
 #: ../rrdcleaner.php:522
 msgid "Archive All"
@@ -14111,7 +14088,7 @@ msgstr "Selecteer plugin(s)"
 
 #: ../settings.php:193
 msgid "Plugins Selected"
-msgstr ""
+msgstr "Plugins geselecteerd"
 
 #: ../settings.php:208
 msgid "Select File(s)"
@@ -14135,7 +14112,7 @@ msgstr ""
 
 #: ../settings.php:303
 msgid "Test Email Results"
-msgstr ""
+msgstr "Test e-mail resultaten"
 
 #: ../sites.php:35
 msgid "Site Information"
@@ -14147,7 +14124,7 @@ msgstr ""
 
 #: ../sites.php:44
 msgid "New Site"
-msgstr ""
+msgstr "Nieuwe locatie"
 
 #: ../sites.php:49
 msgid "Address1"
@@ -14155,7 +14132,7 @@ msgstr "Adres 1"
 
 #: ../sites.php:50
 msgid "The primary address for the Site."
-msgstr ""
+msgstr "Het primaire adres voor de locatie."
 
 #: ../sites.php:52
 msgid "Enter the Site Address"
@@ -14167,11 +14144,11 @@ msgstr "Adres 2"
 
 #: ../sites.php:59
 msgid "Additional address information for the Site."
-msgstr ""
+msgstr "Optionele adresgegevens voor de locatie."
 
 #: ../sites.php:61
 msgid "Additional Site Address information"
-msgstr ""
+msgstr "Optionele adresgegevens"
 
 #: ../sites.php:67 ../sites.php:484
 msgid "City"
@@ -14179,7 +14156,7 @@ msgstr "Stad"
 
 #: ../sites.php:68
 msgid "The city or locality for the Site."
-msgstr ""
+msgstr "De stad of omgeving voor de locatie."
 
 #: ../sites.php:70
 msgid "Enter the City or Locality"
@@ -14199,11 +14176,11 @@ msgstr "Voer de gemeente in"
 
 #: ../sites.php:85
 msgid "Postal/Zip Code"
-msgstr ""
+msgstr "Postcode"
 
 #: ../sites.php:86
 msgid "The postal or zip code for the Site."
-msgstr ""
+msgstr "De postcode van de locatie."
 
 #: ../sites.php:88
 msgid "Enter the postal code"
@@ -14215,7 +14192,7 @@ msgstr "Land"
 
 #: ../sites.php:95
 msgid "The country for the Site."
-msgstr ""
+msgstr "Het land van de locatie."
 
 #: ../sites.php:97
 msgid "Enter the country"
@@ -14223,11 +14200,11 @@ msgstr "Voer het land in"
 
 #: ../sites.php:103
 msgid "TimeZone"
-msgstr ""
+msgstr "Tijdzone"
 
 #: ../sites.php:104
 msgid "The TimeZone for the Site."
-msgstr ""
+msgstr "De tijdzone voor de locatie."
 
 #: ../sites.php:110
 msgid "Latitude"
@@ -14303,7 +14280,7 @@ msgstr "Locatienaam"
 
 #: ../sites.php:481
 msgid "The name of this Site."
-msgstr ""
+msgstr "De naam van de locatie."
 
 #: ../sites.php:482
 msgid "The unique id associated with this Site."
@@ -14351,7 +14328,7 @@ msgstr "Wat wilt u exporteren?"
 #: ../templates_export.php:130
 #, php-format
 msgid "Available Templates [%s]"
-msgstr ""
+msgstr "Beschikbare templates [%s]"
 
 #: ../templates_export.php:134
 #, php-format
@@ -14773,7 +14750,7 @@ msgstr ""
 
 #: ../user_admin.php:1110 ../user_group_admin.php:688
 msgid "Non Member"
-msgstr ""
+msgstr "Geen lid"
 
 #: ../user_admin.php:1112 ../user_admin.php:2282 ../user_admin.php:2283
 #: ../user_admin.php:2284 ../user_group_admin.php:1904
@@ -14867,7 +14844,7 @@ msgstr ""
 
 #: ../user_admin.php:1699 ../user_group_admin.php:1437
 msgid "Plugin Permissions"
-msgstr ""
+msgstr "Plugin rechten"
 
 #: ../user_admin.php:1755
 msgid "Legacy 1.x Plugins"
@@ -14880,7 +14857,7 @@ msgstr "Gebruikersinstellingen %s"
 
 #: ../user_admin.php:1905 ../user_group_admin.php:1644
 msgid "Permissions"
-msgstr ""
+msgstr "Rechten"
 
 #: ../user_admin.php:1906
 msgid "Group Membership"
@@ -14905,23 +14882,23 @@ msgstr ""
 #: ../user_admin.php:1952
 #, php-format
 msgid "User Management %s"
-msgstr ""
+msgstr "Gebruikersbeheer %s"
 
 #: ../user_admin.php:1984
 msgid "Password Too Short"
-msgstr ""
+msgstr "Wachtwoord is te kort"
 
 #: ../user_admin.php:1989
 msgid "Password Validation Passes"
-msgstr ""
+msgstr "Wachtwoord validatie succesvol"
 
 #: ../user_admin.php:2003
 msgid "Passwords do Not Match"
-msgstr ""
+msgstr "Wachtwoorden komen niet overeen"
 
 #: ../user_admin.php:2006
 msgid "Passwords Match"
-msgstr ""
+msgstr "Wachtwoorden komen overeen"
 
 #: ../user_admin.php:2250 ../user_group_admin.php:1884
 msgid "Graph Policy"
@@ -14975,7 +14952,7 @@ msgstr "Apparaat rechten %s"
 #: ../user_group_admin.php:2179 ../user_group_admin.php:2285
 #: ../user_group_admin.php:2372 ../user_group_admin.php:2459
 msgid "Show Exceptions"
-msgstr ""
+msgstr "Toon uitzonderingen"
 
 #: ../user_admin.php:2807 ../user_group_admin.php:2339
 #, php-format
@@ -14989,7 +14966,7 @@ msgstr ""
 
 #: ../user_admin.php:3014
 msgid "Show Exceptions<"
-msgstr ""
+msgstr "Toon uitzonderingen<"
 
 #: ../user_domains.php:222
 msgid "Click 'Continue' to delete the following User Domain."
@@ -15217,7 +15194,7 @@ msgstr ""
 #: ../user_group_admin.php:133
 msgid "What to do when a User from this User Group logs in."
 msgstr ""
-"Wat moet er gebeuren als een gebruiker uit deze gebruikersgroep inlogt?"
+"Wat moet er gebeuren als een gebruiker uit deze gebruikersgroep inlogt."
 
 #: ../user_group_admin.php:441
 msgid "Click 'Continue' to delete the following User Group"
@@ -15266,8 +15243,8 @@ msgstr[1] ""
 #: ../user_group_admin.php:476
 msgid "Enable User Group"
 msgid_plural "Enable User Groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Activeer gebruikersgroep"
+msgstr[1] "Activeer gebruikersgroepen"
 
 #: ../user_group_admin.php:482
 msgid "Click 'Continue' to disable the following User Group."
@@ -15308,7 +15285,7 @@ msgstr "Toevoegen aan groep"
 
 #: ../user_group_admin.php:711
 msgid "Remove from Group"
-msgstr ""
+msgstr "Verwijder uit groep"
 
 #: ../user_group_admin.php:750 ../user_group_admin.php:891
 msgid "Default Graph policy for this User Group"
@@ -15355,7 +15332,7 @@ msgstr ""
 
 #: ../user_group_admin.php:2546
 msgid "Show Members"
-msgstr ""
+msgstr "Toon leden"
 
 #: ../user_group_admin.php:2552
 msgctxt "filter reset"
@@ -15392,16 +15369,16 @@ msgstr "Database"
 
 #: ../utilities.php:195
 msgid "PHP Info"
-msgstr ""
+msgstr "PHP Info"
 
 #: ../utilities.php:202
 #, php-format
 msgid "Technical Support [%s]"
-msgstr ""
+msgstr "Technische ondersteuning [%s]"
 
 #: ../utilities.php:229
 msgid "General Information"
-msgstr ""
+msgstr "Algemene informatie"
 
 #: ../utilities.php:231 ../utilities.php:766
 msgid "Date"
@@ -15426,7 +15403,7 @@ msgstr "Totaal: %s"
 
 #: ../utilities.php:288
 msgid "Poller Information"
-msgstr ""
+msgstr "Poller informatie"
 
 #: ../utilities.php:311
 #, php-format
@@ -15447,7 +15424,7 @@ msgstr ""
 
 #: ../utilities.php:332
 msgid "PHP Servers"
-msgstr ""
+msgstr "PHP servers"
 
 #: ../utilities.php:337
 msgid "Script Timeout"
@@ -15463,28 +15440,30 @@ msgstr ""
 
 #: ../utilities.php:355
 msgid "System Memory"
-msgstr ""
+msgstr "Systeemgeheugen"
 
 #: ../utilities.php:384
 msgid "PHP Information"
-msgstr ""
+msgstr "PHP informatie"
 
 #: ../utilities.php:391
 msgid ""
 "PHP Version 5.5.0+ is recommended due to strong password hashing support."
 msgstr ""
+"PHP versie 5.5.0+ wordt aanbevolen vanwege ondersteuning voor sterke "
+"wachtwoord hashes."
 
 #: ../utilities.php:396
 msgid "PHP OS"
-msgstr ""
+msgstr "PHP OS"
 
 #: ../utilities.php:401
 msgid "PHP uname"
-msgstr ""
+msgstr "PHP uname"
 
 #: ../utilities.php:412
 msgid "PHP SNMP"
-msgstr ""
+msgstr "PHP SNMP"
 
 #: ../utilities.php:447
 msgid "You've set memory limit to 'unlimited'."
@@ -15526,7 +15505,7 @@ msgstr ""
 
 #: ../utilities.php:472
 msgid "Collation"
-msgstr ""
+msgstr "Collatie"
 
 #: ../utilities.php:473
 msgid "Comment"
@@ -15538,7 +15517,7 @@ msgstr ""
 
 #: ../utilities.php:497
 msgid "PHP Module Information"
-msgstr ""
+msgstr "PHP module informatie"
 
 #: ../utilities.php:623
 msgid "User Login History"
@@ -15554,7 +15533,7 @@ msgstr "Verwijderd/Ongeldig"
 
 #: ../utilities.php:650 ../utilities.php:767
 msgid "Result"
-msgstr ""
+msgstr "Resultaat"
 
 #: ../utilities.php:655
 msgid "Success - Pswd"
@@ -15653,7 +15632,7 @@ msgstr "Veld waarde"
 
 #: ../utilities.php:1409
 msgid "Index"
-msgstr ""
+msgstr "Index"
 
 #: ../utilities.php:1545
 msgid "Poller Cache Items"
@@ -16066,10 +16045,8 @@ msgid "Click 'Continue' to delete the following VDEF's."
 msgstr "Klik op 'Volgende' om de volgende VDEF's te verwijderen."
 
 #: ../vdef.php:385
-#, fuzzy
-#| msgid "Preview"
 msgid "VDEF Preview"
-msgstr "Voorbeeld"
+msgstr "VDEF voorbeeld"
 
 #: ../vdef.php:390
 #, php-format
