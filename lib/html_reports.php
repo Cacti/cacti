@@ -508,10 +508,10 @@ function reports_form_save() {
 			($atype != REPORTS_TYPE_ATTACH_GIF) &&
 			($atype != REPORTS_TYPE_INLINE_PNG_LN) &&
 			($atype != REPORTS_TYPE_INLINE_JPG_LN) &&
-			($atype != REPORTS_TYPE_INLINE_GIF_LN) &&
-			($atype != REPORTS_TYPE_ATTACH_PDF)) {
+			($atype != REPORTS_TYPE_INLINE_GIF_LN)) {
 			$atype = REPORTS_TYPE_INLINE_PNG;
 		}
+
 		$save['attachment_type']  = form_input_validate($atype, 'attachment_type', '^[0-9]+$', false, 3);
 		$save['lastsent']         = 0;
 
@@ -525,7 +525,7 @@ function reports_form_save() {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
+		header('Location: ' . get_reports_page() . '?action=edit&header=false&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
 		exit;
 	} elseif (isset_request_var('save_component_report_item')) {
 		/* ================= input validation ================= */
@@ -562,9 +562,9 @@ function reports_form_save() {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=item_edit&id=' . get_nfilter_request_var('report_id') . '&item_id=' . (empty($item_id) ? get_nfilter_request_var('id') : $item_id));
+		header('Location: ' . get_reports_page() . '?action=item_edit&header=false&id=' . get_nfilter_request_var('report_id') . '&item_id=' . (empty($item_id) ? get_nfilter_request_var('id') : $item_id));
 	} else {
-		header('Location: ' . get_reports_page());
+		header('Location: ' . get_reports_page() . '?header=false');
 	}
 	exit;
 }
@@ -879,7 +879,7 @@ function reports_item_edit() {
 	/* set the default item alignment */
 	$fields_reports_item_edit['font_size']['default'] = $report['font_size'];
 
-	print "<form method='post' action='" . get_current_page() . "' name='reports_item_edit'>\n";
+	form_start(get_current_page(), 'reports_item_edit');
 
 	# ready for displaying the fields
 	html_start_box($header_label, '100%', true, '3', 'center', '');
@@ -1232,10 +1232,20 @@ function display_reports_items($report_id) {
 
 	$css = db_fetch_cell_prepared('SELECT cformat FROM reports WHERE id = ?', array($report_id));
 
-	html_header(array(__('Item'), __('Sequence'), __('Type'), __('Item Details'), __('Timespan'), __('Alignment'), __('Font Size'), __('Actions')), 2);
+	html_header(
+		array(
+			array('display' => __('Item'), 'align' => 'left'),
+			array('display' => __('Sequence'), 'align' => 'left'),
+			array('display' => __('Type'), 'align' => 'left'),
+			array('display' => __('Item Details'), 'align' => 'left'),
+			array('display' => __('Timespan'), 'align' => 'left'),
+			array('display' => __('Alignment'), 'align' => 'left'),
+			array('display' => __('Font Size'), 'align' => 'left'),
+			array('display' => __('Actions'), 'align' => 'right')
+		), 2);
 
-	$i = 0;
-	if (sizeof($items) > 0) {
+	$i = 1;
+	if (sizeof($items)) {
 		foreach ($items as $item) {
 			switch ($item['item_type']) {
 			case REPORTS_ITEM_GRAPH:
@@ -1290,7 +1300,7 @@ function display_reports_items($report_id) {
 			}
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars(get_reports_page() . '?action=item_edit&id=' . $report_id. '&item_id=' . $item['id']) . '">Item#' . $i . '</a></td>';$i++;
+			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars(get_reports_page() . '?action=item_edit&id=' . $report_id. '&item_id=' . $item['id']) . '">Item#' . $i . '</a></td>';
 			$form_data .= '<td>' . $item['sequence'] . '</td>';
 			$form_data .= '<td>' . $item_types{$item['item_type']} . '</td>';
 			$form_data .= '<td class="nowrap">' . $item_details . '</td>';
@@ -1298,13 +1308,21 @@ function display_reports_items($report_id) {
 			$form_data .= '<td>' . $align . '</td>';
 			$form_data .= '<td>' . $size . '</td>';
 
-			$form_data .= '<td align="right" style="text-align:right;min-width:5%;white-space:nowrap;"><a href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"><img src="images/move_down.gif" alt="" title="' . __('Move Down') . '"></a>' . '<a	href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"><img src="images/move_up.gif" alt="" title="' . __('Move Up') . '"></a>' . '</td>';
+			if ($i == 1) {
+				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __('Move Down') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span class="moveArrowNone"</span></td>';
+			} elseif ($i > 1 && $i < sizeof($items)) {
+				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __('Move Down') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __('Move Up') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
+			} else {
+				$form_data .= '<td class="right nowrap"><span class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __('Move Up') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
+			}
 
-			$form_data .= '<td align="right"><a class="pid deleteMarker fa fa-remove" href="' . htmlspecialchars(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __('Delete') . '"></a>' . '</td></tr>';
+			$form_data .= '<td align="right"><a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __('Delete') . '"></a>' . '</td></tr>';
 			print $form_data;
+
+			$i++;
 		}
 	} else {
-		print "<tr><td><em>" . __('No Report Items') . "</em></td></tr>\n";
+		print '<tr><td colspan="9"><em>' . __('No Report Items') . '</em></td></tr>';
 	}
 }
 
@@ -1511,10 +1529,23 @@ function reports() {
 		$date_format = reports_date_time_format();
 
 		foreach ($reports_list as $report) {
+			if (reports_html_account_exists($report['user_id'])) {
+				reports_html_report_disable($report['id']);
+				$report['enabled'] = '';
+			}
+
 			form_alternate_row('line' . $report['id'], true);
+
 			form_selectable_cell(filter_value($report['name'], get_request_var('filter'), get_reports_page() . '?action=edit&tab=details&id=' . $report['id'] . '&page=1'), $report['id']);
 
-			if (is_reports_admin()) form_selectable_cell($report['full_name'], $report['id']);
+			if (is_reports_admin()) { 
+				if (reports_html_account_exists($report['user_id'])) {
+					form_selectable_cell($report['full_name'], $report['id']);
+				} else {
+					form_selectable_cell(__('Report Disabled - No Owner'), $report['id']);
+				}
+			} 
+
 			$interval = 'Every ' . $report['count'] . ' ' . $reports_interval[$report['intrvl']];
 
 			form_selectable_cell($interval, $report['id']);
@@ -1575,3 +1606,10 @@ function reports() {
 	<?php
 }
 
+function reports_html_account_exists($user_id) {
+	return db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($user_id));
+}
+
+function reports_html_report_disable($report_id) {
+	db_execute_prepared('UPDATE reports SET enabled="" WHERE id = ?', array($report_id));
+}

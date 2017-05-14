@@ -109,7 +109,7 @@ function read_default_graph_config_option($config_name) {
    @arg $config_name - the name of the configuration setting as specified $settings_user array
      in 'include/global_settings.php'
    @returns - the current value of the graph configuration option */
-function read_graph_config_option($config_name, $force = FALSE) {
+function read_graph_config_option($config_name, $force = false) {
 	return read_user_setting($config_name, false, $force);
 }
 
@@ -173,24 +173,35 @@ function read_default_user_setting($config_name) {
    @arg $config_name - the name of the configuration setting as specified $settings_user array
      in 'include/global_settings.php'
    @returns - the current value of the graph configuration option */
-function read_user_setting($config_name, $default = false, $force = FALSE) {
+function read_user_setting($config_name, $default = false, $force = false, $user = 0) {
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
 
-	if (isset($_SESSION['sess_user_id'])) {
+	if ($user == 0 && isset($_SESSION['sess_user_id'])) {
 		$effective_uid = $_SESSION['sess_user_id'];
 	}else if (isset($config['config_options_array']['export_user_id'])) {
 		$effective_uid = $config['config_options_array']['export_user_id'];
-	}else if ((read_config_option('auth_method') == 0)) {
+	}else if (read_config_option('auth_method') == 0 || $user > 0) {
 		/* first attempt to get the db setting for guest */
-		$effective_uid = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username= ?', array(read_config_option('guest_user')));
+		if ($user == 0) {
+			$effective_uid = db_fetch_cell_prepared('SELECT id 
+				FROM user_auth 
+				WHERE username= ?', 
+				array(read_config_option('guest_user')));
 
-		if (strlen($effective_uid) == 0) {
-			$effective_uid = 0;
+			if (strlen($effective_uid) == 0) {
+				$effective_uid = 0;
+			}
+		}else{
+			$effective_uid = $user;
 		}
 
-		$db_setting = db_fetch_row_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $effective_uid));
+		$db_setting = db_fetch_row_prepared('SELECT value 
+			FROM settings_user 
+			WHERE name = ? 
+			AND user_id = ?', 
+			array($config_name, $effective_uid));
 
 		if (sizeof($db_setting)) {
 			return $db_setting['value'];
@@ -288,7 +299,7 @@ function read_default_config_option($config_name) {
    @arg $config_name - the name of the configuration setting as specified $settings array
      in 'include/global_settings.php'
    @returns - the current value of the configuration option */
-function read_config_option($config_name, $force = FALSE) {
+function read_config_option($config_name, $force = false) {
 	global $config;
 
 	if (isset($_SESSION['sess_config_array'])) {
@@ -298,7 +309,7 @@ function read_config_option($config_name, $force = FALSE) {
 	}
 
 	if ((!isset($config_array[$config_name])) || ($force)) {
-		$db_setting = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name), FALSE);
+		$db_setting = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name), false);
 
 		if (isset($db_setting['value'])) {
 			$config_array[$config_name] = $db_setting['value'];
@@ -1005,7 +1016,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 /* is_hexadecimal - test whether a string represents a hexadecimal number,
      ignoring space and tab, and case insensitive.
    @arg $result - the string to test
-   @arg 1 if the argument is hex, 0 otherwise, and FALSE on error */
+   @arg 1 if the argument is hex, 0 otherwise, and false on error */
 function is_hexadecimal($result) {
 	$hexstr = str_replace(array(' ', '-'), ':', trim($result));
 
@@ -1441,7 +1452,7 @@ function generate_graph_best_cf($local_data_id, $requested_cf) {
 function get_rrd_cfs($local_data_id) {
 	global $rrd_cfs, $consolidation_functions;
 
-	$rrdfile = get_data_source_path($local_data_id, TRUE);
+	$rrdfile = get_data_source_path($local_data_id, true);
 
 	if (!isset($rrd_cfs)) {
 		$rrd_cfs = array();
@@ -1451,7 +1462,7 @@ function get_rrd_cfs($local_data_id) {
 
 	$cfs = array();
 
-	$output = @rrdtool_execute("info $rrdfile", FALSE, RRDTOOL_OUTPUT_STDOUT);
+	$output = @rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT);
 
 	/* search for
 	 * 		rra[0].cf = 'LAST'
@@ -4245,7 +4256,7 @@ function cacti_oid_numeric_format() {
 	if (function_exists('snmp_set_oid_output_format')) {
 		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
 	} elseif (function_exists("snmp_set_oid_numeric_print")) {
-		snmp_set_oid_numeric_print(TRUE);
+		snmp_set_oid_numeric_print(true);
 	}
 }
 
