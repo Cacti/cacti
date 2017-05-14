@@ -40,14 +40,14 @@ function upgrade_to_1_0_5() {
 	} else {
 		$nonhostzero = db_fetch_assoc('SELECT host_id, data_query_id, count(*) AS totals 
 			FROM poller_reindex 
-			GROUP BY host_id, data_query_id
 			WHERE host_id > 0
+			GROUP BY host_id, data_query_id
 			HAVING totals > 1');
 
 		$haszero = db_fetch_assoc('SELECT host_id, data_query_id, count(*) AS totals 
 			FROM poller_reindex 
-			GROUP BY host_id, data_query_id
 			WHERE host_id = 0
+			GROUP BY host_id, data_query_id
 			HAVING totals > 1');
 
 		if (sizeof($nonhostzero) && !sizeof($haszero)) {
