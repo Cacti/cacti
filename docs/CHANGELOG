@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#680: Sort order in Time Graph View
 -issue#687: Cacti DB access not compatible with PHP 7
 -issue: Reports were not using Cacti's permission system for checking access
+-issue: User Admin page reported wrong permissions at Tree level missing some i18n as well
 -feature: Updated Dutch language
 -feature: Updating PHPMailer to 5.2.23
 -feature: Support input-output Data Query types
