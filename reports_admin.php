@@ -30,6 +30,9 @@ include_once($config['library_path'] . '/html_reports.php');
 get_filter_request_var('id');
 get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
+/* set a longer execution time for large reports */
+ini_set('max_execution_time', '300');
+
 /* set default action */
 set_default_action();
 
