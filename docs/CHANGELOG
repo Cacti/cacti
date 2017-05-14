@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -feature: Updated Dutch language
 -feature: Updating PHPMailer to 5.2.23
 -feature: Support input-output Data Query types
+-feature: Introduce new get_cacti_version() to reduce database calls on pages
 
 1.1.6
 -issue#620: The table poller_data_template_field_mappings can get out of sync when manipulating data templates

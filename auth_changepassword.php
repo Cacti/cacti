@@ -36,7 +36,7 @@ if (!isset($_SESSION['sess_user_id'])) {
 }
 
 $user        = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
-$version     = db_fetch_cell('SELECT cacti FROM version');
+$version     = get_cacti_version();
 $auth_method = read_config_option('auth_method');
 
 if ($auth_method != 1 && $user['realm'] != 0) {

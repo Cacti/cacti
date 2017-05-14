@@ -27,7 +27,7 @@
  * @param string $_title	- title of the new report
  */
 function duplicate_reports($_id, $_title) {
-	global $fields_reports_edit, $current_user;
+	global $fields_reports_edit;
 	reports_log(__FUNCTION__ . ', id: ' . $_id, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
 	$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array($_id));
@@ -371,7 +371,7 @@ function generate_report($report, $force = false) {
 		$report['bcc'] = '';
 	}
 
-	$v = db_fetch_cell('SELECT cacti FROM version');
+	$v = get_cacti_version();
 	$headers['User-Agent'] = 'Cacti-Reports-v' . $v;
 
 	$error = mailer(

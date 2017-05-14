@@ -104,7 +104,7 @@ function open_snmp_session($host_id, &$item) {
 }
 
 function display_version() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
+	$version = get_cacti_version();
 	echo "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

@@ -78,7 +78,7 @@ print "User copied...\n";
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
+	$version = get_cacti_version();
 	echo "Cacti Copy User Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

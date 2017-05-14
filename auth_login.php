@@ -60,7 +60,7 @@ if (read_config_option('auth_method') == '2') {
 }
 
 $username = sanitize_search_string($username);
-$version  = db_fetch_cell('SELECT cacti FROM version');
+$version  = get_cacti_version();
 
 /* process login */
 $copy_user    = false;
