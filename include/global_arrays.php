@@ -1240,8 +1240,7 @@ if (is_realm_allowed(22)) {
 
 $attach_types = array(
 	REPORTS_TYPE_INLINE_PNG => __('Inline PNG Image'),
-	#REPORTS_TYPE_INLINE_JPG => 'Inline JPEG Image',
-	#REPORTS_TYPE_ATTACH_PDF => 'PDF Attachment',
+	#REPORTS_TYPE_INLINE_JPG => 'Inline JPEG Image'
 );
 
 if (extension_loaded(REPORTS_EXTENSION_GD)) {
