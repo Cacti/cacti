@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.7
 -issue#470: Enhance Cacti's SNMP function and Data Query XML, add <output_format>hex|string|guess</output_format>
+-issue#658: Scheduled Reports (type "tree") not working
 -issue#655: Data source not displaying device name
 -issue#669: Invalid SQL Messages when upgrading to Cacti 1.0.5
 -issue#670: Validation error when you do "Change Graph Template" in Cacti

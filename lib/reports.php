@@ -217,7 +217,7 @@ function generate_report($report, $force = false) {
 
 	$time = time();
 	# get config option for first-day-of-the-week
-	$first_weekdayid = read_user_setting('first_weekdayid');
+	$first_weekdayid = read_user_setting('first_weekdayid', false, false, $report['user_id']);
 
 	$offset      = 0;
 	$graphs      = array();
@@ -242,133 +242,123 @@ function generate_report($report, $force = false) {
 	$xport_meta = array();
 
 	if (sizeof($graphs)) {
-	foreach($graphs as $key => $local_graph_id) {
-		$arr = explode(':', $key);
-		$timesp = $arr[1];
+		foreach($graphs as $key => $local_graph_id) {
+			$arr = explode(':', $key);
+			$timesp = $arr[1];
 
-		$timespan = array();
-		# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
-		get_timespan($timespan, $time, $timesp, $first_weekdayid);
+			$timespan = array();
+			# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
+			get_timespan($timespan, $time, $timesp, $first_weekdayid);
 
-		# provide parameters for rrdtool graph
-		$graph_data_array = array(
-			'graph_start'    => $timespan['begin_now'],
-			'graph_end'      => $timespan['end_now'],
-			'graph_width'    => $report['graph_width'],
-			'graph_height'   => $report['graph_height'],
-			'image_format'   => 'png',
-			'graph_theme'    => $theme,
-			'output_flag'    => RRDTOOL_OUTPUT_STDOUT,
-			'disable_cache'  => true
-		);
+			# provide parameters for rrdtool graph
+			$graph_data_array = array(
+				'graph_start'    => $timespan['begin_now'],
+				'graph_end'      => $timespan['end_now'],
+				'graph_width'    => $report['graph_width'],
+				'graph_height'   => $report['graph_height'],
+				'image_format'   => 'png',
+				'graph_theme'    => $theme,
+				'output_flag'    => RRDTOOL_OUTPUT_STDOUT,
+				'disable_cache'  => true
+			);
 
-		if ($report['thumbnails'] == 'on') {
-			$graph_data_array['graph_nolegend'] = true;
+			if ($report['thumbnails'] == 'on') {
+				$graph_data_array['graph_nolegend'] = true;
+			}
+
+			switch($report['attachment_type']) {
+				case REPORTS_TYPE_INLINE_PNG:
+					$attachments[] = array(
+						'attachment' => @rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user),
+						'filename'       => 'graph_' . $local_graph_id . '.png',
+						'mime_type'      => 'image/png',
+						'local_graph_id' => $local_graph_id,
+						'timespan'       => $timesp,
+						'inline'         => 'inline'
+					);
+					break;
+				case REPORTS_TYPE_INLINE_JPG:
+					$attachments[] = array(
+						'attachment' => png2jpeg(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+						'filename'       => 'graph_' . $local_graph_id . '.jpg',
+						'mime_type'      => 'image/jpg',
+						'local_graph_id' => $local_graph_id,
+						'timespan'       => $timesp,
+						'inline'         => 'inline'
+					);
+					break;
+				case REPORTS_TYPE_INLINE_GIF:
+					$attachments[] = array(
+						'attachment'     => png2gif(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+						'filename'       => 'graph_' . $local_graph_id . '.gif',
+						'mime_type'      => 'image/gif',
+						'local_graph_id' => $local_graph_id,
+						'timespan'       => $timesp,
+						'inline'         => 'inline'
+					);
+					break;
+				case REPORTS_TYPE_ATTACH_PNG:
+					$attachments[] = array(
+						'attachment'     => @rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user),
+						'filename'       => 'graph_' . $local_graph_id . '.png',
+						'mime_type'      => 'image/png',
+						'local_graph_id' => $local_graph_id,
+						'timespan'       => $timesp,
+						'inline'         => 'attachment'
+					);
+					break;
+				case REPORTS_TYPE_ATTACH_JPG:
+					$attachments[] = array(
+						'attachment'     => png2jpeg(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+						'filename'       => 'graph_' . $local_graph_id . '.jpg',
+						'mime_type'      => 'image/jpg',
+						'local_graph_id' => $local_graph_id,
+						'timespan'       => $timesp,
+						'inline'         => 'attachment'
+					);
+					break;
+				case REPORTS_TYPE_ATTACH_GIF:
+					$attachments[] = array(
+						'attachment'     => png2gif(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+						'filename'       => 'graph_' . $local_graph_id . '.gif',
+						'mime_type'      => 'image/gif',
+						'local_graph_id' => $local_graph_id,
+						'timespan'       => $timesp,
+						'inline'         => 'attachment'
+					);
+					break;
+				case REPORTS_TYPE_INLINE_PNG_LN:
+					$attachments[] = array(
+						'attachment'     => @rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user),
+						'filename'       => '',	# LN does not accept filenames for inline attachments
+						'mime_type'      => 'image/png',
+						'local_graph_id' => $local_graph_id,
+						'timespan'       => $timesp,
+						'inline'         => 'inline'
+					);
+					break;
+				case REPORTS_TYPE_INLINE_JPG_LN:
+					$attachments[] = array(
+						'attachment'     => png2jpeg(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+						'filename'       => '',	# LN does not accept filenames for inline attachments
+						'mime_type'      => 'image/jpg',
+						'local_graph_id' => $local_graph_id,
+						'timespan'       => $timesp,
+						'inline'         => 'inline'
+					);
+					break;
+				case REPORTS_TYPE_INLINE_GIF_LN:
+					$attachments[] = array(
+						'attachment'     => png2gif(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
+						'filename'       => '',	# LN does not accept filenames for inline attachments
+						'mime_type'      => 'image/gif',
+						'local_graph_id' => $local_graph_id,
+						'timespan'       => $timesp,
+						'inline'         => 'inline'
+					);
+					break;
+			}
 		}
-
-		switch($report['attachment_type']) {
-			case REPORTS_TYPE_INLINE_PNG:
-				$attachments[] = array(
-					'attachment' => @rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user),
-					'filename'       => 'graph_' . $local_graph_id . '.png',
-					'mime_type'      => 'image/png',
-					'local_graph_id' => $local_graph_id,
-					'timespan'       => $timesp,
-					'inline'         => 'inline'
-				);
-				break;
-			case REPORTS_TYPE_INLINE_JPG:
-				$attachments[] = array(
-					'attachment' => png2jpeg(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'       => 'graph_' . $local_graph_id . '.jpg',
-					'mime_type'      => 'image/jpg',
-					'local_graph_id' => $local_graph_id,
-					'timespan'       => $timesp,
-					'inline'         => 'inline'
-				);
-				break;
-			case REPORTS_TYPE_INLINE_GIF:
-				$attachments[] = array(
-					'attachment'     => png2gif(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'       => 'graph_' . $local_graph_id . '.gif',
-					'mime_type'      => 'image/gif',
-					'local_graph_id' => $local_graph_id,
-					'timespan'       => $timesp,
-					'inline'         => 'inline'
-				);
-				break;
-			case REPORTS_TYPE_ATTACH_PNG:
-				$attachments[] = array(
-					'attachment'     => @rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user),
-					'filename'       => 'graph_' . $local_graph_id . '.png',
-					'mime_type'      => 'image/png',
-					'local_graph_id' => $local_graph_id,
-					'timespan'       => $timesp,
-					'inline'         => 'attachment'
-				);
-				break;
-			case REPORTS_TYPE_ATTACH_JPG:
-				$attachments[] = array(
-					'attachment'     => png2jpeg(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'       => 'graph_' . $local_graph_id . '.jpg',
-					'mime_type'      => 'image/jpg',
-					'local_graph_id' => $local_graph_id,
-					'timespan'       => $timesp,
-					'inline'         => 'attachment'
-				);
-				break;
-			case REPORTS_TYPE_ATTACH_GIF:
-				$attachments[] = array(
-					'attachment'     => png2gif(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'       => 'graph_' . $local_graph_id . '.gif',
-					'mime_type'      => 'image/gif',
-					'local_graph_id' => $local_graph_id,
-					'timespan'       => $timesp,
-					'inline'         => 'attachment'
-				);
-				break;
-			case REPORTS_TYPE_INLINE_PNG_LN:
-				$attachments[] = array(
-					'attachment'     => @rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user),
-					'filename'       => '',	# LN does not accept filenames for inline attachments
-					'mime_type'      => 'image/png',
-					'local_graph_id' => $local_graph_id,
-					'timespan'       => $timesp,
-					'inline'         => 'inline'
-				);
-				break;
-			case REPORTS_TYPE_INLINE_JPG_LN:
-				$attachments[] = array(
-					'attachment'     => png2jpeg(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'       => '',	# LN does not accept filenames for inline attachments
-					'mime_type'      => 'image/jpg',
-					'local_graph_id' => $local_graph_id,
-					'timespan'       => $timesp,
-					'inline'         => 'inline'
-				);
-				break;
-			case REPORTS_TYPE_INLINE_GIF_LN:
-				$attachments[] = array(
-					'attachment'     => png2gif(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
-					'filename'       => '',	# LN does not accept filenames for inline attachments
-					'mime_type'      => 'image/gif',
-					'local_graph_id' => $local_graph_id,
-					'timespan'       => $timesp,
-					'inline'         => 'inline'
-				);
-				break;
-			case REPORTS_TYPE_ATTACH_PDF:
-#				$attachments[] = array(
-#					'attachment' => png2gif(@rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $xport_meta, $user)),
-#					'filename'   => 'graph_' . $local_graph_id . '.gif',
-#					'mime_type'  => 'image/gif',
-#					'local_graph_id'    => $local_graph_id,
-#					'timespan'   => $timesp,
-#					'inline'     => 'attachment'
-#				);
-				break;
-		}
-	}
 	}
 
 	if ($report['subject'] != '') {
@@ -407,22 +397,33 @@ function generate_report($report, $force = false) {
 		} else {
 			reports_log(__FUNCTION__ . ", Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'", false, 'REPORTS', POLLER_VERBOSITY_LOW);
 		}
+
+		return false;
 	} elseif (isset($_REQUEST)) {
 		$_SESSION['reports_message'] = "Report '" . $report['name'] . "' Sent Successfully";
 
 		if (!isset_request_var('selected_items')) {
 			raise_message('reports_message');
 		}
-	}
 
-	if (!isset_request_var('id') && !$force) {
-		$int  = read_config_option('poller_interval');
-		if ($int == '') $int = 300;
-		$next = reports_interval_start($report['intrvl'], $report['count'], $report['offset'], $report['mailtime']);
-		$next = floor($next / $int) * $int;
-		$sql = "UPDATE reports SET mailtime=$next, lastsent=" . time() . " WHERE id = " . $report['id'];
-		reports_log(__FUNCTION__ . ', update sql: ' . $sql, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-		db_execute($sql);
+		$int = read_config_option('poller_interval');
+
+		if (!$force) {
+			$next = reports_interval_start($report['intrvl'], $report['count'], $report['offset'], $report['mailtime']);
+			$next = floor($next / $int) * $int;
+
+			db_execute_prepared("UPDATE reports 
+				SET mailtime = ?, lastsent = ?
+				WHERE id = ?", 
+				array($next, time(), $report['id']));
+		} else {
+			db_execute_prepared("UPDATE reports 
+				SET lastsent = ?
+				WHERE id = ?", 
+				array(time(), $report['id']));
+		}
+
+		return true;
 	}
 }
 
