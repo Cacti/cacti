@@ -776,13 +776,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 	}
 
 	/* remove ALL quotes, and other special delimiters */
-	$string = str_replace('"', '', $string);
-	$string = str_replace("'", '', $string);
-	$string = str_replace('>', '', $string);
-	$string = str_replace('<', '', $string);
-	$string = str_replace("\\", '', $string);
-	$string = str_replace("\n", ' ', $string);
-	$string = str_replace("\r", ' ', $string);
+	$string = str_replace(array('"', "'", '>', '<', "\\", "\n", "\r"), '', $string);
 
 	/* account for invalid MIB files */
 	if (strpos($string, 'Wrong Type') !== false) {
