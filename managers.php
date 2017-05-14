@@ -412,7 +412,7 @@ function manager_edit() {
 }
 
 function manager_notifications($id){
-	global $items_rows;
+	global $item_rows;
 
 	$mibs = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
 	$registered_mibs = array();
@@ -542,10 +542,10 @@ function manager_notifications($id){
 							<select id='rows' name='rows' onChange='applyFilter()'>
 								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
-								if (sizeof($item_rows) > 0) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
-								}
+								if (sizeof($item_rows)) {
+									foreach ($item_rows as $key => $value) {
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									}
 								}
 								?>
 							</select>
