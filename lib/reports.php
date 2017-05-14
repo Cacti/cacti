@@ -716,7 +716,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	$tree_branches = db_fetch_assoc_prepared('SELECT id
 		FROM graph_tree_items 
 		WHERE parent = ? 
-		AND host_id = 0 AND local_graph_id = 0
+		AND local_graph_id = 0
 		AND graph_tree_id = ?
 		ORDER BY position', array($branch_id, $item['tree_id']));
 
