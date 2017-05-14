@@ -223,86 +223,45 @@ $fields_reports_edit = array(
 );
 
 /* get the hosts sql first */
-if (read_config_option('auth_method') != 0) {
-	/* get policy information for the sql where clause */
-	$current_user = db_fetch_row_prepared('SELECT * 
-		FROM user_auth 
-		WHERE id = ?', 
-		array($_SESSION['sess_user_id']));
-
-	$sql_where    = get_graph_permissions_sql($current_user['policy_graphs'], $current_user['policy_hosts'], $current_user['policy_graph_templates']);
-
-	$hosts_sql = "SELECT DISTINCT host.id, CONCAT_WS('',host.description,' (',host.hostname,')') as name
-		FROM (graph_templates_graph,host)
-		LEFT JOIN graph_local ON (graph_local.host_id=host.id)
-		LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
-		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=" . $_SESSION['sess_user_id'] . ') OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . '))
-		WHERE graph_templates_graph.local_graph_id=graph_local.id
-		AND host_template_id=|arg1:host_template_id|
-		' . (empty($sql_where) ? '' : "AND $sql_where") . '
-		ORDER BY name';
-} else {
-	$hosts_sql = "SELECT DISTINCT host.id, CONCAT_WS('',host.description,' (',host.hostname,')') as name
-		FROM host
-		WHERE host_template_id=|arg1:host_template_id|
-		ORDER BY name";
+$hosts = array();
+if (isset_request_var('host_template_id') && get_filter_request_var('host_template_id') > 0) {
+	$hosts = array_rekey(
+		get_allowed_devices('h.host_template_id =' . get_request_var('host_template_id')),
+		'id', 'description'
+	);
 }
 
-/* next do the templates sql */
-if (read_config_option('auth_method') != 0) {
-	$templates_sql = 'SELECT DISTINCT graph_templates.id, graph_templates.name
-		FROM (graph_templates_graph,graph_local)
-		LEFT JOIN host ON (host.id=graph_local.host_id)
-		LEFT JOIN graph_templates ON (graph_templates.id=graph_local.graph_template_id)
-		LEFT JOIN user_auth_perms ON ((graph_templates_graph.local_graph_id=user_auth_perms.item_id and user_auth_perms.type=1 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (host.id=user_auth_perms.item_id and user_auth_perms.type=3 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . ') OR (graph_templates.id=user_auth_perms.item_id and user_auth_perms.type=4 and user_auth_perms.user_id=' . $_SESSION['sess_user_id'] . '))
-		WHERE graph_templates_graph.local_graph_id=graph_local.id
-		AND graph_templates.id IS NOT NULL
-		AND host_id=|arg1:host_id|
-		' . (empty($sql_where) ? '' : "AND $sql_where") . '
-		ORDER BY name';
-} else {
-	$templates_sql = 'SELECT DISTINCT graph_templates.id, graph_templates.name
-		FROM graph_templates
-		WHERE host_id=|arg1:host_id|
-		ORDER BY name';
+$graph_templates = array();
+if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0) {
+	$graph_templates = array_rekey(
+		get_allowed_graph_templates('h.id = ' . get_request_var('host_id')),
+		'id', 'name'
+	);
 }
 
-/* last do the tree permissions */
-if (read_config_option('auth_method') != 0) {
-	/* all allowed by default */
-	$sql_in = '';
-	if ($current_user['policy_trees'] == 1) {
-		$exclude_trees = db_fetch_assoc_prepared('SELECT item_id
-			FROM user_auth_perms
-			WHERE user_id = ?
-			AND type=2', array($_SESSION['sess_user_id']));
+$sql_where = '';
+$graphs    = array();
+if (isset_request_var('host_template_id') && get_filter_request_var('host_template_id') > 0) {
+	$sql_where = 'h.host_template_id=' . get_request_var('host_template_id');
 
-		if (sizeof($exclude_trees)) {
-			foreach($exclude_trees as $tree) {
-				$sql_in .= (strlen($sql_in) ? ', ':'') . $tree['item_id'];
-			}
+	if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id=' . get_request_var('host_id');
+
+		if (isset_request_var('graph_template_id') && get_filter_request_var('graph_template_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . get_request_var('graph_template_id');
+
+			$graphs = array_rekey(
+				get_allowed_graphs($sql_where),
+				'local_graph_id', 'title_cache'
+			);
 		}
-
-		$sql_where = (strlen($sql_in) ? "WHERE id NOT IN ($sql_in)":'');
-	} else {
-		$include_trees = db_fetch_assoc_prepared('SELECT item_id
-			FROM user_auth_perms
-			WHERE user_id = ?
-			AND type=2', array($_SESSION['sess_user_id']));
-
-		if (sizeof($include_trees)) {
-			foreach($include_trees as $tree) {
-				$sql_in .= (strlen($sql_in) ? ', ':'') . $tree['item_id'];
-			}
-		}
-
-		$sql_where = (strlen($sql_in) ? "WHERE id IN ($sql_in)":'');
 	}
-
-	$trees_sql = "SELECT id, name FROM graph_tree $sql_where ORDER BY name";
-} else {
-	$trees_sql = 'SELECT id, name FROM graph_tree ORDER BY name';
 }
+
+$trees = array_rekey(
+	get_allowed_trees(),
+	'id', 'name'
+);
 
 $fields_reports_item_edit = array(
 	'item_type' => array(
@@ -312,16 +271,18 @@ $fields_reports_item_edit = array(
 		'description' => __('Item Type to be added.'),
 		'value' => '|arg1:item_type|',
 		'on_change' => 'toggle_item_type()',
-		'array' => $item_types),
+		'array' => $item_types
+	),
 	'tree_id' => array(
 		'friendly_name' => __('Graph Tree'),
-		'method' => 'drop_sql',
+		'method' => 'drop_array',
 		'default' => REPORTS_TREE_NONE,
 		'none_value' => __('None'),
 		'description' => __('Select a Tree to use.'),
 		'value' => '|arg1:tree_id|',
 		'on_change' => 'applyChange(document.reports_item_edit)',
-		'sql' => $trees_sql),
+		'array' => $trees
+	),
 	'branch_id' => array(
 		'friendly_name' => __('Graph Tree Branch'),
 		'method' => 'drop_sql',
@@ -329,24 +290,28 @@ $fields_reports_item_edit = array(
 		'none_value' => __('All'),
 		'description' => __('Select a Tree Branch to use.'),
 		'value' => '|arg1:branch_id|',
-		'sql' => "(SELECT id, CONCAT_WS('', title, ' (Branch)') AS name
+		'sql' => "(SELECT id, CONCAT('" . __('Branch:') . " ', title) AS name
 			FROM graph_tree_items
 			WHERE graph_tree_id=|arg1:tree_id| AND host_id=0 AND local_graph_id=0
+			GROUP BY name
 			ORDER BY position)
 			UNION
-			(SELECT graph_tree_items.id, CONCAT_WS('', description, ' (Device)') AS name
+			(SELECT graph_tree_items.id, CONCAT('" . __('Device:') . " ', description) AS name
 			FROM graph_tree_items
 			INNER JOIN host
 			ON host.id=graph_tree_items.host_id
 			WHERE graph_tree_id=|arg1:tree_id|
+			AND host.id IN(" . implode(',', array_keys(array_rekey(get_allowed_devices(), 'id', 'description'))) . ")
 			GROUP BY name)
-			ORDER BY name"),
+			ORDER BY name"
+	),
 	'tree_cascade' => array(
 		'friendly_name' => __('Cascade to Branches'),
 		'method' => 'checkbox',
 		'default' => '',
 		'description' => __('Should all children branch Graphs be rendered?'),
-		'value' => '|arg1:tree_cascade|' ),
+		'value' => '|arg1:tree_cascade|'
+	),
 	'graph_name_regexp' => array(
 		'friendly_name' => __('Graph Name Regular Expression'),
 		'method' => 'textbox',
@@ -354,7 +319,8 @@ $fields_reports_item_edit = array(
 		'description' => __('A Perl compatible regular expression (REGEXP) used to select graphs to include from the tree.'),
 		'max_length' => 255,
 		'size' => 80,
-		'value' => '|arg1:graph_name_regexp|'),
+		'value' => '|arg1:graph_name_regexp|'
+	),
 	'host_template_id' => array(
 		'friendly_name' => __('Device Template'),
 		'method' => 'drop_sql',
@@ -363,37 +329,38 @@ $fields_reports_item_edit = array(
 		'description' => __('Select a Device Template to use.'),
 		'value' => '|arg1:host_template_id|',
 		'on_change' => 'applyChange(document.reports_item_edit)',
-		'sql' => "SELECT DISTINCT ht.id, ht.name FROM host_template AS ht INNER JOIN host AS h ON h.host_template_id=ht.id ORDER BY name"),
+		'sql' => "SELECT DISTINCT ht.id, ht.name FROM host_template AS ht INNER JOIN host AS h ON h.host_template_id=ht.id ORDER BY name"
+	),
 	'host_id' => array(
 		'friendly_name' => __('Device'),
-		'method' => 'drop_sql',
+		'method' => 'drop_array',
 		'default' => REPORTS_HOST_NONE,
 		'description' => __('Select a Device to specify a Graph'),
 		'value' => '|arg1:host_id|',
 		'none_value' => __('None'),
 		'on_change' => 'applyChange(document.reports_item_edit)',
-		'sql' => $hosts_sql),
+		'array' => $hosts
+	),
 	'graph_template_id' => array(
 		'friendly_name' => __('Graph Template'),
-		'method' => 'drop_sql',
+		'method' => 'drop_array',
 		'default' => '0',
 		'description' => __('Select a Graph Template for the host'),
 		'none_value' => __('None'),
 		'on_change' => 'applyChange(document.reports_item_edit)',
 		'value' => '|arg1:graph_template_id|',
-		'sql' => $templates_sql),
+		'array' => $graph_templates
+	),
 	'local_graph_id' => array(
 		'friendly_name' => __('Graph Name'),
-		'method' => 'drop_sql',
+		'method' => 'drop_array',
 		'default' => '0',
 		'description' => __('The Graph to use for this report item.'),
 		'none_value' => __('None'),
 		'on_change' => 'graphImage(this.value)',
 		'value' => '|arg1:local_graph_id|',
-		'sql' => "SELECT graph_templates_graph.local_graph_id as id, graph_templates_graph.title_cache as name
-			FROM graph_local LEFT JOIN graph_templates_graph ON (graph_local.id=graph_templates_graph.local_graph_id)
-			WHERE graph_local.host_id=|arg1:host_id| AND graph_templates_graph.graph_template_id=|arg1:graph_template_id|
-			ORDER BY name"),
+		'array' => $graphs
+	),
 	'timespan' => array(
 		'friendly_name' => __('Graph Timespan'),
 		'method' => 'drop_array',
@@ -401,33 +368,38 @@ $fields_reports_item_edit = array(
 		'description' => __("Graph End Time is always set to Cacti's schedule.") . '<br>' .
 			__('Graph Start Time equals Graph End Time minus given timespan'),
 		'array' => $graph_timespans,
-		'value' => '|arg1:timespan|'),
+		'value' => '|arg1:timespan|'
+	),
 	'align' => array(
 		'friendly_name' => __('Alignment'),
 		'method' => 'drop_array',
 		'default' => REPORTS_ALIGN_LEFT,
 		'description' => __('Alignment of the Item'),
 		'value' => '|arg1:align|',
-		'array' => $alignment),
+		'array' => $alignment
+	),
 	'item_text' => array(
 		'friendly_name' => __('Fixed Text'),
 		'method' => 'textbox',
 		'default' => '',
 		'description' => __('Enter descriptive Text'),
 		'max_length' => 255,
-		'value' => '|arg1:item_text|'),
+		'value' => '|arg1:item_text|'
+	),
 	'font_size' => array(
 		'friendly_name' => __('Font Size'),
 		'method' => 'drop_array',
 		'default' => REPORTS_FONT_SIZE,
 		'array' => array(7 => 7, 8 => 8, 10 => 10, 12 => 12, 14 => 14, 16 => 16, 18 => 18, 20 => 20, 24 => 24, 28 => 28, 32 => 32),
 		'description' => __('Font Size of the Item'),
-		'value' => '|arg1:font_size|'),
+		'value' => '|arg1:font_size|'
+	),
 	'sequence' => array(
 		'method' => 'view',
 		'friendly_name' => __('Sequence'),
 		'description' => __('Sequence of Item.'),
-		'value' => '|arg1:sequence|'),
+		'value' => '|arg1:sequence|'
+	),
 );
 
 function reports_form_save() {
