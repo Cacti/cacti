@@ -995,7 +995,7 @@ function graph_perms_edit($tab, $header_label) {
 				$sql_having
 			) AS rows");
 
-		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsg&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, 'Graphs', 'page', 'main');
+		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsg&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graphs'), 'page', 'main');
 
 		form_start(htmlspecialchars('user_admin.php?tab=permsg&id=' . get_request_var('id')), 'chk');
 
@@ -1090,7 +1090,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$groups = db_fetch_assoc($sql_query);
 
-		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsgr&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, 'Groups', 'page', 'main');
+		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsgr&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Groups'), 'page', 'main');
 	
 		form_start(htmlspecialchars('user_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
 
@@ -1202,23 +1202,36 @@ function graph_perms_edit($tab, $header_label) {
 			COUNT(host.id)
 			FROM host
 			LEFT JOIN user_auth_perms 
-			ON (host.id = user_auth_perms.item_id AND user_auth_perms.type = 3 AND user_auth_perms.user_id = " . get_request_var('id') . ")
+			ON host.id = user_auth_perms.item_id 
+			AND user_auth_perms.type = 3 
+			AND user_auth_perms.user_id = " . get_request_var('id') . "
 			$sql_where");
 
-		$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
-		$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
+		$host_graphs       = array_rekey(
+			db_fetch_assoc('SELECT host_id, count(*) AS graphs 
+				FROM graph_local 
+				GROUP BY host_id'), 
+			'host_id', 'graphs');
+
+		$host_data_sources = array_rekey(
+			db_fetch_assoc('SELECT host_id, count(*) AS data_sources 
+				FROM data_local 
+				GROUP BY host_id'), 
+			'host_id', 'data_sources');
 
 		$sql_query = "SELECT host.*, user_auth_perms.user_id
 			FROM host 
 			LEFT JOIN user_auth_perms 
-			ON (host.id = user_auth_perms.item_id AND user_auth_perms.type = 3 AND user_auth_perms.user_id = " . get_request_var('id') . ")
+			ON host.id = user_auth_perms.item_id 
+			AND user_auth_perms.type = 3 
+			AND user_auth_perms.user_id = " . get_request_var('id') . "
 			$sql_where 
 			ORDER BY description
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 		$hosts = db_fetch_assoc($sql_query);
 
-		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsd&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, 'Devices', 'page', 'main');
+		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsd&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Devices'), 'page', 'main');
 	
 		form_start(htmlspecialchars('user_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
 
@@ -1360,7 +1373,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$graphs = db_fetch_assoc($sql_query);
 
-		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permste&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, 'Graph Templates', 'page', 'main');
+		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permste&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graph Templates'), 'page', 'main');
 
 		form_start(htmlspecialchars('user_admin.php?tab=permste&id=' . get_request_var('id')), 'chk');
 
@@ -1480,20 +1493,24 @@ function graph_perms_edit($tab, $header_label) {
 			COUNT(DISTINCT gt.id)
 			FROM graph_tree AS gt
 			LEFT JOIN user_auth_perms 
-			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 2 AND user_auth_perms.user_id = " . get_request_var('id') . ")
+			ON gt.id = user_auth_perms.item_id 
+			AND user_auth_perms.type = 2 
+			AND user_auth_perms.user_id = " . get_request_var('id') . "
 			$sql_where");
 
 		$sql_query = "SELECT gt.id, gt.name, user_auth_perms.user_id
 			FROM graph_tree AS gt
 			LEFT JOIN user_auth_perms 
-			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 2 AND user_auth_perms.user_id = " . get_request_var('id') . ")
+			ON gt.id = user_auth_perms.item_id 
+			AND user_auth_perms.type = 2 
+			AND user_auth_perms.user_id = " . get_request_var('id') . "
 			$sql_where 
 			ORDER BY name
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 		$trees = db_fetch_assoc($sql_query);
 
-		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permstr&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, 'Trees', 'page', 'main');
+		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permstr&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
 
 		form_start(htmlspecialchars('user_admin.php?tab=permstr&id=' . get_request_var('id')), 'chk');
 
@@ -1511,13 +1528,13 @@ function graph_perms_edit($tab, $header_label) {
 				form_selectable_cell(filter_value($t['name'], get_request_var('filter')), $t['id']);
 				form_selectable_cell($t['id'], $t['id']);
 				if (empty($t['user_id']) || $t['user_id'] == NULL) {
-					if ($policy['policy_graphs'] == 1) {
+					if ($policy['policy_trees'] == 1) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $t['id']);
 					} else {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $t['id']);
 					}
 				} else {
-					if ($policy['policy_graphs'] == 1) {
+					if ($policy['policy_trees'] == 1) {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $t['id']);
 					} else {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $t['id']);
@@ -2234,7 +2251,7 @@ function user() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('user_admin.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 9, 'Users', 'page', 'main');
+	$nav = html_nav_bar('user_admin.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 9, __('Users'), 'page', 'main');
 
 	form_start('user_admin.php', 'chk');
 
