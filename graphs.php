@@ -829,7 +829,10 @@ function form_actions() {
 						WHERE graph_template_id = ?
 						LIMIT 1', 
 						array(get_request_var('template_id')));
-					$graph['graph_template_id'] = get_filter_request_var('template_id');
+
+					$ttemplate = str_replace(array('cg_', 'sg_'), '', get_nfilter_request_var('template_id'));
+
+					$graph['graph_template_id'] = input_validate_input_number($ttemplate);
 
 					$gtsql = get_common_graph_templates($graph);
 

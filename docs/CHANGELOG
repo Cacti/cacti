@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.1.7
 -issue#470: Enhance Cacti's SNMP function and Data Query XML, add <output_format>hex|string|guess</output_format>
 -issue#655: Data source not displaying device name
+-issue#670: Validation error when you do "Change Graph Template" in Cacti
 -issue#672: Cacti unable to enable snmp notification receiver mibs
 -issue#680: Sort order in Time Graph View
 -issue#687: Cacti DB access not compatible with PHP 7
