@@ -21,22 +21,35 @@ define('SNMP_OID_OUTPUT_MODULE', 2);
 define('SNMP_OID_OUTPUT_UCD', 5);
 define('SNMP_OID_OUTPUT_NONE', 6);
 
-class SNMP {
-	const ERRNO_NOERROR		= 0;
-	const ERRNO_GENERIC		= 1;
-	const ERRNO_TIMEOUT		= 2;
-	const ERRNO_ERROR_IN_REPLY	= 3;
-	const ERRNO_OID_NOT_INCREASING	= 4;
+if (!defined('SNMP_STRING_OUTPUT_GUESS')) {
+	define('SNMP_STRING_OUTPUT_GUESS', 1);
+}
 
-	const VERSION_1 = 1;
+if (!defined('SNMP_STRING_OUTPUT_ASCII')) {
+	define('SNMP_STRING_OUTPUT_ASCII', 2);
+}
+
+if (!defined('SNMP_STRING_OUTPUT_HEX')) {
+	define('SNMP_STRING_OUTPUT_HEX', 3);
+}
+
+class SNMP {
+	const ERRNO_NOERROR = 0;
+	const ERRNO_GENERIC = 1;
+	const ERRNO_TIMEOUT = 2;
+	const ERRNO_ERROR_IN_REPLY = 3;
+	const ERRNO_OID_NOT_INCREASING = 4;
+
+	const VERSION_1  = 1;
 	const VERSION_2C = 2;
 	const VERSION_2c = SNMP::VERSION_2C;
-	const VERSION_3 = 3;
+	const VERSION_3  = 3;
 
 	public $info;
 	public $max_oids;
 	public $valueretrieval;
 	public $oid_output_format;
+	public $value_output_format;
 	public $enum_print;
 	public $quick_print;
 	public $oid_increasing_check;
@@ -81,6 +94,8 @@ class SNMP {
 		$this->timeout  = $timeout;
 		$this->retries  = $retries;
 
+		$this->value_output_format = SNMP_STRING_OUTPUT_GUESS;
+
 		if ($version == SNMP::VERSION_3) {
 			$this->username  = $community;
 		} else {
@@ -89,9 +104,9 @@ class SNMP {
 
 		$info = array (
 			'hostname' => $this->hostname,
-			'port' => $this->port,
-			'timeout' => $this->timeout,
-			'retries' => $this->retries,
+			'port'     => $this->port,
+			'timeout'  => $this->timeout,
+			'retries'  => $this->retries
 		);
 	}
 
@@ -166,7 +181,8 @@ class SNMP {
 			$output[$oid] = $function_name($this->hostname, $this->community, $oid,
 				$this->version, $this->username, $this->auth_pass, $this->auth_proto,
 				$this->priv_pass, $this->priv_proto, $this->contextName, $this->port,
-				$this->timeout, $this->retries, SNMP_POLLER, $this->contextEngineID);
+				$this->timeout, $this->retries, SNMP_POLLER, $this->contextEngineID,
+				$this->value_output_format);
 		}
 
 		$this->apply_options($options_backup);
@@ -205,7 +221,8 @@ class SNMP {
 		$result = cacti_snmp_walk($this->hostname, $this->community, $oid, $this->version, 
 			$this->username, $this->auth_pass, $this->auth_proto, $this->priv_pass, 
 			$this->priv_proto, $this->contextName, $this->port, $this->timeout, 
-			$this->retries, $max_repetitions, SNMP_POLLER, $this->contextEngineID);
+			$this->retries, $max_repetitions, SNMP_POLLER, $this->contextEngineID,
+			$this->value_output_format);
 
 		if ($result === FALSE) {
 			$this->errno = SNMP::TIMEOUT;
@@ -276,3 +293,4 @@ class SNMP {
 		}
 	}
 }
+
