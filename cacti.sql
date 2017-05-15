@@ -1879,8 +1879,8 @@ CREATE TABLE host_snmp_cache (
   present tinyint NOT NULL DEFAULT '1',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (host_id, snmp_query_id, field_name, snmp_index),
-  KEY host_id (host_id,field_name),
-  KEY snmp_index (snmp_index(191)),
+  KEY host_id (host_id, field_name),
+  KEY snmp_index (snmp_index),
   KEY field_name (field_name),
   KEY field_value (field_value(191)),
   KEY snmp_query_id (snmp_query_id),
@@ -2068,7 +2068,7 @@ CREATE TABLE poller_command (
 
 CREATE TABLE `poller_data_template_field_mappings` (
   `data_template_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `data_name` varchar(25) NOT NULL DEFAULT '',
+  `data_name` varchar(40) NOT NULL DEFAULT '',
   `data_source_names` varchar(191) NOT NULL DEFAULT '',
   `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`data_template_id`, `data_name`, `data_source_names`)
