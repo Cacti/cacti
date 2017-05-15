@@ -135,15 +135,16 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
 		}
 	}
 
-	$sql = trim(str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql), ';');
+	$sql = db_strip_control_chars($sql);
 
 	cacti_log('DEVEL: SQL Exec: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	$errors = 0;
 	$db_conn->affected_rows = 0;
 
-	while (1) {
+	while (true) {
 		$query = $db_conn->prepare($sql);
+
 		$query->execute($parms);
 		if ($query->errorCode()) {
 			$errorinfo = $query->errorInfo();
@@ -160,34 +161,41 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
 			$db_conn->affected_rows = $query->rowCount();
 			$query->closeCursor();
 			unset($query);
+
 			return true;
 		} elseif ($log) {
 			if ($en == 1213 || $en == 1205) { 
 				$errors++;
 				if ($errors > 30) {
-					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . $sql . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+
 					return false;
 				} else {
 					usleep(500000);
+
 					continue;
 				}
 			} else if ($en == 1153) {
 				if (strlen($sql) > 1024) {
 					$sql = substr($sql, 0, 1024) . '...';
 				}
-				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 				cacti_debug_backtrace('SQL');
+
 				return false;
 			} else {
-				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . "'", FALSE, 'DBCALL');
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:'" . $sql . "'", FALSE, 'DBCALL');
 				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], false);
 				cacti_debug_backtrace('SQL');
+
 				return false;
 			}
 		} else {
 			$query->closeCursor();
 			unset($query);
+
 			return false;
 		}
 	}
@@ -227,7 +235,7 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = t
 		}
 	}
 
-	$sql = str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql);
+	$sql = db_strip_control_chars($sql);
 
 	cacti_log('DEVEL: SQL Cell: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
@@ -250,7 +258,7 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = t
 		}
 		return false;
 	}else if ($log) {
-		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_log('ERROR: SQL Cell Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_debug_backtrace('SQL');
 	}
@@ -287,7 +295,7 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = true, $db_conn = f
 		}
 	}
 
-	$sql = str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql);
+	$sql = db_strip_control_chars($sql);
 
 	if ($log) {
 		cacti_log('DEVEL: SQL Row: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
@@ -315,7 +323,7 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = true, $db_conn = f
 			return array();
 		}
 	} elseif ($log) {
-		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_log('ERROR: SQL Row Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_debug_backtrace('SQL');
 	}
@@ -352,7 +360,7 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = true, $db_conn =
 		}
 	}
 
-	$sql = str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql);
+	$sql = db_strip_control_chars($sql);
 
 	cacti_log('DEVEL: SQL Assoc: "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
@@ -371,7 +379,7 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = true, $db_conn =
 		}
 		return $a;
 	} elseif ($log) {
-		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:\"" . str_replace("\n", '', str_replace("\r", '', str_replace("\t", ' ', $sql))) . '"', false, 'DBCALL');
+		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL');
 		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $errorinfo[2], false, 'DBCALL');
 		cacti_debug_backtrace('SQL');
 	}
@@ -866,7 +874,7 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
-	cacti_log("DEVEL: SQL Replace on table '$table_name': \"" . serialize($array_items) . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	cacti_log("DEVEL: SQL Replace on table '$table_name': '" . serialize($array_items) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	_db_replace($db_conn, $table_name, $array_items, $keyCols);
 
@@ -944,7 +952,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 
 	$cols = db_get_table_column_types($table_name, $db_conn);
 
-	cacti_log("DEVEL: SQL Save on table '$table_name': \"" . serialize($array_items) . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	cacti_log("DEVEL: SQL Save on table '$table_name': '" . serialize($array_items) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	foreach ($array_items as $key => $value) {
 		if (strstr($cols[$key]['type'], 'int') !== false || 
@@ -1007,4 +1015,8 @@ function db_qstr($s, $db_conn = false) {
 	$s = str_replace(array('\\', "\0", "'"), array('\\\\', "\\\0", "\\'"), $s);
 
 	return  "'" . $s . "'";
+}
+
+function db_strip_control_chars($sql) {
+	return trim(str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql), ';');
 }
