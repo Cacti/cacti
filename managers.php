@@ -244,12 +244,12 @@ function manager(){
 			$description = filter_value($item['description'], get_request_var('filter'));
 			$hostname    = filter_value($item['hostname'], get_request_var('filter'));
 			form_alternate_row('line' . $item['id'], false);
-			form_selectable_cell( '<a class="linkEditMain" href="managers.php?action=edit&id=' . $item['id'] . '">' . $description . '</a>', $item['id']);
-			form_selectable_cell( $item['id'], $item['id']);
-			form_selectable_cell( $item['disabled'] ? '<span class="deviceDown">' . __('Disabled') . '</span>' : '<span class="deviceUp">' . __('Enabled') . '</span>', $item['id']);
-			form_selectable_cell( $hostname, $item['id']);
-			form_selectable_cell( '<a class="linkEditMain" href="managers.php?action=edit&tab=notifications&id=' . $item['id'] . '">' . ($item['count_notify'] ? $item['count_notify'] : 0) . '</a>' , $item['id']);
-			form_selectable_cell( '<a class="linkEditMain" href="managers.php?action=edit&tab=logs&id=' . $item['id'] . '">' . ($item['count_log'] ? $item['count_log'] : 0 ) . '</a>', $item['id']);
+			form_selectable_cell('<a class="linkEditMain" href="managers.php?action=edit&id=' . $item['id'] . '">' . $description . '</a>', $item['id']);
+			form_selectable_cell($item['id'], $item['id']);
+			form_selectable_cell($item['disabled'] ? '<span class="deviceDown">' . __('Disabled') . '</span>' : '<span class="deviceUp">' . __('Enabled') . '</span>', $item['id']);
+			form_selectable_cell($hostname, $item['id']);
+			form_selectable_cell('<a class="linkEditMain" href="managers.php?action=edit&tab=notifications&id=' . $item['id'] . '">' . ($item['count_notify'] ? $item['count_notify'] : 0) . '</a>' , $item['id']);
+			form_selectable_cell('<a class="linkEditMain" href="managers.php?action=edit&tab=logs&id=' . $item['id'] . '">' . ($item['count_log'] ? $item['count_log'] : 0 ) . '</a>', $item['id']);
 			form_checkbox_cell($item['description'], $item['id']);
 			form_end_row();
 		}
@@ -614,16 +614,18 @@ function manager_notifications($id){
 			$mib    = filter_value($item['mib'], get_request_var('filter'));
 
 			form_alternate_row('line' . $row_id, false);
+
 			if ($item['description']) {
 				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . $item['description']. '</div>" class="tooltip">' . $name . '</a></td>';
 			}else {
 				form_selectable_cell($name, $row_id);
 			}
-			form_selectable_cell( $oid, $row_id);
-			form_selectable_cell( $mib, $row_id);
-			form_selectable_cell( $item['kind'], $row_id);
-			form_selectable_cell( $item['max-access'],$row_id);
-			form_selectable_cell( ( ( isset( $notifications[ $item['mib'] ]) && isset( $notifications[ $item['mib'] ][ $item['name'] ]) ) ? __('Enabled') : __('Disabled') ), $row_id);
+
+			form_selectable_cell($oid, $row_id);
+			form_selectable_cell($mib, $row_id);
+			form_selectable_cell($item['kind'], $row_id);
+			form_selectable_cell($item['max-access'],$row_id);
+			form_selectable_cell(((isset($notifications[$item['mib']]) && isset($notifications[$item['mib']][$item['name']])) ? '<span class="deviceUp">' .__('Enabled') : '<span class="deviceDown">' .  __('Disabled')) . '</span>', $row_id);
 			form_checkbox_cell($item['oid'], $row_id);
 			form_end_row();
 		}
@@ -940,19 +942,27 @@ function form_actions(){
 			get_filter_request_var('id');
 			/* ==================================================== */
 
-			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+			$selected_items = unserialize(stripslashes(get_nfilter_request_var('selected_items')));
 
-			if ($selected_items != false) {
+			if ($selected_items !== false) {
 				if (get_nfilter_request_var('drp_action') == '0') { // disable
 					foreach($selected_items as $mib => $notifications) {
 						foreach($notifications as $notification => $state) {
-							db_execute_prepared('DELETE FROM snmpagent_managers_notifications WHERE `manager_id` = ? AND `mib` = ? AND `notification` = ? LIMIT 1', array(get_nfilter_request_var('id'), $mib, $notification));
+							db_execute_prepared('DELETE FROM snmpagent_managers_notifications 
+								WHERE `manager_id` = ? 
+								AND `mib` = ? 
+								AND `notification` = ? 
+								LIMIT 1', 
+								array(get_nfilter_request_var('id'), $mib, $notification));
 						}
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '1') { // enable
 					foreach($selected_items as $mib => $notifications) {
 						foreach($notifications as $notification => $state) {
-							db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications (`manager_id`, `notification`, `mib`) VALUES (?, ?, ?)', array(get_nfilter_request_var('id'), $notification), $mib);
+							db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications 
+								(`manager_id`, `notification`, `mib`) 
+								VALUES (?, ?, ?)', 
+								array(get_nfilter_request_var('id'), $notification, $mib));
 						}
 					}
 				}
