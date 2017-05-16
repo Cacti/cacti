@@ -830,7 +830,7 @@ function form_actions() {
 						LIMIT 1', 
 						array(get_request_var('template_id')));
 
-					$ttemplate = str_replace(array('cg_', 'sg_'), '', get_nfilter_request_var('template_id'));
+					$ttemplate = str_replace(array('cg_', 'sg_', 'dq_'), '', get_nfilter_request_var('template_id'));
 
 					$graph['graph_template_id'] = input_validate_input_number($ttemplate);
 
