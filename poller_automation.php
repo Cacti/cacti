@@ -535,104 +535,107 @@ function discoverDevices($network_id, $thread) {
 
 							markIPDone($device['ip_address'], $network_id);
 						} else {
-							$isCactiSysName = db_fetch_cell_prepared('SELECT COUNT(*)
-								FROM host
-								WHERE snmp_sysName = ?', 
-								array($snmp_sysName));
-
-							if ($isCactiSysName) {
-								automation_debug(", Skipping sysName '" . $snmp_sysName . "' already in Cacti!\n");
-								markIPDone($device['ip_address'], $network_id);
-								continue;
-							}
-	
-							$isDuplicateSysName = db_fetch_cell_prepared('SELECT COUNT(*) 
-								FROM automation_devices 
-								WHERE network_id = ? 
-								AND sysName != ""
-								AND ip != ?
-								AND sysName = ?', 
-								array($device['ip_address'], $network_id, $snmp_sysName));
-
-							if ($isDuplicateSysName) {
-								automation_debug(", Skipping sysName '" . $snmp_sysName . "' already Discovered!\n");
-								markIPDone($device['ip_address'], $network_id);
-								continue;
-							}
-	
-							$stats['snmp']++;
-							addSNMPDevice($network_id, getmypid());
-
 							$host_id = 0;
-							automation_debug(" Responded");
 
-							$fos = automation_find_os($device['snmp_sysDescr'], $device['snmp_sysObjectID'], $device['snmp_sysName']);
-							
-							if ($fos != false && $network['add_to_cacti'] == 'on') {
-								automation_debug(", Template: " . $fos['name']);
-								$device['os']                   = $fos['name'];
-								$device['host_template']        = $fos['host_template'];
-								$device['availability_method']  = $fos['availability_method'];
+							if ($snmp_sysName != '') {
+								$isCactiSysName = db_fetch_cell_prepared('SELECT COUNT(*)
+									FROM host
+									WHERE snmp_sysName = ?', 
+									array($snmp_sysName));
 
-								$host_id = automation_add_device($device);
-
-								if (!empty($host_id)) {
-									if (isset($device['snmp_sysDescr']) && $device['snmp_sysDescr'] != '') {
-										db_execute_prepared('UPDATE host 
-											SET snmp_sysDescr = ? 
-											WHERE id = ?', 
-											array($device['snmp_sysDescr'], $host_id));
-									}
-
-									if (isset($device['snmp_sysObjectID']) && $device['snmp_sysObjectID'] != '') {
-										db_execute_prepared('UPDATE host 
-											SET snmp_sysObjectID = ? 
-											WHERE id = ?', 
-											array($device['snmp_sysObjectID'], $host_id));
-									}
-
-									if (isset($device['snmp_sysUptime']) && $device['snmp_sysUptime'] != '') {
-										db_execute_prepared('UPDATE host 
-											SET snmp_sysUptimeInstance = ? 
-											WHERE id = ?', 
-											array($device['snmp_sysUptime'], $host_id));
-									}
-
-									if (isset($device['snmp_sysContact']) && $device['snmp_sysContact'] != '') {
-										db_execute_prepared('UPDATE host 
-											SET snmp_sysContact = ? 
-											WHERE id = ?', 
-											array($device['snmp_sysContact'], $host_id));
-									}
-
-									if (isset($device['snmp_sysName']) && $device['snmp_sysName'] != '') {
-										db_execute_prepared('UPDATE host 
-											SET snmp_sysName = ? 
-											WHERE id = ?', 
-											array($device['snmp_sysName'], $host_id));
-									}
-
-									if (isset($device['snmp_sysLocation']) && $device['snmp_sysLocation'] != '') {
-										db_execute_prepared('UPDATE host 
-											SET snmp_sysLocation = ? 
-											WHERE id = ?', 
-											array($device['snmp_sysLocation'], $host_id));
-									}
-
-									automation_update_device($host_id);
+								if ($isCactiSysName) {
+									automation_debug(", Skipping sysName '" . $snmp_sysName . "' already in Cacti!\n");
+									markIPDone($device['ip_address'], $network_id);
+									continue;
 								}
+	
+								$isDuplicateSysName = db_fetch_cell_prepared('SELECT COUNT(*) 
+									FROM automation_devices 
+									WHERE network_id = ? 
+									AND sysName != ""
+									AND ip != ?
+									AND sysName = ?', 
+									array($device['ip_address'], $network_id, $snmp_sysName));
 
-								$stats['added']++;
-							} elseif ($fos == false) {
-								automation_debug(", Template: Not found, Not adding to Cacti");
-							} else {
-								automation_debug(", Template: " . $fos['name']);
-								$device['os'] = $fos['name'];
-								automation_debug(", Skipped: Add to Cacti disabled");
+								if ($isDuplicateSysName) {
+									automation_debug(", Skipping sysName '" . $snmp_sysName . "' already Discovered!\n");
+									markIPDone($device['ip_address'], $network_id);
+									continue;
+								}
+	
+								$stats['snmp']++;
+								addSNMPDevice($network_id, getmypid());
+
+								automation_debug(" Responded");
+
+								$fos = automation_find_os($device['snmp_sysDescr'], $device['snmp_sysObjectID'], $device['snmp_sysName']);
+							
+								if ($fos != false && $network['add_to_cacti'] == 'on') {
+									automation_debug(", Template: " . $fos['name']);
+									$device['os']                   = $fos['name'];
+									$device['host_template']        = $fos['host_template'];
+									$device['availability_method']  = $fos['availability_method'];
+
+									$host_id = automation_add_device($device);
+
+									if (!empty($host_id)) {
+										if (isset($device['snmp_sysDescr']) && $device['snmp_sysDescr'] != '') {
+											db_execute_prepared('UPDATE host 
+												SET snmp_sysDescr = ? 
+												WHERE id = ?', 
+												array($device['snmp_sysDescr'], $host_id));
+										}
+
+										if (isset($device['snmp_sysObjectID']) && $device['snmp_sysObjectID'] != '') {
+											db_execute_prepared('UPDATE host 
+												SET snmp_sysObjectID = ? 
+												WHERE id = ?', 
+												array($device['snmp_sysObjectID'], $host_id));
+										}
+
+										if (isset($device['snmp_sysUptime']) && $device['snmp_sysUptime'] != '') {
+											db_execute_prepared('UPDATE host 
+												SET snmp_sysUptimeInstance = ? 
+												WHERE id = ?', 
+												array($device['snmp_sysUptime'], $host_id));
+										}
+
+										if (isset($device['snmp_sysContact']) && $device['snmp_sysContact'] != '') {
+											db_execute_prepared('UPDATE host 
+												SET snmp_sysContact = ? 
+												WHERE id = ?', 
+												array($device['snmp_sysContact'], $host_id));
+										}
+
+										if (isset($device['snmp_sysName']) && $device['snmp_sysName'] != '') {
+											db_execute_prepared('UPDATE host 
+												SET snmp_sysName = ? 
+												WHERE id = ?', 
+												array($device['snmp_sysName'], $host_id));
+										}
+
+										if (isset($device['snmp_sysLocation']) && $device['snmp_sysLocation'] != '') {
+											db_execute_prepared('UPDATE host 
+												SET snmp_sysLocation = ? 
+												WHERE id = ?', 
+												array($device['snmp_sysLocation'], $host_id));
+										}
+
+										automation_update_device($host_id);
+									}
+
+									$stats['added']++;
+								} elseif ($fos == false) {
+									automation_debug(", Template: Not found, Not adding to Cacti");
+								} else {
+									automation_debug(", Template: " . $fos['name']);
+									$device['os'] = $fos['name'];
+									automation_debug(", Skipped: Add to Cacti disabled");
+								}
 							}
 
 							// if the devices template is not discovered, add to found table
-							if (!$host_id) {
+							if ($host_id == 0) {
 								db_execute('REPLACE INTO automation_devices 
 									(network_id, hostname, ip, community, snmp_version, snmp_port, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, sysName, sysLocation, sysContact, sysDescr, sysUptime, os, snmp, up, time) VALUES ('
 									. $network_id                              . ', '
