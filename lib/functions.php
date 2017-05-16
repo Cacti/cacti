@@ -187,7 +187,7 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 		if ($user == 0) {
 			$effective_uid = db_fetch_cell_prepared('SELECT id 
 				FROM user_auth 
-				WHERE username= ?', 
+				WHERE username= ?',
 				array(read_config_option('guest_user')));
 
 			if (strlen($effective_uid) == 0) {
@@ -200,7 +200,7 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 		$db_setting = db_fetch_row_prepared('SELECT value 
 			FROM settings_user 
 			WHERE name = ? 
-			AND user_id = ?', 
+			AND user_id = ?',
 			array($config_name, $effective_uid));
 
 		if (sizeof($db_setting)) {
@@ -1134,7 +1134,7 @@ function get_full_script_path($local_data_id) {
 		data_input.input_string
 		FROM (data_template_data, data_input)
 		WHERE data_template_data.data_input_id = data_input.id
-		AND data_template_data.local_data_id = ?', 
+		AND data_template_data.local_data_id = ?',
 		array($local_data_id));
 
 	/* snmp-actions don't have paths */
@@ -1211,32 +1211,30 @@ function get_data_source_path($local_data_id, $expand_paths) {
 		return ''; 
 	}
 
-	if (!isset($data_source_path_cache[$local_data_id])) {
-		$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' name, data_source_path FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
-
-		if (sizeof($data_source) > 0) {
-			if (empty($data_source['data_source_path'])) {
-				/* no custom path was specified */
-				$data_source_path = generate_data_source_path($local_data_id);
-			} else {
-				if (!strstr($data_source['data_source_path'], '/')) {
-					$data_source_path = '<path_rra>/' . $data_source['data_source_path'];
-				} else {
-					$data_source_path = $data_source['data_source_path'];
-				}
-			}
-
-			/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
-			if ($expand_paths == true) {
-				$data_source_path = str_replace('<path_rra>/', $config['rra_path'] . '/', $data_source_path);
-			}
-
-			$data_source_path_cache[$local_data_id] = $data_source_path;
-
-			return $data_source_path;
-		}
-	} else {
+	if (isset($data_source_path_cache[$local_data_id])) {
 		return $data_source_path_cache[$local_data_id];
+	}
+
+	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' name, data_source_path FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
+
+	if (sizeof($data_source) > 0) {
+		if (empty($data_source['data_source_path'])) {
+			/* no custom path was specified */
+			$data_source_path = generate_data_source_path($local_data_id);
+		} elseif (!strstr($data_source['data_source_path'], '/')) {
+			$data_source_path = '<path_rra>/' . $data_source['data_source_path'];
+		} else {
+			$data_source_path = $data_source['data_source_path'];
+		}
+
+		/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
+		if ($expand_paths == true) {
+			$data_source_path = str_replace('<path_rra>/', $config['rra_path'] . '/', $data_source_path);
+		}
+
+		$data_source_path_cache[$local_data_id] = $data_source_path;
+
+		return $data_source_path;
 	}
 }
 
