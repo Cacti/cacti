@@ -796,7 +796,7 @@ function manager_logs($id) {
 
 	if (sizeof($logs)) {
 		foreach ($logs as $item) {
-			$varbinds = (strlen(get_request_var('filter')) ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['varbinds']))): htmlspecialchars($item['varbinds']));
+			$varbinds = (get_request_var('filter') != '' ? (preg_replace('/(' . preg_quote(get_request_var('filter'), '/') . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($item['varbinds']))): htmlspecialchars($item['varbinds']));
 			form_alternate_row('line' . $item['id'], true);
 			print "<td title='" . __('Severity Level') . ": " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td class='nowrap'>" . date( 'Y/m/d H:i:s', $item['time']) . '</td>';

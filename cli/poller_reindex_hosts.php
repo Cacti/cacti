@@ -107,7 +107,7 @@ if (strtolower($host_id) == 'all') {
 if (strtolower($query_id) == 'all') {
 	/* do nothing */
 }else if (is_numeric($query_id) && $query_id > 0) {
-	$sql_where .= (strlen($sql_where) ? ' AND snmp_query_id=' . $query_id : ' WHERE snmp_query_id=' . $query_id);
+	$sql_where .= ($sql_where != '' ? ' AND snmp_query_id=' . $query_id : ' WHERE snmp_query_id=' . $query_id);
 } else {
 	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
 	display_help();
@@ -115,8 +115,8 @@ if (strtolower($query_id) == 'all') {
 }
 
 /* allow for additional filtering on host description */
-if (strlen($host_descr)) {
-	$sql_where .= (strlen($sql_where) ? " AND host.description like '%" . $host_descr . "%' AND host.id=host_snmp_query.host_id" : " WHERE host.description like '%" . $host_descr . "%' AND host.id=host_snmp_query.host_id");
+if ($host_descr != '') {
+	$sql_where .= ($sql_where != '' ? " AND host.description like '%" . $host_descr . "%' AND host.id=host_snmp_query.host_id" : " WHERE host.description like '%" . $host_descr . "%' AND host.id=host_snmp_query.host_id");
 	$data_queries = db_fetch_assoc('SELECT host_id, snmp_query_id FROM host_snmp_query,host' . $sql_where);
 } else {
 	$data_queries = db_fetch_assoc('SELECT host_id, snmp_query_id FROM host_snmp_query' . $sql_where);

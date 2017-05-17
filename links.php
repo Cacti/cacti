@@ -347,7 +347,7 @@ function pages() {
 		'FRONTTOP'   => __('Top Console')
 	);
 
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where = " WHERE title LIKE '%" . get_request_var('filter') . "%' OR contentfile LIKE '%" . get_request_var('filter') . "%'";
 	} else {
 		$sql_where = '';

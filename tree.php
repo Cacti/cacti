@@ -1519,7 +1519,7 @@ function tree() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (t.name LIKE '%" . get_request_var('filter') . "%' OR ti.title LIKE '%" . get_request_var('filter') . "%')";
 	} else {
 		$sql_where = '';

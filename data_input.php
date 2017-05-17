@@ -687,7 +687,7 @@ function data() {
 		$sql_where = '';
 	}
 
-	$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . " (di.hash NOT IN ('3eb92bb845b9660a7445cf9740726522', 'bf566c869ac6443b0c75d1c32b5a350e', '80e9e4c4191a5da189ae26d0e237f015', '332111d8b54ac8ce939af87a7eac0c06'))";
+	$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " (di.hash NOT IN ('3eb92bb845b9660a7445cf9740726522', 'bf566c869ac6443b0c75d1c32b5a350e', '80e9e4c4191a5da189ae26d0e237f015', '332111d8b54ac8ce939af87a7eac0c06'))";
 
 	$sql_where  = api_plugin_hook_function('data_input_sql_where', $sql_where);
 

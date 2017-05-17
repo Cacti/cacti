@@ -107,7 +107,7 @@ if (strtolower($host_id) == 'all') {
 
 /* determine data queries to rerun */
 if (is_numeric($template)) {
-	$sql_where .= (strlen($sql_where) ? " AND host_template_id=$template": "WHERE host_template_id=$template");
+	$sql_where .= ($sql_where != '' ? " AND host_template_id=$template": "WHERE host_template_id=$template");
 } else {
 	print "ERROR: You must specify a Host Template to proceed.\n\n";
 	display_help();

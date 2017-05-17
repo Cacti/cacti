@@ -595,7 +595,7 @@ function aggregate_template() {
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'graphs.graphs>0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'graphs.graphs>0';
 	}
 
 	$total_rows = db_fetch_cell("SELECT

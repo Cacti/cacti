@@ -1197,7 +1197,7 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 		array($host_id, $data_query_id));
 
 	/* in case no unique index is available, fallback to first field in XML */
-	if (strlen($sort_cache['sort_field']) == 0){
+	if ($sort_cache['sort_field'] == ''){
 		$snmp_queries = get_data_query_array($data_query_id);
 		if (isset($snmp_queries['index_order'])){
 			$i = explode(':', $snmp_queries['index_order']);

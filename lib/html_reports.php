@@ -461,7 +461,7 @@ function reports_form_save() {
 
 		$save['mailtime']     = form_input_validate($timestamp, 'mailtime', '^[0-9]+$', false, 3);
 
-		if (strlen(get_nfilter_request_var('subject'))) {
+		if (get_nfilter_request_var('subject') != '') {
 			$save['subject'] = get_nfilter_request_var('subject');
 		} else {
 			$save['subject'] = $save['name'];
@@ -590,15 +590,15 @@ function reports_form_actions() {
 
 					reports_send($selected_items[$i]);
 
-					if (isset($_SESSION['reports_message']) && strlen($_SESSION['reports_message'])) {
-						$message .= (strlen($message) ? '<br>':'') . $_SESSION['reports_message'];
+					if (isset($_SESSION['reports_message']) && $_SESSION['reports_message'] != '') {
+						$message .= ($message != '' ? '<br>':'') . $_SESSION['reports_message'];
 					}
-					if (isset($_SESSION['reports_error']) && strlen($_SESSION['reports_error'])) {
-						$message .= (strlen($message) ? '<br>':'') . "<span style='color:red;'>" . $_SESSION['reports_error'] . '</span>';
+					if (isset($_SESSION['reports_error']) && $_SESSION['reports_error'] != '') {
+						$message .= ($message != '' ? '<br>':'') . "<span style='color:red;'>" . $_SESSION['reports_error'] . '</span>';
 					}
 				}
 
-				if (strlen($message)) {
+				if ($message != '') {
 					$_SESSION['reports_message'] = $message;
 					raise_message('reports_message');
 				}
@@ -728,25 +728,25 @@ function reports_send($id) {
 	} elseif ($report['user_id'] == $_SESSION['sess_user_id']) {
 		reports_log(__FUNCTION__ . ', send now, report_id: ' . $id, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 		/* use report name as default EMail title */
-		if (!strlen($report['subject'])) {
+		if ($report['subject'] == '') {
 			$report['subject'] = $report['name'];
 		};
-		if (!strlen($report['email'])) {
+		if ($report['email'] == '') {
 			$_SESSION['reports_error'] = __('Unable to send Report \'%d\'.  Please set destination e-mail addresses',  $report['name']);
 			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
-		} elseif (!strlen($report['subject'])) {
+		} elseif ($report['subject'] == '') {
 			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set an e-mail subject',  $report['name']);
 			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
-		} elseif (!strlen($report['from_name'])) {
+		} elseif ($report['from_name'] == '') {
 			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set an e-mail From Name',  $report['name']);
 			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
-		} elseif (!strlen($report['from_email'])) {
+		} elseif ($report['from_email'] == '') {
 			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set an e-mail from address',  $report['name']);
 			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
@@ -1421,7 +1421,7 @@ function reports() {
 	form_end();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (reports.name LIKE '%%" . get_request_var('filter') . "%%')";
 	} else {
 		$sql_where = '';
@@ -1430,16 +1430,16 @@ function reports() {
 	if (get_request_var('status') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('status') == '-2') {
-		$sql_where .= (strlen($sql_where) ? " AND reports.enabled='on'" : " WHERE reports.enabled='on'");
+		$sql_where .= ($sql_where != '' ? " AND reports.enabled='on'" : " WHERE reports.enabled='on'");
 	} elseif (get_request_var('status') == '-3') {
-		$sql_where .= (strlen($sql_where) ? " AND reports.enabled=''" : " WHERE reports.enabled=''");
+		$sql_where .= ($sql_where != '' ? " AND reports.enabled=''" : " WHERE reports.enabled=''");
 	}
 
 	/* account for permissions */
 	if (is_reports_admin()) {
 		$sql_join = 'LEFT JOIN user_auth ON user_auth.id=reports.user_id';
 	} else {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' user_auth.id=' . $_SESSION['sess_user_id'];
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' user_auth.id=' . $_SESSION['sess_user_id'];
 		$sql_join = 'INNER JOIN user_auth ON user_auth.id=reports.user_id';
 	}
 

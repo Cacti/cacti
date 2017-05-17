@@ -88,7 +88,7 @@ if (sizeof($parms)) {
 }
 
 /* form the 'where' clause for our main sql query */
-if (strlen($filter)) {
+if ($filter != '') {
 	$sql_where = "AND (graph_templates_graph.title_cache LIKE '%" . $filter . "%'" .
 		" OR graph_templates.name LIKE '%" . $filter . "%')";
 } else {
