@@ -1716,7 +1716,7 @@ function graph_management() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
-	if (strlen(get_request_var('rfilter'))) {
+	if (get_request_var('rfilter') != '') {
 		$sql_where = " WHERE (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR gt.name RLIKE '" . get_request_var('rfilter') . "')";
 	}
@@ -1724,26 +1724,26 @@ function graph_management() {
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('host_id')) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=0';
 	} elseif (!isempty_request_var('host_id')) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
 	} elseif (!isempty_request_var('template_id')) {
 		$parts = explode('_', get_request_var('template_id'));
 		if ($parts[0] == 'cg') {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.graph_template_id=' . $parts[1];
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id=' . $parts[1];
 		} else {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id=' . $parts[1];
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id=' . $parts[1];
 		}
 	}
 
 	/* don't allow aggregates to be view here */
-	$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' ag.local_graph_id IS NULL';
+	$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ag.local_graph_id IS NULL';
 
 	/* allow plugins to modify sql_where */
 	$sql_where = api_plugin_hook_function('graphs_sql_where', $sql_where);

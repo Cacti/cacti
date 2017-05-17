@@ -247,11 +247,11 @@ function update_policies() {
 	$set = '';
 
 	$set .= isset_request_var('policy_graphs') ? 'policy_graphs=' . get_nfilter_request_var('policy_graphs'):'';
-	$set .= isset_request_var('policy_trees') ? (strlen($set) ? ',':'') . 'policy_trees=' . get_nfilter_request_var('policy_trees'):'';
-	$set .= isset_request_var('policy_hosts') ? (strlen($set) ? ',':'') . 'policy_hosts=' . get_nfilter_request_var('policy_hosts'):'';
-	$set .= isset_request_var('policy_graph_templates') ? (strlen($set) ? ',':'') . 'policy_graph_templates=' . get_nfilter_request_var('policy_graph_templates'):'';
+	$set .= isset_request_var('policy_trees') ? ($set != '' ? ',':'') . 'policy_trees=' . get_nfilter_request_var('policy_trees'):'';
+	$set .= isset_request_var('policy_hosts') ? ($set != '' ? ',':'') . 'policy_hosts=' . get_nfilter_request_var('policy_hosts'):'';
+	$set .= isset_request_var('policy_graph_templates') ? ($set != '' ? ',':'') . 'policy_graph_templates=' . get_nfilter_request_var('policy_graph_templates'):'';
 
-	if (strlen($set)) {
+	if ($set != '') {
 		db_execute_prepared("UPDATE user_auth_group SET $set WHERE id = ?", array(get_nfilter_request_var('id')));
 	}
 
@@ -635,7 +635,7 @@ function user_group_members_edit($header_label) {
 	}
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (username LIKE '%" . get_request_var('filter') . "%' OR full_name LIKE '%" . get_request_var('filter') . "%')";
 	} else {
 		$sql_where = '';
@@ -644,7 +644,7 @@ function user_group_members_edit($header_label) {
 	if (get_request_var('associated') == 'false') {
 		/* Show all items */
 	} else {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_members.group_id=' . get_request_var('id', 0) . ')';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_members.group_id=' . get_request_var('id', 0) . ')';
 	}
 
 	$total_rows = db_fetch_cell("SELECT
@@ -773,7 +773,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		}
 
 		/* form the 'where' clause for our main sql query */
-		if (strlen(get_request_var('filter'))) {
+		if (get_request_var('filter') != '') {
 			$sql_where = "WHERE (gtg.title_cache LIKE '%" . get_request_var('filter') . "%' AND gtg.local_graph_id>0)";
 		} else {
 			$sql_where = 'WHERE (gtg.local_graph_id>0)';
@@ -782,15 +782,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		if (get_request_var('graph_template_id') == '-1') {
 			/* Show all items */
 		} elseif (get_request_var('graph_template_id') == '0') {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
 		} elseif (!isempty_request_var('graph_template_id')) {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=' . get_request_var('graph_template_id');
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=' . get_request_var('graph_template_id');
 		}
 
 		if (get_request_var('associated') == 'false') {
 			/* Show all items */
 		} else {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 1 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 1 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 
 		$total_rows = db_fetch_cell("SELECT
@@ -915,7 +915,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		/* form the 'where' clause for our main sql query */
-		if (strlen(get_request_var('filter'))) {
+		if (get_request_var('filter') != '') {
 			$sql_where = "WHERE (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
 		} else {
 			$sql_where = '';
@@ -924,15 +924,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		if (get_request_var('host_template_id') == '-1') {
 			/* Show all items */
 		} elseif (get_request_var('host_template_id') == '0') {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' host.host_template_id=0';
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' host.host_template_id=0';
 		} elseif (!isempty_request_var('host_template_id')) {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' host.host_template_id=' . get_request_var('host_template_id');
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' host.host_template_id=' . get_request_var('host_template_id');
 		}
 
 		if (get_request_var('associated') == 'false') {
 			/* Show all items */
 		} else {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' user_auth_group_perms.group_id=' . get_request_var('id', 0);
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' user_auth_group_perms.group_id=' . get_request_var('id', 0);
 		}
 
 		$total_rows = db_fetch_cell("SELECT
@@ -1063,7 +1063,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		/* form the 'where' clause for our main sql query */
-		if (strlen(get_request_var('filter'))) {
+		if (get_request_var('filter') != '') {
 			$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
 		} else {
 			$sql_where = '';
@@ -1072,7 +1072,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		if (get_request_var('associated') == 'false') {
 			/* Show all items */
 		} else {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 
 		$total_rows = db_fetch_cell("SELECT
@@ -1203,7 +1203,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		}
 
 		/* form the 'where' clause for our main sql query */
-		if (strlen(get_request_var('filter'))) {
+		if (get_request_var('filter') != '') {
 			$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
 		} else {
 			$sql_where = '';
@@ -1212,7 +1212,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		if (get_request_var('associated') == 'false') {
 			/* Show all items */
 		} else {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 
 		$total_rows = db_fetch_cell("SELECT
@@ -1847,7 +1847,7 @@ function user_group() {
 	}
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' OR description LIKE '%" . get_request_var('filter') . "%')";
 	} else {
 		$sql_where = '';

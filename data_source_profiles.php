@@ -629,7 +629,7 @@ function get_span($duration) {
 			$months    = floor($duration/2592000);
 			$months    = ( $months == 1 ) ? __('%d Month', 1) : __('%d Months', $months); 
 			$duration %= 2592000;
-			$output   .= (strlen($output) ? ', ':'') . $months;
+			$output   .= ($output != '' ? ', ' : '') . $months;
 		}
 	}
 
@@ -638,7 +638,7 @@ function get_span($duration) {
 			$weeks     = floor($duration/604800);
 			$weeks     = ( $weeks == 1 ) ? __('%d Week', 1) : __('%d Weeks', $weeks); 
 			$duration %= 604800;
-			$output   .= (strlen($output) ? ', ':'') . $weeks;
+			$output   .= ($output != '' ? ', ' : '') . $weeks;
 		}
 	}
 
@@ -647,14 +647,14 @@ function get_span($duration) {
 			$days      = floor($duration/86400);
 			$days      = ( $days == 1 ) ? __('%d Day', 1) : __('%d Days', $days);
 			$duration %= 86400;
-			$output   .= (strlen($output) ? ', ':'') . $days;
+			$output   .= ($output != '' ? ', ' : '') . $days;
 		}
 	}
 
 	if (floor($duration/3600) > 0) {
 		$hours   = floor($duration/3600);
 		$hours   = ( $hours == 1 ) ? __('1 Hour') : __('%d Hours', $hours);
-		$output .= (strlen($output) ? ', ':'') . $hours;
+		$output .= ($output != '' ? ', ' : '') . $hours;
 	}
 
 	return $output;

@@ -713,7 +713,7 @@ function utilities_view_user_log() {
 
 	/* filter by result */
 	if (get_request_var('result') != '-1') {
-		if (strlen($sql_where)) {
+		if ($sql_where != '') {
 			$sql_where .= ' AND ul.result=' . get_request_var('result');
 		} else {
 			$sql_where = 'WHERE ul.result=' . get_request_var('result');
@@ -722,7 +722,7 @@ function utilities_view_user_log() {
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		if (strlen($sql_where)) {
+		if ($sql_where != '') {
 			$sql_where .= " AND (ul.username LIKE '%" . get_request_var('filter') . "%'
 				OR ul.time LIKE '%" . get_request_var('filter') . "%'
 				OR ua.full_name LIKE '%" . get_request_var('filter') . "%'
@@ -1651,12 +1651,12 @@ function utilities_view_poller_cache() {
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' dtd.data_template_id=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dtd.data_template_id=0';
 	} elseif (!isempty_request_var('template_id')) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' dl.data_template_id=' . get_request_var('template_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dl.data_template_id=' . get_request_var('template_id');
 	}
 
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where .= " AND (dtd.name_cache LIKE '%" . get_request_var('filter') . "%'
 			OR h.description LIKE '%" . get_request_var('filter') . "%'
 			OR pi.arg1 LIKE '%" . get_request_var('filter') . "%'
@@ -1943,7 +1943,7 @@ function boost_display_run_status() {
 	$total_data_sources = db_fetch_cell('SELECT COUNT(*) FROM poller_item');
 
 	$boost_status = read_config_option('boost_poller_status', TRUE);
-	if (strlen($boost_status)) {
+	if ($boost_status != '') {
 		$boost_status_array = explode(':', $boost_status);
 
 		$boost_status_date  = $boost_status_array[1];
@@ -1959,7 +1959,7 @@ function boost_display_run_status() {
 	}
 
 	$stats_boost = read_config_option('stats_boost', TRUE);
-	if (strlen($stats_boost)) {
+	if ($stats_boost != '') {
 		$stats_boost_array = explode(' ', $stats_boost);
 
 		$stats_duration = explode(':', $stats_boost_array[0]);
@@ -2054,7 +2054,7 @@ function boost_display_run_status() {
 
 	/* tell the user about the average size/record */
 	$output_length = read_config_option('boost_max_output_length');
-	if (strlen($output_length)) {
+	if ($output_length != '') {
 		$parts = explode(':', $output_length);
 		if ((time()-1200) > $parts[0]) {
 			$ref = TRUE;

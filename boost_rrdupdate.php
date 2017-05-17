@@ -60,7 +60,7 @@ if ($config['cacti_server_os'] == 'win32') {
 /* get the results */
 $result = fread($handle, 1024);
 
-if (!strlen(trim($result))) {
+if (trim($result) == '') {
 	$result = 'OK';
 } else {
 	if (substr_count($result, "\r")) {

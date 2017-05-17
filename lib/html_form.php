@@ -509,7 +509,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __('File Found') . "'></span>";
 	}else if (is_dir(trim($form_previous_value))) {
 		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Path is a Directory and not a File') . "'></span>";
-	}else if (strlen($form_previous_value) == 0) {
+	}else if ($form_previous_value == '') {
 		$extra_data = '';
 	} else {
 		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('File is Not Found'). "'></span>";
@@ -554,7 +554,7 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __('Directory Found') ."'></span>";
 	}else if (is_file($form_previous_value)) {
 		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Path is a File and not a Directory'). "></span>";
-	}else if (strlen($form_previous_value) == 0) {
+	}else if ($form_previous_value == '') {
 		$extra_data = '';
 	} else {
 		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Directory is Not found'). "'></span>";
@@ -636,7 +636,7 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			$class .= (strlen($class) ? ' ':'') . 'txtErrorTextBox';
+			$class .= ($class != '' ? ' ':'') . 'txtErrorTextBox';
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -647,11 +647,11 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 		}
 	}
 
-	if (strlen($class)) {
+	if ($class != '') {
 		$class = " class='$class' ";
 	}
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = " onChange='$on_change' ";
 	}
 
@@ -673,7 +673,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			$class .= (strlen($class) ? ' ':'') . 'txtErrorTextBox';
+			$class .= ($class != '' ? ' ':'') . 'txtErrorTextBox';
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -684,11 +684,11 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		}
 	}
 
-	if (strlen($class)) {
+	if ($class != '') {
 		$class = " class='$class' ";
 	}
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = " onChange='$on_change' ";
 	}
 
@@ -798,11 +798,11 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		}
 	}
 
-	if (strlen($class)) {
+	if ($class != '') {
 		$class = ' ' . trim($class);
 	}
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = " onChange='$on_change'";
 	}
 
@@ -833,11 +833,11 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 		}
 	}
 
-	if (strlen($class)) {
+	if ($class != '') {
 		$class = " class='$class' ";
 	}
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = " onChange='$on_change' ";
 	}
 
@@ -866,7 +866,7 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			$class .= (strlen($class) ? ' ':'') . 'txtErrorTextBox';
+			$class .= ($class != '' ? ' ':'') . 'txtErrorTextBox';
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -877,15 +877,15 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		}
 	}
 
-	if (strlen($class)) {
+	if ($class != '') {
 		$class = " class='$class' ";
 	}
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = " onChange='$on_change' ";
 	}
 
-	if (strlen($placeholder)) {
+	if ($placeholder != '') {
 		$placeholder = " placeholder='$placeholder'";
 	}
 
@@ -920,17 +920,17 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			$class .= (strlen($class) ? ' ':'') . 'txtErrorTextBox';
+			$class .= ($class != '' ? ' ':'') . 'txtErrorTextBox';
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
 
 	$class = 'multiselect';
-	if (strlen($class)) {
+	if ($class != '') {
 		$class .= " $class";
 	}
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = " onChange='$on_change' ";
 	}
 
@@ -971,7 +971,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 		$form_previous_value = $form_default_value;
 	}
 
-	if (strlen($class)) {
+	if ($class != '') {
 		$class = " class='colordropdown $class' ";
 	} else {
 		$class = " class='colordropdown'";
@@ -979,7 +979,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 
 	$current_color = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($form_previous_value));
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = ' ' . $on_change . ';';
 	}
 
@@ -1047,7 +1047,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	if (strlen($form_previous_value) == 0) { # no data: defaults are used; everythings fine
+	if ($form_previous_value == '') { # no data: defaults are used; everythings fine
 			$extra_data = '';
 	} else {
 		/* verifying all possible pango font params is too complex to be tested here
@@ -1112,7 +1112,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 		} else {
 			$alt = __('Save');
 
-			if (strlen($force_type)) {
+			if ($force_type != '') {
 				$calt   = __('Return');
 			} else {
 				$calt   = __('Cancel');

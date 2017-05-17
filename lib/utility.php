@@ -147,7 +147,7 @@ function update_poller_cache($data_source, $commit = false) {
 			$field = data_query_field_list($data_input['data_template_data_id']);
 
 			$params = array();
-			if (strlen($field['output_type'])) {
+			if ($field['output_type'] != '') {
 				$output_type_sql = ' AND snmp_query_graph_rrd.snmp_query_graph_id = ?';
 				$params[] = $field['output_type'];
 			} else {
@@ -469,7 +469,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 	if (sizeof($poller_items)) {
 		foreach($poller_items as $record) {
 			/* take care of invalid entries */
-			if (strlen($record) == 0) {
+			if ($record == '') {
 				continue;
 			}
 

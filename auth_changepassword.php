@@ -233,19 +233,19 @@ if (read_config_option('secpass_minlen') > 0) {
 }
 
 if (read_config_option('secpass_reqmixcase') == 'on') {
-	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Must include mixed case');
+	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include mixed case');
 }
 
 if (read_config_option('secpass_reqnum') == 'on') {
-	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Must include at least 1 number');
+	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include at least 1 number');
 }
 
 if (read_config_option('secpass_reqspec') == 'on') {
-	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Must include at least 1 special character');
+	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include at least 1 special character');
 }
 
 if (read_config_option('secpass_history') != '0') {
-	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Cannot be reused for %d password changes', read_config_option('secpass_history')+1);
+	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Cannot be reused for %d password changes', read_config_option('secpass_history')+1);
 }
 
 $secpass_tooltip .= $secpass_body;

@@ -155,7 +155,7 @@ while (1) {
 			exit(0);
 		}
 
-		if (strlen($input_string)) {
+		if ($input_string != '') {
 			/* pull off the parameters */
 			$i = 0;
 			while ( true ) {
@@ -314,7 +314,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 				$msg = 'Parse error attempting to parse string';
 			} elseif ($indelim) {
 				$curstr .= $char;
-			} elseif (strlen($curstr)) {
+			} elseif ($curstr != '') {
 				$str_list[] = $curstr;
 				$curstr = '';
 			}
@@ -348,7 +348,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 
 	if (!$parse_ok) {
 		echo 'ERROR: ' . $msg . " '" . $string . "'\n";
-	} elseif (strlen($curstr)) {
+	} elseif ($curstr != '') {
 		$str_list[] = $curstr;
 	}
 

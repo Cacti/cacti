@@ -101,7 +101,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		break;
 	case '3':
 		/* LDAP Auth */
- 		if ((get_nfilter_request_var('realm') == '2') && (strlen(get_nfilter_request_var('login_password')) > 0)) {
+ 		if (get_nfilter_request_var('realm') == '2' && get_nfilter_request_var('login_password') != '') {
 			/* include LDAP lib */
 			include_once('./lib/ldap.php');
 
@@ -205,7 +205,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	/* end of switch */
 
 	/* Create user from template if requested */
-	if ((!sizeof($user)) && ($copy_user) && (read_config_option('user_template') != '0') && (strlen($username) > 0)) {
+	if (!sizeof($user) && $copy_user && read_config_option('user_template') != '0' && $username != '') {
 		cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 		/* check that template user exists */
 		if (db_fetch_row_prepared('SELECT id FROM user_auth WHERE username = ? AND realm = 0', array(read_config_option('user_template')))) {
@@ -390,7 +390,7 @@ function auth_display_custom_error_message($message) {
 function domains_login_process() {
 	global $user, $realm, $username, $user_auth, $ldap_error, $ldap_error_message;
 
-	if (is_numeric(get_nfilter_request_var('realm')) && (strlen(get_nfilter_request_var('login_password')) > 0)) {
+	if (is_numeric(get_nfilter_request_var('realm')) && get_nfilter_request_var('login_password') != '') {
 		/* include LDAP lib */
 		include_once('./lib/ldap.php');
 
@@ -423,7 +423,7 @@ function domains_login_process() {
 				/* Create user from template if requested */
 				$template_user = db_fetch_cell_prepared('SELECT user_id FROM user_domains WHERE domain_id = ?', array(get_nfilter_request_var('realm')-1000));
 				$template_username = db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($template_user));
-				if ((!sizeof($user)) && ($copy_user) && ($template_user != '0') && (strlen($username) > 0)) {
+				if (!sizeof($user) && $copy_user && $template_user != '0' && $username != '') {
 					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 					/* check that template user exists */
 					if (db_fetch_row_prepared('SELECT id FROM user_auth WHERE id = ? AND realm = 0', array($template_user))) {

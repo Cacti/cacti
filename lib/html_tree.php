@@ -593,7 +593,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>' . __('Device:') . '</strong>' . htmlspecialchars($host_name, ENT_QUOTES); $title_delimeter = '-> '; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = '-> '; }
 
-	html_start_box(__('Graph Filters') . (strlen(get_request_var('rfilter')) ? " [ " . __('Filter') . " '" . htmlspecialchars(get_request_var('rfilter')) . "' " . __('Applied') . " ]" : ''), '100%', "", '3', 'center', '');
+	html_start_box(__('Graph Filters') . (get_request_var('rfilter') != '' ? " [ " . __('Filter') . " '" . htmlspecialchars(get_request_var('rfilter')) . "' " . __('Applied') . " ]" : ''), '100%', "", '3', 'center', '');
 
 	?>
 	<tr class='even noprint' id='search'>
@@ -955,7 +955,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	if (($leaf_type == 'header') || (empty($leaf_id))) {
 		$sql_where = '';
-		if (strlen(get_request_var('rfilter'))) {
+		if (get_request_var('rfilter') != '') {
 			$sql_where .= " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "' OR gtg.title RLIKE '" . get_request_var('rfilter') . "')";
 		}
 
@@ -985,10 +985,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			if (sizeof($graph_templates)) {
 				foreach ($graph_templates as $graph_template) {
 					$sql_where = '';
-					if (strlen(get_request_var('rfilter'))) {
+					if (get_request_var('rfilter') != '') {
 						$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
 					}
-					$sql_where .= (strlen($sql_where) ? 'AND':'') . ' gl.graph_template_id=' . $graph_template['id'] . ' AND gl.host_id=' . $leaf['host_id'];
+					$sql_where .= ($sql_where != '' ? 'AND':'') . ' gl.graph_template_id=' . $graph_template['id'] . ' AND gl.host_id=' . $leaf['host_id'];
 
 					$graphs = get_allowed_graphs($sql_where);
 
@@ -1031,12 +1031,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					/* fetch a list of field names that are sorted by the preferred sort field */
 					$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 
-					if (strlen(get_request_var('rfilter'))) {
+					if (get_request_var('rfilter') != '') {
 						$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
 					}
 
 					/* grab a list of all graphs for this host/data query combination */
-					$sql_where .= (strlen($sql_where) ? ' AND ':'') . 
+					$sql_where .= ($sql_where != '' ? ' AND ':'') .
 						' gl.snmp_query_id=' . $data_query['id'] . ' AND gl.host_id=' . $leaf['host_id'] . 
 						' ' . (empty($data_query_index) ? '' : " AND gl.snmp_index='$data_query_index'");
 

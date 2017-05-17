@@ -354,7 +354,7 @@ function form_actions() {
 		<td colspan='2' class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>" . (strlen($save_html) ? "
+			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>" . ($save_html != '' ? "
 			<input type='submit' name='cancel' value='" . __('Cancel') . "'>
 			$save_html" : "<input type='submit' name='cancel' value='" . __('Return') . "'>") . "
 		</td>

@@ -450,7 +450,7 @@ if (sizeof($parms)) {
 		exit(1);
 	}
 
-	if (strlen($cgInputFields)) {
+	if ($cgInputFields != '') {
 		$fields = explode(' ', $cgInputFields);
 		if ($template_id > 0) {
 			$input_fields = getInputFields($template_id, $quietMode);
@@ -537,7 +537,7 @@ if (sizeof($parms)) {
 			foreach($returnArray['local_data_id'] as $item) {
 				push_out_host($host_id, $item);
 
-				if (strlen($dataSourceId)) {
+				if ($dataSourceId != '') {
 					$dataSourceId .= ', ' . $item;
 				} else {
 					$dataSourceId = $item;
@@ -646,7 +646,7 @@ if (sizeof($parms)) {
 				foreach($returnArray['local_data_id'] as $item) {
 					push_out_host($host_id, $item);
 
-					if (strlen($dataSourceId)) {
+					if ($dataSourceId != '') {
 						$dataSourceId .= ', ' . $item;
 					} else {
 						$dataSourceId = $item;

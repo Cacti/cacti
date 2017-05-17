@@ -172,7 +172,7 @@ function boost_poller_on_demand(&$results) {
 					}
 				}
 
-				if (strlen($outbuf)) {
+				if ($outbuf != '') {
 					db_execute($sql_prefix . $outbuf . $sql_suffix);
 				}
 			}
@@ -344,7 +344,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 		 */
 		$cache_directory = read_config_option('boost_png_cache_directory');
 
-		if (strlen($cache_directory)) {
+		if ($cache_directory != '') {
 			if (is_dir($cache_directory)) {
 				if (is_writable($cache_directory)) {
 					if ($rra_id > 0) {
@@ -465,7 +465,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 	if ((read_config_option('boost_png_cache_enable')) && (boost_determine_caching_state())) {
 		$cache_directory = read_config_option('boost_png_cache_directory');
 
-		if (strlen($cache_directory)) {
+		if ($cache_directory != '') {
 			if (is_dir($cache_directory)) {
 				if ($rra_id > 0) {
 					$cache_file = $cache_directory . '/' . get_selected_theme() . '_lgi_' . $local_graph_id . '_rrai_' . $rra_id;
@@ -589,7 +589,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	set_error_handler('boost_error_handler');
 
 	/* tiny SQL where addendum for boost */
-	if (strlen($local_data_id)) {
+	if ($local_data_id != '') {
 		/* we can simplify the delete process if only one local_data_id */
 		$single_local_data_id = true;
 		$orig_local_data_id   = $local_data_id;
@@ -805,7 +805,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($value))) {
 				$outbuf .= ':' . hexdec($value);
 				$vals_in_buffer++;
-			} elseif (strlen($value)) {
+			} elseif ($value != '') {
 				/* break out multiple value output to an array */
 				$values = explode(' ', $value);
 

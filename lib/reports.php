@@ -387,7 +387,7 @@ function generate_report($report, $force = false) {
 		$headers
 	);
 
-	if (strlen($error)) {
+	if ($error != '') {
 		if (isset_request_var('id')) {
 			$_SESSION['reports_error'] = "Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'";
 
@@ -482,7 +482,7 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 	$graphs     = array();
 	$new_graphs = array();
 
-	if (strlen($search_key)) {
+	if ($search_key != '') {
 		$sql_swhere = " AND gtg.title_cache REGEXP '" . $search_key . "'";
 	}
 
@@ -902,7 +902,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 			$title_delimeter = '-> ';
 		}
 
-		if (strlen($item['graph_name_regexp'])) {
+		if ($item['graph_name_regexp'] != '') {
 			$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
 		}
 
@@ -930,7 +930,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 
 			if (sizeof($mygraphs)) {
 				/* start graph display */
-				if (strlen($title)) {
+				if ($title != '') {
 					$outstr .= "\t\t<tr class='text_row'>\n";
 					if ($format_ok) {
 						$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . "'>\n";
@@ -946,7 +946,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 			}
 		} elseif ($leaf_type == 'graph') {
 			$gr_where = '';
-			if (strlen($item['graph_name_regexp'])) {
+			if ($item['graph_name_regexp'] != '') {
 				$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
 			}
 
@@ -956,7 +956,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 
 			/* start graph display */
 			if ($graph > 0) {
-				if (strlen($title)) {
+				if ($title != '') {
 					$outstr .= "\t\t<tr class='text_row'>\n";
 					if ($format_ok) {
 						$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'>\n";
@@ -1031,7 +1031,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 						usort($outgraphs, 'necturally_sort_graphs');
 
 						/* start graph display */
-						if (strlen($title)) {
+						if ($title != '') {
 							$outstr .= "\t\t<tr class='text_row'>\n";
 							if ($format_ok) {
 								$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . "';>\n";
@@ -1095,7 +1095,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 						if (sizeof($graphs)) {
 							if ($i == 0) {
 								/* start graph display */
-								if (strlen($title)) {
+								if ($title != '') {
 									$outstr .= "\t\t<tr class='text_row'>\n";
 									if ($format_ok) {
 										$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'>\n";
@@ -1541,7 +1541,7 @@ function reports_graphs_action_execute($action) {
 			}
 		}
 
-		if (strlen($message)) {
+		if ($message != '') {
 			$_SESSION['reports_message'] = $message;
 		}
 		raise_message('reports_message');

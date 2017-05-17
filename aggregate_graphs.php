@@ -1050,7 +1050,7 @@ function aggregate_items() {
 	html_end_box(false);
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$filters = explode(' ', get_request_var('filter'));
 		$sql_where = '';
 		$sql_where = aggregate_make_sql_where($sql_where, $filters, 'gtg.title_cache');
@@ -1061,7 +1061,7 @@ function aggregate_items() {
 	}
 
 	if (get_request_var('matching') != 'false') {
-		$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . ' (agi.local_graph_id IS NOT NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' (agi.local_graph_id IS NOT NULL)';
 	}
 
 	$graph_template = db_fetch_cell_prepared('SELECT graph_template_id
@@ -1075,7 +1075,7 @@ function aggregate_items() {
 		array(get_request_var('id')));
 
 	if (!empty($graph_template)) {
-		$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . "(gtg.graph_template_id=$graph_template)";
+		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . "(gtg.graph_template_id=$graph_template)";
 	}
 
 	/* print checkbox form for validation */
@@ -1152,7 +1152,7 @@ function aggregate_items() {
 }
 
 function aggregate_make_sql_where($sql_where, $items, $field) {
-	if (strlen($sql_where)) {
+	if ($sql_where != '') {
 		$sql_where .= ' AND (';
 	} else {
 		$sql_where  = 'WHERE (';
@@ -1177,7 +1177,7 @@ function aggregate_make_sql_where($sql_where, $items, $field) {
 			$end = '';
 		}
 
-		if (strlen($i)) {
+		if ($i != '') {
 			if (strtolower($i) == 'and') {
 				$sql_where .= ' AND ';
 			} elseif (strtolower($i) == 'or') {
@@ -1383,7 +1383,7 @@ function aggregate_graph() {
 
 	$sql_where = 'WHERE (gtg.graph_template_id=0 AND gl.host_id=0)';
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where .= " AND (gtg.title_cache LIKE '%%" . get_request_var('filter') . "%%'" .
 			" OR ag.title_format LIKE '%%" . get_request_var('filter') . "%%')";
 	}

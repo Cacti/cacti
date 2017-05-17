@@ -499,7 +499,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		$rrd_update_array = NULL;
 
 		/* to much records in poller_output, process in chunks */
-		if ($remainder && strlen($limit)) {
+		if ($remainder && $limit != '') {
 			$rrds_processed += process_poller_output($rrdtool_pipe, $remainder);
 		}
 	}

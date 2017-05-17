@@ -218,51 +218,51 @@ function color_import_processor(&$colors) {
 	$return_array = array();
 
 	if (sizeof($colors)) {
-	foreach($colors as $color_line) {
-		/* parse line */
-		$line_array = explode(',', $color_line);
+		foreach($colors as $color_line) {
+			/* parse line */
+			$line_array = explode(',', $color_line);
 
-		/* header row */
-		if ($i == 0) {
-			$save_order = '(';
-			$j = 0;
-			$first_column = TRUE;
-			$required = 0;
-			$update_suffix = '';
+			/* header row */
+			if ($i == 0) {
+				$save_order = '(';
+				$j = 0;
+				$first_column = TRUE;
+				$required = 0;
+				$update_suffix = '';
 
-			if (sizeof($line_array)) {
-			foreach($line_array as $line_item) {
-				$line_item = trim(str_replace("'", '', $line_item));
-				$line_item = trim(str_replace('"', '', $line_item));
+				if (sizeof($line_array)) {
+				foreach($line_array as $line_item) {
+					$line_item = trim(str_replace("'", '', $line_item));
+					$line_item = trim(str_replace('"', '', $line_item));
 
-				switch ($line_item) {
-					case 'hex':
-						$hexcol = $j;
-					case 'name':
-						if (!$first_column) {
-							$save_order .= ', ';
-						}
+					switch ($line_item) {
+						case 'hex':
+							$hexcol = $j;
+						case 'name':
+							if (!$first_column) {
+								$save_order .= ', ';
+							}
 
-						$save_order .= $line_item;
+							$save_order .= $line_item;
 
-						$insert_columns[] = $j;
-						$first_column = FALSE;
+							$insert_columns[] = $j;
+							$first_column = FALSE;
 
-						if (strlen($update_suffix)) {
-							$update_suffix .= ", $line_item=VALUES($line_item)";
-						} else {
-							$update_suffix .= " ON DUPLICATE KEY UPDATE $line_item=VALUES($line_item)";
-						}
+							if ($update_suffix != '') {
+								$update_suffix .= ", $line_item=VALUES($line_item)";
+							} else {
+								$update_suffix .= " ON DUPLICATE KEY UPDATE $line_item=VALUES($line_item)";
+							}
 
-						$required++;
+							$required++;
 
-						break;
-					default:
-						/* ignore unknown columns */
+							break;
+						default:
+							/* ignore unknown columns */
+					}
+
+					$j++;
 				}
-
-				$j++;
-			}
 			}
 
 			$save_order .= ')';
@@ -633,7 +633,7 @@ function color() {
 	}
 
 	if (get_request_var('named') == 'true') {
-		$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . " read_only='on'";
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " read_only='on'";
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
@@ -755,7 +755,7 @@ function color_export() {
 	}
 
 	if (get_request_var('named') == 'true') {
-		$sql_where .= (strlen($sql_where) ? ' AND':'WHERE') . " read_only='on'";
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " read_only='on'";
 	}
 
 	if (get_request_var('has_graphs') == 'true') {

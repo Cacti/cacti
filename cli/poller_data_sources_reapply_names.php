@@ -92,7 +92,7 @@ if (sizeof($parms)) {
 }
 
 /* form the 'where' clause for our main sql query */
-if (strlen($filter)) {
+if ($filter != '') {
 	$sql_where = "AND (data_template_data.name_cache like '%" . $filter . "%'" .
 	" OR data_template_data.local_data_id like '%" . $filter . "%'" .
 	" OR data_template.name like '%" . $filter . "%'" .

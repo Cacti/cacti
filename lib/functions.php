@@ -190,7 +190,7 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 				WHERE username= ?',
 				array(read_config_option('guest_user')));
 
-			if (strlen($effective_uid) == 0) {
+			if ($effective_uid == '') {
 				$effective_uid = 0;
 			}
 		}else{
@@ -1466,7 +1466,7 @@ function get_rrd_cfs($local_data_id) {
 	 * 		rra[0].cf = 'LAST'
 	 * or similar
 	 */
-	if (strlen($output)) {
+	if ($output != '') {
 		$output = explode("\n", $output);
 
 		if (sizeof($output)) {

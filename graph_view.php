@@ -323,7 +323,7 @@ case 'preview':
 	html_graph_validate_preview_request_vars();
 
 	/* include graph view filter selector */
-	html_start_box(__('Graph Preview Filters') . (isset_request_var('style') && strlen(get_request_var('style')) ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]'):''), '100%', '', '3', 'center', '');
+	html_start_box(__('Graph Preview Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]'):''), '100%', '', '3', 'center', '');
 
 	html_graph_preview_filter('graph_view.php', 'preview');
 
@@ -375,7 +375,7 @@ case 'preview':
 		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
 	}
 
-	$sql_where .= (strlen($sql_or) && strlen($sql_where) ? ' AND ':'') . $sql_or;
+	$sql_where .= ($sql_or != '' && $sql_where != '' ? ' AND ':'') . $sql_or;
 
 	if (!isempty_request_var('host_id') && get_request_var('host_id') > 0) {
 		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id');
@@ -506,7 +506,7 @@ case 'list':
 	form_start('graph_view.php', 'form_graph_list');
 
 	/* display graph view filter selector */
-	html_start_box(__('Graph List View Filters') . (isset_request_var('style') && strlen(get_request_var('style')) ? ' ' . __('[ Custom Graph List Applied - Filter FROM List ]'):''), '100%', '', '3', 'center', '');
+	html_start_box(__('Graph List View Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filter FROM List ]'):''), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>

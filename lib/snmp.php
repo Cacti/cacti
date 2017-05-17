@@ -162,19 +162,19 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 				$sec_level = 'authPriv';
 			}
 
-			if (strlen($priv_pass)) {
+			if ($priv_pass != '') {
 				$priv_pass = '-X ' . snmp_escape_string($priv_pass) . ' -x ' . snmp_escape_string($priv_proto);
 			} else {
 				$priv_pass = '';
 			}
 
-			if (strlen($context)) {
+			if ($context != '') {
 				$context = '-n ' . snmp_escape_string($context);
 			} else {
 				$context = '';
 			}
 
-			if (strlen($engineid)) {
+			if ($engineid != '') {
 				$engineid = '-e ' . snmp_escape_string($engineid);
 			} else {
 				$engineid = '';
@@ -276,19 +276,19 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $username, $p
 				$sec_level = 'authPriv';
 			}
 
-			if (strlen($priv_pass)) {
+			if ($priv_pass != '') {
 				$priv_pass = '-X ' . snmp_escape_string($priv_pass) . ' -x ' . snmp_escape_string($priv_proto);
 			} else {
 				$priv_pass = '';
 			}
 
-			if (strlen($context)) {
+			if ($context != '') {
 				$context = '-n ' . snmp_escape_string($context);
 			} else {
 				$context = '';
 			}
 
-			if (strlen($engineid)) {
+			if ($engineid != '') {
 				$engineid = '-e ' . snmp_escape_string($engineid);
 			} else {
 				$engineid = '';
@@ -386,19 +386,19 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 				$sec_level = 'authPriv';
 			}
 
-			if (strlen($priv_pass)) {
+			if ($priv_pass != '') {
 				$priv_pass = '-X ' . snmp_escape_string($priv_pass) . ' -x ' . snmp_escape_string($priv_proto);
 			} else {
 				$priv_pass = '';
 			}
 
-			if (strlen($context)) {
+			if ($context != '') {
 				$context = '-n ' . snmp_escape_string($context);
 			} else {
 				$context = '';
 			}
 
-			if (strlen($engineid)) {
+			if ($engineid != '') {
 				$engineid = '-e ' . snmp_escape_string($engineid);
 			} else {
 				$engineid = '';
@@ -657,19 +657,19 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 				$sec_level = 'authPriv';
 			}
 
-			if (strlen($priv_pass)) {
+			if ($priv_pass != '') {
 				$priv_pass = '-X ' . snmp_escape_string($priv_pass) . ' -x ' . snmp_escape_string($priv_proto);
 			} else {
 				$priv_pass = '';
 			}
 
-			if (strlen($context)) {
+			if ($context != '') {
 				$context = '-n ' . snmp_escape_string($context);
 			} else {
 				$context = '';
 			}
 
-			if (strlen($engineid)) {
+			if ($engineid != '') {
 				$engineid = '-e ' . snmp_escape_string($engineid);
 			} else {
 				$engineid = '';
