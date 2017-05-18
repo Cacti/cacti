@@ -3805,14 +3805,19 @@ function email_test() {
 			$mail .= '<b>' . __('Authentication') . '</b>: false<br>';
 		}
 
-		$ping_results = ping_mail_server($smtp_host, $smtp_port, $smtp_username, $smtp_password, $smtp_timeout, $smtp_secure);
+		if (read_config_option('settings_ping_mail') == 0) {
+			$ping_results = ping_mail_server($smtp_host, $smtp_port, $smtp_username, $smtp_password, $smtp_timeout, $smtp_secure);
 
-		print __('Ping Results:') . ' ' . ($ping_results == 1 ? __('Success'):$ping_results) . '<br>';
+			print __('Ping Results:') . ' ' . ($ping_results == 1 ? __('Success'):$ping_results) . '<br>';
 
-		if ($ping_results != 1) {
-			$mail .= '<b>' . __('Ping Results') . '</b>: ' . $ping_results . '<br>';
+			if ($ping_results != 1) {
+				$mail .= '<b>' . __('Ping Results') . '</b>: ' . $ping_results . '<br>';
+			} else {
+				$mail .= '<b>' . __('Ping Results') . '</b>: ' . __('Success') . '<br>';
+			}
 		} else {
-			$mail .= '<b>' . __('Ping Results') . '</b>: ' . __('Success') . '<br>';
+			$ping_results = 1;
+			$mail .= '<b>' . __('Ping Results') . '</b>: ' . __('Bypassed') . '<br>';
 		}
 	}
 	$message .= $mail;
