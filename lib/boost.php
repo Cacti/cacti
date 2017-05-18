@@ -236,11 +236,11 @@ function boost_fetch_cache_check($local_data_id) {
 		set_error_handler('boost_error_handler');
 
 		/* process input parameters */
-		$rrdtool_pipe      = rrd_init();
+		$rrdtool_pipe = rrd_init();
 
 		/* get the information to populate into the rrd files */
 		if (boost_check_correct_enabled()) {
-			$updates += boost_process_poller_output($local_data_id);
+			boost_process_poller_output($local_data_id);
 		}
 
 		/* restore original error handler */
@@ -588,10 +588,6 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	/* install the boost error handler */
 	set_error_handler('boost_error_handler');
 
-	/* load system variables needed */
-	$log_verbosity		= read_config_option('log_verbosity');
-	$upd_string_len		= read_config_option('boost_rrd_update_string_length');
-
 	/* tiny SQL where addendum for boost */
 	if (strlen($local_data_id)) {
 		/* we can simplify the delete process if only one local_data_id */
@@ -605,12 +601,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	} else {
 		$single_local_data_id = false;
 
-		$poller_interval     = read_config_option('poller_interval');
-		$rrd_update_interval = read_config_option('boost_rrd_update_interval');
-		$data_ids_to_get     = read_config_option('boost_rrd_update_max_records_per_select');
-
 		$archive_table = boost_get_arch_table_name();
-
 		if ($archive_table === false) {
 			if ($warning_issued != true) {
 				cacti_log('NOTE: Failed to determine archive table', false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
@@ -622,6 +613,8 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		}
 	}
 
+	$data_ids_to_get = read_config_option('boost_rrd_update_max_records_per_select');
+
 	/* get the records */
 	if ($single_local_data_id) {
 		$query_string = '';
@@ -632,9 +625,9 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 		if(count($arch_tables)) {
 			foreach($arch_tables as $table) {
-				$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
+				$rows = db_fetch_cell('SELECT COUNT(*) FROM '.$table['name']);
 				if (db_table_exists($table['name']) && is_numeric($rows) && intval($rows) > 0) {
-					if (strlen($query_string)) {
+					if ($query_string != '') {
 						$query_string .= ' UNION ';
 					}
 					$query_string .= ' (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output FROM ' . $table['name'] . " WHERE local_data_id='$local_data_id') ";
@@ -642,7 +635,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			}
 		}
 
-		if (strlen($query_string)) {
+		if ($query_string != '') {
 			$query_string .= ' UNION ';
 		}
 
@@ -674,6 +667,8 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	}
 
 	if ($single_local_data_id) {
+		$log_verbosity = read_config_option('log_verbosity');
+
 		if ($debug) {
 			$log_verbosity = POLLER_VERBOSITY_DEBUG;
 		}
@@ -717,6 +712,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			}
 		}
 
+		$upd_string_len = read_config_option('boost_rrd_update_string_length');
 
 		boost_timer('results_cycle', BOOST_TIMER_START);
 		/* go through each poller_output_boost entries and process */
@@ -746,7 +742,6 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
 					boost_timer('rrdupdate', BOOST_TIMER_END);
 
-					$outbuf = '';
 					$vals_in_buffer = 0;
 
 					/* check return status for delete operation */
@@ -930,8 +925,7 @@ function boost_determine_caching_state() {
 	set_default_action();
 
 	/* turn off image caching if viewing thold vrules */
-	if ((isset($_SESSION['sess_config_array']['thold_draw_vrules'])) &&
-		($_SESSION['sess_config_array']['thold_draw_vrules'] == 'on')) {
+	if (isset($_SESSION['sess_config_array']['thold_draw_vrules']) && $_SESSION['sess_config_array']['thold_draw_vrules'] == 'on') {
 		return false;
 	}
 
@@ -953,7 +947,7 @@ function boost_determine_caching_state() {
 		$custom = $_SESSION['custom'];
 	}
 
-	if (($cache) && (!$custom)) {
+	if ($cache && !$custom) {
 		return true;
 	} else {
 		return false;
@@ -967,7 +961,6 @@ function boost_determine_caching_state() {
    @arg $local_data_id - the data source to obtain information from */
 function boost_get_rrd_filename_and_template($local_data_id) {
 	$rrd_path     = '';
-	$rrd_template = '';
 	$all_nulls    = true;
 	$ds_null      = array();
 	$ds_nnull     = array();
