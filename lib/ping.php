@@ -73,6 +73,18 @@ class Net_Ping
 		$this->request_len = strlen($this->request);
 	}
 
+	function ping_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
+		return true;
+	}
+
+	function set_ping_error_handler() {
+		set_error_handler(array($this, 'ping_error_handler'));
+	}
+
+	function restore_cacti_error_handler() {
+		restore_error_handler();
+	}
+
 	function build_icmp_packet() {
 		$seq_low   = rand(0,255);
 		$seq_high  = rand(0,255);
@@ -305,6 +317,8 @@ class Net_Ping
 	} /* ping_snmp */
 
 	function ping_udp() {
+		$this->set_ping_error_handler();
+
 		/* hostname must be nonblank */
 		if ($this->host['hostname']) {
 			/* initialize variables */
@@ -328,6 +342,8 @@ class Net_Ping
 				if (!$this->is_ipaddress($host_ip)) {
 					cacti_log('WARNING: UDP Ping Error: gethostbyname failed for ' . $this->host['hostname']);
 					$this->response = 'UDP Ping Error: gethostbyname failed for ' . $this->host['hostname'];
+					$this->restore_cacti_error_handler();
+
 					return false;
 				}
 			}
@@ -340,6 +356,7 @@ class Net_Ping
 					$this->ping_response = __('PHP version does not support IPv6');
 					$this->ping_status   = 'down';
 					cacti_log('WARNING: IPv6 host detected, PHP version does not support IPv6');
+					$this->restore_cacti_error_handler();
 
 					return false;
 				}
@@ -355,11 +372,12 @@ class Net_Ping
 
 			$error = '';
 			$retry_count = 0;
-			while (1) {
+			while (true) {
 				if ($retry_count >= $this->retries) {
 					$this->status = 'down';
 					$this->ping_response = __('UDP ping error: %s', $error);
 					$this->close_socket();
+					$this->restore_cacti_error_handler();
 
 					return false;
 				}
@@ -394,6 +412,8 @@ class Net_Ping
 						$this->ping_response = __('UDP Ping Success (%s ms)', $this->time*1000);
 
 						$this->close_socket();
+						$this->restore_cacti_error_handler();
+
 						return true;
 
 						break;
@@ -410,12 +430,15 @@ class Net_Ping
 		} else {
 			$this->ping_response = __('Destination address not specified');
 			$this->ping_status   = 'down';
+			$this->restore_cacti_error_handler();
 
 			return false;
 		}
 	} /* end ping_udp */
 
 	function ping_tcp() {
+		$this->set_ping_error_handler();
+
 		/* hostname must be nonblank */
 		if ($this->host['hostname']) {
 			/* initialize variables */
@@ -439,6 +462,8 @@ class Net_Ping
 				if (!$this->is_ipaddress($host_ip)) {
 					cacti_log('WARNING: TCP Ping Error: gethostbyname failed for ' . $this->host['hostname']);
 					$this->response = 'TCP Ping Error: gethostbyname failed for ' . $this->host['hostname'];
+					$this->restore_cacti_error_handler();
+
 					return false;
 				}
 			}
@@ -451,6 +476,7 @@ class Net_Ping
 					$this->ping_response = __('PHP binary does not support IPv6');
 					$this->ping_status   = 'down';
 					cacti_log('WARNING: IPv6 host detected, PHP version does not support IPv6');
+					$this->restore_cacti_error_handler();
 
 					return false;
 				}
@@ -475,6 +501,7 @@ class Net_Ping
 					$this->ping_status   = 'down';
 
 					$this->close_socket();
+					$this->restore_cacti_error_handler();
 
 					return false;
 				} else {
@@ -490,6 +517,7 @@ class Net_Ping
 						}
 
 						$this->close_socket();
+						$this->restore_cacti_error_handler();
 
 						return true;
 					case 0:
@@ -498,6 +526,7 @@ class Net_Ping
 						$this->ping_status   = 'down';
 
 						$this->close_socket();
+						$this->restore_cacti_error_handler();
 
 						return false;
 					}
@@ -506,12 +535,15 @@ class Net_Ping
 		} else {
 			$this->ping_response = __('Destination address not specified');
 			$this->ping_status   = 'down';
+			$this->restore_cacti_error_handler();
 
 			return false;
 		}
 	} /* end ping_tcp */
 
 	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = PING_ICMP, $timeout=500, $retries=3) {
+		$this->set_ping_error_handler();
+
 		/* initialize variables */
 		$ping_ping = true;
 		$ping_snmp = true;
@@ -525,6 +557,8 @@ class Net_Ping
 		/* short circuit for availability none */
 		if ($avail_method == AVAIL_NONE) {
 			$this->ping_status = '0.00';
+			$this->restore_cacti_error_handler();
+
 			return true;
 		}
 
@@ -581,6 +615,8 @@ class Net_Ping
 				$snmp_result = $this->ping_snmp();
 			}
 		}
+
+		$this->restore_cacti_error_handler();
 
 		switch ($avail_method) {
 			case AVAIL_SNMP_OR_PING:

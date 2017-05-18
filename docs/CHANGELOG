@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#672: Cacti unable to enable snmp notification receiver mibs
 -issue#680: Sort order in Time Graph View
 -issue#687: Cacti DB access not compatible with PHP 7
+-issue:699: Add custom error handler for ping functions
 -issue: Reports were not using Cacti's permission system for checking access
 -issue: User Admin page reported wrong permissions at Tree level missing some i18n as well
 -issue: Short data_name can cause data collection issues
