@@ -7128,14 +7128,14 @@ msgstr ""
 msgid "Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)"
 msgstr ""
 
-#: ../include/global_form.php:722 ../include/global_form.php:733
+#: ../include/global_form.php:722
 msgid ""
 "When you setup the right axis labeling, apply a rule to the data format.  "
 "Supported formats include \"numeric\" where\n"
 "\t\t\tdata is treated as numeric, \"timestamp\" where values are interpreted "
 "as UNIX timestamps (number of seconds since January 1970)\n"
 "\t\t\tand expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S"
-"\").  See also --units-length and --left-axis-format.  Finally\n"
+"\").  See also --units-length and --right-axis-format.  Finally\n"
 "\t\t\t\"duration\" where values are interpreted as duration in "
 "milliseconds.  Formatting follows the rules of valstrfduration qualified "
 "PRINT/GPRINT."
@@ -7144,6 +7144,19 @@ msgstr ""
 #: ../include/global_form.php:728
 msgid "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
 msgstr ""
+
+#: ../include/global_form.php:733
+msgid ""
+"When you setup the left axis labeling, apply a rule to the data format.  "
+"Supported formats include \"numeric\" where\n"
+"\t\t\tdata is treated as numeric, \"timestamp\" where values are interpreted "
+"as UNIX timestamps (number of seconds since January 1970)\n"
+"\t\t\tand expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S"
+"\").  See also --units-length.  Finally \"duration\" where values\n"
+"\t\t\tare interpreted as duration in milliseconds.  Formatting follows the"
+"rules of valstrfduration qualified PRINT/GPRINT."
+msgstr ""
+
 
 #: ../include/global_form.php:739
 msgid "Legend Options"
