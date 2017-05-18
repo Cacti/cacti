@@ -1246,6 +1246,13 @@ $settings = array(
 			'default' => __('PHP Mail() Function'),
 			'array' => array( __('PHP Mail() Function'), __('Sendmail'), __('SMTP') ),
 			),
+		'settings_ping_mail' => array(
+			'friendly_name' => __('Ping Mail Server'),
+			'description' => __('Ping the Mail Server before sending test Email?'),
+			'method' => 'drop_array',
+			'default' => 0,
+			'array' => array(0 => __('Yes'), 1 => __('No'))
+			),
 		'settings_from_email' => array(
 			'friendly_name' => __('From Email Address'),
 			'description' => __('This is the Email address that the Email will appear from.'),
