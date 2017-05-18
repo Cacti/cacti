@@ -375,7 +375,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 		$issue_list = '';
 		foreach($issues as $issue) {
-			$issue_list .= (strlen($issue_list) ? ', ' : '') . $issue['rrd_name'] . '(DS[' . $issue['local_data_id'] . '])';
+			$issue_list .= ($issue_list != '' ? ', ' : '') . $issue['rrd_name'] . '(DS[' . $issue['local_data_id'] . '])';
 		}
 
 		if ($count > $issues_limit) {

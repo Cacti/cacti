@@ -543,7 +543,7 @@ function read_user_i18n_setting($config_name) {
 				ON user_auth.username = settings.value 
 				WHERE settings.name = 'guest_user'");
 		}
-		if (strlen($effective_uid) == 0) {
+		if ($effective_uid == '') {
 			$effective_uid = 0;
 		}
 	} else {

@@ -1305,7 +1305,7 @@ function ds() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('rfilter'))) {
+	if (get_request_var('rfilter') != '') {
 		$sql_where1 = "WHERE (dtd.name_cache RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR dtd.local_data_id RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR dt.name RLIKE '" . get_request_var('rfilter') . "')";
@@ -1316,31 +1316,31 @@ function ds() {
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('host_id')) {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' (dl.host_id=0 OR dl.host_id IS NULL)';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dl.host_id=0 OR dl.host_id IS NULL)';
 	} elseif (!isempty_request_var('host_id')) {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dl.host_id=' . get_request_var('host_id');
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.host_id=' . get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_template_id=0';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.data_template_id=0';
 	} elseif (!isempty_request_var('host_id')) {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_template_id=' . get_request_var('template_id');
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.data_template_id=' . get_request_var('template_id');
 	}
 
 	if (get_request_var('profile') == '-1') {
 		/* Show all items */
 	} else {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.data_source_profile_id=' . get_request_var('profile');
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.data_source_profile_id=' . get_request_var('profile');
 	}
 
 	if (get_request_var('status') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('status') == '1') {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.active="on"';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.active="on"';
 	} else {
-		$sql_where1 .= (strlen($sql_where1) ? ' AND':'WHERE') . ' dtd.active=""';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.active=""';
 	}
 
 	if (get_request_var('orphans') == '0') {

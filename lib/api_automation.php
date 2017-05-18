@@ -209,21 +209,21 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	if (get_request_var('host_status') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('host_status') == '-2') {
-		$sql_where .= (strlen($sql_where) ? " AND h.disabled='on'" : "WHERE h.disabled='on'");
+		$sql_where .= ($sql_where != '' ? " AND h.disabled='on'" : "WHERE h.disabled='on'");
 	} elseif (get_request_var('host_status') == '-3') {
-		$sql_where .= (strlen($sql_where) ? " AND h.disabled=''" : "WHERE h.disabled=''");
+		$sql_where .= ($sql_where != '' ? " AND h.disabled=''" : "WHERE h.disabled=''");
 	} elseif (get_request_var('host_status') == '-4') {
-		$sql_where .= (strlen($sql_where) ? " AND (h.status!='3' or h.disabled='on')" : "WHERE (h.status!='3' or h.disabled='on')");
+		$sql_where .= ($sql_where != '' ? " AND (h.status!='3' or h.disabled='on')" : "WHERE (h.status!='3' or h.disabled='on')");
 	}else {
-		$sql_where .= (strlen($sql_where) ? ' AND (h.status=' . get_request_var('host_status') . " AND h.disabled = '')" : "WHERE (h.status=" . get_request_var('host_status') . " AND h.disabled = '')");
+		$sql_where .= ($sql_where != '' ? ' AND (h.status=' . get_request_var('host_status') . " AND h.disabled = '')" : "WHERE (h.status=" . get_request_var('host_status') . " AND h.disabled = '')");
 	}
 
 	if (get_request_var('host_template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('host_template_id') == '0') {
-		$sql_where .= (strlen($sql_where) ? ' AND h.host_template_id=0' : 'WHERE h.host_template_id=0');
+		$sql_where .= ($sql_where != '' ? ' AND h.host_template_id=0' : 'WHERE h.host_template_id=0');
 	} elseif (!isempty_request_var('host_template_id')) {
-		$sql_where .= (strlen($sql_where) ? ' AND h.host_template_id=' . get_request_var('host_template_id') : 'WHERE h.host_template_id=' . get_request_var('host_template_id'));
+		$sql_where .= ($sql_where != '' ? ' AND h.host_template_id=' . get_request_var('host_template_id') : 'WHERE h.host_template_id=' . get_request_var('host_template_id'));
 	}
 
 	$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
@@ -239,7 +239,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$hosts = db_fetch_assoc($sql_query);
 
 	/* get the WHERE clause for matching hosts */
-	if (strlen($sql_where)) {
+	if ($sql_where != '') {
 		$sql_filter = ' AND (' . build_matching_objects_filter($rule['id'], $rule_type) . ')';
 	} else {
 		$sql_filter = ' WHERE (' . build_matching_objects_filter($rule['id'], $rule_type) .')';
@@ -488,7 +488,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	html_end_box(false);
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (gtg.title_cache LIKE '%" . get_request_var('filter') . "%'" .
 			" OR gt.name LIKE '%" . get_request_var('filter') . "%'" . 
 			" OR h.description LIKE '%" . get_request_var('filter') . "%'" . 
@@ -500,21 +500,21 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('host_id') == '0') {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=0';
 	} elseif (!isempty_request_var('host_id')) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
 	} elseif (!isempty_request_var('template_id')) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') .' gtg.graph_template_id=' . get_request_var('template_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') .' gtg.graph_template_id=' . get_request_var('template_id');
 	}
 
 	/* get the WHERE clause for matching graphs */
-	$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . build_matching_objects_filter($rule['id'], $rule_type);
+	$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . build_matching_objects_filter($rule['id'], $rule_type);
 
 	$total_rows = db_fetch_cell("SELECT COUNT(gtg.id)
 		FROM graph_local AS gl
@@ -1076,7 +1076,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	}
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where .= " AND (h.hostname LIKE '%" . get_request_var('filter') . "%' OR h.description LIKE '%" . get_request_var('filter') . "%' OR ht.name LIKE '%" . get_request_var('filter') . "%')";
 	}
 
@@ -1622,7 +1622,7 @@ function build_sort_order($index_order, $default_order = '') {
 	}
 
 	/* if ANY order is requested */
-	if (strlen($sql_order)) {
+	if ($sql_order != '') {
 		$sql_order = 'ORDER BY ' . $sql_order;
 	}
 
@@ -1650,7 +1650,7 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
 
 	/* get the WHERE clause for matching hosts */
 	$sql_filter = ' WHERE (' . build_matching_objects_filter($rule['id'], $rule_type) .')';
-	if (strlen($sql_where)) {
+	if ($sql_where != '') {
 		$sql_filter .= ' AND ' . $sql_where;
 	}
 
@@ -1682,7 +1682,7 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 	/* get the WHERE clause for matching graphs */
 	$sql_filter = 'WHERE gl.id=gtg.local_graph_id AND ' . build_matching_objects_filter($rule['id'], $rule_type);
 
-	if (strlen($sql_where)) {
+	if ($sql_where != '') {
 		$sql_filter .= ' AND ' . $sql_where;
 	}
 
@@ -2099,7 +2099,7 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 				foreach($returnArray['local_data_id'] as $item) {
 					push_out_host($host_id, $item);
 
-					if (strlen($dataSourceId)) {
+					if ($dataSourceId != '') {
 						$dataSourceId .= ', ' . $item;
 					} else {
 						$dataSourceId = $item;
@@ -2346,7 +2346,7 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 				foreach($return_array['local_data_id'] as $item) {
 					push_out_host($host_id, $item);
 
-					if (strlen($data_source_id)) {
+					if ($data_source_id != '') {
 						$data_source_id .= ', ' . $item;
 					} else {
 						$data_source_id = $item;
@@ -3039,7 +3039,7 @@ function automation_valid_snmp_device(&$device) {
 		/* get system name */
 		$snmp_sysName = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0'); 
 
-		if (strlen($snmp_sysName)) {
+		if ($snmp_sysName != '') {
 			$snmp_sysName = trim(strtr($snmp_sysName,'"',' '));
 			$device['snmp_sysName'] = $snmp_sysName;
 		}
@@ -3047,7 +3047,7 @@ function automation_valid_snmp_device(&$device) {
 		/* get system location */
 		$snmp_sysLocation = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0'); 
 
-		if (strlen($snmp_sysLocation)) {
+		if ($snmp_sysLocation != '') {
 			$snmp_sysLocation = trim(strtr($snmp_sysLocation,'"',' '));
 			$device['snmp_sysLocation'] = $snmp_sysLocation;
 		}
@@ -3055,7 +3055,7 @@ function automation_valid_snmp_device(&$device) {
 		/* get system contact */
 		$snmp_sysContact = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0'); 
 
-		if (strlen($snmp_sysContact)) {
+		if ($snmp_sysContact != '') {
 			$snmp_sysContact = trim(strtr($snmp_sysContact,'"',' '));
 			$device['snmp_sysContact'] = $snmp_sysContact;
 		}
@@ -3063,7 +3063,7 @@ function automation_valid_snmp_device(&$device) {
 		/* get system description */
 		$snmp_sysDescr = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0'); 
 
-		if (strlen($snmp_sysDescr)) {
+		if ($snmp_sysDescr != '') {
 			$snmp_sysDescr = trim(strtr($snmp_sysDescr,'"',' '));
 			$device['snmp_sysDescr'] = $snmp_sysDescr;
 		}
@@ -3071,7 +3071,7 @@ function automation_valid_snmp_device(&$device) {
 		/* get system uptime */
 		$snmp_sysUptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0'); 
 
-		if (strlen($snmp_sysUptime)) {
+		if ($snmp_sysUptime != '') {
 			$snmp_sysUptime = trim(strtr($snmp_sysUptime,'"',' '));
 			$device['snmp_sysUptime'] = $snmp_sysUptime;
 		}

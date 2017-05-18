@@ -321,12 +321,12 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 				# no more prepending until next line break is encountered
 				$prepend = false;
-			} elseif ($prepend && (strlen($save['text_format']) > 0) && (strlen($_gprint_prefix) > 0)) {
+			} elseif ($prepend && $save['text_format'] != '' && $_gprint_prefix != '') {
 				$save['text_format'] = substitute_host_data($_gprint_prefix . ' ' . $save['text_format'], '|', '|', (isset($graph_local['host_id']) ? $graph_local['host_id']:0));
 				cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 				/* if this is a data query graph type, try to substitute */
-				if (isset($graph_local['snmp_query_id']) && $graph_local['snmp_query_id'] > 0 && strlen($graph_local['snmp_index']) > 0) {
+				if (isset($graph_local['snmp_query_id']) && $graph_local['snmp_query_id'] > 0 && $graph_local['snmp_index'] != '') {
 					$save['text_format'] = substitute_snmp_query_data($save['text_format'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], read_config_option('max_data_query_field_length'));
 
 					cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'] . ' for ' . $graph_local['host_id'] . ',' . $graph_local['snmp_query_id'] . ',' . $graph_local['snmp_index'], true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -341,7 +341,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 				$save['hard_return'] = 'on';
 			}
 			# if this item defines a line break, remember to prepend next line
-			if (strlen($save['text_format']) > 0) {
+			if ($save['text_format'] != '') {
 				$prepend = ($save['hard_return'] == 'on');
 			}
 

@@ -795,7 +795,7 @@ function automation_tree_rules() {
 	html_end_box();
 
 	/* form the 'WHERE' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (atr.name LIKE '%%" . get_request_var('filter') . "%%')";
 	} else {
 		$sql_where = '';
@@ -804,9 +804,9 @@ function automation_tree_rules() {
 	if (get_request_var('status') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('status') == '-2') {
-		$sql_where .= (strlen($sql_where) ? " AND atr.enabled='on'" : "WHERE atr.enabled='on'");
+		$sql_where .= ($sql_where != '' ? " AND atr.enabled='on'" : "WHERE atr.enabled='on'");
 	} elseif (get_request_var('status') == '-3') {
-		$sql_where .= (strlen($sql_where) ? " AND atr.enabled=''" : "WHERE atr.enabled=''");
+		$sql_where .= ($sql_where != '' ? " AND atr.enabled=''" : "WHERE atr.enabled=''");
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(atr.id) 

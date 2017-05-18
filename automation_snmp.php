@@ -886,7 +886,7 @@ function automation_snmp() {
 	form_end();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (automation_snmp.name LIKE '%" . get_request_var('filter') . "%')";
 	} else {
 		$sql_where = '';

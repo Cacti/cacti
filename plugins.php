@@ -331,9 +331,9 @@ function update_show_current () {
 
 	if (get_request_var('state') > -3) {
 		if (get_request_var('state') == 5) {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' status IN(1,4)';
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status IN(1,4)';
 		} else {
-			$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' status=' . get_request_var('state');
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status=' . get_request_var('state');
 		}
 	}
 
@@ -421,7 +421,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 
 	$row = plugin_actions($plugin);
 
-	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'>" . (strlen(get_request_var('filter')) ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">' . __('ERROR: Directory Missing') . '</span>)') . '</td>';
+	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">' . __('ERROR: Directory Missing') . '</span>)') . '</td>';
 
 	$row .= "<td class='nowrap'>" . filter_value($plugin['name'], get_request_var('filter')) . "</td>\n";
 	$row .= "<td class='nowrap'>" . $status_names[$plugin['status']] . "</td>\n";

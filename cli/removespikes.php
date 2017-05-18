@@ -366,7 +366,7 @@ if (!$using_cacti) {
 		$response = shell_exec('rrdtool');
 	}
 
-	if (strlen($response)) {
+	if ($response != '') {
 		$response_array = explode(' ', $response);
 		echo 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . "\n";
 	} else {
@@ -733,7 +733,7 @@ function createRRDFileFromXML($xmlfile, $rrdfile) {
 		$response = shell_exec("rrdtool restore -f -r $xmlfile $rrdfile");
 	}
 
-	if (strlen($response)) {
+	if ($response != '') {
 		$strout .= ($html ? "<p class='spikekillNote'>":'') . $response . ($html ? "</p>\n":"\n");
 	}
 }

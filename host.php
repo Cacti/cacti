@@ -1418,7 +1418,7 @@ function host() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
 	} else {
 		$sql_where = '';
@@ -1427,35 +1427,35 @@ function host() {
 	if (get_request_var('host_status') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('host_status') == '-2') {
-		$sql_where .= (strlen($sql_where) ? " AND host.disabled='on'" : " WHERE host.disabled='on'");
+		$sql_where .= ($sql_where != '' ? " AND host.disabled='on'" : " WHERE host.disabled='on'");
 	} elseif (get_request_var('host_status') == '-3') {
-		$sql_where .= (strlen($sql_where) ? " AND host.disabled=''" : " WHERE host.disabled=''");
+		$sql_where .= ($sql_where != '' ? " AND host.disabled=''" : " WHERE host.disabled=''");
 	} elseif (get_request_var('host_status') == '-4') {
-		$sql_where .= (strlen($sql_where) ? " AND (host.status!='3' OR host.disabled='on')" : " WHERE (host.status!='3' OR host.disabled='on')");
+		$sql_where .= ($sql_where != '' ? " AND (host.status!='3' OR host.disabled='on')" : " WHERE (host.status!='3' OR host.disabled='on')");
 	}else {
-		$sql_where .= (strlen($sql_where) ? ' AND (host.status=' . get_request_var('host_status') . " AND host.disabled = '')" : 'where (host.status=' . get_request_var('host_status') . " AND host.disabled = '')");
+		$sql_where .= ($sql_where != '' ? ' AND (host.status=' . get_request_var('host_status') . " AND host.disabled = '')" : 'where (host.status=' . get_request_var('host_status') . " AND host.disabled = '')");
 	}
 
 	if (get_request_var('host_template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('host_template_id') == '0') {
-		$sql_where .= (strlen($sql_where) ? ' AND host.host_template_id=0' : ' WHERE host.host_template_id=0');
+		$sql_where .= ($sql_where != '' ? ' AND host.host_template_id=0' : ' WHERE host.host_template_id=0');
 	} elseif (!isempty_request_var('host_template_id')) {
-		$sql_where .= (strlen($sql_where) ? ' AND host.host_template_id=' . get_request_var('host_template_id') : ' WHERE host.host_template_id=' . get_request_var('host_template_id'));
+		$sql_where .= ($sql_where != '' ? ' AND host.host_template_id=' . get_request_var('host_template_id') : ' WHERE host.host_template_id=' . get_request_var('host_template_id'));
 	}
 
 	if (get_request_var('site_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('site_id') == '0') {
-		$sql_where .= (strlen($sql_where) ? ' AND host.site_id=0' : ' WHERE host.site_id=0');
+		$sql_where .= ($sql_where != '' ? ' AND host.site_id=0' : ' WHERE host.site_id=0');
 	} elseif (!isempty_request_var('site_id')) {
-		$sql_where .= (strlen($sql_where) ? ' AND host.site_id=' . get_request_var('site_id') : ' WHERE host.site_id=' . get_request_var('site_id'));
+		$sql_where .= ($sql_where != '' ? ' AND host.site_id=' . get_request_var('site_id') : ' WHERE host.site_id=' . get_request_var('site_id'));
 	}
 
 	if (get_request_var('poller_id') == '-1') {
 		/* Show all items */
 	} else {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . ' host.poller_id=' . get_request_var('poller_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' host.poller_id=' . get_request_var('poller_id');
 	}
 
 	$sql_where = api_plugin_hook_function('device_sql_where', $sql_where);

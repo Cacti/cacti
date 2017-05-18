@@ -775,7 +775,7 @@ function graphs() {
 
 						if (sizeof($indexes)) {
 							foreach($indexes as $index) {
-								if (strlen($sql_where)) {
+								if ($sql_where != '') {
 									$sql_where .= ", '" . $index['snmp_index'] . "'";
 								} else {
 									$sql_where .= " AND snmp_index IN('" . $index['snmp_index'] . "'";
@@ -786,8 +786,7 @@ function graphs() {
 						}
 					}
 
-					if ((strlen(get_request_var('filter')) == 0) ||
-						((strlen(get_request_var('filter'))) && (sizeof($indexes)))) {
+					if (get_request_var('filter') == '' || (get_request_var('filter') != '' && sizeof($indexes))) {
 						/* determine the sort order */
 						if (isset($xml_array['index_order_type'])) {
 							if ($xml_array['index_order_type'] == 'numeric') {
@@ -966,7 +965,7 @@ function graphs() {
 		}
 	}
 
-	if (strlen($script)) {
+	if ($script != '') {
 		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()) });</script>\n";
 		print $script;
 	}

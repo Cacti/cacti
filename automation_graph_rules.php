@@ -798,7 +798,7 @@ function automation_graph_rules() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	if (strlen(get_request_var('filter'))) {
+	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (agr.name LIKE '%" . get_request_var('filter') . "%' OR " . 
 			"sqg.name LIKE '%" . get_request_var('filter') . "%' OR " .
 			"sq.name LIKE '%" . get_request_var('filter') . "%')";
@@ -810,15 +810,15 @@ function automation_graph_rules() {
 	if (get_request_var('status') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('status') == '-2') {
-		$sql_where .= (strlen($sql_where) ? " and agr.enabled='on'" : "where agr.enabled='on'");
+		$sql_where .= ($sql_where != '' ? " and agr.enabled='on'" : "where agr.enabled='on'");
 	} elseif (get_request_var('status') == '-3') {
-		$sql_where .= (strlen($sql_where) ? " and agr.enabled=''" : "where agr.enabled=''");
+		$sql_where .= ($sql_where != '' ? " and agr.enabled=''" : "where agr.enabled=''");
 	}
 
 	if (get_request_var('snmp_query_id') == '-1') {
 		/* show all items */
 	} elseif (!isempty_request_var('snmp_query_id')) {
-		$sql_where .= (strlen($sql_where) ? ' AND ' : ' WHERE ');
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ');
 		$sql_where .= 'agr.snmp_query_id=' . get_request_var('snmp_query_id');
 	}
 

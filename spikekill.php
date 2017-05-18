@@ -52,7 +52,7 @@ if (is_realm_allowed(1043)) {
 		foreach($local_data_ids as $local_data_id) {
 			$data_source_path = get_data_source_path($local_data_id['local_data_id'], true);
 
-			if (strlen($data_source_path)) {
+			if ($data_source_path != '') {
 				if ($debug) {
 					cacti_log(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/removespikes.php ' .
 						' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .

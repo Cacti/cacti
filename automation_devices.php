@@ -109,7 +109,7 @@ function form_actions() {
 					}
 				}
 
-				if (strlen($message)) {
+				if ($message != '') {
 					$_SESSION['automation_message'] = $message;
 					raise_message('automation_message');
 				}
@@ -393,21 +393,21 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	}
 
 	if ($network > 0) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'network_id=' . $network;
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'network_id=' . $network;
 	}
 
 	if ($snmp == __('Down')) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'snmp=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'snmp=0';
 	} else if ($snmp == __('Up')) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . 'snmp=1';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'snmp=1';
 	}
 
 	if ($os != '-1' && in_array($os, $os_arr)) {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . "os='$os'";
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . "os='$os'";
 	}
 
 	if ($filter != '') {
-		$sql_where .= (strlen($sql_where) ? ' AND ':'WHERE ') . "(hostname LIKE '%$filter%' OR ip LIKE '%$filter%')";
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . "(hostname LIKE '%$filter%' OR ip LIKE '%$filter%')";
 	}
 
 	if ($export) {

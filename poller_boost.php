@@ -139,7 +139,7 @@ function output_rrd_data($start_time, $force = FALSE) {
 		}
 	}
 
-	if (!strlen($archive_table)) {
+	if ($archive_table == '') {
 		cacti_log('ERROR: Failed to retrieve archive table name');
 		return -1;
 	}
@@ -221,12 +221,12 @@ function log_boost_statistics($rrd_updates) {
 		$timer_cycles = 0;
 		foreach($boost_stats_log as $area => $entry) {
 			if (isset($entry[BOOST_TIMER_TOTAL])) {
-				$outstr .= (strlen($outstr) ? ', ' : '') . $area . ':' . round($entry[BOOST_TIMER_TOTAL] - (($overhead * $entry[BOOST_TIMER_CYCLES])/BOOST_TIMER_OVERHEAD_MULTIPLIER), 2);
+				$outstr .= ($outstr != '' ? ', ' : '') . $area . ':' . round($entry[BOOST_TIMER_TOTAL] - (($overhead * $entry[BOOST_TIMER_CYCLES])/BOOST_TIMER_OVERHEAD_MULTIPLIER), 2);
 			}
 			$timer_cycles += $entry[BOOST_TIMER_CYCLES];
 		}
 
-		if (strlen($outstr)) {
+		if ($outstr != '') {
 			$outstr = "RRDUpdates:$rrd_updates, TotalTime:" . round($end - $start, 0) . ', ' . $outstr;
 			$timer_overhead = round((($overhead * $timer_cycles)/BOOST_TIMER_OVERHEAD_MULTIPLIER), 0);
 			if ($timer_overhead > 0) {

@@ -2276,7 +2276,7 @@ function rrdtool_function_set_font($type, $no_legend, $themefonts) {
 		return;
 	}
 
-	if(strlen($font)) {
+	if($font != '') {
 		/* verifying all possible pango font params is too complex to be tested here
 		 * so we only escape the font
 		 */
