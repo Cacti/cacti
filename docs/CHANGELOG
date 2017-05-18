@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#653: Devices with empty sysNames are not added to discovered devices
 -issue#655: Data source not displaying device name
 -issue#658: Scheduled Reports (type "tree") not working
+-issue#667: In Classic theme initial view of Tree view broken
 -issue#669: Invalid SQL Messages when upgrading to Cacti 1.0.5
 -issue#670: Validation error when you do "Change Graph Template" in Cacti
 -issue#672: Cacti unable to enable snmp notification receiver mibs
