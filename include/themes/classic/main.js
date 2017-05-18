@@ -1,7 +1,7 @@
 function themeReady() {
 	height = get_height();
 	$('#navigation, .cactiConsoleNavigationArea').css('height', height);
-	$('#navigation').show();
+	$('#navigation, #navigation_right').show();
 
 	$(window).unbind().resize(function(event) {
 		if (pageName == 'graph_view.php') {
@@ -24,5 +24,6 @@ function get_height() {
 	nrsh = parseInt($('#navigation_right').prop('scrollHeight'));
 	nh   = parseInt($('#navigation').height());
 	nrh  = parseInt($('#navigation_right').height());
-	return Math.max(nsh, nrsh, nh, nrh);
+	wht  = $(window).height();
+	return Math.max(nsh, nrsh, nh, nrh, wht);
 }
