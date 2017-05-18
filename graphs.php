@@ -528,7 +528,7 @@ function form_actions() {
 				}
 			} elseif (get_request_var('drp_action') == '3') { // duplicate 
 				for ($i=0;($i<count($selected_items));$i++) {
-					duplicate_graph($selected_items[$i], 0, get_nfilter_request_var('title_format'));
+					api_duplicate_graph($selected_items[$i], 0, get_nfilter_request_var('title_format'));
 				}
 			} elseif (get_request_var('drp_action') == '4') { // graph -> graph template
 				for ($i=0;($i<count($selected_items));$i++) {
