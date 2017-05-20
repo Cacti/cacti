@@ -730,6 +730,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 			debug_log_insert_section_end('data_query');
 		}
+
+		$fields_processed[] = $field_name;
 	}
 
 	$session->close();
@@ -832,15 +834,17 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 	foreach($oid_items as $item){
 		$matches = array();
 		if (preg_match('/^\|query_([^|]+)\|$/', $item, $matches)){
-			$iv = db_qstr($matches[1]);
+			$iv = $matches[1];
 			if (is_array($fields_processed) && !in_array($iv, $fields_processed)){
 				$errmsg[] = "rewrite_index='$rewrite_index': '$iv' is not processed yet, could not use it as index source";
 					continue;
 			}
+
 			if (!isset($chain_indexes[$iv])) {
 				$hash =  "$host_id@$snmp_query_id@$iv";
 				if (!isset($data_query_rewrite_indexes_cache[$hash])) {
 					$data_query_rewrite_indexes_cache[$hash] = array();
+					$iv = db_qstr($iv);
 
 					$field_values = db_fetch_assoc_prepared("SELECT snmp_index, field_value
 						FROM host_snmp_cache
