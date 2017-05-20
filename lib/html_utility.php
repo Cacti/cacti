@@ -214,9 +214,9 @@ function html_boolean($html_boolean) {
      checkbox */
 function html_boolean_friendly($html_boolean) {
 	if ($html_boolean == "on") {
-		return "Selected";
+		return __("Selected");
 	} else {
-		return "Not Selected";
+		return __("Not Selected");
 	}
 }
 
