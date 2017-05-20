@@ -5,14 +5,12 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
+global $config;
+
 $no_http_headers = true;
 
 /* display No errors */
 error_reporting(0);
-
-if (isset($config)) {
-	include_once(dirname(__FILE__) . '/../lib/snmp.php');
-}
 
 if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . '/../include/global.php');
@@ -21,6 +19,8 @@ if (!isset($called_by_script_server)) {
 	array_shift($_SERVER['argv']);
 
 	print call_user_func_array('ss_host_disk', $_SERVER['argv']);
+}else{
+	include_once($config['library_path'] . '/snmp.php');
 }
 
 function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = '') {
