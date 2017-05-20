@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -issue#696: Multiple issues with snmpagent notification UI
 -issue#699: Add custom error handler for ping functions
 -issue#708: Issues finding lib/snmp.php in host disk functions
+-issue#712: Change Graph Template dropdown invalid
 -issue: Reports were not using Cacti's permission system for checking access
 -issue: User Admin page reported wrong permissions at Tree level missing some i18n as well
 -issue: Short data_name can cause data collection issues

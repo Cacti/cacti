@@ -720,7 +720,9 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$graph_list = ''; $i = 0;
+	$i          = 0;
+	$graph_list = '';
+	$graph      = array();
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	foreach ($_POST as $var => $val) {
@@ -731,6 +733,14 @@ function form_actions() {
 
 			$graph_list .= '<li>' . htmlspecialchars(get_graph_title($matches[1])) . '</li>';
 			$graph_array[$i] = $matches[1];
+
+			if ($i == 0) {
+				$graph = db_fetch_row_prepared('SELECT id AS local_graph_id, graph_template_id
+					FROM graph_local 
+					WHERE id = ?
+					LIMIT 1', 
+					array($matches[1]));
+			}
 
 			$i++;
 		}
@@ -790,7 +800,7 @@ function form_actions() {
 				}
 			}
 
-			print "	<tr>
+			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Graph(s).  Note that if you choose to Delete Data Sources, only those Data Sources not in use elsewhere will also be Deleted.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>";
@@ -822,17 +832,6 @@ function form_actions() {
 					<p>" . __('Choose a Graph Template and click \'Continue\' to change the Graph Template for the following Graph(s). Please note, that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 					<p>" . __('New Graph Template') . "<br>"; 
-
-					$graph = array();
-					$graph['local_graph_id'] = db_fetch_cell_prepared('SELECT id 
-						FROM graph_local 
-						WHERE graph_template_id = ?
-						LIMIT 1', 
-						array(get_request_var('template_id')));
-
-					$ttemplate = str_replace(array('cg_', 'sg_', 'dq_'), '', get_nfilter_request_var('template_id'));
-
-					$graph['graph_template_id'] = input_validate_input_number($ttemplate);
 
 					$gtsql = get_common_graph_templates($graph);
 
@@ -1196,8 +1195,10 @@ function graph_edit() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	$locked = 'false';
 	$use_graph_template = true;
+
+	$locked = 'false';
+	$graph  = array();
 
 	if (!isempty_request_var('id')) {
 		$_SESSION['sess_graph_lock_id'] = get_request_var('id');
