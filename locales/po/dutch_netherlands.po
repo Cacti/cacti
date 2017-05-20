@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-20 12:51+0200\n"
-"PO-Revision-Date: 2017-05-20 12:59+0200\n"
+"PO-Revision-Date: 2017-05-20 22:06+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -11915,7 +11915,7 @@ msgstr ""
 
 #: ../lib/html.php:336
 msgid "Previous"
-msgstr ""
+msgstr "Vorige"
 
 #: ../lib/html.php:339
 #, php-format
@@ -15138,7 +15138,7 @@ msgstr ""
 
 #: ../user_domains.php:730
 msgid "None Selected"
-msgstr ""
+msgstr "Niets geselecteerd"
 
 #: ../user_domains.php:736
 msgid "No User Domains Found"
@@ -15978,7 +15978,7 @@ msgstr ""
 
 #: ../utilities.php:2133
 msgid "Records"
-msgstr ""
+msgstr "Rijen"
 
 #: ../utilities.php:2136
 msgid "Maximum Allowed Runtime:"
