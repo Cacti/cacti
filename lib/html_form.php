@@ -282,6 +282,7 @@ function draw_edit_control($field_name, &$field_array) {
 			$field_array['action'],
 			$field_array['id'],
 			$field_array['value'],
+			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			((isset($field_array['class'])) ? $field_array['class'] : ''),
 			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
@@ -710,6 +711,11 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 
 		print "<span id='$form_prefix" . "_wrap' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>\n";
 		print "<span id='$form_prefix" . "_click' style='z-index:4' class='ui-icon ui-icon-triangle-1-s'></span>\n";
+
+		if (!empty($none_entry) && empty($previous_value)) {
+			$previous_value = $none_entry;
+		}
+
 		print "<input id='$form_prefix" . "_input' class='ui-selectmenu-text ui-state-default' value='" . htmlspecialchars($previous_value) . "'>\n";
 		print "</span>\n";
 		print "<input type='hidden' id='" . $form_prefix . "' name='" . $form_prefix . "' value='" . $previous_id . "'>\n";
