@@ -1408,6 +1408,10 @@ function pushState(myTitle, myHref) {
 				window.history.pushState(myObject, myTitle, cleanHeader(myHref));
 			}
 		}
+	}else{
+		if (typeof window.history.popState === 'function') {
+			window.history.popState();
+		}
 	}
 
 	statePushed = true;
