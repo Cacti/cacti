@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#687: Cacti DB access not compatible with PHP 7
 -issue#696: Multiple issues with snmpagent notification UI
 -issue#699: Add custom error handler for ping functions
+-issue#704: Fix GUI issues for Graphs not belonging to a device
 -issue#708: Issues finding lib/snmp.php in host disk functions
 -issue#712: Change Graph Template dropdown invalid
 -issue: Reports were not using Cacti's permission system for checking access

@@ -1324,7 +1324,7 @@ function graph_edit() {
 			'friendly_name' => __('Selected Graph Template'),
 			'description' => __('Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100% compatible Graph Template, which means that it includes identical Data Sources.'),
 			'value' => $graph_template_id,
-			'none_value' => ($graph['graph_template_id'] == 0 ? __('None'):''),
+			'none_value' => (!isset($graph['graph_template_id']) || $graph['graph_template_id'] == 0 ? __('None'):''),
 			'sql' => $gtsql
   			),
 		'host_id' => array(
@@ -1333,20 +1333,21 @@ function graph_edit() {
 			'description' => __('Choose the Device that this Graph belongs to.'),
 			'sql' => 'SELECT id, description as name FROM host ORDER BY name',
 			'action' => 'ajax_hosts_noany',
+			'none_value' => __('None'),
 			'id' => $host_id,
 			'value' => db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id)),
 			),
 		'graph_template_graph_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($graph) ? $graph['id'] : '0')
+			'value' => (isset($graph['id']) ? $graph['id'] : '0')
 			),
 		'local_graph_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($graph) ? $graph['local_graph_id'] : '0')
+			'value' => (isset($graph['local_graph_id']) ? $graph['local_graph_id'] : '0')
 			),
 		'local_graph_template_graph_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($graph) ? $graph['local_graph_template_graph_id'] : '0')
+			'value' => (isset($graph['local_graph_template_graph_id']) ? $graph['local_graph_template_graph_id'] : '0')
 			),
 		'graph_template_id_prev' => array(
 			'method' => 'hidden',
@@ -1420,8 +1421,8 @@ function graph_edit() {
 			$form_array += array($field_name => $struct_graph[$field_name]);
 
 			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){
-				$form_array[$field_name]['value'] = (isset($graph) ? $graph[$field_name] : '');
-				$form_array[$field_name]['form_id'] = (isset($graph) ? $graph['id'] : '0');
+				$form_array[$field_name]['value'] = (isset($graph[$field_name]) ? $graph[$field_name] : '');
+				$form_array[$field_name]['form_id'] = (isset($graph[$field_name]) ? $graph['id'] : '0');
 
 				if ($use_graph_template == true && isset($graph_template['t_' . $field_name]) && ($graph_template['t_' . $field_name] == 'on')) {
 					$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
