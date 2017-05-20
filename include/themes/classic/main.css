@@ -310,8 +310,8 @@ label {
 }
 
 .itemlist { 
-	height:400px;
-	overflow-y:scroll;
+	max-height:400px;
+	overflow-y:auto;
 }
 
 .realms {
@@ -1528,7 +1528,7 @@ div#tabs {
 	vertical-align: bottom;
 	height: 36px;
 	overflow: hidden;
-	width: 60%;
+	width: 70%;
 }
 
 td#tabs {
