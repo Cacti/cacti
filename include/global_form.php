@@ -721,7 +721,7 @@ $struct_graph = array(
 		'none_value' => __('None'),
 		'description' => __('When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where
 			data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970)
-			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --left-axis-format.  Finally
+			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --right-axis-format.  Finally
 			"duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
 		),
 	'left_axis_formatter' => array(
@@ -730,10 +730,10 @@ $struct_graph = array(
 		'array' => $rrd_axis_formatters,
 		'default' => '0',
 		'none_value' => __('None'),
-		'description' => __('When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where
+		'description' => __('When you setup the left axis labeling, apply a rule to the data format.  Supported formats include "numeric" where
 			data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970)
-			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --left-axis-format.  Finally
-			"duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
+			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length.  Finally "duration" where values
+			are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
 		),
 	'legend_header' => array(
 		'friendly_name' => __('Legend Options'),
