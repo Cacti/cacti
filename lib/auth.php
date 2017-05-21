@@ -1566,6 +1566,65 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	print json_encode($return);
 }
 
+function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
+	$return    = array();
+
+	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+	if ($term != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . "name_cache LIKE '%$term%' OR data_source_name LIKE '%$term%'";
+	}
+
+	if (get_request_var('term') == '') {
+		if ($include_none) {
+			$return[] = array('label' => 'None', 'value' => 'None', 'id' => '0');
+		}
+	}
+
+	$graph_items = get_allowed_graph_items($sql_where, 'name_cache', 30);
+	if (sizeof($graph_items)) {
+		foreach($graph_items as $gi) {
+			$return[] = array('label' => $gi['name'], 'value' => $gi['name'], 'id' => $gi['id']);
+		}
+	}
+
+	print json_encode($return);
+}
+
+function get_allowed_graph_items($sql_where, $sort = 'name' , $limit = 30, $user = 0) {
+	$return = array();
+
+	if ($user == 0) {
+		$user = $_SESSION['sess_user_id'];
+	}
+
+	if ($sql_where != '') {
+		$sql_where = 'WHERE ' . $sql_where;
+	}
+
+	$items = db_fetch_assoc("SELECT
+		CONCAT_WS('', dtd.name_cache,' (', dtr.data_source_name, ')') as name, dtr.id, dl.host_id
+		FROM data_local AS dl
+		INNER JOIN data_template_data AS dtd
+		ON dtd.local_data_id=dl.id
+		INNER JOIN data_template_rrd AS dtr
+		ON dtr.local_data_id=dl.id
+		LEFT JOIN host AS h
+		ON dl.host_id=h.id
+		$sql_where
+		ORDER BY $sort
+		LIMIT $limit");
+
+	if (sizeof($items)) {
+		foreach($items as $i) {
+			if (is_device_allowed($i['host_id'], $user)) {
+				$return[] = array('id' => $i['id'], 'name' => $i['name']);
+			}
+		}
+	}
+
+	return $return;
+}
+
 function secpass_login_process() {
 	$users = db_fetch_assoc('SELECT username FROM user_auth WHERE realm = 0');
 	$username = sanitize_search_string(get_nfilter_request_var('login_username'));
