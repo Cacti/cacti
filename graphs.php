@@ -336,7 +336,9 @@ function get_current_graph_template_name($local_graph_id) {
 		WHERE id = ?', 
 		array($local_graph_id));
 
-	if ($graph_local['snmp_query_id'] > 0) {
+	if (empty($graph_local['graph_template_id'])) {
+		return __('None');
+	} elseif ($graph_local['snmp_query_id'] > 0) {
 		return db_fetch_cell_prepared('SELECT sqg.name 
 			FROM snmp_query_graph AS sqg 
 			INNER JOIN graph_local AS gl 
@@ -1804,7 +1806,6 @@ function graph_management() {
 	if (sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
-			$template_name = ((empty($graph['name'])) ? '<em>None</em>' : htmlspecialchars($graph['name']));
 			$template_name = get_current_graph_template_name($graph['local_graph_id']);
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
