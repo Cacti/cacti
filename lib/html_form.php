@@ -709,16 +709,16 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 	} else {
 		$form_prefix = htmlspecialchars($form_name);
 
-		print "<span id='$form_prefix" . "_wrap' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>\n";
-		print "<span id='$form_prefix" . "_click' style='z-index:4' class='ui-icon ui-icon-triangle-1-s'></span>\n";
+		print "<span id='$form_prefix" . "_wrap' style='width:300px;' class='autodrop ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>";
+		print "<span id='$form_prefix" . "_click' style='z-index:4' class='ui-icon ui-icon-triangle-1-s'></span>";
 
 		if (!empty($none_entry) && empty($previous_value)) {
 			$previous_value = $none_entry;
 		}
 
-		print "<input id='$form_prefix" . "_input' class='ui-selectmenu-text ui-state-default' value='" . htmlspecialchars($previous_value) . "'>\n";
-		print "</span>\n";
-		print "<input type='hidden' id='" . $form_prefix . "' name='" . $form_prefix . "' value='" . $previous_id . "'>\n";
+		print "<input id='$form_prefix" . "_input' size='28' class='ui-autocomplete-input ui-state-default ui-selectmenu-text' value='" . htmlspecialchars($previous_value) . "'>";
+		print "<input type='hidden' id='" . $form_prefix . "' name='" . $form_prefix . "' value='" . $previous_id . "'>";
+		print "</span>";
 		?>
 		<script type='text/javascript'>
 		var <?php print $form_name;?>Timer;
@@ -748,7 +748,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 					<?php print $form_name;?>Open = false;
 				} else {
 					<?php print $form_name;?>ClickTimer = setTimeout(function() {
-						$('#<?php print $form_prefix;?>_input').autocomplete('search', $('#<?php print $form_prefix;?>_input').val());
+						$('#<?php print $form_prefix;?>_input').autocomplete('search', '');
 						clearTimeout(<?php print $form_name;?>Timer);
 						<?php print $form_name;?>Open = true;
 					}, 200);
