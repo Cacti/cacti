@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#707: Back button not working
 -issue#708: Issues finding lib/snmp.php in host disk functions
 -issue#712: Change Graph Template dropdown invalid
+-issue#717: Allow ajax callbacks when adding non-templated graph items
 -issue: Reports were not using Cacti's permission system for checking access
 -issue: User Admin page reported wrong permissions at Tree level missing some i18n as well
 -issue: Short data_name can cause data collection issues
