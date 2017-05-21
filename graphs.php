@@ -985,9 +985,9 @@ function form_actions() {
 
 				function changeTotalsType() {
 					if (($('#aggregate_total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR;?>)) {
-						$('#aggregate_total_prefix').attr('value', 'Total');
+						$('#aggregate_total_prefix').attr('value', '<?php print __('Total');?>');
 					} else if (($('#aggregate_total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL;?>)) {
-						$('#aggregate_total_prefix').attr('value', 'All Items');
+						$('#aggregate_total_prefix').attr('value', '<?php print __('All Items');?>');
 					}
 				}
 
@@ -1137,6 +1137,8 @@ function item() {
 		$template_item_list = array();
 
 		$header_label = __('Graph Items [new]');
+		$add_text     = '';
+		$anchor_link  = '';
 	} else {
 		$template_item_list = db_fetch_assoc_prepared('SELECT
 			gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id, gti.alpha, gti.textalign,
@@ -1155,20 +1157,24 @@ function item() {
 			WHERE gti.local_graph_id = ?
 			ORDER BY gti.sequence', array(get_request_var('id')));
 
-		$host_id = db_fetch_cell_prepared('SELECT host_id FROM graph_local WHERE id = ?', array(get_request_var('id')));
+		$host_id = db_fetch_cell_prepared('SELECT host_id 
+			FROM graph_local 
+			WHERE id = ?', 
+			array(get_request_var('id')));
+
+		$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id 
+			FROM graph_local 
+			WHERE id = ?', 
+			array(get_request_var('id')));
+
 		$header_label = __('Graph Items [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));
-	}
-
-	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id FROM graph_local WHERE id = ?', array(get_request_var('id')));
-
-	if (empty($graph_template_id)) {
-		$add_text = 'graphs_items.php?action=item_edit&local_graph_id=' . get_request_var('id') . "&host_id=$host_id";
-	} else {
-		$add_text = '';
+		$add_text     = 'graphs_items.php?action=item_edit' . (!empty($host_id) ? '&host_id=' . $host_id:'') . '&local_graph_id=' . get_request_var('id');
+		$anchor_link  = 'host_id=' . $host_id . '&local_graph_id=' . get_request_var('id');
 	}
 
 	html_start_box($header_label, '100%', '', '3', 'center', $add_text);
-	draw_graph_items_list($template_item_list, 'graphs_items.php', 'local_graph_id=' . get_request_var('id'), (empty($graph_template_id) ? false : true));
+
+	draw_graph_items_list($template_item_list, 'graphs_items.php', $anchor_link, (empty($graph_template_id) ? false : true));
 
 	?>
 	<script type='text/javascript'>
