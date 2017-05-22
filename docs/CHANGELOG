@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.8
+-issue#706: Classic external link template images missing
+
 1.1.7
 -issue#470: Enhance Cacti's SNMP function and Data Query XML, add <output_format>hex|string|guess</output_format>
 -issue#653: Devices with empty sysNames are not added to discovered devices
