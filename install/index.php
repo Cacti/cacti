@@ -345,6 +345,21 @@ if (isset_request_var('database_hostname')) {
 	$_SESSION['database_ssl']      = isset_request_var('database_ssl') ? true:false;
 }
 
+if (isset($rdatabase_default) &&
+	isset($rdatabase_username) &&
+	isset($rdatabase_hostname) &&
+	isset($rdatabase_port)) {
+	$remote_good = true;
+} else {
+	$remote_good = false;
+}
+
+if (is_writable($config['base_path'] . '/include/config.php')) {
+	$good_write = true;
+} else {
+	$good_write = false;
+}
+
 $enabled = '1';
 
 ?>
@@ -598,21 +613,6 @@ $enabled = '1';
 							print '</div>';
 
 							print '<div id="remote_database" style="display:none;">';
-
-							if (is_writable($config['base_path'] . '/include/config.php')) {
-								$good_write = true;
-							} else {
-								$good_write = false;
-							}
-
-							if (isset($rdatabase_default) &&
-								isset($rdatabase_username) &&
-								isset($rdatabase_hostname) &&
-								isset($rdatabase_port)) {
-								$remote_good = true;
-							} else {
-								$remote_good = false;
-							}
 
 							if ($remote_good && $good_write) {
 								print '<h4>' . __('Remote Poller Cacti database connection information') . '</h4>';
