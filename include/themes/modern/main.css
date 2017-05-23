@@ -117,9 +117,8 @@ select {
 }
 
 label {
-	white-space:nowrap;
+	white-space: nowrap;
 }
-
 
 .nowrap {
 	white-space:nowrap;
@@ -1287,6 +1286,7 @@ legend {
 
 .formCheckboxLabel {
 	color: #444;
+	vertical-align: 5%;
 }
 
 .formCheckbox {

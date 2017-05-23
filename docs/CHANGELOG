@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.8
 -issue#706: Classic external link template images missing
+-issue:731: Add class to radio button labels to correct display issue
 -feature: Add function to obtain the current execution user
 
 1.1.7
