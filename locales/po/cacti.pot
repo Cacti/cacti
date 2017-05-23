@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-18 17:11+0100\n"
+"POT-Creation-Date: 2017-05-23 11:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,7 +107,7 @@ msgstr ""
 #: ../host_templates.php:30 ../host_templates.php:485 ../host_templates.php:542
 #: ../include/global_arrays.php:1234 ../lib/api_automation.php:1246
 #: ../lib/api_automation.php:1309 ../lib/api_automation.php:1373
-#: ../lib/html.php:970 ../lib/html_form.php:1096 ../lib/html_reports.php:1291
+#: ../lib/html.php:970 ../lib/html_form.php:1102 ../lib/html_reports.php:1291
 #: ../links.php:28 ../managers.php:28 ../pollers.php:29 ../sites.php:28
 #: ../tree.php:1051 ../tree.php:1204 ../tree.php:1264 ../user_admin.php:28
 #: ../user_domains.php:29 ../user_group_admin.php:30 ../vdef.php:29
@@ -157,18 +157,18 @@ msgstr ""
 #: ../data_templates.php:368 ../data_templates.php:384
 #: ../gprint_presets.php:153 ../graph_templates.php:317
 #: ../graph_templates.php:327 ../graph_templates.php:347
-#: ../graph_templates.php:356 ../graphs.php:818 ../graphs.php:845
-#: ../graphs.php:856 ../graphs.php:867 ../graphs.php:882 ../graphs.php:905
-#: ../graphs.php:1029 ../graphs.php:1072 ../graphs.php:1094 ../graphs.php:1102
-#: ../graphs.php:1535 ../host.php:381 ../host.php:390 ../host.php:432
+#: ../graph_templates.php:356 ../graphs.php:830 ../graphs.php:846
+#: ../graphs.php:857 ../graphs.php:868 ../graphs.php:883 ../graphs.php:906
+#: ../graphs.php:1030 ../graphs.php:1073 ../graphs.php:1095 ../graphs.php:1103
+#: ../graphs.php:1545 ../host.php:381 ../host.php:390 ../host.php:432
 #: ../host.php:441 ../host.php:450 ../host.php:464 ../host.php:478
 #: ../host.php:487 ../host.php:495 ../host_templates.php:261
 #: ../host_templates.php:275 ../host_templates.php:286
 #: ../host_templates.php:334 ../host_templates.php:394
-#: ../lib/clog_webapi.php:129 ../lib/html_form.php:1095
-#: ../lib/html_form.php:1107 ../lib/html_form.php:1118
+#: ../lib/clog_webapi.php:129 ../lib/html_form.php:1101
+#: ../lib/html_form.php:1113 ../lib/html_form.php:1124
 #: ../lib/html_utility.php:198 ../links.php:196 ../links.php:205
-#: ../links.php:214 ../managers.php:1012 ../managers.php:1069
+#: ../links.php:214 ../managers.php:1040 ../managers.php:1097
 #: ../pollers.php:288 ../pollers.php:297 ../pollers.php:306 ../pollers.php:315
 #: ../sites.php:280 ../tree.php:490 ../tree.php:499 ../tree.php:508
 #: ../user_admin.php:350 ../user_admin.php:390 ../user_admin.php:401
@@ -198,16 +198,16 @@ msgstr ""
 #: ../data_templates.php:368 ../data_templates.php:384
 #: ../gprint_presets.php:153 ../graph_templates.php:317
 #: ../graph_templates.php:327 ../graph_templates.php:347
-#: ../graph_templates.php:356 ../graphs.php:818 ../graphs.php:845
-#: ../graphs.php:856 ../graphs.php:867 ../graphs.php:882 ../graphs.php:905
-#: ../graphs.php:1029 ../graphs.php:1072 ../graphs.php:1094 ../graphs.php:1102
+#: ../graph_templates.php:356 ../graphs.php:830 ../graphs.php:846
+#: ../graphs.php:857 ../graphs.php:868 ../graphs.php:883 ../graphs.php:906
+#: ../graphs.php:1030 ../graphs.php:1073 ../graphs.php:1095 ../graphs.php:1103
 #: ../host.php:381 ../host.php:390 ../host.php:432 ../host.php:441
 #: ../host.php:450 ../host.php:464 ../host.php:478 ../host.php:487
 #: ../host.php:495 ../host_templates.php:261 ../host_templates.php:275
 #: ../host_templates.php:286 ../host_templates.php:335
 #: ../host_templates.php:395 ../lib/clog_webapi.php:130
 #: ../lib/html_reports.php:643 ../lib/html_utility.php:198 ../links.php:196
-#: ../links.php:205 ../links.php:214 ../managers.php:1012 ../managers.php:1069
+#: ../links.php:205 ../links.php:214 ../managers.php:1040 ../managers.php:1097
 #: ../pollers.php:288 ../pollers.php:297 ../pollers.php:306 ../pollers.php:315
 #: ../sites.php:280 ../tree.php:490 ../tree.php:499 ../tree.php:508
 #: ../user_admin.php:350 ../user_admin.php:390 ../user_admin.php:401
@@ -220,7 +220,7 @@ msgid "Continue"
 msgstr ""
 
 #: ../aggregate_graphs.php:323 ../aggregate_graphs.php:384
-#: ../aggregate_graphs.php:409 ../graphs.php:818
+#: ../aggregate_graphs.php:409 ../graphs.php:830
 msgid "Delete Graph(s)"
 msgstr ""
 
@@ -247,12 +247,12 @@ msgstr ""
 #: ../color_templates.php:246 ../data_input.php:221 ../data_queries.php:325
 #: ../data_source_profiles.php:280 ../data_sources.php:515
 #: ../data_templates.php:388 ../gprint_presets.php:157
-#: ../graph_templates.php:360 ../graphs.php:1031 ../graphs.php:1081
-#: ../graphs.php:1084 ../graphs.php:1107 ../host.php:499
-#: ../host_templates.php:290 ../include/auth.php:115 ../lib/html_form.php:1116
-#: ../lib/html_utility.php:196 ../links.php:218 ../managers.php:1072
-#: ../permission_denied.php:30 ../permission_denied.php:32 ../pollers.php:319
-#: ../sites.php:284 ../tree.php:512 ../user_admin.php:439
+#: ../graph_templates.php:360 ../graphs.php:1032 ../graphs.php:1082
+#: ../graphs.php:1085 ../graphs.php:1108 ../host.php:499
+#: ../host_templates.php:290 ../include/auth.php:115 ../lib/html_form.php:1122
+#: ../lib/html_utility.php:196 ../links.php:218 ../managers.php:1043
+#: ../managers.php:1100 ../permission_denied.php:30 ../permission_denied.php:32
+#: ../pollers.php:319 ../sites.php:284 ../tree.php:512 ../user_admin.php:439
 #: ../user_domains.php:258 ../user_group_admin.php:491 ../vdef.php:284
 msgid "Return"
 msgstr ""
@@ -327,7 +327,7 @@ msgstr ""
 msgid "Destination Branch:"
 msgstr ""
 
-#: ../aggregate_graphs.php:438 ../graphs.php:882
+#: ../aggregate_graphs.php:438 ../graphs.php:883
 msgid "Place Graph(s) on Tree"
 msgstr ""
 
@@ -335,11 +335,11 @@ msgstr ""
 msgid "You must select at least one graph."
 msgstr ""
 
-#: ../aggregate_graphs.php:476 ../graphs.php:1140
+#: ../aggregate_graphs.php:476 ../graphs.php:1141
 msgid "Graph Items [new]"
 msgstr ""
 
-#: ../aggregate_graphs.php:492 ../graphs.php:1160
+#: ../aggregate_graphs.php:492 ../graphs.php:1172
 #, php-format
 msgid "Graph Items [edit: %s]"
 msgstr ""
@@ -377,11 +377,11 @@ msgstr ""
 msgid "Aggregate Preview [%s]"
 msgstr ""
 
-#: ../aggregate_graphs.php:633 ../graph.php:431 ../graphs.php:1398
+#: ../aggregate_graphs.php:633 ../graph.php:431 ../graphs.php:1408
 msgid "RRDTool Command:"
 msgstr ""
 
-#: ../aggregate_graphs.php:635 ../graph.php:434 ../graphs.php:1400
+#: ../aggregate_graphs.php:635 ../graph.php:434 ../graphs.php:1410
 msgid "RRDTool Says:"
 msgstr ""
 
@@ -390,15 +390,15 @@ msgstr ""
 msgid "Aggregate Graph %s"
 msgstr ""
 
-#: ../aggregate_graphs.php:798 ../lib/api_aggregate.php:1221
+#: ../aggregate_graphs.php:798 ../graphs.php:990 ../lib/api_aggregate.php:1221
 msgid "Total"
 msgstr ""
 
-#: ../aggregate_graphs.php:802
+#: ../aggregate_graphs.php:802 ../graphs.php:992
 msgid "All Items"
 msgstr ""
 
-#: ../aggregate_graphs.php:825 ../graphs.php:1414 ../lib/api_aggregate.php:1367
+#: ../aggregate_graphs.php:825 ../graphs.php:1424 ../lib/api_aggregate.php:1367
 msgid "Graph Configuration"
 msgstr ""
 
@@ -426,14 +426,14 @@ msgstr ""
 #: ../data_source_profiles.php:719 ../data_sources.php:1251
 #: ../data_templates.php:754 ../gprint_presets.php:262
 #: ../graph_templates.php:628 ../graph_view.php:517 ../graph_view.php:818
-#: ../graphs.php:1687 ../graphs_new.php:548 ../host.php:1375
+#: ../graphs.php:1697 ../graphs_new.php:548 ../host.php:1375
 #: ../host_templates.php:700 ../lib/api_automation.php:133
 #: ../lib/api_automation.php:460 ../lib/api_automation.php:683
 #: ../lib/api_automation.php:988 ../lib/clog_webapi.php:380
 #: ../lib/html_filter.php:63 ../lib/html_graph.php:206
 #: ../lib/html_graph.php:432 ../lib/html_reports.php:1378
 #: ../lib/html_tree.php:121 ../lib/html_tree.php:605 ../lib/html_tree.php:879
-#: ../links.php:309 ../managers.php:150 ../managers.php:533 ../managers.php:724
+#: ../links.php:309 ../managers.php:150 ../managers.php:525 ../managers.php:758
 #: ../plugins.php:276 ../pollers.php:517 ../rrdcleaner.php:475
 #: ../settings.php:204 ../settings.php:221 ../settings.php:267 ../sites.php:387
 #: ../tree.php:633 ../tree.php:668 ../tree.php:1485 ../user_admin.php:2193
@@ -450,7 +450,7 @@ msgstr ""
 
 #: ../aggregate_graphs.php:1013 ../aggregate_graphs.php:1111
 #: ../aggregate_graphs.php:1354 ../color_templates.php:549
-#: ../graph_view.php:395 ../graph_view.php:556 ../graphs.php:1693
+#: ../graph_view.php:395 ../graph_view.php:556 ../graphs.php:1703
 #: ../host.php:1501 ../include/global_arrays.php:686
 #: ../include/global_arrays.php:865 ../lib/api_automation.php:274
 #: ../lib/functions.php:1856 ../lib/html.php:1308 ../lib/html.php:1310
@@ -470,12 +470,12 @@ msgstr ""
 #: ../color_templates.php:453 ../data_input.php:629 ../data_queries.php:1058
 #: ../data_source_profiles.php:729 ../data_source_profiles.php:848
 #: ../data_sources.php:1287 ../data_templates.php:780 ../gprint_presets.php:272
-#: ../graph_templates.php:638 ../graph_view.php:560 ../graphs.php:1697
+#: ../graph_templates.php:638 ../graph_view.php:560 ../graphs.php:1707
 #: ../graphs_new.php:530 ../host.php:1400 ../host_templates.php:710
 #: ../include/global_form.php:79 ../lib/api_automation.php:176
 #: ../lib/api_automation.php:470 ../lib/api_automation.php:693
 #: ../lib/api_automation.php:1031 ../lib/html_reports.php:1398 ../links.php:319
-#: ../managers.php:160 ../managers.php:543 ../plugins.php:299
+#: ../managers.php:160 ../managers.php:535 ../plugins.php:299
 #: ../pollers.php:527 ../rrdcleaner.php:501 ../sites.php:397 ../tree.php:1495
 #: ../user_admin.php:2203 ../user_admin.php:2563 ../user_admin.php:2650
 #: ../user_admin.php:2756 ../user_admin.php:2843 ../user_admin.php:2930
@@ -501,14 +501,14 @@ msgstr ""
 #: ../color_templates.php:472 ../data_input.php:640 ../data_queries.php:1069
 #: ../data_source_profiles.php:746 ../data_sources.php:1241
 #: ../data_templates.php:797 ../gprint_presets.php:289
-#: ../graph_templates.php:655 ../graph_view.php:571 ../graphs.php:1677
+#: ../graph_templates.php:655 ../graph_view.php:571 ../graphs.php:1687
 #: ../graphs_new.php:554 ../host.php:1365 ../host_templates.php:727
 #: ../lib/api_automation.php:187 ../lib/api_automation.php:452
 #: ../lib/api_automation.php:704 ../lib/api_automation.php:1042
 #: ../lib/clog_webapi.php:340 ../lib/html.php:1154 ../lib/html_filter.php:81
 #: ../lib/html_graph.php:190 ../lib/html_reports.php:1408
 #: ../lib/html_tree.php:642 ../links.php:328 ../managers.php:171
-#: ../managers.php:554 ../managers.php:743 ../plugins.php:310
+#: ../managers.php:546 ../managers.php:777 ../plugins.php:310
 #: ../pollers.php:538 ../sites.php:408 ../tree.php:1506 ../user_admin.php:2214
 #: ../user_admin.php:2580 ../user_admin.php:2667 ../user_admin.php:2773
 #: ../user_admin.php:2860 ../user_admin.php:2947 ../user_admin.php:3034
@@ -521,10 +521,10 @@ msgstr ""
 #: ../data_input.php:640 ../data_queries.php:1069
 #: ../data_source_profiles.php:746 ../data_sources.php:1241
 #: ../data_templates.php:797 ../gprint_presets.php:289
-#: ../graph_templates.php:655 ../graph_view.php:571 ../graphs.php:1677
+#: ../graph_templates.php:655 ../graph_view.php:571 ../graphs.php:1687
 #: ../graphs_new.php:554 ../host.php:1365 ../host_templates.php:727
-#: ../lib/html_graph.php:190 ../managers.php:171 ../managers.php:554
-#: ../managers.php:743 ../plugins.php:310 ../pollers.php:538 ../sites.php:408
+#: ../lib/html_graph.php:190 ../managers.php:171 ../managers.php:546
+#: ../managers.php:777 ../plugins.php:310 ../pollers.php:538 ../sites.php:408
 #: ../tree.php:1506 ../user_admin.php:2214 ../user_admin.php:2580
 #: ../user_admin.php:2667 ../user_admin.php:2773 ../user_admin.php:2860
 #: ../user_admin.php:2947 ../user_admin.php:3034 ../user_domains.php:642
@@ -544,7 +544,7 @@ msgstr ""
 #: ../color_templates.php:475 ../data_input.php:643 ../data_queries.php:1072
 #: ../data_source_profiles.php:749 ../data_sources.php:1244
 #: ../data_templates.php:800 ../gprint_presets.php:292
-#: ../graph_templates.php:658 ../graph_view.php:574 ../graphs.php:1680
+#: ../graph_templates.php:658 ../graph_view.php:574 ../graphs.php:1690
 #: ../graphs_new.php:555 ../host.php:1368 ../host_templates.php:730
 #: ../lib/api_automation.php:190 ../lib/api_automation.php:455
 #: ../lib/api_automation.php:707 ../lib/api_automation.php:1045
@@ -552,7 +552,7 @@ msgstr ""
 #: ../lib/html_graph.php:193 ../lib/html_graph.php:322
 #: ../lib/html_reports.php:1411 ../lib/html_tree.php:645
 #: ../lib/html_tree.php:768 ../links.php:331 ../managers.php:174
-#: ../managers.php:557 ../managers.php:746 ../plugins.php:313
+#: ../managers.php:549 ../managers.php:780 ../plugins.php:313
 #: ../pollers.php:541 ../sites.php:411 ../tree.php:1509 ../user_admin.php:2217
 #: ../user_admin.php:2583 ../user_admin.php:2670 ../user_admin.php:2776
 #: ../user_admin.php:2863 ../user_admin.php:2950 ../user_admin.php:3037
@@ -565,10 +565,10 @@ msgstr ""
 #: ../color.php:565 ../data_input.php:643 ../data_queries.php:1072
 #: ../data_source_profiles.php:749 ../data_sources.php:1244
 #: ../data_templates.php:800 ../gprint_presets.php:292
-#: ../graph_templates.php:658 ../graph_view.php:574 ../graphs.php:1680
+#: ../graph_templates.php:658 ../graph_view.php:574 ../graphs.php:1690
 #: ../graphs_new.php:555 ../host.php:1368 ../host_templates.php:730
 #: ../lib/html_graph.php:193 ../lib/html_tree.php:645 ../managers.php:174
-#: ../managers.php:557 ../managers.php:746 ../plugins.php:313
+#: ../managers.php:549 ../managers.php:780 ../plugins.php:313
 #: ../pollers.php:541 ../sites.php:411 ../tree.php:1509 ../user_admin.php:2217
 #: ../user_admin.php:2583 ../user_admin.php:2670 ../user_admin.php:2776
 #: ../user_admin.php:2863 ../user_admin.php:2950 ../user_admin.php:3037
@@ -582,7 +582,7 @@ msgid "Clear Filters"
 msgstr ""
 
 #: ../aggregate_graphs.php:1116 ../aggregate_graphs.php:1435
-#: ../graph_view.php:619 ../graphs.php:1058 ../lib/api_automation.php:561
+#: ../graph_view.php:619 ../graphs.php:1059 ../lib/api_automation.php:561
 #: ../user_admin.php:1006 ../user_group_admin.php:821
 msgid "Graph Title"
 msgstr ""
@@ -590,7 +590,7 @@ msgstr ""
 #: ../aggregate_graphs.php:1117 ../aggregate_graphs.php:1436
 #: ../automation_graph_rules.php:856 ../automation_tree_rules.php:843
 #: ../data_queries.php:1153 ../data_sources.php:1406 ../data_templates.php:910
-#: ../graph_templates.php:762 ../graphs.php:1788 ../host.php:1500
+#: ../graph_templates.php:762 ../graphs.php:1798 ../host.php:1500
 #: ../host_templates.php:815 ../lib/api_automation.php:273 ../pollers.php:612
 #: ../sites.php:482 ../tree.php:1559 ../user_admin.php:1006
 #: ../user_admin.php:1101 ../user_admin.php:1242 ../user_admin.php:1384
@@ -605,7 +605,7 @@ msgid "Included in Aggregate"
 msgstr ""
 
 #: ../aggregate_graphs.php:1119 ../aggregate_graphs.php:1438
-#: ../graph_templates.php:765 ../graphs.php:1790
+#: ../graph_templates.php:765 ../graphs.php:1800
 msgid "Size"
 msgstr ""
 
@@ -636,7 +636,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: ../aggregate_graphs.php:1135 ../graphs.php:1810
+#: ../aggregate_graphs.php:1135 ../graphs.php:1819
 #: ../lib/api_automation.php:588
 msgid "No Graphs Found"
 msgstr ""
@@ -647,7 +647,7 @@ msgid "Aggregate Graphs"
 msgstr ""
 
 #: ../aggregate_graphs.php:1332 ../data_sources.php:1206 ../graph_view.php:524
-#: ../graphs.php:1653 ../host.php:1347 ../lib/api_automation.php:434
+#: ../graphs.php:1663 ../host.php:1347 ../lib/api_automation.php:434
 #: ../lib/html_graph.php:159 ../lib/html_tree.php:611 ../rrdcleaner.php:351
 #: ../user_admin.php:2537 ../user_admin.php:2734 ../user_group_admin.php:2139
 #: ../user_group_admin.php:2249 ../utilities.php:1555
@@ -658,17 +658,16 @@ msgstr ""
 #: ../automation_devices.php:488 ../automation_devices.php:503
 #: ../automation_devices.php:518 ../automation_graph_rules.php:711
 #: ../automation_graph_rules.php:733 ../data_sources.php:1210
-#: ../graphs.php:1657 ../graphs_items.php:308 ../graphs_items.php:329
-#: ../host.php:1316 ../host.php:1334 ../host.php:1351 ../host.php:1385
-#: ../lib/api_automation.php:143 ../lib/api_automation.php:161
-#: ../lib/api_automation.php:421 ../lib/api_automation.php:438
-#: ../lib/api_automation.php:998 ../lib/api_automation.php:1016
-#: ../lib/html.php:1633 ../lib/html_reports.php:1388 ../managers.php:522
-#: ../managers.php:734 ../user_admin.php:2541 ../user_admin.php:2738
-#: ../user_group_admin.php:2143 ../user_group_admin.php:2253
-#: ../utilities.php:654 ../utilities.php:1293 ../utilities.php:1559
-#: ../utilities.php:1604 ../utilities.php:2267 ../utilities.php:2520
-#: ../utilities.php:2533
+#: ../graphs.php:1667 ../graphs_items.php:325 ../host.php:1316 ../host.php:1334
+#: ../host.php:1351 ../host.php:1385 ../lib/api_automation.php:143
+#: ../lib/api_automation.php:161 ../lib/api_automation.php:421
+#: ../lib/api_automation.php:438 ../lib/api_automation.php:998
+#: ../lib/api_automation.php:1016 ../lib/html.php:1633
+#: ../lib/html_reports.php:1388 ../managers.php:514 ../managers.php:768
+#: ../user_admin.php:2541 ../user_admin.php:2738 ../user_group_admin.php:2143
+#: ../user_group_admin.php:2253 ../utilities.php:654 ../utilities.php:1293
+#: ../utilities.php:1559 ../utilities.php:1604 ../utilities.php:2267
+#: ../utilities.php:2520 ../utilities.php:2533
 msgid "Any"
 msgstr ""
 
@@ -677,30 +676,30 @@ msgstr ""
 #: ../automation_networks.php:421 ../automation_networks.php:633
 #: ../automation_tree_rules.php:855 ../data_sources.php:824
 #: ../data_sources.php:1211 ../data_sources.php:1436 ../data_templates.php:932
-#: ../graph_view.php:782 ../graphs.php:1326 ../graphs.php:1658
-#: ../graphs_items.php:309 ../graphs_items.php:330 ../host.php:1013
-#: ../host.php:1317 ../host.php:1352 ../include/global_arrays.php:330
-#: ../include/global_arrays.php:383 ../include/global_arrays.php:459
-#: ../include/global_arrays.php:571 ../include/global_arrays.php:594
-#: ../include/global_arrays.php:1318 ../include/global_form.php:389
-#: ../include/global_form.php:712 ../include/global_form.php:721
-#: ../include/global_form.php:732 ../include/global_form.php:775
-#: ../include/global_form.php:782 ../include/global_form.php:808
-#: ../include/global_form.php:837 ../include/global_form.php:845
-#: ../include/global_form.php:1032 ../include/global_form.php:1041
-#: ../include/global_form.php:2097 ../include/global_form.php:2139
-#: ../include/global_settings.php:445 ../include/global_settings.php:453
-#: ../include/global_settings.php:900 ../include/global_settings.php:1324
-#: ../lib/api_automation.php:144 ../lib/api_automation.php:422
-#: ../lib/api_automation.php:439 ../lib/api_automation.php:576
-#: ../lib/api_automation.php:999 ../lib/html.php:1634 ../lib/html_form.php:315
-#: ../lib/html_graph.php:396 ../lib/html_reports.php:280
-#: ../lib/html_reports.php:328 ../lib/html_reports.php:340
-#: ../lib/html_reports.php:349 ../lib/html_reports.php:359
-#: ../lib/html_tree.php:843 ../settings.php:197 ../settings.php:214
-#: ../settings.php:237 ../user_admin.php:2542 ../user_admin.php:2739
-#: ../user_group_admin.php:2144 ../user_group_admin.php:2254
-#: ../utilities.php:1560
+#: ../graph_view.php:782 ../graphs.php:340 ../graphs.php:1335
+#: ../graphs.php:1344 ../graphs.php:1668 ../graphs_items.php:326
+#: ../graphs_items.php:429 ../host.php:1013 ../host.php:1317 ../host.php:1352
+#: ../include/global_arrays.php:330 ../include/global_arrays.php:383
+#: ../include/global_arrays.php:459 ../include/global_arrays.php:571
+#: ../include/global_arrays.php:594 ../include/global_arrays.php:1318
+#: ../include/global_form.php:389 ../include/global_form.php:712
+#: ../include/global_form.php:721 ../include/global_form.php:732
+#: ../include/global_form.php:775 ../include/global_form.php:782
+#: ../include/global_form.php:808 ../include/global_form.php:837
+#: ../include/global_form.php:845 ../include/global_form.php:1032
+#: ../include/global_form.php:1041 ../include/global_form.php:2097
+#: ../include/global_form.php:2139 ../include/global_settings.php:445
+#: ../include/global_settings.php:453 ../include/global_settings.php:900
+#: ../include/global_settings.php:1324 ../lib/api_automation.php:144
+#: ../lib/api_automation.php:422 ../lib/api_automation.php:439
+#: ../lib/api_automation.php:576 ../lib/api_automation.php:999
+#: ../lib/html.php:1634 ../lib/html_form.php:316 ../lib/html_graph.php:396
+#: ../lib/html_reports.php:280 ../lib/html_reports.php:328
+#: ../lib/html_reports.php:340 ../lib/html_reports.php:349
+#: ../lib/html_reports.php:359 ../lib/html_tree.php:843 ../settings.php:197
+#: ../settings.php:214 ../settings.php:237 ../user_admin.php:2542
+#: ../user_admin.php:2739 ../user_group_admin.php:2144
+#: ../user_group_admin.php:2254 ../utilities.php:1560
 msgid "None"
 msgstr ""
 
@@ -712,7 +711,7 @@ msgstr ""
 msgid "The internal database identifier for this object"
 msgstr ""
 
-#: ../aggregate_graphs.php:1437 ../graphs.php:1062
+#: ../aggregate_graphs.php:1437 ../graphs.php:1063
 msgid "Aggregate Template"
 msgstr ""
 
@@ -874,8 +873,8 @@ msgstr ""
 msgid "Confirm new password"
 msgstr ""
 
-#: ../auth_changepassword.php:307 ../lib/html_form.php:1113
-#: ../lib/html_form.php:1122 ../lib/html_graph.php:197 ../lib/html_tree.php:649
+#: ../auth_changepassword.php:307 ../lib/html_form.php:1119
+#: ../lib/html_form.php:1128 ../lib/html_graph.php:197 ../lib/html_tree.php:649
 msgid "Save"
 msgstr ""
 
@@ -1089,11 +1088,11 @@ msgid "Added to Cacti"
 msgstr ""
 
 #: ../automation_devices.php:106 ../automation_devices.php:108
-#: ../data_sources.php:822 ../graph_view.php:619 ../graphs.php:1331
-#: ../graphs_items.php:304 ../include/global_arrays.php:651
-#: ../include/global_arrays.php:696 ../include/global_arrays.php:1434
-#: ../lib/api_automation.php:417 ../lib/functions.php:3796 ../lib/html.php:1629
-#: ../lib/html.php:1659 ../lib/html_reports.php:335 ../lib/html_tree.php:349
+#: ../data_sources.php:822 ../graph_view.php:619 ../graphs.php:1340
+#: ../include/global_arrays.php:651 ../include/global_arrays.php:696
+#: ../include/global_arrays.php:1434 ../lib/api_automation.php:417
+#: ../lib/functions.php:3796 ../lib/html.php:1629 ../lib/html.php:1659
+#: ../lib/html_reports.php:335 ../lib/html_tree.php:349
 #: ../lib/html_tree.php:377 ../utilities.php:1409
 msgid "Device"
 msgstr ""
@@ -1161,7 +1160,7 @@ msgstr ""
 #: ../include/global_form.php:1006 ../include/global_form.php:1287
 #: ../include/global_form.php:1630 ../install/index.php:899
 #: ../lib/api_automation.php:269 ../lib/api_automation.php:1137
-#: ../managers.php:222 ../tree.php:647 ../user_admin.php:1101
+#: ../managers.php:217 ../tree.php:647 ../user_admin.php:1101
 #: ../user_admin.php:1242 ../user_group_admin.php:966
 #: ../user_group_admin.php:1883
 msgid "Description"
@@ -1188,7 +1187,7 @@ msgstr ""
 #: ../host.php:1503 ../lib/api_automation.php:157 ../lib/api_automation.php:271
 #: ../lib/api_automation.php:560 ../lib/api_automation.php:1012
 #: ../lib/api_automation.php:1140 ../lib/html_reports.php:1384
-#: ../managers.php:224 ../plugins.php:282 ../plugins.php:377 ../pollers.php:614
+#: ../managers.php:219 ../plugins.php:282 ../plugins.php:377 ../pollers.php:614
 #: ../user_admin.php:1242 ../user_group_admin.php:966
 msgid "Status"
 msgstr ""
@@ -1217,7 +1216,7 @@ msgstr ""
 msgid "Reset fields to defaults"
 msgstr ""
 
-#: ../automation_devices.php:474 ../color.php:571 ../lib/html_form.php:1128
+#: ../automation_devices.php:474 ../color.php:571 ../lib/html_form.php:1134
 msgid "Export"
 msgstr ""
 
@@ -1226,7 +1225,7 @@ msgid "Export to a file"
 msgstr ""
 
 #: ../automation_devices.php:477 ../lib/clog_webapi.php:120
-#: ../lib/clog_webapi.php:346 ../managers.php:749
+#: ../lib/clog_webapi.php:346 ../managers.php:783
 msgid "Purge"
 msgstr ""
 
@@ -1269,7 +1268,7 @@ msgid ""
 msgstr ""
 
 #: ../automation_graph_rules.php:260 ../automation_tree_rules.php:262
-#: ../graphs.php:851 ../graphs.php:862
+#: ../graphs.php:852 ../graphs.php:863
 msgid "Title Format"
 msgstr ""
 
@@ -1360,8 +1359,8 @@ msgstr ""
 #: ../include/global_settings.php:339 ../lib/api_automation.php:162
 #: ../lib/api_automation.php:1017 ../lib/html_reports.php:1389
 #: ../lib/html_reports.php:1482 ../lib/html_reports.php:1493
-#: ../lib/html_reports.php:1529 ../links.php:381 ../managers.php:249
-#: ../managers.php:628 ../user_admin.php:1101 ../user_admin.php:1113
+#: ../lib/html_reports.php:1529 ../links.php:381 ../managers.php:244
+#: ../managers.php:630 ../user_admin.php:1101 ../user_admin.php:1113
 #: ../user_admin.php:2265 ../user_domains.php:341 ../user_domains.php:718
 #: ../user_group_admin.php:87 ../user_group_admin.php:675
 #: ../user_group_admin.php:690 ../user_group_admin.php:1887
@@ -1379,7 +1378,7 @@ msgstr ""
 #: ../include/global_settings.php:1145 ../include/global_settings.php:1764
 #: ../lib/api_automation.php:163 ../lib/api_automation.php:1018
 #: ../lib/html_reports.php:1390 ../lib/html_reports.php:1529
-#: ../lib/html_utility.php:807 ../managers.php:249 ../managers.php:628
+#: ../lib/html_utility.php:807 ../managers.php:244 ../managers.php:630
 #: ../pollers.php:40 ../user_admin.php:1113 ../user_domains.php:402
 #: ../user_group_admin.php:690 ../utilities.php:2142
 msgid "Disabled"
@@ -1516,7 +1515,7 @@ msgstr ""
 #: ../include/global_form.php:2070 ../include/global_form.php:2168
 #: ../include/global_form.php:2215 ../install/index.php:466
 #: ../install/index.php:543 ../install/index.php:899 ../lib/vdef.php:74
-#: ../managers.php:607 ../pollers.php:52 ../sites.php:40 ../user_admin.php:1101
+#: ../managers.php:594 ../pollers.php:52 ../sites.php:40 ../user_admin.php:1101
 #: ../user_domains.php:317 ../utilities.php:466 ../utilities.php:2338
 msgid "Name"
 msgstr ""
@@ -2422,7 +2421,7 @@ msgstr ""
 msgid "Device Automation Templates"
 msgstr ""
 
-#: ../automation_templates.php:512 ../data_sources.php:1410 ../graphs.php:1789
+#: ../automation_templates.php:512 ../data_sources.php:1410 ../graphs.php:1799
 #: ../user_admin.php:1384 ../user_group_admin.php:1109
 msgid "Template Name"
 msgstr ""
@@ -2681,7 +2680,7 @@ msgid ""
 "information."
 msgstr ""
 
-#: ../color.php:373 ../lib/html_form.php:463
+#: ../color.php:373 ../lib/html_form.php:464
 msgid "Select a File"
 msgstr ""
 
@@ -2733,7 +2732,7 @@ msgstr ""
 msgid "Named Colors"
 msgstr ""
 
-#: ../color.php:568 ../lib/html_form.php:1126
+#: ../color.php:568 ../lib/html_form.php:1132
 msgid "Import"
 msgstr ""
 
@@ -3116,8 +3115,9 @@ msgid "Data Template - %s"
 msgstr ""
 
 #: ../data_queries.php:550 ../data_sources.php:881 ../data_templates.php:516
-#: ../include/global_arrays.php:698 ../include/global_form.php:797
-#: ../lib/api_aggregate.php:1215 ../lib/html.php:856
+#: ../graphs_items.php:425 ../include/global_arrays.php:698
+#: ../include/global_form.php:797 ../lib/api_aggregate.php:1215
+#: ../lib/html.php:856
 msgid "Data Source"
 msgstr ""
 
@@ -3619,7 +3619,7 @@ msgstr ""
 msgid "Edit Data Template."
 msgstr ""
 
-#: ../data_sources.php:751 ../graphs.php:1294
+#: ../data_sources.php:751 ../graphs.php:1303
 msgid "Edit Device."
 msgstr ""
 
@@ -3698,7 +3698,7 @@ msgstr ""
 msgid "1 Minute"
 msgstr ""
 
-#: ../data_sources.php:1196 ../graphs_items.php:292
+#: ../data_sources.php:1196 ../graphs_items.php:306
 #, php-format
 msgid "Data Sources [%s]"
 msgstr ""
@@ -4195,21 +4195,21 @@ msgid "Associated Graph Items"
 msgstr ""
 
 #: ../graph_templates_items.php:99 ../graph_templates_items.php:125
-#: ../graphs_items.php:118
+#: ../graphs_items.php:135
 msgid "Cur:"
 msgstr ""
 
 #: ../graph_templates_items.php:106 ../graph_templates_items.php:132
-#: ../graphs_items.php:125
+#: ../graphs_items.php:142
 msgid "Avg:"
 msgstr ""
 
 #: ../graph_templates_items.php:113 ../graph_templates_items.php:146
-#: ../graphs_items.php:139
+#: ../graphs_items.php:156
 msgid "Max:"
 msgstr ""
 
-#: ../graph_templates_items.php:139 ../graphs_items.php:132
+#: ../graph_templates_items.php:139 ../graphs_items.php:149
 msgid "Min:"
 msgstr ""
 
@@ -4283,7 +4283,7 @@ msgstr ""
 msgid "Templates Selected"
 msgstr ""
 
-#: ../graphs.php:49 ../graphs.php:845 ../lib/functions.php:1920
+#: ../graphs.php:49 ../graphs.php:846 ../lib/functions.php:1920
 msgid "Change Graph Template"
 msgstr ""
 
@@ -4295,11 +4295,11 @@ msgstr ""
 msgid "Create Aggregate from Template"
 msgstr ""
 
-#: ../graphs.php:58 ../graphs.php:1094 ../host.php:43
+#: ../graphs.php:58 ../graphs.php:1095 ../host.php:43
 msgid "Apply Automation Rules"
 msgstr ""
 
-#: ../graphs.php:64 ../graphs.php:867
+#: ../graphs.php:64 ../graphs.php:868
 msgid "Convert to Graph Template"
 msgstr ""
 
@@ -4312,28 +4312,28 @@ msgstr ""
 msgid "ERROR: no Data Source associated. Check Template"
 msgstr ""
 
-#: ../graphs.php:795
+#: ../graphs.php:807
 msgid ""
 "Click 'Continue' to delete the following Graph(s).  Note that if you choose "
 "to Delete Data Sources, only those Data Sources not in use elsewhere will "
 "also be Deleted."
 msgstr ""
 
-#: ../graphs.php:799
+#: ../graphs.php:811
 msgid "The following Data Source(s) are in use by these Graph(s)."
 msgstr ""
 
-#: ../graphs.php:808
+#: ../graphs.php:820
 msgid ""
 "Delete all Data Source(s) referenced by these Graph(s) that are not in use "
 "elsewhere."
 msgstr ""
 
-#: ../graphs.php:810
+#: ../graphs.php:822
 msgid "Leave the Data Source(s) untouched."
 msgstr ""
 
-#: ../graphs.php:822
+#: ../graphs.php:834
 msgid ""
 "Choose a Graph Template and click 'Continue' to change the Graph Template "
 "for the following Graph(s). Please note, that only compatible Graph "
@@ -4341,89 +4341,89 @@ msgid ""
 "identical Data Sources."
 msgstr ""
 
-#: ../graphs.php:824
+#: ../graphs.php:836
 msgid "New Graph Template"
 msgstr ""
 
-#: ../graphs.php:849
+#: ../graphs.php:850
 msgid ""
 "Click 'Continue' to duplicate the following Graph(s). You can optionally "
 "change the title format for the new Graph(s)."
 msgstr ""
 
-#: ../graphs.php:852
+#: ../graphs.php:853
 msgid "<graph_title> (1)"
 msgstr ""
 
-#: ../graphs.php:856
+#: ../graphs.php:857
 msgid "Duplicate Graph(s)"
 msgstr ""
 
-#: ../graphs.php:860
+#: ../graphs.php:861
 msgid ""
 "Click 'Continue' to convert the following Graph(s) into Graph Template(s).  "
 "You can optionally change the title format for the new Graph Template(s)."
 msgstr ""
 
-#: ../graphs.php:863
+#: ../graphs.php:864
 msgid "<graph_title> Template"
 msgstr ""
 
-#: ../graphs.php:871
+#: ../graphs.php:872
 msgid ""
 "Click 'Continue' to place the following Graph(s) under the Tree Branch "
 "selected below."
 msgstr ""
 
-#: ../graphs.php:873
+#: ../graphs.php:874
 msgid "Destination Branch"
 msgstr ""
 
-#: ../graphs.php:886
+#: ../graphs.php:887
 msgid "Choose a new Device for these Graph(s) and click 'Continue'."
 msgstr ""
 
-#: ../graphs.php:888
+#: ../graphs.php:889
 msgid "New Device"
 msgstr ""
 
-#: ../graphs.php:900
+#: ../graphs.php:901
 msgid ""
 "Click 'Continue' to re-apply suggested naming to the following Graph(s)."
 msgstr ""
 
-#: ../graphs.php:905
+#: ../graphs.php:906
 msgid "Reapply Suggested Naming to Graph(s)"
 msgstr ""
 
-#: ../graphs.php:921
+#: ../graphs.php:922
 msgid ""
 "Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
 msgstr ""
 
-#: ../graphs.php:928
+#: ../graphs.php:929
 msgid "The following data sources are in use by these graphs:"
 msgstr ""
 
-#: ../graphs.php:961
+#: ../graphs.php:962
 msgid "Please confirm"
 msgstr ""
 
-#: ../graphs.php:1029
+#: ../graphs.php:1030
 msgid "Resize Selected Graph(s)"
 msgstr ""
 
-#: ../graphs.php:1051
+#: ../graphs.php:1052
 msgid ""
 "Select the Aggregate Template to use and press 'Continue' to create your "
 "Aggregate Graph.  Otherwise press 'Cancel' to return."
 msgstr ""
 
-#: ../graphs.php:1072
+#: ../graphs.php:1073
 msgid "Create Aggregate"
 msgstr ""
 
-#: ../graphs.php:1076
+#: ../graphs.php:1077
 msgid ""
 "There are presently no Aggregate Templates defined for this Graph Template.  "
 "Please either first create an Aggregate Template for the selected Graphs "
@@ -4431,52 +4431,52 @@ msgid ""
 "Graph."
 msgstr ""
 
-#: ../graphs.php:1077
+#: ../graphs.php:1078
 msgid "Press 'Return' to return and select different Graphs."
 msgstr ""
 
-#: ../graphs.php:1089
+#: ../graphs.php:1090
 msgid "Click 'Continue' to apply Automation Rules to the following Graphs."
 msgstr ""
 
-#: ../graphs.php:1105
+#: ../graphs.php:1106
 msgid "You must select at least one Graph."
 msgstr ""
 
-#: ../graphs.php:1245
+#: ../graphs.php:1254
 #, php-format
 msgid "Graph [edit: %s]"
 msgstr ""
 
-#: ../graphs.php:1251
+#: ../graphs.php:1260
 msgid "Graph [new]"
 msgstr ""
 
-#: ../graphs.php:1276
+#: ../graphs.php:1285
 msgid "Turn Off Graph Debug Mode."
 msgstr ""
 
-#: ../graphs.php:1278
+#: ../graphs.php:1287
 msgid "Turn On Graph Debug Mode."
 msgstr ""
 
-#: ../graphs.php:1291
+#: ../graphs.php:1300
 msgid "Edit Graph Template."
 msgstr ""
 
-#: ../graphs.php:1297
+#: ../graphs.php:1306
 msgid "Unlock Graph."
 msgstr ""
 
-#: ../graphs.php:1299
+#: ../graphs.php:1308
 msgid "Lock Graph."
 msgstr ""
 
-#: ../graphs.php:1323
+#: ../graphs.php:1332
 msgid "Selected Graph Template"
 msgstr ""
 
-#: ../graphs.php:1324
+#: ../graphs.php:1333
 #, php-format
 msgid ""
 "Choose a Graph Template to apply to this Graph. Please note that you may "
@@ -4484,64 +4484,68 @@ msgid ""
 "that it includes identical Data Sources."
 msgstr ""
 
-#: ../graphs.php:1332
+#: ../graphs.php:1341
 msgid "Choose the Device that this Graph belongs to."
 msgstr ""
 
-#: ../graphs.php:1371
+#: ../graphs.php:1381
 msgid "Supplemental Graph Template Data"
 msgstr ""
 
-#: ../graphs.php:1373
+#: ../graphs.php:1383
 msgid "Graph Fields"
 msgstr ""
 
-#: ../graphs.php:1374
+#: ../graphs.php:1384
 msgid "Graph Item Fields"
 msgstr ""
 
-#: ../graphs.php:1643 ../lib/functions.php:1908
+#: ../graphs.php:1653 ../lib/functions.php:1908
 msgid "Graph Management"
 msgstr ""
 
-#: ../graphs.php:1787 ../include/global_form.php:1859
+#: ../graphs.php:1797 ../include/global_form.php:1859
 #: ../lib/html_reports.php:355 ../tree.php:681
 msgid "Graph Name"
 msgstr ""
 
-#: ../graphs.php:1787
+#: ../graphs.php:1797
 msgid ""
 "The Title of this Graph.  Generally programatically generated from the Graph "
 "Template definition or Suggested Naming rules.  The max length of the Title "
 "is controlled under Settings->Visual."
 msgstr ""
 
-#: ../graphs.php:1788
+#: ../graphs.php:1798
 msgid ""
 "The internal database ID for this Graph.  Useful when performing automation "
 "or debugging."
 msgstr ""
 
-#: ../graphs.php:1789
+#: ../graphs.php:1799
 msgid "The Graph Template that this Graph was based upon."
 msgstr ""
 
-#: ../graphs.php:1790
+#: ../graphs.php:1800
 msgid "The size of this Graph when not in Preview mode."
 msgstr ""
 
-#: ../graphs_items.php:290
+#: ../graphs_items.php:304
 msgid "Data Sources [No Device]"
 msgstr ""
 
-#: ../graphs_items.php:325 ../include/global_arrays.php:984
+#: ../graphs_items.php:321 ../include/global_arrays.php:984
 #: ../include/global_form.php:1556
 msgid "Data Template"
 msgstr ""
 
-#: ../graphs_items.php:377
+#: ../graphs_items.php:394
 #, php-format
 msgid "Graph Items [graph: %s]"
+msgstr ""
+
+#: ../graphs_items.php:426
+msgid "Choose the Data Source to associate with this Graph Item."
 msgstr ""
 
 #: ../graphs_new.php:75
@@ -4618,8 +4622,8 @@ msgid "Select All"
 msgstr ""
 
 #: ../graphs_new.php:674 ../include/global_arrays.php:679
-#: ../include/global_arrays.php:750 ../lib/html_form.php:1111
-#: ../lib/html_form.php:1124 ../tree.php:1025
+#: ../include/global_arrays.php:750 ../lib/html_form.php:1117
+#: ../lib/html_form.php:1130 ../tree.php:1025
 msgid "Create"
 msgstr ""
 
@@ -4952,7 +4956,7 @@ msgstr ""
 #: ../host.php:1499 ../include/global_form.php:1013
 #: ../include/global_form.php:1638 ../lib/api_automation.php:270
 #: ../lib/api_automation.php:558 ../lib/api_automation.php:809
-#: ../lib/api_automation.php:1138 ../managers.php:225 ../pollers.php:82
+#: ../lib/api_automation.php:1138 ../managers.php:220 ../pollers.php:82
 #: ../pollers.php:613 ../user_admin.php:1242 ../user_group_admin.php:966
 msgid "Hostname"
 msgstr ""
@@ -6841,7 +6845,7 @@ msgid ""
 "'unknown'. (Usually 2x300=600)"
 msgstr ""
 
-#: ../include/global_form.php:464
+#: ../include/global_form.php:464 ../lib/html_utility.php:219
 msgid "Not Selected"
 msgstr ""
 
@@ -8544,7 +8548,7 @@ msgstr ""
 #: ../include/global_settings.php:408
 msgid ""
 "When checked, any attempts to access Cacti will be redirected to HTTPS to "
-"insure high security."
+"ensure high security."
 msgstr ""
 
 #: ../include/global_settings.php:419
@@ -11704,39 +11708,39 @@ msgstr ""
 msgid "Reset filter to default values"
 msgstr ""
 
-#: ../lib/html_form.php:509
+#: ../lib/html_form.php:510
 msgid "File Found"
 msgstr ""
 
-#: ../lib/html_form.php:511
+#: ../lib/html_form.php:512
 msgid "Path is a Directory and not a File"
 msgstr ""
 
-#: ../lib/html_form.php:515
+#: ../lib/html_form.php:516
 msgid "File is Not Found"
 msgstr ""
 
-#: ../lib/html_form.php:518
+#: ../lib/html_form.php:519
 msgid "Enter a valid file path"
 msgstr ""
 
-#: ../lib/html_form.php:554
+#: ../lib/html_form.php:555
 msgid "Directory Found"
 msgstr ""
 
-#: ../lib/html_form.php:556
+#: ../lib/html_form.php:557
 msgid "Path is a File and not a Directory"
 msgstr ""
 
-#: ../lib/html_form.php:560
+#: ../lib/html_form.php:561
 msgid "Directory is Not found"
 msgstr ""
 
-#: ../lib/html_form.php:563
+#: ../lib/html_form.php:564
 msgid "Enter a valid directory path"
 msgstr ""
 
-#: ../lib/html_form.php:1056
+#: ../lib/html_form.php:1062
 msgid "NO FONT VERIFICATION POSSIBLE"
 msgstr ""
 
@@ -12275,11 +12279,11 @@ msgstr ""
 msgid "Graph Template:"
 msgstr ""
 
-#: ../lib/html_tree.php:591 ../lib/reports.php:886
+#: ../lib/html_tree.php:591 ../lib/reports.php:887
 msgid "Tree:"
 msgstr ""
 
-#: ../lib/html_tree.php:592 ../lib/reports.php:891
+#: ../lib/html_tree.php:592 ../lib/reports.php:892
 msgid "Leaf:"
 msgstr ""
 
@@ -12297,6 +12301,10 @@ msgstr ""
 
 #: ../lib/html_tree.php:642
 msgid "Set/Refresh Filter"
+msgstr ""
+
+#: ../lib/html_utility.php:217
+msgid "Selected"
 msgstr ""
 
 #: ../lib/html_utility.php:419 ../lib/html_utility.php:635
@@ -12562,51 +12570,51 @@ msgstr ""
 msgid "Plugin Management"
 msgstr ""
 
-#: ../lib/reports.php:896
+#: ../lib/reports.php:897
 msgid "Host:"
 msgstr ""
 
-#: ../lib/reports.php:901
+#: ../lib/reports.php:902
 msgid "Graph:"
 msgstr ""
 
-#: ../lib/reports.php:1002
+#: ../lib/reports.php:1003
 msgid "(No Graph Template)"
 msgstr ""
 
-#: ../lib/reports.php:1421
+#: ../lib/reports.php:1422
 msgid "Add to Report"
 msgstr ""
 
-#: ../lib/reports.php:1439
+#: ../lib/reports.php:1440
 msgid ""
 "Choose the Report to associate these graphs with.  The defaults for "
 "alignment will be used for each graph in the list below."
 msgstr ""
 
-#: ../lib/reports.php:1441
+#: ../lib/reports.php:1442
 msgid "Report:"
 msgstr ""
 
-#: ../lib/reports.php:1448
+#: ../lib/reports.php:1449
 msgid "Graph Timespan:"
 msgstr ""
 
-#: ../lib/reports.php:1451
+#: ../lib/reports.php:1452
 msgid "Graph Alignment:"
 msgstr ""
 
-#: ../lib/reports.php:1533
+#: ../lib/reports.php:1534
 #, php-format
 msgid "Created Report Graph Item '<i>%s</i>'"
 msgstr ""
 
-#: ../lib/reports.php:1535
+#: ../lib/reports.php:1536
 #, php-format
 msgid "Failed Adding Report Graph Item '<i>%s</i>' Already Exists"
 msgstr ""
 
-#: ../lib/reports.php:1538
+#: ../lib/reports.php:1539
 #, php-format
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr ""
@@ -13175,11 +13183,11 @@ msgstr ""
 msgid "Please close your browser or %sLogin Again%s"
 msgstr ""
 
-#: ../managers.php:40 ../managers.php:226
+#: ../managers.php:40 ../managers.php:221 ../managers.php:603
 msgid "Notifications"
 msgstr ""
 
-#: ../managers.php:41 ../managers.php:227
+#: ../managers.php:41 ../managers.php:222
 msgid "Logs"
 msgstr ""
 
@@ -13187,116 +13195,125 @@ msgstr ""
 msgid "SNMP Notification Receivers"
 msgstr ""
 
-#: ../managers.php:156 ../managers.php:231 ../managers.php:539
-#: ../managers.php:793
+#: ../managers.php:156 ../managers.php:226 ../managers.php:531
+#: ../managers.php:835
 msgid "Receivers"
 msgstr ""
 
-#: ../managers.php:223
+#: ../managers.php:218
 msgid "Id"
 msgstr ""
 
-#: ../managers.php:257
+#: ../managers.php:252
 msgid "No SNMP Notification Receivers"
 msgstr ""
 
-#: ../managers.php:288
+#: ../managers.php:283
 #, php-format
 msgid "SNMP Notification Receiver [edit: %s]"
 msgstr ""
 
-#: ../managers.php:290
+#: ../managers.php:285
 msgid "SNMP Notification Receiver [new]"
 msgstr ""
 
-#: ../managers.php:518 ../managers.php:607 ../utilities.php:2263
+#: ../managers.php:510 ../managers.php:596 ../utilities.php:2263
 #: ../utilities.php:2338
 msgid "MIB"
 msgstr ""
 
-#: ../managers.php:607
-msgid "Kind"
-msgstr ""
-
-#: ../managers.php:607 ../utilities.php:2338
-msgid "Max-Access"
-msgstr ""
-
-#: ../managers.php:607
-msgid "Monitored"
-msgstr ""
-
-#: ../managers.php:607 ../utilities.php:1409 ../utilities.php:2338
+#: ../managers.php:595 ../utilities.php:1409 ../utilities.php:2338
 msgid "OID"
 msgstr ""
 
-#: ../managers.php:634
+#: ../managers.php:597
+msgid "Kind"
+msgstr ""
+
+#: ../managers.php:598 ../utilities.php:2338
+msgid "Max-Access"
+msgstr ""
+
+#: ../managers.php:599
+msgid "Monitored"
+msgstr ""
+
+#: ../managers.php:635
 msgid "No SNMP Notifications"
 msgstr ""
 
-#: ../managers.php:730 ../utilities.php:2516
+#: ../managers.php:764 ../utilities.php:2516
 msgid "Severity"
 msgstr ""
 
-#: ../managers.php:749 ../utilities.php:2559
+#: ../managers.php:783 ../utilities.php:2559
 msgid "Purge Notification Log"
 msgstr ""
 
-#: ../managers.php:797 ../utilities.php:2613
-msgid "Notification"
-msgstr ""
-
-#: ../managers.php:797 ../utilities.php:2613
+#: ../managers.php:830 ../utilities.php:2613
 msgid "Time"
 msgstr ""
 
-#: ../managers.php:797 ../utilities.php:2613
+#: ../managers.php:831 ../utilities.php:2613
+msgid "Notification"
+msgstr ""
+
+#: ../managers.php:832 ../utilities.php:2613
 msgid "Varbinds"
 msgstr ""
 
-#: ../managers.php:803
+#: ../managers.php:849
 msgid "Severity Level"
 msgstr ""
 
-#: ../managers.php:821 ../utilities.php:2635
+#: ../managers.php:866 ../utilities.php:2635
 msgid "No SNMP Notification Log Entries"
 msgstr ""
 
-#: ../managers.php:998
+#: ../managers.php:1026
 msgid "Click 'Continue' to delete the following Notification Receiver"
 msgid_plural "Click 'Continue' to delete following Notification Receiver"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../managers.php:1000
+#: ../managers.php:1028
 msgid "Click 'Continue' to enable the following Notification Receiver"
 msgid_plural "Click 'Continue' to enable following Notification Receiver"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../managers.php:1002
+#: ../managers.php:1030
 msgid "Click 'Continue' to disable the following Notification Receiver"
 msgid_plural "Click 'Continue' to disable following Notification Receiver"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../managers.php:1059
+#: ../managers.php:1040
+#, php-format
+msgid "%s Notification Receivers"
+msgstr ""
+
+#: ../managers.php:1042
+msgid "You must select at least one Notification Receiver."
+msgstr ""
+
+#: ../managers.php:1087
 msgid ""
 "Click 'Continue' to forward the following Notification Objects to this "
 "Notification Receiver."
 msgstr ""
 
-#: ../managers.php:1060
+#: ../managers.php:1088
 msgid ""
 "Click 'Continue' to disable forwarding the following Notification Objects to "
 "this Notification Receiver."
 msgstr ""
 
-#: ../managers.php:1069
+#: ../managers.php:1097
 msgid "Disable Notification Objects"
 msgstr ""
 
-#: ../managers.php:1071
+#: ../managers.php:1099
 msgid "You must select at least one notification object."
 msgstr ""
 

@@ -405,7 +405,7 @@ $settings = array(
 		),
 		'force_https' => array(
 			'friendly_name' => __('Force Connections over HTTPS'),
-			'description' => __('When checked, any attempts to access Cacti will be redirected to HTTPS to insure high security.'),
+			'description' => __('When checked, any attempts to access Cacti will be redirected to HTTPS to ensure high security.'),
 			'default' => '',
 			'method' => 'checkbox',
 			),

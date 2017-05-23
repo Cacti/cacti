@@ -150,7 +150,7 @@ $.fn.delayKeyup = function(callback, ms){
 	return $(this);
 };
 
-/** bindFirst - Function insures that the event is found to the top
+/** bindFirst - Function ensures that the event is found at the top
  * of the event stack. */
 $.fn.bindFirst = function(which, handler) {
 	var $el = $(this);
