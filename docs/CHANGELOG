@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.8
 -issue#706: Classic external link template images missing
+-feature: Add function to obtain the current execution user
 
 1.1.7
 -issue#470: Enhance Cacti's SNMP function and Data Query XML, add <output_format>hex|string|guess</output_format>

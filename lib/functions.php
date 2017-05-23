@@ -1367,6 +1367,18 @@ function get_username($user_id) {
 	return db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id));
 }
 
+/* get_execution_user - returns the username of the running process
+   @returns - the username */
+function get_execution_user() {
+	if (function_exists('posix_getpwuid')) {
+		$user_info = posix_getpwuid(posix_geteuid());
+
+		return $user_info['name'];
+	}else{
+		return exec('whoami');
+	}
+}
+
 /* generate_data_source_path - creates a new data source path from scratch using the first data source
      item name and updates the database with the new value
    @arg $local_data_id - (int) the ID of the data source to generate a new path for
