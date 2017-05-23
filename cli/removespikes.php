@@ -161,8 +161,9 @@ if (sizeof($parms)) {
 				}
 
 				if (!is_writable($rrdfile)) {
-					if ($config['cacti_server_os'] == 'unix' && function_exists('posix_geteuid') && function_exists('posix_getpwuid')) {
-						echo "FATAL: File '$rrdfile' is not writable by the '" . posix_getpwuid(posix_geteuid())['name'] . "' account.\n";
+					$username = get_execution_user();
+					if ($username != '') {
+						echo "FATAL: File '$rrdfile' is not writable by the '$username' account.\n";
 					} else {
 						echo "FATAL: File '$rrdfile' is not writable by this account.\n";
 					}
