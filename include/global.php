@@ -214,7 +214,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	}
 } elseif (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl)) {
 	print $config['is_web'] ? '<p>':'';
-	print 'FATAL: Connection to Cacti database failed. Please insure the database is running and your credentials in config.php are valid.';
+	print 'FATAL: Connection to Cacti database failed. Please ensure the database is running and your credentials in config.php are valid.';
 	print $config['is_web'] ? '</p>':'';
 	exit;
 } else {
