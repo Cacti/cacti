@@ -145,7 +145,7 @@ if (sizeof($parms)) {
 				} elseif ($value == 'nan') {
 					$avgnan = 'nan';
 				} else {
-					echo "FATAL: You must specify either 'last', 'avg' or 'nan' as replacement methods.\n\n";
+					echo "FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method.\n\n";
 					display_help();
 					exit(-10);
 				}
@@ -161,7 +161,11 @@ if (sizeof($parms)) {
 				}
 
 				if (!is_writable($rrdfile)) {
-					echo "FATAL: File '$rrdfile' is not writable by this account.\n";
+					if ($config['cacti_server_os'] == 'unix' && function_exists('posix_geteuid') && function_exists('posix_getpwuid')) {
+						echo "FATAL: File '$rrdfile' is not writable by the '" . posix_getpwuid(posix_geteuid())['name'] . "' account.\n";
+					} else {
+						echo "FATAL: File '$rrdfile' is not writable by this account.\n";
+					}
 					exit(-8);
 				}
 
@@ -332,7 +336,7 @@ if ((!empty($out_start) || !empty($out_end)) && $out_set == true) {
 }
 
 if ((!empty($out_start) && empty($out_end)) || (!empty($out_end) && empty($out_start))) {
-	echo "FATAL: Outlier time range requires outlier-start and outlier-end to be specifieid.\n";
+	echo "FATAL: Outlier time range requires outlier-start and outlier-end to be specified.\n";
 	display_help();
 	exit(-4);
 }
@@ -370,7 +374,7 @@ if (!$using_cacti) {
 		$response_array = explode(' ', $response);
 		echo 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . "\n";
 	} else {
-		echo "FATAL: RRDTool not found in path.  Please insure RRDTool can be found in your path!\n";
+		echo "FATAL: RRDTool not found in path.  Please ensure RRDTool can be found in your path!\n";
 		exit(-1);
 	}
 }
@@ -448,7 +452,7 @@ if (file_exists($xmlfile)) {
 	if ($using_cacti) {
 		$strout .= ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!" . ($html ? "</td></tr>\n":"\n");
 	} else {
-		$strout .= ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "FATAL: RRDtool Command Failed.  Please insure your RRDtool install is valid!" . ($html ? "</td></tr>\n":"\n");
+		$strout .= ($html ? "<tr><td colspan='20' class='spikekill_note'>":'') . "FATAL: RRDtool Command Failed.  Please ensure your RRDtool installation is valid!" . ($html ? "</td></tr>\n":"\n");
 	}
 
 	print $strout;
@@ -1323,7 +1327,7 @@ function display_help () {
 	echo "    --number        - The maximum number of spikes to remove from the RRDfile\n";
 	echo "    --outlier-start - A start date of an incident where all data should be considered\n";
 	echo "                      invalid data and should be excluded from average calculations.\n";
-	echo "    --outlier-end   - A end date of an incident where all data should be considered\n";
+	echo "    --outlier-end   - An end date of an incident where all data should be considered\n";
 	echo "                      invalid data and should be excluded from average calculations.\n";
 	echo "    --outliers      - The number of outliers to ignore when calculating average.\n";
 	echo "    --dryrun        - If specified, the RRDfile will not be changed.  Instead a summary of\n";
