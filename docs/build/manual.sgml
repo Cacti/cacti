@@ -319,6 +319,26 @@ DirectoryIndex index.php</userinput></screen>
 					</para>
 <screen><prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root password somepassword</userinput>
 <prompt>shell&gt;</prompt> <userinput>mysqladmin --user=root --password reload</userinput></screen>
+					<para>
+						Galera clustering:  There are several tables which are set to use the MEMORY storage engine which do not get replicated among nodes which can cause problems.  If you configure Cacti to only connect to one node of your cluster and are not load balancing this does not apply to you.
+					</para>
+					<para>
+						  If you are running multiple nodes in a load-balanced environment where you connect to a VIP you should remove all but one node from rotation during Cacti installation or update.  After the installation/update login to your MySQL server and execute the following commands to update those tables to use the InnoDB engine:
+					</para>
+					<para>
+						<screen>
+							<prompt>MariaDB [(none)]&gt;</prompt> <userinput>use cacti;</userinput>
+							<prompt>MariaDB [cacti]>&gt;</prompt> <userinput>ALTER TABLE `automation_ips` ENGINE=InnoDB;</userinput>
+							<prompt>MariaDB [cacti]>&gt;</prompt> <userinput>ALTER TABLE `automation_processes` ENGINE=InnoDB;</userinput>
+							<prompt>MariaDB [cacti]>&gt;</prompt> <userinput>ALTER TABLE `data_source_stats_hourly_cache` ENGINE=InnoDB;</userinput>
+							<prompt>MariaDB [cacti]>&gt;</prompt> <userinput>ALTER TABLE `data_source_stats_hourly_last` ENGINE=InnoDB;</userinput>
+							<prompt>MariaDB [cacti]>&gt;</prompt> <userinput>ALTER TABLE `poller_output` ENGINE=InnoDB;</userinput>
+							<prompt>MariaDB [cacti]>&gt;</prompt> <userinput>ALTER TABLE `poller_output_boost_processes` ENGINE=InnoDB;</userinput>
+						</screen>
+					</para>
+					<para>
+						These changes should replicate to the other nodes in your cluster.  Allow Cacti to run at least two or three full polling cycles before placing the other nodes back into rotation.
+					</para>
 			</sect1>
 			<sect1 id="unix-configure-cacti">
 				<title>Install and Configure Cacti</title>
