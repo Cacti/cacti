@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#726: Undefined variable in upgrade script
 -issue:731: Add class to radio button labels to correct display issue
 -issue:736: Sequence numbers not visible when editing templates using modern theme
+-issue:741: Errors in dsstats with very large RRDfiles with more than 60 data sources
 -feature: Add function to obtain the current execution user
 
 1.1.7

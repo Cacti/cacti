@@ -263,8 +263,9 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 
 			/* create the command syntax to get data */
 			/* assume that an RRDfile has not more than 62 data sources */
-			$defs     = 'abcdefghijklmnopqrstuvwzyz012345789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			$defs     = 'abcdefghijklmnopqrstuvwxyz012345789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			$i        = 0;
+			$j        = 0;
 			$def      = '';
 			$xport    = '';
 			$dsvalues = array();
@@ -279,15 +280,20 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 			if (sizeof($dsnames)) {
 				foreach ($dsnames as $dsname => $present) {
 					if ($average) {
-						$def .= 'DEF:' . $defs[$i] . "=\"" . $rrdfile . "\":" . $dsname . ':AVERAGE ';
-						$xport .= ' XPORT:' . $defs[$i];
+						$def .= 'DEF:' . $defs[$j] . $defs[$i] . "=\"" . $rrdfile . "\":" . $dsname . ':AVERAGE ';
+						$xport .= ' XPORT:' . $defs[$j] . $defs[$i];
 						$i++;
 					}
 
 					if ($max) {
-						$def .= 'DEF:' . $defs[$i] . "=\"" . $rrdfile . "\":" . $dsname . ':MAX ';
-						$xport .= ' XPORT:' . $defs[$i];
+						$def .= 'DEF:' . $defs[$j] . $defs[$i] . "=\"" . $rrdfile . "\":" . $dsname . ':MAX ';
+						$xport .= ' XPORT:' . $defs[$j] . $defs[$i];
 						$i++;
+					}
+
+					if ($i > 60) {
+						$j++;
+						$i = 0;
 					}
 				}
 			}
