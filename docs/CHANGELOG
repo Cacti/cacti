@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue:736: Sequence numbers not visible when editing templates using modern theme
 -issue:741: Errors in dsstats with very large RRDfiles with more than 60 data sources
 -feature: Add function to obtain the current execution user
+-feature: Implement Site timezones as autocomplete for performance
 
 1.1.7
 -issue#470: Enhance Cacti's SNMP function and Data Query XML, add <output_format>hex|string|guess</output_format>
