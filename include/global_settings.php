@@ -73,9 +73,14 @@ $nohead_files = array_values($no_http_header_files);
 foreach($realm_files as $file) {
 	$logfiles[$file] = $file;
 }
+
 foreach($nohead_files as $file) {
 	$logfiles[$file] = $file;
 }
+
+$logfiles['poller_realtime.php'] = 'poller_realtime.php';
+$logfiles['cmd_realtime.php']    = 'cmd_realtime.php';
+
 asort($logfiles);
 
 /* setting information */
