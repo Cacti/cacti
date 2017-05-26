@@ -291,7 +291,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 						$i++;
 					}
 
-					if ($i > 60) {
+					if ($i > 50) {
 						$j++;
 						$i = 0;
 					}
