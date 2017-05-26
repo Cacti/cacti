@@ -1214,12 +1214,14 @@ table.cactiTable {
 	float: left;
 	display: table-column;
 	width: 50%;
+	text-align: left;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
 	width: 50%;
+	text-align: left;
 }
 
 .formData {
