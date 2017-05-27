@@ -544,6 +544,10 @@ function graph_edit() {
 			WHERE local_graph_id = ?',
 			array($graphs['local_graph_id']));
 
+		if ($aginfo['title_format'] == '') {
+			$aginfo['title_format'] = get_graph_title($graphs['local_graph_id']);
+		}
+
 		$header_label = '[edit: ' . htmlspecialchars(get_graph_title(get_request_var('id'))) . ']';
 	}
 
@@ -856,11 +860,6 @@ function graph_edit() {
 							$form_array[$field_name]['method']      = 'template_' . $form_array[$field_name]['method'];
 							$form_array[$field_name]['description'] = '';
 						}
-					}else{
-						$form_array += array($field_name => $struct_graph[$field_name]);
-
-						$form_array[$field_name]['value']   = (isset($graphs) ? $graphs[$field_name] : '');
-						$form_array[$field_name]['form_id'] = (isset($graphs) ? $graphs['id'] : '0');
 					}
 				} else {
 					$form_array += array($field_name => $struct_graph[$field_name]);
