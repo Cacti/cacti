@@ -581,6 +581,8 @@ function graph_edit() {
 		case 'items':
 		case 'preview':
 			$_SESSION['agg_tab'] = get_nfilter_request_var('tab');
+			set_request_var('tab', get_nfilter_request_var('tab'));
+
 			break;
 		default:
 			if (isset($_SESSION['agg_tab'])) {
@@ -695,7 +697,6 @@ function graph_edit() {
 				draw_aggregate_graph_items_list(0, $template['graph_template_id'], $aginfo);
 			}
 
-			form_hidden_box('id', (isset($template['id']) ? $template['id'] : '0'), '');
 			form_hidden_box('save_component_template', '1', '');
 
 			?>
