@@ -519,7 +519,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 
 				print "<div class='formRow'>\n";
 
-				print "<div class='formColumnLeft'>" . $field['name'] . "</div>\n";
+				print "<div class='formColumnLeft'><div class='formFieldName'>" . $field['name'] . "</div></div>\n";
 				print "<div class='formColumnRight'>";
 
 				draw_custom_data_row($form_field_name, $field['id'], $data['id'], $old_value);
