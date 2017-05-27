@@ -1024,12 +1024,13 @@ function ajaxAnchors() {
 function setupCollapsible() {
 	storage=$.localStorage;
 
+console.log(storage);
 	$('.collapsible').each(function(data) {
 		id=$(this).attr('id')+'_cs';
 		state = storage.get(id);
 		if (state == 'hide') {
 			$(this).addClass('collapsed');
-			$(this).nextUntil('tr.spacer').hide();
+			$(this).nextUntil('div.spacer').hide();
 			$(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
 			storage.set(id, 'hide');
 		}

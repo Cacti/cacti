@@ -3,11 +3,12 @@ Cacti CHANGELOG
 1.1.8
 -issue#706: Classic external link template images missing
 -issue#726: Undefined variable in upgrade script
--issue:731: Add class to radio button labels to correct display issue
--issue:736: Sequence numbers not visible when editing templates using modern theme
--issue:739: Graph Titles missing on aggregate graphs
--issue:741: Errors in dsstats with very large RRDfiles with more than 60 data sources
--issue:748: Search results are not cleared on Aggregates
+-issue#731: Add class to radio button labels to correct display issue
+-issue#736: Sequence numbers not visible when editing templates using modern theme
+-issue#739: Graph Titles missing on aggregate graphs
+-issue#740: Spacer manipulation broken after update to responsive forms
+-issue#741: Errors in dsstats with very large RRDfiles with more than 60 data sources
+-issue#748: Search results are not cleared on Aggregates
 -issue: Hide Aggregate system cdefs when editing graphs and graph templates
 -feature: Add function to obtain the current execution user
 -feature: Implement Site timezones as autocomplete for performance
