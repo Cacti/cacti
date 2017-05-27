@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue:731: Add class to radio button labels to correct display issue
 -issue:736: Sequence numbers not visible when editing templates using modern theme
 -issue:741: Errors in dsstats with very large RRDfiles with more than 60 data sources
+-issue:748: Search results are not cleared on Aggregates
 -issue: Hide Aggregate system cdefs when editing graphs and graph templates
 -feature: Add function to obtain the current execution user
 -feature: Implement Site timezones as autocomplete for performance

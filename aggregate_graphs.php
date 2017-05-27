@@ -557,25 +557,39 @@ function graph_edit() {
 			$template = $aginfo;
 		}
 
-		$aggregate_tabs = array('details' => __('Details'), 'items' => __('Items'), 'preview' => __('Preview'));
+		$aggregate_tabs = array(
+			'details' => __('Details'), 
+			'items'   => __('Items'), 
+			'preview' => __('Preview')
+		);
 	} else {
 		$template = array();
-		$aggregate_tabs = array('details' => __('Details'), 'preview' => __('Preview'));
+		$aggregate_tabs = array(
+			'details' => __('Details'), 
+			'preview' => __('Preview')
+		);
 	}
 
 	/* ================= input validation and session storage ================= */
-	$filters = array(
-		'tab' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'details', 
-			'options' => array('options' => 'sanitize_search_string')
-		)
-	);
-
-	validate_store_request_vars($filters, 'sess_aggregate');
+	if (isset_request_var('tab')) {
+		switch(get_nfilter_request_var('tab')) {
+		case 'details':
+		case 'items':
+		case 'preview':
+			$_SESSION['agg_tab'] = get_nfilter_request_var('tab');
+			break;
+		default:
+			if (isset($_SESSION['agg_tab'])) {
+				set_request_var('tab', $_SESSION['agg_tab']);
+			}else{
+				$_SESSION['agg_tab'] = 'details';
+				set_request_var('tab', 'details');
+			}
+		}
+	}
 	/* ================= input validation ================= */
 
-	$current_tab = get_request_var('tab');
+	$current_tab = get_nfilter_request_var('tab');
 
 	/* draw the categories tabs on the top of the page */
 	print "<div class='tabs'>\n";
@@ -970,7 +984,7 @@ function aggregate_items() {
 	}
 
 	function clearFilter() {
-		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val()+'&clear=1&header=false';
+		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val()+'&clear=true&header=false';
 		loadPageNoHeader(strURL);
 	}
 
