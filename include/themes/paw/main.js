@@ -212,45 +212,9 @@ function themeReady() {
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 	
-	$.ui.selectmenu.prototype._renderItem = function(ui, item) {
-		if (item.element.closest('select').hasClass('colordropdown')) {
-			if (item.label != 'None') {
-				var li = $("<li>", { text: item.label });
+	$('select.colordropdown').dropcolor();
 
-				$('<span>', {
-					style: item.element.attr('data-style'),
-					'class': 'ui-icon color-icon'
-				}).appendTo(li);
-			}else{
-				var li = $("<li>", { text: item.label });
-			}
-		}else if (item.element.closest('select').hasClass('iconselect')) {
-			var li = $('<li>', { text: item.label });
-
-			if (item.disabled) {
-				li.addClass('ui-state-disabled');
-			}
-
-			$('<span>', {
-				style: item.element.attr('data-style'),
-				'class': 'ui-icon ' + item.element.attr('data-class')
-			}).appendTo(li);
-
-			return li.appendTo(ui);
-		}else{
-			var li = $("<li>");
-
-			this._setText(li, item.label);
-		}
-
-		if (item.disabled) {
-			li.addClass("ui-state-disabled");
-		}
-
-		return li.appendTo(ui);
-	}
-
-	$('select').each(function() {
+	$('select').not('.colordropdown').each(function() {
 		if ($(this).prop('multiple') != true) {
 			$(this).selectmenu({
 				change: function(event, ui) {

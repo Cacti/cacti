@@ -1776,3 +1776,149 @@ function initializeGraphs() {
 		}
 	});
 }
+
+// combobox example borrowed from jqueryui
+$.widget('custom.dropcolor', {
+	_create: function() {
+		$('body').append('<div id="cwrap" class="ui-selectmenu-menu ui-front">');
+
+		this.wrapper = $('<span>')
+		.addClass('autodrop ui-selectmenu-button ui-widget ui-state-default ui-corner-all')
+		.insertAfter(this.element);
+ 
+		this.element.hide();
+		this._createAutocomplete();
+		this._createShowAllButton();
+	},
+ 
+	_createAutocomplete: function() {
+		var selected = this.element.children(':selected');
+		var value = selected.val() ? selected.text() : '';
+ 
+		this.input = $('<input>')
+		.appendTo(this.wrapper)
+		.val(value)
+		.attr('title', '')
+		.addClass('ui-autocomplete-input ui-state-default ui-selectmenu-text')
+		.css({'border':'medium none', 'background-color':'transparent', 'width':'220px', 'padding-left':'12px'})
+		.tooltip({
+			classes: {
+				'ui-tooltip': 'ui-state-highlight'
+			}
+		})
+		.on('click', function() {
+			$(this).autocomplete('search', '');
+		})
+		.autocomplete({
+			delay: 0,
+			minLength: 0,
+			source: $.proxy(this, '_source'),
+			create: function() {
+				$(this).data('ui-autocomplete')._renderItem = function(ul, item) {
+					pie = item.label.replace(')', '').split(' (');
+					if (pie[1] != undefined) {
+						color = pie[1];
+						return $('<li>').attr('data-value', item.value).html('<div style="background-color:#'+color+';" class="ui-icon color-icon"></div><div>'+item.label+'</div>').appendTo(ul);
+					}else{
+						return $('<li>').attr('data-value', item.value).append(item.label).appendTo(ul);
+					}
+				}
+
+				$(this).data('ui-autocomplete')._resizeMenu = function () {
+					var ul = this.menu.element;
+					ul.outerWidth('220px');
+				}
+			}
+		});
+
+		this._on(this.input, {
+			autocompleteselect: function(event, ui) {
+				ui.item.option.selected = true;
+				this._trigger('select', event, {
+					item: ui.item.option
+				});
+			},
+
+			autocompletechange: '_removeIfInvalid'
+		});
+	},
+ 
+	_createShowAllButton: function() {
+		var input = this.input;
+		var wasOpen = false;
+ 
+		$('<span>')
+		.attr('tabIndex', -1)
+		.tooltip()
+		.appendTo(this.wrapper)
+		.addClass('ui-icon ui-icon-triangle-1-s')
+		.on('mousedown', function() {
+			wasOpen = input.autocomplete('widget').is(':visible');
+		})
+		.on('click', function() {
+			input.trigger('focus');
+ 
+			// Close if already visible
+			if (wasOpen) {
+				return;
+			}
+ 
+			// Pass empty string as value to search for, displaying all results
+			input.autocomplete('search', '');
+		});
+	},
+ 
+	_source: function(request, response) {
+		var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), 'i');
+		results = this.element.children('option').map(function() {
+			var text = $(this).text();
+			if (this.value && (!request.term || matcher.test(text))) {
+				return {
+					label: text,
+					value: text,
+					option: this
+				};
+			}
+		});
+
+		response(results.slice(0,15));
+	},
+ 
+	_removeIfInvalid: function(event, ui) {
+		// Selected an item, nothing to do
+		if (ui.item) {
+			return;
+		}
+ 
+		// Search for a match (case-insensitive)
+		var value = this.input.val();
+		var valueLowerCase = value.toLowerCase();
+		var valid = false;
+
+		this.element.children('option').each(function() {
+			if ($(this).text().toLowerCase() === valueLowerCase) {
+				this.selected = valid = true;
+				return false;
+			}
+		});
+ 
+		// Found a match, nothing to do
+		if (valid) {
+			return;
+		}
+ 
+		// Remove invalid value
+		this.input.val('');
+		this.element.val('');
+		this._delay(function() {
+			this.input.tooltip('close').attr('title', '');
+		}, 2500 );
+		this.input.autocomplete('instance').term = '';
+	},
+ 
+	_destroy: function() {
+		this.wrapper.remove();
+		this.element.show();
+	}
+});
+

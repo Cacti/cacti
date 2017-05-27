@@ -707,17 +707,15 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 
 		print "</select>\n";
 	} else {
-		$form_prefix = htmlspecialchars($form_name);
-
-		print "<span id='$form_prefix" . "_wrap' style='width:300px;' class='autodrop ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>";
-		print "<span id='$form_prefix" . "_click' style='z-index:4' class='ui-icon ui-icon-triangle-1-s'></span>";
+		print "<span id='$form_name" . "_wrap' style='width:300px;' class='autodrop ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>";
+		print "<input id='$form_name" . "_input' size='28' style='padding-left:12px' class='ui-autocomplete-input ui-state-default ui-selectmenu-text' value='" . htmlspecialchars($previous_value) . "'>";
+		print "<span id='$form_name" . "_click' style='z-index:4' class='ui-icon ui-icon-triangle-1-s'></span>";
 
 		if (!empty($none_entry) && empty($previous_value)) {
 			$previous_value = $none_entry;
 		}
 
-		print "<input id='$form_prefix" . "_input' size='28' class='ui-autocomplete-input ui-state-default ui-selectmenu-text' value='" . htmlspecialchars($previous_value) . "'>";
-		print "<input type='hidden' id='" . $form_prefix . "' name='" . $form_prefix . "' value='" . $previous_id . "'>";
+		print "<input type='hidden' id='" . $form_name . "' name='" . $form_name . "' value='" . $previous_id . "'>";
 		print "</span>";
 		?>
 		<script type='text/javascript'>
@@ -726,41 +724,42 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		var <?php print $form_name;?>Open = false;
 
 		$(function() {
-		    $('#<?php print $form_prefix;?>_input').autocomplete({
+		    $('#<?php print $form_name;?>_input').autocomplete({
 		        source: '<?php print get_current_page();?>?action=<?php print $callback;?>',
 				autoFocus: true,
 				minLength: 0,
 				select: function(event,ui) {
-					$('#<?php print $form_prefix;?>').val(ui.item.id);
+					$('#<?php print $form_name;?>_input').val(ui.item.value);
+					$('#<?php print $form_name;?>').val(ui.item.value);
 					<?php print $on_change;?>;
 				}
 			}).css('border', 'none').css('background-color', 'transparent');
 
-			$('#<?php print $form_prefix;?>_wrap').dblclick(function() {
+			$('#<?php print $form_name;?>_wrap').dblclick(function() {
 				<?php print $form_name;?>Open = false;
 				clearTimeout(<?php print $form_name;?>Timer);
 				clearTimeout(<?php print $form_name;?>ClickTimer);
-				$('#<?php print $form_prefix;?>_input').autocomplete('close');
+				$('#<?php print $form_name;?>_input').autocomplete('close');
 			}).click(function() {
 				if (<?php print $form_name;?>Open) {
-					$('#<?php print $form_prefix;?>_input').autocomplete('close');
+					$('#<?php print $form_name;?>_input').autocomplete('close');
 					clearTimeout(<?php print $form_name;?>Timer);
 					<?php print $form_name;?>Open = false;
 				} else {
 					<?php print $form_name;?>ClickTimer = setTimeout(function() {
-						$('#<?php print $form_prefix;?>_input').autocomplete('search', '');
+						$('#<?php print $form_name;?>_input').autocomplete('search', '');
 						clearTimeout(<?php print $form_name;?>Timer);
 						<?php print $form_name;?>Open = true;
 					}, 200);
 				}
 			}).on('mouseleave', function() {
-				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_prefix;?>_input').autocomplete('close'); }, 800);
+				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_name;?>_input').autocomplete('close'); }, 800);
 			});
 
 			$('ul[id^="ui-id"]').on('mouseenter', function() {
 				clearTimeout(<?php print $form_name;?>Timer);
 			}).on('mouseleave', function() {
-				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_prefix;?>_input').autocomplete('close'); }, 800);
+				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_name;?>_input').autocomplete('close'); }, 800);
 			});
 
 			$('ul[id^="ui-id"] > li').each().on('mouseenter', function() {
@@ -769,12 +768,12 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 				$(this).removeClass('ui-state-hover');
 			});
 
-			$('#<?php print $form_prefix;?>_wrap').on('mouseenter', function() {
+			$('#<?php print $form_name;?>_wrap').on('mouseenter', function() {
 				$(this).addClass('ui-state-hover');
-				$('input#<?php print $form_prefix;?>_input').addClass('ui-state-hover');
+				$('input#<?php print $form_name;?>_input').addClass('ui-state-hover');
 			}).on('mouseleave', function() {
 				$(this).removeClass('ui-state-hover');
-				$('input#<?php print $form_prefix;?>_input').removeClass('ui-state-hover');
+				$('input#<?php print $form_name;?>_input').removeClass('ui-state-hover');
 			});
 		});
 		</script>
@@ -983,7 +982,10 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 		$class = " class='colordropdown'";
 	}
 
-	$current_color = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($form_previous_value));
+	$current_color = db_fetch_cell_prepared('SELECT hex 
+		FROM colors 
+		WHERE id = ?', 
+		array($form_previous_value));
 
 	if ($on_change != '') {
 		$on_change = ' ' . $on_change . ';';
@@ -991,32 +993,39 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 
 	$on_change = " onChange='this.style.backgroundColor=this.options[this.selectedIndex].style.backgroundColor;$on_change'";
 
-	$colors_list = db_fetch_assoc('SELECT * FROM colors ORDER BY hex DESC');
+	$colors_sql = 'SELECT * 
+		FROM colors 
+		ORDER BY 
+			SUBSTRING(hex,0,2) ASC, 
+			SUBSTRING(hex,2,2) ASC,
+			SUBSTRING(hex,4,2) ASC';
 
-	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" . $class . $on_change . ">\n";
+	$colors_list = db_fetch_assoc($colors_sql);
+
+	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" . $class . $on_change . ">";
 
 	if ($form_none_entry != '') {
-		print "<option value='0'>$form_none_entry</option>\n";
+		print "<option value='0'>$form_none_entry</option>";
 	}
 
 	if (sizeof($colors_list) > 0) {
 		foreach ($colors_list as $color) {
 			if ($color['name'] == '') {
-				$display = 'Cacti Color (' . $color['hex'] . ')';
+				$display = __('Cacti Color (%s)', $color['hex']);
 			} else {
 				$display = $color['name'] . ' (' . $color['hex'] . ')';
 			}
-			print "<option data-color='" . $color['hex'] . "' data-style='background-color: #" . $color['hex'] . "' style='background-color: #" . $color['hex'] . ";' value='" . $color['id'] . "'";
+			print "<option data-color='" . $color['hex'] . "' style='background-color: #" . $color['hex'] . ";' value='" . $color['id'] . "'";
 
 			if ($form_previous_value == $color['id']) {
 				print ' selected';
 			}
 
-			print '>' . $display . "</option>\n";
+			print '>' . $display . "</option>";
 		}
 	}
 
-	print "</select>\n";
+	print "</select>";
 }
 
 /* form_font_box - draws a standard html textbox and provides status of a fonts existence
