@@ -436,16 +436,15 @@ function data_query_item_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#cdialog').dialog();
-	});
-
-	$('#continue').click(function(data) {
-		$.post('data_queries.php?action=item_remove', { 
-			__csrf_magic: csrfMagicToken, 
-			snmp_query_id: <?php print get_request_var('snmp_query_id');?>, 
-			id: <?php print get_request_var('id');?> 
-		}, function(data) {
-			$('#cdialog').dialog('close');
-			loadPageNoHeader('data_queries.php?action=edit&header=false&id=<?php print get_request_var('snmp_query_id');?>');
+		$('#continue').click(function(data) {
+			$.post('data_queries.php?action=item_remove', { 
+				__csrf_magic: csrfMagicToken, 
+				snmp_query_id: <?php print get_request_var('snmp_query_id');?>, 
+				id: <?php print get_request_var('id');?> 
+			}, function(data) {
+				$('#cdialog').dialog('close');
+				loadPageNoHeader('data_queries.php?action=edit&header=false&id=<?php print get_request_var('snmp_query_id');?>');
+			});
 		});
 	});
 	</script>
