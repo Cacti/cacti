@@ -586,6 +586,10 @@ function graph_edit() {
 				set_request_var('tab', 'details');
 			}
 		}
+	} elseif (isset($_SESSION['agg_tab'])) {
+		set_request_var('tab', $_SESSION['agg_tab']);
+	} else {
+		set_request_var('tab', 'details'); 
 	}
 	/* ================= input validation ================= */
 
@@ -852,6 +856,11 @@ function graph_edit() {
 							$form_array[$field_name]['method']      = 'template_' . $form_array[$field_name]['method'];
 							$form_array[$field_name]['description'] = '';
 						}
+					}else{
+						$form_array += array($field_name => $struct_graph[$field_name]);
+
+						$form_array[$field_name]['value']   = (isset($graphs) ? $graphs[$field_name] : '');
+						$form_array[$field_name]['form_id'] = (isset($graphs) ? $graphs['id'] : '0');
 					}
 				} else {
 					$form_array += array($field_name => $struct_graph[$field_name]);
