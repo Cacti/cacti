@@ -1157,7 +1157,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	<input type='hidden' id='action' name='action' value='actions'>
 	<script type='text/javascript'>
 	function setDisabled() {
-		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').find('td').unbind().find(':checkbox.disabled').prop('disabled', false);
+		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').find('td').unbind().find(':checkbox.disabled').unbind().prop('disabled', false);
 
 		if ($('#drp_action').val() == <?php print $delete_action;?>) {
 			$(':checkbox.disabled').each(function(data) {
