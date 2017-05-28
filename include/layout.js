@@ -1024,7 +1024,6 @@ function ajaxAnchors() {
 function setupCollapsible() {
 	storage=$.localStorage;
 
-console.log(storage);
 	$('.collapsible').each(function(data) {
 		id=$(this).attr('id')+'_cs';
 		state = storage.get(id);
