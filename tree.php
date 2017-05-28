@@ -918,6 +918,7 @@ function tree_edit() {
 						data.instance.set_id(data.node, d.id);
 						data.instance.set_text(data.node, d.text);
 						data.instance.edit(data.node);
+						$('.jstree').jstree(true).refresh();
 					})
 					.fail(function () {
 						var st = data.instance.get_state();
