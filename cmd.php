@@ -33,6 +33,7 @@ function sig_handler($signo) {
 
 			/* record the process as having completed */
 			record_cmdphp_done();
+			db_close();
 
 			exit;
 			break;
@@ -235,7 +236,9 @@ if (!is_numeric($poller_id) || $poller_id < 1) {
 	$exists = db_fetch_cell_prepared('SELECT COUNT(*) FROM host WHERE poller_id = ?', array($poller_id));
 
 	if (empty($exists)) {
-		cacti_log('FATAL: No hosts matching this poller exist on the system', true, 'POLLER');
+		cacti_log('FATAL: No devices matching this poller exist on the system', true, 'POLLER');
+		record_cmdphp_done();
+		db_close();
 		exit(-1);
 	}
 }
@@ -261,11 +264,12 @@ $polling_interval = read_config_option('poller_interval');
 /* check arguments */
 if ($allhost) {
 	if (isset($polling_interval)) {
-		$polling_items       = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
+		$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
 			FROM poller_item 
 			WHERE poller_id = ? 
 			AND rrd_next_step<=0 
-			ORDER BY host_id', array($poller_id));
+			ORDER BY host_id', 
+			array($poller_id));
 
 		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*) 
 			FROM poller_item 
@@ -274,10 +278,11 @@ if ($allhost) {
 			AND rrd_next_step<=0', 
 			array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT));
 	} else {
-		$polling_items       = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
+		$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
 			FROM poller_item 
 			WHERE poller_id = ?
-			ORDER by host_id', array($poller_id));
+			ORDER by host_id', 
+			array($poller_id));
 
 		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*) 
 			FROM poller_item 
@@ -293,7 +298,8 @@ if ($allhost) {
 		FROM host 
 		WHERE poller_id = ? 
 		AND disabled="" 
-		ORDER BY id', array($poller_id));
+		ORDER BY id', 
+		array($poller_id));
 
 	/* rework the hosts array to be searchable */
 	$hosts = array_rekey($hosts, 'id', $host_struc);
@@ -304,12 +310,14 @@ if ($allhost) {
 	if (isset($polling_interval)) {
 		db_execute_prepared('UPDATE poller_item 
 			SET rrd_next_step = rrd_next_step - ? 
-			WHERE poller_id = ?', array($polling_interval, $poller_id));
+			WHERE poller_id = ?', 
+			array($polling_interval, $poller_id));
 
 		db_execute_prepared('UPDATE poller_item 
 			SET rrd_next_step = rrd_step - ? 
 			WHERE poller_id = ? 
-			AND rrd_next_step < 0', array($polling_interval, $poller_id));
+			AND rrd_next_step < 0', 
+			array($polling_interval, $poller_id));
 	}
 } else {
 	$print_data_to_stdout = false;
@@ -319,12 +327,14 @@ if ($allhost) {
 		input_validate_input_number($last);
 
 		$hosts = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
-				FROM host
-				WHERE poller_id = ? 
-				AND disabled = '' 
-				AND id >= ? 
-				AND id <= ?
-				ORDER by id", array($poller_id, $first, $last));
+			FROM host
+			WHERE poller_id = ? 
+			AND disabled = '' 
+			AND id >= ? 
+			AND id <= ?
+			ORDER by id", 
+			array($poller_id, $first, $last));
+
 		$hosts      = array_rekey($hosts, 'id', $host_struc);
 		$host_count = sizeof($hosts);
 
@@ -335,7 +345,8 @@ if ($allhost) {
 				AND host_id >= ? 
 				AND host_id <= ? 
 				AND rrd_next_step <= 0
-				ORDER by host_id', array($poller_id, $first, $last));
+				ORDER by host_id', 
+				array($poller_id, $first, $last));
 
 			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
 				FROM poller_item
@@ -363,18 +374,19 @@ if ($allhost) {
 				array($polling_interval, $poller_id, $first, $last));
 		} else {
 			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
-					FROM poller_item
-					WHERE poller_id = ? 
-					AND host_id >= ? and host_id <= ? 
-					ORDER by host_id', array($poller_id, $first, $last));
+				FROM poller_item
+				WHERE poller_id = ? 
+				AND host_id >= ? and host_id <= ? 
+				ORDER by host_id', 
+				array($poller_id, $first, $last));
 
 			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*) 
-					FROM poller_item 
-					WHERE poller_id = ? 
-					AND action IN (?, ?) 
-					AND host_id >= ? 
-					AND host_id <= ?', 
-					array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT, $first, $last));
+				FROM poller_item 
+				WHERE poller_id = ? 
+				AND action IN (?, ?) 
+				AND host_id >= ? 
+				AND host_id <= ?', 
+				array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT, $first, $last));
 		}
 	} else {
 		print "ERROR: Invalid Arguments.  The first argument must be less than or equal to the first.\n";
@@ -384,6 +396,7 @@ if ($allhost) {
 
 		/* record the process as having completed */
 		record_cmdphp_done();
+		db_close();
 		exit('-1');
 	}
 }
@@ -465,7 +478,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 				$reindex = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' pr.data_query_id, pr.action,
 					pr.op, pr.assert_value, pr.arg1
 					FROM poller_reindex AS pr
-					WHERE pr.host_id=?', array($item['host_id']));
+					WHERE pr.host_id=?', 
+					array($item['host_id']));
 
 				if (sizeof($reindex) && !$host_down) {
 					cacti_log("Device[$host_id] RECACHE: Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item['hostname'] . "'.", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_DEBUG));

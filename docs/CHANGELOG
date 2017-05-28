@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.8
 -issue#552: Minor selectable row checkbox issue
+-issue#617: Correct poller timeouts when no devices are associated with active data collector
 -issue#706: Classic external link template images missing
 -issue#726: Undefined variable in upgrade script
 -issue#728: Resolve issues with jQueryUI empty dialogs
