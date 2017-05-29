@@ -201,7 +201,8 @@ function clog_view_logfile() {
 	$refresh      = get_request_var('refresh');
 	$message_type = get_request_var('message_type');
 	$tail_lines   = get_request_var('tail_lines');
-	$base_url     = 'clog.php?rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refresh.'&message_type='.$message_type.'&tail_lines='.$tail_lines;
+	$filename     = get_request_var('filename');
+	$base_url     = 'clog.php?rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refresh.'&message_type='.$message_type.'&tail_lines='.$tail_lines.'&filename='.$filename;
 
 	$nav          = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page');
 
