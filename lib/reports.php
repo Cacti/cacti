@@ -66,40 +66,35 @@ function duplicate_reports($_id, $_title) {
  * @return string	- string defining the datetime format specific to this user
  */
 function reports_date_time_format() {
-	global $config;
+	global $datechar;
 
 	$graph_date = '';
 
 	/* setup date format */
 	$date_fmt = read_user_setting('default_date_format');
-	$datechar = read_user_setting('default_datechar');
-
-	switch ($datechar) {
-		case GDC_HYPHEN: 	$datechar = '-'; break;
-		case GDC_SLASH: 	$datechar = '/'; break;
-		case GDC_DOT:	 	$datechar = '.'; break;
-	}
+	$datecharacter = $datechar[read_user_setting('default_datechar')];
 
 	switch ($date_fmt) {
 		case GD_MO_D_Y:
-			$graph_date = 'm' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			$graph_date = 'm' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_MN_D_Y:
-			$graph_date = 'M' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			$graph_date = 'M' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_D_MO_Y:
-			$graph_date = 'd' . $datechar . 'm' . $datechar . 'Y H:i:s';
+			$graph_date = 'd' . $datecharacter . 'm' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_D_MN_Y:
-			$graph_date = 'd' . $datechar . 'M' . $datechar . 'Y H:i:s';
+			$graph_date = 'd' . $datecharacter . 'M' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_Y_MO_D:
-			$graph_date = 'Y' . $datechar . 'm' . $datechar . 'd H:i:s';
+			$graph_date = 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
 			break;
 		case GD_Y_MN_D:
-			$graph_date = 'Y' . $datechar . 'M' . $datechar . 'd H:i:s';
+			$graph_date = 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
 			break;
 	}
+
 	reports_log(__FUNCTION__ . ', datefmt: ' . $graph_date, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 	return $graph_date;
 }

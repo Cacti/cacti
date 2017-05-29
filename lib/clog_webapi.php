@@ -61,10 +61,21 @@ function clog_purge_logfile() {
 function clog_view_logfile() {
 	global $config;
 
-	$logfile = read_config_option('path_cactilog');
+	//Filter filename input
+	if (isset_request_var('filename')) {
+		if (get_request_var('filename') !== basename(get_request_var('filename'))) {
+			set_request_var('filename', '');
+		}
+	}
 
-	if ($logfile == '') {
-		$logfile = './log/cacti.log';
+	if (isset_request_var('filename') && get_request_var('filename') !== '') {
+		$logfile = realpath('./log/' . get_request_var('filename'));
+	} else {
+		$logfile = read_config_option('path_cactilog');
+
+		if ($logfile == '') {
+			$logfile = './log/cacti.log';
+		}
 	}
 
 	/* ================= input validation and session storage ================= */
@@ -308,6 +319,28 @@ function filter() {
 			<table class='filterTable'>
 				<tr>
 					<td>
+						<?php print __('File to show');?>
+					</td>
+					<td>
+						<select id='filename' name='filename'>
+							<?php
+							$logPath = dirname(read_config_option('path_cactilog'));
+							$files = scandir($logPath);
+
+							foreach($files as $logFile) {
+								if (in_array($logFile, array('.', '..', '.htaccess'))) {
+									continue;
+								}
+								print "<option value='" . $logFile . "'";
+								if (get_request_var('filename') == $logFile) {
+									print ' selected';
+								}
+								print '>' . $logFile . "</option>\n";
+							}
+							?>
+						</select>
+					</td>
+					<td>
 						<?php print __('Tail Lines');?>
 					</td>
 					<td>
@@ -323,6 +356,17 @@ function filter() {
 							?>
 						</select>
 					</td>
+					<td>
+						<input type='button' id='go' name='go' value='<?php print __('Go');?>'>
+					</td>
+					<td>
+						<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>'>
+					</td>
+					<td>
+						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='<?php print __('Purge');?>'><?php }?>
+					</td>
+				</tr>
+				<tr>
 					<td class='nowrap'>
 						<?php print __('Message Type');?>
 					</td>
@@ -336,14 +380,14 @@ function filter() {
 							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
 						</select>
 					</td>
-					<td>
-						<input type='button' id='go' name='go' value='<?php print __('Go');?>'>
+					<td class='nowrap'>
+						<?php print __('Display Order');?>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>'>
-					</td>
-					<td>
-						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='<?php print __('Purge');?>'><?php }?>
+						<select id='reverse' name='reverse'>
+							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
+							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
+						</select>
 					</td>
 				</tr>
 				<tr>
@@ -361,15 +405,6 @@ function filter() {
 								print '>' . $display_text . "</option>\n";
 							}
 							?>
-						</select>
-					</td>
-					<td class='nowrap'>
-						<?php print __('Display Order');?>
-					</td>
-					<td>
-						<select id='reverse' name='reverse'>
-							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
-							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
 					</td>
 				</tr>
@@ -400,6 +435,10 @@ function filter() {
 		});
 
 		$('#message_type').change(function() {
+			refreshFilter();
+		});
+
+		$('#filename').change(function() {
 			refreshFilter();
 		});
 
@@ -438,6 +477,7 @@ function filter() {
 				'&refresh='+$('#refresh').val()+
 				'&message_type='+$('#message_type').val()+
 				'&tail_lines='+$('#tail_lines').val()+
+				'&filename='+$('#filename').val()+
 				'&header=false';
 
 			loadPageNoHeader(strURL);
