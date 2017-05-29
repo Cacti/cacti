@@ -24,7 +24,7 @@
 
 global $menu, $menu_glyphs;
 
-/* Array of Cacti versions and template hash codes 
+/* Array of Cacti versions and template hash codes
    Remember to add every version here. */
 $cacti_version_codes = array(
 	'0.8'    => 'NaN',
@@ -170,83 +170,83 @@ $messages = array(
 		'message' => __('Unable to Change Device for Data Query based Graphs.'),
 		'type' => 'error'),
 	'clog_purged' => array(
-		'message' => __('Cacti Log purged successfully'), 
+		'message' => __('Cacti Log purged successfully'),
 		'type' => 'info'),
 	'password_change' => array(
-		'message' => __('Error: If you force a password change, you must also allow the user to change their password.'), 
+		'message' => __('Error: If you force a password change, you must also allow the user to change their password.'),
 		'type' => 'error'),
 	'nopassword' => array(
-		'message' => __('Error: You are not allowed to change your password.'), 
+		'message' => __('Error: You are not allowed to change your password.'),
 		'type' => 'error'),
 	'nodomainpassword' => array(
-		'message' => __('Error: LDAP/AD based password change not supported.'), 
+		'message' => __('Error: LDAP/AD based password change not supported.'),
 		'type' => 'error'),
 	'clog_permissions' => array(
-		'message' => __('Error: Unable to clear log, no write permissions'), 
+		'message' => __('Error: Unable to clear log, no write permissions'),
 		'type' => 'error'),
 	'clog_missing' => array(
-		'message' => __('Error: Unable to clear log, file does not exist'), 
+		'message' => __('Error: Unable to clear log, file does not exist'),
 		'type' => 'error'),
 	'mg_mailtime_invalid' => array(
 		'message' => __('Invalid Timestamp. Select timestamp in the future.'),
 		'type'    => 'error'),
 	'poller_sync' => array(
-		'message' => '<i>' . __('Data Collector(s) Synchronized for Offline Operation') . '</i>', 
+		'message' => '<i>' . __('Data Collector(s) Synchronized for Offline Operation') . '</i>',
 		'type' => 'info'),
 	'poller_notfound' => array(
-		'message' => '<i>' . __('Data Collector(s) Not found when attempting Synchronization') . '</i>', 
+		'message' => '<i>' . __('Data Collector(s) Not found when attempting Synchronization') . '</i>',
 		'type' => 'error'),
 	'poller_noconnect' => array(
-		'message' => '<i>' . __('Unable to establish MySQL connection with remote Data Collector.') . '</i>', 
+		'message' => '<i>' . __('Unable to establish MySQL connection with remote Data Collector.') . '</i>',
 		'type' => 'error'),
 	'poller_nosync' => array(
-		'message' => '<i>' . __('Data Collector Synchronization must be initiated from the main Cacti server.') . '</i>', 
+		'message' => '<i>' . __('Data Collector Synchronization must be initiated from the main Cacti server.') . '</i>',
 		'type' => 'error'),
 	'reports_save' => array(
-		'message' => '<i>' . __('Report Saved') . '</i>', 
+		'message' => '<i>' . __('Report Saved') . '</i>',
 		'type' => 'info'),
 	'reports_save_failed' => array(
-		'message' => '<font style="color:red;"><i>' . __('Report Save Failed') . '</i></font>', 
+		'message' => '<font style="color:red;"><i>' . __('Report Save Failed') . '</i></font>',
 		'type' => 'info'),
 	'reports_item_save' => array(
-		'message' => '<i>' . __('Report Item Saved') . '</i>', 
+		'message' => '<i>' . __('Report Item Saved') . '</i>',
 		'type' => 'info'),
 	'reports_item_save_failed' => array(
-		'message' => '<font style="color:red;"><i>' . __('Report Item Save Failed') . '</i></font>', 
+		'message' => '<font style="color:red;"><i>' . __('Report Item Save Failed') . '</i></font>',
 		'type' => 'info')
 );
 
 if (isset($_SESSION['automation_message']) && $_SESSION['automation_message'] != '') {
 	$messages['automation_message'] = array(
-		'message' => $_SESSION['automation_message'], 
+		'message' => $_SESSION['automation_message'],
 		'type' => 'info'
 	);
 }
 
 if (isset($_SESSION['clog_message']) && $_SESSION['clog_message'] != '') {
 	$messages['clog_message'] = array(
-		'message' => $_SESSION['clog_message'], 
+		'message' => $_SESSION['clog_message'],
 		'type' => 'info'
 	);
 }
 
 if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
 	$messages['clog_error'] = array(
-		'message' => $_SESSION['clog_error'], 
+		'message' => $_SESSION['clog_error'],
 		'type' => 'error'
 	);
 }
 
 if (isset($_SESSION['reports_message']) && $_SESSION['reports_message'] != '') {
 	$messages['reports_message'] = array(
-		'message' => '<i>' . $_SESSION['reports_message'] . '</i>', 
+		'message' => '<i>' . $_SESSION['reports_message'] . '</i>',
 		'type' => 'info'
 	);
 }
 
 if (isset($_SESSION['reports_error']) && $_SESSION['reports_error'] != '') {
 	$messages['reports_error'] = array(
-		'message' => "<span style='color:red;'><i>" . $_SESSION['reports_error'] . "</i></span>", 
+		'message' => "<span style='color:red;'><i>" . $_SESSION['reports_error'] . "</i></span>",
 		'type' => 'info'
 	);
 }
@@ -423,7 +423,7 @@ $graph_item_types = array(
 asort($graph_item_types);
 
 $image_types = array(
-	1 => 'PNG', 
+	1 => 'PNG',
 	3 => 'SVG'
 );
 
@@ -500,7 +500,7 @@ $aggregation_levels = array(
 	43200   => __('%d Hours', 12),
 	86400   => __('Daily')
 );
-	
+
 $sampling_intervals = array(
 	10    => __('Every %d Seconds', 10),
 	15    => __('Every %d Seconds', 15),
@@ -580,7 +580,7 @@ if (function_exists('ldap_connect')) {
 }
 
 $domain_types = array(
-	'1' => __('LDAP'), 
+	'1' => __('LDAP'),
 	'2' => __('Active Directory')
 );
 
@@ -607,7 +607,8 @@ $rrdtool_versions = array(
 	'rrd-1.3.x' => 'RRDTool 1.3.x',
 	'rrd-1.4.x' => 'RRDTool 1.4.x',
 	'rrd-1.5.x' => 'RRDTool 1.5.x',
-	'rrd-1.6.x' => 'RRDTool 1.6.x'
+	'rrd-1.6.x' => 'RRDTool 1.6.x',
+	'rrd-1.7.x' => 'RRDTool 1.7.x'
 );
 
 $i18n_modes = array(

@@ -70,7 +70,7 @@ function db_install_add_key ($table, $type, $key, $columns) {
 	if (!is_array($columns)) {
 		$columns = array($columns);
 	}
-	
+
 	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' ' . $key . '(' . implode(',', $columns) . ')';
 
 	if (db_index_exists($table, $key, false)) {
@@ -138,34 +138,34 @@ function find_best_path($binary_name) {
 	global $config;
 	if ($config['cacti_server_os'] == 'win32') {
 		$search_paths = array(
-			'c:/usr/bin', 
-			'c:/cacti', 
-			'c:/rrdtool', 
-			'c:/spine', 
-			'c:/php', 
-			'c:/net-snmp/bin', 
-			'c:/progra~1/net-snmp/bin', 
-			'c:/progra~1/php', 
-			'c:/progra~1/spine', 
-			'c:/progra~1/spine/bin', 
-			'd:/usr/bin', 
-			'd:/cacti', 
-			'd:/rrdtool', 
-			'd:/spine', 
-			'd:/php', 
-			'd:/net-snmp/bin', 
-			'd:/progra~1/net-snmp/bin', 
-			'd:/progra~1/php', 
-			'd:/progra~1/spine', 
+			'c:/usr/bin',
+			'c:/cacti',
+			'c:/rrdtool',
+			'c:/spine',
+			'c:/php',
+			'c:/net-snmp/bin',
+			'c:/progra~1/net-snmp/bin',
+			'c:/progra~1/php',
+			'c:/progra~1/spine',
+			'c:/progra~1/spine/bin',
+			'd:/usr/bin',
+			'd:/cacti',
+			'd:/rrdtool',
+			'd:/spine',
+			'd:/php',
+			'd:/net-snmp/bin',
+			'd:/progra~1/net-snmp/bin',
+			'd:/progra~1/php',
+			'd:/progra~1/spine',
 			'd:/progra~1/spine/bin'
 		);
 	} else {
 		$search_paths = array(
-			'/bin', 
-			'/sbin', 
-			'/usr/bin', 
-			'/usr/sbin', 
-			'/usr/local/bin', 
+			'/bin',
+			'/sbin',
+			'/usr/bin',
+			'/usr/sbin',
+			'/usr/local/bin',
 			'/usr/local/sbin',
 			'/usr/local/spine/bin',
 			'/usr/spine/bin'
@@ -196,7 +196,7 @@ function install_setup_get_templates() {
 		$filename = "compress.zlib://$path/$xmlfile";
 		$xml = file_get_contents($filename);;
 		//Loading Template Information from package
-		$xmlget = simplexml_load_string($xml); 
+		$xmlget = simplexml_load_string($xml);
 		$data = to_array($xmlget);
 		if (is_array($data['info']['author'])) $data['info']['author'] = '1';
 		if (is_array($data['info']['email'])) $data['info']['email'] = '2';
@@ -453,7 +453,9 @@ function install_file_paths () {
 		exec("\"" . $input['path_rrdtool']['default'] . "\"", $out_array);
 
 		if (sizeof($out_array) > 0) {
-			if (preg_match('/^RRDtool 1\.6/', $out_array[0])) {
+			if (preg_match('/^RRDtool 1\.7/', $out_array[0])) {
+				$input['rrdtool_version']['default'] = 'rrd-1.7.x';
+			}else if (preg_match('/^RRDtool 1\.6/', $out_array[0])) {
 				$input['rrdtool_version']['default'] = 'rrd-1.6.x';
 			}else if (preg_match('/^RRDtool 1\.5/', $out_array[0])) {
 				$input['rrdtool_version']['default'] = 'rrd-1.5.x';
@@ -469,10 +471,10 @@ function install_file_paths () {
 }
 
 function remote_update_config_file() {
-	global $config, $rdatabase_type, $rdatabase_hostname, $rdatabase_username, 
+	global $config, $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
 		$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl;
 
-	global $database_type, $database_hostname, $database_username, 
+	global $database_type, $database_hostname, $database_username,
 		$database_password, $database_default, $database_type, $database_port, $database_ssl;
 
 	$written     = false;
