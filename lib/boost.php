@@ -979,7 +979,7 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 				$rrd_path = $ds_name['rrd_path'];
 			}
 
-			if ($ds_name['rrd_name'] == '') {
+			if (!isset($ds_name['rrd_name'])) {
 				$ds_null[] = $ds_name['data_source_name'];
 			} elseif ($ds_name['rrd_name'] == $ds_name['data_source_name']) {
 				$ds_nnull[] = $ds_name['data_source_name'];
