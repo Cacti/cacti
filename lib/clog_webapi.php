@@ -70,7 +70,7 @@ function clog_view_logfile() {
 			$logfile = $requestedFile;
 		}
 	} elseif ($logfile == '') {
-		$logfile = dirname($logfile) . '/cacti.log';
+		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
 	/* ================= input validation and session storage ================= */

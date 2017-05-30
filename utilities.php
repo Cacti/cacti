@@ -867,9 +867,9 @@ function utilities_clear_user_log() {
 }
 
 function utilities_view_logfile() {
-	global $log_tail_lines, $page_refresh_interval;
+	global $log_tail_lines, $page_refresh_interval, $config;
 
-	$logfile   = read_config_option('path_cactilog');
+	$logfile = read_config_option('path_cactilog');
 
 	if (isset_request_var('filename')) {
 		$requestedFile = dirname($logfile) . '/' . basename(get_request_var('filename'));
@@ -877,11 +877,8 @@ function utilities_view_logfile() {
 			$logfile = $requestedFile;
 		}
 	} elseif ($logfile == '') {
-		$logfile = dirname($logfile) . '/cacti.log';
+		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
-
-	/* helps determine output color */
-	$linecolor = True;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
