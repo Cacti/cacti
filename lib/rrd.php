@@ -576,24 +576,26 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
 				}
 			}
-		}elseif (!is_dir(dirname($data_source_path)) && $config['is_web'] == false) {
-			if (mkdir(dirname($data_source_path), 0775)) {
-				if ($config['cacti_server_os'] != 'win32') {
-					$owner_id = fileowner($config['rra_path']);
-					$group_id = filegroup($config['rra_path']);
+		}elseif (!is_dir(dirname($data_source_path))) {
+			if ($config['is_web'] == false) {
+				if (mkdir(dirname($data_source_path), 0775)) {
+					if ($config['cacti_server_os'] != 'win32') {
+						$owner_id = fileowner($config['rra_path']);
+						$group_id = filegroup($config['rra_path']);
 
-					if ((chown(dirname($data_source_path), $owner_id)) &&
-						(chgrp(dirname($data_source_path), $group_id))) {
-						/* permissions set ok */
-					}else{
-						cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
+						if ((chown(dirname($data_source_path), $owner_id)) &&
+								(chgrp(dirname($data_source_path), $group_id))) {
+							/* permissions set ok */
+						}else{
+							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
+						}
 					}
+				}else{
+					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
 				}
 			}else{
-				cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
+				cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", FALSE);
 			}
-		}else{
-			cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", FALSE);
 		}
 	}
 
