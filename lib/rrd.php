@@ -2160,35 +2160,31 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 }
 
 function rrdtool_function_format_graph_date(&$graph_data_array) {
+	global $datechar;
+
 	$graph_legend = '';
 	/* setup date format */
 	$date_fmt = read_user_setting('default_date_format');
-	$datechar = read_user_setting('default_datechar');
-
-	if ($datechar == GDC_HYPHEN) {
-		$datechar = '-';
-	}else {
-		$datechar = '/';
-	}
+	$datecharacter = $datechar[read_user_setting('default_datechar')];
 
 	switch ($date_fmt) {
 		case GD_MO_D_Y:
-			$graph_date = 'm' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			$graph_date = 'm' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_MN_D_Y:
-			$graph_date = 'M' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			$graph_date = 'M' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_D_MO_Y:
-			$graph_date = 'd' . $datechar . 'm' . $datechar . 'Y H:i:s';
+			$graph_date = 'd' . $datecharacter . 'm' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_D_MN_Y:
-			$graph_date = 'd' . $datechar . 'M' . $datechar . 'Y H:i:s';
+			$graph_date = 'd' . $datecharacter . 'M' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_Y_MO_D:
-			$graph_date = 'Y' . $datechar . 'm' . $datechar . 'd H:i:s';
+			$graph_date = 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
 			break;
 		case GD_Y_MN_D:
-			$graph_date = 'Y' . $datechar . 'M' . $datechar . 'd H:i:s';
+			$graph_date = 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
 			break;
 	}
 

@@ -220,6 +220,7 @@ define('GD_Y_MN_D', 5);
 
 define('GDC_HYPHEN', 0);
 define('GDC_SLASH', 1);
+define('GDC_DOT', 2);
 
 define('CVDEF_ITEM_TYPE_FUNCTION', 1);
 define('CVDEF_ITEM_TYPE_OPERATOR', 2);

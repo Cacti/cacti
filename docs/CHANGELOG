@@ -24,6 +24,8 @@ Cacti CHANGELOG
 -feature: Add function to obtain the current execution user
 -feature: Implement Site timezones as autocomplete for performance
 -feature: For themes other than classic, make color id selection autocomplete
+-feature: CLOG timestamp is now formatted as defined in settings
+-feature: CLOG can show loginformation from rotated logfiles
 
 1.1.7
 -issue#470: Enhance Cacti's SNMP function and Data Query XML, add <output_format>hex|string|guess</output_format>

@@ -1111,7 +1111,8 @@ $dateformats = array(
 
 $datechar = array(
 	GDC_HYPHEN => '-',
-	GDC_SLASH => '/'
+	GDC_SLASH  => '/',
+	GDC_DOT    => '.'
 );
 
 $dsstats_refresh_interval = array(
