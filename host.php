@@ -836,7 +836,7 @@ function host_edit() {
 					<?php device_reindex_methods($item, $host);?>
 					</td>
 					<td>
-						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail') . "</span>" . __n('[%d Item, ' '%d Items, ', $item['items']) . __n('%d Row]', '%d Rows]', $item['rows']);?>
+						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail')) . "</span>" . __n('[%d Item, ', '%d Items, ', $item['items']) . __n('%d Row]', '%d Rows]', $item['rows']);?>
 					</td>
 					<td class='nowrap right' style='vertical-align:middle;'>
 						<span class='reloadquery fa fa-refresh' id='reload<?php print $item['id'];?>' title='<?php print htmlspecialchars(__('Reload Query'), ENT_QUOTES, 'UTF-8');?>' data-id='<?php print $item['id'];?>'></span>
