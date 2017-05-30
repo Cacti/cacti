@@ -61,16 +61,16 @@ function clog_purge_logfile() {
 function clog_view_logfile() {
 	global $config;
 
-	$logfile = read_config_option('path_cactilog');
-	$dirname = dirname($logfile) . '/';
+	$clogAdmin = clog_admin();
+	$logfile   = read_config_option('path_cactilog');
 
 	if (isset_request_var('filename')) {
-		$requestedFile = $dirname . basename(get_request_var('filename'));
+		$requestedFile = dirname($logfile) . '/' . basename(get_request_var('filename'));
 		if (file_exists($requestedFile)) {
 			$logfile = $requestedFile;
 		}
 	} elseif ($logfile == '') {
-		$logfile = $dirname . 'cacti.log';
+		$logfile = dirname($logfile) . '/cacti.log';
 	}
 
 	/* ================= input validation and session storage ================= */
@@ -97,8 +97,6 @@ function clog_view_logfile() {
 		)
 	);
 
-	$clogAdmin = clog_admin();
-
 	validate_store_request_vars($filters, 'sess_clog');
 	/* ================= input validation ================= */
 
@@ -108,9 +106,14 @@ function clog_view_logfile() {
 	set_request_var('page_referrer', 'view_logfile');
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
+	$page_nr = isset_request_var('page') ? get_request_var('page') : 1;
+
+	$page = $config['url_path'] . 'clog' . (!$clogAdmin ? '_user' : '') . '.php?header=false';
+	$page .= '&filename=' . basename($logfile) . '&page=' . $page_nr;
+
 	$refresh = array(
 		'seconds' => get_request_var('refresh'),
-		'page'    => $config['url_path'] . 'clog' . (!$clogAdmin ? '_user' : '') . '.php?header=false&filename='.basename($logfile),
+		'page'    => $page,
 		'logout'  => 'false'
 	);
 
@@ -162,12 +165,11 @@ function clog_view_logfile() {
 	}
 
 	html_start_box(__('Log Filters'), '100%', '', '3', 'center', '');
-	filter();
+	filter($clogAdmin);
 	html_end_box();
 
 	/* read logfile into an array and display */
 	$total_rows      = 0;
-	$page_nr         = isset_request_var('page') ? get_request_var('page') : 1;
 	$number_of_lines = get_request_var('tail_lines') < 0 ? read_config_option('max_display_rows') : get_request_var('tail_lines');
 
 	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows);
@@ -307,7 +309,7 @@ function clog_view_logfile() {
 	bottom_footer();
 }
 
-function filter() {
+function filter($clogAdmin) {
 	global $page_refresh_interval, $log_tail_lines;
 	?>
 	<tr class='even'>
@@ -361,7 +363,7 @@ function filter() {
 						<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>'>
 					</td>
 					<td>
-						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='<?php print __('Purge');?>'><?php }?>
+						<?php if ($clogAdmin) {?><input type='button' id='purge' name='purge' value='<?php print __('Purge');?>'><?php }?>
 					</td>
 				</tr>
 				<tr>

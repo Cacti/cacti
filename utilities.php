@@ -867,12 +867,17 @@ function utilities_clear_user_log() {
 }
 
 function utilities_view_logfile() {
-	global $log_tail_lines, $page_refresh_interval, $config;
+	global $log_tail_lines, $page_refresh_interval;
 
-	$logfile = read_config_option('path_cactilog');
+	$logfile   = read_config_option('path_cactilog');
 
-	if ($logfile == '') {
-		$logfile = $config['base_path'] . '/log/cacti.log';
+	if (isset_request_var('filename')) {
+		$requestedFile = dirname($logfile) . '/' . basename(get_request_var('filename'));
+		if (file_exists($requestedFile)) {
+			$logfile = $requestedFile;
+		}
+	} elseif ($logfile == '') {
+		$logfile = dirname($logfile) . '/cacti.log';
 	}
 
 	/* helps determine output color */
@@ -910,15 +915,16 @@ function utilities_view_logfile() {
 	validate_store_request_vars($filters, 'sess_log');
 	/* ================= input validation ================= */
 
-	if (get_request_var('rows') == '-1') {
-		$rows = read_config_option('num_rows_table');
-	} else {
-		$rows = get_request_var('rows');
-	}
+	$page_nr = isset_request_var('page') ? get_request_var('page') : 1;
 
-	$refresh['seconds'] = get_request_var('refresh');
-	$refresh['page']    = 'utilities.php?action=view_logfile&header=false';
-	$refresh['logout']  = 'false';
+	$page = 'utilities.php?action=view_logfile&header=false';
+	$page .= '&filename=' . basename($logfile) . '&page=' . $page_nr;
+
+	$refresh = array(
+		'seconds' => get_request_var('refresh'),
+		'page'    => $page,
+		'logout'  => 'false'
+	);
 
 	set_page_refresh($refresh);
 
@@ -957,6 +963,7 @@ function utilities_view_logfile() {
 		strURL += '&refresh=' + $('#refresh').val();
 		strURL += '&reverse=' + $('#reverse').val();
 		strURL += '&rfilter=' + $('#rfilter').val();
+		strURL += '&filename=' + $('#filename').val();
 		strURL += '&action=view_logfile';
 		strURL += '&header=false';
 		refreshMSeconds=$('#refresh').val()*1000;
@@ -980,6 +987,29 @@ function utilities_view_logfile() {
 		<form id='form_logfile' action='utilities.php'>
 			<table class='filterTable'>
 				<tr>
+					<td>
+						<?php print __('File to show');?>
+					</td>
+					<td>
+						<select id='filename' name='filename'>
+							<?php
+							$selectedFile = basename(get_request_var('filename'));
+							$logPath      = dirname(read_config_option('path_cactilog'));
+							$files        = scandir($logPath);
+
+							foreach($files as $logFile) {
+								if (in_array($logFile, array('.', '..', '.htaccess'))) {
+									continue;
+								}
+								print "<option value='" . $logFile . "'";
+								if ($selectedFile == $logFile) {
+									print ' selected';
+								}
+								print '>' . $logFile . "</option>\n";
+							}
+							?>
+						</select>
+					</td>
 					<td class='nowrap'>
 						<?php print __('Tail Lines');?>
 					</td>
@@ -990,19 +1020,6 @@ function utilities_view_logfile() {
 								print "<option value='" . $tail_lines . "'"; if (get_request_var('tail_lines') == $tail_lines) { print ' selected'; } print '>' . $display_text . "</option>\n";
 							}
 							?>
-						</select>
-					</td>
-					<td class='nowrap'>
-						<?php print __('Message Type');?>
-					</td>
-					<td>
-						<select id='message_type' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
-							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
-							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
-							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>><?php print __('Errors');?></option>
-							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>><?php print __('Debug');?></option>
-							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
 						</select>
 					</td>
 					<td>
@@ -1016,6 +1033,30 @@ function utilities_view_logfile() {
 					</td>
 				</tr>
 				<tr>
+					<td class='nowrap'>
+						<?php print __('Message Type');?>
+					</td>
+					<td>
+						<select id='message_type' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
+							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
+							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>><?php print __('Errors');?></option>
+							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>><?php print __('Debug');?></option>
+							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
+						</select>
+					</td>
+					<td class='nowrap'>
+						<?php print __('Display Order');?>
+					</td>
+					<td>
+						<select id='reverse' onChange='applyFilter()'>
+							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
+							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
 					<td>
 						<?php print __('Refresh');?>
 					</td>
@@ -1026,15 +1067,6 @@ function utilities_view_logfile() {
 								print "<option value='" . $seconds . "'"; if (get_request_var('refresh') == $seconds) { print ' selected'; } print '>' . $display_text . "</option>\n";
 							}
 							?>
-						</select>
-					</td>
-					<td class='nowrap'>
-						<?php print __('Display Order');?>
-					</td>
-					<td>
-						<select id='reverse' onChange='applyFilter()'>
-							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
-							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
 					</td>
 				</tr>
@@ -1059,7 +1091,6 @@ function utilities_view_logfile() {
 
 	/* read logfile into an array and display */
 	$total_rows      = 0;
-	$page_nr         = isset_request_var('page') ? get_request_var('page') : 1;
 	$number_of_lines = get_request_var('tail_lines') < 0 ? read_config_option('max_display_rows') : get_request_var('tail_lines');
 
 	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows);
@@ -1076,10 +1107,10 @@ function utilities_view_logfile() {
 
 	$rfilter      = get_request_var('rfilter');
 	$reverse      = get_request_var('reverse');
-	$refresh      = get_request_var('refresh');
+	$refreshTime  = get_request_var('refresh');
 	$message_type = get_request_var('message_type');
 	$tail_lines   = get_request_var('tail_lines');
-	$base_url     = 'utilities.php?action=view_logfile&rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refresh.'&message_type='.$message_type.'&tail_lines='.$tail_lines;
+	$base_url     = 'utilities.php?action=view_logfile&rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refreshTime.'&message_type='.$message_type.'&tail_lines='.$tail_lines.'&filename='.basename($logfile);
 
 	$nav          = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page');
 
