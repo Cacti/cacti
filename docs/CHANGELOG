@@ -14,9 +14,12 @@ Cacti CHANGELOG
 -issue#740: Spacer manipulation broken after update to responsive forms
 -issue#741: Errors in dsstats with very large RRDfiles with more than 60 data sources
 -issue#748: Search results are not cleared on Aggregates
+-issue#754: Default Language for user and system are not set on new installation
+-issue#755: RRDtool Graph Watermark is incorrect
 -issue: Hide Aggregate system cdefs when editing graphs and graph templates
--feature#735: Allow color selection in graphs and templates to be autocomplete
 -feature#723: Convert Data Source dropdown to autocomplete when editing standalone graphs
+-feature#735: Allow color selection in graphs and templates to be autocomplete
+-feature#753: Preliminary support for RRDtool 1.7.
 -feature: Add function to obtain the current execution user
 -feature: Implement Site timezones as autocomplete for performance
 -feature: For themes other than classic, make color id selection autocomplete
