@@ -310,7 +310,7 @@ $vdef_item_types = array(
 );
 
 $custom_vdef_data_source_types = array( // this may change as soon as RRDTool supports math in VDEF, until then only reference to CDEF may help
-	'CURRENT_DATA_SOURCE' => 'Current Graph Item Data Source',
+	'CURRENT_DATA_SOURCE' => __('Current Graph Item Data Source'),
 );
 
 $input_types = array(

@@ -180,7 +180,7 @@ function save() {
 
 function automation_graph_rules_form_actions() {
 	global $config, $automation_graph_rules_actions;
-	
+
         /* ================= input validation ================= */
         get_filter_request_var('drp_action');
         /* ==================================================== */
@@ -203,18 +203,18 @@ function automation_graph_rules_form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
-					db_execute_prepared("UPDATE automation_graph_rules 
-						SET enabled='on' 
-						WHERE id = ?", 
+					db_execute_prepared("UPDATE automation_graph_rules
+						SET enabled='on'
+						WHERE id = ?",
 						array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
-					db_execute_prepared("UPDATE automation_graph_rules 
-						SET enabled='' 
-						WHERE id = ?", 
+					db_execute_prepared("UPDATE automation_graph_rules
+						SET enabled=''
+						WHERE id = ?",
 						array($selected_items[$i]));
 				}
 			}
@@ -417,17 +417,17 @@ function automation_graph_rules_remove() {
 	}
 
 	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
-		db_execute_prepared('DELETE FROM automation_match_rule_items 
+		db_execute_prepared('DELETE FROM automation_match_rule_items
 			WHERE rule_id = ?
-			AND rule_type = ?', 
+			AND rule_type = ?',
 			array(get_request_var('id'), AUTOMATION_RULE_TYPE_GRAPH_MATCH));
 
-		db_execute_prepared('DELETE FROM automation_graph_rule_items 
-			WHERE rule_id = ?', 
+		db_execute_prepared('DELETE FROM automation_graph_rule_items
+			WHERE rule_id = ?',
 			array(get_request_var('id')));
 
-		db_execute_prepared('DELETE FROM automation_graph_rules 
-			WHERE id = ?', 
+		db_execute_prepared('DELETE FROM automation_graph_rules
+			WHERE id = ?',
 			array(get_request_var('id')));
 	}
 }
@@ -638,37 +638,37 @@ function automation_graph_rules() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'status' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'snmp_query_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => ''
 			)
@@ -709,14 +709,14 @@ function automation_graph_rules() {
 						<td>
 							<select id='snmp_query_id'>
 								<option value='-1'<?php print (get_request_var('snmp_query_id') == '-1' ? ' selected':'');?>><?php print __('Any');?></option>
-								<?php 
+								<?php
 								$available_data_queries = db_fetch_assoc('SELECT DISTINCT
-									ar.snmp_query_id, sq.name 
+									ar.snmp_query_id, sq.name
 									FROM automation_graph_rules AS ar
 									LEFT JOIN snmp_query AS sq
 									ON (ar.snmp_query_id=sq.id)
 									ORDER BY sq.name');
-	
+
 								if (sizeof($available_data_queries)) {
 									foreach ($available_data_queries as $data_query) {
 										print "<option value='" . $data_query['snmp_query_id'] . "'" . (get_request_var('snmp_query_id') == $data_query['snmp_query_id'] ? ' selected':'') .  '>' . $data_query['name'] . "</option>\n";
@@ -761,7 +761,7 @@ function automation_graph_rules() {
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'automation_graph_rules.php' + 
+			strURL = 'automation_graph_rules.php' +
 				'?status='        + $('#status').val()+
 				'&filter='        + escape($('#filter').val())+
 				'&rows='          + $('#rows').val()+
@@ -799,10 +799,10 @@ function automation_graph_rules() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (agr.name LIKE '%" . get_request_var('filter') . "%' OR " . 
+		$sql_where = "WHERE (agr.name LIKE '%" . get_request_var('filter') . "%' OR " .
 			"sqg.name LIKE '%" . get_request_var('filter') . "%' OR " .
 			"sq.name LIKE '%" . get_request_var('filter') . "%')";
-			
+
 	} else {
 		$sql_where = '';
 	}
@@ -832,14 +832,14 @@ function automation_graph_rules() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$automation_graph_rules_list = db_fetch_assoc("SELECT agr.id, agr.name, agr.snmp_query_id, agr.graph_type_id, 
-		agr.enabled, sq.name AS snmp_query_name, sqg.name AS graph_type_name 
+	$automation_graph_rules_list = db_fetch_assoc("SELECT agr.id, agr.name, agr.snmp_query_id, agr.graph_type_id,
+		agr.enabled, sq.name AS snmp_query_name, sqg.name AS graph_type_name
 		FROM automation_graph_rules AS agr
 		LEFT JOIN snmp_query AS sq
-		ON (agr.snmp_query_id=sq.id) 
-		LEFT JOIN snmp_query_graph AS sqg	
-		ON (agr.graph_type_id=sqg.id) 
-		$sql_where 
+		ON (agr.snmp_query_id=sq.id)
+		LEFT JOIN snmp_query_graph AS sqg
+		ON (agr.graph_type_id=sqg.id)
+		$sql_where
 		$sql_order
 		$sql_limit");
 
@@ -866,13 +866,13 @@ function automation_graph_rules() {
 			$snmp_query_name 		= ((empty($automation_graph_rules['snmp_query_name'])) 	 ? '<em>' . __('None') . '</em>' : htmlspecialchars($automation_graph_rules['snmp_query_name']));
 			$graph_type_name 		= ((empty($automation_graph_rules['graph_type_name'])) 	 ? '<em>' . __('None') . '</em>' : htmlspecialchars($automation_graph_rules['graph_type_name']));
 
-			form_alternate_row('line' . $automation_graph_rules['id'], true); 
+			form_alternate_row('line' . $automation_graph_rules['id'], true);
 
 			form_selectable_cell(filter_value($automation_graph_rules['name'], get_request_var('filter'), 'automation_graph_rules.php?action=edit&id=' . $automation_graph_rules['id'] . '&page=1'), $automation_graph_rules['id']);
 			form_selectable_cell($automation_graph_rules['id'], $automation_graph_rules['id'], '', 'text-align:right');
 			form_selectable_cell(filter_value($snmp_query_name, get_request_var('filter')), $automation_graph_rules['id']);
 			form_selectable_cell(filter_value($graph_type_name, get_request_var('filter')), $automation_graph_rules['id']);
-			form_selectable_cell($automation_graph_rules['enabled'] ? 'Enabled' : 'Disabled', $automation_graph_rules['id'], '', 'text-align:right');
+			form_selectable_cell($automation_graph_rules['enabled'] ? __('Enabled') : __('Disabled'), $automation_graph_rules['id'], '', 'text-align:right');
 			form_checkbox_cell($automation_graph_rules['name'], $automation_graph_rules['id']);
 
 			form_end_row();

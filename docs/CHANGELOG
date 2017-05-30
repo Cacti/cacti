@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#748: Search results are not cleared on Aggregates
 -issue#754: Default Language for user and system are not set on new installation
 -issue#755: RRDtool Graph Watermark is incorrect
+-issue#756: Resolving some translation issues
 -issue: Hide Aggregate system cdefs when editing graphs and graph templates
 -feature#723: Convert Data Source dropdown to autocomplete when editing standalone graphs
 -feature#735: Allow color selection in graphs and templates to be autocomplete

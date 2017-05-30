@@ -206,7 +206,7 @@ function form_save() {
 			if (!is_error_message()) {
 				/* Before we save the item, let's get a look at task_item_id <-> input associations */
 				$orig_data_source_graph_inputs = db_fetch_assoc_prepared("SELECT
-					gtin.id, gtin.name, gti.task_item_id 
+					gtin.id, gtin.name, gti.task_item_id
 					FROM graph_template_input AS gtin
 					INNER JOIN graph_template_input_defs AS gtid
 					ON gtin.id = gtid.graph_template_input_id
@@ -227,44 +227,44 @@ function form_save() {
 						/* old item clean-up.  Don't delete anything if the item <-> task_item_id association remains the same. */
 						if (get_nfilter_request_var('_task_item_id') != get_nfilter_request_var('task_item_id')) {
 							/* It changed.  Delete any old associations */
-							db_execute_prepared('DELETE FROM graph_template_input_defs 
-								WHERE graph_template_item_id = ?', 
+							db_execute_prepared('DELETE FROM graph_template_input_defs
+								WHERE graph_template_item_id = ?',
 								array($graph_template_item_id));
 
 							/* Input for current data source exists and has changed.  Update the association */
 							if (isset($orig_data_source_to_input{$save['task_item_id']})) {
-								db_execute_prepared('REPLACE INTO graph_template_input_defs 
-									(graph_template_input_id, graph_template_item_id) 
-									VALUES (?, ?)', 
+								db_execute_prepared('REPLACE INTO graph_template_input_defs
+									(graph_template_input_id, graph_template_item_id)
+									VALUES (?, ?)',
 									array($orig_data_source_to_input{$save['task_item_id']}, $graph_template_item_id));
 							}
 						}
 
 						/* an input for the current data source does NOT currently exist, let's create one */
 						if (!isset($orig_data_source_to_input[$save['task_item_id']])) {
-							$ds_name = db_fetch_cell_prepared('SELECT data_source_name 
-								FROM data_template_rrd 
-								WHERE id = ?', 
+							$ds_name = db_fetch_cell_prepared('SELECT data_source_name
+								FROM data_template_rrd
+								WHERE id = ?',
 								array(get_nfilter_request_var('task_item_id')));
 
-							db_execute_prepared("REPLACE INTO graph_template_input 
-								(hash, graph_template_id, name, column_name) 
-								VALUES (?, ?, ?, 'task_item_id')", 
+							db_execute_prepared("REPLACE INTO graph_template_input
+								(hash, graph_template_id, name, column_name)
+								VALUES (?, ?, ?, 'task_item_id')",
 								array(get_hash_graph_template(0, 'graph_template_input'), $save['graph_template_id'], "Data Source [$ds_name]"));
 
 							$graph_template_input_id = db_fetch_insert_id();
 
-							$graph_items = db_fetch_assoc_prepared('SELECT id 
-								FROM graph_templates_item 
-								WHERE graph_template_id = ? 
-								AND task_item_id = ?', 
+							$graph_items = db_fetch_assoc_prepared('SELECT id
+								FROM graph_templates_item
+								WHERE graph_template_id = ?
+								AND task_item_id = ?',
 								array($save['graph_template_id'], get_nfilter_request_var('task_item_id')));
 
 							if (sizeof($graph_items)) {
 								foreach ($graph_items as $graph_item) {
-									db_execute_prepared('REPLACE INTO graph_template_input_defs 
-										(graph_template_input_id, graph_template_item_id) 
-										VALUES (?, ?)', 
+									db_execute_prepared('REPLACE INTO graph_template_input_defs
+										(graph_template_input_id, graph_template_item_id)
+										VALUES (?, ?)',
 										array($graph_template_input_id, $graph_item['id']));
 								}
 							}
@@ -393,19 +393,19 @@ function item_edit() {
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	if (!isempty_request_var('id')) {
-		$template_item = db_fetch_row_prepared('SELECT * 
-			FROM graph_templates_item 
-			WHERE id = ?', 
+		$template_item = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_item
+			WHERE id = ?',
 			array(get_request_var('id')));
 	}
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	if (!isempty_request_var('graph_template_id')) {
-		$default = db_fetch_row_prepared('SELECT task_item_id 
-			FROM graph_templates_item 
-			WHERE graph_template_id = ? 
-			AND local_graph_id = 0 
-			ORDER BY sequence DESC', 
+		$default = db_fetch_row_prepared('SELECT task_item_id
+			FROM graph_templates_item
+			WHERE graph_template_id = ?
+			AND local_graph_id = 0
+			ORDER BY sequence DESC',
 			array(get_request_var('graph_template_id')));
 
 		if (sizeof($default) > 0) {
@@ -449,7 +449,7 @@ function item_edit() {
 
 		if (sizeof($graph_item_input_fields) > 0) {
 			foreach ($graph_item_input_fields as $field) {
-				$form_array{$field['column_name']}['friendly_name'] .= " [<a href='" . htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $field['id'] . '&graph_template_id=' . get_request_var('graph_template_id')) . "'>Field Not Templated</a>]";
+				$form_array{$field['column_name']}['friendly_name'] .= " [<a href='" . htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $field['id'] . '&graph_template_id=' . get_request_var('graph_template_id')) . "'>" . __('Field Not Templated') . "</a>]";
 			}
 		}
 	}
@@ -491,7 +491,7 @@ function item_edit() {
 		});
 	});
 
-	/* 
+	/*
 	columns - task_item_id color_id alpha graph_type_id consolidation_function_id cdef_id value gprint_id text_format hard_return
 
 	graph_type_ids - 1 - Comment 2 - HRule 3 - Vrule 4 - Line1 5 - Line2 6 - Line3 7 - Area 8 - Stack 9 - Gprint 10 - Legend

@@ -203,19 +203,19 @@ function automation_tree_rules_form_actions() {
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions duplicate: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-	
+
 					duplicate_automation_tree_rules($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-	
+
 					db_execute_prepared("UPDATE automation_tree_rules SET enabled='on' WHERE id = ?", array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
 				for ($i=0;($i<count($selected_items));$i++) {
 					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
-	
+
 					db_execute_prepared("UPDATE automation_tree_rules SET enabled='' WHERE id = ?", array($selected_items[$i]));
 				}
 			}
@@ -474,16 +474,16 @@ function automation_tree_rules_remove() {
 	}
 
 	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
-		db_execute_prepared('DELETE FROM automation_match_rule_items 
+		db_execute_prepared('DELETE FROM automation_match_rule_items
 			WHERE rule_id = ?
-			AND rule_type = ?', 
+			AND rule_type = ?',
 			array(get_request_var('id'), AUTOMATION_RULE_TYPE_TREE_MATCH));
 
-		db_execute_prepared('DELETE FROM automation_tree_rule_items 
-			WHERE rule_id = ?', 
+		db_execute_prepared('DELETE FROM automation_tree_rule_items
+			WHERE rule_id = ?',
 			array(get_request_var('id')));
 
-		db_execute_prepared('DELETE FROM automation_tree_rules 
+		db_execute_prepared('DELETE FROM automation_tree_rules
 			WHERE id = ?',
 			array(get_request_var('id')));
 	}
@@ -592,13 +592,13 @@ function automation_tree_rules_edit() {
 	 */
 	if (!empty($rule['id'])) {
 		# display tree rules for host match
-		display_match_rule_items('Object Selection Criteria',
+		display_match_rule_items(__('Object Selection Criteria'),
 			$rule['id'],
 			AUTOMATION_RULE_TYPE_TREE_MATCH,
 			'automation_tree_rules.php');
 
 		# fetch tree action rules
-		display_tree_rule_items('Tree Creation Criteria',
+		display_tree_rule_items(__('Tree Creation Criteria'),
 			$rule['id'],
 			$rule['leaf_type'],
 			AUTOMATION_RULE_TYPE_TREE_ACTION,
@@ -663,32 +663,32 @@ function automation_tree_rules() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'status' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => ''
 			)
@@ -743,7 +743,7 @@ function automation_tree_rules() {
 							</select>
 						</td>
 						<td>
-							<input id='refresh' type='button' value='<?php print __('Go');?>'> 
+							<input id='refresh' type='button' value='<?php print __('Go');?>'>
 						</td>
 						<td>
 							<input id='clear' type='button' value='<?php print __('Clear');?>'>
@@ -809,10 +809,10 @@ function automation_tree_rules() {
 		$sql_where .= ($sql_where != '' ? " AND atr.enabled=''" : "WHERE atr.enabled=''");
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(atr.id) 
+	$total_rows = db_fetch_cell("SELECT COUNT(atr.id)
 		FROM automation_tree_rules AS atr
 		LEFT JOIN graph_tree AS gt
-		ON atr.id=gt.id 
+		ON atr.id=gt.id
 		$sql_where");
 
 	$sql_order = get_order_string();
@@ -820,7 +820,7 @@ function automation_tree_rules() {
 
 	$automation_tree_rules = db_fetch_assoc("SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id,
 		atr.leaf_type, atr.host_grouping_type, atr.enabled,
-		gt.name AS tree_name, gti.title AS subtree_name 
+		gt.name AS tree_name, gti.title AS subtree_name
 		FROM automation_tree_rules AS atr
 		LEFT JOIN graph_tree AS gt
 		ON atr.tree_id=gt.id

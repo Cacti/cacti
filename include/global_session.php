@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
  +-------------------------------------------------------------------------+
  | Copyright (C) 2004-2017 The Cacti Group                                 |
@@ -79,7 +79,7 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
 	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
 	$refreshIsLogout = 'true';
-} ?> 
+} ?>
 <script type='text/javascript'>
 	var theme='<?php print get_selected_theme();?>';
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
@@ -90,4 +90,6 @@ if (isset($_SESSION['refresh'])) {
 	var requestURI='<?php print $_SERVER['REQUEST_URI'];?>';
 	var searchFilter='<?php print __('Enter a search term');?>';
 	var searchRFilter='<?php print __('Enter a regular expression');?>';
+	var clearFilter='<?php print __('Press Ctrl+Shift+X to Clear Filter');?>';
+	var noFileSelected='<?php print __('No file selected');?>';
 </script>

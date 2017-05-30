@@ -37,7 +37,7 @@ function themeReady() {
 		text=this.value;
 		setImportFile(text);
 	});
-	setImportFile('No file selected');
+	setImportFile(noFileSelected);
 
 	function setImportFile(fileText) {
 		$('.import_text').html(fileText);

@@ -24,7 +24,7 @@
 
 /* update_replication_crc - update hash stored in settings table to inform
    remote pollers to replicate tables
-   @arg $poller_id - the id of the poller impacted by hash update 
+   @arg $poller_id - the id of the poller impacted by hash update
    @arg $variable  - the variable name to store in the settings table */
 function update_replication_crc($poller_id, $variable) {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
@@ -76,8 +76,8 @@ function repopulate_poller_cache() {
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id) {
-	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
-		FROM data_local 
+	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
+		FROM data_local
 		WHERE host_id = ?
 		AND snmp_query_id = ?',
 		array($host_id, $data_query_id));
@@ -105,10 +105,10 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 	}
 
 	$poller_ids = array_rekey(
-		db_fetch_assoc_prepared('SELECT DISTINCT poller_id 
-			FROM poller_item 
-			WHERE host_id = ?', 
-			array($host_id)), 
+		db_fetch_assoc_prepared('SELECT DISTINCT poller_id
+			FROM poller_item
+			WHERE host_id = ?',
+			array($host_id)),
 		'poller_id', 'poller_id'
 	);
 
@@ -181,11 +181,11 @@ function update_poller_cache($data_source, $commit = false) {
 					$script_path = get_full_script_path($data_source['id']);
 				}
 
-				$num_output_fields = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id 
-					FROM data_input_fields 
-					WHERE data_input_id = ? 
+				$num_output_fields = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+					FROM data_input_fields
+					WHERE data_input_id = ?
 					AND input_output = "out"
-					AND update_rra="on"', 
+					AND update_rra="on"',
 					array($data_input['id'])));
 
 				if ($num_output_fields == 1) {
@@ -208,7 +208,7 @@ function update_poller_cache($data_source, $commit = false) {
 						ON dif.id=did.data_input_field_id
 						WHERE (type_code LIKE "snmp_%" OR type_code IN("hostname","host_id"))
 						AND did.data_template_data_id = ?
-						AND did.value != ""', array($data_input['data_template_data_id'])), 
+						AND did.value != ""', array($data_input['data_template_data_id'])),
 					'type_code', 'value'
 				);
 
@@ -220,7 +220,7 @@ function update_poller_cache($data_source, $commit = false) {
 						WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
 						AND did.data_template_data_id = ?
 						AND data_template_data_id = ?
-						AND did.value != ""', array($data_template_id, $data_template_id)), 
+						AND did.value != ""', array($data_template_id, $data_template_id)),
 					'type_code', 'value'
 				);
 
@@ -253,7 +253,7 @@ function update_poller_cache($data_source, $commit = false) {
 						ON dif.id=did.data_input_field_id
 						WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
 						AND did.data_template_data_id = ?
-						AND did.value != ""', array($data_input['data_template_data_id'])), 
+						AND did.value != ""', array($data_input['data_template_data_id'])),
 					'type_code', 'value'
 				);
 
@@ -265,7 +265,7 @@ function update_poller_cache($data_source, $commit = false) {
 						WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
 						AND did.data_template_data_id = ?
 						AND data_template_data_id = ?
-						AND did.value != ""', array($data_template_id, $data_template_id)), 
+						AND did.value != ""', array($data_template_id, $data_template_id)),
 					'type_code', 'value'
 				);
 
@@ -310,7 +310,7 @@ function update_poller_cache($data_source, $commit = false) {
 						ON dif.id=did.data_input_field_id
 						WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
 						AND did.data_template_data_id = ?
-						AND did.value != ""', array($data_input['data_template_data_id'])), 
+						AND did.value != ""', array($data_input['data_template_data_id'])),
 					'type_code', 'value'
 				);
 
@@ -322,7 +322,7 @@ function update_poller_cache($data_source, $commit = false) {
 						WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
 						AND data_template_data_id = ?
 						AND did.data_template_data_id = ?
-						AND did.value != ""', array($data_template_id, $data_template_id)), 
+						AND did.value != ""', array($data_template_id, $data_template_id)),
 					'type_code', 'value'
 				);
 
@@ -363,16 +363,16 @@ function update_poller_cache($data_source, $commit = false) {
 				}
 			} else {
 				$arguments = array(
-					'poller_items' => $poller_items, 
-					'data_source'  => $data_source, 
+					'poller_items' => $poller_items,
+					'data_source'  => $data_source,
 					'data_input'   => $data_input
 				);
 
 				$arguments = api_plugin_hook_function('data_source_to_poller_items', $arguments);
 
 				// Process the returned poller items
-				if ((isset($arguments['poller_items'])) && 
-					(is_array($arguments['poller_items'])) && 
+				if ((isset($arguments['poller_items'])) &&
+					(is_array($arguments['poller_items'])) &&
 					(sizeof($poller_items) < sizeof($arguments['poller_items']))) {
 					$poller_items = $arguments['poller_items'];
 				}
@@ -437,7 +437,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 			db_execute("UPDATE poller_item SET present=0 WHERE local_data_id IN ($ids)");
 		}
 	} else {
-		/* don't mark anything in case we have no $local_data_ids => 
+		/* don't mark anything in case we have no $local_data_ids =>
 		 *this would flush the whole table at bottom of this function */
 	}
 
@@ -584,8 +584,8 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 							$template_field['type_code'] = 'id';
 						}
 
-						db_execute_prepared('REPLACE INTO data_input_data 
-							(data_input_field_id, data_template_data_id, value) 
+						db_execute_prepared('REPLACE INTO data_input_data
+							(data_input_field_id, data_template_data_id, value)
 							VALUES (?, ?, ?)',
 							array($template_field['id'], $data_source['id'], $host[$template_field['type_code']]));
 					}
@@ -637,9 +637,7 @@ function utilities_get_mysql_recommendations() {
 		'version' => array(
 			'value' => '5.6',
 			'measure' => 'gt',
-			'comment' => __('MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you
-				run the very latest release though which fixes a long standing low level networking
-				issue that was casuing spine many issues with reliability.')
+			'comment' => __('MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was casuing spine many issues with reliability.')
 			)
 	);
 
@@ -654,7 +652,7 @@ function utilities_get_mysql_recommendations() {
 						'comment' => __('It is recommended that you enable InnoDB in any %s version greater than 5.1.', $database)
 					)
 				);
-	
+
 				$variables['innodb'] = 'UNSET';
 			}
 		}
@@ -664,21 +662,13 @@ function utilities_get_mysql_recommendations() {
 				'value' => 'utf8_general_ci',
 				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use
-					the utf8_general_ci collation type as some characters take more than a single byte.  
-					If you are first just now installing Cacti, stop, make the changes and start over again.
-					If your Cacti has been running and is in production, see the internet for instructions
-					on converting your databases and tables if you plan on supporting other languages.')
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages.')
 				),
 			'character_set_client' => array(
 				'value' => 'utf8',
 				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important ot use
-					the utf8 character set as some characters take more than a single byte.
-					If you are first just now installing Cacti, stop, make the changes and start over again.
-					If your Cacti has been running and is in production, see the internet for instructions
-					on converting your databases and tables if you plan on supporting other languages.')
+				'comment' => __('When using Cacti with languages other than English, it is important ot use the utf8 character set as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages.')
 				)
 		);
 	} else {
@@ -692,7 +682,7 @@ function utilities_get_mysql_recommendations() {
 						'comment' => __('It is recommended that you enable InnoDB in any %s version greater than 5.1.', $database)
 					)
 				);
-	
+
 				$variables['innodb'] = 'UNSET';
 			}
 		}
@@ -702,89 +692,62 @@ function utilities_get_mysql_recommendations() {
 				'value' => 'utf8mb4_unicode_ci',
 				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use
-					the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
 				),
 			'character_set_client' => array(
 				'value' => 'utf8mb4',
 				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important ot use
-					the utf8mb4 character set as some characters take more than a single byte.')
+				'comment' => __('When using Cacti with languages other than English, it is important ot use the utf8mb4 character set as some characters take more than a single byte.')
 				)
 		);
 	}
 
 	$recommendations += array(
 		'max_connections' => array(
-			'value'   => '100', 
-			'measure' => 'gt', 
-			'comment' => __('Depending on the number of logins and use of spine data collector, 
-				%s will need many connections.  The calculation for spine is:
-				total_connections = total_processes * (total_threads + script_servers + 1), then you
-				must leave headroom for user connections, which will change depending on the number of
-				concurrent login accounts.', $database)
+			'value'   => '100',
+			'measure' => 'gt',
+			'comment' => __('Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts.', $database)
 			),
 		'max_heap_table_size' => array(
 			'value'   => '5',
 			'measure' => 'pmem',
-			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage engine,
-				you have to be careful to flush your Performance Booster buffer before the system runs
-				out of memory table space.  This is done two ways, first reducing the size of your output
-				column to just the right size.  This column is in the tables poller_output, 
-				and poller_output_boost.  The second thing you can do is allocate more memory to memory
-				tables.  We have arbitrarily chosen a recommended value of 10% of system memory, but 
-				if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation
-				or choose a different storage engine.  You may see the expected consumption of the 
-				Performance Booster tables under Console -> System Utilities -> View Boost Status.')
+			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status.')
 			),
 		'table_cache' => array(
 			'value'   => '200',
 			'measure' => 'gt',
-			'comment' => __('Keeping the table cache larger means less file open/close operations when
-				using innodb_file_per_table.')
+			'comment' => __('Keeping the table cache larger means less file open/close operations when using innodb_file_per_table.')
 			),
 		'max_allowed_packet' => array(
 			'value'   => 16777216,
 			'measure' => 'gt',
-			'comment' => __('With Remote polling capabilities, large amounts of data 
-				will be synced from the main server to the remote pollers.  
-				Therefore, keep this value at or above 16M.')
+			'comment' => __('With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M.')
 			),
 		'tmp_table_size' => array(
 			'value'   => '64M',
 			'measure' => 'gtm',
-			'comment' => __('When executing subqueries, having a larger temporary table size, 
-				keep those temporary tables in memory.')
+			'comment' => __('When executing subqueries, having a larger temporary table size, keep those temporary tables in memory.')
 			),
 		'join_buffer_size' => array(
 			'value'   => '64M',
 			'measure' => 'gtm',
-			'comment' => __('When performing joins, if they are below this size, they will 
-				be kept in memory and never written to a temporary file.')
+			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.')
 			),
 		'innodb_file_per_table' => array(
 			'value'   => 'ON',
 			'measure' => 'equal',
-			'comment' => __('When using InnoDB storage it is important to keep your table spaces
-				separate.  This makes managing the tables simpler for long time users of %s.
-				If you are running with this currently off, you can migrate to the per file storage
-				by enabling the feature, and then running an alter statement on all InnoDB tables.', $database)
+			'comment' => __('When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables.', $database)
 			),
 		'innodb_buffer_pool_size' => array(
 			'value'   => '25',
 			'measure' => 'pmem',
-			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.
-				Therefore, you should make the innodb_buffer_pool large enough to hold as much
-				of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti
-				directory will help in determining this value.  We are recommending 25% of your systems
-				total memory, but your requirements will vary depending on your systems size.')
+			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25% of your systems total memory, but your requirements will vary depending on your systems size.')
 			),
 		'innodb_doublewrite' => array(
 			'value'   => 'OFF',
 			'measure' => 'equal',
-			'comment' => __('With modern SSD type storage, this operation actually degrades the disk
-				more rapidly and adds a 50% overhead on all write operations.')
+			'comment' => __('With modern SSD type storage, this operation actually degrades the disk more rapidly and adds a 50% overhead on all write operations.')
 			),
 		'innodb_additional_mem_pool_size' => array(
 			'value'   => '80M',
@@ -794,8 +757,7 @@ function utilities_get_mysql_recommendations() {
 		'innodb_lock_wait_timeout' => array(
 			'value'   => '50',
 			'measure' => 'gt',
-			'comment' => __('Rogue queries should not for the database to go offline to others.  Kill these
-				queries before they kill your system.')
+			'comment' => __('Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system.')
 			)
 	);
 
@@ -804,14 +766,12 @@ function utilities_get_mysql_recommendations() {
 			'innodb_flush_log_at_trx_commit' => array(
 				'value'   => '2',
 				'measure' => 'equal',
-				'comment' => __('Setting this value to 2 means that you will flush all transactions every
-				second rather than at commit.  This allows %s to perform writing less often.', $database)
+				'comment' => __('Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often.', $database)
 			),
 			'innodb_file_io_threads' => array(
 				'value'   => '16',
 				'measure' => 'gt',
-				'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for
-					applications with high io characteristics.')
+				'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics.')
 				)
 		);
 	} else {
@@ -824,21 +784,17 @@ function utilities_get_mysql_recommendations() {
 			'innodb_read_io_threads' => array(
 				'value'   => '32',
 				'measure' => 'gt',
-				'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for
-					applications with high io characteristics.')
+				'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.')
 				),
 			'innodb_write_io_threads' => array(
 				'value'   => '16',
 				'measure' => 'gt',
-				'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for
-					applications with high io characteristics.')
+				'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.')
 				),
 			'innodb_buffer_pool_instances' => array(
 				'value' => '16',
 				'measure' => 'present',
-				'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance.
-					The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size
-					divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
+				'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
 				)
 		);
 	}
@@ -850,10 +806,10 @@ function utilities_get_mysql_recommendations() {
 	print "<table id='mysql' class='cactiTable' style='width:100%'>\n";
 	print "<thead>\n";
 	print "<tr class='tableHeader'>\n";
-	print "  <th class='tableSubHeaderColumn'>Variable</th>\n";
-	print "  <th class='tableSubHeaderColumn'>Current Value</th>\n";
-	print "  <th class='tableSubHeaderColumn'>Recommended Value</th>\n";
-	print "  <th class='tableSubHeaderColumn'>Comments</th>\n";
+	print "  <th class='tableSubHeaderColumn'>" . __('Variable')          . "</th>\n";
+	print "  <th class='tableSubHeaderColumn'>" . __('Current Value')     . "</th>\n";
+	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . "</th>\n";
+	print "  <th class='tableSubHeaderColumn'>" . __('Comments')          . "</th>\n";
 	print "</tr>\n";
 	print "</thead>\n";
 

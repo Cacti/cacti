@@ -173,9 +173,9 @@ function form_save() {
 				get_nfilter_request_var('ping_port'), get_nfilter_request_var('ping_timeout'),
 				get_nfilter_request_var('ping_retries'), get_nfilter_request_var('notes'),
 				get_nfilter_request_var('snmp_auth_protocol'), get_nfilter_request_var('snmp_priv_passphrase'),
-				get_nfilter_request_var('snmp_priv_protocol'), get_nfilter_request_var('snmp_context'), 
-				get_nfilter_request_var('snmp_engine_id'), get_nfilter_request_var('max_oids'), 
-				get_nfilter_request_var('device_threads'), get_nfilter_request_var('poller_id'), 
+				get_nfilter_request_var('snmp_priv_protocol'), get_nfilter_request_var('snmp_context'),
+				get_nfilter_request_var('snmp_engine_id'), get_nfilter_request_var('max_oids'),
+				get_nfilter_request_var('device_threads'), get_nfilter_request_var('poller_id'),
 				get_nfilter_request_var('site_id'), get_nfilter_request_var('external_id'));
 
 			if ($host_id !== false) {
@@ -314,14 +314,14 @@ function form_actions() {
 				api_device_remove_multi($devices_to_act_on);
 
 				api_plugin_hook_function('device_remove', $devices_to_act_on);
-			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree 
+			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
 
 				foreach ($selected_items as $selected_item) {
 					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_HOST, get_nfilter_request_var('tree_item_id'), '', 0, $selected_item, 1, 1, false);
 				}
-			} elseif (get_request_var('drp_action') == 6) { // automation 
+			} elseif (get_request_var('drp_action') == 6) { // automation
 				cacti_log(__FUNCTION__ . ' called, action: ' . get_request_var('drp_action'), true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				cacti_log(__FUNCTION__ . ', items: ' . get_nfilter_request_var('selected_items'), true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
@@ -337,7 +337,7 @@ function form_actions() {
 
 		/* update snmpcache */
 		snmpagent_device_action_bottom(array(get_nfilter_request_var('drp_action'), $selected_items));
-		
+
 		api_plugin_hook_function('device_action_bottom', array(get_nfilter_request_var('drp_action'), $selected_items));
 
 		header('Location: host.php?header=false');
@@ -370,7 +370,7 @@ function form_actions() {
 	html_start_box($device_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($host_array) && sizeof($host_array)) {
-		if (get_request_var('drp_action') == '2') { // Enable Devices 
+		if (get_request_var('drp_action') == '2') { // Enable Devices
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to enable the following Device(s).') . "</p>
@@ -468,7 +468,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to place the following Device(s) under the branch selected below.') . "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
 					<p>" . __('Destination Branch:') . "<br>\n";
-					grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); 
+					grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0');
 
 			print "</p>
 				</td>
@@ -563,9 +563,9 @@ function host_add_gt() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	db_execute_prepared('REPLACE INTO host_graph 
-		(host_id, graph_template_id) 
-		VALUES (?, ?)', 
+	db_execute_prepared('REPLACE INTO host_graph
+		(host_id, graph_template_id)
+		VALUES (?, ?)',
 		array(get_nfilter_request_var('host_id'), get_nfilter_request_var('graph_template_id')));
 
 	automation_hook_graph_template(get_nfilter_request_var('host_id'), get_nfilter_request_var('graph_template_id'));
@@ -609,7 +609,6 @@ function host_edit() {
 			}
 		}
 	}
-
 
 	if (!empty($host['id'])) {
 		?>
@@ -687,15 +686,15 @@ function host_edit() {
 			), 2);
 
 		$selected_graph_templates = db_fetch_assoc_prepared("
-			SELECT result.id, result.name, graph_local.id AS graph_local_id  
+			SELECT result.id, result.name, graph_local.id AS graph_local_id
 			FROM (
 				SELECT DISTINCT gt.id, gt.name
 				FROM graph_templates AS gt
-				INNER JOIN host_graph AS hg 
+				INNER JOIN host_graph AS hg
 				ON gt.id = hg.graph_template_id
 				WHERE hg.host_id = ?
 			) AS result
-			LEFT JOIN graph_local 
+			LEFT JOIN graph_local
 			ON graph_local.graph_template_id = result.id
 			AND graph_local.host_id = ?
 			ORDER BY result.name",
@@ -704,18 +703,18 @@ function host_edit() {
 
 		$available_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT gt.id, gt.name
 			FROM graph_templates AS gt
-			LEFT JOIN snmp_query_graph AS sqg 
+			LEFT JOIN snmp_query_graph AS sqg
 			ON sqg.graph_template_id = gt.id
-			INNER JOIN graph_templates_item AS gti 
+			INNER JOIN graph_templates_item AS gti
 			ON gti.graph_template_id = gt.id
-			INNER JOIN data_template_rrd AS dtr 
+			INNER JOIN data_template_rrd AS dtr
 			ON gti.task_item_id = dtr.id
-			INNER JOIN data_template_data AS dtd 
+			INNER JOIN data_template_data AS dtd
 			ON dtd.data_template_id = dtr.data_template_id
-			WHERE sqg.name IS NULL 
+			WHERE sqg.name IS NULL
 			AND gti.local_graph_id = 0
 			AND dtr.local_data_id = 0
-			AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?) 
+			AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
 			ORDER BY gt.name",
 			array(get_request_var('id'))
 		);
@@ -743,8 +742,8 @@ function host_edit() {
 
 				form_end_row();
 			}
-		} else { 
-			print "<tr class='tableRow'><td colspan='3'><em>" . __('No associated graph templates.') . "</em></td></tr>"; 
+		} else {
+			print "<tr class='tableRow'><td colspan='3'><em>" . __('No associated graph templates.') . "</em></td></tr>";
 		}
 
 		?>
@@ -773,8 +772,8 @@ function host_edit() {
 
 		html_header(
 			array(
-				array('display' => __('Data Query Name'), 'align' => 'left', 'nohide' => true), 
-				array('display' => __('Re-Index Method'), 'align' => 'left', 'nohide' => true), 
+				array('display' => __('Data Query Name'), 'align' => 'left', 'nohide' => true),
+				array('display' => __('Re-Index Method'), 'align' => 'left', 'nohide' => true),
 				array('display' => __('Status'), 'align' => 'left'),
 				array('display' => __('Actions'), 'align' => 'right')
 			)
@@ -837,7 +836,7 @@ function host_edit() {
 					<?php device_reindex_methods($item, $host);?>
 					</td>
 					<td>
-						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail') . "</span>");?> [<?php print $item['items'];?> Item<?php print ($item['items'] == 1 ? '' : 's');?>, <?php print $item['rows'];?> Row<?php print ($item['rows'] == 1 ? '' : 's');?>]
+						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail') . "</span>" . __n('[%d Item, ' '%d Items, ', $item['items']) . __n('%d Row]', '%d Rows]', $item['rows']);?>
 					</td>
 					<td class='nowrap right' style='vertical-align:middle;'>
 						<span class='reloadquery fa fa-refresh' id='reload<?php print $item['id'];?>' title='<?php print htmlspecialchars(__('Reload Query'), ENT_QUOTES, 'UTF-8');?>' data-id='<?php print $item['id'];?>'></span>
@@ -847,8 +846,8 @@ function host_edit() {
 				<?php
 				form_end_row();
 			}
-		} else { 
-			print "<tr class='tableRow'><td colspan='4'><em>" . __('No Associated Data Queries.') . "</em></td></tr>"; 
+		} else {
+			print "<tr class='tableRow'><td colspan='4'><em>" . __('No Associated Data Queries.') . "</em></td></tr>";
 		}
 
 		if ($host['snmp_version'] == 0) {
@@ -998,8 +997,8 @@ function device_javascript() {
 		}
 
 		if ($('#snmp_version').val() == '0') {
-			methods = [ 
-				{ value: '0', text: 'None' }, 
+			methods = [
+				{ value: '0', text: 'None' },
 				{ value: '3', text: 'Ping' }
 			];
 
@@ -1010,12 +1009,12 @@ function device_javascript() {
 			$('#availability_method').replaceOptions(methods, $('#availability_method').val());
 		} else {
 			methods = [
-				{ value: '0', text: '<?php print __('None');?>' }, 
-				{ value: '1', text: '<?php print __('Ping and SNMP Uptime');?>' }, 
-				{ value: '2', text: '<?php print __('SNMP Uptime');?>' }, 
-				{ value: '3', text: '<?php print __('Ping');?>' }, 
-				{ value: '4', text: '<?php print __('Ping or SNMP Uptime');?>' }, 
-				{ value: '5', text: '<?php print __('SNMP Desc');?>' }, 
+				{ value: '0', text: '<?php print __('None');?>' },
+				{ value: '1', text: '<?php print __('Ping and SNMP Uptime');?>' },
+				{ value: '2', text: '<?php print __('SNMP Uptime');?>' },
+				{ value: '3', text: '<?php print __('Ping');?>' },
+				{ value: '4', text: '<?php print __('Ping or SNMP Uptime');?>' },
+				{ value: '5', text: '<?php print __('SNMP Desc');?>' },
 				{ value: '6', text: '<?php print __('SNMP GetNext');?>' }
 			];
 
@@ -1201,47 +1200,47 @@ function host() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'description', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'description',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'host_status' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'host_template_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'site_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'poller_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -1471,8 +1470,8 @@ function host() {
 	$sql_limit = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$sql_query = "SELECT host.*, graphs, data_sources,
-		IF(status_event_count>0, status_event_count*$poller_interval, 
-			IF(UNIX_TIMESTAMP(status_rec_date)>943916400,UNIX_TIMESTAMP()-UNIX_TIMESTAMP(status_rec_date), 
+		IF(status_event_count>0, status_event_count*$poller_interval,
+			IF(UNIX_TIMESTAMP(status_rec_date)>943916400,UNIX_TIMESTAMP()-UNIX_TIMESTAMP(status_rec_date),
 			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance,UNIX_TIMESTAMP()))) AS instate
 		FROM host
 		LEFT JOIN (SELECT host_id, COUNT(*) AS graphs FROM graph_local GROUP BY host_id) AS gl
@@ -1513,9 +1512,9 @@ function host() {
 
 	if (sizeof($hosts)) {
 		foreach ($hosts as $host) {
-			if ($host['disabled'] == '' && 
+			if ($host['disabled'] == '' &&
 				($host['status'] == HOST_RECOVERING || $host['status'] == HOST_UP) &&
-				($host['availability_method'] != AVAIL_NONE && $host['availability_method'] != AVAIL_PING)) { 
+				($host['availability_method'] != AVAIL_NONE && $host['availability_method'] != AVAIL_PING)) {
 				$snmp_uptime = $host['snmp_sysUpTimeInstance'];
 				$days      = intval($snmp_uptime / (60*60*24*100));
 				$remainder = $snmp_uptime % (60*60*24*100);
