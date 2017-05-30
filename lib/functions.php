@@ -589,7 +589,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 
 	/* fill in the current date for printing in the log */
-	$date = date('Y-m-d H:i:s');
+	$date = date(date_time_format());
 
 	/* determine how to log data */
 	$logdestination = read_config_option('log_destination');
@@ -677,6 +677,8 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		return array();
 	}
 
+	$filter = strtolower($filter);
+
 	$fp = fopen($file_name, 'r');
 
 	/* Count all lines in the logfile */
@@ -697,8 +699,6 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		$start = 0;
 	}
 
-	$dateFormat = date_time_format();
-
 	/* load up the lines into an array */
 	$file_array = array();
 	$i = 0;
@@ -717,7 +717,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		}
 
 		++$i;
-		$file_array[$i] = date($dateFormat, strtotime(substr($line, 0, 19))) . substr($line, 19);
+		$file_array[$i] = $line;
 	}
 
 	fclose($fp);
@@ -759,7 +759,7 @@ function determine_display_log_entry($message_type, $line, $filter) {
 
 	/* match any lines that match the search string */
 	if ($display === true && $filter != '') {
-		return (strpos(strtolower($line), strtolower($filter)) !== false || preg_match('/' . $filter . '/i', $line));
+		return (strpos(strtolower($line), $filter) !== false || preg_match('/' . $filter . '/i', $line));
 	}
 
 	return $display;
@@ -788,7 +788,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	if ($status == HOST_DOWN) {
 		/* Set initial date down. BUGFIX */
 		if (empty($hosts[$host_id]['status_fail_date'])) {
-                    $hosts[$host_id]['status_fail_date'] = date('Y-m-d H:i:s');
+			$hosts[$host_id]['status_fail_date'] = date('Y-m-d H:i:s');
 		}
 
 		/* update total polls, failed polls and availability */
@@ -3305,16 +3305,16 @@ function set_page_refresh($refresh) {
 
 	if (isset($refresh['logout'])) {
 		if ($refresh['logout'] == 'true' || $refresh['logout'] === true) {
-			$_SESSION['refresh']['logout']  = 'true';
+			$_SESSION['refresh']['logout'] = 'true';
 		} else {
-			$_SESSION['refresh']['logout']  = 'false';
+			$_SESSION['refresh']['logout'] = 'false';
 		}
 	} else {
-		$_SESSION['refresh']['logout']  = 'true';
+		$_SESSION['refresh']['logout'] = 'true';
 	}
 
 	if (isset($refresh['page'])) {
-		$_SESSION['refresh']['page']    = $refresh['page'];
+		$_SESSION['refresh']['page'] = $refresh['page'];
 	}
 }
 

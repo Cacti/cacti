@@ -61,21 +61,16 @@ function clog_purge_logfile() {
 function clog_view_logfile() {
 	global $config;
 
-	//Filter filename input
+	$logfile = read_config_option('path_cactilog');
+	$dirname = dirname($logfile) . '/';
+
 	if (isset_request_var('filename')) {
-		if (get_request_var('filename') !== basename(get_request_var('filename'))) {
-			set_request_var('filename', '');
+		$requestedFile = $dirname . basename(get_request_var('filename'));
+		if (file_exists($requestedFile)) {
+			$logfile = $requestedFile;
 		}
-	}
-
-	if (isset_request_var('filename') && get_request_var('filename') !== '') {
-		$logfile = realpath('./log/' . get_request_var('filename'));
-	} else {
-		$logfile = read_config_option('path_cactilog');
-
-		if ($logfile == '') {
-			$logfile = './log/cacti.log';
-		}
+	} elseif ($logfile == '') {
+		$logfile = $dirname . 'cacti.log';
 	}
 
 	/* ================= input validation and session storage ================= */
@@ -113,9 +108,11 @@ function clog_view_logfile() {
 	set_request_var('page_referrer', 'view_logfile');
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
-	$refresh['seconds'] = get_request_var('refresh');
-	$refresh['page']    = $config['url_path'] . 'clog' . (!$clogAdmin ? '_user' : '') . '.php?header=false';
-	$refresh['logout']  = 'false';
+	$refresh = array(
+		'seconds' => get_request_var('refresh'),
+		'page'    => $config['url_path'] . 'clog' . (!$clogAdmin ? '_user' : '') . '.php?header=false&filename='.basename($logfile),
+		'logout'  => 'false'
+	);
 
 	set_page_refresh($refresh);
 
@@ -182,12 +179,12 @@ function clog_view_logfile() {
 	if (!$clogAdmin) {
 		$exclude_regex = read_config_option('clog_exclude', true);
 		if ($exclude_regex != '') {
-			$ad_filter = ' - Admin Filter in Affect';
+			$ad_filter = __(' - Admin Filter in Affect');
 		} else {
-			$ad_filter = ' - No Admin Filter in Affect';
+			$ad_filter = __(' - No Admin Filter in Affect');
 		}
 	} else {
-		$ad_filter = ' - Admin View';
+		$ad_filter = __(' - Admin View');
 	}
 
 	if (get_request_var('message_type') > 0) {
@@ -198,11 +195,10 @@ function clog_view_logfile() {
 
 	$rfilter      = get_request_var('rfilter');
 	$reverse      = get_request_var('reverse');
-	$refresh      = get_request_var('refresh');
+	$refreshTime  = get_request_var('refresh');
 	$message_type = get_request_var('message_type');
 	$tail_lines   = get_request_var('tail_lines');
-	$filename     = get_request_var('filename');
-	$base_url     = 'clog.php?rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refresh.'&message_type='.$message_type.'&tail_lines='.$tail_lines.'&filename='.$filename;
+	$base_url     = 'clog.php?rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refreshTime.'&message_type='.$message_type.'&tail_lines='.$tail_lines.'&filename='.basename($logfile);
 
 	$nav          = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page');
 
@@ -325,15 +321,16 @@ function filter() {
 					<td>
 						<select id='filename' name='filename'>
 							<?php
-							$logPath = dirname(read_config_option('path_cactilog'));
-							$files = scandir($logPath);
+							$selectedFile = basename(get_request_var('filename'));
+							$logPath      = dirname(read_config_option('path_cactilog'));
+							$files        = scandir($logPath);
 
 							foreach($files as $logFile) {
 								if (in_array($logFile, array('.', '..', '.htaccess'))) {
 									continue;
 								}
 								print "<option value='" . $logFile . "'";
-								if (get_request_var('filename') == $logFile) {
+								if ($selectedFile == $logFile) {
 									print ' selected';
 								}
 								print '>' . $logFile . "</option>\n";
