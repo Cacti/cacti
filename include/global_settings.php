@@ -333,7 +333,7 @@ $settings = array(
             'friendly_name' => __('Language'),
             'description' => __('Default language for this system.'),
             'method' => 'drop_array',
-            'default' => 'us',
+            'default' => 'en',
             'array' => get_installed_locales()
             ),
         'i18n_auto_detection' => array(
