@@ -65,7 +65,7 @@ function clog_view_logfile() {
 	$logfile   = read_config_option('path_cactilog');
 
 	if (isset_request_var('filename')) {
-		$requestedFile = dirname($logfile) . '/' . basename(get_request_var('filename'));
+		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
 		if (file_exists($requestedFile)) {
 			$logfile = $requestedFile;
 		}
@@ -75,6 +75,10 @@ function clog_view_logfile() {
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'default' => '1'
+		),
 		'tail_lines' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => read_config_option('num_rows_log')
@@ -106,7 +110,7 @@ function clog_view_logfile() {
 	set_request_var('page_referrer', 'view_logfile');
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
-	$page_nr = isset_request_var('page') ? get_request_var('page') : 1;
+	$page_nr = get_request_var('page');
 
 	$page = $config['url_path'] . 'clog' . (!$clogAdmin ? '_user' : '') . '.php?header=false';
 	$page .= '&filename=' . basename($logfile) . '&page=' . $page_nr;
@@ -323,7 +327,7 @@ function filter($clogAdmin) {
 					<td>
 						<select id='filename' name='filename'>
 							<?php
-							$selectedFile = basename(get_request_var('filename'));
+							$selectedFile = basename(get_nfilter_request_var('filename'));
 							$logPath      = dirname(read_config_option('path_cactilog'));
 							$files        = scandir($logPath);
 
