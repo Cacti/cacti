@@ -4679,7 +4679,11 @@ function date_time_format() {
 		$date_fmt = read_config_option('default_date_format');
 	}
 
-	$datecharacter = $datechar[read_config_option('default_datechar')];
+	$dateCharSetting = read_config_option('default_datechar');
+	if (empty($dateCharSetting)) {
+		$dateCharSetting = GDC_SLASH;
+	}
+	$datecharacter = $datechar[$dateCharSetting];
 
 	switch ($date_fmt) {
 		case GD_MO_D_Y:

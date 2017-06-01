@@ -1734,53 +1734,53 @@ function utilities_view_poller_cache() {
 
 	$i = 0;
 	if (sizeof($poller_cache)) {
-	foreach ($poller_cache as $item) {
-		if ($i % 2 == 0) {
-			$class = 'odd';
-		} else {
-			$class = 'even';
-		}
-		print "<tr class='$class'>\n";
-			?>
-			<td>
-				<?php print filter_value($item['name_cache'], get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>
-			</td>
-
-			<td>
-			<?php
-			if ($item['action'] == 0) {
-				if ($item['snmp_version'] != 3) {
-					$details =
-						__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
-						__('Community:') . ' ' . $item['snmp_community'] . ', ' .
-						__('OID:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
-				} else {
-					$details =
-						__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
-						__('User:') . ' ' . $item['snmp_username'] . ', ' . __('OID:') . ' ' . $item['arg1'];
-				}
-			} elseif ($item['action'] == 1) {
-					$details = __('Script:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+		foreach ($poller_cache as $item) {
+			if ($i % 2 == 0) {
+				$class = 'odd';
 			} else {
-					$details = __('Script Server:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+				$class = 'even';
 			}
+			print "<tr class='$class'>\n";
+				?>
+				<td>
+					<?php print filter_value($item['name_cache'], get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>
+				</td>
 
-			print $details;
+				<td>
+				<?php
+				if ($item['action'] == 0) {
+					if ($item['snmp_version'] != 3) {
+						$details =
+							__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
+							__('Community:') . ' ' . $item['snmp_community'] . ', ' .
+							__('OID:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+					} else {
+						$details =
+							__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
+							__('User:') . ' ' . $item['snmp_username'] . ', ' . __('OID:') . ' ' . $item['arg1'];
+					}
+				} elseif ($item['action'] == 1) {
+						$details = __('Script:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+				} else {
+						$details = __('Script Server:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+				}
+
+				print $details;
+				?>
+				</td>
+			</tr>
+			<?php
+			print "<tr class='$class'>\n";
 			?>
-			</td>
-		</tr>
-		<?php
-		print "<tr class='$class'>\n";
-		?>
-			<td>
-			</td>
-			<td>
-				<?php print __('RRD:');?> <?php print $item['rrd_path'];?>
-			</td>
-		</tr>
-		<?php
-		$i++;
-	}
+				<td>
+				</td>
+				<td>
+					<?php print __('RRD:');?> <?php print $item['rrd_path'];?>
+				</td>
+			</tr>
+			<?php
+			$i++;
+		}
 	}
 
 	html_end_box();
@@ -1794,7 +1794,7 @@ function utilities() {
 	global $utilities;
 
 	$utilities[__('Technical Support')] = array(
-		__('Tecnical Support') => array(
+		__('Technical Support') => array(
 			'link'  => 'utilities.php?action=view_tech',
 			'description' => __('Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.')
 		),
