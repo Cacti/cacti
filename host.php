@@ -790,24 +790,24 @@ function host_edit() {
 		$sql_where2 .= ' snmp_query.id NOT IN(SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ' . get_request_var('id') . ')';
 
 		$selected_data_queries = db_fetch_assoc_prepared("SELECT snmp_query.id,
-			snmp_query.name, host_snmp_query.reindex_method, items.items, rows.rows
+			snmp_query.name, host_snmp_query.reindex_method, `items`.`itemCount`, `rows`.`rowCount`
 			FROM snmp_query
 			INNER JOIN host_snmp_query
 			ON snmp_query.id = host_snmp_query.snmp_query_id
 			AND host_snmp_query.host_id = ?
 			LEFT JOIN (
-				SELECT snmp_query_id, COUNT(*) AS items
+				SELECT snmp_query_id, COUNT(*) AS `itemCount`
 				FROM host_snmp_cache
 				WHERE host_id = ?
 				GROUP BY snmp_query_id
-			) AS items
+			) AS `items`
 			ON items.snmp_query_id = snmp_query.id
 			LEFT JOIN (
-				SELECT snmp_query_id, COUNT(DISTINCT snmp_index) AS rows
+				SELECT snmp_query_id, COUNT(DISTINCT snmp_index) AS `rowCount`
 				FROM host_snmp_cache
 				WHERE host_id = ?
 				GROUP BY snmp_query_id
-			) AS rows
+			) AS `rows`
 			ON rows.snmp_query_id = snmp_query.id
 			$sql_where1
 			ORDER BY snmp_query.name",
@@ -836,7 +836,7 @@ function host_edit() {
 					<?php device_reindex_methods($item, $host);?>
 					</td>
 					<td>
-						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail')) . "</span>" . __(' [%d Items, %d Rows]', $item['items'], $item['rows']);?>
+						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail')) . "</span>" . __(' [%d Items, %d Rows]', $item['itemCount'], $item['rowCount']);?>
 					</td>
 					<td class='nowrap right' style='vertical-align:middle;'>
 						<span class='reloadquery fa fa-refresh' id='reload<?php print $item['id'];?>' title='<?php print htmlspecialchars(__('Reload Query'), ENT_QUOTES, 'UTF-8');?>' data-id='<?php print $item['id'];?>'></span>
