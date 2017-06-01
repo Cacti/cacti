@@ -757,7 +757,8 @@ $menu_glyphs = array(
 	__('Presets') => 'fa fa-archive',
 	__('Import/Export') => 'fa fa-exchange',
 	__('Configuration')  => 'fa fa-sliders',
-	__('Utilities') => 'fa fa-cogs'
+	__('Utilities') => 'fa fa-cogs',
+	__('External Links') => 'fa fa-external-link'
 );
 
 if ((isset($_SESSION['sess_user_id']))) {

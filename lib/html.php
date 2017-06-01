@@ -712,7 +712,7 @@ function html_header($header_items, $last_item_colspan = 1) {
 
 /* html_section_header - draws a header row suitable for display inside of a box element
      but for display as a secton title and not as a series of table header columns
-   @arg $header_name - an array of the display name of the header for the section and 
+   @arg $header_name - an array of the display name of the header for the section and
      optional alignment.
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
 function html_section_header($header_item, $last_item_colspan = 1) {
@@ -865,12 +865,12 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
-			$this_row_style   = ''; 
-			$use_custom_class = false; 
+			$this_row_style   = '';
+			$use_custom_class = false;
 			$hard_return      = '';
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
-				$this_row_style = 'font-weight: bold;'; 
+				$this_row_style = 'font-weight: bold;';
 				$use_custom_class = true;
 
 				if ($group_counter % 2 == 0) {
@@ -1072,7 +1072,7 @@ function draw_menu($user_menu = "") {
 			if (isset($menu_glyphs[$header_name])) {
 				$glyph = '<i class="menu_glyph ' . $menu_glyphs[$header_name] . '"></i>';
 			} else {
-				$glyph = '<i class="menu_glyph fa fa-folder"></i>';
+				$glyph = '<i class="menu_glyph fa fa-folder-o"></i>';
 			}
 
 			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$glyph<span>$header_name</span></a>\n";
@@ -1134,7 +1134,7 @@ function draw_menu($user_menu = "") {
 /* draw_actions_dropdown - draws a table the allows the user to select an action to perform
      on one or more data elements
    @arg $actions_array - an array that contains a list of possible actions. this array should
-     be compatible with the form_dropdown() function 
+     be compatible with the form_dropdown() function
    @arg $delete_action - if there is a delete action that should surpress removal of rows
      specify it here.  If you don't want any delete actions, set to 0.*/
 function draw_actions_dropdown($actions_array, $delete_action = 1) {
@@ -1239,12 +1239,12 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
  * Deprecated functions
  */
 
-function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) { 
+function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) {
 	?>
 	<th style='height:1px;' colspan='<?php print $column_span;?>'>
 		<div class='textSubHeaderDark'><?php print $matrix_name;?></div>
 	</th>
-	<?php 
+	<?php
 }
 
 function form_area($text) { ?>
@@ -1308,7 +1308,7 @@ function html_show_tabs_left() {
 					print "<a id='maintab-anchor" . rand() . "' class='selected' href='" . htmlspecialchars($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs_down.gif' alt='" . __('Graphs') . "'></a>";
 				} else {
 					print "<a href='" . htmlspecialchars($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs.gif' alt='" . __('Graphs') . "'></a>";
-				} 
+				}
 			}
 		}
 
@@ -1356,7 +1356,7 @@ function html_show_tabs_left() {
 								}
 							}
 						}
-	
+
 						print '<a href="' . $config['url_path'] . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . $tab['title'] . '"></a>';
 					}
 				}
@@ -1418,7 +1418,7 @@ function html_show_tabs_left() {
 			if (sizeof($external_links)) {
 				foreach($external_links as $tab) {
 					if (is_realm_allowed($tab['id']+10000)) {
-						$tabs_left[] = 
+						$tabs_left[] =
 							array(
 								'title' => $tab['title'],
 								'id'    => 'maintab-anchor-link' . $tab['id'],
@@ -1788,7 +1788,7 @@ function html_spikekill_js() {
 				local_graph_id = $(this).attr('data-graph');
 
 				$.get('?action=spikemenu&local_graph_id='+local_graph_id, function(data) {
-					$('#sk'+local_graph_id).after(data);	
+					$('#sk'+local_graph_id).after(data);
 
 					$('.spikekillMenu').menu({
 						select: function(event, ui) {
