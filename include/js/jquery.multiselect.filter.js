@@ -1,6 +1,6 @@
 /* jshint forin:true, noarg:true, noempty:true, eqeqeq:true, boss:true, undef:true, curly:true, browser:true, jquery:true */
 /*
- * jQuery MultiSelect UI Widget Filtering Plugin 1.6
+ * jQuery MultiSelect UI Widget Filtering Plugin 1.5pre
  * Copyright (c) 2012 Eric Hynds
  *
  * http://www.erichynds.com/jquery/jquery-ui-multiselect-widget/
@@ -16,34 +16,13 @@
 (function($) {
   var rEscape = /[\-\[\]{}()*+?.,\\\^$|#\s]/g;
 
-  //Courtesy of underscore.js
-  function debounce(func, wait, immediate) {
-    var timeout;
-    return function() {
-      var context = this, args = arguments;
-      var later = function() {
-        timeout = null;
-        if (!immediate) {
-          func.apply(context, args);
-        }
-      };
-      var callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) {
-        func.apply(context, args);
-      }
-    };
-  }
-
   $.widget('ech.multiselectfilter', {
 
     options: {
       label: 'Filter:',
       width: null, /* override default width set in css file (px). null will inherit */
       placeholder: 'Enter keywords',
-      autoReset: false,
-      debounceMS: 250
+      autoReset: false
     },
 
     _create: function() {
@@ -70,8 +49,8 @@
             e.preventDefault();
           }
         },
-        input: $.proxy(debounce(this._handler, opts.debounceMS), this),
-        search: $.proxy(this._handler, this)
+        keyup: $.proxy(this._handler, this),
+        click: $.proxy(this._handler, this)
       });
 
       // cache input values for searching
@@ -94,14 +73,13 @@
         this.update();
 
         // gather an array of the values that actually changed
-        var values = {};
-        $inputs.each(function() {
-          values[this.value] = true;
-        });
+        var values = $inputs.map(function() {
+          return this.value;
+        }).get();
 
         // select option tags
         this.element.find('option').filter(function() {
-          if(!this.disabled && values[this.value]) {
+          if(!this.disabled && $.inArray(this.value, values) > -1) {
             _self._toggleState('selected', flag).call(this);
           }
         });
