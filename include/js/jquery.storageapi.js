@@ -9,7 +9,7 @@
  * Project home:
  * https://github.com/julien-maurel/jQuery-Storage-API
  *
- * Version: 1.7.3
+ * Version: 1.7.5
  *
  */
 (function (factory) {
@@ -242,7 +242,7 @@
     }else{
       o=s;
     }
-    if(o._cookie){
+    if(o && o._cookie){
       // If storage is a cookie, use $.cookie to retrieve keys
       for(var key in $.cookie()){
         if(key!='') {
