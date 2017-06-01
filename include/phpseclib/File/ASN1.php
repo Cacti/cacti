@@ -305,7 +305,7 @@ class ASN1
                 $newcontent = array();
                 $remainingLength = $length;
                 while ($remainingLength > 0) {
-                    $temp = $this->_decode_ber($content, $start);
+                    $temp = $this->_decode_ber($content, $start, $content_pos);
                     $length = $temp['length'];
                     // end-of-content octets - see paragraph 8.1.5
                     if (substr($content, $content_pos + $length, 2) == "\0\0") {
@@ -1138,7 +1138,7 @@ class ASN1
            http://www.obj-sys.com/asn1tutorial/node14.html */
 
         $pattern = $tag == self::TYPE_UTC_TIME ?
-            '#(..)(..)(..)(..)(..)(..)(.*)#' :
+            '#^(..)(..)(..)(..)(..)(..)?(.*)$#' :
             '#(....)(..)(..)(..)(..)(..).*([Z+-].*)$#';
 
         preg_match($pattern, $content, $matches);
@@ -1163,7 +1163,7 @@ class ASN1
             $timezone = 0;
         }
 
-        return @$mktime($hour, $minute, $second, $month, $day, $year) + $timezone;
+        return @$mktime((int)$hour, (int)$minute, (int)$second, (int)$month, (int)$day, (int)$year) + $timezone;
     }
 
     /**
