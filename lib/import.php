@@ -537,7 +537,6 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 		if ($remove_orphans) {
 			retemplate_graphs($graph_template_id);
-			
 		}
 	}
 
