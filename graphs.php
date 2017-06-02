@@ -413,22 +413,24 @@ function get_common_graph_templates(&$graph) {
 	}
 
 	if (!empty($dqid)) {
-		$sqgi = db_fetch_cell_prepared('SELECT id
+		$sqgi = db_fetch_cell_prepared('SELECT GROUP_CONCAT(id) AS id
 			FROM snmp_query_graph
 			WHERE snmp_query_id = ?
 			AND graph_template_id = ?',
 			array($dqid, $graph['graph_template_id']));
 
-		$query_fields = db_fetch_cell_prepared('SELECT GROUP_CONCAT(snmp_field_name ORDER BY snmp_field_name) AS columns
+		$query_fields = array_rekey(db_fetch_assoc_prepared('SELECT snmp_query_graph_id, GROUP_CONCAT(snmp_field_name ORDER BY snmp_field_name) AS columns
 			FROM snmp_query_graph_rrd
-			WHERE snmp_query_graph_id = ?
-			GROUP BY snmp_query_graph_id', array($sqgi));
+			WHERE snmp_query_graph_id IN (' . $sqgi . ')
+			GROUP BY snmp_query_graph_id'), 'snmp_query_graph_id', 'columns');
+
+		$ids = array_to_sql_or(array_values($query_fields), 'columns');
 
 		$common_graph_ids = array_rekey(db_fetch_assoc_prepared('SELECT
 			snmp_query_graph_id, GROUP_CONCAT(snmp_field_name ORDER BY snmp_field_name) AS columns
 			FROM snmp_query_graph_rrd
 			GROUP BY snmp_query_graph_id
-			HAVING columns = ?', array($query_fields)), 'snmp_query_graph_id', 'columns');
+			HAVING ' . $ids), 'snmp_query_graph_id', 'columns');
 
 		$ids = implode(',', array_keys($common_graph_ids));
 
