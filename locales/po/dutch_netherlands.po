@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-06-03 17:03+0200\n"
-"PO-Revision-Date: 2017-06-03 17:18+0200\n"
+"PO-Revision-Date: 2017-06-03 17:38+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -2586,7 +2586,7 @@ msgstr "Object selectiecriteria"
 
 #: ../automation_tree_rules.php:601
 msgid "Tree Creation Criteria"
-msgstr ""
+msgstr "Criteria voor het aanmaken van een menuitem"
 
 #: ../automation_tree_rules.php:706 ../automation_tree_rules.php:731
 #: ../automation_tree_rules.php:833 ../include/global_arrays.php:709
@@ -3849,7 +3849,7 @@ msgstr "Data bron debug"
 
 #: ../data_sources.php:1039
 msgid "RRDtool Tune Info"
-msgstr ""
+msgstr "RRDTool Tune info"
 
 #: ../data_sources.php:1065
 msgid "External"
@@ -3927,10 +3927,12 @@ msgid ""
 "The internal database ID for this Data Source. Useful when performing "
 "automation or debugging."
 msgstr ""
+"De interne database ID voor deze data bron. Handig voor automatisering of "
+"debugging."
 
 #: ../data_sources.php:1407
 msgid "The frequency that data is collected for this Data Source."
-msgstr ""
+msgstr "De frequentie voor het verzamelen van data voor deze data bron."
 
 #: ../data_sources.php:1408
 msgid "If this Data Source is no long in use by Graphs, it can be Deleted."
@@ -3953,7 +3955,7 @@ msgstr ""
 
 #: ../data_sources.php:1410
 msgid "The Data Template that this Data Source was based upon."
-msgstr ""
+msgstr "De data template waarop deze data bron was gebaseerd."
 
 #: ../data_sources.php:1457
 msgid "No Data Sources Found"
@@ -3982,6 +3984,8 @@ msgid ""
 "Click 'Continue' to duplicate the following Data Template(s). You can "
 "optionally change the title format for the new Data Template(s)."
 msgstr ""
+"Klik op 'Volgende' om de volgende data template(s) te dupliceren. Optioneel "
+"kunt u het titel formaat voor de nieuwe data template(s) aanpassen."
 
 #: ../data_templates.php:364
 msgid "template_title"
@@ -4008,6 +4012,8 @@ msgid ""
 "NOTE: This change only will affect future Data Sources and does not alter "
 "existing Data Sources."
 msgstr ""
+"LET OP: Deze wijziging is alleen van toepassing op toekomstige data bronnen "
+"en laat huidige bestaande data bronnen onveranderd."
 
 #: ../data_templates.php:384
 msgid "Change Data Source Profile"
@@ -4028,7 +4034,7 @@ msgstr "Data template [nieuw]"
 
 #: ../data_templates.php:527
 msgid "This field is always templated."
-msgstr ""
+msgstr "Dit veld is altijd getempleteerd."
 
 #: ../data_templates.php:531 ../data_templates.php:603
 #: ../data_templates.php:671
@@ -4043,6 +4049,7 @@ msgstr "Data bron item [%s]"
 #: ../data_templates.php:676
 msgid "Value will be derived from the device if this field is left empty."
 msgstr ""
+"De waarde wordt over genomen van het apparaat als u dit veld leeg houdt."
 
 #: ../data_templates.php:745 ../data_templates.php:776
 #: ../data_templates.php:900 ../include/global_arrays.php:876
@@ -4063,12 +4070,16 @@ msgid ""
 "The internal database ID for this Data Template.  Useful when performing "
 "automation or debugging."
 msgstr ""
+"De interne database ID voor deze data template. Handig voor automatisering "
+"of debugging."
 
 #: ../data_templates.php:911
 msgid ""
 "Data Templates that are in use cannot be Deleted.  In use is defined as "
 "being referenced by a Data Source."
 msgstr ""
+"Data template die in gebruik zijn kunnen niet worden verwijderd. In gebruik "
+"is gedefinieerd als gekoppeld aan een data bron."
 
 #: ../data_templates.php:912
 msgid "The number of Data Sources using this Data Template."
@@ -16026,7 +16037,7 @@ msgstr ""
 
 #: ../utilities.php:2132
 msgid "Runtime Statistics"
-msgstr ""
+msgstr "Runtime statistieken"
 
 #: ../utilities.php:2135
 msgid "Last Start Time:"
@@ -16049,11 +16060,11 @@ msgstr "%d seconden"
 #: ../utilities.php:2140
 #, php-format
 msgid "%0.2f percent of update frequency)"
-msgstr ""
+msgstr "%0.2f procent van update frequentie)"
 
 #: ../utilities.php:2144
 msgid "RRD Updates:"
-msgstr ""
+msgstr "RRD Updates:"
 
 #: ../utilities.php:2147 ../utilities.php:2153
 msgid "MBytes"
@@ -16081,7 +16092,7 @@ msgstr "Update frequentie:"
 
 #: ../utilities.php:2162
 msgid "Next Start Time:"
-msgstr ""
+msgstr "Volgende start tijd:"
 
 #: ../utilities.php:2165
 msgid "Maximum Records:"
