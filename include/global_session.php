@@ -92,4 +92,18 @@ if (isset($_SESSION['refresh'])) {
 	var searchRFilter='<?php print __('Enter a regular expression');?>';
 	var clearFilter='<?php print __('Press Ctrl+Shift+X to Clear Filter');?>';
 	var noFileSelected='<?php print __('No file selected');?>';
+	var timeGraphView='<?php print __('Time Graph View');?>';
+	var filterSettingsSaved='<?php print __('Filter Settings Saved');?>';
+	var spikeKillResuls='<?php print __('SpikeKill Results');?>';
+	var utilityView='<?php print __('Utility View');?>';
+	var realtimeClickOn='<?php print __('Click to view just this Graph in Realtime');?>';
+	var realtimeClickOff='<?php print __('Click again to take this Graph out of Realtime');?>';
+	var treeView='<?php print __('Tree View');?>';
+	var listView='<?php print __('List View');?>';
+	var previewView='<?php print __('Preview View');?>';
+	var cactiHome='<?php print __('Cacti Home');?>';
+	var cactiProjectPage='<?php print __('Cacti Project Page');?>';
+	var cactiCommunityForum='<?php print __('Cacti Community Forum');?>';
+	var reportABug='<?php print __('Report a bug');?>';
+	var aboutCacti='<?php print __('About Cacti');?>';
 </script>

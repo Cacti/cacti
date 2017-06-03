@@ -314,7 +314,7 @@ $.tablesorter.addParser({
  *  of graphs for creation. Is will scan the against preset variables
  *  taking action as required to enable or disable rows. */
 function applySelectorVisibilityAndActions() {
-	// Change for accessibility  
+	// Change for accessibility
 	$('input[type="checkbox"], input[type="radio"]').click(function() {
 		if ($(this).is(':checked')) {
 			$(this).attr('aria-checked', 'true');
@@ -345,6 +345,10 @@ function applySelectorVisibilityAndActions() {
 	// Create Actions for Checkboxes
 	$('tr[id^="gt_line"].selectable').find('input.checkbox').click(function(data) {
 		if (!$(this).is(':disabled')) {
+			if ($(this).is(':checked')) {
+				$('#all_cg').prop('checked', false);
+			}
+
 			$(this).closest('tr').toggleClass('selected');
 		}
 	});
@@ -553,11 +557,11 @@ function applySkin() {
 	});
 
 	// Debug message actions
-	$('table.debug').click(function() { 
-		if ($(this).find('table').is(':visible')) { 
-			$(this).find('table').slideUp('fast'); 
-		} else { 
-			$(this).find('table').slideDown('fast'); 
+	$('table.debug').click(function() {
+		if ($(this).find('table').is(':visible')) {
+			$(this).find('table').slideUp('fast');
+		} else {
+			$(this).find('table').slideDown('fast');
 		}
 	});
 
@@ -621,7 +625,7 @@ function setupResponsiveMenuAndTabs() {
 		}else{
 			document.location = $(this).attr('href');
 		}
-	});	
+	});
 
 	$(window).resize(function(event) {
     	resizeTime = new Date();
@@ -773,7 +777,7 @@ function tuneTable(object, width) {
 				$('#'+id+' td:nth-child('+column+')').hide();
 				columnsHidden++;
 			}
-			
+
 			visibleColumns = totalCols - columnsHidden;
 
 			if (tableWidth-reducedWidth < width || visibleColumns <= minColumns) {
@@ -844,7 +848,7 @@ function tuneFilter(object, width) {
 				if ($(this).next('td').find('input, select').length > 0) {
 					$(this).next('td').hide();
 				}
-				
+
 				return false;
 			}
 		});
@@ -919,7 +923,7 @@ function loadPage(href) {
 			if ($('#menu').find("a[href*='"+href+"']").length > 0) {
 				$('#menu').find('.pic').removeClass('selected');
 				$('#menu').find("a[href*='"+href+"']").addClass('selected');
-			}else{ 
+			}else{
 				$('#menu').find('.pic').removeClass('selected');
 				$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
 			}
@@ -1087,7 +1091,7 @@ function setupUserMenu() {
 }
 
 function setupSpecialKeys() {
-	$('#filter, #rfilter').unbind('keypress').attr('title', 'Press Ctrl+Shift+X to Clear Filter');
+	$('#filter, #rfilter').unbind('keypress').attr('title', clearFilter);
 	$('#filter, #rfilter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close'); }).on('click', function() { $(this).tooltip('close'); });
 
 	$('#filter, #rfilter').bind('keypress', 'ctrl+shift+x', function() {
@@ -1363,7 +1367,7 @@ function saveGraphFilter(section) {
 		'&thumbnails='+$('#thumbnails').is(':checked');
 
 	$.get(href+'&header=false&section='+section, function(data) {
-		$('#text').show().text('Filter Settings Saved').fadeOut(2000, function() {
+		$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
 			$('#text').empty();
 		});
 	});
@@ -1452,12 +1456,12 @@ function applyGraphTimespan() {
 }
 
 function refreshGraphTimespanFilter() {
-	var json = { 
-		custom: 1, 
-		button_refresh_x: 1, 
-		date1: $('#date1').val(), 
-		date2: $('#date2').val(), 
-		predefined_timespan: $('#predefined_timespan').val(), 
+	var json = {
+		custom: 1,
+		button_refresh_x: 1,
+		date1: $('#date1').val(),
+		date2: $('#date2').val(),
+		predefined_timespan: $('#predefined_timespan').val(),
 		predefined_timeshift: $('#predefined_timeshift').val(),
 		__csrf_magic: csrfMagicToken
 	};
@@ -1474,12 +1478,12 @@ function refreshGraphTimespanFilter() {
 }
 
 function timeshiftGraphFilterLeft() {
-	var json = { 
-		move_left_x: 1, 
-		move_left_y: 1, 
-		date1: $('#date1').val(), 
-		date2: $('#date2').val(), 
-		predefined_timespan: $('#predefined_timespan').val(), 
+	var json = {
+		move_left_x: 1,
+		move_left_y: 1,
+		date1: $('#date1').val(),
+		date2: $('#date2').val(),
+		predefined_timespan: $('#predefined_timespan').val(),
 		predefined_timeshift: $('#predefined_timeshift').val(),
 		__csrf_magic: csrfMagicToken
 	};
@@ -1496,12 +1500,12 @@ function timeshiftGraphFilterLeft() {
 }
 
 function timeshiftGraphFilterRight() {
-	var json = { 
-		move_right_x: 1, 
-		move_right_y: 1, 
-		date1: $('#date1').val(), 
-		date2: $('#date2').val(), 
-		predefined_timespan: $('#predefined_timespan').val(), 
+	var json = {
+		move_right_x: 1,
+		move_right_y: 1,
+		date1: $('#date1').val(),
+		date2: $('#date2').val(),
+		predefined_timespan: $('#predefined_timespan').val(),
 		predefined_timeshift: $('#predefined_timeshift').val(),
 		__csrf_magic: csrfMagicToken
 	};
@@ -1518,11 +1522,11 @@ function timeshiftGraphFilterRight() {
 }
 
 function clearGraphTimespanFilter() {
-	var json = { 
-		button_clear: 1, 
-		date1: $('#date1').val(), 
-		date2: $('#date2').val(), 
-		predefined_timespan: $('#predefined_timespan').val(), 
+	var json = {
+		button_clear: 1,
+		date1: $('#date1').val(),
+		date2: $('#date2').val(),
+		predefined_timespan: $('#predefined_timespan').val(),
 		predefined_timeshift: $('#predefined_timeshift').val(),
 		__csrf_magic: csrfMagicToken
 	};
@@ -1543,9 +1547,6 @@ function removeSpikesStdDev(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		//$('#spikeresults').html(data.results);
-		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
@@ -1554,9 +1555,6 @@ function removeSpikesVariance(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		//$('#spikeresults').html(data.results);
-		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
@@ -1565,9 +1563,6 @@ function removeSpikesInRange(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		//$('#spikeresults').html(data.results);
-		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
@@ -1576,9 +1571,6 @@ function removeRangeFill(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		//$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
-		//$('#spikeresults').html(data.results);
-		//$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
 }
 
@@ -1586,7 +1578,7 @@ function dryRunStdDev(local_graph_id) {
 	strURL = "spikekill.php?method=stddev&dryrun=true&local_graph_id="+local_graph_id;
 	$.getJSON(strURL, function(data) {
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
 		$('#spikeresults').html(data.results);
 		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
@@ -1596,7 +1588,7 @@ function dryRunVariance(local_graph_id) {
 	strURL = "spikekill.php?method=variance&dryrun=true&local_graph_id="+local_graph_id;
 	$.getJSON(strURL, function(data) {
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
 		$('#spikeresults').html(data.results);
 		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
@@ -1607,7 +1599,7 @@ function dryRunSpikesInRange(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
 		$('#spikeresults').html(data.results);
 		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
@@ -1618,7 +1610,7 @@ function dryRunRangeFill(local_graph_id) {
 	$.getJSON(strURL, function(data) {
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="SpikeKill Results"></div>');
+		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
 		$('#spikeresults').html(data.results);
 		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 	});
@@ -1668,7 +1660,7 @@ function initializeGraphs() {
 		$.ajaxQ.abortAll();
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
 			$('#main').empty().hide();
-			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">Time Graph View</a></li>');
+			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">'+timeGraphView+'</a></li>');
 			$('#zoom-container').remove();
 			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
@@ -1724,8 +1716,8 @@ function initializeGraphs() {
 
 				$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
 				$("#graph_"+data.local_graph_id).zoom({
-					inputfieldStartTime : 'date1', 
-					inputfieldEndTime : 'date2', 
+					inputfieldStartTime : 'date1',
+					inputfieldEndTime : 'date2',
 					serverTimeOffset : timeOffset
 				});
 				realtimeArray[data.local_graph_id] = false;
@@ -1749,7 +1741,7 @@ function initializeGraphs() {
 			$('#main').empty().hide();
 			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
-			$('#breadcrumbs').append('<li><a id="nav_util" href="#">Utility View</a></li>');
+			$('#breadcrumbs').append('<li><a id="nav_util" href="#">'+utilityView+'</a></li>');
 			applySkin();
 			clearTimeout(myRefresh);
 		});
@@ -1762,13 +1754,13 @@ function initializeGraphs() {
 
 		if (realtimeArray[graph_id]) {
 			$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
-			$(this).html("<img class='drillDown' title='Click to view just this Graph in Realtime' alt='' src='"+urlPath+"images/chart_curve_go.png'>");
+			$(this).html("<img class='drillDown' title='"+realtimeClickOn+"' alt='' src='"+urlPath+"images/chart_curve_go.png'>");
 			$(this).find('img').tooltip().zoom({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : timeOffset });
 			realtimeArray[graph_id] = false;
 			setFilters();
 		}else{
 			keepRealtime[graph_id]  = $('#wrapper_'+graph_id).html();
-			$(this).html("<i style='text-align:center;padding:0px;' title='Click again to take this Graph out of Realtime' class='drillDown fa fa-circle-o-notch fa-spin'/>");
+			$(this).html("<i style='text-align:center;padding:0px;' title='"+realtimeClickOff+"' class='drillDown fa fa-circle-o-notch fa-spin'/>");
 			$(this).find('i').tooltip();
 			realtimeArray[graph_id] = true;
 			setFilters();
@@ -1785,16 +1777,16 @@ $.widget('custom.dropcolor', {
 		this.wrapper = $('<span>')
 		.addClass('autodrop ui-selectmenu-button ui-widget ui-state-default ui-corner-all')
 		.insertAfter(this.element);
- 
+
 		this.element.hide();
 		this._createAutocomplete();
 		this._createShowAllButton();
 	},
- 
+
 	_createAutocomplete: function() {
 		var selected = this.element.children(':selected');
 		var value = selected.val() ? selected.text() : '';
- 
+
 		this.input = $('<input>')
 		.appendTo(this.wrapper)
 		.val(value)
@@ -1842,11 +1834,11 @@ $.widget('custom.dropcolor', {
 			autocompletechange: '_removeIfInvalid'
 		});
 	},
- 
+
 	_createShowAllButton: function() {
 		var input = this.input;
 		var wasOpen = false;
- 
+
 		$('<span>')
 		.attr('tabIndex', -1)
 		.tooltip()
@@ -1857,17 +1849,17 @@ $.widget('custom.dropcolor', {
 		})
 		.on('click', function() {
 			input.trigger('focus');
- 
+
 			// Close if already visible
 			if (wasOpen) {
 				return;
 			}
- 
+
 			// Pass empty string as value to search for, displaying all results
 			input.autocomplete('search', '');
 		});
 	},
- 
+
 	_source: function(request, response) {
 		var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), 'i');
 		results = this.element.children('option').map(function() {
@@ -1883,13 +1875,13 @@ $.widget('custom.dropcolor', {
 
 		response(results.slice(0,15));
 	},
- 
+
 	_removeIfInvalid: function(event, ui) {
 		// Selected an item, nothing to do
 		if (ui.item) {
 			return;
 		}
- 
+
 		// Search for a match (case-insensitive)
 		var value = this.input.val();
 		var valueLowerCase = value.toLowerCase();
@@ -1901,12 +1893,12 @@ $.widget('custom.dropcolor', {
 				return false;
 			}
 		});
- 
+
 		// Found a match, nothing to do
 		if (valid) {
 			return;
 		}
- 
+
 		// Remove invalid value
 		this.input.val('');
 		this.element.val('');
@@ -1915,7 +1907,7 @@ $.widget('custom.dropcolor', {
 		}, 2500 );
 		this.input.autocomplete('instance').term = '';
 	},
- 
+
 	_destroy: function() {
 		this.wrapper.remove();
 		this.element.show();

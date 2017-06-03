@@ -20,14 +20,14 @@ function keepWindowSize() {
 		waitForFinalEvent(function(){
 			/* close open dropdown menues first off */
 			$('.dropdownMenu > ul').hide();
-		
+
 			heightPage = $(window).height();
 			heightPageHead = $('#cactiPageHead').outerHeight();
 			heightPageContent = heightPage - heightPageHead + 1;
 
 			$('body').css('height', heightPage);
 			$('#cactiContent').css('height', heightPageContent);
-		
+
 			/* check visibility of all tabs */
 			$('#submenu-ellipsis').empty();
 			$('.maintabs nav ul li a').each(function() {
@@ -91,12 +91,12 @@ function themeReady() {
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
-	
+
 	/* Start clean up */
 
 	//login page
 	$('.cactiLoginLogo').html("<i class='fa fa-paw'/>").css('font-size: 20px');
-	
+
 	/* clean up the navigation menu */
 	$('.cactiConsoleNavigationArea').find('#menu').appendTo($('.cactiConsoleNavigationArea').find('#navigation'));
 	$('.cactiConsoleNavigationArea').find('#navigation > table').remove();
@@ -108,20 +108,20 @@ function themeReady() {
 				+'<li class="maintabs-submenu">'
 					+'<a class="submenu-ellipsis" href="#"><i class="fa fa-angle-down"></i></a></li>'
 			+'</ul></nav>'
-		+'</div>').insertAfter('.maintabs');	
+		+'</div>').insertAfter('.maintabs');
 	}
 	$('<div class="dropdownMenu">'
 		+'<ul id="submenu-ellipsis" class="submenuoptions" style="display:none;">'
 		+'</ul>'
-	+'</div>').appendTo('body');	
-	
+	+'</div>').appendTo('body');
+
 	/* Hey - No footer available ? */
 	//if($('#cactiPageBottom').length == 0) {
 		//$('<div id="cactiPageBottom" class="cactiPageBottom"></div>').insertAfter('#cactiContent');
 	//}
 	/* Console? Nope! */
 	submenu_counter = 10;
-		
+
 	$('.maintabs nav ul li a').each( function() {
 		id = $(this).attr('id');
 		if ( id == 'maintab-anchor-console') {
@@ -132,14 +132,14 @@ function themeReady() {
 			$('<li class="maintabs-submenu"><a class="submenu-' + submenu_counter + '" href="#"><i class="fa fa-angle-down"></i></a></li>').insertAfter( $(this) );
 			$('<div class="dropdownMenu">'
 				+'<ul id="submenu-' + submenu_counter + '" class="submenuoptions" style="display:none;">'
-					+'<li><a href="'+urlPath+'graph_view.php?action=tree">Tree View</a></li>'
-					+'<li><a href="'+urlPath+'graph_view.php?action=list">List View</a></li>'
-					+'<li><a href="'+urlPath+'graph_view.php?action=preview">Preview View</a></li>'
+					+'<li><a href="'+urlPath+'graph_view.php?action=tree">'+treeView+'</a></li>'
+					+'<li><a href="'+urlPath+'graph_view.php?action=list">'+listView+'</a></li>'
+					+'<li><a href="'+urlPath+'graph_view.php?action=preview">'+previewView+'</a></li>'
 				+'</ul>'
 			+'</div>').appendTo('body');
 		}else {
 			/* plugin stuff here ? */
-		}		
+		}
 	});
 
 	/* user menu on the right ... */
@@ -148,11 +148,11 @@ function themeReady() {
 			+'<nav><ul>'
 				+'<li class="action-icon-user"><a class="pic" href="#"><i class="fa fa-user"></i></a></li>'
 			+'</ul></nav>'
-		+'</div>').insertAfter('.ellipsis');	
+		+'</div>').insertAfter('.ellipsis');
 	}
-	
+
 	ajaxAnchors();
-	
+
 	/* User Menu */
 	$('.menuoptions').parent().appendTo('body');
 
@@ -172,10 +172,10 @@ function themeReady() {
 
 	$('.maintabs-submenu').unbind('click').click(function(event) {
 		event.preventDefault();
-		
+
 		submenu_index = $(this).children('a:first').attr('class');
 		submenu = $('#'+submenu_index);
-		
+
 		if( submenu.is(':visible') === false ) {
 			/* close other drop down menus first */
 			$('.submenuoptions').slideUp(120);
@@ -192,7 +192,7 @@ function themeReady() {
 		}else {
 			submenu.slideUp(120);
 		}
-		
+
 		return false;
 	});
 
@@ -211,7 +211,7 @@ function themeReady() {
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
-	
+
 	$('select.colordropdown').dropcolor();
 
 	$('select').not('.colordropdown').each(function() {
@@ -327,4 +327,4 @@ function setMenuVisibility() {
 		}
 	});
 }
-	
+
