@@ -29,7 +29,7 @@ include_once('./lib/rrd.php');
 /* set default action */
 set_default_action('view');
 
-if (!isset_request_var('view_type')) { 
+if (!isset_request_var('view_type')) {
 	set_request_var('view_type', '');
 }
 
@@ -59,7 +59,7 @@ if (get_request_var('rra_id') == 'all' || isempty_request_var('rra_id')) {
 
 /* make sure the graph requested exists (sanity) */
 if (!(db_fetch_cell_prepared('SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id'))))) {
-	print "<strong><font class='txtErrorTextBox'>GRAPH DOES NOT EXIST</font></strong>"; 
+	print "<strong><font class='txtErrorTextBox'>GRAPH DOES NOT EXIST</font></strong>";
 	exit;
 }
 
@@ -94,7 +94,7 @@ case 'view':
 			<strong><?php print __('Viewing Graph');?></strong> '<?php print htmlspecialchars($graph_title, ENT_QUOTES);?>'
 		<script type='text/javascript'>
 
-		$(function() { 
+		$(function() {
 			$('#navigation').show();
 			$('#navigation_right').show();
 		});
@@ -182,7 +182,7 @@ case 'view':
 		});
 	}
 
-	$(function() { 
+	$(function() {
 		initializeGraph();
 		$('#navigation').show();
 		$('#navigation_right').show();
@@ -286,11 +286,11 @@ case 'zoom':
                             <?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
 					</td>
 					<td valign='top' style='align:left;padding-top: 3px;' class='noprint'>
-						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink hyperLink properties'> 
+						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink hyperLink properties'>
 							<img class='drillDown' src='<?php print $config['url_path'] . "images/graph_properties.gif";?>' alt='' title='<?php print __('Graph Source/Properties');?>'>
 						</a>
 						<br>
-						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_csv' class='iconLink hyperLink properties'> 
+						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_csv' class='iconLink hyperLink properties'>
 							<img class='drillDown' src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='<?php print __('Graph Data');?>'>
 						</a>
 						<br>
@@ -329,7 +329,7 @@ case 'zoom':
 		if ($('#graph_end').val() > now) {
 			$('#graph_end').val(now);
 		}
-		
+
 		initializeGraph();
 	}
 
@@ -398,7 +398,8 @@ case 'zoom':
 		});
 	}
 
-	$(function() { 
+	$(function() {
+		myGraphLocation = 'graph';
 		initializeGraph();
 		$('#navigation').show();
 		$('#navigation_right').show();
@@ -420,10 +421,10 @@ case 'properties':
 	if (!isempty_request_var('graph_end')) {
 		$graph_data_array['graph_end'] = get_request_var('graph_end');
 	}
-	
+
 	$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
 	$graph_data_array['print_source'] = 1;
-	
+
 	print "<table align='center' width='100%' class='cactiTable'<tr><td>\n";
 	print "<table class='cactiTable' width='100%'>\n";
 	print "<tr class='tableHeader'><td colspan='3' class='linkOverDark' style='font-weight:bold;'>" . __('RRDtool Graph Syntax') . "</td></tr>\n";

@@ -50,12 +50,12 @@ function get_matching_nodes() {
 
 	if (get_nfilter_request_var('str') != '') {
 		$matching = db_fetch_assoc_prepared("SELECT gti.parent, gti.graph_tree_id
-			FROM graph_tree_items AS gti 
+			FROM graph_tree_items AS gti
 			LEFT JOIN host AS h
 			ON h.id=gti.host_id
 			LEFT JOIN graph_templates_graph AS gtg
 			ON gtg.local_graph_id=gti.local_graph_id AND gtg.local_graph_id>0
-			WHERE gtg.title_cache LIKE ? 
+			WHERE gtg.title_cache LIKE ?
 			OR h.description LIKE ?
 			OR h.hostname LIKE ?
 			OR gti.title LIKE ?",
@@ -112,7 +112,7 @@ function get_matching_nodes() {
 				}
 			}
 		}
- 
+
 		header('Content-Type: application/json; charset=utf-8');
 
 		print json_encode($fa);
@@ -126,7 +126,7 @@ case 'ajax_hosts':
 
 	break;
 case 'ajax_search':
-	get_matching_nodes(); 
+	get_matching_nodes();
 	exit;
 
 	break;
@@ -194,11 +194,11 @@ case 'get_node':
 
 	if (isset_request_var('tree_id')) {
 		if (get_nfilter_request_var('tree_id') == 0 && strstr(get_nfilter_request_var('id'), 'tbranch-') !== false) {
-			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id 
-				FROM graph_tree_items 
+			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
+				FROM graph_tree_items
 				WHERE id = ?', array(str_replace('tbranch-', '', get_nfilter_request_var('id'))));
-		}else if (get_nfilter_request_var('tree_id') == 'default' || 
-			get_nfilter_request_var('tree_id') == 'undefined' || 
+		}else if (get_nfilter_request_var('tree_id') == 'default' ||
+			get_nfilter_request_var('tree_id') == 'undefined' ||
 			get_nfilter_request_var('tree_id') == '') {
 
 			$tree_id = read_user_setting('default_tree_id');
@@ -221,7 +221,7 @@ case 'get_node':
 
 			foreach($ndata as $node) {
 				$pnode = explode('-', $node);
-	
+
 				if ($pnode[0] == 'tbranch') {
 					$parent = $pnode[1];
 					input_validate_input_number($parent);
@@ -233,7 +233,7 @@ case 'get_node':
 	}
 
 	api_tree_get_main($tree_id, $parent);
-	
+
 	break;
 case 'tree_content':
 	html_validate_tree_vars();
@@ -266,6 +266,7 @@ case 'tree_content':
 
 	// Adjust the height of the tree
 	$(function() {
+		myGraphLocation='tree';
 		navHeight    = $('.cactiTreeNavigationArea').height();
 		windowHeight = $(window).height();
 		navOffset    = $('.cactiTreeNavigationArea').offset();
@@ -292,9 +293,9 @@ case 'tree_content':
 		} elseif (strpos(get_request_var('node'), 'tbranch') !== false) {
 			// Check for branch
 			$node_id = $parts[1];
-			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id 
-				FROM graph_tree_items 
-				WHERE id = ?', 
+			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
+				FROM graph_tree_items
+				WHERE id = ?',
 				array($node_id));
 		}
 	}
@@ -390,7 +391,7 @@ case 'preview':
 	$limit      = (get_request_var('graphs')*(get_request_var('page')-1)) . ',' . get_request_var('graphs');
 	$order      = 'gtg.title_cache';
 
-	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);	
+	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
 
 	$nav = html_nav_bar('graph_view.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
 
@@ -431,26 +432,26 @@ case 'list':
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX, 
+			'filter' => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			),
 		'graph_template_id' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST, 
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
 			'default' => '0'
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
@@ -532,9 +533,9 @@ case 'list':
 							if (sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {
-									$found = db_fetch_cell_prepared('SELECT id 
-										FROM graph_local 
-										WHERE graph_template_id = ? LIMIT 1', 
+									$found = db_fetch_cell_prepared('SELECT id
+										FROM graph_local
+										WHERE graph_template_id = ? LIMIT 1',
 										array($gt['id']));
 
 									if ($found) {
@@ -622,11 +623,11 @@ case 'list':
 	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			if ($graph['description'] == '' && $graph['template_name'] == '') {
-				$aggregate = db_fetch_cell_prepared('SELECT agt.name 
+				$aggregate = db_fetch_cell_prepared('SELECT agt.name
 					FROM aggregate_graphs AS ag
 					INNER JOIN aggregate_graph_templates AS agt
 					ON ag.aggregate_template_id=agt.id
-					WHERE local_graph_id = ?', 
+					WHERE local_graph_id = ?',
 					array($graph['local_graph_id']));
 
 				if (!empty($aggregate)) {
@@ -756,6 +757,8 @@ case 'list':
 	}
 
 	$(function() {
+		myGraphLocation='list';
+
 		initializeChecks();
 
 		var msWidth = 100;
@@ -767,7 +770,7 @@ case 'list':
 		});
 
 		$('#graph_template_id').hide().multiselect({
-			noneSelectedText: '<?php print __('All Graphs & Templates');?>', 
+			noneSelectedText: '<?php print __('All Graphs & Templates');?>',
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
 				$.each(checkedItems, function(index, value) {
@@ -778,7 +781,7 @@ case 'list':
 				});
 				return myReturn;
 			},
-			checkAllText: '<?php print __('All');?>', 
+			checkAllText: '<?php print __('All');?>',
 			uncheckAllText: '<?php print __('None');?>',
 			uncheckall: function() {
 				$(this).multiselect('widget').find(':checkbox:first').each(function() {
@@ -815,7 +818,7 @@ case 'list':
 				}
 			}
 		}).multiselectfilter({
-			label: '<?php print __('Search');?>', 
+			label: '<?php print __('Search');?>',
 			width: msWidth
 		});
 

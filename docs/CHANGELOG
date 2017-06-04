@@ -18,9 +18,11 @@ Cacti CHANGELOG
 -issue#755: RRDtool Graph Watermark is incorrect
 -issue#756: Resolving some translation issues
 -issue#763: Template Export not functional
+-issue#765: Validation error when viewing Utility View
 -issue#771: Editing a report renders no options after creation
 -issue#780: Preview always shows thumbnails in reports interface
 -issue: Hide Aggregate system cdefs when editing graphs and graph templates
+-issue: Updating Utility View zoom was not updating table data
 -feature#723: Convert Data Source dropdown to autocomplete when editing standalone graphs
 -feature#735: Allow color selection in graphs and templates to be autocomplete
 -feature#753: Preliminary support for RRDtool 1.7.

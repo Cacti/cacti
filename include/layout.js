@@ -47,6 +47,7 @@ var lastMain = 0;
 var resizeDelta = 100;
 var resizeTime = 0;
 var resizeTimeout = false;
+var myGraphLocation = false;
 
 var isMobile = {
 	Android: function() {
@@ -1741,7 +1742,7 @@ function initializeGraphs() {
 			$('#main').empty().hide();
 			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
-			$('#breadcrumbs').append('<li><a id="nav_util" href="#">'+utilityView+'</a></li>');
+			$('#breadcrumbs').append('<li><a id="nav_butil" href="#">'+utilityView+'</a></li>');
 			applySkin();
 			clearTimeout(myRefresh);
 		});
