@@ -82,53 +82,53 @@ function html_graph_validate_preview_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_user_setting('preview_graphs_per_page', 20)
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'graph_template_id' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST, 
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
 			'default' => read_user_setting('graph_template_id', 0)
 			),
 		'columns' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_user_setting('num_columns', 2)
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX, 
+			'filter' => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			),
 		'thumbnails' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'default' => read_user_setting('thumbnail_section_preview', '') == 'on' ? 'true':'false'
 			),
 		'graph_list' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
 			'pageset' => true,
 			'default' => ''
 			),
 		'graph_add' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
 			'pageset' => true,
 			'default' => ''
 			),
 		'graph_remove' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
 			'pageset' => true,
 			'default' => ''
@@ -166,9 +166,9 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							if (sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {
-									$found = db_fetch_cell_prepared('SELECT id 
-										FROM graph_local 
-										WHERE graph_template_id = ? LIMIT 1', 
+									$found = db_fetch_cell_prepared('SELECT id
+										FROM graph_local
+										WHERE graph_template_id = ? LIMIT 1',
 										array($gt['id']));
 
 									if ($found) {
@@ -381,7 +381,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 			});
 
 			$('#graph_template_id').hide().multiselect({
-				noneSelectedText: '<?php print __('All Graphs & Templates');?>', 
+				noneSelectedText: '<?php print __('All Graphs & Templates');?>',
 				selectedText: function(numChecked, numTotal, checkedItems) {
 					myReturn = numChecked + ' <?php print __('Templates Selected');?>';
 					$.each(checkedItems, function(index, value) {
@@ -392,7 +392,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					});
 					return myReturn;
 				},
-				checkAllText: '<?php print __('All');?>', 
+				checkAllText: '<?php print __('All');?>',
 				uncheckAllText: '<?php print __('None');?>',
 				uncheckall: function() {
 					$(this).multiselect('widget').find(':checkbox:first').each(function() {
@@ -429,7 +429,8 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					}
 				}
 			}).multiselectfilter({
-				label: '<?php print __('Search');?>', 
+				label: '<?php print __('Search');?>',
+				placeholder: '<?php print __('Enter keyword');?>',
 				width: msWidth
 			});
 

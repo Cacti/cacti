@@ -82,7 +82,7 @@ case 'save':
 
 	/* update snmpcache */
 	snmpagent_global_settings_update();
-	
+
 	api_plugin_hook_function('global_settings_update');
 	raise_message(1);
 
@@ -149,9 +149,9 @@ default:
 						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 					}
 
-					$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value 
-						FROM settings 
-						WHERE name = ?', 
+					$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value
+						FROM settings
+						WHERE name = ?',
 						array($sub_field_name));
 				}
 			} else {
@@ -159,9 +159,9 @@ default:
 					$form_array[$field_name]['form_id'] = 1;
 				}
 
-				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value 
-					FROM settings 
-					WHERE name = ?', 
+				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value
+					FROM settings
+					WHERE name = ?',
 					array($field_name));
 			}
 		}
@@ -188,12 +188,12 @@ default:
 
 	$(function() {
 		$('#selective_plugin_debug').multiselect({
-			noneSelectedText: '<?php print __('Select Plugin(s)');?>', 
+			noneSelectedText: '<?php print __('Select Plugin(s)');?>',
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Plugins Selected');?>';
 				return myReturn;
 			},
-			checkAllText: '<?php print __('All');?>', 
+			checkAllText: '<?php print __('All');?>',
 			uncheckAllText: '<?php print __('None');?>',
 			uncheckall: function() {
 				$(this).multiselect('widget').find(':checkbox:first').each(function() {
@@ -201,16 +201,18 @@ default:
 				});
 			}
 		}).multiselectfilter( {
-			label: '<?php print __('Search');?>', width: '150'
+			label: '<?php print __('Search');?>',
+			placeholder: '<?php print __('Enter keyword');?>',
+			width: '150'
 		});
 
 		$('#selective_debug').multiselect({
-			noneSelectedText: '<?php print __('Select File(s)');?>', 
+			noneSelectedText: '<?php print __('Select File(s)');?>',
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Files Selected');?>';
 				return myReturn;
 			},
-			checkAllText: '<?php print __('All');?>', 
+			checkAllText: '<?php print __('All');?>',
 			uncheckAllText: '<?php print __('None');?>',
 			uncheckall: function() {
 				$(this).multiselect('widget').find(':checkbox:first').each(function() {
@@ -218,11 +220,13 @@ default:
 				});
 			}
 		}).multiselectfilter( {
-			label: '<?php print __('Search');?>', width: '150'
+			label: '<?php print __('Search');?>',
+			placeholder: '<?php print __('Enter keyword');?>',
+			width: '150'
 		});
 
 		$('#spikekill_templates').multiselect({
-			noneSelectedText: '<?php print __('Select Template(s)');?>', 
+			noneSelectedText: '<?php print __('Select Template(s)');?>',
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
 				$.each(checkedItems, function(index, value) {
@@ -233,7 +237,7 @@ default:
 				});
 				return myReturn;
 			},
-			checkAllText: '<?php print __('All');?>', 
+			checkAllText: '<?php print __('All');?>',
 			uncheckAllText: '<?php print __('None');?>',
 			uncheckall: function() {
 				$(this).multiselect('widget').find(':checkbox:first').each(function() {
@@ -264,7 +268,9 @@ default:
 				}
 			}
 		}).multiselectfilter( {
-			label: '<?php print __('Search');?>', width: '150'
+			label: '<?php print __('Search');?>',
+			placeholder: '<?php print __('Enter keyword');?>',
+			width: '150'
 		});
 
 		$('.subTab').find('a').click(function(event) {
@@ -273,7 +279,7 @@ default:
 			strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
 			loadPageNoHeader(strURL);
 		});
-		
+
 		$('input[value="Save"]').click(function(event) {
 			event.preventDefault();
 

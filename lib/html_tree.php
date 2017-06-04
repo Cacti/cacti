@@ -45,7 +45,7 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 		AND gti.host_id = 0
 		AND gti.local_graph_id = 0
 		AND parent = ?
-		ORDER BY parent, position', 
+		ORDER BY parent, position',
 		array($tree_id, $parent));
 
 	if ($parent == 0) {
@@ -92,24 +92,24 @@ function grow_dhtml_trees() {
 			$user = db_fetch_row_prepared('SELECT policy_trees FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
 			if ($user['policy_trees'] == 1) {
-				$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id 
+				$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
 					FROM graph_tree
 					LEFT JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
 					AND user_auth_perms.type = 2
 					AND user_auth_perms.user_id = ?
-					WHERE user_auth_perms.item_id IS NULL 
+					WHERE user_auth_perms.item_id IS NULL
 					AND graph_tree.enabled = "on"
-					ORDER BY graph_tree.id 
+					ORDER BY graph_tree.id
 					LIMIT 1',
 					array($_SESSION['sess_user_id']));
 			} else {
-				$default_tree_id = db_fetch_cell('SELECT graph_tree.id 
+				$default_tree_id = db_fetch_cell('SELECT graph_tree.id
 					FROM graph_tree
 					INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
-					AND user_auth_perms.type = 2 
+					AND user_auth_perms.type = 2
 					AND user_auth_perms.user_id = ?
 					WHERE graph_tree.enabled = "on"
-					ORDER BY graph_tree.id 
+					ORDER BY graph_tree.id
 					LIMIT 1',
 					array($_SESSION['sess_user_id']));
 			}
@@ -283,8 +283,8 @@ function get_tree_path() {
 			$parts = explode('-', get_request_var('node'));
 			$node  = $parts[1];
 
-			$linknode = db_fetch_row_prepared('SELECT * 
-				FROM graph_tree_items 
+			$linknode = db_fetch_row_prepared('SELECT *
+				FROM graph_tree_items
 				WHERE id = ?',
 				array($node));
 
@@ -314,7 +314,7 @@ function get_tree_path() {
 				while (true) {
 					if ($linknode['parent'] > 0) {
 						$rnodes[] = 'tbranch-' . $linknode['parent'];
-						$linknode = db_fetch_row_prepared('SELECT * 
+						$linknode = db_fetch_row_prepared('SELECT *
 							FROM graph_tree_items
 							WHERE id = ?',
 							array($linknode['parent']));
@@ -435,13 +435,13 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 									}
 								}
 							}
-	
+
 							$dhtml_tree[] = "\t\t\t\t\t\t</li>\n";
 						}
-	
+
 						$dhtml_tree[] = "\t\t\t\t\t</ul>\n";
 					}
-	
+
 					$dhtml_tree[] = "\t\t\t\t</li>\n";
 				} else { //It's not a host
 					$children = db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_tree_items WHERE parent = ? AND local_graph_id=0', array($leaf['id']));
@@ -449,7 +449,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . htmlspecialchars($leaf['title']) . "</a></li>\n";
 				}
 			}
-	
+
 			$dhtml_tree[] = "\t\t\t</ul>\n";
 		} else {
 			$dhtml_tree[] = "<ul>\n";
@@ -481,50 +481,50 @@ function html_validate_tree_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_user_setting('treeview_graphs_per_page')
 			),
 		'graph_template_id' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST, 
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
 			'default' => read_user_setting('graph_template_id', '0')
 			),
 		'columns' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => read_user_setting('num_columns_tree')
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'predefined_timeshift' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => read_user_setting('default_timeshift')
 			),
 		'predefined_timespan' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => read_user_setting('default_timespan')
 			),
 		'node' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
 			'pageset' => true,
 			'default' => ''
 			),
 		'hgd' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX, 
+			'filter' => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			),
 		'thumbnails' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_user_setting('thumbnail_section_tree_2')
@@ -550,28 +550,28 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$title           = '';
 	$title_delimeter = '';
 
-	$leaf = db_fetch_row_prepared('SELECT 
+	$leaf = db_fetch_row_prepared('SELECT
 		title, host_id, host_grouping_type
 		FROM graph_tree_items
-		WHERE id = ?', 
+		WHERE id = ?',
 		array($leaf_id));
 
 	$leaf_type = api_tree_get_item_type($leaf_id);
 
 	/* get information for the headers */
-	if (!empty($tree_id)) { 
-		$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($tree_id)); 
+	if (!empty($tree_id)) {
+		$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($tree_id));
 	}
 
-	if (!empty($leaf_id)) { 
-		$leaf_name = $leaf['title']; 
+	if (!empty($leaf_id)) {
+		$leaf_name = $leaf['title'];
 	}
 
-	if (!empty($leaf_id)) { 
-		$host_name = db_fetch_cell_prepared('SELECT host.description 
-			FROM (graph_tree_items,host) 
-			WHERE graph_tree_items.host_id=host.id 
-			AND graph_tree_items.id = ?', array($leaf_id)); 
+	if (!empty($leaf_id)) {
+		$host_name = db_fetch_cell_prepared('SELECT host.description
+			FROM (graph_tree_items,host)
+			WHERE graph_tree_items.host_id=host.id
+			AND graph_tree_items.id = ?', array($leaf_id));
 	}
 
 	$host_group_data_array = explode(':', $host_group_data);
@@ -618,9 +618,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							if (sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {
-									$found = db_fetch_cell_prepared('SELECT id 
-										FROM graph_local 
-										WHERE graph_template_id = ? LIMIT 1', 
+									$found = db_fetch_cell_prepared('SELECT id
+										FROM graph_local
+										WHERE graph_template_id = ? LIMIT 1',
 										array($gt['id']));
 
 									if ($found) {
@@ -828,7 +828,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		});
 
 		$('#graph_template_id').hide().multiselect({
-			noneSelectedText: '<?php print __('All Graphs & Templates');?>', 
+			noneSelectedText: '<?php print __('All Graphs & Templates');?>',
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
 				$.each(checkedItems, function(index, value) {
@@ -839,7 +839,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				});
 				return myReturn;
 			},
-			checkAllText: '<?php print __('All');?>', 
+			checkAllText: '<?php print __('All');?>',
 			uncheckAllText: '<?php print __('None');?>',
 			uncheckall: function() {
 				$(this).multiselect('widget').find(':checkbox:first').each(function() {
@@ -876,7 +876,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 				}
 			}
 		}).multiselectfilter({
-			label: '<?php print __('Search');?>', 
+			label: '<?php print __('Search');?>',
+			placeholder: '<?php print __('Enter keyword');?>',
 			width: msWidth
 		});
 
@@ -1016,7 +1017,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 			/* for graphs without a data query */
 			if (empty($data_query_id)) {
-				array_push($data_queries, 
+				array_push($data_queries,
 					array(
 						'id' => '0',
 						'name' => 'Non Query Based'
@@ -1037,7 +1038,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 					/* grab a list of all graphs for this host/data query combination */
 					$sql_where .= ($sql_where != '' ? ' AND ':'') .
-						' gl.snmp_query_id=' . $data_query['id'] . ' AND gl.host_id=' . $leaf['host_id'] . 
+						' gl.snmp_query_id=' . $data_query['id'] . ' AND gl.host_id=' . $leaf['host_id'] .
 						' ' . (empty($data_query_index) ? '' : " AND gl.snmp_index='$data_query_index'");
 
 					$graphs = get_allowed_graphs($sql_where);
