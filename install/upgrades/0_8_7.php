@@ -166,7 +166,7 @@ function upgrade_to_0_8_7() {
 
 	/* Add 1 min rra */
 	db_install_execute("INSERT INTO rra VALUES (DEFAULT,'283ea2bf1634d92ce081ec82a634f513','Hourly (1 Minute Average)',0.5,1,500,14400)");
-	$rrd_id = mysql_insert_id();
+	$rrd_id = db_fetch_insert_id();
 	db_install_execute("INSERT INTO `rra_cf` VALUES ($rrd_id,1), ($rrd_id,3)");
 
 	/* rename cactid path to spine path */
