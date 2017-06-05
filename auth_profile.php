@@ -290,8 +290,8 @@ function settings() {
 	var currentLang  = '<?php print read_config_option('user_language');?>';
 
 	function clearPrivateData() {
-		$.localStorage.removeAll();
-		$.sessionStorage.removeAll();
+		Storages.localStorage.removeAll();
+		Storages.sessionStorage.removeAll();
 
 		$('body').append('<div style="display:none;" id="cleared" title="<?php print __('Private Data Cleared');?>"><p><?php print __('Your Private Data has been cleared.');?></p></div>');
 
