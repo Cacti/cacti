@@ -719,7 +719,11 @@ function form_actions() {
 			api_plugin_hook_function('graphs_action_bottom', array(get_request_var('drp_action'), $selected_items));
 		}
 
-		header('Location: graphs.php?header=false');
+		if (get_request_var('drp_action') == '2') { // change graph template
+			header('Location: graphs.php?header=false&template_id=-1');
+		} else {
+			header('Location: graphs.php?header=false');
+		}
 		exit;
 	}
 
