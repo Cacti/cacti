@@ -63,9 +63,13 @@ $spikekill_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT gt.id, gt.nam
 	WHERE gti.local_graph_id=0 AND data_source_type_id IN (3,2)
 	ORDER BY name'), 'id', 'name');
 
-$logplugins = array_rekey(db_fetch_assoc('SELECT directory AS id, name
-	FROM plugin_config
-	WHERE status=1'), 'id', 'name');
+if (db_table_exists('plugin_config')) {
+	$logplugins = array_rekey(db_fetch_assoc('SELECT directory AS id, name
+		FROM plugin_config
+		WHERE status=1'), 'id', 'name');
+} else {
+	$logplugins = array();
+}
 
 /* get the files for selective logging */
 $realm_files  = array_keys($user_auth_realm_filenames);

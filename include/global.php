@@ -235,8 +235,10 @@ if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions')
 	$cacti_db_session = false;
 }
 
-set_error_handler('CactiErrorHandler');
-register_shutdown_function('CactiShutdownHandler');
+if (!defined('IN_CACTI_INSTALL')) {
+	set_error_handler('CactiErrorHandler');
+	register_shutdown_function('CactiShutdownHandler');
+}
 
 /* verify the cacti database is initialized before moving past here */
 db_cacti_initialized($config['is_web']);
@@ -313,7 +315,6 @@ if ((bool)ini_get('register_globals')) {
 }
 
 include_once($config['include_path'] . '/global_languages.php');
-
 include_once($config['library_path'] . '/auth.php');
 include_once($config['library_path'] . '/plugins.php');
 include_once($config['include_path'] . '/plugins.php');

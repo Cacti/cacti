@@ -45,7 +45,8 @@ function api_plugin_hook ($name) {
 	global $config, $plugin_hooks, $plugins_integrated;
 	$args = func_get_args();
 	$ret = '';
-	if (defined('IN_CACTI_INSTALL')) {
+
+	if (defined('IN_CACTI_INSTALL') || !db_table_exists('plugin_hooks')) {
 		return $args;
 	}
 
@@ -80,7 +81,7 @@ function api_plugin_hook_function ($name, $parm = NULL) {
 	global $config, $plugin_hooks, $plugins_integrated;
 
 	$ret = $parm;
-	if (defined('IN_CACTI_INSTALL')) {
+	if (defined('IN_CACTI_INSTALL') || !db_table_exists('plugin_hooks')) {
 		return $ret;
 	}
 

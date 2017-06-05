@@ -45,7 +45,7 @@ function verify_php_extensions($extensions) {
 }
 
 function db_install_execute($sql) {
-	$status = (db_execute($sql) ? 1 : 0);
+	$status = (db_execute($sql, false) ? 1 : 0);
 	db_install_add_cache ($status, $sql);
 }
 
@@ -564,3 +564,68 @@ function import_colors() {
 	}
 	return true;
 }
+
+function cacti_version_compare($version1, $version2, $operator) {
+	$version1 = version_to_decimal($version1);
+	$version2 = version_to_decimal($version2);
+
+	switch ($operator) {
+	case '<':
+		if ($version1 < $version2) {
+			return true;
+		} else {
+			return false;
+		}
+		break;
+	case '<=':
+		if ($version1 <= $version2) {
+			return true;
+		} else {
+			return false;
+		}
+
+		break;
+	case '>=':
+		if ($version1 >= $version2) {
+			return true;
+		} else {
+			return false;
+		}
+		break;
+	case '>':
+		if ($version1 > $version2) {
+			return true;
+		} else {
+			return false;
+		}
+		break;
+	case '==':
+		if ($version1 == $version2) {
+			return true;
+		} else {
+			return false;
+		}
+		break;
+	default:
+		return version_compare($version1, $version2, $operator);
+	}
+}
+
+function version_to_decimal($version) {
+	$alpha  = substr($version, -1);
+	$newver = '';
+
+	if (!is_numeric($alpha)) {
+		$version = substr($version, 0, -1);
+		$alpha   = ord($alpha) / 1000;
+	} else {
+		$alpha   = 0;
+	}
+
+	for ($i = 0; $i < strlen($version); $i++) {
+		$newver .= ord($version[$i]);
+	}
+
+	return hexdec($newver) + $alpha;
+}
+

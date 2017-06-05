@@ -129,5 +129,5 @@ function upgrade_to_1_1_6() {
 		);
 	}
 
-	db_install_execute("INSERT INTO settings SET `name` = 'max_display_rows', `value` = 1000");
+	db_install_execute("REPLACE INTO settings (name, value) VALUES ('max_display_rows', '1000')");
 }

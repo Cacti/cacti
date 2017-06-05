@@ -50,10 +50,7 @@ $fields_profile_edit = array(
 	'heartbeat' => array(
 		'method' => 'drop_array',
 		'friendly_name' => __('Heartbeat'),
-		'description' => __('How long can data be missing before RRDtool records unknown data.  
-			Increase this value if your Data Source is unstable and you wish to carry forward 
-			old data rather than show gaps in your graphs.  This value is multiplied by the
-			X-Files Factor to determine the actual amount of time.'),
+		'description' => __('How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time.'),
 		'array' => $heartbeats,
 		'value' => '|arg1:heartbeat|',
 		'default' => (read_config_option('poller_interval') * 2),
@@ -368,8 +365,7 @@ $struct_data_source = array(
 		'max_length' => '250',
 		'size' => '80',
 		'default' => '',
-		'description' => __('Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.
-            For a complete list of supported replacement tags, please see the Cacti documentation.'),
+		'description' => __('Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation.'),
 		'flags' => ''
 		),
 	'data_source_path' => array(
@@ -506,8 +502,7 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'default' => '',
-		'description' => __('The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.
-			For a complete list of supported replacement tags, please see the Cacti documentation.'),
+		'description' => __('The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation.'),
 		'size' => '80'
 		),
 	'vertical_label' => array(
@@ -553,8 +548,7 @@ $struct_graph = array(
 		'friendly_name' => __('Slope Mode (--slope-mode)'),
 		'method' => 'checkbox',
 		'default' => 'on',
-		'description' => __('Using Slope Mode evens out the shape of the graphs at the expense of
-			some on screen resolution.')
+		'description' => __('Using Slope Mode evens out the shape of the graphs at the expense of some on screen resolution.')
 		),
 	'scaling_header' => array(
 		'friendly_name' => __('Scaling Options'),
@@ -565,19 +559,14 @@ $struct_graph = array(
 		'friendly_name' => __('Auto Scale'),
 		'method' => 'checkbox',
 		'default' => 'on',
-		'description' => __('Auto scale the y-axis instead of defining an upper and lower limit. Note: if this is check both the
-			Upper and Lower limit will be ignored.'),
+		'description' => __('Auto scale the y-axis instead of defining an upper and lower limit. Note: if this is check both the Upper and Lower limit will be ignored.'),
 		'size' => '7'
 		),
 	'auto_scale_opts' => array(
 		'friendly_name' => __('Auto Scale Options'),
 		'method' => 'radio',
 		'default' => '2',
-		'description' => __('Use <br>
-			--alt-autoscale to scale to the absolute minimum and maximum <br>
-			--alt-autoscale-max to scale to the maximum value, using a given lower limit <br>
-			--alt-autoscale-min to scale to the minimum value, using a given upper limit <br>
-			--alt-autoscale (with limits) to scale using both lower and upper limits (RRDtool default) <br>'),
+		'description' => __('Use <br> --alt-autoscale to scale to the absolute minimum and maximum <br> --alt-autoscale-max to scale to the maximum value, using a given lower limit <br> --alt-autoscale-min to scale to the minimum value, using a given upper limit <br> --alt-autoscale (with limits) to scale using both lower and upper limits (RRDtool default) <br>'),
 		'items' => array(
 			0 => array(
 				'radio_value' => '1',
@@ -608,8 +597,7 @@ $struct_graph = array(
 		'friendly_name' => __('SI Units for Logarithmic Scaling (--units=si)'),
 		'method' => 'checkbox',
 		'default' => '',
-		'description' => __('Use SI Units for Logarithmic Scaling instead of using exponential notation.<br>
-			Note: Linear graphs use SI notation by default.')
+		'description' => __('Use SI Units for Logarithmic Scaling instead of using exponential notation.<br> Note: Linear graphs use SI notation by default.')
 		),
 	'auto_scale_rigid' => array(
 		'friendly_name' => __('Rigid Boundaries Mode (--rigid)'),
@@ -643,9 +631,7 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '',
-		'description' => __('Sets the exponent value on the Y-axis for numbers. Note: This option is
-			deprecated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear
-			at each grid step interval.  Labels are placed every label factor lines.'),
+		'description' => __('Sets the exponent value on the Y-axis for numbers. Note: This option is deprecated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear at each grid step interval.  Labels are placed every label factor lines.'),
 		'size' => '12'
 		),
 	'unit_exponent_value' => array(
@@ -653,8 +639,7 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '',
-		'description' => __('What unit cacti should use on the Y-axis. Use 3 to display everything in "k" or -6
-			to display everything in "u" (micro).'),
+		'description' => __('What unit Cacti should use on the Y-axis. Use 3 to display everything in "k" or -6 to display everything in "u" (micro).'),
 		'size' => '12'
 		),
 	'unit_length' => array(
@@ -663,24 +648,19 @@ $struct_graph = array(
 		'max_length' => '50',
 		'default' => '',
 		'size' => '30',
-		'description' => __('How many digits should RRDtool assume the y-axis labels to be? You may have to use this 
-			option to make enough space once you start fiddling with the y-axis labeling.'),
+		'description' => __('How many digits should RRDtool assume the y-axis labels to be? You may have to use this option to make enough space once you start fiddling with the y-axis labeling.'),
         ),
 	'no_gridfit' => array(
 		'friendly_name' => __('No Gridfit (--no-gridfit)'),
 		'method' => 'checkbox',
 		'default' => '',
-		'description' => __('In order to avoid anti-aliasing blurring effects RRDtool snaps points to device 
-			resolution pixels, this results in a crisper appearance. If this is not to your liking, you can 
-			use this switch to turn this behavior off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default.'),
+		'description' => __('In order to avoid anti-aliasing blurring effects RRDtool snaps points to device resolution pixels, this results in a crisper appearance. If this is not to your liking, you can use this switch to turn this behavior off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default.'),
 		),
 	'alt_y_grid' => array(
 		'friendly_name' => __('Alternative Y Grid (--alt-y-grid)'),
 		'method' => 'checkbox',
 		'default' => '',
-		'description' => __('The algorithm ensures that you always have a grid, that there are enough but not too many grid lines, 
-			and that the grid is metric. This parameter will also ensure that you get enough decimals displayed 
-			even if your graph goes from 69.998 to 70.001.<br><strong>Note: </strong>This parameter may interfere with --alt-autoscale options.'),
+		'description' => __('The algorithm ensures that you always have a grid, that there are enough but not too many grid lines, and that the grid is metric. This parameter will also ensure that you get enough decimals displayed even if your graph goes from 69.998 to 70.001.<br><strong>Note: </strong>This parameter may interfere with --alt-autoscale options.'),
 		),
 	'axis_header' => array(
 		'friendly_name' => __('Axis Options'),
@@ -693,8 +673,7 @@ $struct_graph = array(
 		'max_length' => '20',
 		'default' => '',
 		'size' => '20',
-		'description' => __('A second axis will be drawn to the right of the graph. It is tied to the left axis via the 
-			scale and shift parameters.'),
+		'description' => __('A second axis will be drawn to the right of the graph. It is tied to the left axis via the scale and shift parameters.'),
 		),
 	'right_axis_label' => array(
 		'friendly_name' => __('Right Axis Label (--right-axis-label &lt;string&gt;)'),
@@ -710,8 +689,7 @@ $struct_graph = array(
 		'sql' => 'SELECT id, name FROM graph_templates_gprint ORDER BY name',
 		'default' => '',
 		'none_value' => __('None'),
-		'description' => __('By default, the format of the axis labels gets determined automatically. 
-			If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.'),
+		'description' => __('By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.'),
 		),
 	'right_axis_formatter' => array(
 		'friendly_name' => __('Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)'),
@@ -719,10 +697,7 @@ $struct_graph = array(
 		'array' => $rrd_axis_formatters,
 		'default' => '0',
 		'none_value' => __('None'),
-		'description' => __('When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where
-			data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970)
-			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --right-axis-format.  Finally
-			"duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
+		'description' => __('When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --right-axis-format.  Finally "duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
 		),
 	'left_axis_formatter' => array(
 		'friendly_name' => __('Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)'),
@@ -730,10 +705,7 @@ $struct_graph = array(
 		'array' => $rrd_axis_formatters,
 		'default' => '0',
 		'none_value' => __('None'),
-		'description' => __('When you setup the left axis labeling, apply a rule to the data format.  Supported formats include "numeric" where
-			data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970)
-			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length.  Finally "duration" where values
-			are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
+		'description' => __('When you setup the left axis labeling, apply a rule to the data format.  Supported formats include "numeric" where data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length.  Finally "duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
 		),
 	'legend_header' => array(
 		'friendly_name' => __('Legend Options'),
@@ -744,9 +716,7 @@ $struct_graph = array(
 		'friendly_name' => __('Auto Padding'),
 		'method' => 'checkbox',
 		'default' => 'on',
-		'description' => __('Pad text so that legend and graph data always line up. Note: this could cause
-			graphs to take longer to render because of the larger overhead. Also Auto Padding may not
-			be accurate on all types of graphs, consistent labeling usually helps.')
+		'description' => __('Pad text so that legend and graph data always line up. Note: this could cause graphs to take longer to render because of the larger overhead. Also Auto Padding may not be accurate on all types of graphs, consistent labeling usually helps.')
 		),
 	'dynamic_labels' => array(
 		'friendly_name' => __('Dynamic Labels (--dynamic-labels)'),
@@ -857,17 +827,14 @@ $struct_graph_item = array(
 		'max_length' => '50',
 		'size' => '40',
 		'default' => '',
-		'description' => __('[HRULE|VRULE]: The value of the graph item.<br/>
-			[TICK]: The fraction for the tick line.<br/>
-			[SHIFT]: The time offset in seconds.')
+		'description' => __('[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds.')
 		),
 	'gprint_id' => array(
 		'friendly_name' => __('GPRINT Type'),
 		'method' => 'drop_sql',
 		'sql' => 'SELECT id, name FROM graph_templates_gprint ORDER BY name',
 		'default' => '2',
-		'description' => __('If this graph item is a GPRINT, you can optionally choose another format
-			here. You can define additional types under "GPRINT Presets".')
+		'description' => __('If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under "GPRINT Presets".')
 		),
 	'textalign' => array(
 		'friendly_name' => __('Text Alignment' . ' (TEXTALIGN)'),
@@ -875,9 +842,7 @@ $struct_graph_item = array(
 		'value' => '|arg1:textalign|',
 		'array' => $rrd_textalign,
 		'default' => '',
-		'description' => __('All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.
-			This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/>
-			<strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!'),
+		'description' => __('All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.  This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/> <strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!'),
 		),
 	'text_format' => array(
 		'friendly_name' => __('Text Format'),
@@ -1326,21 +1291,21 @@ $fields_data_query_item_edit = array(
 		'sql' => 'SELECT gt.id, gt.name
 			FROM graph_templates AS gt
 			WHERE gt.id IN(
-				SELECT gtg.graph_template_id 
-				FROM graph_templates_graph AS gtg 
+				SELECT gtg.graph_template_id
+				FROM graph_templates_graph AS gtg
 				INNER JOIN graph_templates_item AS gti
-				ON gtg.graph_template_id=gti.graph_template_id 
+				ON gtg.graph_template_id=gti.graph_template_id
 				AND gti.local_graph_id = 0
 				INNER JOIN data_template_rrd AS dtr
 				ON gti.task_item_id=dtr.id
 				AND dtr.local_data_id = 0
 				INNER JOIN data_template_data AS dtd
-				ON dtd.data_template_id=dtr.data_template_id 
+				ON dtd.data_template_id=dtr.data_template_id
 				AND dtd.local_data_id = 0
 				INNER JOIN data_input AS di
 				ON di.id = dtd.data_input_id
-				WHERE di.id in (2, 11, 12) 
-				ORDER BY gt.name 
+				WHERE di.id in (2, 11, 12)
+				ORDER BY gt.name
 			)
 			ORDER BY gt.name',
 		),
@@ -1723,7 +1688,7 @@ $fields_template_import = array(
 			'value' => '|arg1:snmp_priv_protocol|',
 			'default' => read_config_option('snmp_priv_protocol'),
 			'array' => $snmp_priv_protocols,
-			),	
+			),
 		'snmp_engine_id' => array(
 			'friendly_name' => __('SNMP Engine ID'),
 			'description' => __('Defines the unique SNMP Engine ID to identify this peer. Following format will be recommended:<br>FlexibleLength+Enterprise(8000) + IANA-Cacti(5d75) + MAC-Following(03) + YOUR-MAC-ADDRESS(e.g.:D89D67287B00).<br>Per default the locally administrated MAC 02-FF-FF-FF-FF-FF will be used.'),
@@ -1801,11 +1766,7 @@ $struct_aggregate = array(
 	),
 	'aggregate_graph_type' => array(
 		'friendly_name' => __('Graph Type'),
-		'description' => __('Use this Option to create e.g. STACKed graphs.' . '<br>' .
-			'AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK' . '<br>' .
-			'LINE1: all items convert to LINE1 items' . '<br>' .
-			'LINE2: all items convert to LINE2 items' . '<br>' .
-			'LINE3: all items convert to LINE3 items'),
+		'description' => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items'),
 		'method' => 'drop_array',
 		'value' => '|arg1:aggregate_graph_type|',
 		'array' => $agg_graph_types,
@@ -1884,11 +1845,7 @@ $struct_aggregate_graph = array(
 	),
 	'graph_type' => array(
 		'friendly_name' => __('Graph Type'),
-		'description' => __('Use this Option to create e.g. STACKed graphs.' . '<br>' .
-			'AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK' . '<br>' .
-			'LINE1: all items convert to LINE1 items' . '<br>' .
-			'LINE2: all items convert to LINE2 items' . '<br>' .
-			'LINE3: all items convert to LINE3 items'),
+		'description' => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items'),
 		'method' => 'drop_array',
 		'value' => '|arg1:graph_type|',
 		'array' => $agg_graph_types,
@@ -1986,11 +1943,7 @@ $struct_aggregate_template = array(
 	),
 	'graph_type' => array(
 		'friendly_name' => __('Graph Type'),
-		'description' => __('Use this Option to create e.g. STACKed graphs.' . '<br>' .
-			'AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK' . '<br>' .
-			'LINE1: all items convert to LINE1 items' . '<br>' .
-			'LINE2: all items convert to LINE2 items' . '<br>' .
-			'LINE3: all items convert to LINE3 items'),
+		'description' => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items'),
 		'method' => 'drop_array',
 		'value' => '|arg1:graph_type|',
 		'array' => $agg_graph_types,
@@ -2248,8 +2201,7 @@ $fields_automation_tree_rules_edit2 = array(
 	'tree_item_id' => array(
 		'method' => 'drop_tree',
 		'friendly_name' => __('Optional: Sub-Tree Item'),
-		'description' => __('Choose a Sub-Tree Item to hook in.' . '<br>' .
-			'Make sure, that it is still there when this rule is executed!'),
+		'description' => __('Choose a Sub-Tree Item to hook in.<br>Make sure, that it is still there when this rule is executed!'),
 		'tree_id' => '|arg1:tree_id|',
 		'value' => '|arg1:tree_item_id|',
 	)

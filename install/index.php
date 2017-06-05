@@ -296,9 +296,8 @@ if ($step == '7') {
 
 /* upgrade */
 } elseif (($step == '8') && (get_filter_request_var('install_type') == '3')) {
-
 	// if the version is not found, die
-	if (! array_key_exists($old_cacti_version, $cacti_version_codes)) {
+	if (!array_key_exists($old_cacti_version, $cacti_version_codes)) {
 		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __('Error') . "</p>
 			<p style='font-family: Verdana, Arial; font-size: 12px;'>"
 			. __('Invalid Cacti version <strong>%1$s</strong>, cannot upgrade to <strong>%2$s</strong>', $old_cacti_version, CACTI_VERSION) . "</p>";
@@ -307,9 +306,8 @@ if ($step == '7') {
 
 	// loop through versions from old version to the current, performing updates for each version in the chain
 	foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
-
 		// skip versions old than the database version
-		if (version_compare($old_cacti_version, $cacti_upgrade_version, '>=')) {
+		if (cacti_version_compare($old_cacti_version, $cacti_upgrade_version, '>=')) {
 			continue;
 		}
 

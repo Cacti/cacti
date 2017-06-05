@@ -3354,7 +3354,9 @@ function display_messages() {
 	var message = "<?php print display_output_messages();?>";
 
 	$(function() {
-		clearTimeout(messageTimer);
+		if (typeof messageTimer === 'function') {
+			clearTimeout(messageTimer);
+		}
 
 		if (message != '') {
 			$('.messageContainer').empty().show().html(message);
@@ -4049,6 +4051,10 @@ function update_system_mibs($host_id) {
 function cacti_debug_backtrace($entry = '', $html = false) {
 	global $config;
 
+	if (defined('IN_CACTI_INSTALL')) {
+		return true;
+	}
+
 	$callers = debug_backtrace();
 	$s = '';
 	foreach ($callers as $c) {
@@ -4070,6 +4076,7 @@ function cacti_debug_backtrace($entry = '', $html = false) {
 	if ($html) {
 		echo "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
 	}
+
 	cacti_log(trim("$entry Backtrace: $s"), false);
 }
 
@@ -4313,6 +4320,10 @@ function IgnoreErrorHandler($message) {
 
 function CactiErrorHandler($level, $message, $file, $line, $context) {
 	global $phperrors;
+
+	if (defined('IN_CACTI_INSTALL')) {
+		return true;
+	}
 
 	if (IgnoreErrorHandler($message)) {
 		return true;

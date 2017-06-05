@@ -29,7 +29,7 @@ var graphMenuElement=0;
 var pulsating=true;
 var pageLoaded=false;
 var shiftPressed=false;
-var messageTimer;
+var messageTimer=null;
 var myTitle;
 var myHref;
 var lastPage=null;
