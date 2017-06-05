@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
  */
 
-/** 
+/**
  * Create or update aggregate graph.
  * Save all graph definitions, but omit graph items. Wipe out host_id and graph_template_id.
  *
@@ -78,16 +78,16 @@ function aggregate_graph_local_save($id = 0) {
 }
 
 
-/** 
+/**
  * Create or update aggregate graphs data in graph_templates_graph.
  * Graph must already exist in graph_local eg. local_graph_id must never be 0
  *
  * @param int $local_graph_id        - ID of graph.
- * @param int $graph_template_id     - Graph template this graph is based on. 
+ * @param int $graph_template_id     - Graph template this graph is based on.
  * @param string $graph_title        - Title of graph. Used only for new graphs.
  * @param int $aggregate_template_id - ID of aggregate template this graph is based on (0 if not aggregate template based).
  * @param array $new_data            - Key/value pairs with new graph data.
- * 
+ *
  * @return int ID of record in graph_templates_graph
  */
 function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_id, $graph_title = '', $aggregate_template_id = 0, $new_data = array()) {
@@ -99,12 +99,23 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 	}
 
 	$graph_data = array();
-	$existing_data = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array($local_graph_id));
-	$template_data = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE graph_template_id = ? AND local_graph_id=0', array($graph_template_id));
+	$existing_data = db_fetch_row_prepared('SELECT *
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
+		array($local_graph_id));
+
+	$template_data = db_fetch_row_prepared('SELECT *
+		FROM graph_templates_graph
+		WHERE graph_template_id = ?
+		AND local_graph_id=0',
+		array($graph_template_id));
 
 	if ($aggregate_template_id > 0) {
 		/* override selected fields from template data with aggregate template data */
-		$aggregate_data = db_fetch_row_prepared('SELECT * FROM aggregate_graph_templates_graph WHERE aggregate_template_id = ?', array($aggregate_template_id));
+		$aggregate_data = db_fetch_row_prepared('SELECT *
+			FROM aggregate_graph_templates_graph
+			WHERE aggregate_template_id = ?',
+			array($aggregate_template_id));
 
 		if (sizeof($aggregate_data)) {
 			foreach ($aggregate_data as $field => $value) {
@@ -168,6 +179,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
  * @param int $_old_graph_id			- id of the old graph
  * @param int $_graph_template_id		- template id of the old graph if the old graph is 0
  * @param int $_skip					- graph items to be skipped, array starts at 1
+ * @param int $_totali                  - graph items to be totaled, array starts at 1
  * @param bool $_hr						- graph items that should have a <HR>
  * @param int $_graph_item_sequence		- sequence number of the next graph item to be inserted
  * @param int $_selected_graph_index	- index of current graph to be inserted
@@ -178,12 +190,12 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
  * @param int $_gprint_prefix			- prefix for the legend line
  * @param int $_total					- Totalling: graph items AND/OR legend
  * @param int $_total_type				- Totalling: SIMILAR/ALL data sources
- * @param array $member_graph			- Totalling: Used for determining the con function id
+ * @param array $member_graph			- Totalling: Used for determining the consolidation function id
  * @return int							- id of the next graph item to be inserted
  *  */
 function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_graph_template_id,
-	$_skip, $_graph_item_sequence, $_selected_graph_index, $_color_templates, $_graph_item_types, $_cdefs,
-	$_graph_type, $_gprint_prefix, $_total, $_total_type = '', $member_graphs = '') {
+	$_skip, $_totali, $_graph_item_sequence, $_selected_graph_index, $_color_templates, $_graph_item_types, $_cdefs,
+	$_graph_type, $_gprint_prefix, $_total, $_total_type = '', $member_graphs = array()) {
 
 	global $struct_graph_item, $graph_item_types, $config;
 
@@ -201,11 +213,24 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 	# take graph item data from old one
 	if (!empty($_old_graph_id)) {
-		$graph_items = db_fetch_assoc_prepared('SELECT * FROM graph_templates_item WHERE local_graph_id = ? ORDER BY sequence', array($_old_graph_id));
+		$graph_items = db_fetch_assoc_prepared('SELECT *
+			FROM graph_templates_item
+			WHERE local_graph_id = ?
+			ORDER BY sequence',
+			array($_old_graph_id));
 
-		$graph_local = db_fetch_row_prepared('SELECT host_id, graph_template_id, snmp_query_id, snmp_index FROM graph_local WHERE id = ?', array($_old_graph_id));
+		$graph_local = db_fetch_row_prepared('SELECT host_id, graph_template_id,
+			snmp_query_id, snmp_index
+			FROM graph_local
+			WHERE id = ?',
+			array($_old_graph_id));
 	} else {
-		$graph_items = db_fetch_assoc_prepared('SELECT * FROM graph_templates_item WHERE local_graph_id = ?  AND graph_template_id = ? ORDER BY sequence', array($_old_graph_id, $_graph_template_id));
+		$graph_items = db_fetch_assoc_prepared('SELECT *
+			FROM graph_templates_item
+			WHERE local_graph_id = ?
+			AND graph_template_id = ?
+			ORDER BY sequence',
+			array($_old_graph_id, $_graph_template_id));
 
 		$graph_local = array();
 	}
@@ -238,13 +263,13 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 			if ($_total == AGGREGATE_TOTAL_ONLY) {
 				# if we only need the totalling legend, ...
-				if (($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT) || 
-					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_LAST) || 
-					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_MIN) || 
-					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_MAX) || 
-					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_AVERAGE) || 
-					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_TEXTALIGN) || 
-					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_TIC) || 
+				if (($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT) ||
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_LAST) ||
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_MIN) ||
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_MAX) ||
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_GPRINT_AVERAGE) ||
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_TEXTALIGN) ||
+					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_TIC) ||
 					($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_COMMENT)) {
 					# and this is a legend entry (GPRINT, COMMENT), skip
 					continue;
@@ -255,17 +280,24 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 					# and as long as cacti does not provide for a 'pure DEF' graph item type
 					# we need this workaround
 					$graph_item['text_format'] = '';
+
 					# make sure, that this entry does not have a HR,
 					# else a single colored mark will be drawn
 					$graph_item['hard_return'] = '';
 					$_hr[$i] = '';
+
 					# make sure, that data of this item will be suppressed: make 0!
 					$graph_item['cdef_id'] = $make0_cdef;
 
 					# try to pick the best totaling cf id
-					$graph_item['consolidation_function_id'] = db_fetch_cell('SELECT DISTINCT consolidation_function_id 
-						FROM graph_templates_item 
-						WHERE color_id>0 AND ' . array_to_sql_or($member_graphs, 'local_graph_id') . ' LIMIT 1');
+					$graph_item['consolidation_function_id'] = db_fetch_cell('SELECT DISTINCT consolidation_function_id
+						FROM graph_templates_item
+						WHERE color_id>0
+						AND sequence = ' . $graph_item['sequence'] .
+						(sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
+						(sizeof($_skip) ? ' AND sequence NOT IN (' . implode(',', $_skip) . ')':'') .
+						(sizeof($_totali) ? ' AND sequence IN (' . implode(',', $_totali) . ')':'') . '
+						LIMIT 1');
 				}
 			}
 
@@ -280,13 +312,16 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 				if ($_color_templates[$i] > 0) {
 					# get the size of the color templates array
 					# if number of colored items exceed array size, use round robin
-					$num_colors = db_fetch_cell_prepared('SELECT count(color_id) FROM color_template_items WHERE color_template_id = ?', array($_color_templates[$i]));
+					$num_colors = db_fetch_cell_prepared('SELECT COUNT(color_id)
+						FROM color_template_items
+						WHERE color_template_id = ?',
+						array($_color_templates[$i]));
 
 					# templating required, get color for current graph item
-					$sql = 'SELECT color_id 
-						FROM color_template_items 
+					$sql = 'SELECT color_id
+						FROM color_template_items
 						WHERE color_template_id=' . $_color_templates[$i] . '
-						ORDER BY sequence 
+						ORDER BY sequence
 						LIMIT ' . ($_selected_graph_index % $num_colors) . ',1';
 
 					$save['color_id'] = db_fetch_cell($sql);
@@ -368,7 +403,6 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 	return $_graph_item_sequence;
 }
 
-
 /**
  * insert or update aggregate graph items in DB tables
  * @param array $items
@@ -412,7 +446,7 @@ function aggregate_graph_items_save($items, $table) {
 
 		// convert to partial SQL statement
 		$items_sql[] .= sprintf(
-			' (%d, %d, %d, %d, %s, %d, %s, %d, %s, %s)', 
+			' (%d, %d, %d, %d, %s, %d, %s, %d, %s, %s)',
 			$item[$id_field],
 			$item['graph_templates_item_id'],
 			$item['sequence'],
@@ -550,7 +584,6 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 	}
 }
 
-
 /**
  * cleanup of graph items of the new graph
  * @param int $base			- base graph id
@@ -573,7 +606,6 @@ function aggregate_graphs_cleanup($base, $aggregate, $reorder) {
 	/* restore original error handler */
 	restore_error_handler();
 }
-
 
 /**
  * reorder graph items
@@ -605,7 +637,7 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 		$sql = "SELECT DISTINCT dtr.$sql_id_column AS local_data_template_rrd_id
 			FROM data_template_rrd  AS dtr
 			LEFT JOIN graph_templates_item AS gti
-			ON (gti.task_item_id=dtr.id) 
+			ON (gti.task_item_id=dtr.id)
 			$sql_where
 			ORDER BY gti.sequence";
 
@@ -680,32 +712,32 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 	$member_graphs              = array();
 
 	if ($local_graph_id > 0 && $aggregate_template_id == 0) {
-		$id = db_fetch_cell_prepared('SELECT id 
-			FROM aggregate_graphs 
-			WHERE local_graph_id = ?', 
+		$id = db_fetch_cell_prepared('SELECT id
+			FROM aggregate_graphs
+			WHERE local_graph_id = ?',
 			array($local_graph_id));
 
-		$attribs['graph_title'] = db_fetch_cell_prepared('SELECT title_format 
-			FROM aggregate_graphs 
-			WHERE id = ?', 
+		$attribs['graph_title'] = db_fetch_cell_prepared('SELECT title_format
+			FROM aggregate_graphs
+			WHERE id = ?',
 			array($id));
 
 		$attribs['skipped_items'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence
 				FROM aggregate_graphs_graph_item
-				WHERE item_skip="on" 
-				AND aggregate_graph_id = ? 
-				ORDER BY sequence', 
-				array($id)), 
+				WHERE item_skip="on"
+				AND aggregate_graph_id = ?
+				ORDER BY sequence',
+				array($id)),
 			'sequence', 'sequence'
 		);
 
 		$attribs['total_items'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence
 				FROM aggregate_graphs_graph_item
-				WHERE item_total="on" 
-				AND aggregate_graph_id = ? 
-				ORDER BY sequence', 
+				WHERE item_total="on"
+				AND aggregate_graph_id = ?
+				ORDER BY sequence',
 				array($id)),
 			'sequence', 'sequence'
 		);
@@ -713,9 +745,9 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 		$attribs['color_templates'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence, color_template
 				FROM aggregate_graphs_graph_item
-				WHERE color_template>=0 
-				AND aggregate_graph_id = ? 
-				ORDER BY sequence', 
+				WHERE color_template>=0
+				AND aggregate_graph_id = ?
+				ORDER BY sequence',
 				array($id)),
 			'sequence', 'color_template'
 		);
@@ -723,20 +755,20 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 		$attribs['graph_item_types'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence, graph_type_id
 				FROM aggregate_graphs_graph_item
-				WHERE t_graph_type_id="on" 
+				WHERE t_graph_type_id="on"
 				AND aggregate_graph_id = ?
-				ORDER BY sequence', 
-				array($id)), 
+				ORDER BY sequence',
+				array($id)),
 			'sequence', 'graph_type_id'
 		);
 
 		$attribs['cdefs'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence, cdef_id
 				FROM aggregate_graphs_graph_item
-				WHERE t_cdef_id="on" 
+				WHERE t_cdef_id="on"
 				AND aggregate_graph_id = ?
-				ORDER BY sequence', 
-				array($id)), 
+				ORDER BY sequence',
+				array($id)),
 			'sequence', 'cdef_id'
 		);
 
@@ -758,71 +790,83 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 		$attribs['skipped_items'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence
 				FROM aggregate_graph_templates_item
-				WHERE item_skip="on" 
-				AND aggregate_template_id = ? 
-				ORDER BY sequence', 
-				array($aggregate_template_id)), 
+				WHERE item_skip="on"
+				AND aggregate_template_id = ?
+				ORDER BY sequence',
+				array($aggregate_template_id)),
 			'sequence', 'sequence'
 		);
 
 		$attribs['total_items'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence
 				FROM aggregate_graph_templates_item
-				WHERE item_total="on" 
+				WHERE item_total="on"
 				AND aggregate_template_id = ?
-				ORDER BY sequence', 
-				array($aggregate_template_id)), 
+				ORDER BY sequence',
+				array($aggregate_template_id)),
 			'sequence', 'sequence'
 		);
 
 		$attribs['color_templates'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence, color_template
 				FROM aggregate_graph_templates_item
-				WHERE color_template>=0 
+				WHERE color_template>=0
 				AND aggregate_template_id = ?
-				ORDER BY sequence', 
-				array($aggregate_template_id)), 
+				ORDER BY sequence',
+				array($aggregate_template_id)),
 			'sequence', 'color_template'
 		);
 
 		$attribs['graph_item_types'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence, graph_type_id
 				FROM aggregate_graph_templates_item
-				WHERE t_graph_type_id="on" 
+				WHERE t_graph_type_id="on"
 				AND aggregate_template_id = ?
-				ORDER BY sequence', 
-				array($aggregate_template_id)), 
+				ORDER BY sequence',
+				array($aggregate_template_id)),
 			'sequence', 'graph_type_id'
 		);
 
 		$attribs['cdefs'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT sequence, cdef_id
 				FROM aggregate_graph_templates_item
-				WHERE t_cdef_id="on" 
+				WHERE t_cdef_id="on"
 				AND aggregate_template_id = ?
-				ORDER BY sequence', 
-				array($aggregate_template_id)), 
+				ORDER BY sequence',
+				array($aggregate_template_id)),
 			'sequence', 'cdef_id'
 		);
 
 		$attribs['aggregate_template_id'] = $aggregate_template_id;
-		$template_data                    = db_fetch_row_prepared("SELECT * FROM aggregate_graph_templates WHERE id = ?", array($aggregate_template_id));
-		$attribs['template_propogation']  = 'on';
-		$attribs['graph_template_id']     = $template_data['graph_template_id'];
-		$attribs['gprint_prefix']         = $template_data['gprint_prefix'];
-		$attribs['graph_type']            = $template_data['graph_type'];
-		$attribs['total']                 = $template_data['total'];
-		$attribs['total_type']            = $template_data['total_type'];
-		$attribs['total_prefix']          = $template_data['total_prefix'];
-		$attribs['reorder']               = $template_data['order_type'];
-		$attribs['item_no']               = db_fetch_cell_prepared('SELECT COUNT(*) FROM aggregate_graph_templates_item WHERE aggregate_template_id = ?', array($aggregate_template_id));
+
+		$template_data = db_fetch_row_prepared("SELECT *
+			FROM aggregate_graph_templates
+			WHERE id = ?",
+			array($aggregate_template_id));
+
+		$attribs['template_propogation'] = 'on';
+		$attribs['graph_template_id']    = $template_data['graph_template_id'];
+		$attribs['gprint_prefix']        = $template_data['gprint_prefix'];
+		$attribs['graph_type']           = $template_data['graph_type'];
+		$attribs['total']                = $template_data['total'];
+		$attribs['total_type']           = $template_data['total_type'];
+		$attribs['total_prefix']         = $template_data['total_prefix'];
+		$attribs['reorder']              = $template_data['order_type'];
+
+		$attribs['item_no'] = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM aggregate_graph_templates_item
+			WHERE aggregate_template_id = ?',
+			array($aggregate_template_id));
 	}
 
 	$aggregate_graphs = array();
 	if ($local_graph_id > 0) {
 		$aggregate_graphs[] = $local_graph_id;
 	} else {
-		$graphs = db_fetch_assoc_prepared('SELECT local_graph_id FROM aggregate_graphs WHERE aggregate_template_id = ?', array($aggregate_template_id));
+		$graphs = db_fetch_assoc_prepared('SELECT local_graph_id
+			FROM aggregate_graphs
+			WHERE aggregate_template_id = ?',
+			array($aggregate_template_id));
 
 		if (sizeof($graphs)) {
 			foreach($graphs as $g) {
@@ -834,15 +878,18 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 	if (sizeof($aggregate_graphs)) {
 		foreach($aggregate_graphs as $ag) {
 			$member_graphs = array();
-			$graphs        = db_fetch_assoc_prepared('SELECT DISTINCT agi.local_graph_id 
+			$graphs        = db_fetch_assoc_prepared('SELECT DISTINCT agi.local_graph_id
 				FROM aggregate_graphs AS ag
 				INNER JOIN aggregate_graphs_items AS agi
 				ON ag.id=agi.aggregate_graph_id
-				WHERE ag.local_graph_id = ?', array($ag));
+				WHERE ag.local_graph_id = ?',
+				array($ag));
 
 			/* remove all old graph items first */
 			if ($ag > 0) {
-				db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_id = ?', array($ag));
+				db_execute_prepared('DELETE FROM graph_templates_item
+					WHERE local_graph_id = ?',
+					array($ag));
 			}
 
 			if (sizeof($graphs)) {
@@ -857,10 +904,10 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 }
 
 /**
- * aggregate_create_update			- either create or update an aggregate based on criteria
- * @param int $local_graph_id		- the local graph id of the existing graph.  0 if one needs to be created
- * @param array $member_graphs		- the graphs that will be included in this aggregate
- * @return array $attribs			- the attributes for this new graph
+ * aggregate_create_update - either create or update an aggregate based on criteria
+ * @param int $local_graph_id  - the local graph id of the existing graph.  0 if one needs to be created
+ * @param array $member_graphs - the graphs that will be included in this aggregate
+ * @return array $attribs      - the attributes for this new graph
  *  */
 function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 	global $config;
@@ -905,7 +952,12 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 		} else {
 			# update graph params of existing aggregate graph
 			$local_graph_id = aggregate_graph_save($local_graph_id, $graph_template_id, $graph_title, $aggregate_template);
-			$save1['id']    = db_fetch_cell_prepared('SELECT id FROM aggregate_graphs WHERE local_graph_id = ?', array($local_graph_id));
+
+			$save1['id'] = db_fetch_cell_prepared('SELECT id
+				FROM aggregate_graphs
+				WHERE local_graph_id = ?',
+				array($local_graph_id));
+
 			$new_aggregate  = false;
 		}
 
@@ -933,7 +985,9 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 
 		/* remove all old graph items first */
 		if ($local_graph_id > 0) {
-			db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_id = ?', array($local_graph_id));
+			db_execute_prepared('DELETE FROM graph_templates_item
+				WHERE local_graph_id = ?',
+				array($local_graph_id));
 		}
 
 		/* now add the graphs one by one to the newly created graph
@@ -950,6 +1004,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				$graph_id,
 				$graph_template_id,
 				$skipped_items,
+				$total_items,
 				$next_item_sequence,
 				$i,
 				$color_templates,
@@ -958,9 +1013,13 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				$_graph_type,
 				$gprint_prefix,
 				$_total,
-				'');
+				'',
+				$member_graphs);
 
-			db_execute_prepared('REPLACE INTO aggregate_graphs_items (aggregate_graph_id, local_graph_id, sequence) VALUES (?, ?, ?)', array($aggregate_graph_id, $graph_id, $j));
+			db_execute_prepared('REPLACE INTO aggregate_graphs_items
+				(aggregate_graph_id, local_graph_id, sequence)
+				VALUES (?, ?, ?)',
+				array($aggregate_graph_id, $graph_id, $j));
 
 			$j++; $i++;
 		}
@@ -991,15 +1050,22 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 		switch ($_total) {
 			case AGGREGATE_TOTAL_NONE: # no totalling
 				# do NOT add any totalling items
-				break;
 
+				break;
 			case AGGREGATE_TOTAL_ALL: # any totalling option was selected ...
 				$_graph_type = GRAPH_ITEM_TYPE_LINE1;
 
+				$cf_id = db_fetch_cell('SELECT consolidation_function_id
+					FROM graph_templates_item
+					WHERE color_id>0' .
+					(sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
+					(sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
+					LIMIT 1');
+
 				/* add an empty line before total items */
-				db_execute_prepared("INSERT INTO graph_templates_item 
+				db_execute_prepared("INSERT INTO graph_templates_item
 					(local_graph_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
-					VALUES (?, 1, 1, '', '', 'on', 2, ?)", array($local_graph_id, $next_item_sequence++));
+					VALUES (?, ?, 1, '', '', 'on', 2, ?)", array($local_graph_id, $cf_id, $next_item_sequence++));
 
 			case AGGREGATE_TOTAL_ONLY:
 				# use the prefix for totalling GPRINTs as given by the user
@@ -1007,7 +1073,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 					case AGGREGATE_TOTAL_TYPE_SIMILAR:
 					case AGGREGATE_TOTAL_TYPE_ALL:
 						$gprint_prefix = $_total_prefix;
-					break;
+						break;
 				}
 
 				# now skip all items, that are
@@ -1028,6 +1094,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 					$example_graph_id,
 					$graph_template_id,
 					$skipped_items,
+					$total_items,
 					$next_item_sequence,
 					$i,
 					$color_templates,
@@ -1036,7 +1103,8 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 					$_graph_type,			#TODO: user may choose LINEx instead of assuming LINE1
 					$gprint_prefix,
 					AGGREGATE_TOTAL_ALL,	# now add the totalling line(s)
-					$_total_type);
+					$_total_type,
+					$member_graphs);
 
 				# now pay attention to CDEFs
 				# next_item_sequence still points to the first totalling graph item
@@ -1091,7 +1159,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 		$sql = 'SELECT DISTINCT graph_templates.id, graph_templates.name
 			FROM graph_local
 			LEFT JOIN graph_templates ON (graph_local.graph_template_id=graph_templates.id)
-			WHERE (' . array_to_sql_or($graph_array, 'graph_local.id') . ') 
+			WHERE (' . array_to_sql_or($graph_array, 'graph_local.id') . ')
 			AND graph_local.graph_template_id>0';
 		$used_graph_templates = db_fetch_assoc($sql);
 
@@ -1184,28 +1252,40 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 		/* fetch existing item values */
 		if (isset($_object['aggregate_template_id']) && $_object['aggregate_template_id'] == 0) {
 			/* this is aggregate graph with no aggregate template */
-			$current_vals = db_fetch_assoc_prepared('SELECT * FROM aggregate_graphs_graph_item WHERE aggregate_graph_id = ?', array($_object['id']));
+			$current_vals = db_fetch_assoc_prepared('SELECT *
+				FROM aggregate_graphs_graph_item
+				WHERE aggregate_graph_id = ?',
+				array($_object['id']));
+
 			$item_editor_link_param = 'aggregate_graph_id='.$_object['id'].'&local_graph_id='.$_object['local_graph_id'];
 			$is_templated = false;
 		} elseif (isset($_object['aggregate_template_id'])) {
 			/* this is aggregate graph from aggregate template */
-			$current_vals = db_fetch_assoc_prepared('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id = ?', array($_object['aggregate_template_id']));
+			$current_vals = db_fetch_assoc_prepared('SELECT *
+				FROM aggregate_graph_templates_item
+				WHERE aggregate_template_id = ?',
+				array($_object['aggregate_template_id']));
+
 			$item_editor_link_param = 'aggregate_template_id='.$_object['aggregate_template_id'];
 			$is_templated = true;
 		} else {
 			/* this is aggregate template */
-			$current_vals = db_fetch_assoc_prepared('SELECT * FROM aggregate_graph_templates_item WHERE aggregate_template_id = ?', array($_object['id']));
+			$current_vals = db_fetch_assoc_prepared('SELECT *
+				FROM aggregate_graph_templates_item
+				WHERE aggregate_template_id = ?',
+				array($_object['id']));
+
 			$item_editor_link_param = 'aggregate_template_id='.$_object['id'];
 			$is_templated = true;
 		}
 		/* key results on item id */
 		$current_vals = array_rekey(
-			$current_vals, 
+			$current_vals,
 			'graph_templates_item_id',
 			array('color_template', 'item_skip', 'item_total', 't_graph_type_id', 'graph_type_id')
 		);
 	}
-	
+
 	# draw list of graph items
 	html_start_box(($is_templated ? __('Graph Template Items'):__('Graph Items')), '100%', '', '3', 'center', '');
 
@@ -1226,12 +1306,12 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
-			$this_row_style = ''; 
-			$use_custom_class = false; 
+			$this_row_style = '';
+			$use_custom_class = false;
 			$hard_return = '';
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
-				$this_row_style = 'font-weight: bold;'; 
+				$this_row_style = 'font-weight: bold;';
 				$use_custom_class = true;
 
 				if ($group_counter % 2 == 0) {
@@ -1340,7 +1420,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '>';
 				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'></td>";
 			}
-	
+
 			print '</tr>';
 
 			$i++;
@@ -1366,8 +1446,15 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 
 	html_start_box(__('Graph Configuration'), '100%', true, '3', 'center', '');
 
-	$aggregate_templates_graph = db_fetch_row_prepared('SELECT * FROM aggregate_graph_templates_graph WHERE aggregate_template_id = ?', array($aggregate_template_id));
-	$graph_templates_graph     = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE graph_template_id = ?', array($graph_template_id));
+	$aggregate_templates_graph = db_fetch_row_prepared('SELECT *
+		FROM aggregate_graph_templates_graph
+		WHERE aggregate_template_id = ?',
+		array($aggregate_template_id));
+
+	$graph_templates_graph = db_fetch_row_prepared('SELECT *
+		FROM graph_templates_graph
+		WHERE graph_template_id = ?',
+		array($graph_template_id));
 
 	$form_array = array();
 

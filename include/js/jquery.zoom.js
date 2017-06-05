@@ -241,7 +241,7 @@
 				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
 				$("<div id='zoom-box'></div>").appendTo("#zoom-container");
 			}
-			
+
 			// add the "zoomSelectedArea"
 			if ($("#zoom-area").length == 0) {
 				$("<div id='zoom-area'></div>").appendTo("#zoom-container");
@@ -657,7 +657,6 @@
 				}
 			}
 
-			zoomAction_update_session(newGraphStartTime, newGraphEndTime);
 			/* hide Zoom without destroying its container */
 			$("#zoom-container").html('');
 
@@ -670,12 +669,23 @@
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
 				if (graph_start !== null && graph_end !== null) {
-					graph_start = newGraphStartTime;
-					graph_end = newGraphEndTime;
-					initializeGraphs();
+					if (myGraphLocation != 'graph') {
+						graph_start = newGraphStartTime;
+						graph_end = newGraphEndTime;
+
+						initializeGraphs();
+					}else{
+						$('#graph_start').val(newGraphStartTime);
+						$('#graph_end').val(newGraphEndTime);
+
+						initializeGraph();
+					}
 				} else {
 					$("input[name='" + zoom.options.submitButton + "']").trigger('click');
 				}
+
+				zoomAction_update_session(newGraphStartTime, newGraphEndTime);
+
 				return false;
 			} else {
 				/* graph view is already in zoom status */
@@ -747,7 +757,6 @@
 				}
 			}
 
-			zoomAction_update_session(newGraphStartTime, newGraphEndTime);
 			/* hide Zoom without destroying its container */
 			$("#zoom-container").html('');
 
@@ -760,12 +769,22 @@
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
 				if (graph_start !== null && graph_end !== null) {
-					graph_start = newGraphStartTime;
-					graph_end = newGraphEndTime;
-					initializeGraphs();
+					if (myGraphLocation != 'graph') {
+						graph_start = newGraphStartTime;
+						graph_end = newGraphEndTime;
+
+						initializeGraphs();
+					}else{
+						$('#graph_start').val(newGraphStartTime);
+						$('#graph_end').val(newGraphEndTime);
+
+						initializeGraph();
+					}
 				} else {
 					$("input[name='" + zoom.options.submitButton + "']").trigger('click');
 				}
+
+				zoomAction_update_session(newGraphStartTime, newGraphEndTime);
 			} else {
 				open(zoom.attr.location[0] + "?action=" + zoom.graph.action + "&local_graph_id=" + zoom.graph.local_graph_id + "&rra_id=" + zoom.graph.rra_id + "&view_type=" + zoom.graph.view_type + "&graph_start=" + newGraphStartTime + "&graph_end=" + newGraphEndTime + "&graph_height=" + zoom.graph.height + "&graph_width=" + zoom.graph.width + "&title_font_size=" + zoom.graph.title_font_size, "_self");
 			}
@@ -775,11 +794,15 @@
 		* when updating the zoom window, we have to update cacti's zoom session variables
 		*/
 		function zoomAction_update_session(newGraphStartTime, newGraphEndTime) {
-			$.get(document.location.pathname + 
-				'?action=update_timespan' + 
-				'&date1=' + unixTime2Date(newGraphStartTime) + 
-				'&date2=' + unixTime2Date(newGraphEndTime)
-			);
+			$.get(document.location.pathname +
+				'?action=update_timespan' +
+				'&date1=' + unixTime2Date(newGraphStartTime) +
+				'&date2=' + unixTime2Date(newGraphEndTime), function() {
+				$('#predefined_timespan').val('0');
+				if (typeof $('#predefined_timespan').selectmenu() === 'object') {
+					$('#predefined_timespan').selectmenu('refresh');
+				}
+			});
 		}
 
 		/*

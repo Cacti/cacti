@@ -536,6 +536,12 @@ function update_graph_data_source_output_type($local_graph_id, $output_type_id) 
 				AND data_input_field_id = ?',
 				array($output_type_id, $data['id'], $output_type_field_id));
 
+			db_execute_prepared('UPDATE graph_local
+				SET snmp_query_graph_id = ?
+				WHERE graph_template_id = ?
+				AND id = ?',
+				array($output_type_id, $graph_local['graph_template_id'], $local_graph_id));
+
 			push_out_host($graph_local['host_id'], $local_data_id);
 		}
 	}
@@ -590,10 +596,10 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 	}
 }
 
-/* retemplate_graphs - reapply the graph template as it current exists to all
+/* retemplate_graphs - reapply the graph template as it currently exists to all
     graphs using that template.  This is important when you have graphs that
     have multiple versions of a template.
-   @arg $graph_template_id - the graph template id to retemplat
+   @arg $graph_template_id - the graph template id to retemplate
    @arg $local_graph_id - optional local graph id */
 function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
 	if ($local_graph_id == 0) {
@@ -689,7 +695,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 	$save['local_graph_id']                = $local_graph_id;
 	$save['graph_template_id']             = $graph_template_id;
 
-	/* loop through the 'templated field names' to find to the rest... */
+	/* loop through the 'templated field names' to find the rest... */
 	foreach ($struct_graph as $field_name => $field_array) {
 		$value_type = "t_$field_name";
 
@@ -839,12 +845,20 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 					}
 				}
 			}
-				
+
 			sql_save($save, 'graph_templates_item');
 		}
 	}
 
-	/* if there are more graph items then there are items in the template, delete the difference */
+	/* if there are more graph items than there are items in the template, delete the difference */
+	/* we have probably modified 'graph_templates_item' so we need to recalculate the number of
+	   items before checking them */
+	$graph_items_list = db_fetch_assoc_prepared('SELECT * 
+		FROM graph_templates_item 
+		WHERE local_graph_id = ?
+		ORDER BY sequence', 
+		array($local_graph_id));
+
 	if ($new_save == false && sizeof($graph_items_list) > sizeof($template_items_list)) {
 		foreach($template_items_list as $item) {
 			$ids[] = $item['id'];

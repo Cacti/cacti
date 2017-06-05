@@ -134,9 +134,9 @@ function themeReady() {
 			$('<li class="maintabs-submenu"><a class="submenu-' + submenu_counter + '" href="#"><i class="fa fa-caret-down"></i></a></li>').insertAfter( $(this) );
 			$('<div class="dropdownMenu">'
 				+'<ul id="submenu-' + submenu_counter + '" class="submenuoptions" style="display:none;">'
-					+'<li><a href="'+urlPath+'graph_view.php?action=tree"><span>Tree View</span></a></li>'
-					+'<li><a href="'+urlPath+'graph_view.php?action=list"><span>List View</span></a></li>'
-					+'<li><a href="'+urlPath+'graph_view.php?action=preview"><span>Preview View</span></a></li>'
+					+'<li><a href="'+urlPath+'graph_view.php?action=tree"><span>'+treeView+'</span></a></li>'
+					+'<li><a href="'+urlPath+'graph_view.php?action=list"><span>'+listView+'</span></a></li>'
+					+'<li><a href="'+urlPath+'graph_view.php?action=preview"><span>'+previewView+'</span></a></li>'
 				+'</ul>'
 			+'</div>').appendTo('body');
 		}else {
@@ -154,11 +154,11 @@ function themeReady() {
 		+'</div>').insertAfter('.ellipsis');
 		$('<div class="dropdownMenu">'
 			+'<ul id="submenu-user-help" class="submenuoptions right" style="display:none;">'
-				+'<li><a href="http://www.cacti.net" target="_blank"><span>Cacti Home</span></a></li>'
-				+'<li><a href="https://github.com/cacti" target="_blank"><span>Cacti Project Page</span></a></li>'
-				+'<li><a href="http://forums.cacti.net/" target="_blank"><span>Cacti Community Forum</span></a></li>'
-				+'<li><a href="https://github.com/Cacti/cacti/issues/new" target="_blank"><span>Report a bug</span></a></li>'
-				+'<li><a href="'+urlPath+'about.php"><span>About Cacti</span></a></li>'
+				+'<li><a href="http://www.cacti.net" target="_blank"><span>'+cactiHome+'</span></a></li>'
+				+'<li><a href="https://github.com/cacti" target="_blank"><span>'+cactiProjectPage+'</span></a></li>'
+				+'<li><a href="http://forums.cacti.net/" target="_blank"><span>'+cactiCommunityForum+'</span></a></li>'
+				+'<li><a href="https://github.com/Cacti/cacti/issues/new" target="_blank"><span>'+reportABug+'</span></a></li>'
+				+'<li><a href="'+urlPath+'about.php"><span>'+aboutCacti+'</span></a></li>'
 			+'</ul>'
 		+'</div>').appendTo('body');
 	}
@@ -243,57 +243,21 @@ function themeReady() {
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
-	$.ui.selectmenu.prototype._renderItem = function(ui, item) {
-		if (item.element.closest('select').hasClass('colordropdown')) {
-			if (item.label != 'None') {
-				var li = $("<li>", { text: item.label });
-
-				$('<span>', {
-					style: item.element.attr('data-style'),
-					'class': 'ui-icon color-icon'
-				}).appendTo(li);
-			}else{
-				var li = $("<li>", { text: item.label });
-			}
-		}else if (item.element.closest('select').hasClass('iconselect')) {
-			var li = $('<li>', { text: item.label });
-
-			if (item.disabled) {
-				li.addClass('ui-state-disabled');
-			}
-
-			$('<span>', {
-				style: item.element.attr('data-style'),
-				'class': 'ui-icon ' + item.element.attr('data-class')
-			}).appendTo(li);
-
-			return li.appendTo(ui);
-		}else{
-			var li = $("<li>");
-
-			this._setText(li, item.label);
-		}
-
-		if (item.disabled) {
-			li.addClass("ui-state-disabled");
-		}
-
-		return li.appendTo(ui);
-	};
-
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
 	$('.import_button').change(function() {
 		text=this.value;
 		setImportFile(text);
 	});
-	setImportFile('No file selected');
+	setImportFile(noFileSelected);
 
 	function setImportFile(fileText) {
 		$('.import_text').html(fileText);
 	}
 
-	$('select').each(function() {
+	$('select.colordropdown').dropcolor();
+
+	$('select').not('.colordropdown').each(function() {
 		if ($(this).prop('multiple') != true) {
 			$(this).selectmenu({
 				change: function(event, ui) {

@@ -182,7 +182,7 @@ if (function_exists('pcntl_signal')) {
     pcntl_signal(SIGINT, 'sig_handler');
 }
 
-// Let's insure that we were called correctly
+// Let's ensure that we were called correctly
 if (!$master && !$network_id) {
 	print "FATAL: You must specify -M to Start the Master Control Process, or the Network ID using --network\n";
 	exit;

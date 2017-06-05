@@ -1350,15 +1350,17 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_perms.type=4 AND user_auth_perms.user_id=' . get_request_var('id', 0) . ')';
 		}
 
-		$total_rows = db_fetch_cell("SELECT
-			COUNT(DISTINCT gt.id)
-			FROM graph_templates AS gt
-			INNER JOIN graph_local AS gl
-			ON gt.id = gl.graph_template_id
-			LEFT JOIN user_auth_perms 
-			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 4 AND user_auth_perms.user_id = " . get_request_var('id') . ")
-			$sql_where
-			GROUP BY gl.graph_template_id");
+		$total_rows = db_fetch_cell("SELECT COUNT(rows)
+			FROM (SELECT
+				COUNT(DISTINCT gt.id) rows
+				FROM graph_templates AS gt
+				INNER JOIN graph_local AS gl
+				ON gt.id = gl.graph_template_id
+				LEFT JOIN user_auth_perms 
+				ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 4 AND user_auth_perms.user_id = " . get_request_var('id') . ")
+				$sql_where
+				GROUP BY gl.graph_template_id
+			) AS rs");
 
 		$sql_query = "SELECT gt.id, gt.name, count(*) AS totals, user_auth_perms.user_id
 			FROM graph_templates AS gt

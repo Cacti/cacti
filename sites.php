@@ -99,12 +99,14 @@ $fields_site_edit = array(
 		'max_length' => '30'
 	),
 	'timezone' => array(
-		'method' => 'drop_sql',
+		'method' => 'drop_callback',
 		'friendly_name' => __('TimeZone'),
 		'description' => __('The TimeZone for the Site.'),
-		'value' => '|arg1:timezone|',
-		'sql' => 'SELECT Name AS id, Name AS name FROM mysql.time_zone_name ORDER BY name'
-	),
+		'sql' => 'SELECT Name AS id, Name AS name FROM mysql.time_zone_name ORDER BY name',
+		'action' => 'ajax_tz',
+		'id' => '|arg1:timezone|',
+		'value' => '|arg1:timezone|'
+		),
 	'latitude' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Latitude'),
@@ -163,6 +165,15 @@ switch (get_request_var('action')) {
 		break;
 	case 'actions':
 		form_actions();
+
+		break;
+	case 'ajax_tz':
+		print json_encode(db_fetch_assoc_prepared('SELECT Name AS label, Name AS `value` 
+			FROM mysql.time_zone_name 
+			WHERE Name LIKE ?
+			ORDER BY Name
+			LIMIT 10',
+			array('%' . get_nfilter_request_var('term') . '%')));
 
 		break;
 	case 'edit':

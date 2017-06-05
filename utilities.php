@@ -126,22 +126,22 @@ function utilities_view_tech($php_info = '') {
 	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types;
 
 	/* Get table status */
-	$tables = db_fetch_assoc_prepared('SELECT * 
-		FROM information_schema.tables 
+	$tables = db_fetch_assoc_prepared('SELECT *
+		FROM information_schema.tables
 		WHERE table_schema = ?', array($database_default));
 
 	/* Get poller stats */
-	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total 
-		FROM poller_item 
+	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total
+		FROM poller_item
 		GROUP BY action');
 
 	/* Get system stats */
 	$host_count  = db_fetch_cell('SELECT COUNT(*) FROM host');
 	$graph_count = db_fetch_cell('SELECT COUNT(*) FROM graph_local');
-	$data_count  = db_fetch_assoc('SELECT i.type_id, COUNT(i.type_id) AS total 
-		FROM data_template_data AS d, data_input AS i 
-		WHERE d.data_input_id = i.id 
-		AND local_data_id <> 0 
+	$data_count  = db_fetch_assoc('SELECT i.type_id, COUNT(i.type_id) AS total
+		FROM data_template_data AS d, data_input AS i
+		WHERE d.data_input_id = i.id
+		AND local_data_id <> 0
 		GROUP BY i.type_id');
 
 	/* Get RRDtool version */
@@ -208,7 +208,7 @@ function utilities_view_tech($php_info = '') {
 		print "<div class='tabs'><nav><ul role='tablist'>\n";
 
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") . 
+			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
 				" href='" . htmlspecialchars($config['url_path'] .
 				'utilities.php?action=view_tech' .
 				'&tab=' . $tab_short_name) .
@@ -446,7 +446,7 @@ function utilities_view_tech($php_info = '') {
 			if ((ini_get('memory_limit') == -1)) {
 				print __("You've set memory limit to 'unlimited'.") . "<br>";
 			}
-			print __('It is highly suggested that you alter you php.ini memory_limit to %s or higher.', memory_readable($memory_suggestion)) . ' <br/>' . 
+			print __('It is highly suggested that you alter you php.ini memory_limit to %s or higher.', memory_readable($memory_suggestion)) . ' <br/>' .
 				__('This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.');
 			print '</span><br>';
 		}
@@ -531,37 +531,37 @@ function utilities_view_user_log() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'time', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'time',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'username' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => '-1', 
+			'filter' => FILTER_CALLBACK,
+			'default' => '-1',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'result' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -820,48 +820,48 @@ function utilities_clear_user_log() {
 	if (sizeof($users)) {
 		/* remove active users */
 		foreach ($users as $user) {
-			$total_login_rows = db_fetch_cell_prepared('SELECT COUNT(username) 
-				FROM user_log 
-				WHERE username = ? 
-				AND result IN (1)', 
+			$total_login_rows = db_fetch_cell_prepared('SELECT COUNT(username)
+				FROM user_log
+				WHERE username = ?
+				AND result IN (1)',
 				array($user['username']));
 
-			$total_token_rows = db_fetch_cell_prepared('SELECT COUNT(username) 
-				FROM user_log 
-				WHERE username = ? 
-				AND result IN (2)', 
+			$total_token_rows = db_fetch_cell_prepared('SELECT COUNT(username)
+				FROM user_log
+				WHERE username = ?
+				AND result IN (2)',
 				array($user['username']));
 
 			if ($total_login_rows > 1) {
-				db_execute_prepared('DELETE 
-					FROM user_log 
-					WHERE username = ? 
-					AND result IN(1) 
-					ORDER BY time LIMIT ' . ($total_login_rows - 1), 
+				db_execute_prepared('DELETE
+					FROM user_log
+					WHERE username = ?
+					AND result IN(1)
+					ORDER BY time LIMIT ' . ($total_login_rows - 1),
 					array($user['username']));
 			}
 
 			if ($total_token_rows > 1) {
-				db_execute_prepared('DELETE 
-					FROM user_log 
-					WHERE username = ? 
-					AND result IN(2) 
-					ORDER BY time 
-					LIMIT ' . ($total_token_rows - 1), 
+				db_execute_prepared('DELETE
+					FROM user_log
+					WHERE username = ?
+					AND result IN(2)
+					ORDER BY time
+					LIMIT ' . ($total_token_rows - 1),
 					array($user['username']));
 			}
 
-			db_execute_prepared('DELETE 
-				FROM user_log 
-				WHERE username = ? 
-				AND result = 0', 
+			db_execute_prepared('DELETE
+				FROM user_log
+				WHERE username = ?
+				AND result = 0',
 				array($user['username']));
 		}
 
 		/* delete inactive users */
-		db_execute('DELETE 
-			FROM user_log 
-			WHERE user_id NOT IN (SELECT id FROM user_auth) 
+		db_execute('DELETE
+			FROM user_log
+			WHERE user_id NOT IN (SELECT id FROM user_auth)
 			OR username NOT IN (SELECT username FROM user_auth)');
 	}
 }
@@ -871,37 +871,43 @@ function utilities_view_logfile() {
 
 	$logfile = read_config_option('path_cactilog');
 
-	if ($logfile == '') {
+	if (isset_request_var('filename')) {
+		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
+		if (file_exists($requestedFile)) {
+			$logfile = $requestedFile;
+		}
+	} elseif ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
-	/* helps determine output color */
-	$linecolor = True;
-
 	/* ================= input validation and session storage ================= */
 	$filters = array(
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'default' => '1'
+			),
 		'tail_lines' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX, 
+			'filter' => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => ''
 			),
 		'message_type' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'reverse' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '1'
 			),
 		'refresh' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_config_option('log_refresh_interval')
 			)
@@ -910,15 +916,16 @@ function utilities_view_logfile() {
 	validate_store_request_vars($filters, 'sess_log');
 	/* ================= input validation ================= */
 
-	if (get_request_var('rows') == '-1') {
-		$rows = read_config_option('num_rows_table');
-	} else {
-		$rows = get_request_var('rows');
-	}
+	$page_nr = get_request_var('page');
 
-	$refresh['seconds'] = get_request_var('refresh');
-	$refresh['page']    = 'utilities.php?action=view_logfile&header=false';
-	$refresh['logout']  = 'false';
+	$page = 'utilities.php?action=view_logfile&header=false';
+	$page .= '&filename=' . basename($logfile) . '&page=' . $page_nr;
+
+	$refresh = array(
+		'seconds' => get_request_var('refresh'),
+		'page'    => $page,
+		'logout'  => 'false'
+	);
 
 	set_page_refresh($refresh);
 
@@ -957,6 +964,7 @@ function utilities_view_logfile() {
 		strURL += '&refresh=' + $('#refresh').val();
 		strURL += '&reverse=' + $('#reverse').val();
 		strURL += '&rfilter=' + $('#rfilter').val();
+		strURL += '&filename=' + $('#filename').val();
 		strURL += '&action=view_logfile';
 		strURL += '&header=false';
 		refreshMSeconds=$('#refresh').val()*1000;
@@ -980,6 +988,29 @@ function utilities_view_logfile() {
 		<form id='form_logfile' action='utilities.php'>
 			<table class='filterTable'>
 				<tr>
+					<td>
+						<?php print __('File to show');?>
+					</td>
+					<td>
+						<select id='filename' name='filename'>
+							<?php
+							$selectedFile = basename(get_request_var('filename'));
+							$logPath      = dirname(read_config_option('path_cactilog'));
+							$files        = scandir($logPath);
+
+							foreach($files as $logFile) {
+								if (in_array($logFile, array('.', '..', '.htaccess'))) {
+									continue;
+								}
+								print "<option value='" . $logFile . "'";
+								if ($selectedFile == $logFile) {
+									print ' selected';
+								}
+								print '>' . $logFile . "</option>\n";
+							}
+							?>
+						</select>
+					</td>
 					<td class='nowrap'>
 						<?php print __('Tail Lines');?>
 					</td>
@@ -990,19 +1021,6 @@ function utilities_view_logfile() {
 								print "<option value='" . $tail_lines . "'"; if (get_request_var('tail_lines') == $tail_lines) { print ' selected'; } print '>' . $display_text . "</option>\n";
 							}
 							?>
-						</select>
-					</td>
-					<td class='nowrap'>
-						<?php print __('Message Type');?>
-					</td>
-					<td>
-						<select id='message_type' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
-							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
-							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
-							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>><?php print __('Errors');?></option>
-							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>><?php print __('Debug');?></option>
-							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
 						</select>
 					</td>
 					<td>
@@ -1016,6 +1034,30 @@ function utilities_view_logfile() {
 					</td>
 				</tr>
 				<tr>
+					<td class='nowrap'>
+						<?php print __('Message Type');?>
+					</td>
+					<td>
+						<select id='message_type' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
+							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
+							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>><?php print __('Errors');?></option>
+							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>><?php print __('Debug');?></option>
+							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
+						</select>
+					</td>
+					<td class='nowrap'>
+						<?php print __('Display Order');?>
+					</td>
+					<td>
+						<select id='reverse' onChange='applyFilter()'>
+							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
+							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
 					<td>
 						<?php print __('Refresh');?>
 					</td>
@@ -1026,15 +1068,6 @@ function utilities_view_logfile() {
 								print "<option value='" . $seconds . "'"; if (get_request_var('refresh') == $seconds) { print ' selected'; } print '>' . $display_text . "</option>\n";
 							}
 							?>
-						</select>
-					</td>
-					<td class='nowrap'>
-						<?php print __('Display Order');?>
-					</td>
-					<td>
-						<select id='reverse' onChange='applyFilter()'>
-							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
-							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
 					</td>
 				</tr>
@@ -1059,7 +1092,6 @@ function utilities_view_logfile() {
 
 	/* read logfile into an array and display */
 	$total_rows      = 0;
-	$page_nr         = isset_request_var('page') ? get_request_var('page') : 1;
 	$number_of_lines = get_request_var('tail_lines') < 0 ? read_config_option('max_display_rows') : get_request_var('tail_lines');
 
 	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows);
@@ -1076,10 +1108,10 @@ function utilities_view_logfile() {
 
 	$rfilter      = get_request_var('rfilter');
 	$reverse      = get_request_var('reverse');
-	$refresh      = get_request_var('refresh');
+	$refreshTime  = get_request_var('refresh');
 	$message_type = get_request_var('message_type');
 	$tail_lines   = get_request_var('tail_lines');
-	$base_url     = 'utilities.php?action=view_logfile&rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refresh.'&message_type='.$message_type.'&tail_lines='.$tail_lines;
+	$base_url     = 'utilities.php?action=view_logfile&rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refreshTime.'&message_type='.$message_type.'&tail_lines='.$tail_lines.'&filename='.basename($logfile);
 
 	$nav          = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page');
 
@@ -1188,32 +1220,32 @@ function utilities_view_snmp_cache() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'snmp_query_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'poller_action' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -1449,32 +1481,32 @@ function utilities_view_poller_cache() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'dtd.name_cache', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'dtd.name_cache',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
@@ -1484,7 +1516,7 @@ function utilities_view_poller_cache() {
 			'default' => '-1'
 			),
 		'poller_action' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -1565,7 +1597,7 @@ function utilities_view_poller_cache() {
 								$sql_where = '';
 							}
 
-							$templates = db_fetch_assoc("SELECT DISTINCT dt.id, dt.name 
+							$templates = db_fetch_assoc("SELECT DISTINCT dt.id, dt.name
 								FROM data_template AS dt
 								INNER JOIN data_local AS dl
 								ON dt.id=dl.data_template_id
@@ -1702,53 +1734,53 @@ function utilities_view_poller_cache() {
 
 	$i = 0;
 	if (sizeof($poller_cache)) {
-	foreach ($poller_cache as $item) {
-		if ($i % 2 == 0) {
-			$class = 'odd';
-		} else {
-			$class = 'even';
-		}
-		print "<tr class='$class'>\n";
-			?>
-			<td>
-				<?php print filter_value($item['name_cache'], get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>
-			</td>
-
-			<td>
-			<?php
-			if ($item['action'] == 0) {
-				if ($item['snmp_version'] != 3) {
-					$details =
-						__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
-						__('Community:') . ' ' . $item['snmp_community'] . ', ' .
-						__('OID:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
-				} else {
-					$details =
-						__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
-						__('User:') . ' ' . $item['snmp_username'] . ', ' . __('OID:') . ' ' . $item['arg1'];
-				}
-			} elseif ($item['action'] == 1) {
-					$details = __('Script:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+		foreach ($poller_cache as $item) {
+			if ($i % 2 == 0) {
+				$class = 'odd';
 			} else {
-					$details = __('Script Server:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+				$class = 'even';
 			}
+			print "<tr class='$class'>\n";
+				?>
+				<td>
+					<?php print filter_value($item['name_cache'], get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>
+				</td>
 
-			print $details;
+				<td>
+				<?php
+				if ($item['action'] == 0) {
+					if ($item['snmp_version'] != 3) {
+						$details =
+							__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
+							__('Community:') . ' ' . $item['snmp_community'] . ', ' .
+							__('OID:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+					} else {
+						$details =
+							__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
+							__('User:') . ' ' . $item['snmp_username'] . ', ' . __('OID:') . ' ' . $item['arg1'];
+					}
+				} elseif ($item['action'] == 1) {
+						$details = __('Script:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+				} else {
+						$details = __('Script Server:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+				}
+
+				print $details;
+				?>
+				</td>
+			</tr>
+			<?php
+			print "<tr class='$class'>\n";
 			?>
-			</td>
-		</tr>
-		<?php
-		print "<tr class='$class'>\n";
-		?>
-			<td>
-			</td>
-			<td>
-				<?php print __('RRD:');?> <?php print $item['rrd_path'];?>
-			</td>
-		</tr>
-		<?php
-		$i++;
-	}
+				<td>
+				</td>
+				<td>
+					<?php print __('RRD:');?> <?php print $item['rrd_path'];?>
+				</td>
+			</tr>
+			<?php
+			$i++;
+		}
 	}
 
 	html_end_box();
@@ -1762,7 +1794,7 @@ function utilities() {
 	global $utilities;
 
 	$utilities[__('Technical Support')] = array(
-		__('Tecnical Support') => array(
+		__('Technical Support') => array(
 			'link'  => 'utilities.php?action=view_tech',
 			'description' => __('Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.')
 		),
@@ -1829,7 +1861,7 @@ function utilities() {
 	html_start_box(__('Cacti System Utilities'), '100%', '', '3', 'center', '');
 
 	foreach($utilities as $header => $content) {
-		html_section_header($header, 2); 
+		html_section_header($header, 2);
 		foreach($content as $title => $details) {
 			form_alternate_row(true);
 			print "<td class='nowrap'>";
@@ -1914,7 +1946,7 @@ function boost_display_run_status() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* get the boost table status */
-	$boost_table_status = db_fetch_assoc("SELECT * 
+	$boost_table_status = db_fetch_assoc("SELECT *
 		FROM INFORMATION_SCHEMA.TABLES WHERE table_schema=SCHEMA()
 		AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
 
@@ -2181,23 +2213,23 @@ function snmpagent_utilities_run_cache() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'mib' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => '-1', 
+			'filter' => FILTER_CALLBACK,
+			'default' => '-1',
 			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
@@ -2396,9 +2428,9 @@ function snmpagent_utilities_run_eventlog(){
 		SNMPAGENT_EVENT_SEVERITY_CRITICAL => '#FF00FF'
 	);
 
-	$receivers = db_fetch_assoc('SELECT DISTINCT manager_id, hostname 
-		FROM snmpagent_notifications_log 
-		INNER JOIN snmpagent_managers 
+	$receivers = db_fetch_assoc('SELECT DISTINCT manager_id, hostname
+		FROM snmpagent_notifications_log
+		INNER JOIN snmpagent_managers
 		ON snmpagent_managers.id = snmpagent_notifications_log.manager_id');
 
 	/* ================= input validation ================= */
@@ -2419,27 +2451,27 @@ function snmpagent_utilities_run_eventlog(){
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'severity' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'receiver' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -2593,14 +2625,14 @@ function snmpagent_utilities_run_eventlog(){
 		ON sm.id = snl.manager_id
 		LEFT JOIN snmpagent_cache AS sc
 		ON sc.name = snl.notification
-		WHERE $sql_where 
+		WHERE $sql_where
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*) 
-		FROM snmpagent_notifications_log AS snl 
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM snmpagent_notifications_log AS snl
 		WHERE $sql_where");
 
-	$logs       = db_fetch_assoc($sql_query);
+	$logs = db_fetch_assoc($sql_query);
 
 	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity='. get_request_var('severity').'&receiver='. get_request_var('receiver').'&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Log Entries'), 'page', 'main');
 

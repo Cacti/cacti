@@ -589,7 +589,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 
 	/* fill in the current date for printing in the log */
-	$date = date('Y-m-d H:i:s');
+	$date = date(date_time_format());
 
 	/* determine how to log data */
 	$logdestination = read_config_option('log_destination');
@@ -677,6 +677,8 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		return array();
 	}
 
+	$filter = strtolower($filter);
+
 	$fp = fopen($file_name, 'r');
 
 	/* Count all lines in the logfile */
@@ -757,7 +759,7 @@ function determine_display_log_entry($message_type, $line, $filter) {
 
 	/* match any lines that match the search string */
 	if ($display === true && $filter != '') {
-		return (strpos(strtolower($line), strtolower($filter)) !== false || preg_match('/' . $filter . '/i', $line));
+		return (strpos(strtolower($line), $filter) !== false || preg_match('/' . $filter . '/i', $line));
 	}
 
 	return $display;
@@ -786,7 +788,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 	if ($status == HOST_DOWN) {
 		/* Set initial date down. BUGFIX */
 		if (empty($hosts[$host_id]['status_fail_date'])) {
-                    $hosts[$host_id]['status_fail_date'] = date('Y-m-d H:i:s');
+			$hosts[$host_id]['status_fail_date'] = date('Y-m-d H:i:s');
 		}
 
 		/* update total polls, failed polls and availability */
@@ -1365,6 +1367,18 @@ function get_graph_title($local_graph_id) {
    @returns - the username */
 function get_username($user_id) {
 	return db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id));
+}
+
+/* get_execution_user - returns the username of the running process
+   @returns - the username */
+function get_execution_user() {
+	if (function_exists('posix_getpwuid')) {
+		$user_info = posix_getpwuid(posix_geteuid());
+
+		return $user_info['name'];
+	}else{
+		return exec('whoami');
+	}
 }
 
 /* generate_data_source_path - creates a new data source path from scratch using the first data source
@@ -3291,16 +3305,16 @@ function set_page_refresh($refresh) {
 
 	if (isset($refresh['logout'])) {
 		if ($refresh['logout'] == 'true' || $refresh['logout'] === true) {
-			$_SESSION['refresh']['logout']  = 'true';
+			$_SESSION['refresh']['logout'] = 'true';
 		} else {
-			$_SESSION['refresh']['logout']  = 'false';
+			$_SESSION['refresh']['logout'] = 'false';
 		}
 	} else {
-		$_SESSION['refresh']['logout']  = 'true';
+		$_SESSION['refresh']['logout'] = 'true';
 	}
 
 	if (isset($refresh['page'])) {
-		$_SESSION['refresh']['page']    = $refresh['page'];
+		$_SESSION['refresh']['page'] = $refresh['page'];
 	}
 }
 
@@ -3340,7 +3354,9 @@ function display_messages() {
 	var message = "<?php print display_output_messages();?>";
 
 	$(function() {
-		clearTimeout(messageTimer);
+		if (typeof messageTimer === 'function') {
+			clearTimeout(messageTimer);
+		}
 
 		if (message != '') {
 			$('.messageContainer').empty().show().html(message);
@@ -4035,6 +4051,10 @@ function update_system_mibs($host_id) {
 function cacti_debug_backtrace($entry = '', $html = false) {
 	global $config;
 
+	if (defined('IN_CACTI_INSTALL')) {
+		return true;
+	}
+
 	$callers = debug_backtrace();
 	$s = '';
 	foreach ($callers as $c) {
@@ -4056,6 +4076,7 @@ function cacti_debug_backtrace($entry = '', $html = false) {
 	if ($html) {
 		echo "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
 	}
+
 	cacti_log(trim("$entry Backtrace: $s"), false);
 }
 
@@ -4299,6 +4320,10 @@ function IgnoreErrorHandler($message) {
 
 function CactiErrorHandler($level, $message, $file, $line, $context) {
 	global $phperrors;
+
+	if (defined('IN_CACTI_INSTALL')) {
+		return true;
+	}
 
 	if (IgnoreErrorHandler($message)) {
 		return true;
@@ -4653,53 +4678,45 @@ function is_ipaddress($ip_address = '') {
 }
 
 /** date_time_format		create a format string for date/time
- * @param string returns	date time format
+ * @return string returns	date time format
  */
 function date_time_format() {
-	global $config;
-
-	$date = '';
+	global $datechar;
 
 	/* setup date format */
 	if (isset($_SESSION['sess_user_id'])) {
 		$date_fmt = read_user_setting('default_date_format');
-		$datechar = read_user_setting('default_datechar');
 	} else {
 		$date_fmt = read_config_option('default_date_format');
-		$datechar = read_config_option('default_datechar');
 	}
 
-	switch ($datechar) {
-		case GDC_HYPHEN: 	$datechar = '-'; break;
-		case GDC_SLASH: 	$datechar = '/'; break;
-		case GDC_DOT:	 	$datechar = '.'; break;
+	$dateCharSetting = read_config_option('default_datechar');
+	if (empty($dateCharSetting)) {
+		$dateCharSetting = GDC_SLASH;
 	}
+	$datecharacter = $datechar[$dateCharSetting];
 
 	switch ($date_fmt) {
 		case GD_MO_D_Y:
-			$date = 'm' . $datechar . 'd' . $datechar . 'Y H:i:s';
-			break;
+			return 'm' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
 		case GD_MN_D_Y:
-			$date = 'M' . $datechar . 'd' . $datechar . 'Y H:i:s';
-			break;
+			return 'M' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
 		case GD_D_MO_Y:
-			$date = 'd' . $datechar . 'm' . $datechar . 'Y H:i:s';
-			break;
+			return 'd' . $datecharacter . 'm' . $datecharacter . 'Y H:i:s';
 		case GD_D_MN_Y:
-			$date = 'd' . $datechar . 'M' . $datechar . 'Y H:i:s';
-			break;
+			return 'd' . $datecharacter . 'M' . $datecharacter . 'Y H:i:s';
 		case GD_Y_MO_D:
-			$date = 'Y' . $datechar . 'm' . $datechar . 'd H:i:s';
-			break;
+			return 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
 		case GD_Y_MN_D:
-			$date = 'Y' . $datechar . 'M' . $datechar . 'd H:i:s';
-			break;
+			return 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
+		default:
+			return '';
 	}
-
-	return $date;
 }
 
-/** get_cacti_version    Generic function to get the cacti version */
+/**
+ * get_cacti_version    Generic function to get the cacti version
+ */
 function get_cacti_version() {
 	static $version = '';
 
@@ -4710,3 +4727,62 @@ function get_cacti_version() {
 	return $version;
 }
 
+/**
+ * cacti_version_compare - Compare Cacti version numbers
+ */
+function cacti_version_compare($version1, $version2, $operator) {
+	$version1 = version_to_decimal($version1);
+	$version2 = version_to_decimal($version2);
+
+	switch ($operator) {
+		case '<':
+			if ($version1 < $version2) {
+				return true;
+			}
+			break;
+		case '<=':
+			if ($version1 <= $version2) {
+				return true;
+			}
+			break;
+		case '>=':
+			if ($version1 >= $version2) {
+				return true;
+			}
+			break;
+		case '>':
+			if ($version1 > $version2) {
+				return true;
+			}
+			break;
+		case '==':
+			if ($version1 == $version2) {
+				return true;
+			}
+			break;
+		default:
+			return version_compare($version1, $version2, $operator);
+	}
+	return false;
+}
+
+/**
+ * version_to_decimal - convert version string to decimal
+ */
+function version_to_decimal($version) {
+	$alpha  = substr($version, -1);
+	$newver = '';
+
+	if (!is_numeric($alpha)) {
+		$version = substr($version, 0, -1);
+		$alpha   = ord($alpha) / 1000;
+	} else {
+		$alpha   = 0;
+	}
+
+	for ($i = 0; $i < strlen($version); $i++) {
+		$newver .= ord($version[$i]);
+	}
+
+	return hexdec($newver) + $alpha;
+}

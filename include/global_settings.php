@@ -54,18 +54,22 @@ $tabs_graphs = array(
 	'tree' => __('Tree Settings'),
 	'fonts' => __('Graph Fonts'));
 
-$spikekill_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT gt.id, gt.name 
-	FROM graph_templates AS gt 
-	INNER JOIN graph_templates_item AS gti 
-	ON gt.id=gti.graph_template_id 
-	INNER JOIN data_template_rrd AS dtr 
-	ON gti.task_item_id=dtr.id 
+$spikekill_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT gt.id, gt.name
+	FROM graph_templates AS gt
+	INNER JOIN graph_templates_item AS gti
+	ON gt.id=gti.graph_template_id
+	INNER JOIN data_template_rrd AS dtr
+	ON gti.task_item_id=dtr.id
 	WHERE gti.local_graph_id=0 AND data_source_type_id IN (3,2)
 	ORDER BY name'), 'id', 'name');
 
-$logplugins = array_rekey(db_fetch_assoc('SELECT directory AS id, name 
-	FROM plugin_config 
-	WHERE status=1'), 'id', 'name');
+if (db_table_exists('plugin_config')) {
+	$logplugins = array_rekey(db_fetch_assoc('SELECT directory AS id, name
+		FROM plugin_config
+		WHERE status=1'), 'id', 'name');
+} else {
+	$logplugins = array();
+}
 
 /* get the files for selective logging */
 $realm_files  = array_keys($user_auth_realm_filenames);
@@ -73,9 +77,14 @@ $nohead_files = array_values($no_http_header_files);
 foreach($realm_files as $file) {
 	$logfiles[$file] = $file;
 }
+
 foreach($nohead_files as $file) {
 	$logfiles[$file] = $file;
 }
+
+$logfiles['poller_realtime.php'] = 'poller_realtime.php';
+$logfiles['cmd_realtime.php']    = 'cmd_realtime.php';
+
 asort($logfiles);
 
 /* setting information */
@@ -328,7 +337,7 @@ $settings = array(
             'friendly_name' => __('Language'),
             'description' => __('Default language for this system.'),
             'method' => 'drop_array',
-            'default' => 'us',
+            'default' => 'en',
             'array' => get_installed_locales()
             ),
         'i18n_auto_detection' => array(
@@ -369,14 +378,14 @@ $settings = array(
 			'description' => __('There are two methods for determining a User\'s Graph Permissions.  The first is \'Permissive\'.  Under the \'Permissive\' setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under \'Restrictive\', the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.'),
 			'method' => 'drop_array',
 			'default' => '1',
-			'array' => array('1' => 'Permissive', '2' => 'Restrictive')
+			'array' => array('1' => __('Permissive'), '2' => __('Restrictive'))
 			),
 		'grds_creation_method' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Graph/Data Source Creation Method'),
 			'description' => __('If set to Simple, Graphs and Data Sources can only be created from New Graphs.  If Advanced, legacy Graph and Data Source creation is supported.'),
 			'default' => '0',
-			'array' => array('0' => 'Simple', '1' => 'Advanced')
+			'array' => array('0' => __('Simple'), '1' => __('Advanced'))
 			),
 		'hide_form_description' => array(
 			'friendly_name' => __('Show Form/Setting Help Inline'),
@@ -405,7 +414,7 @@ $settings = array(
 		),
 		'force_https' => array(
 			'friendly_name' => __('Force Connections over HTTPS'),
-			'description' => __('When checked, any attempts to access Cacti will be redirected to HTTPS to insure high security.'),
+			'description' => __('When checked, any attempts to access Cacti will be redirected to HTTPS to ensure high security.'),
 			'default' => '',
 			'method' => 'checkbox',
 			),
@@ -417,16 +426,16 @@ $settings = array(
 		'automation_graphs_enabled' => array(
 			'method' => 'checkbox',
 			'friendly_name' => __('Enable Automatic Graph Creation'),
-			'description' => __('When disabled, Cacti Automation will not actively create any Graph.' . 
-				'This is useful when adjusting Host settings so as to avoid creating new Graphs each time you save an object. ' . 
+			'description' => __('When disabled, Cacti Automation will not actively create any Graph.' .
+				'This is useful when adjusting Host settings so as to avoid creating new Graphs each time you save an object. ' .
 				'Invoking Automation Rules manually will still be possible.'),
 			'default' => '',
 			),
 		'automation_tree_enabled' => array(
 			'method' => 'checkbox',
 			'friendly_name' => __('Enable Automatic Tree Item Creation'),
-			'description' => __('When disabled, Cacti Automation will not actively create any Tree Item.' . 
-				'This is useful when adjusting Host or Graph settings so as to avoid creating new Tree Entries each time you save an object. ' . 
+			'description' => __('When disabled, Cacti Automation will not actively create any Tree Item.' .
+				'This is useful when adjusting Host or Graph settings so as to avoid creating new Tree Entries each time you save an object. ' .
 				'Invoking Rules manually will still be possible.'),
 			'default' => '',
 			),
@@ -675,7 +684,7 @@ $settings = array(
 			),
 		'max_display_rows' => array(
 			'friendly_name' => __('Maximum number of rows per page'),
-			'description' => __("User defined number of lines for the CLOG to tail when selecting 'All lines'."),
+			'description' => __('User defined number of lines for the CLOG to tail when selecting \'All lines\'.'),
 			'method' => 'textbox',
 			'max_length' => 5,
 			'size' => 5,
@@ -695,9 +704,9 @@ $settings = array(
 			),
 		'graph_watermark' => array(
 			'friendly_name' => __('Watermark Text'),
-			'description' => __('Test to place at the bottom center of every Graph.'),
+			'description' => __('Text placed at the bottom center of every Graph.'),
 			'method' => 'textbox',
-			'default' => COPYRIGHT_YEARS,
+			'default' => 'Generated by Cacti®',
 			'max_length' => '80',
 			'size' => '60'
 			),
@@ -708,9 +717,7 @@ $settings = array(
 			),
 		'clog_exclude' => array(
 			'friendly_name' => __('Exclusion Regex'),
-			'description' => __('Any strings that match this regex will be excluded from the user display.
-				<strong>For example, if you want to exclude all log lines that include the words \'Admin\' or \'Login\'
-				you would type \'(Admin || Login)\'</strong>'),
+			'description' => __('Any strings that match this regex will be excluded from the user display.  <strong>For example, if you want to exclude all log lines that include the words \'Admin\' or \'Login\' you would type \'(Admin || Login)\'</strong>'),
 			'method' => 'textarea',
 			'textarea_rows' => '5',
 			'textarea_cols' => '45',
@@ -743,9 +750,7 @@ $settings = array(
 			),
 		'realtime_cache_path' => array(
 			'friendly_name' => __('Cache Directory'),
-			'description' => __('This is the location, on the web server where the RRDfiles and PNG files will be cached.
-			This cache will be managed by the poller.
-			Make sure you have the correct read and write permissions on this folder'),
+			'description' => __('This is the location, on the web server where the RRDfiles and PNG files will be cached.  This cache will be managed by the poller.  Make sure you have the correct read and write permissions on this folder'),
 			'method' => 'dirpath',
 			'default' => $config['base_path'] . '/cache/realtime/',
 			'max_length' => 255,
@@ -897,9 +902,9 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(
-				'0'  => __('None'), 
+				'0'  => __('None'),
 				'1'  => __('Summary'),
-				'2'  => __('Detailed') 
+				'2'  => __('Detailed')
 				),
 			),
 		'max_threads' => array(
@@ -969,7 +974,7 @@ $settings = array(
 			),
 		'user_template' => array(
 			'friendly_name' => __('User Template'),
-			'description' => __('The name of the user that cacti will use as a template for new Web Basic and LDAP users; is \'guest\' by default.'),
+			'description' => __('The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is \'guest\' by default.'),
 			'method' => 'drop_sql',
 			'none_value' => __('No User'),
 			'sql' => 'SELECT username AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
@@ -1018,11 +1023,11 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(
-				'0'  => __('Disabled'), 
-				'30'  => __('%d Days', 30), 
-				'60'  => __('%d Days', 60), 
-				'90'  => __('%d Days', 90), 
-				'120'  => __('%d Days', 120), 
+				'0'  => __('Disabled'),
+				'30'  => __('%d Days', 30),
+				'60'  => __('%d Days', 60),
+				'90'  => __('%d Days', 90),
+				'120'  => __('%d Days', 120),
 				'365'  => __('%d Year', 1),
 				'730'  => __('%d Years', 2) )
 			),
@@ -1032,10 +1037,10 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(
-			'0'  => __('Disabled'), 
-				'30'  => __('%d Days', 30), 
-				'60'  => __('%d Days', 60), 
-				'90'  => __('%d Days', 90), 
+			'0'  => __('Disabled'),
+				'30'  => __('%d Days', 30),
+				'60'  => __('%d Days', 60),
+				'90'  => __('%d Days', 90),
 				'120'  => __('%d Days', 120) )
 			),
 		'secpass_history' => array(
@@ -1044,8 +1049,8 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(
-				'0'  => __('Disabled'), 
-				'1'  => __('1 Change'), 
+				'0'  => __('Disabled'),
+				'1'  => __('1 Change'),
 				'2'  => __('%d Changes', 2),
 				'3'  => __('%d Changes', 3),
 				'4'  => __('%d Changes', 4),
@@ -1056,7 +1061,7 @@ $settings = array(
 				'9'  => __('%d Changes', 9),
 				'10' => __('%d Changes', 10),
 				'11' => __('%d Changes', 11),
-				'12' => __('%d Changes', 12) ) 
+				'12' => __('%d Changes', 12) )
 			),
 		'secpass_lock_header' => array(
 			'friendly_name' => __('Account Locking'),
@@ -1069,11 +1074,11 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(
-				'0'  => __('Disabled'), 
-				'1'  => __('1 Attempt'), 
-				'2'  => __('%d Attempts', 2), 
+				'0'  => __('Disabled'),
+				'1'  => __('1 Attempt'),
+				'2'  => __('%d Attempts', 2),
 				'3'  => __('%d Attempts', 3),
-				'4'  => __('%d Attempts', 4), 
+				'4'  => __('%d Attempts', 4),
 				'5'  => __('%d Attempts', 5),
 				'6'  => __('%d Attempts', 6) )
 			),
@@ -1083,9 +1088,9 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '60',
 			'array' => array(
-				'0'  => __('Disabled'), 
-				'1'  => __('1 Minute'), 
-				'2'  => __('%d Minutes', 2), 
+				'0'  => __('Disabled'),
+				'1'  => __('1 Minute'),
+				'2'  => __('%d Minutes', 2),
 				'5'  => __('%d Minutes', 5),
 				'10'  => __('%d Minutes', 10),
 				'20'  => __('%d Minutes', 20),
@@ -1413,8 +1418,7 @@ $settings = array(
 			),
 		'dsstats_hourly_duration' => array(
 			'friendly_name' => __('Hourly Average Window'),
-			'description' => __('The number of consecutive hours that represent the hourly
-			average.  Keep in mind that a setting too high can result in very large memory tables'),
+			'description' => __('The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables'),
 			'default' => '60',
 			'method' => 'drop_array',
 			'array' => $dsstats_hourly_avg
@@ -1441,15 +1445,13 @@ $settings = array(
 			),
 		'dsstats_rrdtool_pipe' => array(
 			'friendly_name' => __('Enable Single RRDtool Pipe'),
-			'description' => __('Using a single pipe will speed the RRDtool process by 10x.  However, RRDtool crashes
-			problems can occur.  Disable this setting if you need to find a bad RRDfile.'),
+			'description' => __('Using a single pipe will speed the RRDtool process by 10x.  However, RRDtool crashes problems can occur.  Disable this setting if you need to find a bad RRDfile.'),
 			'method' => 'checkbox',
 			'default' => 'on'
 			),
 		'dsstats_partial_retrieve' => array(
 			'friendly_name' => __('Enable Partial Reference Data Retrieve'),
-			'description' => __('If using a large system, it may be beneficial for you to only gather data as needed
-			during Cacti poller passes.  If you check this box, Data Source Statistics will gather data this way.'),
+			'description' => __('If using a large system, it may be beneficial for you to only gather data as needed during Cacti poller passes.  If you check this box, Data Source Statistics will gather data this way.'),
 			'method' => 'checkbox',
 			'default' => ''
 			)
@@ -1490,19 +1492,14 @@ $settings = array(
 			),
 		'boost_rrd_update_max_records_per_select' => array(
 			'friendly_name' => __('Maximum Data Source Items Per Pass'),
-			'description' => __('To optimize performance, the boost RRD updater needs to know how many Data Source Items
-			should be retrieved in one pass.  Please be careful not to set too high as graphing performance during
-			major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this
-			number.  The default value is 50000.'),
+			'description' => __('To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000.'),
 			'method' => 'drop_array',
 			'default' => '50000',
 			'array' => $boost_max_rows_per_select
 			),
 		'boost_rrd_update_string_length' => array(
 			'friendly_name' => __('Maximum Argument Length'),
-			'description' => __('When boost sends update commands to RRDtool, it must not exceed the operating systems
-			Maximum Argument Length.  This varies by operating system and kernel level.  For example:
-			Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited'),
+			'description' => __('When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited'),
 			'method' => 'textbox',
 			'default' => '2000',
 			'max_length' => '20',
@@ -1517,8 +1514,7 @@ $settings = array(
 			),
 		'boost_rrd_update_max_runtime' => array(
 			'friendly_name' => __('Maximum RRD Update Script Run Time'),
-			'description' => __('The maximum boot poller run time allowed prior to boost issuing warning
-			messages relative to possible hardware/software issues preventing proper updates.'),
+			'description' => __('The maximum boot poller run time allowed prior to boost issuing warning messages relative to possible hardware/software issues preventing proper updates.'),
 			'method' => 'drop_array',
 			'default' => '1200',
 			'array' => $boost_max_runtime
@@ -1646,29 +1642,21 @@ $settings = array(
 			),
 		'spikekill_method' => array(
 			'friendly_name' => __('Removal Method'),
-			'description' => __('There are two removal methods.  The first, Standard Deviation, will remove any
-			sample that is X number of standard deviations away from the average of samples.  The second method,
-			Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes
-			into account a certain number of \'outliers\'.  Those are exceptional samples, like the spike, that need
-			to be excluded from the Variance Average calculation.'),
+			'description' => __('There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of \'outliers\'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation.'),
 			'method' => 'drop_array',
 			'default' => '2',
 			'array' => array(1 => __('Standard Deviation'), 2 => __('Variance Based w/Outliers Removed'))
 			),
 		'spikekill_avgnan' => array(
 			'friendly_name' => __('Replacement Method'),
-			'description' => __('There are three replacement methods.  The first method replaces the spike with the
-			the average of the data source in question.  The second method replaces the spike with a \'NaN\'.
-			The last replaces the spike with the last known good value found.'),
+			'description' => __('There are three replacement methods.  The first method replaces the spike with the the average of the data source in question.  The second method replaces the spike with a \'NaN\'.  The last replaces the spike with the last known good value found.'),
 			'method' => 'drop_array',
 			'default' => 'last',
 			'array' => array('avg' => __('Average'), 'nan' => __('NaN\'s'), 'last' => __('Last Known Good'))
 			),
 		'spikekill_deviations' => array(
 			'friendly_name' => __('Number of Standard Deviations'),
-			'description' => __('Any value that is this many standard deviations above the average will be excluded.
-			A good number will be dependent on the type of data to be operated on.  We recommend a number no lower
-			than 5 Standard Deviations.'),
+			'description' => __('Any value that is this many standard deviations above the average will be excluded.  A good number will be dependent on the type of data to be operated on.  We recommend a number no lower than 5 Standard Deviations.'),
 			'method' => 'drop_array',
 			'default' => '10',
 			'array' => array(
@@ -1686,9 +1674,7 @@ $settings = array(
 			),
 		'spikekill_percent' => array(
 			'friendly_name' => __('Variance Percentage'),
-			'description' => __('This value represents the percentage above the adjusted sample average once outliers
-			have been removed from the sample.  For example, a Variance Percentage of 100% on an adjusted average of 50
-			would remove any sample above the quantity of 100 from the graph.'),
+			'description' => __('This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph.'),
 			'method' => 'drop_array',
 			'default' => '1000',
 			'array' => array(
@@ -1708,9 +1694,7 @@ $settings = array(
 			),
 		'spikekill_outliers' => array(
 			'friendly_name' => __('Variance Number of Outliers'),
-			'description' => __('This value represents the number of high and low average samples will be removed from the
-			sample set prior to calculating the Variance Average.  If you choose an outlier value of 5, then both the top
-			and bottom 5 averages are removed.'),
+			'description' => __('This value represents the number of high and low average samples will be removed from the sample set prior to calculating the Variance Average.  If you choose an outlier value of 5, then both the top and bottom 5 averages are removed.'),
 			'method' => 'drop_array',
 			'default' => '5',
 			'array' => array(
@@ -1761,17 +1745,16 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(
-				0  => __('Disabled'), 
-				6  => __('Every %d Hours', 6), 
-				12 => __('Every %d Hours', 12), 
-				24 => __('Once a Day'), 
+				0  => __('Disabled'),
+				6  => __('Every %d Hours', 6),
+				12 => __('Every %d Hours', 12),
+				24 => __('Once a Day'),
 				48 => __('Every Other Day')
 				)
 			),
 		'spikekill_basetime' => array(
 			'friendly_name' => __('Base Time'),
-			'description' => __('The Base Time for Spike removal to occur.  For example, if you use \'12:00am\' and you choose
-			once per day, the batch removal would begin at approximately midnight every day.'),
+			'description' => __('The Base Time for Spike removal to occur.  For example, if you use \'12:00am\' and you choose once per day, the batch removal would begin at approximately midnight every day.'),
 			'method' => 'textbox',
 			'default' => '12:00am',
 			'max_length' => '10',

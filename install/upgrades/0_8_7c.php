@@ -24,7 +24,7 @@
 
 function upgrade_to_0_8_7c() {
 	/* speed up the UI, missed in 0.8.7b upgrade, avoid failures if index already exists */
-	$result = db_fetch_assoc("SHOW INDEX FROM `data_local`") or die (mysql_error());
+	$result = db_fetch_assoc("SHOW INDEX FROM `data_local`");
 	$indices = array();
 	foreach($result as $index => $arr) {
 		$indices[] = $arr["Key_name"];
@@ -33,7 +33,7 @@ function upgrade_to_0_8_7c() {
 		db_install_execute("ALTER TABLE `data_local` ADD INDEX `host_id`(`host_id`)");
 	}
 
-	$result = db_fetch_assoc("SHOW INDEX FROM `host_snmp_cache`") or die (mysql_error());
+	$result = db_fetch_assoc("SHOW INDEX FROM `host_snmp_cache`");
 	$indices = array();
 	foreach($result as $index => $arr) {
 		$indices[] = $arr["Key_name"];

@@ -579,7 +579,7 @@ function is_realm_allowed($realm) {
 		}
 
 		if (read_config_option('auth_method') != 0) {
-			if (version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
+			if (cacti_version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
 				$user_realm = db_fetch_cell_prepared("SELECT realm_id
 					FROM user_auth_realm
 					WHERE user_id = ?
@@ -1556,7 +1556,7 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 		}
 	}
 
-	$hosts = get_allowed_devices($sql_where, 'description', 30);
+	$hosts = get_allowed_devices($sql_where, 'description', 20);
 	if (sizeof($hosts)) {
 		foreach($hosts as $host) {
 			$return[] = array('label' => $host['description'], 'value' => $host['description'], 'id' => $host['id']);
@@ -1580,7 +1580,7 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
 		}
 	}
 
-	$graph_items = get_allowed_graph_items($sql_where, 'name_cache', 30);
+	$graph_items = get_allowed_graph_items($sql_where, 'name_cache', 20);
 	if (sizeof($graph_items)) {
 		foreach($graph_items as $gi) {
 			$return[] = array('label' => $gi['name'], 'value' => $gi['name'], 'id' => $gi['id']);
@@ -1590,7 +1590,7 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
 	print json_encode($return);
 }
 
-function get_allowed_graph_items($sql_where, $sort = 'name' , $limit = 30, $user = 0) {
+function get_allowed_graph_items($sql_where, $sort = 'name' , $limit = 20, $user = 0) {
 	$return = array();
 
 	if ($user == 0) {
@@ -1796,7 +1796,7 @@ function user_perms_valid($user_id) {
 	if ($valid === 'null') {
 		$valid = true;
 
-		if (version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
+		if (cacti_version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
 			$key = db_fetch_cell_prepared('SELECT reset_perms FROM user_auth WHERE id = ?', array($user_id));
 
 			if (isset($_SESSION['sess_user_perms_key'])) {

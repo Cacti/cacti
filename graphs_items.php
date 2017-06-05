@@ -460,8 +460,12 @@ function item_edit() {
 	foreach ($struct_graph_item as $field_name => $field_array) {
 		$form_array += array($field_name => $struct_graph_item[$field_name]);
 
-		if ($field_name != 'task_item_id') {
-			$form_array[$field_name]['value']   = (isset($template_item[$field_name]) ? $template_item[$field_name] : '');
+		if (get_selected_theme() != 'classic') {
+			if ($field_name != 'task_item_id') {
+				$form_array[$field_name]['value'] = (isset($template_item[$field_name]) ? $template_item[$field_name] : '');
+			}
+		}else{
+			$form_array[$field_name]['value'] = (isset($template_item[$field_name]) ? $template_item[$field_name] : '');
 		}
 
 		$form_array[$field_name]['form_id'] = (isset($template_item['id']) ? $template_item['id'] : '0');

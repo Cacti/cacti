@@ -61,14 +61,24 @@ function clog_purge_logfile() {
 function clog_view_logfile() {
 	global $config;
 
-	$logfile = read_config_option('path_cactilog');
+	$clogAdmin = clog_admin();
+	$logfile   = read_config_option('path_cactilog');
 
-	if ($logfile == '') {
-		$logfile = './log/cacti.log';
+	if (isset_request_var('filename')) {
+		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
+		if (file_exists($requestedFile)) {
+			$logfile = $requestedFile;
+		}
+	} elseif ($logfile == '') {
+		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
+		'page' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'default' => '1'
+		),
 		'tail_lines' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => read_config_option('num_rows_log')
@@ -91,8 +101,6 @@ function clog_view_logfile() {
 		)
 	);
 
-	$clogAdmin = clog_admin();
-
 	validate_store_request_vars($filters, 'sess_clog');
 	/* ================= input validation ================= */
 
@@ -102,9 +110,16 @@ function clog_view_logfile() {
 	set_request_var('page_referrer', 'view_logfile');
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
-	$refresh['seconds'] = get_request_var('refresh');
-	$refresh['page']    = $config['url_path'] . 'clog' . (!$clogAdmin ? '_user' : '') . '.php?header=false';
-	$refresh['logout']  = 'false';
+	$page_nr = get_request_var('page');
+
+	$page = $config['url_path'] . 'clog' . (!$clogAdmin ? '_user' : '') . '.php?header=false';
+	$page .= '&filename=' . basename($logfile) . '&page=' . $page_nr;
+
+	$refresh = array(
+		'seconds' => get_request_var('refresh'),
+		'page'    => $page,
+		'logout'  => 'false'
+	);
 
 	set_page_refresh($refresh);
 
@@ -154,12 +169,11 @@ function clog_view_logfile() {
 	}
 
 	html_start_box(__('Log Filters'), '100%', '', '3', 'center', '');
-	filter();
+	filter($clogAdmin);
 	html_end_box();
 
 	/* read logfile into an array and display */
 	$total_rows      = 0;
-	$page_nr         = isset_request_var('page') ? get_request_var('page') : 1;
 	$number_of_lines = get_request_var('tail_lines') < 0 ? read_config_option('max_display_rows') : get_request_var('tail_lines');
 
 	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows);
@@ -171,12 +185,12 @@ function clog_view_logfile() {
 	if (!$clogAdmin) {
 		$exclude_regex = read_config_option('clog_exclude', true);
 		if ($exclude_regex != '') {
-			$ad_filter = ' - Admin Filter in Affect';
+			$ad_filter = __(' - Admin Filter in Affect');
 		} else {
-			$ad_filter = ' - No Admin Filter in Affect';
+			$ad_filter = __(' - No Admin Filter in Affect');
 		}
 	} else {
-		$ad_filter = ' - Admin View';
+		$ad_filter = __(' - Admin View');
 	}
 
 	if (get_request_var('message_type') > 0) {
@@ -187,10 +201,10 @@ function clog_view_logfile() {
 
 	$rfilter      = get_request_var('rfilter');
 	$reverse      = get_request_var('reverse');
-	$refresh      = get_request_var('refresh');
+	$refreshTime  = get_request_var('refresh');
 	$message_type = get_request_var('message_type');
 	$tail_lines   = get_request_var('tail_lines');
-	$base_url     = 'clog.php?rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refresh.'&message_type='.$message_type.'&tail_lines='.$tail_lines;
+	$base_url     = 'clog.php?rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refreshTime.'&message_type='.$message_type.'&tail_lines='.$tail_lines.'&filename='.basename($logfile);
 
 	$nav          = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page');
 
@@ -299,7 +313,7 @@ function clog_view_logfile() {
 	bottom_footer();
 }
 
-function filter() {
+function filter($clogAdmin) {
 	global $page_refresh_interval, $log_tail_lines;
 	?>
 	<tr class='even'>
@@ -307,6 +321,29 @@ function filter() {
 		<form id='logfile'>
 			<table class='filterTable'>
 				<tr>
+					<td>
+						<?php print __('File to show');?>
+					</td>
+					<td>
+						<select id='filename' name='filename'>
+							<?php
+							$selectedFile = basename(get_nfilter_request_var('filename'));
+							$logPath      = dirname(read_config_option('path_cactilog'));
+							$files        = scandir($logPath);
+
+							foreach($files as $logFile) {
+								if (in_array($logFile, array('.', '..', '.htaccess'))) {
+									continue;
+								}
+								print "<option value='" . $logFile . "'";
+								if ($selectedFile == $logFile) {
+									print ' selected';
+								}
+								print '>' . $logFile . "</option>\n";
+							}
+							?>
+						</select>
+					</td>
 					<td>
 						<?php print __('Tail Lines');?>
 					</td>
@@ -323,6 +360,17 @@ function filter() {
 							?>
 						</select>
 					</td>
+					<td>
+						<input type='button' id='go' name='go' value='<?php print __('Go');?>'>
+					</td>
+					<td>
+						<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>'>
+					</td>
+					<td>
+						<?php if ($clogAdmin) {?><input type='button' id='purge' name='purge' value='<?php print __('Purge');?>'><?php }?>
+					</td>
+				</tr>
+				<tr>
 					<td class='nowrap'>
 						<?php print __('Message Type');?>
 					</td>
@@ -336,14 +384,14 @@ function filter() {
 							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
 						</select>
 					</td>
-					<td>
-						<input type='button' id='go' name='go' value='<?php print __('Go');?>'>
+					<td class='nowrap'>
+						<?php print __('Display Order');?>
 					</td>
 					<td>
-						<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>'>
-					</td>
-					<td>
-						<?php if (clog_admin()) {?><input type='button' id='purge' name='purge' value='<?php print __('Purge');?>'><?php }?>
+						<select id='reverse' name='reverse'>
+							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
+							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
+						</select>
 					</td>
 				</tr>
 				<tr>
@@ -361,15 +409,6 @@ function filter() {
 								print '>' . $display_text . "</option>\n";
 							}
 							?>
-						</select>
-					</td>
-					<td class='nowrap'>
-						<?php print __('Display Order');?>
-					</td>
-					<td>
-						<select id='reverse' name='reverse'>
-							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
-							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
 					</td>
 				</tr>
@@ -400,6 +439,10 @@ function filter() {
 		});
 
 		$('#message_type').change(function() {
+			refreshFilter();
+		});
+
+		$('#filename').change(function() {
 			refreshFilter();
 		});
 
@@ -438,6 +481,7 @@ function filter() {
 				'&refresh='+$('#refresh').val()+
 				'&message_type='+$('#message_type').val()+
 				'&tail_lines='+$('#tail_lines').val()+
+				'&filename='+$('#filename').val()+
 				'&header=false';
 
 			loadPageNoHeader(strURL);

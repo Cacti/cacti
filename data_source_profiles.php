@@ -335,14 +335,15 @@ function profile_item_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#cdialog').dialog();
-	});
-	$('#continue').click(function(data) {
-		$.post('data_source_profiles.php?action=item_remove', { 
-			__csrf_magic: csrfMagicToken, 
-			id: <?php print get_request_var('id');?> 
-		}, function(data) {
-			$('#cdialog').dialog('close');
-			loadPageNoHeader('data_source_profiles.php?action=edit&header=false&id=<?php print $profile['data_source_profile_id'];?>');
+
+		$('#continue').click(function(data) {
+			$.post('data_source_profiles.php?action=item_remove', { 
+				__csrf_magic: csrfMagicToken, 
+				id: <?php print get_request_var('id');?> 
+			}, function(data) {
+				$('#cdialog').dialog('close');
+				loadPageNoHeader('data_source_profiles.php?action=edit&header=false&id=<?php print $profile['data_source_profile_id'];?>');
+			});
 		});
 	});
 	</script>

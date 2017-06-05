@@ -544,6 +544,10 @@ function graph_edit() {
 			WHERE local_graph_id = ?',
 			array($graphs['local_graph_id']));
 
+		if ($aginfo['title_format'] == '') {
+			$aginfo['title_format'] = get_graph_title($graphs['local_graph_id']);
+		}
+
 		$header_label = '[edit: ' . htmlspecialchars(get_graph_title(get_request_var('id'))) . ']';
 	}
 
@@ -557,25 +561,45 @@ function graph_edit() {
 			$template = $aginfo;
 		}
 
-		$aggregate_tabs = array('details' => __('Details'), 'items' => __('Items'), 'preview' => __('Preview'));
+		$aggregate_tabs = array(
+			'details' => __('Details'), 
+			'items'   => __('Items'), 
+			'preview' => __('Preview')
+		);
 	} else {
 		$template = array();
-		$aggregate_tabs = array('details' => __('Details'), 'preview' => __('Preview'));
+		$aggregate_tabs = array(
+			'details' => __('Details'), 
+			'preview' => __('Preview')
+		);
 	}
 
 	/* ================= input validation and session storage ================= */
-	$filters = array(
-		'tab' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'details', 
-			'options' => array('options' => 'sanitize_search_string')
-		)
-	);
+	if (isset_request_var('tab')) {
+		switch(get_nfilter_request_var('tab')) {
+		case 'details':
+		case 'items':
+		case 'preview':
+			$_SESSION['agg_tab'] = get_nfilter_request_var('tab');
+			set_request_var('tab', get_nfilter_request_var('tab'));
 
-	validate_store_request_vars($filters, 'sess_aggregate');
+			break;
+		default:
+			if (isset($_SESSION['agg_tab'])) {
+				set_request_var('tab', $_SESSION['agg_tab']);
+			}else{
+				$_SESSION['agg_tab'] = 'details';
+				set_request_var('tab', 'details');
+			}
+		}
+	} elseif (isset($_SESSION['agg_tab'])) {
+		set_request_var('tab', $_SESSION['agg_tab']);
+	} else {
+		set_request_var('tab', 'details'); 
+	}
 	/* ================= input validation ================= */
 
-	$current_tab = get_request_var('tab');
+	$current_tab = get_nfilter_request_var('tab');
 
 	/* draw the categories tabs on the top of the page */
 	print "<div class='tabs'>\n";
@@ -673,7 +697,6 @@ function graph_edit() {
 				draw_aggregate_graph_items_list(0, $template['graph_template_id'], $aginfo);
 			}
 
-			form_hidden_box('id', (isset($template['id']) ? $template['id'] : '0'), '');
 			form_hidden_box('save_component_template', '1', '');
 
 			?>
@@ -970,7 +993,7 @@ function aggregate_items() {
 	}
 
 	function clearFilter() {
-		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val()+'&clear=1&header=false';
+		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val()+'&clear=true&header=false';
 		loadPageNoHeader(strURL);
 	}
 

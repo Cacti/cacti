@@ -277,16 +277,16 @@ function field_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#cdialog').dialog();
-	});
 
-	$('#continue').click(function(data) {
-		$.post('data_input.php?action=field_remove', { 
-			__csrf_magic: csrfMagicToken, 
-			data_input_id: <?php print get_request_var('data_input_id');?>, 
-			id: <?php print get_request_var('id');?> 
-		}, function(data) {
-			$('#cdialog').dialog('close');
-			loadPageNoHeader('data_input.php?action=edit&header=false&id=<?php print get_request_var('data_input_id');?>');
+		$('#continue').click(function(data) {
+			$.post('data_input.php?action=field_remove', { 
+				__csrf_magic: csrfMagicToken, 
+				data_input_id: <?php print get_request_var('data_input_id');?>, 
+				id: <?php print get_request_var('id');?> 
+			}, function(data) {
+				$('#cdialog').dialog('close');
+				loadPageNoHeader('data_input.php?action=edit&header=false&id=<?php print get_request_var('data_input_id');?>');
+			});
 		});
 	});
 	</script>

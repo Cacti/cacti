@@ -772,7 +772,9 @@ function validate_is_regex($regex) {
 
 	$error = preg_last_error();
 
-	set_error_handler('CactiErrorHandler');
+	if (!defined('IN_CACTI_INSTALL')) {
+		set_error_handler('CactiErrorHandler');
+	}
 
 	if (empty($error)) {
 		return $php_error;

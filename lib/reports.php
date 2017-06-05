@@ -30,8 +30,15 @@ function duplicate_reports($_id, $_title) {
 	global $fields_reports_edit;
 	reports_log(__FUNCTION__ . ', id: ' . $_id, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-	$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array($_id));
-	$reports_items = db_fetch_assoc_prepared('SELECT * FROM reports_items WHERE report_id = ?', array($_id));
+	$report = db_fetch_row_prepared('SELECT *
+		FROM reports
+		WHERE id = ?',
+		array($_id));
+
+	$reports_items = db_fetch_assoc_prepared('SELECT *
+		FROM reports_items
+		WHERE report_id = ?',
+		array($_id));
 
 	$save = array();
 	foreach ($fields_reports_edit as $field => $array) {
@@ -66,40 +73,39 @@ function duplicate_reports($_id, $_title) {
  * @return string	- string defining the datetime format specific to this user
  */
 function reports_date_time_format() {
-	global $config;
+	global $datechar;
 
 	$graph_date = '';
 
 	/* setup date format */
 	$date_fmt = read_user_setting('default_date_format');
-	$datechar = read_user_setting('default_datechar');
-
-	switch ($datechar) {
-		case GDC_HYPHEN: 	$datechar = '-'; break;
-		case GDC_SLASH: 	$datechar = '/'; break;
-		case GDC_DOT:	 	$datechar = '.'; break;
+	$dateCharSetting = read_config_option('default_datechar');
+	if (empty($dateCharSetting)) {
+		$dateCharSetting = GDC_SLASH;
 	}
+	$datecharacter = $datechar[$dateCharSetting];
 
 	switch ($date_fmt) {
 		case GD_MO_D_Y:
-			$graph_date = 'm' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			$graph_date = 'm' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_MN_D_Y:
-			$graph_date = 'M' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			$graph_date = 'M' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_D_MO_Y:
-			$graph_date = 'd' . $datechar . 'm' . $datechar . 'Y H:i:s';
+			$graph_date = 'd' . $datecharacter . 'm' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_D_MN_Y:
-			$graph_date = 'd' . $datechar . 'M' . $datechar . 'Y H:i:s';
+			$graph_date = 'd' . $datecharacter . 'M' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_Y_MO_D:
-			$graph_date = 'Y' . $datechar . 'm' . $datechar . 'd H:i:s';
+			$graph_date = 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
 			break;
 		case GD_Y_MN_D:
-			$graph_date = 'Y' . $datechar . 'M' . $datechar . 'd H:i:s';
+			$graph_date = 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
 			break;
 	}
+
 	reports_log(__FUNCTION__ . ', datefmt: ' . $graph_date, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 	return $graph_date;
 }
@@ -378,14 +384,14 @@ function generate_report($report, $force = false) {
 
 	$error = mailer(
 		array($report['from_email'], $report['from_name']),
-		$report['email'], 
-		'', 
-		$report['bcc'], 
-		'', 
-		$subject, 
-		$body, 
-		'Cacti Reporting Requires and HTML Email Client', 
-		$attachments, 
+		$report['email'],
+		'',
+		$report['bcc'],
+		'',
+		$subject,
+		$body,
+		'Cacti Reporting Requires and HTML Email Client',
+		$attachments,
 		$headers
 	);
 
@@ -414,14 +420,14 @@ function generate_report($report, $force = false) {
 			$next = reports_interval_start($report['intrvl'], $report['count'], $report['offset'], $report['mailtime']);
 			$next = floor($next / $int) * $int;
 
-			db_execute_prepared("UPDATE reports 
+			db_execute_prepared("UPDATE reports
 				SET mailtime = ?, lastsent = ?
-				WHERE id = ?", 
+				WHERE id = ?",
 				array($next, time(), $report['id']));
 		} else {
-			db_execute_prepared("UPDATE reports 
+			db_execute_prepared("UPDATE reports
 				SET lastsent = ?
-				WHERE id = ?", 
+				WHERE id = ?",
 				array(time(), $report['id']));
 		}
 
@@ -442,7 +448,7 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 
 	if (file_exists($config['base_path'] . '/formats/' . $format_file)) {
 		$contents = file($config['base_path'] . '/formats/' . $format_file);
-	}	
+	}
 	$output   = '';
 	$report_tag_included = false;
 
@@ -488,10 +494,10 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 		$sql_swhere = " AND gtg.title_cache REGEXP '" . $search_key . "'";
 	}
 
-	$device_id = db_fetch_cell_prepared('SELECT host_id 
-		FROM graph_tree_items 
+	$device_id = db_fetch_cell_prepared('SELECT host_id
+		FROM graph_tree_items
 		WHERE id = ?
-		AND graph_tree_id = ?', 
+		AND graph_tree_id = ?',
 		array($branch_id, $tree_id));
 
 	if ($device_id > 0) {
@@ -514,19 +520,19 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 			ON gti.local_graph_id=gl.id
 			INNER JOIN graph_templates_graph AS gtg
 			ON gtg.local_graph_id=gti.local_graph_id
-			WHERE gti.local_graph_id>0 
-			AND graph_tree_id=$tree_id 
+			WHERE gti.local_graph_id>0
+			AND graph_tree_id=$tree_id
 			$sql_where
 			$sql_swhere"), 'id', 'id');
 
 		/* get host graphs first */
-		$graphs = array_merge($graphs, array_rekey(db_fetch_assoc("SELECT gl.id 
+		$graphs = array_merge($graphs, array_rekey(db_fetch_assoc("SELECT gl.id
 			FROM graph_local AS gl
 			INNER JOIN graph_tree_items AS gti
 			ON gl.host_id=gti.host_id
 			INNER JOIN graph_templates_graph AS gtg
 			ON gtg.local_graph_id=gl.id
-			WHERE gti.graph_tree_id=$tree_id 
+			WHERE gti.graph_tree_id=$tree_id
 			AND gti.host_id>0
 			$sql_where
 			$sql_swhere"), 'id', 'id'));
@@ -557,15 +563,15 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 	include_once($config['base_path'] . '/lib/time.php');
 
 	$outstr = '';
-	$report = db_fetch_row_prepared('SELECT * 
-		FROM reports 
-		WHERE id = ?', 
+	$report = db_fetch_row_prepared('SELECT *
+		FROM reports
+		WHERE id = ?',
 		array($reports_id));
 
-	$reports_items = db_fetch_assoc_prepared('SELECT * 
-		FROM reports_items 
-		WHERE report_id = ? 
-		ORDER BY sequence', 
+	$reports_items = db_fetch_assoc_prepared('SELECT *
+		FROM reports_items
+		WHERE report_id = ?
+		ORDER BY sequence',
 		array($report['id']));
 
 	$format_data = '';
@@ -726,8 +732,8 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	}
 
 	$tree_branches = db_fetch_assoc_prepared('SELECT id
-		FROM graph_tree_items 
-		WHERE parent = ? 
+		FROM graph_tree_items
+		WHERE parent = ?
 		AND host_id = 0
 		AND local_graph_id = 0
 		AND graph_tree_id = ?
@@ -744,7 +750,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 
 /**
  * return html code for an embetted image
- * @param array $report	- parameters for this report mail report	
+ * @param array $report	- parameters for this report mail report
  * @param $item			- current graph item
  * @param $timespan		- timespan
  * @param $output		- type of output
@@ -753,17 +759,17 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
  function reports_graph_image($report, $item, $timespan, $output, $theme = 'classic') {
  	global $config;
 
-	$out = ''; 	
+	$out = '';
 	if ($output == REPORTS_OUTPUT_STDOUT) {
 		$out = "<img class='image' alt='' src='" . htmlspecialchars($config['url_path'] . 'graph_image.php' .
 			'?graph_width=' . $report['graph_width'] .
 			'&graph_height=' . $report['graph_height'] .
-			'&graph_nolegend=' . ($report['thumbnails'] == 'on' ? 'true':'') .
+			($report['thumbnails'] == 'on' ? '&graph_nolegend=true':'') .
 			'&local_graph_id=' . $item['local_graph_id'] .
 			'&graph_start=' . $timespan['begin_now'] .
 			'&graph_end=' . $timespan['end_now'] .
 			'&graph_theme=' . $theme .
-			'&image_format=png' . 
+			'&image_format=png' .
 			'&rra_id=0') . "'>";
 	} else {
 		$out = '<GRAPH:' . $item['local_graph_id'] . ':' . $item['timespan'] . '>';
@@ -808,29 +814,29 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 	# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
 	get_timespan($timespan, $time, $item['timespan'], $first_weekdayid);
 
-	if (empty($tree_id)) { 
-		return; 
+	if (empty($tree_id)) {
+		return;
 	}
 
-	$device_id = db_fetch_cell_prepared('SELECT host_id 
-		FROM graph_tree_items 
+	$device_id = db_fetch_cell_prepared('SELECT host_id
+		FROM graph_tree_items
 		WHERE id = ?
-		AND graph_tree_id = ?', 
+		AND graph_tree_id = ?',
 		array($parent, $tree_id));
 
 	$outstr = '';
 
 	if ($device_id == 0) {
-		$leaves = db_fetch_assoc_prepared('SELECT * 
-			FROM graph_tree_items 
-			WHERE graph_tree_id = ? 
-			AND parent = ?', 
+		$leaves = db_fetch_assoc_prepared('SELECT *
+			FROM graph_tree_items
+			WHERE graph_tree_id = ?
+			AND parent = ?',
 			array($tree_id, $parent));
 	} elseif (is_device_allowed($device_id, $user)) {
-		$leaves = db_fetch_assoc_prepared('SELECT * 
-			FROM graph_tree_items 
-			WHERE graph_tree_id = ? 
-			AND id = ?', 
+		$leaves = db_fetch_assoc_prepared('SELECT *
+			FROM graph_tree_items
+			WHERE graph_tree_id = ?
+			AND id = ?',
 			array($tree_id, $parent));
 	} else{
 		$leaves = array();
@@ -859,47 +865,55 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 			}
 
 			/* get information for the headers */
-			if (!empty($tree_id)) { 
-				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($tree_id));
+			if (!empty($tree_id)) {
+				$tree_name = db_fetch_cell_prepared('SELECT name
+					FROM graph_tree
+					WHERE id = ?',
+					array($tree_id));
 			}
 
-			if (!empty($parent)) { 
-				$leaf_name = db_fetch_cell_prepared('SELECT title FROM graph_tree_items WHERE id = ?', array($parent));
+			if (!empty($parent)) {
+				$leaf_name = db_fetch_cell_prepared('SELECT title
+					FROM graph_tree_items
+					WHERE id = ?',
+					array($parent));
 			}
 
-			if (!empty($leaf_id)) { 
-				$host_name = db_fetch_cell_prepared('SELECT h.description 
+			if (!empty($leaf_id)) {
+				$host_name = db_fetch_cell_prepared('SELECT h.description
 					FROM graph_tree_items AS gti
 					INNER JOIN host AS h
-					ON h.id = gti.host_id 
-					WHERE gti.id = ?', array($leaf_id));
+					ON h.id = gti.host_id
+					WHERE gti.id = ?',
+					array($leaf_id));
 			}
 
 			if ($leaf_type == 'graph') {
-				$graph_name = db_fetch_cell_prepared('SELECT 
+				$graph_name = db_fetch_cell_prepared('SELECT
 					gtg.title_cache AS title
 					FROM graph_templates_graph AS gtg
-					WHERE gtg.local_graph_id = ?', array($leaf['local_graph_id']));
+					WHERE gtg.local_graph_id = ?',
+					array($leaf['local_graph_id']));
 			}
 
 			//if (!empty($tree_name) && empty($leaf_name) && empty($host_name) && !$nested) {
 			if (!empty($tree_name) && empty($leaf_name) && empty($host_name)) {
-				$title = $title_delimeter . '<strong>' . __('Tree:') . "</strong> $tree_name"; 
+				$title = $title_delimeter . '<strong>' . __('Tree:') . "</strong> $tree_name";
 				$title_delimeter = '-> ';
 			}
 
 			if (!empty($leaf_name)) {
-				$title .= $title_delimeter . '<strong>' . __('Leaf:') . "</strong> $leaf_name"; 
+				$title .= $title_delimeter . '<strong>' . __('Leaf:') . "</strong> $leaf_name";
 				$title_delimeter = '-> ';
 			}
 
 			if (!empty($host_name)) {
-				$title .= $title_delimeter . '<strong>' . __('Host:') . "</strong> $host_name"; 
+				$title .= $title_delimeter . '<strong>' . __('Host:') . "</strong> $host_name";
 				$title_delimeter = '-> ';
 			}
 
 			if (!empty($graph_name)) {
-				$title .= $title_delimeter . '<strong>' . __('Graph:') . "</strong> $graph_name"; 
+				$title .= $title_delimeter . '<strong>' . __('Graph:') . "</strong> $graph_name";
 				$title_delimeter = '-> ';
 			}
 
@@ -951,8 +965,8 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
 				}
 
-				$graph = db_fetch_cell("SELECT count(*) 
-					FROM graph_templates_graph 
+				$graph = db_fetch_cell("SELECT count(*)
+					FROM graph_templates_graph
 					WHERE local_graph_id=" . $leaf['local_graph_id'] . $gr_where);
 
 				/* start graph display */
@@ -984,7 +998,8 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 							INNER JOIN graph_templates_graph AS gtg
 							ON gtg.local_graph_id=gl.id
 							WHERE gl.host_id = ?
-							ORDER BY gt.name', array($leaf['host_id'])), 
+							ORDER BY gt.name',
+							array($leaf['host_id'])),
 						'id', 'name'
 					);
 
@@ -997,7 +1012,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 					}
 
 					/* for graphs without a template */
-					array_push($graph_templates, 
+					array_push($graph_templates,
 						array(
 							'id' => '0',
 							'name' => __('(No Graph Template)')
@@ -1054,12 +1069,12 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 						INNER JOIN snmp_query AS sq
 						ON gl.snmp_query_id=sq.id
 						WHERE gl.host_id = ?
-						ORDER BY sq.name', 
+						ORDER BY sq.name',
 						array($leaf['host_id']));
 
 					/* for graphs without a data query */
 					if (empty($data_query_id)) {
-						array_push($data_queries, 
+						array_push($data_queries,
 							array(
 								'id' => '0',
 								'name' => 'Non Query Based'
@@ -1074,7 +1089,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 							$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
 
 							/* grab a list of all graphs for this host/data query combination */
-							$graphs = db_fetch_assoc('SELECT 
+							$graphs = db_fetch_assoc('SELECT
 								gtg.title_cache, gtg.local_graph_id, gl.snmp_index
 								FROM graph_local AS gl
 								INNER JOIN graph_templates_graph AS gtg
@@ -1440,10 +1455,11 @@ function reports_graphs_action_prepare($save) {
 				<p>" . __('Choose the Report to associate these graphs with.  The defaults for alignment will be used for each graph in the list below.') . "</p>
 				<p>" . $save['graph_list'] . "</p>
 				<p>" . __('Report:') . "<br>";
+
 				form_dropdown('reports_id', db_fetch_assoc_prepared('SELECT reports.id, reports.name
 					FROM reports
 					WHERE user_id = ?
-					ORDER by name', 
+					ORDER by name',
 					array($_SESSION['sess_user_id'])), 'name', 'id', '', '', '0');
 
 				echo '<br><p>' . __('Graph Timespan:') . '<br>';
@@ -1483,7 +1499,10 @@ function reports_graphs_action_execute($action) {
 				get_filter_request_var('timespan');
 				get_filter_request_var('alignment');
 
-				$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?',  array($reports_id));
+				$report = db_fetch_row_prepared('SELECT *
+					FROM reports
+					WHERE id = ?',
+					array($reports_id));
 
 				foreach($selected_items as $local_graph_id) {
 					/* see if the graph is already added */
@@ -1491,23 +1510,27 @@ function reports_graphs_action_execute($action) {
 						FROM reports_items
 						WHERE local_graph_id = ?
 						AND report_id = ?
-						AND timespan = ?', 
+						AND timespan = ?',
 						array($local_graph_id, $reports_id, get_nfilter_request_var('timespan')));
 
 					if (!$existing) {
 						$sequence = db_fetch_cell_prepared('SELECT max(sequence)
 							FROM reports_items
-							WHERE report_id = ?', array($reports_id));
+							WHERE report_id = ?',
+							array($reports_id));
+
 						$sequence++;
 
 						$graph_data = db_fetch_row_prepared('SELECT *
 							FROM graph_local
-							WHERE id = ?', array($local_graph_id));
+							WHERE id = ?',
+							array($local_graph_id));
 
 						if ($graph_data['host_id']) {
 							$host_template = db_fetch_cell_prepared('SELECT host_template_id
 								FROM host
-								WHERE id = ?', array($graph_data['host_id']));
+								WHERE id = ?',
+								array($graph_data['host_id']));
 						} else {
 							$host_template = 0;
 						}

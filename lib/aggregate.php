@@ -27,10 +27,19 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 
 	aggregate_prune_graphs($local_graph_id);
 
-	$aggregate_data = db_fetch_row_prepared('SELECT * FROM aggregate_graphs WHERE local_graph_id = ?', array($local_graph_id));
+	$aggregate_data = db_fetch_row_prepared('SELECT *
+		FROM aggregate_graphs
+		WHERE local_graph_id = ?',
+		array($local_graph_id));
 
 	if (sizeof($aggregate_data)) {
-		$local_graph_ids = array_rekey(db_fetch_assoc_prepared('SELECT local_graph_id FROM aggregate_graphs_items WHERE aggregate_graph_id = ?', array($aggregate_data['id'])), 'local_graph_id', 'local_graph_id');
+		$local_graph_ids = array_rekey(
+			db_fetch_assoc_prepared('SELECT local_graph_id
+				FROM aggregate_graphs_items
+				WHERE aggregate_graph_id = ?',
+				array($aggregate_data['id'])
+			), 'local_graph_id', 'local_graph_id'
+		);
 
 		if (sizeof($local_graph_ids)) {
 			$graph_select = 'graph_add=';
@@ -46,7 +55,10 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 
 function api_aggregate_convert_template($graphs) {
 	$aggregate_template_id = get_nfilter_request_var('aggregate_template_id');
-	$aggregate_template    = db_fetch_row_prepared('SELECT * FROM aggregate_graph_templates WHERE id = ?', array($aggregate_template_id));
+	$aggregate_template    = db_fetch_row_prepared('SELECT *
+		FROM aggregate_graph_templates
+		WHERE id = ?',
+		array($aggregate_template_id));
 
 	foreach($graphs as $graph) {
 		$save['id']                    = '';
@@ -61,13 +73,22 @@ function api_aggregate_convert_template($graphs) {
 		$save['total_type']            = $aggregate_template['total_type'];
 		$save['total_prefix']          = $aggregate_template['total_prefix'];
 		$save['order_type']            = $aggregate_template['order_type'];
+
 		$id = sql_save($save, 'aggregate_graphs');
 
-		$task_items = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT task_item_id FROM graph_templates_item WHERE local_graph_id = ?', array($graph)), 'task_item_id', 'task_item_id');
+		$task_items = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT task_item_id
+				FROM graph_templates_item
+				WHERE local_graph_id = ?
+				ORDER BY sequence',
+				array($graph)
+			), 'task_item_id', 'task_item_id'
+		);
+
 		$task_items = implode(',', $task_items);
-		$member_graphs = array_rekey(db_fetch_assoc("SELECT DISTINCT local_graph_id 
+		$member_graphs = array_rekey(db_fetch_assoc("SELECT DISTINCT local_graph_id
 			FROM graph_templates_item
-			WHERE task_item_id IN ($task_items) 
+			WHERE task_item_id IN ($task_items)
 			AND graph_template_id>0"), 'local_graph_id', 'local_graph_id');
 
 		$sequence = 1;
@@ -75,7 +96,7 @@ function api_aggregate_convert_template($graphs) {
 		foreach($member_graphs as $mg) {
 			db_execute_prepared('REPLACE INTO aggregate_graphs_items
 				(aggregate_graph_id, local_graph_id, sequence)
-				VALUES (?, ?, ?)', 
+				VALUES (?, ?, ?)',
 				array($id, $mg, $sequence));
 			$sequence++;
 		}
@@ -86,13 +107,29 @@ function api_aggregate_convert_template($graphs) {
 
 function api_aggregate_associate($graphs) {
 	$local_graph_id     = get_nfilter_request_var('local_graph_id');
-	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id FROM aggregate_graphs WHERE local_graph_id = ?', array($local_graph_id));
-	$aggregate_id       = db_fetch_cell_prepared('SELECT id FROM aggregate_graphs WHERE local_graph_id = ?', array($local_graph_id));
-	$max_sequence       = db_fetch_cell_prepared('SELECT MAX(sequence) FROM aggregate_graphs_items WHERE aggregate_graph_id = ?', array($aggregate_id));
+	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id
+		FROM aggregate_graphs
+		WHERE local_graph_id = ?',
+		array($local_graph_id));
+
+	$aggregate_id = db_fetch_cell_prepared('SELECT id
+		FROM aggregate_graphs
+		WHERE local_graph_id = ?',
+		array($local_graph_id));
+
+	$max_sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
+		FROM aggregate_graphs_items
+		WHERE aggregate_graph_id = ?',
+		array($aggregate_id));
+
 	if ($max_sequence == '') $max_sequence = 1;
 
 	foreach($graphs as $graph) {
-		db_execute_prepared('REPLACE INTO aggregate_graphs_items (aggregate_graph_id, local_graph_id, sequence) VALUES (?, ?, ?)', array($aggregate_id, $graph, $max_sequence));
+		db_execute_prepared('REPLACE INTO aggregate_graphs_items
+			(aggregate_graph_id, local_graph_id, sequence)
+			VALUES (?, ?, ?)',
+			array($aggregate_id, $graph, $max_sequence));
+
 		$max_sequence++;
 	}
 
@@ -105,11 +142,22 @@ function api_aggregate_associate($graphs) {
 
 function api_aggregate_disassociate($graphs) {
 	$local_graph_id     = get_nfilter_request_var('local_graph_id');
-	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id FROM aggregate_graphs WHERE local_graph_id = ?', array($local_graph_id));
-	$aggregate_id       = db_fetch_cell_prepared('SELECT id FROM aggregate_graphs WHERE local_graph_id = ?', array($local_graph_id));
+
+	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id
+		FROM aggregate_graphs
+		WHERE local_graph_id = ?',
+		array($local_graph_id));
+
+	$aggregate_id = db_fetch_cell_prepared('SELECT id
+		FROM aggregate_graphs
+		WHERE local_graph_id = ?',
+		array($local_graph_id));
 
 	foreach($graphs as $graph) {
-		db_execute_prepared('DELETE FROM aggregate_graphs_items WHERE aggregate_graph_id = ? AND local_graph_id = ?', array($aggregate_id, $graph));
+		db_execute_prepared('DELETE FROM aggregate_graphs_items
+			WHERE aggregate_graph_id = ?
+			AND local_graph_id = ?',
+			array($aggregate_id, $graph));
 	}
 
 	push_out_aggregates($aggregate_template, $local_graph_id);
@@ -122,20 +170,27 @@ function api_aggregate_disassociate($graphs) {
 function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 	/* get the first aggregate graph */
 	if ($agg_template_id == 0) {
-		$agg_template = db_fetch_row_prepared('SELECT * FROM aggregate_graphs WHERE local_graph_id = ?', array($graphs[0]));
+		$agg_template = db_fetch_row_prepared('SELECT *
+			FROM aggregate_graphs
+			WHERE local_graph_id = ?',
+			array($graphs[0]));
 
 		/* get graph items */
-		$graph_items = db_fetch_assoc('SELECT DISTINCT local_graph_id 
-			FROM aggregate_graphs_items 
+		$graph_items = db_fetch_assoc('SELECT DISTINCT local_graph_id
+			FROM aggregate_graphs_items
 			WHERE aggregate_graph_id IN(
-				SELECT id 
-				FROM aggregate_graphs 
+				SELECT id
+				FROM aggregate_graphs
 				WHERE ' . array_to_sql_or($graphs, 'local_graph_id') . ')');
 	} else {
-		$agg_template = db_fetch_row_prepared('SELECT * FROM aggregate_graph_templates WHERE id = ?', array($agg_template_id));
+		$agg_template = db_fetch_row_prepared('SELECT *
+			FROM aggregate_graph_templates
+			WHERE id = ?',
+			array($agg_template_id));
 
 		/* unset when dealing with a template */
 		unset($agg_template['name']);
+
 		$agg_template['aggregate_template_id'] = $agg_template_id;
 		$agg_template['template_propogation']  = 'on';
 
@@ -146,10 +201,14 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 	}
 
 	if (sizeof($agg_template)) {
-
 		/* create new graph in cacti tables */
-		$graph_template_graph = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array($graphs[0]));
+		$graph_template_graph = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_graph
+			WHERE local_graph_id = ?',
+			array($graphs[0]));
+
 		$graph_template_id = $graph_template_graph['graph_template_id'];
+
 		$local_graph_id = aggregate_graph_save(0, $graph_template_id, $aggregate_name, $agg_template_id);
 
 		/* create new graph in aggregate table */
@@ -169,7 +228,7 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 				$aggs++;
 			}
 
-			db_execute("INSERT INTO aggregate_graphs_items 
+			db_execute("INSERT INTO aggregate_graphs_items
 				(aggregate_graph_id, local_graph_id, sequence) VALUES $sql");
 		}
 
@@ -193,8 +252,10 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
  */
 function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	$errno = $errno & error_reporting();
+
 	# return if error handling disabled by @
 	if($errno == 0) return;
+
 	# define constants not available with PHP 4
 	if(!defined('E_STRICT'))            define('E_STRICT', 2048);
 	if(!defined('E_RECOVERABLE_ERROR')) define('E_RECOVERABLE_ERROR', 4096);
@@ -243,6 +304,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 
 /**
  * get_next_sequence 			- returns the next available sequence id
+ *
  * @param int $id 				- the current id
  * @param string $field 		- the field name that contains the target id
  * @param string $table_name 	- the table name that contains the target id
@@ -251,6 +313,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
  */
 function get_next_sequence($id, $field, $table_name, $group_query, $key_field='id') {
 	cacti_log(__FUNCTION__ . '  called. Id: ' . $id . ' field: ' . $field . ' table: ' . $table_name, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+
 	if (empty($id)) {
 		$data = db_fetch_row("SELECT max($field)+1 AS seq FROM $table_name WHERE $group_query");
 
@@ -277,8 +340,8 @@ function aggregate_is_pure_stacked_graph($_local_graph_id) {
 
 	if (!empty($_local_graph_id)) {
 		# fetch all AREA graph items
-		$_count = db_fetch_cell_prepared('SELECT COUNT(id) 
-			FROM graph_templates_item 
+		$_count = db_fetch_cell_prepared('SELECT COUNT(id)
+			FROM graph_templates_item
 			WHERE graph_templates_item.local_graph_id = ?
 			AND graph_templates_item.graph_type_id IN (?, ?, ?, ?)',
 			array($_local_graph_id, GRAPH_ITEM_TYPE_AREA, GRAPH_ITEM_TYPE_LINE1, GRAPH_ITEM_TYPE_LINE2, GRAPH_ITEM_TYPE_LINE3));
@@ -308,10 +371,10 @@ function aggregate_is_stacked_graph($_local_graph_id) {
 
 	if (!empty($_local_graph_id)) {
 		# fetch all AREA graph items
-		$_count = db_fetch_cell_prepared('SELECT COUNT(id) 
-			FROM graph_templates_item 
+		$_count = db_fetch_cell_prepared('SELECT COUNT(id)
+			FROM graph_templates_item
 			WHERE graph_templates_item.local_graph_id = ?
-			AND graph_templates_item.graph_type_id = ?', 
+			AND graph_templates_item.graph_type_id = ?',
 			array($_local_graph_id, GRAPH_ITEM_TYPE_STACK));
 
 		cacti_log(__FUNCTION__ . ' #AREA/LINEx items: ' . $_count, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -399,16 +462,18 @@ function aggregate_conditional_convert_graph_type($_graph_id, $_old_type, $_new_
 
 	if (!empty($_graph_id) && !empty($_old_type)) {
 		/* fetch the first item of requested graph_type */
-		$_graph_item_id = db_fetch_cell_prepared('SELECT id FROM graph_templates_item 
-			WHERE graph_templates_item.local_graph_id = ?
-			AND graph_templates_item.graph_type_id = ? 
-			ORDER BY sequence LIMIT 1', 
+		$_graph_item_id = db_fetch_cell_prepared('SELECT id
+			FROM graph_templates_item AS gti
+			WHERE gti.local_graph_id = ?
+			AND gti.graph_type_id = ?
+			ORDER BY sequence
+			LIMIT 1',
 			array($_graph_id, $_old_type));
 
 		/* and update it to the new graph_type */
-		db_execute_prepared('UPDATE graph_templates_item 
-			SET graph_templates_item.graph_type_id = ? 
-			WHERE graph_templates_item.id = ?', 
+		db_execute_prepared('UPDATE graph_templates_item
+			SET graph_templates_item.graph_type_id = ?
+			WHERE graph_templates_item.id = ?',
 			array($_new_type, $_graph_item_id));
 	}
 }
@@ -445,11 +510,11 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 			 * any AREA/STACKed graph needs a base AREA entry
 			 * but e.g. a graph that prints on both negative and positive y-axis may hold two AREAs
 			 * so it's a good idea to keep all AREA entries of the first aggregated elementary graph (index 0)*/
-			if ($graph_index == 0 && $item_index == 1 && 
-				($old_graph_type == GRAPH_ITEM_TYPE_STACK || 
-				$old_graph_type == GRAPH_ITEM_TYPE_LINESTACK || 
-				$old_graph_type == GRAPH_ITEM_TYPE_LINE1 || 
-				$old_graph_type == GRAPH_ITEM_TYPE_LINE2 || 
+			if ($graph_index == 0 && $item_index == 1 &&
+				($old_graph_type == GRAPH_ITEM_TYPE_STACK ||
+				$old_graph_type == GRAPH_ITEM_TYPE_LINESTACK ||
+				$old_graph_type == GRAPH_ITEM_TYPE_LINE1 ||
+				$old_graph_type == GRAPH_ITEM_TYPE_LINE2 ||
 				$old_graph_type == GRAPH_ITEM_TYPE_LINE3)) {
 				/* if the graph type is a stack and the item is 1, it must be converted to area */
 				return GRAPH_ITEM_TYPE_AREA;
@@ -493,7 +558,6 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 	}
 }
 
-
 /**
  * duplicate_color_template				- duplicate color template
  *
@@ -504,10 +568,16 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 	cacti_log(__FUNCTION__ . ' called. Color Template Id: ' . $_color_template_id . ' Title: ' . $color_template_title, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	/* fetch data from table color_templates */
-	$color_template = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array($_color_template_id));
+	$color_template = db_fetch_row_prepared('SELECT *
+		FROM color_templates
+		WHERE color_template_id = ?',
+		array($_color_template_id));
 
 	/* fetch data from table color_template_items */
-	$color_template_items = db_fetch_assoc_prepared('SELECT * FROM color_template_items WHERE color_template_id = ?', array($_color_template_id));
+	$color_template_items = db_fetch_assoc_prepared('SELECT *
+		FROM color_template_items
+		WHERE color_template_id = ?',
+		array($_color_template_id));
 
 	/* create new entry: color_templates */
 	$save['color_template_id'] = 0;
@@ -551,7 +621,11 @@ function aggregate_cdef_make0() {
 	$magic   = '_MAKE 0';
 
 	# search the 'magic' cdef
-	$cdef_id = db_fetch_cell_prepared('SELECT id FROM cdef WHERE name = ?', array($magic));
+	$cdef_id = db_fetch_cell_prepared('SELECT id
+		FROM cdef
+		WHERE name = ?',
+		array($magic));
+
 	if (isset($cdef_id) && $cdef_id > 0) {
 		return $cdef_id;	# hoping, that nobody changed the cdef_items!
 	}
@@ -599,7 +673,11 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 
 	# take graph item data for the totalling items
 	if (!empty($_new_graph_id)) {
-		$sql = "SELECT id, cdef_id FROM graph_templates_item WHERE local_graph_id=$_new_graph_id AND sequence>=$_graph_item_sequence ORDER BY sequence";
+		$sql = "SELECT id, cdef_id
+			FROM graph_templates_item
+			WHERE local_graph_id=$_new_graph_id
+			AND sequence>=$_graph_item_sequence
+			ORDER BY sequence";
 
 		cacti_log('sql: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -708,7 +786,9 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 			}
 
 			# now that we have a new cdef id, update record accordingly
-			$sql = "UPDATE graph_templates_item SET cdef_id=$new_cdef_id WHERE id=" . $graph_template_item["id"];
+			$sql = "UPDATE graph_templates_item
+				SET cdef_id=$new_cdef_id
+				WHERE id=" . $graph_template_item["id"];
 
 			cacti_log(__FUNCTION__ . ' sql: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -753,7 +833,10 @@ function auto_title($_local_graph_id) {
 
 	# apply given graph title, but drop host and query variables
 	$graph_title = 'Aggregate ';
-	$graph_title .= db_fetch_cell_prepared('SELECT title FROM graph_templates_graph WHERE local_graph_id = ?', array($_local_graph_id));
+	$graph_title .= db_fetch_cell_prepared('SELECT title
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
+		array($_local_graph_id));
 
 	cacti_log('title:' . $graph_title, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -779,11 +862,22 @@ function api_aggregate_remove_multi($graphs) {
 
 	if (sizeof($graphs)) {
 		foreach($graphs as $graph) {
-			$ag = db_fetch_cell_prepared('SELECT id FROM aggregate_graphs WHERE local_graph_id = ?', array($graph));
+			$ag = db_fetch_cell_prepared('SELECT id
+				FROM aggregate_graphs
+				WHERE local_graph_id = ?',
+				array($graph));
 
-			db_execute_prepared('DELETE FROM aggregate_graphs WHERE local_graph_id = ?', array($graph));
-			db_execute_prepared('DELETE FROM aggregate_graphs_items WHERE aggregate_graph_id = ?', array($ag));
-			db_execute_prepared('DELETE FROM aggregate_graphs_graph_item WHERE aggregate_graph_id = ?', array($ag));
+			db_execute_prepared('DELETE FROM aggregate_graphs
+				WHERE local_graph_id = ?',
+				array($graph));
+
+			db_execute_prepared('DELETE FROM aggregate_graphs_items
+				WHERE aggregate_graph_id = ?',
+				array($ag));
+
+			db_execute_prepared('DELETE FROM aggregate_graphs_graph_item
+				WHERE aggregate_graph_id = ?',
+				array($ag));
 		}
 
 		api_graph_remove_multi($graphs);
@@ -801,7 +895,7 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	}
 
 	// Phase 1 Aggregate Graphs
-	$pruneme = db_fetch_assoc("SELECT 
+	$pruneme = db_fetch_assoc("SELECT
 		pagi.aggregate_graph_id,
 		pagi.local_graph_id
 		FROM aggregate_graphs_items AS pagi
@@ -816,13 +910,16 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	}
 
 	if (sizeof($local_graph_ids)) {
-		db_execute('DELETE FROM aggregate_graphs_items 
+		db_execute('DELETE FROM aggregate_graphs_items
 			WHERE local_graph_id IN (' . implode(',', $local_graph_ids) . ')');
 	}
 
 	if (sizeof($aggregate_graphs) || $local_graph_id > 0) {
 		if ($local_graph_id > 0) {
-			$agg_graph = db_fetch_cell_prepared('SELECT id FROM aggregate_graphs WHERE local_graph_id = ?', array($local_graph_id));
+			$agg_graph = db_fetch_cell_prepared('SELECT id
+				FROM aggregate_graphs
+				WHERE local_graph_id = ?',
+				array($local_graph_id));
 
 			if (!empty($agg_graph)) {
 				$aggregate_graphs[$agg_graph] = $agg_graph;
@@ -831,18 +928,22 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 
 		// Phase 2 - Graphs based upon aggregates
 		foreach($aggregate_graphs as $a) {
-			$graph_id = db_fetch_cell_prepared('SELECT local_graph_id FROM aggregate_graphs WHERE id = ?', array($a));
+			$graph_id = db_fetch_cell_prepared('SELECT local_graph_id
+				FROM aggregate_graphs
+				WHERE id = ?',
+				array($a));
 
-			$bad_graph_items = array_rekey(db_fetch_assoc_prepared('SELECT gti.id 
+			$bad_graph_items = array_rekey(db_fetch_assoc_prepared('SELECT gti.id
 				FROM graph_templates_item AS gti
 				LEFT JOIN data_template_rrd AS dtr
-				ON gti.task_item_id=dtr.id 
+				ON gti.task_item_id=dtr.id
 				WHERE gti.local_graph_id = ?
 				AND dtr.id IS NULL
 				AND gti.graph_type_id IN (4,5,6,7,8,9)', array($graph_id)), 'id', 'id');
 
 			if (sizeof($bad_graph_items)) {
-				db_execute('DELETE FROM graph_templates_item WHERE id IN (' . implode(',',$bad_graph_items) . ')');
+				db_execute('DELETE FROM graph_templates_item
+					WHERE id IN (' . implode(',', $bad_graph_items) . ')');
 			}
 		}
 	}

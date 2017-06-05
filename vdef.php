@@ -343,16 +343,16 @@ function vdef_item_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#cdialog').dialog();
-	});
 
-	$('#continue').click(function(data) {
-		$.post('vdef.php?action=item_remove', { 
-			__csrf_magic: csrfMagicToken, 
-			vdef_id: <?php print get_request_var('vdef_id');?>, 
-			id: <?php print get_request_var('id');?> 
-		}, function(data) {
-			$('#cdialog').dialog('close');
-			loadPageNoHeader('vdef.php?action=edit&header=false&id=<?php print get_request_var('id');?>');
+		$('#continue').click(function(data) {
+			$.post('vdef.php?action=item_remove', { 
+				__csrf_magic: csrfMagicToken, 
+				vdef_id: <?php print get_request_var('vdef_id');?>, 
+				id: <?php print get_request_var('id');?> 
+			}, function(data) {
+				$('#cdialog').dialog('close');
+				loadPageNoHeader('vdef.php?action=edit&header=false&id=<?php print get_request_var('id');?>');
+			});
 		});
 	});
 	</script>

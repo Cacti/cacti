@@ -37,44 +37,6 @@ function themeReady() {
 		}).appendTo($('#'+id+'-button'));
 	});
 
-	$.ui.selectmenu.prototype._renderItem = function(ui, item) {
-		if (item.element.closest('select').hasClass('colordropdown')) {
-			if (item.label != 'None') {
-				var li = $("<li>", { text: item.label });
-
-				$('<span>', {
-					style: item.element.attr('data-style'),
-					'class': 'ui-icon color-icon'
-				}).appendTo(li);
-			}else{
-				var li = $("<li>", { text: item.label });
-			}
-		}else if (item.element.closest('select').hasClass('iconselect')) {
-			var li = $('<li>', { text: item.label });
-
-			if (item.disabled) {
-				li.addClass('ui-state-disabled');
-			}
-
-			$('<span>', {
-				style: item.element.attr('data-style'),
-				'class': 'ui-icon ' + item.element.attr('data-class')
-			}).appendTo(li);
-
-			return li.appendTo(ui);
-		}else{
-			var li = $("<li>");
-
-			this._setText(li, item.label);
-		}
-
-		if (item.disabled) {
-			li.addClass("ui-state-disabled");
-		}
-
-		return li.appendTo(ui);
-	}
-
 	$('.checkboxgroup').children('br').remove();
 	$('.checkboxgroup').buttonset();
 
@@ -84,7 +46,7 @@ function themeReady() {
 		text=this.value;
 		setImportFile(text);
 	});
-	setImportFile('No file selected');
+	setImportFile(noFileSelected);
 
 	function setImportFile(fileText) {
 		$('.import_text').html(fileText);
@@ -92,7 +54,9 @@ function themeReady() {
 
 	maxWidth = 280;
 
-	$('select').each(function() {
+	$('select.colordropdown').dropcolor();
+
+	$('select').not('.colordropdown').each(function() {
 		if ($(this).prop('multiple') != true) {
 			$(this).selectmenu({
 				change: function(event, ui) {
@@ -323,7 +287,7 @@ function setMenuVisibility() {
 		$('li.menuitem').not('#'+id).each(function() {
 			text = $(this).attr('id');
 			id   = $(this).attr('id');
-			
+
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).find('ul').slideUp( { duration: 200, easing: 'swing' } );
 			storage.set($(this).attr('id'), 'collapsed');

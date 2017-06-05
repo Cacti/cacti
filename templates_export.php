@@ -60,7 +60,7 @@ function form_save() {
 		if (get_nfilter_request_var('output_format') == '1') {
 			top_header();
 
-			print "<table style='width:100%;' class='center'><tr><td><pre>" . htmlspecialchars($xml_data) . '</pre></td></tr></table>';
+			print "<table style='width:100%;' class='center'><tr><td style='text-align:left;'><pre>" . htmlspecialchars($xml_data) . '</pre></td></tr></table>';
 
 			bottom_footer();
 		} elseif (get_nfilter_request_var('output_format') == '2') {
@@ -92,10 +92,11 @@ function export() {
 	}
 
 	html_start_box( __('Export Templates'), '100%', '', '3', 'center', '');
+
 	?>
 	<tr class='tableRow'>
 		<td>
-			<form name='form_graph_id' action='templates_export.php'>
+			<form id='form_export' action='templates_export.php'>
 				<table>
 					<tr>
 						<td style='font-size:1.2em;'><?php print __('What would you like to export?');?></td>
@@ -168,6 +169,6 @@ function export() {
 
 	html_end_box();
 
-	form_save_button('', 'export');
+	form_save_button('', 'export', '', false);
 }
 

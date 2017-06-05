@@ -93,7 +93,7 @@ if ($old_cacti_version == 'new_install') {
 /* pre-processing that needs to be done for each step */
 if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 	$step = get_filter_request_var('step');
-	
+
 	switch($step) {
 	case '1':
 		/* license&welcome - send to checkdependencies */
@@ -104,7 +104,7 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 	case '2':
 		$previous_step = 1;
 
-		/* checkdependencies - send to install/upgrade */	
+		/* checkdependencies - send to install/upgrade */
 		$step++;
 
 		break;
@@ -176,7 +176,7 @@ if ($step == '7') {
 	include_once('../lib/utility.php');
 	include_once('../lib/import.php');
 	include_once('../lib/api_automation.php');
-	
+
 	/* look for templates that have been checked for install */
 	if (get_request_var('install_type') == 1) {
 		$install = Array();
@@ -246,12 +246,12 @@ if ($step == '7') {
 			cacti_log('WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server.');
 		}
 	}
-	
+
 	if (get_request_var('install_type') == 2) {
 		global $local_db_cnn_id;
 
 		$success = remote_update_config_file();
-	
+
 		/* change cacti version */
 		db_execute('DELETE FROM version', true, $local_db_cnn_id);
 		db_execute("INSERT INTO version (cacti) VALUES ('" . CACTI_VERSION . "')", true, $local_db_cnn_id);
@@ -274,11 +274,11 @@ if ($step == '7') {
 
 			/* fill up the snmpcache */
 			snmpagent_cache_rebuilt();
-		
+
 			/* generate RSA key pair */
 			rsa_check_keypair();
 		}
-	
+
 		/* change cacti version */
 		db_execute('DELETE FROM version');
 		db_execute("INSERT INTO version (cacti) VALUES ('" . CACTI_VERSION . "')");
@@ -296,9 +296,8 @@ if ($step == '7') {
 
 /* upgrade */
 } elseif (($step == '8') && (get_filter_request_var('install_type') == '3')) {
-
 	// if the version is not found, die
-	if (! array_key_exists($old_cacti_version, $cacti_version_codes)) {
+	if (!array_key_exists($old_cacti_version, $cacti_version_codes)) {
 		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __('Error') . "</p>
 			<p style='font-family: Verdana, Arial; font-size: 12px;'>"
 			. __('Invalid Cacti version <strong>%1$s</strong>, cannot upgrade to <strong>%2$s</strong>', $old_cacti_version, CACTI_VERSION) . "</p>";
@@ -307,9 +306,8 @@ if ($step == '7') {
 
 	// loop through versions from old version to the current, performing updates for each version in the chain
 	foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
-
 		// skip versions old than the database version
-		if (version_compare($old_cacti_version, $cacti_upgrade_version, '>=')) {
+		if (cacti_version_compare($old_cacti_version, $cacti_upgrade_version, '>=')) {
 			continue;
 		}
 
@@ -343,6 +341,21 @@ if (isset_request_var('database_hostname')) {
 	$_SESSION['database_password'] = get_nfilter_request_var('database_password');
 	$_SESSION['database_port']     = get_filter_request_var('database_port');
 	$_SESSION['database_ssl']      = isset_request_var('database_ssl') ? true:false;
+}
+
+if (isset($rdatabase_default) &&
+	isset($rdatabase_username) &&
+	isset($rdatabase_hostname) &&
+	isset($rdatabase_port)) {
+	$remote_good = true;
+} else {
+	$remote_good = false;
+}
+
+if (is_writable($config['base_path'] . '/include/config.php')) {
+	$good_write = true;
+} else {
+	$good_write = false;
 }
 
 $enabled = '1';
@@ -411,8 +424,8 @@ $enabled = '1';
 				</tr>
 				<tr class='installArea'>
 					<td>
-						
-					<?php	
+
+					<?php
 					/* license&welcome */
 					if ($step == '1') {
 						print '<h2>' . __('License Agreement') . '</h2>';
@@ -422,18 +435,12 @@ $enabled = '1';
 						print '<p>' . __('Also, if this is an upgrade, be sure to reading the <a href="%s">Upgrade</a> information file.', '../docs/html/upgrade.html') . '</p>';
 						print '<p>' . __('Cacti is licensed under the GNU General Public License, you must agree to its provisions before continuing:') . "</p>";
 					?>
-						<p class='code'>This program is free software; you can redistribute it and/or
-						modify it under the terms of the GNU General Public License
-						as published by the Free Software Foundation; either version 2
-						of the License, or (at your option) any later version.</p>
+						<p class='code'><?php print __('This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.');?></p>
 
-						<p class='code'>This program is distributed in the hope that it will be useful,
-						but WITHOUT ANY WARRANTY; without even the implied warranty of
-						MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-						GNU General Public License for more details.</p>
+						<p class='code'><?php print __('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.');?></p>
 
-						<span><input type='checkbox' id='accept' name='accept'></span><span><label for='accept'>Accept GPL License Agreement</label></span><br><br>
-					<?php 	
+						<span><input type='checkbox' id='accept' name='accept'></span><span><label for='accept'><?php print __('Accept GPL License Agreement');?></label></span><br><br>
+					<?php
 					/* checkdependencies */
 					} elseif ($step == '2') {
 						$enabled = '1';
@@ -464,7 +471,7 @@ $enabled = '1';
 
 						html_start_box('<strong> ' . __('Required PHP Modules') . '</strong>', '30', 0, '', '', false);
 						html_header( array( __('Name'), __('Required'), __('Installed') ) );
-					
+
 						form_selectable_cell(__('PHP Version'), '');
 						form_selectable_cell('5.2.0+', '');
 						form_selectable_cell((version_compare(PHP_VERSION, '5.2.0', '<') ? "<font color=red>" . PHP_VERSION . "</font>" : "<font color=green>" . PHP_VERSION . "</font>"), '');
@@ -599,21 +606,6 @@ $enabled = '1';
 
 							print '<div id="remote_database" style="display:none;">';
 
-							if (is_writable($config['base_path'] . '/include/config.php')) {
-								$good_write = true;
-							} else {
-								$good_write = false;
-							}
-
-							if (isset($rdatabase_default) &&
-								isset($rdatabase_username) &&
-								isset($rdatabase_hostname) &&
-								isset($rdatabase_port)) {
-								$remote_good = true;
-							} else {
-								$remote_good = false;
-							}
-
 							if ($remote_good && $good_write) {
 								print '<h4>' . __('Remote Poller Cacti database connection information') . '</h4>';
 								print '<p class="code">'
@@ -730,7 +722,7 @@ $enabled = '1';
 					} elseif ($step == '4') {
 						print '<h2>' . __('Critical Binary Locations and Versions') . '</h2>';
 
-						print '<p>' . __('Make sure all of these values are correct before continuing.') . '</p>';						
+						print '<p>' . __('Make sure all of these values are correct before continuing.') . '</p>';
 						$i = 0;
 						$input = install_file_paths();
 						/* find the appropriate value for each 'config name' above by config.php, database,
@@ -771,7 +763,7 @@ $enabled = '1';
 
 							$i++;
 						}
-						
+
 				 	/* settings-install */
 					} elseif ($step == '5') {
 						include_once('../lib/data_query.php');
@@ -786,14 +778,14 @@ $enabled = '1';
 								db_execute_prepared("REPLACE INTO settings (name,value) VALUES (?, ?)", array($name, get_nfilter_request_var($name)));
 							}
 						}
-							
+
 						/* Print message and error logs */
 						print '<h2>' . __('Directory Permission Checks') . '</h2>';
-							
+
 						print '<p>' . __('Please ensure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an \'install_package.php\' cli script that can be used from the command line after the install is complete.') . '</p>';
 
 						if (get_request_var('install_type') == 1) {
-							print '<p>' . __('After the install is complete, you can make some of these directories read only to increase security.') . '</p>';						
+							print '<p>' . __('After the install is complete, you can make some of these directories read only to increase security.') . '</p>';
 						} else {
 							print '<p>' . __('These directories will be required to stay read writable after the install so that the Cacti remote synchronization process can update them as the Main Cacti Web Site changes') . '</p>';
 						}
@@ -915,7 +907,7 @@ $enabled = '1';
 						print '<p><strong><font color="#FF0000">' . __('NOTE:') . ' </font></strong>';
 
 						print __('Press \'Finish\' to complete the installation process after selecting your Device Templates.') . '</p>';
-					
+
 					/* upgrade */
 					} elseif ($step == '8') {
 						print '<h2>' . __('Upgrade Results') . '</h2>';
@@ -999,11 +991,11 @@ $(function() {
 	}else if (step == 1) {
 		$('#next').button('disable');
 	}else if (step == 8) {
-		$('#next').val('Finish');
+		$('#next').val('<?php print __('Finish');?>');
 	}else if (step == 5 && install_type == 2) {
-		$('#next').val('Finish');
+		$('#next').val('<?php print __('Finish');?>');
 	}else if (step == 6 && install_type == 1) {
-		$('#next').val('Finish');
+		$('#next').val('<?php print __('Finish');?>');
 	}
 
 	$('#previous').click(function() {

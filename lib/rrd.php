@@ -564,25 +564,26 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}
-		} elseif ($config['is_web'] == false && !is_dir(dirname($data_source_path))) {
-			if (mkdir(dirname($data_source_path), 0775)) {
-				if ($config['cacti_server_os'] != 'win32') {
-					$owner_id = fileowner($config['rra_path']);
-					$group_id = filegroup($config['rra_path']);
+		}elseif (!is_dir(dirname($data_source_path))) {
+			if ($config['is_web'] == false) {
+				if (mkdir(dirname($data_source_path), 0775)) {
+					if ($config['cacti_server_os'] != 'win32') {
+						$owner_id = fileowner($config['rra_path']);
+						$group_id = filegroup($config['rra_path']);
 
-					if (chown(dirname($data_source_path), $owner_id) &&
-						chgrp(dirname($data_source_path), $group_id)
-					) {
-						/* permissions set ok */
-					} else{
-						cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", false);
+						if ((chown(dirname($data_source_path), $owner_id)) &&
+								(chgrp(dirname($data_source_path), $group_id))) {
+							/* permissions set ok */
+						}else{
+							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
+						}
 					}
+				}else{
+					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
 				}
-			} else {
-				cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
+			}else{
+				cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", FALSE);
 			}
-		} else {
-			cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", false);
 		}
 	}
 
@@ -2046,11 +2047,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						} else {
 							$value = date('U', mktime($value_array[0],$value_array[1],0));
 						}
+
+						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $value . $graph_item_color_code . ':' . cacti_escapeshellarg(rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8')) . $hardreturn[$graph_item_id]) . $dash;
 					}else if (is_numeric($graph_item['value'])) {
 						$value = $graph_item['value'];
-					}
 
-					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $value . $graph_item_color_code . ':' . cacti_escapeshellarg(rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8')) . $hardreturn[$graph_item_id]) . $dash;
+						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $value . $graph_item_color_code . ':' . cacti_escapeshellarg(rrdtool_escape_string(htmlspecialchars($graph_variables['text_format'][$graph_item_id], ENT_QUOTES, 'UTF-8')) . $hardreturn[$graph_item_id]) . $dash;
+					}
 
 					break;
 				default:
@@ -2158,35 +2161,35 @@ function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$x
 }
 
 function rrdtool_function_format_graph_date(&$graph_data_array) {
+	global $datechar;
+
 	$graph_legend = '';
 	/* setup date format */
 	$date_fmt = read_user_setting('default_date_format');
-	$datechar = read_user_setting('default_datechar');
-
-	if ($datechar == GDC_HYPHEN) {
-		$datechar = '-';
-	}else {
-		$datechar = '/';
+	$dateCharSetting = read_config_option('default_datechar');
+	if (empty($dateCharSetting)) {
+		$dateCharSetting = GDC_SLASH;
 	}
+	$datecharacter = $datechar[$dateCharSetting];
 
 	switch ($date_fmt) {
 		case GD_MO_D_Y:
-			$graph_date = 'm' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			$graph_date = 'm' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_MN_D_Y:
-			$graph_date = 'M' . $datechar . 'd' . $datechar . 'Y H:i:s';
+			$graph_date = 'M' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_D_MO_Y:
-			$graph_date = 'd' . $datechar . 'm' . $datechar . 'Y H:i:s';
+			$graph_date = 'd' . $datecharacter . 'm' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_D_MN_Y:
-			$graph_date = 'd' . $datechar . 'M' . $datechar . 'Y H:i:s';
+			$graph_date = 'd' . $datecharacter . 'M' . $datecharacter . 'Y H:i:s';
 			break;
 		case GD_Y_MO_D:
-			$graph_date = 'Y' . $datechar . 'm' . $datechar . 'd H:i:s';
+			$graph_date = 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
 			break;
 		case GD_Y_MN_D:
-			$graph_date = 'Y' . $datechar . 'M' . $datechar . 'd H:i:s';
+			$graph_date = 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
 			break;
 	}
 
