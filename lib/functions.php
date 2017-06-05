@@ -4730,7 +4730,7 @@ function get_cacti_version() {
 /**
  * cacti_version_compare - Compare Cacti version numbers
  */
-function cacti_version_compare($version1, $version2, $operator) {
+function cacti_version_compare($version1, $version2, $operator = '>') {
 	$version1 = version_to_decimal($version1);
 	$version2 = version_to_decimal($version2);
 

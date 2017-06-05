@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.9
+-issue#788: Fails on PHP Fatal error if LDAP auth enabled
+
 1.1.8
 -issue#529: Issue on Graph New page with checkbox unselected
 -issue#552: Minor selectable row checkbox issue
