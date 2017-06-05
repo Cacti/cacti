@@ -579,7 +579,7 @@ function is_realm_allowed($realm) {
 		}
 
 		if (read_config_option('auth_method') != 0) {
-			if (version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
+			if (cacti_version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
 				$user_realm = db_fetch_cell_prepared("SELECT realm_id
 					FROM user_auth_realm
 					WHERE user_id = ?
@@ -1796,7 +1796,7 @@ function user_perms_valid($user_id) {
 	if ($valid === 'null') {
 		$valid = true;
 
-		if (version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
+		if (cacti_version_compare($config['cacti_db_version'], '1.0.0') >= 0) {
 			$key = db_fetch_cell_prepared('SELECT reset_perms FROM user_auth WHERE id = ?', array($user_id));
 
 			if (isset($_SESSION['sess_user_perms_key'])) {

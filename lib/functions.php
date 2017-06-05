@@ -4714,7 +4714,9 @@ function date_time_format() {
 	}
 }
 
-/** get_cacti_version    Generic function to get the cacti version */
+/**
+ * get_cacti_version    Generic function to get the cacti version
+ */
 function get_cacti_version() {
 	static $version = '';
 
@@ -4725,3 +4727,62 @@ function get_cacti_version() {
 	return $version;
 }
 
+/**
+ * cacti_version_compare - Compare Cacti version numbers
+ */
+function cacti_version_compare($version1, $version2, $operator) {
+	$version1 = version_to_decimal($version1);
+	$version2 = version_to_decimal($version2);
+
+	switch ($operator) {
+		case '<':
+			if ($version1 < $version2) {
+				return true;
+			}
+			break;
+		case '<=':
+			if ($version1 <= $version2) {
+				return true;
+			}
+			break;
+		case '>=':
+			if ($version1 >= $version2) {
+				return true;
+			}
+			break;
+		case '>':
+			if ($version1 > $version2) {
+				return true;
+			}
+			break;
+		case '==':
+			if ($version1 == $version2) {
+				return true;
+			}
+			break;
+		default:
+			return version_compare($version1, $version2, $operator);
+	}
+	return false;
+}
+
+/**
+ * version_to_decimal - convert version string to decimal
+ */
+function version_to_decimal($version) {
+	$alpha  = substr($version, -1);
+	$newver = '';
+
+	if (!is_numeric($alpha)) {
+		$version = substr($version, 0, -1);
+		$alpha   = ord($alpha) / 1000;
+	} else {
+		$alpha   = 0;
+	}
+
+	for ($i = 0; $i < strlen($version); $i++) {
+		$newver .= ord($version[$i]);
+	}
+
+	return hexdec($newver) + $alpha;
+}
