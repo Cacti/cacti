@@ -187,7 +187,7 @@ function themeReady() {
 }
 
 function setMenuVisibility() {
-	storage=$.localStorage;
+	storage=Storages.localStorage;
 
 	// Initialize the navigation settings
 	$('#navigation').hide();
