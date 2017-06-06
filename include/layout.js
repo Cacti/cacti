@@ -1092,7 +1092,7 @@ function setupUserMenu() {
 }
 
 function setupSpecialKeys() {
-	$('#filter, #rfilter').unbind('keypress').attr('title', clearFilter);
+	$('#filter, #rfilter').unbind('keypress').attr('title', clearSearchFilter);
 	$('#filter, #rfilter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close'); }).on('click', function() { $(this).tooltip('close'); });
 
 	$('#filter, #rfilter').bind('keypress', 'ctrl+shift+x', function() {

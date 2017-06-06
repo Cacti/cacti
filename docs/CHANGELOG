@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.20
+-issue#789: Unable to Clear Filter due to JavaScrpt name space collision
+
 1.1.9
 -issue#788: Fails on PHP Fatal error if LDAP auth enabled
 
