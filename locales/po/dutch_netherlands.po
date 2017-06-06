@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-03 17:03+0200\n"
-"PO-Revision-Date: 2017-06-03 17:38+0200\n"
+"POT-Creation-Date: 2017-06-06 08:13+0200\n"
+"PO-Revision-Date: 2017-06-06 08:34+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -475,7 +475,7 @@ msgstr "Overeenkomende grafieken"
 #: ../lib/html_tree.php:121 ../lib/html_tree.php:605 ../lib/html_tree.php:879
 #: ../links.php:309 ../managers.php:150 ../managers.php:525 ../managers.php:758
 #: ../plugins.php:276 ../pollers.php:517 ../rrdcleaner.php:475
-#: ../settings.php:204 ../settings.php:221 ../settings.php:267 ../sites.php:398
+#: ../settings.php:204 ../settings.php:223 ../settings.php:271 ../sites.php:398
 #: ../tree.php:655 ../tree.php:690 ../tree.php:1508 ../user_admin.php:2195
 #: ../user_admin.php:2533 ../user_admin.php:2642 ../user_admin.php:2730
 #: ../user_admin.php:2835 ../user_admin.php:2922 ../user_admin.php:3009
@@ -495,7 +495,7 @@ msgstr "Zoeken"
 #: ../include/global_arrays.php:868 ../lib/api_automation.php:274
 #: ../lib/functions.php:1870 ../lib/html.php:1308 ../lib/html.php:1310
 #: ../lib/html.php:1383 ../lib/html_graph.php:212 ../lib/html_tree.php:658
-#: ../lib/html_tree.php:1076 ../tree.php:1591 ../user_admin.php:998
+#: ../lib/html_tree.php:1077 ../tree.php:1591 ../user_admin.php:998
 #: ../user_admin.php:1242 ../user_admin.php:2561 ../user_group_admin.php:813
 #: ../user_group_admin.php:966 ../user_group_admin.php:2161
 #: ../utilities.php:268
@@ -737,7 +737,7 @@ msgstr "Alle"
 #: ../lib/html_reports.php:307 ../lib/html_reports.php:355
 #: ../lib/html_reports.php:367 ../lib/html_reports.php:376
 #: ../lib/html_reports.php:386 ../lib/html_tree.php:843 ../settings.php:197
-#: ../settings.php:214 ../settings.php:237 ../user_admin.php:2544
+#: ../settings.php:216 ../settings.php:241 ../user_admin.php:2544
 #: ../user_admin.php:2741 ../user_group_admin.php:2144
 #: ../user_group_admin.php:2254 ../utilities.php:1592
 msgid "None"
@@ -3890,7 +3890,7 @@ msgstr "Geen apparaat"
 #: ../data_templates.php:764 ../graph_view.php:781 ../graphs_new.php:504
 #: ../lib/clog_webapi.php:379 ../lib/html_graph.php:395
 #: ../lib/html_reports.php:317 ../lib/html_tree.php:842 ../plugins.php:286
-#: ../settings.php:196 ../settings.php:213 ../settings.php:236
+#: ../settings.php:196 ../settings.php:215 ../settings.php:240
 #: ../utilities.php:636 ../utilities.php:1042
 msgid "All"
 msgstr "Alle"
@@ -4329,7 +4329,7 @@ msgstr "Grafiektemplate items [wijzig %s]"
 
 #: ../graph_templates.php:420 ../lib/functions.php:2084
 msgid "Graph Item Inputs"
-msgstr ""
+msgstr "Grafiek item invoer"
 
 #: ../graph_templates.php:446
 msgid "No Inputs"
@@ -4346,7 +4346,7 @@ msgstr "Template [nieuw]"
 
 #: ../graph_templates.php:509
 msgid "Graph Template Options"
-msgstr ""
+msgstr "Grafiek template opties"
 
 #: ../graph_templates.php:524
 msgid "Use Per-Graph Value (Ignore this Value)"
@@ -4400,7 +4400,7 @@ msgstr ""
 #: ../graph_templates_inputs.php:145
 #, php-format
 msgid "Graph Item Inputs [edit graph: %s]"
-msgstr ""
+msgstr "Grafiek item invoer [wijzig grafiek: %s]"
 
 #: ../graph_templates_inputs.php:191
 msgid "Associated Graph Items"
@@ -4495,7 +4495,7 @@ msgid "Not Applicable"
 msgstr "Niet van toepassing"
 
 #: ../graph_view.php:772 ../lib/html_graph.php:386 ../lib/html_tree.php:833
-#: ../settings.php:227
+#: ../settings.php:231
 msgid "Templates Selected"
 msgstr "Templates geselecteerd"
 
@@ -5555,6 +5555,8 @@ msgid ""
 "Graph Template Not Found during Export.  Please run Database Repair Script "
 "to Identify."
 msgstr ""
+"Grafiek template niet gevonden tijdens exporteren. Draait het Database "
+"reparatie script om deze fout te identificeren."
 
 #: ../include/global_arrays.php:161
 msgid ""
@@ -6952,7 +6954,7 @@ msgstr ""
 
 #: ../include/global_form.php:213 ../include/global_form.php:273
 msgid "Enter a meaningful name for this data input method."
-msgstr ""
+msgstr "Voer een handige naam in voor deze data invoer methode."
 
 #: ../include/global_form.php:220
 msgid "Input Type"
@@ -6990,6 +6992,9 @@ msgid ""
 "script, for example: NAME:VALUE, it is important that the name match your "
 "output field name identically to the script output name or names."
 msgstr ""
+"Voer een naam in voor dit %s veld. Let op: Als er gebruik wordt gemaakt van "
+"name-waarde combinaties in het script, bijvoorbeeld: NAAM:WAARDE, dan is het "
+"belangrijk dat de naam exact overeenkomt met het uitvoer veld van het script."
 
 #: ../include/global_form.php:280
 msgid "Update RRDfile"
@@ -7130,6 +7135,8 @@ msgstr ""
 msgid ""
 "Enter a name for this GPRINT preset, make sure it is something you recognize."
 msgstr ""
+"Voer een naam in voor deze GPRINT, zorg ervoor dat het een duidelijke naam "
+"is."
 
 #: ../include/global_form.php:477
 msgid "GPRINT Text"
@@ -7487,7 +7494,7 @@ msgstr ""
 #: ../include/global_form.php:760 ../lib/api_aggregate.php:1296
 #: ../lib/html.php:857
 msgid "Graph Item Type"
-msgstr ""
+msgstr "Grafiek item type"
 
 #: ../include/global_form.php:764
 msgid "How data for this item is represented visually on the graph."
@@ -7641,12 +7648,16 @@ msgid ""
 "Enter a name for this graph item input, make sure it is something you "
 "recognize."
 msgstr ""
+"Voer een naam in voor dit grafiekitem, zorg ervoor dat het een duidelijke "
+"naam is."
 
 #: ../include/global_form.php:936
 msgid ""
 "Enter a description for this graph item input to describe what this input is "
 "used for."
 msgstr ""
+"Voer een beschrijving in voor deze grafiek item invoer zodat wordt "
+"beschreven waar de invoer voor wordt gebruikt."
 
 #: ../include/global_form.php:943
 msgid "Field Type"
@@ -7804,7 +7815,7 @@ msgstr "Extern ID"
 
 #: ../include/global_form.php:1203
 msgid "External ID for linking Cacti data to external monitoring systems."
-msgstr ""
+msgstr "Externe ID om Cacti data aan externe monitoring te koppelen."
 
 #: ../include/global_form.php:1225
 msgid "A useful name for this host template."
@@ -8343,11 +8354,11 @@ msgstr " K"
 
 #: ../include/global_session.php:91 ../lib/html_filter.php:66
 msgid "Enter a search term"
-msgstr ""
+msgstr "Voer een zoekterm in"
 
 #: ../include/global_session.php:92
 msgid "Enter a regular expression"
-msgstr ""
+msgstr "Voer een reguliere expressie in"
 
 #: ../include/global_session.php:93
 msgid "Press Ctrl+Shift+X to Clear Filter"
@@ -8606,7 +8617,7 @@ msgstr ""
 
 #: ../include/global_settings.php:206
 msgid "Event Logging"
-msgstr ""
+msgstr "Gebeurtenis registratie"
 
 #: ../include/global_settings.php:211
 msgid "Log Destination"
@@ -8630,7 +8641,7 @@ msgstr ""
 
 #: ../include/global_settings.php:228
 msgid "Graph Syntax"
-msgstr ""
+msgstr "Grafiek syntax"
 
 #: ../include/global_settings.php:232
 msgid "Developer Mode"
@@ -8737,7 +8748,7 @@ msgstr ""
 
 #: ../include/global_settings.php:318
 msgid "Graph Template Width"
-msgstr ""
+msgstr "Grafiek template breedte"
 
 #: ../include/global_settings.php:326
 msgid "Language Support"
@@ -10620,11 +10631,11 @@ msgstr ""
 
 #: ../include/global_settings.php:1870
 msgid "End of Daily Shift"
-msgstr ""
+msgstr "Einde werkdag"
 
 #: ../include/global_settings.php:1871
 msgid "End Time of the Daily Shift."
-msgstr ""
+msgstr "Einde werkdag."
 
 #: ../include/global_settings.php:1880
 msgid "Thumbnail Sections"
@@ -10888,6 +10899,7 @@ msgstr ""
 msgid ""
 "GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'"
 msgstr ""
+"GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'"
 
 #: ../install/index.php:304
 #, php-format
@@ -11695,7 +11707,7 @@ msgstr "Regels"
 
 #: ../lib/clog_webapi.php:325 ../utilities.php:992
 msgid "File to show"
-msgstr ""
+msgstr "Toon bestand"
 
 #: ../lib/clog_webapi.php:348 ../utilities.php:1015
 msgid "Tail Lines"
@@ -12231,7 +12243,7 @@ msgstr "Aan"
 
 #: ../lib/html_graph.php:297 ../lib/html_tree.php:743
 msgid "End Date Selector"
-msgstr ""
+msgstr "Eind datum selector"
 
 #: ../lib/html_graph.php:300 ../lib/html_tree.php:746
 msgid "Shift Time Backward"
@@ -12260,6 +12272,11 @@ msgstr "Interval"
 #: ../lib/html_graph.php:351 ../lib/html_tree.php:797
 msgid "Stop"
 msgstr "Stop"
+
+#: ../lib/html_graph.php:433 ../lib/html_tree.php:880 ../settings.php:205
+#: ../settings.php:224 ../settings.php:272
+msgid "Enter keyword"
+msgstr "Voer sleutelwoord in"
 
 #: ../lib/html_reports.php:35 ../lib/html_reports.php:1502
 msgid "Report Name"
@@ -12491,7 +12508,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:343
 msgid "Graph Name Regular Expression"
-msgstr ""
+msgstr "Grafiek naam reguliere expressie"
 
 #: ../lib/html_reports.php:346
 msgid ""
@@ -14245,27 +14262,27 @@ msgstr "Selecteer plugin(s)"
 msgid "Plugins Selected"
 msgstr "Plugins geselecteerd"
 
-#: ../settings.php:208
+#: ../settings.php:210
 msgid "Select File(s)"
 msgstr "Selecteer bestand(en)"
 
-#: ../settings.php:210
+#: ../settings.php:212
 msgid "Files Selected"
 msgstr "Bestanden geselecteerd"
 
-#: ../settings.php:225
+#: ../settings.php:229
 msgid "Select Template(s)"
 msgstr "Selecteer template(s)"
 
-#: ../settings.php:230
+#: ../settings.php:234
 msgid "All Templates Selected"
 msgstr "Alle templates geselected"
 
-#: ../settings.php:281
+#: ../settings.php:287
 msgid "Poller Interval must be less than Cron Interval"
 msgstr ""
 
-#: ../settings.php:303
+#: ../settings.php:309
 msgid "Test Email Results"
 msgstr "Test e-mail resultaten"
 
@@ -14395,7 +14412,7 @@ msgstr ""
 
 #: ../sites.php:136
 msgid "Enter some useful information about the Site."
-msgstr ""
+msgstr "Voer informatie in over deze locatie."
 
 #: ../sites.php:141
 msgid "Alternate Name"
@@ -15000,7 +15017,7 @@ msgstr "Gebruikersrechten"
 
 #: ../user_admin.php:1661 ../user_group_admin.php:1380
 msgid "External Link Permissions"
-msgstr ""
+msgstr "Rechten externe links"
 
 #: ../user_admin.php:1718 ../user_group_admin.php:1437
 msgid "Plugin Permissions"
@@ -15188,6 +15205,8 @@ msgid ""
 "Enter a meaningful name for this domain. This will be the name that appears "
 "in the Login Realm during login."
 msgstr ""
+"Voer een handige naam in voor dit domein. Deze naam zal wordt getoond in het "
+"login venster gedurende de login."
 
 #: ../user_domains.php:324
 msgid "Domains Type"
@@ -15332,7 +15351,7 @@ msgstr ""
 
 #: ../user_group_admin.php:114
 msgid "Graph List Rights"
-msgstr ""
+msgstr "Grafiek lijst rechten"
 
 #: ../user_group_admin.php:116
 msgid "Should Users of this Group have access to the Graph List?"

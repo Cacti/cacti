@@ -69,7 +69,7 @@ if ($old_cacti_version == CACTI_VERSION) {
 	} else {
 		print '<p>' . __("On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:") . '</p><p><pre>';
 	}
-	print __("GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password) . '</pre></p>';
+	print sprintf("GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password) . '</pre></p>';
 
 	exit;
 }
