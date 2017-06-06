@@ -781,17 +781,21 @@ function form_actions() {
 				/* data sources to delete */
 				$data_array = array_keys($data_sources);
 
-				$not_deletable = array_rekey(
-					db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
-						FROM data_template_data AS dtd
-						INNER JOIN data_template_rrd AS dtr
-						ON dtr.local_data_id=dtd.local_data_id
-						INNER JOIN graph_templates_item AS gti
-						ON dtr.id=gti.task_item_id
-						WHERE gti.local_graph_id NOT IN(' . implode(',', $graph_array) . ')
-						AND dtr.local_data_id IN(' . implode(',', $data_array) . ')
-						AND dtd.local_data_id > 0'),
-					'local_data_id', 'local_data_id');
+				if (sizeof($data_array)) {
+					$not_deletable = array_rekey(
+						db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
+							FROM data_template_data AS dtd
+							INNER JOIN data_template_rrd AS dtr
+							ON dtr.local_data_id=dtd.local_data_id
+							INNER JOIN graph_templates_item AS gti
+							ON dtr.id=gti.task_item_id
+							WHERE gti.local_graph_id NOT IN(' . implode(',', $graph_array) . ')
+							AND dtr.local_data_id IN(' . implode(',', $data_array) . ')
+							AND dtd.local_data_id > 0'),
+						'local_data_id', 'local_data_id');
+				} else {
+					$not_deletable = array();
+				}
 
 				if (sizeof($not_deletable)) {
 					$data_sources = array_rekey(
