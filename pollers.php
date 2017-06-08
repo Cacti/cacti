@@ -216,7 +216,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
 	/* ==================================================== */
-	
+
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
@@ -402,10 +402,10 @@ function poller_edit() {
 			function ping_database() {
 				dbssl = $('#dbssl').is(':checked') ? 'on':'';
 
-				$.post('pollers.php', { 
+				$.post('pollers.php', {
 					__csrf_magic: csrfMagicToken,
 					action:       'ping',
-					dbdefault:    $('#dbdefault').val(), 
+					dbdefault:    $('#dbdefault').val(),
 					dbhost:       $('#dbhost').val(),
 					dbuser:       $('#dbuser').val(),
 					dbpass:       $('#dbpass').val(),
@@ -416,7 +416,7 @@ function poller_edit() {
 				});
 			}
 			</script>
-			<?php 
+			<?php
 		}
 	}
 
@@ -447,12 +447,12 @@ function test_database_connection($poller = array()) {
 	}
 
     $connection = db_connect_real(
-		$poller['dbhost'], 
-		$poller['dbuser'], 
-		$poller['dbpass'], 
-		$poller['dbdefault'], 
-		$poller['dbtype'], 
-		$poller['dbport'], 
+		$poller['dbhost'],
+		$poller['dbuser'],
+		$poller['dbpass'],
+		$poller['dbdefault'],
+		$poller['dbtype'],
+		$poller['dbport'],
 		$poller['dbssl']
 	);
 
@@ -470,28 +470,28 @@ function pollers() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
@@ -520,7 +520,7 @@ function pollers() {
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
 					<td>
-						<?php print __('Rows');?>
+						<?php print __('Collectors');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
