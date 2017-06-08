@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#794: SQL Error when creating graphs manually
 -issue#798: Cosmetic issue when checking checkboxes in Cacti
 -issue#800: Unchecked loop in lib/html_utility.php causing race condition
+-issue#803: Issues with utf8mb4 introduced via optimization
 
 1.1.9
 -issue#788: Fails on PHP Fatal error if LDAP auth enabled
