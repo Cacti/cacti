@@ -1527,21 +1527,21 @@ $export_types = array(
 		'title_sql' => 'SELECT name FROM snmp_query WHERE id=|id|',
 		'dropdown_sql' => 'SELECT id, name FROM snmp_query ORDER BY name'
 		),
-	'automation_devices' => array(
-		'name' => __('Discovery Rules'),
-		'title_sql' => 'SELECT CONCAT(ht.name, " (", at.sysDescr, ")") AS name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id=|id|',
-		'dropdown_sql' => 'SELECT at.id, CONCAT(ht.name, " (", at.sysDescr, ")") AS name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template ORDER BY name'
-		),
-	'automation_graphs' => array(
-		'name' => __('Graph Rules'),
-		'title_sql' => 'SELECT name FROM automation_graph_rules WHERE id=|id|',
-		'dropdown_sql' => 'SELECT id, name FROM automation_graph_rules ORDER BY name'
-		),
-	'automation_trees' => array(
-		'name' => __('Tree Rules'),
-		'title_sql' => 'SELECT name FROM automation_tree_rules WHERE id=|id|',
-		'dropdown_sql' => 'SELECT id, name FROM automation_tree_rules ORDER BY name'
-		)
+//	'automation_devices' => array(
+//		'name' => __('Discovery Rules'),
+//		'title_sql' => 'SELECT CONCAT(ht.name, " (", at.sysDescr, ")") AS name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id=|id|',
+//		'dropdown_sql' => 'SELECT at.id, CONCAT(ht.name, " (", at.sysDescr, ")") AS name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template ORDER BY name'
+//		),
+//	'automation_graphs' => array(
+//		'name' => __('Graph Rules'),
+//		'title_sql' => 'SELECT name FROM automation_graph_rules WHERE id=|id|',
+//		'dropdown_sql' => 'SELECT id, name FROM automation_graph_rules ORDER BY name'
+//		),
+//	'automation_trees' => array(
+//		'name' => __('Tree Rules'),
+//		'title_sql' => 'SELECT name FROM automation_tree_rules WHERE id=|id|',
+//		'dropdown_sql' => 'SELECT id, name FROM automation_tree_rules ORDER BY name'
+//		)
 	);
 
 $fields_template_import = array(
