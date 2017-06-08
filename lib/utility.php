@@ -126,7 +126,10 @@ function update_poller_cache($data_source, $commit = false) {
 	include_once($config['library_path'] . '/api_poller.php');
 
 	if (!is_array($data_source)) {
-		$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM data_local WHERE id = ?', array($data_source));
+		$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
+			FROM data_local
+			WHERE id = ?',
+			array($data_source));
 	}
 
 	$poller_items = array();
@@ -338,7 +341,7 @@ function update_poller_cache($data_source, $commit = false) {
 					$host_fields = $data_template_fields;
 				}
 
-				if (sizeof($outputs) > 0) {
+				if (sizeof($outputs)) {
 					foreach ($outputs as $output) {
 						if (isset($script_queries['fields']{$output['snmp_field_name']}['query_name'])) {
 							$identifier = $script_queries['fields']{$output['snmp_field_name']}['query_name'];
@@ -526,7 +529,9 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	/* setup the sql where, and if using a host, get it's host information */
 	if ($host_id != 0) {
 		/* get all information about this host so we can write it to the data source */
-		$hosts[$host_id] = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' id AS host_id, host.* FROM host WHERE id = ?', array($host_id));
+		$hosts[$host_id] = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' id AS host_id, host.*
+			FROM host WHERE id = ?',
+			array($host_id));
 
 		$sql_where .= ' AND dl.host_id=' . $host_id;
 	}
@@ -554,7 +559,10 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		foreach ($data_sources as $data_source) {
 			/* set the host information */
 			if (!isset($hosts[$data_source['host_id']])) {
-				$hosts[$data_source['host_id']] = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($data_source['host_id']));
+				$hosts[$data_source['host_id']] = db_fetch_row_prepared('SELECT *
+					FROM host
+					WHERE id = ?',
+					array($data_source['host_id']));
 			}
 			$host = $hosts[$data_source['host_id']];
 
@@ -607,7 +615,10 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 	}
 
-	$poller_id = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', array($host_id));
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id
+		FROM host
+		WHERE id = ?',
+		array($host_id));
 
 	api_data_source_cache_crc_update($poller_id);
 }
