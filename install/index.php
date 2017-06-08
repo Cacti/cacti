@@ -69,7 +69,7 @@ if ($old_cacti_version == CACTI_VERSION) {
 	} else {
 		print '<p>' . __("On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:") . '</p><p><pre>';
 	}
-	print sprintf("GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password) . '</pre></p>';
+	print __("GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password) . '</pre></p>';
 
 	exit;
 }
@@ -431,7 +431,7 @@ $enabled = '1';
 						print '<h2>' . __('License Agreement') . '</h2>';
 
 						print '<p>' . __('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.') . '</p>';
-						print '<p>' . __('Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href="%1$s">Unix</a> and <a href="%2$s">Win32</a>-based operating systems.', '../docs/html/install-unix.html', '../docs/html/install-windows.html') . '</p>';
+						print '<p>' . __('Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href="%1$s">Unix</a> and <a href="%2$s">Win32</a>-based operating systems.', '../docs/html/install_unix.html', '../docs/html/install_windows.html') . '</p>';
 						print '<p>' . __('Also, if this is an upgrade, be sure to reading the <a href="%s">Upgrade</a> information file.', '../docs/html/upgrade.html') . '</p>';
 						print '<p>' . __('Cacti is licensed under the GNU General Public License, you must agree to its provisions before continuing:') . "</p>";
 					?>
@@ -619,19 +619,12 @@ $enabled = '1';
 								print '<h4>' . __('Remote Poller Cacti database connection information') . '</h4>';
 
 								if (!$good_write) {
-									print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your config.php file must be writable by
-										the web server during install in order to configure the Remote poller.  Once
-										installation is complete, you must set this file to Read Only to prevent
-										possible security issues.');
+									print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your config.php file must be writable by the web server during install in order to configure the Remote poller.  Once installation is complete, you must set this file to Read Only to prevent possible security issues.');
 									print '</p>';
 								}
 
 								if (!$remote_good) {
-									print '<p class="textError">' . __('ERROR:') . '</strong> ' . __('Your Remote Cacti Poller information has not
-										been included in your config.php file.  Please review the config.php.dist, and
-										set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.
-										These variables must be set and point back to your Primary Cacti database server.
-										Correct this and try again.') . '</p>';
+									print '<p class="textError">' . __('ERROR:') . '</strong> ' . __('Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again.') . '</p>';
 
 									print '<p>' . __('The variables that must be set include the following:') . '</p>';
 									print '<ul>';
@@ -646,10 +639,7 @@ $enabled = '1';
 
 									print '<p>' . __('You must also set the $poller_id variable in the config.php.') . '</p>';
 
-									print '<p>' . __('Once you have the variables set in the config.php file, you must also
-										grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with
-										any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is
-										successful you will be able to proceed and complete the install.') . '</p>';
+									print '<p>' . __('Once you have the variables set in the config.php file, you must also grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is successful you will be able to proceed and complete the install.') . '</p>';
 								}
 							}
 						}
@@ -868,10 +858,7 @@ $enabled = '1';
 						} else {
 							print '<p><strong><font color="#FF0000">';
 
-							print __('NOTE:') . '</font></strong> ' . __('For remote pollers, it is critical that
-								the paths that you will be updating frequently, including the plugins, scripts,
-								and resources paths have read/write access as the data collector will have to
-								update these paths from the main web server content.');
+							print __('NOTE:') . '</font></strong> ' . __('For remote pollers, it is critical that the paths that you will be updating frequently, including the plugins, scripts, and resources paths have read/write access as the data collector will have to update these paths from the main web server content.');
 
 							print '</p>';
 						}
