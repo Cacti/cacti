@@ -141,7 +141,7 @@ function form_save() {
 							input_validate_input_number($cf);
 						}
 
-						db_execute_prepared('DELETE FROM data_source_profiles_cf 
+						db_execute_prepared('DELETE FROM data_source_profiles_cf
 							WHERE data_source_profile_id = ?
 							AND consolidation_function_id NOT IN (' . implode(',', $cfs) . ')', array($profile_id));
 					}
@@ -151,8 +151,8 @@ function form_save() {
 					$cfs = get_nfilter_request_var('consolidation_function_id');
 					if (sizeof($cfs) && !empty($cfs)) {
 						foreach($cfs as $cf) {
-							db_execute_prepared('REPLACE INTO data_source_profiles_cf 
-								(data_source_profile_id, consolidation_function_id) 
+							db_execute_prepared('REPLACE INTO data_source_profiles_cf
+								(data_source_profile_id, consolidation_function_id)
 								VALUES (?, ?)', array($profile_id, $cf));
 						}
 					}
@@ -210,7 +210,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
 	/* ==================================================== */
-	
+
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
@@ -337,9 +337,9 @@ function profile_item_remove_confirm() {
 		$('#cdialog').dialog();
 
 		$('#continue').click(function(data) {
-			$.post('data_source_profiles.php?action=item_remove', { 
-				__csrf_magic: csrfMagicToken, 
-				id: <?php print get_request_var('id');?> 
+			$.post('data_source_profiles.php?action=item_remove', {
+				__csrf_magic: csrfMagicToken,
+				id: <?php print get_request_var('id');?>
 			}, function(data) {
 				$('#cdialog').dialog('close');
 				loadPageNoHeader('data_source_profiles.php?action=edit&header=false&id=<?php print $profile['data_source_profile_id'];?>');
@@ -349,7 +349,7 @@ function profile_item_remove_confirm() {
 	</script>
 	<?php
 }
-		
+
 function profile_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -367,24 +367,44 @@ function item_edit() {
 	get_filter_request_var('profile_id');
 	/* ==================================================== */
 
+	$sampling_interval = db_fetch_cell_prepared('SELECT step
+		FROM data_source_profiles
+		WHERE id = ?',
+		array(get_request_var('profile_id')));
+
 	if (!isempty_request_var('id')) {
-		$rra = db_fetch_row_prepared('SELECT * FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')));
-		$sampling_interval = db_fetch_cell_prepared('SELECT step FROM data_source_profiles WHERE id = ?', array(get_request_var('profile_id')));
+		$rra = db_fetch_row_prepared('SELECT *
+			FROM data_source_profiles_rra
+			WHERE id = ?',
+			array(get_request_var('id')));
 
 		if ($rra['steps'] == '1') {
 			$fields_profile_rra_edit['steps']['array'] = array('1' => __('Each Insert is New Row'));
 		} else {
-			unset($aggregation_levels[1]);
+			foreach($aggregation_levels as $interval => $name) {
+				if ($interval <= $sampling_interval) {
+					unset($aggregation_levels[$interval]);
+				}
+			}
 			$fields_profile_rra_edit['steps']['array'] = $aggregation_levels;
 		}
+
 		$fields_profile_rra_edit['steps']['value'] = $rra['steps'] * $sampling_interval;
 	} else {
-		$oneguy = db_fetch_cell_prepared('SELECT id FROM data_source_profiles_rra WHERE data_source_profile_id = ? AND steps=1', array(get_request_var('profile_id')));
+		$oneguy = db_fetch_cell_prepared('SELECT id
+			FROM data_source_profiles_rra
+			WHERE data_source_profile_id = ?
+			AND steps=1',
+			array(get_request_var('profile_id')));
 
 		if (empty($oneguy)) {
 			$fields_profile_rra_edit['steps']['array'] = array('1' => __('Each Insert is New Row'));
 		} else {
-			unset($aggregation_levels[1]);
+			foreach($aggregation_levels as $interval => $name) {
+				if ($interval <= $sampling_interval) {
+					unset($aggregation_levels[$interval]);
+				}
+			}
 			$fields_profile_rra_edit['steps']['array'] = $aggregation_levels;
 		}
 	}
@@ -414,7 +434,7 @@ function item_edit() {
 	$(function() {
 		get_span();
 		get_size();
-		
+
 		$('#steps').change(function() {
 			get_span();
 			get_size();
@@ -484,11 +504,11 @@ function profile_edit() {
 		}
 
 		$display_text = array(
-			array('display' => __('Name'),               'align' => 'left'), 
+			array('display' => __('Name'),               'align' => 'left'),
 			array('display' => __('Effective Timespan'), 'align' => 'left'),
 			array('display' => __('Steps'),              'align' => 'left'),
 			array('display' => __('Rows'),               'align' => 'left'),
-		); 
+		);
 
 		html_header($display_text, 2);
 
@@ -558,11 +578,11 @@ function profile_edit() {
 			$.get(request, function(data) {
 				$('#cdialog').html(data);
 				applySkin();
-				$('#cdialog').dialog({ 
-					title: '<?php print __('Delete Data Source Profile Item');?>', 
+				$('#cdialog').dialog({
+					title: '<?php print __('Delete Data Source Profile Item');?>',
 					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
-					minHeight: 80, 
-					minWidth: 500 
+					minHeight: 80,
+					minWidth: 500
 				});
 			});
 		}).css('cursor', 'pointer');
@@ -619,7 +639,7 @@ function get_span($duration) {
 	if ($duration > 31536000) {
 		if (floor($duration/31536000) > 0) {
 			$years     = floor($duration/31536000);
-			$years	   = ( $years == 1 ) ? __('1 Year') : __('%d Years', $years); 
+			$years	   = ( $years == 1 ) ? __('1 Year') : __('%d Years', $years);
 			$duration %= 31536000;
 			$output    = $years;
 		}
@@ -628,7 +648,7 @@ function get_span($duration) {
 	if ($duration > 2592000) {
 		if (floor($duration/2592000)) {
 			$months    = floor($duration/2592000);
-			$months    = ( $months == 1 ) ? __('%d Month', 1) : __('%d Months', $months); 
+			$months    = ( $months == 1 ) ? __('%d Month', 1) : __('%d Months', $months);
 			$duration %= 2592000;
 			$output   .= ($output != '' ? ', ' : '') . $months;
 		}
@@ -637,7 +657,7 @@ function get_span($duration) {
 	if ($duration > 604800) {
 		if (floor($duration/604800) > 0) {
 			$weeks     = floor($duration/604800);
-			$weeks     = ( $weeks == 1 ) ? __('%d Week', 1) : __('%d Weeks', $weeks); 
+			$weeks     = ( $weeks == 1 ) ? __('%d Week', 1) : __('%d Weeks', $weeks);
 			$duration %= 604800;
 			$output   .= ($output != '' ? ', ' : '') . $weeks;
 		}
@@ -667,32 +687,32 @@ function profile() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_data' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
@@ -846,9 +866,9 @@ function profile() {
 
 	$display_text = array(
 		'name' => array('display' => __('Data Source Profile Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this CDEF.')),
-		'nosort00' => array('display' => __('Default'), 'align' => 'right', 'tip' => __('Is this the default Profile for all new Data Templates?')), 
-		'nosort01' => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Profiles that are in use cannot be Deleted. In use is defined as being referenced by a Data Source or a Data Template.')), 
-		'nosort02' => array('display' => __('Read Only'), 'align' => 'right', 'tip' => __('Profiles that are in use by Data Sources become read only for now.')), 
+		'nosort00' => array('display' => __('Default'), 'align' => 'right', 'tip' => __('Is this the default Profile for all new Data Templates?')),
+		'nosort01' => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Profiles that are in use cannot be Deleted. In use is defined as being referenced by a Data Source or a Data Template.')),
+		'nosort02' => array('display' => __('Read Only'), 'align' => 'right', 'tip' => __('Profiles that are in use by Data Sources become read only for now.')),
 		'step' => array('display' => __('Poller Interval'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The Polling Frequency for the Profile')),
 		'heartbeat' => array('display' => __('Heartbeat'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The Amount of Time, in seconds, without good data before Data is stored as Unknown')),
 		'data_sources' => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources using this Profile.')),

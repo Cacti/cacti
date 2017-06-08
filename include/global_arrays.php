@@ -490,6 +490,8 @@ $poller_options = array(1 =>
 
 $aggregation_levels = array(
 	1       => __('Selected Poller Interval'),
+	30      => __('%d Seconds', 30),
+	60      => __('1 Minute'),
 	300     => __('%d Minutes', 5),
 	600     => __('%d Minutes', 10),
 	900     => __('%d Minutes', 15),
