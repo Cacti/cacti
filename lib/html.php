@@ -1199,7 +1199,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		}
 
 		$('tr[id^="line"]').not('.disabled_row').find('td').not('.checkbox').each(function(data) {
-			$(this).click(function(data) {
+			$(this).unbind().click(function(data) {
 				$(this).closest('tr').toggleClass('selected');
 				var checkbox = $(this).parent().find(':checkbox');
 				checkbox.prop('checked', !checkbox.is(':checked'));
@@ -1207,7 +1207,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		});
 
 		$('tr[id^="line"]').find('input.checkbox').each(function(data) {
-			$(this).click(function(data) {
+			$(this).unbind().click(function(data) {
 				if (!$(this).closest('tr').hasClass('disabled_row')) {
 					$(this).closest('tr').toggleClass('selected');
 				}

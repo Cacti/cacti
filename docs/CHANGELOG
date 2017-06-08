@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.1.10
 -issue#789: Unable to Clear Filter due to JavaScrpt name space collision
 -issue#794: SQL Error when creating graphs manually
+-issue#798: Cosmetic issue when checking checkboxes in Cacti
 -issue#800: Unchecked loop in lib/html_utility.php causing race condition
 
 1.1.9
