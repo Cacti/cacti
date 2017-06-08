@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.10
+-issue#779: Resolve random apache segfault due to recursion
 -issue#786: Unable to create second RRA for a Data Source Profile with collection rate less than 5 minutes
 -issue#789: Unable to Clear Filter due to JavaScrpt name space collision
 -issue#794: SQL Error when creating graphs manually

@@ -967,13 +967,11 @@ default:
 		case "classical":
 			$('#row_export_tree_options').hide();
 			$('#row_export_tree_isolation').hide();
-			$('#row_export_user_id').hide();
 			$('#row_export_tree_expand_hosts').hide();
 			break;
 		case "tree":
 			$('#row_export_tree_options').show();
 			$('#row_export_tree_isolation').show();
-			$('#row_export_user_id').show();
 			$('#row_export_tree_expand_hosts').show();
 			break;
 		}
