@@ -1060,16 +1060,22 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 			$rowcnt++;
 
 			if ($rowcnt > 1000) {
-				db_execute($prefix . $sql, true, $conn);
-				$rows_done += db_affected_rows($conn);
+				$query = db_prepare_statement($prefix . $sql, true, $conn);
+				db_execute($query, true, $conn);
+				$rows_done += $query->rowCount();
+				$query->closeCursor();
+				unset($query);
 				$sql = '';
 				$rowcnt = 0;
 			}
 		}
 
 		if ($rowcnt > 0) {
-			db_execute($prefix . $sql, true, $conn);
-			$rows_done += db_affected_rows($conn);
+                        $query = db_prepare_statement($prefix . $sql, true, $conn);
+			db_execute($query, true, $conn);
+                        $rows_done += $query->rowCount();
+                        $query->closeCursor();
+                        unset($query);
 		}
 
 		cacti_log('NOTE: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated');
