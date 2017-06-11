@@ -24,12 +24,14 @@
 
 /* api_data_source_crc_update - update hash stored in settings table to inform
    remote pollers to update their caches
-   @arg $poller_id - the id of the poller impacted by hash update 
+   @arg $poller_id - the id of the poller impacted by hash update
    @arg $variable  - the hash variable prefix for the replication setting. */
 function api_data_source_cache_crc_update($poller_id, $variable = 'poller_replicate_data_source_cache_crc') {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
 
-	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . "_" . "$poller_id'", array($hash));
+	db_execute_prepared("REPLACE INTO settings
+		SET value = ?, name='$variable" . "_" . "$poller_id'",
+		array($hash));
 }
 
 function api_data_source_remove($local_data_id) {
@@ -43,26 +45,26 @@ function api_data_source_remove($local_data_id) {
 	$acmethod  = read_config_option('rrd_autoclean_method');
 
 	if ($autoclean == 'on') {
-		$dsinfo = db_fetch_row_prepared('SELECT local_data_id, data_source_path 
-			FROM data_template_data 
+		$dsinfo = db_fetch_row_prepared('SELECT local_data_id, data_source_path
+			FROM data_template_data
 			WHERE local_data_id = ?', array($local_data_id));
 
 		if (sizeof($dsinfo)) {
 			$filename = str_replace('<path_cacti>/', '', $dsinfo['data_source_path']);
-			db_execute_prepared('INSERT INTO data_source_purge_action 
-				(local_data_id, name, action) VALUES (?, ?, ?) 
-				ON DUPLICATE KEY UPDATE action=VALUES(action)', 
+			db_execute_prepared('INSERT INTO data_source_purge_action
+				(local_data_id, name, action) VALUES (?, ?, ?)
+				ON DUPLICATE KEY UPDATE action=VALUES(action)',
 				array($local_data_id, $filename, $acmethod));
 		}
 	}
 
-	$data_template_data_id = db_fetch_cell_prepared('SELECT id 
-		FROM data_template_data 
+	$data_template_data_id = db_fetch_cell_prepared('SELECT id
+		FROM data_template_data
 		WHERE local_data_id = ?', array($local_data_id));
 
 	if (!empty($data_template_data_id)) {
-		db_execute_prepared('DELETE 
-			FROM data_input_data 
+		db_execute_prepared('DELETE
+			FROM data_input_data
 			WHERE data_template_data_id = ?', array($data_template_data_id));
 	}
 
@@ -123,8 +125,8 @@ function api_data_source_remove_multi($local_data_ids) {
 
 		}
 
-		$poller_ids = array_rekey(db_fetch_assoc('SELECT poller_id 
-			FROM poller_item 
+		$poller_ids = array_rekey(db_fetch_assoc('SELECT poller_id
+			FROM poller_item
 			WHERE local_data_id IN(' . implode(',', $ids_to_delete) .')'), 'poller_id', 'poller_id');
 
 		db_execute('DELETE FROM data_template_data WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
@@ -163,13 +165,23 @@ function api_data_source_remove_multi($local_data_ids) {
 }
 
 function api_data_source_enable($local_data_id) {
-	db_execute_prepared("UPDATE data_template_data SET active = 'on' WHERE local_data_id = ?", array($local_data_id));
+	db_execute_prepared("UPDATE data_template_data
+		SET active = 'on'
+		WHERE local_data_id = ?",
+		array($local_data_id));
+
 	update_poller_cache($local_data_id, true);
  }
 
 function api_data_source_disable($local_data_id) {
-	db_execute_prepared('DELETE FROM poller_item WHERE local_data_id = ?', array($local_data_id));
-	db_execute_prepared("UPDATE data_template_data SET active='' WHERE local_data_id = ?", array($local_data_id));
+	db_execute_prepared('DELETE FROM poller_item
+		WHERE local_data_id = ?',
+		array($local_data_id));
+
+	db_execute_prepared("UPDATE data_template_data
+		SET active=''
+		WHERE local_data_id = ?",
+		array($local_data_id));
 }
 
 function api_data_source_disable_multi($local_data_ids) {
@@ -189,8 +201,8 @@ function api_data_source_disable_multi($local_data_ids) {
 			$i++;
 
 			if (!($i % 1000)) {
-				$poller_ids = array_rekey(db_fetch_assoc('SELECT poller_id 
-					FROM poller_item 
+				$poller_ids = array_rekey(db_fetch_assoc('SELECT poller_id
+					FROM poller_item
 					WHERE local_data_id IN(' . $ids_to_delete . ')'), 'poller_id', 'poller_id');
 
 				db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
@@ -202,8 +214,8 @@ function api_data_source_disable_multi($local_data_ids) {
 		}
 
 		if ($i > 0) {
-			$poller_ids = array_rekey(db_fetch_assoc('SELECT poller_id 
-				FROM poller_item 
+			$poller_ids = array_rekey(db_fetch_assoc('SELECT poller_id
+				FROM poller_item
 				WHERE local_data_id IN(' . $ids_to_delete .')'), 'poller_id', 'poller_id');
 
 			db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
@@ -221,23 +233,33 @@ function api_data_source_disable_multi($local_data_ids) {
 function api_reapply_suggested_data_source_title($local_data_id) {
 	global $config;
 
-	$data_template_data_id = db_fetch_cell_prepared('SELECT id FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
+	$data_template_data_id = db_fetch_cell_prepared('SELECT id
+		FROM data_template_data
+		WHERE local_data_id = ?',
+		array($local_data_id));
+
 	if (empty($data_template_data_id)) {
 		return;
 	}
 
 	/* require query type data sources only (snmp_query_id > 0) */
-	$data_local = db_fetch_row_prepared('SELECT id, host_id, data_template_id, snmp_query_id, snmp_index FROM data_local WHERE snmp_query_id > 0 AND id = ?', array($local_data_id));
+	$data_local = db_fetch_row_prepared('SELECT id, host_id,
+		data_template_id, snmp_query_id, snmp_index
+		FROM data_local
+		WHERE snmp_query_id > 0
+		AND id = ?',
+		array($local_data_id));
+
 	/* if this is not a data query graph, simply return */
 	if (!isset($data_local['host_id'])) {
 		return;
 	}
 
-	$snmp_query_graph_id = db_fetch_cell_prepared("SELECT 
-		data_input_data.value FROM data_input_data 
-		JOIN data_input_fields ON (data_input_data.data_input_field_id = data_input_fields.id) 
-		JOIN data_template_data ON (data_template_data.id = data_input_data.data_template_data_id) 
-		WHERE data_input_fields.type_code = 'output_type' 
+	$snmp_query_graph_id = db_fetch_cell_prepared("SELECT
+		data_input_data.value FROM data_input_data
+		JOIN data_input_fields ON (data_input_data.data_input_field_id = data_input_fields.id)
+		JOIN data_template_data ON (data_template_data.id = data_input_data.data_template_data_id)
+		WHERE data_input_fields.type_code = 'output_type'
 		AND data_template_data.local_data_id = ?", array($data_local['id']));
 
 	/* no snmp query graph id found */
@@ -245,9 +267,9 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 		return;
 	}
 
-	$suggested_values = db_fetch_assoc_prepared("SELECT 
-		text, field_name 
-		FROM snmp_query_graph_rrd_sv 
+	$suggested_values = db_fetch_assoc_prepared("SELECT
+		text, field_name
+		FROM snmp_query_graph_rrd_sv
 		WHERE snmp_query_graph_id = ?
 		AND data_template_id = ?
 		AND field_name = 'name'
@@ -258,11 +280,16 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 		foreach ($suggested_values as $suggested_value) {
 			if(!isset($suggested_values_data{$suggested_value['field_name']})) {
  				$subs_string = substitute_snmp_query_data($suggested_value['text'],$data_local['host_id'],
-								$data_local['snmp_query_id'], $data_local['snmp_index'],
-								read_config_option('max_data_query_field_length'));
+					$data_local['snmp_query_id'], $data_local['snmp_index'],
+					read_config_option('max_data_query_field_length'));
+
 				/* if there are no '|query' characters, all of the substitutions were successful */
 				if (!substr_count($subs_string, '|query')) {
-					db_execute_prepared('UPDATE data_template_data SET ' . $suggested_value['field_name'] . ' = ? WHERE local_data_id = ?', array($suggested_value['text'], $local_data_id));
+					db_execute_prepared('UPDATE data_template_data
+						SET ' . $suggested_value['field_name'] . ' = ?
+						WHERE local_data_id = ?',
+						array($suggested_value['text'], $local_data_id));
+
 					/* once we find a working value for that very field, stop */
 					$suggested_values_data{$suggested_value['field_name']} = true;
 				}
@@ -275,11 +302,25 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	global $struct_data_source, $struct_data_source_item;
 
 	if (!empty($_local_data_id)) {
-		$data_local         = db_fetch_row_prepared('SELECT * FROM data_local WHERE id = ?', array($_local_data_id));
-		$data_template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE local_data_id = ?', array($_local_data_id));
+		$data_local         = db_fetch_row_prepared('SELECT *
+			FROM data_local
+			WHERE id = ?',
+			array($_local_data_id));
 
-		$data_template_rrds = db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE local_data_id = ?', array($_local_data_id));
-		$data_input_datas   = db_fetch_assoc_prepared('SELECT * FROM data_input_data WHERE data_template_data_id = ?', array($data_template_data['id']));
+		$data_template_data = db_fetch_row_prepared('SELECT *
+			FROM data_template_data
+			WHERE local_data_id = ?',
+			array($_local_data_id));
+
+		$data_template_rrds = db_fetch_assoc_prepared('SELECT *
+			FROM data_template_rrd
+			WHERE local_data_id = ?',
+			array($_local_data_id));
+
+		$data_input_datas   = db_fetch_assoc_prepared('SELECT *
+			FROM data_input_data
+			WHERE data_template_data_id = ?',
+			array($data_template_data['id']));
 
 		/* create new entry: data_local */
 		$save['id']               = 0;
@@ -292,11 +333,27 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 
 		$data_template_data['name'] = str_replace('<ds_title>', $data_template_data['name'], $data_source_title);
 	} elseif (!empty($_data_template_id)) {
-		$data_template      = db_fetch_row_prepared('SELECT * FROM data_template WHERE id = ?', array($_data_template_id));
-		$data_template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE data_template_id = ? AND local_data_id=0', array($_data_template_id));
+		$data_template      = db_fetch_row_prepared('SELECT *
+			FROM data_template
+			WHERE id = ?',
+			array($_data_template_id));
 
-		$data_template_rrds = db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE data_template_id = ? AND local_data_id=0', array($_data_template_id));
-		$data_input_datas   = db_fetch_assoc_prepared('SELECT * FROM data_input_data WHERE data_template_data_id = ?', array($data_template_data['id']));
+		$data_template_data = db_fetch_row_prepared('SELECT *
+			FROM data_template_data
+			WHERE data_template_id = ?
+			AND local_data_id=0',
+			array($_data_template_id));
+
+		$data_template_rrds = db_fetch_assoc_prepared('SELECT *
+			FROM data_template_rrd
+			WHERE data_template_id = ?
+			AND local_data_id=0',
+			array($_data_template_id));
+
+		$data_input_datas   = db_fetch_assoc_prepared('SELECT *
+			FROM data_input_data
+			WHERE data_template_data_id = ?',
+			array($data_template_data['id']));
 
 		/* create new entry: data_template */
 		$save['id']   = 0;
@@ -327,7 +384,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	$data_template_data_id = sql_save($save, 'data_template_data');
 
 	/* create new entry(s): data_template_rrd */
-	if (sizeof($data_template_rrds) > 0) {
+	if (sizeof($data_template_rrds)) {
 		foreach ($data_template_rrds as $data_template_rrd) {
 			unset($save);
 
@@ -354,10 +411,10 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	}
 
 	/* create new entry(s): data_input_data */
-	if (sizeof($data_input_datas) > 0) {
+	if (sizeof($data_input_datas)) {
 		foreach ($data_input_datas as $data_input_data) {
-			db_execute_prepared('INSERT INTO data_input_data 
-				(data_input_field_id, data_template_data_id, t_value, value) 
+			db_execute_prepared('INSERT INTO data_input_data
+				(data_input_field_id, data_template_data_id, t_value, value)
 				VALUES (?, ?, ?, ?)',
 				array($data_input_data['data_input_field_id'], $data_template_data_id, $data_input_data['t_value'], $data_input_data['value']));
 		}
