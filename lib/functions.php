@@ -4154,8 +4154,10 @@ function get_timeinstate($host) {
 		$time = $host['status_event_count'] * $interval;
 	} elseif (strtotime($host['status_rec_date']) > 943916400) {
 		$time = time() - strtotime($host['status_rec_date']);
-	} else {
+	} elseif ($host['snmp_sysUpTimeInstance'] > 0) {
 		$time = $host['snmp_sysUpTimeInstance']/100;
+	} else {
+		$time = 0;
 	}
 
 	if ($time > 86400) {
@@ -4187,7 +4189,7 @@ function get_classic_tabimage($text, $down = false) {
 
 	if ($text == '') return false;
 
-	$text         = strtolower($text);
+	$text = strtolower($text);
 
 	$possibles = array(
 		array('DejaVuSans-Bold.ttf', 9, true),

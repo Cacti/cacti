@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#800: Unchecked loop in lib/html_utility.php causing race condition
 -issue#802: Issue updating device hostname with SNMP data queries
 -issue#803: Issues with utf8mb4 introduced via optimization
+-issue: If the device is down and snmp_sysUpTimeInstance is 0, time in state can be wrong
 
 1.1.9
 -issue#788: Fails on PHP Fatal error if LDAP auth enabled
