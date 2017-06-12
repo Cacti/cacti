@@ -4,17 +4,17 @@ Cacti CHANGELOG
 -issue#779: Resolve random apache segfault due to recursion
 -issue#786: Unable to create second RRA for a Data Source Profile with collection rate less than 5 minutes
 -issue#789: Unable to Clear Filter due to JavaScrpt name space collision
+-issue#791: cacti 1.1.9 and clog_webapi.php permission issue
 -issue#794: SQL Error when creating graphs manually
 -issue#798: Cosmetic issue when checking checkboxes in Cacti
 -issue#800: Unchecked loop in lib/html_utility.php causing race condition
 -issue#802: Issue updating device hostname with SNMP data queries
 -issue#803: Issues with utf8mb4 introduced via optimization
 -issue: If the device is down and snmp_sysUpTimeInstance is 0, time in state can be wrong
+-feature: Updated Dutch translations
 
 1.1.9
 -issue#788: Fails on PHP Fatal error if LDAP auth enabled
--issue#791: cacti 1.1.9 and clog_webapi.php permission issue
--feature: Updated Dutch translations
 
 1.1.8
 -issue#529: Issue on Graph New page with checkbox unselected
