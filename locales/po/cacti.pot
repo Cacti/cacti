@@ -10054,7 +10054,6 @@ msgid "Variance Percentage"
 msgstr ""
 
 #: ../include/global_settings.php:1689
-#, php-format
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
 "outliers\n"
