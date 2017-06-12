@@ -384,7 +384,7 @@ $enabled = '1';
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.storageapi.js'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/js.storage.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablednd.js'></script>
@@ -619,19 +619,12 @@ $enabled = '1';
 								print '<h4>' . __('Remote Poller Cacti database connection information') . '</h4>';
 
 								if (!$good_write) {
-									print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your config.php file must be writable by
-										the web server during install in order to configure the Remote poller.  Once
-										installation is complete, you must set this file to Read Only to prevent
-										possible security issues.');
+									print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your config.php file must be writable by the web server during install in order to configure the Remote poller.  Once installation is complete, you must set this file to Read Only to prevent possible security issues.');
 									print '</p>';
 								}
 
 								if (!$remote_good) {
-									print '<p class="textError">' . __('ERROR:') . '</strong> ' . __('Your Remote Cacti Poller information has not
-										been included in your config.php file.  Please review the config.php.dist, and
-										set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.
-										These variables must be set and point back to your Primary Cacti database server.
-										Correct this and try again.') . '</p>';
+									print '<p class="textError">' . __('ERROR:') . '</strong> ' . __('Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again.') . '</p>';
 
 									print '<p>' . __('The variables that must be set include the following:') . '</p>';
 									print '<ul>';
@@ -646,10 +639,7 @@ $enabled = '1';
 
 									print '<p>' . __('You must also set the $poller_id variable in the config.php.') . '</p>';
 
-									print '<p>' . __('Once you have the variables set in the config.php file, you must also
-										grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with
-										any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is
-										successful you will be able to proceed and complete the install.') . '</p>';
+									print '<p>' . __('Once you have the variables set in the config.php file, you must also grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is successful you will be able to proceed and complete the install.') . '</p>';
 								}
 							}
 						}
@@ -868,10 +858,7 @@ $enabled = '1';
 						} else {
 							print '<p><strong><font color="#FF0000">';
 
-							print __('NOTE:') . '</font></strong> ' . __('For remote pollers, it is critical that
-								the paths that you will be updating frequently, including the plugins, scripts,
-								and resources paths have read/write access as the data collector will have to
-								update these paths from the main web server content.');
+							print __('NOTE:') . '</font></strong> ' . __('For remote pollers, it is critical that the paths that you will be updating frequently, including the plugins, scripts, and resources paths have read/write access as the data collector will have to update these paths from the main web server content.');
 
 							print '</p>';
 						}

@@ -24,7 +24,7 @@
 
 /* api_device_crc_update - update hash stored in settings table to inform
    remote pollers to update their caches
-   @arg $poller_id - the id of the poller impacted by hash update 
+   @arg $poller_id - the id of the poller impacted by hash update
    @arg $variable  - the hash variable prefix for the replication setting. */
 function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_device_cache_crc') {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
@@ -75,8 +75,8 @@ function api_device_remove_multi($device_ids) {
 			$i++;
 		}
 
-		$poller_ids = array_rekey(db_fetch_assoc("SELECT DISTINCT poller_id 
-			FROM host 
+		$poller_ids = array_rekey(db_fetch_assoc("SELECT DISTINCT poller_id
+			FROM host
 			WHERE id IN ($devices_to_delete)"), 'poller_id', 'poller_id');
 
 		db_execute("DELETE FROM host             WHERE id IN ($devices_to_delete)");
@@ -102,7 +102,7 @@ function api_device_remove_multi($device_ids) {
 
 /* api_device_dq_add - adds a device->data query mapping
    @arg $device_id - the id of the device which contains the mapping
-   @arg $data_query_id - the id of the data query to remove the mapping for 
+   @arg $data_query_id - the id of the data query to remove the mapping for
    @arg $reindex_method - the reindex method to user when adding the data query */
 function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
     db_execute_prepared('REPLACE INTO host_snmp_query
@@ -118,37 +118,37 @@ function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
    @arg $device_id - the id of the device which contains the mapping
    @arg $data_query_id - the id of the data query to remove the mapping for */
 function api_device_dq_remove($device_id, $data_query_id) {
-	db_execute_prepared('DELETE FROM host_snmp_cache 
-		WHERE snmp_query_id = ? 
-		AND host_id = ?', 
+	db_execute_prepared('DELETE FROM host_snmp_cache
+		WHERE snmp_query_id = ?
+		AND host_id = ?',
 		array($data_query_id, $device_id));
 
-	db_execute_prepared('DELETE FROM host_snmp_query 
-		WHERE snmp_query_id = ? 
-		AND host_id = ?', 
+	db_execute_prepared('DELETE FROM host_snmp_query
+		WHERE snmp_query_id = ?
+		AND host_id = ?',
 		array($data_query_id, $device_id));
 
 	db_execute_prepared('DELETE FROM poller_reindex
-		WHERE data_query_id = ? 
-		AND host_id = ?', 
+		WHERE data_query_id = ?
+		AND host_id = ?',
 		array($data_query_id, $device_id));
 }
 
 /* api_device_dq_change - changes a device->data query mapping
    @arg $device_id - the id of the device which contains the mapping
-   @arg $data_query_id - the id of the data query to remove the mapping for 
+   @arg $data_query_id - the id of the data query to remove the mapping for
    @arg $reindex_method - the reindex method to use when changing the data query */
 function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
-	db_execute_prepared('INSERT INTO host_snmp_query 
-		(host_id, snmp_query_id, reindex_method) 
-		VALUES (?, ?, ?) 
-		ON DUPLICATE KEY UPDATE reindex_method=VALUES(reindex_method)', 
+	db_execute_prepared('INSERT INTO host_snmp_query
+		(host_id, snmp_query_id, reindex_method)
+		VALUES (?, ?, ?)
+		ON DUPLICATE KEY UPDATE reindex_method=VALUES(reindex_method)',
 		array($device_id, $data_query_id, $reindex_method));
 
 	cacti_log("INSERT INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES ($device_id, $data_query_id, $reindex_method) ON DUPLICATE KEY UPDATE reindex_method=VALUES(reindex_method)");
 
-	db_execute_prepared('DELETE FROM poller_reindex 
-		WHERE data_query_id = ? 
+	db_execute_prepared('DELETE FROM poller_reindex
+		WHERE data_query_id = ?
 		AND host_id = ?', array($data_query_id, $device_id));
 
 	/* finally rerun the data query */
@@ -159,9 +159,9 @@ function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
    @arg $device_id - the id of the device which contains the mapping
    @arg $graph_template_id - the id of the graph template to remove the mapping for */
 function api_device_gt_remove($device_id, $graph_template_id) {
-	db_execute_prepared('DELETE FROM host_graph 
-		WHERE graph_template_id = ? 
-		AND host_id = ?', 
+	db_execute_prepared('DELETE FROM host_graph
+		WHERE graph_template_id = ?
+		AND host_id = ?',
 		array($graph_template_id, $device_id));
 }
 
@@ -244,6 +244,11 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		if ($host_id) {
 			raise_message(1);
 
+			/* clear the host session data for poller cache repopulation */
+			if (isset($_SESSION['sess_host_cache_array'][$host_id])) {
+				unset($_SESSION['sess_host_cache_array'][$host_id]);
+			}
+
 			/* change reindex method for 'None' for non-snmp devices */
 			if ($save['snmp_version'] == 0) {
 				db_execute_prepared('UPDATE host_snmp_query SET reindex_method = 0 WHERE host_id = ?', array($host_id));
@@ -280,7 +285,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 						if ($config['cacti_server_os'] != 'win32') {
 							$owner_id      = fileowner($config['rra_path']);
 							$group_id      = filegroup($config['rra_path']);
-		
+
 							if ((chown($host_dir, $owner_id)) &&
 								(chgrp($host_dir, $group_id))) {
 								/* permissions set ok */
@@ -316,15 +321,15 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 function api_device_update_host_template($host_id, $host_template_id) {
 	db_execute_prepared('UPDATE host SET host_template_id = ? WHERE id = ?', array($host_template_id, $host_id));
 
-	$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id 
-		FROM host_template_snmp_query 
+	$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
+		FROM host_template_snmp_query
 		WHERE host_template_id = ?', array($host_template_id));
 
 	if (sizeof($snmp_queries)) {
 		foreach ($snmp_queries as $snmp_query) {
-			db_execute_prepared('REPLACE INTO host_snmp_query 
-				(host_id, snmp_query_id, reindex_method) 
-				VALUES (?, ?, ?)', 
+			db_execute_prepared('REPLACE INTO host_snmp_query
+				(host_id, snmp_query_id, reindex_method)
+				VALUES (?, ?, ?)',
 				array($host_id, $snmp_query['snmp_query_id'], read_config_option('reindex_method')));
 
 			/* recache snmp data */
@@ -332,20 +337,20 @@ function api_device_update_host_template($host_id, $host_template_id) {
 		}
 	}
 
-	$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id 
-		FROM host_template_graph 
+	$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id
+		FROM host_template_graph
 		WHERE host_template_id = ?', array($host_template_id));
 
 	if (sizeof($graph_templates)) {
 		foreach ($graph_templates as $graph_template) {
-			db_execute_prepared('REPLACE INTO host_graph 
-				(host_id, graph_template_id) 
-				VALUES (?, ?)', 
+			db_execute_prepared('REPLACE INTO host_graph
+				(host_id, graph_template_id)
+				VALUES (?, ?)',
 				array($host_id, $graph_template['graph_template_id']));
 
 			automation_hook_graph_template($host_id, $graph_template['graph_template_id']);
 
-			api_plugin_hook_function('add_graph_template_to_host', 
+			api_plugin_hook_function('add_graph_template_to_host',
 				array('host_id' => $host_id, 'graph_template_id' => $graph_template['graph_template_id']));
 		}
 	}
@@ -362,9 +367,9 @@ function api_device_template_sync_template($device_template, $down_devices = fal
 	}
 
 	$devices = array_rekey(
-		db_fetch_assoc_prepared('SELECT id 
-			FROM host 
-			WHERE host_template_id = ?' . 
+		db_fetch_assoc_prepared('SELECT id
+			FROM host
+			WHERE host_template_id = ?' .
 			$status_where,
 			array($device_template)),
 		'id', 'id'

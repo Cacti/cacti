@@ -294,7 +294,7 @@ function upgrade_to_1_0_0() {
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `snmpagent_managers_notifications` (
 		`manager_id` int(8) NOT NULL,
-		`notification` varchar(255) NOT NULL,
+		`notification` varchar(190) NOT NULL,
 		`mib` varchar(191) NOT NULL,
 		KEY `mib` (`mib`),
 		KEY `manager_id` (`manager_id`),
@@ -311,7 +311,7 @@ function upgrade_to_1_0_0() {
 		`time` int(24) NOT NULL,
 		`severity` tinyint(1) NOT NULL,
 		`manager_id` int(8) NOT NULL,
-		`notification` varchar(255) NOT NULL,
+		`notification` varchar(190) NOT NULL,
 		`mib` varchar(191) NOT NULL,
 		`varbinds` varchar(5000) NOT NULL,
 		PRIMARY KEY (`id`),
@@ -321,7 +321,7 @@ function upgrade_to_1_0_0() {
 		KEY `manager_id2` (`manager_id`,`notification`))
 		ENGINE=$engine
 		COMMENT='logs snmp notifications to receivers';");
-		
+
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_purge_temp` (
 		`id` integer UNSIGNED auto_increment,
 		`name_cache` varchar(255) NOT NULL default '',
@@ -332,11 +332,11 @@ function upgrade_to_1_0_0() {
 		`in_cacti` tinyint NOT NULL default '0',
 		`data_template_id` mediumint(8) unsigned NOT NULL default '0',
 		PRIMARY KEY (`id`),
-		UNIQUE KEY name (`name`), 
-		KEY local_data_id (`local_data_id`), 
-		KEY in_cacti (`in_cacti`), 
-		KEY data_template_id (`data_template_id`)) 
-		ENGINE=$engine 
+		UNIQUE KEY name (`name`),
+		KEY local_data_id (`local_data_id`),
+		KEY in_cacti (`in_cacti`),
+		KEY data_template_id (`data_template_id`))
+		ENGINE=$engine
 		COMMENT='RRD Cleaner File Repository';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
@@ -346,7 +346,7 @@ function upgrade_to_1_0_0() {
 		`action` tinyint(2) NOT NULL default 0,
 		PRIMARY KEY (`id`),
 		UNIQUE KEY name (`name`))
-		ENGINE=$engine 
+		ENGINE=$engine
 		COMMENT='RRD Cleaner File Actions';");
 
 	db_install_add_column ('graph_tree', array('name' => 'enabled', 'type' => 'char(2)', 'default' => 'on', 'after' => 'id'));
@@ -373,31 +373,31 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (`id`),
 		UNIQUE KEY `tokenkey` (`token`),
 		KEY `hostname` (`hostname`),
-		KEY `user_id` (`user_id`)) 
-		ENGINE=InnoDB 
+		KEY `user_id` (`user_id`))
+		ENGINE=InnoDB
 		COMMENT='Caches Remember Me Details'");
 
-	db_install_execute("ALTER TABLE host 
-		MODIFY COLUMN status_fail_date timestamp NOT NULL DEFAULT '0000-00-00 00:00:00', 
+	db_install_execute("ALTER TABLE host
+		MODIFY COLUMN status_fail_date timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 		MODIFY COLUMN status_rec_date timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
-		
+
 	db_install_execute("ALTER TABLE poller
 		MODIFY COLUMN last_update timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
-		
+
 	db_install_execute("ALTER TABLE poller_command
 		MODIFY COLUMN time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
-		
+
 	db_install_execute("ALTER TABLE poller_output
 		MODIFY COLUMN time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
-	
+
 	db_install_execute("ALTER TABLE poller_time
 		MODIFY COLUMN start_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 		MODIFY COLUMN end_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
-	
+
 	db_install_execute("ALTER TABLE user_log
 		MODIFY COLUMN time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
-	
-		
+
+
 	// Add secpass fields
 	db_install_add_column ('user_auth', array('name' => 'lastchange', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
 	db_install_add_column ('user_auth', array('name' => 'lastlogin', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
@@ -412,10 +412,10 @@ function upgrade_to_1_0_0() {
 
 		if (sizeof($trees)) {
 			foreach($trees as $t) {
-				$tree_items = db_fetch_assoc("SELECT * 
-					FROM graph_tree_items 
-					WHERE graph_tree_id=" . $t['id'] . " 
-					AND order_key NOT LIKE '___000%' 
+				$tree_items = db_fetch_assoc("SELECT *
+					FROM graph_tree_items
+					WHERE graph_tree_id=" . $t['id'] . "
+					AND order_key NOT LIKE '___000%'
 					ORDER BY order_key");
 
 				/* reset the position variable in case we run more than once */
@@ -435,16 +435,16 @@ function upgrade_to_1_0_0() {
 						$parent_key_len = strlen($translated_key) - CHARS_PER_TIER;
 						$parent_key     = substr($translated_key, 0, $parent_key_len);
 						$parent_id      = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id=" . $item["graph_tree_id"] . " AND order_key LIKE '" . $parent_key . "000%'");
-	
+
 						if (!empty($parent_id)) {
 							/* get order */
 							if ($parent_id != $prev_parent) {
 								$position = 0;
 							}
 
-							$position = db_fetch_cell("SELECT MAX(position) 
-								FROM graph_tree_items 
-								WHERE graph_tree_id=" . $item['graph_tree_id'] . " 
+							$position = db_fetch_cell("SELECT MAX(position)
+								FROM graph_tree_items
+								WHERE graph_tree_id=" . $item['graph_tree_id'] . "
 								AND parent=" . $parent_id) + 1;
 
 							db_execute("UPDATE graph_tree_items SET parent=$parent_id, position=$position WHERE id=" . $item["id"]);
@@ -457,10 +457,10 @@ function upgrade_to_1_0_0() {
 				}
 
 				/* get base tree items and set position */
-				$tree_items = db_fetch_assoc("SELECT * 
+				$tree_items = db_fetch_assoc("SELECT *
 					FROM graph_tree_items
-					WHERE graph_tree_id=" . $t['id'] . " 
-					AND order_key LIKE '___000%' 
+					WHERE graph_tree_id=" . $t['id'] . "
+					AND order_key LIKE '___000%'
 					ORDER BY order_key");
 
 				$position = 0;
@@ -508,7 +508,7 @@ function upgrade_to_1_0_0() {
 		output text NOT NULL,
 		poller_id varchar(256) NOT NULL default '',
 		PRIMARY KEY  (local_data_id,rrd_name,`time`),
-		KEY poller_id(poller_id(191))) 
+		KEY poller_id(poller_id(191)))
 		ENGINE=$engine");
 
 	db_install_drop_table('poller_output_rt');
@@ -545,10 +545,10 @@ function upgrade_to_1_0_0() {
 			`lastsent` bigint(20) unsigned NOT NULL DEFAULT '0',
 			`enabled` char(2) DEFAULT '',
 			PRIMARY KEY (`id`),
-			KEY `mailtime` (`mailtime`)) 
-			ENGINE=$engine 
+			KEY `mailtime` (`mailtime`))
+			ENGINE=$engine
 			COMMENT='Cacri Reporting Reports'");
-	
+
 		db_install_execute("CREATE TABLE IF NOT EXISTS `reports_items` (
 			`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			`report_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -567,8 +567,8 @@ function upgrade_to_1_0_0() {
 			`font_size` smallint(2) unsigned NOT NULL DEFAULT '10',
 			`sequence` smallint(5) unsigned NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`),
-			KEY `report_id` (`report_id`)) 
-			ENGINE=$engine 
+			KEY `report_id` (`report_id`))
+			ENGINE=$engine
 			COMMENT='Cacti Reporting Items'");
 	} else {
 		db_install_rename_table('plugin_nectar', 'reports');
@@ -602,14 +602,14 @@ function upgrade_to_1_0_0() {
 		$items = db_fetch_assoc("SELECT * FROM reports_items WHERE item_type=1");
 		if (sizeof($items)) {
 			foreach ($items as $row) {
-				$host = db_fetch_row("SELECT host.* 
-					FROM graph_local 
-					LEFT JOIN host 
-					ON (graph_local.host_id=host.id) 
+				$host = db_fetch_row("SELECT host.*
+					FROM graph_local
+					LEFT JOIN host
+					ON (graph_local.host_id=host.id)
 					WHERE graph_local.id=" . $row["local_graph_id"]);
 
-				$graph_template = db_fetch_cell("SELECT graph_template_id 
-					FROM graph_local 
+				$graph_template = db_fetch_cell("SELECT graph_template_id
+					FROM graph_local
 					WHERE id=" . $row["local_graph_id"]);
 
 				db_execute("UPDATE reports_items SET " .
@@ -869,10 +869,10 @@ function upgrade_to_1_0_0() {
 		$data['comment'] = 'Automation Match Rule Items';
 		db_table_create ('plugin_autom8_match_rule_items', $data);
 
-		$sql[] = "INSERT IGNORE INTO `plugin_autom8_match_rule_items` 
-			(`id`, `rule_id`, `rule_type`, `sequence`, `operation`, `field`, `operator`, `pattern`) 
-			VALUES 
-			(1, 1, 1, 1, 0, 'h.description', 14, ''), 
+		$sql[] = "INSERT IGNORE INTO `plugin_autom8_match_rule_items`
+			(`id`, `rule_id`, `rule_type`, `sequence`, `operation`, `field`, `operator`, `pattern`)
+			VALUES
+			(1, 1, 1, 1, 0, 'h.description', 14, ''),
 			(2, 1, 1, 2, 1, 'h.snmp_version', 12, '2'),
 			(3, 1, 3, 1, 0, 'ht.name', 1, 'Linux'),
 			(4, 2, 1, 1, 0, 'ht.name', 1, 'Linux'),
@@ -903,7 +903,7 @@ function upgrade_to_1_0_0() {
 
 		$sql[] = "INSERT IGNORE INTO `plugin_autom8_graph_rules`
 			(`id`, `name`, `snmp_query_id`, `graph_type_id`, `enabled`)
-			VALUES 
+			VALUES
 			(1, 'Traffic 64 bit Server', 1, 14, ''),
 			(2, 'Traffic 64 bit Server Linux', 1, 14, ''),
 			(3, 'Disk Space', 8, 18, '')";
@@ -999,10 +999,10 @@ function upgrade_to_1_0_0() {
 
 	/* autom8 table renames */
 	$autom8_tables = array(
-		'plugin_autom8_graph_rules', 
-		'plugin_autom8_graph_rule_items', 
-		'plugin_autom8_match_rule_items', 
-		'plugin_autom8_tree_rules', 
+		'plugin_autom8_graph_rules',
+		'plugin_autom8_graph_rule_items',
+		'plugin_autom8_match_rule_items',
+		'plugin_autom8_tree_rules',
 		'plugin_autom8_tree_rule_items'
 	);
 
@@ -1032,13 +1032,13 @@ function upgrade_to_1_0_0() {
 		db_install_rename_table('plugin_discover_hosts', 'automation_devices');
 		db_install_drop_column('automation_devices', 'hash');
 
-		db_install_execute("ALTER TABLE automation_devices 
-			ADD COLUMN id BIGINT unsigned auto_increment FIRST, 
-			ADD COLUMN network_id INT unsigned NOT NULL default '0' AFTER id, 
+		db_install_execute("ALTER TABLE automation_devices
+			ADD COLUMN id BIGINT unsigned auto_increment FIRST,
+			ADD COLUMN network_id INT unsigned NOT NULL default '0' AFTER id,
 			ADD COLUMN snmp_port int(10) unsigned NOT NULL DEFAULT '161' AFTER snmp_version,
 			ADD COLUMN snmp_engine_id varchar(30) DEFAULT '' AFTER snmp_context,
 			DROP PRIMARY KEY,
-			ADD PRIMARY KEY(id), 
+			ADD PRIMARY KEY(id),
 			ADD UNIQUE INDEX ip(ip);
 			ADD INDEX network_id(network_id),
 			COMMENT='Table of Discovered Devices'");
@@ -1049,7 +1049,7 @@ function upgrade_to_1_0_0() {
 
 		if (db_table_exists('plugin_discover_template', false)) {
 			db_install_rename_table('plugin_discover_template', 'automation_templates');
-			db_install_execute("ALTER TABLE automation_templates 
+			db_install_execute("ALTER TABLE automation_templates
 				CHANGE COLUMN sysdescr sysDescr VARCHAR(255) DEFAULT ''");
 			db_install_add_column ('automation_templates', array('name' => 'availability_method', 'type' => 'int(10)', 'default' => 2, 'after' => 'host_template'));
 			db_install_add_column ('automation_templates', array('name' => 'sysName', 'type' => 'VARCHAR(255)', 'default' => '', 'after' => 'sysdescr'));
@@ -1088,8 +1088,8 @@ function upgrade_to_1_0_0() {
 		`time` int(11) NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`),
 		UNIQUE KEY `ip` (`ip`),
-		KEY `hostname` (`hostname`)) 
-		ENGINE=$engine 
+		KEY `hostname` (`hostname`))
+		ENGINE=$engine
 		COMMENT='Table of Discovered Devices'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_ips` (
@@ -1100,8 +1100,8 @@ function upgrade_to_1_0_0() {
 		`status` int(10) unsigned DEFAULT NULL,
 		`thread` int(10) unsigned DEFAULT NULL,
 		PRIMARY KEY (`ip_address`),
-		KEY `pid` (`pid`)) 
-		ENGINE=MEMORY 
+		KEY `pid` (`pid`))
+		ENGINE=MEMORY
 		COMMENT='List of discoverable ip addresses used for scanning'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_networks` (
@@ -1137,8 +1137,8 @@ function upgrade_to_1_0_0() {
 		`last_status` varchar(128) NOT NULL DEFAULT '' COMMENT 'The last exit message if any',
 		`rerun_data_queries` char(2) DEFAULT NULL COMMENT 'Rerun data queries or not for existing hosts',
 		PRIMARY KEY (`id`),
-		KEY `poller_id` (`poller_id`)) 
-		ENGINE=$engine 
+		KEY `poller_id` (`poller_id`))
+		ENGINE=$engine
 		COMMENT='Stores scanning subnet definitions'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_processes` (
@@ -1151,15 +1151,15 @@ function upgrade_to_1_0_0() {
 		`up_hosts` int(10) unsigned DEFAULT '0',
 		`snmp_hosts` int(10) unsigned DEFAULT '0',
 		`heartbeat` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-		PRIMARY KEY (`pid`, `network_id`)) 
-		ENGINE=MEMORY 
+		PRIMARY KEY (`pid`, `network_id`))
+		ENGINE=MEMORY
 		COMMENT='Table tracking active poller processes'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_snmp` (
 		`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 		`name` varchar(100) NOT NULL DEFAULT '',
-		PRIMARY KEY (`id`)) 
-		ENGINE=$engine 
+		PRIMARY KEY (`id`))
+		ENGINE=$engine
 		COMMENT='Group of SNMP Option Sets'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_snmp_items` (
@@ -1178,8 +1178,8 @@ function upgrade_to_1_0_0() {
 		`snmp_priv_passphrase` varchar(200) DEFAULT '',
 		`snmp_priv_protocol` char(6) DEFAULT '',
 		`snmp_context` varchar(64) DEFAULT '',
-		PRIMARY KEY (`id`,`snmp_id`)) 
-		ENGINE=$engine 
+		PRIMARY KEY (`id`,`snmp_id`))
+		ENGINE=$engine
 		COMMENT='Set of SNMP Options'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_templates` (
@@ -1190,8 +1190,8 @@ function upgrade_to_1_0_0() {
 		`sysName` varchar(255) NULL DEFAULT '',
 		`sysOid` varchar(60) NULL DEFAULT '',
 		`sequence` int(10) unsigned DEFAULT '0',
-		PRIMARY KEY (`id`)) 
-		ENGINE=$engine 
+		PRIMARY KEY (`id`))
+		ENGINE=$engine
 		COMMENT='Templates of SNMP Sys variables used for automation'");
 
 	db_install_execute("DELETE FROM plugin_config WHERE directory='discovery'");
@@ -1209,17 +1209,17 @@ function upgrade_to_1_0_0() {
 	}
 
 	/* stamp out duplicate colors */
-	$duplicates = db_fetch_assoc('SELECT hex, COUNT(*) AS totals 
+	$duplicates = db_fetch_assoc('SELECT hex, COUNT(*) AS totals
 		FROM colors
-		GROUP BY hex 
+		GROUP BY hex
 		HAVING totals > 1');
 
 	if (sizeof($duplicates)) {
 		foreach($duplicates as $duplicate) {
-			$hexes = db_fetch_assoc_prepared('SELECT id, hex 
+			$hexes = db_fetch_assoc_prepared('SELECT id, hex
 				FROM colors
-				WHERE hex = ? 
-				ORDER BY id ASC', 
+				WHERE hex = ?
+				ORDER BY id ASC',
 				array($duplicate['hex']));
 
 			$first = true;
@@ -1229,15 +1229,15 @@ function upgrade_to_1_0_0() {
 					$keephex = $hex['id'];
 					$first   = false;
 				} else {
-					db_execute_prepared('UPDATE graph_templates_item 
-						SET color_id = ? 
-						WHERE color_id = ?', 
+					db_execute_prepared('UPDATE graph_templates_item
+						SET color_id = ?
+						WHERE color_id = ?',
 						array($keephex, $hex['id']));
 
 					if (db_table_exists('color_template_items')) {
-						db_execute_prepared('UPDATE color_template_item 
-							SET color_id = ? 
-							WHERE color_id = ?', 
+						db_execute_prepared('UPDATE color_template_item
+							SET color_id = ?
+							WHERE color_id = ?',
 							array($keephex, $hex['id']));
 					}
 
@@ -1253,7 +1253,7 @@ function upgrade_to_1_0_0() {
 
 	// import remaining colors into database
 	import_colors();
-	
+
 	db_install_execute("ALTER TABLE settings MODIFY COLUMN value varchar(2048) NOT NULL default ''");
 	if (db_table_exists('settings_graphs', false)) {
 		db_install_execute("ALTER TABLE settings_graphs MODIFY COLUMN value varchar(2048) NOT NULL default ''");
@@ -1299,7 +1299,7 @@ function upgrade_to_1_0_0() {
 	db_install_add_column ('graph_templates_graph', array('name' => 'legend_position', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_position'));
 	db_install_add_column ('graph_templates_graph', array('name' => 't_legend_direction', 'type' => 'char(2)',  'default' => '', 'after' => 'legend_position'));
 	db_install_add_column ('graph_templates_graph', array('name' => 'legend_direction', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_direction'));
-		
+
 	/* create new table sessions */
 	$data = array();
 	$data['columns'][] = array('name' => 'id', 'type' => 'varchar(32)', 'NULL' => false );
@@ -1310,7 +1310,7 @@ function upgrade_to_1_0_0() {
 	$data['comment']   = 'Used for Database based Session Storage';
 	$data['type'] = $engine;
 	db_table_create('sessions', $data);
-		
+
 	/* create new table VDEF */
 	$data = array();
 	$data['columns'][] = array('name' => 'id', 'type' => 'mediumint(8)',    'unsigned' => 'unsigned', 'NULL' => false, 'auto_increment' => true);
@@ -1335,14 +1335,14 @@ function upgrade_to_1_0_0() {
 	$data['type'] = $engine;
 	db_table_create('vdef_items', $data);
 
-	
+
 	/* add admin permissions */
 	$userid= db_fetch_cell("SELECT * FROM user_auth WHERE id='1' AND username='admin'");
 	if (!empty($userid)) {
 	db_install_execute("REPLACE INTO `user_auth_realm` VALUES (19,1);");
 	db_install_execute("REPLACE INTO `user_auth_realm` VALUES (22,1);");
 	}
-	
+
 	/* fill table VDEF */
 	db_install_execute("REPLACE INTO `vdef` VALUES (1, 'e06ed529238448773038601afb3cf278', 'Maximum');");
 	db_install_execute("REPLACE INTO `vdef` VALUES (2, 'e4872dda82092393d6459c831a50dc3b', 'Minimum');");
@@ -1382,16 +1382,16 @@ function upgrade_to_1_0_0() {
 		`x_files_factor` double DEFAULT '0.5',
 		`default` char(2) DEFAULT '',
 		PRIMARY KEY (`id`))
-		ENGINE=$engine 
+		ENGINE=$engine
 		COMMENT='Stores Data Source Profiles'");
-		
+
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_profiles_cf` (
 		`data_source_profile_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
 		`consolidation_function_id` smallint(5) unsigned NOT NULL DEFAULT '0',
 		PRIMARY KEY (`data_source_profile_id`,`consolidation_function_id`),
 		KEY `data_source_profile_id` (`data_source_profile_id`))
-		ENGINE=$engine 
+		ENGINE=$engine
 		COMMENT='Maps the Data Source Profile Consolidation Functions'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_profiles_rra` (
@@ -1402,21 +1402,21 @@ function upgrade_to_1_0_0() {
 		`rows` int(10) unsigned NOT NULL DEFAULT '700',
 		PRIMARY KEY (`id`),
 		KEY `data_source_profile_id` (`data_source_profile_id`))
-		ENGINE=$engine 
+		ENGINE=$engine
 		COMMENT='Stores RRA Definitions for Data Source Profiles'");
 
 	/* get the current data source profiles */
 	if (db_table_exists('data_template_data_rra', false)) {
 		$profiles = db_fetch_assoc("SELECT pattern, rrd_step, rrd_heartbeat, x_files_factor
 			FROM (
-				SELECT data_template_data_id, GROUP_CONCAT(rra_id) AS pattern 
-				FROM data_template_data_rra 
+				SELECT data_template_data_id, GROUP_CONCAT(rra_id) AS pattern
+				FROM data_template_data_rra
 				GROUP BY data_template_data_id
-			) AS dtdr 
-			INNER JOIN data_template_data AS dtd 
-			ON dtd.id=dtdr.data_template_data_id 
-			INNER JOIN data_template_rrd AS dtr 
-			ON dtd.id=dtr.local_data_template_rrd_id 
+			) AS dtdr
+			INNER JOIN data_template_data AS dtd
+			ON dtd.id=dtdr.data_template_data_id
+			INNER JOIN data_template_rrd AS dtr
+			ON dtd.id=dtr.local_data_template_rrd_id
 			INNER JOIN rra AS r
 			ON r.id IN(pattern)
 			GROUP BY pattern, rrd_step, rrd_heartbeat, x_files_factor");
@@ -1439,8 +1439,8 @@ function upgrade_to_1_0_0() {
 				$rras = explode(',', $pattern);
 
 				foreach($rras as $r) {
-					db_install_execute("INSERT INTO data_source_profiles_rra 
-						(data_source_profile_id, name, steps, rows) 
+					db_install_execute("INSERT INTO data_source_profiles_rra
+						(data_source_profile_id, name, steps, rows)
 						SELECT '$id' AS data_source_profile_id, name, steps, rows FROM rra WHERE id=" . $r);
 
 					db_install_execute("REPLACE INTO data_source_profiles_cf
@@ -1448,14 +1448,14 @@ function upgrade_to_1_0_0() {
 						SELECT '$id' AS data_source_profile_id, consolidation_function_id FROM rra_cf WHERE rra_id=" . $r);
 				}
 
-				db_install_execute("UPDATE data_template_data 
-					SET data_source_profile_id=$id 
+				db_install_execute("UPDATE data_template_data
+					SET data_source_profile_id=$id
 					WHERE data_template_data.id IN(
-						SELECT data_template_data_id 
+						SELECT data_template_data_id
 						FROM (
 							SELECT data_template_data_id, GROUP_CONCAT(rra_id) AS pattern
 							FROM data_template_data_rra
-							GROUP BY data_template_data_id 
+							GROUP BY data_template_data_id
 							HAVING pattern='" . $pattern . "'
 						) AS rs);");
 			}
@@ -1507,19 +1507,19 @@ function upgrade_to_1_0_0() {
 	db_install_add_key('data_local', 'INDEX', 'data_template_id', array('data_template_id'));
 	db_install_add_key('data_local', 'INDEX', 'snmp_query_id', array('snmp_query_id'));
 
-	db_install_execute("ALTER TABLE poller 
+	db_install_execute("ALTER TABLE poller
 		MODIFY COLUMN last_update TIMESTAMP NOT NULL default '0000-00-00'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS poller_resource_cache (
 		id int(10) unsigned NOT NULL AUTO_INCREMENT,
 		resource_type varchar(20) DEFAULT NULL,
 		md5sum varchar(32) DEFAULT NULL,
-		path varchar(255) DEFAULT NULL,
+		path varchar(191) DEFAULT NULL,
 		update_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 		contents longblob,
 		PRIMARY KEY (id),
-		UNIQUE KEY path (path)) 
-		ENGINE=$engine 
+		UNIQUE KEY path (path))
+		ENGINE=$engine
 		COMMENT='Caches all scripts, resources files, and plugins'");
 
 	db_install_add_column ('host', array('name' => 'poller_id', 'type' => 'INT UNSIGNED', 'default' => '0', 'after' => 'id'));
@@ -1542,8 +1542,8 @@ function upgrade_to_1_0_0() {
 		db_install_execute('DELETE FROM external_links WHERE style NOT IN ("TAB", "CONSOLE", "FRONT", "FRONTTOP")');
 
 		db_install_drop_column('external_links', 'disabled');
-		db_install_execute('ALTER TABLE external_links 
-			MODIFY COLUMN contentfile VARCHAR(255) NOT NULL default "", 
+		db_install_execute('ALTER TABLE external_links
+			MODIFY COLUMN contentfile VARCHAR(255) NOT NULL default "",
 			MODIFY COLUMN title VARCHAR(20) NOT NULL default "",
 			MODIFY COLUMN style VARCHAR(10) NOT NULL default ""');
 
@@ -1560,8 +1560,8 @@ function upgrade_to_1_0_0() {
 			`title` varchar(20) NOT NULL DEFAULT '',
 			`style` varchar(10) NOT NULL DEFAULT '',
 			`extendedstyle` varchar(50) NOT NULL DEFAULT '',
-			PRIMARY KEY (`id`)) 
-			ENGINE=$engine 
+			PRIMARY KEY (`id`))
+			ENGINE=$engine
 			COMMENT='Stores External Link Information'");
 	}
 
@@ -1585,8 +1585,8 @@ function upgrade_to_1_0_0() {
 		KEY `state` (`state`),
 		KEY `postal_code` (`postal_code`),
 		KEY `country` (`country`),
-		KEY `alternate_id` (`alternate_id`)) 
-		ENGINE=$engine 
+		KEY `alternate_id` (`alternate_id`))
+		ENGINE=$engine
 		COMMENT='Contains information about customer sites';");
 
 	db_install_add_column ('host', array('name' => 'site_id', 'type' => 'INT UNSIGNED', 'NULL' => false, 'default' => '0', 'after' => 'poller_id'));
@@ -1613,8 +1613,8 @@ function upgrade_to_1_0_0() {
 		`server` mediumint(8) unsigned DEFAULT '0',
 		`last_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 		`last_status` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-		PRIMARY KEY (`id`)) 
-		ENGINE=$engine 
+		PRIMARY KEY (`id`))
+		ENGINE=$engine
 		COMMENT='Pollers for Cacti'");
 
 	db_install_execute('INSERT INTO poller (id, name, hostname) VALUES (1, "Main Poller", "' . php_uname('n') . '")');
@@ -1661,7 +1661,7 @@ function upgrade_to_1_0_0() {
 	/* add the snmp query graph id to graph local */
 	db_install_execute("UPDATE graph_local AS gl
 		INNER JOIN (
-			SELECT DISTINCT local_graph_id, task_item_id 
+			SELECT DISTINCT local_graph_id, task_item_id
 			FROM graph_templates_item
 		) AS gti
 		ON gl.id=gti.local_graph_id
@@ -1693,8 +1693,8 @@ function upgrade_to_1_0_0() {
 	}
 
 	$plugins = array_rekey(
-		db_fetch_assoc('SELECT directory AS plugin, version 
-			FROM plugin_config 
+		db_fetch_assoc('SELECT directory AS plugin, version
+			FROM plugin_config
 			WHERE status IN(1,2)'),
 		'plugin', 'version'
 	);
@@ -1702,9 +1702,9 @@ function upgrade_to_1_0_0() {
 	if (sizeof($plugins)) {
 		foreach ($plugins as $plugin => $version) {
 			$disable = true;
-			if (is_dir($config['base_path'] . '/plugins/' . $plugin) 
-				&& file_exists($config['base_path'] . "/plugins/$plugin/setup.php") 
-				&& file_exists($config['base_path'] . "/plugins/$plugin/INFO") 
+			if (is_dir($config['base_path'] . '/plugins/' . $plugin)
+				&& file_exists($config['base_path'] . "/plugins/$plugin/setup.php")
+				&& file_exists($config['base_path'] . "/plugins/$plugin/INFO")
 				&& !in_array($plugin, $plugins_integrated)) {
 					$info = parse_ini_file($config['base_path'] . "/plugins/$plugin/INFO", true);
 					if (isset($info['info']['compat']) && version_compare(CACTI_VERSION, $info['info']['compat']) > -1) {
@@ -1732,16 +1732,16 @@ function upgrade_to_1_0_0() {
 		`data_name` varchar(25) NOT NULL DEFAULT '',
 		`data_source_names` varchar(255) NOT NULL DEFAULT '',
 		`last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-		PRIMARY KEY (`data_template_id`,`data_name`,`data_source_names`)) 
-		ENGINE=InnoDB 
+		PRIMARY KEY (`data_template_id`,`data_name`,`data_source_names`))
+		ENGINE=InnoDB
 		COMMENT='Tracks mapping of Data Templates to their Data Source Names'");
 
 	db_install_execute("INSERT IGNORE INTO poller_data_template_field_mappings
-		SELECT dtr.data_template_id, dif.data_name, GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW() 
-		FROM data_template_rrd AS dtr 
-		INNER JOIN data_input_fields AS dif 
-		ON dtr.data_input_field_id = dif.id 
-		WHERE dtr.local_data_id=0 
+		SELECT dtr.data_template_id, dif.data_name, GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_input_fields AS dif
+		ON dtr.data_input_field_id = dif.id
+		WHERE dtr.local_data_id=0
 		GROUP BY dtr.data_template_id, dif.data_name");
 
 	db_install_execute("ALTER TABLE host_snmp_cache MODIFY COLUMN field_value varchar(512) DEFAULT NULL");

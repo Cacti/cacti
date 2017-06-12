@@ -172,7 +172,10 @@ function read_default_user_setting($config_name) {
 /* read_user_setting - finds the current value of a graph configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings_user array
      in 'include/global_settings.php'
-   @returns - the current value of the graph configuration option */
+   @arg $default - the default value is none is set
+   @arg $force - pull the data from the database if true ignoring session
+   @arg $user - assume this user's identity
+   @returns - the current value of the user setting */
 function read_user_setting($config_name, $default = false, $force = false, $user = 0) {
 	global $config;
 
@@ -180,26 +183,25 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 
 	if ($user == 0 && isset($_SESSION['sess_user_id'])) {
 		$effective_uid = $_SESSION['sess_user_id'];
-	}else if (isset($config['config_options_array']['export_user_id'])) {
-		$effective_uid = $config['config_options_array']['export_user_id'];
-	}else if (read_config_option('auth_method') == 0 || $user > 0) {
+	} elseif (read_config_option('auth_method') == 0 || $user > 0) {
 		/* first attempt to get the db setting for guest */
 		if ($user == 0) {
-			$effective_uid = db_fetch_cell_prepared('SELECT id 
-				FROM user_auth 
-				WHERE username= ?',
-				array(read_config_option('guest_user')));
+			$effective_uid = db_fetch_cell("SELECT user_auth.id
+				FROM settings
+				INNER JOIN user_auth
+				ON user_auth.username = settings.value
+				WHERE settings.name = 'guest_user'");
 
 			if ($effective_uid == '') {
 				$effective_uid = 0;
 			}
-		}else{
+		} else {
 			$effective_uid = $user;
 		}
 
-		$db_setting = db_fetch_row_prepared('SELECT value 
-			FROM settings_user 
-			WHERE name = ? 
+		$db_setting = db_fetch_row_prepared('SELECT value
+			FROM settings_user
+			WHERE name = ?
 			AND user_id = ?',
 			array($config_name, $effective_uid));
 
@@ -217,15 +219,15 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 	if (!$force) {
 		if (isset($_SESSION['sess_user_config_array'])) {
 			$user_config_array = $_SESSION['sess_user_config_array'];
-		}else if (isset($config['config_options_array']['export_user_id'])) {
-			if (isset($config['config_user_settings_array'])) {
-				$user_config_array = $config['config_user_settings_array'];
-			}
 		}
 	}
 
 	if (!isset($user_config_array[$config_name])) {
-		$db_setting = db_fetch_row_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $effective_uid));
+		$db_setting = db_fetch_row_prepared('SELECT value
+			FROM settings_user
+			WHERE name = ?
+			AND user_id = ?',
+			array($config_name, $effective_uid));
 
 		if (sizeof($db_setting)) {
 			$user_config_array[$config_name] = $db_setting['value'];
@@ -236,7 +238,7 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 		}
 
 		if (isset($_SESSION)) {
-			$_SESSION['sess_user_config_array']   = $user_config_array;
+			$_SESSION['sess_user_config_array'] = $user_config_array;
 		} else {
 			$config['config_user_settings_array'] = $user_config_array;
 		}
@@ -304,7 +306,7 @@ function read_config_option($config_name, $force = false) {
 
 	if (isset($_SESSION['sess_config_array'])) {
 		$config_array = $_SESSION['sess_config_array'];
-	}else if (isset($config['config_options_array'])) {
+	} elseif (isset($config['config_options_array'])) {
 		$config_array = $config['config_options_array'];
 	}
 
@@ -375,7 +377,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 		raise_message($custom_message);
 
 		$_SESSION['sess_error_fields'][$field_name] = $field_name;
-	}else if ($regexp_match != '' && !preg_match('/' . $regexp_match . '/', $field_value)) {
+	} elseif ($regexp_match != '' && !preg_match('/' . $regexp_match . '/', $field_value)) {
 		if (read_config_option('developer_mode') == 'on') {
 			cacti_log("Form Validation Failed: Variable '$field_name' with Value '$field_value' Failed REGEX '$regexp_match'", false);
 		}
@@ -1209,8 +1211,8 @@ function get_data_source_path($local_data_id, $expand_paths) {
 	global $config;
 	static $data_source_path_cache = array();
 
-	if (empty($local_data_id)) { 
-		return ''; 
+	if (empty($local_data_id)) {
+		return '';
 	}
 
 	if (isset($data_source_path_cache[$local_data_id])) {
@@ -1330,7 +1332,7 @@ function get_device_name($host_id) {
 }
 
 /* get_color - returns the hex color value from the cacti colors table
-   @arg $color_id - (int) the ID of the cacti color 
+   @arg $color_id - (int) the ID of the cacti color
    @returns - the hex color value */
 function get_color($color_id) {
 	return db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($color_id));
@@ -1376,7 +1378,7 @@ function get_execution_user() {
 		$user_info = posix_getpwuid(posix_geteuid());
 
 		return $user_info['name'];
-	}else{
+	} else {
 		return exec('whoami');
 	}
 }
@@ -1468,7 +1470,7 @@ function get_rrd_cfs($local_data_id) {
 
 	if (!isset($rrd_cfs)) {
 		$rrd_cfs = array();
-	}else if (array_key_exists($local_data_id, $rrd_cfs)) {
+	} elseif (array_key_exists($local_data_id, $rrd_cfs)) {
 		return $rrd_cfs[$local_data_id];
 	}
 
@@ -1834,11 +1836,11 @@ function draw_login_status($using_guest_account = false) {
 	} elseif (isset($_SESSION['sess_user_id']) && $using_guest_account == false) {
 		$user = db_fetch_row_prepared('SELECT username, password_change, realm FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 		api_plugin_hook('nav_login_before');
-		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . htmlspecialchars($user['username'], ENT_QUOTES) . 
-			"</span></div><div><ul class='menuoptions' style='display:none;'>" . 
-				(is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>" . __('Edit Profile') . "</a></li>":"") . 
-				($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'') . 
-				($auth_method > 0 ? "<li><a href='" . $config['url_path'] . "logout.php'>" . __('Logout') . "</a></li>":"") . 
+		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . htmlspecialchars($user['username'], ENT_QUOTES) .
+			"</span></div><div><ul class='menuoptions' style='display:none;'>" .
+				(is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>" . __('Edit Profile') . "</a></li>":"") .
+				($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'') .
+				($auth_method > 0 ? "<li><a href='" . $config['url_path'] . "logout.php'>" . __('Logout') . "</a></li>":"") .
 			"</ul>\n";
 
 		api_plugin_hook('nav_login_after');
@@ -1856,792 +1858,792 @@ function draw_navigation_text($type = 'url') {
 	$nav = array(
 		'auth_profile.php:' => array(
 			'title' => __('User Profile (Edit)'),
-			'mapping' => '', 
-			'url' => '', 
+			'mapping' => '',
+			'url' => '',
 			'level' => '0'
 			),
 		'auth_profile.php:edit' => array(
 			'title' => __('User Profile (Edit)'),
-			'mapping' => '', 
-			'url' => '', 
+			'mapping' => '',
+			'url' => '',
 			'level' => '0'
 			),
 		'graph_view.php:' => array(
-			'title' => __('Graphs'), 
-			'mapping' => '', 
-			'url' => 'graph_view.php', 
+			'title' => __('Graphs'),
+			'mapping' => '',
+			'url' => 'graph_view.php',
 			'level' => '0'
 			),
 		'graph_view.php:tree' => array(
-			'title' => __('Tree Mode'), 
-			'mapping' => 'graph_view.php:', 
-			'url' => 'graph_view.php?action=tree', 
+			'title' => __('Tree Mode'),
+			'mapping' => 'graph_view.php:',
+			'url' => 'graph_view.php?action=tree',
 			'level' => '0'
 			),
 		'graph_view.php:tree_content' => array(
-			'title' => __('Tree Mode'), 
-			'mapping' => 'graph_view.php:', 
-			'url' => 'graph_view.php?action=tree', 
+			'title' => __('Tree Mode'),
+			'mapping' => 'graph_view.php:',
+			'url' => 'graph_view.php?action=tree',
 			'level' => '0'
 			),
 		'graph_view.php:list' => array(
-			'title' => __('List Mode'), 
-			'mapping' => '', 
-			'url' => 'graph_view.php?action=list', 
+			'title' => __('List Mode'),
+			'mapping' => '',
+			'url' => 'graph_view.php?action=list',
 			'level' => '0'
 			),
 		'graph_view.php:preview' => array(
-			'title' => __('Preview Mode'), 
-			'mapping' => '', 
-			'url' => 'graph_view.php?action=preview', 
+			'title' => __('Preview Mode'),
+			'mapping' => '',
+			'url' => 'graph_view.php?action=preview',
 			'level' => '0'
 			),
 		'graph.php:' => array(
-			'title' => '|current_graph_title|', 
-			'mapping' => 'graph_view.php:,?', 
+			'title' => '|current_graph_title|',
+			'mapping' => 'graph_view.php:,?',
 			'level' => '2'
 			),
 		'graph.php:view' => array(
-			'title' => '|current_graph_title|', 
-			'mapping' => 'graph_view.php:,?', 
+			'title' => '|current_graph_title|',
+			'mapping' => 'graph_view.php:,?',
 			'level' => '2'
 			),
 		'index.php:' => array(
-			'title' => __('Console'), 
-			'mapping' => '', 
-			'url' => $config['url_path'] . 'index.php', 
+			'title' => __('Console'),
+			'mapping' => '',
+			'url' => $config['url_path'] . 'index.php',
 			'level' => '0'
 			),
 		'index.php:login' => array(
-			'title' => __('Console'), 
-			'mapping' => '', 
-			'url' => $config['url_path'] . 'index.php', 
+			'title' => __('Console'),
+			'mapping' => '',
+			'url' => $config['url_path'] . 'index.php',
 			'level' => '0'
 			),
 		'graphs.php:' => array(
-			'title' => __('Graph Management'), 
-			'mapping' => 'index.php:', 
-			'url' => 'graphs.php', 
+			'title' => __('Graph Management'),
+			'mapping' => 'index.php:',
+			'url' => 'graphs.php',
 			'level' => '1'
 			),
 		'graphs.php:graph_edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,graphs.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,graphs.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'graphs.php:graph_diff' => array(
-			'title' => __('Change Graph Template'), 
-			'mapping' => 'index.php:,graphs.php:,graphs.php:graph_edit', 
-			'url' => '', 
+			'title' => __('Change Graph Template'),
+			'mapping' => 'index.php:,graphs.php:,graphs.php:graph_edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'graphs.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,graphs.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,graphs.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'graphs_items.php:item_edit' => array(
-			'title' => __('Graph Items'), 
-			'mapping' => 'index.php:,graphs.php:,graphs.php:graph_edit', 
-			'url' => '', 
+			'title' => __('Graph Items'),
+			'mapping' => 'index.php:,graphs.php:,graphs.php:graph_edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'graphs_new.php:' => array(
-			'title' => __('Create New Graphs'), 
-			'mapping' => 'index.php:', 
-			'url' => 'graphs_new.php', 
+			'title' => __('Create New Graphs'),
+			'mapping' => 'index.php:',
+			'url' => 'graphs_new.php',
 			'level' => '1'
 			),
 		'graphs_new.php:save' => array(
-			'title' => __('Create Graphs from Data Query'), 
-			'mapping' => 'index.php:,graphs_new.php:', 
-			'url' => '', 
+			'title' => __('Create Graphs from Data Query'),
+			'mapping' => 'index.php:,graphs_new.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'gprint_presets.php:' => array(
-			'title' => __('GPRINT Presets'), 
-			'mapping' => 'index.php:', 
-			'url' => 'gprint_presets.php', 
+			'title' => __('GPRINT Presets'),
+			'mapping' => 'index.php:',
+			'url' => 'gprint_presets.php',
 			'level' => '1'
 			),
 		'gprint_presets.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,gprint_presets.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,gprint_presets.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'gprint_presets.php:remove' => array(
-			'title' => __('(Remove)'), 
-			'mapping' => 'index.php:,gprint_presets.php:', 
-			'url' => '', 
+			'title' => __('(Remove)'),
+			'mapping' => 'index.php:,gprint_presets.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'cdef.php:' => array(
-			'title' => __('CDEFs'), 
-			'mapping' => 'index.php:', 
-			'url' => 'cdef.php', 
+			'title' => __('CDEFs'),
+			'mapping' => 'index.php:',
+			'url' => 'cdef.php',
 			'level' => '1'
 			),
 		'cdef.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,cdef.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,cdef.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'cdef.php:remove' => array(
-			'title' => __('(Remove)'), 
-			'mapping' => 'index.php:,cdef.php:', 
-			'url' => '', 
+			'title' => __('(Remove)'),
+			'mapping' => 'index.php:,cdef.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'cdef.php:item_edit' => array(
-			'title' => __('CDEF Items'), 
-			'mapping' => 'index.php:,cdef.php:,cdef.php:edit', 
-			'url' => '', 
+			'title' => __('CDEF Items'),
+			'mapping' => 'index.php:,cdef.php:,cdef.php:edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'cdef.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,cdef.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,cdef.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'clog.php:' => array(
-			'title' => __('View Cacti Log'), 
-			'mapping' => '', 
-			'url' => 'clog.php', 
+			'title' => __('View Cacti Log'),
+			'mapping' => '',
+			'url' => 'clog.php',
 			'level' => '0'
 			),
 		'clog.php:preview' => array(
-			'title' => __('View Cacti Log'), 
-			'mapping' => '', 
-			'url' => 'clog.php', 
+			'title' => __('View Cacti Log'),
+			'mapping' => '',
+			'url' => 'clog.php',
 			'level' => '0'
 			),
 		'clog_user.php:' => array(
-			'title' => __('View Cacti Log'), 
-			'mapping' => '', 
-			'url' => 'clog_user.php', 
+			'title' => __('View Cacti Log'),
+			'mapping' => '',
+			'url' => 'clog_user.php',
 			'level' => '0'
 			),
 		'clog_user.php:preview' => array(
-			'title' => __('View Cacti Log'), 
-			'mapping' => '', 
-			'url' => 'clog_user.php', 
+			'title' => __('View Cacti Log'),
+			'mapping' => '',
+			'url' => 'clog_user.php',
 			'level' => '0'
 			),
 		'tree.php:' => array(
-			'title' => __('Graph Trees'), 
-			'mapping' => 'index.php:', 
-			'url' => 'tree.php', 
+			'title' => __('Graph Trees'),
+			'mapping' => 'index.php:',
+			'url' => 'tree.php',
 			'level' => '1'
 			),
 		'tree.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,tree.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,tree.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'color.php:' => array(
-			'title' => __('Colors'), 
-			'mapping' => 'index.php:', 
-			'url' => 'color.php', 
+			'title' => __('Colors'),
+			'mapping' => 'index.php:',
+			'url' => 'color.php',
 			'level' => '1'
 			),
 		'color.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,color.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,color.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'graph_templates.php:' => array(
-			'title' => __('Graph Templates'), 
-			'mapping' => 'index.php:', 
-			'url' => 'graph_templates.php', 
+			'title' => __('Graph Templates'),
+			'mapping' => 'index.php:',
+			'url' => 'graph_templates.php',
 			'level' => '1'
 			),
 		'graph_templates.php:template_edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,graph_templates.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,graph_templates.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'graph_templates.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,graph_templates.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,graph_templates.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'graph_templates_items.php:item_edit' => array(
-			'title' => __('Graph Template Items'), 
-			'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit', 
-			'url' => '', 
+			'title' => __('Graph Template Items'),
+			'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'graph_templates_inputs.php:input_edit' => array(
-			'title' => __('Graph Item Inputs'), 
-			'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit', 
-			'url' => '', 
+			'title' => __('Graph Item Inputs'),
+			'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'graph_templates_inputs.php:input_remove' => array(
-			'title' => __('(Remove)'), 
-			'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit', 
-			'url' => '', 
+			'title' => __('(Remove)'),
+			'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'host_templates.php:' => array(
-			'title' => __('Device Templates'), 
-			'mapping' => 'index.php:', 
-			'url' => 'host_templates.php', 
+			'title' => __('Device Templates'),
+			'mapping' => 'index.php:',
+			'url' => 'host_templates.php',
 			'level' => '1'
 			),
 		'host_templates.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,host_templates.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,host_templates.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'host_templates.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,host_templates.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,host_templates.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'data_templates.php:' => array(
-			'title' => __('Data Templates'), 
-			'mapping' => 'index.php:', 
-			'url' => 'data_templates.php', 
+			'title' => __('Data Templates'),
+			'mapping' => 'index.php:',
+			'url' => 'data_templates.php',
 			'level' => '1'
 			),
 		'data_templates.php:template_edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,data_templates.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,data_templates.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'data_templates.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,data_templates.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,data_templates.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'data_sources.php:' => array(
-			'title' => __('Data Sources'), 
-			'mapping' => 'index.php:', 
-			'url' => 'data_sources.php', 
+			'title' => __('Data Sources'),
+			'mapping' => 'index.php:',
+			'url' => 'data_sources.php',
 			'level' => '1'
 			),
 		'data_sources.php:ds_edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,data_sources.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,data_sources.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'data_sources.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,data_sources.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,data_sources.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'host.php:' => array(
-			'title' => __('Devices'), 
-			'mapping' => 'index.php:', 
-			'url' => 'host.php', 
+			'title' => __('Devices'),
+			'mapping' => 'index.php:',
+			'url' => 'host.php',
 			'level' => '1'
 			),
 		'host.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,host.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,host.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'host.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,host.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,host.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'rra.php:' => array(
-			'title' => __('Round Robin Archives'), 
-			'mapping' => 'index.php:', 
-			'url' => 'rra.php', 
+			'title' => __('Round Robin Archives'),
+			'mapping' => 'index.php:',
+			'url' => 'rra.php',
 			'level' => '1'
 			),
 		'rra.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,rra.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,rra.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'rra.php:remove' => array(
-			'title' => __('(Remove)'), 
-			'mapping' => 'index.php:,rra.php:', 
-			'url' => '', 
+			'title' => __('(Remove)'),
+			'mapping' => 'index.php:,rra.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'data_input.php:' => array(
-			'title' => __('Data Input Methods'), 
-			'mapping' => 'index.php:', 
-			'url' => 'data_input.php', 
+			'title' => __('Data Input Methods'),
+			'mapping' => 'index.php:',
+			'url' => 'data_input.php',
 			'level' => '1'
 			),
 		'data_input.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,data_input.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,data_input.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'data_input.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,data_input.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,data_input.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'data_input.php:remove' => array(
-			'title' => __('(Remove)'), 
-			'mapping' => 'index.php:,data_input.php:', 
-			'url' => '', 
+			'title' => __('(Remove)'),
+			'mapping' => 'index.php:,data_input.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'data_input.php:field_edit' => array(
-			'title' => __('Data Input Fields'), 
-			'mapping' => 'index.php:,data_input.php:,data_input.php:edit', 
-			'url' => '', 
+			'title' => __('Data Input Fields'),
+			'mapping' => 'index.php:,data_input.php:,data_input.php:edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'data_input.php:field_remove' => array(
-			'title' => __('(Remove Item)'), 
-			'mapping' => 'index.php:,data_input.php:,data_input.php:edit', 
-			'url' => '', 
+			'title' => __('(Remove Item)'),
+			'mapping' => 'index.php:,data_input.php:,data_input.php:edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'data_queries.php:' => array(
-			'title' => __('Data Queries'), 
-			'mapping' => 'index.php:', 
-			'url' => 'data_queries.php', 
+			'title' => __('Data Queries'),
+			'mapping' => 'index.php:',
+			'url' => 'data_queries.php',
 			'level' => '1'
 			),
 		'data_queries.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,data_queries.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,data_queries.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'data_queries.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,data_queries.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,data_queries.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'data_queries.php:item_edit' => array(
-			'title' => __('Associated Graph Templates'), 
-			'mapping' => 'index.php:,data_queries.php:,data_queries.php:edit', 
-			'url' => '', 
+			'title' => __('Associated Graph Templates'),
+			'mapping' => 'index.php:,data_queries.php:,data_queries.php:edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'data_queries.php:item_remove' => array(
-			'title' => __('(Remove Item)'), 
-			'mapping' => 'index.php:,data_queries.php:,data_queries.php:edit', 
-			'url' => '', 
+			'title' => __('(Remove Item)'),
+			'mapping' => 'index.php:,data_queries.php:,data_queries.php:edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'rrdcleaner.php:' => array(
-			'title' => __('RRD Cleaner'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'rrdcleaner.php', 
+			'title' => __('RRD Cleaner'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'rrdcleaner.php',
 			'level' => '2'
 			),
 		'rrdcleaner.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,rrdcleaner.php:', 
-			'url' => 'rrdcleaner.php?action=actions', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,rrdcleaner.php:',
+			'url' => 'rrdcleaner.php?action=actions',
 			'level' => '2'
 			),
 		'rrdcleaner.php:restart' => array(
-			'title' => __('List unused Files'), 
-			'mapping' => 'rrdcleaner.php:', 
-			'url' => 'rrdcleaner.php?action=restart', 
+			'title' => __('List unused Files'),
+			'mapping' => 'rrdcleaner.php:',
+			'url' => 'rrdcleaner.php?action=restart',
 			'level' => '2'
 			),
 		'utilities.php:' => array(
-			'title' => __('Utilities'), 
-			'mapping' => 'index.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('Utilities'),
+			'mapping' => 'index.php:',
+			'url' => 'utilities.php',
 			'level' => '1'
 			),
 		'utilities.php:view_poller_cache' => array(
-			'title' => __('View Poller Cache'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('View Poller Cache'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'utilities.php:view_snmp_cache' => array(
-			'title' => __('View Data Query Cache'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('View Data Query Cache'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'utilities.php:clear_poller_cache' => array(
-			'title' => __('View Poller Cache'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('View Poller Cache'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'utilities.php:view_logfile' => array(
-			'title' => __('View Cacti Log'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('View Cacti Log'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'utilities.php:clear_logfile' => array(
-			'title' => __('Clear Cacti Log'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('Clear Cacti Log'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'utilities.php:view_user_log' => array(
-			'title' => __('View User Log'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('View User Log'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'utilities.php:clear_user_log' => array(
-			'title' => __('Clear User Log'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('Clear User Log'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'utilities.php:view_tech' => array(
-			'title' => __('Technical Support'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('Technical Support'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'utilities.php:view_boost_status' => array(
-			'title' => __('Boost Status'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('Boost Status'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'utilities.php:view_snmpagent_cache' => array(
-			'title' => __('View SNMP Agent Cache'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('View SNMP Agent Cache'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'utilities.php:view_snmpagent_events' => array(
-			'title' => __('View SNMP Agent Notification Log'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'utilities.php', 
+			'title' => __('View SNMP Agent Notification Log'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'vdef.php:' => array(
-			'title' => __('VDEFs'), 
-			'mapping' => 'index.php:', 
-			'url' => 'vdef.php', 
+			'title' => __('VDEFs'),
+			'mapping' => 'index.php:',
+			'url' => 'vdef.php',
 			'level' => '1'
 			),
 		'vdef.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,vdef.php:', 
-			'url' => 'vdef.php', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,vdef.php:',
+			'url' => 'vdef.php',
 			'level' => '2'
 			),
 		'vdef.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,vdef.php:', 
-			'url' => 'vdef.php', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,vdef.php:',
+			'url' => 'vdef.php',
 			'level' => '2'
 			),
 		'vdef.php:remove' => array(
-			'title' => __('(Remove)'), 
-			'mapping' => 'index.php:,vdef.php:', 
-			'url' => 'vdef.php', 
+			'title' => __('(Remove)'),
+			'mapping' => 'index.php:,vdef.php:',
+			'url' => 'vdef.php',
 			'level' => '2'
 			),
 		'vdef.php:item_edit' => array(
-			'title' => __('VDEF Items'), 
-			'mapping' => 'index.php:,vdef.php:,vdef.php:edit', 
-			'url' => '', 
+			'title' => __('VDEF Items'),
+			'mapping' => 'index.php:,vdef.php:,vdef.php:edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'managers.php:' => array(
-			'title' => __('View SNMP Notification Receivers'), 
-			'mapping' => 'index.php:,utilities.php:', 
-			'url' => 'managers.php', 
+			'title' => __('View SNMP Notification Receivers'),
+			'mapping' => 'index.php:,utilities.php:',
+			'url' => 'managers.php',
 			'level' => '2'
 			),
 		'managers.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,utilities.php:,managers.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,utilities.php:,managers.php:',
+			'url' => '',
 			'level' => '3'
 			),
 		'settings.php:' => array(
-			'title' => __('Cacti Settings'), 
-			'mapping' => 'index.php:', 
-			'url' => 'settings.php', 
+			'title' => __('Cacti Settings'),
+			'mapping' => 'index.php:',
+			'url' => 'settings.php',
 			'level' => '1'
 			),
 		'user_admin.php:' => array(
-			'title' => __('Users'), 
-			'mapping' => 'index.php:', 
-			'url' => 'user_admin.php', 
+			'title' => __('Users'),
+			'mapping' => 'index.php:',
+			'url' => 'user_admin.php',
 			'level' => '1'
 			),
 		'user_admin.php:user_edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,user_admin.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,user_admin.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'user_admin.php:actions' => array(
-			'title' => __('(Action)'), 
-			'mapping' => 'index.php:,user_admin.php:', 
-			'url' => '', 
+			'title' => __('(Action)'),
+			'mapping' => 'index.php:,user_admin.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'user_domains.php:' => array(
-			'title' => __('User Domains'), 
-			'mapping' => 'index.php:', 
-			'url' => 'user_domains.php', 
+			'title' => __('User Domains'),
+			'mapping' => 'index.php:',
+			'url' => 'user_domains.php',
 			'level' => '1'
 			),
 		'user_domains.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'user_domains.php:,index.php:', 
-			'url' => 'user_domains.php:edit', 
+			'title' => __('(Edit)'),
+			'mapping' => 'user_domains.php:,index.php:',
+			'url' => 'user_domains.php:edit',
 			'level' => '2'
 			),
 		'user_group_admin.php:' => array(
-			'title' => __('User Groups'), 
-			'mapping' => 'index.php:', 
-			'url' => 'user_group_admin.php', 
+			'title' => __('User Groups'),
+			'mapping' => 'index.php:',
+			'url' => 'user_group_admin.php',
 			'level' => '1'
 			),
 		'user_group_admin.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,user_group_admin.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,user_group_admin.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'user_group_admin.php:actions' => array(
-			'title' => __('(Action)'), 
-			'mapping' => 'index.php:,user_group_admin.php:', 
-			'url' => '', 
+			'title' => __('(Action)'),
+			'mapping' => 'index.php:,user_group_admin.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'about.php:' => array(
-			'title' => __('About Cacti'), 
-			'mapping' => 'index.php:', 
-			'url' => 'about.php', 
+			'title' => __('About Cacti'),
+			'mapping' => 'index.php:',
+			'url' => 'about.php',
 			'level' => '1'
 			),
 		'templates_export.php:' => array(
-			'title' => __('Export Templates'), 
-			'mapping' => 'index.php:', 
-			'url' => 'templates_export.php', 
+			'title' => __('Export Templates'),
+			'mapping' => 'index.php:',
+			'url' => 'templates_export.php',
 			'level' => '1'
 			),
 		'templates_export.php:save' => array(
-			'title' => __('Export Results'), 
-			'mapping' => 'index.php:,templates_export.php:', 
-			'url' => 'templates_export.php', 
+			'title' => __('Export Results'),
+			'mapping' => 'index.php:,templates_export.php:',
+			'url' => 'templates_export.php',
 			'level' => '2'
 			),
 		'templates_import.php:' => array(
-			'title' => __('Import Templates'), 
-			'mapping' => 'index.php:', 
-			'url' => 'templates_import.php', 
+			'title' => __('Import Templates'),
+			'mapping' => 'index.php:',
+			'url' => 'templates_import.php',
 			'level' => '1'
 			),
 		'reports_admin.php:' => array(
-			'title' => __('Reporting'), 
-			'mapping' => '', 
-			'url' => 'reports_admin.php', 
+			'title' => __('Reporting'),
+			'mapping' => '',
+			'url' => 'reports_admin.php',
 			'level' => '0'
 			),
 		'reports_admin.php:actions' => array(
-			'title' => __('Report Add'), 
-			'mapping' => 'reports_admin.php:', 
-			'url' => 'reports_admin.php', 
+			'title' => __('Report Add'),
+			'mapping' => 'reports_admin.php:',
+			'url' => 'reports_admin.php',
 			'level' => '1'
 			),
 		'reports_admin.php:delete' => array(
-			'title' => __('Report Delete'), 
-			'mapping' => 'reports_admin.php:', 
-			'url' => 'reports_admin.php', 
+			'title' => __('Report Delete'),
+			'mapping' => 'reports_admin.php:',
+			'url' => 'reports_admin.php',
 			'level' => '1'
 			),
 		'reports_admin.php:edit' => array(
-			'title' => __('Report Edit'), 
-			'mapping' => 'reports_admin.php:', 
-			'url' => 'reports_admin.php?action=edit', 
+			'title' => __('Report Edit'),
+			'mapping' => 'reports_admin.php:',
+			'url' => 'reports_admin.php?action=edit',
 			'level' => '1'
 			),
 		'reports_admin.php:item_edit' => array(
-			'title' => __('Report Edit Item'), 
-			'mapping' => 'reports_admin.php:,reports_admin.php:edit', 
-			'url' => '', 
+			'title' => __('Report Edit Item'),
+			'mapping' => 'reports_admin.php:,reports_admin.php:edit',
+			'url' => '',
 			'level' => '2'
 			),
 		'reports_user.php:' => array(
-			'title' => __('Reporting'), 
-			'mapping' => '', 
-			'url' => 'reports_user.php', 
+			'title' => __('Reporting'),
+			'mapping' => '',
+			'url' => 'reports_user.php',
 			'level' => '0'
 			),
 		'reports_user.php:actions' => array(
-			'title' => __('Report Add'), 
-			'mapping' => 'reports_user.php:', 
-			'url' => 'reports_user.php', 
+			'title' => __('Report Add'),
+			'mapping' => 'reports_user.php:',
+			'url' => 'reports_user.php',
 			'level' => '1'
 			),
 		'reports_user.php:delete' => array(
-			'title' => __('Report Delete'), 
-			'mapping' => 'reports_user.php:', 
-			'url' => 'reports_user.php', 
+			'title' => __('Report Delete'),
+			'mapping' => 'reports_user.php:',
+			'url' => 'reports_user.php',
 			'level' => '1'
 			),
 		'reports_user.php:edit' => array(
-			'title' => __('Report Edit'), 
-			'mapping' => 'reports_user.php:', 
-			'url' => 'reports_user.php?action=edit', 
+			'title' => __('Report Edit'),
+			'mapping' => 'reports_user.php:',
+			'url' => 'reports_user.php?action=edit',
 			'level' => '1'
 			),
 		'reports_user.php:item_edit' => array(
-			'title' => __('Report Edit Item'), 
-			'mapping' => 'reports_user.php:,reports_user.php:edit', 
-			'url' => '', 
+			'title' => __('Report Edit Item'),
+			'mapping' => 'reports_user.php:,reports_user.php:edit',
+			'url' => '',
 			'level' => '2'
 			),
 		'color_templates.php:' => array(
-			'title' => __('Color Templates'), 
-			'mapping' => 'index.php:', 
-			'url' => 'color_templates.php', 
+			'title' => __('Color Templates'),
+			'mapping' => 'index.php:',
+			'url' => 'color_templates.php',
 			'level' => '1'
 			),
 		'color_templates.php:template_edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,color_templates.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,color_templates.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'color_templates.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,color_templates.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,color_templates.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'color_templates_items.php:item_edit' => array(
-			'title' => __('Color Template Items'), 
-			'mapping' => 'index.php:,color_templates.php:,color_templates.php:template_edit', 
-			'url' => '', 
+			'title' => __('Color Template Items'),
+			'mapping' => 'index.php:,color_templates.php:,color_templates.php:template_edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'aggregate_templates.php:' => array(
-			'title' => __('Aggregate Templates'), 
-			'mapping' => 'index.php:', 
-			'url' => 'aggregate_templates.php', 
+			'title' => __('Aggregate Templates'),
+			'mapping' => 'index.php:',
+			'url' => 'aggregate_templates.php',
 			'level' => '1'
 			),
 		'aggregate_templates.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,aggregate_templates.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,aggregate_templates.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'aggregate_templates.php:actions'=> array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,aggregate_templates.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,aggregate_templates.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'aggregate_graphs.php:' => array(
-			'title' => __('Aggregate Graphs'), 
-			'mapping' => 'index.php:', 
-			'url' => 'aggregate_graphs.php', 
+			'title' => __('Aggregate Graphs'),
+			'mapping' => 'index.php:',
+			'url' => 'aggregate_graphs.php',
 			'level' => '1'
 			),
 		'aggregate_graphs.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,aggregate_graphs.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,aggregate_graphs.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'aggregate_graphs.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,aggregate_graphs.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,aggregate_graphs.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'aggregate_items.php:' => array(
-			'title' => __('Aggregate Items'), 
-			'mapping' => 'index.php:', 
-			'url' => 'aggregate_items.php', 
+			'title' => __('Aggregate Items'),
+			'mapping' => 'index.php:',
+			'url' => 'aggregate_items.php',
 			'level' => '1'
 			),
 		'aggregate_items.php:item_edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,aggregate_graphs.php:,aggregate_items.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,aggregate_graphs.php:,aggregate_items.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'aggregate_items.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,aggregate_items.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,aggregate_items.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'automation_graph_rules.php:' => array(
-			'title' => __('Graph Rules'), 
-			'mapping' => 'index.php:', 
-			'url' => 'automation_graph_rules.php', 
+			'title' => __('Graph Rules'),
+			'mapping' => 'index.php:',
+			'url' => 'automation_graph_rules.php',
 			'level' => '1'
 			),
 		'automation_graph_rules.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,automation_graph_rules.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,automation_graph_rules.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'automation_graph_rules.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,automation_graph_rules.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,automation_graph_rules.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'automation_graph_rules.php:item_edit' => array(
-			'title' => __('Graph Rule Items'), 
-			'mapping' => 'index.php:,automation_graph_rules.php:,automation_graph_rules.php:edit', 
-			'url' => '', 
+			'title' => __('Graph Rule Items'),
+			'mapping' => 'index.php:,automation_graph_rules.php:,automation_graph_rules.php:edit',
+			'url' => '',
 			'level' => '3'
 			),
 		'automation_tree_rules.php:' => array(
-			'title' => __('Tree Rules'), 
-			'mapping' => 'index.php:', 
-			'url' => 'automation_tree_rules.php', 
+			'title' => __('Tree Rules'),
+			'mapping' => 'index.php:',
+			'url' => 'automation_tree_rules.php',
 			'level' => '1'
 			),
 		'automation_tree_rules.php:edit' => array(
-			'title' => __('(Edit)'), 
-			'mapping' => 'index.php:,automation_tree_rules.php:', 
-			'url' => '', 
+			'title' => __('(Edit)'),
+			'mapping' => 'index.php:,automation_tree_rules.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'automation_tree_rules.php:actions' => array(
-			'title' => __('Actions'), 
-			'mapping' => 'index.php:,automation_tree_rules.php:', 
-			'url' => '', 
+			'title' => __('Actions'),
+			'mapping' => 'index.php:,automation_tree_rules.php:',
+			'url' => '',
 			'level' => '2'
 			),
 		'automation_tree_rules.php:item_edit' => array(
-			'title' => __('Tree Rule Items'), 
-			'mapping' => 'index.php:,automation_tree_rules.php:,automation_tree_rules.php:edit', 
-			'url' => '', 
+			'title' => __('Tree Rule Items'),
+			'mapping' => 'index.php:,automation_tree_rules.php:,automation_tree_rules.php:edit',
+			'url' => '',
 			'level' => '3'
 			)
 	);
@@ -2766,7 +2768,7 @@ function draw_navigation_text($type = 'url') {
 		$style = $externalLinks['style'];
 
 		if ($style == 'CONSOLE') {
-			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0' href='" . $config['url_path'] . 
+			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0' href='" . $config['url_path'] .
 				"index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>';
 			$current_nav .= "<li><a id='nav_1' href='#'>Link " . $title . '</a></li>';
 		} else {
@@ -3167,7 +3169,7 @@ function debug_log_return($type) {
    @returns - the sanitized search string */
 function sanitize_search_string($string) {
 	static $drop_char_match = array('(',')','^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '+', '[', ']', '{', '}', '#', ';', '!', '=', '*');
-	static $drop_char_replace = array('','',' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '); 
+	static $drop_char_replace = array('','',' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 
 	/* Replace line endings by a space */
 	$string = preg_replace('/[\n\r]/is', ' ', $string);
@@ -3362,7 +3364,7 @@ function display_messages() {
 			$('.messageContainer').empty().show().html(message);
 			message = '';
 
-			messageTimer = setTimeout(function() { 
+			messageTimer = setTimeout(function() {
 				$('#message_container').fadeOut(1000);
 			}, 2000);
 
@@ -3410,9 +3412,9 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 		$from     = read_config_option('settings_from_email');
 		$fromname = read_config_option('settings_from_name');
 	} else {
-		$full_name = db_fetch_cell_prepared('SELECT full_name 
-			FROM user_auth 
-			WHERE email_address = ?', 
+		$full_name = db_fetch_cell_prepared('SELECT full_name
+			FROM user_auth
+			WHERE email_address = ?',
 			array($from));
 
 		if (empty($full_name)) {
@@ -3427,7 +3429,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 	return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
 }
 
-/** mailer - function to send mails to users 
+/** mailer - function to send mails to users
  *  @arg $from - a string email address, or an array in array(email_address, name format)
  *  @arg $to - either a string of comma delimited email addresses, or an array of addresses in email_address => name format
  *  @arg $cc - either a string of comma delimited email addresses, or an array of addresses in email_address => name format
@@ -3720,7 +3722,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	if ($mail->send()) {
-		cacti_log("Mail Sucessfully Sent to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER'); 
+		cacti_log("Mail Sucessfully Sent to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
 
 		return '';
 	} else {
@@ -4081,7 +4083,7 @@ function cacti_debug_backtrace($entry = '', $html = false) {
 }
 
 /*	calculate_percentiles - Given and array of numbers, calculate the Nth percentile,
- *  optionally, return an array of numbers containing elements required for 
+ *  optionally, return an array of numbers containing elements required for
  *  a whisker chart.
  *
  *  @arg $data       - an array of data
@@ -4152,8 +4154,10 @@ function get_timeinstate($host) {
 		$time = $host['status_event_count'] * $interval;
 	} elseif (strtotime($host['status_rec_date']) > 943916400) {
 		$time = time() - strtotime($host['status_rec_date']);
-	} else {
+	} elseif ($host['snmp_sysUpTimeInstance'] > 0) {
 		$time = $host['snmp_sysUpTimeInstance']/100;
+	} else {
+		$time = 0;
 	}
 
 	if ($time > 86400) {
@@ -4185,7 +4189,7 @@ function get_classic_tabimage($text, $down = false) {
 
 	if ($text == '') return false;
 
-	$text         = strtolower($text);
+	$text = strtolower($text);
 
 	$possibles = array(
 		array('DejaVuSans-Bold.ttf', 9, true),
@@ -4252,7 +4256,7 @@ function get_classic_tabimage($text, $down = false) {
 					$line--;
 				}
 			}
-						
+
 			if($maxw<$wlimit) break;
 		}
 
@@ -4394,8 +4398,8 @@ function CactiShutdownHandler () {
 
 			$plugin = (isset($output_array[1]) ? $output_array[1] : '' );
 
-			$message = 'PHP ' . $phperrors[$error['type']] . 
-				($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] . 
+			$message = 'PHP ' . $phperrors[$error['type']] .
+				($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
 				' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
 
 			cacti_log($message, false, 'ERROR');
@@ -4476,7 +4480,7 @@ function get_url_type() {
 	}
 }
 
-/** repair_system_data_input_methods - This utility will repair 
+/** repair_system_data_input_methods - This utility will repair
  *  system data input methods when they are detected on the system
  *
  *  @returns - null */
@@ -4520,7 +4524,7 @@ function repair_system_data_input_methods($step = 'import') {
 			'3b7caa46eb809fc238de6ef18b6e10d5', // Index Value
 			'74af2e42dc12956c4817c2ef5d9983f9', // Output Type ID
 			'8ae57f09f787656bf4ac541e8bd12537'  // Output Value
-		), 
+		),
 		'332111d8b54ac8ce939af87a7eac0c06' => array( // Get Script Server Data (Indexed) 12
 			'172b4b0eacee4948c6479f587b62e512', // Index Type
 			'30fb5d5bcf3d66bb5abe88596f357c26', // Index Value
@@ -4533,22 +4537,22 @@ function repair_system_data_input_methods($step = 'import') {
 		$data_input_id = db_fetch_cell_prepared('SELECT id FROM data_input WHERE hash = ?', array($hash));
 
 		if (!empty($data_input_id)) {
-			$bad_hashes = db_fetch_assoc_prepared('SELECT * 
-				FROM data_input_fields 
-				WHERE hash NOT IN ("' . implode('","', $field_hashes) . '") 
+			$bad_hashes = db_fetch_assoc_prepared('SELECT *
+				FROM data_input_fields
+				WHERE hash NOT IN ("' . implode('","', $field_hashes) . '")
 				AND hash != ""
-				AND data_input_id = ?', 
+				AND data_input_id = ?',
 				array($data_input_id));
 
 			if (sizeof($bad_hashes)) {
 				cacti_log(strtoupper($step) . ' NOTE: Repairing ' . sizeof($bad_hashes) . ' Damaged data_input_fields', false);
 
 				foreach($bad_hashes as $bhash) {
-					$good_field_id = db_fetch_cell_prepared('SELECT id 
-						FROM data_input_fields 
-						WHERE hash != ? 
-						AND data_input_id = ? 
-						AND data_name = ?', 
+					$good_field_id = db_fetch_cell_prepared('SELECT id
+						FROM data_input_fields
+						WHERE hash != ?
+						AND data_input_id = ?
+						AND data_name = ?',
 						array($bhash['hash'], $data_input_id, $bhash['data_name']));
 
 					if (!empty($good_field_id)) {
@@ -4557,16 +4561,16 @@ function repair_system_data_input_methods($step = 'import') {
 						cacti_log('Executing Data Input Data Check', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
 						// Data Input Data
-						$bad_mappings = db_fetch_assoc_prepared('SELECT * 
-							FROM data_input_data 
-							WHERE data_input_field_id = ?', 
+						$bad_mappings = db_fetch_assoc_prepared('SELECT *
+							FROM data_input_data
+							WHERE data_input_field_id = ?',
 							array($bhash['id']));
 
 						if (sizeof($bad_mappings)) {
 							cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_input_fields', false);
 							foreach($bad_mappings as $mfid) {
-								$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
-									FROM data_input_data 
+								$good_found = db_fetch_cell_prepared('SELECT COUNT(*)
+									FROM data_input_data
 									WHERE data_input_field_id = ?
 									AND data_template_data_id = ?',
 									array($good_field_id, $mfid['data_template_data_id']));
@@ -4574,14 +4578,14 @@ function repair_system_data_input_methods($step = 'import') {
 								if ($good_found > 0) {
 									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-									db_execute_prepared('DELETE FROM data_input_data 
+									db_execute_prepared('DELETE FROM data_input_data
 										WHERE data_input_field_id = ?
 										AND data_template_data_id = ?',
 										array($mfid['data_input_field_id'], $mfid['data_template_data_id']));
 								} else {
 									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-									db_execute_prepared('UPDATE data_input_data 
+									db_execute_prepared('UPDATE data_input_data
 										SET data_input_field_id = ?
 										WHERE data_input_field_id = ?
 										AND data_template_data_id = ?',
@@ -4595,17 +4599,17 @@ function repair_system_data_input_methods($step = 'import') {
 						// Data Template RRD
 						cacti_log('Executing Data Template RRD Check', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);;
 
-						$bad_mappings = db_fetch_assoc_prepared('SELECT * 
-							FROM data_template_rrd 
-							WHERE data_input_field_id = ?', 
+						$bad_mappings = db_fetch_assoc_prepared('SELECT *
+							FROM data_template_rrd
+							WHERE data_input_field_id = ?',
 							array($bhash['id']));
 
 						if (sizeof($bad_mappings)) {
 							cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_template_rrd', false);
 
 							foreach($bad_mappings as $mfid) {
-								$good_found = db_fetch_cell_prepared('SELECT COUNT(*) 
-									FROM data_template_rrd 
+								$good_found = db_fetch_cell_prepared('SELECT COUNT(*)
+									FROM data_template_rrd
 									WHERE data_input_field_id = ?
 									AND id = ?',
 									array($good_field_id, $mfid['id']));
@@ -4613,14 +4617,14 @@ function repair_system_data_input_methods($step = 'import') {
 								if ($good_found > 0) {
 									cacti_log('Good Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-									db_execute_prepared('DELETE FROM data_template_rrd 
+									db_execute_prepared('DELETE FROM data_template_rrd
 										WHERE data_input_field_id = ?
-										AND id = ?', 
+										AND id = ?',
 										array($mfid['data_input_field_id'], $mfid['id']));
 								} else {
 									cacti_log('Good NOT Found for ' . $mfid['data_input_field_id'] . ', Fixing', false, 'WEBUI', POLLER_VERBOSITY_DEVDBG);
 
-									db_execute_prepared('UPDATE data_template_rrd 
+									db_execute_prepared('UPDATE data_template_rrd
 										SET data_input_field_id = ?
 										WHERE data_input_field_id = ?
 										AND id = ?',
@@ -4730,7 +4734,7 @@ function get_cacti_version() {
 /**
  * cacti_version_compare - Compare Cacti version numbers
  */
-function cacti_version_compare($version1, $version2, $operator) {
+function cacti_version_compare($version1, $version2, $operator = '>') {
 	$version1 = version_to_decimal($version1);
 	$version2 = version_to_decimal($version2);
 

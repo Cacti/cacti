@@ -314,7 +314,7 @@ function clog_view_logfile() {
 }
 
 function filter($clogAdmin) {
-	global $page_refresh_interval, $log_tail_lines;
+	global $page_refresh_interval, $log_tail_lines, $config;
 	?>
 	<tr class='even'>
 		<td>
@@ -327,11 +327,18 @@ function filter($clogAdmin) {
 					<td>
 						<select id='filename' name='filename'>
 							<?php
+							$configLogPath = read_config_option('path_cactilog');
+
+							if ($configLogPath == '') {
+								$logPath = $config['base_path'] . '/log/';
+							} else {
+								$logPath = dirname($configLogPath);
+							}
+
 							$selectedFile = basename(get_nfilter_request_var('filename'));
-							$logPath      = dirname(read_config_option('path_cactilog'));
 							$files        = scandir($logPath);
 
-							foreach($files as $logFile) {
+							foreach ($files as $logFile) {
 								if (in_array($logFile, array('.', '..', '.htaccess'))) {
 									continue;
 								}

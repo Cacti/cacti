@@ -102,10 +102,10 @@ function draw_edit_form($array) {
 				print '</div>';
 
 				// End form cell
-				print '</div>'; 
+				print '</div>';
 
 				// New form column for content
-				print '<div class="formColumnRight"><div class="formData">'; 
+				print '<div class="formColumnRight"><div class="formData">';
 
 				draw_edit_control($field_name, $field_array);
 
@@ -129,11 +129,11 @@ function draw_edit_control($field_name, &$field_array) {
 	switch ($field_array['method']) {
 	case 'textbox':
 		form_text_box(
-			$field_name, 
+			$field_name,
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
-			((isset($field_array['size'])) ? $field_array['size'] : '40'), 
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
 			'text',
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
 			((isset($field_array['placeholder'])) ? $field_array['placeholder'] : '')
@@ -141,11 +141,11 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'filepath':
-		form_filepath_box($field_name, 
+		form_filepath_box($field_name,
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
-			((isset($field_array['size'])) ? $field_array['size'] : '40'), 
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
 			'text',
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : '')
 		);
@@ -153,11 +153,11 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'dirpath':
 		form_dirpath_box(
-			$field_name, 
+			$field_name,
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
-			((isset($field_array['size'])) ? $field_array['size'] : '40'), 
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
 			'text',
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : '')
 		);
@@ -169,11 +169,11 @@ function draw_edit_control($field_name, &$field_array) {
 		print "<input type='password' name='mypassword' style='display:none;' value='' autocomplete='off' disabled='disabled'>\n";
 
 		form_text_box(
-			$field_name, 
+			$field_name,
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
-			((isset($field_array['size'])) ? $field_array['size'] : '40'), 
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
 			'password',
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
 			'********'
@@ -182,11 +182,11 @@ function draw_edit_control($field_name, &$field_array) {
 		print '<br>';
 
 		form_text_box(
-			$field_name . '_confirm', 
+			$field_name . '_confirm',
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
-			((isset($field_array['size'])) ? $field_array['size'] : '40'), 
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
 			'password',
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
 			'********'
@@ -195,8 +195,8 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'textarea':
 		form_text_area(
-			$field_name, 
-			$field_array['value'], 
+			$field_name,
+			$field_array['value'],
 			$field_array['textarea_rows'],
 			$field_array['textarea_cols'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
@@ -208,10 +208,10 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'drop_array':
 		form_dropdown(
-			$field_name, 
-			$field_array['array'], 
-			'', 
-			'', 
+			$field_name,
+			$field_array['array'],
+			'',
+			'',
 			$field_array['value'],
 			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
@@ -247,10 +247,10 @@ function draw_edit_control($field_name, &$field_array) {
 		}
 
 		form_dropdown(
-			$field_name, 
+			$field_name,
 			$array_files,
-			'', 
-			'', 
+			'',
+			'',
 			$field_array['value'],
 			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
@@ -262,9 +262,9 @@ function draw_edit_control($field_name, &$field_array) {
 	case 'drop_sql':
 		form_dropdown(
 			$field_name,
-			db_fetch_assoc($field_array['sql']), 
-			'name', 
-			'id', 
+			db_fetch_assoc($field_array['sql']),
+			'name',
+			'id',
 			$field_array['value'],
 			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
@@ -277,8 +277,8 @@ function draw_edit_control($field_name, &$field_array) {
 		form_callback(
 			$field_name,
 			$field_array['sql'],
-			'name', 
-			'id', 
+			'name',
+			'id',
 			$field_array['action'],
 			$field_array['id'],
 			$field_array['value'],
@@ -291,9 +291,9 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'drop_multi':
 		form_multi_dropdown(
-			$field_name, 
-			$field_array['array'], 
-			(isset($field_array['sql']) ? db_fetch_assoc($field_array['sql']):$field_array['value']), 
+			$field_name,
+			$field_array['array'],
+			(isset($field_array['sql']) ? db_fetch_assoc($field_array['sql']):$field_array['value']),
 			'id',
 			((isset($field_array['class'])) ? $field_array['class'] : ''),
 			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
@@ -302,17 +302,17 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'drop_tree':
 		grow_dropdown_tree(
-			$field_array['tree_id'], 
+			$field_array['tree_id'],
 			'0',
-			$field_name, 
+			$field_name,
 			$field_array['value']
 		);
 
 		break;
 	case 'drop_color':
 		form_color_dropdown(
-			$field_name, 
-			$field_array['value'], 
+			$field_name,
+			$field_array['value'],
 			__('None'),
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			((isset($field_array['class'])) ? $field_array['class'] : ''),
@@ -336,8 +336,8 @@ function draw_edit_control($field_name, &$field_array) {
 		print "<div id='${field_name}_group' class='checkboxgroup'>\n";
 		foreach ($field_array['items'] as $check_name => $check_array) {
 			form_checkbox(
-				$check_name, 
-				$check_array['value'], 
+				$check_name,
+				$check_array['value'],
 				$check_array['friendly_name'],
 				((isset($check_array['default'])) ? $check_array['default'] : ''),
 				((isset($check_array['form_id'])) ? $check_array['form_id'] : ''),
@@ -354,9 +354,9 @@ function draw_edit_control($field_name, &$field_array) {
 		print "<div style='formRadio'>";
 		foreach ($field_array['items'] as $radio_index => $radio_array) {
 			form_radio_button(
-				$field_name, 
-				$field_array['value'], 
-				$radio_array['radio_value'], 
+				$field_name,
+				$field_array['value'],
+				$radio_array['radio_value'],
 				$radio_array['radio_caption'],
 				((isset($field_array['default'])) ? $field_array['default'] : ''),
 				((isset($field_array['class'])) ? $field_array['class'] : ''),
@@ -386,7 +386,7 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'font':
 		form_font_box(
-			$field_name, 
+			$field_name,
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
@@ -403,7 +403,7 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'button':
 		form_button(
-			$field_name, 
+			$field_name,
 			((isset($field_array['value'])) ? $field_array['value'] : ''),
 			((isset($field_array['title'])) ? $field_array['title'] : ''),
 			((isset($field_array['on_click'])) ? $field_array['on_click'] : '')
@@ -412,7 +412,7 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'submit':
 		form_submit(
-			$field_name, 
+			$field_name,
 			((isset($field_array['value'])) ? $field_array['value'] : ''),
 			((isset($field_array['title'])) ? $field_array['title'] : ''),
 			((isset($field_array['on_click'])) ? $field_array['on_click'] : '')
@@ -434,11 +434,11 @@ function draw_edit_control($field_name, &$field_array) {
    @arg $title - the hover title for the button
    @arg $action - the onClick action for the button */
 function form_button($form_name, $value, $title = '', $action = '') {
-	print "<input type='button' " . 
-		"id='$form_name' " . 
-		"name='$form_name' " . 
-		"value='$value' " . 
-		($action!='' ? "onClick='$action'":"") . 
+	print "<input type='button' " .
+		"id='$form_name' " .
+		"name='$form_name' " .
+		"value='$value' " .
+		($action!='' ? "onClick='$action'":"") .
 		($title!='' ? "title='$title'":"") . ">";
 }
 
@@ -448,11 +448,11 @@ function form_button($form_name, $value, $title = '', $action = '') {
    @arg $title - the hover title for the button
    @arg $action - the onClick action for the button */
 function form_submit($form_name, $value, $title = '', $action = '') {
-	print "<input type='submit' " . 
-		"id='$form_name' " . 
-		"name='$form_name' " . 
-		"value='$value' " . 
-		($action!='' ? "onClick='$action'":"") . 
+	print "<input type='submit' " .
+		"id='$form_name' " .
+		"name='$form_name' " .
+		"value='$value' " .
+		($action!='' ? "onClick='$action'":"") .
 		($title!='' ? "title='$title'":"") . ">";
 }
 
@@ -708,7 +708,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		print "</select>\n";
 	} else {
 		print "<span id='$form_name" . "_wrap' style='width:300px;' class='autodrop ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>";
-		print "<input id='$form_name" . "_input' size='28' style='padding-left:12px' class='ui-autocomplete-input ui-state-default ui-selectmenu-text' value='" . htmlspecialchars($previous_value) . "'>";
+		print "<input type='text' id='$form_name" . "_input' size='28' style='padding-left:12px' class='ui-autocomplete-input ui-state-default ui-selectmenu-text' value='" . htmlspecialchars($previous_value) . "'>";
 		print "<span id='$form_name" . "_click' style='z-index:4' class='ui-icon ui-icon-triangle-1-s'></span>";
 
 		if (!empty($none_entry) && empty($previous_value)) {
@@ -729,8 +729,12 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 				autoFocus: true,
 				minLength: 0,
 				select: function(event,ui) {
-					$('#<?php print $form_name;?>_input').val(ui.item.value);
-					$('#<?php print $form_name;?>').val(ui.item.value);
+					$('#<?php print $form_name;?>_input').val(ui.item.label);
+					if (ui.item.id) {
+						$('#<?php print $form_name;?>').val(ui.item.id);
+					} else {
+						$('#<?php print $form_name;?>').val(ui.item.value);
+					}
 					<?php print $on_change;?>;
 				}
 			}).css('border', 'none').css('background-color', 'transparent');
@@ -982,9 +986,9 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 		$class = " class='colordropdown'";
 	}
 
-	$current_color = db_fetch_cell_prepared('SELECT hex 
-		FROM colors 
-		WHERE id = ?', 
+	$current_color = db_fetch_cell_prepared('SELECT hex
+		FROM colors
+		WHERE id = ?',
 		array($form_previous_value));
 
 	if ($on_change != '') {
@@ -993,10 +997,10 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 
 	$on_change = " onChange='this.style.backgroundColor=this.options[this.selectedIndex].style.backgroundColor;$on_change'";
 
-	$colors_sql = 'SELECT * 
-		FROM colors 
-		ORDER BY 
-			SUBSTRING(hex,0,2) ASC, 
+	$colors_sql = 'SELECT *
+		FROM colors
+		ORDER BY
+			SUBSTRING(hex,0,2) ASC,
 			SUBSTRING(hex,2,2) ASC,
 			SUBSTRING(hex,4,2) ASC';
 

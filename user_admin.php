@@ -109,15 +109,15 @@ function form_actions() {
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_perms 
-						(user_id, item_id, type) 
-						VALUES (?, ?, 3)', 
+					db_execute_prepared('REPLACE INTO user_auth_perms
+						(user_id, item_id, type)
+						VALUES (?, ?, 3)',
 						array(get_nfilter_request_var('id'), $matches[1]));
 				} else {
-					db_execute_prepared('DELETE FROM user_auth_perms 
-						WHERE user_id = ? 
-						AND item_id = ? 
-						AND type = 3', 
+					db_execute_prepared('DELETE FROM user_auth_perms
+						WHERE user_id = ?
+						AND item_id = ?
+						AND type = 3',
 						array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
@@ -133,15 +133,15 @@ function form_actions() {
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_perms 
-						(user_id, item_id, type) 
-						VALUES (?, ?, 1)', 
+					db_execute_prepared('REPLACE INTO user_auth_perms
+						(user_id, item_id, type)
+						VALUES (?, ?, 1)',
 						array(get_nfilter_request_var('id'), $matches[1]));
 				} else {
-					db_execute_prepared('DELETE FROM user_auth_perms 
-						WHERE user_id = ? 
-						AND item_id = ? 
-						AND type = 1', 
+					db_execute_prepared('DELETE FROM user_auth_perms
+						WHERE user_id = ?
+						AND item_id = ?
+						AND type = 1',
 						array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
@@ -157,15 +157,15 @@ function form_actions() {
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_perms 
-						(user_id, item_id, type) 
-						VALUES (?, ?, 4)', 
+					db_execute_prepared('REPLACE INTO user_auth_perms
+						(user_id, item_id, type)
+						VALUES (?, ?, 4)',
 						array(get_nfilter_request_var('id'), $matches[1]));
 				} else {
-					db_execute_prepared('DELETE FROM user_auth_perms 
-						WHERE user_id = ? 
-						AND item_id = ? 
-						AND type = 4', 
+					db_execute_prepared('DELETE FROM user_auth_perms
+						WHERE user_id = ?
+						AND item_id = ?
+						AND type = 4',
 						array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
@@ -181,14 +181,14 @@ function form_actions() {
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_group_members 
-						(user_id, group_id) 
-						VALUES (?, ?)', 
+					db_execute_prepared('REPLACE INTO user_auth_group_members
+						(user_id, group_id)
+						VALUES (?, ?)',
 						array(get_nfilter_request_var('id'), $matches[1]));
 				} else {
-					db_execute_prepared('DELETE FROM user_auth_group_members 
-						WHERE user_id = ? 
-						AND group_id = ?', 
+					db_execute_prepared('DELETE FROM user_auth_group_members
+						WHERE user_id = ?
+						AND group_id = ?',
 						array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
@@ -204,15 +204,15 @@ function form_actions() {
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
-					db_execute_prepared('REPLACE INTO user_auth_perms 
-						(user_id, item_id, type) 
-						VALUES (?, ?, 2)', 
+					db_execute_prepared('REPLACE INTO user_auth_perms
+						(user_id, item_id, type)
+						VALUES (?, ?, 2)',
 						array(get_nfilter_request_var('id'), $matches[1]));
 				} else {
-					db_execute_prepared('DELETE FROM user_auth_perms 
-						WHERE user_id = ? 
-						AND item_id = ? 
-						AND type = 2', 
+					db_execute_prepared('DELETE FROM user_auth_perms
+						WHERE user_id = ?
+						AND item_id = ?
+						AND type = 2',
 						array(get_nfilter_request_var('id'), $matches[1]));
 				}
 			}
@@ -230,9 +230,9 @@ function form_actions() {
 			$new_username  = get_nfilter_request_var('new_username');
 			$new_realm     = get_nfilter_request_var('new_realm', 0);
 
-			$template_user = db_fetch_row_prepared('SELECT username, realm 
-				FROM user_auth 
-				WHERE id = ?', 
+			$template_user = db_fetch_row_prepared('SELECT username, realm
+				FROM user_auth
+				WHERE id = ?',
 				array(get_nfilter_request_var('selected_items')));
 
 			$overwrite     = array( 'full_name' => get_nfilter_request_var('new_fullname') );
@@ -272,15 +272,15 @@ function form_actions() {
 					/* ==================================================== */
 
 					$copy_error = false;
-					$template = db_fetch_row_prepared('SELECT username, realm 
-						FROM user_auth 
-						WHERE id = ?', 
+					$template = db_fetch_row_prepared('SELECT username, realm
+						FROM user_auth
+						WHERE id = ?',
 						array(get_nfilter_request_var('template_user')));
 
 					for ($i=0;($i<count($selected_items));$i++) {
-						$user = db_fetch_row_prepared('SELECT username, realm 
-							FROM user_auth 
-							WHERE id = ?', 
+						$user = db_fetch_row_prepared('SELECT username, realm
+							FROM user_auth
+							WHERE id = ?',
 							array($selected_items[$i]));
 
 						if ((isset($user)) && (isset($template))) {
@@ -322,16 +322,6 @@ function form_actions() {
 		}
 	}
 
-	/* Check for deleting of Graph Export User */
-	if ((get_nfilter_request_var('drp_action') == '1') && isset($user_array) && sizeof($user_array)) { // delete
-		$exportuser = read_config_option('export_user_id');
-		if (in_array($exportuser, $user_array)) {
-			raise_message(22);
-			header('Location: user_admin.php?header=false');
-			exit;
-		}
-	}
-
 	top_header();
 
 	form_start('user_admin.php');
@@ -339,7 +329,7 @@ function form_actions() {
 	html_start_box($user_actions[get_nfilter_request_var('drp_action')], '40%', '', '3', 'center', '');
 
 	if (isset($user_array) && sizeof($user_array)) {
-		if ((get_nfilter_request_var('drp_action') == '1') && (sizeof($user_array))) { // delete 
+		if ((get_nfilter_request_var('drp_action') == '1') && (sizeof($user_array))) { // delete
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the selected User(s).') . "</p>
@@ -485,30 +475,30 @@ function form_save() {
 		$add_button_clicked = false;
 
 		if (isset_request_var('add_graph_x')) {
-			db_execute_prepared('REPLACE INTO user_auth_perms 
-				(user_id,item_id,type) 
-				VALUES (?, ?, 1)', 
+			db_execute_prepared('REPLACE INTO user_auth_perms
+				(user_id,item_id,type)
+				VALUES (?, ?, 1)',
 				array(get_nfilter_request_var('id'), get_nfilter_request_var('perm_graphs')));
 
 			$add_button_clicked = true;
 		} elseif (isset_request_var('add_tree_x')) {
-			db_execute_prepared('REPLACE INTO user_auth_perms 
-				(user_id,item_id,type) 
-				VALUES (?, ?, 2)', 
+			db_execute_prepared('REPLACE INTO user_auth_perms
+				(user_id,item_id,type)
+				VALUES (?, ?, 2)',
 				array(get_nfilter_request_var('id'), get_nfilter_request_var('perm_trees')));
 
 			$add_button_clicked = true;
 		} elseif (isset_request_var('add_host_x')) {
-			db_execute_prepared('REPLACE INTO user_auth_perms 
-				(user_id,item_id,type) 
-				VALUES (?, ?, 3)', 
+			db_execute_prepared('REPLACE INTO user_auth_perms
+				(user_id,item_id,type)
+				VALUES (?, ?, 3)',
 				array(get_nfilter_request_var('id'), get_nfilter_request_var('perm_hosts')));
 
 			$add_button_clicked = true;
 		} elseif (isset_request_var('add_graph_template_x')) {
-			db_execute_prepared('REPLACE INTO user_auth_perms 
-				(user_id,item_id,type) 
-				VALUES (?, ?, 4)', 
+			db_execute_prepared('REPLACE INTO user_auth_perms
+				(user_id,item_id,type)
+				VALUES (?, ?, 4)',
 				array(get_nfilter_request_var('id'), get_nfilter_request_var('perm_graph_templates')));
 
 			$add_button_clicked = true;
@@ -530,9 +520,9 @@ function form_save() {
 		/* ==================================================== */
 
 		if ((get_nfilter_request_var('password') == '') && (get_nfilter_request_var('password_confirm') == '')) {
-			$password = db_fetch_cell_prepared('SELECT password 
-				FROM user_auth 
-				WHERE id = ?', 
+			$password = db_fetch_cell_prepared('SELECT password
+				FROM user_auth
+				WHERE id = ?',
 				array(get_nfilter_request_var('id')));
 		} elseif (function_exists('password_hash')) {
 			$password = password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
@@ -590,7 +580,7 @@ function form_save() {
 		$save['reset_perms']          = mt_rand();
 		if ($save['locked'] == '') {
 			$save['failed_attempts'] = 0;
-		}		
+		}
 
 		$save = api_plugin_hook_function('user_admin_setup_sql_save', $save);
 
@@ -609,9 +599,9 @@ function form_save() {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^[section]/i', $var)) {
 				if (substr($var, 0, 7) == 'section') {
-					db_execute_prepared('REPLACE INTO user_auth_realm 
-						(user_id, realm_id) 
-						VALUES (?, ?)', 
+					db_execute_prepared('REPLACE INTO user_auth_realm
+						(user_id, realm_id)
+						VALUES (?, ?)',
 						array(get_nfilter_request_var('id'), substr($var, 7)));
 				}
 			}
@@ -625,15 +615,15 @@ function form_save() {
 			foreach ($tab_fields as $field_name => $field_array) {
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						db_execute_prepared('REPLACE INTO settings_user 
-							(user_id, name, value) 
-							VALUES (?, ?, ?)', 
+						db_execute_prepared('REPLACE INTO settings_user
+							(user_id, name, value)
+							VALUES (?, ?, ?)',
 							array((!empty($user_id) ? $user_id : get_filter_request_var('id')), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
 					}
 				} else {
-					db_execute_prepared('REPLACE INTO settings_user 
-						(user_id, name, value) 
-						VALUES (?, ?, ?)', 
+					db_execute_prepared('REPLACE INTO settings_user
+						(user_id, name, value)
+						VALUES (?, ?, ?)',
 						array((!empty($user_id) ? $user_id : get_filter_request_var('id')), $field_name, get_nfilter_request_var($field_name)));
 				}
 			}
@@ -646,9 +636,9 @@ function form_save() {
 
 		raise_message(1);
 	} elseif (isset_request_var('save_component_graph_perms')) {
-		db_execute_prepared('UPDATE user_auth 
-			SET policy_graphs = ?, policy_trees = ?, policy_hosts = ?, policy_graph_templates = ? 
-			WHERE id = ?', 
+		db_execute_prepared('UPDATE user_auth
+			SET policy_graphs = ?, policy_trees = ?, policy_hosts = ?, policy_graph_templates = ?
+			WHERE id = ?',
 			array(get_nfilter_request_var('policy_graphs'), get_nfilter_request_var('policy_trees'), get_nfilter_request_var('policy_hosts'), get_nfilter_request_var('policy_graph_templates'), get_nfilter_request_var('id')));
 	} else {
 		api_plugin_hook('user_admin_user_save');
@@ -671,28 +661,28 @@ function perm_remove() {
 	/* ==================================================== */
 
 	if (get_request_var('type') == 'graph') {
-		db_execute_prepared('DELETE FROM user_auth_perms 
-			WHERE type = 1 
-			AND user_id = ? 
-			AND item_id = ?', 
+		db_execute_prepared('DELETE FROM user_auth_perms
+			WHERE type = 1
+			AND user_id = ?
+			AND item_id = ?',
 			array(get_request_var('user_id'), get_request_var('id')));
 	} elseif (get_request_var('type') == 'tree') {
-		db_execute_prepared('DELETE FROM user_auth_perms 
-			WHERE type = 2 
-			AND user_id = ? 
-			AND item_id = ?', 
+		db_execute_prepared('DELETE FROM user_auth_perms
+			WHERE type = 2
+			AND user_id = ?
+			AND item_id = ?',
 			array(get_request_var('user_id'), get_request_var('id')));
 	} elseif (get_request_var('type') == 'host') {
-		db_execute_prepared('DELETE FROM user_auth_perms 
-			WHERE type = 3 
-			AND user_id = ? 
-			AND item_id = ?', 
+		db_execute_prepared('DELETE FROM user_auth_perms
+			WHERE type = 3
+			AND user_id = ?
+			AND item_id = ?',
 			array(get_request_var('user_id'), get_request_var('id')));
 	} elseif (get_request_var('type') == 'graph_template') {
-		db_execute_prepared('DELETE FROM user_auth_perms 
-			WHERE type = 4 
-			AND user_id = ? 
-			AND item_id = ?', 
+		db_execute_prepared('DELETE FROM user_auth_perms
+			WHERE type = 4
+			AND user_id = ?
+			AND item_id = ?',
 			array(get_request_var('user_id'), get_request_var('id')));
 	}
 
@@ -814,8 +804,8 @@ function graph_perms_edit($tab, $header_label) {
 	);
 
 	if (!isempty_request_var('id')) {
-		$policy = db_fetch_row_prepared('SELECT policy_graphs, policy_trees, policy_hosts, policy_graph_templates 
-			FROM user_auth 
+		$policy = db_fetch_row_prepared('SELECT policy_graphs, policy_trees, policy_hosts, policy_graph_templates
+			FROM user_auth
 			WHERE id = ?', array(get_request_var('id')));
 	} else {
 		$policy = array(
@@ -885,17 +875,17 @@ function graph_perms_edit($tab, $header_label) {
 		$limit = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 		/* get policies for all groups and user */
-		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, uag.name, 
-			policy_graphs, policy_hosts, policy_graph_templates 
+		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, uag.name,
+			policy_graphs, policy_hosts, policy_graph_templates
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
-			WHERE uag.enabled = 'on' AND uagm.user_id = ?", 
+			WHERE uag.enabled = 'on' AND uagm.user_id = ?",
 			array($user_id));
 
-		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 'user' AS name, 
-			policy_graphs, policy_hosts, policy_graph_templates 
-			FROM user_auth WHERE id = ?", 
+		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 'user' AS name,
+			policy_graphs, policy_hosts, policy_graph_templates
+			FROM user_auth WHERE id = ?",
 			array($user_id));
 
 		array_reverse($policies);
@@ -964,16 +954,16 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_having = 'HAVING ' . $sql_having;
 		}
 
-		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name, 
+		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name,
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id = gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id = gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id = gl.host_id 
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_local AS gl
+			ON gl.id = gtg.local_graph_id
+			LEFT JOIN graph_templates AS gt
+			ON gt.id = gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id = gl.host_id
 			$sql_join
 			$sql_where
 			$sql_having
@@ -983,13 +973,13 @@ function graph_perms_edit($tab, $header_label) {
 		$total_rows = db_fetch_cell("SELECT COUNT(*)
 			FROM (
 				SELECT $sql_select
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id = gtg.local_graph_id 
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id = gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id = gl.host_id 
+				FROM graph_templates_graph AS gtg
+				INNER JOIN graph_local AS gl
+				ON gl.id = gtg.local_graph_id
+				LEFT JOIN graph_templates AS gt
+				ON gt.id = gl.graph_template_id
+				LEFT JOIN host AS h
+				ON h.id = gl.host_id
 				$sql_join
 				$sql_where
 				$sql_having
@@ -1084,14 +1074,14 @@ function graph_perms_edit($tab, $header_label) {
 			FROM user_auth_group AS uag
 			LEFT JOIN (SELECT user_id, group_id FROM user_auth_group_members WHERE user_id=" . get_request_var('id') . ") AS uagm
 			ON uag.id = uagm.group_id
-			$sql_where 
+			$sql_where
 			ORDER BY name
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 		$groups = db_fetch_assoc($sql_query);
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsgr&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Groups'), 'page', 'main');
-	
+
 		form_start(htmlspecialchars('user_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
 
 		print $nav;
@@ -1201,38 +1191,38 @@ function graph_perms_edit($tab, $header_label) {
 		$total_rows = db_fetch_cell("SELECT
 			COUNT(host.id)
 			FROM host
-			LEFT JOIN user_auth_perms 
-			ON host.id = user_auth_perms.item_id 
-			AND user_auth_perms.type = 3 
+			LEFT JOIN user_auth_perms
+			ON host.id = user_auth_perms.item_id
+			AND user_auth_perms.type = 3
 			AND user_auth_perms.user_id = " . get_request_var('id') . "
 			$sql_where");
 
 		$host_graphs       = array_rekey(
-			db_fetch_assoc('SELECT host_id, count(*) AS graphs 
-				FROM graph_local 
-				GROUP BY host_id'), 
+			db_fetch_assoc('SELECT host_id, count(*) AS graphs
+				FROM graph_local
+				GROUP BY host_id'),
 			'host_id', 'graphs');
 
 		$host_data_sources = array_rekey(
-			db_fetch_assoc('SELECT host_id, count(*) AS data_sources 
-				FROM data_local 
-				GROUP BY host_id'), 
+			db_fetch_assoc('SELECT host_id, count(*) AS data_sources
+				FROM data_local
+				GROUP BY host_id'),
 			'host_id', 'data_sources');
 
 		$sql_query = "SELECT host.*, user_auth_perms.user_id
-			FROM host 
-			LEFT JOIN user_auth_perms 
-			ON host.id = user_auth_perms.item_id 
-			AND user_auth_perms.type = 3 
+			FROM host
+			LEFT JOIN user_auth_perms
+			ON host.id = user_auth_perms.item_id
+			AND user_auth_perms.type = 3
 			AND user_auth_perms.user_id = " . get_request_var('id') . "
-			$sql_where 
+			$sql_where
 			ORDER BY description
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 		$hosts = db_fetch_assoc($sql_query);
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsd&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Devices'), 'page', 'main');
-	
+
 		form_start(htmlspecialchars('user_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
 
 		print $nav;
@@ -1356,7 +1346,7 @@ function graph_perms_edit($tab, $header_label) {
 				FROM graph_templates AS gt
 				INNER JOIN graph_local AS gl
 				ON gt.id = gl.graph_template_id
-				LEFT JOIN user_auth_perms 
+				LEFT JOIN user_auth_perms
 				ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 4 AND user_auth_perms.user_id = " . get_request_var('id') . ")
 				$sql_where
 				GROUP BY gl.graph_template_id
@@ -1366,9 +1356,9 @@ function graph_perms_edit($tab, $header_label) {
 			FROM graph_templates AS gt
 			INNER JOIN graph_local AS gl
 			ON gt.id = gl.graph_template_id
-			LEFT JOIN user_auth_perms 
+			LEFT JOIN user_auth_perms
 			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 4 AND user_auth_perms.user_id = " . get_request_var('id') . ")
-			$sql_where 
+			$sql_where
 			GROUP BY gl.graph_template_id
 			ORDER BY name
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
@@ -1494,19 +1484,19 @@ function graph_perms_edit($tab, $header_label) {
 		$total_rows = db_fetch_cell("SELECT
 			COUNT(DISTINCT gt.id)
 			FROM graph_tree AS gt
-			LEFT JOIN user_auth_perms 
-			ON gt.id = user_auth_perms.item_id 
-			AND user_auth_perms.type = 2 
+			LEFT JOIN user_auth_perms
+			ON gt.id = user_auth_perms.item_id
+			AND user_auth_perms.type = 2
 			AND user_auth_perms.user_id = " . get_request_var('id') . "
 			$sql_where");
 
 		$sql_query = "SELECT gt.id, gt.name, user_auth_perms.user_id
 			FROM graph_tree AS gt
-			LEFT JOIN user_auth_perms 
-			ON gt.id = user_auth_perms.item_id 
-			AND user_auth_perms.type = 2 
+			LEFT JOIN user_auth_perms
+			ON gt.id = user_auth_perms.item_id
+			AND user_auth_perms.type = 2
 			AND user_auth_perms.user_id = " . get_request_var('id') . "
-			$sql_where 
+			$sql_where
 			ORDER BY name
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
@@ -1614,10 +1604,10 @@ function user_realms_edit($header_label) {
 
 			print "<td class='realms'>\n";
 			if (isset($user_auth_realms[$realm])) {
-				$set = db_fetch_cell_prepared('SELECT realm_id 
-					FROM user_auth_realm 
-					WHERE user_id = ? 
-					AND realm_id = ?', 
+				$set = db_fetch_cell_prepared('SELECT realm_id
+					FROM user_auth_realm
+					WHERE user_id = ?
+					AND realm_id = ?',
 					array(get_request_var('id', 0), $realm));
 
 				if (!empty($set)) {
@@ -1740,7 +1730,7 @@ function user_realms_edit($header_label) {
 			if ($break) {
 				print "</td><td class='realms'>\n";
 			}
-			
+
 			if ($break || $i == 1) {
 				print '<strong>' . $r['name'] . "</strong><br>\n";
 			}
@@ -1948,7 +1938,7 @@ function user_edit() {
 		print "<div class='tabs'><nav><ul role='tablist'>\n";
 
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") . 
+			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
 				" href='" . htmlspecialchars($config['url_path'] .
 				'user_admin.php?action=user_edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
@@ -2114,28 +2104,28 @@ function user() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'username', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'username',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 	);
@@ -2322,27 +2312,27 @@ function process_graph_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_config_option('num_rows_table')
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'graph_template_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
-			'default' => '-1', 
+			'default' => '-1',
 			),
 		'associated' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
@@ -2357,22 +2347,22 @@ function process_group_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_config_option('num_rows_table')
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'associated' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
@@ -2387,27 +2377,27 @@ function process_device_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_config_option('num_rows_table')
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'host_template_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
-			'default' => '-1', 
+			'default' => '-1',
 			),
 		'associated' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
@@ -2422,27 +2412,27 @@ function process_template_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_config_option('num_rows_table')
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'graph_template_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
-			'default' => '-1', 
+			'default' => '-1',
 			),
 		'associated' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
@@ -2457,27 +2447,27 @@ function process_tree_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_config_option('num_rows_table')
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'graph_template_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
-			'default' => '-1', 
+			'default' => '-1',
 			),
 		'associated' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
@@ -2543,7 +2533,7 @@ function graph_filter($header_label) {
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
-							$graph_templates = db_fetch_assoc('SELECT DISTINCT gt.id, gt.name 
+							$graph_templates = db_fetch_assoc('SELECT DISTINCT gt.id, gt.name
 								FROM graph_templates AS gt
 								INNER JOIN graph_local AS gl
 								ON gl.graph_template_id = gt.id

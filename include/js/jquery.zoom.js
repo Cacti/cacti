@@ -29,7 +29,7 @@
 
 (function($){
 	$.fn.zoom = function(options) {
-		storage=$.localStorage;
+		storage=Storages.localStorage;
 
 		/* +++++++++++++++++++++++ Global Variables +++++++++++++++++++++++++ */
 

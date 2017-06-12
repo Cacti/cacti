@@ -1027,7 +1027,7 @@ function ajaxAnchors() {
 }
 
 function setupCollapsible() {
-	storage=$.localStorage;
+	storage=Storages.localStorage;
 
 	$('.collapsible').each(function(data) {
 		id=$(this).attr('id')+'_cs';
@@ -1092,7 +1092,7 @@ function setupUserMenu() {
 }
 
 function setupSpecialKeys() {
-	$('#filter, #rfilter').unbind('keypress').attr('title', clearFilter);
+	$('#filter, #rfilter').unbind('keypress').attr('title', clearSearchFilter);
 	$('#filter, #rfilter').tooltip({ closed: true }).on('focus', function() { $('#filter').tooltip('close'); }).on('click', function() { $(this).tooltip('close'); });
 
 	$('#filter, #rfilter').bind('keypress', 'ctrl+shift+x', function() {
@@ -1151,7 +1151,7 @@ function setupBreadcrumbs() {
  *  load.  It includes the 'initial' boolean to initialize the page */
 function saveTableWidths(initial) {
 	// We will save columns widths persistently
-	storage=$.localStorage;
+	storage=Storages.localStorage;
 
 	// Initialize table width on the page
 	$('.cactiTable').each(function(data) {

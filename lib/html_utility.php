@@ -38,7 +38,7 @@
    @returns - $form_array with all available variables substituted with their
      proper values */
 function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $arg3 = array(), $arg4 = array()) {
-	$check_fields = array('value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id');
+	$check_fields = array('id', 'value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id');
 
 	/* loop through each available field */
 	if (sizeof($form_array)) {
@@ -50,7 +50,9 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 					$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
 				} elseif (isset($field_array[$field_to_check]) && !is_array($field_array[$field_to_check]) && preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $field_array[$field_to_check], $matches)) {
 					$string = $field_array[$field_to_check];
-					while ( 1 ) {
+
+					$count = 0;
+					while (true) {
 						/* an empty field name in the variable means don't treat this as an array */
 						if ($matches[2] == '') {
 							if (is_array(${$matches[1]})) {
@@ -67,11 +69,19 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 							$string = str_replace($matches[0], (isset(${$matches[1]}{$matches[2]}) ? ${$matches[1]}{$matches[2]} : ''), $string);
 
 							$matches = array();
+
 							preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
+
 							if (!sizeof($matches)) {
 								$form_array[$field_name][$field_to_check] = $string;
 								break;
 							}
+						}
+
+						$count++;
+
+						if ($count > 3) {
+							break;
 						}
 					}
 				}
@@ -457,8 +467,8 @@ function get_nfilter_request_var($name, $default = '') {
 	}
 }
 
-/* get_request_var_post - depricated - returns the current value of a 
-     PHP $_POST variable, optionally returning a default value if the 
+/* get_request_var_post - depricated - returns the current value of a
+     PHP $_POST variable, optionally returning a default value if the
      request variable does not exist.
    @arg $name - the name of the request variable. this should be a valid key in the
      $_POST array
@@ -477,27 +487,27 @@ function get_request_var_post($name, $default = '') {
    @arg $filters - an array keyed with the filter methods.
    @arg $session_prefix - the prefix for the session variable
 
-   Valid filter include those from PHP filter_var() function syntax.  
+   Valid filter include those from PHP filter_var() function syntax.
    The format of the array is:
 
      array(
        'varA' => array(
-          'filter' => value, 
+          'filter' => value,
           'pageset' => true,      (optional)
           'session' => sess_name, (optional)
-          'options' => mixed, 
+          'options' => mixed,
           'default' => value),
        'varB' => array(
-          'filter' => value, 
+          'filter' => value,
           'pageset' => true,      (optional)
           'session' => sess_name, (optional)
-          'options' => mixed, 
+          'options' => mixed,
           'default' => value),
        ...
      );
 
-   The 'pageset' attribute is optional, and when set, any changes 
-   between what the page returns and what is set in the session 
+   The 'pageset' attribute is optional, and when set, any changes
+   between what the page returns and what is set in the session
    result in the page number being returned to 1.
 
    The 'session' attribute is also optional, and when set, all
@@ -706,7 +716,7 @@ function update_order_string($inplace = false) {
 	}
 }
 
-/* get_order_string - returns a valid order string for a table 
+/* get_order_string - returns a valid order string for a table
    @returns - the order string */
 function get_order_string() {
 	$page = get_order_string_page();
@@ -751,7 +761,7 @@ function validate_is_regex($regex) {
 	restore_error_handler();
 
 	$track_errors = ini_get('track_errors');
-	ini_set('track_errors', 1); 
+	ini_set('track_errors', 1);
 
     if(@preg_match("'" . $regex . "'", NULL) !== false) {
 		ini_set('track_errors', $track_errors);
@@ -810,7 +820,7 @@ function get_colored_device_status($disabled, $status) {
 	} else {
 		switch ($status) {
 			case HOST_DOWN:
-				return "<span class='deviceDown'>" . __('Down') . "</span>"; 
+				return "<span class='deviceDown'>" . __('Down') . "</span>";
 				break;
 			case HOST_RECOVERING:
 				return "<span class='deviceRecovering'>" . __('Recovering') . "</span>";
@@ -851,7 +861,7 @@ function get_current_graph_end() {
 }
 
 /* display_tooltip - display the text passed to the function as a tooltip
-   @arg $text - the text to display in the tooltip 
+   @arg $text - the text to display in the tooltip
    @returns - null */
 function display_tooltip($text) {
 	return '<div class="cactiTooltipHint fa fa-question-circle"><span style="display:none;">' . $text . "</span></div>\n";

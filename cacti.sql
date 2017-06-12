@@ -2828,7 +2828,7 @@ CREATE TABLE `snmpagent_managers` (
 
 CREATE TABLE `snmpagent_managers_notifications` (
   `manager_id` int(8) NOT NULL,
-  `notification` varchar(180) NOT NULL,
+  `notification` varchar(190) NOT NULL,
   `mib` varchar(191) NOT NULL,
   KEY `mib` (`mib`),
   KEY `manager_id_notification` (`manager_id`,`notification`)
@@ -2847,7 +2847,7 @@ CREATE TABLE `snmpagent_notifications_log` (
   `time` int(24) NOT NULL,
   `severity` tinyint(1) NOT NULL,
   `manager_id` int(8) NOT NULL,
-  `notification` varchar(180) NOT NULL,
+  `notification` varchar(190) NOT NULL,
   `mib` varchar(191) NOT NULL,
   `varbinds` varchar(5000) NOT NULL,
   PRIMARY KEY (`id`),

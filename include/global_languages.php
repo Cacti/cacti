@@ -215,7 +215,7 @@ function load_fallback_procedure(){
 	define('CACTI_COUNTRY', 'us');
 	define('CACTI_LANGUAGE', 'English');
 	define('CACTI_LANGUAGE_FILE', 'english_usa');
-	
+
 }
 
 
@@ -241,7 +241,7 @@ function load_i18n_gettext_wrappers(){
 		if (isset($l10n[$domain])) {
     		return $l10n[$domain]->ngettext($singular, $plural, $number);
     	}else {
-			return ($number == 1) ? $singular : $plural;	
+			return ($number == 1) ? $singular : $plural;
 		}
 	}
 
@@ -282,7 +282,7 @@ function load_i18n_gettext_wrappers(){
 	function __xn($context, $singular, $plural, $number, $domain = 'cacti'){
 		$xsingular = $context . chr(4) . $singular;
 		$xplural = $context . chr(4) . $plural;
-		
+
 		$msgstr = __n($xsingular, $xplural, $number, $domain);
 		if($number == 1 ) {
 			return ( $msgstr == $xsingular ) ? $singular : $msgstr;
@@ -290,42 +290,42 @@ function load_i18n_gettext_wrappers(){
 			return ( $msgstr == $xplural ) ? $plural : $msgstr;
 		}
 	}
-	
+
 	function __x(){
 		global $l10n;
 
 		$args = func_get_args();
 		$num  = func_num_args();
-		
+
 		/* this should never happen */
 		if ($num < 2) {
 			return false;
 		}else {
 			$context = array_shift($args);
 			$num--;
-			
+
 			$msgid = reset($args);
 			$xmsgid = $context . chr(4) . $msgid;
 
 			$args[0] = $xmsgid;
-			
+
 			if($num == 1) {
 				/* pure text string without placeholders and a change of the default textdomain */
 				$msgstr = __gettext($args[0]);
 			}else {
-				/* get gettext string */		
+				/* get gettext string */
 				$msgstr = isset($l10n[$args[$num-1]]) 	? __gettext($args[0], $args[$num-1])
-														: __gettext($args[0]);			
+														: __gettext($args[0]);
 			}
-			
+
 			/* use the raw message id if language catalogue does not contain a context specific message string */
 			$args[0] = ( $msgstr == $xmsgid ) ? $msgid : $msgstr;
-			
+
 			/* process return string against input arguments */
 			return call_user_func_array('sprintf', $args);
 		}
 	}
-	
+
 	function __date($format, $timestamp = false, $domain = 'cacti') {
 
 		global $i18n_date_placeholders;
@@ -407,11 +407,11 @@ function load_i18n_fallback_wrappers(){
 	function __xn($context, $singular, $plural, $number, $domain = 'cacti'){
 		return __n($singular, $plural, $number, $domain);
 	}
-	
+
 	function __x(){
 		$args = func_get_args();
 		$num  = func_num_args();
-		
+
 		/* this should never happen */
 		if ($num < 2) {
 			return false;
@@ -528,8 +528,6 @@ function read_user_i18n_setting($config_name) {
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
 	if (isset($_SESSION['sess_user_id'])) {
 		$effective_uid = $_SESSION['sess_user_id'];
-	}else if (isset($config['config_options_array']['export_user_id'])) {
-		$effective_uid = $config['config_options_array']['export_user_id'];
 	}else if ((read_config_option('auth_method') == 0)) {
 		if (isset($_SESSION['sess_config_array'])) {
 			$config_array = $_SESSION['sess_config_array'];
@@ -537,10 +535,10 @@ function read_user_i18n_setting($config_name) {
 			$config_array = $config['config_options_array'];
 		}
 		if (!isset($config_array[$config_name])) {
-			$effective_uid = db_fetch_cell("SELECT user_auth.id 
-				FROM settings 
-				INNER JOIN user_auth 
-				ON user_auth.username = settings.value 
+			$effective_uid = db_fetch_cell("SELECT user_auth.id
+				FROM settings
+				INNER JOIN user_auth
+				ON user_auth.username = settings.value
 				WHERE settings.name = 'guest_user'");
 		}
 		if ($effective_uid == '') {
@@ -551,13 +549,13 @@ function read_user_i18n_setting($config_name) {
 	}
 
 	if (db_table_exists('settings_user')) {
-		$db_setting = db_fetch_row_prepared('SELECT value 
-			FROM settings_user 
-			WHERE name = ? 
-			AND user_id = ?', 
+		$db_setting = db_fetch_row_prepared('SELECT value
+			FROM settings_user
+			WHERE name = ?
+			AND user_id = ?',
 			array($config_name, $effective_uid));
 	}
-	
+
 	if (isset($db_setting['value'])) {
 		return $db_setting['value'];
 	} else {
