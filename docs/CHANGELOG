@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.1.11
+issue: date_format(): fix date separator character
+issue: host.php: fix itemCount en rowCount when result = null
+
 1.1.10
 -issue#779: Resolve random apache segfault due to recursion
 -issue#786: Unable to create second RRA for a Data Source Profile with collection rate less than 5 minutes
