@@ -790,7 +790,7 @@ function host_edit() {
 		$sql_where2 .= ' snmp_query.id NOT IN(SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ' . get_request_var('id') . ')';
 
 		$selected_data_queries = db_fetch_assoc_prepared("SELECT snmp_query.id,
-			snmp_query.name, host_snmp_query.reindex_method, `items`.`itemCount`, `rows`.`rowCount`
+			snmp_query.name, host_snmp_query.reindex_method, IFNULL(`items`.`itemCount`, 0) AS itemCount, IFNULL(`rows`.`rowCount`, 0) AS rowCount
 			FROM snmp_query
 			INNER JOIN host_snmp_query
 			ON snmp_query.id = host_snmp_query.snmp_query_id
