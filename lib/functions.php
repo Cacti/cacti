@@ -4695,7 +4695,7 @@ function date_time_format() {
 	}
 
 	$dateCharSetting = read_config_option('default_datechar');
-	if (empty($dateCharSetting)) {
+	if (!isset($datechar[$dateCharSetting])) {
 		$dateCharSetting = GDC_SLASH;
 	}
 	$datecharacter = $datechar[$dateCharSetting];
