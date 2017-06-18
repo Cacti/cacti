@@ -325,30 +325,42 @@ function filter($clogAdmin) {
 						<?php print __('File to show');?>
 					</td>
 					<td>
-						<select id='filename' name='filename'>
-							<?php
-							$configLogPath = read_config_option('path_cactilog');
+						<?php
+						$configLogPath = read_config_option('path_cactilog');
 
-							if ($configLogPath == '') {
-								$logPath = $config['base_path'] . '/log/';
-							} else {
-								$logPath = dirname($configLogPath);
-							}
+						if ($configLogPath == '') {
+							$logPath = $config['base_path'] . '/log/';
+						} else {
+							$logPath = dirname($configLogPath);
+						}
 
+						$files = @scandir($logPath);
+
+						if ($files === false) {
+							echo '<select id="filename" name="filename">
+									<option value="cacti.log">cacti.log</option>';
+						} else {
+							echo '<select id="filename" name="filename">';
 							$selectedFile = basename(get_nfilter_request_var('filename'));
-							$files        = scandir($logPath);
 
 							foreach ($files as $logFile) {
 								if (in_array($logFile, array('.', '..', '.htaccess'))) {
 									continue;
 								}
+
+								$explode = explode('.', $logFile);
+								if (substr($explode[max(array_keys($explode))], 0, 3) != 'log') {
+									continue;
+								}
+
 								print "<option value='" . $logFile . "'";
 								if ($selectedFile == $logFile) {
 									print ' selected';
 								}
 								print '>' . $logFile . "</option>\n";
 							}
-							?>
+						}
+						?>
 						</select>
 					</td>
 					<td>
