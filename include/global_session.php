@@ -81,6 +81,7 @@ if (isset($_SESSION['refresh'])) {
 	$refreshIsLogout = 'true';
 } ?>
 <script type='text/javascript'>
+	var cactiVersion='<?php print $config['cacti_version'];?>';
 	var theme='<?php print get_selected_theme();?>';
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';
