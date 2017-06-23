@@ -1312,7 +1312,6 @@ table.cactiTable {
 
 	.formFieldName {
 		color: snow;
-		color: #000000;
 		float: left;
 		text-align: left;
 		padding-left: 3px;
@@ -1330,6 +1329,26 @@ table.cactiTable {
 	.queryAdd, .templateAdd, .navBar, #ping_results {
 		display: none;
 	}
+	
+	/* switch to horizontal scrolling */
+	.tabs {	
+		overflow-y: hidden;
+		overflow-x: scroll;
+		white-space: nowrap;
+	}
+	
+	.tabs ul {
+		display: inline-flex;
+	}
+	
+	/* dropdown menus */
+	.menuoptions, .submenuoptions {
+		width: 100%;
+		left: 0 !important;
+		border-left: none !important;
+		border-right: none !important;
+	}
+	
 }
 
 .graphItem {
