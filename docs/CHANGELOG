@@ -6,11 +6,12 @@ issue: date_format(): fix date separator character
 issue: host.php: fix itemCount en rowCount when result = null
 issue: clog: fix scandir for systems with limited permissions to log directory
 issue: clog: fix listing of logfiles
+feature: new skin: Sunrise
 
 1.1.10
--issue#779: Resolve random apache segfault due to recursion
+-issue#779: Resolve random Apache segfault due to recursion
 -issue#786: Unable to create second RRA for a Data Source Profile with collection rate less than 5 minutes
--issue#789: Unable to Clear Filter due to JavaScrpt name space collision
+-issue#789: Unable to Clear Filter due to JavaScript name space collision
 -issue#791: cacti 1.1.9 and clog_webapi.php permission issue
 -issue#794: SQL Error when creating graphs manually
 -issue#798: Cosmetic issue when checking checkboxes in Cacti
