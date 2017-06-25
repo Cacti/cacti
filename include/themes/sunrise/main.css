@@ -89,10 +89,6 @@ pre {
 	color: #f7f7f7;
 }
 
-form#tree_edit>div{
-	background: #F7F7F7;
-}
-
 #main {
 	display:none;
 	width: 100%;
@@ -111,6 +107,7 @@ form#tree_edit>div{
 #navigation_right {
 	overflow-y: auto !important;
 	margin-right: 10px !important;
+	padding-left: 10px;
 }
 
 input, select {
@@ -753,6 +750,7 @@ label {
 	height:100%;
 	float: left;
 	display: none;
+	color: lightgrey;
 }
 
 .cactiTreeNavigationArea div:first-child {
@@ -1041,7 +1039,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #2d4ca8;
+	color: #93CEFF;
 	text-decoration: none;
 	font-size: 12px;
 	padding: 3px;
@@ -1050,7 +1048,7 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: yellow;
+	color: white;
 	white-space: nowrap;
 	text-decoration: none;
 }
@@ -1895,12 +1893,12 @@ th:last-child {
 
 tr.selected {
 	background: rgba(0,0,0,0.4) !important;
-	border-left: 10px solid #3C8A3C !important;
-	color: snow !important;
+	border-left: 3px solid #bababa !important;
+	color: #bababa !important;
 }
 
 tr.selected a.linkEditMain:visited {
-	color: #00008B;
+	color: #FFFFFF;
 }
 
 tr:not(.selectable) a.linkEditMain:hover {
@@ -1908,11 +1906,7 @@ tr:not(.selectable) a.linkEditMain:hover {
 }
 
 tr.selectable {
-	border-left: 10px solid transparent;
-}
-
-tr.selectable a.linkEditMain:hover {
-	color: blue;
+	border-left: 3px solid transparent;
 }
 
 tr.selectable:hover:not(.selected){
@@ -1920,7 +1914,7 @@ tr.selectable:hover:not(.selected){
 }
 
 tr.selected a {
-	color: #0000CD;
+	color: #FFFFFF;
 }
 
 #nav li a.pic:hover:not(.selected) {

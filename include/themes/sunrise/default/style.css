@@ -378,9 +378,10 @@
 }
 .jstree-default .jstree-wholerow-hovered {
   background: rgba(0,0,0,0.1);
+  border: none;
 }
 .jstree-default .jstree-wholerow-clicked {
-  background: #3F75A2;
+  border-left: 3px solid #bababa;
   color: white;
 }
 .jstree-default .jstree-node {
@@ -392,6 +393,7 @@
 .jstree-default .jstree-anchor {
   line-height: 20px;
   height: 20px;
+  color: #93CEFF;
 }
 .jstree-default .jstree-icon {
   width: 22px;
