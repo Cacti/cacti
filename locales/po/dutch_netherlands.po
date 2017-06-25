@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-06-25 07:30+0200\n"
-"PO-Revision-Date: 2017-06-25 07:42+0200\n"
+"PO-Revision-Date: 2017-06-25 08:38+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -2347,7 +2347,7 @@ msgstr "Pogingen"
 
 #: ../automation_snmp.php:681
 msgid "Max OIDS"
-msgstr "Maximum aantal OID's"
+msgstr "Max OID's"
 
 #: ../automation_snmp.php:682
 msgid "Auth Username"
@@ -7101,7 +7101,7 @@ msgstr "De minimale toegestane waarde van de verzamelde data."
 
 #: ../include/global_form.php:434
 msgid "Maximum Value (\"U\" for No Maximum)"
-msgstr "Maximale waarde (\"U' voor geen maximum)"
+msgstr "Maximale waarde (\"U\" voor geen maximum)"
 
 #: ../include/global_form.php:439
 msgid "The maximum value of data that is allowed to be collected."
