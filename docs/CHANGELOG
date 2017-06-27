@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue: host.php: fix itemCount en rowCount when result = null
 -issue: clog: fix scandir for systems with limited permissions to log directory
 -issue: clog: fix listing of logfiles
+-issue: Stop New Graphs filter interface from taking too much space
 -feature: new skin: Sunrise
 -feature: Updated Dutch translations
 

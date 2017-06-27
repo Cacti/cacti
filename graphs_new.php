@@ -70,7 +70,7 @@ function save_default_query_option() {
 	$data_query = get_filter_request_var('query');
 	$default    = get_filter_request_var('item');
 
-	set_user_setting('default_sgg_' . $data_query, $default); 
+	set_user_setting('default_sgg_' . $data_query, $default);
 
 	print __('Default Settings Saved') . "\n";
 }
@@ -214,9 +214,9 @@ function host_new_graphs_save($host_id) {
 					$snmp_query_array['snmp_query_graph_id'] = $form_id2;
 				}
 
-				$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id 
-					FROM snmp_query_graph 
-					WHERE id = ?', 
+				$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
+					FROM snmp_query_graph
+					WHERE id = ?',
 					array($snmp_query_array['snmp_query_graph_id']));
 			}
 
@@ -292,7 +292,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 
 					$snmp_query = db_fetch_row_prepared('SELECT snmp_query.name
 						FROM snmp_query
-						WHERE snmp_query.id = ?', 
+						WHERE snmp_query.id = ?',
 						array($snmp_query_id));
 
 					$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id FROM snmp_query_graph WHERE id = ?', array($snmp_query_graph_id));
@@ -325,7 +325,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				AND graph_templates_item.local_graph_id = 0
 				AND graph_templates_item.graph_template_id = ?
 				GROUP BY data_template.id
-				ORDER BY data_template.name', 
+				ORDER BY data_template.name',
 				array($graph_template_id));
 
 			$graph_template = db_fetch_row_prepared('SELECT
@@ -334,12 +334,12 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				FROM (graph_templates, graph_templates_graph)
 				WHERE graph_templates.id = graph_templates_graph.graph_template_id
 				AND graph_templates.id = ?
-				AND graph_templates_graph.local_graph_id = 0', 
+				AND graph_templates_graph.local_graph_id = 0',
 				array($graph_template_id));
 
-			$graph_template_name = db_fetch_cell_prepared('SELECT name 
-				FROM graph_templates 
-				WHERE id = ?', 
+			$graph_template_name = db_fetch_cell_prepared('SELECT name
+				FROM graph_templates
+				WHERE id = ?',
 				array($graph_template_id));
 
 			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', htmlspecialchars($graph_template['graph_template_name'])), false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
@@ -354,7 +354,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						data_template_rrd.*
 						FROM data_template_rrd
 						WHERE data_template_rrd.data_template_id = ?
-						AND local_data_id = 0', 
+						AND local_data_id = 0',
 						array($data_template['data_template_id']));
 
 					array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template['data_template_id'], $data_template_items, 'di_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|_|field|', '', false, false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
@@ -409,23 +409,23 @@ function graphs() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => db_fetch_cell('SELECT id FROM host ORDER BY description, hostname LIMIT 1')
 			),
 		'graph_type' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => read_config_option('default_graphs_new_dropdown')
 			)
 	);
@@ -443,7 +443,7 @@ function graphs() {
 		$host   = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id FROM host WHERE id = ?', array(get_request_var('host_id')));
 
 		if (sizeof($host)) {
-			$header =  __('New Graphs for [ %s ]', htmlspecialchars($host['description']) . ' (' . htmlspecialchars($host['hostname']) . ') ' . 
+			$header =  __('New Graphs for [ %s ]', htmlspecialchars($host['description']) . ' (' . htmlspecialchars($host['hostname']) . ') ' .
 			(!empty($host['host_template_id']) ? htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($host['host_template_id']))):''));
 		} else {
 			$header =  __('New Graphs for [ All Devices ]');
@@ -511,7 +511,7 @@ function graphs() {
 							FROM (snmp_query, host_snmp_query)
 							WHERE host_snmp_query.snmp_query_id = snmp_query.id
 							AND host_snmp_query.host_id = ?
-							ORDER BY snmp_query.name', 
+							ORDER BY snmp_query.name',
 							array($host['id']));
 
 						if (sizeof($snmp_queries) > 0) {
@@ -537,7 +537,7 @@ function graphs() {
 						?>
 					</select>
 				</td>
-				<td class='textInfo' style='text-align:right;vertical-align:top;width:100%;'>
+				<td class='textInfo' rowspan='2' style='text-align:right;vertical-align:top;width:100%;'>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . get_request_var('host_id'));?>'><?php print __('Edit this Device');?></a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit');?>'><?php print __('Create New Device');?></a><br>
 					<?php api_plugin_hook('graphs_new_top_links'); ?>
@@ -560,7 +560,7 @@ function graphs() {
 	</td>
 	</tr>
 
-	<?php 
+	<?php
 
 	html_end_box();
 
@@ -713,11 +713,11 @@ function graphs() {
 							$num_input_fields++;
 
 							if (!isset($total_rows)) {
-								$total_rows = db_fetch_cell_prepared('SELECT count(*) 
-									FROM host_snmp_cache 
-									WHERE host_id = ? 
-									AND snmp_query_id = ? 
-									AND field_name = ?', 
+								$total_rows = db_fetch_cell_prepared('SELECT count(*)
+									FROM host_snmp_cache
+									WHERE host_id = ?
+									AND snmp_query_id = ?
+									AND field_name = ?',
 									array($host['id'], $snmp_query['id'], $field_name));
 							}
 						}
@@ -728,10 +728,10 @@ function graphs() {
 					$total_rows = 0;
 				}
 
-				$snmp_query_graphs = db_fetch_assoc_prepared('SELECT 
-					snmp_query_graph.id,snmp_query_graph.name 
-					FROM snmp_query_graph 
-					WHERE snmp_query_graph.snmp_query_id = ? 
+				$snmp_query_graphs = db_fetch_assoc_prepared('SELECT
+					snmp_query_graph.id,snmp_query_graph.name
+					FROM snmp_query_graph
+					WHERE snmp_query_graph.snmp_query_id = ?
 					ORDER BY snmp_query_graph.name', array($snmp_query['id']));
 
 				if (sizeof($snmp_query_graphs)) {
@@ -740,7 +740,7 @@ function graphs() {
 							gl.snmp_index
 							FROM graph_local AS gl
 							WHERE gl.snmp_query_graph_id = ?
-							AND gl.host_id = ?', 
+							AND gl.host_id = ?',
 							array($snmp_query_graph['id'], $host['id']));
 
 						$script .= 'created_graphs[' . $snmp_query_graph['id'] . '] = new Array(';
@@ -927,10 +927,10 @@ function graphs() {
 				html_end_box(false);
 
 				/* draw the graph template drop down here */
-				$data_query_graphs = db_fetch_assoc_prepared('SELECT 
-					snmp_query_graph.id, snmp_query_graph.name 
-					FROM snmp_query_graph 
-					WHERE snmp_query_graph.snmp_query_id = ? 
+				$data_query_graphs = db_fetch_assoc_prepared('SELECT
+					snmp_query_graph.id, snmp_query_graph.name
+					FROM snmp_query_graph
+					WHERE snmp_query_graph.snmp_query_id = ?
 					ORDER BY snmp_query_graph.name', array($snmp_query['id']));
 
 				if (sizeof($data_query_graphs) == 1) {
