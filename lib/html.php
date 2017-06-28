@@ -1654,9 +1654,9 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		if ($host_id > 0) {
 			$hostname = db_fetch_cell_prepared("SELECT description FROM host WHERE id = ?", array($host_id));
 		} elseif ($host_id == 0) {
-			$hostname = 'None';
+			$hostname = __('None');
 		} else {
-			$hostname = 'Any';
+			$hostname = __('Any');
 		}
 
 		?>
