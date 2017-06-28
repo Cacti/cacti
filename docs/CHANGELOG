@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.11
+-issue#779: PHP running out of memory due to date format issues
 -issue#818: Unable to unselect all SpikeKill templates under settings
 -issue: incorrect version of pace: fix progess bar
 -issue: date_format(): fix date separator character

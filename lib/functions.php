@@ -4695,9 +4695,11 @@ function date_time_format() {
 	}
 
 	$dateCharSetting = read_config_option('default_datechar');
+
 	if (!isset($datechar[$dateCharSetting])) {
 		$dateCharSetting = GDC_SLASH;
 	}
+
 	$datecharacter = $datechar[$dateCharSetting];
 
 	switch ($date_fmt) {
@@ -4714,7 +4716,7 @@ function date_time_format() {
 		case GD_Y_MN_D:
 			return 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
 		default:
-			return '';
+			return 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
 	}
 }
 
