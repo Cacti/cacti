@@ -91,9 +91,9 @@ pre {
 
 #main {
 	display:none;
-	width: 100%;
 	position: relative;
 	z-index: 0;
+	padding-right: 15px;
 }
 
 #main > br {
@@ -106,7 +106,6 @@ pre {
 
 #navigation_right {
 	overflow-y: auto !important;
-	margin-right: 10px !important;
 	padding-left: 10px;
 }
 
@@ -557,9 +556,8 @@ label {
 	cursor:pointer;
 	padding:2px;
 	vertical-align:middle;
-	color: #174163;
-	font-weight:bold;
-	font-size:14px
+    color: red;
+    font-size: 14px;
 }
 
 .odd {
@@ -941,6 +939,10 @@ legend {
 	vertical-align: top;
 }
 
+.graphWrapper{
+	position: relative;
+}
+
 .cactiGraphContentArea {
 	height: 100%;
 	overflow-y: auto !important;
@@ -1054,7 +1056,7 @@ legend {
 }
 
 .linkOverDark, .linkOverDark:visited, .linkOverDark:active {
-	color: white;
+	color: #93CEFF;
 	font-weight: normal;
 	text-decoration: none;
 	cursor: pointer;
@@ -1299,7 +1301,7 @@ table.cactiTable {
 	.formColumnLeft {
 		float: left;
 		display: table-row;
-		width: 100%;
+		width: 92%;
 	}
 
 	.formColumnRight {
@@ -1350,11 +1352,11 @@ table.cactiTable {
 }
 
 .graphItem {
-	background-color: #D5D5D5;
+	background: rgba(255,255,255,0.05);
 }
 
 .graphItemAlternate {
-	background-color: #D2D6E7;
+	background: rgba(255,255,255,0.05);
 }
 
 .break {
@@ -1427,17 +1429,16 @@ th.sortable {
 }
 
 .tablesorter-headerRow {
-    background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-   	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
-    border-bottom: 1px solid #000;
+
+}
+
+.tablesorter-headerRow th{
+ 	border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .tablesorter-headerDesc, .tablesorter-headerAsc {
 	color: white !important;
 	background: none !important;
-	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5) !important;
     border-bottom: 3px solid #3C8A3C !important;
 }
 
@@ -1652,13 +1653,17 @@ th.sortable {
 }
 
 .deleteMarker {
-	color: rgba(0,0,0,0.6);
+	color: red;
 	vertical-align: middle;
 	text-decoration: none !important;
 }
 
 .deleteMarker:hover {
 	text-decoration: none !important;
+}
+
+.deleteMarkerDisabled {
+	color: #9d9d9d !important;
 }
 
 .moveArrow {

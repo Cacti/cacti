@@ -179,7 +179,8 @@
 	width:115px;
 	display:block;
 	padding: 4px 15px;
-	cursor:pointer
+	cursor:pointer;
+	text-align: left;
 }
 
 .zoom-menu .inner_li {

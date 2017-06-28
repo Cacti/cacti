@@ -329,7 +329,6 @@ function themeReady() {
 	/* Replace icons */
 	$('.fa-arrow-down').addClass('fa-chevron-down').removeClass('fa-arrow-down');
 	$('.fa-arrow-up').addClass('fa-chevron-up').removeClass('fa-arrow-up');
-	$('.fa-remove').addClass('fa-trash-o').removeClass('fa-remove');
 
 	// Hide the graph icons until you hover
 	$('.graphDrillDown').hover(
