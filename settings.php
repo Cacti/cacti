@@ -61,6 +61,16 @@ case 'save':
 					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($sub_field_name, get_nfilter_request_var($sub_field_name)));
 				}
 			}
+		} elseif ($field_array['method'] == 'drop_multi') {
+			if (isset_request_var($field_name)) {
+				if (is_array(get_nfilter_request_var($field_name))) {
+					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, implode(',', get_nfilter_request_var($field_name))));
+				} else {
+					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
+				}
+			} else {
+				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, "")', array($field_name));
+			}
 		} elseif (isset_request_var($field_name)) {
 			if (is_array(get_nfilter_request_var($field_name))) {
 				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, implode(',', get_nfilter_request_var($field_name))));
