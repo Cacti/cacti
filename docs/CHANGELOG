@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.1.11
 -issue#779: PHP running out of memory due to date format issues
 -issue#818: Unable to unselect all SpikeKill templates under settings
+-issue#824: ss_host_disk.php not calculating Total Disk Space for large disks
 -issue: incorrect version of pace: fix progess bar
 -issue: date_format(): fix date separator character
 -issue: host.php: fix itemCount en rowCount when result = null
