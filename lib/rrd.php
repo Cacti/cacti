@@ -44,7 +44,7 @@ function escape_command($command) {
 
 function rrd_init($output_to_term = TRUE) {
 	global $config;
-	
+
 	$args = func_get_args();
 	$force_storage_location_local = (isset($config['force_storage_location_local']) && $config['force_storage_location_local'] === true ) ? true : false;
 	$function = ($force_storage_location_local === false && read_config_option('storage_location')) ? '__rrd_proxy_init' : '__rrd_init';
@@ -72,13 +72,13 @@ function __rrd_init($output_to_term = TRUE) {
 
 function __rrd_proxy_init($logopt = 'WEBLOG') {
 	$rsa = new \phpseclib\Crypt\RSA();
-	
+
 	$rrdp_socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 	if ($rrdp_socket === false) {
 		cacti_log('CACTI2RRDP ERROR: Unable to create socket to connect to RRDtool Proxy Server', false, $logopt, POLLER_VERBOSITY_LOW);
 		return false;
 	}
-	
+
 	if ( read_config_option('rrdp_load_balancing') == 'on' ) {
 		$rrdp_id = rand(1,2);
 		$rrdp = @socket_connect($rrdp_socket, (($rrdp_id == 1 ) ? read_config_option('rrdp_server') : read_config_option('rrdp_server_backup')), (($rrdp_id == 1 ) ? read_config_option('rrdp_port') : read_config_option('rrdp_port_backup')) );
@@ -86,21 +86,21 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 		$rrdp_id = 1;
 		$rrdp = @socket_connect($rrdp_socket, read_config_option('rrdp_server'), read_config_option('rrdp_port'));
 	}
-	
+
 	if($rrdp === false) {
 		/* log entry ... */
 		cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
-		
+
 		/* ... and try to use backup path */
 		$rrdp_id = ($rrdp_id + 1) % 2;
 		$rrdp = @socket_connect($rrdp_socket, (($rrdp_id == 1 ) ? read_config_option('rrdp_server') : read_config_option('rrdp_server_backup')), (($rrdp_id == 1 ) ? read_config_option('rrdp_port') : read_config_option('rrdp_port_backup')) );
-		
+
 		if($rrdp === false) {
 			cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
 			return false;
 		}
 	}
-	
+
 	$rrdp_fingerprint = ($rrdp_id == 1 ) ? read_config_option('rrdp_fingerprint') : read_config_option('rrdp_fingerprint_backup');
 
 	socket_write($rrdp_socket, read_config_option('rsa_public_key') . "\r\n");
@@ -117,7 +117,7 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 		}else if($recv == '') {
 			cacti_log('CACTI2RRDP ERROR: Session closed by Proxy.', false, $logopt, POLLER_VERBOSITY_LOW);
 			/* session closed by Proxy */
-			break;	
+			break;
 		}else {
 			$rrdp_public_key .= $recv;
 			if (substr($rrdp_public_key, -1) == "\n") {
@@ -139,7 +139,7 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 		if (read_config_option('path_rrdtool_default_font')) {
 			rrdtool_execute("setenv RRD_DEFAULT_FONT '" . read_config_option('path_rrdtool_default_font') . "'", false, RRDTOOL_OUTPUT_NULL, $rrdproxy, $logopt = 'WEBLOG');
 		}
-		
+
 		return $rrdproxy;
 	}
 }
@@ -174,27 +174,27 @@ function encrypt($output, $rsa_key) {
 	$rsa = new \phpseclib\Crypt\RSA();
 	$aes = new \phpseclib\Crypt\Rijndael();
 	$aes_key = \phpseclib\Crypt\Random::string(192);
-	
+
 	$aes->setKey($aes_key);
 	$ciphertext = base64_encode($aes->encrypt($output));
 	$rsa->loadKey($rsa_key);
 	$aes_key = base64_encode($rsa->encrypt($aes_key));
-	$aes_key_length = str_pad(dechex(strlen($aes_key)),3,'0',STR_PAD_LEFT); 
-	
+	$aes_key_length = str_pad(dechex(strlen($aes_key)),3,'0',STR_PAD_LEFT);
+
 	return $aes_key_length . $aes_key . $ciphertext;
 }
 
 function decrypt($input){
-			 
+
 	$rsa = new \phpseclib\Crypt\RSA();
 	$aes = new \phpseclib\Crypt\Rijndael();
 
 	$rsa_private_key = read_config_option('rsa_private_key');
-	
+
 	$aes_key_length = hexdec(substr($input,0,3));
-	$aes_key = base64_decode(substr($input,3,$aes_key_length)); 
+	$aes_key = base64_decode(substr($input,3,$aes_key_length));
 	$ciphertext = base64_decode(substr($input,3+$aes_key_length));
-	
+
 	$rsa->loadKey( $rsa_private_key );
 	$aes_key = $rsa->decrypt($aes_key);
 	$aes->setKey($aes_key);
@@ -343,31 +343,31 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 
 	/* output information to the log file if appropriate */
 	cacti_log("CACTI2RRDP: " . read_config_option("path_rrdtool") . " $command_line", $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
-	
+
 	/* store the last command to provide rrdtool segfault diagnostics */
 	$last_command = $command_line;
 	$rrdp_auto_close = FALSE;
-	
+
 	if(!$rrdp) {
 		$rrdp = __rrd_proxy_init($logopt);
 		$rrdp_auto_close = TRUE;
 	}
-	
+
 	if(!$rrdp) {
 		cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool proxy.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
-		return null;	
+		return null;
 	}else {
 		cacti_log('CACTI2RRDP NOTE: Connection to RRDtool proxy has already been established.', $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 	}
 
 	$rrdp_socket = $rrdp[0];
 	$rrdp_public_key = $rrdp[1];
-	
+
 	if(strlen($command_line) >= 8192) {
 		$command_line = gzencode($command_line, 1);
 	}
 	socket_write($rrdp_socket, encrypt($command_line, $rrdp_public_key) . "\r\n");
-	
+
 	$input = '';
 	$output = '';
 
@@ -381,32 +381,32 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 			if($output) {
 				cacti_log('CACTI2RRDP ERROR: Session closed by Proxy.', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
 			}
-			break;			
+			break;
 		}else {
 			$input .= $recv;
 			if (strpos($input, "\n") !== false) {
 				$chunks = explode("\n", $input);
 				$input = array_pop($chunks);
-					
+
 				foreach($chunks as $chunk) {
 					$output .= decrypt(trim($chunk));
 					if(strpos($output, "\x1f\x8b") === 0) {
 						$output = gzdecode($output);
 					}
-					
+
 					if ( substr_count($output, "OK u") || substr_count($output, "ERROR:") ) {
 						cacti_log("RRDP: " . $output, $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 						break 2;
 					}
 				}
 			}
-		}	
+		}
 	}
-	
+
 	if($rrdp_auto_close) {
 		__rrd_proxy_close($rrdp);
 	}
-	
+
 	switch ($output_flag) {
 		case RRDTOOL_OUTPUT_NULL:
 			return;
@@ -463,11 +463,11 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 		ON dtd.data_source_profile_id=dsp.id
 		LEFT JOIN data_source_profiles_rra AS dspr
 		ON dsp.id=dspr.data_source_profile_id
-		LEFT JOIN data_source_profiles_cf AS dspc 
+		LEFT JOIN data_source_profiles_cf AS dspc
 		ON dsp.id=dspc.data_source_profile_id
 		WHERE dtd.local_data_id = ?
 		AND (dspr.steps IS NOT NULL OR dspr.rows IS NOT NULL)
-		ORDER BY dspc.consolidation_function_id, rra_order', 
+		ORDER BY dspc.consolidation_function_id, rra_order',
 		array($local_data_id)
 	);
 
@@ -485,7 +485,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 		rrd_minimum, rrd_maximum, data_source_type_id
 		FROM data_template_rrd
 		WHERE local_data_id = ?
-		ORDER BY local_data_template_rrd_id', 
+		ORDER BY local_data_template_rrd_id',
 		array($local_data_id)
 	);
 
@@ -496,7 +496,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 	if (sizeof($data_sources)) {
 		$data_local = db_fetch_row_prepared('SELECT host_id,
 			snmp_query_id, snmp_index
-			FROM data_local 
+			FROM data_local
 			WHERE id = ?',
 			array($local_data_id)
 		);
@@ -1084,7 +1084,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	 * As some rrdtool parameters accept "Cacti variables", we have to perform the
 	 * variable substitution prior to vulnerability checks.
 	 * We will enclose all parameters in quotes and substitute quotation marks within
-	 * those parameters. 
+	 * those parameters.
 	 */
 
 	/* before we do anything; make sure the user has permission to view this graph,
@@ -1108,7 +1108,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		WHERE graph_templates_item.task_item_id=data_template_rrd.id
 		AND data_template_rrd.local_data_id=data_template_data.local_data_id
 		AND graph_templates_item.local_graph_id = ?
-		LIMIT 1', 
+		LIMIT 1',
 		array($local_graph_id)
 	);
 
@@ -1149,8 +1149,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 		}
 	} else {
-		$rra = db_fetch_row_prepared('SELECT 
-			dspr.rows, dsp.step, dspr.steps 
+		$rra = db_fetch_row_prepared('SELECT
+			dspr.rows, dsp.step, dspr.steps
 			FROM data_source_profiles_rra AS dspr
 			INNER JOIN data_source_profiles AS dsp
 			ON dspr.data_source_profile_id=dsp.id
@@ -1178,7 +1178,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		gtg.slope_mode, gtg.auto_scale, gtg.auto_scale_opts, gtg.auto_scale_log,
 		gtg.scale_log_units, gtg.auto_scale_rigid, gtg.auto_padding, gtg.base_value,
 		gtg.upper_limit, gtg.lower_limit, gtg.height, gtg.width, gtg.image_format_id,
-		gtg.unit_value, gtg.unit_exponent_value, gtg.alt_y_grid, 
+		gtg.unit_value, gtg.unit_exponent_value, gtg.alt_y_grid,
 		gtg.right_axis, gtg.right_axis_label, gtg.right_axis_format, gtg.no_gridfit,
 		gtg.unit_length, gtg.tab_width, gtg.dynamic_labels, gtg.force_rules_legend,
 		gtg.legend_position, gtg.legend_direction, gtg.right_axis_formatter,
@@ -1206,7 +1206,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		FROM graph_templates_item AS gti
 		LEFT JOIN data_template_rrd AS dtr
 		ON gti.task_item_id=dtr.id
-		LEFT JOIN colors 
+		LEFT JOIN colors
 		ON gti.color_id=colors.id
 		LEFT JOIN graph_templates_gprint AS gtgp
 		ON gti.gprint_id=gtgp.id
@@ -1812,9 +1812,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					/* get the maximum text_format length from the database */
 					if (!isset($max_length)) {
-						$max_length = db_fetch_cell_prepared('SELECT MAX(LENGTH(TRIM(text_format))) 
-							FROM graph_templates_item 
-							WHERE local_graph_id=? 
+						$max_length = db_fetch_cell_prepared('SELECT MAX(LENGTH(TRIM(text_format)))
+							FROM graph_templates_item
+							WHERE local_graph_id=?
 							AND graph_type_id IN(' .
 								GRAPH_ITEM_TYPE_LINE1 . ',' .
 								GRAPH_ITEM_TYPE_LINE2 . ',' .
@@ -2104,7 +2104,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 
 			if (isset($graph_data_array['get_error'])) {
-				return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_STDERR);	
+				return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_STDERR);
 			} elseif (isset($graph_data_array['export'])) {
 				rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
 
@@ -2221,7 +2221,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 	if (file_exists($rrdtheme) && is_readable($rrdtheme)) {
 		$rrdversion = str_replace('rrd-', '', str_replace('.x', '', read_config_option('rrdtool_version')));
 		include($rrdtheme);
-		
+
 		if (isset($rrdcolors)) {
 			foreach($rrdcolors as $colortag => $color) {
 				$graph_opts .= '--color ' . strtoupper($colortag) . '#' . strtoupper($color) . RRD_NL;
@@ -2383,30 +2383,30 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	global $data_source_types, $consolidation_functions;
 
 	/* get cacti header information for given data source id */
-	$cacti_header_array = db_fetch_row_prepared('SELECT 
+	$cacti_header_array = db_fetch_row_prepared('SELECT
 		local_data_template_data_id, rrd_step, data_source_profile_id
-		FROM data_template_data 
+		FROM data_template_data
 		WHERE local_data_id = ?', array($data_source_id));
 
 	/* get cacti DS information */
-	$cacti_ds_array = db_fetch_assoc_prepared('SELECT data_source_name, data_source_type_id, 
-		rrd_heartbeat, rrd_maximum, rrd_minimum 
-		FROM data_template_rrd 
+	$cacti_ds_array = db_fetch_assoc_prepared('SELECT data_source_name, data_source_type_id,
+		rrd_heartbeat, rrd_maximum, rrd_minimum
+		FROM data_template_rrd
 		WHERE local_data_id = ?', array($data_source_id));
 
 	/* get cacti RRA information */
-	$cacti_rra_array = db_fetch_assoc_prepared('SELECT 
-		dspc.consolidation_function_id AS cf, 
-		dsp.x_files_factor AS xff, 
-		dspr.steps AS steps, 
-		dspr.rows AS rows 
+	$cacti_rra_array = db_fetch_assoc_prepared('SELECT
+		dspc.consolidation_function_id AS cf,
+		dsp.x_files_factor AS xff,
+		dspr.steps AS steps,
+		dspr.rows AS rows
 		FROM data_source_profiles AS dsp
 		INNER JOIN data_source_profiles_cf AS dspc
 		ON dsp.id=dspc.data_source_profile_id
 		INNER JOIN data_source_profiles_rra AS dspr
 		ON dsp.id=dspr.data_source_profile_id
-		WHERE dsp.id = ? 
-		ORDER BY dspc.consolidation_function_id, dspr.steps', 
+		WHERE dsp.id = ?
+		ORDER BY dspc.consolidation_function_id, dspr.steps',
 		array($cacti_header_array['data_source_profile_id']));
 
 	$diff = array();
@@ -2421,9 +2421,9 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	 * data source information
 	 -----------------------------------------------------------------------------------*/
 	if (sizeof($cacti_ds_array) > 0) {
-		$data_local = db_fetch_row_prepared('SELECT host_id, 
-			snmp_query_id, snmp_index 
-			FROM data_local 
+		$data_local = db_fetch_row_prepared('SELECT host_id,
+			snmp_query_id, snmp_index
+			FROM data_local
 			WHERE id = ?',
 			array($data_source_id)
 		);
@@ -2632,7 +2632,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 
 	# add human readable timestamp
 	if (isset($info_array['last_update'])) {
-		$info_array['last_update'] .= ' [' . date(date_time_format(), $info_array['last_update']) . ']';
+		$info_array['last_update'] .= ' [' . date(CACTI_DATE_TIME_FORMAT, $info_array['last_update']) . ']';
 	}
 
 	$loop = array(
@@ -3369,7 +3369,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	if (isset($nimage)) {
 		imagedestroy($nimage);
 	}
-	
+
 	/* flush the buffer */
 	ob_end_clean();
 
