@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue: clog: fix scandir for systems with limited permissions to log directory
 -issue: clog: fix listing of logfiles
 -issue: Stop New Graphs filter interface from taking too much space
+-issue: Pagination of clog is not done via ajax
 -feature: new skin: Sunrise
 -feature: Updated Dutch translations
 
