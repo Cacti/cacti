@@ -322,7 +322,7 @@ function filter($clogAdmin) {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('File to show');?>
+						<?php print __('File');?>
 					</td>
 					<td>
 						<?php
@@ -391,7 +391,7 @@ function filter($clogAdmin) {
 				</tr>
 				<tr>
 					<td class='nowrap'>
-						<?php print __('Message Type');?>
+						<?php print __('Type');?>
 					</td>
 					<td>
 						<select id='message_type' name='message_type'>

@@ -989,7 +989,7 @@ function utilities_view_logfile() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('File to show');?>
+						<?php print __('File');?>
 					</td>
 					<td>
 						<select id='filename' name='filename'>
@@ -1035,7 +1035,7 @@ function utilities_view_logfile() {
 				</tr>
 				<tr>
 					<td class='nowrap'>
-						<?php print __('Message Type');?>
+						<?php print __('Type');?>
 					</td>
 					<td>
 						<select id='message_type' onChange='applyFilter()'>
