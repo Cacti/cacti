@@ -332,7 +332,7 @@
 					+ '<div class="sep_li"></div>'
 					+ '<div class="first_li">'
 					+ 		'<div class="ui-icon ui-icon-close zoomContextMenuAction__close"></div><span class="zoomContextMenuAction__close">Close</span>'
-					+ '</div>').appendTo("#zoom-container");
+					+ '</div>').appendTo("body");
 			}
 
 			zoomElements_reposition();
@@ -353,8 +353,8 @@
 		 **/
 		function zoomElements_remove() {
 			zoomElements_reset();
-			$("#zoom-container").find('*').off();
-			$("#zoom-container").remove();
+			$("#zoom-container").find('*').off().remove();
+			$("#zoom-menu").remove();
 		}
 
 		/**
@@ -1048,7 +1048,7 @@
 				menu_y_offset += (-1*menu_height);
 			}
 
-			$("#zoom-menu").css({ left: menu_x_pos+menu_x_offset-zoom.image.left, top: menu_y_pos+menu_y_offset-zoom.image.top, zIndex: '101' }).show();
+			$("#zoom-menu").css({ left: menu_x_pos+menu_x_offset, top: menu_y_pos+menu_y_offset, zIndex: '101' }).show();
 		};
 
 		function zoomContextMenu_hide(){
