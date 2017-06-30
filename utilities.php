@@ -996,16 +996,23 @@ function utilities_view_logfile() {
 							<?php
 							$selectedFile = basename(get_request_var('filename'));
 							$logPath      = dirname(read_config_option('path_cactilog'));
-							$files        = scandir($logPath);
+
+							if (is_readable($logPath)) {
+								$files = scandir($logPath);
+							} else {
+								$files = array('cacti.log');
+							}
 
 							foreach($files as $logFile) {
 								if (in_array($logFile, array('.', '..', '.htaccess'))) {
 									continue;
 								}
+
 								print "<option value='" . $logFile . "'";
 								if ($selectedFile == $logFile) {
 									print ' selected';
 								}
+
 								print '>' . $logFile . "</option>\n";
 							}
 							?>

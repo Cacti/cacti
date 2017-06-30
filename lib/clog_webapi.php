@@ -334,7 +334,11 @@ function filter($clogAdmin) {
 							$logPath = dirname($configLogPath);
 						}
 
-						$files = @scandir($logPath);
+						if (is_readable($logPath)) {
+							$files = scandir($logPath);
+						} else {
+							$files = false;
+						}
 
 						if ($files === false) {
 							echo '<select id="filename" name="filename">
