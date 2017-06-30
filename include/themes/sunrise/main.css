@@ -892,7 +892,7 @@ legend {
 .cactiTooltipHint {
 	cursor: pointer;
 	padding:5px;
-	font-size:14px !important;
+	font-size:12px !important;
 }
 
 .spikekillData, .spikekillData td {
@@ -1329,18 +1329,18 @@ table.cactiTable {
 	.queryAdd, .templateAdd, .navBar, #ping_results {
 		display: none;
 	}
-	
+
 	/* switch to horizontal scrolling */
-	.tabs {	
+	.tabs {
 		overflow-y: hidden;
 		overflow-x: scroll;
 		white-space: nowrap;
 	}
-	
+
 	.tabs ul {
 		display: inline-flex;
 	}
-	
+
 	/* dropdown menus */
 	.menuoptions, .submenuoptions {
 		width: 100%;
@@ -1348,7 +1348,7 @@ table.cactiTable {
 		border-left: none !important;
 		border-right: none !important;
 	}
-	
+
 }
 
 .graphItem {
