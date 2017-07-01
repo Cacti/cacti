@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue: Stop New Graphs filter interface from taking too much space
 -issue: Pagination of clog is not done via ajax
 -issue: Unable to dry run spikekill's from Graphs page
+-issue: Default sort order does not highlight on Aggregate Template page
 -feature: new skin: Sunrise
 -feature: Updated Dutch translations
 
