@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue: clog: fix listing of logfiles
 -issue: Stop New Graphs filter interface from taking too much space
 -issue: Pagination of clog is not done via ajax
+-issue: Unable to dry run spikekill's from Graphs page
 -feature: new skin: Sunrise
 -feature: Updated Dutch translations
 

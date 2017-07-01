@@ -107,4 +107,5 @@ if (isset($_SESSION['refresh'])) {
 	var cactiCommunityForum='<?php print __('Cacti Community Forum');?>';
 	var reportABug='<?php print __('Report a bug');?>';
 	var aboutCacti='<?php print __('About Cacti');?>';
+	var spikeKillResults='<?php print __('SpikeKill Results');?>';
 </script>
