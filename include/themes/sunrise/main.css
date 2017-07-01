@@ -602,6 +602,7 @@ label {
 .treeArea, .treeItemsArea {
 	width:33%;
 	border:1px solid #006400;
+	vertical-align: top;
 }
 
 .linkMarker {
@@ -649,7 +650,6 @@ label {
 }
 
 .hostUp {
-	color: #000000;
 	font-size: 10px;
 	font-weight: normal;
 	font-family: monospace;
@@ -967,7 +967,7 @@ legend {
 }
 
 .cactiGraphContentArea .tableHeader > td{
-	color: white;
+	color: #FFAA00;
     text-align: left;
     padding: 3px 5px;
     width: 100%;
@@ -975,7 +975,7 @@ legend {
     font-weight: 600;
 	text-transform: none;
     border-color: rgba(255,255,255,0.2);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+    background-image: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1));
     background-repeat: repeat-x;
 }
 
