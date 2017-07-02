@@ -14,6 +14,8 @@ Cacti CHANGELOG
 -issue: Unable to dry run spikekill's from Graphs page
 -issue: Default sort order does not highlight on Aggregate Template page
 -issue: Correct display issue with Graph Templates when editing Device
+-issue: External Data Sources show as having poller interval on Data Source page
+-issue: Allow Selecting 'External' as the Data Source Profile when creating non-templated Data Source
 -feature: new skin: Sunrise
 -feature: Updated Dutch translations
 -feature: Allow Graph Templates with multiple flag to be created repeatedly from Graphs New interface
