@@ -1735,6 +1735,7 @@ function utilities_view_poller_cache() {
 
 	$display_text = array(
 		'dtd.name_cache' => array(__('Data Source Name'), 'ASC'),
+		'h.description' => array(__('Device Description'), 'ASC'),
 		'nosort' => array(__('Details'), 'ASC'));
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_poller_cache');
@@ -1751,6 +1752,10 @@ function utilities_view_poller_cache() {
 				?>
 				<td>
 					<?php print filter_value($item['name_cache'], get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>
+				</td>
+
+				<td>
+					<?php print $item['description'];?>
 				</td>
 
 				<td>
@@ -1779,7 +1784,7 @@ function utilities_view_poller_cache() {
 			<?php
 			print "<tr class='$class'>\n";
 			?>
-				<td>
+				<td colspan='2'>
 				</td>
 				<td>
 					<?php print __('RRD:');?> <?php print $item['rrd_path'];?>
