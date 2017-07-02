@@ -720,8 +720,15 @@ function host_edit() {
 		);
 
 		$i = 0;
+		$displayed_templates = array();
 		if (sizeof($selected_graph_templates)) {
 			foreach ($selected_graph_templates as $item) {
+				if (isset($displayed_templates[$item['id']])) {
+					continue;
+				} else {
+					$displayed_templates[$item['id']] = true;
+				}
+
 				$i++;
 
 				form_alternate_row("gt$i", true);
