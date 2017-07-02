@@ -600,9 +600,12 @@ function graphs() {
 
 		if (!isempty_request_var('host_id')) {
 			$template_graphs = db_fetch_assoc_prepared('SELECT
-				gl.graph_template_id
+				DISTINCT gl.graph_template_id
 				FROM graph_local AS gl
+				INNER JOIN graph_templates AS gt
+				ON gt.id=gl.graph_template_id
 				WHERE gl.host_id = ?
+				AND gt.multiple = ""
 				AND gl.snmp_query_id = 0
 				GROUP BY gl.graph_template_id', array($host['id']));
 

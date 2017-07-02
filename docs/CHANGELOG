@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue: Correct display issue with Graph Templates when editing Device
 -feature: new skin: Sunrise
 -feature: Updated Dutch translations
+-feature: Allow Graph Templates with multiple flag to be created repeatedly from Graphs New interface
 
 1.1.10
 -issue#779: Resolve random Apache segfault due to recursion
