@@ -930,22 +930,24 @@ function form_actions() {
 				print '<tr>';
 				print "<td class='textArea'>
 					<p>" . __('Click \'Continue\' to create an Aggregate Graph from the selected Graph(s).'). "</p>
-					<div class='itemlist'><ul>" . get_nfilter_request_var('graph_list') . "</ul></div>
-				</td>\n";
+					<div class='itemlist'><ul>" . get_nfilter_request_var('graph_list') . '</ul></div>
+				</td></tr>';
 
 				/* list affected data sources */
-				if (sizeof($data_sources) > 0) {
+				print '<tr>';
+
+				if (sizeof($data_sources)) {
 					print "<td class='textArea'>" .
 					'<p>' . __('The following data sources are in use by these graphs:') . '</p>
 					<div class="itemlist"><ul>';
 					foreach ($data_sources as $data_source) {
-						print '<li>' . htmlspecialchars($data_source['name_cache']) . "</li>\n";
+						print '<li>' . htmlspecialchars($data_source['name_cache']) . '</li>';
 					}
-					print "</ul></div></td>\n";
+					print '</ul></div></td>';
 				}
-				print "</tr>\n";
+				print '</tr>';
 
-				print "<tr><td>";
+				print '<tr><td>';
 
 				$ttitle = $graph_array[0];
 
@@ -966,7 +968,7 @@ function form_actions() {
 				# draw all graph items of first graph, including a html_start_box
 				draw_aggregate_graph_items_list(0, $graph_template);
 
-				print "</td></tr>";
+				print '</td></tr>';
 
 				# again, a new html_start_box. Using the one from above would yield ugly formatted NO and YES buttons
 				html_start_box(__('Please confirm'), '100%', '', '3', 'center', '');

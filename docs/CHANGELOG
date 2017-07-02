@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue: Allow Selecting 'External' as the Data Source Profile when creating non-templated Data Source
 -issue: Remove Field Order on Data Input output data as it's not required
 -issue: Data Templates not using Ajax callbacks to switch Data Sources
+-issue: Visual issue when creating non-templated Aggregate Graphs
 -feature: new skin: Sunrise
 -feature: Updated Dutch translations
 -feature: Allow Graph Templates with multiple flag to be created repeatedly from Graphs New interface
