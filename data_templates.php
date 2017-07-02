@@ -568,7 +568,7 @@ function template_edit() {
 			print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
 			foreach ($template_data_rrds as $template_data_rrd) {
-				print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i+1) . ": " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a><a class='deleteMarker fa fa-remove' title='" . __('Delete') . "' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
+				print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . htmlspecialchars('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i+1) . ": " . htmlspecialchars($template_data_rrd['data_source_name']) . "</a><a class='deleteMarker fa fa-remove' title='" . __('Delete') . "' href='" . htmlspecialchars('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
 
 				$i++;
 			}
