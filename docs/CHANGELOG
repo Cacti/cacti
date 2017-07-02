@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.11
+-issue#642: RRA not written or WARNING: Poller Output Table not Empty
 -issue#779: PHP running out of memory due to date format issues
 -issue#818: Unable to unselect all SpikeKill templates under settings
 -issue#831: Unable to add devices from automation devices that don't have a snmpSysname

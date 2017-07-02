@@ -444,6 +444,24 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 								cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_MEDIUM));
 								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
 							}
+						} else {
+							// Handle data source without a data template
+							$nt_rrd_field_names = array_rekey(
+								db_fetch_assoc_prepared('SELECT dtr.data_source_name, dif.data_name
+									FROM data_template_rrd AS dtr
+									INNER JOIN data_input_fields AS dif
+									ON dtr.data_input_field_id=dif.id
+									WHERE dtr.local_data_id = ?', array($item['local_data_id'])),
+								'data_name', 'data_source_name'
+							);
+
+							if (sizeof($nt_rrd_field_names)) {
+								if (isset($nt_rrd_field_names{$matches[0]})) {
+									cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $nt_rrd_field_names{$matches[0]} . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_MEDIUM));
+
+									$rrd_update_array{$item['rrd_path']}['times'][$unix_time]{$nt_rrd_field_names{$matches[0]}} = $matches[1];
+								}
+							}
 						}
 					}
 				}
