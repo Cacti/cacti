@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -feature: new skin: Sunrise
 -feature: Updated Dutch translations
 -feature: Allow Graph Templates with multiple flag to be created repeatedly from Graphs New interface
+-feature: Allow plugins to exclude files and directories from their remote poller synchronization process
 
 1.1.10
 -issue#779: Resolve random Apache segfault due to recursion

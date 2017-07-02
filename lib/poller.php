@@ -163,11 +163,11 @@ function update_reindex_cache($host_id, $data_query_id) {
 	$host       = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM host WHERE id = ?', array($host_id));
 	$data_query = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array($host_id, $data_query_id));
 
-	$data_query_type = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_input.type_id 
+	$data_query_type = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_input.type_id
 		FROM data_input
 		INNER JOIN snmp_query
 		ON data_input.id = snmp_query.data_input_id
-		WHERE snmp_query.id = ?', 
+		WHERE snmp_query.id = ?',
 		array($data_query_id));
 
 	$data_query_xml  = get_data_query_array($data_query_id);
@@ -215,11 +215,11 @@ function update_reindex_cache($host_id, $data_query_id) {
 			 * we do NOT make use of <oid_num_indexes> or the like!
 			 * this works, even if no <oid_num_indexes> was given
 			 */
-			$assert_value = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index 
-				FROM host_snmp_cache 
-				WHERE host_id = ? 
-				AND snmp_query_id = ? 
-				GROUP BY snmp_index', 
+			$assert_value = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index
+				FROM host_snmp_cache
+				WHERE host_id = ?
+				AND snmp_query_id = ?
+				GROUP BY snmp_index',
 				array($host_id, $data_query_id)));
 
 			/* now, we have to build the (list of) commands that are later used on a recache event
@@ -258,11 +258,11 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 			break;
 		case DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION:
-			$primary_indexes = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index, oid, field_value 
-				FROM host_snmp_cache 
-				WHERE host_id = ? 
-				AND snmp_query_id = ? 
-				AND field_name = ?', 
+			$primary_indexes = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index, oid, field_value
+				FROM host_snmp_cache
+				WHERE host_id = ?
+				AND snmp_query_id = ?
+				AND field_name = ?',
 				array($host_id, $data_query_id, $data_query['sort_field']));
 
 			if (sizeof($primary_indexes) > 0) {
@@ -288,10 +288,10 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$recache_stack) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
-	db_execute_prepared('UPDATE poller_reindex 
-		SET present = 0 
-		WHERE host_id = ? 
-		AND data_query_id = ?', 
+	db_execute_prepared('UPDATE poller_reindex
+		SET present = 0
+		WHERE host_id = ?
+		AND data_query_id = ?',
 		array($host_id, $data_query_id));
 
 	/* setup the database call */
@@ -334,9 +334,9 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 	}
 
 	/* remove stale records FROM the poller reindex */
-	db_execute_prepared('DELETE FROM poller_reindex 
-		WHERE host_id = ? 
-		AND data_query_id = ? 
+	db_execute_prepared('DELETE FROM poller_reindex
+		WHERE host_id = ?
+		AND data_query_id = ?
 		AND present = 0', array($host_id, $data_query_id));
 }
 
@@ -387,7 +387,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 		$rrd_field_names = array_rekey(
 			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
 				CONCAT(data_template_id, "_", data_name) AS keyname, data_source_names AS data_source_name
-				FROM poller_data_template_field_mappings'), 
+				FROM poller_data_template_field_mappings'),
 			'keyname', Array('data_source_name'));
 	}
 
@@ -507,8 +507,8 @@ function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
 	return $rrds_processed;
 }
 
-/** update_resource_cache - place the cacti website in the poller_resource_cache 
- * 
+/** update_resource_cache - place the cacti website in the poller_resource_cache
+ *
  *  for remote pollers to consume
  * @param int $poller_id    - The id of the poller.  1 is the main system
  * @return null             - No data is returned
@@ -528,7 +528,6 @@ function update_resource_cache($poller_id = 1) {
 		'base'     => array('recursive' => false, 'path' => $mpath),
 		'scripts'  => array('recursive' => true,  'path' => $spath),
 		'resource' => array('recursive' => true,  'path' => $rpath),
-		'plugins'  => array('recursive' => true,  'path' => $mpath . '/plugins'),
 		'lib'      => array('recursive' => true,  'path' => $mpath . '/lib'),
 		'include'  => array('recursive' => true,  'path' => $mpath . '/include'),
 		'formats'  => array('recursive' => true,  'path' => $mpath . '/formats'),
@@ -564,16 +563,78 @@ function update_resource_cache($poller_id = 1) {
 			}
 		}
 
+		/* handle plugin paths */
+		$files_and_dirs = array_diff(scandir($mpath . '/plugins'), array('..', '.'));
+
+		if (sizeof($files_and_dirs)) {
+			foreach($files_and_dirs as $path) {
+				if (is_dir($mpath . '/plugins/' . $path)) {
+					if (file_exists($mpath . '/plugins/' . $path . '/INFO')) {
+						$info = parse_ini_file($mpath . '/plugins/' . $path . '/INFO', true);
+						$dir_exclusions  = array('..', '.');
+						$file_exclusions = $excluded_extensions;
+
+						if (isset($info['info']['nosync'])) {
+							$exclude_paths = explode(',', $info['info']['nosync']);
+							if (sizeof($exclude_paths)) {
+								foreach($exclude_paths as $epath) {
+									if (strpos($epath, '*.') !== false) {
+										$file_exclusions[] = trim(str_replace('*.', '', $epath));
+									} else {
+										$dir_exclusions[]  = trim($epath);
+									}
+								}
+							}
+						}
+
+						$fod = array_diff(scandir($mpath . '/plugins/' . $path), $dir_exclusions);
+						if (sizeof($fod)) {
+							foreach($fod as $file_or_dir) {
+								$fpath = $mpath . '/plugins/' . $path . '/' . $file_or_dir;
+								if (is_dir($fpath)) {
+									cache_in_path($fpath, $path . '_' . basename($file_or_dir), true);
+								} else {
+									$pathinfo = pathinfo($fpath);
+
+									if (isset($pathinfo['extension'])) {
+										$extension = strtolower($pathinfo['extension']);
+									} else {
+										$extension = '';
+									}
+
+									/* exclude spurious extensions */
+									$exclude = false;
+									if (array_search($extension, $file_exclusions, true) !== false) {
+										$exclude = true;
+									}
+
+									if (!$exclude) {
+										cache_in_path($fpath, 'plugins', false);
+									}
+								}
+							}
+						}
+					} else {
+						cacti_log("WARNING: INFO file does not exist for plugin directory '" . $mpath . '/plugins/' . $path . "'", false, 'POLLER');
+					}
+				} else {
+					cache_in_path($mpath . '/plugins/' . $path, 'plugins', false);
+				}
+			}
+		}
+
 		/* purge old entries */
 		$cache = db_fetch_assoc('SELECT path FROM poller_resource_cache');
 		if (sizeof($cache)) {
-		foreach($cache as $item) {
-			if (!file_exists($item['path'])) {
-				db_execute_prepared('DELETE FROM poller_resource_cache WHERE path = ?', array($item['path']));
+			foreach($cache as $item) {
+				if (!file_exists($item['path'])) {
+					db_execute_prepared('DELETE FROM poller_resource_cache WHERE path = ?', array($item['path']));
+				}
 			}
 		}
-		}
 	} elseif ($poller_id > 1) {
+		$paths['plugins'] = array('recursive' => true, 'path' => $mpath . '/plugins');
+
 		foreach($paths as $type => $path) {
 			if (is_writable($path['path'])) {
 				resource_cache_out($type, $path);
@@ -584,26 +645,51 @@ function update_resource_cache($poller_id = 1) {
 	}
 }
 
-/** cache_in_path - check to see if the directory in question has changed.  
- *  If so, send its data into the resource cache table 
- * 
+/** cache_in_path - check to see if the directory in question has changed.
+ *  If so, send its data into the resource cache table
+ *
  * @param string $path      - The path to look for changes
  * @param string $type      - The patch types being cached
  * @param bool   $recursive - Should the path be scanned recursively
  * @return null             - No data is returned
  */
 function cache_in_path($path, $type, $recursive = true) {
-	$settings_path = "md5dirsum_$type";
+	global $config;
 
-	$last_md5      = read_config_option($settings_path);
-	$curr_md5      = md5sum_path($path, $recursive);
+	if (is_dir($path)) {
+		$curr_md5      = md5sum_path($path, $recursive);
+		$settings_path = "md5dirsum_$type";
+		$last_md5      = read_config_option($settings_path);
 
-	if (empty($last_md5) || $last_md5 != $curr_md5) {
-		cacti_log("NOTE: Detecting Resource Change.  Updating Resource Cache for '$path'", false, 'POLLER');
-		update_db_from_path($path, $type, $recursive);
+		if (empty($last_md5) || $last_md5 != $curr_md5) {
+			cacti_log("Type:" . $type . ", Path:" . $path . ", Last MD5:" . $last_md5 . ", Curr MD5:" . $curr_md5);
+			cacti_log("NOTE: Detecting Resource Change.  Updating Resource Cache for '$path'", false, 'POLLER');
+			update_db_from_path($path, $type, $recursive);
+		}
+
+		set_config_option($settings_path, $curr_md5);
+	} else {
+		$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\'), '/ \\');
+		$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
+		$pathinfo = pathinfo($path);
+
+		if (isset($pathinfo['extension'])) {
+			$extension = strtolower($pathinfo['extension']);
+		} else {
+			$extension = '';
+		}
+
+		/* exclude spurious extensions */
+		if (array_search($extension, $excluded_extensions, true) === false && basename($path) != 'config.php') {
+			$curr_md5 = md5_file($path);
+			$last_md5 = db_fetch_cell_prepared('SELECT md5sum FROM poller_resource_cache WHERE path = ?', array($spath));
+
+			if (empty($last_md5) || $last_md5 != $curr_md5) {
+				cacti_log("NOTE: Detecting Resource Change.  Updating Resource Cache for '$spath'", false, 'POLLER');
+				update_db_from_path($path, $type, $recursive);
+			}
+		}
 	}
-
-	set_config_option($settings_path, $curr_md5);
 }
 
 /** update_db_from_path - store the actual file in the databases resource cache.
@@ -617,57 +703,84 @@ function cache_in_path($path, $type, $recursive = true) {
 function update_db_from_path($path, $type, $recursive = true) {
 	global $config;
 
-	$pobject = dir($path);
-
 	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
 
-	while(($entry = $pobject->read()) !== false) {
-		if ($entry != '.' && $entry != '..' && $entry != '.git') {
-			$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
-			if (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
-				if ($recursive) {
-					update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
-				}
-			} elseif ($entry == '.') {
-				continue;
-			} elseif ($entry == '..') {
-				continue;
-			} elseif ($entry == '.git') {
-				continue;
-			} elseif ($entry == '') {
-				continue;
-			} elseif (basename($path) == 'config.php') {
-				continue;
-			} else {
-				$pathinfo = pathinfo($entry);
-				if (isset($pathinfo['extension'])) {
-					$extension = strtolower($pathinfo['extension']);
-				} else {
-					$extension = '';
-				}
+	if (is_dir($path)) {
+		$pobject = dir($path);
 
-				/* exclude spurious extensions */
-				if (array_search($extension, $excluded_extensions, true) !== false) {
+		while(($entry = $pobject->read()) !== false) {
+			if ($entry != '.' && $entry != '..' && $entry != '.git' && $entry != '') {
+				$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
+				if (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
+					if ($recursive) {
+						update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
+					}
+				} elseif (basename($path) == 'config.php') {
 					continue;
-				}
+				} else {
+					$pathinfo = pathinfo($entry);
+					if (isset($pathinfo['extension'])) {
+						$extension = strtolower($pathinfo['extension']);
+					} else {
+						$extension = '';
+					}
 
-				$save                  = array();
-				$save['path']          = $spath;
-				$save['id']            = db_fetch_cell_prepared('SELECT id FROM poller_resource_cache WHERE path = ?', array($save['path']));
+					/* exclude spurious extensions */
+					if (array_search($extension, $excluded_extensions, true) !== false) {
+						continue;
+					}
+
+					$save         = array();
+					$save['path'] = $spath;
+					$save['id']   = db_fetch_cell_prepared('SELECT id
+						FROM poller_resource_cache
+						WHERE path = ?',
+						array($save['path']));
+
+					$save['resource_type'] = $type;
+					$save['md5sum']        = md5_file($path . DIRECTORY_SEPARATOR . $entry);
+					$save['update_time']   = date('Y-m-d H:i:s');
+					$save['contents']      = base64_encode(file_get_contents($path . DIRECTORY_SEPARATOR . $entry));
+
+					sql_save($save, 'poller_resource_cache');
+				}
+			}
+		}
+
+		$pobject->close();
+	} else {
+		if (basename($path) != 'config.php' && basename($path) != '.git' && $path != '') {
+			$pathinfo = pathinfo($path);
+			if (isset($pathinfo['extension'])) {
+				$extension = strtolower($pathinfo['extension']);
+			} else {
+				$extension = '';
+			}
+
+			/* exclude spurious extensions */
+			if (array_search($extension, $excluded_extensions, true) === false) {
+				$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\'), '/ \\');
+
+				$save         = array();
+				$save['path'] = $spath;
+
+				$save['id']   = db_fetch_cell_prepared('SELECT id
+					FROM poller_resource_cache
+					WHERE path = ?',
+					array($save['path']));
+
 				$save['resource_type'] = $type;
-				$save['md5sum']        = md5_file($path . DIRECTORY_SEPARATOR . $entry);
+				$save['md5sum']        = md5_file($path);
 				$save['update_time']   = date('Y-m-d H:i:s');
-				$save['contents']      = base64_encode(file_get_contents($path . DIRECTORY_SEPARATOR . $entry));
+				$save['contents']      = base64_encode(file_get_contents($path));
 
 				sql_save($save, 'poller_resource_cache');
 			}
 		}
 	}
-
-	$pobject->close();
 }
 
-/** resource_cache_out - push the cache from the cacti database to the 
+/** resource_cache_out - push the cache from the cacti database to the
  *  remote database.  Check PHP files for errors
  *
  * before placing them on the remote pollers file system.
@@ -705,9 +818,9 @@ function resource_cache_out($type, $path) {
 					if ($md5sum != $e['md5sum'] && basename($e['path']) != 'config.php') {
 						$extension = substr(strrchr($e['path'], "."), 1);
 						$exit = -1;
-						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents 
-							FROM poller_resource_cache 
-							WHERE id = ?', 
+						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents
+							FROM poller_resource_cache
+							WHERE id = ?',
 							array($e['id'])));
 
 						/* if the file type is PHP check syntax */
@@ -765,7 +878,7 @@ function md5sum_path($path, $recursive = true) {
     if (!is_dir($path)) {
         return false;
     }
-    
+
     $filemd5s = array();
     $pobject = dir($path);
 
@@ -818,12 +931,12 @@ function replicate_out($remote_poller_id = 1) {
 		}
 
 		$remote_db_cnn_id = db_connect_real(
-			$cinfo['dbhost'], 
-			$cinfo['dbuser'], 
-			$cinfo['dbpass'], 
-			$cinfo['dbdefault'], 
+			$cinfo['dbhost'],
+			$cinfo['dbuser'],
+			$cinfo['dbpass'],
+			$cinfo['dbdefault'],
 			'mysql',
-			$cinfo['dbport'], 
+			$cinfo['dbport'],
 			$cinfo['dbssl']);
 
 		if (!is_object($remote_db_cnn_id)) {
@@ -873,103 +986,103 @@ function replicate_out($remote_poller_id = 1) {
 	$data = db_fetch_assoc('SELECT * FROM user_domains_ldap');
 	replicate_out_table($remote_db_cnn_id, $data, 'user_domains_ldap', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT hsq.* 
+	$data = db_fetch_assoc_prepared('SELECT hsq.*
 		FROM host_snmp_query AS hsq
 		INNER JOIN host AS h
-		ON h.id=hsq.host_id 
-		WHERE h.poller_id = ?', 
+		ON h.id=hsq.host_id
+		WHERE h.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'host_snmp_query', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT pc.* 
-		FROM poller_command AS pc 
-		WHERE pc.poller_id = ?', 
+	$data = db_fetch_assoc_prepared('SELECT pc.*
+		FROM poller_command AS pc
+		WHERE pc.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'poller_command', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT pi.* 
-		FROM poller_item AS pi 
-		WHERE pi.poller_id = ?', 
+	$data = db_fetch_assoc_prepared('SELECT pi.*
+		FROM poller_item AS pi
+		WHERE pi.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'poller_item', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT h.* 
-		FROM host AS h 
-		WHERE h.poller_id = ?', 
+	$data = db_fetch_assoc_prepared('SELECT h.*
+		FROM host AS h
+		WHERE h.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'host', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT hsc.* 
+	$data = db_fetch_assoc_prepared('SELECT hsc.*
 		FROM host_snmp_cache AS hsc
 		INNER JOIN host AS h
-		ON h.id=hsc.host_id 
-		WHERE h.poller_id = ?', 
+		ON h.id=hsc.host_id
+		WHERE h.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'host_snmp_cache', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT pri.* 
+	$data = db_fetch_assoc_prepared('SELECT pri.*
 		FROM poller_reindex AS pri
 		INNER JOIN host AS h
-		ON h.id=pri.host_id 
-		WHERE h.poller_id = ?', 
+		ON h.id=pri.host_id
+		WHERE h.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'poller_reindex', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT dl.* 
+	$data = db_fetch_assoc_prepared('SELECT dl.*
 		FROM data_local AS dl
 		INNER JOIN host AS h
-		ON h.id=dl.host_id 
-		WHERE h.poller_id = ?', 
+		ON h.id=dl.host_id
+		WHERE h.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'data_local', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT gl.* 
+	$data = db_fetch_assoc_prepared('SELECT gl.*
 		FROM graph_local AS gl
 		INNER JOIN host AS h
-		ON h.id=gl.host_id 
-		WHERE h.poller_id = ?', 
+		ON h.id=gl.host_id
+		WHERE h.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'graph_local', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT dtd.* 
+	$data = db_fetch_assoc_prepared('SELECT dtd.*
 		FROM data_template_data AS dtd
 		INNER JOIN data_local AS dl
 		ON dtd.local_data_id=dl.id
 		INNER JOIN host AS h
-		ON h.id=dl.host_id 
-		WHERE h.poller_id = ?', 
+		ON h.id=dl.host_id
+		WHERE h.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'data_template_data', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT dtr.* 
+	$data = db_fetch_assoc_prepared('SELECT dtr.*
 		FROM data_template_rrd AS dtr
 		INNER JOIN data_local AS dl
 		ON dtr.local_data_id=dl.id
 		INNER JOIN host AS h
-		ON h.id=dl.host_id 
-		WHERE h.poller_id = ?', 
+		ON h.id=dl.host_id
+		WHERE h.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'data_template_rrd', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT gti.* 
+	$data = db_fetch_assoc_prepared('SELECT gti.*
 		FROM graph_templates_item AS gti
 		INNER JOIN graph_local AS gl
 		ON gti.local_graph_id=gl.id
 		INNER JOIN host AS h
-		ON h.id=gl.host_id 
-		WHERE h.poller_id = ?', 
+		ON h.id=gl.host_id
+		WHERE h.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'graph_templates_item', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT did.* 
+	$data = db_fetch_assoc_prepared('SELECT did.*
 		FROM data_input_data AS did
 		INNER JOIN data_template_data AS dtd
 		ON did.data_template_data_id=dtd.id
 		INNER JOIN data_local AS dl
 		ON dl.id=dtd.local_data_id
 		INNER JOIN host AS h
-		ON h.id=dl.host_id 
-		WHERE h.poller_id = ?', 
+		ON h.id=dl.host_id
+		WHERE h.poller_id = ?',
 		array($remote_poller_id));
 	replicate_out_table($remote_db_cnn_id, $data, 'data_input_data', $remote_poller_id);
 
