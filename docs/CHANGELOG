@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue: Correct display issue with Graph Templates when editing Device
 -issue: External Data Sources show as having poller interval on Data Source page
 -issue: Allow Selecting 'External' as the Data Source Profile when creating non-templated Data Source
+-issue: Remove Field Order on Data Input output data as it's not required
 -feature: new skin: Sunrise
 -feature: Updated Dutch translations
 -feature: Allow Graph Templates with multiple flag to be created repeatedly from Graphs New interface
