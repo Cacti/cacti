@@ -394,19 +394,19 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 		}
 
 		if (db_execute($sql)) {
-			db_execute_prepared("REPLACE INTO plugin_db_changes 
-				(plugin, `table`, `column`, `method`) 
-				VALUES (?, ?, '', 'create')", 
+			db_execute_prepared("REPLACE INTO plugin_db_changes
+				(plugin, `table`, `column`, `method`)
+				VALUES (?, ?, '', 'create')",
 				array($plugin, $table));
 		}
 	}
 }
 
 function api_plugin_db_changes_remove ($plugin) {
-	$tables = db_fetch_assoc_prepared("SELECT `table` 
-		FROM plugin_db_changes 
-		WHERE plugin = ? 
-		AND method ='create'", 
+	$tables = db_fetch_assoc_prepared("SELECT `table`
+		FROM plugin_db_changes
+		WHERE plugin = ?
+		AND method ='create'",
 		array($plugin), false);
 
 	if (count($tables)) {
@@ -416,10 +416,10 @@ function api_plugin_db_changes_remove ($plugin) {
 		db_execute_prepared("DELETE FROM plugin_db_changes where plugin = ? AND method ='create'", array($plugin), false);
 	}
 
-	$columns = db_fetch_assoc_prepared("SELECT `table`, `column` 
-		FROM plugin_db_changes 
-		WHERE plugin = ? 
-		AND method ='addcolumn'", 
+	$columns = db_fetch_assoc_prepared("SELECT `table`, `column`
+		FROM plugin_db_changes
+		WHERE plugin = ?
+		AND method ='addcolumn'",
 		array($plugin), false);
 
 	if (count($columns)) {
@@ -605,128 +605,128 @@ function api_plugin_movedown($plugin) {
 }
 
 function api_plugin_register_hook ($plugin, $hook, $function, $file) {
-	$exists = db_fetch_assoc_prepared('SELECT id 
-		FROM plugin_hooks 
-		WHERE name = ? 
-		AND hook = ?', 
+	$exists = db_fetch_assoc_prepared('SELECT id
+		FROM plugin_hooks
+		WHERE name = ?
+		AND hook = ?',
 		array($plugin, $hook), false);
 
 	if (!count($exists)) {
 		$settings = array('config_settings', 'config_arrays', 'config_form');
 		$status = (!in_array($hook, $settings) ? 0 : 1);
-		db_execute_prepared('INSERT INTO plugin_hooks 
-			(name, hook, function, file, status) 
-			VALUES (?, ?, ?, ?, ?)', 
+		db_execute_prepared('INSERT INTO plugin_hooks
+			(name, hook, function, file, status)
+			VALUES (?, ?, ?, ?, ?)',
 			array($plugin, $hook, $function, $file, $status));
 	} else {
 		db_execute_prepared("UPDATE plugin_hooks
 			SET function = ?,
 			file = ?
-			WHERE name = ? AND hook = ?", 
+			WHERE name = ? AND hook = ?",
 			array($function, $file, $plugin, $hook));
 	}
 }
 
 function api_plugin_remove_hooks ($plugin) {
-	db_execute_prepared('DELETE FROM plugin_hooks 
-		WHERE name = ?', 
+	db_execute_prepared('DELETE FROM plugin_hooks
+		WHERE name = ?',
 		array($plugin));
 }
 
 function api_plugin_enable_hooks ($plugin) {
-	db_execute_prepared('UPDATE plugin_hooks 
-		SET status = 1 
-		WHERE name = ?', 
+	db_execute_prepared('UPDATE plugin_hooks
+		SET status = 1
+		WHERE name = ?',
 		array($plugin));
 }
 
 function api_plugin_disable_hooks ($plugin) {
-	db_execute_prepared("UPDATE plugin_hooks 
-		SET status = 0 
-		WHERE name = ? 
-		AND hook != 'config_settings' 
-		AND hook != 'config_arrays' 
-		AND hook != 'config_form'", 
+	db_execute_prepared("UPDATE plugin_hooks
+		SET status = 0
+		WHERE name = ?
+		AND hook != 'config_settings'
+		AND hook != 'config_arrays'
+		AND hook != 'config_form'",
 		array($plugin));
 }
 
 function api_plugin_disable_hooks_all ($plugin) {
-	db_execute_prepared("UPDATE plugin_hooks 
-		SET status = 0 
-		WHERE name = ?", 
+	db_execute_prepared("UPDATE plugin_hooks
+		SET status = 0
+		WHERE name = ?",
 		array($plugin));
 }
 
 function api_plugin_register_realm ($plugin, $file, $display, $admin = false) {
-	$exists = db_fetch_assoc_prepared('SELECT id 
-		FROM plugin_realms 
-		WHERE plugin = ? 
-		AND file = ?', 
+	$exists = db_fetch_assoc_prepared('SELECT id
+		FROM plugin_realms
+		WHERE plugin = ?
+		AND file = ?',
 		array($plugin, $file), false);
 
 	if (!count($exists)) {
-		db_execute_prepared('INSERT INTO plugin_realms 
-			(plugin, file, display) 
-			VALUES (?, ?, ?)', 
+		db_execute_prepared('INSERT INTO plugin_realms
+			(plugin, file, display)
+			VALUES (?, ?, ?)',
 			array($plugin, $file, $display));
 
 		if ($admin) {
-			$realm_id = db_fetch_assoc_prepared('SELECT id 
-				FROM plugin_realms 
-				WHERE plugin = ? 
-				AND file = ?', 
+			$realm_id = db_fetch_assoc_prepared('SELECT id
+				FROM plugin_realms
+				WHERE plugin = ?
+				AND file = ?',
 				array($plugin, $file), false);
 
 			$realm_id = $realm_id[0]['id'] + 100;
 
-			$user_id = db_fetch_assoc("SELECT id 
-				FROM user_auth 
+			$user_id = db_fetch_assoc("SELECT id
+				FROM user_auth
 				WHERE username = 'admin'", false);
 
 			if (count($user_id)) {
 				$user_id = $user_id[0]['id'];
-				$exists = db_fetch_assoc_prepared('SELECT realm_id 
-					FROM user_auth_realm 
-					WHERE user_id = ? 
-					AND realm_id = ?', 
+				$exists = db_fetch_assoc_prepared('SELECT realm_id
+					FROM user_auth_realm
+					WHERE user_id = ?
+					AND realm_id = ?',
 					array($user_id, $realm_id), false);
 
 				if (!count($exists)) {
-					db_execute_prepared('INSERT INTO user_auth_realm 
-						(user_id, realm_id) 
-						VALUES (?, ?)', 
+					db_execute_prepared('INSERT INTO user_auth_realm
+						(user_id, realm_id)
+						VALUES (?, ?)',
 						array($user_id, $realm_id));
 				}
 			}
 		}
 	} else {
-		db_execute_prepared('UPDATE plugin_realms 
+		db_execute_prepared('UPDATE plugin_realms
 			SET display = ?
 			WHERE plugin = ?
-			AND file = ?', 
+			AND file = ?',
 			array($display, $plugin, $file));
 	}
 }
 
 function api_plugin_remove_realms ($plugin) {
-	$realms = db_fetch_assoc_prepared('SELECT id 
-		FROM plugin_realms 
-		WHERE plugin = ?', 
+	$realms = db_fetch_assoc_prepared('SELECT id
+		FROM plugin_realms
+		WHERE plugin = ?',
 		array($plugin), false);
 
 	foreach ($realms as $realm) {
 		$id = $realm['id'] + 100;
-		db_execute_prepared('DELETE FROM user_auth_realm 
-			WHERE realm_id = ?', 
+		db_execute_prepared('DELETE FROM user_auth_realm
+			WHERE realm_id = ?',
 			array($id));
 
-		db_execute_prepared('DELETE FROM user_auth_group_realm 
-			WHERE realm_id = ?', 
+		db_execute_prepared('DELETE FROM user_auth_group_realm
+			WHERE realm_id = ?',
 			array($id));
 	}
 
-	db_execute_prepared('DELETE FROM plugin_realms 
-			WHERE plugin = ?', 
+	db_execute_prepared('DELETE FROM plugin_realms
+			WHERE plugin = ?',
 			array($plugin));
 }
 
@@ -770,4 +770,39 @@ function plugin_config_arrays () {
 function plugin_draw_navigation_text ($nav) {
 	$nav['plugins.php:'] = array('title' => __('Plugin Management'), 'mapping' => 'index.php:', 'url' => 'plugins.php', 'level' => '1');
 	return $nav;
+}
+
+function plugin_is_compatible($plugin) {
+	global $config;
+
+	$info = plugin_load_info_file($config['base_path'] . '/plugins/' . $plugin . '/INFO');
+
+	if ($info !== false) {
+		if (!isset($info['compat']) || cacti_version_compare(CACTI_VERSION, $info['compat'], '<')) {
+			return array('compat' => false, 'requires' => __('Requires: Cacti >= %s', $info['compat']));
+		}
+	} else {
+		return array('compat' => false, 'requires' => __('Legacy Plugin'));
+	}
+
+	return array('compat' => true, 'requires' => __('Requires: Cacti >= %s', $info['compat']));
+}
+
+function plugin_load_info_file($file) {
+	if (file_exists($file)) {
+		if (is_readable($file)) {
+			$info = parse_ini_file($file, true);
+			if (sizeof($info)) {
+				return $info['info'];
+			} else {
+				cacti_log('WARNING: Loading plugin INFO file failed.  Parsing INI file failed.', false, 'WEBUI');
+			}
+		} else {
+			cacti_log('WARNING: Loading plugin INFO file failed.  INFO file not readable.', false, 'WEBUI');
+		}
+	} else {
+		cacti_log('WARNING: Loading plugin INFO file failed.  INFO file does not exist.', false, 'WEBUI');
+	}
+
+	return false;
 }

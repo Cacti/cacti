@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue: Data Templates not using Ajax callbacks to switch Data Sources
 -issue: Visual issue when creating non-templated Aggregate Graphs
 -feature: new skin: Sunrise
+-feature: Provide Non Compatible explanation when a plugin is not compatible
 -feature: Updated Dutch translations
 -feature: Allow Graph Templates with multiple flag to be created repeatedly from Graphs New interface
 -feature: Allow plugins to exclude files and directories from their remote poller synchronization process
