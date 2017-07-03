@@ -844,6 +844,10 @@ legend {
 	vertical-align: top;
 }
 
+.graphWrapper{
+	position: relative;
+}
+
 .cactiGraphContentArea {
 	height: 100%;
 	overflow-y: auto !important;

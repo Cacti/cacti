@@ -1,20 +1,48 @@
 Cacti CHANGELOG
 
+1.1.11
+-issue#642: RRA not written or WARNING: Poller Output Table not Empty
+-issue#779: PHP running out of memory due to date format issues
+-issue#791: SeLinux causing problems due to recent enhancement of the Cacti log
+-issue#818: Unable to unselect all SpikeKill templates under settings
+-issue#831: Unable to add devices from automation devices that don't have a snmpSysname
+-issue: incorrect version of pace: fix progess bar
+-issue: date_format(): fix date separator character
+-issue: host.php: fix itemCount en rowCount when result = null
+-issue: clog: fix scandir for systems with limited permissions to log directory
+-issue: clog: fix listing of logfiles
+-issue: Stop New Graphs filter interface from taking too much space
+-issue: Pagination of clog is not done via ajax
+-issue: Unable to dry run spikekill's from Graphs page
+-issue: Default sort order does not highlight on Aggregate Template page
+-issue: Correct display issue with Graph Templates when editing Device
+-issue: External Data Sources show as having poller interval on Data Source page
+-issue: Allow Selecting 'External' as the Data Source Profile when creating non-templated Data Source
+-issue: Remove Field Order on Data Input output data as it's not required
+-issue: Data Templates not using Ajax callbacks to switch Data Sources
+-issue: Visual issue when creating non-templated Aggregate Graphs
+-feature: new skin: Sunrise
+-feature: Provide Non Compatible explanation when a plugin is not compatible
+-feature: Updated Dutch translations
+-feature: Allow Graph Templates with multiple flag to be created repeatedly from Graphs New interface
+-feature: Allow plugins to exclude files and directories from their remote poller synchronization process
+-feature: Add Device Description to View Poller Cache UI
+
 1.1.10
--issue#779: Resolve random apache segfault due to recursion
+-issue#779: Resolve random Apache segfault due to recursion
 -issue#786: Unable to create second RRA for a Data Source Profile with collection rate less than 5 minutes
--issue#789: Unable to Clear Filter due to JavaScrpt name space collision
+-issue#789: Unable to Clear Filter due to JavaScript name space collision
+-issue#791: cacti 1.1.9 and clog_webapi.php permission issue
 -issue#794: SQL Error when creating graphs manually
 -issue#798: Cosmetic issue when checking checkboxes in Cacti
 -issue#800: Unchecked loop in lib/html_utility.php causing race condition
 -issue#802: Issue updating device hostname with SNMP data queries
 -issue#803: Issues with utf8mb4 introduced via optimization
 -issue: If the device is down and snmp_sysUpTimeInstance is 0, time in state can be wrong
+-feature: Updated Dutch translations
 
 1.1.9
 -issue#788: Fails on PHP Fatal error if LDAP auth enabled
--issue#791: cacti 1.1.9 and clog_webapi.php permission issue
--feature: Updated Dutch translations
 
 1.1.8
 -issue#529: Issue on Graph New page with checkbox unselected

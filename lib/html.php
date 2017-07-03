@@ -1335,7 +1335,12 @@ function html_show_tabs_left() {
 		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
 			// Only show external links when online
 		} else {
-			$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" AND enabled="on" ORDER BY sortorder');
+			$external_links = db_fetch_assoc('SELECT id, title
+				FROM external_links
+				WHERE style="TAB"
+				AND enabled="on"
+				ORDER BY sortorder');
+
 			if (sizeof($external_links)) {
 				foreach($external_links as $tab) {
 					if (is_realm_allowed($tab['id']+10000)) {
@@ -1649,9 +1654,9 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		if ($host_id > 0) {
 			$hostname = db_fetch_cell_prepared("SELECT description FROM host WHERE id = ?", array($host_id));
 		} elseif ($host_id == 0) {
-			$hostname = 'None';
+			$hostname = __('None');
 		} else {
-			$hostname = 'Any';
+			$hostname = __('Any');
 		}
 
 		?>

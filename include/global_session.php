@@ -81,6 +81,7 @@ if (isset($_SESSION['refresh'])) {
 	$refreshIsLogout = 'true';
 } ?>
 <script type='text/javascript'>
+	var cactiVersion='<?php print $config['cacti_version'];?>';
 	var theme='<?php print get_selected_theme();?>';
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';
@@ -106,4 +107,5 @@ if (isset($_SESSION['refresh'])) {
 	var cactiCommunityForum='<?php print __('Cacti Community Forum');?>';
 	var reportABug='<?php print __('Report a bug');?>';
 	var aboutCacti='<?php print __('About Cacti');?>';
+	var spikeKillResults='<?php print __('SpikeKill Results');?>';
 </script>

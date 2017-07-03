@@ -206,7 +206,7 @@ function clog_view_logfile() {
 	$tail_lines   = get_request_var('tail_lines');
 	$base_url     = 'clog.php?rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refreshTime.'&message_type='.$message_type.'&tail_lines='.$tail_lines.'&filename='.basename($logfile);
 
-	$nav          = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page');
+	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
 
 	echo $nav;
 
@@ -322,33 +322,49 @@ function filter($clogAdmin) {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('File to show');?>
+						<?php print __('File');?>
 					</td>
 					<td>
-						<select id='filename' name='filename'>
-							<?php
-							$configLogPath = read_config_option('path_cactilog');
+						<?php
+						$configLogPath = read_config_option('path_cactilog');
 
-							if ($configLogPath == '') {
-								$logPath = $config['base_path'] . '/log/';
-							} else {
-								$logPath = dirname($configLogPath);
-							}
+						if ($configLogPath == '') {
+							$logPath = $config['base_path'] . '/log/';
+						} else {
+							$logPath = dirname($configLogPath);
+						}
 
+						if (is_readable($logPath)) {
+							$files = scandir($logPath);
+						} else {
+							$files = false;
+						}
+
+						if ($files === false) {
+							echo '<select id="filename" name="filename">
+									<option value="cacti.log">cacti.log</option>';
+						} else {
+							echo '<select id="filename" name="filename">';
 							$selectedFile = basename(get_nfilter_request_var('filename'));
-							$files        = scandir($logPath);
 
 							foreach ($files as $logFile) {
 								if (in_array($logFile, array('.', '..', '.htaccess'))) {
 									continue;
 								}
+
+								$explode = explode('.', $logFile);
+								if (substr($explode[max(array_keys($explode))], 0, 3) != 'log') {
+									continue;
+								}
+
 								print "<option value='" . $logFile . "'";
 								if ($selectedFile == $logFile) {
 									print ' selected';
 								}
 								print '>' . $logFile . "</option>\n";
 							}
-							?>
+						}
+						?>
 						</select>
 					</td>
 					<td>
@@ -379,7 +395,7 @@ function filter($clogAdmin) {
 				</tr>
 				<tr>
 					<td class='nowrap'>
-						<?php print __('Message Type');?>
+						<?php print __('Type');?>
 					</td>
 					<td>
 						<select id='message_type' name='message_type'>

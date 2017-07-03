@@ -332,6 +332,8 @@ include_once($config['library_path'] . '/snmpagent.php');
 include_once($config['library_path'] . '/aggregate.php');
 include_once($config['library_path'] . '/api_automation.php');
 
+define('CACTI_DATE_TIME_FORMAT', date_time_format());
+
 /* cross site request forgery library */
 if ($config['is_web']) {
 	function csrf_startup() {

@@ -32,14 +32,17 @@ function keepWindowSize() {
 			$('#submenu-ellipsis').empty();
 			$('.maintabs nav ul li a').each(function() {
 				id = $(this).attr('id');
-				if ($(this).offset().top !== 0) {
-					if ( $('#' + id + '-ellipsis').length == 0 ) {
+				if( $(this).offset().top !== 0 ) {
+					if( $('#' + id + '-ellipsis').length == 0 ) {
 						var str = $(this).parent().html();
 						var str2 = str.replace( id , id + '-ellipsis');
 						$('#submenu-ellipsis').prepend('<li>' + str2 + '</li>');
+						$('#'+ id + '-ellipsis').css('visibility','');
+						$(this).css('visibility', 'hidden');
 					}
-				} else {
+				}else {
 					$('#' + id + '-ellipsis').parent().remove();
+					$(this).css('visibility', 'visible');
 				}
 			});
 
