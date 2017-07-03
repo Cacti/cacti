@@ -173,7 +173,7 @@ function plugins_load_temp_table() {
 					$cinfo[$file]['status'] = 0;
 					$pluginslist[] = $file;
 
-					if (!isset($info['info']['compat']) || cacti_version_compare(CACTI_VERSION, $info['info']['compat'], '<')) {
+					if (!isset($cinfo[$file]['compat']) || cacti_version_compare(CACTI_VERSION, $cinfo[$file]['compat'], '<')) {
 						$cinfo[$file]['status'] = -1;
 					}
 				} else {
