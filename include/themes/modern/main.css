@@ -1504,6 +1504,10 @@ th.secondarySort {
 	line-height: 20px;
 }
 
+.tableRowGraph td {
+	padding: 3px;
+}
+
 .image_table {
 	width:100%;
 }

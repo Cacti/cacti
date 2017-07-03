@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.1.12
+-issue#834: Add spacing on graphs pages
+-issue: Uninstalled plugins can not install
+
 1.1.11
 -issue#642: RRA not written or WARNING: Poller Output Table not Empty
 -issue#779: PHP running out of memory due to date format issues
