@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.12
+-issue#822: Aggregate Graph Items are incorrectly editable
 -issue#834: Add spacing on graphs pages
 -issue: Uninstalled plugins can not install
 

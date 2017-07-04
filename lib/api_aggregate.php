@@ -142,7 +142,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 		$graph_data['id']          = $existing_data['id'];
 		$graph_data['title']       = $existing_data['title'];
 		$graph_data['title_cache'] = $existing_data['title_cache'];
-	}else {
+	} else {
 		/* this is an existing graph and not templated from aggregate,
 		 * re-use its old data */
 		$graph_data = $existing_data;
@@ -417,7 +417,7 @@ function aggregate_graph_items_save($items, $table) {
 	} elseif ($table == 'aggregate_graph_templates_item') {
 		$defaults['aggregate_template_id'] = null;
 		$id_field = 'aggregate_template_id';
-	}else {
+	} else {
 		return false;
 	}
 
@@ -473,7 +473,7 @@ function aggregate_graph_items_save($items, $table) {
 
 	if (db_execute($sql) == 1) {
 		return true;
-	}else {
+	} else {
 		return false;
 	}
 }
@@ -525,7 +525,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 		/* validate value */
 		if ($defs['type'] == 'bool') {
 			$params_new[$field] = (isset($posted[$field])) ? 'on' : '';
-		}else {
+		} else {
 			$params_new[$field] = (isset($posted[$field]) ? form_input_validate(htmlspecialchars($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3) : $defs['default']);
 		}
 	}
@@ -1364,17 +1364,18 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			}
 
 			/* column 'Graph Item' */
-			print '<td>';
+			print '<td title="' . __('Aggregate Items are not modifyable') . '">';
 			if ($is_edit == false) {
 				/* no existing aggregate graph/template */
 				print __('Item # %d', ($i+1));
 			} elseif (isset($_object['template_propogation']) && $_object['template_propogation']) {
 				/* existing aggregate graph with template propagation enabled */
 				print __('Item # %d', ($i+1));
-			}else {
+			} else {
 				/* existing aggregate template or graph with no templating */
 				/* create a link to graph item editor */
-				print '<a href="aggregate_items.php?action=item_edit&'.$item_editor_link_param.'&id='.$item['id'].'">' . __('Item # %d', ($i+1)) . '</a>';
+				//print '<a class="pic" href="aggregate_items.php?action=item_edit&'.$item_editor_link_param.'&id='.$item['id'].'">' . __('Item # %d', ($i+1)) . '</a>';
+				print '<a title="' . __('Aggregate Items are not editable') . '" class="pic" href="#">' . __('Item # %d', ($i+1)) . '</a>';
 			}
 			print "</td>\n";
 
