@@ -615,7 +615,7 @@ function makeFiltersResponsive() {
 				$(this).attr('title', showHideFilter).tooltip({ track: true });
 
 				$('.cactiFilter').tooltip().click(function(event) {
-					event.stopPropagation();
+					//event.stopPropagation();
 				});
 
 				id    = $(this).closest('.cactiTable').attr('id');
