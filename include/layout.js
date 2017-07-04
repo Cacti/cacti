@@ -548,6 +548,8 @@ function applySkin() {
 
 	tuneFilter();
 
+	makeFiltersResponsive();
+
 	setupResponsiveMenuAndTabs();
 
 	// Add tooltips to graph drilldowns
@@ -599,6 +601,61 @@ function applySkin() {
 	$.when.apply(this, showPage).done(function() {
 		responsiveUI(null);
 	});
+}
+
+function makeFiltersResponsive() {
+	if ($('div.cactiTableTitle').closest('.cactiTable').find('.filterTable').length > 0) {
+		$('div.cactiTableTitle').each(function() {
+			$(this).append('<i style="display:none;" class="cactiFilter fa fa-filter"></i>').css('cursor', 'pointer');;
+
+			$(this).attr('title', showHideFilter).tooltip({ track: true });
+
+			$('.cactiFilter').tooltip().click(function(event) {
+				event.stopPropagation();
+			});
+
+			id    = $(this).closest('.cactiTable').attr('id');
+			child = id+'_child';
+
+			if ($('#'+child).find('#clear').length) {
+				$(this).append('<i title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear fa fa-trash-o"></i>');
+
+				$('.cactiFilterClear').click(function(event) {
+					event.stopPropagation();
+					$('#clear').trigger('click');
+				});
+			}
+
+			toggleFilterAndIcon(id, child, true);
+
+			$(this).click(function() {
+				id    = $(this).closest('.cactiTable').attr('id');
+				child = id+'_child';
+				toggleFilterAndIcon(id, child, false);
+			});
+		});
+	}
+}
+
+function toggleFilterAndIcon(id, child, initial) {
+	storage=Storages.localStorage;
+
+	state = storage.get('filterVisibility');
+
+	if (initial) {
+		if (state == 'hidden') {
+			$('#'+child).hide();
+			$('#'+id).find('.cactiFilter, .cactiFilterClear').show();
+		}
+	} else if ($('#'+child).is(':visible')) {
+		$('#'+child).hide();
+		$('#'+id).find('.cactiFilter, .cactiFilterClear').show();
+		storage.set('filterVisibility', 'hidden');
+	} else {
+		$('#'+child).show();
+		$('#'+id).find('.cactiFilter, .cactiFilterClear').hide();
+		storage.set('filterVisibility', 'visible');
+	}
 }
 
 function setupResponsiveMenuAndTabs() {

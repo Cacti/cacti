@@ -108,4 +108,6 @@ if (isset($_SESSION['refresh'])) {
 	var reportABug='<?php print __('Report a bug');?>';
 	var aboutCacti='<?php print __('About Cacti');?>';
 	var spikeKillResults='<?php print __('SpikeKill Results');?>';
+	var showHideFilter='<?php print __('Click to Show/Hide Filter');?>';
+	var clearFilterTitle='<?php print __('Clear Current Filter');?>';
 </script>
