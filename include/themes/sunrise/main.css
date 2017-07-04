@@ -593,6 +593,11 @@ label {
 	padding: 4px 5px !important;
 }
 
+.tableRowGraph td {
+	padding: 3px;
+	vertical-align: top;
+}
+
 .saveRow {
 	border-color: rgba(255,255,255,0.2);
 	text-align:right;

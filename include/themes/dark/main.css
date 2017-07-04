@@ -1482,6 +1482,7 @@ th.secondarySort {
 
 .tableRowGraph td {
 	padding: 3px;
+	vertical-align: top;
 }
 
 .image_table {

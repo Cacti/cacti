@@ -100,6 +100,11 @@ label {
 	white-space:nowrap;
 }
 
+.tableRowGraph td {
+	padding: 3px;
+	vertical-align: top;
+}
+
 .nowrap {
 	white-space:nowrap;
 }
@@ -309,7 +314,7 @@ label {
 	width: 200px;
 }
 
-.itemlist { 
+.itemlist {
 	max-height:400px;
 	overflow-y:auto;
 }
