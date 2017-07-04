@@ -1204,12 +1204,14 @@ legend {
 	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	color: snow;
+	white-space: nowrap;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
 	padding: 0px 5px 0px 5px;
 	white-space: nowrap;
 	overflow: hidden;
+	vertical-align: middle;
 }
 
 .cactiTableButton span a {

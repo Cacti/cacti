@@ -1063,6 +1063,7 @@ legend {
 	text-align: right;
 	width: 10%;
 	background-color: #00438c;
+	white-space: nowrap;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
@@ -1071,6 +1072,7 @@ legend {
 	font-weight: bold;
 	white-space: nowrap;
 	overflow: hidden;
+	vertical-align: middle;
 }
 
 .cactiTable td {

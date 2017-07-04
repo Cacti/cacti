@@ -1041,12 +1041,14 @@ legend {
 	width: 10%;
 	border-bottom: 1px solid rgba(0,0,0,0.5);
 	background: rgba(0,0,0,0.9);
+	white-space: nowrap;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
 	padding: 0px 5px 0px 5px;
 	white-space: nowrap;
 	overflow: hidden;
+	vertical-align: middle;
 }
 
 .cactiDebugTable {

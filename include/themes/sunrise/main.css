@@ -1180,15 +1180,16 @@ table.cactiTable {
 	font-size: 13px;
 	width: 10%;
     border-color: rgba(255,255,255,0.2);
-
 	background-image: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0));
     background-repeat: repeat-x;
+	white-space: nowrap;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
 	padding: 0px 5px 0px 5px;
 	white-space: nowrap;
 	overflow: hidden;
+	vertical-align: middle;
 }
 
 .cactiDebugTable {
