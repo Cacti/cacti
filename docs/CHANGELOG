@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.12
 -issue#822: Aggregate Graph Items are incorrectly editable
+-issue#823: Allow Filters to be hidden
 -issue#834: Add spacing on graphs pages
 -issue: Uninstalled plugins can not install
 -issue: Location of filter functions in host.php prevent full responsive filter implementation
