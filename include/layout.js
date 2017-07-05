@@ -614,7 +614,15 @@ function makeFiltersResponsive() {
 			$(this).parent().css('cursor', 'pointer');
 
 			if ($(this).find('a').length) {
-				$(this).find('a').css('title', $(this).find('a').text()).addClass('fa fa-plus').tooltip().text('');
+				$(this).find('a').attr('title', $(this).find('a').text()).addClass('fa fa-plus').tooltip({
+					open: function (event, ui) {
+						id = $(this).closest('.cactiTable').attr('id');
+						$('#'+id).find('.cactiTableButton').tooltip('close');
+					},
+					close: function (event, ui) {
+						id = $(this).closest('.cactiTable').attr('id');
+					}
+				}).text('');
 			}
 
 			if ($('#'+child).find('.filterTable').length) {
