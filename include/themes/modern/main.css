@@ -3,16 +3,16 @@
 ::-webkit-scrollbar {
     width: 8px;
 }
- 
+
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(22,22,6,0.7); 
+    -webkit-box-shadow: inset 0 0 6px rgba(22,22,6,0.7);
     border-radius: 6px;
 }
- 
+
 ::-webkit-scrollbar-thumb {
     border-radius: 6px;
-	background: rgba(49,68,43,0.8); 
-    -webkit-box-shadow: inset 0 0 4px rgba(49,68,43,0.5); 
+	background: rgba(49,68,43,0.8);
+    -webkit-box-shadow: inset 0 0 4px rgba(49,68,43,0.5);
 }
 
 html, body {
@@ -44,7 +44,7 @@ body {
 }
 
 table {
-	border-collapse: collapse; border-spacing: 0; 
+	border-collapse: collapse; border-spacing: 0;
 	border: none;
 	text-align:left;
 }
@@ -104,7 +104,6 @@ input {
 
 #host_id_wrap {
 	line-height: 25px;
-	padding-left: 4px;
 }
 
 select {
@@ -289,7 +288,7 @@ label {
 	width: 200px;
 }
 
-.itemlist { 
+.itemlist {
 	max-height:200px;
 	overflow-y:auto;
 }
@@ -772,10 +771,10 @@ ul#breadcrumbs {
 	padding-top: 10px;
 	display: none;
 	vertical-align: top;
-	position: fixed; 
-	left: 0px; 
-	top: 56px; 
-	z-index: 2; 
+	position: fixed;
+	left: 0px;
+	top: 56px;
+	z-index: 2;
 	overflow-y: auto;
 }
 
@@ -791,9 +790,9 @@ ul#breadcrumbs {
 	padding-right:0px;
 	padding-top:5px;
 	vertical-align:top;
-	position: fixed; 
-	left: 0px; 
-	top: 56px; 
+	position: fixed;
+	left: 0px;
+	top: 56px;
 	overflow-y: hidden;
 	width: 167px;
 }
@@ -1152,7 +1151,7 @@ legend {
 .cactiTable {
 	display: table;
 	width: 100%;
-	margin-left:auto; 
+	margin-left:auto;
 	margin-right:auto;
 	display: table;
 	line-height: 16px;
@@ -1177,11 +1176,11 @@ legend {
 
 .cactiTableTitle {
 	float: left;
-	text-align: left;
 	padding: 3px 0px;
-	height: 16px;
+	text-align: left;
+	height: 18px;
 	display: table-column;
-	width: 90%;
+	width: 70%;
 	background: rgba(98,125,77,1);
 	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
@@ -1194,10 +1193,10 @@ legend {
 .cactiTableButton {
 	float: right;
 	padding: 3px 0px;
-	height: 16px;
+	height: 18px;
 	display: table-column;
 	text-align: right;
-	width: 10%;
+	width: 30%;
 	background: rgba(98,125,77,1);
 	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
@@ -1205,12 +1204,14 @@ legend {
 	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	color: snow;
+	white-space: nowrap;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 5px 0px 5px;
+	padding: 0px 8px 0px 8px;
 	white-space: nowrap;
 	overflow: hidden;
+	vertical-align: middle;
 }
 
 .cactiTableButton span a {
@@ -1505,6 +1506,11 @@ th.secondarySort {
 	line-height: 20px;
 }
 
+.tableRowGraph td {
+	padding: 3px;
+	vertical-align: top;
+}
+
 .image_table {
 	width:100%;
 }
@@ -1545,7 +1551,6 @@ th.secondarySort {
 	white-space: nowrap;
 	display: block;
 	width: 10%;
-	height: 20px;
 	vertical-align: middle;
 }
 
@@ -1554,7 +1559,6 @@ th.secondarySort {
 	display: table-cell;
 	white-space: nowrap;
 	width:80%;
-	height: 20px;
 	margin-top: auto;
 }
 
@@ -1568,7 +1572,6 @@ th.secondarySort {
 	white-space: nowrap;
 	display: table-cell;
 	width: 10%;
-	height: 20px;
 	vertical-align: middle;
 
 }

@@ -42,6 +42,7 @@ function keepWindowSize() {
 						var str = $(this).parent().html();
 						var str2 = str.replace( id , id + '-ellipsis');
 						$('#submenu-ellipsis').prepend('<li>' + str2 + '</li>');
+						$('#'+ id + '-ellipsis').css('visibility','');
 						$(this).css('visibility', 'hidden');
 					}
 				}else {
@@ -113,10 +114,6 @@ function themeReady() {
 			+'</ul></nav>'
 		+'</div>').insertAfter('.maintabs');
 	}
-	$('<div class="dropdownMenu">'
-		+'<ul id="submenu-ellipsis" class="submenuoptions" style="display:none;">'
-		+'</ul>'
-	+'</div>').appendTo('body');
 	$('<div class="dropdownMenu">'
 		+'<ul id="submenu-ellipsis" class="submenuoptions" style="display:none;">'
 		+'</ul>'
@@ -329,7 +326,6 @@ function themeReady() {
 	/* Replace icons */
 	$('.fa-arrow-down').addClass('fa-chevron-down').removeClass('fa-arrow-down');
 	$('.fa-arrow-up').addClass('fa-chevron-up').removeClass('fa-arrow-up');
-	$('.fa-remove').addClass('fa-trash-o').removeClass('fa-remove');
 
 	// Hide the graph icons until you hover
 	$('.graphDrillDown').hover(

@@ -591,7 +591,11 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 
 	/* fill in the current date for printing in the log */
-	$date = date(date_time_format());
+	if (defined('CACTI_DATE_TIME_FORMAT')) {
+		$date = date(CACTI_DATE_TIME_FORMAT);
+	} else {
+		$date = date('Y-m-d H:i:s');
+	}
 
 	/* determine how to log data */
 	$logdestination = read_config_option('log_destination');
@@ -2660,12 +2664,21 @@ function draw_navigation_text($type = 'url') {
 
 	/* find the current page in the big array */
 	if (isset($nav[$current_page . ':' . $current_action])) {
-		$current_array = $nav{$current_page . ':' . $current_action};
+		$current_array = $nav[$current_page . ':' . $current_action];
 	} else {
-		$current_array = array('mapping' => 'index.php:', 'title' => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))), 'level' => 1);
+		$current_array = array(
+			'mapping' => 'index.php:',
+			'title' => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))),
+			'level' => 1
+		);
 	}
 
-	$current_mappings = explode(',', $current_array['mapping']);
+	if (isset($current_array['mapping'])) {
+		$current_mappings = explode(',', $current_array['mapping']);
+	} else {
+		$current_mappings = array();
+	}
+
 	$current_nav = "<ul id='breadcrumbs'>";
 	$title       = '';
 	$nav_count   = 0;
@@ -2682,7 +2695,7 @@ function draw_navigation_text($type = 'url') {
 		} elseif (isset($nav_level_cache{$i}) && !empty($nav_level_cache{$i}['url'])) {
 			/* found a match in the url cache for this level */
 			$url = $nav_level_cache{$i}['url'];
-		} elseif (!empty($current_array['url'])) {
+		} elseif (isset($current_array['url'])) {
 			/* found a default url in the above array */
 			$url = $current_array['url'];
 		} else {
@@ -2706,11 +2719,16 @@ function draw_navigation_text($type = 'url') {
 	}
 
 	if ($nav_count) {
-		$current_nav .= "<li><a id='nav_$i' href=#>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+		if (isset($current_array['title'])) {
+			$current_nav .= "<li><a id='nav_$i' href=#>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+		}
 	} else {
 		$current_array = $nav[$current_page . ':' . $current_action];
 		$url           = (isset($current_array['url']) ? $current_array['url']:'');
-		$current_nav  .= "<li><a id='nav_$i' href='$url'>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+
+		if (isset($current_array['title'])) {
+			$current_nav  .= "<li><a id='nav_$i' href='$url'>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+		}
 	}
 
 	if (isset_request_var('tree_id') || isset_request_var('leaf_id')) {
@@ -2779,10 +2797,16 @@ function draw_navigation_text($type = 'url') {
 		$tree_title = '';
 	}
 
-	$title .= htmlspecialchars(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
+	if (isset($current_array['title'])) {
+		$title .= htmlspecialchars(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
+	}
 
 	/* keep a cache for each level we encounter */
-	$nav_level_cache{$current_array['level']} = array('id' => $current_page . ':' . $current_action, 'url' => get_browser_query_string());
+	$nav_level_cache[$current_array['level']] = array(
+		'id' => $current_page . ':' . $current_action,
+		'url' => get_browser_query_string()
+	);
+
 	$current_nav .= '</ul>';
 
 	$_SESSION['sess_nav_level_cache'] = $nav_level_cache;
@@ -3462,7 +3486,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 			$time = time();
 		}
 
-		$subject = str_replace('|date_time|', date(date_time_format(), $time), $subject);
+		$subject = str_replace('|date_time|', date(CACTI_DATE_TIME_FORMAT, $time), $subject);
 	}
 
 	if (is_array($to)) {
@@ -4695,9 +4719,11 @@ function date_time_format() {
 	}
 
 	$dateCharSetting = read_config_option('default_datechar');
+
 	if (!isset($datechar[$dateCharSetting])) {
 		$dateCharSetting = GDC_SLASH;
 	}
+
 	$datecharacter = $datechar[$dateCharSetting];
 
 	switch ($date_fmt) {
@@ -4714,7 +4740,7 @@ function date_time_format() {
 		case GD_Y_MN_D:
 			return 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
 		default:
-			return '';
+			return 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
 	}
 }
 

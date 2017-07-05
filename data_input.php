@@ -279,10 +279,10 @@ function field_remove_confirm() {
 		$('#cdialog').dialog();
 
 		$('#continue').click(function(data) {
-			$.post('data_input.php?action=field_remove', { 
-				__csrf_magic: csrfMagicToken, 
-				data_input_id: <?php print get_request_var('data_input_id');?>, 
-				id: <?php print get_request_var('id');?> 
+			$.post('data_input.php?action=field_remove', {
+				__csrf_magic: csrfMagicToken,
+				data_input_id: <?php print get_request_var('data_input_id');?>,
+				id: <?php print get_request_var('id');?>
 			}, function(data) {
 				$('#cdialog').dialog('close');
 				loadPageNoHeader('data_input.php?action=edit&header=false&id=<?php print get_request_var('data_input_id');?>');
@@ -500,12 +500,16 @@ function data_edit() {
 		html_start_box(__('Output Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . get_request_var('id'));
 		print "<tr class='tableHeader'>";
 			DrawMatrixHeaderItem(__('Name'),'',1);
-			DrawMatrixHeaderItem(__('Field Order'),'',1);
 			DrawMatrixHeaderItem(__('Friendly Name'),'',1);
 			DrawMatrixHeaderItem(__('Update RRA'),'',2);
 		print '</tr>';
 
-		$fields = db_fetch_assoc_prepared("SELECT id, name, data_name, update_rra, sequence FROM data_input_fields WHERE data_input_id = ? and input_output = 'out' ORDER BY sequence, data_name", array(get_request_var('id')));
+		$fields = db_fetch_assoc_prepared("SELECT id, name, data_name, update_rra, sequence
+			FROM data_input_fields
+			WHERE data_input_id = ?
+			AND input_output = 'out'
+			ORDER BY sequence, data_name",
+			array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($fields) > 0) {
@@ -513,10 +517,7 @@ function data_edit() {
 				form_alternate_row('', true);
 				?>
 					<td>
-						<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>"><?php print htmlspecialchars($field['data_name']);?></a>
-					</td>
-					<td>
-						<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' ' . __('(Not In Use)'); }?>
+						<a class='linkEditMain' href='<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>'><?php print htmlspecialchars($field['data_name']);?></a>
 					</td>
 					<td>
 						<?php print htmlspecialchars($field['name']);?>
@@ -524,7 +525,7 @@ function data_edit() {
 					<td>
 						<?php print html_boolean_friendly($field['update_rra']);?>
 					</td>
-					<td class="right">
+					<td class='right'>
 						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __('Delete');?>'></a>
 					</td>
 				<?php
@@ -552,11 +553,11 @@ function data_edit() {
 			$.get(request, function(data) {
 				$('#cdialog').html(data);
 				applySkin();
-				$('#cdialog').dialog({ 
-					title: '<?php print __('Delete Data Input Field');?>', 
+				$('#cdialog').dialog({
+					title: '<?php print __('Delete Data Input Field');?>',
 					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
-					minHeight: 80, 
-					minWidth: 500 
+					minHeight: 80,
+					minWidth: 500
 				});
 			});
 		}).css('cursor', 'pointer');
@@ -572,28 +573,28 @@ function data() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
@@ -666,7 +667,7 @@ function data() {
 			$('#clear').click(function() {
 				clearFilter();
 			});
-	
+
 			$('#form_data_input').submit(function(event) {
 				event.preventDefault();
 				applyFilter();
@@ -720,7 +721,7 @@ function data() {
 
 	$display_text = array(
 		'name'         => array('display' => __('Data Input Name'),    'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')),
-		'nosort'       => array('display' => __('Deletable'),          'align' => 'right', 'tip' => __('Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')), 
+		'nosort'       => array('display' => __('Deletable'),          'align' => 'right', 'tip' => __('Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')),
 		'data_sources' => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources that use this Data Input Method.')),
 		'templates'    => array('display' => __('Templates Using'),    'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Templates that use this Data Input Method.')),
 		'type_id'      => array('display' => __('Data Input Method'),  'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method used to gather information for this Data Input Method.')));

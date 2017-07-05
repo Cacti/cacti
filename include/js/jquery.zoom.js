@@ -166,9 +166,6 @@
 		function zoomFunction_init(image) {
 			var $this = image;
 
-			/* as long as Zoom is active reposition all elements once the window has been resized by the user */
-			$(window).off('resize').on('resize', function() { zoomElements_reposition( $this ); } );
-
 			/* load global settings cached in a cookie if available */
 			zoom.custom = unserialize(storage.get(zoom.options.cookieName));
 			if (zoom.custom.zoomMode == undefined) zoom.custom.zoomMode = 'quick';
@@ -223,7 +220,7 @@
 				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
 				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
 				$("<div id='zoom-container'></div>").appendTo("body").delay(1000);
-				$("#zoom-container").css({ top:zoom.image.top+'px', left:zoom.image.left+'px', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' }).removeClass().addClass('zoom_active_' + zoom.image.reference);
+				$("#zoom-container").css({ position: 'absolute', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' }).removeClass().addClass('zoom_active_' + zoom.image.reference);
 			}
 
 			// add a hidden anchor to use for downloads
@@ -335,8 +332,10 @@
 					+ '<div class="sep_li"></div>'
 					+ '<div class="first_li">'
 					+ 		'<div class="ui-icon ui-icon-close zoomContextMenuAction__close"></div><span class="zoomContextMenuAction__close">Close</span>'
-					+ '</div>').appendTo("#zoom-container");
+					+ '</div>').appendTo("body");
 			}
+
+			zoomElements_reposition();
 			zoomElements_reset();
 			zoomContextMenu_init();
 			zoomAction_init(image);
@@ -345,12 +344,8 @@
 		/**
 		 * reposition all elements of Zoom
 		 **/
-		function zoomElements_reposition( image ) {
-			var $this = image;
-			zoom.image.top	= parseInt($this.offset().top);
-			zoom.image.left	= parseInt($this.offset().left);
-			$("#zoom-container").css({ top:zoom.image.top+'px', left:zoom.image.left+'px' });
-
+		function zoomElements_reposition() {
+			$("#zoom-container").insertBefore('#' + zoom.image.reference);
 		}
 
 		/**
@@ -358,8 +353,8 @@
 		 **/
 		function zoomElements_remove() {
 			zoomElements_reset();
-			$("#zoom-container").find('*').off();
-			$("#zoom-container").remove();
+			$("#zoom-container").find('*').off().remove();
+			$("#zoom-menu").remove();
 		}
 
 		/**
@@ -1053,7 +1048,7 @@
 				menu_y_offset += (-1*menu_height);
 			}
 
-			$("#zoom-menu").css({ left: menu_x_pos+menu_x_offset-zoom.image.left, top: menu_y_pos+menu_y_offset-zoom.image.top, zIndex: '101' }).show();
+			$("#zoom-menu").css({ left: menu_x_pos+menu_x_offset, top: menu_y_pos+menu_y_offset, zIndex: '101' }).show();
 		};
 
 		function zoomContextMenu_hide(){

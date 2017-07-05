@@ -145,9 +145,11 @@ function plugins_load_temp_table() {
 	while ($x < 30) {
 		if (!plugins_temp_table_exists($table)) {
 			$_SESSION['plugin_temp_table'] = $table;
+
 			db_execute("CREATE TEMPORARY TABLE IF NOT EXISTS $table LIKE plugin_config");
 			db_execute("TRUNCATE $table");
 			db_execute("INSERT INTO $table SELECT * FROM plugin_config");
+
 			break;
 		} else {
 			$table = 'plugin_temp_table_' . rand();
@@ -161,32 +163,39 @@ function plugins_load_temp_table() {
 		while (($file = readdir($dh)) !== false) {
 			if (is_dir("$path/$file") && file_exists("$path/$file/setup.php") && !in_array($file, $pluginslist) && !in_array($file, $plugins_integrated)) {
 				if (file_exists("$path/$file/INFO")) {
-					$info = parse_ini_file("$path/$file/INFO", true);
-					$cinfo[$file] = $info['info'];
+					$cinfo[$file] = plugin_load_info_file("$path/$file/INFO");
+
 					if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = __('Unknown');
 					if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = __('Not Stated');
 					if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
 					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['longname'] = ucfirst($file);
+
 					$cinfo[$file]['status'] = 0;
 					$pluginslist[] = $file;
-					if (!isset($info['info']['compat']) || cacti_version_compare(CACTI_VERSION, $info['info']['compat'], '<')) {
+
+					if (!isset($cinfo[$file]['compat']) || cacti_version_compare(CACTI_VERSION, $cinfo[$file]['compat'], '<')) {
 						$cinfo[$file]['status'] = -1;
 					}
 				} else {
 					$cinfo[$file] = array('name' => ucfirst($file), 'longname' => '', 'author' => '', 'homepage' => '', 'version' => '', 'compat' => '0.8');
 					$cinfo[$file]['status'] = -1;
 				}
+
 				$pluginslist[] = $file;
-				db_execute("REPLACE INTO $table (directory, name, status, author, webpage, version)
-						VALUES ('" .
-							$file . "', '" .
-							$cinfo[$file]['longname'] . "', '" .
-							$cinfo[$file]['status']   . "', '" .
-							$cinfo[$file]['author']   . "', '" .
-							$cinfo[$file]['homepage'] . "', '" .
-							$cinfo[$file]['version']  . "')");
+
+				db_execute_prepared("REPLACE INTO $table
+					(directory, name, status, author, webpage, version)
+					VALUES (?, ?, ?, ?, ?, ?)",
+					array(
+						$file,
+						$cinfo[$file]['longname'],
+						$cinfo[$file]['status'],
+						$cinfo[$file]['author'],
+						$cinfo[$file]['homepage'],
+						$cinfo[$file]['version']));
 			}
 		}
+
 		closedir($dh);
 	}
 
@@ -199,32 +208,32 @@ function update_show_current () {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'state' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-3'
 			)
@@ -397,7 +406,9 @@ function update_show_current () {
 			}
 
 			form_alternate_row('', true);
+
 			print format_plugin_row($plugin, $last_plugin, $load_ordering);
+
 			$i++;
 
 			$j++;
@@ -424,7 +435,14 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">' . __('ERROR: Directory Missing') . '</span>)') . '</td>';
 
 	$row .= "<td class='nowrap'>" . filter_value($plugin['name'], get_request_var('filter')) . "</td>\n";
-	$row .= "<td class='nowrap'>" . $status_names[$plugin['status']] . "</td>\n";
+
+	if ($plugin['status'] == '-1') {
+		$status = plugin_is_compatible($plugin['directory']);
+		$row .= "<td class='nowrap'>" . __('Not Compatible, %s', $status['requires']) . "</td>\n";
+	}else{
+		$row .= "<td class='nowrap'>" . $status_names[$plugin['status']] . "</td>\n";
+	}
+
 	$row .= "<td class='nowrap'>" . $plugin['author'] . "</td>\n";
 	$row .= "<td class='right'>"  . $plugin['version'] . "</td>\n";
 

@@ -720,8 +720,15 @@ function host_edit() {
 		);
 
 		$i = 0;
+		$displayed_templates = array();
 		if (sizeof($selected_graph_templates)) {
 			foreach ($selected_graph_templates as $item) {
+				if (isset($displayed_templates[$item['id']])) {
+					continue;
+				} else {
+					$displayed_templates[$item['id']] = true;
+				}
+
 				$i++;
 
 				form_alternate_row("gt$i", true);
@@ -1261,23 +1268,23 @@ function host() {
 	?>
 	<script type='text/javascript'>
 
+	function applyFilter() {
+		strURL  = 'host.php?host_status=' + $('#host_status').val();
+		strURL += '&host_template_id=' + $('#host_template_id').val();
+		strURL += '&site_id=' + $('#site_id').val();
+		strURL += '&poller_id=' + $('#poller_id').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&header=false';
+		loadPageNoHeader(strURL);
+	}
+
+	function clearFilter() {
+		strURL = 'host.php?clear=1&header=false';
+		loadPageNoHeader(strURL);
+	}
+
 	$(function() {
-		function applyFilter() {
-			strURL  = 'host.php?host_status=' + $('#host_status').val();
-			strURL += '&host_template_id=' + $('#host_template_id').val();
-			strURL += '&site_id=' + $('#site_id').val();
-			strURL += '&poller_id=' + $('#poller_id').val();
-			strURL += '&rows=' + $('#rows').val();
-			strURL += '&filter=' + escape($('#filter').val());
-			strURL += '&header=false';
-			loadPageNoHeader(strURL);
-		}
-
-		function clearFilter() {
-			strURL = 'host.php?clear=1&header=false';
-			loadPageNoHeader(strURL);
-		}
-
 		$('#rows, #site_id, #poller_id, #host_template_id, #host_status').change(function() {
 			applyFilter();
 		});

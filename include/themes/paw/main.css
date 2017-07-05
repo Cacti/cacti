@@ -26,7 +26,7 @@ textarea {
 }
 
 table {
-	border-collapse: collapse; border-spacing: 0; 
+	border-collapse: collapse; border-spacing: 0;
 	border: none;
 	text-align:left;
 }
@@ -242,7 +242,7 @@ label {
 	width: 200px;
 }
 
-.itemlist { 
+.itemlist {
 	max-height:200px;
 	overflow-y:auto;
 }
@@ -423,7 +423,7 @@ label {
 	text-align:right;
 	margin:0px;
 	padding: 10px 0px 10px 0px;
-	
+
 }
 
 .menuoptions li a {
@@ -844,6 +844,10 @@ legend {
 	vertical-align: top;
 }
 
+.graphWrapper{
+	position: relative;
+}
+
 .cactiGraphContentArea {
 	height: 100%;
 	overflow-y: auto !important;
@@ -1009,7 +1013,7 @@ legend {
 .cactiTable {
 	display: table;
 	width: 100%;
-	margin-left:auto; 
+	margin-left:auto;
 	margin-right:auto;
 }
 
@@ -1018,31 +1022,34 @@ legend {
 	color: white;
 	float: left;
 	text-align: left;
-	padding: 3px 0px;
+	padding: 2px 0px;
 	display: table-column;
-	width: 90%;
+	width: 70%;
 	font-size: 1em;
 	font-weight: 700;
 	border-bottom: 1px solid rgba(0,0,0,0.5);
 	background: rgba(0,0,0,0.9);
-	
-	
+
+
 }
 
 .cactiTableButton {
 	float: right;
-	padding: 3px 0px;
+	padding: 2px 0px;
 	display: table-column;
 	text-align: right;
-	width: 10%;
+	width: 30%;
 	border-bottom: 1px solid rgba(0,0,0,0.5);
 	background: rgba(0,0,0,0.9);
+	white-space: nowrap;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 5px 0px 5px;
+	color: white;
+	padding: 0px 8px 0px 8px;
 	white-space: nowrap;
 	overflow: hidden;
+	vertical-align: middle;
 }
 
 .cactiDebugTable {
@@ -1240,7 +1247,7 @@ legend {
 }
 
 .cactiNavBarTop {
-	border-bottom: 1px solid rgba(0,0,0,0.5);	
+	border-bottom: 1px solid rgba(0,0,0,0.5);
 }
 
 .cactiNavBarBottom {
@@ -1302,6 +1309,11 @@ th.sortable {
 .tableSubHeaderCheckbox {
 	width:1%;
 	background: #3F75A2;
+}
+
+.tableRowGraph td {
+	padding: 3px;
+	vertical-align: top;
 }
 
 .image_table {
@@ -1586,7 +1598,7 @@ div#gtabs {
 }
 
 .maintabs nav {
-	
+
 }
 
 .maintabs li {
@@ -1694,7 +1706,7 @@ div.submenu span{
 
 #nav li a {
 	display: block;
-	padding: 2px 4px 2px 15px; 
+	padding: 2px 4px 2px 15px;
 	background: #ccc;
 	color: rgba(0,0,0,0.9);
 	text-decoration: none;
@@ -1725,11 +1737,11 @@ tr.selected a.linkEditMain:visited {
 }
 
 tr:not(.selectable) a.linkEditMain:hover {
-	color: #2d4ca8; 
+	color: #2d4ca8;
 }
 
 tr.selectable a.linkEditMain:hover {
-	color: yellow; 
+	color: yellow;
 }
 
 tr.selectable:hover:not(.selected){
@@ -1755,7 +1767,7 @@ tr.selected a {
 }
 
 #nav li ul li a {
-	padding: 2px 4px 2px 35px; 
+	padding: 2px 4px 2px 35px;
 	background: #f0f0f0;
 }
 
@@ -1928,11 +1940,11 @@ tr#realtime td:first-child {
 
 }
 
-.ui-corner-all { 
+.ui-corner-all {
 	border-radius: 0px !important;
 	-moz-border-radius-bottomright: 0px !important;
 	-moz-border-radius-bottomleft: 0px !important;
-	-moz-border-radius-topright: 0px !important; 
+	-moz-border-radius-topright: 0px !important;
 	-moz-border-radius-topleft: 0px !important;
 }
 

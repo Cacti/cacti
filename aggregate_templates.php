@@ -108,9 +108,9 @@ function aggregate_form_save() {
 
 	/* do a quick comparison to see if anything changed */
 	if ($is_new == false) {
-		$old = db_fetch_row_prepared('SELECT * 
-			FROM aggregate_graph_templates 
-			WHERE id = ?', 
+		$old = db_fetch_row_prepared('SELECT *
+			FROM aggregate_graph_templates
+			WHERE id = ?',
 			array($save1['id']));
 
 		$save_me = 0;
@@ -129,11 +129,11 @@ function aggregate_form_save() {
 		$id = sql_save($save1, 'aggregate_graph_templates', 'id');
 
 		/* update children of the template */
-		db_execute_prepared("UPDATE aggregate_graphs 
+		db_execute_prepared("UPDATE aggregate_graphs
 			SET gprint_prefix = ?, graph_type = ?, total = ?, total_prefix = ?, order_type = ?
 			WHERE aggregate_template_id = ?
-			AND template_propogation='on'", 
-			array($save1['gprint_prefix'], $save1['graph_type'], 
+			AND template_propogation='on'",
+			array($save1['gprint_prefix'], $save1['graph_type'],
 				$save1['total'], $save1['total_prefix'],  $save1['order_type'], $id));
 
 		cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $id, FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -157,9 +157,9 @@ function aggregate_form_save() {
 	 * rebuild existing graphs if needed. */
 	$params_changed = false;
 
-	$params_old = db_fetch_row_prepared('SELECT * 
-		FROM aggregate_graph_templates_graph 
-		WHERE aggregate_template_id = ?', 
+	$params_old = db_fetch_row_prepared('SELECT *
+		FROM aggregate_graph_templates_graph
+		WHERE aggregate_template_id = ?',
 		array($id));
 
 	if (!empty($params_old)) {
@@ -182,18 +182,18 @@ function aggregate_form_save() {
 	/* save the template items now */
 	/* get existing item ids and sequences from graph template */
 	$graph_templates_items = array_rekey(
-		db_fetch_assoc_prepared('SELECT id, sequence 
-			FROM graph_templates_item 
-			WHERE local_graph_id=0 
-			AND graph_template_id = ?', 
+		db_fetch_assoc_prepared('SELECT id, sequence
+			FROM graph_templates_item
+			WHERE local_graph_id=0
+			AND graph_template_id = ?',
 			array($save1['graph_template_id'])),
 		'id', array('sequence')
 	);
 
 	/* get existing aggregate template items */
 	$aggregate_template_items_old = array_rekey(
-		db_fetch_assoc_prepared('SELECT * 
-			FROM aggregate_graph_templates_item 
+		db_fetch_assoc_prepared('SELECT *
+			FROM aggregate_graph_templates_item
 			WHERE aggregate_template_id = ?', array($id)),
 		'graph_templates_item_id', array('sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total')
 	);
@@ -343,9 +343,9 @@ function aggregate_template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$template = db_fetch_row_prepared('SELECT * 
-			FROM aggregate_graph_templates 
-			WHERE id = ?', 
+		$template = db_fetch_row_prepared('SELECT *
+			FROM aggregate_graph_templates
+			WHERE id = ?',
 			array(get_request_var('id')));
 
 		$header_label = __('Aggregate Template [edit: %s]', $template['name']);
@@ -485,32 +485,32 @@ function aggregate_template() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'pgt.name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_graphs' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
@@ -602,8 +602,8 @@ function aggregate_template() {
 		COUNT(pgt.id)
 		FROM aggregate_graph_templates AS pgt
 		LEFT JOIN (
-			SELECT aggregate_template_id, COUNT(*) AS graphs 
-			FROM aggregate_graphs 
+			SELECT aggregate_template_id, COUNT(*) AS graphs
+			FROM aggregate_graphs
 			GROUP BY aggregate_template_id
 		) AS graphs
 		ON pgt.id=graphs.aggregate_template_id
@@ -617,8 +617,8 @@ function aggregate_template() {
 	$template_list = db_fetch_assoc("SELECT pgt.*, graphs.graphs, gt.name AS graph_template_name
 		FROM aggregate_graph_templates AS pgt
 		LEFT JOIN (
-			SELECT aggregate_template_id, COUNT(*) AS graphs 
-			FROM aggregate_graphs 
+			SELECT aggregate_template_id, COUNT(*) AS graphs
+			FROM aggregate_graphs
 			GROUP BY aggregate_template_id
 		) AS graphs
 		ON pgt.id=graphs.aggregate_template_id

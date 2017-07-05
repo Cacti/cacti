@@ -989,23 +989,30 @@ function utilities_view_logfile() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('File to show');?>
+						<?php print __('File');?>
 					</td>
 					<td>
 						<select id='filename' name='filename'>
 							<?php
 							$selectedFile = basename(get_request_var('filename'));
 							$logPath      = dirname(read_config_option('path_cactilog'));
-							$files        = scandir($logPath);
+
+							if (is_readable($logPath)) {
+								$files = scandir($logPath);
+							} else {
+								$files = array('cacti.log');
+							}
 
 							foreach($files as $logFile) {
 								if (in_array($logFile, array('.', '..', '.htaccess'))) {
 									continue;
 								}
+
 								print "<option value='" . $logFile . "'";
 								if ($selectedFile == $logFile) {
 									print ' selected';
 								}
+
 								print '>' . $logFile . "</option>\n";
 							}
 							?>
@@ -1035,7 +1042,7 @@ function utilities_view_logfile() {
 				</tr>
 				<tr>
 					<td class='nowrap'>
-						<?php print __('Message Type');?>
+						<?php print __('Type');?>
 					</td>
 					<td>
 						<select id='message_type' onChange='applyFilter()'>
@@ -1113,7 +1120,7 @@ function utilities_view_logfile() {
 	$tail_lines   = get_request_var('tail_lines');
 	$base_url     = 'utilities.php?action=view_logfile&rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refreshTime.'&message_type='.$message_type.'&tail_lines='.$tail_lines.'&filename='.basename($logfile);
 
-	$nav          = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page');
+	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
 
 	echo $nav;
 
@@ -1728,6 +1735,7 @@ function utilities_view_poller_cache() {
 
 	$display_text = array(
 		'dtd.name_cache' => array(__('Data Source Name'), 'ASC'),
+		'h.description' => array(__('Device Description'), 'ASC'),
 		'nosort' => array(__('Details'), 'ASC'));
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_poller_cache');
@@ -1744,6 +1752,10 @@ function utilities_view_poller_cache() {
 				?>
 				<td>
 					<?php print filter_value($item['name_cache'], get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>
+				</td>
+
+				<td>
+					<?php print $item['description'];?>
 				</td>
 
 				<td>
@@ -1772,7 +1784,7 @@ function utilities_view_poller_cache() {
 			<?php
 			print "<tr class='$class'>\n";
 			?>
-				<td>
+				<td colspan='2'>
 				</td>
 				<td>
 					<?php print __('RRD:');?> <?php print $item['rrd_path'];?>

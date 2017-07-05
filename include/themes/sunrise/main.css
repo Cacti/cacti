@@ -89,15 +89,11 @@ pre {
 	color: #f7f7f7;
 }
 
-form#tree_edit>div{
-	background: #F7F7F7;
-}
-
 #main {
 	display:none;
-	width: 100%;
 	position: relative;
 	z-index: 0;
+	padding-right: 15px;
 }
 
 #main > br {
@@ -110,7 +106,7 @@ form#tree_edit>div{
 
 #navigation_right {
 	overflow-y: auto !important;
-	margin-right: 10px !important;
+	padding-left: 10px;
 }
 
 input, select {
@@ -560,9 +556,8 @@ label {
 	cursor:pointer;
 	padding:2px;
 	vertical-align:middle;
-	color: #174163;
-	font-weight:bold;
-	font-size:14px
+    color: red;
+    font-size: 14px;
 }
 
 .odd {
@@ -598,6 +593,11 @@ label {
 	padding: 4px 5px !important;
 }
 
+.tableRowGraph td {
+	padding: 3px;
+	vertical-align: top;
+}
+
 .saveRow {
 	border-color: rgba(255,255,255,0.2);
 	text-align:right;
@@ -607,6 +607,7 @@ label {
 .treeArea, .treeItemsArea {
 	width:33%;
 	border:1px solid #006400;
+	vertical-align: top;
 }
 
 .linkMarker {
@@ -654,7 +655,6 @@ label {
 }
 
 .hostUp {
-	color: #000000;
 	font-size: 10px;
 	font-weight: normal;
 	font-family: monospace;
@@ -753,6 +753,7 @@ label {
 	height:100%;
 	float: left;
 	display: none;
+	color: lightgrey;
 }
 
 .cactiTreeNavigationArea div:first-child {
@@ -896,23 +897,27 @@ legend {
 .cactiTooltipHint {
 	cursor: pointer;
 	padding:5px;
-	font-size:14px !important;
+	font-size:12px !important;
+}
+
+.spikekillParent {
+	padding: 0px !important;
 }
 
 .spikekillData, .spikekillData td {
-	border: 1px solid #999;
+	#border: 1px solid #999;
 }
 
 .spikekillNote {
-	padding: 1px;
+	#padding: 1px;
 }
 
 .spikekillMenu {
-	background: #f5f5f5 none repeat scroll 0 0;
-    border: 1px solid #979797;
-    box-shadow: 2px 2px 2px #999999;
-    margin: 0;
-    padding: 2px;
+	color: #93CEFF;
+	background: #100000;
+    border: 1px solid #3a3b3c;;
+    margin: 0px;
+    padding: 10px 0px 10px 0px !important;
 	line-height: 1.5em;
 }
 
@@ -943,6 +948,10 @@ legend {
 	vertical-align: top;
 }
 
+.graphWrapper{
+	position: relative;
+}
+
 .cactiGraphContentArea {
 	height: 100%;
 	overflow-y: auto !important;
@@ -963,7 +972,7 @@ legend {
 }
 
 .cactiGraphContentArea .tableHeader > td{
-	color: white;
+	color: #FFAA00;
     text-align: left;
     padding: 3px 5px;
     width: 100%;
@@ -971,7 +980,7 @@ legend {
     font-weight: 600;
 	text-transform: none;
     border-color: rgba(255,255,255,0.2);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+    background-image: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1));
     background-repeat: repeat-x;
 }
 
@@ -1041,7 +1050,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #2d4ca8;
+	color: #93CEFF;
 	text-decoration: none;
 	font-size: 12px;
 	padding: 3px;
@@ -1050,13 +1059,13 @@ legend {
 }
 
 .linkEditMain:hover {
-	color: yellow;
+	color: white;
 	white-space: nowrap;
 	text-decoration: none;
 }
 
 .linkOverDark, .linkOverDark:visited, .linkOverDark:active {
-	color: white;
+	color: #93CEFF;
 	font-weight: normal;
 	text-decoration: none;
 	cursor: pointer;
@@ -1155,7 +1164,7 @@ table.cactiTable {
 	text-align: left;
 	padding: 3px 0px;
 	display: table-column;
-	width: 90%;
+	width: 70%;
 	font-size: 13px;
 	font-weight: 600;
     border-color: rgba(255,255,255,0.2);
@@ -1169,17 +1178,18 @@ table.cactiTable {
 	display: table-column;
 	text-align: right;
 	font-size: 13px;
-	width: 10%;
+	width: 30%;
     border-color: rgba(255,255,255,0.2);
-
 	background-image: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0));
     background-repeat: repeat-x;
+	white-space: nowrap;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 5px 0px 5px;
+	padding: 0px 8px 0px 8px;
 	white-space: nowrap;
 	overflow: hidden;
+	vertical-align: middle;
 }
 
 .cactiDebugTable {
@@ -1301,7 +1311,7 @@ table.cactiTable {
 	.formColumnLeft {
 		float: left;
 		display: table-row;
-		width: 100%;
+		width: 92%;
 	}
 
 	.formColumnRight {
@@ -1329,18 +1339,18 @@ table.cactiTable {
 	.queryAdd, .templateAdd, .navBar, #ping_results {
 		display: none;
 	}
-	
+
 	/* switch to horizontal scrolling */
-	.tabs {	
+	.tabs {
 		overflow-y: hidden;
 		overflow-x: scroll;
 		white-space: nowrap;
 	}
-	
+
 	.tabs ul {
 		display: inline-flex;
 	}
-	
+
 	/* dropdown menus */
 	.menuoptions, .submenuoptions {
 		width: 100%;
@@ -1348,15 +1358,15 @@ table.cactiTable {
 		border-left: none !important;
 		border-right: none !important;
 	}
-	
+
 }
 
 .graphItem {
-	background-color: #D5D5D5;
+	background: rgba(255,255,255,0.05);
 }
 
 .graphItemAlternate {
-	background-color: #D2D6E7;
+	background: rgba(255,255,255,0.05);
 }
 
 .break {
@@ -1429,17 +1439,16 @@ th.sortable {
 }
 
 .tablesorter-headerRow {
-    background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-   	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
-    border-bottom: 1px solid #000;
+
+}
+
+.tablesorter-headerRow th{
+ 	border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .tablesorter-headerDesc, .tablesorter-headerAsc {
 	color: white !important;
 	background: none !important;
-	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5) !important;
     border-bottom: 3px solid #3C8A3C !important;
 }
 
@@ -1654,13 +1663,17 @@ th.sortable {
 }
 
 .deleteMarker {
-	color: rgba(0,0,0,0.6);
+	color: red;
 	vertical-align: middle;
 	text-decoration: none !important;
 }
 
 .deleteMarker:hover {
 	text-decoration: none !important;
+}
+
+.deleteMarkerDisabled {
+	color: #9d9d9d !important;
 }
 
 .moveArrow {
@@ -1895,12 +1908,12 @@ th:last-child {
 
 tr.selected {
 	background: rgba(0,0,0,0.4) !important;
-	border-left: 10px solid #3C8A3C !important;
-	color: snow !important;
+	border-left: 3px solid #bababa !important;
+	color: #bababa !important;
 }
 
 tr.selected a.linkEditMain:visited {
-	color: #00008B;
+	color: #FFFFFF;
 }
 
 tr:not(.selectable) a.linkEditMain:hover {
@@ -1908,11 +1921,7 @@ tr:not(.selectable) a.linkEditMain:hover {
 }
 
 tr.selectable {
-	border-left: 10px solid transparent;
-}
-
-tr.selectable a.linkEditMain:hover {
-	color: blue;
+	border-left: 3px solid transparent;
 }
 
 tr.selectable:hover:not(.selected){
@@ -1920,7 +1929,7 @@ tr.selectable:hover:not(.selected){
 }
 
 tr.selected a {
-	color: #0000CD;
+	color: #FFFFFF;
 }
 
 #nav li a.pic:hover:not(.selected) {
