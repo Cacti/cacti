@@ -680,6 +680,8 @@ function toggleFilterAndIcon(id, child, initial) {
 		$('.cactiFilterState').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
 		storage.set('filterVisibility', 'visible');
 	}
+
+	$(window).trigger('resize');
 }
 
 function setupResponsiveMenuAndTabs() {
