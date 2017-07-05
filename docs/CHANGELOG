@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2
+-issue#837: Using the add_device.php CLI script, you can not 'default' the device threads to other than 1
 -issue#838: SECURITY: XSS Issue in link.php
 
 1.1.12
