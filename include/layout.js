@@ -630,7 +630,7 @@ function makeFiltersResponsive() {
 
 				$(this).attr('title', showHideFilter).tooltip({ track: true });
 
-				$('.cactiFilter').tooltip().click(function(event) {
+				$('.cactiFilter').click(function(event) {
 					//$('.filterTable').find('td').css('display', 'table-row');
 					//event.stopPropagation();
 				});
@@ -644,6 +644,14 @@ function makeFiltersResponsive() {
 					$('.cactiFilterClear').click(function(event) {
 						event.stopPropagation();
 						$('#clear').trigger('click');
+					}).tooltip({
+						open: function (event, ui) {
+							id = $(this).closest('.cactiTable').attr('id');
+							$('#'+id).find('.cactiTableButton').tooltip('close');
+						},
+						close: function (event, ui) {
+							id = $(this).closest('.cactiTable').attr('id');
+						}
 					});
 				}
 
