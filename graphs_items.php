@@ -295,9 +295,9 @@ function item_edit() {
 
 	$id = (!isempty_request_var('id') ? '&id=' . get_request_var('id') : '');
 
-	$host = db_fetch_row_prepared('SELECT hostname 
-		FROM host 
-		WHERE id = ?', 
+	$host = db_fetch_row_prepared('SELECT hostname
+		FROM host
+		WHERE id = ?',
 		array(get_request_var('host_id')));
 
 	if (empty($host['hostname'])) {
@@ -317,7 +317,7 @@ function item_edit() {
 					<?php print html_host_filter(get_request_var('host_id'));?>
 				</tr>
 				<tr>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Data Template');?>
 					</td>
 					<td>
@@ -326,11 +326,11 @@ function item_edit() {
 							<option value='0'<?php if (get_request_var('data_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
 							if (get_request_var('host_id') <= 0) {
-								$data_templates = db_fetch_assoc('SELECT id, name 
-									FROM data_template 
+								$data_templates = db_fetch_assoc('SELECT id, name
+									FROM data_template
 									ORDER BY name');
 							} else {
-								$data_templates = db_fetch_assoc_prepared('SELECT DISTINCT dt.id, dt.name 
+								$data_templates = db_fetch_assoc_prepared('SELECT DISTINCT dt.id, dt.name
 									FROM data_template AS dt
 									INNER JOIN data_local AS dl
 									ON dl.data_template_id=dt.id
@@ -376,9 +376,9 @@ function item_edit() {
 	}
 
 	if (!isempty_request_var('id')) {
-		$template_item = db_fetch_row_prepared('SELECT * 
-			FROM graph_templates_item 
-			WHERE id = ?', 
+		$template_item = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_item
+			WHERE id = ?',
 			array(get_request_var('id')));
 	} else {
 		$template_item = array();
@@ -386,9 +386,9 @@ function item_edit() {
 		kill_session_var('sess_graph_items_dti');
 	}
 
-	$title = db_fetch_cell_prepared('SELECT title_cache 
-		FROM graph_templates_graph 
-		WHERE local_graph_id = ?', 
+	$title = db_fetch_cell_prepared('SELECT title_cache
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
 		array(get_request_var('local_graph_id')));
 
 	$header_label = __('Graph Items [graph: %s]', htmlspecialchars($title));
@@ -439,7 +439,7 @@ function item_edit() {
 			INNER JOIN data_template_data AS dtd
 			ON dtd.local_data_id=dl.id
 			INNER JOIN data_template_rrd AS dtr
-			ON dtr.local_data_id=dl.id 
+			ON dtr.local_data_id=dl.id
 			LEFT JOIN host AS h
 			ON dl.host_id=h.id";
 
@@ -509,7 +509,7 @@ function item_edit() {
 		});
 	});
 
-	/* 
+	/*
 	columns - task_item_id color_id alpha graph_type_id consolidation_function_id cdef_id value gprint_id text_format hard_return
 
 	graph_type_ids - 1 - Comment 2 - HRule 3 - Vrule 4 - Line1 5 - Line2 6 - Line3 7 - Area 8 - Stack 9 - Gprint 10 - Legend
@@ -531,8 +531,8 @@ function item_edit() {
 	}
 
 	function applyFilter() {
-		strURL = 'graphs_items.php?header=false&action=item_edit<?php print $id;?>' + 
-			'&local_graph_id=<?php print get_request_var('local_graph_id');?>' + 
+		strURL = 'graphs_items.php?header=false&action=item_edit<?php print $id;?>' +
+			'&local_graph_id=<?php print get_request_var('local_graph_id');?>' +
 			'&data_template_id='+$('#data_template_id').val()+
 			'&host_id='+$('#host_id').val();
 

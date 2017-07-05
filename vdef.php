@@ -345,10 +345,10 @@ function vdef_item_remove_confirm() {
 		$('#cdialog').dialog();
 
 		$('#continue').click(function(data) {
-			$.post('vdef.php?action=item_remove', { 
-				__csrf_magic: csrfMagicToken, 
-				vdef_id: <?php print get_request_var('vdef_id');?>, 
-				id: <?php print get_request_var('id');?> 
+			$.post('vdef.php?action=item_remove', {
+				__csrf_magic: csrfMagicToken,
+				vdef_id: <?php print get_request_var('vdef_id');?>,
+				id: <?php print get_request_var('id');?>
 			}, function(data) {
 				$('#cdialog').dialog('close');
 				loadPageNoHeader('vdef.php?action=edit&header=false&id=<?php print get_request_var('id');?>');
@@ -677,25 +677,27 @@ function vdef_filter() {
 						</select>
 					</td>
                     <td>
-                        <input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
-                    </td>
-                    <td>
-                        <label for='has_graphs'><?php print __('Has Graphs');?></label>
+						<span>
+	   	                     <input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+                        	<label for='has_graphs'><?php print __('Has Graphs');?></label>
+						</span>
                     </td>
 					<td>
-						<input type='button' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' id='refresh'>
-					</td>
-					<td>
-						<input type='button' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' id='clear'>
+						<span>
+							<input type='button' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' id='refresh'>
+							<input type='button' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' id='clear'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_filter_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'vdef.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
+				strURL  = 'vdef.php?header=false';
+				strURL += '&filter='+escape($('#filter').val());
+				strURL += '&rows='+$('#rows').val();
+				strURL += '&has_graphs='+$('#has_graphs').is(':checked');
 				loadPageNoHeader(strURL);
 			}
 

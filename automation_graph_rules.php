@@ -703,7 +703,7 @@ function automation_graph_rules() {
 						<td>
 							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 						</td>
-						<td class='nowrap'>
+						<td>
 							<?php print __('Data Query');?>
 						</td>
 						<td>
@@ -751,13 +751,12 @@ function automation_graph_rules() {
 							</select>
 						</td>
 						<td>
-							<input type='submit' id='refresh' name='go' value='<?php print __('Go');?>'>
-						</td>
-						<td>
-							<input type='button' id='clear' value='<?php print __('Clear');?>'></td>
+							<span>
+								<input type='submit' id='refresh' name='go' value='<?php print __('Go');?>'>
+								<input type='button' id='clear' value='<?php print __('Clear');?>'></td>
+							</span>
 					</tr>
 				</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
@@ -765,7 +764,6 @@ function automation_graph_rules() {
 				'?status='        + $('#status').val()+
 				'&filter='        + escape($('#filter').val())+
 				'&rows='          + $('#rows').val()+
-				'&page='          + $('#page').val()+
 				'&snmp_query_id=' + $('#snmp_query_id').val()+
 				'&header=false';
 			loadPageNoHeader(strURL);

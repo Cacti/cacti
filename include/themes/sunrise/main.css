@@ -4,10 +4,6 @@
 	display:none;
 }
 
-
-
-
-
 html {
 	height: 100%;
 	width: 100%;
@@ -113,7 +109,7 @@ input, select {
 	padding: 0.4em 0.4em 0.4em 0.4em;
 }
 
-input[type="checkbox"].formCheckbox {
+input[type="checkbox"].formCheckbox, .filterTable input[type="checkbox"] {
   display: none;
 }
 
@@ -876,8 +872,6 @@ legend {
 	margin-bottom: auto;
 }
 
-
-
 .actionsDropdownButton {
 	vertical-align: top;
 	float: right;
@@ -1197,16 +1191,25 @@ table.cactiTable {
 }
 
 .filterTable {
-	white-space:nowrap;
+	white-space: nowrap;
 }
 
 .filterTable td:first-child {
-	width:55px;
-	min-width:55px;
+	width: 55px;
+	min-width: 55px;
 }
 
 .filterTable td {
 	padding: 2px;
+	white-space: nowrap;
+}
+
+.filterTable td span {
+	padding: 0px 2px 0px 0px;
+}
+
+.filterTable label {
+	vertical-align: 10%;
 }
 
 .formRow {

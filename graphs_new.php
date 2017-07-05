@@ -550,9 +550,11 @@ function graphs() {
 				<td>
 					<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 				</td>
-				<td colspan='3' class='nowrap'>
-					<input type='submit' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+				<td colspan='3'>
+					<span>
+						<input id='refresh' type='submit' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+						<input id='clear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+					</span>
 				</td>
 			</tr>
 		</table>

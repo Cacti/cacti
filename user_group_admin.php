@@ -1766,7 +1766,6 @@ function user_group() {
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -1824,14 +1823,13 @@ function user_group() {
 						</select>
 					</td>
 					<td>
-						<input id='refresh' type='button' value='<?php print __x('filter: use', 'Go');?>' title='<?php print __('Set/Refresh Filters');?>' onClick='applyFilter()'>
-					</td>
-					<td>
-						<input id='clear' type='button' value='<?php print __x('filter: reset', 'Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearFilter()'>
+						<span>
+							<input id='refresh' type='button' value='<?php print __x('filter: use', 'Go');?>' title='<?php print __('Set/Refresh Filters');?>' onClick='applyFilter()'>
+							<input id='clear' type='button' value='<?php print __x('filter: reset', 'Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearFilter()'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 	</tr>
@@ -2097,7 +2095,6 @@ function graph_filter($header_label) {
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permsg&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + escape($('#filter').val());
@@ -2164,7 +2161,7 @@ function graph_filter($header_label) {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -2173,20 +2170,19 @@ function graph_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+						<span>
+							<input type='checkbox' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+							<label for='associated'><?php print __('Show Exceptions');?></label>
+						</span>
 					</td>
 					<td>
-						<label for='associated'><?php print __('Show Exceptions');?></label>
-					</td>
-					<td>
-						<input type='button' value='<?php print __x('filter: use','Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __x('filter: reset','Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' value='<?php print __x('filter: use','Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __x('filter: reset','Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			<input type='hidden' name='action' value='edit'>
 			<input type='hidden' name='tab' value='permsg'>
 			<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
@@ -2207,7 +2203,6 @@ function device_filter($header_label) {
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permsd&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + escape($('#filter').val());
@@ -2270,7 +2265,7 @@ function device_filter($header_label) {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -2279,20 +2274,19 @@ function device_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+						<span>
+							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+							<label for='associated'><?php print __('Show Exceptions');?></label>
+						</span>
 					</td>
 					<td>
-						<label for='associated'><?php print __('Show Exceptions');?></label>
-					</td>
-					<td>
-						<input type='button' value='<?php print __x('filter: use', 'Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __x('filter: reset', 'Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' value='<?php print __x('filter: use', 'Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __x('filter: reset', 'Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			<input type='hidden' name='action' value='edit'>
 			<input type='hidden' name='tab' value='permsd'>
 			<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
@@ -2313,7 +2307,6 @@ function template_filter($header_label) {
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permste&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
@@ -2357,7 +2350,7 @@ function template_filter($header_label) {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -2366,20 +2359,19 @@ function template_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+						<span>
+							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+							<label for='associated'><?php print __('Show Exceptions');?></label>
+						</span>
 					</td>
 					<td>
-						<label for='associated'><?php print __('Show Exceptions');?></label>
-					</td>
-					<td>
-						<input type='button' value='<?php print __x('filter: use', 'Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __x('filter: reset', 'Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' value='<?php print __x('filter: use', 'Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __x('filter: reset', 'Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			<input type='hidden' name='action' value='edit'>
 			<input type='hidden' name='tab' value='permste'>
 			<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
@@ -2400,7 +2392,6 @@ function tree_filter($header_label) {
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permstr&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
@@ -2435,7 +2426,7 @@ function tree_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' name='filter' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Trees');?>
@@ -2444,7 +2435,7 @@ function tree_filter($header_label) {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -2453,20 +2444,19 @@ function tree_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+						<span>
+							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+							<label for='associated'><?php print __('Show Exceptions');?></label>
+						</span>
 					</td>
 					<td>
-						<label for='associated'><?php print __('Show Exceptions');?></label>
-					</td>
-					<td>
-						<input type='button' value='<?php print __x('filter: use', 'Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __x('filter: reset', 'Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' value='<?php print __x('filter: use', 'Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __x('filter: reset', 'Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			<input type='hidden' name='action' value='edit'>
 			<input type='hidden' name='tab' value='permstr'>
 			<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
@@ -2487,7 +2477,6 @@ function member_filter($header_label) {
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=members&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
@@ -2522,7 +2511,7 @@ function member_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+						<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Users');?>
@@ -2531,7 +2520,7 @@ function member_filter($header_label) {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -2540,20 +2529,19 @@ function member_filter($header_label) {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+						<span>
+							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+							<label for='associated'><?php print __('Show Members');?></label>
+						</span>
 					</td>
 					<td>
-						<label for='associated'><?php print __('Show Members');?></label>
-					</td>
-					<td>
-						<input type='button' value='<?php print __x('filter: use', 'Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __x('filter reset', 'Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' value='<?php print __x('filter: use', 'Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __x('filter reset', 'Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			<input type='hidden' name='action' value='edit'>
 			<input type='hidden' name='tab' value='members'>
 			<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
@@ -2564,3 +2552,4 @@ function member_filter($header_label) {
 
 	html_end_box();
 }
+

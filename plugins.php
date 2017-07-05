@@ -247,7 +247,10 @@ function update_show_current () {
 	?>
 	<script type="text/javascript">
 	function applyFilter() {
-		strURL = 'plugins.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&state='+$('#state').val()+'&header=false';
+		strURL  = 'plugins.php?header=false';
+		strURL += '&filter='+escape($('#filter').val());
+		strURL += '&rows='+$('#rows').val();
+		strURL += '&state='+$('#state').val();
 		loadPageNoHeader(strURL);
 	}
 
@@ -316,14 +319,13 @@ function update_show_current () {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 	</tr>

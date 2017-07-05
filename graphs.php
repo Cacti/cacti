@@ -1621,12 +1621,11 @@ function graph_management() {
 	}
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 
 	function applyFilter() {
 		strURL  = 'graphs.php?host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&rfilter=' + $('#rfilter').val();
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&header=false';
@@ -1667,7 +1666,7 @@ function graph_management() {
 	?>
 	<tr class='even noprint'>
 		<td>
-			<form id='form_graphs' name='form_graphs' action='graphs.php'>
+			<form id='form_graphs' action='graphs.php'>
 			<table class='filterTable'>
 				<tr>
 					<?php print html_host_filter(get_request_var('host_id'));?>
@@ -1675,7 +1674,7 @@ function graph_management() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='template_id' name='template_id' onChange='applyFilter()'>
+						<select id='template_id' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -1696,10 +1695,10 @@ function graph_management() {
 						</select>
 					</td>
 					<td>
-						<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -1709,16 +1708,16 @@ function graph_management() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' type='text' name='rfilter' size='30' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>'>
+						<input id='rfilter' type='text' size='30' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>'>
 					</td>
 					<td>
 						<?php print __('Graphs');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -1728,7 +1727,6 @@ function graph_management() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>

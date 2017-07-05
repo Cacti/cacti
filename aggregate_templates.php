@@ -565,21 +565,20 @@ function aggregate_template() {
 	$filter_html .= '</select>
 					</td>
 					<td>
-						<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+						<span>
+							<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+							<label for="has_graphs">' . __('Has Graphs') . '</label>
+						</span>
 					</td>
 					<td>
-						<label for="has_graphs">' . __('Has Graphs') . '</label>
-					</td>
-					<td>
-						<input type="button" value="' . __('Go') . '" id="refresh">
-					</td>
-					<td>
-						<input type="button" value="' . __('Clear') . '" id="clear">
+						<span>
+							<input type="button" value="' . __('Go') . '" id="refresh">
+							<input type="button" value="' . __('Clear') . '" id="clear">
+						</span>
 					</td>
 				</tr>
 			</table>
 		</td>
-		<td><input type="hidden" id="page" value="' . get_request_var('page') . '"></td>
 	</tr>';
 
 	print $filter_html;
@@ -683,7 +682,6 @@ function aggregate_template() {
 	function applyFilter() {
 		strURL  = 'aggregate_templates.php';
 		strURL += '?rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
 		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&header=false';
