@@ -1022,9 +1022,9 @@ legend {
 	color: white;
 	float: left;
 	text-align: left;
-	padding: 3px 0px;
+	padding: 2px 0px;
 	display: table-column;
-	width: 90%;
+	width: 70%;
 	font-size: 1em;
 	font-weight: 700;
 	border-bottom: 1px solid rgba(0,0,0,0.5);
@@ -1035,10 +1035,10 @@ legend {
 
 .cactiTableButton {
 	float: right;
-	padding: 3px 0px;
+	padding: 2px 0px;
 	display: table-column;
 	text-align: right;
-	width: 10%;
+	width: 30%;
 	border-bottom: 1px solid rgba(0,0,0,0.5);
 	background: rgba(0,0,0,0.9);
 	white-space: nowrap;
@@ -1046,7 +1046,7 @@ legend {
 
 .cactiTableButton span, .cactiTableTitle span {
 	color: white;
-	padding: 0px 5px 0px 5px;
+	padding: 0px 8px 0px 8px;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;

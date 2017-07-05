@@ -1164,7 +1164,7 @@ table.cactiTable {
 	text-align: left;
 	padding: 3px 0px;
 	display: table-column;
-	width: 90%;
+	width: 70%;
 	font-size: 13px;
 	font-weight: 600;
     border-color: #222;
@@ -1178,7 +1178,7 @@ table.cactiTable {
 	display: table-column;
 	text-align: right;
 	font-size: 13px;
-	width: 10%;
+	width: 30%;
     border-color: #222;
     background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
     background-repeat: repeat-x;
@@ -1186,7 +1186,7 @@ table.cactiTable {
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 5px 0px 5px;
+	padding: 0px 8px 0px 8px;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;

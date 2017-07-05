@@ -1050,7 +1050,7 @@ legend {
 	text-align: left;
 	height: 22px;
 	display: table-column;
-	width: 90%;
+	width: 70%;
 	background-color: #00438c;
 }
 
@@ -1059,16 +1059,14 @@ legend {
 	height: 22px;
 	display: table-column;
 	text-align: right;
-	width: 10%;
+	width: 30%;
 	background-color: #00438c;
 	white-space: nowrap;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
 	color: white;
-	padding-left: 3px;
-	padding-right: 3px;
-	padding-top: 5px;
+	padding: 5px 8px 0px 8px;
 	font-size: 11px;
 	font-weight: bold;
 	white-space: nowrap;

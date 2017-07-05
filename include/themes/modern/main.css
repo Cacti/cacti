@@ -1176,11 +1176,11 @@ legend {
 
 .cactiTableTitle {
 	float: left;
-	padding: 3px 0px 3px 0px;;
+	padding: 3px 0px;
 	text-align: left;
-	height: 22px;
+	height: 18px;
 	display: table-column;
-	width: 90%;
+	width: 70%;
 	background: rgba(98,125,77,1);
 	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
@@ -1192,11 +1192,11 @@ legend {
 
 .cactiTableButton {
 	float: right;
-	padding: 3px 0px 3px 0px;
-	height: 22px;
+	padding: 3px 0px;
+	height: 18px;
 	display: table-column;
 	text-align: right;
-	width: 10%;
+	width: 30%;
 	background: rgba(98,125,77,1);
 	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
@@ -1208,8 +1208,7 @@ legend {
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding-left: 3px;
-	padding-right: 3px;
+	padding: 0px 8px 0px 8px;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;
@@ -1552,7 +1551,6 @@ th.secondarySort {
 	white-space: nowrap;
 	display: block;
 	width: 10%;
-	height: 20px;
 	vertical-align: middle;
 }
 
@@ -1561,7 +1559,6 @@ th.secondarySort {
 	display: table-cell;
 	white-space: nowrap;
 	width:80%;
-	height: 20px;
 	margin-top: auto;
 }
 
@@ -1575,7 +1572,6 @@ th.secondarySort {
 	white-space: nowrap;
 	display: table-cell;
 	width: 10%;
-	height: 20px;
 	vertical-align: middle;
 
 }
