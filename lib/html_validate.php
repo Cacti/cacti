@@ -48,16 +48,16 @@ function die_html_input_error($variable = '', $value = '', $message = '') {
 	global $config;
 
 	?>
-	<table style="width:100%;text-align:center;">
+	<table style='width:100%;text-align:center;'>
 		<tr>
 			<td>
-				Validation error<?php print ($variable != '' ? ' for variable ' . $variable . ', with value of "' . $value . '"' . ($message != '' ? ', and error:' . $message : '') : '');?>.  See backtrace below for more details.
+				<?php print __('Validation error for variable %s with a value of %s.  See backtrace below for more details.', $variable, htmlspecialchars($value));?>
 			</td>
 		</tr>
 	</table>
 	<?php
 
-	cacti_debug_backtrace('Validation Error' . ($variable != '' ? ", Variable:$variable":"") . ($value != '' ? ", Value:$value":""), true);
+	cacti_debug_backtrace('Validation Error' . ($variable != '' ? ", Variable:$variable":'') . ($value != '' ? ", Value:$value":''), true);
 
 	bottom_footer();
 	exit;

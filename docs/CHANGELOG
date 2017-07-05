@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2
+-issue#838: SECURITY: XSS Issue in link.php
+
 1.1.12
 -issue#822: Aggregate Graph Items are incorrectly editable
 -issue#823: Allow Filters to be hidden
