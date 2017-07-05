@@ -593,6 +593,11 @@ label {
 	padding: 4px 5px !important;
 }
 
+.tableRowGraph td {
+	padding: 3px;
+	vertical-align: top;
+}
+
 .saveRow {
 	border-color: rgba(255,255,255,0.2);
 	text-align:right;
@@ -1159,7 +1164,7 @@ table.cactiTable {
 	text-align: left;
 	padding: 3px 0px;
 	display: table-column;
-	width: 90%;
+	width: 70%;
 	font-size: 13px;
 	font-weight: 600;
     border-color: rgba(255,255,255,0.2);
@@ -1173,17 +1178,18 @@ table.cactiTable {
 	display: table-column;
 	text-align: right;
 	font-size: 13px;
-	width: 10%;
+	width: 30%;
     border-color: rgba(255,255,255,0.2);
-
 	background-image: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0));
     background-repeat: repeat-x;
+	white-space: nowrap;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 5px 0px 5px;
+	padding: 0px 8px 0px 8px;
 	white-space: nowrap;
 	overflow: hidden;
+	vertical-align: middle;
 }
 
 .cactiDebugTable {

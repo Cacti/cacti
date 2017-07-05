@@ -122,7 +122,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 		foreach ($graph_array as $graph) {
 			if ($i == 0) {
-				print "<tr class='tableRow'>\n";
+				print "<tr class='tableRowGraph'>\n";
 			}
 
 			?>
@@ -237,7 +237,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			}
 
 			if ($i == 0) {
-				print "<tr class='tableRow'>\n";
+				print "<tr class='tableRowGraph'>\n";
 				$start = false;
 			}
 
@@ -886,9 +886,9 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			/* alternating row color */
 			if ($use_custom_class == false) {
-				print "<tr class='tableRow'>\n";
+				print "<tr class='tableRowGraph'>\n";
 			} else {
-				print "<tr class='tableRow $customClass'>";
+				print "<tr class='tableRowGraph $customClass'>";
 			}
 
 			print '<td>';

@@ -3,16 +3,16 @@
 ::-webkit-scrollbar {
     width: 8px;
 }
- 
+
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(22,22,6,0.7); 
+    -webkit-box-shadow: inset 0 0 6px rgba(22,22,6,0.7);
     border-radius: 6px;
 }
- 
+
 ::-webkit-scrollbar-thumb {
     border-radius: 6px;
-	background: rgba(49,68,43,0.8); 
-    -webkit-box-shadow: inset 0 0 4px rgba(49,68,43,0.5); 
+	background: rgba(49,68,43,0.8);
+    -webkit-box-shadow: inset 0 0 4px rgba(49,68,43,0.5);
 }
 
 html, body {
@@ -48,7 +48,7 @@ textarea {
 }
 
 table {
-	border-collapse: collapse; border-spacing: 0; 
+	border-collapse: collapse; border-spacing: 0;
 	border: none;
 	text-align:left;
 }
@@ -295,7 +295,7 @@ label {
 	width: 200px;
 }
 
-.itemlist { 
+.itemlist {
 	max-height:200px;
 	overflow-y:auto;
 }
@@ -782,10 +782,10 @@ ul#breadcrumbs {
 	padding-top: 10px;
 	display: none;
 	vertical-align: top;
-	position: fixed; 
-	left: 0px; 
-	top: 56px; 
-	z-index: 2; 
+	position: fixed;
+	left: 0px;
+	top: 56px;
+	z-index: 2;
 	overflow-x: hidden;
 	overflow-y: hidden;
 }
@@ -802,9 +802,9 @@ ul#breadcrumbs {
 	padding-right:0px;
 	padding-top:5px;
 	vertical-align:top;
-	position: fixed; 
-	left: 0px; 
-	top: 56px; 
+	position: fixed;
+	left: 0px;
+	top: 56px;
 	overflow-y: hidden;
 	width: 167px;
 }
@@ -1165,7 +1165,7 @@ legend {
 .cactiTable {
 	display: table;
 	width: 100%;
-	margin-left:auto; 
+	margin-left:auto;
 	margin-right:auto;
 	color: snow;
 }
@@ -1175,19 +1175,13 @@ legend {
 	text-align: left;
 	padding: 5px 0px;
 	display: table-column;
-	width: 90%;
+	width: 70%;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -webkit-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -ms-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
-}
-
-.cactiTableTitle span {
-	padding-left: 3px;
-	white-space: nowrap;
-	overflow: hidden;
 }
 
 .cactiTableButton {
@@ -1195,14 +1189,21 @@ legend {
 	padding: 5px 0px;
 	display: table-column;
 	text-align: right;
-	width: 10%;
+	width: 30%;
 	height: 14px;
+	white-space: nowrap;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -webkit-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -ms-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
+}
+
+.cactiTableButton span, .cactiTableTitle span {
+	padding: 0px 8px 0px 8px;
+	white-space: nowrap;
+	vertical-align: middle;
 }
 
 .cactiDebugTable {
@@ -1478,6 +1479,11 @@ th.secondarySort {
 	background: -o-linear-gradient(top,  #45484d 0%,#000000 100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  #45484d 0%,#000000 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #45484d 0%,#000000 100%); /* W3C */
+}
+
+.tableRowGraph td {
+	padding: 3px;
+	vertical-align: top;
 }
 
 .image_table {

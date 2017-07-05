@@ -100,6 +100,11 @@ label {
 	white-space:nowrap;
 }
 
+.tableRowGraph td {
+	padding: 3px;
+	vertical-align: top;
+}
+
 .nowrap {
 	white-space:nowrap;
 }
@@ -309,7 +314,7 @@ label {
 	width: 200px;
 }
 
-.itemlist { 
+.itemlist {
 	max-height:400px;
 	overflow-y:auto;
 }
@@ -1043,29 +1048,30 @@ legend {
 	color: white;
 	float: left;
 	text-align: left;
-	padding: 2px 0px;
-	height: 16px;
+	height: 22px;
 	display: table-column;
-	width: 90%;
+	width: 70%;
 	background-color: #00438c;
 }
 
 .cactiTableButton {
 	float: right;
-	padding: 2px 0px;
-	height: 16px;
+	height: 22px;
 	display: table-column;
 	text-align: right;
-	width: 10%;
+	width: 30%;
 	background-color: #00438c;
+	white-space: nowrap;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 3px 0px 3px;
+	color: white;
+	padding: 5px 8px 0px 8px;
 	font-size: 11px;
 	font-weight: bold;
 	white-space: nowrap;
 	overflow: hidden;
+	vertical-align: middle;
 }
 
 .cactiTable td {

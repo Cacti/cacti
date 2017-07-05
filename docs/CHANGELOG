@@ -1,5 +1,13 @@
 Cacti CHANGELOG
 
+1.1.12
+-issue#822: Aggregate Graph Items are incorrectly editable
+-issue#823: Allow Filters to be hidden
+-issue#834: Add spacing on graphs pages
+-issue: Uninstalled plugins can not install
+-issue: Location of filter functions in host.php prevent full responsive filter implementation
+-feature: Implement first phase of responsive search filters
+
 1.1.11
 -issue#642: RRA not written or WARNING: Poller Output Table not Empty
 -issue#779: PHP running out of memory due to date format issues
