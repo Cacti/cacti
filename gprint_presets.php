@@ -349,9 +349,9 @@ function gprint_presets() {
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		COUNT(rows)
+		COUNT(`rows`)
 		FROM (
-			SELECT gp.id AS rows,
+			SELECT gp.id AS `rows`,
 			SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
 			FROM graph_templates_gprint AS gp
 			LEFT JOIN graph_templates_item AS gti

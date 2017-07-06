@@ -809,9 +809,9 @@ function cdef() {
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		COUNT(rows)
+		COUNT(`rows`)
 		FROM (
-			SELECT cd.id AS rows,
+			SELECT cd.id AS `rows`,
 			SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
 			FROM cdef AS cd
 			LEFT JOIN graph_templates_item AS gti

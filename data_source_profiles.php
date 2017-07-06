@@ -618,7 +618,7 @@ function get_size($id, $type, $cfs = '') {
 			$cfs  = db_fetch_cell_prepared('SELECT COUNT(*) FROM data_source_profiles_cf WHERE data_source_profile_id = ?', array($id));
 		}
 
-		$rows = db_fetch_cell_prepared('SELECT SUM(rows) FROM data_source_profiles_rra WHERE data_source_profile_id = ?', array($id));
+		$rows = db_fetch_cell_prepared('SELECT SUM(`rows`) FROM data_source_profiles_rra WHERE data_source_profile_id = ?', array($id));
 
 		return number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000) . " KBytes per Data Source, and $header Bytes for the Header.";
 	} else {
@@ -827,9 +827,9 @@ function profile() {
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		COUNT(rows)
+		COUNT(`rows`)
 		FROM (
-			SELECT dsp.id AS rows,
+			SELECT dsp.id AS `rows`,
 			SUM(CASE WHEN local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 			FROM data_source_profiles AS dsp
 			LEFT JOIN data_template_data AS dtd

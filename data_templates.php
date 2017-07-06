@@ -860,9 +860,9 @@ function template() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(rows)
+	$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
 		FROM (SELECT
-			COUNT(dt.id) rows,
+			COUNT(dt.id) `rows`,
 			SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 			FROM data_template AS dt
 			INNER JOIN data_template_data AS dtd

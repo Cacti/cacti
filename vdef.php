@@ -748,9 +748,9 @@ function get_vdef_records(&$total_rows, &$rows) {
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		COUNT(rows)
+		COUNT(`rows`)
         FROM (
-            SELECT vd.id AS rows, vd.name,
+            SELECT vd.id AS `rows`, vd.name,
             SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
             FROM vdef AS vd
             LEFT JOIN graph_templates_item AS gti

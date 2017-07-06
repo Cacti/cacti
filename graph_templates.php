@@ -714,9 +714,9 @@ function template() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(rows)
+	$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
 		FROM (SELECT
-			COUNT(gt.id) AS rows,
+			COUNT(gt.id) AS `rows`,
 			COUNT(gl.id) AS graphs
 			FROM graph_templates AS gt
 			LEFT JOIN graph_local AS gl

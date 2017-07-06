@@ -780,10 +780,10 @@ function template() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(rows)
+	$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
 		FROM (
 			SELECT
-			COUNT(host_template.id) AS rows, COUNT(DISTINCT host.id) AS hosts
+			COUNT(host_template.id) AS `rows`, COUNT(DISTINCT host.id) AS hosts
 			FROM host_template
 			LEFT JOIN host ON host.host_template_id=host_template.id
 			$sql_where

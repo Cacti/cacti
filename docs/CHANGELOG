@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#814: Allow 'Save' feature from New Graphs
 -issue#837: Using the add_device.php CLI script, you can not 'default' the device threads to other than 1
 -issue#838: SECURITY: XSS Issue in link.php
+-issue#839: The Database column name 'rows' is a reserved word in MariaDB 10.2+
 
 1.1.12
 -issue#822: Aggregate Graph Items are incorrectly editable
