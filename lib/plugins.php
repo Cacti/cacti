@@ -51,7 +51,7 @@ function api_plugin_hook ($name) {
 	}
 
 	/* order the plugins by order */
-	$result = db_fetch_assoc_prepared('SELECT pc.id, ph.name, ph.file, ph.function
+	$result = db_fetch_assoc_prepared('SELECT ph.name, ph.file, ph.function
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory = ph.name
