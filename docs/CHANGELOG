@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#838: SECURITY: XSS Issue in link.php
 -issue#839: The Database column name 'rows' is a reserved word in MariaDB 10.2+
 -issue: Up/Down arrow titles labeled incorrectly on Tree Management page
+-issue: Make the default Export Type a Device Template
 
 1.1.12
 -issue#822: Aggregate Graph Items are incorrectly editable

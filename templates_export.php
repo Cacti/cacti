@@ -88,7 +88,7 @@ function export() {
 
 	/* 'graph_template' should be the default */
 	if (!isset_request_var('export_type')) {
-		set_request_var('export_type', 'graph_template');
+		set_request_var('export_type', 'host_template');
 	}
 
 	html_start_box( __('Export Templates'), '100%', '', '3', 'center', '');
