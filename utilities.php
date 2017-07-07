@@ -612,7 +612,6 @@ function utilities_view_user_log() {
 		strURL += '&result=' + $('#result').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + escape($('#filter').val());
-		strURL += '&page=' + $('#page').val();
 		strURL += '&action=view_user_log';
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -638,10 +637,10 @@ function utilities_view_user_log() {
 							<?php
 							$users = db_fetch_assoc('SELECT DISTINCT username FROM user_auth ORDER BY username');
 
-							if (sizeof($users) > 0) {
-							foreach ($users as $user) {
-								print "<option value='" . $user['username'] . "'"; if (get_request_var('username') == $user['username']) { print ' selected'; } print '>' . $user['username'] . "</option>\n";
-							}
+							if (sizeof($users)) {
+								foreach ($users as $user) {
+									print "<option value='" . $user['username'] . "'"; if (get_request_var('username') == $user['username']) { print ' selected'; } print '>' . $user['username'] . "</option>\n";
+								}
 							}
 							?>
 						</select>
@@ -664,7 +663,7 @@ function utilities_view_user_log() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -673,13 +672,11 @@ function utilities_view_user_log() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge User Log');?>'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge User Log');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -693,7 +690,6 @@ function utilities_view_user_log() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			<input type='hidden' name='action' value='view_user_log'>
 		</form>
 		</td>
@@ -1018,7 +1014,7 @@ function utilities_view_logfile() {
 							?>
 						</select>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Tail Lines');?>
 					</td>
 					<td>
@@ -1031,17 +1027,17 @@ function utilities_view_logfile() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refreshme' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Log');?>'>
+						<span>
+							<input type='button' id='refreshme' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Log');?>'>
+						</span>
 					</td>
 				</tr>
+			</table>
+			<table class='filterTable'>
 				<tr>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Type');?>
 					</td>
 					<td>
@@ -1054,7 +1050,7 @@ function utilities_view_logfile() {
 							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
 						</select>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Display Order');?>
 					</td>
 					<td>
@@ -1063,8 +1059,6 @@ function utilities_view_logfile() {
 							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
 					</td>
-				</tr>
-				<tr>
 					<td>
 						<?php print __('Refresh');?>
 					</td>
@@ -1281,7 +1275,6 @@ function utilities_view_snmp_cache() {
 		strURL += '&snmp_query_id=' + $('#snmp_query_id').val();
 		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&action=view_snmp_cache';
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -1364,7 +1357,7 @@ function utilities_view_snmp_cache() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -1373,14 +1366,13 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
-						<input type='submit' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						<span>
+							<input type='submit' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			<input type='hidden' name='action' value='view_snmp_cache'>
 		</form>
 		</td>
@@ -1554,7 +1546,6 @@ function utilities_view_poller_cache() {
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -1594,7 +1585,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='template_id' name='template_id' onChange='applyFilter()'>
+						<select id='template_id' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -1620,10 +1611,10 @@ function utilities_view_poller_cache() {
 						</select>
 					</td>
 					<td>
-						<input type='submit' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						<span>
+							<input type='submit' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -1653,7 +1644,7 @@ function utilities_view_poller_cache() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -1663,7 +1654,6 @@ function utilities_view_poller_cache() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			<input type='hidden' name='action' value='view_poller_cache'>
 		</form>
 		</td>
@@ -2262,7 +2252,6 @@ function snmpagent_utilities_run_cache() {
 		strURL += '&mib=' + $('#mib').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + escape($('#filter').val());
-		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2325,7 +2314,7 @@ function snmpagent_utilities_run_cache() {
 							<select id='rows' onChange='applyFilter()'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
-								if (sizeof($item_rows) > 0) {
+								if (sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
 										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 									}
@@ -2334,14 +2323,13 @@ function snmpagent_utilities_run_cache() {
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-						</td>
-						<td>
-							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<span>
+								<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							</span>
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>
@@ -2506,7 +2494,6 @@ function snmpagent_utilities_run_eventlog(){
 		strURL += '&receiver=' + $('#receiver').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + escape($('#filter').val());
-		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2589,7 +2576,7 @@ function snmpagent_utilities_run_eventlog(){
 							<select id='rows' onChange='applyFilter()'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
-								if (sizeof($item_rows) > 0) {
+								if (sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
 										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 									}
@@ -2598,13 +2585,14 @@ function snmpagent_utilities_run_eventlog(){
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-							<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Notification Log');?>'>
+							<span>
+								<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+								<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Notification Log');?>'>
+							</span>
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>

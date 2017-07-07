@@ -112,7 +112,7 @@ function form_save() {
 			if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
 				$csv_data = file($_FILES['import_file']['tmp_name']);
 				$debug_data = color_import_processor($csv_data);
-	
+
 				if (sizeof($debug_data)) {
 					$_SESSION['import_debug_info'] = $debug_data;
 				}
@@ -139,7 +139,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
 	/* ==================================================== */
-	
+
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
@@ -464,38 +464,38 @@ function process_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_graphs' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
 			),
 		'named' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
@@ -547,36 +547,39 @@ function color() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='named' <?php print (get_request_var('named') == 'true' ? 'checked':'');?>>
+						<span>
+							<input type='checkbox' id='named' <?php print (get_request_var('named') == 'true' ? 'checked':'');?>>
+							<label for='named'><?php print __('Named Colors');?></label>
+						</span>
 					</td>
 					<td>
-						<label for='named'><?php print __('Named Colors');?></label>
+						<span>
+							<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+							<label for='has_graphs'><?php print __('Has Graphs');?></label>
+						</span>
 					</td>
 					<td>
-						<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 					<td>
-						<label for='has_graphs'><?php print __('Has Graphs');?></label>
-					</td>
-					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='import' value='<?php print __('Import');?>' title='<?php print __('Import Colors');?>'>
-					</td>
-					<td>
-						<input type='button' id='export' value='<?php print __('Export');?>' title='<?php print __('Export Colors');?>'>
+						<span>
+							<input type='button' id='import' value='<?php print __('Import');?>' title='<?php print __('Import Colors');?>'>
+							<input type='button' id='export' value='<?php print __('Export');?>' title='<?php print __('Export Colors');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
-				strURL = 'color.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&named='+$('#named').is(':checked')+'&header=false';
+				strURL  = 'color.php?header=false';
+				strURL += '&filter='+escape($('#filter').val());
+				strURL += '&rows='+$('#rows').val();
+				strURL += '&has_graphs='+$('#has_graphs').is(':checked');
+				strURL += '&named='+$('#named').is(':checked');
 				loadPageNoHeader(strURL);
 			}
 
@@ -626,7 +629,7 @@ function color() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' 
+		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%'
 			OR hex LIKE '%" .  get_request_var('filter') . "%')";
 	} else {
 		$sql_where = '';
@@ -651,8 +654,8 @@ function color() {
 			SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates
 			FROM colors AS c
 			LEFT JOIN (
-				SELECT DISTINCT color_id, graph_template_id, local_graph_id 
-				FROM graph_templates_item 
+				SELECT DISTINCT color_id, graph_template_id, local_graph_id
+				FROM graph_templates_item
 				WHERE color_id>0
 			) AS gti
 			ON gti.color_id=c.id
@@ -671,8 +674,8 @@ function color() {
 			SELECT c.*, local_graph_id
 			FROM colors AS c
 			LEFT JOIN (
-				SELECT DISTINCT color_id, graph_template_id, local_graph_id 
-				FROM graph_templates_item 
+				SELECT DISTINCT color_id, graph_template_id, local_graph_id
+				FROM graph_templates_item
 				WHERE color_id>0
 			) AS gti
 			ON c.id=gti.color_id
@@ -748,7 +751,7 @@ function color_export() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' 
+		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%'
 			OR hex LIKE '%" .  get_request_var('filter') . "%')";
 	} else {
 		$sql_where = '';
@@ -771,8 +774,8 @@ function color_export() {
 			SELECT c.*, local_graph_id
 			FROM colors AS c
 			LEFT JOIN (
-				SELECT color_id, graph_template_id, local_graph_id 
-				FROM graph_templates_item 
+				SELECT color_id, graph_template_id, local_graph_id
+				FROM graph_templates_item
 				WHERE color_id>0
 			) AS gti
 			ON c.id=gti.color_id

@@ -756,11 +756,11 @@ function template() {
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Profile');?>
 					</td>
 					<td>
-						<select id='profile' name='profile' onChange='applyFilter()'>
+						<select id='profile' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
@@ -772,14 +772,14 @@ function template() {
 							?>
 						</select>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Data Templates');?>
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -788,20 +788,19 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='has_data' <?php print (get_request_var('has_data') == 'true' ? 'checked':'');?>>
+						<span>
+							<input type='checkbox' id='has_data' <?php print (get_request_var('has_data') == 'true' ? 'checked':'');?>>
+							<label for='has_data'><?php print __('Has Data Sources');?></label>
+						</span>
 					</td>
 					<td>
-						<label for='has_data'><?php print __('Has Data Sources');?></label>
-					</td>
-					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 		<script type='text/javascript'>
@@ -810,7 +809,6 @@ function template() {
 			strURL += '&filter='+escape($('#filter').val());
 			strURL += '&rows='+$('#rows').val();
 			strURL += '&profile='+$('#profile').val();
-			strURL += '&page='+$('#page').val();
 			strURL += '&has_data='+$('#has_data').is(':checked');
 			loadPageNoHeader(strURL);
 		}
@@ -862,9 +860,9 @@ function template() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(rows)
+	$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
 		FROM (SELECT
-			COUNT(dt.id) rows,
+			COUNT(dt.id) `rows`,
 			SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 			FROM data_template AS dt
 			INNER JOIN data_template_data AS dtd

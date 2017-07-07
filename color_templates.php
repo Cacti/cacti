@@ -86,14 +86,14 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 
 			print '<td>';
 
-			if ($disable_controls == false) { 
-				print "<a class='linkEditMain' href='" . htmlspecialchars($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>"; 
+			if ($disable_controls == false) {
+				print "<a class='linkEditMain' href='" . htmlspecialchars($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>";
 			}
 
 			print __('Item # %d', $i);
 
-			if ($disable_controls == false) { 
-				print '</a>'; 
+			if ($disable_controls == false) {
+				print '</a>';
 			}
 
 			print "</td>\n";
@@ -228,7 +228,7 @@ function aggregate_color_form_actions() {
 					<div class='itemlist'><ul>$color_list</ul></div>
 				</td>
 			</tr>\n";
-	
+
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', sizeof($color_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
@@ -238,7 +238,7 @@ function aggregate_color_form_actions() {
 					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
-	
+
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', sizeof($color_array)) . "'>";
 		}
 	} else {
@@ -280,10 +280,10 @@ function aggregate_color_item() {
 		$template_item_list = db_fetch_assoc_prepared('SELECT
 			cti.color_template_id, cti.color_template_item_id, cti.sequence, colors.hex
 			FROM color_template_items AS cti
-			LEFT JOIN colors 
+			LEFT JOIN colors
 			ON cti.color_id=colors.id
 			WHERE cti.color_template_id = ?
-			ORDER BY cti.sequence ASC', 
+			ORDER BY cti.sequence ASC',
 			array(get_request_var('color_template_id')));
 
 		$header_label = __('Color Template Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id'))));
@@ -386,32 +386,32 @@ function aggregate_color_template() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_graphs' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
@@ -463,21 +463,20 @@ function aggregate_color_template() {
 	$filter_html .= '					</select>
 							</td>
 							<td>
-								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+								<span>
+									<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+									<label for="has_graphs">' . __('Has Graphs') . '</label>
+								</span>
 							</td>
 							<td>
-								<label for="has_graphs">' . __('Has Graphs') . '</label>
-							</td>
-							<td>
-								<input type="button" id="refresh" value="' . __('Go') . '">
-							</td>
-							<td>
-								<input type="button" id="clear" value="' . __('Clear') . '">
+								<span>
+									<input type="button" id="refresh" value="' . __('Go') . '">
+									<input type="button" id="clear" value="' . __('Clear') . '">
+								</span>
 							</td>
 						</tr>
 					</table>
 					</td>
-					<td><input type="hidden" id="page" value="' . get_request_var('page') . '"></td>
 				</tr>';
 
 	print $filter_html;
@@ -500,8 +499,8 @@ function aggregate_color_template() {
 		COUNT(ct.color_template_id)
 		FROM color_templates AS ct
 		LEFT JOIN (
-			SELECT color_template, COUNT(*) AS templates 
-			FROM aggregate_graph_templates_item 
+			SELECT color_template, COUNT(*) AS templates
+			FROM aggregate_graph_templates_item
 			GROUP BY color_template
 		) AS templates
 		ON ct.color_template_id=templates.color_template
@@ -520,8 +519,8 @@ function aggregate_color_template() {
 		ct.color_template_id, ct.name, templates.templates, graphs.graphs
 		FROM color_templates AS ct
 		LEFT JOIN (
-			SELECT color_template, COUNT(*) AS templates 
-			FROM aggregate_graph_templates_item 
+			SELECT color_template, COUNT(*) AS templates
+			FROM aggregate_graph_templates_item
 			GROUP BY color_template
 		) AS templates
 		ON ct.color_template_id=templates.color_template
@@ -590,7 +589,6 @@ function aggregate_color_template() {
 	function applyFilter() {
 		strURL  = 'color_templates.php';
 		strURL += '?rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
 		strURL += '&header=false';

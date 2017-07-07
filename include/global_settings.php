@@ -462,6 +462,13 @@ $settings = array(
 			'none_value' => __('None'),
 			'sql' => 'SELECT id, name FROM poller ORDER BY name',
 			),
+		'device_threads' => array(
+			'friendly_name' => __('Device Threads'),
+			'description' => __('The default number of Device Threads.  This is only applicable when using the spine Data Collector.'),
+			'method' => 'drop_array',
+			'default' => '1',
+			'array' => array(1, 2, 3, 4, 5, 6)
+			),
 		'reindex_method' => array(
 			'friendly_name' => __('Re-index Method for Data Queries'),
 			'description' => __('The default Re-index Method to use for all Data Queries.'),

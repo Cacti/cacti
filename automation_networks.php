@@ -74,36 +74,36 @@ function form_save() {
 }
 
 function api_networks_remove($network_id){
-	db_execute_prepared('DELETE FROM automation_networks 
-		WHERE id = ?', 
+	db_execute_prepared('DELETE FROM automation_networks
+		WHERE id = ?',
 		array($network_id));
 
-	db_execute_prepared('DELETE FROM automation_devices 
-		WHERE network_id = ?', 
+	db_execute_prepared('DELETE FROM automation_devices
+		WHERE network_id = ?',
 		array($network_id));
 }
 
 function api_networks_enable($network_id){
-	db_execute_prepared('UPDATE automation_networks 
-		SET enabled="on" 
-		WHERE id = ?', 
+	db_execute_prepared('UPDATE automation_networks
+		SET enabled="on"
+		WHERE id = ?',
 		array($network_id));
 }
 
 function api_networks_disable($network_id){
-	db_execute_prepared('UPDATE automation_networks 
-		SET enabled="" 
-		WHERE id = ?', 
+	db_execute_prepared('UPDATE automation_networks
+		SET enabled=""
+		WHERE id = ?',
 		array($network_id));
 }
 
 function api_networks_cancel($network_id){
-	db_execute_prepared('UPDATE IGNORE automation_processes 
-		SET command="cancel" 
-		WHERE task="tmaster" 
-		AND network_id = ?', 
+	db_execute_prepared('UPDATE IGNORE automation_processes
+		SET command="cancel"
+		WHERE task="tmaster"
+		AND network_id = ?',
 		array($network_id));
-} 
+}
 
 function api_networks_discover($network_id) {
 	global $config;
@@ -226,7 +226,7 @@ function api_networks_save($post) {
 			$network_id = 0;
 			if (!is_error_message()) {
 				$network_id = sql_save($save, 'automation_networks');
-	
+
 				if ($network_id) {
 					raise_message(1);
 				} else {
@@ -375,10 +375,10 @@ function network_edit() {
 	/* ==================================================== */
 
 	$sched_types = array(
-		'1' => __('Manual'), 
-		'2' => __('Daily'), 
-		'3' => __('Weekly'), 
-		'4' => __('Monthly'), 
+		'1' => __('Manual'),
+		'2' => __('Daily'),
+		'3' => __('Weekly'),
+		'4' => __('Monthly'),
 		'5' => __('Monthly on Day'));
 
 	if (!isempty_request_var('id')) {
@@ -458,15 +458,15 @@ function network_edit() {
 		'description' => __('Define the number of threads to use for discovering this Network Range.'),
 		'value' => '|arg1:threads|',
 		'array' => array(
-			'1'  => __('%d Thread', 1), 
-			'2'  => __('%d Threads', 2), 
-			'3'  => __('%d Threads', 3), 
-			'4'  => __('%d Threads', 4), 
-			'5'  => __('%d Threads', 5), 
-			'6'  => __('%d Threads', 6), 
-			'7'  => __('%d Threads', 7), 
-			'8'  => __('%d Threads', 8), 
-			'9'  => __('%d Threads', 9), 
+			'1'  => __('%d Thread', 1),
+			'2'  => __('%d Threads', 2),
+			'3'  => __('%d Threads', 3),
+			'4'  => __('%d Threads', 4),
+			'5'  => __('%d Threads', 5),
+			'6'  => __('%d Threads', 6),
+			'7'  => __('%d Threads', 7),
+			'8'  => __('%d Threads', 8),
+			'9'  => __('%d Threads', 9),
 			'10' => __('%d Threads', 10),
 			'20' => __('%d Threads', 20),
 			'50' => __('%d Threads', 50)
@@ -479,15 +479,15 @@ function network_edit() {
 		'description' => __('After the selected Run Limit, the discovery process will be terminated.'),
 		'value' => '|arg1:run_limit|',
 		'array' => array(
-			'60'    => __('%d Minute', 1), 
-			'300'   => __('%d Minutes', 5), 
-			'600'   => __('%d Minutes', 10), 
-			'1200'  => __('%d Minutes', 20), 
-			'1800'  => __('%d Minutes', 30), 
-			'3600'  => __('%d Hour', 1), 
-			'7200'  => __('%d Hours', 2), 
-			'14400' => __('%d Hours', 4), 
-			'28800' => __('%d Hours', 8), 
+			'60'    => __('%d Minute', 1),
+			'300'   => __('%d Minutes', 5),
+			'600'   => __('%d Minutes', 10),
+			'1200'  => __('%d Minutes', 20),
+			'1800'  => __('%d Minutes', 30),
+			'3600'  => __('%d Hour', 1),
+			'7200'  => __('%d Hours', 2),
+			'14400' => __('%d Hours', 4),
+			'28800' => __('%d Hours', 8),
 			),
 		'default' => 1200
 		),
@@ -537,12 +537,12 @@ function network_edit() {
 		'value' => '|arg1:recur_every|',
 		'default' => '1',
 		'array' => array(
-			1 => '1', 
-			2 => '2', 
-			3 => '3', 
-			4 => '4', 
-			5 => '5', 
-			6 => '6', 
+			1 => '1',
+			2 => '2',
+			3 => '3',
+			4 => '4',
+			5 => '5',
+			6 => '6',
 			7 => '7'
 			),
 		),
@@ -551,12 +551,12 @@ function network_edit() {
 		'friendly_name' => __('Days of Week'),
 		'description' => __('What Day(s) of the week will this Network Range be discovered.'),
 		'array' => array(
-			1 => __('Sunday'), 
-			2 => __('Monday'), 
-			3 => __('Tuesday'), 
-			4 => __('Wednesday'), 
-			5 => __('Thursday'), 
-			6 => __('Friday'), 
+			1 => __('Sunday'),
+			2 => __('Monday'),
+			3 => __('Tuesday'),
+			4 => __('Wednesday'),
+			5 => __('Thursday'),
+			6 => __('Friday'),
 			7 => __('Saturday')
 			),
 		'value' => '|arg1:day_of_week|',
@@ -567,17 +567,17 @@ function network_edit() {
 		'friendly_name' => __('Months of Year'),
 		'description' => __('What Months(s) of the Year will this Network Range be discovered.'),
 		'array' => array(
-			1 => __('January'), 
-			2 => __('February'), 
-			3 => __('March'), 
-			4 => __('April'), 
-			5 => __('May'), 
-			6 => __('June'), 
-			7 => __('July'), 
-			8 => __('August'), 
-			9 => __('September'), 
-			10 => __('October'), 
-			11 => __('November'), 
+			1 => __('January'),
+			2 => __('February'),
+			3 => __('March'),
+			4 => __('April'),
+			5 => __('May'),
+			6 => __('June'),
+			7 => __('July'),
+			8 => __('August'),
+			9 => __('September'),
+			10 => __('October'),
+			11 => __('November'),
 			12 => __('December')
 			),
 		'value' => '|arg1:month|',
@@ -596,9 +596,9 @@ function network_edit() {
 		'friendly_name' => __('Week(s) of Month'),
 		'description' => __('What Week(s) of the Month will this Network Range be discovered.'),
 		'array' => array(
-			1 => __('First'), 
-			2 => __('Second'), 
-			3 => __('Third'), 
+			1 => __('First'),
+			2 => __('Second'),
+			3 => __('Third'),
 			'32' => __('Last')
 			),
 		'value' => '|arg1:monthly_week|',
@@ -609,12 +609,12 @@ function network_edit() {
 		'friendly_name' => __('Day(s) of Week'),
 		'description' => __('What Day(s) of the week will this Network Range be discovered.'),
 		'array' => array(
-			1 => __('Sunday'), 
-			2 => __('Monday'), 
-			3 => __('Tuesday'), 
-			4 => __('Wednesday'), 
-			5 => __('Thursday'), 
-			6 => __('Friday'), 
+			1 => __('Sunday'),
+			2 => __('Monday'),
+			3 => __('Tuesday'),
+			4 => __('Wednesday'),
+			5 => __('Thursday'),
+			6 => __('Friday'),
 			7 => __('Saturday')
 			),
 		'value' => '|arg1:monthly_day|',
@@ -699,54 +699,54 @@ function network_edit() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#day_of_week').multiselect({ 
-			selectedList: 7, 
+		$('#day_of_week').multiselect({
+			selectedList: 7,
 			noneSelectedText: '<?php print __('Select the days(s) of the week');?>',
-			header: false, 
-			height: 54, 
-			multipleRow: true, 
-			multipleRowWidth: 90, 
-			minWidth: 450 
+			header: false,
+			height: 54,
+			multipleRow: true,
+			multipleRowWidth: 90,
+			minWidth: 450
 		});
 
-		$('#month').multiselect({ 
-			selectedList: 7, 
+		$('#month').multiselect({
+			selectedList: 7,
 			noneSelectedText: '<?php print __('Select the month(s) of the year');?>',
-			header: false, 
-			height: 82, 
-			multipleRow: true, 
-			multipleRowWidth: 90, 
-			minWidth: 400 
+			header: false,
+			height: 82,
+			multipleRow: true,
+			multipleRowWidth: 90,
+			minWidth: 400
 		});
 
-		$('#day_of_month').multiselect({ 
-			selectedList: 15, 
+		$('#day_of_month').multiselect({
+			selectedList: 15,
 			noneSelectedText: '<?php print __('Select the day(s) of the month');?>',
-			header: false, 
-			height: 162, 
-			multipleRow: true, 
-			multipleRowWidth: 55, 
-			minWidth: 400 
+			header: false,
+			height: 162,
+			multipleRow: true,
+			multipleRowWidth: 55,
+			minWidth: 400
 		});
 
-		$('#monthly_week').multiselect({ 
-			selectedList: 4, 
+		$('#monthly_week').multiselect({
+			selectedList: 4,
 			noneSelectedText: '<?php print __('Select the week(s) of the month');?>',
-			header: false, 
+			header: false,
 			height: 28,
 			multipleRow: true,
 			multipleRowWidth: 70,
 			minWidth: 300
 		});
 
-		$('#monthly_day').multiselect({ 
-			selectedList: 7, 
+		$('#monthly_day').multiselect({
+			selectedList: 7,
 			noneSelectedText: '<?php print __('Select the day(s) of the week');?>',
-			header: false, 
-			height: 54, 
-			multipleRow: true, 
-			multipleRowWidth: 90, 
-			minWidth: 450 
+			header: false,
+			height: 54,
+			multipleRow: true,
+			multipleRowWidth: 90,
+			minWidth: 450
 		});
 
 		$('#start_at').datetimepicker({
@@ -893,28 +893,28 @@ function networks() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
@@ -949,10 +949,10 @@ function networks() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$sched_types = array(
-		'1' => __('Manual'), 
-		'2' => __('Daily'), 
-		'3' => __('Weekly'), 
-		'4' => __('Monthly'), 
+		'1' => __('Manual'),
+		'2' => __('Daily'),
+		'3' => __('Weekly'),
+		'4' => __('Monthly'),
 		'5' => __('Monthly on Day')
 	);
 
@@ -984,7 +984,7 @@ function networks() {
 				$running = db_fetch_cell_prepared('SELECT COUNT(*) FROM automation_processes WHERE network_id = ?', array($network['id']));
 
 				if ($running > 0) {
-					$status = db_fetch_row_prepared('SELECT 
+					$status = db_fetch_row_prepared('SELECT
 						COUNT(*) AS total,
 						SUM(CASE WHEN status=0 THEN 1 ELSE 0 END) AS pending,
 						SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS running,
@@ -1071,28 +1071,26 @@ function networks_filter() {
 							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
 							if (sizeof($item_rows)) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								}
 							}
 							?>
 						</select>
 					</td>
 					<td>
-						<input type='button' id='go' title='<?php print __('Search');?>' value='<?php print __('Go');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' title='<?php print __('Clear Filtered');?>' value='<?php print __('Clear');?>'>
+						<span>
+							<input type='button' id='go' title='<?php print __('Search');?>' value='<?php print __('Go');?>'>
+							<input type='button' id='clear' title='<?php print __('Clear Filtered');?>' value='<?php print __('Clear');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
 				strURL  = '?rows=' + $('#rows').val();
 				strURL += '&filter=' + escape($('#filter').val());
-				strURL += '&page=' + $('#page').val();
 				strURL += '&header=false';
 
 				loadPageNoHeader(strURL);

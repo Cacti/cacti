@@ -145,10 +145,10 @@ function display_matching_hosts($rule, $rule_type, $url) {
 								<?php
 								$host_templates = db_fetch_assoc('SELECT id,name FROM host_template ORDER BY name');
 
-								if (sizeof($host_templates) > 0) {
-								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . $host_template['name'] . "</option>\n";
-								}
+								if (sizeof($host_templates)) {
+									foreach ($host_templates as $host_template) {
+										print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . $host_template['name'] . "</option>\n";
+									}
 								}
 								?>
 							</select>
@@ -175,23 +175,22 @@ function display_matching_hosts($rule, $rule_type, $url) {
 							<select id='rowsd' onChange='applyDeviceFilter()'>
 								<option value='-1'<?php if (get_request_var('rowsd') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
-								if (sizeof($item_rows) > 0) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='". $key . "'"; if (get_request_var('rowsd') == $key) { print ' selected'; } print '>' . $value . '</option>\n';
-								}
+								if (sizeof($item_rows)) {
+									foreach ($item_rows as $key => $value) {
+										print "<option value='". $key . "'"; if (get_request_var('rowsd') == $key) { print ' selected'; } print '>' . $value . '</option>\n';
+									}
 								}
 								?>
 							</select>
 						</td>
 						<td>
-							<input id='refresh' type='button' value='<?php print __('Go');?>'>
-						</td>
-						<td>
-							<input id='clear' type='button' value='<?php print __('Clear');?>'>
+							<span>
+								<input id='refresh' type='button' value='<?php print __('Go');?>'>
+								<input id='clear' type='button' value='<?php print __('Clear');?>'>
+							</span>
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='paged' value='<?php print get_request_var('paged');?>'>
 			</form>
 		</td>
 	</tr>
@@ -449,12 +448,14 @@ function display_matching_graphs($rule, $rule_type, $url) {
 							</select>
 						</td>
 						<td>
-							<input id='refresh' type='button' value='<?php print __('Go');?>'>
-						</td>
-						<td>
-							<input id='clear' type='button' value='<?php print __('Clear');?>'>
+							<span>
+								<input id='refresh' type='button' value='<?php print __('Go');?>'>
+								<input id='clear' type='button' value='<?php print __('Clear');?>'>
+							</span>
 						</td>
 					</tr>
+				</table>
+				<table class='filterTable'>
 					<tr>
 						<td>
 							<?php print __('Search');?>
@@ -469,17 +470,16 @@ function display_matching_graphs($rule, $rule_type, $url) {
 							<select id='rows'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
-								if (sizeof($item_rows) > 0) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-								}
+								if (sizeof($item_rows)) {
+									foreach ($item_rows as $key => $value) {
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+									}
 								}
 								?>
 							</select>
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>
@@ -692,23 +692,22 @@ function display_new_graphs($rule, $url) {
 							<select id='rows' onChange='applyFilter()'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
-								if (sizeof($item_rows) > 0) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='". $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . '</option>\n';
-								}
+								if (sizeof($item_rows)) {
+									foreach ($item_rows as $key => $value) {
+										print "<option value='". $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . '</option>\n';
+									}
 								}
 								?>
 							</select>
 						</td>
 						<td>
-							<input id='refresh' type='button' value='<?php print __('Go');?>'>
-						</td>
-						<td>
-							<input id='clear' type='button' value='<?php print __('Clear');?>'>
+							<span>
+								<input id='refresh' type='button' value='<?php print __('Go');?>'>
+								<input id='clear' type='button' value='<?php print __('Clear');?>'>
+							</span>
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>
@@ -1023,26 +1022,26 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 							<option value='0'<?php if (get_request_var('host_status') == '0') {?> selected<?php }?>><?php print __('Unknown');?></option>
 						</select>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Data Queries');?>
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
+							if (sizeof($item_rows)) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								}
 							}
 							?>
 						</select>
 					</td>
 					<td>
-						<input id='refresh' type='button' value='<?php print __('Go');?>'>
-					</td>
-					<td>
-						<input id='clear' type='button' value='<?php print __('Clear');?>'>
+						<span>
+							<input id='refresh' type='button' value='<?php print __('Go');?>'>
+							<input id='clear' type='button' value='<?php print __('Clear');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>

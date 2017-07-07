@@ -34,7 +34,7 @@ $automation_snmp_actions = array(
 set_default_action();
 
 /* correct for a cancel button */
-if (isset_request_var('cancel')) { 
+if (isset_request_var('cancel')) {
 	set_request_var('action', '');
 }
 
@@ -404,14 +404,14 @@ function automation_snmp_item_edit() {
 	/* ==================================================== */
 
 	# fetch the current mactrack snmp record
-	$snmp_option = db_fetch_row_prepared('SELECT * 
-		FROM automation_snmp 
+	$snmp_option = db_fetch_row_prepared('SELECT *
+		FROM automation_snmp
 		WHERE id = ?', array(get_request_var('id')));
 
 	# if an existing item was requested, fetch data for it
 	if (get_request_var('item_id', '') !== '') {
-		$automation_snmp_item = db_fetch_row_prepared('SELECT * 
-			FROM automation_snmp_items 
+		$automation_snmp_item = db_fetch_row_prepared('SELECT *
+			FROM automation_snmp_items
 			WHERE id = ?', array(get_request_var('item_id')));
 
 		$header_label = __('SNMP Options [edit: %s]', htmlspecialchars($snmp_option['name']));
@@ -664,7 +664,7 @@ function automation_snmp_edit() {
 	form_hidden_box('save_component_automation_snmp', '1', '');
 
 	if (!isempty_request_var('id')) {
-		$items = db_fetch_assoc_prepared('SELECT * 
+		$items = db_fetch_assoc_prepared('SELECT *
 			FROM automation_snmp_items
 			WHERE snmp_id = ?
 			ORDER BY sequence', array(get_request_var('id')));
@@ -782,28 +782,28 @@ function automation_snmp() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
@@ -847,21 +847,20 @@ function automation_snmp() {
                         </select>
                     </td>
 					<td>
-						<input id='refresh' type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input id='clear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input id='refresh' type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input id='clear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
 		</td>
-		<td>
-			<input type='hidden' name='page' value='<?php print get_request_var('page');?>'>
-		</td>
 	</tr>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL = 'automation_snmp.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+		strURL  = 'automation_snmp.php?header=false';
+		strURL += '&filter='+escape($('#filter').val());
+		strURL += '&rows='+$('#rows').val();
 		loadPageNoHeader(strURL);
 	}
 

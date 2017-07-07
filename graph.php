@@ -204,7 +204,7 @@ case 'zoom':
 
 	/* fetch information for the current RRA */
 	if (isset_request_var('rra_id') && get_request_var('rra_id') > 0) {
-		$rra = db_fetch_row_prepared('SELECT dspr.id, step, steps, dspr.name, rows
+		$rra = db_fetch_row_prepared('SELECT dspr.id, step, steps, dspr.name, `rows`
 			FROM data_source_profiles_rra AS dspr
 			INNER JOIN data_source_profiles AS dsp
 			ON dsp.id=dspr.data_source_profile_id
@@ -212,7 +212,7 @@ case 'zoom':
 
 		$rra['timespan'] = $rra['steps'] * $rra['step'] * $rra['rows'];
 	} else {
-		$rra = db_fetch_row_prepared('SELECT dspr.id, step, steps, dspr.name, rows
+		$rra = db_fetch_row_prepared('SELECT dspr.id, step, steps, dspr.name, `rows`
 			FROM data_source_profiles_rra AS dspr
 			INNER JOIN data_source_profiles AS dsp
 			ON dsp.id=dspr.data_source_profile_id

@@ -187,17 +187,15 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>' onClick='applyGraphFilter()'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearGraphFilter()'>
-					</td>
-					<?php if (is_view_allowed('graph_settings')) {?>
-					<td>
-						<input type='button' id='save' value='<?php print __('Save');?>' title='<?php print __('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>' onClick='saveGraphFilter("preview")'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>' onClick='applyGraphFilter()'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearGraphFilter()'>
+							<?php if (is_view_allowed('graph_settings')) {?>
+							<input type='button' id='save' value='<?php print __('Save');?>' title='<?php print __('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>' onClick='saveGraphFilter("preview")'>
+							<?php }?>
+						<span>
 					</td>
 					<td id='text'></td>
-					<?php }?>
 				</tr>
 			</table>
 			<table class='filterTable'>
@@ -236,10 +234,10 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						</select>
 					</td>
 					<td>
-						<label for='thumbnails'><?php print __('Thumbnails');?></label>
-					</td>
-					<td>
-						<input id='thumbnails' type='checkbox' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
+						<span>
+							<label for='thumbnails'><?php print __('Thumbnails');?></label>
+							<input id='thumbnails' type='checkbox' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -282,44 +280,42 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('From');?>
 					</td>
 					<td>
-						<input type='text' id='date1' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
-					</td>
-					<td>
-						<i id='startDate' class='calendar fa fa-calendar' title='<?php print __('Start Date Selector');?>'></i>
+						<span>
+							<input type='text' id='date1' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
+							<i id='startDate' class='calendar fa fa-calendar' title='<?php print __('Start Date Selector');?>'></i>
+						</span>
 					</td>
 					<td>
 						<?php print __('To');?>
 					</td>
 					<td>
-						<input type='text' id='date2' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
+						<span>
+							<input type='text' id='date2' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
+							<i id='endDate' class='calendar fa fa-calendar' title='<?php print __('End Date Selector');?>'></i>
+						</span>
 					</td>
 					<td>
-						<i id='endDate' class='calendar fa fa-calendar' title='<?php print __('End Date Selector');?>'></i>
-					</td>
-					<td>
-						<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='<?php print __('Shift Time Backward');?>'></i>
-					</td>
-					<td>
-						<select id='predefined_timeshift' name='predefined_timeshift' title='<?php print __('Define Shifting Interval');?>'>
-							<?php
-							$start_val = 1;
-							$end_val = sizeof($graph_timeshifts)+1;
-							if (sizeof($graph_timeshifts) > 0) {
-								for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-									print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
+						<span>
+							<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='<?php print __('Shift Time Backward');?>'></i>
+							<select id='predefined_timeshift' name='predefined_timeshift' title='<?php print __('Define Shifting Interval');?>'>
+								<?php
+								$start_val = 1;
+								$end_val = sizeof($graph_timeshifts)+1;
+								if (sizeof($graph_timeshifts) > 0) {
+									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
+										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
+									}
 								}
-							}
-							?>
-						</select>
+								?>
+							</select>
+							<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __('Shift Time Forward');?>'></i>
+						</span>
 					</td>
 					<td>
-						<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __('Shift Time Forward');?>'></i>
-					</td>
-					<td>
-						<input id='tsrefresh' type='button' value='<?php print __('Refresh');?>' name='button_refresh_x' title='<?php print __('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
-					</td>
-					<td>
-						<input id='tsclear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
+						<span>
+							<input id='tsrefresh' type='button' value='<?php print __('Refresh');?>' name='button_refresh_x' title='<?php print __('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
+							<input id='tsclear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
+						</span>
 					</td>
 				</tr>
 				<tr id='realtime' style='display:none;'>

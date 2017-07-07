@@ -1406,42 +1406,41 @@ function reports() {
 						" . __('Search') . "
 					</td>
 					<td>
-						<input type='text' id='filter' size='20' value='" . get_request_var('filter') . "'>
+						<input type='text' id='filter' size='25' value='" . get_request_var('filter') . "'>
 					</td>
 					<td>
 						" . __('Status') . "
 					</td>
 					<td>
-						<select id='status' onChange='applyFilter(document.report)'>
+						<select id='status' onChange='applyFilter()'>
 							<option value='-1'" . (get_request_var('status') == '-1' ? ' selected':'') . ">" . __('Any') . "</option>
 							<option value='-2'" . (get_request_var('status') == '-2' ? ' selected':'') . ">" . __('Enabled') . "</option>
 							<option value='-3'" . (get_request_var('status') == '-3' ? ' selected':'') . ">" . __('Disabled') . "</option>
 						</select>
 					</td>
 					<td>
-						Rows
+						" . __('Reports') . "
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter(document.report)'>
+						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'" . (get_request_var('rows') == '-1' ? ' selected':'') . '>' . __('Default') . '</option>';
 							if (sizeof($item_rows)) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'" .
-									(get_request_var('rows') == $key ? ' selected':'') . ">$value</option>\n";
-							}
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'" .
+										(get_request_var('rows') == $key ? ' selected':'') . ">$value</option>\n";
+								}
 							}
 	print "				</select>
 					</td>
 					<td>
-						<input id='refresh' type='button' value='" . __('Go') . "' name='go'>
-					</td>
-					<td>
-						<input id='clear' type='button' value='" . __('Clear') . "' name='clear'>
+						<span>
+							<input id='refresh' type='button' value='" . __('Go') . "' name='go'>
+							<input id='clear' type='button' value='" . __('Clear') . "' name='clear'>
+						</span>
 					</td>
 				</tr>
 			</table>
 		</td>
-		<td><input type='hidden' name='page' value='" . get_request_var('page') . "'></td>
 	</tr>\n";
 
 	html_end_box(TRUE);

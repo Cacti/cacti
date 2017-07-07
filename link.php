@@ -22,12 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once("./include/global.php");
+include_once('./include/global.php');
 
 $page = db_fetch_row_prepared('SELECT
 	id, title, style, contentfile, enabled
 	FROM external_links AS el
-	WHERE id = ?', array(get_filter_request_var('id')));
+	WHERE id = ?',
+	array(get_filter_request_var('id')));
 
 if (!sizeof($page)) {
 	print 'FATAL: Page is not defined.';
