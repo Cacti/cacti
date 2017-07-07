@@ -128,12 +128,14 @@ input[type="checkbox"] + label:before {
   width: 12px;
   background: transparent;
 }
+
 input[type="checkbox"]:checked + label:before {
   background: #3C8A3C;
   color: #FFFFFF;
   content: "\2713";
   text-align: center;
 }
+
 input[type="checkbox"]:checked + label {
   color: #FFFFFF;
 }
@@ -1113,8 +1115,8 @@ legend {
 	padding: 1px;
 	margin-top: 2px;
 	border-radius: 3px;
-	background-color: white;
-	border:1px solid #BBBBBB;
+	background-color: #04335B;
+	border: 1px solid #04335B;
 	position: relative;
 	z-index: 4;
 }
