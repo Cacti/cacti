@@ -688,15 +688,7 @@ function makeFiltersResponsive() {
 		});
 	} else if ($('div.cactiTableButton').length) {
 		if ($('div.cactiTableButton').find('a').length) {
-			$('div.cactiTableButton').find('a').attr('title', $(this).find('a').text()).addClass('fa fa-plus').tooltip({
-				open: function (event, ui) {
-					id = $(this).closest('.cactiTable').attr('id');
-					$('#'+id).find('.cactiTableButton').tooltip('close');
-				},
-				close: function (event, ui) {
-					id = $(this).closest('.cactiTable').attr('id');
-				}
-			}).text('');
+			$('div.cactiTableButton').find('a').attr('title', $('div.cactiTableButton').find('a').text()).addClass('fa fa-plus').tooltip().text('');
 		}
 	}
 }
