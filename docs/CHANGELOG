@@ -3,7 +3,7 @@ Cacti CHANGELOG
 1.2
 -issue#814: Allow 'Save' feature from New Graphs
 -issue#837: Using the add_device.php CLI script, you can not 'default' the device threads to other than 1
--issue#838: SECURITY: XSS Issue in link.php
+-issue#838: CVE-2017-10970: XSS Issue in link.php
 -issue#839: The Database column name 'rows' is a reserved word in MariaDB 10.2+
 -issue: Up/Down arrow titles labeled incorrectly on Tree Management page
 -issue: Make the default Export Type a Device Template
