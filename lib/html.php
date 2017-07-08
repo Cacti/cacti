@@ -1332,6 +1332,8 @@ function html_show_tabs_left() {
 			}
 		}
 
+		api_plugin_hook('top_graph_header_tabs');
+
 		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
 			// Only show external links when online
 		} else {
@@ -1367,8 +1369,6 @@ function html_show_tabs_left() {
 				}
 			}
 		}
-
-		api_plugin_hook('top_graph_header_tabs');
 	} else {
 		if ($show_console_tab) {
 			$tabs_left[] =
@@ -1414,25 +1414,6 @@ function html_show_tabs_left() {
 					'image' => '',
 					'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
 				);
-		}
-
-		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
-			// Only show external links when online
-		} else {
-			$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" AND enabled="on" ORDER BY sortorder');
-			if (sizeof($external_links)) {
-				foreach($external_links as $tab) {
-					if (is_realm_allowed($tab['id']+10000)) {
-						$tabs_left[] =
-							array(
-								'title' => $tab['title'],
-								'id'    => 'maintab-anchor-link' . $tab['id'],
-								'image' => '',
-								'url'   => $config['url_path'] . 'link.php?id=' . $tab['id']
-							);
-					}
-				}
-			}
 		}
 
 		// Get Plugin Text Out of Band
@@ -1483,10 +1464,35 @@ function html_show_tabs_left() {
 			$tabs_left[] = array('title' => ucwords($alt), 'url' => $href);
 		}
 
+		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
+			// Only show external links when online
+		} else {
+			$external_links = db_fetch_assoc('SELECT id, title
+				FROM external_links
+				WHERE style="TAB"
+				AND enabled="on"
+				ORDER BY sortorder');
+
+			if (sizeof($external_links)) {
+				foreach($external_links as $tab) {
+					if (is_realm_allowed($tab['id']+10000)) {
+						$tabs_left[] =
+							array(
+								'title' => $tab['title'],
+								'id'    => 'maintab-anchor-link' . $tab['id'],
+								'image' => '',
+								'url'   => $config['url_path'] . 'link.php?id=' . $tab['id']
+							);
+					}
+				}
+			}
+		}
+
 		$i = 0;
 		$me_base = get_current_page();
 		foreach($tabs_left as $tab) {
 			$tab_base = basename($tab['url']);
+
 			if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
 				$tabs_left[$i]['selected'] = true;
 			} elseif (isset_request_var('id') && ($tab_base == 'link.php?id=' . get_nfilter_request_var('id')) && $me_base == 'link.php') {
@@ -1496,6 +1502,7 @@ function html_show_tabs_left() {
 			} elseif ($tab_base == $me_base) {
 				$tabs_left[$i]['selected'] = true;
 			}
+
 			$i++;
 		}
 
