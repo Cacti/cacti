@@ -1036,7 +1036,7 @@ function updateXML(&$output, &$rra) {
 	$rra_num   = 0;
 	$ds_num    = 0;
 	$kills     = 0;
-	$first_num = array();
+	$last_num  = array();
 
 	if (sizeof($output)) {
 	foreach($output as $line) {
@@ -1064,14 +1064,14 @@ function updateXML(&$output, &$rra) {
 				/* peel off garbage */
 				$dsvalue = trim(str_replace('</row>', '', str_replace('</v>', '', $dsvalue)));
 
-				if (strtolower($dsvalue) == 'nan' && !isset($first_num[$ds_num])) {
+				if (strtolower($dsvalue) == 'nan' && !isset($last_num[$ds_num])) {
 					/* do nothing, it's a NaN, and the first one */
 				} elseif (!empty($out_start) && $timestamp > $out_start && $timestamp < $out_end) {
 					if ($method == 3) {
 						if ($avgnan == 'avg') {
 							$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-						} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-							$dsvalue = $first_num[$ds_num];
+						} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+							$dsvalue = $last_num[$ds_num];
 						}
 
 						$kills++;
@@ -1080,21 +1080,21 @@ function updateXML(&$output, &$rra) {
 						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg'] || strtolower($dsvalue) == 'nan') {
 							if ($avgnan == 'avg') {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-							} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-								$dsvalue = $first_num[$ds_num];
+							} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+								$dsvalue = $last_num[$ds_num];
 							}
 
 							$kills++;
 							$total_kills++;
 						}
 					}
-				} elseif(strtolower($dsvalue) == 'nan' && isset($first_num[$ds_num])) {
+				} elseif(strtolower($dsvalue) == 'nan' && isset($last_num[$ds_num])) {
 					if ($method == 2) {
 						if ($kills < $numspike) {
 							if ($avgnan == 'avg') {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-							} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-								$dsvalue = $first_num[$ds_num];
+							} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+								$dsvalue = $last_num[$ds_num];
 							} else {
 								$dsvalue = 'NaN';
 							}
@@ -1106,8 +1106,8 @@ function updateXML(&$output, &$rra) {
 						if ($kills < $numspike) {
 							if ($avgnan == 'avg') {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
-							} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-								$dsvalue = $first_num[$ds_num];
+							} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+								$dsvalue = $last_num[$ds_num];
 							} else {
 								$dsvalue = 'NaN';
 							}
@@ -1122,8 +1122,8 @@ function updateXML(&$output, &$rra) {
 							if ($kills < $numspike) {
 								if ($avgnan == 'avg') {
 									$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-								} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-									$dsvalue = $first_num[$ds_num];
+								} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+									$dsvalue = $last_num[$ds_num];
 								} else {
 									$dsvalue = 'NaN';
 								}
@@ -1131,8 +1131,8 @@ function updateXML(&$output, &$rra) {
 								$kills++;
 								$total_kills++;
 							}
-						} elseif (!isset($first_num[$ds_num])) {
-							$first_num[$ds_num] = $dsvalue;
+						} else {
+							$last_num[$ds_num] = $dsvalue;
 						}
 					} else {
 						if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
@@ -1140,8 +1140,8 @@ function updateXML(&$output, &$rra) {
 							if ($kills < $numspike) {
 								if ($avgnan == 'avg') {
 									$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
-								} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-									$dsvalue = $first_num[$ds_num];
+								} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+									$dsvalue = $last_num[$ds_num];
 								} else {
 									$dsvalue = 'NaN';
 								}
@@ -1149,8 +1149,8 @@ function updateXML(&$output, &$rra) {
 								$kills++;
 								$total_kills++;
 							}
-						} elseif (!isset($first_num[$ds_num])) {
-							$first_num[$ds_num] = $dsvalue;
+						} else {
+							$last_num[$ds_num] = $dsvalue;
 						}
 					}
 				}
@@ -1167,11 +1167,11 @@ function updateXML(&$output, &$rra) {
 				$ds_minmax = array();
 				$rra_num++;
 				$kills = 0;
-				$first_num = array();
+				$last_num = array();
 			}else if (substr_count($line, "</database>\n")) {
 				$ds_num++;
 				$kills = 0;
-				$first_num = array();
+				$last_num = array();
 			}
 
 			$new_array[] = $line;
