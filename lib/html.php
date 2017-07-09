@@ -776,17 +776,19 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
    @arg $form_previous_value - the current value of this form element */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
-		foreach (array_keys($form_data) as $id) {
-			print '<option value="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '"';
+		if (sizeof($form_data)) {
+			foreach (array_keys($form_data) as $id) {
+				print '<option value="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '"';
 
-			if ($form_previous_value == $id) {
-			print " selected";
+				if ($form_previous_value == $id) {
+					print " selected";
+				}
+
+				print ">" . title_trim(null_out_substitutions(htmlspecialchars($form_data[$id])), 75) . "</option>\n";
 			}
-
-			print ">" . title_trim(null_out_substitutions(htmlspecialchars($form_data[$id])), 75) . "</option>\n";
 		}
 	} else {
-		if (sizeof($form_data) > 0) {
+		if (sizeof($form_data)) {
 			foreach ($form_data as $row) {
 				print "<option value='" . htmlspecialchars($row[$column_id], ENT_QUOTES, 'UTF-8') . "'";
 
