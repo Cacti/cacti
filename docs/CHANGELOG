@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-1.2
+1.1.13
 -issue#605: Remove Spikes feature not fully functional
 -issue#814: Allow 'Save' feature from New Graphs
 -issue#837: Using the add_device.php CLI script, you can not 'default' the device threads to other than 1
