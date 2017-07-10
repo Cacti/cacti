@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue: Up/Down arrow titles labeled incorrectly on Tree Management page
 -issue: Make the default Export Type a Device Template
 -issue: Fix SNMPagent MIB cache issues
+-issue: Realtime cache cleanup now only removes rrd and png
 -feature: updated Dutch language
 
 1.1.12
