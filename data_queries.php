@@ -776,9 +776,15 @@ function data_query_item_edit() {
 		html_end_box();
 	}
 
+	if (isset($snmp_query_item['graph_template_id'])) {
+		$item = $snmp_query_item['graph_template_id'];
+	} else {
+		$item = 0;
+	}
+
 	?>
 	<script type='text/javascript'>
-	var graph_template_id_prev=<?php print $snmp_query_item['graph_template_id'];?>;
+	var graph_template_id_prev=<?php print $item;?>;
 
 	$('.remover').click(function(event) {
 		event.preventDefault();

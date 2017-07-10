@@ -221,6 +221,8 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'drop_files':
+		$array_files = array();
+
 		if (isset($field_array['directory'])) {
 			$dir = $field_array['directory'];
 
