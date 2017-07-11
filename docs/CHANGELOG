@@ -8,8 +8,11 @@ Cacti CHANGELOG
 -issue#839: The Database column name 'rows' is a reserved word in MariaDB 10.2+
 -issue#845: External links tabs should appear at the end of the tab view
 -issue#846: Web crawl of Cacti site shows errors in the log
+-issue#853: Go and Clear buttons do not work in all cases on Graph Rules pages
 -issue: Up/Down arrow titles labeled incorrectly on Tree Management page
 -issue: Make the default Export Type a Device Template
+-issue: Fix SNMPagent MIB cache issues
+-issue: Realtime cache cleanup now only removes rrd and png
 -feature: updated Dutch language
 
 1.1.12

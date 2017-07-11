@@ -626,7 +626,7 @@ function automation_graph_rules_edit() {
 		strURL = strURL + '&name=' + $('#name').val();
 		strURL = strURL + '&snmp_query_type' + $('#name').val();
 		strURL = strURL + '&header=false';
-		//loadPageNoHeader(strURL);
+		loadPageNoHeader(strURL);
 	}
 	</script>
 	<?php
