@@ -2141,12 +2141,10 @@ $fields_automation_graph_rules_edit2 = array(
 		'description' => __('Choose any of the available Graph Types to apply to this rule.'),
 		'value' => '|arg1:graph_type_id|',
 		'on_change' => 'applySNMPQueryTypeChange()',
-		'sql' => 'SELECT ' .
-			'snmp_query_graph.id, ' .
-			'snmp_query_graph.name ' .
-			'FROM snmp_query_graph ' .
-			'WHERE snmp_query_graph.snmp_query_id=|arg1:snmp_query_id| ' .
-			'ORDER BY snmp_query_graph.name'
+		'sql' => 'SELECT snmp_query_graph.id, snmp_query_graph.name
+			FROM snmp_query_graph
+			WHERE snmp_query_graph.snmp_query_id=|arg1:snmp_query_id|
+			ORDER BY snmp_query_graph.name'
 	)
 );
 
