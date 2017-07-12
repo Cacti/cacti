@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue: Make the default Export Type a Device Template
 -issue: Fix SNMPagent MIB cache issues
 -issue: Realtime cache cleanup now only removes rrd and png
+-issue: When redirected from reports, you can receive a validation error
 -feature: updated Dutch language
 
 1.1.12

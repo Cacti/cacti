@@ -95,7 +95,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			cacti_log("ERROR: User '" . $username . "' authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.  Exiting.", false, 'AUTH');
 			$username = htmlspecialchars($username);
 			auth_display_custom_error_message( __('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username) );
-			exit;			
+			exit;
 		}
 
 		break;
@@ -131,9 +131,9 @@ if (get_nfilter_request_var('action') == 'login') {
 					/* Locate user in database */
 					cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated", false, 'AUTH');
 
-					$user = db_fetch_row_prepared('SELECT * 
-						FROM user_auth 
-						WHERE username = ? AND realm = 1', 
+					$user = db_fetch_row_prepared('SELECT *
+						FROM user_auth
+						WHERE username = ? AND realm = 1',
 						array($username));
 				} else {
 					/* error */
@@ -163,9 +163,9 @@ if (get_nfilter_request_var('action') == 'login') {
 			/* Builtin Auth */
 			$user = array();
 			if ((!$user_auth) && (!$ldap_error)) {
-				$stored_pass = db_fetch_cell_prepared('SELECT password 
-					FROM user_auth 
-					WHERE username = ? AND realm = 0', 
+				$stored_pass = db_fetch_cell_prepared('SELECT password
+					FROM user_auth
+					WHERE username = ? AND realm = 0',
 					array($username));
 
 				if ($stored_pass != '') {
@@ -173,16 +173,16 @@ if (get_nfilter_request_var('action') == 'login') {
 						$p = get_nfilter_request_var('login_password');
 
 						if (password_verify($p, $stored_pass)) {
-							$user = db_fetch_row_prepared('SELECT * 
-								FROM user_auth 
-								WHERE username = ? AND realm = 0', 
+							$user = db_fetch_row_prepared('SELECT *
+								FROM user_auth
+								WHERE username = ? AND realm = 0',
 								array($username));
 
 							if (password_needs_rehash($p, PASSWORD_DEFAULT)) {
 								$p = password_hash($p, PASSWORD_DEFAULT);
-								db_execute_prepared('UPDATE user_auth 
-									SET password = ? 
-									WHERE username = ?', 
+								db_execute_prepared('UPDATE user_auth
+									SET password = ?
+									WHERE username = ?',
 									array($p, $username));
 							}
 						}
@@ -191,9 +191,9 @@ if (get_nfilter_request_var('action') == 'login') {
 					if (!sizeof($user)) {
 						$p = md5(get_nfilter_request_var('login_password'));
 
-						$user = db_fetch_row_prepared('SELECT * 
-							FROM user_auth 
-							WHERE username = ? AND password = ? AND realm = 0', 
+						$user = db_fetch_row_prepared('SELECT *
+							FROM user_auth
+							WHERE username = ? AND password = ? AND realm = 0',
 							array($username, $p));
 					}
 				} else {
@@ -257,9 +257,9 @@ if (get_nfilter_request_var('action') == 'login') {
 			$client_addr = '';
 		}
 
-		db_execute_prepared('INSERT IGNORE INTO user_log 
-			(username, user_id, result, ip, time) 
-			VALUES (?, ?, 1, ?, NOW())', 
+		db_execute_prepared('INSERT IGNORE INTO user_log
+			(username, user_id, result, ip, time)
+			VALUES (?, ?, 1, ?, NOW())',
 			array($username, $user['id'], $client_addr));
 
 		/* is user enabled */
@@ -279,7 +279,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		$_SESSION['sess_user_id'] = $user['id'];
 
 		/* handle 'force change password' */
-		if (($user['must_change_password'] == 'on') && 
+		if (($user['must_change_password'] == 'on') &&
 			(read_config_option('auth_method') == 1) &&
 			($user['password_change'] == 'on')) {
 
@@ -312,7 +312,7 @@ if (get_nfilter_request_var('action') == 'login') {
 				if (isset($_SERVER["REDIRECT_URL"])) {
 					$referer = $_SERVER["REDIRECT_URL"];
 					if (isset($_SERVER["REDIRECT_QUERY_STRING"])) {
-						$referer .= '?' . $_SERVER["REDIRECT_QUERY_STRING"] . ($newtheme ? '?newtheme=1':'');
+						$referer .= '?' . $_SERVER["REDIRECT_QUERY_STRING"] . ($newtheme ? '&newtheme=1':'');
 					}
 				} else if (isset($_SERVER['HTTP_REFERER'])) {
 					$referer = $_SERVER['HTTP_REFERER'];
@@ -552,13 +552,13 @@ $selectedTheme = get_selected_theme();
 			<legend><?php print __('User Login');?></legend>
 			<form name='login' method='post' action='<?php print get_current_page();?>'>
 				<input type='hidden' name='action' value='login'>
-				<?php api_plugin_hook_function('login_before', 
+				<?php api_plugin_hook_function('login_before',
 					array(
-						'ldap_error' => $ldap_error, 
-						'ldap_error_message' => $ldap_error_message, 
-						'username' => $username, 
-						'user_enabled' => $user_enabled, 
-						'action' => get_nfilter_request_var('action'))); 
+						'ldap_error' => $ldap_error,
+						'ldap_error_message' => $ldap_error_message,
+						'username' => $username,
+						'user_enabled' => $user_enabled,
+						'action' => get_nfilter_request_var('action')));
 				?>
 				<div class='loginTitle'>
 					<p><? print __('Enter your Username and Password below');?></p>
@@ -584,14 +584,14 @@ $selectedTheme = get_selected_theme();
 						<?php
 						if (read_config_option('auth_method') == '3' || read_config_option('auth_method') == '4') {
 							if (read_config_option('auth_method') == '3') {
-								$realms = api_plugin_hook_function('login_realms', 
+								$realms = api_plugin_hook_function('login_realms',
 									array(
 										'1' => array(
-											'name' => __('Local'), 
+											'name' => __('Local'),
 											'selected' => false
-										), 
+										),
 										'2' => array(
-											'name' => __('LDAP'), 
+											'name' => __('LDAP'),
 											'selected' => true
 										)
 									)
@@ -641,7 +641,7 @@ $selectedTheme = get_selected_theme();
 					}
 					if ($user_enabled == '0') {
 						print __('User Account Disabled');
-					} 
+					}
 				}
 				?>
 			</div>
