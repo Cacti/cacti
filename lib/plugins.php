@@ -51,12 +51,16 @@ function api_plugin_hook ($name) {
 	}
 
 	/* order the plugins by order */
-	$result = db_fetch_assoc_prepared('SELECT pc.id, ph.name, ph.file, ph.function
+	$result = db_fetch_assoc_prepared('SELECT ph.name, ph.file, ph.function
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory = ph.name
-		WHERE ph.status = 1 AND hook = ?
-		ORDER BY id ASC', array($name), true);
+		WHERE ph.status = 1
+		AND hook = ?
+		ORDER BY pc.id ASC',
+		array($name),
+		true
+	);
 
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
@@ -86,12 +90,16 @@ function api_plugin_hook_function ($name, $parm = NULL) {
 	}
 
 	/* order the plugins by order */
-	$result = db_fetch_assoc_prepared('SELECT pc.id, ph.name, ph.file, ph.function
+	$result = db_fetch_assoc_prepared('SELECT ph.name, ph.file, ph.function
 		FROM plugin_hooks AS ph
 		LEFT JOIN plugin_config AS pc
 		ON pc.directory = ph.name
-		WHERE ph.status = 1 AND hook = ?
-		ORDER BY id ASC', array($name), true);
+		WHERE ph.status = 1
+		AND hook = ?
+		ORDER BY pc.id ASC',
+		array($name),
+		true
+	);
 
 	if (!empty($result)) {
 		foreach ($result as $hdata) {

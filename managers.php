@@ -71,28 +71,28 @@ function manager(){
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'hostname', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'hostname',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
@@ -109,9 +109,9 @@ function manager(){
 	?>
 	<script type="text/javascript">
 	function applyFilter() {
-		strURL  = 'managers.php?filter=' + escape($('#filter').val());
+		strURL  = 'managers.php';
+		strURL += '?filter=' + escape($('#filter').val());
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -168,14 +168,13 @@ function manager(){
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-						</td>
-						<td>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							<span>
+								<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+								<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							</span>
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>
@@ -198,14 +197,14 @@ function manager(){
 		sm.hostname, sm.disabled, smn.count_notify, snl.count_log
 		FROM snmpagent_managers AS sm
 		LEFT JOIN (
-			SELECT COUNT(*) as count_notify, manager_id 
-			FROM snmpagent_managers_notifications 
+			SELECT COUNT(*) as count_notify, manager_id
+			FROM snmpagent_managers_notifications
 			GROUP BY manager_id
 		) AS smn
 		ON smn.manager_id = sm.id
 		LEFT JOIN (
-			SELECT COUNT(*) as count_log, manager_id 
-			FROM snmpagent_notifications_log 
+			SELECT COUNT(*) as count_log, manager_id
+			FROM snmpagent_notifications_log
 			GROUP BY manager_id
 		) AS snl
 		ON snl.manager_id = sm.id
@@ -423,34 +422,34 @@ function manager_notifications($id, $header_label) {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'mib' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '-1', 
+			'default' => '-1',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
@@ -474,7 +473,6 @@ function manager_notifications($id, $header_label) {
 		strURL += '&mib=' + $('#mib').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + escape($('#filter').val());
-		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 
 		loadPageNoHeader(strURL);
@@ -543,14 +541,13 @@ function manager_notifications($id, $header_label) {
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-						</td>
-						<td>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							<span>
+								<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+								<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							</span>
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>
@@ -591,11 +588,11 @@ function manager_notifications($id, $header_label) {
 	}
 
 	$display_text = array(
-		__('Name'), 
-		__('OID'), 
-		__('MIB'), 
-		__('Kind'), 
-		__('Max-Access'), 
+		__('Name'),
+		__('OID'),
+		__('MIB'),
+		__('Kind'),
+		__('Max-Access'),
 		__('Monitored')
 	);
 
@@ -684,22 +681,22 @@ function manager_logs($id) {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'severity' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '-1'
 			)
 	);
@@ -774,17 +771,14 @@ function manager_logs($id) {
 							</select>
 						</td>
 						<td>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-						</td>
-						<td>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
-						</td>
-						<td>
-							<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Notification Log');?>'>
+							<span>
+								<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+								<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+								<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Notification Log');?>'>
+							</span>
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 				<input type='hidden' name='action' value='edit'>
 				<input type='hidden' name='tab' value='logs'>
 				<input type='hidden' id='id' value='<?php print get_request_var('id'); ?>'>
@@ -810,16 +804,16 @@ function manager_logs($id) {
 	}
 
 	$sql_where .= ' ORDER by `id` DESC';
-	$sql_query = "SELECT snl.*, sc.description 
+	$sql_query = "SELECT snl.*, sc.description
 		FROM snmpagent_notifications_log AS snl
 		LEFT JOIN snmpagent_cache AS sc
 		ON sc.name = snl.notification
-		WHERE $sql_where 
+		WHERE $sql_where
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	form_start('managers.php', 'chk');
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*) 
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM snmpagent_notifications_log AS snl
 		WHERE $sql_where");
 
@@ -952,7 +946,7 @@ function form_actions(){
 			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 			if ($selected_items != false) {
-				if (get_nfilter_request_var('drp_action') == '1') { // delete 
+				if (get_nfilter_request_var('drp_action') == '1') { // delete
 					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',' ,$selected_items) . ')');
 					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
 					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
@@ -976,20 +970,20 @@ function form_actions(){
 				if (get_nfilter_request_var('drp_action') == '1') { // disable
 					foreach($selected_items as $mib => $notifications) {
 						foreach($notifications as $notification => $state) {
-							db_execute_prepared('DELETE FROM snmpagent_managers_notifications 
-								WHERE `manager_id` = ? 
-								AND `mib` = ? 
-								AND `notification` = ? 
-								LIMIT 1', 
+							db_execute_prepared('DELETE FROM snmpagent_managers_notifications
+								WHERE `manager_id` = ?
+								AND `mib` = ?
+								AND `notification` = ?
+								LIMIT 1',
 								array(get_nfilter_request_var('id'), $mib, $notification));
 						}
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '2') { // enable
 					foreach($selected_items as $mib => $notifications) {
 						foreach($notifications as $notification => $state) {
-							db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications 
-								(`manager_id`, `notification`, `mib`) 
-								VALUES (?, ?, ?)', 
+							db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications
+								(`manager_id`, `notification`, `mib`)
+								VALUES (?, ?, ?)',
 								array(get_nfilter_request_var('id'), $notification, $mib));
 						}
 					}
@@ -1029,7 +1023,7 @@ function form_actions(){
 				} elseif (get_nfilter_request_var('drp_action') == '3') { // disable
 					$msg = __n('Click \'Continue\' to disable the following Notification Receiver', 'Click \'Continue\' to disable following Notification Receiver', sizeof($selected_items));
 				}
-			
+
 				print "<tr>
 					<td class='textArea'>
 						<p>$msg</p>

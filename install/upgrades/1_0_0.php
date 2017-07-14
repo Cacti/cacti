@@ -1440,8 +1440,8 @@ function upgrade_to_1_0_0() {
 
 				foreach($rras as $r) {
 					db_install_execute("INSERT INTO data_source_profiles_rra
-						(data_source_profile_id, name, steps, rows)
-						SELECT '$id' AS data_source_profile_id, name, steps, rows FROM rra WHERE id=" . $r);
+						(`data_source_profile_id`, `name`, `steps`, `rows`)
+						SELECT '$id' AS `data_source_profile_id`, `name`, `steps`, `rows` FROM `rra` WHERE `id`=" . $r);
 
 					db_install_execute("REPLACE INTO data_source_profiles_cf
 						(data_source_profile_id, consolidation_function_id)

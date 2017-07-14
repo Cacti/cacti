@@ -776,17 +776,19 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
    @arg $form_previous_value - the current value of this form element */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
-		foreach (array_keys($form_data) as $id) {
-			print '<option value="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '"';
+		if (sizeof($form_data)) {
+			foreach (array_keys($form_data) as $id) {
+				print '<option value="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '"';
 
-			if ($form_previous_value == $id) {
-			print " selected";
+				if ($form_previous_value == $id) {
+					print " selected";
+				}
+
+				print ">" . title_trim(null_out_substitutions(htmlspecialchars($form_data[$id])), 75) . "</option>\n";
 			}
-
-			print ">" . title_trim(null_out_substitutions(htmlspecialchars($form_data[$id])), 75) . "</option>\n";
 		}
 	} else {
-		if (sizeof($form_data) > 0) {
+		if (sizeof($form_data)) {
 			foreach ($form_data as $row) {
 				print "<option value='" . htmlspecialchars($row[$column_id], ENT_QUOTES, 'UTF-8') . "'";
 
@@ -1326,11 +1328,13 @@ function html_show_tabs_left() {
 
 		if (is_realm_allowed(18) || is_realm_allowed(19)) {
 			if (substr_count($_SERVER["REQUEST_URI"], "clog")) {
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="' . __('Cacti Log'). '"></a>';
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="' . __('Logs'). '"></a>';
 			} else {
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="' . __('Cacti Log') . '"></a>';
+				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="' . __('Logs') . '"></a>';
 			}
 		}
+
+		api_plugin_hook('top_graph_header_tabs');
 
 		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
 			// Only show external links when online
@@ -1367,8 +1371,6 @@ function html_show_tabs_left() {
 				}
 			}
 		}
-
-		api_plugin_hook('top_graph_header_tabs');
 	} else {
 		if ($show_console_tab) {
 			$tabs_left[] =
@@ -1409,30 +1411,11 @@ function html_show_tabs_left() {
 		if (is_realm_allowed(18) || is_realm_allowed(19)) {
 			$tabs_left[] =
 				array(
-					'title' => __('Cacti Log'),
+					'title' => __('Logs'),
 					'id'	=> 'maintab-anchor-logs',
 					'image' => '',
 					'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
 				);
-		}
-
-		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
-			// Only show external links when online
-		} else {
-			$external_links = db_fetch_assoc('SELECT id, title FROM external_links WHERE style="TAB" AND enabled="on" ORDER BY sortorder');
-			if (sizeof($external_links)) {
-				foreach($external_links as $tab) {
-					if (is_realm_allowed($tab['id']+10000)) {
-						$tabs_left[] =
-							array(
-								'title' => $tab['title'],
-								'id'    => 'maintab-anchor-link' . $tab['id'],
-								'image' => '',
-								'url'   => $config['url_path'] . 'link.php?id=' . $tab['id']
-							);
-					}
-				}
-			}
 		}
 
 		// Get Plugin Text Out of Band
@@ -1483,10 +1466,35 @@ function html_show_tabs_left() {
 			$tabs_left[] = array('title' => ucwords($alt), 'url' => $href);
 		}
 
+		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
+			// Only show external links when online
+		} else {
+			$external_links = db_fetch_assoc('SELECT id, title
+				FROM external_links
+				WHERE style="TAB"
+				AND enabled="on"
+				ORDER BY sortorder');
+
+			if (sizeof($external_links)) {
+				foreach($external_links as $tab) {
+					if (is_realm_allowed($tab['id']+10000)) {
+						$tabs_left[] =
+							array(
+								'title' => $tab['title'],
+								'id'    => 'maintab-anchor-link' . $tab['id'],
+								'image' => '',
+								'url'   => $config['url_path'] . 'link.php?id=' . $tab['id']
+							);
+					}
+				}
+			}
+		}
+
 		$i = 0;
 		$me_base = get_current_page();
 		foreach($tabs_left as $tab) {
 			$tab_base = basename($tab['url']);
+
 			if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
 				$tabs_left[$i]['selected'] = true;
 			} elseif (isset_request_var('id') && ($tab_base == 'link.php?id=' . get_nfilter_request_var('id')) && $me_base == 'link.php') {
@@ -1496,6 +1504,7 @@ function html_show_tabs_left() {
 			} elseif ($tab_base == $me_base) {
 				$tabs_left[$i]['selected'] = true;
 			}
+
 			$i++;
 		}
 

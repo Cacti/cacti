@@ -23,12 +23,12 @@
 */
 
 class MibCache{
-	private $active_mib				= '';
-	private $active_object			= '';
-	private $active_table			= '';
-	private $active_table_entry 	= '';
-	private $cache__tables			= array();
-	private $cache__tables_columns 	= array();
+	private $active_mib            = '';
+	private $active_object         = '';
+	private $active_table          = '';
+	private $active_table_entry    = '';
+	private $cache__tables         = array();
+	private $cache__tables_columns = array();
 
 	public function __construct($mib='CACTI-MIB') {
 		$this->active_mib = $mib;
@@ -139,7 +139,7 @@ class MibCache{
 					/* MIB table does not exist */
 					$this->active_table = '';
 					$this->active_table_entry = '';
-					return 'ERROR';
+					throw new Exception('MIB table does not exist');
 				}
 			}else {
 				/* table exists and has already been cached */

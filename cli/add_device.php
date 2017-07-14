@@ -75,7 +75,7 @@ if (sizeof($parms)) {
 	$ping_retries   = read_config_option('ping_retries');
 	$max_oids       = read_config_option('max_get_size');
 	$proxy          = false;
-	$device_threads = 1;
+	$device_threads = read_config_option('device_threads');;
 
 	$displayHostTemplates = FALSE;
 	$displayCommunities   = FALSE;
@@ -433,7 +433,7 @@ if (sizeof($parms)) {
 		$snmp_port, $snmp_timeout, $disable, $avail, $ping_method,
 		$ping_port, $ping_timeout, $ping_retries, $notes,
 		$snmp_auth_protocol, $snmp_priv_passphrase,
-		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, 
+		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads,
 		$poller_id, $site_id, $external_id);
 
 	if (is_error_message()) {

@@ -560,7 +560,7 @@ case 'list':
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 								}
@@ -569,13 +569,11 @@ case 'list':
 						</select>
 					</td>
 					<td>
-						<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearFilter()'>
-					</td>
-					<td>
-						<input type='button' value='<?php print __('View');?>' title='<?php print __('View Graphs');?>' onClick='viewGraphs()'>
+						<span>
+							<input type='submit' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>' onClick='clearFilter()'>
+							<input type='button' value='<?php print __('View');?>' title='<?php print __('View Graphs');?>' onClick='viewGraphs()'>
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -584,7 +582,6 @@ case 'list':
 			<input type='hidden' id='graph_add' value=''>
 			<input type='hidden' id='graph_remove' value=''>
 			<input type='hidden' id='graph_list' value='<?php print get_request_var('graph_list');?>'>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 		</td>
 	</tr>
 	<?php
@@ -680,7 +677,6 @@ case 'list':
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
 		strURL += '&rfilter=' + $('#rfilter').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += url_graph('');
 		loadPageNoHeader(strURL);
 	}

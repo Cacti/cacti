@@ -4,10 +4,6 @@
 	display:none;
 }
 
-
-
-
-
 html {
 	height: 100%;
 	width: 100%;
@@ -113,7 +109,7 @@ input, select {
 	padding: 0.4em 0.4em 0.4em 0.4em;
 }
 
-input[type="checkbox"].formCheckbox {
+input[type="checkbox"].formCheckbox, .filterTable input[type="checkbox"] {
   display: none;
 }
 
@@ -132,12 +128,14 @@ input[type="checkbox"] + label:before {
   width: 12px;
   background: transparent;
 }
+
 input[type="checkbox"]:checked + label:before {
   background: #3C8A3C;
   color: #FFFFFF;
   content: "\2713";
   text-align: center;
 }
+
 input[type="checkbox"]:checked + label {
   color: #FFFFFF;
 }
@@ -876,8 +874,6 @@ legend {
 	margin-bottom: auto;
 }
 
-
-
 .actionsDropdownButton {
 	vertical-align: top;
 	float: right;
@@ -1119,8 +1115,8 @@ legend {
 	padding: 1px;
 	margin-top: 2px;
 	border-radius: 3px;
-	background-color: white;
-	border:1px solid #BBBBBB;
+	background-color: #04335B;
+	border: 1px solid #04335B;
 	position: relative;
 	z-index: 4;
 }
@@ -1197,16 +1193,25 @@ table.cactiTable {
 }
 
 .filterTable {
-	white-space:nowrap;
+	white-space: nowrap;
 }
 
 .filterTable td:first-child {
-	width:55px;
-	min-width:55px;
+	width: 55px;
+	min-width: 55px;
 }
 
 .filterTable td {
 	padding: 2px;
+	white-space: nowrap;
+}
+
+.filterTable td span {
+	padding: 0px 2px 0px 0px;
+}
+
+.filterTable label {
+	vertical-align: 10%;
 }
 
 .formRow {

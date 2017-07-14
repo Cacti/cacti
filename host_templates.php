@@ -146,9 +146,9 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 	/* create new entry(s): host_template_graph */
 	if (sizeof($host_template_graphs)) {
 		foreach ($host_template_graphs as $host_template_graph) {
-			db_execute_prepared('INSERT INTO host_template_graph 
-				(host_template_id,graph_template_id) 
-				VALUES (?, ?)', 
+			db_execute_prepared('INSERT INTO host_template_graph
+				(host_template_id,graph_template_id)
+				VALUES (?, ?)',
 				array($host_template_id, $host_template_graph['graph_template_id']));
 		}
 	}
@@ -156,9 +156,9 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 	/* create new entry(s): host_template_snmp_query */
 	if (sizeof($host_template_data_queries)) {
 		foreach ($host_template_data_queries as $host_template_data_query) {
-			db_execute_prepared('INSERT INTO host_template_snmp_query 
-				(host_template_id,snmp_query_id) 
-				VALUES (?, ?)', 
+			db_execute_prepared('INSERT INTO host_template_snmp_query
+				(host_template_id,snmp_query_id)
+				VALUES (?, ?)',
 				array($host_template_id, $host_template_data_query['snmp_query_id']));
 		}
 	}
@@ -174,9 +174,9 @@ function template_item_add_dq() {
 	get_filter_request_var('snmp_query_id');
 	/* ==================================================== */
 
-	db_execute_prepared('REPLACE INTO host_template_snmp_query 
-		(host_template_id, snmp_query_id) 
-		VALUES (?, ?)', 
+	db_execute_prepared('REPLACE INTO host_template_snmp_query
+		(host_template_id, snmp_query_id)
+		VALUES (?, ?)',
 		array(get_request_var('host_template_id'), get_request_var('snmp_query_id')));
 }
 
@@ -186,9 +186,9 @@ function template_item_add_gt() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	db_execute_prepared('REPLACE INTO host_template_graph 
-		(host_template_id, graph_template_id) 
-		VALUES (?, ?)', 
+	db_execute_prepared('REPLACE INTO host_template_graph
+		(host_template_id, graph_template_id)
+		VALUES (?, ?)',
 		array(get_request_var('host_template_id'), get_request_var('graph_template_id')));
 }
 
@@ -264,9 +264,9 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Device Template(s).  Optionally change the title for the new Device Template(s).') ."</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
-					<p><strong>" . __('Title Format:'). "</strong><br>\n"; 
+					<p><strong>" . __('Title Format:'). "</strong><br>\n";
 
-			form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); 
+			form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text');
 
 			print "</p>
 				</td>
@@ -348,10 +348,10 @@ function template_item_remove_gt_confirm() {
 	});
 
 	$('#continue').click(function(data) {
-		$.post('host_templates.php?action=item_remove_gt', { 
-			__csrf_magic: csrfMagicToken, 
-			host_template_id: <?php print get_request_var('host_template_id');?>, 
-			id: <?php print get_request_var('id');?> 
+		$.post('host_templates.php?action=item_remove_gt', {
+			__csrf_magic: csrfMagicToken,
+			host_template_id: <?php print get_request_var('host_template_id');?>,
+			id: <?php print get_request_var('id');?>
 		}, function(data) {
 			$('#cdialog').dialog('close');
 			loadPageNoHeader('host_templates.php?action=edit&header=false&id=<?php print get_request_var('host_template_id');?>');
@@ -408,10 +408,10 @@ function template_item_remove_dq_confirm() {
 	});
 
 	$('#continue').click(function(data) {
-		$.post('host_templates.php?action=item_remove_dq', { 
-			__csrf_magic: csrfMagicToken, 
-			host_template_id: <?php print get_request_var('host_template_id');?>, 
-			id: <?php print get_request_var('id');?> 
+		$.post('host_templates.php?action=item_remove_dq', {
+			__csrf_magic: csrfMagicToken,
+			host_template_id: <?php print get_request_var('host_template_id');?>,
+			id: <?php print get_request_var('id');?>
 		}, function(data) {
 			$('#cdialog').dialog('close');
 			loadPageNoHeader('host_templates.php?action=edit&header=false&id=<?php print get_request_var('host_template_id');?>');
@@ -489,8 +489,8 @@ function template_edit() {
 
 				$i++;
 			}
-		} else { 
-			print '<tr><td><em>' . __('No associated graph templates.') . '</em></td></tr>'; 
+		} else {
+			print '<tr><td><em>' . __('No associated graph templates.') . '</em></td></tr>';
 		}
 
 		?>
@@ -503,9 +503,9 @@ function template_edit() {
 						</td>
 						<td class='noHide'>
 							<?php form_dropdown('graph_template_id', db_fetch_assoc_prepared('SELECT gt.id, gt.name
-								FROM graph_templates AS gt 
+								FROM graph_templates AS gt
 								LEFT JOIN host_template_graph AS htg
-								ON gt.id=htg.graph_template_id 
+								ON gt.id=htg.graph_template_id
 								AND htg.host_template_id = ?
 								WHERE htg.host_template_id IS NULL
 								AND gt.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
@@ -546,8 +546,8 @@ function template_edit() {
 
 				$i++;
 			}
-		} else { 
-			print '<tr><td><em>' . __('No associated data queries.') . '</em></td></tr>'; 
+		} else {
+			print '<tr><td><em>' . __('No associated data queries.') . '</em></td></tr>';
 		}
 
 		?>
@@ -596,21 +596,21 @@ function template_edit() {
 			$.get(request, function(data) {
 				$('#cdialog').html(data);
 				applySkin();
-				$('#cdialog').dialog({ 
-					title: '<?php print __('Delete Data Input Field');?>', 
+				$('#cdialog').dialog({
+					title: '<?php print __('Delete Data Input Field');?>',
 					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
-					minHeight: 80, 
-					minWidth: 500 
+					minHeight: 80,
+					minWidth: 500
 				});
 			});
 		}).css('cursor', 'pointer');
 
 		$('#add_dq').click(function() {
-			$.post('host_templates.php?action=item_add_dq', { 
-				host_template_id: $('#id').val(), 
-				snmp_query_id: $('#snmp_query_id').val(), 
-				reindex_method: $('#reindex_method').val(), 
-				__csrf_magic: csrfMagicToken 
+			$.post('host_templates.php?action=item_add_dq', {
+				host_template_id: $('#id').val(),
+				snmp_query_id: $('#snmp_query_id').val(),
+				reindex_method: $('#reindex_method').val(),
+				__csrf_magic: csrfMagicToken
 			}).done(function(data) {
 				$('div[class^="ui-"]').remove();
 				$('#main').html(data);
@@ -619,10 +619,10 @@ function template_edit() {
 		});
 
 		$('#add_gt').click(function() {
-			$.post('host_templates.php?action=item_add_gt', { 
-				host_template_id: $('#id').val(), 
-				graph_template_id: $('#graph_template_id').val(), 
-				__csrf_magic: csrfMagicToken 
+			$.post('host_templates.php?action=item_add_gt', {
+				host_template_id: $('#id').val(),
+				graph_template_id: $('#graph_template_id').val(),
+				__csrf_magic: csrfMagicToken
 			}).done(function(data) {
 				$('div[class^="ui-"]').remove();
 				$('#main').html(data);
@@ -647,32 +647,32 @@ function template() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_hosts' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
@@ -700,16 +700,16 @@ function template() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Device Templates');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
 								}
@@ -718,25 +718,27 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='has_hosts' <?php print (get_request_var('has_hosts') == 'true' ? 'checked':'');?>>
+						<span>
+							<input type='checkbox' id='has_hosts' <?php print (get_request_var('has_hosts') == 'true' ? 'checked':'');?>>
+							<label for='has_hosts'><?php print __('Has Devices');?></label>
+						</span>
 					</td>
 					<td>
-						<label for='has_hosts'><?php print __('Has Devices');?></label>
-					</td>
-					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-		<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'host_templates.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_hosts='+$('#has_hosts').is(':checked')+'&header=false';
+			strURL  = 'host_templates.php?header=false';
+			strURL += '&filter='+escape($('#filter').val());
+			strURL += '&rows='+$('#rows').val();
+			strURL += '&has_hosts='+$('#has_hosts').is(':checked');
 			loadPageNoHeader(strURL);
 		}
 
@@ -753,7 +755,7 @@ function template() {
 			$('#clear').click(function() {
 				clearFilter();
 			});
-	
+
 			$('#form_host_template').submit(function(event) {
 				event.preventDefault();
 				applyFilter();
@@ -778,10 +780,10 @@ function template() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(rows)
+	$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
 		FROM (
 			SELECT
-			COUNT(host_template.id) AS rows, COUNT(DISTINCT host.id) AS hosts
+			COUNT(host_template.id) AS `rows`, COUNT(DISTINCT host.id) AS hosts
 			FROM host_template
 			LEFT JOIN host ON host.host_template_id=host_template.id
 			$sql_where

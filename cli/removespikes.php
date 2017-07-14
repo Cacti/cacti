@@ -639,7 +639,7 @@ calculateVarianceAverages($rra, $samples);
 */
 
 if (empty($out_start)) {
-	$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+	$strout .= ($html ? "<p class='spikekillNote'>":'') .
 		"NOTE: Searching for Spikes in XML file '$xmlfile'" . ($html ? "</p>\n":"\n");
 }
 
@@ -662,27 +662,31 @@ if ($debug || $dryrun) {
 if ($method == 1) {
 	/* standard deviation subroutine */
 	if ($std_kills || $out_kills) {
+		debug('Either std_kills or out_kills found');
+
 		if (!$dryrun) {
 			$new_output = updateXML($output, $rra);
 		}
 	} elseif (!empty($out_start)) {
-		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+		$strout .= ($html ? "<p class='spikekillNote'>":'') .
 			"NOTE: NO Window Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	} else {
-		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+		$strout .= ($html ? "<p class='spikekillNote'>":'') .
 			"NOTE: NO Standard Deviation found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}
 } else {
 	/* variance subroutine */
 	if ($var_kills || $out_kills) {
+		debug('Either variance or out_kills found');
+
 		if (!$dryrun) {
 			$new_output = updateXML($output, $rra);
 		}
 	} elseif (!empty($out_start)) {
-		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+		$strout .= ($html ? "<p class='spikekillNote'>":'') .
 			"NOTE: NO Window Fills found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	} else {
-		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+		$strout .= ($html ? "<p class='spikekillNote'>":'') .
 			"NOTE: NO Variance Spikes found in '$rrdfile'" . ($html ? "</p>\n":"\n");
 	}
 }
@@ -693,22 +697,22 @@ if (!$dryrun) {
 		if (writeXMLFile($new_output, $xmlfile)) {
 			if (backupRRDFile($rrdfile)) {
 				createRRDFileFromXML($xmlfile, $rrdfile);
-				$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+				$strout .= ($html ? "<p class='spikekillNote'>":'') .
 					"NOTE: Spikes Found and Remediated.  Total Spikes ($total_kills)" . ($html ? "</p>\n":"\n");
 			} else {
-				$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+				$strout .= ($html ? "<p class='spikekillNote'>":'') .
 					"FATAL: Unable to backup '$rrdfile'" . ($html ? "</p>\n":"\n");
 			}
 		} else {
-			$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+			$strout .= ($html ? "<p class='spikekillNote'>":'') .
 				"FATAL: Unable to write XML file '$xmlfile'" . ($html ? "</p>\n":"\n");
 		}
 	} else {
-		$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+		$strout .= ($html ? "<p class='spikekillNote'>":'') .
 			"NOTE: No Spikes Found.  No remediation performed." . ($html ? "</p>\n":"\n");
 	}
 } else {
-	$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+	$strout .= ($html ? "<p class='spikekillNote'>":'') .
 		"NOTE: Dryrun requested.  No updates performed" . ($html ? "</p>\n":"\n");
 }
 
@@ -729,7 +733,7 @@ function createRRDFileFromXML($xmlfile, $rrdfile) {
 	global $using_cacti, $html, $strout;
 
 	/* execute the dump command */
-	$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+	$strout .= ($html ? "<p class='spikekillNote'>":'') .
 		"NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($html ? "</p>\n":"\n");
 
 	if ($using_cacti) {
@@ -766,7 +770,7 @@ function backupRRDFile($rrdfile) {
 		$newfile = basename($rrdfile);
 	}
 
-	$strout .= ($html ? "<p class='spikekillNote'>":'') . 
+	$strout .= ($html ? "<p class='spikekillNote'>":'') .
 		"NOTE: Backing Up '$rrdfile' to '" . $backupdir . '/' .  $newfile . "'" . ($html ? "</p>\n":"\n");
 
 	return copy($rrdfile, $backupdir . "/" . $newfile);
@@ -947,40 +951,40 @@ function outputStatistics($rra) {
 			$strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
 				'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
 				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindFilled', 'StdDevAvg', 'VarAvg');
-			$strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
-				'----------', '---------------', '----------', '-------', '-------', '----------', '----------', 
-				'----------', '----------', '----------', '----------', '----------', '----------', '----------', 
-				'----------', '----------');
+			$strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
+				'----------', '---------------', '----------', '-------', '-------', '----------', '----------',
+				'----------', '----------', '----------', '----------', '----------', '----------', '----------',
+				'----------', '----------', '----------');
 			foreach($rra as $rra_key => $dses) {
 				if (sizeof($dses)) {
-				foreach($dses as $dskey => $ds) {
-					$strout .= sprintf('%10s %16s %10s %7s %7s ' .
-						($ds['average'] < 1E6 ? '%10s ':'%10.4e ') .
-						($ds['standard_deviation'] < 1E6 ? '%10s ':'%10.4e ') .
-						(isset($ds['max_value']) ? ($ds['max_value'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
-						(isset($ds['min_value']) ? ($ds['min_value'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
-						(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
-						(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
-						'%10s %10s %10s ' .
-						(isset($ds['avgnksampled']) ? ($ds['avgnksamples'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
-						(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') . "\n",
-						displayTime($rra_pdp[$rra_key]),
-						$ds_name[$dskey],
-						$rra_cf[$rra_key],
-						$ds['totalsamples'],
-						(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
-						($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
-						($ds['standard_deviation'] != 'N/A' ? round($ds['standard_deviation'],2) : $ds['standard_deviation']),
-						(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
-						(isset($ds['min_value']) ? round($ds['min_value'],2) : 'N/A'),
-						($ds['max_cutoff'] != 'N/A' ? round($ds['max_cutoff'],2) : $ds['max_cutoff']),
-						($ds['min_cutoff'] != 'N/A' ? round($ds['min_cutoff'],2) : $ds['min_cutoff']),
-						$ds['stddev_killed'],
-						$ds['variance_killed'],
-						$ds['outwind_killed'],
-						($ds['avgnksamples'] != 'N/A' ? round($ds['avgnksamples'],2) : $ds['avgnksamples']),
-						(isset($ds['variance_avg']) ? round($ds['variance_avg'],2) : 'N/A'));
-				}
+					foreach($dses as $dskey => $ds) {
+						$strout .= sprintf('%10s %16s %10s %7s %7s ' .
+							($ds['average'] < 1E6 ? '%10s ':'%10.4e ') .
+							($ds['standard_deviation'] < 1E6 ? '%10s ':'%10.4e ') .
+							(isset($ds['max_value'])  ? ($ds['max_value']  < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
+							(isset($ds['min_value'])  ? ($ds['min_value']  < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
+							(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
+							(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
+							'%10s %10s %10s ' .
+							(isset($ds['avgnksamples']) ? ($ds['avgnksamples'] < 1E6 ? '%10s ':'%10.4e ') : '%10.4E ') .
+							(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? '%10s ':'%10.4e ') : '%10.4E ') . "\n",
+							displayTime($rra_pdp[$rra_key]),
+							$ds_name[$dskey],
+							$rra_cf[$rra_key],
+							$ds['totalsamples'],
+							(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
+							($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
+							($ds['standard_deviation'] != 'N/A' ? round($ds['standard_deviation'],2) : $ds['standard_deviation']),
+							(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
+							(isset($ds['min_value']) ? round($ds['min_value'],2) : 'N/A'),
+							($ds['max_cutoff'] != 'N/A' ? round($ds['max_cutoff'],2) : $ds['max_cutoff']),
+							($ds['min_cutoff'] != 'N/A' ? round($ds['min_cutoff'],2) : $ds['min_cutoff']),
+							$ds['stddev_killed'],
+							$ds['variance_killed'],
+							$ds['outwind_killed'],
+							($ds['avgnksamples'] != 'N/A' ? round($ds['avgnksamples'],2) : $ds['avgnksamples']),
+							(isset($ds['variance_avg']) ? round($ds['variance_avg'],2) : 'N/A'));
+					}
 				}
 			}
 
@@ -991,34 +995,34 @@ function outputStatistics($rra) {
 				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindFilled', 'StdDevAvg', 'VarAvg');
 			foreach($rra as $rra_key => $dses) {
 				if (sizeof($dses)) {
-				foreach($dses as $dskey => $ds) {
-					$strout .= sprintf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>' .
-						($ds['average'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') .
-						($ds['standard_deviation'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') .
-						(isset($ds['max_value']) ? ($ds['max_value'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
-						(isset($ds['min_value']) ? ($ds['min_value'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
-						(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
-						(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
-						'%s</td><td>%s</td><td>%s</td><td>' .
-						(isset($ds['avgnksampled']) ? ($ds['avgnksamples'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
-						(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? "%s</td></tr>\n":"%.4e</td></tr>\n") : "%s</td></tr>\n") . "\n",
-						displayTime($rra_pdp[$rra_key]),
-						$ds_name[$dskey],
-						$rra_cf[$rra_key],
-						$ds['totalsamples'],
-						(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
-						($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
-						($ds['standard_deviation'] != 'N/A' ? round($ds['standard_deviation'],2) : $ds['standard_deviation']),
-						(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
-						(isset($ds['min_value']) ? round($ds['min_value'],2) : 'N/A'),
-						($ds['max_cutoff'] != 'N/A' ? round($ds['max_cutoff'],2) : $ds['max_cutoff']),
-						($ds['min_cutoff'] != 'N/A' ? round($ds['min_cutoff'],2) : $ds['min_cutoff']),
-						$ds['stddev_killed'],
-						$ds['variance_killed'],
-						$ds['outwind_killed'],
-						($ds['avgnksamples'] != 'N/A' ? round($ds['avgnksamples'],2) : $ds['avgnksamples']),
-						(isset($ds['variance_avg']) ? round($ds['variance_avg'],2) : 'N/A'));
-				}
+					foreach($dses as $dskey => $ds) {
+						$strout .= sprintf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>' .
+							($ds['average'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') .
+							($ds['standard_deviation'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') .
+							(isset($ds['max_value']) ? ($ds['max_value'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
+							(isset($ds['min_value']) ? ($ds['min_value'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
+							(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
+							(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
+							'%s</td><td>%s</td><td>%s</td><td>' .
+							(isset($ds['avgnksampled']) ? ($ds['avgnksamples'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') : '%s</td><td>') .
+							(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? "%s</td></tr>\n":"%.4e</td></tr>\n") : "%s</td></tr>\n") . "\n",
+							displayTime($rra_pdp[$rra_key]),
+							$ds_name[$dskey],
+							$rra_cf[$rra_key],
+							$ds['totalsamples'],
+							(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
+							($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
+							($ds['standard_deviation'] != 'N/A' ? round($ds['standard_deviation'],2) : $ds['standard_deviation']),
+							(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
+							(isset($ds['min_value']) ? round($ds['min_value'],2) : 'N/A'),
+							($ds['max_cutoff'] != 'N/A' ? round($ds['max_cutoff'],2) : $ds['max_cutoff']),
+							($ds['min_cutoff'] != 'N/A' ? round($ds['min_cutoff'],2) : $ds['min_cutoff']),
+							$ds['stddev_killed'],
+							$ds['variance_killed'],
+							$ds['outwind_killed'],
+							($ds['avgnksamples'] != 'N/A' ? round($ds['avgnksamples'],2) : $ds['avgnksamples']),
+							(isset($ds['variance_avg']) ? round($ds['variance_avg'],2) : 'N/A'));
+					}
 				}
 			}
 		}
@@ -1032,7 +1036,7 @@ function updateXML(&$output, &$rra) {
 	$rra_num   = 0;
 	$ds_num    = 0;
 	$kills     = 0;
-	$first_num = array();
+	$last_num  = array();
 
 	if (sizeof($output)) {
 	foreach($output as $line) {
@@ -1060,14 +1064,14 @@ function updateXML(&$output, &$rra) {
 				/* peel off garbage */
 				$dsvalue = trim(str_replace('</row>', '', str_replace('</v>', '', $dsvalue)));
 
-				if (strtolower($dsvalue) == 'nan' && !isset($first_num[$ds_num])) {
+				if (strtolower($dsvalue) == 'nan' && !isset($last_num[$ds_num])) {
 					/* do nothing, it's a NaN, and the first one */
 				} elseif (!empty($out_start) && $timestamp > $out_start && $timestamp < $out_end) {
 					if ($method == 3) {
 						if ($avgnan == 'avg') {
 							$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-						} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-							$dsvalue = $first_num[$ds_num];
+						} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+							$dsvalue = $last_num[$ds_num];
 						}
 
 						$kills++;
@@ -1076,25 +1080,25 @@ function updateXML(&$output, &$rra) {
 						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg'] || strtolower($dsvalue) == 'nan') {
 							if ($avgnan == 'avg') {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-							} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-								$dsvalue = $first_num[$ds_num];
+							} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+								$dsvalue = $last_num[$ds_num];
 							}
 
 							$kills++;
 							$total_kills++;
 						}
 					}
-				} elseif(strtolower($dsvalue) == 'nan' && isset($first_num[$ds_num])) {
+				} elseif(strtolower($dsvalue) == 'nan' && isset($last_num[$ds_num])) {
 					if ($method == 2) {
 						if ($kills < $numspike) {
 							if ($avgnan == 'avg') {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-							} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-								$dsvalue = $first_num[$ds_num];
+							} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+								$dsvalue = $last_num[$ds_num];
 							} else {
 								$dsvalue = 'NaN';
 							}
-	
+
 							$total_kills++;
 							$kills++;
 						}
@@ -1102,8 +1106,8 @@ function updateXML(&$output, &$rra) {
 						if ($kills < $numspike) {
 							if ($avgnan == 'avg') {
 								$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
-							} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-								$dsvalue = $first_num[$ds_num];
+							} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+								$dsvalue = $last_num[$ds_num];
 							} else {
 								$dsvalue = 'NaN';
 							}
@@ -1113,14 +1117,13 @@ function updateXML(&$output, &$rra) {
 						}
 					}
 				} else {
-					$first_num[$ds_num] = $dsvalue;
 					if ($method == 2) {
 						if ($dsvalue > (1+$percent)*$rra[$rra_num][$ds_num]['variance_avg']) {
 							if ($kills < $numspike) {
 								if ($avgnan == 'avg') {
 									$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
-								} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-									$dsvalue = $first_num[$ds_num];
+								} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+									$dsvalue = $last_num[$ds_num];
 								} else {
 									$dsvalue = 'NaN';
 								}
@@ -1128,6 +1131,8 @@ function updateXML(&$output, &$rra) {
 								$kills++;
 								$total_kills++;
 							}
+						} else {
+							$last_num[$ds_num] = $dsvalue;
 						}
 					} else {
 						if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
@@ -1135,8 +1140,8 @@ function updateXML(&$output, &$rra) {
 							if ($kills < $numspike) {
 								if ($avgnan == 'avg') {
 									$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
-								} elseif ($avgnan == 'last' && isset($first_num[$ds_num])) {
-									$dsvalue = $first_num[$ds_num];
+								} elseif ($avgnan == 'last' && isset($last_num[$ds_num])) {
+									$dsvalue = $last_num[$ds_num];
 								} else {
 									$dsvalue = 'NaN';
 								}
@@ -1144,6 +1149,8 @@ function updateXML(&$output, &$rra) {
 								$kills++;
 								$total_kills++;
 							}
+						} else {
+							$last_num[$ds_num] = $dsvalue;
 						}
 					}
 				}
@@ -1152,19 +1159,19 @@ function updateXML(&$output, &$rra) {
 				$ds_num++;
 			}
 
-			$out_row .= '</row>';
+			$out_row .= "</row>\n";
 
 			$new_array[] = $out_row;
 		} else {
-			if (substr_count($line, '</rra>')) {
+			if (substr_count($line, "</rra>\n")) {
 				$ds_minmax = array();
 				$rra_num++;
 				$kills = 0;
-				$first_num = array();
-			}else if (substr_count($line, '</database>')) {
+				$last_num = array();
+			}else if (substr_count($line, "</database>\n")) {
 				$ds_num++;
 				$kills = 0;
-				$first_num = array();
+				$last_num = array();
 			}
 
 			$new_array[] = $line;

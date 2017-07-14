@@ -198,7 +198,7 @@ function get_files() {
 
 	/* insert the files into the table from cacti */
 	db_execute("INSERT INTO data_source_purge_temp
-		(local_data_id, data_template_id, name_cache, name, in_cacti) 
+		(local_data_id, data_template_id, name_cache, name, in_cacti)
 		SELECT local_data_id, data_template_id, name_cache, replace(data_source_path, '<path_rra>/', '') AS file, '1' AS in_cacti
 		FROM data_template_data
 		WHERE local_data_id>0
@@ -215,11 +215,11 @@ function get_files() {
 			$size++;
 
 			if ($size == 400) {
-				db_execute('INSERT INTO data_source_purge_temp 
-					(name, size, last_mod, in_cacti) 
-					VALUES ' . implode(',', $sql) . ' 
+				db_execute('INSERT INTO data_source_purge_temp
+					(name, size, last_mod, in_cacti)
+					VALUES ' . implode(',', $sql) . '
 					ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
-	
+
 				$size = 0;
 				$sql  = array();
 			}
@@ -228,8 +228,8 @@ function get_files() {
 
 	if ($size > 0) {
 		db_execute('INSERT INTO data_source_purge_temp
-			(name, size, last_mod, in_cacti) 
-			VALUES ' . implode(',', $sql) . ' 
+			(name, size, last_mod, in_cacti)
+			VALUES ' . implode(',', $sql) . '
 			ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
 	}
 
@@ -242,7 +242,7 @@ function get_files() {
  */
 function list_rrd() {
 	global $config, $item_rows, $ds_actions, $rra_path;
- 
+
 	/* suppress warnings */
 	error_reporting(0);
 
@@ -252,32 +252,32 @@ function list_rrd() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'age' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '0'
 			)
@@ -311,13 +311,13 @@ function list_rrd() {
 		$sql_where .= " AND last_mod<='" . date("Y-m-d H:i:s", (time() - $secsback)) . "'";
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(rc.name) 
+	$total_rows = db_fetch_cell("SELECT COUNT(rc.name)
 		FROM data_source_purge_temp AS rc
 		LEFT JOIN data_template AS dt
 		ON dt.id = rc.data_template_id
 		$sql_where");
 
-	$total_size = db_fetch_cell("SELECT ROUND(SUM(size),2) 
+	$total_size = db_fetch_cell("SELECT ROUND(SUM(size),2)
 		FROM data_source_purge_temp AS rc
 		LEFT JOIN data_template AS dt
 		ON dt.id = rc.data_template_id
@@ -326,12 +326,12 @@ function list_rrd() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$file_list = db_fetch_assoc("SELECT rc.id, rc.name, rc.last_mod, rc.size, 
+	$file_list = db_fetch_assoc("SELECT rc.id, rc.name, rc.last_mod, rc.size,
 		rc.name_cache, rc.local_data_id, rc.data_template_id, dt.name AS data_template_name
 		FROM data_source_purge_temp AS rc
 		LEFT JOIN data_template AS dt
 		ON dt.id = rc.data_template_id
-		$sql_where 
+		$sql_where
 		$sql_order
 		$sql_limit");
 
@@ -411,11 +411,11 @@ function remove_all_rrds() {
 	$action = get_nfilter_request_var('raction');
 
 	/* add to data_source_purge_action table */
-	db_execute_prepared('INSERT INTO data_source_purge_action 
+	db_execute_prepared('INSERT INTO data_source_purge_action
 		(name, local_data_id, action)
-		SELECT name, local_data_id, ? AS action 
-		FROM data_source_purge_temp 
-		WHERE in_cacti = 0 
+		SELECT name, local_data_id, ? AS action
+		FROM data_source_purge_temp
+		WHERE in_cacti = 0
 		ON DUPLICATE KEY UPDATE action = VALUES(action)', array($action));
 
 	/* remove the entries from the data_source_purge_temp location */
@@ -441,14 +441,14 @@ function do_rrd() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_(.*)$/', $var, $matches)) {
 			/* recreate the file name */
-			$unused_file = db_fetch_row_prepared('SELECT id, name, local_data_id 
+			$unused_file = db_fetch_row_prepared('SELECT id, name, local_data_id
 				FROM data_source_purge_temp
 				WHERE id = ?', array($matches[1]));
 
 			/* add to data_source_purge_action table */
-			$sql = "INSERT INTO data_source_purge_action 
-				(name, local_data_id, action) 
-				VALUES(?, ?, ?) 
+			$sql = "INSERT INTO data_source_purge_action
+				(name, local_data_id, action)
+				VALUES(?, ?, ?)
 				ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)";
 
 			db_execute_prepared($sql, array($unused_file['name'], $unused_file['local_data_id'], get_nfilter_request_var('drp_action')));
@@ -468,7 +468,7 @@ function filter() {
 	?>
 	<tr class='even'>
 		<td>
-			<form id='form_rrdclean' name='form_rrdclean' method='get' action='rrdcleaner.php'>
+			<form id='form_rrdclean' method='get' action='rrdcleaner.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
@@ -477,11 +477,11 @@ function filter() {
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Time Since Update');?>
 					</td>
 					<td>
-						<select id='age' name='age' onChange='refreshForm()'>
+						<select id='age' onChange='refreshForm()'>
 							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('%d Week', 1);?></option>
 							<option value='604800'   <?php print (get_request_var('age') == '604800'   ? ' selected':'');?>>&gt; <?php print __('%d Week', 1);?></option>
 							<option value='1209600'  <?php print (get_request_var('age') == '1209600'  ? ' selected':'');?>>&gt; <?php print __('%d Weeks',2);?></option>
@@ -497,34 +497,33 @@ function filter() {
 						<?php print __('RRDfiles');?>
 					</td>
 					<td>
-						<select id='rows' name='rows'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
-							foreach ($item_rows as $key => $value) {
-								print '<option value="' . $key . '"'; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
+							if (sizeof($item_rows)) {
+								foreach ($item_rows as $key => $value) {
+									print '<option value="' . $key . '"'; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								}
 							}
 							?>
 						</select>
 					</td>
 					<td>
-						<input id='go' type='submit' value='<?php print __x('filter: use', 'Go');?>'>
+						<span>
+							<input id='go' type='submit' value='<?php print __x('filter: use', 'Go');?>'>
+							<input id='clear' type='button' value='<?php print __x('filter: reset', 'Clear');?>'>
+							<input id='rescan' type='button' value='<?php print __('Rescan');?>' name='rescan'>
+						</span>
 					</td>
 					<td>
-						<input id='clear' type='button' value='<?php print __x('filter: reset', 'Clear');?>'>
-					</td>
-					<td>
-						<input id='rescan' type='button' value='<?php print __('Rescan');?>' name='rescan'>
-					</td>
-					<td>
-						<input id='remall' type='button' value='<?php print __('Delete All');?>' title='<?php print __('Delete All Unknown RRDfiles');?>'>
-						<input id='arcall' type='button' value='<?php print __('Archive All');?>' title='<?php print __('Archive All Unknown RRDfiles');?>'>
+						<span>
+							<input id='remall' type='button' value='<?php print __('Delete All');?>' title='<?php print __('Delete All Unknown RRDfiles');?>'>
+							<input id='arcall' type='button' value='<?php print __('Archive All');?>' title='<?php print __('Archive All Unknown RRDfiles');?>'>
+						</span>
 					</td>
 					<td id='text'></td>
 				</tr>
 			</table>
-			<input type='hidden' name='page' value='1'>
 			</form>
 			<script type="text/javascript">
 			function refreshForm() {
@@ -536,9 +535,9 @@ function filter() {
 			}
 
 			$(function() {
-				$('#form_rrdclean').submit(function() { 
+				$('#form_rrdclean').submit(function() {
 					refreshForm();
-					return false; 
+					return false;
 				});
 
 				$('#rows').change(function() {

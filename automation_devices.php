@@ -31,8 +31,8 @@ $device_actions = array(
 	1 => __('Add Device')
 );
 
-$os_arr = array_rekey(db_fetch_assoc('SELECT DISTINCT os 
-	FROM automation_devices 
+$os_arr = array_rekey(db_fetch_assoc('SELECT DISTINCT os
+	FROM automation_devices
 	WHERE os IS NOT NULL AND os!=""'), 'os', 'os');
 
 $status_arr = array(
@@ -40,10 +40,10 @@ $status_arr = array(
 	__('Up')
 );
 
-$networks = array_rekey(db_fetch_assoc('SELECT an.id, an.name 
+$networks = array_rekey(db_fetch_assoc('SELECT an.id, an.name
 	FROM automation_networks AS an
 	INNER JOIN automation_devices AS ad
-	ON an.id=ad.network_id 
+	ON an.id=ad.network_id
 	ORDER BY name'), 'id', 'name');
 
 set_default_action();
@@ -75,7 +75,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
 	/* ==================================================== */
-	
+
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
@@ -321,53 +321,53 @@ function process_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'hostname', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'hostname',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'status' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'network' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'snmp' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'os' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 		)
 	);
@@ -465,16 +465,16 @@ function draw_filter() {
 							?>
 						</select>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Reset fields to defaults');?>'>
+						</span>
 					</td>
 					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Reset fields to defaults');?>'>
-					</td>
-					<td>
-						<input type='button' id='export' value='<?php print __('Export');?>' title='<?php print __('Export to a file');?>'>
-					</td>
-					<td>
-						<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Discovered Devices');?>'>
+						<span>
+							<input type='button' id='export' value='<?php print __('Export');?>' title='<?php print __('Export to a file');?>'>
+							<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Discovered Devices');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -540,7 +540,6 @@ function draw_filter() {
 							?>
 						</select>
 					</td>
-					<td><input type='hidden' id='page' value='<?php print get_request_var('page');?>'></td>
 				</tr>
 			</table>
 		</form>
@@ -568,7 +567,7 @@ function draw_filter() {
 				document.location = 'automation_devices.php?action=export';
 			});
 		});
-	
+
 		function clearFilter() {
 			loadPageNoHeader('automation_devices.php?header=false&clear=1');
 		}

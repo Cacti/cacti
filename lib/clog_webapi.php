@@ -384,17 +384,17 @@ function filter($clogAdmin) {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='go' name='go' value='<?php print __('Go');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>'>
-					</td>
-					<td>
+						<span>
+							<input type='button' id='go' name='go' value='<?php print __('Go');?>'>
+							<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>'>
 						<?php if ($clogAdmin) {?><input type='button' id='purge' name='purge' value='<?php print __('Purge');?>'><?php }?>
+						</span>
 					</td>
 				</tr>
+			</table>
+			<table class='filterTable'>
 				<tr>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Type');?>
 					</td>
 					<td>
@@ -407,7 +407,7 @@ function filter($clogAdmin) {
 							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
 						</select>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Display Order');?>
 					</td>
 					<td>
@@ -416,8 +416,6 @@ function filter($clogAdmin) {
 							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
 					</td>
-				</tr>
-				<tr>
 					<td>
 						<?php print __('Refresh');?>
 					</td>

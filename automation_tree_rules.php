@@ -743,14 +743,13 @@ function automation_tree_rules() {
 							</select>
 						</td>
 						<td>
-							<input id='refresh' type='button' value='<?php print __('Go');?>'>
-						</td>
-						<td>
-							<input id='clear' type='button' value='<?php print __('Clear');?>'>
+							<span>
+								<input id='refresh' type='button' value='<?php print __('Go');?>'>
+								<input id='clear' type='button' value='<?php print __('Clear');?>'>
+							</span>
 						</td>
 					</tr>
 				</table>
-				<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
@@ -758,7 +757,6 @@ function automation_tree_rules() {
 					'?status='+$('#status').val() +
 					'&filter='+escape($('#filter').val()) +
 					'&rows='+$('#rows').val() +
-					'&page='+$('#page').val() +
 					'&header=false';
 
 				loadPageNoHeader(strURL);

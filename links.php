@@ -325,14 +325,13 @@ function pages() {
 						</select>
 					</td>
 					<td>
-						<input type='button' name='go' value='<?php print __('Go');?>' title='<?php print __('Apply Filter');?>' onClick='applyFilter()'>
-					</td>
-					<td>
-						<input type='button' name='clear' value='<?php print __('Clear');?>' title='<?php print __('Reset filters');?>' onClick='clearFilter()'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Apply Filter');?>' onClick='applyFilter()'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Reset filters');?>' onClick='clearFilter()'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_filter_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>

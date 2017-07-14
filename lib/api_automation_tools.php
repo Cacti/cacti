@@ -83,7 +83,7 @@ function getInputFields($templateId) {
 		AND dtr.local_data_id = 0
 		AND dtd.local_data_id = 0
 		AND did.t_value = 'on'
-		AND dif.input_output IN ('in', 'inout')", 
+		AND dif.input_output IN ('in', 'inout')",
 		array($templateId));
 
 	if (sizeof($tmpArray)) {
@@ -469,7 +469,7 @@ function displayRRAs($quietMode = FALSE) {
 		echo "Known RRAs:\nid\tsteps\trows\tname\n";
 	}
 
-	$rras = db_fetch_assoc('SELECT id, name, steps, rows FROM data_source_profiles_rra ORDER BY id');
+	$rras = db_fetch_assoc('SELECT id, name, steps, `rows` FROM data_source_profiles_rra ORDER BY id');
 
 	if (sizeof($rras)) {
 		foreach ($rras as $rra) {

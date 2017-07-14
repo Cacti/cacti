@@ -177,9 +177,9 @@ function form_save() {
 						input_validate_input_number($data_template_rrd_id);
 						/* ==================================================== */
 
-						db_execute_prepared('REPLACE INTO snmp_query_graph_rrd 
-							(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name) 
-							VALUES (?, ?, ?, ?)', 
+						db_execute_prepared('REPLACE INTO snmp_query_graph_rrd
+							(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name)
+							VALUES (?, ?, ?, ?)',
 							array($snmp_query_graph_id, $data_template_id, $data_template_rrd_id, get_nfilter_request_var('dsdt_' . $data_template_id . '_' . $data_template_rrd_id . '_snmp_field_output')));
 					}
 				}
@@ -209,9 +209,9 @@ function form_save() {
 		$hash   = get_hash_data_query(0, 'data_query_sv_graph');
 		$header = '';
 
-		db_execute_prepared('INSERT INTO snmp_query_graph_sv 
-			(hash, snmp_query_graph_id, sequence, field_name, text) 
-			VALUES (?, ?, ?, ?, ?)', 
+		db_execute_prepared('INSERT INTO snmp_query_graph_sv
+			(hash, snmp_query_graph_id, sequence, field_name, text)
+			VALUES (?, ?, ?, ?, ?)',
 			array($hash, get_request_var('id'), $sequence, get_nfilter_request_var('svg_field'), get_nfilter_request_var('svg_text')));
 
 		clear_messages();
@@ -240,9 +240,9 @@ function form_save() {
 
 				$hash = get_hash_data_query(0, 'data_query_sv_data_source');
 
-				db_execute_prepared('INSERT INTO snmp_query_graph_rrd_sv 
-					(hash, snmp_query_graph_id, data_template_id, sequence, field_name, text) 
-					VALUES (?, ?, ?, ?, ?, ?)', 
+				db_execute_prepared('INSERT INTO snmp_query_graph_rrd_sv
+					(hash, snmp_query_graph_id, data_template_id, sequence, field_name, text)
+					VALUES (?, ?, ?, ?, ?, ?)',
 					array($hash, get_request_var('id'), $matches[1], $sequence, get_nfilter_request_var('svds_' . $matches[1] . '_field'), get_nfilter_request_var('svds_' . $matches[1] . '_text')));
 
 				clear_messages();
@@ -437,10 +437,10 @@ function data_query_item_remove_confirm() {
 	$(function() {
 		$('#cdialog').dialog();
 		$('#continue').click(function(data) {
-			$.post('data_queries.php?action=item_remove', { 
-				__csrf_magic: csrfMagicToken, 
-				snmp_query_id: <?php print get_request_var('snmp_query_id');?>, 
-				id: <?php print get_request_var('id');?> 
+			$.post('data_queries.php?action=item_remove', {
+				__csrf_magic: csrfMagicToken,
+				snmp_query_id: <?php print get_request_var('snmp_query_id');?>,
+				id: <?php print get_request_var('id');?>
 			}, function(data) {
 				$('#cdialog').dialog('close');
 				loadPageNoHeader('data_queries.php?action=edit&header=false&id=<?php print get_request_var('snmp_query_id');?>');
@@ -450,7 +450,7 @@ function data_query_item_remove_confirm() {
 	</script>
 	<?php
 }
-		
+
 function data_query_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -523,12 +523,12 @@ function data_query_item_edit() {
 				dtr.id, dtr.data_source_name, sqgr.snmp_field_name, sqgr.snmp_query_graph_id
 				FROM data_template_rrd AS dtr
 				LEFT JOIN snmp_query_graph_rrd AS sqgr
-				ON sqgr.data_template_rrd_id = dtr.id 
-				AND sqgr.snmp_query_graph_id = ? 
+				ON sqgr.data_template_rrd_id = dtr.id
+				AND sqgr.snmp_query_graph_id = ?
 				AND sqgr.data_template_id = ?
 				WHERE dtr.data_template_id = ?
 				AND dtr.local_data_id = 0
-				ORDER BY dtr.data_source_name', 
+				ORDER BY dtr.data_source_name',
 				array(get_request_var('id'), $data_template['id'], $data_template['id']));
 
 			$i = 0;
@@ -590,8 +590,8 @@ function data_query_item_edit() {
 			ORDER BY field_name, sequence', array(get_request_var('id')));
 
 		html_header(array(
-			array('display' => __('Name'), 'align' => 'left'), 
-			array('display' => __('Order'), 'align' => 'center'), 
+			array('display' => __('Name'), 'align' => 'left'),
+			array('display' => __('Order'), 'align' => 'center'),
 			array('display' => __('Equation'), 'align' => 'left')
 		), 2);
 
@@ -776,9 +776,15 @@ function data_query_item_edit() {
 		html_end_box();
 	}
 
+	if (isset($snmp_query_item['graph_template_id'])) {
+		$item = $snmp_query_item['graph_template_id'];
+	} else {
+		$item = 0;
+	}
+
 	?>
 	<script type='text/javascript'>
-	var graph_template_id_prev=<?php print $snmp_query_item['graph_template_id'];?>;
+	var graph_template_id_prev=<?php print $item;?>;
 
 	$('.remover').click(function(event) {
 		event.preventDefault();
@@ -913,7 +919,7 @@ function data_query_edit() {
 			<th class='tableSubHeaderColumn right' style='width:60px;'>" . __('Action') . "</th>
 		</tr>";
 
-		$snmp_query_graphs = db_fetch_assoc_prepared('SELECT sqg.id, 
+		$snmp_query_graphs = db_fetch_assoc_prepared('SELECT sqg.id,
 			gt.name AS graph_template_name, sqg.name, COUNT(gl.id) AS graphs
 			FROM snmp_query_graph AS sqg
 			LEFT JOIN graph_templates AS gt
@@ -980,11 +986,11 @@ function data_query_edit() {
 			$.get(request, function(data) {
 				$('#cdialog').html(data);
 				applySkin();
-				$('#cdialog').dialog({ 
-					title: '<?php print __('Delete Associated Graph');?>', 
+				$('#cdialog').dialog({
+					title: '<?php print __('Delete Associated Graph');?>',
 					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
-					minHeight: 80, 
-					minWidth: 500 
+					minHeight: 80,
+					minWidth: 500
 				});
 			});
 		}).css('cursor', 'pointer');
@@ -1000,28 +1006,28 @@ function data_query() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
@@ -1049,7 +1055,7 @@ function data_query() {
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Data Queries');?>
 					</td>
 					<td>
@@ -1065,18 +1071,19 @@ function data_query() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL = 'data_queries.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			strURL  = 'data_queries.php?header=false';
+			strURL += '&filter='+escape($('#filter').val());
+			strURL += '&rows='+$('#rows').val();
 			loadPageNoHeader(strURL);
 		}
 
@@ -1093,7 +1100,7 @@ function data_query() {
 			$('#clear').click(function() {
 				clearFilter();
 			});
-	
+
 			$('#form_data_queries').submit(function(event) {
 				event.preventDefault();
 				applyFilter();
@@ -1124,7 +1131,7 @@ function data_query() {
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$snmp_queries = db_fetch_assoc("SELECT sq.id, sq.name,
-		di.name AS data_input_method, 
+		di.name AS data_input_method,
 		COUNT(DISTINCT gl.id) AS graphs,
 		COUNT(DISTINCT sqg.graph_template_id) AS templates
 		FROM snmp_query AS sq
@@ -1150,7 +1157,7 @@ function data_query() {
 	$display_text = array(
 		'name'              => array('display' => __('Data Query Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Query.')),
 		'id'                => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal ID for this Graph Template.  Useful when performing automation or debugging.')),
-		'nosort'            => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Data Queries that are in use cannot be Deleted. In use is defined as being referenced by either a Graph or a Graph Template.')), 
+		'nosort'            => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Data Queries that are in use cannot be Deleted. In use is defined as being referenced by either a Graph or a Graph Template.')),
 		'graphs'            => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this Data Query.')),
 		'templates'         => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs Templates using this Data Query.')),
 		'data_input_method' => array('display' => __('Data Input Method'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Data Input Method used to collect data for Data Sources associated with this Data Query.')));

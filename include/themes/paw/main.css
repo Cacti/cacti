@@ -87,12 +87,12 @@ input, select {
 }
 
 label {
-	white-space:nowrap;
+	white-space: nowrap;
 }
 
 
 .nowrap {
-	white-space:nowrap;
+	white-space: nowrap;
 }
 
 .top {
@@ -1067,6 +1067,15 @@ legend {
 
 .filterTable td {
 	padding: 2px;
+	white-space:nowrap;
+}
+
+.filterTable td span {
+	padding: 0px 2px 0px 0px;
+}
+
+.filterTable label {
+	vertical-align: 10%;
 }
 
 .formRow {

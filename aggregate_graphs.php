@@ -100,8 +100,8 @@ function form_save() {
 	}
 
 	/* get the aggregate graph id */
-	$aggregate_graph_id  = db_fetch_cell_prepared('SELECT id 
-		FROM aggregate_graphs 
+	$aggregate_graph_id  = db_fetch_cell_prepared('SELECT id
+		FROM aggregate_graphs
 		WHERE local_graph_id = ?', array($local_graph_id));
 
 	/* if user disabled template propagation we need to get graph data from form */
@@ -128,9 +128,9 @@ function form_save() {
 	);
 
 	/* update title in aggregate graphs table */
-	db_execute_prepared('UPDATE aggregate_graphs 
+	db_execute_prepared('UPDATE aggregate_graphs
 		SET title_format = ?
-		WHERE id = ?', 
+		WHERE id = ?',
 		array($graph_title, $aggregate_graph_id));
 
 	/* next lets see if any of the aggregate has changed and save as applicable
@@ -153,9 +153,9 @@ function form_save() {
 
 		/* see if anything changed, if so, we will have to push out the aggregate */
 		if (!empty($aggregate_graph_id)) {
-			$old = db_fetch_row_prepared('SELECT * 
-				FROM aggregate_graphs 
-				WHERE id = ?', 
+			$old = db_fetch_row_prepared('SELECT *
+				FROM aggregate_graphs
+				WHERE id = ?',
 				array($aggregate_graph_id));
 
 			$save_me = 0;
@@ -176,17 +176,17 @@ function form_save() {
 			/* save the template items now */
 			/* get existing item ids and sequences from graph template */
 			$graph_templates_items = array_rekey(
-				db_fetch_assoc_prepared('SELECT id, sequence 
-					FROM graph_templates_item 
-					WHERE local_graph_id=0 
+				db_fetch_assoc_prepared('SELECT id, sequence
+					FROM graph_templates_item
+					WHERE local_graph_id=0
 					AND graph_template_id = ?
 					ORDER BY sequence', array($graph_template_id)),
 				'id', array('sequence')
 			);
 			/* get existing aggregate template items */
 			$aggregate_graph_items_old = array_rekey(
-				db_fetch_assoc_prepared('SELECT * 
-					FROM aggregate_graphs_graph_item 
+				db_fetch_assoc_prepared('SELECT *
+					FROM aggregate_graphs_graph_item
 					WHERE aggregate_graph_id = ?
 					ORDER BY sequence', array($aggregate_graph_id)),
 				'graph_templates_item_id', array('aggregate_graph_id', 'graph_templates_item_id', 'sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total')
@@ -333,13 +333,13 @@ function form_actions() {
 			/* for whatever reason,  subquery performance in mysql is sub-optimal.  Therefore, let's do this
 			 * as a few queries instead.
 			 */
-			$task_items = array_rekey(db_fetch_assoc("SELECT DISTINCT task_item_id 
-				FROM graph_templates_item 
+			$task_items = array_rekey(db_fetch_assoc("SELECT DISTINCT task_item_id
+				FROM graph_templates_item
 				WHERE local_graph_id IN($lgid)"), 'task_item_id', 'task_item_id');
 
 			$task_items = implode(',', $task_items);
 
-			$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id 
+			$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id
 				FROM graph_templates_item
 				WHERE task_item_id IN ($task_items) AND graph_template_id>0");
 
@@ -356,10 +356,10 @@ function form_actions() {
 			} else {
 				$graph_template      = $graph_templates[0]['graph_template_id'];
 
-				$aggregate_templates = db_fetch_assoc_prepared('SELECT id, name 
-					FROM aggregate_graph_templates 
-					WHERE graph_template_id = ? 
-					ORDER BY name', 
+				$aggregate_templates = db_fetch_assoc_prepared('SELECT id, name
+					FROM aggregate_graph_templates
+					WHERE graph_template_id = ?
+					ORDER BY name',
 					array($graph_template));
 
 				if (sizeof($aggregate_templates)) {
@@ -486,14 +486,14 @@ function item() {
 			LEFT JOIN cdef ON (gti.cdef_id=cdef.id)
 			LEFT JOIN colors ON (gti.color_id=colors.id)
 			WHERE gti.local_graph_id = ?
-			ORDER BY gti.sequence', 
+			ORDER BY gti.sequence',
 			array(get_request_var('id')));
 
 		$header_label = __('Graph Items [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));
 	}
 
-	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id 
-		FROM graph_local 
+	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
+		FROM graph_local
 		WHERE id = ?', array(get_request_var('id')));
 
 	if (empty($graph_template_id)) {
@@ -534,13 +534,13 @@ function graph_edit() {
 	$aginfo = array();
 	$graphs = array();
 	if (!isempty_request_var('id')) {
-		$graphs = db_fetch_row_prepared('SELECT * 
-			FROM graph_templates_graph 
-			WHERE local_graph_id = ?', 
+		$graphs = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_graph
+			WHERE local_graph_id = ?',
 			array(get_request_var('id')));
 
-		$aginfo = db_fetch_row_prepared('SELECT * 
-			FROM aggregate_graphs 
+		$aginfo = db_fetch_row_prepared('SELECT *
+			FROM aggregate_graphs
 			WHERE local_graph_id = ?',
 			array($graphs['local_graph_id']));
 
@@ -553,23 +553,23 @@ function graph_edit() {
 
 	if (sizeof($aginfo)) {
 		if ($aginfo['aggregate_template_id'] > 0) {
-			$template = db_fetch_row_prepared('SELECT * 
-				FROM aggregate_graph_templates 
-				WHERE id = ?', 
+			$template = db_fetch_row_prepared('SELECT *
+				FROM aggregate_graph_templates
+				WHERE id = ?',
 				array($aginfo['aggregate_template_id']));
 		} else {
 			$template = $aginfo;
 		}
 
 		$aggregate_tabs = array(
-			'details' => __('Details'), 
-			'items'   => __('Items'), 
+			'details' => __('Details'),
+			'items'   => __('Items'),
 			'preview' => __('Preview')
 		);
 	} else {
 		$template = array();
 		$aggregate_tabs = array(
-			'details' => __('Details'), 
+			'details' => __('Details'),
 			'preview' => __('Preview')
 		);
 	}
@@ -595,7 +595,7 @@ function graph_edit() {
 	} elseif (isset($_SESSION['agg_tab'])) {
 		set_request_var('tab', $_SESSION['agg_tab']);
 	} else {
-		set_request_var('tab', 'details'); 
+		set_request_var('tab', 'details');
 	}
 	/* ================= input validation ================= */
 
@@ -609,7 +609,7 @@ function graph_edit() {
 	if (sizeof($aggregate_tabs)) {
 		foreach (array_keys($aggregate_tabs) as $tab_short_name) {
 			if ($tab_short_name == 'details' || (!isempty_request_var('id'))) {
-				print "<li class='subTab'><a class='tab " . ($tab_short_name == $current_tab ? "selected'" : "'") . 
+				print "<li class='subTab'><a class='tab " . ($tab_short_name == $current_tab ? "selected'" : "'") .
 					" href='" . htmlspecialchars($config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . get_request_var('id') . "&tab=$tab_short_name") . "'>" . $aggregate_tabs[$tab_short_name] . "</a></li>\n";
 			}
 
@@ -856,7 +856,7 @@ function graph_edit() {
 
 						$form_array[$field_name]['value']   = (isset($graphs) ? $graphs[$field_name] : '');
 						$form_array[$field_name]['form_id'] = (isset($graphs) ? $graphs['id'] : '0');
-	
+
 						if (!(($use_graph_template == false) || ($graphs_template{'t_' . $field_name} == 'on'))) {
 							$form_array[$field_name]['method']      = 'template_' . $form_array[$field_name]['method'];
 							$form_array[$field_name]['description'] = '';
@@ -934,38 +934,38 @@ function aggregate_items() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'template_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'matching' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'on', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'on',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'title_cache', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'title_cache',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 	);
@@ -1048,16 +1048,16 @@ function aggregate_items() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='matching' onChange='applyFilter()' <?php print (get_request_var('matching') == 'on' || get_request_var('matching') == 'true' ? ' checked':'');?>>
+						<span>
+							<input type='checkbox' id='matching' onChange='applyFilter()' <?php print (get_request_var('matching') == 'on' || get_request_var('matching') == 'true' ? ' checked':'');?>>
+							<label for='matching'><?php print __('Part of Aggregate');?></label>
+						</span>
 					</td>
 					<td>
-						<label for='matching'><?php print __('Part of Aggregate');?></label>
-					</td>
-					<td>
-						<input id='refresh' type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input id='clear' type='button' onClick='clearFilter()' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input id='refresh' type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input id='clear' type='button' onClick='clearFilter()' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -1089,12 +1089,12 @@ function aggregate_items() {
 
 	$graph_template = db_fetch_cell_prepared('SELECT graph_template_id
 		FROM aggregate_graphs AS ag
-		WHERE ag.local_graph_id = ?', 
+		WHERE ag.local_graph_id = ?',
 		array(get_request_var('id')));
 
-	$aggregate_id   = db_fetch_cell_prepared('SELECT id 
-		FROM aggregate_graphs 
-		WHERE local_graph_id = ?', 
+	$aggregate_id   = db_fetch_cell_prepared('SELECT id
+		FROM aggregate_graphs
+		WHERE local_graph_id = ?',
 		array(get_request_var('id')));
 
 	if (!empty($graph_template)) {
@@ -1162,7 +1162,7 @@ function aggregate_items() {
 
 	/* put the nav bar on the bottom as well */
 	print $nav;
-	
+
 	/* add a list of tree names to the actions dropdown */
 	add_tree_names_to_actions_array();
 
@@ -1257,33 +1257,33 @@ function aggregate_graph() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'template_id' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'title_cache', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'title_cache',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 	);
@@ -1303,7 +1303,6 @@ function aggregate_graph() {
 	function applyFilter() {
 		strURL  = 'aggregate_graphs.php';
 		strURL += '?rows=' + $('#rows').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&filter=' + escape($('#filter').val());
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&header=false';
@@ -1389,14 +1388,13 @@ function aggregate_graph() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 			</form>
 		</td>
 	</tr>
@@ -1523,13 +1521,13 @@ function purge_old_graphs() {
 		WHERE gl.id IS NULL'), 'id', 'id');
 
 	if (sizeof($old_aggregates)) {
-		db_execute('DELETE FROM graph_templates_item 
+		db_execute('DELETE FROM graph_templates_item
 			WHERE local_graph_id IN (' . implode(',', $old_aggregates) . ')');
 
-		db_execute('DELETE FROM graph_templates_graph 
+		db_execute('DELETE FROM graph_templates_graph
 			WHERE local_graph_id IN (' . implode(',', $old_aggregates) . ')');
 
-		db_execute('DELETE FROM aggregate_graphs 
+		db_execute('DELETE FROM aggregate_graphs
 			WHERE local_graph_id IN (' . implode(',', $old_aggregates) . ')');
 	}
 

@@ -622,7 +622,7 @@ function data() {
 					<td>
 						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Input Methods');?>
 					</td>
 					<td>
@@ -638,19 +638,20 @@ function data() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php __('Clear Filters');?>'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
 
 		function applyFilter() {
-			strURL = 'data_input.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&header=false';
+			strURL  = 'data_input.php?header=false';
+			strURL += '&filter='+escape($('#filter').val());
+			strURL += '&rows='+$('#rows').val();
 			loadPageNoHeader(strURL);
 		}
 

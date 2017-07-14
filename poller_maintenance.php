@@ -144,7 +144,7 @@ if (read_config_option('logrotate_enabled') == 'on') {
 	}
 }
 
-/** realtime_purge_cache() - Thsi function will purge files in the realtime directory
+/** realtime_purge_cache() - This function will purge files in the realtime directory
  *  that are older than 2 hours without changes */
 function realtime_purge_cache() {
 	/* remove all Realtime files over than 2 hours */
@@ -156,8 +156,14 @@ function realtime_purge_cache() {
 				if ($fileInfo->isDot()) {
 					continue;
 				}
-				if (time() - $fileInfo->getCTime() >= 2*60*60) {
-					unlink($fileInfo->getRealPath());
+				// only remove .png and .rrd files
+				if (
+					(substr($fileInfo->getFilename(), -4, 4) == '.png') ||
+					(substr($fileInfo->getFilename(), -4, 4) == '.rrd')
+				) {
+					if ((time() - $fileInfo->getMTime()) >= 7200) {
+						unlink($fileInfo->getRealPath());
+					}
 				}
 			}
 		}

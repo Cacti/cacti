@@ -109,7 +109,7 @@ function draw_cdef_preview($cdef_id) {
 			<pre>cdef=<?php print get_cdef($cdef_id, true);?></pre>
 		</td>
 	</tr>
-	<?php 
+	<?php
 }
 
 
@@ -227,7 +227,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
 	/* ==================================================== */
-	
+
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
@@ -273,7 +273,7 @@ function form_actions() {
 	if (isset($cdef_array) && sizeof($cdef_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
-				<td class='textArea' class='odd'>
+				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to delete the following CDEF.', 'Click \'Continue\' to delete all following CDEFs.', sizeof($cdef_array)) . "</p>
 					<div class='itemlist'><ul>$cdef_list</ul></div>
 				</td>
@@ -282,7 +282,7 @@ function form_actions() {
 			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', sizeof($cdef_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
-				<td class='textArea' class='odd'>
+				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to duplicate the following CDEF. You can optionally change the title format for the new CDEF.', 'Click \'Continue\' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs.', sizeof($cdef_array)) . "</p>
 					<div class='itemlist'><ul>$cdef_list</ul></div>
 					<p>" . __n('Title Format:') . "<br>"; form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text'); print "</p>
@@ -303,7 +303,7 @@ function form_actions() {
 			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -357,10 +357,10 @@ function cdef_item_remove_confirm() {
 		$('#cdialog').dialog();
 
 		$('#continue').click(function(data) {
-			$.post('cdef.php?action=item_remove', { 
-				__csrf_magic: csrfMagicToken, 
-				cdef_id: <?php print get_request_var('cdef_id');?>, 
-				id: <?php print get_request_var('id');?> 
+			$.post('cdef.php?action=item_remove', {
+				__csrf_magic: csrfMagicToken,
+				cdef_id: <?php print get_request_var('cdef_id');?>,
+				id: <?php print get_request_var('id');?>
 			}, function(data) {
 				$('#cdialog').dialog('close');
 				$('.deleteMarker').blur();
@@ -371,7 +371,7 @@ function cdef_item_remove_confirm() {
 	</script>
 	<?php
 }
-		
+
 function cdef_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('cdef_id');
@@ -581,9 +581,9 @@ function cdef_edit() {
 		html_start_box( __('CDEF Items'), '100%', '', '3', 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id']);
 
 		$display_text = array(
-			array('display' => __('Item'), 'align' => 'left'), 
+			array('display' => __('Item'), 'align' => 'left'),
 			array('display' => __('Item Value'), 'align' => 'left')
-		); 
+		);
 
 		html_header($display_text, 2);
 
@@ -608,7 +608,7 @@ function cdef_edit() {
 							} else {
 								echo '<span class="moveArrowNone"></span>';
 							}
-	
+
 							if ($i > 1 && $i <= $total_items) {
 								echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] .	'&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __('Move Up') . '"></a>';
 							} else {
@@ -669,32 +669,32 @@ function cdef() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_graphs' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
@@ -740,25 +740,27 @@ function cdef() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+						<span>
+							<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+							<label for='has_graphs'><?php print __('Has Graphs');?></label>
+						</span>
 					</td>
 					<td>
-						<label for='has_graphs'><?php print __('Has Graphs');?></label>
-					</td>
-					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'cdef.php?filter='+escape($('#filter').val())+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
+				strURL  = 'cdef.php?header=false';
+				strURL += '&filter='+escape($('#filter').val());
+				strURL += '&rows='+$('#rows').val();
+				strURL += '&has_graphs='+$('#has_graphs').is(':checked');
 				loadPageNoHeader(strURL);
 			}
 
@@ -807,9 +809,9 @@ function cdef() {
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		COUNT(rows)
+		COUNT(`rows`)
 		FROM (
-			SELECT cd.id AS rows,
+			SELECT cd.id AS `rows`,
 			SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
 			FROM cdef AS cd
 			LEFT JOIN graph_templates_item AS gti
@@ -849,7 +851,7 @@ function cdef() {
 
 	$display_text = array(
 		'name'      => array('display' => __('CDEF Name'),       'align' => 'left',  'sort' => 'ASC', 'tip' => __('The name of this CDEF.')),
-		'nosort'    => array('display' => __('Deletable'),       'align' => 'right', 'tip'  => __('CDEFs that are in use cannot be Deleted.  In use is defined as being referenced by a Graph or a Graph Template.')), 
+		'nosort'    => array('display' => __('Deletable'),       'align' => 'right', 'tip'  => __('CDEFs that are in use cannot be Deleted.  In use is defined as being referenced by a Graph or a Graph Template.')),
 		'graphs'    => array('display' => __('Graphs Using'),    'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this CDEF.')),
 		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs Templates using this CDEF.')));
 

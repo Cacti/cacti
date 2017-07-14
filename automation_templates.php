@@ -146,7 +146,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
 	/* ==================================================== */
-	
+
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
@@ -251,10 +251,10 @@ function form_save() {
 
 function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 	$items = db_fetch_assoc_prepared('SELECT id, title
-		FROM graph_tree_items 
+		FROM graph_tree_items
 		WHERE graph_tree_id = ?
 		AND host_id=0
-		AND local_graph_id=0 
+		AND local_graph_id=0
 		AND parent = ?
 		ORDER BY position', array($tree_id, $id));
 
@@ -266,7 +266,7 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 		$headers = automation_get_child_branches($tree_id, $i['id'], $spaces, $headers);
 	}
 	}
-	
+
 	return $headers;
 }
 
@@ -375,18 +375,18 @@ function template() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '', 
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
@@ -430,21 +430,19 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
-				strURL = 'automation_templates.php' + 
+				strURL = 'automation_templates.php' +
 					'?filter='     + escape($('#filter').val())+
 					'&rows='       + $('#rows').val()+
-					'&page='       + $('#page').val()+
 					'&has_graphs=' + $('#has_graphs').is(':checked')+
 					'&header=false';
 				loadPageNoHeader(strURL);
@@ -479,14 +477,14 @@ function template() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' OR " .
-			"sysName LIKE '%" . get_request_var('filter') . "%' OR " . 
-			"sysDescr LIKE '%" . get_request_var('filter') . "%' OR " . 
+			"sysName LIKE '%" . get_request_var('filter') . "%' OR " .
+			"sysDescr LIKE '%" . get_request_var('filter') . "%' OR " .
 			"sysOID LIKE '%" . get_request_var('filter') . "%')";
 	} else {
 		$sql_where = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*) 
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM automation_templates AS at
 		LEFT JOIN host_template AS ht
 		ON ht.id=at.host_template
@@ -497,7 +495,7 @@ function template() {
 		LEFT JOIN host_template AS ht
 		ON ht.id=at.host_template
 		$sql_where
-		ORDER BY sequence " . 
+		ORDER BY sequence " .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
 	$nav = html_nav_bar('automation_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Templates'), 'page', 'main');

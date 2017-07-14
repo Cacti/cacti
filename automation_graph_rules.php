@@ -626,7 +626,7 @@ function automation_graph_rules_edit() {
 		strURL = strURL + '&name=' + $('#name').val();
 		strURL = strURL + '&snmp_query_type' + $('#name').val();
 		strURL = strURL + '&header=false';
-		//loadPageNoHeader(strURL);
+		loadPageNoHeader(strURL);
 	}
 	</script>
 	<?php
@@ -703,7 +703,7 @@ function automation_graph_rules() {
 						<td>
 							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 						</td>
-						<td class='nowrap'>
+						<td>
 							<?php print __('Data Query');?>
 						</td>
 						<td>
@@ -751,13 +751,12 @@ function automation_graph_rules() {
 							</select>
 						</td>
 						<td>
-							<input type='submit' id='refresh' name='go' value='<?php print __('Go');?>'>
-						</td>
-						<td>
-							<input type='button' id='clear' value='<?php print __('Clear');?>'></td>
+							<span>
+								<input type='submit' id='refresh' name='go' value='<?php print __('Go');?>'>
+								<input type='button' id='clear' value='<?php print __('Clear');?>'></td>
+							</span>
 					</tr>
 				</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
@@ -765,7 +764,6 @@ function automation_graph_rules() {
 				'?status='        + $('#status').val()+
 				'&filter='        + escape($('#filter').val())+
 				'&rows='          + $('#rows').val()+
-				'&page='          + $('#page').val()+
 				'&snmp_query_id=' + $('#snmp_query_id').val()+
 				'&header=false';
 			loadPageNoHeader(strURL);
@@ -863,8 +861,8 @@ function automation_graph_rules() {
 
 	if (sizeof($automation_graph_rules_list)) {
 		foreach ($automation_graph_rules_list as $automation_graph_rules) {
-			$snmp_query_name 		= ((empty($automation_graph_rules['snmp_query_name'])) 	 ? '<em>' . __('None') . '</em>' : htmlspecialchars($automation_graph_rules['snmp_query_name']));
-			$graph_type_name 		= ((empty($automation_graph_rules['graph_type_name'])) 	 ? '<em>' . __('None') . '</em>' : htmlspecialchars($automation_graph_rules['graph_type_name']));
+			$snmp_query_name 		= ((empty($automation_graph_rules['snmp_query_name'])) 	 ? __('None') : htmlspecialchars($automation_graph_rules['snmp_query_name']));
+			$graph_type_name 		= ((empty($automation_graph_rules['graph_type_name'])) 	 ? __('None') : htmlspecialchars($automation_graph_rules['graph_type_name']));
 
 			form_alternate_row('line' . $automation_graph_rules['id'], true);
 

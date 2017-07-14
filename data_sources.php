@@ -1154,7 +1154,6 @@ function ds() {
 		strURL += '&profile=' + $('#profile').val();
 		strURL += '&orphans=' + $('#orphans').val();
 		strURL += '&template_id=' + $('#template_id').val();
-		strURL += '&page=' + $('#page').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -1238,10 +1237,10 @@ function ds() {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -1253,7 +1252,7 @@ function ds() {
 					<td>
 						<input id='rfilter' type='text' size='30' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>' onChange='applyFilter()'>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Profile');?>
 					</td>
 					<td>
@@ -1269,7 +1268,7 @@ function ds() {
 							?>
 						</select>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Orphaned');?>
 					</td>
 					<td>
@@ -1279,7 +1278,7 @@ function ds() {
 							<option value='1'<?php print (get_request_var('orphans') == '1' ? ' selected>':'>') . __('Orphaned');?></option>
 						</select>
 					</td>
-					<td class='nowrap'>
+					<td>
 						<?php print __('Data Sources');?>
 					</td>
 					<td>
@@ -1296,7 +1295,6 @@ function ds() {
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		</td>
 	</tr>
