@@ -4285,7 +4285,11 @@ function get_classic_tabimage($text, $down = false) {
 		}
 
 		foreach ($lines as $line) {
-			imagettftext($tab, $line[2], 0, $line[3], $line[4], $white, $line[1], $line[0]);
+			if (function_exists('imagettftext')) {
+				imagettftext($tab, $line[2], 0, $line[3], $line[4], $white, $line[1], $line[0]);
+			}else{
+				imagestring($tab, $line[2], $line[3], $line[4], $string, $white);
+			}
 		}
 
 		putenv('GDFONTPATH=' . $originalpath);

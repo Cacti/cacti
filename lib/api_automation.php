@@ -25,6 +25,10 @@
 function display_matching_hosts($rule, $rule_type, $url) {
 	global $device_actions, $item_rows;
 
+	if (isset_request_var('cleard')) {
+		set_request_var('clear', 'true');
+	}
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rowsd' => array(
@@ -73,6 +77,10 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	validate_store_request_vars($filters, 'sess_auto');
 	/* ================= input validation ================= */
 
+	if (isset_request_var('cleard')) {
+		unset_request_var('clear');
+	}
+
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rowsd') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -98,7 +106,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	}
 
 	function clearDeviceFilter() {
-		strURL = '<?php print $url;?>' + '&clear=1&header=false';
+		strURL = '<?php print $url;?>' + '&cleard=true&header=false';
 		loadPageNoHeader(strURL);
 	}
 
@@ -378,7 +386,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	}
 
 	function clearFilter() {
-		strURL = '<?php print $url;?>' + '&clear=1&header=false';
+		strURL = '<?php print $url;?>' + '&clear=true&header=false';
 		loadPageNoHeader(strURL);
 	}
 
@@ -395,7 +403,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 			clearFilter();
 		});
 
-		$('#form_automation_device').submit(function(event) {
+		$('#form_graphs').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -409,7 +417,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	?>
 	<tr class='even'>
 		<td>
-			<form method='post' id='form_automation_device' action='<?php print htmlspecialchars($url);?>'>
+			<form id='form_graphs' action='<?php print htmlspecialchars($url);?>'>
 				<table class='filterTable'>
 					<tr>
 						<td>
@@ -600,6 +608,10 @@ function display_matching_graphs($rule, $rule_type, $url) {
 function display_new_graphs($rule, $url) {
 	global $config, $item_rows;
 
+	if (isset_request_var('oclear')) {
+		set_request_var('clear', 'true');
+	}
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
@@ -632,6 +644,10 @@ function display_new_graphs($rule, $url) {
 	validate_store_request_vars($filters, 'sess_autog');
 	/* ================= input validation ================= */
 
+	if (isset_request_var('oclear')) {
+		unset_request_var('clear');
+	}
+
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -641,7 +657,7 @@ function display_new_graphs($rule, $url) {
 
 	?>
 	<script type='text/javascript'>
-	function applyFilter() {
+	function applyObjectFilter() {
 		strURL  = '<?php print $url;?>';
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + escape($('#filter').val());
@@ -649,23 +665,23 @@ function display_new_graphs($rule, $url) {
 		loadPageNoHeader(strURL);
 	}
 
-	function clearFilter() {
-		strURL = '<?php print $url;?>' + '&clear=1&header=false';
+	function clearObjectFilter() {
+		strURL = '<?php print $url;?>' + '&oclear=true&header=false';
 		loadPageNoHeader(strURL);
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
-			applyFilter();
+		$('#orefresh').click(function() {
+			applyObjectFilter();
 		});
 
-		$('#clear').click(function() {
-			clearFilter();
+		$('#oclear').click(function() {
+			clearObjectFilter();
 		});
 
 		$('#form_automation_objects').submit(function(event) {
 			event.preventDefault();
-			applyFilter();
+			applyObjectFilter();
 		});
 	});
 	</script>
@@ -676,7 +692,7 @@ function display_new_graphs($rule, $url) {
 	?>
 	<tr class='even'>
 		<td>
-			<form method='post' id='form_automation_objects' action='<?php print htmlspecialchars($url);?>'>
+			<form id='form_automation_objects' action='<?php print htmlspecialchars($url);?>'>
 				<table class='filterTable'>
 					<tr>
 						<td>
@@ -702,8 +718,8 @@ function display_new_graphs($rule, $url) {
 						</td>
 						<td>
 							<span>
-								<input id='refresh' type='button' value='<?php print __('Go');?>'>
-								<input id='clear' type='button' value='<?php print __('Clear');?>'>
+								<input id='orefresh' type='button' value='<?php print __('Go');?>'>
+								<input id='oclear' type='button' value='<?php print __('Clear');?>'>
 							</span>
 						</td>
 					</tr>
@@ -961,7 +977,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	}
 
 	function clearFilter() {
-		strURL = '<?php print $url;?>' + '&clear=1&header=false';
+		strURL = '<?php print $url;?>' + '&clear=true&header=false';
 		loadPageNoHeader(strURL);
 	}
 

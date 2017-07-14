@@ -1113,8 +1113,8 @@ function form_confirm_buttons($action_url, $cancel_url) {
 	?>
 	<tr>
 		<td align='right'>
-			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $cancel_url;?>")' value='<?php print __('Cancel');?>'>
-			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $action_url;?>&confirm=true")' value='<?php print __('Delete');?>'>
+			<input type='button' onClick='cactiReturnTo("<?php print htmlspecialchars($config['url_path'] . $cancel_url);?>")' value='<?php print __esc('Cancel');?>'>
+			<input type='button' onClick='cactiReturnTo("<?php print htmlspecialchars($config['url_path'] . $action_url . '&confirm=true');?>")' value='<?php print __esc('Delete');?>'>
 		</td>
 	</tr>
 <?php }
@@ -1129,28 +1129,28 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 
 	if (empty($force_type) || $force_type == 'return') {
 		if (isempty_request_var($key_field)) {
-			$alt = __('Create');
+			$alt = __esc('Create');
 		} else {
-			$alt = __('Save');
+			$alt = __esc('Save');
 
 			if ($force_type != '') {
-				$calt   = __('Return');
+				$calt   = __esc('Return');
 			} else {
-				$calt   = __('Cancel');
+				$calt   = __esc('Cancel');
 			}
 		}
 	} elseif ($force_type == 'save') {
-		$alt = __('Save');
+		$alt = __esc('Save');
 	} elseif ($force_type == 'create') {
-		$alt = __('Create');
+		$alt = __esc('Create');
 	} elseif ($force_type == 'import') {
-		$alt = __('Import');
+		$alt = __esc('Import');
 	} elseif ($force_type == 'export') {
-		$alt = __('Export');
+		$alt = __esc('Export');
 	}
 
 	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $cancel_url != '') {
-		$cancel_action = "<input type='button' onClick='cactiReturnTo(\"" . $cancel_url . "\")' value='" . $calt . "'>";
+		$cancel_action = "<input type='button' onClick='cactiReturnTo(\"" . htmlspecialchars($cancel_url) . "\")' value='" . $calt . "'>";
 	} else {
 		$cancel_action = '';
 	}
