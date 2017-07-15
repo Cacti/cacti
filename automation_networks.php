@@ -347,7 +347,7 @@ function form_actions() {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Network.') . "</span></td></tr>\n";
 		$save_html = '';
 	} else {
-		$save_html = "<input type='submit' value='" . __('Continue') . "' name='save'>";
+		$save_html = "<input type='submit' value='" . __esc('Continue') . "' name='save'>";
 	}
 
 	print "<tr>
@@ -355,8 +355,8 @@ function form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>" . ($save_html != '' ? "
-			<input type='submit' name='cancel' value='" . __('Cancel') . "'>
-			$save_html" : "<input type='submit' name='cancel' value='" . __('Return') . "'>") . "
+			<input type='submit' name='cancel' value='" . __esc('Cancel') . "'>
+			$save_html" : "<input type='submit' name='cancel' value='" . __esc('Return') . "'>") . "
 		</td>
 	</tr>\n";
 
@@ -1080,8 +1080,8 @@ function networks_filter() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='go' title='<?php print __('Search');?>' value='<?php print __('Go');?>'>
-							<input type='button' id='clear' title='<?php print __('Clear Filtered');?>' value='<?php print __('Clear');?>'>
+							<input type='button' id='go' title='<?php print __esc('Search');?>' value='<?php print __esc('Go');?>'>
+							<input type='button' id='clear' title='<?php print __esc('Clear Filtered');?>' value='<?php print __esc('Clear');?>'>
 						</span>
 					</td>
 				</tr>
