@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2
+-issue#858: Pagination on SNMP Options wrong
+
 1.1.13
 -issue#605: Remove Spikes feature not fully functional
 -issue#814: Allow 'Save' feature from New Graphs

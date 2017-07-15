@@ -225,7 +225,7 @@ function form_automation_snmp_actions() {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one SNMP Option.') . "</span></td></tr>\n";
 		$save_html = '';
 	} else {
-		$save_html = "<input type='submit' value='" . __('Continue') . "' name='save'>";
+		$save_html = "<input type='submit' value='" . __esc('Continue') . "' name='save'>";
 
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
@@ -245,12 +245,12 @@ function form_automation_snmp_actions() {
 		}
 	}
 
-	print "	<tr>
+	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_array) ? serialize($automation_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
-			<input type='button' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? __('Return'):__('Cancel')) . "' name='cancel'>
+			<input type='button' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -284,7 +284,10 @@ function automation_snmp_item_dnd() {
         $new_order[$sequence] = str_replace('line', '', $option_id);
     }
 
-    $snmp_items = db_fetch_assoc_prepared('SELECT id, sequence FROM automation_snmp_items WHERE snmp_id = ?', array(get_request_var('id')));
+    $snmp_items = db_fetch_assoc_prepared('SELECT id, sequence
+		FROM automation_snmp_items
+		WHERE snmp_id = ?',
+		array(get_request_var('id')));
 
     if(sizeof($snmp_items)) {
         foreach($snmp_items as $item) {
@@ -353,8 +356,8 @@ function automation_snmp_item_remove_confirm() {
     </tr>
     <tr>
         <td align='right'>
-            <input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-            <input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove SNMP Item');?>'>
+            <input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+            <input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove SNMP Item');?>'>
         </td>
     </tr>
     <?php
@@ -713,19 +716,19 @@ function automation_snmp_edit() {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items && $total_items > 1) {
-						$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __('Move Down') . '"></a>';
+						$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __('Move Up') . '"></a>';
+						$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 				}
 
-				$form_data .= '<a class="delete deleteMarker fa fa-remove" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __('Delete') . '"></a>';
+				$form_data .= '<a class="delete deleteMarker fa fa-remove" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __esc('Delete') . '"></a>';
 				$form_data .= '</td></tr>';
 
 				print $form_data;
@@ -836,7 +839,7 @@ function automation_snmp() {
 					</td>
                     <td>
                         <select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __esc('Default');?></option>
                             <?php
                             if (sizeof($item_rows)) {
                                 foreach ($item_rows as $key => $value) {
@@ -848,8 +851,8 @@ function automation_snmp() {
                     </td>
 					<td>
 						<span>
-							<input id='refresh' type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-							<input id='clear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							<input id='refresh' type='button' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input id='clear' type='button' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -893,7 +896,7 @@ function automation_snmp() {
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		COUNT(asnmp.id)
+		COUNT(DISTINCT asnmp.id)
 		FROM automation_snmp AS asnmp
 		LEFT JOIN automation_networks AS anw
 		ON asnmp.id=anw.snmp_id
