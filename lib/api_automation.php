@@ -254,7 +254,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	/* now we build up a new query for counting the rows */
 	$rows_query = $sql_query . $sql_where . $sql_filter;
-	$total_rows = sizeof(db_fetch_assoc($rows_query));
+	$total_rows = sizeof(db_fetch_assoc($rows_query, false));
 
 	$sortby = get_request_var('sort_column');
 	if ($sortby=='hostname') {
@@ -264,7 +264,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$sql_query = $rows_query .
 		' ORDER BY ' . $sortby . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('paged')-1)) . ',' . $rows;
-	$hosts = db_fetch_assoc($sql_query);
+	$hosts = db_fetch_assoc($sql_query, false);
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('paged'), $rows, $total_rows, 7, 'Devices', 'paged', 'main');
 
@@ -553,7 +553,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
 		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$graph_list = db_fetch_assoc($sql);
+	$graph_list = db_fetch_assoc($sql, false);
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Devices', 'page', 'main');
 
@@ -802,23 +802,30 @@ function display_new_graphs($rule, $url) {
 			$sql_query = build_data_query_sql($rule);
 		}
 
-		/* rule item filter first */
-		$sql_filter	= build_rule_item_filter($rule_items, ' a.');
+		$results = db_fetch_cell("SELECT COUNT(*) FROM ($sql_query) AS a");
 
-		/* filter on on the display filter next */
-		$sql_having = build_graph_object_sql_having($rule, get_request_var('filter'));
+		if ($results > 0) {
+			/* rule item filter first */
+			$sql_filter	= build_rule_item_filter($rule_items, ' a.');
 
-		/* now we build up a new query for counting the rows */
-		$rows_query = "SELECT * FROM ($sql_query) AS a " . ($sql_filter != '' ? "WHERE ($sql_filter)":'') . $sql_having;
-		$total_rows = sizeof(db_fetch_assoc($rows_query));
+			/* filter on on the display filter next */
+			$sql_having = build_graph_object_sql_having($rule, get_request_var('filter'));
 
-		if ($total_rows < (get_request_var('rows')*(get_request_var('page')-1))+1) {
-			set_request_var('page', '1');
+			/* now we build up a new query for counting the rows */
+			$rows_query = "SELECT * FROM ($sql_query) AS a " . ($sql_filter != '' ? "WHERE ($sql_filter)":'') . $sql_having;
+			$total_rows = sizeof(db_fetch_assoc($rows_query));
+
+			if ($total_rows < (get_request_var('rows')*(get_request_var('page')-1))+1) {
+				set_request_var('page', '1');
+			}
+
+			$sql_query = $rows_query . ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
+			$snmp_query_indexes = db_fetch_assoc($sql_query);
+		} else {
+			$total_rows = 0;
+			$snmp_query_indexes = array();
 		}
-
-		$sql_query = $rows_query . ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
-
-		$snmp_query_indexes = db_fetch_assoc($sql_query);
 
 		$nav = html_nav_bar('automation_graph_rules.php?action=edit&id=' . $rule['id'], MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 30, __('Matching Objects'), 'page', 'main');
 
@@ -1136,7 +1143,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		$sql_tables
 		$sql_where AND ($sql_filter)";
 
-	$total_rows = sizeof(db_fetch_assoc($rows_query));
+	$total_rows = sizeof(db_fetch_assoc($rows_query, false));
 
 	$sortby = get_request_var('sort_column');
 	if ($sortby=='h.hostname') {
@@ -1147,7 +1154,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		get_request_var('sort_direction') . ' LIMIT ' .
 		($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$templates = db_fetch_assoc($sql_query);
+	$templates = db_fetch_assoc($sql_query, false);
 
 	cacti_log(__FUNCTION__ . " templates sql: $sql_query", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
@@ -1560,13 +1567,12 @@ function build_matching_objects_filter($rule_id, $rule_type) {
 	 * this way, we may add any where clause that might be added via
 	 *  'Matching Device' match
 	 */
-	$sql = "SELECT *
+	$rule_items = db_fetch_assoc_prepared('SELECT *
 		FROM automation_match_rule_items
-		WHERE rule_id=$rule_id
-		AND rule_type=$rule_type
-		ORDER BY sequence";
-
-	$rule_items = db_fetch_assoc($sql);
+		WHERE rule_id = ?
+		AND rule_type = ?
+		ORDER BY sequence',
+		array($rule_id, $rule_type));
 
 	#print '<pre>Items: $sql<br>'; print_r($rule_items); print '</pre>';
 
@@ -1678,7 +1684,7 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
 		$sql_filter .= ' AND ' . $sql_where;
 	}
 
-	return db_fetch_assoc($sql_query . $sql_filter);
+	return db_fetch_assoc($sql_query . $sql_filter, false);
 }
 
 /**
@@ -1710,7 +1716,7 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 		$sql_filter .= ' AND ' . $sql_where;
 	}
 
-	return db_fetch_assoc($sql_query . $sql_filter);
+	return db_fetch_assoc($sql_query . $sql_filter, false);
 }
 
 /*
@@ -1747,7 +1753,7 @@ function get_created_graphs($rule) {
 		AND did.value='" . $snmp_query_graph_id . "'
 		AND ($sql_where)";
 
-	$graphs = db_fetch_assoc($sql);
+	$graphs = db_fetch_assoc($sql, false);
 
 	# rearrange items to ease indexed access
 	$items = array();
@@ -2062,7 +2068,7 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 			/* now we build up a new query for counting the rows */
 			$rows_query = $sql_query . ' WHERE (' . $sql_filter . ') AND h.id=' . $host_id;
 
-			$hosts = db_fetch_assoc($rows_query);
+			$hosts = db_fetch_assoc($rows_query, false);
 
 			cacti_log(__FUNCTION__ . ' Device[' . $host_id . "] - create sql: $rows_query matches:" . sizeof($hosts), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
@@ -2457,7 +2463,7 @@ function create_all_header_nodes ($item_id, $rule) {
 				$sql_tables .
 				$sql_where . ' AND (' . $sql_filter . ')';
 
-				$target = db_fetch_cell($sql);
+				$target = db_fetch_cell($sql, '', false);
 			}
 
 			cacti_log(__FUNCTION__ . " Item $item_id - sql: $sql matches: " . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
