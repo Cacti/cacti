@@ -145,6 +145,7 @@ case 'view':
 	<script type='text/javascript'>
 	/* turn off the page refresh */
 	var refreshMSeconds=9999999;
+	var originalWidth  = null;
 
 	function initializeGraph() {
 		$('.graphWrapper').each(function() {
@@ -186,6 +187,35 @@ case 'view':
 		initializeGraph();
 		$('#navigation').show();
 		$('#navigation_right').show();
+
+		$(window).resize(function() {
+			$('.graphimage').each(function() {
+				imageWidth    = $(this).width();
+				imageHeight   = $(this).height();
+				aspectRatio   = imageWidth/imageHeight;
+
+				if (imageWidth > 0 && originalWidth == null) {
+					originalWidth = imageWidth;
+					originalHeight = imageHeight;
+				}
+
+				$(this).hide();
+
+				mainSize = $('#main').width();
+
+				if (imageWidth + 40 > mainSize || mainSize < originalWidth) {
+					newWidth    = mainSize - 40;
+					aspectRatio = imageWidth / imageHeight;
+					imageWidth  = newWidth;
+					imageHeight = newWidth / aspectRatio;
+					$(this).css({ width: imageWidth, height: imageHeight });
+				} else if (mainSize > originalWidth) {
+					$(this).css({ width: originalWidth, height: originalHeight });
+				}
+
+				$(this).show();
+			});
+		}).trigger('resize');
 	});
 	</script>
 	<?php
