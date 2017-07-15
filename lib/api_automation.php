@@ -534,7 +534,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		ON gl.host_id=h.id
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id=ht.id
-		$sql_where");
+		$sql_where", '', false);
 
 	$sql = "SELECT h.id AS host_id, h.hostname, h.description,
 		h.disabled, h.status, ht.name AS host_template_name,
@@ -802,7 +802,7 @@ function display_new_graphs($rule, $url) {
 			$sql_query = build_data_query_sql($rule);
 		}
 
-		$results = db_fetch_cell("SELECT COUNT(*) FROM ($sql_query) AS a");
+		$results = db_fetch_cell("SELECT COUNT(*) FROM ($sql_query) AS a", '', false);
 
 		if ($results > 0) {
 			/* rule item filter first */
