@@ -150,7 +150,7 @@ function manager(){
 							<?php print __('Search'); ?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>' onChange='applyFilter()'>
+							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 						</td>
 						<td>
 							<?php print __('Receivers'); ?>
@@ -523,7 +523,7 @@ function manager_notifications($id, $header_label) {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>' onChange='applyFilter()'>
+							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 						</td>
 						<td>
 							<?php print __('Receivers');?>
@@ -755,7 +755,7 @@ function manager_logs($id) {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+							<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Severity');?>

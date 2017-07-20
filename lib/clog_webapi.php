@@ -440,7 +440,7 @@ function filter($clogAdmin) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' type='text' size='75' value='<?php print get_request_var('rfilter');?>'>
+						<input id='rfilter' type='text' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 				</tr>
 			</table>

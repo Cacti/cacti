@@ -561,7 +561,7 @@ function automation_snmp_item_edit() {
 	form_hidden_box('id', (isset($automation_snmp_item['snmp_id']) ? $automation_snmp_item['snmp_id'] : '0'), '');
 	form_hidden_box('save_component_automation_snmp_item', '1', '');
 
-	form_save_button(htmlspecialchars('automation_snmp.php?action=edit&id=' . get_request_var('id')));
+	form_save_button('automation_snmp.php?action=edit&id=' . get_request_var('id'));
 
 	?>
 	<script type='text/javascript'>
@@ -819,20 +819,19 @@ function automation_snmp() {
 		$rows = get_request_var('rows');
 	}
 
-	form_start('automation_snmp.php', 'automation_snmp');
-
 	html_start_box(__('Automation SNMP Options'), '100%', '', '3', 'center', 'automation_snmp.php?action=edit');
 
 	?>
 	<tr class='even'>
 		<td>
+		<form id='snmp_form'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+						<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('SNMP Rules');?>
@@ -857,6 +856,7 @@ function automation_snmp() {
 					</td>
 				</tr>
 			</table>
+		</form>
 		</td>
 	</tr>
 	<script type='text/javascript'>
@@ -880,17 +880,20 @@ function automation_snmp() {
 		$('#clear').click(function() {
 			clearFilter();
 		});
+
+		$('#snmp_form').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
 	});
 	</script>
 	<?php
 
 	html_end_box();
 
-	form_end();
-
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (automation_snmp.name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = "WHERE asnmp.name LIKE '%" . get_request_var('filter') . "%'";
 	} else {
 		$sql_where = '';
 	}
@@ -902,8 +905,8 @@ function automation_snmp() {
 		ON asnmp.id=anw.snmp_id
 		LEFT JOIN automation_snmp_items AS asnmpi
 		ON asnmp.id=asnmpi.snmp_id
-		GROUP BY asnmp.id
-		$sql_where");
+		$sql_where
+		GROUP BY asnmp.id");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
@@ -918,8 +921,8 @@ function automation_snmp() {
 		ON asnmp.id=anw.snmp_id
 		LEFT JOIN automation_snmp_items AS asnmpi
 		ON asnmp.id=asnmpi.snmp_id
-		GROUP BY asnmp.id
 		$sql_where
+		GROUP BY asnmp.id
 		$sql_order
 		$sql_limit");
 

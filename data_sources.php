@@ -1250,7 +1250,7 @@ function ds() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' type='text' size='30' value='<?php print get_request_var('rfilter');?>' onChange='applyFilter()'>
+						<input id='rfilter' type='text' size='30' value='<?php print html_escape_request_var('rfilter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Profile');?>

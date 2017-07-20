@@ -897,7 +897,7 @@ function reports_item_edit() {
 
 	echo "<table id='graphdiv' style='text-align:center;width:100%;display:none;'><tr><td align='center' id='graph'></td></tr></table>";
 
-	form_save_button(htmlspecialchars(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var('id')), 'return');
+	form_save_button(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var('id'), 'return');
 
 	if (isset($item['item_type']) && $item['item_type'] == REPORTS_ITEM_GRAPH) {
 		$timespan = array();
@@ -1406,7 +1406,7 @@ function reports() {
 						" . __('Search') . "
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='" . get_request_var('filter') . "'>
+						<input type='text' id='filter' size='25' value='" . html_escape_request_var('filter') . "'>
 					</td>
 					<td>
 						" . __('Status') . "

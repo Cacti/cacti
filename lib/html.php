@@ -806,6 +806,10 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 	}
 }
 
+function html_escape_request_var($string) {
+	return htmlspecialchars(get_request_var($string), ENT_QUOTES, 'UTF-8');
+}
+
 /* html_split_string - takes a string and breaks it into a number of <br> separated segments
    @arg $string - string to be modified and returned
    @arg $length - the maximal string length to split to
@@ -813,7 +817,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
          the correct break location.
    @returns $new_string - the modified string to be returned. */
 function html_split_string($string, $length = 70, $forgiveness = 10) {
-	$new_string = "";
+	$new_string = '';
 	$j    = 0;
 	$done = false;
 

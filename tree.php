@@ -655,7 +655,7 @@ function tree_edit() {
 							<?php print __('Search'); ?>
 						</td>
 						<td>
-							<input id='hfilter' type='text' name='hfilter' size='25' value='<?php print get_request_var('hfilter');?>'>
+							<input id='hfilter' type='text' name='hfilter' size='25' value='<?php print html_escape_request_var('hfilter');?>'>
 						</td>
 					</tr>
 				</table>
@@ -690,7 +690,7 @@ function tree_edit() {
 							<?php print __('Search'); ?>
 						</td>
 						<td>
-							<input id='grfilter' type='text' name='grfilter' size='25' value='<?php print get_request_var('grfilter');?>'>
+							<input id='grfilter' type='text' name='grfilter' size='25' value='<?php print html_escape_request_var('grfilter');?>'>
 						</td>
 					</tr>
 				</table>
@@ -1507,7 +1507,7 @@ function tree() {
 						<?php print __('Search'); ?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Trees'); ?>

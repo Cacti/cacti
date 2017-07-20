@@ -309,7 +309,7 @@ function pages() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='textbox' id='filter' value='<?php print get_request_var('filter');?>' size='25'>
+						<input type='textbox' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Links');?>

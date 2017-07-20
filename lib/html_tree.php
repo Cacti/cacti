@@ -605,7 +605,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' size='30' value='<?php print get_request_var('rfilter');?>'>
+						<input id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<td>
 						<?php print __('Template');?>

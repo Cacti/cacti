@@ -396,7 +396,7 @@ function automation_tree_rules_item_edit() {
 	} else {
 		form_hidden_box('save_component_automation_tree_rule_item', '1', '');
 	}
-	form_save_button(htmlspecialchars('automation_tree_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . get_request_var('rule_type')));
+	form_save_button('automation_tree_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . get_request_var('rule_type'));
 	print '<br>';
 
 	/* display list of matching trees */
@@ -715,7 +715,7 @@ function automation_tree_rules() {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+							<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Status');?>

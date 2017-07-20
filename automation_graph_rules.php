@@ -371,7 +371,7 @@ function automation_graph_rules_item_edit() {
 		form_hidden_box('save_component_automation_graph_rule_item', '1', '');
 	}
 
-	form_save_button(htmlspecialchars('automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type='. get_request_var('rule_type')));
+	form_save_button('automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type='. get_request_var('rule_type'));
 
 	?>
 	<script type='text/javascript'>
@@ -743,7 +743,7 @@ function automation_graph_rules() {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+							<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Data Query');?>

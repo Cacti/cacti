@@ -517,7 +517,7 @@ function pollers() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Collectors');?>

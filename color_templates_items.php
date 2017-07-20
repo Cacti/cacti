@@ -358,6 +358,6 @@ function aggregate_color_item_edit() {
 	form_hidden_box('sequence', (array_key_exists('sequence', $template_item) ? $template_item['sequence'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 
-	form_save_button(htmlspecialchars('color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id')), '', 'color_template_item_id');
+	form_save_button('color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id'), '', 'color_template_item_id');
 }
 

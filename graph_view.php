@@ -518,7 +518,7 @@ case 'list':
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' type='text' size='30' value='<?php print get_request_var('rfilter');?>'>
+						<input id='rfilter' type='text' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>

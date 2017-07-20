@@ -2184,7 +2184,7 @@ function user() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Users');?>
@@ -2520,7 +2520,7 @@ function graph_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Template');?>
@@ -2627,7 +2627,7 @@ function group_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Groups');?>
@@ -2713,7 +2713,7 @@ function device_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Template');?>
@@ -2816,7 +2816,7 @@ function template_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Templates');?>
@@ -2901,7 +2901,7 @@ function tree_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Trees');?>
@@ -2986,7 +2986,7 @@ function member_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Trees');?>

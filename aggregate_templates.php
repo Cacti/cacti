@@ -538,7 +538,7 @@ function aggregate_template() {
 						' . __('Search') . '
 					</td>
 					<td>
-						<input type="text" id="filter" size="25" value="' . get_request_var("filter") . '">
+						<input type="text" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
 					</td>
 					<td>
 						' . __('Templates') . '

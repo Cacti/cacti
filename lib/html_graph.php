@@ -204,7 +204,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='rfilter' size='30' value='<?php print get_request_var('rfilter');?>' onChange='applyGraphFilter()'>
+						<input type='text' id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>' onChange='applyGraphFilter()'>
 					</td>
 					<td>
 						<?php print __('Graphs');?>

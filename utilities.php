@@ -686,7 +686,7 @@ function utilities_view_user_log() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1079,7 +1079,7 @@ function utilities_view_logfile() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' type='text' size='75' value='<?php print get_request_var('rfilter');?>'>
+						<input id='rfilter' type='text' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1314,7 +1314,7 @@ function utilities_view_snmp_cache() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
@@ -1624,7 +1624,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Action');?>
@@ -2290,7 +2290,7 @@ function snmpagent_utilities_run_cache() {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
+							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('MIB');?>
@@ -2541,7 +2541,7 @@ function snmpagent_utilities_run_eventlog(){
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
+							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Severity');?>
