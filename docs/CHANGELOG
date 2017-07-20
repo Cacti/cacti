@@ -4,7 +4,9 @@ Cacti CHANGELOG
 -issue#858: Pagination on SNMP Options wrong
 -issue#860: Network Discovery Subnet Range character limit too small
 -issue#861: The search filter does not support Cyrillic
+-issue#862: Automation - When editing Graph Rules, unable to Change Data Query
 -issue#863: Typo error in auth_login.php for LDAP authentication
+-issue: Link's not showing in Automation Graph and Tree rules on Sunshine theme
 -feature: Resize Graphs on Graph page to be responsive
 
 1.1.13
