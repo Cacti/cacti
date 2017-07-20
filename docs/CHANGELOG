@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2
 -issue#858: Pagination on SNMP Options wrong
+-issue#860: Network Discovery Subnet Range character limit too small
 -issue#861: The search filter does not support Cyrillic
 -issue#863: Typo error in auth_login.php for LDAP authentication
 -feature: Resize Graphs on Graph page to be responsive

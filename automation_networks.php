@@ -425,9 +425,9 @@ function network_edit() {
 		'friendly_name' => __('Subnet Range'),
 		'description' => __('Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*'),
 		'value' => '|arg1:subnet_range|',
-		'textarea_rows' => '2',
-		'textarea_cols' => '60',
-		'max_length' => '255',
+		'textarea_rows' => '4',
+		'textarea_cols' => '80',
+		'max_length' => '1024',
 		'placeholder' => '192.168.1.0/24'
 		),
 	'total_ips' => array(
