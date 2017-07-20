@@ -1364,7 +1364,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			}
 
 			/* column 'Graph Item' */
-			print '<td title="' . __('Aggregate Items are not modifyable') . '">';
+			print '<td title="' . __esc('Aggregate Items are not modifyable') . '">';
 			if ($is_edit == false) {
 				/* no existing aggregate graph/template */
 				print __('Item # %d', ($i+1));
@@ -1375,7 +1375,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 				/* existing aggregate template or graph with no templating */
 				/* create a link to graph item editor */
 				//print '<a class="pic" href="aggregate_items.php?action=item_edit&'.$item_editor_link_param.'&id='.$item['id'].'">' . __('Item # %d', ($i+1)) . '</a>';
-				print '<a title="' . __('Aggregate Items are not editable') . '" class="pic" href="#">' . __('Item # %d', ($i+1)) . '</a>';
+				print '<a title="' . __esc('Aggregate Items are not editable') . '" class="pic" href="#">' . __('Item # %d', ($i+1)) . '</a>';
 			}
 			print "</td>\n";
 

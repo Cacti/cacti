@@ -412,7 +412,7 @@ function template() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Templates');?>
@@ -441,9 +441,9 @@ function template() {
 			<script type='text/javascript'>
 			function applyFilter() {
 				strURL = 'automation_templates.php' +
-					'?filter='     + escape($('#filter').val())+
-					'&rows='       + $('#rows').val()+
-					'&has_graphs=' + $('#has_graphs').is(':checked')+
+					'?filter='     + $('#filter').val() +
+					'&rows='       + $('#rows').val() +
+					'&has_graphs=' + $('#has_graphs').is(':checked') +
 					'&header=false';
 				loadPageNoHeader(strURL);
 			}

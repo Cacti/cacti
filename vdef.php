@@ -695,7 +695,7 @@ function vdef_filter() {
 
 			function applyFilter() {
 				strURL  = 'vdef.php?header=false';
-				strURL += '&filter='+escape($('#filter').val());
+				strURL += '&filter='+$('#filter').val();
 				strURL += '&rows='+$('#rows').val();
 				strURL += '&has_graphs='+$('#has_graphs').is(':checked');
 				loadPageNoHeader(strURL);

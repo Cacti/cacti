@@ -862,7 +862,7 @@ function automation_snmp() {
 	<script type='text/javascript'>
 	function applyFilter() {
 		strURL  = 'automation_snmp.php?header=false';
-		strURL += '&filter='+escape($('#filter').val());
+		strURL += '&filter='+$('#filter').val();
 		strURL += '&rows='+$('#rows').val();
 		loadPageNoHeader(strURL);
 	}
@@ -946,7 +946,7 @@ function automation_snmp() {
 		foreach ($snmp_groups as $snmp_group) {
 			form_alternate_row('line' . $snmp_group['id'], true);
 
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_snmp.php?action=edit&id=' . $snmp_group['id'] . '&page=1') . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($snmp_group['name'])) : htmlspecialchars($snmp_group['name'])) . '</a>', $snmp_group['id']);
+			form_selectable_cell(filter_value($snmp_group['name'], get_request_var('filter'), 'automation_snmp.php?action=edit&id=' . $snmp_group['id'] . '&page=1'), $snmp_group['id']);
 			form_selectable_cell($snmp_group['networks'], $snmp_group['id'], '', 'text-align:right;');
 			form_selectable_cell($snmp_group['totals'], $snmp_group['id'], '', 'text-align:right;');
 			form_selectable_cell($snmp_group['v1entries'], $snmp_group['id'], '', 'text-align:right;');
@@ -975,7 +975,7 @@ function automation_snmp() {
 	<script type='text/javascript'>
 	function applyFilter() {
 		strURL  = 'automation_snmp.php?header=false&rows=' + $('#rows').val();
-		strURL += strURL + '&filter=' + escape($('#filter').val());
+		strURL += strURL + '&filter=' + $('#filter').val();
 		loadPageNoHeader(strURL);
 	}
 	</script>

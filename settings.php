@@ -290,7 +290,7 @@ default:
 			loadPageNoHeader(strURL);
 		});
 
-		$('input[value="Save"]').click(function(event) {
+		$('input[value="<?php print __esc('Save');?>"]').click(function(event) {
 			event.preventDefault();
 
 			if (parseInt($('#cron_interval').val()) < parseInt($('#poller_interval').val())) {

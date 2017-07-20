@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2
 -issue#858: Pagination on SNMP Options wrong
+-issue#861: The search filter does not support Cyrillic
 -feature: Resize Graphs on Graph page to be responsive
 
 1.1.13

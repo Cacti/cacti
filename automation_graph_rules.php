@@ -762,7 +762,7 @@ function automation_graph_rules() {
 		function applyFilter() {
 			strURL = 'automation_graph_rules.php' +
 				'?status='        + $('#status').val()+
-				'&filter='        + escape($('#filter').val())+
+				'&filter='        + $('#filter').val()+
 				'&rows='          + $('#rows').val()+
 				'&snmp_query_id=' + $('#snmp_query_id').val()+
 				'&header=false';

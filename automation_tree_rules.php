@@ -722,9 +722,9 @@ function automation_tree_rules() {
 						</td>
 						<td>
 							<select id='status'>
-								<option value='-1' <?php print (get_request_var('status') == '-1' ? ' selected':'');?>>Any</option>
-								<option value='-2' <?php print (get_request_var('status') == '-2' ? ' selected':'');?>>Enabled</option>
-								<option value='-3' <?php print (get_request_var('status') == '-3' ? ' selected':'');?>>Disabled</option>
+								<option value='-1' <?php print (get_request_var('status') == '-1' ? ' selected':'');?>><?php print __('Any');?></option>
+								<option value='-2' <?php print (get_request_var('status') == '-2' ? ' selected':'');?>><?php print __('Enabled');?></option>
+								<option value='-3' <?php print (get_request_var('status') == '-3' ? ' selected':'');?>><?php print __('Disabled');?></option>
 							</select>
 						</td>
 						<td>
@@ -755,7 +755,7 @@ function automation_tree_rules() {
 			function applyFilter() {
 				strURL = 'automation_tree_rules.php' +
 					'?status='+$('#status').val() +
-					'&filter='+escape($('#filter').val()) +
+					'&filter='+$('#filter').val() +
 					'&rows='+$('#rows').val() +
 					'&header=false';
 

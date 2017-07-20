@@ -309,11 +309,11 @@ function aggregate_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Color Template(s)') . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Delete Color Template(s)') . "'>";
 		}
 	} else {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Aggregate Graph Template.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -572,8 +572,8 @@ function aggregate_template() {
 					</td>
 					<td>
 						<span>
-							<input type="button" value="' . __('Go') . '" id="refresh">
-							<input type="button" value="' . __('Clear') . '" id="clear">
+							<input type="button" value="' . __esc('Go') . '" id="refresh">
+							<input type="button" value="' . __esc('Clear') . '" id="clear">
 						</span>
 					</td>
 				</tr>
@@ -683,7 +683,7 @@ function aggregate_template() {
 		strURL  = 'aggregate_templates.php';
 		strURL += '?rows=' + $('#rows').val();
 		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}

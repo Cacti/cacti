@@ -100,7 +100,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&rowsd=' + $('#rowsd').val();
-		strURL += '&filterd=' + escape($('#filterd').val());
+		strURL += '&filterd=' + $('#filterd').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -193,8 +193,8 @@ function display_matching_hosts($rule, $rule_type, $url) {
 						</td>
 						<td>
 							<span>
-								<input id='refresh' type='button' value='<?php print __('Go');?>'>
-								<input id='clear' type='button' value='<?php print __('Clear');?>'>
+								<input id='refresh' type='button' value='<?php print __esc('Go');?>'>
+								<input id='clear' type='button' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
 					</tr>
@@ -379,7 +379,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	function applyFilter() {
 		strURL  = '<?php print $url;?>' + '&host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -457,8 +457,8 @@ function display_matching_graphs($rule, $rule_type, $url) {
 						</td>
 						<td>
 							<span>
-								<input id='refresh' type='button' value='<?php print __('Go');?>'>
-								<input id='clear' type='button' value='<?php print __('Clear');?>'>
+								<input id='refresh' type='button' value='<?php print __esc('Go');?>'>
+								<input id='clear' type='button' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
 					</tr>
@@ -660,7 +660,7 @@ function display_new_graphs($rule, $url) {
 	function applyObjectFilter() {
 		strURL  = '<?php print $url;?>';
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -718,8 +718,8 @@ function display_new_graphs($rule, $url) {
 						</td>
 						<td>
 							<span>
-								<input id='orefresh' type='button' value='<?php print __('Go');?>'>
-								<input id='oclear' type='button' value='<?php print __('Clear');?>'>
+								<input id='orefresh' type='button' value='<?php print __esc('Go');?>'>
+								<input id='oclear' type='button' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
 					</tr>
@@ -978,7 +978,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -1071,8 +1071,8 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 					</td>
 					<td>
 						<span>
-							<input id='refresh' type='button' value='<?php print __('Go');?>'>
-							<input id='clear' type='button' value='<?php print __('Clear');?>'>
+							<input id='refresh' type='button' value='<?php print __esc('Go');?>'>
+							<input id='clear' type='button' value='<?php print __esc('Clear');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1261,20 +1261,20 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td class="right nowrap">';
 
 			if ($i != sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td style="width:1%;">
-				<a class="pid deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Delete') . '"></a></td>
+				<a class="pid deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1324,20 +1324,20 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td class="right nowrap">';
 
 			if ($i != sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-awwow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
+				$form_data .= '<a class="pic fa fa-awwow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td class="right nowrap">
-				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Delete') . '"></a></td>
+				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1388,20 +1388,20 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 
 			$form_data .= '<td class="right">';
 			if ($i != sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td class="nowrap" style="width:1%;">
-				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Delete') . '"></a></td>
+				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;

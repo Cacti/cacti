@@ -319,10 +319,10 @@ function form_actions() {
 			</tr>\n";
 		}
 
-		$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Query', sizeof($dq_array)) . "'>";
+		$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Query', sizeof($dq_array)) . "'>";
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one data query.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -422,8 +422,8 @@ function data_query_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove VDEF Item');?>'>
+			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
 		</td>
 	</tr>
 	<?php
@@ -664,7 +664,7 @@ function data_query_item_edit() {
 						<input type='text' id='svg_text' size='60'>
 					</td>
 					<td>
-						<input id='svg_x' type='button' name='svg_x' value='<?php print __('Add');?>' title='<?php print __('Add Graph Title Suggested Name');?>'>
+						<input id='svg_x' type='button' name='svg_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Graph Title Suggested Name');?>'>
 					</td>
 				</tr>
 			</table>
@@ -763,7 +763,7 @@ function data_query_item_edit() {
 								<input id='svds_text' type='text' name='svds_<?php print $data_template['id'];?>_text' size='60'>
 							</td>
 							<td>
-								<input id='svds_x' type='button' name='svds_x' value='<?php print __('Add');?>' title='<?php print __('Add Data Source Name Suggested Name');?>'>
+								<input id='svds_x' type='button' name='svds_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Data Source Name Suggested Name');?>'>
 							</td>
 						</tr>
 					</table>
@@ -1053,7 +1053,7 @@ function data_query() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Data Queries');?>
@@ -1072,8 +1072,8 @@ function data_query() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' name='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1082,7 +1082,7 @@ function data_query() {
 		<script type='text/javascript'>
 		function applyFilter() {
 			strURL  = 'data_queries.php?header=false';
-			strURL += '&filter='+escape($('#filter').val());
+			strURL += '&filter='+$('#filter').val();
 			strURL += '&rows='+$('#rows').val();
 			loadPageNoHeader(strURL);
 		}

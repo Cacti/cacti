@@ -82,12 +82,12 @@ switch (get_request_var('action')) {
 case 'changepassword':
 	// Secpass checking
 	$error = secpass_check_pass(get_nfilter_request_var('password'));
-	
+
 	if ($error != 'ok') {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>$error</span>";
 	}
-			
+
 	if (!secpass_check_history($_SESSION['sess_user_id'], get_nfilter_request_var('password'))) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('You cannot use a previously entered password!') . "</span>";
@@ -125,30 +125,30 @@ case 'changepassword':
 			$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . "</span>";
 		}
 	}
-	
+
 	if (get_nfilter_request_var('password') !== (get_nfilter_request_var('confirm'))) {
 	    $bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . "</span>";
 	}
-	
+
 	if ($bad_password == false && get_nfilter_request_var('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
 		// Password change is good to go
 		if (read_config_option('secpass_expirepass') > 0) {
-			db_execute_prepared("UPDATE user_auth 
-				SET lastchange = ? 
+			db_execute_prepared("UPDATE user_auth
+				SET lastchange = ?
 				WHERE id = ?
-				AND realm = 0 
-				AND enabled = 'on'", 
+				AND realm = 0
+				AND enabled = 'on'",
 				array(time(), intval($_SESSION['sess_user_id'])));
 		}
 
 		$history = intval(read_config_option('secpass_history'));
 		if ($history > 0) {
-				$h = db_fetch_row_prepared("SELECT password, password_history 
-					FROM user_auth 
-					WHERE id = ? 
-					AND realm = 0 
-					AND enabled = 'on'", 
+				$h = db_fetch_row_prepared("SELECT password, password_history
+					FROM user_auth
+					WHERE id = ?
+					AND realm = 0
+					AND enabled = 'on'",
 					array($_SESSION['sess_user_id']));
 
 				$op = $h['password'];
@@ -159,19 +159,19 @@ case 'changepassword':
 				$h[] = $op;
 				$h = implode('|', $h);
 
-				db_execute_prepared("UPDATE user_auth 
-					SET password_history = ? WHERE id = ? AND realm = 0 AND enabled = 'on'", 
+				db_execute_prepared("UPDATE user_auth
+					SET password_history = ? WHERE id = ? AND realm = 0 AND enabled = 'on'",
 					array($h, $_SESSION['sess_user_id']));
 		}
 
-		db_execute_prepared('INSERT IGNORE INTO user_log 
-			(username, result, time, ip) 
-			VALUES (?, 3, NOW(), ?)', 
+		db_execute_prepared('INSERT IGNORE INTO user_log
+			(username, result, time, ip)
+			VALUES (?, 3, NOW(), ?)',
 			array($user['username'], $_SERVER['REMOTE_ADDR']));
 
-		db_execute_prepared("UPDATE user_auth 
-			SET must_change_password = '', password = ? 
-			WHERE id = ?", 
+		db_execute_prepared("UPDATE user_auth
+			SET must_change_password = '', password = ?
+			WHERE id = ?",
 			array($password_new != '' ? $password_new:$password_old, $_SESSION['sess_user_id']));
 
 		kill_session_var('sess_change_password');
@@ -180,9 +180,9 @@ case 'changepassword':
 
 		/* if no console permissions show graphs otherwise, pay attention to user setting */
 		$realm_id    = $user_auth_realm_filenames['index.php'];
-		$has_console = db_fetch_cell_prepared('SELECT realm_id 
-			FROM user_auth_realm 
-			WHERE user_id = ? AND realm_id = ?', 
+		$has_console = db_fetch_cell_prepared('SELECT realm_id
+			FROM user_auth_realm
+			WHERE user_id = ? AND realm_id = ?',
 			array($_SESSION['sess_user_id'], $realm_id));
 
 		if (basename(get_nfilter_request_var('ref')) == 'auth_changepassword.php' || basename(get_nfilter_request_var('ref')) == '') {
@@ -304,8 +304,8 @@ print "<body class='loginBody'>
 							<td><input type='password' name='confirm' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
-							<td class='nowrap' colspan='2'><input type='submit' value='" . __('Save') . "'>
-						" . ($user['must_change_password'] != 'on' ? "<input type='button' onClick='window.history.go(-1)' value='" . __('Return') . "'>":"") . "
+							<td class='nowrap' colspan='2'><input type='submit' value='" . __esc('Save') . "'>
+						" . ($user['must_change_password'] != 'on' ? "<input type='button' onClick='window.history.go(-1)' value='" . __esc('Return') . "'>":"") . "
 							</td>
 						</tr>
 					</table>

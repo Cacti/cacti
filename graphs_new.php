@@ -481,7 +481,7 @@ function graphs() {
 	function applyFilter() {
 		strURL  = '?graph_type=' + $('#graph_type').val();
 		strURL += '&host_id=' + $('#host_id').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -556,9 +556,9 @@ function graphs() {
 						</td>
 						<td>
 							<span>
-								<input id='refresh' type='submit' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-								<input id='clear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
-								<input id='save' type='button' value='<?php print __('Save');?>' title='<?php print __('Save Filters');?>'>
+								<input id='refresh' type='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input id='clear' type='button' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+								<input id='save' type='button' value='<?php print __esc('Save');?>' title='<?php print __esc('Save Filters');?>'>
 							</span>
 						</td>
 						<td id='text'></td>
@@ -570,7 +570,7 @@ function graphs() {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+							<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Rows');?>
@@ -635,7 +635,7 @@ function graphs() {
 
 		print "<tr class='tableHeader'>
 				<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
-				<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __('Select All') . "' onClick='SelectAll(\"sg\",this.checked)'></th>\n
+				<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . "' onClick='SelectAll(\"sg\",this.checked)'></th>\n
 			</tr>\n";
 
 		if (get_request_var('filter') != '') {
@@ -927,7 +927,7 @@ function graphs() {
 						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header
-									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __('Select All') . "' onClick='SelectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'></th>\n
+									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __esc('Select All') . "' onClick='SelectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'></th>\n
 								</tr>\n";
 						}
 
@@ -998,7 +998,7 @@ function graphs() {
 							" . __('Select a Graph Type to Create') . "
 						</td>
 						<td class='right'>
-							<input type='button' class='default' id='default_" .  $snmp_query['id'] . "' value='" . __('Set Default') . "' title='" . __('Make selection default') . "'>
+							<input type='button' class='default' id='default_" .  $snmp_query['id'] . "' value='" . __esc('Set Default') . "' title='" . __esc('Make selection default') . "'>
 						</td>
 						<td class='right'>
 							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter:'') . ");'>
