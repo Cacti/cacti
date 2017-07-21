@@ -147,7 +147,7 @@ function settings() {
 
 	form_start('auth_profile.php');
 
-	html_start_box( __('User Account Details'), '100%', true, '3', 'center', '');
+	html_start_box(__('User Account Details'), '100%', true, '3', 'center', '');
 
 	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
@@ -418,7 +418,7 @@ function settings() {
 		});
 
 		$('input[value="<?php print __esc('Return');?>"]').unbind().click(function(event) {
-			document.location = '<?php print $_SESSION['profile_referer'];?>';
+			document.location = '<?php print htmlspecialchars($_SESSION['profile_referer']);?>';
 		});
 	});
 
@@ -427,7 +427,7 @@ function settings() {
 
 	form_hidden_box('save_component_graph_config','1','');
 
-	form_save_buttons(array(array('id' => 'return', 'value' => 'Return'), array('id' => 'save', 'value' => 'Save')));
+	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return')), array('id' => 'save', 'value' => __esc('Save'))));
 
 	form_end();
 }
