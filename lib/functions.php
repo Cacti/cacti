@@ -3731,12 +3731,10 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$text['text']  = strip_tags($body);
 		$mail->isHTML(false);
 		$mail->Body    = $text['text'];
-		$mail->AltBody = $text['text'];
 	} elseif ($html == false) {
 		$text['text']  = strip_tags($body);
 		$mail->isHTML(false);
 		$mail->Body    = $text['text'];
-		$mail->AltBody = $text['text'];
 	} else {
 		$text['html']  = $body . '<br>';
 		$text['text']  = strip_tags(str_replace('<br>', "\n", $body));
