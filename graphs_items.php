@@ -61,6 +61,14 @@ switch (get_request_var('action')) {
 
 		header('Location: graphs.php?header=false&action=graph_edit&id=' . get_request_var('local_graph_id'));
 		break;
+	case 'ajax_hosts':
+		get_allowed_ajax_hosts();
+
+		break;
+	case 'ajax_hosts_noany':
+		get_allowed_ajax_hosts(false);
+
+		break;
 	case 'ajax_graph_items':
 		$sql_where = '';
 
