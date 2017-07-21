@@ -282,7 +282,11 @@ if ($sql_where != '') {
 		'local_graph_id', 'title_cache'
 	);
 } else {
-	$graphs = array();
+	$sql_where = 'gl.graph_template_id=0';
+	$graphs = array_rekey(
+		get_allowed_graphs($sql_where),
+		'local_graph_id', 'title_cache'
+	);
 }
 
 $trees = array_rekey(
