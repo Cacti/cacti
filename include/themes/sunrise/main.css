@@ -1182,10 +1182,14 @@ table.cactiTable {
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 8px 0px 8px;
+	padding: 0px 16px 0px 3px;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;
+}
+
+.cactiTableButton span:last-child, .cactiTableTitle span:last-child {
+	padding-right: 8px;
 }
 
 .cactiDebugTable {
