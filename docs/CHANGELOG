@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#863: Typo error in auth_login.php for LDAP authentication
 -issue#867: Cross-site scripting (XSS) vulnerability in auth_profile.php
 -issue: Link's not showing in Automation Graph and Tree rules on Sunshine theme
+-issue: Make Templates Export responsive
 -feature: Resize Graphs on Graph page to be responsive
 
 1.1.13

@@ -91,83 +91,98 @@ function export() {
 		set_request_var('export_type', 'host_template');
 	}
 
-	html_start_box( __('Export Templates'), '100%', '', '3', 'center', '');
+	foreach($export_types as $id => $type) {
+		$export_array[$id] = $type['name'];
+	}
 
-	?>
-	<tr class='tableRow'>
-		<td>
-			<form id='form_export' action='templates_export.php'>
-				<table>
-					<tr>
-						<td style='font-size:1.2em;'><?php print __('What would you like to export?');?></td>
-						<td>
-							<select id='export_type'>
-								<?php
-								foreach ($export_types as $key => $array) {
-									print "<option value='$key'"; if (get_nfilter_request_var('export_type') == $key) { print ' selected'; } print '>' . htmlspecialchars($array['name'], ENT_QUOTES) . "</option>\n";
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-				</table>
-			</form>
-			<script type='text/javascript'>
-			$(function() {
-				$('#export_type').change(function() {
-					strURL = 'templates_export.php?header=false&export_type='+$('#export_type').val();
-					loadPageNoHeader(strURL);
-				});
-			});
-			</script>
-		</td>
-	</tr>
-	<?php
+	$form_template_export1 = array(
+		'export_type' => array(
+			'friendly_name' => __('What would you like to export?'),
+			'description' => __('Select the Template type that you wish to export from Cacti.'),
+			'method' => 'drop_array',
+			'value' => 'host_template',
+			'array' => $export_array,
+			'default' => 'host_template'
+		)
+	);
 
-	html_end_box();
+	$export_item_ids = db_fetch_assoc($export_types{get_nfilter_request_var('export_type')}['dropdown_sql']);
+
+	$form_template_export2 = array(
+		'export_item_id' => array(
+			'friendly_name' => __('Device Template to Export'),
+			'description' => __('Choose the Template to export to XML.'),
+			'method' => 'drop_sql',
+			'value' => '0',
+			'default' => '0',
+			'sql' => $export_types[get_nfilter_request_var('export_type')]['dropdown_sql']
+		),
+		'include_deps' => array(
+			'friendly_name' => __('Include Dependencies'),
+			'description' => __('Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail.'),
+			'value' => 'on',
+			'method' => 'checkbox',
+			'default' => 'on'
+		),
+		'output_format' => array(
+			'friendly_name' => __('Output Format'),
+			'description' => __('Choose the format to output the resulting XML file in.'),
+			'method' => 'radio',
+			'value' => '3',
+			'default' => '0',
+			'items' => array(
+				0 => array(
+					'radio_value' => '1',
+					'radio_caption' => __('Output to the Browser (within Cacti)'),
+					),
+				1 => array(
+					'radio_value' => '2',
+					'radio_caption' => __('Output to the Browser (raw XML)'),
+					),
+				2 => array(
+					'radio_value' => '3',
+					'radio_caption' => __('Save File Locally')
+				)
+			)
+		)
+	);
 
 	form_start('templates_export.php', 'export');
 
-	html_start_box( __('Available Templates [%s]', $export_types{get_nfilter_request_var('export_type')}['name']), '100%', '', '3', 'center', '');
+	html_start_box( __('Export Templates'), '100%', '', '3', 'center', '');
 
-	form_alternate_row();?>
-		<td style='width:50%;'>
-			<span class='textEditTitle'><?php print __('%s to Export', $export_types{get_nfilter_request_var('export_type')}['name']); ?></span><br>
-			<?php print __('Choose the exact item to export to XML.'); ?>
-		</td>
-		<td>
-			<?php form_dropdown('export_item_id', db_fetch_assoc($export_types{get_nfilter_request_var('export_type')}['dropdown_sql']),'name','id','','','0');?>
-		</td>
-	</tr>
-
-	<?php form_alternate_row(); ?>
-		<td style='width:50%;'>
-			<span class='textEditTitle'><?php print __('Include Dependencies'); ?></span><br>
-			<?php print __('Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail.');?>
-		</td>
-		<td>
-			<?php form_checkbox('include_deps', 'on', __('Include Dependencies'), 'on', '', true);?>
-		</td>
-	</tr>
-
-	<?php form_alternate_row(); ?>
-		<td style='width:50%;'>
-			<span class='textEditTitle'><?php print __('Output Format');?></span><br>
-			<?php print __('Choose the format to output the resulting XML file in.');?>
-		</td>
-		<td>
-			<?php
-			form_radio_button('output_format', '3', '1', __('Output to the Browser (within Cacti)'),'1',true); print '<br>';
-			form_radio_button('output_format', '3', '2', __('Output to the Browser (raw XML)'),'1',true); print '<br>';
-			form_radio_button('output_format', '3', '3', __('Save File Locally'),'1',true);
-			form_hidden_box('export_type', get_nfilter_request_var('export_type'), '');
-			form_hidden_box('save_component_export','1','');
-			?>
-		</td>
-	</tr>
-	<?php
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => $form_template_export1
+		)
+	);
 
 	html_end_box();
+
+	html_start_box( __('Available Templates [%s]', $export_types{get_nfilter_request_var('export_type')}['name']), '100%', '', '3', 'center', '');
+
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => $form_template_export2
+		)
+	);
+
+	form_hidden_box('save_component_export','1','');
+
+	html_end_box();
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#export_type').change(function() {
+			strURL = 'templates_export.php?header=false&export_type='+$('#export_type').val();
+			loadPageNoHeader(strURL);
+		});
+	});
+	</script>
+	<?php
 
 	form_save_button('', 'export', '', false);
 }
