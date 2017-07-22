@@ -2084,6 +2084,10 @@ tr#realtime td:first-child {
 	color: #eeeeee;
 }
 
+.menuitem {
+	white-space: nowrap;
+}
+
 .menu_glyph {
 	font-size: 18px;
 	padding-right: 5px;

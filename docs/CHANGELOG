@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-1.2
+1.14
 -issue#849: Unable to select host in Graph Item pick
 -issue#850: Reporting not allowing Non-templated Graphs
 -issue#858: Pagination on SNMP Options wrong
@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#867: Cross-site scripting (XSS) vulnerability in auth_profile.php
 -issue: Link's not showing in Automation Graph and Tree rules on Sunshine theme
 -issue: Make Templates Export responsive
+-issue: Don't wrap menu glyphs and menuitems
 -feature: Resize Graphs on Graph page to be responsive
 -feature: Make import text a hidden field as it is likely seldom used
 

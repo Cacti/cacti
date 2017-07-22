@@ -2144,6 +2144,10 @@ tr#realtime td:first-child {
 	-moz-border-radius-topleft: 0px !important;
 }
 
+.menuitem {
+	white-space: nowrap;
+}
+
 .menu_glyph {
 	font-size: 12px;
 	width: 20px;
@@ -2151,7 +2155,7 @@ tr#realtime td:first-child {
 }
 
 .submenu_glyph {
-	width:20px;
+	width: 20px;
 	vertical-align: 10%;
 }
 

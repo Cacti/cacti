@@ -1965,6 +1965,10 @@ tr#realtime td:first-child {
 	background: rgba(0,0,0,0.9);
 }
 
+.menuitem {
+	white-space: nowrap;
+}
+
 .menu_glyph {
 	font-size: 12px;
 	width: 20px;
