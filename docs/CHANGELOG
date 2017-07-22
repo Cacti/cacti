@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue: Link's not showing in Automation Graph and Tree rules on Sunshine theme
 -issue: Make Templates Export responsive
 -issue: Don't wrap menu glyphs and menuitems
+-issue: The function get_order_string() can fail when encountering reserved word columns
 -feature: Resize Graphs on Graph page to be responsive
 -feature: Make import text a hidden field as it is likely seldom used
 
