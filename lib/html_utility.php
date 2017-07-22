@@ -709,9 +709,9 @@ function update_order_string($inplace = false) {
 			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
 				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
-					$order .= ($order != '' ? $del . ', ':'') . 'INET_ATON(' . $column . ") AS `$column` " . $direction;
+					$order .= ($order != '' ? $del . ', ':$del) . 'INET_ATON(' . $column . ") AS `$column` " . $direction;
 				} else {
-					$order .= ($order != '' ? $del . ', ' . $del:'') . $column . $del . ' ' . $direction;
+					$order .= ($order != '' ? $del . ', ' . $del:$del) . $column . $del . ' ' . $direction;
 				}
 			}
 			$_SESSION['sort_string'][$page] .= $order;
