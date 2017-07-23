@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-1.14
+1.1.14
 -issue#849: Unable to select host in Graph Item pick
 -issue#850: Reporting not allowing Non-templated Graphs
 -issue#858: Pagination on SNMP Options wrong
