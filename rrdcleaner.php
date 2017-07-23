@@ -475,7 +475,7 @@ function filter() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Time Since Update');?>
@@ -512,13 +512,13 @@ function filter() {
 						<span>
 							<input id='go' type='submit' value='<?php print __x('filter: use', 'Go');?>'>
 							<input id='clear' type='button' value='<?php print __x('filter: reset', 'Clear');?>'>
-							<input id='rescan' type='button' value='<?php print __('Rescan');?>' name='rescan'>
+							<input id='rescan' type='button' value='<?php print __esc('Rescan');?>' name='rescan'>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input id='remall' type='button' value='<?php print __('Delete All');?>' title='<?php print __('Delete All Unknown RRDfiles');?>'>
-							<input id='arcall' type='button' value='<?php print __('Archive All');?>' title='<?php print __('Archive All Unknown RRDfiles');?>'>
+							<input id='remall' type='button' value='<?php print __esc('Delete All');?>' title='<?php print __esc('Delete All Unknown RRDfiles');?>'>
+							<input id='arcall' type='button' value='<?php print __esc('Archive All');?>' title='<?php print __esc('Archive All Unknown RRDfiles');?>'>
 						</span>
 					</td>
 					<td id='text'></td>
@@ -528,7 +528,7 @@ function filter() {
 			<script type="text/javascript">
 			function refreshForm() {
 				strURL = 'rrdcleaner.php?header=false'+
-					'&filter='+escape($('#filter').val())+
+					'&filter='+$('#filter').val()+
 					'&age='+$('#age').val()+
 					'&rows='+$('#rows').val();
 				loadPageNoHeader(strURL);

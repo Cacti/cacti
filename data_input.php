@@ -215,10 +215,10 @@ function form_actions() {
 			</tr>\n";
 		}
 
-		$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', sizeof($di_array)) . "'>";
+		$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', sizeof($di_array)) . "'>";
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one data input method.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -263,8 +263,8 @@ function field_remove_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove Data Input Field');?>'>
+			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Input Field');?>'>
 		</td>
 	</tr>
 	<?php
@@ -487,7 +487,7 @@ function data_edit() {
 						<?php print htmlspecialchars($field['name']);?>
 					</td>
 					<td class="right">
-						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __('Delete');?>'></a>
+						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
 					</td>
 					<?php
 				form_end_row();
@@ -526,7 +526,7 @@ function data_edit() {
 						<?php print html_boolean_friendly($field['update_rra']);?>
 					</td>
 					<td class='right'>
-						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __('Delete');?>'></a>
+						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -620,7 +620,7 @@ function data() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Input Methods');?>
@@ -639,8 +639,8 @@ function data() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php __('Clear Filters');?>'>
+							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -650,7 +650,7 @@ function data() {
 
 		function applyFilter() {
 			strURL  = 'data_input.php?header=false';
-			strURL += '&filter='+escape($('#filter').val());
+			strURL += '&filter='+$('#filter').val();
 			strURL += '&rows='+$('#rows').val();
 			loadPageNoHeader(strURL);
 		}

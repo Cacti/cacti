@@ -337,7 +337,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' value='" . __('Continue') . "' title='" . __('Delete User(s)') . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Delete User(s)') . "'>";
 		}
 		$user_id = '';
 
@@ -377,7 +377,7 @@ function form_actions() {
 			print "</p></td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Copy User') . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Copy User') . "'>";
 		}
 
 		if ((get_nfilter_request_var('drp_action') == '3') && (sizeof($user_array))) { // enable
@@ -388,7 +388,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Enable User(s)') . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Enable User(s)') . "'>";
 		}
 
 		if ((get_nfilter_request_var('drp_action') == '4') && (sizeof($user_array))) { // disable
@@ -399,7 +399,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Disable User(s)') . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Disable User(s)') . "'>";
 		}
 
 		if ((get_nfilter_request_var('drp_action') == '5') && (sizeof($user_array))) { // batch copy
@@ -421,12 +421,12 @@ function form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Reset User(s) Settings') . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Reset User(s) Settings') . "'>";
 		}
 	} else {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one user.') . "</span></td></tr>\n";
 
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -841,7 +841,7 @@ function graph_perms_edit($tab, $header_label) {
 				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
 			</td>
 			<td>
-				<input type='submit' name='update_policy' value='Update'>
+				<input type='submit' name='update_policy' value='<?php print __esc('Update');?>'>
 				<input type='hidden' name='tab' value='<?php print $tab;?>'>
 				<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
 				<input type='hidden' name='update_policy' value='1'>
@@ -1146,7 +1146,7 @@ function graph_perms_edit($tab, $header_label) {
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 			</td>
 			<td>
-				<input type='submit' name='update_policy' value='Update'>
+				<input type='submit' name='update_policy' value='<?php print __esc('Update');?>'>
 				<input type='hidden' name='tab' value='<?php print $tab;?>'>
 				<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
 				<input type='hidden' name='update_policy' value='1'>
@@ -1307,7 +1307,7 @@ function graph_perms_edit($tab, $header_label) {
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 			</td>
 			<td>
-				<input type='submit' name='update_policy' value='Update'>
+				<input type='submit' name='update_policy' value='<?php print __esc('Update');?>'>
 				<input type='hidden' name='tab' value='<?php print $tab;?>'>
 				<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
 				<input type='hidden' name='update_policy' value='1'>
@@ -1448,7 +1448,7 @@ function graph_perms_edit($tab, $header_label) {
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 			</td>
 			<td>
-				<input type='submit' name='update_policy' value='Update'>
+				<input type='submit' name='update_policy' value='<?php print __esc('Update');?>'>
 				<input type='hidden' name='tab' value='<?php print $tab;?>'>
 				<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
 				<input type='hidden' name='update_policy' value='1'>
@@ -1582,7 +1582,7 @@ function user_realms_edit($header_label) {
 	print "<div class='cactiTable' style='width:100%;text-align:left;'>
 		<div>
 			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . " $header_label</span></div>
-			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' name='all' title='" . __('Select All') . "' onClick='selectAllRealms(this.checked)'></a><?php }?></span></div>
+			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' name='all' title='" . __esc('Select All') . "' onClick='selectAllRealms(this.checked)'></a><?php }?></span></div>
 		</div>
 	</div>\n";
 
@@ -2138,7 +2138,7 @@ function user() {
 
 	function applyFilter() {
 		strURL  = 'user_admin.php?rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2184,7 +2184,7 @@ function user() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Users');?>
@@ -2203,8 +2203,8 @@ function user() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -2487,7 +2487,7 @@ function graph_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2520,7 +2520,7 @@ function graph_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Template');?>
@@ -2567,8 +2567,8 @@ function graph_filter($header_label) {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='go' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+							<input type='button' id='go' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -2594,7 +2594,7 @@ function group_filter($header_label) {
 		strURL  = 'user_admin.php?action=user_edit&tab=permsgr&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2627,7 +2627,7 @@ function group_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Groups');?>
@@ -2652,8 +2652,8 @@ function group_filter($header_label) {
 					</td>
 					<td>
 						<span>
-							<input type='button' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+							<input type='button' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -2680,7 +2680,7 @@ function device_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2713,7 +2713,7 @@ function device_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Template');?>
@@ -2756,8 +2756,8 @@ function device_filter($header_label) {
 					</td>
 					<td>
 						<span>
-							<input type='button' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+							<input type='button' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -2783,7 +2783,7 @@ function template_filter($header_label) {
 		strURL  = 'user_admin.php?action=user_edit&tab=permste&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2816,7 +2816,7 @@ function template_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Templates');?>
@@ -2841,8 +2841,8 @@ function template_filter($header_label) {
 					</td>
 					<td>
 						<span>
-							<input type='button' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+							<input type='button' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -2868,7 +2868,7 @@ function tree_filter($header_label) {
 		strURL  = 'user_admin.php?action=user_edit&tab=permstr&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2901,7 +2901,7 @@ function tree_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Trees');?>
@@ -2926,8 +2926,8 @@ function tree_filter($header_label) {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+							<input type='button' id='refresh' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -2953,7 +2953,7 @@ function member_filter($header_label) {
 		strURL  = 'user_admin.php?action=user_edit&tab=members&id=<?php print get_request_var('id');?>'
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2986,7 +2986,7 @@ function member_filter($header_label) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Trees');?>
@@ -3006,13 +3006,13 @@ function member_filter($header_label) {
 					<td>
 						<span>
 							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
-							<label for='associated'><?php print __('Show Exceptions<');?>/label>
+							<label for='associated'><?php print __('Show Exceptions<');?></label>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' onClick='applyFilter()' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' onClick='clearFilter()' title='<?php print __('Clear Filters');?>'>
+							<input type='button' id='refresh' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>

@@ -107,19 +107,19 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items && $total_items > 1) {
-						echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __('Move Down') . '"></a>';
+						echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						echo '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __('Move Up') . '"></a>';
+						echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						echo '<span class="moveArrowNone"></span>';
 					}
 				}
 
-				print "<a class='delete deleteMarker fa fa-remove' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __('Delete') . "'></a>";
+				print "<a class='delete deleteMarker fa fa-remove' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __esc('Delete') . "'></a>";
 
 				print "</td>\n";
 			}
@@ -229,7 +229,7 @@ function aggregate_color_form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', sizeof($color_array)) . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', sizeof($color_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea'>
@@ -239,11 +239,11 @@ function aggregate_color_form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', sizeof($color_array)) . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', sizeof($color_array)) . "'>";
 		}
 	} else {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Color Template.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -439,7 +439,7 @@ function aggregate_color_template() {
 								' . __('Search') . '
 							</td>
 							<td>
-								<input type="text" id="filter" size="25" value="' . get_request_var('filter') . '">
+								<input type="text" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
 							</td>
 							<td>
 								' . __('Color Templates') . '
@@ -470,8 +470,8 @@ function aggregate_color_template() {
 							</td>
 							<td>
 								<span>
-									<input type="button" id="refresh" value="' . __('Go') . '">
-									<input type="button" id="clear" value="' . __('Clear') . '">
+									<input type="button" id="refresh" value="' . __esc('Go') . '">
+									<input type="button" id="clear" value="' . __esc('Clear') . '">
 								</span>
 							</td>
 						</tr>
@@ -589,7 +589,7 @@ function aggregate_color_template() {
 	function applyFilter() {
 		strURL  = 'color_templates.php';
 		strURL += '?rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);

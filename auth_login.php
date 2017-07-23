@@ -133,7 +133,8 @@ if (get_nfilter_request_var('action') == 'login') {
 
 					$user = db_fetch_row_prepared('SELECT *
 						FROM user_auth
-						WHERE username = ? AND realm = 1',
+						WHERE username = ?
+						AND realm = 3',
 						array($username));
 				} else {
 					/* error */

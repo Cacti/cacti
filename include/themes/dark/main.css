@@ -937,7 +937,7 @@ legend {
 
 .cactiTooltipHint {
 	cursor: pointer;
-	padding:5px;
+	padding-left:5px;
 	font-size:12px !important;
 }
 
@@ -1201,9 +1201,13 @@ legend {
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 8px 0px 8px;
+	padding: 0px 12px 0px 3px;
 	white-space: nowrap;
 	vertical-align: middle;
+}
+
+.cactiTableButton span:last-child, .cactiTableTitle span:last-child {
+	padding-right: 8px;
 }
 
 .cactiDebugTable {
@@ -2078,6 +2082,10 @@ tr#realtime td:first-child {
 	text-align: center;
 	width: 12.5%;
 	color: #eeeeee;
+}
+
+.menuitem {
+	white-space: nowrap;
 }
 
 .menu_glyph {

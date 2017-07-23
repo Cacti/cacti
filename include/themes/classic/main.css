@@ -1810,6 +1810,10 @@ tr#realtime td:first-child {
 	width: 12.5%;
 }
 
+.menuitem {
+	white-space: nowrap;
+}
+
 .menu_glyph {
 	display: none;
 }

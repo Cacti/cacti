@@ -1046,10 +1046,14 @@ legend {
 
 .cactiTableButton span, .cactiTableTitle span {
 	color: white;
-	padding: 0px 8px 0px 8px;
+	padding: 0px 12px 0px 3px;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;
+}
+
+.cactiTableButton span:last-child, .cactiTableTitle span:last-child {
+	padding-right: 8px;
 }
 
 .cactiDebugTable {
@@ -1959,6 +1963,10 @@ tr#realtime td:first-child {
 
 #graph_view_tree_content2_child > tbody > .tableHeader {
 	background: rgba(0,0,0,0.9);
+}
+
+.menuitem {
+	white-space: nowrap;
 }
 
 .menu_glyph {

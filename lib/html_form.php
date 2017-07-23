@@ -439,9 +439,9 @@ function form_button($form_name, $value, $title = '', $action = '') {
 	print "<input type='button' " .
 		"id='$form_name' " .
 		"name='$form_name' " .
-		"value='$value' " .
+		"value='" . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . "' " .
 		($action!='' ? "onClick='$action'":"") .
-		($title!='' ? "title='$title'":"") . ">";
+		($title!='' ? "title='" . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . "'":"") . ">";
 }
 
 /* form_button - draws a standard button form element
@@ -453,9 +453,9 @@ function form_submit($form_name, $value, $title = '', $action = '') {
 	print "<input type='submit' " .
 		"id='$form_name' " .
 		"name='$form_name' " .
-		"value='$value' " .
+		"value='" . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . "' " .
 		($action!='' ? "onClick='$action'":"") .
-		($title!='' ? "title='$title'":"") . ">";
+		($title!='' ? "title='" . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . "'":"") . ">";
 }
 
 /* form_file - draws a standard html file input element
@@ -509,13 +509,13 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 	}
 
 	if (is_file(trim($form_previous_value))) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __('File Found') . "'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __esc('File Found') . "'></span>";
 	}else if (is_dir(trim($form_previous_value))) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Path is a Directory and not a File') . "'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __esc('Path is a Directory and not a File') . "'></span>";
 	}else if ($form_previous_value == '') {
 		$extra_data = '';
 	} else {
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('File is Not Found'). "'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __esc('File is Not Found'). "'></span>";
 	}
 
 	print " id='$form_name' placeholder='" . __('Enter a valid file path') . "' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
@@ -554,13 +554,13 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 	}
 
 	if (is_dir($form_previous_value)) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __('Directory Found') ."'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __esc('Directory Found') ."'></span>";
 	}else if (is_file($form_previous_value)) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Path is a File and not a Directory'). "></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __esc('Path is a File and not a Directory'). "></span>";
 	}else if ($form_previous_value == '') {
 		$extra_data = '';
 	} else {
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Directory is Not found'). "'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __esc('Directory is Not found'). "'></span>";
 	}
 
 	print " id='$form_name' name='$form_name' placeholder='" . __('Enter a valid directory path'). "' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
@@ -598,7 +598,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	print " id='$form_name' autocomplete='off' " . ($placeholder != '' ? "placeholder='$placeholder'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
+	print " id='$form_name' autocomplete='off' " . ($placeholder != '' ? "placeholder='$placeholder'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES, 'UTF-8') . "'>\n";
 }
 
 /* form_hidden_box - draws a standard html hidden element
@@ -611,7 +611,7 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value, 
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<div style='display:none;'><input style='height:0px;' type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'></div>";
+	print "<div style='display:none;'><input style='height:0px;' type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES, 'UTF-8') . "'></div>";
 }
 
 /* form_dropdown - draws a standard html dropdown box
@@ -710,14 +710,14 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		print "</select>\n";
 	} else {
 		print "<span id='$form_name" . "_wrap' style='width:300px;' class='autodrop ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>";
-		print "<input type='text' id='$form_name" . "_input' size='28' class='ui-autocomplete-input ui-state-default ui-selectmenu-text' value='" . htmlspecialchars($previous_value) . "'>";
+		print "<input type='text' id='$form_name" . "_input' size='28' class='ui-autocomplete-input ui-state-default ui-selectmenu-text' value='" . htmlspecialchars($previous_value, ENT_QUOTES, 'UTF-8') . "'>";
 		print "<span id='$form_name" . "_click' style='z-index:4' class='ui-icon ui-icon-triangle-1-s'></span>";
 
 		if (!empty($none_entry) && empty($previous_value)) {
 			$previous_value = $none_entry;
 		}
 
-		print "<input type='hidden' id='" . $form_name . "' name='" . $form_name . "' value='" . $previous_id . "'>";
+		print "<input type='hidden' id='" . $form_name . "' name='" . $form_name . "' value='" . htmlspecialchars($previous_id, ENT_QUOTES, 'UTF-8') . "'>";
 		print "</span>";
 		?>
 		<script type='text/javascript'>
@@ -860,7 +860,7 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 
 	$css_id = $form_name . '_' . $form_current_value;
 
-	print "<input type='radio' id='$css_id' name='$form_name' value='$form_current_value'" . $class . $on_change . $checked . "><label class='formCheckboxLabel' for='$css_id'>$form_caption</label>\n";
+	print "<input type='radio' id='$css_id' name='$form_name' value='" . htmlspecialchars($form_current_value, ENT_QUOTES, 'UTF-8') . "'" . $class . $on_change . $checked . "><label class='formCheckboxLabel' for='$css_id'>$form_caption</label>\n";
 }
 
 /* form_text_area - draws a standard html text area box
@@ -1077,7 +1077,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 		$extra_data = "<span style='color:green'><br>[" . __('NO FONT VERIFICATION POSSIBLE') . ']</span>';
 	}
 
-	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . htmlspecialchars($placeholder) . "'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . htmlspecialchars($placeholder) . "'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES, 'UTF-8') . "'>" . $extra_data;
 }
 
 /* form_confirm - draws a table presenting the user with some choice and allowing
@@ -1180,7 +1180,7 @@ function form_save_buttons($buttons) {
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php foreach($buttons as $b) {
-					print "<input type='button' id='" . $b['id'] . "' value='" . $b['value'] . "'>\n";
+					print "<input type='button' id='" . $b['id'] . "' value='" . htmlspecialchars($b['value'], ENT_QUOTES, 'UTF-8') . "'>\n";
 				} ?>
 			</td>
 		</tr>
@@ -1232,3 +1232,4 @@ function form_end($ajax = true) {
 		<?php
 	}
 }
+

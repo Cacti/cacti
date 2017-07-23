@@ -279,7 +279,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', sizeof($cdef_array)) . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', sizeof($cdef_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
@@ -289,11 +289,11 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Duplicate CDEF', 'Duplicate CDEFs', sizeof($cdef_array)) . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Duplicate CDEF', 'Duplicate CDEFs', sizeof($cdef_array)) . "'>";
 		}
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one CDEF.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -341,8 +341,8 @@ function cdef_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td align='right'>
-			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");$(".deleteMarker").blur();' name='cancel'>
-			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove CDEF Item');?>'>
+			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");$(".deleteMarker").blur();' name='cancel'>
+			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove CDEF Item');?>'>
 		</td>
 	</tr>
 	<?php
@@ -604,19 +604,19 @@ function cdef_edit() {
 						<?php
 						if (read_config_option('drag_and_drop') == '') {
 							if ($i < $total_items && $total_items > 0) {
-								echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __('Move Down') . '"></a>';
+								echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
 							} else {
 								echo '<span class="moveArrowNone"></span>';
 							}
 
 							if ($i > 1 && $i <= $total_items) {
-								echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] .	'&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __('Move Up') . '"></a>';
+								echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] .	'&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
 							} else {
 								echo '<span class="moveArrowNone"></span>';
 							}
 						}
 						?>
-						<a id='<?php print $cdef['id'] . '_' . $cdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='#'></a>
+						<a id='<?php print $cdef['id'] . '_' . $cdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __esc('Delete');?>' href='#'></a>
 					</td>
 				</tr>
 				<?php
@@ -722,7 +722,7 @@ function cdef() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('CDEFs');?>
@@ -747,8 +747,8 @@ function cdef() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -758,7 +758,7 @@ function cdef() {
 
 			function applyFilter() {
 				strURL  = 'cdef.php?header=false';
-				strURL += '&filter='+escape($('#filter').val());
+				strURL += '&filter='+$('#filter').val();
 				strURL += '&rows='+$('#rows').val();
 				strURL += '&has_graphs='+$('#has_graphs').is(':checked');
 				loadPageNoHeader(strURL);

@@ -196,11 +196,11 @@ function form_actions() {
 
 			print "</td></tr></table></td></tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Add Device(s)') . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Add Device(s)') . "'>";
 		}
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Device.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -448,7 +448,7 @@ function draw_filter() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+						<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Network');?>
@@ -466,14 +466,14 @@ function draw_filter() {
 						</select>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Reset fields to defaults');?>'>
+							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Reset fields to defaults');?>'>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='button' id='export' value='<?php print __('Export');?>' title='<?php print __('Export to a file');?>'>
-							<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Discovered Devices');?>'>
+							<input type='button' id='export' value='<?php print __esc('Export');?>' title='<?php print __esc('Export to a file');?>'>
+							<input type='button' id='purge' value='<?php print __esc('Purge');?>' title='<?php print __esc('Purge Discovered Devices');?>'>
 						</span>
 					</td>
 				</tr>
@@ -578,7 +578,7 @@ function draw_filter() {
 			strURL += '&network=' + $('#network').val();
 			strURL += '&snmp=' + $('#snmp').val();
 			strURL += '&os=' + $('#os').val();
-			strURL += '&filter=' + escape($('#filter').val());
+			strURL += '&filter=' + $('#filter').val();
 			strURL += '&rows=' + $('#rows').val();
 
 			loadPageNoHeader(strURL);

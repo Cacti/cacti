@@ -288,7 +288,7 @@ CREATE TABLE `automation_networks` (
   `poller_id` int(10) unsigned DEFAULT '1',
   `site_id` int(10) unsigned DEFAULT '1',
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT 'The name for this network',
-  `subnet_range` varchar(255) NOT NULL DEFAULT '' COMMENT 'Defined subnet ranges for discovery',
+  `subnet_range` varchar(1024) NOT NULL DEFAULT '' COMMENT 'Defined subnet ranges for discovery',
   `dns_servers` varchar(128) NOT NULL DEFAULT '' COMMENT 'DNS Servers to use for name resolution',
   `enabled` char(2) DEFAULT '',
   `snmp_id` int(10) unsigned DEFAULT NULL,

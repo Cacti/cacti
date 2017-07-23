@@ -263,7 +263,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', sizeof($profile_array)) . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', sizeof($profile_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -273,11 +273,11 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Duplicate Data Source Profile', 'Duplicate Date Source Profiles', sizeof($profile_array)) . "'>";
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Source Profile', 'Duplicate Date Source Profiles', sizeof($profile_array)) . "'>";
 		}
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Data Source Profile.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -321,8 +321,8 @@ function profile_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td align='right'>
-			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove Data Source Profile RRA');?>'>
+			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Source Profile RRA');?>'>
 		</td>
 	</tr>
 	<?php
@@ -531,7 +531,7 @@ function profile_edit() {
 					<em><?php print $rra['rows'];?></em>
 				</td>
 				<td class='right'>
-					<?php print (!$readonly ? "<a id='" . $profile['id'] . '_' . $rra['id'] . "' class='delete deleteMarker fa fa-remove' title='" . __('Delete') . "' href='#'></a>":"");?>
+					<?php print (!$readonly ? "<a id='" . $profile['id'] . '_' . $rra['id'] . "' class='delete deleteMarker fa fa-remove' title='" . __esc('Delete') . "' href='#'></a>":"");?>
 				</td>
 				<?php
 				form_end_row();
@@ -740,7 +740,7 @@ function profile() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Profiles');?>
@@ -765,8 +765,8 @@ function profile() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -776,7 +776,7 @@ function profile() {
 
 			function applyFilter() {
 				strURL  = 'data_source_profiles.php?header=false';
-				strURL += '&filter='+escape($('#filter').val());
+				strURL += '&filter='+$('#filter').val();
 				strURL += '&rows='+$('#rows').val();
 				strURL += '&has_data='+$('#has_data').is(':checked');
 				loadPageNoHeader(strURL);

@@ -347,7 +347,7 @@ function form_actions() {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Network.') . "</span></td></tr>\n";
 		$save_html = '';
 	} else {
-		$save_html = "<input type='submit' value='" . __('Continue') . "' name='save'>";
+		$save_html = "<input type='submit' value='" . __esc('Continue') . "' name='save'>";
 	}
 
 	print "<tr>
@@ -355,8 +355,8 @@ function form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>" . ($save_html != '' ? "
-			<input type='submit' name='cancel' value='" . __('Cancel') . "'>
-			$save_html" : "<input type='submit' name='cancel' value='" . __('Return') . "'>") . "
+			<input type='submit' name='cancel' value='" . __esc('Cancel') . "'>
+			$save_html" : "<input type='submit' name='cancel' value='" . __esc('Return') . "'>") . "
 		</td>
 	</tr>\n";
 
@@ -425,9 +425,9 @@ function network_edit() {
 		'friendly_name' => __('Subnet Range'),
 		'description' => __('Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*'),
 		'value' => '|arg1:subnet_range|',
-		'textarea_rows' => '2',
-		'textarea_cols' => '60',
-		'max_length' => '255',
+		'textarea_rows' => '4',
+		'textarea_cols' => '80',
+		'max_length' => '1024',
 		'placeholder' => '192.168.1.0/24'
 		),
 	'total_ips' => array(
@@ -1061,7 +1061,7 @@ function networks_filter() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+						<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Networks');?>
@@ -1080,8 +1080,8 @@ function networks_filter() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='go' title='<?php print __('Search');?>' value='<?php print __('Go');?>'>
-							<input type='button' id='clear' title='<?php print __('Clear Filtered');?>' value='<?php print __('Clear');?>'>
+							<input type='button' id='go' title='<?php print __esc('Search');?>' value='<?php print __esc('Go');?>'>
+							<input type='button' id='clear' title='<?php print __esc('Clear Filtered');?>' value='<?php print __esc('Clear');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1090,7 +1090,7 @@ function networks_filter() {
 			<script type='text/javascript'>
 			function applyFilter() {
 				strURL  = '?rows=' + $('#rows').val();
-				strURL += '&filter=' + escape($('#filter').val());
+				strURL += '&filter=' + $('#filter').val();
 				strURL += '&header=false';
 
 				loadPageNoHeader(strURL);

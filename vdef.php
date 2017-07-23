@@ -659,7 +659,7 @@ function vdef_filter() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+						<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('VDEFs');?>
@@ -695,7 +695,7 @@ function vdef_filter() {
 
 			function applyFilter() {
 				strURL  = 'vdef.php?header=false';
-				strURL += '&filter='+escape($('#filter').val());
+				strURL += '&filter='+$('#filter').val();
 				strURL += '&rows='+$('#rows').val();
 				strURL += '&has_graphs='+$('#has_graphs').is(':checked');
 				loadPageNoHeader(strURL);

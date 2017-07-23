@@ -112,7 +112,7 @@ function import() {
 		$display_hideme = true;
 	}
 
-	html_start_box(__('Import Templates'), '100%', true, '3', 'center', '');
+	html_start_box(__('Import Template'), '100%', true, '3', 'center', '');
 
 	$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
 	if (empty($default_profile)) {

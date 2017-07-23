@@ -611,7 +611,7 @@ function utilities_view_user_log() {
 		strURL  = urlPath+'utilities.php?username=' + $('#username').val();
 		strURL += '&result=' + $('#result').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&action=view_user_log';
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -686,7 +686,7 @@ function utilities_view_user_log() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1079,7 +1079,7 @@ function utilities_view_logfile() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' type='text' size='75' value='<?php print htmlspecialchars(get_request_var('rfilter'));?>'>
+						<input id='rfilter' type='text' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1273,7 +1273,7 @@ function utilities_view_snmp_cache() {
 	function applyFilter() {
 		strURL  = urlPath+'utilities.php?host_id=' + $('#host_id').val();
 		strURL += '&snmp_query_id=' + $('#snmp_query_id').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&action=view_snmp_cache';
 		strURL += '&header=false';
@@ -1314,7 +1314,7 @@ function utilities_view_snmp_cache() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
@@ -1544,7 +1544,7 @@ function utilities_view_poller_cache() {
 		strURL += '&action=view_poller_cache';
 		strURL += '&host_id=' + $('#host_id').val();
 		strURL += '&template_id=' + $('#template_id').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -1624,7 +1624,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Action');?>
@@ -2251,7 +2251,7 @@ function snmpagent_utilities_run_cache() {
 		strURL  = 'utilities.php?action=view_snmpagent_cache';
 		strURL += '&mib=' + $('#mib').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2290,7 +2290,7 @@ function snmpagent_utilities_run_cache() {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('MIB');?>
@@ -2493,7 +2493,7 @@ function snmpagent_utilities_run_eventlog(){
 		strURL += '&severity=' + $('#severity').val();
 		strURL += '&receiver=' + $('#receiver').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2541,7 +2541,7 @@ function snmpagent_utilities_run_eventlog(){
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
+							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Severity');?>
@@ -2649,7 +2649,7 @@ function snmpagent_utilities_run_eventlog(){
 			$varbinds = filter_value($item['varbinds'], get_request_var('filter'));
 			form_alternate_row('line' . $item['id'], false);
 
-			print "<td title='" . __('Severity Level: %s', $severity_levels[$item['severity']]) . "' style='width:10px;background-color: " . $severity_colors[$item['severity']] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
+			print "<td title='" . __esc('Severity Level: %s', $severity_levels[$item['severity']]) . "' style='width:10px;background-color: " . $severity_colors[$item['severity']] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td class='nowrap'>" . date('Y-m-d H:i:s', $item['time']) . '</td>';
 			print '<td>' . htmlspecialchars($item['hostname'], ENT_QUOTES) . '</td>';
 
