@@ -20,9 +20,7 @@ before_install:
   - mysql -e 'CREATE DATABASE cacti;'
   - mysql cacti < cacti.sql
 
-install: true
-
-after_install:
+install:
   - php tests/tools/check_install_code.php
 
 notifications:
