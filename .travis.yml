@@ -22,6 +22,9 @@ before_install:
 
 install: true
 
+after_install:
+  - php tests/tools/check_install_code.php
+
 notifications:
   email:
     on_success: change
