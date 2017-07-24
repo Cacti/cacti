@@ -38,23 +38,31 @@ ini_set('max_execution_time', '0');
 // define base path of Cacti
 define('CACTI_PATH', str_replace('/tests/tools', '', dirname(__FILE__)));
 
+// pre-flush oubput buffer to avoid header warning
+flush();
+
 /*
  * TEST: include all installation upgrade files
  * This will find function name collisions
  */
 
 print "TEST: Including all Install upgrade files" . PHP_EOL;
-$install_upgrades_dir = CACTI_PATH . '/install/upgrades/';
+$install_upgrades_dir = CACTI_PATH . '/install/upgrades';
 $dh = opendir($install_upgrades_dir);
 if ($dh === false) {
 	throw new Exception('Failed to open directory: ' . $install_upgrades_dir);
 }
 while (($file = readdir($dh)) !== false)
 {
-	// only include .php files
-	if (substr($file, -4) == '.php') {
+	// only include .php files, skip index.php
+	if (substr($file, -4) == '.php' && $file != 'index.php') {
 		print '  Include File: ' . $install_upgrades_dir . '/' . $file . PHP_EOL;
 		require_once($install_upgrades_dir . '/' . $file);
+		// confirm upgrade function exists
+		$function_name = 'upgrade_to_' . substr($file, 0, -4);
+		if (! function_exists($function_name)) {
+			throw new Exception('Install upgrade function ' . $function_name . ' not found');
+		}
 	}
 }
 closedir($dh);
