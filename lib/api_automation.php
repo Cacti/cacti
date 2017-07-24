@@ -100,7 +100,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&rowsd=' + $('#rowsd').val();
-		strURL += '&filterd=' + escape($('#filterd').val());
+		strURL += '&filterd=' + $('#filterd').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -141,7 +141,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' id='filterd' size='25' value='<?php print get_request_var('filterd');?>'>
+							<input type='text' id='filterd' size='25' value='<?php print html_escape_request_var('filterd');?>'>
 						</td>
 						<td>
 							<?php print __('Type');?>
@@ -193,8 +193,8 @@ function display_matching_hosts($rule, $rule_type, $url) {
 						</td>
 						<td>
 							<span>
-								<input id='refresh' type='button' value='<?php print __('Go');?>'>
-								<input id='clear' type='button' value='<?php print __('Clear');?>'>
+								<input id='refresh' type='button' value='<?php print __esc('Go');?>'>
+								<input id='clear' type='button' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
 					</tr>
@@ -254,7 +254,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	/* now we build up a new query for counting the rows */
 	$rows_query = $sql_query . $sql_where . $sql_filter;
-	$total_rows = sizeof(db_fetch_assoc($rows_query));
+	$total_rows = sizeof(db_fetch_assoc($rows_query, false));
 
 	$sortby = get_request_var('sort_column');
 	if ($sortby=='hostname') {
@@ -264,7 +264,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$sql_query = $rows_query .
 		' ORDER BY ' . $sortby . ' ' . get_request_var('sort_direction') .
 		' LIMIT ' . ($rows*(get_request_var('paged')-1)) . ',' . $rows;
-	$hosts = db_fetch_assoc($sql_query);
+	$hosts = db_fetch_assoc($sql_query, false);
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('paged'), $rows, $total_rows, 7, 'Devices', 'paged', 'main');
 
@@ -379,7 +379,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	function applyFilter() {
 		strURL  = '<?php print $url;?>' + '&host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&template_id=' + $('#template_id').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -457,8 +457,8 @@ function display_matching_graphs($rule, $rule_type, $url) {
 						</td>
 						<td>
 							<span>
-								<input id='refresh' type='button' value='<?php print __('Go');?>'>
-								<input id='clear' type='button' value='<?php print __('Clear');?>'>
+								<input id='refresh' type='button' value='<?php print __esc('Go');?>'>
+								<input id='clear' type='button' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
 					</tr>
@@ -469,7 +469,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print get_request_var('filter');?>'>
+							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Devices');?>
@@ -534,7 +534,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		ON gl.host_id=h.id
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id=ht.id
-		$sql_where");
+		$sql_where", '', false);
 
 	$sql = "SELECT h.id AS host_id, h.hostname, h.description,
 		h.disabled, h.status, ht.name AS host_template_name,
@@ -553,7 +553,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
 		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$graph_list = db_fetch_assoc($sql);
+	$graph_list = db_fetch_assoc($sql, false);
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Devices', 'page', 'main');
 
@@ -660,7 +660,7 @@ function display_new_graphs($rule, $url) {
 	function applyObjectFilter() {
 		strURL  = '<?php print $url;?>';
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -699,7 +699,7 @@ function display_new_graphs($rule, $url) {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+							<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Objects');?>
@@ -718,8 +718,8 @@ function display_new_graphs($rule, $url) {
 						</td>
 						<td>
 							<span>
-								<input id='orefresh' type='button' value='<?php print __('Go');?>'>
-								<input id='oclear' type='button' value='<?php print __('Clear');?>'>
+								<input id='orefresh' type='button' value='<?php print __esc('Go');?>'>
+								<input id='oclear' type='button' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
 					</tr>
@@ -802,23 +802,30 @@ function display_new_graphs($rule, $url) {
 			$sql_query = build_data_query_sql($rule);
 		}
 
-		/* rule item filter first */
-		$sql_filter	= build_rule_item_filter($rule_items, ' a.');
+		$results = db_fetch_cell("SELECT COUNT(*) FROM ($sql_query) AS a", '', false);
 
-		/* filter on on the display filter next */
-		$sql_having = build_graph_object_sql_having($rule, get_request_var('filter'));
+		if ($results > 0) {
+			/* rule item filter first */
+			$sql_filter	= build_rule_item_filter($rule_items, ' a.');
 
-		/* now we build up a new query for counting the rows */
-		$rows_query = "SELECT * FROM ($sql_query) AS a " . ($sql_filter != '' ? "WHERE ($sql_filter)":'') . $sql_having;
-		$total_rows = sizeof(db_fetch_assoc($rows_query));
+			/* filter on on the display filter next */
+			$sql_having = build_graph_object_sql_having($rule, get_request_var('filter'));
 
-		if ($total_rows < (get_request_var('rows')*(get_request_var('page')-1))+1) {
-			set_request_var('page', '1');
+			/* now we build up a new query for counting the rows */
+			$rows_query = "SELECT * FROM ($sql_query) AS a " . ($sql_filter != '' ? "WHERE ($sql_filter)":'') . $sql_having;
+			$total_rows = sizeof(db_fetch_assoc($rows_query));
+
+			if ($total_rows < (get_request_var('rows')*(get_request_var('page')-1))+1) {
+				set_request_var('page', '1');
+			}
+
+			$sql_query = $rows_query . ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
+			$snmp_query_indexes = db_fetch_assoc($sql_query);
+		} else {
+			$total_rows = 0;
+			$snmp_query_indexes = array();
 		}
-
-		$sql_query = $rows_query . ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
-
-		$snmp_query_indexes = db_fetch_assoc($sql_query);
 
 		$nav = html_nav_bar('automation_graph_rules.php?action=edit&id=' . $rule['id'], MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 30, __('Matching Objects'), 'page', 'main');
 
@@ -971,7 +978,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -1012,7 +1019,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+						<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Type');?>
@@ -1064,8 +1071,8 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 					</td>
 					<td>
 						<span>
-							<input id='refresh' type='button' value='<?php print __('Go');?>'>
-							<input id='clear' type='button' value='<?php print __('Clear');?>'>
+							<input id='refresh' type='button' value='<?php print __esc('Go');?>'>
+							<input id='clear' type='button' value='<?php print __esc('Clear');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1136,7 +1143,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		$sql_tables
 		$sql_where AND ($sql_filter)";
 
-	$total_rows = sizeof(db_fetch_assoc($rows_query));
+	$total_rows = sizeof(db_fetch_assoc($rows_query, false));
 
 	$sortby = get_request_var('sort_column');
 	if ($sortby=='h.hostname') {
@@ -1147,7 +1154,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		get_request_var('sort_direction') . ' LIMIT ' .
 		($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$templates = db_fetch_assoc($sql_query);
+	$templates = db_fetch_assoc($sql_query, false);
 
 	cacti_log(__FUNCTION__ . " templates sql: $sql_query", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
@@ -1254,20 +1261,20 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td class="right nowrap">';
 
 			if ($i != sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td style="width:1%;">
-				<a class="pid deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Delete') . '"></a></td>
+				<a class="pid deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1317,20 +1324,20 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td class="right nowrap">';
 
 			if ($i != sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-awwow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
+				$form_data .= '<a class="pic fa fa-awwow-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td class="right nowrap">
-				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Delete') . '"></a></td>
+				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1381,20 +1388,20 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 
 			$form_data .= '<td class="right">';
 			if ($i != sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Down') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Move Up') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 			$form_data .= '</td>';
 
 			$form_data .= '<td class="nowrap" style="width:1%;">
-				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __('Delete') . '"></a></td>
+				<a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1560,13 +1567,12 @@ function build_matching_objects_filter($rule_id, $rule_type) {
 	 * this way, we may add any where clause that might be added via
 	 *  'Matching Device' match
 	 */
-	$sql = "SELECT *
+	$rule_items = db_fetch_assoc_prepared('SELECT *
 		FROM automation_match_rule_items
-		WHERE rule_id=$rule_id
-		AND rule_type=$rule_type
-		ORDER BY sequence";
-
-	$rule_items = db_fetch_assoc($sql);
+		WHERE rule_id = ?
+		AND rule_type = ?
+		ORDER BY sequence',
+		array($rule_id, $rule_type));
 
 	#print '<pre>Items: $sql<br>'; print_r($rule_items); print '</pre>';
 
@@ -1678,7 +1684,7 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
 		$sql_filter .= ' AND ' . $sql_where;
 	}
 
-	return db_fetch_assoc($sql_query . $sql_filter);
+	return db_fetch_assoc($sql_query . $sql_filter, false);
 }
 
 /**
@@ -1710,7 +1716,7 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 		$sql_filter .= ' AND ' . $sql_where;
 	}
 
-	return db_fetch_assoc($sql_query . $sql_filter);
+	return db_fetch_assoc($sql_query . $sql_filter, false);
 }
 
 /*
@@ -1747,7 +1753,7 @@ function get_created_graphs($rule) {
 		AND did.value='" . $snmp_query_graph_id . "'
 		AND ($sql_where)";
 
-	$graphs = db_fetch_assoc($sql);
+	$graphs = db_fetch_assoc($sql, false);
 
 	# rearrange items to ease indexed access
 	$items = array();
@@ -2062,7 +2068,7 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 			/* now we build up a new query for counting the rows */
 			$rows_query = $sql_query . ' WHERE (' . $sql_filter . ') AND h.id=' . $host_id;
 
-			$hosts = db_fetch_assoc($rows_query);
+			$hosts = db_fetch_assoc($rows_query, false);
 
 			cacti_log(__FUNCTION__ . ' Device[' . $host_id . "] - create sql: $rows_query matches:" . sizeof($hosts), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
@@ -2457,7 +2463,7 @@ function create_all_header_nodes ($item_id, $rule) {
 				$sql_tables .
 				$sql_where . ' AND (' . $sql_filter . ')';
 
-				$target = db_fetch_cell($sql);
+				$target = db_fetch_cell($sql, '', false);
 			}
 
 			cacti_log(__FUNCTION__ . " Item $item_id - sql: $sql matches: " . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);

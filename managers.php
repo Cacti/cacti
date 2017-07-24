@@ -110,7 +110,7 @@ function manager(){
 	<script type="text/javascript">
 	function applyFilter() {
 		strURL  = 'managers.php';
-		strURL += '?filter=' + escape($('#filter').val());
+		strURL += '?filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -150,7 +150,7 @@ function manager(){
 							<?php print __('Search'); ?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 						</td>
 						<td>
 							<?php print __('Receivers'); ?>
@@ -169,8 +169,8 @@ function manager(){
 						</td>
 						<td>
 							<span>
-								<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-								<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+								<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							</span>
 						</td>
 					</tr>
@@ -472,7 +472,7 @@ function manager_notifications($id, $header_label) {
 		strURL  = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>';
 		strURL += '&mib=' + $('#mib').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 
 		loadPageNoHeader(strURL);
@@ -523,7 +523,7 @@ function manager_notifications($id, $header_label) {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>' onChange='applyFilter()'>
+							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
 						</td>
 						<td>
 							<?php print __('Receivers');?>
@@ -542,8 +542,8 @@ function manager_notifications($id, $header_label) {
 						</td>
 						<td>
 							<span>
-								<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-								<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+								<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							</span>
 						</td>
 					</tr>
@@ -717,7 +717,7 @@ function manager_logs($id) {
 
 	function applyFilter(objForm) {
 		strURL  = '?header=false&severity=' + $('#severity').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		strURL += '&action=edit&tab=logs&id=<?php print get_request_var('id'); ?>';
 		loadPageNoHeader(strURL);
 	}
@@ -755,7 +755,7 @@ function manager_logs($id) {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+							<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Severity');?>
@@ -772,9 +772,9 @@ function manager_logs($id) {
 						</td>
 						<td>
 							<span>
-								<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-								<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
-								<input type='button' id='purge' value='<?php print __('Purge');?>' title='<?php print __('Purge Notification Log');?>'>
+								<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+								<input type='button' id='purge' value='<?php print __esc('Purge');?>' title='<?php print __esc('Purge Notification Log');?>'>
 							</span>
 						</td>
 					</tr>
@@ -840,7 +840,7 @@ function manager_logs($id) {
 
 			form_alternate_row('line' . $item['id'], true);
 
-			print "<td title='" . __('Severity Level') . ": " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
+			print "<td title='" . __esc('Severity Level') . ": " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td class='nowrap'>" . date('Y/m/d H:i:s', $item['time']) . '</td>';
 
 			if ($item['description']) {
@@ -1031,10 +1031,10 @@ function form_actions(){
 					</td>
 				</tr>";
 
-				$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' value='" . __('Continue') . "' title='" . __('%s Notification Receivers', $manager_actions[get_nfilter_request_var('drp_action')]) . "'>";
+				$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' value='" . __esc('Continue') . "' title='" . __esc('%s Notification Receivers', $manager_actions[get_nfilter_request_var('drp_action')]) . "'>";
 			} else {
 				print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Notification Receiver.') . "</span></td></tr>";
-				$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+				$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 			}
 
 			print "<tr>
@@ -1088,10 +1088,10 @@ function form_actions(){
 					</td>
 				</tr>";
 
-				$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Disable Notification Objects') . "'>";
+				$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Disable Notification Objects') . "'>";
 			} else {
 				print "<tr><td><span class='textError'>" . __('You must select at least one notification object.') . "</span></td></tr>\n";
-				$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+				$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 			}
 
 			print "<tr>

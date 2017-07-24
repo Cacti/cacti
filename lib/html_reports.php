@@ -282,7 +282,11 @@ if ($sql_where != '') {
 		'local_graph_id', 'title_cache'
 	);
 } else {
-	$graphs = array();
+	$sql_where = 'gl.graph_template_id=0';
+	$graphs = array_rekey(
+		get_allowed_graphs($sql_where),
+		'local_graph_id', 'title_cache'
+	);
 }
 
 $trees = array_rekey(
@@ -667,7 +671,7 @@ function reports_form_actions() {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Report.') . "</span></td></tr>\n";
 		$save_html = '';
 	} else {
-		$save_html = "<input type='submit' value='" . __('Continue') . "' name='save'>";
+		$save_html = "<input type='submit' value='" . __esc('Continue') . "' name='save'>";
 
 		if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete
 			print "<tr>
@@ -897,7 +901,7 @@ function reports_item_edit() {
 
 	echo "<table id='graphdiv' style='text-align:center;width:100%;display:none;'><tr><td align='center' id='graph'></td></tr></table>";
 
-	form_save_button(htmlspecialchars(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var('id')), 'return');
+	form_save_button(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var('id'), 'return');
 
 	if (isset($item['item_type']) && $item['item_type'] == REPORTS_ITEM_GRAPH) {
 		$timespan = array();
@@ -1309,14 +1313,14 @@ function display_reports_items($report_id) {
 			$form_data .= '<td>' . $size . '</td>';
 
 			if ($i == 1) {
-				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __('Move Down') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span class="moveArrowNone"</span></td>';
+				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __esc('Move Down') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span class="moveArrowNone"</span></td>';
 			} elseif ($i > 1 && $i < sizeof($items)) {
-				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __('Move Down') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __('Move Up') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
+				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __esc('Move Down') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __esc('Move Up') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
 			} else {
-				$form_data .= '<td class="right nowrap"><span class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __('Move Up') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
+				$form_data .= '<td class="right nowrap"><span class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __esc('Move Up') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
 			}
 
-			$form_data .= '<td align="right"><a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __('Delete') . '"></a>' . '</td></tr>';
+			$form_data .= '<td align="right"><a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
 			print $form_data;
 
 			$i++;
@@ -1406,7 +1410,7 @@ function reports() {
 						" . __('Search') . "
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='" . get_request_var('filter') . "'>
+						<input type='text' id='filter' size='25' value='" . html_escape_request_var('filter') . "'>
 					</td>
 					<td>
 						" . __('Status') . "
@@ -1434,8 +1438,8 @@ function reports() {
 					</td>
 					<td>
 						<span>
-							<input id='refresh' type='button' value='" . __('Go') . "' name='go'>
-							<input id='clear' type='button' value='" . __('Clear') . "' name='clear'>
+							<input id='refresh' type='button' value='" . __esc('Go') . "' name='go'>
+							<input id='clear' type='button' value='" . __esc('Clear') . "' name='clear'>
 						</span>
 					</td>
 				</tr>
@@ -1578,7 +1582,7 @@ function reports() {
 	function applyFilter() {
 		strURL  = '<?php print get_reports_page();?>?header=false&status=' + $('#status').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + escape($('#filter').val());
+		strURL += '&filter=' + $('#filter').val();
 		loadPageNoHeader(strURL);
 	}
 

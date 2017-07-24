@@ -1551,7 +1551,7 @@ $fields_template_import = array(
 		'method' => 'file'
 		),
 	'import_text' => array(
-		'method' => 'textarea',
+		'method' => 'hidden',
 		'friendly_name' => __('Import Template from Text'),
 		'description' => __('If you have the XML file containing template data as text, you can paste it into this box to import it.'),
 		'value' => '',

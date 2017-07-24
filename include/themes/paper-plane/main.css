@@ -1186,10 +1186,14 @@ table.cactiTable {
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 8px 0px 8px;
+	padding: 0px 12px 0px 3px;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;
+}
+
+.cactiTableButton span:last-child, .cactiTableTitle span:last-child {
+	padding-right: 8px;
 }
 
 .cactiDebugTable {
@@ -2140,6 +2144,10 @@ tr#realtime td:first-child {
 	-moz-border-radius-bottomleft: 0px !important;
 	-moz-border-radius-topright: 0px !important;
 	-moz-border-radius-topleft: 0px !important;
+}
+
+.menuitem {
+	white-space: nowrap;
 }
 
 .menu_glyph {

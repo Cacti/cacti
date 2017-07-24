@@ -225,7 +225,7 @@ function form_automation_snmp_actions() {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one SNMP Option.') . "</span></td></tr>\n";
 		$save_html = '';
 	} else {
-		$save_html = "<input type='submit' value='" . __('Continue') . "' name='save'>";
+		$save_html = "<input type='submit' value='" . __esc('Continue') . "' name='save'>";
 
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
@@ -245,12 +245,12 @@ function form_automation_snmp_actions() {
 		}
 	}
 
-	print "	<tr>
+	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_array) ? serialize($automation_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
-			<input type='button' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? __('Return'):__('Cancel')) . "' name='cancel'>
+			<input type='button' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -284,7 +284,10 @@ function automation_snmp_item_dnd() {
         $new_order[$sequence] = str_replace('line', '', $option_id);
     }
 
-    $snmp_items = db_fetch_assoc_prepared('SELECT id, sequence FROM automation_snmp_items WHERE snmp_id = ?', array(get_request_var('id')));
+    $snmp_items = db_fetch_assoc_prepared('SELECT id, sequence
+		FROM automation_snmp_items
+		WHERE snmp_id = ?',
+		array(get_request_var('id')));
 
     if(sizeof($snmp_items)) {
         foreach($snmp_items as $item) {
@@ -353,8 +356,8 @@ function automation_snmp_item_remove_confirm() {
     </tr>
     <tr>
         <td align='right'>
-            <input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-            <input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove SNMP Item');?>'>
+            <input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+            <input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove SNMP Item');?>'>
         </td>
     </tr>
     <?php
@@ -558,7 +561,7 @@ function automation_snmp_item_edit() {
 	form_hidden_box('id', (isset($automation_snmp_item['snmp_id']) ? $automation_snmp_item['snmp_id'] : '0'), '');
 	form_hidden_box('save_component_automation_snmp_item', '1', '');
 
-	form_save_button(htmlspecialchars('automation_snmp.php?action=edit&id=' . get_request_var('id')));
+	form_save_button('automation_snmp.php?action=edit&id=' . get_request_var('id'));
 
 	?>
 	<script type='text/javascript'>
@@ -713,19 +716,19 @@ function automation_snmp_edit() {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items && $total_items > 1) {
-						$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __('Move Down') . '"></a>';
+						$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __('Move Up') . '"></a>';
+						$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 				}
 
-				$form_data .= '<a class="delete deleteMarker fa fa-remove" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __('Delete') . '"></a>';
+				$form_data .= '<a class="delete deleteMarker fa fa-remove" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __esc('Delete') . '"></a>';
 				$form_data .= '</td></tr>';
 
 				print $form_data;
@@ -816,20 +819,19 @@ function automation_snmp() {
 		$rows = get_request_var('rows');
 	}
 
-	form_start('automation_snmp.php', 'automation_snmp');
-
 	html_start_box(__('Automation SNMP Options'), '100%', '', '3', 'center', 'automation_snmp.php?action=edit');
 
 	?>
 	<tr class='even'>
 		<td>
+		<form id='snmp_form'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+						<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('SNMP Rules');?>
@@ -848,18 +850,19 @@ function automation_snmp() {
                     </td>
 					<td>
 						<span>
-							<input id='refresh' type='button' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-							<input id='clear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+							<input id='refresh' type='button' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input id='clear' type='button' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
 			</table>
+		</form>
 		</td>
 	</tr>
 	<script type='text/javascript'>
 	function applyFilter() {
 		strURL  = 'automation_snmp.php?header=false';
-		strURL += '&filter='+escape($('#filter').val());
+		strURL += '&filter='+$('#filter').val();
 		strURL += '&rows='+$('#rows').val();
 		loadPageNoHeader(strURL);
 	}
@@ -877,30 +880,33 @@ function automation_snmp() {
 		$('#clear').click(function() {
 			clearFilter();
 		});
+
+		$('#snmp_form').submit(function(event) {
+			event.preventDefault();
+			applyFilter();
+		});
 	});
 	</script>
 	<?php
 
 	html_end_box();
 
-	form_end();
-
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (automation_snmp.name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = "WHERE asnmp.name LIKE '%" . get_request_var('filter') . "%'";
 	} else {
 		$sql_where = '';
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		COUNT(asnmp.id)
+		COUNT(DISTINCT asnmp.id)
 		FROM automation_snmp AS asnmp
 		LEFT JOIN automation_networks AS anw
 		ON asnmp.id=anw.snmp_id
 		LEFT JOIN automation_snmp_items AS asnmpi
 		ON asnmp.id=asnmpi.snmp_id
-		GROUP BY asnmp.id
-		$sql_where");
+		$sql_where
+		GROUP BY asnmp.id");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
@@ -915,8 +921,8 @@ function automation_snmp() {
 		ON asnmp.id=anw.snmp_id
 		LEFT JOIN automation_snmp_items AS asnmpi
 		ON asnmp.id=asnmpi.snmp_id
-		GROUP BY asnmp.id
 		$sql_where
+		GROUP BY asnmp.id
 		$sql_order
 		$sql_limit");
 
@@ -943,7 +949,7 @@ function automation_snmp() {
 		foreach ($snmp_groups as $snmp_group) {
 			form_alternate_row('line' . $snmp_group['id'], true);
 
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('automation_snmp.php?action=edit&id=' . $snmp_group['id'] . '&page=1') . "'>" . ((get_request_var('filter') != '') ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", htmlspecialchars($snmp_group['name'])) : htmlspecialchars($snmp_group['name'])) . '</a>', $snmp_group['id']);
+			form_selectable_cell(filter_value($snmp_group['name'], get_request_var('filter'), 'automation_snmp.php?action=edit&id=' . $snmp_group['id'] . '&page=1'), $snmp_group['id']);
 			form_selectable_cell($snmp_group['networks'], $snmp_group['id'], '', 'text-align:right;');
 			form_selectable_cell($snmp_group['totals'], $snmp_group['id'], '', 'text-align:right;');
 			form_selectable_cell($snmp_group['v1entries'], $snmp_group['id'], '', 'text-align:right;');
@@ -972,7 +978,7 @@ function automation_snmp() {
 	<script type='text/javascript'>
 	function applyFilter() {
 		strURL  = 'automation_snmp.php?header=false&rows=' + $('#rows').val();
-		strURL += strURL + '&filter=' + escape($('#filter').val());
+		strURL += strURL + '&filter=' + $('#filter').val();
 		loadPageNoHeader(strURL);
 	}
 	</script>

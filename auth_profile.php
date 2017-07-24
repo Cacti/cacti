@@ -142,12 +142,12 @@ function settings() {
 			}
 		}
 
-		$_SESSION['profile_referer'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER']:'graph_view.php'); 
+		$_SESSION['profile_referer'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER']:'graph_view.php');
 	}
 
 	form_start('auth_profile.php');
 
-	html_start_box( __('User Account Details'), '100%', true, '3', 'center', '');
+	html_start_box(__('User Account Details'), '100%', true, '3', 'center', '');
 
 	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
@@ -293,7 +293,7 @@ function settings() {
 		Storages.localStorage.removeAll();
 		Storages.sessionStorage.removeAll();
 
-		$('body').append('<div style="display:none;" id="cleared" title="<?php print __('Private Data Cleared');?>"><p><?php print __('Your Private Data has been cleared.');?></p></div>');
+		$('body').append('<div style="display:none;" id="cleared" title="<?php print __esc('Private Data Cleared');?>"><p><?php print __('Your Private Data has been cleared.');?></p></div>');
 
 		$('#cleared').dialog({
 			modal: true,
@@ -313,7 +313,7 @@ function settings() {
 
 	function logoutEverywhere() {
 		$.get('auth_profile.php?action=logout_everywhere', function(data) {
-			$('body').append('<div style="display:none;" id="cleared" title="<?php print __('User Sessions Cleared');?>"><p><?php print __('All your login sessions have been cleared.');?></p></div>');
+			$('body').append('<div style="display:none;" id="cleared" title="<?php print __esc('User Sessions Cleared');?>"><p><?php print __('All your login sessions have been cleared.');?></p></div>');
 
 			$('#cleared').dialog({
 				modal: true,
@@ -396,7 +396,7 @@ function settings() {
 		$('#navigation').show();
 		$('#navigation_right').show();
 
-		$('input[value="Save"]').unbind().click(function(event) {
+		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
 			event.preventDefault();
             if (themeChanged != true && langChanged != true) {
                 $.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
@@ -417,8 +417,8 @@ function settings() {
 			langChange();
 		});
 
-		$('input[value="Return"]').unbind().click(function(event) {
-			document.location = '<?php print $_SESSION['profile_referer'];?>';
+		$('input[value="<?php print __esc('Return');?>"]').unbind().click(function(event) {
+			document.location = '<?php print htmlspecialchars($_SESSION['profile_referer']);?>';
 		});
 	});
 
@@ -427,7 +427,7 @@ function settings() {
 
 	form_hidden_box('save_component_graph_config','1','');
 
-	form_save_buttons(array(array('id' => 'return', 'value' => 'Return'), array('id' => 'save', 'value' => 'Save')));
+	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return')), array('id' => 'save', 'value' => __esc('Save'))));
 
 	form_end();
 }

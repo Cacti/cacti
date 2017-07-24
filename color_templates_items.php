@@ -183,32 +183,32 @@ function aggregate_color_item_movedown() {
 
 	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id = ?', 
+		WHERE color_template_item_id = ?',
 		array(get_request_var('color_template_item_id')));
 
-	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], 
+	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	$next_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
 		WHERE sequence > ?
 		AND color_template_id = ?
-		ORDER BY sequence ASC limit 1', 
+		ORDER BY sequence ASC limit 1',
 		array($current_sequence['sequence'], get_request_var('color_template_id')));
 
-	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'], 
+	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'],
 		FALSE, POLLER_VERBOSITY_DEBUG);
 
 	db_execute_prepared('UPDATE color_template_items
 		SET sequence = ?
 		WHERE color_template_id = ?
-		AND color_template_item_id = ?', 
+		AND color_template_item_id = ?',
 		array($next_sequence['sequence'], get_request_var('color_template_id'), $current_sequence['color_template_item_id']));
 
 	db_execute_prepared('UPDATE color_template_items
 		SET sequence = ?
 		WHERE color_template_id = ?
-		AND color_template_item_id = ?', 
+		AND color_template_item_id = ?',
 		array($current_sequence['sequence'], get_request_var('color_template_id'), $next_sequence['color_template_item_id']));
 }
 
@@ -224,32 +224,32 @@ function aggregate_color_item_moveup() {
 
 	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
-		WHERE color_template_item_id = ?', 
+		WHERE color_template_item_id = ?',
 		array(get_request_var('color_template_item_id')));
 
-	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'], 
+	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	$previous_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
 		WHERE sequence < ?
 		AND color_template_id = ?
-		ORDER BY sequence DESC limit 1', 
+		ORDER BY sequence DESC limit 1',
 		array($current_sequence['sequence'], get_request_var('color_template_id')));
 
-	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'], 
+	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'],
 		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	db_execute_prepared('UPDATE color_template_items
 		SET sequence = ?
 		WHERE color_template_id = ?
-		AND color_template_item_id = ?', 
+		AND color_template_item_id = ?',
 		array($previous_sequence['sequence'], get_request_var('color_template_id'), $current_sequence['color_template_item_id']));
 
 	db_execute_prepared('UPDATE color_template_items
 		SET sequence = ?
 		WHERE color_template_id = ?
-		AND color_template_item_id = ?', 
+		AND color_template_item_id = ?',
 		array($current_sequence['sequence'], get_request_var('color_template_id'), $previous_sequence['color_template_item_id']));
 }
 
@@ -277,8 +277,8 @@ function aggregate_color_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td align='right'>
-			<input id='cancel' type='button' value='<?php print __('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input id='continue' type='button' value='<?php print __('Continue');?>' name='continue' title='<?php print __('Remove Color Item');?>'>
+			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Color Item');?>'>
 		</td>
 	</tr>
 	<?php
@@ -293,10 +293,10 @@ function aggregate_color_item_remove_confirm() {
 		$('#cdialog').dialog();
 
 		$('#continue').click(function(data) {
-			$.post('color_templates_items.php?action=item_remove', { 
-				__csrf_magic: csrfMagicToken, 
-				color_id: <?php print get_request_var('color_id');?>, 
-				id: <?php print get_request_var('id');?> 
+			$.post('color_templates_items.php?action=item_remove', {
+				__csrf_magic: csrfMagicToken,
+				color_id: <?php print get_request_var('color_id');?>,
+				id: <?php print get_request_var('id');?>
 			}, function(data) {
 				$('#cdialog').dialog('close');
 				loadPageNoHeader('color_templates.php?action=template_edit&header=false&color_template_id=<?php print get_request_var('id');?>');
@@ -358,6 +358,6 @@ function aggregate_color_item_edit() {
 	form_hidden_box('sequence', (array_key_exists('sequence', $template_item) ? $template_item['sequence'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 
-	form_save_button(htmlspecialchars('color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id')), '', 'color_template_item_id');
+	form_save_button('color_templates.php?header=false&action=template_edit&color_template_id=' . get_request_var('color_template_id'), '', 'color_template_item_id');
 }
 

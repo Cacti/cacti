@@ -64,6 +64,11 @@ switch (get_request_var('action')) {
 		automation_graph_rules_item_edit();
 		bottom_footer();
 		break;
+	case 'qedit':
+		automation_change_query_type();
+
+		header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_filter_request_var('id'));
+		break;
 	case 'remove':
 		automation_graph_rules_remove();
 
@@ -279,9 +284,9 @@ function automation_graph_rules_form_actions() {
 
 	if (!isset($automation_graph_rules_array)) {
 		print "<tr class='even'><td><span class='textError'>" . __('You must select at least one Rule.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}else {
-		$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Apply requested action') . "'>";
+		$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
 	}
 
 	print "	<tr>
@@ -366,7 +371,7 @@ function automation_graph_rules_item_edit() {
 		form_hidden_box('save_component_automation_graph_rule_item', '1', '');
 	}
 
-	form_save_button(htmlspecialchars('automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type='. get_request_var('rule_type')));
+	form_save_button('automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type='. get_request_var('rule_type'));
 
 	?>
 	<script type='text/javascript'>
@@ -432,6 +437,42 @@ function automation_graph_rules_remove() {
 	}
 }
 
+function automation_change_query_type() {
+	$id = get_filter_request_var('id');
+
+	if (isset_request_var('snmp_query_id')) {
+		$snmp_query_id = get_filter_request_var('snmp_query_id');
+		$name = get_nfilter_request_var('name');
+
+		db_execute_prepared('UPDATE automation_graph_rules
+			SET snmp_query_id = ?, name = ?
+			WHERE id = ?',
+			array($snmp_query_id, $name, $id));
+
+		$graph_type = db_fetch_cell_prepared('SELECT id
+			FROM snmp_query_graph
+			WHERE snmp_query_id = ?
+			ORDER BY name
+			LIMIT 1', array($snmp_query_id));
+
+		db_execute_prepared('UPDATE automation_graph_rules
+			SET graph_type_id = ?
+			WHERE id = ?',
+			array($graph_type, $id));
+
+		raise_message(1);
+	} elseif (isset_request_var('graph_type_id')) {
+		$snmp_query_id = get_filter_request_var('graph_type_id');
+		$name = get_nfilter_request_var('name');
+
+		db_execute_prepared('UPDATE automation_graph_rules
+			SET graph_type_id = ?, name = ?
+			WHERE id = ?',
+			array($snmp_query_id, $name, $id));
+
+		raise_message(1);
+	}
+}
 
 function automation_graph_rules_edit() {
 	global $config;
@@ -510,7 +551,7 @@ function automation_graph_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print ($_SESSION['automation_graph_rules_show_rule'] == true ? __('Don\'t Show'):__('Show'));?> <?php print __('Rule Details.');?></a></span><br>
+		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print ($_SESSION['automation_graph_rules_show_rule'] == true ? __('Don\'t Show'):__('Show'));?> <?php print __('Rule Details.');?></a><br>
 		</td>
 	</tr>
 </table>
@@ -525,7 +566,7 @@ function automation_graph_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Devices.');?></a></span><br>
+		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Devices.');?></a><br>
 		</td>
 	</tr>
 </table>
@@ -541,7 +582,7 @@ function automation_graph_rules_edit() {
 <table style='width:100%;text-align:center;'>
 	<tr>
 		<td class='textInfo right' style='vertical-align:top;'>
-			<span class='linkMarker'>*<a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Objects.');?></a></span><br>
+			<span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Objects.');?></a><br>
 		</td>
 	</tr>
 </table>
@@ -613,19 +654,20 @@ function automation_graph_rules_edit() {
 	?>
 	<script type='text/javascript'>
 	function applySNMPQueryIdChange() {
-		strURL = 'automation_graph_rules.php?action=edit&id=' + $('#id').val();
-		strURL = strURL + '&snmp_query_id=' + $('#snmp_query_id').val();
-		strURL = strURL + '&name=' + $('#name').val();
-		strURL = strURL + '&header=false';
+		strURL  = 'automation_graph_rules.php?action=qedit';
+		strURL += '&id=' + $('#id').val();
+		strURL += '&name=' + $('#name').val();
+		strURL += '&snmp_query_id=' + $('#snmp_query_id').val();
+		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
 
 	function applySNMPQueryTypeChange() {
-		strURL = 'automation_graph_rules.php?action=edit&id=' + $('#id').val();
-		strURL = strURL + '&snmp_query_id=' + $('#snmp_query_id').val();
-		strURL = strURL + '&name=' + $('#name').val();
-		strURL = strURL + '&snmp_query_type' + $('#name').val();
-		strURL = strURL + '&header=false';
+		strURL  = 'automation_graph_rules.php?action=qedit'
+		strURL += '&id=' + $('#id').val();
+		strURL += '&name=' + $('#name').val();
+		strURL += '&graph_type_id=' + $('#graph_type_id').val();
+		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
 	</script>
@@ -701,7 +743,7 @@ function automation_graph_rules() {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+							<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Data Query');?>
@@ -711,15 +753,15 @@ function automation_graph_rules() {
 								<option value='-1'<?php print (get_request_var('snmp_query_id') == '-1' ? ' selected':'');?>><?php print __('Any');?></option>
 								<?php
 								$available_data_queries = db_fetch_assoc('SELECT DISTINCT
-									ar.snmp_query_id, sq.name
+									sq.id, sq.name
 									FROM automation_graph_rules AS ar
 									LEFT JOIN snmp_query AS sq
-									ON (ar.snmp_query_id=sq.id)
+									ON ar.snmp_query_id=sq.id
 									ORDER BY sq.name');
 
 								if (sizeof($available_data_queries)) {
 									foreach ($available_data_queries as $data_query) {
-										print "<option value='" . $data_query['snmp_query_id'] . "'" . (get_request_var('snmp_query_id') == $data_query['snmp_query_id'] ? ' selected':'') .  '>' . $data_query['name'] . "</option>\n";
+										print "<option value='" . $data_query['id'] . "'" . (get_request_var('snmp_query_id') == $data_query['id'] ? ' selected':'') .  '>' . $data_query['name'] . "</option>\n";
 									}
 								}
 								?>
@@ -752,8 +794,8 @@ function automation_graph_rules() {
 						</td>
 						<td>
 							<span>
-								<input type='submit' id='refresh' name='go' value='<?php print __('Go');?>'>
-								<input type='button' id='clear' value='<?php print __('Clear');?>'></td>
+								<input type='submit' id='refresh' name='go' value='<?php print __esc('Go');?>'>
+								<input type='button' id='clear' value='<?php print __esc('Clear');?>'></td>
 							</span>
 					</tr>
 				</table>
@@ -762,7 +804,7 @@ function automation_graph_rules() {
 		function applyFilter() {
 			strURL = 'automation_graph_rules.php' +
 				'?status='        + $('#status').val()+
-				'&filter='        + escape($('#filter').val())+
+				'&filter='        + $('#filter').val()+
 				'&rows='          + $('#rows').val()+
 				'&snmp_query_id=' + $('#snmp_query_id').val()+
 				'&header=false';

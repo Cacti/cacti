@@ -141,8 +141,8 @@ function clog_view_logfile() {
 		</tr>
 		<tr class='saveRow'>
 			<td colspan='2' align='right'>
-				<input id='cancel' type='button' value='" . __('Cancel') . "'>&nbsp
-				<input id='pc' type='button' name='purge_continue' value='" . __('Continue') . "' title='" . __('Purge cacti.log') . "'>
+				<input id='cancel' type='button' value='" . __esc('Cancel') . "'>&nbsp
+				<input id='pc' type='button' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge cacti.log') . "'>
 				<script type='text/javascript'>
 				$('#pc').click(function() {
 					strURL = location.pathname+'?purge_continue=1&header=false';
@@ -260,7 +260,7 @@ function clog_view_logfile() {
 							$titles .= "'"  . cacti_htmlspecialchars($title) . "'";
 						}
 					}
-					$new_item .= cacti_htmlspecialchars($graph_add) . "' title='" . __('View Graphs') . "'>" . $titles . '</a>';
+					$new_item .= cacti_htmlspecialchars($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $titles . '</a>';
 				}
 
 				$item     = substr($item, $ds_end);
@@ -385,9 +385,9 @@ function filter($clogAdmin) {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='go' name='go' value='<?php print __('Go');?>'>
-							<input type='button' id='clear' name='clear' value='<?php print __('Clear');?>'>
-						<?php if ($clogAdmin) {?><input type='button' id='purge' name='purge' value='<?php print __('Purge');?>'><?php }?>
+							<input type='button' id='go' name='go' value='<?php print __esc('Go');?>'>
+							<input type='button' id='clear' name='clear' value='<?php print __esc('Clear');?>'>
+						<?php if ($clogAdmin) {?><input type='button' id='purge' name='purge' value='<?php print __esc('Purge');?>'><?php }?>
 						</span>
 					</td>
 				</tr>
@@ -440,7 +440,7 @@ function filter($clogAdmin) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' type='text' size='75' value='<?php print get_request_var('rfilter');?>'>
+						<input id='rfilter' type='text' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 				</tr>
 			</table>

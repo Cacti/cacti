@@ -289,14 +289,14 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
 
 	print "<div class='iconWrapper'>\n";
-	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='" . __('Graph Details, Zooming and Debugging Utilities') . "'></a><br>\n";
-	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __('CSV Export of Graph Data'). "'></a><br>\n";
-	print "<a class='iconLink mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/timeview.png' alt='' title='" . __('Time Graph View'). "'></a><br>\n";
+	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></a><br>\n";
+	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __esc('CSV Export of Graph Data'). "'></a><br>\n";
+	print "<a class='iconLink mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/timeview.png' alt='' title='" . __esc('Time Graph View'). "'></a><br>\n";
 	if (read_config_option('realtime_enabled') == 'on') {
-		print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __('Click to view just this Graph in Real-time'). "'></a><br/>\n";
+		print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __esc('Click to view just this Graph in Real-time'). "'></a><br/>\n";
 	}
 	if (is_realm_allowed(1043)) {
-		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif' title='" . __('Kill Spikes in Graphs') . "'></span>";
+		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif' title='" . __esc('Kill Spikes in Graphs') . "'></span>";
 		print '<br/>';
 	}
 
@@ -671,7 +671,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __('Select All Rows'). "' onClick='SelectAll(\"chk\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='SelectAll(\"chk\",this.checked)'></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 
 	$page++;
@@ -758,7 +758,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __('Select All Rows'). "' onClick='SelectAll(\"chk\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='SelectAll(\"chk\",this.checked)'></th>\n" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 
@@ -781,10 +781,10 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 				print '<option value="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '"';
 
 				if ($form_previous_value == $id) {
-					print " selected";
+					print ' selected';
 				}
 
-				print ">" . title_trim(null_out_substitutions(htmlspecialchars($form_data[$id])), 75) . "</option>\n";
+				print '>' . title_trim(null_out_substitutions(htmlspecialchars($form_data[$id])), 75) . "</option>\n";
 			}
 		}
 	} else {
@@ -793,17 +793,21 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 				print "<option value='" . htmlspecialchars($row[$column_id], ENT_QUOTES, 'UTF-8') . "'";
 
 				if ($form_previous_value == $row[$column_id]) {
-					print " selected";
+					print ' selected';
 				}
 
-				if (isset($row["host_id"])) {
-					print ">" . title_trim(htmlspecialchars($row[$column_display]), 75) . "</option>\n";
+				if (isset($row['host_id'])) {
+					print '>' . title_trim(htmlspecialchars($row[$column_display]), 75) . "</option>\n";
 				} else {
-					print ">" . title_trim(null_out_substitutions(htmlspecialchars($row[$column_display])), 75) . "</option>\n";
+					print '>' . title_trim(null_out_substitutions(htmlspecialchars($row[$column_display])), 75) . "</option>\n";
 				}
 			}
 		}
 	}
+}
+
+function html_escape_request_var($string) {
+	return htmlspecialchars(get_request_var($string), ENT_QUOTES, 'UTF-8');
 }
 
 /* html_split_string - takes a string and breaks it into a number of <br> separated segments
@@ -813,7 +817,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
          the correct break location.
    @returns $new_string - the modified string to be returned. */
 function html_split_string($string, $length = 70, $forgiveness = 10) {
-	$new_string = "";
+	$new_string = '';
 	$j    = 0;
 	$done = false;
 
@@ -958,18 +962,18 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			if ($disable_controls == false) {
 				print "<td style='text-align:right;padding-right:10px;'>\n";
 				if ($i != sizeof($item_list)-1) {
-					print "<a class='moveArrow fa fa-caret-down' title='" . __('Move Down'). "' href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'></a>\n";
+					print "<a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . htmlspecialchars("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'></a>\n";
 				} else {
 					print "<span class='moveArrowNone'></span>\n";
 				}
 				if ($i > 0) {
-					print "<a class='moveArrow fa fa-caret-up' title='" . __('Move Up') . "' href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'></a>\n";
+					print "<a class='moveArrow fa fa-caret-up' title='" . __esc('Move Up') . "' href='" . htmlspecialchars("$filename?action=item_moveup&id=" . $item["id"] . "&$url_data") . "'></a>\n";
 				} else {
 					print "<span class='moveArrowNone'></span>\n";
 				}
 				print "</td>\n";
 
-				print "<td style='text-align:right;'><a class='deleteMarker fa fa-remove' title='" . __('Delete') . "' href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'></a></td>\n";
+				print "<td style='text-align:right;'><a class='deleteMarker fa fa-remove' title='" . __esc('Delete') . "' href='" . htmlspecialchars("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'></a></td>\n";
 			}
 
 			print "</tr>";
@@ -1153,7 +1157,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		<div>
 			<span class='actionsDropdownArrow'><img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''></span>
 			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
-			<span class='actionsDropdownButton'><input id='submit' type='submit' value='<?php print __('Go');?>' title='<?php print __('Execute Action');?>'></span>
+			<span class='actionsDropdownButton'><input id='submit' type='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>'></span>
 		</div>
 	</div>
 	<input type='hidden' id='action' name='action' value='actions'>
@@ -1530,21 +1534,21 @@ function html_graph_tabs_right($current_user) {
 			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=tree');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
 				print '_down';
-			}?>.gif' title='<?php print __('Tree View');?>' alt=''></a><?php
+			}?>.gif' title='<?php print __esc('Tree View');?>' alt=''></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_list')) {
 			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=list');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_list<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'list') {
 				print '_down';
-			}?>.gif' title='<?php print __('List View');?>' alt=''></a><?php
+			}?>.gif' title='<?php print __esc('List View');?>' alt=''></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_preview')) {
 			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=preview');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_preview<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
 				print '_down';
-			}?>.gif' title='<?php print __('Preview View');?>' alt=''></a><?php
+			}?>.gif' title='<?php print __esc('Preview View');?>' alt=''></a><?php
 		}?>&nbsp;<br>
 		<?php
 	} else {
@@ -1603,24 +1607,24 @@ function html_graph_tabs_right($current_user) {
 			switch($tab['id']) {
 			case 'tree':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 				} else {
-					print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 				}
 				break;
 			case 'list':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 				} else {
-					print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 				}
 
 				break;
 			case 'preview':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 				} else {
-					print "<li role='tab'><a title='" . $tab['title'] . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
+					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 				}
 
 				break;
@@ -1675,7 +1679,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		<td>
 			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>
 				<span id='host_click' class='ui-icon ui-icon-triangle-1-s'></span>
-				<input size='28' id='host' value='<?php print $hostname;?>'>
+				<input size='28' id='host' value='<?php print htmlspecialchars($hostname, ENT_QUOTES, 'UTF-8');?>'>
 			</span>
 			<input type='hidden' id='host_id' name='host_id' value='<?php print $host_id;?>'>
 			<input type='hidden' id='call_back' value='<?php print $call_back;?>'>

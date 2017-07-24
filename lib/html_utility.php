@@ -203,9 +203,9 @@ function form_confim_buttons($post_variable, $item_array, $save_message, $return
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($item_array) ? serialize($item_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $post_variable . "'>" . ($return ? "
-			<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>
+			<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>
 			":"
-			<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') ."' title='$save_message'>") . "
+			<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') ."' title='$save_message'>") . "
 		</td>
 	</tr>\n";
 }
@@ -678,6 +678,12 @@ function update_order_string($inplace = false) {
 
 	$order = '';
 
+	if (strpos(get_request_var('sort_column'), '(') === false && strpos(get_request_var('sort_column'), '`') === false) {
+		$del = '`';
+	} else {
+		$del = '';
+	}
+
 	if ($inplace) {
 		$_SESSION['sort_string'][$page] = 'ORDER BY ';
 		foreach($_SESSION['sort_data'][$page] as $column => $direction) {
@@ -697,15 +703,15 @@ function update_order_string($inplace = false) {
 			unset($_SESSION['sort_string'][$page]);
 
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
-			$_SESSION['sort_string'][$page] = 'ORDER BY ' . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
+			$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . get_request_var('sort_column') . $del . ' ' . get_request_var('sort_direction');
 		} elseif (isset_request_var('sort_column')) {
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
 			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
 				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
-					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
+					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ") AS `$column` " . $direction;
 				} else {
-					$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
+					$order .= ($order != '' ? ', ' . $del:$del) . $column . $del . ' ' . $direction;
 				}
 			}
 			$_SESSION['sort_string'][$page] .= $order;
@@ -721,10 +727,16 @@ function update_order_string($inplace = false) {
 function get_order_string() {
 	$page = get_order_string_page();
 
+	if (strpos(get_request_var('sort_column'), '(') === false && strpos(get_request_var('sort_column'), '`') === false) {
+		$del = '`';
+	} else {
+		$del = '';
+	}
+
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
 	} else {
-		return 'ORDER BY ' . get_request_var('sort_column') . ' ' . get_request_var('sort_direction');
+		return 'ORDER BY ' . $del . trim(get_request_var('sort_column')) . $del . ' ' . get_request_var('sort_direction');
 	}
 }
 

@@ -1,5 +1,22 @@
 Cacti CHANGELOG
 
+1.1.14
+-issue#849: Unable to select host in Graph Item pick
+-issue#850: Reporting not allowing Non-templated Graphs
+-issue#858: Pagination on SNMP Options wrong
+-issue#860: Network Discovery Subnet Range character limit too small
+-issue#861: The search filter does not support Cyrillic
+-issue#862: Automation - When editing Graph Rules, unable to Change Data Query
+-issue#863: Typo error in auth_login.php for LDAP authentication
+-issue#867: Cross-site scripting (XSS) vulnerability in auth_profile.php
+-issue: Link's not showing in Automation Graph and Tree rules on Sunshine theme
+-issue: Make Templates Export responsive
+-issue: Don't wrap menu glyphs and menuitems
+-issue: The function get_order_string() can fail when encountering reserved word columns
+-issue: Data Query Delete is not using callback
+-feature: Resize Graphs on Graph page to be responsive
+-feature: Make import text a hidden field as it is likely seldom used
+
 1.1.13
 -issue#605: Remove Spikes feature not fully functional
 -issue#814: Allow 'Save' feature from New Graphs
