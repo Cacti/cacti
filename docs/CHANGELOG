@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.1.15
+-issue: PHP Fatal Exception on upgrade from 1.1.11 or earlier
+-feature: Added test to detect install upgrade code problems
+
 1.1.14
 -issue#849: Unable to select host in Graph Item pick
 -issue#850: Reporting not allowing Non-templated Graphs
