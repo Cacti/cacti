@@ -703,15 +703,15 @@ function update_order_string($inplace = false) {
 			unset($_SESSION['sort_string'][$page]);
 
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
-			$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . get_request_var('sort_column') . $del . ' ' . get_request_var('sort_direction');
+			$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.'. $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
 		} elseif (isset_request_var('sort_column')) {
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
 			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
 				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
-					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ") AS `$column` " . $direction;
+					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ") " . $direction;
 				} else {
-					$order .= ($order != '' ? ', ' . $del:$del) . $column . $del . ' ' . $direction;
+					$order .= ($order != '' ? ', ' . $del:$del) . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
 				}
 			}
 			$_SESSION['sort_string'][$page] .= $order;
@@ -736,7 +736,7 @@ function get_order_string() {
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
 	} else {
-		return 'ORDER BY ' . $del . trim(get_request_var('sort_column')) . $del . ' ' . get_request_var('sort_direction');
+		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
 	}
 }
 
