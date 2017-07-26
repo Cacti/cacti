@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.16
+-issue#875: When modifying Realm permissions, realms that are listed multiple times don't stay in sync
 -issue: Address additional corner cases around get_order_string usage
 
 1.1.15
