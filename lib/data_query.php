@@ -1420,7 +1420,7 @@ function get_script_query_path($args, $script_path, $host_id) {
 
 	/* get any extra arguments that need to be passed to the script */
 	if ($args != '') {
-		$parts = explode(' ', $args);
+		$parts = preg_split('/\s+/', $args);
 
 		$extra_arguments = '';
 		foreach($parts as $index => $part) {

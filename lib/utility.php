@@ -383,7 +383,7 @@ function update_poller_cache($data_source, $commit = false) {
 								$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
 							} else {
 								$action = POLLER_ACTION_SCRIPT;
-								$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index'], $script_queries['script_path'], $data_source['host_id']);
+								$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
 							}
 						}
 
