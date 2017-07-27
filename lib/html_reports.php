@@ -845,6 +845,9 @@ function reports_item_edit() {
 		}else if (!isset($reports_item['tree_id'])) {
 			$reports_item['tree_id'] = 0;
 		}
+	} else {
+		$fields_reports_item_edit['branch_id']['sql'] =
+			"SELECT '0' AS id, '" . __('None') . "' AS name";
 	}
 
 	if (isset_request_var('host_template_id')) {
