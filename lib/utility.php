@@ -151,7 +151,7 @@ function update_poller_cache($data_source, $commit = false) {
 
 			$params = array();
 			if ($field['output_type'] != '') {
-				$output_type_sql = ' AND snmp_query_graph_rrd.snmp_query_graph_id = ?';
+				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ?';
 				$params[] = $field['output_type'];
 			} else {
 				$output_type_sql = '';
@@ -159,15 +159,16 @@ function update_poller_cache($data_source, $commit = false) {
 			$params[] = $data_input['data_template_id'];
 			$params[] = $data_source['id'];
 
-			$outputs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . "
-				snmp_query_graph_rrd.snmp_field_name,
-				data_template_rrd.id as data_template_rrd_id
-				FROM (snmp_query_graph_rrd,data_template_rrd FORCE INDEX (local_data_id))
-				WHERE snmp_query_graph_rrd.data_template_rrd_id = data_template_rrd.local_data_template_rrd_id
+			$outputs = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . "
+				sqgr.snmp_field_name,
+				dtr.id as data_template_rrd_id
+				FROM snmp_query_graph_rrd AS sqgr
+				INNER JOIN data_template_rrd AS dtr FORCE INDEX (local_data_id)
+				ON sqgr.data_template_rrd_id = dtr.local_data_template_rrd_id
+				WHERE sqgr.data_template_id = ?
+				AND dtr.local_data_id = ?
 				$output_type_sql
-				AND snmp_query_graph_rrd.data_template_id = ?
-				AND data_template_rrd.local_data_id = ?
-				ORDER BY data_template_rrd.id", $params);
+				ORDER BY dtr.id", $params);
 		}
 
 		if ($data_input['active'] == 'on') {

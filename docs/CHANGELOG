@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#878: Ambiguous language in purge log function
 -issue#879: SQL Error when adding a report item to a report
 -issue: Address additional corner cases around get_order_string usage
+-issue: Data Queries sharing a Data Source can result in poller output table not empty errors
 
 1.1.15
 -issue: PHP Fatal Exception on upgrade from 1.1.11 or earlier
