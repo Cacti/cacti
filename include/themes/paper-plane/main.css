@@ -2175,5 +2175,6 @@ tr#realtime td:first-child {
 
 .ui-autocomplete {
 	height: 300px;
-	overflow: scroll;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
