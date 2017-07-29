@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.16
 -issue#865: Escape Data Query arguments to prevent issues with special characters
+-issue#872: Can't add device items to graphs generated with no device and no template
 -issue#875: When modifying Realm permissions, realms that are listed multiple times don't stay in sync
 -issue#877: Improving resolution to issue#847 and one additional vulnerability
 -issue#878: Ambiguous language in purge log function

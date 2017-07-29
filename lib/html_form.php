@@ -696,7 +696,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 	}
 
 	$theme = get_selected_theme();
-	if ($theme == 'classic' || !read_config_option('autocomplete')) {
+	if ($theme == 'classic' || read_config_option('autocomplete') > 0) {
 		print "<select id='" . htmlspecialchars($form_name) . "' name='" . htmlspecialchars($form_name) . "'" . $class . $on_change . '>';
 
 		if (!empty($none_entry)) {
@@ -709,6 +709,9 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 
 		print "</select>\n";
 	} else {
+			$previous_value = $none_entry;
+		}
+
 		print "<span id='$form_name" . "_wrap' style='width:300px;' class='autodrop ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>";
 		print "<input type='text' id='$form_name" . "_input' size='28' class='ui-autocomplete-input ui-state-default ui-selectmenu-text' value='" . htmlspecialchars($previous_value, ENT_QUOTES, 'UTF-8') . "'>";
 		print "<span id='$form_name" . "_click' style='z-index:4' class='ui-icon ui-icon-triangle-1-s'></span>";
