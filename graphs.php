@@ -165,7 +165,7 @@ function form_save() {
 	$gt_id_prev_unparsed = get_nfilter_request_var('graph_template_id_prev');
 	parse_validate_graph_template_id('graph_template_id');
 
-	if ((isset_request_var('save_component_graph_new')) && (!isempty_request_var('graph_template_id'))) {
+	if (isset_request_var('save_component_graph_new') && !isempty_request_var('graph_template_id')) {
 		$snmp_query_array  = array();
 		$suggested_values  = array();
 		$graph_template_id = get_request_var('graph_template_id');
@@ -262,10 +262,24 @@ function form_save() {
 			}
 		}
 
-		if ((!is_error_message()) && ($gt_id_unparsed != $gt_id_prev_unparsed)) {
-			change_graph_template($local_graph_id, $gt_id_unparsed);
-		} elseif (!isempty_request_var('graph_template_id')) {
-			update_graph_data_query_cache($local_graph_id);
+		$lg_template_id = db_fetch_cell_prepared('SELECT graph_template_id
+			FROM graph_local
+			WHERE id = ?',
+			array($local_graph_id));
+
+		$lg_dq_id = db_fetch_cell_prepared('SELECT snmp_query_id
+			FROM graph_lcoal
+			WHERE id = ?',
+			array($local_graph_id));
+
+		if (!is_error_message()) {
+			if ($lg_template_id > 0) {
+				change_graph_template($local_graph_id, $gt_id_unparsed);
+
+				if ($lg_dq_id > 0) {
+					update_graph_data_query_cache($local_graph_id);
+				}
+			}
 		}
 	}
 
@@ -1555,6 +1569,7 @@ function graph_edit() {
 
 	if (locked) {
 		$('input, select').not('input[value="<?php print __('Cancel');?>"]').prop('disabled', true);
+		$('.moveArrow, .deleteMarker, .linkOverDark, .linkEditMain').unbind().attr('href', '#').removeClass('moveArrow').removeClass('deleteMarker');
 		if ($('#submit').button === 'function') {
 			$('#submit').button('disable');
 		} else {

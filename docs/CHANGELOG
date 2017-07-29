@@ -7,11 +7,13 @@ Cacti CHANGELOG
 -issue#878: Ambiguous language in purge log function
 -issue#879: SQL Error when adding a report item to a report
 -issue#880: Device drop down is limited to 20 devices and lacks a scroll bar
+-issue#885: Graph generated with no device and no graph template forgets device definitions
 -issue#886: Unable to export templates other than Device templates
 -issue: Address additional corner cases around get_order_string usage
 -issue: Data Queries sharing a Data Source can result in poller output table not empty errors
 -issue: Fix Sunrise theme to properly theme multiselect widgets
 -issue: Increase height of multiselects so that more options are visible
+-issue: When a graph is locked, anchor tags are still functional
 
 1.1.15
 -issue: PHP Fatal Exception on upgrade from 1.1.11 or earlier
