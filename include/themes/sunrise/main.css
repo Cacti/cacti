@@ -20,7 +20,7 @@ body {
 	margin: 0px;
 	background-color: white;
 	background-repeat: repeat-y;
-    overflow: hidden;
+	overflow: hidden;
    	background-color: #000000;
 	background-image: -webkit-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: -moz-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
@@ -107,43 +107,40 @@ pre {
 
 input, select {
 	padding: 0.4em 0.4em 0.4em 0.4em;
+	background: transparent;
 }
 
 input[type="checkbox"].formCheckbox, .filterTable input[type="checkbox"] {
-  display: none;
+	display: none;
 }
 
 label {
-  cursor: pointer;
-}
-
-input[type="checkbox"] + label:before {
-  border: 1px solid #7f83a2;
-  content: "\00a0";
-  display: inline-block;
-  font: 12px/1em sans-serif;
-  height: 12px;
-  margin: .25em .25em 0 0;
-  vertical-align:text-bottom;
-  width: 12px;
-  background: transparent;
-}
-
-input[type="checkbox"]:checked + label:before {
-  background: #3C8A3C;
-  color: #FFFFFF;
-  content: "\2713";
-  text-align: center;
-}
-
-input[type="checkbox"]:checked + label {
-  color: #FFFFFF;
-}
-
-label {
+	cursor: pointer;
 	white-space:nowrap;
 }
 
+input[type="checkbox"] + label:before {
+	border: 1px solid #7f83a2;
+	content: "\00a0";
+	display: inline-block;
+	font: 12px/1em sans-serif;
+	height: 12px;
+	margin: .25em .25em 0 0;
+	vertical-align:text-bottom;
+	width: 12px;
+	background: transparent;
+}
+
+input[type="checkbox"]:checked + label:before {
+	background: #3C8A3C;
+	color: #FFFFFF;
+	content: "\2713";
+	text-align: center;
+}
+
+input[type="checkbox"]:checked + label {
+	color: #FFFFFF;
+}
 
 .nowrap {
 	white-space:nowrap;
@@ -2169,4 +2166,70 @@ tr#realtime td:first-child {
 
 .hostInfoHeader {
 	color: lightgray;
+}
+
+.ui-widget-header {
+	border: 1px solid transparent;
+	background: transparent;
+	color: #93CEFF;
+	font-weight: bold;
+}
+
+.ui-multiselect-header span {
+	color: #93CEFF;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+	background: transparent;
+	color: rgb(150, 155, 163);
+	border: 1px solid rgba(255,255,255,0.2);
+}
+
+.ui-widget-header .ui-icon {
+	background-image: url(images/ui-icons_888888_256x240.png);
+}
+
+.ui-icon, .ui-widget-content .ui-icon {
+	background-image: url(images/ui-icons_888888_256x240.png);
+}
+
+.ui-multiselect-filter {
+	font-size: 11px;
+	font-weight: normal;
+}
+
+.ui-multiselect-all, .ui-multiselect-none {
+	font-size: 11px;
+	font-weight: normal;
+}
+
+.ui-multiselect-all:hover, .ui-multiselect-none:hover {
+	text-decoration: none;
+}
+
+.ui-multiselect-header {
+	margin-bottom: 1px;
+}
+
+.ui-multiselect-header ul li {
+	padding-top: 4px;
+}
+
+.ui-multiselect-filter input {
+	border: 1px solid rgba(255,255,255,0.2);
+	padding-left: 3px;
+	margin-left: 3px;
+}
+
+.ui-multiselect-checkboxes label {
+	color: #93CEFF;
+	padding: 1px 1px;
+}
+
+.ui-multiselect-checkboxes .ui-state-hover {
+	background: #3C8A3C;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+	color: #93CEFF;
 }
