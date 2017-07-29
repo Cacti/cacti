@@ -874,7 +874,7 @@ legend {
 .actionsDropdownButton {
 	vertical-align: top;
 	float: right;
-	margin-top: 1px;
+	margin-top: 0px;
 	margin-left: 3px;
 	margin-right: 6px;
 	display: table-cell;
@@ -2232,4 +2232,10 @@ tr#realtime td:first-child {
 
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
 	color: #93CEFF;
+}
+
+.ui-autocomplete {
+	height: 300px;
+	overflow-y: auto;
+	overflow-x: hidden;
 }

@@ -696,7 +696,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 	}
 
 	$theme = get_selected_theme();
-	if ($theme == 'classic') {
+	if ($theme == 'classic' || !read_config_option('autocomplete')) {
 		print "<select id='" . htmlspecialchars($form_name) . "' name='" . htmlspecialchars($form_name) . "'" . $class . $on_change . '>';
 
 		if (!empty($none_entry)) {

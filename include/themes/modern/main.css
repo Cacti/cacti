@@ -2150,3 +2150,8 @@ tr#realtime td:first-child {
 .menuitem span {
 	vertical-align: 20%;
 }
+
+.ui-autocomplete {
+	height: 300px;
+	overflow: scroll;
+}
