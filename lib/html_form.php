@@ -709,6 +709,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 
 		print "</select>\n";
 	} else {
+		if (empty($previous_id) && $previous_value == '') {
 			$previous_value = $none_entry;
 		}
 
