@@ -263,12 +263,12 @@ function form_save() {
 		}
 
 		if (!is_error_message()) {
-				$lg_template_id = db_fetch_cell_prepared(
-					'SELECT graph_template_id
-					 FROM graph_local
-					 WHERE id = ?',
-					array($local_graph_id)
-				);
+			$lg_template_id = db_fetch_cell_prepared(
+				'SELECT graph_template_id
+				 FROM graph_local
+				 WHERE id = ?',
+				array($local_graph_id)
+			);
 
 			if ($lg_template_id > 0) {
 				change_graph_template($local_graph_id, $gt_id_unparsed);
