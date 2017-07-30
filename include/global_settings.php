@@ -644,6 +644,22 @@ $settings = array(
 			'default' => '30',
 			'array' => $item_rows
 			),
+		'autocomplete_enabled' => array(
+			'friendly_name' => __('Autocomplete Enabled'),
+			'description' => __('In very large systems, select lists can slow the user interface significantly.  If this option is enabled, Cacti will use autocomplete callbacks to populate the select list systematically.  Note: autocomplete is forcibly disabled on the Classic theme.'),
+			'method' => 'drop_array',
+			'default' => '1',
+			'array' => array(
+				1 => __('Yes'),
+				0 => __('No'))
+			),
+		'autocomplete_rows' => array(
+			'friendly_name' => __('Autocomplete Rows'),
+			'description' => __('The default number of rows to return from an autocomplete based select pattern match.'),
+			'method' => 'drop_array',
+			'default' => '30',
+			'array' => $item_rows
+			),
 		'object_creation_header' => array(
 			'friendly_name' => __('Graph/Data Source/Data Query Settings'),
 			'collapsible' => 'true',

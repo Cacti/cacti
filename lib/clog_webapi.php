@@ -136,13 +136,13 @@ function clog_view_logfile() {
 
 		print "<tr>
 			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to purge the Cacti log file.<br><br><br>Note: If logging is set to Cacti and Syslog, the log information will remain in Syslog.') . "</p>
+				<p>" . __('Click \'Continue\' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.') . "</p>
 			</td>
 		</tr>
 		<tr class='saveRow'>
 			<td colspan='2' align='right'>
 				<input id='cancel' type='button' value='" . __esc('Cancel') . "'>&nbsp
-				<input id='pc' type='button' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge cacti.log') . "'>
+				<input id='pc' type='button' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge Log') . "'>
 				<script type='text/javascript'>
 				$('#pc').click(function() {
 					strURL = location.pathname+'?purge_continue=1&header=false';

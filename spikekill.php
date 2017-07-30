@@ -43,7 +43,7 @@ if (isset_request_var('method')) {
 if (is_realm_allowed(1043)) {
 	$local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT data_template_rrd.local_data_id
 		FROM graph_templates_item
-		LEFT JOIN data_template_rrd 
+		LEFT JOIN data_template_rrd
 		ON graph_templates_item.task_item_id=data_template_rrd.id
 		WHERE graph_templates_item.local_graph_id = ?', array(get_filter_request_var('local_graph_id')));
 
@@ -57,20 +57,20 @@ if (is_realm_allowed(1043)) {
 					cacti_log(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/removespikes.php ' .
 						' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
 						(isset_request_var('method') ? ' -M=' . get_nfilter_request_var('method'):'') .
-						(isset_request_var('avgnan') ? ' -A=' . get_nfilter_request_var('avgnan'):'') .
-						(isset_request_var('outlier-start') ? ' --outlier-start=' . get_nfilter_request_var('outlier-start'):'') .
-						(isset_request_var('outlier-end') ? ' --outlier-end=' . get_nfilter_request_var('outlier-end'):'') .
-						' -U=' . $_SESSION['sess_user_id'] . 
+						(isset_request_var('avgnan') ? ' -A=' . escapeshellarg(get_nfilter_request_var('avgnan')):'') .
+						(isset_request_var('outlier-start') ? ' --outlier-start=' . escapeshellarg(get_nfilter_request_var('outlier-start')):'') .
+						(isset_request_var('outlier-end') ? ' --outlier-end=' . escapeshellarg(get_nfilter_request_var('outlier-end')):'') .
+						' -U=' . $_SESSION['sess_user_id'] .
 						' --html', false);
 				}
 
 				$results .= shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/removespikes.php ' .
 					' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
 					(isset_request_var('method') ? ' -M=' . get_nfilter_request_var('method'):'') .
-					(isset_request_var('avgnan') ? ' -A=' . get_nfilter_request_var('avgnan'):'') .
-					(isset_request_var('outlier-start') ? ' --outlier-start=' . get_nfilter_request_var('outlier-start'):'') .
-					(isset_request_var('outlier-end') ? ' --outlier-end=' . get_nfilter_request_var('outlier-end'):'') .
-					' -U=' . $_SESSION['sess_user_id'] . 
+					(isset_request_var('avgnan') ? ' -A=' . escapeshellarg(get_nfilter_request_var('avgnan')):'') .
+					(isset_request_var('outlier-start') ? ' --outlier-start=' . escapeshellarg(get_nfilter_request_var('outlier-start')):'') .
+					(isset_request_var('outlier-end') ? ' --outlier-end=' . escapeshellarg(get_nfilter_request_var('outlier-end')):'') .
+					' -U=' . $_SESSION['sess_user_id'] .
 					' --html');
 			}
 		}

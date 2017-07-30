@@ -183,7 +183,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	}
 
 	$save['id']                   = form_input_validate($id, 'id', '^[0-9]+$', false, 3);
-	$save['host_template_id']     = form_input_validate($host_template_id, 'host_template_id', '^[0-9]+$', false, 3);
+	$save['host_template_id']     = form_input_validate($host_template_id, 'host_template_id', '^[0-9]+$', true, 3);
 
 	$save['poller_id']            = form_input_validate($poller_id, 'poller_id', '^[0-9]+$', true, 3);
 	$save['site_id']              = form_input_validate($site_id, 'site_id', '^[0-9]+$', true, 3);

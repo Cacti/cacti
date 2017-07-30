@@ -198,6 +198,7 @@ default:
 
 	$(function() {
 		$('#selective_plugin_debug').multiselect({
+			height: 300,
 			noneSelectedText: '<?php print __('Select Plugin(s)');?>',
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Plugins Selected');?>';
@@ -236,6 +237,7 @@ default:
 		});
 
 		$('#spikekill_templates').multiselect({
+			height: 300,
 			noneSelectedText: '<?php print __('Select Template(s)');?>',
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Templates Selected');?>';

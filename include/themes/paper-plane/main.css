@@ -2172,3 +2172,9 @@ tr#realtime td:first-child {
 .hostInfoHeader {
 	background: none repeat scroll 0 0 #fbfdff;
 }
+
+.ui-autocomplete {
+	height: 300px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}

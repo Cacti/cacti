@@ -172,7 +172,7 @@ switch (get_request_var('action')) {
 			FROM mysql.time_zone_name
 			WHERE Name LIKE ?
 			ORDER BY Name
-			LIMIT 10',
+			LIMIT ' . read_config_options('autocomplete_rows'),
 			array('%' . get_nfilter_request_var('term') . '%')));
 
 		break;

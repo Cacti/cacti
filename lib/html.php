@@ -1641,7 +1641,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		$call_back .= '()';
 	}
 
-	if ($theme == 'classic') {
+	if ($theme == 'classic' || !read_config_option('autocomplete_enabled')) {
 		?>
 		<td>
 			<?php print __('Device');?>
