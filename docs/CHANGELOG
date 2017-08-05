@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.17
+-issue#888: Rebuilding Poller Cache when External data sources are present results in false positive warnings in the log
 -issue#891: Database.php unable to connect to MySQL when using port different than 3306
 -issue#893: Warning messages when duplicating CDEF objects
 -issue: Unable use ipv6 ip addresses for snmp ping in the Cacti GUI
