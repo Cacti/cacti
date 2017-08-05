@@ -336,7 +336,11 @@ function get_selected_theme() {
 	if (isset($_SESSION['selected_theme'])) {
 		return $_SESSION['selected_theme'];
 	} elseif (isset($_SESSION['sess_user_id'])) {
-		$theme = db_fetch_cell_prepared("SELECT value FROM settings_user WHERE name='selected_theme' AND user_id = ?", array($_SESSION['sess_user_id']));
+		$theme = db_fetch_cell_prepared("SELECT value
+			FROM settings_user
+			WHERE name='selected_theme'
+			AND user_id = ?",
+			array($_SESSION['sess_user_id']));
 
 		if (!empty($theme)) {
 			$_SESSION['selected_theme'] = $theme;

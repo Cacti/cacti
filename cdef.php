@@ -285,7 +285,8 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to duplicate the following CDEF. You can optionally change the title format for the new CDEF.', 'Click \'Continue\' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs.', sizeof($cdef_array)) . "</p>
 					<div class='itemlist'><ul>$cdef_list</ul></div>
-					<p>" . __n('Title Format:') . "<br>"; form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text'); print "</p>
+					<p>" . __('Title Format:') . '<br>';
+					form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 

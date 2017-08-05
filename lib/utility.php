@@ -140,7 +140,8 @@ function update_poller_cache($data_source, $commit = false) {
 		FROM data_template_data AS dtd
 		INNER JOIN data_input AS di
 		ON dtd.data_input_id=di.id
-		WHERE dtd.local_data_id = ?', array($data_source['id']));
+		WHERE dtd.local_data_id = ?',
+		array($data_source['id']));
 
 	if (sizeof($data_input)) {
 		/* we have to perform some additional sql queries if this is a 'query' */
@@ -151,23 +152,22 @@ function update_poller_cache($data_source, $commit = false) {
 
 			$params = array();
 			if ($field['output_type'] != '') {
-				$output_type_sql = ' AND snmp_query_graph_rrd.snmp_query_graph_id = ?';
-				$params[] = $field['output_type'];
+				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ' . $field['output_type'];
 			} else {
 				$output_type_sql = '';
 			}
 			$params[] = $data_input['data_template_id'];
 			$params[] = $data_source['id'];
 
-			$outputs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . "
-				snmp_query_graph_rrd.snmp_field_name,
-				data_template_rrd.id as data_template_rrd_id
-				FROM (snmp_query_graph_rrd,data_template_rrd FORCE INDEX (local_data_id))
-				WHERE snmp_query_graph_rrd.data_template_rrd_id = data_template_rrd.local_data_template_rrd_id
+			$outputs = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . "
+				sqgr.snmp_field_name, dtr.id as data_template_rrd_id
+				FROM snmp_query_graph_rrd AS sqgr
+				INNER JOIN data_template_rrd AS dtr FORCE INDEX (local_data_id)
+				ON sqgr.data_template_rrd_id = dtr.local_data_template_rrd_id
+				WHERE sqgr.data_template_id = ?
+				AND dtr.local_data_id = ?
 				$output_type_sql
-				AND snmp_query_graph_rrd.data_template_id = ?
-				AND data_template_rrd.local_data_id = ?
-				ORDER BY data_template_rrd.id", $params);
+				ORDER BY dtr.id", $params);
 		}
 
 		if ($data_input['active'] == 'on') {
@@ -192,7 +192,11 @@ function update_poller_cache($data_source, $commit = false) {
 					array($data_input['id'])));
 
 				if ($num_output_fields == 1) {
-					$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_rrd WHERE local_data_id = ?', array($data_source['id']));
+					$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id
+						FROM data_template_rrd
+						WHERE local_data_id = ?',
+						array($data_source['id']));
+
 					$data_source_item_name = get_data_source_item_name($data_template_rrd_id);
 				} else {
 					$data_source_item_name = '';
@@ -201,7 +205,10 @@ function update_poller_cache($data_source, $commit = false) {
 				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], array(), $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
 			}else if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) { /* snmp */
 				/* get the host override fields */
-				$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
+				$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
+					FROM data_template_data
+					WHERE local_data_id = ?',
+					array($data_source['id']));
 
 				/* get host fields first */
 				$host_fields = array_rekey(
@@ -239,14 +246,20 @@ function update_poller_cache($data_source, $commit = false) {
 					$host_fields = $data_template_fields;
 				}
 
-				$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_rrd WHERE local_data_id = ?', array($data_source['id']));
+				$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id
+					FROM data_template_rrd
+					WHERE local_data_id = ?',
+					array($data_source['id']));
 
 				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields['snmp_oid']) ? $host_fields['snmp_oid'] : ''));
 			}else if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
 				$snmp_queries = get_data_query_array($data_source['snmp_query_id']);
 
 				/* get the host override fields */
-				$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
+				$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
+					FROM data_template_data
+					WHERE local_data_id = ?',
+					array($data_source['id']));
 
 				/* get host fields first */
 				$host_fields = array_rekey(
@@ -274,36 +287,39 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (sizeof($host_fields)) {
 					if (sizeof($data_template_fields)) {
-					foreach($data_template_fields as $key => $value) {
-						if (!isset($host_fields[$key])) {
-							$host_fields[$key] = $value;
+						foreach($data_template_fields as $key => $value) {
+							if (!isset($host_fields[$key])) {
+								$host_fields[$key] = $value;
+							}
 						}
-					}
 					}
 				} elseif (sizeof($data_template_fields)) {
 					$host_fields = $data_template_fields;
 				}
 
-				if (sizeof($outputs) > 0) {
-				foreach ($outputs as $output) {
-					if (isset($snmp_queries['fields']{$output['snmp_field_name']}['oid'])) {
-						$oid = $snmp_queries['fields']{$output['snmp_field_name']}['oid'] . '.' . $data_source['snmp_index'];
+				if (sizeof($outputs)) {
+					foreach ($outputs as $output) {
+						if (isset($snmp_queries['fields']{$output['snmp_field_name']}['oid'])) {
+							$oid = $snmp_queries['fields']{$output['snmp_field_name']}['oid'] . '.' . $data_source['snmp_index'];
 
-						if (isset($snmp_queries['fields']{$output['snmp_field_name']}['oid_suffix'])) {
-							$oid .= '.' . $snmp_queries['fields']{$output['snmp_field_name']}['oid_suffix'];
+							if (isset($snmp_queries['fields']{$output['snmp_field_name']}['oid_suffix'])) {
+								$oid .= '.' . $snmp_queries['fields']{$output['snmp_field_name']}['oid_suffix'];
+							}
+						}
+
+						if (!empty($oid)) {
+							$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($output['data_template_rrd_id']), sizeof($outputs), $oid);
 						}
 					}
-
-					if (!empty($oid)) {
-						$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($output['data_template_rrd_id']), sizeof($outputs), $oid);
-					}
-				}
 				}
 			}else if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) || ($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) { /* script query */
 				$script_queries = get_data_query_array($data_source['snmp_query_id']);
 
 				/* get the host override fields */
-				$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id FROM data_template_data WHERE local_data_id = ?', array($data_source['id']));
+				$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
+					FROM data_template_data
+					WHERE local_data_id = ?',
+					array($data_source['id']));
 
 				/* get host fields first */
 				$host_fields = array_rekey(
@@ -349,13 +365,25 @@ function update_poller_cache($data_source, $commit = false) {
 							/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
 							if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (function_exists('proc_open'))) {
 								$action = POLLER_ACTION_SCRIPT_PHP;
-								$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . cacti_escapeshellarg($data_source['snmp_index']), $script_queries['script_path'] . ' ' . $script_queries['script_function'], $data_source['host_id']);
+
+								$prepend = '';
+								if (isset($script_queries['arg_prepend']) && $script_queries['arg_prepend'] != '') {
+									$prepend = $script_queries['arg_prepend'];
+								}
+
+								$script_path = get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index']), $script_queries['script_path'] . ' ' . $script_queries['script_function'], $data_source['host_id']);
 							}else if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
 								$action = POLLER_ACTION_SCRIPT;
-								$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index'], $script_queries['script_path'], $data_source['host_id']);
+
+								$prepend = '';
+								if (isset($script_queries['arg_prepend']) && $script_queries['arg_prepend'] != '') {
+									$prepend = $script_queries['arg_prepend'];
+								}
+
+								$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
 							} else {
 								$action = POLLER_ACTION_SCRIPT;
-								$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . cacti_escapeshellarg($data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
+								$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
 							}
 						}
 
@@ -382,7 +410,14 @@ function update_poller_cache($data_source, $commit = false) {
 			}
 		}
 	} else {
-		cacti_log('WARNING: Repopulate Poller Cache found Data Input Missing for Data Source ' . $data_source['id'] . '.  Database may be corrupted');
+		$data_template_data = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
+			FROM data_template_data
+			WHERE local_data_id = ?',
+			array($data_source['id']));
+
+		if (sizeof($data_template_data) && $data_template_data['data_input_id'] > 0) {
+			cacti_log('WARNING: Repopulate Poller Cache found Data Input Missing for Data Source ' . $data_source['id'] . '.  Database may be corrupted');
+		}
 	}
 
 	if ($commit && sizeof($poller_items)) {

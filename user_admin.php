@@ -1776,7 +1776,29 @@ function user_realms_edit($header_label) {
 	}
 
 	print "</td></tr></table></td></tr>\n";
-	print "<script type='text/javascript'>function selectAllRealms(checked) { if (checked) { $('input[id^=\"section\"]').prop('checked', true); } else { $('input[id^=\"section\"]').prop('checked', false); } }</script>\n";
+	?>
+	<script type='text/javascript'>
+	function selectAllRealms(checked) {
+		if (checked) {
+			$('input[id^=\"section\"]').prop('checked', true);
+		} else {
+			$('input[id^=\"section\"]').prop('checked', false);
+		}
+	}
+
+	$(function() {
+		$('input[type="checkbox"]').each(function() {
+			$(this).addClass($(this).attr('id'));
+		});
+
+		$('label').click(function(event) {
+			event.preventDefault();
+			id = $(this).attr('for');
+			$('.'+id).trigger('click');
+		});
+	});
+	</script>
+	<?php
 
 	html_end_box();
 

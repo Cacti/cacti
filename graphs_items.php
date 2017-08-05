@@ -72,11 +72,8 @@ switch (get_request_var('action')) {
 	case 'ajax_graph_items':
 		$sql_where = '';
 
-		load_current_session_value('host_id', 'sess_graph_items_hi', '-1');
-		load_current_session_value('data_template_id', 'sess_graph_items_dti', '-1');
-
 		if (get_filter_request_var('host_id') > 0) {
-			$sql_where .= 'dl.host_id=' . get_request_var('host_id');
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'dl.host_id=' . get_request_var('host_id');
 		}
 
 		if (get_filter_request_var('data_template_id') > 0) {
@@ -427,13 +424,22 @@ function item_edit() {
 			$value = '';
 		}
 
-		if (get_selected_theme() != 'classic') {
+		if (get_selected_theme() != 'classic' && read_config_option('autocomplete_enabled') > 0) {
+			$action = 'ajax_graph_items';
+			if (get_request_var('host_id') > 0) {
+				$action .= '&host_id=' . get_filter_request_var('host_id');
+			}
+
+			if (get_request_var('data_template_id') > 0) {
+				$action .= '&data_template_id=' . get_filter_request_var('data_template_id');
+			}
+
 			$struct_graph_item['task_item_id'] = array(
 				'method' => 'drop_callback',
 				'friendly_name' => __('Data Source'),
 				'description' => __('Choose the Data Source to associate with this Graph Item.'),
 				'sql' => '',
-				'action' => 'ajax_graph_items',
+				'action' => $action,
 				'none_value' => __('None'),
 				'id' => $task_item_id,
 				'value' => $value
@@ -468,7 +474,7 @@ function item_edit() {
 	foreach ($struct_graph_item as $field_name => $field_array) {
 		$form_array += array($field_name => $struct_graph_item[$field_name]);
 
-		if (get_selected_theme() != 'classic') {
+		if (get_selected_theme() != 'classic' && read_config_option('autocomplete_enabled')) {
 			if ($field_name != 'task_item_id') {
 				$form_array[$field_name]['value'] = (isset($template_item[$field_name]) ? $template_item[$field_name] : '');
 			}

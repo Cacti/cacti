@@ -40,6 +40,8 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 		return $database_sessions["$device:$port:$db_name"];
 	}
 
+	$odevice = $device;
+
 	$flags = array();
 	if ($db_type == 'mysql') {
 		// Using 'localhost' will force unix sockets mode, which breaks when attempting to use mysql on a different port
@@ -74,7 +76,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'NO_ZERO_IN_DATE', ''))");
 			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY', ''))");
 
-			$database_sessions["$device:$port:$db_name"] = $cnn_id;
+			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
 			return $cnn_id;
 		} catch (PDOException $e) {
@@ -164,7 +166,7 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
 
 			return true;
 		} elseif ($log) {
-			if ($en == 1213 || $en == 1205) { 
+			if ($en == 1213 || $en == 1205) {
 				$errors++;
 				if ($errors > 30) {
 					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . $sql . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
@@ -652,7 +654,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 			// Check that column is correct and fix it
 			// FIXME: Need to still check default value
 			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
-			if ($column['type'] != $arr['Type'] || (isset($column['NULL']) && ($column['NULL'] ? 'YES' : 'NO') != $arr['Null']) 
+			if ($column['type'] != $arr['Type'] || (isset($column['NULL']) && ($column['NULL'] ? 'YES' : 'NO') != $arr['Null'])
 							    || (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])) {
 				$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['name'] . '` `' . $column['name'] . '`';
 				if (isset($column['type']))
@@ -955,9 +957,9 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, 
 	cacti_log("DEVEL: SQL Save on table '$table_name': '" . serialize($array_items) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	foreach ($array_items as $key => $value) {
-		if (strstr($cols[$key]['type'], 'int') !== false || 
-			strstr($cols[$key]['type'], 'float') !== false || 
-			strstr($cols[$key]['type'], 'double') !== false || 
+		if (strstr($cols[$key]['type'], 'int') !== false ||
+			strstr($cols[$key]['type'], 'float') !== false ||
+			strstr($cols[$key]['type'], 'double') !== false ||
 			strstr($cols[$key]['type'], 'decimal') !== false) {
 			if ($value == '') {
 				if ($cols[$key]['null'] == 'YES') {

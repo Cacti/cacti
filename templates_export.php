@@ -100,7 +100,7 @@ function export() {
 			'friendly_name' => __('What would you like to export?'),
 			'description' => __('Select the Template type that you wish to export from Cacti.'),
 			'method' => 'drop_array',
-			'value' => 'host_template',
+			'value' => get_request_var('export_type'),
 			'array' => $export_array,
 			'default' => 'host_template'
 		)

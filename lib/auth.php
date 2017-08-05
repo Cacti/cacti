@@ -58,9 +58,9 @@ function set_auth_cookie($user) {
 
 	$secret = hash('sha512', $nssecret, false);
 
-	db_execute_prepared('REPLACE INTO user_auth_cache 
-		(user_id, hostname, last_update, token) 
-		VALUES 
+	db_execute_prepared('REPLACE INTO user_auth_cache
+		(user_id, hostname, last_update, token)
+		VALUES
 		(?, ?, NOW(), ?);', array($user['id'], $_SERVER['REMOTE_ADDR'], $secret));
 
 	setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
@@ -74,8 +74,8 @@ function check_auth_cookie() {
 		$user  = $parts[0];
 
 		if ($user != '') {
-			$user_info = db_fetch_row_prepared('SELECT id, username 
-				FROM user_auth 
+			$user_info = db_fetch_row_prepared('SELECT id, username
+				FROM user_auth
 				WHERE username = ?',
 				array($user)
 			);
@@ -84,8 +84,8 @@ function check_auth_cookie() {
 				if (isset($parts[1])) {
 					$secret = hash('sha512', $parts[1], false);
 
-					$found  = db_fetch_cell_prepared('SELECT user_id 
-						FROM user_auth_cache 
+					$found  = db_fetch_cell_prepared('SELECT user_id
+						FROM user_auth_cache
 						WHERE user_id = ?
 						AND token = ?',
 						array($user_info['id'], $secret)
@@ -98,9 +98,9 @@ function check_auth_cookie() {
 
 						cacti_log("LOGIN: User '" . $user_info['username'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
 
-						db_execute_prepared('INSERT IGNORE INTO user_log 
-							(username, user_id, result, ip, time) 
-							VALUES 
+						db_execute_prepared('INSERT IGNORE INTO user_log
+							(username, user_id, result, ip, time)
+							VALUES
 							(?, ?, 2, ?, NOW())',
 							array($user, $user_info['id'], $_SERVER['REMOTE_ADDR'])
 						);
@@ -486,7 +486,7 @@ function is_view_allowed($view = 'show_tree') {
 				FROM user_auth_group AS uag
 				INNER JOIN user_auth_group_members AS uagm
 				ON uag.id = uagm.user_id
-				WHERE uag.enabled = 'on' 
+				WHERE uag.enabled = 'on'
 				AND uagm.user_id = ?",
 				array($_SESSION['sess_user_id'])
 			), $view, $view
@@ -499,9 +499,9 @@ function is_view_allowed($view = 'show_tree') {
 		} elseif (isset($values[2])) {
 			return true;
 		} else {
-			$value = db_fetch_cell_prepared("SELECT $view 
-				FROM user_auth 
-				WHERE id = ?", 
+			$value = db_fetch_cell_prepared("SELECT $view
+				FROM user_auth
+				WHERE id = ?",
 				array($_SESSION['sess_user_id'])
 			);
 
@@ -548,7 +548,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 		 AND host_id = 0',
 		array($tree_id, $parent)
 	);
-	if (sizeof($branches)) { 
+	if (sizeof($branches)) {
 		foreach($branches as $b) {
 			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'])) {
 				return false;
@@ -678,7 +678,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 			$sql_where .= ' AND gt.id IN (' . implode(', ', array_keys($trees)) . ')';
 		}
 
-		$heirarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id, gti.title, gti.host_id, 
+		$heirarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id, gti.title, gti.host_id,
 			gti.local_graph_id, gti.host_grouping_type, h.description AS hostname
 			FROM graph_tree_items AS gti
 			INNER JOIN graph_tree AS gt
@@ -689,7 +689,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 			ORDER BY gti.position"
 		);
 	} elseif (sizeof($trees)) {
-		$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id, 
+		$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id,
 			'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname
 			FROM graph_tree AS gt
 			WHERE enabled='on'
@@ -761,19 +761,19 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		}
 
 		/* get policies for all groups and user */
-		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, 
-			uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates 
+		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type,
+			uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
-			WHERE uag.enabled = 'on' 
+			WHERE uag.enabled = 'on'
 			AND uagm.user_id = ?",
 			array($user)
 		);
 
-		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 
-			policy_graphs, policy_hosts, policy_graph_templates 
-			FROM user_auth 
+		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type,
+			policy_graphs, policy_hosts, policy_graph_templates
+			FROM user_auth
 			WHERE id = ?",
 			array($user)
 		);
@@ -817,19 +817,19 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gtg.local_graph_id, 
-			h.description, gt.name AS template_name, gtg.title_cache, 
+		$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gtg.local_graph_id,
+			h.description, gt.name AS template_name, gtg.title_cache,
 			gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id = gtg.local_graph_id 
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_local AS gl
+			ON gl.id = gtg.local_graph_id
 			INNER JOIN graph_tree_items AS gti
 			ON gti.local_graph_id = gl.id
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id = gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id = gl.host_id 
+			LEFT JOIN graph_templates AS gt
+			ON gt.id = gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id = gl.host_id
 			$sql_join
 			$sql_where
 			$sql_having
@@ -840,56 +840,56 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		$total_rows = db_fetch_cell("SELECT COUNT(*)
 			FROM (
 				SELECT $sql_select
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id = gtg.local_graph_id 
+				FROM graph_templates_graph AS gtg
+				INNER JOIN graph_local AS gl
+				ON gl.id = gtg.local_graph_id
 				INNER JOIN graph_tree_items AS gti
 				ON gti.local_graph_id = gl.id
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id = gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id = gl.host_id 
+				LEFT JOIN graph_templates AS gt
+				ON gt.id = gl.graph_template_id
+				LEFT JOIN host AS h
+				ON h.id = gl.host_id
 				$sql_join
 				$sql_where
 				$sql_having
 			) AS rower"
 		);
 	} else {
-		$graphs = db_fetch_assoc("SELECT 
+		$graphs = db_fetch_assoc("SELECT
 			gti.id,
-			gti.title, 
-			gtg.local_graph_id, 
-			h.description, 
-			gt.name AS template_name, 
-			gtg.title_cache, 
-			gtg.width, 
+			gti.title,
+			gtg.local_graph_id,
+			h.description,
+			gt.name AS template_name,
+			gtg.title_cache,
+			gtg.width,
 			gtg.height,
 			gl.snmp_index,
 			gl.snmp_query_id
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id = gtg.local_graph_id 
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_local AS gl
+			ON gl.id = gtg.local_graph_id
 			INNER JOIN graph_tree_items AS gti
 			ON gti.local_graph_id = gl.id
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id = gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id = gl.host_id 
+			LEFT JOIN graph_templates AS gt
+			ON gt.id = gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id = gl.host_id
 			$sql_where
 			$order_by
 			$limit"
 		);
 
 		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_local AS gl
+			ON gl.id=gtg.local_graph_id
 			INNER JOIN graph_tree_items AS gti
 			ON gti.local_graph_id=gl.id
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
+			LEFT JOIN graph_templates AS gt
+			ON gt.id=gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id=gl.host_id
 			$sql_where"
 		);
 	}
@@ -936,8 +936,8 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 		}
 
 		/* get policies for all groups and user */
-		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 
-			'group' AS type, uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates 
+		$policies   = db_fetch_assoc_prepared("SELECT uag.id,
+			'group' AS type, uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
@@ -987,16 +987,16 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name, 
+		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name,
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_local AS gl
+			ON gl.id=gtg.local_graph_id
+			LEFT JOIN graph_templates AS gt
+			ON gt.id=gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id=gl.host_id
 			$sql_join
 			$sql_where
 			$sql_having
@@ -1007,48 +1007,48 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 		$total_rows = db_fetch_cell("SELECT COUNT(*)
 			FROM (
 				SELECT $sql_select
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id=gtg.local_graph_id 
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id=gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id=gl.host_id 
+				FROM graph_templates_graph AS gtg
+				INNER JOIN graph_local AS gl
+				ON gl.id=gtg.local_graph_id
+				LEFT JOIN graph_templates AS gt
+				ON gt.id=gl.graph_template_id
+				LEFT JOIN host AS h
+				ON h.id=gl.host_id
 				$sql_join
 				$sql_where
 				$sql_having
 			) AS rower"
 		);
 	} else {
-		$graphs = db_fetch_assoc("SELECT 
-			gtg.local_graph_id, 
-			h.description, 
-			gt.name AS template_name, 
-			gtg.title_cache, 
-			gtg.width, 
+		$graphs = db_fetch_assoc("SELECT
+			gtg.local_graph_id,
+			h.description,
+			gt.name AS template_name,
+			gtg.title_cache,
+			gtg.width,
 			gtg.height,
 			gl.snmp_index,
 			gl.snmp_query_id
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_local AS gl
+			ON gl.id=gtg.local_graph_id
+			LEFT JOIN graph_templates AS gt
+			ON gt.id=gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id=gl.host_id
 			$sql_where
 			$order_by
 			$limit"
 		);
 
 		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM graph_templates_graph AS gtg 
-			INNER JOIN graph_local AS gl 
-			ON gl.id=gtg.local_graph_id 
-			LEFT JOIN graph_templates AS gt 
-			ON gt.id=gl.graph_template_id 
-			LEFT JOIN host AS h 
-			ON h.id=gl.host_id 
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_local AS gl
+			ON gl.id=gtg.local_graph_id
+			LEFT JOIN graph_templates AS gt
+			ON gt.id=gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id=gl.host_id
 			$sql_where"
 		);
 	}
@@ -1100,8 +1100,8 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		}
 
 		/* get policies for all groups and user */
-		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 
-			'group' AS type, uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates 
+		$policies   = db_fetch_assoc_prepared("SELECT uag.id,
+			'group' AS type, uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
@@ -1111,7 +1111,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		);
 
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs, policy_hosts, policy_graph_templates FROM user_auth WHERE id = ?", array($user));
-		
+
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
 				$sql_having .= ($sql_having != '' ? ' OR ' : '') . "(user$i IS NULL";
@@ -1146,16 +1146,16 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT DISTINCT id, name 
+		$graphs = db_fetch_assoc("SELECT DISTINCT id, name
 			FROM (SELECT DISTINCT gtg.graph_template_id AS id, gt.name,
 				$sql_select
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id=gtg.local_graph_id 
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id=gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id=gl.host_id 
+				FROM graph_templates_graph AS gtg
+				INNER JOIN graph_local AS gl
+				ON gl.id=gtg.local_graph_id
+				LEFT JOIN graph_templates AS gt
+				ON gt.id=gl.graph_template_id
+				LEFT JOIN host AS h
+				ON h.id=gl.host_id
 				$sql_join
 				$sql_where
 				$sql_having
@@ -1170,13 +1170,13 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			FROM (
 				SELECT DISTINCT gtg.graph_template_id AS id, gt.name,
 				$sql_select
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id=gtg.local_graph_id 
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id=gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id=gl.host_id 
+				FROM graph_templates_graph AS gtg
+				INNER JOIN graph_local AS gl
+				ON gl.id=gtg.local_graph_id
+				LEFT JOIN graph_templates AS gt
+				ON gt.id=gl.graph_template_id
+				LEFT JOIN host AS h
+				ON h.id=gl.host_id
 				$sql_join
 				$sql_where
 				$sql_having
@@ -1187,13 +1187,13 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 	} else {
 		$graphs = db_fetch_assoc("SELECT DISTINCT id, name
 			FROM (SELECT DISTINCT gtg.graph_template_id AS id, gt.name
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id=gtg.local_graph_id 
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id=gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id=gl.host_id 
+				FROM graph_templates_graph AS gtg
+				INNER JOIN graph_local AS gl
+				ON gl.id=gtg.local_graph_id
+				LEFT JOIN graph_templates AS gt
+				ON gt.id=gl.graph_template_id
+				LEFT JOIN host AS h
+				ON h.id=gl.host_id
 				$sql_where
 			) AS rs
 			WHERE id > 0
@@ -1205,13 +1205,13 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
 			FROM (
 				SELECT DISTINCT gtg.graph_template_id AS id, gt.name
-				FROM graph_templates_graph AS gtg 
-				INNER JOIN graph_local AS gl 
-				ON gl.id=gtg.local_graph_id 
-				LEFT JOIN graph_templates AS gt 
-				ON gt.id=gl.graph_template_id 
-				LEFT JOIN host AS h 
-				ON h.id=gl.host_id 
+				FROM graph_templates_graph AS gtg
+				INNER JOIN graph_local AS gl
+				ON gl.id=gtg.local_graph_id
+				LEFT JOIN graph_templates AS gt
+				ON gt.id=gl.graph_template_id
+				LEFT JOIN host AS h
+				ON h.id=gl.host_id
 				$sql_where
 			) AS rs
 			WHERE id > 0
@@ -1279,7 +1279,7 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 			$sql_where = 'WHERE ' . ($edit == false ? '(gt.enabled="on") AND ':'') . '(gt.enabled="on") AND (' . $sql_where1 . ')';
 		}
 
-		$sql = "SELECT id, name 
+		$sql = "SELECT id, name
 			FROM graph_tree AS gt
 			$sql_join
 			$sql_where
@@ -1291,7 +1291,7 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 		} else {
 			$trees = db_fetch_assoc($sql);
 
-			$total_rows = db_fetch_cell("SELECT COUNT(gt.id) 
+			$total_rows = db_fetch_cell("SELECT COUNT(gt.id)
 				FROM graph_tree AS gt
 				$sql_join
 				$sql_where");
@@ -1353,8 +1353,8 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		}
 
 		/* get policies for all groups and user */
-		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, 
-			uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates 
+		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type,
+			uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
@@ -1363,8 +1363,8 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 			array($user)
 		);
 
-		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 
-			policy_graphs, policy_hosts, policy_graph_templates 
+		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type,
+			policy_graphs, policy_hosts, policy_graph_templates
 			FROM user_auth
 			WHERE id = ?",
 			array($user)
@@ -1416,7 +1416,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 					SELECT h.*, $sql_select
 					FROM host AS h
 					LEFT JOIN graph_local AS gl
-					ON h.id=gl.host_id 
+					ON h.id=gl.host_id
 					LEFT JOIN graph_templates_graph AS gtg
 					ON gl.id=gtg.local_graph_id
 					LEFT JOIN graph_templates AS gt
@@ -1436,9 +1436,9 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
 			FROM (
 				SELECT h.id, $sql_select
-				FROM host AS h 
+				FROM host AS h
 				LEFT JOIN graph_local AS gl
-				ON h.id=gl.host_id 
+				ON h.id=gl.host_id
 				LEFT JOIN graph_templates_graph AS gtg
 				ON gl.id=gtg.local_graph_id
 				LEFT JOIN graph_templates AS gt
@@ -1476,9 +1476,9 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
 			FROM (
 				SELECT h.id
-				FROM host AS h 
+				FROM host AS h
 				LEFT JOIN graph_local AS gl
-				ON h.id=gl.host_id 
+				ON h.id=gl.host_id
 				LEFT JOIN graph_templates_graph AS gtg
 				ON gl.id=gtg.local_graph_id
 				LEFT JOIN graph_templates AS gt
@@ -1504,11 +1504,11 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 	$sql_where     = ($sql_where != '' ? ' AND ' : '') . $sql_where;
 
 	foreach ($templates as $key => $t) {
-		$dqg = db_fetch_assoc_prepared("SELECT DISTINCT sqg.id, name 
+		$dqg = db_fetch_assoc_prepared("SELECT DISTINCT sqg.id, name
 			FROM snmp_query_graph AS sqg
 			INNER JOIN graph_local AS gl
 			ON gl.snmp_query_graph_id=sqg.id
-			WHERE sqg.graph_template_id = ? 
+			WHERE sqg.graph_template_id = ?
 			$sql_where
 			ORDER BY name",
 			array($t['id'])
@@ -1556,7 +1556,7 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 		}
 	}
 
-	$hosts = get_allowed_devices($sql_where, 'description', 20);
+	$hosts = get_allowed_devices($sql_where, 'description', read_config_option('autocomplete_rows'));
 	if (sizeof($hosts)) {
 		foreach($hosts as $host) {
 			$return[] = array('label' => $host['description'], 'value' => $host['description'], 'id' => $host['id']);
@@ -1580,7 +1580,7 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
 		}
 	}
 
-	$graph_items = get_allowed_graph_items($sql_where, 'name_cache', 20);
+	$graph_items = get_allowed_graph_items($sql_where, 'name_cache', read_config_option('autocomplete_rows'));
 	if (sizeof($graph_items)) {
 		foreach($graph_items as $gi) {
 			$return[] = array('label' => $gi['name'], 'value' => $gi['name'], 'id' => $gi['id']);
@@ -1747,7 +1747,7 @@ function secpass_check_history($id, $p) {
 
 function rsa_check_keypair() {
 	global $config;
-	
+
 	set_include_path($config['include_path'] . '/phpseclib/');
 	include('Crypt/Base.php');
 	include('Math/BigInteger.php');
@@ -1755,7 +1755,7 @@ function rsa_check_keypair() {
 	include('Crypt/RSA.php');
 	include('Crypt/Rijndael.php');
 	include('Crypt/AES.php');
-	
+
 	$public_key = read_config_option('rsa_public_key');
 
 	if(!$public_key) {

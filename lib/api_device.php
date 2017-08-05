@@ -145,8 +145,6 @@ function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
 		ON DUPLICATE KEY UPDATE reindex_method=VALUES(reindex_method)',
 		array($device_id, $data_query_id, $reindex_method));
 
-	cacti_log("INSERT INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES ($device_id, $data_query_id, $reindex_method) ON DUPLICATE KEY UPDATE reindex_method=VALUES(reindex_method)");
-
 	db_execute_prepared('DELETE FROM poller_reindex
 		WHERE data_query_id = ?
 		AND host_id = ?', array($data_query_id, $device_id));
@@ -183,7 +181,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	}
 
 	$save['id']                   = form_input_validate($id, 'id', '^[0-9]+$', false, 3);
-	$save['host_template_id']     = form_input_validate($host_template_id, 'host_template_id', '^[0-9]+$', false, 3);
+	$save['host_template_id']     = form_input_validate($host_template_id, 'host_template_id', '^[0-9]+$', true, 3);
 
 	$save['poller_id']            = form_input_validate($poller_id, 'poller_id', '^[0-9]+$', true, 3);
 	$save['site_id']              = form_input_validate($site_id, 'site_id', '^[0-9]+$', true, 3);

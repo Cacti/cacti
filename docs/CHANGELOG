@@ -1,7 +1,28 @@
 Cacti CHANGELOG
 
+1.1.17
+-issue#888: Rebuilding Poller Cache when External data sources are present results in false positive warnings in the log
+-issue#891: Database.php unable to connect to MySQL when using port different than 3306
+-issue#893: Warning messages when duplicating CDEF objects
+-issue: Unable use ipv6 ip addresses for snmp ping in the Cacti GUI
+-issue: Update language of the Rebuild Poller Cache menu pick
+
 1.1.16
+-issue#865: Escape Data Query arguments to prevent issues with special characters
+-issue#872: Can't add device items to graphs generated with no device and no template
+-issue#875: When modifying Realm permissions, realms that are listed multiple times don't stay in sync
+-issue#877: Improving resolution to issue#847 and one additional vulnerability
+-issue#878: Ambiguous language in purge log function
+-issue#879: SQL Error when adding a report item to a report
+-issue#880: Device drop down is limited to 20 devices and lacks a scroll bar
+-issue#885: Graph generated with no device and no graph template forgets device definitions
+-issue#886: Unable to export templates other than Device templates
 -issue: Address additional corner cases around get_order_string usage
+-issue: Data Queries sharing a Data Source can result in poller output table not empty errors
+-issue: Fix Sunrise theme to properly theme multiselect widgets
+-issue: Increase height of multiselects so that more options are visible
+-issue: When a graph is locked, anchor tags are still functional
+-issue: Autocomplete does not populate none-value when the selected value is not set
 
 1.1.15
 -issue: PHP Fatal Exception on upgrade from 1.1.11 or earlier

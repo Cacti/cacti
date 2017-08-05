@@ -1365,7 +1365,29 @@ function user_group_realms_edit($header_label) {
 		print "</table></td></tr>\n";
 	}
 
-	print "<script type='text/javascript'>function selectAllRealms(checked) { if (checked) { $('input[id^=\"section\"]').prop('checked', true); } else { $('input[id^=\"section\"]').prop('checked', false); } }</script>\n";
+	?>
+	<script type='text/javascript'>
+	function selectAllRealms(checked) {
+		if (checked) {
+			$('input[id^=\"section\"]').prop('checked', true);
+		} else {
+			$('input[id^=\"section\"]').prop('checked', false);
+		}
+	}
+
+	$(function() {
+		$('input[type="checkbox"]').each(function() {
+			$(this).addClass($(this).attr('id'));
+		});
+
+		$('label').click(function(event) {
+			event.preventDefault();
+			id = $(this).attr('for');
+			$('.'+id).trigger('click');
+		});
+	});
+	</script>
+	<?php
 
 	/* external links */
 	$links  = db_fetch_assoc('SELECT * FROM external_links ORDER BY sortorder');
