@@ -176,6 +176,7 @@ function form_save() {
 		$save['name']                    = form_input_validate(get_nfilter_request_var('name'), 'name', '', true, 3);
 		$save['data_source_profile_id']  = form_input_validate(get_request_var('profile_id'), 'profile_id', '^[0-9]+$', false, 3);
 		$save['steps']                   = form_input_validate(get_nfilter_request_var('steps'), 'steps', '^[0-9]+$', false, 3);
+		$save['timespan']                = form_input_validate(get_nfilter_request_var('timespan'), 'timespan', '^[0-9]+$', false, 3);
 
 		if ($save['steps'] != '1') {
 			$save['steps'] /= $sampling_interval;
@@ -454,7 +455,7 @@ function item_edit() {
 
 	function get_span() {
 		$.get('data_source_profiles.php?action=ajax_span&profile_id='+profile_id+'&span='+$('#steps').val()+'&rows='+$('#rows').val(), function(data) {
-			$('#row_timespan').find('.formColumnRight').empty().html('<em>'+data+'</em>');
+			$('#row_retention').find('.formColumnRight').empty().html('<em>'+data+'</em>');
 		});
 	}
 	</script>
@@ -466,7 +467,7 @@ function item_edit() {
    --------------------- */
 
 function profile_edit() {
-	global $fields_profile_edit;
+	global $fields_profile_edit, $timespans;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -505,7 +506,8 @@ function profile_edit() {
 
 		$display_text = array(
 			array('display' => __('Name'),               'align' => 'left'),
-			array('display' => __('Effective Timespan'), 'align' => 'left'),
+			array('display' => __('Data Retention'),     'align' => 'left'),
+			array('display' => __('Graph Timespan'),     'align' => 'left'),
 			array('display' => __('Steps'),              'align' => 'left'),
 			array('display' => __('Rows'),               'align' => 'left'),
 		);
@@ -523,6 +525,9 @@ function profile_edit() {
 				</td>
 				<td style='text-align:left'>
 					<em><?php print get_span($profile['step'] * $rra['steps'] * $rra['rows']);?></em>
+				</td>
+				<td style='text-align:left'>
+					<em><?php print isset($timespans[$rra['timespan']]) ? $timespans[$rra['timespan']]:get_span($rra['timespan']);?></em>
 				</td>
 				<td style='text-align:left'>
 					<em><?php print $rra['steps'];?></em>
