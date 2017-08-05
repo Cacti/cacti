@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.17
+-issue#891: Database.php unable to connect to MySQL when using port different than 3306
+
 1.1.16
 -issue#865: Escape Data Query arguments to prevent issues with special characters
 -issue#872: Can't add device items to graphs generated with no device and no template
@@ -15,6 +18,7 @@ Cacti CHANGELOG
 -issue: Fix Sunrise theme to properly theme multiselect widgets
 -issue: Increase height of multiselects so that more options are visible
 -issue: When a graph is locked, anchor tags are still functional
+-issue: Autocomplete does not populate none-value when the selected value is not set
 
 1.1.15
 -issue: PHP Fatal Exception on upgrade from 1.1.11 or earlier
