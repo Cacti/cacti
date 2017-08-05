@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.17
 -issue#891: Database.php unable to connect to MySQL when using port different than 3306
+-issue: Unable use ipv6 ip addresses for snmp ping in the Cacti GUI
 
 1.1.16
 -issue#865: Escape Data Query arguments to prevent issues with special characters

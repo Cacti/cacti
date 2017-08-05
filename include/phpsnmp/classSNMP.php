@@ -60,7 +60,7 @@ class SNMP {
 	private $community;
 	private $timeout;
 	private $retries;
-	
+
 	private $username;
 	private $sec_level;
 	private $auth_proto;
@@ -86,11 +86,24 @@ class SNMP {
 		if (function_exists('snmp_get_quick_print')) {
 			$this->quick_print = snmp_get_quick_print();
 		}
-		
+
 		$this->version  = $version;
-		$hostname       = explode(':', $hostname);
-		$this->hostname = array_shift($hostname);
-		$this->port     = (sizeof($hostname) ? array_shift($hostname) : 161);
+
+		$delcount = substr_count($hostname, ':');
+
+		if ($delcount == 1) {
+			$hostname       = explode(':', $hostname);
+			$this->hostname = array_shift($hostname);
+			$this->port     = (sizeof($hostname) ? array_shift($hostname) : 161);
+		} elseif ($delcount > 1) {
+			$hostname       = explode(':', $hostname);
+			$this->port     = $hostname[sizeof($hostname)-1];
+			unset($hostname[sizeof($hostname)-1]);
+			$this->hostname = implode(':', $hostname);
+		} else {
+			$this->hostname = $hostname;
+			$this->port     = '161';
+		}
 		$this->timeout  = $timeout;
 		$this->retries  = $retries;
 
@@ -114,7 +127,7 @@ class SNMP {
 		$this->close();
 	}
 
-	function setSecurity($sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, 
+	function setSecurity($sec_level, $auth_protocol, $auth_passphrase, $priv_protocol,
 		$priv_passphrase, $contextName, $contextEngineID) {
 		$this->sec_level       = $sec_level;
 		$this->auth_proto      = $auth_protocol;
@@ -123,7 +136,7 @@ class SNMP {
 		$this->priv_pass       = $priv_passphrase;
 		$this->contextName     = $contextName;
 		$this->contextEngineID = $contextEngineID;
-		
+
 		return TRUE;
 	}
 
@@ -162,10 +175,10 @@ class SNMP {
 			}
 			$backup = TRUE;
 		}
-		
+
 		return $backup;
 	}
-	
+
 	private function uniget($command, $oids) {
 		$this->errno = SNMP::ERRNO_NOERROR;
 		$array_output = TRUE;
@@ -197,18 +210,18 @@ class SNMP {
 			}
 			return array_shift($output);
 		}
-		
+
 		return $output;
 	}
 
 	function get($oid) {
 		return $this->uniget('get', $oid);
 	}
-	
+
 	function getnext($oid) {
 		return $this->uniget('getnext', $oid);
 	}
-	
+
 	function walk($oid, $dummy = FALSE, $max_repetitions = 10, $non_repeaters = 0) {
 		$this->errno = SNMP::ERRNO_NOERROR;
 
@@ -218,9 +231,9 @@ class SNMP {
 		}
 
 		$options_backup = $this->apply_options();
-		$result = cacti_snmp_walk($this->hostname, $this->community, $oid, $this->version, 
-			$this->username, $this->auth_pass, $this->auth_proto, $this->priv_pass, 
-			$this->priv_proto, $this->contextName, $this->port, $this->timeout, 
+		$result = cacti_snmp_walk($this->hostname, $this->community, $oid, $this->version,
+			$this->username, $this->auth_pass, $this->auth_proto, $this->priv_pass,
+			$this->priv_proto, $this->contextName, $this->port, $this->timeout,
 			$this->retries, $max_repetitions, SNMP_POLLER, $this->contextEngineID,
 			$this->value_output_format);
 
@@ -240,11 +253,11 @@ class SNMP {
 	function getErrno() {
 		return $this->errno;
 	}
-	
+
 	function getError() {
 		return '';
 	}
-	
+
 	function set($oid, $type, $value) {
 		trigger_error('set function is not implemented', E_WARNING);
 		return FALSE;
@@ -255,7 +268,7 @@ class SNMP {
 		case 'info':
 			trigger_error('info property is read-only', E_WARNING);
 			return FALSE;
-			
+
 		case 'valuretrieval':
 			switch ($value) {
 			case SNMP_VALUE_LIBRARY:
