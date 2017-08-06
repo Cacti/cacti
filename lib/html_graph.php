@@ -235,8 +235,8 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					</td>
 					<td>
 						<span>
-							<label for='thumbnails'><?php print __('Thumbnails');?></label>
 							<input id='thumbnails' type='checkbox' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
+							<label for='thumbnails'><?php print __('Thumbnails');?></label>
 						</span>
 					</td>
 				</tr>
