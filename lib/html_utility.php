@@ -186,7 +186,7 @@ function form_selectable_cell($contents, $id, $width='', $style_or_class = '', $
    @arg $title - the text that will be displayed if your hover over the checkbox */
 function form_checkbox_cell($title, $id, $disabled = false) {
 	print "\t<td class='checkbox' style='width:1%;'>\n";
-	print "\t\t<input type='checkbox' class='checkbox" . ($disabled ? ' disabled':'') . "' " . ($disabled ? "disabled='disabled'":'') . " id='chk_" . $id . "' name='chk_" . $id . "'>\n";
+	print "\t\t<input type='checkbox' class='checkbox" . ($disabled ? ' disabled':'') . "' " . ($disabled ? "disabled='disabled'":'') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
 	print "\t</td>\n";
 }
 
