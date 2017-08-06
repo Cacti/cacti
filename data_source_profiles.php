@@ -55,7 +55,10 @@ switch (get_request_var('action')) {
 		get_filter_request_var('span');
 		get_filter_request_var('rows');
 
-		$sampling_interval = db_fetch_cell_prepared('SELECT step FROM data_source_profiles WHERE id = ?', array(get_request_var('profile_id')));
+		$sampling_interval = db_fetch_cell_prepared('SELECT step
+			FROM data_source_profiles
+			WHERE id = ?',
+			array(get_request_var('profile_id')));
 
 		if (get_request_var('span') == 1) {
 			print get_span(get_request_var('rows') * $sampling_interval);
@@ -171,7 +174,11 @@ function form_save() {
 		get_filter_request_var('profile_id');
 		/* ==================================================== */
 
-		$sampling_interval = db_fetch_cell_prepared('SELECT step FROM data_source_profiles WHERE id = ?', array(get_request_var('profile_id')));
+		$sampling_interval = db_fetch_cell_prepared('SELECT step
+			FROM data_source_profiles
+			WHERE id = ?',
+			array(get_request_var('profile_id')));
+
 		$save['id']                      = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['name']                    = form_input_validate(get_nfilter_request_var('name'), 'name', '', true, 3);
 		$save['data_source_profile_id']  = form_input_validate(get_request_var('profile_id'), 'profile_id', '^[0-9]+$', false, 3);
@@ -311,7 +318,10 @@ function profile_item_remove_confirm() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$profile = db_fetch_row_prepared('SELECT * FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')));
+	$profile = db_fetch_row_prepared('SELECT *
+		FROM data_source_profiles_rra
+		WHERE id = ?',
+		array(get_request_var('id')));
 
 	?>
 	<tr>
@@ -373,6 +383,12 @@ function item_edit() {
 		WHERE id = ?',
 		array(get_request_var('profile_id')));
 
+	$readonly = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM data_template_data AS dtd
+		WHERE data_source_profile_id = ?
+		AND local_data_id > 0',
+		array(get_request_var('profile_id')));
+
 	if (!isempty_request_var('id')) {
 		$rra = db_fetch_row_prepared('SELECT *
 			FROM data_source_profiles_rra
@@ -406,13 +422,19 @@ function item_edit() {
 					unset($aggregation_levels[$interval]);
 				}
 			}
+
 			$fields_profile_rra_edit['steps']['array'] = $aggregation_levels;
 		}
 	}
 
 	form_start('data_source_profiles.php', 'form_rra');
 
-	html_start_box( __('RRA [edit: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')))) ), '100%', true, '3', 'center', '');
+	$name = db_fetch_cell_prepared('SELECT name
+		FROM data_source_profiles_rra
+		WHERE id = ?',
+		array(get_request_var('id')));
+
+	html_start_box( __('RRA [edit: %s %s]', $name, ($readonly ? __('(Some Elements Read Only)'):'')), '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -431,6 +453,7 @@ function item_edit() {
 
 	var profile_id=<?php print get_request_var('profile_id') != '' ? get_request_var('profile_id'):0;?>;
 	var rows_to = false;
+	var readonly = <?php print ($readonly ? 'true':'false');?>;
 
 	$(function() {
 		get_span();
@@ -445,6 +468,11 @@ function item_edit() {
             if (rows_to) { clearTimeout(rows_to); }
             rows_to = setTimeout(function () { get_span(); get_size() }, 250);
         });
+
+		if (readonly) {
+			$('#steps').prop('disabled', true);
+			$('#rows').prop('disabled', true);
+		}
 	});
 
 	function get_size() {
@@ -474,10 +502,16 @@ function profile_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$profile = db_fetch_row_prepared('SELECT * FROM data_source_profiles WHERE id = ?', array(get_request_var('id')));
+		$profile = db_fetch_row_prepared('SELECT *
+			FROM data_source_profiles
+			WHERE id = ?',
+			array(get_request_var('id')));
+
 		$readonly     = db_fetch_cell_prepared('SELECT COUNT(*)
 			FROM data_template_data AS dtd
-			WHERE data_source_profile_id = ? AND local_data_id > 0', array(get_request_var('id')));
+			WHERE data_source_profile_id = ?
+			AND local_data_id > 0',
+			array(get_request_var('id')));
 
 		$header_label = __('Data Source Profile [edit: %s]', htmlspecialchars($profile['name']) . ($readonly ? ' (Read Only)':''));
 	} else {
@@ -505,34 +539,38 @@ function profile_edit() {
 		}
 
 		$display_text = array(
-			array('display' => __('Name'),               'align' => 'left'),
-			array('display' => __('Data Retention'),     'align' => 'left'),
-			array('display' => __('Graph Timespan'),     'align' => 'left'),
-			array('display' => __('Steps'),              'align' => 'left'),
-			array('display' => __('Rows'),               'align' => 'left'),
+			array('display' => __('Name'),           'align' => 'left'),
+			array('display' => __('Data Retention'), 'align' => 'left'),
+			array('display' => __('Graph Timespan'), 'align' => 'left'),
+			array('display' => __('Steps'),          'align' => 'left'),
+			array('display' => __('Rows'),           'align' => 'left'),
 		);
 
 		html_header($display_text, 2);
 
-		$profile_rras = db_fetch_assoc_prepared('SELECT * FROM data_source_profiles_rra WHERE data_source_profile_id = ? ORDER BY steps', array(get_request_var('id')));
+		$profile_rras = db_fetch_assoc_prepared('SELECT *
+			FROM data_source_profiles_rra
+			WHERE data_source_profile_id = ?
+			ORDER BY steps',
+			array(get_request_var('id')));
 
 		$i = 0;
 		if (sizeof($profile_rras)) {
 			foreach ($profile_rras as $rra) {
 				form_alternate_row('line' . $rra['id']);$i++;?>
 				<td>
-					<?php print (!$readonly ? "<a class='linkEditMain' href='" . htmlspecialchars('data_source_profiles.php?action=item_edit&id=' . $rra['id'] . '&profile_id=' . $rra['data_source_profile_id']) . "'>":"") . htmlspecialchars($rra['name']) . (!$readonly ? "</a>":"");?>
+					<?php print "<a class='linkEditMain' href='" . htmlspecialchars('data_source_profiles.php?action=item_edit&id=' . $rra['id'] . '&profile_id=' . $rra['data_source_profile_id']) . "'>" . htmlspecialchars($rra['name']) . '</a>';?>
 				</td>
-				<td style='text-align:left'>
+				<td>
 					<em><?php print get_span($profile['step'] * $rra['steps'] * $rra['rows']);?></em>
 				</td>
-				<td style='text-align:left'>
+				<td>
 					<em><?php print isset($timespans[$rra['timespan']]) ? $timespans[$rra['timespan']]:get_span($rra['timespan']);?></em>
 				</td>
-				<td style='text-align:left'>
+				<td>
 					<em><?php print $rra['steps'];?></em>
 				</td>
-				<td style='text-align:left'>
+				<td>
 					<em><?php print $rra['rows'];?></em>
 				</td>
 				<td class='right'>
@@ -620,17 +658,27 @@ function get_size($id, $type, $cfs = '') {
 
 	if ($type == 'profile') {
 		if (empty($cfs)) {
-			$cfs  = db_fetch_cell_prepared('SELECT COUNT(*) FROM data_source_profiles_cf WHERE data_source_profile_id = ?', array($id));
+			$cfs  = db_fetch_cell_prepared('SELECT COUNT(*)
+				FROM data_source_profiles_cf
+				WHERE data_source_profile_id = ?',
+				array($id));
 		}
 
-		$rows = db_fetch_cell_prepared('SELECT SUM(`rows`) FROM data_source_profiles_rra WHERE data_source_profile_id = ?', array($id));
+		$rows = db_fetch_cell_prepared('SELECT SUM(`rows`)
+			FROM data_source_profiles_rra
+			WHERE data_source_profile_id = ?',
+			array($id));
 
-		return number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000) . " KBytes per Data Source, and $header Bytes for the Header.";
+		return __('%s KBytes per Data Sources and $s Bytes for the Header', number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000), $header);
 	} else {
-		$cfs  = db_fetch_cell_prepared('SELECT COUNT(*) FROM data_source_profiles_cf WHERE data_source_profile_id = ?', array($id));
+		$cfs  = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM data_source_profiles_cf
+			WHERE data_source_profile_id = ?',
+			array($id));
+
 		$rows = get_filter_request_var('rows');
 
-		return number_format_i18n(($rows * $row * $cfs) / 1000) . " KBytes per Data Source.";
+		return __('%s KBytes per Data Source', number_format_i18n(($rows * $row * $cfs) / 1000));
 	}
 }
 
