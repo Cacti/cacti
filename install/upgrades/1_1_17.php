@@ -23,6 +23,9 @@
 */
 
 function upgrade_to_1_1_17() {
+	// Finalize fix to LDAP authentication
+	db_install_execute('UPDATE user_auth SET realm=3 WHERE realm=1');
+
 	if (!db_column_exists('data_source_profiles_rra', 'timespan')) {
 		db_install_execute('ALTER TABLE data_source_profiles_rra
 			ADD COLUMN timespan int(10) unsigned NOT NULL DEFAULT "0"');
