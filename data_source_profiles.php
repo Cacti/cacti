@@ -182,13 +182,19 @@ function form_save() {
 		$save['id']                      = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['name']                    = form_input_validate(get_nfilter_request_var('name'), 'name', '', true, 3);
 		$save['data_source_profile_id']  = form_input_validate(get_request_var('profile_id'), 'profile_id', '^[0-9]+$', false, 3);
-		$save['steps']                   = form_input_validate(get_nfilter_request_var('steps'), 'steps', '^[0-9]+$', false, 3);
 		$save['timespan']                = form_input_validate(get_nfilter_request_var('timespan'), 'timespan', '^[0-9]+$', false, 3);
 
-		if ($save['steps'] != '1') {
-			$save['steps'] /= $sampling_interval;
+		if (isset_request_var('steps')) {
+			$save['steps'] = form_input_validate(get_nfilter_request_var('steps'), 'steps', '^[0-9]+$', false, 3);
+
+			if ($save['steps'] != '1') {
+				$save['steps'] /= $sampling_interval;
+			}
 		}
-		$save['rows']                    = form_input_validate(get_nfilter_request_var('rows'), 'rows', '^[0-9]+$', false, 3);
+
+		if (isset_request_var('rows')) {
+			$save['rows'] = form_input_validate(get_nfilter_request_var('rows'), 'rows', '^[0-9]+$', false, 3);
+		}
 
 		if (!is_error_message()) {
 			$profile_rra_id = sql_save($save, 'data_source_profiles_rra');
