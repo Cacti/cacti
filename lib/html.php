@@ -719,9 +719,9 @@ function html_section_header($header_item, $last_item_colspan = 1) {
 	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>\n";
 
 	if (is_array($header_item) && isset($header_item['display'])) {
-		print "<td " . (isset($header_item['align']) ? "style='text-align:" . $header_item['align'] . ";'":"") . " colspan='$last_item_colspan'>" . $header_item['display'] . "</td>\n";
+		print "<th " . (isset($header_item['align']) ? "style='text-align:" . $header_item['align'] . ";'":"") . " colspan='$last_item_colspan'>" . $header_item['display'] . "</th>\n";
 	} else {
-		print "<td colspan='$last_item_colspan'>" . $header_item . "</td>\n";
+		print "<th colspan='$last_item_colspan'>" . $header_item . "</th>\n";
 	}
 
 	print "</tr>\n";
