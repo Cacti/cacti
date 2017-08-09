@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.17
+-issue673: Downtime/Recovery time/date is set incorrectly
 -issue#819: Customized timespans for graphs
 -issue#888: Rebuilding Poller Cache when External data sources are present results in false positive warnings in the log
 -issue#891: Database.php unable to connect to MySQL when using port different than 3306
