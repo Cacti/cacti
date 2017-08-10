@@ -1865,7 +1865,7 @@ function utilities() {
 	foreach($utilities as $header => $content) {
 		html_section_header($header, 2);
 		foreach($content as $title => $details) {
-			form_alternate_row(true);
+			form_alternate_row();
 			print "<td class='nowrap' style='vertical-align:top;'>";
 			print "<a class='hyperLink' href='" . htmlspecialchars($details['link']) . "'>" . $title . "</a>";
 			print "</td>\n";

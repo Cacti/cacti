@@ -89,10 +89,6 @@ form#tree_edit>div{
 	width: 100%;
 }
 
-#navigation_right {
-	overflow-y: auto !important;
-}
-
 input, select {
 	padding: 0.4em 0.4em 0.4em 0.4em;
 }
@@ -505,11 +501,12 @@ label {
 
 .odd {
     border: none;
+	background: none repeat scroll 0 0 #EBEDEF;
 }
 
-.odd.tableRow{
+.odd.tableRow {
 	color: #000000;
-	background: none repeat scroll 0 0 #fbfdff;
+	background: none repeat scroll 0 0 #EBEDEF;
 }
 
 .tableRowGraph td {
@@ -519,20 +516,19 @@ label {
 
 .even {
 	border: none;
+	background: none repeat scroll 0 0 #FFFFFF;
 }
 
-.even.tableRow{
+.even.tableRow {
 	color: #000000;
 	background: none repeat scroll 0 0 #FFFFFF;
 }
 
 .even-alternate {
-	#background: none repeat scroll 0 0 #E7E9F2;
-	#background-color:#E7E9F2;
-    #box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	background: none repeat scroll 0 0 #FFFFFF;
 }
 
-.even-alternate.tableRow{
+.even-alternate.tableRow {
 	color: #000000;
 	background: none repeat scroll 0 0 #FFFFFF;
 }
@@ -987,10 +983,6 @@ legend {
 	display: none !important;
 }
 
-.cactiGraphContentAreaPreview>div:last-child {
-	#margin-top: 10px;
-}
-
 .cactiGraphContentAreaPreview .cactitable{
 	background: none !important;
 }
@@ -1000,10 +992,6 @@ legend {
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
-}
-
-.cactiConsoleContentArea>div:first-child {
-	#display: none !important;
 }
 
 #graph_view_preview2 table.cactiTable{
@@ -1140,8 +1128,6 @@ tr>td.textInfo.right{
 }
 
 .textSubHeaderDark, .textSubHeaderDark:visited {
-	font-size: 11px;
-	font-weight: bold;
 	outline-style: none;
 }
 
@@ -1228,6 +1214,10 @@ table.cactiTable {
 	line-height: 35px;
 }
 
+.checkboxgroup {
+	line-height: 25px;
+}
+
 .formColumn {
 	float: left;
 	display: table-column;
@@ -1238,6 +1228,7 @@ table.cactiTable {
 	display: table-column;
 	width: 50%;
 	text-align: left;
+	color: #000;
 }
 
 .formColumnRight {
@@ -1245,6 +1236,7 @@ table.cactiTable {
 	display: table-column;
 	width: 50%;
 	text-align: left;
+	color: #000;
 }
 
 .formData {
@@ -1254,7 +1246,7 @@ table.cactiTable {
 
 .formFieldName {
 	display: inline-block;
-	color: snow;
+	color: #000;
 	float: left;
 	text-align: left;
 	font-weight: bold;
@@ -1276,6 +1268,7 @@ table.cactiTable {
 	float: left;
 	width: 100%;
 	text-align: left;
+	font-size: 13px;
 	line-height: 25px;
 	text-transform: none;
     background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
@@ -1288,6 +1281,10 @@ table.cactiTable {
 .formHeaderAnchor {
 	float:right;
 	padding-right:4px;
+}
+
+.formHeaderText {
+	padding-left: 3px;
 }
 
 .hostInfoHeader {
@@ -1380,7 +1377,7 @@ table.cactiTable {
 }
 
 .tableHeader > td {
-	padding: 20px 5px 0px 5px;
+	padding: 8px 5px 0px 5px;
 }
 
 th.sortable {
@@ -1390,23 +1387,20 @@ th.sortable {
 
 .tableHeader th {
 	color: #9d9d9d;
-	font-weight:600;
+	font-weight: 600;
 	cursor: pointer;
 	vertical-align:middle;
 	text-align:left;
-	font-size: 11px;
 	text-transform: none;
     background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
    	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
     background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
     background-repeat: repeat-x;
-    border-bottom: 1px solid #000;
 }
 
 .tableHeader th div {
 	display:block;
 	padding-right:8px;
-	font-size:11px;
 }
 
 .tableHeaderColumnSelected {
@@ -1488,7 +1482,7 @@ th.sortable {
 	color: #9D9D9D;
 	width: 100%;
 	text-align:center;
-	line-height: 20px;
+	line-height: 25px;
 	height: 25px;
 	margin-left:auto;
 	margin-right:auto;
@@ -1510,7 +1504,7 @@ th.sortable {
 	white-space: nowrap;
 	display: block;
 	width: 10%;
-	height: 20px;
+	height: 25px;
 	vertical-align: middle;
 	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
     background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
@@ -1524,7 +1518,7 @@ th.sortable {
 	float: left;
 	white-space: nowrap;
 	width: 80%;
-	height: 20px;
+	height: 25px;
 	margin-top: auto;
 	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
     background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
@@ -1544,8 +1538,7 @@ th.sortable {
 	white-space: nowrap;
 	display: block;
 	width: 10%;
-	#padding: 2px 0px;
-	height: 20px;
+	height: 25px;
 	vertical-align: middle;
 	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
     background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
@@ -1560,8 +1553,7 @@ th.sortable {
 	float: left;
 	white-space: nowrap;
 	width:100%;
-	padding: 2px 0px;
-	height: 20px;
+	height: 25px;
 	margin-top: auto;
 }
 
@@ -1587,7 +1579,6 @@ th.sortable {
 }
 
 .popupBox {
-	#z-index: 2;
 	position: absolute;
 	padding: 0px;
 	display: none;
@@ -1928,7 +1919,8 @@ tr:not(.selectable) a.linkEditMain:hover {
 }
 
 tr.selectable {
-	border-left: 10px solid transparent;
+	border-left: 10px solid transparent !important;
+	white-space: nowrap;
 }
 
 tr.selectable a.linkEditMain:hover {

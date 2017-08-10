@@ -73,6 +73,10 @@ fieldset {
 	font-size: 9px;
 }
 
+.checkbox {
+	text-align:center;
+}
+
 /* links */
 
 a, a:active {

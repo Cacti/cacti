@@ -389,8 +389,9 @@ class Net_Ping
 				socket_write($this->socket, $this->request, $this->request_len);
 
 				/* get the socket response */
-				$w = $f = array();
 				$r = array($this->socket);
+				$w = array($this->socket);
+				$f = array($this->socket);
 				$num_changed_sockets = socket_select($r, $w, $f, $to_sec, $to_usec);
 				if ($num_changed_sockets === false) {
 					$error = 'socket_select() failed, reason: ' . socket_strerror(socket_last_error());
@@ -493,8 +494,9 @@ class Net_Ping
 				@socket_connect($this->socket, $host_ip, $this->port);
 				socket_set_block($this->socket);
 
-				$w = $f = array();
 				$r = array($this->socket);
+				$w = array($this->socket);
+				$f = array($this->socket);
 				$num_changed_sockets = socket_select($r, $w, $f, $to_sec, $to_usec);
 				if ($num_changed_sockets === false) {
 					$this->ping_response = __('TCP ping: socket_select() failed, reason: %s', socket_strerror(socket_last_error()));

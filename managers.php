@@ -647,7 +647,7 @@ function manager_notifications($id, $header_label) {
     form_end();
 }
 
-function manager_logs($id) {
+function manager_logs($id, $header_label) {
 	$severity_levels = array(
 		SNMPAGENT_EVENT_SEVERITY_LOW      => 'LOW',
 		SNMPAGENT_EVENT_SEVERITY_MEDIUM   => 'MEDIUM',

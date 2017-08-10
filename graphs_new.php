@@ -635,7 +635,7 @@ function graphs() {
 
 		print "<tr class='tableHeader'>
 				<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
-				<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . "' onClick='SelectAll(\"sg\",this.checked)'></th>\n
+				<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . "' onClick='SelectAll(\"sg\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_cg'></label></th>\n
 			</tr>\n";
 
 		if (get_request_var('filter') != '') {
@@ -694,6 +694,7 @@ function graphs() {
 					</td>
 					<td class='checkbox' style='width:1%;'>
 						<input class='checkbox' type='checkbox' name='cg_$query_row' id='cg_$query_row'>
+						<label class='formCheckboxLabel' for='cg_$query_row'></label>
 					</td>
 				</tr>";
 			}
@@ -927,7 +928,7 @@ function graphs() {
 						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header
-									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __esc('Select All') . "' onClick='SelectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'></th>\n
+									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __esc('Select All') . "' onClick='SelectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_" . $snmp_query['id'] . "'></label></th>\n
 								</tr>\n";
 						}
 
@@ -956,7 +957,7 @@ function graphs() {
 								}
 
 								print "<td style='width:1%;' class='checkbox'>";
-								print "<input class='checkbox' type='checkbox' name='sg_$query_row' id='sg_$query_row'>";
+								print "<input class='checkbox' type='checkbox' name='sg_$query_row' id='sg_$query_row'><label class='formCheckboxLabel' for='sg_$query_row'></label>";
 								print '</td>';
 								print "</tr>\n";
 
