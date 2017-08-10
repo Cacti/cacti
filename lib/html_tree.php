@@ -701,22 +701,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td>
 						<select id='predefined_timespan' onChange='applyGraphTimespan()'>
 							<?php
-							if (isset($_SESSION['custom'])) {
-								$graph_timespans[GT_CUSTOM] = __('Custom');
-								$start_val = 0;
-								$end_val = sizeof($graph_timespans);
-							} else {
-								if (isset($graph_timespans[GT_CUSTOM])) {
-									asort($graph_timespans);
-									array_shift($graph_timespans);
-								}
-								$start_val = 1;
-								$end_val = sizeof($graph_timespans)+1;
-							}
+							$graph_timespans[GT_CUSTOM] = __('Custom');
+							$start_val = 0;
+							$end_val = sizeof($graph_timespans);
 
-							if (sizeof($graph_timespans) > 0) {
-								for ($value=$start_val; $value < $end_val; $value++) {
-									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . title_trim($graph_timespans[$value], 40) . "</option>\n";
+							if (sizeof($graph_timespans)) {
+								foreach($graph_timespans as $value => $text) {
+									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . $text . "</option>\n";
 								}
 							}
 							?>

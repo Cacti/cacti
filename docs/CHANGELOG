@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue: Unable use ipv6 ip addresses for snmp ping in the Cacti GUI
 -issue: Update language of the Rebuild Poller Cache menu pick
 -issue: Broken design for input controls with Sunrise theme
+-issue: Timespan switching not switching to Custom in Preview Mode
 
 1.1.16
 -issue#865: Escape Data Query arguments to prevent issues with special characters
