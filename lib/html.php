@@ -1531,21 +1531,21 @@ function html_graph_tabs_right($current_user) {
 
 	if ($theme == 'classic') {
 		if (is_view_allowed('show_tree')) {
-			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=tree');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
+			?><a class='righttab' id='treeview' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=tree');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
 				print '_down';
 			}?>.gif' title='<?php print __esc('Tree View');?>' alt=''></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_list')) {
-			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=list');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_list<?php
+			?><a class='righttab' id='listview' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=list');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_list<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'list') {
 				print '_down';
 			}?>.gif' title='<?php print __esc('List View');?>' alt=''></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_preview')) {
-			?><a class='righttab' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=preview');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_preview<?php
+			?><a class='righttab' id='preview' href='<?php print htmlspecialchars($config['url_path'] . 'graph_view.php?action=preview');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_preview<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
 				print '_down';
 			}?>.gif' title='<?php print __esc('Preview View');?>' alt=''></a><?php
@@ -1607,14 +1607,14 @@ function html_graph_tabs_right($current_user) {
 			switch($tab['id']) {
 			case 'tree':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+					print "<li role='tab'><a id='treeview' title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 				} else {
 					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 				}
 				break;
 			case 'list':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+					print "<li role='tab'><a id='listview' title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 				} else {
 					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 				}
@@ -1622,7 +1622,7 @@ function html_graph_tabs_right($current_user) {
 				break;
 			case 'preview':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
+					print "<li role='tab'><a id='preview' title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>\n";
 				} else {
 					print "<li role='tab'><a title='" . htmlspecialchars($tab['title'], ENT_QUOTES, 'UTF-8') . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . "</a></li>\n";
 				}
