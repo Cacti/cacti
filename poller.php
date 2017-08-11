@@ -103,11 +103,11 @@ if (sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
-	
+
 				break;
 			case '--force':
 				$force = true;
-	
+
 				break;
 			case '--version':
 			case '-V':
@@ -246,9 +246,9 @@ if ((($poller_start - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_las
 	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '$min_period' second $task_type, but " . number_format_i18n($poller_start - $poller_lastrun, 1) . ' seconds have passed since the last poll!', true, 'POLLER');
 }
 
-db_execute_prepared('REPLACE INTO settings 
-	(name, value) 
-	VALUES (?, ?)', 
+db_execute_prepared('REPLACE INTO settings
+	(name, value)
+	VALUES (?, ?)',
 	array('poller_lastrun_' . $poller_id, (int)$poller_start));
 
 /* let PHP only run 1 second longer than the max runtime, plus the poller needs lot's of memory */
@@ -265,16 +265,16 @@ while ($poller_runs_completed < $poller_runs) {
 	if ($poller_id == '1') {
 		$polling_hosts = array_merge(
 			array(0 => array('id' => '0')),
-			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id 
-				FROM host 
+			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+				FROM host
 				WHERE poller_id = ?
-				AND disabled="" 
+				AND disabled=""
 				ORDER BY id', array($poller_id)));
 	} else {
-		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id 
-			FROM host 
-			WHERE poller_id = ? 
-			AND disabled="" 
+		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+			FROM host
+			WHERE poller_id = ?
+			AND disabled=""
 			ORDER BY id', array($poller_id));
 	}
 
@@ -299,8 +299,8 @@ while ($poller_runs_completed < $poller_runs) {
 	/* update statistics */
 	db_execute_prepared('INSERT INTO poller (id, snmp, script, server, last_status, status)
 		VALUES (?, ?, ?, ?, NOW(), 1)
-		ON DUPLICATE KEY UPDATE snmp=VALUES(snmp), script=VALUES(script), 
-		server=VALUES(server), last_status=VALUES(last_status), status=VALUES(status)', 
+		ON DUPLICATE KEY UPDATE snmp=VALUES(snmp), script=VALUES(script),
+		server=VALUES(server), last_status=VALUES(last_status), status=VALUES(status)',
 		array($poller_id, $snmp, $script, $server));
 
 	/* calculate overhead time */
@@ -327,8 +327,8 @@ while ($poller_runs_completed < $poller_runs) {
 	$max_threads = read_config_option('max_threads');
 
 	/* initialize poller_time and poller_output tables, check poller_output for issues */
-	$running_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*) 
-		FROM poller_time 
+	$running_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
+		FROM poller_time
 		WHERE poller_id = ?
 		AND end_time="0000-00-00 00:00:00"', array($poller_id));
 
@@ -342,16 +342,16 @@ while ($poller_runs_completed < $poller_runs) {
 	$issues_limit = 20;
 
 	if ($poller_id == 1) {
-		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name 
+		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name
 			FROM poller_output AS po
 			LEFT JOIN data_local AS dl
 			ON po.local_data_id=dl.id
 			LEFT JOIN host AS h
 			ON dl.host_id=h.id
-			WHERE h.poller_id = ? OR h.id IS NULL 
+			WHERE h.poller_id = ? OR h.id IS NULL
 			LIMIT ' . $issues_limit, array($poller_id));
 	} elseif ($config['connection'] == 'online') {
-		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name 
+		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name
 			FROM poller_output AS po
 			LEFT JOIN data_local AS dl
 			ON po.local_data_id=dl.id
@@ -365,7 +365,7 @@ while ($poller_runs_completed < $poller_runs) {
 	}
 
 	if (sizeof($issues)) {
-		$count  = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*) 
+		$count  = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
 			FROM poller_output AS po
 			LEFT JOIN data_local AS dl
 			ON po.local_data_id=dl.id
@@ -373,19 +373,23 @@ while ($poller_runs_completed < $poller_runs) {
 			ON dl.host_id=h.id
 			WHERE h.poller_id = ? OR h.id IS NULL', array($poller_id));
 
-		$issue_list = '';
-		foreach($issues as $issue) {
-			$issue_list .= ($issue_list != '' ? ', ' : '') . $issue['rrd_name'] . '(DS[' . $issue['local_data_id'] . '])';
+
+		if (sizeof($issues)) {
+			$issue_list =  'DataSources[';
+			foreach($issues as $issue) {
+				$issue_list .= ($issue_list != '' ? ', ' : '') . $issue['local_data_id'];
+			}
+			$issue_list .= ']';
 		}
 
 		if ($count > $issues_limit) {
 			$issue_list .= ", Additional Issues Remain.  Only showing first $issues_limit";
 		}
 
-		cacti_log("WARNING: Poller Output Table not Empty.  Issues Found: $count, Data Sources: $issue_list", true, 'POLLER');
+		cacti_log("WARNING: Poller Output Table not Empty.  Issues: $count, $issue_list", true, 'POLLER');
 
-		db_execute_prepared('DELETE po 
-			FROM poller_output AS po 
+		db_execute_prepared('DELETE po
+			FROM poller_output AS po
 			LEFT JOIN data_local AS dl
 			ON po.local_data_id=dl.id
 			LEFT JOIN host AS h
@@ -502,9 +506,9 @@ while ($poller_runs_completed < $poller_runs) {
 		$rrds_processed = 0;
 		$poller_finishing_dispatched = false;
 		while (1) {
-			$finished_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " count(*) 
-				FROM poller_time 
-				WHERE poller_id = ? 
+			$finished_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " count(*)
+				FROM poller_time
+				WHERE poller_id = ?
 				AND end_time >'0000-00-00 00:00:00'", array($poller_id));
 
 			if ($finished_processes >= $started_processes) {
@@ -662,10 +666,10 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 
 	/* insert poller stats into the settings table */
 	db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("stats_poller",?)', array($cacti_stats));
-	db_execute_prepared('INSERT INTO poller (id, total_time, last_update, last_status, status) 
+	db_execute_prepared('INSERT INTO poller (id, total_time, last_update, last_status, status)
 		VALUES (?, ?, NOW(), NOW(), 2)
 		ON DUPLICATE KEY UPDATE total_time=VALUES(total_time), last_update=VALUES(last_update),
-		last_status=VALUES(last_status), status=VALUES(status)', 
+		last_status=VALUES(last_status), status=VALUES(status)',
 		array($poller_id, round($loop_end-$loop_start,4)));
 
 	/* update snmpcache */

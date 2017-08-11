@@ -23,15 +23,17 @@
 */
 
 function clog_get_graphs_from_datasource($local_data_id) {
-	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT graph_templates_graph.local_graph_id AS id,
-		graph_templates_graph.title_cache AS name
-		FROM (graph_templates_graph
-		INNER JOIN graph_templates_item
-		ON graph_templates_graph.local_graph_id=graph_templates_item.local_graph_id)
-		INNER JOIN data_template_rrd
-		ON graph_templates_item.task_item_id=data_template_rrd.id
-		WHERE graph_templates_graph.local_graph_id>0
-		AND data_template_rrd.local_data_id = ?', array($local_data_id)), 'id', 'name');
+	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
+		gtg.local_graph_id AS id,
+		gtg.title_cache AS name
+		FROM graph_templates_graph AS gtg
+		INNER JOIN graph_templates_item AS gti
+		ON gtg.local_graph_id=gti.local_graph_id
+		INNER JOIN data_template_rrd AS dtr
+		ON gti.task_item_id=dtr.id
+		WHERE gtg.local_graph_id>0
+		AND dtr.local_data_id = ?',
+		array($local_data_id)), 'id', 'name');
 }
 
 function clog_purge_logfile() {
@@ -234,52 +236,59 @@ function clog_view_logfile() {
 
 	foreach ($logcontents as $item) {
 		$host_start = strpos($item, 'Device[');
-		$ds_start   = strpos($item, 'DS[');
+		$ds_start   = strpos($item, 'DataSources[');
 
 		if (!$host_start && !$ds_start) {
 			$new_item = cacti_htmlspecialchars($item);
 		} else {
 			$new_item = '';
-			while ($host_start) {
+			if ($host_start) {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start + 7, $host_end - ($host_start + 7));
-				$new_item   .= cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
-				$new_item   .= '] Description[' . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id] : '');
-				$item        = substr($item, $host_end);
-				$host_start  = strpos($item, 'Device[');
+				$new_item   .= substr($item, 0, $host_start) . " Device[<a href='" . cacti_htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>" . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:'') . '</a>]';
+				$item        = substr($item, $host_end + 1);
 			}
 
-			$ds_start = strpos($item, 'DS[');
-			while ($ds_start) {
+			$ds_start   = strpos($item, 'DataSources[');
+			if ($ds_start) {
 				$ds_end    = strpos($item, ']', $ds_start);
-				$ds_id     = substr($item, $ds_start + 3, $ds_end - ($ds_start + 3));
-				$graph_ids = clog_get_graphs_from_datasource($ds_id);
-				$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
+				$ds_id     = substr($item, $ds_start + 12, $ds_end - ($ds_start + 12));
+				$ds_ids    = explode(', ', $ds_id);
+				if (sizeof($ds_ids)) {
+					$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
-				if (sizeof($graph_ids)) {
-					$new_item  .= substr($item, 0, $ds_start + 3) .
-						"<a href='" . cacti_htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . cacti_htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>' .
-						"] Graphs[<a href='";
-
-					$i = 0;
+					$new_item  .= " Graphs[<a href='";
 					$titles = '';
-					foreach($graph_ids as $key => $title) {
-						$graph_add .= ($i > 0 ? '%2C' : '') . $key;
-						$i++;
-						if ($titles != '') {
-							$titles .= ",'" . cacti_htmlspecialchars($title) . "'";
-						} else {
-							$titles .= "'"  . cacti_htmlspecialchars($title) . "'";
+					foreach($ds_ids as $ds_id) {
+						$graph_ids = clog_get_graphs_from_datasource($ds_id);
+
+						if (sizeof($graph_ids)) {
+							$i = 0;
+							foreach($graph_ids as $key => $title) {
+								$graph_add .= ($i > 0 ? '%2C' : '') . $key;
+								if ($titles != '') {
+									$titles .= ", '" . cacti_htmlspecialchars($title) . "'";
+								} else {
+									$titles .= "'"  . cacti_htmlspecialchars($title) . "'";
+								}
+								$i++;
+							}
 						}
 					}
-					$new_item .= cacti_htmlspecialchars($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $titles . '</a>';
+
+					$new_item .= cacti_htmlspecialchars($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $titles . '</a>]';
+
+					$new_item .= ' DataSources[';
+					$i = 0;
+					foreach($ds_ids as $ds_id) {
+						$new_item .= ($i == 0 ? '':', ') . "<a href='" . cacti_htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_id . '</a>';
+						$i++;
+					}
+					$new_item .= ']';
 				}
-
-				$item     = substr($item, $ds_end);
-				$ds_start = strpos($item, 'DS[');
+			}else{
+				$new_item .= cacti_htmlspecialchars($item);
 			}
-
-			$new_item .= cacti_htmlspecialchars($item);
 		}
 
 		/* respect the exclusion filter */

@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue: Timespan switching not switching to Custom in Preview Mode
 -issue: Log rotation would not occur under certain conditions.  Provide more control over log functions
 -issue: Purge log file always purged the cacti.log, not the selected log
+-issue: Unable to view graphs for errored data sources from Cacti log
 
 1.1.16
 -issue#865: Escape Data Query arguments to prevent issues with special characters
