@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.17
 -issue#450: List View to Preview shows no results
+-issue#544: Allow Log Rotation to be other than Daily
 -issue#673: Downtime/Recovery time/date is set incorrectly
 -issue#819: Customized timespans for graphs
 -issue#888: Rebuilding Poller Cache when External data sources are present results in false positive warnings in the log
@@ -13,6 +14,8 @@ Cacti CHANGELOG
 -issue: Update language of the Rebuild Poller Cache menu pick
 -issue: Broken design for input controls with Sunrise theme
 -issue: Timespan switching not switching to Custom in Preview Mode
+-issue: Log rotation would not occur under certain conditions.  Provide more control over log functions
+-issue: Purge log file always purged the cacti.log, not the selected log
 
 1.1.16
 -issue#865: Escape Data Query arguments to prevent issues with special characters

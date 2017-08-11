@@ -871,8 +871,12 @@ function utilities_view_logfile() {
 		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
 		if (file_exists($requestedFile)) {
 			$logfile = $requestedFile;
+		} else {
+			$logfile = read_config_option('path_cactilog');
 		}
-	} elseif ($logfile == '') {
+	}
+
+	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 

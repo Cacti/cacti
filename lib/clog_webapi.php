@@ -37,19 +37,32 @@ function clog_get_graphs_from_datasource($local_data_id) {
 function clog_purge_logfile() {
 	global $config;
 
-	$logfile = read_config_option('path_cactilog');
+	$logfile   = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
-	if (file_exists($logfile)) {
-		if (is_writable($logfile)) {
-			$timestamp = date('Y-m-d H:i:s');
-			$log_fh = fopen($logfile, 'w');
-			fwrite($log_fh, "$timestamp - WEBUI: Cacti Log Cleared from Web Management Interface\n");
-			fclose($log_fh);
-			raise_message('clog_purged');
+	$purgefile = dirname($logfile) . '/' . get_nfilter_request_var('filename');
+	if (strstr($purgefile, $logfile) === false) {
+		raise_message('clog_invalid');
+		exit(0);
+	}
+
+	if (file_exists($purgefile)) {
+		if (is_writable($purgefile)) {
+			if ($logfile != $purgefile) {
+				unlink($purgefile);
+				raise_message('clog_remove');
+			} else {
+				$timestamp = date('Y-m-d H:i:s');
+				$log_fh = fopen($logfile, 'w');
+				fwrite($log_fh, "$timestamp - WEBUI: Cacti Log Cleared from Web Management Interface\n");
+				fclose($log_fh);
+				raise_message('clog_purged');
+			}
+
+			cacti_log('NOTE: Cacti Log file ' . $purgefile . ', Removed by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 		} else {
 			raise_message('clog_permissions');
 		}
@@ -110,6 +123,11 @@ function clog_view_logfile() {
 	set_request_var('page_referrer', 'view_logfile');
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
+	if ($clogAdmin && isset_request_var('purge_continue')) {
+		clog_purge_logfile();
+		$logfile   = read_config_option('path_cactilog');
+	}
+
 	$page_nr = get_request_var('page');
 
 	$page = $config['url_path'] . 'clog' . (!$clogAdmin ? '_user' : '') . '.php?header=false';
@@ -122,10 +140,6 @@ function clog_view_logfile() {
 	);
 
 	set_page_refresh($refresh);
-
-	if ($clogAdmin && isset_request_var('purge_continue')) {
-		clog_purge_logfile();
-	}
 
 	general_header();
 
@@ -145,7 +159,7 @@ function clog_view_logfile() {
 				<input id='pc' type='button' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge Log') . "'>
 				<script type='text/javascript'>
 				$('#pc').click(function() {
-					strURL = location.pathname+'?purge_continue=1&header=false';
+					strURL = location.pathname+'?purge_continue=1&header=false&filename=" . basename($logfile) . "';
 					loadPageNoHeader(strURL);
 				});
 
@@ -162,8 +176,6 @@ function clog_view_logfile() {
 		</tr>\n";
 
 		html_end_box();
-
-		form_end();
 
 		return;
 	}
@@ -480,7 +492,7 @@ function filter($clogAdmin) {
 		});
 
 		$('#purge').click(function() {
-			strURL = basename(location.pathname) + '?purge=1&header=false';
+			strURL = basename(location.pathname) + '?purge=1&header=false&filename=' + $('#filename').val();
 			loadPageNoHeader(strURL);
 		});
 
