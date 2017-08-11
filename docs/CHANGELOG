@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.17
 -issue#450: List View to Preview shows no results
+-issue#486: Export Device table results to CSV
 -issue#544: Allow Log Rotation to be other than Daily
 -issue#673: Downtime/Recovery time/date is set incorrectly
 -issue#819: Customized timespans for graphs
