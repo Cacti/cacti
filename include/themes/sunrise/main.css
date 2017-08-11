@@ -110,7 +110,7 @@ input, select {
 	background: transparent;
 }
 
-input[type="checkbox"],
+input[type="checkbox"]:not([name^="multiselect"]),
 input[type="radio"]:not([name^="reindex"]) {
 	display: none;
 }
