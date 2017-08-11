@@ -259,11 +259,11 @@ function clog_view_logfile() {
 
 					$new_item  .= " Graphs[<a href='";
 					$titles = '';
+					$i = 0;
 					foreach($ds_ids as $ds_id) {
 						$graph_ids = clog_get_graphs_from_datasource($ds_id);
 
 						if (sizeof($graph_ids)) {
-							$i = 0;
 							foreach($graph_ids as $key => $title) {
 								$graph_add .= ($i > 0 ? '%2C' : '') . $key;
 								if ($titles != '') {
