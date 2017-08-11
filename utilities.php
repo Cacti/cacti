@@ -994,7 +994,7 @@ function utilities_view_logfile() {
 					<td>
 						<select id='filename' name='filename'>
 							<?php
-							$selectedFile = basename(get_request_var('filename'));
+							$selectedFile = basename(get_nfilter_request_var('filename'));
 							$logPath      = dirname(read_config_option('path_cactilog'));
 
 							if (is_readable($logPath)) {
