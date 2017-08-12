@@ -236,7 +236,7 @@ function clog_view_logfile() {
 
 	foreach ($logcontents as $item) {
 		$host_start = strpos($item, 'Device[');
-		$ds_start   = strpos($item, 'DataSources[');
+		$ds_start   = strpos($item, 'DS[');
 
 		if (!$host_start && !$ds_start) {
 			$new_item = cacti_htmlspecialchars($item);
@@ -249,10 +249,10 @@ function clog_view_logfile() {
 				$item        = substr($item, $host_end + 1);
 			}
 
-			$ds_start   = strpos($item, 'DataSources[');
+			$ds_start   = strpos($item, 'DS[');
 			if ($ds_start) {
 				$ds_end    = strpos($item, ']', $ds_start);
-				$ds_id     = substr($item, $ds_start + 12, $ds_end - ($ds_start + 12));
+				$ds_id     = substr($item, $ds_start + 3, $ds_end - ($ds_start + 3));
 				$ds_ids    = explode(', ', $ds_id);
 				if (sizeof($ds_ids)) {
 					$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
@@ -278,7 +278,7 @@ function clog_view_logfile() {
 
 					$new_item .= cacti_htmlspecialchars($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $titles . '</a>]';
 
-					$new_item .= ' DataSources[';
+					$new_item .= ' DS[';
 					$i = 0;
 					foreach($ds_ids as $ds_id) {
 						$new_item .= ($i == 0 ? '':', ') . "<a href='" . cacti_htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_id . '</a>';

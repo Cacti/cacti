@@ -409,6 +409,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 	$current_host = '';
 	$output_array = array();
 	$output_count = 0;
+	$error_ds     = array();
 
 	/* create new ping socket for host pinging */
 	$ping = new Net_Ping;
@@ -447,6 +448,14 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			$set_spike_kill = false;
 
 			$host_update_time = date('Y-m-d H:i:s'); // for poller update time
+
+			if ($last_host != '') {
+				if (sizeof($error_ds)) {
+					cacti_log('WARNING: Invalid Response(s), Errors[' . sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
+				}
+
+				$error_ds = array();
+			}
 		}
 
 		$host_id = $item['host_id'];
@@ -641,7 +650,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			switch ($item['action']) {
 			case POLLER_ACTION_SNMP: /* snmp */
 				if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
-					cacti_log("Device[$host_id] DataSources[$data_source] ERROR: Invalid SNMP Data Source.  Please either delete it from the database, or correct it.", $print_data_to_stdout, 'POLLER');
+					cacti_log("Device[$host_id] DS[$data_source] ERROR: Invalid SNMP Data Source.  Please either delete it from the database, or correct it.", $print_data_to_stdout, 'POLLER');
 					$output = 'U';
 				}else {
 					open_snmp_session($host_id, $item);
@@ -660,13 +669,15 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 								$strout = strlen($output);
 							}
 
-							cacti_log("Device[$host_id] DataSources[$data_source] WARNING: Result from SNMP not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER');
+							$error_ds[$data_source] = $data_source;
+
+							cacti_log("Device[$host_id] DS[$data_source] WARNING: Result from SNMP not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 							$output = 'U';
 						}
 					}
 				}
 
-				cacti_log("Device[$host_id] DataSources[$data_source] SNMP: v" . $item['snmp_version'] . ': ' . $item['hostname'] . ', dsname: ' . $item['rrd_name'] . ', oid: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				cacti_log("Device[$host_id] DS[$data_source] SNMP: v" . $item['snmp_version'] . ': ' . $item['hostname'] . ', dsname: ' . $item['rrd_name'] . ', oid: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			case POLLER_ACTION_SCRIPT: /* script (popen) */
@@ -680,11 +691,13 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 							$strout = strlen($output);
 						}
 
-						cacti_log("Device[$host_id] DataSources[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER');
+						$error_ds[$data_source] = $data_source;
+
+						cacti_log("Device[$host_id] DS[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 					}
 				}
 
-				cacti_log("Device[$host_id] DataSources[$data_source] CMD: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				cacti_log("Device[$host_id] DS[$data_source] CMD: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
@@ -698,15 +711,19 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 							$strout = strlen($output);
 						}
 
-						cacti_log("Device[$host_id] DataSources[$data_source] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER');
+						$error_ds[$data_source] = $data_source;
+
+						cacti_log("Device[$host_id] DS[$data_source] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 					}
 				}
 
-				cacti_log("Device[$host_id] DataSources[$data_source] SERVER: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				cacti_log("Device[$host_id] DS[$data_source] SERVER: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			default: /* invalid polling option */
-				cacti_log("Device[$host_id] DataSources[$data_source] ERROR: Invalid polling option: " . $item['action'], $stdout, 'POLLER');
+				$error_ds[$data_source] = $data_source;
+
+				cacti_log("Device[$host_id] DS[$data_source] ERROR: Invalid polling option: " . $item['action'], $stdout, 'POLLER');
 			} /* End Switch */
 
 			if (isset($output)) {
@@ -744,6 +761,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			break;
 		}
 	} /* End foreach */
+
+	if (sizeof($error_ds)) {
+		cacti_log('WARNING: Invalid Response(s), Errors[' . sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
+	}
 
 	if ($output_count > 0) {
 		db_execute('INSERT IGNORE INTO poller_output

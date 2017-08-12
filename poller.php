@@ -375,7 +375,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 
 		if (sizeof($issues)) {
-			$issue_list =  'DataSources[';
+			$issue_list =  'DS[';
 			foreach($issues as $issue) {
 				$issue_list .= ($issue_list != '' ? ', ' : '') . $issue['local_data_id'];
 			}
