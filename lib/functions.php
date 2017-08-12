@@ -844,7 +844,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 			/* host is down, but not ready to issue log message */
 			} else {
 				/* host down for the first time, set event date */
-				if ($hosts[$host_id]['status_event_count'] == $ping_filure_count) {
+				if ($hosts[$host_id]['status_event_count'] == $ping_failure_count) {
 					$hosts[$host_id]['status_fail_date'] = date('Y-m-d H:i:s');
 				}
 			}
