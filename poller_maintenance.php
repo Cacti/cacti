@@ -35,7 +35,7 @@ $dir = dirname(__FILE__);
 chdir($dir);
 
 /* record the start time */
-$poller_start         = microtime(true);
+$poller_start = microtime(true);
 
 include ('./include/global.php');
 
@@ -88,7 +88,8 @@ maint_debug('Checking for Purge Actions');
 
 if ($config['poller_id'] == 1) {
 	/* are my tables already present? */
-	$purge = db_fetch_cell('SELECT count(*) FROM data_source_purge_action');
+	$purge = db_fetch_cell('SELECT count(*)
+		FROM data_source_purge_action');
 
 	/* if the table that holds the actions is present, work on it */
 	if ($purge) {
@@ -98,7 +99,7 @@ if ($config['poller_id'] == 1) {
 		while (true) {
 			maint_debug('Grabbing 1000 RRDfiles to Remove');
 
-			$file_array = db_fetch_assoc('SELECT id, name, local_data_id, action 
+			$file_array = db_fetch_assoc('SELECT id, name, local_data_id, action
 				FROM data_source_purge_action
 				ORDER BY name
 				LIMIT 1000');
@@ -106,11 +107,11 @@ if ($config['poller_id'] == 1) {
 			if (sizeof($file_array) == 0) {
 				break;
 			}
-	
+
 			if (sizeof($file_array) || $force) {
 				/* there's something to do for us now */
 				remove_files($file_array);
-	
+
 				if ($force) {
 					cleanup_ds_and_graphs();
 				}
@@ -118,14 +119,16 @@ if ($config['poller_id'] == 1) {
 		}
 
 		/* record the start time */
-		$poller_end         = microtime(true);
+		$poller_end = microtime(true);
 		$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
 		cacti_log($string, true, 'SYSTEM');
 	}
 
 	/* removing security tokens older than 90 days */
 	if (read_config_option('auth_cache_enabled') == 'on') {
-		db_execute_prepared('DELETE FROM user_auth_cache WHERE last_update < ?', array(date('Y-m-d H:i:s', time()-(86400*90))));
+		db_execute_prepared('DELETE FROM user_auth_cache
+			WHERE last_update < ?',
+			array(date('Y-m-d H:i:s', time()-(86400*90))));
 	} else {
 		db_execute('TRUNCATE TABLE user_auth_cache');
 	}
@@ -137,12 +140,23 @@ if ($config['poller_id'] == 1) {
 // Check the realtime cache and poller
 realtime_purge_cache();
 
-// Check whether the cacti log needs rotating
+// Check whether the cacti log.  Rotations takes place around midnight
 if (read_config_option('logrotate_enabled') == 'on') {
-	if (date('G') == 0 && date('i') < 5 && (time() - read_config_option('logrotate_lastrun') > 3600)) {
+	$frequency  = read_config_option('logrotate_frequency');
+	if (empty($frequency)) {
+		$frequency = 1;
+	}
+	$last = read_config_option('logrotate_lastrun');
+	$now  = time();
+
+	if (empty($last)) {
+		set_config_option('logrotate_lastrun', time());
+	} elseif (($last + ($frequency * 86400)) < $now) {
 		logrotate_rotatenow();
 	}
 }
+
+exit(0);
 
 /** realtime_purge_cache() - This function will purge files in the realtime directory
  *  that are older than 2 hours without changes */
@@ -179,12 +193,15 @@ function realtime_purge_cache() {
 function logrotate_rotatenow () {
 	global $config;
 
+	$poller_start = microtime(true);
+
 	$log = read_config_option('path_cactilog');
 	if ($log == '') {
 		$log = $config['base_path'] . '/log/cacti.log';
 	}
 
 	set_config_option('logrotate_lastrun', time());
+
 	clearstatcache();
 
 	if (is_writable(dirname($log) . '/') && is_writable($log)) {
@@ -216,6 +233,11 @@ function logrotate_rotatenow () {
 	}
 
 	logrotate_cleanold();
+
+	/* record the start time */
+	$poller_end = microtime(true);
+	$string = sprintf('LOGMAINT STATS: Time:%4.4f', ($poller_end - $poller_start));
+	cacti_log($string, true, 'SYSTEM');
 }
 
 /*
@@ -268,12 +290,10 @@ function logrotate_cleanold () {
 	clearstatcache();
 }
 
-
 /*
  * secpass_check_expired
  * Checks user accounts to determine if the accounts and/or their passwords should be expired
  */
-
 function secpass_check_expired () {
 	maint_debug('Checking for Account / Password expiration');
 
@@ -281,16 +301,41 @@ function secpass_check_expired () {
 	$e = read_config_option('secpass_expireaccount');
 	if ($e > 0 && is_numeric($e)) {
 		$t = time();
-		db_execute_prepared("UPDATE user_auth SET lastlogin = ? WHERE lastlogin = -1 AND realm = 0 AND enabled = 'on'", array($t));
+		db_execute_prepared("UPDATE user_auth
+			SET lastlogin = ?
+			WHERE lastlogin = -1
+			AND realm = 0
+			AND enabled = 'on'",
+			array($t));
+
 		$t = $t - (intval($e) * 86400);
-		db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE realm = 0 AND enabled = 'on' AND lastlogin < ? AND id > 1", array($t));
+
+		db_execute_prepared("UPDATE user_auth
+			SET enabled = ''
+			WHERE realm = 0
+			AND enabled = 'on'
+			AND lastlogin < ?
+			AND id > 1",
+			array($t));
 	}
 	$e = read_config_option('secpass_expirepass');
 	if ($e > 0 && is_numeric($e)) {
 		$t = time();
-		db_execute_prepared("UPDATE user_auth SET lastchange = ? WHERE lastchange = -1 AND realm = 0 AND enabled = 'on'", array($t));
+		db_execute_prepared("UPDATE user_auth
+			SET lastchange = ?
+			WHERE lastchange = -1
+			AND realm = 0
+			AND enabled = 'on'",
+			array($t));
+
 		$t = $t - (intval($e) * 86400);
-		db_execute_prepared("UPDATE user_auth SET must_change_password = 'on' WHERE realm = 0 AND enabled = 'on' AND lastchange < ?", array($t));
+
+		db_execute_prepared("UPDATE user_auth
+			SET must_change_password = 'on'
+			WHERE realm = 0
+			AND enabled = 'on'
+			AND lastchange < ?",
+			array($t));
 	}
 }
 
@@ -349,7 +394,9 @@ function remove_files($file_array) {
 		}
 
 		/* drop from data_source_purge_action table */
-		db_execute_prepared('DELETE FROM `data_source_purge_action` WHERE name = ?', array($file['name']));
+		db_execute_prepared('DELETE FROM `data_source_purge_action`
+			WHERE name = ?',
+			array($file['name']));
 
 		maint_debug('Delete from data_source_purge_action: ' . $file['name']);
 
@@ -362,7 +409,8 @@ function remove_files($file_array) {
 			ON dtr.id=gti.task_item_id
 			INNER JOIN data_local AS dl
 			ON dtr.local_data_id=dl.id
-			WHERE (local_data_id=?)', array($file['local_data_id']));
+			WHERE (local_data_id=?)',
+			array($file['local_data_id']));
 
 		if (sizeof($lgis)) {
 			/* anything found? */
@@ -429,9 +477,10 @@ function cleanup_ds_and_graphs() {
 	$remove_lgis = array ();
 
 	maint_debug('RRDClean now cleans up all data sources and graphs');
+
 	//fetch all local_data_id's which have appropriate data-sources
-	$rrds = db_fetch_assoc("SELECT local_data_id, name_cache, data_source_path 
-		FROM data_template_data 
+	$rrds = db_fetch_assoc("SELECT local_data_id, name_cache, data_source_path
+		FROM data_template_data
 		WHERE name_cache > ''");
 
 	//filter those whose rrd files doesn't exist

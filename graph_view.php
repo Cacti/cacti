@@ -703,7 +703,7 @@ case 'list':
 		$('#form_graph_list').find('select, input').each(function() {
 			switch($(this).attr('id')) {
 			case 'graph_template_id':
-				strURL += '&' + $(this).attr('id') + '=' + $(this).prop('selectedIndex');
+				strURL += '&' + $(this).attr('id') + '=' + $(this).val();
 				break;
 			case 'host_id':
 			case 'rfilter':
@@ -719,9 +719,13 @@ case 'list':
 			}
 		});
 
-		strURL += '&reset=1';
+		strURL += '&reset=1&header=false';
 
-		document.location = strURL;
+		loadPageNoHeader(strURL);
+
+		$('#breadcrumbs').empty().html('<li><a href="graph_view.php?action=preview"><?php print __('Preview Mode');?></a></li>');
+		$('#listview').removeClass('selected');
+		$('#preview').addClass('selected');
 	}
 
 	function url_graph(strNavURL) {

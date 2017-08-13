@@ -110,7 +110,7 @@ input, select {
 	background: transparent;
 }
 
-input[type="checkbox"],
+input[type="checkbox"]:not([name^="multiselect"]),
 input[type="radio"]:not([name^="reindex"]) {
 	display: none;
 }
@@ -657,7 +657,7 @@ label.ui-state-hover > span {
 }
 
 .filteredValue {
-	background-color:#F8D93D;
+	color: #F8D93D;
 }
 
 .graphItemGr1Alt1 {
@@ -2058,12 +2058,12 @@ ul#nav {
 }
 
 .ui-tooltip-content div.header {
-	color: #3f75a2;
+	color: #93CEFF;
 }
 
 .ui-tooltip-content div.content {
 	font-size: 10px;
-	color: #333333;
+	color: #9d9d9d;
 }
 
 .ui-tooltip-content {

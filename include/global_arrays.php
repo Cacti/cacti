@@ -1488,6 +1488,12 @@ $automation_frequencies = array(
 	'40320'    => __('Every %d Weeks', 4)
 );
 
+$logrotate_frequency = array(
+	'1'  => __('Daily'),
+	'7'  => __('Weekly'),
+	'30' => __('Monthly')
+);
+
 $no_session_write = array(
 	'graph_xport.php',
 	'graph_image.php',

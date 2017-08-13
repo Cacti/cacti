@@ -871,8 +871,12 @@ function utilities_view_logfile() {
 		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
 		if (file_exists($requestedFile)) {
 			$logfile = $requestedFile;
+		} else {
+			$logfile = read_config_option('path_cactilog');
 		}
-	} elseif ($logfile == '') {
+	}
+
+	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
@@ -990,7 +994,7 @@ function utilities_view_logfile() {
 					<td>
 						<select id='filename' name='filename'>
 							<?php
-							$selectedFile = basename(get_request_var('filename'));
+							$selectedFile = basename(get_nfilter_request_var('filename'));
 							$logPath      = dirname(read_config_option('path_cactilog'));
 
 							if (is_readable($logPath)) {
@@ -1865,7 +1869,7 @@ function utilities() {
 	foreach($utilities as $header => $content) {
 		html_section_header($header, 2);
 		foreach($content as $title => $details) {
-			form_alternate_row(true);
+			form_alternate_row();
 			print "<td class='nowrap' style='vertical-align:top;'>";
 			print "<a class='hyperLink' href='" . htmlspecialchars($details['link']) . "'>" . $title . "</a>";
 			print "</td>\n";

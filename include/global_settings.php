@@ -150,17 +150,25 @@ $settings = array(
 			'max_length' => '255'
 			),
 		'logrotate_enabled' => array(
-			'friendly_name' => __('Rotate the Cacti Log Nightly'),
-			'description' => __('This will rotate the Cacti Log every night at midnight.'),
+			'friendly_name' => __('Rotate the Cacti Log'),
+			'description' => __('This option will rotate the Cacti Log periodically.'),
 			'method' => 'checkbox',
 			'default' => '',
 			),
+		'logrotate_frequency' => array(
+			'friendly_name' => __('Rotation Frequency'),
+			'description' => __('At what frequency would you like to rotate your logs?'),
+			'method' => 'drop_array',
+			'default' => '1',
+			'array' => $logrotate_frequency
+			),
 		'logrotate_retain' => array(
 			'friendly_name' => __('Log Retention'),
-			'description' => __('The number of days to retain old logs.  Use 0 to never remove any logs. (0-365)'),
+			'description' => __('How many log files do you wish to retain?  Use 0 to never remove any logs. (0-365)'),
 			'method' => 'textbox',
 			'default' => '7',
 			'max_length' => 3,
+			'size' => 4
 			),
 		'pollerpaths_header' => array(
 			'friendly_name' => __('Alternate Poller Path'),
