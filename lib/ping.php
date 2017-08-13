@@ -179,7 +179,7 @@ class Net_Ping
 			} else {
 				/* please know, that when running SELinux, httpd will throw
 				 * ping: cap_set_proc: Permission denied
-				 * as it now tries to open an ICMP socket and fails 
+				 * as it now tries to open an ICMP socket and fails
 				 * $result will be empty, then. */
 				$result = shell_exec('ping -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname'] . ' 2>&1');
 				if (substr_count($result, 'unknown host') && file_exists('/bin/ping6')) {
@@ -274,12 +274,12 @@ class Net_Ping
 			$oid = '.1.3.6.1.2.1.1.3.0';
 		}
 
-		$session = cacti_snmp_session($this->host['hostname'], $this->host['snmp_community'], 
-			$this->host['snmp_version'], $this->host['snmp_username'], 
-			$this->host['snmp_password'], $this->host['snmp_auth_protocol'], 
-			$this->host['snmp_priv_passphrase'], $this->host['snmp_priv_protocol'], 
-			$this->host['snmp_context'], $this->host['snmp_engine_id'], 
-			$this->host['snmp_port'], $this->host['snmp_timeout'], 
+		$session = cacti_snmp_session($this->host['hostname'], $this->host['snmp_community'],
+			$this->host['snmp_version'], $this->host['snmp_username'],
+			$this->host['snmp_password'], $this->host['snmp_auth_protocol'],
+			$this->host['snmp_priv_passphrase'], $this->host['snmp_priv_protocol'],
+			$this->host['snmp_context'], $this->host['snmp_engine_id'],
+			$this->host['snmp_port'], $this->host['snmp_timeout'],
 			$this->retries, read_config_option('max_get_size'));
 
 		if ($session === false) {
@@ -389,10 +389,11 @@ class Net_Ping
 				socket_write($this->socket, $this->request, $this->request_len);
 
 				/* get the socket response */
-				$w = $f = array();
 				$r = array($this->socket);
+				$w = array($this->socket);
+				$f = array($this->socket);
 				$num_changed_sockets = socket_select($r, $w, $f, $to_sec, $to_usec);
-				if ($num_changed_sockets === false) {	
+				if ($num_changed_sockets === false) {
 					$error = 'socket_select() failed, reason: ' . socket_strerror(socket_last_error());
 				} else {
 					switch($num_changed_sockets) {
@@ -493,10 +494,11 @@ class Net_Ping
 				@socket_connect($this->socket, $host_ip, $this->port);
 				socket_set_block($this->socket);
 
-				$w = $f = array();
 				$r = array($this->socket);
+				$w = array($this->socket);
+				$f = array($this->socket);
 				$num_changed_sockets = socket_select($r, $w, $f, $to_sec, $to_usec);
-				if ($num_changed_sockets === false) {	
+				if ($num_changed_sockets === false) {
 					$this->ping_response = __('TCP ping: socket_select() failed, reason: %s', socket_strerror(socket_last_error()));
 					$this->ping_status   = 'down';
 

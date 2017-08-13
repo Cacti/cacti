@@ -145,8 +145,6 @@ function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
 		ON DUPLICATE KEY UPDATE reindex_method=VALUES(reindex_method)',
 		array($device_id, $data_query_id, $reindex_method));
 
-	cacti_log("INSERT INTO host_snmp_query (host_id, snmp_query_id, reindex_method) VALUES ($device_id, $data_query_id, $reindex_method) ON DUPLICATE KEY UPDATE reindex_method=VALUES(reindex_method)");
-
 	db_execute_prepared('DELETE FROM poller_reindex
 		WHERE data_query_id = ?
 		AND host_id = ?', array($data_query_id, $device_id));

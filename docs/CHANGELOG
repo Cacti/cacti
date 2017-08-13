@@ -1,5 +1,24 @@
 Cacti CHANGELOG
 
+1.1.17
+-issue#450: List View to Preview shows no results
+-issue#486: Export Device table results to CSV
+-issue#544: Allow Log Rotation to be other than Daily
+-issue#673: Downtime/Recovery time/date is set incorrectly
+-issue#819: Customized timespans for graphs
+-issue#888: Rebuilding Poller Cache when External data sources are present results in false positive warnings in the log
+-issue#891: Database.php unable to connect to MySQL when using port different than 3306
+-issue#893: Warning messages when duplicating CDEF objects
+-issue#897: Due to browser use of special key, deprecate ctrl-shift-x for clearing filter
+-issue#898: Issue with tcp and udp ping due to file description allocation changes
+-issue: Unable use ipv6 ip addresses for snmp ping in the Cacti GUI
+-issue: Update language of the Rebuild Poller Cache menu pick
+-issue: Broken design for input controls with Sunrise theme
+-issue: Timespan switching not switching to Custom in Preview Mode
+-issue: Log rotation would not occur under certain conditions.  Provide more control over log functions
+-issue: Purge log file always purged the cacti.log, not the selected log
+-issue: Unable to view graphs for errored data sources from Cacti log
+
 1.1.16
 -issue#865: Escape Data Query arguments to prevent issues with special characters
 -issue#872: Can't add device items to graphs generated with no device and no template
@@ -15,6 +34,7 @@ Cacti CHANGELOG
 -issue: Fix Sunrise theme to properly theme multiselect widgets
 -issue: Increase height of multiselects so that more options are visible
 -issue: When a graph is locked, anchor tags are still functional
+-issue: Autocomplete does not populate none-value when the selected value is not set
 
 1.1.15
 -issue: PHP Fatal Exception on upgrade from 1.1.11 or earlier

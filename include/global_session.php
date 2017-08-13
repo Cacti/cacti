@@ -91,7 +91,6 @@ if (isset($_SESSION['refresh'])) {
 	var requestURI='<?php print $_SERVER['REQUEST_URI'];?>';
 	var searchFilter='<?php print __('Enter a search term');?>';
 	var searchRFilter='<?php print __('Enter a regular expression');?>';
-	var clearSearchFilter='<?php print __('Press Ctrl+Shift+X to Clear Filter');?>';
 	var noFileSelected='<?php print __('No file selected');?>';
 	var timeGraphView='<?php print __('Time Graph View');?>';
 	var filterSettingsSaved='<?php print __('Filter Settings Saved');?>';

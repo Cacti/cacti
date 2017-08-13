@@ -50,6 +50,10 @@ $device_actions = api_plugin_hook_function('device_action_array', $device_action
 set_default_action();
 
 switch (get_request_var('action')) {
+	case 'export':
+		host_export();
+
+		break;
 	case 'save':
 		form_save();
 
@@ -513,6 +517,32 @@ function form_actions() {
 	form_end();
 
 	bottom_footer();
+}
+
+/* -------------------
+	Device Export Function
+   ------------------- */
+
+function host_export() {
+	host_validate_vars();
+
+	$hosts = get_device_records($total_rows, 9999999);
+
+	$stdout = fopen('php://output', 'w');
+
+	header('Content-type: application/excel');
+	header('Content-Disposition: attachment; filename=cacti-devices-' . time() . '.csv');
+
+	if (sizeof($hosts)) {
+		$columns = array_keys($hosts[0]);
+		fputcsv($stdout, $columns);
+
+		foreach($hosts as $h) {
+			fputcsv($stdout, $h);
+		}
+	}
+
+	fclose($stdout);
 }
 
 /* -------------------
@@ -1195,15 +1225,7 @@ function device_javascript() {
 	<?php
 }
 
-function host() {
-	global $device_actions, $item_rows;
-
-	if ((!empty($_SESSION['sess_host_status'])) && (!isempty_request_var('host_status'))) {
-		if ($_SESSION['sess_host_status'] != get_nfilter_request_var('host_status')) {
-			set_request_var('page', '1');
-		}
-	}
-
+function host_validate_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
@@ -1257,6 +1279,89 @@ function host() {
 
 	validate_store_request_vars($filters, 'sess_host');
 	/* ================= input validation ================= */
+}
+
+function get_device_records(&$total_rows, $rows) {
+	/* form the 'where' clause for our main sql query */
+	if (get_request_var('filter') != '') {
+		$sql_where = "WHERE (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
+	} else {
+		$sql_where = '';
+	}
+
+	if (get_request_var('host_status') == '-1') {
+		/* Show all items */
+	} elseif (get_request_var('host_status') == '-2') {
+		$sql_where .= ($sql_where != '' ? " AND host.disabled='on'" : " WHERE host.disabled='on'");
+	} elseif (get_request_var('host_status') == '-3') {
+		$sql_where .= ($sql_where != '' ? " AND host.disabled=''" : " WHERE host.disabled=''");
+	} elseif (get_request_var('host_status') == '-4') {
+		$sql_where .= ($sql_where != '' ? " AND (host.status!='3' OR host.disabled='on')" : " WHERE (host.status!='3' OR host.disabled='on')");
+	}else {
+		$sql_where .= ($sql_where != '' ? ' AND (host.status=' . get_request_var('host_status') . " AND host.disabled = '')" : 'where (host.status=' . get_request_var('host_status') . " AND host.disabled = '')");
+	}
+
+	if (get_request_var('host_template_id') == '-1') {
+		/* Show all items */
+	} elseif (get_request_var('host_template_id') == '0') {
+		$sql_where .= ($sql_where != '' ? ' AND host.host_template_id=0' : ' WHERE host.host_template_id=0');
+	} elseif (!isempty_request_var('host_template_id')) {
+		$sql_where .= ($sql_where != '' ? ' AND host.host_template_id=' . get_request_var('host_template_id') : ' WHERE host.host_template_id=' . get_request_var('host_template_id'));
+	}
+
+	if (get_request_var('site_id') == '-1') {
+		/* Show all items */
+	} elseif (get_request_var('site_id') == '0') {
+		$sql_where .= ($sql_where != '' ? ' AND host.site_id=0' : ' WHERE host.site_id=0');
+	} elseif (!isempty_request_var('site_id')) {
+		$sql_where .= ($sql_where != '' ? ' AND host.site_id=' . get_request_var('site_id') : ' WHERE host.site_id=' . get_request_var('site_id'));
+	}
+
+	if (get_request_var('poller_id') == '-1') {
+		/* Show all items */
+	} else {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' host.poller_id=' . get_request_var('poller_id');
+	}
+
+	$sql_where = api_plugin_hook_function('device_sql_where', $sql_where);
+
+	$total_rows = db_fetch_cell("SELECT
+		COUNT(host.id)
+		FROM host
+		$sql_where");
+
+	$poller_interval = read_config_option('poller_interval');
+
+	$sql_order = get_order_string();
+	$sql_limit = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
+	$sql_query = "SELECT host.*, graphs, data_sources,
+		IF(status_event_count>0, status_event_count*$poller_interval,
+			IF(UNIX_TIMESTAMP(status_rec_date)>943916400,UNIX_TIMESTAMP()-UNIX_TIMESTAMP(status_rec_date),
+			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance,UNIX_TIMESTAMP()))) AS instate
+		FROM host
+		LEFT JOIN (SELECT host_id, COUNT(*) AS graphs FROM graph_local GROUP BY host_id) AS gl
+		ON host.id=gl.host_id
+		LEFT JOIN (SELECT host_id, COUNT(*) AS data_sources FROM data_local GROUP BY host_id) AS dl
+		ON host.id=dl.host_id
+		$sql_where
+		GROUP BY host.id
+		$sql_order
+		$sql_limit";
+
+	return db_fetch_assoc($sql_query);
+}
+
+function host() {
+	global $device_actions, $item_rows;
+
+	if ((!empty($_SESSION['sess_host_status'])) && (!isempty_request_var('host_status'))) {
+		if ($_SESSION['sess_host_status'] != get_nfilter_request_var('host_status')) {
+			set_request_var('page', '1');
+		}
+	}
+
+	host_validate_vars();
 
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
@@ -1284,6 +1389,11 @@ function host() {
 		loadPageNoHeader(strURL);
 	}
 
+	function exportRecords() {
+		strURL = 'host.php?action=export';
+		document.location = strURL;
+	}
+
 	$(function() {
 		$('#rows, #site_id, #poller_id, #host_template_id, #host_status').change(function() {
 			applyFilter();
@@ -1295,6 +1405,10 @@ function host() {
 
 		$('#clear').click(function() {
 			clearFilter();
+		});
+
+		$('#export').click(function() {
+			exportRecords();
 		});
 
 		$('#form_devices').submit(function(event) {
@@ -1371,6 +1485,7 @@ function host() {
 						<span>
 							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' id='export' value='<?php print __('Export');?>' title='<?php print __esc('Export Devices');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1422,97 +1537,90 @@ function host() {
 
 	html_end_box();
 
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
-	} else {
-		$sql_where = '';
-	}
+	$display_text = array(
+		'description' => array(
+			'display' => __('Device Description'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The name by which this Device will be referred to.')
+		),
+		'hostname' => array(
+			'display' => __('Hostname'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file.')
+		),
+		'id' => array(
+			'display' => __('ID'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The internal database ID for this Device.  Useful when performing automation or debugging.')
+		),
+		'graphs' => array(
+			'display' => __('Graphs'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The total number of Graphs generated from this Device.')
+		),
+		'data_sources' => array(
+			'display' => __('Data Sources'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The total number of Data Sources generated from this Device.')
+		),
+		'status' => array(
+			'display' => __('Status'),
+			'align' => 'center',
+			'sort' => 'ASC',
+			'tip' => __('The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.')
+		),
+		'instate' => array(
+			'display' => __('In State'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The amount of time that this Device has been in its current state.')
+		),
+		'snmp_sysUpTimeInstance' => array(
+			'display' => __('Uptime'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The current amount of time that the host has been up.')
+		),
+		'polling_time' => array(
+			'display' => __('Poll Time'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The amount of time it takes to collect data from this Device.')
+		),
+		'cur_time' => array(
+			'display' => __('Current (ms)'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The current ping time in milliseconds to reach the Device.')
+		),
+		'avg_time' => array(
+			'display' => __('Average (ms)'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The average ping time in milliseconds to reach the Device since the counters were cleared for this Device.')
+		),
+		'availability' => array(
+			'display' => __('Availability'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The availability percentage based upon ping results since the counters were cleared for this Device.')
+		)
+	);
 
-	if (get_request_var('host_status') == '-1') {
-		/* Show all items */
-	} elseif (get_request_var('host_status') == '-2') {
-		$sql_where .= ($sql_where != '' ? " AND host.disabled='on'" : " WHERE host.disabled='on'");
-	} elseif (get_request_var('host_status') == '-3') {
-		$sql_where .= ($sql_where != '' ? " AND host.disabled=''" : " WHERE host.disabled=''");
-	} elseif (get_request_var('host_status') == '-4') {
-		$sql_where .= ($sql_where != '' ? " AND (host.status!='3' OR host.disabled='on')" : " WHERE (host.status!='3' OR host.disabled='on')");
-	}else {
-		$sql_where .= ($sql_where != '' ? ' AND (host.status=' . get_request_var('host_status') . " AND host.disabled = '')" : 'where (host.status=' . get_request_var('host_status') . " AND host.disabled = '')");
-	}
+	$hosts = get_device_records($total_rows, $rows);
 
-	if (get_request_var('host_template_id') == '-1') {
-		/* Show all items */
-	} elseif (get_request_var('host_template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND host.host_template_id=0' : ' WHERE host.host_template_id=0');
-	} elseif (!isempty_request_var('host_template_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND host.host_template_id=' . get_request_var('host_template_id') : ' WHERE host.host_template_id=' . get_request_var('host_template_id'));
-	}
-
-	if (get_request_var('site_id') == '-1') {
-		/* Show all items */
-	} elseif (get_request_var('site_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND host.site_id=0' : ' WHERE host.site_id=0');
-	} elseif (!isempty_request_var('site_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND host.site_id=' . get_request_var('site_id') : ' WHERE host.site_id=' . get_request_var('site_id'));
-	}
-
-	if (get_request_var('poller_id') == '-1') {
-		/* Show all items */
-	} else {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' host.poller_id=' . get_request_var('poller_id');
-	}
-
-	$sql_where = api_plugin_hook_function('device_sql_where', $sql_where);
-
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(host.id)
-		FROM host
-		$sql_where");
-
-	$poller_interval = read_config_option('poller_interval');
-
-	$sql_order = get_order_string();
-	$sql_limit = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
-
-	$sql_query = "SELECT host.*, graphs, data_sources,
-		IF(status_event_count>0, status_event_count*$poller_interval,
-			IF(UNIX_TIMESTAMP(status_rec_date)>943916400,UNIX_TIMESTAMP()-UNIX_TIMESTAMP(status_rec_date),
-			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance,UNIX_TIMESTAMP()))) AS instate
-		FROM host
-		LEFT JOIN (SELECT host_id, COUNT(*) AS graphs FROM graph_local GROUP BY host_id) AS gl
-		ON host.id=gl.host_id
-		LEFT JOIN (SELECT host_id, COUNT(*) AS data_sources FROM data_local GROUP BY host_id) AS dl
-		ON host.id=dl.host_id
-		$sql_where
-		GROUP BY host.id
-		$sql_order
-		$sql_limit";
-
-	$hosts = db_fetch_assoc($sql_query);
-
-	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 13, __('Devices'), 'page', 'main');
+	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Devices'), 'page', 'main');
 
 	form_start('host.php', 'chk');
 
 	print $nav;
 
 	html_start_box('', '100%', '', '3', 'center', '');
-
-	$display_text = array(
-		'description'            => array('display' => __('Device Description'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name by which this Device will be referred to.')),
-		'hostname'               => array('display' => __('Hostname'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file.')),
-		'id'                     => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Device.  Useful when performing automation or debugging.')),
-		'graphs'                 => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of Graphs generated from this Device.')),
-		'data_sources'           => array('display' => __('Data Sources'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of Data Sources generated from this Device.')),
-		'status'                 => array('display' => __('Status'), 'align' => 'center', 'sort' => 'ASC', 'tip' => __('The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.')),
-		'instate'                => array('display' => __('In State'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The amount of time that this Device has been in its current state.')),
-		'snmp_sysUpTimeInstance' => array('display' => __('Uptime'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The current amount of time that the host has been up.')),
-		'polling_time'           => array('display' => __('Poll Time'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The amount of time it takes to collect data from this Device.')),
-		'cur_time'               => array('display' => __('Current (ms)'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The current ping time in milliseconds to reach the Device.')),
-		'avg_time'               => array('display' => __('Average (ms)'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The average ping time in milliseconds to reach the Device since the counters were cleared for this Device.')),
-		'availability'           => array('display' => __('Availability'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The availability percentage based upon ping results since the counters were cleared for this Device.'))
-	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

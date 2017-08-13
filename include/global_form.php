@@ -123,8 +123,15 @@ $fields_profile_rra_edit = array(
 		'default' => '600'
 		),
 	'timespan' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('Default Timespan'),
+		'description' => __('When viewing a Graph based upon the RRA in question, the default Timespan to show for that Graph.'),
+		'value' => '|arg1:timespan|',
+		'array' => $timespans
+		),
+	'retention' => array(
 		'method' => 'other',
-		'friendly_name' => __('Effective Retention'),
+		'friendly_name' => __('Data Retention'),
 		'description' => __('Based upon the Aggregation Level, the Rows, and the Polling Interval the amount of data that will be retained in the RRA'),
 		'value' => ''
 		),

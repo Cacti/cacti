@@ -79,8 +79,8 @@ function record_cmdphp_done($pid = '') {
 function record_cmdphp_started() {
 	global $poller_id;
 
-	db_execute_prepared("INSERT INTO poller_time 
-		(poller_id, pid, start_time, end_time) 
+	db_execute_prepared("INSERT INTO poller_time
+		(poller_id, pid, start_time, end_time)
 		VALUES (?, ?, NOW(), '0000-00-00 00:00:00')", array($poller_id, getmypid()));
 }
 
@@ -264,29 +264,29 @@ $polling_interval = read_config_option('poller_interval');
 /* check arguments */
 if ($allhost) {
 	if (isset($polling_interval)) {
-		$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
-			FROM poller_item 
-			WHERE poller_id = ? 
-			AND rrd_next_step<=0 
-			ORDER BY host_id', 
+		$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
+			FROM poller_item
+			WHERE poller_id = ?
+			AND rrd_next_step<=0
+			ORDER BY host_id',
 			array($poller_id));
 
-		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*) 
-			FROM poller_item 
-			WHERE poller_id = ? 
+		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
+			FROM poller_item
+			WHERE poller_id = ?
 			AND action IN (?, ?)
-			AND rrd_next_step<=0', 
+			AND rrd_next_step<=0',
 			array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT));
 	} else {
-		$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
-			FROM poller_item 
+		$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
+			FROM poller_item
 			WHERE poller_id = ?
-			ORDER by host_id', 
+			ORDER by host_id',
 			array($poller_id));
 
-		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*) 
-			FROM poller_item 
-			WHERE poller_id = ? 
+		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
+			FROM poller_item
+			WHERE poller_id = ?
 			AND action IN (?, ?)',
 			array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT));
 	}
@@ -294,11 +294,11 @@ if ($allhost) {
 	$print_data_to_stdout = true;
 
 	/* get the number of polling items from the database */
-	$hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
-		FROM host 
-		WHERE poller_id = ? 
-		AND disabled="" 
-		ORDER BY id', 
+	$hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
+		FROM host
+		WHERE poller_id = ?
+		AND disabled=""
+		ORDER BY id',
 		array($poller_id));
 
 	/* rework the hosts array to be searchable */
@@ -308,15 +308,15 @@ if ($allhost) {
 
 	/* setup next polling interval */
 	if (isset($polling_interval)) {
-		db_execute_prepared('UPDATE poller_item 
-			SET rrd_next_step = rrd_next_step - ? 
-			WHERE poller_id = ?', 
+		db_execute_prepared('UPDATE poller_item
+			SET rrd_next_step = rrd_next_step - ?
+			WHERE poller_id = ?',
 			array($polling_interval, $poller_id));
 
-		db_execute_prepared('UPDATE poller_item 
-			SET rrd_next_step = rrd_step - ? 
-			WHERE poller_id = ? 
-			AND rrd_next_step < 0', 
+		db_execute_prepared('UPDATE poller_item
+			SET rrd_next_step = rrd_step - ?
+			WHERE poller_id = ?
+			AND rrd_next_step < 0',
 			array($polling_interval, $poller_id));
 	}
 } else {
@@ -328,11 +328,11 @@ if ($allhost) {
 
 		$hosts = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
 			FROM host
-			WHERE poller_id = ? 
-			AND disabled = '' 
-			AND id >= ? 
+			WHERE poller_id = ?
+			AND disabled = ''
+			AND id >= ?
 			AND id <= ?
-			ORDER by id", 
+			ORDER by id",
 			array($poller_id, $first, $last));
 
 		$hosts      = array_rekey($hosts, 'id', $host_struc);
@@ -341,51 +341,51 @@ if ($allhost) {
 		if (isset($polling_interval)) {
 			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 				FROM poller_item
-				WHERE poller_id = ? 
-				AND host_id >= ? 
-				AND host_id <= ? 
+				WHERE poller_id = ?
+				AND host_id >= ?
+				AND host_id <= ?
 				AND rrd_next_step <= 0
-				ORDER by host_id', 
+				ORDER by host_id',
 				array($poller_id, $first, $last));
 
 			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
 				FROM poller_item
-				WHERE poller_id = ? 
-				AND action IN(?, ?) 
-				AND host_id >= ? 
-				AND host_id <= ? 
-				AND rrd_next_step <= 0', 
+				WHERE poller_id = ?
+				AND action IN(?, ?)
+				AND host_id >= ?
+				AND host_id <= ?
+				AND rrd_next_step <= 0',
 				array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT, $first, $last));
 
 			/* setup next polling interval */
 			db_execute_prepared('UPDATE poller_item
 				SET rrd_next_step = rrd_next_step - ?
-				WHERE poller_id = ? 
-				AND host_id >= ? 
-				AND host_id <= ?', 
+				WHERE poller_id = ?
+				AND host_id >= ?
+				AND host_id <= ?',
 				array($polling_interval, $poller_id, $first, $last));
 
 			db_execute_prepared('UPDATE poller_item
 				SET rrd_next_step = rrd_step - ?
-				WHERE poller_id = ? 
-				AND rrd_next_step < 0 
-				AND host_id >= ? 
-				AND host_id <= ?', 
+				WHERE poller_id = ?
+				AND rrd_next_step < 0
+				AND host_id >= ?
+				AND host_id <= ?',
 				array($polling_interval, $poller_id, $first, $last));
 		} else {
-			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' * 
+			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 				FROM poller_item
-				WHERE poller_id = ? 
-				AND host_id >= ? and host_id <= ? 
-				ORDER by host_id', 
+				WHERE poller_id = ?
+				AND host_id >= ? and host_id <= ?
+				ORDER by host_id',
 				array($poller_id, $first, $last));
 
-			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*) 
-				FROM poller_item 
-				WHERE poller_id = ? 
-				AND action IN (?, ?) 
-				AND host_id >= ? 
-				AND host_id <= ?', 
+			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
+				FROM poller_item
+				WHERE poller_id = ?
+				AND action IN (?, ?)
+				AND host_id >= ?
+				AND host_id <= ?',
 				array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT, $first, $last));
 		}
 	} else {
@@ -409,6 +409,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 	$current_host = '';
 	$output_array = array();
 	$output_count = 0;
+	$error_ds     = array();
 
 	/* create new ping socket for host pinging */
 	$ping = new Net_Ping;
@@ -447,6 +448,14 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			$set_spike_kill = false;
 
 			$host_update_time = date('Y-m-d H:i:s'); // for poller update time
+
+			if ($last_host != '') {
+				if (sizeof($error_ds)) {
+					cacti_log('WARNING: Invalid Response(s), Errors[' . sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
+				}
+
+				$error_ds = array();
+			}
 		}
 
 		$host_id = $item['host_id'];
@@ -478,7 +487,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 				$reindex = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' pr.data_query_id, pr.action,
 					pr.op, pr.assert_value, pr.arg1
 					FROM poller_reindex AS pr
-					WHERE pr.host_id=?', 
+					WHERE pr.host_id=?',
 					array($item['host_id']));
 
 				if (sizeof($reindex) && !$host_down) {
@@ -572,34 +581,34 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 						/* assert the result with the expected value in the db; recache if the assert fails */
 						/* TODO: remove magic ":" from poller_command["command"]; this may interfere with scripts */
 						if (($index_item['op'] == '=') && ($index_item['assert_value'] != trim($output))) {
-							cacti_log("ASSERT: '" . $index_item['assert_value'] . '=' . trim($output) . 
-								"' failed. Recaching host '" . $item['hostname'] . 
+							cacti_log("ASSERT: '" . $index_item['assert_value'] . '=' . trim($output) .
+								"' failed. Recaching host '" . $item['hostname'] .
 								"', data query #" . $index_item['data_query_id'], $print_data_to_stdout, 'POLLER');
 
-							db_execute_prepared('REPLACE INTO poller_command 
-								(poller_id, time, action, command) 
+							db_execute_prepared('REPLACE INTO poller_command
+								(poller_id, time, action, command)
 								VALUES (?, NOW(), ?, ?)',
 								array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']));
 
 							$assert_fail = true;
 						}else if (($index_item['op'] == '>') && ($index_item['assert_value'] < trim($output))) {
-							cacti_log("ASSERT: '" . $index_item['assert_value'] . '>' . trim($output) . 
-								"' failed. Recaching host '" . $item['hostname'] . 
+							cacti_log("ASSERT: '" . $index_item['assert_value'] . '>' . trim($output) .
+								"' failed. Recaching host '" . $item['hostname'] .
 								"', data query #" . $index_item['data_query_id'], $print_data_to_stdout, 'POLLER');
 
-							db_execute_prepared('REPLACE INTO poller_command 
-								(poller_id, time, action, command) 
+							db_execute_prepared('REPLACE INTO poller_command
+								(poller_id, time, action, command)
 								VALUES (?, NOW(), ?, ?)',
 								array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']));
 
 							$assert_fail = true;
 						}else if (($index_item['op'] == '<') && ($index_item['assert_value'] > trim($output))) {
-							cacti_log("ASSERT: '" . $index_item['assert_value'] . '<' . trim($output) . 
-								"' failed. Recaching host '" . $item['hostname'] . 
+							cacti_log("ASSERT: '" . $index_item['assert_value'] . '<' . trim($output) .
+								"' failed. Recaching host '" . $item['hostname'] .
 								"', data query #" . $index_item['data_query_id'], $print_data_to_stdout, 'POLLER');
 
-							db_execute_prepared('REPLACE INTO poller_command 
-								(poller_id, time, action, command) 
+							db_execute_prepared('REPLACE INTO poller_command
+								(poller_id, time, action, command)
 								VALUES (?, NOW(), ?, ?)',
 								array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']));
 
@@ -611,11 +620,11 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 						 * 2) the OP code is > or < meaning the current value could have changed without causing
 						 *     the assert to fail */
 						if (($assert_fail == true) || ($index_item['op'] == '>') || ($index_item['op'] == '<')) {
-							db_execute_prepared('UPDATE poller_reindex 
-								SET assert_value = ? 
-								WHERE host_id = ? 
-								AND data_query_id = ? 
-								AND arg1 = ?', 
+							db_execute_prepared('UPDATE poller_reindex
+								SET assert_value = ?
+								WHERE host_id = ?
+								AND data_query_id = ?
+								AND arg1 = ?',
 								array($output, $host_id, $index_item['data_query_id'], $index_item['arg1']));
 
 							/* spike kill logic */
@@ -660,7 +669,9 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 								$strout = strlen($output);
 							}
 
-							cacti_log("Device[$host_id] DS[$data_source] WARNING: Result from SNMP not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER');
+							$error_ds[$data_source] = $data_source;
+
+							cacti_log("Device[$host_id] DS[$data_source] WARNING: Result from SNMP not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 							$output = 'U';
 						}
 					}
@@ -680,7 +691,9 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 							$strout = strlen($output);
 						}
 
-						cacti_log("Device[$host_id] DS[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER');
+						$error_ds[$data_source] = $data_source;
+
+						cacti_log("Device[$host_id] DS[$data_source] WARNING: Result from CMD not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 					}
 				}
 
@@ -698,7 +711,9 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 							$strout = strlen($output);
 						}
 
-						cacti_log("Device[$host_id] DS[$data_source] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER');
+						$error_ds[$data_source] = $data_source;
+
+						cacti_log("Device[$host_id] DS[$data_source] WARNING: Result from SERVER not valid.  Partial Result: " . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 					}
 				}
 
@@ -706,6 +721,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 
 				break;
 			default: /* invalid polling option */
+				$error_ds[$data_source] = $data_source;
+
 				cacti_log("Device[$host_id] DS[$data_source] ERROR: Invalid polling option: " . $item['action'], $stdout, 'POLLER');
 			} /* End Switch */
 
@@ -744,6 +761,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			break;
 		}
 	} /* End foreach */
+
+	if (sizeof($error_ds)) {
+		cacti_log('WARNING: Invalid Response(s), Errors[' . sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
+	}
 
 	if ($output_count > 0) {
 		db_execute('INSERT IGNORE INTO poller_output

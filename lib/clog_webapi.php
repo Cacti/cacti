@@ -23,33 +23,48 @@
 */
 
 function clog_get_graphs_from_datasource($local_data_id) {
-	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT graph_templates_graph.local_graph_id AS id,
-		graph_templates_graph.title_cache AS name
-		FROM (graph_templates_graph
-		INNER JOIN graph_templates_item
-		ON graph_templates_graph.local_graph_id=graph_templates_item.local_graph_id)
-		INNER JOIN data_template_rrd
-		ON graph_templates_item.task_item_id=data_template_rrd.id
-		WHERE graph_templates_graph.local_graph_id>0
-		AND data_template_rrd.local_data_id = ?', array($local_data_id)), 'id', 'name');
+	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
+		gtg.local_graph_id AS id,
+		gtg.title_cache AS name
+		FROM graph_templates_graph AS gtg
+		INNER JOIN graph_templates_item AS gti
+		ON gtg.local_graph_id=gti.local_graph_id
+		INNER JOIN data_template_rrd AS dtr
+		ON gti.task_item_id=dtr.id
+		WHERE gtg.local_graph_id>0
+		AND dtr.local_data_id = ?',
+		array($local_data_id)), 'id', 'name');
 }
 
 function clog_purge_logfile() {
 	global $config;
 
-	$logfile = read_config_option('path_cactilog');
+	$logfile   = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
-	if (file_exists($logfile)) {
-		if (is_writable($logfile)) {
-			$timestamp = date('Y-m-d H:i:s');
-			$log_fh = fopen($logfile, 'w');
-			fwrite($log_fh, "$timestamp - WEBUI: Cacti Log Cleared from Web Management Interface\n");
-			fclose($log_fh);
-			raise_message('clog_purged');
+	$purgefile = dirname($logfile) . '/' . get_nfilter_request_var('filename');
+	if (strstr($purgefile, $logfile) === false) {
+		raise_message('clog_invalid');
+		exit(0);
+	}
+
+	if (file_exists($purgefile)) {
+		if (is_writable($purgefile)) {
+			if ($logfile != $purgefile) {
+				unlink($purgefile);
+				raise_message('clog_remove');
+			} else {
+				$timestamp = date('Y-m-d H:i:s');
+				$log_fh = fopen($logfile, 'w');
+				fwrite($log_fh, "$timestamp - WEBUI: Cacti Log Cleared from Web Management Interface\n");
+				fclose($log_fh);
+				raise_message('clog_purged');
+			}
+
+			cacti_log('NOTE: Cacti Log file ' . $purgefile . ', Removed by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 		} else {
 			raise_message('clog_permissions');
 		}
@@ -110,6 +125,11 @@ function clog_view_logfile() {
 	set_request_var('page_referrer', 'view_logfile');
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
+	if ($clogAdmin && isset_request_var('purge_continue')) {
+		clog_purge_logfile();
+		$logfile   = read_config_option('path_cactilog');
+	}
+
 	$page_nr = get_request_var('page');
 
 	$page = $config['url_path'] . 'clog' . (!$clogAdmin ? '_user' : '') . '.php?header=false';
@@ -122,10 +142,6 @@ function clog_view_logfile() {
 	);
 
 	set_page_refresh($refresh);
-
-	if ($clogAdmin && isset_request_var('purge_continue')) {
-		clog_purge_logfile();
-	}
 
 	general_header();
 
@@ -145,7 +161,7 @@ function clog_view_logfile() {
 				<input id='pc' type='button' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge Log') . "'>
 				<script type='text/javascript'>
 				$('#pc').click(function() {
-					strURL = location.pathname+'?purge_continue=1&header=false';
+					strURL = location.pathname+'?purge_continue=1&header=false&filename=" . basename($logfile) . "';
 					loadPageNoHeader(strURL);
 				});
 
@@ -162,8 +178,6 @@ function clog_view_logfile() {
 		</tr>\n";
 
 		html_end_box();
-
-		form_end();
 
 		return;
 	}
@@ -228,46 +242,53 @@ function clog_view_logfile() {
 			$new_item = cacti_htmlspecialchars($item);
 		} else {
 			$new_item = '';
-			while ($host_start) {
+			if ($host_start) {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start + 7, $host_end - ($host_start + 7));
-				$new_item   .= cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>$host_id</a>";
-				$new_item   .= '] Description[' . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id] : '');
-				$item        = substr($item, $host_end);
-				$host_start  = strpos($item, 'Device[');
+				$new_item   .= substr($item, 0, $host_start) . " Device[<a href='" . cacti_htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>" . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:'') . '</a>]';
+				$item        = substr($item, $host_end + 1);
 			}
 
-			$ds_start = strpos($item, 'DS[');
-			while ($ds_start) {
+			$ds_start   = strpos($item, 'DS[');
+			if ($ds_start) {
 				$ds_end    = strpos($item, ']', $ds_start);
 				$ds_id     = substr($item, $ds_start + 3, $ds_end - ($ds_start + 3));
-				$graph_ids = clog_get_graphs_from_datasource($ds_id);
-				$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
+				$ds_ids    = explode(', ', $ds_id);
+				if (sizeof($ds_ids)) {
+					$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
-				if (sizeof($graph_ids)) {
-					$new_item  .= substr($item, 0, $ds_start + 3) .
-						"<a href='" . cacti_htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . cacti_htmlspecialchars(substr($item, $ds_start + 3, $ds_end-($ds_start + 3))) . '</a>' .
-						"] Graphs[<a href='";
-
-					$i = 0;
+					$new_item  .= " Graphs[<a href='";
 					$titles = '';
-					foreach($graph_ids as $key => $title) {
-						$graph_add .= ($i > 0 ? '%2C' : '') . $key;
-						$i++;
-						if ($titles != '') {
-							$titles .= ",'" . cacti_htmlspecialchars($title) . "'";
-						} else {
-							$titles .= "'"  . cacti_htmlspecialchars($title) . "'";
+					$i = 0;
+					foreach($ds_ids as $ds_id) {
+						$graph_ids = clog_get_graphs_from_datasource($ds_id);
+
+						if (sizeof($graph_ids)) {
+							foreach($graph_ids as $key => $title) {
+								$graph_add .= ($i > 0 ? '%2C' : '') . $key;
+								if ($titles != '') {
+									$titles .= ", '" . cacti_htmlspecialchars($title) . "'";
+								} else {
+									$titles .= "'"  . cacti_htmlspecialchars($title) . "'";
+								}
+								$i++;
+							}
 						}
 					}
-					$new_item .= cacti_htmlspecialchars($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $titles . '</a>';
+
+					$new_item .= cacti_htmlspecialchars($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $titles . '</a>]';
+
+					$new_item .= ' DS[';
+					$i = 0;
+					foreach($ds_ids as $ds_id) {
+						$new_item .= ($i == 0 ? '':', ') . "<a href='" . cacti_htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_id . '</a>';
+						$i++;
+					}
+					$new_item .= ']';
 				}
-
-				$item     = substr($item, $ds_end);
-				$ds_start = strpos($item, 'DS[');
+			}else{
+				$new_item .= cacti_htmlspecialchars($item);
 			}
-
-			$new_item .= cacti_htmlspecialchars($item);
 		}
 
 		/* respect the exclusion filter */
@@ -480,7 +501,7 @@ function filter($clogAdmin) {
 		});
 
 		$('#purge').click(function() {
-			strURL = basename(location.pathname) + '?purge=1&header=false';
+			strURL = basename(location.pathname) + '?purge=1&header=false&filename=' + $('#filename').val();
 			loadPageNoHeader(strURL);
 		});
 

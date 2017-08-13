@@ -110,7 +110,12 @@ case 'view':
 	if (sizeof($rras)) {
 		$graph_end   = time();
 		foreach ($rras as $rra) {
-			$graph_start = $graph_end - ($rra['step'] * $rra['rows'] * $rra['steps']);
+			if (!empty($rra['timespan'])) {
+				$graph_start = $graph_end - $rra['timespan'];
+			} else {
+				$graph_start = $graph_end - ($rra['step'] * $rra['rows'] * $rra['steps']);
+			}
+
 			$aggregate_url = aggregate_build_children_url(get_request_var('local_graph_id'), $graph_start, $graph_end, $rra['id']);
 			?>
 			<tr>

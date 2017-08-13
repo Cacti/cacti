@@ -871,8 +871,12 @@ function utilities_view_logfile() {
 		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
 		if (file_exists($requestedFile)) {
 			$logfile = $requestedFile;
+		} else {
+			$logfile = read_config_option('path_cactilog');
 		}
-	} elseif ($logfile == '') {
+	}
+
+	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
@@ -990,7 +994,7 @@ function utilities_view_logfile() {
 					<td>
 						<select id='filename' name='filename'>
 							<?php
-							$selectedFile = basename(get_request_var('filename'));
+							$selectedFile = basename(get_nfilter_request_var('filename'));
 							$logPath      = dirname(read_config_option('path_cactilog'));
 
 							if (is_readable($logPath)) {
@@ -1821,7 +1825,7 @@ function utilities() {
 		),
 		__('Rebuild Poller Cache') => array(
 			'link'  => 'utilities.php?action=clear_poller_cache',
-			'description' => __('The poller cache will be cleared and re-generated if you select this option. Sometimes host/data source data can get out of sync with the cache in which case it makes sense to clear the cache and start over.')
+			'description' => __('The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  <i class="deviceDown">NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.</i>')
 		),
 	);
 
@@ -1865,8 +1869,8 @@ function utilities() {
 	foreach($utilities as $header => $content) {
 		html_section_header($header, 2);
 		foreach($content as $title => $details) {
-			form_alternate_row(true);
-			print "<td class='nowrap'>";
+			form_alternate_row();
+			print "<td class='nowrap' style='vertical-align:top;'>";
 			print "<a class='hyperLink' href='" . htmlspecialchars($details['link']) . "'>" . $title . "</a>";
 			print "</td>\n";
 			print "<td>";

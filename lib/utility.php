@@ -140,7 +140,8 @@ function update_poller_cache($data_source, $commit = false) {
 		FROM data_template_data AS dtd
 		INNER JOIN data_input AS di
 		ON dtd.data_input_id=di.id
-		WHERE dtd.local_data_id = ?', array($data_source['id']));
+		WHERE dtd.local_data_id = ?',
+		array($data_source['id']));
 
 	if (sizeof($data_input)) {
 		/* we have to perform some additional sql queries if this is a 'query' */
@@ -409,7 +410,14 @@ function update_poller_cache($data_source, $commit = false) {
 			}
 		}
 	} else {
-		cacti_log('WARNING: Repopulate Poller Cache found Data Input Missing for Data Source ' . $data_source['id'] . '.  Database may be corrupted');
+		$data_template_data = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
+			FROM data_template_data
+			WHERE local_data_id = ?',
+			array($data_source['id']));
+
+		if (sizeof($data_template_data) && $data_template_data['data_input_id'] > 0) {
+			cacti_log('WARNING: Repopulate Poller Cache found Data Input Missing for Data Source ' . $data_source['id'] . '.  Database may be corrupted');
+		}
 	}
 
 	if ($commit && sizeof($poller_items)) {

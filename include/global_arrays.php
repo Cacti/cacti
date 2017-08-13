@@ -90,6 +90,7 @@ $cacti_version_codes = array(
 	'1.1.14' => '0101',
 	'1.1.15' => '0101',
 	'1.1.16' => '0101',
+	'1.1.17' => '0101',
 );
 
 $messages = array(
@@ -543,6 +544,27 @@ $heartbeats = array(
 	28800 => __('%d Hours', 8),
 	57600 => __('%d Hours', 16),
 	86400 => __('1 Day')
+);
+
+$timespans = array(
+	3600     => __('%d Hour', 1),
+	7200     => __('%d Hours', 2),
+	14400    => __('%d Hours', 4),
+	21600    => __('%d Hours', 6),
+	43200    => __('%d Hours', 12),
+	86400    => __('%d Day', 1),
+	172800   => __('%d Days', 2),
+	345600   => __('%d Days', 4),
+	604800   => __('%d Week', 1),
+	1209600  => __('%d Weeks', 2),
+	1814400  => __('%d Weeks', 3),
+	2618784  => __('%d Month', 1),
+	5237568  => __('%d Months', 2),
+	7856352  => __('%d Months', 3),
+	10475136 => __('%d Months', 4),
+	15712704 => __('%d Months', 6),
+	31536000 => __('%d Year', 1),
+	63072000 => __('%d Years', 2)
 );
 
 $poller_intervals = array(
@@ -1464,6 +1486,12 @@ $automation_frequencies = array(
 	'10080'    => __('Every Week'),
 	'20160'    => __('Every %d Weeks', 2),
 	'40320'    => __('Every %d Weeks', 4)
+);
+
+$logrotate_frequency = array(
+	'1'  => __('Daily'),
+	'7'  => __('Weekly'),
+	'30' => __('Monthly')
 );
 
 $no_session_write = array(

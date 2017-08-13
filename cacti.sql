@@ -1289,6 +1289,7 @@ CREATE TABLE `data_source_profiles_rra` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `steps` int(10) unsigned DEFAULT '1',
   `rows` int(10) unsigned NOT NULL DEFAULT '700',
+  `timespan` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `data_source_profile_id` (`data_source_profile_id`)
 ) ENGINE=InnoDB COMMENT='Stores RRA Definitions for Data Source Profiles';
@@ -1297,15 +1298,14 @@ CREATE TABLE `data_source_profiles_rra` (
 -- Dumping data for table `data_source_profiles_rra`
 --
 
-INSERT INTO `data_source_profiles_rra` VALUES (1,1,'Daily (5 Minute Average)',1,600);
-INSERT INTO `data_source_profiles_rra` VALUES (2,1,'Weekly (30 Minute Average)',6,700);
-INSERT INTO `data_source_profiles_rra` VALUES (3,1,'Monthly (2 Hour Average)',24,775);
-INSERT INTO `data_source_profiles_rra` VALUES (4,1,'Yearly (1 Day Average)',288,797);
-INSERT INTO `data_source_profiles_rra` VALUES (5,2,'30 Second Samples',1,1500);
-INSERT INTO `data_source_profiles_rra` VALUES (6,2,'15 Minute Average',30,1346);
-INSERT INTO `data_source_profiles_rra` VALUES (7,2,'1 Hour Average',120,1445);
-INSERT INTO `data_source_profiles_rra` VALUES (8,2,'4 Hour Average',480,4380);
-
+INSERT INTO `data_source_profiles_rra` VALUES (1,1,'Daily (5 Minute Average)',1,600,86400);
+INSERT INTO `data_source_profiles_rra` VALUES (2,1,'Weekly (30 Minute Average)',6,700,604800);
+INSERT INTO `data_source_profiles_rra` VALUES (3,1,'Monthly (2 Hour Average)',24,775,2618784);
+INSERT INTO `data_source_profiles_rra` VALUES (4,1,'Yearly (1 Day Average)',288,797,31536000);
+INSERT INTO `data_source_profiles_rra` VALUES (5,2,'30 Second Samples',1,1500,86400);
+INSERT INTO `data_source_profiles_rra` VALUES (6,2,'15 Minute Average',30,1346,604800);
+INSERT INTO `data_source_profiles_rra` VALUES (7,2,'1 Hour Average',120,1445,2618784);
+INSERT INTO `data_source_profiles_rra` VALUES (8,2,'4 Hour Average',480,4380,31536000);
 
 --
 -- Table structure for table `data_source_purge_action`

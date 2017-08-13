@@ -619,7 +619,8 @@ $selectedTheme = get_selected_theme();
 					<?php } if (read_config_option('auth_cache_enabled') == 'on') { ?>
 						<tr>
 							<td colspan='2'>
-								<label for='remember_me'><input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) ? 'checked':'');?>><?php print __('Keep me signed in');?></label>
+								<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) ? 'checked':'');?>>
+								<label for='remember_me'><?php print __('Keep me signed in');?></label>
 							</td>
 						</tr>
 					<?php } ?>

@@ -110,7 +110,8 @@ input, select {
 	background: transparent;
 }
 
-input[type="checkbox"].formCheckbox, .filterTable input[type="checkbox"] {
+input[type="checkbox"]:not([name^="multiselect"]),
+input[type="radio"]:not([name^="reindex"]) {
 	display: none;
 }
 
@@ -137,8 +138,54 @@ input[type="checkbox"]:checked + label:before {
 	content: "\2713";
 	text-align: center;
 }
+input[type="checkbox"]:checked + label,
+input[type="radio"]:not([name^="reindex"]):checked + label {
+  color: #FFFFFF;
+}
 
-input[type="checkbox"]:checked + label {
+input[type="radio"]:not([name^="reindex"]) + label:before {
+  border: 1px solid #7f83a2;
+  border-radius: 10px;
+  content: "\00a0";
+  display: inline-block;
+  font: 10px/1em sans-serif;
+  height: 12px;
+  margin: .25em .25em 0 0;
+  vertical-align:text-bottom;
+  width: 12px;
+  background: transparent;
+}
+
+input[type="radio"]:not([name^="reindex"]):checked + label:before {
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px #3C8A3C inset;
+  border: 1px solid #7f83a2;
+  text-align: center;
+  font-weight: bold;
+}
+
+input[type="radio"]:not([name^="reindex"]) + label.ui-state-hover:before {
+  border: 1px solid #FFFFFF;
+}
+
+label {
+	white-space:nowrap;
+}
+
+label > span {
+	color: #7f83a2;
+}
+
+label.ui-state-active > span {
+	color: #FFFFFF;
+}
+
+label.ui-state-active {
+	border: 1px solid #7f83a2;
+	background: transparent !important;
+}
+
+label.ui-state-hover > span {
 	color: #FFFFFF;
 }
 
@@ -610,7 +657,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .filteredValue {
-	background-color:#F8D93D;
+	color: #F8D93D;
 }
 
 .graphItemGr1Alt1 {
@@ -2011,12 +2058,12 @@ ul#nav {
 }
 
 .ui-tooltip-content div.header {
-	color: #3f75a2;
+	color: #93CEFF;
 }
 
 .ui-tooltip-content div.content {
 	font-size: 10px;
-	color: #333333;
+	color: #9d9d9d;
 }
 
 .ui-tooltip-content {
