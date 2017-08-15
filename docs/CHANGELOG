@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.18
 -issue#903: Upgrade pace.js to v0.7.8
+-issue#906: Create a separate Realm for Realtime Graphs
 
 1.1.17
 -issue#450: List View to Preview shows no results
