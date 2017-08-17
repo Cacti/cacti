@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.18
 -issue#903: Upgrade pace.js to v0.7.8
+-issue#904: Allow user to hide Graphs from disabled Devices
 -issue#906: Create a separate Realm for Realtime Graphs
 -issue#907: XSS issue in spikekill.php
 -issue#910: Boost last run duration generates an error on new install

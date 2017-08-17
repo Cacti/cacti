@@ -1829,6 +1829,12 @@ $settings_user = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
+		'hide_disabled' => array(
+			'friendly_name' => __('Hide Disabled'),
+			'description' => __('Hide Disabled Devices and Graphs from Disabled Devices.'),
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
 		'default_date_format' => array(
 			'friendly_name' => __('Date Display Format'),
 			'description' => __('The date format to use in Cacti.'),
