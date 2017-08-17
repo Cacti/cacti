@@ -2142,8 +2142,13 @@ function boost_display_run_status() {
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
-	print (($boost_last_run_duration > 60) ? __('%d minutes', (int)($boost_last_run_duration/60)) : '' ) . __('%d seconds', $boost_last_run_duration%60);
-	if ($rrd_updates != ''){ print ' (' . __('%0.2f percent of update frequency)', round(100*$boost_last_run_duration/$update_interval/60));}
+
+	if (is_numeric($boost_last_run_duration)) {
+		print (($boost_last_run_duration > 60) ? __('%d minutes', (int)($boost_last_run_duration/60)) : '' ) . __('%d seconds', $boost_last_run_duration%60);
+		if ($rrd_updates != ''){ print ' (' . __('%0.2f percent of update frequency)', round(100*$boost_last_run_duration/$update_interval/60));}
+	} else {
+		print __('N/A');
+	}
 	print '</td>';
 
 	form_alternate_row();
