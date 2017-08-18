@@ -935,7 +935,7 @@ function utilities_view_logfile() {
 	<script type='text/javascript'>
 
 	function purgeLog() {
-		strURL = urlPath+'utilities.php?action=purge_logfile&header=false';
+		strURL = urlPath+'utilities.php?action=purge_logfile&header=false&filename='+$('#filename').val();
 		loadPageNoHeader(strURL);
 	}
 

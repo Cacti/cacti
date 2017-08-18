@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#906: Create a separate Realm for Realtime Graphs
 -issue#907: XSS issue in spikekill.php
 -issue#910: Boost last run duration generates an error on new install
+-issue#914: Unable to purge Cacti logfile from System Utilities
 
 1.1.17
 -issue#450: List View to Preview shows no results
