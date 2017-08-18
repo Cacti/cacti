@@ -1,3 +1,39 @@
+// Host Autocomplete Magic
+var pageName = basename($(location).attr('pathname'));
+
+/* only perform the recalculation of elements at the final end of the windows resize event */
+var waitForFinalEvent = (function () {
+  var timers = {};
+  return function (callback, ms, uniqueId) {
+    if (!uniqueId) {
+      uniqueId = "Don't call this twice without a uniqueId";
+    }
+    if (timers[uniqueId]) {
+      clearTimeout (timers[uniqueId]);
+    }
+    timers[uniqueId] = setTimeout(callback, ms);
+  };
+})();
+
+function keepWindowSize() {
+	$(window).resize(function (event) {
+		waitForFinalEvent(function(){
+			heightPage = $(window).height();
+			heightPageHead = $('#cactiPageHead').outerHeight();
+			heightPageBottom = $('#cactiPageBottom').outerHeight();
+			heightPageContent = heightPage -heightPageHead -heightPageBottom +1;
+
+			$('body').css('height', heightPage);
+			$('#cactiContent').css('height', heightPageContent);
+
+			$('.cactiTreeNavigationArea').css('height', heightPageContent);
+			width = parseInt($('#searcher').width())+65;
+			$('.cactiTreeNavigationArea').css('width', width+'px');
+			$('.cactiTreeNavigationArea > div').css('padding-top', '5px');
+		}, 300, "resize-content");
+	});
+}
+
 function themeReady() {
 	var hostTimer = false;
 	var clickTimeout = false;
@@ -7,6 +43,8 @@ function themeReady() {
 	$('#navigation').css('height', ($(window).height()-80)+'px');
 	$('#navigation_right').css('height', ($(window).height()-80)+'px');
 	$('.formItemDescription').hide();
+
+	keepWindowSize();
 
 	// Setup the navigation menu
 	setMenuVisibility();
