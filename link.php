@@ -84,8 +84,6 @@ if (!sizeof($page)) {
 		width  = $('#main').width();
 		$('#cactiContent').css({'height':heightPageContent+'px', 'width':'100%'});
 		$('#content').css({'width':'100%', 'height':(heightPageContent-3)+'px'});
-		$('#navigation_right').css({'margin':'0px', 'padding':'0px'});
-		$('#main').css({'margin-top':'0px', 'position':'relative'});
 	}
 	</script>
 	<?php
