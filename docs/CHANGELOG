@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.19
+-issue#919: Unable to upgrade to 1.1.18
+
 1.1.18
 -issue#902: Correcting some issues with Console and External Links
 -issue#903: Upgrade pace.js to v0.7.8
