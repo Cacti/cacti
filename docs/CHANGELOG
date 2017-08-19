@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#907: XSS issue in spikekill.php
 -issue#910: Boost last run duration generates an error on new install
 -issue#914: Unable to purge Cacti logfile from System Utilities
+-issue#915: Non-numeric data in ss_host_disk.php
 -feature: Updated dutch translations
 
 1.1.17
