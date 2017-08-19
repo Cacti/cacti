@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#914: Unable to purge Cacti logfile from System Utilities
 -issue#915: Non-numeric data in ss_host_disk.php
 -issue#916: Resolve display of errors when encountering ldap issues
+-issue#918: Minor XSS and create generalized escape function
 -issue: Resolve JavaScript errors on Login page
 -issue: Resolve JavaScript errors on Permission Denied pages
 -feature: Updated dutch translations
