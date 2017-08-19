@@ -1,5 +1,21 @@
 Cacti CHANGELOG
 
+1.1.18
+-issue#902: Correcting some issues with Console and External Links
+-issue#903: Upgrade pace.js to v0.7.8
+-issue#904: Allow user to hide Graphs from disabled Devices
+-issue#906: Create a separate Realm for Realtime Graphs
+-issue#907: XSS issue in spikekill.php
+-issue#910: Boost last run duration generates an error on new install
+-issue#914: Unable to purge Cacti logfile from System Utilities
+-issue#915: Non-numeric data in ss_host_disk.php
+-issue#916: Resolve display of errors when encountering ldap issues
+-issue#918: Minor XSS and create generalized escape function
+-issue: Resolve JavaScript errors on Login page
+-issue: Resolve JavaScript errors on Permission Denied pages
+-issue: Graphs tab would appear in non-classic even if you did not have permissions
+-feature: Updated dutch translations
+
 1.1.17
 -issue#450: List View to Preview shows no results
 -issue#486: Export Device table results to CSV

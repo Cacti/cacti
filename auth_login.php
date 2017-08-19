@@ -532,6 +532,7 @@ $selectedTheme = get_selected_theme();
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/js.storage.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.metadata.js'></script>
@@ -658,5 +659,6 @@ $selectedTheme = get_selected_theme();
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 	});
 	</script>
+	<?php include_once('./include/global_session.php');?>
 </body>
 </html>
