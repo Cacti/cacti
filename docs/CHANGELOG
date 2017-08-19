@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#918: Minor XSS and create generalized escape function
 -issue: Resolve JavaScript errors on Login page
 -issue: Resolve JavaScript errors on Permission Denied pages
+-issue: Graphs tab would appear in non-classic even if you did not have permissions
 -feature: Updated dutch translations
 
 1.1.17

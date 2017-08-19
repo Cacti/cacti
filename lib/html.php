@@ -1396,16 +1396,18 @@ function html_show_tabs_left() {
 			);
 		}
 
-		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
-			// Don't show the graphs tab when offline
-		} else {
-			$tabs_left[] =
-				array(
-					'title' => __('Graphs'),
-					'id'	=> 'maintab-anchor-graphs',
-					'image' => '',
-					'url'   => $config['url_path'] . 'graph_view.php',
-				);
+		if (is_realm_allowed(7)) {
+			if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
+				// Don't show the graphs tab when offline
+			} else {
+				$tabs_left[] =
+					array(
+						'title' => __('Graphs'),
+						'id'	=> 'maintab-anchor-graphs',
+						'image' => '',
+						'url'   => $config['url_path'] . 'graph_view.php',
+					);
+			}
 		}
 
 		if (is_realm_allowed(21) || is_realm_allowed(22)) {
