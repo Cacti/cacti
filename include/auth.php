@@ -89,7 +89,7 @@ if (read_config_option('auth_method') != 0) {
 		}
 
 		if ($realm_id > 0) {
-			$authorized = db_fetch_cell_prepared('SELECT COUNT(*) 
+			$authorized = db_fetch_cell_prepared('SELECT COUNT(*)
 				FROM (
 					SELECT realm_id
 					FROM user_auth_realm AS uar
@@ -105,7 +105,8 @@ if (read_config_option('auth_method') != 0) {
 					WHERE uag.enabled="on"
 					AND uagm.user_id = ?
 					AND uagr.realm_id = ?
-				) AS authorized', array($_SESSION['sess_user_id'], $realm_id, $_SESSION['sess_user_id'], $realm_id));
+				) AS authorized',
+				array($_SESSION['sess_user_id'], $realm_id, $_SESSION['sess_user_id'], $realm_id));
 		} else {
 			$authorized = false;
 		}
@@ -132,6 +133,10 @@ if (read_config_option('auth_method') != 0) {
 			print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/images/cacti_logo.gif' rel='icon' sizes='96x96'>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
+			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.js'></script>\n";
+			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.widgets.js'></script>\n";
+			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.pager.js'></script>\n";
+			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/js.storage.js'></script>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
 			print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
@@ -159,8 +164,9 @@ if (read_config_option('auth_method') != 0) {
 				$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 				$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 			});
-			</script>
-			</body>
+			</script>\n";
+			include_once('./include/global_session.php');
+			print "</body>
 			</html>\n";
 			exit;
 		}

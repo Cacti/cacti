@@ -185,7 +185,23 @@ class Ldap {
 	}
 
 	function ErrorHandler($level, $message, $file, $line, $context) {
-		return false;
+		return true;
+	}
+
+	function SetLdapHandler() {
+		/* drop out of cactis error handler */
+		restore_error_handler();
+
+		/* set an error handler for ldap */
+		set_error_handler(array($this, 'ErrorHandler'));
+	}
+
+	function RestoreCactiHandler() {
+		/* drop out of ldaps error handler */
+		restore_error_handler();
+
+		/* set an error handler for Cacti */
+		set_error_handler('CactiErrorHandler');
 	}
 
 	function Authenticate() {
@@ -212,8 +228,7 @@ class Ldap {
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
 		$this->password = html_entity_decode($this->password, $this->GetMask(), 'UTF-8');
 
-		/* set an error handler for ldap */
-		set_error_handler(array($this, 'ErrorHandler'));
+		$this->SetLdapHandler();
 
 		/* Determine connection method and create LDAP Object */
 		if ($this->encryption == '1') {
@@ -232,7 +247,7 @@ class Ldap {
 				$output['error_text'] = __('Protocol Error, Unable to set version');
 				cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
 				ldap_close($ldap_conn);
-				restore_error_handler();
+				$this->RestoreCactiHandler();
 				return $output;
 			}
 
@@ -243,7 +258,7 @@ class Ldap {
 					$output['error_text'] = __('Unable to set referrals option');
 					cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
 					ldap_close($ldap_conn);
-					restore_error_handler();
+					$this->RestoreCactiHandler();
 					return $output;
 				}
 			}
@@ -255,7 +270,7 @@ class Ldap {
 					$output['error_text'] = __('Protocol Error, unable to start TLS communications');
 					cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
 					ldap_close($ldap_conn);
-					restore_error_handler();
+					$this->RestoreCactiHandler();
 					return $output;
 				}
 			}
@@ -297,14 +312,14 @@ class Ldap {
 						$output['error_text'] = __('Insufficient access');
 						cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
 						ldap_close($ldap_conn);
-						restore_error_handler();
+						$this->RestoreCactiHandler();
 						return $output;
 					} else {
 						$output['error_num'] = '12';
 						$output['error_text'] = __('Group DN could not be found to compare');
 						cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
 						ldap_close($ldap_conn);
-						restore_error_handler();
+						$this->RestoreCactiHandler();
 						return $output;
 					}
 				} else {
@@ -354,7 +369,7 @@ class Ldap {
 			cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
 		}
 
-		restore_error_handler();
+		$this->RestoreCactiHandler();
 
 		return $output;
 	}
