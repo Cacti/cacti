@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#915: Non-numeric data in ss_host_disk.php
 -issue#916: Resolve display of errors when encountering ldap issues
 -issue: Resolve JavaScript errors on Login page
+-issue: Resolve JavaScript errors on Permission Denied pages
 -feature: Updated dutch translations
 
 1.1.17
