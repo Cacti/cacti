@@ -56,6 +56,10 @@ if (get_request_var('action') == 'timeout') {
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-migrate.js' language='javascript'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
+	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.js'></script>\n";
+	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.widgets.js'></script>\n";
+	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.pager.js'></script>\n";
+	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/js.storage.js'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.js'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
@@ -82,8 +86,9 @@ if (get_request_var('action') == 'timeout') {
 		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 	});
-	</script>
-	</body>
+	</script>";
+	include('./include/global_session.php');
+	print "</body>
 	</html>\n";
 } elseif (read_config_option('auth_method') == '2') {
 	clear_auth_cookie();
@@ -106,6 +111,10 @@ if (get_request_var('action') == 'timeout') {
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-migrate.js' language='javascript'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
+	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.js'></script>\n";
+	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.widgets.js'></script>\n";
+	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.pager.js'></script>\n";
+	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/js.storage.js'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
 	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/main.js'></script>\n";
@@ -130,8 +139,9 @@ if (get_request_var('action') == 'timeout') {
 		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 	});
-	</script>
-	</body>
+	</script>";
+	include('./include/global_session.php');
+	print "</body>
 	</html>\n";
 } else {
 	/* Default action */
