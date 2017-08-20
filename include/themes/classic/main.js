@@ -31,7 +31,7 @@ function keepWindowSize() {
 			$('.cactiTreeNavigationArea').css('width', width+'px');
 			$('.cactiTreeNavigationArea > div').css('padding-top', '5px');
 		}, 300, "resize-content");
-	});
+	}).trigger('resize');
 }
 
 function themeReady() {

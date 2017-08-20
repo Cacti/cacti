@@ -713,6 +713,7 @@ label {
 	height:100%;
 	float: left;
 	display: none;
+	color: #9d9d9d;
 }
 
 .cactiTreeNavigationArea div:first-child {

@@ -1003,6 +1003,8 @@ legend {
 	padding-left: 5px;
 	display: none;
 	vertical-align: top;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
 }
 
 .cactiGraphContentAreaPreview {
@@ -1012,8 +1014,9 @@ legend {
 	padding-left: 5px;
 	display: none;
 	vertical-align: top;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
 }
-
 
 .cactiConsoleContentArea {
 	background: #161616;

@@ -62,7 +62,7 @@ function keepWindowSize() {
 				$(".ellipsis").show(0);
 			}
 		}, 200, "resize-content");
-	});
+	}).trigger('resize');
 }
 
 $('<div id="cactiPageBottom" class="cactiPageBottom"></div>').insertAfter('#cactiContent');

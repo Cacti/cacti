@@ -852,7 +852,6 @@ legend {
 	height: 100%;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
-	#padding-left: 10px;
 	margin-right: 5px;
 }
 
