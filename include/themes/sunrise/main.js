@@ -57,7 +57,7 @@ function keepWindowSize() {
 				$(".ellipsis").show(0);
 			}
 		}, 300, "resize-content");
-	});
+	}).trigger('resize');
 }
 
 function themeReady() {

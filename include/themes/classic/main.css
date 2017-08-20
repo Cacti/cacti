@@ -863,12 +863,15 @@ legend {
 
 .cactiGraphContentArea {
 	background: #FFFFFF url('./../../../images/shadow.gif') repeat-x center top;
-	padding-top:10px;
+	display: table-cell;
+	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
 	vertical-align:top;
-	float: left;
+	overflow-x: hidden !important;
+	overflow-y: hidden !important;
 }
+
 .spikekillData, .spikekillData td {
 	border: 1px solid #999;
 }
