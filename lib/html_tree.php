@@ -139,12 +139,7 @@ function grow_dhtml_trees() {
 	var search_to = false;
 
 	function resizeGraphContent() {
-		if ('<?php print get_selected_theme();?>' != 'classic') {
-			$('.cactiGraphContentArea').css('margin-left', parseInt($('#navigation').width()+10)+'px');
-		} else {
-			width = $(document).width() - $('.cactiTreeNavigationArea').width() - 22;
-			$('.cactiGraphContentArea').css('width', width).css('float', 'right');
-		}
+		$('.cactiGraphContentArea').css('margin-left', parseInt($('#navigation').width()+10)+'px');
 	}
 
 	$(function () {

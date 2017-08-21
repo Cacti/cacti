@@ -23,7 +23,7 @@ Developed in the early 2000's by Ian Berry as a high school project, it has been
 
 Cacti should be able to run on any Linux, UNIX, or Windows based operating system with the following requirements:
 
-- PHP 5.3+
+- PHP 5.4+
 - MySQL 5.1+
 - RRDTool 1.3+, 1.5+ recommended
 - NET-SNMP 5.5+

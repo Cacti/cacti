@@ -410,7 +410,7 @@ $enabled = '1';
 	</style>
 </head>
 
-<body>
+<body style='overflow:auto;'>
 
 <form method='post' action='index.php'>
 
@@ -1026,5 +1026,8 @@ $(function() {
 </script>
 
 </form>
-
 <?php
+include('../include/global_session.php');
+?>
+</body>
+</html>
