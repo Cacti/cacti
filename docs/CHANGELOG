@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.20
+-issue: Taking actions on users does not use callbacks
+
 1.1.19
 -issue#810: Scripts in packages don't match distribution
 -issue#919: Unable to upgrade to 1.1.18
