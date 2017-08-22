@@ -2326,6 +2326,8 @@ function user() {
 	}
 
 	draw_actions_dropdown($user_actions);
+
+	form_end();
 }
 
 function process_graph_request_vars() {
