@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.20
+-issue#922: When using LDAP domains some setings are not passed correctly to the Cacti LDAP library
 -issue#923: Warninga in cacti.log are displayed incorrectly
 -issue: Taking actions on users does not use callbacks
 
