@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.20
+-issue#923: Warninga in cacti.log are displayed incorrectly
 -issue: Taking actions on users does not use callbacks
 
 1.1.19
