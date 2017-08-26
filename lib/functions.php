@@ -4845,3 +4845,43 @@ function version_to_decimal($version) {
 
 	return hexdec($newver) + $alpha;
 }
+
+/**
+ * cacti_gethostinfo - obtains the dns information for a host
+ */
+function cacti_gethostinfo($hostname, $type = DNS_ALL) {
+	return dns_get_record($hostname, $type);
+}
+
+/**
+ * cacti_gethostbyname - a ip/ipv6 replacement for php's gethostbyname function
+ */
+function cacti_gethostbyname($hostname, $type = '') {
+	if ($type == '') {
+		$type = DNS_A + DNS_AAAA;
+	}
+
+	if ($type != DNS_AAAA) {
+		$host = gethostbyname($hostname);
+		if ($host !== $hostname) {
+			return $host;
+		}
+	}
+
+	$return = cacti_gethostinfo($hostname, $type);
+
+	if (sizeof($return)) {
+		foreach($return as $record) {
+			switch($record['type']) {
+			case 'A':
+				return $record['ip'];
+				break;
+			case 'AAAA':
+				return $record['ipv6'];
+				break;
+			}
+		}
+	}
+
+	return $hostname;
+}

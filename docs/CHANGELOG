@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue: Taking actions on users does not use callbacks
 -issue: Undefined constant in lib/snmp.php on RHEL7
 -issue: Human readable socket errno's not defined
+-issue: Audit of ping methods tcp, udp, and icmp ping. IPv6 will still not work till php 5.5.4
 
 1.1.19
 -issue#810: Scripts in packages don't match distribution
