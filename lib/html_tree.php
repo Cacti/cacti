@@ -118,7 +118,7 @@ function grow_dhtml_trees() {
 		$default_tree_id = db_fetch_cell('SELECT id FROM graph_tree ORDER BY sequence LIMIT 1');
 	}
 
-	print "<div style='white-space:nowrap'><span style='padding-right:4px;'>" . __('Search') . "</span><input id='searcher' style='padding:2px;font-size:12px;max-width:200px;' type='text' size='35'><hr></div>\n";
+	print "<div class='cactiTreeSearch' style='white-space:nowrap'><span style='padding-right:4px;'>" . __('Search') . "</span><input id='searcher' style='padding:2px;font-size:12px;max-width:200px;' type='text' size='35'><hr></div>\n";
 
 	$dhtml_tree = create_dhtml_tree();
 	if (sizeof($dhtml_tree)) {
@@ -139,7 +139,12 @@ function grow_dhtml_trees() {
 	var search_to = false;
 
 	function resizeGraphContent() {
-		$('.cactiGraphContentArea').css('margin-left', parseInt($('#navigation').width()+10)+'px');
+		docHeight  = parseInt($('body').height());
+		navigation = $('.cactiTreeNavigationArea').offset();
+		navHeight  = docHeight - navigation.top + 15;
+		visWidth   = Math.max.apply(Math, $('.jstree').children(':visible').map(function() { return $(this).width(); }).get());
+		$('.cactiTreeNavigationArea').height(navHeight).width(visWidth);
+		$('.cactiGraphContentArea').css('margin-left', visWidth+10);
 	}
 
 	$(function () {
@@ -154,6 +159,9 @@ function grow_dhtml_trees() {
 				//$('#jstree').jstree().clear_state();
 				<?php } ?>
 			})
+			.on('activate_node.jstree', function(e, data) {
+				resizeGraphContent();
+			})
 			.on('ready.jstree', function(e, data) {
 				resizeGraphContent();
 			})
@@ -167,6 +175,7 @@ function grow_dhtml_trees() {
 				resizeGraphContent();
 			})
 			.on('select_node.jstree', function(e, data) {
+				resizeGraphContent();
 				if (data.node.id) {
 					if (data.node.id.search('tree_anchor') >= 0) {
 						href=$('#'+data.node.id).find('a:first').attr('href');
@@ -250,22 +259,13 @@ function grow_dhtml_trees() {
 			}, 250);
 		});
 
-		$(window).resize(function() {
-			treeHeight = parseInt($(window).height()-$('.jstree').offset().top-10);
-			windHeight = parseInt($('.cactiContent').height());
-			docHeight  = parseInt($('body').height());
-
-			if (treeHeight > windHeight) {
-				$('#navigation').height(treeHeight+'px');
-			}else if (docHeight < windHeight) {
-				$('#navigation').height(docHeight+'px');
-			}else {
-				$('#navigation').height(windHeight+'px');
-			}
+		$(document).resize(function() {
+			resizeGraphContent();
 		});
 
 		<?php print api_plugin_hook_function('top_graph_jquery_function');?>
 	});
+
 	</script>
 	<?php
 }

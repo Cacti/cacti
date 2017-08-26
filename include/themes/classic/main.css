@@ -39,6 +39,7 @@ td, th, select {
 
 th {
 	border-right: 1px groove white;
+	white-space: nowrap;
 }
 
 img {
