@@ -43,7 +43,6 @@ var pageName;
 var columnsHidden = 0;
 var lastColumnsHidden = {};
 var lastWidth = {};
-var lastMain = 0;
 var resizeDelta = 100;
 var resizeTime = 0;
 var resizeTimeout = false;
@@ -552,6 +551,8 @@ function applySkin() {
 
 	setupResponsiveMenuAndTabs();
 
+	keepWindowSize();
+
 	// Add tooltips to graph drilldowns
 	$('.drillDown').tooltip({
 		content: function() {
@@ -599,7 +600,7 @@ function applySkin() {
 	});
 
 	$.when.apply(this, showPage).done(function() {
-		responsiveUI(null);
+		responsiveUI('force');
 	});
 }
 
@@ -762,33 +763,24 @@ function setupResponsiveMenuAndTabs() {
 		}
 	});
 
-	$(window).resize(function(event) {
-    	resizeTime = new Date();
-		myEvent = event;
-	    if (resizeTimeout === false) {
-			resizeTimeout = true;
-			setTimeout(function() {
-				responsiveUI(myEvent);
-			}, resizeDelta);
-		}
-	});
-
-	$(window).on('orientationchange', function() {
-		responsiveUI(null);
+	$(window).on('orientationchange, fullscreenchange', function() {
+		responsiveUI('force');
 	});
 }
 
 function responsiveUI(event) {
-    if (new Date() - resizeTime < resizeDelta) {
-		myEvent = event;
-        setTimeout(function() {
-			responsiveUI(myEvent);
-		}, resizeDelta);
+	if (event != 'force') {
+	    if (new Date() - resizeTime < resizeDelta) {
+			myEvent = event;
+			setTimeout(function() {
+				responsiveUI(myEvent);
+			}, resizeDelta);
 
-		return false;
-    } else {
-        resizeTimeout = false;
-    }
+			return false;
+		} else {
+			resizeTimeout = false;
+		}
+	}
 
 	if ($('.cactiTreeNavigationArea').length > 0) {
 		tree = true;
@@ -796,14 +788,10 @@ function responsiveUI(event) {
 		tree = false;
 	}
 
-	if (event == null) {
-		if (lastMain > 0) {
-			mainWidth = lastMain;
-		}else{
-			mainWidth = $('#main').width();
-		}
-	}else{
-		mainWidth = $('#main').width();
+	if ($('#navigation').length) {
+		mainWidth = $('body').innerWidth() - $('#navigation').width();
+	} else {
+		mainWidth = $('body').innerWidth();
 	}
 
 	if ($(window).width() < 640) {
@@ -822,41 +810,26 @@ function responsiveUI(event) {
 		menuShow(tree);
 	}
 
-	mainWidth = $('#main').width();
-
 	/* change textbox and textarea widths */
-	if (event != null) {
-		$('input[type="text"], textarea').each(function() {
-			//console.log('Main:'+mainWidth+', Element:'+$(this).attr('id')+', Width:'+$(this).width());
-
-			if ($(this).attr('type') == 'text') {
-				offset = 20;
-			}else{
-				offset = 5;
-			}
-
-			if (mainWidth != 100) {
-				if ($(this).width() > mainWidth) {
-					$(this).css('max-width', (mainWidth - offset)+'px');
-				}else{
-					$(this).css('max-width', '');
-				}
-
-				if ($(this).width() > mainWidth) {
-					$(this).css('max-width', (mainWidth - offset)+'px');
-				}
-			}
-		});
-	}
-
-	if (event != null && !$(event.target).hasClass('ui-resizable')) {
-		height = Math.max(document.body.scrollHeight, $(window).height());
-		if (tree) {
-			$('.cactiTreeNavigationArea').css('height', height);
+	$('input[type="text"], textarea').each(function() {
+		if ($(this).attr('type') == 'text') {
+			offset = 20;
 		}else{
-			$('.cactiConsoleNavigationArea').css('height', height);
+			offset = 5;
 		}
-	}
+
+		if (mainWidth != 100) {
+			if ($(this).width() > mainWidth) {
+				$(this).css('max-width', (mainWidth - offset)+'px');
+			}else{
+				$(this).css('max-width', '');
+			}
+
+			if ($(this).width() > mainWidth) {
+				$(this).css('max-width', (mainWidth - offset)+'px');
+			}
+		}
+	});
 
 	$('.filterTable').each(function() {
 		tuneFilter($(this), mainWidth);
@@ -884,8 +857,8 @@ function countHiddenCols(object) {
 
 function tuneTable(object, width) {
 	rows           = $(object).find('tr').length;
-	width          = parseInt(width);
-	tableWidth     = parseInt($(object).width());
+	width          = width;
+	tableWidth     = $(object).width();
 	totalCols      = $(object).find('th').length;
 	reducedWidth   = 0;
 	columnsHidden  = countHiddenCols(object);
@@ -894,7 +867,6 @@ function tuneTable(object, width) {
 
 	if (rows > 101) return false;
 
-	//console.log('totCols: '+totalCols+', hidCols: '+columnsHidden+', visCols: '+visibleColumns+', tabWid: '+tableWidth+', wid: '+width+', redWid: '+reducedWidth);
 	if (tableWidth > width) {
 		column = totalCols;
 		hasCheckbox = $(object).find('th.tableSubHeaderCheckbox').length;
@@ -907,7 +879,7 @@ function tuneTable(object, width) {
 
 		$($(object).find('th').not('.noHide').get().reverse()).each(function() {
 			if (!$(this).hasClass('tableSubHeaderCheckbox') && $(this).is(':visible')) {
-				reducedWidth += parseInt($(this).width());
+				reducedWidth += $(this).width();
 				$('#'+id+' th:nth-child('+column+')').hide();
 				$('#'+id+' td:nth-child('+column+')').hide();
 				columnsHidden++;
@@ -991,8 +963,9 @@ function tuneFilter(object, width) {
 }
 
 function menuHide(tree) {
-	if (marginLeft == null) {
-		marginLeft = parseInt($('#navigation_right').css('margin-left'));
+	curMargin = $('#navigation_right').css('margin-left');
+	if (curMargin > 0) {
+		marginLeft = curMargin;
 	}
 
 	if (tree) {
@@ -1310,7 +1283,7 @@ function saveTableWidths(initial) {
 		if (key !== undefined) {
 			if (initial && items.length) {
 				$('#'+key).find('th.ui-resizable').each(function(data) {
-					if (parseInt(items[i]) == 0) {
+					if (items[i] == 0) {
 						items[i] = $(this).width();
 						sizes[i] = items[i];
 					}
@@ -1459,9 +1432,64 @@ $(function() {
 			}
 		});
 	}
-
-	responsiveUI(null);
 });
+
+/* only perform the recalculation of elements at the final end of the windows resize event */
+var waitForFinalEvent = (function () {
+  var timers = {};
+  return function (callback, ms, uniqueId) {
+    if (!uniqueId) {
+      uniqueId = "Don't call this twice without a uniqueId";
+    }
+    if (timers[uniqueId]) {
+      clearTimeout (timers[uniqueId]);
+    }
+    timers[uniqueId] = setTimeout(callback, ms);
+  };
+})();
+
+function keepWindowSize() {
+	$(window).resize(function (event) {
+   		resizeTime = new Date();
+		myEvent = event;
+		if (resizeTimeout === false) {
+			resizeTimeout = true;
+			setTimeout(function() {
+				responsiveUI(myEvent);
+			}, resizeDelta);
+		}
+		heightPage = $(window).height();
+
+		if ($('#cactiPageHead').is(':visible')) {
+			heightPageHead = $('#cactiPageHead').outerHeight();
+		} else {
+			heightPageHead = 0;
+		}
+
+		if ($('#breadCrumbBar').is(':visible')) {
+			heightBreadCrumbBar = $('#breadCrumbBar').outerHeight();
+		} else {
+			heightBreadCrumbBar = 0;
+		}
+
+		if ($('#cactiPageBottom').is(':visible')) {
+			heightPageBottom = $('#cactiPageBottom').outerHeight();
+		} else {
+			heightPageBottom = 0;
+		}
+
+		heightPageContent = heightPage - heightPageHead - heightPageBottom - heightBreadCrumbBar;
+
+		$('body').css('height', heightPage);
+		$('#cactiContent, #navigation, #navigation_right, #main').css('height', heightPageContent);
+
+		// Handle links pages
+		$('#content').css({'width':'100%', 'height':heightPageContent-4});
+
+		navWidth = $('#navigation').width();
+		$('#searcher').css('width', navWidth-70);
+	}).resize();
+}
 
 /* Graph related javascript functions */
 if (typeof urlPath == 'undefined') {

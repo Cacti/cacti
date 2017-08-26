@@ -27,7 +27,7 @@ body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	/* fix those ever present IE issues */
-	-ms-overflow-style:scrollbar;
+	-ms-overflow-style: scrollbar;
 	color: #000000;
 }
 
@@ -54,6 +54,10 @@ table {
 td, th {
 	padding: 0px;
 	margin: 0px;
+}
+
+th {
+	white-space: nowrap;
 }
 
 img {
@@ -546,6 +550,7 @@ label {
 .treeArea, .treeItemsArea {
 	width:33%;
 	border:1px solid #006400;
+	vertical-align: top;
 }
 
 .linkMarker {

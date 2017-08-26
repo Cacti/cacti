@@ -160,17 +160,19 @@ function form_selectable_cell($contents, $id, $width='', $style_or_class = '', $
 
 	if ($style_or_class != '') {
 		if (strpos($style_or_class, ':') === false) {
-			$output = "class='" . $style_or_class . "'";
+			$output = "class='nowrap " . $style_or_class . "'";
 			if ($width != '') {
 				$output .= " style='width:$width;'";
 			}
 		} else {
-			$output = "style='" . $style_or_class;
+			$output = "style='nowrap " . $style_or_class;
 			if ($width != '') {
 				$output .= ($output != '' ? ';':'') . "width:$width;";
 			}
 			$output .= "'";
 		}
+	} else {
+		$output = 'class="nowrap"';
 	}
 
 	if ($title != '') {
