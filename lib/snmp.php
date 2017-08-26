@@ -789,7 +789,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 	}
 
 	/* Remove invalid chars, if the string output is to be numeric */
-	if ($value_output_format == SNMP_STRING_OUTPUT_GUESS) {
+	if ($value_output_format == SNMP_STRING_OUTPUT_NUMERIC) {
 		$k = strlen($string);
 		for ($i=0; $i < $k; $i++) {
 			if ((ord($string[$i]) <= 31) || (ord($string[$i]) >= 127)) {
@@ -802,7 +802,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 	$string = trim($string);
 
 	/* convert hex strings to numeric values */
-	if (is_hex_string($string) && $value_output_format == SNMP_VALUE_NUMERIC) {
+	if (is_hex_string($string) && $value_output_format == SNMP_STRING_OUTPUT_NUMERIC) {
 		$output = '';
 		$parts  = explode(' ', $string);
 
