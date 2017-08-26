@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#929: Overlapping frames on certain themes
 -issue: Taking actions on users does not use callbacks
 -issue: Undefined constant in lib/snmp.php on RHEL7
+-issue: Human readable socket errno's not defined
 
 1.1.19
 -issue#810: Scripts in packages don't match distribution
