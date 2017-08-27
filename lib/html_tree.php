@@ -148,8 +148,6 @@ function grow_dhtml_trees() {
 	}
 
 	$(function () {
-		resizeGraphContent();
-
 		$('#jstree').each(function(data) {
 			var id=$(this).attr('id');
 
@@ -158,9 +156,6 @@ function grow_dhtml_trees() {
 				<?php if (isset_request_var('hyper')) { ?>
 				//$('#jstree').jstree().clear_state();
 				<?php } ?>
-			})
-			.on('activate_node.jstree', function(e, data) {
-				resizeGraphContent();
 			})
 			.on('ready.jstree', function(e, data) {
 				resizeGraphContent();
@@ -175,7 +170,6 @@ function grow_dhtml_trees() {
 				resizeGraphContent();
 			})
 			.on('select_node.jstree', function(e, data) {
-				resizeGraphContent();
 				if (data.node.id) {
 					if (data.node.id.search('tree_anchor') >= 0) {
 						href=$('#'+data.node.id).find('a:first').attr('href');
@@ -188,10 +182,14 @@ function grow_dhtml_trees() {
 
 					if (typeof href !== 'undefined') {
 						href=href.replace('action=tree', 'action=tree_content');
+						$('.cactiGraphContentArea').hide();
 
 						$.get(href, function(data) {
 							$('#main').html(data);
 							applySkin();
+
+							$('.cactiGraphContentArea').show();
+
 							var mytitle = 'Tree Mode - '+$('#nav_title').text();
 							document.getElementsByTagName('title')[0].innerHTML = mytitle;
 							if (typeof window.history.pushState !== 'undefined') {
