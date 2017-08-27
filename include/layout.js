@@ -1450,6 +1450,8 @@ var waitForFinalEvent = (function () {
 
 function keepWindowSize() {
 	$(window).resize(function (event) {
+		$('.cactiGraphContentArea').show();
+
    		resizeTime = new Date();
 		myEvent = event;
 		if (resizeTimeout === false) {
@@ -1480,11 +1482,16 @@ function keepWindowSize() {
 
 		heightPageContent = heightPage - heightPageHead - heightPageBottom - heightBreadCrumbBar;
 
-		$('body').css('height', heightPage);
-		$('#cactiContent, #navigation, #navigation_right, #main').css('height', heightPageContent);
+		if (theme != 'classic') {
+			$('body').css('height', heightPage);
+			$('#cactiContent, #navigation, #navigation_right, #main').css('height', heightPageContent);
 
-		// Handle links pages
-		$('#content').css({'width':'100%', 'height':heightPageContent-4});
+			// Handle links pages
+			$('#content').css({'width':'100%', 'height':heightPageContent-4});
+		} else {
+			// Handle links pages
+			$('#content').css({'width':'100%', 'height':$(document).height()});
+		}
 
 		navWidth = $('#navigation').width();
 		$('#searcher').css('width', navWidth-70);

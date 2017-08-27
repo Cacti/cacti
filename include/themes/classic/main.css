@@ -709,6 +709,7 @@ ul#breadcrumbs {
 }
 
 .cactiTreeNavigationArea {
+	display: table-cell;
 	background: #efefef url('./../../../images/shadow_gray.gif') repeat-x center top;
 	border-right: #aaaaaa 1px solid;
 	padding-left:5px;
@@ -729,6 +730,7 @@ ul#breadcrumbs {
 }
 
 .cactiConsoleNavigationArea {
+	display: table-cell;
 	background: snow url('./../../../images/shadow_gray.gif') repeat-x center top;
 	border-right: #aaaaaa 1px solid;
 	padding-left:0px;
@@ -738,8 +740,8 @@ ul#breadcrumbs {
 	float:left;
 	width:162px;
 	height: 100%;
-	overflow-y:auto !important;
-	overflow-x:auto;
+//	overflow-y:auto !important;
+//	overflow-x:auto;
 }
 
 .cactiConsoleNavigationArea table {
@@ -761,7 +763,7 @@ ul#breadcrumbs {
 	cursor:pointer;
 	height:140px;
 	width:156px;
-	margin-top:-6px;
+	margin-top:0px;
 	margin-left:2px;
 	margin-right:2px;
 }
@@ -869,8 +871,6 @@ legend {
 	padding-right: 5px;
 	padding-left: 5px;
 	vertical-align:top;
-	overflow-x: hidden !important;
-	overflow-y: hidden !important;
 }
 
 .spikekillData, .spikekillData td {
@@ -912,8 +912,9 @@ legend {
 	padding-left: 5px;
 	margin-left: 162px;
 	height: 100%;
+	width: 100%;
 	vertical-align: top;
-	display: none;
+	display: table-cell;
 	overflow-y: auto !important;
     overflow-x: hidden !important;
 }
