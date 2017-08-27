@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#922: When using LDAP domains some setings are not passed correctly to the Cacti LDAP library
 -issue#923: Warninga in cacti.log are displayed incorrectly
 -issue#929: Overlapping frames on certain themes
+-issue#931: Aggregate graphs missing from list view
 -issue: Taking actions on users does not use callbacks
 -issue: Undefined constant in lib/snmp.php on RHEL7
 -issue: Human readable socket errno's not defined
