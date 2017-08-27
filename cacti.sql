@@ -2728,13 +2728,13 @@ CREATE TABLE `sites` (
 --
 
 CREATE TABLE `snmpagent_cache` (
-  `oid` varchar(191) NOT NULL,
-  `name` varchar(191) NOT NULL,
-  `mib` varchar(191) NOT NULL,
-  `type` varchar(255) NOT NULL DEFAULT '',
-  `otype` varchar(255) NOT NULL DEFAULT '',
-  `kind` varchar(255) NOT NULL DEFAULT '',
-  `max-access` varchar(255) NOT NULL DEFAULT 'not-accessible',
+  `oid` varchar(50) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `mib` varchar(50) NOT NULL,
+  `type` varchar(50) NOT NULL DEFAULT '',
+  `otype` varchar(50) NOT NULL DEFAULT '',
+  `kind` varchar(50) NOT NULL DEFAULT '',
+  `max-access` varchar(50) NOT NULL DEFAULT 'not-accessible',
   `value` varchar(255) NOT NULL DEFAULT '',
   `description` varchar(5000) NOT NULL DEFAULT '',
   PRIMARY KEY (`oid`),
@@ -2751,7 +2751,7 @@ CREATE TABLE `snmpagent_cache` (
 --
 CREATE TABLE `snmpagent_mibs` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL DEFAULT '',
+  `name` varchar(50) NOT NULL DEFAULT '',
   `file` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='Registered MIB files';
@@ -2765,10 +2765,11 @@ CREATE TABLE `snmpagent_mibs` (
 --
 
 CREATE TABLE `snmpagent_cache_notifications` (
-  `name` varchar(191) NOT NULL,
-  `mib` varchar(255) NOT NULL,
-  `attribute` varchar(255) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `mib` varchar(50) NOT NULL,
+  `attribute` varchar(50) NOT NULL,
   `sequence_id` smallint(6) NOT NULL,
+  PRIMARY KEY (`name`,`mib`,`attribute`,`sequence_id`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB COMMENT='Notifcations and related attributes';
 
@@ -2781,10 +2782,11 @@ CREATE TABLE `snmpagent_cache_notifications` (
 --
 
 CREATE TABLE `snmpagent_cache_textual_conventions` (
-  `name` varchar(191) NOT NULL,
-  `mib` varchar(191) NOT NULL,
-  `type` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(50) NOT NULL,
+  `mib` varchar(50) NOT NULL,
+  `type` varchar(50) NOT NULL DEFAULT '',
   `description` varchar(5000) NOT NULL DEFAULT '',
+  PRIMARY KEY (`name`,`mib`,`type`),
   KEY `name` (`name`),
   KEY `mib` (`mib`)
 ) ENGINE=InnoDB COMMENT='Textual conventions';
@@ -2828,8 +2830,9 @@ CREATE TABLE `snmpagent_managers` (
 
 CREATE TABLE `snmpagent_managers_notifications` (
   `manager_id` int(8) NOT NULL,
-  `notification` varchar(190) NOT NULL,
-  `mib` varchar(191) NOT NULL,
+  `notification` varchar(50) NOT NULL,
+  `mib` varchar(50) NOT NULL,
+  PRIMARY KEY(`manager_id`,`notification`,`mib`),
   KEY `mib` (`mib`),
   KEY `manager_id_notification` (`manager_id`,`notification`)
 ) ENGINE=InnoDB COMMENT='snmp notifications to receivers';
@@ -2848,7 +2851,7 @@ CREATE TABLE `snmpagent_notifications_log` (
   `severity` tinyint(1) NOT NULL,
   `manager_id` int(8) NOT NULL,
   `notification` varchar(190) NOT NULL,
-  `mib` varchar(191) NOT NULL,
+  `mib` varchar(50) NOT NULL,
   `varbinds` varchar(5000) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `time` (`time`),

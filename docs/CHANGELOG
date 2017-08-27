@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#922: When using LDAP domains some setings are not passed correctly to the Cacti LDAP library
 -issue#923: Warninga in cacti.log are displayed incorrectly
 -issue#926: Update Utilities page to provide more information on rebuilding poller cache
+-issue#927: Minor schema change to support XtraDB Cluster
 -issue#929: Overlapping frames on certain themes
 -issue#931: Aggregate graphs missing from list view
 -issue#933: Aggregate graphs page counter off
