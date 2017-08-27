@@ -911,7 +911,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND':'') . ' h.disabled=""';
+		$sql_where .= ($sql_where != '' ? ' AND':'') . '(h.disabled="" OR h.disabled IS NULL)';
 	}
 
 	if ($sql_where != '') {
