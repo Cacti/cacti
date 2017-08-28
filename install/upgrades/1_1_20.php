@@ -45,7 +45,7 @@ function upgrade_to_1_1_20() {
 		MODIFY COLUMN name VARCHAR(50) NOT NULL,
 		MODIFY COLUMN mib VARCHAR(50) NOT NULL,
 		MODIFY COLUMN type VARCHAR(50) NOT NULL,
-		PRIMARY KEY (`name`,`mib`,`type`)');
+		ADD PRIMARY KEY (`name`,`mib`,`type`)');
 
 	/* correct dumplicate notifications */
 	$notifications = db_fetch_assoc('SELECT *, COUNT(*) AS totals

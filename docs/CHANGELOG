@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.21
+-issue#938: Problems upgrading to 1.1.20 with one table alter statement
+
 1.1.20
 -issue#920: Issue with scrollbars after update to 1.1.19 related to #902
 -issue#921: Tree Mode no longer expands to accomodate full tree item names
