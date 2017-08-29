@@ -589,6 +589,9 @@ if (sizeof($parms)) {
 
 		if (sizeof($snmp_indexes)) {
 			foreach ($snmp_indexes as $snmp_index) {
+				
+				$duplicate_graph_detected = false;
+				
 				$snmp_query_array['snmp_index'] = $snmp_index['snmp_index'];
 
 				$existsAlready = db_fetch_cell_prepared('SELECT id
@@ -619,6 +622,8 @@ if (sizeof($parms)) {
 
 					echo "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)\n";
 
+					$duplicate_graph_detected = true;
+					
 					continue;
 				}
 
@@ -655,6 +660,13 @@ if (sizeof($parms)) {
 
 				echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
 			}
+			
+			if($duplicate_graph_detected == true){
+                                exit(1);
+                        } else {
+                                exit(0);
+                        }
+			
 		} else {
 			$err_msg = 'ERROR: Could not find snmp-field ' . implode(',', $dsGraph['snmpField']) . ' (';
 
