@@ -578,7 +578,7 @@ if (sizeof($parms)) {
 				if (sizeof($dsGraph['snmpValue'])) {
 					$req .= ' AND field_value = ' . db_qstr($dsGraph['snmpValue'][$index_snmp_filter]). ')';
 				} else {
-					$req .= ' AND field_value LIKE "%' . addslashes($dsGraph['snmpValueRegex'][$index_snmp_filter]) . '%")';
+					$req .= ' AND field_value REGEXP "' . addslashes($dsGraph['snmpValueRegex'][$index_snmp_filter]) . '")';
 				}
 
 				$index_snmp_filter++;
