@@ -313,7 +313,7 @@ function template_edit() {
 		'sysDescr' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('System Description Match'),
-			'description' => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Discovery Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'description' => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value' => '|arg1:sysDescr|',
 			'max_length' => '255',
 			),
