@@ -1,5 +1,26 @@
 Cacti CHANGELOG
 
+1.1.21
+-issue#938: Problems upgrading to 1.1.20 with one table alter statement
+-issue: Minor alignment issue on tables
+
+1.1.20
+-issue#920: Issue with scrollbars after update to 1.1.19 related to #902
+-issue#921: Tree Mode no longer expands to accomodate full tree item names
+-issue#922: When using LDAP domains some setings are not passed correctly to the Cacti LDAP library
+-issue#923: Warninga in cacti.log are displayed incorrectly
+-issue#926: Update Utilities page to provide more information on rebuilding poller cache
+-issue#927: Minor schema change to support XtraDB Cluster
+-issue#929: Overlapping frames on certain themes
+-issue#931: Aggregate graphs missing from list view
+-issue#933: Aggregate graphs page counter off
+-issue#935: Support utf8 printable in data query inserts
+-issue#936: TimeZone query failure undefined function
+-issue: Taking actions on users does not use callbacks
+-issue: Undefined constant in lib/snmp.php on RHEL7
+-issue: Human readable socket errno's not defined
+-issue: Audit of ping methods tcp, udp, and icmp ping. IPv6 will still not work till php 5.5.4
+
 1.1.19
 -issue#810: Scripts in packages don't match distribution
 -issue#919: Unable to upgrade to 1.1.18

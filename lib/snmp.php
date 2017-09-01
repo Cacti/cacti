@@ -802,7 +802,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 	$string = trim($string);
 
 	/* convert hex strings to numeric values */
-	if (is_hex_string($string) && $value_output_format == SNMP_VALUE_NUMERIC) {
+	if (is_hex_string($string) && $value_output_format == SNMP_STRING_OUTPUT_GUESS) {
 		$output = '';
 		$parts  = explode(' ', $string);
 

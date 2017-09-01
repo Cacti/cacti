@@ -42,6 +42,10 @@ td, th {
 	margin: 0px;
 }
 
+th {
+	white-space: nowrap;
+}
+
 h2 {
 	border-color: rgba(255,255,255,0.1);
 }
@@ -89,7 +93,7 @@ pre {
 	display:none;
 	position: relative;
 	z-index: 0;
-	padding-right: 15px;
+	padding-right: 5px;
 }
 
 #main > br {
@@ -102,7 +106,7 @@ pre {
 
 #navigation_right {
 	overflow-y: auto !important;
-	padding-left: 10px;
+	padding-left: 5px;
 }
 
 input, select {
@@ -734,7 +738,6 @@ label.ui-state-hover > span {
 	overflow-y:hidden;
 }
 
-
 .cactiGraphPageHeadBackdrop {
 	padding-bottom:0px;
 	float:right;
@@ -742,13 +745,16 @@ label.ui-state-hover > span {
 }
 
 .cactiPageBottom {
-	height: 35px;
+	height: 30px;
 	width: 100%;
 	border-bottom: 1px solid grey;
     background-color: transparent;
     float: right;
     text-align: right;
-    line-height:35px;
+    line-height: 30px;
+	position: fixed;
+	left: 0px;
+	bottom: 0px;
 }
 
 .cactiPageBottom a {
@@ -756,7 +762,6 @@ label.ui-state-hover > span {
 	padding:0px 8px;
 	text-decoration:none;
 	font-size: 16px;
-	#vertical-align:bottom;
 	outline-style: none;
 }
 
@@ -764,10 +769,6 @@ label.ui-state-hover > span {
 	padding-bottom:0px;
 	float:right;
 	position:fixed;
-}
-
-#navigation {
-	#margin-right: 5px;
 }
 
 .navigation {
@@ -800,6 +801,10 @@ label.ui-state-hover > span {
 
 .cactiTreeNavigationArea div:first-child {
 	padding-left: 5px;
+}
+
+.cactiTreeSearch {
+	padding-top: 5px;
 }
 
 .jstree {

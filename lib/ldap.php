@@ -161,21 +161,23 @@ class Ldap {
 		$this->version    = read_config_option('ldap_version');
 		$this->encryption = read_config_option('ldap_encryption');
 		$this->referrals  = read_config_option('ldap_referrals');
+
 		if (read_config_option('ldap_group_require') == 'on') {
 			$this->group_require = true;
 		} else {
 			$this->group_require = false;
 		}
+
 		$this->group_dn          = read_config_option('ldap_group_dn');
 		$this->group_attrib      = read_config_option('ldap_group_attrib');
 		$this->group_member_type = read_config_option('ldap_group_member_type');
 
 		/* Initialize LDAP parameters for Search */
 		$this->mode              = read_config_option('ldap_mode');
-		$this->specific_dn       = read_config_option('ldap_specific_dn');
-		$this->specific_password = read_config_option('ldap_specific_password');
 		$this->search_base       = read_config_option('ldap_search_base');
 		$this->search_filter     = read_config_option('ldap_search_filter');
+		$this->specific_dn       = read_config_option('ldap_specific_dn');
+		$this->specific_password = read_config_option('ldap_specific_password');
 
 		return true;
 	}

@@ -1,64 +1,35 @@
 // Host Autocomplete Magic
 var pageName = basename($(location).attr('pathname'));
 
-/* only perform the recalculation of elements at the final end of the windows resize event */
-var waitForFinalEvent = (function () {
-  var timers = {};
-  return function (callback, ms, uniqueId) {
-    if (!uniqueId) {
-      uniqueId = "Don't call this twice without a uniqueId";
-    }
-    if (timers[uniqueId]) {
-      clearTimeout (timers[uniqueId]);
-    }
-    timers[uniqueId] = setTimeout(callback, ms);
-  };
-})();
-
-function keepWindowSize() {
+function myKeepWindowSize() {
 	$(window).resize(function (event) {
-		waitForFinalEvent(function(){
-			/* close open dropdown menues first off */
-			$('.dropdownMenu > ul').hide();
+		/* close open dropdown menues first off */
+		$('.dropdownMenu > ul').hide();
 
-			heightPage = $(window).height();
-			heightPageHead = $('#cactiPageHead').outerHeight();
-			heightPageBottom = $('#cactiPageBottom').outerHeight();
-			heightPageContent = heightPage -heightPageHead -heightPageBottom +1;
-
-			$('body').css('height', heightPage);
-			$('#cactiContent').css('height', heightPageContent);
-
-			$('.cactiTreeNavigationArea').css('height', heightPageContent);
-			width = parseInt($('#searcher').width())+65;
-			$('.cactiTreeNavigationArea').css('width', width+'px');
-			$('.cactiTreeNavigationArea > div').css('padding-top', '5px');
-
-			/* check visibility of all tabs */
-			$('#submenu-ellipsis').empty();
-			$('.maintabs nav ul li a').each(function() {
-				id = $(this).attr('id');
-				if( $(this).offset().top !== 0 ) {
-					if( $('#' + id + '-ellipsis').length == 0 ) {
-						var str = $(this).parent().html();
-						var str2 = str.replace( id , id + '-ellipsis');
-						$('#submenu-ellipsis').prepend('<li>' + str2 + '</li>');
-						$('#'+ id + '-ellipsis').css('visibility','');
-						$(this).css('visibility', 'hidden');
-					}
-				}else {
-					$('#' + id + '-ellipsis').parent().remove();
-					$(this).css('visibility', 'visible');
+		/* check visibility of all tabs */
+		$('#submenu-ellipsis').empty();
+		$('.maintabs nav ul li a').each(function() {
+			id = $(this).attr('id');
+			if( $(this).offset().top !== 0 ) {
+				if( $('#' + id + '-ellipsis').length == 0 ) {
+					var str = $(this).parent().html();
+					var str2 = str.replace( id , id + '-ellipsis');
+					$('#submenu-ellipsis').prepend('<li>' + str2 + '</li>');
+					$('#'+ id + '-ellipsis').css('visibility','');
+					$(this).css('visibility', 'hidden');
 				}
-			});
-
-			if($("#submenu-ellipsis li").length == 0) {
-				$(".ellipsis").hide(0);
 			}else {
-				$(".ellipsis").show(0);
+				$('#' + id + '-ellipsis').parent().remove();
+				$(this).css('visibility', 'visible');
 			}
-		}, 200, "resize-content");
-	}).trigger('resize');
+		});
+
+		if($("#submenu-ellipsis li").length == 0) {
+			$(".ellipsis").hide(0);
+		}else {
+			$(".ellipsis").show(0);
+		}
+	}).resize();
 }
 
 function themeReady() {
@@ -67,7 +38,7 @@ function themeReady() {
 	var clickTimeout = false;
 	var hostOpen = false;
 
-	keepWindowSize();
+	myKeepWindowSize();
 
 	// Setup the navigation menu
 	setMenuVisibility();
@@ -118,11 +89,10 @@ function themeReady() {
 		+'</ul>'
 	+'</div>').appendTo('body');
 
-	/* Hey - No footer available ? */
-	if($('#cactiPageBottom').length == 0) {
+	if ($('#cactiPageBottom').length == 0) {
 		$('<div id="cactiPageBottom" class="cactiPageBottom"><a class="bottom_scroll_up action-icon-user" href="#"><i class="fa fa-arrow-circle-o-up"></i></a></div>').insertAfter('#cactiContent');
 	}
-	/* Console? Nope! */
+
 	submenu_counter = 10;
 
 	$('.maintabs nav ul li a').each( function() {

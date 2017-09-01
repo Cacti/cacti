@@ -53,6 +53,7 @@ class MibCache{
 
 	public function install($path, $replace=false, $mib_name='optional') {
 		global $config;
+
 		include_once($config['library_path'] . '/mib_parser.php');
 
 		$mp = new MibParser();
@@ -83,11 +84,11 @@ class MibCache{
 							str_replace("\r\n", '<br>', trim($object_params['description']))));
 
 					if ($object_params['otype'] == 'NOTIFICATION-TYPE') {
-						foreach($object_params['objects'] as $notication_object_index => $notication_object) {
+						foreach($object_params['objects'] as $notification_object_index => $notification_object) {
 							db_execute_prepared('INSERT INTO `snmpagent_cache_notifications` 
 								(`name`, `mib`, `attribute`, `sequence_id`) 
 								VALUES (?, ?, ?, ?)',
-								array($object_name, $object_params['mib'], $notication_object, $notication_object_index));
+								array($object_name, $object_params['mib'], $notification_object, $notification_object_index));
 						}
 					}
 				}else {

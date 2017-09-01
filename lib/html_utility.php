@@ -155,22 +155,24 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
    @arg $width - the width of the table element
    @arg $style_or_class - the style or class to apply to the table element
    @arg $title - optional title for the column */
-function form_selectable_cell($contents, $id, $width='', $style_or_class = '', $title = '') {
+function form_selectable_cell($contents, $id, $width = '', $style_or_class = '', $title = '') {
 	$output = '';
 
 	if ($style_or_class != '') {
 		if (strpos($style_or_class, ':') === false) {
-			$output = "class='" . $style_or_class . "'";
+			$output = "class='nowrap " . $style_or_class . "'";
 			if ($width != '') {
 				$output .= " style='width:$width;'";
 			}
 		} else {
-			$output = "style='" . $style_or_class;
+			$output = "class='nowrap' style='" . $style_or_class;
 			if ($width != '') {
-				$output .= ($output != '' ? ';':'') . "width:$width;";
+				$output .= ";width:$width;";
 			}
 			$output .= "'";
 		}
+	} else {
+		$output = 'class="nowrap"';
 	}
 
 	if ($title != '') {

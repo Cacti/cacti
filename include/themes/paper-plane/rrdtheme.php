@@ -1,11 +1,11 @@
 <?php
-$rrdcolors['back']   = '04335b';
+$rrdcolors['back']   = '1D1F21';
 $rrdcolors['canvas'] = '060606';
 $rrdcolors['shadea'] = '0B0B0B';
 $rrdcolors['shadeb'] = '292929';
 $rrdcolors['grid']   = '545454';
 $rrdcolors['mgrid']  = '6A6C6C';
-$rrdcolors['font']   = 'C3C3C3';
+$rrdcolors['font']   = 'FFFFFF';
 $rrdcolors['axis']   = '2C4D43';
 $rrdcolors['arrow']  = '2C4D43';
 $rrdcolors['frame']  = '060606';
