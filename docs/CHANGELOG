@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2
+-issue#122: Support a Site Branch Type
 -issue: Move Graph removal function to Graph API
 
 1.1.21
