@@ -486,60 +486,7 @@ function form_actions() {
 					set_request_var('delete_type', 1);
 				}
 
-				switch (get_nfilter_request_var('delete_type')) {
-					case '2': // delete all data sources referenced by this graph
-						$all_data_sources = array_rekey(db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
-							FROM data_template_data AS dtd
-							INNER JOIN data_template_rrd AS dtr
-							ON dtd.local_data_id=dtr.local_data_id
-							INNER JOIN graph_templates_item AS gti
-							ON dtr.id=gti.task_item_id
-							WHERE ' . array_to_sql_or($selected_items, 'gti.local_graph_id') . '
-							AND dtd.local_data_id > 0'), 'local_data_id', 'local_data_id');
-
-						$data_sources = array_rekey(db_fetch_assoc('SELECT dtd.local_data_id,
-							COUNT(DISTINCT gti.local_graph_id) AS graphs
-							FROM data_template_data AS dtd
-							INNER JOIN data_template_rrd AS dtr
-							ON dtd.local_data_id=dtr.local_data_id
-							INNER JOIN graph_templates_item AS gti
-							ON dtr.id=gti.task_item_id
-							WHERE dtd.local_data_id > 0
-							GROUP BY dtd.local_data_id
-							HAVING graphs = 1
-							AND ' . array_to_sql_or($all_data_sources, 'local_data_id')), 'local_data_id', 'local_data_id');
-
-						if (sizeof($data_sources)) {
-							api_data_source_remove_multi($data_sources);
-							api_plugin_hook_function('data_source_remove', $data_sources);
-						}
-
-						api_graph_remove_multi($selected_items);
-						api_plugin_hook_function('graphs_remove', $selected_items);
-
-						/* Remove orphaned data sources */
-						$data_sources = array_rekey(db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
-							FROM data_template_data AS dtd
-							INNER JOIN data_template_rrd AS dtr
-							ON dtd.local_data_id=dtr.local_data_id
-							LEFT JOIN graph_templates_item AS gti
-							ON dtr.id=gti.task_item_id
-							WHERE ' . array_to_sql_or($all_data_sources, 'dtd.local_data_id') . '
-							AND gti.local_graph_id IS NULL
-							AND dtd.local_data_id > 0'), 'local_data_id', 'local_data_id');
-
-						if (sizeof($data_sources)) {
-							api_data_source_remove_multi($data_sources);
-							api_plugin_hook_function('data_source_remove', $data_sources);
-						}
-
-						break;
-					case '1':
-						api_graph_remove_multi($selected_items);
-						api_plugin_hook_function('graphs_remove', $selected_items);
-
-						break;
-				}
+				api_delete_graphs($selected_items, get_request_var('delete_type'));
 			} elseif (get_request_var('drp_action') == '2') { // change graph template
 				$gt_id_unparsed      = get_nfilter_request_var('graph_template_id');
 				$gt_id_prev_unparsed = get_nfilter_request_var('graph_template_id_prev');
