@@ -333,11 +333,15 @@ function form_actions() {
 
 				switch (get_request_var('delete_type')) {
 					case '2': /* delete all graph items tied to this data source */
-						$data_template_rrds = array_rekey(db_fetch_assoc('SELECT id FROM data_template_rrd WHERE ' . array_to_sql_or($selected_items, 'local_data_id')), 'id', 'id');
+						$data_template_rrds = array_rekey(db_fetch_assoc('SELECT id 
+							FROM data_template_rrd 
+							WHERE ' . array_to_sql_or($selected_items, 'local_data_id')), 'id', 'id');
 
 						/* loop through each data source item */
 						if (sizeof($data_template_rrds) > 0) {
-							db_execute('DELETE FROM graph_templates_item WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ') and local_graph_id > 0');
+							db_execute('DELETE FROM graph_templates_item 
+								WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ') 
+								AND local_graph_id > 0');
 						}
 
 						api_plugin_hook_function('graph_items_remove', $data_template_rrds);
@@ -543,15 +547,20 @@ function data_edit($incform = true) {
 	if (!isempty_request_var('id')) {
 		$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id
 			FROM data_template_data
-			WHERE local_data_id = ?', array(get_request_var('id')));
+			WHERE local_data_id = ?', 
+			array(get_request_var('id')));
 
 		$template_data = db_fetch_row_prepared('SELECT id, data_input_id
 			FROM data_template_data
-			WHERE data_template_id = ? AND local_data_id = 0', array($data['data_template_id']));
+			WHERE data_template_id = ? 
+			AND local_data_id = 0', 
+			array($data['data_template_id']));
 
 		$host = db_fetch_row_prepared('SELECT host.id, host.hostname
 			FROM (data_local, host)
-			WHERE data_local.host_id = host.id and data_local.id = ?', array(get_request_var('id')));
+			WHERE data_local.host_id = host.id 
+			AND data_local.id = ?', 
+			array(get_request_var('id')));
 	}
 
 	if ($incform) {
@@ -561,15 +570,20 @@ function data_edit($incform = true) {
 	$i = 0;
 	if (!empty($data['data_input_id'])) {
 		/* get each INPUT field for this data input source */
-		$fields = db_fetch_assoc_prepared("SELECT *
+		$fields = db_fetch_assoc_prepared('SELECT *
 			FROM data_input_fields
 			WHERE data_input_id = ?
-			AND input_output = 'in'
-			ORDER BY name",
+			AND input_output = "in"
+			ORDER BY name',
 			array($data['data_input_id'])
 		);
 
-		html_start_box( __('Custom Data [data input: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($data['data_input_id']))) ),'100%', '', '3', 'center', '');
+		$data_input_name = db_fetch_cell_prepared('SELECT name 
+			FROM data_input 
+			WHERE id = ?', 
+			array($data['data_input_id']));
+
+		html_start_box(__('Custom Data [data input: %s]', $data_input_name), '100%', '', '3', 'center', '');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -644,8 +658,14 @@ function ds_rrd_remove() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM data_template_rrd WHERE id = ?', array(get_request_var('id')));
-	db_execute_prepared('UPDATE graph_templates_item SET task_item_id = 0 WHERE task_item_id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM data_template_rrd 
+		WHERE id = ?', 
+		array(get_request_var('id')));
+
+	db_execute_prepared('UPDATE graph_templates_item 
+		SET task_item_id = 0 
+		WHERE task_item_id = ?', 
+		array(get_request_var('id')));
 
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('local_data_id'));
 }
@@ -655,7 +675,11 @@ function ds_rrd_add() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared("INSERT INTO data_template_rrd (local_data_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) VALUES (?, 100, 0, 600, 1, 'ds')", array(get_request_var('id')));
+	db_execute_prepared("INSERT INTO data_template_rrd 
+		(local_data_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
+		VALUES (?, 100, 0, 600, 1, 'ds')", 
+		array(get_request_var('id')));
+
 	$data_template_rrd_id = db_fetch_insert_id();
 
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
@@ -864,9 +888,13 @@ function ds_edit() {
 
 	/* only display the "inputs" area if we are using a data template for this data source */
 	if (!empty($data['data_template_id'])) {
-		$template_data_rrds = db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE local_data_id = ? ORDER BY data_source_name', array(get_request_var('id')));
+		$template_data_rrds = db_fetch_assoc_prepared('SELECT * 
+			FROM data_template_rrd 
+			WHERE local_data_id = ? 
+			ORDER BY data_source_name', 
+			array(get_request_var('id')));
 
-		html_start_box( __('Supplemental Data Template Data'), '100%', true, '3', 'center', '');
+		html_start_box(__('Supplemental Data Template Data'), '100%', true, '3', 'center', '');
 
 		draw_nontemplated_fields_data_source($data['data_template_id'], $data['local_data_id'], $data, '|field|', __('Data Source Fields'), true, true, 0);
 		draw_nontemplated_fields_data_source_item($data['data_template_id'], $template_data_rrds, '|field|_|id|', __('Data Source Item Fields'), true, true, true, 0);
@@ -910,7 +938,11 @@ function ds_edit() {
 
 		/* fetch ALL rrd's for this data source */
 		if (!isempty_request_var('id')) {
-			$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name FROM data_template_rrd WHERE local_data_id = ? ORDER BY data_source_name', array(get_request_var('id')));
+			$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name 
+				FROM data_template_rrd 
+				WHERE local_data_id = ? 
+				ORDER BY data_source_name', 
+				array(get_request_var('id')));
 		}
 
 		/* select the first "rrd" of this data source by default */
@@ -920,10 +952,20 @@ function ds_edit() {
 
 		/* get more information about the rrd we chose */
 		if (!isempty_request_var('view_rrd')) {
-			$local_data_template_rrd_id = db_fetch_cell_prepared('SELECT local_data_template_rrd_id FROM data_template_rrd WHERE id = ?', array(get_request_var('view_rrd')));
+			$local_data_template_rrd_id = db_fetch_cell_prepared('SELECT local_data_template_rrd_id 
+				FROM data_template_rrd 
+				WHERE id = ?', 
+				array(get_request_var('view_rrd')));
 
-			$rrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array(get_request_var('view_rrd')));
-			$rrd_template = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array($local_data_template_rrd_id));
+			$rrd = db_fetch_row_prepared('SELECT * 
+				FROM data_template_rrd 
+				WHERE id = ?', 
+				array(get_request_var('view_rrd')));
+
+			$rrd_template = db_fetch_row_prepared('SELECT * 
+				FROM data_template_rrd 
+				WHERE id = ?', 
+				array($local_data_template_rrd_id));
 
 			$header_label = '[edit: ' . $rrd['data_source_name'] . ']';
 		} else {
@@ -1036,7 +1078,7 @@ function ds_edit() {
 					$diff = rrdtool_cacti_compare(get_request_var('id'), $rrd_info);
 					rrdtool_info2html($rrd_info, $diff);
 					if (sizeof($diff)) {
-						html_start_box( __('RRDtool Tune Info'), '100%', '', '3', 'center', '');
+						html_start_box(__('RRDtool Tune Info'), '100%', '', '3', 'center', '');
 						rrdtool_tune($rrd_info['filename'], $diff, true);
 						html_end_box();
 					}
