@@ -545,8 +545,6 @@ function applySkin() {
 		themeReady();
 	}
 
-	tuneFilter();
-
 	makeFiltersResponsive();
 
 	setupResponsiveMenuAndTabs();
@@ -842,6 +840,55 @@ function responsiveUI(event) {
 			tuneTable(object, mainWidth);
 		});
 	});
+
+	myColumns = $('#columns').val();
+	graphRow  = $('.tableRowGraph').width();
+	drillDown = $('.graphDrillDown:first').outerWidth() + 10;
+
+	if (mainWidth < graphRow) {
+		graphRow = mainWidth - drillDown;
+	}
+
+	//console.log('mainWidth: '+mainWidth+', graphRow: '+graphRow+', drillDown: '+drillDown+', myColumns: '+myColumns);
+
+	myWidth = (graphRow-(drillDown * myColumns)) / myColumns;
+
+	$('.graphimage').each(function() {
+		graph_id = $(this).attr('id').replace('wrapper_','');
+
+		/* original image attributes */
+		image_width  = $(this).attr('image_width');
+		image_height = $(this).attr('image_height');
+
+		/* original image attributes */
+		graph_height = $(this).attr('graph_height');
+		graph_width  = $(this).attr('graph_width');
+
+		/* original image offsets for zoom */
+		graph_top    = $(this).attr('graph_top');
+		graph_left   = $(this).attr('graph_left');
+
+		if (myWidth < image_width) {
+			ratio = myWidth / image_width;
+
+			new_width      = image_width  * ratio;
+			new_height     = image_height * ratio;
+			new_graph_top  = graph_top  * ratio;
+			new_graph_left = graph_left * ratio;
+		} else if (graph_width != image_width) {
+			new_width      = image_width;
+			new_height     = image_height;
+			new_graph_top  = graph_top * (image_width/graph_width);
+			new_graph_left = graph_top * (image_width/graph_width);
+		}
+
+		$(this).attr('graph_width', new_width);
+		$(this).attr('graph_height', new_height);
+		$(this).attr('graph_top', new_graph_top);
+		$(this).attr('graph_left', new_graph_left);
+		$(this).css('width', new_width);
+		$(this).css('height', new_height);
+	});
 }
 
 function countHiddenCols(object) {
@@ -921,19 +968,32 @@ function tuneTable(object, width) {
 }
 
 function tuneFilter(object, width) {
-	filter = 'input[id="refresh"], input[id="clear"], input[id="save"], input[id="tsrefresh"], input[id="tsclear"]';
-	buttons = $(object).find(filter).length;
+	filter  = 'input[id="refresh"], input[id="clear"], input[id="save"], input[id="tsrefresh"], input[id="tsclear"]';
+	buttons = 0;
+	visTds  = $(object).find('td:visible').length;
+
+	// Find the td's with buttons
+	$($(object).find('td').get().reverse()).each(function() {
+		if ($(this).find(filter).length > 0) {
+			buttons++;
+		}
+	});
+	minTds  = 2 + buttons;
 
 	if ($(object).width() > width) {
 		$($(object).find('td').get().reverse()).each(function() {
-			if (!$(this).find(filter).length) {
-				// always show two objects
-				if ($(object).find('td:visible').length - buttons > 2) {
-					$(this).hide();
+			if (visTds < minTds) {
+				return false;
+			}
 
-					if ($(this).closest('td').prev().find('input, select').length == 0) {
-						$(this).closest('td').prev().hide();
-					}
+			if ($(this).find(filter).length == 0) {
+				// always show two objects
+				$(this).hide();
+				visTds--;
+
+				if ($(this).closest('td').prev().find('input, select').length == 0) {
+					$(this).closest('td').prev().hide();
+					visTds--;
 				}
 			}
 
@@ -1784,9 +1844,7 @@ function redrawGraph(graph_id) {
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
 
-	if (isThumb) {
-		myWidth = (mainWidth-(30*myColumns))/myColumns;
-	}
+	myWidth = (mainWidth-(30*myColumns))/myColumns;
 
 	graph_height=$('#wrapper_'+graph_id).attr('graph_height');
 	graph_width=$('#wrapper_'+graph_id).attr('graph_width');
