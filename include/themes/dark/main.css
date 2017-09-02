@@ -535,7 +535,7 @@ label {
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
-.odd td, .even td, .even-alternate td {
+.odd td, .even td, .even-alternate td, .selectable td {
 	padding: 2px;
 }
 
@@ -1512,11 +1512,6 @@ th.secondarySort {
 	background: linear-gradient(to bottom,  #45484d 0%,#000000 100%); /* W3C */
 }
 
-.tableRowGraph td {
-	padding: 3px;
-	vertical-align: top;
-}
-
 .image_table {
 	width:100%;
 }
@@ -1812,6 +1807,7 @@ div#gtabs {
 	float:left;
 	margin:0 3px 0 0;
 	position:relative;
+	line-height: 14px;
 }
 
 .tabs li.current a, .maintabs li.current a {
