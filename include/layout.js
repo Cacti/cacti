@@ -1841,13 +1841,22 @@ function dryRunRangeFill(local_graph_id) {
 
 function redrawGraph(graph_id) {
 	mainWidth = $('#main').width();
-	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
 
-	myWidth = (mainWidth-(30*myColumns))/myColumns;
+	myColumns = $('#columns').val();
+	graphRow  = $('.tableRowGraph').width();
+	drillDown = $('.graphDrillDown:first').outerWidth() + 10;
 
-	graph_height=$('#wrapper_'+graph_id).attr('graph_height');
-	graph_width=$('#wrapper_'+graph_id).attr('graph_width');
+	if (mainWidth < graphRow) {
+		graphRow = mainWidth - drillDown;
+	}
+
+	//console.log('mainWidth: '+mainWidth+', graphRow: '+graphRow+', drillDown: '+drillDown+', myColumns: '+myColumns);
+
+	myWidth = (graphRow-(drillDown * myColumns)) / myColumns;
+
+	graph_height= $('#wrapper_'+graph_id).attr('graph_height');
+	graph_width = $('#wrapper_'+graph_id).attr('graph_width');
 
 	$.getJSON(urlPath+'graph_json.php?rra_id=0'+
 		'&local_graph_id='+graph_id+
@@ -1857,7 +1866,7 @@ function redrawGraph(graph_id) {
 		'&graph_width='+graph_width+
 		(isThumb ? '&graph_nolegend=true':''),
 		function(data) {
-			if (isThumb && myWidth < data.image_width) {
+			if (myWidth < data.image_width) {
 				ratio=myWidth/data.image_width;
 				data.image_width  *= ratio;
 				data.image_height *= ratio;
