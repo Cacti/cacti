@@ -384,13 +384,13 @@ if (!$using_cacti) {
 $seed = mt_rand();
 if ($using_cacti) {
 	if ($config['cacti_server_os'] == 'win32') {
-		$tempdir  = getenv('TEMP');
+		$tempdir  = read_config_option('spikekill_backupdir');
 		$xmlfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
 		$bakfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
 	} else {
-		$tempdir = '/tmp';
-		$xmlfile = '/tmp/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
-		$bakfile = '/tmp/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
+		$tempdir = read_config_option('spikekill_backupdir');
+		$xmlfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
+		$bakfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
 	}
 } elseif (substr_count(PHP_OS, 'WIN')) {
 	$tempdir  = getenv('TEMP');
@@ -398,8 +398,8 @@ if ($using_cacti) {
 	$bakfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
 } else {
 	$tempdir = '/tmp';
-	$xmlfile = '/tmp/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
-	$bakfile = '/tmp/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
+	$xmlfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.dump.' . $seed;
+	$bakfile = $tempdir . '/' . str_replace('.rrd', '', basename($rrdfile)) . '.backup.' . $seed . '.rrd';
 }
 
 $strout = '';
@@ -724,6 +724,11 @@ if ($using_cacti) {
 	} elseif($debug) {
 		cacti_log("NOTE: Removed '$total_kills' Spikes from '$rrdfile', Method:'$method'", false, 'WEBUI');
 	}
+}
+
+if ($using_cacti) {
+	unlink($xmlfile);
+	unlink($bakfile);
 }
 
 print $strout;
