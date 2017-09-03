@@ -898,8 +898,6 @@ function responsiveResizeGraphs() {
 		$(this).css('width', new_image_width);
 		$(this).css('height', new_image_height);
 
-		$(this).closest('.graphWrapper').attr('graph_width', new_image_width).attr('graph_height', new_image_height);
-
 		$('#zoom-container').remove();
 		$(this).zoom({
 			inputfieldStartTime : 'date1',
@@ -1928,7 +1926,7 @@ function redrawGraph(graph_id) {
 				" canvas_height='"+data.graph_height+"'"+
 				" value_min='"+data.value_min+"'"+
 				" value_max='"+data.value_max+"'>"
-			).attr('graph_width', data.graph_width).attr('graph_height', data.graph_height);
+			);
 		}
 	);
 }
@@ -2015,7 +2013,7 @@ function initializeGraphs() {
 					" canvas_height='"+data.graph_height+"'"+
 					" value_min='"+data.value_min+"'"+
 					" value_max='"+data.value_max+"'>"
-				).attr('graph_width', data.graph_width).attr('graph_height', data.graph_height);
+				);
 
 				$("#graph_"+data.local_graph_id).zoom({
 					inputfieldStartTime : 'date1',
