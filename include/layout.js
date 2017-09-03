@@ -786,12 +786,6 @@ function responsiveUI(event) {
 		tree = false;
 	}
 
-	if ($('#navigation').length) {
-		mainWidth = $('body').innerWidth() - $('#navigation').width();
-	} else {
-		mainWidth = $('body').innerWidth();
-	}
-
 	if ($(window).width() < 640) {
 		menuHide(tree);
 		menuHideResponsive = true;
@@ -806,6 +800,12 @@ function responsiveUI(event) {
 		}
 	}else if (!menuOpen) {
 		menuShow(tree);
+	}
+
+	if ($('#navigation').length && $('#navigation').is(':visible')) {
+		mainWidth = $('body').innerWidth() - $('#navigation').width();
+	} else {
+		mainWidth = $('body').innerWidth();
 	}
 
 	/* change textbox and textarea widths */
@@ -840,54 +840,72 @@ function responsiveUI(event) {
 			tuneTable(object, mainWidth);
 		});
 	});
+}
+
+function responsiveResizeGraphs() {
+	if ($('.graphimage').length == 0) {
+		return false;
+	}
+
+	if ($('#navigation').length && $('#navigation').is(':visible')) {
+		mainWidth = $('body').innerWidth() - $('#navigation').width();
+	} else {
+		mainWidth = $('body').innerWidth();
+	}
 
 	myColumns = $('#columns').val();
+	isThumb   = $('#thumbnails').is(':checked');
 	graphRow  = $('.tableRowGraph').width();
-	drillDown = $('.graphDrillDown:first').outerWidth() + 10;
+	drillDown = $('.graphDrillDown:first').outerWidth() + 15;
 
 	if (mainWidth < graphRow) {
 		graphRow = mainWidth - drillDown;
+	} else if (graphRow == 0) {
+		graphRow = mainWidth;
 	}
 
-	//console.log('mainWidth: '+mainWidth+', graphRow: '+graphRow+', drillDown: '+drillDown+', myColumns: '+myColumns);
-
-	myWidth = (graphRow-(drillDown * myColumns)) / myColumns;
+	myWidth = parseInt((graphRow - (drillDown * myColumns)) / myColumns);
 
 	$('.graphimage').each(function() {
 		graph_id = $(this).attr('id').replace('wrapper_','');
 
 		/* original image attributes */
-		image_width  = $(this).attr('image_width');
-		image_height = $(this).attr('image_height');
+		image_width   = $(this).attr('image_width');
+		image_height  = $(this).attr('image_height');
+		canvas_top    = $(this).attr('canvas_top');
+		canvas_left   = $(this).attr('canvas_left');
+		canvas_width  = $(this).attr('canvas_width');
+		canvas_height = $(this).attr('canvas_height');
 
-		/* original image attributes */
-		graph_height = $(this).attr('graph_height');
-		graph_width  = $(this).attr('graph_width');
-
-		/* original image offsets for zoom */
-		graph_top    = $(this).attr('graph_top');
-		graph_left   = $(this).attr('graph_left');
-
-		if (myWidth < image_width) {
+		if (isThumb || myWidth < image_width) {
 			ratio = myWidth / image_width;
-
-			new_width      = image_width  * ratio;
-			new_height     = image_height * ratio;
-			new_graph_top  = graph_top  * ratio;
-			new_graph_left = graph_left * ratio;
-		} else if (graph_width != image_width) {
-			new_width      = image_width;
-			new_height     = image_height;
-			new_graph_top  = graph_top * (image_width/graph_width);
-			new_graph_left = graph_top * (image_width/graph_width);
+		} else {
+			ratio = 1;
 		}
 
-		$(this).attr('graph_width', new_width);
-		$(this).attr('graph_height', new_height);
-		$(this).attr('graph_top', new_graph_top);
-		$(this).attr('graph_left', new_graph_left);
-		$(this).css('width', new_width);
-		$(this).css('height', new_height);
+		new_image_width       = parseInt(image_width * ratio)
+		new_image_height      = parseInt(image_height * ratio)
+		new_canvas_width      = parseInt(canvas_width  * ratio);
+		new_canvas_height     = parseInt(canvas_height * ratio);
+		new_canvas_graph_top  = parseInt(canvas_top  * ratio);
+		new_canvas_graph_left = parseInt(canvas_left * ratio);
+
+		$(this).attr('graph_width', new_canvas_width);
+		$(this).attr('graph_height', new_canvas_height);
+		$(this).attr('graph_top', new_canvas_graph_top);
+		$(this).attr('graph_left', new_canvas_graph_left);
+
+		$(this).css('width', new_image_width);
+		$(this).css('height', new_image_height);
+
+		$(this).closest('.graphWrapper').attr('graph_width', new_image_width).attr('graph_height', new_image_height);
+
+		$('#zoom-container').remove();
+		$(this).zoom({
+			inputfieldStartTime : 'date1',
+			inputfieldEndTime : 'date2',
+			serverTimeOffset : timeOffset
+		});
 	});
 }
 
@@ -1022,35 +1040,48 @@ function tuneFilter(object, width) {
 	}
 }
 
-function menuHide(tree) {
-	curMargin = $('#navigation_right').css('margin-left');
+function menuHide() {
+	myClass = '';
+    curMargin = $('#navigation').outerWidth();
 	if (curMargin > 0) {
 		marginLeft = curMargin;
 	}
 
-	if (tree) {
+	if ($('.cactiTreeNavigationArea').length) {
 		myClass = '.cactiTreeNavigationArea';
-	}else{
+	} else if ($('.cactiConsoleNavigationArea').length) {
 		myClass = '.cactiConsoleNavigationArea';
 	}
 
 	$('#navigation_right').animate({'margin-left': '0px'}, 20);
-	$(myClass).hide('slide', {direction: 'left'}, 20);
+
+	if (myClass != '') {
+		$(myClass).hide('slide', {direction: 'left'}, 20, function() {
+			responsiveResizeGraphs();
+		});
+	}
 
 	menuOpen = false;
 }
 
 function menuShow(tree) {
-	if (tree) {
+	myClass = '';
+
+	if ($('.cactiTreeNavigationArea').length) {
 		myClass = '.cactiTreeNavigationArea';
-	}else{
+	} else if ($('.cactiConsoleNavigationArea').length) {
 		myClass = '.cactiConsoleNavigationArea';
 	}
 
-	if (marginLeft != null) {
+	if (marginLeft > 0) {
 		$('#navigation_right').animate({'margin-left': marginLeft}, 20);
 	}
-	$(myClass).show('slide', {direction: 'left'}, 20);
+
+	if (myClass != '') {
+		$(myClass).show('slide', {direction: 'left'}, 20, function() {
+			responsiveResizeGraphs();
+		});
+	}
 
 	menuOpen = true;
 }
@@ -1555,6 +1586,8 @@ function keepWindowSize() {
 
 		navWidth = $('#navigation').width();
 		$('#searcher').css('width', navWidth-70);
+
+		responsiveResizeGraphs();
 	}).resize();
 }
 
@@ -1849,9 +1882,9 @@ function redrawGraph(graph_id) {
 
 	if (mainWidth < graphRow) {
 		graphRow = mainWidth - drillDown;
+	} else if (graphRow == 0) {
+		graphRow = mainWidth;
 	}
-
-	//console.log('mainWidth: '+mainWidth+', graphRow: '+graphRow+', drillDown: '+drillDown+', myColumns: '+myColumns);
 
 	myWidth = (graphRow-(drillDown * myColumns)) / myColumns;
 
@@ -1868,15 +1901,34 @@ function redrawGraph(graph_id) {
 		function(data) {
 			if (myWidth < data.image_width) {
 				ratio=myWidth/data.image_width;
-				data.image_width  *= ratio;
-				data.image_height *= ratio;
-				data.graph_width  *= ratio;
-				data.graph_height *= ratio;
-				data.graph_top    *= ratio;
-				data.graph_left   *= ratio;
+				data.image_width  = parseInt(data.image_width  * ratio);
+				data.image_height = parseInt(data.image_height * ratio);
+				data.graph_width  = parseInt(data.graph_width  * ratio);
+				data.graph_height = parseInt(data.graph_height * ratio);
+				data.graph_top    = parseInt(data.graph_top  * ratio);
+				data.graph_left   = parseInt(data.graph_left * ratio);
 			}
 
-			$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+			$('#wrapper_'+data.local_graph_id).html(
+				"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
+				" src='data:image/"+data.type+";base64,"+data.image+"'"+
+				" graph_start='"+data.graph_start+"'"+
+				" graph_end='"+data.graph_end+"'"+
+				" graph_left='"+data.graph_left+"'"+
+				" graph_top='"+data.graph_top+"'"+
+				" graph_width='"+data.graph_width+"'"+
+				" graph_height='"+data.graph_height+"'"+
+				" width='"+data.image_width+"'"+
+				" height='"+data.image_height+"'"+
+				" image_width='"+data.image_width+"'"+
+				" image_height='"+data.image_height+"'"+
+				" canvas_top='"+data.graph_top+"'"+
+				" canvas_left='"+data.graph_left+"'"+
+				" canvas_width='"+data.graph_width+"'"+
+				" canvas_height='"+data.graph_height+"'"+
+				" value_min='"+data.value_min+"'"+
+				" value_max='"+data.value_max+"'>"
+			).attr('graph_width', data.graph_width).attr('graph_height', data.graph_height);
 		}
 	);
 }
@@ -1936,20 +1988,41 @@ function initializeGraphs() {
 			function(data) {
 				if (myWidth < data.image_width) {
 					ratio=myWidth/data.image_width;
-					data.image_width  *= ratio;
-					data.image_height *= ratio;
-					data.graph_width  *= ratio;
-					data.graph_height *= ratio;
-					data.graph_top    *= ratio;
-					data.graph_left   *= ratio;
+					data.image_width  = parseInt(data.image_width  * ratio);
+					data.image_height = parseInt(data.image_height * ratio);
+					data.graph_width  = parseInt(data.graph_width  * ratio);
+					data.graph_height = parseInt(data.graph_height * ratio);
+					data.graph_top    = parseInt(data.graph_top  * ratio);
+					data.graph_left   = parseInt(data.graph_left * ratio);
 				}
 
-				$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+				$('#wrapper_'+data.local_graph_id).html(
+					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
+					" src='data:image/"+data.type+";base64,"+data.image+"'"+
+					" graph_start='"+data.graph_start+"'"+
+					" graph_end='"+data.graph_end+"'"+
+					" graph_left='"+data.graph_left+"'"+
+					" graph_top='"+data.graph_top+"'"+
+					" graph_width='"+data.graph_width+"'"+
+					" graph_height='"+data.graph_height+"'"+
+					" width='"+data.image_width+"'"+
+					" height='"+data.image_height+"'"+
+					" image_width='"+data.image_width+"'"+
+					" image_height='"+data.image_height+"'"+
+					" canvas_top='"+data.graph_top+"'"+
+					" canvas_left='"+data.graph_left+"'"+
+					" canvas_width='"+data.graph_width+"'"+
+					" canvas_height='"+data.graph_height+"'"+
+					" value_min='"+data.value_min+"'"+
+					" value_max='"+data.value_max+"'>"
+				).attr('graph_width', data.graph_width).attr('graph_height', data.graph_height);
+
 				$("#graph_"+data.local_graph_id).zoom({
 					inputfieldStartTime : 'date1',
 					inputfieldEndTime : 'date2',
 					serverTimeOffset : timeOffset
 				});
+
 				realtimeArray[data.local_graph_id] = false;
 		});
 	});
@@ -1985,7 +2058,11 @@ function initializeGraphs() {
 		if (realtimeArray[graph_id]) {
 			$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
 			$(this).html("<img class='drillDown' title='"+realtimeClickOn+"' alt='' src='"+urlPath+"images/chart_curve_go.png'>");
-			$(this).find('img').tooltip().zoom({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : timeOffset });
+			$(this).find('img').tooltip().zoom({ 
+				inputfieldStartTime : 'date1', 
+				inputfieldEndTime : 'date2', 
+				serverTimeOffset : timeOffset 
+			});
 			realtimeArray[graph_id] = false;
 			setFilters();
 		}else{
