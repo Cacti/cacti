@@ -855,8 +855,12 @@ function responsiveResizeGraphs() {
 
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
-	graphRow  = $('.tableRowGraph').width();
+	graphRow  = $('.tableRowGraph:first').width();
 	drillDown = $('.graphDrillDown:first').outerWidth() + 15;
+
+	if (myColumns == null) {
+		myColumns = 1;
+	}
 
 	if (mainWidth < graphRow) {
 		graphRow = mainWidth - drillDown;
