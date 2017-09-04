@@ -93,7 +93,7 @@ $xport_array = rrdtool_function_xport(get_request_var('local_graph_id'), get_req
 
 /* Make graph title the suggested file name */
 if (is_array($xport_array['meta'])) {
-	$filename = $xport_array['meta']['title_cache'] . '.csv';
+	$filename = htmlspecialchars_decode($xport_array['meta']['title_cache']) . '.csv';
 } else {
 	$filename = 'graph_export.csv';
 }
@@ -117,8 +117,9 @@ if (isset_request_var('format') && get_nfilter_request_var('format') == 'table')
 
 if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 	if (!$html) {
-		print '"' . __('Title') . '","'          . $xport_array['meta']['title_cache']                . '"' . "\n";
-		print '"' . __('Vertical Label') . '","' . $xport_array['meta']['vertical_label']             . '"' . "\n";
+		print '"' . __('Title') . '","'          . htmlspecialchars_decode($xport_array['meta']['title_cache'])    . '"' . "\n";
+		print '"' . __('Vertical Label') . '","' . htmlspecialchars_decode($xport_array['meta']['vertical_label']) . '"' . "\n";
+
 		print '"' . __('Start Date') . '","'     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '"' . "\n";
 		print '"' . __('End Date') . '","'       . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step']*($xport_array['meta']['rows']-1) : $xport_array['meta']['end']) . '"' . "\n";
 		print '"' . __('Step') . '","'           . $xport_array['meta']['step']                       . '"' . "\n";
