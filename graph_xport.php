@@ -93,7 +93,7 @@ $xport_array = rrdtool_function_xport(get_request_var('local_graph_id'), get_req
 
 /* Make graph title the suggested file name */
 if (is_array($xport_array['meta'])) {
-	$filename = htmlspecialchars_decode($xport_array['meta']['title_cache']) . '.csv';
+	$filename = $xport_array['meta']['title_cache'] . '.csv';
 } else {
 	$filename = 'graph_export.csv';
 }
