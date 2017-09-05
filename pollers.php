@@ -263,7 +263,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$pollers .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($matches[1]))) . '</li>';
+			$pollers .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($matches[1]))) . '</li>';
 			$poller_array[$i] = $matches[1];
 
 			$i++;
@@ -348,7 +348,7 @@ function poller_edit() {
 
 	if (!isempty_request_var('id')) {
 		$poller = db_fetch_row_prepared('SELECT * FROM poller WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Site [edit: %s]', htmlspecialchars($poller['name']));
+		$header_label = __('Site [edit: %s]', html_escape($poller['name']));
 	} else {
 		$header_label = __('Site [new]');
 	}
@@ -528,7 +528,7 @@ function pollers() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>

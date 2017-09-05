@@ -312,7 +312,7 @@ function update_show_current () {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -434,7 +434,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 
 	$row = plugin_actions($plugin);
 
-	$row .= "<td><a href='" . htmlspecialchars($plugin['webpage']) . "' target='_blank'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">' . __('ERROR: Directory Missing') . '</span>)') . '</td>';
+	$row .= "<td><a href='" . html_escape($plugin['webpage']) . "' target='_blank'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">' . __('ERROR: Directory Missing') . '</span>)') . '</td>';
 
 	$row .= "<td class='nowrap'>" . filter_value($plugin['name'], get_request_var('filter')) . "</td>\n";
 
@@ -451,12 +451,12 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 	if ($include_ordering) {
 		$row .= "<td class='nowrap right'>";
 		if (!$first_plugin) {
-			$row .= "<a class='pic fa fa-caret-up moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __esc('Order Before Previous Plugin') . "'></a>";
+			$row .= "<a class='pic fa fa-caret-up moveArrow' href='" . html_escape($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __esc('Order Before Previous Plugin') . "'></a>";
 		} else {
 			$row .= '<span class="moveArrowNone"></span>';
 		}
 		if (!$last_plugin) {
-			$row .= "<a class='pic fa fa-caret-down moveArrow' href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='" . __esc('Order After Next Plugin') . "'></a>";
+			$row .= "<a class='pic fa fa-caret-down moveArrow' href='" . html_escape($config['url_path'] . 'plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='" . __esc('Order After Next Plugin') . "'></a>";
 		} else {
 			$row .= '<span class="moveArrowNone"></span>';
 		}
@@ -480,19 +480,19 @@ function plugin_actions($plugin) {
 	$link = '<td>';
 	switch ($plugin['status']) {
 		case '0': // Not Installed
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __esc('Install Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
+			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __esc('Install Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
 			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
 			break;
 		case '1':	// Currently Active
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/stop.png'></a>";
+			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/stop.png'></a>";
 			break;
 		case '2': // Configuration issues
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
 			break;
 		case '4':	// Installed but not active
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
-			$link .= "<a href='" . htmlspecialchars($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/accept.png'></a>";
+			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/accept.png'></a>";
 			break;
 		default: // Old PIA
 			$link .= "<a href='#' title='" . __esc('Plugin is not compatible') . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";

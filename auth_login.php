@@ -93,7 +93,7 @@ if (get_nfilter_request_var('action') == 'login') {
 
 		if (!$user && read_config_option('user_template') == '0' && read_config_option('guest_user') == '0') {
 			cacti_log("ERROR: User '" . $username . "' authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.  Exiting.", false, 'AUTH');
-			$username = htmlspecialchars($username);
+			$username = html_escape($username);
 			auth_display_custom_error_message( __('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username) );
 			exit;
 		}
@@ -593,7 +593,7 @@ $selectedTheme = get_selected_theme();
 								<label for='login_username'><?php print __('Username');?></label>
 							</td>
 							<td>
-								<input type='text' id='login_username' name='login_username' value='<?php print htmlspecialchars($username, ENT_QUOTES); ?>' placeholder='<?php print __esc('Username');?>'>
+								<input type='text' id='login_username' name='login_username' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username');?>'>
 							</td>
 						</tr>
 						<tr>
@@ -631,7 +631,7 @@ $selectedTheme = get_selected_theme();
 								<select id='realm' name='realm'><?php
 									if (sizeof($realms)) {
 									foreach($realms as $index => $realm) {
-										print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected':'') . '>' . htmlspecialchars($realm['name']) . "</option>\n";
+										print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected':'') . '>' . html_escape($realm['name']) . "</option>\n";
 									}
 									}
 									?>

@@ -103,9 +103,9 @@ function form_actions() {
 					$description = (trim($d['hostname']) != '' ? $d['hostname'] : $d['ip']);
 
 					if ($host_id) {
-						$message = "<span class='deviceUp'>" . __('Device') . ' ' . htmlspecialchars($description) . ' ' . __('Added to Cacti') . '</span><br>';
+						$message = "<span class='deviceUp'>" . __('Device') . ' ' . html_escape($description) . ' ' . __('Added to Cacti') . '</span><br>';
 					} else {
-						$message = "<span class='deviceDown'>" . __('Device') . ' ' . htmlspecialchars($description) . ' ' . __('Not Added to Cacti') . '</span><br>';
+						$message = "<span class='deviceDown'>" . __('Device') . ' ' . html_escape($description) . ' ' . __('Not Added to Cacti') . '</span><br>';
 					}
 				}
 
@@ -130,7 +130,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$device_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") FROM automation_devices WHERE id = ?', array($matches[1]))) . '</li>';
+			$device_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") FROM automation_devices WHERE id = ?', array($matches[1]))) . '</li>';
 			$device_array[$i] = $matches[1];
 
 			$i++;
@@ -640,9 +640,9 @@ function purge_discovery_results() {
 
 function snmp_data($item) {
 	if ($item == '') {
-		return 'N/A';
+		return __('N/A');
 	} else {
-		return htmlspecialchars(str_replace(':',' ', $item));
+		return html_escape(str_replace(':',' ', $item));
 	}
 }
 

@@ -418,7 +418,7 @@ function settings() {
 		});
 
 		$('input[value="<?php print __esc('Return');?>"]').unbind().click(function(event) {
-			document.location = '<?php print htmlspecialchars($_SESSION['profile_referer'], ENT_QUOTES);?>';
+			document.location = '<?php print html_escape($_SESSION['profile_referer']);?>';
 		});
 	});
 

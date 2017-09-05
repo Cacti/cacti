@@ -34,7 +34,7 @@ if (isset_request_var('method')) {
 		case 'fill':
 			break;
 		default:
-			echo __("FATAL: Spike Kill method '%s' is Invalid\n", htmlspecialchars(get_nfilter_request_var('method'), ENT_QUOTES, 'UTF-8'));
+			echo __("FATAL: Spike Kill method '%s' is Invalid\n", html_escape(get_nfilter_request_var('method')));
 			exit(1);
 			break;
 	}

@@ -167,7 +167,7 @@ function utilities_view_tech($php_info = '') {
 	/* Check RRDTool issues */
 	$rrdtool_error = '';
 	if ($rrdtool_version != read_config_option('rrdtool_version')) {
-		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not match configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . htmlspecialchars('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span><br>";
+		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not match configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span><br>";
 	}
 	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
 	if ($graph_gif_count > 0) {
@@ -209,7 +209,7 @@ function utilities_view_tech($php_info = '') {
 
 		foreach (array_keys($tabs) as $tab_short_name) {
 			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
-				" href='" . htmlspecialchars($config['url_path'] .
+				" href='" . html_escape($config['url_path'] .
 				'utilities.php?action=view_tech' .
 				'&tab=' . $tab_short_name) .
 				"'>" . $tabs[$tab_short_name] . "</a></li>\n";
@@ -665,7 +665,7 @@ function utilities_view_user_log() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1130,13 +1130,13 @@ function utilities_view_logfile() {
 		$ds_start   = strpos($item, 'DS[');
 
 		if (!$host_start && !$ds_start) {
-			$new_item = cacti_htmlspecialchars($item);
+			$new_item = html_escape($item);
 		} else {
 			$new_item = '';
 			while ($host_start) {
 				$host_end   = strpos($item, ']', $host_start);
 				$host_id    = substr($item, $host_start + 7, $host_end - ($host_start + 7));
-				$new_item  .= cacti_htmlspecialchars(substr($item, 0, $host_start + 7)) . "<a href='" . cacti_htmlspecialchars('host.php?action=edit&id=' . $host_id) . "'>" . cacti_htmlspecialchars(substr($item, $host_start + 7, $host_end - ($host_start + 7))) . '</a>';
+				$new_item  .= html_escape(substr($item, 0, $host_start + 7)) . "<a href='" . html_escape('host.php?action=edit&id=' . $host_id) . "'>" . html_escape(substr($item, $host_start + 7, $host_end - ($host_start + 7))) . '</a>';
 				$item       = substr($item, $host_end);
 				$host_start = strpos($item, 'Device[');
 			}
@@ -1145,12 +1145,12 @@ function utilities_view_logfile() {
 			while ($ds_start) {
 				$ds_end    = strpos($item, ']', $ds_start);
 				$ds_id     = substr($item, $ds_start + 3, $ds_end - ($ds_start + 3));
-				$new_item .= cacti_htmlspecialchars(substr($item, 0, $ds_start + 3)) . "<a href='" . cacti_htmlspecialchars('data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . cacti_htmlspecialchars(substr($item, $ds_start + 3, $ds_end - ($ds_start + 3))) . '</a>';
+				$new_item .= html_escape(substr($item, 0, $ds_start + 3)) . "<a href='" . html_escape('data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . html_escape(substr($item, $ds_start + 3, $ds_end - ($ds_start + 3))) . '</a>';
 				$item      = substr($item, $ds_end);
 				$ds_start  = strpos($item, 'DS[');
 			}
 
-			$new_item .= cacti_htmlspecialchars($item);
+			$new_item .= html_escape($item);
 		}
 
 		/* get the background color */
@@ -1348,7 +1348,7 @@ function utilities_view_snmp_cache() {
 
 							if (sizeof($snmp_queries)) {
 								foreach ($snmp_queries as $snmp_query) {
-									print "<option value='" . $snmp_query['id'] . "'"; if (get_request_var('snmp_query_id') == $snmp_query['id']) { print ' selected'; } print '>' . htmlspecialchars($snmp_query['name'], ENT_QUOTES) . "</option>\n";
+									print "<option value='" . $snmp_query['id'] . "'"; if (get_request_var('snmp_query_id') == $snmp_query['id']) { print ' selected'; } print '>' . html_escape($snmp_query['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -1363,7 +1363,7 @@ function utilities_view_snmp_cache() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1608,7 +1608,7 @@ function utilities_view_poller_cache() {
 
 							if (sizeof($templates)) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($template['name']), 40) . "</option>\n";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . "</option>\n";
 								}
 							}
 							?>
@@ -1650,7 +1650,7 @@ function utilities_view_poller_cache() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1871,7 +1871,7 @@ function utilities() {
 		foreach($content as $title => $details) {
 			form_alternate_row();
 			print "<td class='nowrap' style='vertical-align:top;'>";
-			print "<a class='hyperLink' href='" . htmlspecialchars($details['link']) . "'>" . $title . "</a>";
+			print "<a class='hyperLink' href='" . html_escape($details['link']) . "'>" . $title . "</a>";
 			print "</td>\n";
 			print "<td>";
 			print $details['description'];
@@ -2310,7 +2310,7 @@ function snmpagent_utilities_run_cache() {
 								<?php
 								if (sizeof($mibs) > 0) {
 									foreach ($mibs as $mib) {
-										print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . htmlspecialchars($mib['mib'], ENT_QUOTES) . "</option>\n";
+										print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . html_escape($mib['mib']) . "</option>\n";
 									}
 								}
 								?>
@@ -2325,7 +2325,7 @@ function snmpagent_utilities_run_cache() {
 								<?php
 								if (sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 									}
 								}
 								?>
@@ -2389,7 +2389,7 @@ function snmpagent_utilities_run_cache() {
 			form_alternate_row('line' . $item['oid'], false);
 			form_selectable_cell( $oid, $item['oid']);
 			if($item['description']) {
-				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . htmlspecialchars($item['description'], ENT_QUOTES) . '</div>" class="tooltip">' . $name . '</a></td>';
+				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . html_escape($item['description']) . '</div>" class="tooltip">' . $name . '</a></td>';
 			}else {
 				print "<td>$name</td>";
 			}
@@ -2560,7 +2560,7 @@ function snmpagent_utilities_run_eventlog(){
 								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
-									print "<option value='" . $level . "'"; if (get_request_var('severity') == $level) { print ' selected'; } print '>' . htmlspecialchars($name, ENT_QUOTES) . "</option>\n";
+									print "<option value='" . $level . "'"; if (get_request_var('severity') == $level) { print ' selected'; } print '>' . html_escape($name) . "</option>\n";
 								}
 								?>
 							</select>
@@ -2587,7 +2587,7 @@ function snmpagent_utilities_run_eventlog(){
 								<?php
 								if (sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 									}
 								}
 								?>
@@ -2660,12 +2660,12 @@ function snmpagent_utilities_run_eventlog(){
 
 			print "<td title='" . __esc('Severity Level: %s', $severity_levels[$item['severity']]) . "' style='width:10px;background-color: " . $severity_colors[$item['severity']] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td class='nowrap'>" . date('Y-m-d H:i:s', $item['time']) . '</td>';
-			print '<td>' . htmlspecialchars($item['hostname'], ENT_QUOTES) . '</td>';
+			print '<td>' . html_escape($item['hostname']) . '</td>';
 
 			if($item['description']) {
-				print '<td><a href="#" title="<div class=\'header\'>' . htmlspecialchars($item['notification'], ENT_QUOTES) . '</div><div class=\'content preformatted\'>' . htmlspecialchars($item['description'], ENT_QUOTES) . '</div>" class="tooltip">' . htmlspecialchars($item['notification']) . '</a></td>';
+				print '<td><a href="#" title="<div class=\'header\'>' . html_escape($item['notification']) . '</div><div class=\'content preformatted\'>' . html_escape($item['description']) . '</div>" class="tooltip">' . html_escape($item['notification']) . '</a></td>';
 			}else {
-				print '<td>' . htmlspecialchars($item['notification']) . '</td>';
+				print '<td>' . html_escape($item['notification']) . '</td>';
 			}
 
 			print "<td>$varbinds</td>";

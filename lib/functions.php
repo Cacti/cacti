@@ -37,23 +37,6 @@ function title_trim($text, $max_length) {
 	}
 }
 
-/* cacti_htmlspecialchars - filter dangerous specialchars but everything
-   @arg $value - the string to protect
-   @returns - the escaped string */
-function cacti_htmlspecialchars($value) {
-	static $charset;
-
-	if ($charset == '') {
-		$charset = ini_get('default_charset');
-	}
-
-	if (strpos($value, '<script') !== false) {
-		return htmlspecialchars($value, ENT_QUOTES, $charset, false);
-	} else {
-		return $value;
-	}
-}
-
 /* filter_value - a quick way to highlight text in a table from general filtering
    @arg $text - the string to filter
    @arg $filter - the search term to filter for
@@ -64,6 +47,10 @@ function filter_value($value, $filter, $href = '') {
 
 	if ($charset == '') {
 		$charset = ini_get('default_charset');
+	}
+
+	if ($charset == '') {
+		$charset = 'UTF-8';
 	}
 
 	$value =  htmlspecialchars($value, ENT_QUOTES, $charset, false);
@@ -1844,7 +1831,7 @@ function draw_login_status($using_guest_account = false) {
 	} elseif (isset($_SESSION['sess_user_id']) && $using_guest_account == false) {
 		$user = db_fetch_row_prepared('SELECT username, password_change, realm FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 		api_plugin_hook('nav_login_before');
-		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . htmlspecialchars($user['username'], ENT_QUOTES) .
+		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . html_escape($user['username']) .
 			"</span></div><div><ul class='menuoptions' style='display:none;'>" .
 				(is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>" . __('Edit Profile') . "</a></li>":"") .
 				($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'') .
@@ -2710,13 +2697,13 @@ function draw_navigation_text($type = 'url') {
 		if ($current_mappings[$i] == '?') {
 			/* '?' tells us to pull title from the cache at this level */
 			if (isset($nav_level_cache{$i})) {
-				$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}['id']}['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
-				$title       .= htmlspecialchars(resolve_navigation_variables($nav{$nav_level_cache{$i}['id']}['title'])) . ' -> ';
+				$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . html_escape($url) . "'>") . html_escape(resolve_navigation_variables($nav{$nav_level_cache{$i}['id']}['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
+				$title       .= html_escape(resolve_navigation_variables($nav{$nav_level_cache{$i}['id']}['title'])) . ' -> ';
 			}
 		} else {
 			/* there is no '?' - pull from the above array */
-			$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . htmlspecialchars($url) . "'>") . htmlspecialchars(resolve_navigation_variables($nav{basename($current_mappings[$i])}['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
-			$title       .= htmlspecialchars(resolve_navigation_variables($nav{basename($current_mappings[$i])}['title'])) . ' -> ';
+			$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . html_escape($url) . "'>") . html_escape(resolve_navigation_variables($nav{basename($current_mappings[$i])}['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
+			$title       .= html_escape(resolve_navigation_variables($nav{basename($current_mappings[$i])}['title'])) . ' -> ';
 		}
 
 		$nav_count++;
@@ -2724,14 +2711,14 @@ function draw_navigation_text($type = 'url') {
 
 	if ($nav_count) {
 		if (isset($current_array['title'])) {
-			$current_nav .= "<li><a id='nav_$i' href=#>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+			$current_nav .= "<li><a id='nav_$i' href=#>" . html_escape(resolve_navigation_variables($current_array['title'])) . '</a></li>';
 		}
 	} else {
 		$current_array = $nav[$current_page . ':' . $current_action];
 		$url           = (isset($current_array['url']) ? $current_array['url']:'');
 
 		if (isset($current_array['title'])) {
-			$current_nav  .= "<li><a id='nav_$i' href='$url'>" . htmlspecialchars(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+			$current_nav  .= "<li><a id='nav_$i' href='$url'>" . html_escape(resolve_navigation_variables($current_array['title'])) . '</a></li>';
 		}
 	}
 
@@ -2782,7 +2769,7 @@ function draw_navigation_text($type = 'url') {
 		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . $leaf_name:'') . ($leaf_sub != '' ? ':' . $leaf_sub . ')':($leaf_name != '' ? ')':''));
 
 		if ($tree_title != '') {
-			$current_nav .= "<li><a id='nav_title' href=#>" . htmlspecialchars($tree_title) . '</a></li>';
+			$current_nav .= "<li><a id='nav_title' href=#>" . html_escape($tree_title) . '</a></li>';
 		}
 	} elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
 		$externalLinks = db_fetch_row_prepared('SELECT title, style FROM external_links WHERE id = ?', array($matches[1]));
@@ -2802,7 +2789,7 @@ function draw_navigation_text($type = 'url') {
 	}
 
 	if (isset($current_array['title'])) {
-		$title .= htmlspecialchars(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
+		$title .= html_escape(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
 	}
 
 	/* keep a cache for each level we encounter */
@@ -3143,7 +3130,7 @@ function generate_hash() {
    @arg $type - the 'category' or type of debug message
    @arg $text - section header */
 function debug_log_insert_section_start($type, $text) {
-	debug_log_insert($type, "<table class='cactiTable debug'><tr class='tableHeader'><td class='textHeaderDark'>" . htmlspecialchars($text) . "</td></tr><tr><td style='padding:0px;'><table style='display:none;'><tr><td><div style='font-family: monospace;'>");
+	debug_log_insert($type, "<table class='cactiTable debug'><tr class='tableHeader'><td class='textHeaderDark'>" . html_escape($text) . "</td></tr><tr><td style='padding:0px;'><table style='display:none;'><tr><td><div style='font-family: monospace;'>");
 }
 
 /* debug_log_insert_section_end - finalizes the header started with the start function

@@ -761,7 +761,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 
 	$out = '';
 	if ($output == REPORTS_OUTPUT_STDOUT) {
-		$out = "<img class='image' alt='' src='" . htmlspecialchars($config['url_path'] . 'graph_image.php' .
+		$out = "<img class='image' alt='' src='" . html_escape($config['url_path'] . 'graph_image.php' .
 			'?graph_width=' . $report['graph_width'] .
 			'&graph_height=' . $report['graph_height'] .
 			($report['thumbnails'] == 'on' ? '&graph_nolegend=true':'') .
@@ -776,7 +776,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	}
 
 	if ($report['graph_linked'] == 'on' ) {
-		$out = "<a href='" . htmlspecialchars(read_config_option('base_url') . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
+		$out = "<a href='" . html_escape(read_config_option('base_url') . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
 	}
 
 	return $out . "\n";

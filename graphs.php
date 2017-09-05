@@ -704,7 +704,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$graph_list .= '<li>' . htmlspecialchars(get_graph_title($matches[1])) . '</li>';
+			$graph_list .= '<li>' . html_escape(get_graph_title($matches[1])) . '</li>';
 			$graph_array[$i] = $matches[1];
 
 			if ($i == 0) {
@@ -787,7 +787,7 @@ function form_actions() {
 
 				print '<div class="itemlist"><ul>';
 				foreach ($data_sources as $data_source) {
-					print '<li>' . htmlspecialchars($data_source['name_cache']) . "</li>\n";
+					print '<li>' . html_escape($data_source['name_cache']) . "</li>\n";
 				}
 				print '</ul></div><br>';
 
@@ -853,7 +853,7 @@ function form_actions() {
 			print "</p>
 				</td>
 				</tr>
-				<input type='hidden' name='tree_id' value='" . htmlspecialchars($matches[1]) . "'>\n";
+				<input type='hidden' name='tree_id' value='" . html_escape($matches[1]) . "'>\n";
 
 			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Place Graph(s) on Tree') . "'>";
 		} elseif (get_request_var('drp_action') == '5') { // change host
@@ -906,7 +906,7 @@ function form_actions() {
 					'<p>' . __('The following data sources are in use by these graphs:') . '</p>
 					<div class="itemlist"><ul>';
 					foreach ($data_sources as $data_source) {
-						print '<li>' . htmlspecialchars($data_source['name_cache']) . '</li>';
+						print '<li>' . html_escape($data_source['name_cache']) . '</li>';
 					}
 					print '</ul></div></td>';
 				}
@@ -1146,7 +1146,7 @@ function item() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Graph Items [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));
+		$header_label = __('Graph Items [edit: %s]', html_escape(get_graph_title(get_request_var('id'))));
 		$add_text     = 'graphs_items.php?action=item_edit' . (!empty($host_id) ? '&host_id=' . $host_id:'') . '&local_graph_id=' . get_request_var('id');
 		$anchor_link  = 'host_id=' . $host_id . '&local_graph_id=' . get_request_var('id');
 	}
@@ -1228,7 +1228,7 @@ function graph_edit() {
 			exit;
 		}
 
-		$header_label = __('Graph [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));
+		$header_label = __('Graph [edit: %s]', html_escape(get_graph_title(get_request_var('id'))));
 
 		if ($graph['graph_template_id'] == '0') {
 			$use_graph_template = 'false';
@@ -1268,16 +1268,16 @@ function graph_edit() {
 		<table style='width:100%;'>
 			<tr>
 				<td class='textInfo left' style='vertical-align:top'>
-					<?php print htmlspecialchars(get_graph_title(get_request_var('id')));?>
+					<?php print html_escape(get_graph_title(get_request_var('id')));?>
 				</td>
 				<td class='textInfo right' style='vertical-align:top;'>
-					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?action=graph_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1'));?>'><?php print $message;?></a><br>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graphs.php?action=graph_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1'));?>'><?php print $message;?></a><br>
 					<?php
 						if (!empty($graph['graph_template_id'])) {
-							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graph_templates.php?action=template_edit&id=' . (isset($graph['graph_template_id']) ? $graph['graph_template_id'] : '0'));?>'><?php print __('Edit Graph Template.');?></a><br><?php
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graph_templates.php?action=template_edit&id=' . (isset($graph['graph_template_id']) ? $graph['graph_template_id'] : '0'));?>'><?php print __('Edit Graph Template.');?></a><br><?php
 						}
 						if (!isempty_request_var('host_id') || !empty($host_id)) {
-							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . ($host_id > 0 ? $host_id : get_request_var('host_id')));?>'><?php print __('Edit Device.');?></a><br><?php
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . ($host_id > 0 ? $host_id : get_request_var('host_id')));?>'><?php print __('Edit Device.');?></a><br><?php
 						}
 						if ($locked) {
 							?><span class='linkMarker'>*</span><a href='#' class='hyperLink' id='unlockid'><?php print __('Unlock Graph.');?></a><?php
@@ -1368,7 +1368,7 @@ function graph_edit() {
 		item();
 	}
 
-	$graph['src'] = htmlspecialchars($config['url_path'] . 'graph_json.php?local_graph_id=' . get_request_var('id') . '&rra_id=0&graph_start=' . (time()-86400) . '&graph_end=-300&v=' . mt_rand());
+	$graph['src'] = html_escape($config['url_path'] . 'graph_json.php?local_graph_id=' . get_request_var('id') . '&rra_id=0&graph_start=' . (time()-86400) . '&graph_end=-300&v=' . mt_rand());
 
 	if (!isempty_request_var('id')) {
 		?>
@@ -1622,7 +1622,7 @@ function graph_management() {
 	<?php
 
 	if (read_config_option('grds_creation_method') == 1) {
-		$add_url = htmlspecialchars('graphs.php?action=graph_edit&host_id=' . get_request_var('host_id'));
+		$add_url = html_escape('graphs.php?action=graph_edit&host_id=' . get_request_var('host_id'));
 	} else {
 		$add_url = '';
 	}
@@ -1654,7 +1654,7 @@ function graph_management() {
 
 							if (sizeof($templates) > 0) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($template['name']), 40) . "</option>\n";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . "</option>\n";
 								}
 							}
 							?>
@@ -1685,7 +1685,7 @@ function graph_management() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>

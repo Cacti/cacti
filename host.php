@@ -359,7 +359,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$host_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($matches[1]))) . '</li>';
+			$host_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($matches[1]))) . '</li>';
 			$host_array[] = $matches[1];
 		}
 	}
@@ -631,11 +631,11 @@ function host_edit() {
 		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array(get_request_var('id')));
 
 		if (sizeof($host)) {
-			$header_label = __('Device [edit: %s]', htmlspecialchars($host['description']));
+			$header_label = __('Device [edit: %s]', html_escape($host['description']));
 			if (is_device_debug_enabled($host['id'])) {
-				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . htmlspecialchars('host.php?action=disable_debug&host_id=' . $host['id']) . "'>" . __('Disable Device Debug') . "</a><br>";
+				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=disable_debug&host_id=' . $host['id']) . "'>" . __('Disable Device Debug') . "</a><br>";
 			} else {
-				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . htmlspecialchars('host.php?action=enable_debug&host_id=' . $host['id']) . "'>" . __('Enable Device Debug') . "</a><br>";
+				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=enable_debug&host_id=' . $host['id']) . "'>" . __('Enable Device Debug') . "</a><br>";
 			}
 		}
 	}
@@ -645,13 +645,13 @@ function host_edit() {
 		<table class='hostInfoHeader' style='width:100%'>
 			<tr>
 				<td class='textInfo left'>
-					<?php print htmlspecialchars($host['description']);?> (<?php print htmlspecialchars($host['hostname']);?>)
+					<?php print html_escape($host['description']);?> (<?php print html_escape($host['hostname']);?>)
 				</td>
 				<td rowspan='2' class='textInfo right' style='vertical-align:top'>
-					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graphs_new.php?host_id=' . $host['id']);?>'><?php print __('Create Graphs for this Device');?></a><br>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graphs_new.php?host_id=' . $host['id']);?>'><?php print __('Create Graphs for this Device');?></a><br>
 					<?php print $debug_link;?>
-					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'><?php print __('Data Source List');?></a><br>
-					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('graphs.php?host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1');?>'><?php print __('Graph List');?></a>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'><?php print __('Data Source List');?></a><br>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graphs.php?host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1');?>'><?php print __('Graph List');?></a>
 					<?php api_plugin_hook('device_edit_top_links'); ?>
 				</td>
 			</tr>
@@ -767,10 +767,10 @@ function host_edit() {
 				$is_being_graphed = $item['graph_local_id'] > 0;
 				?>
 					<td class='nowrap' style="padding: 4px;">
-						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
+						<strong><?php print $i;?>)</strong> <?php print html_escape($item['name']);?>
 					</td>
 					<td class='nowrap'>
-						<?php print (($is_being_graphed == true) ? "<span class='beingGraphed'>" . __('Is Being Graphed') . "</span> (<a class='linkEditMain' href='" . htmlspecialchars('graphs.php?action=graph_edit&id=' . $item['graph_local_id']) . "'>" . __('Edit') . "</a>)" : "<span class='notBeingGraphed'>" . __('Not Being Graphed') ."</span>");?>
+						<?php print (($is_being_graphed == true) ? "<span class='beingGraphed'>" . __('Is Being Graphed') . "</span> (<a class='linkEditMain' href='" . html_escape('graphs.php?action=graph_edit&id=' . $item['graph_local_id']) . "'>" . __('Edit') . "</a>)" : "<span class='notBeingGraphed'>" . __('Not Being Graphed') ."</span>");?>
 					</td>
 					<td class='nowrap right'>
 						<span title='<?php print __esc('Delete Graph Template Association');?>' class='deletequery fa fa-remove' id='gtremove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
@@ -867,7 +867,7 @@ function host_edit() {
 
 				?>
 					<td style='padding:4px;'>
-						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
+						<strong><?php print $i;?>)</strong> <?php print html_escape($item['name']);?>
 					</td>
 					<td class='nowrap'>
 					<?php device_reindex_methods($item, $host);?>
@@ -943,7 +943,7 @@ function device_reindex_methods($item, $host) {
 				print "<fieldset class='reindex_methods'>\n";
 			}
 			print "<input name='reindex_radio_" . $item['id'] . "' type='radio' data-device-id='" . $host['id'] . "' data-query-id='" . $item['id'] . "' data-reindex-method='" . $key . "' id='reindex_" . $item['id'] . "_" . $key . "'" . ($item['reindex_method'] == $key ? ' checked="checked"':'') . " />\n";
-			print "<label title='" . htmlspecialchars($reindex_types_tips[$key], ENT_QUOTES, 'UTF-8') . "' for='reindex_" . $item['id'] . "_" . $key . "'>" . $type . "</label>\n";
+			print "<label title='" . html_escape($reindex_types_tips[$key]) . "' for='reindex_" . $item['id'] . "_" . $key . "'>" . $type . "</label>\n";
 		} else {
 			print $reindex_types[$item['reindex_method']];
 			break;
@@ -1420,7 +1420,7 @@ function host() {
 	</script>
 	<?php
 
-	html_start_box(__('Devices'), '100%', '', '3', 'center', 'host.php?action=edit&host_template_id=' . htmlspecialchars(get_request_var('host_template_id')) . '&host_status=' . htmlspecialchars(get_request_var('host_status')));
+	html_start_box(__('Devices'), '100%', '', '3', 'center', 'host.php?action=edit&host_template_id=' . html_escape_request_var('host_template_id') . '&host_status=' . html_escape_request_var('host_status'));
 
 	?>
 	<tr class='even noprint'>
@@ -1440,7 +1440,7 @@ function host() {
 
 							if (sizeof($sites)) {
 								foreach ($sites as $site) {
-									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . htmlspecialchars($site['name']) . "</option>\n";
+									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -1457,7 +1457,7 @@ function host() {
 
 							if (sizeof($pollers)) {
 								foreach ($pollers as $poller) {
-									print "<option value='" . $poller['id'] . "'"; if (get_request_var('poller_id') == $poller['id']) { print ' selected'; } print '>' . htmlspecialchars($poller['name']) . "</option>\n";
+									print "<option value='" . $poller['id'] . "'"; if (get_request_var('poller_id') == $poller['id']) { print ' selected'; } print '>' . html_escape($poller['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -1475,7 +1475,7 @@ function host() {
 
 							if (sizeof($host_templates)) {
 								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . htmlspecialchars($host_template['name']) . "</option>\n";
+									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -1522,7 +1522,7 @@ function host() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>

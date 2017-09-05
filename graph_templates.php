@@ -292,7 +292,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$graph_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
+			$graph_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
 			$graph_array[$i] = $matches[1];
 
 			$i++;
@@ -410,7 +410,7 @@ function item() {
 			ORDER BY gti.sequence",
 			array(get_request_var('id')));
 
-		$header_label = __('Graph Template Items [edit: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('id')))));
+		$header_label = __('Graph Template Items [edit: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('id')))));
 	}
 
 	html_start_box($header_label, '100%', '', '3', 'center', 'graph_templates_items.php?action=item_edit&graph_template_id=' . get_request_var('id'));
@@ -434,10 +434,10 @@ function item() {
 			form_alternate_row('', true);
 			?>
 			<td>
-				<a class='linkEditMain' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'><?php print htmlspecialchars($item['name']);?></a>
+				<a class='linkEditMain' href='<?php print html_escape('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'><?php print html_escape($item['name']);?></a>
 			</td>
 			<td class='right'>
-				<a class='deleteMarker fa fa-remove' title='<?php print __esc('Delete');?>' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'></a>
+				<a class='deleteMarker fa fa-remove' title='<?php print __esc('Delete');?>' href='<?php print html_escape('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'></a>
 			</td>
 		</tr>
 		<?php
@@ -488,7 +488,7 @@ function template_edit() {
 			AND local_graph_id=0',
 			array(get_request_var('id')));
 
-		$header_label = __('Template [edit: %s]', htmlspecialchars($template['name']));
+		$header_label = __('Template [edit: %s]', html_escape($template['name']));
 	} else {
 		$header_label = __('Template [new]');
 	}
@@ -639,7 +639,7 @@ function template() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -784,7 +784,7 @@ function template() {
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right');
 			form_selectable_cell(number_format_i18n($template['graphs'], '-1'), $template['id'], '', 'text-align:right');
-			//form_selectable_cell('<a class="linkEditMain" href="' . htmlspecialchars('graphs.php?reset=true&template_id=' . ($template['dqid'] > 0 ? 'dq_':'') . $template['id']) . '">' . number_format_i18n($template['graphs'], '-1') . '</a>', $template['id'], '', 'text-align:right');
+			//form_selectable_cell('<a class="linkEditMain" href="' . html_escape('graphs.php?reset=true&template_id=' . ($template['dqid'] > 0 ? 'dq_':'') . $template['id']) . '">' . number_format_i18n($template['graphs'], '-1') . '</a>', $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['size'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($image_types[$template['image_format_id']], $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['vertical_label'], $template['id'], '', 'text-align:right');

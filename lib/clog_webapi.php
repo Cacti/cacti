@@ -231,7 +231,7 @@ function clog_view_logfile() {
 	$hosts = db_fetch_assoc_prepared('SELECT id, description FROM host');
 	$hostDescriptions = array();
 	foreach ($hosts as $host) {
-		$hostDescriptions[$host['id']] = cacti_htmlspecialchars($host['description']);
+		$hostDescriptions[$host['id']] = html_escape($host['description']);
 	}
 
 	foreach ($logcontents as $item) {
@@ -239,13 +239,13 @@ function clog_view_logfile() {
 		$ds_start   = strpos($item, 'DS[');
 
 		if (!$host_start && !$ds_start) {
-			$new_item = cacti_htmlspecialchars($item);
+			$new_item = html_escape($item);
 		} else {
 			$new_item = '';
 			if ($host_start) {
 				$host_end    = strpos($item, ']', $host_start);
 				$host_id     = substr($item, $host_start + 7, $host_end - ($host_start + 7));
-				$new_item   .= substr($item, 0, $host_start) . " Device[<a href='" . cacti_htmlspecialchars($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>" . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:'') . '</a>]';
+				$new_item   .= substr($item, 0, $host_start) . " Device[<a href='" . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>" . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:'') . '</a>]';
 				$item        = substr($item, $host_end + 1);
 			}
 
@@ -267,27 +267,27 @@ function clog_view_logfile() {
 							foreach($graph_ids as $key => $title) {
 								$graph_add .= ($i > 0 ? '%2C' : '') . $key;
 								if ($titles != '') {
-									$titles .= ", '" . cacti_htmlspecialchars($title) . "'";
+									$titles .= ", '" . html_escape($title) . "'";
 								} else {
-									$titles .= "'"  . cacti_htmlspecialchars($title) . "'";
+									$titles .= "'"  . html_escape($title) . "'";
 								}
 								$i++;
 							}
 						}
 					}
 
-					$new_item .= cacti_htmlspecialchars($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $titles . '</a>]';
+					$new_item .= html_escape($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $titles . '</a>]';
 
 					$new_item .= ' DS[';
 					$i = 0;
 					foreach($ds_ids as $ds_id) {
-						$new_item .= ($i == 0 ? '':', ') . "<a href='" . cacti_htmlspecialchars($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_id . '</a>';
+						$new_item .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_id . '</a>';
 						$i++;
 					}
 					$new_item .= ']';
 				}
 			}else{
-				$new_item .= cacti_htmlspecialchars($item);
+				$new_item .= html_escape($item);
 			}
 		}
 

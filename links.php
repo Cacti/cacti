@@ -171,7 +171,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$page_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]))) . '</li>';
+			$page_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]))) . '</li>';
 			$pages[$i] = $matches[1];
 
 			$i++;
@@ -388,21 +388,21 @@ function pages() {
 		foreach ($pages as $page) {
 			form_alternate_row('line' . $page['id']);
 
-			$actions = '<a class="pic"  href="' . htmlspecialchars('links.php?action=edit&id='.$page['id']) . '" title="' . __esc('Edit Page') . '"><img src="' . $config['url_path'] . 'images/application_edit.png" alt=""></a>';
+			$actions = '<a class="pic"  href="' . html_escape('links.php?action=edit&id='.$page['id']) . '" title="' . __esc('Edit Page') . '"><img src="' . $config['url_path'] . 'images/application_edit.png" alt=""></a>';
 
 			if ($page['enabled'] == 'on') {
-				$actions .= '<a class="pic" href="' . htmlspecialchars('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><img src="' . $config['url_path'] . 'images/view_page.png" alt=""></a>';
+				$actions .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><img src="' . $config['url_path'] . 'images/view_page.png" alt=""></a>';
 			}
 
 			form_selectable_cell($actions, $page['id'], '50');
-			form_selectable_cell(htmlspecialchars($page['contentfile']), $page['id']);
-			form_selectable_cell(htmlspecialchars($page['title']), $page['id']);
-			form_selectable_cell(htmlspecialchars($style_translate[$page['style']]) . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? 'External Links':$page['extendedstyle']) . ' )':''), $page['id']);
+			form_selectable_cell(html_escape($page['contentfile']), $page['id']);
+			form_selectable_cell(html_escape($page['title']), $page['id']);
+			form_selectable_cell(html_escape($style_translate[$page['style']]) . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? 'External Links':$page['extendedstyle']) . ' )':''), $page['id']);
 			form_selectable_cell(($page['enabled'] == 'on' ? 'Yes':'No'), $page['id']);
 
 			if (get_request_var('sort_column') == 'sortorder') {
 				if ($i != 0) {
-					$sort = '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id='.$page['id']) . '"></a>';
+					$sort = '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id='.$page['id']) . '"></a>';
 				} else {
 					$sort = '<span class="moveArrowNone"></span>';
 				}
@@ -410,7 +410,7 @@ function pages() {
 				if ($i == sizeof($pages)-1) {
 					$sort .= '<span class="moveArrowNone"></span>';
 				} else {
-					$sort .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
+					$sort .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
 				form_selectable_cell($sort, $page['id'], '', 'center');

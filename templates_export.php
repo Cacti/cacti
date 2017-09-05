@@ -60,7 +60,7 @@ function form_save() {
 		if (get_nfilter_request_var('output_format') == '1') {
 			top_header();
 
-			print "<table style='width:100%;' class='center'><tr><td style='text-align:left;'><pre>" . htmlspecialchars($xml_data) . '</pre></td></tr></table>';
+			print "<table style='width:100%;' class='center'><tr><td style='text-align:left;'><pre>" . html_escape($xml_data) . '</pre></td></tr></table>';
 
 			bottom_footer();
 		} elseif (get_nfilter_request_var('output_format') == '2') {

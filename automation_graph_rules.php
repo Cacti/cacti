@@ -535,7 +535,7 @@ function automation_graph_rules_edit() {
 		}
 
 		# setup header
-		$header_label = __('Rule Selection [edit: %s]', htmlspecialchars($rule['name']));
+		$header_label = __('Rule Selection [edit: %s]', html_escape($rule['name']));
 	} else {
 		$rule = array (
 				'name' => get_request_var('name'),
@@ -551,7 +551,7 @@ function automation_graph_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print ($_SESSION['automation_graph_rules_show_rule'] == true ? __('Don\'t Show'):__('Show'));?> <?php print __('Rule Details.');?></a><br>
+		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print ($_SESSION['automation_graph_rules_show_rule'] == true ? __('Don\'t Show'):__('Show'));?> <?php print __('Rule Details.');?></a><br>
 		</td>
 	</tr>
 </table>
@@ -566,7 +566,7 @@ function automation_graph_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Devices.');?></a><br>
+		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Devices.');?></a><br>
 		</td>
 	</tr>
 </table>
@@ -582,7 +582,7 @@ function automation_graph_rules_edit() {
 <table style='width:100%;text-align:center;'>
 	<tr>
 		<td class='textInfo right' style='vertical-align:top;'>
-			<span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print htmlspecialchars('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Objects.');?></a><br>
+			<span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_graph_rules_show_graphs']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Objects.');?></a><br>
 		</td>
 	</tr>
 </table>
@@ -903,8 +903,8 @@ function automation_graph_rules() {
 
 	if (sizeof($automation_graph_rules_list)) {
 		foreach ($automation_graph_rules_list as $automation_graph_rules) {
-			$snmp_query_name 		= ((empty($automation_graph_rules['snmp_query_name'])) 	 ? __('None') : htmlspecialchars($automation_graph_rules['snmp_query_name']));
-			$graph_type_name 		= ((empty($automation_graph_rules['graph_type_name'])) 	 ? __('None') : htmlspecialchars($automation_graph_rules['graph_type_name']));
+			$snmp_query_name 		= ((empty($automation_graph_rules['snmp_query_name'])) 	 ? __('None') : html_escape($automation_graph_rules['snmp_query_name']));
+			$graph_type_name 		= ((empty($automation_graph_rules['graph_type_name'])) 	 ? __('None') : html_escape($automation_graph_rules['graph_type_name']));
 
 			form_alternate_row('line' . $automation_graph_rules['id'], true);
 

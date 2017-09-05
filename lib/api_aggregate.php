@@ -526,7 +526,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 		if ($defs['type'] == 'bool') {
 			$params_new[$field] = (isset($posted[$field])) ? 'on' : '';
 		} else {
-			$params_new[$field] = (isset($posted[$field]) ? form_input_validate(htmlspecialchars($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3) : $defs['default']);
+			$params_new[$field] = (isset($posted[$field]) ? form_input_validate(html_escape($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3) : $defs['default']);
 		}
 	}
 
@@ -1170,7 +1170,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>\n";
 			print "<ul>";
 			foreach ($used_graph_templates as $graph_template) {
-				print '<li>' . htmlspecialchars($graph_template['name'], ENT_QUOTES) . "</li>\n";
+				print '<li>' . html_escape($graph_template['name']) . "</li>\n";
 			}
 			print '</ul></td></tr>';
 
@@ -1383,7 +1383,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 				$hard_return = '<strong><span style="color:#FF0000;">&lt;HR&gt;</span></strong>';
 			}
 
-			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
+			print "<td style='$this_row_style'>" . html_escape($matrix_title) . $hard_return . "</td>\n";
 
 			/* column 'Graph Item Type' */
 			print "<td style='$this_row_style'>" . $graph_item_types{$item['graph_type_id']} . "</td>\n";
@@ -1408,18 +1408,18 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			/* column "Skip" */
 			if (!$force_skip) {
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . '>';
+				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . '>';
 				print '</td>';
 
 				/* column 'Total' */
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
+				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
 				print '</td>';
 			} else {
-				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '></td>';
-				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'>";
-				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '>';
-				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'></td>";
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit ? 'checked':'') . '></td>';
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "'>";
+				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit ? 'checked':'') . '>';
+				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "'></td>";
 			}
 
 			print '</tr>';

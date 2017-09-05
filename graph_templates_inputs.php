@@ -142,7 +142,7 @@ function input_edit() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	$header_label = __('Graph Item Inputs [edit graph: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
+	$header_label = __('Graph Item Inputs [edit graph: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
 
 	/* get a list of all graph item field names and populate an array for user display */
 	foreach ($struct_graph_item as $field_name => $field_array) {

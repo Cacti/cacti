@@ -607,7 +607,7 @@ function api_tree_get_main($tree_id, $parent = 0) {
 		if ($tree_id > 0) {
 			$name     = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($tree_id));
 
-			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id' data-jstree='{ \"type\" : \"tree\" }'><a href='" . htmlspecialchars('graph_view.php?action=tree&node=tree_anchor-' . $tree_id). "'>" . htmlspecialchars($name) . "</a>\n";
+			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id' data-jstree='{ \"type\" : \"tree\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tree_anchor-' . $tree_id). "'>" . html_escape($name) . "</a>\n";
 
 			$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 

@@ -294,7 +294,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$dq_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT snmp_query.name FROM snmp_query WHERE id = ?', array($matches[1]))) . '</li>';
+			$dq_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT snmp_query.name FROM snmp_query WHERE id = ?', array($matches[1]))) . '</li>';
 			$dq_array[$i] = $matches[1];
 
 			$i++;
@@ -475,7 +475,7 @@ function data_query_item_edit() {
 	}
 
 	$snmp_query = db_fetch_row_prepared('SELECT name, xml_path FROM snmp_query WHERE id = ?', array(get_request_var('snmp_query_id')));
-	$header_label = __('Associated Graph/Data Templates [edit: %s]', htmlspecialchars($snmp_query['name']));
+	$header_label = __('Associated Graph/Data Templates [edit: %s]', html_escape($snmp_query['name']));
 
 	form_start('data_queries.php', 'data_queries');
 
@@ -616,25 +616,25 @@ function data_query_item_edit() {
 
 				?>
 				<td class='left'>
-					<?php print htmlspecialchars($suggested_value['field_name']);?>
+					<?php print html_escape($suggested_value['field_name']);?>
 				</td>
 				<td class='center'>
 					<?php if ($show_down) {?>
-					<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
+					<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print html_escape('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
 					<?php if ($show_up) {?>
-					<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
+					<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='<?php print html_escape('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
 				</td>
 				<td class='left'>
-					<?php print htmlspecialchars($suggested_value['text']);?>
+					<?php print html_escape($suggested_value['text']);?>
 				</td>
 				<td class='right'>
-					<a class='remover deleteMarker fa fa-remove' title='<?php print htmlspecialchars(__('Delete'), ENT_QUOTES, 'UTF-8');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id'));?>'></a>
+					<a class='remover deleteMarker fa fa-remove' title='<?php print html_escape(__('Delete'));?>' href='<?php print html_escape('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id'));?>'></a>
 				</td>
 				<?php
 
@@ -714,25 +714,25 @@ function data_query_item_edit() {
 
 						?>
 						<td class='left'>
-							<?php print htmlspecialchars($suggested_value['field_name']);?>
+							<?php print html_escape($suggested_value['field_name']);?>
 						</td>
 						<td class='center'>
 							<?php if ($show_down) {?>
-							<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id='. $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
+							<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print html_escape('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id='. $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
 							<?php if ($show_up) {?>
-							<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
+							<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='<?php print html_escape('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
 						</td>
 						<td class='nowrap left'>
-							<?php print htmlspecialchars($suggested_value['text']);?>
+							<?php print html_escape($suggested_value['text']);?>
 						</td>
 						<td class='right'>
-							<a class='remover deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id']);?>'></a>
+							<a class='remover deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='<?php print html_escape('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id']);?>'></a>
 						</td>
 						<?php
 
@@ -876,7 +876,7 @@ function data_query_edit() {
 
 	if (!isempty_request_var('id')) {
 		$snmp_query = db_fetch_row_prepared('SELECT * FROM snmp_query WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Data Queries [edit: %s]', htmlspecialchars($snmp_query['name']));
+		$header_label = __('Data Queries [edit: %s]', html_escape($snmp_query['name']));
 	} else {
 		$header_label = __('Data Queries [new]');
 	}
@@ -937,13 +937,13 @@ function data_query_edit() {
 				?>
 					<td>
 					<?php if ($xml_file_exists) {?>
-						<a class='linkEditMain' href="<?php print htmlspecialchars('data_queries.php?action=item_edit&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><?php print htmlspecialchars($snmp_query_graph['name']);?></a>
+						<a class='linkEditMain' href="<?php print html_escape('data_queries.php?action=item_edit&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><?php print html_escape($snmp_query_graph['name']);?></a>
 					<?php } else { ?>
-						<span class='noLinkEditMain' title='Association Read Only until XML file located'><?php print htmlspecialchars($snmp_query_graph['name']);?></span>
+						<span class='noLinkEditMain' title='Association Read Only until XML file located'><?php print html_escape($snmp_query_graph['name']);?></span>
 					<?php } ?>
 					</td>
 					<td>
-						<?php print htmlspecialchars($snmp_query_graph['graph_template_name']);?>
+						<?php print html_escape($snmp_query_graph['graph_template_name']);?>
 					</td>
 					<td class='right'>
 						<?php print number_format_i18n($snmp_query_graph['graphs'], '-1');?>
@@ -952,7 +952,7 @@ function data_query_edit() {
 						<?php print $snmp_query_graph['id'];?>
 					</td><?php if ($snmp_query_graph['graphs'] == 0) {?>
 					<td class='right'>
-							<a class='delete deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='<?php print htmlspecialchars('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
+							<a class='delete deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='<?php print html_escape('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
 					</td>
 					<?php } else { ?>
 					<td class='right'>
@@ -1064,7 +1064,7 @@ function data_query() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>

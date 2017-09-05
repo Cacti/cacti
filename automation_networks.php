@@ -383,7 +383,7 @@ function network_edit() {
 
 	if (!isempty_request_var('id')) {
 		$network = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Network Discovery Range [edit: %s]', htmlspecialchars($network['name']));
+		$header_label = __('Network Discovery Range [edit: %s]', html_escape($network['name']));
 	} else {
 		$header_label = __('Network Discovery Range [new]');
 	}
@@ -1018,7 +1018,7 @@ function networks() {
 			}
 
 			form_alternate_row('line' . $network['id'], true);
-			form_selectable_cell('<a class="linkEditMain" href="' . htmlspecialchars('automation_networks.php?action=edit&id=' . $network['id']) . '">' . $network['name'] . '</a>', $network['id']);
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('automation_networks.php?action=edit&id=' . $network['id']) . '">' . $network['name'] . '</a>', $network['id']);
 			form_selectable_cell($network['data_collector'], $network['id']);
 			form_selectable_cell($sched_types[$network['sched_type']], $network['id']);
 			form_selectable_cell(number_format_i18n($network['total_ips']), $network['id'], '', 'text-align:right;');

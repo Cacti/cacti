@@ -1804,12 +1804,12 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 					$type_text = "<span class='deviceUp'>" . __('[unchanged]') . "</span>\n";
 				}
 
-				print "<span class='monoSpace'>$result_text " . htmlspecialchars($vals['title']) . " $type_text</span><br>\n";
+				print "<span class='monoSpace'>$result_text " . html_escape($vals['title']) . " $type_text</span><br>\n";
 
 				if (isset($vals['orphans'])) {
 					print '<ul class="monoSpace">';
 					foreach($vals['orphans'] as $orphan) {
-						print "<li>" . htmlspecialchars($orphan) . "</li>\n";
+						print "<li>" . html_escape($orphan) . "</li>\n";
 					}
 					print '</ul>';
 				}
@@ -1817,7 +1817,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				if (isset($vals['new_items'])) {
 					print '<ul class="monoSpace">';
 					foreach($vals['new_items'] as $item) {
-						print "<li>" . htmlspecialchars($item) . "</li>\n";
+						print "<li>" . html_escape($item) . "</li>\n";
 					}
 					print '</ul>';
 				}
@@ -1825,7 +1825,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				if (isset($vals['differences'])) {
 					print '<ul class="monoSpace">';
 					foreach($vals['differences'] as $diff) {
-						print "<li>" . htmlspecialchars($diff) . "</li>\n";
+						print "<li>" . html_escape($diff) . "</li>\n";
 					}
 					print '</ul>';
 				}

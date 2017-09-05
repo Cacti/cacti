@@ -87,7 +87,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 			print '<td>';
 
 			if ($disable_controls == false) {
-				print "<a class='linkEditMain' href='" . htmlspecialchars($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>";
+				print "<a class='linkEditMain' href='" . html_escape($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>";
 			}
 
 			print __('Item # %d', $i);
@@ -107,13 +107,13 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items && $total_items > 1) {
-						echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						echo '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('color_templates_items.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						echo '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						echo '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('color_templates_items.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						echo '<span class="moveArrowNone"></span>';
 					}
@@ -209,7 +209,7 @@ function aggregate_color_form_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$color_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM color_templates WHERE color_template_id = ?', array($matches[1]))) . '</li>';
+			$color_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM color_templates WHERE color_template_id = ?', array($matches[1]))) . '</li>';
 			$color_array[] = $matches[1];
 		}
 	}
@@ -289,9 +289,9 @@ function aggregate_color_item() {
 		$header_label = __('Color Template Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id'))));
 	}
 
-	html_start_box($header_label, '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . htmlspecialchars(get_request_var('color_template_id')));
+	html_start_box($header_label, '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . html_escape_request_var('color_template_id'));
 
-	draw_color_template_items_list($template_item_list, 'color_templates_items.php', 'color_template_id=' . htmlspecialchars(get_request_var('color_template_id')), false);
+	draw_color_template_items_list($template_item_list, 'color_templates_items.php', 'color_template_id=' . html_escape_request_var('color_template_id'), false);
 
 	html_end_box();
 

@@ -255,7 +255,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$profile_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_source_profiles WHERE id = ?', array($matches[1]))) . '</li>';
+			$profile_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM data_source_profiles WHERE id = ?', array($matches[1]))) . '</li>';
 			$profile_array[$i] = $matches[1];
 
 			$i++;
@@ -519,7 +519,7 @@ function profile_edit() {
 			AND local_data_id > 0',
 			array(get_request_var('id')));
 
-		$header_label = __('Data Source Profile [edit: %s]', htmlspecialchars($profile['name']) . ($readonly ? ' (Read Only)':''));
+		$header_label = __('Data Source Profile [edit: %s]', html_escape($profile['name']) . ($readonly ? ' (Read Only)':''));
 	} else {
 		$header_label = __('Data Source Profile [new]');
 		$readonly     = false;
@@ -565,7 +565,7 @@ function profile_edit() {
 			foreach ($profile_rras as $rra) {
 				form_alternate_row('line' . $rra['id']);$i++;?>
 				<td>
-					<?php print "<a class='linkEditMain' href='" . htmlspecialchars('data_source_profiles.php?action=item_edit&id=' . $rra['id'] . '&profile_id=' . $rra['data_source_profile_id']) . "'>" . htmlspecialchars($rra['name']) . '</a>';?>
+					<?php print "<a class='linkEditMain' href='" . html_escape('data_source_profiles.php?action=item_edit&id=' . $rra['id'] . '&profile_id=' . $rra['data_source_profile_id']) . "'>" . html_escape($rra['name']) . '</a>';?>
 				</td>
 				<td>
 					<em><?php print get_span($profile['step'] * $rra['steps'] * $rra['rows']);?></em>
@@ -810,7 +810,7 @@ function profile() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>

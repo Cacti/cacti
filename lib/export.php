@@ -992,16 +992,6 @@ function get_item_xml($type, $id, $follow_deps) {
 }
 
 function xml_character_encode($text) {
-	if (function_exists('htmlspecialchars')) {
-		return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-	} else {
-		$text = str_replace('&', '&amp;', $text);
-		$text = str_replace('>', '&gt;', $text);
-		$text = str_replace('<', '&lt;', $text);
-		$text = str_replace("\"", '&quot;', $text);
-		$text = str_replace("\'", '&apos;', $text);
-
-		return $text;
-	}
+	return html_escape($text);
 }
 

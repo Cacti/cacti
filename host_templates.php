@@ -236,7 +236,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$host_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($matches[1]))) . '</li>';
+			$host_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($matches[1]))) . '</li>';
 			$host_array[$i] = $matches[1];
 
 			$i++;
@@ -326,7 +326,7 @@ function template_item_remove_gt_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Graph Template will be disassociated from the Device Template.');?></p>
-			<p><?php print __('Graph Template Name: %s', htmlspecialchars($template['name']));?>'<br>
+			<p><?php print __('Graph Template Name: %s', html_escape($template['name']));?>'<br>
 		</td>
 	</tr>
 	<tr>
@@ -386,7 +386,7 @@ function template_item_remove_dq_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Data Queries will be disassociated from the Device Template.');?></p>
-			<p><?php print __('Data Query Name: %s', htmlspecialchars($query['name']));?>'<br>
+			<p><?php print __('Data Query Name: %s', html_escape($query['name']));?>'<br>
 		</td>
 	</tr>
 	<tr>
@@ -439,7 +439,7 @@ function template_edit() {
 
 	if (!isempty_request_var('id')) {
 		$host_template = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Device Templates [edit: %s]', htmlspecialchars($host_template['name']));
+		$header_label = __('Device Templates [edit: %s]', html_escape($host_template['name']));
 	} else {
 		$header_label = __('Device Templates [new]');
 		set_request_var('id', 0);
@@ -479,10 +479,10 @@ function template_edit() {
 				form_alternate_row("gt$i", true);
 				?>
 					<td class='left'>
-						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
+						<strong><?php print $i;?>)</strong> <?php print html_escape($item['name']);?>
 					</td>
 					<td class='right'>
-						<a class='delete deleteMarker fa fa-remove' title='<?php print __esc('Delete');?>' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_gt_confirm&id=' . $item['id'] . '&host_template_id=' . get_request_var('id'));?>'></a>
+						<a class='delete deleteMarker fa fa-remove' title='<?php print __esc('Delete');?>' href='<?php print html_escape('host_templates.php?action=item_remove_gt_confirm&id=' . $item['id'] . '&host_template_id=' . get_request_var('id'));?>'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -536,10 +536,10 @@ function template_edit() {
 				form_alternate_row("dq$i", true);
 				?>
 					<td class='left'>
-						<strong><?php print $i;?>)</strong> <?php print htmlspecialchars($item['name']);?>
+						<strong><?php print $i;?>)</strong> <?php print html_escape($item['name']);?>
 					</td>
 					<td class='right'>
-						<a class='delete deleteMarker fa fa-remove' title='<?php print __esc('Delete');?>' href='<?php print htmlspecialchars('host_templates.php?action=item_remove_dq_confirm&id=' . $item['id'] . '&host_template_id=' . get_request_var('id'));?>'></a>
+						<a class='delete deleteMarker fa fa-remove' title='<?php print __esc('Delete');?>' href='<?php print html_escape('host_templates.php?action=item_remove_dq_confirm&id=' . $item['id'] . '&host_template_id=' . get_request_var('id'));?>'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -711,7 +711,7 @@ function template() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -834,7 +834,7 @@ function template() {
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'host_templates.php?action=edit&id=' . $template['id']), $template['id']);
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right');
-			form_selectable_cell('<a class="linkEditMain" href="' . htmlspecialchars('host.php?reset=true&host_template_id=' . $template['id']) . '">' . number_format_i18n($template['hosts'], '-1') . '</a>', $template['id'], '', 'text-align:right');
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('host.php?reset=true&host_template_id=' . $template['id']) . '">' . number_format_i18n($template['hosts'], '-1') . '</a>', $template['id'], '', 'text-align:right');
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
 		}

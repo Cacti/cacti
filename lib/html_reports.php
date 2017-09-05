@@ -1116,7 +1116,7 @@ function reports_edit() {
 
 		foreach (array_keys($tabs) as $tab_short_name) {
 			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
-				" href='" . htmlspecialchars($config['url_path'] .
+				" href='" . html_escape($config['url_path'] .
 				get_reports_page() . '?action=edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
 				"'>" . $tabs[$tab_short_name] . "</a></li>\n";
@@ -1126,7 +1126,7 @@ function reports_edit() {
 
 
 		if (!isempty_request_var('id')) {
-			print "<li style='float:right;position:relative;'><a class='tab' href='" . htmlspecialchars(get_reports_page() . '?action=send&id=' . get_request_var('id') . '&tab=' . get_request_var('tab')) . "'>" . __('Send Report') . "</a></li>\n";
+			print "<li style='float:right;position:relative;'><a class='tab' href='" . html_escape(get_reports_page() . '?action=send&id=' . get_request_var('id') . '&tab=' . get_request_var('tab')) . "'>" . __('Send Report') . "</a></li>\n";
 		}
 
 		print "</ul></nav></div>\n";
@@ -1307,7 +1307,7 @@ function display_reports_items($report_id) {
 			}
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars(get_reports_page() . '?action=item_edit&id=' . $report_id. '&item_id=' . $item['id']) . '">Item#' . $i . '</a></td>';
+			$form_data = '<td><a class="linkEditMain" href="' . html_escape(get_reports_page() . '?action=item_edit&id=' . $report_id. '&item_id=' . $item['id']) . '">Item#' . $i . '</a></td>';
 			$form_data .= '<td>' . $item['sequence'] . '</td>';
 			$form_data .= '<td>' . $item_types{$item['item_type']} . '</td>';
 			$form_data .= '<td class="nowrap">' . $item_details . '</td>';
@@ -1316,14 +1316,14 @@ function display_reports_items($report_id) {
 			$form_data .= '<td>' . $size . '</td>';
 
 			if ($i == 1) {
-				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __esc('Move Down') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span class="moveArrowNone"</span></td>';
+				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span class="moveArrowNone"</span></td>';
 			} elseif ($i > 1 && $i < sizeof($items)) {
-				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __esc('Move Down') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __esc('Move Up') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
+				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
 			} else {
-				$form_data .= '<td class="right nowrap"><span class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __esc('Move Up') . '" href="' . htmlspecialchars(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
+				$form_data .= '<td class="right nowrap"><span class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
 			}
 
-			$form_data .= '<td align="right"><a class="pic deleteMarker fa fa-remove" href="' . htmlspecialchars(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
+			$form_data .= '<td align="right"><a class="pic deleteMarker fa fa-remove" href="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
 			print $form_data;
 
 			$i++;

@@ -167,7 +167,7 @@ function form_actions() {
 
 			$color = db_fetch_row_prepared('SELECT name, hex FROM colors WHERE id = ?', array($matches[1]));
 
-			$color_list .= '<li>' . ($color['name'] != '' ? htmlspecialchars($color['name']): __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
+			$color_list .= '<li>' . ($color['name'] != '' ? html_escape($color['name']): __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
 			$color_array[$i] = $matches[1];
 
 			$i++;
@@ -540,7 +540,7 @@ function color() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -720,7 +720,7 @@ function color() {
 			}
 
 			form_alternate_row('line' . $color['id'], false, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('color.php?action=edit&id=' . $color['id']) . "'>" . $color['hex'] . '</a>', $color['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . html_escape('color.php?action=edit&id=' . $color['id']) . "'>" . $color['hex'] . '</a>', $color['id']);
 			form_selectable_cell(filter_value($color['name'], get_request_var('filter')), $color['id']);
 			form_selectable_cell($color['read_only'] == 'on' ? __('Yes'):__('No'), $color['id']);
 			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . $color['hex'] . ';min-width:30%');

@@ -314,7 +314,7 @@ function form_actions() {
 			/* ==================================================== */
 
 			if (get_nfilter_request_var('drp_action') != '2') {
-				$user_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($matches[1]))) . '</li>';
+				$user_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($matches[1]))) . '</li>';
 			}
 			$user_array[$i] = $matches[1];
 
@@ -352,7 +352,7 @@ function form_actions() {
 			</tr>
 			<tr>
 				<td class='textArea'>
-					<p>" . __('Template Username:') . " <i>" . htmlspecialchars(db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id))) . "</i></p>
+					<p>" . __('Template Username:') . " <i>" . html_escape(db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id))) . "</i></p>
 				</td>
 			</tr>
 			<tr>
@@ -987,7 +987,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsg&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graphs'), 'page', 'main');
 
-		form_start(htmlspecialchars('user_admin.php?tab=permsg&id=' . get_request_var('id')), 'chk');
+		form_start(html_escape('user_admin.php?tab=permsg&id=' . get_request_var('id')), 'chk');
 
 		print $nav;
 
@@ -1082,7 +1082,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsgr&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Groups'), 'page', 'main');
 
-		form_start(htmlspecialchars('user_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
+		form_start(html_escape('user_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
 
 		print $nav;
 
@@ -1223,7 +1223,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsd&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Devices'), 'page', 'main');
 
-		form_start(htmlspecialchars('user_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
+		form_start(html_escape('user_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
 
 		print $nav;
 
@@ -1367,7 +1367,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permste&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graph Templates'), 'page', 'main');
 
-		form_start(htmlspecialchars('user_admin.php?tab=permste&id=' . get_request_var('id')), 'chk');
+		form_start(html_escape('user_admin.php?tab=permste&id=' . get_request_var('id')), 'chk');
 
 		print $nav;
 
@@ -1504,7 +1504,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permstr&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
 
-		form_start(htmlspecialchars('user_admin.php?tab=permstr&id=' . get_request_var('id')), 'chk');
+		form_start(html_escape('user_admin.php?tab=permstr&id=' . get_request_var('id')), 'chk');
 
 		print $nav;
 
@@ -1961,7 +1961,7 @@ function user_edit() {
 
 		foreach (array_keys($tabs) as $tab_short_name) {
 			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
-				" href='" . htmlspecialchars($config['url_path'] .
+				" href='" . html_escape($config['url_path'] .
 				'user_admin.php?action=user_edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
 				"'>" . $tabs[$tab_short_name] . "</a></li>\n";
@@ -2217,7 +2217,7 @@ function user() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -2532,7 +2532,7 @@ function graph_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Graph Permissions %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__('Graph Permissions %s', html_escape($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2562,7 +2562,7 @@ function graph_filter($header_label) {
 
 							if (sizeof($graph_templates)) {
 								foreach ($graph_templates as $gt) {
-									print "<option value='" . $gt['id'] . "'"; if (get_request_var('graph_template_id') == $gt['id']) { print ' selected'; } print '>' . htmlspecialchars($gt['name']) . "</option>\n";
+									print "<option value='" . $gt['id'] . "'"; if (get_request_var('graph_template_id') == $gt['id']) { print ' selected'; } print '>' . html_escape($gt['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -2577,7 +2577,7 @@ function graph_filter($header_label) {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -2639,7 +2639,7 @@ function group_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Group Membership %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__('Group Membership %s', html_escape($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2662,7 +2662,7 @@ function group_filter($header_label) {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -2725,7 +2725,7 @@ function device_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Devices Permission %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__('Devices Permission %s', html_escape($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2751,7 +2751,7 @@ function device_filter($header_label) {
 
 							if (sizeof($host_templates)) {
 								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . htmlspecialchars($host_template['name']) . "</option>\n";
+									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -2766,7 +2766,7 @@ function device_filter($header_label) {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -2828,7 +2828,7 @@ function template_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Template Permission %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__('Template Permission %s', html_escape($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2851,7 +2851,7 @@ function template_filter($header_label) {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -2913,7 +2913,7 @@ function tree_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Tree Permission %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__('Tree Permission %s', html_escape($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2936,7 +2936,7 @@ function tree_filter($header_label) {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -2998,7 +2998,7 @@ function member_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Tree Permission %s', htmlspecialchars($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__('Tree Permission %s', html_escape($header_label)), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -3021,7 +3021,7 @@ function member_filter($header_label) {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>

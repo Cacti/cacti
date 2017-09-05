@@ -351,13 +351,13 @@ function draw_dhtml_tree_level($tree_id, $parent = 0) {
 		$dhtml_tree[] = "\t\t\t<ul>\n";
 		foreach ($heirarchy as $leaf) {
 			if ($leaf['host_id'] > 0) {  //It's a host
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>" . __('Device') . ": " . htmlspecialchars($leaf['hostname']) . "</li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>" . __('Device') . ": " . html_escape($leaf['hostname']) . "</li>\n";
 			} elseif ($leaf['site_id'] > 0) {
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tsite:" . $leaf['site_id'] . "' data-jstree='{ \"type\" : \"site\" }'>" . __('Site') . ": " . htmlspecialchars($leaf['sitename']) . "</a></li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tsite:" . $leaf['site_id'] . "' data-jstree='{ \"type\" : \"site\" }'>" . __('Site') . ": " . html_escape($leaf['sitename']) . "</a></li>\n";
 			} elseif ($leaf['local_graph_id'] > 0) {
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . __('Graph') . ": " . htmlspecialchars(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . __('Graph') . ": " . html_escape(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
 			} else { //It's not a host
-				$dhtml_tree[] = "\t\t\t\t<li class='jstree-closed' id='tbranch:" . $leaf['id'] . "'>" . htmlspecialchars($leaf['title']) . "</li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li class='jstree-closed' id='tbranch:" . $leaf['id'] . "'>" . html_escape($leaf['title']) . "</li>\n";
 			}
 		}
 
@@ -381,7 +381,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 			$dhtml_tree[] = "\t\t\t<ul>\n";
 			foreach ($heirarchy as $leaf) {
 				if ($leaf['site_id'] > 0) {  // It's a site
-					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"site\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . __('Site') . ': ' . htmlspecialchars($leaf['sitename']) . "</a>\n";
+					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"site\" }'><a href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . __('Site') . ': ' . html_escape($leaf['sitename']) . "</a>\n";
 
 					$devices = get_allowed_site_devices($leaf['site_id'], '', 'ht.name ASC, h1.description ASC');
 					$ht_name = '';
@@ -391,7 +391,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 						foreach($devices as $d) {
 							if ($ht_name != $d['host_template_name']) {
-								$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-sht-' . $leaf['site_id'] . ':' . $d['host_template_id'] . "' data-jstree='{ \"type\" : \"host_template\" }'><a href='" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . "'>" . htmlspecialchars($d['host_template_name']) . "</a></li>\n";
+								$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-sht-' . $leaf['site_id'] . ':' . $d['host_template_id'] . "' data-jstree='{ \"type\" : \"host_template\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . "'>" . html_escape($d['host_template_name']) . "</a></li>\n";
 							}
 							$ht_name = $d['host_template_name'];
 						}
@@ -403,11 +403,11 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 					if (sizeof($graph_templates)) {
 						$dhtml_tree[] = "\t\t\t\t\t\t<ul>\n";
-						$dhtml_tree[] = "\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-gts' . "' data-jstree='{ \"type\" : \"graph_templates\" }'><a href='" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=gts') . "'>" . __('Graph Templates') . "</a>\n";
+						$dhtml_tree[] = "\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-gts' . "' data-jstree='{ \"type\" : \"graph_templates\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=gts') . "'>" . __('Graph Templates') . "</a>\n";
 						$dhtml_tree[] = "\t\t\t\t\t\t\t<ul>\n";
 
 						foreach ($graph_templates as $graph_template) {
-							$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . "-gt-" . $graph_template['id'] . "' data-jstree='{ \"type\" : \"graph_template\" }'><a href='" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=gt:' . $graph_template['id']) . "'>" . htmlspecialchars($graph_template['name']) . "</a></li>\n";
+							$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . "-gt-" . $graph_template['id'] . "' data-jstree='{ \"type\" : \"graph_template\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=gt:' . $graph_template['id']) . "'>" . html_escape($graph_template['name']) . "</a></li>\n";
 						}
 
 						$dhtml_tree[] = "\t\t\t\t\t\t\t</ul>\n";
@@ -417,7 +417,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 					$dhtml_tree[] = "\t\t\t\t</li>\n";
 				} elseif ($leaf['host_id'] > 0) {  // It's a host
-					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . __('Device') . ': ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
+					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . __('Device') . ': ' . html_escape($leaf['hostname']) . "</a>\n";
 
 					if (read_user_setting('expand_hosts') == 'on') {
 						$dhtml_tree[] = "\t\t\t\t\t<ul>\n";
@@ -426,7 +426,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 							if (sizeof($graph_templates)) {
 								foreach ($graph_templates as $graph_template) {
-									$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . "-gt-" . $graph_template['id'] . "' data-jstree='{ \"type\" : \"graph_template\" }'><a href='" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=gt:' . $graph_template['id']) . "'>" . htmlspecialchars($graph_template['name']) . "</a></li>\n";
+									$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . "-gt-" . $graph_template['id'] . "' data-jstree='{ \"type\" : \"graph_template\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=gt:' . $graph_template['id']) . "'>" . html_escape($graph_template['name']) . "</a></li>\n";
 								}
 							}
 						} elseif ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
@@ -461,15 +461,15 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 										($data_query['id'] > 0 && sizeof($sort_field_data))
 									) {
 										if ($data_query['name'] != 'Non Query Based') {
-											$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . "-dq-" . $data_query['id'] . "' data-jstree='{ \"type\" : \"data_query\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . "&hgd=dq:" . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
+											$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . "-dq-" . $data_query['id'] . "' data-jstree='{ \"type\" : \"data_query\" }'><a class='treepick' href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . "&hgd=dq:" . $data_query['id']) . '">' . html_escape($data_query['name']) . "</a>\n";
 										} else {
-											$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-dq-' . $data_query['id'] . "' data-jstree='{ \"type\" : \"data_query\" }'><a class='treepick' href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . "&hgd=dq:" . $data_query['id']) . '">' . htmlspecialchars($data_query['name']) . "</a>\n";
+											$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-dq-' . $data_query['id'] . "' data-jstree='{ \"type\" : \"data_query\" }'><a class='treepick' href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . "&hgd=dq:" . $data_query['id']) . '">' . html_escape($data_query['name']) . "</a>\n";
 										}
 
 										if ($data_query['id'] > 0) {
 											$dhtml_tree[] = "\t\t\t\t\t\t\t<ul>\n";
 											foreach ($sort_field_data as $snmp_index => $sort_field_value) {
-												$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-dq-' . $data_query['id'] . '-' . urlencode($snmp_index) . "' data-jstree='{ \"type\" : \"graph\" }'><a class='treepick' href='" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=dqi:' . $data_query['id'] . ':' . $snmp_index) . "'>" . htmlspecialchars($sort_field_value) . "</a></li>\n";
+												$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-dq-' . $data_query['id'] . '-' . urlencode($snmp_index) . "' data-jstree='{ \"type\" : \"graph\" }'><a class='treepick' href='" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=dqi:' . $data_query['id'] . ':' . $snmp_index) . "'>" . html_escape($sort_field_value) . "</a></li>\n";
 											}
 
 											$dhtml_tree[] = "\t\t\t\t\t\t\t</ul>\n";
@@ -489,7 +489,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 				} else { //It's not a host
 					$children = db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_tree_items WHERE parent = ? AND local_graph_id=0', array($leaf['id']));
 
-					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . htmlspecialchars($leaf['title']) . "</a></li>\n";
+					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . html_escape($leaf['title']) . "</a></li>\n";
 				}
 			}
 
@@ -497,7 +497,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 		} else {
 			$dhtml_tree[] = "<ul>\n";
 			foreach($heirarchy as $h) {
-				$dhtml_tree[] = "<li id='tree_anchor-" . $h['tree_id'] . "' data-jstree='{ \"type\" : \"tree\" }' class='jstree-closed'><a href='" . htmlspecialchars('graph_view.php?action=tree&node=tree_anchor-' . $h['tree_id'] . '&hgd=') . "'>" . htmlspecialchars($h['title']) . "</a></li>\n";
+				$dhtml_tree[] = "<li id='tree_anchor-" . $h['tree_id'] . "' data-jstree='{ \"type\" : \"tree\" }' class='jstree-closed'><a href='" . html_escape('graph_view.php?action=tree&node=tree_anchor-' . $h['tree_id'] . '&hgd=') . "'>" . html_escape($h['title']) . "</a></li>\n";
 			}
 			$dhtml_tree[] = "</ul>\n";
 		}
@@ -638,13 +638,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$data_query_index = $host_group_data_array[2];
 	}
 
-	if (!empty($tree_name)) { $title .= $title_delimeter . '<strong>' . __('Tree:') . '</strong>&nbsp;' . htmlspecialchars($tree_name, ENT_QUOTES); $title_delimeter = '-> '; }
-	if (!empty($leaf_name)) { $title .= $title_delimeter . '<strong>' . __('Leaf:') . '</strong>&nbsp;' . htmlspecialchars($leaf_name, ENT_QUOTES); $title_delimeter = '-> '; }
-	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>' . __('Device:') . '</strong>&nbsp;' . htmlspecialchars($host_name, ENT_QUOTES); $title_delimeter = '-> '; }
-	if (!empty($site_name)) { $title .= $title_delimeter . '<strong>' . __('Site:') . '</strong>&nbsp;' . htmlspecialchars($site_name, ENT_QUOTES); $title_delimeter = '-> '; }
+	if (!empty($tree_name)) { $title .= $title_delimeter . '<strong>' . __('Tree:') . '</strong>&nbsp;' . html_escape($tree_name); $title_delimeter = '-> '; }
+	if (!empty($leaf_name)) { $title .= $title_delimeter . '<strong>' . __('Leaf:') . '</strong>&nbsp;' . html_escape($leaf_name); $title_delimeter = '-> '; }
+	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>' . __('Device:') . '</strong>&nbsp;' . html_escape($host_name); $title_delimeter = '-> '; }
+	if (!empty($site_name)) { $title .= $title_delimeter . '<strong>' . __('Site:') . '</strong>&nbsp;' . html_escape($site_name); $title_delimeter = '-> '; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = '-> '; }
 
-	html_start_box(__('Graph Filters') . (get_request_var('rfilter') != '' ? " [ " . __('Filter') . " '" . htmlspecialchars(get_request_var('rfilter')) . "' " . __('Applied') . " ]" : ''), '100%', "", '3', 'center', '');
+	html_start_box(__('Graph Filters') . (get_request_var('rfilter') != '' ? " [ " . __('Filter') . " '" . html_escape(get_request_var('rfilter')) . "' " . __('Applied') . " ]" : ''), '100%', "", '3', 'center', '');
 
 	?>
 	<tr class='even noprint' id='search'>
@@ -806,6 +806,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</span>
 					</td>
 				</tr>
+			</table>
+			<table class='filterTable'>
 				<tr id='realtime' style='display:none;'>
 					<td>
 						<?php print __('Window');?>

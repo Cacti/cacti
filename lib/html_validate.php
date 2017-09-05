@@ -51,7 +51,7 @@ function die_html_input_error($variable = '', $value = '', $message = '') {
 	<table style='width:100%;text-align:center;'>
 		<tr>
 			<td>
-				<?php print __('Validation error for variable %s with a value of %s.  See backtrace below for more details.', $variable, htmlspecialchars($value));?>
+				<?php print __('Validation error for variable %s with a value of %s.  See backtrace below for more details.', $variable, html_escape($value));?>
 			</td>
 		</tr>
 	</table>

@@ -529,7 +529,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$tree_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($matches[1]))) . '</li>';
+			$tree_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($matches[1]))) . '</li>';
 			$tree_array[$i] = $matches[1];
 
 			$i++;
@@ -618,7 +618,7 @@ function tree_edit() {
 			WHERE id = ?', 
 			array(get_request_var('id')));
 
-		$header_label = __('Trees [edit: %s]', htmlspecialchars($tree['name']) );
+		$header_label = __('Trees [edit: %s]', html_escape($tree['name']) );
 
 		// Reset the cookie state if tree id has changed
 		if (isset($_SESSION['sess_tree_id']) && $_SESSION['sess_tree_id'] != get_request_var('id')) {
@@ -1676,7 +1676,7 @@ function tree() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1754,15 +1754,15 @@ function tree() {
 			$sequence = '';
 			if (get_request_var('sort_column') == 'sequence' && get_request_var('sort_direction') == 'ASC') {
 				if ($i == 1) {
-					$sequence .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
+					$sequence .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
 					$sequence .= '<span class="moveArrowNone"></span>';
 				} elseif ($i == sizeof($trees)) {
 					$sequence .= '<span class="moveArrowNone"></span>';
-					$sequence .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
+					$sequence .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
 
 				} else {
-					$sequence .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
-					$sequence .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
+					$sequence .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
+					$sequence .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
 				}
 			}
 

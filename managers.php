@@ -161,7 +161,7 @@ function manager(){
 								<?php
 								if (sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>";
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 									}
 								}
 								?>
@@ -279,7 +279,7 @@ function manager_edit() {
 
 	if ($id) {
 		$manager = db_fetch_row_prepared('SELECT * FROM snmpagent_managers WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('SNMP Notification Receiver [edit: %s]', htmlspecialchars($manager['description']));
+		$header_label = __('SNMP Notification Receiver [edit: %s]', html_escape($manager['description']));
 	} else {
 		$header_label = __('SNMP Notification Receiver [new]');
 	}
@@ -295,7 +295,7 @@ function manager_edit() {
 				print "<li class='subTab'><a href='#' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') . "'>" . $tabs_manager_edit[$tab_short_name] . '</a></li>';
 			}else {
 				print "<li class='subTab'><a " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') .
-					" href='" . htmlspecialchars($config['url_path'] .
+					" href='" . html_escape($config['url_path'] .
 					'managers.php?action=edit&id=' . get_request_var('id') .
 					'&tab=' . $tab_short_name) .
 					"'>" . $tabs_manager_edit[$tab_short_name] . '</a></li>';
@@ -534,7 +534,7 @@ function manager_notifications($id, $header_label) {
 								<?php
 								if (sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . '</option>';
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 									}
 								}
 								?>
@@ -847,7 +847,7 @@ function manager_logs($id, $header_label) {
 				$description = '';
 				$lines = preg_split( '/\r\n|\r|\n/', $item['description']);
 				foreach($lines as $line) {
-					$description .= htmlspecialchars(trim($line)) . '<br>';
+					$description .= html_escape(trim($line)) . '<br>';
 				}
 				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . $item['notification'] . '\', \'' . $description . '\')">' . $item['notification'] . '</a></td>';
 			}else {
