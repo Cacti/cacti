@@ -117,8 +117,9 @@ if (isset_request_var('format') && get_nfilter_request_var('format') == 'table')
 
 if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 	if (!$html) {
-		print '"' . __('Title') . '","'          . $xport_array['meta']['title_cache']                . '"' . "\n";
-		print '"' . __('Vertical Label') . '","' . $xport_array['meta']['vertical_label']             . '"' . "\n";
+		print '"' . __('Title') . '","'          . $xport_array['meta']['title_cache']    . '"' . "\n";
+		print '"' . __('Vertical Label') . '","' . $xport_array['meta']['vertical_label'] . '"' . "\n";
+
 		print '"' . __('Start Date') . '","'     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '"' . "\n";
 		print '"' . __('End Date') . '","'       . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step']*($xport_array['meta']['rows']-1) : $xport_array['meta']['end']) . '"' . "\n";
 		print '"' . __('Step') . '","'           . $xport_array['meta']['step']                       . '"' . "\n";
@@ -150,8 +151,8 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 		print "<table align='center' width='100%' style='border: 1px solid #bbbbbb;'><tr><td>\n";
 		print "<table class='cactiTable' align='center' width='100%'>\n";
 		print "<tr class='tableHeader'><td colspan='2' class='linkOverDark' style='font-weight:bold;'>" . __('Summary Details') . "</td><td align='right'><a href='#' role='link' style='cursor:pointer;' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>Download</a></td></tr>\n";
-		print "<tr class='even'><td align='left'>" . __('Title') . "</td><td $second>"          . trim($xport_array['meta']['title_cache'], "'")      . "</td></tr>\n";
-		print "<tr class='odd'><td align='left'>" . __('Vertical Label') . "</td><td $second>" . trim($xport_array['meta']['vertical_label'],"'")    . "</td></tr>\n";
+		print "<tr class='even'><td align='left'>" . __('Title') . "</td><td $second>"          . html_escape($xport_array['meta']['title_cache'])      . "</td></tr>\n";
+		print "<tr class='odd'><td align='left'>" . __('Vertical Label') . "</td><td $second>" . html_escape($xport_array['meta']['vertical_label'])    . "</td></tr>\n";
 		print "<tr class='even'><td align='left'>" . __('Start Date') . "</td><td $second>"     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . "</td></tr>\n";
 		print "<tr class='odd'><td align='left'>" . __('End Date') . "</td><td $second>"       . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step']*($xport_array['meta']['rows']-1) : $xport_array['meta']['end']) . "</td></tr>\n";
 		print "<tr class='even'><td align='left'>" . __('Step') . "</td><td $second>"           . $xport_array['meta']['step']                       . "</td></tr>\n";
