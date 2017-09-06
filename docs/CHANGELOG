@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue: Move Graph removal function to Graph API
 
 1.1.22
+-issue#950: Automation - New graph rule looses name on change
 -issue#952: CSV Export not rendering chinese characters correctly
 -issue#955: Validation error trying to view graph debug syntax
 
