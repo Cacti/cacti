@@ -4,9 +4,12 @@ Cacti CHANGELOG
 -issue#122: Support a Site Branch Type
 -issue: Move Graph removal function to Graph API
 
+1.1.22
+-issue#952: CSV Export not rendering chinese characters correctly
+-issue#955: Validation error trying to view graph debug syntax
+
 1.1.21
 -issue#938: Problems upgrading to 1.1.20 with one table alter statement
--issue#952: CSV Export not rendering chinese characters correctly
 -issue: Minor alignment issue on tables
 
 1.1.20

@@ -126,8 +126,8 @@ case 'view':
 								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>'></div>
 							</td>
 							<td id='dd<?php print get_request_var('local_graph_id');?>' style='vertical-align:top;' class='graphDrillDown noprint'>
-								<a class='iconLink utils' href='#' role='link' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><img class='drillDown' src='<?php print $config['url_path'] . "images/cog.png";?>' alt='' title='<?php print __esc('Graph Details, Zooming and Debugging Utilities');?>'></a></br>
-								<a class='iconLink' href='<?php print html_escape($config['url_path'] . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='<?php print __esc('CSV Export');?>'></a><br>
+								<a class='iconLink utils' href='#' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><img class='drillDown' src='<?php print $config['url_path'] . "images/cog.png";?>' alt='' title='<?php print __esc('Graph Details, Zooming and Debugging Utilities');?>'></a></br>
+								<a class='iconLink csv' href='<?php print html_escape($config['url_path'] . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='<?php print __esc('CSV Export');?>'></a><br>
 								<?php if (read_config_option('realtime_enabled') == 'on') print "<a class='iconLink' href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?top=0&left=0&local_graph_id=" . get_request_var('local_graph_id') . "', 'popup_" . get_request_var('local_graph_id') . "', 'toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __esc('Real-time') . "'></a><br/>\n";?>
 								<?php print ($aggregate_url != '' ? $aggregate_url:'')?>
 								<?php api_plugin_hook('graph_buttons', array('hook' => 'view', 'local_graph_id' => get_request_var('local_graph_id'), 'rra' => $rra['id'], 'view_type' => get_request_var('view_type'))); ?>
@@ -314,11 +314,11 @@ case 'zoom':
                             <?php print (read_user_setting('show_graph_title') == 'on' ? "<span align='center'><strong>" . html_escape($graph['title_cache']) . '</strong></span>' : '');?>
 					</td>
 					<td id='dd<?php print $graph['local_graph_id'];?>' style='vertical-align:top;' class='graphDrillDown noprint'>
-						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink hyperLink properties'>
+						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink properties'>
 							<img class='drillDown' src='<?php print $config['url_path'] . 'images/graph_properties.gif';?>' alt='' title='<?php print __esc('Graph Source/Properties');?>'>
 						</a>
 						<br>
-						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_csv' class='iconLink hyperLink properties'>
+						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_csv' class='iconLink properties'>
 							<img class='drillDown' src='<?php print $config['url_path'] . 'images/table_go.png';?>' alt='' title='<?php print __esc('Graph Data');?>'>
 						</a>
 						<br>
@@ -439,10 +439,12 @@ case 'zoom':
 		});
 
 		$('a[id$="_properties"]').unbind('click').click(function() {
+			graph_id=$(this).attr('id').replace('graph_', '').replace('_properties', '');
 			graphProperties();
 		});
 
 		$('a[id$="_csv"]').unbind('click').click(function() {
+			graph_id=$(this).attr('id').replace('graph_', '').replace('_csv', '');
 			graphXport();
 		});
 	}
