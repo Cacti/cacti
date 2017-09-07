@@ -1,32 +1,11 @@
 // Host Autocomplete Magic
 var pageName = basename($(location).attr('pathname'));
 
-/* only perform the recalculation of elements at the final end of the windows resize event */
-var waitForFinalEvent = (function () {
-  var timers = {};
-  return function (callback, ms, uniqueId) {
-    if (!uniqueId) {
-      uniqueId = "Don't call this twice without a uniqueId";
-    }
-    if (timers[uniqueId]) {
-      clearTimeout (timers[uniqueId]);
-    }
-    timers[uniqueId] = setTimeout(callback, ms);
-  };
-})();
-
-function keepWindowSize() {
+function myKeepWindowSize() {
 	$(window).resize(function (event) {
-		waitForFinalEvent(function(){
+		waitForFinalEvent(function() {
 			/* close open dropdown menues first off */
 			$('.dropdownMenu > ul').hide();
-
-			heightPage = $(window).height();
-			heightPageHead = $('#cactiPageHead').outerHeight();
-			heightPageContent = heightPage - heightPageHead + 1;
-
-			$('body').css('height', heightPage);
-			$('#cactiContent').css('height', heightPageContent);
 
 			/* check visibility of all tabs */
 			$('#submenu-ellipsis').empty();
@@ -46,26 +25,14 @@ function keepWindowSize() {
 				}
 			});
 
-			// Resize from dark theme
-			if (!$(event.target).hasClass('ui-resizable')) {
-				if (menuOpen) {
-					$('#navigation').css('height', ($(window).height())+'px');
-					width = parseInt($('#searcher').width())+65;
-					$('#navigation').css('width', width+'px');
-					$('#navigation > div').css('padding-top', '5px');
-				}
-			}
-
 			if($("#submenu-ellipsis li").length == 0) {
 				$(".ellipsis").hide(0);
 			}else {
 				$(".ellipsis").show(0);
 			}
-		}, 200, "resize-content");
+		}, 100, 'resize-content');
 	});
 }
-
-$('<div id="cactiPageBottom" class="cactiPageBottom"></div>').insertAfter('#cactiContent');
 
 function themeReady() {
 	var pageName = basename($(location).attr('pathname'));
@@ -73,7 +40,11 @@ function themeReady() {
 	var clickTimeout = false;
 	var hostOpen = false;
 
-	keepWindowSize();
+	if ($('#cactiPageBottom').length == 0) {
+		$('<div id="cactiPageBottom" class="cactiPageBottom"></a></div>').insertAfter('#cactiContent');
+	}
+
+	myKeepWindowSize();
 
 	// Setup the navigation menu
 	setMenuVisibility();

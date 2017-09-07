@@ -91,7 +91,7 @@ case 'view':
 	?>
 	<tr class='tableHeader'>
 		<td colspan='3' class='textHeaderDark'>
-			<strong><?php print __('Viewing Graph');?></strong> '<?php print htmlspecialchars($graph_title, ENT_QUOTES);?>'
+			<strong><?php print __('Viewing Graph');?></strong> '<?php print html_escape($graph_title);?>'
 		<script type='text/javascript'>
 
 		$(function() {
@@ -118,24 +118,24 @@ case 'view':
 
 			$aggregate_url = aggregate_build_children_url(get_request_var('local_graph_id'), $graph_start, $graph_end, $rra['id']);
 			?>
-			<tr>
+			<tr class='tableRowGraph'>
 				<td align='center'>
 					<table>
 						<tr>
 							<td>
-								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
+								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>'></div>
 							</td>
-							<td valign='top' style='padding: 3px;' class='noprint'>
-								<a class='iconLink utils' href='#' role='link' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><img class='drillDown' src='<?php print $config['url_path'] . "images/cog.png";?>' alt='' title='<?php print __esc('Graph Details, Zooming and Debugging Utilities');?>'></a></br>
-								<a class='iconLink' href='<?php print htmlspecialchars($config['url_path'] . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='<?php print __esc('CSV Export');?>'></a><br>
+							<td id='dd<?php print get_request_var('local_graph_id');?>' style='vertical-align:top;' class='graphDrillDown noprint'>
+								<a class='iconLink utils' href='#' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><img class='drillDown' src='<?php print $config['url_path'] . "images/cog.png";?>' alt='' title='<?php print __esc('Graph Details, Zooming and Debugging Utilities');?>'></a></br>
+								<a class='iconLink csv' href='<?php print html_escape($config['url_path'] . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='<?php print __esc('CSV Export');?>'></a><br>
 								<?php if (read_config_option('realtime_enabled') == 'on') print "<a class='iconLink' href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?top=0&left=0&local_graph_id=" . get_request_var('local_graph_id') . "', 'popup_" . get_request_var('local_graph_id') . "', 'toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __esc('Real-time') . "'></a><br/>\n";?>
 								<?php print ($aggregate_url != '' ? $aggregate_url:'')?>
 								<?php api_plugin_hook('graph_buttons', array('hook' => 'view', 'local_graph_id' => get_request_var('local_graph_id'), 'rra' => $rra['id'], 'view_type' => get_request_var('view_type'))); ?>
 							</td>
 						</tr>
 						<tr>
-							<td colspan='2' align='center'>
-								<strong><?php print htmlspecialchars($rra['name'], ENT_QUOTES);?></strong>
+							<td class='no-print center'>
+								<strong><?php print html_escape($rra['name']);?></strong>
 							</td>
 						</tr>
 					</table>
@@ -171,8 +171,30 @@ case 'view':
 				'&disable_cache=true'+
 				<?php print (isset_request_var('thumbnails') && get_request_var('thumbnails') == 'true' ? "'&graph_nolegend=true'":"''");?>,
 				function(data) {
-					$('#wrapper_'+data.local_graph_id+'_'+data.rra_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
-				});
+					$('#wrapper_'+data.local_graph_id+'_'+data.rra_id).html(
+						"<img class='graphimage' id='graph_"+data.local_graph_id+
+						"' src='data:image/"+data.type+";base64,"+data.image+
+						"' graph_start='"+data.graph_start+
+						"' graph_end='"+data.graph_end+
+						"' graph_left='"+data.graph_left+
+						"' graph_top='"+data.graph_top+
+						"' graph_width='"+data.graph_width+
+						"' graph_height='"+data.graph_height+
+						"' image_width='"+data.image_width+
+						"' image_height='"+data.image_height+
+						"' canvas_left='"+data.graph_left+
+						"' canvas_top='"+data.graph_top+
+						"' canvas_width='"+data.graph_width+
+						"' canvas_height='"+data.graph_height+
+						"' width='"+data.image_width+
+						"' height='"+data.image_height+
+						"' value_min='"+data.value_min+
+						"' value_max='"+data.value_max+"'>"
+					);
+
+					responsiveResizeGraphs();
+				}
+			);
 		});
 
 		$('a[id$="_util"]').unbind('click').click(function() {
@@ -192,35 +214,6 @@ case 'view':
 		initializeGraph();
 		$('#navigation').show();
 		$('#navigation_right').show();
-
-		$(window).resize(function() {
-			$('.graphimage').each(function() {
-				imageWidth    = $(this).width();
-				imageHeight   = $(this).height();
-				aspectRatio   = imageWidth/imageHeight;
-
-				if (imageWidth > 0 && originalWidth == null) {
-					originalWidth = imageWidth;
-					originalHeight = imageHeight;
-				}
-
-				$(this).hide();
-
-				mainSize = $('#main').width();
-
-				if (imageWidth + 40 > mainSize || mainSize < originalWidth) {
-					newWidth    = mainSize - 40;
-					aspectRatio = imageWidth / imageHeight;
-					imageWidth  = newWidth;
-					imageHeight = newWidth / aspectRatio;
-					$(this).css({ width: imageWidth, height: imageHeight });
-				} else if (mainSize > originalWidth) {
-					$(this).css({ width: originalWidth, height: originalHeight });
-				}
-
-				$(this).show();
-			});
-		}).trigger('resize');
 	});
 	</script>
 	<?php
@@ -309,24 +302,24 @@ case 'zoom':
 	?>
 	<tr class='tableHeader'>
 		<td colspan='3' class='textHeaderDark'>
-			<strong><?php print __('Graph Utility View');?></strong> '<?php print htmlspecialchars($graph_title);?>'
+			<strong><?php print __('Graph Utility View');?></strong> '<?php print html_escape($graph_title);?>'
 		</td>
 	</tr>
-	<tr class='even'>
+	<tr class='tableRowGraph'>
 		<td align='center'>
 			<table>
 				<tr>
 					<td align='center'>
-						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>' style="min-height: <?php echo (1.2 * $graph["height"]) . "px"?>;"></div>
-                            <?php print (read_user_setting("show_graph_title") == "on" ? "<span align='center'><strong>" . htmlspecialchars($graph["title_cache"]) . "</strong></span>" : "");?>
+						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
+                            <?php print (read_user_setting('show_graph_title') == 'on' ? "<span align='center'><strong>" . html_escape($graph['title_cache']) . '</strong></span>' : '');?>
 					</td>
-					<td valign='top' style='align:left;padding-top: 3px;' class='noprint'>
-						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink hyperLink properties'>
-							<img class='drillDown' src='<?php print $config['url_path'] . "images/graph_properties.gif";?>' alt='' title='<?php print __esc('Graph Source/Properties');?>'>
+					<td id='dd<?php print $graph['local_graph_id'];?>' style='vertical-align:top;' class='graphDrillDown noprint'>
+						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink properties'>
+							<img class='drillDown' src='<?php print $config['url_path'] . 'images/graph_properties.gif';?>' alt='' title='<?php print __esc('Graph Source/Properties');?>'>
 						</a>
 						<br>
-						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_csv' class='iconLink hyperLink properties'>
-							<img class='drillDown' src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='<?php print __esc('Graph Data');?>'>
+						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_csv' class='iconLink properties'>
+							<img class='drillDown' src='<?php print $config['url_path'] . 'images/table_go.png';?>' alt='' title='<?php print __esc('Graph Data');?>'>
 						</a>
 						<br>
 						<?php api_plugin_hook('graph_buttons', array('hook' => 'zoom', 'local_graph_id' => get_request_var('local_graph_id'), 'rra' =>  get_request_var('rra_id'), 'view_type' => get_request_var('view_type'))); ?>
@@ -405,7 +398,26 @@ case 'zoom':
 				'&disable_cache=true'+
 				<?php print (isset_request_var('thumbnails') && get_request_var('thumbnails') == 'true' ? "'&graph_nolegend=true'":"''");?>,
 				function(data) {
-					$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+					$('#wrapper_'+data.local_graph_id).html(
+						"<img class='graphimage' id='graph_"+data.local_graph_id+
+						"' src='data:image/"+data.type+";base64,"+data.image+
+						"' graph_start='"+data.graph_start+
+						"' graph_end='"+data.graph_end+
+						"' graph_left='"+data.graph_left+
+						"' graph_top='"+data.graph_top+
+						"' graph_width='"+data.graph_width+
+						"' graph_height='"+data.graph_height+
+						"' image_width='"+data.image_width+
+						"' image_height='"+data.image_height+
+						"' canvas_left='"+data.graph_left+
+						"' canvas_top='"+data.graph_top+
+						"' canvas_width='"+data.graph_width+
+						"' canvas_height='"+data.graph_height+
+						"' width='"+data.image_width+
+						"' height='"+data.image_height+
+						"' value_min='"+data.value_min+
+						"' value_max='"+data.value_max+"'>"
+					);
 
 					$('#graph_start').val(data.graph_start);
 					$('#graph_end').val(data.graph_end);
@@ -421,14 +433,18 @@ case 'zoom':
 					}else if (props_on) {
 						graphProperties();
 					}
+
+					responsiveResizeGraphs();
 				});
 		});
 
 		$('a[id$="_properties"]').unbind('click').click(function() {
+			graph_id=$(this).attr('id').replace('graph_', '').replace('_properties', '');
 			graphProperties();
 		});
 
 		$('a[id$="_csv"]').unbind('click').click(function() {
+			graph_id=$(this).attr('id').replace('graph_', '').replace('_csv', '');
 			graphXport();
 		});
 	}

@@ -2143,8 +2143,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		/* add host and graph information */
 		$xport_array['meta']['stacked_columns']= $stacked_columns;
-		$xport_array['meta']['title_cache']    = htmlspecialchars($graph['title_cache'], ENT_QUOTES);
-		$xport_array['meta']['vertical_label'] = htmlspecialchars($graph['vertical_label'], ENT_QUOTES);
+		$xport_array['meta']['title_cache']    = $graph['title_cache'];
+		$xport_array['meta']['vertical_label'] = $graph['vertical_label'];
 		$xport_array['meta']['local_graph_id'] = $local_graph_id;
 		$xport_array['meta']['host_id']        = $graph['host_id'];
 

@@ -91,6 +91,10 @@ $cacti_version_codes = array(
 	'1.1.15' => '0101',
 	'1.1.16' => '0101',
 	'1.1.17' => '0101',
+	'1.1.18' => '0101',
+	'1.1.19' => '0101',
+	'1.1.20' => '0101',
+	'1.1.21' => '0101',
 );
 
 $messages = array(
@@ -178,6 +182,12 @@ $messages = array(
 	34 => array(
 		'message' => __('Unable to Change Device for Data Query based Graphs.'),
 		'type' => 'error'),
+	'clog_invalid' => array(
+		'message' => __('Log file specified is not a Cacti log or archive file.'),
+		'type' => 'info'),
+	'clog_remove' => array(
+		'message' => __('Log file specified was Cacti archive file and was removed.'),
+		'type' => 'info'),
 	'clog_purged' => array(
 		'message' => __('Cacti Log purged successfully'),
 		'type' => 'info'),
@@ -886,6 +896,7 @@ $page_refresh_interval = array(
 $user_auth_realms = array(
 	8    => __('Console Access'),
 	7    => __('View Graphs'),
+	25   => __('Realtime Graphs'),
 	20   => __('Update Profile'),
 	24   => __('External Links'),
 
@@ -919,7 +930,7 @@ $user_auth_realms = array(
 );
 
 $user_auth_roles = array(
-	'Normal User'            => array(7, 19, 20, 22, 24),
+	'Normal User'            => array(7, 19, 20, 22, 24, 25),
 	'Template Editor'        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
 	'General Administration' => array(8, 3, 4, 5, 23, 1043),
 	'System Administration'  => array(8, 15, 1, 18, 21, 101)
@@ -944,7 +955,7 @@ $user_auth_realm_filenames = array(
 	'graph_templates_inputs.php' => 10,
 	'graph_templates_items.php' => 10,
 	'graph_view.php' => 7,
-	'graph_realtime.php' => 7,
+	'graph_realtime.php' => 25,
 	'graphs.php' => 5,
 	'graphs_items.php' => 5,
 	'graphs_new.php' => 5,

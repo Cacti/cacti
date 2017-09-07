@@ -755,16 +755,26 @@ function data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrit
 	}
 
 	$data_query_rewrite_indexes_cache[$hash][$snmp_index] = $value;
-	if (ctype_print($value) === FALSE) {
+	if (data_query_ctype_print_unicode($value) === false) {
 		$value = bin2hex($value);
 	}
 
 	return "($host_id, $snmp_query_id, " . db_qstr($field_name) . ', ' . db_qstr($value) . ', ' . db_qstr($snmp_index) . ', ' . db_qstr($oid) . ', 1)';
 }
 
+function data_query_ctype_print_unicode($value) {
+	$pattern = "~^[\pL\pN\s\"\~" . preg_quote("!#$%&'()*+,-./:;<=>?@[\]^_`{|}´") . "]+$~u";
+
+	return preg_match($pattern, $value);
+}
+
 function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$output_array) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
-	db_execute_prepared('UPDATE host_snmp_cache SET present=0 WHERE host_id = ? AND snmp_query_id = ?', array($host_id, $snmp_query_id));
+	db_execute_prepared('UPDATE host_snmp_cache 
+		SET present=0 
+		WHERE host_id = ? 
+		AND snmp_query_id = ?', 
+		array($host_id, $snmp_query_id));
 
 	/* setup the database call */
 	$sql_prefix   = 'INSERT INTO host_snmp_cache (host_id, snmp_query_id, field_name, field_value, snmp_index, oid, present) VALUES';

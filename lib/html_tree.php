@@ -118,7 +118,7 @@ function grow_dhtml_trees() {
 		$default_tree_id = db_fetch_cell('SELECT id FROM graph_tree ORDER BY sequence LIMIT 1');
 	}
 
-	print "<div style='white-space:nowrap'><span style='padding-right:4px;'>" . __('Search') . "</span><input id='searcher' style='padding:2px;font-size:12px;max-width:200px;' type='text' size='35'><hr></div>\n";
+	print "<div class='cactiTreeSearch' style='white-space:nowrap'><span style='padding-right:4px;'>" . __('Search') . "</span><input id='searcher' style='padding:2px;font-size:12px;max-width:200px;' type='text' size='35'><hr></div>\n";
 
 	$dhtml_tree = create_dhtml_tree();
 	if (sizeof($dhtml_tree)) {
@@ -139,17 +139,15 @@ function grow_dhtml_trees() {
 	var search_to = false;
 
 	function resizeGraphContent() {
-		if ('<?php print get_selected_theme();?>' != 'classic') {
-			$('.cactiGraphContentArea').css('margin-left', parseInt($('#navigation').width()+10)+'px');
-		} else {
-			width = $(document).width() - $('.cactiTreeNavigationArea').width() - 22;
-			$('.cactiGraphContentArea').css('width', width).css('float', 'right');
-		}
+		docHeight  = parseInt($('body').height());
+		navigation = $('.cactiTreeNavigationArea').offset();
+		navHeight  = docHeight - navigation.top + 15;
+		visWidth   = Math.max.apply(Math, $('.jstree').children(':visible').map(function() { return $(this).width(); }).get());
+		$('.cactiTreeNavigationArea').height(navHeight).width(visWidth);
+		$('.cactiGraphContentArea').css('margin-left', visWidth+10);
 	}
 
 	$(function () {
-		resizeGraphContent();
-
 		$('#jstree').each(function(data) {
 			var id=$(this).attr('id');
 
@@ -184,10 +182,14 @@ function grow_dhtml_trees() {
 
 					if (typeof href !== 'undefined') {
 						href=href.replace('action=tree', 'action=tree_content');
+						$('.cactiGraphContentArea').hide();
 
 						$.get(href, function(data) {
 							$('#main').html(data);
 							applySkin();
+
+							$('.cactiGraphContentArea').show();
+
 							var mytitle = 'Tree Mode - '+$('#nav_title').text();
 							document.getElementsByTagName('title')[0].innerHTML = mytitle;
 							if (typeof window.history.pushState !== 'undefined') {
@@ -255,22 +257,13 @@ function grow_dhtml_trees() {
 			}, 250);
 		});
 
-		$(window).resize(function() {
-			treeHeight = parseInt($(window).height()-$('.jstree').offset().top-10);
-			windHeight = parseInt($('.cactiContent').height());
-			docHeight  = parseInt($('body').height());
-
-			if (treeHeight > windHeight) {
-				$('#navigation').height(treeHeight+'px');
-			}else if (docHeight < windHeight) {
-				$('#navigation').height(docHeight+'px');
-			}else {
-				$('#navigation').height(windHeight+'px');
-			}
+		$(document).resize(function() {
+			resizeGraphContent();
 		});
 
 		<?php print api_plugin_hook_function('top_graph_jquery_function');?>
 	});
+
 	</script>
 	<?php
 }

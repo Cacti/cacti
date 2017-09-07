@@ -935,7 +935,7 @@ function utilities_view_logfile() {
 	<script type='text/javascript'>
 
 	function purgeLog() {
-		strURL = urlPath+'utilities.php?action=purge_logfile&header=false';
+		strURL = urlPath+'utilities.php?action=purge_logfile&header=false&filename='+$('#filename').val();
 		loadPageNoHeader(strURL);
 	}
 
@@ -1825,7 +1825,7 @@ function utilities() {
 		),
 		__('Rebuild Poller Cache') => array(
 			'link'  => 'utilities.php?action=clear_poller_cache',
-			'description' => __('The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  <i class="deviceDown">NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.</i>')
+			'description' => __('The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  <i class="deviceDown">NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run \'php -q cli/rebuild_poller_cache.php --help\' at the command line for more information.</i>')
 		),
 	);
 
@@ -2142,8 +2142,13 @@ function boost_display_run_status() {
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
-	print (($boost_last_run_duration > 60) ? __('%d minutes', (int)($boost_last_run_duration/60)) : '' ) . __('%d seconds', $boost_last_run_duration%60);
-	if ($rrd_updates != ''){ print ' (' . __('%0.2f percent of update frequency)', round(100*$boost_last_run_duration/$update_interval/60));}
+
+	if (is_numeric($boost_last_run_duration)) {
+		print (($boost_last_run_duration > 60) ? __('%d minutes', (int)($boost_last_run_duration/60)) : '' ) . __('%d seconds', $boost_last_run_duration%60);
+		if ($rrd_updates != ''){ print ' (' . __('%0.2f percent of update frequency)', round(100*$boost_last_run_duration/$update_interval/60));}
+	} else {
+		print __('N/A');
+	}
 	print '</td>';
 
 	form_alternate_row();

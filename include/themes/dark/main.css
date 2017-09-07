@@ -20,6 +20,7 @@ html, body {
 	width: 100%;
 	margin: 0px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	overflow: hidden;
 }
 
 body {
@@ -58,9 +59,17 @@ td, th {
 	margin: 0px;
 }
 
+th {
+	white-space: nowrap;
+}
+
 img {
 	border:none;
 	vertical-align:middle;
+}
+
+div {
+	display: block;
 }
 
 fieldset {
@@ -551,6 +560,7 @@ label {
 .treeArea, .treeItemsArea {
 	width:33%;
 	border:1px solid rgba(148, 179, 107, 0.8);
+	vertical-align: top;
 }
 
 .linkMarker {
@@ -776,6 +786,7 @@ ul#breadcrumbs {
 	width: 100%;
 	vertical-align: top;
 	padding-top: 56px;
+	display: inline-table;
 }
 
 .cactiTreeNavigationArea {
@@ -806,11 +817,11 @@ ul#breadcrumbs {
 	padding-right:0px;
 	padding-top:5px;
 	vertical-align:top;
-	position: fixed;
 	left: 0px;
 	top: 56px;
 	overflow-y: hidden;
 	width: 167px;
+	float: left;
 }
 
 .cactiConsoleNavigationArea table {
@@ -997,6 +1008,8 @@ legend {
 	padding-left: 5px;
 	display: none;
 	vertical-align: top;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
 }
 
 .cactiGraphContentAreaPreview {
@@ -1006,8 +1019,9 @@ legend {
 	padding-left: 5px;
 	display: none;
 	vertical-align: top;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
 }
-
 
 .cactiConsoleContentArea {
 	background: #161616;
@@ -1015,8 +1029,8 @@ legend {
 	padding-right: 5px;
 	padding-left: 5px;
 	vertical-align: top;
-	display: none;
-	margin-left: 168px;
+	overflow-y: auto !important;
+    overflow-x: hidden !important;
 }
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {

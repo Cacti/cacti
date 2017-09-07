@@ -23,9 +23,9 @@
 */
 
 include('./include/auth.php');
-include('./lib/api_device.php');
-include('./lib/api_data_source.php');
-include('./lib/utility.php');
+include_once('./lib/api_device.php');
+include_once('./lib/api_data_source.php');
+include_once('./lib/utility.php');
 
 $device_actions = array(
 	1 => __('Add Device')

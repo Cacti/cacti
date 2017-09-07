@@ -224,22 +224,22 @@ if ($output !== false && $output != '') {
 
 	if (isset($graph_data_array['graph_width'])) {
 		if (isset($graph_data_array['graph_nolegend'])) {
-			$oarray['image_width']  = $graph_data_array['graph_width']  * 1.24;
-			$oarray['image_height'] = $graph_data_array['graph_height'] * 1.45;
+			$oarray['image_width']  = round($graph_data_array['graph_width']  * 1.24, 0);
+			$oarray['image_height'] = round($graph_data_array['graph_height'] * 1.45, 0);
 		} else {
-			$oarray['image_width']  = $graph_data_array['graph_width']  * 1.15;
-			$oarray['image_height'] = $graph_data_array['graph_height'] * 1.8;
+			$oarray['image_width']  = round($graph_data_array['graph_width']  * 1.15, 0);
+			$oarray['image_height'] = round($graph_data_array['graph_height'] * 1.8, 0);
 		}
 	} else {
-		$oarray['image_width']  = db_fetch_cell_prepared('SELECT width 
+		$oarray['image_width']  = round(db_fetch_cell_prepared('SELECT width 
 			FROM graph_templates_graph 
 			WHERE local_graph_id = ?', 
-			array(get_request_var('local_graph_id')));
+			array(get_request_var('local_graph_id'))), 0);
 
-		$oarray['image_height']  = db_fetch_cell_prepared('SELECT height 
+		$oarray['image_height']  = round(db_fetch_cell_prepared('SELECT height 
 			FROM graph_templates_graph 
 			WHERE local_graph_id = ?', 
-			array(get_request_var('local_graph_id')));
+			array(get_request_var('local_graph_id'))), 0);
 	}
 
 	if ($image !== false) {

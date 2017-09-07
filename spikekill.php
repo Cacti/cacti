@@ -34,7 +34,7 @@ if (isset_request_var('method')) {
 		case 'fill':
 			break;
 		default:
-			echo __("FATAL: Spike Kill method '%s' is Invalid\n", get_nfilter_request_var('method'));
+			echo __("FATAL: Spike Kill method '%s' is Invalid\n", htmlspecialchars(get_nfilter_request_var('method'), ENT_QUOTES, 'UTF-8'));
 			exit(1);
 			break;
 	}
@@ -45,7 +45,8 @@ if (is_realm_allowed(1043)) {
 		FROM graph_templates_item
 		LEFT JOIN data_template_rrd
 		ON graph_templates_item.task_item_id=data_template_rrd.id
-		WHERE graph_templates_item.local_graph_id = ?', array(get_filter_request_var('local_graph_id')));
+		WHERE graph_templates_item.local_graph_id = ?',
+		array(get_filter_request_var('local_graph_id')));
 
 	$results = '';
 	if (sizeof($local_data_ids)) {

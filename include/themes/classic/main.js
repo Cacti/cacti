@@ -1,7 +1,12 @@
+// Host Autocomplete Magic
+var pageName = basename($(location).attr('pathname'));
+
 function themeReady() {
 	height = get_height();
 	$('#navigation, .cactiConsoleNavigationArea').css('height', height);
 	$('#navigation, #navigation_right').show();
+
+	keepWindowSize();
 
 	$(window).unbind().resize(function(event) {
 		if (pageName == 'graph_view.php') {

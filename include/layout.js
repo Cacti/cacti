@@ -43,7 +43,6 @@ var pageName;
 var columnsHidden = 0;
 var lastColumnsHidden = {};
 var lastWidth = {};
-var lastMain = 0;
 var resizeDelta = 100;
 var resizeTime = 0;
 var resizeTimeout = false;
@@ -546,11 +545,11 @@ function applySkin() {
 		themeReady();
 	}
 
-	tuneFilter();
-
 	makeFiltersResponsive();
 
 	setupResponsiveMenuAndTabs();
+
+	keepWindowSize();
 
 	// Add tooltips to graph drilldowns
 	$('.drillDown').tooltip({
@@ -599,7 +598,7 @@ function applySkin() {
 	});
 
 	$.when.apply(this, showPage).done(function() {
-		responsiveUI(null);
+		responsiveUI('force');
 	});
 }
 
@@ -762,48 +761,29 @@ function setupResponsiveMenuAndTabs() {
 		}
 	});
 
-	$(window).resize(function(event) {
-    	resizeTime = new Date();
-		myEvent = event;
-	    if (resizeTimeout === false) {
-			resizeTimeout = true;
-			setTimeout(function() {
-				responsiveUI(myEvent);
-			}, resizeDelta);
-		}
-	});
-
-	$(window).on('orientationchange', function() {
-		responsiveUI(null);
+	$(window).on('orientationchange, fullscreenchange', function() {
+		responsiveUI('force');
 	});
 }
 
 function responsiveUI(event) {
-    if (new Date() - resizeTime < resizeDelta) {
-		myEvent = event;
-        setTimeout(function() {
-			responsiveUI(myEvent);
-		}, resizeDelta);
+	if (event != 'force') {
+	    if (new Date() - resizeTime < resizeDelta) {
+			myEvent = event;
+			setTimeout(function() {
+				responsiveUI(myEvent);
+			}, resizeDelta);
 
-		return false;
-    } else {
-        resizeTimeout = false;
-    }
+			return false;
+		} else {
+			resizeTimeout = false;
+		}
+	}
 
 	if ($('.cactiTreeNavigationArea').length > 0) {
 		tree = true;
 	}else{
 		tree = false;
-	}
-
-	if (event == null) {
-		if (lastMain > 0) {
-			mainWidth = lastMain;
-		}else{
-			mainWidth = $('#main').width();
-		}
-	}else{
-		mainWidth = $('#main').width();
 	}
 
 	if ($(window).width() < 640) {
@@ -822,41 +802,32 @@ function responsiveUI(event) {
 		menuShow(tree);
 	}
 
-	mainWidth = $('#main').width();
+	if ($('#navigation').length && $('#navigation').is(':visible')) {
+		mainWidth = $('body').innerWidth() - $('#navigation').width();
+	} else {
+		mainWidth = $('body').innerWidth();
+	}
 
 	/* change textbox and textarea widths */
-	if (event != null) {
-		$('input[type="text"], textarea').each(function() {
-			//console.log('Main:'+mainWidth+', Element:'+$(this).attr('id')+', Width:'+$(this).width());
-
-			if ($(this).attr('type') == 'text') {
-				offset = 20;
-			}else{
-				offset = 5;
-			}
-
-			if (mainWidth != 100) {
-				if ($(this).width() > mainWidth) {
-					$(this).css('max-width', (mainWidth - offset)+'px');
-				}else{
-					$(this).css('max-width', '');
-				}
-
-				if ($(this).width() > mainWidth) {
-					$(this).css('max-width', (mainWidth - offset)+'px');
-				}
-			}
-		});
-	}
-
-	if (event != null && !$(event.target).hasClass('ui-resizable')) {
-		height = Math.max(document.body.scrollHeight, $(window).height());
-		if (tree) {
-			$('.cactiTreeNavigationArea').css('height', height);
+	$('input[type="text"], textarea').each(function() {
+		if ($(this).attr('type') == 'text') {
+			offset = 20;
 		}else{
-			$('.cactiConsoleNavigationArea').css('height', height);
+			offset = 5;
 		}
-	}
+
+		if (mainWidth != 100) {
+			if ($(this).width() > mainWidth) {
+				$(this).css('max-width', (mainWidth - offset)+'px');
+			}else{
+				$(this).css('max-width', '');
+			}
+
+			if ($(this).width() > mainWidth) {
+				$(this).css('max-width', (mainWidth - offset)+'px');
+			}
+		}
+	});
 
 	$('.filterTable').each(function() {
 		tuneFilter($(this), mainWidth);
@@ -867,6 +838,75 @@ function responsiveUI(event) {
 			object = $(this).closest('.cactiTable');
 
 			tuneTable(object, mainWidth);
+		});
+	});
+}
+
+function responsiveResizeGraphs() {
+	if ($('.graphimage').length == 0) {
+		return false;
+	}
+
+	if ($('#navigation').length && $('#navigation').is(':visible')) {
+		mainWidth = $('body').innerWidth() - $('#navigation').width();
+	} else {
+		mainWidth = $('body').innerWidth();
+	}
+
+	myColumns = $('#columns').val();
+	isThumb   = $('#thumbnails').is(':checked');
+	graphRow  = $('.tableRowGraph:first').width();
+	drillDown = $('.graphDrillDown:first').outerWidth() + 15;
+
+	if (myColumns == null) {
+		myColumns = 1;
+	}
+
+	if (mainWidth < graphRow) {
+		graphRow = mainWidth - drillDown;
+	} else if (graphRow == 0) {
+		graphRow = mainWidth;
+	}
+
+	myWidth = parseInt((graphRow - (drillDown * myColumns)) / myColumns);
+
+	$('.graphimage').each(function() {
+		graph_id = $(this).attr('id').replace('wrapper_','');
+
+		/* original image attributes */
+		image_width   = $(this).attr('image_width');
+		image_height  = $(this).attr('image_height');
+		canvas_top    = $(this).attr('canvas_top');
+		canvas_left   = $(this).attr('canvas_left');
+		canvas_width  = $(this).attr('canvas_width');
+		canvas_height = $(this).attr('canvas_height');
+
+		if (isThumb || myWidth < image_width) {
+			ratio = myWidth / image_width;
+		} else {
+			ratio = 1;
+		}
+
+		new_image_width       = parseInt(image_width * ratio)
+		new_image_height      = parseInt(image_height * ratio)
+		new_canvas_width      = parseInt(canvas_width  * ratio);
+		new_canvas_height     = parseInt(canvas_height * ratio);
+		new_canvas_graph_top  = parseInt(canvas_top  * ratio);
+		new_canvas_graph_left = parseInt(canvas_left * ratio);
+
+		$(this).attr('graph_width', new_canvas_width);
+		$(this).attr('graph_height', new_canvas_height);
+		$(this).attr('graph_top', new_canvas_graph_top);
+		$(this).attr('graph_left', new_canvas_graph_left);
+
+		$(this).css('width', new_image_width);
+		$(this).css('height', new_image_height);
+
+		$('#zoom-container').remove();
+		$(this).zoom({
+			inputfieldStartTime : 'date1',
+			inputfieldEndTime : 'date2',
+			serverTimeOffset : timeOffset
 		});
 	});
 }
@@ -884,8 +924,8 @@ function countHiddenCols(object) {
 
 function tuneTable(object, width) {
 	rows           = $(object).find('tr').length;
-	width          = parseInt(width);
-	tableWidth     = parseInt($(object).width());
+	width          = width;
+	tableWidth     = $(object).width();
 	totalCols      = $(object).find('th').length;
 	reducedWidth   = 0;
 	columnsHidden  = countHiddenCols(object);
@@ -894,7 +934,6 @@ function tuneTable(object, width) {
 
 	if (rows > 101) return false;
 
-	//console.log('totCols: '+totalCols+', hidCols: '+columnsHidden+', visCols: '+visibleColumns+', tabWid: '+tableWidth+', wid: '+width+', redWid: '+reducedWidth);
 	if (tableWidth > width) {
 		column = totalCols;
 		hasCheckbox = $(object).find('th.tableSubHeaderCheckbox').length;
@@ -907,7 +946,7 @@ function tuneTable(object, width) {
 
 		$($(object).find('th').not('.noHide').get().reverse()).each(function() {
 			if (!$(this).hasClass('tableSubHeaderCheckbox') && $(this).is(':visible')) {
-				reducedWidth += parseInt($(this).width());
+				reducedWidth += $(this).width();
 				$('#'+id+' th:nth-child('+column+')').hide();
 				$('#'+id+' td:nth-child('+column+')').hide();
 				columnsHidden++;
@@ -949,19 +988,32 @@ function tuneTable(object, width) {
 }
 
 function tuneFilter(object, width) {
-	filter = 'input[id="refresh"], input[id="clear"], input[id="save"], input[id="tsrefresh"], input[id="tsclear"]';
-	buttons = $(object).find(filter).length;
+	filter  = 'input[id="refresh"], input[id="clear"], input[id="save"], input[id="tsrefresh"], input[id="tsclear"]';
+	buttons = 0;
+	visTds  = $(object).find('td:visible').length;
+
+	// Find the td's with buttons
+	$($(object).find('td').get().reverse()).each(function() {
+		if ($(this).find(filter).length > 0) {
+			buttons++;
+		}
+	});
+	minTds  = 2 + buttons;
 
 	if ($(object).width() > width) {
 		$($(object).find('td').get().reverse()).each(function() {
-			if (!$(this).find(filter).length) {
-				// always show two objects
-				if ($(object).find('td:visible').length - buttons > 2) {
-					$(this).hide();
+			if (visTds < minTds) {
+				return false;
+			}
 
-					if ($(this).closest('td').prev().find('input, select').length == 0) {
-						$(this).closest('td').prev().hide();
-					}
+			if ($(this).find(filter).length == 0) {
+				// always show two objects
+				$(this).hide();
+				visTds--;
+
+				if ($(this).closest('td').prev().find('input, select').length == 0) {
+					$(this).closest('td').prev().hide();
+					visTds--;
 				}
 			}
 
@@ -990,34 +1042,48 @@ function tuneFilter(object, width) {
 	}
 }
 
-function menuHide(tree) {
-	if (marginLeft == null) {
-		marginLeft = parseInt($('#navigation_right').css('margin-left'));
+function menuHide() {
+	myClass = '';
+    curMargin = $('#navigation').outerWidth();
+	if (curMargin > 0) {
+		marginLeft = curMargin;
 	}
 
-	if (tree) {
+	if ($('.cactiTreeNavigationArea').length) {
 		myClass = '.cactiTreeNavigationArea';
-	}else{
+	} else if ($('.cactiConsoleNavigationArea').length) {
 		myClass = '.cactiConsoleNavigationArea';
 	}
 
 	$('#navigation_right').animate({'margin-left': '0px'}, 20);
-	$(myClass).hide('slide', {direction: 'left'}, 20);
+
+	if (myClass != '') {
+		$(myClass).hide('slide', {direction: 'left'}, 20, function() {
+			responsiveResizeGraphs();
+		});
+	}
 
 	menuOpen = false;
 }
 
 function menuShow(tree) {
-	if (tree) {
+	myClass = '';
+
+	if ($('.cactiTreeNavigationArea').length) {
 		myClass = '.cactiTreeNavigationArea';
-	}else{
+	} else if ($('.cactiConsoleNavigationArea').length) {
 		myClass = '.cactiConsoleNavigationArea';
 	}
 
-	if (marginLeft != null) {
+	if (marginLeft > 0) {
 		$('#navigation_right').animate({'margin-left': marginLeft}, 20);
 	}
-	$(myClass).show('slide', {direction: 'left'}, 20);
+
+	if (myClass != '') {
+		$(myClass).show('slide', {direction: 'left'}, 20, function() {
+			responsiveResizeGraphs();
+		});
+	}
 
 	menuOpen = true;
 }
@@ -1310,7 +1376,7 @@ function saveTableWidths(initial) {
 		if (key !== undefined) {
 			if (initial && items.length) {
 				$('#'+key).find('th.ui-resizable').each(function(data) {
-					if (parseInt(items[i]) == 0) {
+					if (items[i] == 0) {
 						items[i] = $(this).width();
 						sizes[i] = items[i];
 					}
@@ -1459,9 +1525,73 @@ $(function() {
 			}
 		});
 	}
-
-	responsiveUI(null);
 });
+
+/* only perform the recalculation of elements at the final end of the windows resize event */
+var waitForFinalEvent = (function () {
+  var timers = {};
+  return function (callback, ms, uniqueId) {
+    if (!uniqueId) {
+      uniqueId = "Don't call this twice without a uniqueId";
+    }
+    if (timers[uniqueId]) {
+      clearTimeout (timers[uniqueId]);
+    }
+    timers[uniqueId] = setTimeout(callback, ms);
+  };
+})();
+
+function keepWindowSize() {
+	$(window).resize(function (event) {
+		$('.cactiGraphContentArea').show();
+
+   		resizeTime = new Date();
+		myEvent = event;
+		if (resizeTimeout === false) {
+			resizeTimeout = true;
+			setTimeout(function() {
+				responsiveUI(myEvent);
+			}, resizeDelta);
+		}
+		heightPage = $(window).height();
+
+		if ($('#cactiPageHead').is(':visible')) {
+			heightPageHead = $('#cactiPageHead').outerHeight();
+		} else {
+			heightPageHead = 0;
+		}
+
+		if ($('#breadCrumbBar').is(':visible')) {
+			heightBreadCrumbBar = $('#breadCrumbBar').outerHeight();
+		} else {
+			heightBreadCrumbBar = 0;
+		}
+
+		if ($('#cactiPageBottom').is(':visible')) {
+			heightPageBottom = $('#cactiPageBottom').outerHeight();
+		} else {
+			heightPageBottom = 0;
+		}
+
+		heightPageContent = heightPage - heightPageHead - heightPageBottom - heightBreadCrumbBar;
+
+		if (theme != 'classic') {
+			$('body').css('height', heightPage);
+			$('#cactiContent, #navigation, #navigation_right, #main').css('height', heightPageContent);
+
+			// Handle links pages
+			$('#content').css({'width':'100%', 'height':heightPageContent-4});
+		} else {
+			// Handle links pages
+			$('#content').css({'width':'100%', 'height':$(document).height()});
+		}
+
+		navWidth = $('#navigation').width();
+		$('#searcher').css('width', navWidth-70);
+
+		responsiveResizeGraphs();
+	}).resize();
+}
 
 /* Graph related javascript functions */
 if (typeof urlPath == 'undefined') {
@@ -1746,15 +1876,22 @@ function dryRunRangeFill(local_graph_id) {
 
 function redrawGraph(graph_id) {
 	mainWidth = $('#main').width();
-	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
 
-	if (isThumb) {
-		myWidth = (mainWidth-(30*myColumns))/myColumns;
+	myColumns = $('#columns').val();
+	graphRow  = $('.tableRowGraph').width();
+	drillDown = $('.graphDrillDown:first').outerWidth() + 10;
+
+	if (mainWidth < graphRow) {
+		graphRow = mainWidth - drillDown;
+	} else if (graphRow == 0) {
+		graphRow = mainWidth;
 	}
 
-	graph_height=$('#wrapper_'+graph_id).attr('graph_height');
-	graph_width=$('#wrapper_'+graph_id).attr('graph_width');
+	myWidth = (graphRow-(drillDown * myColumns)) / myColumns;
+
+	graph_height= $('#wrapper_'+graph_id).attr('graph_height');
+	graph_width = $('#wrapper_'+graph_id).attr('graph_width');
 
 	$.getJSON(urlPath+'graph_json.php?rra_id=0'+
 		'&local_graph_id='+graph_id+
@@ -1764,17 +1901,36 @@ function redrawGraph(graph_id) {
 		'&graph_width='+graph_width+
 		(isThumb ? '&graph_nolegend=true':''),
 		function(data) {
-			if (isThumb && myWidth < data.image_width) {
+			if (myWidth < data.image_width) {
 				ratio=myWidth/data.image_width;
-				data.image_width  *= ratio;
-				data.image_height *= ratio;
-				data.graph_width  *= ratio;
-				data.graph_height *= ratio;
-				data.graph_top    *= ratio;
-				data.graph_left   *= ratio;
+				data.image_width  = parseInt(data.image_width  * ratio);
+				data.image_height = parseInt(data.image_height * ratio);
+				data.graph_width  = parseInt(data.graph_width  * ratio);
+				data.graph_height = parseInt(data.graph_height * ratio);
+				data.graph_top    = parseInt(data.graph_top  * ratio);
+				data.graph_left   = parseInt(data.graph_left * ratio);
 			}
 
-			$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+			$('#wrapper_'+data.local_graph_id).html(
+				"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
+				" src='data:image/"+data.type+";base64,"+data.image+"'"+
+				" graph_start='"+data.graph_start+"'"+
+				" graph_end='"+data.graph_end+"'"+
+				" graph_left='"+data.graph_left+"'"+
+				" graph_top='"+data.graph_top+"'"+
+				" graph_width='"+data.graph_width+"'"+
+				" graph_height='"+data.graph_height+"'"+
+				" width='"+data.image_width+"'"+
+				" height='"+data.image_height+"'"+
+				" image_width='"+data.image_width+"'"+
+				" image_height='"+data.image_height+"'"+
+				" canvas_top='"+data.graph_top+"'"+
+				" canvas_left='"+data.graph_left+"'"+
+				" canvas_width='"+data.graph_width+"'"+
+				" canvas_height='"+data.graph_height+"'"+
+				" value_min='"+data.value_min+"'"+
+				" value_max='"+data.value_max+"'>"
+			);
 		}
 	);
 }
@@ -1834,20 +1990,41 @@ function initializeGraphs() {
 			function(data) {
 				if (myWidth < data.image_width) {
 					ratio=myWidth/data.image_width;
-					data.image_width  *= ratio;
-					data.image_height *= ratio;
-					data.graph_width  *= ratio;
-					data.graph_height *= ratio;
-					data.graph_top    *= ratio;
-					data.graph_left   *= ratio;
+					data.image_width  = parseInt(data.image_width  * ratio);
+					data.image_height = parseInt(data.image_height * ratio);
+					data.graph_width  = parseInt(data.graph_width  * ratio);
+					data.graph_height = parseInt(data.graph_height * ratio);
+					data.graph_top    = parseInt(data.graph_top  * ratio);
+					data.graph_left   = parseInt(data.graph_left * ratio);
 				}
 
-				$('#wrapper_'+data.local_graph_id).html("<img class='graphimage' id='graph_"+data.local_graph_id+"' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+				$('#wrapper_'+data.local_graph_id).html(
+					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
+					" src='data:image/"+data.type+";base64,"+data.image+"'"+
+					" graph_start='"+data.graph_start+"'"+
+					" graph_end='"+data.graph_end+"'"+
+					" graph_left='"+data.graph_left+"'"+
+					" graph_top='"+data.graph_top+"'"+
+					" graph_width='"+data.graph_width+"'"+
+					" graph_height='"+data.graph_height+"'"+
+					" width='"+data.image_width+"'"+
+					" height='"+data.image_height+"'"+
+					" image_width='"+data.image_width+"'"+
+					" image_height='"+data.image_height+"'"+
+					" canvas_top='"+data.graph_top+"'"+
+					" canvas_left='"+data.graph_left+"'"+
+					" canvas_width='"+data.graph_width+"'"+
+					" canvas_height='"+data.graph_height+"'"+
+					" value_min='"+data.value_min+"'"+
+					" value_max='"+data.value_max+"'>"
+				);
+
 				$("#graph_"+data.local_graph_id).zoom({
 					inputfieldStartTime : 'date1',
 					inputfieldEndTime : 'date2',
 					serverTimeOffset : timeOffset
 				});
+
 				realtimeArray[data.local_graph_id] = false;
 		});
 	});
@@ -1883,7 +2060,11 @@ function initializeGraphs() {
 		if (realtimeArray[graph_id]) {
 			$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
 			$(this).html("<img class='drillDown' title='"+realtimeClickOn+"' alt='' src='"+urlPath+"images/chart_curve_go.png'>");
-			$(this).find('img').tooltip().zoom({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : timeOffset });
+			$(this).find('img').tooltip().zoom({ 
+				inputfieldStartTime : 'date1', 
+				inputfieldEndTime : 'date2', 
+				serverTimeOffset : timeOffset 
+			});
 			realtimeArray[graph_id] = false;
 			setFilters();
 		}else{

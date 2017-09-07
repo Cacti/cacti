@@ -469,7 +469,18 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
 		if (!empty($ld['proto_version']))     $ldap->version           = $ld['proto_version'];
 		if (!empty($ld['encryption']))        $ldap->encryption        = $ld['encryption'];
 		if (!empty($ld['referrals']))         $ldap->referrals         = $ld['referrals'];
-		if (!empty($ld['group_require']))     $ldap->group_require     = $ld['group_require'];
+
+		if (!empty($ld['mode']))              $ldap->mode              = $ld['mode'];
+		if (!empty($ld['search_base']))       $ldap->search_base       = $ld['search_base'];
+		if (!empty($ld['search_filter']))     $ldap->search_filter     = $ld['search_filter'];
+		if (!empty($ld['specific_dn']))       $ldap->specific_dn       = $ld['specific_dn'];
+		if (!empty($ld['specific_password'])) $ldap->specific_password = $ld['specific_password'];
+
+		if ($ld['group_require'] == 'on') {
+			$ldap->group_require = true;
+		}else{
+			$ldap->group_require = false;
+		}
 		if (!empty($ld['group_dn']))          $ldap->group_dn          = $ld['group_dn'];
 		if (!empty($ld['group_attrib']))      $ldap->group_attrib      = $ld['group_attrib'];
 		if (!empty($ld['group_member_type'])) $ldap->group_member_type = $ld['group_member_type'];
@@ -495,11 +506,21 @@ function domains_ldap_search_dn($username, $realm) {
 		if (!empty($ld['proto_version']))     $ldap->version           = $ld['proto_version'];
 		if (!empty($ld['encryption']))        $ldap->encryption        = $ld['encryption'];
 		if (!empty($ld['referrals']))         $ldap->referrals         = $ld['referrals'];
-		if (!empty($ld['mode']))              $ldap->group_require     = $ld['mode'];
-		if (!empty($ld['search_base']))       $ldap->group_dn          = $ld['search_base'];
-		if (!empty($ld['search_filter']))     $ldap->group_attrib      = $ld['search_filter'];
-		if (!empty($ld['specific_dn']))       $ldap->group_member_type = $ld['specific_dn'];
-		if (!empty($ld['specific_password'])) $ldap->group_member_type = $ld['specific_password'];
+
+		if (!empty($ld['mode']))              $ldap->mode              = $ld['mode'];
+		if (!empty($ld['search_base']))       $ldap->search_base       = $ld['search_base'];
+		if (!empty($ld['search_filter']))     $ldap->search_filter     = $ld['search_filter'];
+		if (!empty($ld['specific_dn']))       $ldap->specific_dn       = $ld['specific_dn'];
+		if (!empty($ld['specific_password'])) $ldap->specific_password = $ld['specific_password'];
+
+		if ($ld['group_require'] == 'on') {
+			$ldap->group_require = true;
+		}else{
+			$ldap->group_require = false;
+		}
+		if (!empty($ld['group_dn']))          $ldap->group_dn          = $ld['group_dn'];
+		if (!empty($ld['group_attrib']))      $ldap->group_attrib      = $ld['group_attrib'];
+		if (!empty($ld['group_member_type'])) $ldap->group_member_type = $ld['group_member_type'];
 
 		return $ldap->Search();
 	} else {
@@ -532,6 +553,7 @@ $selectedTheme = get_selected_theme();
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js' language='javascript'></script>
+	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/js.storage.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js' language='javascript'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
 	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.metadata.js'></script>
@@ -658,5 +680,6 @@ $selectedTheme = get_selected_theme();
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 	});
 	</script>
+	<?php include_once('./include/global_session.php');?>
 </body>
 </html>

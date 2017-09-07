@@ -78,7 +78,7 @@
 			</listitem>
 			<listitem>
 				<para>
-					<application>PHP</application> 5.1 or greater
+					<application>PHP</application> 5.4 or greater
 				</para>
 			</listitem>
 			<listitem>
@@ -448,28 +448,6 @@ DB_Database	cacti
 DB_User		cactiuser
 DB_Password	cacti
 DB_Port		3306</userinput></screen>
-			</sect1>
-			<sect1 id="unix-apply-patches">
-				<title>Apply Patches</title>
-					<para>
-						Please visit the Cacti website at http://www.cacti.net/download_patches.php
-						If any patch has been released, you will find installation
-						instructions there.
-					</para>
-					<para>
-						As an example, please find patch installation instructions
-						for cacti 0.8.8 here.
-						Do not apply those patches to recent releases!
-					</para>
-				<screen><userinput>wget http://www.cacti.net/downloads/patches/0.8.8a/snmpv3_priv_proto_none.patch
-				patch -p1 -N < snmpv3_priv_proto_none.patch</userinput></screen>
-					<para>
-						You might need to reapply file/folder security
-						on the files patched. Double check they are correct.
-					</para>
-					<para>Please pay attention not to break cacti when using SELinux or using NTFS file security.
-					If you encounter</para><para><computeroutput>PHP Warning:  include_once(./lib/html_tree.php) [&lt;a href='function.include-once'&gt;function.include-once&lt;/a&gt;]: failed to open stream: Permission denied in /var/www/cacti/graphs.php on line 33, referer: http://localhost/cacti/graphs.php </computeroutput></para>
-					<para>or the like, it is very likely that your permissions are wrong.</para>
 			</sect1>
 	</chapter>
 	<chapter id="install-windows">

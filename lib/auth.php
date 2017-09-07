@@ -910,6 +910,10 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.id = $graph_id";
 	}
 
+	if (read_user_setting('hide_disabled') == 'on') {
+		$sql_where .= ($sql_where != '' ? ' AND':'') . '(h.disabled="" OR h.disabled IS NULL)';
+	}
+
 	if ($sql_where != '') {
 		$sql_where = "WHERE $sql_where";
 	}
@@ -1321,6 +1325,10 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 
 	if ($order_by != '') {
 		$order_by = "ORDER BY $order_by";
+	}
+
+	if (read_user_setting('hide_disabled') == 'on') {
+		$sql_where .= ($sql_where != '' ? ' AND':'') . ' h.disabled=""';
 	}
 
 	if ($sql_where != '') {

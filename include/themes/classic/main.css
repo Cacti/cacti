@@ -4,6 +4,7 @@ html, body {
 	height: 100%;
 	width: 100%;
 	margin: 0px;
+	overflow: auto;
 }
 
 body, table, tr, td, textarea {
@@ -38,11 +39,16 @@ td, th, select {
 
 th {
 	border-right: 1px groove white;
+	white-space: nowrap;
 }
 
 img {
 	border:none;
 	vertical-align:middle;
+}
+
+div {
+	display: block;
 }
 
 fieldset {
@@ -107,6 +113,10 @@ label {
 
 .nowrap {
 	white-space:nowrap;
+}
+
+.top {
+	vertical-align:top;
 }
 
 .right {
@@ -695,12 +705,11 @@ ul#breadcrumbs {
 	width: 100%;
 	height: 100%;
 	vertical-align: top;
-	display: table;
-	position: relative;
-	overflow: hidden;
+	display: inline-table;
 }
 
 .cactiTreeNavigationArea {
+	display: table-cell;
 	background: #efefef url('./../../../images/shadow_gray.gif') repeat-x center top;
 	border-right: #aaaaaa 1px solid;
 	padding-left:5px;
@@ -721,6 +730,7 @@ ul#breadcrumbs {
 }
 
 .cactiConsoleNavigationArea {
+	display: table-cell;
 	background: snow url('./../../../images/shadow_gray.gif') repeat-x center top;
 	border-right: #aaaaaa 1px solid;
 	padding-left:0px;
@@ -730,8 +740,8 @@ ul#breadcrumbs {
 	float:left;
 	width:162px;
 	height: 100%;
-	overflow-y:auto !important;
-	overflow-x:auto;
+//	overflow-y:auto !important;
+//	overflow-x:auto;
 }
 
 .cactiConsoleNavigationArea table {
@@ -749,10 +759,11 @@ ul#breadcrumbs {
 .cactiLogo {
 	padding-top:20px;
 	background: #f5f5f5 url('./images/cacti_logo.svg') no-repeat 30px;	display:block;
+	display:block;
 	cursor:pointer;
 	height:140px;
 	width:156px;
-	margin-top:-6px;
+	margin-top:0px;
 	margin-left:2px;
 	margin-right:2px;
 }
@@ -855,12 +866,13 @@ legend {
 
 .cactiGraphContentArea {
 	background: #FFFFFF url('./../../../images/shadow.gif') repeat-x center top;
-	padding-top:10px;
+	display: table-cell;
+	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
 	vertical-align:top;
-	float: left;
 }
+
 .spikekillData, .spikekillData td {
 	border: 1px solid #999;
 }
@@ -900,8 +912,11 @@ legend {
 	padding-left: 5px;
 	margin-left: 162px;
 	height: 100%;
+	width: 100%;
 	vertical-align: top;
-	display: none;
+	display: table-cell;
+	overflow-y: auto !important;
+    overflow-x: hidden !important;
 }
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {
@@ -1035,13 +1050,14 @@ legend {
 }
 
 .cactiTable {
-	display: table;
+
 	width: 100%;
 	border-width: 0px;
 	border-color: #00438c;
 	border-style: solid;
 	margin-left:auto;
 	margin-right:auto;
+	display: table;
 }
 
 .cactiTableTitle {

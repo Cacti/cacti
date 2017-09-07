@@ -82,6 +82,9 @@ function get_children($vals, &$i) {
 }
 
 function rrdxport2array($data) {
+	// Bug force encoding to UTF-8
+	$data = str_replace(array('US-ASCII', 'ISO-8859-1'), 'UTF-8', $data);
+
 	/* bug #1436 */
 	/* scan XML for bad data RRDtool 1.2.30 */
 	$array = explode("\n", $data);
@@ -106,11 +109,12 @@ function rrdxport2array($data) {
 	/* mvo voncken@mailandnews.com
 	original ripped from  on the php-manual:gdemartini@bol.com.br
 	to be used for data retrieval(result-structure is Data oriented) */
-	$p = xml_parser_create();
+	$p = xml_parser_create('UTF-8');
 	$vals = array();
 	$index = array();
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
+	xml_parser_set_option($p, XML_OPTION_TARGET_ENCODING, 'UTF-8');
 	xml_parse_into_struct($p, $data, $vals, $index);
 	xml_parser_free($p);
 

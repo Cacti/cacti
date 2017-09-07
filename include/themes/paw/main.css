@@ -520,6 +520,7 @@ label {
 .treeArea, .treeItemsArea {
 	width:33%;
 	border:1px solid #006400;
+	vertical-align: top;
 }
 
 .linkMarker {
@@ -646,6 +647,10 @@ label {
 
 .cactiTreeNavigationArea div:first-child {
 	padding-left: 5px;
+}
+
+.cactiTreeSearch {
+	padding-top: 5px;
 }
 
 .jstree {
@@ -852,7 +857,6 @@ legend {
 	height: 100%;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
-	#padding-left: 10px;
 	margin-right: 5px;
 }
 

@@ -1,3 +1,6 @@
+// Host Autocomplete Magic
+var pageName = basename($(location).attr('pathname'));
+
 function themeReady() {
 	var hostTimer = false;
 	var clickTimeout = false;
@@ -7,6 +10,8 @@ function themeReady() {
 	$('#navigation').css('height', ($(window).height()-80)+'px');
 	$('#navigation_right').css('height', ($(window).height()-80)+'px');
 	$('.formItemDescription').hide();
+
+	keepWindowSize();
 
 	// Setup the navigation menu
 	setMenuVisibility();

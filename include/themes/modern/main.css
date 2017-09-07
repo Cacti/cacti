@@ -19,13 +19,15 @@ html, body {
 	height: 100%;
 	width: 100%;
 	margin: 0px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	overflow: hidden;
 }
 
 body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	/* fix those ever present IE issues */
-	-ms-overflow-style:scrollbar;
+	-ms-overflow-style: scrollbar;
 	color: #000000;
 }
 
@@ -54,9 +56,17 @@ td, th {
 	margin: 0px;
 }
 
+th {
+	white-space: nowrap;
+}
+
 img {
 	border:none;
 	vertical-align:middle;
+}
+
+div {
+	display: block;
 }
 
 fieldset {
@@ -67,6 +77,10 @@ fieldset {
 
 .reindex_methods span {
 	font-size: 9px;
+}
+
+.checkbox {
+	text-align:center;
 }
 
 /* links */
@@ -91,8 +105,8 @@ th i.fa {
 
 #main {
 	display:none;
-	position: relative;
 	width: 100%;
+	position: relative;
 	z-index: 3;
 }
 
@@ -536,6 +550,7 @@ label {
 .treeArea, .treeItemsArea {
 	width:33%;
 	border:1px solid #006400;
+	vertical-align: top;
 }
 
 .linkMarker {
@@ -761,6 +776,7 @@ ul#breadcrumbs {
 	width: 100%;
 	vertical-align: top;
 	padding-top: 56px;
+	display: inline-table;
 }
 
 .cactiTreeNavigationArea {
@@ -775,7 +791,8 @@ ul#breadcrumbs {
 	left: 0px;
 	top: 56px;
 	z-index: 2;
-	overflow-y: auto;
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 .jstree {
@@ -790,11 +807,11 @@ ul#breadcrumbs {
 	padding-right:0px;
 	padding-top:5px;
 	vertical-align:top;
-	position: fixed;
 	left: 0px;
 	top: 56px;
 	overflow-y: hidden;
 	width: 167px;
+	float: left;
 }
 
 .cactiConsoleNavigationArea table {
@@ -979,6 +996,8 @@ legend {
 	padding-left: 5px;
 	display: none;
 	vertical-align: top;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
 }
 
 .cactiGraphContentAreaPreview {
@@ -988,6 +1007,8 @@ legend {
 	padding-left: 5px;
 	display: none;
 	vertical-align: top;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
 }
 
 
@@ -997,8 +1018,9 @@ legend {
 	padding-right: 5px;
 	padding-left: 5px;
 	vertical-align: top;
-	display: none;
-	margin-left: 168px;
+	display:none;
+	overflow-y: auto !important;
+    overflow-x: hidden !important;
 }
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {
@@ -1065,6 +1087,7 @@ legend {
 	text-decoration: none;
 	font-weight:normal;
 }
+
 /* text styles */
 
 .textError {
@@ -1176,8 +1199,8 @@ legend {
 
 .cactiTableTitle {
 	float: left;
-	padding: 3px 0px;
 	text-align: left;
+	padding: 3px 0px;
 	height: 18px;
 	display: table-column;
 	width: 70%;
@@ -1460,7 +1483,6 @@ legend {
 
 th.sortable {
 	cursor:pointer;
-	line-height:10px;
 }
 
 th.primarySort, th.tablesorter-headerDesc, th.tablesorter-headerAsc {
@@ -2156,3 +2178,4 @@ tr#realtime td:first-child {
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
+

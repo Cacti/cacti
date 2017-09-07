@@ -31,6 +31,10 @@ td, th {
 	margin: 0px;
 }
 
+th {
+	white-space: nowrap;
+}
+
 img {
 	border:none;
 	vertical-align:middle;
@@ -558,8 +562,9 @@ label {
 
 
 .treeArea, .treeItemsArea {
-	width:33%;
-	border:1px solid #006400;
+	width: 33%;
+	border: 1px solid #006400;
+	vertical-align: top;
 }
 
 .linkMarker {
@@ -654,6 +659,7 @@ label {
 
 .cactiPageBottom {
 	height: 25px;
+	line-height: 25px;
 	width: 100%;
 	border-color: #222; */
     box-shadow: inset 0 1px 0 rgba(255,255,255,.09); */
@@ -663,8 +669,10 @@ label {
     background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
     background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
     background-repeat: repeat-x;
-    float: right;
     text-align: right;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
 }
 
 .cactiPageBottom a {
@@ -672,7 +680,6 @@ label {
 	padding:0px 8px;
 	text-decoration:none;
 	font-size: 16px;
-	#vertical-align:bottom;
 	outline-style: none;
 }
 
@@ -680,10 +687,6 @@ label {
 	padding-bottom:0px;
 	float:right;
 	position:fixed;
-}
-
-#navigation {
-	#margin-right: 5px;
 }
 
 .navigation {
@@ -703,8 +706,8 @@ label {
 	clear: both;
 	width: 100%;
 	vertical-align: top;
-	background: #064072;
-	background-image: linear-gradient(#064072,#000000);
+	background: #1D1F21;
+	background-image: linear-gradient(#1D1F21,#000000);
 }
 
 .cactiTreeNavigationArea {
@@ -713,10 +716,15 @@ label {
 	height:100%;
 	float: left;
 	display: none;
+	color: #9d9d9d;
 }
 
 .cactiTreeNavigationArea div:first-child {
 	padding-left: 5px;
+}
+
+.cactiTreeSearch {
+	padding-top: 5px;
 }
 
 .jstree {
@@ -813,8 +821,8 @@ legend {
 .loginBody, .logoutBody {
 	height: 100% !important;
 	width: 100% !important;
-	background: #064072;
-	background-image: linear-gradient(#064072,#000000);
+	background: #1D1F21;
+	background-image: linear-gradient(#1D1F21,#000000);
 }
 
 .versionInfo {
@@ -1009,7 +1017,6 @@ legend {
 #graph_view_tree_content2 .tableRow{
 	background: none !important;
 }
-
 
 .hyperLink {
 	color: #2d4ca8;

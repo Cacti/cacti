@@ -1090,7 +1090,7 @@ function aggregate_items() {
 		WHERE ag.local_graph_id = ?',
 		array(get_request_var('id')));
 
-	$aggregate_id   = db_fetch_cell_prepared('SELECT id
+	$aggregate_id = db_fetch_cell_prepared('SELECT id
 		FROM aggregate_graphs
 		WHERE local_graph_id = ?',
 		array(get_request_var('id')));
@@ -1104,7 +1104,7 @@ function aggregate_items() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$total_rows = db_fetch_cell("SELECT COUNT(gtg.id) AS total
+	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.id) AS total
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
 		ON gtg.local_graph_id=gl.id
@@ -1415,11 +1415,11 @@ function aggregate_graph() {
 		$sql_where .= ' AND ag.aggregate_template_id=' . get_request_var('template_id');
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(gtg.id) AS total
+	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.id) AS total
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
 		ON gtg.local_graph_id=gl.id
-		LEFT JOIN aggregate_graphs AS ag
+		INNER JOIN aggregate_graphs AS ag
 		ON gtg.local_graph_id=ag.local_graph_id
 		LEFT JOIN aggregate_graph_templates AS agt
 		ON agt.id=ag.aggregate_template_id
@@ -1433,8 +1433,8 @@ function aggregate_graph() {
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
 		ON gtg.local_graph_id=gl.id
-		LEFT JOIN aggregate_graphs AS ag
-		ON gtg.local_graph_id=ag.local_graph_id
+		INNER JOIN aggregate_graphs AS ag
+		ON gl.id=ag.local_graph_id
 		LEFT JOIN aggregate_graph_templates AS agt
 		ON agt.id=ag.aggregate_template_id
 		$sql_where
