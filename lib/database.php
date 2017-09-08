@@ -69,12 +69,21 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			}
 			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
+			$bad_modes = array(
+				'STRICT_TRANS_TABLES', 
+				'TRADITIONAL', 
+				'NO_ZERO_DATE', 
+				'NO_ZERO_IN_DATE', 
+				'ONLY_FULL_GROUP_BY', 
+				'NO_AUTO_VALUE_ON_ZERO'
+			);
+
 			// MySQL 5.7 forces NO_ZERO_DATE on
-			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'STRICT_TRANS_TABLES', ''))");
-			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'TRADITIONAL', ''))");
-			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'NO_ZERO_DATE', ''))");
-			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'NO_ZERO_IN_DATE', ''))");
-			$cnn_id->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY', ''))");
+			$sql_mode = db_fetch_cell('SELECT @@sql_mode');
+			$sql_mode = str_replace($bad_modes, '', $sql_mode);
+			$cnn_id->query("SET SESSION sql_mode = '$sql_mode'))");
+
+			cacti_log(db_fetch_cell('SELECT @@sql_mode'));
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
