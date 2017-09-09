@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-18 08:25-0400\n"
-"PO-Revision-Date: 2017-09-09 17:10+0200\n"
+"PO-Revision-Date: 2017-09-09 17:14+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -912,8 +912,7 @@ msgstr "Wijzig wachtwoord"
 
 #: ../auth_changepassword.php:290
 msgid "Please enter your current password and your new<br>Cacti password."
-msgstr ""
-"Voer alstublieft uw huidige wachtwoord in uw nieuwe<br>Cacti wachtwoord."
+msgstr "Voer alstublieft uw huidige en uw nieuwe<br>Cacti wachtwoord in."
 
 #: ../auth_changepassword.php:295
 msgid "Current password"
