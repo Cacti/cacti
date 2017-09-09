@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-18 08:25-0400\n"
-"PO-Revision-Date: 2017-08-19 11:23+0200\n"
+"PO-Revision-Date: 2017-09-09 17:10+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -3345,7 +3345,7 @@ msgstr "Gekoppelde grafiektemplates"
 #: ../data_queries.php:916 ../graph_templates.php:763 ../graphs_new.php:637
 #: ../host.php:714 ../lib/api_automation.php:571
 msgid "Graph Template Name"
-msgstr "Nama grafiektemplate"
+msgstr "Naam grafiektemplate"
 
 #: ../data_queries.php:918
 msgid "Mapping ID"
@@ -4954,7 +4954,7 @@ msgstr "Fout in data query."
 
 #: ../graphs_new.php:999
 msgid "Select a Graph Type to Create"
-msgstr "Selecteer een grafiektype om te creeëren"
+msgstr "Selecteer een grafiektype om te creëeren"
 
 #: ../graphs_new.php:1002
 msgid "Make selection default"
@@ -6423,7 +6423,7 @@ msgstr "Afgelopen %d jaren"
 
 #: ../include/global_arrays.php:1100
 msgid "Day Shift"
-msgstr ""
+msgstr "Werkdag"
 
 #: ../include/global_arrays.php:1101
 msgid "This Day"
@@ -7298,6 +7298,8 @@ msgstr "Basis waarde (--base)"
 #: ../include/global_form.php:551
 msgid "Should be set to 1024 for memory and 1000 for traffic measurements."
 msgstr ""
+"Zou op 1024 voor geheugen- en 1000 voor verkeermetingen moeten worden "
+"ingesteld."
 
 #: ../include/global_form.php:555
 msgid "Slope Mode (--slope-mode)"
@@ -7542,7 +7544,7 @@ msgstr ""
 
 #: ../include/global_form.php:729
 msgid "Dynamic Labels (--dynamic-labels)"
-msgstr ""
+msgstr "Dynamische labels (--dynamic-labels)"
 
 #: ../include/global_form.php:732
 msgid "Draw line markers as a line."
@@ -7631,7 +7633,7 @@ msgstr ""
 
 #: ../include/global_form.php:826
 msgid "Shift Data"
-msgstr ""
+msgstr "Verschuif data"
 
 #: ../include/global_form.php:829
 msgid ""
@@ -8232,7 +8234,7 @@ msgstr ""
 #: ../include/global_form.php:1799 ../include/global_form.php:1880
 #: ../include/global_form.php:1978
 msgid "Prefix for GPRINT Totals"
-msgstr ""
+msgstr "Voorvoegsel voor GPRINT totalen"
 
 #: ../include/global_form.php:1800 ../include/global_form.php:1881
 #: ../include/global_form.php:1979
@@ -8505,7 +8507,7 @@ msgstr "Apparaat standaardinstellingen"
 
 #: ../include/global_settings.php:41 ../include/global_settings.php:466
 msgid "Poller"
-msgstr ""
+msgstr "Poller"
 
 #: ../include/global_settings.php:42
 msgid "Data Storage"
@@ -9443,7 +9445,7 @@ msgstr ""
 
 #: ../include/global_settings.php:884
 msgid "Poller Type"
-msgstr ""
+msgstr "Poller type"
 
 #: ../include/global_settings.php:885
 msgid ""
@@ -12373,7 +12375,7 @@ msgstr "Van"
 
 #: ../lib/html_graph.php:276 ../lib/html_tree.php:722
 msgid "Start Date Selector"
-msgstr ""
+msgstr "Startdatum selector"
 
 #: ../lib/html_graph.php:280 ../lib/html_reports.php:1514
 #: ../lib/html_reports.php:1525 ../lib/html_tree.php:726
@@ -12382,23 +12384,23 @@ msgstr "Aan"
 
 #: ../lib/html_graph.php:285 ../lib/html_tree.php:731
 msgid "End Date Selector"
-msgstr "Eind datum selector"
+msgstr "Einddatum selector"
 
 #: ../lib/html_graph.php:290 ../lib/html_tree.php:736
 msgid "Shift Time Backward"
-msgstr ""
+msgstr "Verschuif tijd achteruit"
 
 #: ../lib/html_graph.php:291 ../lib/html_tree.php:737
 msgid "Define Shifting Interval"
-msgstr ""
+msgstr "Definieer verschuivingsinterval"
 
 #: ../lib/html_graph.php:302 ../lib/html_tree.php:748
 msgid "Shift Time Forward"
-msgstr ""
+msgstr "Verschuif tijd vooruit"
 
 #: ../lib/html_graph.php:307 ../lib/html_tree.php:753
 msgid "Refresh selected time span"
-msgstr ""
+msgstr "Vernieuw geselecteerde periode"
 
 #: ../lib/html_graph.php:308 ../lib/html_tree.php:754
 msgid "Return to the default time span"
@@ -12472,14 +12474,16 @@ msgid ""
 "Defines the default font size for all text in the report including the "
 "Report Title."
 msgstr ""
+"De standaard grootte van het lettertype voor alle tekst in de rapportage "
+"inclusief de rapport titel."
 
 #: ../lib/html_reports.php:81
 msgid "Default Object Alignment"
-msgstr ""
+msgstr "Standaard object uitlijning"
 
 #: ../lib/html_reports.php:82
 msgid "Defines the default Alignment for Text and Graphs."
-msgstr ""
+msgstr "De standaard uitlijning voor tekst en grafieken."
 
 #: ../lib/html_reports.php:89
 msgid "Graph Linked"
@@ -12487,7 +12491,7 @@ msgstr "Gekoppelde grafieken"
 
 #: ../lib/html_reports.php:92
 msgid "Should the Graphs be linked back to the Cacti site?"
-msgstr ""
+msgstr "Moeten de grafieken gelinked worden naar de Cacti site?"
 
 #: ../lib/html_reports.php:96
 msgid "Graph Settings"
@@ -12499,19 +12503,19 @@ msgstr "Grafiek kolommen"
 
 #: ../lib/html_reports.php:105
 msgid "The number of Graph columns."
-msgstr ""
+msgstr "Het aantal grafiek kolommen."
 
 #: ../lib/html_reports.php:113
 msgid "The Graph width in pixels."
-msgstr ""
+msgstr "De grafiekbreedte in pixels."
 
 #: ../lib/html_reports.php:121
 msgid "The Graph height in pixels."
-msgstr ""
+msgstr "De grafiekbreedte in pixels."
 
 #: ../lib/html_reports.php:128
 msgid "Should the Graphs be rendered as Thumbnails?"
-msgstr ""
+msgstr "Moeten de grafieken als thumbnails worden gerenderd?"
 
 #: ../lib/html_reports.php:132
 msgid "Email Frequency"
@@ -12528,6 +12532,10 @@ msgid ""
 "must be in the future.  If a fractional time is used, say 2:00am, it is "
 "assumed to be in the future."
 msgstr ""
+"De starttijd voor de eerste of volgende mail. Alle toekomstige mailingtijden "
+"worden gebaseerd op deze starttijd. Een voorbeeld is: 02:00 uur. De tijd "
+"moet in de toekomst zijn. Als alleen een tijd wordt gebruikt, bijvoorbeeld "
+"02:00 uur, dan er vanuit gegaan dat deze in de toekomst is."
 
 #: ../lib/html_reports.php:146
 msgid "Report Interval"
@@ -12536,10 +12544,12 @@ msgstr "Rapportage interval"
 #: ../lib/html_reports.php:147
 msgid "Defines a Report Frequency relative to the given Mailtime above."
 msgstr ""
+"Definieert de frequentie van het rapport. Relatief aan de opgegeven mailtijd "
+"van hierboven."
 
 #: ../lib/html_reports.php:148
 msgid "e.g. 'Week(s)' represents a weekly Reporting Interval."
-msgstr ""
+msgstr "Bijvoorbeeld: 'We(e)k(en) is een wekelijkse rapportage interval."
 
 #: ../lib/html_reports.php:155
 msgid "Interval Frequency"
@@ -12550,6 +12560,8 @@ msgid ""
 "Based upon the Timespan of the Report Interval above, defines the Frequency "
 "within that Interval."
 msgstr ""
+"Gebaseerd op de tijdspanne van de rapportage interval hierboven, definieer "
+"de frequentie van die interval."
 
 #: ../lib/html_reports.php:157
 msgid ""
@@ -12558,6 +12570,11 @@ msgid ""
 "Intervals, the 'Day of Week' and the 'Day of Month' are both calculated "
 "based upon the Mailtime you specify above."
 msgstr ""
+"Bijvoorbeeld: Als de rapportage interval 'Wekelijks' is, dan impliceert '2' "
+"dat de rapportage iedere 2 weken wordt verstuurd vanaf het eerst volgende "
+"mail moment. Als er gebruik wordt gemaakt van de Maandelijkse rapportage "
+"intervallen, de 'dag van de week' en de 'dag van de maand' worden beiden "
+"berekend op basis van de mailtijd die hierboven is gespecificeerd."
 
 #: ../lib/html_reports.php:165
 msgid "Email Sender/Receiver Details"
@@ -12576,14 +12593,16 @@ msgid ""
 "This value will be used as the default Email subject.  The report name will "
 "be used if left blank."
 msgstr ""
+"Deze waarde wordt gebruikt als standaard onderwerp voor de e-mail. Indien "
+"leeg, wordt de rapportagenaam gehanteerd."
 
 #: ../lib/html_reports.php:181
 msgid "This Name will be used as the default E-mail Sender"
-msgstr ""
+msgstr "Deze naam zal worden gebruikt als de standaard afzender van de e-mail"
 
 #: ../lib/html_reports.php:189
 msgid "This Address will be used as the E-mail Senders address"
-msgstr ""
+msgstr "Dit adres wordt gebruikt als afzenderadres."
 
 #: ../lib/html_reports.php:194
 msgid "To Email Address(es)"
@@ -12591,7 +12610,7 @@ msgstr "E-mailadres(sen) ontvanger(s)"
 
 #: ../lib/html_reports.php:200
 msgid "Please separate multiple addresses by comma (,)"
-msgstr ""
+msgstr "Vul alstublieft meerdere adressen in gescheiden met een komma (,)"
 
 #: ../lib/html_reports.php:205
 msgid "BCC Address(es)"
@@ -12600,6 +12619,7 @@ msgstr "BCC adres(sen)"
 #: ../lib/html_reports.php:211
 msgid "Blind carbon copy. Please separate multiple addresses by comma (,)"
 msgstr ""
+"Blind Carbon Copy. Voer meerdere adressen in gescheiden met een komma (,)"
 
 #: ../lib/html_reports.php:216
 msgid "Image attach type"
@@ -12607,7 +12627,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:219
 msgid "Select one of the given Types for the Image Attachments"
-msgstr ""
+msgstr "Selecteer een van de gegeven types voor de afbeelding bijlagen"
 
 #: ../lib/html_reports.php:302
 msgid "Item Type to be added."
@@ -12795,7 +12815,7 @@ msgstr "Verstuur rapport"
 
 #: ../lib/html_reports.php:1207
 msgid "Scheduled Events"
-msgstr ""
+msgstr "Geplande momenten"
 
 #: ../lib/html_reports.php:1218
 msgid "Report Preview"
@@ -12807,7 +12827,7 @@ msgstr "Item details"
 
 #: ../lib/html_reports.php:1248
 msgid "Timespan"
-msgstr ""
+msgstr "Tijdspanne"
 
 #: ../lib/html_reports.php:1287
 msgid "(All Branches)"
@@ -12900,7 +12920,7 @@ msgstr "Grafiek filters"
 
 #: ../lib/html_tree.php:643
 msgid "Set/Refresh Filter"
-msgstr ""
+msgstr "Stel in/vernieuw filter"
 
 #: ../lib/html_utility.php:227
 msgid "Selected"
@@ -13170,7 +13190,7 @@ msgstr ""
 #: ../lib/plugins.php:488
 #, php-format
 msgid "Plugin %s is required for %s, and it is not installed."
-msgstr ""
+msgstr "Plugin %s is vereist voor %s, maar is niet geinstalleerd."
 
 #: ../lib/plugins.php:495
 msgid "Plugin cannot be installed."
@@ -13986,7 +14006,7 @@ msgstr ""
 
 #: ../plugins.php:386
 msgid "Plugin Name"
-msgstr ""
+msgstr "Plugin naam"
 
 #: ../plugins.php:386
 msgid ""
@@ -14063,7 +14083,7 @@ msgstr "Activeer plugin"
 
 #: ../plugins.php:498
 msgid "Plugin is not compatible"
-msgstr ""
+msgstr "Plugin is niet compatible"
 
 #: ../pollers.php:32
 msgid "Full Sync"
@@ -14264,7 +14284,7 @@ msgstr ""
 
 #: ../pollers.php:616
 msgid "Polling Time"
-msgstr ""
+msgstr "Polling tijd"
 
 #: ../pollers.php:616
 msgid "The last data collection time for this Data Collector."
@@ -15977,7 +15997,7 @@ msgstr "Index"
 
 #: ../utilities.php:1579
 msgid "Poller Cache Items"
-msgstr ""
+msgstr "Poller gecachede items"
 
 #: ../utilities.php:1640
 msgid "Script"
