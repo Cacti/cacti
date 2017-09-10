@@ -8,6 +8,8 @@ Cacti CHANGELOG
 -issue: When creating a data source, the data source profile does not default
 to the system default
 -feature: Enhance table filters to supprt new Cycle plugin
+-feature: Enhance table filters to support new Cycle plugin
+-feature: Updated Dutch Translations
 
 1.1.21
 -issue#938: Problems upgrading to 1.1.20 with one table alter statement
