@@ -398,6 +398,7 @@ $struct_data_source = array(
 		'method' => 'drop_sql',
 		'description' => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
 		'sql' => 'SELECT id, name FROM data_source_profiles ORDER BY name',
+		'default' => db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1'),
 		'none_value' => __('External'),
 		'flags' => ''
 		),

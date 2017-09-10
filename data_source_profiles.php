@@ -965,7 +965,7 @@ function profile() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Data Source Profiles') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Data Source Profiles Found') . "</em></td></tr>\n";
 	}
 	html_end_box(false);
 
