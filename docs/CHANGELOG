@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.23
+-issue#963: SQL Errors with snmpagent and MariaDB 10.2
+
 1.1.22
 -issue#950: Automation - New graph rule looses name on change
 -issue#952: CSV Export not rendering chinese characters correctly (Second attempt)
