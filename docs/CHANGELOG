@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.23
 -issue#963: SQL Errors with snmpagent and MariaDB 10.2
+-issue#964: SQL Mode optimization failing in 1.1.22
 
 1.1.22
 -issue#950: Automation - New graph rule looses name on change
