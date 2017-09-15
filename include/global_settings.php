@@ -1250,6 +1250,22 @@ $settings = array(
 			'method' => 'textbox_password',
 			'max_length' => '255'
 			),
+                'ldap_cn_header' => array(
+                        'friendly_name' => __('LDAP CN Settings'),
+                        'method' => 'spacer'
+                        ),
+                'ldap_cn_fullname' => array(
+                        'friendly_name' => __('Full Name'),
+                        'description' => __('Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) '),
+                        'method' => 'textbox',
+                        'max_length' => '255'
+                        ),
+                'ldap_cn_email' => array(
+                        'friendly_name' => __('eMail'),
+                        'description' => __('Field that will replace the email taken from LDAP. (on windows: mail) '),
+                        'method' => 'textbox',
+                        'max_length' => '255'
+                        ),
 		),
 	'mail' => array(
 		'settings_web_url' => array(
