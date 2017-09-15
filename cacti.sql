@@ -2669,6 +2669,8 @@ CREATE TABLE `user_domains_ldap` (
   `search_filter` varchar(128) NOT NULL,
   `specific_dn` varchar(128) NOT NULL,
   `specific_password` varchar(128) NOT NULL,
+  `cn_full_name` varchar(20) DEFAULT '',
+  `cn_email` varchar (20) DEFAULT '',
   PRIMARY KEY (`domain_id`)
 ) ENGINE=InnoDB COMMENT='Table to Hold Login Domains for LDAP';
 
