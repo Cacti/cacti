@@ -726,7 +726,7 @@ class Ldap {
 			/* bind to the directory */
 			if (ldap_bind($ldap_conn, $this->specific_dn, $this->specific_password)) {
 				/* Search */
-				$ldap_results = ldap_search($ldap_conn, $this->search_base, $this->search_filter, array('dn'));
+				$ldap_results = ldap_search($ldap_conn, $this->search_base, $this->search_filter, this->cn);
 				if ($ldap_results) {
 					$ldap_entries =  ldap_get_entries($ldap_conn, $ldap_results);
 					/* We find 1 entries */
