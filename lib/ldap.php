@@ -753,8 +753,8 @@ class Ldap {
 				} else {
 					/* no search results, user not found*/
 					$output['dn'] = '';
-					$output['error_num'] = '3';
-					$output['error_text'] = __('Unable to find users DN');
+					$output['error_num'] = '15';
+					$output['error_text'] = __('Unable to find this CN');
 				}
 			} else {
 				/* unable to bind */
