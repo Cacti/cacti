@@ -145,7 +145,8 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 			$user_auth['password']  = $user_exist['password'];
 			$user_auth['realm']     = $user_exist['realm'];
 			$user_auth['full_name'] = $user_exist['full_name'];
-			$user_auth['must_change_password'] = $user_exist['must_change_password'];
+                        $user_auth['email_address']  = $user_exist['email_address'];
+ 			$user_auth['must_change_password'] = $user_exist['must_change_password'];
 			$user_auth['enabled']   = $user_exist['enabled'];
 		} else {
 			/* User already exists, duplicate users are bad */
@@ -157,7 +158,8 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		$user_auth['id'] = 0;
 		$user_auth['username'] = $new_user;
 		$user_auth['password'] = '!';
-		$user_auth['realm'] = $new_realm;
+             	$user_auth['email_address']  = '';
+ 		$user_auth['realm'] = $new_realm;
 	}
 
 	/* Update data_override fields */
