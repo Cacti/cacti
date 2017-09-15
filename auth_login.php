@@ -211,7 +211,32 @@ if (get_nfilter_request_var('action') == 'login') {
 		/* check that template user exists */
 		if (db_fetch_row_prepared('SELECT id FROM user_auth WHERE username = ? AND realm = 0', array(read_config_option('user_template')))) {
 			/* template user found */
-			user_copy(read_config_option('user_template'), $username, 0, $realm);
+//			user_copy(read_config_option('user_template'), $username, 0, $realm);
+			
+                       /* get user CN*/
+                        $ldap_full_name = read_config_option('ldap_cn_fullname');
+                        $ldap_email = read_config_option('ldap_cn_email');
+                        if( isset($ldap_full_name) || isset($ldap_email) ) {
+                                $ldap_cn_search_response = cacti_ldap_search_cn($username, array($ldap_full_name,$ldap_email) );
+
+                                if(isset($ldap_cn_search_response['cn'])) {
+                                        $data_override = array();
+                                        if( array_key_exists( $ldap_full_name, $ldap_cn_search_response['cn'] ) )
+                                                $data_override["full_name"] = $ldap_cn_search_response['cn'][$ldap_full_name];
+                                        else            
+                                                $data_override["full_name"] = '';
+                                        if( array_key_exists( $ldap_email, $ldap_cn_search_response['cn'] ) )
+                                                $data_override["email_address"] = $ldap_cn_search_response['cn'][$ldap_email];
+                                        else    
+                                                $data_override["email_address"] = '';
+
+                                        user_copy(read_config_option("user_template"), $username, 0, $realm, false, $data_override);
+                                } else {                
+                                        cacti_log("LOGIN: fields not found " . $ldap_cn_search_response[0] . "code: " . $ldap_cn_search_response['error_num'], false, "AUTH");      
+                                        user_copy(read_config_option("user_template"), $username, 0, $realm);
+                                }       
+                        }                       
+			
 			/* requery newly created user */
 			$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 		} else {
