@@ -273,7 +273,7 @@ class Ldap {
 
 		/* function check */
 		if (!function_exists('ldap_connect')) {
-			$output['error_num'] = 99;
+			$output['error_num'] = '99';
 			$output['error_text'] = __('PHP LDAP not enabled');
 			return $output;
 		}
@@ -451,7 +451,7 @@ class Ldap {
 
 		/* function check */
 		if (!function_exists('ldap_connect')) {
-			$output['error_num'] = 99;
+			$output['error_num'] = '99';
 			$output['error_text'] = __('PHP LDAP not enabled');
 			return $output;
 		}
@@ -630,7 +630,7 @@ class Ldap {
 
 		/* function check */
 		if (!function_exists('ldap_connect')) {
-			$output['error_num'] = 99;
+			$output['error_num'] = '99';
 			$output['error_text'] = __('PHP LDAP not enabled');
 			return $output;
 		}
@@ -640,7 +640,7 @@ class Ldap {
 			$output['dn'] = '';
 			$output['error_num'] = '1';
 			$output['error_text'] = __('No username defined');
-			cacti_log('LDAP_SEARCH: No username defined', false, 'AUTH');
+			cacti_log('LDAP_SEARCH: ' . $output['error_text'],  false, 'AUTH');
 			return $output;
 		}
 
@@ -723,39 +723,39 @@ class Ldap {
 				}
 			}
 
-			/* bind to the directory */
-			if (ldap_bind($ldap_conn, $this->specific_dn, $this->specific_password)) {
-				/* Search */
-				$ldap_results = ldap_search($ldap_conn, $this->search_base, $this->search_filter, $this->cn);
-				if ($ldap_results) {
-					$ldap_entries =  ldap_get_entries($ldap_conn, $ldap_results);
-					/* We find 1 entries */
-                                        if ($ldap_entries['count'] == 1 ) {
-                                                // check if we got an full username entry
-                                                if( array_key_exists( $this->cn[0], $ldap_entries[0] ) ) {
-                                                        $output['cn'][$this->cn[0]] = $ldap_entries[0][$this->cn[0]][0];
-                                                } else {
-                                                        $output['cn'][$this->cn[0]] = '';
-                                                }
-                                                // check if we got an email entry
-                                                if( array_key_exists( $this->cn[1], $ldap_entries[0] ) ) {
-                                                        $output['cn'][$this->cn[1]] = $ldap_entries[0][$this->cn[1]][0];
-                                                } else {
-                                                        $output['cn'][$this->cn[1]] = '';
-                                                }
-                                                $output['error_num'] = '0';
-                                                $output['error_text'] = __('CN found');
+                        /* bind to the directory */
+                        if (ldap_bind($ldap_conn, $this->specific_dn, $this->specific_password)) {
+                              /* Search */
+                              $ldap_results = ldap_search($ldap_conn, $this->search_base, $this->search_filter, $this->cn);
+                        if ($ldap_results) {
+                                   $ldap_entries =  ldap_get_entries($ldap_conn, $ldap_results);
+                                   /* We find 1 entries */
+                                   if ($ldap_entries['count'] == 1 ) {
+                                        // check if we got an full username entry
+                                        if( array_key_exists( $this->cn[0], $ldap_entries[0] ) ) {
+                                             $output['cn'][$this->cn[0]] = $ldap_entries[0][$this->cn[0]][0];
                                         } else {
-                                                $output['dn'] = '';
-                                                $output['error_num'] = '13';
-                                                $output['error_text'] = __('To many records find');
+                                             $output['cn'][$this->cn[0]] = '';
                                         }
-				} else {
-					/* no search results, user not found*/
-					$output['dn'] = '';
-					$output['error_num'] = '15';
-					$output['error_text'] = __('Unable to find this CN');
-				}
+                                        // check if we got an email entry
+                                        if( array_key_exists( $this->cn[1], $ldap_entries[0] ) ) {
+                                             $output['cn'][$this->cn[1]] = $ldap_entries[0][$this->cn[1]][0];
+                                        } else {
+                                             $output['cn'][$this->cn[1]] = '';
+                                        }
+                                        $output['error_num'] = '0';
+                                        $output['error_text'] = __('CN found');
+                                   } else {
+                                        $output['dn'] = '';
+                                        $output['error_num'] = '13';
+                                        $output['error_text'] = __('To many records find');
+                                   }
+                              } else {
+                                   /* no search results, user not found*/
+                                   $output['dn'] = '';
+                                   $output['error_num'] = '15';
+                                   $output['error_text'] = __('Unable to find this CN');
+                              }
 			} else {
 				/* unable to bind */
 				$ldap_error = ldap_errno($ldap_conn);
