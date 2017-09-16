@@ -660,6 +660,9 @@ default:
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
+			$('#row_cn_header').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			$('#row_secpass_header').hide();
 			$('#row_secpass_minlen').hide();
 			$('#row_secpass_reqmixcase').hide();
@@ -699,6 +702,9 @@ default:
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
+			$('#row_cn_header').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			$('#row_secpass_header').show();
 			$('#row_secpass_minlen').show();
 			$('#row_secpass_reqmixcase').show();
@@ -738,6 +744,9 @@ default:
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
+			$('#row_cn_header').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			$('#row_secpass_header').hide();
 			$('#row_secpass_minlen').hide();
 			$('#row_secpass_reqmixcase').hide();
@@ -777,6 +786,9 @@ default:
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
+			$('#row_cn_header').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			$('#row_secpass_header').show();
 			$('#row_secpass_minlen').show();
 			$('#row_secpass_reqmixcase').show();
@@ -816,6 +828,9 @@ default:
 			$('#row_ldap_search_filter').show();
 			$('#row_ldap_specific_dn').show();
 			$('#row_ldap_specific_password').show();
+			$('#row_cn_header').show();
+			$('#row_cn_full_name').show();
+			$('#row_cn_email').show();
 			$('#row_secpass_header').show();
 			$('#row_secpass_minlen').show();
 			$('#row_secpass_reqmixcase').show();
@@ -857,6 +872,9 @@ default:
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
+			$('#row_cn_header').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			$('#row_secpass_header').show();
 			$('#row_secpass_minlen').show();
 			$('#row_secpass_reqmixcase').show();

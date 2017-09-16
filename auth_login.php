@@ -211,7 +211,34 @@ if (get_nfilter_request_var('action') == 'login') {
 		/* check that template user exists */
 		if (db_fetch_row_prepared('SELECT id FROM user_auth WHERE username = ? AND realm = 0', array(read_config_option('user_template')))) {
 			/* template user found */
-			user_copy(read_config_option('user_template'), $username, 0, $realm);
+//			user_copy(read_config_option('user_template'), $username, 0, $realm);
+			
+                       /* get user CN*/
+                        $cn_full_name = read_config_option('cn_full_name');
+                        $cn_email = read_config_option('cn_email');
+                        if( isset($cn_full_name) || isset($cn_email) ) {
+                                $ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name,$cn_email) );
+
+                                if(isset($ldap_cn_search_response['cn'])) {
+                                        $data_override = array();
+                                        if( array_key_exists( $cn_full_name, $ldap_cn_search_response['cn'] ) ) {
+                                                $data_override["full_name"] = $ldap_cn_search_response['cn'][$cn_full_name];
+					} else {
+                                                $data_override["full_name"] = '';
+					}
+					if( array_key_exists( $cn_email, $ldap_cn_search_response['cn'] ) ) {
+                                                $data_override["email_address"] = $ldap_cn_search_response['cn'][$cn_email];
+                                        } else {    
+                                                $data_override["email_address"] = '';
+                                        }
+
+                                        user_copy(read_config_option("user_template"), $username, 0, $realm, false, $data_override);
+                                } else {                
+                                        cacti_log("LOGIN: fields not found " . $ldap_cn_search_response[0] . "code: " . $ldap_cn_search_response['error_num'], false, "AUTH");      
+                                        user_copy(read_config_option("user_template"), $username, 0, $realm);
+                                }       
+                        }                       
+			
 			/* requery newly created user */
 			$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 		} else {
@@ -429,7 +456,31 @@ function domains_login_process() {
 					/* check that template user exists */
 					if (db_fetch_row_prepared('SELECT id FROM user_auth WHERE id = ? AND realm = 0', array($template_user))) {
 						/* template user found */
-						user_copy($template_username, $username, 0, $realm);
+//						user_copy($template_username, $username, 0, $realm);
+
+                       				// get user CN 
+                                                $cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name FROM user_domains_ldap WHERE domain_id = ?', array(get_nfilter_request_var('realm')-1000));
+                                                $cn_email = db_fetch_cell_prepared('SELECT cn_email FROM user_domains_ldap WHERE domain_id = ?', array(get_nfilter_request_var('realm')-1000));
+                                                if( isset($cn_full_name) || isset($cn_email) ) {
+                                                        $ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name,$cn_email) );
+                                                        if( isset($ldap_cn_search_response['cn'])) {
+                                                                $data_override = array();
+                                                                if( array_key_exists( $cn_full_name, $ldap_cn_search_response['cn'] ) ) {
+                                                                      $data_override["full_name"] = $ldap_cn_search_response['cn'][$cn_full_name];
+                                                                } else {
+                                                                      $data_override["full_name"] = '';
+                                                                }
+                                                                if( array_key_exists( $cn_email, $ldap_cn_search_response['cn'] ) ) {
+                                                                      $data_override["email_address"] = $ldap_cn_search_response['cn'][$cn_email];
+                                                                } else {
+                                                                      $data_override["email_address"] = '';
+								}
+                                                                user_copy(read_config_option("user_template"), $username, 0, $realm, false, $data_override);                                } else {
+                                                                cacti_log("LOGIN: fields not found " . $ldap_cn_search_response[0] . "code: " . $ldap_cn_search_response['error_num'], false, "AUTH");      
+                                                                user_copy(read_config_option("user_template"), $username, 0, $realm);
+                                                        }               
+                                                }
+
 						/* requery newly created user */
 						$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 					} else {
