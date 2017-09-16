@@ -480,24 +480,24 @@ function domain_edit() {
 			'value' => '|arg1:specific_password|',
 			'max_length' => '255'
 			),
-                'cn_header' => array(
-                        'friendly_name' => __('LDAP CN Settings'),
-                        'method' => 'spacer'
-                        ),
-                'cn_full_name' => array(
-                        'friendly_name' => __('Full Name'),
-                        'description' => __('Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) '),
-                        'method' => 'textbox',
+		'cn_header' => array(
+			'friendly_name' => __('LDAP CN Settings'),
+			'method' => 'spacer'
+			),
+		'cn_full_name' => array(
+			'friendly_name' => __('Full Name'),
+			'description' => __('Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) '),
+			'method' => 'textbox',
 			'value' => '|arg1:cn_full_name|',
-                        'max_length' => '255'
-                        ),
-                'cn_email' => array(
-                        'friendly_name' => __('eMail'),
-                        'description' => __('Field that will replace the email taken from LDAP. (on windows: mail) '),
-                        'method' => 'textbox',
+			'max_length' => '255'
+			),
+		'cn_email' => array(
+			'friendly_name' => __('eMail'),
+			'description' => __('Field that will replace the email taken from LDAP. (on windows: mail) '),
+			'method' => 'textbox',
 			'value' => '|arg1:cn_email|',
-                        'max_length' => '255'
-                        ),
+			'max_length' => '255'
+			),
 		'save_component_domain_ldap' => array(
 			'method' => 'hidden',
 			'value' => '1'
@@ -552,8 +552,8 @@ function domain_edit() {
 			$('#row_search_filter').hide();
 			$('#row_specific_dn').hide();
 			$('#row_specific_password').hide();
-                        $('#row_cn_full_name').hide();
-                        $('#row_cn_email').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			break;
 		case "1":
 			$('#row_search_base_header').show();
@@ -561,8 +561,8 @@ function domain_edit() {
 			$('#row_search_filter').show();
 			$('#row_specific_dn').hide();
 			$('#row_specific_password').hide();
-                        $('#row_cn_full_name').hide();
-                        $('#row_cn_email').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			break;
 		case "2":
 			$('#row_search_base_header').show();
@@ -570,8 +570,8 @@ function domain_edit() {
 			$('#row_search_filter').show();
 			$('#row_specific_dn').show();
 			$('#row_specific_password').show();
-                        $('#row_cn_full_name').show();
-                        $('#row_cn_email').show();
+			$('#row_cn_full_name').show();
+			$('#row_cn_email').show();
 			break;
 		}
 	}
@@ -735,13 +735,13 @@ function domains() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'domain_name' => array( __('Domain Name'), 'ASC'),
-		'type' => array( __('Domain Type'), 'ASC'),
-		'defdomain' => array( __('Default'), 'ASC'),
-		'user_id' => array( __('Effective User'), 'ASC'),
-                'cn_full_name' => array( __('CN FullName'), 'ASC'),
-                'cn_email' => array( __('CN eMail'), 'ASC'),
-		'enabled' => array( __('Enabled'), 'ASC'));
+		'domain_name'  => array(__('Domain Name'), 'ASC'),
+		'type'         => array(__('Domain Type'), 'ASC'),
+		'defdomain'    => array(__('Default'), 'ASC'),
+		'user_id'      => array(__('Effective User'), 'ASC'),
+		'cn_full_name' => array(__('CN FullName'), 'ASC'),
+		'cn_email'     => array(__('CN eMail'), 'ASC'),
+		'enabled'      => array(__('Enabled'), 'ASC'));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -754,9 +754,9 @@ function domains() {
 			form_selectable_cell($domain_types{$domain['type']}, $domain['domain_id']);
 			form_selectable_cell( ($domain['defdomain'] == '0' ? '--': __('Yes') ), $domain['domain_id']);
 			form_selectable_cell( ($domain['user_id'] == '0' ? __('None Selected') : db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);
-                        form_selectable_cell( db_fetch_cell_prepared('SELECT cn_full_name FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
-                        form_selectable_cell( db_fetch_cell_prepared('SELECT cn_email FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
-			form_selectable_cell( ($domain['enabled'] == 'on' ? __('Yes'):__('No') ), $domain['domain_id']);
+			form_selectable_cell( db_fetch_cell_prepared('SELECT cn_full_name FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
+			form_selectable_cell( db_fetch_cell_prepared('SELECT cn_email FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
+			form_selectable_cell($domain['enabled'] == 'on' ? __('Yes'):__('No'), $domain['domain_id']);
 			form_checkbox_cell($domain['domain_name'], $domain['domain_id']);
 			form_end_row();
 		}
