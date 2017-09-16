@@ -221,14 +221,16 @@ if (get_nfilter_request_var('action') == 'login') {
 
                                 if(isset($ldap_cn_search_response['cn'])) {
                                         $data_override = array();
-                                        if( array_key_exists( $cn_full_name, $ldap_cn_search_response['cn'] ) )
+                                        if( array_key_exists( $cn_full_name, $ldap_cn_search_response['cn'] ) ) {
                                                 $data_override["full_name"] = $ldap_cn_search_response['cn'][$cn_full_name];
-                                        else            
+					} else {
                                                 $data_override["full_name"] = '';
-                                        if( array_key_exists( $cn_email, $ldap_cn_search_response['cn'] ) )
+					}
+					if( array_key_exists( $cn_email, $ldap_cn_search_response['cn'] ) ) {
                                                 $data_override["email_address"] = $ldap_cn_search_response['cn'][$cn_email];
-                                        else    
+                                        } else {    
                                                 $data_override["email_address"] = '';
+                                        }
 
                                         user_copy(read_config_option("user_template"), $username, 0, $realm, false, $data_override);
                                 } else {                
