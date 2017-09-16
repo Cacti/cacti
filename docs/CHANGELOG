@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.24
+-issue: Long sysDescriptions on automation page cause columns to be hidden
+
 1.1.23
 -issue#963: SQL Errors with snmpagent and MariaDB 10.2
 -issue#964: SQL Mode optimization failing in 1.1.22
