@@ -556,7 +556,7 @@ class Ldap {
 						$output['dn'] = $ldap_entries['0']['dn'];
 						$output['error_num'] = '0';
 						$output['error_text'] = __('User found');
-						cacti_log("LDAP_SEARCH: User found, DN '%s'" . $output['dn'], false, 'AUTH');
+						cacti_log('LDAP_SEARCH: ' . $output['error_text'] . ', DN \'' . $output['dn'] . '\'', false, 'AUTH');
 					} elseif ($ldap_entries['count'] > 1) {
 						/* more than 1 result */
 						$output['dn'] = '';

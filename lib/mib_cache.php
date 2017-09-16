@@ -183,7 +183,7 @@ class MibCache{
 	}
 
 	public function count() {
-		return db_execute_prepared('UPDATE LOW_PRIORITY snmpagent_cache
+		return db_execute_prepared('UPDATE IGNORE snmpagent_cache
 			SET `value` = CASE
 			WHEN `type`="Counter32" AND `value`= 4294967295 THEN 0
 			WHEN `type`="Counter64" AND `value`= 18446744073709551615 THEN 0
@@ -361,13 +361,13 @@ class MibCache{
 				foreach($columns as $column_params) {
 					$column_params['oid'] .= '.' . $this->active_table_entry;
 					if (isset($values[$column_params['name']])) {
-						$sql[] = '(' . db_qstr($values[$column_params['name']]) . ', ' . db_qstr($column_params['oid']) . ')';
+						$sql[] = '(' . db_qstr($column_params['name']) . ', ' . db_qstr($values[$column_params['name']]) . ', ' . db_qstr($column_params['oid']) . ')';
 					}
 				}
 
 				if (sizeof($sql)) {
 					db_execute('INSERT INTO `snmpagent_cache` 
-						(value, oid) 
+						(name, value, oid) 
 						VALUES ' . implode(', ', $sql) . '
 						ON DUPLICATE KEY UPDATE value=VALUES(value)', $sql);
 				}
@@ -375,6 +375,7 @@ class MibCache{
 				return true;
 			}
 		}
+
 		return false;
 	}
 

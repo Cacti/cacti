@@ -290,7 +290,7 @@ function display_discovery_page() {
 			form_selectable_cell(snmp_data($host['sysName']), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data($host['sysLocation']), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data($host['sysContact']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['sysDescr']), $host['id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($host['sysDescr']), $host['id'], '', 'text-align:left;white-space:normal;');
 			form_selectable_cell(snmp_data($host['os']), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data($uptime), $host['id'], '', 'text-align:right');
 			form_selectable_cell($status[$host['snmp']], $host['id'], '', 'text-align:right');

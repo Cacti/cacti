@@ -71,6 +71,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$bad_modes = array(
 				'STRICT_TRANS_TABLES', 
+				'STRICT_ALL_TABLES', 
 				'TRADITIONAL', 
 				'NO_ZERO_DATE', 
 				'NO_ZERO_IN_DATE', 
@@ -78,14 +79,19 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				'NO_AUTO_VALUE_ON_ZERO'
 			);
 
-			// MySQL 5.7 forces NO_ZERO_DATE on
-			$sql_mode = db_fetch_cell('SELECT @@sql_mode');
-			$sql_mode = str_replace($bad_modes, '', $sql_mode);
-			$cnn_id->query("SET SESSION sql_mode = '$sql_mode'))");
-
-			cacti_log(db_fetch_cell('SELECT @@sql_mode'));
-
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
+
+			// Get rid of bad modes
+			$modes = explode(',', db_fetch_cell('SELECT @@sql_mode'));
+
+			foreach($modes as $mode) {
+				if (array_search($mode, $bad_modes) === false) {
+					$new_modes[] = $mode;
+				}
+			}
+			$sql_mode = implode(',', $new_modes);
+
+			db_execute('SET SESSION sql_mode = "' . $sql_mode . '"');
 
 			return $cnn_id;
 		} catch (PDOException $e) {

@@ -1,8 +1,16 @@
 Cacti CHANGELOG
 
 1.2
--issue#122: Support a Site Branch Type
+-feature#122: Support a Site Branch Type
+-feature#973: Obtain users email and full name from ldap 
 -issue: Move Graph removal function to Graph API
+
+1.1.24
+-issue: Long sysDescriptions on automation page cause columns to be hidden
+
+1.1.23
+-issue#963: SQL Errors with snmpagent and MariaDB 10.2
+-issue#964: SQL Mode optimization failing in 1.1.22
 
 1.1.22
 -issue#950: Automation - New graph rule looses name on change
