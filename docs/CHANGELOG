@@ -7,6 +7,7 @@ Cacti CHANGELOG
 
 1.1.24
 -issue#970: Remote Data Collector Cache Synchronization missing plugin sub-directories
+-issue#980: Resolve issue where a new tree branches refreshs before you have a chance to name it
 -issue: Long sysDescriptions on automation page cause columns to be hidden
 -issue: Resolve visual issues in Classic theme
 -feature: Allow Resynchronization of Poller Resource Cache
