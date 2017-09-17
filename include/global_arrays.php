@@ -235,6 +235,9 @@ $messages = array(
 		'type' => 'info'),
 	'reports_item_save_failed' => array(
 		'message' => '<font style="color:red;"><i>' . __('Report Item Save Failed') . '</i></font>',
+		'type' => 'info'),
+	'resource_cache_rebuild' => array(
+		'message' => '<i>' . __('Poller Resource Cache Cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards.'),
 		'type' => 'info')
 );
 
