@@ -1313,6 +1313,7 @@ legend {
 .tableHeader {
 	display: table-row;
 	background-color: #6D88AD !important;
+	line-height: 20px;
 }
 
 .tableHeader td {
