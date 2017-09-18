@@ -675,7 +675,7 @@ function get_size($id, $type, $cfs = '') {
 			WHERE data_source_profile_id = ?',
 			array($id));
 
-		return __('%s KBytes per Data Sources and $s Bytes for the Header', number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000), $header);
+		return __('%s KBytes per Data Sources and %s Bytes for the Header', number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000), $header);
 	} else {
 		$cfs  = db_fetch_cell_prepared('SELECT COUNT(*)
 			FROM data_source_profiles_cf
@@ -954,7 +954,7 @@ function profile() {
 
 			form_alternate_row('line' . $profile['id'], false, $disabled);
 			form_selectable_cell(filter_value($profile['name'], get_request_var('filter'), 'data_source_profiles.php?action=edit&id=' . $profile['id']), $profile['id']);
-			form_selectable_cell($profile['default'] == 'on' ? 'Yes':'', $profile['id'], '', 'text-align:right');
+			form_selectable_cell($profile['default'] == 'on' ? __('Yes'):'', $profile['id'], '', 'text-align:right');
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $profile['id'], '', 'text-align:right');
 			form_selectable_cell($readonly ? __('Yes') : __('No'), $profile['id'], '', 'text-align:right');
 			form_selectable_cell($sampling_intervals[$profile['step']], $profile['id'], '', 'text-align:right');
@@ -967,6 +967,7 @@ function profile() {
 	} else {
 		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Data Source Profiles Found') . "</em></td></tr>\n";
 	}
+
 	html_end_box(false);
 
 	if (sizeof($profile_list)) {

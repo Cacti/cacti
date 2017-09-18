@@ -525,7 +525,7 @@ label {
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
-.odd td, .even td, .even-alternate td {
+.odd td, .even td, .even-alternate td, .selectable td {
 	padding: 2px;
 }
 
@@ -1296,6 +1296,10 @@ legend {
 	display: table-column;
 	width: 50%;
 	text-align: left;
+}
+
+.formColumnRight em {
+	color: #000000;
 }
 
 .formData {
