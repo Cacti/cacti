@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.24
+-issue#932: Zoom positioning breaks when you scroll the graph page
 -issue#970: Remote Data Collector Cache Synchronization missing plugin sub-directories
 -issue#980: Resolve issue where a new tree branches refreshs before you have a chance to name it
 -issue: Long sysDescriptions on automation page cause columns to be hidden
