@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue: Long sysDescriptions on automation page cause columns to be hidden
 -issue: Resolve visual issues in Classic theme
 -feature: Allow Resynchronization of Poller Resource Cache
+-feature: Update Spanish Translation
 
 1.1.23
 -issue#963: SQL Errors with snmpagent and MariaDB 10.2
