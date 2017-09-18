@@ -22,14 +22,14 @@ textarea {
 }
 
 body {
-	background-color: #ffffff;
+	background-color: #FFFFFF;
 	background-repeat: repeat-y;
 }
 
 table {
 	border-collapse: collapse; border-spacing: 0;
 	border: none;
-	text-align:left;
+	text-align: left;
 }
 
 td, th, select {
@@ -43,8 +43,8 @@ th {
 }
 
 img {
-	border:none;
-	vertical-align:middle;
+	border: none;
+	vertical-align: middle;
 }
 
 div {
@@ -103,7 +103,7 @@ tr.selected {
 }
 
 label {
-	white-space:nowrap;
+	white-space: nowrap;
 }
 
 .tableRowGraph td {
@@ -112,25 +112,25 @@ label {
 }
 
 .nowrap {
-	white-space:nowrap;
+	white-space: nowrap;
 }
 
 .top {
-	vertical-align:top;
+	vertical-align: top;
 }
 
 .right {
-	text-align:right !important;
+	text-align: right !important;
 }
 
 .left {
-	text-align:left !important;
+	text-align: left !important;
 }
 
 .center {
-	text-align:center !important;
-	margin-left:auto;
-	margin-right:auto;
+	text-align: center !important;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .usermenudown {
@@ -142,113 +142,113 @@ label {
 }
 
 .user {
-	padding-right:16px;
-	font-weight:bold;
-	cursor:pointer;
+	padding-right: 16px;
+	font-weight: bold;
+	cursor: pointer;
 }
 
 .badpassword_message {
-	padding:2px;
-	color:red;
-	font-size:1.0em !important;
-	vertical-align:bottom;
+	padding: 2px;
+	color: red;
+	font-size: 1.0em !important;
+	vertical-align: bottom;
 }
 
 .badpassword {
-	padding:4px;
-	color:red;
-	font-size:1.5em !important;
-	vertical-align:bottom;
+	padding: 4px;
+	color: red;
+	font-size: 1.5em !important;
+	vertical-align: bottom;
 }
 
 .goodpassword {
-	padding:4px;
-	color:green;
-	font-size:1.5em !important;
-	vertical-align:bottom;
+	padding: 4px;
+	color: green;
+	font-size: 1.5em !important;
+	vertical-align: bottom;
 }
 
 .associated {
-	color:green;
-	font-weight:bold;
+	color: green;
+	font-weight: bold;
 }
 
 .notAssociated {
-	color:red;
-	font-weight:bold;
+	color: red;
+	font-weight: bold;
 }
 
 .disabled_row span, .disabled_row td, .disabled_row a {
-	color:grey;
+	color: grey;
 }
 
 .disabled {
-	color:grey;
-	font-weight:bold;
+	color: grey;
+	font-weight: bold;
 }
 
 .idle {
-	color:green;
-	font-weight:bold;
+	color: green;
+	font-weight: bold;
 }
 
 .running {
-	color:orange;
+	color: orange;
 }
 
 .errored {
-	color:red;
-	font-weight:bold;
+	color: red;
+	font-weight: bold;
 }
 
 .newObject{
-	color:blue;
+	color: blue;
 }
 
 .updateObject {
-	color:grey;
+	color: grey;
 }
 
 .unmetDependency {
-	color:red;
+	color: red;
 }
 
 .foundDependency {
-	color:navy;
+	color: navy;
 }
 
 .success {
-	color:green;
+	color: green;
 }
 
 .failed {
-	color:red;
+	color: red;
 }
 
 .accessGranted {
-	color:green;
-	font-weight:bold;
+	color: green;
+	font-weight: bold;
 }
 
 .accessGrantedItem {
-	color:green;
+	color: green;
 }
 
 .accessRestricted {
-	color:red;
-	font-weight:bold;
+	color: red;
+	font-weight: bold;
 }
 
 .accessRestrictedItem {
-	color:red;
+	color: red;
 }
 
 .deleteIcon {
-	width:10px;
-	height:10px;
-	cursor:pointer;
-	padding:2px;
-	border:none;
+	width: 10px;
+	height: 10px;
+	cursor: pointer;
+	padding: 2px;
+	border: none;
 }
 
 .graphDrillDown {
@@ -286,7 +286,7 @@ label {
 }
 
 .drillDown {
-	cursor:pointer;
+	cursor: pointer;
 }
 
 .moveArrow {
@@ -302,21 +302,21 @@ label {
 }
 
 .moveArrowNone {
-	padding-left:14px;
+	padding-left: 14px;
 }
 
 .action, .shiftArrow, .calendar {
 	cursor: pointer;
-	padding:2px;
+	padding: 2px;
 }
 
 .cactiTooltipHint {
 	cursor: pointer;
-	color: #6d88ad;
+	color: #6D88AD;
 }
 
 .monoSpace {
-	font-size:9px;
+	font-size: 9px;
 	font-family: monospace;
 }
 
@@ -325,14 +325,14 @@ label {
 }
 
 .itemlist {
-	max-height:400px;
-	overflow-y:auto;
+	max-height: 400px;
+	overflow-y: auto;
 }
 
 .realms {
-	width:20%;
-	vertical-align:top;
-	white-space:nowrap;
+	width: 20%;
+	vertical-align: top;
+	white-space: nowrap;
 }
 
 .deviceUp {
@@ -340,19 +340,19 @@ label {
 }
 
 .deviceDown {
-	color: #ff0000 !important;
+	color: #FF0000 !important;
 }
 
 .deviceUnknown {
-	color: #0000ff !important;
+	color: #0000FF !important;
 }
 
 .deviceDisabled {
-	color: #a1a1a1 !important;
+	color: #A1A1A1 !important;
 }
 
 .deviceRecovering {
-	color: #ff8f1e !important;
+	color: #FF8F1E !important;
 }
 
 .deviceError {
@@ -360,11 +360,11 @@ label {
 }
 
 .deviceDownMuted {
-	color: #ffe333 !important;
+	color: #FFE333 !important;
 }
 
 .deviceThreshold {
-	color: #ffa833 !important;
+	color: #FFA833 !important;
 }
 
 .deviceUnmonitored {
@@ -372,7 +372,7 @@ label {
 }
 
 .deviceWarning {
-	color: #aa7807 !important;
+	color: #AA7807 !important;
 }
 
 .deviceAlert {
@@ -390,28 +390,28 @@ label {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: #ff0000;
+	background-color: #FF0000;
 }
 
 .deviceUnknownBg {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: #0000ff;
+	background-color: #0000FF;
 }
 
 .deviceDisabledBg {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: #a1a1a1;
+	background-color: #A1A1A1;
 }
 
 .deviceRecoveringBg {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: #ff8f1e;
+	background-color: #FF8F1E;
 }
 
 .deviceErrorBg {
@@ -425,14 +425,14 @@ label {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: #ffe333;
+	background-color: #FFE333;
 }
 
 .deviceThresholdBg {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: #ffa833;
+	background-color: #FFA833;
 }
 
 .deviceUnmonitoredBg {
@@ -446,7 +446,7 @@ label {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: #aa7807;
+	background-color: #AA7807;
 }
 
 .deviceAlertBg {
@@ -465,33 +465,33 @@ label {
 }
 
 .menuoptions {
-	background: none repeat scroll 0 0 #eee;
-    border-color: #f5f5f5 #e5e5e5 #ccc;
+	background: none repeat scroll 0 0 #EEE;
+    border-color: #F5F5F5 #E5E5E5 #CCC;
     border-style: solid;
     border-width: 0px 1px 1px 1px;
-	z-index:2;
-	display:block;
-	float:right;
-	position:absolute;
-	right:12px;
-	top:58px;
+	z-index: 2;
+	display: block;
+	float: right;
+	position: absolute;
+	right: 12px;
+	top: 58px;
   	list-style: none;
-	text-align:right;
-	margin:0px;
-	padding:0px;
+	text-align: right;
+	margin: 0px;
+	padding: 0px;
 }
 
 .menuoptions li a {
-	border-top: 1px solid #ccc;
-	display:block;
-	height:14px;
+	border-top: 1px solid #CCC;
+	display: block;
+	height: 14px;
 	padding: 4px;
 }
 
 .menuoptions li a:hover {
-	display:block;
-	text-decoration:none;
-	background-color: #e1e1e1;
+	display: block;
+	text-decoration: none;
+	background-color: #E1E1E1;
 }
 
 .import_label {
@@ -515,29 +515,29 @@ label {
 }
 
 .reloadquery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
-	color:lime;
-	font-weight:bold;
-	font-size:14px;
+	cursor: pointer;
+	padding: 2px;
+	vertical-align: middle;
+	color: lime;
+	font-weight: bold;
+	font-size: 14px;
 }
 
 .verbosequery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
+	cursor: pointer;
+	padding: 2px;
+	vertical-align: middle;
 	color: rgba(255, 204, 0, 0.8);
-	font-size:14px;
+	font-size: 14px;
 }
 
 .deletequery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
-	color:red;
-	font-weight:bold;
-	font-size:14px
+	cursor: pointer;
+	padding: 2px;
+	vertical-align: middle;
+	color: red;
+	font-weight: bold;
+	font-size: 14px
 }
 
 .odd {
@@ -556,27 +556,28 @@ label {
 
 .even-alternate {
 	background: none repeat scroll 0 0 #E7E9F2;
-	background-color:#E7E9F2;
+	background-color: #E7E9F2;
     border: none;
 }
 
 .saveRow {
-	background-color:#EAEAEA;
-	text-align:right;
-	padding:4px;
+	background-color: #EAEAEA;
+	text-align: right;
+	padding: 4px;
 }
 
 .treeArea, .treeItemsArea {
-	width:33%;
-	border:1px solid #006400;
+	width: 25%;
+	border: 1px solid #006400;
+	vertical-align: top;
 }
 
 .linkMarker {
-	color: #c16921;
+	color: #C16921;
 }
 
 .filteredValue {
-	background-color:#F8D93D;
+	background-color: #F8D93D;
 }
 
 .graphItemGr1Alt1 {
@@ -604,7 +605,7 @@ label {
 }
 
 .graphItemAdd {
-	background-color: #00438c;
+	background-color: #00438C;
 }
 
 .graphItemDel {
@@ -623,53 +624,53 @@ label {
 }
 
 .hostDown {
-	color: #ff0000;
+	color: #FF0000;
 	font-size: 10px;
 	font-weight: normal;
 	font-family: monospace;
 }
 
 .cactiPageHead {
-	background: #a9a9a9 url("./images/cacti_logo.svg") no-repeat scroll right 40% / 400px auto;
-	border-bottom:1px solid #00438c;
-	height:36px;
-	width:100%;
+	background: #A9A9A9 url("./images/cacti_logo.svg") no-repeat scroll right 40% / 400px auto;
+	border-bottom: 1px solid #00438C;
+	height: 36px;
+	width: 100%;
 }
 
 .cactiGraphPageHeadBackdrop {
-	background-color: #a9a9a9;
+	background-color: #A9A9A9;
 	vertical-align: bottom;
 	padding-bottom: 0px;
-	float:right;
-	width:400px;
-	height:36px;
-	z-index:-1;
+	float: right;
+	width: 400px;
+	height: 36px;
+	z-index: -1;
 }
 
 .cactiConsolePageHeadBackdrop {
-	padding-bottom:0px;
-	float:right;
-	width:0px;
-	height:36px;
-	z-index:-1;
+	padding-bottom: 0px;
+	float: right;
+	width: 0px;
+	height: 36px;
+	z-index: -1;
 }
 
 .navigation {
 }
 
 .debug td {
-	padding:3px;
-	margin:0px;
+	padding: 3px;
+	margin: 0px;
 }
 
 .breadCrumbBar {
-	background-color: #e9e9e9;
-	padding:2px;
-	height:16px;
+	background-color: #E9E9E9;
+	padding: 2px;
+	height: 16px;
 }
 
 ul#breadcrumbs {
-  font-size:8px;
+	font-size: 8px;
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -680,8 +681,8 @@ ul#breadcrumbs {
 	display: block;
 	min-width: 15%;
 	max-width: 40%;
-	margin-right:10px;
-	float:right;
+	margin-right: 10px;
+	float: right;
 	text-align: right;
 }
 
@@ -692,8 +693,8 @@ ul#breadcrumbs {
 }
 
 #breadcrumbs a {
-	padding-left:5px;
-	padding-right:5px;
+	padding-left: 5px;
+	padding-right: 5px;
 	float: left;
 	text-decoration: none;
 	color: blue;
@@ -710,13 +711,13 @@ ul#breadcrumbs {
 
 .cactiTreeNavigationArea {
 	display: table-cell;
-	background: #efefef url('./../../../images/shadow_gray.gif') repeat-x center top;
-	border-right: #aaaaaa 1px solid;
-	padding-left:5px;
-	padding-right:5px;
-	padding-top:10px;
-	width:250px;
-	max-width:400px;
+	background: #EFEFEF url('./../../../images/shadow_gray.gif') repeat-x center top;
+	border-right: #AAAAAA 1px solid;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 10px;
+	width: 250px;
+	max-width: 400px;
 	height: 100%;
 	float: left;
 	vertical-align: top;
@@ -725,31 +726,31 @@ ul#breadcrumbs {
 }
 
 .jstree {
-	position:relative;
-	display:block;
+	position: relative;
+	display: block;
 }
 
 .cactiConsoleNavigationArea {
 	display: table-cell;
 	background: snow url('./../../../images/shadow_gray.gif') repeat-x center top;
-	border-right: #aaaaaa 1px solid;
-	padding-left:0px;
-	padding-right:0px;
-	padding-top:5px;
-	vertical-align:top;
-	float:left;
-	width:162px;
+	border-right: #AAAAAA 1px solid;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 5px;
+	vertical-align: top;
+	float: left;
+	width: 162px;
 	height: 100%;
 //	overflow-y:auto !important;
 //	overflow-x:auto;
 }
 
 .cactiConsoleNavigationArea table {
-	width:160px;
+	width: 160px;
 }
 
 .treeTable {
-	width:100%;
+	width: 100%;
 }
 
 .treeArea {
@@ -757,84 +758,84 @@ ul#breadcrumbs {
 }
 
 .cactiLogo {
-	padding-top:20px;
-	background: #f5f5f5 url('./images/cacti_logo.svg') no-repeat 30px;	display:block;
-	display:block;
-	cursor:pointer;
-	height:140px;
-	width:156px;
-	margin-top:0px;
-	margin-left:2px;
-	margin-right:2px;
+	padding-top: 20px;
+	background: #F5F5F5 url('./images/cacti_logo.svg') no-repeat 30px;
+	display: block;
+	cursor: pointer;
+	height: 140px;
+	width: 156px;
+	margin-top: 0px;
+	margin-left: 2px;
+	margin-right: 2px;
 }
 
 .loginLeft, .logoutLeft {
-	width:33%;
-	float:left;
+	width: 33%;
+	float: left;
 }
 
 .loginCenter, .logoutCenter {
-	position:relative;
-	padding:30px 0px 5px 20px;
-	top:15%;
-	max-width:350px;
-	max-height:350px;
-	margin-left:auto;
-	margin-right:auto;
+	position: relative;
+	padding: 30px 0px 5px 20px;
+	top: 15%;
+	max-width: 350px;
+	max-height: 350px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .cactiLoginLogo, .cactiLogoutLogo {
-	position:relative;
-	float:right;
-	top:15%;
+	position: relative;
+	float: right;
+	top: 15%;
 	background: transparent url('./../../../images/auth_background.gif') no-repeat center;
-	width:350px;
-	height:128px;
-	z-index:2;
-	margin-top:-90px;
-	margin-left:0px;
-	margin-bottom:-20px;
+	width: 350px;
+	height: 128px;
+	z-index: 2;
+	margin-top: -90px;
+	margin-left: 0px;
+	margin-bottom: -20px;
 }
 
 .loginArea, .logoutArea {
-	position:relative;
+	position: relative;
 }
 
 .cactiLoginTable td {
-	padding-bottom:6px;
-	padding-right:6px;
+	padding-bottom: 6px;
+	padding-right: 6px;
 }
 
 .loginErrors, .logoutErrors {
-	color:red;
-	min-height:0px;
+	color: red;
+	min-height: 0px;
 }
 
 legend {
-	font-size:22px;
-	font-weight:bold;
-	text-align:right;
+	font-size: 22px;
+	font-weight: bold;
+	text-align: right;
 }
 
 .loginRight, .logoutRight {
-	width:33%;
-	float:right;
+	width: 33%;
+	float: right;
 }
 
 .loginBody, .logoutBody {
 }
 
 .versionInfo {
-	padding-top:5px;
-	float:right;
-	font-size:10px;
-	color:black;
+	padding-top: 5px;
+	float: right;
+	font-size: 10px;
+	color: black;
 }
 
 .actionsDropdown {
-	vertical-align:middle;
+	vertical-align: middle;
 	padding: 3px;
-	width:100%;
+	width: 100%;
 	text-align: right;
 	display: table;
 }
@@ -861,7 +862,7 @@ legend {
 }
 
 .loginPanel {
-	padding:4px 0px;
+	padding: 4px 0px;
 }
 
 .cactiGraphContentArea {
@@ -882,7 +883,7 @@ legend {
 }
 
 .spikekillMenu {
-	background: #f5f5f5 none repeat scroll 0 0;
+	background: #F5F5F5 none repeat scroll 0 0;
     border: 1px solid #979797;
     box-shadow: 2px 2px 2px #999999;
     margin: 0;
@@ -891,18 +892,18 @@ legend {
 }
 
 .spikekillMenu li {
-	vertical-align:middle;
+	vertical-align: middle;
 }
 
 .spikekillMenu i {
-	text-align:center;
+	text-align: center;
 	width: 2.0em;
-	display:inline-block;
+	display: inline-block;
 }
 
 .spikekillMenu i:empty{
 	width: 2.0em;
-	display:inline-block;
+	display: inline-block;
 }
 
 .cactiConsoleContentArea {
@@ -929,11 +930,11 @@ legend {
 }
 
 .iconLink {
-	padding:2px;
+	padding: 2px;
 }
 
 .iconLink img {
-	padding-bottom:2px;
+	padding-bottom: 2px;
 }
 
 .noLinkEditMain {
@@ -1019,8 +1020,8 @@ legend {
 	padding: 1px;
 	margin-top: 2px;
 	border-radius: 3px;
-	background-color:#FFFFFF;
-	border:1px solid #BBBBBB;
+	background-color: #FFFFFF;
+	border: 1px solid #BBBBBB;
 	position: relative;
 	z-index: 4;
 }
@@ -1028,7 +1029,7 @@ legend {
 .textHeaderDark {
 	font-size: 12px;
 	font-weight: bold;
-	color: #ffffff;
+	color: #FFFFFF;
 }
 
 .templateHeader {
@@ -1036,24 +1037,25 @@ legend {
 }
 
 .templateHeader td {
-	padding:3px;
+	padding: 3px;
 }
+
 .textSubHeaderDark, .textSubHeaderDark:visited {
 	font-size: 10px;
-	color: #ffffff;
+	color: #FFFFFF;
 	font-weight: bold;
 	padding: 0px;
 }
 
 .tableBody {
-	background-color: #e1e1e1;
+	background-color: #E1E1E1;
 }
 
 .cactiTable {
 
 	width: 100%;
 	border-width: 0px;
-	border-color: #00438c;
+	border-color: #00438C;
 	border-style: solid;
 	margin-left:auto;
 	margin-right:auto;
@@ -1064,30 +1066,33 @@ legend {
 	color: white;
 	float: left;
 	text-align: left;
-	height: 22px;
 	display: table-column;
 	width: 70%;
-	background-color: #00438c;
+	background-color: #00438C;
 }
 
 .cactiTableButton {
 	float: right;
-	height: 22px;
 	display: table-column;
 	text-align: right;
 	width: 30%;
-	background-color: #00438c;
+	background-color: #00438C;
 	white-space: nowrap;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
 	color: white;
-	padding: 5px 8px 0px 8px;
+	padding: 5px 8px 0px 3px;
+	line-height: 22px;
 	font-size: 11px;
 	font-weight: bold;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;
+}
+
+.cactiTableButton .fa, .cactiTableTitle .fa {
+	display: inline;
 }
 
 .cactiTable td {
@@ -1199,14 +1204,14 @@ legend {
 	float: left;
 	width: 100%;
 	text-align: left;
-	color: #ffffff;
-	font-weight:bold;
+	color: #FFFFFF;
+	font-weight: bold;
 	cursor: pointer;
-	vertical-align:middle;
-	text-align:left;
-	border-right: 1px groove #efefef;
-	font-size:11px;
-	background-color: #6d88ad !important;
+	vertical-align: middle;
+	text-align: left;
+	border-right: 1px groove #EFEFEF;
+	font-size: 11px;
+	background-color: #6D88AD !important;
 }
 
 .formHeaderText {
@@ -1214,8 +1219,8 @@ legend {
 }
 
 .formHeaderAnchor {
-	float:right;
-	padding-right:4px;
+	float: right;
+	padding-right: 4px;
 }
 
 .hostInfoHeader {
@@ -1283,47 +1288,48 @@ legend {
 }
 
 .break {
-	height:4px;
+	height: 4px;
 }
 
 .next {
-	padding-right:6px;
-	padding-left:6px;
+	padding-right: 6px;
+	padding-left: 6px;
 }
 
 .previous {
-	padding-right:6px;
-	padding-left:6px;
+	padding-right: 6px;
+	padding-left: 6px;
 }
 
 .cactiNavBarTop {
-	background-color: #00438c;
+	background-color: #00438C;
 }
 
 .cactiNavBarBottom {
-	background-color: #00438c;
+	background-color: #00438C;
 }
 
 
 .tableHeader {
 	display: table-row;
-	background-color: #6d88ad !important;
+	background-color: #6D88AD !important;
+	line-height: 20px;
 }
 
 .tableHeader td {
-	color: #ffffff;
+	color: #FFFFFF;
 	font-weight: bold;
 }
 
 .tableHeader th {
-	color: #ffffff;
-	font-weight:bold;
+	color: #FFFFFF;
+	font-weight: bold;
 	cursor: pointer;
-	vertical-align:middle;
-	text-align:left;
-	border-right: 1px groove #efefef;
-	font-size:11px;
-	background-color: #6d88ad !important;
+	vertical-align: middle;
+	text-align: left;
+	border-right: 1px groove #EFEFEF;
+	font-size: 11px;
+	background-color: #6D88AD !important;
 	padding: 2px;
 }
 
@@ -1332,55 +1338,56 @@ legend {
 }
 
 .tableHeader th div {
-	display:block;
-	padding-right:8px;
-	font-size:10px;
+	display: block;
+	padding-right: 8px;
+	font-size: 10px;
 }
 
 .tableSubHeaderColumn {
-	color: #ffffff;
-	font-weight:bold;
-	vertical-align:middle;
-	text-align:left;
-	cursor:pointer;
+	color: #FFFFFF;
+	font-weight: bold;
+	vertical-align: middle;
+	text-align: left;
+	cursor: pointer;
 	padding: 3px;
 }
 
 .graphSubHeaderColumn {
-	color: #ffffff;
-	font-size:12px;
-	vertical-align:middle;
-	text-align:left;
-	padding:3px;
+	color: #FFFFFF;
+	font-size: 12px;
+	vertical-align: middle;
+	text-align: left;
+	padding: 3px;
 }
 
 .tableSubHeaderCheckbox {
-	background-color: #819bc0;
+	background-color: #819BC0;
 }
 
 .image_table {
-	width:100%;
+	width: 100%;
 }
 
 .tableConfirmation {
-	background-color: #f5f5f5;
-	border: 1px solid #aaaaaa;
+	background-color: #F5F5F5;
+	border: 1px solid #AAAAAA;
 }
 
 .navBar {
-	min-width:30%;
-	white-space:nowrap;
+	min-width: 30%;
+	white-space: nowrap;
 }
 
 .navBarNavigation {
 	color: white;
 	width: 100%;
-	text-align:center;
+	text-align: center;
 	vertical-align: middle;
 	display: table;
-	margin-left:auto;
-	margin-right:auto;
-	background-color: #00438c;
+	margin-left: auto;
+	margin-right: auto;
+	line-height: 20px;
+	background-color: #00438D;
 	font-size: 12px;
 }
 
@@ -1429,7 +1436,7 @@ legend {
 	text-align: center;
 	display: table-cell;
 	white-space: nowrap;
-	width:100%;
+	width: 100%;
 	height: 16px;
 	margin-top: auto;
 }
@@ -1437,18 +1444,18 @@ legend {
 .navBarNavigationNext i.ui-icon {
 	margin-top: -16px;
 	margin-right: -16px;
-	top:50%;
+	top: 50%;
 }
 
 .navBarNavigationPrevious i.ui-icon {
 	margin-bottom: -16px;
 	margin-left: -16px;
-	top:50%;
+	top: 50%;
 }
 
 .textArea {
 	font-size: 10px;
-	background-color:#f5f5f5;
+	background-color: #F5F5F5;
 }
 
 .popupBox {
@@ -1458,12 +1465,12 @@ legend {
 	display: none;
 	overflow: auto;
 	color: #FFFFFF;
-	background-color:#e5e5e5;
-	border:1px solid #e5e5e5;
+	background-color: #E5E5E5;
+	border:1px solid #E5E5E5;
 }
 
 .installArea {
-	background-color: #ffffff;
+	background-color: #FFFFFF;
 	padding: 10px;
 }
 
@@ -1478,7 +1485,7 @@ legend {
 }
 
 .textMenuHeader {
-	color: #ffffff;
+	color: #FFFFFF;
 	background-color: #9C9C9C;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
@@ -1486,13 +1493,13 @@ legend {
 }
 
 .textMenuItem {
-	background-color: #f5f5f5;
+	background-color: #F5F5F5;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
 
 .textMenuSubItem {
-	background-color: #ffffff;
+	background-color: #FFFFFF;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
@@ -1504,8 +1511,9 @@ legend {
 }
 
 .txtErrorTextBox {
-	border: 2px solid #ff0000;
+	border: 2px solid #FF0000;
 }
+
 .txtErrorText {
 	color: #FF0000;
 	font-size: 12px;
@@ -1514,25 +1522,25 @@ legend {
 
 /* tabs */
 .tabSpacer {
-	width:0px;
-	padding-right:2px;
-	padding-left:0px;
+	width: 0px;
+	padding-right: 2px;
+	padding-left: 0px;
 }
 
 .tabsMarginLeft {
-	padding-left:2px;
+	padding-left: 2px;
 }
 
 .tabSelected {
-	background-color:silver;
-	white-space:nowrap;
-	width:1%;
+	background-color: silver;
+	white-space: nowrap;
+	width: 1%;
 }
 
 .tabNotSelected {
-	background-color:#dfdfdf;
-	white-space:nowrap;
-	width:1%;
+	background-color: #DFDFDF;
+	white-space: nowrap;
+	width: 1%;
 }
 
 .tab {
@@ -1543,9 +1551,9 @@ legend {
 
 .tabs li a {
 	background-color: #DFDFDF;
-    float:left !important;
-    padding:5px 4px;
-    text-decoration:none;
+    float: left !important;
+    padding: 5px 4px;
+    text-decoration: none;
     font-size: 9px;
 	border-color: #999 #666 !important;
     border-style: solid solid none;
@@ -1570,14 +1578,14 @@ td#tabs {
 
 .cactiGraphHeaderBackground {
 	height: 36px;
-	float:right;
-	z-index:-1;
+	float: right;
+	z-index: -1;
 }
 
 div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
-	float:right;
+	float: right;
 	height: 36px;
 	overflow: hidden;
 }
@@ -1594,37 +1602,37 @@ div#gtabs {
 }
 
 .tabs li {
-	bottom:-1px;
-	float:left;
-	margin:0 3px 0 0;
+	bottom: -1px;
+	float: left;
+	margin: 0 3px 0 0;
 }
 
 .tabs li.current a {
-	background:#fff;
-	border-bottom:1px solid #fff;
+	background: #FFFFFF;
+	border-bottom: 1px solid #FFFFFF;
 }
 
 .tabs li.current a:hover {
-	background:#fff;
-	border-bottom:1px solid #fff;
+	background: #FFFFFF;
+	border-bottom:1px solid #FFFFFF;
 }
 .tabs nav {
-	padding:0px 4px 0px 0px;
-    background-repeat:repeat-x;
-	zoom:1;
+	padding: 0px 4px 0px 0px;
+    background-repeat: repeat-x;
+	zoom: 1;
 }
 
 .tabs nav:after {
-	clear:both;
-	display:block;
-	height:0;
-	visibility:hidden;
+	clear: both;
+	display: block;
+	height: 0;
+	visibility: hidden;
 }
 
 .tabs ul {
-	list-style:none;
-	margin:0;
-	padding:0;
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
 /* Navigation Area */
@@ -1657,24 +1665,24 @@ div#gtabs {
 
 #nav li ul {
 	display: none;
-	padding:0;
+	padding: 0;
 }
 
 #nav li ul li a {
 	padding: 2px 4px;
-	background: #f5f5f5;
+	background: #F5F5F5;
 	border-bottom: 1px dotted #ccc;
 }
 
 #nav li ul li {
-	list-style:none;
-	padding:0;
+	list-style: none;
+	padding: 0;
 }
 
 ul#nav {
 	list-style: none;
-	padding:0;
-	width:100%;
+	padding: 0;
+	width: 100%;
 }
 
 .clogError {
@@ -1740,7 +1748,7 @@ ul.pagination {
 	display: inline-block;
 	padding: 0px;
 	margin: 0px;
-	vertical-align:middle;
+	vertical-align: middle;
 }
 
 ul.pagination li {
@@ -1775,7 +1783,7 @@ ul.pagination li a:hover:not(.active) {
 }
 
 tr#realtime td:first-child {
-	height:54px;
+	height: 54px;
 }
 
 .logEmergency {

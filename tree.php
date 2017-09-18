@@ -730,7 +730,7 @@ function tree_edit() {
 
 		function createNode() {
 			var ref = $('#jstree').jstree(true);
-			sel = ref.create_node('#', 'New Node', '0');
+			sel = ref.create_node('#', '<?php print __('New Node');?>', '0');
 			if (sel) {
 				ref.edit(sel);
 			}
@@ -918,7 +918,10 @@ function tree_edit() {
 						data.instance.set_id(data.node, d.id);
 						data.instance.set_text(data.node, d.text);
 						data.instance.edit(data.node);
-						$('.jstree').jstree(true).refresh();
+
+						if (d.text != '<?php print __('New Node');?>') {
+							$('.jstree').jstree(true).refresh();
+						}
 					})
 					.fail(function () {
 						var st = data.instance.get_state();

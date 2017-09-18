@@ -727,8 +727,13 @@ if ($using_cacti) {
 }
 
 if ($using_cacti) {
-	unlink($xmlfile);
-	unlink($bakfile);
+	if (file_exists($xmlfile)) {
+		unlink($xmlfile);
+	}
+
+	if (file_exists($xmlfile)) {
+		unlink($bakfile);
+	}
 }
 
 print $strout;

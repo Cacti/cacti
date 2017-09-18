@@ -1,12 +1,30 @@
 Cacti CHANGELOG
 
+1.1.24
+-issue#932: Zoom positioning breaks when you scroll the graph page
+-issue#970: Remote Data Collector Cache Synchronization missing plugin sub-directories
+-issue#980: Resolve issue where a new tree branches refreshs before you have a chance to name it
+-issue#982: Data Source Profile size information not showing properly
+-issue: Long sysDescriptions on automation page cause columns to be hidden
+-issue: Resolve visual issues in Classic theme
+-feature: Allow Resynchronization of Poller Resource Cache
+
+1.1.23
+-issue#963: SQL Errors with snmpagent and MariaDB 10.2
+-issue#964: SQL Mode optimization failing in 1.1.22
+
 1.1.22
 -issue#950: Automation - New graph rule looses name on change
--issue#952: CSV Export not rendering chinese characters correctly
+-issue#952: CSV Export not rendering chinese characters correctly (Second attempt)
 -issue#955: Validation error trying to view graph debug syntax
+-issue: MySQL/MariaDB database sql_mode NO_AUTO_VALUE_ON_ZERO corrupts Cacti database
+-issue: When creating a data source, the data source profile does not default to the system default
+-feature: Enhance table filters to support new Cycle plugin
+-feature: Updated Dutch Translations
 
 1.1.21
 -issue#938: Problems upgrading to 1.1.20 with one table alter statement
+-issue#952: CSV Export not rendering chinese characters correctly
 -issue: Minor alignment issue on tables
 
 1.1.20

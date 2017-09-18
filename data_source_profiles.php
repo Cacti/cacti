@@ -255,7 +255,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$profile_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_source_profiles WHERE id = ?', array($matches[1]))) . '</li>';
+			$profile_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM data_source_profiles WHERE id = ?', array($matches[1]))) . '</li>';
 			$profile_array[$i] = $matches[1];
 
 			$i++;
@@ -519,7 +519,7 @@ function profile_edit() {
 			AND local_data_id > 0',
 			array(get_request_var('id')));
 
-		$header_label = __('Data Source Profile [edit: %s]', htmlspecialchars($profile['name']) . ($readonly ? ' (Read Only)':''));
+		$header_label = __('Data Source Profile [edit: %s]', html_escape($profile['name']) . ($readonly ? ' (Read Only)':''));
 	} else {
 		$header_label = __('Data Source Profile [new]');
 		$readonly     = false;
@@ -565,7 +565,7 @@ function profile_edit() {
 			foreach ($profile_rras as $rra) {
 				form_alternate_row('line' . $rra['id']);$i++;?>
 				<td>
-					<?php print "<a class='linkEditMain' href='" . htmlspecialchars('data_source_profiles.php?action=item_edit&id=' . $rra['id'] . '&profile_id=' . $rra['data_source_profile_id']) . "'>" . htmlspecialchars($rra['name']) . '</a>';?>
+					<?php print "<a class='linkEditMain' href='" . html_escape('data_source_profiles.php?action=item_edit&id=' . $rra['id'] . '&profile_id=' . $rra['data_source_profile_id']) . "'>" . html_escape($rra['name']) . '</a>';?>
 				</td>
 				<td>
 					<em><?php print get_span($profile['step'] * $rra['steps'] * $rra['rows']);?></em>
@@ -675,7 +675,7 @@ function get_size($id, $type, $cfs = '') {
 			WHERE data_source_profile_id = ?',
 			array($id));
 
-		return __('%s KBytes per Data Sources and $s Bytes for the Header', number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000), $header);
+		return __('%s KBytes per Data Sources and %s Bytes for the Header', number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000), $header);
 	} else {
 		$cfs  = db_fetch_cell_prepared('SELECT COUNT(*)
 			FROM data_source_profiles_cf
@@ -810,7 +810,7 @@ function profile() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -954,7 +954,7 @@ function profile() {
 
 			form_alternate_row('line' . $profile['id'], false, $disabled);
 			form_selectable_cell(filter_value($profile['name'], get_request_var('filter'), 'data_source_profiles.php?action=edit&id=' . $profile['id']), $profile['id']);
-			form_selectable_cell($profile['default'] == 'on' ? 'Yes':'', $profile['id'], '', 'text-align:right');
+			form_selectable_cell($profile['default'] == 'on' ? __('Yes'):'', $profile['id'], '', 'text-align:right');
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $profile['id'], '', 'text-align:right');
 			form_selectable_cell($readonly ? __('Yes') : __('No'), $profile['id'], '', 'text-align:right');
 			form_selectable_cell($sampling_intervals[$profile['step']], $profile['id'], '', 'text-align:right');
@@ -965,8 +965,9 @@ function profile() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Data Source Profiles') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Data Source Profiles Found') . "</em></td></tr>\n";
 	}
+
 	html_end_box(false);
 
 	if (sizeof($profile_list)) {

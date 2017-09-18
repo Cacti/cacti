@@ -16,7 +16,7 @@
  */
 class Twig_Environment
 {
-    const VERSION = '1.24.1-DEV';
+    const VERSION = '1.24.2';
 
     protected $charset;
     protected $loader;
@@ -436,6 +436,10 @@ class Twig_Environment
         try {
             $template = $this->loadTemplate($name);
         } catch (Exception $e) {
+            $this->setLoader($current);
+
+            throw $e;
+        } catch (Throwable $e) {
             $this->setLoader($current);
 
             throw $e;

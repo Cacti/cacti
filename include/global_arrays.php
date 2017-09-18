@@ -95,6 +95,9 @@ $cacti_version_codes = array(
 	'1.1.19' => '0101',
 	'1.1.20' => '0101',
 	'1.1.21' => '0101',
+	'1.1.22' => '0101',
+	'1.1.23' => '0101',
+	'1.1.24' => '0101',
 );
 
 $messages = array(
@@ -232,6 +235,9 @@ $messages = array(
 		'type' => 'info'),
 	'reports_item_save_failed' => array(
 		'message' => '<font style="color:red;"><i>' . __('Report Item Save Failed') . '</i></font>',
+		'type' => 'info'),
+	'resource_cache_rebuild' => array(
+		'message' => '<i>' . __('Poller Resource Cache Cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards.'),
 		'type' => 'info')
 );
 
