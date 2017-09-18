@@ -103,9 +103,9 @@ function form_actions() {
 					$description = (trim($d['hostname']) != '' ? $d['hostname'] : $d['ip']);
 
 					if ($host_id) {
-						$message = "<span class='deviceUp'>" . __('Device') . ' ' . htmlspecialchars($description) . ' ' . __('Added to Cacti') . '</span><br>';
+						$message = "<span class='deviceUp'>" . __('Device') . ' ' . html_escape($description) . ' ' . __('Added to Cacti') . '</span><br>';
 					} else {
-						$message = "<span class='deviceDown'>" . __('Device') . ' ' . htmlspecialchars($description) . ' ' . __('Not Added to Cacti') . '</span><br>';
+						$message = "<span class='deviceDown'>" . __('Device') . ' ' . html_escape($description) . ' ' . __('Not Added to Cacti') . '</span><br>';
 					}
 				}
 
@@ -130,7 +130,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$device_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") FROM automation_devices WHERE id = ?', array($matches[1]))) . '</li>';
+			$device_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") FROM automation_devices WHERE id = ?', array($matches[1]))) . '</li>';
 			$device_array[$i] = $matches[1];
 
 			$i++;
@@ -290,7 +290,7 @@ function display_discovery_page() {
 			form_selectable_cell(snmp_data($host['sysName']), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data($host['sysLocation']), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data($host['sysContact']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['sysDescr']), $host['id'], '', 'text-align:left');
+			form_selectable_cell(snmp_data($host['sysDescr']), $host['id'], '', 'text-align:left;white-space:normal;');
 			form_selectable_cell(snmp_data($host['os']), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data($uptime), $host['id'], '', 'text-align:right');
 			form_selectable_cell($status[$host['snmp']], $host['id'], '', 'text-align:right');
@@ -640,9 +640,9 @@ function purge_discovery_results() {
 
 function snmp_data($item) {
 	if ($item == '') {
-		return 'N/A';
+		return __('N/A');
 	} else {
-		return htmlspecialchars(str_replace(':',' ', $item));
+		return html_escape(str_replace(':',' ', $item));
 	}
 }
 

@@ -1,5 +1,14 @@
 Cacti CHANGELOG
 
+1.1.24
+-issue#932: Zoom positioning breaks when you scroll the graph page
+-issue#970: Remote Data Collector Cache Synchronization missing plugin sub-directories
+-issue#980: Resolve issue where a new tree branches refreshs before you have a chance to name it
+-issue#982: Data Source Profile size information not showing properly
+-issue: Long sysDescriptions on automation page cause columns to be hidden
+-issue: Resolve visual issues in Classic theme
+-feature: Allow Resynchronization of Poller Resource Cache
+
 1.1.23
 -issue#963: SQL Errors with snmpagent and MariaDB 10.2
 -issue#964: SQL Mode optimization failing in 1.1.22
