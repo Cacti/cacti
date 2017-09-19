@@ -69,13 +69,8 @@
 		};
 
 		// support jQuery's concatenation
-		return this.each(function() { 
-			object = $(this);
-			$(this).on('mouseover', function() {
-console.log('Mouseover');
-				zoomFunction_init(object);
-			});
-		});
+		return this.each(function() { zoom_init( $(this) ); });
+
 
 		/* ++++++++++++++++++++ Universal Functions +++++++++++++++++++++++++ */
 
@@ -151,6 +146,23 @@ console.log('Mouseover');
 		/* +++++++++++++++++++++++ Core Functions +++++++++++++++++++++++++++ */
 
 		/* init zoom */
+		function zoom_init(image) {
+			var $this = image;
+
+			if($('#zoom-container').hasClass('zoom_active_' + $this.attr('id'))) {
+				zoomElements_remove();
+				zoomFunction_init($this);
+			}
+
+			$this.parent().disableSelection();
+			$this.off().mouseover(
+				function(){
+					zoomElements_remove();
+					zoomFunction_init($this);
+				}
+			);
+		}
+
 		function zoomFunction_init(image) {
 			var $this = image;
 
@@ -171,7 +183,7 @@ console.log('Mouseover');
 			}
 
 			/* fetch all attributes that rrdgraph provides */
-			zoom.image.data 			= atob(zoom.initiator.attr('src').split(',')[1]);
+			zoom.image.data 			= atob( zoom.initiator.attr('src').split(',')[1] );
 			zoom.image.type 			= (zoom.initiator.attr('src').split(';')[0] == 'data:image/svg+xml' )? 'svg' : 'png';
 			zoom.image.reference		= zoom.initiator.attr('id');
 			zoom.image.id				= zoom.image.reference.replace('graph_', '');
@@ -204,128 +216,132 @@ console.log('Mouseover');
 			//console.log('ImageLeft: ' + zoom.initiator.offset().left);
 			//console.log('GraphTop: '  + zoom.initiator.attr('graph_top'));
 			//console.log('GraphLeft: ' + zoom.initiator.attr('graph_left'));
-
 			// get all graph parameters and merge results with zoom.graph object
-			// $.extend(zoom.graph, getUrlVars( $this.attr('src') ));
+			// $.extend(zoom.graph, getUrlVars( $this.attr("src") ));
 
 			// add all additional HTML elements to the DOM if necessary and register
 			// the individual events needed. Once added we will only reset
 			// and reposition these elements.
 
-			// Add the container for all elements Zoom requires
-			// Please note: IE does not fire hover or click behaviors on completely transparent elements.
-			// Use a background color and set opacity to 1% as a workaround.(see CSS file)
-			$('#zoom-container').off().remove();
-			$("<div id='zoom-container'></div>").appendTo('body').delay(1000);
+			// add the container for all elements Zoom requires
+			if ($('#zoom-container').length == 0) {
+				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
+				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
+				$('<div id="zoom-container"></div>').appendTo('body').delay(1000);
+				$('#zoom-container').css({ position: 'absolute', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' }).removeClass().addClass('zoom_active_' + zoom.image.reference);
+			}
 
-			// Add a hidden anchor to use for downloads
-			$('#zoom-image').off().remove();
-			$("<a class='zoom-hidden' id='zoom-image'></a>").appendTo('body');
+			// add a hidden anchor to use for downloads
+			if ($('#zoom-image').length == 0) {
+				$('<a class="zoom-hidden" id="zoom-image"></a>').appendTo('body');
+			}
+			// add a hidden textareas used to copy images / links
+			if ($('#zoom-textarea').length == 0) {
+				$('<textarea id="zoom-textarea" class="zoom-hidden"></textarea>').appendTo('body');
+			}
 
-			// Add a hidden textareas used to copy images / links
-			$('#zoom-textarea').off().remove();
-			$("<textarea id='zoom-textarea' class='zoom-hidden'></textarea>").appendTo('body');
-
-			// Add the 'zoomBox'
-			// Please note: IE does not fire hover or click behaviors on completely transparent elements.
-			// Use a background color and set opacity to 1% as a workaround.(see CSS file)
-			$('#zoom-box').off().remove();
-			$("<div id='zoom-box'></div>").appendTo('#zoom-container');
+			// add the 'zoomBox'
+			if ($('#zoom-box').length == 0) {
+				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
+				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
+				$('<div id="zoom-box"></div>').appendTo('#zoom-container');
+			}
 
 			// add the 'zoomSelectedArea'
-			$('#zoom-area').off().remove();
-			$("<div id='zoom-area'></div>").appendTo('#zoom-container');
+			if ($('#zoom-area').length == 0) {
+				$('<div id="zoom-area"></div>').appendTo('#zoom-container');
+			}
 
 			// add two markers for the advanced mode
-			$('#zoom-marker-1').off().remove();
-			$('<div id="zoom-excluded-area-1" class="zoom-area-excluded"></div>').appendTo('#zoom-container');
-			$('<div class="zoom-marker" id="zoom-marker-1"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo('#zoom-container');
-			$('<div id="zoom-marker-tooltip-1" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-1-arrow-left" class="zoom-marker-tooltip-arrow-left"><div id="zoom-marker-tooltip-1-arrow-left-inner" class="zoom-marker-tooltip-arrow-left-inner"></div></div><span id="zoom-marker-tooltip-value-1" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-1-arrow-right" class="zoom-marker-tooltip-arrow-right"><div id="zoom-marker-tooltip-1-arrow-right-inner" class="zoom-marker-tooltip-arrow-right-inner"></div></div></div>').appendTo('#zoom-container');
-
-			$('#zoom-marker-2').off().remove();
-			$('<div id="zoom-excluded-area-2" class="zoom-area-excluded"></div>').appendTo('#zoom-container');
-			$('<div class="zoom-marker" id="zoom-marker-2"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo('#zoom-container');
-			$('<div id="zoom-marker-tooltip-2" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-2-arrow-left" class="zoom-marker-tooltip-arrow-left"><div id="zoom-marker-tooltip-1-arrow-left-inner" class="zoom-marker-tooltip-arrow-left-inner"></div></div><span id="zoom-marker-tooltip-value-2" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-2-arrow-right" class="zoom-marker-tooltip-arrow-right"><div id="zoom-marker-tooltip-2-arrow-right-inner" class="zoom-marker-tooltip-arrow-right-inner"></div></div></div>').appendTo('#zoom-container');
-
+			if ($('#zoom-marker-1').length == 0) {
+				$('<div id="zoom-excluded-area-1" class="zoom-area-excluded"></div>').appendTo('#zoom-container');
+				$('<div class="zoom-marker" id="zoom-marker-1"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo('#zoom-container');
+				$('<div id="zoom-marker-tooltip-1" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-1-arrow-left" class="zoom-marker-tooltip-arrow-left"><div id="zoom-marker-tooltip-1-arrow-left-inner" class="zoom-marker-tooltip-arrow-left-inner"></div></div><span id="zoom-marker-tooltip-value-1" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-1-arrow-right" class="zoom-marker-tooltip-arrow-right"><div id="zoom-marker-tooltip-1-arrow-right-inner" class="zoom-marker-tooltip-arrow-right-inner"></div></div></div>').appendTo('#zoom-container');
+			}
+			if ($('#zoom-marker-2').length == 0) {
+				$('<div id="zoom-excluded-area-2" class="zoom-area-excluded"></div>').appendTo('#zoom-container');
+				$('<div class="zoom-marker" id="zoom-marker-2"><div class="zoom-marker-arrow-down"></div><div class="zoom-marker-arrow-up"></div></div>').appendTo('#zoom-container');
+				$('<div id="zoom-marker-tooltip-2" class="zoom-marker-tooltip"><div id="zoom-marker-tooltip-2-arrow-left" class="zoom-marker-tooltip-arrow-left"><div id="zoom-marker-tooltip-1-arrow-left-inner" class="zoom-marker-tooltip-arrow-left-inner"></div></div><span id="zoom-marker-tooltip-value-2" class="zoom-marker-tooltip-value">-</span><div id="zoom-marker-tooltip-2-arrow-right" class="zoom-marker-tooltip-arrow-right"><div id="zoom-marker-tooltip-2-arrow-right-inner" class="zoom-marker-tooltip-arrow-right-inner"></div></div></div>').appendTo('#zoom-container');
+			}
 			zoom.marker[1].placed = false;
 			zoom.marker[2].placed = false;
 
 			// add the context (right click) menu
-			$('#zoom-menu').off().remove();
-			$('<div id="zoom-menu" class="zoom-menu">'
-				+ '<div class="first_li">'
-				+ 		'<div class="ui-icon ui-icon-zoomin zoomContextMenuAction__zoom_in"></div>'
-				+       '<span class="zoomContextMenuAction__zoom_in">Zoom In</span>'
-				+ '</div>'
-				+ '<div class="first_li">'
-				+ 		'<div class="ui-icon ui-icon-zoomout zoomContextMenuAction__zoom_out"></div>'
-				+ 		'<span class="zoomContextMenuAction__zoom_out">Zoom Out (2x)</span>'
-				+ 		'<div class="inner_li">'
-				+ 			'<span class="zoomContextMenuAction__zoom_out__2">2x</span>'
-				+ 			'<span class="zoomContextMenuAction__zoom_out__4">4x</span>'
-				+ 			'<span class="zoomContextMenuAction__zoom_out__8">8x</span>'
-				+ 			'<span class="zoomContextMenuAction__zoom_out__16">16x</span>'
-				+ 			'<span class="zoomContextMenuAction__zoom_out__32">32x</span>'
-				+ 		'</div>'
-				+ '</div>'
-				+ '<div class="sep_li"></div>'
-				+ '<div class="first_li">'
-				+ 		'<div class="ui-icon ui-icon-empty"></div><span>Zoom Mode</span>'
-				+ 		'<div class="inner_li">'
-				+ 			'<span class="zoomContextMenuAction__set_zoomMode__quick">Quick</span>'
-				+ 			'<span class="zoomContextMenuAction__set_zoomMode__advanced">Advanced</span>'
-				+ 		'</div>'
-				+ '</div>'
-				+ '<div class="sep_li"></div>'
-				+ '<div class="first_li">'
-				+ 		'<div class="ui-icon ui-icon-empty"></div><span>Graph</span>'
-				+ 		'<div class="inner_li">'
-				+ 			'<span class="zoomContextMenuAction__newTab">Open in new tab</a></span>'
-				+			'<span class="zoomContextMenuAction__save">Save graph</span>'
-				+ 			'<span class="zoomContextMenuAction__link">Copy graph link</span>'
-				+ 		'</div>'
-				+ '</div>'
-				+ '<div class="first_li">'
-				+ 		'<div class="ui-icon ui-icon-wrench"></div><span>Settings</span>'
-				+ 			'<div class="inner_li">'
-				+ 				'<div class="sec_li advanced_mode"><span>Timestamps</span></span>'
-				+ 					'<div class="inner_li advanced_mode">'
-				+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__on">Always On</span>'
-				+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__auto">Auto</span>'
-				+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__off">Always Off</span>'
-				+ 					'</div>'
-				+ 				'</div>'
-				+ 				'<div class="sep_li"></div>'
-				+ 				'<div class="sec_li"><span>Zoom Out Factor</span>'
-				+ 					'<div class="inner_li">'
-				+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__2">2x</span>'
-				+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__4">4x</span>'
-				+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__8">8x</span>'
-				+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__16">16x</span>'
-				+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__32">32x</span>'
-				+ 					'</div>'
-				+ 				'</div>'
-				+ 				'<div class="sec_li"><span>Zoom Out Positioning</span>'
-				+ 					'<div class="inner_li">'
-				+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__begin">Begin with</span>'
-				+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__center">Center</span>'
-				+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__end">End with</span>'
-				+ 					'</div>'
-				+ 				'</div>'
-				+ 				'<div class="sec_li advanced_mode"><span>3rd Mouse Button</span>'
-				+ 					'<div class="inner_li advanced_mode">'
-				+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_in">Zoom in</span>'
-				+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_out">Zoom out</span>'
-				+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__off">Disabled</span>'
-				+ 					'</div>'
-				+ 				'</div>'
-				+ 			'</div>'
-				+ 		'</div>'
-				+ '<div class="sep_li"></div>'
-				+ '<div class="first_li">'
-				+ 		'<div class="ui-icon ui-icon-close zoomContextMenuAction__close"></div><span class="zoomContextMenuAction__close">Close</span>'
+			if ($('#zoom-menu').length == 0) {
+				$('<div id="zoom-menu" class="zoom-menu">'
+					+ '<div class="first_li">'
+					+ 		'<div class="ui-icon ui-icon-zoomin zoomContextMenuAction__zoom_in"></div>'
+					+       '<span class="zoomContextMenuAction__zoom_in">Zoom In</span>'
+					+ '</div>'
+					+ '<div class="first_li">'
+					+ 		'<div class="ui-icon ui-icon-zoomout zoomContextMenuAction__zoom_out"></div>'
+					+ 		'<span class="zoomContextMenuAction__zoom_out">Zoom Out (2x)</span>'
+					+ 		'<div class="inner_li">'
+					+ 			'<span class="zoomContextMenuAction__zoom_out__2">2x</span>'
+					+ 			'<span class="zoomContextMenuAction__zoom_out__4">4x</span>'
+					+ 			'<span class="zoomContextMenuAction__zoom_out__8">8x</span>'
+					+ 			'<span class="zoomContextMenuAction__zoom_out__16">16x</span>'
+					+ 			'<span class="zoomContextMenuAction__zoom_out__32">32x</span>'
+					+ 		'</div>'
+					+ '</div>'
+					+ '<div class="sep_li"></div>'
+					+ '<div class="first_li">'
+					+ 		'<div class="ui-icon ui-icon-empty"></div><span>Zoom Mode</span>'
+					+ 		'<div class="inner_li">'
+					+ 			'<span class="zoomContextMenuAction__set_zoomMode__quick">Quick</span>'
+					+ 			'<span class="zoomContextMenuAction__set_zoomMode__advanced">Advanced</span>'
+					+ 		'</div>'
+					+ '</div>'
+					+ '<div class="sep_li"></div>'
+					+ '<div class="first_li">'
+					+ 		'<div class="ui-icon ui-icon-empty"></div><span>Graph</span>'
+					+ 		'<div class="inner_li">'
+					+ 			'<span class="zoomContextMenuAction__newTab">Open in new tab</a></span>'
+					+			'<span class="zoomContextMenuAction__save">Save graph</span>'
+					+ 			'<span class="zoomContextMenuAction__link">Copy graph link</span>'
+					+ 		'</div>'
+					+ '</div>'
+					+ '<div class="first_li">'
+					+ 		'<div class="ui-icon ui-icon-wrench"></div><span>Settings</span>'
+					+ 			'<div class="inner_li">'
+					+ 				'<div class="sec_li advanced_mode"><span>Timestamps</span></span>'
+					+ 					'<div class="inner_li advanced_mode">'
+					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__on">Always On</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__auto">Auto</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__off">Always Off</span>'
+					+ 					'</div>'
+					+ 				'</div>'
+					+ 				'<div class="sep_li"></div>'
+					+ 				'<div class="sec_li"><span>Zoom Out Factor</span>'
+					+ 					'<div class="inner_li">'
+					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__2">2x</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__4">4x</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__8">8x</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__16">16x</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__32">32x</span>'
+					+ 					'</div>'
+					+ 				'</div>'
+					+ 				'<div class="sec_li"><span>Zoom Out Positioning</span>'
+					+ 					'<div class="inner_li">'
+					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__begin">Begin with</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__center">Center</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__end">End with</span>'
+					+ 					'</div>'
+					+ 				'</div>'
+					+ 				'<div class="sec_li advanced_mode"><span>3rd Mouse Button</span>'
+					+ 					'<div class="inner_li advanced_mode">'
+					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_in">Zoom in</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_out">Zoom out</span>'
+					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__off">Disabled</span>'
+					+ 					'</div>'
+					+ 				'</div>'
+					+ 			'</div>'
+					+ 		'</div>'
+					+ '<div class="sep_li"></div>'
+					+ '<div class="first_li">'
+					+ 		'<div class="ui-icon ui-icon-close zoomContextMenuAction__close"></div><span class="zoomContextMenuAction__close">Close</span>'
 				+ '</div>').appendTo('body');
-
+			}
 			zoomElements_reposition();
 			zoomElements_reset();
 			zoomContextMenu_init();
@@ -337,13 +353,6 @@ console.log('Mouseover');
 		 **/
 		function zoomElements_reposition() {
 			$('#zoom-container').insertBefore('#' + zoom.image.reference);
-			$('#zoom-container').css({ 
-				position: 'absolute', 
-				top: (zoom.image.top)+'px',
-				left: (zoom.image.left)+'px',
-				width: (zoom.image.width-1)+'px', 
-				height: (zoom.image.height-1)+'px' 
-			}).removeClass().addClass('zoom_active_' + zoom.image.reference);
 		}
 
 		/**
@@ -381,6 +390,7 @@ console.log('Mouseover');
 		* registers all the different mouse click event handler
 		*/
 		function zoomAction_init(image) {
+
 			if (zoom.custom.zoomMode == 'quick') {
 				$('#zoom-area').resizable({ containment: '#zoom-box', handles: 'e, w' });
 				$('#zoom-box').off('mousedown').on('mousedown', function(e) {
