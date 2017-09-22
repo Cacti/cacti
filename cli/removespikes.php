@@ -316,9 +316,9 @@ if (!isset($stddev)) {
 
 if (!isset($percent)) {
 	if (!isset($upercent)) {
-		$percent = $dpercent;
+		$percent = $dpercent/100;
 	} else {
-		$percent = $upercent;
+		$percent = $upercent/100;
 	}
 }
 
