@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.25
+-issue#995: Redirecting exec_background() to dev null breaks some functions
 -issue#998: Allow removeal of external data template and prevent their creation
 -issue: Remove spikes uses wrong variance value from WebGUI
 -issue: Allow manual creation of external data sources again
