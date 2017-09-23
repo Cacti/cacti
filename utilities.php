@@ -900,28 +900,26 @@ function utilities_view_logfile() {
 			'default' => '1'
 			),
 		'tail_lines' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX,
+			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => ''
 			),
 		'message_type' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'reverse' => array(
-			'filter' => FILTER_VALIDATE_INT,
-			'pageset' => true,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'refresh' => array(
-			'filter' => FILTER_VALIDATE_INT,
-			'pageset' => true,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('log_refresh_interval')
 			)
 	);
