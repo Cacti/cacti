@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.1.25
+-issue: Remove spikes uses wrong variance value from WebGUI
+-issue: Allow manual creation of external data sources again
+
 1.1.24
 -issue#932: Zoom positioning breaks when you scroll the graph page
 -issue#970: Remote Data Collector Cache Synchronization missing plugin sub-directories
