@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue: Remove spikes uses wrong variance value from WebGUI
 -issue: Changing filters on clog page does not change the page to 1
 -issue: Allow manual creation of external data sources again
+-feature: Updated Dutch translations
 
 1.1.24
 -issue#932: Zoom positioning breaks when you scroll the graph page
