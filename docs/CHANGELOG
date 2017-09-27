@@ -6,12 +6,12 @@ Cacti CHANGELOG
 -issue: Move Graph removal function to Graph API
 
 1.1.25
--issue#966: Email still using SNTP Security even though set to none
+-issue#966: Email still using SMTP security even though set to none
 -issue#995: Redirecting exec_background() to dev null breaks some functions
--issue#998: Allow removeal of external data template and prevent their creation
+-issue#998: Allow removal of external data template and prevent their creation
 -issue: Remove spikes uses wrong variance value from WebGUI
--issue: Changing filters on clog page does not change the page to 1
--issue: Allow manual creation of external data sources again
+-issue: Changing filters on log page does not reset to first page
+-issue: Allow manual creation of external data sources once again
 -feature: Updated Dutch translations
 
 1.1.24
