@@ -88,14 +88,6 @@ var hasTouch   = 'ontouchstart' in document.documentElement,
     moveEvent  = 'touchmove mousemove',
     endEvent   = 'touchend mouseup';
 
-// If we're on a touch device, then wire up the events
-// see http://stackoverflow.com/a/8456194/1316086
-hasTouch
-    && $.each("touchstart touchmove touchend".split(" "), function(i, name) {
-        $.event.fixHooks[name] = $.event.mouseHooks;
-    });
-
-
 $(document).ready(function () {
     function parseStyle(css) {
         var objMap = {},

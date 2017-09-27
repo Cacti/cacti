@@ -1860,3 +1860,7 @@ tr#realtime td:first-child {
 .ui-multiselect-filter {
 	width: 100%;
 }
+
+.graphWrapper {
+	position: relative;
+}

@@ -1,5 +1,14 @@
 Cacti CHANGELOG
 
+1.1.25
+-issue#966: Email still using SMTP security even though set to none
+-issue#995: Redirecting exec_background() to dev null breaks some functions
+-issue#998: Allow removal of external data template and prevent their creation
+-issue: Remove spikes uses wrong variance value from WebGUI
+-issue: Changing filters on log page does not reset to first page
+-issue: Allow manual creation of external data sources once again
+-feature: Updated Dutch translations
+
 1.1.24
 -issue#932: Zoom positioning breaks when you scroll the graph page
 -issue#970: Remote Data Collector Cache Synchronization missing plugin sub-directories
@@ -8,6 +17,7 @@ Cacti CHANGELOG
 -issue: Long sysDescriptions on automation page cause columns to be hidden
 -issue: Resolve visual issues in Classic theme
 -feature: Allow Resynchronization of Poller Resource Cache
+-feature: Update Spanish Translation
 
 1.1.23
 -issue#963: SQL Errors with snmpagent and MariaDB 10.2
