@@ -275,7 +275,7 @@ function form_save() {
 
 				$lg_dq_id = db_fetch_cell_prepared(
 					'SELECT snmp_query_id
-					 FROM graph_lcoal
+					 FROM graph_local
 					 WHERE id = ?',
 					array($local_graph_id)
 				);
