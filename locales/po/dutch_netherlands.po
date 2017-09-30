@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-18 08:25-0400\n"
-"PO-Revision-Date: 2017-09-09 17:14+0200\n"
+"PO-Revision-Date: 2017-09-23 23:00+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.3\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: ../about.php:29 ../include/global_session.php:108 ../lib/functions.php:2448
 msgid "About Cacti"
@@ -4533,7 +4533,7 @@ msgstr "Geaggregeerd apparaat"
 
 #: ../graph_view.php:634
 msgid "Non-Device"
-msgstr ""
+msgstr "Geen-apparaat"
 
 #: ../graph_view.php:635
 msgid "Not Applicable"
@@ -6053,7 +6053,7 @@ msgstr "Alfabetisch sorteren"
 
 #: ../include/global_arrays.php:684
 msgid "Natural Ordering"
-msgstr ""
+msgstr "Natuurlijke sortering"
 
 #: ../include/global_arrays.php:685
 msgid "Numeric Ordering"
@@ -7863,7 +7863,7 @@ msgstr ""
 
 #: ../include/global_form.php:1137
 msgid "Maximum OIDs Per Get Request"
-msgstr ""
+msgstr "Maximaal aantal OID's per GET request"
 
 #: ../include/global_form.php:1146
 msgid "Availability/Reachability Options"
@@ -8000,11 +8000,11 @@ msgstr ""
 
 #: ../include/global_form.php:1434
 msgid "Must Change Password at Next Login"
-msgstr ""
+msgstr "Moet het wachtwoord wijzigen na de volgende login"
 
 #: ../include/global_form.php:1446
 msgid "Maintain Custom Graph and User Settings"
-msgstr ""
+msgstr "Behoud de aangepaste grafiek en gebruikers instellingen"
 
 #: ../include/global_form.php:1453
 msgid "Graph Options"
@@ -8119,7 +8119,7 @@ msgstr ""
 
 #: ../include/global_form.php:1626
 msgid "Maximum Log Size"
-msgstr ""
+msgstr "Maximale log grootte"
 
 #: ../include/global_form.php:1627
 msgid ""
@@ -8252,7 +8252,7 @@ msgstr ""
 
 #: ../include/global_form.php:1828
 msgid "Please name this Aggregate Graph."
-msgstr ""
+msgstr "Geef deze geaggregeerde grafiek een naam."
 
 #: ../include/global_form.php:1835
 msgid "Propagation Enabled"
@@ -8278,7 +8278,7 @@ msgstr "Naam van geaggregeerde template"
 
 #: ../include/global_form.php:1924
 msgid "Please name this Aggregate Template."
-msgstr ""
+msgstr "Geef dit geaggregeerde template een naam."
 
 #: ../include/global_form.php:1931
 msgid "Source Graph Template"
@@ -8902,7 +8902,7 @@ msgstr "RRDtool versie"
 
 #: ../include/global_settings.php:379
 msgid "The version of RRDtool that you have installed."
-msgstr ""
+msgstr "De versie van RRDTool die u heeft geïnstalleerd."
 
 #: ../include/global_settings.php:385
 msgid "Graph Permission Method"
@@ -8919,7 +8919,7 @@ msgstr ""
 
 #: ../include/global_settings.php:389
 msgid "Permissive"
-msgstr ""
+msgstr "Toegeeflijk"
 
 #: ../include/global_settings.php:389
 msgid "Restrictive"
@@ -8959,7 +8959,7 @@ msgstr ""
 
 #: ../include/global_settings.php:406
 msgid "Prompt user before item deletion."
-msgstr ""
+msgstr "Waarschuw de gebruiker voor verwijderen."
 
 #: ../include/global_settings.php:411
 msgid "Hide Cacti Console"
@@ -9206,7 +9206,7 @@ msgstr ""
 
 #: ../include/global_settings.php:677
 msgid "Maximum Title Length"
-msgstr ""
+msgstr "Maximale titel lengte"
 
 #: ../include/global_settings.php:678
 msgid "The maximum allowable Graph or Data Source titles."
@@ -9250,7 +9250,7 @@ msgstr ""
 
 #: ../include/global_settings.php:717
 msgid "Maximum number of rows per page"
-msgstr ""
+msgstr "Maximum aantal rijen per pagina"
 
 #: ../include/global_settings.php:718
 msgid ""
@@ -9720,7 +9720,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1078
 msgid "Password History"
-msgstr ""
+msgstr "Wachtwoord history"
 
 #: ../include/global_settings.php:1079
 msgid "Remember this number of old passwords and disallow re-using them."
@@ -9892,7 +9892,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1214 ../user_domains.php:437
 msgid "Name of the attribute that contains the usernames of the members."
-msgstr ""
+msgstr "Naam van het attribuut dat de gebruikersnaam van de leden bevat."
 
 #: ../include/global_settings.php:1219 ../user_domains.php:443
 msgid "Group Member Type"
@@ -9983,7 +9983,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1279
 msgid "Mail Services"
-msgstr ""
+msgstr "Mail diensten"
 
 #: ../include/global_settings.php:1280
 msgid "Which mail service to use in order to send mail"
@@ -10219,7 +10219,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1458
 msgid "Maintenance Time"
-msgstr ""
+msgstr "Onderhoudstijd"
 
 #: ../include/global_settings.php:1459
 msgid ""
@@ -10825,7 +10825,7 @@ msgstr "De breedte van de thumbnail grafiek in pixels."
 
 #: ../include/global_settings.php:1968
 msgid "Default Tree"
-msgstr ""
+msgstr "Standaard boom"
 
 #: ../include/global_settings.php:1969
 msgid "The default graph tree to use when displaying graphs in tree mode."
@@ -11010,7 +11010,7 @@ msgstr "Op Linux/UNIX, doe het volgende:"
 
 #: ../install/index.php:68
 msgid "mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql"
-msgstr ""
+msgstr "mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql"
 
 #: ../install/index.php:70
 msgid ""
@@ -11050,6 +11050,10 @@ msgid ""
 "graphing solution for your network. Before you can start making cool graphs, "
 "there are a few pieces of data that Cacti needs to know."
 msgstr ""
+"Bedankt dat u de tijd heeft genomen om Cacti te downloaden en te "
+"installeren. Cacti is de complete grafiek oplossing voor uw netwerk. Voordat "
+"u kunt beginnen met het maken van grafieken, zijn hier een paar zaken over "
+"Cacti die u moete weten."
 
 #: ../install/index.php:434
 #, php-format
@@ -11058,6 +11062,10 @@ msgid ""
 "Cacti before continuing. Install information can be found for <a href=\"%1$s"
 "\">Unix</a> and <a href=\"%2$s\">Win32</a>-based operating systems."
 msgstr ""
+"Zorg ervoor dat u de benodigde stappen heeft gelezen en gevolgd voor het "
+"installeren en Cacti. Installatieinstructies kunnen worden gevonden voor <a "
+"href=\"%1$s\">Unix</a> en <a href=\"%2$s\">Win32</a>-gebaseerde "
+"besturingssystemen."
 
 #: ../install/index.php:435
 #, php-format
@@ -11065,6 +11073,8 @@ msgid ""
 "Also, if this is an upgrade, be sure to reading the <a href=\"%s\">Upgrade</"
 "a> information file."
 msgstr ""
+"Tevens, als dit een upgrade is, zorg ervoor dat u de <a href=\"%s\">upgrade</"
+"a> informatie heeft gelezen."
 
 #: ../install/index.php:436
 msgid ""
@@ -11096,7 +11106,7 @@ msgstr "Pre installatie controle"
 
 #: ../install/index.php:449
 msgid "MySQL TimeZone Support"
-msgstr ""
+msgstr "MySQL Timezone ondersteuning"
 
 #: ../install/index.php:454 ../install/index.php:458 ../install/index.php:622
 #: ../install/index.php:627
@@ -11133,7 +11143,7 @@ msgstr ""
 
 #: ../install/index.php:466
 msgid "Required PHP Module Support"
-msgstr ""
+msgstr "Benodigde PHP module ondersteuning"
 
 #: ../install/index.php:468
 msgid ""
@@ -11156,10 +11166,12 @@ msgid ""
 "The following PHP extensions are mandatory, and MUST be installed before "
 "continuing your Cacti install."
 msgstr ""
+"De volgende PHP extensies zijn verplicht, en MOETEN worden geïnstalleerd "
+"voordat u door kunt gaan met de installatie van Cacti."
 
 #: ../install/index.php:472
 msgid "Required PHP Modules"
-msgstr ""
+msgstr "Benodigde PHP modules"
 
 #: ../install/index.php:473 ../install/index.php:550 ../plugins.php:41
 #: ../plugins.php:300 ../utilities.php:415
@@ -11176,13 +11188,15 @@ msgstr "PHP versie"
 
 #: ../install/index.php:540
 msgid "Optional PHP Module Support"
-msgstr "Optionele PHP Module ondersteuning"
+msgstr "Optionele PHP module ondersteuning"
 
 #: ../install/index.php:542
 msgid ""
 "The following PHP extensions are recommended, and should be installed before "
 "continuing your Cacti install."
 msgstr ""
+"De volgende PHP extensies zijn aanbevolen en zouden moeten worden "
+"geïnstalleerd voordat u doorgaat met de installatie van Cacti."
 
 #: ../install/index.php:549
 msgid "Optional Modules"
@@ -11197,6 +11211,8 @@ msgid ""
 "These MySQL performance tuning settings will help your Cacti system perform "
 "better without issues for a longer time."
 msgstr ""
+"Deze MySQL performance optimalisatie instellingen helpen bij het optimaal "
+"presteren van uw Cacti systeem zonder problemen op de langere termijn."
 
 #: ../install/index.php:562
 msgid "Recommended MySQL System Variable Settings"
@@ -11221,7 +11237,7 @@ msgstr ""
 
 #: ../install/index.php:576
 msgid "Please select the type of installation"
-msgstr ""
+msgstr "Selecteer het type installatie"
 
 #: ../install/index.php:578
 msgid "Installation options:"
@@ -11394,6 +11410,8 @@ msgid ""
 "Make sure your webserver has read and write access to the entire folder "
 "structure.<br> Example: chown -R apache.apache %s/resource/"
 msgstr ""
+"Zorg ervoor dat de webserver lees en schrijf rechten heeft tot de volledige "
+"directoriestructuur.<br> Bijvoorbeeld: chown -R apache.apache %s/resource/"
 
 #: ../install/index.php:845
 msgid ""
@@ -12224,7 +12242,7 @@ msgstr "Actie uitvoeren"
 #: ../lib/html.php:1335 ../lib/html.php:1337 ../lib/html.php:1418
 #: ../managers.php:41 ../managers.php:221
 msgid "Logs"
-msgstr ""
+msgstr "Logs"
 
 #: ../lib/html.php:1739
 msgid "Nan's"
@@ -12746,7 +12764,7 @@ msgstr ""
 
 #: ../lib/html_reports.php:695
 msgid "Name Format:"
-msgstr ""
+msgstr "Naamlayout:"
 
 #: ../lib/html_reports.php:705
 msgid "Click 'Continue' to enable the following Report(s)."
@@ -13051,7 +13069,7 @@ msgstr "Geen gebruikersnaam gedefinieerd"
 
 #: ../lib/ldap.php:232
 msgid "Protocol Error, Unable to set version"
-msgstr ""
+msgstr "Protocol fout, instellen van versie niet mogelijk"
 
 #: ../lib/ldap.php:243 ../lib/ldap.php:448
 msgid "Unable to set referrals option"
@@ -13059,7 +13077,7 @@ msgstr ""
 
 #: ../lib/ldap.php:255 ../lib/ldap.php:461
 msgid "Protocol Error, unable to start TLS communications"
-msgstr ""
+msgstr "Protocol fout, starten van TLS communicatie niet mogelijk"
 
 #: ../lib/ldap.php:294 ../lib/ldap.php:313
 msgid "Authentication Success"
@@ -13111,11 +13129,11 @@ msgstr ""
 
 #: ../lib/ldap.php:436
 msgid "Protocol Error, unable to set version"
-msgstr ""
+msgstr "Protocol fout, instellen van versie niet mogelijk"
 
 #: ../lib/ldap.php:485
 msgid "More than one matching user found"
-msgstr ""
+msgstr "Meer dan één overeenkomstige gebruiker gevonden"
 
 #: ../lib/ldap.php:490 ../lib/ldap.php:496
 msgid "Unable to find users DN"
@@ -13332,11 +13350,11 @@ msgstr ""
 
 #: ../lib/rrd.php:2657
 msgid "Minimal Heartbeat"
-msgstr ""
+msgstr "Minimale heartbeat"
 
 #: ../lib/rrd.php:2658
 msgid "Min"
-msgstr ""
+msgstr "Min"
 
 #: ../lib/rrd.php:2659
 msgid "Max"
@@ -13434,6 +13452,10 @@ msgid ""
 "long standing low level networking issue that was casuing spine many issues "
 "with reliability."
 msgstr ""
+"MySQL 5.6+ en MariaDB 10.0+ zijn goede releases en zijn goede versies om te "
+"kiezen. Zorg ervoor dat u de laatste versie draait. Hierin is een lang "
+"levende fout opgelost met betrekking tot low level networking, dat voor veel "
+"betrouwbaarheidsproblemen zorgde met Spine."
 
 #: ../lib/utility.php:698 ../lib/utility.php:728
 #, php-format
@@ -13450,6 +13472,13 @@ msgid ""
 "production, see the internet for instructions on converting your databases "
 "and tables if you plan on supporting other languages."
 msgstr ""
+"Wanneer Cacti gebruikt wordt met talen anders dan Engels, is het belangrijk "
+"om de utf8_general_ci karakterset te gebruiken, omdat sommige karakters "
+"multi-byte zijn. Als u de installatie nu voor het eerst uitvoert, stop dan, "
+"wijzig de collatie en begin opnieuw. Als Cacti al draait in een "
+"productieomgeving, kijk op het internet voor instructies over het "
+"converteren van uw database en tabellen voor de ondersteuning van andere "
+"talen."
 
 #: ../lib/utility.php:717
 msgid ""
@@ -13460,6 +13489,12 @@ msgid ""
 "internet for instructions on converting your databases and tables if you "
 "plan on supporting other languages."
 msgstr ""
+"Wanneer Cacti gebruikt wordt met talen anders dan Engels, is het belangrijk "
+"om de UTF8 karakterset te gebruiken, omdat sommige karakters multi-byte "
+"zijn. Als u de installatie nu voor het eerst uitvoert, stop dan, wijzig de "
+"collatie en begin opnieuw. Als Cacti al draait in een productieomgeving, "
+"kijk op het internet voor instructies over het converteren van uw database "
+"en tabellen voor de ondersteuning van andere talen."
 
 #: ../lib/utility.php:741
 msgid ""
@@ -13518,18 +13553,26 @@ msgid ""
 "the main server to the remote pollers.  Therefore, keep this value at or "
 "above 16M."
 msgstr ""
+"Met remote polling oplossingen zullen grote hoeveelheden data worden "
+"gesynchroniseerd van de hoofd poller naar de remote pollers. Hou daarom deze "
+"waarde op of boven de 16M."
 
 #: ../lib/utility.php:776
 msgid ""
 "When executing subqueries, having a larger temporary table size, keep those "
 "temporary tables in memory."
 msgstr ""
+"Wanneer subqueries worden uitgevoerd, is een grote tijdelijk tabel grootte "
+"handig zodat deze tijdelijke tabellen in-memory blijven."
 
 #: ../lib/utility.php:781
 msgid ""
 "When performing joins, if they are below this size, they will be kept in "
 "memory and never written to a temporary file."
 msgstr ""
+"Wanneer joins worden gebruikt, en het resultaat beneden deze waarde blijft, "
+"zal het resultaat in-memory blijven en niet naar een tijdelijk bestand "
+"worden geschreven."
 
 #: ../lib/utility.php:786
 #, php-format
@@ -13540,6 +13583,11 @@ msgid ""
 "file storage by enabling the feature, and then running an alter statement on "
 "all InnoDB tables."
 msgstr ""
+"Wanneer de InnoDB storage engine wordt gebruikt is het belangrijk om de "
+"table spaces gescheiden te houden. Dit maakt het beheer van de tabellen "
+"simpeler voor langdurig gebruik van %s. Als op dit moment deze waarde niet "
+"actief is, kunt u migreren naar de per-bestand opslag door deze optie te "
+"activeren en een ALTER statement uit te voeren op iedere InnoDB tabel."
 
 #: ../lib/utility.php:791
 #, php-format
@@ -13566,12 +13614,16 @@ msgid ""
 "This is where metadata is stored. If you had a lot of tables, it would be "
 "useful to increase this."
 msgstr ""
+"Dit is waar metadata is opgeslagen. Als u een grote hoeveelheid tabellen "
+"heeft is het handig om deze waarde te verhogen."
 
 #: ../lib/utility.php:806
 msgid ""
 "Rogue queries should not for the database to go offline to others.  Kill "
 "these queries before they kill your system."
 msgstr ""
+"Rogue-queries zouden niet moeten omdat deze de server omlaag halen. Kill "
+"deze queries voordat ze uw systeem killen."
 
 #: ../lib/utility.php:815
 #, php-format
@@ -13825,7 +13877,7 @@ msgstr "U bent uitgelogd uit Cacti omdat de sessie is verlopen."
 #: ../logout.php:73 ../logout.php:122
 #, php-format
 msgid "Please close your browser or %sLogin Again%s"
-msgstr ""
+msgstr "Sluit alstublieft uw browser of %sLog opnieuw in%s"
 
 #: ../managers.php:40 ../managers.php:220 ../managers.php:600
 msgid "Notifications"
@@ -13860,7 +13912,7 @@ msgstr ""
 #: ../managers.php:508 ../managers.php:593 ../utilities.php:2305
 #: ../utilities.php:2379
 msgid "MIB"
-msgstr ""
+msgstr "MIB"
 
 #: ../managers.php:592 ../utilities.php:1444 ../utilities.php:2379
 msgid "OID"
@@ -13868,7 +13920,7 @@ msgstr "OID"
 
 #: ../managers.php:594
 msgid "Kind"
-msgstr ""
+msgstr "Soort"
 
 #: ../managers.php:595 ../utilities.php:2379
 msgid "Max-Access"
@@ -14031,7 +14083,7 @@ msgstr ""
 
 #: ../plugins.php:390
 msgid "The version of this Plugin."
-msgstr ""
+msgstr "De versie van deze plugin."
 
 #: ../plugins.php:391
 msgid "Load Order"
@@ -14573,7 +14625,7 @@ msgstr "voorbeeld 38.889488"
 
 #: ../sites.php:121
 msgid "Longitude"
-msgstr ""
+msgstr "Longitude"
 
 #: ../sites.php:122
 msgid "The Longitude for this Site."
@@ -15380,7 +15432,7 @@ msgstr ""
 
 #: ../user_domains.php:254
 msgid "Make Selected Domain Default"
-msgstr ""
+msgstr "Maak het geselecteerde domein standaard"
 
 #: ../user_domains.php:257
 msgid "You must select at least one User Domain."
@@ -15494,11 +15546,11 @@ msgstr ""
 
 #: ../user_group_admin.php:47
 msgid "Show the Console"
-msgstr ""
+msgstr "Toon de console"
 
 #: ../user_group_admin.php:51
 msgid "Show the default Graph Screen"
-msgstr ""
+msgstr "Toon het standaard grafiek venster"
 
 #: ../user_group_admin.php:66
 msgid "Restrict Access"
@@ -15638,7 +15690,7 @@ msgstr "Loginnaam"
 
 #: ../user_group_admin.php:675
 msgid "Membership"
-msgstr ""
+msgstr "Lidmaatschap"
 
 #: ../user_group_admin.php:686
 msgid "Group Member"
@@ -15708,6 +15760,8 @@ msgid ""
 "NET-SNMP Not Installed or its paths are not set.  Please install if you wish "
 "to monitor SNMP enabled devices."
 msgstr ""
+"NET-SNMP niet geïnstalleerd of de paden zijn incorrect ingesteld. Installeer "
+"NET-SNMP als u SNMP geactiveerde apparaten wilt monitoren."
 
 #: ../utilities.php:170
 msgid "Configuration Settings"
@@ -15758,7 +15812,7 @@ msgstr "Cacti OS"
 
 #: ../utilities.php:253
 msgid "NET-SNMP Version"
-msgstr ""
+msgstr "NET-SNMP versie"
 
 #: ../utilities.php:281 ../utilities.php:314
 #, php-format
@@ -15849,7 +15903,7 @@ msgstr ""
 
 #: ../utilities.php:458
 msgid "MySQL Table Information - Sizes in KBytes"
-msgstr ""
+msgstr "MySQL Tabel informatie - Groottes in KBytes"
 
 #: ../utilities.php:467
 msgid "Engine"
@@ -16307,7 +16361,7 @@ msgstr "Volgende start tijd:"
 
 #: ../utilities.php:2176
 msgid "Maximum Records:"
-msgstr ""
+msgstr "Maximum aantal rijen:"
 
 #: ../utilities.php:2176
 msgid "Records"

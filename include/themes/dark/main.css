@@ -2116,3 +2116,7 @@ tr#realtime td:first-child {
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
+
+.graphWrapper {
+	position: relative;
+}

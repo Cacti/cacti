@@ -537,6 +537,8 @@ function template_edit() {
 		$form_array[$field_name]['form_id'] = (isset($template_data) ? $template_data['data_template_id'] : '0');
 	}
 
+	$form_array['data_source_profile_id']['sql'] = 'SELECT id, name FROM data_source_profiles ORDER BY name';
+
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
@@ -867,7 +869,7 @@ function template() {
 			FROM data_template AS dt
 			INNER JOIN data_template_data AS dtd
 			ON dt.id=dtd.data_template_id
-			INNER JOIN data_source_profiles AS dsp
+			LEFT JOIN data_source_profiles AS dsp
 			ON dtd.data_source_profile_id=dsp.id
 			LEFT JOIN data_input AS di
 			ON dtd.data_input_id=di.id
@@ -885,7 +887,7 @@ function template() {
 		FROM data_template AS dt
 		INNER JOIN data_template_data AS dtd
 		ON dt.id=dtd.data_template_id
-		INNER JOIN data_source_profiles AS dsp
+		LEFT JOIN data_source_profiles AS dsp
 		ON dtd.data_source_profile_id=dsp.id
 		LEFT JOIN data_input AS di
 		ON dtd.data_input_id=di.id
@@ -928,7 +930,7 @@ function template() {
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right');
 			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('data_sources.php?reset=true&template_id=' . $template['id']) . '">' . number_format_i18n($template['data_sources']) . '</a>', $template['id'], '', 'text-align:right');
 			form_selectable_cell((empty($template['data_input_method']) ? '<em>' . __('None') .'</em>': html_escape($template['data_input_method'])), $template['id']);
-			form_selectable_cell(html_escape($template['profile_name']), $template['id']);
+			form_selectable_cell((empty($template['profile_name']) ? __('External'):html_escape($template['profile_name'])), $template['id']);
 			form_selectable_cell((($template['active'] == 'on') ? __('Active'):__('Disabled')), $template['id']);
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();

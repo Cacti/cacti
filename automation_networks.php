@@ -188,13 +188,13 @@ function api_networks_save($post) {
 		} elseif ($save['sched_type'] == '4') {
 			if ($save['month'] == '' || $save['day_of_month'] == '') {
 				$save['enabled'] = '';
-				$_SESSION['automation_message'] = __('ERROR: You must specificy both the Months and Days of Month.  Disabling Network %s!.', $net);
+				$_SESSION['automation_message'] = __('ERROR: You must specificy both the Months and Days of Month.  Disabling Network %s!', $net);
 				raise_message('automation_message');
 			}
 		} elseif ($save['sched_type'] == '5') {
 			if ($save['month'] == '' || $save['monthly_day'] == '' || $save['monthly_week'] == '') {
 				$save['enabled'] = '';
-				$_SESSION['automation_message'] = __('ERROR: You must specificy the Months, Weeks of Months, and Days of Week.  Disabling Network %s!.', $net);
+				$_SESSION['automation_message'] = __('ERROR: You must specificy the Months, Weeks of Months, and Days of Week.  Disabling Network %s!', $net);
 				raise_message('automation_message');
 			}
 		}

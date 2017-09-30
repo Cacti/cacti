@@ -3776,7 +3776,7 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure
 	//Create a new SMTP instance
 	$smtp = new SMTP;
 
-	if ($secure != 'tls' && $secure != 'none') {
+	if (!empty($secure) && $secure != 'none') {
 		$smtp->SMTPSecure = $secure;
 		if (substr_count($host, ':') == 0) {
 			$host = $secure . '://' . $host;

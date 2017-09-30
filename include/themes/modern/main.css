@@ -2183,3 +2183,6 @@ tr#realtime td:first-child {
 	overflow-x: hidden;
 }
 
+.graphWrapper {
+	position: relative;
+}

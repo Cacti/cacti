@@ -91,28 +91,31 @@ function clog_view_logfile() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 		),
 		'tail_lines' => array(
-			'filter' => FILTER_VALIDATE_INT,
-			'default' => read_config_option('num_rows_log')
+			'filter'  => FILTER_VALIDATE_INT,
+			'default' => read_config_option('num_rows_log'),
+			'pageset' => true
 		),
 		'message_type' => array(
-			'filter' => FILTER_VALIDATE_INT,
-			'default' => '-1'
+			'filter'  => FILTER_VALIDATE_INT,
+			'default' => '-1',
+			'pageset' => true
 		),
 		'refresh' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('log_refresh_interval')
 		),
 		'reverse' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 		),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX,
-			'default' => ''
+			'filter'  => FILTER_VALIDATE_IS_REGEX,
+			'default' => '',
+			'pageset' => true
 		)
 	);
 
