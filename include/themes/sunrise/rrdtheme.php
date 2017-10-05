@@ -11,15 +11,15 @@ $rrdcolors['arrow']  = '2C4D43';
 $rrdcolors['frame']  = '060606';
 
 # RRDtool graph fonts in RRDtool 1.2+
-$rrdfonts['title']['font']     = 'Ariel';
+$rrdfonts['title']['font']     = 'Arial';
 $rrdfonts['title']['size']     = '11';
-$rrdfonts['axis']['font']      = 'Ariel';
+$rrdfonts['axis']['font']      = 'Arial';
 $rrdfonts['axis']['size']      = '8';
 $rrdfonts['legend']['font']    = 'Courier';
 $rrdfonts['legend']['size']    = '8';
-$rrdfonts['unit']['font']      = 'Ariel';
+$rrdfonts['unit']['font']      = 'Arial';
 $rrdfonts['unit']['size']      = '8';
-$rrdfonts['watermark']['font'] = 'Ariel';
+$rrdfonts['watermark']['font'] = 'Arial';
 $rrdfonts['watermark']['size'] = '6';
 
 # Only supported in RRDtool 1.4+
