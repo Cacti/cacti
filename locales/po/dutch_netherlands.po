@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-18 08:25-0400\n"
-"PO-Revision-Date: 2017-10-07 12:03+0200\n"
+"PO-Revision-Date: 2017-10-07 12:44+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -8338,7 +8338,7 @@ msgstr "Overeenkomend patroon"
 
 #: ../include/global_form.php:2070 ../include/global_form.php:2112
 msgid "The Pattern to be matched against."
-msgstr ""
+msgstr "Het vergelijkingspatroon."
 
 #: ../include/global_form.php:2078 ../include/global_form.php:2120
 #: ../include/global_form.php:2271
@@ -8569,61 +8569,63 @@ msgstr ""
 
 #: ../include/global_settings.php:99
 msgid "snmpwalk Binary Path"
-msgstr ""
+msgstr "snmpwalk binary locatie"
 
 #: ../include/global_settings.php:100
 msgid "The path to your snmpwalk binary."
-msgstr ""
+msgstr "De locatie van de snmpwalk binary."
 
 #: ../include/global_settings.php:105
 msgid "snmpget Binary Path"
-msgstr ""
+msgstr "snmpget binary locatie"
 
 #: ../include/global_settings.php:106
 msgid "The path to your snmpget binary."
-msgstr ""
+msgstr "De locatie van de snmpget binary."
 
 #: ../include/global_settings.php:111
 msgid "snmpbulkwalk Binary Path"
-msgstr ""
+msgstr "snmpbulkwalk binary locatie"
 
 #: ../include/global_settings.php:112
 msgid "The path to your snmpbulkwalk binary."
-msgstr ""
+msgstr "De locatie van de snmpbulkwalk binary."
 
 #: ../include/global_settings.php:117
 msgid "snmpgetnext Binary Path"
-msgstr ""
+msgstr "snmpgetnext binary locatie"
 
 #: ../include/global_settings.php:118
 msgid "The path to your snmpgetnext binary."
-msgstr ""
+msgstr "De locatie van de snmpgetnext binary."
 
 #: ../include/global_settings.php:123
 msgid "snmptrap Binary Path"
-msgstr ""
+msgstr "snmptrap binary locatie"
 
 #: ../include/global_settings.php:124
 msgid "The path to your snmptrap binary."
-msgstr ""
+msgstr "De locatie van de snmptrap binary."
 
 #: ../include/global_settings.php:129
 msgid "RRDtool Binary Path"
-msgstr ""
+msgstr "RRDTool binary locatie"
 
 #: ../include/global_settings.php:130
 msgid "The path to the rrdtool binary."
-msgstr ""
+msgstr "De locatie van de rrdtool binary."
 
 #: ../include/global_settings.php:135
 msgid "PHP Binary Path"
-msgstr ""
+msgstr "PHP binary locatie"
 
 #: ../include/global_settings.php:136
 msgid ""
 "The path to your PHP binary file (may require a php recompile to get this "
 "file)."
 msgstr ""
+"De locatie van de PHP binary (mogelijk is het opnieuw compileren van PHP "
+"noodzakelijk)."
 
 #: ../include/global_settings.php:141
 msgid "Logging"
@@ -8638,6 +8640,8 @@ msgid ""
 "The path to your Cacti log file (if blank, defaults to <path_cacti>/log/"
 "cacti.log)"
 msgstr ""
+"De locatie van het Cacti log bestand (indien leeg is dit standaard "
+"<path_cacti>/log/cacti.log)"
 
 #: ../include/global_settings.php:153
 msgid "Rotate the Cacti Log"
@@ -8675,7 +8679,7 @@ msgstr ""
 
 #: ../include/global_settings.php:180
 msgid "The path to Spine binary."
-msgstr ""
+msgstr "De locatie van de Spine binary"
 
 #: ../include/global_settings.php:185
 msgid "Spine Config File Path"
@@ -8686,6 +8690,8 @@ msgid ""
 "The path to Spine configuration file.  By default, in the cwd of spine, or /"
 "etc if not specified."
 msgstr ""
+"De locatie van het Spine configuratiebestand. Standaard staat deze in de cwd "
+"van Spine of in /etc als dit niet is gespecificeerd."
 
 #: ../include/global_settings.php:191 ../lib/functions.php:2262
 #: ../rrdcleaner.php:296
@@ -10490,7 +10496,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1675
 msgid "Removal Method"
-msgstr ""
+msgstr "Verwijdermethode"
 
 #: ../include/global_settings.php:1676
 msgid ""
@@ -11274,7 +11280,7 @@ msgstr "Installatie opties:"
 
 #: ../install/index.php:581
 msgid "Choose this for the Primary site."
-msgstr "Kies dit voor de primaire Cacti locatie."
+msgstr "Kies deze optie voor de primaire Cacti locatie."
 
 #: ../install/index.php:581 ../install/index.php:587
 msgid "New Primary Server"
@@ -11289,6 +11295,8 @@ msgid ""
 "Remote Pollers are used to access networks that are not readily accessible "
 "to the Primary site."
 msgstr ""
+"Externe pollers worden gebruikt op netwerken die niet direct toegankelijk "
+"zijn voor de primaire Cacti locatie."
 
 #: ../install/index.php:592
 msgid ""
@@ -11296,6 +11304,9 @@ msgid ""
 "file. If it is not correct, please edit \"include/config.php\" before "
 "continuing."
 msgstr ""
+"De volgende informatie is bepaald op basis van Cacti's configuratiebestand. "
+"Als dit niet correct is wijzig dan \"include/config.php\" voordat u verder "
+"gaat."
 
 #: ../install/index.php:596
 msgid "Local Cacti database connection information"
@@ -11381,7 +11392,7 @@ msgstr ""
 
 #: ../install/index.php:713
 msgid "Critical Binary Locations and Versions"
-msgstr ""
+msgstr "Noodzakelijke locaties en versies van applicaties"
 
 #: ../install/index.php:715
 msgid "Make sure all of these values are correct before continuing."
@@ -11389,7 +11400,7 @@ msgstr "Zorg ervoor dat al deze waarden correct zijn voordat u doorgaat."
 
 #: ../install/index.php:773
 msgid "Directory Permission Checks"
-msgstr "Directorie permissiecontrole"
+msgstr "Rechten controle directories"
 
 #: ../install/index.php:775
 msgid ""
@@ -11419,7 +11430,7 @@ msgstr ""
 
 #: ../install/index.php:811
 msgid "Required Writable at Install Time Only"
-msgstr ""
+msgstr "Locatie hoeft uitsluitend schrijfbaar te zijn tijdens de installatie"
 
 #: ../install/index.php:814 ../install/index.php:824 ../install/index.php:834
 msgid "Writable"
@@ -11431,7 +11442,7 @@ msgstr "Niet schrijfbaar"
 
 #: ../install/index.php:821 ../install/index.php:831
 msgid "Required Writable after Install Complete"
-msgstr ""
+msgstr "Locatie moet schrijfbaar zijn ook nadat de installatie is voltooid"
 
 #: ../install/index.php:844
 #, php-format
