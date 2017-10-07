@@ -2862,7 +2862,7 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
 					/* scratch that XML file to avoid filling up the disk */
 					unlink($xml_file);
-					cacti_log(__('Added Data Source(s) to RRDfile: %s', $file), false, 'UTIL');
+					cacti_log('Added Data Source(s) to RRDfile: ' . $file, false, 'UTIL');
 				} else {
 					$check['err_msg'] = __('ERROR: RRDfile %s not writeable', $file);
 					return $check;
@@ -2917,7 +2917,7 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
 					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
 					/* scratch that XML file to avoid filling up the disk */
 					unlink($xml_file);
-					cacti_log(__('Deleted RRA(s) from RRDfile: %s', $file), false, 'UTIL');
+					cacti_log('Deleted RRA(s) from RRDfile: ' . $file, false, 'UTIL');
 				} else {
 					$check['err_msg'] = __('ERROR: RRDfile %s not writeable', $file);
 					return $check;
@@ -2973,7 +2973,7 @@ function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 					rrdtool_execute("restore -f $xml_file $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL');
 					/* scratch that XML file to avoid filling up the disk */
 					unlink($xml_file);
-					cacti_log(__('Deleted rra(s) from rrd file: %s', $file), false, 'UTIL');
+					cacti_log('Deleted rra(s) from rrd file: ' . $file, false, 'UTIL');
 				} else {
 					$check['err_msg'] = __('ERROR: RRD file %s not writeable', $file);
 					return $check;

@@ -5,6 +5,8 @@ Cacti CHANGELOG
 -feature#973: Obtain users email and full name from ldap 
 -issue: Move Graph removal function to Graph API
 
+1.1.26
+
 1.1.25
 -issue#966: Email still using SMTP security even though set to none
 -issue#995: Redirecting exec_background() to dev null breaks some functions
