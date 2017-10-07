@@ -811,9 +811,9 @@ $enabled = '1';
 							print '<p><strong>' . __('Required Writable at Install Time Only') . '</strong></p>';
 							foreach($install_paths as $path) {
 								if (is_writable($path)) {
-									print '<p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
+									print __('<p>%s is <font color="#008000">Writable</font></p>', $path);
 								} else {
-									print '<p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
+									print __('<p>%s is <font color="#FF0000">Not Writable</font></p>', $path);
 									$writable = false;
 								}
 							}
@@ -821,9 +821,9 @@ $enabled = '1';
 							print '<p><strong>' . __('Required Writable after Install Complete') . '</strong></p>';
 							foreach($always_paths as $path) {
 								if (is_writable($path)) {
-									print '<p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
+									print __('<p>%s is <font color="#008000">Writable</font></p>', $path);
 								} else {
-									print '<p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
+									print __('<p>%s is <font color="#FF0000">Not Writable</font></p>', $path);
 									$writable = false;
 								}
 							}
@@ -831,9 +831,9 @@ $enabled = '1';
 							print '<p><strong>' . __('Required Writable after Install Complete') . '</strong></p>';
 							foreach($remote_paths as $path) {
 								if (is_writable($path)) {
-									print '<p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
+									print __('<p>%s is <font color="#008000">Writable</font></p>', $path);
 								} else {
-									print '<p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
+									print __('<p>%s is <font color="#FF0000">Not Writable</font></p>', $path);
 									$writable = false;
 								}
 							}
@@ -914,7 +914,7 @@ $enabled = '1';
 							$upgrade_results = '';
 							foreach ($_SESSION['cacti_db_install_cache'] as $cacti_upgrade_version => $actions) {
 								// output version header
-								$upgrade_results .= '<h4>Version: ' . $cacti_upgrade_version . '</h4>' . PHP_EOL;
+								$upgrade_results .= '<h4>' . __('Version: ') . $cacti_upgrade_version . '</h4>' . PHP_EOL;
 
 								// show results from version upgrade
 								foreach ($actions as $action) {
