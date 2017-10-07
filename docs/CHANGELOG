@@ -1,6 +1,10 @@
 Cacti CHANGELOG
 
 1.1.26
+- feature: Schema changes; Examined queries without key usage and added/changed some keys
+- feature: Fixed some missing i18n
+- feature: Fixed text typo's
+- feature: Updated Dutch translations
 
 1.1.25
 -issue#966: Email still using SMTP security even though set to none
