@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.26
+- feature: Schema changes; Examined queries without key usage and added/changed some keys
+
 1.1.25
 -issue#966: Email still using SMTP security even though set to none
 -issue#995: Redirecting exec_background() to dev null breaks some functions

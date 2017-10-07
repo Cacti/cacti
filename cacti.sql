@@ -1844,7 +1844,8 @@ CREATE TABLE host (
   KEY poller_id (poller_id),
   KEY site_id (site_id),
   KEY external_id (external_id),
-  KEY disabled (disabled)
+  KEY disabled (disabled),
+  KEY status (status)
 ) ENGINE=InnoDB;
 
 --
@@ -2108,10 +2109,10 @@ CREATE TABLE poller_item (
   PRIMARY KEY (`local_data_id`,`rrd_name`),
   KEY `local_data_id` (`local_data_id`),
   KEY `host_id` (`host_id`),
-  KEY `rrd_next_step` (`rrd_next_step`),
   KEY `action` (`action`),
   KEY `present` (`present`),
-  KEY `poller_id_host_id` (`poller_id`,`host_id`)
+  KEY `poller_id_host_id` (`poller_id`,`host_id`),
+  KEY `poller_id_rrd_next_step` (`poller_id`, `rrd_next_step`)
 ) ENGINE=InnoDB;
 
 --
@@ -2159,7 +2160,8 @@ CREATE TABLE poller_output_realtime (
   output text NOT NULL,
   poller_id varchar(256) NOT NULL default '1',
   PRIMARY KEY (local_data_id,rrd_name,`time`),
-  KEY poller_id(poller_id(191))
+  KEY poller_id (poller_id(191)),
+  KEY `time` (`time`)
 ) ENGINE=InnoDB;
 
 --
@@ -2203,7 +2205,8 @@ CREATE TABLE poller_time (
   poller_id int(10) unsigned NOT NULL default '1',
   start_time timestamp NOT NULL default '0000-00-00 00:00:00',
   end_time timestamp NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  KEY `poller_id_end_time` (`poller_id`, `end_time`)
 ) ENGINE=InnoDB;
 
 --
@@ -2477,7 +2480,8 @@ CREATE TABLE `user_auth_cache` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `tokenkey` (`token`),
   KEY `hostname` (`hostname`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  KEY `last_update` (`last_update`)
 ) ENGINE=InnoDB COMMENT='Caches Remember Me Details';
 
 --
