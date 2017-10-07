@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-18 08:25-0400\n"
-"PO-Revision-Date: 2017-09-23 23:00+0200\n"
+"PO-Revision-Date: 2017-10-07 12:03+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -6153,7 +6153,7 @@ msgstr "Boomstructuren"
 
 #: ../include/global_arrays.php:728
 msgid "Aggregates"
-msgstr ""
+msgstr "Geaggregeerde"
 
 #: ../include/global_arrays.php:730 ../include/global_arrays.php:777
 #: ../include/global_arrays.php:792
@@ -6487,7 +6487,7 @@ msgstr "Jaar, maand naam, dag"
 
 #: ../include/global_arrays.php:1159
 msgid "After Boost"
-msgstr ""
+msgstr "After Boost"
 
 #: ../include/global_arrays.php:1169 ../include/global_arrays.php:1170
 #: ../include/global_arrays.php:1171 ../include/global_arrays.php:1172
@@ -6982,7 +6982,7 @@ msgstr "Nieuw RRA profiel"
 
 #: ../include/global_form.php:110
 msgid "Aggregation Level"
-msgstr ""
+msgstr "Aggregatie niveau"
 
 #: ../include/global_form.php:111
 msgid ""
@@ -7473,6 +7473,8 @@ msgid ""
 "A second axis will be drawn to the right of the graph. It is tied to the "
 "left axis via the scale and shift parameters."
 msgstr ""
+"Een tweede as zal worden getekend aan de rechterkant van de grafiek. Deze is "
+"gekoppeld aan de linker met dezelfde schaal en verschuiving parameters."
 
 #: ../include/global_form.php:686
 msgid "Right Axis Label (--right-axis-label &lt;string&gt;)"
@@ -7621,6 +7623,8 @@ msgstr "CDEF functie"
 #: ../include/global_form.php:815
 msgid "A CDEF (math) function to apply to this item on the graph or legend."
 msgstr ""
+"Een CDEF (wiskundige) functie om toe te passen op de grafiek of het "
+"bijschrift."
 
 #: ../include/global_form.php:818
 msgid "VDEF Function"
@@ -7629,6 +7633,7 @@ msgstr "VDEF functie"
 #: ../include/global_form.php:823
 msgid "A VDEF (math) function to apply to this item on the graph legend."
 msgstr ""
+"Een VDEF (wiskundige) functie om toe te passen op deze grafiek legenda."
 
 #: ../include/global_form.php:826
 msgid "Shift Data"
@@ -7909,7 +7914,7 @@ msgstr "Externe ID om Cacti data aan externe monitoring te koppelen."
 
 #: ../include/global_form.php:1232
 msgid "A useful name for this host template."
-msgstr "Een zinvolle naam voor dit apparaat template."
+msgstr "Een handige naam voor dit apparaat template."
 
 #: ../include/global_form.php:1252
 msgid "A name for this data query."
@@ -7943,11 +7948,11 @@ msgstr ""
 
 #: ../include/global_form.php:1322
 msgid "A name for this associated graph."
-msgstr ""
+msgstr "Een naam voor deze gekoppelde grafiek."
 
 #: ../include/global_form.php:1350
 msgid "A useful name for this graph tree."
-msgstr ""
+msgstr "Een handige naam voor deze grafiek boomstructuur."
 
 #: ../include/global_form.php:1357 ../include/global_form.php:2238
 #: ../lib/api_automation.php:1365 ../tree.php:1302
@@ -8198,6 +8203,8 @@ msgstr "Voorvoegsel"
 #: ../include/global_form.php:1768
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts."
 msgstr ""
+"Een voorvoegsel voor alle GPRINT lijnen om bijvoorbeeld verschillende "
+"apparaten van elkaar te onderscheiden."
 
 #: ../include/global_form.php:1776 ../include/global_form.php:1855
 #: ../include/global_form.php:1953
@@ -8238,7 +8245,7 @@ msgstr "Voorvoegsel voor GPRINT totalen"
 #: ../include/global_form.php:1800 ../include/global_form.php:1881
 #: ../include/global_form.php:1979
 msgid "A Prefix for all <strong>totaling</strong> GPRINT lines."
-msgstr ""
+msgstr "Een voorvoegsel voor alle <strong>totalen</strong> GPRINT lijnen."
 
 #: ../include/global_form.php:1807 ../include/global_form.php:1888
 #: ../include/global_form.php:1986
@@ -8271,6 +8278,9 @@ msgid ""
 "A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may "
 "use both Host as well as Data Query replacement variables in this prefix."
 msgstr ""
+"Een voorvoegsel voor alle GPRINT lijnen om bijvoorbeeld verschillende "
+"apparaten van elkaar te onderscheiden. U mag zowel host als data query "
+"variabelen in deze prefix gebruiken."
 
 #: ../include/global_form.php:1923
 msgid "Aggregate Template Name"
@@ -8337,7 +8347,7 @@ msgstr "Volgorde."
 
 #: ../include/global_form.php:2129 ../include/global_form.php:2174
 msgid "A useful name for this Rule."
-msgstr ""
+msgstr "Een handige naam voor deze regel."
 
 #: ../include/global_form.php:2137
 msgid "Choose a Data Query to apply to this rule."
@@ -8787,6 +8797,9 @@ msgid ""
 "during data collection.  This Debug level is only in place during the Cacti "
 "polling process."
 msgstr ""
+"Een komma gescheiden lijst van apparaat ID's die u in debug modus wilt "
+"hebben gedurende de data collectie. Dit debug level is alleen van toepassing "
+"tijdens het Cacti polling proces."
 
 #: ../include/global_settings.php:284
 msgid "Poller Syslog/Eventlog Selection"
@@ -10944,6 +10957,16 @@ msgid ""
 "Server are reachable.  Then it will dump it's Boost table output back to the "
 "Main Cacti Database for updating."
 msgstr ""
+"<strong>LET OP:</strong> U bent ingelogd in een Remote Data Collector. Als "
+"deze <b>'online'</b> is, is het mogelijk om deze te beheren zoals de hoofd "
+"Cacti website alsof u hier op bent ingelogd. Ook is het belangrijk om te "
+"vermelden dat Remote Data Collectors Cacti's Performance Boosting Service "
+"<b>'On Demand Updating'</b> feature nodig hebben. Wij adviseren altijd om "
+"Spine te gebruiken. Wanneer de Remote Data Collector <b>'offline'</b> is, "
+"zal de Remote Data Collectors Web Site veel minder informatie bevatten. "
+"Echter, het zal alle updates cachen totdat de Hoofd Cacti Database en "
+"Webserver weer beschikbaar zijn. Dan zal het alle informatie uit de Boost "
+"table naar de Main Cacti Database sturen om de gegevens te laten bijwerken."
 
 #: ../index.php:90
 msgid ""
@@ -10953,6 +10976,12 @@ msgid ""
 "with Remote Data Collectors at this time.  However, plugins such as Thold "
 "will work so long as the Remote Data Collector is in <b>'online'</b> mode."
 msgstr ""
+"<strong>LET OP:</strong> Tot op heden zijn geen van de basis Cacti plugins "
+"bijgewerkt om met remote pollers te werken. Daarom zullen plugins zoals "
+"bijvoorbeeld MacTrack en HMIB, die directe toegang nodig hebben op "
+"apparaten, op dit moment niet werken met Remote Data Collectors. Echter, "
+"plugins als Thold zullen wél werken zolang de Remote Data Collector in "
+"<b>'online'</b> modus is."
 
 #: ../install/index.php:51 ../install/index.php:56 ../install/index.php:61
 #: ../install/index.php:301 ../lib/html_utility.php:844
@@ -11663,6 +11692,8 @@ msgid ""
 "A blue font color indicates that the rule will be applied to the objects in "
 "question.  Other objects will not be subject to the rule."
 msgstr ""
+"Het blauwe lettertype geeft aan dat de regel toegepast zal worden op de "
+"objecten in kwestie. De andere objecten worden niet aangeraakt."
 
 #: ../lib/api_automation.php:784
 #, php-format
@@ -12691,6 +12722,8 @@ msgid ""
 "A Perl compatible regular expression (REGEXP) used to select graphs to "
 "include from the tree."
 msgstr ""
+"Een Perl reguliere expressie (REGEXP) dat gebruikt wordt om grafieken te "
+"integreren in de boomstructuur."
 
 #: ../lib/html_reports.php:360
 msgid "Select a Device Template to use."
@@ -14054,6 +14087,8 @@ msgid ""
 "Actions available include 'Install', 'Activate', 'Disable', 'Enable', "
 "'Uninstall'."
 msgstr ""
+"Beschikbare acties zijn: 'Install', 'Activate', 'Disable', 'Enable', "
+"'Uninstall'."
 
 #: ../plugins.php:386
 msgid "Plugin Name"
@@ -14068,6 +14103,7 @@ msgstr ""
 #: ../plugins.php:387
 msgid "A description that the Plugins author has given to the Plugin."
 msgstr ""
+"Een beschrijving dat de auteur van de plugin heeft gegeven aan de plugin."
 
 #: ../plugins.php:387
 msgid "Plugin Description"
@@ -14641,7 +14677,7 @@ msgstr "Locatie aantekeningen"
 
 #: ../sites.php:133
 msgid "Additional area use for random notes related to this Site."
-msgstr ""
+msgstr "Optionele ruimte voor willekeurige notities over deze omgeving."
 
 #: ../sites.php:136
 msgid "Enter some useful information about the Site."
