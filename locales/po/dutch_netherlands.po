@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-18 08:25-0400\n"
-"PO-Revision-Date: 2017-09-23 23:00+0200\n"
+"PO-Revision-Date: 2017-10-07 16:50+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -4182,16 +4182,16 @@ msgstr "GPRINT voorinstelling [nieuw]"
 
 #: ../gprint_presets.php:253 ../lib/functions.php:1974
 msgid "GPRINT Presets"
-msgstr "GEPRINT voorinstelling"
+msgstr "GPRINT voorinstelling"
 
 #: ../gprint_presets.php:268 ../gprint_presets.php:383
 #: ../include/global_arrays.php:755
 msgid "GPRINTs"
-msgstr "GEPRINTs"
+msgstr "GPRINTs"
 
 #: ../gprint_presets.php:392
 msgid "GPRINT Preset Name"
-msgstr "Naam GEPRINT voorinstelling"
+msgstr "Naam GPRINT voorinstelling"
 
 #: ../gprint_presets.php:392
 msgid "The name of this GPRINT Preset."
@@ -6153,7 +6153,7 @@ msgstr "Boomstructuren"
 
 #: ../include/global_arrays.php:728
 msgid "Aggregates"
-msgstr ""
+msgstr "Geaggregeerde"
 
 #: ../include/global_arrays.php:730 ../include/global_arrays.php:777
 #: ../include/global_arrays.php:792
@@ -6487,7 +6487,7 @@ msgstr "Jaar, maand naam, dag"
 
 #: ../include/global_arrays.php:1159
 msgid "After Boost"
-msgstr ""
+msgstr "After Boost"
 
 #: ../include/global_arrays.php:1169 ../include/global_arrays.php:1170
 #: ../include/global_arrays.php:1171 ../include/global_arrays.php:1172
@@ -6982,7 +6982,7 @@ msgstr "Nieuw RRA profiel"
 
 #: ../include/global_form.php:110
 msgid "Aggregation Level"
-msgstr ""
+msgstr "Aggregatie niveau"
 
 #: ../include/global_form.php:111
 msgid ""
@@ -7473,6 +7473,8 @@ msgid ""
 "A second axis will be drawn to the right of the graph. It is tied to the "
 "left axis via the scale and shift parameters."
 msgstr ""
+"Een tweede as zal worden getekend aan de rechterkant van de grafiek. Deze is "
+"gekoppeld aan de linker met dezelfde schaal en verschuiving parameters."
 
 #: ../include/global_form.php:686
 msgid "Right Axis Label (--right-axis-label &lt;string&gt;)"
@@ -7621,6 +7623,8 @@ msgstr "CDEF functie"
 #: ../include/global_form.php:815
 msgid "A CDEF (math) function to apply to this item on the graph or legend."
 msgstr ""
+"Een CDEF (wiskundige) functie om toe te passen op de grafiek of het "
+"bijschrift."
 
 #: ../include/global_form.php:818
 msgid "VDEF Function"
@@ -7629,6 +7633,7 @@ msgstr "VDEF functie"
 #: ../include/global_form.php:823
 msgid "A VDEF (math) function to apply to this item on the graph legend."
 msgstr ""
+"Een VDEF (wiskundige) functie om toe te passen op deze grafiek legenda."
 
 #: ../include/global_form.php:826
 msgid "Shift Data"
@@ -7909,7 +7914,7 @@ msgstr "Externe ID om Cacti data aan externe monitoring te koppelen."
 
 #: ../include/global_form.php:1232
 msgid "A useful name for this host template."
-msgstr "Een zinvolle naam voor dit apparaat template."
+msgstr "Een handige naam voor dit apparaat template."
 
 #: ../include/global_form.php:1252
 msgid "A name for this data query."
@@ -7943,11 +7948,11 @@ msgstr ""
 
 #: ../include/global_form.php:1322
 msgid "A name for this associated graph."
-msgstr ""
+msgstr "Een naam voor deze gekoppelde grafiek."
 
 #: ../include/global_form.php:1350
 msgid "A useful name for this graph tree."
-msgstr ""
+msgstr "Een handige naam voor deze grafiek boomstructuur."
 
 #: ../include/global_form.php:1357 ../include/global_form.php:2238
 #: ../lib/api_automation.php:1365 ../tree.php:1302
@@ -8198,6 +8203,8 @@ msgstr "Voorvoegsel"
 #: ../include/global_form.php:1768
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts."
 msgstr ""
+"Een voorvoegsel voor alle GPRINT lijnen om bijvoorbeeld verschillende "
+"apparaten van elkaar te onderscheiden."
 
 #: ../include/global_form.php:1776 ../include/global_form.php:1855
 #: ../include/global_form.php:1953
@@ -8238,7 +8245,7 @@ msgstr "Voorvoegsel voor GPRINT totalen"
 #: ../include/global_form.php:1800 ../include/global_form.php:1881
 #: ../include/global_form.php:1979
 msgid "A Prefix for all <strong>totaling</strong> GPRINT lines."
-msgstr ""
+msgstr "Een voorvoegsel voor alle <strong>totalen</strong> GPRINT lijnen."
 
 #: ../include/global_form.php:1807 ../include/global_form.php:1888
 #: ../include/global_form.php:1986
@@ -8271,6 +8278,9 @@ msgid ""
 "A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may "
 "use both Host as well as Data Query replacement variables in this prefix."
 msgstr ""
+"Een voorvoegsel voor alle GPRINT lijnen om bijvoorbeeld verschillende "
+"apparaten van elkaar te onderscheiden. U mag zowel host als data query "
+"variabelen in deze prefix gebruiken."
 
 #: ../include/global_form.php:1923
 msgid "Aggregate Template Name"
@@ -8328,7 +8338,7 @@ msgstr "Overeenkomend patroon"
 
 #: ../include/global_form.php:2070 ../include/global_form.php:2112
 msgid "The Pattern to be matched against."
-msgstr ""
+msgstr "Het vergelijkingspatroon."
 
 #: ../include/global_form.php:2078 ../include/global_form.php:2120
 #: ../include/global_form.php:2271
@@ -8337,7 +8347,7 @@ msgstr "Volgorde."
 
 #: ../include/global_form.php:2129 ../include/global_form.php:2174
 msgid "A useful name for this Rule."
-msgstr ""
+msgstr "Een handige naam voor deze regel."
 
 #: ../include/global_form.php:2137
 msgid "Choose a Data Query to apply to this rule."
@@ -8559,61 +8569,63 @@ msgstr ""
 
 #: ../include/global_settings.php:99
 msgid "snmpwalk Binary Path"
-msgstr ""
+msgstr "snmpwalk binary locatie"
 
 #: ../include/global_settings.php:100
 msgid "The path to your snmpwalk binary."
-msgstr ""
+msgstr "De locatie van de snmpwalk binary."
 
 #: ../include/global_settings.php:105
 msgid "snmpget Binary Path"
-msgstr ""
+msgstr "snmpget binary locatie"
 
 #: ../include/global_settings.php:106
 msgid "The path to your snmpget binary."
-msgstr ""
+msgstr "De locatie van de snmpget binary."
 
 #: ../include/global_settings.php:111
 msgid "snmpbulkwalk Binary Path"
-msgstr ""
+msgstr "snmpbulkwalk binary locatie"
 
 #: ../include/global_settings.php:112
 msgid "The path to your snmpbulkwalk binary."
-msgstr ""
+msgstr "De locatie van de snmpbulkwalk binary."
 
 #: ../include/global_settings.php:117
 msgid "snmpgetnext Binary Path"
-msgstr ""
+msgstr "snmpgetnext binary locatie"
 
 #: ../include/global_settings.php:118
 msgid "The path to your snmpgetnext binary."
-msgstr ""
+msgstr "De locatie van de snmpgetnext binary."
 
 #: ../include/global_settings.php:123
 msgid "snmptrap Binary Path"
-msgstr ""
+msgstr "snmptrap binary locatie"
 
 #: ../include/global_settings.php:124
 msgid "The path to your snmptrap binary."
-msgstr ""
+msgstr "De locatie van de snmptrap binary."
 
 #: ../include/global_settings.php:129
 msgid "RRDtool Binary Path"
-msgstr ""
+msgstr "RRDTool binary locatie"
 
 #: ../include/global_settings.php:130
 msgid "The path to the rrdtool binary."
-msgstr ""
+msgstr "De locatie van de rrdtool binary."
 
 #: ../include/global_settings.php:135
 msgid "PHP Binary Path"
-msgstr ""
+msgstr "PHP binary locatie"
 
 #: ../include/global_settings.php:136
 msgid ""
 "The path to your PHP binary file (may require a php recompile to get this "
 "file)."
 msgstr ""
+"De locatie van de PHP binary (mogelijk is het opnieuw compileren van PHP "
+"noodzakelijk)."
 
 #: ../include/global_settings.php:141
 msgid "Logging"
@@ -8628,6 +8640,8 @@ msgid ""
 "The path to your Cacti log file (if blank, defaults to <path_cacti>/log/"
 "cacti.log)"
 msgstr ""
+"De locatie van het Cacti log bestand (indien leeg is dit standaard "
+"<path_cacti>/log/cacti.log)"
 
 #: ../include/global_settings.php:153
 msgid "Rotate the Cacti Log"
@@ -8665,7 +8679,7 @@ msgstr ""
 
 #: ../include/global_settings.php:180
 msgid "The path to Spine binary."
-msgstr ""
+msgstr "De locatie van de Spine binary"
 
 #: ../include/global_settings.php:185
 msgid "Spine Config File Path"
@@ -8676,6 +8690,8 @@ msgid ""
 "The path to Spine configuration file.  By default, in the cwd of spine, or /"
 "etc if not specified."
 msgstr ""
+"De locatie van het Spine configuratiebestand. Standaard staat deze in de cwd "
+"van Spine of in /etc als dit niet is gespecificeerd."
 
 #: ../include/global_settings.php:191 ../lib/functions.php:2262
 #: ../rrdcleaner.php:296
@@ -8787,6 +8803,9 @@ msgid ""
 "during data collection.  This Debug level is only in place during the Cacti "
 "polling process."
 msgstr ""
+"Een komma gescheiden lijst van apparaat ID's die u in debug modus wilt "
+"hebben gedurende de data collectie. Dit debug level is alleen van toepassing "
+"tijdens het Cacti polling proces."
 
 #: ../include/global_settings.php:284
 msgid "Poller Syslog/Eventlog Selection"
@@ -10477,7 +10496,7 @@ msgstr ""
 
 #: ../include/global_settings.php:1675
 msgid "Removal Method"
-msgstr ""
+msgstr "Verwijdermethode"
 
 #: ../include/global_settings.php:1676
 msgid ""
@@ -10944,6 +10963,16 @@ msgid ""
 "Server are reachable.  Then it will dump it's Boost table output back to the "
 "Main Cacti Database for updating."
 msgstr ""
+"<strong>LET OP:</strong> U bent ingelogd in een Remote Data Collector. Als "
+"deze <b>'online'</b> is, is het mogelijk om deze te beheren zoals de hoofd "
+"Cacti website alsof u hier op bent ingelogd. Ook is het belangrijk om te "
+"vermelden dat Remote Data Collectors Cacti's Performance Boosting Service "
+"<b>'On Demand Updating'</b> feature nodig hebben. Wij adviseren altijd om "
+"Spine te gebruiken. Wanneer de Remote Data Collector <b>'offline'</b> is, "
+"zal de Remote Data Collectors Web Site veel minder informatie bevatten. "
+"Echter, het zal alle updates cachen totdat de Hoofd Cacti Database en "
+"Webserver weer beschikbaar zijn. Dan zal het alle informatie uit de Boost "
+"table naar de Main Cacti Database sturen om de gegevens te laten bijwerken."
 
 #: ../index.php:90
 msgid ""
@@ -10953,6 +10982,12 @@ msgid ""
 "with Remote Data Collectors at this time.  However, plugins such as Thold "
 "will work so long as the Remote Data Collector is in <b>'online'</b> mode."
 msgstr ""
+"<strong>LET OP:</strong> Tot op heden zijn geen van de basis Cacti plugins "
+"bijgewerkt om met remote pollers te werken. Daarom zullen plugins zoals "
+"bijvoorbeeld MacTrack en HMIB, die directe toegang nodig hebben op "
+"apparaten, op dit moment niet werken met Remote Data Collectors. Echter, "
+"plugins als Thold zullen wél werken zolang de Remote Data Collector in "
+"<b>'online'</b> modus is."
 
 #: ../install/index.php:51 ../install/index.php:56 ../install/index.php:61
 #: ../install/index.php:301 ../lib/html_utility.php:844
@@ -11245,7 +11280,7 @@ msgstr "Installatie opties:"
 
 #: ../install/index.php:581
 msgid "Choose this for the Primary site."
-msgstr "Kies dit voor de primaire Cacti locatie."
+msgstr "Kies deze optie voor de primaire Cacti locatie."
 
 #: ../install/index.php:581 ../install/index.php:587
 msgid "New Primary Server"
@@ -11260,6 +11295,8 @@ msgid ""
 "Remote Pollers are used to access networks that are not readily accessible "
 "to the Primary site."
 msgstr ""
+"Externe pollers worden gebruikt op netwerken die niet direct toegankelijk "
+"zijn voor de primaire Cacti locatie."
 
 #: ../install/index.php:592
 msgid ""
@@ -11267,6 +11304,9 @@ msgid ""
 "file. If it is not correct, please edit \"include/config.php\" before "
 "continuing."
 msgstr ""
+"De volgende informatie is bepaald op basis van Cacti's configuratiebestand. "
+"Als dit niet correct is wijzig dan \"include/config.php\" voordat u verder "
+"gaat."
 
 #: ../install/index.php:596
 msgid "Local Cacti database connection information"
@@ -11352,7 +11392,7 @@ msgstr ""
 
 #: ../install/index.php:713
 msgid "Critical Binary Locations and Versions"
-msgstr ""
+msgstr "Noodzakelijke locaties en versies van applicaties"
 
 #: ../install/index.php:715
 msgid "Make sure all of these values are correct before continuing."
@@ -11360,7 +11400,7 @@ msgstr "Zorg ervoor dat al deze waarden correct zijn voordat u doorgaat."
 
 #: ../install/index.php:773
 msgid "Directory Permission Checks"
-msgstr "Directorie permissiecontrole"
+msgstr "Rechten controle directories"
 
 #: ../install/index.php:775
 msgid ""
@@ -11372,6 +11412,13 @@ msgid ""
 "install the packages, there is an 'install_package.php' cli script that can "
 "be used from the command line after the install is complete."
 msgstr ""
+"Let op dat de rechten van de directories hieronder correct zijn ingesteld "
+"voordat u doorgaat. Tijdens de installatie moeten deze directories eigenaar "
+"zijn van de webserver gebruiker. Deze rechten wijzigingen zijn noodzakelijk "
+"om de installer de Apparaat templates, welke XML bestanden en script "
+"bestanden bevatten, te laten plaatsen in deze directories. Als u ervoor "
+"kiest om deze pakketten niet te installeren, dan is er een 'install_package."
+"php' cli script dat kan worden gebruikt als de installatie is voltooid."
 
 #: ../install/index.php:778
 msgid ""
@@ -11390,7 +11437,7 @@ msgstr ""
 
 #: ../install/index.php:811
 msgid "Required Writable at Install Time Only"
-msgstr ""
+msgstr "Locatie hoeft uitsluitend schrijfbaar te zijn tijdens de installatie"
 
 #: ../install/index.php:814 ../install/index.php:824 ../install/index.php:834
 msgid "Writable"
@@ -11402,7 +11449,7 @@ msgstr "Niet schrijfbaar"
 
 #: ../install/index.php:821 ../install/index.php:831
 msgid "Required Writable after Install Complete"
-msgstr ""
+msgstr "Locatie moet schrijfbaar zijn ook nadat de installatie is voltooid"
 
 #: ../install/index.php:844
 #, php-format
@@ -11433,6 +11480,9 @@ msgid ""
 "change the scripts directory back to read only as this presents some "
 "exposure to the web site."
 msgstr ""
+"Als u pakketten installeert en wanneer deze pakketten zijn geïnstalleerd, "
+"dient u de rechten van de script directorie terug te zetten naar alleen-"
+"lezen om blootstelling van buitenaf aan de website te voorkomen."
 
 #: ../install/index.php:855 ../install/index.php:861 ../install/index.php:894
 msgid "NOTE:"
@@ -11448,7 +11498,7 @@ msgstr ""
 
 #: ../install/index.php:868
 msgid "Template Setup"
-msgstr ""
+msgstr "Template installatie"
 
 #: ../install/index.php:870
 msgid ""
@@ -11457,6 +11507,11 @@ msgid ""
 "'Windows Device' Template.  If your Operating System is Linux/UNIX, make "
 "sure you select the 'Local Linux Machine' Device Template."
 msgstr ""
+"Selecteert u alstublieft de apparaat templates die u wilt gebruiken na de "
+"installatie. Als uw besturingssysteem Windows is, dan moet u erop letten dat "
+"u de 'Windows Device' templates selecteert. Als uw besturingssysteem Linux/"
+"UNIX is, let er dan op dat u de 'Local Linux Machine' apparaat template "
+"selecteert."
 
 #: ../install/index.php:872
 msgid ""
@@ -11465,6 +11520,11 @@ msgid ""
 "and the installation will complete.  Please be patient on this step, as the "
 "importation of the Device Templates can take a few minutes."
 msgstr ""
+"Apparaat templates geven u de gelegenheid om een vaste selectie van data "
+"binnen Cacti te monitoren. Nadat u de gewenste apparaat templates heeft "
+"geselecteerd, drukt u op 'Volgende' om de installatie te voltooien. Heb "
+"geduld gedurende dit proces omdat het importeren van de apparaat templates "
+"enige minuten in beslag kan nemen."
 
 #: ../install/index.php:878 ../plugins.php:389
 msgid "Author"
@@ -11479,6 +11539,8 @@ msgid ""
 "Press 'Finish' to complete the installation process after selecting your "
 "Device Templates."
 msgstr ""
+"Nadat u de apparaat templates heeft geselecteerd, drukt u op 'Volgende' om "
+"het installatieproces af te ronden."
 
 #: ../install/index.php:900
 msgid "Upgrade Results"
@@ -11663,6 +11725,8 @@ msgid ""
 "A blue font color indicates that the rule will be applied to the objects in "
 "question.  Other objects will not be subject to the rule."
 msgstr ""
+"Het blauwe lettertype geeft aan dat de regel toegepast zal worden op de "
+"objecten in kwestie. De andere objecten worden niet aangeraakt."
 
 #: ../lib/api_automation.php:784
 #, php-format
@@ -12691,6 +12755,8 @@ msgid ""
 "A Perl compatible regular expression (REGEXP) used to select graphs to "
 "include from the tree."
 msgstr ""
+"Een Perl reguliere expressie (REGEXP) dat gebruikt wordt om grafieken te "
+"integreren in de boomstructuur."
 
 #: ../lib/html_reports.php:360
 msgid "Select a Device Template to use."
@@ -14054,6 +14120,8 @@ msgid ""
 "Actions available include 'Install', 'Activate', 'Disable', 'Enable', "
 "'Uninstall'."
 msgstr ""
+"Beschikbare acties zijn: 'Install', 'Activate', 'Disable', 'Enable', "
+"'Uninstall'."
 
 #: ../plugins.php:386
 msgid "Plugin Name"
@@ -14068,6 +14136,7 @@ msgstr ""
 #: ../plugins.php:387
 msgid "A description that the Plugins author has given to the Plugin."
 msgstr ""
+"Een beschrijving dat de auteur van de plugin heeft gegeven aan de plugin."
 
 #: ../plugins.php:387
 msgid "Plugin Description"
@@ -14641,7 +14710,7 @@ msgstr "Locatie aantekeningen"
 
 #: ../sites.php:133
 msgid "Additional area use for random notes related to this Site."
-msgstr ""
+msgstr "Optionele ruimte voor willekeurige notities over deze omgeving."
 
 #: ../sites.php:136
 msgid "Enter some useful information about the Site."

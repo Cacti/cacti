@@ -82,7 +82,7 @@ if (read_config_option('hide_console') != '1') {
 	<tr><td><hr></td></tr>
 	<tr>
 		<td class="textAreaNotes top left">
-			<?php print __('<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>\'online\'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it\'s important to note that Remote Data Collectors are required to use the Cacti\'s Performance Boosting Services <b>\'On Demand Updating\'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>\'offline\'</b>, the Remote Data Collectos Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it\'s Boost table output back to the Main Cacti Database for updating.');?>
+			<?php print __('<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>\'online\'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it\'s important to note that Remote Data Collectors are required to use the Cacti\'s Performance Boosting Services <b>\'On Demand Updating\'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>\'offline\'</b>, the Remote Data Collectors Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it\'s Boost table output back to the Main Cacti Database for updating.');?>
 		</td>
 	</tr>
 	<tr>
