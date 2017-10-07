@@ -84,11 +84,11 @@ if (isset($_SESSION['refresh'])) {
 	var cactiVersion='<?php print $config['cacti_version'];?>';
 	var theme='<?php print get_selected_theme();?>';
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
-	var refreshPage='<?php print $myrefresh['page'];?>';
+	var refreshPage='<?php print htmlspecialchars($myrefresh['page']);?>';
 	var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;
 	var urlPath='<?php print $config['url_path'];?>';
 	var previousPage='';
-	var requestURI='<?php print $_SERVER['REQUEST_URI'];?>';
+	var requestURI='<?php print htmlspecialchars($_SERVER['REQUEST_URI']);?>';
 	var searchFilter='<?php print __('Enter a search term');?>';
 	var searchRFilter='<?php print __('Enter a regular expression');?>';
 	var noFileSelected='<?php print __('No file selected');?>';
