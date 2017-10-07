@@ -130,7 +130,7 @@ function rebuild_resource_cache() {
 
 	raise_message('resource_cache_rebuild');
 
-	cacti_log(__('NOTE: Poller Resource Cache scheduled for rebuild by user %s', get_username($_SESSION['sess_user_id'])), false, 'WEBUI');
+    cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 }
 
 function utilities_view_tech($php_info = '') {

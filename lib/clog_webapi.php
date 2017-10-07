@@ -59,12 +59,12 @@ function clog_purge_logfile() {
 			} else {
 				$timestamp = date('Y-m-d H:i:s');
 				$log_fh = fopen($logfile, 'w');
-                fwrite($log_fh, __('%s - WEBUI: Cacti Log Cleared from Web Management Interface.', $timestamp) . "\n");
+				fwrite($log_fh, "$timestamp - WEBUI: Cacti Log Cleared from Web Management Interface\n");
 				fclose($log_fh);
 				raise_message('clog_purged');
 			}
 
-			cacti_log(__('NOTE: Cacti Log file %s, Removed by user %s', $purgefile, get_username($_SESSION['sess_user_id'])), false, 'WEBUI');
+			cacti_log('NOTE: Cacti Log file ' . $purgefile . ', Removed by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 		} else {
 			raise_message('clog_permissions');
 		}
