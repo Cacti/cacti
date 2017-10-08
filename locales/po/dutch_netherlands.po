@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-18 08:25-0400\n"
-"PO-Revision-Date: 2017-10-07 22:46+0200\n"
+"PO-Revision-Date: 2017-10-08 11:32+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -4692,19 +4692,23 @@ msgstr "Wijzig grafiek(en) van gekoppeld apparaat"
 msgid ""
 "Click 'Continue' to re-apply suggested naming to the following Graph(s)."
 msgstr ""
+"Klik op 'Volgende' om de gesuggereerde namen opnieuw toe te passen op de "
+"volgende grafiek(en)."
 
 #: ../graphs.php:934
 msgid "Reapply Suggested Naming to Graph(s)"
-msgstr ""
+msgstr "Gesuggereerde namen opnieuw toepassen op de grafiek(en)"
 
 #: ../graphs.php:950
 msgid ""
 "Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
 msgstr ""
+"Klik op 'Volgende' om een geaggregeerde grafiek te maken van de "
+"geselecteerde grafiek(en)."
 
 #: ../graphs.php:959
 msgid "The following data sources are in use by these graphs:"
-msgstr ""
+msgstr "De volgende data bronnen zijn in gebruik bij deze grafieken:"
 
 #: ../graphs.php:992
 msgid "Please confirm"
@@ -4712,13 +4716,15 @@ msgstr "Bevestig alstublieft"
 
 #: ../graphs.php:1060
 msgid "Resize Selected Graph(s)"
-msgstr ""
+msgstr "Formaat wijzigen van geselecteerde grafiek(en)"
 
 #: ../graphs.php:1082
 msgid ""
 "Select the Aggregate Template to use and press 'Continue' to create your "
 "Aggregate Graph.  Otherwise press 'Cancel' to return."
 msgstr ""
+"Selecteer het geaggregeerde template dat u wilt gebruiken en druk op "
+"'Volgende' om deze te maken. Druk op 'Annuleren' om terug te gaan."
 
 #: ../graphs.php:1103
 msgid "Create Aggregate"
@@ -4731,6 +4737,9 @@ msgid ""
 "Graph Template and try again, or simply crease an un-templated Aggregate "
 "Graph."
 msgstr ""
+"Er zijn geen geaggregeerde templates gedefinieerd voor dit grafiektemplate. "
+"Maak een geaggregeerd template voor de geselecteerde grafiek template en "
+"probeer het opnieuw of gebruik een niet getempleteerd geaggregeerde grafiek."
 
 #: ../graphs.php:1108
 msgid "Press 'Return' to return and select different Graphs."
@@ -4757,11 +4766,11 @@ msgstr "Grafiek [nieuw]"
 
 #: ../graphs.php:1315
 msgid "Turn Off Graph Debug Mode."
-msgstr ""
+msgstr "Grafiek debug modus uitschakelen."
 
 #: ../graphs.php:1317
 msgid "Turn On Graph Debug Mode."
-msgstr ""
+msgstr "Grafiek debug modus inschakelen."
 
 #: ../graphs.php:1330
 msgid "Edit Graph Template."
@@ -4796,7 +4805,7 @@ msgstr "Kies het apparaat waar deze grafiek toe behoort."
 
 #: ../graphs.php:1411
 msgid "Supplemental Graph Template Data"
-msgstr ""
+msgstr "Aanvullende grafiektemplate data"
 
 #: ../graphs.php:1413
 msgid "Graph Fields"
@@ -4821,20 +4830,24 @@ msgid ""
 "Template definition or Suggested Naming rules.  The max length of the Title "
 "is controlled under Settings->Visual."
 msgstr ""
+"De titel van deze grafiek. Geprogrammeerd uit de definities van de "
+"grafiektemplate of gesuggereerde naamgeving. De maximale lengte van de titel "
+"wordt beheerd in instellingen->visueel."
 
 #: ../graphs.php:1827
 msgid ""
 "The internal database ID for this Graph.  Useful when performing automation "
 "or debugging."
 msgstr ""
+"De interne database ID van deze grafiek. Handig voor automation of debugging."
 
 #: ../graphs.php:1828
 msgid "The Graph Template that this Graph was based upon."
-msgstr ""
+msgstr "De grafiektemplate waarop deze grafiek is gebaseerd."
 
 #: ../graphs.php:1829
 msgid "The size of this Graph when not in Preview mode."
-msgstr ""
+msgstr "De afmetingen van deze grafiek wanneer niet in voorvertoning modus."
 
 #: ../graphs_items.php:309
 msgid "Data Sources [No Device]"
@@ -4891,7 +4904,7 @@ msgstr "Data bron [Template: %s]"
 #: ../graphs_new.php:378
 #, php-format
 msgid "Custom Data [Template: %s]"
-msgstr ""
+msgstr "Aangepaste data [Template: %s]"
 
 #: ../graphs_new.php:463
 #, php-format
@@ -4904,7 +4917,7 @@ msgstr "Nieuwe grafieken voor [ Alle apparaten ]"
 
 #: ../graphs_new.php:471
 msgid "New Graphs for None Host Type"
-msgstr ""
+msgstr "Nieuwe grafiek voor type geen-host"
 
 #: ../graphs_new.php:500 ../include/global_session.php:96
 msgid "Filter Settings Saved"
@@ -4916,7 +4929,7 @@ msgstr "Grafiektype"
 
 #: ../graphs_new.php:537
 msgid "Graph Template Based"
-msgstr ""
+msgstr "Grafiektemplate gebaseerd"
 
 #: ../graphs_new.php:561
 msgid "Save Filters"
@@ -5051,6 +5064,8 @@ msgid ""
 "Click 'Continue' to Synchronize the following Device(s) to their Device "
 "Template."
 msgstr ""
+"Klik op 'Volgende' om de volgende appara(a)t(en) te synchroniseren naar zijn "
+"apparaat template."
 
 #: ../host.php:454
 msgid "Synchronize Device(s)"
@@ -5137,7 +5152,7 @@ msgstr "Proberen apparaat te bereiken"
 
 #: ../host.php:692
 msgid "Data Query Debug Information"
-msgstr ""
+msgstr "Data query debug informatie"
 
 #: ../host.php:695 ../templates_import.php:141
 msgid "Hide"
@@ -5213,7 +5228,7 @@ msgstr "Query herladen"
 
 #: ../host.php:880
 msgid "Verbose Query"
-msgstr ""
+msgstr "Query uitschrijven"
 
 #: ../host.php:881
 msgid "Remove Query"
@@ -5327,6 +5342,12 @@ msgid ""
 "When using cmd.php data collector, a Device with no Graphs, is not pinged by "
 "the data collector and will remain in an \"Unknown\" state."
 msgstr ""
+"De monitoringstatus van het apparaat gebaseerd op ping resultaten. Als dit "
+"apparaat een speciaal type apparaat is, bijvoorbeeld door het gebruik van "
+"hostname 'localhost', of als de controle op beschikbaarheid is "
+"uitgeschakeld, zal altijd online worden weergegeven. Indien gebruik wordt "
+"gemaakt van cmd.php en het apparaat heeft geen grafieken, zal het apparaat "
+"niet worden gepinged en altijd in de status 'onbekend' worden weergegeven."
 
 #: ../host.php:1578
 msgid "In State"
@@ -5428,6 +5449,8 @@ msgid ""
 "Click 'Continue' to delete the following Graph Template will be "
 "disassociated from the Device Template."
 msgstr ""
+"Klik op 'Volgende' om de grafiektemplate te verwijderen en los te koppelen "
+"van het apparaat template."
 
 #: ../host_templates.php:329
 #, php-format
@@ -5439,6 +5462,8 @@ msgid ""
 "Click 'Continue' to delete the following Data Queries will be disassociated "
 "from the Device Template."
 msgstr ""
+"Klik op 'Volgende' om de volgende data query te verwijderen en los te "
+"koppelen van het apparaat template."
 
 #: ../host_templates.php:389
 #, php-format
@@ -5602,10 +5627,14 @@ msgstr ""
 #: ../include/global_arrays.php:140
 msgid "User delete not permitted for designated template or guest user."
 msgstr ""
+"Verwijderen van gebruiker niet toegestaan voor aangewezen sjablonen of het "
+"gastaccount."
 
 #: ../include/global_arrays.php:143
 msgid "User delete not permitted for designated graph export user."
 msgstr ""
+"Verwijderen van gebruiker niet toegestaan voor aangewezen grafiek export "
+"gebruiker."
 
 #: ../include/global_arrays.php:146
 msgid ""
