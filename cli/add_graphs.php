@@ -655,7 +655,7 @@ if (sizeof($parms)) {
 
 				if ($graphTitle != '') {
 					db_execute_prepared('UPDATE graph_templates_graph
-						SET title = ?
+						SET title_cache = ?
 						WHERE local_graph_id = ?',
 						array($graphTitle, $returnArray['local_graph_id']));
 
