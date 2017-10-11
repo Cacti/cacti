@@ -3,10 +3,11 @@ Cacti CHANGELOG
 1.1.26
 -issue#1010: CVE-2017-15194 - Path-Based Cross-Site Scripting (XSS)
 -issue: Fixed database session handling for PHP 7.1
--feature: Schema changes; Examined queries without key usage and added/changed some keys
--feature: Fixed some missing i18n
--feature: Fixed text typo's
+-issue: Fixed some missing i18n
+-issue: Fixed typo's
 -feature: Updated Dutch translations
+-feature: Schema changes; Examined queries without key usage and added/changed some keys
+-feature: Some small improvements
 
 1.1.25
 -issue#966: Email still using SMTP security even though set to none

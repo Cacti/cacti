@@ -104,7 +104,7 @@ case 'view':
 	</tr>
 	<?php
 
-	$graph = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
+	$graph = db_fetch_row_prepared('SELECT local_graph_id, width, height FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
 
 	$i = 0;
 	if (sizeof($rras)) {
@@ -286,7 +286,7 @@ case 'zoom':
 		$graph_start--;
 	}
 
-	$graph = db_fetch_row_prepared('SELECT * FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
+	$graph = db_fetch_row_prepared('SELECT width, height, title_cache, local_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
 
 	$graph_height = $graph['height'];
 	$graph_width  = $graph['width'];

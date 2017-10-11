@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-18 08:25-0400\n"
-"PO-Revision-Date: 2017-10-07 16:50+0200\n"
+"PO-Revision-Date: 2017-10-08 11:32+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -1340,7 +1340,7 @@ msgstr "Indeling titel"
 
 #: ../automation_graph_rules.php:265 ../automation_tree_rules.php:262
 msgid "rule_name"
-msgstr ""
+msgstr "rule_name"
 
 #: ../automation_graph_rules.php:271 ../automation_tree_rules.php:268
 msgid "Click 'Continue' to enable the following Rule(s)."
@@ -3504,7 +3504,7 @@ msgstr "Data retentie"
 #: ../data_source_profiles.php:550 ../include/global_settings.php:769
 #: ../lib/html_reports.php:396
 msgid "Graph Timespan"
-msgstr ""
+msgstr "Grafiek tijdspanne"
 
 #: ../data_source_profiles.php:551
 msgid "Steps"
@@ -4034,7 +4034,7 @@ msgstr ""
 
 #: ../data_templates.php:364
 msgid "template_title"
-msgstr ""
+msgstr "template_title"
 
 #: ../data_templates.php:368
 msgid "Duplicate Data Template(s)"
@@ -4084,7 +4084,7 @@ msgstr "Dit veld is altijd getempleteerd."
 #: ../data_templates.php:531 ../data_templates.php:603
 #: ../data_templates.php:671
 msgid "Use Per-Data Source Value (Ignore this Value)"
-msgstr ""
+msgstr "Gebruik per-data bron waarde (negeer deze waarde)"
 
 #: ../data_templates.php:584
 #, php-format
@@ -4153,6 +4153,8 @@ msgid ""
 "Data Sources based on Inactive Data Templates will not be updated when the "
 "poller runs."
 msgstr ""
+"Data bronnen gebaseerd op inactieve data templates worden niet bijgewerkt "
+"tijdens een poller run."
 
 #: ../data_templates.php:937
 msgid "No Data Templates Found"
@@ -4227,7 +4229,7 @@ msgstr "Geen GPRINT voorinstelling"
 
 #: ../graph.php:94
 msgid "Viewing Graph"
-msgstr ""
+msgstr "Toon grafiek"
 
 #: ../graph.php:129 ../lib/html.php:292
 msgid "Graph Details, Zooming and Debugging Utilities"
@@ -4318,6 +4320,8 @@ msgid ""
 "Click 'Continue' to delete the following Graph Template(s).  Any Graph(s) "
 "associated with the Template(s) will become individual Graph(s)."
 msgstr ""
+"Klik op 'Volgende' om de volgende grafiektemplate(s) te verwijderen. Alle "
+"gekoppelde grafieken zullen losse grafieken worden."
 
 #: ../graph_templates.php:317
 msgid "Delete Graph Template(s)"
@@ -4328,6 +4332,8 @@ msgid ""
 "Click 'Continue' to duplicate the following Graph Template(s). You can "
 "optionally change the title format for the new Graph Template(s)."
 msgstr ""
+"Klik 'Volgende' om de volgende grafiektemplate(s) te duplicere. Optioneel "
+"kunt u de titel voor de nieuwe grafiektemplate(s) wijzigen."
 
 #: ../graph_templates.php:327
 msgid "Duplicate Graph Template(s)"
@@ -4338,6 +4344,9 @@ msgid ""
 "Click 'Continue' to resize the following Graph Template(s) and Graph(s) to "
 "the Height and Width below.  The defaults below are maintained in Settings."
 msgstr ""
+"Klik op 'Volgende' om het formaat van de volgende grafiektemplate(s) te "
+"wijzigen naar de hoogte en breedte die hieronder zijn opgegeven. De "
+"standaard afmetingen worden opgeslagen in de instellingen."
 
 #: ../graph_templates.php:340 ../lib/html_reports.php:117
 msgid "Graph Height"
@@ -4349,7 +4358,7 @@ msgstr "Grafiekbreedte"
 
 #: ../graph_templates.php:347
 msgid "Resize Selected Graph Template(s)"
-msgstr ""
+msgstr "Formaat wijzigen van de selecteerde grafiek template(s)"
 
 #: ../graph_templates.php:351
 msgid ""
@@ -4358,6 +4367,10 @@ msgid ""
 "multiple versions of a Graph Template and wish to make them all common in "
 "appearance."
 msgstr ""
+"Klik op 'Volgende' om de grafieken te synchroniseren met de volgende "
+"grafiektemplate(s). Deze functie is belangrijk als u grafieken heeft die van "
+"verschillende versies van een grafiektemplate zijn gemaakt en u deze wilt "
+"gelijktrekken."
 
 #: ../graph_templates.php:356
 msgid "Synchronize Graphs to Graph Template(s)"
@@ -4395,7 +4408,7 @@ msgstr "Grafiek template opties"
 
 #: ../graph_templates.php:524
 msgid "Use Per-Graph Value (Ignore this Value)"
-msgstr ""
+msgstr "Gebruik per-grafiek waarde (negeer deze waarde)"
 
 #: ../graph_templates.php:619 ../graph_templates.php:634
 #: ../graph_templates.php:754 ../graphs_new.php:632
@@ -4406,33 +4419,35 @@ msgstr "Grafiektemplates"
 
 #: ../graph_templates.php:763
 msgid "The name of this Graph Template."
-msgstr ""
+msgstr "De naam van de grafektemplate."
 
 #: ../graph_templates.php:765
 msgid ""
 "Graph Templates that are in use cannot be Deleted.  In use is defined as "
 "being referenced by a Graph."
 msgstr ""
+"Grafiektemplates die in gebruik zijn kunnen niet worden verwijderd. Een "
+"grafiek is in gebruik als deze is gekoppelde aan een grafiek."
 
 #: ../graph_templates.php:766
 msgid "The number of Graphs using this Graph Template."
-msgstr ""
+msgstr "Het aantal grafieken dat gebruik maakt van deze grafiektemplate."
 
 #: ../graph_templates.php:767
 msgid "The default size of the resulting Graphs."
-msgstr ""
+msgstr "De standaard afmeting van de grafiek."
 
 #: ../graph_templates.php:768
 msgid "Image Format"
-msgstr ""
+msgstr "Formaat van de afbeleding"
 
 #: ../graph_templates.php:768
 msgid "The default image format for the resulting Graphs."
-msgstr ""
+msgstr "Het standaard opmaak van de afbeelding."
 
 #: ../graph_templates.php:769
 msgid "The vertical label for the resulting Graphs."
-msgstr ""
+msgstr "Het verticale label voor de grafiek."
 
 #: ../graph_templates.php:769
 msgid "Vertical Label"
@@ -4473,7 +4488,7 @@ msgstr "Min:"
 #: ../graph_templates_items.php:391
 #, php-format
 msgid "Graph Template Items [edit graph: %s]"
-msgstr ""
+msgstr "Grafiek template item [wijzig grafiek: %s]"
 
 #: ../graph_templates_items.php:452
 msgid "Field Not Templated"
@@ -4501,7 +4516,7 @@ msgstr "U HEEFT GEEN RECHTEN TOT DE LIJSTWEERGAVE"
 
 #: ../graph_view.php:510
 msgid "Graph List View Filters"
-msgstr ""
+msgstr "Grafiek lijst weergave filters"
 
 #: ../graph_view.php:510
 msgid "[ Custom Graph List Applied - Filter FROM List ]"
@@ -4542,7 +4557,7 @@ msgstr "Niet van toepassing"
 #: ../graph_view.php:726 ../include/global_settings.php:1926
 #: ../lib/functions.php:1904
 msgid "Preview Mode"
-msgstr ""
+msgstr "Voorvertoning modus"
 
 #: ../graph_view.php:776 ../lib/html_graph.php:374 ../lib/html_tree.php:821
 #: ../settings.php:243
@@ -4555,15 +4570,15 @@ msgstr "Wijzig grafiektemplate"
 
 #: ../graphs.php:56
 msgid "Create Aggregate Graph"
-msgstr ""
+msgstr "Maak geaggregeerde grafiek"
 
 #: ../graphs.php:57
 msgid "Create Aggregate from Template"
-msgstr ""
+msgstr "Maak geaggregeerde grafiek vanaf template"
 
 #: ../graphs.php:58 ../graphs.php:1125 ../host.php:43
 msgid "Apply Automation Rules"
-msgstr ""
+msgstr "Automatiseringsregels toepassen"
 
 #: ../graphs.php:64 ../graphs.php:896
 msgid "Convert to Graph Template"
@@ -4584,20 +4599,25 @@ msgid ""
 "to Delete Data Sources, only those Data Sources not in use elsewhere will "
 "also be Deleted."
 msgstr ""
+"Klik op 'Volgende' om de volgende grafiek(en) te verwijderen. Let op: als u "
+"ervoor kiest om de data bronnen te verwijderen, zullen uitsluitend de data "
+"bronnen die niet in gebruik zijn worden verwijderd."
 
 #: ../graphs.php:839
 msgid "The following Data Source(s) are in use by these Graph(s)."
-msgstr ""
+msgstr "De volgende data bron(nen) zijn/is in gebruik bij deze grafiek(en)."
 
 #: ../graphs.php:848
 msgid ""
 "Delete all Data Source(s) referenced by these Graph(s) that are not in use "
 "elsewhere."
 msgstr ""
+"Verwijder alle data bron(nen) gekoppeld aan deze grafiek(en) die niet elders "
+"in gebruik zijn."
 
 #: ../graphs.php:850
 msgid "Leave the Data Source(s) untouched."
-msgstr ""
+msgstr "Laat de data bron(nen) ongemoeid."
 
 #: ../graphs.php:862
 msgid ""
@@ -4606,6 +4626,10 @@ msgid ""
 "Templates will be displayed.  Compatible is identified by those having "
 "identical Data Sources."
 msgstr ""
+"Kies een grafiektemplate an klik op 'Volgende' om de grafiektemplate voor de "
+"volgende grafiek(en) te wijzigen. Let op: alleen compatible grafiektemplates "
+"zullen worden getoond. Compatible grafiektemplates hebben dezelfde identieke "
+"data bronnen."
 
 #: ../graphs.php:864
 msgid "New Graph Template"
@@ -4616,6 +4640,8 @@ msgid ""
 "Click 'Continue' to duplicate the following Graph(s). You can optionally "
 "change the title format for the new Graph(s)."
 msgstr ""
+"Klik op 'Volgende' om de volgende grafiek(en) te dupliceren. Optioneel kunt "
+"u de opmaak van de titel voor de nieuwe grafiek(en) wijzigen."
 
 #: ../graphs.php:881
 msgid "<graph_title> (1)"
@@ -4643,6 +4669,8 @@ msgid ""
 "Click 'Continue' to place the following Graph(s) under the Tree Branch "
 "selected below."
 msgstr ""
+"Klik op 'Volgende' om de volgende grafiek(en) in de selecteerde "
+"boomstructuur te plaatsen."
 
 #: ../graphs.php:902
 msgid "Destination Branch"
@@ -4664,19 +4692,23 @@ msgstr "Wijzig grafiek(en) van gekoppeld apparaat"
 msgid ""
 "Click 'Continue' to re-apply suggested naming to the following Graph(s)."
 msgstr ""
+"Klik op 'Volgende' om de gesuggereerde namen opnieuw toe te passen op de "
+"volgende grafiek(en)."
 
 #: ../graphs.php:934
 msgid "Reapply Suggested Naming to Graph(s)"
-msgstr ""
+msgstr "Gesuggereerde namen opnieuw toepassen op de grafiek(en)"
 
 #: ../graphs.php:950
 msgid ""
 "Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
 msgstr ""
+"Klik op 'Volgende' om een geaggregeerde grafiek te maken van de "
+"geselecteerde grafiek(en)."
 
 #: ../graphs.php:959
 msgid "The following data sources are in use by these graphs:"
-msgstr ""
+msgstr "De volgende data bronnen zijn in gebruik bij deze grafieken:"
 
 #: ../graphs.php:992
 msgid "Please confirm"
@@ -4684,13 +4716,15 @@ msgstr "Bevestig alstublieft"
 
 #: ../graphs.php:1060
 msgid "Resize Selected Graph(s)"
-msgstr ""
+msgstr "Formaat wijzigen van geselecteerde grafiek(en)"
 
 #: ../graphs.php:1082
 msgid ""
 "Select the Aggregate Template to use and press 'Continue' to create your "
 "Aggregate Graph.  Otherwise press 'Cancel' to return."
 msgstr ""
+"Selecteer het geaggregeerde template dat u wilt gebruiken en druk op "
+"'Volgende' om deze te maken. Druk op 'Annuleren' om terug te gaan."
 
 #: ../graphs.php:1103
 msgid "Create Aggregate"
@@ -4703,6 +4737,9 @@ msgid ""
 "Graph Template and try again, or simply crease an un-templated Aggregate "
 "Graph."
 msgstr ""
+"Er zijn geen geaggregeerde templates gedefinieerd voor dit grafiektemplate. "
+"Maak een geaggregeerd template voor de geselecteerde grafiek template en "
+"probeer het opnieuw of gebruik een niet getempleteerd geaggregeerde grafiek."
 
 #: ../graphs.php:1108
 msgid "Press 'Return' to return and select different Graphs."
@@ -4729,11 +4766,11 @@ msgstr "Grafiek [nieuw]"
 
 #: ../graphs.php:1315
 msgid "Turn Off Graph Debug Mode."
-msgstr ""
+msgstr "Grafiek debug modus uitschakelen."
 
 #: ../graphs.php:1317
 msgid "Turn On Graph Debug Mode."
-msgstr ""
+msgstr "Grafiek debug modus inschakelen."
 
 #: ../graphs.php:1330
 msgid "Edit Graph Template."
@@ -4768,7 +4805,7 @@ msgstr "Kies het apparaat waar deze grafiek toe behoort."
 
 #: ../graphs.php:1411
 msgid "Supplemental Graph Template Data"
-msgstr ""
+msgstr "Aanvullende grafiektemplate data"
 
 #: ../graphs.php:1413
 msgid "Graph Fields"
@@ -4793,20 +4830,24 @@ msgid ""
 "Template definition or Suggested Naming rules.  The max length of the Title "
 "is controlled under Settings->Visual."
 msgstr ""
+"De titel van deze grafiek. Geprogrammeerd uit de definities van de "
+"grafiektemplate of gesuggereerde naamgeving. De maximale lengte van de titel "
+"wordt beheerd in instellingen->visueel."
 
 #: ../graphs.php:1827
 msgid ""
 "The internal database ID for this Graph.  Useful when performing automation "
 "or debugging."
 msgstr ""
+"De interne database ID van deze grafiek. Handig voor automation of debugging."
 
 #: ../graphs.php:1828
 msgid "The Graph Template that this Graph was based upon."
-msgstr ""
+msgstr "De grafiektemplate waarop deze grafiek is gebaseerd."
 
 #: ../graphs.php:1829
 msgid "The size of this Graph when not in Preview mode."
-msgstr ""
+msgstr "De afmetingen van deze grafiek wanneer niet in voorvertoning modus."
 
 #: ../graphs_items.php:309
 msgid "Data Sources [No Device]"
@@ -4863,7 +4904,7 @@ msgstr "Data bron [Template: %s]"
 #: ../graphs_new.php:378
 #, php-format
 msgid "Custom Data [Template: %s]"
-msgstr ""
+msgstr "Aangepaste data [Template: %s]"
 
 #: ../graphs_new.php:463
 #, php-format
@@ -4876,7 +4917,7 @@ msgstr "Nieuwe grafieken voor [ Alle apparaten ]"
 
 #: ../graphs_new.php:471
 msgid "New Graphs for None Host Type"
-msgstr ""
+msgstr "Nieuwe grafiek voor type geen-host"
 
 #: ../graphs_new.php:500 ../include/global_session.php:96
 msgid "Filter Settings Saved"
@@ -4888,7 +4929,7 @@ msgstr "Grafiektype"
 
 #: ../graphs_new.php:537
 msgid "Graph Template Based"
-msgstr ""
+msgstr "Grafiektemplate gebaseerd"
 
 #: ../graphs_new.php:561
 msgid "Save Filters"
@@ -5023,6 +5064,8 @@ msgid ""
 "Click 'Continue' to Synchronize the following Device(s) to their Device "
 "Template."
 msgstr ""
+"Klik op 'Volgende' om de volgende appara(a)t(en) te synchroniseren naar zijn "
+"apparaat template."
 
 #: ../host.php:454
 msgid "Synchronize Device(s)"
@@ -5109,7 +5152,7 @@ msgstr "Proberen apparaat te bereiken"
 
 #: ../host.php:692
 msgid "Data Query Debug Information"
-msgstr ""
+msgstr "Data query debug informatie"
 
 #: ../host.php:695 ../templates_import.php:141
 msgid "Hide"
@@ -5185,7 +5228,7 @@ msgstr "Query herladen"
 
 #: ../host.php:880
 msgid "Verbose Query"
-msgstr ""
+msgstr "Query uitschrijven"
 
 #: ../host.php:881
 msgid "Remove Query"
@@ -5299,6 +5342,12 @@ msgid ""
 "When using cmd.php data collector, a Device with no Graphs, is not pinged by "
 "the data collector and will remain in an \"Unknown\" state."
 msgstr ""
+"De monitoringstatus van het apparaat gebaseerd op ping resultaten. Als dit "
+"apparaat een speciaal type apparaat is, bijvoorbeeld door het gebruik van "
+"hostname 'localhost', of als de controle op beschikbaarheid is "
+"uitgeschakeld, zal altijd online worden weergegeven. Indien gebruik wordt "
+"gemaakt van cmd.php en het apparaat heeft geen grafieken, zal het apparaat "
+"niet worden gepinged en altijd in de status 'onbekend' worden weergegeven."
 
 #: ../host.php:1578
 msgid "In State"
@@ -5400,6 +5449,8 @@ msgid ""
 "Click 'Continue' to delete the following Graph Template will be "
 "disassociated from the Device Template."
 msgstr ""
+"Klik op 'Volgende' om de grafiektemplate te verwijderen en los te koppelen "
+"van het apparaat template."
 
 #: ../host_templates.php:329
 #, php-format
@@ -5411,6 +5462,8 @@ msgid ""
 "Click 'Continue' to delete the following Data Queries will be disassociated "
 "from the Device Template."
 msgstr ""
+"Klik op 'Volgende' om de volgende data query te verwijderen en los te "
+"koppelen van het apparaat template."
 
 #: ../host_templates.php:389
 #, php-format
@@ -5574,10 +5627,14 @@ msgstr ""
 #: ../include/global_arrays.php:140
 msgid "User delete not permitted for designated template or guest user."
 msgstr ""
+"Verwijderen van gebruiker niet toegestaan voor aangewezen sjablonen of het "
+"gastaccount."
 
 #: ../include/global_arrays.php:143
 msgid "User delete not permitted for designated graph export user."
 msgstr ""
+"Verwijderen van gebruiker niet toegestaan voor aangewezen grafiek export "
+"gebruiker."
 
 #: ../include/global_arrays.php:146
 msgid ""
