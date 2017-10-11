@@ -629,7 +629,7 @@ if (sizeof($parms)) {
 				if (isset($existsAlready) && $existsAlready > 0) {
 					if ($graphTitle != '') {
 						db_execute_prepared('UPDATE graph_templates_graph
-							SET title = ?
+							SET title_cache = ?
 							WHERE local_graph_id = ?',
 							array($graphTitle, $existsAlready));
 
