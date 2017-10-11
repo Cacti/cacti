@@ -1,7 +1,8 @@
 Cacti CHANGELOG
 
 1.1.26
--issue#1010: Path-Based Cross-Site Scripting (XSS)
+-issue#1010: CVE-2017-15194 - Path-Based Cross-Site Scripting (XSS)
+-issue: Fixed database session handling for PHP 7.1
 -issue: Fixed some missing i18n
 -issue: Fixed typo's
 -feature: Updated Dutch translations
