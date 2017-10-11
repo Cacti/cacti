@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.26
+-issue#1003: Reversing resolution to Issue#995 due to adverse impact to polling times
 -issue#1010: CVE-2017-15194 - Path-Based Cross-Site Scripting (XSS)
 -issue: Fixed database session handling for PHP 7.1
 -issue: Fixed some missing i18n
