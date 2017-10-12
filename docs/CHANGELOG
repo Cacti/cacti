@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#1008: Remove developer debug warning about thumbnail validation
 -issue#1009: Resolving minor issue with cmd_realtime.php and a changing hostname
 -issue#1010: CVE-2017-15194 - Path-Based Cross-Site Scripting (XSS)
+-issue#1027: Confirm that the PHP date.timezone setting is properly set during install
 -issue: Fixed database session handling for PHP 7.1
 -issue: Fixed some missing i18n
 -issue: Fixed typo's
