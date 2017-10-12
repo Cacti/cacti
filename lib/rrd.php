@@ -3377,6 +3377,19 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	return $image_data;
 }
 
+
+/** Add gradient support for AREA type charts. This function adds several CDEF with different shading
+ * @param boolean 	$vname		- the data source name
+ * @param string 	$start_color	- the start color for the gradient
+ * @param string 	$end_color	- the end color for the gradient
+ * @param boolean 	$label		- any label attached to it
+ * @param string	$steps		- defaults to 20
+ * @param boolean 	$lower		- defaults to faulse
+ * @param string	$alpha		- Alpha channel to be used
+ * @return string			- the additional CDEF/AREA command lines for rrdtool
+ * License:			GPLv2
+ * Original Code		https://github.com/lingej/pnp4nagios/blob/master/share/pnp/application/helpers/rrd.php
+ */
 function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $label=FALSE, $steps=20, $lower=FALSE, $alpha='FF'){
         $label = preg_replace("/'/","",$label);
         if(preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$start_color,$matches)){
@@ -3425,6 +3438,13 @@ function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $l
         return $spline;
     }
 
+/** Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
+ * @param boolean 	$hex		- The hex representation of a color
+ * @param string 	$percent	- the percentage to darken the given color. decimal number ( 0.4 -> 40% )
+ * @return string			- the darker version of the given color
+ * License:			GPLv2
+ * Original Code		http://www.barelyfitz.com/projects/csscolor/
+ */
 function colourBrightness($hex, $percent) {
         // Work out if hash given
         $hash = '';
