@@ -1703,7 +1703,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 function html_spikekill_actions() {
 	switch(get_nfilter_request_var('action')) {
 	case 'spikemenu':
-		print html_spikekill_menu(get_filter_request_var('local_graph_id'));
+		html_spikekill_menu(get_filter_request_var('local_graph_id'));
 
 		break;
 	case 'spikesave':
@@ -1720,20 +1720,16 @@ function html_spikekill_actions() {
 
 				break;
 			case 'rstddev':
-				$id = get_filter_request_var('id');
-				set_user_setting('spikekill_deviations', $id);
+				set_user_setting('spikekill_deviations', get_filter_request_var('id'));
 				break;
 			case 'rvarout':
-				$id = get_filter_request_var('id');
-				set_user_setting('spikekill_outliers', $id);
+				set_user_setting('spikekill_outliers', get_filter_request_var('id'));
 				break;
 			case 'rvarpct':
-				$id = get_filter_request_var('id');
-				set_user_setting('spikekill_percent', $id);
+				set_user_setting('spikekill_percent', get_filter_request_var('id'));
 				break;
 			case 'rkills':
-				$id = get_filter_request_var('id');
-				set_user_setting('spikekill_number', $id);
+				set_user_setting('spikekill_number', get_filter_request_var('id'));
 				break;
 		}
 
