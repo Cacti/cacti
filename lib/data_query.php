@@ -380,7 +380,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		$host['snmp_context'], $host['snmp_engine_id'],  $host['snmp_port'],
 		$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
-	if ($session === FALSE) {
+	if ($session === false) {
 		debug_log_insert('data_query', 'Failed to load SNMP session.');
 
 		return false;
@@ -830,7 +830,7 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
 	@returns - (array) of original snmp indexes associated with rewritten ones
 */
 
-function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite_index, $snmp_indexes, $fields_processed = FALSE){
+function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite_index, $snmp_indexes, $fields_processed = false){
 	global $data_query_rewrite_indexes_cache;
 
 	$errmsg = array();
@@ -878,10 +878,10 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 	}
 
 	$out = array();
-	$numeric_output = FALSE;
+	$numeric_output = false;
 	if (!is_array($snmp_indexes)){
 		$snmp_indexes = array($snmp_indexes);
-		$numeric_output = TRUE;
+		$numeric_output = true;
 	}
 	foreach ($snmp_indexes as $oid => $num_index) {
 		$index = $rewrite_index;
@@ -939,7 +939,7 @@ function rewrite_snmp_enum_value($field_name, $value=NULL, $map=NULL){
 		$map = unserialize($map);
 	}
 
-	if ($map === FALSE || !is_array($map)){
+	if ($map === false || !is_array($map)){
 		debug_log_insert('data_query', 'Could not parse translation map (rewrite_value)');
 		return $value;
 	}

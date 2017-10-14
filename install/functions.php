@@ -503,7 +503,7 @@ function remote_update_config_file() {
 			$save['dbport']    = $database_port;
 			$save['dbssl']     = $database_ssl;
 
-			$poller_id = sql_save($save, 'poller', 'id', TRUE, $connection);
+			$poller_id = sql_save($save, 'poller', 'id', true, $connection);
 		}
 
 		if (!empty($poller_id)) {

@@ -157,7 +157,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 	if (is_resource($f)) {
 		while (!feof($f)) {
 			$x = fgets($f);
-			if (strpos($x, '<signature>') !== FALSE) {
+			if (strpos($x, '<signature>') !== false) {
 				$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)));
 				$x = "   <signature></signature>\n";
 
@@ -1883,4 +1883,3 @@ function xml_to_array($data) {
     }
     return (is_array($data)) ? array_map(__FUNCTION__,$data) : $data;
 }
-

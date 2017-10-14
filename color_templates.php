@@ -149,12 +149,12 @@ function aggregate_color_form_save() {
 
 		$save1['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 
-		cacti_log('Saved ID: ' . $save1['color_template_id'] . ' Name: ' . $save1['name'], FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+		cacti_log('Saved ID: ' . $save1['color_template_id'] . ' Name: ' . $save1['name'], false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 		if (!is_error_message()) {
 			$color_template_id = sql_save($save1, 'color_templates', 'color_template_id');
 
-			cacti_log('Saved ID: ' . $color_template_id, FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+			cacti_log('Saved ID: ' . $color_template_id, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 			if ($color_template_id) {
 				raise_message(1);

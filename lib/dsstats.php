@@ -234,8 +234,8 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 		if ($info != '') {
 			$info_array = explode("\n", $info);
 
-			$average = FALSE;
-			$max     = FALSE;
+			$average = false;
+			$max     = false;
 			$dsnames = array();
 
 			/* figure out whatis in this RRDfile.  Assume CF Uniformity as Cacti does not allow async rrdfiles.
@@ -250,9 +250,9 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 					} else if (substr_count($line, '.cf')) {
 						$parts = explode('=', $line);
 						if (substr_count($parts[1], 'AVERAGE')) {
-							$average = TRUE;
+							$average = true;
 						} elseif (substr_count($parts[1], 'MAX')) {
-							$max = TRUE;
+							$max = true;
 						}
 					} else if (substr_count($line, 'step')) {
 						$parts = explode('=', $line);
@@ -413,7 +413,7 @@ function log_dsstats_statistics($type) {
 	db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array('stats_dsstats_' . $type, $cacti_stats));
 
 	/* log to the logfile */
-	cacti_log('DSSTATS STATS: Type:' . $type . ', ' . $cacti_stats , TRUE, 'SYSTEM');
+	cacti_log('DSSTATS STATS: Type:' . $type . ', ' . $cacti_stats , true, 'SYSTEM');
 }
 
 /* dsstats_error_handler - this routine logs all PHP error transactions
@@ -456,7 +456,7 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 		if (substr_count($errmsg, 'Only variables')) return;
 
 		/* log the error to the Cacti log */
-		cacti_log('PROGERR: ' . $err, FALSE, 'DSSTATS');
+		cacti_log('PROGERR: ' . $err, false, 'DSSTATS');
 	}
 
 	return;

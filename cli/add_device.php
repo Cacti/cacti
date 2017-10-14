@@ -77,9 +77,9 @@ if (sizeof($parms)) {
 	$proxy          = false;
 	$device_threads = read_config_option('device_threads');;
 
-	$displayHostTemplates = FALSE;
-	$displayCommunities   = FALSE;
-	$quietMode            = FALSE;
+	$displayHostTemplates = false;
+	$displayCommunities   = false;
+	$quietMode            = false;
 
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
@@ -91,7 +91,7 @@ if (sizeof($parms)) {
 
 		switch ($arg) {
 		case '-d':
-			$debug = TRUE;
+			$debug = true;
 
 			break;
 		case '--description':
@@ -274,15 +274,15 @@ if (sizeof($parms)) {
 			display_help();
 			exit;
 		case '--list-communities':
-			$displayCommunities = TRUE;
+			$displayCommunities = true;
 
 			break;
 		case '--list-host-templates':
-			$displayHostTemplates = TRUE;
+			$displayHostTemplates = true;
 
 			break;
 		case '--quiet':
-			$quietMode = TRUE;
+			$quietMode = true;
 
 			break;
 		default:

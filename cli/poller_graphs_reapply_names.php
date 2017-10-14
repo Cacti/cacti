@@ -39,7 +39,7 @@ include_once($config['base_path'] . '/lib/api_graph.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug   = FALSE;
+$debug   = false;
 $host_id = '';
 $filter  = '';
 
@@ -63,7 +63,7 @@ if (sizeof($parms)) {
 				break;
 			case '--debug':
 			case '-d':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--version':
 			case '-V':

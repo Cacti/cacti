@@ -46,7 +46,7 @@ if (sizeof($parms) == 0) {
 	exit;
 }
 
-$debug   = FALSE;
+$debug   = false;
 $host_id = '';
 $filter  = '';
 
@@ -71,7 +71,7 @@ if (sizeof($parms)) {
 				break;
 			case '-d' :
 			case '--debug' :
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--version' :
 			case '-v' :

@@ -46,8 +46,8 @@ array_shift($parms);
 
 global $debug;
 
-$debug = FALSE;
-$force = FALSE;
+$debug = false;
+$force = false;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -61,11 +61,11 @@ if (sizeof($parms)) {
 		switch ($arg) {
 		case '-d':
 		case '--debug':
-			$debug = TRUE;
+			$debug = true;
 			break;
 		case '-f':
 		case '--force':
-			$force = TRUE;
+			$force = true;
 			break;
 		case '--version':
 		case '-V':

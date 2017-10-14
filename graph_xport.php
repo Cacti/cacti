@@ -240,5 +240,4 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 }
 
 /* log the memory usage */
-cacti_log("The Peak Graph XPORT Memory Usage was '" . memory_get_peak_usage() . "'", FALSE, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
-
+cacti_log("The Peak Graph XPORT Memory Usage was '" . memory_get_peak_usage() . "'", false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);

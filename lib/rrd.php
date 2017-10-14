@@ -42,7 +42,7 @@ function escape_command($command) {
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
 
-function rrd_init($output_to_term = TRUE) {
+function rrd_init($output_to_term = true) {
 	global $config;
 
 	$args = func_get_args();
@@ -51,7 +51,7 @@ function rrd_init($output_to_term = TRUE) {
 	return call_user_func_array($function, $args);
 }
 
-function __rrd_init($output_to_term = TRUE) {
+function __rrd_init($output_to_term = true) {
 	global $config;
 
 	/* set the rrdtool default font */
@@ -346,11 +346,11 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 
 	/* store the last command to provide rrdtool segfault diagnostics */
 	$last_command = $command_line;
-	$rrdp_auto_close = FALSE;
+	$rrdp_auto_close = false;
 
 	if(!$rrdp) {
 		$rrdp = __rrd_proxy_init($logopt);
-		$rrdp_auto_close = TRUE;
+		$rrdp_auto_close = true;
 	}
 
 	if(!$rrdp) {
@@ -575,14 +575,14 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 								(chgrp(dirname($data_source_path), $group_id))) {
 							/* permissions set ok */
 						}else{
-							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
+							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", false);
 						}
 					}
 				}else{
-					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
+					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}else{
-				cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", FALSE);
+				cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", false);
 			}
 		}
 	}
@@ -1613,7 +1613,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 										}
 
 										$count_similar_ds_nodups++;
-										$sources_seen[$gi_check['data_template_rrd_id']] = TRUE;
+										$sources_seen[$gi_check['data_template_rrd_id']] = true;
 									}
 								} # SIMILAR data sources
 							} # matching consolidation function?
@@ -1869,7 +1869,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* most of the calculations have been done above. now we have for print everything out
 			in an RRDTool-friendly fashion */
 
-			$need_rrd_nl = TRUE;
+			$need_rrd_nl = true;
 
 			/* initialize color support */
 			$graph_item_color_code = '';
@@ -2057,7 +2057,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					break;
 				default:
-					$need_rrd_nl = FALSE;
+					$need_rrd_nl = false;
 				}
 			} else {
 				if (preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', $graph_item_types[$graph_item['graph_type_id']])) {
@@ -2072,7 +2072,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					$txt_graph_items .= 'XPORT:' . cacti_escapeshellarg($data_source_name) . ':' . str_replace(':', '', cacti_escapeshellarg($legend_name)) ;
 				} else {
-					$need_rrd_nl = FALSE;
+					$need_rrd_nl = false;
 				}
 			}
 
@@ -2445,7 +2445,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 			/* try to print matching rrd file's ds information */
 			if (isset($info['ds'][$ds_name]) ) {
 				if (!isset($info['ds'][$ds_name]['seen'])) {
-					$info['ds'][$ds_name]['seen'] = TRUE;
+					$info['ds'][$ds_name]['seen'] = true;
 				} else {
 					continue;
 				}
@@ -2498,7 +2498,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				$info['ds'][$ds_name]['minimal_heartbeat'] = $data_source['rrd_heartbeat'];
 				$info['ds'][$ds_name]['min'] = $data_source['rrd_minimum'];
 				$info['ds'][$ds_name]['max'] = $data_source['rrd_maximum'];
-				$info['ds'][$ds_name]['seen'] = TRUE;
+				$info['ds'][$ds_name]['seen'] = true;
 				$diff['ds'][$ds_name]['error'] = __("DS '%s' missing in RRDfile", $ds_name);
 			}
 		}
@@ -2516,7 +2516,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	/* -----------------------------------------------------------------------------------
 	 * RRA information
 	 -----------------------------------------------------------------------------------*/
-	$resize = TRUE;		# assume a resize operation as long as no rra duplicates are found
+	$resize = true;		# assume a resize operation as long as no rra duplicates are found
 
 	/* scan cacti rra information for duplicates of (CF, STEPS) */
 	if (sizeof($cacti_rra_array) > 0) {
@@ -2527,7 +2527,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				if ($cf == $cacti_rra['cf'] && $steps == $cacti_rra['steps'] && ($i != $cacti_rra_id)) {
 					$diff['rra'][$i]['error'] = __("Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'", $i, $consolidation_functions{$cf}, $steps, $cacti_rra_id);
 					$diff['rra'][$cacti_rra_id]['error'] = __("Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'", $cacti_rra_id, $consolidation_functions{$cf}, $steps, $i);
-					$resize = FALSE;
+					$resize = false;
 				}
 			}
 		}
@@ -2542,7 +2542,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				if (($cf == $file_rra['cf']) && ($steps == $file_rra['pdp_per_row']) && ($i != $file_rra_id)) {
 					$diff['rra'][$i]['error'] = __("File RRA '%s' has same CF/steps (%s, %s) as '%s'", $i, $cf, $steps, $file_rra_id);
 					$diff['rra'][$file_rra_id]['error'] = __("File RRA '%s' has same CF/steps (%s, %s) as '%s'", $file_rra_id, $cf, $steps, $i);
-					$resize = FALSE;
+					$resize = false;
 				}
 			}
 		}
@@ -2568,8 +2568,8 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 					}
 
 					# mark both rra id's as seen to avoid printing them as non-matching
-					$info['rra'][$file_rra_id]['seen'] = TRUE;
-					$cacti_rra_array[$cacti_rra_id]['seen'] = TRUE;
+					$info['rra'][$file_rra_id]['seen'] = true;
+					$cacti_rra_array[$cacti_rra_id]['seen'] = true;
 
 					if ($cacti_rra['xff'] != $file_rra['xff']) {
 						$diff['rra'][$file_rra_id]['xff'] = __("XFF for cacti RRA id '%s' should be '%s'", $cacti_rra_id, $cacti_rra['xff']);

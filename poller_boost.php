@@ -52,7 +52,7 @@ function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
-			cacti_log('WARNING: Boost Poller terminated by user', FALSE, 'BOOST');
+			cacti_log('WARNING: Boost Poller terminated by user', false, 'BOOST');
 
 			/* tell the main poller that we are done */
 			db_execute("REPLACE INTO settings (name, value) VALUES ('boost_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') ."')");
@@ -62,10 +62,9 @@ function sig_handler($signo) {
 		default:
 			/* ignore all other signals */
 	}
-
 }
 
-function output_rrd_data($start_time, $force = FALSE) {
+function output_rrd_data($start_time, $force = false) {
 	global $start, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
 
 	include_once($config['base_path'] . '/lib/rrd.php');
@@ -90,7 +89,7 @@ function output_rrd_data($start_time, $force = FALSE) {
 
 			/* if the runtime was exceeded, allow the next process to run */
 			if ($previous_start_time + $max_run_duration < $start_time) {
-				cacti_log('WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash', FALSE, 'BOOST SVR');
+				cacti_log('WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash', false, 'BOOST SVR');
 			}
 		}
 	}
@@ -213,7 +212,7 @@ function log_boost_statistics($rrd_updates) {
 	db_execute_prepared("REPLACE INTO settings (name,value) VALUES ('stats_boost', ?)", array($cacti_stats));
 
 	/* log to the logfile */
-	cacti_log('BOOST STATS: ' . $cacti_stats , TRUE, 'SYSTEM');
+	cacti_log('BOOST STATS: ' . $cacti_stats , true, 'SYSTEM');
 
 	if (isset($boost_stats_log)) {
 		$overhead = boost_timer_get_overhead();
@@ -237,7 +236,7 @@ function log_boost_statistics($rrd_updates) {
 
 			/* log to the logfile */
 			if ($verbose) {
-				cacti_log('BOOST DETAIL STATS: ' . $outstr, TRUE, 'SYSTEM');
+				cacti_log('BOOST DETAIL STATS: ' . $outstr, true, 'SYSTEM');
 			}
 		}
 	}
@@ -251,7 +250,7 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $dir = dirname(__FILE__);
 chdir($dir);
 
-if (strpos($dir, 'boost') !== FALSE) {
+if (strpos($dir, 'boost') !== false) {
 	chdir('../../');
 }
 
@@ -268,9 +267,9 @@ $max_run_duration = read_config_option('boost_rrd_update_max_runtime');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug          = FALSE;
-$forcerun       = FALSE;
-$verbose        = FALSE;
+$debug          = false;
+$forcerun       = false;
+$verbose        = false;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -284,14 +283,14 @@ if (sizeof($parms)) {
 		switch ($arg) {
 			case '-d':
 			case '--debug':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '-f':
 			case '--force':
-				$forcerun = TRUE;
+				$forcerun = true;
 				break;
 			case '--verbose':
-				$verbose = TRUE;
+				$verbose = true;
 				break;
 			case '--version':
 			case '-V':
@@ -407,7 +406,7 @@ if ((read_config_option('boost_png_cache_enable') == 'on') || $forcerun) {
 
 	if ($handle = opendir($cache_directory)) {
 		/* This is the correct way to loop over the directory. */
-		while (FALSE !== ($file = readdir($handle))) {
+		while (false !== ($file = readdir($handle))) {
 			$directory_contents[] = $file;
 		}
 

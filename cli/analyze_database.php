@@ -38,7 +38,7 @@ array_shift($parms);
 
 global $debug;
 
-$debug = FALSE;
+$debug = false;
 $form  = '';
 $start = time();
 
@@ -54,7 +54,7 @@ if (sizeof($parms)) {
 		switch ($arg) {
 			case '-d':
 			case '--debug':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--version':
 			case '-V':

@@ -226,7 +226,7 @@ function color_import_processor(&$colors) {
 			if ($i == 0) {
 				$save_order = '(';
 				$j = 0;
-				$first_column = TRUE;
+				$first_column = true;
 				$required = 0;
 				$update_suffix = '';
 
@@ -246,7 +246,7 @@ function color_import_processor(&$colors) {
 							$save_order .= $line_item;
 
 							$insert_columns[] = $j;
-							$first_column = FALSE;
+							$first_column = false;
 
 							if ($update_suffix != '') {
 								$update_suffix .= ", $line_item=VALUES($line_item)";
@@ -276,7 +276,7 @@ function color_import_processor(&$colors) {
 		} else {
 			$save_value = '(';
 			$j = 0;
-			$first_column = TRUE;
+			$first_column = true;
 			$sql_where = '';
 
 			if (sizeof($line_array)) {
@@ -288,7 +288,7 @@ function color_import_processor(&$colors) {
 					if (!$first_column) {
 						$save_value .= ',';
 					} else {
-						$first_column = FALSE;
+						$first_column = false;
 					}
 
 					$save_value .= "'" . $line_item . "'";
@@ -384,7 +384,7 @@ function color_import() {
 			<input type='checkbox' name='allow_update' id='allow_update'><?php print __('Allow Existing Rows to be Updated?');?>
 		</td><?php
 
-	html_end_box(FALSE);
+	html_end_box(false);
 
 	html_start_box( __('Required File Format Notes'), '100%', '', '3', 'center', '');
 
