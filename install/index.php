@@ -463,6 +463,15 @@ $enabled = '1';
 							print '<p>' . __('Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information.') . '</p>';
 						}
 
+						print '<h3>' . __('PHP Timezone Support') .'</h3>';
+
+						if (ini_get('date.timezone') == '') {
+							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the \'date.timezone\' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti.') . '</p>';
+							$enabled = '0';
+						} else {
+							print '<p>' . __('Your Web Servers PHP is properly setup with a Timezone.') . '</p>';
+						}
+
 						print '<h3>' . __('Required PHP Module Support') .'</h3>';
 
 						print '<p>' .  __('Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '</p>';
