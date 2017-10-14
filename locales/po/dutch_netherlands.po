@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-10-14 08:11-0400\n"
-"PO-Revision-Date: 2017-10-14 17:56+0200\n"
+"PO-Revision-Date: 2017-10-14 18:08+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -2105,28 +2105,22 @@ msgstr ""
 "uitgeschakeld!."
 
 #: /var/www/html/cacti/automation_networks.php:191
-#, fuzzy, php-format
-#| msgid ""
-#| "ERROR: You must specificy both the Months and Days of Month.  Disabling "
-#| "Network %s!."
+#, php-format
 msgid ""
 "ERROR: You must specificy both the Months and Days of Month.  Disabling "
 "Network %s!"
 msgstr ""
 "FOUT: U moet zowel een maand als de dag(en) va de maand specificeren. Het "
-"netwerk %s wordt uitgeschakeld!."
+"netwerk %s wordt uitgeschakeld!"
 
 #: /var/www/html/cacti/automation_networks.php:197
-#, fuzzy, php-format
-#| msgid ""
-#| "ERROR: You must specificy the Months, Weeks of Months, and Days of Week.  "
-#| "Disabling Network %s!."
+#, php-format
 msgid ""
 "ERROR: You must specificy the Months, Weeks of Months, and Days of Week.  "
 "Disabling Network %s!"
 msgstr ""
 "FOUT: U moet een maand, week van de maand en dagen van de week specificeren. "
-"Het netwerk %s wordt uitgeschakeld!."
+"Het netwerk %s wordt uitgeschakeld!"
 
 #: /var/www/html/cacti/automation_networks.php:215
 #, php-format
@@ -3252,17 +3246,12 @@ msgid "System Description Match"
 msgstr "Systeembeschrijving overeenkomst"
 
 #: /var/www/html/cacti/automation_templates.php:316
-#, fuzzy
-#| msgid ""
-#| "This is a unique string that will be matched to a devices sysName string "
-#| "to pair it to this Automation Template.  Any Perl regular expression can "
-#| "be used in addition to any SQL Where expression."
 msgid ""
 "This is a unique string that will be matched to a devices sysDescr string to "
 "pair it to this Automation Template.  Any Perl regular expression can be "
 "used in addition to any SQL Where expression."
 msgstr ""
-"Dit is een unieke waarde dat gekoppeld wordt aan de sysName waarde van een "
+"Dit is een unieke waarde dat gekoppeld wordt aan de sysDescr waarde van een "
 "apparaat om het te koppelen aan dit scantemplate. Iedere Perl reguliere "
 "expressie kan hier worden gebruikt evenals ieder SQL Where statement."
 
@@ -4359,10 +4348,9 @@ msgid "Delete Data Source Profile Item"
 msgstr "Verwijder data bron profiel item"
 
 #: /var/www/html/cacti/data_source_profiles.php:678
-#, fuzzy, php-format
-#| msgid "%s KBytes per Data Sources and $s Bytes for the Header"
+#, php-format
 msgid "%s KBytes per Data Sources and %s Bytes for the Header"
-msgstr "%s KBytes per data bron en $s Bytes voor de header"
+msgstr "%s KBytes per data bron en %s Bytes voor de header"
 
 #: /var/www/html/cacti/data_source_profiles.php:687
 #, php-format
@@ -4535,10 +4523,8 @@ msgid "The number of Data Templates using this Profile."
 msgstr "Het aantal data templates die dit profiel gebruiken."
 
 #: /var/www/html/cacti/data_source_profiles.php:968
-#, fuzzy
-#| msgid "No Data Source Profiles"
 msgid "No Data Source Profiles Found"
-msgstr "Geen data bron profielen"
+msgstr "Geen data bron profielen gevonden"
 
 #: /var/www/html/cacti/data_sources.php:36
 #: /var/www/html/cacti/data_sources.php:478 /var/www/html/cacti/graphs.php:54
@@ -5522,10 +5508,8 @@ msgstr "Startdatum"
 
 #: /var/www/html/cacti/graph_xport.php:124
 #: /var/www/html/cacti/graph_xport.php:157
-#, fuzzy
-#| msgid "Date"
 msgid "End Date"
-msgstr "Datum"
+msgstr "Einddatum"
 
 #: /var/www/html/cacti/graph_xport.php:125
 #: /var/www/html/cacti/graph_xport.php:158
@@ -5535,10 +5519,8 @@ msgstr "Stap"
 
 #: /var/www/html/cacti/graph_xport.php:126
 #: /var/www/html/cacti/graph_xport.php:159
-#, fuzzy
-#| msgid "Total IPs"
 msgid "Total Rows"
-msgstr "Totaal aantal IP adressen"
+msgstr "Totaal aantal rijen"
 
 #: /var/www/html/cacti/graph_xport.php:127
 #: /var/www/html/cacti/graph_xport.php:160
@@ -5548,10 +5530,8 @@ msgstr "Grafiek ID"
 
 #: /var/www/html/cacti/graph_xport.php:128
 #: /var/www/html/cacti/graph_xport.php:161
-#, fuzzy
-#| msgid "Host"
 msgid "Host ID"
-msgstr "Host"
+msgstr "Host ID"
 
 #: /var/www/html/cacti/graph_xport.php:132
 #: /var/www/html/cacti/graph_xport.php:171
@@ -5560,10 +5540,8 @@ msgstr ""
 
 #: /var/www/html/cacti/graph_xport.php:138
 #: /var/www/html/cacti/graph_xport.php:181
-#, fuzzy
-#| msgid "Automation"
 msgid "Summation"
-msgstr "Automatisering"
+msgstr "Samenvatting"
 
 #: /var/www/html/cacti/graph_xport.php:144
 #: /var/www/html/cacti/utilities.php:242 /var/www/html/cacti/utilities.php:773
@@ -5571,16 +5549,12 @@ msgid "Date"
 msgstr "Datum"
 
 #: /var/www/html/cacti/graph_xport.php:153
-#, fuzzy
-#| msgid "Down"
 msgid "Download"
-msgstr "Offline"
+msgstr "Download"
 
 #: /var/www/html/cacti/graph_xport.php:153
-#, fuzzy
-#| msgid "Item Details"
 msgid "Summary Details"
-msgstr "Item details"
+msgstr "Samenvatting details"
 
 #: /var/www/html/cacti/graphs.php:49 /var/www/html/cacti/graphs.php:874
 #: /var/www/html/cacti/lib/functions.php:1931
@@ -9956,7 +9930,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:180
 msgid "The path to Spine binary."
-msgstr "De locatie van de Spine binary"
+msgstr "De locatie van de Spine binary."
 
 #: /var/www/html/cacti/include/global_settings.php:185
 msgid "Spine Config File Path"
@@ -12325,18 +12299,6 @@ msgid "Number of Offline Records:"
 msgstr "Aantal offline records:"
 
 #: /var/www/html/cacti/index.php:85
-#, fuzzy
-#| msgid ""
-#| "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When "
-#| "<b>'online'</b>, you will be able to view and control much of the Main "
-#| "Cacti Web Site just as if you were logged into it.  Also, it's important "
-#| "to note that Remote Data Collectors are required to use the Cacti's "
-#| "Performance Boosting Services <b>'On Demand Updating'</b> feature, and we "
-#| "always recommend using Spine.  When the Remote Data Collector is "
-#| "<b>'offline'</b>, the Remote Data Collectos Web Site will contain much "
-#| "less information.  However, it will cache all updates until the Main "
-#| "Cacti Database and Web Server are reachable.  Then it will dump it's "
-#| "Boost table output back to the Main Cacti Database for updating."
 msgid ""
 "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When "
 "<b>'online'</b>, you will be able to view and control much of the Main Cacti "
@@ -12569,10 +12531,8 @@ msgstr ""
 "database is verrijkt met de globale tijdzone informatie."
 
 #: /var/www/html/cacti/install/index.php:466
-#, fuzzy
-#| msgid "MySQL TimeZone Support"
 msgid "PHP Timezone Support"
-msgstr "MySQL Timezone ondersteuning"
+msgstr "PHP Timezone ondersteuning"
 
 #: /var/www/html/cacti/install/index.php:469
 msgid ""
@@ -12994,10 +12954,8 @@ msgid "Database upgrade completed!"
 msgstr ""
 
 #: /var/www/html/cacti/install/index.php:926
-#, fuzzy
-#| msgid "Version"
 msgid "Version: "
-msgstr "Versie"
+msgstr "Versie: "
 
 #: /var/www/html/cacti/install/index.php:943
 msgid ""
@@ -14161,7 +14119,7 @@ msgstr ""
 
 #: /var/www/html/cacti/lib/html_reports.php:148
 msgid "e.g. 'Week(s)' represents a weekly Reporting Interval."
-msgstr "Bijvoorbeeld: 'We(e)k(en) is een wekelijkse rapportage interval."
+msgstr "bijvoorbeeld: 'We(e)k(en) is een wekelijkse rapportage interval."
 
 #: /var/www/html/cacti/lib/html_reports.php:155
 msgid "Interval Frequency"
@@ -14182,7 +14140,7 @@ msgid ""
 "Intervals, the 'Day of Week' and the 'Day of Month' are both calculated "
 "based upon the Mailtime you specify above."
 msgstr ""
-"Bijvoorbeeld: Als de rapportage interval 'Wekelijks' is, dan impliceert '2' "
+"bijvoorbeeld: Als de rapportage interval 'Wekelijks' is, dan impliceert '2' "
 "dat de rapportage iedere 2 weken wordt verstuurd vanaf het eerst volgende "
 "mail moment. Als er gebruik wordt gemaakt van de Maandelijkse rapportage "
 "intervallen, de 'dag van de week' en de 'dag van de maand' worden beiden "
@@ -14214,7 +14172,7 @@ msgstr "Deze naam zal worden gebruikt als de standaard afzender van de e-mail"
 
 #: /var/www/html/cacti/lib/html_reports.php:189
 msgid "This Address will be used as the E-mail Senders address"
-msgstr "Dit adres wordt gebruikt als afzenderadres."
+msgstr "Dit adres wordt gebruikt als afzender adres"
 
 #: /var/www/html/cacti/lib/html_reports.php:194
 msgid "To Email Address(es)"
@@ -14508,10 +14466,8 @@ msgid "Report Disabled - No Owner"
 msgstr "Rapportage uitgeschakeld - Geen eigenaar"
 
 #: /var/www/html/cacti/lib/html_reports.php:1555
-#, fuzzy
-#| msgid "Every Day"
 msgid "Every"
-msgstr "Iedere dag"
+msgstr "Iedere"
 
 #: /var/www/html/cacti/lib/html_reports.php:1561
 msgid "Multiple"
@@ -14953,7 +14909,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/rrd.php:2579
 #, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
-msgstr "Aantal rijen van Cacti RRA id '%s' zou '%s' moeten zijn"
+msgstr "Aantal rijen van Cacti RRA id '%s' zou moeten zijn: '%s'"
 
 #: /var/www/html/cacti/lib/rrd.php:2595
 #, php-format
@@ -15057,12 +15013,6 @@ msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr ""
 
 #: /var/www/html/cacti/lib/utility.php:686
-#, fuzzy
-#| msgid ""
-#| "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good "
-#| "versions to choose. Make sure you run the very latest release though "
-#| "which fixes a long standing low level networking issue that was casuing "
-#| "spine many issues with reliability."
 msgid ""
 "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions "
 "to choose. Make sure you run the very latest release though which fixes a "
@@ -15099,14 +15049,6 @@ msgstr ""
 "talen."
 
 #: /var/www/html/cacti/lib/utility.php:717
-#, fuzzy
-#| msgid ""
-#| "When using Cacti with languages other than English, it is important ot "
-#| "use the utf8 character set as some characters take more than a single "
-#| "byte.  If you are first just now installing Cacti, stop, make the changes "
-#| "and start over again.  If your Cacti has been running and is in "
-#| "production, see the internet for instructions on converting your "
-#| "databases and tables if you plan on supporting other languages."
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
 "the utf8 character set as some characters take more than a single byte. If "
@@ -16550,10 +16492,8 @@ msgid "Available Graphs"
 msgstr "Beschikbare grafieken"
 
 #: /var/www/html/cacti/tree.php:733 /var/www/html/cacti/tree.php:922
-#, fuzzy
-#| msgid "New Profile"
 msgid "New Node"
-msgstr "Nieuw profiel"
+msgstr "Nieuwe node"
 
 #: /var/www/html/cacti/tree.php:1065
 msgid "Rename"
@@ -17898,10 +17838,8 @@ msgid ""
 msgstr ""
 
 #: /var/www/html/cacti/utilities.php:1839
-#, fuzzy
-#| msgid "Rebuild Poller Cache"
 msgid "Rebuild Resource Cache"
-msgstr "Poller cache opnieuw opbouwen"
+msgstr "Resource cache opnieuw opbouwen"
 
 #: /var/www/html/cacti/utilities.php:1841
 msgid ""
