@@ -28,8 +28,8 @@ if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 	die("<br><strong>This script is only meant to run at the command line.</strong>");
 }
 
-$no_http_headers = TRUE;
-$proceed         = FALSE;
+$no_http_headers = true;
+$proceed         = false;
 
 include(dirname(__FILE__) . "/../include/global.php");
 
@@ -49,7 +49,7 @@ if (sizeof($parms)) {
 
 		switch ($arg) {
 			case '--proceed':
-				$proceed = TRUE;
+				$proceed = true;
 
 				break;
 			case '--version':
@@ -74,7 +74,7 @@ if (sizeof($parms)) {
 	}
 }
 
-if ($proceed == FALSE) {
+if ($proceed == false) {
 	echo "\nFATAL: You Must Explicitally Instruct This Script to Proceed with the '--proceed' Option\n\n";
 	display_help();
 	exit -1;

@@ -38,7 +38,7 @@ include_once('../lib/template.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$execute = FALSE;
+$execute = false;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -51,12 +51,12 @@ if (sizeof($parms)) {
 
 		switch ($arg) {
 			case '--execute':
-				$execute = TRUE;
+				$execute = true;
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
-				diaplay_version();
+				display_version();
 			case '--help':
 			case '-H':
 			case '-h':

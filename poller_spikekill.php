@@ -40,10 +40,10 @@ array_shift($parms);
 
 global $debug, $start, $seed, $forcerun;
 
-$debug          = FALSE;
-$forcerun       = FALSE;
-$templates      = FALSE;
-$kills          = 0;
+$debug     = false;
+$forcerun  = false;
+$templates = false;
+$kills     = 0;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -57,14 +57,14 @@ if (sizeof($parms)) {
 		switch ($arg) {
 			case '-d':
 			case '--debug':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--templates':
 				$templates = $value;
 				break;
 			case '-f':
 			case '--force':
-				$forcerun = TRUE;
+				$forcerun = true;
 				break;
 			case '--version':
 			case '-V':
@@ -128,7 +128,7 @@ if (timeToRun()) {
     db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("stats_spikekill", ?)', array($cacti_stats));
 
     /* log to the logfile */
-    cacti_log('SPIKEKILL STATS: ' . $cacti_stats , TRUE, 'SYSTEM');
+    cacti_log('SPIKEKILL STATS: ' . $cacti_stats , true, 'SYSTEM');
 }
 
 echo "NOTE: SpikeKill Finished\n";

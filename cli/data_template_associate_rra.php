@@ -52,7 +52,7 @@ if (sizeof($parms)) {
 		switch ($arg) {
 			case '-d':
 			case '--debug':				
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--rra':
 				$rra = trim($value);
@@ -71,7 +71,7 @@ if (sizeof($parms)) {
 				display_help();
 				exit;
 			case '--quiet':
-				$quietMode = TRUE;
+				$quietMode = true;
 				break;
 			default:
 				echo "ERROR: Invalid Argument: ($arg)\n\n";

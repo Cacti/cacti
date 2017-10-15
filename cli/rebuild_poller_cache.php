@@ -37,7 +37,7 @@ include_once($config['base_path'] . '/lib/utility.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug = FALSE;
+$debug = false;
 $host_id = 0;
 
 if (sizeof($parms)) {
@@ -52,7 +52,7 @@ if (sizeof($parms)) {
 		switch ($arg) {
 			case '-d':
 			case '--debug':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--host-id':
 				$host_id = trim($value);

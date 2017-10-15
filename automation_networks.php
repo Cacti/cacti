@@ -863,7 +863,7 @@ function network_edit() {
 	<?php
 }
 
-function get_networks(&$sql_where, $rows, $apply_limits = TRUE) {
+function get_networks(&$sql_where, $rows, $apply_limits = true) {
 	if (get_request_var('filter') != '') {
 		$sql_where = " WHERE (automation_networks.name LIKE '%" . get_request_var('filter') . "%')";
 	}

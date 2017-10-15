@@ -85,8 +85,8 @@ global $current_user;
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug          = FALSE;
-$force          = FALSE;
+$debug = false;
+$force = false;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -100,11 +100,11 @@ if (sizeof($parms)) {
 		switch ($arg) {
 			case '-f':
 			case '--force':
-				$force = TRUE;
+				$force = true;
 				break;
 			case '-d':
 			case '--debug':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--version':
 			case '-V':

@@ -41,13 +41,13 @@ function sig_handler($signo) {
 		case SIGABRT:
 		case SIGQUIT:
 		case SIGSEGV:
-			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" . basename($include_file) . "', function:'$function', params:'$parameters'", FALSE, 'PHPSVR');
+			cacti_log("WARNING: Script Server terminated with signal '$signo' in file:'" . basename($include_file) . "', function:'$function', params:'$parameters'", false, 'PHPSVR');
 			db_close();
 
 			exit;
 			break;
 		default:
-			cacti_log("WARNING: Script Server received signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'", FALSE, 'PHPSVR');
+			cacti_log("WARNING: Script Server received signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'", false, 'PHPSVR');
 
 			break;
 	}
@@ -144,7 +144,7 @@ while (1) {
 	$parameters      = '';
 	$parameter_array = array();
 
-	if ($input_string !== FALSE) {
+	if ($input_string !== false) {
 		$input_string = trim($input_string);
 
 		if (substr($input_string,0,4) == 'quit') {

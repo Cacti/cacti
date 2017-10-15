@@ -344,7 +344,7 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
      results to RRDTool for processing
   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
   @arg $remainder - don't use LIMIT if TRUE */
-function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
+function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 	global $config, $debug;
 
 	static $have_deleted_rows = true;

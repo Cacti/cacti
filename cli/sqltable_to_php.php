@@ -113,7 +113,7 @@ function sqltable_to_php ($table, $create) {
 				$text .= "\$data['columns'][] = array(";
 				$text .= "'name' => '" . $r['Field'] . "'";
 
-				if (strpos(strtolower($r['Type']), ' unsigned') !== FALSE) {
+				if (strpos(strtolower($r['Type']), ' unsigned') !== false) {
 					$r['Type'] = str_ireplace(' unsigned', '', $r['Type']);
 					$text .= ", 'unsigned' => true";
 				}

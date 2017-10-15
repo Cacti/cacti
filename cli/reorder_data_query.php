@@ -40,7 +40,7 @@ include_once($config['base_path'] . '/lib/data_query.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug		= FALSE;
+$debug		= false;
 $host_id	= 'all';
 $host_descr	= '';
 
@@ -65,7 +65,7 @@ if (sizeof($parms)) {
 				break;
 			case '-d':
 			case '--debug':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--version':
 			case '-V':

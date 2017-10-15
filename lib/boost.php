@@ -676,10 +676,10 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	}
 
 	if (sizeof($results) > 0) {
-		$rrdp_auto_close = FALSE;
+		$rrdp_auto_close = false;
 		if(!$rrdtool_pipe) {
 			$rrdtool_pipe = rrd_init();
-			$rrdp_auto_close = TRUE;
+			$rrdp_auto_close = true;
 		}
 	
 		/* create an array keyed off of each .rrd file */
@@ -1120,7 +1120,7 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 		if (read_config_option('storage_location')) {
 			if (false === rrdtool_execute('is_dir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
 				if (false === rrdtool_execute('mkdir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
-					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
+					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}
 		}elseif (!is_dir(dirname($data_source_path))) {
@@ -1134,14 +1134,14 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 								(chgrp(dirname($data_source_path), $group_id))) {
 							/* permissions set ok */
 						}else{
-							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
+							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", false);
 						}
 					}
 				}else{
-					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
+					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}else{
-				cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", FALSE);
+				cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", false);
 			}
 		}
 	}
