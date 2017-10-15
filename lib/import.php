@@ -157,7 +157,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 	if (is_resource($f)) {
 		while (!feof($f)) {
 			$x = fgets($f);
-			if (strpos($x, '<signature>') !== false) {
+			if (strpos($x, '<signature>') !== FALSE) {
 				$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)));
 				$x = "   <signature></signature>\n";
 
@@ -165,9 +165,9 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 			}
 			$xml .= "$x";
 		}
-		fclose($f); 
+		fclose($f);
 	} else {
-		cacti_log('FATAL: Unable to open file ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);	
+		cacti_log('FATAL: Unable to open file ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
 		return false;
 	}
 
@@ -185,7 +185,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 
 	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 
-	$xmlget     = simplexml_load_string($xml); 
+	$xmlget     = simplexml_load_string($xml);
 	$data       = xml_to_array($xmlget);
 	$filestatus = array();
 
@@ -265,14 +265,14 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	$status = 0;
 
 	/* import into: graph_templates */
-	$_graph_template_id = db_fetch_cell_prepared('SELECT id 
-		FROM graph_templates 
-		WHERE hash = ?', 
+	$_graph_template_id = db_fetch_cell_prepared('SELECT id
+		FROM graph_templates
+		WHERE hash = ?',
 		array($hash));
 
 	if (!empty($_graph_template_id)) {
-		$previous_data = db_fetch_row_prepared('SELECT * 
-			FROM graph_templates 
+		$previous_data = db_fetch_row_prepared('SELECT *
+			FROM graph_templates
 			WHERE id = ?', array($_graph_template_id));
 	} else {
 		$previous_data = array();
@@ -299,16 +299,16 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 	/* import into: graph_templates_graph */
 	unset($save);
-	$save['id'] = (empty($_graph_template_id) ? '0' : db_fetch_cell_prepared('SELECT gtg.id 
+	$save['id'] = (empty($_graph_template_id) ? '0' : db_fetch_cell_prepared('SELECT gtg.id
 		FROM graph_templates AS gt
 		INNER JOIN graph_templates_graph AS gtg
-		ON gt.id=gtg.graph_template_id 
+		ON gt.id=gtg.graph_template_id
 		WHERE gt.id = ? AND gtg.local_graph_id=0', array($graph_template_id)));
 
 	if (!empty($_graph_template_id)) {
-		$previous_data = db_fetch_row_prepared('SELECT * 
-			FROM graph_templates_graph 
-			WHERE id = ?', 
+		$previous_data = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_graph
+			WHERE id = ?',
 			array($save['id']));
 	} else {
 		$previous_data = array();
@@ -376,17 +376,17 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_graph_template_item_id = db_fetch_cell_prepared('SELECT id 
-				FROM graph_templates_item 
+			$_graph_template_item_id = db_fetch_cell_prepared('SELECT id
+				FROM graph_templates_item
 				WHERE hash = ?
 				AND graph_template_id = ?
-				AND local_graph_id=0', 
+				AND local_graph_id=0',
 				array($parsed_hash['hash'], $graph_template_id));
 
 			if (!empty($_graph_template_item_id)) {
-				$previous_data = db_fetch_row_prepared('SELECT * 
-					FROM graph_templates_item 
-					WHERE id = ?', 
+				$previous_data = db_fetch_row_prepared('SELECT *
+					FROM graph_templates_item
+					WHERE id = ?',
 					array($_graph_template_item_id));
 			} else {
 				$previous_data = array();
@@ -403,14 +403,14 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
 					} elseif (($field_name == 'color_id') && (preg_match('/^[a-fA-F0-9]{6}$/', $item_array[$field_name])) && (get_version_index($parsed_hash['version']) >= get_version_index('0.8.5'))) { /* treat the 'color' field differently */
-						$color_id = db_fetch_cell_prepared('SELECT id 
-							FROM colors 
-							WHERE hex = ?', 
+						$color_id = db_fetch_cell_prepared('SELECT id
+							FROM colors
+							WHERE hex = ?',
 							array($item_array[$field_name]));
 
 						if (empty($color_id) && !$preview_only) {
 							db_execute_prepared('INSERT INTO colors (
-								hex) VALUES (?)', 
+								hex) VALUES (?)',
 								array($item_array[$field_name]));
 
 							$color_id = db_fetch_insert_id();
@@ -452,16 +452,16 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_graph_template_input_id = db_fetch_cell_prepared('SELECT id 
-				FROM graph_template_input 
+			$_graph_template_input_id = db_fetch_cell_prepared('SELECT id
+				FROM graph_template_input
 				WHERE hash = ?
-				AND graph_template_id = ?', 
+				AND graph_template_id = ?',
 				array($parsed_hash['hash'], $graph_template_id));
 
 			if (!empty($_graph_template_input_id)) {
-				$previous_data = db_fetch_row_prepared('SELECT * 
-					FROM graph_template_input 
-					WHERE id = ?', 
+				$previous_data = db_fetch_row_prepared('SELECT *
+					FROM graph_template_input
+					WHERE id = ?',
 					array($_graph_template_input_id));
 			} else {
 				$previous_data = array();
@@ -498,9 +498,9 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 						if ($parsed_hash == false) { return false; }
 
 						if (isset($hash_cache['graph_template_item'][$parsed_hash['hash']])) {
-							db_execute_prepared('REPLACE INTO graph_template_input_defs 
-								(graph_template_input_id,graph_template_item_id) 
-								VALUES (?, ?)', 
+							db_execute_prepared('REPLACE INTO graph_template_input_defs
+								(graph_template_input_id,graph_template_item_id)
+								VALUES (?, ?)',
 								array($graph_template_input_id, $hash_cache['graph_template_item'][$parsed_hash['hash']]));
 						}
 					}
@@ -527,8 +527,14 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 		foreach($orphaned_items as $item) {
 			if ($remove_orphans) {
 				$orphan_text[] = 'Removed Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
-				db_execute_prepared('DELETE FROM graph_templates_item WHERE hash = ?', array($item['hash']));				
-				db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_template_item_id = ?', array($item['id']));
+
+				db_execute_prepared('DELETE FROM graph_templates_item
+					WHERE hash = ?',
+					array($item['hash']));
+
+				db_execute_prepared('DELETE FROM graph_templates_item
+					WHERE local_graph_template_item_id = ?',
+					array($item['id']));
 			} else {
 				$orphan_text[] = 'Found Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
 			}
@@ -550,15 +556,15 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	$status = 0;
 
 	/* import into: data_template */
-	$_data_template_id = db_fetch_cell_prepared('SELECT id 
-		FROM data_template 
-		WHERE hash = ?', 
+	$_data_template_id = db_fetch_cell_prepared('SELECT id
+		FROM data_template
+		WHERE hash = ?',
 		array($hash));
 
 	if (!empty($_data_template_id)) {
-		$previous_data = db_fetch_row_prepared('SELECT * 
-			FROM data_template 
-			WHERE id = ?', 
+		$previous_data = db_fetch_row_prepared('SELECT *
+			FROM data_template
+			WHERE id = ?',
 			array($_data_template_id));
 	} else {
 		$previous_data = array();
@@ -583,17 +589,17 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 
 	/* import into: data_template_data */
 	unset($save);
-	$save['id'] = (empty($_data_template_id) ? '0' : db_fetch_cell_prepared('SELECT dtd.id 
+	$save['id'] = (empty($_data_template_id) ? '0' : db_fetch_cell_prepared('SELECT dtd.id
 		FROM data_template AS dt
 		INNER JOIN data_template_data AS dtd
-		ON dt.id=dtd.data_template_id 
+		ON dt.id=dtd.data_template_id
 		WHERE dt.id = ?
 		AND dtd.local_data_id=0', array($data_template_id)));
 
 	if (!empty($save['id'])) {
-		$previous_data = db_fetch_row_prepared('SELECT * 
+		$previous_data = db_fetch_row_prepared('SELECT *
 			FROM data_template_data
-			WHERE id = ?', 
+			WHERE id = ?',
 			array($save['id']));
 	} else {
 		$previous_data = array();
@@ -620,15 +626,19 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 			}
 		}
 	}
-	
+
 	/* set the rrd_step */
 	if ($profile_id > 0) {
-		$save['rrd_step'] = db_fetch_cell_prepared('SELECT step 
-			FROM data_source_profiles 
-			WHERE id = ?', 
+		$save['rrd_step'] = db_fetch_cell_prepared('SELECT step
+			FROM data_source_profiles
+			WHERE id = ?',
 			array($profile_id));
 	} else {
-		$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+		$profile_id = db_fetch_cell('SELECT id
+			FROM data_source_profiles
+			ORDER BY `default`
+			DESC LIMIT 1');
+
 		$save['rrd_step'] = db_fetch_cell_prepared('SELECT step
 			FROM data_source_profiles
 			WHERE id = ?',
@@ -654,17 +664,17 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_data_template_rrd_id = db_fetch_cell_prepared('SELECT id 
-				FROM data_template_rrd 
+			$_data_template_rrd_id = db_fetch_cell_prepared('SELECT id
+				FROM data_template_rrd
 				WHERE hash = ?
 				AND data_template_id = ?
-				AND local_data_id=0', 
+				AND local_data_id=0',
 				array($parsed_hash['hash'], $data_template_id));
 
 			if (!empty($_data_template_rrd_id)) {
-				$previous_data = db_fetch_row_prepared('SELECT * 
+				$previous_data = db_fetch_row_prepared('SELECT *
 					FROM data_template_rrd
-					WHERE id = ?', 
+					WHERE id = ?',
 					array($_data_template_rrd_id));
 			} else {
 				$previous_data = array();
@@ -693,12 +703,12 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 
 			/* use the profiles step * 2 as the heartbeat if we are not importing a new profile */
 			if ($import_as_new === false) {
-				$save['rrd_heartbeat'] = db_fetch_cell_prepared('SELECT step 
-					FROM data_source_profiles 
-					WHERE id = ?', 
+				$save['rrd_heartbeat'] = db_fetch_cell_prepared('SELECT step
+					FROM data_source_profiles
+					WHERE id = ?',
 					array($profile_id)) * 2;
 			}
-			
+
 			/* Fix for importing during installation - use the polling interval as the step if we are to use the default rra settings */
 			if (is_array($profile_id) == true) {
 				$save['rrd_heartbeat'] = read_config_option('poller_interval') * 2;
@@ -733,9 +743,9 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 
 		/* push out field mappings for the data collector */
 		db_execute_prepared('REPLACE INTO poller_data_template_field_mappings
-			SELECT dtr.data_template_id, 
-			dif.data_name, 
-			GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, 
+			SELECT dtr.data_template_id,
+			dif.data_name,
+			GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names,
 			NOW() AS last_updated
 			FROM data_template_rrd AS dtr
 			INNER JOIN data_input_fields AS dif
@@ -760,15 +770,15 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 	$status = 0;
 
 	/* import into: snmp_query */
-	$_data_query_id = db_fetch_cell_prepared('SELECT id 
-		FROM snmp_query 
-		WHERE hash = ?', 
+	$_data_query_id = db_fetch_cell_prepared('SELECT id
+		FROM snmp_query
+		WHERE hash = ?',
 		array($hash));
 
 	if (!empty($_data_query_id)) {
-		$previous_data = db_fetch_row_prepared('SELECT * 
-			FROM snmp_query 
-			WHERE id = ?', 
+		$previous_data = db_fetch_row_prepared('SELECT *
+			FROM snmp_query
+			WHERE id = ?',
 			array($_data_query_id));
 	} else {
 		$previous_data = array();
@@ -814,16 +824,16 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_data_query_graph_id = db_fetch_cell_prepared('SELECT id 
-				FROM snmp_query_graph 
+			$_data_query_graph_id = db_fetch_cell_prepared('SELECT id
+				FROM snmp_query_graph
 				WHERE hash = ?
-				AND snmp_query_id = ?', 
+				AND snmp_query_id = ?',
 				array($parsed_hash['hash'], $data_query_id));
 
 			if (!empty($_data_query_graph_id)) {
-				$previous_data = db_fetch_row_prepared('SELECT * 
+				$previous_data = db_fetch_row_prepared('SELECT *
 					FROM snmp_query_graph
-					WHERE id = ?', 
+					WHERE id = ?',
 					array($_data_query_graph_id));
 			} else {
 				$previous_data = array();
@@ -881,16 +891,16 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					if ($parsed_hash == false) { return false; }
 
 					unset($save);
-					$_data_query_graph_sv_id = db_fetch_cell_prepared('SELECT id 
-						FROM snmp_query_graph_sv 
+					$_data_query_graph_sv_id = db_fetch_cell_prepared('SELECT id
+						FROM snmp_query_graph_sv
 						WHERE hash = ?
-						AND snmp_query_graph_id = ?', 
+						AND snmp_query_graph_id = ?',
 						array($parsed_hash['hash'], $data_query_graph_id));
 
 					if (!empty($_data_query_graph_sv_id)) {
-						$previous_data = db_fetch_row_prepared('SELECT * 
+						$previous_data = db_fetch_row_prepared('SELECT *
 							FROM snmp_query_graph_sv
-							WHERE id = ?', 
+							WHERE id = ?',
 							array($_data_query_graph_sv_id));
 					} else {
 						$previous_data = array();
@@ -926,16 +936,16 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					if ($parsed_hash == false) { return false; }
 
 					unset($save);
-					$_data_query_graph_rrd_sv_id = db_fetch_cell_prepared('SELECT id 
-						FROM snmp_query_graph_rrd_sv 
+					$_data_query_graph_rrd_sv_id = db_fetch_cell_prepared('SELECT id
+						FROM snmp_query_graph_rrd_sv
 						WHERE hash = ?
-						AND snmp_query_graph_id = ?', 
+						AND snmp_query_graph_id = ?',
 						array($parsed_hash['hash'], $data_query_graph_id));
 
 					if (!empty($_data_query_graph_rrd_sv_id)) {
-						$previous_data = db_fetch_row_prepared('SELECT * 
+						$previous_data = db_fetch_row_prepared('SELECT *
 							FROM snmp_query_graph_rrd_sv
-							WHERE id = ?', 
+							WHERE id = ?',
 							array($_data_query_graph_rrd_sv_id));
 					} else {
 						$previous_data = array();
@@ -979,15 +989,15 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	$status = 0;
 
 	/* import into: graph_templates_gprint */
-	$_gprint_preset_id = db_fetch_cell_prepared('SELECT id 
-		FROM graph_templates_gprint 
-		WHERE hash = ?', 
+	$_gprint_preset_id = db_fetch_cell_prepared('SELECT id
+		FROM graph_templates_gprint
+		WHERE hash = ?',
 		array($hash));
 
 	if (!empty($_gprint_preset_id)) {
-		$previous_data = db_fetch_row_prepared('SELECT * 
+		$previous_data = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_gprint
-			WHERE id = ?', 
+			WHERE id = ?',
 			array($_gprint_preset_id));
 	} else {
 		$previous_data = array();
@@ -1043,9 +1053,9 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 			$dsp_id = sql_save($save, 'data_source_profiles');
 
 			if (!empty($dsp_id)) {
-				db_execute_prepared('UPDATE data_template_data 
-					SET data_source_profile_id = ? 
-					WHERE id = ?', 
+				db_execute_prepared('UPDATE data_template_data
+					SET data_source_profile_id = ?
+					WHERE id = ?',
 					array($dsp_id, $import_template_id));
 			}
 
@@ -1056,9 +1066,9 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 
 			if (!empty($hash_items[0])) {
 				for ($i=0; $i<count($hash_items); $i++) {
-					db_execute_prepared('REPLACE INTO data_source_profiles_cf 
-						(data_source_profile_id,consolidation_function_id) 
-						VALUES (?, ?)', 
+					db_execute_prepared('REPLACE INTO data_source_profiles_cf
+						(data_source_profile_id,consolidation_function_id)
+						VALUES (?, ?)',
 						array($dsp_id, $hash_items[$i]));
 				}
 			}
@@ -1104,15 +1114,15 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 	$status = 0;
 
 	/* import into: graph_templates_gprint */
-	$_host_template_id = db_fetch_cell_prepared('SELECT id 
-		FROM host_template 
-		WHERE hash = ?', 
+	$_host_template_id = db_fetch_cell_prepared('SELECT id
+		FROM host_template
+		WHERE hash = ?',
 		array($hash));
 
 	if (!empty($_host_template_id)) {
-		$previous_data = db_fetch_row_prepared('SELECT * 
+		$previous_data = db_fetch_row_prepared('SELECT *
 			FROM host_template
-			WHERE id = ?', 
+			WHERE id = ?',
 			array($_host_template_id));
 	} else {
 		$previous_data = array();
@@ -1148,9 +1158,9 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 				if ($parsed_hash == false) { return false; }
 
 				if (isset($hash_cache['graph_template']{$parsed_hash['hash']})) {
-					db_execute_prepared('REPLACE INTO host_template_graph 
-						(host_template_id,graph_template_id) 
-						VALUES (?, ?)', 
+					db_execute_prepared('REPLACE INTO host_template_graph
+						(host_template_id,graph_template_id)
+						VALUES (?, ?)',
 						array($host_template_id, $hash_cache['graph_template']{$parsed_hash['hash']}));
 				}
 			}
@@ -1168,9 +1178,9 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 				if ($parsed_hash == false) { return false; }
 
 				if (isset($hash_cache['data_query']{$parsed_hash['hash']})) {
-					db_execute_prepared('REPLACE INTO host_template_snmp_query 
-						(host_template_id,snmp_query_id) 
-						VALUES (?, ?)', 
+					db_execute_prepared('REPLACE INTO host_template_snmp_query
+						(host_template_id,snmp_query_id)
+						VALUES (?, ?)',
 						array($host_template_id, $hash_cache['data_query']{$parsed_hash['hash']}));
 				}
 			}
@@ -1200,15 +1210,15 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	);
 
 	/* import into: cdef */
-	$_cdef_id = db_fetch_cell_prepared('SELECT id 
-		FROM cdef 
-		WHERE hash = ?', 
+	$_cdef_id = db_fetch_cell_prepared('SELECT id
+		FROM cdef
+		WHERE hash = ?',
 		array($hash));
 
 	if (!empty($_cdef_id)) {
-		$previous_data = db_fetch_row_prepared('SELECT * 
+		$previous_data = db_fetch_row_prepared('SELECT *
 			FROM cdef
-			WHERE id = ?', 
+			WHERE id = ?',
 			array($_cdef_id));
 	} else {
 		$previous_data = array();
@@ -1247,16 +1257,16 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_cdef_item_id = db_fetch_cell_prepared('SELECT id 
-				FROM cdef_items 
-				WHERE hash= ? 
-				AND cdef_id = ?', 
+			$_cdef_item_id = db_fetch_cell_prepared('SELECT id
+				FROM cdef_items
+				WHERE hash= ?
+				AND cdef_id = ?',
 				array($parsed_hash['hash'], $cdef_id));
 
 			if (!empty($_cdef_item_id)) {
-				$previous_data = db_fetch_row_prepared('SELECT * 
+				$previous_data = db_fetch_row_prepared('SELECT *
 					FROM cdef_items
-					WHERE id = ?', 
+					WHERE id = ?',
 					array($_cdef_item_id));
 			} else {
 				$previous_data = array();
@@ -1281,9 +1291,9 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 						/* invalid/wrong hash */
 						if ($parsed_item_hash == false) { return false; }
 
-						$_cdef_id = db_fetch_cell_prepared('SELECT id 
-							FROM cdef 
-							WHERE hash = ?', 
+						$_cdef_id = db_fetch_cell_prepared('SELECT id
+							FROM cdef
+							WHERE hash = ?',
 							array($parsed_item_hash['hash']));
 
 						$save[$field_name] = $_cdef_id;
@@ -1323,15 +1333,15 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	$status = 0;
 
 	/* import into: vdef */
-	$_vdef_id = db_fetch_cell_prepared('SELECT id 
-		FROM vdef 
-		WHERE hash = ?', 
+	$_vdef_id = db_fetch_cell_prepared('SELECT id
+		FROM vdef
+		WHERE hash = ?',
 		array($hash));
 
 	if (!empty($_vdef_id)) {
-		$previous_data = db_fetch_row_prepared('SELECT * 
+		$previous_data = db_fetch_row_prepared('SELECT *
 			FROM vdef
-			WHERE id = ?', 
+			WHERE id = ?',
 			array($_vdef_id));
 	} else {
 		$previous_data = array();
@@ -1371,16 +1381,16 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_vdef_item_id = db_fetch_cell_prepared('SELECT id 
-				FROM vdef_items 
-				WHERE hash = ? 
-				AND vdef_id = ?', 
+			$_vdef_item_id = db_fetch_cell_prepared('SELECT id
+				FROM vdef_items
+				WHERE hash = ?
+				AND vdef_id = ?',
 				array($parsed_hash['hash'], $vdef_id));
 
 			if (!empty($_vdef_item_id)) {
-				$previous_data = db_fetch_row_prepared('SELECT * 
+				$previous_data = db_fetch_row_prepared('SELECT *
 					FROM vdef_items
-					WHERE id = ?', 
+					WHERE id = ?',
 					array($_vdef_item_id));
 			} else {
 				$previous_data = array();
@@ -1429,15 +1439,15 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	$fields_data_input_field_edit += $fields_data_input_field_edit_1;
 
 	/* import into: data_input */
-	$_data_input_id = db_fetch_cell_prepared('SELECT id 
-		FROM data_input 
-		WHERE hash = ?', 
+	$_data_input_id = db_fetch_cell_prepared('SELECT id
+		FROM data_input
+		WHERE hash = ?',
 		array($hash));
 
 	if (!empty($_data_input_id)) {
-		$previous_data = db_fetch_row_prepared('SELECT * 
+		$previous_data = db_fetch_row_prepared('SELECT *
 			FROM data_input
-			WHERE id = ?', 
+			WHERE id = ?',
 			array($_data_input_id));
 	} else {
 		$previous_data = array();
@@ -1449,14 +1459,18 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	foreach ($fields_data_input_edit as $field_name => $field_array) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
-			/* fix issue with data input method importing and white spaces */
-			if ($field_name == 'input_string') {
-				$xml_array[$field_name] = str_replace('><', '> <', $xml_array[$field_name]);
-				$xml_array[$field_name] = str_replace('>""<', '>" "<', $xml_array[$field_name]);
-				$xml_array[$field_name] = str_replace('>\'\'<', '>\' \'<', $xml_array[$field_name]);
-			}
+			if ($field_name == 'input_string' && import_is_base64_encoded($xml_array[$field_name])) {
+				$save[$field_name] = base64_decode($xml_array[$field_name]);
+			} else {
+				$save[$field_name] = xml_character_decode($xml_array[$field_name]);
 
-			$save[$field_name] = xml_character_decode($xml_array[$field_name]);
+				/* fix issue with data input method importing and white spaces */
+				if ($field_name == 'input_string') {
+					$save[$field_name] = str_replace('><', '> <', $save[$field_name]);
+					$save[$field_name] = str_replace('>""<', '>" "<', $save[$field_name]);
+					$save[$field_name] = str_replace('>\'\'<', '>\' \'<', $save[$field_name]);
+				}
+			}
 		}
 	}
 
@@ -1485,16 +1499,16 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			if ($parsed_hash == false) { return false; }
 
 			unset($save);
-			$_data_input_field_id = db_fetch_cell_prepared('SELECT id 
-				FROM data_input_fields 
-				WHERE hash= ? 
-				AND data_input_id = ?', 
+			$_data_input_field_id = db_fetch_cell_prepared('SELECT id
+				FROM data_input_fields
+				WHERE hash= ?
+				AND data_input_id = ?',
 				array($parsed_hash['hash'], $data_input_id));
 
 			if (!empty($_data_input_field_id)) {
-				$previous_data = db_fetch_row_prepared('SELECT * 
+				$previous_data = db_fetch_row_prepared('SELECT *
 					FROM data_input_fields
-					WHERE id = ?', 
+					WHERE id = ?',
 					array($_data_input_field_id));
 			} else {
 				$previous_data = array();
@@ -1583,7 +1597,7 @@ function compare_data($save, $previous_data, $table) {
 				}
 
 				$different++;
-				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: \'' . $value . '\', Old Value: \'' . $previous_data[$column] . '\''; 
+				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: \'' . $value . '\', Old Value: \'' . $previous_data[$column] . '\'';
 			}
 		}
 
@@ -1608,27 +1622,60 @@ function hash_to_friendly_name($hash, $display_type_name) {
 
 	switch ($parsed_hash['type']) {
 	case 'graph_template':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT name
+			FROM graph_templates
+			WHERE hash = ?',
+			array($parsed_hash['hash']));
 	case 'data_template':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM data_template WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT name
+			FROM data_template
+			WHERE hash = ?',
+			array($parsed_hash['hash']));
 	case 'data_template_item':
-		return $prepend . db_fetch_cell_prepared('SELECT data_source_name FROM data_template_rrd WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT data_source_name
+			FROM data_template_rrd
+			WHERE hash = ?',
+			array($parsed_hash['hash']));
 	case 'host_template':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM host_template WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT name
+			FROM host_template
+			WHERE hash = ?',
+			array($parsed_hash['hash']));
 	case 'data_input_method':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM data_input WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT name
+			FROM data_input
+			WHERE hash = ?',
+			array($parsed_hash['hash']));
 	case 'data_input_field':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM data_input_fields WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT name
+			FROM data_input_fields
+			WHERE hash = ?',
+			array($parsed_hash['hash']));
 	case 'data_query':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT name
+			FROM snmp_query
+			WHERE hash = ?',
+			array($parsed_hash['hash']));
 	case 'gprint_preset':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT name
+			FROM graph_templates_gprint
+			WHERE hash = ?',
+			array($parsed_hash['hash']));
 	case 'cdef':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM cdef WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT name
+			FROM cdef
+			WHERE hash = ?',
+			array($parsed_hash['hash']));
 	case 'vdef':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM vdef WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT name
+			FROM vdef
+			WHERE hash = ?',
+			array($parsed_hash['hash']));
 	case 'data_source_profile':
-		return $prepend . db_fetch_cell_prepared('SELECT name FROM data_source_profile WHERE hash = ?', array($parsed_hash['hash']));
+		return $prepend . db_fetch_cell_prepared('SELECT name
+			FROM data_source_profile
+			WHERE hash = ?',
+			array($parsed_hash['hash']));
 	case 'round_robin_archive':
 		return $prepend;
 	}
@@ -1804,12 +1851,12 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 					$type_text = "<span class='deviceUp'>" . __('[unchanged]') . "</span>\n";
 				}
 
-				print "<span class='monoSpace'>$result_text " . htmlspecialchars($vals['title']) . " $type_text</span><br>\n";
+				print "<span class='monoSpace'>$result_text " . html_escape($vals['title']) . " $type_text</span><br>\n";
 
 				if (isset($vals['orphans'])) {
 					print '<ul class="monoSpace">';
 					foreach($vals['orphans'] as $orphan) {
-						print "<li>" . htmlspecialchars($orphan) . "</li>\n";
+						print "<li>" . html_escape($orphan) . "</li>\n";
 					}
 					print '</ul>';
 				}
@@ -1817,7 +1864,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				if (isset($vals['new_items'])) {
 					print '<ul class="monoSpace">';
 					foreach($vals['new_items'] as $item) {
-						print "<li>" . htmlspecialchars($item) . "</li>\n";
+						print "<li>" . html_escape($item) . "</li>\n";
 					}
 					print '</ul>';
 				}
@@ -1825,7 +1872,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				if (isset($vals['differences'])) {
 					print '<ul class="monoSpace">';
 					foreach($vals['differences'] as $diff) {
-						print "<li>" . htmlspecialchars($diff) . "</li>\n";
+						print "<li>" . html_escape($diff) . "</li>\n";
 					}
 					print '</ul>';
 				}
@@ -1882,4 +1929,12 @@ function xml_to_array($data) {
         $data = get_object_vars($data);
     }
     return (is_array($data)) ? array_map(__FUNCTION__,$data) : $data;
+}
+
+function import_is_base64_encoded($string) {
+	if (preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $string)) {
+		return true;
+	} else {
+		return false;
+	}
 }
