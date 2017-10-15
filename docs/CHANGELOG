@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.26
 -issue#841: --input-fields variable not working with add_graphs.php cli
+-issue#986: Resolve minor appearance problem on Modern theme
 -issue#1000: add_graphs.php not recognizing input fields
 -issue#1003: Reversing resolution to Issue#995 due to adverse impact to polling times
 -issue#1008: Remove developer debug warning about thumbnail validation
