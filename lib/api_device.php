@@ -288,14 +288,14 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 								(chgrp($host_dir, $group_id))) {
 								/* permissions set ok */
 							} else {
-								cacti_log("ERROR: Unable to set directory permissions for '" . $host_dir . "'", FALSE);
+								cacti_log("ERROR: Unable to set directory permissions for '" . $host_dir . "'", false);
 							}
 						}
 					} else {
-						cacti_log("ERROR: Unable to create directory '" . $host_dir . "'", FALSE);
+						cacti_log("ERROR: Unable to create directory '" . $host_dir . "'", false);
 					}
 				} else {
-					cacti_log("ERROR: Unable to create directory due to missing write permissions '" . $host_dir . "'", FALSE);
+					cacti_log("ERROR: Unable to create directory due to missing write permissions '" . $host_dir . "'", false);
 				}
 			}
 		}

@@ -137,11 +137,11 @@ class SNMP {
 		$this->contextName     = $contextName;
 		$this->contextEngineID = $contextEngineID;
 
-		return TRUE;
+		return true;
 	}
 
 	function close() {
-		return TRUE;
+		return true;
 	}
 
 	private function apply_options($backup = array()) {
@@ -173,7 +173,7 @@ class SNMP {
 					snmp_set_quick_print($backup['quick_print']);
 				}
 			}
-			$backup = TRUE;
+			$backup = true;
 		}
 
 		return $backup;
@@ -181,12 +181,12 @@ class SNMP {
 
 	private function uniget($command, $oids) {
 		$this->errno = SNMP::ERRNO_NOERROR;
-		$array_output = TRUE;
+		$array_output = true;
 		$output = array();
 		$function_name = "cacti_snmp_$command";
 		$options_backup = $this->apply_options();
 		if (!is_array($oids)) {
-			$array_output = FALSE;
+			$array_output = false;
 			$oids = array($oids);
 		}
 
@@ -204,9 +204,9 @@ class SNMP {
 			$this->errno = SNMP::TIMEOUT;
 		}
 
-		if ($array_output == FALSE) {
+		if ($array_output == false) {
 			if (sizeof($output) == 0) {
-				return FALSE;
+				return false;
 			}
 			return array_shift($output);
 		}
@@ -222,12 +222,12 @@ class SNMP {
 		return $this->uniget('getnext', $oid);
 	}
 
-	function walk($oid, $dummy = FALSE, $max_repetitions = 10, $non_repeaters = 0) {
+	function walk($oid, $dummy = false, $max_repetitions = 10, $non_repeaters = 0) {
 		$this->errno = SNMP::ERRNO_NOERROR;
 
 		if (is_array($oid)) {
 			trigger_error('Multi OID walks are not supported!', E_WARNING);
-			return FALSE;
+			return false;
 		}
 
 		$options_backup = $this->apply_options();
@@ -237,7 +237,7 @@ class SNMP {
 			$this->retries, $max_repetitions, SNMP_POLLER, $this->contextEngineID,
 			$this->value_output_format);
 
-		if ($result === FALSE) {
+		if ($result === false) {
 			$this->errno = SNMP::TIMEOUT;
 		}
 
@@ -260,14 +260,14 @@ class SNMP {
 
 	function set($oid, $type, $value) {
 		trigger_error('set function is not implemented', E_WARNING);
-		return FALSE;
+		return false;
 	}
 
 	function __set($name, $value) {
 		switch ($name) {
 		case 'info':
 			trigger_error('info property is read-only', E_WARNING);
-			return FALSE;
+			return false;
 
 		case 'valuretrieval':
 			switch ($value) {
@@ -275,10 +275,10 @@ class SNMP {
 			case SNMP_VALUE_PLAIN:
 			case SNMP_VALUE_OBJECT:
 				$this->$name = $value;
-				return TRUE;
+				return true;
 			default:
 				trigger_error("Unknown SNMP value retrieval method '$value'", E_WARNING);
-				return FALSE;
+				return false;
 
 			}
 		break;
@@ -291,10 +291,10 @@ class SNMP {
 			case SNMP_OID_OUTPUT_UCD:
 			case SNMP_OID_OUTPUT_NONE:
 				$this->$name = $value;
-				return TRUE;
+				return true;
 			default:
 				trigger_error("Unknown SNMP output print format '$value'", E_WARNING);
-				return FALSE;
+				return false;
 			}
 		break;
 		case 'max_oids':

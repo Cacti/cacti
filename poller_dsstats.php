@@ -56,7 +56,7 @@ function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
-			cacti_log('WARNING: DSStats Poller terminated by user', FALSE, 'dsstats');
+			cacti_log('WARNING: DSStats Poller terminated by user', false, 'dsstats');
 
 			/* tell the main poller that we are done */
 			db_execute("REPLACE INTO settings (name, value) VALUES ('dsstats_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') ."')");
@@ -83,9 +83,9 @@ include_once($config['base_path'] . '/lib/dsstats.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug          = FALSE;
-$forcerun       = FALSE;
-$forcerun_maint = FALSE;
+$debug          = false;
+$forcerun       = false;
+$forcerun_maint = false;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -99,11 +99,11 @@ if (sizeof($parms)) {
 		switch ($arg) {
 		case '-d':
 		case '--debug':
-			$debug = TRUE;
+			$debug = true;
 			break;
 		case '-f':
 		case '--force':
-			$forcerun = TRUE;
+			$forcerun = true;
 			break;
 		case '--version':
 		case '-v':
@@ -216,4 +216,3 @@ if ((read_config_option('dsstats_enable') == 'on') || $forcerun) {
 }
 
 dsstats_debug('Polling Ending');
-

@@ -437,7 +437,7 @@ function install_file_paths () {
 
 	/* Theme */
 	$input['selected_theme'] = $settings['visual']['selected_theme'];
-	$input['selected_theme']['description'] = 'Please select one of the available Themes to skin your Cacti with.';
+	$input['selected_theme']['description'] = __('Please select one of the available Themes to skin your Cacti with.');
 	if (config_value_exists('selected_theme')) {
 		$input['selected_theme']['default'] = read_config_option('selected_theme');
 	} else {
@@ -503,7 +503,7 @@ function remote_update_config_file() {
 			$save['dbport']    = $database_port;
 			$save['dbssl']     = $database_ssl;
 
-			$poller_id = sql_save($save, 'poller', 'id', TRUE, $connection);
+			$poller_id = sql_save($save, 'poller', 'id', true, $connection);
 		}
 
 		if (!empty($poller_id)) {

@@ -150,7 +150,7 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 		$second = "align='right' colspan='2'";
 		print "<table align='center' width='100%' style='border: 1px solid #bbbbbb;'><tr><td>\n";
 		print "<table class='cactiTable' align='center' width='100%'>\n";
-		print "<tr class='tableHeader'><td colspan='2' class='linkOverDark' style='font-weight:bold;'>" . __('Summary Details') . "</td><td align='right'><a href='#' role='link' style='cursor:pointer;' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>Download</a></td></tr>\n";
+		print "<tr class='tableHeader'><td colspan='2' class='linkOverDark' style='font-weight:bold;'>" . __('Summary Details') . "</td><td align='right'><a href='#' role='link' style='cursor:pointer;' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>" . __('Download') . "</a></td></tr>\n";
 		print "<tr class='even'><td align='left'>" . __('Title') . "</td><td $second>"          . html_escape($xport_array['meta']['title_cache'])      . "</td></tr>\n";
 		print "<tr class='odd'><td align='left'>" . __('Vertical Label') . "</td><td $second>" . html_escape($xport_array['meta']['vertical_label'])    . "</td></tr>\n";
 		print "<tr class='even'><td align='left'>" . __('Start Date') . "</td><td $second>"     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . "</td></tr>\n";
@@ -240,5 +240,4 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 }
 
 /* log the memory usage */
-cacti_log("The Peak Graph XPORT Memory Usage was '" . memory_get_peak_usage() . "'", FALSE, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
-
+cacti_log("The Peak Graph XPORT Memory Usage was '" . memory_get_peak_usage() . "'", false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);

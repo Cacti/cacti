@@ -97,6 +97,7 @@ $selectedTheme = get_selected_theme();
 	<div class='scrollBar'></div>
 	<?php if (read_config_option('auth_method') != 0) {?><div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div><?php }?>
 </div>
+<div class='cactiShadow'></div>
 <div id='cactiContent' class='cactiContent'>
 	<?php if (isset($user_menu) && is_array($user_menu)) {?>
 	<div style='display:none;' id='navigation' class='cactiConsoleNavigationArea'>

@@ -104,7 +104,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 		usleep(40000);
 	}
 
-	return FALSE;
+	return false;
 }
 
 /* db_close - closes the open connection
@@ -203,7 +203,7 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
 
 				return false;
 			} else {
-				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:'" . $sql . "'", FALSE, 'DBCALL');
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL');
 				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], false);
 				cacti_debug_backtrace('SQL');
 
@@ -229,7 +229,7 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
    @param $col_name - use this column name instead of the first one
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
-function db_fetch_cell($sql, $col_name = '', $log = TRUE, $db_conn = FALSE) {
+function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
 	return db_fetch_cell_prepared($sql, array(), $col_name, $log, $db_conn);
 }
 
@@ -582,7 +582,7 @@ function db_cacti_initialized($is_web = true) {
 	$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 
 	if (!is_object($db_conn)) {
-		return FALSE;
+		return false;
 	}
 
 	$query = $db_conn->prepare('SELECT cacti FROM version');
@@ -959,7 +959,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
    @param $table_name - the name of the table to make the replacement in
    @param $key_cols - the primary key(s)
    @returns - the auto incriment id column (if applicable) */
-function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = TRUE, $db_conn = false) {
+function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */

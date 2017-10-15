@@ -60,7 +60,7 @@ function form_save() {
 		if (get_nfilter_request_var('output_format') == '1') {
 			top_header();
 
-			print "<table style='width:100%;' class='center'><tr><td style='text-align:left;'><pre>" . htmlspecialchars($xml_data) . '</pre></td></tr></table>';
+			print "<table style='width:100%;' class='center'><tr><td style='text-align:left;'><pre>" . html_escape($xml_data) . '</pre></td></tr></table>';
 
 			bottom_footer();
 		} elseif (get_nfilter_request_var('output_format') == '2') {
@@ -91,8 +91,17 @@ function export() {
 		set_request_var('export_type', 'host_template');
 	}
 
+	$type_found = false;
+
 	foreach($export_types as $id => $type) {
 		$export_array[$id] = $type['name'];
+		if (get_nfilter_request_var('export_type') == $id) {
+			$type_found = true;
+		}
+	}
+
+	if (!$type_found) {
+		set_request_var('export_type', 'host_template');
 	}
 
 	$form_template_export1 = array(
@@ -100,7 +109,7 @@ function export() {
 			'friendly_name' => __('What would you like to export?'),
 			'description' => __('Select the Template type that you wish to export from Cacti.'),
 			'method' => 'drop_array',
-			'value' => get_request_var('export_type'),
+			'value' => get_nfilter_request_var('export_type'),
 			'array' => $export_array,
 			'default' => 'host_template'
 		)

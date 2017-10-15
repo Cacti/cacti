@@ -48,7 +48,7 @@ if (sizeof($parms) == 0) {
 	exit;
 }
 
-$debug    = FALSE;
+$debug    = false;
 $template = '';
 $hostid   = '';
 
@@ -74,7 +74,7 @@ if (sizeof($parms)) {
 				exit(0);
 			case '-d':
 			case '--debug':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--version':
 			case '-V':
