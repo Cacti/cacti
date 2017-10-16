@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -117,7 +117,7 @@ case 'countdown':
 		$graph_data_array['graph_end'] = time();
 	}
 
-	/* print RRDTool graph source? */
+	/* print RRDtool graph source? */
 	if (!isempty_request_var('show_source')) {
 		$graph_data_array['print_source'] = get_request_var('show_source');
 	}

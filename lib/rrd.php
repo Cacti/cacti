@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -1114,7 +1114,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	$ds_step = empty($ds_step) ? 300 : $ds_step;
 
-	/* if no rra was specified, we need to figure out which one RRDTool will choose using
+	/* if no rra was specified, we need to figure out which one RRDtool will choose using
 	 * "best-fit" resolution fit algorithm */
 	if (empty($rra_id)) {
 		if (empty($graph_data_array['graph_start']) || empty($graph_data_array['graph_end'])) {
@@ -1867,7 +1867,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* +++++++++++++++++++++++ GRAPH ITEMS +++++++++++++++++++++++ */
 
 			/* most of the calculations have been done above. now we have for print everything out
-			in an RRDTool-friendly fashion */
+			in an RRDtool-friendly fashion */
 
 			$need_rrd_nl = true;
 
@@ -2826,8 +2826,8 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 		}
 
 		/* rrdtool dump depends on rrd file version:
-		 * version 0001 => RRDTool 1.0.x
-		 * version 0003 => RRDTool 1.2.x, 1.3.x, 1.4.x, 1.5.x, 1.6.x
+		 * version 0001 => RRDtool 1.0.x
+		 * version 0003 => RRDtool 1.2.x, 1.3.x, 1.4.x, 1.5.x, 1.6.x
 		 */
 		$version = trim($dom->getElementsByTagName('version')->item(0)->nodeValue);
 
@@ -3108,7 +3108,7 @@ function rrd_append_cdp_prep_ds($dom, $version) {
 	/* get XPATH for source <ds> entry */
 	#$src_ds = $xpath->query('/rrd/rra/cdp_prep/ds')->item(0);
 	$src_ds = $dom->getElementsByTagName('rra')->item(0)->getElementsByTagName('cdp_prep')->item(0)->getElementsByTagName('ds')->item(0);
-	/* clone the source ds entry to preserve RRDTool notation */
+	/* clone the source ds entry to preserve RRDtool notation */
 	$new_ds = $src_ds->cloneNode(true);
 
 	/* rrdtool version dependencies */
@@ -3144,7 +3144,7 @@ function rrd_append_value($dom) {
 	#$itemList = $xpath->query('/rrd/rra/database/row');
 	$itemList = $dom->getElementsByTagName('row');
 
-	/* create <V> entry to preserve RRDTool notation */
+	/* create <V> entry to preserve RRDtool notation */
 	$new_v = $dom->createElement('v', ' NaN ');
 
 	/* iterate all entries found, equals 'number of <rra>' times 'number of <ds>' */
