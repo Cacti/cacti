@@ -15,7 +15,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -375,7 +375,7 @@ if (!$using_cacti) {
 		$response_array = explode(' ', $response);
 		echo 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . "\n";
 	} else {
-		echo "FATAL: RRDTool not found in path.  Please ensure RRDTool can be found in your path!\n";
+		echo "FATAL: RRDtool not found in path.  Please ensure RRDtool can be found in your path!\n";
 		exit(-1);
 	}
 }

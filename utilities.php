@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -175,7 +175,7 @@ function utilities_view_tech($php_info = '') {
 		$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . "</span>";
 	}
 
-	/* Check RRDTool issues */
+	/* Check RRDtool issues */
 	$rrdtool_error = '';
 	if ($rrdtool_version != read_config_option('rrdtool_version')) {
 		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not match configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span><br>";
