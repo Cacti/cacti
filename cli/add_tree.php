@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -55,12 +55,12 @@ if (sizeof($parms)) {
 	$hostId         = 0;
 	$hostGroupStyle = 1; # 1 = Graph Template,  2 = Data Query Index
 
-	$quietMode      = FALSE;
-	$displayHosts   = FALSE;
-	$displayTrees   = FALSE;
-	$displayNodes   = FALSE;
-	$displayRRAs    = FALSE;
-	$displayGraphs  = FALSE;
+	$quietMode      = false;
+	$displayHosts   = false;
+	$displayTrees   = false;
+	$displayNodes   = false;
+	$displayRRAs    = false;
+	$displayGraphs  = false;
 
 	$hosts          = getHosts();
 	$sites          = getSites();

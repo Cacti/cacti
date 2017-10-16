@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -225,7 +225,7 @@ running on. */
 function install_file_paths () {
 	global $config, $settings;
 
-	/* RRDTool Binary Path */
+	/* RRDtool Binary Path */
 	$input = array();
 	$input['path_rrdtool'] = $settings['path']['path_rrdtool'];
 
@@ -444,7 +444,7 @@ function install_file_paths () {
 		$input['selected_theme']['default'] = 'modern';
 	}
 
-	/* RRDTool Version */
+	/* RRDtool Version */
 	if ((file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
 		$input['rrdtool_version'] = $settings['general']['rrdtool_version'];
 
@@ -503,7 +503,7 @@ function remote_update_config_file() {
 			$save['dbport']    = $database_port;
 			$save['dbssl']     = $database_ssl;
 
-			$poller_id = sql_save($save, 'poller', 'id', TRUE, $connection);
+			$poller_id = sql_save($save, 'poller', 'id', true, $connection);
 		}
 
 		if (!empty($poller_id)) {

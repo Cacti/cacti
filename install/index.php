@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -461,6 +461,15 @@ $enabled = '1';
 
 						if ($enabled == '1') {
 							print '<p>' . __('Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information.') . '</p>';
+						}
+
+						print '<h3>' . __('PHP Timezone Support') .'</h3>';
+
+						if (ini_get('date.timezone') == '') {
+							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the \'date.timezone\' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti.') . '</p>';
+							$enabled = '0';
+						} else {
+							print '<p>' . __('Your Web Servers PHP is properly setup with a Timezone.') . '</p>';
 						}
 
 						print '<h3>' . __('Required PHP Module Support') .'</h3>';

@@ -13,7 +13,7 @@
    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
    | GNU General Public License for more details.                            |
    +-------------------------------------------------------------------------+
-   | Cacti: The Complete RRDTool-based Graphing Solution                     |
+   | Cacti: The Complete RRDtool-based Graphing Solution                     |
    +-------------------------------------------------------------------------+
    | This code is designed, written, and maintained by the Cacti Group. See  |
    | about.php and/or the AUTHORS file for specific developer information.   |
@@ -47,7 +47,7 @@ $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
 /* check mib cache table status */
 $mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS WHERE `Name` LIKE 'snmpagent_cache' AND (UNIX_TIMESTAMP(`Update_time`)) >= ?", array($last_time));
 
-if($mibcache_changed !== NULL || file_exists($path_mibcache) === FALSE ) {
+if($mibcache_changed !== NULL || file_exists($path_mibcache) === false ) {
 	$objects = db_fetch_assoc("SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value` FROM snmpagent_cache");
 
 	if($objects && sizeof($objects)>0) {

@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -188,7 +188,7 @@ function aggregate_color_item_movedown() {
 		array(get_request_var('color_template_item_id')));
 
 	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
-		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	$next_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
@@ -198,7 +198,7 @@ function aggregate_color_item_movedown() {
 		array($current_sequence['sequence'], get_request_var('color_template_id')));
 
 	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'],
-		FALSE, POLLER_VERBOSITY_DEBUG);
+		false, POLLER_VERBOSITY_DEBUG);
 
 	db_execute_prepared('UPDATE color_template_items
 		SET sequence = ?
@@ -229,7 +229,7 @@ function aggregate_color_item_moveup() {
 		array(get_request_var('color_template_item_id')));
 
 	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
-		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	$previous_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
@@ -239,7 +239,7 @@ function aggregate_color_item_moveup() {
 		array($current_sequence['sequence'], get_request_var('color_template_id')));
 
 	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'],
-		FALSE, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	db_execute_prepared('UPDATE color_template_items
 		SET sequence = ?

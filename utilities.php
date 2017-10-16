@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -175,7 +175,7 @@ function utilities_view_tech($php_info = '') {
 		$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . "</span>";
 	}
 
-	/* Check RRDTool issues */
+	/* Check RRDtool issues */
 	$rrdtool_error = '';
 	if ($rrdtool_version != read_config_option('rrdtool_version')) {
 		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not match configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span><br>";
@@ -1907,17 +1907,17 @@ function boost_display_run_status() {
 
 	load_current_session_value('refresh', 'sess_boost_utilities_refresh', '30');
 
-	$last_run_time   = read_config_option('boost_last_run_time', TRUE);
-	$next_run_time   = read_config_option('boost_next_run_time', TRUE);
+	$last_run_time   = read_config_option('boost_last_run_time', true);
+	$next_run_time   = read_config_option('boost_next_run_time', true);
 
-	$rrd_updates     = read_config_option('boost_rrd_update_enable', TRUE);
-	$boost_cache     = read_config_option('boost_png_cache_enable', TRUE);
+	$rrd_updates     = read_config_option('boost_rrd_update_enable', true);
+	$boost_cache     = read_config_option('boost_png_cache_enable', true);
 
-	$max_records     = read_config_option('boost_rrd_update_max_records', TRUE);
-	$max_runtime     = read_config_option('boost_rrd_update_max_runtime', TRUE);
-	$update_interval = read_config_option('boost_rrd_update_interval', TRUE);
-	$peak_memory     = read_config_option('boost_peak_memory', TRUE);
-	$detail_stats    = read_config_option('stats_detail_boost', TRUE);
+	$max_records     = read_config_option('boost_rrd_update_max_records', true);
+	$max_runtime     = read_config_option('boost_rrd_update_max_runtime', true);
+	$update_interval = read_config_option('boost_rrd_update_interval', true);
+	$peak_memory     = read_config_option('boost_peak_memory', true);
+	$detail_stats    = read_config_option('stats_detail_boost', true);
 
 	$refresh['seconds'] = get_request_var('refresh');
 	$refresh['page']    = 'utilities.php?action=view_boost_status&header=false';
@@ -1993,7 +1993,7 @@ function boost_display_run_status() {
 
 	$total_data_sources = db_fetch_cell('SELECT COUNT(*) FROM poller_item');
 
-	$boost_status = read_config_option('boost_poller_status', TRUE);
+	$boost_status = read_config_option('boost_poller_status', true);
 	if ($boost_status != '') {
 		$boost_status_array = explode(':', $boost_status);
 
@@ -2009,7 +2009,7 @@ function boost_display_run_status() {
 		$boost_status_date = '';
 	}
 
-	$stats_boost = read_config_option('stats_boost', TRUE);
+	$stats_boost = read_config_option('stats_boost', true);
 	if ($stats_boost != '') {
 		$stats_boost_array = explode(' ', $stats_boost);
 
@@ -2024,13 +2024,13 @@ function boost_display_run_status() {
 	}
 
 	/* get cache directory size/contents */
-	$cache_directory    = read_config_option('boost_png_cache_directory', TRUE);
+	$cache_directory    = read_config_option('boost_png_cache_directory', true);
 	$directory_contents = array();
 
 	if (is_dir($cache_directory)) {
 		if ($handle = @opendir($cache_directory)) {
 			/* This is the correct way to loop over the directory. */
-			while (FALSE !== ($file = readdir($handle))) {
+			while (false !== ($file = readdir($handle))) {
 				$directory_contents[] = $file;
 			}
 
@@ -2108,12 +2108,12 @@ function boost_display_run_status() {
 	if ($output_length != '') {
 		$parts = explode(':', $output_length);
 		if ((time()-1200) > $parts[0]) {
-			$ref = TRUE;
+			$ref = true;
 		} else {
-			$ref = FALSE;
+			$ref = false;
 		}
 	} else {
-		$ref = TRUE;
+		$ref = true;
 	}
 
 	if ($ref) {
@@ -2206,7 +2206,7 @@ function boost_display_run_status() {
 	form_alternate_row();
 	print '<td>' . __('Cached Files Size:') . '</td><td>' . $directory_size . '</td>';
 
-	html_end_box(TRUE);
+	html_end_box(true);
 }
 
 /**

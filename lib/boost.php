@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -569,7 +569,7 @@ function boost_get_arch_table_name() {
 }
 
 /* boost_process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
-     results to RRDTool for processing
+     results to RRDtool for processing
    @arg $local_data_id - if you are using boost, you need to update only an rra id at a time */
 function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
@@ -676,10 +676,10 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	}
 
 	if (sizeof($results) > 0) {
-		$rrdp_auto_close = FALSE;
+		$rrdp_auto_close = false;
 		if(!$rrdtool_pipe) {
 			$rrdtool_pipe = rrd_init();
-			$rrdp_auto_close = TRUE;
+			$rrdp_auto_close = true;
 		}
 	
 		/* create an array keyed off of each .rrd file */
@@ -1120,7 +1120,7 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 		if (read_config_option('storage_location')) {
 			if (false === rrdtool_execute('is_dir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
 				if (false === rrdtool_execute('mkdir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
-					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
+					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}
 		}elseif (!is_dir(dirname($data_source_path))) {
@@ -1134,14 +1134,14 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 								(chgrp(dirname($data_source_path), $group_id))) {
 							/* permissions set ok */
 						}else{
-							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", FALSE);
+							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", false);
 						}
 					}
 				}else{
-					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", FALSE);
+					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}else{
-				cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", FALSE);
+				cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", false);
 			}
 		}
 	}

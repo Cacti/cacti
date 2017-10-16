@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -41,10 +41,10 @@ include_once($config['base_path'] . '/lib/rrd.php');
 $config['force_storage_location_local'] = true;
 
 /* initialize some additional variables */
-$force     = FALSE;
-$debug     = FALSE;
-$graph_id  = FALSE;
-$interval  = FALSE;
+$force     = false;
+$debug     = false;
+$graph_id  = false;
+$interval  = false;
 $poller_id = '';
 
 /* process calling arguments */
@@ -63,11 +63,11 @@ if (sizeof($parms)) {
 		switch ($arg) {
 			case '-d':
 			case '--debug':
-				$debug = TRUE;
+				$debug = true;
 	
 				break;
 			case '--force':
-				$force = TRUE;
+				$force = true;
 				break;
 			case '--graph':
 				$graph_id = (int)$value;
@@ -96,13 +96,13 @@ if (sizeof($parms)) {
 	}
 }
 
-if ($graph_id === FALSE || $graph_id < 0) {
+if ($graph_id === false || $graph_id < 0) {
 	echo "ERROR: No --graph=ID specified\n\n";
 	display_help();
 	exit(1);
 }
 
-if ($interval === FALSE || $interval < 0) {
+if ($interval === false || $interval < 0) {
 	echo "ERROR: No --interval=SEC specified\n\n";
 	display_help();
 	exit(1);

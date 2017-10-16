@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -39,7 +39,7 @@ include_once($config['base_path'] . '/lib/api_graph.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug   = FALSE;
+$debug   = false;
 $host_id = '';
 $filter  = '';
 
@@ -63,7 +63,7 @@ if (sizeof($parms)) {
 				break;
 			case '--debug':
 			case '-d':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--version':
 			case '-V':

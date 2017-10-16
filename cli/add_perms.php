@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -51,13 +51,13 @@ if (sizeof($parms) == 0) {
 	$itemId   = 0;
 	$hostId   = 0;
 
-	$quietMode				= FALSE;
-	$displayGroups			= FALSE;
-	$displayUsers			= FALSE;
-	$displayTrees			= FALSE;
-	$displayHosts			= FALSE;
-	$displayGraphs			= FALSE;
-	$displayGraphTemplates 	= FALSE;
+	$quietMode				= false;
+	$displayGroups			= false;
+	$displayUsers			= false;
+	$displayTrees			= false;
+	$displayHosts			= false;
+	$displayGraphs			= false;
+	$displayGraphTemplates 	= false;
 
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
@@ -92,31 +92,31 @@ if (sizeof($parms) == 0) {
 
 			break;
 		case '--list-groups':
-			$displayGroups = TRUE;
+			$displayGroups = true;
 
 			break;
 		case '--list-users':
-			$displayUsers = TRUE;
+			$displayUsers = true;
 
 			break;
 		case '--list-trees':
-			$displayTrees = TRUE;
+			$displayTrees = true;
 
 			break;
 		case '--list-hosts':
-			$displayHosts = TRUE;
+			$displayHosts = true;
 
 			break;
 		case '--list-graphs':
-			$displayGraphs = TRUE;
+			$displayGraphs = true;
 
 			break;
 		case '--list-graph-templates':
-			$displayGraphTemplates = TRUE;
+			$displayGraphTemplates = true;
 
 			break;
 		case '--quiet':
-			$quietMode = TRUE;
+			$quietMode = true;
 
 			break;
 		case '--version':
@@ -259,4 +259,11 @@ function display_help() {
 	echo "    --list-trees\n";
 	echo "    --list-graph-templates\n";
 	echo "    --list-graphs --host-id=[ID]\n";
+}
+
+function displayGroups() {
+    /**
+     * Todo implement
+     */
+	echo 'This option has not yet been implemented';
 }

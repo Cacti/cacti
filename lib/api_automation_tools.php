@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -226,7 +226,7 @@ function getGraphTemplatesByHostTemplate($host_template_id) {
 	return $graph_templates;
 }
 
-function displayQueryTypes($types, $quietMode = FALSE) {
+function displayQueryTypes($types, $quietMode = false) {
 	if (!$quietMode) {
 		echo "Known SNMP Query Types: (id, name)\n";
 	}
@@ -240,7 +240,7 @@ function displayQueryTypes($types, $quietMode = FALSE) {
 	}
 }
 
-function displayHostTemplates($host_templates, $quietMode = FALSE) {
+function displayHostTemplates($host_templates, $quietMode = false) {
 	if (!$quietMode) {
 		echo "Valid Device Templates: (id, name)\n";
 	}
@@ -256,7 +256,7 @@ function displayHostTemplates($host_templates, $quietMode = FALSE) {
 	}
 }
 
-function displayCommunities($quietMode = FALSE) {
+function displayCommunities($quietMode = false) {
 	if (!$quietMode) {
 		echo "Known communities are: (community)\n";
 	}
@@ -274,7 +274,7 @@ function displayCommunities($quietMode = FALSE) {
 	}
 }
 
-function displaySNMPFields($fields, $hostId, $quietMode = FALSE) {
+function displaySNMPFields($fields, $hostId, $quietMode = false) {
 	if (!$quietMode) {
 		echo "Known SNMP Fields for host-id $hostId: (name)\n";
 	}
@@ -288,7 +288,7 @@ function displaySNMPFields($fields, $hostId, $quietMode = FALSE) {
 	}
 }
 
-function displaySNMPValues($values, $hostId, $field, $quietMode = FALSE) {
+function displaySNMPValues($values, $hostId, $field, $quietMode = false) {
 	if (!$quietMode) {
 		echo "Known values for $field for host $hostId: (name)\n";
 	}
@@ -302,7 +302,7 @@ function displaySNMPValues($values, $hostId, $field, $quietMode = FALSE) {
 	}
 }
 
-function displaySNMPQueries($queries, $quietMode = FALSE) {
+function displaySNMPQueries($queries, $quietMode = false) {
 	if (!$quietMode) {
 		echo "Known SNMP Queries:(id, name)\n";
 	}
@@ -316,7 +316,7 @@ function displaySNMPQueries($queries, $quietMode = FALSE) {
 	}
 }
 
-function displayInputFields($input_fields, $quietMode = FALSE) {
+function displayInputFields($input_fields, $quietMode = false) {
 	if (!$quietMode) {
 		echo "Known Input Fields:(name, default, description)\n";
 	}
@@ -332,7 +332,7 @@ function displayInputFields($input_fields, $quietMode = FALSE) {
 	}
 }
 
-function displayGraphTemplates($templates, $quietMode = FALSE) {
+function displayGraphTemplates($templates, $quietMode = false) {
 	if (!$quietMode) {
 		echo "Known Graph Templates:(id, name)\n";
 	}
@@ -346,7 +346,7 @@ function displayGraphTemplates($templates, $quietMode = FALSE) {
 	}
 }
 
-function displayHosts($hosts, $quietMode = FALSE) {
+function displayHosts($hosts, $quietMode = false) {
 	if (!$quietMode) {
 		echo "Known Devices: (id, hostname, template, description)\n";
 	}
@@ -362,7 +362,7 @@ function displayHosts($hosts, $quietMode = FALSE) {
 	}
 }
 
-function displayTrees($quietMode = FALSE) {
+function displayTrees($quietMode = false) {
 	global $tree_sort_types;
 
 	if (!$quietMode) {
@@ -384,7 +384,7 @@ function displayTrees($quietMode = FALSE) {
 	}
 }
 
-function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode = FALSE) {
+function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode = false) {
 	global $tree_sort_types, $tree_item_types, $host_group_types;
 
 	if ($parentNode == 0) {
@@ -477,7 +477,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 	}
 }
 
-function displayRRAs($quietMode = FALSE) {
+function displayRRAs($quietMode = false) {
 	if (!$quietMode) {
 		echo "Known RRAs:\nid\tsteps\trows\tname\n";
 	}
@@ -498,7 +498,7 @@ function displayRRAs($quietMode = FALSE) {
 	}
 }
 
-function displayHostGraphs($host_id, $quietMode = FALSE) {
+function displayHostGraphs($host_id, $quietMode = false) {
 
 	if (!$quietMode) {
 		echo "Known Device Graphs: (id, name, template)\n";
@@ -528,7 +528,7 @@ function displayHostGraphs($host_id, $quietMode = FALSE) {
 	}
 }
 
-function displayUsers($quietMode = FALSE) {
+function displayUsers($quietMode = false) {
 	if (!$quietMode) {
 		echo "Known Users:\nid\tusername\tfull_name\n";
 	}

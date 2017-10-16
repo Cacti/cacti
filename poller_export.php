@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -46,8 +46,8 @@ array_shift($parms);
 
 global $debug;
 
-$debug = FALSE;
-$force = FALSE;
+$debug = false;
+$force = false;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -61,11 +61,11 @@ if (sizeof($parms)) {
 		switch ($arg) {
 		case '-d':
 		case '--debug':
-			$debug = TRUE;
+			$debug = true;
 			break;
 		case '-f':
 		case '--force':
-			$force = TRUE;
+			$force = true;
 			break;
 		case '--version':
 		case '-V':

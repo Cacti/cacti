@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -40,9 +40,9 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (sizeof($parms)) {
-	$displayHosts 		= FALSE;
-	$displayDataQueries = FALSE;
-	$quietMode			= FALSE;
+	$displayHosts 		= false;
+	$displayDataQueries = false;
+	$quietMode			= false;
 
 	unset($host_id);
 	unset($data_query_id);
@@ -58,7 +58,7 @@ if (sizeof($parms)) {
 
 		switch ($arg) {
 			case '-d':
-				$debug = TRUE;
+				$debug = true;
 
 				break;
 			case '--host-id':
@@ -113,13 +113,13 @@ if (sizeof($parms)) {
 				display_help();
 				exit;
 			case '--list-hosts':
-				$displayHosts = TRUE;
+				$displayHosts = true;
 				break;
 			case '--list-data-queries':
-				$displayDataQueries = TRUE;
+				$displayDataQueries = true;
 				break;
 			case '--quiet':
-				$quietMode = TRUE;
+				$quietMode = true;
 				break;
 			default:
 				echo "ERROR: Invalid Argument: ($arg)\n\n";

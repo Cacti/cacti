@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -3042,7 +3042,7 @@ function automation_valid_snmp_device(&$device) {
 	global $snmp_logging;
 
 	/* initialize variable */
-	$host_up = FALSE;
+	$host_up = false;
 	$snmp_logging = false;
 	$device['snmp_status'] = HOST_DOWN;
 	$device['ping_status'] = 0;
@@ -3098,13 +3098,13 @@ function automation_valid_snmp_device(&$device) {
 						(!substr_count($snmp_sysObjectID, 'Error In'))) {
 						$snmp_sysObjectID = trim(str_replace('"', '', $snmp_sysObjectID));
 						$device['snmp_status'] = HOST_UP;
-						$host_up = TRUE;
+						$host_up = true;
 						break;
 					}
 				}
 			}
 
-			if ($host_up == TRUE) {
+			if ($host_up == true) {
 				break;
 			}
 
