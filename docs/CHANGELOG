@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.27
+-issue#1033: Issues inserting into dsstats table due to legacy data
+
 1.1.26
 -issue#841: --input-fields variable not working with add_graphs.php cli
 -issue#986: Resolve minor appearance problem on Modern theme
