@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.27
 -issue#1033: Issues inserting into dsstats table due to legacy data
+-issue#1039: Using html_escape still double escapes.  Use strip_tags instead
 
 1.1.26
 -issue#841: --input-fields variable not working with add_graphs.php cli
