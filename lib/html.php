@@ -1001,7 +1001,7 @@ function is_menu_pick_active($menu_url) {
 	$menu_parts = array();
 
 	/* break out the URL and variables */
-	if (!sizeof($url_array)) {
+	if (!is_array($url_array) || (is_array($url_array) && !sizeof($url_array))) {
 		$url_array = parse_url($_SERVER['REQUEST_URI']);
 		if (isset($url_array['query'])) {
 			parse_str($url_array['query'], $url_parts);
