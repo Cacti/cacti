@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -125,10 +125,10 @@ function exec_background($filename, $args = '') {
 		if ($config['cacti_server_os'] == 'win32') {
 			pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, 'r'));
 		} else {
-			exec($filename . ' ' . $args . ' > /dev/null &');
+			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
 		}
 	} elseif (file_exists_2gb($filename)) {
-		exec($filename . ' ' . $args . ' > /dev/null &');
+		exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
 	}
 }
 
@@ -341,10 +341,10 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 }
 
 /* process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
-     results to RRDTool for processing
+     results to RRDtool for processing
   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
   @arg $remainder - don't use LIMIT if TRUE */
-function process_poller_output(&$rrdtool_pipe, $remainder = FALSE) {
+function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 	global $config, $debug;
 
 	static $have_deleted_rows = true;

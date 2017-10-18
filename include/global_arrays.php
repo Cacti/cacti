@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -98,6 +98,8 @@ $cacti_version_codes = array(
 	'1.1.22' => '0101',
 	'1.1.23' => '0101',
 	'1.1.24' => '0101',
+	'1.1.25' => '0101',
+	'1.1.26' => '0101',
 );
 
 $messages = array(
@@ -334,7 +336,7 @@ $vdef_item_types = array(
 	CVDEF_ITEM_TYPE_STRING          => __('Custom String'),
 );
 
-$custom_vdef_data_source_types = array( // this may change as soon as RRDTool supports math in VDEF, until then only reference to CDEF may help
+$custom_vdef_data_source_types = array( // this may change as soon as RRDtool supports math in VDEF, until then only reference to CDEF may help
 	'CURRENT_DATA_SOURCE' => __('Current Graph Item Data Source'),
 );
 
@@ -652,11 +654,11 @@ $ldap_modes = array(
 );
 
 $rrdtool_versions = array(
-	'rrd-1.3.x' => 'RRDTool 1.3.x',
-	'rrd-1.4.x' => 'RRDTool 1.4.x',
-	'rrd-1.5.x' => 'RRDTool 1.5.x',
-	'rrd-1.6.x' => 'RRDTool 1.6.x',
-	'rrd-1.7.x' => 'RRDTool 1.7.x'
+	'rrd-1.3.x' => 'RRDtool 1.3.x',
+	'rrd-1.4.x' => 'RRDtool 1.4.x',
+	'rrd-1.5.x' => 'RRDtool 1.5.x',
+	'rrd-1.6.x' => 'RRDtool 1.6.x',
+	'rrd-1.7.x' => 'RRDtool 1.7.x'
 );
 
 $i18n_modes = array(

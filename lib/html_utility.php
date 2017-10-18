@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -383,7 +383,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				if ($valid === true) {
 					$value = $_REQUEST[$name];
 				} else {
-					$value = FALSE;
+					$value = false;
 					$custom_error = $valid;
 				}
 			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
@@ -428,7 +428,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 
 		if ($value === false) {
 			if ($filter == FILTER_VALIDATE_IS_REGEX) {
-				$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($name), $cusom_error);
+				$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($name), $custom_error);
 				set_request_var($name, '');
 				raise_message('custom_error');
 			} else {

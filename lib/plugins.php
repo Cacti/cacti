@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -560,7 +560,7 @@ function api_plugin_check_config ($plugin) {
 	if (function_exists($function)) {
 		return $function();
 	}
-	return TRUE;
+	return true;
 }
 
 function api_plugin_enable ($plugin) {
@@ -758,11 +758,11 @@ function api_plugin_user_realm_auth ($filename = '') {
 
 	if ($filename != '' && isset($user_auth_realm_filenames[basename($filename)])) {
 		if (is_realm_allowed($user_auth_realm_filenames[basename($filename)])) {
-			return TRUE;
+			return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 function plugin_config_arrays () {

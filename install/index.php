@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -463,6 +463,15 @@ $enabled = '1';
 							print '<p>' . __('Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information.') . '</p>';
 						}
 
+						print '<h3>' . __('PHP Timezone Support') .'</h3>';
+
+						if (ini_get('date.timezone') == '') {
+							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the \'date.timezone\' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti.') . '</p>';
+							$enabled = '0';
+						} else {
+							print '<p>' . __('Your Web Servers PHP is properly setup with a Timezone.') . '</p>';
+						}
+
 						print '<h3>' . __('Required PHP Module Support') .'</h3>';
 
 						print '<p>' .  __('Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '</p>';
@@ -811,9 +820,9 @@ $enabled = '1';
 							print '<p><strong>' . __('Required Writable at Install Time Only') . '</strong></p>';
 							foreach($install_paths as $path) {
 								if (is_writable($path)) {
-									print '<p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
+									print __('<p>%s is <font color="#008000">Writable</font></p>', $path);
 								} else {
-									print '<p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
+									print __('<p>%s is <font color="#FF0000">Not Writable</font></p>', $path);
 									$writable = false;
 								}
 							}
@@ -821,9 +830,9 @@ $enabled = '1';
 							print '<p><strong>' . __('Required Writable after Install Complete') . '</strong></p>';
 							foreach($always_paths as $path) {
 								if (is_writable($path)) {
-									print '<p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
+									print __('<p>%s is <font color="#008000">Writable</font></p>', $path);
 								} else {
-									print '<p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
+									print __('<p>%s is <font color="#FF0000">Not Writable</font></p>', $path);
 									$writable = false;
 								}
 							}
@@ -831,9 +840,9 @@ $enabled = '1';
 							print '<p><strong>' . __('Required Writable after Install Complete') . '</strong></p>';
 							foreach($remote_paths as $path) {
 								if (is_writable($path)) {
-									print '<p>'. $path . ' is <font color="#008000">' . __('Writable') . '</font></p>';
+									print __('<p>%s is <font color="#008000">Writable</font></p>', $path);
 								} else {
-									print '<p>'. $path . ' is <font color="#FF0000">' . __('Not Writable') . '</font></p>';
+									print __('<p>%s is <font color="#FF0000">Not Writable</font></p>', $path);
 									$writable = false;
 								}
 							}
@@ -914,7 +923,7 @@ $enabled = '1';
 							$upgrade_results = '';
 							foreach ($_SESSION['cacti_db_install_cache'] as $cacti_upgrade_version => $actions) {
 								// output version header
-								$upgrade_results .= '<h4>Version: ' . $cacti_upgrade_version . '</h4>' . PHP_EOL;
+								$upgrade_results .= '<h4>' . __('Version: ') . $cacti_upgrade_version . '</h4>' . PHP_EOL;
 
 								// show results from version upgrade
 								foreach ($actions as $action) {

@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -275,7 +275,7 @@ function form_save() {
 
 				$lg_dq_id = db_fetch_cell_prepared(
 					'SELECT snmp_query_id
-					 FROM graph_lcoal
+					 FROM graph_local
 					 WHERE id = ?',
 					array($local_graph_id)
 				);
@@ -1435,9 +1435,9 @@ function graph_edit() {
 					$graph_data_array['print_source'] = 1;
 					?>
 					<td>
-						<span class='textInfo'><?php print __('RRDTool Command:');?></span><br>
+						<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
 						<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
-						<span class='textInfo'><?php print __('RRDTool Says:');?></span><br>
+						<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
 						<?php unset($graph_data_array['print_source']);?>
 						<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
 					</td>

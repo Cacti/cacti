@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -70,7 +70,7 @@ $polling_items = array();
 /* get poller_item for graph_id */
 $local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT data_template_rrd.local_data_id
 	FROM graph_templates_item
-	LEFT JOIN data_template_rrd 
+	LEFT JOIN data_template_rrd
 	ON graph_templates_item.task_item_id=data_template_rrd.id
 	WHERE graph_templates_item.local_graph_id = ?
 	AND data_template_rrd.local_data_id IS NOT NULL', array($graph_id));
@@ -141,7 +141,13 @@ if (sizeof($polling_items)) {
 				if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
 					$output = 'U';
 				}else {
-					$host = db_fetch_row_prepared('SELECT ping_retries, max_oids FROM host WHERE hostname = ?', array($item['hostname']));
+					$host = db_fetch_row_prepared('SELECT ping_retries, max_oids FROM host WHERE id = ?', array($host_id));
+
+					if (!sizeof($host)) {
+						$host['ping_retries'] = 1;
+						$host['max_oids'] = 1;
+					}
+
 					$session = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
 						$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
 						$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
@@ -202,10 +208,10 @@ if (sizeof($polling_items)) {
 		}
 
 		if (isset($output)) {
-			db_execute_prepared('INSERT INTO poller_output_realtime 
-				(local_data_id, rrd_name, time, poller_id, output) 
-				VALUES 
-				(?, ?, ?, ?, ?)', 
+			db_execute_prepared('INSERT INTO poller_output_realtime
+				(local_data_id, rrd_name, time, poller_id, output)
+				VALUES
+				(?, ?, ?, ?, ?)',
 				array($item['local_data_id'], $item['rrd_name'], $host_update_time, $poller_id, $output));
 		}
 	}

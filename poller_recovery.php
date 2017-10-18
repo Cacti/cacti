@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -52,7 +52,7 @@ function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
-			cacti_log('WARNING: Boost Poller terminated by user', FALSE, 'BOOST');
+			cacti_log('WARNING: Boost Poller terminated by user', false, 'BOOST');
 
 			/* tell the main poller that we are done */
 			db_execute("REPLACE INTO settings (name, value) VALUES ('boost_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') ."')");
@@ -81,7 +81,7 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $dir = dirname(__FILE__);
 chdir($dir);
 
-if (strpos($dir, 'boost') !== FALSE) {
+if (strpos($dir, 'boost') !== false) {
 	chdir('../../');
 }
 
@@ -106,9 +106,9 @@ if (isset($packet_data['Value'])) {
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug          = FALSE;
-$forcerun       = FALSE;
-$verbose        = FALSE;
+$debug          = false;
+$forcerun       = false;
+$verbose        = false;
 $poller_id      = $config['poller_id'];
 
 if (sizeof($parms)) {
@@ -123,14 +123,14 @@ if (sizeof($parms)) {
 		switch ($arg) {
 			case '-d':
 			case '--debug':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '-f':
 			case '--force':
-				$forcerun = TRUE;
+				$forcerun = true;
 				break;
 			case '--verbose':
-				$verbose = TRUE;
+				$verbose = true;
 				break;
 			case '--version':
 			case '-V':

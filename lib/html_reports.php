@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -1450,7 +1450,7 @@ function reports() {
 		</td>
 	</tr>\n";
 
-	html_end_box(TRUE);
+	html_end_box(true);
 
 	form_end();
 
@@ -1552,10 +1552,10 @@ function reports() {
 				}
 			}
 
-			$interval = 'Every ' . $report['count'] . ' ' . $reports_interval[$report['intrvl']];
+			$interval = __('Every') . ' ' . $report['count'] . ' ' . $reports_interval[$report['intrvl']];
 
 			form_selectable_cell($interval, $report['id']);
-			form_selectable_cell(($report['lastsent'] == 0) ? 'Never' : date($date_format, $report['lastsent']), $report['lastsent']);
+			form_selectable_cell(($report['lastsent'] == 0) ? __('Never') : date($date_format, $report['lastsent']), $report['lastsent']);
 			form_selectable_cell(date($date_format, $report['mailtime']), $report['id']);
 			form_selectable_cell($report['from_name'], $report['id']);
 			form_selectable_cell((substr_count($report['email'], ',') ? __('Multiple'): $report['email']), $report['id']);

@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -141,6 +141,7 @@ case 'save':
 		get_filter_request_var('predefined_timeshift');
 		get_filter_request_var('graphs');
 		get_filter_request_var('graph_template_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
+		get_filter_request_var('thumbnails', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '(true|false)')));
 
 		if (isset_request_var('predefined_timespan')) {
 			set_graph_config_option('default_timespan', get_request_var('predefined_timespan'));

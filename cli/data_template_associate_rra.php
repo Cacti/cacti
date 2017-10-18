@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -52,7 +52,7 @@ if (sizeof($parms)) {
 		switch ($arg) {
 			case '-d':
 			case '--debug':				
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--rra':
 				$rra = trim($value);
@@ -71,7 +71,7 @@ if (sizeof($parms)) {
 				display_help();
 				exit;
 			case '--quiet':
-				$quietMode = TRUE;
+				$quietMode = true;
 				break;
 			default:
 				echo "ERROR: Invalid Argument: ($arg)\n\n";

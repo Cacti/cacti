@@ -15,7 +15,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
 */
 
@@ -45,8 +45,8 @@ global $config, $database_default, $archived, $purged;
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug    = FALSE;
-$force    = FALSE;
+$debug    = false;
+$force    = false;
 $archived = 0;
 $purged   = 0;
 
@@ -209,7 +209,7 @@ function logrotate_rotatenow () {
 		$owner = fileowner($log);
 		$group = filegroup($log);
 
-		if ($owner !== FALSE) {
+		if ($owner !== false) {
 			$ext = date('Ymd');
 
 			if (file_exists($log . '-' . $ext)) {
@@ -359,7 +359,7 @@ function remove_files($file_array) {
 	}
 
 	/* let's prepare the archive directory */
-	$rrd_archive = read_config_option('rrd_archive', TRUE);
+	$rrd_archive = read_config_option('rrd_archive', true);
 	if ($rrd_archive == '') {
 		$rrd_archive = $rra_path . '/archive';
 	}

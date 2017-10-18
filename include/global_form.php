@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -397,9 +397,8 @@ $struct_data_source = array(
 		'friendly_name' => __('Data Source Profile'),
 		'method' => 'drop_sql',
 		'description' => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
-		'sql' => 'SELECT id, name FROM data_source_profiles ORDER BY name',
+		'sql' => 'SELECT "0" AS id, "' . __('External') . '" AS name UNION SELECT id, name FROM data_source_profiles ORDER BY name',
 		'default' => db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1'),
-		'none_value' => __('External'),
 		'flags' => ''
 		),
 	'rrd_step' => array(

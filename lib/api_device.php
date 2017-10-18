@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -288,14 +288,14 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 								(chgrp($host_dir, $group_id))) {
 								/* permissions set ok */
 							} else {
-								cacti_log("ERROR: Unable to set directory permissions for '" . $host_dir . "'", FALSE);
+								cacti_log("ERROR: Unable to set directory permissions for '" . $host_dir . "'", false);
 							}
 						}
 					} else {
-						cacti_log("ERROR: Unable to create directory '" . $host_dir . "'", FALSE);
+						cacti_log("ERROR: Unable to create directory '" . $host_dir . "'", false);
 					}
 				} else {
-					cacti_log("ERROR: Unable to create directory due to missing write permissions '" . $host_dir . "'", FALSE);
+					cacti_log("ERROR: Unable to create directory due to missing write permissions '" . $host_dir . "'", false);
 				}
 			}
 		}
