@@ -898,7 +898,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				$group_counter++;
 			}
 
-			$_graph_type_name = $graph_item_types{$item['graph_type_id']};
+			$_graph_type_name = $graph_item_types[$item['graph_type_id']];
 
 			/* alternating row color */
 			if ($use_custom_class == false) {
@@ -946,9 +946,9 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			print "<td style='$this_row_style'>" . html_escape($matrix_title) . $hard_return . '</td>';
 
 			/* graph item type */
-			print "<td style='$this_row_style'>" . $graph_item_types{$item['graph_type_id']} . '</td>';
+			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . '</td>';
 			if (!preg_match('/(TICK|TEXTALIGN|HRULE|VRULE)/', $_graph_type_name)) {
-				print "<td style='$this_row_style'>" . $consolidation_functions{$item['consolidation_function_id']} . '</td>';
+				print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . '</td>';
 			} else {
 				print '<td>' . __('N/A') . '</td>';
 			}

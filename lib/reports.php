@@ -650,7 +650,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 
 					if ($column == 0) {
 						$outstr .= "\t\t<tr class='image_row'>\n";
-						$outstr .= "\t\t\t<td style='text-align:" . $alignment{$item['align']} . ";'>\n";
+						$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";'>\n";
 
 						if ($format_ok) {
 							$outstr .= "\t\t\t\t<table class='image_table'>\n";
@@ -1140,7 +1140,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 								usort($graphs, 'necturally_sort_graphs');
 
 								foreach ($graphs as $graph) {
-									$snmp_index_to_graph{$graph['snmp_index']}{$graph['local_graph_id']} = $graph['title_cache'];
+									$snmp_index_to_graph[$graph['snmp_index']][$graph['local_graph_id']] = $graph['title_cache'];
 								}
 							}
 
@@ -1195,34 +1195,34 @@ function reports_graph_area($graphs, $report, $item, $timespan, $output, $format
 	$outstr = '';
 
 	if (sizeof($graphs)) {
-	foreach($graphs as $graph) {
-		$item['local_graph_id'] = $graph['local_graph_id'];
+		foreach($graphs as $graph) {
+			$item['local_graph_id'] = $graph['local_graph_id'];
 
-		if ($column == 0) {
-			$outstr .= "\t\t<tr class='image_row'>\n";
-			$outstr .= "\t\t\t<td style='text-align:" . $alignment{$item['align']} . ";'>\n";
-			$outstr .= "\t\t\t\t<table style='width:100%;'>\n";
-			$outstr .= "\t\t\t\t\t<tr>\n";
-		}
-		if ($format_ok) {
-			$outstr .= "\t\t\t\t\t\t<td class='image_column' style='text-align:" . $alignment{$item['align']} . ";'>\n";
-		} else {
-			$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align='" . $alignment{$item['align']} . ";'>\n";
-		}
-		$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output, $theme) . "\n";
-		$outstr .= "\t\t\t\t\t\t</td>\n";
+			if ($column == 0) {
+				$outstr .= "\t\t<tr class='image_row'>\n";
+				$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";'>\n";
+				$outstr .= "\t\t\t\t<table style='width:100%;'>\n";
+				$outstr .= "\t\t\t\t\t<tr>\n";
+			}
+			if ($format_ok) {
+				$outstr .= "\t\t\t\t\t\t<td class='image_column' style='text-align:" . $alignment[$item['align']] . ";'>\n";
+			} else {
+				$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align='" . $alignment[$item['align']] . ";'>\n";
+			}
+			$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output, $theme) . "\n";
+			$outstr .= "\t\t\t\t\t\t</td>\n";
 
-		if ($report['graph_columns'] > 1) {
-			$column = ($column + 1) % ($report['graph_columns']);
-		}
+			if ($report['graph_columns'] > 1) {
+				$column = ($column + 1) % ($report['graph_columns']);
+			}
 
-		if ($column == 0) {
-			$outstr .= "\t\t\t\t\t</tr>\n";
-			$outstr .= "\t\t\t\t</table>\n";
-			$outstr .= "\t\t\t</td>\n";
-			$outstr .= "\t\t</tr>\n";
+			if ($column == 0) {
+				$outstr .= "\t\t\t\t\t</tr>\n";
+				$outstr .= "\t\t\t\t</table>\n";
+				$outstr .= "\t\t\t</td>\n";
+				$outstr .= "\t\t</tr>\n";
+			}
 		}
-	}
 	}
 
 	if ($column > 0) {

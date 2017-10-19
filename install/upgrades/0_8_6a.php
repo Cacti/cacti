@@ -69,7 +69,7 @@ function upgrade_to_0_8_6a() {
 
 			if (sizeof($graph_template_items) > 0) {
 				foreach ($graph_template_items as $graph_template_item) {
-					if (!isset($non_templated_items{$graph_template_item["id"]})) {
+					if (!isset($non_templated_items[$graph_template_item["id"]])) {
 						if ($graph_template_item["task_item_id"] > 0) {
 							$dest_dti = db_fetch_row("select local_data_id from data_template_rrd where id = '" . $graph_template_item["task_item_id"] . "'");
 

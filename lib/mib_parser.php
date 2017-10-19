@@ -83,7 +83,7 @@ class MibParser extends MibCache {
 		{
 			if($in_quote)
 			{
-				if($text{$i} == '"')
+				if($text[$i] == '"')
 				{
 					$in_quote = false;
 					if($token != '')
@@ -99,16 +99,16 @@ class MibParser extends MibCache {
 					}
 				}
 				else
-				$token .= $text{$i};
+				$token .= $text[$i];
 			}
 			elseif($in_comment)
 			{
-				if($text{$i} == "\n" || $text{$i} == "\r")
+				if($text[$i] == "\n" || $text[$i] == "\r")
 				  $in_comment = false;
 			}
 			else
 			{
-				switch($text{$i})
+				switch($text[$i])
 				{
 					case ':':
 						if($text{$i+1} == ':' && $text{$i+2} == '=')
@@ -122,7 +122,7 @@ class MibParser extends MibCache {
 							$i += 2;
 						}
 						else
-						$token .= $text{$i};
+						$token .= $text[$i];
 						break;
 					case '.':
 						if($text{$i+1} == '.')
@@ -136,7 +136,7 @@ class MibParser extends MibCache {
 							$i++;
 						}
 						else
-						$token .= $text{$i};
+						$token .= $text[$i];
 						break;
 					case ',':
 					case ';':
@@ -150,7 +150,7 @@ class MibParser extends MibCache {
 							$tokens[] = $token;
 							$token = '';
 						}
-						$tokens[] = $text{$i};
+						$tokens[] = $text[$i];
 						break;
 					case ' ':
 					case "\t":
@@ -166,13 +166,13 @@ class MibParser extends MibCache {
 						if($text{$i+1} == '-')
 						  $in_comment = true;
 						else
-						$token .= $text{$i};
+						$token .= $text[$i];
 						break;
 					case '"';
 						$in_quote = true;
 						break;
 					default:
-						$token .= $text{$i};
+						$token .= $text[$i];
 				}
 			}
 		}

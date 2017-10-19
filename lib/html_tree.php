@@ -1031,7 +1031,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						usort($graphs, 'naturally_sort_graphs');
 
 						foreach ($graphs as $graph) {
-							$snmp_index_to_graph{$graph['snmp_index']}{$graph['local_graph_id']} = $graph['title_cache'];
+							$snmp_index_to_graph[$graph['snmp_index']][$graph['local_graph_id']] = $graph['title_cache'];
 							$graphs_height[$graph['local_graph_id']] = $graph['height'];
 							$graphs_width[$graph['local_graph_id']] = $graph['width'];
 						}

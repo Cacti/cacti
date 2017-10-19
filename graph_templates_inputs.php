@@ -80,14 +80,14 @@ function form_save() {
 						input_validate_input_number($matches[1]);
 						/* ==================================================== */
 
-						$selected_graph_items{$matches[1]} = $matches[1];
+						$selected_graph_items[$matches[1]] = $matches[1];
 
-						if (isset($db_selected_graph_item{$matches[1]})) {
+						if (isset($db_selected_graph_item[$matches[1]])) {
 							/* is selected and exists in the db; old item */
-							$old_members{$matches[1]} = $matches[1];
+							$old_members[$matches[1]] = $matches[1];
 						} else {
 							/* is selected and does not exist the db; new item */
-							$new_members{$matches[1]} = $matches[1];
+							$new_members[$matches[1]] = $matches[1];
 						}
 					}
 				}
@@ -202,7 +202,7 @@ function input_edit() {
 				$any_selected_item = $item['graph_templates_item_id'];
 			}
 
-			if ($graph_item_types{$item['graph_type_id']} == 'GPRINT') {
+			if ($graph_item_types[$item['graph_type_id']] == 'GPRINT') {
 				$start_bold = '';
 				$end_bold = '';
 			} else {
@@ -210,7 +210,7 @@ function input_edit() {
 				$end_bold = '</strong>';
 			}
 
-			$name = "$start_bold Item #" . ($i+1) . ': ' . $graph_item_types{$item['graph_type_id']} . ' (' . $consolidation_functions{$item['consolidation_function_id']} . ")$end_bold";
+			$name = "$start_bold Item #" . ($i+1) . ': ' . $graph_item_types[$item['graph_type_id']] . ' (' . $consolidation_functions[$item['consolidation_function_id']] . ")$end_bold";
 
 			form_checkbox('i_' . $item['graph_templates_item_id'], $old_value, $name, '', '', get_request_var('graph_template_id')); print '<br>';
 

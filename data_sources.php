@@ -886,14 +886,14 @@ function ds_edit() {
 			$form_array += array($field_name => $struct_data_source[$field_name]);
 
 			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){
-				if (!(($use_data_template == false) || (!empty($data_template_data{'t_' . $field_name})) || ($field_array['flags'] == 'NOTEMPLATE'))) {
+				if (!(($use_data_template == false) || (!empty($data_template_data['t_' . $field_name])) || ($field_array['flags'] == 'NOTEMPLATE'))) {
 					$form_array[$field_name]['description'] = '';
 				}
 
 				$form_array[$field_name]['value'] = (isset($data[$field_name]) ? $data[$field_name] : '');
 				$form_array[$field_name]['form_id'] = (empty($data['id']) ? '0' : $data['id']);
 
-				if (!(($use_data_template == false) || (!empty($data_template_data{'t_' . $field_name})) || ($field_array['flags'] == 'NOTEMPLATE'))) {
+				if (!(($use_data_template == false) || (!empty($data_template_data['t_' . $field_name])) || ($field_array['flags'] == 'NOTEMPLATE'))) {
 					$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
 				}
 			}
@@ -974,13 +974,13 @@ function ds_edit() {
 			$form_array += array($field_name => $struct_data_source_item[$field_name]);
 
 			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){
-				if (!(($use_data_template == false) || ($rrd_template{'t_' . $field_name} == 'on'))) {
+				if (!(($use_data_template == false) || ($rrd_template['t_' . $field_name] == 'on'))) {
 					$form_array[$field_name]['description'] = '';
 				}
 
 				$form_array[$field_name]['value'] = (isset($rrd) ? $rrd[$field_name] : '');
 
-				if (!(($use_data_template == false) || ($rrd_template{'t_' . $field_name} == 'on'))) {
+				if (!(($use_data_template == false) || ($rrd_template['t_' . $field_name] == 'on'))) {
 					$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
 				}
 			}

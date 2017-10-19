@@ -181,7 +181,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 					$return_array['nth_percentile_aggregate_total'] = $values_array[$target];
 				}
 			} else {
-				$return_array{'nth_percentile_aggregate_total'} = $values_array[$target];
+				$return_array['nth_percentile_aggregate_total'] = $values_array[$target];
 			}
 		}
 	}
