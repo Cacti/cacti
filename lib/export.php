@@ -319,7 +319,7 @@ function data_input_method_to_xml($data_input_id) {
 	foreach ($fields_data_input_edit as $field_name => $field_array) {
 		if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
 			if ($field_name == 'input_string') {
-				$xml_text .= "\t<$field_name>" . base64_encode($data_input{$field_name}) . "</$field_name>\n";
+				$xml_text .= "\t<$field_name>" . base64_encode($data_input[$field_name]) . "</$field_name>\n";
 			} else {
 				$xml_text .= "\t<$field_name>" . xml_character_encode($data_input[$field_name]) . "</$field_name>\n";
 			}

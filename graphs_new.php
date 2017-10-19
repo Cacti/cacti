@@ -100,10 +100,10 @@ function form_save() {
 				$selected_graphs['cg'][$matches[1]][$matches[1]] = true;
 			} elseif (preg_match('/^cg_g$/', $var)) {
 				if (get_nfilter_request_var('cg_g') > 0) {
-					$selected_graphs['cg']{get_nfilter_request_var('cg_g')}{get_nfilter_request_var('cg_g')} = true;
+					$selected_graphs['cg'][get_nfilter_request_var('cg_g')][get_nfilter_request_var('cg_g')] = true;
 				}
 			} elseif (preg_match('/^sg_(\d+)_([a-f0-9]{32})$/', $var, $matches)) {
-				$selected_graphs['sg'][$matches[1]]{get_nfilter_request_var('sgg_' . $matches[1])}{$matches[2]} = true;
+				$selected_graphs['sg'][$matches[1]][get_nfilter_request_var('sgg_' . $matches[1])][$matches[2]] = true;
 			}
 		}
 

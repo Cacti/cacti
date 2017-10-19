@@ -969,7 +969,7 @@ function utilities_php_modules() {
 
 function memory_bytes($val) {
 	$val  = trim($val);
-	$last = strtolower($val{strlen($val)-1});
+	$last = strtolower($val[strlen($val)-1]);
 	$val  = trim($val, 'GMKgmk');
 	switch($last) {
 		case 'g':

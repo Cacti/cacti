@@ -421,7 +421,7 @@ function form_actions() {
 
 	form_start('data_sources.php');
 
-	html_start_box($ds_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($ds_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($ds_array) && sizeof($ds_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */

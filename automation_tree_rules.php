@@ -245,7 +245,7 @@ function automation_tree_rules_form_actions() {
 
 	form_start('automation_tree_rules.php', 'automation_tree_rules_action');
 
-	html_start_box($automation_tree_rules_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($automation_tree_rules_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
 		print "<tr>

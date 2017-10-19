@@ -72,7 +72,7 @@ function form_save() {
 				header('Location: templates_export.php');
 			} else {
 				header('Content-type: application/xml');
-				header('Content-Disposition: attachment; filename=cacti_' . get_nfilter_request_var('export_type') . '_' . strtolower(clean_up_file_name(db_fetch_cell(str_replace('|id|', get_nfilter_request_var('export_item_id'), $export_types{get_nfilter_request_var('export_type')}['title_sql'])))) . '.xml');
+				header('Content-Disposition: attachment; filename=cacti_' . get_nfilter_request_var('export_type') . '_' . strtolower(clean_up_file_name(db_fetch_cell(str_replace('|id|', get_nfilter_request_var('export_item_id'), $export_types[get_nfilter_request_var('export_type')]['title_sql'])))) . '.xml');
 				print $xml_data;
 			}
 		}
@@ -114,8 +114,6 @@ function export() {
 			'default' => 'host_template'
 		)
 	);
-
-	$export_item_ids = db_fetch_assoc($export_types{get_nfilter_request_var('export_type')}['dropdown_sql']);
 
 	$form_template_export2 = array(
 		'export_item_id' => array(
@@ -169,7 +167,7 @@ function export() {
 
 	html_end_box();
 
-	html_start_box( __('Available Templates [%s]', $export_types{get_nfilter_request_var('export_type')}['name']), '100%', '', '3', 'center', '');
+	html_start_box( __('Available Templates [%s]', $export_types[get_nfilter_request_var('export_type')]['name']), '100%', '', '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -195,4 +193,3 @@ function export() {
 
 	form_save_button('', 'export', '', false);
 }
-

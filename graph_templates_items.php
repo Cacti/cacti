@@ -273,9 +273,9 @@ function form_save() {
 
 					push_out_graph_item($graph_template_item_id);
 
-					if (isset($orig_data_source_to_input{get_nfilter_request_var('task_item_id')})) {
+					if (isset($orig_data_source_to_input[get_nfilter_request_var('task_item_id')])) {
 						/* make sure all current graphs using this graph input are aware of this change */
-						push_out_graph_input($orig_data_source_to_input{get_nfilter_request_var('task_item_id')}, $graph_template_item_id, array($graph_template_item_id => $graph_template_item_id));
+						push_out_graph_input($orig_data_source_to_input[get_nfilter_request_var('task_item_id')], $graph_template_item_id, array($graph_template_item_id => $graph_template_item_id));
 					}
 				} else {
 					raise_message(2);

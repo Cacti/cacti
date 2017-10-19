@@ -665,7 +665,7 @@ function reports_form_actions() {
 
 	print "<form name='report' action='" . get_reports_page() . "' method='post'>";
 
-	html_start_box($reports_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($reports_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (!isset($reports_array)) {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Report.') . "</span></td></tr>\n";

@@ -219,7 +219,7 @@ function form_automation_snmp_actions() {
 
 	form_start('automation_snmp.php', 'automation_filter');
 
-	html_start_box($automation_snmp_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($automation_snmp_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (!isset($automation_array)) {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one SNMP Option.') . "</span></td></tr>\n";

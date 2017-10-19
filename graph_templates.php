@@ -303,7 +303,7 @@ function form_actions() {
 
 	form_start('graph_templates.php');
 
-	html_start_box($graph_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($graph_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && sizeof($graph_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
