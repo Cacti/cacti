@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -1001,7 +1001,7 @@ function is_menu_pick_active($menu_url) {
 	$menu_parts = array();
 
 	/* break out the URL and variables */
-	if (!sizeof($url_array)) {
+	if (!is_array($url_array) || (is_array($url_array) && !sizeof($url_array))) {
 		$url_array = parse_url($_SERVER['REQUEST_URI']);
 		if (isset($url_array['query'])) {
 			parse_str($url_array['query'], $url_parts);

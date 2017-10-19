@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -569,7 +569,7 @@ function boost_get_arch_table_name() {
 }
 
 /* boost_process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
-     results to RRDTool for processing
+     results to RRDtool for processing
    @arg $local_data_id - if you are using boost, you need to update only an rra id at a time */
 function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;

@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -1521,7 +1521,7 @@ function get_rrd_cfs($local_data_id) {
 }
 
 /* generate_graph_def_name - takes a number and turns each digit into its letter-based
-     counterpart for RRDTool DEF names (ex 1 -> a, 2 -> b, etc)
+     counterpart for RRDtool DEF names (ex 1 -> a, 2 -> b, etc)
    @arg $graph_item_id - (int) the ID to generate a letter-based representation of
    @returns - a letter-based representation of the input argument */
 function generate_graph_def_name($graph_item_id) {

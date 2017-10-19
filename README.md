@@ -2,7 +2,7 @@
 
 -----------------------------------------------------------------------------
 
-Cacti is a complete network graphing solution designed to harness the power of RRDTool's data storage and graphing functionality. Cacti provides following features:
+Cacti is a complete network graphing solution designed to harness the power of RRDtool's data storage and graphing functionality. Cacti provides following features:
 
 * remote and local data collectors
 * network discovery
@@ -25,7 +25,7 @@ Cacti should be able to run on any Linux, UNIX, or Windows based operating syste
 
 - PHP 5.4+
 - MySQL 5.1+
-- RRDTool 1.3+, 1.5+ recommended
+- RRDtool 1.3+, 1.5+ recommended
 - NET-SNMP 5.5+
 - Web Server with PHP support
 
@@ -33,7 +33,7 @@ PHP Must also be compiled as a standalone cgi or cli binary. This is required fo
 
 ## Note About RRDtool
 
-RRDTool is available in multiple versions and a majority of them are supported by Cacti. Please remember to confirm your Cacti settings for the RRDtool version if you having problem rendering graphs.
+RRDtool is available in multiple versions and a majority of them are supported by Cacti. Please remember to confirm your Cacti settings for the RRDtool version if you having problem rendering graphs.
 
 ## Contribute
 
