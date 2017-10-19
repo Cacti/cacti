@@ -224,7 +224,7 @@ function disable_poller() {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-    echo "Cacti Structured Paths Creation Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	echo "Cacti Structured Paths Creation Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
