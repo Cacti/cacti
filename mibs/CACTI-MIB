@@ -291,7 +291,7 @@ cactiApplRrdtoolVersion OBJECT-TYPE
     MAX-ACCESS      read-only
     STATUS          current
     DESCRIPTION
-        "The version of RRDTool used by Cacti"
+        "The version of RRDtool used by Cacti"
     ::= { cactiAppl 4 }
 
 --

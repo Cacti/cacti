@@ -68,7 +68,7 @@
 		<itemizedlist>
 			<listitem>
 				<para>
-					<application>RRDTool</application> 1.0.49 or greater, 1.4+ recommended
+					<application>RRDtool</application> 1.0.49 or greater, 1.4+ recommended
 				</para>
 			</listitem>
 			<listitem>
@@ -473,7 +473,7 @@ DB_Port		3306</userinput></screen>
 			</listitem>
 			<listitem>
 				<para>
-					RRDTool - Install from the Cacti website.  Install it into the <filename>c:\cacti</filename> directory.
+					RRDtool - Install from the Cacti website.  Install it into the <filename>c:\cacti</filename> directory.
 				</para>
 			</listitem>
 			<listitem>
@@ -671,10 +671,10 @@ Web
 			</listitem>
 		</orderedlist>
 		<orderedlist>
-			<title>Install RRDTool</title>
+			<title>Install RRDtool</title>
 			<listitem>
 				<para>
-					Extract the RRDTool zip file from the Cacti web site to <filename>c:\cacti\rrdtool.exe</filename>.
+					Extract the RRDtool zip file from the Cacti web site to <filename>c:\cacti\rrdtool.exe</filename>.
 				</para>
 			</listitem>
 		</orderedlist>
@@ -810,7 +810,7 @@ $database_port = "3306";</userinput></screen>
 				</para>
 					<screen>c:/php/php.exe</screen>
 				<para>
-					<emphasis>RRDTool Binary Path:</emphasis>
+					<emphasis>RRDtool Binary Path:</emphasis>
 				</para>
 				<screen>c:/cacti/rrdtool.exe</screen>
 				<para>
@@ -1108,7 +1108,7 @@ $database_password = "cacti";</userinput></screen>
 		<title>Data Storage</title>
 			<para>
 				There are lots of different approaches for this task. Some may
-				use an (SQL) database, others flat files. Cacti uses <ulink url="http://www.rrdtool.org/"><application>RRDTool</application>
+				use an (SQL) database, others flat files. Cacti uses <ulink url="http://www.rrdtool.org/"><application>RRDtool</application>
 				</ulink> to store data.
 			</para>
 			<para>
@@ -1130,7 +1130,7 @@ $database_password = "cacti";</userinput></screen>
 		<sect1 id="Data-Presentation">
 		<title>Data Presentation</title>
 			<para>
-				One of the most appreciated features of <ulink url="http://www.rrdtool.org/"><application>RRDTool</application>
+				One of the most appreciated features of <ulink url="http://www.rrdtool.org/"><application>RRDtool</application>
 				</ulink> is the built-in
 				graphing function. This comes in useful when combining this with
 				some commonly used webserver. Such, it is possible to access
@@ -1154,10 +1154,10 @@ $database_password = "cacti";</userinput></screen>
 			next chapter for creating new graphs in Cacti.
 		</para>
 		<para>
-			For users that are familiar with <ulink url="http://www.rrdtool.org/"><application>RRDTool</application>
-			</ulink>, you will immediately recognize that a graph in Cacti is closely modeled after <application>RRDTool</application>'s graphs.
-			This makes sense since Cacti provides a user friendly interface to <application>RRDTool</application> without requiring users to
-			understand how <application>RRDTool</application> works. With this in mind, every graph in Cacti has certain settings and at least
+			For users that are familiar with <ulink url="http://www.rrdtool.org/"><application>RRDtool</application>
+			</ulink>, you will immediately recognize that a graph in Cacti is closely modeled after <application>RRDtool</application>'s graphs.
+			This makes sense since Cacti provides a user friendly interface to <application>RRDtool</application> without requiring users to
+			understand how <application>RRDtool</application> works. With this in mind, every graph in Cacti has certain settings and at least
 			one graph item associated with it. While graph settings define the overall properties of a graph, the graph
 			items define the data that is to be represented on the graph. So the graph items define which data to display
 			and how it should displayed, and also define what should be displayed on the legend.
@@ -2072,7 +2072,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 					</row>
 					<row>
 						<entry>(Data Source) Data Source Type [snmp_oid]</entry>
-						<entry>How the data from the OID should be stored by RRDTool and interpreted on the graph. If the value of the OID represents the actual data, you should use <guilabel>GAUGE</guilabel> for this field. If the OID value is a constantly incrementing number, you should use <guilabel>COUNTER</guilabel> for this field. The two remaining field values, <guilabel>DERIVE</guilabel> and <guilabel>ABSOLUTE</guilabel> can be ignored in most situations.</entry>
+						<entry>How the data from the OID should be stored by RRDtool and interpreted on the graph. If the value of the OID represents the actual data, you should use <guilabel>GAUGE</guilabel> for this field. If the OID value is a constantly incrementing number, you should use <guilabel>COUNTER</guilabel> for this field. The two remaining field values, <guilabel>DERIVE</guilabel> and <guilabel>ABSOLUTE</guilabel> can be ignored in most situations.</entry>
 					</row>
 					<row>
 						<entry>(Custom Data) OID</entry>
@@ -2678,14 +2678,14 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 							<row>
 								<entry>Associated RRAs</entry>
 								<entry>You need to associate the data source with at least one RRA
-								so <application>RRDTool</application> knows how often and for how
+								so <application>RRDtool</application> knows how often and for how
 								long to keep its data. You will almost always want to select all
 								of these values however so you can render daily, weekly, monthly,
 								and yearly graphs.</entry>
 							</row>
 							<row>
 								<entry>Step</entry>
-								<entry>This tells <application>RRDTool</application> how many seconds
+								<entry>This tells <application>RRDtool</application> how many seconds
 								there will be between updates. The default is 300 seconds (5 minutes),
 								and is sufficient for most installations.</entry>
 							</row>
@@ -2739,7 +2739,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 							<tbody>
 								<row>
 									<entry>Internal Data Source Name</entry>
-									<entry>This is the name used by <application>RRDTool</application> to identify this particular data source within the RRD file. <application>RRDTool</application> places a limit of 19 alphanumeric characters (plus '_' and '-') on this field.</entry>
+									<entry>This is the name used by <application>RRDtool</application> to identify this particular data source within the RRD file. <application>RRDtool</application> places a limit of 19 alphanumeric characters (plus '_' and '-') on this field.</entry>
 								</row>
 								<row>
 									<entry>Minimum Value</entry>
@@ -2753,12 +2753,12 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 								</row>
 								<row>
 									<entry>Data Source Type</entry>
-									<entry><para>Cacti currently supports four types of data that <application>RRDTool</application> can represent for any given data source:
+									<entry><para>Cacti currently supports four types of data that <application>RRDtool</application> can represent for any given data source:
 									</para><para>COUNTER: is for continuous incrementing counters like the ifInOctets counter in a router. The COUNTER
 														data source assumes that the counter never decreases, except when a counter overflows. It is always a whole INTEGER,
 														floating point numbers are invalid.
 														The update function takes the overflow into account.  The counter is stored as a per-second rate.
-														When the counter overflows, <application>RRDTool</application> checks if the overflow happened at the 32bit or 64bit
+														When the counter overflows, <application>RRDtool</application> checks if the overflow happened at the 32bit or 64bit
                    										border and acts accordingly by adding an appropriate value to the result.
 									</para><para>GAUGE: numbers that are not continuously incrementing, e.g. a temperature reading.
 														Floating point numbers are accepted.
@@ -2767,7 +2767,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 								</row>
 								<row>
 									<entry>Heartbeat</entry>
-									<entry>As defined by <application>RRDTool</application>: <quote>The maximum amount of time that can pass before data is entered as "unknown". This field is usually '600' or 2 data gathering intervals</quote>.</entry>
+									<entry>As defined by <application>RRDtool</application>: <quote>The maximum amount of time that can pass before data is entered as "unknown". This field is usually '600' or 2 data gathering intervals</quote>.</entry>
 								</row>
 							</tbody>
 						</tgroup>
@@ -2870,7 +2870,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 								<entry>RRDtool graphs are composed of stair case curves by default.
 								This is in line with the way RRDtool
            						calculates its data. Some people favor a more "organic" look for their graphs.
-           						<application>RRDTool</application> version 1.2 and above
+           						<application>RRDtool</application> version 1.2 and above
 								support smoothing of graphs, know as <guilabel>slope mode</guilabel>.</entry>
 							</row>
 							<row>
@@ -2885,7 +2885,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 								<listitem><para>--alt-autoscale-max (accepting a lower limit),</para></listitem>
 								<listitem><para>--alt-autoscale-min (accepting an upper limit, requires rrdtool 1.2.x) or</para></listitem>
 								<listitem><para>--alt-autoscale (accepting both limits, rrdtool default) on the graph.</para></listitem></itemizedlist>
-								The <ulink url="http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html">RRDTool graph manual</ulink> says:
+								The <ulink url="http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html">RRDtool graph manual</ulink> says:
 </para><para>       <emphasis>Limits</emphasis>
 </para><para>           [-u|--upper-limit value] [-l|--lower-limit value] [-r|--rigid]
 </para><para>
@@ -2929,14 +2929,14 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 							</row>
 							<row>
 								<entry>Rigid Boundaries Mode</entry>
-								<entry>From the RRDTool manual
+								<entry>From the RRDtool manual
 								<quote>Normally rrdgraph will automatically expand the lower and upper
 								limit if the graph contains a value outside the valid range.
 								With this option you can disable this behavior</quote>.</entry>
 							</row>
 							<row>
 								<entry>Auto Padding</entry>
-								<entry>If you have ever created RRDTool-based graphs manually,
+								<entry>If you have ever created RRDtool-based graphs manually,
 								you may have realized how annoying it can be to get text to
 								line up properly. With this option Cacti will do its best to
 								make the columns on your graph legend line up. This option
@@ -3040,7 +3040,7 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 								</row>
 								<row>
 									<entry>Consolidation Function</entry>
-									<entry>This tells <application>RRDTool</application> which consolidation function to use when representing this data on the graph. You will typically use AVERAGE for most things on the graph area, and LAST/MAXIMUM as well for GPRINT items.</entry>
+									<entry>This tells <application>RRDtool</application> which consolidation function to use when representing this data on the graph. You will typically use AVERAGE for most things on the graph area, and LAST/MAXIMUM as well for GPRINT items.</entry>
 								</row>
 								<row>
 									<entry>CDEF Function</entry>
@@ -4434,7 +4434,7 @@ disk /</userinput></screen>
 						<screen><prompt>shell&gt;</prompt> <userinput>ls -al rra/</userinput></screen>
 						<para>
 							If only some of your graphs are not updating correctly, double check the <guilabel>Maximum Value</guilabel> field for all data
-							sources used by these graphs. If the value being fed to the .rrd file exceeds its <guilabel>Maximum Value</guilabel>, RRDTool
+							sources used by these graphs. If the value being fed to the .rrd file exceeds its <guilabel>Maximum Value</guilabel>, RRDtool
 							will insert an <guilabel>Unknown</guilabel> and you will see no data on the graph.
 						</para>
 					</answer>
@@ -4462,9 +4462,9 @@ disk /</userinput></screen>
 					<answer>
 						<para>
 							This occurs because the reboot causes SNMP's counters to reset, which can cause a rather large spike on the graph when
-							<application>RRDTool</application> tries to determine the change between the new small counter value and the large
+							<application>RRDtool</application> tries to determine the change between the new small counter value and the large
 							previous value. One way to combat this issue is to specify realistic maximum values for your data sources.
-							<application>RRDTool</application> will ignore any value that is larger than the maximum value.
+							<application>RRDtool</application> will ignore any value that is larger than the maximum value.
 						</para>
 						<para>
 							If you already have a spike on one or more of your graphs, there is a really <ulink url="http://cricket.sourceforge.net/contrib/files/killspike2">useful Perl script</ulink> that will remove them for you.
@@ -4474,12 +4474,12 @@ disk /</userinput></screen>
 				<qandaentry>
 					<question>
 						<para>
-							RRDTool Says: ERROR: unknown option '--slope-mode' or RRDTool Says: ERROR: Garbage ':39:24 To 2005/10/22 16:39:24\c' after command: COMMENT:From 2005/10/21 16:39:24 To 2005/10/22 16:39:24\c
+							RRDtool Says: ERROR: unknown option '--slope-mode' or RRDtool Says: ERROR: Garbage ':39:24 To 2005/10/22 16:39:24\c' after command: COMMENT:From 2005/10/21 16:39:24 To 2005/10/22 16:39:24\c
 						</para>
 					</question>
 					<answer>
 						<para>
-							This occurs because the version of RRDTool that you are running does not match the RRDTool version Cacti is configured to use.  Double check your Cacti Settings and make sure that the RRDTool version matches what version of RRDTool you are running.
+							This occurs because the version of RRDtool that you are running does not match the RRDtool version Cacti is configured to use.  Double check your Cacti Settings and make sure that the RRDtool version matches what version of RRDtool you are running.
 						</para>
 					</answer>
 				</qandaentry>
@@ -4826,7 +4826,7 @@ disk /</userinput></screen>
 		</sect1>
 	</chapter>
 	<chapter id="rrdtool-features">
-		<title>RRDTool Specific Features</title>
+		<title>RRDtool Specific Features</title>
 		<sect1 id="gprint-presets">
 			<title>GPRINT Presets</title>
 			<para>
@@ -4851,7 +4851,7 @@ disk /</userinput></screen>
 			<title>CDEFs</title>
 			<para>
 				CDEFs allow you to apply mathematical functions to graph data to alter output. The concept of a
-				CDEF comes straight from <application>RRDTool</application>, and are written in reverse polish notation (RPN). For more
+				CDEF comes straight from <application>RRDtool</application>, and are written in reverse polish notation (RPN). For more
 				information regarding the syntax of CDEFs, check out the <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph_data.en.html">CDEF tutorial</ulink>.
 			</para>
 			<sect2 id="add-new-cdef">
@@ -4880,7 +4880,7 @@ disk /</userinput></screen>
 						<tbody>
 							<row>
 								<entry>Function</entry>
-								<entry>You can choose a CDEF function to use as the item. The <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph.en.html">RRDTool graph manual</ulink> describes the purpose of each CDEF function.</entry>
+								<entry>You can choose a CDEF function to use as the item. The <ulink url="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/doc/rrdgraph.en.html">RRDtool graph manual</ulink> describes the purpose of each CDEF function.</entry>
 							</row>
 							<row>
 								<entry>Operator</entry>

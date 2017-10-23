@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -40,7 +40,7 @@ function get_cdef_item_name($cdef_item_id) 	{
 	}
 }
 
-/* get_cdef - resolves an entire CDEF into its text-based representation for use in the RRDTool 'graph'
+/* get_cdef - resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'
      string. this name will be resolved recursively if necessary
    @arg $cdef_id - the id of the cdef to resolve
    @returns - a text-based representation of the cdef */

@@ -1,5 +1,10 @@
 Cacti CHANGELOG
 
+1.1.27
+-issue#1033: Issues inserting into dsstats table due to legacy data
+-issue#1039: Using html_escape still double escapes.  Use strip_tags instead
+-issue#1040: Resolving compatibility issue with PHP7.2
+
 1.1.26
 -issue#841: --input-fields variable not working with add_graphs.php cli
 -issue#986: Resolve minor appearance problem on Modern theme
@@ -502,7 +507,7 @@ Cacti CHANGELOG
 -issue: Fixed issues with Dark theme
 -issue: Fixed issues with Paw theme
 -issue: Fix timespan calculation
--issue: Added misplaced join condition when generating RRDTool graphs
+-issue: Added misplaced join condition when generating RRDtool graphs
 -issue: Fix the selection of timestan based on local_graph_id and rra_id
 -issue: Correct error in discovery not adding devices
 -issue: Action message did not always display
@@ -644,7 +649,7 @@ Cacti CHANGELOG
 -bug#0002484: Incorrect SQL request in cli script repair_database.php
 -bug#0002521: Unable to create two devices via CLI with the same IP-Address
 -bug#0002522: Zero padded hex strings are parsed incorrectly
--bug#0002535: Graph Template Changes not updating RRDTool command
+-bug#0002535: Graph Template Changes not updating RRDtool command
 -bug#0002636: Creating Data Template with "U" for min and max saves field data_input_field_id as 0 for first item
 -bug#0002697: CVE-2016-2313 allows remote authenticated users who use web authentication to bypass intended access
 -bug#0002698: When the host is down the wrong data type are used for some columns in the host table
@@ -686,7 +691,7 @@ Cacti CHANGELOG
 -bug:0002629: Cacti lacks tab icons in chrome from android
 -bug:0002619: Fix incorrect placement of htmlspecialchars() in tree.php
 -bug:0002642: ping.pl does not take into account host port numbers
--bug:0002567: RRDTool 1.5.x Support 
+-bug:0002567: RRDtool 1.5.x Support 
 -bug:0002269: |query_ifSpeed| in --upper-limit for graph template does not work with empty ifSpee
 
 0.8.8f
@@ -929,7 +934,7 @@ Cacti CHANGELOG
 -feature: Add analyze database and push out host cli scripts
 
 0.8.7g
--bug: RRDTool 1.4.x not recognized during installation
+-bug: RRDtool 1.4.x not recognized during installation
 -bug: Implement windows-aware shell escaping
 -bug: Fixed multiple cross site scripting vulnerabilities reported by Tomas Hoger of the Red Hat Security Response Team
 -bug#0001292: Over 8TByte Partition in Windows cant get correct data from snmp
@@ -944,7 +949,7 @@ Cacti CHANGELOG
 -bug#0001756: Alternate font styles do not work correctly
 -bug#0001757: LDAP realm authentication outputs warning for undefined index
 -bug#0001763: Unable to add graph permissions on a user
--bug#0001765: Tech support does not work correctly with RRDTool 1.4.x
+-bug#0001765: Tech support does not work correctly with RRDtool 1.4.x
 -bug#0001766: Page refresh setting not being honored
 -bug#0001771: "index count changed" not implemented for query_unix_partitions.pl, query_host_partitions.pl, query_cpu_partitions.pl, ss_host_cpu.php and ss_host_disk.php
 -bug#0001773: Character encoding problem after upgrade to 0.8.7f
@@ -961,7 +966,7 @@ Cacti CHANGELOG
 -bug#0001416: Graph Export fails with EXPORT FATAL ERROR: Export path /some/path/root/export is within a system path /root. Can not continue.
 -bug#0001452: Missing "<" and ">" in "Collection Methods=>Data Input Methods=>"Input String" after importing template
 -bug#0001461: Data query export/import fails
--bug#0001492: RRDTool 1.3 series fonts (fontconfig) support
+-bug#0001492: RRDtool 1.3 series fonts (fontconfig) support
 -bug#0001506: Reindexing fails due to global include issue in lib/snmp.php
 -bug#0001522: Special characters break parsing of template data
 -bug#0001524: Export graphs and Classical Presentation does not honor per graph export rules
@@ -1170,7 +1175,7 @@ Cacti CHANGELOG
 -feature: Add links to Data Template and Host Edit to Data Source Edit Screen
 -feature: Support using the cacti database api with more than one connection
 -feature: Add some more debug lines to Data Query debugging (Verbose Query)
--feature: Fix compatibility issues for RRDTool 1.3
+-feature: Fix compatibility issues for RRDtool 1.3
 -feature: Make the tabs section work a little better with existing plugins
 -feature: Add additional options to speed data query graph automation process
 -feature: Add additional indexes to speed data query graph creation
@@ -1352,7 +1357,7 @@ Cacti CHANGELOG
 -feature: Add the ability to ignore custom RRA settings when importing templates and use this behavior by default
 -feature: Add technical support output to System Utilities
 -compat: Add additional checking due to php-snmp changes in Windows
--compat: Remove GIF as a supported file type for RRDTool 1.2.x and added SVG file type
+-compat: Remove GIF as a supported file type for RRDtool 1.2.x and added SVG file type
 
 0.8.6j
 -bug#0000842: SNMPv3 password field does not check if entered passwords match.
@@ -1571,7 +1576,7 @@ Cacti CHANGELOG
 -bug#0000443: Add SNMP port/timeout to the Host MIB CPU/disk script queries.
 -bug: Corrected issues encountered when creating multiple graphs from a single graph template.
 -bug: Corrected a problem where no graphs are displayed in the graph tree when authentication is turned off.
--bug: Allow RRDTool fetch command to retrieve negative numbers.
+-bug: Allow RRDtool fetch command to retrieve negative numbers.
 -bug: Increased some field lengths for very long OID's.
 -bug: Removed references to non-existing code when attempting to make database connections.
 -bug: Give poller cache more time to process entries during a clear operation, give it more memory.
@@ -1581,7 +1586,7 @@ Cacti CHANGELOG
 -bug: Changed SNMP ping OID to be sysUptime because it is more common.
 -bug: Increased PHP timeout to accommodate for long running recache events causing poller issues.
 -bug: LDAP Auth with no DN specified and blank username would allow login.
--feature: Basic support for RRDTool 1.2 including specifying a default True Type Font.
+-feature: Basic support for RRDtool 1.2 including specifying a default True Type Font.
 -feature: Added support for spike suppression within the cmd.php poller.
 -feature: Support php_snmp version 2 builtin functions.
 
@@ -1615,7 +1620,7 @@ Cacti CHANGELOG
 0.8.6b
 -bug#0000318: Only delete the Cacti system user when uninstalling the RPM package rather than during each upgrade.
 -bug: Problems with the 95th percentile and bandwidth summation graph variables.
--bug: Problem with random gaps in some or all graphs caused by staggered RRDTool update times.
+-bug: Problem with random gaps in some or all graphs caused by staggered RRDtool update times.
 
 0.8.6a
 -bug#0000287: Non-host based scripts failing to populate the poller cache (0.8.6).
@@ -1635,7 +1640,7 @@ Cacti CHANGELOG
 -bug: Typo in graphs.php when placing graph(s) on a tree.
 -bug: Make sure that there is a user logged in before trying to read a per-user graph configuration value.
 -bug: Fix support for multiple cmd.php/cactid polling sessions in a single poller.php session.
--bug: Revert back to older RRDTool update method as to correct several poller related issues with 0.8.6.
+-bug: Revert back to older RRDtool update method as to correct several poller related issues with 0.8.6.
 -bug: Fix PHP-SNMP support in cmd.php.
 -bug: Fix multiple graph/data template corruption issues when converting from graphs or data sources.
 
@@ -1664,7 +1669,7 @@ Cacti CHANGELOG
 -bug#0000253: Fixed recursive CDEFs.
 -bug#0000254: CDEF dropdown list in adding another CDEF is not sorted.
 -bug#0000265: Removed "CANNOT FIND GUEST USER" error message.
--bug#0000273: Fixed 'rrdtool fetch' parsing for RRDTool 1.0.9.
+-bug#0000273: Fixed 'rrdtool fetch' parsing for RRDtool 1.0.9.
 -bug: A hash was not being generated for duplicated graph and data templates which would cause import/export for those templates to fail.
 -bug: A user's graph permissions may fail to delete properly after removing that user.
 -bug: The "Export Every x Times" feature did not work correctly.
@@ -1701,7 +1706,7 @@ Cacti CHANGELOG
 -feature: Added Eric Steffen's Bonsai patch which enables users to zoom a graph by dragging a box around the area of interest.
 -feature: Added branix's graph export enhancements patch which adds many more graph export configuration options including remote FTP support.
 -feature: Ability to view/clear the log file from the console.
--feature: Use a single RRDTool stdin pipe for all update, create, and graph export actions.
+-feature: Use a single RRDtool stdin pipe for all update, create, and graph export actions.
 -feature: Advanced timespan selector which provides a large number of presets and a calendar control for custom timespans.
 -feature: Better support for SNMP v2 from UI.  Speed up some UI queries.
 -feature: Enable/Disable Poller from UI.
@@ -1725,7 +1730,7 @@ Cacti CHANGELOG
 -bug: Correctly display the two pane tree when authentication has been turned off.
 -bug: Support regular expression characters in passwords: \+*?[^]$(){}=!<>|:
 -bug: Fixed certain re-ordering problems when deleting branches from a graph tree.
--bug: Add support for a 3 digit exponents in RRDTool fetch output on Windows.
+-bug: Add support for a 3 digit exponents in RRDtool fetch output on Windows.
 -bug: Correctly escape community strings with a quotation mark under Windows.
 -bug: 95th percentile and bandwidth summation code should result in less errors when things don't go as planned.
 -bug: Fix 'data_input_data_fcache' orphan when deleting a data source.
@@ -1860,7 +1865,7 @@ Cacti CHANGELOG
 -bug#59: Regular expression bug that caused 'query_unix_partitions.pl' not to function on FreeBSD.
 -bug#60: Incorrect index OID in the (currently unused) 'host_disk.xml' SNMP query.
 -bug#61: Problems adding additional graph items to an input after the template is in use by graphs.
--bug#64: Cactid now checks for the RRDTool path in the 'settings' table.\
+-bug#64: Cactid now checks for the RRDtool path in the 'settings' table.\
 -bug#67: Problems with wrapping and 'diskfree.pl'.
 -bug: Problems deleting GPRINT presets.
 -bug: Undefined variable errors on the graph settings page if built in user authentication was turned off.
@@ -1882,7 +1887,7 @@ Cacti CHANGELOG
 -bug#40: Fixed OIDs in serveral Netware data templates.
 -bug#41: Data source and graph names are lost when created from a  template.
 -bug#44: Fixed Host MIB logged in users OID in data template.
--bug#46: Fixed an RRDTool/PHP binary variable mixup on the install page for win32 users.
+-bug#46: Fixed an RRDtool/PHP binary variable mixup on the install page for win32 users.
 -bug#48: Changed the "Create" button on the settings page to "Save".
 -bug#52: Make sure the data source/graph names are pulled down after clicking "Create", so the user can press cancel.
 -bug: Changed references from $_SERVER["SCRIPT_NAME"] to $_SERVER["PHP_SELF"] because of strange behavior on PHP 4.3.2 under Windows.
