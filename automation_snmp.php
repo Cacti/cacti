@@ -349,7 +349,7 @@ function automation_snmp_item_remove_confirm() {
     <tr>
         <td class='topBoxAlt'>
             <p><?php print __('Click \'Continue\' to delete the following SNMP Option Item.'); ?></p>
-            <p><?php print __('SNMP Option:');?> <?php print htmlspecialchars($snmp['name']);?><br>
+            <p><?php print __('SNMP Option:');?> <?php print html_escape($snmp['name']);?><br>
             <?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']);?><br>
 			<?php print __('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? $item['snmp_readstring']:$item['snmp_username']));?></p>
         </td>
@@ -369,8 +369,6 @@ function automation_snmp_item_remove_confirm() {
     ?>
     <script type='text/javascript'>
     $(function() {
-		$('#cdialog').dialog();
-
     	$('#continue').click(function(data) {
 			$.post('automation_snmp.php?action=item_remove', {
 				__csrf_magic: csrfMagicToken,
@@ -417,7 +415,7 @@ function automation_snmp_item_edit() {
 			FROM automation_snmp_items
 			WHERE id = ?', array(get_request_var('item_id')));
 
-		$header_label = __('SNMP Options [edit: %s]', htmlspecialchars($snmp_option['name']));
+		$header_label = __('SNMP Options [edit: %s]', html_escape($snmp_option['name']));
 	} else {
 		$header_label = __('SNMP Options [new]');
 		$automation_snmp_item = array();
@@ -698,7 +696,7 @@ function automation_snmp_edit() {
 		if (sizeof($items)) {
 			foreach ($items as $item) {
 				form_alternate_row('line' . $item['id'], true, true);
-				$form_data = "<td><a class='linkEditMain' href='" . htmlspecialchars('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>Item#" . $i . '</a></td>';
+				$form_data = "<td><a class='linkEditMain' href='" . html_escape('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>Item#" . $i . '</a></td>';
 				#$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 				$form_data .= '<td>' . 	$item['snmp_version'] . '</td>';
 				$form_data .= '<td class="left">' . 	($item['snmp_version'] == 3 ? __('none') : $item['snmp_readstring']) . '</td>';
@@ -716,13 +714,13 @@ function automation_snmp_edit() {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items && $total_items > 1) {
-						$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
@@ -842,7 +840,7 @@ function automation_snmp() {
                             <?php
                             if (sizeof($item_rows)) {
                                 foreach ($item_rows as $key => $value) {
-                                    print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+                                    print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
                                 }
                             }
                             ?>
