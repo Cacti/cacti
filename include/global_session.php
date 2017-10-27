@@ -57,7 +57,7 @@ if (isset($_SESSION['refresh'])) {
 	}
 
     if (isset($_SESSION['refresh']['page'])) {
-        $myrefresh['page'] = strip_tags($_SESSION['refresh']['page']);
+        $myrefresh['page'] = filter_var(strip_tags($_SESSION['refresh']['page']), FILTER_SANITIZE_URL);
     } else {
 		$myrefresh['page'] = $config['url_path'] . 'logout.php?action=timeout';
 	}
@@ -66,11 +66,11 @@ if (isset($_SESSION['refresh'])) {
 } elseif (isset($refresh) && is_array($refresh)) {
 	$refreshIsLogout = 'false';
 	$myrefresh['seconds'] = $refresh['seconds'];
-	$myrefresh['page']    = strip_tags(strpos($refresh['page'], '?') ? '&':'?') . 'header=false';
+	$myrefresh['page']    = filter_var(strip_tags(strpos($refresh['page'], '?') ? '&':'?' . 'header=false'), FILTER_SANITIZE_URL);
 } elseif (isset($refresh)) {
 	$refreshIsLogout = 'false';
 	$myrefresh['seconds'] = $refresh;
-	$myrefresh['page']    = strip_tags($_SERVER['REQUEST_URI'] . (strpos($_SERVER['REQUEST_URI'], '?') ? '&':'?') . 'header=false');
+	$myrefresh['page']    = filter_var(strip_tags($_SERVER['REQUEST_URI'] . (strpos($_SERVER['REQUEST_URI'], '?') ? '&':'?') . 'header=false'), FILTER_SANITIZE_URL);
 } elseif (read_config_option('auth_cache_enabled') == 'on' && isset($_COOKIE['cacti_remembers'])) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = 'index.php';
@@ -88,7 +88,7 @@ if (isset($_SESSION['refresh'])) {
 	var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;
 	var urlPath='<?php print $config['url_path'];?>';
 	var previousPage='';
-	var requestURI='<?php print strip_tags($_SERVER['REQUEST_URI']);?>';
+	var requestURI='<?php print filter_var(strip_tags($_SERVER['REQUEST_URI']), FILTER_SANITIZE_URL);?>';
 	var searchFilter='<?php print __('Enter a search term');?>';
 	var searchRFilter='<?php print __('Enter a regular expression');?>';
 	var noFileSelected='<?php print __('No file selected');?>';
