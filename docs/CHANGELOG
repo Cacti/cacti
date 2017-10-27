@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.28
 -issue#1045: Resolving issues with multiple pages and confirmation dialogs
+-issue#1048: Issue importing vdefs from a template
 
 1.1.27
 -issue#1033: Issues inserting into dsstats table due to legacy data
