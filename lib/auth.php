@@ -281,15 +281,30 @@ function user_enable($user_id) {
 /* get_auth_realms - return a list of system user authentication realms */
 function get_auth_realms($login = false) {
 	if (read_config_option('auth_method') == 4) {
-		$drealms = db_fetch_assoc('SELECT domain_id, domain_name FROM user_domains WHERE enabled="on" ORDER BY domain_name');
+		$drealms = db_fetch_assoc('SELECT domain_id, domain_name
+			FROM user_domains
+			WHERE enabled="on"
+			ORDER BY domain_name');
+
 		if (sizeof($drealms)) {
 			if ($login) {
-				$new_realms['0'] = array('name' => __('Local'), 'selected' => false);
+				$new_realms['0'] = array(
+					'name' => __('Local'),
+					'selected' => false
+				);
+
 				foreach($drealms as $realm) {
-					$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
+					$new_realms[1000+$realm['domain_id']] = array(
+						'name' => $realm['domain_name'],
+						'selected' => false
+					);
 				}
 
-				$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
+				$default_realm = db_fetch_cell('SELECT domain_id
+					FROM user_domains
+					WHERE defdomain=1
+					AND enabled="on"');
+
 				if (!empty($default_realm)) {
 					$new_realms[1000+$default_realm]['selected'] = true;
 				} else {
