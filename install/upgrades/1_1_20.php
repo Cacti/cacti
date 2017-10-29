@@ -34,17 +34,19 @@ function upgrade_to_1_1_20() {
 
 	db_install_execute('ALTER TABLE snmpagent_mibs
 		MODIFY COLUMN `name` VARCHAR(50) NOT NULL DEFAULT ""');
-		
+
 	db_install_execute('ALTER TABLE snmpagent_cache_notifications
 		MODIFY COLUMN `name` VARCHAR(50) NOT NULL,
 		MODIFY COLUMN `mib` VARCHAR(50) NOT NULL,
 		MODIFY COLUMN `attribute` VARCHAR(50) NOT NULL,
+		DROP PRIMARY KEY,
 		ADD PRIMARY KEY (`name`,`mib`,`attribute`,`sequence_id`)');
-		
+
 	db_install_execute('ALTER TABLE snmpagent_cache_textual_conventions
 		MODIFY COLUMN name VARCHAR(50) NOT NULL,
 		MODIFY COLUMN mib VARCHAR(50) NOT NULL,
 		MODIFY COLUMN type VARCHAR(50) NOT NULL,
+		DROP PRIMARY KEY,
 		ADD PRIMARY KEY (`name`,`mib`,`type`)');
 
 	/* correct dumplicate notifications */
@@ -69,5 +71,6 @@ function upgrade_to_1_1_20() {
 	db_install_execute('ALTER TABLE snmpagent_managers_notifications
 		MODIFY COLUMN `notification` VARCHAR(50) NOT NULL,
 		MODIFY COLUMN `mib` VARCHAR(50) NOT NULL,
+		DROP PRIMARY KEY,
 		ADD PRIMARY KEY (`manager_id`,`notification`,`mib`)');
 }
