@@ -76,6 +76,8 @@ function clog_purge_logfile() {
 function clog_view_logfile() {
 	global $config;
 
+	$exclude_reported = false;
+
 	$clogAdmin = clog_admin();
 	$logfile   = read_config_option('path_cactilog');
 
@@ -208,6 +210,7 @@ function clog_view_logfile() {
 		}
 	} else {
 		$ad_filter = __(' - Admin View');
+		$exclude_regex = '';
 	}
 
 	if (get_request_var('message_type') > 0) {
@@ -295,8 +298,15 @@ function clog_view_logfile() {
 		}
 
 		/* respect the exclusion filter */
-		if (!$clogAdmin && @preg_match($exclude_regex, $new_item)) {
-			continue;
+		if ($exclude_regex != '' && !$clogAdmin) {
+			if (validate_is_regex($exclude_regex)) {
+				if (preg_match($exclude_regex, $new_item)) {
+					continue;
+				}
+			} elseif (!$exclude_reported) {
+				cacti_log('Cacti Log Exclude Regex "' . $exclude_regex . '" is Invalid.  Update your Exclude Regex to be valid!');
+				$exclude_reported = true;
+			}
 		}
 
 		/* get the background color */
