@@ -3535,7 +3535,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	// Support i18n
 	$mail->CharSet = 'UTF-8';
-	$mail->Encoding = 'quoted-printable';
+	$mail->Encoding = 'base64';
 
 	$how = read_config_option('settings_how');
 	if ($how < 0 || $how > 2) {
