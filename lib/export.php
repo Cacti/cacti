@@ -40,7 +40,6 @@ function graph_template_to_xml($graph_template_id) {
 		ORDER BY id',
 		array($graph_template_id));
 
-
 	$graph_template_items = db_fetch_assoc_prepared('SELECT *
 		FROM graph_templates_item
 		WHERE graph_template_id = ?
@@ -51,7 +50,7 @@ function graph_template_to_xml($graph_template_id) {
 	$graph_template_inputs = db_fetch_assoc_prepared('SELECT *
 		FROM graph_template_input
 		WHERE graph_template_id = ?
-		ORDER BY hash',
+		ORDER BY id',
 		array($graph_template_id));
 
 	if ((empty($graph_template['id'])) || (empty($graph_template_graph['id']))) {

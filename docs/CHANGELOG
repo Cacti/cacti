@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.28
 -issue#959: Resolving issues viewing email reports due to email client decoder issues
+-issue#992: Resolving RRDfile naming issues that result from random sorting during export on prior Cacti versions
 -issue#1045: Resolving issues with multiple pages and confirmation dialogs
 -issue#1048: Issue importing vdefs from a template
 
