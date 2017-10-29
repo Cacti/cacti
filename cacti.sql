@@ -3,7 +3,8 @@
 -- Allow MySQL to handle Cacti's legacy syntax
 --
 
-SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode,'NO_ZERO_DATE', '')) ;
+SET GLOBAL sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+SET SESSION sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 
 --
 -- Table structure for table `aggregate_graph_templates`
