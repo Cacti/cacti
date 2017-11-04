@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#1053: Remote Data Collector issues with https and self signed certificates
 -issue#1055: Errors in data source statistics inserts when invalid output is encountered
 -issue#1057: Potential vulnerability in RRDtool functions
+-issue#1058: ICMP Ping to and IPv6 address fails to gather data for Ping Latency / CentOS 7.4
 -issue#1059: Aggregate item filter should use regular expressions to avoid SQL errors due to flawed filter logic.
 
 1.1.27
