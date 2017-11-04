@@ -489,7 +489,7 @@ function item() {
 			ORDER BY gti.sequence',
 			array(get_request_var('id')));
 
-		$header_label = __('Graph Items [edit: %s]', htmlspecialchars(get_graph_title(get_request_var('id'))));
+		$header_label = __('Graph Items [edit: %s]', html_escape(get_graph_title(get_request_var('id'))));
 	}
 
 	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
@@ -548,7 +548,7 @@ function graph_edit() {
 			$aginfo['title_format'] = get_graph_title($graphs['local_graph_id']);
 		}
 
-		$header_label = '[edit: ' . htmlspecialchars(get_graph_title(get_request_var('id'))) . ']';
+		$header_label = '[edit: ' . html_escape(get_graph_title(get_request_var('id'))) . ']';
 	}
 
 	if (sizeof($aginfo)) {
@@ -610,7 +610,7 @@ function graph_edit() {
 		foreach (array_keys($aggregate_tabs) as $tab_short_name) {
 			if ($tab_short_name == 'details' || (!isempty_request_var('id'))) {
 				print "<li class='subTab'><a class='tab " . ($tab_short_name == $current_tab ? "selected'" : "'") .
-					" href='" . htmlspecialchars($config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . get_request_var('id') . "&tab=$tab_short_name") . "'>" . $aggregate_tabs[$tab_short_name] . "</a></li>\n";
+					" href='" . html_escape($config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . get_request_var('id') . "&tab=$tab_short_name") . "'>" . $aggregate_tabs[$tab_short_name] . "</a></li>\n";
 			}
 
 			$i++;
@@ -634,7 +634,7 @@ function graph_edit() {
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
-		print "<ul style='float:right;'><li><a class='pic' href='" . htmlspecialchars('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . "</a></li></ul></nav>\n</div></div>\n";
+		print "<ul style='float:right;'><li><a class='pic' href='" . html_escape('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . "</a></li></ul></nav>\n</div></div>\n";
 	} elseif (!isempty_request_var('id') && $current_tab == 'details' && (!sizeof($template))) {
 		print "<ul style='float:right;'><li><a id='toggle_items' class='pic' href='#'>" . __('Show Item Details') . "</a></li></ul></nav>\n</div></div>\n";
 	} else {
@@ -645,7 +645,7 @@ function graph_edit() {
 		html_start_box(__('Aggregate Preview [%s]', $header_label), '100%', '', '3', 'center', '');
 		?>
 		<tr class='even'><td class='center'>
-			<img src='<?php print htmlspecialchars($config['url_path'] . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&random=' . mt_rand());?>' alt=''>
+			<img src='<?php print html_escape($config['url_path'] . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&random=' . mt_rand());?>' alt=''>
 		</td></tr>
 		<?php
 		if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {
@@ -943,11 +943,10 @@ function aggregate_items() {
 			'pageset' => true,
 			'default' => '-1'
 			),
-		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+		'rfilter' => array(
+			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -985,7 +984,7 @@ function aggregate_items() {
 	function applyFilter() {
 		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
+		strURL += '&rfilter=' + $('#rfilter').val();
 		strURL += '&matching=' + $('#matching').is(':checked');
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -1005,7 +1004,7 @@ function aggregate_items() {
 			clearFilter();
 		});
 
-		$('#filter').change(function() {
+		$('#rfilter').change(function() {
 			applyFilter();
 		});
 
@@ -1029,7 +1028,7 @@ function aggregate_items() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' onChange='applyFilter()' value='<?php print get_request_var('filter');?>'>
+						<input type='text' id='rfilter' size='45' onChange='applyFilter()' value='<?php print get_request_var('rfilter');?>'>
 					</td>
 					<td>
 						<?php print __('Graphs');?>
@@ -1040,7 +1039,7 @@ function aggregate_items() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1071,14 +1070,14 @@ function aggregate_items() {
 	html_end_box(false);
 
 	/* form the 'where' clause for our main sql query */
-	if (get_request_var('filter') != '') {
-		$filters = explode(' ', get_request_var('filter'));
+	if (get_request_var('rfilter') == '') {
+		$sql_where = '';
+	} elseif (validate_is_regex(get_request_var('rfilter'))) {
+		$sql_where = 'WHERE gtg.title_cache RLIKE "' . get_request_var('rfilter') . '"';
+	} else {
+		$filters = explode(' ', get_request_var('rfilter'));
 		$sql_where = '';
 		$sql_where = aggregate_make_sql_where($sql_where, $filters, 'gtg.title_cache');
-
-		//$sql_where = "WHERE (gtg.title_cache LIKE '%%" . get_request_var("filter") . "%%')";
-	} else {
-		$sql_where = '';
 	}
 
 	if (get_request_var('matching') != 'false') {
@@ -1096,7 +1095,7 @@ function aggregate_items() {
 		array(get_request_var('id')));
 
 	if (!empty($graph_template)) {
-		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . "(gtg.graph_template_id=$graph_template)";
+		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . " (gtg.graph_template_id=$graph_template)";
 	}
 
 	/* print checkbox form for validation */
@@ -1145,7 +1144,13 @@ function aggregate_items() {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			form_alternate_row('line' . $graph['local_graph_id'], true);
-			form_selectable_cell(get_request_var('filter') != '' ? aggregate_format_text(htmlspecialchars($graph['title_cache']), get_request_var('filter')) : htmlspecialchars($graph['title_cache']), $graph['local_graph_id']);
+
+			if (validate_is_regex(get_request_var('rfilter'))) {
+				form_selectable_cell(filter_value($graph['title_cache'], get_request_var('rfilter')), $graph['local_graph_id']);
+			} else {
+				form_selectable_cell(get_request_var('rfilter') != '' ? aggregate_format_text(html_escape($graph['title_cache']), get_request_var('rfilter')) : html_escape($graph['title_cache']), $graph['local_graph_id']);
+			}
+
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'right');
 			form_selectable_cell(($graph['agg_graph_id'] != '' ? "<span class='associated'>" . __('Yes') . '</span>':"<span class='notAssociated'>" . __('No') . "</span>"), $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
@@ -1180,43 +1185,48 @@ function aggregate_make_sql_where($sql_where, $items, $field) {
 	}
 
 	$indentation = 0;
+	$termcount   = 0;
 
 	if (sizeof($items)) {
-	foreach($items as $i) {
-		$i = trim($i);
-		while (substr($i,0,1) == '(') {
-			$indentation++;
-			$sql_where .= '(';
-			$i = substr($i,1);
-		}
+		foreach($items as $i) {
+			$i = trim($i);
+			while (substr($i,0,1) == '(') {
+				$indentation++;
+				$termcount = 0;
+				$sql_where .= '(';
+				$i = substr($i, 1);
+			}
 
-		$split = strpos($i, ')');
-		if ($split !== false) {
-			$end = trim(substr($i,$split));
-			$i   = substr($i,0,$split);
-		} else {
-			$end = '';
-		}
-
-		if ($i != '') {
-			if (strtolower($i) == 'and') {
-				$sql_where .= ' AND ';
-			} elseif (strtolower($i) == 'or') {
-				$sql_where .= ' OR ';
+			$split = strpos($i, ')');
+			if ($split !== false) {
+				$end = trim(substr($i, $split));
+				$i   = substr($i, 0, $split);
 			} else {
-				$sql_where .= $field . " LIKE '%%" . trim($i) . "%%'";
+				$end = '';
 			}
-		}
 
-		if ($end != '') {
-			while (substr($end,0,1) == ')') {
-				$indentation--;
-				$sql_where .= ')';
-				$end = trim(substr($end,1));
+			if ($i != '') {
+				if (strtolower($i) == 'and') {
+					$sql_where .= ' AND ';
+				} elseif (strtolower($i) == 'or') {
+					$sql_where .= ' OR ';
+				} else {
+					$sql_where .= ($termcount > 0 ? ' OR ':'') . $field . " LIKE '%" . trim($i) . "%'";
+					$termcount++;
+				}
+			}
+
+			if ($end != '') {
+				while (substr($end, 0, 1) == ')') {
+					$indentation--;
+					$termcount = 0;
+					$sql_where .= ')';
+					$end = trim(substr($end, 1));
+				}
 			}
 		}
 	}
-	}
+
 	$sql_where .= ')';
 
 	return trim($sql_where);
@@ -1242,7 +1252,7 @@ function aggregate_format_text($text, $filter) {
 
 	if (sizeof($tags)) {
 		foreach($tags as $k => $t) {
-			$text = str_replace("<<$k>>", "<span class='filteredValue'>" . htmlspecialchars($t) . "</span>", $text);
+			$text = str_replace("<<$k>>", "<span class='filteredValue'>" . html_escape($t) . "</span>", $text);
 		}
 	}
 
@@ -1364,7 +1374,7 @@ function aggregate_graph() {
 
 							if (sizeof($templates) > 0) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . htmlspecialchars($template['name']) . "</option>\n";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -1379,7 +1389,7 @@ function aggregate_graph() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1403,8 +1413,8 @@ function aggregate_graph() {
 	$sql_where = 'WHERE (gtg.graph_template_id=0 AND gl.host_id=0)';
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (gtg.title_cache LIKE '%%" . get_request_var('filter') . "%%'" .
-			" OR ag.title_format LIKE '%%" . get_request_var('filter') . "%%')";
+		$sql_where .= " AND (gtg.title_cache LIKE '%" . get_request_var('filter') . "%'" .
+			" OR ag.title_format LIKE '%" . get_request_var('filter') . "%')";
 	}
 
 	if (get_request_var('template_id') == '-1') {
@@ -1462,7 +1472,7 @@ function aggregate_graph() {
 	if (sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
-			$template_name = htmlspecialchars($graph['name']);
+			$template_name = html_escape($graph['name']);
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'aggregate_graphs.php?action=edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'right');

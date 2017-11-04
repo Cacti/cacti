@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#1045: Resolving issues with multiple pages and confirmation dialogs
 -issue#1048: Issue importing vdefs from a template
 -issue#1055: Errors in data source statistics inserts when invalid output is encountered
+-issue#1059: Aggregate item filter should use regular expressions to avoid SQL errors due to flawed filter logic.
 
 1.1.27
 -issue#1033: Issues inserting into dsstats table due to legacy data
