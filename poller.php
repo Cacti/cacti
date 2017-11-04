@@ -487,7 +487,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($host_count > 1) {
 			$last_host = $item['id'];
 
-			exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host");
+			exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''));
 			usleep(100000);
 
 			$started_processes++;
