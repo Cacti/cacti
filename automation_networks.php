@@ -118,8 +118,26 @@ function api_networks_discover($network_id) {
 			if ($config['poller_id'] == $poller_id) {
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force");
 			} else {
-				$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($poller_id));
-				$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id);
+				$hostname = db_fetch_cell_prepared('SELECT hostname
+					FROM poller
+					WHERE id = ?',
+					array($poller_id));
+
+				if (get_url_type() == 'https') {
+					$fgc_contextoption = array(
+						'ssl' => array(
+							'verify_peer' => false,
+							'verify_peer_name' => false,
+							'allow_self_signed' => true,
+						)
+					);
+
+					$fgc_context = stream_context_create($fgc_contextoption);
+
+					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id, false, $fgc_context);
+				} else {
+					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id);
+				}
 			}
 		} else {
 			$_SESSION['automation_message'] = "Can Not Restart Discovery for Discovery in Progress for Network '$name'";
@@ -383,7 +401,7 @@ function network_edit() {
 
 	if (!isempty_request_var('id')) {
 		$network = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Network Discovery Range [edit: %s]', htmlspecialchars($network['name']));
+		$header_label = __('Network Discovery Range [edit: %s]', html_escape($network['name']));
 	} else {
 		$header_label = __('Network Discovery Range [new]');
 	}
@@ -1018,7 +1036,7 @@ function networks() {
 			}
 
 			form_alternate_row('line' . $network['id'], true);
-			form_selectable_cell('<a class="linkEditMain" href="' . htmlspecialchars('automation_networks.php?action=edit&id=' . $network['id']) . '">' . $network['name'] . '</a>', $network['id']);
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('automation_networks.php?action=edit&id=' . $network['id']) . '">' . $network['name'] . '</a>', $network['id']);
 			form_selectable_cell($network['data_collector'], $network['id']);
 			form_selectable_cell($sched_types[$network['sched_type']], $network['id']);
 			form_selectable_cell(number_format_i18n($network['total_ips']), $network['id'], '', 'text-align:right;');

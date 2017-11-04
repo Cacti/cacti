@@ -36,9 +36,26 @@ function run_data_query($host_id, $snmp_query_id) {
 	$poller_id = $status['poller_id'];
 
 	if ($poller_id != $config['poller_id']) {
-		$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($poller_id));
+		$hostname = db_fetch_cell_prepared('SELECT hostname
+			FROM poller
+			WHERE id = ?',
+			array($poller_id));
 
-		$response = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id);
+		if (get_url_type() == 'https') {
+			$fgc_contextoption = array(
+				'ssl' => array(
+					'verify_peer' => false,
+					'verify_peer_name' => false,
+					'allow_self_signed' => true,
+				)
+			);
+
+			$fgc_context = stream_context_create($fgc_contextoption);
+
+			$response = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id, false, $fgc_context);
+		} else {
+			$response = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id);
+		}
 
 		if ($response != '') {
 			$response = json_decode($response, true);
@@ -770,10 +787,10 @@ function data_query_ctype_print_unicode($value) {
 
 function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$output_array) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
-	db_execute_prepared('UPDATE host_snmp_cache 
-		SET present=0 
-		WHERE host_id = ? 
-		AND snmp_query_id = ?', 
+	db_execute_prepared('UPDATE host_snmp_cache
+		SET present=0
+		WHERE host_id = ?
+		AND snmp_query_id = ?',
 		array($host_id, $snmp_query_id));
 
 	/* setup the database call */

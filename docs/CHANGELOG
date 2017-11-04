@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#1044: Handle invalid exclusion regex properly when viewing the Cacti Log
 -issue#1045: Resolving issues with multiple pages and confirmation dialogs
 -issue#1048: Issue importing vdefs from a template
+-issue#1053: Remote Data Collector issues with https and self signed certificates
 -issue#1055: Errors in data source statistics inserts when invalid output is encountered
 -issue#1057: Potential vulnerability in RRDtool functions
 -issue#1059: Aggregate item filter should use regular expressions to avoid SQL errors due to flawed filter logic.
