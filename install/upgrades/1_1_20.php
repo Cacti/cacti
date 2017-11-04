@@ -44,7 +44,7 @@ function upgrade_to_1_1_20() {
 		MODIFY COLUMN `attribute` VARCHAR(50) NOT NULL,
 		ADD PRIMARY KEY (`name`,`mib`,`attribute`,`sequence_id`)');
 
-	db_execute('ALTER IGNORE TABLE snmpagent_cache_textual_conventiions
+	db_execute('ALTER IGNORE TABLE snmpagent_cache_textual_conventions
 		DROP PRIMARY KEY');
 
 	db_install_execute('ALTER TABLE snmpagent_cache_textual_conventions
