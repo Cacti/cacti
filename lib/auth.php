@@ -465,6 +465,25 @@ function is_tree_allowed($tree_id, $user = 0) {
 			}
 		}
 
+		/* check for group trees */
+		$gtrees = db_fetch_assoc_prepared("SELECT uagm.user_id
+			FROM user_auth_group AS uag
+        		INNER JOIN user_auth_group_members AS uagm
+			ON uag.id = uagm.group_id
+        		INNER JOIN user_auth_group_perms as uagp
+			ON uagp.group_id = uag.id
+			WHERE uag.enabled = 'on'
+		        AND uagm.user_id = ?
+		        and uagp.item_id = ?",
+                        array($user, $tree_id)
+		);
+
+		foreach ($groups as $g) {
+			if (auth_check_perms($gtrees, $g['policy_trees'])) {
+				return true;
+			}
+		}
+
 		return false;
 	} else {
 		return true;

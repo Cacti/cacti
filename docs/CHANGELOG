@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.28
+-issue#958: User Group Tree permissions not calculated fully
 -issue#959: Resolving issues viewing email reports due to email client decoder issues
 -issue#992: Resolving RRDfile naming issues that result from random sorting during export on prior Cacti versions
 -issue#1012: Issue where disabled devices will not appear on the Tree edit page
