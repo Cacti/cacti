@@ -1713,8 +1713,9 @@ function upgrade_to_1_0_0() {
 						$disable = false;
 					}
 			}
+
 			if ($disable) {
-				echo "Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION . "\n";
+				cacti_log("Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION);
 				db_install_add_cache(1, "Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION);
 				api_plugin_disable_all($plugin);
 			}
