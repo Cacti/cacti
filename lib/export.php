@@ -171,20 +171,20 @@ function data_template_to_xml($data_template_id) {
 	$data_template_data = db_fetch_row_prepared('SELECT *
 		FROM data_template_data
 		WHERE data_template_id = ?
-		AND local_data_id = 0',
+		AND local_data_id = 0
+		ORDER BY id',
 		array($data_template_id));
 
 	$data_template_rrd = db_fetch_assoc_prepared('SELECT *
 		FROM data_template_rrd
 		WHERE data_template_id = ?
 		AND local_data_id=0
-		ORDER BY hash',
+		ORDER BY id',
 		array($data_template_id));
 
 	$data_input_data = db_fetch_assoc_prepared('SELECT *
 		FROM data_input_data
-		WHERE data_template_data_id = ?
-		ORDER BY data_input_field_id',
+		WHERE data_template_data_id = ?',
 		array($data_template_data['id']));
 
 	if ((empty($data_template['id'])) || (empty($data_template_data['id']))) {
@@ -291,7 +291,7 @@ function data_input_method_to_xml($data_input_id) {
 	$data_input_fields = db_fetch_assoc_prepared('SELECT *
 		FROM data_input_fields
 		WHERE data_input_id = ?
-		ORDER BY hash',
+		ORDER BY id',
 		array($data_input_id));
 
 	if (empty($data_input['id'])) {
@@ -698,7 +698,7 @@ function data_query_to_xml($data_query_id) {
 	$snmp_query_graph = db_fetch_assoc_prepared('SELECT *
 		FROM snmp_query_graph
 		WHERE snmp_query_id = ?
-		ORDER BY hash',
+		ORDER BY id',
 		array($data_query_id));
 
 	if (empty($snmp_query['id'])) {
