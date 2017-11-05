@@ -330,12 +330,12 @@ function get_tree_path() {
 	}
 }
 
-function draw_dhtml_tree_level($tree_id, $parent = 0) {
+function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 	$dhtml_tree = array();
 
-	$heirarchy = get_allowed_tree_level($tree_id, $parent);
+	$heirarchy = get_allowed_tree_level($tree_id, $parent, $editing);
 
-	if (sizeof($heirarchy) > 0) {
+	if (sizeof($heirarchy)) {
 		$dhtml_tree[] = "\t\t\t<ul>\n";
 		foreach ($heirarchy as $leaf) {
 			if ($leaf['host_id'] > 0) {  //It's a host

@@ -634,7 +634,7 @@ function is_realm_allowed($realm) {
 	}
 }
 
-function get_allowed_tree_level($tree_id, $parent_id, $user = 0) {
+function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 0) {
 	$items = db_fetch_assoc_prepared('SELECT gti.id, gti.title, gti.host_id,
 		gti.local_graph_id, gti.host_grouping_type, h.description AS hostname
 		FROM graph_tree_items AS gti
@@ -648,20 +648,22 @@ function get_allowed_tree_level($tree_id, $parent_id, $user = 0) {
 		array($tree_id, $parent_id)
 	);
 
-	$i = 0;
-	if (sizeof($items)) {
-		foreach($items as $item) {
-			if ($item['host_id'] > 0) {
-				if (!is_device_allowed($item['host_id'], $user)) {
-					unset($items[$i]);
+	if (!$editing) {
+		$i = 0;
+		if (sizeof($items)) {
+			foreach($items as $item) {
+				if ($item['host_id'] > 0) {
+					if (!is_device_allowed($item['host_id'], $user)) {
+						unset($items[$i]);
+					}
+				} elseif($item['local_graph_id'] > 0) {
+					if (!is_graph_allowed($item['local_graph_id'], $user)) {
+						unset($items[$i]);
+					}
 				}
-			} elseif($item['local_graph_id'] > 0) {
-				if (!is_graph_allowed($item['local_graph_id'], $user)) {
-					unset($items[$i]);
-				}
-			}
 
-			$i++;
+				$i++;
+			}
 		}
 	}
 
