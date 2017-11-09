@@ -133,8 +133,26 @@ if (sizeof($polling_items)) {
 		$col_poller_id = $item['poller_id'];
 
 		if ($col_poller_id > 1) {
-			$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($col_poller_id));
-			$output = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=polldata&host_id=' . $host_id . '&local_data_id=' . $data_source . '&poller_id=' . $poller_id);
+			$hostname = db_fetch_cell_prepared('SELECT hostname
+				FROM poller
+				WHERE id = ?',
+				array($col_poller_id));
+
+			if (get_url_type() == 'https') {
+				$fgc_contextoption = array(
+					'ssl' => array(
+						'verify_peer' => false,
+						'verify_peer_name' => false,
+						'allow_self_signed' => true,
+					)
+				);
+
+				$fgc_context = stream_context_create($fgc_contextoption);
+
+				$output = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=polldata&host_id=' . $host_id . '&local_data_id=' . $data_source . '&poller_id=' . $poller_id, FALSE, $fgc_context);
+			} else {
+				$output = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=polldata&host_id=' . $host_id . '&local_data_id=' . $data_source . '&poller_id=' . $poller_id);
+			}
 		} else {
 			switch ($item['action']) {
 			case POLLER_ACTION_SNMP: /* snmp */

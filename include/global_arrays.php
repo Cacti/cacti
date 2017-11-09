@@ -100,6 +100,8 @@ $cacti_version_codes = array(
 	'1.1.24' => '0101',
 	'1.1.25' => '0101',
 	'1.1.26' => '0101',
+	'1.1.27' => '0101',
+	'1.1.28' => '0101',
 );
 
 $messages = array(
@@ -123,6 +125,9 @@ $messages = array(
 		'type' => 'error'),
 	7  => array(
 		'message' => __('XML parse error.'),
+		'type' => 'error'),
+	8  => array(
+		'message' => __('Form types dirpath and filepath must point to a valid diretory or file.'),
 		'type' => 'error'),
 	12 => array(
 		'message' => __('Username already in use.'),

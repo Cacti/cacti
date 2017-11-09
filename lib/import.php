@@ -1327,7 +1327,7 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	global $config, $preview_only, $import_debug_info;
 
-	include_once($config['library_path'] . 'vdef.php');
+	include_once($config['library_path'] . '/vdef.php');
 
 	/* track changes */
 	$status = 0;

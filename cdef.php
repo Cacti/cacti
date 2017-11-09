@@ -257,7 +257,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$cdef_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($matches[1]))) . '</li>';
+			$cdef_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($matches[1]))) . '</li>';
 			$cdef_array[$i] = $matches[1];
 
 			$i++;
@@ -355,8 +355,6 @@ function cdef_item_remove_confirm() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#cdialog').dialog();
-
 		$('#continue').click(function(data) {
 			$.post('cdef.php?action=item_remove', {
 				__csrf_magic: csrfMagicToken,
@@ -428,7 +426,7 @@ function item_edit() {
 
 	form_start('cdef.php', 'form_cdef');
 
-	html_start_box( __('CDEF Items [edit: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array(get_request_var('cdef_id'))))), '100%', '', '3', 'center', '');
+	html_start_box( __('CDEF Items [edit: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array(get_request_var('cdef_id'))))), '100%', '', '3', 'center', '');
 
 	if (isset_request_var('type_select')) {
 		$current_type = get_request_var('type_select');
@@ -556,7 +554,7 @@ function cdef_edit() {
 
 	if (!isempty_request_var('id')) {
 		$cdef = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('CDEF [edit: %s]', htmlspecialchars($cdef['name']));
+		$header_label = __('CDEF [edit: %s]', html_escape($cdef['name']));
 	} else {
 		$header_label = __('CDEF [new]');
 	}
@@ -596,22 +594,22 @@ function cdef_edit() {
 			foreach ($cdef_items as $cdef_item) {
 				form_alternate_row('line' . $cdef_item['id'], true, true);?>
 					<td>
-						<a class='linkEditMain' href='<?php print htmlspecialchars('cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><?php print __('Item #%d', $i);?></a>
+						<a class='linkEditMain' href='<?php print html_escape('cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']);?>'><?php print __('Item #%d', $i);?></a>
 					</td>
 					<td>
-						<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <?php print htmlspecialchars(get_cdef_item_name($cdef_item['id']));?>
+						<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <?php print html_escape(get_cdef_item_name($cdef_item['id']));?>
 					</td>
 					<td class='right'>
 						<?php
 						if (read_config_option('drag_and_drop') == '') {
 							if ($i < $total_items && $total_items > 0) {
-								echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
+								echo '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
 							} else {
 								echo '<span class="moveArrowNone"></span>';
 							}
 
 							if ($i > 1 && $i <= $total_items) {
-								echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('cdef.php?action=item_moveup&id=' . $cdef_item['id'] .	'&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
+								echo '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('cdef.php?action=item_moveup&id=' . $cdef_item['id'] .	'&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
 							} else {
 								echo '<span class="moveArrowNone"></span>';
 							}
@@ -734,7 +732,7 @@ function cdef() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>

@@ -342,8 +342,6 @@ function vdef_item_remove_confirm() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#cdialog').dialog();
-
 		$('#continue').click(function(data) {
 			$.post('vdef.php?action=item_remove', {
 				__csrf_magic: csrfMagicToken,
@@ -411,7 +409,7 @@ function vdef_item_edit() {
 			<select id='type_select'>
 				<?php
 				foreach ($vdef_item_types as $var => $val) {
-					print "<option value='" . htmlspecialchars('vdef.php?action=item_edit' . (isset_request_var('id') ? '&id=' . get_request_var('id') : '') . '&vdef_id=' . get_request_var('vdef_id') . '&type_select=' . $var) . "'"; if ($var == $current_type) { print ' selected'; } print ">$val</option>\n";
+					print "<option value='" . html_escape('vdef.php?action=item_edit' . (isset_request_var('id') ? '&id=' . get_request_var('id') : '') . '&vdef_id=' . get_request_var('vdef_id') . '&type_select=' . $var) . "'"; if ($var == $current_type) { print ' selected'; } print ">$val</option>\n";
 				}
 				?>
 			</select>
@@ -576,7 +574,7 @@ function vdef_edit() {
 				form_alternate_row('line' . $vdef_item['id'], true, true);
 				?>
 				<td>
-					<a class='linkEditMain' href='<?php print htmlspecialchars('vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']);?>'><?php print __('Item #%d', $i);?></a>
+					<a class='linkEditMain' href='<?php print html_escape('vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']);?>'><?php print __('Item #%d', $i);?></a>
 				</td>
 				<td>
 					<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item['id']);?></strong>
@@ -585,13 +583,13 @@ function vdef_edit() {
 					<?php
 					if (read_config_option('drag_and_drop') == '') {
 						if ($i < $total_items && $total_items > 1) {
-							echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
+							echo '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
 						} else {
 							echo '<span class="moveArrowNone"></span>';
 						}
 
 						if ($i > 1 && $i <= $total_items) {
-							echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
+							echo '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
 						} else {
 							echo '<span class="moveArrowNone"></span>';
 						}

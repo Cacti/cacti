@@ -3237,7 +3237,7 @@ function sanitize_uri($uri) {
 	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', '+', '[', ']', '{', '}', ';', '!');
 	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  '');
 
-	return str_replace($drop_char_match, $drop_char_replace, urldecode($uri));
+	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
 }
 
 /** cleans up a CDEF/VDEF string
@@ -3535,7 +3535,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	// Support i18n
 	$mail->CharSet = 'UTF-8';
-	$mail->Encoding = 'quoted-printable';
+	$mail->Encoding = 'base64';
 
 	$how = read_config_option('settings_how');
 	if ($how < 0 || $how > 2) {
