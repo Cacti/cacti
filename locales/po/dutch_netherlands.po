@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-10-14 08:11-0400\n"
-"PO-Revision-Date: 2017-10-14 18:08+0200\n"
+"PO-Revision-Date: 2017-11-09 15:13+0100\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -13240,7 +13240,7 @@ msgstr "Apparaat is uitgeschakeld"
 
 #: /var/www/html/cacti/lib/api_device.php:402
 msgid "Device Availability Check Bypassed"
-msgstr ""
+msgstr "Controle op beschikbaarheid is uitgeschakeld"
 
 #: /var/www/html/cacti/lib/api_device.php:409
 msgid "SNMP Information"
