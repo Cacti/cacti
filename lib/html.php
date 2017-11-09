@@ -1315,7 +1315,6 @@ function html_show_tabs_left() {
 	$realm_allowed[21] = is_realm_allowed(21);
 	$realm_allowed[22] = is_realm_allowed(22);
 
-
 	if ($realm_allowed[8]) {
 		$show_console_tab = true;
 	} else {
@@ -1716,38 +1715,38 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 function html_spikekill_actions() {
 	switch(get_nfilter_request_var('action')) {
-	case 'spikemenu':
-		html_spikekill_menu(get_filter_request_var('local_graph_id'));
+		case 'spikemenu':
+			html_spikekill_menu(get_filter_request_var('local_graph_id'));
 
-		break;
-	case 'spikesave':
-		switch(get_nfilter_request_var('setting')) {
-			case 'ravgnan':
-				$id = get_nfilter_request_var('id');
-				switch($id) {
-					case 'avg':
-					case 'last':
-					case 'nan':
-						set_user_setting('spikekill_avgnan', $id);
-						break;
-				}
+			break;
+		case 'spikesave':
+			switch(get_nfilter_request_var('setting')) {
+				case 'ravgnan':
+					$id = get_nfilter_request_var('id');
+					switch($id) {
+						case 'avg':
+						case 'last':
+						case 'nan':
+							set_user_setting('spikekill_avgnan', $id);
+							break;
+					}
 
-				break;
-			case 'rstddev':
-				set_user_setting('spikekill_deviations', get_filter_request_var('id'));
-				break;
-			case 'rvarout':
-				set_user_setting('spikekill_outliers', get_filter_request_var('id'));
-				break;
-			case 'rvarpct':
-				set_user_setting('spikekill_percent', get_filter_request_var('id'));
-				break;
-			case 'rkills':
-				set_user_setting('spikekill_number', get_filter_request_var('id'));
-				break;
-		}
+					break;
+				case 'rstddev':
+					set_user_setting('spikekill_deviations', get_filter_request_var('id'));
+					break;
+				case 'rvarout':
+					set_user_setting('spikekill_outliers', get_filter_request_var('id'));
+					break;
+				case 'rvarpct':
+					set_user_setting('spikekill_percent', get_filter_request_var('id'));
+					break;
+				case 'rkills':
+					set_user_setting('spikekill_number', get_filter_request_var('id'));
+					break;
+			}
 
-		break;
+			break;
 	}
 }
 

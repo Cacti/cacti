@@ -1177,6 +1177,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
  * natural sort function
  * @param $a
  * @param $b
+ * @return string
  */
 function necturally_sort_graphs($a, $b) {
 	return strnatcasecmp($a['title_cache'], $b['title_cache']);
@@ -1191,6 +1192,7 @@ function necturally_sort_graphs($a, $b) {
  * @param int $timespan		- requested timespan
  * @param int $output		- type of output
  * @param bool $format_ok	- use css styling
+ * @return string
  */
 function reports_graph_area($graphs, $report, $item, $timespan, $output, $format_ok, $theme = 'classic') {
 	global $alignment;
@@ -1202,20 +1204,20 @@ function reports_graph_area($graphs, $report, $item, $timespan, $output, $format
 		foreach($graphs as $graph) {
 			$item['local_graph_id'] = $graph['local_graph_id'];
 
-		if ($column == 0) {
-			$outstr .= "\t\t<tr class='image_row'>\n";
-			$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";'>\n";
-			$outstr .= "\t\t\t\t<table style='width:100%;'>\n";
-			$outstr .= "\t\t\t\t\t<tr>\n";
-		}
-		if ($format_ok) {
-			$outstr .= "\t\t\t\t\t\t<td class='image_column' style='text-align:" . $alignment[$item['align']] . ";'>\n";
-		} else {
-			$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align='" . $alignment[$item['align']] . ";'>\n";
-		}
+			if ($column == 0) {
+				$outstr .= "\t\t<tr class='image_row'>\n";
+				$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";'>\n";
+				$outstr .= "\t\t\t\t<table style='width:100%;'>\n";
+				$outstr .= "\t\t\t\t\t<tr>\n";
+			}
+			if ($format_ok) {
+				$outstr .= "\t\t\t\t\t\t<td class='image_column' style='text-align:" . $alignment[$item['align']] . ";'>\n";
+			} else {
+				$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align='" . $alignment[$item['align']] . ";'>\n";
+			}
 
-		$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output, $theme) . "\n";
-		$outstr .= "\t\t\t\t\t\t</td>\n";
+			$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output, $theme) . "\n";
+			$outstr .= "\t\t\t\t\t\t</td>\n";
 
 			if ($report['graph_columns'] > 1) {
 				$column = ($column + 1) % ($report['graph_columns']);

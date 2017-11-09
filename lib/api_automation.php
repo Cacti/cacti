@@ -1820,15 +1820,16 @@ function get_field_names($snmp_query_id) {
 
 function array_to_list($array, $sql_column) {
 	/* if the last item is null; pop it off */
-	if (empty($array[count($array)-1]) && sizeof($array) > 1) {
+	$counter = count($array);
+	if (empty($array[$counter-1]) && $counter > 1) {
 		array_pop($array);
+		$counter = count($array);
 	}
 
-	$counter = count($array);
 	if ($counter > 0) {
 		$sql = '(';
 
-		for ($i=0;($i<$counter);$i++) {
+		for ($i=0; $i<$counter; $i++) {
 			$sql .= $array[$i][$sql_column];
 
 			if ($i+1 < $counter) {

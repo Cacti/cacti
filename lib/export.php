@@ -84,7 +84,7 @@ function graph_template_to_xml($graph_template_id) {
 			$xml_text .= "\t\t<hash_" . $hash['graph_template_item'] . ">\n";
 
 			foreach ($struct_graph_item as $field_name => $field_array) {
-				if ($item[$field_name] !== '') {
+				if (!empty($item[$field_name])) {
 					switch ($field_name) {
 						case 'task_item_id':
 							$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('data_template_item') . get_hash_data_template($item[$field_name], 'data_template_item') . "</$field_name>\n";

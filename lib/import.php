@@ -1612,7 +1612,9 @@ function hash_to_friendly_name($hash, $display_type_name) {
 	$parsed_hash = parse_xml_hash($hash);
 
 	/* invalid/wrong hash */
-	if ($parsed_hash == false) { return false; }
+	if ($parsed_hash == false) {
+		return false;
+	}
 
 	if ($display_type_name == true) {
 		$prepend = '(<em>' . $hash_type_names[$parsed_hash['type']] . '</em>) ';
