@@ -1211,7 +1211,8 @@ function reports_graph_area($graphs, $report, $item, $timespan, $output, $format
 		if ($format_ok) {
 			$outstr .= "\t\t\t\t\t\t<td class='image_column' style='text-align:" . $alignment[$item['align']] . ";'>\n";
 		} else {
-			$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align='" . $alignment[$item['align']] . ";'>\n";}
+			$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align='" . $alignment[$item['align']] . ";'>\n";
+		}
 
 		$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output, $theme) . "\n";
 		$outstr .= "\t\t\t\t\t\t</td>\n";
