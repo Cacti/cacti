@@ -15,7 +15,7 @@ Cacti CHANGELOG
 -issue#1059: Aggregate item filter should use regular expressions to avoid SQL errors due to flawed filter logic.
 -feature: updated Dutch translations
 -feature: Schema changes; Examined queries without key usage and added/changed some keys
--feature: Changed array identifier {} to []
+-feature: Changed array parentheses from {} to []
 -feature: Various code layout changes
 
 1.1.27
