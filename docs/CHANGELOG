@@ -13,13 +13,15 @@ Cacti CHANGELOG
 -issue#1057: CVE-2017-16641 - Potential vulnerability in RRDtool functions
 -issue#1058: ICMP Ping to and IPv6 address fails to gather data for Ping Latency / CentOS 7.4
 -issue#1059: Aggregate item filter should use regular expressions to avoid SQL errors due to flawed filter logic.
+-feature: updated Dutch translations
+-feature: Schema changes; Examined queries without key usage and added/changed some keys
+-feature: Changed array identifier {} to []
+-feature: Various code layout changes
 
 1.1.27
 -issue#1033: Issues inserting into dsstats table due to legacy data
 -issue#1039: Using html_escape still double escapes.  Use strip_tags instead
 -issue#1040: Resolving compatibility issue with PHP7.2
--feature: Changed array identifier {} to []
--feature: Various code layout changes
 
 1.1.26
 -issue#841: --input-fields variable not working with add_graphs.php cli
