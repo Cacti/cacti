@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_27() {
+function upgrade_to_1_1_28() {
 	db_install_execute(
 		'ALTER TABLE `poller` ADD INDEX `disabled` (`disabled`);'
 	);
