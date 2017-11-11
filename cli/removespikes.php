@@ -1318,7 +1318,7 @@ function calculateStandardDeviation($items) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-    echo "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	echo "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /* display_help - displays the usage of the function */

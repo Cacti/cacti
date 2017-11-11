@@ -322,7 +322,7 @@ function form_actions() {
 
 	form_start('automation_networks.php');
 
-	html_start_box($network_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($network_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 		print "<tr>

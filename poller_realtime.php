@@ -244,11 +244,11 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 			$value            = trim($item['output']);
 			$unix_time        = strtotime($item['time']);
 
-			$rrd_update_array{$item['rrd_path']}['local_data_id'] = $item['local_data_id'];
+			$rrd_update_array[$item['rrd_path']]['local_data_id'] = $item['local_data_id'];
 
 			/* single one value output */
 			if ((is_numeric($value)) || ($value == 'U')) {
-				$rrd_update_array{$item['rrd_path']}['times'][$unix_time]{$item['rrd_name']} = $value;
+				$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$item['rrd_name']] = $value;
 			/* multiple value output */
 			} else {
 				$values = explode(' ', $value);
@@ -262,18 +262,18 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 
 				for ($i=0; $i<count($values); $i++) {
 					if (preg_match('/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/', $values[$i], $matches)) {
-						if (isset($rrd_field_names{$matches[1]})) {
-							$rrd_update_array{$item['rrd_path']}['times'][$unix_time]{$rrd_field_names{$matches[1]}} = $matches[2];
+						if (isset($rrd_field_names[$matches[1]])) {
+							$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$rrd_field_names[$matches[1]]] = $matches[2];
 						}
 					}
 				}
 			}
 
 			/* fallback values */
-			if ((!isset($rrd_update_array{$item['rrd_path']}['times'][$unix_time])) && ($item['rrd_name'] != '')) {
-				$rrd_update_array{$item['rrd_path']}['times'][$unix_time]{$item['rrd_name']} = 'U';
-			}else if ((!isset($rrd_update_array{$item['rrd_path']}['times'][$unix_time])) && ($item['rrd_name'] == '')) {
-				unset($rrd_update_array{$item['rrd_path']});
+			if ((!isset($rrd_update_array[$item['rrd_path']]['times'][$unix_time])) && ($item['rrd_name'] != '')) {
+				$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$item['rrd_name']] = 'U';
+			}else if ((!isset($rrd_update_array[$item['rrd_path']]['times'][$unix_time])) && ($item['rrd_name'] == '')) {
+				unset($rrd_update_array[$item['rrd_path']]);
 			}
 		}
 

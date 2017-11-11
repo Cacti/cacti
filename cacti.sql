@@ -1842,7 +1842,7 @@ CREATE TABLE host (
   availability decimal(8,5) NOT NULL default '100.00000',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  KEY poller_id (poller_id),
+  KEY poller_id_disabled (poller_id, disabled),
   KEY site_id (site_id),
   KEY external_id (external_id),
   KEY disabled (disabled),
@@ -2046,7 +2046,8 @@ CREATE TABLE `poller` (
   `last_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `last_status` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `disabled` (`disabled`)
 ) ENGINE=InnoDB COMMENT='Pollers for Cacti';
 
 INSERT INTO poller (id,name,hostname) VALUES (1,'Main Poller', 'localhost');
@@ -2108,12 +2109,12 @@ CREATE TABLE poller_item (
   `arg2` varchar(255) default NULL,
   `arg3` varchar(255) default NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`),
-  KEY `local_data_id` (`local_data_id`),
   KEY `host_id` (`host_id`),
   KEY `action` (`action`),
   KEY `present` (`present`),
   KEY `poller_id_host_id` (`poller_id`,`host_id`),
-  KEY `poller_id_rrd_next_step` (`poller_id`, `rrd_next_step`)
+  KEY `poller_id_rrd_next_step` (`poller_id`,`rrd_next_step`),
+  KEY `poller_id_action` (`poller_id`,`action`)
 ) ENGINE=InnoDB;
 
 --

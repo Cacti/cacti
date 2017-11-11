@@ -181,7 +181,7 @@ function form_actions() {
 
 	form_start('automation_templates.php');
 
-	html_start_box($at_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($at_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($at_array) && sizeof($at_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */

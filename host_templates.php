@@ -247,7 +247,7 @@ function form_actions() {
 
 	form_start('host_templates.php');
 
-	html_start_box($host_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($host_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($host_array) && sizeof($host_array)) {
 		if (get_request_var('drp_action') == '1') { // delete

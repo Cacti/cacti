@@ -916,7 +916,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 
 	/* basic graph options */
 	$graph_opts .=
-		'--imgformat=' . $image_types{$graph['image_format_id']} . RRD_NL .
+		'--imgformat=' . $image_types[$graph['image_format_id']] . RRD_NL .
 		'--start=' . cacti_escapeshellarg($graph_start) . RRD_NL .
 		'--end=' . cacti_escapeshellarg($graph_end) . RRD_NL;
 
@@ -1847,7 +1847,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			to this graph item */
 			if ($graph_item['cdef_id'] == '0') {
 				if (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id])) {
-					$data_source_name = generate_graph_def_name(strval($cf_ds_cache{$graph_item['data_template_rrd_id']}[$cf_id]));
+					$data_source_name = generate_graph_def_name(strval($cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id]));
 				} else {
 					$data_source_name = '';
 				}
@@ -2529,12 +2529,12 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	/* scan cacti rra information for duplicates of (CF, STEPS) */
 	if (sizeof($cacti_rra_array) > 0) {
 		for ($i=0; $i<= sizeof($cacti_rra_array)-1; $i++) {
-			$cf = $cacti_rra_array{$i}['cf'];
-			$steps = $cacti_rra_array{$i}['steps'];
+			$cf = $cacti_rra_array[$i]['cf'];
+			$steps = $cacti_rra_array[$i]['steps'];
 			foreach($cacti_rra_array as $cacti_rra_id => $cacti_rra) {
 				if ($cf == $cacti_rra['cf'] && $steps == $cacti_rra['steps'] && ($i != $cacti_rra_id)) {
-					$diff['rra'][$i]['error'] = __("Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'", $i, $consolidation_functions{$cf}, $steps, $cacti_rra_id);
-					$diff['rra'][$cacti_rra_id]['error'] = __("Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'", $cacti_rra_id, $consolidation_functions{$cf}, $steps, $i);
+					$diff['rra'][$i]['error'] = __("Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'", $i, $consolidation_functions[$cf], $steps, $cacti_rra_id);
+					$diff['rra'][$cacti_rra_id]['error'] = __("Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'", $cacti_rra_id, $consolidation_functions[$cf], $steps, $i);
 					$resize = false;
 				}
 			}
@@ -2544,8 +2544,8 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	/* scan file rra information for duplicates of (CF, PDP_PER_ROWS) */
 	if (sizeof($info['rra']) > 0) {
 		for ($i=0; $i<= sizeof($info['rra'])-1; $i++) {
-			$cf = $info['rra']{$i}['cf'];
-			$steps = $info['rra']{$i}['pdp_per_row'];
+			$cf = $info['rra'][$i]['cf'];
+			$steps = $info['rra'][$i]['pdp_per_row'];
 			foreach($info['rra'] as $file_rra_id => $file_rra) {
 				if (($cf == $file_rra['cf']) && ($steps == $file_rra['pdp_per_row']) && ($i != $file_rra_id)) {
 					$diff['rra'][$i]['error'] = __("File RRA '%s' has same CF/steps (%s, %s) as '%s'", $i, $cf, $steps, $file_rra_id);
@@ -2568,7 +2568,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 					$file_rra['pdp_per_row'] = 0;
 				}
 
-				if ($consolidation_functions{$cacti_rra['cf']} == trim($file_rra['cf'], '"') &&
+				if ($consolidation_functions[$cacti_rra['cf']] == trim($file_rra['cf'], '"') &&
 					$cacti_rra['steps'] == $file_rra['pdp_per_row']) {
 
 					if (isset($info['rra'][$file_rra_id]['seen'])) {
@@ -2596,7 +2596,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 			# if cacti knows an rra that has no match, consider this as an error
 			if (!isset($cacti_rra_array[$cacti_rra_id]['seen'])) {
 				# add to info array for printing, the index $cacti_rra_id has no real meaning
-				$info['rra']['cacti_' . $cacti_rra_id]['cf']    = $consolidation_functions{$cacti_rra['cf']};
+				$info['rra']['cacti_' . $cacti_rra_id]['cf']    = $consolidation_functions[$cacti_rra['cf']];
 				$info['rra']['cacti_' . $cacti_rra_id]['steps'] = $cacti_rra['steps'];
 				$info['rra']['cacti_' . $cacti_rra_id]['xff']   = $cacti_rra['xff'];
 				$info['rra']['cacti_' . $cacti_rra_id]['rows']  = $cacti_rra['rows'];
@@ -2796,7 +2796,7 @@ function rrd_check($data_source_id) {
 	global $rrd_tune_array, $data_source_types;
 
 	$data_source_name = get_data_source_item_name($rrd_tune_array['data_source_id']);
-	$data_source_type = $data_source_types{$rrd_tune_array['data-source-type']};
+	$data_source_type = $data_source_types[$rrd_tune_array['data-source-type']];
 	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
 }
 
@@ -2808,7 +2808,7 @@ function rrd_repair($data_source_id) {
 	global $rrd_tune_array, $data_source_types;
 
 	$data_source_name = get_data_source_item_name($rrd_tune_array['data_source_id']);
-	$data_source_type = $data_source_types{$rrd_tune_array['data-source-type']};
+	$data_source_type = $data_source_types[$rrd_tune_array['data-source-type']];
 	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
 }
 

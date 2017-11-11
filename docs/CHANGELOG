@@ -14,6 +14,10 @@ Cacti CHANGELOG
 -issue#1058: ICMP Ping to and IPv6 address fails to gather data for Ping Latency / CentOS 7.4
 -issue#1059: Aggregate item filter should use regular expressions to avoid SQL errors due to flawed filter logic.
 -issue#1064: When a Device Template is removed, Automation Templates for that Device Template remain
+-feature: updated Dutch translations
+-feature: Schema changes; Examined queries without key usage and added/changed some keys
+-feature: Changed array parentheses from {} to []
+-feature: Various code layout changes
 
 1.1.27
 -issue#1033: Issues inserting into dsstats table due to legacy data

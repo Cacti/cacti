@@ -824,14 +824,16 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 				$multi_ok   = false;
 				for ($i=0; $i<count($values); $i++) {
 					if (preg_match("/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/", $values[$i], $matches)) {
-						if (isset($rrd_field_names{$matches[1]})) {
+						if (isset($rrd_field_names[$matches[1]])) {
 							$multi_ok = true;
 
-							cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names{$matches[1]} . ']' , false, 'BOOST', POLLER_VERBOSITY_DEBUG);
+							cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names[$matches[1]] . ']' , false, 'BOOST', POLLER_VERBOSITY_DEBUG);
 
 							if (!$multi_vals_set) {
-								if (!$first_tmpl) $rrd_tmpl .= ':';
-								$rrd_tmpl .= $rrd_field_names{$matches[1]};
+								if (!$first_tmpl) {
+									$rrd_tmpl .= ':';
+								}
+								$rrd_tmpl .= $rrd_field_names[$matches[1]];
 								$first_tmpl=0;
 							}
 
@@ -1000,6 +1002,10 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 function boost_rrdtool_function_create($local_data_id, $initial_time, $show_source, &$rrdtool_pipe) {
 	global $config;
 
+	/**
+	 * @var array $data_source_types
+	 * @var array $consolidation_functions
+	 */
 	include ($config['include_path'] . '/global_arrays.php');
 
 	$data_source_path = get_data_source_path($local_data_id, true);
@@ -1103,14 +1109,14 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 				$data_source['rrd_maximum'] = 'U';
 			}
 
-			$create_ds .= "DS:$data_source_name:" . $data_source_types{$data_source['data_source_type_id']} . ':' . $data_source['rrd_heartbeat'] . ':' . $data_source['rrd_minimum'] . ':' . $data_source['rrd_maximum'] . RRD_NL;
+			$create_ds .= "DS:$data_source_name:" . $data_source_types[$data_source['data_source_type_id']] . ':' . $data_source['rrd_heartbeat'] . ':' . $data_source['rrd_minimum'] . ':' . $data_source['rrd_maximum'] . RRD_NL;
 		}
 	}
 
 	$create_rra = '';
 	/* loop through each available RRA for this DS */
 	foreach ($rras as $rra) {
-		$create_rra .= 'RRA:' . $consolidation_functions{$rra['consolidation_function_id']} . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
+		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
 
 	/* check for structured path configuration, if in place verify directory
