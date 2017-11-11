@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-10-14 08:11-0400\n"
-"PO-Revision-Date: 2017-11-09 15:13+0100\n"
+"PO-Revision-Date: 2017-11-11 09:30+0100\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -6690,42 +6690,56 @@ msgid ""
 "Data Template Includes Deleted Data Source Profile.  Please resave the Data "
 "Template with an existing Data Source Profile."
 msgstr ""
+"Data template bevat een verwijderd data bron profiel. Sla het data template "
+"opnieuw op met een bestaand data bron profiel."
 
 #: /var/www/html/cacti/include/global_arrays.php:158
 msgid ""
 "Graph Template Includes Deleted GPrint Prefix.  Please run Database Repair "
 "Script to Identify and/or Correct."
 msgstr ""
+"Grafiek template bevat verwijderde GPrint voorvoegsel. Draai het database "
+"reparatiescript om dit te identificeren en te corrigeren."
 
 #: /var/www/html/cacti/include/global_arrays.php:161
 msgid ""
 "Graph Template Includes Deleted CDEFs.  Please run Database Repair Script to "
 "Identify and/or Correct."
 msgstr ""
+"Grafiek template bevat verwijderde CDEF’s. Draai het database "
+"reparatiescript om dit te identificeren en te corrigeren."
 
 #: /var/www/html/cacti/include/global_arrays.php:164
 msgid ""
 "Graph Template Includes Deleted Data Input Method.  Please run Database "
 "Repair Script to Identify."
 msgstr ""
+"Grafiek template bevat een verwijderde data invoer methode. Draai het "
+"database reparatiescript om dit te identificeren."
 
 #: /var/www/html/cacti/include/global_arrays.php:167
 msgid ""
 "Data Template Not Found during Export.  Please run Database Repair Script to "
 "Identify."
 msgstr ""
+"Data template niet gevonden tijdens het exporteren. Draai het database "
+"reparatiescript om dit te identificeren."
 
 #: /var/www/html/cacti/include/global_arrays.php:170
 msgid ""
 "Device Template Not Found during Export.  Please run Database Repair Script "
 "to Identify."
 msgstr ""
+"Apparaat template niet gevonden tijdens het exporteren. Draai het database "
+"reparatiescript om dit te identificeren."
 
 #: /var/www/html/cacti/include/global_arrays.php:173
 msgid ""
 "Data Query Not Found during Export.  Please run Database Repair Script to "
 "Identify."
 msgstr ""
+"Data query niet gevonden tijdens het exporteren. Draai het database "
+"reparatiescript om dit te identificeren."
 
 #: /var/www/html/cacti/include/global_arrays.php:176
 msgid ""
@@ -6744,24 +6758,28 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:182
 msgid "SNMPv3 Auth Passphrases must be 8 characters or greater."
-msgstr ""
+msgstr "SNMPv3 Auth wachtwoord moet minimaal 8 karakters lang zijn."
 
 #: /var/www/html/cacti/include/global_arrays.php:185
 msgid ""
 "Some Graphs not Updated. Unable to Change Device for Data Query based Graphs."
 msgstr ""
+"Sommige grafieken zijn niet bijgewerkt. Het apparaat is niet gewijzigd voor "
+"de data query gebaseerde grafiek."
 
 #: /var/www/html/cacti/include/global_arrays.php:188
 msgid "Unable to Change Device for Data Query based Graphs."
-msgstr ""
+msgstr "Het apparaat voor data query gebaseerde grafiek is niet gewijzigd."
 
 #: /var/www/html/cacti/include/global_arrays.php:191
 msgid "Log file specified is not a Cacti log or archive file."
-msgstr ""
+msgstr "Het gespecificeerde log bestand is geen Cacti log of archief bestand."
 
 #: /var/www/html/cacti/include/global_arrays.php:194
 msgid "Log file specified was Cacti archive file and was removed."
 msgstr ""
+"Het gespecificeerde log bestand was een Cacti archief en is daarom "
+"verwijderd."
 
 #: /var/www/html/cacti/include/global_arrays.php:197
 msgid "Cacti Log purged successfully"
@@ -6782,6 +6800,8 @@ msgstr "Fout: U mag uw wachtwoord niet wijzigen."
 #: /var/www/html/cacti/include/global_arrays.php:206
 msgid "Error: LDAP/AD based password change not supported."
 msgstr ""
+"Fout: Het wijzigen van op LDAP/AD gebaseerde wachtwoorden wordt niet "
+"ondersteund."
 
 #: /var/www/html/cacti/include/global_arrays.php:209
 msgid "Error: Unable to clear log, no write permissions"
@@ -6805,12 +6825,14 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:224
 msgid "Unable to establish MySQL connection with remote Data Collector."
-msgstr ""
+msgstr "Het maken van een MySQL verbinding is mislukt met de data collector."
 
 #: /var/www/html/cacti/include/global_arrays.php:227
 msgid ""
 "Data Collector Synchronization must be initiated from the main Cacti server."
 msgstr ""
+"Data collector synchronisatie moet worden geïnitieerd vanaf de hoofd Cacti "
+"server."
 
 #: /var/www/html/cacti/include/global_arrays.php:230
 msgid "Report Saved"
@@ -6833,6 +6855,8 @@ msgid ""
 "Poller Resource Cache Cleared.  Main Data Collector will rebuild at the next "
 "poller start, and Remote Data Collectors will sync afterwards."
 msgstr ""
+"Poller bron cache verwijderd. Hoofd data collector wordt herbouwd tijdens de "
+"volgende run en de andere data collectoren worden daarna gesynchroniseerd."
 
 #: /var/www/html/cacti/include/global_arrays.php:334
 #: /var/www/html/cacti/include/global_arrays.php:671
@@ -6852,7 +6876,7 @@ msgstr "Aangepaste waarde"
 #: /var/www/html/cacti/include/global_arrays.php:340
 #: /var/www/html/cacti/include/global_arrays.php:712
 msgid "Current Graph Item Data Source"
-msgstr ""
+msgstr "Huidige data bron van grafiek item"
 
 #: /var/www/html/cacti/include/global_arrays.php:346
 #: /var/www/html/cacti/include/global_arrays.php:353
@@ -6874,23 +6898,33 @@ msgid "Verify All"
 msgstr "Alles verifieer"
 
 #: /var/www/html/cacti/include/global_arrays.php:365
+#, fuzzy
 msgid ""
 "All Re-Indexing will be manual or managed through scripts or Device "
 "Automation."
 msgstr ""
+"Alle herindexeringen zijn handmatig of worden beheerd vanuit scripts of de "
+"apparaat automatisering."
 
 #: /var/www/html/cacti/include/global_arrays.php:366
 msgid ""
 "When the Devices SNMP uptime goes backward, a Re-Index will be performed."
 msgstr ""
+"Wanneer de SNMP uptime van apparaten achteruit gaat, zal een herindexering "
+"worden uitgevoerd."
 
 #: /var/www/html/cacti/include/global_arrays.php:367
+#, fuzzy
 msgid "When the Data Query index count changes, a Re-Index will be performed."
 msgstr ""
+"Wanneer de data query indexering veranderd, zal een herindexering plaats "
+"vinden."
 
 #: /var/www/html/cacti/include/global_arrays.php:368
 msgid "Every polling cycle, a Re-Index will be performed.  Very expensive."
 msgstr ""
+"Tijdens iedere polling cyclus zal een herindexering worden uitgevoerd. Dit "
+"is erg zwaar."
 
 #: /var/www/html/cacti/include/global_arrays.php:372
 msgid "SNMP Field Name (Dropdown)"
@@ -7183,7 +7217,7 @@ msgstr "Nog een CDEF"
 
 #: /var/www/html/cacti/include/global_arrays.php:693
 msgid "Inherit Parent Sorting"
-msgstr ""
+msgstr "Overerf de sortering van een bovenliggend niveau"
 
 #: /var/www/html/cacti/include/global_arrays.php:694
 msgid "Manual Ordering (No Sorting)"
@@ -7221,7 +7255,7 @@ msgstr "Data query index"
 
 #: /var/www/html/cacti/include/global_arrays.php:713
 msgid "Current Graph Item Polling Interval"
-msgstr ""
+msgstr "Huidige polling interval van dit grafiek item"
 
 #: /var/www/html/cacti/include/global_arrays.php:714
 msgid "All Data Sources (Do not Include Duplicates)"
@@ -7245,11 +7279,11 @@ msgstr "Alle vergelijkbare data bronnen (Inclusief dubbelen)"
 
 #: /var/www/html/cacti/include/global_arrays.php:719
 msgid "Current Data Source Item: Minimum Value"
-msgstr ""
+msgstr "Huidige data bron item: minimale waarde"
 
 #: /var/www/html/cacti/include/global_arrays.php:720
 msgid "Current Data Source Item: Maximum Value"
-msgstr ""
+msgstr "Huidige data bron item: Maximale waarde"
 
 #: /var/www/html/cacti/include/global_arrays.php:721
 msgid "Graph: Lower Limit"
@@ -7261,19 +7295,19 @@ msgstr "Grafiek: boven limiet"
 
 #: /var/www/html/cacti/include/global_arrays.php:723
 msgid "Count of All Data Sources (Do not Include Duplicates)"
-msgstr ""
+msgstr "Totaal van alle data bronnen (dubbelen niet meegeteld)"
 
 #: /var/www/html/cacti/include/global_arrays.php:724
 msgid "Count of All Data Sources (Include Duplicates)"
-msgstr ""
+msgstr "Totaal van alle data bronnen (dubbelen wel meegeteld)"
 
 #: /var/www/html/cacti/include/global_arrays.php:725
 msgid "Count of All Similar Data Sources (Do not Include Duplicates)"
-msgstr ""
+msgstr "Totaal van alle gelijke data bronnen (dubbelen niet meegeteld)"
 
 #: /var/www/html/cacti/include/global_arrays.php:726
 msgid "Count of All Similar Data Sources (Include Duplicates)"
-msgstr ""
+msgstr "Totaal van alle gelijke data bronnen (dubbelen wel meegeteld)"
 
 #: /var/www/html/cacti/include/global_arrays.php:732
 #: /var/www/html/cacti/lib/html_form_template.php:562
@@ -7474,11 +7508,11 @@ msgstr "Instellingen en gereedschappen"
 
 #: /var/www/html/cacti/include/global_arrays.php:913
 msgid "Automation Settings"
-msgstr ""
+msgstr "Automatisering instellingen"
 
 #: /var/www/html/cacti/include/global_arrays.php:918
 msgid "Sites/Devices/Data Sources/Data Collectors"
-msgstr ""
+msgstr "Locaties/Apparaten/Data bronnen/Data collectoren"
 
 #: /var/www/html/cacti/include/global_arrays.php:921
 msgid "Remove Spikes from Graphs"
@@ -7499,11 +7533,11 @@ msgstr "Importeer data"
 #: /var/www/html/cacti/include/global_arrays.php:933
 #: /var/www/html/cacti/include/global_settings.php:705
 msgid "Log Management"
-msgstr ""
+msgstr "Logbeheer"
 
 #: /var/www/html/cacti/include/global_arrays.php:934
 msgid "Log Viewing"
-msgstr ""
+msgstr "Log inzien"
 
 #: /var/www/html/cacti/include/global_arrays.php:936
 msgid "Reports Management"
@@ -7511,7 +7545,7 @@ msgstr "Rapportage management"
 
 #: /var/www/html/cacti/include/global_arrays.php:937
 msgid "Reports Creation"
-msgstr ""
+msgstr "Rapportage creëren"
 
 #: /var/www/html/cacti/include/global_arrays.php:1035
 msgid "CDEF"
@@ -7533,19 +7567,19 @@ msgstr "Data invoer veld"
 #: /var/www/html/cacti/include/global_form.php:397
 #: /var/www/html/cacti/include/global_form.php:1585
 msgid "Data Source Profile"
-msgstr ""
+msgstr "Data bron profiel"
 
 #: /var/www/html/cacti/include/global_arrays.php:1042
 msgid "Data Template Item"
-msgstr ""
+msgstr "Data template item"
 
 #: /var/www/html/cacti/include/global_arrays.php:1044
 msgid "Graph Template Item"
-msgstr ""
+msgstr "Grafiek template item"
 
 #: /var/www/html/cacti/include/global_arrays.php:1045
 msgid "Graph Template Input"
-msgstr ""
+msgstr "Grafiek template invoer"
 
 #: /var/www/html/cacti/include/global_arrays.php:1048
 msgid "VDEF"
@@ -7820,15 +7854,15 @@ msgstr "Bijgevoegd GIF afbeelding"
 
 #: /var/www/html/cacti/include/global_arrays.php:1314
 msgid "Inline PNG Image, LN Style"
-msgstr ""
+msgstr "Inline PNG afbeelding, LN stijl"
 
 #: /var/www/html/cacti/include/global_arrays.php:1316
 msgid "Inline JPEG Image, LN Style"
-msgstr ""
+msgstr "Inline JPG afbeelding, LN stijl"
 
 #: /var/www/html/cacti/include/global_arrays.php:1317
 msgid "Inline GIF Image, LN Style"
-msgstr ""
+msgstr "Inline GIF afbeelding, LN stijl"
 
 #: /var/www/html/cacti/include/global_arrays.php:1322
 msgid "Text"
@@ -7889,11 +7923,11 @@ msgstr "Behoud grafiektypen"
 
 #: /var/www/html/cacti/include/global_arrays.php:1346
 msgid "Keep Type and STACK"
-msgstr ""
+msgstr "Behoud type en STACK"
 
 #: /var/www/html/cacti/include/global_arrays.php:1347
 msgid "Convert to AREA/STACK Graph"
-msgstr ""
+msgstr "Converteer naar AREA/STACK grafiek"
 
 #: /var/www/html/cacti/include/global_arrays.php:1348
 msgid "Convert to LINE1 Graph"
