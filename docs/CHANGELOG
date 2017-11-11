@@ -14,6 +14,8 @@ Cacti CHANGELOG
 -issue#1058: ICMP Ping to and IPv6 address fails to gather data for Ping Latency / CentOS 7.4
 -issue#1059: Aggregate item filter should use regular expressions to avoid SQL errors due to flawed filter logic.
 -issue#1064: When a Device Template is removed, Automation Templates for that Device Template remain
+-issue#1066: Resolve CVE-2017-16660 in remote_agent.php logging function
+-feature: Add a timeout to the remote agent for realtime graphs
 -feature: updated Dutch translations
 -feature: Schema changes; Examined queries without key usage and added/changed some keys
 -feature: Changed array parentheses from {} to []

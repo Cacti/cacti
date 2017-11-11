@@ -44,6 +44,9 @@ set_default_action();
 
 switch (get_request_var('action')) {
 	case 'polldata':
+		// Only let realtime polling run for a short time
+		ini_set('max_execution_time', read_config_option('script_timeout'));
+
 		debug('Start: Poling Data for Realtime');
 		poll_for_data();
 		debug('End: Poling Data for Realtime');
@@ -126,6 +129,11 @@ function remote_client_authorized() {
 	} elseif (isset($_SERVER['REMOTE_ADDR'])) {
 		$client_addr = $_SERVER['REMOTE_ADDR'];
 	} else {
+		return false;
+	}
+
+	if (!filter_var($client_addr, FILTER_VALIDATE_IP)) {
+		cacti_log('ERROR: Invalid remote agent client IP Address.  Exiting');
 		return false;
 	}
 
@@ -277,17 +285,17 @@ function poll_for_data() {
 	$host_id       = get_filter_request_var('host_id');
 	$poller_id     = get_nfilter_request_var('poller_id');
 
-	$item = db_fetch_row_prepared('SELECT * 
-		FROM poller_item 
-		WHERE host_id = ? 
-		AND local_data_id = ?', 
+	$item = db_fetch_row_prepared('SELECT *
+		FROM poller_item
+		WHERE host_id = ?
+		AND local_data_id = ?',
 		array($host_id, $local_data_id));
 
-	$script_server_calls = db_fetch_cell_prepared('SELECT COUNT(*) 
-		FROM poller_item 
-		WHERE host_id = ? 
-		AND local_data_id = ? 
-		AND action = 2', 
+	$script_server_calls = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM poller_item
+		WHERE host_id = ?
+		AND local_data_id = ?
+		AND action = 2',
 		array($host_id, $local_data_id));
 
 	if (sizeof($item)) {
