@@ -170,7 +170,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$at_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', array($matches[1]))) . '</li>';
+			$at_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', array($matches[1]))) . '</li>';
 			$at_array[$i] = $matches[1];
 
 			$i++;
@@ -286,9 +286,10 @@ function template_edit() {
 	global $availability_options;
 
 	$host_template_names = db_fetch_assoc('SELECT id, name FROM host_template');
+
 	$template_names = array();
 
-	if (sizeof($host_template_names) > 0) {
+	if (sizeof($host_template_names)) {
 		foreach ($host_template_names as $ht) {
 			$template_names[$ht['id']] = $ht['name'];
 		}
@@ -346,8 +347,16 @@ function template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$host_template = db_fetch_row_prepared('SELECT * FROM automation_templates WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Automation Templates [edit: %s]', htmlspecialchars($template_names[$host_template['host_template']]));
+		$host_template = db_fetch_row_prepared('SELECT *
+			FROM automation_templates
+			WHERE id = ?',
+			array(get_request_var('id')));
+
+		if (isset($template_names[$host_template['host_template']])) {
+			$header_label = __('Automation Templates [edit: %s]', html_escape($template_names[$host_template['host_template']]));
+		} else {
+			$header_label = __('Automation Templates for [Deleted Template]');
+		}
 	} else {
 		$header_label = __('Automation Templates [new]');
 		set_request_var('id', 0);
@@ -423,7 +432,7 @@ function template() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -540,13 +549,13 @@ function template() {
 			if (read_config_option('drag_and_drop') == '') {
 				$add_text = '';
 				if ($i < $total_items && $total_items > 1) {
-					$add_text .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
+					$add_text .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$add_text .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
+					$add_text .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
