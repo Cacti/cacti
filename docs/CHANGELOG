@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#1064: When a Device Template is removed, Automation Templates for that Device Template remain
 -issue#1066: Resolve CVE-2017-16660 in remote_agent.php logging function
 -issue#1066: Resolve CVE-2017-16661 in view Cacti log file
+-issue: Minor performance increase in boost process, reformat poller_boost.php cli
 -feature: Add a timeout to the remote agent for realtime graphs
 -feature: updated Dutch translations
 -feature: Schema changes; Examined queries without key usage and added/changed some keys
