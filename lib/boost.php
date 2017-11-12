@@ -1165,14 +1165,14 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 						if ((chown(dirname($data_source_path), $owner_id)) &&
 								(chgrp(dirname($data_source_path), $group_id))) {
 							/* permissions set ok */
-						}else{
+						} else {
 							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", false);
 						}
 					}
-				}else{
+				} else {
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
-			}else{
+			} else {
 				cacti_log("WARNING: Poller has not created structured path '" . dirname($data_source_path) . "' yet.", false);
 			}
 		}
