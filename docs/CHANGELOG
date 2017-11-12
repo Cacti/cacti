@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -feature: Schema changes; Examined queries without key usage and added/changed some keys
 -feature: Changed array parentheses from {} to []
 -feature: Various code layout changes
+-feature: updated PHPMailer to version 5.2.26
 
 1.1.27
 -issue#1033: Issues inserting into dsstats table due to legacy data
