@@ -51,7 +51,7 @@
 class MibParser extends MibCache {
 
 	protected $parsed = array();
-	protected $oids = array();
+	public    $oids   = array();
 
 	/**
 	 * Constructor
