@@ -73,10 +73,23 @@ case 'save':
 			if (get_nfilter_request_var($field_name) != '' && !is_file(get_nfilter_request_var($field_name))) {
 				raise_message(8);
 			} else {
-				db_execute_prepared('REPLACE INTO settings
-					(name, value)
-					VALUES (?, ?)',
-					array($field_name, get_nfilter_request_var($field_name)));
+				$continue = true;
+
+				if ($field_name == 'path_cactilog') {
+					$extension = pathinfo(get_nfilter_request_var($field_name), PATHINFO_EXTENSION);
+
+					if ($extension != 'log') {
+						raise_message(9);
+						$continue = false;
+					}
+				}
+
+				if ($continue) {
+					db_execute_prepared('REPLACE INTO settings
+						(name, value)
+						VALUES (?, ?)',
+						array($field_name, get_nfilter_request_var($field_name)));
+				}
 			}
 		} elseif ($field_array['method'] == 'textbox_password') {
 			if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {

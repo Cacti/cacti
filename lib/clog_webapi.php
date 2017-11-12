@@ -39,15 +39,25 @@ function clog_get_graphs_from_datasource($local_data_id) {
 function clog_purge_logfile() {
 	global $config;
 
-	$logfile   = read_config_option('path_cactilog');
-
+	$logfile = read_config_option('path_cactilog');
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
+	}
+
+	$logbase = basename($logfile);
+
+	if (get_nfilter_request_var('filename') != '') {
+		if (!strpos(get_nfilter_request_var('filename'), $logbase) === false) {
+			raise_message('clog_invalid');
+			header('Location: ' . get_current_page() . '?header=false');
+			exit(0);
+		}
 	}
 
 	$purgefile = dirname($logfile) . '/' . get_nfilter_request_var('filename');
 	if (strstr($purgefile, $logfile) === false) {
 		raise_message('clog_invalid');
+		header('Location: ' . get_current_page() . '?header=false');
 		exit(0);
 	}
 
@@ -88,6 +98,16 @@ function clog_view_logfile() {
 		}
 	} elseif ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
+	}
+
+	$logbase = basename($logfile);
+
+	if (get_nfilter_request_var('filename') != '') {
+		if (!strpos(get_nfilter_request_var('filename'), $logbase) === false) {
+			raise_message('clog_invalid');
+			header('Location: ' . get_current_page() . '?header=false');
+			exit(0);
+		}
 	}
 
 	/* ================= input validation and session storage ================= */

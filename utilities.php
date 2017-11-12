@@ -107,9 +107,11 @@ switch (get_request_var('action')) {
 		break;
 	case 'ajax_hosts':
 		get_allowed_ajax_hosts();
+
 		break;
 	case 'ajax_hosts_noany':
 		get_allowed_ajax_hosts(false);
+
 		break;
 	default:
 		if (!api_plugin_hook_function('utilities_action', get_request_var('action'))) {
@@ -130,7 +132,7 @@ function rebuild_resource_cache() {
 
 	raise_message('resource_cache_rebuild');
 
-    cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
+	cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 }
 
 function utilities_view_tech($php_info = '') {
@@ -889,6 +891,16 @@ function utilities_view_logfile() {
 
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
+	}
+
+	$logbase = basename($logfile);
+
+	if (get_nfilter_request_var('filename') != '') {
+		if (!strpos(get_nfilter_request_var('filename'), $logbase) === false) {
+			raise_message('clog_invalid');
+			header('Location: utilities.php?action=view_logfile&filename=&header=false');
+			exit(0);
+		}
 	}
 
 	/* ================= input validation and session storage ================= */

@@ -1217,7 +1217,7 @@ legend {
 	}
 
 	.formFieldName {
-		color: snow;
+		color: #000000;
 		float: left;
 		text-align: left;
 		white-space: nowrap;
