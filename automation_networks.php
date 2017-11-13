@@ -123,17 +123,9 @@ function api_networks_discover($network_id) {
 					WHERE id = ?',
 					array($poller_id));
 
-				if (get_url_type() == 'https') {
-					$fgc_contextoption = array(
-						'ssl' => array(
-							'verify_peer' => false,
-							'verify_peer_name' => false,
-							'allow_self_signed' => true,
-						)
-					);
-
+				$fgc_contextoption = get_default_contextoption();
+				if($fgc_contextoption) {
 					$fgc_context = stream_context_create($fgc_contextoption);
-
 					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id, false, $fgc_context);
 				} else {
 					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id);
