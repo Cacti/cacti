@@ -635,7 +635,10 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 								break;
 							case 4:	// ABSOLUTE
-								if ($result['output'] != 'NULL') {
+								if ($result['output'] != 'NULL' &&
+									$result['output'] != 'U' &&
+									strtolower($result['output']) != 'nan') {
+
 									$currentval = abs($result['output']);
 									$lastval    = $currentval;
 								} else {
@@ -645,7 +648,10 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 								break;
 							case 1:	// GAUGE
-								if ($result['output'] != 'NULL') {
+								if ($result['output'] != 'NULL' &&
+									$result['output'] != 'U' &&
+									strtolower($result['output']) != 'nan') {
+
 									$currentval = $result['output'];
 									$lastval    = $result['output'];
 								} else {
