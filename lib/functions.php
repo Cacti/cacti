@@ -4520,6 +4520,38 @@ function get_url_type() {
 	}
 }
 
+/** get_default_contextoption - Sets default context options for self-signed SSL
+ *  related protocols if necessary. Allows plugins to add addional header information
+ *  to fullfill system setup related requirements like the usage of Web Single Login
+ *  cookies for example.
+ *
+ *  @returns - an array of stream context options or false */
+function get_default_contextoption($protocol = false, $options = false) {
+
+	$fgc_contextoption = false;
+
+	if (!$protocol) {
+		$protocol = get_url_type();
+	}
+
+	if (in_array($protocol, array('ssl', 'https', 'ftps'))) {
+		$fgc_contextoption = array(
+			'ssl' => array(
+				'verify_peer' => false,
+				'verify_peer_name' => false,
+				'allow_self_signed' => true,
+			)
+		);
+	}
+
+	if (is_array($options)) {
+		$fgc_contextoption = array_replace_recursive($fgc_contextoption, $options);
+	}
+
+	$fgc_contextoption = api_plugin_hook_function('fgc_contextoption', $fgc_contextoption);
+	return $fgc_contextoption;
+}
+
 /** repair_system_data_input_methods - This utility will repair
  *  system data input methods when they are detected on the system
  *
