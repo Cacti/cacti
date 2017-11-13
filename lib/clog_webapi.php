@@ -47,9 +47,9 @@ function clog_purge_logfile() {
 	$logbase = basename($logfile);
 
 	if (get_nfilter_request_var('filename') != '') {
-		if (!strpos(get_nfilter_request_var('filename'), $logbase) === false) {
+		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
 			raise_message('clog_invalid');
-			header('Location: ' . get_current_page() . '?header=false');
+			header('Location: ' . get_current_page() . '?filename=&header=false');
 			exit(0);
 		}
 	}

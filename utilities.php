@@ -896,7 +896,7 @@ function utilities_view_logfile() {
 	$logbase = basename($logfile);
 
 	if (get_nfilter_request_var('filename') != '') {
-		if (!strpos(get_nfilter_request_var('filename'), $logbase) === false) {
+		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
 			raise_message('clog_invalid');
 			header('Location: utilities.php?action=view_logfile&filename=&header=false');
 			exit(0);
