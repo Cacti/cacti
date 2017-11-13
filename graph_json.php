@@ -189,6 +189,7 @@ if ($config['poller_id'] == 1) {
 	} else {
 		$output = file_get_contents($url);
 	}
+	
 }
 
 $oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => $rra_id);
