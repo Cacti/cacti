@@ -2,27 +2,25 @@ Cacti CHANGELOG
 
 1.1.28
 -issue#958: User Group Tree permissions not calculated fully
--issue#959: Resolving issues viewing email reports due to email client decoder issues
--issue#992: Resolving RRDfile naming issues that result from random sorting during export on prior Cacti versions
+-issue#959: Issue viewing email reports due to email client decoder issues
+-issue#992: RRDfile naming issues that result from random sorting during export on prior versions
 -issue#1012: Issue where disabled devices will not appear on the Tree edit page
 -issue#1044: Handle invalid exclusion regex properly when viewing the Cacti Log
--issue#1045: Resolving issues with multiple pages and confirmation dialogs
+-issue#1045: Issue with multiple pages and confirmation dialogs
 -issue#1048: Issue importing vdefs from a template
 -issue#1053: Remote Data Collector issues with https and self signed certificates
 -issue#1055: Errors in data source statistics inserts when invalid output is encountered
 -issue#1057: CVE-2017-16641 - Potential vulnerability in RRDtool functions
--issue#1058: ICMP Ping to and IPv6 address fails to gather data for Ping Latency / CentOS 7.4
--issue#1059: Aggregate item filter should use regular expressions to avoid SQL errors due to flawed filter logic.
+-issue#1058: ICMP Ping to and IPv6 address fails to gather data for ping latency
+-issue#1059: Aggregate item filter should use regular expressions to avoid SQL errors due to flawed filter logic
 -issue#1064: When a Device Template is removed, Automation Templates for that Device Template remain
 -issue#1066: CVE-2017-16660 in remote_agent.php logging function
 -issue#1066: CVE-2017-16661 in view Cacti log file
 -issue#1071: CVE-2017-16785 in global_session.php Reflection XSS issue
--issue: Minor performance increase in boost process, reformat poller_boost.php cli
+-issue: Minor performance increase in boost process
 -feature: Add a timeout to the remote agent for realtime graphs
 -feature: updated Dutch translations
--feature: Schema changes; Examined queries without key usage and added/changed some keys
--feature: Changed array parentheses from {} to []
--feature: Various code layout changes
+-feature: Database update adding additional indexes for increased performance
 -feature: updated PHPMailer to version 5.2.26
 
 1.1.27
