@@ -182,17 +182,9 @@ if ($config['poller_id'] == 1) {
 		$url .= '&' . $variable . '=' . $value;
 	}
 
-	if (get_url_type() == 'https') {
-		$fgc_contextoption = array(
-			'ssl' => array(
-				'verify_peer' => false,
-				'verify_peer_name' => false,
-				'allow_self_signed' => true,
-			)
-		);
-
+	$fgc_contextoption = get_default_contextoption();
+	if($fgc_contextoption) {
 		$fgc_context = stream_context_create($fgc_contextoption);
-
 		$output = file_get_contents($url, false, $fgc_context);
 	} else {
 		$output = file_get_contents($url);
