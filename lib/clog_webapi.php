@@ -40,16 +40,15 @@ function clog_purge_logfile() {
 	global $config;
 
 	$logfile = read_config_option('path_cactilog');
+	$logbase = basename($logfile);
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
-	$logbase = basename($logfile);
-
 	if (get_nfilter_request_var('filename') != '') {
 		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
 			raise_message('clog_invalid');
-			header('Location: ' . get_current_page() . '?filename=&header=false');
+			header('Location: ' . get_current_page() . '?filename=' . $logbase);
 			exit(0);
 		}
 	}
@@ -90,6 +89,7 @@ function clog_view_logfile() {
 
 	$clogAdmin = clog_admin();
 	$logfile   = read_config_option('path_cactilog');
+	$logbase   = basename($logfile);
 
 	if (isset_request_var('filename')) {
 		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
@@ -100,12 +100,10 @@ function clog_view_logfile() {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
-	$logbase = basename($logfile);
-
 	if (get_nfilter_request_var('filename') != '') {
-		if (!strpos(get_nfilter_request_var('filename'), $logbase) === false) {
+		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
 			raise_message('clog_invalid');
-			header('Location: ' . get_current_page() . '?header=false');
+			header('Location: ' . get_current_page() . '?filename=' . $logbase);
 			exit(0);
 		}
 	}
@@ -379,8 +377,11 @@ function filter($clogAdmin) {
 						<?php print __('File');?>
 					</td>
 					<td>
+						<select id='filename'>
 						<?php
 						$configLogPath = read_config_option('path_cactilog');
+						$configLogBase = basename($configLogPath);
+						$selectedFile  = basename(get_nfilter_request_var('filename'));
 
 						if ($configLogPath == '') {
 							$logPath = $config['base_path'] . '/log/';
@@ -391,16 +392,10 @@ function filter($clogAdmin) {
 						if (is_readable($logPath)) {
 							$files = scandir($logPath);
 						} else {
-							$files = false;
+							$files = array('cacti.log');
 						}
 
-						if ($files === false) {
-							echo '<select id="filename" name="filename">
-									<option value="cacti.log">cacti.log</option>';
-						} else {
-							echo '<select id="filename" name="filename">';
-							$selectedFile = basename(get_nfilter_request_var('filename'));
-
+						if (sizeof($files)) {
 							foreach ($files as $logFile) {
 								if (in_array($logFile, array('.', '..', '.htaccess'))) {
 									continue;
@@ -411,10 +406,16 @@ function filter($clogAdmin) {
 									continue;
 								}
 
+								if (strpos($logFile, $configLogBase) === false) {
+									continue;
+								}
+
 								print "<option value='" . $logFile . "'";
+
 								if ($selectedFile == $logFile) {
 									print ' selected';
 								}
+
 								print '>' . $logFile . "</option>\n";
 							}
 						}
