@@ -45,16 +45,9 @@ function clog_purge_logfile() {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
-	if (get_nfilter_request_var('filename') != '') {
-		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
-			raise_message('clog_invalid');
-			header('Location: ' . get_current_page() . '?filename=' . $logbase);
-			exit(0);
-		}
-	}
-
-	$purgefile = dirname($logfile) . '/' . get_nfilter_request_var('filename');
-	if (strstr($purgefile, $logfile) === false) {
+	$purgefile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
+	$ext = pathinfo($purgefile, PATHINFO_EXTENSION);
+	if ($ext !== 'log') {
 		raise_message('clog_invalid');
 		header('Location: ' . get_current_page() . '?header=false');
 		exit(0);
@@ -100,12 +93,11 @@ function clog_view_logfile() {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
-	if (get_nfilter_request_var('filename') != '') {
-		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
-			raise_message('clog_invalid');
-			header('Location: ' . get_current_page() . '?filename=' . $logbase);
-			exit(0);
-		}
+	$ext = pathinfo($logfile, PATHINFO_EXTENSION);
+	if ($ext != 'log') {
+		raise_message('clog_invalid');
+		header('Location: ' . get_current_page() . '?header=false');
+		exit(0);
 	}
 
 	/* ================= input validation and session storage ================= */
