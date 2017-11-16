@@ -353,10 +353,8 @@ function snmpagent_poller_bottom() {
 		$mc_devices = $mc->table('cactiApplDeviceTable')->select(array('cactiApplDeviceIndex', 'cactiApplDeviceStatus'));
 		if ($mc_devices && sizeof($mc_devices)) {
 			foreach($mc_devices as $mc_device) {
-				if (isset($mc_device['cactiApplDeviceStatus'])) {
+				if (isset($mc_device['cactiApplDeviceStatus']) && isset($mc_device['cactiApplDeviceIndex'])) {
 					$mc_dstatus[$mc_device['cactiApplDeviceIndex']] = $mc_device['cactiApplDeviceStatus'];
-				} else {
-					$mc_dstatus[$mc_device['cactiApplDeviceIndex']] = 0;
 				}
 			}
 		}
@@ -383,11 +381,11 @@ function snmpagent_poller_bottom() {
 		cacti_log('WARNING: SNMPAgent: ' . $e->getMessage(), false, 'SNMPAGENT', POLLER_VERBOSITY_MEDIUM);
 	}
 
-	$devices = db_fetch_assoc('SELECT id, description, hostname, status, 
-		disabled, status_event_count, status_fail_date, status_rec_date, 
-		status_last_error, min_time, max_time, cur_time, avg_time, 
-		total_polls, failed_polls, availability, snmp_engine_id 
-		FROM host 
+	$devices = db_fetch_assoc('SELECT id, description, hostname, status,
+		disabled, status_event_count, status_fail_date, status_rec_date,
+		status_last_error, min_time, max_time, cur_time, avg_time,
+		total_polls, failed_polls, availability, snmp_engine_id
+		FROM host
 		ORDER BY id ASC');
 
 	if (sizeof($devices)) {
@@ -403,9 +401,9 @@ function snmpagent_poller_bottom() {
 					'cactiApplDeviceHostname'    => $device['hostname'],
 					'cactiApplDeviceLastError'   => $device['status_last_error']
 				);
-				
+
 				$overwrite['snmp_engine_id'] = $device['snmp_engine_id'];
-				
+
 				if (isset($mc_dfailed[$device['id']]) && $device['failed_polls'] > $mc_dfailed[$device['id']]) {
 					snmpagent_notification('cactiNotifyDeviceFailedPoll', 'CACTI-MIB', $varbinds, SNMPAGENT_EVENT_SEVERITY_MEDIUM, $overwrite);
 				}
@@ -493,7 +491,10 @@ function snmpagent_poller_bottom() {
 	}
 	$mc->object('cactiApplLastUpdate')->set(time());
 
-	$recache_stats = db_fetch_cell("SELECT value FROM settings WHERE name = 'stats_recache'");
+	$recache_stats = db_fetch_cell("SELECT value
+		FROM settings
+		WHERE name = 'stats_recache'");
+
 	if ($recache_stats) {
 		list($time, $hosts) = explode(' ', $recache_stats);
 		$time  = str_replace('RecacheTime:', '', $time);
@@ -508,8 +509,9 @@ function snmpagent_poller_bottom() {
 	$snmp_notification_managers = db_fetch_assoc('SELECT id, max_log_size FROM snmpagent_managers');
 	if ($snmp_notification_managers && sizeof($snmp_notification_managers)>0) {
 		foreach($snmp_notification_managers as $snmp_notification_manager) {
-			db_execute_prepared('DELETE FROM snmpagent_notifications_log 
-				WHERE manager_id = ? AND `time` <= ?', 
+			db_execute_prepared('DELETE FROM snmpagent_notifications_log
+				WHERE manager_id = ?
+				AND `time` <= ?',
 				array($snmp_notification_manager['id'], time()-86400*$snmp_notification_manager['max_log_size']));
 		}
 	}
@@ -653,10 +655,10 @@ function snmpagent_cache_init(){
 	}
 
 	/* add all devices as devicetable entries to the snmp cache */
-	$devices = db_fetch_assoc('SELECT id, description, hostname, disabled, status_event_count, status_fail_date, 
-		status_rec_date, status_last_error, min_time, max_time, cur_time, 
-		avg_time, total_polls, failed_polls, availability 
-		FROM host 
+	$devices = db_fetch_assoc('SELECT id, description, hostname, disabled, status_event_count, status_fail_date,
+		status_rec_date, status_last_error, min_time, max_time, cur_time,
+		avg_time, total_polls, failed_polls, availability
+		FROM host
 		ORDER BY id ASC');
 
 	if (sizeof($devices)) {
@@ -767,10 +769,10 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		return false;
 	}
 
-	$enterprise_oid = db_fetch_cell_prepared('SELECT oid 
-		FROM snmpagent_cache 
-		WHERE `name` = ? 
-		AND `mib` = ?', 
+	$enterprise_oid = db_fetch_cell_prepared('SELECT oid
+		FROM snmpagent_cache
+		WHERE `name` = ?
+		AND `mib` = ?',
 		array($notification, $mib));
 
 	if (!$enterprise_oid) {
@@ -788,7 +790,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		FROM snmpagent_managers_notifications
 		INNER JOIN snmpagent_managers
 		ON (snmpagent_managers.id = snmpagent_managers_notifications.manager_id)
-		WHERE snmpagent_managers.disabled = 0 
+		WHERE snmpagent_managers.disabled = 0
 		AND snmpagent_managers_notifications.notification = ?
 		AND snmpagent_managers_notifications.mib = ?',
 		array($notification, $mib));
@@ -816,7 +818,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		ON sc.mib = sctc.mib AND sc.type = sctc.name
 		WHERE scn.name = ?
 		AND scn.mib = ?
-		ORDER BY scn.sequence_id', 
+		ORDER BY scn.sequence_id',
 		array($notification, $mib));
 
 	if (sizeof($reg_var_binds)) {
@@ -834,11 +836,11 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		/* order the managers by message type to send out all notifications immmediately. Informs
 		   will take more processing time.
 		*/
-		$notification_managers = db_fetch_assoc_prepared('SELECT sm.* 
+		$notification_managers = db_fetch_assoc_prepared('SELECT sm.*
 			FROM snmpagent_managers_notifications AS smn
 			INNER JOIN snmpagent_managers AS sm
 			ON sm.id = smn.manager_id
-			WHERE smn.notification = ? 
+			WHERE smn.notification = ?
 			AND smn.mib = ?
 			ORDER BY sm.snmp_message_type', array($notification, $mib));
 
@@ -900,11 +902,11 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 				}else if ($notification_manager['snmp_version'] == 2 ) {
 					$args = ' -v 2c -c ' . $notification_manager['snmp_community'] . ( ($notification_manager['snmp_message_type'] == 2 )? ' -Ci ' : '' )  . ' ' . $notification_manager['hostname'] . ':' . $notification_manager['snmp_port'] . " \"\" " . $enterprise_oid . $snmp_notification_varbinds;
 				}else if ($notification_manager['snmp_version'] == 3 ) {
-					
+
 					if ( $overwrite && isset($overwrite['snmp_engine_id']) && $overwrite['snmp_engine_id'] ) {
 						$notification_manager['snmp_engine_id'] = $overwrite['snmp_engine_id'];
 					}
-					
+
 					$args = ' -v 3 -e ' . $notification_manager['snmp_engine_id'] . (($notification_manager['snmp_message_type'] == 2 )? ' -Ci ' : '' ) .  ' -u ' . $notification_manager['snmp_username'];
 
 					if ( $notification_manager['snmp_auth_password'] && $notification_manager['snmp_priv_password']) {
