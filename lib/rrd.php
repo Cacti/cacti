@@ -27,7 +27,7 @@ define('MAX_FETCH_CACHE_SIZE', 5);
 
 if(read_config_option('storage_location')) {
 	/* load crypt libraries only if the Cacti RRDtool Proxy Server is in use */
-	set_include_path($config['include_path'] . '/phpseclib/');
+	set_include_path($config['include_path'] . '/vendor/phpseclib/');
 	include_once('Math/BigInteger.php');
 	include_once('Crypt/Base.php');
 	include_once('Crypt/Hash.php');

@@ -1792,7 +1792,7 @@ function secpass_check_history($id, $p) {
 function rsa_check_keypair() {
 	global $config;
 
-	set_include_path($config['include_path'] . '/phpseclib/');
+	set_include_path($config['include_path'] . '/vendor/phpseclib/');
 	include('Crypt/Base.php');
 	include('Math/BigInteger.php');
 	include('Crypt/Hash.php');
