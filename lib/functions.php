@@ -3484,7 +3484,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true) {
 	global $config;
 
-	include_once($config['include_path'] . '/phpmailer/PHPMailerAutoload.php');
+	include_once($config['include_path'] . '/vendor/phpmailer/PHPMailerAutoload.php');
 
 	// Set the to informaiotn
 	if ($to == '') {
@@ -3771,7 +3771,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure = 'none') {
 	global $config;
 
-	include_once($config['include_path'] . '/phpmailer/PHPMailerAutoload.php');
+	include_once($config['include_path'] . '/vendor/phpmailer/PHPMailerAutoload.php');
 
 	//Create a new SMTP instance
 	$smtp = new SMTP;
