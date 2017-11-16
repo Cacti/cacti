@@ -338,9 +338,9 @@ define('CACTI_DATE_TIME_FORMAT', date_time_format());
 if ($config['is_web']) {
 	function csrf_startup() {
 		global $config;
-		csrf_conf('rewrite-js', $config['url_path'] . 'include/csrf/csrf-magic.js');
+		csrf_conf('rewrite-js', $config['url_path'] . 'include/vendor/csrf/csrf-magic.js');
 	}
-	include_once($config['include_path'] . '/csrf/csrf-magic.php');
+	include_once($config['include_path'] . '/vendor/csrf/csrf-magic.php');
 
 	if (isset_request_var('newtheme')) {
 		unset($_SESSION['selected_theme']);
