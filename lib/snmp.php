@@ -44,7 +44,7 @@ global $banned_snmp_strings;
 $banned_snmp_strings = array('End of MIB', 'No Such', 'No more');
 
 if (!class_exists('SNMP')) {
-	include_once($config['include_path'] . '/phpsnmp/classSNMP.php');
+	include_once($config['include_path'] . '/vendor/phpsnmp/classSNMP.php');
 }
 
 function cacti_snmp_session($hostname, $community, $version, $username, $password,
