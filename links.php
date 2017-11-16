@@ -440,8 +440,8 @@ function pages() {
 
 function page_delete($id) {
 	db_execute_prepared('DELETE FROM external_links WHERE id = ?', array($id));
-	db_execute_prepared('DELETE FROM user_auth_realm WHERE real_id = ?', array($id+10000));
-	db_execute_prepared('DELETE FROM user_auth_group_realm WHERE real_id = ?', array($id+10000));
+	db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($id+10000));
+	db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($id+10000));
 
 	page_resort();
 }
