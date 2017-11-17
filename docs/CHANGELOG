@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#1066: CVE-2017-16661 in view Cacti log file
 -issue#1071: CVE-2017-16785 in global_session.php Reflection XSS issue
 -issue#1079: Undefined index in lib/snmpagent.php
+-issue#1085: Undefined function html_log_input_error in debug
 -issue: Minor performance increase in boost process
 -feature: Add a timeout to the remote agent for realtime graphs
 -feature: updated Dutch translations
