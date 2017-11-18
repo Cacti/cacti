@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#1088: Set timeout for remote data collector context options
 -issue: Minor performance increase in boost process
 -issue: Poller output not empty not processed correctly on Log tab
+-issue: Be cognizant of other charsets when performing html_escape operations
 -feature: Add a timeout to the remote agent for realtime graphs
 -feature: updated Dutch translations
 -feature: Database update adding additional indexes for increased performance
