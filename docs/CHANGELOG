@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#1071: CVE-2017-16785 in global_session.php Reflection XSS issue
 -issue#1079: Undefined index in lib/snmpagent.php
 -issue#1085: Undefined function html_log_input_error in debug
+-issue#1086: Rerun data queries in automation process has no effect
 -issue#1087: add_device.php --proxy option does not work with non-snmp devices
 -issue#1088: Set timeout for remote data collector context options
 -issue: Minor performance increase in boost process
