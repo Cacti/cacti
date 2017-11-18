@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -issue#1085: Undefined function html_log_input_error in debug
 -issue#1087: add_device.php --proxy option does not work with non-snmp devices
 -issue: Minor performance increase in boost process
+-issue: Poller output not empty not processed correctly on Log tab
 -feature: Add a timeout to the remote agent for realtime graphs
 -feature: updated Dutch translations
 -feature: Database update adding additional indexes for increased performance
