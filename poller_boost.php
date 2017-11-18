@@ -275,8 +275,10 @@ function output_rrd_data($start_time, $force = false) {
 
 	/* split poller_output_boost */
 	$archive_table = 'poller_output_boost_arch_' . time();
+
 	db_execute("RENAME TABLE poller_output_boost TO $archive_table");
 	db_execute("CREATE TABLE poller_output_boost LIKE $archive_table");
+
 	$more_arch_tables = db_fetch_assoc_prepared("SELECT table_name AS name
 		FROM information_schema.tables
 		WHERE table_schema = ?
@@ -347,7 +349,7 @@ function output_rrd_data($start_time, $force = false) {
 
 	if (count($tables)) {
 		foreach($tables as $table) {
-			$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
+			$rows = db_fetch_cell('SELECT count(*) FROM ' . $table['name']);
 			if (is_numeric($rows) && intval($rows) == 0) {
 				db_execute('DROP TABLE ' . $table['name']);
 			}
