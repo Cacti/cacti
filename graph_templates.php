@@ -303,7 +303,7 @@ function form_actions() {
 
 	form_start('graph_templates.php');
 
-	html_start_box($graph_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($graph_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && sizeof($graph_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
@@ -522,7 +522,7 @@ function template_edit() {
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
 				'friendly_name' => __('Use Per-Graph Value (Ignore this Value)'),
-				'value' => (isset($template_graph['t_' . $field_name]) ? $template_graph{'t_' . $field_name} : '')
+				'value' => (isset($template_graph['t_' . $field_name]) ? $template_graph['t_' . $field_name] : '')
 			);
 		}
 	}

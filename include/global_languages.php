@@ -149,8 +149,8 @@ if ($plugins && sizeof($plugins) > 0)
 }
 
 /* load php-gettext class */
-require($config['include_path'] . '/phpgettext/streams.php');
-require($config['include_path'] . '/phpgettext/gettext.php');
+require($config['include_path'] . '/vendor/phpgettext/streams.php');
+require($config['include_path'] . '/vendor/phpgettext/gettext.php');
 
 /* prefetch all language files to work in memory only,
    die if one of the language files is corrupted */

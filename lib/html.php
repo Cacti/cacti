@@ -908,7 +908,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				$group_counter++;
 			}
 
-			$_graph_type_name = $graph_item_types{$item['graph_type_id']};
+			$_graph_type_name = $graph_item_types[$item['graph_type_id']];
 
 			/* alternating row color */
 			if ($use_custom_class == false) {
@@ -956,9 +956,9 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			print "<td style='$this_row_style'>" . html_escape($matrix_title) . $hard_return . '</td>';
 
 			/* graph item type */
-			print "<td style='$this_row_style'>" . $graph_item_types{$item['graph_type_id']} . '</td>';
+			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . '</td>';
 			if (!preg_match('/(TICK|TEXTALIGN|HRULE|VRULE)/', $_graph_type_name)) {
-				print "<td style='$this_row_style'>" . $consolidation_functions{$item['consolidation_function_id']} . '</td>';
+				print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . '</td>';
 			} else {
 				print '<td>' . __('N/A') . '</td>';
 			}
@@ -1076,7 +1076,7 @@ function draw_menu($user_menu = "") {
 					$show_header_items = false;
 				}
 			} else {
-				$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
+				$current_realm_id = (isset($user_auth_realm_filenames[basename($item_url)]) ? $user_auth_realm_filenames[basename($item_url)] : 0);
 
 				if (is_realm_allowed($current_realm_id)) {
 					$show_header_items = true;
@@ -1106,14 +1106,15 @@ function draw_menu($user_menu = "") {
 
 			/* pass 2: loop through each top level item and render it */
 			foreach ($header_array as $item_url => $item_title) {
-				$current_realm_id = (isset($user_auth_realm_filenames{basename($item_url)}) ? $user_auth_realm_filenames{basename($item_url)} : 0);
+				$basename = basename($item_url);
+				$current_realm_id = (isset($user_auth_realm_filenames[$basename]) ? $user_auth_realm_filenames[$basename] : 0);
 
 				/* if this item is an array, then it contains sub-items. if not, is just
 				the title string and needs to be displayed */
 				if (is_array($item_title)) {
 					$i = 0;
 
-					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames{basename($item_url)})) {
+					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames[$basename])) {
 						/* if the current page exists in the sub-items array, draw each sub-item */
 						if (array_key_exists(get_current_page(), $item_title) == true) {
 							$draw_sub_items = true;
@@ -1138,7 +1139,7 @@ function draw_menu($user_menu = "") {
 						}
 					}
 				} else {
-					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames{basename($item_url)})) {
+					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames[$basename])) {
 						/* draw normal (non sub-item) menu item */
 						$item_url = $config['url_path'] . $item_url;
 						if (is_menu_pick_active($item_url)) {
@@ -1284,11 +1285,13 @@ function form_area($text) { ?>
 function is_console_page($url) {
 	global $menu;
 
-	if (basename($url) == 'index.php') {
+	$basename = basename($url);
+
+	if ($basename == 'index.php') {
 		return true;
 	}
 
-	if (basename($url) == 'rrdcleaner.php') {
+	if ($basename == 'rrdcleaner.php') {
 		return true;
 	}
 
@@ -1297,15 +1300,15 @@ function is_console_page($url) {
 	}
 
 	if (sizeof($menu)) {
-	foreach($menu as $section => $children) {
-		if (sizeof($children)) {
-		foreach($children as $page => $name) {
-			if (basename($page) == basename($url)) {
-				return true;
+		foreach($menu as $section => $children) {
+			if (sizeof($children)) {
+				foreach($children as $page => $name) {
+					if (basename($page) == $basename) {
+						return true;
+					}
+				}
 			}
 		}
-		}
-	}
 	}
 
 	return false;
@@ -1314,7 +1317,15 @@ function is_console_page($url) {
 function html_show_tabs_left() {
 	global $config, $tabs_left;
 
-	if (is_realm_allowed(8)) {
+	$realm_allowed     = array();
+	$realm_allowed[7]  = is_realm_allowed(7);
+	$realm_allowed[8]  = is_realm_allowed(8);
+	$realm_allowed[18] = is_realm_allowed(18);
+	$realm_allowed[19] = is_realm_allowed(19);
+	$realm_allowed[21] = is_realm_allowed(21);
+	$realm_allowed[22] = is_realm_allowed(22);
+
+	if ($realm_allowed[8]) {
 		$show_console_tab = true;
 	} else {
 		$show_console_tab = false;
@@ -1325,7 +1336,7 @@ function html_show_tabs_left() {
 			?><a <?php print (is_console_page(get_current_page()) ? " id='maintab-anchor" . rand() . "' class='selected'":"");?> href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(get_current_page()) ? '_down':'');?>.gif" alt="<?php print __('Console');?>"></a><?php
 		}
 
-		if (is_realm_allowed(7)) {
+		if ($realm_allowed[7]) {
 			if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
 				// Don't show graphs tab when offline
 			} else {
@@ -1338,23 +1349,23 @@ function html_show_tabs_left() {
 			}
 		}
 
-		if (is_realm_allowed(21) || is_realm_allowed(22)) {
+		if ($realm_allowed[21] || $realm_allowed[22]) {
 			if ($config['poller_id'] > 1) {
 				// Don't show reports tabe if not poller 1
 			} else {
 				if (substr_count($_SERVER["REQUEST_URI"], "reports_")) {
-					print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
+					print '<a href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
 				} else {
-					print '<a href="' . $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
+					print '<a href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
 				}
 			}
 		}
 
-		if (is_realm_allowed(18) || is_realm_allowed(19)) {
+		if ($realm_allowed[18] || $realm_allowed[19]) {
 			if (substr_count($_SERVER["REQUEST_URI"], "clog")) {
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="' . __('Logs'). '"></a>';
+				print '<a href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="' . __('Logs'). '"></a>';
 			} else {
-				print '<a href="' . $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="' . __('Logs') . '"></a>';
+				print '<a href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="' . __('Logs') . '"></a>';
 			}
 		}
 
@@ -1406,7 +1417,7 @@ function html_show_tabs_left() {
 			);
 		}
 
-		if (is_realm_allowed(7)) {
+		if ($realm_allowed[7]) {
 			if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
 				// Don't show the graphs tab when offline
 			} else {
@@ -1420,7 +1431,7 @@ function html_show_tabs_left() {
 			}
 		}
 
-		if (is_realm_allowed(21) || is_realm_allowed(22)) {
+		if ($realm_allowed[21] || $realm_allowed[22]) {
 			if ($config['poller_id'] > 1) {
 				// Don't show the reports tab on other pollers
 			} else {
@@ -1429,18 +1440,18 @@ function html_show_tabs_left() {
 						'title' => __('Reporting'),
 						'id'	=> 'maintab-anchor-reports',
 						'image' => '',
-						'url'   => $config['url_path'] . (is_realm_allowed(22) ? 'reports_admin.php':'reports_user.php'),
+						'url'   => $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php'),
 					);
 			}
 		}
 
-		if (is_realm_allowed(18) || is_realm_allowed(19)) {
+		if ($realm_allowed[18] || $realm_allowed[19]) {
 			$tabs_left[] =
 				array(
 					'title' => __('Logs'),
 					'id'	=> 'maintab-anchor-logs',
 					'image' => '',
-					'url'   => $config['url_path'] . (is_realm_allowed(18) ? 'clog.php':'clog_user.php'),
+					'url'   => $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php'),
 				);
 		}
 
@@ -1460,7 +1471,9 @@ function html_show_tabs_left() {
 		foreach($elements as $p) {
 			$p = trim($p);
 
-			if ($p == '') continue;
+			if ($p == '') {
+				continue;
+			}
 
 			$altpos  = strpos($p, 'alt=');
 			$hrefpos = strpos($p, 'href=');
@@ -1474,7 +1487,7 @@ function html_show_tabs_left() {
 					$alt = $parts[0];
 				}
 			} else {
-				$alt = 'Title';
+				$alt = __('Title');
 			}
 
 			if ($hrefpos >= 0) {
@@ -1712,42 +1725,38 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 function html_spikekill_actions() {
 	switch(get_nfilter_request_var('action')) {
-	case 'spikemenu':
-		print html_spikekill_menu(get_filter_request_var('local_graph_id'));
+		case 'spikemenu':
+			html_spikekill_menu(get_filter_request_var('local_graph_id'));
 
-		break;
-	case 'spikesave':
-		switch(get_nfilter_request_var('setting')) {
-			case 'ravgnan':
-				$id = get_nfilter_request_var('id');
-				switch($id) {
-					case 'avg':
-					case 'last':
-					case 'nan':
-						set_user_setting('spikekill_avgnan', $id);
-						break;
-				}
+			break;
+		case 'spikesave':
+			switch(get_nfilter_request_var('setting')) {
+				case 'ravgnan':
+					$id = get_nfilter_request_var('id');
+					switch($id) {
+						case 'avg':
+						case 'last':
+						case 'nan':
+							set_user_setting('spikekill_avgnan', $id);
+							break;
+					}
 
-				break;
-			case 'rstddev':
-				$id = get_filter_request_var('id');
-				set_user_setting('spikekill_deviations', $id);
-				break;
-			case 'rvarout':
-				$id = get_filter_request_var('id');
-				set_user_setting('spikekill_outliers', $id);
-				break;
-			case 'rvarpct':
-				$id = get_filter_request_var('id');
-				set_user_setting('spikekill_percent', $id);
-				break;
-			case 'rkills':
-				$id = get_filter_request_var('id');
-				set_user_setting('spikekill_number', $id);
-				break;
-		}
+					break;
+				case 'rstddev':
+					set_user_setting('spikekill_deviations', get_filter_request_var('id'));
+					break;
+				case 'rvarout':
+					set_user_setting('spikekill_outliers', get_filter_request_var('id'));
+					break;
+				case 'rvarpct':
+					set_user_setting('spikekill_percent', get_filter_request_var('id'));
+					break;
+				case 'rkills':
+					set_user_setting('spikekill_number', get_filter_request_var('id'));
+					break;
+			}
 
-		break;
+			break;
 	}
 }
 

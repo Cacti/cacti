@@ -291,8 +291,6 @@ function aggregate_color_item_remove_confirm() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#cdialog').dialog();
-
 		$('#continue').click(function(data) {
 			$.post('color_templates_items.php?action=item_remove', {
 				__csrf_magic: csrfMagicToken,

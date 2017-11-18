@@ -118,8 +118,18 @@ function api_networks_discover($network_id) {
 			if ($config['poller_id'] == $poller_id) {
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force");
 			} else {
-				$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($poller_id));
-				$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id);
+				$hostname = db_fetch_cell_prepared('SELECT hostname
+					FROM poller
+					WHERE id = ?',
+					array($poller_id));
+
+				$fgc_contextoption = get_default_contextoption();
+				if($fgc_contextoption) {
+					$fgc_context = stream_context_create($fgc_contextoption);
+					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id, false, $fgc_context);
+				} else {
+					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id);
+				}
 			}
 		} else {
 			$_SESSION['automation_message'] = "Can Not Restart Discovery for Discovery in Progress for Network '$name'";
@@ -304,7 +314,7 @@ function form_actions() {
 
 	form_start('automation_networks.php');
 
-	html_start_box($network_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($network_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 		print "<tr>

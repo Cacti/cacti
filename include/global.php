@@ -317,6 +317,7 @@ include_once($config['include_path'] . '/global_languages.php');
 include_once($config['library_path'] . '/auth.php');
 include_once($config['library_path'] . '/plugins.php');
 include_once($config['include_path'] . '/plugins.php');
+include_once($config['library_path'] . '/html_validate.php');
 include_once($config['library_path'] . '/html_utility.php');
 include_once($config['include_path'] . '/global_arrays.php');
 include_once($config['include_path'] . '/global_settings.php');
@@ -324,7 +325,6 @@ include_once($config['include_path'] . '/global_form.php');
 include_once($config['library_path'] . '/html.php');
 include_once($config['library_path'] . '/html_form.php');
 include_once($config['library_path'] . '/html_filter.php');
-include_once($config['library_path'] . '/html_validate.php');
 include_once($config['library_path'] . '/variables.php');
 include_once($config['library_path'] . '/mib_cache.php');
 include_once($config['library_path'] . '/snmpagent.php');
@@ -337,9 +337,9 @@ define('CACTI_DATE_TIME_FORMAT', date_time_format());
 if ($config['is_web']) {
 	function csrf_startup() {
 		global $config;
-		csrf_conf('rewrite-js', $config['url_path'] . 'include/csrf/csrf-magic.js');
+		csrf_conf('rewrite-js', $config['url_path'] . 'include/vendor/csrf/csrf-magic.js');
 	}
-	include_once($config['include_path'] . '/csrf/csrf-magic.php');
+	include_once($config['include_path'] . '/vendor/csrf/csrf-magic.php');
 
 	if (isset_request_var('newtheme')) {
 		unset($_SESSION['selected_theme']);

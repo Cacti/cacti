@@ -694,9 +694,9 @@ $selectedTheme = get_selected_theme();
 							<td>
 								<select id='realm' name='realm'><?php
 									if (sizeof($realms)) {
-									foreach($realms as $index => $realm) {
-										print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected':'') . '>' . html_escape($realm['name']) . "</option>\n";
-									}
+										foreach($realms as $index => $realm) {
+											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected':'') . '>' . htmlspecialchars($realm['name']) . "</option>\n";
+										}
 									}
 									?>
 								</select>

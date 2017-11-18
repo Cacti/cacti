@@ -424,8 +424,19 @@ function api_device_ping_device($device_id, $from_remote = false) {
 	$anym = false;
 
 	if ($config['poller_id'] != $host['poller_id'] && $from_remote == false) {
-		$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($host['poller_id']));
-		print file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id']);
+		$hostname = db_fetch_cell_prepared('SELECT hostname
+			FROM poller
+			WHERE id = ?',
+			array($host['poller_id']));
+		
+		$fgc_contextoption = get_default_contextoption();
+		if($fgc_contextoption) {
+			$fgc_context = stream_context_create($fgc_contextoption);
+			print file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id'], false, $fgc_context);
+		} else {
+			print file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id']);
+		}
+
 		return;
 	}
 

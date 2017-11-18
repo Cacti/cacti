@@ -305,7 +305,7 @@ function form_actions() {
 
 	form_start('data_queries.php');
 
-	html_start_box($dq_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($dq_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($dq_array) && sizeof($dq_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
@@ -435,7 +435,6 @@ function data_query_item_remove_confirm() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#cdialog').dialog();
 		$('#continue').click(function(data) {
 			$.post('data_queries.php?action=item_remove', {
 				__csrf_magic: csrfMagicToken,

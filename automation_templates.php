@@ -181,7 +181,7 @@ function form_actions() {
 
 	form_start('automation_templates.php');
 
-	html_start_box($at_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($at_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($at_array) && sizeof($at_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
@@ -286,9 +286,10 @@ function template_edit() {
 	global $availability_options;
 
 	$host_template_names = db_fetch_assoc('SELECT id, name FROM host_template');
+
 	$template_names = array();
 
-	if (sizeof($host_template_names) > 0) {
+	if (sizeof($host_template_names)) {
 		foreach ($host_template_names as $ht) {
 			$template_names[$ht['id']] = $ht['name'];
 		}
@@ -346,8 +347,16 @@ function template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$host_template = db_fetch_row_prepared('SELECT * FROM automation_templates WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Automation Templates [edit: %s]', html_escape($template_names[$host_template['host_template']]));
+		$host_template = db_fetch_row_prepared('SELECT *
+			FROM automation_templates
+			WHERE id = ?',
+			array(get_request_var('id')));
+
+		if (isset($template_names[$host_template['host_template']])) {
+			$header_label = __('Automation Templates [edit: %s]', html_escape($template_names[$host_template['host_template']]));
+		} else {
+			$header_label = __('Automation Templates for [Deleted Template]');
+		}
 	} else {
 		$header_label = __('Automation Templates [new]');
 		set_request_var('id', 0);

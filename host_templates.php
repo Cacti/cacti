@@ -247,7 +247,7 @@ function form_actions() {
 
 	form_start('host_templates.php');
 
-	html_start_box($host_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($host_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($host_array) && sizeof($host_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
@@ -343,10 +343,6 @@ function template_item_remove_gt_confirm() {
 
 	?>
 	<script type='text/javascript'>
-	$(function() {
-		$('#cdialog').dialog();
-	});
-
 	$('#continue').click(function(data) {
 		$.post('host_templates.php?action=item_remove_gt', {
 			__csrf_magic: csrfMagicToken,
@@ -403,10 +399,6 @@ function template_item_remove_dq_confirm() {
 
 	?>
 	<script type='text/javascript'>
-	$(function() {
-		$('#cdialog').dialog();
-	});
-
 	$('#continue').click(function(data) {
 		$.post('host_templates.php?action=item_remove_dq', {
 			__csrf_magic: csrfMagicToken,

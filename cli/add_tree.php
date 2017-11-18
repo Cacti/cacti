@@ -74,88 +74,76 @@ if (sizeof($parms)) {
 		}
 
 		switch ($arg) {
-		case '--type':
-			$type = trim($value);
+			case '--type':
+				$type = trim($value);
 
-			break;
-		case '--name':
-			$name = trim($value);
+				break;
+			case '--name':
+				$name = trim($value);
 
-			break;
-		case '--sort-method':
-			$sortMethod = trim($value);
+				break;
+			case '--sort-method':
+				$sortMethod = trim($value);
 
-			break;
-		case '--parent-node':
-			$parentNode = $value;
+				break;
+			case '--parent-node':
+				$parentNode = $value;
 
-			break;
-		case '--tree-id':
-			$treeId = $value;
+				break;
+			case '--tree-id':
+				$treeId = $value;
 
-			break;
-		case '--node-type':
-			$nodeType = trim($value);
+				break;
+			case '--node-type':
+				$nodeType = trim($value);
 
-			break;
-		case '--graph-id':
-			$graphId = $value;
+				break;
+			case '--graph-id':
+				$graphId = $value;
 
-			break;
-		case '--site-id':
-			$siteId = $value;
+				break;
+			case '--host-id':
+				$hostId = $value;
 
-			break;
-		case '--host-id':
-			$hostId = $value;
+				break;
+			case '--quiet':
+				$quietMode = true;
 
-			break;
-		case '--quiet':
-			$quietMode = true;
+				break;
+			case '--list-hosts':
+				$displayHosts = true;
 
-			break;
-		case '--list-sites':
-			$displaySites = true;
+				break;
+			case '--list-trees':
+				$displayTrees = true;
 
-			break;
-		case '--list-hosts':
-			$displayHosts = true;
+				break;
+			case '--list-nodes':
+				$displayNodes = true;
 
-			break;
-		case '--list-trees':
-			$displayTrees = true;
+				break;
+			case '--list-graphs':
+				$displayGraphs = true;
 
-			break;
-		case '--list-nodes':
-			$displayNodes = true;
+				break;
+			case '--host-group-style':
+				$hostGroupStyle = trim($value);
 
-			break;
-		case '--list-graphs':
-			$displayGraphs = true;
-
-			break;
-		case '--host-group-style':
-			$hostGroupStyle = trim($value);
-
-			break;
-		case '--quiet':
-			$quietMode = true;
-
-			break;
-		case '--version':
-		case '-V':
-		case '-v':
-			display_version();
-			exit;
-		case '--help':
-		case '-H':
-		case '-h':
-			display_help();
-			exit;
-		default:
-			echo "ERROR: Invalid Argument: ($arg)\n\n";
-			display_help();
-			exit(1);
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				exit;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				exit;
+			default:
+				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				display_help();
+				exit(1);
 		}
 	}
 

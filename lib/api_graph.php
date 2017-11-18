@@ -211,7 +211,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	if (sizeof($suggested_values)) {
 		foreach ($suggested_values as $suggested_value) {
 			/* once we find a match; don't try to find more */
-			if (!isset($suggested_values_graph{$suggested_value['field_name']})) {
+			if (!isset($suggested_values_graph[$suggested_value['field_name']])) {
 				$subs_string = substitute_snmp_query_data($suggested_value['text'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], read_config_option('max_data_query_field_length'));
 				/* if there are no '|' characters, all of the substitutions were successful */
 				if ((!substr_count($subs_string, '|query'))) {
@@ -221,7 +221,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 						array($suggested_value['text'], $local_graph_id));
 
 					/* once we find a working value for this very field, stop */
-					$suggested_values_graph{$suggested_value['field_name']} = true;
+					$suggested_values_graph[$suggested_value['field_name']] = true;
 				}
 			}
 		}
@@ -316,8 +316,8 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 
 	foreach ($struct_graph as $field => $array) {
 		if ($array['method'] == 'spacer') continue;
-		$save{$field} = $graph_template_graph{$field};
-		$save{'t_' . $field} = $graph_template_graph{'t_' . $field};
+		$save[$field] = $graph_template_graph[$field];
+		$save['t_' . $field] = $graph_template_graph['t_' . $field];
 	}
 
 	$graph_templates_graph_id = sql_save($save, 'graph_templates_graph');
@@ -335,10 +335,10 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			$save['local_graph_template_item_id'] = (isset($graph_template_item['local_graph_template_item_id']) ? $graph_template_item['local_graph_template_item_id'] : 0);
 
 			foreach ($struct_graph_item as $field => $array) {
-				$save{$field} = $graph_template_item{$field};
+				$save[$field] = $graph_template_item[$field];
 			}
 
-			$graph_item_mappings{$graph_template_item['id']} = sql_save($save, 'graph_templates_item');
+			$graph_item_mappings[$graph_template_item['id']] = sql_save($save, 'graph_templates_item');
 		}
 	}
 

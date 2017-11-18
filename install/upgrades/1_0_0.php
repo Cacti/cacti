@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ | Cacti: The Complete RRDTool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -602,21 +602,23 @@ function upgrade_to_1_0_0() {
 		$items = db_fetch_assoc("SELECT * FROM reports_items WHERE item_type=1");
 		if (sizeof($items)) {
 			foreach ($items as $row) {
-				$host = db_fetch_row("SELECT host.*
+				$host = db_fetch_row('SELECT host.*
 					FROM graph_local
 					LEFT JOIN host
 					ON (graph_local.host_id=host.id)
-					WHERE graph_local.id=" . $row["local_graph_id"]);
+					WHERE graph_local.id=' . $row['local_graph_id']);
 
-				$graph_template = db_fetch_cell("SELECT graph_template_id
-					FROM graph_local
-					WHERE id=" . $row["local_graph_id"]);
+				if (sizeof($host)) {
+					$graph_template = db_fetch_cell('SELECT graph_template_id
+						FROM graph_local
+						WHERE id=' . $row['local_graph_id']);
 
-				db_execute("UPDATE reports_items SET " .
-						" host_id='" . $host["id"] . "', " .
-						" host_template_id='" . $host["host_template_id"] . "', " .
-						" graph_template_id='" . $graph_template . "' " .
-						" WHERE id=" . $row["id"]);
+					db_execute('UPDATE reports_items SET 
+						host_id=' . $host['id'] . ', 
+						host_template_id=' . $host['host_template_id'] . ', 
+						graph_template_id=' . $graph_template . '
+						WHERE id=' . $row['id']);
+				}
 			}
 		}
 	}
@@ -1711,8 +1713,9 @@ function upgrade_to_1_0_0() {
 						$disable = false;
 					}
 			}
+
 			if ($disable) {
-				echo "Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION . "\n";
+				cacti_log("Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION);
 				db_install_add_cache(1, "Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION);
 				api_plugin_disable_all($plugin);
 			}

@@ -23,7 +23,7 @@
 */
 
 /* api_tree_lock - locks a tree for editing
- * @arg $tree_id - the tree id 
+ * @arg $tree_id - the tree id
  * @arg $user_id - the user id
  * @arg $web - is this a web operation
  * @returns - null unless in $web, in which case it redirects to the page */
@@ -33,9 +33,9 @@ function api_tree_lock($tree_id, $user_id = 0, $web = true) {
 	input_validate_input_number($user_id);
 	/* ==================================================== */
 
-	db_execute_prepared('UPDATE graph_tree 
-		SET locked = 1, locked_date = NOW(), last_modified = NOW(), modified_by = ? 
-		WHERE id = ?', 
+	db_execute_prepared('UPDATE graph_tree
+		SET locked = 1, locked_date = NOW(), last_modified = NOW(), modified_by = ?
+		WHERE id = ?',
 		array($user_id, $tree_id));
 
 	if ($web) {
@@ -44,7 +44,7 @@ function api_tree_lock($tree_id, $user_id = 0, $web = true) {
 }
 
 /* api_tree_unlock - unlockes a locked tree that has been locked for editing
- * @arg $tree_id - the tree id 
+ * @arg $tree_id - the tree id
  * @arg $user_id - the user id
  * @arg $web - is this a web operation
  * @returns - null unless in $web, in which case it redirects to the page */
@@ -54,9 +54,9 @@ function api_tree_unlock($tree_id, $user_id = 0, $web = true) {
 	input_validate_input_number($user_id);
 	/* ==================================================== */
 
-	db_execute_prepared('UPDATE graph_tree 
+	db_execute_prepared('UPDATE graph_tree
 		SET locked = 0, last_modified = NOW(), modified_by = ?
-		WHERE id = ?', 
+		WHERE id = ?',
 		array($user_id, $tree_id));
 
 	if ($web) {
@@ -64,7 +64,7 @@ function api_tree_unlock($tree_id, $user_id = 0, $web = true) {
 	}
 }
 
-/* api_tree_copy_node - given a tree id, a new node location, 
+/* api_tree_copy_node - given a tree id, a new node location,
  * it's original paren, make a copy of the prior node.
  * @arg $tree_id - The name of the lock to be created
  * @arg $node_id - The node to be copied
@@ -102,11 +102,11 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 	// Check to see if the node already exists
 	$title = '';
 	if ($data['host'] > 0) {
-		$exists = db_fetch_cell_prepared('SELECT id 
-			FROM graph_tree_items 
-			WHERE parent = ? 
+		$exists = db_fetch_cell_prepared('SELECT id
+			FROM graph_tree_items
+			WHERE parent = ?
 			AND graph_tree_id = ?
-			AND host_id = ?', 
+			AND host_id = ?',
 			array($pdata['leaf_id'], $tree_id, $data['host']));
 
 		if ($exists) {
@@ -114,8 +114,8 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 			return;
 		}
 	} elseif ($data['graph'] > 0) {
-		$exists = db_fetch_cell_prepared('SELECT id 
-			FROM graph_tree_items 
+		$exists = db_fetch_cell_prepared('SELECT id
+			FROM graph_tree_items
 			WHERE parent = ?
 			AND graph_tree_id = ?
 			AND local_graph_id = ?',
@@ -138,8 +138,8 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 			return;
 		}
 	} else {
-		$title = db_fetch_cell_prepared('SELECT title 
-			FROM graph_tree_items 
+		$title = db_fetch_cell_prepared('SELECT title
+			FROM graph_tree_items
 			WHERE id = ?', array($data['leaf_id']));
 	}
 
@@ -207,7 +207,7 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 	if (isset($title)) {
 		$title = sanitize_search_string(htmlspecialchars_decode($title));
 	}
-	
+
 	$data  = api_tree_parse_node_data($node_id);
 
 	if ($data['leaf_id'] < 0) {
@@ -251,7 +251,7 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 	print json_encode(array('id' => 'tbranch:' . $id, 'text' => $title));
 }
 
-/* api_tree_branch_exists - given a tree, parent branch, and a title, will check for a branch 
+/* api_tree_branch_exists - given a tree, parent branch, and a title, will check for a branch
  * @arg $tree_id - The tree_id to search
  * @arg $parent - The parent leaf_id to search
  * @arg $title - The branch name to search for
@@ -368,8 +368,8 @@ function api_tree_delete_node($tree_id, $node_id) {
  * @arg $leaf_id - The branch to remove
  * @returns - null */
 function api_tree_delete_node_content($tree_id, $leaf_id) {
-	$children = db_fetch_assoc_prepared('SELECT * 
-		FROM graph_tree_items 
+	$children = db_fetch_assoc_prepared('SELECT *
+		FROM graph_tree_items
 		WHERE graph_tree_id = ? AND parent = ?', array($tree_id, $leaf_id));
 
 	if (sizeof($children)) {
@@ -378,8 +378,8 @@ function api_tree_delete_node_content($tree_id, $leaf_id) {
 				api_tree_delete_node_content($tree_id, $child['id']);
 			}
 
-			db_execute_prepared('DELETE 
-				FROM graph_tree_items 
+			db_execute_prepared('DELETE
+				FROM graph_tree_items
 				WHERE graph_tree_id = ?
 				AND id = ?', array($tree_id, $child['id']));
 		}
@@ -418,16 +418,16 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 	$data  = api_tree_parse_node_data($node_id);
 
 	if ($data['parent'] != $pdata['leaf_id']) {
-		db_execute_prepared('UPDATE graph_tree_items 
-			SET parent = ?, position = ? 
+		db_execute_prepared('UPDATE graph_tree_items
+			SET parent = ?, position = ?
 			WHERE id = ?
-			AND graph_tree_id = ?', 
+			AND graph_tree_id = ?',
 			array($pdata['leaf_id'], $new_position, $data['leaf_id'], $tree_id));
 
-		$others = db_fetch_assoc_prepared('SELECT id 
-			FROM graph_tree_items 
-			WHERE parent = ? 
-			AND id != ? 
+		$others = db_fetch_assoc_prepared('SELECT id
+			FROM graph_tree_items
+			WHERE parent = ?
+			AND id != ?
 			AND position >= ?', array($pdata['leaf_id'], $data['leaf_id'], $new_position));
 
 		$position = $new_position + 1;
@@ -441,15 +441,15 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 		api_tree_sort_branch($data['leaf_id'], $tree_id);
 	} elseif (isset($data['leaf_id']) && $data['leaf_id'] > 0 && isset($pdata['leaf_id']) && $pdata['leaf_id'] >= 0) {
 		db_execute_prepared('UPDATE graph_tree_items
-			SET position = ? 
+			SET position = ?
 			WHERE graph_tree_id = ?
-			AND id = ?', 
+			AND id = ?',
 			array($new_position, $tree_id, $data['leaf_id']));
 
-		$others = db_fetch_assoc_prepared('SELECT id 
-			FROM graph_tree_items 
-			WHERE parent = ? 
-			AND id != ? AND 
+		$others = db_fetch_assoc_prepared('SELECT id
+			FROM graph_tree_items
+			WHERE parent = ?
+			AND id != ? AND
 			position >= ?', array($pdata['leaf_id'], $data['leaf_id'], $new_position));
 
 		$position = $new_position + 1;
@@ -523,10 +523,10 @@ function api_tree_parse_node_data($variable) {
  * @returns - string of the tree items in html format */
 function api_tree_rename_node($tree_id, $node_id = '', $text = '') {
 	input_validate_input_number($tree_id);
-	
+
 	/* clean up text string */
 	$text = sanitize_search_string(htmlspecialchars_decode($text));
-	
+
 	// Basic Error Checking
 	if ($tree_id <= 0) {
 		cacti_log("ERROR: Invalid TreeID: '" . $tree_id . "', Function rename_node", false);
@@ -582,9 +582,9 @@ function api_tree_rename_node($tree_id, $node_id = '', $text = '') {
 		if ($host_id > 0 || $graph_id > 0 || $site_id > 0) {
 			// Ignore.  Need to customize context
 		} else {
-			db_execute_prepared('UPDATE graph_tree_items 
-				SET title = ? 
-				WHERE graph_tree_id = ? 
+			db_execute_prepared('UPDATE graph_tree_items
+				SET title = ?
+				WHERE graph_tree_id = ?
 				AND id = ?', array($text, $tree_id, $leaf_id));
 		}
 	}
@@ -605,7 +605,10 @@ function api_tree_get_main($tree_id, $parent = 0) {
 		$is_root = true;
 
 		if ($tree_id > 0) {
-			$name     = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($tree_id));
+			$name = db_fetch_cell_prepared('SELECT name
+				FROM graph_tree
+				WHERE id = ?',
+				array($tree_id));
 
 			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id' data-jstree='{ \"type\" : \"tree\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tree_anchor-' . $tree_id). "'>" . html_escape($name) . "</a>\n";
 
@@ -643,16 +646,17 @@ function api_tree_get_main($tree_id, $parent = 0) {
 /* api_tree_get_node - given the tree and the node information return tree elements
  * @arg $tree_id - The id of the tree you are parsing
  * @arg $node_id - The encoded node id of the branch/leaf
+ * @arg $editing - The determine if we are building a user tree or a tree for editing
  * @returns - string of the tree items in html format */
-function api_tree_get_node($tree_id, $node_id) {
+function api_tree_get_node($tree_id, $node_id, $editing = false) {
 	if ($node_id == '#') {
-		$heirarchy = draw_dhtml_tree_level($tree_id, 0);
+		$heirarchy = draw_dhtml_tree_level($tree_id, 0, $editing);
 	} else {
 		$data  = api_tree_parse_node_data($node_id);
 		$id    = $data['leaf_id'];
 
 		input_validate_input_number($id);
-		$heirarchy = draw_dhtml_tree_level($tree_id, $id);
+		$heirarchy = draw_dhtml_tree_level($tree_id, $id, $editing);
 	}
 
 	if (sizeof($heirarchy)) {
@@ -802,7 +806,7 @@ function api_tree_get_branch_ordering($leaf_id) {
 
 /* api_tree_get_branch_name - determine the name of a branch leaf
  * This function is to assist with editing trees
- * @arg $tree_id - the tree id 
+ * @arg $tree_id - the tree id
  * @arg $leaf_id - the leaf id
  * @returns - the name of the leaf */
 function api_tree_get_branch_name($tree_id, $leaf_id) {
@@ -810,7 +814,7 @@ function api_tree_get_branch_name($tree_id, $leaf_id) {
 }
 
 /* api_tree_get_branch_id - given a tree, parent, and title return the leaf_id
- * @arg $tree_id - the tree id 
+ * @arg $tree_id - the tree id
  * @arg $parent - the parent leaf id
  * @arg $title - the branch/leaf title
  * @returns - the name of the leaf */
@@ -821,7 +825,7 @@ function api_tree_get_branch_id($tree_id, $parent, $title) {
 /* api_tree_sort_branch - sorts a branch based upon sorting rules.
  * Trees always go first, then hosts, and finally, graphs.
  * @arg $leaf_id - the leaf id
- * @arg $tree_id - the tree id 
+ * @arg $tree_id - the tree id
  * @returns - the name of the leaf */
 function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 	static $level = 1;
@@ -863,10 +867,10 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 	}
 
 	$sort_array = array_rekey(db_fetch_assoc_prepared('SELECT id, title
-		FROM graph_tree_items AS gti 
-		WHERE parent = ? 
+		FROM graph_tree_items AS gti
+		WHERE parent = ?
 		AND graph_tree_id = ?
-		AND local_graph_id = 0 
+		AND local_graph_id = 0
 		AND host_id = 0 ' . $order_by, array($parent, $tree_id)), 'id', 'title');
 
 	if (sizeof($sort_array)) {
@@ -904,10 +908,10 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 	}
 
 	$sort_array = array_rekey(db_fetch_assoc_prepared('SELECT h.description, gti.id
-		FROM graph_tree_items AS gti 
-		INNER JOIN host AS h 
-		ON h.id=gti.host_id 
-		WHERE parent = ? 
+		FROM graph_tree_items AS gti
+		INNER JOIN host AS h
+		ON h.id=gti.host_id
+		WHERE parent = ?
 		AND graph_tree_id = ?
 		AND host_id > 0 ' . $order_by, array($parent, $tree_id)), 'id', 'description');
 
@@ -937,10 +941,10 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 	}
 
 	$sort_array = array_rekey(db_fetch_assoc_prepared('SELECT gtg.title_cache, gti.id
-		FROM graph_tree_items AS gti 
+		FROM graph_tree_items AS gti
 		INNER JOIN graph_templates_graph AS gtg
 		ON gtg.local_graph_id=gti.local_graph_id
-		WHERE parent = ? 
+		WHERE parent = ?
 		AND graph_tree_id = ?
 		AND gti.local_graph_id > 0 ' . $order_by, array($parent, $tree_id)), 'id', 'title_cache');
 

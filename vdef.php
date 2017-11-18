@@ -256,7 +256,7 @@ function vdef_form_actions() {
 
 	form_start('vdef.php', 'vdef_actions');
 
-	html_start_box($vdef_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($vdef_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($vdef_array)) {
 		if (get_nfilter_request_var('drp_action') === '1') { // delete
@@ -342,8 +342,6 @@ function vdef_item_remove_confirm() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#cdialog').dialog();
-
 		$('#continue').click(function(data) {
 			$.post('vdef.php?action=item_remove', {
 				__csrf_magic: csrfMagicToken,

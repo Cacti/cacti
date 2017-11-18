@@ -97,13 +97,13 @@ function form_save() {
 		/* summarize the 'create graph from host template/snmp index' stuff into an array */
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^cg_(\d+)$/', $var, $matches)) {
-				$selected_graphs['cg']{$matches[1]}{$matches[1]} = true;
+				$selected_graphs['cg'][$matches[1]][$matches[1]] = true;
 			} elseif (preg_match('/^cg_g$/', $var)) {
 				if (get_nfilter_request_var('cg_g') > 0) {
-					$selected_graphs['cg']{get_nfilter_request_var('cg_g')}{get_nfilter_request_var('cg_g')} = true;
+					$selected_graphs['cg'][get_nfilter_request_var('cg_g')][get_nfilter_request_var('cg_g')] = true;
 				}
 			} elseif (preg_match('/^sg_(\d+)_([a-f0-9]{32})$/', $var, $matches)) {
-				$selected_graphs['sg']{$matches[1]}{get_nfilter_request_var('sgg_' . $matches[1])}{$matches[2]} = true;
+				$selected_graphs['sg'][$matches[1]][get_nfilter_request_var('sgg_' . $matches[1])][$matches[2]] = true;
 			}
 		}
 
@@ -158,9 +158,9 @@ function host_new_graphs_save($host_id) {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^g_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: field_name
 			if (empty($matches[1])) { // this is a new graph from template field
-				$values['cg']{$matches[2]}['graph_template']{$matches[3]} = $val;
+				$values['cg'][$matches[2]]['graph_template'][$matches[3]] = $val;
 			} else { // this is a data query field
-				$values['sg']{$matches[1]}{$matches[2]}['graph_template']{$matches[3]} = $val;
+				$values['sg'][$matches[1]][$matches[2]]['graph_template'][$matches[3]] = $val;
 			}
 		} elseif (preg_match('/^gi_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name
 			/* ================= input validation ================= */
@@ -177,29 +177,29 @@ function host_new_graphs_save($host_id) {
 			if (sizeof($item_list)) {
 				foreach ($item_list as $item) {
 					if (empty($matches[1])) { // this is a new graph from template field
-						$values['cg']{$matches[2]}['graph_template_item']{$item['graph_template_item_id']}{$matches[4]} = $val;
+						$values['cg'][$matches[2]]['graph_template_item'][$item['graph_template_item_id']][$matches[4]] = $val;
 					} else { // this is a data query field
-						$values['sg']{$matches[1]}{$matches[2]}['graph_template_item']{$item['graph_template_item_id']}{$matches[4]} = $val;
+						$values['sg'][$matches[1]][$matches[2]]['graph_template_item'][$item['graph_template_item_id']][$matches[4]] = $val;
 					}
 				}
 			}
 		} elseif (preg_match('/^d_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:field_nam
 			if (empty($matches[1])) { // this is a new graph from template field
-				$values['cg']{$matches[2]}['data_template']{$matches[3]}{$matches[4]} = $val;
+				$values['cg'][$matches[2]]['data_template'][$matches[3]][$matches[4]] = $val;
 			} else { // this is a data query field
-				$values['sg']{$matches[1]}{$matches[2]}['data_template']{$matches[3]}{$matches[4]} = $val;
+				$values['sg'][$matches[1]][$matches[2]]['data_template'][$matches[3]][$matches[4]] = $val;
 			}
 		} elseif (preg_match('/^c_(\d+)_(\d+)_(\d+)_(\d+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:data_input_field_id
 			if (empty($matches[1])) { // this is a new graph from template field
-				$values['cg']{$matches[2]}['custom_data']{$matches[3]}{$matches[4]} = $val;
+				$values['cg'][$matches[2]]['custom_data'][$matches[3]][$matches[4]] = $val;
 			} else { // this is a data query field
-				$values['sg']{$matches[1]}{$matches[2]}['custom_data']{$matches[3]}{$matches[4]} = $val;
+				$values['sg'][$matches[1]][$matches[2]]['custom_data'][$matches[3]][$matches[4]] = $val;
 			}
 		} elseif (preg_match('/^di_(\d+)_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:local_data_template_rrd_id, 5:field_name
 			if (empty($matches[1])) { // this is a new graph from template field
-				$values['cg']{$matches[2]}['data_template_item']{$matches[4]}{$matches[5]} = $val;
+				$values['cg'][$matches[2]]['data_template_item'][$matches[4]][$matches[5]] = $val;
 			} else { // this is a data query field
-				$values['sg']{$matches[1]}{$matches[2]}['data_template_item']{$matches[4]}{$matches[5]} = $val;
+				$values['sg'][$matches[1]][$matches[2]]['data_template_item'][$matches[4]][$matches[5]] = $val;
 			}
 		}
 	}
@@ -256,7 +256,7 @@ function host_new_graphs_save($host_id) {
 				foreach ($snmp_index_array as $snmp_index => $true) {
 					$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
 
-					$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg']{$snmp_query_array['snmp_query_id']});
+					$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
 
 					debug_log_insert('new_graphs', __('Created graph: %s', get_graph_title($return_array['local_graph_id'])));
 

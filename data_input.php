@@ -201,7 +201,7 @@ function form_actions() {
 
 	form_start('data_input.php');
 
-	html_start_box($di_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($di_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($di_array) && sizeof($di_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
@@ -276,8 +276,6 @@ function field_remove_confirm() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#cdialog').dialog();
-
 		$('#continue').click(function(data) {
 			$.post('data_input.php?action=field_remove', {
 				__csrf_magic: csrfMagicToken,
@@ -743,7 +741,7 @@ function data() {
 			form_selectable_cell($disabled ? __('No'): __('Yes'), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell(number_format_i18n($data_input['data_sources'], '-1'), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell(number_format_i18n($data_input['templates'], '-1'), $data_input['id'],'', 'text-align:right');
-			form_selectable_cell($input_types{$data_input['type_id']}, $data_input['id']);
+			form_selectable_cell($input_types[$data_input['type_id']], $data_input['id']);
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);
 			form_end_row();
 		}

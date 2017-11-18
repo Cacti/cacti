@@ -401,7 +401,7 @@ function aggregate_is_stacked_graph($_local_graph_id) {
 function aggregate_convert_to_stack($_graph_item_type, $_old_graph_id, $_graph_no, $_graph_item_sequence) {
 	global $graph_item_types;
 
-	cacti_log(__FUNCTION__ . '  called: Item type:' . $graph_item_types{$_graph_item_type} . ' graph: ' . $_graph_no . ' item: ' . $_graph_item_sequence, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+	cacti_log(__FUNCTION__ . '  called: Item type:' . $graph_item_types[$_graph_item_type] . ' graph: ' . $_graph_no . ' item: ' . $_graph_item_sequence, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	if ($_graph_no === 0) {
 		/* this one converts the first graph only
@@ -413,7 +413,7 @@ function aggregate_convert_to_stack($_graph_item_type, $_old_graph_id, $_graph_n
 		$_pure_linex_graph = aggregate_detect_linex_graph_type($_old_graph_id);
 	}
 
-	if (preg_match('/(LINE[123])/', $graph_item_types{$_graph_item_type})) {
+	if (preg_match('/(LINE[123])/', $graph_item_types[$_graph_item_type])) {
 		if ($_graph_no === 0) {
 			/* convert LINEx statements to AREA on the first graph */
 			$_graph_item_type = GRAPH_ITEM_TYPE_AREA;
@@ -421,14 +421,14 @@ function aggregate_convert_to_stack($_graph_item_type, $_old_graph_id, $_graph_n
 			/* convert LINEx statements to STACK */
 			$_graph_item_type = GRAPH_ITEM_TYPE_STACK;
 		}
-	} elseif (preg_match('/(AREA)/', $graph_item_types{$_graph_item_type}) && !($_graph_no === 0)) {
+	} elseif (preg_match('/(AREA)/', $graph_item_types[$_graph_item_type]) && !($_graph_no === 0)) {
 		/* convert AREA statements, but not for the first graph
 		 * this is required, when graphing a 'negative' AREA */
 		$_graph_item_type = GRAPH_ITEM_TYPE_STACK;
 	}
 
 
-	cacti_log(__FUNCTION__ . '  return: Item type:' . $graph_item_types{$_graph_item_type} . ' graph: ' . $_graph_no, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+	cacti_log(__FUNCTION__ . '  return: Item type:' . $graph_item_types[$_graph_item_type] . ' graph: ' . $_graph_no, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	return $_graph_item_type;
 }
@@ -443,15 +443,15 @@ function aggregate_convert_to_stack($_graph_item_type, $_old_graph_id, $_graph_n
 function aggregate_convert_graph_type($_graph_item_type, $_graph_type) {
 	global $graph_item_types;
 
-	cacti_log(__FUNCTION__ . '  called: Item Type: ' . $graph_item_types{$_graph_item_type} . ' new item type: ' . $_graph_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+	cacti_log(__FUNCTION__ . '  called: Item Type: ' . $graph_item_types[$_graph_item_type] . ' new item type: ' . $_graph_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
-	if (preg_match('/(AREA|STACK)/', $graph_item_types{$_graph_item_type})) {
+	if (preg_match('/(AREA|STACK)/', $graph_item_types[$_graph_item_type])) {
 		/* change AREA|STACK statements only */
-		cacti_log(__FUNCTION__ . '  return: Item type:' . $graph_item_types{$_graph_type}, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+		cacti_log(__FUNCTION__ . '  return: Item type:' . $graph_item_types[$_graph_type], true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 		return $_graph_type;
 	} else {
-		cacti_log(__FUNCTION__ . '  return: Item type:' . $graph_item_types{$_graph_item_type}, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+		cacti_log(__FUNCTION__ . '  return: Item type:' . $graph_item_types[$_graph_item_type], true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 		return $_graph_item_type;
 	}

@@ -268,7 +268,7 @@ function form_actions() {
 
 	form_start('cdef.php');
 
-	html_start_box($cdef_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($cdef_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($cdef_array) && sizeof($cdef_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
@@ -355,8 +355,6 @@ function cdef_item_remove_confirm() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#cdialog').dialog();
-
 		$('#continue').click(function(data) {
 			$.post('cdef.php?action=item_remove', {
 				__csrf_magic: csrfMagicToken,

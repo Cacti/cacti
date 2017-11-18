@@ -137,7 +137,7 @@ switch (get_request_var('action')) {
 		api_tree_rename_node(get_request_var('tree_id'), get_request_var('id'), get_nfilter_request_var('text'));
 		break;
 	case 'get_node':
-		api_tree_get_node(get_request_var('tree_id'), get_request_var('id'));
+		api_tree_get_node(get_request_var('tree_id'), get_request_var('id'), true);
 		break;
 	case 'get_host_sort':
 		get_host_sort_type();
@@ -540,7 +540,7 @@ function form_actions() {
 
 	form_start('tree.php');
 
-	html_start_box($tree_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($tree_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($tree_array) && sizeof($tree_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { // delete

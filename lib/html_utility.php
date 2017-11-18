@@ -745,8 +745,8 @@ function get_order_string() {
 function remove_column_from_order_string($column) {
 	$page = get_order_string_page();
 
-	if (isset($_SESSIION['sort_data'][$page][$column])) {
-		unset($_SESSIION['sort_data'][$page][$column]);
+	if (isset($_SESSION['sort_data'][$page][$column])) {
+		unset($_SESSION['sort_data'][$page][$column]);
 		update_order_string(true);
 	}
 }

@@ -381,7 +381,7 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'template_drop_array':
-		print '<em>' . $field_array['array']{$field_array['value']} . '</em>';
+		print '<em>' . $field_array['array'][$field_array['value']] . '</em>';
 
 		form_hidden_box($field_name, $field_array['value'], '', true);
 
