@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -issue#1079: Undefined index in lib/snmpagent.php
 -issue#1085: Undefined function html_log_input_error in debug
 -issue#1087: add_device.php --proxy option does not work with non-snmp devices
+-issue#1088: Set timeout for remote data collector context options
 -issue: Minor performance increase in boost process
 -issue: Poller output not empty not processed correctly on Log tab
 -feature: Add a timeout to the remote agent for realtime graphs
