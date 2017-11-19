@@ -615,12 +615,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (!empty($leaf_id)) {
 		$host_name = db_fetch_cell_prepared('SELECT description
 			FROM host
-			WHERE id = ?', 
+			WHERE id = ?',
 			array($leaf['host_id']));
 
 		$site_name = db_fetch_cell_prepared('SELECT name
 			FROM sites
-			WHERE id = ?', 
+			WHERE id = ?',
 			array($leaf['site_id']));
 	}
 
@@ -789,7 +789,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 								<?php
 								$start_val = 1;
 								$end_val = sizeof($graph_timeshifts)+1;
-								if (sizeof($graph_timeshifts) > 0) {
+								if (sizeof($graph_timeshifts)) {
 									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
 										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
 									}
@@ -1086,7 +1086,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 					/* re-key the results on data query index */
 					$snmp_index_to_graph = array();
-					if (sizeof($graphs) > 0) {
+					if (sizeof($graphs)) {
 						/* let's sort the graphs naturally */
 						usort($graphs, 'naturally_sort_graphs');
 

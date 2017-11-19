@@ -139,9 +139,9 @@ function api_graph_remove_multi($local_graph_ids) {
   */
 function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
 	/* get graphs template id */
-	db_execute_prepared('UPDATE graph_templates_graph 
-		SET width = ?, height = ? 
-		WHERE local_graph_id = ?', 
+	db_execute_prepared('UPDATE graph_templates_graph
+		SET width = ?, height = ?
+		WHERE local_graph_id = ?',
 		array($graph_width, $graph_height, $local_graph_id));
 }
 
@@ -152,9 +152,9 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	global $config;
 
 	/* get graphs template id */
-	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id 
-		FROM graph_templates_graph 
-		WHERE local_graph_id = ?', 
+	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
 		array($local_graph_id));
 
 	/* if a non-template graph, simply return */
@@ -164,10 +164,10 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 
 	/* get the host associated with this graph for data queries only
 	 * there's no "reapply suggested title" for "simple" graph templates */
-	$graph_local = db_fetch_row_prepared('SELECT host_id, graph_template_id, snmp_query_id, snmp_index 
-		FROM graph_local 
-		WHERE snmp_query_id>0 
-		AND id = ?', 
+	$graph_local = db_fetch_row_prepared('SELECT host_id, graph_template_id, snmp_query_id, snmp_index
+		FROM graph_local
+		WHERE snmp_query_id>0
+		AND id = ?',
 		array($local_graph_id));
 
 	/* if this is not a data query graph, simply return */
@@ -176,23 +176,23 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	}
 
 	/* get data source associated with the graph */
-	$data_local = db_fetch_cell_prepared('SELECT 
+	$data_local = db_fetch_cell_prepared('SELECT
 		data_template_data.local_data_id
 		FROM (data_template_rrd,data_template_data,graph_templates_item)
 		WHERE graph_templates_item.task_item_id=data_template_rrd.id
 		AND data_template_rrd.local_data_id=data_template_data.local_data_id
 		AND graph_templates_item.local_graph_id = ?
-		GROUP BY data_template_data.local_data_id', 
+		GROUP BY data_template_data.local_data_id',
 		array($local_graph_id));
-	
-	$snmp_query_graph_id = db_fetch_cell_prepared("SELECT did.value 
+
+	$snmp_query_graph_id = db_fetch_cell_prepared("SELECT did.value
 		FROM data_input_data AS did
 		INNER JOIN data_input_fields AS dif
 		ON did.data_input_field_id=dif.id
 		INNER JOIN data_template_data AS dtd
 		ON dtd.id=did.data_template_data_id
-		WHERE dif.type_code = 'output_type' 
-		AND dtd.local_data_id = ?", 
+		WHERE dif.type_code = 'output_type'
+		AND dtd.local_data_id = ?",
 		array($data_local));
 
 	/* no snmp query graph id found */
@@ -201,8 +201,8 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	}
 
 	/* get the suggested values from the suggested values cache */
-	$suggested_values = db_fetch_assoc_prepared("SELECT text, field_name 
-		FROM snmp_query_graph_sv 
+	$suggested_values = db_fetch_assoc_prepared("SELECT text, field_name
+		FROM snmp_query_graph_sv
 		WHERE snmp_query_graph_id = ?
 		AND field_name = 'title'
 		ORDER BY sequence", array($snmp_query_graph_id));
@@ -215,9 +215,9 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 				$subs_string = substitute_snmp_query_data($suggested_value['text'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], read_config_option('max_data_query_field_length'));
 				/* if there are no '|' characters, all of the substitutions were successful */
 				if ((!substr_count($subs_string, '|query'))) {
-					db_execute_prepared('UPDATE graph_templates_graph 
-						SET ' . $suggested_value['field_name'] . ' = ? 
-						WHERE local_graph_id = ?', 
+					db_execute_prepared('UPDATE graph_templates_graph
+						SET ' . $suggested_value['field_name'] . ' = ?
+						WHERE local_graph_id = ?',
 						array($suggested_value['text'], $local_graph_id));
 
 					/* once we find a working value for this very field, stop */
@@ -248,19 +248,19 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	global $struct_graph, $struct_graph_item;
 
 	if (!empty($_local_graph_id)) {
-		$graph_local = db_fetch_row_prepared('SELECT * 
-			FROM graph_local 
-			WHERE id = ?', 
+		$graph_local = db_fetch_row_prepared('SELECT *
+			FROM graph_local
+			WHERE id = ?',
 			array($_local_graph_id));
 
-		$graph_template_graph = db_fetch_row_prepared('SELECT * 
-			FROM graph_templates_graph 
-			WHERE local_graph_id = ?', 
+		$graph_template_graph = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_graph
+			WHERE local_graph_id = ?',
 			array($_local_graph_id));
 
-		$graph_template_items = db_fetch_assoc_prepared('SELECT * 
-			FROM graph_templates_item 
-			WHERE local_graph_id = ?', 
+		$graph_template_items = db_fetch_assoc_prepared('SELECT *
+			FROM graph_templates_item
+			WHERE local_graph_id = ?',
 			array($_local_graph_id));
 
 		/* create new entry: graph_local */
@@ -274,26 +274,26 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 
 		$graph_template_graph['title'] = str_replace('<graph_title>', $graph_template_graph['title'], $graph_title);
 	} elseif (!empty($_graph_template_id)) {
-		$graph_template        = db_fetch_row_prepared('SELECT * 
-			FROM graph_templates 
-			WHERE id = ?', 
+		$graph_template        = db_fetch_row_prepared('SELECT *
+			FROM graph_templates
+			WHERE id = ?',
 			array($_graph_template_id));
 
-		$graph_template_graph  = db_fetch_row_prepared('SELECT * 
-			FROM graph_templates_graph 
-			WHERE graph_template_id = ? 
-			AND local_graph_id=0', 
+		$graph_template_graph  = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_graph
+			WHERE graph_template_id = ?
+			AND local_graph_id=0',
 			array($_graph_template_id));
 
-		$graph_template_items  = db_fetch_assoc_prepared('SELECT * 
-			FROM graph_templates_item 
-			WHERE graph_template_id = ? 
-			AND local_graph_id=0', 
+		$graph_template_items  = db_fetch_assoc_prepared('SELECT *
+			FROM graph_templates_item
+			WHERE graph_template_id = ?
+			AND local_graph_id=0',
 			array($_graph_template_id));
 
-		$graph_template_inputs = db_fetch_assoc_prepared('SELECT * 
-			FROM graph_template_input 
-			WHERE graph_template_id = ?', 
+		$graph_template_inputs = db_fetch_assoc_prepared('SELECT *
+			FROM graph_template_input
+			WHERE graph_template_id = ?',
 			array($_graph_template_id));
 
 		/* create new entry: graph_templates */
@@ -362,9 +362,9 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 				/* create new entry(s): graph_template_input_defs (graph template only) */
 				if (sizeof($graph_template_input_defs)) {
 					foreach ($graph_template_input_defs as $graph_template_input_def) {
-						db_execute_prepared('INSERT INTO graph_template_input_defs 
+						db_execute_prepared('INSERT INTO graph_template_input_defs
 							(graph_template_input_id, graph_template_item_id)
-							VALUES (?, ?)', 
+							VALUES (?, ?)',
 							array($graph_template_input_id, $graph_item_mappings[$graph_template_input_def['graph_template_item_id']]));
 					}
 				}
@@ -378,9 +378,9 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 }
 
 function api_graph_change_device($local_graph_id, $host_id) {
-	$dqgraph = db_fetch_cell_prepared('SELECT snmp_query_id 
-		FROM graph_local 
-		WHERE id = ?', 
+	$dqgraph = db_fetch_cell_prepared('SELECT snmp_query_id
+		FROM graph_local
+		WHERE id = ?',
 		array($local_graph_id));
 
 	if (empty($dqgraph)) {
@@ -401,14 +401,14 @@ function api_graph_change_device($local_graph_id, $host_id) {
 
 		if (sizeof($data_ids)) {
 			foreach($data_ids as $data_id) {
-				db_execute_prepared('UPDATE data_local 
-					SET host_id = ? 
-					WHERE id = ?', 
+				db_execute_prepared('UPDATE data_local
+					SET host_id = ?
+					WHERE id = ?',
 					array($host_id, $data_id['local_data_id']));
 
-				db_execute_prepared('UPDATE poller_item 
-					SET host_id = ? 
-					WHERE local_data_id = ?', 
+				db_execute_prepared('UPDATE poller_item
+					SET host_id = ?
+					WHERE local_data_id = ?',
 					array($host_id, $data_id['local_data_id']));
 			}
 		}

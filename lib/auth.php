@@ -129,10 +129,10 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 	/* ==================================================== */
 
 	/* Check get template users array */
-	$user_auth = db_fetch_row_prepared('SELECT * 
-		FROM user_auth 
-		WHERE username = ? 
-		AND realm = ?', 
+	$user_auth = db_fetch_row_prepared('SELECT *
+		FROM user_auth
+		WHERE username = ?
+		AND realm = ?',
 		array($template_user, $template_realm));
 
 	if (! isset($user_auth)) {
@@ -141,10 +141,10 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 	$template_id = $user_auth['id'];
 
 	/* Create update/insert for new/existing user */
-	$user_exist = db_fetch_row_prepared('SELECT * 
-		FROM user_auth 
-		WHERE username = ? 
-		AND realm = ?', 
+	$user_exist = db_fetch_row_prepared('SELECT *
+		FROM user_auth
+		WHERE username = ?
+		AND realm = ?',
 		array($new_user, $new_realm));
 
 	if (sizeof($user_exist)) {
@@ -480,15 +480,14 @@ function is_tree_allowed($tree_id, $user = 0) {
 		/* check for group trees */
 		$gtrees = db_fetch_assoc_prepared("SELECT uagm.user_id
 			FROM user_auth_group AS uag
-        		INNER JOIN user_auth_group_members AS uagm
+			INNER JOIN user_auth_group_members AS uagm
 			ON uag.id = uagm.group_id
-        		INNER JOIN user_auth_group_perms as uagp
+			INNER JOIN user_auth_group_perms as uagp
 			ON uagp.group_id = uag.id
 			WHERE uag.enabled = 'on'
-		        AND uagm.user_id = ?
-		        and uagp.item_id = ?",
-                        array($user, $tree_id)
-		);
+			AND uagm.user_id = ?
+			AND uagp.item_id = ?",
+			array($user, $tree_id));
 
 		foreach ($groups as $g) {
 			if (auth_check_perms($gtrees, $g['policy_trees'])) {
@@ -667,7 +666,8 @@ function is_realm_allowed($realm) {
 
 function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 0) {
 	$items = db_fetch_assoc_prepared('SELECT gti.id, gti.title, gti.host_id,
-		gti.local_graph_id, gti.host_grouping_type, h.description AS hostname
+		gti.site_id, gti.local_graph_id, gti.host_grouping_type,
+		h.description AS hostname, s.name AS sitename
 		FROM graph_tree_items AS gti
 		INNER JOIN graph_tree AS gt
 		ON gt.id = gti.graph_tree_id

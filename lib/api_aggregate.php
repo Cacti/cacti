@@ -1232,9 +1232,11 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	if ($_graph_id == 0) {
 		$item_list_where = "gti.local_graph_id=0 AND graph_template_id=$_graph_template_id ";
 	}
+
 	if ($_graph_template_id == 0) {
 		$item_list_where = "gti.local_graph_id=$_graph_id ";
 	}
+
 	$item_list = db_fetch_assoc("SELECT
 		gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id,
 		gti.consolidation_function_id, cdef.name as cdef_name, colors.hex
@@ -1310,10 +1312,10 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
-			$this_row_style = '';
+			$this_row_style   = '';
 			$use_custom_class = false;
-			$hard_return = '';
-			$matrix_title = '';
+			$hard_return      = '';
+			$matrix_title     = '';
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
 				$this_row_style = 'font-weight: bold;';
@@ -1532,3 +1534,4 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 	</script>
 	<?php
 }
+
