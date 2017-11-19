@@ -889,8 +889,7 @@ $settings = array(
 			),
 		'poller_interval' => array(
 			'friendly_name' => __('Poller Interval'),
-			'description' => __('The polling interval in use.  This setting will effect how often RRDfiles are checked and updated.
-			<strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>'),
+			'description' => __('The polling interval in use.  This setting will effect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>'),
 			'method' => 'drop_array',
 			'default' => 300,
 			'array' => $poller_intervals,
@@ -1526,8 +1525,24 @@ $settings = array(
 			'description' => __('When you enable boost, your RRD files are only updated when they are requested by a user, or when this time period elapses.'),
 			'default' => '60',
 			'method' => 'drop_array',
-			'default' => '60',
 			'array' => $boost_refresh_interval
+			),
+		'boost_parallel' => array(
+			'friendly_name' => __('Number of Boost Processes'),
+			'description' => __('The number of concurrent boost processes to use to use to process all of the RRDs in the boost table.'),
+			'default' => '1',
+			'method' => 'drop_array',
+			'array' => array(
+				1  => __('1 Process'),
+				2  => __('%d Processes', 2),
+				3  => __('%d Processes', 3),
+				4  => __('%d Processes', 4),
+				5  => __('%d Processes', 5),
+				6  => __('%d Processes', 6),
+				7  => __('%d Processes', 7),
+				8  => __('%d Processes', 8),
+				9  => __('%d Processes', 9),
+				10 => __('%d Processes', 10))
 			),
 		'boost_rrd_update_max_records' => array(
 			'friendly_name' => __('Maximum Records'),
@@ -1773,8 +1788,7 @@ $settings = array(
 			),
 		'spikekill_backupdir' => array(
 			'friendly_name' => __('RRDfile Backup Directory'),
-			'description' => __('If this directory is not empty, then your original RRDfiles will be backed
-			up to this location.'),
+			'description' => __('If this directory is not empty, then your original RRDfiles will be backed up to this location.'),
 			'method' => 'dirpath',
 			'default' => $config['base_path'] . '/cache/spikekill/',
 			'max_length' => '255',
@@ -1787,8 +1801,7 @@ $settings = array(
 			),
 		'spikekill_batch' => array(
 			'friendly_name' => __('Removal Schedule'),
-			'description' => __('Do you wish to periodically remove spikes from your graphs?  If so, select the frequency
-			below.'),
+			'description' => __('Do you wish to periodically remove spikes from your graphs?  If so, select the frequency below.'),
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(

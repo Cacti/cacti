@@ -209,10 +209,10 @@ if (get_nfilter_request_var('action') == 'login') {
 	if (!sizeof($user) && $copy_user && read_config_option('user_template') != '0' && $username != '') {
 		cacti_log("NOTE: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 
-		$user_template = db_fetch_row_prepared('SELECT id 
-			FROM user_auth 
-			WHERE username = ? 
-			AND realm = 0', 
+		$user_template = db_fetch_row_prepared('SELECT id
+			FROM user_auth
+			WHERE username = ?
+			AND realm = 0',
 			array(read_config_option('user_template')));
 
 		/* check that template user exists */
@@ -235,24 +235,24 @@ if (get_nfilter_request_var('action') == 'login') {
 
 					if (array_key_exists($cn_email, $ldap_cn_search_response['cn'])) {
 						$data_override['email_address'] = $ldap_cn_search_response['cn'][$cn_email];
-					} else {    
+					} else {
 						$data_override['email_address'] = '';
 					}
 
 					user_copy(read_config_option('user_template'), $username, 0, $realm, false, $data_override);
-				} else {                
-					cacti_log('LOGIN: Email Address and Full Name fields not found ' . $ldap_cn_search_response[0] . 'code: ' . $ldap_cn_search_response['error_num'], false, 'AUTH');      
+				} else {
+					cacti_log('LOGIN: Email Address and Full Name fields not found ' . $ldap_cn_search_response[0] . 'code: ' . $ldap_cn_search_response['error_num'], false, 'AUTH');
 					user_copy(read_config_option('user_template'), $username, 0, $realm);
-				}       
+				}
 			} else {
 				user_copy(read_config_option('user_template'), $username, 0, $realm);
 			}
-			
+
 			/* requery newly created user */
-			$user = db_fetch_row_prepared('SELECT * 
-				FROM user_auth 
-				WHERE username = ? 
-				AND realm = ?', 
+			$user = db_fetch_row_prepared('SELECT *
+				FROM user_auth
+				WHERE username = ?
+				AND realm = ?',
 				array($username, $realm));
 		} else {
 			/* error */
@@ -471,7 +471,7 @@ function domains_login_process() {
 						/* template user found */
 //						user_copy($template_username, $username, 0, $realm);
 
-                       				// get user CN 
+                       				// get user CN
                                                 $cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name FROM user_domains_ldap WHERE domain_id = ?', array(get_nfilter_request_var('realm')-1000));
                                                 $cn_email = db_fetch_cell_prepared('SELECT cn_email FROM user_domains_ldap WHERE domain_id = ?', array(get_nfilter_request_var('realm')-1000));
                                                 if( isset($cn_full_name) || isset($cn_email) ) {
@@ -489,9 +489,9 @@ function domains_login_process() {
                                                                       $data_override["email_address"] = '';
 								}
                                                                 user_copy(read_config_option("user_template"), $username, 0, $realm, false, $data_override);                                } else {
-                                                                cacti_log("LOGIN: fields not found " . $ldap_cn_search_response[0] . "code: " . $ldap_cn_search_response['error_num'], false, "AUTH");      
+                                                                cacti_log("LOGIN: fields not found " . $ldap_cn_search_response[0] . "code: " . $ldap_cn_search_response['error_num'], false, "AUTH");
                                                                 user_copy(read_config_option("user_template"), $username, 0, $realm);
-                                                        }               
+                                                        }
                                                 }
 
 						/* requery newly created user */
@@ -695,7 +695,7 @@ $selectedTheme = get_selected_theme();
 								<select id='realm' name='realm'><?php
 									if (sizeof($realms)) {
 										foreach($realms as $index => $realm) {
-											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected':'') . '>' . htmlspecialchars($realm['name']) . "</option>\n";
+											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected':'') . '>' . html_escape($realm['name']) . "</option>\n";
 										}
 									}
 									?>
