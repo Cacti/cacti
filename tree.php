@@ -137,7 +137,7 @@ switch (get_request_var('action')) {
 		api_tree_rename_node(get_request_var('tree_id'), get_request_var('id'), get_nfilter_request_var('text'));
 		break;
 	case 'get_node':
-		api_tree_get_node(get_request_var('tree_id'), get_request_var('id'), true);
+		api_tree_get_node(get_request_var('tree_id'), get_request_var('id'));
 		break;
 	case 'get_host_sort':
 		get_host_sort_type();
