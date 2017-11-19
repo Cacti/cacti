@@ -696,8 +696,7 @@ function automation_snmp_edit() {
 		if (sizeof($items)) {
 			foreach ($items as $item) {
 				form_alternate_row('line' . $item['id'], true, true);
-				$form_data = "<td><a class='linkEditMain' href='" . html_escape('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>Item#" . $i . '</a></td>';
-				#$form_data .= '<td>' . 	$item['sequence'] . '</td>';
+				$form_data = "<td><a class='linkEditMain' href='" . html_escape('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>" . __('Item # %d', $i) . '</a></td>';
 				$form_data .= '<td>' . 	$item['snmp_version'] . '</td>';
 				$form_data .= '<td class="left">' . 	($item['snmp_version'] == 3 ? __('none') : $item['snmp_readstring']) . '</td>';
 				$form_data .= '<td class="right">' . 	$item['snmp_port'] . '</td>';

@@ -1307,7 +1307,7 @@ function display_reports_items($report_id) {
 			}
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . html_escape(get_reports_page() . '?action=item_edit&id=' . $report_id. '&item_id=' . $item['id']) . '">Item#' . $i . '</a></td>';
+			$form_data = '<td><a class="linkEditMain" href="' . html_escape(get_reports_page() . '?action=item_edit&id=' . $report_id. '&item_id=' . $item['id']) . '">' . __('Item # %d', $i) . '</a></td>';
 			$form_data .= '<td>' . $item['sequence'] . '</td>';
 			$form_data .= '<td>' . $item_types[$item['item_type']] . '</td>';
 			$form_data .= '<td class="nowrap">' . $item_details . '</td>';

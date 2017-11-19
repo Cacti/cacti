@@ -877,6 +877,7 @@ function display_new_graphs($rule, $url) {
 				} else {
 					$style = ' style="color: blue"';
 				}
+
 				$column_counter = 0;
 				foreach ($xml_array['fields'] as $field_name => $field_array) {
 					if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
@@ -1251,7 +1252,7 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$operation = ($item['operation'] != 0) ? $automation_oper[$item['operation']] : '&nbsp;';
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item#%s', $i+1) . '</a></td>';
+			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item # %d', $i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$operation . '</td>';
 			$form_data .= '<td>' . 	$item['field'] . '</td>';
@@ -1313,7 +1314,7 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$operation = ($item['operation'] != 0) ? $automation_oper[$item['operation']] : '&nbsp;';
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item#%s', $i+1) . '</a></td>';
+			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item # %d', $i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$operation . '</td>';
 			$form_data .= '<td>' . 	$item['field'] . '</td>';
@@ -1377,7 +1378,7 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			$field_name = ($item['field'] === AUTOMATION_TREE_ITEM_TYPE_STRING) ? $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING] : $item['field'];
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item') . '#' . ($i+1) . '</a></td>';
+			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item # %d', $i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$field_name . '</td>';
 			$form_data .= '<td>' . 	$tree_sort_types[$item['sort_type']] . '</td>';
@@ -1763,7 +1764,6 @@ function get_created_graphs($rule) {
 	}
 
 	return $items;
-
 }
 
 function get_query_fields($table, $excluded_fields) {
