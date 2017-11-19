@@ -4527,8 +4527,9 @@ function get_url_type() {
  *
  *  @returns - an array of stream context options or false */
 function get_default_contextoption($protocol = false, $options = false) {
-
 	$fgc_contextoption = false;
+
+	$timeout = read_config_option('script_timeout');
 
 	if (!$protocol) {
 		$protocol = get_url_type();
@@ -4544,11 +4545,22 @@ function get_default_contextoption($protocol = false, $options = false) {
 		);
 	}
 
+	if ($protocol == 'https') {
+		$fgc_contextoption['https'] = array(
+			'timeout' => $timeout
+		);
+	} elseif ($protocol == 'http') {
+		$fgc_contextoption['http'] = array(
+			'timeout' => $timeout
+		);
+	}
+
 	if (is_array($options)) {
 		$fgc_contextoption = array_replace_recursive($fgc_contextoption, $options);
 	}
 
 	$fgc_contextoption = api_plugin_hook_function('fgc_contextoption', $fgc_contextoption);
+
 	return $fgc_contextoption;
 }
 

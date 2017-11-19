@@ -7,31 +7,34 @@ Cacti CHANGELOG
 
 1.1.28
 -issue#958: User Group Tree permissions not calculated fully
--issue#959: Issue viewing email reports due to email client decoder issues
--issue#992: RRDfile naming issues that result from random sorting during export on prior versions
--issue#1012: Issue where disabled devices will not appear on the Tree edit page
--issue#1044: Handle invalid exclusion regex properly when viewing the Cacti Log
+-issue#959: Issue viewing email reports due to email client decoding problems
+-issue#992: RRDfile naming issues that result from random sorting during export
+-issue#1012: Issue where disabled devices will not appear in Tree editor
+-issue#1044: Handle invalid exclusion regex properly when viewing the log
 -issue#1045: Issue with multiple pages and confirmation dialogs
--issue#1048: Issue importing vdefs from a template
--issue#1053: Remote Data Collector issues with https and self signed certificates
+-issue#1048: Problem importing vdefs from templates
+-issue#1053: Remote Data Collector now works with https and self signed certificates
 -issue#1055: Errors in data source statistics inserts when invalid output is encountered
 -issue#1057: CVE-2017-16641 - Potential vulnerability in RRDtool functions
 -issue#1058: ICMP Ping to and IPv6 address fails to gather data for ping latency
 -issue#1059: Aggregate item filter should use regular expressions to avoid SQL errors due to flawed filter logic
 -issue#1064: When a Device Template is removed, Automation Templates for that Device Template remain
 -issue#1066: CVE-2017-16660 in remote_agent.php logging function
--issue#1066: CVE-2017-16661 in view Cacti log file
--issue#1071: CVE-2017-16785 in global_session.php Reflection XSS issue
+-issue#1066: CVE-2017-16661 in view log file
+-issue#1071: CVE-2017-16785 in global_session.php Reflection XSS
+-issue#1074: Boost records get stuck in archive
 -issue#1079: Undefined index in lib/snmpagent.php
--issue#1085: Undefined function html_log_input_error in debug
--issue#1087: add_device.php --proxy option does not work with non-snmp devices
--issue: Minor performance increase in boost process
+-issue#1085: Undefined function html_log_input_error
+-issue#1086: Rerun data queries in automation process has no effect
+-issue#1087: cli/add_device.php --proxy option does not work with non-snmp devices
+-issue#1088: Set timeout for remote data collector context
+-issue: Minor performance increase in boost processing
 -issue: Poller output not empty not processed correctly on Log tab
--feature: Add a timeout to the remote agent for realtime graphs
--feature: updated Dutch translations
+-feature: Timeout to the remote agent for realtime graphs
+-feature: Updated Dutch translations
 -feature: Database update adding additional indexes for increased performance
--feature: updated PHPMailer to version 5.2.26
--feature: updated phpseclib to version 2.0.7
+-feature: Updated PHPMailer to version 5.2.26
+-feature: Updated phpseclib to version 2.0.7
 
 1.1.27
 -issue#1033: Issues inserting into dsstats table due to legacy data

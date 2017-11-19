@@ -309,6 +309,8 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						</span>
 					</td>
 				</tr>
+			</table>
+			<table class='filterTable'>
 				<tr id='realtime' style='display:none;'>
 					<td>
 						<?php print __('Window');?>
@@ -466,7 +468,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		$(function() {
 			$.when(initPage())
 			.pipe(function() {
-					initializeGraphs();
+				initializeGraphs();
 			});
 		});
 

@@ -827,7 +827,7 @@ function html_escape($string) {
 		$charset = 'UTF-8';
 	}
 
-	return htmlspecialchars($string, ENT_QUOTES, $charset, true);
+	return htmlspecialchars($string, ENT_QUOTES, $charset, false);
 }
 
 /* html_split_string - takes a string and breaks it into a number of <br> separated segments

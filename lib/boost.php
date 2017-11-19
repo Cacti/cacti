@@ -554,9 +554,10 @@ function boost_timer_get_overhead() {
 /* boost_get_arch_table_name - returns current archive boost table or false if no arch table is present currently */
 function boost_get_arch_table_name() {
 	global $database_default;
+
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
-		WHERE table_schema='$database_default'
+		WHERE table_schema = '$database_default'
 		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	foreach($tables as $table) {
@@ -565,6 +566,7 @@ function boost_get_arch_table_name() {
 			return $table['name'];
 		}
 	}
+
 	return false;
 }
 
@@ -595,7 +597,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		$orig_local_data_id   = $local_data_id;
 
 		/* aquire lock in order to prevent race conditions */
-		while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
+		while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$orig_local_data_id', 1)")) {
 			usleep(50000);
 		}
 	} else {
@@ -618,19 +620,22 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	/* get the records */
 	if ($single_local_data_id) {
 		$query_string = '';
-		$arch_tables = db_fetch_assoc("SELECT table_name AS name
+		$arch_tables  = db_fetch_assoc("SELECT table_name AS name
 			FROM information_schema.tables
-			WHERE table_schema='$database_default'
+			WHERE table_schema = '$database_default'
 			AND table_name LIKE 'poller_output_boost_arch_%'");
 
 		if (count($arch_tables)) {
 			foreach($arch_tables as $table) {
-				$rows = db_fetch_cell('SELECT COUNT(*) FROM '.$table['name']);
+				$rows = db_fetch_cell('SELECT COUNT(*) FROM ' . $table['name']);
 				if (db_table_exists($table['name']) && is_numeric($rows) && intval($rows) > 0) {
 					if ($query_string != '') {
 						$query_string .= ' UNION ';
 					}
-					$query_string .= ' (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output FROM ' . $table['name'] . " WHERE local_data_id='$local_data_id') ";
+
+					$query_string .= ' (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
+						FROM ' . $table['name'] . "
+						WHERE local_data_id = $local_data_id) ";
 				}
 			}
 		}
@@ -643,14 +648,32 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 		$query_string .= " (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
 			FROM poller_output_boost
-			WHERE local_data_id=$orig_local_data_id
-			AND time < FROM_UNIXTIME('$timestamp'))";
+			WHERE local_data_id = $orig_local_data_id
+			AND time < FROM_UNIXTIME($timestamp))";
 
-		$query_string .= ' ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC ';
+		$query_string .= ' ORDER BY timestamp ASC, rrd_name ASC ';
 	} else {
-		$query_string = "SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
-			FROM $archive_table FORCE INDEX (PRIMARY)
-			ORDER BY local_data_id ASC, time ASC, rrd_name ASC
+		$query_string = '';
+		$arch_tables  = db_fetch_assoc("SELECT table_name AS name
+			FROM information_schema.tables
+			WHERE table_schema = '$database_default'
+			AND table_name LIKE 'poller_output_boost_arch_%'");
+
+		if (count($arch_tables)) {
+			foreach($arch_tables as $table) {
+				$rows = db_fetch_cell('SELECT COUNT(*) FROM ' . $table['name']);
+				if (db_table_exists($table['name']) && is_numeric($rows) && intval($rows) > 0) {
+					if ($query_string != '') {
+						$query_string .= ' UNION ';
+					}
+
+					$query_string .= ' (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
+						FROM ' . $table['name'] . ') ';
+				}
+			}
+		}
+
+		$query_string .= "ORDER BY local_data_id ASC, time ASC, rrd_name ASC
 			LIMIT $data_ids_to_get ";
 	}
 
@@ -660,7 +683,8 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 	/* log memory */
 	if ($get_memory) {
-		$cur_memory    = memory_get_usage();
+		$cur_memory = memory_get_usage();
+
 		if ($cur_memory > $memory_used) {
 			$memory_used = $cur_memory;
 		}
@@ -676,19 +700,24 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		cacti_log("NOTE: Updating Local Data ID:'$local_data_id', Total of '" . sizeof($results) . "' Updates to Process", false, 'BOOST', $log_verbosity);
 	}
 
-	if (sizeof($results) > 0) {
+	if (sizeof($results)) {
 		$rrdp_auto_close = false;
+
 		if (!$rrdtool_pipe) {
-			$rrdtool_pipe = rrd_init();
+			$rrdtool_pipe    = rrd_init();
 			$rrdp_auto_close = true;
 		}
 
 		/* create an array keyed off of each .rrd file */
-		$local_data_id  = -1;
-		$time           = -1;
-		$outbuf         = '';
-		$last_update    = -1;
-		$last_item	= array('local_data_id' => -1, 'timestamp' => -1, 'rrd_name' => '');
+		$local_data_id = -1;
+		$time          = -1;
+		$outbuf        = '';
+		$last_update   = -1;
+		$last_item     = array(
+			'local_data_id' => -1,
+			'timestamp'     => -1,
+			'rrd_name'      => ''
+		);
 
 		/* we are going to blow away all record if ok */
 		$vals_in_buffer = 0;
@@ -696,12 +725,17 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		/* cut last DS (likely to be incomplete due to LIMIT)*/
 		if (!$single_local_data_id) {
 			reset($results);
+
 			$first_ds = $results[key($results)];
 			$first_ds = intval($first_ds['local_data_id']);
+
 			end($results);
+
 			$last_ds = $results[key($results)];
 			$last_ds = intval($last_ds['local_data_id']);
+
 			reset($results);
+
 			if ($first_ds == $last_ds) {
 				if (sizeof($results) == $data_ids_to_get) {
 					cacti_log("FALURE: Current LIMIT ($data_ids_to_get) is too low to run multiple DS RRD writes, consider raising it", false, 'BOOST');
@@ -722,6 +756,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		$outlen       = 0;
 
 		boost_timer('results_cycle', BOOST_TIMER_START);
+
 		/* go through each poller_output_boost entries and process */
 		foreach ($results as $item) {
 			$item['timestamp'] = trim($item['timestamp']);
@@ -734,7 +769,9 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 				continue;
 			}
 
-			if (!$single_local_data_id && $first_ds != $last_ds && $last_ds == $item['local_data_id']) {
+			if (!$single_local_data_id &&
+				$first_ds != $last_ds &&
+				$last_ds == $item['local_data_id']) {
 				/* we faced last and possibly incomplete DS, bail out */
 				break;
 			}
@@ -802,6 +839,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 					}
 				}
+
 				$output  = ' ' . $item['timestamp'];
 				$outbuf .= $output;
 				$outlen += strlen($output);
@@ -838,6 +876,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 				$first_tmpl = true;
 				$multi_ok   = false;
+
 				for ($i=0; $i<count($values); $i++) {
 					if (preg_match("/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/", $values[$i], $matches)) {
 						if (isset($rrd_field_names[$matches[1]])) {
@@ -897,24 +936,34 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 				cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 			}
 		}
+
 		boost_timer('results_cycle', BOOST_TIMER_END);
 
 		/* remove the entries from the table */
 		boost_timer('delete', BOOST_TIMER_START);
 		if ($single_local_data_id) {
-			$tables = db_fetch_assoc("SELECT table_name AS name
-				FROM information_schema.tables
-				WHERE table_schema='$database_default'
-				AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
-
-			if (count($tables)) {
-				foreach($tables as $table) {
-					db_execute_prepared('DELETE FROM ' . $table['name'] . ' WHERE local_data_id = ? AND time < FROM_UNIXTIME(?)', array($local_data_id, $timestamp));
+			if (count($arch_tables)) {
+				foreach($arch_tables as $table) {
+					db_execute_prepared('DELETE FROM ' . $table['name'] . '
+						WHERE local_data_id = ?',
+						array($local_data_id));
 				}
 			}
+
+			db_execute_prepared('DELETE FROM poller_output_boost
+				WHERE local_data_id = ?
+				AND time < FROM_UNIXTIME(?)',
+				array($local_data_id, $timestamp));
 		} else {
-			db_execute_prepared("DELETE FROM $archive_table WHERE local_data_id BETWEEN ? AND ?", array($first_ds, ($last_ds - 1)));
+			if (count($arch_tables)) {
+				foreach($arch_tables as $table) {
+					db_execute_prepared('DELETE FROM ' . $table['name'] . '
+						WHERE local_data_id BETWEEN ? AND ?',
+						array($first_ds, $last_ds));
+				}
+			}
 		}
+
 		boost_timer('delete', BOOST_TIMER_END);
 
 		if ($rrdp_auto_close) {
@@ -1099,7 +1148,7 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 	- There is multiple data sources and this item is not the main one.
 	- There is only one data source (then use it) */
 
-	if (sizeof($data_sources) > 0) {
+	if (sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			/* use the cacti ds name by default or the user defined one, if entered */
 			$data_source_name = get_data_source_item_name($data_source['id']);
