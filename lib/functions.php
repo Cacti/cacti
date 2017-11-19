@@ -1636,7 +1636,7 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 			}
 
 			/* make sure to "ignore" the items that we handled above */
-			if ((!isset($graph_group_array{$item['id']})) && (!isset($target_graph_group_array{$item['id']}))) {
+			if ((!isset($graph_group_array[$item['id']])) && (!isset($target_graph_group_array[$item['id']]))) {
 				db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE id = ?', array($sequence_counter, $item['id']));
 				$sequence_counter++;
 			}
@@ -1660,7 +1660,7 @@ function get_graph_group($graph_template_item_id) {
 	}
 
 	/* a parent must NOT be the following graph item types */
-	if (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{$graph_item['graph_type_id']})) {
+	if (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types[$graph_item['graph_type_id']])) {
 		return;
 	}
 
@@ -1673,9 +1673,9 @@ function get_graph_group($graph_template_item_id) {
 
 	if (sizeof($graph_items) > 0) {
 		foreach ($graph_items as $item) {
-			if ($graph_item_types{$item['graph_type_id']} == 'GPRINT') {
+			if ($graph_item_types[$item['graph_type_id']] == 'GPRINT') {
 				/* a child must be a GPRINT */
-				$graph_item_children_array{$item['id']} = $item['id'];
+				$graph_item_children_array[$item['id']] = $item['id'];
 			} else {
 				/* if not a GPRINT then get out */
 				return $graph_item_children_array;
@@ -2683,9 +2683,9 @@ function draw_navigation_text($type = 'url') {
 			$url = $nav{basename($current_mappings[$i])}['url'];
 
 			if (basename($url) == 'graph_view.php') continue;
-		} elseif (isset($nav_level_cache{$i}) && !empty($nav_level_cache{$i}['url'])) {
+		} elseif (isset($nav_level_cache[$i]) && !empty($nav_level_cache[$i]['url'])) {
 			/* found a match in the url cache for this level */
-			$url = $nav_level_cache{$i}['url'];
+			$url = $nav_level_cache[$i]['url'];
 		} elseif (isset($current_array['url'])) {
 			/* found a default url in the above array */
 			$url = $current_array['url'];
@@ -2696,9 +2696,9 @@ function draw_navigation_text($type = 'url') {
 
 		if ($current_mappings[$i] == '?') {
 			/* '?' tells us to pull title from the cache at this level */
-			if (isset($nav_level_cache{$i})) {
-				$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . html_escape($url) . "'>") . html_escape(resolve_navigation_variables($nav{$nav_level_cache{$i}['id']}['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
-				$title       .= html_escape(resolve_navigation_variables($nav{$nav_level_cache{$i}['id']}['title'])) . ' -> ';
+			if (isset($nav_level_cache[$i])) {
+				$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . html_escape($url) . "'>") . html_escape(resolve_navigation_variables($nav[$nav_level_cache[$i]['id']]['title'])) . (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
+				$title       .= html_escape(resolve_navigation_variables($nav[$nav_level_cache[$i]['id']]['title'])) . ' -> ';
 			}
 		} else {
 			/* there is no '?' - pull from the above array */
@@ -3237,7 +3237,7 @@ function sanitize_uri($uri) {
 	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', '+', '[', ']', '{', '}', ';', '!');
 	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  '');
 
-	return str_replace($drop_char_match, $drop_char_replace, urldecode($uri));
+	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
 }
 
 /** cleans up a CDEF/VDEF string
@@ -3535,7 +3535,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	// Support i18n
 	$mail->CharSet = 'UTF-8';
-	$mail->Encoding = 'quoted-printable';
+	$mail->Encoding = 'base64';
 
 	$how = read_config_option('settings_how');
 	if ($how < 0 || $how > 2) {
@@ -4518,6 +4518,50 @@ function get_url_type() {
 	} else {
 		return 'http';
 	}
+}
+
+/** get_default_contextoption - Sets default context options for self-signed SSL
+ *  related protocols if necessary. Allows plugins to add addional header information
+ *  to fullfill system setup related requirements like the usage of Web Single Login
+ *  cookies for example.
+ *
+ *  @returns - an array of stream context options or false */
+function get_default_contextoption($protocol = false, $options = false) {
+	$fgc_contextoption = false;
+
+	$timeout = read_config_option('script_timeout');
+
+	if (!$protocol) {
+		$protocol = get_url_type();
+	}
+
+	if (in_array($protocol, array('ssl', 'https', 'ftps'))) {
+		$fgc_contextoption = array(
+			'ssl' => array(
+				'verify_peer' => false,
+				'verify_peer_name' => false,
+				'allow_self_signed' => true,
+			)
+		);
+	}
+
+	if ($protocol == 'https') {
+		$fgc_contextoption['https'] = array(
+			'timeout' => $timeout
+		);
+	} elseif ($protocol == 'http') {
+		$fgc_contextoption['http'] = array(
+			'timeout' => $timeout
+		);
+	}
+
+	if (is_array($options)) {
+		$fgc_contextoption = array_replace_recursive($fgc_contextoption, $options);
+	}
+
+	$fgc_contextoption = api_plugin_hook_function('fgc_contextoption', $fgc_contextoption);
+
+	return $fgc_contextoption;
 }
 
 /** repair_system_data_input_methods - This utility will repair

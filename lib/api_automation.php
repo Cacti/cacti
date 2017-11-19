@@ -872,7 +872,7 @@ function display_new_graphs($rule, $url) {
 			foreach($snmp_query_indexes as $row) {
 				form_alternate_row("line$row_counter", true);
 
-				if (isset($created_graphs{$row['host_id']}{$row['snmp_index']})) {
+				if (isset($created_graphs[$row['host_id']][$row['snmp_index']])) {
 					$style = ' ';
 				} else {
 					$style = ' style="color: blue"';
@@ -1243,19 +1243,19 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 		array('display' => __('Actions'),   'align' => 'right')
 	);
 
-	html_header($display_text, 2, false);
+	html_header($display_text, 2);
 
 	$i = 0;
 	if (sizeof($items)) {
 		foreach ($items as $item) {
-			$operation = ($item['operation'] != 0) ? $automation_oper{$item['operation']} : '&nbsp;';
+			$operation = ($item['operation'] != 0) ? $automation_oper[$item['operation']] : '&nbsp;';
 
 			form_alternate_row();
 			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">Item#' . ($i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$operation . '</td>';
 			$form_data .= '<td>' . 	$item['field'] . '</td>';
-			$form_data .= '<td>' . 	((isset($item['operator']) && $item['operator'] > 0) ? $automation_op_array['display']{$item['operator']} : '') . '</td>';
+			$form_data .= '<td>' . 	((isset($item['operator']) && $item['operator'] > 0) ? $automation_op_array['display'][$item['operator']] : '') . '</td>';
 			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
 
 			$form_data .= '<td class="right nowrap">';
@@ -1305,20 +1305,19 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 		array('display' => __('Actions'),   'align' => 'right')
 	);
 
-	html_header($display_text, 2, false);
+	html_header($display_text, 2);
 
 	$i = 0;
 	if (sizeof($items)) {
 		foreach ($items as $item) {
-			#print '<pre>'; print_r($item); print '</pre>';
-			$operation = ($item['operation'] != 0) ? $automation_oper{$item['operation']} : '&nbsp;';
+			$operation = ($item['operation'] != 0) ? $automation_oper[$item['operation']] : '&nbsp;';
 
 			form_alternate_row();
 			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">Item#' . ($i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$operation . '</td>';
 			$form_data .= '<td>' . 	$item['field'] . '</td>';
-			$form_data .= '<td>' . 	(($item['operator'] > 0 || $item['operator'] == '') ? $automation_op_array['display']{$item['operator']} : '') . '</td>';
+			$form_data .= '<td>' . 	(($item['operator'] > 0 || $item['operator'] == '') ? $automation_op_array['display'][$item['operator']] : '') . '</td>';
 			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
 
 			$form_data .= '<td class="right nowrap">';
@@ -1369,7 +1368,7 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 		array('display' => __('Actions'),          'align' => 'right')
 	);
 
-	html_header($display_text, 2, false);
+	html_header($display_text, 2);
 
 	$i = 0;
 	if (sizeof($items)) {
@@ -1378,10 +1377,10 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			$field_name = ($item['field'] === AUTOMATION_TREE_ITEM_TYPE_STRING) ? $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING] : $item['field'];
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">Item#' . ($i+1) . '</a></td>';
+			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item') . '#' . ($i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$field_name . '</td>';
-			$form_data .= '<td>' . 	$tree_sort_types{$item['sort_type']} . '</td>';
+			$form_data .= '<td>' . 	$tree_sort_types[$item['sort_type']] . '</td>';
 			$form_data .= '<td>' . 	($item['propagate_changes'] ? 'Yes' : 'No') . '</td>';
 			$form_data .= '<td>' . 	$item['search_pattern'] . '</td>';
 			$form_data .= '<td>' . 	$item['replace_pattern'] . '</td>';
@@ -1759,7 +1758,7 @@ function get_created_graphs($rule) {
 	$items = array();
 	if (sizeof($graphs)) {
 		foreach ($graphs as $graph) {
-			$items{$graph['host_id']}{$graph['snmp_index']} = $graph['snmp_index'];
+			$items[$graph['host_id']][$graph['snmp_index']] = $graph['snmp_index'];
 		}
 	}
 
@@ -1821,17 +1820,19 @@ function get_field_names($snmp_query_id) {
 
 function array_to_list($array, $sql_column) {
 	/* if the last item is null; pop it off */
-	if ((empty($array{count($array)-1})) && (sizeof($array) > 1)) {
+	$counter = count($array);
+	if (empty($array[$counter-1]) && $counter > 1) {
 		array_pop($array);
+		$counter = count($array);
 	}
 
-	if (count($array) > 0) {
+	if ($counter > 0) {
 		$sql = '(';
 
-		for ($i=0;($i<count($array));$i++) {
-			$sql .=  $array[$i][$sql_column];
+		for ($i=0; $i<$counter; $i++) {
+			$sql .= $array[$i][$sql_column];
 
-			if (($i+1) < count($array)) {
+			if ($i+1 < $counter) {
 				$sql .= ',';
 			}
 		}

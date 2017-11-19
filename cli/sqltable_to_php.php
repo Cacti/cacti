@@ -199,10 +199,10 @@ function display_version() {
 }
 
 function display_help() {
-    display_version();
+	display_version();
 
-    echo "\nusage: sqltable_to_php.php --table=table_name [--update]\n\n";
-    echo "A simple developers utility to create a save schema for a newly created or\n";
+	echo "\nusage: sqltable_to_php.php --table=table_name [--update]\n\n";
+	echo "A simple developers utility to create a save schema for a newly created or\n";
 	echo "modified database table.  These save schema's can be placed into a plugins\n";
 	echo "setup.php file in order to create the tables inside of a plugin as a part of\n";
 	echo "it's install function.\n\n";

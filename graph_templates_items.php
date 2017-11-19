@@ -232,11 +232,11 @@ function form_save() {
 								array($graph_template_item_id));
 
 							/* Input for current data source exists and has changed.  Update the association */
-							if (isset($orig_data_source_to_input{$save['task_item_id']})) {
+							if (isset($orig_data_source_to_input[$save['task_item_id']])) {
 								db_execute_prepared('REPLACE INTO graph_template_input_defs
 									(graph_template_input_id, graph_template_item_id)
 									VALUES (?, ?)',
-									array($orig_data_source_to_input{$save['task_item_id']}, $graph_template_item_id));
+									array($orig_data_source_to_input[$save['task_item_id']], $graph_template_item_id));
 							}
 						}
 
@@ -273,9 +273,9 @@ function form_save() {
 
 					push_out_graph_item($graph_template_item_id);
 
-					if (isset($orig_data_source_to_input{get_nfilter_request_var('task_item_id')})) {
+					if (isset($orig_data_source_to_input[get_nfilter_request_var('task_item_id')])) {
 						/* make sure all current graphs using this graph input are aware of this change */
-						push_out_graph_input($orig_data_source_to_input{get_nfilter_request_var('task_item_id')}, $graph_template_item_id, array($graph_template_item_id => $graph_template_item_id));
+						push_out_graph_input($orig_data_source_to_input[get_nfilter_request_var('task_item_id')], $graph_template_item_id, array($graph_template_item_id => $graph_template_item_id));
 					}
 				} else {
 					raise_message(2);
@@ -449,7 +449,7 @@ function item_edit() {
 
 		if (sizeof($graph_item_input_fields) > 0) {
 			foreach ($graph_item_input_fields as $field) {
-				$form_array{$field['column_name']}['friendly_name'] .= " [<a href='" . htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $field['id'] . '&graph_template_id=' . get_request_var('graph_template_id')) . "'>" . __('Field Not Templated') . "</a>]";
+				$form_array[$field['column_name']]['friendly_name'] .= " [<a href='" . htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $field['id'] . '&graph_template_id=' . get_request_var('graph_template_id')) . "'>" . __('Field Not Templated') . "</a>]";
 			}
 		}
 	}

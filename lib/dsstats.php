@@ -518,11 +518,14 @@ function dsstats_poller_output(&$rrd_update_array) {
 			$overhead_last    = strlen($sql_last_prefix) + strlen($sql_last_suffix);
 
 			/* determine the keyvalue pair's to decide on how to store data */
-			$ds_types = array_rekey(db_fetch_assoc('SELECT DISTINCT data_source_name, data_source_type_id, rrd_step
-				FROM data_template_rrd
-				INNER JOIN data_template_data
-				ON data_template_data.local_data_id=data_template_rrd.local_data_id
-				WHERE data_template_data.local_data_id>0'), 'data_source_name', array('data_source_type_id', 'rrd_step'));
+			$ds_types = array_rekey(
+				db_fetch_assoc('SELECT DISTINCT data_source_name, data_source_type_id, rrd_step
+					FROM data_template_rrd
+					INNER JOIN data_template_data
+					ON data_template_data.local_data_id=data_template_rrd.local_data_id
+					WHERE data_template_data.local_data_id>0'),
+				'data_source_name', array('data_source_type_id', 'rrd_step')
+			);
 
 			/* make the association between the multi-part name value pairs and the RRDfile internal
 			 * data source names.
@@ -545,23 +548,44 @@ function dsstats_poller_output(&$rrd_update_array) {
 			$n = 1;
 			foreach($rrd_update_array as $data_source) {
 				if (isset($data_source['times'])) {
-				foreach($data_source['times'] as $time => $sample) {
-					foreach($sample as $ds => $value) {
-						$result['local_data_id'] = $data_source['local_data_id'];
-						$result['rrd_name']      = $ds;
-						$result['time']          = date('Y-m-d H:i:s', $time);
-						$result['output']        = ($value == 'U' ? 'NULL':$value);
-						$lastval                 = '';
+					foreach($data_source['times'] as $time => $sample) {
+						foreach($sample as $ds => $value) {
+							$result['local_data_id'] = $data_source['local_data_id'];
+							$result['rrd_name']      = $ds;
+							$result['time']          = date('Y-m-d H:i:s', $time);
 
-						if (!isset($ds_types[$result['rrd_name']]['data_source_type_id'])) {
-							$polling_interval = db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($data_source['local_data_id']));
-							$ds_type          = db_fetch_cell_prepared('SELECT data_source_type_id FROM data_template_rrd WHERE local_data_id = ?', array($data_source['local_data_id']));
-						} else {
-							$polling_interval = $ds_types[$result['rrd_name']]['rrd_step'];
-							$ds_type          = $ds_types[$result['rrd_name']]['data_source_type_id'];
-						}
+							if (is_numeric($value)) {
+								$result['output'] = $value;
+							} elseif ($value == 'U' || strtolower($value) == 'nan') {
+								$result['output'] = 'NULL';
+							} else {
+								$result['output'] = 'NULL';
 
-						switch ($ds_type) {
+								cacti_log("ERROR: Output from local_data_id " .
+									$data_source['local_data_id'] .
+									", for RRDfile DS Name '$ds', is invalid.  " .
+									"It outputs was : '" . $value . "'. " .
+									"Please check your script or data input method for errors.");
+							}
+
+							$lastval = '';
+
+							if (!isset($ds_types[$result['rrd_name']]['data_source_type_id'])) {
+								$polling_interval = db_fetch_cell_prepared('SELECT rrd_step
+									FROM data_template_data
+									WHERE local_data_id = ?',
+									array($data_source['local_data_id']));
+
+								$ds_type = db_fetch_cell_prepared('SELECT data_source_type_id
+									FROM data_template_rrd
+									WHERE local_data_id = ?',
+									array($data_source['local_data_id']));
+							} else {
+								$polling_interval = $ds_types[$result['rrd_name']]['rrd_step'];
+								$ds_type          = $ds_types[$result['rrd_name']]['data_source_type_id'];
+							}
+
+							switch ($ds_type) {
 							case 2:	// COUNTER
 								/* get the last values from the database for COUNTER and DERIVE data sources */
 								$ds_last = db_fetch_cell_prepared('SELECT SQL_NO_CACHE `value`
@@ -589,7 +613,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 									$currentval = $currentval / $polling_interval;
 								}
 
-								$lastval = $result['output'] == 'U' ? 'NULL' : $result['output'];
+								$lastval = $result['output'];
 
 								break;
 							case 3:	// DERIVE
@@ -601,17 +625,20 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 								if ($ds_last == '') {
 									$currentval = 'NULL';
-								} elseif ($result['output'] != 'U') {
+								} elseif ($result['output'] != 'NULL') {
 									$currentval = ($result['output'] - $ds_last) / $polling_interval;
 								} else {
 									$currentval = 'NULL';
 								}
 
-								$lastval    = $result['output'] == 'U' ? 'NULL' : $result['output'];
+								$lastval = $result['output'];
 
 								break;
 							case 4:	// ABSOLUTE
-								if ($result['output'] != 'NULL') {
+								if ($result['output'] != 'NULL' &&
+									$result['output'] != 'U' &&
+									strtolower($result['output']) != 'nan') {
+
 									$currentval = abs($result['output']);
 									$lastval    = $currentval;
 								} else {
@@ -621,9 +648,12 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 								break;
 							case 1:	// GAUGE
-								if ($result['output'] != 'NULL') {
+								if ($result['output'] != 'NULL' &&
+									$result['output'] != 'U' &&
+									strtolower($result['output']) != 'nan') {
+
 									$currentval = $result['output'];
-									$lastval    = $result['output'] == 'U' ? 'NULL' : $result['output'];
+									$lastval    = $result['output'];
 								} else {
 									$currentval = 'NULL';
 									$lastval    = $currentval;
@@ -634,71 +664,72 @@ function dsstats_poller_output(&$rrd_update_array) {
 								cacti_log("WARNING: Unknown RRDtool Data Type '" . $ds_types[$result['rrd_name']]['data_source_type_id'] . "', For '" . $result['rrd_name'] . "'", false, 'DSSTATS');
 
 								break;
-						}
-
-						/* when doing bulk inserts, the second record is different */
-						if ($cache_i == 1) {
-							$cache_delim = ' ';
-						} else {
-							$cache_delim = ', ';
-						}
-
-						if ($last_i == 1) {
-							$last_delim = ' ';
-						} else {
-							$last_delim = ', ';
-						}
-
-						if ($currentval == '' || $currentval == '-') {
-							$currentval = 'NULL';
-						}
-
-						/* setupt the output buffer for the cache first */
-						$cachebuf .=
-							$cache_delim . '(' .
-							$result['local_data_id'] . ", '" .
-							$result['rrd_name'] . "', '" .
-							$result['time'] . "', " .
-							$currentval . ')';
-
-						$out_length += strlen($cachebuf);
-
-						/* now do the the last value, if applicable */
-						if ($lastval != '') {
-							$lastbuf .=
-								$last_delim . '(' .
-								$result['local_data_id'] . ", '" .
-								$result['rrd_name'] . "', " .
-								$lastval . ", " .
-								$currentval . ')';
-							$last_i++;
-							$last_length += strlen($lastbuf);
-						}
-
-						/* if we exceed our output buffer, it's time to write */
-						if ((($out_length + $overhead) > $max_packet) ||
-							(($last_length + $overhead_last) > $max_packet )) {
-							db_execute($sql_cache_prefix . $cachebuf . $sql_suffix);
-
-							if ($last_i > 1) {
-								db_execute($sql_last_prefix . $lastbuf . $sql_last_suffix);
 							}
 
-							$cachebuf     = '';
-							$lastbuf      = '';
-							$out_length   = 0;
-							$last_length  = 0;
-							$cache_i      = 1;
-							$last_i       = 1;
-						} else {
-							$cache_i++;
+							/* when doing bulk inserts, the second record is different */
+							if ($cache_i == 1) {
+								$cache_delim = ' ';
+							} else {
+								$cache_delim = ', ';
+							}
+
+							if ($last_i == 1) {
+								$last_delim = ' ';
+							} else {
+								$last_delim = ', ';
+							}
+
+							if ($currentval == '' || $currentval == '-') {
+								$currentval = 'NULL';
+							}
+
+							/* setupt the output buffer for the cache first */
+							$cachebuf .=
+								$cache_delim . '(' .
+								$result['local_data_id'] . ", '" .
+								$result['rrd_name'] . "', '" .
+								$result['time'] . "', " .
+								$currentval . ')';
+
+							$out_length += strlen($cachebuf);
+
+							/* now do the the last value, if applicable */
+							if ($lastval != '') {
+								$lastbuf .=
+									$last_delim . '(' .
+									$result['local_data_id'] . ", '" .
+									$result['rrd_name'] . "', " .
+									$lastval . ", " .
+									$currentval . ')';
+
+								$last_i++;
+								$last_length += strlen($lastbuf);
+							}
+
+							/* if we exceed our output buffer, it's time to write */
+							if ((($out_length + $overhead) > $max_packet) ||
+								(($last_length + $overhead_last) > $max_packet )) {
+								db_execute($sql_cache_prefix . $cachebuf . $sql_suffix);
+
+								if ($last_i > 1) {
+									db_execute($sql_last_prefix . $lastbuf . $sql_last_suffix);
+								}
+
+								$cachebuf     = '';
+								$lastbuf      = '';
+								$out_length   = 0;
+								$last_length  = 0;
+								$cache_i      = 1;
+								$last_i       = 1;
+							} else {
+								$cache_i++;
+							}
+
+							$n++;
+
+							if (($n % 1000) == 0) echo '.';
 						}
-
-						$n++;
-
-						if (($n % 1000) == 0) echo '.';
 					}
-				}
 				}
 			}
 
@@ -727,8 +758,12 @@ function dsstats_boost_bottom() {
 		include_once($config['base_path'] . '/lib/rrd.php');
 
 		/* run the daily stats. log to database to prevent secondary runs */
-		db_execute("REPLACE INTO settings (name, value) VALUES ('dsstats_last_daily_run_time', '" . date('Y-m-d G:i:s', time()) . "')");
+		db_execute("REPLACE INTO settings
+			(name, value) VALUES
+			('dsstats_last_daily_run_time', '" . date('Y-m-d G:i:s', time()) . "')");
+
 		dsstats_get_and_store_ds_avgpeak_values('daily');
+
 		log_dsstats_statistics('DAILY');
 	}
 }

@@ -59,9 +59,9 @@ function get_children($vals, &$i) {
 			/* if the value is an empty string, php doesn't include the 'value' key
 			in its array, so we need to check for this first */
 			if (isset($vals[$i]['value'])) {
-				$children{($vals[$i]['tag'])} = $vals[$i]['value'];
+				$children[$vals[$i]['tag']] = $vals[$i]['value'];
 			} else {
-				$children{($vals[$i]['tag'])} = '';
+				$children[$vals[$i]['tag']] = '';
 			}
 
 			break;
@@ -73,7 +73,7 @@ function get_children($vals, &$i) {
 				$prevtag = $vals[$i]['tag'];
 			}
 
-			$children{($vals[$i]['tag'])} = get_children($vals,$i);
+			$children[$vals[$i]['tag']] = get_children($vals,$i);
 			break;
 		case 'close':
 			return $children;
@@ -158,10 +158,10 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 						$children['col' . $column] = $vals[$i]['value'];
 						break;
 					default:
-						$children{($vals[$i]['tag'])} = $vals[$i]['value'];
+						$children[$vals[$i]['tag']] = $vals[$i]['value'];
 				}
 			} else {
-				$children{($vals[$i]['tag'])} = '';
+				$children[$vals[$i]['tag']] = '';
 			}
 
 			break;
@@ -177,7 +177,7 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 				case 'meta':
 				case 'xport':
 				case 'legend':
-					$children{($vals[$i]['tag'])} = get_rrd_children($vals,$i,$column,$row);
+					$children[$vals[$i]['tag']] = get_rrd_children($vals,$i,$column,$row);
 					break;
 				case 'data':
 					break;

@@ -665,7 +665,7 @@ function reports_form_actions() {
 
 	print "<form name='report' action='" . get_reports_page() . "' method='post'>";
 
-	html_start_box($reports_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($reports_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (!isset($reports_array)) {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Report.') . "</span></td></tr>\n";
@@ -1309,7 +1309,7 @@ function display_reports_items($report_id) {
 			form_alternate_row();
 			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars(get_reports_page() . '?action=item_edit&id=' . $report_id. '&item_id=' . $item['id']) . '">Item#' . $i . '</a></td>';
 			$form_data .= '<td>' . $item['sequence'] . '</td>';
-			$form_data .= '<td>' . $item_types{$item['item_type']} . '</td>';
+			$form_data .= '<td>' . $item_types[$item['item_type']] . '</td>';
 			$form_data .= '<td class="nowrap">' . $item_details . '</td>';
 			$form_data .= '<td class="nowrap">' . $timespan . '</td>';
 			$form_data .= '<td>' . $align . '</td>';
@@ -1559,7 +1559,7 @@ function reports() {
 			form_selectable_cell(date($date_format, $report['mailtime']), $report['id']);
 			form_selectable_cell($report['from_name'], $report['id']);
 			form_selectable_cell((substr_count($report['email'], ',') ? __('Multiple'): $report['email']), $report['id']);
-			form_selectable_cell((isset($attach_types{$report['attachment_type']})) ? $attach_types{$report['attachment_type']} : __('Invalid'), $report['id']);
+			form_selectable_cell((isset($attach_types[$report['attachment_type']])) ? $attach_types[$report['attachment_type']] : __('Invalid'), $report['id']);
 			form_selectable_cell($report['enabled'] ? __('Enabled'): __('Disabled'), $report['id']);
 			form_checkbox_cell($report['name'], $report['id']);
 

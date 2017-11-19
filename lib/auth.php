@@ -281,15 +281,30 @@ function user_enable($user_id) {
 /* get_auth_realms - return a list of system user authentication realms */
 function get_auth_realms($login = false) {
 	if (read_config_option('auth_method') == 4) {
-		$drealms = db_fetch_assoc('SELECT domain_id, domain_name FROM user_domains WHERE enabled="on" ORDER BY domain_name');
+		$drealms = db_fetch_assoc('SELECT domain_id, domain_name
+			FROM user_domains
+			WHERE enabled="on"
+			ORDER BY domain_name');
+
 		if (sizeof($drealms)) {
 			if ($login) {
-				$new_realms['0'] = array('name' => __('Local'), 'selected' => false);
+				$new_realms['0'] = array(
+					'name' => __('Local'),
+					'selected' => false
+				);
+
 				foreach($drealms as $realm) {
-					$new_realms[1000+$realm['domain_id']] = array('name' => $realm['domain_name'], 'selected' => false);
+					$new_realms[1000+$realm['domain_id']] = array(
+						'name' => $realm['domain_name'],
+						'selected' => false
+					);
 				}
 
-				$default_realm = db_fetch_cell('SELECT domain_id FROM user_domains WHERE defdomain=1 AND enabled="on"');
+				$default_realm = db_fetch_cell('SELECT domain_id
+					FROM user_domains
+					WHERE defdomain=1
+					AND enabled="on"');
+
 				if (!empty($default_realm)) {
 					$new_realms[1000+$default_realm]['selected'] = true;
 				} else {
@@ -446,6 +461,25 @@ function is_tree_allowed($tree_id, $user = 0) {
 
 		foreach ($groups as $g) {
 			if (auth_check_perms($trees, $g['policy_trees'])) {
+				return true;
+			}
+		}
+
+		/* check for group trees */
+		$gtrees = db_fetch_assoc_prepared("SELECT uagm.user_id
+			FROM user_auth_group AS uag
+        		INNER JOIN user_auth_group_members AS uagm
+			ON uag.id = uagm.group_id
+        		INNER JOIN user_auth_group_perms as uagp
+			ON uagp.group_id = uag.id
+			WHERE uag.enabled = 'on'
+		        AND uagm.user_id = ?
+		        and uagp.item_id = ?",
+                        array($user, $tree_id)
+		);
+
+		foreach ($groups as $g) {
+			if (auth_check_perms($gtrees, $g['policy_trees'])) {
 				return true;
 			}
 		}
@@ -619,7 +653,7 @@ function is_realm_allowed($realm) {
 	}
 }
 
-function get_allowed_tree_level($tree_id, $parent_id, $user = 0) {
+function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 0) {
 	$items = db_fetch_assoc_prepared('SELECT gti.id, gti.title, gti.host_id,
 		gti.local_graph_id, gti.host_grouping_type, h.description AS hostname
 		FROM graph_tree_items AS gti
@@ -633,20 +667,22 @@ function get_allowed_tree_level($tree_id, $parent_id, $user = 0) {
 		array($tree_id, $parent_id)
 	);
 
-	$i = 0;
-	if (sizeof($items)) {
-		foreach($items as $item) {
-			if ($item['host_id'] > 0) {
-				if (!is_device_allowed($item['host_id'], $user)) {
-					unset($items[$i]);
+	if (!$editing) {
+		$i = 0;
+		if (sizeof($items)) {
+			foreach($items as $item) {
+				if ($item['host_id'] > 0) {
+					if (!is_device_allowed($item['host_id'], $user)) {
+						unset($items[$i]);
+					}
+				} elseif($item['local_graph_id'] > 0) {
+					if (!is_graph_allowed($item['local_graph_id'], $user)) {
+						unset($items[$i]);
+					}
 				}
-			} elseif($item['local_graph_id'] > 0) {
-				if (!is_graph_allowed($item['local_graph_id'], $user)) {
-					unset($items[$i]);
-				}
-			}
 
-			$i++;
+				$i++;
+			}
 		}
 	}
 

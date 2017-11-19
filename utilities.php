@@ -107,9 +107,11 @@ switch (get_request_var('action')) {
 		break;
 	case 'ajax_hosts':
 		get_allowed_ajax_hosts();
+
 		break;
 	case 'ajax_hosts_noany':
 		get_allowed_ajax_hosts(false);
+
 		break;
 	default:
 		if (!api_plugin_hook_function('utilities_action', get_request_var('action'))) {
@@ -130,7 +132,7 @@ function rebuild_resource_cache() {
 
 	raise_message('resource_cache_rebuild');
 
-    cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
+	cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 }
 
 function utilities_view_tech($php_info = '') {
@@ -877,6 +879,7 @@ function utilities_view_logfile() {
 	global $log_tail_lines, $page_refresh_interval, $config;
 
 	$logfile = read_config_option('path_cactilog');
+	$logbase = basename($logfile);
 
 	if (isset_request_var('filename')) {
 		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
@@ -889,6 +892,14 @@ function utilities_view_logfile() {
 
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
+	}
+
+	if (get_nfilter_request_var('filename') != '') {
+		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
+			raise_message('clog_invalid');
+			header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
+			exit(0);
+		}
 	}
 
 	/* ================= input validation and session storage ================= */
@@ -1001,10 +1012,17 @@ function utilities_view_logfile() {
 						<?php print __('File');?>
 					</td>
 					<td>
-						<select id='filename' name='filename'>
+						<select id='filename'>
 							<?php
-							$selectedFile = basename(get_nfilter_request_var('filename'));
-							$logPath      = dirname(read_config_option('path_cactilog'));
+							$configLogPath = read_config_option('path_cactilog');
+							$configLogBase = basename($configLogPath);
+							$selectedFile  = basename(get_nfilter_request_var('filename'));
+
+							if ($configLogPath == '') {
+								$logPath = $config['base_path'] . '/log/';
+							} else {
+								$logPath = dirname($configLogPath);
+							}
 
 							if (is_readable($logPath)) {
 								$files = scandir($logPath);
@@ -1012,17 +1030,24 @@ function utilities_view_logfile() {
 								$files = array('cacti.log');
 							}
 
-							foreach($files as $logFile) {
-								if (in_array($logFile, array('.', '..', '.htaccess'))) {
-									continue;
-								}
+							if (sizeof($files)) {
+								foreach($files as $logFile) {
+									if (in_array($logFile, array('.', '..', '.htaccess'))) {
+										continue;
+									}
 
-								print "<option value='" . $logFile . "'";
-								if ($selectedFile == $logFile) {
-									print ' selected';
-								}
+									if (strpos($logFile, $configLogBase) === false) {
+										continue;
+									}
 
-								print '>' . $logFile . "</option>\n";
+									print "<option value='" . $logFile . "'";
+
+									if ($selectedFile == $logFile) {
+										print ' selected';
+									}
+
+									print '>' . $logFile . "</option>\n";
+								}
 							}
 							?>
 						</select>

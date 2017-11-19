@@ -5,10 +5,8 @@ php:
 - '5.5'
 - '5.6'
 - '7.0'
-
-matrix:
-  allow_failures:
-  - php: 7.0
+- '7.1'
+- '7.2'
 
 before_script:
   - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi

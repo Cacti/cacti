@@ -278,7 +278,7 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 	$suggested_values_data = array();
 	if (sizeof($suggested_values) > 0) {
 		foreach ($suggested_values as $suggested_value) {
-			if(!isset($suggested_values_data{$suggested_value['field_name']})) {
+			if(!isset($suggested_values_data[$suggested_value['field_name']])) {
  				$subs_string = substitute_snmp_query_data($suggested_value['text'],$data_local['host_id'],
 					$data_local['snmp_query_id'], $data_local['snmp_index'],
 					read_config_option('max_data_query_field_length'));
@@ -291,7 +291,7 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 						array($suggested_value['text'], $local_data_id));
 
 					/* once we find a working value for that very field, stop */
-					$suggested_values_data{$suggested_value['field_name']} = true;
+					$suggested_values_data[$suggested_value['field_name']] = true;
 				}
 			}
 		}
@@ -374,10 +374,10 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	$save['name_cache']                  = $data_template_data['name_cache'];
 
 	foreach ($struct_data_source as $field => $array) {
-		$save{$field} = $data_template_data{$field};
+		$save[$field] = $data_template_data[$field];
 
 		if ($array['flags'] != 'ALWAYSTEMPLATE') {
-			$save{'t_' . $field} = $data_template_data{'t_' . $field};
+			$save['t_' . $field] = $data_template_data['t_' . $field];
 		}
 	}
 
@@ -399,10 +399,10 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 			}
 
 			foreach ($struct_data_source_item as $field => $array) {
-				$save{$field} = $data_template_rrd{$field};
+				$save[$field] = $data_template_rrd[$field];
 
-				if (isset($data_template_rrd{'t_' . $field})) {
-					$save{'t_' . $field} = $data_template_rrd{'t_' . $field};
+				if (isset($data_template_rrd['t_' . $field])) {
+					$save['t_' . $field] = $data_template_rrd['t_' . $field];
 				}
 			}
 

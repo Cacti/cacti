@@ -70,7 +70,7 @@ function get_matching_nodes() {
 				$match[] = 'tbranch-' . $row['parent'];
 				$row = db_fetch_row_prepared('SELECT parent, graph_tree_id FROM graph_tree_items WHERE id = ?', array($row['parent']));
 				if (!sizeof($row)) {
-				    break;
+					break;
 				}
 			}
 
@@ -99,7 +99,7 @@ function get_matching_nodes() {
 			$level++;
 
 			if ($found == 0) {
-			    break;
+				break;
 			}
 		}
 
@@ -335,14 +335,13 @@ case 'preview':
 	$sql_or = '';
 	if (isset_request_var('style')) {
 		if (get_request_var('style') == 'selective') {
+			$graph_list = array();
 
 			/* process selected graphs */
 			if (!isempty_request_var('graph_list')) {
 				foreach (explode(',', get_request_var('graph_list')) as $item) {
 					$graph_list[$item] = 1;
 				}
-			} else {
-				$graph_list = array();
 			}
 			if (!isempty_request_var('graph_add')) {
 				foreach (explode(',', get_request_var('graph_add')) as $item) {
@@ -389,10 +388,10 @@ case 'preview':
 		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.graph_template_id IN (' . get_request_var('graph_template_id') . ')';
 	}
 
-	$limit      = (get_request_var('graphs')*(get_request_var('page')-1)) . ',' . get_request_var('graphs');
-	$order      = 'gtg.title_cache';
+	$limit = (get_request_var('graphs') * (get_request_var('page') - 1)) . ',' . get_request_var('graphs');
+	$order = 'gtg.title_cache';
 
-	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
+	$graphs = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
 
 	$nav = html_nav_bar('graph_view.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
 
@@ -479,13 +478,13 @@ case 'list':
 		$rows = get_request_var('rows');
 	}
 
+	$graph_list = array();
+
 	/* save selected graphs into url */
 	if (!isempty_request_var('graph_list')) {
 		foreach (explode(',', get_request_var('graph_list')) as $item) {
 			$graph_list[$item] = 1;
 		}
-	} else {
-		$graph_list = array();
 	}
 
 	if (!isempty_request_var('graph_add')) {
@@ -521,7 +520,7 @@ case 'list':
 					<td>
 						<input id='rfilter' type='text' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
-					<?php print html_host_filter(get_request_var('host_id'));?>
+					<?php html_host_filter(get_request_var('host_id'));?>
 					<td>
 						<?php print __('Template');?>
 					</td>
