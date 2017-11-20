@@ -23,7 +23,15 @@
 */
 
 function upgrade_to_1_2_0() {
-	db_install_execute("ALTER TABLE `user_domains_ldap` 
-    ADD `cn_full_name` VARCHAR(50) NULL DEFAULT '',
-    ADD `cn_email` VARCHAR(50) NULL DEFAULT '' ");
+	db_install_execute("ALTER TABLE `user_domains_ldap`
+		ADD `cn_full_name` VARCHAR(50) NULL DEFAULT '',
+		ADD `cn_email` VARCHAR(50) NULL DEFAULT ''");
+
+	db_install_execute("ALTER TABLE poller
+		ADD COLUMN max_time DOUBLE DEFAULT NULL AFTER total_time,
+		ADD COLUMN min_time DOUBLE DEFAULT NULL AFTER max_time,
+		ADD COLUMN avg_time DOUBLE DEFAULT NULL AFTER min_time,
+		ADD COLUMN total_polls INT unsigned DEFAULT '0' AFTER avg_time,
+		ADD COLUMN processes INT unsigned DEFAULT '1' AFTER total_polls,
+		ADD COLUMN threads INT unsigned DEFAULT '1' AFTER processes");
 }
