@@ -72,3 +72,10 @@ $cacti_db_session = false;
 
 //$scripts_path = '/var/www/html/cacti/scripts';
 //$resource_path = '/var/www/html/cacti/resource/';
+
+/* optional parameter to define a data input whitelist command string
+ * This whitelist file will help protect cacti from unauthorized changes
+ * to Cacti's data input command string. */
+
+$input_whitelist = '/etc/cacti/input_whitelist.json';
+

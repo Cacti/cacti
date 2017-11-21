@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ | Cacti: The Complete RRDTool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -649,38 +649,40 @@ if (sizeof($parms)) {
 					continue;
 				}
 
-				$empty = array(); /* Suggested Values are not been implemented */
+				$isempty = array(); /* Suggested Values are not been implemented */
 
-				$returnArray = create_complete_graph_from_template($template_id, $host_id, $snmp_query_array, $empty);
+				$returnArray = create_complete_graph_from_template($template_id, $host_id, $snmp_query_array, $isempty);
 
-				if ($graphTitle != '') {
-					db_execute_prepared('UPDATE graph_templates_graph
-						SET title_cache = ?
-						WHERE local_graph_id = ?',
-						array($graphTitle, $returnArray['local_graph_id']));
+				if (sizeof($returnArray)) {
+					if ($graphTitle != '') {
+						db_execute_prepared('UPDATE graph_templates_graph
+							SET title_cache = ?
+							WHERE local_graph_id = ?',
+							array($graphTitle, $returnArray['local_graph_id']));
 
-					update_graph_title_cache($returnArray['local_graph_id']);
-				}
-
-				$dataSourceId = db_fetch_cell_prepared('SELECT
-					data_template_rrd.local_data_id
-					FROM graph_templates_item, data_template_rrd
-					WHERE graph_templates_item.local_graph_id = ?
-					AND graph_templates_item.task_item_id = data_template_rrd.id
-					LIMIT 1',
-					array($returnArray['local_graph_id']));
-
-				foreach($returnArray['local_data_id'] as $item) {
-					push_out_host($host_id, $item);
-
-					if ($dataSourceId != '') {
-						$dataSourceId .= ', ' . $item;
-					} else {
-						$dataSourceId = $item;
+						update_graph_title_cache($returnArray['local_graph_id']);
 					}
-				}
 
-				echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
+					$dataSourceId = db_fetch_cell_prepared('SELECT
+						data_template_rrd.local_data_id
+						FROM graph_templates_item, data_template_rrd
+						WHERE graph_templates_item.local_graph_id = ?
+						AND graph_templates_item.task_item_id = data_template_rrd.id
+						LIMIT 1',
+						array($returnArray['local_graph_id']));
+
+					foreach($returnArray['local_data_id'] as $item) {
+						push_out_host($host_id, $item);
+
+						if ($dataSourceId != '') {
+							$dataSourceId .= ', ' . $item;
+						} else {
+							$dataSourceId = $item;
+						}
+					}
+
+					echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
+				}
 			}
 		} else {
 			$err_msg = 'ERROR: Could not find snmp-field ' . implode(',', $dsGraph['snmpField']) . ' (';

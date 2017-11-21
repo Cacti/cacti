@@ -153,6 +153,10 @@ if (!isset($resource_path)) {
 	$config['resource_path'] = $resource_path;
 }
 
+if (isset($input_whitelist)) {
+	$config['input_whitelist'] = $input_whitelist;
+}
+
 /* colors */
 $colors['dark_outline'] = '454E53';
 $colors['dark_bar'] = 'AEB4B7';
@@ -222,7 +226,9 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 }
 
 if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
-	$boost_records = db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost', '', true, $local_db_cnn_id);
+	$boost_records = db_fetch_cell('SELECT COUNT(*)
+		FROM poller_output_boost', '', true, $local_db_cnn_id);
+
 	if ($boost_records > 0) {
 		$config['connection'] = 'recovery';
 	}

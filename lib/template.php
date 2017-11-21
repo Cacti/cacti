@@ -1003,6 +1003,12 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	include_once($config['library_path'] . '/data_query.php');
 
+	if (!graph_template_whitespace_check($graph_template_id)) {
+		raise_message(10);
+
+		return false;
+	}
+
 	/* create the graph */
 	$save['id']                  = 0;
 	$save['graph_template_id']   = $graph_template_id;
@@ -1395,5 +1401,80 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 	} else {
 		return array();
 	}
+}
+
+function verify_data_input($input_data) {
+	$hash = $input_data['hash'];
+	$input_string = $input_data['input_string'];
+
+	$db_input_string = db_fetch_cell_prepared('SELECT input_string
+		FROM data_input
+		WHERE hash = ?',
+		array($hash));
+
+	if ($db_input_string == $input_string) {
+		return array(
+			'status' => true,
+			'input'  => $db_input_string
+		);
+	} else {
+		return array(
+			'status' => false,
+			'input' => $db_input_string
+		);
+	}
+}
+
+function graph_template_whitespace_check($graph_template_id) {
+	global $config;
+
+	static $data_input_whitespace_json = null;
+	static $notified = array();
+
+	if (!isset($config['input_whitespace']) || !file_exists($config['input_whitespace'])) {
+		return true;
+	}
+
+	$valid = true;
+
+	$data_input_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtd.data_input_id
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_template_data AS dtd
+		ON dtr.data_template_id=dtd.data_template_id
+		INNER JOIN graph_templates_item AS gti
+		ON gti.task_item_id=dtr.id
+		WHERE gti.graph_template_id = ?
+		AND gti.local_graph_id = 0',
+		array($graph_template_id));
+
+	if (sizeof($data_input_ids)) {
+		if ($data_input_whitespace_json == null) {
+			$data_input_whitespace_json = json_decode($config['input_whitespace']);
+		}
+
+		foreach($data_input_ids as $dii) {
+			$found = false;
+			$data_input = db_fetch_row_prepared('SELECT *
+				FROM data_input
+				WHERE id = ?',
+				array($dii['data_input_id']));
+
+			foreach($data_input_whitespace_json as $input) {
+				if ($input['hash'] == $data_input['hash']) {
+					if ($input['input_string'] != $data_input['input_string']) {
+						$value = false;
+					}
+				}
+			}
+
+			if (!$found && !isset($notified[$dii['data_input_id']])) {
+				cacti_log('WARNING: Whitespace file appears out of date.  Please update');
+
+				$notified[$dii['data_input_id']] = true;
+			}
+		}
+	}
+
+	return $valid;
 }
 
