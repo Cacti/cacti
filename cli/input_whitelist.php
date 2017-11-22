@@ -100,7 +100,7 @@ if ($audit) {
 		echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL;
 
 		foreach($input as $line) {
-			$aud = verify_data_input($line);
+			$aud = verify_data_input($line['hash'], $line['input_sting']);
 			if ($aud['status'] == true) {
 				echo "ID: " . $line['id'] . ", Name: " . $line['name'] . ", Status: " . 'Success' . PHP_EOL;
 				echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL;

@@ -458,7 +458,7 @@ function data_edit() {
 		}
 
 		if (isset($data_input['hash'])) {
-			$aud = verify_data_input($data_input);
+			$aud = verify_data_input($data_input['hash'], $data_input['input_string']);
 
 			if ($aud['status']) {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Succeeded.');

@@ -1403,9 +1403,7 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 	}
 }
 
-function verify_data_input($input_data) {
-	$hash = $input_data['hash'];
-	$input_string = $input_data['input_string'];
+function verify_data_input($hash, $input_string) {
 
 	$db_input_string = db_fetch_cell_prepared('SELECT input_string
 		FROM data_input
@@ -1431,10 +1429,17 @@ function graph_template_whitelist_check($graph_template_id) {
 	static $data_input_whitelist_json = null;
 	static $notified = array();
 
-	if (!isset($config['input_whitelist']) || !file_exists($config['input_whitelist'])) {
+	// no whitelist file defined, everything whitelisted
+	if (! empty($config['input_whitelist'])) {
 		return true;
 	}
 
+	// whitelist is configured but does not exist, means nothing whitelisted
+	if (! file_exists($config['input_whitelist'])) {
+		return false;
+	}
+
+	// load whitelist, but only once within process execution
 	if ($data_input_whitelist_json == null) {
 		$data_input_whitelist_json = json_decode($config['input_whitelist']);
 		if ($data_input_whitelist_json === null) {
