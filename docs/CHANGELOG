@@ -6,6 +6,9 @@ Cacti CHANGELOG
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue: Move Graph removal function to Graph API
 
+1.1.29
+-issue: New Graph pagenation and filter reset
+
 1.1.28
 -issue#958: User Group Tree permissions not calculated fully
 -issue#959: Issue viewing email reports due to email client decoding problems
