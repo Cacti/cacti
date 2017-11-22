@@ -77,5 +77,5 @@ $cacti_db_session = false;
  * This whitelist file will help protect cacti from unauthorized changes
  * to Cacti's data input command string. */
 
-$input_whitelist = '/etc/cacti/input_whitelist.json';
+$input_whitelist = '/usr/local/etc/cacti/input_whitelist.json';
 

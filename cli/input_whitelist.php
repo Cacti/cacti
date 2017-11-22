@@ -23,22 +23,22 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
+// do NOT run this script through a web browser
 if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-/* we are not talking to the browser */
+// we are not talking to the browser
 $no_http_headers = true;
 
-/* start initialization section */
+// start initialization section
 include(dirname(__FILE__) . '/../include/global.php');
 include(dirname(__FILE__) . '/../lib/template.php');
 
 $audit  = false;
 $update = false;
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -71,7 +71,7 @@ if (sizeof($parms)) {
 				display_help();
 				exit;
 			default:
-				echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				echo 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 				exit;
 		}
@@ -79,13 +79,13 @@ if (sizeof($parms)) {
 }
 
 if (!isset($config['input_whitelist'])) {
-	echo "NOTICE: The Cacti whitelist file is not setup in config.php.  Therefore, no action taken.\n";
+	echo "NOTICE: Data Input Whitelist file not defined in config.php." . PHP_EOL;
 	exit(0);
 }
 
 if ($audit) {
 	if (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
-		echo "ERROR: The file '" . $config['input_whitelist'] . "' does not exist.  Please run with the '--update' option.\n";
+		echo "ERROR: Data Input Whitelist file '" . $config['input_whitelist'] . "' does not exist.  Please run with the '--update' option." . PHP_EOL;
 		exit(1);
 	}
 
@@ -96,46 +96,53 @@ if ($audit) {
 		WHERE input_string != ""');
 
 	if (sizeof($input)) {
-		echo "The results below show all non-blank Data Input Methods and their whitespace verification status.\n\n";
-		echo "------------------------------------------------------------------------------------------------------------\n";
+		echo "Data Input Methods Whitelist Verification" . PHP_EOL . PHP_EOL;
+		echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL;
 
 		foreach($input as $line) {
 			$aud = verify_data_input($line);
 			if ($aud['status'] == true) {
-				echo "ID: " . $line['id'] . ", Name: " . $line['name'] . ", Status: " . 'Success' . "\n";
-				echo "------------------------------------------------------------------------------------------------------------\n";
-				echo "Command:   " . $line['input_string'] . "\nWhitelist: " . $aud['input'] . "\n";
+				echo "ID: " . $line['id'] . ", Name: " . $line['name'] . ", Status: " . 'Success' . PHP_EOL;
+				echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL;
+				echo "Command:   " . $line['input_string'] . "\nWhitelist: " . $aud['input'] . PHP_EOL;
 			} else {
-				echo "ID: " . $line['id'] . ", Name: " . $line['name'] . ", Status: " . 'Failed' . "\n";
-				echo "------------------------------------------------------------------------------------------------------------\n";
-				echo "Command:   " . $line['input_string'] . "\nWhitelist: " . $aud['input'] . "\n";
+				echo "ID: " . $line['id'] . ", Name: " . $line['name'] . ", Status: " . 'Failed' . PHP_EOL;
+				echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL;
+				echo "Command:   " . $line['input_string'] . "\nWhitelist: " . $aud['input'] . PHP_EOL;
 
 				$totals++;
 			}
-			echo "------------------------------------------------------------------------------------------------------------\n\n";
+			echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL . PHP_EOL;
 		}
 
 		if ($totals) {
-			echo "ERROR: $totals Audits failed out of a total of " . sizeof($input) . " Data Input Methods\n\n";
+			echo "ERROR: $totals audits failed out of a total of " . sizeof($input) . " Data Input Methods" . PHP_EOL;
 		} else {
-			echo "NOTE: All Audits successfull from a total of " . sizeof($input) . " Data Input Methods\n\n";
+			echo "SUCCESS: Audits successfull for total of " . sizeof($input) . " Data Input Methods" . PHP_EOL;
 		}
 	}
 } elseif ($update) {
 	if (!is_writable(dirname($config['input_whitelist']))) {
-		echo "ERROR: The file '" . $config['input_whitelist'] . "' is not writeable!  Please run as a user with write permissions.\n";
+		echo "ERROR: Data Input whitelist file '" . $config['input_whitelist'] . "' not writeable." . PHP_EOL;
 		exit(1);
 	}
 
-	$input = db_fetch_assoc('SELECT hash, input_string
+	$input_db = db_fetch_assoc('SELECT hash, input_string
 		FROM data_input
 		WHERE input_string != ""');
 
-	if (sizeof($input)) {
+	if (sizeof($input_db)) {
+		// format data for easier consumption
+		$input = array();
+		foreach ($input_db as $value)
+		{
+			$input[$value['hash']] = $value['input_string'];
+		}
+
 		file_put_contents($config['input_whitelist'], json_encode($input));
-		echo "NOTE: The file '" . $config['input_whitelist'] . "' has successfully been updated.\n";
+		echo "SUCCESS: Data Input Whitelist file '" . $config['input_whitelist'] . "' successfully updated." . PHP_EOL;
 	} else {
-		echo "ERROR: The no Data Input records found in the Cacti Database.  Unable to write.\n";
+		echo "ERROR: No Data Input records found." . PHP_EOL;
 		exit(1);
 	}
 } else {
@@ -144,22 +151,26 @@ if ($audit) {
 
 exit(0);
 
-/*  display_version - displays version information */
+/*
+ * display_version - displays version information
+ */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Input whitelist Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	echo "Cacti Data Input Whitelist Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
+/*
+ * display_help - displays the usage of the function
+ */
 function display_help () {
 	display_version();
 
-	echo "\nusage: input_whitelist.php [--audit | --update]\n\n";
+	echo PHP_EOL . "usage: input_whitelist.php [--audit | --update]" . PHP_EOL . PHP_EOL;
 
-	echo "A utility audit and update the Data Input whitelist status and\n";
-	echo "Data Input protection file.\n\n";
+	echo "A utility audit and update the Data Input whitelist status and" . PHP_EOL;
+	echo "Data Input protection file." . PHP_EOL . PHP_EOL;
 
-	echo "Optional:\n";
-	echo "    --audit       Audit but do not update the whitelist file.\n";
-	echo "    --update      Update the whitelist file with latest information.\n\n";
+	echo "Optional:" . PHP_EOL;
+	echo "    --audit       Audit but do not update the whitelist file." . PHP_EOL;
+	echo "    --update      Update the whitelist file with latest information." . PHP_EOL . PHP_EOL;
 }

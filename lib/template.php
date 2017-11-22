@@ -1003,7 +1003,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	include_once($config['library_path'] . '/data_query.php');
 
-	if (!graph_template_whitespace_check($graph_template_id)) {
+	if (!graph_template_whitelist_check($graph_template_id)) {
 		raise_message(10);
 
 		return false;
@@ -1425,14 +1425,23 @@ function verify_data_input($input_data) {
 	}
 }
 
-function graph_template_whitespace_check($graph_template_id) {
+function graph_template_whitelist_check($graph_template_id) {
 	global $config;
 
-	static $data_input_whitespace_json = null;
+	static $data_input_whitelist_json = null;
 	static $notified = array();
 
-	if (!isset($config['input_whitespace']) || !file_exists($config['input_whitespace'])) {
+	if (!isset($config['input_whitelist']) || !file_exists($config['input_whitelist'])) {
 		return true;
+	}
+
+	if ($data_input_whitelist_json == null) {
+		$data_input_whitelist_json = json_decode($config['input_whitelist']);
+		if ($data_input_whitelist_json === null) {
+			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
+			return true;
+		}
+		//FIXME: Probally need to validate returned data structure
 	}
 
 	$valid = true;
@@ -1448,10 +1457,6 @@ function graph_template_whitespace_check($graph_template_id) {
 		array($graph_template_id));
 
 	if (sizeof($data_input_ids)) {
-		if ($data_input_whitespace_json == null) {
-			$data_input_whitespace_json = json_decode($config['input_whitespace']);
-		}
-
 		foreach($data_input_ids as $dii) {
 			$found = false;
 			$data_input = db_fetch_row_prepared('SELECT *
@@ -1459,17 +1464,16 @@ function graph_template_whitespace_check($graph_template_id) {
 				WHERE id = ?',
 				array($dii['data_input_id']));
 
-			foreach($data_input_whitespace_json as $input) {
-				if ($input['hash'] == $data_input['hash']) {
-					if ($input['input_string'] != $data_input['input_string']) {
+			foreach($data_input_whitelist_json as $input_hash => $input_string) {
+				if ($input_hash == $data_input['hash']) {
+					if ($input_string != $data_input['input_string']) {
 						$value = false;
 					}
 				}
 			}
 
 			if (!$found && !isset($notified[$dii['data_input_id']])) {
-				cacti_log('WARNING: Whitespace file appears out of date.  Please update');
-
+				cacti_log('WARNING: Data input script not found in input whitelist file: ' . $config['input_whitelist']);
 				$notified[$dii['data_input_id']] = true;
 			}
 		}
