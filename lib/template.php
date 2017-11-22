@@ -1467,7 +1467,7 @@ function graph_template_whitelist_check($graph_template_id) {
 			foreach($data_input_whitelist_json as $input_hash => $input_string) {
 				if ($input_hash == $data_input['hash']) {
 					if ($input_string != $data_input['input_string']) {
-						$value = false;
+						$valid = false;
 					}
 				}
 			}
