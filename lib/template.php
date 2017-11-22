@@ -1404,47 +1404,46 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 }
 
 function verify_data_input($hash, $input_string) {
-
-	$db_input_string = db_fetch_cell_prepared('SELECT input_string
+	$input = db_fetch_row_prepared('SELECT *
 		FROM data_input
 		WHERE hash = ?',
 		array($hash));
 
-	if ($db_input_string == $input_string) {
-		return array(
-			'status' => true,
-			'input'  => $db_input_string
-		);
+	if ($input['input_string'] == $input_string) {
+		$input['status'] = true;
+		return $input;
 	} else {
-		return array(
-			'status' => false,
-			'input' => $db_input_string
-		);
+		$input['status'] = false;
+		return $input;
 	}
 }
 
 function graph_template_whitelist_check($graph_template_id) {
 	global $config;
 
-	static $data_input_whitelist_json = null;
+	static $data_input_whitelist = null;
 	static $notified = array();
 
 	// no whitelist file defined, everything whitelisted
-	if (! empty($config['input_whitelist'])) {
+	if (!isset($config['input_whitelist'])) {
 		return true;
 	}
 
 	// whitelist is configured but does not exist, means nothing whitelisted
-	if (! file_exists($config['input_whitelist'])) {
+	if (!file_exists($config['input_whitelist'])) {
 		return false;
 	}
 
 	// load whitelist, but only once within process execution
-	if ($data_input_whitelist_json == null) {
-		$data_input_whitelist_json = json_decode($config['input_whitelist']);
-		if ($data_input_whitelist_json === null) {
+	if ($data_input_whitelist == null) {
+		$whitelist = json_decode(file_get_contents($config['input_whitelist']));
+		if ($whitelist === null) {
 			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
 			return true;
+		} else {
+			foreach($whitelist as $item) {
+				$data_input_whitelist[$item->hash] = $item->input_string;
+			}
 		}
 		//FIXME: Probally need to validate returned data structure
 	}
@@ -1462,18 +1461,18 @@ function graph_template_whitelist_check($graph_template_id) {
 		array($graph_template_id));
 
 	if (sizeof($data_input_ids)) {
-		foreach($data_input_ids as $dii) {
+		foreach ($data_input_ids as $dii) {
 			$found = false;
 			$data_input = db_fetch_row_prepared('SELECT *
 				FROM data_input
 				WHERE id = ?',
 				array($dii['data_input_id']));
 
-			foreach($data_input_whitelist_json as $input_hash => $input_string) {
-				if ($input_hash == $data_input['hash']) {
-					if ($input_string != $data_input['input_string']) {
-						$valid = false;
-					}
+			if (isset($data_input_whitelist[$data_input['hash']])) {
+				$found = true;
+
+				if ($data_input_whitelist[$data_input['hash']] != $data_input['input_string']) {
+					$valid = false;
 				}
 			}
 

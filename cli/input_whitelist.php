@@ -91,24 +91,25 @@ if ($audit) {
 
 	$totals = 0;
 
-	$input = db_fetch_assoc('SELECT *
-		FROM data_input
-		WHERE input_string != ""');
+	$input = json_decode(file_get_contents($config['input_whitelist']));
 
 	if (sizeof($input)) {
 		echo "Data Input Methods Whitelist Verification" . PHP_EOL . PHP_EOL;
 		echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL;
 
-		foreach($input as $line) {
-			$aud = verify_data_input($line['hash'], $line['input_sting']);
+		foreach($input as $item) {
+			$hash = $item->hash;
+			$input_string = $item->input_string;
+
+			$aud = verify_data_input($hash, $input_string);
 			if ($aud['status'] == true) {
-				echo "ID: " . $line['id'] . ", Name: " . $line['name'] . ", Status: " . 'Success' . PHP_EOL;
+				echo "ID: " . $aud['id'] . ", Name: " . $aud['name'] . ", Status: " . 'Success' . PHP_EOL;
 				echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL;
-				echo "Command:   " . $line['input_string'] . "\nWhitelist: " . $aud['input'] . PHP_EOL;
+				echo "Command:   " . $aud['input_string'] . "\nWhitelist: " . $input_string . PHP_EOL;
 			} else {
-				echo "ID: " . $line['id'] . ", Name: " . $line['name'] . ", Status: " . 'Failed' . PHP_EOL;
+				echo "ID: " . $aud['id'] . ", Name: " . $aud['name'] . ", Status: " . 'Failed' . PHP_EOL;
 				echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL;
-				echo "Command:   " . $line['input_string'] . "\nWhitelist: " . $aud['input'] . PHP_EOL;
+				echo "Command:   " . $aud['input_string'] . "\nWhitelist: " . $input_string . PHP_EOL;
 
 				$totals++;
 			}
@@ -134,8 +135,7 @@ if ($audit) {
 	if (sizeof($input_db)) {
 		// format data for easier consumption
 		$input = array();
-		foreach ($input_db as $value)
-		{
+		foreach ($input_db as $value) {
 			$input[$value['hash']] = $value['input_string'];
 		}
 

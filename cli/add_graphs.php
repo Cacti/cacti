@@ -560,25 +560,29 @@ if (sizeof($parms)) {
 			}
 		}
 
-		if (sizeof($returnArray['local_data_id'])) {
-			foreach($returnArray['local_data_id'] as $item) {
-				push_out_host($host_id, $item);
+		if (is_array($returnArray) && sizeof($returnArray)) {
+			if (sizeof($returnArray['local_data_id'])) {
+				foreach($returnArray['local_data_id'] as $item) {
+					push_out_host($host_id, $item);
 
-				if ($dataSourceId != '') {
-					$dataSourceId .= ', ' . $item;
-				} else {
-					$dataSourceId = $item;
+					if ($dataSourceId != '') {
+						$dataSourceId .= ', ' . $item;
+					} else {
+						$dataSourceId = $item;
+					}
 				}
 			}
+
+			/* add this graph template to the list of associated graph templates for this host */
+			db_execute_prepared('REPLACE INTO host_graph
+				(host_id, graph_template_id) VALUES
+				(?, ?)',
+				array($host_id , $template_id));
+
+			echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
+		} else {
+			echo "Graph Not Added due to whitelist check failure.\n";
 		}
-
-		/* add this graph template to the list of associated graph templates for this host */
-		db_execute_prepared('REPLACE INTO host_graph
-			(host_id, graph_template_id) VALUES
-			(?, ?)',
-			array($host_id , $template_id));
-
-		echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
 	} elseif ($graph_type == 'ds') {
 		if (($dsGraph['snmpQueryId'] == '') || ($dsGraph['snmpQueryType'] == '') || (sizeof($dsGraph['snmpField']) == 0) ) {
 			echo "ERROR: For graph-type of 'ds' you must supply more options\n";
@@ -653,7 +657,7 @@ if (sizeof($parms)) {
 
 				$returnArray = create_complete_graph_from_template($template_id, $host_id, $snmp_query_array, $isempty);
 
-				if (sizeof($returnArray)) {
+				if ($returnArray !== false) {
 					if ($graphTitle != '') {
 						db_execute_prepared('UPDATE graph_templates_graph
 							SET title_cache = ?
@@ -682,6 +686,8 @@ if (sizeof($parms)) {
 					}
 
 					echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
+				} else {
+					echo "Graph Not Added due to whitelist check failure.\n";
 				}
 			}
 		} else {
