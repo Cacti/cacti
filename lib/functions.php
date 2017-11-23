@@ -316,29 +316,41 @@ function read_config_option($config_name, $force = false) {
 	return $config_array[$config_name];
 }
 
-/* get_selected_theme - checks the user settings and if the user selected theme is set, returns it
-     otherwise returns the system default.
-   @returns - the themen name */
-function get_selected_theme() {
+/* 
+ * get_selected_theme - checks the user settings and if the user selected
+ * theme is set, returns it otherwise returns the system default.
+ *
+ * @return - the theme name
+ */
+function get_selected_theme()
+{
+	// shortcut if theme is set in session
 	if (isset($_SESSION['selected_theme'])) {
 		return $_SESSION['selected_theme'];
-	} elseif (isset($_SESSION['sess_user_id'])) {
-		$theme = db_fetch_cell_prepared("SELECT value
+	}
+
+	// default to system selected theme
+	$theme = read_config_option('selected_theme');
+
+	// figure out user defined theme
+	if (isset($_SESSION['sess_user_id'])) {
+		// fetch user defined theme
+		$user_theme = db_fetch_cell_prepared("SELECT value
 			FROM settings_user
 			WHERE name='selected_theme'
 			AND user_id = ?",
 			array($_SESSION['sess_user_id']));
 
-		if (!empty($theme)) {
-			$_SESSION['selected_theme'] = $theme;
-
-			return $theme;
+		// user has a theme
+		if (! empty($user_theme)) {
+			$theme = $user_theme;;
 		}
 	}
 
-	$_SESSION['selected_theme'] = read_config_option('selected_theme');
+	// update session
+	$_SESSION['selected_theme'] = $theme;
 
-	return read_config_option('selected_theme');
+	return $theme;
 }
 
 /* form_input_validate - validates the value of a form field and Takes the appropriate action if the input
