@@ -3,7 +3,6 @@
 -- Allow MySQL to handle Cacti's legacy syntax
 --
 
-SET GLOBAL sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 SET SESSION sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 
 --
