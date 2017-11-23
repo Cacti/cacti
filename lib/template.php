@@ -1436,16 +1436,11 @@ function graph_template_whitelist_check($graph_template_id) {
 
 	// load whitelist, but only once within process execution
 	if ($data_input_whitelist == null) {
-		$whitelist = json_decode(file_get_contents($config['input_whitelist']));
-		if ($whitelist === null) {
+		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+		if ($data_input_whitelist === null) {
 			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
 			return true;
-		} else {
-			foreach($whitelist as $item) {
-				$data_input_whitelist[$item->hash] = $item->input_string;
-			}
 		}
-		//FIXME: Probally need to validate returned data structure
 	}
 
 	$valid = true;

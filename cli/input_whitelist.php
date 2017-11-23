@@ -79,52 +79,52 @@ if (sizeof($parms)) {
 }
 
 if (!isset($config['input_whitelist'])) {
-	echo "NOTICE: Data Input Whitelist file not defined in config.php." . PHP_EOL;
+	echo 'NOTICE: Data Input Whitelist file not defined in config.php.' . PHP_EOL;
 	exit(0);
 }
 
 if ($audit) {
 	if (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
-		echo "ERROR: Data Input Whitelist file '" . $config['input_whitelist'] . "' does not exist.  Please run with the '--update' option." . PHP_EOL;
+		echo 'ERROR: Data Input Whitelist file \'' . $config['input_whitelist'] . '\' does not exist.  Please run with the \'--update\' option.' . PHP_EOL;
 		exit(1);
 	}
 
+
+	$input = json_decode(file_get_contents($config['input_whitelist']), true);
+
 	$totals = 0;
+	$items = sizeof($input);
 
-	$input = json_decode(file_get_contents($config['input_whitelist']));
+	if ($items) {
+		echo 'Data Input Methods Whitelist Verification' . PHP_EOL . PHP_EOL;
+		echo '------------------------------------------------------------------------------------------------------------' . PHP_EOL;
 
-	if (sizeof($input)) {
-		echo "Data Input Methods Whitelist Verification" . PHP_EOL . PHP_EOL;
-		echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL;
-
-		foreach($input as $item) {
-			$hash = $item->hash;
-			$input_string = $item->input_string;
-
+		foreach($input as $hash => $input_string) {
 			$aud = verify_data_input($hash, $input_string);
 			if ($aud['status'] == true) {
-				echo "ID: " . $aud['id'] . ", Name: " . $aud['name'] . ", Status: " . 'Success' . PHP_EOL;
-				echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL;
-				echo "Command:   " . $aud['input_string'] . "\nWhitelist: " . $input_string . PHP_EOL;
+				echo 'ID: ' . $aud['id'] . ', Name: ' . $aud['name'] . ', Status: ' . 'Success' . PHP_EOL;
+				echo '------------------------------------------------------------------------------------------------------------' . PHP_EOL;
+				echo 'Command:   ' . $aud['input_string'] . PHP_EOL . 'Whitelist: ' . $input_string . PHP_EOL;
 			} else {
-				echo "ID: " . $aud['id'] . ", Name: " . $aud['name'] . ", Status: " . 'Failed' . PHP_EOL;
-				echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL;
-				echo "Command:   " . $aud['input_string'] . "\nWhitelist: " . $input_string . PHP_EOL;
+				echo 'ID: ' . $aud['id'] . ', Name: ' . $aud['name'] . ', Status: ' . 'Failed' . PHP_EOL;
+				echo '------------------------------------------------------------------------------------------------------------' . PHP_EOL;
+				echo 'Command:   ' . $aud['input_string'] . PHP_EOL . 'Whitelist: ' . $input_string . PHP_EOL;
 
 				$totals++;
 			}
-			echo "------------------------------------------------------------------------------------------------------------" . PHP_EOL . PHP_EOL;
+
+			echo '------------------------------------------------------------------------------------------------------------' . PHP_EOL . PHP_EOL;
 		}
 
 		if ($totals) {
-			echo "ERROR: $totals audits failed out of a total of " . sizeof($input) . " Data Input Methods" . PHP_EOL;
+			echo 'ERROR: ' . $totals . ' audits failed out of a total of ' . $items . ' Data Input Methods' . PHP_EOL;
 		} else {
-			echo "SUCCESS: Audits successfull for total of " . sizeof($input) . " Data Input Methods" . PHP_EOL;
+			echo 'SUCCESS: Audits successfull for total of ' . $items . ' Data Input Methods' . PHP_EOL;
 		}
 	}
 } elseif ($update) {
 	if (!is_writable(dirname($config['input_whitelist']))) {
-		echo "ERROR: Data Input whitelist file '" . $config['input_whitelist'] . "' not writeable." . PHP_EOL;
+		echo 'ERROR: Data Input whitelist file \'' . $config['input_whitelist'] . '\' not writeable.' . PHP_EOL;
 		exit(1);
 	}
 
@@ -140,9 +140,9 @@ if ($audit) {
 		}
 
 		file_put_contents($config['input_whitelist'], json_encode($input));
-		echo "SUCCESS: Data Input Whitelist file '" . $config['input_whitelist'] . "' successfully updated." . PHP_EOL;
+		echo 'SUCCESS: Data Input Whitelist file \'' . $config['input_whitelist'] . '\' successfully updated.' . PHP_EOL;
 	} else {
-		echo "ERROR: No Data Input records found." . PHP_EOL;
+		echo 'ERROR: No Data Input records found.' . PHP_EOL;
 		exit(1);
 	}
 } else {
