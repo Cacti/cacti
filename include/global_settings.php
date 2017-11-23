@@ -1004,7 +1004,7 @@ $settings = array(
 			),
 		'user_template' => array(
 			'friendly_name' => __('User Template'),
-			'description' => __('The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is \'guest\' by default.'),
+			'description' => __('The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is \'guest\' by default.  This user account will be disabled from logging in upon being selected.'),
 			'method' => 'drop_sql',
 			'none_value' => __('No User'),
 			'sql' => 'SELECT username AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',

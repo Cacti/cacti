@@ -84,6 +84,11 @@ function form_save() {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
 
 			if ($domain_id) {
+				// Disable template user from logging in
+				db_execute_prepared('UPDATE user_auth
+					SET enabled=""
+					WHERE id = ?', array($save['user_id']));
+
 				raise_message(1);
 			} else {
 				raise_message(2);
@@ -752,10 +757,10 @@ function domains() {
 			form_alternate_row('line' . $domain['domain_id'], true);
 			form_selectable_cell(filter_value($domain['domain_name'], get_request_var('filter'), 'user_domains.php?action=edit&domain_id=' . $domain['domain_id']), $domain['domain_id']);
 			form_selectable_cell($domain_types[$domain['type']], $domain['domain_id']);
-			form_selectable_cell( ($domain['defdomain'] == '0' ? '--': __('Yes') ), $domain['domain_id']);
-			form_selectable_cell( ($domain['user_id'] == '0' ? __('None Selected') : db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);
-			form_selectable_cell( db_fetch_cell_prepared('SELECT cn_full_name FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
-			form_selectable_cell( db_fetch_cell_prepared('SELECT cn_email FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
+			form_selectable_cell(($domain['defdomain'] == '0' ? '--': __('Yes') ), $domain['domain_id']);
+			form_selectable_cell(($domain['user_id'] == '0' ? __('None Selected') : db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);
+			form_selectable_cell(db_fetch_cell_prepared('SELECT cn_full_name FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
+			form_selectable_cell(db_fetch_cell_prepared('SELECT cn_email FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
 			form_selectable_cell($domain['enabled'] == 'on' ? __('Yes'):__('No'), $domain['domain_id']);
 			form_checkbox_cell($domain['domain_name'], $domain['domain_id']);
 			form_end_row();

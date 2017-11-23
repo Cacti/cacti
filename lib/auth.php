@@ -120,7 +120,7 @@ function check_auth_cookie() {
    @arg $new_realm - new realm of the account to be created, overwrite not affected, but is used for lookup
    @arg $overwrite - Allow overwrite of existing user, preserves username, fullname, password and realm
    @arg $data_override - Array of user_auth field and values to override on the new user
-   @return - True on copy, False on no copy */
+   @return - the new users id, or false on no copy */
 function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 0, $overwrite = false, $data_override = array()) {
 
 	/* ================= input validation ================= */
@@ -138,6 +138,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 	if (! isset($user_auth)) {
 		return false;
 	}
+
 	$template_id = $user_auth['id'];
 
 	/* Create update/insert for new/existing user */
@@ -167,7 +168,8 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		/* new user */
 		$user_auth['id']            = 0;
 		$user_auth['username']      = $new_user;
-		$user_auth['password']      = '!';
+		$user_auth['enabled']       = 'on';
+		$user_auth['password']      = mt_rand(100000, 10000000);
 		$user_auth['email_address'] = '';
  		$user_auth['realm']         = $new_realm;
 	}
@@ -236,7 +238,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 
 	api_plugin_hook_function('copy_user', array('template_id' => $template_id, 'new_id' => $new_id));
 
-	return true;
+	return $new_id;
 }
 
 

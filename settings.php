@@ -158,7 +158,15 @@ case 'save':
 		}
 	}
 
-	/* update snmpcache */
+	// Disable template user from being able to login
+	if (isset_request_var('user_template') && get_request_var('user_template') > 0) {
+		db_execute_prepared('UPDATE user_auth
+			SET enabled=""
+			WHERE id = ?',
+			array(get_request_var('user_template'));
+	}
+
+	// Update snmpcache
 	snmpagent_global_settings_update();
 
 	api_plugin_hook_function('global_settings_update');
