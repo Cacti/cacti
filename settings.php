@@ -163,7 +163,7 @@ case 'save':
 		db_execute_prepared('UPDATE user_auth
 			SET enabled=""
 			WHERE id = ?',
-			array(get_request_var('user_template'));
+			array(get_request_var('user_template')));
 	}
 
 	// Update snmpcache
