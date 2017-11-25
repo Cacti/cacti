@@ -239,6 +239,12 @@ $fields_data_input_edit = array(
 		'class' => 'textAreaNotes',
 		'max_length' => '255',
 		),
+	'whitelist_verification' => array(
+		'method' => 'other',
+		'value' => '',
+		'friendly_name' => __('White List Check'),
+		'description' => __('The result of the Whitespace verification check for the specific Input Method.  If the Input String changes, and the Whitelist file is not update, Graphs will not be allowed to be created.')
+		),
 	'id' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'
