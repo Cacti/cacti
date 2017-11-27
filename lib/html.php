@@ -817,7 +817,17 @@ function html_escape_request_var($string) {
    @arg $string - string the string to escape
    @returns $new_string - the escaped string to be returned. */
 function html_escape($string) {
-	return htmlspecialchars($string, ENT_QUOTES, 'UTF-8', true);
+	static $charset;
+
+	if ($charset == '') {
+		$charset = ini_get('default_charset');
+	}
+
+	if ($charset == '') {
+		$charset = 'UTF-8';
+	}
+
+	return htmlspecialchars($string, ENT_QUOTES, $charset, false);
 }
 
 /* html_split_string - takes a string and breaks it into a number of <br> separated segments

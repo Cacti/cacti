@@ -246,7 +246,7 @@ function clog_view_logfile() {
 
 	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
 
-	echo $nav;
+	print $nav;
 
 	html_start_box($start_string, '100%', '', '3', 'center', '');
 
@@ -266,51 +266,62 @@ function clog_view_logfile() {
 			$new_item = html_escape($item);
 		} else {
 			$new_item = '';
+
+			// Process the host section
 			if ($host_start) {
-				$host_end    = strpos($item, ']', $host_start);
-				$host_id     = substr($item, $host_start + 7, $host_end - ($host_start + 7));
-				$new_item   .= substr($item, 0, $host_start) . " Device[<a href='" . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>" . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:'') . '</a>]';
-				$item        = substr($item, $host_end + 1);
+				$host_end  = strpos($item, ']', $host_start);
+				$host_id   = substr($item, $host_start + 7, $host_end - ($host_start + 7));
+				$new_item .= substr($item, 0, $host_start) . " Device[<a href='" . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>" . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:'') . '</a>]';
+				$item      = substr($item, $host_end + 1);
 			}
 
-			$ds_start   = strpos($item, 'DS[');
+			// Process the Data Source Section
+			$ds_start = strpos($item, 'DS[');
+
 			if ($ds_start) {
-				$ds_end    = strpos($item, ']', $ds_start);
-				$ds_id     = substr($item, $ds_start + 3, $ds_end - ($ds_start + 3));
-				$ds_ids    = explode(', ', $ds_id);
+				$ds_end = strpos($item, ']', $ds_start);
+				$ds_id  = substr($item, $ds_start + 3, $ds_end - ($ds_start + 3));
+				$ds_ids = explode(', ', $ds_id);
+
 				if (sizeof($ds_ids)) {
 					$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
-					$new_item  .= " Graphs[<a href='";
-					$titles = '';
-					$i = 0;
+					if ($new_item == '') {
+						$new_item .= substr($item, 0, $ds_start);
+					}
+
+					$title = '';
+					$i     = 0;
+
 					foreach($ds_ids as $ds_id) {
 						$graph_ids = clog_get_graphs_from_datasource($ds_id);
 
 						if (sizeof($graph_ids)) {
+							$new_item .= " Graphs[<a href='";
+
 							foreach($graph_ids as $key => $title) {
 								$graph_add .= ($i > 0 ? '%2C' : '') . $key;
-								if ($titles != '') {
-									$titles .= ", '" . html_escape($title) . "'";
-								} else {
-									$titles .= "'"  . html_escape($title) . "'";
-								}
+								$title     .= ($title != '' ? ', ':'') . html_escape($title);
+
 								$i++;
 							}
+
+							$new_item .= html_escape($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $title . '</a>]';
 						}
 					}
 
-					$new_item .= html_escape($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $titles . '</a>]';
-
 					$new_item .= ' DS[';
-					$i = 0;
+					$i         = 0;
+
 					foreach($ds_ids as $ds_id) {
 						$new_item .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_id . '</a>';
+
 						$i++;
 					}
+
 					$new_item .= ']';
 				}
-			}else{
+			} else {
 				$new_item .= html_escape($item);
 			}
 		}
@@ -359,7 +370,7 @@ function clog_view_logfile() {
 	html_end_box();
 
 	if ($total_rows) {
-		echo $nav;
+		print $nav;
 	}
 
 	bottom_footer();

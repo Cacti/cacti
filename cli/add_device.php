@@ -332,12 +332,14 @@ if (sizeof($parms)) {
 
 	/* process ip */
 	if (isset($addresses[$ip])) {
-		$id = $addresses[$ip];
+		$id    = $addresses[$ip];
 		$phost = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($id));
-		$fail = false;
+		$fail  = false;
 
 		if ($phost['snmp_version'] < '3' && $snmp_ver < '3') {
-			if ($phost['snmp_community'] != $community) {
+			if ($snmp_ver == 0 && $proxy) {
+				// proxy but for no snmp
+			} elseif ($phost['snmp_community'] != $community) {
 				if ($proxy) {
 					// assuming an snmp-proxy
 				} else {
@@ -351,7 +353,7 @@ if (sizeof($parms)) {
 			// assumeing a proxy
 		} elseif ($phost['snmp_version'] == '3' && $snmp_ver == '3') {
 			$changed = 0;
-			$changed += ($phost['snmp_usernanem'] != $username ? 1:0);
+			$changed += ($phost['snmp_username'] != $username ? 1:0);
 			$changed += ($phost['snmp_context'] != $snmp_context ? 1:0);
 			$changed += ($phost['snmp_engine_id'] != $snmp_engine_id ? 1:0);
 			$changed += ($phost['snmp_auth_protocol'] != $snmp_auth_protocol ? 1:0);
