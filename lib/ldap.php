@@ -126,6 +126,7 @@ Error codes:
 12	Unable to set referrals option
 13	More than one matching user found
 14	Specific DN and Password required
+15	Unable to find user from DN
 99	PHP LDAP not enabled
 
 */
@@ -461,7 +462,7 @@ class Ldap {
 				if (!@ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
 					/* referrals set error */
 					$output['dn'] = '';
-					$output['error_num'] = '13';
+					$output['error_num'] = '12';
 					$output['error_text'] = __('Unable to set referrals option');
 					cacti_log('LDAP_SEARCH: ' . $output['error_text'], false, 'AUTH');
 					@ldap_close($ldap_conn);
@@ -503,8 +504,8 @@ class Ldap {
 					} else {
 						/* no search results */
 						$output['dn'] = '';
-						$output['error_num'] = '3';
-						$output['error_text'] = __('Unable to find users DN');
+						$output['error_num'] = '15';
+						$output['error_text'] = __('Unable to find user from DN');
 					}
 				} else {
 					/* no search results, user not found*/
