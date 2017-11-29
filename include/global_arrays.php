@@ -1169,12 +1169,6 @@ $dateformats = array(
 	GD_Y_MN_D => __('Year, Month Name, Day')
 );
 
-$datechar = array(
-	GDC_HYPHEN => '-',
-	GDC_SLASH  => '/',
-	GDC_DOT    => '.'
-);
-
 $dsstats_refresh_interval = array(
 	'boost' => __('After Boost'),
 	'60'    => __('1 Hour'),
