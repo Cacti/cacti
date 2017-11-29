@@ -92,9 +92,9 @@ function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = 
 
 			for ($i=0;($i<sizeof($arr_index));$i++) {
 				if ($arg == 'usage') {
-					print $arr_index[$i] . '!' . $arr[$i] . "\n";
+					print $i . '!' . $arr[$i] . "\n";
 				} elseif ($arg == 'index') {
-					print $arr_index[$i] . '!' . $arr_index[$i] . "\n";
+					print $i . '!' . $arr_index[$i] . "\n";
 				}
 			}
 		} else {
@@ -130,13 +130,17 @@ function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $s
 	$return_arr = array();
 
 	$j = 0;
+	$sum = 0;
 
 	for ($i=0;($i<sizeof($arr));$i++) {
 		if (is_numeric($arr[$i])) {
 			$return_arr[$j] = $arr[$i];
+			$sum += $arr[$i];
 			$j++;
 		}
 	}
+
+	$return_arr[$j] = round($sum / sizeof($return_arr));
 
 	return $return_arr;
 }
@@ -153,6 +157,8 @@ function ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snm
 			$j++;
 		}
 	}
+
+	$return_arr[$j] = "Total";
 
 	return $return_arr;
 }
