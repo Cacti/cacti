@@ -1190,7 +1190,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		$graphs = db_fetch_assoc(
 			"SELECT DISTINCT gtg.graph_template_id AS id, gt.name
 			 FROM graph_templates_graph AS gtg
-			 INNER JOIN graph_local AS gl ON gl.id = gtg.local_graph_id
+			 INNER JOIN graph_local AS gl ON gl.id = gtg.local_graph_id AND gl.graph_template_id != 0
 			 LEFT JOIN graph_templates AS gt ON gt.id = gl.graph_template_id
 			 LEFT JOIN host AS h ON h.id=gl.host_id
 			 $sql_join
@@ -1332,6 +1332,113 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 	}
 
 	return $trees;
+}
+
+function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0) {
+	if ($limit != '') {
+		$limit = "LIMIT $limit";
+	}
+
+	if ($order_by != '') {
+		$order_by = "ORDER BY $order_by";
+	}
+
+	if ($user == -1) {
+		$auth_method = 0;
+	} else {
+		$auth_method = read_config_option('auth_method');
+	}
+
+	if ($auth_method != 0) {
+		if ($user == 0) {
+			if (isset($_SESSION['sess_user_id'])) {
+				$user = $_SESSION['sess_user_id'];
+			} else {
+				return array();
+			}
+		}
+
+		/* get policies for all groups and user */
+		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, policy_trees FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id = uagm.group_id
+			WHERE uag.enabled = 'on'
+			AND uagm.user_id = ?",
+			array($user)
+		);
+		$policies[] = db_fetch_row_prepared("SELECT id, 'user' as type, policy_trees FROM user_auth WHERE id = ?", array($user));
+
+		$i          = 0;
+		$sql_join   = '';
+		$sql_where1 = '';
+
+		foreach($policies as $policy) {
+			if ($policy['policy_trees'] == '1') {
+				$sql_where1 .= ($sql_where1 != '' ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NULL";
+			} elseif ($policy['policy_trees'] == '2') {
+				$sql_where1 .= ($sql_where1 != '' ? ' OR':'') . " uap$i." . $policy['type'] . "_id IS NOT NULL";
+			}
+
+			$sql_join .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'group' ? 'group_':'') . "perms AS uap$i
+				ON (gt.id=uap$i.item_id AND uap$i.type=2 AND uap$i." . $policy['type'] . '_id=' . $policy['id'] . ') ';
+
+			$i++;
+		}
+
+		if ($sql_where != '') {
+			$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where . ') AND (' . $sql_where1 . ')';
+		} else {
+			$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where1 . ')';
+		}
+
+		$sql = "(SELECT gti.id, CONCAT('". __('Branch:') . " ', gti.title) AS name
+			FROM graph_tree AS gt
+			INNER JOIN graph_tree_items AS gti on gti.graph_tree_id = gt.id AND gti.host_id=0 AND gti.local_graph_id=0
+			$sql_join
+			$sql_where)
+			UNION
+			(SELECT gti.id, CONCAT('" . __('Device:') . " ', h.description) AS name
+                        FROM graph_tree AS gt
+			INNER JOIN graph_tree_items AS gti ON gti.graph_tree_id = gt.id
+                        INNER JOIN host AS h
+                        ON h.id=gti.host_id
+                        AND h.id IN(" . implode(',', array_keys(array_rekey(get_allowed_devices(), 'id', 'description'))) . ")
+			$sql_join
+			$sql_where)
+			ORDER BY name
+			$limit";
+
+		$branches = db_fetch_assoc($sql);
+		$total_rows = db_fetch_cell("SELECT COUNT(".$sql.")");
+	} else {
+		if ($sql_where != '') {
+			$sql_where = "WHERE gt.enabled='on' AND h.enabled='on' AND $sql_where";
+		} else {
+			$sql_where = "WHERE gt.enabled='on' AND h.enabled='on'";
+		}
+
+		$sql = "(SELECT gti.id, CONCAT('". __('Branch:') . " ', gti.title) AS name
+			FROM graph_tree AS gt
+			INNER JOIN graph_tree_items AS gti on gti.graph_tree_id = gt.id AND gti.host_id=0 AND gti.local_graph_id=0
+			$sql_join
+			$sql_where)
+			UNION
+			(SELECT gti.id, CONCAT('" . __('Device:') . " ', h.description) AS name
+                        FROM graph_tree AS gt
+			INNER JOIN graph_tree_items AS gti ON gti.graph_tree_id = gt.id
+                        INNER JOIN host AS h
+                        ON h.id=gti.host_id
+                        AND h.id IN(" . implode(',', array_keys(array_rekey(get_allowed_devices(), 'id', 'description'))) . ")
+			$sql_join
+			$sql_where)
+			$order_by
+			$limit";
+
+		$branches   = db_fetch_assoc("SELECT id, name FROM graph_tree AS gt $sql_where $order_by");
+		$total_rows = db_fetch_cell("SELECT COUNT(*) FROM (".$sql.")");
+	}
+
+	return $branches;
 }
 
 function get_allowed_devices($sql_where = '', $order_by = 'description', $limit = '', &$total_rows = 0, $user = 0, $host_id = 0) {
