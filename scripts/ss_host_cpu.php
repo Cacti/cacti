@@ -129,7 +129,7 @@ function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $s
 	$arr = ss_host_cpu_reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$return_arr = array();
 
-	$j = 0;
+	$j = 1;
 	$sum = 0;
 
 	for ($i=0;($i<sizeof($arr));$i++) {
@@ -140,7 +140,7 @@ function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $s
 		}
 	}
 
-	$return_arr[$j] = round($sum / sizeof($return_arr));
+	$return_arr[0] = round($sum / sizeof($return_arr));
 
 	return $return_arr;
 }
@@ -149,7 +149,7 @@ function ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snm
 	$arr = ss_host_cpu_reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$return_arr = array();
 
-	$j = 0;
+	$j = 1;
 
 	for ($i=0;($i<sizeof($arr));$i++) {
 		if (is_numeric($arr[$i])) {
@@ -158,7 +158,7 @@ function ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snm
 		}
 	}
 
-	$return_arr[$j] = "Total";
+	$return_arr[0] = "Total";
 
 	return $return_arr;
 }
