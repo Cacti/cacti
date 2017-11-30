@@ -434,7 +434,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 		$using_proc_function = false;
 	}
 
-        /* to avoid DST ambiguity, always use GMT for inserting TIMESTAMP data */
+        /* to avoid DST ambiguity, always use UTC for inserting TIMESTAMP data */
         db_execute('SET SESSION time_zone = "+0:00"');
 
 	foreach ($polling_items as $item) {
@@ -450,7 +450,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			/* assume we don't have to spike prevent */
 			$set_spike_kill = false;
 
-			$host_update_time = gmdate('Y-m-d H:i:s'); // for poller update time
+			$host_update_time = gmdate('Y-m-d H:i:s'); // UTC for poller update time
 
 			if ($last_host != '') {
 				if (sizeof($error_ds)) {
