@@ -1,6 +1,9 @@
 Cacti CHANGELOG
 
 1.1.29
+-issue#1084: Fix issue with Graph Tree Branch not properly populating when editing report item
+-issue#1106: Fix issue with Template Filters having empty row
+-issue#1116: Fix issue with filters not allowing "None" or "All" when editing report item
 -issue: New Graph pagenation and filter reset
 
 1.1.28
