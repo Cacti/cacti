@@ -63,6 +63,7 @@ $username = sanitize_search_string($username);
 $version  = get_cacti_version();
 
 /* process login */
+$user         = array();
 $copy_user    = false;
 $user_auth    = false;
 $user_enabled = 1;
@@ -115,7 +116,6 @@ if (get_nfilter_request_var('action') == 'login') {
 				$ldap_error = true;
 				$ldap_error_message =  __('LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
 				$user_auth = false;
-				$user = array();
 			}
 
 			if (!$ldap_error) {
@@ -142,7 +142,6 @@ if (get_nfilter_request_var('action') == 'login') {
 					$ldap_error = true;
 					$ldap_error_message = __('LDAP Error: %s', $ldap_auth_response['error_text']);
 					$user_auth = false;
-					$user = array();
 				}
 			}
 
@@ -162,7 +161,6 @@ if (get_nfilter_request_var('action') == 'login') {
 
 		if (!api_plugin_hook_function('login_process', false)) {
 			/* Builtin Auth */
-			$user = array();
 			if ((!$user_auth) && (!$ldap_error)) {
 				$stored_pass = db_fetch_cell_prepared('SELECT password
 					FROM user_auth
@@ -197,8 +195,6 @@ if (get_nfilter_request_var('action') == 'login') {
 							WHERE username = ? AND password = ? AND realm = 0',
 							array($username, $p));
 					}
-				} else {
-					$user = array();
 				}
 			}
 		}
@@ -409,7 +405,6 @@ function domains_login_process() {
 			$ldap_error = true;
 			$ldap_error_message = __('LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
 			$user_auth = false;
-			$user = array();
 		}
 
 		if (!$ldap_error) {
@@ -449,7 +444,6 @@ function domains_login_process() {
 				$ldap_error = true;
 				$ldap_error_message = __('LDAP Error: %s', $ldap_auth_response['error_text']);
 				$user_auth = false;
-				$user = array();
 			}
 		}
 
