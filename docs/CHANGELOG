@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.29
+-issue#1109: Fixed URL used in redireciton when referrer already has parameters in it
 -issue#1111: Fixed PHP NOTICE when using LDAP authenication
 -issue: New Graph pagenation and filter reset
 
