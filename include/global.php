@@ -314,6 +314,8 @@ if ((bool)ini_get('register_globals')) {
 	unset($input);
 }
 
+define('CACTI_DATE_TIME_FORMAT', date_time_format());
+
 include_once($config['include_path'] . '/global_languages.php');
 include_once($config['library_path'] . '/auth.php');
 include_once($config['library_path'] . '/plugins.php');
@@ -331,8 +333,6 @@ include_once($config['library_path'] . '/mib_cache.php');
 include_once($config['library_path'] . '/snmpagent.php');
 include_once($config['library_path'] . '/aggregate.php');
 include_once($config['library_path'] . '/api_automation.php');
-
-define('CACTI_DATE_TIME_FORMAT', date_time_format());
 
 /* cross site request forgery library */
 if ($config['is_web']) {

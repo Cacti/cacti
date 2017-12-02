@@ -4769,15 +4769,14 @@ function is_ipaddress($ip_address = '') {
  * @return string returns	date time format
  */
 function date_time_format() {
-	global $datechar;
+	$datechar = array(
+		GDC_HYPHEN => '-',
+		GDC_SLASH  => '/',
+		GDC_DOT    => '.'
+	);
 
 	/* setup date format */
-	if (isset($_SESSION['sess_user_id'])) {
-		$date_fmt = read_user_setting('default_date_format');
-	} else {
-		$date_fmt = read_config_option('default_date_format');
-	}
-
+	$date_fmt        = read_config_option('default_date_format');
 	$dateCharSetting = read_config_option('default_datechar');
 
 	if (!isset($datechar[$dateCharSetting])) {
