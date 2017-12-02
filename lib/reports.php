@@ -73,16 +73,22 @@ function duplicate_reports($_id, $_title) {
  * @return string	- string defining the datetime format specific to this user
  */
 function reports_date_time_format() {
-	global $datechar;
+	$datechar = array(
+		GDC_HYPHEN => '-',
+		GDC_SLASH  => '/',
+		GDC_DOT    => '.'
+	);
 
 	$graph_date = '';
 
 	/* setup date format */
-	$date_fmt = read_user_setting('default_date_format');
+	$date_fmt        = read_config_option('default_date_format');
 	$dateCharSetting = read_config_option('default_datechar');
+
 	if (empty($dateCharSetting)) {
 		$dateCharSetting = GDC_SLASH;
 	}
+
 	$datecharacter = $datechar[$dateCharSetting];
 
 	switch ($date_fmt) {
