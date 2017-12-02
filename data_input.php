@@ -458,12 +458,14 @@ function data_edit() {
 		}
 
 		if (isset($data_input['hash'])) {
-			$aud = verify_data_input($data_input['hash'], $data_input['input_string']);
+			$aud = verify_data_input_whitelist($data_input['hash'], $data_input['input_string']);
 
-			if ($aud['status']) {
+			if ($aud === true) {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Succeeded.');
-			} else {
+			} elseif ($aud == false) {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Failed.  Run CLI script input_whitelist.php to correct.');
+			} elseif ($aud == '-1') {
+				$fields_data_input_edit['whitelist_verification']['value'] = __('Input String does not exist in White List.  Run CLI script input_whitelist.php to correct.');
 			}
 		}
 	}

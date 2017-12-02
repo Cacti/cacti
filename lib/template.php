@@ -1418,6 +1418,28 @@ function verify_data_input($hash, $input_string) {
 	}
 }
 
+function verify_data_input_whitelist($hash, $input_string) {
+	global $config;
+
+	if (!isset($config['input_whitelist'])) {
+		return true;
+	} elseif (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
+		return true;
+	}
+
+	$whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+
+	if (isset($whitelist[$hash])) {
+		if ($input_string == $whitelist[$hash]) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return -1;
+	}
+}
+
 function graph_template_whitelist_check($graph_template_id) {
 	global $config;
 
