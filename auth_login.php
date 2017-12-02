@@ -330,9 +330,9 @@ if (get_nfilter_request_var('action') == 'login') {
 				} elseif (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = ?', array($_SESSION['sess_user_id']))) == 0) {
 					header('Location: graph_view.php' . ($newtheme ? '?newtheme=1':''));
 				} else {
-					$param_char = "?";
-					if (substr_count($referer,"?")) {
-						$param_char = "&";
+					$param_char = '?';
+					if (substr_count($referer, '?')) {
+						$param_char = '&';
 					}
 					header("Location: $referer" . ($newtheme ? $param_char . 'newtheme=1':''));
 				}
