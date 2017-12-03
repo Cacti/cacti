@@ -754,7 +754,8 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 			$sql_where .= ' AND gt.id IN (' . implode(', ', array_keys($trees)) . ')';
 		}
 
-		$heirarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id, gti.title, gti.host_id,
+		$heirarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id,
+			gti.title, gti.host_id, gti.site_id,
 			gti.local_graph_id, gti.host_grouping_type, h.description AS hostname
 			FROM graph_tree_items AS gti
 			INNER JOIN graph_tree AS gt
@@ -765,7 +766,8 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 			ORDER BY gti.position"
 		);
 	} elseif (sizeof($trees)) {
-		$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id,
+		$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id,
+			gt.name AS title, '0' AS host_id, '0' AS site_id,
 			'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname
 			FROM graph_tree AS gt
 			WHERE enabled='on'
@@ -1141,6 +1143,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 	if ($sql_where != '') {
 		$sql_where = "WHERE $sql_where";
 	}
+
 	$sql_where .= " AND gtg.graph_template_id > 0 AND gt.name != ''";
 
 	if ($user == -1) {
@@ -1185,6 +1188,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		$i        = 0;
 		$sql_user = '';
 		$sql_join = '';
+
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
 				$sql_user .= ($sql_user != '' ? ' OR ' : '') . "(uap$i." . $policy['type'] . "_id IS NULL";
@@ -1214,7 +1218,9 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			$i++;
 		}
 
-		$sql_where .= ' AND ' . $sql_user;
+		if ($sql_user != '') {
+			$sql_where .= ' AND (' . $sql_user . ')';
+		}
 
 		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, gt.name
 			FROM graph_templates_graph AS gtg
