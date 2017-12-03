@@ -533,20 +533,22 @@ case 'list':
 							if (sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {
-									$found = db_fetch_cell_prepared('SELECT id
-										FROM graph_local
-										WHERE graph_template_id = ? LIMIT 1',
-										array($gt['id']));
+									if ($gt['id'] != 0) {
+										$found = db_fetch_cell_prepared('SELECT id
+											FROM graph_local
+											WHERE graph_template_id = ? LIMIT 1',
+											array($gt['id']));
 
-									if ($found) {
-										print "<option value='" . $gt['id'] . "'";
-										if (sizeof($selected)) {
-											if (in_array($gt['id'], $selected)) {
-												print ' selected';
+										if ($found) {
+											print "<option value='" . $gt['id'] . "'";
+											if (sizeof($selected)) {
+												if (in_array($gt['id'], $selected)) {
+													print ' selected';
+												}
 											}
+											print '>';
+											print $gt['name'] . "</option>\n";
 										}
-										print '>';
-										print $gt['name'] . "</option>\n";
 									}
 								}
 							}
