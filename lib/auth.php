@@ -754,21 +754,21 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 			$sql_where .= ' AND gt.id IN (' . implode(', ', array_keys($trees)) . ')';
 		}
 
-		$heirarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id,
-			gti.title, gti.host_id, gti.site_id,
-			gti.local_graph_id, gti.host_grouping_type, h.description AS hostname
+		$heirarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id, gti.title, gti.host_id, gti.site_id,
+			gti.local_graph_id, gti.host_grouping_type, h.description AS hostname, s.name AS sitename
 			FROM graph_tree_items AS gti
 			INNER JOIN graph_tree AS gt
 			ON gt.id = gti.graph_tree_id
 			LEFT JOIN host AS h
 			ON h.id = gti.host_id
+			LEFT JOIN sites AS s
+			ON gti.site_id=s.id
 			$sql_where
 			ORDER BY gti.position"
 		);
 	} elseif (sizeof($trees)) {
-		$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id,
-			gt.name AS title, '0' AS host_id, '0' AS site_id,
-			'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname
+		$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id, '0' AS site_id,
+			'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname, '' AS sitename
 			FROM graph_tree AS gt
 			WHERE enabled='on'
 			AND gt.id IN (" . implode(', ', array_keys($trees)) . ")
