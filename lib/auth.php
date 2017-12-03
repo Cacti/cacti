@@ -768,7 +768,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 			LEFT JOIN host AS h
 			ON h.id = gti.host_id
 			LEFT JOIN sites AS s
-			ON s.id = gti.site_id
+			ON gti.site_id=s.id
 			$sql_where
 			ORDER BY gti.position"
 		);
@@ -1151,6 +1151,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 	if ($sql_where != '') {
 		$sql_where = "WHERE $sql_where";
 	}
+
 	$sql_where .= " AND gtg.graph_template_id > 0 AND gt.name != ''";
 
 	if ($user == -1) {
@@ -1195,6 +1196,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 		$i        = 0;
 		$sql_user = '';
 		$sql_join = '';
+
 		foreach($policies as $policy) {
 			if ($policy['policy_graphs'] == 1) {
 				$sql_user .= ($sql_user != '' ? ' OR ' : '') . "(uap$i." . $policy['type'] . "_id IS NULL";
@@ -1224,7 +1226,9 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			$i++;
 		}
 
-		$sql_where .= ' AND ' . $sql_user;
+		if ($sql_user != '') {
+			$sql_where .= ' AND (' . $sql_user . ')';
+		}
 
 		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, gt.name
 			FROM graph_templates_graph AS gtg

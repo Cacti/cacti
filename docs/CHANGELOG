@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#1104: Fix issue with Datetime formatting in developer debug mode
 -issue#1106: Fix issue with Template Filters having empty row
 -issue#1109: Fixed URL used in redirection when referrer already has parameters in it
+-issue#1110: Add CPU Total to 'SNMP - Get Processor Information'
 -issue#1111: Fixed PHP NOTICE when using LDAP authenication
 -issue#1116: Fix issue with filters not allowing "None" or "All" when editing report item
 -issue#1119: Reduced amount of data feteched for CPU usage to just the data used
