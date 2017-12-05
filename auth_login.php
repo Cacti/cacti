@@ -72,20 +72,27 @@ $ldap_error_message = '';
 $realm        = 0;
 
 if (get_nfilter_request_var('action') == 'login') {
-	if (get_nfilter_request_var('realm') == '1') {
+	$frv_realm = get_nfilter_request_var('realm');
+	if ($frv_realm == '1') {
 		$auth_method = 1;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
+	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm ". $frv_realm . ", using method " . $auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
+	$auth_local_required = true;
+
 	switch ($auth_method) {
 	case '0':
 		/* No auth, no action, also shouldn't get here */
+		$auth_local_required = false;
 		exit;
 
 		break;
 	case '2':
 		/* Web Basic Auth */
+		$auth_local_required = false;
 		$copy_user = true;
 		$user_auth = true;
 		$realm = 2;
@@ -149,51 +156,49 @@ if (get_nfilter_request_var('action') == 'login') {
 
 		break;
 	case '4':
-		if (get_request_var('realm') > 0) {
-			domains_login_process();
-
-			break;
+		cacti_log("DEBUG: User '" . $username . "' attempting domain lookup for realm " . $frv_realm . " with " . ($auth_local_required ? '':'no') . " local lookup", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+		if ($frv_realm > 0) {
+			$auth_local_required = false;
+			domains_login_process($username);
 		}
+		break;
 
-		/* continue on to normal login process */
 	default:
-		secpass_login_process();
+		$auth_local_required = true;
+		break;
+	}
+
+	cacti_log("DEBUG: User '" . $username . "' attempt login locally? " . ($auth_local_required ? 'Yes':'No'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+	if ($auth_local_required)
+	{
+		secpass_login_process($username);
 
 		if (!api_plugin_hook_function('login_process', false)) {
 			/* Builtin Auth */
-			if ((!$user_auth) && (!$ldap_error)) {
+			if ((!$user_auth)) {
 				$stored_pass = db_fetch_cell_prepared('SELECT password
 					FROM user_auth
 					WHERE username = ? AND realm = 0',
 					array($username));
 
 				if ($stored_pass != '') {
-					if (function_exists('password_verify')) {
-						$p = get_nfilter_request_var('login_password');
+					$p = get_nfilter_request_var('login_password');
+					$valid = compat_password_verify($p, $stored_pass);
 
-						if (password_verify($p, $stored_pass)) {
-							$user = db_fetch_row_prepared('SELECT *
-								FROM user_auth
-								WHERE username = ? AND realm = 0',
-								array($username));
-
-							if (password_needs_rehash($p, PASSWORD_DEFAULT)) {
-								$p = password_hash($p, PASSWORD_DEFAULT);
-								db_execute_prepared('UPDATE user_auth
-									SET password = ?
-									WHERE username = ?',
-									array($p, $username));
-							}
-						}
-					}
-
-					if (!sizeof($user)) {
-						$p = md5(get_nfilter_request_var('login_password'));
-
+					cacti_log("DEBUG: User '" . $username . "' password is " . ($valid?'':'in') . "valid", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+					if ($valid) {
 						$user = db_fetch_row_prepared('SELECT *
 							FROM user_auth
-							WHERE username = ? AND password = ? AND realm = 0',
-							array($username, $p));
+							WHERE username = ? AND realm = 0',
+							array($username));
+
+						if (compat_password_needs_rehash($stored_pass, PASSWORD_DEFAULT)) {
+							$p = compat_password_hash($p, PASSWORD_DEFAULT);
+							db_execute_prepared('UPDATE user_auth
+								SET password = ?
+								WHERE username = ?',
+								array($p, $username));
+						}
 					}
 				}
 			}
@@ -334,7 +339,7 @@ if (get_nfilter_request_var('action') == 'login') {
 					if (substr_count($referer, '?')) {
 						$param_char = '&';
 					}
-					header("Location: $referer" . ($newtheme ? $param_char . 'newtheme=1':''));
+					header('Location: ' . $referer . ($newtheme ? $param_char . 'newtheme=1':''));
 				}
 
 				break;
