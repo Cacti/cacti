@@ -85,7 +85,7 @@ case 'changepassword':
 
 	// Get passwords entered for change
 	$password = get_nfilter_request_var('password');
-	$password_confirm = get_nfilter_request_var('confirm');
+	$confirm = get_nfilter_request_var('confirm');
 
 	// Get current password as entered
 	$current_password = get_nfilter_request_var('current_password');

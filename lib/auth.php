@@ -1810,7 +1810,7 @@ function secpass_login_process($username) {
 		$max = intval($secPassLockFailed);
 		if ($max > 0) {
 			$p = get_nfilter_request_var('login_password');
-			$user = db_fetch_assoc_prepared("SELECT username, lastfail, failed_attempts, locked, password
+			$user = db_fetch_row_prepared("SELECT username, lastfail, failed_attempts, locked, password
 				FROM user_auth
 				WHERE username = ?
 				AND realm = 0
@@ -1822,7 +1822,11 @@ function secpass_login_process($username) {
 					$unlock = 1440;
 				}
 
-				if ($unlock > 0 && (time() - $user['lastfail'] > 60 * $unlock)) {
+				$secs_unlock = $unlock * 60;
+				$secs_fail = time() - $user['lastfail'];
+
+				cacti_log('DEBUG: User \'' . $username . '\' secs_fail = ' . $secs_fail . ', secs_unlock = ' . $secs_unlock, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+				if ($unlock > 0 && ($secs_fail > $secs_unlock)) {
 					db_execute_prepared("UPDATE user_auth
 						SET lastfail = 0, failed_attempts = 0, locked = ''
 						WHERE username = ?
@@ -1834,11 +1838,12 @@ function secpass_login_process($username) {
 				}
 
 				$valid_pass = compat_password_verify($p, $user['password']);
+				cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass,false,'AUTH', POLLER_VERBOSITY_DEBUG);
 
 				if (!$valid_pass)
 				{
-					cacti_log("DEBUG: User '" . $username . "' used invalid password, incrementing lockout",false,"AUTH",POLLER_VERBOSITY_DEBUG);
-					$failed = $user['failed_attempts'] + 1;
+					$failed = intval($user['failed_attempts']) + 1;
+					cacti_log('LOGIN: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')',false,'AUTH', POLLER_VERBOSITY_LOW);
 					if ($failed >= $max) {
 						db_execute_prepared("UPDATE user_auth
 							SET locked = 'on'
@@ -1850,7 +1855,7 @@ function secpass_login_process($username) {
 					}
 					$user['lastfail'] = time();
 					db_execute_prepared("UPDATE user_auth
-						SET lastfail = ?,  = ?
+						SET lastfail = ?, failed_attempts = ?
 						WHERE username = ?
 						AND realm = 0
 						AND enabled = 'on'",
