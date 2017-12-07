@@ -1843,7 +1843,7 @@ function secpass_login_process($username) {
 				if (!$valid_pass)
 				{
 					$failed = intval($user['failed_attempts']) + 1;
-					cacti_log('LOGIN: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')',false,'AUTH', POLLER_VERBOSITY_LOW);
+					cacti_log('LOGIN: WARNING: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')',false,'AUTH', POLLER_VERBOSITY_LOW);
 					if ($failed >= $max) {
 						db_execute_prepared("UPDATE user_auth
 							SET locked = 'on'
