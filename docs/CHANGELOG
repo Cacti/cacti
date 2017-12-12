@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#1111: Fixed PHP NOTICE when using LDAP authenication
 -issue#1116: Fix issue with filters not allowing "None" or "All" when editing report item
 -issue#1119: Reduced amount of data feteched for CPU usage to just the data used
+-issue#1133: Fix issues with variable name and debug display
 -issue: New Graph pagenation and filter reset
 
 1.1.28
