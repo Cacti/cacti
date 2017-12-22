@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#1116: Fix issue with filters not allowing "None" or "All" when editing report item
 -issue#1119: Reduced amount of data feteched for CPU usage to just the data used
 -issue#1133: Fix issues with variable name and debug display
+-issue#1143: ss_host_cpu.php - Division by zero / Invalid Return Value
 -issue: New Graph pagenation and filter reset
 
 1.1.28
