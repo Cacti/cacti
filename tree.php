@@ -161,23 +161,23 @@ switch (get_request_var('action')) {
 function tree_down() {
 	$tree_id = get_filter_request_var('id');
 
-	$seq = db_fetch_cell_prepared('SELECT sequence 
-		FROM graph_tree 
-		WHERE id = ?', 
+	$seq = db_fetch_cell_prepared('SELECT sequence
+		FROM graph_tree
+		WHERE id = ?',
 		array($tree_id));
 
 	$new_seq = $seq + 1;
 
 	/* update the old tree first */
-	db_execute_prepared('UPDATE graph_tree 
-		SET sequence = ? 
-		WHERE sequence = ?', 
+	db_execute_prepared('UPDATE graph_tree
+		SET sequence = ?
+		WHERE sequence = ?',
 		array($seq, $new_seq));
 
 	/* update the tree in question */
-	db_execute_prepared('UPDATE graph_tree 
-		SET sequence = ? 
-		WHERE id = ?', 
+	db_execute_prepared('UPDATE graph_tree
+		SET sequence = ?
+		WHERE id = ?',
 		array($new_seq, $tree_id));
 
 	header('Location: tree.php?header=false');
@@ -187,23 +187,23 @@ function tree_down() {
 function tree_up() {
 	$tree_id = get_filter_request_var('id');
 
-	$seq = db_fetch_cell_prepared('SELECT sequence 
-		FROM graph_tree 
-		WHERE id = ?', 
+	$seq = db_fetch_cell_prepared('SELECT sequence
+		FROM graph_tree
+		WHERE id = ?',
 		array($tree_id));
 
 	$new_seq = $seq - 1;
 
 	/* update the old tree first */
-	db_execute_prepared('UPDATE graph_tree 
-		SET sequence = ? 
-		WHERE sequence = ?', 
+	db_execute_prepared('UPDATE graph_tree
+		SET sequence = ?
+		WHERE sequence = ?',
 		array($seq, $new_seq));
 
 	/* update the tree in question */
-	db_execute_prepared('UPDATE graph_tree 
-		SET sequence = ? 
-		WHERE id = ?', 
+	db_execute_prepared('UPDATE graph_tree
+		SET sequence = ?
+		WHERE id = ?',
 		array($new_seq, $tree_id));
 
 	header('Location: tree.php?header=false');
@@ -221,9 +221,9 @@ function get_host_sort_type() {
 					$branch = $parts[1];
 					input_validate_input_number($branch);
 
-					$sort_type = db_fetch_cell_prepared('SELECT host_grouping_type 
-						FROM graph_tree_items 
-						WHERE id = ?', 
+					$sort_type = db_fetch_cell_prepared('SELECT host_grouping_type
+						FROM graph_tree_items
+						WHERE id = ?',
 						array($branch));
 
 					if ($sort_type == HOST_GROUPING_GRAPH_TEMPLATE) {
@@ -264,9 +264,9 @@ function set_host_sort_type() {
 						$type = HOST_GROUPING_DATA_QUERY_INDEX;
 					}
 
-					db_execute_prepared('UPDATE graph_tree_items 
-						SET host_grouping_type = ? 
-						WHERE id = ?', 
+					db_execute_prepared('UPDATE graph_tree_items
+						SET host_grouping_type = ?
+						WHERE id = ?',
 						array($type, $branch));
 
 					break;
@@ -290,9 +290,9 @@ function get_branch_sort_type() {
 
 				input_validate_input_number($branch);
 
-				$sort_type = db_fetch_cell_prepared('SELECT sort_children_type 
-					FROM graph_tree_items 
-					WHERE id = ?', 
+				$sort_type = db_fetch_cell_prepared('SELECT sort_children_type
+					FROM graph_tree_items
+					WHERE id = ?',
 					array($branch));
 
 				switch($sort_type) {
@@ -613,9 +613,9 @@ function tree_edit() {
 	load_current_session_value('type', 'sess_tree_edit_type', '0');
 
 	if (!isempty_request_var('id')) {
-		$tree = db_fetch_row_prepared('SELECT * 
-			FROM graph_tree 
-			WHERE id = ?', 
+		$tree = db_fetch_row_prepared('SELECT *
+			FROM graph_tree
+			WHERE id = ?',
 			array(get_request_var('id')));
 
 		$header_label = __('Trees [edit: %s]', html_escape($tree['name']) );
@@ -680,15 +680,28 @@ function tree_edit() {
 	if (!isempty_request_var('id')) {
 		print $lockdiv;
 
-		print "<table class='treeTable'><tr><td class='treeArea'>\n";
+		print "<table class='treeTable' style='width:100%;'>\n";
+
+		print "<tr class='even' id='tree_filter'>\n";
+		print "<td colspan='4'>";
+		print "<table><tr><td>" . __('Display') . "</td>";
+		print "<td>\n";
+		print "<select id='element'>\n";
+		print "<option id='0'>" . __('All') . "</option>";
+		print "<option id='1'>" . __('Sites') . "</option>";
+		print "<option id='2'>" . __('Devices') . "</option>";
+		print "<option id='3'>" . __('Graphs') . "</option>";
+		print "</select></td></tr></table></td></tr>";
+
+		print "<tr><td class='treeArea'>\n";
 
 		html_start_box(__('Tree Items'), '100%', '', '3', 'center', '');
 
-		echo "<tr><td style='padding:7px;'><div id='jstree'></div></td></tr>\n";
+		print "<tr><td style='padding:7px;'><div id='jstree'></div></td></tr>\n";
 
 		html_end_box();
 
-		print "</td><td></td><td class='treeItemsArea'>\n";
+		print "</td><td class='treeItemsArea treeItemsAreaSite'>\n";
 
 		html_start_box(__('Available Sites'), '100%', '', '3', 'center', '');
 		?>
@@ -717,13 +730,13 @@ function tree_edit() {
 		html_start_box('', '100%', '', '3', 'center', '');
 		html_header($display_text);
 
-		echo "<tr><td style='padding:7px;'><div id='sites'>\n";
+		print "<tr><td style='padding:7px;'><div id='sites'>\n";
 		display_sites();
-		echo "</div></td></tr>\n";
+		print "</div></td></tr>\n";
 
 		html_end_box();
 
-		print "</td><td></td><td class='treeItemsArea'>\n";
+		print "</td><td class='treeItemsArea treeItemsAreaDevice'>\n";
 
 		html_start_box(__('Available Devices'), '100%', '', '3', 'center', '');
 		?>
@@ -752,13 +765,13 @@ function tree_edit() {
 		html_start_box('', '100%', '', '3', 'center', '');
 		html_header($display_text);
 
-		echo "<tr><td style='padding:7px;'><div id='hosts'>\n";
+		print "<tr><td style='padding:7px;'><div id='hosts'>\n";
 		display_hosts();
-		echo "</div></td></tr>\n";
+		print "</div></td></tr>\n";
 
 		html_end_box();
 
-		print "</td><td></td><td class='treeItemsArea'>\n";
+		print "</td><td class='treeItemsArea treeItemsAreaGraph'>\n";
 
 		html_start_box(__('Available Graphs'), '100%', '', '3', 'center', '');
 		?>
@@ -786,9 +799,9 @@ function tree_edit() {
 		html_start_box('', '100%', '', '3', 'center', '');
 		html_header($display_text);
 
-		echo "<tr><td style='padding:7px;'><div id='graphs'>\n";
+		print "<tr><td style='padding:7px;'><div id='graphs'>\n";
 		display_graphs();
-		echo "</div></td></tr>\n";
+		print "</div></td></tr>\n";
 
 		html_end_box();
 
@@ -922,21 +935,70 @@ function tree_edit() {
 				loadPageNoHeader(strURL);
 			});
 
-			var height      = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
-			var sheight     = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
-			var hheight     = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
-			var gheight     = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
+			var height  = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
+			var sheight = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
+			var hheight = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
+			var gheight = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
+
+			$('#element').change(function() {
+				resizer();
+			});
 
 			$(window).resize(function() {
-				height      = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
-				sheight     = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
-				hheight     = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
-				gheight     = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
+				resizer();
+			});
+
+			function resizer() {
+				height  = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
+				sheight = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
+				hheight = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
+				gheight = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
 				$('#jstree').css('height', height).css('overflow','auto');;
 				$('#hosts').css('height', hheight).css('overflow','auto');;
 				$('#sites').css('height', hheight).css('overflow','auto');;
 				$('#graphs').css('height', gheight).css('overflow','auto');;
-			});
+
+				switchDisplay();
+			}
+
+			function switchDisplay() {
+				var selected = $('#element').prop('selectedIndex');
+				var mainWidth = parseInt($('#main').outerWidth());
+				var treeWidth = parseInt($('.treeTable').outerWidth());
+
+				if (selected == 0) {
+					if (mainWidth != treeWidth) {
+						$('#element').prop('selectedIndex', 1);
+						if (typeof $('#element').selectmenu() === 'object') {
+							$('#element').selectmenu('refresh');
+						}
+						selected = $('#element').prop('selectedIndex');
+					}
+				}
+
+				switch(selected) {
+					case 0:
+						$('.treeItemsAreaSite').show();
+						$('.treeItemsAreaDevice').show();
+						$('.treeItemsAreaGraph').show();
+						break;
+					case 1:
+						$('.treeItemsAreaSite').show();
+						$('.treeItemsAreaDevice').hide();
+						$('.treeItemsAreaGraph').hide();
+						break;
+					case 2:
+						$('.treeItemsAreaSite').hide();
+						$('.treeItemsAreaDevice').show();
+						$('.treeItemsAreaGraph').hide();
+						break;
+					case 3:
+						$('.treeItemsAreaSite').hide();
+						$('.treeItemsAreaDevice').hide();
+						$('.treeItemsAreaGraph').show();
+						break;
+				}
+			}
 
 			$("#jstree")
 			.jstree({
@@ -1522,7 +1584,7 @@ function tree_edit() {
 
 function display_sites() {
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE name LIKE '%" . get_request_var('filter') . "%' 
+		$sql_where = "WHERE name LIKE '%" . get_request_var('filter') . "%'
 			OR city LIKE '%" . get_request_var('filter') . "%'
 			OR state LIKE '%" . get_request_var('filter') . "%'
 			OR country LIKE '%" . get_request_var('filter') . "%'";
@@ -1534,7 +1596,7 @@ function display_sites() {
 
 	if (sizeof($sites)) {
 		foreach($sites as $s) {
-			echo "<ul><li id='tsite:" . $s['id'] . "' data-jstree='{ \"type\" : \"site\"}'>" . $s['name'] . "</li></ul>\n";
+			print "<ul><li id='tsite:" . $s['id'] . "' data-jstree='{ \"type\" : \"site\"}'>" . $s['name'] . "</li></ul>\n";
 		}
 	}
 }
@@ -1550,7 +1612,7 @@ function display_hosts() {
 
 	if (sizeof($hosts)) {
 		foreach($hosts as $h) {
-			echo "<ul><li id='thost:" . $h['id'] . "' data-jstree='{ \"type\" : \"device\"}'>" . $h['description'] . ' (' . $h['hostname'] . ')' . "</li></ul>\n";
+			print "<ul><li id='thost:" . $h['id'] . "' data-jstree='{ \"type\" : \"device\"}'>" . $h['description'] . ' (' . $h['hostname'] . ')' . "</li></ul>\n";
 		}
 	}
 }
@@ -1576,7 +1638,7 @@ function display_graphs() {
 	if (sizeof($graphs)) {
 		foreach($graphs as $g) {
 			if (is_graph_allowed($g['id'])) {
-				echo "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . $g['title'] . '</li></ul>';
+				print "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . $g['title'] . '</li></ul>';
 			}
 		}
 	}
