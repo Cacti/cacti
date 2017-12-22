@@ -407,15 +407,49 @@ function dqUpdateDeps(snmp_query_id) {
 		$('#all_'+snmp_query_id).prop('checked', false);
 	}
 
-	$('tr[id^="dqline'+snmp_query_id+'_"]').not('.disabled_row').each(function() {
-		$(this).find(':checkbox').click(function() {
-			$(this).closest('tr').toggleClass('selected');
+	var dqlines = $('tr[id^="dqline'+snmp_query_id+'_"]').not('.disabled_row');
+	var checkboxes = dqlines.find(':checkbox');
+	dqlines.each(function() {
+		function updateCheckboxes(clicked_element) {
+			var prev_checkbox = $(clicked_element).closest('tr').siblings().find('[data-prev-check]:checkbox');
+			if (!prev_checkbox.length) {
+				return;
+			}
+			var check = prev_checkbox.attr('data-prev-check') == 'true';
+			var start = checkboxes.index(prev_checkbox);
+			var stop = checkboxes.index(clicked_element);
+			var i = Math.min(start, stop);
+			var j = Math.max(start, stop);
+			for (var k = i; k <= j; k++) {
+				var tr = $(checkboxes[k]).prop('checked', check).closest('tr');
+				if (check) {
+					tr.addClass('selected');
+				} else {
+					tr.removeClass('selected');
+				}
+			}
+		}
+
+		$(this).find(':checkbox').click(function(e) {
+			if (e.shiftKey) {
+				updateCheckboxes(this);
+			} else {
+				$(this).closest('tr').toggleClass('selected');
+				$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
+				$(this).attr('data-prev-check', $(this).prop('checked'));
+			}
 		});
 
 		$(this).find('td').not('.checkbox').each(function() {
-			$(this).click(function() {
-				checked = $(this).closest('tr').find(':checkbox').is(':checked');
-				$(this).closest('tr').toggleClass('selected').find(':checkbox').prop('checked', !checked);;
+			$(this).click(function(e) {
+				if (e.shiftKey) {
+					updateCheckboxes($(this).closest('tr').find(':checkbox'));
+				} else {
+					checked = $(this).closest('tr').find(':checkbox').is(':checked');
+					$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
+					$(this).closest('tr').toggleClass('selected').find(':checkbox').prop('checked', !checked)
+						.attr('data-prev-check', !checked);
+				}
 			});
 		});
 	});

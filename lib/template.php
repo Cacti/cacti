@@ -941,10 +941,10 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 
 	$title = str_replace('<ds_title>', $title_template, $data_source_title);
 
-	db_execute('INSERT INTO data_template
-		(id,name,hash)
-		VALUES (0, ?, ?)',
-		array($totle, get_hash_data_template(0)));
+	db_execute('INSERT INTO data_template 
+		(id,name,hash) 
+		VALUES (0, ?, ?)', 
+		array($title, get_hash_data_template(0)));
 
 	$data_template_id = db_fetch_insert_id();
 
