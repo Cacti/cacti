@@ -1615,13 +1615,12 @@ div#gtabs {
 }
 
 .maintabs nav {
-
+	display: none;
 }
 
 .maintabs li {
 	bottom:-1px;
 	float:left;
-	#position:relative;
 }
 
 .maintabs-submenu a{
