@@ -1679,6 +1679,54 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	return $host_list;
 }
 
+function get_allowed_sites($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0, $site_id = 0) {
+	if ($limit != '') {
+		$limit = "LIMIT $limit";
+	}
+
+	if ($order_by != '') {
+		$order_by = "ORDER BY $order_by";
+	}
+
+	if ($sql_where != '') {
+		$sql_where = "WHERE $sql_where";
+	}
+
+	if ($site_id > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " s.id=$site_id";
+	}
+
+	if ($user == -1) {
+		$auth_method = 0;
+	} else {
+		$auth_method = read_config_option('auth_method');
+	}
+
+	if ($user == 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user = $_SESSION['sess_user_id'];
+		} else {
+			return array();
+		}
+	}
+
+	$sites = db_fetch_assoc("SELECT DISTINCT s.id, s.name
+		FROM sites AS s
+		INNER JOIN host AS h
+		ON s.id=h.site_id
+		$sql_where
+		$order_by
+		$limit");
+
+	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT s.id)
+		FROM sites AS s
+		INNER JOIN host AS h
+		ON s.id=h.site_id
+		$sql_where");
+
+	return $sites;
+}
+
 function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'description', $limit = '', &$total_rows = 0, $user = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";

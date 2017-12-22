@@ -173,15 +173,17 @@ function form_save() {
 
 		$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $suggested_values);
 
-		debug_log_insert('new_graphs', __('Created graph: %s', get_graph_title($return_array['local_graph_id'])));
+		if ($return_array !== false) {
+			debug_log_insert('new_graphs', __('Created graph: %s', get_graph_title($return_array['local_graph_id'])));
 
-		/* lastly push host-specific information to our data sources */
-		if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
-			foreach($return_array['local_data_id'] as $item) {
-				push_out_host($host_id, $item);
+			/* lastly push host-specific information to our data sources */
+			if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
+				foreach($return_array['local_data_id'] as $item) {
+					push_out_host($host_id, $item);
+				}
+			} else {
+				debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
 			}
-		} else {
-			debug_log_insert('new_graphs', __('ERROR: no Data Source associated. Check Template'));
 		}
 
 		if (isset($return_array['local_graph_id'])) {
@@ -486,7 +488,7 @@ function form_actions() {
 					set_request_var('delete_type', 1);
 				}
 
-				api_delete_graphs($selected_items, get_request_var('delete_type'));
+				api_delete_graphs($selected_items, get_filter_request_var('delete_type'));
 			} elseif (get_request_var('drp_action') == '2') { // change graph template
 				$gt_id_unparsed      = get_nfilter_request_var('graph_template_id');
 				$gt_id_prev_unparsed = get_nfilter_request_var('graph_template_id_prev');
@@ -689,6 +691,7 @@ function form_actions() {
 		} else {
 			header('Location: graphs.php?header=false');
 		}
+
 		exit;
 	}
 
@@ -1565,6 +1568,11 @@ function validate_graph_request_vars() {
 			'pageset' => true,
 			'default' => '-1'
 			),
+		'site_id' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'pageset' => true,
+			'default' => '-1'
+			),
 		'template_id' => array(
 			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])')),
@@ -1590,7 +1598,9 @@ function graph_management() {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL  = 'graphs.php?host_id=' + $('#host_id').val();
+		strURL  = 'graphs.php';
+		strURL += '?host_id=' + $('#host_id').val();
+		strURL += '&site_id=' + $('#site_id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&rfilter=' + $('#rfilter').val();
 		strURL += '&template_id=' + $('#template_id').val();
@@ -1635,6 +1645,7 @@ function graph_management() {
 			<form id='form_graphs' action='graphs.php'>
 			<table class='filterTable'>
 				<tr>
+					<?php print html_site_filter(get_request_var('site_id'));?>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
 						<?php print __('Template');?>
@@ -1715,6 +1726,14 @@ function graph_management() {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
 	}
 
+	if (get_request_var('site_id') == '-1') {
+		/* Show all items */
+	} elseif (isempty_request_var('site_id')) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.site_id=0';
+	} elseif (!isempty_request_var('site_id')) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.site_id=' . get_request_var('site_id');
+	}
+
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
@@ -1743,6 +1762,10 @@ function graph_management() {
 		ON gl.graph_template_id=gt.id
 		LEFT JOIN aggregate_graphs AS ag
 		ON ag.local_graph_id=gl.id
+		LEFT JOIN host AS h
+		ON h.id=gl.host_id
+		LEFT JOIN sites AS s
+		ON h.site_id=s.id
 		$sql_where");
 
 	$sql_order = get_order_string();
@@ -1757,6 +1780,10 @@ function graph_management() {
 		ON gl.graph_template_id=gt.id
 		LEFT JOIN aggregate_graphs AS ag
 		ON ag.local_graph_id=gl.id
+		LEFT JOIN host AS h
+		ON h.id=gl.host_id
+		LEFT JOIN sites AS s
+		ON h.site_id=s.id
 		$sql_where
 		$sql_order
 		$sql_limit");

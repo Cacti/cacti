@@ -333,14 +333,14 @@ function form_actions() {
 
 				switch (get_request_var('delete_type')) {
 					case '2': /* delete all graph items tied to this data source */
-						$data_template_rrds = array_rekey(db_fetch_assoc('SELECT id 
-							FROM data_template_rrd 
+						$data_template_rrds = array_rekey(db_fetch_assoc('SELECT id
+							FROM data_template_rrd
 							WHERE ' . array_to_sql_or($selected_items, 'local_data_id')), 'id', 'id');
 
 						/* loop through each data source item */
 						if (sizeof($data_template_rrds) > 0) {
-							db_execute('DELETE FROM graph_templates_item 
-								WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ') 
+							db_execute('DELETE FROM graph_templates_item
+								WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ')
 								AND local_graph_id > 0');
 						}
 
@@ -547,19 +547,19 @@ function data_edit($incform = true) {
 	if (!isempty_request_var('id')) {
 		$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id
 			FROM data_template_data
-			WHERE local_data_id = ?', 
+			WHERE local_data_id = ?',
 			array(get_request_var('id')));
 
 		$template_data = db_fetch_row_prepared('SELECT id, data_input_id
 			FROM data_template_data
-			WHERE data_template_id = ? 
-			AND local_data_id = 0', 
+			WHERE data_template_id = ?
+			AND local_data_id = 0',
 			array($data['data_template_id']));
 
 		$host = db_fetch_row_prepared('SELECT host.id, host.hostname
 			FROM (data_local, host)
-			WHERE data_local.host_id = host.id 
-			AND data_local.id = ?', 
+			WHERE data_local.host_id = host.id
+			AND data_local.id = ?',
 			array(get_request_var('id')));
 	}
 
@@ -578,9 +578,9 @@ function data_edit($incform = true) {
 			array($data['data_input_id'])
 		);
 
-		$data_input_name = db_fetch_cell_prepared('SELECT name 
-			FROM data_input 
-			WHERE id = ?', 
+		$data_input_name = db_fetch_cell_prepared('SELECT name
+			FROM data_input
+			WHERE id = ?',
 			array($data['data_input_id']));
 
 		html_start_box(__('Custom Data [data input: %s]', $data_input_name), '100%', '', '3', 'center', '');
@@ -658,13 +658,13 @@ function ds_rrd_remove() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM data_template_rrd 
-		WHERE id = ?', 
+	db_execute_prepared('DELETE FROM data_template_rrd
+		WHERE id = ?',
 		array(get_request_var('id')));
 
-	db_execute_prepared('UPDATE graph_templates_item 
-		SET task_item_id = 0 
-		WHERE task_item_id = ?', 
+	db_execute_prepared('UPDATE graph_templates_item
+		SET task_item_id = 0
+		WHERE task_item_id = ?',
 		array(get_request_var('id')));
 
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('local_data_id'));
@@ -675,9 +675,9 @@ function ds_rrd_add() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared("INSERT INTO data_template_rrd 
-		(local_data_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) 
-		VALUES (?, 100, 0, 600, 1, 'ds')", 
+	db_execute_prepared("INSERT INTO data_template_rrd
+		(local_data_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name)
+		VALUES (?, 100, 0, 600, 1, 'ds')",
 		array(get_request_var('id')));
 
 	$data_template_rrd_id = db_fetch_insert_id();
@@ -888,10 +888,10 @@ function ds_edit() {
 
 	/* only display the "inputs" area if we are using a data template for this data source */
 	if (!empty($data['data_template_id'])) {
-		$template_data_rrds = db_fetch_assoc_prepared('SELECT * 
-			FROM data_template_rrd 
-			WHERE local_data_id = ? 
-			ORDER BY data_source_name', 
+		$template_data_rrds = db_fetch_assoc_prepared('SELECT *
+			FROM data_template_rrd
+			WHERE local_data_id = ?
+			ORDER BY data_source_name',
 			array(get_request_var('id')));
 
 		html_start_box(__('Supplemental Data Template Data'), '100%', true, '3', 'center', '');
@@ -938,10 +938,10 @@ function ds_edit() {
 
 		/* fetch ALL rrd's for this data source */
 		if (!isempty_request_var('id')) {
-			$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name 
-				FROM data_template_rrd 
-				WHERE local_data_id = ? 
-				ORDER BY data_source_name', 
+			$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name
+				FROM data_template_rrd
+				WHERE local_data_id = ?
+				ORDER BY data_source_name',
 				array(get_request_var('id')));
 		}
 
@@ -952,19 +952,19 @@ function ds_edit() {
 
 		/* get more information about the rrd we chose */
 		if (!isempty_request_var('view_rrd')) {
-			$local_data_template_rrd_id = db_fetch_cell_prepared('SELECT local_data_template_rrd_id 
-				FROM data_template_rrd 
-				WHERE id = ?', 
+			$local_data_template_rrd_id = db_fetch_cell_prepared('SELECT local_data_template_rrd_id
+				FROM data_template_rrd
+				WHERE id = ?',
 				array(get_request_var('view_rrd')));
 
-			$rrd = db_fetch_row_prepared('SELECT * 
-				FROM data_template_rrd 
-				WHERE id = ?', 
+			$rrd = db_fetch_row_prepared('SELECT *
+				FROM data_template_rrd
+				WHERE id = ?',
 				array(get_request_var('view_rrd')));
 
-			$rrd_template = db_fetch_row_prepared('SELECT * 
-				FROM data_template_rrd 
-				WHERE id = ?', 
+			$rrd_template = db_fetch_row_prepared('SELECT *
+				FROM data_template_rrd
+				WHERE id = ?',
 				array($local_data_template_rrd_id));
 
 			$header_label = '[edit: ' . $rrd['data_source_name'] . ']';
@@ -1149,6 +1149,11 @@ function ds() {
 			'pageset' => true,
 			'default' => '-1'
 			),
+		'site_id' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'pageset' => true,
+			'default' => '-1'
+			),
 		'status' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
@@ -1189,7 +1194,9 @@ function ds() {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL  = 'data_sources.php?host_id=' + $('#host_id').val();
+		strURL  = 'data_sources.php';
+		strURL += '?host_id=' + $('#host_id').val();
+		strURL += '&site_id=' + $('#site_id').val();
 		strURL += '&rfilter=' + $('#rfilter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&status=' + $('#status').val();
@@ -1242,6 +1249,7 @@ function ds() {
 		<form id='form_data_sources' name='form_data_sources' action='data_sources.php'>
 			<table class='filterTable'>
 				<tr>
+					<?php print html_site_filter(get_request_var('site_id'));?>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
 						<?php print __('Template');?>
@@ -1266,16 +1274,6 @@ function ds() {
 							}
 							?>
 
-						</select>
-					</td>
-					<td>
-						<?php print __('Status');?>
-					</td>
-					<td>
-						<select id='status' name='status' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
-							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
-							<option value='2'<?php if (get_request_var('status') == '2') {?> selected<?php }?>><?php print __('Disabled');?></option>
 						</select>
 					</td>
 					<td>
@@ -1308,6 +1306,16 @@ function ds() {
 								}
 							}
 							?>
+						</select>
+					</td>
+					<td>
+						<?php print __('Status');?>
+					</td>
+					<td>
+						<select id='status' name='status' onChange='applyFilter()'>
+							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
+							<option value='2'<?php if (get_request_var('status') == '2') {?> selected<?php }?>><?php print __('Disabled');?></option>
 						</select>
 					</td>
 					<td>
@@ -1361,11 +1369,19 @@ function ds() {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.host_id=' . get_request_var('host_id');
 	}
 
+	if (get_request_var('site_id') == '-1') {
+		/* Show all items */
+	} elseif (isempty_request_var('site_id')) {
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (h.site_id=0 OR h.site_id IS NULL)';
+	} elseif (!isempty_request_var('site_id')) {
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' h.site_id=' . get_request_var('site_id');
+	}
+
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.data_template_id=0';
-	} elseif (!isempty_request_var('host_id')) {
+	} elseif (!isempty_request_var('template_id')) {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.data_template_id=' . get_request_var('template_id');
 	}
 
@@ -1402,7 +1418,9 @@ function ds() {
 		LEFT JOIN data_template_rrd AS dtr
 		ON dtr.local_data_id=dtd.local_data_id
 		LEFT JOIN graph_templates_item AS gti
-		ON (gti.task_item_id=dtr.id)
+		ON gti.task_item_id=dtr.id
+		LEFT JOIN host AS h
+		ON h.id=dl.host_id
 		$sql_where1
 		GROUP BY dl.id
 		$sql_having"));
@@ -1427,7 +1445,9 @@ function ds() {
 		LEFT JOIN data_template_rrd AS dtr
 		ON dtr.local_data_id=dtd.local_data_id
 		LEFT JOIN graph_templates_item AS gti
-		ON (gti.task_item_id=dtr.id)
+		ON gti.task_item_id=dtr.id
+		LEFT JOIN host AS h
+		ON h.id=dl.host_id
 		$sql_where1
 		GROUP BY dl.id
 		$sql_having
