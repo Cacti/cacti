@@ -1,18 +1,18 @@
 Cacti CHANGELOG
 
 1.1.29
--issue#965: Fixed issue with duplicated error message and incorrect error code when using LDAP authentication
--issue#1084: Fix issue with Graph Tree Branch not properly populating when editing report item
--issue#1104: Fix issue with Datetime formatting in developer debug mode
--issue#1106: Fix issue with Template Filters having empty row
--issue#1109: Fixed URL used in redirection when referrer already has parameters in it
+-issue#965: Duplicate error message and incorrect error code when using LDAP authentication
+-issue#1084: Graph Tree Branch not properly populating when editing report item
+-issue#1104: Datetime formatting in developer debug mode incorrect
+-issue#1106: Template Filters has empty row
+-issue#1109: URL used in redirection when referrer already has parameters in it
 -issue#1110: Add CPU Total to 'SNMP - Get Processor Information'
--issue#1111: Fixed PHP NOTICE when using LDAP authenication
--issue#1116: Fix issue with filters not allowing "None" or "All" when editing report item
--issue#1119: Reduced amount of data feteched for CPU usage to just the data used
--issue#1133: Fix issues with variable name and debug display
+-issue#1111: PHP NOTICE when using LDAP authenication
+-issue#1116: Filters not allowing "None" or "All" when editing report item
+-issue#1119: Reduced amount of data fetched for CPU usage to just the data used
+-issue#1133: Fix issues with variable name and debug log
 -issue#1143: ss_host_cpu.php - Division by zero / Invalid Return Value
--issue: New Graph pagenation and filter reset
+-issue: Updated Graph pagenation and filter reset
 
 1.1.28
 -issue#958: User Group Tree permissions not calculated fully
