@@ -310,6 +310,27 @@ $.tablesorter.addParser({
 	});
 })(jQuery);
 
+// helper function which selects row range when shift key is pressed during click
+function updateCheckboxes(checkboxes, clicked_element) {
+	var prev_checkbox = $(clicked_element).closest('tr').siblings().find('[data-prev-check]:checkbox');
+	if (!prev_checkbox.length) {
+		return;
+	}
+	var check = prev_checkbox.attr('data-prev-check') == 'true';
+	var start = checkboxes.index(prev_checkbox);
+	var stop = checkboxes.index(clicked_element);
+	var i = Math.min(start, stop);
+	var j = Math.max(start, stop);
+	for (var k = i; k <= j; k++) {
+		var tr = $(checkboxes[k]).prop('checked', check).closest('tr');
+		if (check) {
+			tr.addClass('selected');
+		} else {
+			tr.removeClass('selected');
+		}
+	}
+}
+
 /** applySelectorVisibility - This function set's the initial visibility
  *  of graphs for creation. Is will scan the against preset variables
  *  taking action as required to enable or disable rows. */
@@ -353,19 +374,33 @@ function applySelectorVisibilityAndActions() {
 		}
 	});
 
+	var lines = $('tr[id^="line"].selectable');
+	var checkboxes = lines.find(':checkbox');
+
 	// Create Actions for Rows
-	$('tr[id^="line"].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
-		$(this).click(function(data) {
-			$(this).closest('tr').toggleClass('selected');
-			var checkbox = $(this).parent().find(':checkbox');
-			checkbox.prop('checked', !checkbox.is(':checked'));
+	lines.filter(':not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
+		$(this).click(function(e) {
+			if (e.shiftKey) {
+				updateCheckboxes(checkboxes, $(this).closest('tr').find(':checkbox'));
+			} else {
+				var checked = $(this).closest('tr').find(':checkbox').is(':checked');
+				$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
+				$(this).closest('tr').toggleClass('selected').find(':checkbox').prop('checked', !checked)
+					.attr('data-prev-check', !checked);
+			}
 		});
 	});
 
 	// Create Actions for Checkboxes
-	$('tr[id^="line"].selectable').find('input.checkbox').click(function(data) {
+	lines.find('input.checkbox').click(function(e) {
 		if (!$(this).is(':disabled')) {
-			$(this).closest('tr').toggleClass('selected');
+			if (e.shiftKey) {
+				updateCheckboxes(checkboxes, this);
+			} else {
+				$(this).closest('tr').toggleClass('selected');
+				$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
+				$(this).attr('data-prev-check', $(this).prop('checked'));
+			}
 		}
 	});
 }
@@ -410,29 +445,9 @@ function dqUpdateDeps(snmp_query_id) {
 	var dqlines = $('tr[id^="dqline'+snmp_query_id+'_"]').not('.disabled_row');
 	var checkboxes = dqlines.find(':checkbox');
 	dqlines.each(function() {
-		function updateCheckboxes(clicked_element) {
-			var prev_checkbox = $(clicked_element).closest('tr').siblings().find('[data-prev-check]:checkbox');
-			if (!prev_checkbox.length) {
-				return;
-			}
-			var check = prev_checkbox.attr('data-prev-check') == 'true';
-			var start = checkboxes.index(prev_checkbox);
-			var stop = checkboxes.index(clicked_element);
-			var i = Math.min(start, stop);
-			var j = Math.max(start, stop);
-			for (var k = i; k <= j; k++) {
-				var tr = $(checkboxes[k]).prop('checked', check).closest('tr');
-				if (check) {
-					tr.addClass('selected');
-				} else {
-					tr.removeClass('selected');
-				}
-			}
-		}
-
 		$(this).find(':checkbox').click(function(e) {
 			if (e.shiftKey) {
-				updateCheckboxes(this);
+				updateCheckboxes(checkboxes, this);
 			} else {
 				$(this).closest('tr').toggleClass('selected');
 				$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
@@ -443,9 +458,9 @@ function dqUpdateDeps(snmp_query_id) {
 		$(this).find('td').not('.checkbox').each(function() {
 			$(this).click(function(e) {
 				if (e.shiftKey) {
-					updateCheckboxes($(this).closest('tr').find(':checkbox'));
+					updateCheckboxes(checkboxes, $(this).closest('tr').find(':checkbox'));
 				} else {
-					checked = $(this).closest('tr').find(':checkbox').is(':checked');
+					var checked = $(this).closest('tr').find(':checkbox').is(':checked');
 					$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
 					$(this).closest('tr').toggleClass('selected').find(':checkbox').prop('checked', !checked)
 						.attr('data-prev-check', !checked);
