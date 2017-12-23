@@ -1840,8 +1840,7 @@ function secpass_login_process($username) {
 				$valid_pass = compat_password_verify($p, $user['password']);
 				cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass,false,'AUTH', POLLER_VERBOSITY_DEBUG);
 
-				if (!$valid_pass)
-				{
+				if (!$valid_pass) {
 					$failed = intval($user['failed_attempts']) + 1;
 					cacti_log('LOGIN: WARNING: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')',false,'AUTH', POLLER_VERBOSITY_LOW);
 					if ($failed >= $max) {
@@ -1944,8 +1943,7 @@ function secpass_check_history($id, $p) {
 			array_shift($passes);
 		}
 		if (!empty($passes)) {
-			foreach ($passes as $hash)
-			{
+			foreach ($passes as $hash) {
 				if (compat_password_verify($p, $hash))
 					return false;
 			}
