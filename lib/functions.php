@@ -575,7 +575,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 						return;
 					}
 				}
-			} elseif ($level >= $logVerbosity) {
+			} elseif ($level > $logVerbosity) {
 				return;
 			}
 		}
@@ -4820,8 +4820,9 @@ function get_cacti_version() {
  * cacti_version_compare - Compare Cacti version numbers
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
-	$version1 = version_to_decimal($version1);
-	$version2 = version_to_decimal($version2);
+	$length   = max(strlen($version1), strlen($version2));
+	$version1 = version_to_decimal($version1, $length);
+	$version2 = version_to_decimal($version2, $length);
 
 	switch ($operator) {
 		case '<':
@@ -4858,22 +4859,22 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 /**
  * version_to_decimal - convert version string to decimal
  */
-function version_to_decimal($version) {
-	$alpha  = substr($version, -1);
+function version_to_decimal($version, $length = 1) {
 	$newver = '';
 
-	if (!is_numeric($alpha)) {
-		$version = substr($version, 0, -1);
-		$alpha   = ord($alpha) / 1000;
-	} else {
-		$alpha   = 0;
-	}
-
 	for ($i = 0; $i < strlen($version); $i++) {
-		$newver .= ord($version[$i]);
+		if ($version[$i] != '.') {
+			$newver .= ord($version[$i]);
+		}else{
+			$newver .= ord('0');
+		}
 	}
 
-	return hexdec($newver) + $alpha;
+	for ($j = $i; $j < $length; $j++) {
+		$newver .= ord('0');
+	}
+
+	return hexdec($newver);
 }
 
 /**
