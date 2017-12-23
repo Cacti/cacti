@@ -81,7 +81,8 @@ if (get_nfilter_request_var('action') == 'login') {
 
 	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm ". $frv_realm . ", using method " . $auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-	$auth_local_required = true;
+	// Realms of 1 or below are internal
+	$auth_lcoal_required = ($frv_realm < 2);
 
 	switch ($auth_method) {
 	case '0':
@@ -109,7 +110,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		break;
 	case '3':
 		/* LDAP Auth */
- 		if (get_nfilter_request_var('realm') == '2' && get_nfilter_request_var('login_password') != '') {
+ 		if ($frv_realm == '2' && get_nfilter_request_var('login_password') != '') {
 			/* include LDAP lib */
 			include_once('./lib/ldap.php');
 
@@ -158,7 +159,6 @@ if (get_nfilter_request_var('action') == 'login') {
 	case '4':
 		cacti_log("DEBUG: User '" . $username . "' attempting domain lookup for realm " . $frv_realm . " with " . ($auth_local_required ? '':'no') . " local lookup", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 		if ($frv_realm > 0) {
-			$auth_local_required = false;
 			domains_login_process($username);
 		}
 		break;
