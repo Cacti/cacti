@@ -714,6 +714,9 @@
 		function zoomAction_zoom_out(multiplier){
 			setCustomFilterActionActionAndDate();
 
+			/* hide context menu if open */
+			zoomContextMenu_hide();
+
 			multiplier--;
 			/* avoid that we can not zoom out anymore if start and end date will be equal */
 			if (zoom.graph.timespan == 0) {
