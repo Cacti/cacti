@@ -113,7 +113,7 @@ if ($old_cacti_version == CACTI_VERSION) {
 foreach ($cacti_version_codes as $cacti_version => $hash_code)  {
 
 	// skip versions old than the database version
-	if (version_compare($old_cacti_version, $cacti_version, '>=')) {
+	if (cacti_version_compare($old_cacti_version, $cacti_version, '>=')) {
 		continue;
 	}
 

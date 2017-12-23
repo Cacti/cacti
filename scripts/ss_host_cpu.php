@@ -138,7 +138,11 @@ function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $s
 		}
 	}
 
-	$return_arr[4000] = round($sum / sizeof($return_arr));
+	if (sizeof($return_arr)) {
+		$return_arr[4000] = round($sum / sizeof($return_arr));
+	} else {
+		$return_arr[4000] = 0;
+	}
 
 	return $return_arr;
 }

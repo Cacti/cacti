@@ -517,8 +517,8 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 
 	/* substitute in the final result and round off to two decimal digits */
 	if (isset($summation_label)) {
-		return round($summation, $round_to) . " $summation_label";
+		return number_format_i18n($summation, $round_to) . " $summation_label";
 	} else {
-		return round($summation, $round_to);
+		return number_format_i18n($summation, $round_to);
 	}
 }
