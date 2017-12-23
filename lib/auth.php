@@ -1927,6 +1927,7 @@ function secpass_check_pass($p) {
 
 function secpass_check_history($id, $p) {
 	$history = intval(read_config_option('secpass_history'));
+
 	if ($history > 0) {
 		$user = db_fetch_row_prepared("SELECT password, password_history
 			FROM user_auth
@@ -1934,14 +1935,18 @@ function secpass_check_history($id, $p) {
 			AND realm = 0
 			AND enabled = 'on'",
 			array($id));
+
 		if (compat_password_verify($p,$user['password'])) {
 			return false;
 		}
+
 		$passes = explode('|', $user['password_history']);
+
 		// Double check this incase the password history setting was changed
 		while (count($passes) > $history) {
 			array_shift($passes);
 		}
+
 		if (!empty($passes)) {
 			foreach ($passes as $hash) {
 				if (compat_password_verify($p, $hash))
@@ -1949,6 +1954,7 @@ function secpass_check_history($id, $p) {
 			}
 		}
 	}
+
 	return true;
 }
 
@@ -2047,11 +2053,13 @@ function user_perms_valid($user_id) {
 	*/
 function compat_password_verify($password, $hash) {
 	if (function_exists('password_verify')) {
-		if (password_verify($password, $hash))
+		if (password_verify($password, $hash)) {
 			return true;
+		}
 	}
 
 	$md5 = md5($password);
+
 	return ($md5 == $hash);
 }
 
