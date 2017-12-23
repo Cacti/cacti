@@ -82,7 +82,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm ". $frv_realm . ", using method " . $auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 	// Realms of 1 or below are internal
-	$auth_lcoal_required = ($frv_realm < 2);
+	$auth_local_required = ($frv_realm < 2);
 
 	switch ($auth_method) {
 	case '0':
@@ -97,13 +97,21 @@ if (get_nfilter_request_var('action') == 'login') {
 		$copy_user = true;
 		$user_auth = true;
 		$realm = 2;
+
 		/* Locate user in database */
-		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = 2', array($username));
+		$user = db_fetch_row_prepared('SELECT *
+			FROM user_auth
+			WHERE username = ?
+			AND realm = 2',
+			array($username));
 
 		if (!$user && read_config_option('user_template') == '0' && read_config_option('guest_user') == '0') {
 			cacti_log("ERROR: User '" . $username . "' authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.  Exiting.", false, 'AUTH');
+
 			$username = htmlspecialchars($username);
+
 			auth_display_custom_error_message( __('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username) );
+
 			exit;
 		}
 
@@ -158,19 +166,20 @@ if (get_nfilter_request_var('action') == 'login') {
 		break;
 	case '4':
 		cacti_log("DEBUG: User '" . $username . "' attempting domain lookup for realm " . $frv_realm . " with " . ($auth_local_required ? '':'no') . " local lookup", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
 		if ($frv_realm > 0) {
 			domains_login_process($username);
 		}
-		break;
 
+		break;
 	default:
 		$auth_local_required = true;
+
 		break;
 	}
 
 	cacti_log("DEBUG: User '" . $username . "' attempt login locally? " . ($auth_local_required ? 'Yes':'No'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
-	if ($auth_local_required)
-	{
+	if ($auth_local_required) {
 		secpass_login_process($username);
 
 		if (!api_plugin_hook_function('login_process', false)) {
@@ -209,16 +218,20 @@ if (get_nfilter_request_var('action') == 'login') {
 	/* Create user from template if requested */
 	if (!sizeof($user) && $copy_user && read_config_option('user_template') != '0' && $username != '') {
 		cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
+
 		/* check that template user exists */
 		if (db_fetch_row_prepared('SELECT id FROM user_auth WHERE username = ? AND realm = 0', array(read_config_option('user_template')))) {
 			/* template user found */
 			user_copy(read_config_option('user_template'), $username, 0, $realm);
+
 			/* requery newly created user */
 			$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 		} else {
 			/* error */
 			cacti_log("LOGIN: Template user '" . read_config_option('user_template') . "' does not exist.", false, 'AUTH');
+
 			auth_display_custom_error_message( __('Template user %s does not exist.', read_config_option('user_template')) );
+
 			exit;
 		}
 	}
@@ -227,14 +240,21 @@ if (get_nfilter_request_var('action') == 'login') {
 	$guest_user = false;
 	if ((!sizeof($user)) && ($user_auth) && (read_config_option('guest_user') != '0')) {
 		/* Locate guest user record */
-		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ?', array(read_config_option('guest_user')));
+		$user = db_fetch_row_prepared('SELECT *
+			FROM user_auth
+			WHERE username = ?',
+			array(read_config_option('guest_user')));
+
 		if ($user) {
 			cacti_log("LOGIN: Authenticated user '" . $username . "' using guest account '" . $user['username'] . "'", false, 'AUTH');
+
 			$guest_user = true;
 		} else {
 			/* error */
 			auth_display_custom_error_message( __('Guest user %s does not exist.', read_config_option('guest_user')) );
+
 			cacti_log("LOGIN: Unable to locate guest user '" . read_config_option('guest_user') . "'", false, 'AUTH');
+
 			exit;
 		}
 	}
