@@ -7,9 +7,9 @@ Cacti CHANGELOG
 -issue#1106: Template Filters has empty row
 -issue#1109: URL used in redirection when referrer already has parameters in it
 -issue#1110: Add CPU Total to 'SNMP - Get Processor Information'
--issue#1111: Fixed PHP NOTICE when using LDAP authenication
--issue#1116: Fix issue with filters not allowing "None" or "All" when editing report item
--issue#1119: Reduced amount of data feteched for CPU usage to just the data used
+-issue#1111: PHP NOTICE when using LDAP authenication
+-issue#1116: Filters not allowing "None" or "All" when editing report item
+-issue#1119: Reduced amount of data fetched for CPU usage to just the data used
 -issue#1121: Bandwidth summation not using correct locale
 -issue#1122: Fix issue with local login / potential password problems
 -issue#1130: Fix logging level issue where logs of same level as setting where not logged
