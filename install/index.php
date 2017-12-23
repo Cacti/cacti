@@ -446,6 +446,61 @@ $enabled = '1';
 						$enabled = '1';
 
 						print '<h2>' . __('Pre-installation Checks') .'</h2>';
+						print '<h3>' . __('Location checks') . '</h3>';
+
+						// Get request URI and break into parts
+						$test_request_uri = $_SERVER['REQUEST_URI']; 
+						$test_request_parts = parse_url($test_request_uri);
+						$test_request_path = $test_request_parts['path'];
+						$test_request_len = strlen($test_request_parts['path']);
+
+						// Get current script name (filename only)
+						$test_script_name = basename($_SERVER['SCRIPT_NAME']);
+						$test_script_len = strlen($test_script_name);
+
+						// Get end of the path of URI and see if it's our script
+						$test_script_part = substr($test_request_path, $test_request_len - $test_script_len);
+						$test_script_result = strcmp($test_script_part, $test_script_name);
+
+						// Assume desired path is the URI
+						$test_final_path = $test_request_parts['path'];
+
+						// Script was found in path, so remove it
+						if ($test_script_result === 0)
+						{
+							$test_final_path = substr($test_final_path,0,strlen($test_final_path) - $test_script_len);
+						}
+
+						// Add the install subfolder to defined path location
+						// and check if it matches, if not there will likely be problems
+						$test_config_path = $config['url_path'] . 'install/';
+						$test_compare_result = strcmp($test_config_path,$test_final_path);
+
+						/*
+						 * Uncmment the following to debug the above change
+						 *
+						print '<p>Testing [' . $test_config_path . '] matches [' . $test_final_path .'] result = '.$test_compare_result.'('.gettype($test_compare_result).')</p>';
+
+						print '<p>request_uri = ' . strlen($test_request_uri) . ' [' . $test_request_uri . ']</p>';
+						print '<p>request_parts = ' . var_export($test_request_parts, true) . '</p>';
+						print '<p>request_path = ' . strlen($test_request_path) . ' [' . $test_request_path . ']</p>';
+
+						print '<p>script_name = ' . strlen($test_script_name) . ' [' . $test_script_name . ']</p>';
+							print '<p>script_part = ' . strlen($test_script_part) . ' [' . $test_script_part . ']</p>';
+						print '<p>script_result = ' . $test_script_result . '</p>';
+						print '<p>final_path = ' . strlen($test_final_path) . ' [' . $test_final_path . ']</p>';
+						 *
+						 * The above code should probably be removed once tested.
+						 */
+
+						// The path was not what we expected so print an error
+						if ($test_compare_result !== 0)
+						{
+							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Please update config.php with the correct relative URI location of Cacti (url_path).') . '</p>';
+						} else {
+							print '<p>' . __('Your Cacti configuration has the relative correct path (url_path) in config.php.') . '</p>';
+						}
+
 						print '<h3>' . __('MySQL TimeZone Support') .'</h3>';
 						$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
 						if (sizeof($mysql_timezone_access)) {
