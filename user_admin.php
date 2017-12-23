@@ -524,10 +524,8 @@ function form_save() {
 				FROM user_auth
 				WHERE id = ?',
 				array(get_nfilter_request_var('id')));
-		} elseif (function_exists('password_hash')) {
-			$password = password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
 		} else {
-			$password = md5(get_nfilter_request_var('password'));
+			$password = compat_password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
 		}
 
 		/* check duplicate username */

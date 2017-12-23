@@ -2046,113 +2046,99 @@ function get_allowed_graph_items($sql_where, $sort = 'name' , $limit = 20, $user
 	return $return;
 }
 
-function secpass_login_process() {
-	$users = db_fetch_assoc('SELECT username FROM user_auth WHERE realm = 0');
-	$username = sanitize_search_string(get_nfilter_request_var('login_username'));
-
-	# Mark failed login attempts
+function secpass_login_process($username) {
+	// Mark failed login attempts
 	$secPassLockFailed = read_config_option('secpass_lockfailed');
 	if ($secPassLockFailed > 0) {
 		$max = intval($secPassLockFailed);
 		if ($max > 0) {
 			$p = get_nfilter_request_var('login_password');
-			foreach ($users as $fa) {
-				if ($fa['username'] == $username) {
-					$user = db_fetch_assoc_prepared("SELECT username, lastfail, failed_attempts, locked, password
-						FROM user_auth
+			$user = db_fetch_row_prepared("SELECT username, lastfail, failed_attempts, locked, password
+				FROM user_auth
+				WHERE username = ?
+				AND realm = 0
+				AND enabled = 'on'",
+				array($username));
+			if (isset($user['username'])) {
+				$unlock = intval(read_config_option('secpass_unlocktime'));
+				if ($unlock > 1440) {
+					$unlock = 1440;
+				}
+
+				$secs_unlock = $unlock * 60;
+				$secs_fail = time() - $user['lastfail'];
+
+				cacti_log('DEBUG: User \'' . $username . '\' secs_fail = ' . $secs_fail . ', secs_unlock = ' . $secs_unlock, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+				if ($unlock > 0 && ($secs_fail > $secs_unlock)) {
+					db_execute_prepared("UPDATE user_auth
+						SET lastfail = 0, failed_attempts = 0, locked = ''
 						WHERE username = ?
 						AND realm = 0
 						AND enabled = 'on'",
 						array($username));
-
-					if (isset($user[0]['username'])) {
-						$user = $user[0];
-						$unlock = intval(read_config_option('secpass_unlocktime'));
-						if ($unlock > 1440) {
-							$unlock = 1440;
-						}
-
-						if ($unlock > 0 && (time() - $user['lastfail'] > 60 * $unlock)) {
-							db_execute_prepared("UPDATE user_auth
-								SET lastfail = 0, failed_attempts = 0, locked = ''
-								WHERE username = ?
-								AND realm = 0
-								AND enabled = 'on'",
-								array($username));
-
-							$user['failed_attempts'] = $user['lastfail'] = 0;
-							$user['locked'] = '';
-						}
-
-						if ($user['password'] != md5($p)) {
-							$failed = $user['failed_attempts'] + 1;
-							if ($failed >= $max) {
-								db_execute_prepared("UPDATE user_auth
-									SET locked = 'on'
-									WHERE username = ?
-									AND realm = 0
-									AND enabled = 'on'",
-									array($username));
-
-								$user['locked'] = 'on';
-							}
-							$user['lastfail'] = time();
-							db_execute_prepared("UPDATE user_auth
-								SET lastfail = ?, failed_attempts = ?
-								WHERE username = ?
-								AND realm = 0
-								AND enabled = 'on'",
-								array($user['lastfail'], $failed, $username));
-
-							if ($user['locked'] != '') {
-								auth_display_custom_error_message('This account has been locked.');
-								exit;
-							}
-							return false;
-						}
-						if ($user['locked'] != '') {
-							auth_display_custom_error_message('This account has been locked.');
-							exit;
-						}
-					}
+					$user['failed_attempts'] = $user['lastfail'] = 0;
+					$user['locked'] = '';
 				}
-			}
-		}
-	}
 
-	# Check if old password doesn't meet specifications and must be changed
-	if (read_config_option('secpass_forceold') == 'on') {
-		$p = get_nfilter_request_var('login_password');
-		if (secpass_check_pass($p) != '') {
-			foreach ($users as $fa) {
-				if ($fa['username'] == $username) {
+				$valid_pass = compat_password_verify($p, $user['password']);
+				cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass,false,'AUTH', POLLER_VERBOSITY_DEBUG);
+
+				if (!$valid_pass) {
+					$failed = intval($user['failed_attempts']) + 1;
+					cacti_log('LOGIN: WARNING: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')',false,'AUTH', POLLER_VERBOSITY_LOW);
+					if ($failed >= $max) {
+						db_execute_prepared("UPDATE user_auth
+							SET locked = 'on'
+							WHERE username = ?
+							AND realm = 0
+							AND enabled = 'on'",
+							array($username));
+						$user['locked'] = 'on';
+					}
+					$user['lastfail'] = time();
 					db_execute_prepared("UPDATE user_auth
-						SET must_change_password = 'on'
+						SET lastfail = ?, failed_attempts = ?
 						WHERE username = ?
-						AND password = ?
 						AND realm = 0
 						AND enabled = 'on'",
-						array($username, md5($p)));
+						array($user['lastfail'], $failed, $username));
 
-					return true;
+					if ($user['locked'] != '') {
+						auth_display_custom_error_message('This account has been locked.');
+						exit;
+					}
+					return false;
+				}
+				if ($user['locked'] != '') {
+					auth_display_custom_error_message('This account has been locked.');
+					exit;
 				}
 			}
 		}
 	}
-	# Set the last Login time
-	if (read_config_option('secpass_expireaccount') > 0) {
+
+	// Check if old password doesn't meet specifications and must be changed
+	if (read_config_option('secpass_forceold') == 'on') {
 		$p = get_nfilter_request_var('login_password');
-		foreach ($users as $fa) {
-			if ($fa['username'] == $username) {
-				db_execute_prepared("UPDATE user_auth
-					SET lastlogin = ?
-					WHERE username = ?
-					AND password = ?
-					AND realm = 0
-					AND enabled = 'on'",
-					array(time(), $username, md5($p)));
-			}
+		if (secpass_check_pass($p) != 'ok') {
+			db_execute_prepared("UPDATE user_auth
+				SET must_change_password = 'on'
+				WHERE username = ?
+				AND realm = 0
+				AND enabled = 'on'",
+				array($username));
+			return true;
 		}
+	}
+
+	// Set the last Login time
+	if (read_config_option('secpass_expireaccount') > 0) {
+		db_execute_prepared("UPDATE user_auth
+			SET lastlogin = ?
+			WHERE username = ?
+			AND realm = 0
+			AND enabled = 'on'",
+			array(time(), $username));
 	}
 	return true;
 }
@@ -2185,31 +2171,27 @@ function secpass_check_pass($p) {
 function secpass_check_history($id, $p) {
 	$history = intval(read_config_option('secpass_history'));
 	if ($history > 0) {
-		$p = md5($p);
-
 		$user = db_fetch_row_prepared("SELECT password, password_history
 			FROM user_auth
 			WHERE id = ?
 			AND realm = 0
 			AND enabled = 'on'",
 			array($id));
-
-		if ($p == $user['password']) {
+		if (compat_password_verify($p,$user['password'])) {
 			return false;
 		}
-
 		$passes = explode('|', $user['password_history']);
-
 		// Double check this incase the password history setting was changed
 		while (count($passes) > $history) {
 			array_shift($passes);
 		}
-
-		if (!empty($passes) && in_array($p, $passes)) {
-			return false;
+		if (!empty($passes)) {
+			foreach ($passes as $hash) {
+				if (compat_password_verify($p, $hash))
+					return false;
+			}
 		}
 	}
-
 	return true;
 }
 
@@ -2299,3 +2281,55 @@ function user_perms_valid($user_id) {
 	return $valid;
 }
 
+/*	compat_password_verify - if the secure function exists, verify against that
+	first.  If that checks fails or does not exist, check against older md5
+	version
+	@arg $password - (string) password to verify
+	@arg $hash     - (string) current password hash
+	@returns - true if password hash matches, false otherwise
+	*/
+function compat_password_verify($password, $hash) {
+	if (function_exists('password_verify')) {
+		if (password_verify($password, $hash))
+			return true;
+	}
+
+	$md5 = md5($password);
+	return ($md5 == $hash);
+}
+
+/*	compat_password_hash - if the secure function exists, hash using that.
+	If that does not exist, hash older md5 function instead
+	@arg $password - (string) password to hash
+	@arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
+	@returns - true if password hash matches, false otherwise
+	*/
+function compat_password_hash($password, $algo, $options = array()) {
+	if (function_exists('password_hash')) {
+		// Check if options array has anything, only pass when required
+		return (sizeof($options) > 0) ?
+			password_hash($password, $algo, $options) :
+			password_hash($password, $algo);
+	}
+
+	return md5($password);
+}
+
+
+/*	compat_password_needs_rehash - if the secure function exists, check hash
+	using that. If that does not exist, return false as md5 doesn't need a
+	rehash
+	@arg $password - (string) password to hash
+	@arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
+	@returns - true if password hash needs changing, false otherwise
+	*/
+function compat_password_needs_rehash($password, $algo, $options = array()) {
+	if (function_exists('password_needs_rehash')) {
+		// Check if options array has anything, only pass when required
+		return (sizeof($options) > 0) ?
+			password_needs_rehash($password, $algo, $options) :
+			password_needs_rehash($password, $algo);
+	}
+
+	return md5($password);
+}
