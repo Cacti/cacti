@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#1133: Fix issues with variable name and debug log
 -issue#1143: ss_host_cpu.php - Division by zero / Invalid Return Value
 -issue: Updated Graph pagenation and filter reset
+-issue: Resolve issues with cacti_version_compare() processing
 
 1.1.28
 -issue#958: User Group Tree permissions not calculated fully
