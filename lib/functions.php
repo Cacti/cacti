@@ -575,7 +575,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 						return;
 					}
 				}
-			} elseif ($level >= $logVerbosity) {
+			} elseif ($level > $logVerbosity) {
 				return;
 			}
 		}

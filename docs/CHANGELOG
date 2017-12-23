@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#1111: PHP NOTICE when using LDAP authenication
 -issue#1116: Filters not allowing "None" or "All" when editing report item
 -issue#1119: Reduced amount of data fetched for CPU usage to just the data used
+-issue#1130: Fix logging level issue where logs of same level as setting where not logged
 -issue#1133: Fix issues with variable name and debug log
 -issue#1143: ss_host_cpu.php - Division by zero / Invalid Return Value
 -issue: Updated Graph pagenation and filter reset
