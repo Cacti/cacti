@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -issue#1131: Make upgrade_database.php use same version compare as /install/ system
 -issue#1133: Fix issues with variable name and debug log
 -issue#1143: ss_host_cpu.php - Division by zero / Invalid Return Value
+-issue#1146: Installation now checks URI path matchs with configuration option URL_PATH
 -issue: Updated Graph pagenation and filter reset
 -issue: Resolve issues with cacti_version_compare() processing
 -issue: Zoom context menu stays open after zoom out actions
