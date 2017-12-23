@@ -466,8 +466,7 @@ $enabled = '1';
 						$test_final_path = $test_request_parts['path'];
 
 						// Script was found in path, so remove it
-						if ($test_script_result === 0)
-						{
+						if ($test_script_result === 0) {
 							$test_final_path = substr($test_final_path,0,strlen($test_final_path) - $test_script_len);
 						}
 
@@ -494,8 +493,7 @@ $enabled = '1';
 						 */
 
 						// The path was not what we expected so print an error
-						if ($test_compare_result !== 0)
-						{
+						if ($test_compare_result !== 0) {
 							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Please update config.php with the correct relative URI location of Cacti (url_path).') . '</p>';
 						} else {
 							print '<p>' . __('Your Cacti configuration has the relative correct path (url_path) in config.php.') . '</p>';
