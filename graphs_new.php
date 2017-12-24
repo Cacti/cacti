@@ -906,7 +906,7 @@ function graphs() {
 							load_current_session_value('page' . $query['id'], 'sess_grn_page' . $query['id'], '1');
 						}
 
-						$nav = html_nav_bar('graphs_new.php', MAX_DISPLAY_PAGES, $page, $rows, $total_rows, 15, 'Items', 'page' . $snmp_query['id']);
+						$nav = html_nav_bar('graphs_new.php', MAX_DISPLAY_PAGES, $page, $rows, $total_rows, 15, __('Items'), 'page' . $snmp_query['id']);
 
 						print $nav;
 

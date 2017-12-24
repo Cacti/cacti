@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -issue: Updated Graph pagenation and filter reset
 -issue: Resolve issues with cacti_version_compare() processing
 -issue: Zoom context menu stays open after zoom out actions
+-issue: Some pagination not translated into foreign languages
 
 1.1.28
 -issue#958: User Group Tree permissions not calculated fully
