@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -issue#1130: Fix logging level issue where logs of same level as setting where not logged
 -issue#1131: Make upgrade_database.php use same version compare as /install/ system
 -issue#1133: Fix issues with variable name and debug log
+-issue#1141: When viewing graphs from list view, pagination causes list view filter to be cleared
 -issue#1143: ss_host_cpu.php - Division by zero / Invalid Return Value
 -issue#1146: Installation now checks URI path matchs with configuration option URL_PATH
 -issue: Updated Graph pagenation and filter reset
