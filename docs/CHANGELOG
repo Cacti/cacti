@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#1119: Reduced amount of data fetched for CPU usage to just the data used
 -issue#1121: Bandwidth summation not using correct locale
 -issue#1122: Fix issue with local login / potential password problems
+-issue#1128: Resolve php warning when raising messages
 -issue#1130: Fix logging level issue where logs of same level as setting where not logged
 -issue#1131: Make upgrade_database.php use same version compare as /install/ system
 -issue#1133: Fix issues with variable name and debug log

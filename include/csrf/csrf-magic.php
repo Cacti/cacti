@@ -225,7 +225,7 @@ function csrf_get_tokens() {
     $secret = csrf_get_secret();
     if (!$has_cookies && $secret) {
         // :TODO: Harden this against proxy-spoofing attacks
-	if (isset($_SERVER['REMOTE_ADDR'])) { 
+	if (isset($_SERVER['REMOTE_ADDR'])) {
 		$ip = ';ip:' . csrf_hash($_SERVER['REMOTE_ADDR']);
 	} else {
 		$ip = '';
@@ -285,7 +285,7 @@ function csrf_callback($tokens) {
 	}
 
 	if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $config['url_path']) !== false) {
-		$_SESSION['sess_messages'] = 'CSRF Timeout, refreshing page';
+		raise_message('csrf_timeout');
 
 		if (strpos($_SERVER['HTTP_REFERER'], '?') !== false) {
 			$add = '&';
