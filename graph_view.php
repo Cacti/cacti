@@ -420,7 +420,7 @@ case 'list':
 	top_graph_header();
 
 	if (!is_view_allowed('show_list')) {
-		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR LIST VIEW') ."</font>"; return;
+		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR LIST VIEW') . '</font>'; return;
 	}
 
 	/* reset the graph list on a new viewing */
@@ -501,8 +501,10 @@ case 'list':
 	}
 
 	/* update the revised graph list session variable */
-	set_request_var('graph_list', implode(',', array_keys($graph_list)));
-	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
+	if (sizeof($graph_list)) {
+		set_request_var('graph_list', implode(',', array_keys($graph_list)));
+	}
+	load_current_session_value('graph_list', 'sess_gl_graph_list', '');
 
 	form_start('graph_view.php', 'form_graph_list');
 
@@ -580,7 +582,7 @@ case 'list':
 				</tr>
 			</table>
 			<input type='hidden' id='style' value='selective'>
-			<input type='hidden' id='action' value='preview'>
+			<input type='hidden' id='action' value='list'>
 			<input type='hidden' id='graph_add' value=''>
 			<input type='hidden' id='graph_remove' value=''>
 			<input type='hidden' id='graph_list' value='<?php print get_request_var('graph_list');?>'>
@@ -721,7 +723,7 @@ case 'list':
 			}
 		});
 
-		strURL += '&reset=1&header=false';
+		strURL += '&reset=true&header=false';
 
 		loadPageNoHeader(strURL);
 
@@ -731,21 +733,25 @@ case 'list':
 	}
 
 	function url_graph(strNavURL) {
-		var strURL = '';
-		var strAdd = '';
-		var strDel = '';
-		$('input[id^=chk_]').each(function(data) {
-			graphID = $(this).attr('id').replace('chk_','');
-			if ($(this).is(':checked')) {
-				strAdd += (strAdd.length > 0 ? ',':'') + graphID;
-			} else if (graphChecked(graphID)) {
-				strDel += (strDel.length > 0 ? ',':'') + graphID;
-			}
-		});
+		if ($('#action').val() == 'list') {
+			var strURL = '';
+			var strAdd = '';
+			var strDel = '';
+			$('input[id^=chk_]').each(function(data) {
+				graphID = $(this).attr('id').replace('chk_','');
+				if ($(this).is(':checked')) {
+					strAdd += (strAdd.length > 0 ? ',':'') + graphID;
+				} else if (graphChecked(graphID)) {
+					strDel += (strDel.length > 0 ? ',':'') + graphID;
+				}
+			});
 
-		strURL = '&graph_list=<?php print get_request_var('graph_list');?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
+			strURL = '&demon=1&graph_list=<?php print get_request_var('graph_list');?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
 
-		return strNavURL + strURL;
+			return strNavURL + strURL;
+		} else {
+			return strNavURL;
+		}
 	}
 
 	function graphChecked(graph_id) {
