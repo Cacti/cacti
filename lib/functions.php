@@ -4876,14 +4876,14 @@ function version_to_decimal($version, $length = 1) {
 
 	for ($i = 0; $i < strlen($version); $i++) {
 		if ($version[$i] != '.') {
-			$newver .= ord($version[$i]);
+			$newver .= dechex(ord($version[$i]));
 		}else{
-			$newver .= ord('0');
+			$newver .= dechex(ord('0'));
 		}
 	}
 
 	for ($j = $i; $j < $length; $j++) {
-		$newver .= ord('0');
+		$newver .= dechex(ord('0'));
 	}
 
 	return hexdec($newver);
