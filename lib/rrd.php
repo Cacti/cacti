@@ -1103,6 +1103,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		}
 	}
 
+	if (getenv('LANG') == '') {
+		putenv('LANG=' . CACTI_LOCALE . '_' . strtoupper(CACTI_COUNTRY) . '.utf8');
+	}
+
 	/* check the purge the boost poller output cache, and check for a live image file if caching is enabled */
 	$graph_data = boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, $graph_data_array, false);
 	if ($graph_data !== false) {
