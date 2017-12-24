@@ -721,7 +721,7 @@ function ds_edit() {
 				AND local_data_id = 0',
 				array($data_local['data_template_id']));
 		} else {
-			$_SESSION['sess_messages'] = __('Data Source %d does not exist.', get_request_var('id'));
+			raise_message(11);
 			header ('Location: data_sources.php');
 			exit;
 		}

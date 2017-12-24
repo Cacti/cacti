@@ -133,11 +133,13 @@ $messages = array(
 	9  => array(
 		'message' => __('The Cacti log file must have the extension \'.log\''),
 		'type' => 'error'),
+<<<<<<< HEAD
 	10  => array(
 		'message' => __('Data Input for method does not appear to be whitelisted.'),
-		'type' => 'error'),
+=======
 	11  => array(
 		'message' => __('Data Source does not exist.'),
+>>>>>>> refs/remotes/origin/develop
 		'type' => 'error'),
 	12 => array(
 		'message' => __('Username already in use.'),
