@@ -1427,7 +1427,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if (preg_match_all('/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):(\d)?\|/', $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 					foreach ($matches as $match) {
 						$search[]  = $match[0];
-						$replace[] = variable_nth_percentile($match, $graph_item, $graph_items, $graph_start, $graph_end);
+						$replace[] = variable_nth_percentile($match, $graph, $graph_item, $graph_items, $graph_start, $graph_end);
 					}
 				}
 
@@ -1435,7 +1435,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if (preg_match_all('/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/', $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 					foreach ($matches as $match) {
 						$search[]  = $match[0];
-						$replace[] = variable_bandwidth_summation($match, $graph_item, $graph_items, $graph_start, $graph_end, $rra['steps'], $ds_step);
+						$replace[] = variable_bandwidth_summation($match, $graph, $graph_item, $graph_items, $graph_start, $graph_end, $rra['steps'], $ds_step);
 					}
 				}
 
