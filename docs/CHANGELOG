@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.29
+-issue#871: Allow Nth Percentile and Bandwidth Summation to respect 'Base Value' in template
 -issue#965: Duplicate error message and incorrect error code when using LDAP authentication
 -issue#1084: Graph Tree Branch not properly populating when editing report item
 -issue#1104: Datetime formatting in developer debug mode incorrect
