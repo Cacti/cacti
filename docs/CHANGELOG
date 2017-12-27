@@ -9,6 +9,9 @@ Cacti CHANGELOG
 -issue: Move Graph removal function to Graph API
 -feature: Make tree editing responive
 
+1.1.30
+-issue#1155: Non-secure mail setting not functional due to changes in phpmailer
+
 1.1.29
 -issue#871: Allow Nth Percentile and Bandwidth Summation to respect 'Base Value' in template
 -issue#965: Duplicate error message and incorrect error code when using LDAP authentication
