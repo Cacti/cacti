@@ -534,7 +534,7 @@ function aggregate_color_template() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Color Templates', 'page', 'main');
+	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Color Templates'), 'page', 'main');
 
 	form_start('color_templates.php', 'chk');
 

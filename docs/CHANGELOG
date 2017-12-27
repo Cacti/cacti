@@ -1,5 +1,30 @@
 Cacti CHANGELOG
 
+1.1.29
+-issue#871: Allow Nth Percentile and Bandwidth Summation to respect 'Base Value' in template
+-issue#965: Duplicate error message and incorrect error code when using LDAP authentication
+-issue#1084: Graph Tree Branch not properly populating when editing report item
+-issue#1104: Datetime formatting in developer debug mode incorrect
+-issue#1106: Template Filters has empty row
+-issue#1109: URL used in redirection when referrer already has parameters in it
+-issue#1110: Add CPU Total to 'SNMP - Get Processor Information'
+-issue#1111: PHP NOTICE when using LDAP authenication
+-issue#1116: Filters not allowing "None" or "All" when editing report item
+-issue#1119: Reduced amount of data fetched for CPU usage to just the data used
+-issue#1121: Bandwidth summation not using correct locale
+-issue#1122: Fix issue with local login / potential password problems
+-issue#1128: Resolve php warning when raising messages
+-issue#1130: Fix logging level issue where logs of same level as setting where not logged
+-issue#1131: Make upgrade_database.php use same version compare as /install/ system
+-issue#1133: Fix issues with variable name and debug log
+-issue#1141: When viewing graphs from list view, pagination causes list view filter to be cleared
+-issue#1143: ss_host_cpu.php - Division by zero / Invalid Return Value
+-issue#1146: Installation now checks URI path matchs with configuration option URL_PATH
+-issue: Updated Graph pagenation and filter reset
+-issue: Resolve issues with cacti_version_compare() processing
+-issue: Zoom context menu stays open after zoom out actions
+-issue: Paginator object was not always translated
+
 1.1.28
 -issue#958: User Group Tree permissions not calculated fully
 -issue#959: Issue viewing email reports due to email client decoding problems

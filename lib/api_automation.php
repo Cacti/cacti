@@ -266,7 +266,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		' LIMIT ' . ($rows*(get_request_var('paged')-1)) . ',' . $rows;
 	$hosts = db_fetch_assoc($sql_query, false);
 
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('paged'), $rows, $total_rows, 7, 'Devices', 'paged', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('paged'), $rows, $total_rows, 7, __('Devices'), 'paged', 'main');
 
 	print $nav;
 
@@ -555,7 +555,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 	$graph_list = db_fetch_assoc($sql, false);
 
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Devices', 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Devices'), 'page', 'main');
 
 	print $nav;
 
@@ -1158,7 +1158,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	cacti_log(__FUNCTION__ . " templates sql: $sql_query", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Devices', 'page', 'main');
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Devices'), 'page', 'main');
 
 	print $nav;
 

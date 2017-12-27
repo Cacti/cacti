@@ -575,7 +575,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 						return;
 					}
 				}
-			} elseif ($level >= $logVerbosity) {
+			} elseif ($level > $logVerbosity) {
 				return;
 			}
 		}
@@ -4769,15 +4769,14 @@ function is_ipaddress($ip_address = '') {
  * @return string returns	date time format
  */
 function date_time_format() {
-	global $datechar;
+	$datechar = array(
+		GDC_HYPHEN => '-',
+		GDC_SLASH  => '/',
+		GDC_DOT    => '.'
+	);
 
 	/* setup date format */
-	if (isset($_SESSION['sess_user_id'])) {
-		$date_fmt = read_user_setting('default_date_format');
-	} else {
-		$date_fmt = read_config_option('default_date_format');
-	}
-
+	$date_fmt        = read_config_option('default_date_format');
 	$dateCharSetting = read_config_option('default_datechar');
 
 	if (!isset($datechar[$dateCharSetting])) {
@@ -4821,8 +4820,9 @@ function get_cacti_version() {
  * cacti_version_compare - Compare Cacti version numbers
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
-	$version1 = version_to_decimal($version1);
-	$version2 = version_to_decimal($version2);
+	$length   = max(strlen($version1), strlen($version2));
+	$version1 = version_to_decimal($version1, $length);
+	$version2 = version_to_decimal($version2, $length);
 
 	switch ($operator) {
 		case '<':
@@ -4859,22 +4859,22 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 /**
  * version_to_decimal - convert version string to decimal
  */
-function version_to_decimal($version) {
-	$alpha  = substr($version, -1);
+function version_to_decimal($version, $length = 1) {
 	$newver = '';
 
-	if (!is_numeric($alpha)) {
-		$version = substr($version, 0, -1);
-		$alpha   = ord($alpha) / 1000;
-	} else {
-		$alpha   = 0;
-	}
-
 	for ($i = 0; $i < strlen($version); $i++) {
-		$newver .= ord($version[$i]);
+		if ($version[$i] != '.') {
+			$newver .= dechex(ord($version[$i]));
+		}else{
+			$newver .= dechex(ord('0'));
+		}
 	}
 
-	return hexdec($newver) + $alpha;
+	for ($j = $i; $j < $length; $j++) {
+		$newver .= dechex(ord('0'));
+	}
+
+	return hexdec($newver);
 }
 
 /**
