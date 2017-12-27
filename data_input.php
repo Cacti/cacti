@@ -190,7 +190,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$di_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($matches[1]))) . '</li>';
+			$di_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($matches[1]))) . '</li>';
 			$di_array[$i] = $matches[1];
 
 			$i++;
@@ -201,7 +201,7 @@ function form_actions() {
 
 	form_start('data_input.php');
 
-	html_start_box($di_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($di_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($di_array) && sizeof($di_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
@@ -276,8 +276,6 @@ function field_remove_confirm() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#cdialog').dialog();
-
 		$('#continue').click(function(data) {
 			$.post('data_input.php?action=field_remove', {
 				__csrf_magic: csrfMagicToken,
@@ -359,10 +357,10 @@ function field_edit() {
 	}
 
 	if ($current_field_type == 'out') {
-		$header_name = __('Output Fields [edit: %s]', htmlspecialchars($data_input['name']));
+		$header_name = __('Output Fields [edit: %s]', html_escape($data_input['name']));
 		$dfield      = __('Output Field');
 	} elseif ($current_field_type == 'in') {
-		$header_name = __('Input Fields [edit: %s]', htmlspecialchars($data_input['name']));
+		$header_name = __('Input Fields [edit: %s]', html_escape($data_input['name']));
 		$dfield      = __('Input Field');
 	}
 
@@ -429,7 +427,7 @@ function data_edit() {
 
 	if (!isempty_request_var('id')) {
 		$data_input = db_fetch_row_prepared('SELECT * FROM data_input WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Data Input Methods [edit: %s]', htmlspecialchars($data_input['name']));
+		$header_label = __('Data Input Methods [edit: %s]', html_escape($data_input['name']));
 	} else {
 		$header_label = __('Data Input Methods [new]');
 	}
@@ -463,7 +461,7 @@ function data_edit() {
 	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
-		html_start_box( __('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . htmlspecialchars(get_request_var('id')));
+		html_start_box( __('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . html_escape_request_var('id'));
 		print "<tr class='tableHeader'>";
 			DrawMatrixHeaderItem( __('Name'),'',1);
 			DrawMatrixHeaderItem( __('Field Order'),'',1);
@@ -478,16 +476,16 @@ function data_edit() {
 				form_alternate_row('', true);
 					?>
 					<td>
-						<a class="linkEditMain" href="<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>"><?php print htmlspecialchars($field['data_name']);?></a>
+						<a class="linkEditMain" href="<?php print html_escape('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>"><?php print html_escape($field['data_name']);?></a>
 					</td>
 					<td>
 						<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' ' . __('(Not In Use)'); }?>
 					</td>
 					<td>
-						<?php print htmlspecialchars($field['name']);?>
+						<?php print html_escape($field['name']);?>
 					</td>
 					<td class="right">
-						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
+						<a class='delete deleteMarker fa fa-remove' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
 					</td>
 					<?php
 				form_end_row();
@@ -517,16 +515,16 @@ function data_edit() {
 				form_alternate_row('', true);
 				?>
 					<td>
-						<a class='linkEditMain' href='<?php print htmlspecialchars('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>'><?php print htmlspecialchars($field['data_name']);?></a>
+						<a class='linkEditMain' href='<?php print html_escape('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>'><?php print html_escape($field['data_name']);?></a>
 					</td>
 					<td>
-						<?php print htmlspecialchars($field['name']);?>
+						<?php print html_escape($field['name']);?>
 					</td>
 					<td>
 						<?php print html_boolean_friendly($field['update_rra']);?>
 					</td>
 					<td class='right'>
-						<a class='delete deleteMarker fa fa-remove' href='<?php print htmlspecialchars('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
+						<a class='delete deleteMarker fa fa-remove' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
 					</td>
 				<?php
 				form_end_row();
@@ -631,7 +629,7 @@ function data() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -743,7 +741,7 @@ function data() {
 			form_selectable_cell($disabled ? __('No'): __('Yes'), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell(number_format_i18n($data_input['data_sources'], '-1'), $data_input['id'],'', 'text-align:right');
 			form_selectable_cell(number_format_i18n($data_input['templates'], '-1'), $data_input['id'],'', 'text-align:right');
-			form_selectable_cell($input_types{$data_input['type_id']}, $data_input['id']);
+			form_selectable_cell($input_types[$data_input['type_id']], $data_input['id']);
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);
 			form_end_row();
 		}

@@ -390,7 +390,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 			$save['graph_template_id'] 				= 0;	# disconnect this graph item from the graph template
 			$save['hash']                           = '';   # remove any template attribs
 
-			$graph_item_mappings{$graph_item['id']} = sql_save($save, 'graph_templates_item');
+			$graph_item_mappings[$graph_item['id']] = sql_save($save, 'graph_templates_item');
 
 			$_graph_item_sequence++;
 		}
@@ -1216,6 +1216,10 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0, $_object = array()) {
 	global $config;
 
+	/**
+	 * @var array $consolidation_functions
+	 * @var array $graph_item_types
+	 */
 	include($config['include_path'] . '/global_arrays.php');
 
 	cacti_log(__FUNCTION__ . '  called. graph: ' . $_graph_id . ' template: ' . $_graph_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -1309,6 +1313,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			$this_row_style = '';
 			$use_custom_class = false;
 			$hard_return = '';
+			$matrix_title = '';
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
 				$this_row_style = 'font-weight: bold;';
@@ -1386,10 +1391,10 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
 
 			/* column 'Graph Item Type' */
-			print "<td style='$this_row_style'>" . $graph_item_types{$item['graph_type_id']} . "</td>\n";
+			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . "</td>\n";
 
 			/* column 'CF Type' */
-			print "<td style='$this_row_style'>" . $consolidation_functions{$item['consolidation_function_id']} . "</td>\n";
+			print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . "</td>\n";
 
 			/* column 'Item Color' */
 			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . ">&nbsp;</td>\n";
@@ -1478,7 +1483,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
 				'friendly_name' => __('Override this Value'). '<br>',
-				'value' => (sizeof($aggregate_templates_graph) ? $aggregate_templates_graph{'t_' . $field_name} : ''),
+				'value' => (sizeof($aggregate_templates_graph) ? $aggregate_templates_graph['t_' . $field_name] : ''),
 				'on_change' => 'toggleFieldEnabled(this);'
 			);
 		} else {
@@ -1527,4 +1532,3 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 	</script>
 	<?php
 }
-

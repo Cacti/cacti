@@ -570,7 +570,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					unset_request_var($variable);
 				} elseif (isset_request_var('reset')) {
 					kill_session_var($session_variable);
-				} elseif (isset($options['pageset'])) {
+				} elseif (isset($options['pageset']) && $options['pageset'] == true) {
 					$changed += check_changed($variable, $session_variable);
 				}
 			}
@@ -670,6 +670,9 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 	if ($changed) {
 		set_request_var('page', 1);
 		set_request_var('changed', 1);
+		$_SESSION[$sess_prefix . '_page'] = 1;
+	} elseif (!isset_request_var('page') && isset($_SESSION[$sess_prefix . '_page'])) {
+		set_request_var('page', $_SESSION[$sess_prefix . '_page']);
 	}
 }
 
@@ -745,8 +748,8 @@ function get_order_string() {
 function remove_column_from_order_string($column) {
 	$page = get_order_string_page();
 
-	if (isset($_SESSIION['sort_data'][$page][$column])) {
-		unset($_SESSIION['sort_data'][$page][$column]);
+	if (isset($_SESSION['sort_data'][$page][$column])) {
+		unset($_SESSION['sort_data'][$page][$column]);
 		update_order_string(true);
 	}
 }

@@ -203,11 +203,7 @@ if (!$master && $thread == 0) {
 }
 
 if ($master) {
-	$networks = db_fetch_assoc_prepared('SELECT *
-		FROM automation_networks
-		WHERE poller_id = ?',
-		array($poller_id));
-
+	$networks = db_fetch_assoc_prepared('SELECT * FROM automation_networks WHERE poller_id = ?', array($poller_id));
 	$launched = 0;
 	if (sizeof($networks)) {
 		foreach($networks as $network) {
@@ -259,11 +255,7 @@ if (!$master && $thread == 0) {
 
 	automation_primeIPAddressTable($network_id);
 
-	$threads = db_fetch_cell_prepared('SELECT threads
-		FROM automation_networks
-		WHERE id = ?',
-		array($network_id));
-
+	$threads = db_fetch_cell_prepared('SELECT threads FROM automation_networks WHERE id = ?', array($network_id));
 	automation_debug("Automation will use $threads Threads\n");
 
 	$curthread = 1;
@@ -330,7 +322,10 @@ if (!$master && $thread == 0) {
 exit;
 
 function discoverDevices($network_id, $thread) {
-	$network = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array($network_id));
+	$network = db_fetch_row_prepared('SELECT *
+		FROM automation_networks
+		WHERE id = ?',
+		array($network_id));
 
 	$temp = db_fetch_assoc('SELECT automation_templates.*, host_template.name
 		FROM automation_templates
@@ -445,7 +440,7 @@ function discoverDevices($network_id, $thread) {
 				}
 			}
 
-			$exists = db_fetch_row_prepared('SELECT snmp_version, status
+			$exists = db_fetch_row_prepared('SELECT id, snmp_version, status
 				FROM host
 				WHERE hostname IN (?,?)',
 				array($device['ip_address'], $device['hostname']));
@@ -525,7 +520,7 @@ function discoverDevices($network_id, $thread) {
 							$snmp_sysName_short = $snmp_sysName;
 						}
 
-						$exists = db_fetch_row_prepared('SELECT status, snmp_version
+						$exists = db_fetch_row_prepared('SELECT id, status, snmp_version
 							FROM host
 							WHERE hostname IN (?,?)',
 							array($snmp_sysName_short, $snmp_sysName));
@@ -537,6 +532,9 @@ function discoverDevices($network_id, $thread) {
 								if ($exists['snmp_version'] > 0) {
 									addSNMPDevice($network_id, getmypid());
 								}
+
+								// Rerun data queries if specified
+								rerunDataQueries($exists['id'], $network);
 							}
 
 							automation_debug(' Device is in Cacti!');
@@ -710,6 +708,9 @@ function discoverDevices($network_id, $thread) {
 					if ($exists['snmp_version'] > 0) {
 						addSNMPDevice($network_id, getmypid());
 					}
+
+					// Rerun data queries if specified
+					rerunDataQueries($exists['id'], $network);
 				}
 
 				automation_debug(", Status: Already in Cacti\n");
@@ -759,6 +760,21 @@ function isProcessRunning($pid) {
 
 function killProcess($pid) {
 	return posix_kill($pid, SIGTERM);
+}
+
+function rerunDataQueries($host_id, &$network) {
+	if ($network['rerun_data_queries'] == 'on') {
+		$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
+			FROM host_snmp_query
+			WHERE host_id = ?',
+			array($host_id));
+
+		if (sizeof($snmp_queries)) {
+			foreach($snmp_queries as $query) {
+				run_data_query($host_id, $query['snmp_query_id']);
+			}
+		}
+	}
 }
 
 function registerTask($network_id, $pid, $poller_id, $task = 'collector') {

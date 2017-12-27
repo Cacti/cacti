@@ -245,7 +245,7 @@ function automation_tree_rules_form_actions() {
 
 	form_start('automation_tree_rules.php', 'automation_tree_rules_action');
 
-	html_start_box($automation_tree_rules_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($automation_tree_rules_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DELETE) { /* DELETE */
 		print "<tr>
@@ -850,9 +850,9 @@ function automation_tree_rules() {
 
 	if (sizeof($automation_tree_rules)) {
 		foreach ($automation_tree_rules as 	$automation_tree_rule) {
-			$tree_item_type_name = ((empty($automation_tree_rule['leaf_type'])) ? '<em>' . __('None') . '</em>' : $automation_tree_item_types{$automation_tree_rule['leaf_type']});
+			$tree_item_type_name = ((empty($automation_tree_rule['leaf_type'])) ? '<em>' . __('None') . '</em>' : $automation_tree_item_types[$automation_tree_rule['leaf_type']]);
 			$subtree_name = ((empty($automation_tree_rule['subtree_name'])) ? '<em>' . __('ROOT') . '</em>' : $automation_tree_rule['subtree_name']);
-			$tree_host_grouping_type = ((empty($host_group_types{$automation_tree_rule['host_grouping_type']})) ? '' : $host_group_types{$automation_tree_rule['host_grouping_type']});
+			$tree_host_grouping_type = ((empty($host_group_types[$automation_tree_rule['host_grouping_type']])) ? '' : $host_group_types[$automation_tree_rule['host_grouping_type']]);
 			form_alternate_row('line' .  $automation_tree_rule['id'], true);
 
 			form_selectable_cell(filter_value($automation_tree_rule['name'], get_request_var('filter'), 'automation_tree_rules.php?action=edit&id=' . $automation_tree_rule['id'] . '&page=1'), $automation_tree_rule['id']);

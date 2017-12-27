@@ -36,9 +36,18 @@ function run_data_query($host_id, $snmp_query_id) {
 	$poller_id = $status['poller_id'];
 
 	if ($poller_id != $config['poller_id']) {
-		$hostname = db_fetch_cell_prepared('SELECT hostname FROM poller WHERE id = ?', array($poller_id));
+		$hostname = db_fetch_cell_prepared('SELECT hostname
+			FROM poller
+			WHERE id = ?',
+			array($poller_id));
 
-		$response = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id);
+		$fgc_contextoption = get_default_contextoption();
+		if($fgc_contextoption) {
+			$fgc_context = stream_context_create($fgc_contextoption);
+			$response = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id, false, $fgc_context);
+		} else {
+			$response = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id);
+		}
 
 		if ($response != '') {
 			$response = json_decode($response, true);
@@ -326,7 +335,7 @@ function query_debug_timer_offset($section, $message) {
 	return $delta;
 }
 
-function query_debug_timer_stop($sction, $message) {
+function query_debug_timer_stop($section, $message) {
 	global $query_debug_timer, $query_debug_start;
 
 	/* record the start time */
@@ -770,10 +779,10 @@ function data_query_ctype_print_unicode($value) {
 
 function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$output_array) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
-	db_execute_prepared('UPDATE host_snmp_cache 
-		SET present=0 
-		WHERE host_id = ? 
-		AND snmp_query_id = ?', 
+	db_execute_prepared('UPDATE host_snmp_cache
+		SET present=0
+		WHERE host_id = ?
+		AND snmp_query_id = ?',
 		array($host_id, $snmp_query_id));
 
 	/* setup the database call */
@@ -841,40 +850,40 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 		$data_query_rewrite_indexes_cache = array();
 
 	if (sizeof($oid_items)){
-	foreach($oid_items as $item){
-		$matches = array();
-		if (preg_match('/^\|query_([^|]+)\|$/', $item, $matches)){
-			$iv = $matches[1];
-			if (is_array($fields_processed) && !in_array($iv, $fields_processed)){
-				$errmsg[] = "rewrite_index='$rewrite_index': '$iv' is not processed yet, could not use it as index source";
-					continue;
-			}
-
-			if (!isset($chain_indexes[$iv])) {
-				$hash =  "$host_id@$snmp_query_id@$iv";
-				if (!isset($data_query_rewrite_indexes_cache[$hash])) {
-					$data_query_rewrite_indexes_cache[$hash] = array();
-					$iv = db_qstr($iv);
-
-					$field_values = db_fetch_assoc_prepared("SELECT snmp_index, field_value
-						FROM host_snmp_cache
-						WHERE host_id = ?
-						AND snmp_query_id = ?
-						AND field_name = ?",
-						array($host_id, $snmp_query_id, $iv));
-
-					if (sizeof($field_values)){
-						foreach($field_values as $item){
-							$data_query_rewrite_indexes_cache[$hash][$item['snmp_index']] = $item['field_value'];
-						}
-					} else {
-						$errmsg[] = " field '$iv' was not found either in cache nor in DB";
-					}
+		foreach($oid_items as $item){
+			$matches = array();
+			if (preg_match('/^\|query_([^|]+)\|$/', $item, $matches)){
+				$iv = $matches[1];
+				if (is_array($fields_processed) && !in_array($iv, $fields_processed)){
+					$errmsg[] = "rewrite_index='$rewrite_index': '$iv' is not processed yet, could not use it as index source";
+						continue;
 				}
-				$chain_indexes[$iv] = $data_query_rewrite_indexes_cache[$hash];
+
+				if (!isset($chain_indexes[$iv])) {
+					$hash =  "$host_id@$snmp_query_id@$iv";
+					if (!isset($data_query_rewrite_indexes_cache[$hash])) {
+						$data_query_rewrite_indexes_cache[$hash] = array();
+						$iv = db_qstr($iv);
+
+						$field_values = db_fetch_assoc_prepared("SELECT snmp_index, field_value
+							FROM host_snmp_cache
+							WHERE host_id = ?
+							AND snmp_query_id = ?
+							AND field_name = ?",
+							array($host_id, $snmp_query_id, $iv));
+
+						if (sizeof($field_values)){
+							foreach($field_values as $item){
+								$data_query_rewrite_indexes_cache[$hash][$item['snmp_index']] = $item['field_value'];
+							}
+						} else {
+							$errmsg[] = " field '$iv' was not found either in cache nor in DB";
+						}
+					}
+					$chain_indexes[$iv] = $data_query_rewrite_indexes_cache[$hash];
+				}
 			}
 		}
-	}
 	}
 
 	$out = array();

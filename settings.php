@@ -36,16 +36,59 @@ case 'save':
 			/* do nothing */
 		} elseif ($field_array['method'] == 'checkbox') {
 			if (isset_request_var($field_name)) {
-				db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, 'on')", array($field_name));
+				db_execute_prepared("REPLACE INTO settings
+					(name, value)
+					VALUES (?, 'on')",
+					array($field_name));
 			} else {
-				db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, '')", array($field_name));
+				db_execute_prepared("REPLACE INTO settings
+					(name, value)
+					VALUES (?, '')",
+					array($field_name));
 			}
 		} elseif ($field_array['method'] == 'checkbox_group') {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 				if (isset_request_var($sub_field_name)) {
-					db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, 'on')", array($sub_field_name));
+					db_execute_prepared("REPLACE INTO settings
+					(name, value)
+					VALUES (?, 'on')",
+					array($sub_field_name));
 				} else {
-					db_execute_prepared("REPLACE INTO settings (name, value) VALUES (?, '')", array($sub_field_name));
+					db_execute_prepared("REPLACE INTO settings
+					(name, value)
+					VALUES (?, '')",
+					array($sub_field_name));
+				}
+			}
+		} elseif ($field_array['method'] == 'dirpath') {
+			if (get_nfilter_request_var($field_name) != '' && !is_dir(get_nfilter_request_var($field_name))) {
+				raise_message(8);
+			} else {
+				db_execute_prepared('REPLACE INTO settings
+					(name, value)
+					VALUES (?, ?)',
+					array($field_name, get_nfilter_request_var($field_name)));
+			}
+		} elseif ($field_array['method'] == 'filepath') {
+			if (get_nfilter_request_var($field_name) != '' && !is_file(get_nfilter_request_var($field_name))) {
+				raise_message(8);
+			} else {
+				$continue = true;
+
+				if ($field_name == 'path_cactilog') {
+					$extension = pathinfo(get_nfilter_request_var($field_name), PATHINFO_EXTENSION);
+
+					if ($extension != 'log') {
+						raise_message(9);
+						$continue = false;
+					}
+				}
+
+				if ($continue) {
+					db_execute_prepared('REPLACE INTO settings
+						(name, value)
+						VALUES (?, ?)',
+						array($field_name, get_nfilter_request_var($field_name)));
 				}
 			}
 		} elseif ($field_array['method'] == 'textbox_password') {
@@ -53,40 +96,65 @@ case 'save':
 				raise_message(4);
 				break;
 			} elseif (!isempty_request_var($field_name)) {
-				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
+				db_execute_prepared('REPLACE INTO settings
+					(name, value)
+					VALUES (?, ?)',
+					array($field_name, get_nfilter_request_var($field_name)));
 			}
 		} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 				if (isset_request_var($sub_field_name)) {
-					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($sub_field_name, get_nfilter_request_var($sub_field_name)));
+					db_execute_prepared('REPLACE INTO settings
+					(name, value)
+					VALUES (?, ?)',
+					array($sub_field_name, get_nfilter_request_var($sub_field_name)));
 				}
 			}
 		} elseif ($field_array['method'] == 'drop_multi') {
 			if (isset_request_var($field_name)) {
 				if (is_array(get_nfilter_request_var($field_name))) {
-					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, implode(',', get_nfilter_request_var($field_name))));
+					db_execute_prepared('REPLACE INTO settings
+					(name, value)
+					VALUES (?, ?)',
+					array($field_name, implode(',', get_nfilter_request_var($field_name))));
 				} else {
-					db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
+					db_execute_prepared('REPLACE INTO settings
+					(name, value)
+					VALUES (?, ?)',
+					array($field_name, get_nfilter_request_var($field_name)));
 				}
 			} else {
-				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, "")', array($field_name));
+				db_execute_prepared('REPLACE INTO settings
+					(name, value)
+					VALUES (?, "")',
+					array($field_name));
 			}
 		} elseif (isset_request_var($field_name)) {
 			if (is_array(get_nfilter_request_var($field_name))) {
-				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, implode(',', get_nfilter_request_var($field_name))));
+				db_execute_prepared('REPLACE INTO settings
+					(name, value)
+					VALUES (?, ?)',
+					array($field_name, implode(',', get_nfilter_request_var($field_name))));
 			} else {
-				db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($field_name, get_nfilter_request_var($field_name)));
+				db_execute_prepared('REPLACE INTO settings
+					(name, value)
+					VALUES (?, ?)',
+					array($field_name, get_nfilter_request_var($field_name)));
 			}
 		}
 	}
 
 	if (isset_request_var('log_verbosity')) {
 		if (!isset_request_var('selective_debug')) {
-			db_execute('REPLACE INTO settings (name, value) VALUES("selective_debug", "")');
+			db_execute('REPLACE INTO settings
+				(name, value)
+				VALUES ("selective_debug", "")');
 		}
 
 		if (!isset_request_var('selective_plugin_debug')) {
-			db_execute('REPLACE INTO settings (name, value) VALUES("selective_plugin_debug", "")');
+			db_execute('REPLACE INTO settings
+				(name, value)
+				VALUES ("selective_plugin_debug", "")');
 		}
 	}
 
@@ -134,7 +202,7 @@ default:
 		$i = 0;
 
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmlspecialchars("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
+			print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
 
 			$i++;
 		}

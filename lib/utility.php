@@ -299,11 +299,11 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (sizeof($outputs)) {
 					foreach ($outputs as $output) {
-						if (isset($snmp_queries['fields']{$output['snmp_field_name']}['oid'])) {
-							$oid = $snmp_queries['fields']{$output['snmp_field_name']}['oid'] . '.' . $data_source['snmp_index'];
+						if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid'])) {
+							$oid = $snmp_queries['fields'][$output['snmp_field_name']]['oid'] . '.' . $data_source['snmp_index'];
 
-							if (isset($snmp_queries['fields']{$output['snmp_field_name']}['oid_suffix'])) {
-								$oid .= '.' . $snmp_queries['fields']{$output['snmp_field_name']}['oid_suffix'];
+							if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid_suffix'])) {
+								$oid .= '.' . $snmp_queries['fields'][$output['snmp_field_name']]['oid_suffix'];
 							}
 						}
 
@@ -359,8 +359,8 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (sizeof($outputs)) {
 					foreach ($outputs as $output) {
-						if (isset($script_queries['fields']{$output['snmp_field_name']}['query_name'])) {
-							$identifier = $script_queries['fields']{$output['snmp_field_name']}['query_name'];
+						if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
+							$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
 
 							/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
 							if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (function_exists('proc_open'))) {
@@ -602,8 +602,8 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			$host = $hosts[$data_source['host_id']];
 
 			/* get field information FROM the data template */
-			if (!isset($template_fields{$data_source['local_data_template_data_id']})) {
-				$template_fields{$data_source['local_data_template_data_id']} = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
+			if (!isset($template_fields[$data_source['local_data_template_data_id']])) {
+				$template_fields[$data_source['local_data_template_data_id']] = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
 					did.value, did.t_value, dif.id, dif.type_code
 					FROM data_input_fields AS dif
 					LEFT JOIN data_input_data AS did
@@ -619,7 +619,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			 - the field is a valid "host field"
 			 - the value of the field is empty
 			 - the field is set to 'templated' */
-			if (sizeof($template_fields{$data_source['local_data_template_data_id']})) {
+			if (sizeof($template_fields[$data_source['local_data_template_data_id']])) {
 				foreach ($template_fields[$data_source['local_data_template_data_id']] as $template_field) {
 					if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['value'] == '' && $template_field['t_value'] == '') {
 						// handle special case type_code
@@ -969,7 +969,7 @@ function utilities_php_modules() {
 
 function memory_bytes($val) {
 	$val  = trim($val);
-	$last = strtolower($val{strlen($val)-1});
+	$last = strtolower($val[strlen($val)-1]);
 	$val  = trim($val, 'GMKgmk');
 	switch($last) {
 		case 'g':

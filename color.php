@@ -178,7 +178,7 @@ function form_actions() {
 
 	form_start('color.php');
 
-	html_start_box($color_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($color_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($color_array) && sizeof($color_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
@@ -686,7 +686,7 @@ function color() {
 		$sql_order
 		$sql_limit");
 
-    $nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, 'Colors', 'page', 'main');
+    $nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Colors'), 'page', 'main');
 
 	form_start('color.php', 'chk');
 

@@ -230,17 +230,23 @@ if (isset_request_var('item_id')) {
 }
 
 /* get the hosts sql first */
-$hosts = array();
-if (isset_request_var('host_template_id') && get_filter_request_var('host_template_id') > 0) {
-	$hosts = array_rekey(
-		get_allowed_devices('h.host_template_id =' . get_request_var('host_template_id')),
-		'id', 'description'
-	);
+$hosts = null;
+if (isset_request_var('host_template_id')) {
+	if (get_filter_request_var('host_template_id') > 0) {
+		$hosts = array_rekey(
+			get_allowed_devices('h.host_template_id =' . get_request_var('host_template_id')),
+			'id', 'description'
+		);
+	}
 } elseif (sizeof($report_item) && $report_item['host_template_id'] > 0) {
 	$hosts = array_rekey(
 		get_allowed_devices('h.host_template_id =' . $report_item['host_template_id']),
 		'id', 'description'
 	);
+}
+
+if ($hosts == null) {
+	$hosts = array_rekey(get_allowed_devices(),'id','description');
 }
 
 $graph_templates = array();
@@ -258,20 +264,26 @@ if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0) {
 
 $sql_where = '';
 $graphs    = array();
-if (isset_request_var('host_template_id') && get_filter_request_var('host_template_id') > 0) {
-	$sql_where = 'h.host_template_id=' . get_request_var('host_template_id');
+if (isset_request_var('host_template_id')) {
+	if (get_filter_request_var('host_template_id') > 0) {
+		$sql_where = 'h.host_template_id=' . get_request_var('host_template_id');
+	}
 } elseif (sizeof($report_item) && $report_item['host_template_id'] > 0) {
 	$sql_where = 'h.host_template_id=' . $report_item['host_template_id'];
 }
 
-if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0) {
-	$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id=' . get_request_var('host_id');
+if (isset_request_var('host_id')) {
+	if (get_filter_request_var('host_id') > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id=' . get_request_var('host_id');
+	}
 } elseif (sizeof($report_item) && $report_item['host_id'] > 0) {
 	$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id=' . $report_item['host_id'];
 }
 
-if (isset_request_var('graph_template_id') && get_filter_request_var('graph_template_id') > 0) {
-	$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . get_request_var('graph_template_id');
+if (isset_request_var('graph_template_id')) {
+	if (get_filter_request_var('graph_template_id') > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . get_request_var('graph_template_id');
+	}
 } elseif (sizeof($report_item) && $report_item['graph_template_id'] > 0) {
 	$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . $report_item['graph_template_id'];
 }
@@ -291,6 +303,20 @@ if ($sql_where != '') {
 
 $trees = array_rekey(
 	get_allowed_trees(),
+	'id', 'name'
+);
+
+$sql_where = '';
+if (isset_request_var('tree_id')) {
+	if (get_filter_request_var('tree_id') > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gt.id=' . get_request_var('tree_id');
+	}
+} elseif (sizeof($report_item) && $report_item['tree_id'] > 0) {
+	$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gt.id=' . $report_item['tree_id'];
+}
+
+$branches = array_rekey(
+	get_allowed_branches($sql_where),
 	'id', 'name'
 );
 
@@ -316,11 +342,14 @@ $fields_reports_item_edit = array(
 	),
 	'branch_id' => array(
 		'friendly_name' => __('Graph Tree Branch'),
-		'method' => 'drop_sql',
+		'method' => 'drop_array',
 		'default' => REPORTS_TREE_NONE,
 		'none_value' => __('All'),
 		'description' => __('Select a Tree Branch to use.'),
 		'value' => '|arg1:branch_id|',
+		'on_change' => 'applyChange(document.reports_item_edit)',
+		'array' => $branches
+/*
 		'sql' => "(SELECT id, CONCAT('" . __('Branch:') . " ', title) AS name
 			FROM graph_tree_items
 			WHERE graph_tree_id=|arg1:tree_id| AND host_id=0 AND local_graph_id=0
@@ -335,6 +364,7 @@ $fields_reports_item_edit = array(
 			AND host.id IN(" . implode(',', array_keys(array_rekey(get_allowed_devices(), 'id', 'description'))) . ")
 			GROUP BY name)
 			ORDER BY name"
+*/
 	),
 	'tree_cascade' => array(
 		'friendly_name' => __('Cascade to Branches'),
@@ -665,7 +695,7 @@ function reports_form_actions() {
 
 	print "<form name='report' action='" . get_reports_page() . "' method='post'>";
 
-	html_start_box($reports_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($reports_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (!isset($reports_array)) {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Report.') . "</span></td></tr>\n";
@@ -786,6 +816,10 @@ function reports_send($id) {
 			generate_report($report, true);
 		}
 	}
+	if ($reports_item['tree_id'] == 0) {
+		$reports_item['branch_id'] = 0;
+	}
+
 }
 
 function reports_item_movedown() {
@@ -832,46 +866,21 @@ function reports_item_edit() {
 		$reports_item['host_id']   = REPORTS_HOST_NONE;
 	}
 
-	# if a different host_template_id was selected, use it
-	if (isset_request_var('item_id')) {
+	// if a different item_type was selected, use it
+	if (isset_request_var('item_type')) {
 		if (get_filter_request_var('item_type') > 0) {
 			$reports_item['item_type'] = get_request_var('item_type');
 		}
 	}
 
-	if (isset_request_var('tree_id')) {
-		if (get_filter_request_var('tree_id') > 0) {
-			$reports_item['tree_id'] = get_request_var('tree_id');
-		}else if (!isset($reports_item['tree_id'])) {
-			$reports_item['tree_id'] = 0;
-		}
-	} else {
-		$fields_reports_item_edit['branch_id']['sql'] =
-			"SELECT '0' AS id, '" . __('None') . "' AS name";
-	}
+	$reports_item = set_reports_item_var($reports_item, 'host_id');
+	$reports_item = set_reports_item_var($reports_item, 'branch_id');
+	$reports_item = set_reports_item_var($reports_item, 'tree_id');
+	$reports_item = set_reports_item_var($reports_item, 'host_template_id');
+	$reports_item = set_reports_item_var($reports_item, 'graph_template_id');
 
-	if (isset_request_var('host_template_id')) {
-		if (get_filter_request_var('host_template_id') > 0) {
-			$reports_item['host_template_id'] = get_request_var('host_template_id');
-		}else if (!isset($reports_item['host_template_id'])) {
-			$reports_item['host_template_id'] = 0;
-		}
-	}
-
-	# if a different host_id was selected, use it
-	if (isset_request_var('host_id')) {
-		if (get_filter_request_var('host_id') > 0) {
-			$reports_item['host_id'] = get_request_var('host_id');
-		}
-	}
-
-	# if a different graph_template_id was selected, use it
-	if (isset_request_var('graph_template_id')) {
-		if (get_filter_request_var('graph_template_id') > 0) {
-			$reports_item['graph_template_id'] = get_request_var('graph_template_id');
-		}else if (!isset($reports_item['graph_template_id'])) {
-			$reports_item['graph_template_id'] = 0;
-		}
+	if ($reports_item['tree_id'] == 0) {
+		$reports_item['branch_id'] = 0;
 	}
 
 	load_current_session_value('host_template_id', 'sess_reports_edit_host_template_id', 0);
@@ -1309,7 +1318,7 @@ function display_reports_items($report_id) {
 			form_alternate_row();
 			$form_data = '<td><a class="linkEditMain" href="' . htmlspecialchars(get_reports_page() . '?action=item_edit&id=' . $report_id. '&item_id=' . $item['id']) . '">Item#' . $i . '</a></td>';
 			$form_data .= '<td>' . $item['sequence'] . '</td>';
-			$form_data .= '<td>' . $item_types{$item['item_type']} . '</td>';
+			$form_data .= '<td>' . $item_types[$item['item_type']] . '</td>';
 			$form_data .= '<td class="nowrap">' . $item_details . '</td>';
 			$form_data .= '<td class="nowrap">' . $timespan . '</td>';
 			$form_data .= '<td>' . $align . '</td>';
@@ -1559,7 +1568,7 @@ function reports() {
 			form_selectable_cell(date($date_format, $report['mailtime']), $report['id']);
 			form_selectable_cell($report['from_name'], $report['id']);
 			form_selectable_cell((substr_count($report['email'], ',') ? __('Multiple'): $report['email']), $report['id']);
-			form_selectable_cell((isset($attach_types{$report['attachment_type']})) ? $attach_types{$report['attachment_type']} : __('Invalid'), $report['id']);
+			form_selectable_cell((isset($attach_types[$report['attachment_type']])) ? $attach_types[$report['attachment_type']] : __('Invalid'), $report['id']);
 			form_selectable_cell($report['enabled'] ? __('Enabled'): __('Disabled'), $report['id']);
 			form_checkbox_cell($report['name'], $report['id']);
 
@@ -1618,4 +1627,18 @@ function reports_html_account_exists($user_id) {
 
 function reports_html_report_disable($report_id) {
 	db_execute_prepared('UPDATE reports SET enabled="" WHERE id = ?', array($report_id));
+}
+
+function set_reports_item_var($reports_item, $var_id) {
+	// if a different host_id was selected, use it
+	if (isset_request_var($var_id) && get_filter_request_var($var_id) >= 0) {
+		$reports_item[$var_id] = get_request_var($var_id);
+	}
+
+	// Check that we have set a host_id, if not, default to 0
+	if (!isset($reports_item[$var_id])) {
+		$reports_item[$var_id] = 0;
+	}
+
+	return $reports_item;
 }

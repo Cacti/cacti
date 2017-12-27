@@ -70,7 +70,7 @@ function get_matching_nodes() {
 				$match[] = 'tbranch-' . $row['parent'];
 				$row = db_fetch_row_prepared('SELECT parent, graph_tree_id FROM graph_tree_items WHERE id = ?', array($row['parent']));
 				if (!sizeof($row)) {
-				    break;
+					break;
 				}
 			}
 
@@ -99,7 +99,7 @@ function get_matching_nodes() {
 			$level++;
 
 			if ($found == 0) {
-			    break;
+				break;
 			}
 		}
 
@@ -335,14 +335,13 @@ case 'preview':
 	$sql_or = '';
 	if (isset_request_var('style')) {
 		if (get_request_var('style') == 'selective') {
+			$graph_list = array();
 
 			/* process selected graphs */
 			if (!isempty_request_var('graph_list')) {
 				foreach (explode(',', get_request_var('graph_list')) as $item) {
 					$graph_list[$item] = 1;
 				}
-			} else {
-				$graph_list = array();
 			}
 			if (!isempty_request_var('graph_add')) {
 				foreach (explode(',', get_request_var('graph_add')) as $item) {
@@ -389,10 +388,10 @@ case 'preview':
 		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.graph_template_id IN (' . get_request_var('graph_template_id') . ')';
 	}
 
-	$limit      = (get_request_var('graphs')*(get_request_var('page')-1)) . ',' . get_request_var('graphs');
-	$order      = 'gtg.title_cache';
+	$limit = (get_request_var('graphs') * (get_request_var('page') - 1)) . ',' . get_request_var('graphs');
+	$order = 'gtg.title_cache';
 
-	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
+	$graphs = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
 
 	$nav = html_nav_bar('graph_view.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
 
@@ -421,7 +420,7 @@ case 'list':
 	top_graph_header();
 
 	if (!is_view_allowed('show_list')) {
-		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR LIST VIEW') ."</font>"; return;
+		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR LIST VIEW') . '</font>'; return;
 	}
 
 	/* reset the graph list on a new viewing */
@@ -479,13 +478,13 @@ case 'list':
 		$rows = get_request_var('rows');
 	}
 
+	$graph_list = array();
+
 	/* save selected graphs into url */
 	if (!isempty_request_var('graph_list')) {
 		foreach (explode(',', get_request_var('graph_list')) as $item) {
 			$graph_list[$item] = 1;
 		}
-	} else {
-		$graph_list = array();
 	}
 
 	if (!isempty_request_var('graph_add')) {
@@ -502,8 +501,10 @@ case 'list':
 	}
 
 	/* update the revised graph list session variable */
-	set_request_var('graph_list', implode(',', array_keys($graph_list)));
-	load_current_session_value('graph_list', 'sess_graph_view_list_graph_list', '');
+	if (sizeof($graph_list)) {
+		set_request_var('graph_list', implode(',', array_keys($graph_list)));
+	}
+	load_current_session_value('graph_list', 'sess_gl_graph_list', '');
 
 	form_start('graph_view.php', 'form_graph_list');
 
@@ -521,7 +522,7 @@ case 'list':
 					<td>
 						<input id='rfilter' type='text' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
-					<?php print html_host_filter(get_request_var('host_id'));?>
+					<?php html_host_filter(get_request_var('host_id'));?>
 					<td>
 						<?php print __('Template');?>
 					</td>
@@ -534,20 +535,22 @@ case 'list':
 							if (sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {
-									$found = db_fetch_cell_prepared('SELECT id
-										FROM graph_local
-										WHERE graph_template_id = ? LIMIT 1',
-										array($gt['id']));
+									if ($gt['id'] != 0) {
+										$found = db_fetch_cell_prepared('SELECT id
+											FROM graph_local
+											WHERE graph_template_id = ? LIMIT 1',
+											array($gt['id']));
 
-									if ($found) {
-										print "<option value='" . $gt['id'] . "'";
-										if (sizeof($selected)) {
-											if (in_array($gt['id'], $selected)) {
-												print ' selected';
+										if ($found) {
+											print "<option value='" . $gt['id'] . "'";
+											if (sizeof($selected)) {
+												if (in_array($gt['id'], $selected)) {
+													print ' selected';
+												}
 											}
+											print '>';
+											print $gt['name'] . "</option>\n";
 										}
-										print '>';
-										print $gt['name'] . "</option>\n";
 									}
 								}
 							}
@@ -579,7 +582,7 @@ case 'list':
 				</tr>
 			</table>
 			<input type='hidden' id='style' value='selective'>
-			<input type='hidden' id='action' value='preview'>
+			<input type='hidden' id='action' value='list'>
 			<input type='hidden' id='graph_add' value=''>
 			<input type='hidden' id='graph_remove' value=''>
 			<input type='hidden' id='graph_list' value='<?php print get_request_var('graph_list');?>'>
@@ -609,7 +612,7 @@ case 'list':
 
 	$graphs = get_allowed_graphs($sql_where, 'gtg.title_cache', $limit, $total_rows);
 
-	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
+	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
 	print $nav;
 
@@ -720,7 +723,7 @@ case 'list':
 			}
 		});
 
-		strURL += '&reset=1&header=false';
+		strURL += '&reset=true&header=false';
 
 		loadPageNoHeader(strURL);
 
@@ -730,21 +733,25 @@ case 'list':
 	}
 
 	function url_graph(strNavURL) {
-		var strURL = '';
-		var strAdd = '';
-		var strDel = '';
-		$('input[id^=chk_]').each(function(data) {
-			graphID = $(this).attr('id').replace('chk_','');
-			if ($(this).is(':checked')) {
-				strAdd += (strAdd.length > 0 ? ',':'') + graphID;
-			} else if (graphChecked(graphID)) {
-				strDel += (strDel.length > 0 ? ',':'') + graphID;
-			}
-		});
+		if ($('#action').val() == 'list') {
+			var strURL = '';
+			var strAdd = '';
+			var strDel = '';
+			$('input[id^=chk_]').each(function(data) {
+				graphID = $(this).attr('id').replace('chk_','');
+				if ($(this).is(':checked')) {
+					strAdd += (strAdd.length > 0 ? ',':'') + graphID;
+				} else if (graphChecked(graphID)) {
+					strDel += (strDel.length > 0 ? ',':'') + graphID;
+				}
+			});
 
-		strURL = '&graph_list=<?php print get_request_var('graph_list');?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
+			strURL = '&demon=1&graph_list=<?php print get_request_var('graph_list');?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
 
-		return strNavURL + strURL;
+			return strNavURL + strURL;
+		} else {
+			return strNavURL;
+		}
 	}
 
 	function graphChecked(graph_id) {

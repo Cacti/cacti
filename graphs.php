@@ -125,7 +125,7 @@ function add_tree_names_to_actions_array() {
 
 	if (sizeof($trees)) {
 		foreach ($trees as $tree) {
-			$graph_actions{'tr_' . $tree['id']} = __('Place on a Tree (%s)', $tree['name']);
+			$graph_actions['tr_' . $tree['id']] = __('Place on a Tree (%s)', $tree['name']);
 		}
 	}
 }
@@ -1814,7 +1814,7 @@ function graph_management() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('graphs.php?rfilter=' . get_request_var('rfilter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Graphs', 'page', 'main');
+	$nav = html_nav_bar('graphs.php?rfilter=' . get_request_var('rfilter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
 	form_start('graphs.php', 'chk');
 

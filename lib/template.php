@@ -166,7 +166,7 @@ function push_out_data_source_item($data_template_rrd_id) {
 	/* loop through each data source column name (from the above array) */
 	foreach ($struct_data_source_item as $field_name => $field_array) {
 		/* are we allowed to push out the column? */
-		if (((empty($data_template_rrd{'t_' . $field_name})) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_rrd{'t_' . $field_name})) && (isset($data_template_rrd[$field_name])))) {
+		if (((empty($data_template_rrd['t_' . $field_name])) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_rrd['t_' . $field_name])) && (isset($data_template_rrd[$field_name])))) {
 			db_execute_prepared("UPDATE data_template_rrd 
 				SET $field_name = ? 
 				WHERE local_data_template_rrd_id = ?", 
@@ -189,7 +189,7 @@ function push_out_data_source($data_template_data_id) {
 	/* loop through each data source column name (from the above array) */
 	foreach ($struct_data_source as $field_name => $field_array) {
 		/* are we allowed to push out the column? */
-		if (((empty($data_template_data{'t_' . $field_name})) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_data{'t_' . $field_name})) && (isset($data_template_data[$field_name])))) {
+		if (((empty($data_template_data['t_' . $field_name])) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_data['t_' . $field_name])) && (isset($data_template_data[$field_name])))) {
 			db_execute_prepared("UPDATE data_template_data 
 				SET $field_name = ? 
 				WHERE local_data_template_data_id=?", 
@@ -249,7 +249,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 		if ($field_name == 'rrd_step' && sizeof($profile)) {
 			$save[$field_name] = $profile['step'];
 		} elseif ((isset($data[$field_name])) || (isset($template_data[$field_name]))) {
-			if ((!empty($template_data{'t_' . $field_name})) && ($new_save == false)) {
+			if ((!empty($template_data['t_' . $field_name])) && ($new_save == false)) {
 				$save[$field_name] = $data[$field_name];
 			} else {
 				$save[$field_name] = $template_data[$field_name];
@@ -334,7 +334,7 @@ function push_out_graph($graph_template_graph_id) {
 	/* loop through each graph column name (from the above array) */
 	foreach ($struct_graph as $field_name => $field_array) {
 		/* are we allowed to push out the column? */
-		if (isset($graph_template_graph{'t_' . $field_name}) && empty($graph_template_graph{'t_' . $field_name})) {
+		if (isset($graph_template_graph['t_' . $field_name]) && empty($graph_template_graph['t_' . $field_name])) {
 			if ($field_array['method'] != 'spacer') {
 				db_execute_prepared("UPDATE graph_templates_graph 
 					SET $field_name = ? 
@@ -406,9 +406,9 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 	if (sizeof($values_to_apply)) {
 		foreach ($values_to_apply as $value) {
 			/* this is just an extra check that i threw in to prevent users' graphs from getting really messed up */
-			if (!(($graph_input['column_name'] == 'task_item_id') && (empty($value{$graph_input['column_name']})))) {
+			if (!(($graph_input['column_name'] == 'task_item_id') && (empty($value[$graph_input['column_name']])))) {
 				db_execute('UPDATE graph_templates_item 
-					SET ' . $graph_input['column_name'] . "=" . db_qstr($value{$graph_input['column_name']}) . " 
+					SET ' . $graph_input['column_name'] . "=" . db_qstr($value[$graph_input['column_name']]) . " 
 					WHERE local_graph_id=" . $value['local_graph_id'] . " 
 					AND local_graph_template_item_id=$graph_template_item_id");
 			}
@@ -944,7 +944,7 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	db_execute('INSERT INTO data_template 
 		(id,name,hash) 
 		VALUES (0, ?, ?)', 
-		array($totle, get_hash_data_template(0)));
+		array($title, get_hash_data_template(0)));
 
 	$data_template_id = db_fetch_insert_id();
 
@@ -1045,7 +1045,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		if (sizeof($suggested_values)) {
 			foreach ($suggested_values as $suggested_value) {
 				/* once we find a match; don't try to find more */
-				if (!isset($suggested_values_graph[$graph_template_id]{$suggested_value['field_name']})) {
+				if (!isset($suggested_values_graph[$graph_template_id][$suggested_value['field_name']])) {
 					$subs_string = substitute_snmp_query_data($suggested_value['text'], $host_id, 
 						$snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'], 
 						read_config_option('max_data_query_field_length'));
@@ -1192,7 +1192,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 									}
 
 									/* once we find a working value, stop */
-									$suggested_values_ds{$data_template['id']}{$suggested_value['field_name']} = true;
+									$suggested_values_ds[$data_template['id']][$suggested_value['field_name']] = true;
 
 									$columns = db_fetch_row("SHOW COLUMNS 
 										FROM data_template_rrd 
@@ -1249,16 +1249,16 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 						array($data_input_field['output_type'], $data_template_data_id, $snmp_query_array['snmp_query_graph_id']));
 
 					/* now that we have put data into the 'data_input_data' table, update the snmp cache for ds's */
-					update_data_source_data_query_cache($cache_array['local_data_id']{$data_template['id']});
+					update_data_source_data_query_cache($cache_array['local_data_id'][$data_template['id']]);
 				}
 
 				/* suggested values: data source */
-				if (isset($suggested_vals[$graph_template_id]['data_template']{$data_template['id']})) {
-					foreach ($suggested_vals[$graph_template_id]['data_template']{$data_template['id']} as $field_name => $field_value) {
+				if (isset($suggested_vals[$graph_template_id]['data_template'][$data_template['id']])) {
+					foreach ($suggested_vals[$graph_template_id]['data_template'][$data_template['id']] as $field_name => $field_value) {
 						db_execute_prepared("UPDATE data_template_data
 							SET $field_name = ?
 							WHERE local_data_id = ?", 
-							array($field_value, $cache_array['local_data_id']{$data_template['id']}));
+							array($field_value, $cache_array['local_data_id'][$data_template['id']]));
 					}
 				}
 
@@ -1270,7 +1270,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 								FROM data_template_rrd 
 								WHERE local_data_template_rrd_id = ?
 								AND local_data_id = ?', 
-								array($data_template_item_id, $cache_array['local_data_id']{$data_template['id']}));
+								array($data_template_item_id, $cache_array['local_data_id'][$data_template['id']]));
 
 							db_execute_prepared("UPDATE data_template_rrd
 								SET $field_name = ?
@@ -1281,8 +1281,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				}
 
 				/* suggested values: custom data */
-				if (isset($suggested_vals[$graph_template_id]['custom_data']{$data_template['id']})) {
-					foreach ($suggested_vals[$graph_template_id]['custom_data']{$data_template['id']} as $data_input_field_id => $field_value) {
+				if (isset($suggested_vals[$graph_template_id]['custom_data'][$data_template['id']])) {
+					foreach ($suggested_vals[$graph_template_id]['custom_data'][$data_template['id']] as $data_input_field_id => $field_value) {
 						db_execute_prepared('REPLACE INTO data_input_data 
 							(data_input_field_id, data_template_data_id, t_value, value) 
 							VALUES (?, ?, "", ?)', 
@@ -1290,7 +1290,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					}
 				}
 
-				update_data_source_title_cache($cache_array['local_data_id']{$data_template['id']});
+				update_data_source_title_cache($cache_array['local_data_id'][$data_template['id']]);
 			}
 		}
 	}

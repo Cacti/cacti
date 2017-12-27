@@ -39,15 +39,24 @@ function clog_get_graphs_from_datasource($local_data_id) {
 function clog_purge_logfile() {
 	global $config;
 
-	$logfile   = read_config_option('path_cactilog');
-
+	$logfile = read_config_option('path_cactilog');
+	$logbase = basename($logfile);
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
+	}
+
+	if (get_nfilter_request_var('filename') != '') {
+		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
+			raise_message('clog_invalid');
+			header('Location: ' . get_current_page() . '?filename=' . $logbase);
+			exit(0);
+		}
 	}
 
 	$purgefile = dirname($logfile) . '/' . get_nfilter_request_var('filename');
 	if (strstr($purgefile, $logfile) === false) {
 		raise_message('clog_invalid');
+		header('Location: ' . get_current_page() . '?header=false');
 		exit(0);
 	}
 
@@ -76,8 +85,11 @@ function clog_purge_logfile() {
 function clog_view_logfile() {
 	global $config;
 
+	$exclude_reported = false;
+
 	$clogAdmin = clog_admin();
 	$logfile   = read_config_option('path_cactilog');
+	$logbase   = basename($logfile);
 
 	if (isset_request_var('filename')) {
 		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
@@ -86,6 +98,14 @@ function clog_view_logfile() {
 		}
 	} elseif ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
+	}
+
+	if (get_nfilter_request_var('filename') != '') {
+		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
+			raise_message('clog_invalid');
+			header('Location: ' . get_current_page() . '?filename=' . $logbase);
+			exit(0);
+		}
 	}
 
 	/* ================= input validation and session storage ================= */
@@ -208,6 +228,7 @@ function clog_view_logfile() {
 		}
 	} else {
 		$ad_filter = __(' - Admin View');
+		$exclude_regex = '';
 	}
 
 	if (get_request_var('message_type') > 0) {
@@ -225,7 +246,7 @@ function clog_view_logfile() {
 
 	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
 
-	echo $nav;
+	print $nav;
 
 	html_start_box($start_string, '100%', '', '3', 'center', '');
 
@@ -245,58 +266,76 @@ function clog_view_logfile() {
 			$new_item = html_escape($item);
 		} else {
 			$new_item = '';
+
+			// Process the host section
 			if ($host_start) {
-				$host_end    = strpos($item, ']', $host_start);
-				$host_id     = substr($item, $host_start + 7, $host_end - ($host_start + 7));
-				$new_item   .= substr($item, 0, $host_start) . " Device[<a href='" . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>" . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:'') . '</a>]';
-				$item        = substr($item, $host_end + 1);
+				$host_end  = strpos($item, ']', $host_start);
+				$host_id   = substr($item, $host_start + 7, $host_end - ($host_start + 7));
+				$new_item .= substr($item, 0, $host_start) . " Device[<a href='" . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>" . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:'') . '</a>]';
+				$item      = substr($item, $host_end + 1);
 			}
 
-			$ds_start   = strpos($item, 'DS[');
+			// Process the Data Source Section
+			$ds_start = strpos($item, 'DS[');
+
 			if ($ds_start) {
-				$ds_end    = strpos($item, ']', $ds_start);
-				$ds_id     = substr($item, $ds_start + 3, $ds_end - ($ds_start + 3));
-				$ds_ids    = explode(', ', $ds_id);
+				$ds_end = strpos($item, ']', $ds_start);
+				$ds_id  = substr($item, $ds_start + 3, $ds_end - ($ds_start + 3));
+				$ds_ids = explode(', ', $ds_id);
+
 				if (sizeof($ds_ids)) {
 					$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
-					$new_item  .= " Graphs[<a href='";
-					$titles = '';
-					$i = 0;
+					if ($new_item == '') {
+						$new_item .= substr($item, 0, $ds_start);
+					}
+
+					$title = '';
+					$i     = 0;
+
 					foreach($ds_ids as $ds_id) {
 						$graph_ids = clog_get_graphs_from_datasource($ds_id);
 
 						if (sizeof($graph_ids)) {
+							$new_item .= " Graphs[<a href='";
+
 							foreach($graph_ids as $key => $title) {
 								$graph_add .= ($i > 0 ? '%2C' : '') . $key;
-								if ($titles != '') {
-									$titles .= ", '" . html_escape($title) . "'";
-								} else {
-									$titles .= "'"  . html_escape($title) . "'";
-								}
+								$title     .= ($title != '' ? ', ':'') . html_escape($title);
+
 								$i++;
 							}
+
+							$new_item .= html_escape($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $title . '</a>]';
 						}
 					}
 
-					$new_item .= html_escape($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $titles . '</a>]';
-
 					$new_item .= ' DS[';
-					$i = 0;
+					$i         = 0;
+
 					foreach($ds_ids as $ds_id) {
 						$new_item .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_id . '</a>';
+
 						$i++;
 					}
+
 					$new_item .= ']';
 				}
-			}else{
+			} else {
 				$new_item .= html_escape($item);
 			}
 		}
 
 		/* respect the exclusion filter */
-		if (!$clogAdmin && @preg_match($exclude_regex, $new_item)) {
-			continue;
+		if ($exclude_regex != '' && !$clogAdmin) {
+			if (validate_is_regex($exclude_regex)) {
+				if (preg_match($exclude_regex, $new_item)) {
+					continue;
+				}
+			} elseif (!$exclude_reported) {
+				cacti_log('Cacti Log Exclude Regex "' . $exclude_regex . '" is Invalid.  Update your Exclude Regex to be valid!');
+				$exclude_reported = true;
+			}
 		}
 
 		/* get the background color */
@@ -331,7 +370,7 @@ function clog_view_logfile() {
 	html_end_box();
 
 	if ($total_rows) {
-		echo $nav;
+		print $nav;
 	}
 
 	bottom_footer();
@@ -349,8 +388,11 @@ function filter($clogAdmin) {
 						<?php print __('File');?>
 					</td>
 					<td>
+						<select id='filename'>
 						<?php
 						$configLogPath = read_config_option('path_cactilog');
+						$configLogBase = basename($configLogPath);
+						$selectedFile  = basename(get_nfilter_request_var('filename'));
 
 						if ($configLogPath == '') {
 							$logPath = $config['base_path'] . '/log/';
@@ -361,16 +403,10 @@ function filter($clogAdmin) {
 						if (is_readable($logPath)) {
 							$files = scandir($logPath);
 						} else {
-							$files = false;
+							$files = array('cacti.log');
 						}
 
-						if ($files === false) {
-							echo '<select id="filename" name="filename">
-									<option value="cacti.log">cacti.log</option>';
-						} else {
-							echo '<select id="filename" name="filename">';
-							$selectedFile = basename(get_nfilter_request_var('filename'));
-
+						if (sizeof($files)) {
 							foreach ($files as $logFile) {
 								if (in_array($logFile, array('.', '..', '.htaccess'))) {
 									continue;
@@ -381,10 +417,16 @@ function filter($clogAdmin) {
 									continue;
 								}
 
+								if (strpos($logFile, $configLogBase) === false) {
+									continue;
+								}
+
 								print "<option value='" . $logFile . "'";
+
 								if ($selectedFile == $logFile) {
 									print ' selected';
 								}
+
 								print '>' . $logFile . "</option>\n";
 							}
 						}

@@ -168,11 +168,11 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			$form_field_name = str_replace('|field|', $item['column_name'], $field_name_format);
 			$form_field_name = str_replace('|id|', $item['id'], $form_field_name);
 
-			$form_array += array($form_field_name => $struct_graph_item{$item['column_name']});
+			$form_array += array($form_field_name => $struct_graph_item[$item['column_name']]);
 
 			/* modifications to the default form array */
 			$form_array[$form_field_name]['friendly_name'] = $item['name'];
-			$form_array[$form_field_name]['value'] = $current_def_value{$item['column_name']};
+			$form_array[$form_field_name]['value'] = $current_def_value[$item['column_name']];
 
 			if ($locked == 'true') {
 				if (substr_count($form_field_name, 'task_item_id') > 0) {
@@ -184,7 +184,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
                         LEFT JOIN host ON (data_local.host_id=host.id)
                         WHERE data_template_rrd.local_data_id=data_local.id
                         AND data_template_data.local_data_id=data_local.id
-                        AND data_template_rrd.id = ?", array($current_def_value{$item['column_name']}));
+                        AND data_template_rrd.id = ?", array($current_def_value[$item['column_name']]));
 
 					$form_array[$form_field_name]['value'] = $value;
 				}
@@ -261,7 +261,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 		unset($form_array[$form_field_name]['default']);
 
 		$current_flag = (isset($field_array['flags']) ? $field_array['flags'] : '');
-		$current_template_flag = (isset($data_template{'t_' . $field_name}) ? $data_template{'t_' . $field_name} : 'on');
+		$current_template_flag = (isset($data_template['t_' . $field_name]) ? $data_template['t_' . $field_name] : 'on');
 
 		if (($current_template_flag != 'on') || ($current_flag == 'ALWAYSTEMPLATE')) {
 			if ($include_hidden_fields == true) {
@@ -371,7 +371,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					$form_array[$form_field_name]['friendly_name'] .= ' [' . $rrd['data_source_name'] . ']';
 				}
 
-				if ($data_template_rrd{'t_' . $field_name} != 'on') {
+				if ($data_template_rrd['t_' . $field_name] != 'on') {
 					if ($include_hidden_fields == true) {
 						$form_array[$form_field_name]['method'] = 'hidden';
 					} else {

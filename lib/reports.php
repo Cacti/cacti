@@ -73,16 +73,22 @@ function duplicate_reports($_id, $_title) {
  * @return string	- string defining the datetime format specific to this user
  */
 function reports_date_time_format() {
-	global $datechar;
+	$datechar = array(
+		GDC_HYPHEN => '-',
+		GDC_SLASH  => '/',
+		GDC_DOT    => '.'
+	);
 
 	$graph_date = '';
 
 	/* setup date format */
-	$date_fmt = read_user_setting('default_date_format');
+	$date_fmt        = read_config_option('default_date_format');
 	$dateCharSetting = read_config_option('default_datechar');
+
 	if (empty($dateCharSetting)) {
 		$dateCharSetting = GDC_SLASH;
 	}
+
 	$datecharacter = $datechar[$dateCharSetting];
 
 	switch ($date_fmt) {
@@ -650,7 +656,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 
 					if ($column == 0) {
 						$outstr .= "\t\t<tr class='image_row'>\n";
-						$outstr .= "\t\t\t<td style='text-align:" . $alignment{$item['align']} . ";'>\n";
+						$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";'>\n";
 
 						if ($format_ok) {
 							$outstr .= "\t\t\t\t<table class='image_table'>\n";
@@ -761,7 +767,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 
 	$out = '';
 	if ($output == REPORTS_OUTPUT_STDOUT) {
-		$out = "<img class='image' alt='' src='" . htmlspecialchars($config['url_path'] . 'graph_image.php' .
+		$out = "<img class='image' alt='' src='" . html_escape($config['url_path'] . 'graph_image.php' .
 			'?graph_width=' . $report['graph_width'] .
 			'&graph_height=' . $report['graph_height'] .
 			($report['thumbnails'] == 'on' ? '&graph_nolegend=true':'') .
@@ -776,7 +782,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	}
 
 	if ($report['graph_linked'] == 'on' ) {
-		$out = "<a href='" . htmlspecialchars(read_config_option('base_url') . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
+		$out = "<a href='" . html_escape(read_config_option('base_url') . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
 	}
 
 	return $out . "\n";
@@ -1049,20 +1055,23 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 							/* start graph display */
 							if ($title != '') {
 								$outstr .= "\t\t<tr class='text_row'>\n";
+
 								if ($format_ok) {
 									$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . "';>\n";
 								} else {
 									$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'>\n";
 								}
+
 								$outstr .= "\t\t\t\t$title\n";
 								$outstr .= "\t\t\t</td>\n";
 								$outstr .= "\t\t</tr>\n";
 							}
+
 							$outstr .= reports_graph_area($outgraphs, $report, $item, $timespan, $output, $format_ok, $theme);
 						}
 					}
-				/* data query index grouping */
 				} elseif ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
+					/* data query index grouping */
 					$data_queries = db_fetch_assoc_prepared('SELECT DISTINCT
 						sq.id, sq.name
 						FROM graph_local AS gl
@@ -1140,7 +1149,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 								usort($graphs, 'necturally_sort_graphs');
 
 								foreach ($graphs as $graph) {
-									$snmp_index_to_graph{$graph['snmp_index']}{$graph['local_graph_id']} = $graph['title_cache'];
+									$snmp_index_to_graph[$graph['snmp_index']][$graph['local_graph_id']] = $graph['title_cache'];
 								}
 							}
 
@@ -1155,6 +1164,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 									}
 								}
 							}
+
 							if (sizeof($graph_list)) {
 								$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok, $theme);
 							}
@@ -1173,6 +1183,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
  * natural sort function
  * @param $a
  * @param $b
+ * @return string
  */
 function necturally_sort_graphs($a, $b) {
 	return strnatcasecmp($a['title_cache'], $b['title_cache']);
@@ -1187,6 +1198,7 @@ function necturally_sort_graphs($a, $b) {
  * @param int $timespan		- requested timespan
  * @param int $output		- type of output
  * @param bool $format_ok	- use css styling
+ * @return string
  */
 function reports_graph_area($graphs, $report, $item, $timespan, $output, $format_ok, $theme = 'classic') {
 	global $alignment;
@@ -1195,34 +1207,35 @@ function reports_graph_area($graphs, $report, $item, $timespan, $output, $format
 	$outstr = '';
 
 	if (sizeof($graphs)) {
-	foreach($graphs as $graph) {
-		$item['local_graph_id'] = $graph['local_graph_id'];
+		foreach($graphs as $graph) {
+			$item['local_graph_id'] = $graph['local_graph_id'];
 
-		if ($column == 0) {
-			$outstr .= "\t\t<tr class='image_row'>\n";
-			$outstr .= "\t\t\t<td style='text-align:" . $alignment{$item['align']} . ";'>\n";
-			$outstr .= "\t\t\t\t<table style='width:100%;'>\n";
-			$outstr .= "\t\t\t\t\t<tr>\n";
-		}
-		if ($format_ok) {
-			$outstr .= "\t\t\t\t\t\t<td class='image_column' style='text-align:" . $alignment{$item['align']} . ";'>\n";
-		} else {
-			$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align='" . $alignment{$item['align']} . ";'>\n";
-		}
-		$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output, $theme) . "\n";
-		$outstr .= "\t\t\t\t\t\t</td>\n";
+			if ($column == 0) {
+				$outstr .= "\t\t<tr class='image_row'>\n";
+				$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";'>\n";
+				$outstr .= "\t\t\t\t<table style='width:100%;'>\n";
+				$outstr .= "\t\t\t\t\t<tr>\n";
+			}
+			if ($format_ok) {
+				$outstr .= "\t\t\t\t\t\t<td class='image_column' style='text-align:" . $alignment[$item['align']] . ";'>\n";
+			} else {
+				$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align='" . $alignment[$item['align']] . ";'>\n";
+			}
 
-		if ($report['graph_columns'] > 1) {
-			$column = ($column + 1) % ($report['graph_columns']);
-		}
+			$outstr .= "\t\t\t\t\t\t\t" . reports_graph_image($report, $item, $timespan, $output, $theme) . "\n";
+			$outstr .= "\t\t\t\t\t\t</td>\n";
 
-		if ($column == 0) {
-			$outstr .= "\t\t\t\t\t</tr>\n";
-			$outstr .= "\t\t\t\t</table>\n";
-			$outstr .= "\t\t\t</td>\n";
-			$outstr .= "\t\t</tr>\n";
+			if ($report['graph_columns'] > 1) {
+				$column = ($column + 1) % ($report['graph_columns']);
+			}
+
+			if ($column == 0) {
+				$outstr .= "\t\t\t\t\t</tr>\n";
+				$outstr .= "\t\t\t\t</table>\n";
+				$outstr .= "\t\t\t</td>\n";
+				$outstr .= "\t\t</tr>\n";
+			}
 		}
-	}
 	}
 
 	if ($column > 0) {
@@ -1272,6 +1285,7 @@ function png2jpeg ($png_data) {
 
 		unlink($fn); // delete scratch file
 	}
+
 	return $ImageData;
 }
 
@@ -1312,6 +1326,7 @@ function png2gif ($png_data) {
 
 		unlink($fn); // delete scratch file
 	}
+
 	return $ImageData;
 }
 
@@ -1332,25 +1347,26 @@ function reports_get_format_files() {
 			while (($file = readdir($dh)) !== false) {
 				$files[] = $file;
 			}
+
 			closedir($dh);
 		}
 
 		if (sizeof($files)) {
-		foreach($files as $file) {
-			if (substr_count($file, '.format')) {
-				$contents = file($dir . '/' . $file);
+			foreach($files as $file) {
+				if (substr_count($file, '.format')) {
+					$contents = file($dir . '/' . $file);
 
-				if (sizeof($contents)) {
-				foreach($contents as $line) {
-					$line = trim($line);
-					if (substr_count($line, 'Description:') && substr($line, 0, 1) == '#') {
-						$arr = explode(':', $line);
-						$formats[$file] = trim($arr[1]) . ' (' . $file . ')';
+					if (sizeof($contents)) {
+						foreach($contents as $line) {
+							$line = trim($line);
+							if (substr_count($line, 'Description:') && substr($line, 0, 1) == '#') {
+								$arr = explode(':', $line);
+								$formats[$file] = trim($arr[1]) . ' (' . $file . ')';
+							}
+						}
 					}
 				}
-				}
 			}
-		}
 		}
 	}
 

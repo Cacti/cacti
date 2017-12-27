@@ -118,9 +118,9 @@ $graph_data_array['graphv'] = true;
 
 // Determine the graph type of the output
 if (!isset_request_var('image_format')) {
-	$type   = db_fetch_cell_prepared('SELECT image_format_id 
-		FROM graph_templates_graph 
-		WHERE local_graph_id = ?', 
+	$type   = db_fetch_cell_prepared('SELECT image_format_id
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
 		array(get_request_var('local_graph_id')));
 
 	switch($type) {
@@ -150,7 +150,7 @@ if (!isset_request_var('image_format')) {
 
 $graph_data_array['image_format'] = $gtype;
 
-if ($config['poller_id'] == 1) {
+if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
 
 	ob_end_clean();
@@ -182,9 +182,16 @@ if ($config['poller_id'] == 1) {
 		$url .= '&' . $variable . '=' . $value;
 	}
 
-	$output = file_get_contents($url);
+	$fgc_contextoption = get_default_contextoption();
+	if($fgc_contextoption) {
+		$fgc_context = stream_context_create($fgc_contextoption);
+		$output = file_get_contents($url, false, $fgc_context);
+	} else {
+		$output = file_get_contents($url);
+	}
+	
 }
-
+$output = trim($output);
 $oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => $rra_id);
 
 // Check if we received back something populated from rrdtool
@@ -195,14 +202,14 @@ if ($output !== false && $output != '') {
 	$image_data_pos   = strpos($output, "\n" , $image_begin_pos) + 1;
 	// Insert the raw image data to the array
 	$oarray['image']  = base64_encode(substr($output, $image_data_pos));
-	
+
 	// Parse and populate everything before the image definition row
 	$header_lines     = explode("\n", substr($output, 0, $image_begin_pos - 1));
 	foreach ($header_lines as $line) {
 		$parts = explode(" = ", $line);
 		$oarray[$parts[0]] = trim($parts[1]);
 	}
-} else { 
+} else {
 	/* image type now png */
 	$oarray['type'] = 'png';
 
@@ -231,14 +238,14 @@ if ($output !== false && $output != '') {
 			$oarray['image_height'] = round($graph_data_array['graph_height'] * 1.8, 0);
 		}
 	} else {
-		$oarray['image_width']  = round(db_fetch_cell_prepared('SELECT width 
-			FROM graph_templates_graph 
-			WHERE local_graph_id = ?', 
+		$oarray['image_width']  = round(db_fetch_cell_prepared('SELECT width
+			FROM graph_templates_graph
+			WHERE local_graph_id = ?',
 			array(get_request_var('local_graph_id'))), 0);
 
-		$oarray['image_height']  = round(db_fetch_cell_prepared('SELECT height 
-			FROM graph_templates_graph 
-			WHERE local_graph_id = ?', 
+		$oarray['image_height']  = round(db_fetch_cell_prepared('SELECT height
+			FROM graph_templates_graph
+			WHERE local_graph_id = ?',
 			array(get_request_var('local_graph_id'))), 0);
 	}
 

@@ -181,7 +181,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 					$return_array['nth_percentile_aggregate_total'] = $values_array[$target];
 				}
 			} else {
-				$return_array{'nth_percentile_aggregate_total'} = $values_array[$target];
+				$return_array['nth_percentile_aggregate_total'] = $values_array[$target];
 			}
 		}
 	}
@@ -241,6 +241,7 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
        $arr[3] // power of 10 divisor
        $arr[4] // current, total, max, total_peak, all_max_current, all_max_peak
        $arr[5] // digits of floating point precision
+   @arg $graph - an array that contains the current graph data
    @arg $graph_item - an array that contains the current graph item
    @arg $graph_items - an array that contains all graph items
    @arg $graph_start - the start time to use for the data calculation. this value can
@@ -250,11 +251,17 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
    @arg $seconds_between_graph_updates - the number of seconds between each update on the graph which
      varies depending on the RRA in use
    @returns - a string containing the Nth percentile suitable for placing on the graph */
-function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $graph_end) {
+function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end) {
 	global $graph_item_types;
 
 	if (sizeof($regexp_match_array) == 0) {
 		return 0;
+	}
+
+	if ($graph['base_value'] == 1024) {
+		$pow = 10.24;
+	} else {
+		$pow = 10;
 	}
 
 	if ($regexp_match_array[1] < 1 || $regexp_match_array[1] > 99) {
@@ -312,7 +319,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 			if (!empty($nth_cache[$graph_item['local_data_id']][$graph_item['data_source_name']])) {
 				$nth = $nth_cache[$graph_item['local_data_id']][$graph_item['data_source_name']];
 				$nth = ($regexp_match_array[2] == 'bits') ? $nth * 8 : $nth;
-				$nth /= pow(10, intval($regexp_match_array[3]));
+				$nth /= pow($pow, intval($regexp_match_array[3]));
 			}
 			break;
 		case 'total':
@@ -321,7 +328,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 					if (!empty($nth_cache[$graph_element['local_data_id']][$graph_element['data_source_name']])) {
 						$local_nth = $nth_cache[$graph_element['local_data_id']][$graph_element['data_source_name']];
 						$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-						$local_nth /= pow(10, intval($regexp_match_array[3]));
+						$local_nth /= pow($pow, intval($regexp_match_array[3]));
 
 						$nth += $local_nth;
 					}
@@ -332,7 +339,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 			if (!empty($nth_cache[$graph_item['local_data_id']]['nth_percentile_maximum'])) {
 				$nth = $nth_cache[$graph_item['local_data_id']]['nth_percentile_maximum'];
 				$nth = ($regexp_match_array[2] == 'bits') ? $nth * 8 : $nth;
-				$nth /= pow(10, intval($regexp_match_array[3]));
+				$nth /= pow($pow, intval($regexp_match_array[3]));
 			}
 			break;
 		case 'total_peak':
@@ -341,7 +348,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 					if (!empty($nth_cache[$graph_element['local_data_id']]['nth_percentile_maximum'])) {
 						$local_nth = $nth_cache[$graph_element['local_data_id']]['nth_percentile_maximum'];
 						$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-						$local_nth /= pow(10, intval($regexp_match_array[3]));
+						$local_nth /= pow($pow, intval($regexp_match_array[3]));
 
 						$nth += $local_nth;
 					}
@@ -354,7 +361,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 					if (!empty($ninety_fifth_cache[$graph_element['local_data_id']][$graph_element['data_source_name']])) {
 						$local_nth = $ninety_fifth_cache[$graph_element['local_data_id']][$graph_element['data_source_name']];
 						$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-						$local_nth /= pow(10, intval($regexp_match_array[3]));
+						$local_nth /= pow($pow, intval($regexp_match_array[3]));
 
 						if ($local_nth > $nth) {
 							$nth = $local_nth;
@@ -369,7 +376,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 					if (!empty($nth_cache[$graph_element['local_data_id']]['nth_percentile_maximum'])) {
 						$local_nth = $nth_cache[$graph_element['local_data_id']]['nth_percentile_maximum'];
 						$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-						$local_nth /= pow(10, intval($regexp_match_array[3]));
+						$local_nth /= pow($pow, intval($regexp_match_array[3]));
 
 						if ($local_nth > $nth) {
 							$nth = $local_nth;
@@ -383,7 +390,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 			if (!empty($nth_cache[0]['nth_percentile_aggregate_total'])) {
 				$local_nth = $nth_cache[0]['nth_percentile_aggregate_total'];
 				$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-				$local_nth /= pow(10, intval($regexp_match_array[3]));
+				$local_nth /= pow($pow, intval($regexp_match_array[3]));
 				$nth = $local_nth;
 			}
 			break;
@@ -391,7 +398,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 			if (!empty($nth_cache[0]['nth_percentile_aggregate_max'])) {
 				$local_nth = $nth_cache[0]['nth_percentile_aggregate_max'];
 				$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-				$local_nth /= pow(10, intval($regexp_match_array[3]));
+				$local_nth /= pow($pow, intval($regexp_match_array[3]));
 				$nth = $local_nth;
 			}
 			break;
@@ -399,7 +406,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
 			if (!empty($nth_cache[0]['nth_percentile_aggregate_sum'])) {
 				$local_nth = $nth_cache[0]['nth_percentile_aggregate_sum'];
 				$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-				$local_nth /= pow(10, intval($regexp_match_array[3]));
+				$local_nth /= pow($pow, intval($regexp_match_array[3]));
 				$nth = $local_nth;
 			}
 			break;
@@ -425,6 +432,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
        $arr[2] // current, total
        $arr[3] // digits of floating point precision
        $arr[4] // seconds to perform the calculation for or 'auto'
+   @arg $graph - an array that contains the current graph data
    @arg $graph_item - an array that contains the current graph item
    @arg $graph_items - an array that contains all graph items
    @arg $graph_start - the start time to use for the data calculation. this value can
@@ -437,7 +445,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph_item, &$graph_ite
      averaged summation
    @arg $ds_step - how many seconds each period represents
    @returns - a string containg the bandwidth summation suitable for placing on the graph */
-function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$graph_items, $graph_start, $graph_end, $rra_step, $ds_step) {
+function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end, $rra_step, $ds_step) {
 	global $graph_item_types;
 
 	if (sizeof($regexp_match_array) == 0) {
@@ -489,22 +497,40 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 	}
 
 	if (preg_match('/\d+/', $regexp_match_array[1])) {
-		$summation /= pow(10, intval($regexp_match_array[1]));
+		$summation /= pow($pow, intval($regexp_match_array[1]));
 	} elseif ($regexp_match_array[1] == 'auto') {
-		if ($summation < 1000) {
-			$summation_label = 'B';
-		} elseif ($summation < 1000000) {
-			$summation_label = 'KB';
-			$summation /= 1000;
-		} elseif ($summation < 1000000000) {
-			$summation_label = 'MB';
-			$summation /= 1000000;
-		} elseif ($summation < 1000000000000) {
-			$summation_label = 'GB';
-			$summation /= 1000000000;
+		if ($graph['base_value'] == 1000) {
+			if ($summation < 1000) {
+				$summation_label = 'B';
+			} elseif ($summation < 1000000) {
+				$summation_label = 'KB';
+				$summation /= 1000;
+			} elseif ($summation < 1000000000) {
+				$summation_label = 'MB';
+				$summation /= 1000000;
+			} elseif ($summation < 1000000000000) {
+				$summation_label = 'GB';
+				$summation /= 1000000000;
+			} else {
+				$summation_label = 'TB';
+				$summation /= 1000000000000;
+			}
 		} else {
-			$summation_label = 'TB';
-			$summation /= 1000000000000;
+			if ($summation < 1024) {
+				$summation_label = 'iB';
+			} elseif ($summation < 1048576) {
+				$summation_label = 'KiB';
+				$summation /= 1024;
+			} elseif ($summation < 1073741824) {
+				$summation_label = 'MiB';
+				$summation /= 1048576;
+			} elseif ($summation < 1099511627776) {
+				$summation_label = 'GiB';
+				$summation /= 1073741824;
+			} else {
+				$summation_label = 'TiB';
+				$summation /= 1099511627776;
+			}
 		}
 	}
 
@@ -517,8 +543,8 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph_item, &$grap
 
 	/* substitute in the final result and round off to two decimal digits */
 	if (isset($summation_label)) {
-		return round($summation, $round_to) . " $summation_label";
+		return number_format_i18n($summation, $round_to) . " $summation_label";
 	} else {
-		return round($summation, $round_to);
+		return number_format_i18n($summation, $round_to);
 	}
 }

@@ -218,7 +218,7 @@ function aggregate_color_form_actions() {
 
 	form_start('color_templates.php');
 
-	html_start_box($aggregate_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($aggregate_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($color_array) && sizeof($color_array)) {
 		if (get_request_var('drp_action') == '1') { /* delete */
@@ -534,7 +534,7 @@ function aggregate_color_template() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, 'Color Templates', 'page', 'main');
+	$nav = html_nav_bar('color_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Color Templates'), 'page', 'main');
 
 	form_start('color_templates.php', 'chk');
 

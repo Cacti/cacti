@@ -113,7 +113,7 @@ if ($old_cacti_version == CACTI_VERSION) {
 foreach ($cacti_version_codes as $cacti_version => $hash_code)  {
 
 	// skip versions old than the database version
-	if (version_compare($old_cacti_version, $cacti_version, '>=')) {
+	if (cacti_version_compare($old_cacti_version, $cacti_version, '>=')) {
 		continue;
 	}
 
@@ -162,19 +162,19 @@ function db_install_errors($cacti_version) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-    echo "Cacti Database Upgrade Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+	echo "Cacti Database Upgrade Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /*  display_help - displays the usage of the function */
 function display_help () {
-    display_version();
+	display_version();
 
-    echo PHP_EOL . "usage: upgrade_database.php [--debug] [--forcever=VERSION]" . PHP_EOL . PHP_EOL;
+	echo PHP_EOL . "usage: upgrade_database.php [--debug] [--forcever=VERSION]" . PHP_EOL . PHP_EOL;
 	echo "A command line version of the Cacti database upgrade tool.  You must execute" . PHP_EOL;
 	echo "this command as a super user, or someone who can write a PHP session file." . PHP_EOL;
 	echo "Typically, this user account will be apache, www-run, or root." . PHP_EOL . PHP_EOL;
 	echo "If you are running a beta or alpha version of Cacti and need to rerun" . PHP_EOL;
 	echo "the upgrade script, simply set the forcever to the previous release." . PHP_EOL . PHP_EOL;
-    echo "--forcever - Force the starting version, say " . CACTI_VERSION . PHP_EOL;
-    echo "--debug    - Display verbose output during execution" . PHP_EOL . PHP_EOL;
+	echo "--forcever - Force the starting version, say " . CACTI_VERSION . PHP_EOL;
+	echo "--debug    - Display verbose output during execution" . PHP_EOL . PHP_EOL;
 }
