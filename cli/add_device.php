@@ -56,6 +56,7 @@ if (sizeof($parms)) {
 	$disable       = 0;
 
 	$notes         = '';
+	$location      = '';
 	$external_id   = '';
 
 	$snmp_username        = read_config_option('snmp_username');
@@ -121,6 +122,10 @@ if (sizeof($parms)) {
 			break;
 		case '--notes':
 			$notes = trim($value);
+
+			break;
+		case '--location':
+			$location = trim($value);
 
 			break;
 		case '--site':
@@ -436,7 +441,7 @@ if (sizeof($parms)) {
 		$ping_port, $ping_timeout, $ping_retries, $notes,
 		$snmp_auth_protocol, $snmp_priv_passphrase,
 		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads,
-		$poller_id, $site_id, $external_id);
+		$poller_id, $site_id, $external_id, $location);
 
 	if (is_error_message()) {
 		echo "ERROR: Failed to add this device\n";
@@ -471,6 +476,7 @@ function display_help() {
 	echo "Optional:\n";
 	echo "    --proxy        if specified, allows adding a second host with same ip address\n";
 	echo "    --template     0, is a number (read below to get a list of templates)\n";
+	echo "    --location     '', The physical location of the Device.\n";
 	echo "    --notes        '', General information about this host.  Must be enclosed using double quotes.\n";
 	echo "    --external-id  '', An external ID to align Cacti devices with devices from other systems.\n";
 	echo "    --disable      0, 1 to add this host but to disable checks and 0 to enable it\n";

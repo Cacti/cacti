@@ -23,15 +23,25 @@
 */
 
 function upgrade_to_1_2_0() {
-	db_install_execute("ALTER TABLE `user_domains_ldap`
-		ADD `cn_full_name` VARCHAR(50) NULL DEFAULT '',
-		ADD `cn_email` VARCHAR(50) NULL DEFAULT ''");
+	if (!db_column_exists('user_domains_ldap', 'cn_full_name')) {
+		db_install_execute("ALTER TABLE `user_domains_ldap`
+			ADD `cn_full_name` VARCHAR(50) NULL DEFAULT '',
+			ADD `cn_email` VARCHAR(50) NULL DEFAULT ''");
+	}
 
-	db_install_execute("ALTER TABLE poller
-		ADD COLUMN max_time DOUBLE DEFAULT NULL AFTER total_time,
-		ADD COLUMN min_time DOUBLE DEFAULT NULL AFTER max_time,
-		ADD COLUMN avg_time DOUBLE DEFAULT NULL AFTER min_time,
-		ADD COLUMN total_polls INT unsigned DEFAULT '0' AFTER avg_time,
-		ADD COLUMN processes INT unsigned DEFAULT '1' AFTER total_polls,
-		ADD COLUMN threads INT unsigned DEFAULT '1' AFTER processes");
+	if (!db_column_exists('poller', 'max_time')) {
+		db_install_execute("ALTER TABLE poller
+			ADD COLUMN max_time DOUBLE DEFAULT NULL AFTER total_time,
+			ADD COLUMN min_time DOUBLE DEFAULT NULL AFTER max_time,
+			ADD COLUMN avg_time DOUBLE DEFAULT NULL AFTER min_time,
+			ADD COLUMN total_polls INT unsigned DEFAULT '0' AFTER avg_time,
+			ADD COLUMN processes INT unsigned DEFAULT '1' AFTER total_polls,
+			ADD COLUMN threads INT unsigned DEFAULT '1' AFTER processes");
+	}
+
+	if (!db_column_exists('host', 'location')) {
+		db_install_execute("ALTER TABLE host
+			ADD COLUMN location VARCHAR(40) DEFAULT NULL AFTER hostname,
+			ADD INDEX site_id_location(site_id, location)");
+	}
 }

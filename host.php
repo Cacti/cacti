@@ -68,6 +68,7 @@ switch (get_request_var('action')) {
 		host_add_gt();
 
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+
 		break;
 	case 'gt_remove':
 		get_filter_request_var('host_id');
@@ -75,6 +76,7 @@ switch (get_request_var('action')) {
 		host_remove_gt();
 
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+
 		break;
 	case 'query_add':
 		get_filter_request_var('host_id');
@@ -82,6 +84,7 @@ switch (get_request_var('action')) {
 		host_add_query();
 
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+
 		break;
 	case 'query_remove':
 		get_filter_request_var('host_id');
@@ -89,6 +92,7 @@ switch (get_request_var('action')) {
 		host_remove_query();
 
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+
 		break;
 	case 'query_change':
 		get_filter_request_var('host_id');
@@ -96,6 +100,7 @@ switch (get_request_var('action')) {
 		host_change_query();
 
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+
 		break;
 	case 'query_reload':
 		get_filter_request_var('host_id');
@@ -117,18 +122,26 @@ switch (get_request_var('action')) {
 		host_edit();
 
 		bottom_footer();
+
 		break;
 	case 'ping_host':
 		$host_id = get_filter_request_var('id');
 		api_device_ping_device($host_id);
+
 		break;
 	case 'enable_debug':
 		enable_device_debug(get_filter_request_var('host_id'));
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+
 		break;
 	case 'disable_debug':
 		disable_device_debug(get_filter_request_var('host_id'));
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+
+		break;
+	case 'ajax_locations':
+		get_site_locations();
+
 		break;
 	default:
 		top_header();
@@ -136,6 +149,7 @@ switch (get_request_var('action')) {
 		host();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -154,6 +168,31 @@ function add_tree_names_to_actions_array() {
 			$device_actions['tr_' . $tree['id']] = 'Place on a Tree (' . $tree['name'] . ')';
 		}
 	}
+}
+
+function get_site_locations() {
+	$return  = array();
+	$term    = get_request_var('term');
+	$host_id = $_SESSION['cur_device_id'];
+	$site_id = db_fetch_cell_prepared('SELECT site_id
+		FROM host
+		WHERE id = ?',
+		array($host_id));
+
+	$locations = db_fetch_assoc_prepared('SELECT DISTINCT location
+		FROM host
+		WHERE site_id = ?
+		AND location LIKE ?
+		ORDER BY location',
+		array($site_id, "%$term%"));
+
+	if (sizeof($locations)) {
+		foreach($locations as $l) {
+			$return[] = array('label' => $l['location'], 'value' => $l['location'], 'id' => $l['location']);
+		}
+	}
+
+	print json_encode($return);
 }
 
 /* --------------------------
@@ -180,7 +219,8 @@ function form_save() {
 				get_nfilter_request_var('snmp_priv_protocol'), get_nfilter_request_var('snmp_context'),
 				get_nfilter_request_var('snmp_engine_id'), get_nfilter_request_var('max_oids'),
 				get_nfilter_request_var('device_threads'), get_nfilter_request_var('poller_id'),
-				get_nfilter_request_var('site_id'), get_nfilter_request_var('external_id'));
+				get_nfilter_request_var('site_id'), get_nfilter_request_var('external_id'),
+				get_nfilter_request_var('location'));
 
 			if ($host_id !== false) {
 				api_plugin_hook_function('host_save', array('host_id' => $host_id));
@@ -628,7 +668,12 @@ function host_edit() {
 	$header_label = __('Device [new]');
 	$debug_link   = '';
 	if (!isempty_request_var('id')) {
-		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array(get_request_var('id')));
+		$_SESSION['cur_device_id'] = get_request_var('id');
+
+		$host = db_fetch_row_prepared('SELECT *
+			FROM host
+			WHERE id = ?',
+			array(get_request_var('id')));
 
 		if (sizeof($host)) {
 			$header_label = __('Device [edit: %s]', html_escape($host['description']));
@@ -638,6 +683,8 @@ function host_edit() {
 				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=enable_debug&host_id=' . $host['id']) . "'>" . __('Enable Device Debug') . "</a><br>";
 			}
 		}
+	} else {
+		$_SESSION['cur_device_id'] = 0;
 	}
 
 	if (!empty($host['id'])) {
@@ -1145,7 +1192,7 @@ function device_javascript() {
 	}
 
 	$(function() {
-		if (typeof hostInfoHeight != "undefined") {
+		if (typeof hostInfoHeight != 'undefined') {
 			if ($(window).scrollTop() == 0) {
 				$('.hostInfoHeader').css('height', '');
 			} else {
@@ -1200,6 +1247,12 @@ function device_javascript() {
 
 		$('[id$="spacer"]').click(function() {
 			changeHostForm();
+		});
+
+		$('#location_input').keyup(function() {
+			$('#location').val($('#location_input').val());
+		}).mouseup(function() {
+			$('#location').val($('#location_input').val());
 		});
 
 		$.get(urlPath+'host.php?action=ping_host&id='+$('#id').val(), function(data) {

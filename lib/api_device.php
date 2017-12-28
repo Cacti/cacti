@@ -166,7 +166,7 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
-	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id = 1, $site_id = 1, $external_id = '') {
+	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id = 1, $site_id = 1, $external_id = '', $location = '') {
 	global $config;
 
 	include_once($config['base_path'] . '/lib/utility.php');
@@ -190,6 +190,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$save['description']          = form_input_validate($description, 'description', '', false, 3);
 	$save['hostname']             = form_input_validate(trim($hostname), 'hostname', '', false, 3);
 	$save['notes']                = form_input_validate($notes, 'notes', '', true, 3);
+	$save['location']             = form_input_validate($location, 'location', '', true, 3);
 
 	$save['snmp_version']         = form_input_validate($snmp_version, 'snmp_version', '', true, 3);
 	$save['snmp_community']       = form_input_validate($snmp_community, 'snmp_community', '', true, 3);
@@ -428,7 +429,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 			FROM poller
 			WHERE id = ?',
 			array($host['poller_id']));
-		
+
 		$fgc_contextoption = get_default_contextoption();
 		if($fgc_contextoption) {
 			$fgc_context = stream_context_create($fgc_contextoption);

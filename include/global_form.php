@@ -23,7 +23,7 @@
 */
 
 if (!defined('VALID_HOST_FIELDS')) {
-	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_engine_id|snmp_version|snmp_port|snmp_timeout|external_id)');
+	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|location|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_engine_id|snmp_version|snmp_port|snmp_timeout|external_id)');
 	define('VALID_HOST_FIELDS', $string);
 }
 $valid_host_fields = VALID_HOST_FIELDS;
@@ -993,6 +993,16 @@ $fields_host_edit = array(
 		'value' => '|arg1:hostname|',
 		'max_length' => '250',
 		'size' => '60',
+		),
+	'location' => array(
+		'method' => 'drop_callback',
+		'friendly_name' => __('Location'),
+		'description' => __('The physical location of the Device.  This free form text can be a room, rack location, etc.'),
+		'none_value' => __('None'),
+		'sql' => 'SELECT DISTINCT location AS id, location AS name FROM host ORDER BY location',
+		'action' => 'ajax_locations',
+		'id' => '|arg1:location|',
+		'value' => '|arg1:location|',
 		),
 	'poller_id' => array(
 		'method' => 'drop_sql',

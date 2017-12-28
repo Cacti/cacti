@@ -1799,6 +1799,7 @@ CREATE TABLE host (
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   description varchar(150) NOT NULL default '',
   hostname varchar(100) default NULL,
+  location varchar(40) default NULL,
   notes text,
   external_id varchar(40) default NULL,
   snmp_community varchar(100) default NULL,
@@ -1845,7 +1846,8 @@ CREATE TABLE host (
   KEY site_id (site_id),
   KEY external_id (external_id),
   KEY disabled (disabled),
-  KEY status (status)
+  KEY status (status),
+  KEY site_id_location (site_id, location)
 ) ENGINE=InnoDB;
 
 --
