@@ -1773,9 +1773,10 @@ function tree() {
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$trees = db_fetch_assoc("SELECT t.*,
-		SUM(CASE WHEN ti.host_id>0 THEN 1 ELSE 0 END) AS hosts,
-		SUM(CASE WHEN ti.local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
-		SUM(CASE WHEN ti.local_graph_id=0 AND host_id=0 THEN 1 ELSE 0 END) AS branches
+		SUM(CASE WHEN ti.host_id > 0 THEN 1 ELSE 0 END) AS hosts,
+		SUM(CASE WHEN ti.local_graph_id > 0 THEN 1 ELSE 0 END) AS graphs,
+		SUM(CASE WHEN ti.local_graph_id = 0 AND host_id = 0 AND site_id = 0 THEN 1 ELSE 0 END) AS branches,
+		SUM(CASE WHEN ti.site_id > 0 THEN 1 ELSE 0 END) AS sites
 		FROM graph_tree AS t
 		LEFT JOIN graph_tree_items AS ti
 		ON t.id=ti.graph_tree_id
@@ -1807,6 +1808,7 @@ function tree() {
 		'sequence' => array('display' => __('Order'), 'align' => 'center', 'sort' => 'ASC', 'tip' => __('To change the order of the trees, first sort by this column, press the up or down arrows once they appear.')),
 		'last_modified' => array('display' => __('Last Edited'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The date that this Tree was last edited.')),
 		'modified_by' => array('display' => __('Edited By'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The last user to have modified this Tree.')),
+		'sites' => array('display' => __('Sites'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of Site Branches in this Tree.')),
 		'branches' => array('display' => __('Branches'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of Branches in this Tree.')),
 		'hosts' => array('display' => __('Devices'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of individual Devices in this Tree.')),
 		'graphs' => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The total number of individual Graphs in this Tree.')));
@@ -1840,6 +1842,7 @@ function tree() {
 			form_selectable_cell($sequence, $tree['id'], '', 'nowrap center');
 			form_selectable_cell(substr($tree['last_modified'],0,16), $tree['id'], '', 'text-align:right');
 			form_selectable_cell(get_username($tree['modified_by']), $tree['id'], '', 'text-align:right');
+			form_selectable_cell($tree['sites'] > 0 ? number_format_i18n($tree['sites'], '-1'):'-', $tree['id'], '', 'text-align:right');
 			form_selectable_cell($tree['branches'] > 0 ? number_format_i18n($tree['branches'], '-1'):'-', $tree['id'], '', 'text-align:right');
 			form_selectable_cell($tree['hosts'] > 0 ? number_format_i18n($tree['hosts'], '-1'):'-', $tree['id'], '', 'text-align:right');
 			form_selectable_cell($tree['graphs'] > 0 ? number_format_i18n($tree['graphs'], '-1'):'-', $tree['id'], '', 'text-align:right');
