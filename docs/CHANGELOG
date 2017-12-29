@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.30
 -issue#1155: Non-secure mail setting not functional due to changes in phpmailer
+-issue#1157: Resolve issue with branch permission api
 
 1.1.29
 -issue#871: Allow Nth Percentile and Bandwidth Summation to respect 'Base Value' in template
