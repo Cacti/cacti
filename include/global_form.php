@@ -371,6 +371,16 @@ $fields_data_template_template_edit = array(
 	);
 
 /* file: (data_sources.php|data_templates.php), action: (ds|template)_edit */
+
+if (db_table_exists('data_source_profiles')) {
+	$def_profile = db_fetch_cell('SELECT id 
+		FROM data_source_profiles 
+		ORDER BY `default` 
+		DESC LIMIT 1');
+} else {
+	$def_profile = '1';
+}
+
 $struct_data_source = array(
 	'name' => array(
 		'friendly_name' => __('Name'),
@@ -404,7 +414,7 @@ $struct_data_source = array(
 		'method' => 'drop_sql',
 		'description' => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
 		'sql' => 'SELECT "0" AS id, "' . __('External') . '" AS name UNION SELECT id, name FROM data_source_profiles ORDER BY name',
-		'default' => db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1'),
+		'default' => $def_profile,
 		'flags' => ''
 		),
 	'rrd_step' => array(

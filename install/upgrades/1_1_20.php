@@ -35,8 +35,10 @@ function upgrade_to_1_1_20() {
 	db_install_execute('ALTER TABLE snmpagent_mibs
 		MODIFY COLUMN `name` VARCHAR(50) NOT NULL DEFAULT ""');
 
-	db_execute('ALTER IGNORE TABLE snmpagent_cache_notifications
-		DROP PRIMARY KEY');
+	if (db_index_exists('snmpagent_cache_notifications', 'PRIMARY')) {
+		db_execute('ALTER TABLE snmpagent_cache_notifications
+			DROP PRIMARY KEY');
+	}
 
 	db_install_execute('ALTER TABLE snmpagent_cache_notifications
 		MODIFY COLUMN `name` VARCHAR(50) NOT NULL,
@@ -44,8 +46,9 @@ function upgrade_to_1_1_20() {
 		MODIFY COLUMN `attribute` VARCHAR(50) NOT NULL,
 		ADD PRIMARY KEY (`name`,`mib`,`attribute`,`sequence_id`)');
 
-	db_execute('ALTER IGNORE TABLE snmpagent_cache_textual_conventions
-		DROP PRIMARY KEY');
+	if (db_index_exists('snmpagent_cache_textual_conventions', 'PRIMARY')) {
+			DROP PRIMARY KEY');
+	}
 
 	db_install_execute('ALTER TABLE snmpagent_cache_textual_conventions
 		MODIFY COLUMN name VARCHAR(50) NOT NULL,
@@ -72,8 +75,9 @@ function upgrade_to_1_1_20() {
 		}
 	}
 
-	db_execute('ALTER IGNORE TABLE snmpagent_managers_notifications
-		DROP PRIMARY KEY');
+	if (db_index_exists('snmpagent_managers_notifications', 'PRIMARY')) {
+			DROP PRIMARY KEY');
+	}
 
 	db_install_execute('ALTER TABLE snmpagent_managers_notifications
 		MODIFY COLUMN `notification` VARCHAR(50) NOT NULL,
