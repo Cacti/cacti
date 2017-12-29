@@ -1438,6 +1438,14 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 			$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where1 . ')';
 		}
 
+		$allowed_devices = get_allowed_devices();
+
+		if (sizeof($allowed_devices)) {
+			$dev_on = 'AND h.id IN(' . array_keys(array_rekey($allowed_devices, 'id', 'description')) . ')';
+		} else {
+			$dev_on = '';
+		}
+
 		$sql = "(SELECT gti.id, CONCAT('". __('Branch:') . " ', gti.title) AS name
 			FROM graph_tree AS gt
 			INNER JOIN graph_tree_items AS gti
@@ -1453,7 +1461,7 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 			ON gti.graph_tree_id = gt.id
 			INNER JOIN host AS h
 			ON h.id=gti.host_id
-			AND h.id IN(" . implode(',', array_keys(array_rekey(get_allowed_devices(), 'id', 'description'))) . ")
+			$dev_on
 			$sql_join
 			$sql_where)
 			ORDER BY name
@@ -1483,7 +1491,6 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 			ON gti.graph_tree_id = gt.id
 			INNER JOIN host AS h
 			ON h.id=gti.host_id
-			AND h.id IN(" . implode(',', array_keys(array_rekey(get_allowed_devices(), 'id', 'description'))) . ")
 			$sql_join
 			$sql_where)
 			$order_by
