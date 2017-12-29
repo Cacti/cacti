@@ -267,6 +267,7 @@ print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-migrate.js' language='javascript'></script>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
+print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/js.storage.js'></script>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.js' language='javascript'></script>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
 print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
@@ -319,6 +320,9 @@ print "<body class='loginBody'>
 		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 	});
-	</script>
-	</body>
+	</script>";
+
+include_once('./include/global_session.php');
+
+print "</body>
 	</html>\n";
