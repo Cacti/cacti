@@ -47,6 +47,7 @@ function upgrade_to_1_1_20() {
 		ADD PRIMARY KEY (`name`,`mib`,`attribute`,`sequence_id`)');
 
 	if (db_index_exists('snmpagent_cache_textual_conventions', 'PRIMARY')) {
+		db_execute('ALTER TABLE snmpagent_cache_textual_conventions
 			DROP PRIMARY KEY');
 	}
 
@@ -76,6 +77,7 @@ function upgrade_to_1_1_20() {
 	}
 
 	if (db_index_exists('snmpagent_managers_notifications', 'PRIMARY')) {
+		db_execute('ALTER TABLE snmpagent_managers_notifications
 			DROP PRIMARY KEY');
 	}
 
