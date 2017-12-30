@@ -264,8 +264,8 @@ function clog_view_logfile() {
 		$host_start = strpos($new_item, 'Device[');
 		$ds_start   = strpos($new_item, 'DS[');
 
-		$ds_regex = '~( DS\[)([,\d]+)(\])~';
-		$dev_regex = '~( Device\[)([,\d]+)(\])~';
+		$ds_regex = '~( DS\[)([, \d]+)(\])~';
+		$dev_regex = '~( Device\[)([, \d]+)(\])~';
 
 		$new_item = preg_replace_callback($dev_regex,'clog_regex_device',$new_item);
 		$new_item = preg_replace_callback($ds_regex,'clog_regex_datasource',$new_item);
@@ -525,7 +525,7 @@ function filter($clogAdmin) {
 
 function clog_regex_device($matches) {
 	global $config;
-	$dev_ids = explode(',',$matches[2]);
+	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
 	$result = '';
 	if (sizeof($dev_ids)) {
 		$hosts = db_fetch_assoc_prepared('SELECT id, description 
@@ -546,7 +546,7 @@ function clog_regex_device($matches) {
 function clog_regex_datasource($matches) {
 	global $config;
 
-	$ds_ids = explode(',',$matches[2]);
+	$ds_ids = explode(',',str_replace(" ","",$matches[2]));
 
 	$result = '';
 
