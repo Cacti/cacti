@@ -530,7 +530,8 @@ function clog_regex_device($matches) {
 	if (sizeof($dev_ids)) {
 		$hosts = db_fetch_assoc_prepared('SELECT id, description 
 						  FROM host
-						  WHERE id in ('.implode(',',$dev_ids).')');
+						  WHERE id in (?)',
+						  array(implode(',',$dev_ids));
 		$hostDescriptions = array();
 		foreach ($hosts as $host) {
 			$hostDescriptions[$host['id']] = html_escape($host['description']);
