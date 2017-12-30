@@ -12,6 +12,7 @@ Cacti CHANGELOG
 1.1.30
 -issue#1155: Non-secure mail setting not functional due to changes in phpmailer
 -issue#1157: Resolve issue with branch permission api
+-issue#1158: Change CLOG to use regex replacement so line details are not mangled
 -issue: basename function undefined during upgrade to 1.0.x
 -issue: Storage API and translations required for Change password function
 -issue: ALTER IGNORE still throws an error when attempting to drop the primary key
