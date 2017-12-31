@@ -249,8 +249,6 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 		} else {
 			cacti_log('Importing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
-			file_put_contents('/tmp/template' . rand(), $fdata);
-
 			$debug_data = import_xml_data($fdata, false, $profile_id, $remove_orphans, $preview_only);
 		}
 	}
