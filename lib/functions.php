@@ -4875,20 +4875,28 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
  */
 function version_to_decimal($version, $length = 1) {
 	$newver = '';
+	$minor  = '';
 
-	for ($i = 0; $i < strlen($version); $i++) {
-		if ($version[$i] != '.') {
-			$newver .= dechex(ord($version[$i]));
-		}else{
-			$newver .= dechex(ord('0'));
+	$parts = explode('.', $version);
+	foreach($parts as $part) {
+		if (is_numeric($part)) {
+			$part = substr('00' . $part, -2);
+			$newver .= $part;
+		} else {
+			$minor = substr($part, -1);
+			$major = substr($part, 0, strlen($part)-1);
+			$major = substr('00' . $major, -2);
+			$newver .= $major;
 		}
 	}
 
-	for ($j = $i; $j < $length; $j++) {
-		$newver .= dechex(ord('0'));
+	if ($minor != '') {
+		$int = ord($minor);
+	} else {
+		$int = 0;
 	}
 
-	return hexdec($newver);
+	return hexdec($newver) * 1000 + $int;
 }
 
 /**
