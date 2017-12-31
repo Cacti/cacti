@@ -17,6 +17,8 @@ Cacti CHANGELOG
 -issue: Storage API and translations required for Change password function
 -issue: ALTER IGNORE still throws an error when attempting to drop the primary key
 -issue: Data Source profile form API generates error when system is half upgraded
+-issue: Resolve issue with importing packages
+-feature: Update package versions for Cacti version 1.1.29
 
 1.1.29
 -issue#871: Allow Nth Percentile and Bandwidth Summation to respect 'Base Value' in template
