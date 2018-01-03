@@ -452,6 +452,12 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 		return 0;
 	}
 
+	if ($graph['base_value'] == 1024) {
+		$pow = 10.24;
+	} else {
+		$pow = 10;
+	}
+
 	if (is_numeric($regexp_match_array[4])) {
 		$summation_timespan_start = -$regexp_match_array[4];
 	} else {
