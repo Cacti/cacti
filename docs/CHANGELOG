@@ -1,5 +1,19 @@
 Cacti CHANGELOG
 
+1.1.30
+-issue#1155: Non-secure mail setting not functional due to changes in phpmailer
+-issue#1157: Resolve issue with branch permission api
+-issue#1158: Change CLOG to use regex replacement so line details are not mangled
+-issue#1161: Graph View regex's are not preserved during automatic page refresh
+-issue#1162: Error messages are not display when editing a user
+-issue#1166: Default language was not correctly set when editing a user
+-issue: basename function undefined during upgrade to 1.0.x
+-issue: Storage API and translations required for Change password function
+-issue: ALTER IGNORE still throws an error when attempting to drop the primary key
+-issue: Data Source profile form API generates error when system is half upgraded
+-issue: Resolve issue with importing packages
+-feature: Update package versions for Cacti version 1.1.29
+
 1.1.29
 -issue#871: Allow Nth Percentile and Bandwidth Summation to respect 'Base Value' in template
 -issue#965: Duplicate error message and incorrect error code when using LDAP authentication

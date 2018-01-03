@@ -3240,6 +3240,30 @@ function sanitize_uri($uri) {
 	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
 }
 
+/** Checks to see if a string is base64 encoded
+ * @arg string $data   - the string to be validated
+ * @returns boolean    - true is the string is base64 otherwise false
+ */
+function is_base64_encoded($data) {
+	// Perform a simple check first
+	if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $data)) {
+		return false;
+	}
+
+	// Now test with the built-in function
+	$ndata = base64_decode($data, true);
+	if ($ndata === false) {
+		return false;
+	}
+
+	// Do a re-encode test and compare
+	if (base64_encode($ndata) != $data) {
+		return false;
+	}
+
+	return true;
+}
+
 /** cleans up a CDEF/VDEF string
  * the CDEF/VDEF must have passed all magic string replacements beforehand
  * @arg string $cdef   - the CDEF/VDEF to be sanitized
@@ -3573,10 +3597,12 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 		$secure  = read_config_option('settings_smtp_secure');
 		if (!empty($secure) && $secure != 'none') {
-			$mail->SMTPSecure = $secure;
+			$mail->SMTPSecure = true;
 			if (substr_count($mail->Host, ':') == 0) {
 				$mail->Host = $secure . '://' . $mail->Host;
 			}
+		} else {
+			$mail->SMTPSecure = false;
 		}
 	}
 
@@ -4861,20 +4887,28 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
  */
 function version_to_decimal($version, $length = 1) {
 	$newver = '';
+	$minor  = '';
 
-	for ($i = 0; $i < strlen($version); $i++) {
-		if ($version[$i] != '.') {
-			$newver .= dechex(ord($version[$i]));
-		}else{
-			$newver .= dechex(ord('0'));
+	$parts = explode('.', $version);
+	foreach($parts as $part) {
+		if (is_numeric($part)) {
+			$part = substr('00' . $part, -2);
+			$newver .= $part;
+		} else {
+			$minor = substr($part, -1);
+			$major = substr($part, 0, strlen($part)-1);
+			$major = substr('00' . $major, -2);
+			$newver .= $major;
 		}
 	}
 
-	for ($j = $i; $j < $length; $j++) {
-		$newver .= dechex(ord('0'));
+	if ($minor != '') {
+		$int = ord($minor);
+	} else {
+		$int = 0;
 	}
 
-	return hexdec($newver);
+	return hexdec($newver) * 1000 + $int;
 }
 
 /**

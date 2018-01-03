@@ -379,6 +379,10 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 			} elseif (isempty_request_var($name)) {
 				$value = '';
 			} elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
+				if (is_base64_encoded($_REQUEST[$name])) {
+					$_REQUEST[$name] = utf8_decode(base64_decode($_REQUEST[$name]));
+				}
+
 				$valid = validate_is_regex($_REQUEST[$name]);
 				if ($valid === true) {
 					$value = $_REQUEST[$name];
@@ -596,6 +600,10 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 				} elseif (isempty_request_var($variable)) {
 					$value = '';
 				} elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
+					if (is_base64_encoded($_REQUEST[$variable])) {
+						$_REQUEST[$variable] = utf8_decode(base64_decode($_REQUEST[$variable]));
+					}
+
 					$valid = validate_is_regex($_REQUEST[$variable]);
 					if ($valid === true) {
 						$value = $_REQUEST[$variable];

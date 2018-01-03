@@ -127,6 +127,11 @@ function getTimestampFromDate(dateStamp) {
 	return date.getTime() / 1000;
 }
 
+/** base64_encode - Simple function to base64 encode a utf-8 string */
+function base64_encode(string) {
+	return escape(btoa(unescape(encodeURIComponent(string))));
+}
+
 /** getQueryString - this function will return the value
  *  of the get request variable defined as input.
  *  @args name - the variable name to return */
@@ -1686,7 +1691,7 @@ function saveGraphFilter(section) {
 
 function applyGraphFilter() {
 	href = graphPage+'?action='+pageAction+
-		'&rfilter='+$('#rfilter').val()+
+		'&rfilter=' + base64_encode($('#rfilter').val())+
 		'&host_id='+$('#host_id').val()+
 		'&columns='+$('#columns').val()+
 		'&graphs='+$('#graphs').val()+
@@ -2113,10 +2118,10 @@ function initializeGraphs() {
 		if (realtimeArray[graph_id]) {
 			$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
 			$(this).html("<img class='drillDown' title='"+realtimeClickOn+"' alt='' src='"+urlPath+"images/chart_curve_go.png'>");
-			$(this).find('img').tooltip().zoom({ 
-				inputfieldStartTime : 'date1', 
-				inputfieldEndTime : 'date2', 
-				serverTimeOffset : timeOffset 
+			$(this).find('img').tooltip().zoom({
+				inputfieldStartTime : 'date1',
+				inputfieldEndTime : 'date2',
+				serverTimeOffset : timeOffset
 			});
 			realtimeArray[graph_id] = false;
 			setFilters();

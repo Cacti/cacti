@@ -415,3 +415,6 @@ define('EINPROGRESS',     115);
 define('EREMOTEIO',       121);
 define('ECANCELED',       125);
 
+if (!defined('PASSWORD_DEFAULT')) {
+	define('PASSWORD_DEFAULT', 1);
+}
