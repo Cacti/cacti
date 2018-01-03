@@ -3240,6 +3240,30 @@ function sanitize_uri($uri) {
 	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
 }
 
+/** Checks to see if a string is base64 encoded
+ * @arg string $data   - the string to be validated
+ * @returns boolean    - true is the string is base64 otherwise false
+ */
+function is_base64_encoded($data) {
+	// Perform a simple check first
+	if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $data)) {
+		return false;
+	}
+
+	// Now test with the built-in function
+	$ndata = base64_decode($data, true);
+	if ($ndata === false) {
+		return false;
+	}
+
+	// Do a re-encode test and compare
+	if (base64_encode($ndata) != $data) {
+		return false;
+	}
+
+	return true;
+}
+
 /** cleans up a CDEF/VDEF string
  * the CDEF/VDEF must have passed all magic string replacements beforehand
  * @arg string $cdef   - the CDEF/VDEF to be sanitized
