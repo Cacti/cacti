@@ -60,15 +60,14 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 
 	/* look up for user customized language setting stored in Cacti DB */
 	if ($user_locale = read_user_i18n_setting('user_language')) {
-		if (isset($lang2locale[$user_locale]))
-		{
+		if (isset($lang2locale[$user_locale])) {
 			$cacti_locale_set = true;
 			$cacti_locale = $user_locale;
 			$cacti_country = $lang2locale[$cacti_locale]['country'];
 			$_SESSION['sess_user_language'] = $cacti_locale;
 		}
 	}
-	
+
 	if (!$cacti_locale_set && (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && ( read_config_option('i18n_auto_detection') | read_config_option('i18n_auto_detection') == '' ))) {
 		/* detect browser settings if auto detection is enabled */
 		$accepted = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
@@ -76,8 +75,7 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 
 		$accepted = (isset($lang2locale[$accepted])) ? $accepted : str_replace(strstr($accepted, '-'), '', $accepted);
 
-		if (isset($lang2locale[$accepted]))
-		{
+		if (isset($lang2locale[$accepted])) {
 			$cacti_local_set = true;
 			$cacti_locale = $accepted;
 			$cacti_country = $lang2locale[$accepted]['country'];
@@ -86,13 +84,11 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 
 	if (!$cacti_locale_set) {
 		$accepted = read_config_option('i18n_default_language');
-		if ($accepted == '')
-		{
+		if ($accepted == '') {
 			$accepted = read_default_config_option('i18n_default_language');
 		}
 
-		if (isset($lang2locale[$accepted]))
-		{
+		if (isset($lang2locale[$accepted])) {
 			$cacti_local_set = true;
 			$cacti_locale = $accepted;
 			$cacti_country = $lang2locale[$accepted]['country'];
@@ -620,8 +616,7 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 	}
 }
 
-function get_new_user_default_language()
-{
+function get_new_user_default_language() {
 	$accepted = read_config_option('i18n_default_language');
 	if ($accepted == '') {
 		$accepted = read_default_config_option('i18n_default_language');
