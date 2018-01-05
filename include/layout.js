@@ -2281,3 +2281,26 @@ $.widget('custom.dropcolor', {
 	}
 });
 
+function copyToClipboard(containerid) {
+	var id=containerid.replace("copyToClipboard","");
+	if (document.selection) {
+		var range = document.body.createTextRange();
+		range.moveToElementText(document.getElementById(containerid));
+		range.select().createTextRange();
+		document.execCommand("copy");
+	} else if (window.getSelection) {
+		var range = document.createRange();
+		range.selectNode(document.getElementById(containerid));
+		window.getSelection().addRange(range);
+		document.execCommand("copy");
+		alert("text copied");
+	}
+}
+
+$(document).ready(function () {
+    $(document).on('click', '.cactiDebugCopyLink', function () {
+        var id = $(this).attr('id').replace('copyToClipboard', '');
+	copyToClipboard(id);
+        return false;
+    });
+});
