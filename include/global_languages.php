@@ -33,8 +33,7 @@ $cacti_textdomains = array();
 $lang2locale = get_list_of_locales();
 
 /* use a fallback if i18n is disabled (default) */
-if (!read_config_option('i18n_language_support') && read_config_option('i18n_language_support') != '')
-{
+if (!read_config_option('i18n_language_support') && read_config_option('i18n_language_support') != '') {
 	load_fallback_procedure();
 	return;
 }
@@ -42,9 +41,8 @@ if (!read_config_option('i18n_language_support') && read_config_option('i18n_lan
 
 
 /* determine whether or not we can support the language */
-if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']]))
-/* user requests another language */
-{
+if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) {
+	/* user requests another language */
 	$cacti_locale  = $_REQUEST['language'];
 	$cacti_country = $lang2locale[$_REQUEST['language']]['country'];
 	$_SESSION['sess_user_language'] = $cacti_locale;
@@ -53,53 +51,52 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']]))
 
 	/* save customized language setting (authenticated users only) */
 	set_user_config_option('language', $cacti_locale);
-
-}
-/* language definition stored in the SESSION */
-elseif (isset($_SESSION['sess_user_language']) && isset($lang2locale[$_SESSION['sess_user_language']]))
-{
+} elseif (isset($_SESSION['sess_user_language']) && isset($lang2locale[$_SESSION['sess_user_language']])) {
+	/* language definition stored in the SESSION */
 	$cacti_locale = $_SESSION['sess_user_language'];
 	$cacti_country = $lang2locale[$_SESSION['sess_user_language']]['country'];
+} else {
+	$cacti_locale_set = false;
 
-}
-elseif ($user_locale = read_user_i18n_setting('user_language'))
-/* look up for user customized language setting stored in Cacti DB */
-{
-	if (isset($lang2locale[$user_locale]))
-	{
-		$cacti_locale = $user_locale;
-		$cacti_country = $lang2locale[$cacti_locale]['country'];
-		$_SESSION['sess_user_language'] = $cacti_locale;
+	/* look up for user customized language setting stored in Cacti DB */
+	if ($user_locale = read_user_i18n_setting('user_language')) {
+		if (isset($lang2locale[$user_locale]))
+		{
+			$cacti_locale_set = true;
+			$cacti_locale = $user_locale;
+			$cacti_country = $lang2locale[$cacti_locale]['country'];
+			$_SESSION['sess_user_language'] = $cacti_locale;
+		}
 	}
-}
-elseif ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && ( read_config_option('i18n_auto_detection') | read_config_option('i18n_auto_detection') == '' ) )
-/* detect browser settings if auto detection is enabled */
-{
-	$accepted = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-	$accepted = strtolower(str_replace(strstr($accepted, ','), '', $accepted));
+	
+	if (!$cacti_locale_set && (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && ( read_config_option('i18n_auto_detection') | read_config_option('i18n_auto_detection') == '' ))) {
+		/* detect browser settings if auto detection is enabled */
+		$accepted = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+		$accepted = strtolower(str_replace(strstr($accepted, ','), '', $accepted));
 
-	$accepted = (isset($lang2locale[$accepted])) ? $accepted : str_replace(strstr($accepted, '-'), '', $accepted);
+		$accepted = (isset($lang2locale[$accepted])) ? $accepted : str_replace(strstr($accepted, '-'), '', $accepted);
 
-	if (isset($lang2locale[$accepted]))
-	{
-		$cacti_locale = $accepted;
-		$cacti_country = $lang2locale[$accepted]['country'];
-	}
-
-}
-else
-/* use the default language defined under 'general' */
-{
-	$accepted = read_config_option('i18n_default_language');
-	if ($accepted == '')
-	{
-		$accepted = read_default_config_option('i18n_default_language');
+		if (isset($lang2locale[$accepted]))
+		{
+			$cacti_local_set = true;
+			$cacti_locale = $accepted;
+			$cacti_country = $lang2locale[$accepted]['country'];
+		}
 	}
 
-	if (isset($lang2locale[$accepted]))
-	{
-		$cacti_locale = $accepted;
-		$cacti_country = $lang2locale[$accepted]['country'];
+	if (!$cacti_locale_set) {
+		$accepted = read_config_option('i18n_default_language');
+		if ($accepted == '')
+		{
+			$accepted = read_default_config_option('i18n_default_language');
+		}
+
+		if (isset($lang2locale[$accepted]))
+		{
+			$cacti_local_set = true;
+			$cacti_locale = $accepted;
+			$cacti_country = $lang2locale[$accepted]['country'];
+		}
 	}
 }
 
@@ -623,3 +620,11 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 	}
 }
 
+function get_new_user_default_language()
+{
+	$accepted = read_config_option('i18n_default_language');
+	if ($accepted == '') {
+		$accepted = read_default_config_option('i18n_default_language');
+	}
+	return $accepted;
+}

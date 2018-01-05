@@ -1820,7 +1820,7 @@ $settings_user = array(
             'friendly_name' => __('User Language'),
             'description' => __('Defines the preferred GUI language.'),
             'method' => 'drop_array',
-            'default' => 'en',
+            'default' => get_new_user_default_language(),
             'array' => get_installed_locales()
             ),
 		'show_graph_title' => array(
