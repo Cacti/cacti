@@ -4847,11 +4847,8 @@ function get_cacti_version() {
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
 	$length   = max(sizeof(explode('.', $version1)), sizeof(explode('.', $version2)));
-	//$over1 = $version1;
-	//$over2 = $version2;
 	$version1 = version_to_decimal($version1, $length);
 	$version2 = version_to_decimal($version2, $length);
-	//cacti_log('Length:' . $length . ', Ver1:' . $over1 . ', Ver2:' . $over2 . ', Ver1:' . $version1 . ', Ver2:' . $version2);
 
 	switch ($operator) {
 		case '<':

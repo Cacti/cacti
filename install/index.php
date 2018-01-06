@@ -629,10 +629,16 @@ $enabled = '1';
 						print '<h2>' . __('Installation Type') . '</h2>';
 
 						if ($default_install_type == '3') {
-							// upgrade
+							// upgrade unless it is not
 							print '<input type="hidden" id="install_type" name="install_type" value="3">';
 							print '<h4>' . __('Upgrade from <strong>%s</strong> to <strong>%s</strong>', $old_cacti_version, CACTI_VERSION) . '</h4>';
-							print '<p> <font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing') . '</font></p>';
+							if (cacti_version_compare($old_cacti_version, CACTI_VERSION, '<=')) {
+								// upgrade detected
+								print '<p> <font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing') . '</font></p>';
+							} else {
+								// downgrade detected
+								print '<p> <font color="#FF0000">' . __('WARNING - Appears you are downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues.') . '</font></p>';
+							}
 						} else {
 							// new install
 							print '<h4>' . __('Please select the type of installation') . '</h4>';
