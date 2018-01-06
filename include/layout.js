@@ -1156,19 +1156,23 @@ function loadPage(href) {
 		if (matches != null) {
 			var htmlTitle   = matches[1];
 			var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-			var content     = htmlObject.find('#main').html();
+			var data        = htmlObject.find('#main').html();
+
+			checkForLogout(data);
 
 			$('#main').empty().hide();
 			$('title').text(htmlTitle);
 			$('#breadcrumbs').html(breadCrumbs);
 			$('div[class^="ui-"]').remove();
-			$('#main').html(content);
+			$('#main').html(data);
 
 			myTitle = htmlTitle;
 			myHref  = href;
 
 			pushState(myTitle, href);
 		}else{
+			checkForLogout(html);
+
 			$('#main').empty().hide();
 			$('#main').html(html);
 
@@ -1206,6 +1210,8 @@ function loadPageNoHeader(href, scroll) {
 	statePushed = false;
 
 	$.get(href, function(data) {
+		checkForLogout(html);
+
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
@@ -1373,6 +1379,8 @@ function setupSortable() {
 				sortAdd='&add=reset';
 			}
 			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false'+sortAdd, function(data) {
+				checkForLogout(html);
+
 				$('#main').empty().hide();
 				$('div[class^="ui-"]').remove();
 				$('#main').html(data);
@@ -1526,6 +1534,8 @@ function setupPageTimeout() {
 				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
 
 				$.get(refreshPage, function(data) {
+					checkForLogout(data);
+
 					$('#main').empty().hide();
 					$('div[class^="ui-"]').remove();
 					$('#main').html(data);
@@ -1659,6 +1669,16 @@ if (typeof urlPath == 'undefined') {
 var graphPage  = urlPath+'graph_view.php';
 var pageAction = 'preview';
 
+function checkForLogout(data) {
+	if (data !== 'undefined') {
+		return true;
+	} else if (typeof data === 'object') {
+		return true;
+	} else if (data.indexOf('cactiLoginLogo') >= 0) {
+		document.location = 'logout.php';
+	}
+}
+
 function clearGraphFilter() {
 	href = graphPage+'?action='+pageAction+'&clear=1';
 
@@ -1666,6 +1686,8 @@ function clearGraphFilter() {
 
 	$.ajaxQ.abortAll();
 	$.get(new_href+'&header=false', function(data) {
+		checkForLogout(data);
+
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
@@ -1702,10 +1724,11 @@ function applyGraphFilter() {
 
 	$.ajaxQ.abortAll();
 	$.get(new_href+'&header=false', function(data) {
+		checkForLogout(data);
+
 		$('#main').hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
-
 		applySkin();
 
 		pushState(myTitle, myHref);
@@ -1764,6 +1787,8 @@ function applyGraphTimespan() {
 	$.get(new_href+'?action='+pageAction+'&header=false'+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val(), function(data) {
+		checkForLogout(data);
+
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
@@ -1786,6 +1811,8 @@ function refreshGraphTimespanFilter() {
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
+		checkForLogout(data);
+
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
@@ -1808,6 +1835,8 @@ function timeshiftGraphFilterLeft() {
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
+		checkForLogout(data);
+
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
@@ -1830,6 +1859,8 @@ function timeshiftGraphFilterRight() {
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
+		checkForLogout(data);
+
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
@@ -1851,6 +1882,8 @@ function clearGraphTimespanFilter() {
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 	$.ajaxQ.abortAll();
 	$.post(new_href, json).done(function(data) {
+		checkForLogout(data);
+
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
 		$('#main').html(data);
@@ -2001,6 +2034,8 @@ function initializeGraphs() {
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 		$.ajaxQ.abortAll();
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
+			checkForLogout(data);
+
 			$('#main').empty().hide();
 			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">'+timeGraphView+'</a></li>');
 			$('#zoom-container').remove();
@@ -2101,6 +2136,8 @@ function initializeGraphs() {
 		graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
 		$.ajaxQ.abortAll();
 		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()), function(data) {
+			checkForLogout(data);
+
 			$('#main').empty().hide();
 			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
