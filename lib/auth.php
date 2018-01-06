@@ -1491,7 +1491,6 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 			ON gti.graph_tree_id = gt.id
 			INNER JOIN host AS h
 			ON h.id=gti.host_id
-			$sql_hosts_where
 			$sql_join
 			$sql_where
 			)
@@ -2293,13 +2292,12 @@ function user_perms_valid($user_id) {
 	return $valid;
 }
 
-/*	compat_password_verify - if the secure function exists, verify against that
-	first.  If that checks fails or does not exist, check against older md5
-	version
-	@arg $password - (string) password to verify
-	@arg $hash     - (string) current password hash
-	@returns - true if password hash matches, false otherwise
-	*/
+/* compat_password_verify - if the secure function exists, verify against that
+   first.  If that checks fails or does not exist, check against older md5
+   version
+   @arg $password - (string) password to verify
+   @arg $hash     - (string) current password hash
+   @returns - true if password hash matches, false otherwise */
 function compat_password_verify($password, $hash) {
 	if (function_exists('password_verify')) {
 		if (password_verify($password, $hash)) {
@@ -2312,12 +2310,11 @@ function compat_password_verify($password, $hash) {
 	return ($md5 == $hash);
 }
 
-/*	compat_password_hash - if the secure function exists, hash using that.
-	If that does not exist, hash older md5 function instead
-	@arg $password - (string) password to hash
-	@arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
-	@returns - true if password hash matches, false otherwise
-	*/
+/* compat_password_hash - if the secure function exists, hash using that.
+   If that does not exist, hash older md5 function instead
+   @arg $password - (string) password to hash
+   @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
+   @returns - true if password hash matches, false otherwise */
 function compat_password_hash($password, $algo, $options = array()) {
 	if (function_exists('password_hash')) {
 		// Check if options array has anything, only pass when required
@@ -2330,13 +2327,12 @@ function compat_password_hash($password, $algo, $options = array()) {
 }
 
 
-/*	compat_password_needs_rehash - if the secure function exists, check hash
-	using that. If that does not exist, return false as md5 doesn't need a
-	rehash
-	@arg $password - (string) password to hash
-	@arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
-	@returns - true if password hash needs changing, false otherwise
-	*/
+/* compat_password_needs_rehash - if the secure function exists, check hash
+   using that. If that does not exist, return false as md5 doesn't need a
+   rehash
+   @arg $password - (string) password to hash
+   @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
+   @returns - true if password hash needs changing, false otherwise */
 function compat_password_needs_rehash($password, $algo, $options = array()) {
 	if (function_exists('password_needs_rehash')) {
 		// Check if options array has anything, only pass when required
