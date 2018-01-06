@@ -4409,12 +4409,12 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 		case E_CORE_ERROR:
 		case E_ERROR:
 		case E_PARSE:
+			cacti_log($error, false, 'ERROR');
+			cacti_debug_backtrace('PHP ERROR PARSE');
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
 			}
-			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR PARSE');
 			break;
 		case E_RECOVERABLE_ERROR:
 		case E_USER_ERROR:
