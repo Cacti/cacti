@@ -4416,12 +4416,12 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 		case E_CORE_ERROR:
 		case E_ERROR:
 		case E_PARSE:
+			cacti_log($error, false, 'ERROR');
+			cacti_debug_backtrace('PHP ERROR PARSE');
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
 			}
-			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR PARSE');
 			break;
 		case E_RECOVERABLE_ERROR:
 		case E_USER_ERROR:
@@ -4853,9 +4853,12 @@ function get_cacti_version() {
  * cacti_version_compare - Compare Cacti version numbers
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
-	$length   = max(strlen($version1), strlen($version2));
+	$length   = max(sizeof(explode('.', $version1)), sizeof(explode('.', $version2)));
+	//$over1 = $version1;
+	//$over2 = $version2;
 	$version1 = version_to_decimal($version1, $length);
 	$version2 = version_to_decimal($version2, $length);
+	//cacti_log('Length:' . $length . ', Ver1:' . $over1 . ', Ver2:' . $over2 . ', Ver1:' . $version1 . ', Ver2:' . $version2);
 
 	switch ($operator) {
 		case '<':
@@ -4906,6 +4909,14 @@ function version_to_decimal($version, $length = 1) {
 			$major = substr($part, 0, strlen($part)-1);
 			$major = substr('00' . $major, -2);
 			$newver .= $major;
+		}
+	}
+
+	if (sizeof($parts) < $length) {
+		$i = sizeof($parts);
+		while($i < $length) {
+			$newver .= '00';
+			$i++;
 		}
 	}
 
