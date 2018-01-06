@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -feature#1142: Add Site dropdown to the Graphs and Data Source pages
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
+-issue#1174: Disable drag and drop when tree is not in edit mode
 -issue: Move Graph removal function to Graph API
 -feature: Make tree editing responive
 

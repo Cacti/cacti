@@ -831,6 +831,14 @@ function tree_edit() {
 			}
 		};
 
+		function disableTree(myClass) {
+			$('.treeTable').each(function() {
+				$(this).mousedown(function(event) {
+					event.preventDefault();
+				});
+			});
+		}
+
 		function getGraphData() {
 			$.get('tree.php?action=graphs&filter='+$('#grfilter').val(), function(data) {
 				$('#graphs').jstree('destroy');
@@ -909,7 +917,8 @@ function tree_edit() {
 
 		$(function() {
 			<?php if ($editable == false) {?>
-			$('select, input').not('#lock').prop('disabled', true);
+			$('select, input').not('#lock, #element').prop('disabled', true);
+			disableTree();
 			<?php } else {?>
 			$('select, input').prop('disabled', false);
 			<?php }?>
