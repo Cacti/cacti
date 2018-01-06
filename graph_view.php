@@ -680,7 +680,7 @@ case 'list':
 		strURL += '&host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
-		strURL += '&rfilter=' + $('#rfilter').val();
+		strURL += '&rfilter=' + base64_encode($('#rfilter').val());
 		strURL += url_graph('');
 		loadPageNoHeader(strURL);
 	}

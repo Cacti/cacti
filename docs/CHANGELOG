@@ -9,10 +9,19 @@ Cacti CHANGELOG
 -issue: Move Graph removal function to Graph API
 -feature: Make tree editing responive
 
+1.1.31
+-issue#1166: Further language detection/configuration fixes
+
 1.1.30
 -issue#1155: Non-secure mail setting not functional due to changes in phpmailer
 -issue#1157: Resolve issue with branch permission api
 -issue#1158: Change CLOG to use regex replacement so line details are not mangled
+<<<<<<< HEAD
+=======
+-issue#1161: Graph View regex's are not preserved during automatic page refresh
+-issue#1162: Error messages are not display when editing a user
+-issue#1166: Default language was not correctly set when editing a user
+>>>>>>> refs/remotes/origin/develop
 -issue: basename function undefined during upgrade to 1.0.x
 -issue: Storage API and translations required for Change password function
 -issue: ALTER IGNORE still throws an error when attempting to drop the primary key
