@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -481,6 +481,7 @@ $snmp_versions = array(0 =>
 );
 
 $snmp_auth_protocols = array(
+	'[None]' => __('[None]'),
 	'MD5' => __('MD5 (default)'),
 	'SHA' => __('SHA')
 );
