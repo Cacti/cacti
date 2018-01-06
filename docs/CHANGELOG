@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.31
+-issue#1164: Additional issue with Cacti version compare function
 -issue#1166: Further language detection/configuration fixes
 
 1.1.30
