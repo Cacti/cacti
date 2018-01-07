@@ -1670,12 +1670,12 @@ var graphPage  = urlPath+'graph_view.php';
 var pageAction = 'preview';
 
 function checkForLogout(data) {
-	if (data !== 'undefined') {
+	if (data === 'undefined') {
 		return true;
 	} else if (typeof data === 'object') {
 		return true;
 	} else if (data.indexOf('cactiLoginLogo') >= 0) {
-		document.location = 'logout.php';
+		document.location = 'index.php';
 	}
 }
 
@@ -1705,6 +1705,8 @@ function saveGraphFilter(section) {
 		'&thumbnails='+$('#thumbnails').is(':checked');
 
 	$.get(href+'&header=false&section='+section, function(data) {
+		checkForLogout(data);
+
 		$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
 			$('#text').empty();
 		});
@@ -1894,6 +1896,8 @@ function clearGraphTimespanFilter() {
 function removeSpikesStdDev(local_graph_id) {
 	strURL = 'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
 	$.getJSON(strURL, function(data) {
+		checkForLogout(data);
+
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
 	});
@@ -1902,6 +1906,8 @@ function removeSpikesStdDev(local_graph_id) {
 function removeSpikesVariance(local_graph_id) {
 	strURL = "spikekill.php?method=variance&local_graph_id="+local_graph_id;
 	$.getJSON(strURL, function(data) {
+		checkForLogout(data);
+
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
 	});
@@ -1910,6 +1916,8 @@ function removeSpikesVariance(local_graph_id) {
 function removeSpikesInRange(local_graph_id) {
 	strURL = 'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL, function(data) {
+		checkForLogout(data);
+
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
 	});
@@ -1918,6 +1926,8 @@ function removeSpikesInRange(local_graph_id) {
 function removeRangeFill(local_graph_id) {
 	strURL = 'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL, function(data) {
+		checkForLogout(data);
+
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
 	});
@@ -1926,6 +1936,8 @@ function removeRangeFill(local_graph_id) {
 function dryRunStdDev(local_graph_id) {
 	strURL = "spikekill.php?method=stddev&dryrun=true&local_graph_id="+local_graph_id;
 	$.getJSON(strURL, function(data) {
+		checkForLogout(data);
+
 		$('#spikeresults').remove();
 		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
 		$('#spikeresults').html(data.results);
@@ -1936,6 +1948,8 @@ function dryRunStdDev(local_graph_id) {
 function dryRunVariance(local_graph_id) {
 	strURL = "spikekill.php?method=variance&dryrun=true&local_graph_id="+local_graph_id;
 	$.getJSON(strURL, function(data) {
+		checkForLogout(data);
+
 		$('#spikeresults').remove();
 		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
 		$('#spikeresults').html(data.results);
@@ -1946,6 +1960,8 @@ function dryRunVariance(local_graph_id) {
 function dryRunSpikesInRange(local_graph_id) {
 	strURL = 'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL, function(data) {
+		checkForLogout(data);
+
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
 		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
@@ -1957,6 +1973,8 @@ function dryRunSpikesInRange(local_graph_id) {
 function dryRunRangeFill(local_graph_id) {
 	strURL = 'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL, function(data) {
+		checkForLogout(data);
+
 		redrawGraph(local_graph_id);
 		$('#spikeresults').remove();
 		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
@@ -1992,8 +2010,6 @@ function redrawGraph(graph_id) {
 		'&graph_width='+graph_width+
 		(isThumb ? '&graph_nolegend=true':''),
 		function(data) {
-			checkForLogout(data);
-
 			if (myWidth < data.image_width) {
 				ratio=myWidth/data.image_width;
 				data.image_width  = parseInt(data.image_width  * ratio);
@@ -2083,8 +2099,6 @@ function initializeGraphs() {
 			'&graph_width='+graph_width+
 			(isThumb ? '&graph_nolegend=true':''),
 			function(data) {
-				checkForLogout(data);
-
 				if (myWidth < data.image_width) {
 					ratio=myWidth/data.image_width;
 					data.image_width  = parseInt(data.image_width  * ratio);
