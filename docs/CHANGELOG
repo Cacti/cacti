@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#1161: Graph View regex's are not preserved during automatic page refresh
 -issue#1162: Error messages are not display when editing a user
 -issue#1166: Default language was not correctly set when editing a user
+-issue#1182: Support noAuthNoPriv for SNMPv3 in Cacti
 -issue: basename function undefined during upgrade to 1.0.x
 -issue: Storage API and translations required for Change password function
 -issue: ALTER IGNORE still throws an error when attempting to drop the primary key

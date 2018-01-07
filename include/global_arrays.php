@@ -478,6 +478,7 @@ $snmp_versions = array(0 =>
 );
 
 $snmp_auth_protocols = array(
+	'[None]' => __('[None]'),
 	'MD5' => __('MD5 (default)'),
 	'SHA' => __('SHA')
 );

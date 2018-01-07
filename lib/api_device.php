@@ -203,7 +203,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		$save['snmp_context']         = form_input_validate($snmp_context, 'snmp_context', '', true, 3);
 		$save['snmp_engine_id']       = form_input_validate($snmp_engine_id, 'snmp_engine_id', '', true, 3);
 
-		if (strlen($save['snmp_password']) < 8) {
+		if (strlen($save['snmp_password']) < 8 && $snmp_auth_protocol != '[None]') {
 			raise_message(32);
 			$_SESSION['sess_error_fields']['snmp_password'] = 'snmp_password';
 		}
