@@ -1226,7 +1226,7 @@ function form_end($ajax = true) {
 				strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';
 				json =  $('#<?php print $form_id;?>').serializeObject();
 				$.post(strURL, json).done(function(data) {
-					checkForLogout(html);
+					checkForLogout(data);
 
 					$('#main').html(data);
 					applySkin();

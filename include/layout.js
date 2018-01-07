@@ -1992,6 +1992,8 @@ function redrawGraph(graph_id) {
 		'&graph_width='+graph_width+
 		(isThumb ? '&graph_nolegend=true':''),
 		function(data) {
+			checkForLogout(data);
+
 			if (myWidth < data.image_width) {
 				ratio=myWidth/data.image_width;
 				data.image_width  = parseInt(data.image_width  * ratio);
@@ -2081,6 +2083,8 @@ function initializeGraphs() {
 			'&graph_width='+graph_width+
 			(isThumb ? '&graph_nolegend=true':''),
 			function(data) {
+				checkForLogout(data);
+
 				if (myWidth < data.image_width) {
 					ratio=myWidth/data.image_width;
 					data.image_width  = parseInt(data.image_width  * ratio);
