@@ -3134,10 +3134,11 @@ function debug_log_insert_section_start($type, $text, $allowcopy = false) {
 	$copy_dataid = '';
 	if ($allowcopy) {
 		$uid = generate_hash();
-		$copy_prefix = '<div style=\'float:right;\' class=\'cactiDebugCopyLink\'><input type=\'button\' id=\'copyToClipboard'.$uid.'\' onclick=\'copyToClipboard(this);\' value=\'Copy\'></div>';
+		$copy_prefix = '<div style=\'float:right;\' class=\'cactiTableButton debug\'><a class=\'linkCopyDark cactiTableCopy\' id=\'copyToClipboard'.$uid.'\'>Copy</a></div>';
 		$copy_dataid = ' id=\'clipboardData'.$uid.'\'';
+		$copy_headerid = ' id=\'clipboardHeader'.$uid.'\'';
 	}
-	debug_log_insert($type, $copy_prefix . '<table class=\'cactiTable debug\'><tr class=\'tableHeader\'><td class=\'textHeaderDark\'>' . html_escape($text) . '</td></tr><tr><td style=\'padding:0px;\'><table' . $copy_dataid . ' style=\'display:none;\'><tr><td><div style=\'font-family: monospace;\'>');
+	debug_log_insert($type, '<table class=\'cactiTable debug\''.$copy_headerid.'><tr class=\'tableHeader\'><td class=\'textHeaderDark\'>' . html_escape($text) . $copy_prefix . '</td></tr><tr><td style=\'padding:0px;\'><table style=\'display:none;\''.$copy_dataid.'><tr><td><div style=\'font-family: monospace;\'>');
 }
 
 /* debug_log_insert_section_end - finalizes the header started with the start function

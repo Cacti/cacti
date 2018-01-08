@@ -1,18 +1,18 @@
 /* main styles */
 
 ::-webkit-scrollbar {
-    width: 8px;
+	width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(22,22,6,0.7);
-    border-radius: 6px;
+	-webkit-box-shadow: inset 0 0 6px rgba(22,22,6,0.7);
+	border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-    border-radius: 6px;
+	border-radius: 6px;
 	background: rgba(49,68,43,0.8);
-    -webkit-box-shadow: inset 0 0 4px rgba(49,68,43,0.5);
+	-webkit-box-shadow: inset 0 0 4px rgba(49,68,43,0.5);
 }
 
 html, body {
@@ -101,10 +101,10 @@ a:hover {
 }
 
 th i.fa {
-    margin-top: -5px;
-    position: absolute;
-    right: 3px;
-    top: 50%;
+	margin-top: -5px;
+	position: absolute;
+	right: 3px;
+	top: 50%;
 }
 
 #main {
@@ -131,7 +131,7 @@ select {
 }
 
 *:focus {
-    outline: none;
+	outline: none;
 }
 
 label {
@@ -450,9 +450,9 @@ label {
 
 .menuoptions {
 	background: none repeat scroll 0 0 #161616;
-    border-color: #161606;
-    border-style: solid;
-    border-width: 0px 1px 1px 1px;
+	border-color: #161606;
+	border-style: solid;
+	border-width: 0px 1px 1px 1px;
 	z-index:4;
 	display:block;
 	float:right;
@@ -966,10 +966,10 @@ legend {
 
 .spikekillMenu {
 	background: #161616 none repeat scroll 0 0;
-    border: 1px solid #373737;
-    box-shadow: 2px 2px 2px #292929;
-    margin: 0;
-    padding: 2px;
+	border: 1px solid #373737;
+	box-shadow: 2px 2px 2px #292929;
+	margin: 0;
+	padding: 2px;
 	line-height: 1.5em;
 }
 
@@ -1030,7 +1030,7 @@ legend {
 	padding-left: 5px;
 	vertical-align: top;
 	overflow-y: auto !important;
-    overflow-x: hidden !important;
+	overflow-x: hidden !important;
 }
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {
@@ -1081,6 +1081,18 @@ legend {
 }
 
 .linkOverDark:hover {
+	color: snow;
+	text-decoration: none;
+}
+
+.linkCopyDark, .linkCopyDark:active {
+	color: snow;
+	font-weight: normal;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.linkCopyDark:hover {
 	color: snow;
 	text-decoration: none;
 }
@@ -1216,6 +1228,11 @@ legend {
 	background: -webkit-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -ms-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
+}
+
+.cactiTableButton.debug {
+	background: transparent;
+	height: 1em;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
@@ -1452,7 +1469,7 @@ legend {
 
 .tableHeader th:hover:not(.primarySort) {
 	border: 0px solid #155413;
-    background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
+	background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
 }
 
 th.sortable {
@@ -1800,7 +1817,7 @@ div#gtabs {
 
 .tabs a:hover, .maintabs a:hover {
 	border: 0px solid #155413;
-    background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
+	background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
 }
 
 .tabs a.selected, .maintabs a.selected {
