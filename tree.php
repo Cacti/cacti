@@ -30,11 +30,15 @@ include_once('./lib/data_query.php');
 $tree_actions = array(
 	1 => __x('dropdown action', 'Delete'),
 	2 => __x('dropdown action', 'Publish'),
-	3 => __x('dropdown action', 'Un Publish')
+	3 => __x('dropdown action', 'Un Publish'),
+	4 => __x('dropdown action', 'Sort Ascending'),
+	5 => __x('dropdown action', 'Sort Descending')
 );
 
 /* set default action */
 set_default_action();
+
+tree_check_sequences();
 
 if (get_request_var('action') != '') {
 	/* ================= input validation and session storage ================= */
@@ -155,7 +159,46 @@ switch (get_request_var('action')) {
 		break;
 }
 
+function tree_get_max_sequence() {
+	$max_seq = db_fetch_cell('SELECT MAX(sequence) FROM graph_tree');
+	if ($max_seq == NULL) {
+		$max_seq = 0;
+	}
+}
+
+function tree_check_sequences() {
+	$bad_seq = db_fetch_cell('SELECT COUNT(sequence) FROM graph_tree WHERE sequence <= 0');
+	$dup_seq = db_fetch_cell('SELECT SUM(count) FROM (SELECT sequence, COUNT(sequence) AS count FROM graph_tree GROUP BY sequence) t where t.count > 1');
+
+	// report any bad or duplicate sequencs to the log for reporting purposes
+	if ($bad_seq > 0) {
+		cacti_log('WARN: Found ' . $bad_seq . ' sequences in graph_tree table',false,'TREE',POLLER_DEBUG_VERBOSITY_HIGH);
+	}
+
+	if ($dup_seq > 0) {
+		cacti_log('WARN: Found ' . $dup_seq . ' sequences in graph_tree table',false,'TREE',POLLER_DEBUG_VERBOSITY_HIGH);
+	}
+
+	if ($bad_seq > 0 || $dup_seq > 0) {
+		// resequence the list so it has no gaps, and 0 values will appear at the top
+		// since thats where they would have been displayed
+		db_execute('set @seq = 0; update graph_tree t set t.sequence = (@seq:=@seq+1) order by t.sequence,t.id;');
+	}
+}
+
+function tree_sort_name_asc() {
+	// resequence the list so it has no gaps, alphabetically ascending
+	db_execute('set @seq = 0; update graph_tree t set t.sequence = (@seq:=@seq+1) order by t.name;');
+}
+
+function tree_sort_name_desc() {
+	// resequence the list so it has no gaps, alphabetically ascending
+	db_execute('set @seq = 0; update graph_tree t set t.sequence = (@seq:=@seq+1) order by t.name desc;');
+}
+
 function tree_down() {
+	tree_check_sequences();
+
 	$tree_id = get_filter_request_var('id');
 	$seq     = db_fetch_cell_prepared('SELECT sequence FROM graph_tree WHERE id = ?', array($tree_id));
 	$new_seq = $seq + 1;
@@ -170,6 +213,8 @@ function tree_down() {
 }
 
 function tree_up() {
+	tree_check_sequences();
+
 	$tree_id = get_filter_request_var('id');
 	$seq     = db_fetch_cell_prepared('SELECT sequence FROM graph_tree WHERE id = ?', array($tree_id));
 	$new_seq = $seq - 1;
@@ -375,6 +420,11 @@ function form_save() {
 		$save['last_modified'] = date('Y-m-d H:i:s', time());
 		$save['enabled']       = get_nfilter_request_var('enabled') == 'true' ? 'on':'-';
 		$save['modified_by']   = $_SESSION['sess_user_id'];
+
+		if (empty($save['sequence'])) {
+			$save['sequence'] = get_max_tree_sequence() + 1;
+		}
+
 		if (empty($save['id'])) {
 			$save['user_id'] = $_SESSION['sess_user_id'];
 		}
@@ -451,25 +501,30 @@ function form_actions() {
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
+	$tree_req_action=get_nfilter_request_var('drp_action');
+	if (isset_request_var('selected_items') || $tree_req_action == 4 || $tree_req_action == 5) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
-		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { // delete
+		if ($selected_items != false || $tree_req_action == 4 || $tree_req_action == 5) {
+			if ($tree_req_action == '1') { // delete
 				db_execute('DELETE FROM graph_tree WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM graph_tree_items WHERE ' . array_to_sql_or($selected_items, 'graph_tree_id'));
-			} elseif (get_nfilter_request_var('drp_action') == '2') { // publish
+			} elseif ($tree_req_action == '2') { // publish
 				db_execute("UPDATE graph_tree
 					SET enabled='on',
 					last_modified=NOW(),
 					modified_by=" . $_SESSION['sess_user_id'] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
-			} elseif (get_nfilter_request_var('drp_action') == '3') { // un-publish
+			} elseif ($tree_req_action == '3') { // un-publish
 				db_execute("UPDATE graph_tree
 					SET enabled='',
 					last_modified=NOW(),
 					modified_by=" . $_SESSION['sess_user_id'] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
+			} elseif ($tree_req_action == '4') { // sort-asc
+				tree_sort_name_asc();
+			} elseif ($tree_req_action == '5') { // sort-desc
+				tree_sort_name_desc();
 			}
 		}
 
@@ -500,8 +555,9 @@ function form_actions() {
 
 	html_start_box($tree_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($tree_array) && sizeof($tree_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { // delete
+	$tree_req_action = get_nfilter_request_var('drp_action');
+	if ((isset($tree_array) && sizeof($tree_array)) || ($tree_req_action == 4 || $tree_req_action == 5)) {
+		if ($tree_req_action == '1') { // delete
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to delete the following Tree.', 'Click \'Continue\' to delete following Trees.', sizeof($tree_array)) . "</p>
@@ -510,7 +566,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Tree', 'Delete Trees', sizeof($tree_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '2') { // publish
+		} elseif ($tree_req_action == '2') { // publish
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to publish the following Tree.', 'Click \'Continue\' to publish following Trees.', sizeof($tree_array)) . "</p>
@@ -519,7 +575,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Publish Tree', 'Publish Trees', sizeof($tree_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '3') { // un-publish
+		} elseif ($tree_req_action == '3') { // un-publish
 			print "<tr>
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to un-publish the following Tree.', 'Click \'Continue\' to un-publish following Trees.', sizeof($tree_array)) . "</p>
@@ -528,6 +584,22 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Un-publish Tree', 'Un-publish Trees', sizeof($tree_array)) . "'>";
+		} else if ($tree_req_action == 4) {
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>" . __('Click \'Sort\' to sort Tree order by name ascending.') . "</p>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Sort') . "' title='" . __esc('Sort Ascending') . "'>";
+		} else if ($tree_req_action == 5) {
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>" . __('Click \'Sort\' to sort Tree order by name descending.') . "</p>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Sort') . "' title='" . __esc('Sort Decending') . "'>";
 		}
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Tree.') . "</span></td></tr>\n";
