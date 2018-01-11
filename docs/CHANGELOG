@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#1166: Further language detection/configuration fixes
 -issue#1175: When session timeouts occur logout gracefully
 -issue#1179: Warn during installation if installing moving to older version
+-issue#1185: Layout issue with Graphs having large number of data columns
 
 1.1.30
 -issue#1155: Non-secure mail setting not functional due to changes in phpmailer
