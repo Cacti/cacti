@@ -2315,9 +2315,49 @@ function copyToClipboard(containerId) {
 	var clipboardData=document.getElementById(clipboardDataId);
 
 	if (clipboardData == null) {
-		alert('Failed to find data to copy (' + clipboardDataId +')');
+                $('body').append('<div style="display:none;" id="clipboardMessage" title="Clipboard">Failed to find clipboard data<br/><br/>Clipboard ID: '+clipboardDataId+'</div>');
+/*
+<?php print __esc('Clipboard'); ?>
+<?php print __esc('Failed to find data to copy!'); ?>
+*/
+
+                $('#clipboardMessage').dialog({
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        height: 170,
+			width: 350,
+                        buttons: {
+                                Ok: function() {
+                                        $(this).dialog('close');
+                                        $('#clipboardMessage').remove();
+                                }
+                        }
+                });
+
+                $('#clipboardMessage').dialog('open');
 	} else if (!document.queryCommandSupported('copy')) {
-		alert('Copy operation is not enabled');
+                $('body').append('<div style="display:none;" id="clipboardMessage" title="Clipboard">Copy operation is unavailable at this time</div>');
+/*
+<?php print __esc('Clipboard'); ?>
+<?php print __esc('Copy operation is unavailable at this time'); ?>
+*/
+
+                $('#clipboardMessage').dialog({
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        height: 120,
+			width: 350,
+                        buttons: {
+                                Ok: function() {
+                                        $(this).dialog('close');
+                                        $('#clipboardMessage').remove();
+                                }
+                        }
+                });
+
+                $('#clipboardMessage').dialog('open');
 	} else {
 		var clipboardHeaderId=containerId.replace("copyToClipboard","clipboardHeader");
 		var clipboardHeader=document.getElementById(clipboardHeaderId);
@@ -2352,6 +2392,29 @@ function copyToClipboard(containerId) {
 		var success=document.execCommand("copy");
 		selection.removeAllRanges();
 
+		var successMessage = (!success ? "Clipboard has been updated" : "Sorry, your clipboard could not be updated at this time");
+                $('body').append('<div style="display:none;" id="clipboardMessage" title="Clipboard">' + successMessage + '</div>');
+/*
+<?php print __esc('Clipboard'); ?>
+<?php print __esc('Clipboard has been updated'); ?>
+<?php print __esc('Sorry, your clipboard could not be updated at this time');
+*/
+
+                $('#clipboardMessage').dialog({
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        height: 120,
+			width: 350,
+                        buttons: {
+                                Ok: function() {
+                                        $(this).dialog('close');
+                                        $('#clipboardMessage').remove();
+                                }
+                        }
+                });
+
+                $('#clipboardMessage').dialog('open');
 		//if (!jqVisible) {
 		//	jqTable.slideUp('fast');
 		//}
