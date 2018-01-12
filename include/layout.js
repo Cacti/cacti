@@ -1670,12 +1670,12 @@ var graphPage  = urlPath+'graph_view.php';
 var pageAction = 'preview';
 
 function checkForLogout(data) {
-	if (data === 'undefined') {
+	if (typeof data === 'undefined') {
 		return true;
 	} else if (typeof data === 'object') {
 		return true;
 	} else if (data.indexOf('cactiLoginLogo') >= 0) {
-		document.location = 'index.php';
+		document.location = urlPath + 'logout.php?action=timeout';
 	}
 }
 
