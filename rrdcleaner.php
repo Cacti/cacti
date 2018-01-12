@@ -553,6 +553,8 @@ function filter() {
 					$('#text').text('Rebuilding RRDfile Listing');
 					pulsate('#text');
 					$.get('rrdcleaner.php?header=false&rescan=1&clear=1', function(data) {
+						checkForLogout(data);
+
 						$('#main').html(data);
 						$('#text').text('Finished').fadeOut(2000);
 						applySkin();
@@ -563,6 +565,8 @@ function filter() {
 					$('#text').text('Scheduling Archiving of All Unknowns');
 					pulsate('#text');
 					$.get('rrdcleaner.php?header=false&action=arcall&raction=3&clear=1', function(data) {
+						checkForLogout(data);
+
 						$('#main').html(data);
 						$('#text').text('Finished').fadeOut(2000);
 						applySkin();
@@ -573,6 +577,8 @@ function filter() {
 					$('#text').text('Scheduling Purging of All Unknowns');
 					pulsate('#text');
 					$.get('rrdcleaner.php?header=false&action=remall&raction=1&clear=1', function(data) {
+						checkForLogout(data);
+
 						$('#main').html(data);
 						$('#text').text('Finished').fadeOut(2000);
 						applySkin();
