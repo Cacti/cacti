@@ -535,9 +535,17 @@ label {
 	cursor: pointer;
 	padding: 2px;
 	vertical-align: middle;
-	color: red;
+	text-decoration: none;
+	color: red !important;
 	font-weight: bold;
 	font-size: 14px
+}
+
+.deletequery:hover {
+	color: red !important;
+	text-decoration: none;
+	padding: 2px;
+	vertical-align:middle;
 }
 
 .odd {
@@ -1077,16 +1085,20 @@ legend {
 .cactiTableTitle {
 	color: white;
 	float: left;
+	line-height: 22px;
+	height: 22px;
 	text-align: left;
 	display: table-column;
 	width: 70%;
 	background-color: #00438C;
+	font-size: 12px;
 }
 
 .cactiTableButton {
 	float: right;
 	display: table-column;
 	text-align: right;
+	height:22px;
 	width: 30%;
 	background-color: #00438C;
 	white-space: nowrap;
@@ -1099,13 +1111,14 @@ legend {
 
 .cactiTableButton span, .cactiTableTitle span {
 	color: white;
-	padding: 5px 8px 0px 3px;
+	padding: 0px 8px 0px 3px;
 	line-height: 22px;
-	font-size: 11px;
+	height: 22px;
 	font-weight: bold;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;
+	background: transparent;
 }
 
 .cactiTableButton .fa, .cactiTableTitle .fa {

@@ -265,7 +265,7 @@ function query_script_host($host_id, $snmp_query_id) {
 
 	query_debug_timer_offset('data_query', __('Executing script for list of indexes \'%s\', Index Count: %s', $script_path, sizeof($script_index_array)));
 
-	debug_log_insert_section_start('data_query', __('Click to show data query output for \'index\'', true));
+	debug_log_insert_section_start('data_query', __('Click to show Data Query output for \'index\''), true);
 
 	foreach($script_index_array as $element) {
 		debug_log_insert('data_query', __('Found index: %s', $element));
@@ -281,7 +281,7 @@ function query_script_host($host_id, $snmp_query_id) {
 			$rewrite_value = isset($field_array['rewrite_value']) ? $field_array['rewrite_value'] : NULL;
 			$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ': '') . $script_queries['arg_query'] . ' ' . $field_array['query_name'], $script_queries['script_path'], $host_id);
 
-			debug_log_insert_section_start('data_query', __('Click to show data query output for sfield \'%s\'', $field_name), true);
+			debug_log_insert_section_start('data_query', __('Click to show Data Query output for sfield \'%s\'', $field_name), true);
 
 			$script_data_array = exec_into_array($script_path);
 
@@ -616,7 +616,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				}
 			}
 		} elseif ($field_array['method'] == 'walk' && ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output')) {
-			debug_log_insert_section_start('data_query', __('Click to show data query output for field \'%s\'',$field_name), true);
+			debug_log_insert_section_start('data_query', __('Click to show Data Query output for field \'%s\'', $field_name), true);
 
 			query_debug_timer_offset('data_query', __('Located input field \'%s\' [walk]', $field_name));
 

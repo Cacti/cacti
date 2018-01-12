@@ -694,7 +694,7 @@ function makeFiltersResponsive() {
 
 					if ($(this).find('a').length) {
 						anchors = $(this).find('a').attr('title', $(this).find('a').text());
-						anchors.not('.cactiTableCopy').addClass('fa fa-plus').tooltip({
+						anchors.not('.cactiTableCopy').addClass('fa fa-remove').tooltip({
 							open: function (event, ui) {
 								id = $(this).closest('.cactiTable').attr('id');
 								$('#'+id).find('.cactiTableButton').tooltip('close');
@@ -703,7 +703,7 @@ function makeFiltersResponsive() {
 								id = $(this).closest('.cactiTable').attr('id');
 							}
 						});
-						anchors.filter('.cactiTableCopy').addClass('fa fa-plus-circle').tooltip();
+						anchors.filter('.cactiTableCopy').addClass('fa fa-copy').tooltip();
 						anchors.text('');
 					}
 				}
@@ -760,7 +760,7 @@ function makeFiltersResponsive() {
 				if ($(this).find('a').length) {
 					anchors = $(this).find('a');
 					anchors.each(function(){ $(this).attr('title', $(this).text()); });
-					anchors.not('.cactiTableCopy').addClass('fa fa-plus').tooltip({
+					anchors.not('.cactiTableCopy').addClass('fa fa-remove').tooltip({
 						open: function (event, ui) {
 							id = $(this).closest('.cactiTable').attr('id');
 							$('#'+id).find('.cactiTableButton').tooltip('close');
@@ -769,7 +769,7 @@ function makeFiltersResponsive() {
 							id = $(this).closest('.cactiTable').attr('id');
 						}
 					});
-					anchors.filter('.cactiTableCopy').addClass('fa fa-plus-circle').tooltip();
+					anchors.filter('.cactiTableCopy').addClass('fa fa-copy').tooltip();
 					anchors.text('');
 				}
 			}
@@ -778,8 +778,8 @@ function makeFiltersResponsive() {
 		if ($('div.cactiTableButton').find('a').length) {
 			anchors = $('div.cactiTableButton').find('a');
 			anchors.each(function(){ $(this).attr('title', $(this).text()); });
-			anchors.not('.cactiTableCopy').addClass('fa fa-plus');
-			anchors.filter('.cactiTableCopy').addClass('fa fa-plus-circle');
+			anchors.not('.cactiTableCopy').addClass('fa fa-remove');
+			anchors.filter('.cactiTableCopy').addClass('fa fa-copy');
 			anchors.tooltip().text('');
 		}
 	}
@@ -2373,7 +2373,6 @@ function copyToClipboard(containerId) {
 		$('body').append('<div style="display:none;" id="clipboardMessage" title="'+clipboard+'">'+clipboardCopyFailed+'<br/><br/>'+clipboardID+': '+clipboardDataId+'</div>');
 
 		$('#clipboardMessage').dialog({
-			modal: true,
 			resizable: false,
 			draggable: false,
 			height: 170,
@@ -2391,7 +2390,6 @@ function copyToClipboard(containerId) {
 		$('body').append('<div style="display:none;" id="clipboardMessage" title="'+clipboard+'">'+clipboardNotAvailable+'</div>');
 
 		$('#clipboardMessage').dialog({
-			modal: true,
 			resizable: false,
 			draggable: false,
 			height: 120,
@@ -2439,12 +2437,11 @@ function copyToClipboard(containerId) {
 		var success=document.execCommand('copy');
 		selection.removeAllRanges();
 
-		var successMessage = (!success ? clipboardUpdated : clipboardNotUpdated);
+		var successMessage = (!success ? clipboardNotUpdated : clipboardUpdated);
 
 		$('body').append('<div style="display:none;" id="clipboardMessage" title="'+clipboard+'">'+successMessage+'</div>');
 
 		$('#clipboardMessage').dialog({
-			modal: true,
 			resizable: false,
 			draggable: false,
 			height: 120,

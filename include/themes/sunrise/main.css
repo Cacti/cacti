@@ -599,11 +599,18 @@ label.ui-state-hover > span {
 }
 
 .deletequery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
-	color: red;
+	cursor: pointer;
+	padding: 2px;
+	vertical-align: middle;
+	color: red !important;
 	font-size: 14px;
+}
+
+.deletequery:hover {
+	color: red !important;
+	text-decoration: none;
+	padding: 2px;
+	vertical-align: middle;
 }
 
 .odd {
@@ -651,8 +658,8 @@ label.ui-state-hover > span {
 }
 
 .treeArea, .treeItemsArea {
-	width:33%;
-	border:1px solid #006400;
+	width: 25%;
+	border: 1px solid #006400;
 	vertical-align: top;
 }
 

@@ -529,13 +529,20 @@ label {
 	font-size:14px
 }
 
+.deletequery:hover {
+	color:red;
+	text-decoration: none;
+	padding: 2px;
+	vertical-align:middle;
+}
+
 .odd {
 	background: none repeat scroll 0 0 #202020;
 	border: none;
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
-.odd td, .even td, .even-alternate td {
+.odd td, .even td, .even-alternate td, .selectable td {
 	padding: 2px;
 }
 
@@ -558,8 +565,8 @@ label {
 }
 
 .treeArea, .treeItemsArea {
-	width:33%;
-	border:1px solid rgba(148, 179, 107, 0.8);
+	width: 25%;
+	border: 1px solid rgba(148, 179, 107, 0.8);
 	vertical-align: top;
 }
 
@@ -1232,7 +1239,10 @@ legend {
 
 .cactiTableButton.debug {
 	background: transparent;
-	height: 1em;
+	float: right;
+	padding: 0px;
+	padding-bottom:3px;
+	margin-right: -5px;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
@@ -1242,7 +1252,7 @@ legend {
 }
 
 .cactiTableButton span:last-child, .cactiTableTitle span:last-child {
-	padding-right: 8px;
+	padding-right: 4px;
 }
 
 .cactiDebugTable {
@@ -1527,11 +1537,6 @@ th.secondarySort {
 	background: -o-linear-gradient(top,  #45484d 0%,#000000 100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  #45484d 0%,#000000 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #45484d 0%,#000000 100%); /* W3C */
-}
-
-.tableRowGraph td {
-	padding: 3px;
-	vertical-align: top;
 }
 
 .image_table {
@@ -1829,6 +1834,7 @@ div#gtabs {
 	float:left;
 	margin:0 3px 0 0;
 	position:relative;
+	line-height: 14px;
 }
 
 .tabs li.current a, .maintabs li.current a {

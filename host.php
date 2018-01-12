@@ -109,7 +109,7 @@ switch (get_request_var('action')) {
 
 		host_reload_query();
 
-		header('Location: host.php?header=' . (isset_request_var('header') && get_nfilter_request_var('header') == 'true' ? 'true':'false') . '&action=edit&id=' . get_request_var('host_id') . '&display_dq_details=true#dqdbg');
+		header('Location: host.php?header=' . (isset_request_var('header') && get_nfilter_request_var('header') == 'true' ? 'true':'false') . '&action=edit&id=' . get_request_var('host_id') . '&display_dq_details=true');
 		break;
 	case 'edit':
 		top_header();
@@ -690,20 +690,22 @@ function host_edit() {
 		<div id='dqdebug' class='cactiTable'>
 			<div id='clipboardHeader<?php print $dbg_copy_uid;?>'>
 				<div class='cactiTableTitle'>
-					<span style='padding:3px;' name='dqdbg'><?php print __('Data Query Debug Information');?></span>
+					<span style='padding:3px;'><?php print __('Data Query Debug Information');?></span>
 				</div>
 				<div class='cactiTableButton'>
-					<a class='linkCopyDark cactiTableCopy' id='copyToClipboard<?php print $dbg_copy_uid;?>'><?php print __('Copy');?></a>
-					<a id='dbghide' class='linkOverDark' href='#'><?php print __('Hide');?></a>
+					<span>
+						<a class='linkCopyDark cactiTableCopy' id='copyToClipboard<?php print $dbg_copy_uid;?>'><?php print __('Copy');?></a>
+						<a id='dbghide' class='deletequery fa fa-remove' href='#'><?php print __('Hide');?></a>
+					</span>
 				</div>
-				<table class='cactiTable' id='clipboardData<?php print $dbg_copy_uid;?>'>
-					<tr>
-						<td class='debug'>
-							<span><?php print debug_log_return('data_query');?></span>
-						</td>
-					</tr>
-				</table>
 			</div>
+			<table class='cactiTable' id='clipboardData<?php print $dbg_copy_uid;?>'>
+				<tr>
+					<td class='debug'>
+						<span><?php print debug_log_return('data_query');?></span>
+					</td>
+				</tr>
+			</table>
 		</div>
 		<?php
 	}
@@ -1147,7 +1149,7 @@ function device_javascript() {
 	}
 
 	$(function() {
-		if (typeof hostInfoHeight != "undefined") {
+		if (typeof hostInfoHeight != 'undefined') {
 			if ($(window).scrollTop() == 0) {
 				$('.hostInfoHeader').css('height', '');
 			} else {

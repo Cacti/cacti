@@ -495,12 +495,19 @@ label {
 }
 
 .deletequery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
-	color: #174163;
-	font-weight:bold;
-	font-size:14px
+	cursor: pointer;
+	padding: 2px;
+	vertical-align: middle;
+	color: #174163 !important;
+	font-weight: bold;
+	font-size: 14px
+}
+
+.deletequery:hover {
+	color: #174163 !important;
+	text-decoration: none;
+	padding: 2px;
+	vertical-align: middle;
 }
 
 .odd {
@@ -562,7 +569,7 @@ label {
 
 
 .treeArea, .treeItemsArea {
-	width: 33%;
+	width: 25%;
 	border: 1px solid #006400;
 	vertical-align: top;
 }
@@ -1192,7 +1199,10 @@ table.cactiTable {
 
 .cactiTableButton.debug {
 	background: transparent;
-	height: 1em;
+	float: right;
+	padding: 0px;
+	padding-bottom:3px;
+	margin-right: -5px;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
@@ -1400,16 +1410,12 @@ table.cactiTable {
 	border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
-.tableHeader > td {
-	padding: 8px 5px 0px 5px;
-}
-
 th.sortable {
 	cursor:pointer;
 	line-height:10px;
 }
 
-.tableHeader th {
+.tableHeader th, .tableHeader td {
 	color: #9d9d9d;
 	font-weight: 600;
 	cursor: pointer;
@@ -1800,7 +1806,7 @@ div#gtabs {
 }
 
 .maintabs nav {
-
+	display: none;
 }
 
 .maintabs li {
