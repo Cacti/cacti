@@ -732,23 +732,25 @@ function host_edit() {
 	device_javascript();
 
 	if ((isset_request_var('display_dq_details')) && (isset($_SESSION['debug_log']['data_query']))) {
+		$dbg_copy_uid = generate_hash();
 		?>
 		<div id='dqdebug' class='cactiTable'>
-			<div>
+			<div id='clipboardHeader<?php print $dbg_copy_uid;?>'>
 				<div class='cactiTableTitle'>
 					<span style='padding:3px;' name='dqdbg'><?php print __('Data Query Debug Information');?></span>
 				</div>
 				<div class='cactiTableButton'>
+					<a class='linkCopyDark cactiTableCopy' id='copyToClipboard<?php print $dbg_copy_uid;?>'><?php print __('Copy');?></a>
 					<a id='dbghide' class='linkOverDark' href='#'><?php print __('Hide');?></a>
 				</div>
+				<table class='cactiTable' id='clipboardData<?php print $dbg_copy_uid;?>'>
+					<tr>
+						<td class='debug'>
+							<span><?php print debug_log_return('data_query');?></span>
+						</td>
+					</tr>
+				</table>
 			</div>
-			<table class='cactiTable'>
-				<tr>
-					<td class='debug'>
-						<span><?php print debug_log_return('data_query');?></span>
-					</td>
-				</tr>
-			</table>
 		</div>
 		<?php
 	}

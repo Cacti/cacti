@@ -182,6 +182,16 @@ ul#breadcrumbs {
 	font-weight: bold;
 }
 
+.linkCopyDark, .linkCopyDark:visited, .linkCopyDark:active {
+	color: white;
+	text-decoration: none;
+}
+
+.linkCopyDark:hover {
+	color: white;
+	text-decoration: underline;
+}
+
 .linkOverDark, .linkOverDark:visited, .linkOverDark:active {
 	color: white;
 	text-decoration: none;
