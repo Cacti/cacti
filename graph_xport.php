@@ -259,8 +259,9 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 				$('.wrapperTop').css('height', '20px');
 			} else {
 				$('.wrapperTop').hide();
+				$('.wrapperMain').css('width', '100%');
 			}
-			$('.wrapperMain').show().css('width', '100%');
+			$('.wrapperMain').show();
 		}
 		</script>
 		<?php
