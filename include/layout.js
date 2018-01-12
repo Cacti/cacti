@@ -621,6 +621,13 @@ function applySkin() {
 		}
 	});
 
+	$('.cactiTableCopy').click(function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		containerId =  $(this).attr('id');
+		copyToClipboard(containerId);
+	});
+
 	$(document).tooltip({
 		items: 'div.cactiTooltipHint, span.cactiTooltipHint, a, span',
 		content: function() {
@@ -686,7 +693,8 @@ function makeFiltersResponsive() {
 					$(this).parent().css('cursor', 'pointer');
 
 					if ($(this).find('a').length) {
-						$(this).find('a').attr('title', $(this).find('a').text()).addClass('fa fa-plus').tooltip({
+						anchors = $(this).find('a').attr('title', $(this).find('a').text());
+						anchors.not('.cactiTableCopy').addClass('fa fa-plus').tooltip({
 							open: function (event, ui) {
 								id = $(this).closest('.cactiTable').attr('id');
 								$('#'+id).find('.cactiTableButton').tooltip('close');
@@ -694,7 +702,9 @@ function makeFiltersResponsive() {
 							close: function (event, ui) {
 								id = $(this).closest('.cactiTable').attr('id');
 							}
-						}).text('');
+						});
+						anchors.filter('.cactiTableCopy').addClass('fa fa-plus-circle').tooltip();
+						anchors.text('');
 					}
 				}
 
@@ -748,21 +758,29 @@ function makeFiltersResponsive() {
 				}
 			} else {
 				if ($(this).find('a').length) {
-					$(this).find('a').attr('title', $(this).find('a').text()).addClass('fa fa-plus').tooltip({
+					anchors = $(this).find('a');
+					anchors.each(function(){ $(this).attr('title', $(this).text()); });
+					anchors.not('.cactiTableCopy').addClass('fa fa-plus').tooltip({
 						open: function (event, ui) {
 							id = $(this).closest('.cactiTable').attr('id');
 							$('#'+id).find('.cactiTableButton').tooltip('close');
 						},
 						close: function (event, ui) {
 							id = $(this).closest('.cactiTable').attr('id');
-				}
-					}).text('');
+						}
+					});
+					anchors.filter('.cactiTableCopy').addClass('fa fa-plus-circle').tooltip();
+					anchors.text('');
 				}
 			}
 		});
 	} else if ($('div.cactiTableButton').length) {
-		if ($('div.cactiTableButton').find('a').length) {
-			$('div.cactiTableButton').find('a').attr('title', $('div.cactiTableButton').find('a').text()).addClass('fa fa-plus').tooltip().text('');
+		if ($('div.cactiTableButton').find('a').length) {			
+			anchors = $('div.cactiTableButton').find('a');
+			anchors.each(function(){ $(this).attr('title', $(this).text()); });
+			anchors.not('.cactiTableCopy').addClass('fa fa-plus');
+			anchors.filter('.cactiTableCopy').addClass('fa fa-plus-circle');
+			anchors.tooltip().text('');
 		}
 	}
 }
@@ -2336,3 +2354,130 @@ $.widget('custom.dropcolor', {
 	}
 });
 
+function expandClipboardSection(section) {
+	var isVisible = section.is(':visible');
+	if (!isVisible) {
+		section.slideDown('fast');
+	}
+
+	children=section.find('table').each(function (i) {
+		expandClipboardSection($(this));
+	});
+}
+
+function copyToClipboard(containerId) {
+	var clipboardDataId=containerId.replace("copyToClipboard","clipboardData");
+	var clipboardData=document.getElementById(clipboardDataId);
+
+	if (clipboardData == null) {
+                $('body').append('<div style="display:none;" id="clipboardMessage" title="Clipboard">Failed to find clipboard data<br/><br/>Clipboard ID: '+clipboardDataId+'</div>');
+/*
+<?php print __esc('Clipboard'); ?>
+<?php print __esc('Failed to find data to copy!'); ?>
+*/
+
+                $('#clipboardMessage').dialog({
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        height: 170,
+			width: 350,
+                        buttons: {
+                                Ok: function() {
+                                        $(this).dialog('close');
+                                        $('#clipboardMessage').remove();
+                                }
+                        }
+                });
+
+                $('#clipboardMessage').dialog('open');
+	} else if (!document.queryCommandSupported('copy')) {
+                $('body').append('<div style="display:none;" id="clipboardMessage" title="Clipboard">Copy operation is unavailable at this time</div>');
+/*
+<?php print __esc('Clipboard'); ?>
+<?php print __esc('Copy operation is unavailable at this time'); ?>
+*/
+
+                $('#clipboardMessage').dialog({
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        height: 120,
+			width: 350,
+                        buttons: {
+                                Ok: function() {
+                                        $(this).dialog('close');
+                                        $('#clipboardMessage').remove();
+                                }
+                        }
+                });
+
+                $('#clipboardMessage').dialog('open');
+	} else {
+		var clipboardHeaderId=containerId.replace("copyToClipboard","clipboardHeader");
+		var clipboardHeader=document.getElementById(clipboardHeaderId);
+
+		if (clipboardData != null) {
+			expandClipboardSection($(clipboardData));
+		}
+
+		if (clipboardHeader != null) {
+			expandClipboardSection($(clipboardHeader));
+		}
+
+		// get Selection object from currently user selected text
+		var selection = window.getSelection();
+
+		// unselect any user selected text (if any)
+		selection.removeAllRanges();
+
+		// create new range object
+		var range = document.createRange();
+
+		// set range to encompass desired element text
+		if (clipboardHeader == null) {
+			range.selectNode(clipboardData);
+		} else {
+			range.selectNode(clipboardHeader);
+		}
+
+		// add range to Selection object to select it
+		selection.addRange(range);
+
+		var success=document.execCommand("copy");
+		selection.removeAllRanges();
+
+		var successMessage = (!success ? "Clipboard has been updated" : "Sorry, your clipboard could not be updated at this time");
+                $('body').append('<div style="display:none;" id="clipboardMessage" title="Clipboard">' + successMessage + '</div>');
+/*
+<?php print __esc('Clipboard'); ?>
+<?php print __esc('Clipboard has been updated'); ?>
+<?php print __esc('Sorry, your clipboard could not be updated at this time');
+*/
+
+                $('#clipboardMessage').dialog({
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        height: 120,
+			width: 350,
+                        buttons: {
+                                Ok: function() {
+                                        $(this).dialog('close');
+                                        $('#clipboardMessage').remove();
+                                }
+                        }
+                });
+
+                $('#clipboardMessage').dialog('open');
+		//if (!jqVisible) {
+		//	jqTable.slideUp('fast');
+		//}
+
+		//if (success) {
+		//	alert("text copied");
+		//} else {
+		//	alert("text was not copied");
+		//}
+	}
+}
