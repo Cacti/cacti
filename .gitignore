@@ -8,3 +8,17 @@ log/**
 rra/**
 # Ignore Cacti cache files (comment out to commit new directory)
 cache/**
+# Ignore Cacti plugin foldres
+plugins/**
+# Ignore Custom Cacti theme folders
+# Do not ignore standard Cacti theme folders
+include/themes/*
+!include/themes/classic
+!include/themes/dark
+!include/themes/modern
+!include/themes/paper-plane
+!include/themes/paw
+!include/themes/sunrise
+# Ignore 
+scripts/**
+
