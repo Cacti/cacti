@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -4855,11 +4855,8 @@ function get_cacti_version() {
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
 	$length   = max(sizeof(explode('.', $version1)), sizeof(explode('.', $version2)));
-	//$over1 = $version1;
-	//$over2 = $version2;
 	$version1 = version_to_decimal($version1, $length);
 	$version2 = version_to_decimal($version2, $length);
-	//cacti_log('Length:' . $length . ', Ver1:' . $over1 . ', Ver2:' . $over2 . ', Ver1:' . $version1 . ', Ver2:' . $version2);
 
 	switch ($operator) {
 		case '<':
