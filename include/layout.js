@@ -769,7 +769,6 @@ function makeFiltersResponsive() {
 						toggleFilterAndIcon(id, child, true);
 
 						$('.cactiFilterTitle').find('.cactiTableTitle, .cactiTableButton').click(function() {
-console.log('click');
 							id    = $(this).closest('.cactiTable').attr('id');
 							child = id+'_child';
 							toggleFilterAndIcon(id, child, false);
