@@ -373,9 +373,9 @@ $fields_data_template_template_edit = array(
 /* file: (data_sources.php|data_templates.php), action: (ds|template)_edit */
 
 if (db_table_exists('data_source_profiles')) {
-	$def_profile = db_fetch_cell('SELECT id 
-		FROM data_source_profiles 
-		ORDER BY `default` 
+	$def_profile = db_fetch_cell('SELECT id
+		FROM data_source_profiles
+		ORDER BY `default`
 		DESC LIMIT 1');
 } else {
 	$def_profile = '1';
@@ -1088,6 +1088,15 @@ $fields_host_edit = array(
 		'max_length' => '50',
 		'size' => '20'
 		),
+	'snmp_auth_protocol' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Auth Protocol (v3)'),
+		'description' => __('Choose the SNMPv3 authentication protocol.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_auth_protocol|',
+		'default' => read_config_option('snmp_auth_protocol'),
+		'array' => $snmp_auth_protocols,
+		),
 	'snmp_password' => array(
 		'method' => 'textbox_password',
 		'friendly_name' => __('SNMP Password (v3)'),
@@ -1097,13 +1106,14 @@ $fields_host_edit = array(
 		'max_length' => '50',
 		'size' => '20'
 		),
-	'snmp_auth_protocol' => array(
+	'snmp_priv_protocol' => array(
 		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Auth Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 authentication protocol.'),
-		'value' => '|arg1:snmp_auth_protocol|',
-		'default' => read_config_option('snmp_auth_protocol'),
-		'array' => $snmp_auth_protocols,
+		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
+		'description' => __('Choose the SNMPv3 privacy protocol.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_priv_protocol|',
+		'default' => read_config_option('snmp_priv_protocol'),
+		'array' => $snmp_priv_protocols,
 		),
 	'snmp_priv_passphrase' => array(
 		'method' => 'textbox',
@@ -1113,14 +1123,6 @@ $fields_host_edit = array(
 		'default' => read_config_option('snmp_priv_passphrase'),
 		'max_length' => '200',
 		'size' => '40'
-		),
-	'snmp_priv_protocol' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 privacy protocol.'),
-		'value' => '|arg1:snmp_priv_protocol|',
-		'default' => read_config_option('snmp_priv_protocol'),
-		'array' => $snmp_priv_protocols,
 		),
 	'snmp_context' => array(
 		'method' => 'textbox',
