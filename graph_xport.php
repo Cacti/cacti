@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -77,9 +77,9 @@ if (!isempty_request_var('show_source')) {
 	$graph_data_array['print_source'] = get_request_var('show_source');
 }
 
-$graph_info = db_fetch_row_prepared('SELECT * 
-	FROM graph_templates_graph 
-	WHERE local_graph_id = ?', 
+$graph_info = db_fetch_row_prepared('SELECT *
+	FROM graph_templates_graph
+	WHERE local_graph_id = ?',
 	array(get_request_var('local_graph_id')));
 
 /* for bandwidth, NThPercentile */
@@ -148,8 +148,7 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 		print $header . "\n";
 	} else {
 		$second = "align='right' colspan='2'";
-		print "<table align='center' width='100%' style='border: 1px solid #bbbbbb;'><tr><td>\n";
-		print "<table class='cactiTable' align='center' width='100%'>\n";
+		print "<table class='cactiTable' class='center'>\n";
 		print "<tr class='tableHeader'><td colspan='2' class='linkOverDark' style='font-weight:bold;'>" . __('Summary Details') . "</td><td align='right'><a href='#' role='link' style='cursor:pointer;' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>" . __('Download') . "</a></td></tr>\n";
 		print "<tr class='even'><td align='left'>" . __('Title') . "</td><td $second>"          . html_escape($xport_array['meta']['title_cache'])      . "</td></tr>\n";
 		print "<tr class='odd'><td align='left'>" . __('Vertical Label') . "</td><td $second>" . html_escape($xport_array['meta']['vertical_label'])    . "</td></tr>\n";
@@ -183,7 +182,9 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 		}
 
 		print "</table><br>\n";
-		print "<table id='csvExport' class='cactiTable' align='center' width='100%'><thead>\n";
+		print "<div class='wrapperTop'><div class='fake'></div></div>\n";
+		print "<div class='wrapperMain' style='display:none;'>\n";
+		print "<table id='csvExport' class='cactiTable'><thead>\n";
 
 		print "<tr class='tableHeader'><th class='tableSubHeaderColumn left ui-resizable'>Date</th>";
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
@@ -221,19 +222,47 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 			$j++;
 		}
 
+		print "</table></div>\n";
+
 		?>
 		<script type='text/javascript'>
-		$(function() { 
+		$(function() {
 			$('#csvExport').tablesorter({
-				widgets: ['zebra'], 
-				widgetZebra: { css: ['even', 'odd'] }, 
-				headerTemplate: '<div class="textSubHeaderDark">{content} {icon}</div>', 
-				cssIconAsc: 'fa-sort-asc', 
-				cssIconDesc: 'fa-sort-desc', 
-				cssIconNone: 'fa-sort', 
-				cssIcon: 'fa' 
-			}); 
+				widgets: ['zebra'],
+				widgetZebra: { css: ['even', 'odd'] },
+				headerTemplate: '<div class="textSubHeaderDark">{content} {icon}</div>',
+				cssIconAsc: 'fa-sort-asc',
+				cssIconDesc: 'fa-sort-desc',
+				cssIconNone: 'fa-sort',
+				cssIcon: 'fa'
+			});
+
+  			$('.wrapperTop').on('scroll', function(){
+				$('.wrapperMain').scrollLeft($('.wrapperTop').scrollLeft());
+			});
+			$('.wrapperMain').on('scroll', function(){
+				$('.wrapperTop').scrollLeft($('.wrapperMain').scrollLeft());
+			});
+
+			$(window).resize(function() {
+				resizeWrapper();
+			});
 		});
+
+		function resizeWrapper() {
+			mainWidth = $(window).width() - $('#navigation').outerWidth() - 40;
+			csvWidth = $('.wrapperMain').outerWidth();
+
+			if (csvWidth > mainWidth) {
+				$('.wrapperMain, .wrapperTop').css('width', mainWidth).css('overflow-x', 'scroll');
+				$('.fake').css('width', csvWidth).css('height', '20px');
+				$('.wrapperTop').css('height', '20px');
+			} else {
+				$('.wrapperTop').hide();
+				$('.wrapperMain').css('width', '100%');
+			}
+			$('.wrapperMain').show();
+		}
 		</script>
 		<?php
 	}
@@ -241,3 +270,4 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 
 /* log the memory usage */
 cacti_log("The Peak Graph XPORT Memory Usage was '" . memory_get_peak_usage() . "'", false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
+

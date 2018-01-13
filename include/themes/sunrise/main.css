@@ -79,10 +79,10 @@ a:hover {
 }
 
 th .fa {
-    margin-top: -5px;
-    position: absolute;
-    right: 3px;
-    top: 50%;
+	margin-top: -5px;
+	position: absolute;
+	right: 3px;
+	top: 50%;
 }
 
 pre {
@@ -499,9 +499,9 @@ label.ui-state-hover > span {
 
 .submenuoptions {
 	border-width: 0px 1px 1px 1px;
-    border-color: #3a3b3c;
-    border-style: solid;
-    position:absolute;
+	border-color: #3a3b3c;
+	border-style: solid;
+	position:absolute;
 	top:45px;
   	list-style: none;
 	text-align: left;
@@ -528,8 +528,8 @@ label.ui-state-hover > span {
 .menuoptions {
    	background: #100000;
 	border-width: 0px 1px 1px 1px;
-    border-color: #3a3b3c;
-    border-style: solid;
+	border-color: #3a3b3c;
+	border-style: solid;
 	display:block;
 	float:right;
 	position:absolute;
@@ -599,15 +599,22 @@ label.ui-state-hover > span {
 }
 
 .deletequery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
-    color: red;
-    font-size: 14px;
+	cursor: pointer;
+	padding: 2px;
+	vertical-align: middle;
+	color: red !important;
+	font-size: 14px;
+}
+
+.deletequery:hover {
+	color: red !important;
+	text-decoration: none;
+	padding: 2px;
+	vertical-align: middle;
 }
 
 .odd {
-    border: none;
+	border: none;
 }
 
 .odd.tableRow{
@@ -627,7 +634,7 @@ label.ui-state-hover > span {
 .even-alternate {
 	#background: none repeat scroll 0 0 #E7E9F2;
 	#background-color:#E7E9F2;
-    #box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	#box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even-alternate.tableRow{
@@ -651,8 +658,8 @@ label.ui-state-hover > span {
 }
 
 .treeArea, .treeItemsArea {
-	width:33%;
-	border:1px solid #006400;
+	width: 25%;
+	border: 1px solid #006400;
 	vertical-align: top;
 }
 
@@ -719,13 +726,13 @@ label.ui-state-hover > span {
 	width:100%;
 	padding:0px;
 	border-color: rgba(255,255,255,0.2); */
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.09); */
-    background-color: #000000; */
-    background-image: -webkit-gradient(linear, left 0%, left 100%, from(#3a3b3c), to(#000000));
-    background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #000000 100%);
-    background-image: -moz-linear-gradient(top, #3a3b3c 0%, #000000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #000000 100%);
-    background-repeat: repeat-x;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.09); */
+	background-color: #000000; */
+	background-image: -webkit-gradient(linear, left 0%, left 100%, from(#3a3b3c), to(#000000));
+	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #000000 100%);
+	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #000000 100%);
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #000000 100%);
+	background-repeat: repeat-x;
 }
 
 .cactiPageHead  div {
@@ -748,10 +755,10 @@ label.ui-state-hover > span {
 	height: 30px;
 	width: 100%;
 	border-bottom: 1px solid grey;
-    background-color: transparent;
-    float: right;
-    text-align: right;
-    line-height: 30px;
+	background-color: transparent;
+	float: right;
+	text-align: right;
+	line-height: 30px;
 	position: fixed;
 	left: 0px;
 	bottom: 0px;
@@ -855,10 +862,10 @@ label.ui-state-hover > span {
 	background-color: transparent;
 	width: 300px;
 	height: 200px;
-    top: 45%;
-    left: 50%;
-    padding: 10px 15px;
-    margin: -100px 0 0 -150px;
+	top: 45%;
+	left: 50%;
+	padding: 10px 15px;
+	margin: -100px 0 0 -150px;
 }
 
 .cactiLoginLogo, .cactiLogoutLogo {
@@ -960,9 +967,9 @@ legend {
 .spikekillMenu {
 	color: #93CEFF;
 	background: #100000;
-    border: 1px solid #3a3b3c;;
-    margin: 0px;
-    padding: 10px 0px 10px 0px !important;
+	border: 1px solid #3a3b3c;;
+	margin: 0px;
+	padding: 10px 0px 10px 0px !important;
 	line-height: 1.5em;
 }
 
@@ -1018,15 +1025,15 @@ legend {
 
 .cactiGraphContentArea .tableHeader > td{
 	color: #FFAA00;
-    text-align: left;
-    padding: 3px 5px;
-    width: 100%;
-    font-size: 13px;
-    font-weight: 600;
+	text-align: left;
+	padding: 3px 5px;
+	width: 100%;
+	font-size: 13px;
+	font-weight: 600;
 	text-transform: none;
-    border-color: rgba(255,255,255,0.2);
-    background-image: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1));
-    background-repeat: repeat-x;
+	border-color: rgba(255,255,255,0.2);
+	background-image: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1));
+	background-repeat: repeat-x;
 }
 
 .cactiGraphContentAreaPreview {
@@ -1117,6 +1124,18 @@ legend {
 }
 
 .linkOverDark:hover {
+	color: white;
+	text-decoration: none;
+}
+
+.linkCopyDark, .linkCopyDark:visited, .linkCopyDark:active {
+	color: #93CEFF;
+	font-weight: normal;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.linkCopyDark:hover {
 	color: white;
 	text-decoration: none;
 }
@@ -1212,9 +1231,9 @@ table.cactiTable {
 	width: 70%;
 	font-size: 13px;
 	font-weight: 600;
-    border-color: rgba(255,255,255,0.2);
+	border-color: rgba(255,255,255,0.2);
 	background-image: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1));
-    background-repeat: repeat-x;
+	background-repeat: repeat-x;
 }
 
 .cactiTableButton {
@@ -1224,12 +1243,16 @@ table.cactiTable {
 	text-align: right;
 	font-size: 13px;
 	width: 30%;
-    border-color: rgba(255,255,255,0.2);
+	border-color: rgba(255,255,255,0.2);
 	background-image: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0));
-    background-repeat: repeat-x;
+	background-repeat: repeat-x;
 	white-space: nowrap;
 }
 
+.cactiTableButton.debug {
+	background: transparent;
+	height: 1em;
+}
 .cactiTableButton span, .cactiTableTitle span {
 	padding: 0px 16px 0px 3px;
 	white-space: nowrap;
@@ -1329,8 +1352,8 @@ table.cactiTable {
 	text-transform: none;
 	padding: 0px 0px 0px 5px;
 	color: #93CEFF;
-    font-size: 13px;
-    font-weight: 600;
+	font-size: 13px;
+	font-weight: 600;
 }
 
 .formHeader:hover {
@@ -1469,7 +1492,7 @@ th.sortable {
 	text-align:left;
 	font-size: 11px;
 	text-transform: none;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+	border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .tableHeader th div {
@@ -1480,9 +1503,9 @@ th.sortable {
 
 .tableHeaderColumnSelected {
 	color: white !important;
-    background: none;
-    box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
-    border-bottom: 3px solid #3C8A3C !important;
+	background: none;
+	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
+	border-bottom: 3px solid #3C8A3C !important;
 }
 
 .tableHeaderColumnHover {
@@ -1507,7 +1530,7 @@ th.sortable {
 .tablesorter-headerDesc, .tablesorter-headerAsc {
 	color: white !important;
 	background: none !important;
-    border-bottom: 3px solid #3C8A3C !important;
+	border-bottom: 3px solid #3C8A3C !important;
 }
 
 .tablesorter-header-inner {
@@ -1832,10 +1855,10 @@ div#gtabs {
 }
 
 .maintabs a.selected {
-    color: white;
-    background: none;
-    box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
-    border-bottom: 3px solid #3C8A3C;
+	color: white;
+	background: none;
+	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
+	border-bottom: 3px solid #3C8A3C;
 }
 
 .maintabs nav {
@@ -1895,10 +1918,10 @@ div.submenu span{
 }
 
 .tabs nav a.selected {
-    color: white;
-    background: none;
-    box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
-    border-bottom: 3px solid #3C8A3C;
+	color: white;
+	background: none;
+	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
+	border-bottom: 3px solid #3C8A3C;
 }
 
 .tabs li {
@@ -2110,10 +2133,10 @@ ul.pagination li span {
 }
 
 ul.pagination li a.active {
-    color: white;
-    background: none;
-    box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
-    border-bottom: 1px solid #3C8A3C;
+	color: white;
+	background: none;
+	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
+	border-bottom: 1px solid #3C8A3C;
 }
 
 ul.pagination li a:hover:not(.active) {

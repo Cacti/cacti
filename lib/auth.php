@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1384,6 +1384,12 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 		$auth_method = read_config_option('auth_method');
 	}
 
+	$hosts = get_allowed_devices();
+	$sql_hosts_where = "";
+	if (sizeof($hosts) > 0) {
+		$sql_hosts_where =  'AND h.id IN ('.implode(',', array_keys(array_rekey($hosts, 'id','description'))).')';
+	}
+
 	if ($auth_method != 0) {
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
@@ -1437,22 +1443,23 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 			AND gti.host_id = 0
 			AND gti.local_graph_id=0
 			$sql_join
-			$sql_where)
-			UNION
-			(SELECT gti.id, CONCAT('" . __('Device:') . " ', h.description) AS name
+			$sql_where
+			) UNION (
+			SELECT gti.id, CONCAT('" . __('Device:') . " ', h.description) AS name
 			FROM graph_tree AS gt
 			INNER JOIN graph_tree_items AS gti
 			ON gti.graph_tree_id = gt.id
 			INNER JOIN host AS h
 			ON h.id=gti.host_id
-			AND h.id IN(" . implode(',', array_keys(array_rekey(get_allowed_devices(), 'id', 'description'))) . ")
+			$sql_hosts_where
 			$sql_join
-			$sql_where)
-			ORDER BY name
+			$sql_where
+ 			)
+			$order_by
 			$limit";
 
 		$branches   = db_fetch_assoc($sql);
-		$total_rows = db_fetch_cell('SELECT COUNT(' . $sql . ')');
+		$total_rows = db_fetch_cell('SELECT COUNT(*) FROM (' . $sql . ') AS rower');
 	} else {
 		if ($sql_where != '') {
 			$sql_where = "WHERE gt.enabled='on' AND h.enabled='on' AND $sql_where";
@@ -1460,29 +1467,31 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 			$sql_where = "WHERE gt.enabled='on' AND h.enabled='on'";
 		}
 
-		$sql = "(SELECT gti.id, CONCAT('". __('Branch:') . " ', gti.title) AS name
+		$sql = "(
+			SELECT gti.id, CONCAT('". __('Branch:') . " ', gti.title) AS name
 			FROM graph_tree AS gt
 			INNER JOIN graph_tree_items AS gti
 			ON gti.graph_tree_id = gt.id
 			AND gti.host_id=0
 			AND gti.local_graph_id=0
 			$sql_join
-			$sql_where)
-			UNION
-			(SELECT gti.id, CONCAT('" . __('Device:') . " ', h.description) AS name
+			$sql_where
+			) UNION (
+			SELECT gti.id, CONCAT('" . __('Device:') . " ', h.description) AS name
 			FROM graph_tree AS gt
 			INNER JOIN graph_tree_items AS gti
 			ON gti.graph_tree_id = gt.id
 			INNER JOIN host AS h
 			ON h.id=gti.host_id
-			AND h.id IN(" . implode(',', array_keys(array_rekey(get_allowed_devices(), 'id', 'description'))) . ")
+			$sql_hosts_where
 			$sql_join
-			$sql_where)
+			$sql_where
+			)
 			$order_by
 			$limit";
 
-		$branches   = db_fetch_assoc("SELECT id, name FROM graph_tree AS gt $sql_where $order_by");
-		$total_rows = db_fetch_cell('SELECT COUNT(*) FROM (' . $sql . ')');
+		$branches   = db_fetch_assoc($sql);
+		$total_rows = db_fetch_cell('SELECT COUNT(*) FROM (' . $sql . ') AS rower');
 	}
 
 	return $branches;

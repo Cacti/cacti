@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -3129,8 +3129,17 @@ function generate_hash() {
 /* debug_log_insert_section_start - creates a header item for breaking down the debug log
    @arg $type - the 'category' or type of debug message
    @arg $text - section header */
-function debug_log_insert_section_start($type, $text) {
-	debug_log_insert($type, "<table class='cactiTable debug'><tr class='tableHeader'><td class='textHeaderDark'>" . html_escape($text) . "</td></tr><tr><td style='padding:0px;'><table style='display:none;'><tr><td><div style='font-family: monospace;'>");
+function debug_log_insert_section_start($type, $text, $allowcopy = false) {
+	$copy_prefix = '';
+	$copy_dataid = '';
+	if ($allowcopy) {
+		$uid = generate_hash();
+		$copy_prefix   = '<div class=\'cactiTableButton debug\'><span><a class=\'linkCopyDark cactiTableCopy\' id=\'copyToClipboard' . $uid . '\'>' . __esc('Copy') . '</a></span></div>';
+		$copy_dataid = ' id=\'clipboardData'.$uid.'\'';
+		$copy_headerid = ' id=\'clipboardHeader'.$uid.'\'';
+	}
+
+	debug_log_insert($type, '<table class=\'cactiTable debug\'' . $copy_headerid . '><tr class=\'tableHeader\'><td>' . html_escape($text) . $copy_prefix . '</td></tr><tr><td style=\'padding:0px;\'><table style=\'display:none;\'' . $copy_dataid . '><tr><td><div style=\'font-family: monospace;\'>');
 }
 
 /* debug_log_insert_section_end - finalizes the header started with the start function
@@ -3238,6 +3247,30 @@ function sanitize_uri($uri) {
 	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  '');
 
 	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
+}
+
+/** Checks to see if a string is base64 encoded
+ * @arg string $data   - the string to be validated
+ * @returns boolean    - true is the string is base64 otherwise false
+ */
+function is_base64_encoded($data) {
+	// Perform a simple check first
+	if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $data)) {
+		return false;
+	}
+
+	// Now test with the built-in function
+	$ndata = base64_decode($data, true);
+	if ($ndata === false) {
+		return false;
+	}
+
+	// Do a re-encode test and compare
+	if (base64_encode($ndata) != $data) {
+		return false;
+	}
+
+	return true;
 }
 
 /** cleans up a CDEF/VDEF string
@@ -4385,12 +4418,12 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 		case E_CORE_ERROR:
 		case E_ERROR:
 		case E_PARSE:
+			cacti_log($error, false, 'ERROR');
+			cacti_debug_backtrace('PHP ERROR PARSE');
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
 			}
-			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR PARSE');
 			break;
 		case E_RECOVERABLE_ERROR:
 		case E_USER_ERROR:
@@ -4822,7 +4855,7 @@ function get_cacti_version() {
  * cacti_version_compare - Compare Cacti version numbers
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
-	$length   = max(strlen($version1), strlen($version2));
+	$length   = max(sizeof(explode('.', $version1)), sizeof(explode('.', $version2)));
 	$version1 = version_to_decimal($version1, $length);
 	$version2 = version_to_decimal($version2, $length);
 
@@ -4863,20 +4896,36 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
  */
 function version_to_decimal($version, $length = 1) {
 	$newver = '';
+	$minor  = '';
 
-	for ($i = 0; $i < strlen($version); $i++) {
-		if ($version[$i] != '.') {
-			$newver .= dechex(ord($version[$i]));
-		}else{
-			$newver .= dechex(ord('0'));
+	$parts = explode('.', $version);
+	foreach($parts as $part) {
+		if (is_numeric($part)) {
+			$part = substr('00' . $part, -2);
+			$newver .= $part;
+		} else {
+			$minor = substr($part, -1);
+			$major = substr($part, 0, strlen($part)-1);
+			$major = substr('00' . $major, -2);
+			$newver .= $major;
 		}
 	}
 
-	for ($j = $i; $j < $length; $j++) {
-		$newver .= dechex(ord('0'));
+	if (sizeof($parts) < $length) {
+		$i = sizeof($parts);
+		while($i < $length) {
+			$newver .= '00';
+			$i++;
+		}
 	}
 
-	return hexdec($newver);
+	if ($minor != '') {
+		$int = ord($minor);
+	} else {
+		$int = 0;
+	}
+
+	return hexdec($newver) * 1000 + $int;
 }
 
 /**

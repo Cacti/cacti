@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -259,72 +259,16 @@ function clog_view_logfile() {
 	}
 
 	foreach ($logcontents as $item) {
-		$host_start = strpos($item, 'Device[');
-		$ds_start   = strpos($item, 'DS[');
+		$new_item = html_escape($item);
 
-		if (!$host_start && !$ds_start) {
-			$new_item = html_escape($item);
-		} else {
-			$new_item = '';
+		$host_start = strpos($new_item, 'Device[');
+		$ds_start   = strpos($new_item, 'DS[');
 
-			// Process the host section
-			if ($host_start) {
-				$host_end  = strpos($item, ']', $host_start);
-				$host_id   = substr($item, $host_start + 7, $host_end - ($host_start + 7));
-				$new_item .= substr($item, 0, $host_start) . " Device[<a href='" . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . "'>" . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:'') . '</a>]';
-				$item      = substr($item, $host_end + 1);
-			}
+		$ds_regex = '~( DS\[)([, \d]+)(\])~';
+		$dev_regex = '~( Device\[)([, \d]+)(\])~';
 
-			// Process the Data Source Section
-			$ds_start = strpos($item, 'DS[');
-
-			if ($ds_start) {
-				$ds_end = strpos($item, ']', $ds_start);
-				$ds_id  = substr($item, $ds_start + 3, $ds_end - ($ds_start + 3));
-				$ds_ids = explode(', ', $ds_id);
-
-				if (sizeof($ds_ids)) {
-					$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
-
-					if ($new_item == '') {
-						$new_item .= substr($item, 0, $ds_start);
-					}
-
-					$title = '';
-					$i     = 0;
-
-					foreach($ds_ids as $ds_id) {
-						$graph_ids = clog_get_graphs_from_datasource($ds_id);
-
-						if (sizeof($graph_ids)) {
-							$new_item .= " Graphs[<a href='";
-
-							foreach($graph_ids as $key => $title) {
-								$graph_add .= ($i > 0 ? '%2C' : '') . $key;
-								$title     .= ($title != '' ? ', ':'') . html_escape($title);
-
-								$i++;
-							}
-
-							$new_item .= html_escape($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $title . '</a>]';
-						}
-					}
-
-					$new_item .= ' DS[';
-					$i         = 0;
-
-					foreach($ds_ids as $ds_id) {
-						$new_item .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_id . '</a>';
-
-						$i++;
-					}
-
-					$new_item .= ']';
-				}
-			} else {
-				$new_item .= html_escape($item);
-			}
-		}
+		$new_item = preg_replace_callback($dev_regex,'clog_regex_device',$new_item);
+		$new_item = preg_replace_callback($ds_regex,'clog_regex_datasource',$new_item);
 
 		/* respect the exclusion filter */
 		if ($exclude_regex != '' && !$clogAdmin) {
@@ -577,4 +521,69 @@ function filter($clogAdmin) {
 		</td>
 	</tr>
 	<?php
+}
+
+function clog_regex_device($matches) {
+	global $config;
+	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
+	$result = '';
+	if (sizeof($dev_ids)) {
+		$hosts = db_fetch_assoc_prepared('SELECT id, description 
+						  FROM host
+						  WHERE id in (?)',
+						  array(implode(',',$dev_ids)));
+		$hostDescriptions = array();
+		foreach ($hosts as $host) {
+			$hostDescriptions[$host['id']] = html_escape($host['description']);
+		}
+
+		foreach ($dev_ids as $host_id) {
+			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . '\'>' . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:$host_id) . '</a>' . $matches[3];
+		}
+	}
+	return $result;
+}
+
+function clog_regex_datasource($matches) {
+	global $config;
+
+	$ds_ids = explode(',',str_replace(" ","",$matches[2]));
+
+	$result = '';
+
+	if (sizeof($ds_ids)) {
+		$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
+
+		$title = '';
+		$i     = 0;
+
+		foreach($ds_ids as $ds_id) {
+			$graph_ids = clog_get_graphs_from_datasource($ds_id);
+
+			if (sizeof($graph_ids)) {
+				$result .= " Graphs[<a href='";
+
+				foreach($graph_ids as $key => $title) {
+					$graph_add .= ($i > 0 ? '%2C' : '') . $key;
+					$title     .= ($title != '' ? ', ':'') . html_escape($title);
+
+					$i++;
+				}
+
+				$result .= html_escape($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $title . '</a>]';
+			}
+		}
+
+		$result .= $matches[1];
+		$i         = 0;
+
+		foreach($ds_ids as $ds_id) {
+			$result .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_id . '</a>';
+
+			$i++;
+		}
+
+		$result .= $matches[3];
+	}
+	return $result;
 }

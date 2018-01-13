@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1820,7 +1820,7 @@ $settings_user = array(
             'friendly_name' => __('User Language'),
             'description' => __('Defines the preferred GUI language.'),
             'method' => 'drop_array',
-            'default' => 'us',
+            'default' => get_new_user_default_language(),
             'array' => get_installed_locales()
             ),
 		'show_graph_title' => array(

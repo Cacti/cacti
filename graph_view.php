@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -680,7 +680,7 @@ case 'list':
 		strURL += '&host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
-		strURL += '&rfilter=' + $('#rfilter').val();
+		strURL += '&rfilter=' + base64_encode($('#rfilter').val());
 		strURL += url_graph('');
 		loadPageNoHeader(strURL);
 	}

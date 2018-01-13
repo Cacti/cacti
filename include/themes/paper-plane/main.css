@@ -16,7 +16,7 @@ body {
 	margin: 0px;
 	background-color: white;
 	background-repeat: repeat-y;
-    overflow: hidden;
+	overflow: hidden;
 }
 
 table {
@@ -64,10 +64,10 @@ a:hover {
 }
 
 th .fa {
-    margin-top: -5px;
-    position: absolute;
-    right: 3px;
-    top: 50%;
+	margin-top: -5px;
+	position: absolute;
+	right: 3px;
+	top: 50%;
 }
 
 pre {
@@ -395,9 +395,9 @@ label {
 
 .submenuoptions {
 	border-width: 1px 2px 2px 2px;
-    border-color: #000000;
-    border-style: solid;
-    position:absolute;
+	border-color: #000000;
+	border-style: solid;
+	position:absolute;
 	top:45px;
   	list-style: none;
 	text-align: left;
@@ -424,8 +424,8 @@ label {
 .menuoptions {
    	background: #F7F7F7;
 	border-width: 1px 2px 2px 2px;
-    border-color: #000000;
-    border-style: solid;
+	border-color: #000000;
+	border-style: solid;
 	display:block;
 	float:right;
 	position:absolute;
@@ -495,16 +495,23 @@ label {
 }
 
 .deletequery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
-	color: #174163;
-	font-weight:bold;
-	font-size:14px
+	cursor: pointer;
+	padding: 2px;
+	vertical-align: middle;
+	color: #174163 !important;
+	font-weight: bold;
+	font-size: 14px
+}
+
+.deletequery:hover {
+	color: #174163 !important;
+	text-decoration: none;
+	padding: 2px;
+	vertical-align: middle;
 }
 
 .odd {
-    border: none;
+	border: none;
 	background: none repeat scroll 0 0 #EBEDEF;
 }
 
@@ -562,7 +569,7 @@ label {
 
 
 .treeArea, .treeItemsArea {
-	width: 33%;
+	width: 25%;
 	border: 1px solid #006400;
 	vertical-align: top;
 }
@@ -631,13 +638,13 @@ label {
 	width:100%;
 	padding:0px;
 	border-color: #222; */
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.09); */
-    background-color: #100000; */
-    background-image: -webkit-gradient(linear, left 0%, left 100%, from(#3a3b3c), to(#100000));
-    background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.09); */
+	background-color: #100000; */
+	background-image: -webkit-gradient(linear, left 0%, left 100%, from(#3a3b3c), to(#100000));
+	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
 }
 
 .cactiPageHead  div {
@@ -662,14 +669,14 @@ label {
 	line-height: 25px;
 	width: 100%;
 	border-color: #222; */
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.09); */
-    background-color: #100000; */
-    background-image: -webkit-gradient(linear, left 0%, left 100%, from(#3a3b3c), to(#100000));
-    background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
-    text-align: right;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.09); */
+	background-color: #100000; */
+	background-image: -webkit-gradient(linear, left 0%, left 100%, from(#3a3b3c), to(#100000));
+	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
+	text-align: right;
 	position: fixed;
 	bottom: 0px;
 	left: 0px;
@@ -769,10 +776,10 @@ label {
 	background-color: transparent;
 	width: 300px;
 	height: 200px;
-    top: 45%;
-    left: 50%;
-    padding: 10px 15px;
-    margin: -100px 0 0 -150px;
+	top: 45%;
+	left: 50%;
+	padding: 10px 15px;
+	margin: -100px 0 0 -150px;
 }
 
 .cactiLoginLogo, .cactiLogoutLogo {
@@ -907,10 +914,10 @@ legend {
 
 .spikekillMenu {
 	background: #f5f5f5 none repeat scroll 0 0;
-    border: 1px solid #979797;
-    box-shadow: 2px 2px 2px #999999;
-    margin: 0;
-    padding: 2px;
+	border: 1px solid #979797;
+	box-shadow: 2px 2px 2px #999999;
+	margin: 0;
+	padding: 2px;
 	line-height: 1.5em;
 }
 
@@ -966,15 +973,15 @@ legend {
 
 .cactiGraphContentArea .tableHeader > td{
 	color: white;
-    text-align: left;
-    padding: 3px 5px;
-    width: 100%;
-    font-size: 13px;
-    font-weight: 600;
+	text-align: left;
+	padding: 3px 5px;
+	width: 100%;
+	font-size: 13px;
+	font-weight: 600;
 	text-transform: none;
-    border-color: #222;
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
+	border-color: #222;
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
 }
 
 .cactiGraphContentAreaPreview {
@@ -1056,6 +1063,18 @@ legend {
 }
 
 .linkOverDark:hover {
+	color: white;
+	text-decoration: none;
+}
+
+.linkCopyDark, .linkCopyDark:visited, .linkCopyDark:active {
+	color: white;
+	font-weight: normal;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.linkCopyDark:hover {
 	color: white;
 	text-decoration: none;
 }
@@ -1160,9 +1179,9 @@ table.cactiTable {
 	width: 70%;
 	font-size: 13px;
 	font-weight: 600;
-    border-color: #222;
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
+	border-color: #222;
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
 }
 
 .cactiTableButton {
@@ -1172,10 +1191,18 @@ table.cactiTable {
 	text-align: right;
 	font-size: 13px;
 	width: 30%;
-    border-color: #222;
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
+	border-color: #222;
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
 	white-space: nowrap;
+}
+
+.cactiTableButton.debug {
+	background: transparent;
+	float: right;
+	padding: 0px;
+	padding-bottom:3px;
+	margin-right: -5px;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
@@ -1278,11 +1305,11 @@ table.cactiTable {
 	font-size: 13px;
 	line-height: 25px;
 	text-transform: none;
-    background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
    	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
-    border-bottom: 1px solid #000;
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
+	border-bottom: 1px solid #000;
 }
 
 .formHeaderAnchor {
@@ -1303,7 +1330,7 @@ table.cactiTable {
 		display: table;
 		width: 100%;
 		line-height: 30px;
-	}
+		}
 
 	.formColumn {
 		float: left;
@@ -1383,26 +1410,22 @@ table.cactiTable {
 	border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
-.tableHeader > td {
-	padding: 8px 5px 0px 5px;
-}
-
 th.sortable {
 	cursor:pointer;
 	line-height:10px;
 }
 
-.tableHeader th {
+.tableHeader th, .tableHeader td {
 	color: #9d9d9d;
 	font-weight: 600;
 	cursor: pointer;
 	vertical-align:middle;
 	text-align:left;
 	text-transform: none;
-    background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
    	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
 }
 
 .tableHeader th div {
@@ -1412,9 +1435,9 @@ th.sortable {
 
 .tableHeaderColumnSelected {
 	color: white !important;
-    background: none;
-    box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
-    border-bottom: 3px solid #5CB85C !important;
+	background: none;
+	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
+	border-bottom: 3px solid #5CB85C !important;
 }
 
 .tableHeaderColumnHover {
@@ -1429,18 +1452,18 @@ th.sortable {
 }
 
 .tablesorter-headerRow {
-    background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
    	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
-    border-bottom: 1px solid #000;
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
+	border-bottom: 1px solid #000;
 }
 
 .tablesorter-headerDesc, .tablesorter-headerAsc {
 	color: white !important;
 	background: none !important;
 	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5) !important;
-    border-bottom: 3px solid #5CB85C !important;
+	border-bottom: 3px solid #5CB85C !important;
 }
 
 .tablesorter-header-inner {
@@ -1482,10 +1505,10 @@ th.sortable {
 
 .navBarNavigation {
 	border-color: #222;
-    background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
+	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
 	color: #9D9D9D;
 	width: 100%;
 	text-align:center;
@@ -1514,9 +1537,9 @@ th.sortable {
 	height: 25px;
 	vertical-align: middle;
 	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
+	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
 }
 
 .navBarNavigationCenter {
@@ -1528,9 +1551,9 @@ th.sortable {
 	height: 25px;
 	margin-top: auto;
 	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
+	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
 }
 
 .navBarNavigationCenter span {
@@ -1548,9 +1571,9 @@ th.sortable {
 	height: 25px;
 	vertical-align: middle;
 	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
+	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
 
 }
 
@@ -1776,14 +1799,14 @@ div#gtabs {
 }
 
 .maintabs a.selected {
-    color: white;
-    background: none;
-    box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
-    border-bottom: 3px solid #5CB85C;
+	color: white;
+	background: none;
+	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
+	border-bottom: 3px solid #5CB85C;
 }
 
 .maintabs nav {
-
+	display: none;
 }
 
 .maintabs li {
@@ -1820,10 +1843,10 @@ div.submenu span{
 	width: 100%;
 	line-height: 20px;
 	border-color: #222;
-    background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
-    background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
-    background-repeat: repeat-x;
+	background-image: -webkit-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: -moz-linear-gradient(top, #3a3b3c 0%, #100000 100%);
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
 }
 
 .tabs a {
@@ -1842,10 +1865,10 @@ div.submenu span{
 }
 
 .tabs nav a.selected {
-    color: white;
-    background: none;
-    box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
-    border-bottom: 3px solid #5CB85C;
+	color: white;
+	background: none;
+	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
+	border-bottom: 3px solid #5CB85C;
 }
 
 .tabs li {
@@ -2062,10 +2085,10 @@ ul.pagination li span {
 }
 
 ul.pagination li a.active {
-    color: white;
-    background: none;
-    box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
-    border-bottom: 1px solid #5CB85C;
+	color: white;
+	background: none;
+	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
+	border-bottom: 1px solid #5CB85C;
 }
 
 ul.pagination li a:hover:not(.active) {

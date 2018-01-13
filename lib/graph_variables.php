@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -450,6 +450,12 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 
 	if (sizeof($regexp_match_array) == 0) {
 		return 0;
+	}
+
+	if ($graph['base_value'] == 1024) {
+		$pow = 10.24;
+	} else {
+		$pow = 10;
 	}
 
 	if (is_numeric($regexp_match_array[4])) {

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -221,11 +221,11 @@ function query_script_host($host_id, $snmp_query_id) {
 
 	/* invalid xml check */
 	if ((!is_array($script_queries)) || (sizeof($script_queries) == 0)) {
-		query_debug_timer_offset('data_query', 'Error parsing XML file into an array.');
+		query_debug_timer_offset('data_query', __('Error parsing XML file into an array.'));
 		return false;
 	}
 
-	query_debug_timer_offset('data_query', 'XML file parsed ok.');
+	query_debug_timer_offset('data_query', __('XML file parsed ok.'));
 
 	/* are we talking to script server? */
 	if (isset($script_queries['script_server'])) {
@@ -233,8 +233,8 @@ function query_script_host($host_id, $snmp_query_id) {
 	}
 
 	if (!verify_index_order($script_queries)) {
-		query_debug_timer_offset('data_query', 'Invalid field &lt;index_order&gt;' . $script_queries['index_order'] . '&lt;/index_order&gt;');
-		query_debug_timer_offset('data_query', 'Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt; fields only');
+		query_debug_timer_offset('data_query', __('Invalid field &lt;index_order&gt;%s&lt;/index_order&gt;', $script_queries['index_order']));
+		query_debug_timer_offset('data_query', __('Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt; fields only'));
 		return false;
 	}
 
@@ -245,9 +245,9 @@ function query_script_host($host_id, $snmp_query_id) {
 		/* fetch specified index at specified OID */
 		$script_num_index_array = exec_into_array($script_path);
 
-		query_debug_timer_offset('data_query', 'Executing script for num of indexes' . " '$script_path'");
+		query_debug_timer_offset('data_query', __('Executing script for num of indexes \'%s\'', $script_path));
 		foreach($script_num_index_array as $element) {
-			query_debug_timer_offset('data_query', 'Found number of indexes: ' . $element);
+			query_debug_timer_offset('data_query', __('Found number of indexes: %s' , $element));
 		}
 	} else {
 		if (isset($script_queries['script_server'])) {
@@ -263,12 +263,12 @@ function query_script_host($host_id, $snmp_query_id) {
 	/* fetch specified index */
 	$script_index_array = exec_into_array($script_path);
 
-	query_debug_timer_offset('data_query', 'Executing script for list of indexes' . " '$script_path' " . 'Index Count: ' . sizeof($script_index_array));
+	query_debug_timer_offset('data_query', __('Executing script for list of indexes \'%s\', Index Count: %s', $script_path, sizeof($script_index_array)));
 
-	debug_log_insert_section_start('data_query', "Click to show data query output for 'index'");
+	debug_log_insert_section_start('data_query', __('Click to show Data Query output for \'index\''), true);
 
 	foreach($script_index_array as $element) {
-		debug_log_insert('data_query', 'Found index: ' . $element);
+		debug_log_insert('data_query', __('Found index: %s', $element));
 	}
 
 	debug_log_insert_section_end('data_query');
@@ -281,11 +281,11 @@ function query_script_host($host_id, $snmp_query_id) {
 			$rewrite_value = isset($field_array['rewrite_value']) ? $field_array['rewrite_value'] : NULL;
 			$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ': '') . $script_queries['arg_query'] . ' ' . $field_array['query_name'], $script_queries['script_path'], $host_id);
 
-			debug_log_insert_section_start('data_query', "Click to show data query output for field '$field_name'");
+			debug_log_insert_section_start('data_query', __('Click to show Data Query output for sfield \'%s\'', $field_name), true);
 
 			$script_data_array = exec_into_array($script_path);
 
-			debug_log_insert('data_query', "Executing script query '$script_path'");
+			debug_log_insert('data_query', __('Executing script query \'%s\'', $script_path));
 
 			foreach($script_data_array as $element) {
 				if (preg_match("/(.*?)" . preg_quote($script_queries['output_delimeter']) . "(.*)/", $element, $matches)) {
@@ -294,7 +294,7 @@ function query_script_host($host_id, $snmp_query_id) {
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $field_value, $script_index, '');
 
-					debug_log_insert('data_query', "Found item [$field_name='$field_value'] index: $script_index");
+					debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s', $field_name, $field_value, $script_index));
 				}
 			}
 
@@ -365,21 +365,21 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	$snmp_queries = get_data_query_array($snmp_query_id);
 
 	if (!sizeof($host) || $host['hostname'] == '') {
-		query_debug_timer_offset('data_query', "Invalid host_id: $host_id");
+		query_debug_timer_offset('data_query', __('Invalid host_id: %s',$host_id));
 		return false;
 	}
 
 	/* invalid xml check */
 	if ((!is_array($snmp_queries)) || (sizeof($snmp_queries) == 0)) {
-		query_debug_timer_offset('data_query', 'Error parsing XML file into an array.');
+		query_debug_timer_offset('data_query', __('Error parsing XML file into an array.'));
 		return false;
 	}
 
-	query_debug_timer_offset('data_query', 'XML file parsed ok.');
+	query_debug_timer_offset('data_query', __('XML file parsed ok.'));
 
 	if (!verify_index_order($snmp_queries)) {
-		query_debug_timer_offset('data_query', 'Invalid field &lt;index_order&gt;' . $snmp_queries['index_order'] . '&lt;/index_order&gt;');
-		query_debug_timer_offset('data_query', 'Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt; fields only');
+		query_debug_timer_offset('data_query', __('Invalid field &lt;index_order&gt;%s&lt;/index_order&gt;', $snmp_queries['index_order']));
+		query_debug_timer_offset('data_query', __('Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt; fields only'));
 		return false;
 	}
 
@@ -390,7 +390,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
 	if ($session === false) {
-		debug_log_insert('data_query', 'Failed to load SNMP session.');
+		debug_log_insert('data_query', __('Failed to load SNMP session.'));
 
 		return false;
 	}
@@ -399,24 +399,24 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	if (isset($snmp_queries['oid_num_indexes'])) {
 		$snmp_num_indexes = cacti_snmp_session_get($session, $snmp_queries['oid_num_indexes']);
 
-		query_debug_timer_offset('data_query', "Executing SNMP get for num of indexes @ '" . $snmp_queries['oid_num_indexes'] . "' Index Count: " . $snmp_num_indexes);
+		query_debug_timer_offset('data_query', __('Executing SNMP get for num of indexes @ \'%s\' Index Count: %s' , $snmp_queries['oid_num_indexes'] , $snmp_num_indexes));
 	} else {
-		query_debug_timer_offset('data_query', "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting oid_index entries");
+		query_debug_timer_offset('data_query', __('&lt;oid_num_indexes&gt; missing in XML file, \'Index Count Changed\' emulated by counting oid_index entries'));
 	}
 
 	/* fetch specified index at specified OID */
 	$snmp_indexes = cacti_snmp_session_walk($session, $snmp_queries['oid_index']);
 
-	query_debug_timer_offset('data_query', "Executing SNMP walk for list of indexes @ '" . $snmp_queries['oid_index'] . "' Index Count: " . sizeof($snmp_indexes));
+	query_debug_timer_offset('data_query', __('Executing SNMP walk for list of indexes @ \'%s\' Index Count: %s', $snmp_queries['oid_index'] , sizeof($snmp_indexes)));
 
 	/* no data found; get out */
 	if (!sizeof($snmp_indexes)) {
-		query_debug_timer_offset('data_query', 'No SNMP data returned');
+		query_debug_timer_offset('data_query', __('No SNMP data returned'));
 		return false;
 	} else {
 		/* show list of indices found */
 		foreach($snmp_indexes as $oid => $value) {
-			query_debug_timer_offset('data_query', "Index found at OID: '" . $oid . "' value: '" . $value . "'");
+			query_debug_timer_offset('data_query', __('Index found at OID: \'%s\' value: \'%s\'', $oid , $value));
 		}
 	}
 
@@ -429,7 +429,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 		foreach($snmp_indexes as $oid => $value) {
 			$snmp_indexes[$oid] = preg_replace($index_parse_regexp, "\\1", $oid);
-			query_debug_timer_offset('data_query', "index_parse at OID: '" . $oid . "' results: '" . $snmp_indexes[$oid] . "'");
+			query_debug_timer_offset('data_query', __('index_parse at OID: \'%s\' results: \'%s\'', $oid , $snmp_indexes[$oid]));
 		}
 	}
 
@@ -447,19 +447,19 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		if ($field_array['source'] != 'index' && ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && $field_array['method'] != 'get' &&
 			(isset($field_array['rewrite_index']) || isset($field_array['oid_suffix']))) {
 			$field_array['method'] = 'get';
-			debug_log_insert('data_query', "Fixing wrong 'method' field for '$field_name' since 'rewrite_index' or 'oid_suffix' is defined");
+			debug_log_insert('data_query', __('Fixing wrong \'method\' field for \'%s\' since \'rewrite_index\' or \'oid_suffix\' is defined',$field_name));
 		}
 
 		$rewrite_value = isset($field_array['rewrite_value']) ? $field_array['rewrite_value'] : NULL;
 
 		if ((!isset($field_array['oid'])) && ($field_array['source'] == 'index')) {
 			foreach($snmp_indexes as $oid => $value) {
-				query_debug_timer_offset('data_query', "Inserting index data for field '" . $field_name . "' [value='" . $value . "']");
+				query_debug_timer_offset('data_query', __('Inserting index data for field \'%s\' [value=\'%s\']' , $field_name, $value));
 
 				$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $value, '');
 			}
 		} elseif (($field_array['method'] == 'get') && ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output')) {
-			query_debug_timer_offset('data_query', "Located input field '$field_name' [get]");
+			query_debug_timer_offset('data_query', __('Located input field \'%s\' [get]',$field_name));
 
 			if ($field_array['source'] == 'value' && !isset($field_array['rewrite_index'])) {
 				$oid_rewrite_pattern = null;
@@ -468,7 +468,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				if (isset($field_array['oid_rewrite_pattern']) && isset($field_array['oid_rewrite_replacement'])) {
 					$oid_rewrite_pattern = '/' . str_replace('OID/REGEXP:', '', $field_array['oid_rewrite_pattern']) . '/';
 					$oid_rewrite_replacement = $field_array['oid_rewrite_replacement'];
-					query_debug_timer_offset('data_query', "Found OID rewrite rule: 's/$oid_rewrite_pattern/$oid_rewrite_replacement/'");
+					query_debug_timer_offset('data_query', __('Found OID rewrite rule: \'s/%s/%s/\'', $oid_rewrite_pattern,$oid_rewrite_replacement));
 				}
 
 				foreach($snmp_indexes as $oid => $index) {
@@ -479,7 +479,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					if (isset($oid_rewrite_pattern)) {
 						$orig_oid = $oid;
 						$oid = preg_replace($oid_rewrite_pattern, $oid_rewrite_replacement, $oid);
-						query_debug_timer_offset('data_query', "oid_rewrite at OID: '" . $orig_oid . "' new OID: '" . $oid ."'");
+						query_debug_timer_offset('data_query', __('oid_rewrite at OID: \'%s\' new OI: \'%s\'', $orig_oid , $oid));
 					}
 
 					if (isset($field_array['output_format'])) {
@@ -500,7 +500,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$value = cacti_snmp_session_get($session, $oid);
 					}
 
-					query_debug_timer_offset('data_query', "Executing SNMP get for data @ '$oid' [value='$value']");
+					query_debug_timer_offset('data_query', __('Executing SNMP get for data @ \'%s\' [value=\'%s\']', $oid, $value));
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $index, $oid);
 				}
@@ -510,7 +510,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$rewritten_indexes = data_query_rewrite_indexes($errmsg, $host_id, $snmp_query_id, $field_array['rewrite_index'], $snmp_indexes, $fields_processed);
 					if (sizeof($errmsg)){
 						foreach($errmsg as $message){
-							debug_log_insert('data_query', "Field '$field_name'" . $message);
+							debug_log_insert('data_query', __('Field \'%s\' %s', $field_name,$message));
 						}
 					}
 				}
@@ -545,7 +545,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$oids[] = $value['oid'];
 					}
 
-					debug_log_insert('data_query', 'Executing SNMP get for ' . count($oids) . ' oids');
+					debug_log_insert('data_query', __('Executing SNMP get for %s oids' , count($oids)));
 
 					if (isset($field_array['output_format'])) {
 						if ($field_array['output_format'] == 'hex') {
@@ -581,7 +581,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				}
 
 				foreach ($values as $item) {
-					debug_log_insert('data_query', "Got SNMP get result for data @ '" . $item['oid'] . "' [value='" . $item['value'] . "'] (index: " . $item['index'] . ')');
+					debug_log_insert('data_query', __('Got SNMP get result for data @ \'%s\' [value=\'%s\'] (index: %s)', $item['oid'], $item['value'], $item['index']));
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $item['value'], $item['index'], $item['oid']);
 				}
 				$values = NULL;
@@ -610,15 +610,15 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 					$value = preg_replace('/' . str_replace('VALUE/REGEXP:', '', $field_array['source']) . '/', "\\1", $value);
 
-					query_debug_timer_offset('data_query', "Executing SNMP get for data @ '$oid' [value='$value']");
+					query_debug_timer_offset('data_query', __('Executing SNMP get for data @ \'%s\' [value=\'$value\']', $oid, $value));
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $index, $oid);
 				}
 			}
 		} elseif ($field_array['method'] == 'walk' && ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output')) {
-			debug_log_insert_section_start('data_query', "Click to show data query output for field '$field_name'");
+			debug_log_insert_section_start('data_query', __('Click to show Data Query output for field \'%s\'', $field_name), true);
 
-			query_debug_timer_offset('data_query', "Located input field '$field_name' [walk]");
+			query_debug_timer_offset('data_query', __('Located input field \'%s\' [walk]', $field_name));
 
 			if (isset($field_array['output_format'])) {
 				if ($field_array['output_format'] == 'hex') {
@@ -638,7 +638,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				$snmp_data = cacti_snmp_session_walk($session, $field_array['oid']);
 			}
 
-			query_debug_timer_offset('data_query', "Executing SNMP walk for data @ '" . $field_array['oid'] . "'");
+			query_debug_timer_offset('data_query', __('Executing SNMP walk for data @ \'%s\'', $field_array['oid']));
 
 			if (preg_match('/^VALUE\/TABLE:(.*)/',$field_array['source'],$matches)) {
 				preg_match_all('/([^:]+):([^:]+)/',$matches[1],$match_temp);
@@ -687,7 +687,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$mode = 'value';
 					}
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, isset($modified_value)?$modified_value:$value , $snmp_index, $oid);
-					debug_log_insert('data_query', sprintf("Found item [%s='%s'] index: %s [from %s]",$field_name,isset($modified_value)?"$modified_value ($value)":$value,$snmp_index,$mode));
+					debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from %s]',$field_name,isset($modified_value)?"$modified_value ($value)":$value,$snmp_index,$mode));
 					unset($modified_value);
 				}
 			} elseif (substr($field_array['source'], 0, 11) == 'OID/REGEXP:') {
@@ -725,13 +725,13 @@ function query_snmp_host($host_id, $snmp_query_id) {
 								}
 							}
 							if ($isascii) {
-								query_debug_timer_offset('data_query', "Found OCTET STRING '$parse_value' decoded value: '$decoded'");
+								query_debug_timer_offset('data_query', __('Found OCTET STRING \'%s\' decoded value: \'%s\'', $parse_value, $decoded));
 								$parse_value = $decoded;
 							}
 						}
 					}
 
-					debug_log_insert('data_query', "Found item [$field_name='$parse_value'] index: $snmp_index [from regexp oid parse]");
+					debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from regexp oid parse]', $field_name, $parse_value, $snmp_index));
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
 				}

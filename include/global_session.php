@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -106,7 +106,13 @@ if (isset($_SESSION['refresh'])) {
 	var cactiCommunityForum='<?php print __('Cacti Community Forum');?>';
 	var reportABug='<?php print __('Report a bug');?>';
 	var aboutCacti='<?php print __('About Cacti');?>';
-	var spikeKillResults='<?php print __('SpikeKill Results');?>';
-	var showHideFilter='<?php print __('Click to Show/Hide Filter');?>';
-	var clearFilterTitle='<?php print __('Clear Current Filter');?>';
+	var spikeKillResults='<?php print __esc('SpikeKill Results');?>';
+	var showHideFilter='<?php print __esc('Click to Show/Hide Filter');?>';
+	var clearFilterTitle='<?php print __esc('Clear Current Filter');?>';
+	var clipboard='<?php print __esc('Clipboard');?>';
+	var clipboardID='<?php print __esc('Clipboard ID');?>';
+	var clipboardNotAvailable='<?php print __esc('Copy operation is unavailable at this time');?>';
+	var clipboardCopyFailed='<?php print __esc('Failed to find data to copy!');?>';
+	var clipboardUpdated='<?php print __esc('Clipboard has been updated');?>';
+	var clipboardNotUpdated='<?php print __esc('Sorry, your clipboard could not be updated at this time');?>';
 </script>

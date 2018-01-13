@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -215,7 +215,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 		$fdata = base64_decode($f['data']);
 		$name = $f['name'];
 
-		if (strpos($name, 'scripts/') !== false || strpos($name, '/resource/') !== false) {
+		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
 			$filename = $config['base_path'] . "/$name";
 			cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 			if (!$preview) {
@@ -247,7 +247,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 				}
 			}
 		} else {
-			cacti_log('Importing XML Data', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+			cacti_log('Importing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 			$debug_data = import_xml_data($fdata, false, $profile_id, $remove_orphans, $preview_only);
 		}

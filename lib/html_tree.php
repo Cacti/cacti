@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -147,26 +147,37 @@ function grow_dhtml_trees() {
 		$('.cactiGraphContentArea').css('margin-left', visWidth+10);
 	}
 
+	function checkTreeForLogout() {
+		html = $('#jstree').html();
+		found = html.indexOf('<?php print __('Login to Cacti');?>');
+		if (found >= 0) {
+			document.location = 'logout.php';
+		}
+	}
+
 	$(function () {
 		$('#jstree').each(function(data) {
 			var id=$(this).attr('id');
 
 			$(this)
-			.on('init.jstree', function(e, data) {
+			.on('init.jstree', function() {
 				<?php if (isset_request_var('hyper')) { ?>
 				//$('#jstree').jstree().clear_state();
 				<?php } ?>
 			})
-			.on('ready.jstree', function(e, data) {
+			.on('ready.jstree', function() {
 				resizeGraphContent();
 			})
-			.on('changed.jstree', function(e, data) {
+			.on('changed.jstree', function() {
 				resizeGraphContent();
 			})
-			.on('open_node.jstree', function(e, data) {
+			.on('before_open.jstree', function() {
+				checkTreeForLogout();
+			})
+			.on('open_node.jstree', function() {
 				resizeGraphContent();
 			})
-			.on('close_node.jstree', function(e, data) {
+			.on('close_node.jstree', function() {
 				resizeGraphContent();
 			})
 			.on('select_node.jstree', function(e, data) {
