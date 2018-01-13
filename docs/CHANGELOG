@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#1179: Warn during installation if installing moving to older version
 -issue#1185: Layout issue with Graphs having large number of data columns
 -issue#1190: When Enabling, Disabling, Uninstalling plugin, you should page refresh
+-feature: Enhance Cacti filter API to permit more glyphs for table headers
 
 1.1.30
 -issue#1155: Non-secure mail setting not functional due to changes in phpmailer
