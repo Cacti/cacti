@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.31
+-issue#1122: Discovery network stuck on "running" state but no results
 -issue#1164: Additional issue with Cacti version compare function
 -issue#1166: Further language detection/configuration fixes
 -issue#1175: When session timeouts occur logout gracefully
@@ -10,6 +11,7 @@ Cacti CHANGELOG
 -issue#1190: When Enabling, Disabling, Uninstalling plugin, you should page refresh
 -issue#1191: Tree sequences were not set or checked
 -feature: Enhance Cacti filter API to permit more glyphs for table headers
+-feature: Add a page refresh dropdown to the Automation Networks page
 
 1.1.30
 -issue#1155: Non-secure mail setting not functional due to changes in phpmailer
