@@ -681,7 +681,7 @@ function makeFiltersResponsive() {
 
 	filterNum = 0;
 
-	if ($('div.cactiTableButton').closest('.cactiTable').find('.filterTable').length > 0) {
+	if ($('div.cactiTableButton').closest('.cactiTable').not('#dqdebug').find('.filterTable').length > 0) {
 		$('div.cactiTableButton').each(function() {
 			if ($(this).closest('.cactiTable').find('.filterTable').length) {
 				if ($(this).find('.cactiFilterState').length == 0) {
@@ -693,8 +693,7 @@ function makeFiltersResponsive() {
 					$(this).parent().css('cursor', 'pointer');
 
 					if ($(this).find('a').length) {
-						anchors = $(this).find('a').attr('title', $(this).find('a').text());
-						anchors.not('.cactiTableCopy').addClass('fa fa-remove').tooltip({
+						$(this).find('a').attr('title', $(this).find('a').text()).addClass('fa fa-plus').tooltip({
 							open: function (event, ui) {
 								id = $(this).closest('.cactiTable').attr('id');
 								$('#'+id).find('.cactiTableButton').tooltip('close');
@@ -702,9 +701,7 @@ function makeFiltersResponsive() {
 							close: function (event, ui) {
 								id = $(this).closest('.cactiTable').attr('id');
 							}
-						});
-						anchors.filter('.cactiTableCopy').addClass('fa fa-copy').tooltip();
-						anchors.text('');
+						}).text('');
 					}
 				}
 
@@ -758,9 +755,7 @@ function makeFiltersResponsive() {
 				}
 			} else {
 				if ($(this).find('a').length) {
-					anchors = $(this).find('a');
-					anchors.each(function(){ $(this).attr('title', $(this).text()); });
-					anchors.not('.cactiTableCopy').addClass('fa fa-remove').tooltip({
+					$(this).find('a').attr('title', $(this).find('a').text()).addClass('fa fa-plus').tooltip({
 						open: function (event, ui) {
 							id = $(this).closest('.cactiTable').attr('id');
 							$('#'+id).find('.cactiTableButton').tooltip('close');
@@ -768,9 +763,7 @@ function makeFiltersResponsive() {
 						close: function (event, ui) {
 							id = $(this).closest('.cactiTable').attr('id');
 						}
-					});
-					anchors.filter('.cactiTableCopy').addClass('fa fa-copy').tooltip();
-					anchors.text('');
+					}).text('');
 				}
 			}
 		});
@@ -778,7 +771,7 @@ function makeFiltersResponsive() {
 		if ($('div.cactiTableButton').find('a').length) {
 			anchors = $('div.cactiTableButton').find('a');
 			anchors.each(function(){ $(this).attr('title', $(this).text()); });
-			anchors.not('.cactiTableCopy').addClass('fa fa-remove');
+			anchors.not('.cactiTableCopy').addClass('fa fa-plus');
 			anchors.filter('.cactiTableCopy').addClass('fa fa-copy');
 			anchors.tooltip().text('');
 		}
