@@ -95,6 +95,14 @@ switch (get_request_var('action')) {
 	case 'actions':
         form_actions();
         break;
+	case 'sortasc':
+		tree_sort_name_asc();
+		header('Location: tree.php?header=false');
+		break;
+	case 'sortdesc':
+		tree_sort_name_desc();
+		header('Location: tree.php?header=false');
+		break;
 	case 'edit':
 		top_header();
 		tree_edit();
@@ -158,7 +166,56 @@ switch (get_request_var('action')) {
 		break;
 }
 
+function tree_get_max_sequence() {
+	$max_seq = db_fetch_cell('SELECT MAX(sequence) FROM graph_tree');
+
+	if ($max_seq == NULL) {
+		$max_seq = 0;
+	}
+}
+
+function tree_check_sequences() {
+	$bad_seq = db_fetch_cell('SELECT COUNT(sequence)
+		FROM graph_tree
+		WHERE sequence <= 0');
+
+	$dup_seq = db_fetch_cell('SELECT SUM(count)
+		FROM (
+			SELECT sequence, COUNT(sequence) AS count
+			FROM graph_tree
+			GROUP BY sequence
+		) AS t
+		WHERE t.count > 1');
+
+	// report any bad or duplicate sequencs to the log for reporting purposes
+	if ($bad_seq > 0) {
+		cacti_log('WARN: Found ' . $bad_seq . ' Sequences in graph_tree Table', false, 'TREE', POLLER_DEBUG_VERBOSITY_HIGH);
+	}
+
+	if ($dup_seq > 0) {
+		cacti_log('WARN: Found ' . $dup_seq . ' Sequences in graph_tree Table', false, 'TREE', POLLER_DEBUG_VERBOSITY_HIGH);
+	}
+
+	if ($bad_seq > 0 || $dup_seq > 0) {
+		// resequence the list so it has no gaps, and 0 values will appear at the top
+		// since thats where they would have been displayed
+		db_execute('SET @seq = 0; UPDATE graph_tree SET sequence = (@seq:=@seq+1) ORDER BY sequence, id;');
+	}
+}
+
+function tree_sort_name_asc() {
+	// resequence the list so it has no gaps, alphabetically ascending
+	db_execute('SET @seq = 0; UPDATE graph_tree SET sequence = (@seq:=@seq+1) ORDER BY name;');
+}
+
+function tree_sort_name_desc() {
+	// resequence the list so it has no gaps, alphabetically ascending
+	db_execute('SET @seq = 0; UPDATE graph_tree SET sequence = (@seq:=@seq+1) ORDER BY name DESC;');
+}
+
 function tree_down() {
+	tree_check_sequences();
+
 	$tree_id = get_filter_request_var('id');
 
 	$seq = db_fetch_cell_prepared('SELECT sequence
@@ -185,6 +242,8 @@ function tree_down() {
 }
 
 function tree_up() {
+	tree_check_sequences();
+
 	$tree_id = get_filter_request_var('id');
 
 	$seq = db_fetch_cell_prepared('SELECT sequence
@@ -417,6 +476,11 @@ function form_save() {
 		$save['last_modified'] = date('Y-m-d H:i:s', time());
 		$save['enabled']       = get_nfilter_request_var('enabled') == 'true' ? 'on':'-';
 		$save['modified_by']   = $_SESSION['sess_user_id'];
+
+		if (empty($save['sequence'])) {
+			$save['sequence'] = get_max_tree_sequence() + 1;
+		}
+
 		if (empty($save['id'])) {
 			$save['user_id'] = $_SESSION['sess_user_id'];
 		}
@@ -1718,6 +1782,14 @@ function tree() {
 			clearFilter();
 		});
 
+		$('#sorta').click(function() {
+			loadPageNoHeader('tree.php?action=sortasc');
+		});
+
+		$('#sortd').click(function() {
+			loadPageNoHeader('tree.php?action=sortdesc');
+		});
+
 		$('#form_tree').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
@@ -1727,7 +1799,28 @@ function tree() {
 
 	<?php
 
-	html_start_box(__('Trees'), '100%', '', '3', 'center', 'tree.php?action=edit');
+	$buttons = array(
+		array(
+			'href'     => 'tree.php?action=edit',
+			'callback' => true,
+			'title'    => __esc('Add Tree'),
+			'class'    => 'fa fa-plus'
+		),
+		array(
+			'href'     => 'tree.php?action=sortasc',
+			'callback' => true,
+			'title'    => __esc('Sort Trees Ascending'),
+			'class'    => 'fa fa-sort-alpha-asc'
+		),
+		array(
+			'href'     => 'tree.php?action=sortdesc',
+			'callback' => true,
+			'title'    => __esc('Sort Trees Descending'),
+			'class'    => 'fa fa-sort-alpha-desc'
+		)
+	);
+
+	html_start_box(__('Trees'), '100%', '', '3', 'center', $buttons);
 
 	?>
 	<tr class='even noprint'>
@@ -1760,6 +1853,8 @@ function tree() {
 						<span>
 							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<button type='button' id='sorta' title='<?php print __esc('Sort Trees Ascending');?>'><i class='fa fa-sort-alpha-asc'></i></button>
+							<button type='button' id='sortd' title='<?php print __esc('Sort Trees Descending');?>'><i class='fa fa-sort-alpha-desc'></i></button>
 						</span>
 					</td>
 				</tr>

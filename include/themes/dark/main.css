@@ -529,6 +529,13 @@ label {
 	font-size:14px
 }
 
+.deletequery:hover {
+	color:red;
+	text-decoration: none;
+	padding: 2px;
+	vertical-align:middle;
+}
+
 .odd {
 	background: none repeat scroll 0 0 #202020;
 	border: none;
@@ -1232,7 +1239,10 @@ legend {
 
 .cactiTableButton.debug {
 	background: transparent;
-	height: 1em;
+	float: right;
+	padding: 0px;
+	padding-bottom:3px;
+	margin-right: -5px;
 }
 
 .cactiTableButton span, .cactiTableTitle span {
@@ -1242,7 +1252,7 @@ legend {
 }
 
 .cactiTableButton span:last-child, .cactiTableTitle span:last-child {
-	padding-right: 8px;
+	padding-right: 4px;
 }
 
 .cactiDebugTable {

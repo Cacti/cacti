@@ -29,7 +29,31 @@
    @arg $cell_padding - the amount of cell padding to use inside of the box
    @arg $align - the HTML alignment to use for the box (center, left, or right)
    @arg $add_text - the url to use when the user clicks 'Add' in the upper-right
-     corner of the box ("" for no 'Add' link) */
+     corner of the box ("" for no 'Add' link)
+     This function has two method.  This first is for legacy behavior where you
+     you pass in a href to the function, and an optional label as $add_label
+     The new format accepts an array of hrefs to add to the start box.  The format
+     of the array is as follows:
+
+     $add_text = array(
+        array(
+          'href' => 'value',
+          'title' => 'title',
+          'callback' => true|false,
+          'class' => 'fa fa-icon'
+        ),
+        ...
+     );
+
+     If the callback is true, the Cacti attribute will be added to the href
+     to present only the contents and not to include both the headers.  If
+     the link must go off page, simply make sure $callback is false.  There
+     is a requirement to use fontawesome icon sets for this class, but it
+     can include other classes.  In addition, the href can be a hash '#' if
+     your page has a ready function that has it's own javascript.
+   @arg $add_label - used with legacy behavior to add specific text to the link.
+     This parameter is only used in the legacy behavior.
+ */
 function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, $add_label = false) {
 	static $table_suffix = 1;
 
@@ -51,7 +75,40 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 		print "<div>";
 		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
-		print "<div class='cactiTableButton'><span>" . ($add_text != '' ? "<a class='linkOverDark' href='" . html_escape($add_text) . "'>" . $add_label . '</a>':'') . '</span></div>';
+		print "<div class='cactiTableButton'>\n";
+		if (!is_array($add_text)) {
+			print ($add_text != '' ? "<span><a class='linkOverDark fa fa-plus' title='$add_label' href='" . html_escape($add_text) . "'></a></span>":'');
+		} else {
+			if (sizeof($add_text)) {
+				foreach($add_text as $icon) {
+					if (isset($icon['callback']) && $icon['callback'] === true) {
+						$classo = 'linkOverDark';
+					} else {
+						$classo = '';
+					}
+
+					if (isset($icon['class']) && $icon['class'] !== '') {
+						$classi = $icon['class'];
+					} else {
+						$classi = 'fa fa-plus';
+					}
+
+					if (isset($icon['href'])) {
+						$href = html_escape($icon['href']);
+					} else {
+						$href = '#';
+					}
+
+					if (isset($icon['title'])) {
+						$title = $icon['title'];
+					} else {
+						$title = $add_label;
+					}
+
+					print "<span><a class='$classo' href='$href' title='$title'><i class='$classi'></i></a></span>";
+				}
+			}
+		}
 		print '</div>';
 
 		if ($div === true) {

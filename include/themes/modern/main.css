@@ -513,11 +513,19 @@ label {
 }
 
 .deletequery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
+	cursor: pointer;
+	color: red !important;
+	padding: 2px;
+	vertical-align: middle;
 	color:red;
 	font-size:14px
+}
+
+.deletequery:hover {
+	color: red !important;
+	text-decoration: none;
+	padding: 2px;
+	vertical-align:middle;
 }
 
 .odd {
@@ -1087,6 +1095,7 @@ legend {
 	font-weight: normal;
 	text-decoration: none;
 	cursor: pointer;
+	margin-top: -3px;
 }
 
 .linkCopyDark:hover {
@@ -1251,7 +1260,9 @@ legend {
 
 .cactiTableButton.debug {
 	background: transparent;
-	height: 1em;
+	float: right;
+	height: 13px;
+	line-height: 10px;
 }
 
 .cactiTableButton span, .cactiTableTitle span {

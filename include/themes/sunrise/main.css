@@ -599,11 +599,18 @@ label.ui-state-hover > span {
 }
 
 .deletequery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
-	color: red;
+	cursor: pointer;
+	padding: 2px;
+	vertical-align: middle;
+	color: red !important;
 	font-size: 14px;
+}
+
+.deletequery:hover {
+	color: red !important;
+	text-decoration: none;
+	padding: 2px;
+	vertical-align: middle;
 }
 
 .odd {
