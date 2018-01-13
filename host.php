@@ -1146,6 +1146,17 @@ function device_javascript() {
 			$('#row_max_oids').show();
 			break;
 		}
+
+		if ($('#snmp_auth_protocol').val() == '[None]') {
+			$('#row_snmp_password').hide();
+			$('#snmp_password').val('');
+			$('#snmp_password_confirm').val('');
+		}
+
+		if ($('#snmp_priv_protocol').val() == '[None]') {
+			$('#row_snmp_priv_passphrase').hide();
+			$('#snmp_priv_passphrase').val('');
+		}
 	}
 
 	$(function() {
