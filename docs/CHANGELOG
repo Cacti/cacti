@@ -6,7 +6,9 @@ Cacti CHANGELOG
 -issue#1175: When session timeouts occur logout gracefully
 -issue#1179: Warn during installation if installing moving to older version
 -issue#1185: Layout issue with Graphs having large number of data columns
+-issue#1189: Allow ability to sort tree list by name asc/desc
 -issue#1190: When Enabling, Disabling, Uninstalling plugin, you should page refresh
+-issue#1191: Tree sequences were not set or checked
 -feature: Enhance Cacti filter API to permit more glyphs for table headers
 
 1.1.30
