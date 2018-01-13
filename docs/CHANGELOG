@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#1174: Disable drag and drop when tree is not in edit mode
 -issue: Move Graph removal function to Graph API
 -feature: Make tree editing responive
+-feature: Add a page refresh dropdown to the Automation Networks page
 
 1.1.31
 -issue#1164: Additional issue with Cacti version compare function

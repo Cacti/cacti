@@ -125,7 +125,9 @@ function api_networks_discover($network_id) {
 
 				$fgc_contextoption = get_default_contextoption();
 				if($fgc_contextoption) {
+
 					$fgc_context = stream_context_create($fgc_contextoption);
+
 					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id, false, $fgc_context);
 				} else {
 					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id);
@@ -911,6 +913,10 @@ function networks() {
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
+		'refresh' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'default' => '20'
+			),
 		'filter' => array(
 			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
@@ -931,6 +937,12 @@ function networks() {
 
 	validate_store_request_vars($filters, 'sess_networks');
 	/* ================= input validation ================= */
+
+	$refresh['page']    = 'automation_networks.php?header=false';
+	$refresh['seconds'] = get_request_var('refresh');
+	$refresh['logout']  = 'false';
+
+	set_page_refresh($refresh);
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -1089,6 +1101,28 @@ function networks_filter() {
 						</select>
 					</td>
 					<td>
+						<?php print __('Refresh');?>
+					</td>
+					<td>
+						<select id='refresh' onChange='applyFilter()'>
+							<?php
+							$frequency = array(
+								10  => __('%d Seconds', 10),
+								20  => __('%d Seconds', 20),
+								30  => __('%d Seconds', 30),
+								45  => __('%d Seconds', 45),
+								60  => __('%d Minute', 1),
+								120 => __('%d Minutes', 2),
+								300 => __('%d Minutes', 5)
+							);
+
+							foreach ($frequency as $r => $row) {
+								echo "<option value='" . $r . "'" . (isset_request_var('refresh') && $r == get_request_var('refresh') ? ' selected' : '') . '>' . $row . '</option>';
+							}
+							?>
+						</select>
+					</td>
+					<td>
 						<span>
 							<input type='button' id='go' title='<?php print __esc('Search');?>' value='<?php print __esc('Go');?>'>
 							<input type='button' id='clear' title='<?php print __esc('Clear Filtered');?>' value='<?php print __esc('Clear');?>'>
@@ -1101,6 +1135,7 @@ function networks_filter() {
 			function applyFilter() {
 				strURL  = '?rows=' + $('#rows').val();
 				strURL += '&filter=' + $('#filter').val();
+				strURL += '&refresh=' + $('#refresh').val();
 				strURL += '&header=false';
 
 				loadPageNoHeader(strURL);
