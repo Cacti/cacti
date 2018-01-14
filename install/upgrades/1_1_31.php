@@ -70,5 +70,7 @@ function upgrade_to_1_1_31() {
 				CHANGE COLUMN `snmp_readstring` `snmp_community` varchar(50) NOT NULL DEFAULT ""'
 		);
 	}
+
+	db_install_execute('UPDATE settings SET name="snmp_version" WHERE name="snmp_ver"');
 }
 
