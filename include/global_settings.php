@@ -489,7 +489,7 @@ $settings = array(
 			'method' => 'spacer',
 			'collapsible' => 'true'
 			),
-		'snmp_ver' => array(
+		'snmp_version' => array(
 			'friendly_name' => __('Version'),
 			'description' => __('Default SNMP version for all new hosts.'),
 			'method' => 'drop_array',

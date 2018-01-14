@@ -437,7 +437,7 @@ function automation_snmp_item_edit() {
 		'description' => __('Choose the SNMP version for this host.'),
 		'on_change' => 'setSNMP()',
 		'value' => '|arg1:snmp_version|',
-		'default' => read_config_option('snmp_ver'),
+		'default' => read_config_option('snmp_version'),
 		'array' => $snmp_versions
 		),
 	'snmp_community' => array(

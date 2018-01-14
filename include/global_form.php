@@ -1066,7 +1066,7 @@ $fields_host_edit = array(
 		'description' => __('Choose the SNMP version for this device.'),
 		'on_change' => 'changeHostForm()',
 		'value' => '|arg1:snmp_version|',
-		'default' => read_config_option('snmp_ver'),
+		'default' => read_config_option('snmp_version'),
 		'array' => $snmp_versions,
 		),
 	'snmp_community' => array(
