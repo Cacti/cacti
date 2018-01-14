@@ -115,4 +115,6 @@ if (isset($_SESSION['refresh'])) {
 	var clipboardCopyFailed='<?php print __esc('Failed to find data to copy!');?>';
 	var clipboardUpdated='<?php print __esc('Clipboard has been updated');?>';
 	var clipboardNotUpdated='<?php print __esc('Sorry, your clipboard could not be updated at this time');?>';
+	var defaultSNMPAuthProtocol='<?php print read_config_option('snmp_auth_protocol');?>';
+	var defaultSNMPPrivProtocol='<?php print read_config_option('snmp_priv_protocol');?>';
 </script>

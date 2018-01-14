@@ -2598,11 +2598,11 @@ function setSNMP() {
 				}
 			} else {
 				if ($('#snmp_auth_protocol').val() == '[None]') {
-					$('#snmp_auth_protocol').val('<?php print read_config_option('snmp_auth_protocol');?>');
+					$('#snmp_auth_protocol').val(defaultSNMPAuthProtocol);
 				}
 
 				if ($('#snmp_priv_protocol').val() == '[None]') {
-					$('#snmp_priv_protocol').val('<?php print read_config_option('snmp_priv_protocol');?>');
+					$('#snmp_priv_protocol').val(defaultSNMPPrivProtocol);
 				}
 			}
 
