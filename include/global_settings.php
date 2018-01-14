@@ -503,6 +503,13 @@ $settings = array(
 			'default' => 'public',
 			'max_length' => '100',
 			),
+		'snmp_security_level' => array(
+			'friendly_name' => __('Security Level'),
+			'description' => __('The SNMP v3 Security Level.'),
+			'method' => 'drop_array',
+			'default' => 'noAuthNoPriv',
+			'array' => $snmp_security_levels,
+			),
 		'snmp_username' => array(
 			'friendly_name' => __('Username (v3)'),
 			'description' => __('The SNMP v3 Username for polling hosts.'),
