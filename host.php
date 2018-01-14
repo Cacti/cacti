@@ -1200,8 +1200,11 @@ function device_javascript() {
 		if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
 			$('#snmp_auth_protocol').val('[None]');
 			$('#snmp_priv_protocol').val('[None]');
+			$('#row_snmp_auth_protocol').hide();
+			$('#row_snmp_priv_protocol').hide();
 		} else if ($('#snmp_security_level').val() == 'authNoPriv') {
 			$('#snmp_priv_protocol').val('[None]');
+			$('#row_snmp_priv_protocol').hide();
 		}
 
 		if ($('#snmp_auth_protocol').val() == '[None]') {

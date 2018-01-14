@@ -1005,7 +1005,7 @@ default:
 		$('#snmp_password_confirm').val('');
 
 		switch($('#snmp_ver').val()) {
-		case "0":
+		case '0':
 			$('#row_snmp_security_level').hide();
 			$('#row_snmp_community').hide();
 			$('#row_snmp_username').hide();
@@ -1017,8 +1017,8 @@ default:
 			$('#row_snmp_port').hide();
 			$('#row_snmp_retries').hide();
 			break;
-		case "1":
-		case "2":
+		case '1':
+		case '2':
 			$('#row_snmp_security_level').hide();
 			$('#row_snmp_community').show();
 			$('#row_snmp_username').hide();
@@ -1030,7 +1030,7 @@ default:
 			$('#row_snmp_port').show();
 			$('#row_snmp_retries').show();
 			break;
-		case "3":
+		case '3':
 			$('#row_snmp_security_level').show();
 			$('#row_snmp_community').hide();
 			$('#row_snmp_username').show();
@@ -1045,8 +1045,11 @@ default:
 			if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
 				$('#snmp_auth_protocol').val('[None]');
 				$('#snmp_priv_protocol').val('[None]');
+				$('#row_snmp_auth_protocol').hide();
+				$('#row_snmp_priv_protocol').hide();
 			} else if ($('#snmp_security_level').val() == 'authNoPriv') {
 				$('#snmp_priv_protocol').val('[None]');
+				$('#row_snmp_priv_protocol').hide();
 			}
 
 			if ($('#snmp_auth_protocol').val() == '[None]') {
@@ -1066,8 +1069,8 @@ default:
 
 	function initFTPExport() {
 		switch($('#export_type').val()) {
-		case "disabled":
-		case "local":
+		case 'disabled':
+		case 'local':
 			$('#row_export_hdr_ftp').hide();
 			$('#row_export_ftp_sanitize').hide();
 			$('#row_export_ftp_host').hide();
@@ -1076,9 +1079,9 @@ default:
 			$('#row_export_ftp_user').hide();
 			$('#row_export_ftp_password').hide();
 			break;
-		case "ftp_php":
-		case "ftp_ncftpput":
-		case "sftp_php":
+		case 'ftp_php':
+		case 'ftp_ncftpput':
+		case 'sftp_php':
 			$('#row_export_hdr_ftp').show();
 			$('#row_export_ftp_sanitize').show();
 			$('#row_export_ftp_host').show();
@@ -1092,12 +1095,12 @@ default:
 
 	function initPresentation() {
 		switch($('#export_presentation').val()) {
-		case "classical":
+		case 'classical':
 			$('#row_export_tree_options').hide();
 			$('#row_export_tree_isolation').hide();
 			$('#row_export_tree_expand_hosts').hide();
 			break;
-		case "tree":
+		case 'tree':
 			$('#row_export_tree_options').show();
 			$('#row_export_tree_isolation').show();
 			$('#row_export_tree_expand_hosts').show();
@@ -1107,22 +1110,22 @@ default:
 
 	function initTiming() {
 		switch($('#export_timing').val()) {
-		case "disabled":
+		case 'disabled':
 			$('#row_path_html_export_skip').hide();
 			$('#row_export_hourly').hide();
 			$('#row_export_daily').hide();
 			break;
-		case "classic":
+		case 'classic':
 			$('#row_path_html_export_skip').show();
 			$('#row_export_hourly').hide();
 			$('#row_export_daily').hide();
 			break;
-		case "export_hourly":
+		case 'export_hourly':
 			$('#row_path_html_export_skip').hide();
 			$('#row_export_hourly').show();
 			$('#row_export_daily').hide();
 			break;
-		case "export_daily":
+		case 'export_daily':
 			$('#row_path_html_export_skip').hide();
 			$('#row_export_hourly').hide();
 			$('#row_export_daily').show();
