@@ -1146,6 +1146,9 @@ function device_javascript() {
 	}
 
 	$(function() {
+		// Need to set this for global snmpv3 functions to remain sane between edits
+		snmp_security_initialized = false;
+
 		if (typeof hostInfoHeight != 'undefined') {
 			if ($(window).scrollTop() == 0) {
 				$('.hostInfoHeader').css('height', '');

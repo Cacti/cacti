@@ -350,6 +350,9 @@ function manager_edit() {
 			?>
 			<script type='text/javascript'>
 
+			// Need to set this for global snmpv3 functions to remain sane between edits
+			snmp_security_initialized = false;
+
 			$(function() {
 				setSNMP();
 			});

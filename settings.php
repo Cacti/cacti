@@ -438,6 +438,9 @@ default:
 		}
 
 		if ($('#row_snmp_ver')) {
+			// Need to set this for global snmpv3 functions to remain sane between edits
+			snmp_security_initialized = false;
+
 			setSNMP();
 
 			$('#snmp_ver, #snmp_auth_protocol, #snmp_priv_protocol, #snmp_security_level').change(function() {
