@@ -3077,7 +3077,7 @@ function automation_valid_snmp_device(&$device) {
 			$device['snmp_retries']         = $item['snmp_retries'];
 
 			// snmp v1/v2 options
-			$device['snmp_readstring']      = $item['snmp_readstring'];
+			$device['snmp_community']       = $item['snmp_community'];
 
 			// snmp v3 options
 			$device['snmp_username']        = $item['snmp_username'];
@@ -3089,7 +3089,7 @@ function automation_valid_snmp_device(&$device) {
 			$device['snmp_engine_id']       = $item['snmp_engine_id'];
 			$device['max_oids']             = $item['max_oids'];
 
-            $session = cacti_snmp_session($device['ip_address'], $device['snmp_readstring'], $device['snmp_version'],
+            $session = cacti_snmp_session($device['ip_address'], $device['snmp_community'], $device['snmp_version'],
                 $device['snmp_username'], $device['snmp_password'], $device['snmp_auth_protocol'], $device['snmp_priv_passphrase'],
                 $device['snmp_priv_protocol'], $device['snmp_context'], $device['snmp_engine_id'], $device['snmp_port'],
                 $device['snmp_timeout'], $device['snmp_retries'], $device['max_oids']);
@@ -3123,7 +3123,6 @@ function automation_valid_snmp_device(&$device) {
 
 	if ($host_up) {
 		$device['snmp_sysObjectID'] = $snmp_sysObjectID;
-		$device['community'] = $device['snmp_readstring'];
 
 		/* get system name */
 		$snmp_sysName = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
