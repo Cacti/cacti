@@ -1703,11 +1703,11 @@ $fields_template_import = array(
 			'default' => read_config_option('snmp_auth_protocol'),
 			'array' => $snmp_auth_protocols,
 			),
-		'snmp_auth_password' => array(
+		'snmp_password' => array(
 			'method' => 'textbox_password',
 			'friendly_name' => __('SNMP Auth Password (v3)'),
 			'description' => __('SNMP v3 user password for this device.'),
-			'value' => '|arg1:snmp_auth_password|',
+			'value' => '|arg1:snmp_password|',
 			'default' => read_config_option('snmp_password'),
 			'max_length' => '50',
 			'size' => '20'
@@ -1721,11 +1721,11 @@ $fields_template_import = array(
 			'default' => read_config_option('snmp_priv_protocol'),
 			'array' => $snmp_priv_protocols,
 			),
-		'snmp_priv_password' => array(
+		'snmp_priv_passphrase' => array(
 			'method' => 'textbox_password',
 			'friendly_name' => __('SNMP Privacy Password (v3)'),
 			'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
-			'value' => '|arg1:snmp_priv_password|',
+			'value' => '|arg1:snmp_priv_passphrase|',
 			'default' => read_config_option('snmp_priv_passphrase'),
 			'max_length' => '200',
 			'size' => '40'

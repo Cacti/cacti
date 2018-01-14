@@ -161,7 +161,7 @@ function manager(){
 								<?php
 								if (sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>";
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 									}
 								}
 								?>
@@ -279,7 +279,7 @@ function manager_edit() {
 
 	if ($id) {
 		$manager = db_fetch_row_prepared('SELECT * FROM snmpagent_managers WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('SNMP Notification Receiver [edit: %s]', htmlspecialchars($manager['description']));
+		$header_label = __('SNMP Notification Receiver [edit: %s]', html_escape($manager['description']));
 	} else {
 		$header_label = __('SNMP Notification Receiver [new]');
 	}
@@ -295,7 +295,7 @@ function manager_edit() {
 				print "<li class='subTab'><a href='#' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') . "'>" . $tabs_manager_edit[$tab_short_name] . '</a></li>';
 			}else {
 				print "<li class='subTab'><a " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') .
-					" href='" . htmlspecialchars($config['url_path'] .
+					" href='" . html_escape($config['url_path'] .
 					'managers.php?action=edit&id=' . get_request_var('id') .
 					'&tab=' . $tab_short_name) .
 					"'>" . $tabs_manager_edit[$tab_short_name] . '</a></li>';
@@ -505,7 +505,7 @@ function manager_notifications($id, $header_label) {
 								<?php
 								if (sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . '</option>';
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 									}
 								}
 								?>
@@ -818,7 +818,7 @@ function manager_logs($id, $header_label) {
 				$description = '';
 				$lines = preg_split( '/\r\n|\r|\n/', $item['description']);
 				foreach($lines as $line) {
-					$description .= htmlspecialchars(trim($line)) . '<br>';
+					$description .= html_escape(trim($line)) . '<br>';
 				}
 				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . $item['notification'] . '\', \'' . $description . '\')">' . $item['notification'] . '</a></td>';
 			}else {
@@ -871,16 +871,16 @@ function form_save() {
 
 			if ($save['snmp_version'] == 3) {
 				$save['snmp_username']        = form_input_validate(get_nfilter_request_var('snmp_username'), 'snmp_username', '', true, 3);
-				$save['snmp_auth_password']   = form_input_validate(get_nfilter_request_var('snmp_auth_password'), 'snmp_auth_password', '', true, 3);
+				$save['snmp_password']        = form_input_validate(get_nfilter_request_var('snmp_password'), 'snmp_password', '', true, 3);
 				$save['snmp_auth_protocol']   = form_input_validate(get_nfilter_request_var('snmp_auth_protocol'), 'snmp_auth_protocol', "^\[None\]|MD5|SHA$", true, 3);
-				$save['snmp_priv_password']   = form_input_validate(get_nfilter_request_var('snmp_priv_password'), 'snmp_priv_password', '', true, 3);
+				$save['snmp_priv_passphrase'] = form_input_validate(get_nfilter_request_var('snmp_priv_passphrase'), 'snmp_priv_passphrase', '', true, 3);
 				$save['snmp_priv_protocol']   = form_input_validate(get_nfilter_request_var('snmp_priv_protocol'), 'snmp_priv_protocol', "^\[None\]|DES|AES128$", true, 3);
 				$save['snmp_engine_id']       = form_input_validate(get_request_var_post('snmp_engine_id'), 'snmp_engine_id', '', false, 3);
 			} else {
 				$save['snmp_username']        = '';
-				$save['snmp_auth_password']   = '';
+				$save['snmp_password']        = '';
 				$save['snmp_auth_protocol']   = '';
-				$save['snmp_priv_password']   = '';
+				$save['snmp_priv_passphrase'] = '';
 				$save['snmp_priv_protocol']   = '';
 				$save['snmp_engine_id']       = '';
 			}
@@ -890,11 +890,11 @@ function form_save() {
 			$save['notes']                    = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
 
-			if ($save['snmp_version'] == 3 && ($save['snmp_auth_password'] != get_nfilter_request_var('snmp_auth_password_confirm'))) {
+			if ($save['snmp_version'] == 3 && ($save['snmp_password'] != get_nfilter_request_var('snmp_password_confirm'))) {
 				raise_message(4);
 			}
 
-			if ($save['snmp_version'] == 3 && ($save['snmp_priv_password'] != get_nfilter_request_var('snmp_priv_password_confirm'))) {
+			if ($save['snmp_version'] == 3 && ($save['snmp_priv_passphrase'] != get_nfilter_request_var('snmp_priv_passphrase_confirm'))) {
 				raise_message(4);
 			}
 
