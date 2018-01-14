@@ -1190,6 +1190,18 @@ function device_javascript() {
 			}
 		}
 
+		if ($('#snmp_version').val() == '3') {
+			if ('#snmp_auth_protocol').val() == '[None]') {
+				if ('#snmp_priv_protocol').val() == '[None]') {
+					$('#snmp_security_level').val('noAuthNoPriv');
+				} else {
+					$('#snmp_security_level').val('authNoPriv');
+				}
+			} else {
+				$('#snmp_security_level').val('authPriv');
+			}
+		}
+
 		$('[id^="reload"]').click(function(data) {
 			$(this).addClass('fa-spin');
 			strURL = 'host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();

@@ -430,6 +430,18 @@ default:
 		}
 
 		if ($('#row_snmp_ver')) {
+			if ($('#snmp_version').val() == '3') {
+				if ('#snmp_auth_protocol').val() == '[None]') {
+					if ('#snmp_priv_protocol').val() == '[None]') {
+						$('#snmp_security_level').val('noAuthNoPriv');
+					} else {
+						$('#snmp_security_level').val('authNoPriv');
+					}
+				} else {
+					$('#snmp_security_level').val('authPriv');
+				}
+			}
+
 			initSNMP();
 			$('#snmp_ver, #snmp_auth_protocol, #snmp_priv_protocol, #snmp_security_level').change(function() {
 				initSNMP();
