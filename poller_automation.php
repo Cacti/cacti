@@ -487,7 +487,7 @@ function discoverDevices($network_id, $thread) {
 					$device['site_id']              = $network['site_id'];
 					$device['snmp_version']         = '';
 					$device['snmp_port']            = '';
-					$device['snmp_readstring']      = '';
+					$device['snmp_community']       = '';
 					$device['snmp_username']        = '';
 					$device['snmp_password']        = '';
 					$device['snmp_auth_protocol']   = '';
@@ -671,7 +671,7 @@ function discoverDevices($network_id, $thread) {
 									. $network_id                              . ', '
 									. db_qstr($device['dnsname'])              . ', '
 									. db_qstr($device['ip_address'])           . ', '
-									. db_qstr($device['snmp_readstring'])      . ', '
+									. db_qstr($device['snmp_community'])       . ', '
 									. db_qstr($device['snmp_version'])         . ', '
 									. db_qstr($device['snmp_port'])            . ', '
 									. db_qstr($device['snmp_username'])        . ', '
@@ -697,7 +697,7 @@ function discoverDevices($network_id, $thread) {
 							. $network_id                              . ', '
 							. db_qstr($device['dnsname'])              . ', '
 							. db_qstr($device['ip_address'])           . ', '
-							. db_qstr($device['snmp_readstring'])      . ', '
+							. db_qstr($device['snmp_community'])       . ', '
 							. db_qstr($device['snmp_version'])         . ', '
 							. db_qstr($device['snmp_port'])            . ', '
 							. db_qstr($device['snmp_username'])        . ', '

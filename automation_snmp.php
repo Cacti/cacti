@@ -129,7 +129,7 @@ function form_automation_snmp_save() {
 		$save['id']						= form_input_validate(get_nfilter_request_var('item_id'), '', '^[0-9]+$', false, 3);
 		$save['snmp_id'] 				= form_input_validate(get_nfilter_request_var('id'), 'snmp_id', '^[0-9]+$', false, 3);
 		$save['sequence'] 				= form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
-		$save['snmp_readstring'] 		= form_input_validate(get_nfilter_request_var('snmp_readstring'), 'snmp_readstring', '', false, 3);
+		$save['snmp_community'] 		= form_input_validate(get_nfilter_request_var('snmp_community'), 'snmp_community', '', false, 3);
 		$save['snmp_version'] 			= form_input_validate(get_nfilter_request_var('snmp_version'), 'snmp_version', '', false, 3);
 		$save['snmp_username']			= form_input_validate(get_nfilter_request_var('snmp_username'), 'snmp_username', '', true, 3);
 		$save['snmp_password']			= form_input_validate(get_nfilter_request_var('snmp_password'), 'snmp_password', '', true, 3);
@@ -351,7 +351,7 @@ function automation_snmp_item_remove_confirm() {
             <p><?php print __('Click \'Continue\' to delete the following SNMP Option Item.'); ?></p>
             <p><?php print __('SNMP Option:');?> <?php print html_escape($snmp['name']);?><br>
             <?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']);?><br>
-			<?php print __('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? $item['snmp_readstring']:$item['snmp_username']));?></p>
+			<?php print __('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? $item['snmp_community']:$item['snmp_username']));?></p>
         </td>
     </tr>
     <tr>
@@ -435,19 +435,83 @@ function automation_snmp_item_edit() {
 		'method' => 'drop_array',
 		'friendly_name' => __('SNMP Version'),
 		'description' => __('Choose the SNMP version for this host.'),
-		'on_change' => 'changeSNMPVersion()',
+		'on_change' => 'setSNMP()',
 		'value' => '|arg1:snmp_version|',
 		'default' => read_config_option('snmp_ver'),
 		'array' => $snmp_versions
 		),
-	'snmp_readstring' => array(
+	'snmp_community' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('SNMP Community String'),
 		'description' => __('Fill in the SNMP read community for this device.'),
-		'value' => '|arg1:snmp_readstring|',
+		'value' => '|arg1:snmp_community|',
 		'default' => read_config_option('snmp_community'),
 		'max_length' => '100',
 		'size' => '20'
+		),
+	'snmp_security_level' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Security Level'),
+		'description' => __('SNMP v3 Security Level to user for querying the device.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_security_level|',
+		'form_id' => '|arg1:id|',
+		'default' => read_config_option('snmp_security_level'),
+		'array' => $snmp_security_levels
+		),
+	'snmp_username' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Username (v3)'),
+		'description' => __('SNMP v3 username for this device.'),
+		'value' => '|arg1:snmp_username|',
+		'default' => read_config_option('snmp_username'),
+		'max_length' => '50',
+		'size' => '15'
+		),
+	'snmp_auth_protocol' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Auth Protocol (v3)'),
+		'description' => __('Choose the SNMPv3 Authorization Protocol.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_auth_protocol|',
+		'default' => read_config_option('snmp_auth_protocol'),
+		'array' => $snmp_auth_protocols,
+		),
+	'snmp_password' => array(
+		'method' => 'textbox_password',
+		'friendly_name' => __('SNMP Password (v3)'),
+		'description' => __('SNMP v3 password for this device.'),
+		'value' => '|arg1:snmp_password|',
+		'default' => read_config_option('snmp_password'),
+		'max_length' => '50',
+		'size' => '15'
+		),
+	'snmp_priv_protocol' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
+		'description' => __('Choose the SNMPv3 Privacy Protocol.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_priv_protocol|',
+		'default' => read_config_option('snmp_priv_protocol'),
+		'array' => $snmp_priv_protocols,
+		),
+	'snmp_priv_passphrase' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Privacy Passphrase (v3)'),
+		'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
+		'value' => '|arg1:snmp_priv_passphrase|',
+		'default' => read_config_option('snmp_priv_passphrase'),
+		'max_length' => '200',
+		'size' => '40'
+		),
+	'snmp_context' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Context'),
+		'description' => __('Enter the SNMP Context to use for this device.'),
+		'value' => '|arg1:snmp_context|',
+		'default' => '',
+		'max_length' => '64',
+		'size' => '25'
 		),
 	'snmp_port' => array(
 		'method' => 'textbox',
@@ -485,58 +549,6 @@ function automation_snmp_item_edit() {
 		'default' => read_config_option('max_get_size'),
 		'size' => '15'
 		),
-	'snmp_username' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Username (v3)'),
-		'description' => __('SNMP v3 username for this device.'),
-		'value' => '|arg1:snmp_username|',
-		'default' => read_config_option('snmp_username'),
-		'max_length' => '50',
-		'size' => '15'
-		),
-	'snmp_password' => array(
-		'method' => 'textbox_password',
-		'friendly_name' => __('SNMP Password (v3)'),
-		'description' => __('SNMP v3 password for this device.'),
-		'value' => '|arg1:snmp_password|',
-		'default' => read_config_option('snmp_password'),
-		'max_length' => '50',
-		'size' => '15'
-		),
-	'snmp_auth_protocol' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Auth Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 Authorization Protocol.'),
-		'value' => '|arg1:snmp_auth_protocol|',
-		'default' => read_config_option('snmp_auth_protocol'),
-		'array' => $snmp_auth_protocols,
-		),
-	'snmp_priv_passphrase' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Privacy Passphrase (v3)'),
-		'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
-		'value' => '|arg1:snmp_priv_passphrase|',
-		'default' => read_config_option('snmp_priv_passphrase'),
-		'max_length' => '200',
-		'size' => '40'
-		),
-	'snmp_priv_protocol' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 Privacy Protocol.'),
-		'value' => '|arg1:snmp_priv_protocol|',
-		'default' => read_config_option('snmp_priv_protocol'),
-		'array' => $snmp_priv_protocols,
-		),
-	'snmp_context' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Context'),
-		'description' => __('Enter the SNMP Context to use for this device.'),
-		'value' => '|arg1:snmp_context|',
-		'default' => '',
-		'max_length' => '64',
-		'size' => '25'
-		),
 	);
 
     /* file: mactrack_snmp.php, action: item_edit */
@@ -563,57 +575,12 @@ function automation_snmp_item_edit() {
 
 	?>
 	<script type='text/javascript'>
-	function changeSNMPVersion() {
-		version = parseInt($('#snmp_version').val());
-		switch (version) {
-		case 0:
-			$('#row_snmp_username').hide();
-			$('#row_snmp_password').hide();
-			$('#row_snmp_readstring').hide();
-			$('#row_snmp_auth_protocol').hide();
-			$('#row_snmp_priv_passphrase').hide();
-			$('#row_snmp_priv_protocol').hide();
-			$('#row_snmp_context').hide();
-			$('#row_snmp_port').hide();
-			$('#row_snmp_timeout').hide();
-			$('#row_snmp_retries').hide();
-			$('#row_max_oids').hide();
-
-			break;
-		case 1:
-		case 2:
-			$('#row_snmp_username').hide();
-			$('#row_snmp_password').hide();
-			$('#row_snmp_readstring').show();
-			$('#row_snmp_auth_protocol').hide();
-			$('#row_snmp_priv_passphrase').hide();
-			$('#row_snmp_priv_protocol').hide();
-			$('#row_snmp_context').hide();
-			$('#row_snmp_port').show();
-			$('#row_snmp_timeout').show();
-			$('#row_snmp_retries').show();
-			$('#row_max_oids').show();
-
-			break;
-		case 3:
-			$('#row_snmp_username').show();
-			$('#row_snmp_password').show();
-			$('#row_snmp_readstring').hide();
-			$('#row_snmp_auth_protocol').show();
-			$('#row_snmp_priv_passphrase').show();
-			$('#row_snmp_priv_protocol').show();
-			$('#row_snmp_context').show();
-			$('#row_snmp_port').show();
-			$('#row_snmp_timeout').show();
-			$('#row_snmp_retries').show();
-			$('#row_max_oids').show();
-
-			break;
-		}
-	}
 
 	$(function() {
-		changeSNMPVersion();
+		// Need to set this for global snmpv3 functions to remain sane between edits
+		snmp_security_initialized = false;
+
+		setSNMP();
 	});
 	</script>
 	<?php
@@ -696,10 +663,9 @@ function automation_snmp_edit() {
 		if (sizeof($items)) {
 			foreach ($items as $item) {
 				form_alternate_row('line' . $item['id'], true, true);
-				$form_data = "<td><a class='linkEditMain' href='" . html_escape('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>Item#" . $i . '</a></td>';
-				#$form_data .= '<td>' . 	$item['sequence'] . '</td>';
+				$form_data = "<td><a class='linkEditMain' href='" . html_escape('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>" . __('Item # %d', $i) . '</a></td>';
 				$form_data .= '<td>' . 	$item['snmp_version'] . '</td>';
-				$form_data .= '<td class="left">' . 	($item['snmp_version'] == 3 ? __('none') : $item['snmp_readstring']) . '</td>';
+				$form_data .= '<td class="left">' . 	($item['snmp_version'] == 3 ? __('none') : $item['snmp_community']) . '</td>';
 				$form_data .= '<td class="right">' . 	$item['snmp_port'] . '</td>';
 				$form_data .= '<td class="right">' . 	$item['snmp_timeout'] . '</td>';
 				$form_data .= '<td class="right">' . 	$item['snmp_retries'] . '</td>';
