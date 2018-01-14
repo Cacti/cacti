@@ -507,7 +507,7 @@ $settings = array(
 			'friendly_name' => __('Security Level'),
 			'description' => __('The SNMP v3 Security Level.'),
 			'method' => 'drop_array',
-			'default' => 'noAuthNoPriv',
+			'default' => 'authPriv',
 			'array' => $snmp_security_levels,
 			),
 		'snmp_username' => array(
