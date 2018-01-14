@@ -47,8 +47,28 @@ function upgrade_to_1_1_31() {
 		'ALTER TABLE `snmpagent_managers`
 			MODIFY COLUMN `snmp_auth_protocol` varchar(6) NOT NULL DEFAULT "",
 			MODIFY COLUMN `snmp_username` varchar(50) NOT NULL DEFAULT "",
-			CHANGE COLUMN `snmp_auth_password` `snmp_password` varchar(50) NOT NULL DEFAULT "",
-			MODIFY COLUMN `snmp_priv_protocol` varchar(6) NOT NULL DEFAULT "",
-			CHANGE COLUMN `snmp_priv_password` `snmp_priv_passphrase` varchar(200) NOT NULL DEFAULT ""'
+			MODIFY COLUMN `snmp_priv_protocol` varchar(6) NOT NULL DEFAULT ""'
 	);
+
+	if (!db_column_exists('snmpagent_managers', 'snmp_password')) {
+		db_install_execute(
+			'ALTER TABLE `snmpagent_managers`
+				CHANGE COLUMN `snmp_auth_password` `snmp_password` varchar(50) NOT NULL DEFAULT ""'
+		);
+	}
+
+	if (!db_column_exists('snmpagent_managers', 'snmp_priv_passphrase')) {
+		db_install_execute(
+			'ALTER TABLE `snmpagent_managers`
+				CHANGE COLUMN `snmp_priv_password` `snmp_priv_passphrase` varchar(200) NOT NULL DEFAULT ""'
+		);
+	}
+
+	if (!db_column_exists('automation_snmp_items', 'snmp_community')) {
+		db_install_execute(
+			'ALTER TABLE `automation_snmp_items`
+				CHANGE COLUMN `snmp_readstring` `snmp_community` varchar(50) NOT NULL DEFAULT ""'
+		);
+	}
 }
+
