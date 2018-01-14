@@ -2539,6 +2539,21 @@ function setSNMP() {
 	setSNMPSecurity();
 
 	switch(snmp_version) {
+		case '0': // Not in Use
+			$('#row_snmp_username').hide();
+			$('#row_snmp_password').hide();
+			$('#row_snmp_community').hide();
+			$('#row_snmp_security_level').hide();
+			$('#row_snmp_auth_password').hide();
+			$('#row_snmp_auth_protocol').hide();
+			$('#row_snmp_priv_passphrase').hide();
+			$('#row_snmp_priv_protocol').hide();
+			$('#row_snmp_engine_id').hide();
+			$('#row_snmp_context').hide();
+			$('#row_snmp_port').hide();
+			$('#row_snmp_timeout').hide();
+
+			break;
 		case '1': // SNMP v1
 		case '2': // SNMP v2c
 			$('#row_snmp_username').hide();
