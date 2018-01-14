@@ -1155,9 +1155,18 @@ function device_javascript() {
 			$('#snmp_priv_protocol').val('[None]');
 			$('#row_snmp_auth_protocol').hide();
 			$('#row_snmp_priv_protocol').hide();
+
+			if (typeof $('#snmp_security_level').selectmenu() === 'object') {
+				$('#snmp_auth_protocol').selectmenu('refresh');
+				$('#snmp_priv_protocol').selectmenu('refresh');
+			}
 		} else if ($('#snmp_security_level').val() == 'authNoPriv') {
 			$('#snmp_priv_protocol').val('[None]');
 			$('#row_snmp_priv_protocol').hide();
+
+			if (typeof $('#snmp_security_level').selectmenu() === 'object') {
+				$('#snmp_priv_protocol').selectmenu('refresh');
+			}
 		}
 
 		if ($('#snmp_auth_protocol').val() == '[None]') {

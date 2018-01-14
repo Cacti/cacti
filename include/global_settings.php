@@ -517,13 +517,6 @@ $settings = array(
 			'default' => '',
 			'max_length' => '100',
 			),
-		'snmp_password' => array(
-			'friendly_name' => __('Password (v3)'),
-			'description' => __('The SNMP v3 Password for polling hosts.'),
-			'method' => 'textbox_password',
-			'default' => '',
-			'max_length' => '100',
-			),
 		'snmp_auth_protocol' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Auth Protocol (v3)'),
@@ -531,12 +524,12 @@ $settings = array(
 			'default' => 'MD5',
 			'array' => $snmp_auth_protocols,
 			),
-		'snmp_priv_passphrase' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('Privacy Passphrase (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
+		'snmp_password' => array(
+			'friendly_name' => __('Password (v3)'),
+			'description' => __('The SNMP v3 Password for polling hosts.'),
+			'method' => 'textbox_password',
 			'default' => '',
-			'max_length' => '200'
+			'max_length' => '100',
 			),
 		'snmp_priv_protocol' => array(
 			'method' => 'drop_array',
@@ -544,6 +537,13 @@ $settings = array(
 			'description' => __('Choose the SNMPv3 Privacy Protocol.'),
 			'default' => 'DES',
 			'array' => $snmp_priv_protocols,
+			),
+		'snmp_priv_passphrase' => array(
+			'method' => 'textbox',
+			'friendly_name' => __('Privacy Passphrase (v3)'),
+			'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
+			'default' => '',
+			'max_length' => '200'
 			),
 		'snmp_timeout' => array(
 			'friendly_name' => __('Timeout'),
