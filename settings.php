@@ -431,7 +431,7 @@ default:
 
 		if ($('#row_snmp_ver')) {
 			initSNMP();
-			$('#snmp_ver').change(function() {
+			$('#snmp_ver, #snmp_auth_protocol, #snmp_priv_protocol, #snmp_security_level').change(function() {
 				initSNMP();
 			});
 		}
@@ -980,6 +980,7 @@ default:
 
 		switch($('#snmp_ver').val()) {
 		case "0":
+			$('#row_snmp_security_level').hide();
 			$('#row_snmp_community').hide();
 			$('#row_snmp_username').hide();
 			$('#row_snmp_password').hide();
@@ -992,6 +993,7 @@ default:
 			break;
 		case "1":
 		case "2":
+			$('#row_snmp_security_level').hide();
 			$('#row_snmp_community').show();
 			$('#row_snmp_username').hide();
 			$('#row_snmp_password').hide();
@@ -1003,6 +1005,7 @@ default:
 			$('#row_snmp_retries').show();
 			break;
 		case "3":
+			$('#row_snmp_security_level').show();
 			$('#row_snmp_community').hide();
 			$('#row_snmp_username').show();
 			$('#row_snmp_password').show();
@@ -1012,6 +1015,25 @@ default:
 			$('#row_snmp_timeout').show();
 			$('#row_snmp_port').show();
 			$('#row_snmp_retries').show();
+
+			if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
+				$('#snmp_auth_protocol').val('[None]');
+				$('#snmp_priv_protocol').val('[None]');
+			} else if ($('#snmp_security_level').val() == 'authNoPriv') {
+				$('#snmp_priv_protocol').val('[None]');
+			}
+
+			if ($('#snmp_auth_protocol').val() == '[None]') {
+				$('#row_snmp_password').hide();
+				$('#snmp_password').val('');
+				$('#snmp_password_confirm').val('');
+			}
+
+			if ($('#snmp_priv_protocol').val() == '[None]') {
+				$('#row_snmp_priv_passphrase').hide();
+				$('#snmp_priv_passphrase').val('');
+			}
+
 			break;
 		}
 	}

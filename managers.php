@@ -348,12 +348,12 @@ function manager_edit() {
 			form_save_button('managers.php', 'return');
 
 			?>
-			<script type="text/javascript">
+			<script type='text/javascript'>
 			function setSNMP() {
 				snmp_version = $('#snmp_version').val();
 				switch(snmp_version) {
-					case "1": // SNMP v1
-					case "2": // SNMP v2c
+					case '1': // SNMP v1
+					case '2': // SNMP v2c
 						$('#row_snmp_username').hide();
 						$('#row_snmp_password').hide();
 						$('#row_snmp_community').show();
@@ -366,7 +366,7 @@ function manager_edit() {
 						$('#row_snmp_port').show();
 						$('#row_snmp_timeout').show();
 						break;
-					case "3": // SNMP v3
+					case '3': // SNMP v3
 						$('#row_snmp_username').show();
 						$('#row_snmp_password').show();
 						$('#row_snmp_community').hide();
@@ -378,6 +378,25 @@ function manager_edit() {
 						$('#row_snmp_context').show();
 						$('#row_snmp_port').show();
 						$('#row_snmp_timeout').show();
+
+						if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
+							$('#snmp_auth_protocol').val('[None]');
+							$('#snmp_priv_protocol').val('[None]');
+						} else if ($('#snmp_security_level').val() == 'authNoPriv') {
+							$('#snmp_priv_protocol').val('[None]');
+						}
+
+						if ($('#snmp_auth_protocol').val() == '[None]') {
+							$('#row_snmp_password').hide();
+							$('#snmp_password').val('');
+							$('#snmp_password_confirm').val('');
+						}
+
+						if ($('#snmp_priv_protocol').val() == '[None]') {
+							$('#row_snmp_priv_passphrase').hide();
+							$('#snmp_priv_passphrase').val('');
+						}
+
 					break;
 				}
 			}
@@ -390,10 +409,10 @@ function manager_edit() {
 	}
 
 	?>
-	<script language="javascript" type="text/javascript" >
+	<script language='javascript' type='text/javascript' >
 		$('.tooltip').tooltip({
 			track: true,
-			position: { collision: "flipfit" },
+			position: { collision: 'flipfit' },
 			content: function() { return $(this).attr('title'); }
 		});
 	</script>
@@ -466,7 +485,7 @@ function manager_notifications($id, $header_label) {
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 
 	function applyFilter() {
 		strURL  = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>';

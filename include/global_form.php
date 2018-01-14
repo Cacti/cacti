@@ -1063,6 +1063,16 @@ $fields_host_edit = array(
 		'max_length' => '100',
 		'size' => '20'
 		),
+	'snmp_security_level' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Security Level'),
+		'description' => __('SNMP v3 Security Level to user for querying the device.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_security_level|',
+		'form_id' => '|arg1:id|',
+		'default' => read_config_option('snmp_security_level'),
+		'array' => $snmp_security_levels
+		),
 	'snmp_username' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('SNMP Username (v3)'),
@@ -1665,6 +1675,16 @@ $fields_template_import = array(
 			'max_length' => '100',
 			'size' => '20'
 			),
+		'snmp_security_level' => array(
+			'method' => 'drop_array',
+			'friendly_name' => __('SNMP Security Level'),
+			'description' => __('SNMP v3 Security Level to user for querying the device.'),
+			'on_change' => 'setSNMP()',
+			'value' => '|arg1:snmp_security_level|',
+			'form_id' => '|arg1:id|',
+			'default' => read_config_option('snmp_security_level'),
+			'array' => $snmp_security_levels
+			),
 		'snmp_username' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('SNMP Username (v3)'),
@@ -1673,6 +1693,15 @@ $fields_template_import = array(
 			'default' => read_config_option('snmp_username'),
 			'max_length' => '50',
 			'size' => '20'
+			),
+		'snmp_auth_protocol' => array(
+			'method' => 'drop_array',
+			'friendly_name' => __('SNMP Auth Protocol (v3)'),
+			'description' => __('Choose the SNMPv3 Authorization Protocol.<br>Note: SHA authentication support is only available if you have OpenSSL installed.'),
+			'on_change' => 'setSNMP()',
+			'value' => '|arg1:snmp_auth_protocol|',
+			'default' => read_config_option('snmp_auth_protocol'),
+			'array' => $snmp_auth_protocols,
 			),
 		'snmp_auth_password' => array(
 			'method' => 'textbox_password',
@@ -1683,13 +1712,14 @@ $fields_template_import = array(
 			'max_length' => '50',
 			'size' => '20'
 			),
-		'snmp_auth_protocol' => array(
+		'snmp_priv_protocol' => array(
 			'method' => 'drop_array',
-			'friendly_name' => __('SNMP Auth Protocol (v3)'),
-			'description' => __('Choose the SNMPv3 Authorization Protocol.<br>Note: SHA authentication support is only available if you have OpenSSL installed.'),
-			'value' => '|arg1:snmp_auth_protocol|',
-			'default' => read_config_option('snmp_auth_protocol'),
-			'array' => $snmp_auth_protocols,
+			'friendly_name' => __('SNMP Privacy Protocol (v3)'),
+			'description' => __('Choose the SNMPv3 Privacy Protocol.<br>Note: DES/AES encryption support is only available if you have OpenSSL installed.'),
+			'on_change' => 'setSNMP()',
+			'value' => '|arg1:snmp_priv_protocol|',
+			'default' => read_config_option('snmp_priv_protocol'),
+			'array' => $snmp_priv_protocols,
 			),
 		'snmp_priv_password' => array(
 			'method' => 'textbox_password',
@@ -1699,14 +1729,6 @@ $fields_template_import = array(
 			'default' => read_config_option('snmp_priv_passphrase'),
 			'max_length' => '200',
 			'size' => '40'
-			),
-		'snmp_priv_protocol' => array(
-			'method' => 'drop_array',
-			'friendly_name' => __('SNMP Privacy Protocol (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Protocol.<br>Note: DES/AES encryption support is only available if you have OpenSSL installed.'),
-			'value' => '|arg1:snmp_priv_protocol|',
-			'default' => read_config_option('snmp_priv_protocol'),
-			'array' => $snmp_priv_protocols,
 			),
 		'snmp_engine_id' => array(
 			'friendly_name' => __('SNMP Engine ID'),

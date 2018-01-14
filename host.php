@@ -1106,6 +1106,7 @@ function device_javascript() {
 		snmp_version = $('#snmp_version').val();
 		switch(snmp_version) {
 		case '0': // No SNMP
+			$('#row_snmp_security_level').hide();
 			$('#row_snmp_username').hide();
 			$('#row_snmp_password').hide();
 			$('#row_snmp_community').hide();
@@ -1120,6 +1121,7 @@ function device_javascript() {
 			break;
 		case '1': // SNMP v1
 		case '2': // SNMP v2c
+			$('#row_snmp_security_level').hide();
 			$('#row_snmp_username').hide();
 			$('#row_snmp_password').hide();
 			$('#row_snmp_community').show();
@@ -1133,6 +1135,7 @@ function device_javascript() {
 			$('#row_max_oids').show();
 			break;
 		case '3': // SNMP v3
+			$('#row_snmp_security_level').show();
 			$('#row_snmp_username').show();
 			$('#row_snmp_password').show();
 			$('#row_snmp_community').hide();
@@ -1145,6 +1148,13 @@ function device_javascript() {
 			$('#row_snmp_timeout').show();
 			$('#row_max_oids').show();
 			break;
+		}
+
+		if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
+			$('#snmp_auth_protocol').val('[None]');
+			$('#snmp_priv_protocol').val('[None]');
+		} else if ($('#snmp_security_level').val() == 'authNoPriv') {
+			$('#snmp_priv_protocol').val('[None]');
 		}
 
 		if ($('#snmp_auth_protocol').val() == '[None]') {

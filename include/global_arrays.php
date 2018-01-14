@@ -470,6 +470,12 @@ $image_types = array(
 	3 => 'SVG'
 );
 
+$snmp_security_levels = array(
+	'noAuthNoPriv' => 'noAuthNoPriv',
+	'authNoPriv' => 'authNoPriv',
+	'authPriv' => 'authPriv'
+);
+
 $snmp_versions = array(0 =>
 	__('Not In Use'),
 	__('Version %d', 1),
