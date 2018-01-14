@@ -2552,6 +2552,7 @@ function setSNMP() {
 			$('#row_snmp_context').hide();
 			$('#row_snmp_port').hide();
 			$('#row_snmp_timeout').hide();
+			$('#row_max_oids').hide();
 
 			break;
 		case '1': // SNMP v1
@@ -2568,6 +2569,7 @@ function setSNMP() {
 			$('#row_snmp_context').hide();
 			$('#row_snmp_port').show();
 			$('#row_snmp_timeout').show();
+			$('#row_max_oids').show();
 
 			break;
 		case '3': // SNMP v3
@@ -2583,6 +2585,7 @@ function setSNMP() {
 			$('#row_snmp_context').show();
 			$('#row_snmp_port').show();
 			$('#row_snmp_timeout').show();
+			$('#row_max_oids').show();
 
 			if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
 				if ($('#snmp_auth_protocol').val() != '[None]') {
