@@ -1128,10 +1128,6 @@ legend {
 	text-decoration: none;
 }
 
-.linkOverDark i {
-	padding: 0px 5px;
-}
-
 .linkCopyDark, .linkCopyDark:visited, .linkCopyDark:active {
 	color: #93CEFF;
 	font-weight: normal;
@@ -1257,11 +1253,16 @@ table.cactiTable {
 	background: transparent;
 	height: 1em;
 }
+
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 16px 0px 3px;
+	padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;
+}
+
+.cactiTableButton i {
+	padding: 0px 8px;
 }
 
 .cactiTableButton span:last-child, .cactiTableTitle span:last-child {
