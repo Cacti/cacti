@@ -980,6 +980,10 @@ legend {
 	text-decoration: underline;
 }
 
+.linkOverDark i {
+	padding: 0px 5px;
+}
+
 .linkCopyDark, .linkCopyDark:visited, .linkCopyDark:active {
 	color: white;
 	font-weight: normal;
