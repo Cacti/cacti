@@ -409,14 +409,19 @@ function vdef_item_edit() {
 			<select id='type_select'>
 				<?php
 				foreach ($vdef_item_types as $var => $val) {
-					print "<option value='" . html_escape('vdef.php?action=item_edit' . (isset_request_var('id') ? '&id=' . get_request_var('id') : '') . '&vdef_id=' . get_request_var('vdef_id') . '&type_select=' . $var) . "'"; if ($var == $current_type) { print ' selected'; } print ">$val</option>\n";
+					print "<option value='$var'" . ($var == $current_type ? ' selected':'') . ">$val</option>";
 				}
 				?>
 			</select>
 			<script type='text/javascript'>
 			$(function() {
-				$('#type_select').change(function() {
-					loadPageNoHeader('vdef.php?action=item_edit&header=false&vdef_id=<?php print get_request_var('vdef_id');?>&type_select='+$('#type_select').val())
+				$('#type_select').unbind().change(function() {
+					strURL = 'vdef.php?action=item_edit';
+					strURL += '&header=false';
+					strURL += '&id=<?php print get_request_var('id');?>';
+					strURL += '&vdef_id=<?php print get_request_var('vdef_id');?>';
+					strURL += '&type_select='+$('#type_select').val();
+					loadPageNoHeader(strURL);
 				});
 			});
 			</script>
@@ -537,7 +542,7 @@ function vdef_edit() {
 
 	form_start('vdef.php', 'vdef_edit');
 
-	html_start_box( $header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	$preset_vdef_form_list = preset_vdef_form_list();
 	draw_edit_form(
@@ -557,7 +562,8 @@ function vdef_edit() {
 		draw_vdef_preview(get_request_var('id'));
 		html_end_box();
 
-		html_start_box('VDEF Items', '100%', '', '3', 'center', 'vdef.php?action=item_edit&vdef_id=' . $vdef['id']);
+		html_start_box(__('VDEF Items'), '100%', '', '3', 'center', 'vdef.php?action=item_edit&vdef_id=' . $vdef['id']);
+
 		$header_items = array(
 			array('display' => __('Item'), 'align' => 'left'),
 			array('display' => __('Item Value'), 'align' => 'left')
@@ -565,7 +571,12 @@ function vdef_edit() {
 
 		html_header($header_items, 2);
 
-		$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', array(get_request_var('id')));
+		$vdef_items = db_fetch_assoc_prepared('SELECT *
+			FROM vdef_items
+			WHERE vdef_id = ?
+			ORDER BY sequence',
+			array(get_request_var('id')));
+
 		$i = 1;
 		$total_items = sizeof($vdef_items);
 
@@ -667,16 +678,16 @@ function vdef_filter() {
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows)) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								}
 							}
 							?>
 						</select>
 					</td>
                     <td>
 						<span>
-	   	                     <input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+							<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
                         	<label for='has_graphs'><?php print __('Has Graphs');?></label>
 						</span>
                     </td>
