@@ -545,19 +545,37 @@ $settings = array(
 			'default' => '',
 			'max_length' => '200'
 			),
-		'snmp_timeout' => array(
-			'friendly_name' => __('Timeout'),
-			'description' => __('Default SNMP timeout in milli-seconds.'),
+		'snmp_context' => array(
 			'method' => 'textbox',
-			'default' => '500',
-			'max_length' => '10',
-			'size' => '5'
+			'friendly_name' => __('SNMP Context (v3)'),
+			'description' => __('Enter the SNMP v3 context to use for this device.'),
+			'value' => '|arg1:snmp_context|',
+			'default' => '',
+			'max_length' => '64',
+			'size' => '40'
+			),
+		'snmp_engine_id' => array(
+			'method' => 'textbox',
+			'friendly_name' => __('SNMP Engine ID (v3)'),
+			'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
+			'value' => '|arg1:snmp_engine_id|',
+			'default' => '',
+			'max_length' => '64',
+			'size' => '40'
 			),
 		'snmp_port' => array(
 			'friendly_name' => __('Port Number'),
 			'description' => __('Default UDP port to be used for SNMP Calls.  Typically, 161.'),
 			'method' => 'textbox',
 			'default' => '161',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'snmp_timeout' => array(
+			'friendly_name' => __('Timeout'),
+			'description' => __('Default SNMP timeout in milli-seconds.'),
+			'method' => 'textbox',
+			'default' => '500',
 			'max_length' => '10',
 			'size' => '5'
 			),
