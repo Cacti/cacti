@@ -487,40 +487,25 @@ function vdef_item_dnd() {
 	get_filter_request_var('id');
 	/* ================= Input validation ================= */
 
-	if (!isset_request_var('vdef_item') || !is_array(get_nfilter_request_var('vdef_item'))) exit;
+	$continue = true;
 
-	/* vdef table contains one row defined as 'nodrag&nodrop' */
-	unset($_REQUEST['vdef_item'][0]);
+	if (isset_request_var('vdef_item') && is_array(get_nfilter_request_var('vdef_item'))) {
+		$vdef_ids = get_nfilter_request_var('vdef_item');
 
-	/* delivered vdef ids has to be exactly the same like we have stored */
-	$old_order = array();
+		if (sizeof($vdef_ids)) {
+			$sequence = 1;
+			foreach($vdef_ids as $vdef_id) {
+				$vdef_id = str_replace('line', '', $vdef_id);
+				input_validate_input_number($vdef_id);
 
-	foreach(get_nfilter_request_var('vdef_item') as $sequence => $vdef_id) {
-		if (empty($vdef_id)) continue;
-		$new_order[$sequence] = str_replace('line', '', $vdef_id);
-	}
+				db_execute_prepared('UPDATE vdef_items
+					SET sequence = ?
+					WHERE id = ?',
+					array($sequence, $vdef_id));
 
-	$vdef_items = db_fetch_assoc_prepared('SELECT id, sequence FROM vdef_items WHERE vdef_id = ?', array(get_request_var('id')));
-
-	if(sizeof($vdef_items)) {
-		foreach($vdef_items as $item) {
-			$old_order[$item['sequence']] = $item['id'];
+				$sequence++;
+			}
 		}
-	}else {
-		exit;
-	}
-
-	if (sizeof(array_diff($new_order, $old_order))>0) exit;
-
-	/* the set of sequence numbers has to be the same too */
-	if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
-	/* ==================================================== */
-
-	foreach($new_order as $sequence => $vdef_id) {
-		input_validate_input_number($sequence);
-		input_validate_input_number($vdef_id);
-
-		db_execute_prepared('UPDATE vdef_items SET sequence = ? WHERE id = ?', array($sequence, $vdef_id));
 	}
 
 	header('Location: vdef.php?action=edit&header=false&id=' . get_request_var('id'));
@@ -630,14 +615,14 @@ function vdef_edit() {
 		$('body').append("<div class='cdialog' id='cdialog'></div>");
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
-		$('#vdef_item').tableDnD({
+		$('#vdef_item').unbind().tableDnD({
 			onDrop: function(table, row) {
 				loadPageNoHeader('vdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
 			}
 		});
 		<?php } ?>
 
-		$('.delete').click(function (event) {
+		$('.delete').unbind().click(function (event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');

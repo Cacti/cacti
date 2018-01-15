@@ -516,40 +516,25 @@ function cdef_item_dnd() {
 	get_filter_request_var('id');
 	/* ================= Input validation ================= */
 
-	if (!isset_request_var('cdef_item') || !is_array(get_nfilter_request_var('cdef_item'))) exit;
+	$continue = true;
 
-	/* cdef table contains one row defined as 'nodrag&nodrop' */
-	unset($_REQUEST['cdef_item'][0]);
+	if (isset_request_var('cdef_item') && is_array(get_nfilter_request_var('cdef_item'))) {
+		$cdef_ids = get_nfilter_request_var('cdef_item');
 
-	/* delivered cdef ids has to be exactly the same like we have stored */
-	$old_order = array();
+		if (sizeof($cdef_ids)) {
+			$sequence = 1;
+			foreach($cdef_ids as $cdef_id) {
+				$cdef_id = str_replace('line', '', $cdef_id);
+				input_validate_input_number($cdef_id);
 
-	foreach(get_nfilter_request_var('cdef_item') as $sequence => $cdef_id) {
-		if (empty($cdef_id)) continue;
-		$new_order[$sequence] = str_replace('line', '', $cdef_id);
-	}
+				db_execute_prepared('UPDATE cdef_items
+					SET sequence = ?
+					WHERE id = ?',
+					array($sequence, $cdef_id));
 
-	$cdef_items = db_fetch_assoc_prepared('SELECT id, sequence FROM cdef_items WHERE cdef_id = ?', array(get_request_var('id')));
-
-	if(sizeof($cdef_items)) {
-		foreach($cdef_items as $item) {
-			$old_order[$item['sequence']] = $item['id'];
+				$sequence++;
+			}
 		}
-	}else {
-		exit;
-	}
-
-	if (sizeof(array_diff($new_order, $old_order))>0) exit;
-
-	/* the set of sequence numbers has to be the same too */
-	if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
-	/* ==================================================== */
-
-	foreach($new_order as $sequence => $cdef_id) {
-		input_validate_input_number($sequence);
-		input_validate_input_number($cdef_id);
-
-		db_execute_prepared('UPDATE cdef_items SET sequence = ? WHERE id = ?', array($sequence, $cdef_id));
 	}
 
 	header('Location: cdef.php?action=edit&header=false&id=' . get_request_var('id'));

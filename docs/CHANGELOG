@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#1206: If unable to create a NumberFormat, use older methods of formatting numbers
 -issue#1210: CDEF and VDEF Items can not be properly edited
 -issue: Named colors were not importing on install/upgrade
+-issue: CDEF and VDEF Drag and Drop would corrupt sequencing
 -feature: Enhance Cacti filter API to permit more glyphs for table headers
 -feature: Add a page refresh dropdown to the Automation Networks page
 -feature: When a user chooses '[None]' for SNMP Auth/Privacy, hide/clear passphrases
