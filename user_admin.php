@@ -2067,7 +2067,8 @@ function user_edit() {
 				password_change = $('#password_change').is(':checked');
 
 				if (!password_change && $('#must_change_password').is(':checked')) {
-					if (typeof $('#must_change_password').button === 'function') {
+					button = ($('#mush_change_password').button('instance') !== undefined);
+					if (button) {
 						$('#must_change_password').prop('checked', false).button('refresh');
 					} else {
 						$('#must_change_password').prop('checked', false);
@@ -2077,14 +2078,16 @@ function user_edit() {
 
 			$('#must_change_password').click(function() {
 				if ($(this).is(':checked')) {
-					if (typeof $('#must_change_password').button === 'function') {
+					button = ($('#mush_change_password').button('instance') !== undefined);
+					if (button) {
 						$('#password_change').prop('checked', true);
 						$('#password_change').button('refresh');
 					} else {
 						$('#password_change').prop('checked', true);
 					}
 				} else {
-					if (typeof $('#must_change_password').button === 'function') {
+					button = ($('#mush_change_password').button('instance') !== undefined);
+					if (button) {
 						$('#password_change').prop('checked', password_change).button('refresh');
 					} else {
 						$('#password_change').prop('checked', password_change);
