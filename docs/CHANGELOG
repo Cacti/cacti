@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#1189: Allow ability to sort tree list by name asc/desc
 -issue#1190: When Enabling, Disabling, Uninstalling plugin, you should page refresh
 -issue#1191: Tree sequences were not set or checked
+-issue: Named colors were not importing on install/upgrade
 -feature: Enhance Cacti filter API to permit more glyphs for table headers
 -feature: Add a page refresh dropdown to the Automation Networks page
 -feature: When a user chooses '[None]' for SNMP Auth/Privacy, hide/clear passphrases
