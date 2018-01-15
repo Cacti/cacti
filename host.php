@@ -163,7 +163,9 @@ function add_tree_names_to_actions_array() {
 function form_save() {
 	if (isset_request_var('save_component_host')) {
 		if (get_nfilter_request_var('snmp_version') == 3 && (get_nfilter_request_var('snmp_password') != get_nfilter_request_var('snmp_password_confirm'))) {
-			raise_message(4);
+			raise_message(10);
+		} else if (get_nfilter_request_var('snmp_version') == 3 && (get_nfilter_request_var('snmp_priv_passphrase') != get_nfilter_request_var('snmp_priv_passphrase_confirm'))) {
+			raise_message(13);
 		} else {
 			get_filter_request_var('id');
 			get_filter_request_var('host_template_id');
