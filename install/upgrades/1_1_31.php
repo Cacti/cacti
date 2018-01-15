@@ -36,7 +36,7 @@ function upgrade_to_1_1_31() {
 	);
 
 	db_install_execute(
-		'ALTER TABLE `automation_snmp_options` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
+		'ALTER TABLE `automation_snmp_items` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
 	);
 
 	db_install_execute(
@@ -71,6 +71,9 @@ function upgrade_to_1_1_31() {
 		);
 	}
 
-	db_install_execute('UPDATE settings SET name="snmp_version" WHERE name="snmp_ver"');
+	$snmp_version = read_config_option('snmp_version');
+	if ($snmp_version == '') {
+		db_install_execute('UPDATE settings SET name="snmp_version" WHERE name="snmp_ver"');
+	}
 }
 
