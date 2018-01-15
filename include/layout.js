@@ -824,12 +824,12 @@ function toggleFilterAndIcon(id, child, initial) {
 	} else if ($('#'+child).is(':visible')) {
 		$('#'+child).hide();
 		$('#'+id).find('.cactiFilter, .cactiFilterClear, .cactiFilterImport, .cactiFilterExport').show();
-		$('.cactiFilterState').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+		$('.cactiFilterState').find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
 		storage.set('filterVisibility', 'hidden');
 	} else {
 		$('#'+child).show();
 		$('#'+id).find('.cactiFilter, .cactiFilterClear, .cactiFilterImport, .cactiFilterExport').hide();
-		$('.cactiFilterState').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
+		$('.cactiFilterState').find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
 		storage.set('filterVisibility', 'visible');
 	}
 
