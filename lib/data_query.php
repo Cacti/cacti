@@ -25,6 +25,11 @@
 function run_data_query($host_id, $snmp_query_id) {
 	global $config, $input_types;
 
+	/* required for upgrading old versions of cacti */
+	if (!db_column_exists('host', 'poller_id')) {
+		return;
+	}
+
 	/* don't run/rerun the query if the host is down, or disabled */
 	$status = db_fetch_row_prepared('SELECT status, disabled, poller_id FROM host WHERE id = ?', array($host_id));
 	if (!sizeof($status)) {
