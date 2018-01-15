@@ -539,7 +539,7 @@ function remote_update_config_file() {
 function import_colors() {
 	global $config;
 
-	if (! file_exists(dirname(__FILE__) . '/color.csv')) {
+	if (!file_exists(dirname(__FILE__) . '/colors.csv')) {
 		return false;
 	}
 
