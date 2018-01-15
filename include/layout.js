@@ -2525,7 +2525,11 @@ function setSNMPSecurity() {
 			} else {
 				$('#snmp_security_level').val('authPriv');
 			}
-			$('#snmp_security_level').selectmenu('refresh');
+
+			selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
+			if (selectmenu) {
+				$('#snmp_security_level').selectmenu('refresh');
+			}
 		}
 
 		snmp_security_initialized = true;
@@ -2629,7 +2633,8 @@ function setSNMP() {
 				$('#row_snmp_password').hide();
 				$('#row_snmp_priv_passphrase').hide();
 
-				if (typeof $('#snmp_security_level').selectmenu() === 'object') {
+				selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
+				if (selectmenu) {
 					$('#snmp_security_level').selectmenu('refresh');
 					$('#snmp_auth_protocol').selectmenu('refresh');
 					$('#snmp_priv_protocol').selectmenu('refresh');
@@ -2644,21 +2649,35 @@ function setSNMP() {
 					$('#snmp_auth_protocol').val(snmp_auth_protocol);
 					$('#snmp_password').val(snmp_password);
 					$('#snmp_password_confirm').val(snmp_password);
+				} else {
+					$('#snmp_auth_protocol').val('MD5');
 				}
 
 				$('#snmp_priv_protocol').val('[None]');
 				$('#row_snmp_priv_protocol').hide();
 				$('#row_snmp_priv_passphrase').hide();
 
-				if (typeof $('#snmp_security_level').selectmenu() === 'object') {
+				selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
+				if (selectmenu) {
 					$('#snmp_priv_protocol').selectmenu('refresh');
 				}
 			} else {
-				if ($('#snmp_auth_protocol').val() == '[None]') {
+				if (snmp_auth_protocol != '' && $('#snmp_auth_protocol').val() == '[None]') {
+					$('#snmp_auth_protocol').val(snmp_auth_protocol);
+					$('#snmp_password').val(snmp_password);
+					$('#snmp_password_confirm').val(snmp_password);
+				} else if (defaultSNMPAuthProtocol == '') {
+					$('#snmp_auth_protocol').val('MD5');
+				} else {
 					$('#snmp_auth_protocol').val(defaultSNMPAuthProtocol);
 				}
 
-				if ($('#snmp_priv_protocol').val() == '[None]') {
+				if (snmp_priv_protocol != '' && $('#snmp_priv_protocol').val() == '[None]') {
+					$('#snmp_priv_protocol').val(snmp_priv_protocol);
+					$('#snmp_priv_passphrase').val(snmp_priv_passphrase);
+				} else if (defaultSNMPPrivProtocol == '') {
+					$('#snmp_priv_protocol').val('DES');
+				} else {
 					$('#snmp_priv_protocol').val(defaultSNMPPrivProtocol);
 				}
 			}
