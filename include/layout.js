@@ -693,8 +693,8 @@ function makeFiltersResponsive() {
 					if ($(this).find('a').length) {
 						$(this).find('a').tooltip({
 							open: function (event, ui) {
+								$('.cactiTableTitle, .cactiTableButton').tooltip('close');
 								id = $(this).closest('.cactiTable').attr('id');
-								$('#'+id).find('.cactiTableButton').tooltip('close');
 							},
 							close: function (event, ui) {
 								id = $(this).closest('.cactiTable').attr('id');
@@ -709,15 +709,15 @@ function makeFiltersResponsive() {
 					if ($(this).find('.cactiFilter').length == 0) {
 						if ($('#'+child).find('#export').length) {
 							title = $('#export').attr('value');
-							$(this).append('<span title="'+title+'" style="display:none;" class="cactiFilterExport fa fa-arrow-down"></span>');
+							$(this).append('<span title="'+title+'" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"</i></span>');
 
 							$('.cactiFilterExport').click(function(event) {
 								event.stopPropagation();
 								$('#export').trigger('click');
 							}).tooltip({
 								open: function (event, ui) {
+									$('.cactiTableTitle, .cactiTableButton').tooltip('close');
 									id = $(this).closest('.cactiTable').attr('id');
-									$('#'+id).find('.cactiTableButton').tooltip('close');
 								},
 								close: function (event, ui) {
 									id = $(this).closest('.cactiTable').attr('id');
@@ -727,7 +727,7 @@ function makeFiltersResponsive() {
 
 						if ($('#'+child).find('#import').length) {
 							title = $('#import').attr('value');
-							$(this).append('<span title="'+title+'" style="display:none;" class="cactiFilterImport fa fa-arrow-up"></span>');
+							$(this).append('<span title="'+title+'" style="display:none;" class="cactiFilterImport"><i class="fa fa-arrow-up"></i></span>');
 
 							$('.cactiFilterImport').click(function(event) {
 								event.stopPropagation();
@@ -735,14 +735,13 @@ function makeFiltersResponsive() {
 							}).tooltip({
 								open: function (event, ui) {
 									id = $(this).closest('.cactiTable').attr('id');
-									$('#'+id).find('.cactiTableButton').tooltip('close');
+									$('.cactiTableTitle, .cactiTableButton').tooltip('close');
 								},
 								close: function (event, ui) {
 									id = $(this).closest('.cactiTable').attr('id');
 								}
 							});
 						}
-						$(this).append('<span style="display:none;" class="cactiFilter fa fa-filter"></span>');
 
 						$('.cactiTableTitle, .cactiTableButton').attr('title', showHideFilter).tooltip({ track: true });
 
@@ -750,15 +749,15 @@ function makeFiltersResponsive() {
 						child = id+'_child';
 
 						if ($('#'+child).find('#clear').length) {
-							$(this).append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear fa fa-trash-o"></span>');
+							$(this).append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash-o"></i></span>');
 
 							$('.cactiFilterClear').click(function(event) {
 								event.stopPropagation();
 								$('#clear').trigger('click');
 							}).tooltip({
 								open: function (event, ui) {
+									$('.cactiTableTitle, .cactiTableButton').tooltip('close');
 									id = $(this).closest('.cactiTable').attr('id');
-									$('#'+id).find('.cactiTableButton').tooltip('close');
 								},
 								close: function (event, ui) {
 									id = $(this).closest('.cactiTable').attr('id');
@@ -777,9 +776,9 @@ function makeFiltersResponsive() {
 						state = storage.get('filterVisibility');
 
 						if (state == 'hidden') {
-							$(this).append('<span class="cactiFilterState fa fa-angle-double-down"></span>');
+							$(this).append('<span class="cactiFilterState"><i class="fa fa-angle-double-down"></i></span>');
 						} else {
-							$(this).append('<span class="cactiFilterState fa fa-angle-double-up"></span>');
+							$(this).append('<span class="cactiFilterState"><i class="fa fa-angle-double-up"></i></span>');
 						}
 					}
 				}
@@ -787,8 +786,8 @@ function makeFiltersResponsive() {
 				if ($(this).find('a').length) {
 					$(this).find('a').tooltip({
 						open: function (event, ui) {
+							$('.cactiTableTitle, .cactiTableButton').tooltip('close');
 							id = $(this).closest('.cactiTable').attr('id');
-							$('#'+id).find('.cactiTableButton').tooltip('close');
 						},
 						close: function (event, ui) {
 							id = $(this).closest('.cactiTable').attr('id');

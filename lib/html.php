@@ -77,7 +77,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
 		print "<div class='cactiTableButton'>\n";
 		if (!is_array($add_text)) {
-			print ($add_text != '' ? "<span><a class='linkOverDark fa fa-plus' title='$add_label' href='" . html_escape($add_text) . "'></a></span>":'');
+			print ($add_text != '' ? "<span><a class='linkOverDark' title='$add_label' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>":'');
 		} else {
 			if (sizeof($add_text)) {
 				foreach($add_text as $icon) {

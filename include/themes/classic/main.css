@@ -980,10 +980,6 @@ legend {
 	text-decoration: underline;
 }
 
-.linkOverDark i {
-	padding: 0px 5px;
-}
-
 .linkCopyDark, .linkCopyDark:visited, .linkCopyDark:active {
 	color: white;
 	font-weight: normal;
@@ -1115,7 +1111,7 @@ legend {
 
 .cactiTableButton span, .cactiTableTitle span {
 	color: white;
-	padding: 0px 8px 0px 3px;
+	padding: 0px;
 	line-height: 22px;
 	height: 22px;
 	font-weight: bold;
@@ -1125,6 +1121,13 @@ legend {
 	background: transparent;
 }
 
+.cactiTableButton i {
+	padding: 0px 8px;
+}
+
+.cactiTableButton span:last-child, .cactiTableTitle span:last-child {
+	padding: 0px 5px;
+}
 .cactiTableButton .fa, .cactiTableTitle .fa {
 	display: inline;
 }
