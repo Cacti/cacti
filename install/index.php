@@ -634,7 +634,7 @@ $enabled = '1';
 							print '<h4>' . __('Upgrade from <strong>%s</strong> to <strong>%s</strong>', $old_cacti_version, CACTI_VERSION) . '</h4>';
 							if (cacti_version_compare($old_cacti_version, CACTI_VERSION, '<=')) {
 								// upgrade detected
-								print '<p> <font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing') . '</font></p>';
+								print '<p> <font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing.  Additionally, after this script is complete, you will also have to refresh your page to load updated JavaScript so that the Cacti pages render properly.  In Firefox and IE, you simply press F5, in Chrome, you may have to clear your browser cache for the Cacti web site.') . '</font></p>';
 							} else {
 								// downgrade detected
 								print '<p> <font color="#FF0000">' . __('WARNING - Appears you are downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues.') . '</font></p>';
