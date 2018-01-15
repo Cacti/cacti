@@ -2527,6 +2527,22 @@ function setSNMPSecurity() {
 			if (selectmenu) {
 				$('#snmp_security_level').selectmenu('refresh');
 			}
+
+			$('#snmp_password').keyup(function() {
+				checkSNMPPassphrase('auth');
+			});
+
+			$('#snmp_password_confirm').keyup(function() {
+				checkSNMPPassphraseConfirm('auth');
+			});
+
+			$('#snmp_priv_passphrase').keyup(function() {
+				checkSNMPPassphrase('priv');
+			});
+
+			$('#snmp_priv_passphrase_confirm').keyup(function() {
+				checkSNMPPassphraseConfirm('priv');
+			});
 		}
 
 		snmp_security_initialized = true;
@@ -2659,6 +2675,7 @@ function setSNMP() {
 
 				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', true);
 				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+				checkSNMPPassphrase('auth');
 			} else {
 				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
 				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
@@ -2688,6 +2705,8 @@ function setSNMP() {
 
 				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', true);
 				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', true);
+				checkSNMPPassphrase('auth');
+				checkSNMPPassphrase('priv');
 			}
 
 			if ($('#snmp_auth_protocol').val() == '[None]') {
@@ -2709,6 +2728,69 @@ function setSNMP() {
 			}
 
 			break;
+	}
+}
+
+function checkSNMPPassphrase(type) {
+	var minChars = 8;
+
+	if (type == 'priv') {
+		pass = '#snmp_priv_passphrase';
+		conf = '#snmp_priv_passphrase_confirm';
+		span = 'priv';
+	} else {
+		pass = '#snmp_password';
+		conf = '#snmp_password_confirm';
+		span = 'auth';
+	}
+
+	if ($(pass).val().length == 0) {
+		$('#'+span).remove();
+		$('#'+span+'conf').remove();
+	} else if ($(pass).val().length < minChars) {
+		$('#'+span).remove();
+		$(pass).after('<span id="'+span+'"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+passwordTooShort+'<span></span>');
+		checkSNMPPassphraseConfirm(type);
+	} else {
+		$('#'+span).remove();
+		$(pass).after('<span id="'+span+'"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">'+passwordPass+'</span></span>');
+		checkSNMPPassphraseConfirm(type);
+	}
+}
+
+function checkSNMPPassphraseConfirm(type) {
+	var minChars = 8;
+
+	if (type == 'priv') {
+		pass     = '#snmp_priv_passphrase';
+		conf     = '#snmp_priv_passphrase_confirm';
+		span     = 'priv';
+		spanconf = 'privconf';
+	} else {
+		pass     = '#snmp_password';
+		conf     = '#snmp_password_confirm';
+		span     = 'auth';
+		spanconf = 'authconf';
+	}
+
+	if ($(conf).val().length < minChars) {
+		passphrase = $(pass).val();
+		if (passphrase.indexOf($(conf).val()) == 0) {
+			$('#'+spanconf).remove();
+			$(conf).after('<span id="'+spanconf+'"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+passwordMatchTooShort+'<span></span>');
+		} else {
+			$('#'+spanconf).remove();
+			$(conf).after('<span id="'+spanconf+'"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+passwordNotMatchTooShort+'<span></span>');
+		}
+	} else {
+		if ($(pass).val() != $(conf).val()) {
+			$('#'+spanconf).remove();
+			$(conf).after('<span id="'+spanconf+'"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+passwordNotMatch+'</span></span>');
+		} else {
+			$('#'+span).remove();
+			$('#'+spanconf).remove();
+			$(pass).after('<span id="'+spanconf+'"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">'+passwordMatch+'</span></span>');
+		}
 	}
 }
 

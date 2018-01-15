@@ -118,4 +118,10 @@ if (isset($_SESSION['refresh'])) {
 	var defaultSNMPSecurityLevel='<?php print read_config_option('snmp_security_level');?>';
 	var defaultSNMPAuthProtocol='<?php print read_config_option('snmp_auth_protocol');?>';
 	var defaultSNMPPrivProtocol='<?php print read_config_option('snmp_priv_protocol');?>';
+	var passwordPass='<?php print __('Passphrase length meets 8 character minimum');?>';
+	var passwordTooShort='<?php print __('Passphrase too short');?>';
+	var passwordMatchTooShort='<?php print __('Passphrase matches but too short');?>';
+	var passwordNotMatchTooShort='<?php print __('Passphrase too short and not matching');?>';
+	var passwordMatch='<?php print __('Passphrases match');?>';
+	var passwordNotMatch='<?php print __('Passphrases do not match');?>';
 </script>

@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -feature: Enhance Cacti filter API to permit more glyphs for table headers
 -feature: Add a page refresh dropdown to the Automation Networks page
 -feature: When a user chooses '[None]' for SNMP Auth/Privacy, hide/clear passphrases
+-feature: Provide visual confirmation of SNMP v3 passphrases
 
 1.1.30
 -issue#1155: Non-secure mail setting not functional due to changes in phpmailer
