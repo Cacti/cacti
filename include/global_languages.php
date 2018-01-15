@@ -568,7 +568,7 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 	$country = strtoupper($cacti_country);
 
 	if (function_exists('numfmt_create')) {
-		$fmt_key = $cacti_local . '_'. $country;
+		$fmt_key = $cacti_locale . '_'. $country;
 		$fmt = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
 		if ($fmt !== FALSE) {
 			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
