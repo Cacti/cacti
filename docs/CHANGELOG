@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#1190: When Enabling, Disabling, Uninstalling plugin, you should page refresh
 -issue#1191: Tree sequences were not set or checked
 -issue#1202: Fix backspace functionality on filter input boxes
+-issue#1206: If unable to create a NumberFormat, use older methods of formatting numbers
 -issue: Named colors were not importing on install/upgrade
 -feature: Enhance Cacti filter API to permit more glyphs for table headers
 -feature: Add a page refresh dropdown to the Automation Networks page
