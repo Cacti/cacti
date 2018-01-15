@@ -2554,6 +2554,14 @@ function setSNMP() {
 			$('#row_snmp_timeout').hide();
 			$('#row_max_oids').hide();
 
+			if ($('#row_snmp_engine_id')) {
+				$('#row_snmp_engine_id').hide();
+			}
+
+			if ($('#row_snmp_retries')) {
+				$('#row_snmp_retries').hide();
+			}
+
 			break;
 		case '1': // SNMP v1
 		case '2': // SNMP v2c
@@ -2571,6 +2579,14 @@ function setSNMP() {
 			$('#row_snmp_timeout').show();
 			$('#row_max_oids').show();
 
+			if ($('#row_snmp_engine_id')) {
+				$('#row_snmp_engine_id').hide();
+			}
+
+			if ($('#row_snmp_retries')) {
+				$('#row_snmp_retries').show();
+			}
+
 			break;
 		case '3': // SNMP v3
 			$('#row_snmp_username').show();
@@ -2586,6 +2602,14 @@ function setSNMP() {
 			$('#row_snmp_port').show();
 			$('#row_snmp_timeout').show();
 			$('#row_max_oids').show();
+
+			if ($('#row_snmp_engine_id')) {
+				$('#row_snmp_engine_id').show();
+			}
+
+			if ($('#row_snmp_retries')) {
+				$('#row_snmp_retries').show();
+			}
 
 			if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
 				if ($('#snmp_auth_protocol').val() != '[None]') {
