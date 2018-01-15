@@ -37,6 +37,7 @@
 
      $add_text = array(
         array(
+          'id' => 'uniqueid',
           'href' => 'value',
           'title' => 'title',
           'callback' => true|false,
@@ -105,7 +106,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 						$title = $add_label;
 					}
 
-					print "<span><a class='$classo' href='$href' title='$title'><i class='$classi'></i></a></span>";
+					print "<span><a" . (isset($icon['id']) ? "id='" . $icon['id'] . "'":"") . " class='$classo' href='$href' title='$title'><i class='$classi'></i></a></span>";
 				}
 			}
 		}
