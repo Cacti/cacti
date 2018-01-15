@@ -1328,7 +1328,7 @@ function ajaxAnchors() {
 		handlePopState();
 	});
 
-	$('#filter, #rfilter').keyup(function(event) {
+	$('#filter, #rfilter').keydown(function(event) {
 		if (event.keyCode == 8 && $(this).val() == '') {
 			handlePopState();
 		}
