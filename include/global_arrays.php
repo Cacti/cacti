@@ -104,6 +104,7 @@ $cacti_version_codes = array(
 	'1.1.28' => '0101',
 	'1.1.29' => '0101',
 	'1.1.30' => '0101',
+	'1.1.31' => '0101',
 );
 
 $messages = array(
@@ -142,6 +143,12 @@ $messages = array(
 		'type' => 'error'),
 	12 => array(
 		'message' => __('Username already in use.'),
+		'type' => 'error'),
+	13  => array(
+		'message' => __('The SNMP v3 Privacy Passphrases to not match'),
+		'type' => 'error'),
+	14  => array(
+		'message' => __('The SNMP v3 Authentication Passwords to not match'),
 		'type' => 'error'),
 	15 => array(
 		'message' => __('XML: Cacti version does not exist.'),
@@ -487,11 +494,13 @@ $snmp_versions = array(0 =>
 );
 
 $snmp_auth_protocols = array(
-	'MD5' => __('MD5'),
-	'SHA' => __('SHA')
+	'[None]' => __('[None]'),
+	'MD5'    => __('MD5'),
+	'SHA'    => __('SHA')
 );
 
 $snmp_priv_protocols = array(
+	'[None]' => __('[None]'),
 	'DES'    => __('DES'),
 	'AES128' => __('AES')
 );

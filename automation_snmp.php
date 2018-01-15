@@ -137,6 +137,7 @@ function form_automation_snmp_save() {
 		$save['snmp_priv_passphrase']	= form_input_validate(get_nfilter_request_var('snmp_priv_passphrase'), 'snmp_priv_passphrase', '', true, 3);
 		$save['snmp_priv_protocol']		= form_input_validate(get_nfilter_request_var('snmp_priv_protocol'), 'snmp_priv_protocol', '', true, 3);
 		$save['snmp_context']			= form_input_validate(get_nfilter_request_var('snmp_context'), 'snmp_context', '', true, 3);
+		$save['snmp_engine_id']			= form_input_validate(get_nfilter_request_var('snmp_engine_id'), 'snmp_engine_id', '', true, 3);
 		$save['snmp_port']				= form_input_validate(get_nfilter_request_var('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
 		$save['snmp_timeout']			= form_input_validate(get_nfilter_request_var('snmp_timeout'), 'snmp_timeout', '^[0-9]+$', false, 3);
 		$save['snmp_retries']			= form_input_validate(get_nfilter_request_var('snmp_retries'), 'snmp_retries', '^[0-9]+$', false, 3);
@@ -395,7 +396,7 @@ function automation_snmp_item_remove() {
 }
 
 function automation_snmp_item_edit() {
-	global $config, $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions;
+	global $config, $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions, $snmp_security_levels;
 
 	#include_once($config['base_path'].'/plugins/mactrack/lib/automation_functions.php');
 
@@ -512,6 +513,15 @@ function automation_snmp_item_edit() {
 		'default' => '',
 		'max_length' => '64',
 		'size' => '25'
+		),
+	'snmp_engine_id' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Engine ID (v3)'),
+		'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
+		'value' => '|arg1:snmp_engine_id|',
+		'default' => '',
+		'max_length' => '64',
+		'size' => '40'
 		),
 	'snmp_port' => array(
 		'method' => 'textbox',
