@@ -3611,7 +3611,8 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$mail->Host = $secure . '://' . $mail->Host;
 			}
 		} else {
-			$mail->SMTPSecure = false;
+			$mail->SMTPAutoTLS = false;
+			$mail->SMTPSecure  = false;
 		}
 	}
 

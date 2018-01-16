@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#1191: Tree sequences were not set or checked
 -issue#1206: Display issue with internationalization number format
 -issue#1210: CDEF and VDEF Items can not be properly edited
+-issue#1213: PHPMailer trying TLS despite SMTPSecure setting
 -issue: Named colors fail to import on install or upgrade
 -issue: Drag and Drop issues on multiple pages could corrupt sequencing
 -feature: Enhance filter to permit more glyphs for table headers
