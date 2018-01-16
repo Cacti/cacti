@@ -572,26 +572,30 @@ $sampling_intervals = array(
 	1800  => __('Every %d Minutes', 30),
 	3600  => __('Every Hour'),
 	7200  => __('Every %d Hours', 2),
-	14400 => __('Every %d Hours', 4)
+	14400 => __('Every %d Hours', 4),
+	28800 => __('Every %d Hours', 8),
+	43200 => __('Every %d Hours', 12),
+	86400 => __('Every %1 Day', 1)
 );
 
 $heartbeats = array(
-	20    => __('%d Seconds', 20),
-	30    => __('%d Seconds', 30),
-	40    => __('%d Seconds', 40),
-	60    => __('1 Minute'),
-	120   => __('%d Minutes', 2),
-	300   => __('%d Minutes', 5),
-	600   => __('%d Minutes', 10),
-	1200  => __('%d Minutes', 20),
-	1800  => __('%d Minutes', 30),
-	2400  => __('%d Minutes', 40),
-	3600  => __('1 Hour'),
-	7200  => __('%d Hours', 2),
-	14400 => __('%d Hours', 4),
-	28800 => __('%d Hours', 8),
-	57600 => __('%d Hours', 16),
-	86400 => __('1 Day')
+	20     => __('%d Seconds', 20),
+	30     => __('%d Seconds', 30),
+	40     => __('%d Seconds', 40),
+	60     => __('%d Minute',  1),
+	120    => __('%d Minutes', 2),
+	300    => __('%d Minutes', 5),
+	600    => __('%d Minutes', 10),
+	1200   => __('%d Minutes', 20),
+	1800   => __('%d Minutes', 30),
+	2400   => __('%d Minutes', 40),
+	3600   => __('%d Hour', 1),
+	7200   => __('%d Hours', 2),
+	14400  => __('%d Hours', 4),
+	28800  => __('%d Hours', 8),
+	57600  => __('%d Hours', 16),
+	86400  => __('%d Day', 1),
+	172800 => __('%d Days', 2)
 );
 
 $timespans = array(

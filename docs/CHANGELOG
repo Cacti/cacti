@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#1189: Allow ability to sort tree list by name asc/desc
 -issue#1190: Enabling, Disabling, Uninstalling plugin, you should page refresh
 -issue#1191: Tree sequences were not set or checked
+-issue#1197: Add more collection intervals to Data Source Profiles
 -issue#1206: Display issue with internationalization number format
 -issue#1210: CDEF and VDEF Items can not be properly edited
 -issue#1212: Cacti breadcrumbs don't handle External links correctly
