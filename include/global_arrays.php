@@ -1083,6 +1083,14 @@ $hash_type_names = array(
 	'vdef_item'            => __('VDEF Item')
 );
 
+$hash_system_data_inputs = array(
+	'3eb92bb845b9660a7445cf9740726522', // Get SNMP Data
+	'bf566c869ac6443b0c75d1c32b5a350e', // Get SNMP Data (Indexed)
+	'80e9e4c4191a5da189ae26d0e237f015', // Get Script Data (Indexed)
+	'332111d8b54ac8ce939af87a7eac0c06'  // Get Script Server Data (Indexed)
+);
+
+
 $host_struc = array(
 	'host_template_id',
 	'description',

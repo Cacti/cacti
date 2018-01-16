@@ -5004,3 +5004,12 @@ function cacti_gethostbyname($hostname, $type = '') {
 
 	return $hostname;
 }
+
+function get_nonsystem_data_input($data_input_id) {
+	global $hash_system_data_inputs;
+	$diid = db_fetch_cell_prepared('SELECT id FROM data_input
+					WHERE hash NOT IN ("' . implode('","', $hash_system_data_inputs) . '")
+					AND id = ?',
+					array($data_input_id));
+	return $diid;
+}
