@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#1210: CDEF and VDEF Items can not be properly edited
 -issue#1212: Cacti breadcrumbs don't handle External links correctly
 -issue#1213: PHPMailer trying TLS despite SMTPSecure setting
+-issue#1215: Make installation pages format better and display version
 -issue: Named colors fail to import on install or upgrade
 -issue: Drag and Drop issues on multiple pages could corrupt sequencing
 -feature: Enhance filter to permit more glyphs for table headers
