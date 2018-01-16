@@ -1248,7 +1248,7 @@ function loadPage(href) {
 			return false;
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 
@@ -1287,14 +1287,14 @@ function loadPageNoHeader(href, scroll) {
 			return false;
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 
 	return false;
 }
 
-function getFormatHTTPError(data) {
+function getPresentHTTPError(data) {
 	var title_match = data.match(/<title>(.*?)<\/title>/);
 	var head_match  = data.match(/<h1>(.*?)<\/h1>/);
 	var para_match  = data.match(/<p>(.*?)<\/p>/);
@@ -1315,13 +1315,25 @@ function getFormatHTTPError(data) {
 		var errorText = para_match[1];
 	}
 
-	returnStr = '<div class="center"><hr>' +
-		'<h1>'    + errorOnPage + '</h1></hr>' +
-		'<h3><b>' + errorNumberPrefix + '</b> ' + errorStr + '</h3><hr>' +
-		'<p><b>'  + errorReasonPrefix + '</b> ' + errorText + '</p><hr>' +
+	returnStr = '<div id="httperror" style="display:none" class="center">' +
+		'<h4>'    + errorOnPage + '</h4><hr>' +
+		'<h4>' + errorNumberPrefix + ' ' + errorStr + '</h4><hr>' +
+		'<p><b>'  + errorReasonPrefix + '</b> ' + errorText + '</p>' +
 		'</div>';
 
-	return returnStr;
+	$('#httperror').remove();
+	$('body').append(returnStr);
+	$('#httperror').dialog({
+		resizable: false,
+		height: 'auto',
+		width: 400,
+		title: errorStr,
+		buttons: {
+			Ok: function() {
+				$(this).dialog('close');
+			}
+		}
+	});
 }
 
 function ajaxAnchors() {
@@ -1480,7 +1492,7 @@ function setupSortable() {
 					applySkin();
 				})
 				.error(function(data) {
-					$('#main').html(getFormatHTTPError(data.responseText));
+				getPresentHTTPError(data.responseText);
 				}
 			);
 		}
@@ -1640,7 +1652,7 @@ function setupPageTimeout() {
 						applySkin();
 					})
 					.error(function(data) {
-						$('#main').html(getFormatHTTPError(data.responseText));
+						getPresentHTTPError(data.responseText);
 					}
 				);
 			}
@@ -1797,7 +1809,7 @@ function clearGraphFilter() {
 			applySkin();
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -1820,7 +1832,7 @@ function saveGraphFilter(section) {
 			});
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -1849,7 +1861,7 @@ function applyGraphFilter() {
 			pushState(myTitle, myHref);
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -1915,7 +1927,7 @@ function applyGraphTimespan() {
 			applySkin();
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -2025,7 +2037,7 @@ function removeSpikesStdDev(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -2040,7 +2052,7 @@ function removeSpikesVariance(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -2055,7 +2067,7 @@ function removeSpikesInRange(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -2070,7 +2082,7 @@ function removeRangeFill(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -2087,7 +2099,7 @@ function dryRunStdDev(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -2104,7 +2116,7 @@ function dryRunVariance(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -2122,7 +2134,7 @@ function dryRunSpikesInRange(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -2140,7 +2152,7 @@ function dryRunRangeFill(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -2204,7 +2216,7 @@ function redrawGraph(graph_id) {
 			);
 		})
 		.error(function(data) {
-			$('#main').html(getFormatHTTPError(data.responseText));
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -2229,7 +2241,7 @@ function initializeGraphs() {
 				clearTimeout(myRefresh);
 			})
 			.error(function(data) {
-				$('#main').html(getFormatHTTPError(data.responseText));
+				getPresentHTTPError(data.responseText);
 			}
 		);
 	});
@@ -2309,7 +2321,7 @@ function initializeGraphs() {
 				realtimeArray[data.local_graph_id] = false;
 			})
 			.error(function(data) {
-				$('#main').html(getFormatHTTPError(data.responseText));
+				getPresentHTTPError(data.responseText);
 			}
 		);
 	});
@@ -2339,7 +2351,7 @@ function initializeGraphs() {
 				clearTimeout(myRefresh);
 			})
 			.error(function(data) {
-				$('#main').html(getFormatHTTPError(data.responseText));
+				getPresentHTTPError(data.responseText);
 			}
 		);
 	});
