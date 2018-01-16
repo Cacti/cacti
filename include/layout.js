@@ -1315,11 +1315,13 @@ function getPresentHTTPError(data) {
 		var errorText = para_match[1];
 	}
 
-	returnStr = '<div id="httperror" style="display:none" class="center">' +
-		'<h4>'    + errorOnPage + '</h4><hr>' +
-		'<h4>' + errorNumberPrefix + ' ' + errorStr + '</h4><hr>' +
-		'<p><b>'  + errorReasonPrefix + '</b> ' + errorText + '</p>' +
-		'</div>';
+	returnStr = '<div id="httperror" style="display:none">' +
+		'<h4>' + errorOnPage + '</h4><hr>' +
+		'<div style="padding-bottom: 5px;"><div style="display:table-cell;width:75px"><b>' + errorNumberPrefix + '</b></div> ' +
+		'<div style="display:table-cell"> ' + errorStr + '</div></div>' +
+		'<div><div style="display:table-cell;width:75px"><b>'  + errorReasonPrefix + '</b></div> ' +
+		'<div style="display:table-cell"> ' + errorText + '</div></div>' +
+		'</div></div>';
 
 	$('#httperror').remove();
 	$('body').append(returnStr);
