@@ -291,6 +291,7 @@ if (!$master && $thread == 0) {
 	sleep(5);
 	automation_debug("Checking for Running Threads\n");
 
+	$failcount = 0;
 	while (true) {
 		$command = db_fetch_cell_prepared('SELECT command
 			FROM automation_processes
@@ -311,7 +312,7 @@ if (!$master && $thread == 0) {
 
 		automation_debug("Found $running Threads\n");
 
-		if ($running == 0) {
+		if ($running == 0 && $failcount > 3) {
 			db_execute_prepared('DELETE FROM automation_ips
 				WHERE network_id = ?',
 				array($network_id));
@@ -333,6 +334,8 @@ if (!$master && $thread == 0) {
 			clearAllTasks($network_id);
 
 			exit;
+		} else {
+			$failcount++;
 		}
 
 		sleep(5);
