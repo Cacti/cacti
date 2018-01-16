@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -feature: Add a page refresh dropdown to the Automation Networks
 -feature: Enhanced SNMP v3 input forms
 -feature: Allow Trees to be rearranged using Drag and Drop
+-feature: Trap GUI callback errors and present error message
 
 1.1.30
 -issue#1155: Non-secure mail setting not functional due to changes in phpmailer
