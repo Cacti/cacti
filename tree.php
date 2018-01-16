@@ -920,7 +920,7 @@ function tree_edit() {
 			}
 		};
 
-		function disableTree(myClass) {
+		function disableTree() {
 			$('.treeTable').each(function() {
 				$(this).mousedown(function(event) {
 					event.preventDefault();
