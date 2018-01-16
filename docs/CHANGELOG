@@ -14,10 +14,11 @@ Cacti CHANGELOG
 -issue#1206: Display issue with internationalization number format
 -issue#1210: CDEF and VDEF Items can not be properly edited
 -issue: Named colors fail to import on install or upgrade
--issue: CDEF and VDEF Drag and Drop would corrupt sequencing
+-issue: Drag and Drop issues on multiple pages could corrupt sequencing
 -feature: Enhance filter to permit more glyphs for table headers
 -feature: Add a page refresh dropdown to the Automation Networks
 -feature: Enhanced SNMP v3 input forms
+-feature: Allow Trees to be rearranged using Drag and Drop
 
 1.1.30
 -issue#1155: Non-secure mail setting not functional due to changes in phpmailer
