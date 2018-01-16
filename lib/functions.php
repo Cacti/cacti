@@ -2413,6 +2413,12 @@ function draw_navigation_text($type = 'url') {
 			'url' => 'settings.php',
 			'level' => '1'
 			),
+		'link.php:' => array(
+			'title' => __('External Link'),
+			'mapping' => 'index.php:',
+			'url' => 'link.php',
+			'level' => '1'
+			),
 		'user_admin.php:' => array(
 			'title' => __('Users'),
 			'mapping' => 'index.php:',
@@ -3641,6 +3647,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$mail->Host = $secure . '://' . $mail->Host;
 			}
 		} else {
+			$mail->SMTPSecure = false;
 			$mail->SMTPSecure = false;
 		}
 	}
