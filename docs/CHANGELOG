@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#1212: Cacti breadcrumbs don't handle External links correctly
 -issue#1213: PHPMailer trying TLS despite SMTPSecure setting
 -issue#1215: Make installation pages format better and display version
+-issue#1217: Allow drill down to non-system data_input's from data_template
 -issue: Named colors fail to import on install or upgrade
 -issue: Drag and Drop issues on multiple pages could corrupt sequencing
 -feature: Enhance filter to permit more glyphs for table headers
