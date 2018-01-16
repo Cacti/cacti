@@ -77,37 +77,41 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print "<div>";
 		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
 		print "<div class='cactiTableButton'>\n";
-		if (!is_array($add_text)) {
-			print ($add_text != '' ? "<span><a class='linkOverDark' title='$add_label' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>":'');
+		if ($add_text != '' && !is_array($add_text)) {
+			print "<span><a class='linkOverDark' title='$add_label' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
 		} else {
-			if (sizeof($add_text)) {
-				foreach($add_text as $icon) {
-					if (isset($icon['callback']) && $icon['callback'] === true) {
-						$classo = 'linkOverDark';
-					} else {
-						$classo = '';
-					}
+			if (is_array($add_text)) {
+				if (sizeof($add_text)) {
+					foreach($add_text as $icon) {
+						if (isset($icon['callback']) && $icon['callback'] === true) {
+							$classo = 'linkOverDark';
+						} else {
+							$classo = '';
+						}
 
-					if (isset($icon['class']) && $icon['class'] !== '') {
-						$classi = $icon['class'];
-					} else {
-						$classi = 'fa fa-plus';
-					}
+						if (isset($icon['class']) && $icon['class'] !== '') {
+							$classi = $icon['class'];
+						} else {
+							$classi = 'fa fa-plus';
+						}
 
-					if (isset($icon['href'])) {
-						$href = html_escape($icon['href']);
-					} else {
-						$href = '#';
-					}
+						if (isset($icon['href'])) {
+							$href = html_escape($icon['href']);
+						} else {
+							$href = '#';
+						}
 
-					if (isset($icon['title'])) {
-						$title = $icon['title'];
-					} else {
-						$title = $add_label;
-					}
+						if (isset($icon['title'])) {
+							$title = $icon['title'];
+						} else {
+							$title = $add_label;
+						}
 
-					print "<span><a" . (isset($icon['id']) ? "id='" . $icon['id'] . "'":"") . " class='$classo' href='$href' title='$title'><i class='$classi'></i></a></span>";
+						print "<span><a" . (isset($icon['id']) ? "id='" . $icon['id'] . "'":"") . " class='$classo' href='$href' title='$title'><i class='$classi'></i></a></span>";
+					}
 				}
+			} else {
+				print "<span> </span>";
 			}
 		}
 		print '</div>';
