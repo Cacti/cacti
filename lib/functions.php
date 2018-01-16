@@ -317,16 +317,20 @@ function read_config_option($config_name, $force = false) {
 }
 
 /* 
+/*
  * get_selected_theme - checks the user settings and if the user selected
  * theme is set, returns it otherwise returns the system default.
  *
  * @return - the theme name
  */
-function get_selected_theme()
-{
+function get_selected_theme() {
+	global $config, $themes;
+
 	// shortcut if theme is set in session
 	if (isset($_SESSION['selected_theme'])) {
-		return $_SESSION['selected_theme'];
+		if (file_exists($config['base_path'] . '/include/themes/' . $_SESSION['selected_theme'] . '/main.css')) {
+			return $_SESSION['selected_theme'];
+		}
 	}
 
 	// default to system selected theme
@@ -344,6 +348,21 @@ function get_selected_theme()
 		// user has a theme
 		if (! empty($user_theme)) {
 			$theme = $user_theme;;
+		}
+	}
+
+	if (!file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
+		foreach($themes as $t => $name) {
+			if (file_exists($config['base_path'] . '/include/themes/' . $t . '/main.css')) {
+				$theme = $t;
+
+				db_execute_prepared('UPDATE settings_user
+					SET value = ?
+					WHERE user_id = ?',
+					array($theme, $_SESSION['sess_user_id']));
+
+				break;
+			}
 		}
 	}
 
@@ -2395,6 +2414,12 @@ function draw_navigation_text($type = 'url') {
 			'url' => 'settings.php',
 			'level' => '1'
 			),
+		'link.php:' => array(
+			'title' => __('External Link'),
+			'mapping' => 'index.php:',
+			'url' => 'link.php',
+			'level' => '1'
+			),
 		'user_admin.php:' => array(
 			'title' => __('Users'),
 			'mapping' => 'index.php:',
@@ -3623,6 +3648,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$mail->Host = $secure . '://' . $mail->Host;
 			}
 		} else {
+			$mail->SMTPSecure = false;
 			$mail->SMTPSecure = false;
 		}
 	}

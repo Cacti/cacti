@@ -123,6 +123,9 @@ switch (get_request_var('action')) {
 	case 'tree_down':
 		tree_down();
 		break;
+	case 'ajax_dnd':
+		tree_dnd();
+		break;
 	case 'lock':
 		api_tree_lock(get_request_var('id'), $_SESSION['sess_user_id']);
 		break;
@@ -264,6 +267,28 @@ function tree_up() {
 		SET sequence = ?
 		WHERE id = ?',
 		array($new_seq, $tree_id));
+
+	header('Location: tree.php?header=false');
+	exit;
+}
+
+function tree_dnd() {
+	if (isset_request_var('tree_ids') && is_array(get_nfilter_request_var('tree_ids'))) {
+		$tids     = get_nfilter_request_var('tree_ids');
+		$sequence = 1;
+
+		foreach($tids as $id) {
+			$id = str_replace('line', '', $id);
+			input_validate_input_number($id);
+
+			db_execute_prepared('UPDATE graph_tree
+				SET sequence = ?
+				WHERE id = ?',
+				array($sequence, $id));
+
+			$sequence++;
+		}
+	}
 
 	header('Location: tree.php?header=false');
 	exit;
@@ -1968,5 +1993,25 @@ function tree() {
 	draw_actions_dropdown($tree_actions);
 
 	form_end();
+
+	if (get_request_var('sort_column') == 'sequence' && get_request_var('sort_direction') == 'ASC') {
+		?>
+		<script type='text/javascript'>
+		$(function() {
+			$('#tree2_child').attr('id', 'tree_ids');
+
+			<?php if (read_config_option('drag_and_drop') == 'on') { ?>
+			$('#tree_ids').find('tr:first').addClass('nodrag').addClass('nodrop');
+
+			$('#tree_ids').tableDnD({
+				onDrop: function(table, row) {
+					loadPageNoHeader('tree.php?action=ajax_dnd&'+$.tableDnD.serialize());
+				}
+			});
+			<?php } ?>
+		});
+		</script>
+		<?php
+	}
 }
 

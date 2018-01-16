@@ -77,50 +77,21 @@ function automation_template_dnd() {
 	get_filter_request_var('id');
 	/* ================= Input validation ================= */
 
-	if (!isset_request_var('template_ids') || !is_array(get_nfilter_request_var('template_ids'))) exit;
+	if (isset_request_var('template_ids') && is_array(get_nfilter_request_var('template_ids'))) {
+		$aids     = get_nfilter_request_var('template_ids');
+		$sequence = 1;
 
-	/* template table contains one row defined as 'nodrag&nodrop' */
-//	unset($_REQUEST['template_ids'][0]);
+		foreach($aids as $id) {
+			$id = str_replace('line', '', $id);
+			input_validate_input_number($id);
 
-	/* delivered template ids has to be exactly the same like we have stored */
-	$old_order = array();
+			db_execute_prepared('UPDATE automation_templates
+				SET sequence = ?
+				WHERE id = ?',
+				array($sequence, $id));
 
-	$i = 1;
-	foreach(get_nfilter_request_var('template_ids') as $sequence => $id) {
-		if (empty($id)) continue;
-		$new_order[$i] = str_replace('line', '', $id);
-		$i++;
-	}
-
-	$items = db_fetch_assoc('SELECT id, sequence FROM automation_templates ORDER BY sequence');
-
-	if (sizeof($items)) {
-		$i = 1;
-		foreach($items as $item) {
-			$old_order[$i] = $item['id'];
-			$i++;
+			$sequence++;
 		}
-	} else {
-		header('Location: automation_templates.php?header=false');
-		exit;
-	}
-
-	/* perform some sanity checks */
-	if (sizeof(array_diff($new_order, $old_order)) > 0) {
-		header('Location: automation_templates.php?header=false');
-		exit;
-	}
-
-	if (sizeof(array_diff_key($new_order, $old_order))>0) {
-		header('Location: automation_templates.php?header=false');
-		exit;
-	}
-
-	foreach($new_order as $sequence => $id) {
-		input_validate_input_number($sequence);
-		input_validate_input_number($id);
-
-		db_execute_prepared('UPDATE automation_templates SET sequence = ? WHERE id = ?', array($sequence, $id));
 	}
 
 	header('Location: automation_templates.php?header=false');
