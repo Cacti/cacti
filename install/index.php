@@ -749,7 +749,7 @@ $enabled = '1';
 									$('#test').hide();
 									$('#results').html('');
 									$('#next').button('enable');
-									$('#next').val('<?php print __('Next'); ;?>');
+									$('#next').val('<?php print __('Next'); ?>');
 									break;
 								case '2':
 									$('#local_database').show();
