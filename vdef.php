@@ -409,14 +409,19 @@ function vdef_item_edit() {
 			<select id='type_select'>
 				<?php
 				foreach ($vdef_item_types as $var => $val) {
-					print "<option value='" . html_escape('vdef.php?action=item_edit' . (isset_request_var('id') ? '&id=' . get_request_var('id') : '') . '&vdef_id=' . get_request_var('vdef_id') . '&type_select=' . $var) . "'"; if ($var == $current_type) { print ' selected'; } print ">$val</option>\n";
+					print "<option value='$var'" . ($var == $current_type ? ' selected':'') . ">$val</option>";
 				}
 				?>
 			</select>
 			<script type='text/javascript'>
 			$(function() {
-				$('#type_select').change(function() {
-					loadPageNoHeader('vdef.php?action=item_edit&header=false&vdef_id=<?php print get_request_var('vdef_id');?>&type_select='+$('#type_select').val())
+				$('#type_select').unbind().change(function() {
+					strURL = 'vdef.php?action=item_edit';
+					strURL += '&header=false';
+					strURL += '&id=<?php print get_request_var('id');?>';
+					strURL += '&vdef_id=<?php print get_request_var('vdef_id');?>';
+					strURL += '&type_select='+$('#type_select').val();
+					loadPageNoHeader(strURL);
 				});
 			});
 			</script>
@@ -482,40 +487,25 @@ function vdef_item_dnd() {
 	get_filter_request_var('id');
 	/* ================= Input validation ================= */
 
-	if (!isset_request_var('vdef_item') || !is_array(get_nfilter_request_var('vdef_item'))) exit;
+	$continue = true;
 
-	/* vdef table contains one row defined as 'nodrag&nodrop' */
-	unset($_REQUEST['vdef_item'][0]);
+	if (isset_request_var('vdef_item') && is_array(get_nfilter_request_var('vdef_item'))) {
+		$vdef_ids = get_nfilter_request_var('vdef_item');
 
-	/* delivered vdef ids has to be exactly the same like we have stored */
-	$old_order = array();
+		if (sizeof($vdef_ids)) {
+			$sequence = 1;
+			foreach($vdef_ids as $vdef_id) {
+				$vdef_id = str_replace('line', '', $vdef_id);
+				input_validate_input_number($vdef_id);
 
-	foreach(get_nfilter_request_var('vdef_item') as $sequence => $vdef_id) {
-		if (empty($vdef_id)) continue;
-		$new_order[$sequence] = str_replace('line', '', $vdef_id);
-	}
+				db_execute_prepared('UPDATE vdef_items
+					SET sequence = ?
+					WHERE id = ?',
+					array($sequence, $vdef_id));
 
-	$vdef_items = db_fetch_assoc_prepared('SELECT id, sequence FROM vdef_items WHERE vdef_id = ?', array(get_request_var('id')));
-
-	if(sizeof($vdef_items)) {
-		foreach($vdef_items as $item) {
-			$old_order[$item['sequence']] = $item['id'];
+				$sequence++;
+			}
 		}
-	}else {
-		exit;
-	}
-
-	if (sizeof(array_diff($new_order, $old_order))>0) exit;
-
-	/* the set of sequence numbers has to be the same too */
-	if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
-	/* ==================================================== */
-
-	foreach($new_order as $sequence => $vdef_id) {
-		input_validate_input_number($sequence);
-		input_validate_input_number($vdef_id);
-
-		db_execute_prepared('UPDATE vdef_items SET sequence = ? WHERE id = ?', array($sequence, $vdef_id));
 	}
 
 	header('Location: vdef.php?action=edit&header=false&id=' . get_request_var('id'));
@@ -537,7 +527,7 @@ function vdef_edit() {
 
 	form_start('vdef.php', 'vdef_edit');
 
-	html_start_box( $header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	$preset_vdef_form_list = preset_vdef_form_list();
 	draw_edit_form(
@@ -557,7 +547,8 @@ function vdef_edit() {
 		draw_vdef_preview(get_request_var('id'));
 		html_end_box();
 
-		html_start_box('VDEF Items', '100%', '', '3', 'center', 'vdef.php?action=item_edit&vdef_id=' . $vdef['id']);
+		html_start_box(__('VDEF Items'), '100%', '', '3', 'center', 'vdef.php?action=item_edit&vdef_id=' . $vdef['id']);
+
 		$header_items = array(
 			array('display' => __('Item'), 'align' => 'left'),
 			array('display' => __('Item Value'), 'align' => 'left')
@@ -565,7 +556,12 @@ function vdef_edit() {
 
 		html_header($header_items, 2);
 
-		$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', array(get_request_var('id')));
+		$vdef_items = db_fetch_assoc_prepared('SELECT *
+			FROM vdef_items
+			WHERE vdef_id = ?
+			ORDER BY sequence',
+			array(get_request_var('id')));
+
 		$i = 1;
 		$total_items = sizeof($vdef_items);
 
@@ -619,14 +615,14 @@ function vdef_edit() {
 		$('body').append("<div class='cdialog' id='cdialog'></div>");
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
-		$('#vdef_item').tableDnD({
+		$('#vdef_item').unbind().tableDnD({
 			onDrop: function(table, row) {
 				loadPageNoHeader('vdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
 			}
 		});
 		<?php } ?>
 
-		$('.delete').click(function (event) {
+		$('.delete').unbind().click(function (event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
@@ -667,16 +663,16 @@ function vdef_filter() {
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (sizeof($item_rows)) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								}
 							}
 							?>
 						</select>
 					</td>
                     <td>
 						<span>
-	   	                     <input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+							<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
                         	<label for='has_graphs'><?php print __('Has Graphs');?></label>
 						</span>
                     </td>

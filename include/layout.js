@@ -564,7 +564,7 @@ function applySkin() {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', true);
 		});
 	} else {
-		$('input[type="submit"], input[type="button"]').button();
+		$('input[type="submit"], input[type="button"], button').button();
 
 		// Handle re-index changes
 		$('fieldset.reindex_methods').buttonset();
@@ -690,45 +690,74 @@ function makeFiltersResponsive() {
 
 					markFilterTDs(child, filterNum);
 
-					$(this).parent().css('cursor', 'pointer');
-
 					if ($(this).find('a').length) {
-						$(this).find('a').attr('title', $(this).find('a').text()).addClass('fa fa-plus').tooltip({
+						$(this).find('a').tooltip({
 							open: function (event, ui) {
+								$('.cactiTableTitle, .cactiTableButton').tooltip('close');
 								id = $(this).closest('.cactiTable').attr('id');
-								$('#'+id).find('.cactiTableButton').tooltip('close');
 							},
 							close: function (event, ui) {
 								id = $(this).closest('.cactiTable').attr('id');
 							}
-						}).text('');
+						});
 					}
+
+					$(this).parent().addClass('cactiFilterTitle').find('.cactiTableTitle, .cactiTableButton').css('cursor', 'pointer');
 				}
 
 				if ($('#'+child).find('.filterTable').length) {
 					if ($(this).find('.cactiFilter').length == 0) {
-						$(this).append('<span style="display:none;" class="cactiFilter fa fa-filter"></span>');
+						if ($('#'+child).find('#export').length) {
+							title = $('#export').attr('value');
+							$(this).append('<span title="'+title+'" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"</i></span>');
 
-						$(this).attr('title', showHideFilter).tooltip({ track: true });
+							$('.cactiFilterExport').click(function(event) {
+								event.stopPropagation();
+								$('#export').trigger('click');
+							}).tooltip({
+								open: function (event, ui) {
+									$('.cactiTableTitle, .cactiTableButton').tooltip('close');
+									id = $(this).closest('.cactiTable').attr('id');
+								},
+								close: function (event, ui) {
+									id = $(this).closest('.cactiTable').attr('id');
+								}
+							});
+						}
 
-						$('.cactiFilter').click(function(event) {
-							//$('.filterTable').find('td').css('display', 'table-row');
-							//event.stopPropagation();
-						});
+						if ($('#'+child).find('#import').length) {
+							title = $('#import').attr('value');
+							$(this).append('<span title="'+title+'" style="display:none;" class="cactiFilterImport"><i class="fa fa-arrow-up"></i></span>');
+
+							$('.cactiFilterImport').click(function(event) {
+								event.stopPropagation();
+								$('#import').trigger('click');
+							}).tooltip({
+								open: function (event, ui) {
+									id = $(this).closest('.cactiTable').attr('id');
+									$('.cactiTableTitle, .cactiTableButton').tooltip('close');
+								},
+								close: function (event, ui) {
+									id = $(this).closest('.cactiTable').attr('id');
+								}
+							});
+						}
+
+						$('.cactiTableTitle, .cactiTableButton').attr('title', showHideFilter).tooltip({ track: true });
 
 						id    = $(this).closest('.cactiTable').attr('id');
 						child = id+'_child';
 
 						if ($('#'+child).find('#clear').length) {
-							$(this).append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear fa fa-trash-o"></span>');
+							$(this).append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash-o"></i></span>');
 
 							$('.cactiFilterClear').click(function(event) {
 								event.stopPropagation();
 								$('#clear').trigger('click');
 							}).tooltip({
 								open: function (event, ui) {
+									$('.cactiTableTitle, .cactiTableButton').tooltip('close');
 									id = $(this).closest('.cactiTable').attr('id');
-									$('#'+id).find('.cactiTableButton').tooltip('close');
 								},
 								close: function (event, ui) {
 									id = $(this).closest('.cactiTable').attr('id');
@@ -738,7 +767,7 @@ function makeFiltersResponsive() {
 
 						toggleFilterAndIcon(id, child, true);
 
-						$(this).parent().click(function() {
+						$('.cactiFilterTitle').find('.cactiTableTitle, .cactiTableButton').click(function() {
 							id    = $(this).closest('.cactiTable').attr('id');
 							child = id+'_child';
 							toggleFilterAndIcon(id, child, false);
@@ -747,34 +776,38 @@ function makeFiltersResponsive() {
 						state = storage.get('filterVisibility');
 
 						if (state == 'hidden') {
-							$(this).append('<span class="cactiFilterState fa fa-angle-double-down"></span>');
+							$(this).append('<span class="cactiFilterState"><i class="fa fa-angle-double-down"></i></span>');
 						} else {
-							$(this).append('<span class="cactiFilterState fa fa-angle-double-up"></span>');
+							$(this).append('<span class="cactiFilterState"><i class="fa fa-angle-double-up"></i></span>');
 						}
 					}
 				}
 			} else {
 				if ($(this).find('a').length) {
-					$(this).find('a').attr('title', $(this).find('a').text()).addClass('fa fa-plus').tooltip({
+					$(this).find('a').tooltip({
 						open: function (event, ui) {
+							$('.cactiTableTitle, .cactiTableButton').tooltip('close');
 							id = $(this).closest('.cactiTable').attr('id');
-							$('#'+id).find('.cactiTableButton').tooltip('close');
 						},
 						close: function (event, ui) {
 							id = $(this).closest('.cactiTable').attr('id');
 						}
-					}).text('');
+					});
 				}
 			}
 		});
-	} else if ($('div.cactiTableButton').length) {
-		if ($('div.cactiTableButton').find('a').length) {
-			anchors = $('div.cactiTableButton').find('a');
-			anchors.each(function(){ $(this).attr('title', $(this).text()); });
-			anchors.not('.cactiTableCopy').addClass('fa fa-plus');
-			anchors.filter('.cactiTableCopy').addClass('fa fa-copy');
-			anchors.tooltip().text('');
-		}
+	} else if ($('#dqdebug').length) {
+		$('#dqdebug').find('div.cactiTableButton').each(function() {
+			if ($(this).find('a').length) {
+				anchors = $('div.cactiTableButton').find('a');
+				anchors.each(function(){
+					$(this).attr('title', $(this).text());
+				});
+				anchors.not('.cactiTableCopy').addClass('fa fa-plus');
+				anchors.filter('.cactiTableCopy').addClass('fa fa-copy');
+				anchors.tooltip().text('');
+			}
+		});
 	}
 }
 
@@ -786,17 +819,17 @@ function toggleFilterAndIcon(id, child, initial) {
 	if (initial) {
 		if (state == 'hidden') {
 			$('#'+child).hide();
-			$('#'+id).find('.cactiFilter, .cactiFilterClear').show();
+			$('#'+id).find('.cactiFilter, .cactiFilterClear, .cactiFilterImport, .cactiFilterExport').show();
 		}
 	} else if ($('#'+child).is(':visible')) {
 		$('#'+child).hide();
-		$('#'+id).find('.cactiFilter, .cactiFilterClear').show();
-		$('.cactiFilterState').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+		$('#'+id).find('.cactiFilter, .cactiFilterClear, .cactiFilterImport, .cactiFilterExport').show();
+		$('.cactiFilterState').find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
 		storage.set('filterVisibility', 'hidden');
 	} else {
 		$('#'+child).show();
-		$('#'+id).find('.cactiFilter, .cactiFilterClear').hide();
-		$('.cactiFilterState').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
+		$('#'+id).find('.cactiFilter, .cactiFilterClear, .cactiFilterImport, .cactiFilterExport').hide();
+		$('.cactiFilterState').find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
 		storage.set('filterVisibility', 'visible');
 	}
 
@@ -1294,7 +1327,7 @@ function ajaxAnchors() {
 		handlePopState();
 	});
 
-	$('#filter, #rfilter').keyup(function(event) {
+	$('#filter, #rfilter').keydown(function(event) {
 		if (event.keyCode == 8 && $(this).val() == '') {
 			handlePopState();
 		}
@@ -2450,3 +2483,314 @@ function copyToClipboard(containerId) {
 		$('#clipboardMessage').dialog('open');
 	}
 }
+
+var snmp_password        = '';
+var snmp_auth_protocol   = '';
+var snmp_priv_protocol   = '';
+var snmp_priv_passphrase = '';
+var snmp_security_initialized = false;
+
+function storeSNMPSecurity() {
+	if ($('#snmp_version').val() == '3') {
+		if ($('#snmp_auth_protocol').val() != '[None]') {
+			snmp_auth_protocol = $('#snmp_auth_protocol').val();
+			snmp_password      = $('#snmp_password').val();
+		} else {
+			snmp_auth_protocol = '';
+			snmp_password      = '';
+		}
+
+		if ($('#snmp_priv_protocol').val() != '[None]') {
+			snmp_priv_protocol   = $('#snmp_priv_protocol').val();
+			snmp_priv_passphrase = $('#snmp_priv_passphrase').val();
+		} else {
+			snmp_priv_protocol   = '';
+			snmp_priv_passphrase = '';
+		}
+	} else {
+		$('#snmp_security_level').val(defaultSNMPSecurityLevel);
+	}
+}
+
+function setSNMPSecurity() {
+	if ($('#snmp_version').val() == '3') {
+		if (!snmp_security_initialized) {
+			if ($('#snmp_auth_protocol').val() == '[None]') {
+				$('#snmp_security_level').val('noAuthNoPriv');
+			} else if ($('#snmp_priv_protocol').val() == '[None]') {
+				$('#snmp_security_level').val('authNoPriv');
+			} else {
+				$('#snmp_security_level').val('authPriv');
+			}
+
+			selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
+			if (selectmenu) {
+				$('#snmp_security_level').selectmenu('refresh');
+			}
+
+			$('#snmp_password').keyup(function() {
+				checkSNMPPassphrase('auth');
+			});
+
+			$('#snmp_password_confirm').keyup(function() {
+				checkSNMPPassphraseConfirm('auth');
+			});
+
+			$('#snmp_priv_passphrase').keyup(function() {
+				checkSNMPPassphrase('priv');
+			});
+
+			$('#snmp_priv_passphrase_confirm').keyup(function() {
+				checkSNMPPassphraseConfirm('priv');
+			});
+		}
+
+		snmp_security_initialized = true;
+	}
+}
+
+function setSNMP() {
+	snmp_version = $('#snmp_version').val();
+
+	storeSNMPSecurity();
+	setSNMPSecurity();
+
+	switch(snmp_version) {
+		case '0': // Not in Use
+			$('#row_snmp_username').hide();
+			$('#row_snmp_password').hide();
+			$('#row_snmp_community').hide();
+			$('#row_snmp_security_level').hide();
+			$('#row_snmp_auth_password').hide();
+			$('#row_snmp_auth_protocol').hide();
+			$('#row_snmp_priv_passphrase').hide();
+			$('#row_snmp_priv_protocol').hide();
+			$('#row_snmp_engine_id').hide();
+			$('#row_snmp_context').hide();
+			$('#row_snmp_port').hide();
+			$('#row_snmp_timeout').hide();
+			$('#row_max_oids').hide();
+
+			if ($('#row_snmp_engine_id')) {
+				$('#row_snmp_engine_id').hide();
+			}
+
+			if ($('#row_snmp_retries')) {
+				$('#row_snmp_retries').hide();
+			}
+
+			break;
+		case '1': // SNMP v1
+		case '2': // SNMP v2c
+			$('#row_snmp_username').hide();
+			$('#row_snmp_password').hide();
+			$('#row_snmp_community').show();
+			$('#row_snmp_security_level').hide();
+			$('#row_snmp_auth_password').hide();
+			$('#row_snmp_auth_protocol').hide();
+			$('#row_snmp_priv_passphrase').hide();
+			$('#row_snmp_priv_protocol').hide();
+			$('#row_snmp_engine_id').hide();
+			$('#row_snmp_context').hide();
+			$('#row_snmp_port').show();
+			$('#row_snmp_timeout').show();
+			$('#row_max_oids').show();
+
+			if ($('#row_snmp_engine_id')) {
+				$('#row_snmp_engine_id').hide();
+			}
+
+			if ($('#row_snmp_retries')) {
+				$('#row_snmp_retries').show();
+			}
+
+			break;
+		case '3': // SNMP v3
+			$('#row_snmp_username').show();
+			$('#row_snmp_password').show();
+			$('#row_snmp_community').hide();
+			$('#row_snmp_security_level').show();
+			$('#row_snmp_auth_password').show();
+			$('#row_snmp_auth_protocol').show();
+			$('#row_snmp_priv_passphrase').show();
+			$('#row_snmp_priv_protocol').show();
+			$('#row_snmp_engine_id').show();
+			$('#row_snmp_context').show();
+			$('#row_snmp_port').show();
+			$('#row_snmp_timeout').show();
+			$('#row_max_oids').show();
+
+			if ($('#row_snmp_engine_id')) {
+				$('#row_snmp_engine_id').show();
+			}
+
+			if ($('#row_snmp_retries')) {
+				$('#row_snmp_retries').show();
+			}
+
+			if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
+				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
+				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+
+				if ($('#snmp_auth_protocol').val() != '[None]') {
+					snmp_auth_protocol   = $('#snmp_auth_protocol').val();
+					snmp_password        = $('#snmp_password').val();
+				}
+
+				if ($('#snmp_priv_protocol').val() != '[None]') {
+					snmp_priv_protocol   = $('#snmp_priv_protocol').val();
+					snmp_priv_passphrase = $('#snmp_priv_passphrase').val();
+				}
+
+				$('#snmp_auth_protocol').val('[None]');
+				$('#snmp_priv_protocol').val('[None]');
+				$('#row_snmp_auth_protocol').hide();
+				$('#row_snmp_priv_protocol').hide();
+				$('#row_snmp_password').hide();
+				$('#row_snmp_priv_passphrase').hide();
+			} else if ($('#snmp_security_level').val() == 'authNoPriv') {
+				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
+				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+
+				if ($('#snmp_priv_protocol').val() != '[None]') {
+					snmp_priv_protocol   = $('#snmp_priv_protocol').val();
+					snmp_priv_passphrase = $('#snmp_priv_passphrase').val();
+				}
+
+				if (snmp_auth_protocol != '[None]' && snmp_auth_protocol != '' && $('#snmp_auth_protocol').val() == '[None]') {
+					$('#snmp_auth_protocol').val(snmp_auth_protocol);
+					$('#snmp_password').val(snmp_password);
+					$('#snmp_password_confirm').val(snmp_password);
+				} else if ($('#snmp_auth_protocol').val() == '[None]' || $('#snmp_auth_protocol').val() == '') {
+					if (defaultSNMPAuthProtocol == '' || defaultSNMPAuthProtocol == '[None]') {
+						$('#snmp_auth_protocol').val('MD5');
+					} else {
+						$('#snmp_auth_protocol').val(defaultSNMPAuthProtocol);
+					}
+				}
+
+				$('#snmp_priv_protocol').val('[None]');
+				$('#row_snmp_priv_protocol').hide();
+				$('#row_snmp_priv_passphrase').hide();
+
+				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', true);
+				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+				checkSNMPPassphrase('auth');
+			} else {
+				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
+				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+
+				if (snmp_auth_protocol != '' && $('#snmp_auth_protocol').val() == '[None]') {
+					$('#snmp_auth_protocol').val(snmp_auth_protocol);
+					$('#snmp_password').val(snmp_password);
+					$('#snmp_password_confirm').val(snmp_password);
+				} else if ($('#snmp_auth_protocol').val() == '[None]' || $('#snmp_auth_protocol').val() == '') {
+					if (defaultSNMPAuthProtocol == '' || defaultSNMPAuthProtocol == '[None]') {
+						$('#snmp_auth_protocol').val('MD5');
+					} else {
+						$('#snmp_auth_protocol').val(defaultSNMPAuthProtocol);
+					}
+				}
+
+				if (snmp_priv_protocol != '' && $('#snmp_priv_protocol').val() == '[None]') {
+					$('#snmp_priv_protocol').val(snmp_priv_protocol);
+					$('#snmp_priv_passphrase').val(snmp_priv_passphrase);
+				} else if ($('#snmp_priv_protocol').val() == '[None]' || $('#snmp_priv_protocol').val() == '') {
+					if (defaultSNMPPrivProtocol == '' || defaultSNMPPrivProtocol == '[None]') {
+						$('#snmp_priv_protocol').val('DES');
+					} else {
+						$('#snmp_priv_protocol').val(defaultSNMPPrivProtocol);
+					}
+				}
+
+				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', true);
+				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', true);
+				checkSNMPPassphrase('auth');
+				checkSNMPPassphrase('priv');
+			}
+
+			if ($('#snmp_auth_protocol').val() == '[None]') {
+				$('#row_snmp_password').hide();
+				$('#snmp_password').val('');
+				$('#snmp_password_confirm').val('');
+			}
+
+			if ($('#snmp_priv_protocol').val() == '[None]') {
+				$('#row_snmp_priv_passphrase').hide();
+				$('#snmp_priv_passphrase').val('');
+			}
+
+			selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
+			if (selectmenu) {
+				$('#snmp_security_level').selectmenu('refresh');
+				$('#snmp_auth_protocol').selectmenu('refresh');
+				$('#snmp_priv_protocol').selectmenu('refresh');
+			}
+
+			break;
+	}
+}
+
+function checkSNMPPassphrase(type) {
+	var minChars = 8;
+
+	if (type == 'priv') {
+		pass = '#snmp_priv_passphrase';
+		conf = '#snmp_priv_passphrase_confirm';
+		span = 'priv';
+	} else {
+		pass = '#snmp_password';
+		conf = '#snmp_password_confirm';
+		span = 'auth';
+	}
+
+	if ($(pass).val().length == 0) {
+		$('#'+span).remove();
+		$('#'+span+'conf').remove();
+	} else if ($(pass).val().length < minChars) {
+		$('#'+span).remove();
+		$(pass).after('<span id="'+span+'"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+passwordTooShort+'<span></span>');
+		checkSNMPPassphraseConfirm(type);
+	} else {
+		$('#'+span).remove();
+		$(pass).after('<span id="'+span+'"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">'+passwordPass+'</span></span>');
+		checkSNMPPassphraseConfirm(type);
+	}
+}
+
+function checkSNMPPassphraseConfirm(type) {
+	var minChars = 8;
+
+	if (type == 'priv') {
+		pass     = '#snmp_priv_passphrase';
+		conf     = '#snmp_priv_passphrase_confirm';
+		span     = 'priv';
+		spanconf = 'privconf';
+	} else {
+		pass     = '#snmp_password';
+		conf     = '#snmp_password_confirm';
+		span     = 'auth';
+		spanconf = 'authconf';
+	}
+
+	if ($(conf).val().length < minChars) {
+		passphrase = $(pass).val();
+		if (passphrase.indexOf($(conf).val()) == 0) {
+			$('#'+spanconf).remove();
+			$(conf).after('<span id="'+spanconf+'"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+passwordMatchTooShort+'<span></span>');
+		} else {
+			$('#'+spanconf).remove();
+			$(conf).after('<span id="'+spanconf+'"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+passwordNotMatchTooShort+'<span></span>');
+		}
+	} else {
+		if ($(pass).val() != $(conf).val()) {
+			$('#'+spanconf).remove();
+			$(conf).after('<span id="'+spanconf+'"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+passwordNotMatch+'</span></span>');
+		} else {
+			$('#'+span).remove();
+			$('#'+spanconf).remove();
+			$(pass).after('<span id="'+spanconf+'"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">'+passwordMatch+'</span></span>');
+		}
+	}
+}
+

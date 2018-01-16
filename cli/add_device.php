@@ -52,7 +52,7 @@ if (sizeof($parms)) {
 	$site_id       = 0;
 	$template_id   = 0;
 	$community     = read_config_option('snmp_community');
-	$snmp_ver      = read_config_option('snmp_ver');
+	$snmp_ver      = read_config_option('snmp_version');
 	$disable       = 0;
 
 	$notes         = '';

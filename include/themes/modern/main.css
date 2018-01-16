@@ -1266,14 +1266,18 @@ legend {
 }
 
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 12px 0px 3px;
+	padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;
 }
 
+.cactiTableButton i {
+	padding: 0px 8px;
+}
+
 .cactiTableButton span:last-child, .cactiTableTitle span:last-child {
-	padding-right: 8px;
+	padding: 0px 5px;
 }
 
 .cactiTableButton span a {
@@ -1694,7 +1698,7 @@ th.secondarySort {
 
 .installArea {
 	background-color: snow;
-	padding: 10px;
+	padding: 5px 10px 5px 10px;
 }
 
 .textAreaNotes {
@@ -2220,4 +2224,25 @@ tr#realtime td:first-child {
 
 .graphWrapper {
 	position: relative;
+}
+
+.code {
+	font-family: Consolas, Courier New;
+	font-size: 0.8em;
+	padding: 5px 15px 5px 15px;
+	background: #dfdfdf;
+}
+
+.note {
+	font-size: 0.7em;
+}
+
+.note a:link, .note a:active, .note a:visited {
+	font-size: 1em;
+	text-decoration: none;
+	color: blue;
+}
+
+.note a:hover {
+	text-decoration: underline;
 }

@@ -568,52 +568,56 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 	$country = strtoupper($cacti_country);
 
 	if (function_exists('numfmt_create')) {
-		$fmt = numfmt_create($cacti_locale . '_' . $country, NumberFormatter::DECIMAL);
-		numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+		$fmt_key = $cacti_locale . '_'. $country;
+		$fmt = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
+		if ($fmt !== FALSE) {
+			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
 
-		return numfmt_format($fmt, $number);
-	} else {
-		$origlocales = explode(';', setlocale(LC_ALL, 0));
-		setlocale(LC_ALL, $cacti_locale . '_' . $country);
-		$locale = localeconv();
-
-		if ($decimals == -1) {
-			$number =  number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
-		} elseif ($number>=pow($baseu, 4)) {
-			$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
-		} elseif($number>=pow($baseu, 3)) {
-			$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
-		} elseif($number>=pow($baseu, 2)) {
-			$number = number_format($number/pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
-		} elseif($number>=$baseu) {
-			$number = number_format($number/$baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
-		} else {
-			$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+			return numfmt_format($fmt, $number);
 		}
-
-		foreach ($origlocales as $locale_setting) {
-			if (strpos($locale_setting, '=') !== false) {
-				list($category, $locale) = explode('=', $locale_setting);
-  			} else {
-				$category = LC_ALL;
-				$locale   = $locale_setting;
-			}
-
-			switch($category) {
-			case 'LC_ALL':
-			case 'LC_COLLATE':
-			case 'LC_CTYPE':
-			case 'LC_MONETARY':
-			case 'LC_NUMERIC':
-			case 'LC_TIME':
-				if (defined($category)) {
-					setlocale(constant($category), $locale);
-				}
-			}
-		}
-
-		return $number;
+		cacti_log('DEBUG: Number format \'' . $fmy_key .'\' was unavailable, using older methods',false,'i18n',POLLER_VERBOSITY_HIGH);
 	}
+
+	$origlocales = explode(';', setlocale(LC_ALL, 0));
+	setlocale(LC_ALL, $cacti_locale . '_' . $country);
+	$locale = localeconv();
+
+	if ($decimals == -1) {
+		$number =  number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+	} elseif ($number>=pow($baseu, 4)) {
+		$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
+	} elseif($number>=pow($baseu, 3)) {
+		$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
+	} elseif($number>=pow($baseu, 2)) {
+		$number = number_format($number/pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
+	} elseif($number>=$baseu) {
+		$number = number_format($number/$baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
+	} else {
+		$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+	}
+
+	foreach ($origlocales as $locale_setting) {
+		if (strpos($locale_setting, '=') !== false) {
+			list($category, $locale) = explode('=', $locale_setting);
+  		} else {
+			$category = LC_ALL;
+			$locale   = $locale_setting;
+		}
+
+		switch($category) {
+		case 'LC_ALL':
+		case 'LC_COLLATE':
+		case 'LC_CTYPE':
+		case 'LC_MONETARY':
+		case 'LC_NUMERIC':
+		case 'LC_TIME':
+			if (defined($category)) {
+				setlocale(constant($category), $locale);
+			}
+		}
+	}
+
+	return $number;
 }
 
 function get_new_user_default_language() {

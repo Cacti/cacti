@@ -489,7 +489,7 @@ $settings = array(
 			'method' => 'spacer',
 			'collapsible' => 'true'
 			),
-		'snmp_ver' => array(
+		'snmp_version' => array(
 			'friendly_name' => __('Version'),
 			'description' => __('Default SNMP version for all new hosts.'),
 			'method' => 'drop_array',
@@ -503,17 +503,17 @@ $settings = array(
 			'default' => 'public',
 			'max_length' => '100',
 			),
+		'snmp_security_level' => array(
+			'friendly_name' => __('Security Level'),
+			'description' => __('The SNMP v3 Security Level.'),
+			'method' => 'drop_array',
+			'default' => 'authPriv',
+			'array' => $snmp_security_levels,
+			),
 		'snmp_username' => array(
 			'friendly_name' => __('Username (v3)'),
 			'description' => __('The SNMP v3 Username for polling hosts.'),
 			'method' => 'textbox',
-			'default' => '',
-			'max_length' => '100',
-			),
-		'snmp_password' => array(
-			'friendly_name' => __('Password (v3)'),
-			'description' => __('The SNMP v3 Password for polling hosts.'),
-			'method' => 'textbox_password',
 			'default' => '',
 			'max_length' => '100',
 			),
@@ -524,12 +524,12 @@ $settings = array(
 			'default' => 'MD5',
 			'array' => $snmp_auth_protocols,
 			),
-		'snmp_priv_passphrase' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('Privacy Passphrase (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
+		'snmp_password' => array(
+			'friendly_name' => __('Password (v3)'),
+			'description' => __('The SNMP v3 Password for polling hosts.'),
+			'method' => 'textbox_password',
 			'default' => '',
-			'max_length' => '200'
+			'max_length' => '100',
 			),
 		'snmp_priv_protocol' => array(
 			'method' => 'drop_array',
@@ -538,19 +538,44 @@ $settings = array(
 			'default' => 'DES',
 			'array' => $snmp_priv_protocols,
 			),
-		'snmp_timeout' => array(
-			'friendly_name' => __('Timeout'),
-			'description' => __('Default SNMP timeout in milli-seconds.'),
+		'snmp_priv_passphrase' => array(
 			'method' => 'textbox',
-			'default' => '500',
-			'max_length' => '10',
-			'size' => '5'
+			'friendly_name' => __('Privacy Passphrase (v3)'),
+			'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
+			'default' => '',
+			'max_length' => '200'
+			),
+		'snmp_context' => array(
+			'method' => 'textbox',
+			'friendly_name' => __('SNMP Context (v3)'),
+			'description' => __('Enter the SNMP v3 context to use for this device.'),
+			'value' => '|arg1:snmp_context|',
+			'default' => '',
+			'max_length' => '64',
+			'size' => '40'
+			),
+		'snmp_engine_id' => array(
+			'method' => 'textbox',
+			'friendly_name' => __('SNMP Engine ID (v3)'),
+			'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
+			'value' => '|arg1:snmp_engine_id|',
+			'default' => '',
+			'max_length' => '64',
+			'size' => '40'
 			),
 		'snmp_port' => array(
 			'friendly_name' => __('Port Number'),
 			'description' => __('Default UDP port to be used for SNMP Calls.  Typically, 161.'),
 			'method' => 'textbox',
 			'default' => '161',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'snmp_timeout' => array(
+			'friendly_name' => __('Timeout'),
+			'description' => __('Default SNMP timeout in milli-seconds.'),
+			'method' => 'textbox',
+			'default' => '500',
 			'max_length' => '10',
 			'size' => '5'
 			),

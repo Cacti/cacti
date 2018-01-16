@@ -133,40 +133,23 @@ function color_templates_item_dnd() {
     get_filter_request_var('id');
     /* ================= Input validation ================= */
 
-    if (!isset_request_var('color_item') || !is_array(get_nfilter_request_var('color_item'))) exit;
+    if (isset_request_var('color_item') && is_array(get_nfilter_request_var('color_item'))) {
+		$color_items = get_nfilter_request_var('color_item');
 
-    /* snmp table contains one row defined as 'nodrag&nodrop' */
-    unset($_REQUEST['color_item'][0]);
+		if (sizeof($color_items)) {
+			$sequence = 1;
 
-    /* delivered vdef ids has to be exactly the same like we have stored */
-    $old_order = array();
+		    foreach($color_items as $option_id) {
+        		$option = str_replace('line', '', $option_id);
 
-    foreach(get_nfilter_request_var('color_item') as $sequence => $option_id) {
-        if (empty($option_id)) continue;
-        $new_order[$sequence] = str_replace('line', '', $option_id);
-    }
+		        db_execute_prepared('UPDATE color_template_items
+					SET sequence = ?
+					WHERE color_template_item_id = ?',
+					array($sequence, $option));
 
-    $color_items = db_fetch_assoc_prepared('SELECT color_template_item_id, sequence FROM color_template_items WHERE color_template_id = ?', array(get_request_var('id')));
-
-    if (sizeof($color_items)) {
-        foreach($color_items as $item) {
-            $old_order[$item['sequence']] = $item['color_template_item_id'];
-        }
-    }else {
-        exit;
-    }
-
-    if (sizeof(array_diff($new_order, $old_order))>0) exit;
-
-    /* the set of sequence numbers has to be the same too */
-    if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
-    /* ==================================================== */
-
-    foreach($new_order as $sequence => $color_template_item_id) {
-        input_validate_input_number($sequence);
-        input_validate_input_number($color_template_item_id);
-
-        db_execute_prepared('UPDATE color_template_items SET sequence = ? WHERE color_template_item_id = ?', array($sequence, $color_template_item_id));
+				$sequence++;
+			}
+		}
     }
 
     header('Location: color_templates.php?action=template_edit&header=false&color_template_id=' . get_request_var('id'));

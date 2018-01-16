@@ -197,13 +197,17 @@ if (!$master && $thread == 0) {
 		array($network_id, $poller_id));
 
 	if ($status != 'on' && !$force) {
-		print "ERROR: This Subnet Range is disabled.  You must use the 'force' option to force it's execution.\n";
+		cacti_log("ERROR: The Network ID: $network_id is disabled.  You must use the 'force' option to force it's execution.", true, 'AUTOM8');
 		exit;
 	}
 }
 
 if ($master) {
-	$networks = db_fetch_assoc_prepared('SELECT * FROM automation_networks WHERE poller_id = ?', array($poller_id));
+	$networks = db_fetch_assoc_prepared('SELECT *
+		FROM automation_networks
+		WHERE poller_id = ?',
+		array($poller_id));
+
 	$launched = 0;
 	if (sizeof($networks)) {
 		foreach($networks as $network) {
@@ -238,16 +242,22 @@ if (!$master && $thread == 0) {
 		foreach($pids as $pid) {
 			if (isProcessRunning($pid)) {
 				killProcess($pid);
-				print "NOTE: Killing Process $pid\n";
+				cacti_log("WARNING: Automation Process $pid is still running for Network ID: $network_id", true, 'AUTOM8');
 			} else {
-				print "NOTE: Process $pid claims to be running but not found\n";
+				cacti_log("WARNING: Process $pid claims to be running but not found for Network ID: $network_id", true, 'AUTOM8');
 			}
 		}
 	}
 
 	automation_debug("Removing any orphan entries\n");
-	db_execute_prepared('DELETE FROM automation_ips WHERE network_id = ?', array($network_id));
-	db_execute_prepared('DELETE FROM automation_processes WHERE network_id = ?', array($network_id));
+
+	db_execute_prepared('DELETE FROM automation_ips
+		WHERE network_id = ?',
+		array($network_id));
+
+	db_execute_prepared('DELETE FROM automation_processes
+		WHERE network_id = ?',
+		array($network_id));
 
 	registerTask($network_id, getmypid(), $poller_id, 'tmaster');
 
@@ -255,19 +265,33 @@ if (!$master && $thread == 0) {
 
 	automation_primeIPAddressTable($network_id);
 
-	$threads = db_fetch_cell_prepared('SELECT threads FROM automation_networks WHERE id = ?', array($network_id));
+	$threads = db_fetch_cell_prepared('SELECT threads
+		FROM automation_networks
+		WHERE id = ?',
+		array($network_id));
+
+	if ($threads <= 0) {
+		$threads = 1;
+	}
+
 	automation_debug("Automation will use $threads Threads\n");
+
+	db_execute_prepared('UPDATE automation_networks
+		SET last_started = ?
+		WHERE id = ?',
+		array(date('Y-m-d H:i:s', $startTime), $network_id));
 
 	$curthread = 1;
 	while($curthread <= $threads) {
 		automation_debug("Launching Thread $curthread\n");
-		exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --poller=" . $poller_id . " --thread=$curthread --network=$network_id" . ($force ? ' --force':'') . ($debug ? ' --debug':''));
+		exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . " --thread=$curthread --network=$network_id" . ($force ? ' --force':'') . ($debug ? ' --debug':''));
 		$curthread++;
 	}
 
 	sleep(5);
 	automation_debug("Checking for Running Threads\n");
 
+	$failcount = 0;
 	while (true) {
 		$command = db_fetch_cell_prepared('SELECT command
 			FROM automation_processes
@@ -288,27 +312,30 @@ if (!$master && $thread == 0) {
 
 		automation_debug("Found $running Threads\n");
 
-		if ($running == 0) {
-			db_execute_prepared('DELETE FROM automation_ips WHERE network_id = ?', array($network_id));
+		if ($running == 0 && $failcount > 3) {
+			db_execute_prepared('DELETE FROM automation_ips
+				WHERE network_id = ?',
+				array($network_id));
 
 			$totals = db_fetch_row_prepared('SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp
 				FROM automation_processes
-				WHERE network_id=?',
+				WHERE network_id = ?',
 				array($network_id));
 
 			/* take time and log performance data */
 			$end = microtime(true);
 
 			db_execute_prepared('UPDATE automation_networks
-				SET up_hosts = ?,
-					snmp_hosts = ?,
-					last_started = ?,
-					last_runtime = ? WHERE id = ?',
+				SET up_hosts = ?, snmp_hosts = ?,
+					last_started = ?, last_runtime = ?
+				WHERE id = ?',
 				array($totals['up'], $totals['snmp'], date('Y-m-d H:i:s', $startTime), ($end - $start), $network_id));
 
 			clearAllTasks($network_id);
 
 			exit;
+		} else {
+			$failcount++;
 		}
 
 		sleep(5);
@@ -463,7 +490,7 @@ function discoverDevices($network_id, $thread) {
 					$device['site_id']              = $network['site_id'];
 					$device['snmp_version']         = '';
 					$device['snmp_port']            = '';
-					$device['snmp_readstring']      = '';
+					$device['snmp_community']       = '';
 					$device['snmp_username']        = '';
 					$device['snmp_password']        = '';
 					$device['snmp_auth_protocol']   = '';
@@ -647,7 +674,7 @@ function discoverDevices($network_id, $thread) {
 									. $network_id                              . ', '
 									. db_qstr($device['dnsname'])              . ', '
 									. db_qstr($device['ip_address'])           . ', '
-									. db_qstr($device['snmp_readstring'])      . ', '
+									. db_qstr($device['snmp_community'])       . ', '
 									. db_qstr($device['snmp_version'])         . ', '
 									. db_qstr($device['snmp_port'])            . ', '
 									. db_qstr($device['snmp_username'])        . ', '
@@ -673,7 +700,7 @@ function discoverDevices($network_id, $thread) {
 							. $network_id                              . ', '
 							. db_qstr($device['dnsname'])              . ', '
 							. db_qstr($device['ip_address'])           . ', '
-							. db_qstr($device['snmp_readstring'])      . ', '
+							. db_qstr($device['snmp_community'])       . ', '
 							. db_qstr($device['snmp_version'])         . ', '
 							. db_qstr($device['snmp_port'])            . ', '
 							. db_qstr($device['snmp_username'])        . ', '

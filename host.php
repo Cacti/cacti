@@ -163,7 +163,9 @@ function add_tree_names_to_actions_array() {
 function form_save() {
 	if (isset_request_var('save_component_host')) {
 		if (get_nfilter_request_var('snmp_version') == 3 && (get_nfilter_request_var('snmp_password') != get_nfilter_request_var('snmp_password_confirm'))) {
-			raise_message(4);
+			raise_message(14);
+		} else if (get_nfilter_request_var('snmp_version') == 3 && (get_nfilter_request_var('snmp_priv_passphrase') != get_nfilter_request_var('snmp_priv_passphrase_confirm'))) {
+			raise_message(13);
 		} else {
 			get_filter_request_var('id');
 			get_filter_request_var('host_template_id');
@@ -1098,62 +1100,27 @@ function device_javascript() {
 		setPing();
 	}
 
-	function setSNMP() {
-		if ($('#row_host_snmp_head').hasClass('collapsed')) {
-			return false;
-		}
-
-		snmp_version = $('#snmp_version').val();
-		switch(snmp_version) {
-		case '0': // No SNMP
-			$('#row_snmp_username').hide();
-			$('#row_snmp_password').hide();
-			$('#row_snmp_community').hide();
-			$('#row_snmp_auth_protocol').hide();
-			$('#row_snmp_priv_passphrase').hide();
-			$('#row_snmp_priv_protocol').hide();
-			$('#row_snmp_context').hide();
-			$('#row_snmp_engine_id').hide();
-			$('#row_snmp_port').hide();
-			$('#row_snmp_timeout').hide();
-			$('#row_max_oids').hide();
-			break;
-		case '1': // SNMP v1
-		case '2': // SNMP v2c
-			$('#row_snmp_username').hide();
-			$('#row_snmp_password').hide();
-			$('#row_snmp_community').show();
-			$('#row_snmp_auth_protocol').hide();
-			$('#row_snmp_priv_passphrase').hide();
-			$('#row_snmp_priv_protocol').hide();
-			$('#row_snmp_context').hide();
-			$('#row_snmp_engine_id').hide();
-			$('#row_snmp_port').show();
-			$('#row_snmp_timeout').show();
-			$('#row_max_oids').show();
-			break;
-		case '3': // SNMP v3
-			$('#row_snmp_username').show();
-			$('#row_snmp_password').show();
-			$('#row_snmp_community').hide();
-			$('#row_snmp_auth_protocol').show();
-			$('#row_snmp_priv_passphrase').show();
-			$('#row_snmp_priv_protocol').show();
-			$('#row_snmp_context').show();
-			$('#row_snmp_engine_id').show();
-			$('#row_snmp_port').show();
-			$('#row_snmp_timeout').show();
-			$('#row_max_oids').show();
-			break;
-		}
-	}
-
 	$(function() {
+		// Need to set this for global snmpv3 functions to remain sane between edits
+		snmp_security_initialized = false;
+
 		if (typeof hostInfoHeight != 'undefined') {
 			if ($(window).scrollTop() == 0) {
 				$('.hostInfoHeader').css('height', '');
 			} else {
 				$('.hostInfoHeader').css('height', hostInfoHeight);
+			}
+		}
+
+		if ($('#snmp_version').val() == '3') {
+			if ($('#snmp_auth_protocol').val() == '[None]') {
+				if ($('#snmp_priv_protocol').val() == '[None]') {
+					$('#snmp_security_level').val('noAuthNoPriv');
+				} else {
+					$('#snmp_security_level').val('authNoPriv');
+				}
+			} else {
+				$('#snmp_security_level').val('authPriv');
 			}
 		}
 

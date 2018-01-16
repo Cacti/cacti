@@ -367,9 +367,9 @@ $fields_data_template_template_edit = array(
 /* file: (data_sources.php|data_templates.php), action: (ds|template)_edit */
 
 if (db_table_exists('data_source_profiles')) {
-	$def_profile = db_fetch_cell('SELECT id 
-		FROM data_source_profiles 
-		ORDER BY `default` 
+	$def_profile = db_fetch_cell('SELECT id
+		FROM data_source_profiles
+		ORDER BY `default`
 		DESC LIMIT 1');
 } else {
 	$def_profile = '1';
@@ -1050,7 +1050,7 @@ $fields_host_edit = array(
 		'description' => __('Choose the SNMP version for this device.'),
 		'on_change' => 'changeHostForm()',
 		'value' => '|arg1:snmp_version|',
-		'default' => read_config_option('snmp_ver'),
+		'default' => read_config_option('snmp_version'),
 		'array' => $snmp_versions,
 		),
 	'snmp_community' => array(
@@ -1063,6 +1063,16 @@ $fields_host_edit = array(
 		'max_length' => '100',
 		'size' => '20'
 		),
+	'snmp_security_level' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Security Level'),
+		'description' => __('SNMP v3 Security Level to user for querying the device.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_security_level|',
+		'form_id' => '|arg1:id|',
+		'default' => read_config_option('snmp_security_level'),
+		'array' => $snmp_security_levels
+		),
 	'snmp_username' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('SNMP Username (v3)'),
@@ -1071,6 +1081,15 @@ $fields_host_edit = array(
 		'default' => read_config_option('snmp_username'),
 		'max_length' => '50',
 		'size' => '20'
+		),
+	'snmp_auth_protocol' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Auth Protocol (v3)'),
+		'description' => __('Choose the SNMPv3 authentication protocol.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_auth_protocol|',
+		'default' => read_config_option('snmp_auth_protocol'),
+		'array' => $snmp_auth_protocols,
 		),
 	'snmp_password' => array(
 		'method' => 'textbox_password',
@@ -1081,30 +1100,23 @@ $fields_host_edit = array(
 		'max_length' => '50',
 		'size' => '20'
 		),
-	'snmp_auth_protocol' => array(
+	'snmp_priv_protocol' => array(
 		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Auth Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 authentication protocol.'),
-		'value' => '|arg1:snmp_auth_protocol|',
-		'default' => read_config_option('snmp_auth_protocol'),
-		'array' => $snmp_auth_protocols,
+		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
+		'description' => __('Choose the SNMPv3 privacy protocol.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_priv_protocol|',
+		'default' => read_config_option('snmp_priv_protocol'),
+		'array' => $snmp_priv_protocols,
 		),
 	'snmp_priv_passphrase' => array(
-		'method' => 'textbox',
+		'method' => 'textbox_password',
 		'friendly_name' => __('SNMP Privacy Passphrase (v3)'),
 		'description' => __('Choose the SNMPv3 privacy passphrase.'),
 		'value' => '|arg1:snmp_priv_passphrase|',
 		'default' => read_config_option('snmp_priv_passphrase'),
 		'max_length' => '200',
 		'size' => '40'
-		),
-	'snmp_priv_protocol' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 privacy protocol.'),
-		'value' => '|arg1:snmp_priv_protocol|',
-		'default' => read_config_option('snmp_priv_protocol'),
-		'array' => $snmp_priv_protocols,
 		),
 	'snmp_context' => array(
 		'method' => 'textbox',
@@ -1663,6 +1675,16 @@ $fields_template_import = array(
 			'max_length' => '100',
 			'size' => '20'
 			),
+		'snmp_security_level' => array(
+			'method' => 'drop_array',
+			'friendly_name' => __('SNMP Security Level'),
+			'description' => __('SNMP v3 Security Level to user for querying the device.'),
+			'on_change' => 'setSNMP()',
+			'value' => '|arg1:snmp_security_level|',
+			'form_id' => '|arg1:id|',
+			'default' => read_config_option('snmp_security_level'),
+			'array' => $snmp_security_levels
+			),
 		'snmp_username' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('SNMP Username (v3)'),
@@ -1672,39 +1694,41 @@ $fields_template_import = array(
 			'max_length' => '50',
 			'size' => '20'
 			),
-		'snmp_auth_password' => array(
-			'method' => 'textbox_password',
-			'friendly_name' => __('SNMP Auth Password (v3)'),
-			'description' => __('SNMP v3 user password for this device.'),
-			'value' => '|arg1:snmp_auth_password|',
-			'default' => read_config_option('snmp_password'),
-			'max_length' => '50',
-			'size' => '20'
-			),
 		'snmp_auth_protocol' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('SNMP Auth Protocol (v3)'),
 			'description' => __('Choose the SNMPv3 Authorization Protocol.<br>Note: SHA authentication support is only available if you have OpenSSL installed.'),
+			'on_change' => 'setSNMP()',
 			'value' => '|arg1:snmp_auth_protocol|',
 			'default' => read_config_option('snmp_auth_protocol'),
 			'array' => $snmp_auth_protocols,
 			),
-		'snmp_priv_password' => array(
+		'snmp_password' => array(
 			'method' => 'textbox_password',
-			'friendly_name' => __('SNMP Privacy Password (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
-			'value' => '|arg1:snmp_priv_password|',
-			'default' => read_config_option('snmp_priv_passphrase'),
-			'max_length' => '200',
-			'size' => '40'
+			'friendly_name' => __('SNMP Auth Password (v3)'),
+			'description' => __('SNMP v3 user password for this device.'),
+			'value' => '|arg1:snmp_password|',
+			'default' => read_config_option('snmp_password'),
+			'max_length' => '50',
+			'size' => '20'
 			),
 		'snmp_priv_protocol' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('SNMP Privacy Protocol (v3)'),
 			'description' => __('Choose the SNMPv3 Privacy Protocol.<br>Note: DES/AES encryption support is only available if you have OpenSSL installed.'),
+			'on_change' => 'setSNMP()',
 			'value' => '|arg1:snmp_priv_protocol|',
 			'default' => read_config_option('snmp_priv_protocol'),
 			'array' => $snmp_priv_protocols,
+			),
+		'snmp_priv_passphrase' => array(
+			'method' => 'textbox_password',
+			'friendly_name' => __('SNMP Privacy Password (v3)'),
+			'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
+			'value' => '|arg1:snmp_priv_passphrase|',
+			'default' => read_config_option('snmp_priv_passphrase'),
+			'max_length' => '200',
+			'size' => '40'
 			),
 		'snmp_engine_id' => array(
 			'friendly_name' => __('SNMP Engine ID'),
