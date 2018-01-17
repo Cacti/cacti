@@ -1558,7 +1558,7 @@ function generate_graph_def_name($graph_item_id) {
 	$lookup_table = array('a','b','d','e','f','g','h','i','j','k');
 
 	$result = '';
-    $strValGII = strval($graph_item_id);
+	$strValGII = strval($graph_item_id);
 	for ($i=0; $i<strlen($strValGII); $i++) {
 		$result .= $lookup_table{substr($strValGII, $i, 1)};
 	}
