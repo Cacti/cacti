@@ -1,5 +1,32 @@
 Cacti CHANGELOG
 
+1.1.31
+-issue#629: Site reload after delete the last letter in the searchbar
+-issue#1022: Discovery network stuck in "running" state does not return results
+-issue#1164: Version compare function fails on major/minor only versions
+-issue#1166: Invalid New User default language selection
+-issue#1175: Automatic logout inconsistent redirect
+-issue#1179: Warn during installation if installing moving to older version
+-issue#1183: Automatically detect missing Theme and use alternate
+-issue#1185: Layout with Graphs having large number of data columns
+-issue#1189: Allow ability to sort tree list by name asc/desc
+-issue#1190: Enabling, Disabling, Uninstalling plugin, you should page refresh
+-issue#1191: Tree sequences were not set or checked
+-issue#1197: Add more collection intervals to Data Source Profiles
+-issue#1206: Display issue with internationalization number format
+-issue#1210: CDEF and VDEF Items can not be properly edited
+-issue#1212: Navigation breadcrumbs fail to handle External links correctly
+-issue#1213: PHPMailer trying TLS despite SMTPSecure setting
+-issue#1215: Show version when installation prompts for license
+-issue#1217: Add ability to view/edit Input/Query when editing Data Template
+-issue: Named colors fail to import on install or upgrade
+-issue: Drag and Drop issues on multiple pages could corrupt sequencing
+-feature: Enhance filter to permit more glyphs for table headers
+-feature: Add a page refresh dropdown to the Automation Networks
+-feature: Enhanced SNMP v3 input forms
+-feature: Allow Trees to be rearranged using Drag and Drop
+-feature: Trap GUI callback errors and present error message
+
 1.1.30
 -issue#1155: Non-secure mail setting not functional due to changes in phpmailer
 -issue#1157: Resolve issue with branch permission api
@@ -7,6 +34,7 @@ Cacti CHANGELOG
 -issue#1161: Graph View regex's are not preserved during automatic page refresh
 -issue#1162: Error messages are not display when editing a user
 -issue#1166: Default language was not correctly set when editing a user
+-issue#1182: Support noAuthNoPriv for SNMPv3 in Cacti
 -issue: basename function undefined during upgrade to 1.0.x
 -issue: Storage API and translations required for Change password function
 -issue: ALTER IGNORE still throws an error when attempting to drop the primary key

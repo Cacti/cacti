@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -426,6 +426,11 @@ function data_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
+		$data_id = get_nonsystem_data_input(get_request_var('id'));
+		if ($data_id == 0 || $data_id == NULL) {
+			header('Location: data_input.php');
+			return;
+		}
 		$data_input = db_fetch_row_prepared('SELECT * FROM data_input WHERE id = ?', array(get_request_var('id')));
 		$header_label = __('Data Input Methods [edit: %s]', html_escape($data_input['name']));
 	} else {

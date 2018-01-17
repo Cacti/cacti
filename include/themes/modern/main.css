@@ -1,18 +1,18 @@
 /* main styles */
 
 ::-webkit-scrollbar {
-    width: 8px;
+	width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(22,22,6,0.7);
-    border-radius: 6px;
+	-webkit-box-shadow: inset 0 0 6px rgba(22,22,6,0.7);
+	border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-    border-radius: 6px;
+	border-radius: 6px;
 	background: rgba(49,68,43,0.8);
-    -webkit-box-shadow: inset 0 0 4px rgba(49,68,43,0.5);
+	-webkit-box-shadow: inset 0 0 4px rgba(49,68,43,0.5);
 }
 
 html, body {
@@ -97,10 +97,10 @@ a:hover {
 }
 
 th i.fa {
-    margin-top: -5px;
-    position: absolute;
-    right: 3px;
-    top: 50%;
+	margin-top: -5px;
+	position: absolute;
+	right: 3px;
+	top: 50%;
 }
 
 #main {
@@ -126,7 +126,7 @@ select {
 }
 
 *:focus {
-    outline: none;
+	outline: none;
 }
 
 label {
@@ -443,9 +443,9 @@ label {
 
 .menuoptions {
 	background: none repeat scroll 0 0 #eee;
-    border-color: #f5f5f5 #e5e5e5 #ccc;
-    border-style: solid;
-    border-width: 0px 1px 1px 1px;
+	border-color: #f5f5f5 #e5e5e5 #ccc;
+	border-style: solid;
+	border-width: 0px 1px 1px 1px;
 	z-index:5;
 	display:block;
 	float:right;
@@ -513,17 +513,25 @@ label {
 }
 
 .deletequery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
+	cursor: pointer;
+	color: red !important;
+	padding: 2px;
+	vertical-align: middle;
 	color:red;
 	font-size:14px
 }
 
+.deletequery:hover {
+	color: red !important;
+	text-decoration: none;
+	padding: 2px;
+	vertical-align:middle;
+}
+
 .odd {
 	background: none repeat scroll 0 0 #F5F5F5;
-    border: none;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	border: none;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .odd td, .even td, .even-alternate td, .selectable td {
@@ -532,14 +540,14 @@ label {
 
 .even {
 	background: none repeat scroll 0 0 #E5E5E5;
-    border: none;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	border: none;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .even-alternate {
 	background: none repeat scroll 0 0 #E7E9F2;
-    border: none;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	border: none;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .saveRow {
@@ -954,10 +962,10 @@ legend {
 
 .spikekillMenu {
 	background: #f5f5f5 none repeat scroll 0 0;
-    border: 1px solid #979797;
-    box-shadow: 2px 2px 2px #999999;
-    margin: 0;
-    padding: 2px;
+	border: 1px solid #979797;
+	box-shadow: 2px 2px 2px #999999;
+	margin: 0;
+	padding: 2px;
 	line-height: 1.5em;
 }
 
@@ -1027,7 +1035,7 @@ legend {
 	vertical-align: top;
 	display:none;
 	overflow-y: auto !important;
-    overflow-x: hidden !important;
+	overflow-x: hidden !important;
 }
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {
@@ -1078,6 +1086,19 @@ legend {
 }
 
 .linkOverDark:hover {
+	color: white;
+	text-decoration: none;
+}
+
+.linkCopyDark, .linkCopyDark:visited, .linkCopyDark:active {
+	color: white;
+	font-weight: normal;
+	text-decoration: none;
+	cursor: pointer;
+	margin-top: -3px;
+}
+
+.linkCopyDark:hover {
 	color: white;
 	text-decoration: none;
 }
@@ -1237,15 +1258,26 @@ legend {
 	white-space: nowrap;
 }
 
+.cactiTableButton.debug {
+	background: transparent;
+	float: right;
+	height: 13px;
+	line-height: 10px;
+}
+
 .cactiTableButton span, .cactiTableTitle span {
-	padding: 0px 12px 0px 3px;
+	padding: 0px;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;
 }
 
+.cactiTableButton i {
+	padding: 0px 8px;
+}
+
 .cactiTableButton span:last-child, .cactiTableTitle span:last-child {
-	padding-right: 8px;
+	padding: 0px 5px;
 }
 
 .cactiTableButton span a {
@@ -1401,7 +1433,7 @@ legend {
 		display: table;
 		width: 100%;
 		line-height: 35px;
-	}
+		}
 
 	.formColumn {
 		float: left;
@@ -1666,7 +1698,7 @@ th.secondarySort {
 
 .installArea {
 	background-color: snow;
-	padding: 10px;
+	padding: 5px 10px 5px 10px;
 }
 
 .textAreaNotes {
@@ -2192,4 +2224,25 @@ tr#realtime td:first-child {
 
 .graphWrapper {
 	position: relative;
+}
+
+.code {
+	font-family: Consolas, Courier New;
+	font-size: 0.8em;
+	padding: 5px 15px 5px 15px;
+	background: #dfdfdf;
+}
+
+.note {
+	font-size: 0.7em;
+}
+
+.note a:link, .note a:active, .note a:visited {
+	font-size: 1em;
+	text-decoration: none;
+	color: blue;
+}
+
+.note a:hover {
+	text-decoration: underline;
 }

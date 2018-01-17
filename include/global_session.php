@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -106,7 +106,25 @@ if (isset($_SESSION['refresh'])) {
 	var cactiCommunityForum='<?php print __('Cacti Community Forum');?>';
 	var reportABug='<?php print __('Report a bug');?>';
 	var aboutCacti='<?php print __('About Cacti');?>';
-	var spikeKillResults='<?php print __('SpikeKill Results');?>';
-	var showHideFilter='<?php print __('Click to Show/Hide Filter');?>';
-	var clearFilterTitle='<?php print __('Clear Current Filter');?>';
+	var spikeKillResults='<?php print __esc('SpikeKill Results');?>';
+	var showHideFilter='<?php print __esc('Click to Show/Hide Filter');?>';
+	var clearFilterTitle='<?php print __esc('Clear Current Filter');?>';
+	var clipboard='<?php print __esc('Clipboard');?>';
+	var clipboardID='<?php print __esc('Clipboard ID');?>';
+	var clipboardNotAvailable='<?php print __esc('Copy operation is unavailable at this time');?>';
+	var clipboardCopyFailed='<?php print __esc('Failed to find data to copy!');?>';
+	var clipboardUpdated='<?php print __esc('Clipboard has been updated');?>';
+	var clipboardNotUpdated='<?php print __esc('Sorry, your clipboard could not be updated at this time');?>';
+	var defaultSNMPSecurityLevel='<?php print read_config_option('snmp_security_level');?>';
+	var defaultSNMPAuthProtocol='<?php print read_config_option('snmp_auth_protocol');?>';
+	var defaultSNMPPrivProtocol='<?php print read_config_option('snmp_priv_protocol');?>';
+	var passwordPass='<?php print __('Passphrase length meets 8 character minimum');?>';
+	var passwordTooShort='<?php print __('Passphrase too short');?>';
+	var passwordMatchTooShort='<?php print __('Passphrase matches but too short');?>';
+	var passwordNotMatchTooShort='<?php print __('Passphrase too short and not matching');?>';
+	var passwordMatch='<?php print __('Passphrases match');?>';
+	var passwordNotMatch='<?php print __('Passphrases do not match');?>';
+	var errorOnPage='<?php print __('Sorry, we could not process your last action');?>';
+	var errorNumberPrefix='<?php print __('Error:');?>';
+	var errorReasonPrefix='<?php print __('Reason:');?>';
 </script>

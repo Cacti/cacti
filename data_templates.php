@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -485,7 +485,7 @@ function template_rrd_add() {
 }
 
 function template_edit() {
-	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit, $fields_host_edit;
+	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit, $fields_host_edit, $hash_system_data_inputs;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -497,6 +497,32 @@ function template_edit() {
 		$template = db_fetch_row_prepared('SELECT * FROM data_template WHERE id = ?', array(get_request_var('id')));
 
 		$header_label = __('Data Templates [edit: %s]', html_escape($template['name']));
+
+		?>
+		<table style='width:100%'>
+			<tr>
+				<td class='textInfo left' style='vertical-align:top;'>
+					<?php print html_escape($template['name']);?>
+				</td>
+				<td class='textInfo right' style='vertical-align:top;'>
+					<?php
+						$data_input_id = 0;
+						if (!empty($template_data['data_input_id'])) {
+							$data_input_id = get_nonsystem_data_input($template_data['data_input_id']);
+							if (!isset($data_input_id) || $data_input_id == NULL) {
+								$data_input_id = 0;
+							}
+						}
+
+						if ($data_input_id > 0) {
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_input.php?action=edit&id=' . $data_input_id);?>'><?php print __('Edit Data Input Method.');?></a><br><?php
+						}
+					?>
+				</td>
+			</tr>
+		</table>
+		<br>
+		<?php
 	} else {
 		$header_label = __('Data Templates [new]');
 	}

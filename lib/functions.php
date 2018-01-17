@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -316,29 +316,59 @@ function read_config_option($config_name, $force = false) {
 	return $config_array[$config_name];
 }
 
-/* get_selected_theme - checks the user settings and if the user selected theme is set, returns it
-     otherwise returns the system default.
-   @returns - the themen name */
+/*
+ * get_selected_theme - checks the user settings and if the user selected
+ * theme is set, returns it otherwise returns the system default.
+ *
+ * @return - the theme name
+ */
 function get_selected_theme() {
+	global $config, $themes;
+
+	// shortcut if theme is set in session
 	if (isset($_SESSION['selected_theme'])) {
-		return $_SESSION['selected_theme'];
-	} elseif (isset($_SESSION['sess_user_id'])) {
-		$theme = db_fetch_cell_prepared("SELECT value
+		if (file_exists($config['base_path'] . '/include/themes/' . $_SESSION['selected_theme'] . '/main.css')) {
+			return $_SESSION['selected_theme'];
+		}
+	}
+
+	// default to system selected theme
+	$theme = read_config_option('selected_theme');
+
+	// figure out user defined theme
+	if (isset($_SESSION['sess_user_id'])) {
+		// fetch user defined theme
+		$user_theme = db_fetch_cell_prepared("SELECT value
 			FROM settings_user
 			WHERE name='selected_theme'
 			AND user_id = ?",
 			array($_SESSION['sess_user_id']));
 
-		if (!empty($theme)) {
-			$_SESSION['selected_theme'] = $theme;
-
-			return $theme;
+		// user has a theme
+		if (! empty($user_theme)) {
+			$theme = $user_theme;;
 		}
 	}
 
-	$_SESSION['selected_theme'] = read_config_option('selected_theme');
+	if (!file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
+		foreach($themes as $t => $name) {
+			if (file_exists($config['base_path'] . '/include/themes/' . $t . '/main.css')) {
+				$theme = $t;
 
-	return read_config_option('selected_theme');
+				db_execute_prepared('UPDATE settings_user
+					SET value = ?
+					WHERE user_id = ?',
+					array($theme, $_SESSION['sess_user_id']));
+
+				break;
+			}
+		}
+	}
+
+	// update session
+	$_SESSION['selected_theme'] = $theme;
+
+	return $theme;
 }
 
 /* form_input_validate - validates the value of a form field and Takes the appropriate action if the input
@@ -2383,6 +2413,12 @@ function draw_navigation_text($type = 'url') {
 			'url' => 'settings.php',
 			'level' => '1'
 			),
+		'link.php:' => array(
+			'title' => __('External Link'),
+			'mapping' => 'index.php:',
+			'url' => 'link.php',
+			'level' => '1'
+			),
 		'user_admin.php:' => array(
 			'title' => __('Users'),
 			'mapping' => 'index.php:',
@@ -3129,8 +3165,17 @@ function generate_hash() {
 /* debug_log_insert_section_start - creates a header item for breaking down the debug log
    @arg $type - the 'category' or type of debug message
    @arg $text - section header */
-function debug_log_insert_section_start($type, $text) {
-	debug_log_insert($type, "<table class='cactiTable debug'><tr class='tableHeader'><td class='textHeaderDark'>" . html_escape($text) . "</td></tr><tr><td style='padding:0px;'><table style='display:none;'><tr><td><div style='font-family: monospace;'>");
+function debug_log_insert_section_start($type, $text, $allowcopy = false) {
+	$copy_prefix = '';
+	$copy_dataid = '';
+	if ($allowcopy) {
+		$uid = generate_hash();
+		$copy_prefix   = '<div class=\'cactiTableButton debug\'><span><a class=\'linkCopyDark cactiTableCopy\' id=\'copyToClipboard' . $uid . '\'>' . __esc('Copy') . '</a></span></div>';
+		$copy_dataid = ' id=\'clipboardData'.$uid.'\'';
+		$copy_headerid = ' id=\'clipboardHeader'.$uid.'\'';
+	}
+
+	debug_log_insert($type, '<table class=\'cactiTable debug\'' . $copy_headerid . '><tr class=\'tableHeader\'><td>' . html_escape($text) . $copy_prefix . '</td></tr><tr><td style=\'padding:0px;\'><table style=\'display:none;\'' . $copy_dataid . '><tr><td><div style=\'font-family: monospace;\'>');
 }
 
 /* debug_log_insert_section_end - finalizes the header started with the start function
@@ -3602,6 +3647,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$mail->Host = $secure . '://' . $mail->Host;
 			}
 		} else {
+			$mail->SMTPSecure = false;
 			$mail->SMTPSecure = false;
 		}
 	}
@@ -4409,12 +4455,12 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 		case E_CORE_ERROR:
 		case E_ERROR:
 		case E_PARSE:
+			cacti_log($error, false, 'ERROR');
+			cacti_debug_backtrace('PHP ERROR PARSE');
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
 			}
-			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR PARSE');
 			break;
 		case E_RECOVERABLE_ERROR:
 		case E_USER_ERROR:
@@ -4846,7 +4892,7 @@ function get_cacti_version() {
  * cacti_version_compare - Compare Cacti version numbers
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
-	$length   = max(strlen($version1), strlen($version2));
+	$length   = max(sizeof(explode('.', $version1)), sizeof(explode('.', $version2)));
 	$version1 = version_to_decimal($version1, $length);
 	$version2 = version_to_decimal($version2, $length);
 
@@ -4902,6 +4948,14 @@ function version_to_decimal($version, $length = 1) {
 		}
 	}
 
+	if (sizeof($parts) < $length) {
+		$i = sizeof($parts);
+		while($i < $length) {
+			$newver .= '00';
+			$i++;
+		}
+	}
+
 	if ($minor != '') {
 		$int = ord($minor);
 	} else {
@@ -4949,4 +5003,13 @@ function cacti_gethostbyname($hostname, $type = '') {
 	}
 
 	return $hostname;
+}
+
+function get_nonsystem_data_input($data_input_id) {
+	global $hash_system_data_inputs;
+	$diid = db_fetch_cell_prepared('SELECT id FROM data_input
+					WHERE hash NOT IN ("' . implode('","', $hash_system_data_inputs) . '")
+					AND id = ?',
+					array($data_input_id));
+	return $diid;
 }

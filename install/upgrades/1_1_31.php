@@ -22,26 +22,58 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_26() {
+function upgrade_to_1_1_31() {
 	db_install_execute(
-		'ALTER TABLE `host` ADD KEY `status` (`status`);'
+		'ALTER TABLE `host` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
 	);
 
 	db_install_execute(
-		'ALTER TABLE `user_auth_cache` ADD KEY `last_update` (`last_update`);'
+		'ALTER TABLE `automation_devices` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
 	);
 
 	db_install_execute(
-		'ALTER TABLE `poller_output_realtime` ADD KEY `time` (`time`);'
+		'ALTER TABLE `automation_devices` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
 	);
 
 	db_install_execute(
-		'ALTER TABLE `poller_time` ADD KEY `poller_id_end_time` (`poller_id`, `end_time`);'
+		'ALTER TABLE `automation_snmp_items` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
 	);
 
 	db_install_execute(
-		'ALTER TABLE `poller_item` 
-		 DROP KEY `rrd_next_step`,
-		 ADD KEY `poller_id_rrd_next_step` (`poller_id`, `rrd_next_step`);'
+		'ALTER TABLE `poller_item` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
 	);
+
+	db_install_execute(
+		'ALTER TABLE `snmpagent_managers`
+			MODIFY COLUMN `snmp_auth_protocol` varchar(6) NOT NULL DEFAULT "",
+			MODIFY COLUMN `snmp_username` varchar(50) NOT NULL DEFAULT "",
+			MODIFY COLUMN `snmp_priv_protocol` varchar(6) NOT NULL DEFAULT ""'
+	);
+
+	if (!db_column_exists('snmpagent_managers', 'snmp_password')) {
+		db_install_execute(
+			'ALTER TABLE `snmpagent_managers`
+				CHANGE COLUMN `snmp_auth_password` `snmp_password` varchar(50) NOT NULL DEFAULT ""'
+		);
+	}
+
+	if (!db_column_exists('snmpagent_managers', 'snmp_priv_passphrase')) {
+		db_install_execute(
+			'ALTER TABLE `snmpagent_managers`
+				CHANGE COLUMN `snmp_priv_password` `snmp_priv_passphrase` varchar(200) NOT NULL DEFAULT ""'
+		);
+	}
+
+	if (!db_column_exists('automation_snmp_items', 'snmp_community')) {
+		db_install_execute(
+			'ALTER TABLE `automation_snmp_items`
+				CHANGE COLUMN `snmp_readstring` `snmp_community` varchar(50) NOT NULL DEFAULT ""'
+		);
+	}
+
+	$snmp_version = read_config_option('snmp_version');
+	if ($snmp_version == '') {
+		db_install_execute('UPDATE settings SET name="snmp_version" WHERE name="snmp_ver"');
+	}
 }
+

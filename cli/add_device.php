@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -52,7 +52,7 @@ if (sizeof($parms)) {
 	$site_id       = 0;
 	$template_id   = 0;
 	$community     = read_config_option('snmp_community');
-	$snmp_ver      = read_config_option('snmp_ver');
+	$snmp_ver      = read_config_option('snmp_version');
 	$disable       = 0;
 
 	$notes         = '';

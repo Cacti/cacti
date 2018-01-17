@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -426,7 +426,12 @@ function item_edit() {
 
 	form_start('cdef.php', 'form_cdef');
 
-	html_start_box( __('CDEF Items [edit: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array(get_request_var('cdef_id'))))), '100%', '', '3', 'center', '');
+	$cdef_name = db_fetch_cell_prepared('SELECT name
+		FROM cdef
+		WHERE id = ?',
+		array(get_request_var('cdef_id')));
+
+	html_start_box(__('CDEF Items [edit: %s]', html_escape($cdef_name)), '100%', '', '3', 'center', '');
 
 	if (isset_request_var('type_select')) {
 		$current_type = get_request_var('type_select');
@@ -445,14 +450,19 @@ function item_edit() {
 			<select id='type_select'>
 				<?php
 				foreach ($cdef_item_types as $var => $val) {
-					print "<option value='cdef.php?action=item_edit" . get_request_var('id') . '&cdef_id=' . get_request_var('cdef_id') . "&type_select=$var'"; if ($var == $current_type) { print ' selected'; } print ">$val</option>\n";
+					print "<option value='$var'" . ($var == $current_type ? ' selected':'') . ">$val</option>";
 				}
 				?>
 			</select>
             <script type='text/javascript'>
             $(function() {
-                $('#type_select').change(function() {
-                    loadPageNoHeader('cdef.php?action=item_edit&header=false&cdef_id=<?php print get_request_var('cdef_id');?>&type_select='+$('#type_select').val())
+                $('#type_select').unbind().change(function() {
+					strURL  = 'cdef.php?action=item_edit';
+					strURL += '&id='+<?php print get_request_var('id');?>;
+					strURL += '&cdef_id='+<?php print get_request_var('cdef_id');?>;
+					strURL += '&type_select='+$('#type_select').val();
+					strURL += '&header=false';
+                    loadPageNoHeader(strURL);
                 });
             });
             </script>
@@ -506,40 +516,25 @@ function cdef_item_dnd() {
 	get_filter_request_var('id');
 	/* ================= Input validation ================= */
 
-	if (!isset_request_var('cdef_item') || !is_array(get_nfilter_request_var('cdef_item'))) exit;
+	$continue = true;
 
-	/* cdef table contains one row defined as 'nodrag&nodrop' */
-	unset($_REQUEST['cdef_item'][0]);
+	if (isset_request_var('cdef_item') && is_array(get_nfilter_request_var('cdef_item'))) {
+		$cdef_ids = get_nfilter_request_var('cdef_item');
 
-	/* delivered cdef ids has to be exactly the same like we have stored */
-	$old_order = array();
+		if (sizeof($cdef_ids)) {
+			$sequence = 1;
+			foreach($cdef_ids as $cdef_id) {
+				$cdef_id = str_replace('line', '', $cdef_id);
+				input_validate_input_number($cdef_id);
 
-	foreach(get_nfilter_request_var('cdef_item') as $sequence => $cdef_id) {
-		if (empty($cdef_id)) continue;
-		$new_order[$sequence] = str_replace('line', '', $cdef_id);
-	}
+				db_execute_prepared('UPDATE cdef_items
+					SET sequence = ?
+					WHERE id = ?',
+					array($sequence, $cdef_id));
 
-	$cdef_items = db_fetch_assoc_prepared('SELECT id, sequence FROM cdef_items WHERE cdef_id = ?', array(get_request_var('id')));
-
-	if(sizeof($cdef_items)) {
-		foreach($cdef_items as $item) {
-			$old_order[$item['sequence']] = $item['id'];
+				$sequence++;
+			}
 		}
-	}else {
-		exit;
-	}
-
-	if (sizeof(array_diff($new_order, $old_order))>0) exit;
-
-	/* the set of sequence numbers has to be the same too */
-	if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
-	/* ==================================================== */
-
-	foreach($new_order as $sequence => $cdef_id) {
-		input_validate_input_number($sequence);
-		input_validate_input_number($cdef_id);
-
-		db_execute_prepared('UPDATE cdef_items SET sequence = ? WHERE id = ?', array($sequence, $cdef_id));
 	}
 
 	header('Location: cdef.php?action=edit&header=false&id=' . get_request_var('id'));
@@ -577,7 +572,7 @@ function cdef_edit() {
 		draw_cdef_preview(get_request_var('id'));
 		html_end_box();
 
-		html_start_box( __('CDEF Items'), '100%', '', '3', 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id']);
+		html_start_box(__('CDEF Items'), '100%', '', '3', 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id']);
 
 		$display_text = array(
 			array('display' => __('Item'), 'align' => 'left'),
@@ -586,7 +581,11 @@ function cdef_edit() {
 
 		html_header($display_text, 2);
 
-		$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array(get_request_var('id')));
+		$cdef_items = db_fetch_assoc_prepared('SELECT *
+			FROM cdef_items
+			WHERE cdef_id = ?
+			ORDER BY sequence',
+			array(get_request_var('id')));
 
 		$i = 1;
 		$total_items = sizeof($cdef_items);
@@ -709,7 +708,7 @@ function cdef() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box( __('CDEFs'), '100%', '', '3', 'center', 'cdef.php?action=edit');
+	html_start_box(__('CDEFs'), '100%', '', '3', 'center', 'cdef.php?action=edit');
 
 	?>
 	<tr class='even'>

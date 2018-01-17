@@ -1,7 +1,7 @@
 <?php
 /*
    +-------------------------------------------------------------------------+
-   | Copyright (C) 2004-2017 The Cacti Group                                 |
+   | Copyright (C) 2004-2018 The Cacti Group                                 |
    |                                                                         |
    | This program is free software; you can redistribute it and/or           |
    | modify it under the terms of the GNU General Public License             |
@@ -909,14 +909,14 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 
 					$args = ' -v 3 -e ' . $notification_manager['snmp_engine_id'] . (($notification_manager['snmp_message_type'] == 2 )? ' -Ci ' : '' ) .  ' -u ' . $notification_manager['snmp_username'];
 
-					if ( $notification_manager['snmp_auth_password'] && $notification_manager['snmp_priv_password']) {
+					if ( $notification_manager['snmp_password'] && $notification_manager['snmp_priv_passphrase']) {
 						$snmp_security_level = 'authPriv';
-					} elseif ( $notification_manager['snmp_auth_password'] && !$notification_manager['snmp_priv_password']) {
+					} elseif ( $notification_manager['snmp_password'] && !$notification_manager['snmp_priv_passphrase']) {
 						$snmp_security_level = 'authNoPriv';
 					}else {
 						$snmp_security_level = 'noAuthNoPriv';
 					}
-					$args .= ' -l ' . $snmp_security_level . (($snmp_security_level != 'noAuthNoPriv') ? ' -a ' . $notification_manager['snmp_auth_protocol'] . ' -A ' . $notification_manager['snmp_auth_password'] : '' ) . (($snmp_security_level == 'authPriv')? ' -x ' . $notification_manager['snmp_priv_protocol'] . ' -X ' . $notification_manager['snmp_priv_password'] : '')  . ' ' . $notification_manager['hostname'] . ':' . $notification_manager['snmp_port'] . " \"\" " . $enterprise_oid . $snmp_notification_varbinds;
+					$args .= ' -l ' . $snmp_security_level . (($snmp_security_level != 'noAuthNoPriv') ? ' -a ' . $notification_manager['snmp_auth_protocol'] . ' -A ' . $notification_manager['snmp_password'] : '' ) . (($snmp_security_level == 'authPriv')? ' -x ' . $notification_manager['snmp_priv_protocol'] . ' -X ' . $notification_manager['snmp_priv_passphrase'] : '')  . ' ' . $notification_manager['hostname'] . ':' . $notification_manager['snmp_port'] . " \"\" " . $enterprise_oid . $snmp_notification_varbinds;
 				}
 
 				/* execute net-snmp to generate this notification in the background */
@@ -935,7 +935,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 				sql_save($save, 'snmpagent_notifications_log');
 
 				/* log the net-snmp command for Cacti admins if they wish for */
-				cacti_log("NOTE: $path_snmptrap " . str_replace(array($notification_manager['snmp_auth_password'], $notification_manager['snmp_priv_password']), '********', $args), false, 'SNMPAGENT', POLLER_VERBOSITY_MEDIUM);
+				cacti_log("NOTE: $path_snmptrap " . str_replace(array($notification_manager['snmp_password'], $notification_manager['snmp_priv_passphrase']), '********', $args), false, 'SNMPAGENT', POLLER_VERBOSITY_MEDIUM);
 			}
 		}
 	}else {

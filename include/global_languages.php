@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -33,8 +33,7 @@ $cacti_textdomains = array();
 $lang2locale = get_list_of_locales();
 
 /* use a fallback if i18n is disabled (default) */
-if (!read_config_option('i18n_language_support') && read_config_option('i18n_language_support') != '')
-{
+if (!read_config_option('i18n_language_support') && read_config_option('i18n_language_support') != '') {
 	load_fallback_procedure();
 	return;
 }
@@ -42,9 +41,8 @@ if (!read_config_option('i18n_language_support') && read_config_option('i18n_lan
 
 
 /* determine whether or not we can support the language */
-if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']]))
-/* user requests another language */
-{
+if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) {
+	/* user requests another language */
 	$cacti_locale  = $_REQUEST['language'];
 	$cacti_country = $lang2locale[$_REQUEST['language']]['country'];
 	$_SESSION['sess_user_language'] = $cacti_locale;
@@ -53,53 +51,48 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']]))
 
 	/* save customized language setting (authenticated users only) */
 	set_user_config_option('language', $cacti_locale);
-
-}
-/* language definition stored in the SESSION */
-elseif (isset($_SESSION['sess_user_language']) && isset($lang2locale[$_SESSION['sess_user_language']]))
-{
+} elseif (isset($_SESSION['sess_user_language']) && isset($lang2locale[$_SESSION['sess_user_language']])) {
+	/* language definition stored in the SESSION */
 	$cacti_locale = $_SESSION['sess_user_language'];
 	$cacti_country = $lang2locale[$_SESSION['sess_user_language']]['country'];
+} else {
+	$cacti_locale_set = false;
 
-}
-elseif ($user_locale = read_user_i18n_setting('user_language'))
-/* look up for user customized language setting stored in Cacti DB */
-{
-	if (isset($lang2locale[$user_locale]))
-	{
-		$cacti_locale = $user_locale;
-		$cacti_country = $lang2locale[$cacti_locale]['country'];
-		$_SESSION['sess_user_language'] = $cacti_locale;
-	}
-}
-elseif ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && ( read_config_option('i18n_auto_detection') | read_config_option('i18n_auto_detection') == '' ) )
-/* detect browser settings if auto detection is enabled */
-{
-	$accepted = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-	$accepted = strtolower(str_replace(strstr($accepted, ','), '', $accepted));
-
-	$accepted = (isset($lang2locale[$accepted])) ? $accepted : str_replace(strstr($accepted, '-'), '', $accepted);
-
-	if (isset($lang2locale[$accepted]))
-	{
-		$cacti_locale = $accepted;
-		$cacti_country = $lang2locale[$accepted]['country'];
+	/* look up for user customized language setting stored in Cacti DB */
+	if ($user_locale = read_user_i18n_setting('user_language')) {
+		if (isset($lang2locale[$user_locale])) {
+			$cacti_locale_set = true;
+			$cacti_locale = $user_locale;
+			$cacti_country = $lang2locale[$cacti_locale]['country'];
+			$_SESSION['sess_user_language'] = $cacti_locale;
+		}
 	}
 
-}
-else
-/* use the default language defined under 'general' */
-{
-	$accepted = read_config_option('i18n_default_language');
-	if ($accepted == '')
-	{
-		$accepted = read_default_config_option('i18n_default_language');
+	if (!$cacti_locale_set && (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && ( read_config_option('i18n_auto_detection') | read_config_option('i18n_auto_detection') == '' ))) {
+		/* detect browser settings if auto detection is enabled */
+		$accepted = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+		$accepted = strtolower(str_replace(strstr($accepted, ','), '', $accepted));
+
+		$accepted = (isset($lang2locale[$accepted])) ? $accepted : str_replace(strstr($accepted, '-'), '', $accepted);
+
+		if (isset($lang2locale[$accepted])) {
+			$cacti_local_set = true;
+			$cacti_locale = $accepted;
+			$cacti_country = $lang2locale[$accepted]['country'];
+		}
 	}
 
-	if (isset($lang2locale[$accepted]))
-	{
-		$cacti_locale = $accepted;
-		$cacti_country = $lang2locale[$accepted]['country'];
+	if (!$cacti_locale_set) {
+		$accepted = read_config_option('i18n_default_language');
+		if ($accepted == '') {
+			$accepted = read_default_config_option('i18n_default_language');
+		}
+
+		if (isset($lang2locale[$accepted])) {
+			$cacti_local_set = true;
+			$cacti_locale = $accepted;
+			$cacti_country = $lang2locale[$accepted]['country'];
+		}
 	}
 }
 
@@ -575,51 +568,62 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 	$country = strtoupper($cacti_country);
 
 	if (function_exists('numfmt_create')) {
-		$fmt = numfmt_create($cacti_locale . '_' . $country, NumberFormatter::DECIMAL);
-		numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+		$fmt_key = $cacti_locale . '_'. $country;
+		$fmt = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
+		if ($fmt !== FALSE) {
+			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
 
-		return numfmt_format($fmt, $number);
-	} else {
-		$origlocales = explode(';', setlocale(LC_ALL, 0));
-		setlocale(LC_ALL, $cacti_locale . '_' . $country);
-		$locale = localeconv();
-
-		if ($decimals == -1) {
-			$number =  number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
-		} elseif ($number>=pow($baseu, 4)) {
-			$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
-		} elseif($number>=pow($baseu, 3)) {
-			$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
-		} elseif($number>=pow($baseu, 2)) {
-			$number = number_format($number/pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
-		} elseif($number>=$baseu) {
-			$number = number_format($number/$baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
-		} else {
-			$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+			return numfmt_format($fmt, $number);
 		}
-
-		foreach ($origlocales as $locale_setting) {
-			if (strpos($locale_setting, '=') !== false) {
-				list($category, $locale) = explode('=', $locale_setting);
-  			} else {
-				$category = LC_ALL;
-				$locale   = $locale_setting;
-			}
-
-			switch($category) {
-			case 'LC_ALL':
-			case 'LC_COLLATE':
-			case 'LC_CTYPE':
-			case 'LC_MONETARY':
-			case 'LC_NUMERIC':
-			case 'LC_TIME':
-				if (defined($category)) {
-					setlocale(constant($category), $locale);
-				}
-			}
-		}
-
-		return $number;
+		cacti_log('DEBUG: Number format \'' . $fmy_key .'\' was unavailable, using older methods',false,'i18n',POLLER_VERBOSITY_HIGH);
 	}
+
+	$origlocales = explode(';', setlocale(LC_ALL, 0));
+	setlocale(LC_ALL, $cacti_locale . '_' . $country);
+	$locale = localeconv();
+
+	if ($decimals == -1) {
+		$number =  number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+	} elseif ($number>=pow($baseu, 4)) {
+		$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
+	} elseif($number>=pow($baseu, 3)) {
+		$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
+	} elseif($number>=pow($baseu, 2)) {
+		$number = number_format($number/pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
+	} elseif($number>=$baseu) {
+		$number = number_format($number/$baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
+	} else {
+		$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+	}
+
+	foreach ($origlocales as $locale_setting) {
+		if (strpos($locale_setting, '=') !== false) {
+			list($category, $locale) = explode('=', $locale_setting);
+  		} else {
+			$category = LC_ALL;
+			$locale   = $locale_setting;
+		}
+
+		switch($category) {
+		case 'LC_ALL':
+		case 'LC_COLLATE':
+		case 'LC_CTYPE':
+		case 'LC_MONETARY':
+		case 'LC_NUMERIC':
+		case 'LC_TIME':
+			if (defined($category)) {
+				setlocale(constant($category), $locale);
+			}
+		}
+	}
+
+	return $number;
 }
 
+function get_new_user_default_language() {
+	$accepted = read_config_option('i18n_default_language');
+	if ($accepted == '') {
+		$accepted = read_default_config_option('i18n_default_language');
+	}
+	return $accepted;
+}

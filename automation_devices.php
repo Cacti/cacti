@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -259,7 +259,7 @@ function display_discovery_page() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	$snmp_version        = read_config_option('snmp_ver');
+	$snmp_version        = read_config_option('snmp_version');
 	$snmp_port           = read_config_option('snmp_port');
 	$snmp_timeout        = read_config_option('snmp_timeout');
 	$snmp_username       = read_config_option('snmp_username');

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -539,7 +539,7 @@ function remote_update_config_file() {
 function import_colors() {
 	global $config;
 
-	if (! file_exists(dirname(__FILE__) . '/color.csv')) {
+	if (!file_exists(dirname(__FILE__) . '/colors.csv')) {
 		return false;
 	}
 

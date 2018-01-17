@@ -74,10 +74,10 @@ a:hover {
 }
 
 th .fa {
-    margin-top: -5px;
-    position: absolute;
-    right: 3px;
-    top: 50%;
+	margin-top: -5px;
+	position: absolute;
+	right: 3px;
+	top: 50%;
 }
 
 #main {
@@ -466,9 +466,9 @@ label {
 
 .menuoptions {
 	background: none repeat scroll 0 0 #EEE;
-    border-color: #F5F5F5 #E5E5E5 #CCC;
-    border-style: solid;
-    border-width: 0px 1px 1px 1px;
+	border-color: #F5F5F5 #E5E5E5 #CCC;
+	border-style: solid;
+	border-width: 0px 1px 1px 1px;
 	z-index: 2;
 	display: block;
 	float: right;
@@ -535,14 +535,22 @@ label {
 	cursor: pointer;
 	padding: 2px;
 	vertical-align: middle;
-	color: red;
+	text-decoration: none;
+	color: red !important;
 	font-weight: bold;
 	font-size: 14px
 }
 
+.deletequery:hover {
+	color: red !important;
+	text-decoration: none;
+	padding: 2px;
+	vertical-align:middle;
+}
+
 .odd {
 	background: none repeat scroll 0 0 #F5F5F5;
-    border: none;
+	border: none;
 }
 
 .odd td, .even td, .even-alternate td {
@@ -551,13 +559,13 @@ label {
 
 .even {
 	background: none repeat scroll 0 0 #E5E5E5;
-    border: none;
+	border: none;
 }
 
 .even-alternate {
 	background: none repeat scroll 0 0 #E7E9F2;
 	background-color: #E7E9F2;
-    border: none;
+	border: none;
 }
 
 .saveRow {
@@ -884,10 +892,10 @@ legend {
 
 .spikekillMenu {
 	background: #F5F5F5 none repeat scroll 0 0;
-    border: 1px solid #979797;
-    box-shadow: 2px 2px 2px #999999;
-    margin: 0;
-    padding: 2px;
+	border: 1px solid #979797;
+	box-shadow: 2px 2px 2px #999999;
+	margin: 0;
+	padding: 2px;
 	line-height: 1.5em;
 }
 
@@ -917,7 +925,7 @@ legend {
 	vertical-align: top;
 	display: table-cell;
 	overflow-y: auto !important;
-    overflow-x: hidden !important;
+	overflow-x: hidden !important;
 }
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {
@@ -968,6 +976,18 @@ legend {
 }
 
 .linkOverDark:hover {
+	color: white;
+	text-decoration: underline;
+}
+
+.linkCopyDark, .linkCopyDark:visited, .linkCopyDark:active {
+	color: white;
+	font-weight: normal;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.linkCopyDark:hover {
 	color: white;
 	text-decoration: underline;
 }
@@ -1065,32 +1085,49 @@ legend {
 .cactiTableTitle {
 	color: white;
 	float: left;
+	line-height: 22px;
+	height: 22px;
 	text-align: left;
 	display: table-column;
 	width: 70%;
 	background-color: #00438C;
+	font-size: 12px;
 }
 
 .cactiTableButton {
 	float: right;
 	display: table-column;
 	text-align: right;
+	height:22px;
 	width: 30%;
 	background-color: #00438C;
 	white-space: nowrap;
 }
 
+.cactiTableButton.debug {
+	background: transparent;
+	height: 1em;
+}
+
 .cactiTableButton span, .cactiTableTitle span {
 	color: white;
-	padding: 5px 8px 0px 3px;
+	padding: 0px;
 	line-height: 22px;
-	font-size: 11px;
+	height: 22px;
 	font-weight: bold;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;
+	background: transparent;
 }
 
+.cactiTableButton i {
+	padding: 0px 8px;
+}
+
+.cactiTableButton span:last-child, .cactiTableTitle span:last-child {
+	padding: 0px 5px;
+}
 .cactiTableButton .fa, .cactiTableTitle .fa {
 	display: inline;
 }
@@ -1255,7 +1292,7 @@ legend {
 		display: table-row;
 		width: 100%;
 		text-align: left;
-}
+	}
 
 	.formFieldName {
 		color: #444;
@@ -1275,8 +1312,7 @@ legend {
 
 	.queryAdd, .templateAdd, .navBar, #ping_results {
 		display: none;
-}
-
+	}
 }
 
 .graphItem {
@@ -1334,7 +1370,7 @@ legend {
 }
 
 .tableHeader th:last-child {
-    border-right: none !important;
+	border-right: none !important;
 }
 
 .tableHeader th div {
@@ -1551,13 +1587,13 @@ legend {
 
 .tabs li a {
 	background-color: #DFDFDF;
-    float: left !important;
-    padding: 5px 4px;
-    text-decoration: none;
-    font-size: 9px;
+	float: left !important;
+	padding: 5px 4px;
+	text-decoration: none;
+	font-size: 9px;
 	border-color: #999 #666 !important;
-    border-style: solid solid none;
-    border-width: 1px 1px medium;
+	border-style: solid solid none;
+	border-width: 1px 1px medium;
 	font-weight: bold;
 }
 
@@ -1618,7 +1654,7 @@ div#gtabs {
 }
 .tabs nav {
 	padding: 0px 4px 0px 0px;
-    background-repeat: repeat-x;
+	background-repeat: repeat-x;
 	zoom: 1;
 }
 

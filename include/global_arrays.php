@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -104,6 +104,7 @@ $cacti_version_codes = array(
 	'1.1.28' => '0101',
 	'1.1.29' => '0101',
 	'1.1.30' => '0101',
+	'1.1.31' => '0101',
 );
 
 $messages = array(
@@ -139,6 +140,12 @@ $messages = array(
 		'type' => 'error'),
 	12 => array(
 		'message' => __('Username already in use.'),
+		'type' => 'error'),
+	13  => array(
+		'message' => __('The SNMP v3 Privacy Passphrases to not match'),
+		'type' => 'error'),
+	14  => array(
+		'message' => __('The SNMP v3 Authentication Passwords to not match'),
 		'type' => 'error'),
 	15 => array(
 		'message' => __('XML: Cacti version does not exist.'),
@@ -470,6 +477,12 @@ $image_types = array(
 	3 => 'SVG'
 );
 
+$snmp_security_levels = array(
+	'noAuthNoPriv' => 'noAuthNoPriv',
+	'authNoPriv' => 'authNoPriv',
+	'authPriv' => 'authPriv'
+);
+
 $snmp_versions = array(0 =>
 	__('Not In Use'),
 	__('Version %d', 1),
@@ -478,13 +491,14 @@ $snmp_versions = array(0 =>
 );
 
 $snmp_auth_protocols = array(
-	'MD5' => __('MD5 (default)'),
-	'SHA' => __('SHA')
+	'[None]' => __('[None]'),
+	'MD5'    => __('MD5'),
+	'SHA'    => __('SHA')
 );
 
 $snmp_priv_protocols = array(
 	'[None]' => __('[None]'),
-	'DES'    => __('DES (default)'),
+	'DES'    => __('DES'),
 	'AES128' => __('AES')
 );
 
@@ -558,26 +572,30 @@ $sampling_intervals = array(
 	1800  => __('Every %d Minutes', 30),
 	3600  => __('Every Hour'),
 	7200  => __('Every %d Hours', 2),
-	14400 => __('Every %d Hours', 4)
+	14400 => __('Every %d Hours', 4),
+	28800 => __('Every %d Hours', 8),
+	43200 => __('Every %d Hours', 12),
+	86400 => __('Every %1 Day', 1)
 );
 
 $heartbeats = array(
-	20    => __('%d Seconds', 20),
-	30    => __('%d Seconds', 30),
-	40    => __('%d Seconds', 40),
-	60    => __('1 Minute'),
-	120   => __('%d Minutes', 2),
-	300   => __('%d Minutes', 5),
-	600   => __('%d Minutes', 10),
-	1200  => __('%d Minutes', 20),
-	1800  => __('%d Minutes', 30),
-	2400  => __('%d Minutes', 40),
-	3600  => __('1 Hour'),
-	7200  => __('%d Hours', 2),
-	14400 => __('%d Hours', 4),
-	28800 => __('%d Hours', 8),
-	57600 => __('%d Hours', 16),
-	86400 => __('1 Day')
+	20     => __('%d Seconds', 20),
+	30     => __('%d Seconds', 30),
+	40     => __('%d Seconds', 40),
+	60     => __('%d Minute',  1),
+	120    => __('%d Minutes', 2),
+	300    => __('%d Minutes', 5),
+	600    => __('%d Minutes', 10),
+	1200   => __('%d Minutes', 20),
+	1800   => __('%d Minutes', 30),
+	2400   => __('%d Minutes', 40),
+	3600   => __('%d Hour', 1),
+	7200   => __('%d Hours', 2),
+	14400  => __('%d Hours', 4),
+	28800  => __('%d Hours', 8),
+	57600  => __('%d Hours', 16),
+	86400  => __('%d Day', 1),
+	172800 => __('%d Days', 2)
 );
 
 $timespans = array(
@@ -1064,6 +1082,14 @@ $hash_type_names = array(
 	'vdef'                 => __('VDEF'),
 	'vdef_item'            => __('VDEF Item')
 );
+
+$hash_system_data_inputs = array(
+	'3eb92bb845b9660a7445cf9740726522', // Get SNMP Data
+	'bf566c869ac6443b0c75d1c32b5a350e', // Get SNMP Data (Indexed)
+	'80e9e4c4191a5da189ae26d0e237f015', // Get Script Data (Indexed)
+	'332111d8b54ac8ce939af87a7eac0c06'  // Get Script Server Data (Indexed)
+);
+
 
 $host_struc = array(
 	'host_template_id',

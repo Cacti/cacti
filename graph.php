@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -372,6 +372,7 @@ case 'zoom':
 	function graphXport() {
 		$.get(urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&format=table&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val(), function(data) {
 			$('#data').html(data);
+			resizeWrapper();
 
 			$('.download').click(function(event) {
 				event.preventDefault;

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -84,6 +84,8 @@ if (isset_request_var('install_type')) {
 }
 
 /* defaults for the install type dropdown */
+$default_install_button = __('Begin');
+
 if ($old_cacti_version == 'new_install') {
 	$default_install_type = '1';
 } else {
@@ -93,6 +95,7 @@ if ($old_cacti_version == 'new_install') {
 /* pre-processing that needs to be done for each step */
 if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 	$step = get_filter_request_var('step');
+	$default_install_button = __('Next');
 
 	switch($step) {
 	case '1':
@@ -106,10 +109,17 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 
 		/* checkdependencies - send to install/upgrade */
 		$step++;
-
+		if (get_filter_request_var('install_type') == '3') {
+			if (cacti_version_compare($old_cacti_version, CACTI_VERSION, '<=')) {
+				$default_install_button = __('Upgrade');
+			} else {
+				$default_install_button = __('Downgrade');
+			}
+		}
 		break;
 	case '3':
 		$previous_step = 2;
+
 		if (get_filter_request_var('install_type') == '1') {
 			/* install - New Primary Server */
 			$step = 4;
@@ -117,6 +127,11 @@ if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 			/* install - New Remote Poller */
 			$step = 4;
 		} elseif (get_filter_request_var('install_type') == '3') {
+			if (cacti_version_compare($old_cacti_version, CACTI_VERSION, '<=')) {
+				$default_install_button = __('Upgrade');
+			} else {
+				$default_install_button = __('Downgrade');
+			}
 			/* install/upgrade - if user chooses "Upgrade" send to upgrade */
 			$step = 8;
 		}
@@ -423,22 +438,26 @@ $enabled = '1';
 					<td class='textHeaderDark'><strong><?php print __('Cacti Installation Wizard'); ?></strong></td>
 				</tr>
 				<tr class='installArea'>
-					<td>
+					<td class='installArea'>
 
 					<?php
 					/* license&welcome */
 					if ($step == '1') {
-						print '<h2>' . __('License Agreement') . '</h2>';
+						print '<h2>' . __('Cacti Version') . ' '. CACTI_VERSION . ' - ' . __('License Agreement') . '</h2>';
 
 						print '<p>' . __('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.') . '</p>';
 						print '<p>' . __('Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href="%1$s">Unix</a> and <a href="%2$s">Win32</a>-based operating systems.', '../docs/html/install_unix.html', '../docs/html/install_windows.html') . '</p>';
-						print '<p>' . __('Also, if this is an upgrade, be sure to reading the <a href="%s">Upgrade</a> information file.', '../docs/html/upgrade.html') . '</p>';
+						if ($default_install_type == '3') {
+							print '<p class=\'note\'>' . __('Note: This process will guide you through the steps for upgrading from version \'%s\'. ',$old_cacti_version);
+							print __('Also, if this is an upgrade, be sure to reading the <a href="%s">Upgrade</a> information file.', '../docs/html/upgrade.html') . '</p>';
+						}
 						print '<p>' . __('Cacti is licensed under the GNU General Public License, you must agree to its provisions before continuing:') . "</p>";
 					?>
-						<p class='code'><?php print __('This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.');?></p>
+						<div class='code'>
+						<p><?php print __('This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.');?></p>
 
-						<p class='code'><?php print __('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.');?></p>
-
+						<p><?php print __('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.');?></p>
+						</div>
 						<span><input type='checkbox' id='accept' name='accept'></span><span><label for='accept'><?php print __('Accept GPL License Agreement');?></label></span><br><br>
 					<?php
 					/* checkdependencies */
@@ -629,10 +648,17 @@ $enabled = '1';
 						print '<h2>' . __('Installation Type') . '</h2>';
 
 						if ($default_install_type == '3') {
-							// upgrade
+							// upgrade unless it is not
 							print '<input type="hidden" id="install_type" name="install_type" value="3">';
-							print '<h4>' . __('Upgrade from <strong>%s</strong> to <strong>%s</strong>', $old_cacti_version, CACTI_VERSION) . '</h4>';
-							print '<p> <font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing') . '</font></p>';
+							if (cacti_version_compare($old_cacti_version, CACTI_VERSION, '<=')) {
+								// upgrade detected
+								print '<h4>' . __('Upgrade from <strong>%s</strong> to <strong>%s</strong>', $old_cacti_version, CACTI_VERSION) . '</h4>';
+								print '<p> <font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing.  Additionally, after this script is complete, you will also have to refresh your page to load updated JavaScript so that the Cacti pages render properly.  In Firefox and IE, you simply press F5, in Chrome, you may have to clear your browser cache for the Cacti web site.') . '</font></p>';
+							} else {
+								// downgrade detected
+								print '<h4>' . __('Downgrade from <strong>%s</strong> to <strong>%s</strong>', $old_cacti_version, CACTI_VERSION) . '</h4>';
+								print '<p> <font color="#FF0000">' . __('WARNING - Appears you are downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues.') . '</font></p>';
+							}
 						} else {
 							// new install
 							print '<h4>' . __('Please select the type of installation') . '</h4>';
@@ -723,7 +749,7 @@ $enabled = '1';
 									$('#test').hide();
 									$('#results').html('');
 									$('#next').button('enable');
-									$('#next').val('<?php print __('Next');?>');
+									$('#next').val('<?php print __('Next'); ?>');
 									break;
 								case '2':
 									$('#local_database').show();
@@ -739,7 +765,7 @@ $enabled = '1';
 									}
 									<?php } else { ?>
 									$('#next').button('disable');
-									$('#next').val('<?php print __('Next');?>');
+									$('#next').val('<?php print __('Next'); ?>');
 									<?php } ?>
 									break;
 								case '3':
@@ -748,7 +774,7 @@ $enabled = '1';
 									$('#test').hide();
 									$('#results').html('');
 									$('#next').button('enable');
-									$('#next').val('<?php print __('Upgrade');?>');
+									$('#next').val('<?php print $default_install_button; ?>');
 									break;
 								}
 							}).change();
@@ -1011,11 +1037,12 @@ $enabled = '1';
 
 					} ?>
 					</td>
+					<?php html_end_box(false); ?>
 				</tr>
 				<tr>
 					<td class='saveRow' style='text-align:left'>
 						<?php if ($step > 1) {?><input id='previous' type='button' value='<?php print __x('Dialog: previous', 'Previous'); ?>'><?php }?>
-						<input id='next' type='submit' value='<?php if ($step == '9'){ print __x('Dialog: complete', 'Finish'); } else { print __x('Dialog: go to the next page', 'Next'); }?>'>
+						<input id='next' type='submit' value='<?php if ($step == '9'){ print __x('Dialog: complete', 'Finish'); } else { print __x('Dialog: go to the next page', $default_install_button); }?>'>
 						<input id='test' type='button' style='display:none' title='<?php print __('Test remote database connection');?>' value='<?php print __x('Dialog: test connection', 'Test Connection'); ?>'>
 						<input type='hidden' id='previous_step' name='previous_step' value='<?php print $previous_step;?>'>
 					</td>
