@@ -1642,7 +1642,7 @@ div#gtabs {
 }
 
 .maintabs nav {
-	display: none;
+	display: block;
 }
 
 .maintabs li {
