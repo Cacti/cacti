@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#1240: Tree edit page not displaying properly
 -issue: Critial issue created when theme files are missing corrupting user settings
 -issue: Due to new theme session variable, changing your theme does not take effect until next login
+-issue: Tree edit Tree/Device/Graph drag areas width incorrect
 
 1.1.31
 -issue#629: Site reload after delete the last letter in the searchbar
