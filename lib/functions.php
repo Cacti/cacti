@@ -4411,6 +4411,7 @@ function IgnoreErrorHandler($message) {
 		'This name does not exist',
 		'End of MIB',
 		'Unknown host',
+		'Invalid object identifier',
 		'Name or service not known'
 	);
 
