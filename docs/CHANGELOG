@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#1222: Fix RRDTool error in generate_graph_def_name()
 -issue#1230: Fix undefined function in tree.php
 -issue#1238: Cacti not handing git pull 'Invalid Object identifier' correctly
+-issue#1239: New Cacti browser error handler mishandling certain conditions
 -issue: Critial issue created when theme files are missing corrupting user settings
 
 1.1.31
