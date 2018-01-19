@@ -1295,47 +1295,47 @@ function loadPageNoHeader(href, scroll) {
 }
 
 function getPresentHTTPError(data) {
-	if (typeof data != 'undefined') {
-		var title_match = data.match(/<title>(.*?)<\/title>/);
-		var head_match  = data.match(/<h1>(.*?)<\/h1>/);
-		var para_match  = data.match(/<p>(.*?)<\/p>/);
+	var title_match = data.match(/<title>(.*?)<\/title>/);
+	var head_match  = data.match(/<h1>(.*?)<\/h1>/);
+	var para_match  = data.match(/<p>(.*?)<\/p>/);
 
-		errorStr  = '';
-		errorSub  = '';
-		errorText = '';
+	errorStr  = '';
+	errorSub  = '';
+	errorText = '';
 
-		if (title_match != null) {
-			var errorStr = title_match[1];
-		}
-
-		if (head_match != null) {
-			var errorSub = head_match[1];
-		}
-
-		if (para_match != null) {
-			var errorText = para_match[1];
-		}
-
-		returnStr = '<div id="httperror" style="display:none" class="center">' +
-			'<h4>'    + errorOnPage + '</h4><hr>' +
-			'<h4>' + errorNumberPrefix + ' ' + errorStr + '</h4><hr>' +
-			'<p><b>'  + errorReasonPrefix + '</b> ' + errorText + '</p>' +
-			'</div>';
-
-		$('#httperror').remove();
-		$('body').append(returnStr);
-		$('#httperror').dialog({
-			resizable: false,
-			height: 'auto',
-			width: 400,
-			title: errorStr,
-			buttons: {
-				Ok: function() {
-					$(this).dialog('close');
-				}
-			}
-		});
+	if (title_match != null) {
+		var errorStr = title_match[1];
 	}
+
+	if (head_match != null) {
+		var errorSub = head_match[1];
+	}
+
+	if (para_match != null) {
+		var errorText = para_match[1];
+	}
+
+	returnStr = '<div id="httperror" style="display:none">' +
+		'<h4>' + errorOnPage + '</h4><hr>' +
+		'<div style="padding-bottom: 5px;"><div style="display:table-cell;width:75px"><b>' + errorNumberPrefix + '</b></div> ' +
+		'<div style="display:table-cell"> ' + errorStr + '</div></div>' +
+		'<div><div style="display:table-cell;width:75px"><b>'  + errorReasonPrefix + '</b></div> ' +
+		'<div style="display:table-cell"> ' + errorText + '</div></div>' +
+		'</div></div>';
+
+	$('#httperror').remove();
+	$('body').append(returnStr);
+	$('#httperror').dialog({
+		resizable: false,
+		height: 'auto',
+		width: 400,
+		title: errorStr,
+		buttons: {
+			Ok: function() {
+				$(this).dialog('close');
+			}
+		}
+	});
 }
 
 function ajaxAnchors() {
