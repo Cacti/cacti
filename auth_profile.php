@@ -118,6 +118,7 @@ function form_save() {
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var('sess_user_language');
 	kill_session_var('sess_user_config_array');
+	kill_session_var('selected_theme');
 }
 
 /* --------------------------
