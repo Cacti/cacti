@@ -357,7 +357,8 @@ function get_selected_theme() {
 
 				db_execute_prepared('UPDATE settings_user
 					SET value = ?
-					WHERE user_id = ?',
+					WHERE user_id = ?
+					AND name="selected_theme"',
 					array($theme, $_SESSION['sess_user_id']));
 
 				break;
