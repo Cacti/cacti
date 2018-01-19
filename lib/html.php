@@ -78,7 +78,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
 		print "<div class='cactiTableButton'>\n";
 		if ($add_text != '' && !is_array($add_text)) {
-			print "<span><a class='linkOverDark' title='$add_label' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span></div>";
+			print "<span><a class='linkOverDark' title='$add_label' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
 		} else {
 			if (is_array($add_text)) {
 				if (sizeof($add_text)) {
@@ -107,14 +107,14 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 							$title = $add_label;
 						}
 
-						print "<span><a" . (isset($icon['id']) ? "id='" . $icon['id'] . "'":"") . " class='$classo' href='$href' title='$title'><i class='$classi'></i></a></span></div>";
+						print "<span><a" . (isset($icon['id']) ? "id='" . $icon['id'] . "'":"") . " class='$classo' href='$href' title='$title'><i class='$classi'></i></a></span>";
 					}
 				}
 			} else {
-				print "<span> </span></div>";
+				print "<span> </span>";
 			}
 		}
-		print '</div>';
+		print '</div></div>';
 
 		if ($div === true) {
 			print "<div id='$table_id" . "_child' class='cactiTable'>";
