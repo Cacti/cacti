@@ -1556,10 +1556,10 @@ function get_rrd_cfs($local_data_id) {
    @arg $graph_item_id - (int) the ID to generate a letter-based representation of
    @returns - a letter-based representation of the input argument */
 function generate_graph_def_name($graph_item_id) {
-	$lookup_table = array('a','b','c','d','e','f','g','h','i','j');
+	$lookup_table = array('a','b','d','e','f','g','h','i','j','k');
 
 	$result = '';
-    $strValGII = strval($graph_item_id);
+	$strValGII = strval($graph_item_id);
 	for ($i=0; $i<strlen($strValGII); $i++) {
 		$result .= $lookup_table{substr($strValGII, $i, 1)};
 	}
@@ -4412,6 +4412,7 @@ function IgnoreErrorHandler($message) {
 		'This name does not exist',
 		'End of MIB',
 		'Unknown host',
+		'Invalid object identifier',
 		'Name or service not known'
 	);
 
@@ -5004,4 +5005,13 @@ function cacti_gethostbyname($hostname, $type = '') {
 	}
 
 	return $hostname;
+}
+
+function get_nonsystem_data_input($data_input_id) {
+	global $hash_system_data_inputs;
+	$diid = db_fetch_cell_prepared('SELECT id FROM data_input
+					WHERE hash NOT IN ("' . implode('","', $hash_system_data_inputs) . '")
+					AND id = ?',
+					array($data_input_id));
+	return $diid;
 }

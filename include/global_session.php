@@ -124,4 +124,7 @@ if (isset($_SESSION['refresh'])) {
 	var passwordNotMatchTooShort='<?php print __('Passphrase too short and not matching');?>';
 	var passwordMatch='<?php print __('Passphrases match');?>';
 	var passwordNotMatch='<?php print __('Passphrases do not match');?>';
+	var errorOnPage='<?php print __('Sorry, we could not process your last action');?>';
+	var errorNumberPrefix='<?php print __('Error:');?>';
+	var errorReasonPrefix='<?php print __('Reason:');?>';
 </script>

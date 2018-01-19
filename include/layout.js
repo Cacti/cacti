@@ -1193,59 +1193,64 @@ function menuShow(tree) {
 function loadPage(href) {
 	statePushed = false;
 
-	$.get(href, function(html) {
-		var htmlObject  = $(html);
-		var matches     = html.match(/<title>(.*?)<\/title>/);
+	$.get(href)
+		.success(function(html) {
+			var htmlObject  = $(html);
+			var matches     = html.match(/<title>(.*?)<\/title>/);
 
-		if (matches != null) {
-			var htmlTitle   = matches[1];
-			var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-			var data        = htmlObject.find('#main').html();
+			if (matches != null) {
+				var htmlTitle   = matches[1];
+				var breadCrumbs = htmlObject.find('#breadcrumbs').html();
+				var data        = htmlObject.find('#main').html();
 
-			checkForLogout(data);
+				checkForLogout(data);
 
-			$('#main').empty().hide();
-			$('title').text(htmlTitle);
-			$('#breadcrumbs').html(breadCrumbs);
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
+				$('#main').empty().hide();
+				$('title').text(htmlTitle);
+				$('#breadcrumbs').html(breadCrumbs);
+				$('div[class^="ui-"]').remove();
+				$('#main').html(data);
 
-			myTitle = htmlTitle;
-			myHref  = href;
+				myTitle = htmlTitle;
+				myHref  = href;
 
-			pushState(myTitle, href);
-		} else {
-			checkForLogout(html);
-
-			$('#main').empty().hide();
-			$('#main').html(html);
-
-			pushState(myTitle, href);
-		}
-
-		var hrefParts = href.split('?');
-		pageName = basename(hrefParts[0]);
-
-		if (pageName != '') {
-			if ($('#menu').find("a[href*='"+href+"']").length > 0) {
-				$('#menu').find('.pic').removeClass('selected');
-				$('#menu').find("a[href*='"+href+"']").addClass('selected');
+				pushState(myTitle, href);
 			} else {
-				$('#menu').find('.pic').removeClass('selected');
-				$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+				checkForLogout(html);
+
+				$('#main').empty().hide();
+				$('#main').html(html);
+
+				pushState(myTitle, href);
 			}
+
+			var hrefParts = href.split('?');
+			pageName = basename(hrefParts[0]);
+
+			if (pageName != '') {
+				if ($('#menu').find("a[href*='"+href+"']").length > 0) {
+					$('#menu').find('.pic').removeClass('selected');
+					$('#menu').find("a[href*='"+href+"']").addClass('selected');
+				} else {
+					$('#menu').find('.pic').removeClass('selected');
+					$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+				}
+			}
+
+			applySkin();
+
+			if (isMobile.any() != null) {
+				window.scrollTo(0,1);
+			} else {
+				window.scrollTo(0,0);
+			}
+
+			return false;
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
 		}
-
-		applySkin();
-
-		if (isMobile.any() != null) {
-			window.scrollTo(0,1);
-		} else {
-			window.scrollTo(0,0);
-		}
-
-		return false;
-	});
+	);
 
 	return false;
 }
@@ -1253,35 +1258,84 @@ function loadPage(href) {
 function loadPageNoHeader(href, scroll) {
 	statePushed = false;
 
-	$.get(href, function(data) {
-		checkForLogout(data);
+	$.get(href)
+		.success(function(data) {
+			checkForLogout(data);
 
-		$('#main').empty().hide();
-		$('div[class^="ui-"]').remove();
-		$('#main').html(data);
+			$('#main').empty().hide();
+			$('div[class^="ui-"]').remove();
+			$('#main').html(data);
 
-		var hrefParts = href.split('?');
-		pageName = basename(hrefParts[0]);
+			var hrefParts = href.split('?');
+			pageName = basename(hrefParts[0]);
 
-		if (pageName != '') {
-			$('#menu').find('.pic').removeClass('selected');
-			$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+			if (pageName != '') {
+				$('#menu').find('.pic').removeClass('selected');
+				$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+			}
+
+			applySkin();
+
+			pushState(myTitle, href);
+
+			if (isMobile.any() != null) {
+				window.scrollTo(0,1);
+			} else {
+				window.scrollTo(0,0);
+			}
+
+			return false;
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
 		}
-
-		applySkin();
-
-		pushState(myTitle, href);
-
-		if (isMobile.any() != null) {
-			window.scrollTo(0,1);
-		} else {
-			window.scrollTo(0,0);
-		}
-
-		return false;
-	});
+	);
 
 	return false;
+}
+
+function getPresentHTTPError(data) {
+	var title_match = data.match(/<title>(.*?)<\/title>/);
+	var head_match  = data.match(/<h1>(.*?)<\/h1>/);
+	var para_match  = data.match(/<p>(.*?)<\/p>/);
+
+	errorStr  = '';
+	errorSub  = '';
+	errorText = '';
+
+	if (title_match != null) {
+		var errorStr = title_match[1];
+	}
+
+	if (head_match != null) {
+		var errorSub = head_match[1];
+	}
+
+	if (para_match != null) {
+		var errorText = para_match[1];
+	}
+
+	returnStr = '<div id="httperror" style="display:none">' +
+		'<h4>' + errorOnPage + '</h4><hr>' +
+		'<div style="padding-bottom: 5px;"><div style="display:table-cell;width:75px"><b>' + errorNumberPrefix + '</b></div> ' +
+		'<div style="display:table-cell"> ' + errorStr + '</div></div>' +
+		'<div><div style="display:table-cell;width:75px"><b>'  + errorReasonPrefix + '</b></div> ' +
+		'<div style="display:table-cell"> ' + errorText + '</div></div>' +
+		'</div></div>';
+
+	$('#httperror').remove();
+	$('body').append(returnStr);
+	$('#httperror').dialog({
+		resizable: false,
+		height: 'auto',
+		width: 400,
+		title: errorStr,
+		buttons: {
+			Ok: function() {
+				$(this).dialog('close');
+			}
+		}
+	});
 }
 
 function ajaxAnchors() {
@@ -1414,22 +1468,35 @@ function setupSortable() {
 		document.getSelection().removeAllRanges();
 		var $target = $(e.target);
 		if (!$target.is('.ui-resizable-handle')) {
-			var page=$(this).find('.sortinfo').attr('sort-page');
-			var column=$(this).find('.sortinfo').attr('sort-column');
-			var direction=$(this).find('.sortinfo').attr('sort-direction');
+			var page     = $(this).find('.sortinfo').attr('sort-page');
+			var column   = $(this).find('.sortinfo').attr('sort-column');
+			var direction= $(this).find('.sortinfo').attr('sort-direction');
+
 			if (shiftPressed) {
 				sortAdd='&add=true';
 			} else {
 				sortAdd='&add=reset';
 			}
-			$.get(page+(page.indexOf('?') > 0 ? '&':'?')+'sort_column='+column+'&sort_direction='+direction+'&header=false'+sortAdd, function(data) {
-				checkForLogout(data);
 
-				$('#main').empty().hide();
-				$('div[class^="ui-"]').remove();
-				$('#main').html(data);
-				applySkin();
-			});
+			url = page+(page.indexOf('?') > 0 ? '&':'?') +
+				'sort_column=' + column +
+				'&sort_direction=' + direction +
+				'&header=false' +
+				sortAdd;
+
+			$.get(url)
+				.success(function(data) {
+					checkForLogout(data);
+
+					$('#main').empty().hide();
+					$('div[class^="ui-"]').remove();
+					$('#main').html(data);
+					applySkin();
+				})
+				.error(function(data) {
+				getPresentHTTPError(data.responseText);
+				}
+			);
 		}
 	});
 
@@ -1577,14 +1644,19 @@ function setupPageTimeout() {
 				/* fix coner case with tree refresh */
 				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
 
-				$.get(refreshPage, function(data) {
-					checkForLogout(data);
+				$.get(refreshPage)
+					.success(function(data) {
+						checkForLogout(data);
 
-					$('#main').empty().hide();
-					$('div[class^="ui-"]').remove();
-					$('#main').html(data);
-					applySkin();
-				});
+						$('#main').empty().hide();
+						$('div[class^="ui-"]').remove();
+						$('#main').html(data);
+						applySkin();
+					})
+					.error(function(data) {
+						getPresentHTTPError(data.responseText);
+					}
+				);
 			}
 		}, refreshMSeconds);
 	}
@@ -1729,14 +1801,19 @@ function clearGraphFilter() {
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
 	$.ajaxQ.abortAll();
-	$.get(new_href+'&header=false', function(data) {
-		checkForLogout(data);
+	$.get(new_href+'&header=false')
+		.success(function(data) {
+			checkForLogout(data);
 
-		$('#main').empty().hide();
-		$('div[class^="ui-"]').remove();
-		$('#main').html(data);
-		applySkin();
-	});
+			$('#main').empty().hide();
+			$('div[class^="ui-"]').remove();
+			$('#main').html(data);
+			applySkin();
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function saveGraphFilter(section) {
@@ -1748,13 +1825,18 @@ function saveGraphFilter(section) {
 		'&predefined_timeshift='+$('#predefined_timeshift').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
 
-	$.get(href+'&header=false&section='+section, function(data) {
-		checkForLogout(data);
+	$.get(href+'&header=false&section='+section)
+		.success(function(data) {
+			checkForLogout(data);
 
-		$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
-			$('#text').empty();
-		});
-	});
+			$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
+				$('#text').empty();
+			});
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function applyGraphFilter() {
@@ -1769,16 +1851,21 @@ function applyGraphFilter() {
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
 	$.ajaxQ.abortAll();
-	$.get(new_href+'&header=false', function(data) {
-		checkForLogout(data);
+	$.get(new_href+'&header=false')
+		.success(function(data) {
+			checkForLogout(data);
 
-		$('#main').hide();
-		$('div[class^="ui-"]').remove();
-		$('#main').html(data);
-		applySkin();
+			$('#main').hide();
+			$('div[class^="ui-"]').remove();
+			$('#main').html(data);
+			applySkin();
 
-		pushState(myTitle, myHref);
-	});
+			pushState(myTitle, myHref);
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function cleanHeader(href) {
@@ -1832,14 +1919,19 @@ function applyGraphTimespan() {
 	$.ajaxQ.abortAll();
 	$.get(new_href+'?action='+pageAction+'&header=false'+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
-		'&predefined_timeshift='+$('#predefined_timeshift').val(), function(data) {
-		checkForLogout(data);
+		'&predefined_timeshift='+$('#predefined_timeshift').val())
+		.success(function(data) {
+			checkForLogout(data);
 
-		$('#main').empty().hide();
-		$('div[class^="ui-"]').remove();
-		$('#main').html(data);
-		applySkin();
-	});
+			$('#main').empty().hide();
+			$('div[class^="ui-"]').remove();
+			$('#main').html(data);
+			applySkin();
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function refreshGraphTimespanFilter() {
@@ -1939,92 +2031,132 @@ function clearGraphTimespanFilter() {
 
 function removeSpikesStdDev(local_graph_id) {
 	strURL = 'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
-	$.getJSON(strURL, function(data) {
-		checkForLogout(data);
+	$.getJSON(strURL)
+		.success(function(data) {
+			checkForLogout(data);
 
-		redrawGraph(local_graph_id);
-		$('#spikeresults').remove();
-	});
+			redrawGraph(local_graph_id);
+			$('#spikeresults').remove();
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function removeSpikesVariance(local_graph_id) {
 	strURL = "spikekill.php?method=variance&local_graph_id="+local_graph_id;
-	$.getJSON(strURL, function(data) {
-		checkForLogout(data);
+	$.getJSON(strURL)
+		.success(function(data) {
+			checkForLogout(data);
 
-		redrawGraph(local_graph_id);
-		$('#spikeresults').remove();
-	});
+			redrawGraph(local_graph_id);
+			$('#spikeresults').remove();
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function removeSpikesInRange(local_graph_id) {
 	strURL = 'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
-	$.getJSON(strURL, function(data) {
-		checkForLogout(data);
+	$.getJSON(strURL)
+		.success(function(data) {
+			checkForLogout(data);
 
-		redrawGraph(local_graph_id);
-		$('#spikeresults').remove();
-	});
+			redrawGraph(local_graph_id);
+			$('#spikeresults').remove();
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function removeRangeFill(local_graph_id) {
 	strURL = 'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
-	$.getJSON(strURL, function(data) {
-		checkForLogout(data);
+	$.getJSON(strURL)
+		.success(function(data) {
+			checkForLogout(data);
 
-		redrawGraph(local_graph_id);
-		$('#spikeresults').remove();
-	});
+			redrawGraph(local_graph_id);
+			$('#spikeresults').remove();
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function dryRunStdDev(local_graph_id) {
 	strURL = "spikekill.php?method=stddev&dryrun=true&local_graph_id="+local_graph_id;
-	$.getJSON(strURL, function(data) {
-		checkForLogout(data);
+	$.getJSON(strURL)
+		.success(function(data) {
+			checkForLogout(data);
 
-		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
-	});
+			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function dryRunVariance(local_graph_id) {
 	strURL = "spikekill.php?method=variance&dryrun=true&local_graph_id="+local_graph_id;
-	$.getJSON(strURL, function(data) {
-		checkForLogout(data);
+	$.getJSON(strURL)
+		.success(function(data) {
+			checkForLogout(data);
 
-		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
-	});
+			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function dryRunSpikesInRange(local_graph_id) {
 	strURL = 'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
-	$.getJSON(strURL, function(data) {
-		checkForLogout(data);
+	$.getJSON(strURL)
+		.success(function(data) {
+			checkForLogout(data);
 
-		redrawGraph(local_graph_id);
-		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
-	});
+			redrawGraph(local_graph_id);
+			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function dryRunRangeFill(local_graph_id) {
 	strURL = 'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
-	$.getJSON(strURL, function(data) {
-		checkForLogout(data);
+	$.getJSON(strURL)
+		.success(function(data) {
+			checkForLogout(data);
 
-		redrawGraph(local_graph_id);
-		$('#spikeresults').remove();
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
-		$('#spikeresults').html(data.results);
-		$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
-	});
+			redrawGraph(local_graph_id);
+			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
+		}
+	);
 }
 
 function redrawGraph(graph_id) {
@@ -2052,8 +2184,8 @@ function redrawGraph(graph_id) {
 		'&graph_end='+graph_end+
 		'&graph_height='+graph_height+
 		'&graph_width='+graph_width+
-		(isThumb ? '&graph_nolegend=true':''),
-		function(data) {
+		(isThumb ? '&graph_nolegend=true':''))
+		.success(function(data) {
 			if (myWidth < data.image_width) {
 				ratio=myWidth/data.image_width;
 				data.image_width  = parseInt(data.image_width  * ratio);
@@ -2084,6 +2216,9 @@ function redrawGraph(graph_id) {
 				" value_min='"+data.value_min+"'"+
 				" value_max='"+data.value_max+"'>"
 			);
+		})
+		.error(function(data) {
+			getPresentHTTPError(data.responseText);
 		}
 	);
 }
@@ -2095,17 +2230,22 @@ function initializeGraphs() {
 		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 		$.ajaxQ.abortAll();
-		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false', function(data) {
-			checkForLogout(data);
+		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false')
+			.success(function(data) {
+				checkForLogout(data);
 
-			$('#main').empty().hide();
-			$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">'+timeGraphView+'</a></li>');
-			$('#zoom-container').remove();
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
-			applySkin();
-			clearTimeout(myRefresh);
-		});
+				$('#main').empty().hide();
+				$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">'+timeGraphView+'</a></li>');
+				$('#zoom-container').remove();
+				$('div[class^="ui-"]').remove();
+				$('#main').html(data);
+				applySkin();
+				clearTimeout(myRefresh);
+			})
+			.error(function(data) {
+				getPresentHTTPError(data.responseText);
+			}
+		);
 	});
 
 	$('a[id$="_csv"]').unbind('click').click(function(event) {
@@ -2141,8 +2281,8 @@ function initializeGraphs() {
 			'&graph_end='+graph_end+
 			'&graph_height='+graph_height+
 			'&graph_width='+graph_width+
-			(isThumb ? '&graph_nolegend=true':''),
-			function(data) {
+			(isThumb ? '&graph_nolegend=true':''))
+			.success(function(data) {
 				if (myWidth < data.image_width) {
 					ratio=myWidth/data.image_width;
 					data.image_width  = parseInt(data.image_width  * ratio);
@@ -2181,7 +2321,11 @@ function initializeGraphs() {
 				});
 
 				realtimeArray[data.local_graph_id] = false;
-		});
+			})
+			.error(function(data) {
+				getPresentHTTPError(data.responseText);
+			}
+		);
 	});
 
 	$('#realtimeoff').unbind('click').click(function() {
@@ -2197,16 +2341,21 @@ function initializeGraphs() {
 		event.stopPropagation();
 		graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
 		$.ajaxQ.abortAll();
-		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()), function(data) {
-			checkForLogout(data);
+		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()))
+			.success(function(data) {
+				checkForLogout(data);
 
-			$('#main').empty().hide();
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
-			$('#breadcrumbs').append('<li><a id="nav_butil" href="#">'+utilityView+'</a></li>');
-			applySkin();
-			clearTimeout(myRefresh);
-		});
+				$('#main').empty().hide();
+				$('div[class^="ui-"]').remove();
+				$('#main').html(data);
+				$('#breadcrumbs').append('<li><a id="nav_butil" href="#">'+utilityView+'</a></li>');
+				applySkin();
+				clearTimeout(myRefresh);
+			})
+			.error(function(data) {
+				getPresentHTTPError(data.responseText);
+			}
+		);
 	});
 
 	$('a[id$="_realtime"]').unbind('click').click(function(event) {
