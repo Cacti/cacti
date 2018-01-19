@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.1.32
 -issue#1222: Fix RRDTool error in generate_graph_def_name()
+-issue#1230: Fix undefined function in tree.php
 
 1.1.31
 -issue#629: Site reload after delete the last letter in the searchbar

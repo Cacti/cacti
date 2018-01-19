@@ -485,7 +485,7 @@ function form_save() {
 		$save['modified_by']   = $_SESSION['sess_user_id'];
 
 		if (empty($save['sequence'])) {
-			$save['sequence'] = get_max_tree_sequence() + 1;
+			$save['sequence'] = tree_get_max_sequence() + 1;
 		}
 
 		if (empty($save['id'])) {
