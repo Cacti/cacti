@@ -396,7 +396,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 			FROM poller
 			WHERE id = ?',
 			array($host['poller_id']));
-		
+
 		$fgc_contextoption = get_default_contextoption();
 		if($fgc_contextoption) {
 			$fgc_context = stream_context_create($fgc_contextoption);
@@ -429,11 +429,11 @@ function api_device_ping_device($device_id, $from_remote = false) {
 				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
 			if ($session === false) {
-				print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
+				print "<span class='hostDown'>" . __('SNMP error') . ' - ' . __('Session Unavailable') . "</span>\n";
 			} else {
 				$snmp_system = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0');
 				if ($snmp_system === false || $snmp_system == 'U') {
-					print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
+					print "<span class='hostDown'>" . __('SNMP error') . ' - ' . __('System Undefined') . "</span>\n";
 					return false;
 				}
 
@@ -445,7 +445,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 				}
 
 				if ($snmp_system == '') {
-					print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
+					print "<span class='hostDown'>" . __('SNMP error') . ' - ' . __('System data empty') . "</span>\n";
 				} else {
 					$snmp_uptime     = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
 					$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');

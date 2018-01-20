@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.33
+-issue#1246: Make SNMP Error return more info
+
 1.1.32
 -issue#1222: Fix RRDTool error in generate_graph_def_name()
 -issue#1230: Fix undefined function in tree.php
