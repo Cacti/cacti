@@ -1194,7 +1194,7 @@ function loadPage(href) {
 	statePushed = false;
 
 	$.get(href)
-		.success(function(html) {
+		.done(function(html) {
 			var htmlObject  = $(html);
 			var matches     = html.match(/<title>(.*?)<\/title>/);
 
@@ -1247,7 +1247,7 @@ function loadPage(href) {
 
 			return false;
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -1259,7 +1259,7 @@ function loadPageNoHeader(href, scroll) {
 	statePushed = false;
 
 	$.get(href)
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			$('#main').empty().hide();
@@ -1286,7 +1286,7 @@ function loadPageNoHeader(href, scroll) {
 
 			return false;
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -1487,7 +1487,7 @@ function setupSortable() {
 				sortAdd;
 
 			$.get(url)
-				.success(function(data) {
+				.done(function(data) {
 					checkForLogout(data);
 
 					$('#main').empty().hide();
@@ -1495,7 +1495,7 @@ function setupSortable() {
 					$('#main').html(data);
 					applySkin();
 				})
-				.error(function(data) {
+				.fail(function(data) {
 				getPresentHTTPError(data.responseText);
 				}
 			);
@@ -1647,7 +1647,7 @@ function setupPageTimeout() {
 				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
 
 				$.get(refreshPage)
-					.success(function(data) {
+					.done(function(data) {
 						checkForLogout(data);
 
 						$('#main').empty().hide();
@@ -1655,7 +1655,7 @@ function setupPageTimeout() {
 						$('#main').html(data);
 						applySkin();
 					})
-					.error(function(data) {
+					.fail(function(data) {
 						getPresentHTTPError(data.responseText);
 					}
 				);
@@ -1804,7 +1804,7 @@ function clearGraphFilter() {
 
 	$.ajaxQ.abortAll();
 	$.get(new_href+'&header=false')
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			$('#main').empty().hide();
@@ -1812,7 +1812,7 @@ function clearGraphFilter() {
 			$('#main').html(data);
 			applySkin();
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -1828,14 +1828,14 @@ function saveGraphFilter(section) {
 		'&thumbnails='+$('#thumbnails').is(':checked');
 
 	$.get(href+'&header=false&section='+section)
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
 				$('#text').empty();
 			});
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -1854,7 +1854,7 @@ function applyGraphFilter() {
 
 	$.ajaxQ.abortAll();
 	$.get(new_href+'&header=false')
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			$('#main').hide();
@@ -1864,7 +1864,7 @@ function applyGraphFilter() {
 
 			pushState(myTitle, myHref);
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -1922,7 +1922,7 @@ function applyGraphTimespan() {
 	$.get(new_href+'?action='+pageAction+'&header=false'+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val())
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			$('#main').empty().hide();
@@ -1930,7 +1930,7 @@ function applyGraphTimespan() {
 			$('#main').html(data);
 			applySkin();
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -2034,13 +2034,13 @@ function clearGraphTimespanFilter() {
 function removeSpikesStdDev(local_graph_id) {
 	strURL = 'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
 	$.getJSON(strURL)
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -2049,13 +2049,13 @@ function removeSpikesStdDev(local_graph_id) {
 function removeSpikesVariance(local_graph_id) {
 	strURL = "spikekill.php?method=variance&local_graph_id="+local_graph_id;
 	$.getJSON(strURL)
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -2064,13 +2064,13 @@ function removeSpikesVariance(local_graph_id) {
 function removeSpikesInRange(local_graph_id) {
 	strURL = 'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL)
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -2079,13 +2079,13 @@ function removeSpikesInRange(local_graph_id) {
 function removeRangeFill(local_graph_id) {
 	strURL = 'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL)
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -2094,7 +2094,7 @@ function removeRangeFill(local_graph_id) {
 function dryRunStdDev(local_graph_id) {
 	strURL = "spikekill.php?method=stddev&dryrun=true&local_graph_id="+local_graph_id;
 	$.getJSON(strURL)
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			$('#spikeresults').remove();
@@ -2102,7 +2102,7 @@ function dryRunStdDev(local_graph_id) {
 			$('#spikeresults').html(data.results);
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -2111,7 +2111,7 @@ function dryRunStdDev(local_graph_id) {
 function dryRunVariance(local_graph_id) {
 	strURL = "spikekill.php?method=variance&dryrun=true&local_graph_id="+local_graph_id;
 	$.getJSON(strURL)
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			$('#spikeresults').remove();
@@ -2119,7 +2119,7 @@ function dryRunVariance(local_graph_id) {
 			$('#spikeresults').html(data.results);
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -2128,7 +2128,7 @@ function dryRunVariance(local_graph_id) {
 function dryRunSpikesInRange(local_graph_id) {
 	strURL = 'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL)
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			redrawGraph(local_graph_id);
@@ -2137,7 +2137,7 @@ function dryRunSpikesInRange(local_graph_id) {
 			$('#spikeresults').html(data.results);
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -2146,7 +2146,7 @@ function dryRunSpikesInRange(local_graph_id) {
 function dryRunRangeFill(local_graph_id) {
 	strURL = 'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 	$.getJSON(strURL)
-		.success(function(data) {
+		.done(function(data) {
 			checkForLogout(data);
 
 			redrawGraph(local_graph_id);
@@ -2155,7 +2155,7 @@ function dryRunRangeFill(local_graph_id) {
 			$('#spikeresults').html(data.results);
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -2187,7 +2187,7 @@ function redrawGraph(graph_id) {
 		'&graph_height='+graph_height+
 		'&graph_width='+graph_width+
 		(isThumb ? '&graph_nolegend=true':''))
-		.success(function(data) {
+		.done(function(data) {
 			if (myWidth < data.image_width) {
 				ratio=myWidth/data.image_width;
 				data.image_width  = parseInt(data.image_width  * ratio);
@@ -2219,7 +2219,7 @@ function redrawGraph(graph_id) {
 				" value_max='"+data.value_max+"'>"
 			);
 		})
-		.error(function(data) {
+		.fail(function(data) {
 			getPresentHTTPError(data.responseText);
 		}
 	);
@@ -2233,7 +2233,7 @@ function initializeGraphs() {
 		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 		$.ajaxQ.abortAll();
 		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false')
-			.success(function(data) {
+			.done(function(data) {
 				checkForLogout(data);
 
 				$('#main').empty().hide();
@@ -2244,7 +2244,7 @@ function initializeGraphs() {
 				applySkin();
 				clearTimeout(myRefresh);
 			})
-			.error(function(data) {
+			.fail(function(data) {
 				getPresentHTTPError(data.responseText);
 			}
 		);
@@ -2284,7 +2284,7 @@ function initializeGraphs() {
 			'&graph_height='+graph_height+
 			'&graph_width='+graph_width+
 			(isThumb ? '&graph_nolegend=true':''))
-			.success(function(data) {
+			.done(function(data) {
 				if (myWidth < data.image_width) {
 					ratio=myWidth/data.image_width;
 					data.image_width  = parseInt(data.image_width  * ratio);
@@ -2324,7 +2324,7 @@ function initializeGraphs() {
 
 				realtimeArray[data.local_graph_id] = false;
 			})
-			.error(function(data) {
+			.fail(function(data) {
 				getPresentHTTPError(data.responseText);
 			}
 		);
@@ -2344,7 +2344,7 @@ function initializeGraphs() {
 		graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
 		$.ajaxQ.abortAll();
 		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()))
-			.success(function(data) {
+			.done(function(data) {
 				checkForLogout(data);
 
 				$('#main').empty().hide();
@@ -2354,7 +2354,7 @@ function initializeGraphs() {
 				applySkin();
 				clearTimeout(myRefresh);
 			})
-			.error(function(data) {
+			.fail(function(data) {
 				getPresentHTTPError(data.responseText);
 			}
 		);
