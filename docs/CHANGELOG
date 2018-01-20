@@ -9,7 +9,8 @@ Cacti CHANGELOG
 -issue: Critial issue created when theme files are missing corrupting user settings
 -issue: Due to new theme session variable, changing your theme does not take effect until next login
 -issue: Tree edit Tree/Device/Graph drag areas width incorrect
--issue: Make calback error processing compatible with jquery 1.12.x
+-feature: Update Javascript library: js.storage.js, d3.js, jquery.js, jquery.tablednd.js, jquery.timepicker.js
+-issue: Make callback error processing compatible with jquery 1.12.x
 
 1.1.31
 -issue#629: Site reload after delete the last letter in the searchbar
