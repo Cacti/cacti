@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#1238: SNMP functions fail to handle "Invalid object identifier" error
 -issue#1239: Browser console error in layout.js
 -issue#1240: Page layout issues caused by library update
+-issue#1246: Make SNMP Error return more info
 -issue: Missing or corrupted theme files can corrupt user settings
 -issue: Theme may not change until next login
 -issue: Tree edit Tree/Device/Graph drag areas incorrect
