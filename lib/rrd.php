@@ -3366,11 +3366,15 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	$maxstring = (450 - (125 + 10)) / ($font_size / 1.4);
 	$stringlen = strlen($string) * $font_size;
 	$padding   = 5;
+
 	if ($stringlen > $maxstring) {
 		$cstring = wordwrap($string, $maxstring, "\n", true);
 		$strings = explode("\n", $cstring);
 		$strings = array_reverse($strings);
 		$lines   = sizeof($strings);
+	} elseif (strlen(trim($string)) == 0) {
+		$strings = array(__('Unknown RRDtool Error'));
+		$lines   = 1;
 	} else {
 		$strings = array($string);
 		$lines   = 1;
@@ -3384,17 +3388,21 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	/* set the font of the image */
 	if (file_exists($font_file) && is_readable($font_file) && function_exists('imagettftext')) {
 		foreach($strings as $string) {
-			if (!imagettftext($image, $font_size, 0, $xpos, $ypos, $text_color, $font_file, $string)) {
-				cacti_log('TTF text overlay failed');
+			if (trim($string) != '') {
+				if (!imagettftext($image, $font_size, 0, $xpos, $ypos, $text_color, $font_file, $string)) {
+					cacti_log('TTF text overlay failed');
+				}
+				$ypos -= ($font_size + $padding);
 			}
-			$ypos -= ($font_size + $padding);
 		}
 	} else {
 		foreach($strings as $string) {
-			if (!imagestring($image, $font_size, $xpos, $ypos, $string, $font_color)) {
-				cacti_log('Text overlay failed');
+			if (trim($string) != '') {
+				if (!imagestring($image, $font_size, $xpos, $ypos, $string, $font_color)) {
+					cacti_log('Text overlay failed');
+				}
+				$ypos -= ($font_size + $padding);
 			}
-			$ypos -= ($font_size + $padding);
 		}
 	}
 
