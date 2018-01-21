@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue: Theme may not change until next login
 -issue: Tree edit Tree/Device/Graph drag areas incorrect
 -issue: Make callback error handling compatible with jQuery 3.x
+-issue: Ensure the snmp_error is cleared before every call
 -feature: Update Javascript library: js.storage.js, d3.js, jquery.js, jquery.tablednd.js, jquery.timepicker.js
 
 1.1.31
