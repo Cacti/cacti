@@ -1,14 +1,12 @@
 Cacti CHANGELOG
 
-1.1.33
--issue#1246: Make SNMP Error return more info
-
 1.1.32
 -issue#1222: Fix RRDTool error in generate_graph_def_name()
 -issue#1230: Fix undefined function in tree.php
 -issue#1238: Cacti not handing git pull 'Invalid Object identifier' correctly
 -issue#1239: New Cacti browser error handler mishandling certain conditions
 -issue#1240: Tree edit page not displaying properly
+-issue#1246: Make SNMP Error return more info
 -issue: Critial issue created when theme files are missing corrupting user settings
 -issue: Due to new theme session variable, changing your theme does not take effect until next login
 -issue: Tree edit Tree/Device/Graph drag areas width incorrect
