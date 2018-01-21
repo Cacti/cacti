@@ -2369,9 +2369,8 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 				continue;
 			}
 
-			$myempty = array(); /* Suggested Values are not been implemented */
-
-			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $myempty);
+			$suggested_values = array();
+			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $suggested_values);
 
 			if ($return_array !== false) {
 				if (sizeof($return_array) && array_key_exists('local_graph_id', $return_array) && array_key_exists('local_data_id', $return_array)) {
