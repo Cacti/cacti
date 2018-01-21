@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -feature: Make tree editing responive
 
 1.1.32
+-issue#969: Undefined index: color_id / task_item when viewing graphs
 -issue#1222: Graphs with large number of items causes RRDTool to error
 -issue#1230: PHP Fatal error: Call to undefined function get_max_tree_sequence()
 -issue#1238: SNMP functions fail to handle "Invalid object identifier" error
