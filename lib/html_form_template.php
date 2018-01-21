@@ -142,7 +142,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			ORDER BY name";
 	}
 
-	if (sizeof($input_item_list) > 0) {
+	if (sizeof($input_item_list)) {
 		foreach ($input_item_list as $item) {
 			if (!empty($local_graph_id)) {
 				$current_def_value = db_fetch_row_prepared('SELECT
@@ -172,21 +172,27 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 
 			/* modifications to the default form array */
 			$form_array[$form_field_name]['friendly_name'] = $item['name'];
-			$form_array[$form_field_name]['value'] = $current_def_value[$item['column_name']];
+
+			if (isset($current_def_value[$item['column_name']])) {
+				$form_array[$form_field_name]['value'] = $current_def_value[$item['column_name']];
+			}
 
 			if ($locked == 'true') {
 				if (substr_count($form_field_name, 'task_item_id') > 0) {
 					$form_array[$form_field_name]['method'] = 'value';
 
-					$value = db_fetch_cell_prepared("SELECT
-                        CONCAT_WS('',CASE WHEN host.description IS NULL THEN 'No Device - ' ELSE '' END,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name
-                        FROM (data_template_data,data_template_rrd,data_local)
-                        LEFT JOIN host ON (data_local.host_id=host.id)
-                        WHERE data_template_rrd.local_data_id=data_local.id
-                        AND data_template_data.local_data_id=data_local.id
-                        AND data_template_rrd.id = ?", array($current_def_value[$item['column_name']]));
+					if (isset($current_def_value[$item['column_name']])) {
+						$value = db_fetch_cell_prepared("SELECT
+							CONCAT_WS('',CASE WHEN host.description IS NULL THEN 'No Device - ' ELSE '' END,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name
+							FROM (data_template_data,data_template_rrd,data_local)
+							LEFT JOIN host ON (data_local.host_id=host.id)
+							WHERE data_template_rrd.local_data_id=data_local.id
+							AND data_template_data.local_data_id=data_local.id
+							AND data_template_rrd.id = ?", 
+							array($current_def_value[$item['column_name']]));
 
-					$form_array[$form_field_name]['value'] = $value;
+						$form_array[$form_field_name]['value'] = $value;
+					}
 				}
 			}
 
