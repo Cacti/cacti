@@ -585,7 +585,7 @@ jQuery.tableDnD = {
     serializeTables: function() {
         var result = [];
         $('table').each(function() {
-            this.id && result.push($.param(this.tableData(this)));
+            this.id && result.push($.param($.tableDnD.tableData(this)));
         });
         return result.join('&');
     },

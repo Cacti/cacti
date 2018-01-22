@@ -114,7 +114,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 				print "<span> </span>";
 			}
 		}
-		print '</div>';
+		print '</div></div>';
 
 		if ($div === true) {
 			print "<div id='$table_id" . "_child' class='cactiTable'>";

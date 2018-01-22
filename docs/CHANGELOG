@@ -1,5 +1,22 @@
 Cacti CHANGELOG
 
+1.1.32
+-issue#969: Undefined index: color_id / task_item when viewing graphs
+-issue#1166: Fix typo of 'locale' in global_languages.php
+-issue#1222: Graphs with large number of items causes RRDTool to error
+-issue#1230: PHP Fatal error: Call to undefined function get_max_tree_sequence()
+-issue#1238: SNMP functions fail to handle "Invalid object identifier" error
+-issue#1239: Browser console error in layout.js
+-issue#1240: Page layout issues caused by library update
+-issue#1246: Make SNMP Error return more info
+-issue: Missing or corrupted theme files can corrupt user settings
+-issue: Theme may not change until next login
+-issue: Tree edit Tree/Device/Graph drag areas incorrect
+-issue: Make callback error handling compatible with jQuery 3.x
+-issue: Ensure the snmp_error is cleared before every call
+-issue: Indicate unknown error when RRDTool returns no error message
+-feature: Update Javascript library: js.storage.js, d3.js, jquery.js, jquery.tablednd.js, jquery.timepicker.js
+
 1.1.31
 -issue#629: Site reload after delete the last letter in the searchbar
 -issue#1022: Discovery network stuck in "running" state does not return results
