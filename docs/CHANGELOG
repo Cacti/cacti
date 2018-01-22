@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.33
+-issue#1253: Automatically generated RRDtool DEF names in Cacti 1.1.32 break existing Graph Templates
+
 1.1.32
 -issue#969: Undefined index: color_id / task_item when viewing graphs
 -issue#1166: Fix typo of 'locale' in global_languages.php

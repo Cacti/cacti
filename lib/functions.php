@@ -1556,7 +1556,7 @@ function get_rrd_cfs($local_data_id) {
    @arg $graph_item_id - (int) the ID to generate a letter-based representation of
    @returns - a letter-based representation of the input argument */
 function generate_graph_def_name($graph_item_id) {
-	$lookup_table = array('a','b','d','e','f','g','h','i','j','k');
+	$lookup_table = array('a','b','c','d','e','f','g','h','i','j');
 
 	$result = '';
 	$strValGII = strval($graph_item_id);
@@ -1564,8 +1564,8 @@ function generate_graph_def_name($graph_item_id) {
 		$result .= $lookup_table{substr($strValGII, $i, 1)};
 	}
 
-	if ($result == 'cf') {
-		return 'zcf';
+	if (preg_match('/^(cf|cdef|def)$/', $result)) {
+		return 'zz' . $result;
 	} else {
 		return $result;
 	}
