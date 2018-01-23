@@ -113,7 +113,8 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $username, $passw
 
 	global $config, $snmp_error;
 
-	$max_oids = 1;
+	$max_oids   = 1;
+	$snmp_error = '';
 
 	if (!cacti_snmp_options_sanitize($version, $community, $port, $timeout, $retries, $max_oids)) {
 		return 'U';
@@ -240,7 +241,8 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $username, $p
 
 	global $config, $snmp_error;
 
-	$max_oids = 1;
+	$max_oids   = 1;
+	$snmp_error = '';
 
 	if (!cacti_snmp_options_sanitize($version, $community, $port, $timeout, $retries, $max_oids)) {
 		return 'U';
@@ -363,7 +365,8 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $username, $p
 
 	global $config, $snmp_error;
 
-	$max_oids = 1;
+	$max_oids   = 1;
+	$snmp_error = '';
 
 	if (!cacti_snmp_options_sanitize($version, $community, $port, $timeout, $retries, $max_oids)) {
 		return 'U';
@@ -606,6 +609,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $username, $pass
 
 	global $config, $banned_snmp_strings, $snmp_error;
 
+	$snmp_error        = '';
 	$snmp_oid_included = true;
 	$snmp_auth	       = '';
 	$snmp_array        = array();

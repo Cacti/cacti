@@ -414,7 +414,7 @@ function api_device_template_sync_template($device_template, $down_devices = fal
 }
 
 function api_device_ping_device($device_id, $from_remote = false) {
-	global $config;
+	global $config, $snmp_error;
 
 	if (empty($device_id)) {
 		return "";
@@ -456,52 +456,66 @@ function api_device_ping_device($device_id, $from_remote = false) {
 		if (($host['snmp_community'] == '' && $host['snmp_username'] == '') || $host['snmp_version'] == 0) {
 			print "<span style='color: #ab3f1e; font-weight: bold;'>" . __('SNMP not in use') . "</span>\n";
 		} else {
+			$snmp_error = '';
 			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
  				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
  				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
 				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
-			if ($session === false) {
-				print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
+			if ($session === false || $snmp_error > '') {
+				print "<span class='hostDown'>" . __('Session') . ' ' . __('SNMP error');
+				if ($snmp_error > '') {
+					print " - $snmp_error";
+				}
+				print "</span>\n";
 			} else {
 				$snmp_system = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0');
-				if ($snmp_system === false || $snmp_system == 'U') {
-					print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
-					return false;
-				}
-
-				/* modify for some system descriptions */
-				/* 0000937: System output in host.php poor for Alcatel */
-				if (substr_count($snmp_system, '00:')) {
-					$snmp_system = str_replace('00:', '', $snmp_system);
-					$snmp_system = str_replace(':', ' ', $snmp_system);
-				}
-
-				if ($snmp_system == '') {
-					print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
+				if ($snmp_system === false || $snmp_system == 'U' || $snmp_error > '') {
+					print "<span class='hostDown'>" . __('System') . ' ' . __('SNMP error');
+					if ($snmp_error > '') {
+						print " - $snmp_error";
+					}
+					print "</span>\n";
 				} else {
-					$snmp_uptime     = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
-					$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
-					$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
-					$snmp_contact    = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
 
-					print '<strong>' . __('System:') . '</strong> ' . html_split_string($snmp_system) . "<br>\n";
-					$days      = intval($snmp_uptime / (60*60*24*100));
-					$remainder = $snmp_uptime % (60*60*24*100);
-					$hours     = intval($remainder / (60*60*100));
-					$remainder = $remainder % (60*60*100);
-					$minutes   = intval($remainder / (60*100));
-					print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
-					print "&nbsp;(" . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ")<br>\n";
-					print "<strong>" . __('Hostname:') . "</strong> $snmp_hostname<br>\n";
-					print "<strong>" . __('Location:') . "</strong> $snmp_location<br>\n";
-					print "<strong>" . __('Contact:') . "</strong> $snmp_contact<br>\n";
+					/* modify for some system descriptions */
+					/* 0000937: System output in host.php poor for Alcatel */
+					if (substr_count($snmp_system, '00:')) {
+						$snmp_system = str_replace('00:', '', $snmp_system);
+						$snmp_system = str_replace(':', ' ', $snmp_system);
+					}
+
+					if ($snmp_system == '') {
+						print "<span class='hostDown'>" . __('Host') . ' ' .  __('SNMP error');
+						if ($snmp_error > '') {
+							print " - $snmp_error";
+						}
+						"</span>\n";
+					} else {
+						$snmp_uptime     = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
+						$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
+						$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
+						$snmp_contact    = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
+
+						print '<strong>' . __('System:') . '</strong> ' . html_split_string($snmp_system) . "<br>\n";
+						$days      = intval($snmp_uptime / (60*60*24*100));
+						$remainder = $snmp_uptime % (60*60*24*100);
+						$hours     = intval($remainder / (60*60*100));
+						$remainder = $remainder % (60*60*100);
+						$minutes   = intval($remainder / (60*100));
+						print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
+						print "&nbsp;(" . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ")<br>\n";
+						print "<strong>" . __('Hostname:') . "</strong> $snmp_hostname<br>\n";
+						print "<strong>" . __('Location:') . "</strong> $snmp_location<br>\n";
+						print "<strong>" . __('Contact:') . "</strong> $snmp_contact<br>\n";
+					}
+
 				}
 
 				$session->close();
 			}
 		}
-		print "</span>\n";
+		print "</span><br>\n";
 	}
 
 	if ($am == AVAIL_PING || $am == AVAIL_SNMP_AND_PING || $am == AVAIL_SNMP_OR_PING) {

@@ -76,7 +76,7 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 		$accepted = (isset($lang2locale[$accepted])) ? $accepted : str_replace(strstr($accepted, '-'), '', $accepted);
 
 		if (isset($lang2locale[$accepted])) {
-			$cacti_local_set = true;
+			$cacti_locale_set = true;
 			$cacti_locale = $accepted;
 			$cacti_country = $lang2locale[$accepted]['country'];
 		}
@@ -89,7 +89,7 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 		}
 
 		if (isset($lang2locale[$accepted])) {
-			$cacti_local_set = true;
+			$cacti_locale_set = true;
 			$cacti_locale = $accepted;
 			$cacti_country = $lang2locale[$accepted]['country'];
 		}
