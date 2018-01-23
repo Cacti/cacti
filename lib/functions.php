@@ -316,7 +316,6 @@ function read_config_option($config_name, $force = false) {
 	return $config_array[$config_name];
 }
 
-/* 
 /*
  * get_selected_theme - checks the user settings and if the user selected
  * theme is set, returns it otherwise returns the system default.
@@ -5015,4 +5014,8 @@ function get_nonsystem_data_input($data_input_id) {
 					AND id = ?',
 					array($data_input_id));
 	return $diid;
+}
+
+function get_rrdtool_version() {
+	return str_replace('rrd-', '', str_replace('.x', '', read_config_option('rrdtool_version')));
 }

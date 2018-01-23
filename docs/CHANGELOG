@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue: Move Graph removal function to Graph API
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
+-feature: Add support for DDERIVE and DCOUNTER to Cacti
 
 1.1.33
 -issue#1253: Automatically generated RRDtool DEF names in Cacti 1.1.32 break existing Graph Templates

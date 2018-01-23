@@ -409,13 +409,18 @@ $consolidation_functions = array(1 =>
 	'LAST'
 );
 
-$data_source_types = array(1 =>
-	'GAUGE',
-	'COUNTER',
-	'DERIVE',
-	'ABSOLUTE',
-	'COMPUTE'
+$data_source_types = array(
+	1 => 'GAUGE',
+	2 => 'COUNTER',
+	3 => 'DERIVE',
+	4 => 'ABSOLUTE',
+	5 => 'COMPUTE'
 );
+
+if (get_rrdtool_version() >= 1.5) {
+	$data_source_types[6] = 'DCOUNTER';
+	$data_source_types[7] = 'DDERIVE';
+}
 
 $rrd_font_render_modes = array(
 	RRD_FONT_RENDER_NORMAL  => __('Normal'),
