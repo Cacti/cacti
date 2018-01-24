@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.34
+-issue#1258: cacti.sql does not appear to be up to date for all tables
 -issue#1261: Automatic logout should not fire when using Web Basic Authentication
 
 1.1.33

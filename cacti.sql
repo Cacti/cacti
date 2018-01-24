@@ -3,7 +3,6 @@
 -- Allow MySQL to handle Cacti's legacy syntax
 --
 
-SET GLOBAL sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 SET SESSION sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 
 --
@@ -369,7 +368,7 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_id` int(10) unsigned NOT NULL DEFAULT '0',
   `sequence` int(10) unsigned NOT NULL DEFAULT '0',
   `snmp_version` varchar(100) NOT NULL DEFAULT '',
-  `snmp_readstring` varchar(100) NOT NULL,
+  `snmp_community` varchar(100) NOT NULL,
   `snmp_port` int(10) NOT NULL DEFAULT '161',
   `snmp_timeout` int(10) unsigned NOT NULL DEFAULT '500',
   `snmp_retries` tinyint(11) unsigned NOT NULL DEFAULT '3',
