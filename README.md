@@ -1,5 +1,8 @@
 # Cacti <sup>TM</sup>
-
+[![Build Status - Develop](https://travis-ci.org/Cacti/cacti.svg?branch=develop)](https://travis-ci.org/Cacti/cacti)
+[![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti "Average time to resolve an issue")
+[![Percentage of open issues](http://isitmaintained.com/badge/open/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti "Percentage of issues still open")
 -----------------------------------------------------------------------------
 
 Cacti is a complete network graphing solution designed to harness the power of RRDtool's data storage and graphing functionality. Cacti provides following features:
