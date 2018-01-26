@@ -691,10 +691,10 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	}
 
 	if ($single_local_data_id) {
-		$log_verbosity = read_config_option('log_verbosity');
+		$log_verbosity = POLLER_VERBOSITY_DEBUG;
 
 		if ($debug) {
-			$log_verbosity = POLLER_VERBOSITY_DEBUG;
+			$log_verbosity = POLLER_VERBOSITY_LOW;
 		}
 
 		cacti_log("NOTE: Updating Local Data ID:'$local_data_id', Total of '" . sizeof($results) . "' Updates to Process", false, 'BOOST', $log_verbosity);
