@@ -507,7 +507,8 @@ function filter($clogAdmin) {
 		function refreshFilter() {
 			refreshMSeconds=$('#refresh').val()*1000;
 
-			strURL = basename(location.pathname) + '?rfilter='+ $('#rfilter').val()+
+			strURL = basename(location.pathname)+
+				'?rfilter=' + base64_encode($('#rfilter').val())+
 				'&reverse='+$('#reverse').val()+
 				'&refresh='+$('#refresh').val()+
 				'&message_type='+$('#message_type').val()+
@@ -515,6 +516,7 @@ function filter($clogAdmin) {
 				'&filename='+$('#filename').val()+
 				'&header=false';
 
+			console.log(strURL);
 			loadPageNoHeader(strURL);
 		}
 		</script>

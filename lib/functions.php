@@ -465,6 +465,9 @@ function display_output_messages() {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
 				if (isset($messages[$current_message_id]['message'])) {
 					$message = $messages[$current_message_id]['message'];
+					if ($current_message_id == 'custom_error') {
+						$message = $_SESSION['custom_error'];
+					}
 
 					switch ($messages[$current_message_id]['type']) {
 					case 'info':
@@ -3441,6 +3444,7 @@ function bottom_footer() {
 	} else {
 		/* display output messages */
 		display_messages();
+		display_output_messages();
 
 		/* we use this session var to store field values for when a save fails,
 		this way we can restore the field's previous values. we reset it here, because

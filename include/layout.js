@@ -1248,7 +1248,7 @@ function loadPage(href) {
 			return false;
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 
@@ -1287,7 +1287,7 @@ function loadPageNoHeader(href, scroll) {
 			return false;
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 
@@ -1296,16 +1296,18 @@ function loadPageNoHeader(href, scroll) {
 
 function getPresentHTTPError(data) {
 	if (typeof data != 'undefined') {
-		var title_match = data.match(/<title>(.*?)<\/title>/);
-		var head_match  = data.match(/<h1>(.*?)<\/h1>/);
-		var para_match  = data.match(/<p>(.*?)<\/p>/);
+		errorStr  = data.status;
+		errorSub  = data.statusText;
+		errorText = errorReasonUnexpected;
 
-		errorStr  = '';
-		errorSub  = '';
-		errorText = '';
+		var dataText = data.responseText;
+
+		var title_match = dataText.match(/<title>(.*?)<\/title>/);
+		var head_match  = dataText.match(/<h1>(.*?)<\/h1>/);
+		var para_match  = dataText.match(/<p>(.*?)<\/p>/);
 
 		if (title_match != null) {
-			var errorStr = title_match[1];
+			var errorSub = title_match[1];
 		}
 
 		if (head_match != null) {
@@ -1319,7 +1321,7 @@ function getPresentHTTPError(data) {
 		returnStr = '<div id="httperror" style="display:none">' +
 			'<h4>' + errorOnPage + '</h4><hr>' +
 			'<div style="padding-bottom: 5px;"><div style="display:table-cell;width:75px"><b>' + errorNumberPrefix + '</b></div> ' +
-			'<div style="display:table-cell"> ' + errorStr + '</div></div>' +
+			'<div style="display:table-cell"> ' + errorStr + ' ' + errorSub + '</div></div>' +
 			'<div><div style="display:table-cell;width:75px"><b>'  + errorReasonPrefix + '</b></div> ' +
 			'<div style="display:table-cell"> ' + errorText + '</div></div>' +
 			'</div></div>';
@@ -1330,7 +1332,7 @@ function getPresentHTTPError(data) {
 			resizable: false,
 			height: 'auto',
 			width: 400,
-			title: errorStr,
+			title: errorReasonTitle,
 			buttons: {
 				Ok: function() {
 					$(this).dialog('close');
@@ -1496,7 +1498,7 @@ function setupSortable() {
 					applySkin();
 				})
 				.fail(function(data) {
-				getPresentHTTPError(data.responseText);
+					getPresentHTTPError(data);
 				}
 			);
 		}
@@ -1656,7 +1658,7 @@ function setupPageTimeout() {
 						applySkin();
 					})
 					.fail(function(data) {
-						getPresentHTTPError(data.responseText);
+						getPresentHTTPError(data);
 					}
 				);
 			}
@@ -1813,7 +1815,7 @@ function clearGraphFilter() {
 			applySkin();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -1836,7 +1838,7 @@ function saveGraphFilter(section) {
 			});
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -1865,7 +1867,7 @@ function applyGraphFilter() {
 			pushState(myTitle, myHref);
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -1931,7 +1933,7 @@ function applyGraphTimespan() {
 			applySkin();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2041,7 +2043,7 @@ function removeSpikesStdDev(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2056,7 +2058,7 @@ function removeSpikesVariance(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2071,7 +2073,7 @@ function removeSpikesInRange(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2086,7 +2088,7 @@ function removeRangeFill(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2103,7 +2105,7 @@ function dryRunStdDev(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2120,7 +2122,7 @@ function dryRunVariance(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2138,7 +2140,7 @@ function dryRunSpikesInRange(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2156,7 +2158,7 @@ function dryRunRangeFill(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2220,7 +2222,7 @@ function redrawGraph(graph_id) {
 			);
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2245,7 +2247,7 @@ function initializeGraphs() {
 				clearTimeout(myRefresh);
 			})
 			.fail(function(data) {
-				getPresentHTTPError(data.responseText);
+				getPresentHTTPError(data);
 			}
 		);
 	});
@@ -2325,7 +2327,7 @@ function initializeGraphs() {
 				realtimeArray[data.local_graph_id] = false;
 			})
 			.fail(function(data) {
-				getPresentHTTPError(data.responseText);
+				getPresentHTTPError(data);
 			}
 		);
 	});
@@ -2355,7 +2357,7 @@ function initializeGraphs() {
 				clearTimeout(myRefresh);
 			})
 			.fail(function(data) {
-				getPresentHTTPError(data.responseText);
+				getPresentHTTPError(data);
 			}
 		);
 	});

@@ -720,11 +720,15 @@ function automation_snmp_edit() {
 
 			id = $(this).attr('id').split('_');
 			request = 'automation_snmp.php?action=item_remove_confirm&item_id='+id[0]+'&id='+id[1];
-			$.get(request, function(data) {
-				$('#cdialog').html(data);
-				applySkin();
-				$('#cdialog').dialog({ title: '<?php print __('Delete SNMP Option Item');?>', minHeight: 80, minWidth: 500 });
-			});
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
+					applySkin();
+					$('#cdialog').dialog({ title: '<?php print __('Delete SNMP Option Item');?>', minHeight: 80, minWidth: 500 });
+				})
+				.fail(function(data) {
+                		        getPresentHTTPError(data);
+		                });
 		}).css('cursor', 'pointer');
     });
     </script>
