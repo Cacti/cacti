@@ -403,10 +403,14 @@ default:
 						duratin: 100
 					}
 				});
-				$.get('settings.php?action=send_test', function(data) {
-					$('#testmail').html(data);
-					$('#testmail').dialog('open');
-				});
+				$.get('settings.php?action=send_test')
+					.done(function(data) {
+						$('#testmail').html(data);
+						$('#testmail').dialog('open');
+					})
+					.fail(function(data) {
+						getPresentHTTPError(data);
+					});
 			});
 		}
 

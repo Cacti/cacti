@@ -788,11 +788,15 @@ function data_query_item_edit() {
 	$('.remover').click(function(event) {
 		event.preventDefault();
 		href=$(this).attr('href');
-		$.get(href, function(data) {
-			$('form[action="data_queries.php"]').unbind();
-			$('#main').html(data);
-			applySkin();
-		});
+		$.get(href)
+			.done(function(data) {
+				$('form[action="data_queries.php"]').unbind();
+				$('#main').html(data);
+				applySkin();
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 	});
 
 	$('input[id="svg_x"]').click(function() {
@@ -982,16 +986,20 @@ function data_query_edit() {
 			event.preventDefault();
 
 			request = $(this).attr('href');
-			$.get(request, function(data) {
-				$('#cdialog').html(data);
-				applySkin();
-				$('#cdialog').dialog({
-					title: '<?php print __('Delete Associated Graph');?>',
-					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
-					minHeight: 80,
-					minWidth: 500
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
+					applySkin();
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete Associated Graph');?>',
+						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						minHeight: 80,
+						minWidth: 500
+					});
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
 				});
-			});
 		}).css('cursor', 'pointer');
 	});
 

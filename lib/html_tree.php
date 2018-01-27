@@ -195,21 +195,26 @@ function grow_dhtml_trees() {
 						href=href.replace('action=tree', 'action=tree_content');
 						$('.cactiGraphContentArea').hide();
 
-						$.get(href, function(data) {
-							$('#main').html(data);
-							applySkin();
+						$.get(href)
+							.done(function(data) {
+								$('#main').html(data);
+								applySkin();
 
-							$('.cactiGraphContentArea').show();
+								$('.cactiGraphContentArea').show();
 
-							var mytitle = 'Tree Mode - '+$('#nav_title').text();
-							document.getElementsByTagName('title')[0].innerHTML = mytitle;
-							if (typeof window.history.pushState !== 'undefined') {
-								window.history.pushState({ page: origHref+'&hyper=true' }, mytitle, origHref+'&hyper=true');
-							}
+								var mytitle = 'Tree Mode - '+$('#nav_title').text();
+								document.getElementsByTagName('title')[0].innerHTML = mytitle;
+								if (typeof window.history.pushState !== 'undefined') {
+									window.history.pushState({ page: origHref+'&hyper=true' }, mytitle, origHref+'&hyper=true');
+								}
 
-							window.scrollTo(0, 0);
-							resizeGraphContent();
-						});
+								window.scrollTo(0, 0);
+								resizeGraphContent();
+							})
+							.fail(function(data) {
+								getPresentHTTPError(data);
+							});
+
 					}
 					node = data.node.id;
 				}

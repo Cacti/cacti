@@ -131,4 +131,6 @@ if (isset($_SESSION['refresh'])) {
 	var errorOnPage='<?php print __('Sorry, we could not process your last action');?>';
 	var errorNumberPrefix='<?php print __('Error:');?>';
 	var errorReasonPrefix='<?php print __('Reason:');?>';
+	var errorReasonTitle='<?php print __('Action failed');?>';
+	var errorReasonUnexpected='<?php print __('The response to the last action was unexpected');?>';
 </script>
