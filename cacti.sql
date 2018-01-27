@@ -2823,7 +2823,7 @@ CREATE TABLE `snmpagent_managers` (
   `snmp_auth_protocol` char(6) NOT NULL,
   `snmp_priv_passphrase` varchar(200) NOT NULL,
   `snmp_priv_protocol` char(6) NOT NULL,
-  `snmp_engine_id` varchar(64) NOT NULL DEFAULT '80005d750302FFFFFFFFFF',
+  `snmp_engine_id` varchar(64) DEFAULT NULL,
   `snmp_port` varchar(255) NOT NULL,
   `snmp_message_type` tinyint(1) NOT NULL,
   `notes` text,
