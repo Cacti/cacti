@@ -1965,7 +1965,7 @@ CREATE TABLE host_template_snmp_query (
 --
 
 CREATE TABLE `plugin_config` (
-  `id` int(8) NOT NULL auto_increment,
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
   `directory` varchar(32) NOT NULL default '',
   `name` varchar(64) NOT NULL default '',
   `status` tinyint(2) NOT NULL default '0',
@@ -1982,7 +1982,7 @@ CREATE TABLE `plugin_config` (
 --
 
 CREATE TABLE `plugin_hooks` (
-  `id` int(8) NOT NULL auto_increment,
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
   `name` varchar(32) NOT NULL default '',
   `hook` varchar(64) NOT NULL default '',
   `file` varchar(255) NOT NULL default '',
@@ -1998,7 +1998,7 @@ CREATE TABLE `plugin_hooks` (
 --
 
 CREATE TABLE `plugin_realms` (
-  `id` int(8) NOT NULL auto_increment,
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
   `plugin` varchar(32) NOT NULL default '',
   `file` text NOT NULL,
   `display` varchar(64) NOT NULL default '',
@@ -2011,7 +2011,7 @@ CREATE TABLE `plugin_realms` (
 --
 
 CREATE TABLE `plugin_db_changes` (
-  `id` int(10) NOT NULL auto_increment,
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
   `plugin` varchar(16) NOT NULL default '',
   `table` varchar(64) NOT NULL default '',
   `column` varchar(64) NOT NULL,
