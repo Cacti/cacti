@@ -929,19 +929,27 @@ function tree_edit() {
 		}
 
 		function getGraphData() {
-			$.get('tree.php?action=graphs&filter='+$('#grfilter').val(), function(data) {
-				$('#graphs').jstree('destroy');
-				$('#graphs').html(data);
-				dragable('#graphs');
-			});
+			$.get('tree.php?action=graphs&filter='+$('#grfilter').val())
+				.done(function(data) {
+					$('#graphs').jstree('destroy');
+					$('#graphs').html(data);
+					dragable('#graphs');
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		}
 
 		function getHostData() {
-			$.get('tree.php?action=hosts&filter='+$('#hfilter').val(), function(data) {
-				$('#hosts').jstree('destroy');
-				$('#hosts').html(data);
-				dragable('#hosts');
-			});
+			$.get('tree.php?action=hosts&filter='+$('#hfilter').val())
+				.done(function(data) {
+					$('#hosts').jstree('destroy');
+					$('#hosts').html(data);
+					dragable('#hosts');
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		}
 
 		function getSiteData() {
@@ -956,9 +964,13 @@ function tree_edit() {
 			if (hostSortInfo[nodeid]) {
 				// Already set
 			} else {
-				$.get('tree.php?action=get_host_sort&nodeid='+nodeid, function(data) {
-					hostSortInfo[nodeid] = data;
-				});
+				$.get('tree.php?action=get_host_sort&nodeid='+nodeid)
+					.done(function(data) {
+						hostSortInfo[nodeid] = data;
+					})
+					.fail(function(data) {
+						getPresentHTTPError(data);
+					});
 			}
 		}
 
@@ -966,9 +978,13 @@ function tree_edit() {
 			if (branchSortInfo[nodeid]) {
 				// Already set
 			} else {
-				$.get('tree.php?action=get_branch_sort&nodeid='+nodeid, function(data) {
-					branchSortInfo[nodeid] = data;
-				});
+				$.get('tree.php?action=get_branch_sort&nodeid='+nodeid)
+					.done(function(data) {
+						branchSortInfo[nodeid] = data;
+					})
+					.fail(function(data) {
+						getPresentHTTPError(data);
+					});
 			}
 		}
 
@@ -989,15 +1005,23 @@ function tree_edit() {
 		}
 
 		function setBranchSortOrder(type, nodeid) {
-			$.get('tree.php?action=set_branch_sort&type='+type+'&nodeid='+nodeid, function(data) {
-				branchSortInfo[nodeid] = type;
-			});
+			$.get('tree.php?action=set_branch_sort&type='+type+'&nodeid='+nodeid)
+				.done(function(data) {
+					branchSortInfo[nodeid] = type;
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		}
 
 		function setHostSortOrder(type, nodeid) {
-			$.get('tree.php?action=set_host_sort&type='+type+'&nodeid='+nodeid, function(data) {
-				hostSortInfo[nodeid] = type;
-			});
+			$.get('tree.php?action=set_host_sort&type='+type+'&nodeid='+nodeid)
+				.done(function(data) {
+					hostSortInfo[nodeid] = type;
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		}
 
 		graphsDropSet = '';
@@ -1201,6 +1225,9 @@ function tree_edit() {
 							var st = data.instance.get_state();
 							data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
 						}
+					})
+					.fail(function(data) {
+						getPresentHTTPError(data);
 					});
 			})
 			.on('move_node.jstree', function (e, data) {
@@ -1228,7 +1255,7 @@ function tree_edit() {
 							.always(function () {
 								var st = data.instance.get_state();
 								data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
-							});
+							})
 					});
 
 					if (oid.search('thost') >= 0) {

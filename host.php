@@ -1226,10 +1226,14 @@ function device_javascript() {
 			$('#location').val($('#location_input').val());
 		});
 
-		$.get(urlPath+'host.php?action=ping_host&id='+$('#id').val(), function(data) {
-			$('#ping_results').html(data);
-			hostInfoHeight = $('.hostInfoHeader').height();
-		});
+		$.get(urlPath+'host.php?action=ping_host&id='+$('#id').val())
+			.done(function(data) {
+				$('#ping_results').html(data);
+				hostInfoHeight = $('.hostInfoHeader').height();
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 
 		$('input[id^="reindex_"]').change(function() {
 			strURL  = urlPath+'host.php?action=query_change&header=false';

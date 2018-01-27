@@ -44,9 +44,14 @@ function imageOptionsChanged(action) {
 
 	Pace.stop;
 
-	$.getJSON(url, function(data) {
-		$('#image').empty().append('<img class="graphimage" src="data:image/png;base64,'+data.data+'"/>');
-	});
+	$.getJSON(url)
+		.success(function(data) {
+			$('#image').empty().append('<img class="graphimage" src="data:image/png;base64,'+data.data+'"/>');
+		})
+		.fail(function(data) {
+			getPresentHTTPError(data);
+		});
+
 }
 
 function stopRealtime() {
@@ -126,17 +131,22 @@ function realtimeGrapher() {
 			Pace.ignore(function() {
 				position = $('#wrapper_'+local_graph_id).find('img').position();
 
-				$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'')+'&graph_end=0&graph_start=-'+graph_start+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count, function(data) {
-					results = $.parseJSON(data);
+				$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'')+'&graph_end=0&graph_start=-'+graph_start+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count)
+					.done(function(data) {
+						results = $.parseJSON(data);
 
-					$('#graph_'+results.local_graph_id).prop('src', 'data:image/png;base64,'+results.data).change();
+						$('#graph_'+results.local_graph_id).prop('src', 'data:image/png;base64,'+results.data).change();
 
-					if (isThumb) {
-						$('#graph_'+results.local_graph_id).width(rtWidth).height(rtHeight);
-					}else{
-						$('#graph_'+results.local_graph_id);
-					}
-				});
+						if (isThumb) {
+							$('#graph_'+results.local_graph_id).width(rtWidth).height(rtHeight);
+						}else{
+							$('#graph_'+results.local_graph_id);
+						}
+					})
+					.fail(function(data) {
+						getPresentHTTPError(data);
+					});
+
 			});
 		}
 	}

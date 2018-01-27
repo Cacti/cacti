@@ -75,6 +75,10 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = 'index.php';
 	$refreshIsLogout = 'false';
+} elseif (read_config_option('auth_method') == 2) {
+	$myrefresh['seconds'] = 99999999;
+	$myrefresh['page']    = 'index.php';
+	$refreshIsLogout = 'false';
 } else {
 	$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
 	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
@@ -127,4 +131,6 @@ if (isset($_SESSION['refresh'])) {
 	var errorOnPage='<?php print __('Sorry, we could not process your last action');?>';
 	var errorNumberPrefix='<?php print __('Error:');?>';
 	var errorReasonPrefix='<?php print __('Reason:');?>';
+	var errorReasonTitle='<?php print __('Action failed');?>';
+	var errorReasonUnexpected='<?php print __('The response to the last action was unexpected');?>';
 </script>

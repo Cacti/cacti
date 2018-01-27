@@ -316,11 +316,15 @@ function aggregate_color_item() {
 
             id = $(this).attr('id').split('_');
             request = 'color_templates_items.php?action=item_remove_confirm&id='+id[0]+'&color_id='+id[1];
-            $.get(request, function(data) {
-                $('#cdialog').html(data);
-                applySkin();
-                $('#cdialog').dialog({ title: '<?php print __('Delete Color Item');?>', minHeight: 80, minWidth: 500 });
-            });
+            $.get(request)
+		.done(function(data) {
+	                $('#cdialog').html(data);
+        	        applySkin();
+			$('#cdialog').dialog({ title: '<?php print __('Delete Color Item');?>', minHeight: 80, minWidth: 500 });
+ 		})
+		.fail(function(data) {
+			getPresentHTTPError(data);
+		});
         }).css('cursor', 'pointer');
     });
 

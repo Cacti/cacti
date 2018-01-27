@@ -480,15 +480,24 @@ function item_edit() {
 	});
 
 	function get_size() {
-		$.get('data_source_profiles.php?action=ajax_size&type=rra&id='+profile_id+'&rows='+$('#rows').val(), function(data) {
-			$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
-		});
+		$.get('data_source_profiles.php?action=ajax_size&type=rra&id='+profile_id+'&rows='+$('#rows').val())
+			.done(function(data) {
+				$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 	}
 
 	function get_span() {
-		$.get('data_source_profiles.php?action=ajax_span&profile_id='+profile_id+'&span='+$('#steps').val()+'&rows='+$('#rows').val(), function(data) {
-			$('#row_retention').find('.formColumnRight').empty().html('<em>'+data+'</em>');
-		});
+		$.get('data_source_profiles.php?action=ajax_span&profile_id='+profile_id+'&span='+$('#steps').val()+'&rows='+$('#rows').val())
+			.done(function(data) {
+				$('#row_retention').find('.formColumnRight').empty().html('<em>'+data+'</em>');
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
+
 	}
 	</script>
 	<?php
@@ -622,15 +631,19 @@ function profile_edit() {
 
 			id = $(this).attr('id').split('_');
 			request = 'data_source_profiles.php?action=item_remove_confirm&id='+id[1]+'&profle_id='+id[0];
-			$.get(request, function(data) {
-				$('#cdialog').html(data);
-				applySkin();
-				$('#cdialog').dialog({
-					title: '<?php print __('Delete Data Source Profile Item');?>',
-					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
-					minHeight: 80,
-					minWidth: 500
-				});
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
+					applySkin();
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete Data Source Profile Item');?>',
+						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						minHeight: 80,
+						minWidth: 500
+					})
+					.fail(function(data) {
+						getPresentHTTPError(data);
+					});
 			});
 		}).css('cursor', 'pointer');
 		<?php } else { ?>
@@ -644,9 +657,13 @@ function profile_edit() {
 
 	function get_size() {
 		checked = $('#consolidation_function_id').multiselect('getChecked').length;
-		$.get('data_source_profiles.php?action=ajax_size&type=profile&id='+profile_id+'&cfs='+checked, function(data) {
-			$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
-		});
+		$.get('data_source_profiles.php?action=ajax_size&type=profile&id='+profile_id+'&cfs='+checked)
+			.done(function(data) {
+				$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 	}
 
 	</script>

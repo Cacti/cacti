@@ -126,7 +126,7 @@ case 'view':
 								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>'></div>
 							</td>
 							<td id='dd<?php print get_request_var('local_graph_id');?>' style='vertical-align:top;' class='graphDrillDown noprint'>
-								<a class='iconLink utils' href='#' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><img class='drillDown' src='<?php print $config['url_path'] . "images/cog.png";?>' alt='' title='<?php print __esc('Graph Details, Zooming and Debugging Utilities');?>'></a></br>
+								<a class='iconLink utils' href='#' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><img class='drillDown' src='<?php print $config['url_path'] . "images/cog.png";?>' alt='' title='<?php print __esc('Graph Details, Zooming and Debugging Utilities');?>'></a><br>
 								<a class='iconLink csv' href='<?php print html_escape($config['url_path'] . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end);?>'><img src='<?php print $config['url_path'] . "images/table_go.png";?>' alt='' title='<?php print __esc('CSV Export');?>'></a><br>
 								<?php if (read_config_option('realtime_enabled') == 'on') print "<a class='iconLink' href='#' onclick=\"window.open('".$config['url_path']."graph_realtime.php?top=0&left=0&local_graph_id=" . get_request_var('local_graph_id') . "', 'popup_" . get_request_var('local_graph_id') . "', 'toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __esc('Real-time') . "'></a><br/>\n";?>
 								<?php print ($aggregate_url != '' ? $aggregate_url:'')?>
@@ -169,8 +169,8 @@ case 'view':
 				'&rra_id='+rra_id+
 				'&graph_width='+graph_width+
 				'&disable_cache=true'+
-				<?php print (isset_request_var('thumbnails') && get_request_var('thumbnails') == 'true' ? "'&graph_nolegend=true'":"''");?>,
-				function(data) {
+				<?php print (isset_request_var('thumbnails') && get_request_var('thumbnails') == 'true' ? "'&graph_nolegend=true'":"''");?>)
+				.done(function(data) {
 					$('#wrapper_'+data.local_graph_id+'_'+data.rra_id).html(
 						"<img class='graphimage' id='graph_"+data.local_graph_id+
 						"' src='data:image/"+data.type+";base64,"+data.image+
@@ -193,8 +193,10 @@ case 'view':
 					);
 
 					responsiveResizeGraphs();
-				}
-			);
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 
 		$('a[id$="_util"]').unbind('click').click(function() {
@@ -202,11 +204,15 @@ case 'view':
 			rra_id=$(this).attr('rra_id');
 			graph_start=$(this).attr('graph_start');
 			graph_end=$(this).attr('graph_end');
-			$.get('graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id='+rra_id+'&graph_start='+graph_start+'&graph_end='+graph_end, function(data) {
-				$('#main').html(data);
-				$('#breadcrumbs').append('<li><a id="nav_util" href="#"><?php print __('Utility View');?></a></li>');
-				applySkin();
-			});
+			$.get('graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id='+rra_id+'&graph_start='+graph_start+'&graph_end='+graph_end)
+				.done(function(data) {
+					$('#main').html(data);
+					$('#breadcrumbs').append('<li><a id="nav_util" href="#"><?php print __('Utility View');?></a></li>');
+					applySkin();
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 	}
 
@@ -362,24 +368,32 @@ case 'zoom':
 	}
 
 	function graphProperties() {
-		$.get('graph.php?action=properties&header=false&local_graph_id='+graph_id+'&rra_id=<?php print get_request_var('rra_id');?>&view_type=<?php print get_request_var('view_type');?>&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val(), function(data) {
-			$('#data').html(data);
-		});
+		$.get('graph.php?action=properties&header=false&local_graph_id='+graph_id+'&rra_id=<?php print get_request_var('rra_id');?>&view_type=<?php print get_request_var('view_type');?>&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
+			.done(function(data) {
+				$('#data').html(data);
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 		props_on = true;
 		graph_data_on = false;
 	}
 
 	function graphXport() {
-		$.get(urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&format=table&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val(), function(data) {
-			$('#data').html(data);
-			resizeWrapper();
+		$.get(urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&format=table&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
+			.done(function(data) {
+				$('#data').html(data);
+				resizeWrapper();
 
-			$('.download').click(function(event) {
-				event.preventDefault;
-				graph_id=$(this).attr('id').replace('graph_','');
-				document.location = urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val();
+				$('.download').click(function(event) {
+					event.preventDefault;
+					graph_id=$(this).attr('id').replace('graph_','');
+					document.location = urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val();
+				});
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
 			});
-		});
 		props_on = false;
 		graph_data_on = true;
 	}
@@ -397,8 +411,8 @@ case 'zoom':
 				'&graph_height='+graph_height+
 				'&graph_width='+graph_width+
 				'&disable_cache=true'+
-				<?php print (isset_request_var('thumbnails') && get_request_var('thumbnails') == 'true' ? "'&graph_nolegend=true'":"''");?>,
-				function(data) {
+				<?php print (isset_request_var('thumbnails') && get_request_var('thumbnails') == 'true' ? "'&graph_nolegend=true'":"''");?>)
+				.done(function(data) {
 					$('#wrapper_'+data.local_graph_id).html(
 						"<img class='graphimage' id='graph_"+data.local_graph_id+
 						"' src='data:image/"+data.type+";base64,"+data.image+
@@ -436,7 +450,11 @@ case 'zoom':
 					}
 
 					responsiveResizeGraphs();
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
 				});
+
 		});
 
 		$('a[id$="_properties"]').unbind('click').click(function() {

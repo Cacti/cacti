@@ -982,11 +982,12 @@ function aggregate_items() {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val();
-		strURL += '&rows=' + $('#rows').val();
-		strURL += '&rfilter=' + $('#rfilter').val();
-		strURL += '&matching=' + $('#matching').is(':checked');
-		strURL += '&header=false';
+		strURL = 'aggregate_graphs.php' +
+			'?action=edit&tab=items&id='+$('#id').val() +
+			'&rows=' + $('#rows').val() +
+			'&rfilter=' + base64_encode($('#rfilter').val()) +
+			'&matching=' + $('#matching').is(':checked') +
+			'&header=false';
 		loadPageNoHeader(strURL);
 	}
 

@@ -268,7 +268,10 @@ $messages = array(
 		'type' => 'info'),
 	'resource_cache_rebuild' => array(
 		'message' => '<i>' . __('Poller Resource Cache Cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards.'),
-		'type' => 'info')
+		'type' => 'info'),
+	'custom_error' => array(
+		'message' => '<i>' . __('Unexpected error occurred'),
+		'type' => 'error')
 );
 
 if (isset($_SESSION['automation_message']) && $_SESSION['automation_message'] != '') {

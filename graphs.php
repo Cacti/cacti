@@ -1475,17 +1475,26 @@ function graph_edit() {
 
 			$('body').append("<div id='modal' class='ui-widget-overlay ui-front' style='z-index: 100;'><i style='position:absolute;top:50%;left:50%;' class='fa fa-spin fa-circle-o-notch'/></div>");
 
-			$.get('graphs.php?action=unlock&header=false&id='+$('#local_graph_id').val(), function(data) {
-				$('#modal').remove();
-				$('#main').html(data);
-				applySkin();
-			});
+			$.get('graphs.php?action=unlock&header=false&id='+$('#local_graph_id').val())
+				.done(function(data) {
+					$('#modal').remove();
+					$('#main').html(data);
+					applySkin();
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 
-		$.getJSON(imageSource, function(data) {
-			$('#graphLocation').html("<img class='cactiGraphImage' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
-			$(window).trigger('resize');
-		});
+		$.getJSON(imageSource)
+			.done(function(data) {
+				$('#graphLocation').html("<img class='cactiGraphImage' src='data:image/"+data.type+";base64,"+data.image+"' graph_start='"+data.graph_start+"' graph_end='"+data.graph_end+"' graph_left='"+data.graph_left+"' graph_top='"+data.graph_top+"' graph_width='"+data.graph_width+"' graph_height='"+data.graph_height+"' width='"+data.image_width+"' height='"+data.image_height+"' image_width='"+data.image_width+"' image_height='"+data.image_height+"' value_min='"+data.value_min+"' value_max='"+data.value_max+"'>");
+				$(window).trigger('resize');
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
+
 
 		$('#lockid').click(function(event) {
 			event.preventDefault;
@@ -1598,13 +1607,13 @@ function graph_management() {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL  = 'graphs.php';
-		strURL += '?host_id=' + $('#host_id').val();
-		strURL += '&site_id=' + $('#site_id').val();
-		strURL += '&rows=' + $('#rows').val();
-		strURL += '&rfilter=' + $('#rfilter').val();
-		strURL += '&template_id=' + $('#template_id').val();
-		strURL += '&header=false';
+		strURL  = 'graphs.php' +
+			'?host_id=' + $('#host_id').val() +
+			'&site_id=' + $('#site_id').val() +
+			'&rows=' + $('#rows').val() +
+			'&rfilter=' + base64_encode($('#rfilter').val()) +
+			'&template_id=' + $('#template_id').val() +
+			'&header=false';
 		loadPageNoHeader(strURL);
 	}
 

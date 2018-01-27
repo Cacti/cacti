@@ -465,6 +465,9 @@ function display_output_messages() {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
 				if (isset($messages[$current_message_id]['message'])) {
 					$message = $messages[$current_message_id]['message'];
+					if ($current_message_id == 'custom_error') {
+						$message = $_SESSION['custom_error'];
+					}
 
 					switch ($messages[$current_message_id]['type']) {
 					case 'info':
@@ -3441,6 +3444,7 @@ function bottom_footer() {
 	} else {
 		/* display output messages */
 		display_messages();
+		display_output_messages();
 
 		/* we use this session var to store field values for when a save fails,
 		this way we can restore the field's previous values. we reset it here, because
@@ -4332,48 +4336,78 @@ function get_classic_tabimage($text, $down = false) {
 		imagecolortransparent($tab,$txcol);
 
 		$white = imagecolorallocate($tab, 255, 255, 255);
+		$ttf_functions = function_exists('imagettftext') && function_exists('imagettfbbox');
 
-		foreach ($possibles as $variation) {
-			$font     = $variation[0];
-			$fontsize = $variation[1];
+		if ($ttf_functions) {
+			foreach ($possibles as $variation) {
+				$font     = $variation[0];
+				$fontsize = $variation[1];
 
-			$lines = array();
+				$lines = array();
 
-			// if no wrapping is requested, or no wrapping is possible...
-			if((!$variation[2]) || ($variation[2] && strpos($text,' ') === false)) {
-				$bounds  = imagettfbbox($fontsize, 0, $font, $text);
-				$w       = $bounds[4] - $bounds[0];
-				$h       = $bounds[1] - $bounds[5];
-				$realx   = $x - $w/2 -1;
-				$lines[] = array($text, $font, $fontsize, $realx, $y);
-				$maxw    = $w;
-			} else {
-				$texts = explode("\n", wordwrap($text, $wrapsize), 2);
-				$line  = 1;
-				$maxw  = 0;
-				foreach ($texts as $txt) {
-					$bounds  = imagettfbbox($fontsize, 0, $font, $txt);
+				// if no wrapping is requested, or no wrapping is possible...
+				if((!$variation[2]) || ($variation[2] && strpos($text,' ') === false)) {
+					$bounds  = imagettfbbox($fontsize, 0, $font, $text);
 					$w       = $bounds[4] - $bounds[0];
 					$h       = $bounds[1] - $bounds[5];
 					$realx   = $x - $w/2 -1;
-					$realy   = $y - $h * $line + 3;
-					$lines[] = array($txt, $font, $fontsize, $realx, $realy);
-					if ($maxw < $w) {
-						$maxw = $w;
-					}
+					$lines[] = array($text, $font, $fontsize, $realx, $y);
+					$maxw    = $w;
+				} else {
+					$texts = explode("\n", wordwrap($text, $wrapsize), 2);
+					$line  = 1;
+					$maxw  = 0;
+					foreach ($texts as $txt) {
+						$bounds  = imagettfbbox($fontsize, 0, $font, $txt);
+						$w       = $bounds[4] - $bounds[0];
+						$h       = $bounds[1] - $bounds[5];
+						$realx   = $x - $w/2 -1;
+						$realy   = $y - $h * $line + 3;
+						$lines[] = array($txt, $font, $fontsize, $realx, $realy);
+						if ($maxw < $w) {
+							$maxw = $w;
+						}
 
-					$line--;
+						$line--;
+					}				
+				}
+
+				if($maxw<$wlimit) break;
+			}
+		} else {
+			while ($text > '') {
+				for ($fontid = 5; $fontid>0; $fontid--) {
+					$fontw = imagefontwidth($fontid);
+					$fonth = imagefontheight($fontid);
+					$realx = ($w - ($fontw * strlen($text)))/2;
+					$realy = ($h - $fonth - 5);
+
+					// Since we can't use FreeType, lets use a fixed location
+					$lines = array();
+					$lines[] = array($text, $fontid, 0, $realx, $realy);
+
+					if ($realx > 10 && $realy > 0) break;
+				}
+
+				if ($fontid == 0) {
+					$spacer = strrpos($text,' ');
+					if ($spacer === FALSE) {
+						$spacer = strlen($text) - 1;
+					}
+					$text = substr($text,0,$spacer);						
+//					$lines[] = array(substr($text,0,$maxtext).'.'.$w.'.'.$maxtext.'.'.$fontw, $fontid, 0, $realx, $realy);
+				} else {
+					break;
 				}
 			}
-
-			if($maxw<$wlimit) break;
 		}
 
+
 		foreach ($lines as $line) {
-			if (function_exists('imagettftext')) {
+			if ($ttf_functions) {
 				imagettftext($tab, $line[2], 0, $line[3], $line[4], $white, $line[1], $line[0]);
 			}else{
-				imagestring($tab, $line[2], $line[3], $line[4], $string, $white);
+				imagestring($tab, $line[1], $line[3], $line[4], $line[0], $white);
 			}
 		}
 

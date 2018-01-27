@@ -496,9 +496,13 @@ function graphs() {
 			'&rows='     + $('#rows').val() +
 			'&graph_type=' + $('#graph_type').val();
 
-		$.get(strURL, function(data) {
-			$('#text').show().text('<?php print __('Filter Settings Saved');?>').fadeOut(2000);
-		});
+		$.get(strURL)
+			.done(function(data) {
+				$('#text').show().text('<?php print __('Filter Settings Saved');?>').fadeOut(2000);
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 	}
 
 	$(function() {
@@ -1017,7 +1021,7 @@ function graphs() {
 	}
 
 	if ($script != '') {
-		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()) });</script>\n";
+		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()) }).fail(function(data) { getPresentHTTPError(data); });</script>\n";
 		print $script;
 	}
 
