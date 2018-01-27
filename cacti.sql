@@ -1163,6 +1163,7 @@ CREATE TABLE data_input_fields (
   allow_nulls char(2) default NULL,
   PRIMARY KEY (id),
   KEY data_input_id (data_input_id),
+  KEY input_output (input_output),
   KEY type_code_data_input_id (type_code, data_input_id)
 ) ENGINE=InnoDB;
 
@@ -1845,7 +1846,9 @@ CREATE TABLE host (
   KEY site_id (site_id),
   KEY external_id (external_id),
   KEY disabled (disabled),
-  KEY status (status)
+  KEY status (status),
+  KEY hostname (hostname),
+  KEY poller_id_last_updated (poller_id, last_updated)
 ) ENGINE=InnoDB;
 
 --
@@ -1885,6 +1888,7 @@ CREATE TABLE host_snmp_cache (
   KEY field_name (field_name),
   KEY field_value (field_value(191)),
   KEY snmp_query_id (snmp_query_id),
+  KEY last_updated (last_updated),
   KEY present (present)
 ) ENGINE=InnoDB;
 
@@ -2061,7 +2065,8 @@ CREATE TABLE poller_command (
   action tinyint(3) unsigned NOT NULL default '0',
   command varchar(191) NOT NULL default '',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (poller_id, action, command)
+  PRIMARY KEY (poller_id, action, command),
+  KEY poller_id_last_updated (poller_id, last_updated)
 ) ENGINE=InnoDB;
 
 --
@@ -2092,9 +2097,9 @@ CREATE TABLE poller_item (
   `snmp_version` tinyint(1) unsigned NOT NULL default '0',
   `snmp_username` varchar(50) NOT NULL default '',
   `snmp_password` varchar(50) NOT NULL default '',
-  `snmp_auth_protocol` varchar(6) NOT NULL default '',
+  `snmp_auth_protocol` char(6) NOT NULL default '',
   `snmp_priv_passphrase` varchar(200) NOT NULL default '',
-  `snmp_priv_protocol` varchar(6) NOT NULL default '',
+  `snmp_priv_protocol` char(6) NOT NULL default '',
   `snmp_context` varchar(64) default '',
   `snmp_engine_id` varchar(64) default '',
   `snmp_port` mediumint(5) unsigned NOT NULL default '161',
@@ -2113,7 +2118,8 @@ CREATE TABLE poller_item (
   KEY `present` (`present`),
   KEY `poller_id_host_id` (`poller_id`,`host_id`),
   KEY `poller_id_rrd_next_step` (`poller_id`,`rrd_next_step`),
-  KEY `poller_id_action` (`poller_id`,`action`)
+  KEY `poller_id_action` (`poller_id`,`action`),
+  KEY `poller_id_last_updated` (`poller_id`, `last_updated`)
 ) ENGINE=InnoDB;
 
 --
@@ -2814,9 +2820,9 @@ CREATE TABLE `snmpagent_managers` (
   `snmp_community` varchar(255) NOT NULL,
   `snmp_username` varchar(50) NOT NULL,
   `snmp_password` varchar(50) NOT NULL,
-  `snmp_auth_protocol` varchar(6) NOT NULL,
+  `snmp_auth_protocol` char(6) NOT NULL,
   `snmp_priv_passphrase` varchar(200) NOT NULL,
-  `snmp_priv_protocol` varchar(6) NOT NULL,
+  `snmp_priv_protocol` char(6) NOT NULL,
   `snmp_engine_id` varchar(64) NOT NULL DEFAULT '80005d750302FFFFFFFFFF',
   `snmp_port` varchar(255) NOT NULL,
   `snmp_message_type` tinyint(1) NOT NULL,
