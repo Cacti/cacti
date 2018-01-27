@@ -46,6 +46,11 @@ function upgrade_to_1_1_34() {
 			ADD INDEX `poller_id_last_updated` (`poller_id`, `last_updated`)');
 	}
 
+	if (!db_index_exists('poller_command', 'last_updated')) {
+		db_install_execute('ALTER TABLE `poller_command`
+			DROP INDEX `last_updated`');
+	}
+
 	if (!db_index_exists('poller_item', 'poller_id_last_updated')) {
 		db_install_execute('ALTER TABLE `poller_item`
 			ADD INDEX `poller_id_last_updated` (`poller_id`, `last_updated`)');
