@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#1258: cacti.sql does not appear to be up to date for all tables
 -issue#1260: Tabs should now display correctly in classic mode when TrueType is not available
 -issue#1261: Automatic logout should not fire when using Web Basic Authentication
+-issue#1263: Create utility to audit the Cacti schema for issues
 -issue#1268: Regex filters will now correctly filter
 
 1.1.33
