@@ -1147,14 +1147,15 @@ function ds() {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL  = 'data_sources.php?host_id=' + $('#host_id').val();
-		strURL += '&rfilter=' + $('#rfilter').val();
-		strURL += '&rows=' + $('#rows').val();
-		strURL += '&status=' + $('#status').val();
-		strURL += '&profile=' + $('#profile').val();
-		strURL += '&orphans=' + $('#orphans').val();
-		strURL += '&template_id=' + $('#template_id').val();
-		strURL += '&header=false';
+		strURL  = 'data_sources.php' +
+			'?host_id=' + $('#host_id').val() +
+			'&rfilter=' + base64_encode($('#rfilter').val()) +
+			'&rows=' + $('#rows').val() +
+			'&status=' + $('#status').val() +
+			'&profile=' + $('#profile').val() +
+			'&orphans=' + $('#orphans').val() +
+			'&template_id=' + $('#template_id').val() +
+			'&header=false';
 		loadPageNoHeader(strURL);
 	}
 
