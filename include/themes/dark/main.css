@@ -1534,7 +1534,8 @@ th.secondarySort {
 }
 
 .tableSubHeaderCheckbox {
-	width:1%;
+	max-width: 20px;
+	width: 20px;
 	background: -moz-linear-gradient(top,  #45484d 0%, #000000 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#45484d), color-stop(100%,#000000)); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top,  #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
