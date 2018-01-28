@@ -1848,7 +1848,7 @@ CREATE TABLE host (
   KEY external_id (external_id),
   KEY disabled (disabled),
   KEY status (status),
-  KEY site_id_location (site_id, location)
+  KEY site_id_location (site_id, location),
   KEY hostname (hostname),
   KEY poller_id_last_updated (poller_id, last_updated)
 ) ENGINE=InnoDB;
