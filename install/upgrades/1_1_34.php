@@ -23,14 +23,6 @@
 */
 
 function upgrade_to_1_1_34() {
-	if (db_column_exists('graph_templates_graph', 'export')) {
-		db_install_execute('ALTER TABLE `graph_templates_graph` DROP COLUMN `export`');
-	}
-
-	if (db_column_exists('graph_templates_graph', 't_export')) {
-		db_install_execute('ALTER TABLE `graph_templates_graph` DROP COLUMN `t_export`');
-	}
-
 	if (!db_column_exists('automation_snmp_items', 'snmp_community')) {
 		db_install_execute('ALTER TABLE `automation_snmp_items`
 			CHANGE COLUMN `snmp_readstring` `snmp_community` varchar(50) NOT NULL DEFAULT ""');
@@ -39,6 +31,29 @@ function upgrade_to_1_1_34() {
 	if (!db_index_exists('data_input_fields', 'input_output')) {
 		db_install_execute('ALTER TABLE `data_input_fields`
 			ADD INDEX `input_output` (`input_output`)');
+	}
+
+	if (db_column_exists('graph_templates_graph', 'export')) {
+		db_install_execute('ALTER TABLE `graph_templates_graph` DROP COLUMN `export`');
+	}
+
+	if (db_column_exists('graph_templates_graph', 't_export')) {
+		db_install_execute('ALTER TABLE `graph_templates_graph` DROP COLUMN `t_export`');
+	}
+
+	if (!db_index_exists('host', 'hostname')) {
+		db_install_execute('ALTER TABLE `host`
+			ADD INDEX `hostname` (`hostname`)');
+	}
+
+	if (db_index_exists('host', 'last_updated')) {
+		db_install_execute('ALTER TABLE `host`
+			DROP INDEX `last_updated`');
+	}
+
+	if (!db_index_exists('host', 'poller_id_last_updated')) {
+		db_install_execute('ALTER TABLE `host`
+			ADD INDEX `poller_id_last_updated` (`poller_id`, `last_updated`)');
 	}
 
 	if (!db_index_exists('poller_command', 'poller_id_last_updated')) {
@@ -52,16 +67,17 @@ function upgrade_to_1_1_34() {
 	}
 
 	db_install_execute('ALTER TABLE `poller_item`
-		MODIFY COLUMN `snmp_auth_protocol` char(6) NOT NULL DEFAULT ""');
+		MODIFY COLUMN `snmp_auth_protocol` char(6) NOT NULL DEFAULT "",
+		MODIFY COLUMN `snmp_priv_protocol` char(6) NOT NULL DEFAULT ""');
+
+	if (db_index_exists('poller_item', 'last_updated')) {
+		db_install_execute('ALTER TABLE `poller_item`
+			DROP INDEX `last_updated`');
+	}
 
 	if (!db_index_exists('poller_item', 'poller_id_last_updated')) {
 		db_install_execute('ALTER TABLE `poller_item`
 			ADD INDEX `poller_id_last_updated` (`poller_id`, `last_updated`)');
-	}
-
-	if (!db_index_exists('host', 'hostname')) {
-		db_install_execute('ALTER TABLE `host`
-			ADD INDEX `hostname` (`hostname`)');
 	}
 
 	// Results of upgrade audit
