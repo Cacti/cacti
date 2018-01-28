@@ -1555,7 +1555,7 @@ th.sortable {
 }
 
 .tableSubHeaderCheckbox {
-	width:1%;
+	max-width: 20px;
 }
 
 .image_table {

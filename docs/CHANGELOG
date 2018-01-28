@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#1268: Regex filters will now correctly filter
 -issue#1274: Host CPU script checks value prescence to prevent unnecessary errors
 -issue#1275: Fix issues with authPriv not supplying username/password
+-issue: When a checkbox table has no rows, the checkbox is resizable
 
 1.1.33
 -issue#1253: Automatically generated RRDtool DEF names in Cacti 1.1.32 break existing Graph Templates
