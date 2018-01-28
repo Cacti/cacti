@@ -89,7 +89,7 @@ CREATE TABLE `aggregate_graph_templates_graph` (
   force_rules_legend char(2) DEFAULT NULL,
   t_legend_position char(2) DEFAULT '',
   legend_position varchar(10) DEFAULT NULL,
-  t_legend_direction char(2) DEFAULT '0',
+  t_legend_direction char(2) DEFAULT '',
   legend_direction varchar(10) DEFAULT NULL,
   PRIMARY KEY (`aggregate_template_id`)
 ) ENGINE=InnoDB COMMENT='Aggregate Template Graph Data';
