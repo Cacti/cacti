@@ -46,10 +46,13 @@ function upgrade_to_1_1_34() {
 			ADD INDEX `poller_id_last_updated` (`poller_id`, `last_updated`)');
 	}
 
-	if (!db_index_exists('poller_command', 'last_updated')) {
+	if (db_index_exists('poller_command', 'last_updated')) {
 		db_install_execute('ALTER TABLE `poller_command`
 			DROP INDEX `last_updated`');
 	}
+
+	db_install_execute('ALTER TABLE `poller_item`
+		MODIFY COLUMN `snmp_auth_protocol` char(6) NOT NULL DEFAULT ""');
 
 	if (!db_index_exists('poller_item', 'poller_id_last_updated')) {
 		db_install_execute('ALTER TABLE `poller_item`
@@ -78,7 +81,8 @@ function upgrade_to_1_1_34() {
 		MODIFY COLUMN `tab_width` varchar(20) DEFAULT "30",
 		MODIFY COLUMN `t_dynamic_labels` char(2) DEFAULT "",
 		MODIFY COLUMN `t_force_rules_legend` char(2) DEFAULT "",
-		MODIFY COLUMN `t_legend_position` char(2) DEFAULT ""');
+		MODIFY COLUMN `t_legend_position` char(2) DEFAULT "",
+		MODIFY COLUMN `t_legend_direction` char(2) DEFAULT ""');
 
 	db_install_execute('ALTER TABLE `automation_devices`
 		MODIFY COLUMN `snmp_auth_protocol` char(6) DEFAULT ""');
@@ -242,6 +246,10 @@ function upgrade_to_1_1_34() {
 
 	db_install_execute('ALTER TABLE `snmpagent_cache`
 		MODIFY COLUMN `max-access` varchar(50) NOT NULL DEFAULT "not-accessible"');
+
+	db_install_execute('ALTER TABLE `snmpagent_managers`
+		MODIFY COLUMN `snmp_auth_protocol` char(6) NOT NULL DEFAULT "",
+		MODIFY COLUMN `snmp_priv_protocol` char(6) NOT NULL DEFAULT ""');
 
 	db_install_execute('ALTER TABLE `snmpagent_notifications_log`
 		MODIFY COLUMN `notification` varchar(190) NOT NULL DEFAULT ""');
