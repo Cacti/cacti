@@ -16,7 +16,6 @@ b7018298341701d9314f37d56af29495 *./automation_networks.php
 72101ecf51284645a6d9b779a8f316e7 *./boost_rrdupdate.php
 9a20934c320a31d982facc65b2ec12e6 *./cacti.sql
 c94cddc7e6d108735b91d92243aff7e7 *./cdef.php
-c2c4a24c5a9ade0e1c23bc3408405c14 *./cli/.htaccess
 887db3e8a889f716e75cab4f9e792730 *./cli/add_data_query.php
 1a5ccf6bcdffe5d467447adac1245b57 *./cli/add_device.php
 1d40578506933ad796577542d580eda1 *./cli/add_graphs.php
@@ -28,7 +27,7 @@ b62503a60c96f78aa4141682c12e6063 *./cli/analyze_database.php
 fd8d811964f9393f8213493d07b9727f *./cli/check_md5sum
 d258c126df04977282fc1fad437d32a5 *./cli/convert_innodb.php
 fddc6feab489dfab0645192c011214cd *./cli/copy_user.php
-78db3f3ea3bef58f480302bf7ecbb8bc *./cli/create_md5sum
+982fe020afa814f92a4cf2c9aa5175a1 *./cli/create_md5sum
 3ac1c6d287369eccee05801833e57553 *./cli/data_template_associate_rra.php
 3c80f23ea17317ed610b65b59f993204 *./cli/host_update_template.php
 acac147610f19b59147bbc051be19c1b *./cli/import_package.php

@@ -15,7 +15,8 @@ else
 	rm .md5sum
 
 	#Create new .md5sum
-	find . -type f ! -path "./.git/*" ! -path "./cache/*" ! -path "./log/*" ! -path "./plugins/*" ! -path "./rra/*" ! -path "./scripts/*" -print0 | xargs -0 md5sum > /tmp/MD5SUM; mv /tmp/MD5SUM .md5sum
+	tmp=`mktemp`
+	find . -type f ! -path "./.git/*" ! -path "./cache/*" ! -path "./log/*" ! -path "./plugins/*" ! -path "./rra/*" ! -name ".htaccess" -print0 | xargs -0 md5sum > $tmp; mv $tmp .md5sum
 	printf "${GREEN}Okay${NC}"
 
 fi
