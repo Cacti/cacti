@@ -36,7 +36,7 @@ b62503a60c96f78aa4141682c12e6063 *./cli/analyze_database.php
 6992579288f74980a7ed851be05685c9 *./cli/audit_database.php
 d258c126df04977282fc1fad437d32a5 *./cli/convert_innodb.php
 fddc6feab489dfab0645192c011214cd *./cli/copy_user.php
-3dd4a6aafa1c05285a8faf1fdcdbc8bb *./cli/create_md5sum.sh
+1703a72bb4fef8ca6e7524657884e6c7 *./cli/create_md5sum.sh
 3ac1c6d287369eccee05801833e57553 *./cli/data_template_associate_rra.php
 3c80f23ea17317ed610b65b59f993204 *./cli/host_update_template.php
 acac147610f19b59147bbc051be19c1b *./cli/import_package.php

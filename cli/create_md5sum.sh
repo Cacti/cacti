@@ -3,7 +3,7 @@
 
 # IMPORTANT: Run script in root folder !
 # /cli/create_md5sum.sh
-echo IMPORTANT: Run script in root folder !
+echo "IMPORTANT: Run script in root folder !"
 
 #Delete old .md5sum file
 rm .md5sum
