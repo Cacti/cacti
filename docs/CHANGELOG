@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#1268: Regex filters will now correctly filter
 -issue#1274: Host CPU script checks value prescence to prevent unnecessary errors
 -issue#1275: Fix issues with authPriv not supplying username/password
+-issue#1280: Remove redundant code from lib/snmp.php
 -issue: When a checkbox table has no rows, the checkbox is resizable
 
 1.1.33
