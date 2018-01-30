@@ -1,6 +1,10 @@
 #!/bin/bash
 # A simple bash script to create MD5SUM from all cacti files
 
+# IMPORTANT: Run script in root folder !
+# /cli/create_md5sum.sh
+echo IMPORTANT: Run script in root folder !
+
 #Delete old .md5sum file
 rm .md5sum
 
