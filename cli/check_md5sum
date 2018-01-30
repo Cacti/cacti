@@ -1,0 +1,16 @@
+#!/bin/bash
+# A simple bash script to check MD5SUM from all cacti files
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+if [ ! -f include/config.php.dist ]
+then
+	printf "${RED}Run script in root folder !${NC}"
+	exit
+else 
+printf "${GREEN}Only erros are listed${NC} \n"
+md5sum -c --quiet .md5sum
+
+fi
