@@ -154,12 +154,19 @@ case 'view':
 
 	function initializeGraph() {
 		$('.graphWrapper').each(function() {
-			graph_id=$(this).attr('graph_id');
-			rra_id=$(this).attr('rra_id');
-			graph_height=$(this).attr('graph_height');
-			graph_width=$(this).attr('graph_width');
-			graph_start=$(this).attr('graph_start');
-			graph_end=$(this).attr('graph_end');
+			var itemWrapper=$(this);
+			var itemGraph=$(this).find('.graphimage');
+
+			if (itemGraph.length != 1) {
+				itemGraph = itemWrapper;
+			}
+
+			graph_id=itemGraph.attr('graph_id');
+			rra_id=itemGraph.attr('rra_id');
+			graph_height=itemGraph.attr('graph_height');
+			graph_width=itemGraph.attr('graph_width');
+			graph_start=itemGraph.attr('graph_start');
+			graph_end=itemGraph.attr('graph_end');
 
 			$.getJSON(urlPath+'graph_json.php?'+
 				'local_graph_id='+graph_id+
@@ -175,6 +182,8 @@ case 'view':
 					wrapper.html(
 						"<img class='graphimage' id='graph_"+data.local_graph_id+
 						"' src='data:image/"+data.type+";base64,"+data.image+
+						"' rra_id='"+data.rra_id+
+						"' graph_id='"+data.local_graph_id+
 						"' graph_start='"+data.graph_start+
 						"' graph_end='"+data.graph_end+
 						"' graph_left='"+data.graph_left+
@@ -194,6 +203,7 @@ case 'view':
 					);
 
 					responsiveResizeGraphs();
+
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -218,6 +228,7 @@ case 'view':
 	}
 
 	$(function() {
+		myGraphLocation='graph';
 		initializeGraph();
 		$('#navigation').show();
 		$('#navigation_right').show();
@@ -404,8 +415,12 @@ case 'zoom':
 			graph_id=$(this).attr('id').replace('wrapper_','');
 			graph_height=$(this).attr('graph_height');
 			graph_width=$(this).attr('graph_width');
+			rra_id=$(this).attr('rra_id');
+			if (!(rra_id > 0)) {
+				rra_id = 0;
+			}
 
-			$.getJSON(urlPath+'graph_json.php?rra_id=0'
+			$.getJSON(urlPath+'graph_json.php?rra_id='+rra_id+
 				'&local_graph_id='+graph_id+
 				'&graph_start='+$('#graph_start').val()+
 				'&graph_end='+$('#graph_end').val()+
@@ -417,6 +432,8 @@ case 'zoom':
 					$('#wrapper_'+data.local_graph_id).html(
 						"<img class='graphimage' id='graph_"+data.local_graph_id+
 						"' src='data:image/"+data.type+";base64,"+data.image+
+						"' rra_id='"+data.rra_id+
+						"' graph_id='"+data.local_graph_id+
 						"' graph_start='"+data.graph_start+
 						"' graph_end='"+data.graph_end+
 						"' graph_left='"+data.graph_left+
@@ -438,7 +455,12 @@ case 'zoom':
 					$('#graph_start').val(data.graph_start);
 					$('#graph_end').val(data.graph_end);
 
-					$("#graph_"+data.local_graph_id).zoom({
+					var graph_id = '#graph_'+data.local_graph_id;
+					if (data.rra_id > 0) {
+						graph_id += '[rra_id=\'' + data.rra_id + '\']';
+					}
+
+					$(graph_id).zoom({
 						inputfieldStartTime : 'date1',
 						inputfieldEndTime : 'date2',
 						serverTimeOffset : <?php print date('Z') . "\n";?>
