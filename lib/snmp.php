@@ -856,7 +856,7 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
 		return SNMP_METHOD_BINARY;
 	} elseif ($version == 3 && $engineid != '') {
 		return SNMP_METHOD_BINARY;
-	} elseif ($type == 'walk' && file_exists('path_snmpbulkwalk')) {
+	} elseif ($type == 'walk' && file_exists(read_config_option('path_snmpbulkwalk'))) {
 		return SNMP_METHOD_BINARY;
 	} elseif (function_exists('snmpget') && $version == 1) {
 		return SNMP_METHOD_PHP;
