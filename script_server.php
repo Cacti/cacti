@@ -193,7 +193,7 @@ while (1) {
 			}
 
 			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) .
-			        "' FUNC: '$function' PARMS: '" . implode('\', \'',$parameters) .
+			        "' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
 			        "'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
 			/* validate the existance of the function, and include if applicable */
