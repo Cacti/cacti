@@ -22,6 +22,21 @@
  +-------------------------------------------------------------------------+
 */
 
+function clog_get_datasource_titles($local_data_ids) {
+	if (!is_array($local_data_ids)) {
+		$local_data_ids = array($local_data_ids);
+	}
+
+	$titles = array();
+	foreach ($local_data_ids as $local_data_id)
+	{
+		if (!array_key_exists($local_data_id, $titles)) {
+			$titles[$local_data_id] = get_data_source_title($local_data_id);
+		}
+	}
+	return $titles;
+}
+
 function clog_get_graphs_from_datasource($local_data_id) {
 	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
 		gtg.local_graph_id AS id,
@@ -261,14 +276,15 @@ function clog_view_logfile() {
 	foreach ($logcontents as $item) {
 		$new_item = html_escape($item);
 
-		$host_start = strpos($new_item, 'Device[');
-		$ds_start   = strpos($new_item, 'DS[');
-
 		$ds_regex = '~( DS\[)([, \d]+)(\])~';
+		$dq_regex = '~( DQ\[)([, \d]+)(\])~';
 		$dev_regex = '~( Device\[)([, \d]+)(\])~';
+		$poller_regex = '~( Poller\[)([, \d]+)(\])~';
 
 		$new_item = preg_replace_callback($dev_regex,'clog_regex_device',$new_item);
 		$new_item = preg_replace_callback($ds_regex,'clog_regex_datasource',$new_item);
+		$new_item = preg_replace_callback($dq_regex,'clog_regex_datasource',$new_item);
+		$new_item = preg_replace_callback($poller_regex,'clog_regex_poller',$new_item);
 
 		/* respect the exclusion filter */
 		if ($exclude_regex != '' && !$clogAdmin) {
@@ -530,7 +546,7 @@ function clog_regex_device($matches) {
 	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
 	$result = '';
 	if (sizeof($dev_ids)) {
-		$hosts = db_fetch_assoc_prepared('SELECT id, description 
+		$hosts = db_fetch_assoc_prepared('SELECT id, description
 						  FROM host
 						  WHERE id in (?)',
 						  array(implode(',',$dev_ids)));
@@ -579,8 +595,13 @@ function clog_regex_datasource($matches) {
 		$result .= $matches[1];
 		$i         = 0;
 
+		$ds_titles = clog_get_datasource_titles($ds_ids);
 		foreach($ds_ids as $ds_id) {
-			$result .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_id . '</a>';
+			$ds_title = $ds_id;
+			if (array_key_exists($ds_id, $ds_titles)) {
+				$ds_title = $ds_titles[$ds_id];
+			}
+			$result .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_title . '</a>';
 
 			$i++;
 		}
@@ -589,3 +610,46 @@ function clog_regex_datasource($matches) {
 	}
 	return $result;
 }
+
+function clog_regex_poller($matches) {
+	global $config;
+	$poller_ids = explode(',',str_replace(" ","",$matches[2]));
+	$result = '';
+	if (sizeof($poller_ids)) {
+		$pollers = db_fetch_assoc_prepared('SELECT id, name
+						  FROM poller
+						  WHERE id in (?)',
+						  array(implode(',',$poller_ids)));
+		$pollerDescriptions = array();
+		foreach ($pollers as $poller) {
+			$pollerDescriptions[$poller['id']] = html_escape($poller['name']);
+		}
+
+		foreach ($poller_ids as $poller_id) {
+			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'pollers.php?action=edit&id=' . $poller_id) . '\'>' . (isset($pollerDescriptions[$poller_id]) ? $pollerDescriptions[$poller_id]:$poller_id) . '</a>' . $matches[3];
+		}
+	}
+	return $result;
+}
+
+function clog_regex_query($matches) {
+	global $config;
+	$query_ids = explode(',',str_replace(" ","",$matches[2]));
+	$result = '';
+	if (sizeof($query_ids)) {
+		$querys = db_fetch_assoc_prepared('SELECT id, name
+						  FROM snmp_query
+						  WHERE id in (?)',
+						  array(implode(',',$query_ids)));
+		$queryDescriptions = array();
+		foreach ($querys as $query) {
+			$queryDescriptions[$query['id']] = html_escape($query['name']);
+		}
+
+		foreach ($query_ids as $query_id) {
+			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'data_query.php?action=edit&id=' . $query_id) . '\'>' . (isset($queryDescriptions[$query_id]) ? $queryDescriptions[$query_id]:$query_id) . '</a>' . $matches[3];
+		}
+	}
+	return $result;
+}
+
