@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.34
+-issue#1040: Correct sizeof() issues with get_data_query_array() and get_graph_group() results
 -issue#1256: Error reporting of custom errors now display correctly
 -issue#1257: Boost no longer ignores logging levels when updating single local data id's
 -issue#1258: cacti.sql does not appear to be up to date for all tables

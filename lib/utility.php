@@ -297,7 +297,7 @@ function update_poller_cache($data_source, $commit = false) {
 					$host_fields = $data_template_fields;
 				}
 
-				if (sizeof($outputs)) {
+				if (sizeof($outputs) && sizeof($snmp_queries)) {
 					foreach ($outputs as $output) {
 						if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid'])) {
 							$oid = $snmp_queries['fields'][$output['snmp_field_name']]['oid'] . '.' . $data_source['snmp_index'];
@@ -357,7 +357,7 @@ function update_poller_cache($data_source, $commit = false) {
 					$host_fields = $data_template_fields;
 				}
 
-				if (sizeof($outputs)) {
+				if (sizeof($outputs) && sizeof($script_queries)) {
 					foreach ($outputs as $output) {
 						if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
 							$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];

@@ -1695,7 +1695,7 @@ function get_graph_group($graph_template_item_id) {
 
 	/* a parent must NOT be the following graph item types */
 	if (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types[$graph_item['graph_type_id']])) {
-		return;
+		return array();
 	}
 
 	$graph_item_children_array = array();
