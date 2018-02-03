@@ -149,7 +149,7 @@
 		function zoom_init(image) {
 			var $this = image;
 
-			if($('#zoom-container').hasClass('zoom_active_' + $this.attr('id'))) {
+			if($('#zoom-container').hasClass('zoom_active_' + zoomGetImageId($this))) {
 				zoomElements_remove();
 				zoomFunction_init($this);
 			}
@@ -161,6 +161,30 @@
 					zoomFunction_init($this);
 				}
 			);
+		}
+
+		function zoomGetElement(zoom) {
+			var id = '#' + zoom.image.reference;
+			if (zoom.image.rra_id > 0) {
+				id += '[rra_id=\'' + zoom.image.rra_id + '\']';
+			}
+			return id;
+		}
+
+		function zoomGetImageId(image) {
+			var id = image.attr('id');
+			if (image.attr('rra_id') > 0) {
+				id += '_rra' +rra_id;
+			}
+			return id;
+		}
+
+		function zoomGetId(zoom) {
+			var id = zoom.image.reference;
+			if (zoom.image.rra_id > 0) {
+				id += '_rra' + rra_id;
+			}
+			return id;
 		}
 
 		function zoomFunction_init(image) {
@@ -185,9 +209,10 @@
 			/* fetch all attributes that rrdgraph provides */
 			zoom.image.data 			= atob( zoom.initiator.attr('src').split(',')[1] );
 			zoom.image.type 			= (zoom.initiator.attr('src').split(';')[0] == 'data:image/svg+xml' )? 'svg' : 'png';
-			zoom.image.reference		= zoom.initiator.attr('id');
+			zoom.image.reference			= zoom.initiator.attr('id');
 			zoom.image.id				= zoom.image.reference.replace('graph_', '');
-			zoom.image.name 			= 'cacti_' + zoom.image.id + '.' + zoom.image.type;
+			zoom.image.rra_id			= zoom.initiator.attr('rra_id');
+			zoom.image.name 			= 'cacti_' + zoomGetImageId(zoom.initiator)+ '.' + zoom.image.type;
 			zoom.image.legend			= ($('#thumbnails').length != 0 && $('#thumbnails').is(':checked')) ? false : true;
 			zoom.image.top				= parseInt(zoom.initiator.offset().top);
 			zoom.image.left				= parseInt(zoom.initiator.offset().left);
@@ -200,7 +225,7 @@
 			zoom.graph.start			= parseInt(zoom.initiator.attr('graph_start'));
 			zoom.graph.end				= parseInt(zoom.initiator.attr('graph_end'));
 			zoom.graph.timespan			= zoom.graph.end - zoom.graph.start;
-			zoom.graph.secondsPerPixel 	= zoom.graph.timespan/zoom.graph.width;
+			zoom.graph.secondsPerPixel		= zoom.graph.timespan/zoom.graph.width;
 			zoom.box.width				= zoom.graph.width;
 			zoom.box.height				= zoom.graph.height;
 			zoom.box.top 				= zoom.graph.top-1;
@@ -228,7 +253,7 @@
 				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
 				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
 				$('<div id="zoom-container"></div>').appendTo('body').delay(1000);
-				$('#zoom-container').css({ position: 'absolute', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' }).removeClass().addClass('zoom_active_' + zoom.image.reference);
+				$('#zoom-container').css({ position: 'absolute', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' }).removeClass().addClass('zoom_active_' + zoomGetId(zoom));
 			}
 
 			// add a hidden anchor to use for downloads
@@ -352,7 +377,7 @@
 		 * reposition all elements of Zoom
 		 **/
 		function zoomElements_reposition() {
-			$('#zoom-container').insertBefore('#' + zoom.image.reference);
+			$('#zoom-container').insertBefore(zoomGetElement(zoom));
 		}
 
 		/**
@@ -1007,7 +1032,11 @@
 					}
 					break;
 				case 'newTab':
-					var url = zoom.attr.urlPath + 'graph_image.php?local_graph_id=' + zoom.image.id + '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' );
+					var url = zoom.attr.urlPath + 'graph_image.php?local_graph_id=' + zoom.image.id;
+					if (zoom.image.rra_id > 0) {
+						url += '&rra_id='+zoom.image.rra_id;
+					}
+					url += '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' );
 					$('#zoom-image').removeAttr('download').attr({ 'href':url, 'target': '_bank' }).get(0).click();
 					break;
 				case 'link':
