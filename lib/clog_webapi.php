@@ -547,6 +547,7 @@ function filter($clogAdmin) {
 
 function clog_get_regex_array() {
 	static $regex_array = array();
+
 	if (!sizeof($regex_array)) {
 		$regex_array = array(
 			1 => array('name' => 'DS',     'regex' => '( DS\[)([, \d]+)(\])',      'func' => 'clog_regex_datasource'),
@@ -555,6 +556,7 @@ function clog_get_regex_array() {
 			4 => array('name' => 'Poller', 'regex' => '( Poller\[)([, \d]+)(\])',  'func' => 'clog_regex_poller'),
 			5 => array('name' => 'RRA',    'regex' => "([_\/])(\d+)(\.rrd&#039;)", 'func' => 'clog_regex_rra')
 		);
+
 		$regex_array = api_plugin_hook_function('clog_regex_array',$regex_array);
 		$regex_complete = '';
 		foreach ($regex_array as $regex_key => $regex_setting) {
@@ -563,6 +565,7 @@ function clog_get_regex_array() {
 		$regex_complete = '~('.$regex_complete.')~';
 		$regex_array['complete'] = $regex_complete;
 	}
+
 	return $regex_array;
 }
 
@@ -593,6 +596,7 @@ function clog_regex_parser($matches) {
 			}
 		}
 	}
+
 	return $result;
 }
 
@@ -604,9 +608,10 @@ function clog_regex_device($matches) {
 	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (sizeof($dev_ids)) {
 		$hosts = db_fetch_assoc_prepared('SELECT id, description
-						  FROM host
-						  WHERE id in (?)',
-						  array(implode(',',$dev_ids)));
+			FROM host
+			WHERE id in (?)',
+			array(implode(',',$dev_ids)));
+		
 		$hostDescriptions = array();
 		foreach ($hosts as $host) {
 			$hostDescriptions[$host['id']] = html_escape($host['description']);
@@ -616,6 +621,7 @@ function clog_regex_device($matches) {
 			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . '\'>' . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:$host_id) . '</a>' . $matches[3];
 		}
 	}
+
 	return $result;
 }
 
@@ -665,6 +671,7 @@ function clog_regex_datasource($matches) {
 
 		$result .= $matches[3];
 	}
+
 	return $result;
 }
 
@@ -677,9 +684,10 @@ function clog_regex_poller($matches) {
 	if (sizeof($poller_ids)) {
 		$result = '';
 		$pollers = db_fetch_assoc_prepared('SELECT id, name
-						  FROM poller
-						  WHERE id in (?)',
-						  array(implode(',',$poller_ids)));
+			FROM poller
+			WHERE id in (?)',
+			array(implode(',',$poller_ids)));
+		
 		$pollerDescriptions = array();
 		foreach ($pollers as $poller) {
 			$pollerDescriptions[$poller['id']] = html_escape($poller['name']);
@@ -689,6 +697,7 @@ function clog_regex_poller($matches) {
 			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'pollers.php?action=edit&id=' . $poller_id) . '\'>' . (isset($pollerDescriptions[$poller_id]) ? $pollerDescriptions[$poller_id]:$poller_id) . '</a>' . $matches[3];
 		}
 	}
+
 	return $result;
 }
 
@@ -701,9 +710,9 @@ function clog_regex_dataquery($matches) {
 	if (sizeof($query_ids)) {
 		$result = '';
 		$querys = db_fetch_assoc_prepared('SELECT id, name
-						  FROM snmp_query
-						  WHERE id in (?)',
-						  array(implode(',',$query_ids)));
+			FROM snmp_query
+			WHERE id in (?)',
+			array(implode(',',$query_ids)));
 
 		$queryDescriptions = array();
 		foreach ($querys as $query) {
@@ -714,6 +723,7 @@ function clog_regex_dataquery($matches) {
 			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'data_query.php?action=edit&id=' . $query_id) . '\'>' . (isset($queryDescriptions[$query_id]) ? $queryDescriptions[$query_id]:$query_id) . '</a>' . $matches[3];
 		}
 	}
+
 	return $result;
 }
 
@@ -730,6 +740,7 @@ function clog_regex_rra($matches) {
 			$result .= ' '. $datasource_result;
 		}
 	}
+
 	return $result;
 }
 
