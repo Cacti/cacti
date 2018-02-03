@@ -27,7 +27,7 @@ function run_data_query($host_id, $snmp_query_id) {
 
 	/* required for upgrading old versions of cacti */
 	if (!db_column_exists('host', 'poller_id')) {
-		return;
+		return false;
 	}
 
 	/* don't run/rerun the query if the host is down, or disabled */
@@ -205,7 +205,7 @@ function get_data_query_array($snmp_query_id) {
 
 		if (!file_exists($xml_file_path)) {
 			query_debug_timer_offset('data_query', "Could not find data query XML file at '$xml_file_path'");
-			return false;
+			return array();
 		}
 
 		query_debug_timer_offset('data_query', "Found data query XML file at '$xml_file_path'");
@@ -1227,7 +1227,7 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	/* in case no unique index is available, fallback to first field in XML */
 	if ($sort_cache['sort_field'] == ''){
 		$snmp_queries = get_data_query_array($data_query_id);
-		if (isset($snmp_queries['index_order'])){
+		if (sizeof($snmp_queries) && isset($snmp_queries['index_order'])){
 			$i = explode(':', $snmp_queries['index_order']);
 			if (sizeof($i) > 0){
 				$sort_cache['sort_field'] = array_shift($i);
@@ -1385,7 +1385,7 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 	}
 
 	/* substitute variables */
-	if (isset($raw_xml['index_title_format'])) {
+	if (sizeof($raw_xml) && isset($raw_xml['index_title_format'])) {
 		$title_format = str_replace('|chosen_order_field|', "|query_$sort_field|", $raw_xml['index_title_format']);
 	} else {
 		$title_format = "|query_$sort_field|";

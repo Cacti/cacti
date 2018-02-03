@@ -1345,11 +1345,15 @@ function get_data_source_title($local_data_id) {
 		WHERE data_template_data.local_data_id = data_local.id
 		AND data_local.id = ?', array($local_data_id));
 
-	if ((strstr($data['name'], '|')) && (!empty($data['host_id']))) {
-		$data['name'] = substitute_data_input_data($data['name'], '', $local_data_id);
-		return expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
+	if (isset($data) && sizeof($data)) {
+		if ((strstr($data['name'], '|')) && (!empty($data['host_id']))) {
+			$data['name'] = substitute_data_input_data($data['name'], '', $local_data_id);
+			return expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
+		} else {
+			return $data['name'];
+		}
 	} else {
-		return $data['name'];
+		return 'Missing Datasource '.$local_data_id;
 	}
 }
 
@@ -1695,7 +1699,7 @@ function get_graph_group($graph_template_item_id) {
 
 	/* a parent must NOT be the following graph item types */
 	if (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types[$graph_item['graph_type_id']])) {
-		return;
+		return array();
 	}
 
 	$graph_item_children_array = array();

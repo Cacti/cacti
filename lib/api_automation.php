@@ -760,7 +760,7 @@ function display_new_graphs($rule, $url) {
 	 * for a dropdown selection
 	 */
 	$xml_array = get_data_query_array($rule['snmp_query_id']);
-	if ($xml_array != false) {
+	if (sizeof($xml_array)) {
 		/* loop through once so we can find out how many input fields there are */
 		foreach ($xml_array['fields'] as $field_name => $field_array) {
 			if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
@@ -783,7 +783,7 @@ function display_new_graphs($rule, $url) {
 
 	html_start_box(__('Matching Objects [ %s ]', html_escape($name)) . display_tooltip(__('A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule.')), '100%', '', '3', 'center', '');
 
-	if ($xml_array != false) {
+	if (sizeof($xml_array)) {
 		$html_dq_header     = '';
 		$sql_filter         = '';
 		$sql_having         = '';
@@ -1252,7 +1252,7 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$operation = ($item['operation'] != 0) ? $automation_oper[$item['operation']] : '&nbsp;';
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item # %d', $i+1) . '</a></td>';
+			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item#%d', $i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$operation . '</td>';
 			$form_data .= '<td>' . 	$item['field'] . '</td>';
@@ -1314,7 +1314,7 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$operation = ($item['operation'] != 0) ? $automation_oper[$item['operation']] : '&nbsp;';
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item # %d', $i+1) . '</a></td>';
+			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item#%d', $i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$operation . '</td>';
 			$form_data .= '<td>' . 	$item['field'] . '</td>';
@@ -1378,7 +1378,7 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			$field_name = ($item['field'] === AUTOMATION_TREE_ITEM_TYPE_STRING) ? $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING] : $item['field'];
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item # %d', $i+1) . '</a></td>';
+			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item#%d', $i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$field_name . '</td>';
 			$form_data .= '<td>' . 	$tree_sort_types[$item['sort_type']] . '</td>';
@@ -1898,7 +1898,7 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 		$xml_array = get_data_query_array($automation_rule['snmp_query_id']);
 		$fields = array();
 
-		if (sizeof($xml_array['fields'])) {
+		if (sizeof($xml_array) && sizeof($xml_array['fields'])) {
 			foreach($xml_array['fields'] as $key => $value) {
 				# ... work on all input fields
 				if (isset($value['direction']) && ($value['direction'] == 'input' || $value['direction'] == 'input-output')) {
@@ -2707,7 +2707,7 @@ function automation_add_device($device, $web = false) {
 	$poller_id            = isset($device['poller_id']) ? $device['poller_id'] : read_config_option('default_poller');
 	$site_id              = isset($device['site_id']) ? $device['site_id'] : read_config_option('default_site');
 	$ip                   = isset($device['ip']) ? $device['ip']:$device['ip_address'];
-	$community            = $device['community'];
+	$snmp_community       = $device['snmp_community'];
 	$snmp_ver             = $device['snmp_version'];
 	$snmp_username	      = $device['snmp_username'];
 	$snmp_password	      = $device['snmp_password'];
@@ -2731,7 +2731,7 @@ function automation_add_device($device, $web = false) {
 	automation_debug(' - Adding Device');
 
 	$host_id = api_device_save('0', $template_id, $description, $ip,
-		$community, $snmp_ver, $snmp_username, $snmp_password,
+		$snmp_community, $snmp_ver, $snmp_username, $snmp_password,
 		$snmp_port, $snmp_timeout, $disable, $availability_method,
 		$ping_method, $ping_port, $ping_timeout, $ping_retries,
 		$notes, $snmp_auth_protocol, $snmp_priv_passphrase,

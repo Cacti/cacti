@@ -178,7 +178,7 @@ CREATE TABLE `automation_devices` (
   `ip` varchar(17) NOT NULL DEFAULT '',
   `community` varchar(100) NOT NULL DEFAULT '',
   `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `snmp_port` int(10) unsigned NOT NULL DEFAULT '161',
+  `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
   `snmp_username` varchar(50) DEFAULT NULL,
   `snmp_password` varchar(50) DEFAULT NULL,
   `snmp_auth_protocol` char(6) DEFAULT '',
@@ -214,7 +214,7 @@ CREATE TABLE `automation_graph_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 COMMENT='Automation Graph Rule Items';
+) ENGINE=InnoDB COMMENT='Automation Graph Rule Items';
 
 --
 -- Dumping data for table `automation_graph_rule_items`
@@ -234,7 +234,7 @@ CREATE TABLE `automation_graph_rules` (
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `name` (`name`(171))
-) ENGINE=InnoDB AUTO_INCREMENT=5 COMMENT='Automation Graph Rules';
+) ENGINE=InnoDB COMMENT='Automation Graph Rules';
 
 --
 -- Dumping data for table `automation_graph_rules`
@@ -271,7 +271,7 @@ CREATE TABLE `automation_match_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 COMMENT='Automation Match Rule Items';
+) ENGINE=InnoDB COMMENT='Automation Match Rule Items';
 
 --
 -- Dumping data for table `automation_match_rule_items`
@@ -318,7 +318,7 @@ CREATE TABLE `automation_networks` (
   `rerun_data_queries` char(2) DEFAULT NULL COMMENT 'Rerun data queries or not for existing hosts',
   PRIMARY KEY (`id`),
   KEY `poller_id` (`poller_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 COMMENT='Stores scanning subnet definitions';
+) ENGINE=InnoDB COMMENT='Stores scanning subnet definitions';
 
 --
 -- Dumping data for table `automation_networks`
@@ -351,7 +351,7 @@ CREATE TABLE `automation_snmp` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Group of SNMP Option Sets';
+) ENGINE=InnoDB COMMENT='Group of SNMP Option Sets';
 
 --
 -- Dumping data for table `automation_snmp`
@@ -367,9 +367,9 @@ CREATE TABLE `automation_snmp_items` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `snmp_id` int(10) unsigned NOT NULL DEFAULT '0',
   `sequence` int(10) unsigned NOT NULL DEFAULT '0',
-  `snmp_version` varchar(100) NOT NULL DEFAULT '',
+  `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `snmp_community` varchar(100) NOT NULL,
-  `snmp_port` int(10) NOT NULL DEFAULT '161',
+  `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
   `snmp_timeout` int(10) unsigned NOT NULL DEFAULT '500',
   `snmp_retries` tinyint(11) unsigned NOT NULL DEFAULT '3',
   `max_oids` int(12) unsigned DEFAULT '10',
@@ -381,7 +381,7 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_context` varchar(64) DEFAULT '',
   `snmp_engine_id` varchar(64) DEFAULT '',
   PRIMARY KEY (`id`,`snmp_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Set of SNMP Options';
+) ENGINE=InnoDB COMMENT='Set of SNMP Options';
 
 --
 -- Dumping data for table `automation_snmp_items`
@@ -402,7 +402,7 @@ CREATE TABLE `automation_templates` (
   `sysOid` varchar(60) DEFAULT '',
   `sequence` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Templates of SNMP Sys variables used for automation';
+) ENGINE=InnoDB COMMENT='Templates of SNMP Sys variables used for automation';
 
 --
 -- Dumping data for table `automation_templates`
@@ -424,7 +424,7 @@ CREATE TABLE `automation_tree_rule_items` (
   `search_pattern` varchar(255) NOT NULL DEFAULT '',
   `replace_pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 COMMENT='Automation Tree Rule Items';
+) ENGINE=InnoDB COMMENT='Automation Tree Rule Items';
 
 --
 -- Dumping data for table `automation_tree_rule_items`
@@ -446,7 +446,7 @@ CREATE TABLE `automation_tree_rules` (
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `name` (`name`(171))
-) ENGINE=InnoDB AUTO_INCREMENT=4 COMMENT='Automation Tree Rules';
+) ENGINE=InnoDB COMMENT='Automation Tree Rules';
 
 --
 -- Dumping data for table `automation_tree_rules`
@@ -2522,7 +2522,7 @@ CREATE TABLE `user_auth_group` (
   `policy_graph_templates` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `enabled` char(2) NOT NULL DEFAULT 'on',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 COMMENT='Table that Contains User Groups';
+) ENGINE=InnoDB COMMENT='Table that Contains User Groups';
 
 --
 -- Dumping data for table `user_auth_group`
@@ -2826,15 +2826,15 @@ CREATE TABLE `snmpagent_managers` (
   `description` varchar(255) NOT NULL,
   `disabled` char(2) DEFAULT NULL,
   `max_log_size` tinyint(1) NOT NULL,
-  `snmp_version` varchar(255) NOT NULL,
-  `snmp_community` varchar(255) NOT NULL,
+  `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `snmp_community` varchar(100) NOT NULL DEFAULT '',
   `snmp_username` varchar(50) NOT NULL,
   `snmp_password` varchar(50) NOT NULL,
   `snmp_auth_protocol` char(6) NOT NULL,
   `snmp_priv_passphrase` varchar(200) NOT NULL,
   `snmp_priv_protocol` char(6) NOT NULL,
   `snmp_engine_id` varchar(64) DEFAULT NULL,
-  `snmp_port` varchar(255) NOT NULL,
+  `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
   `snmp_message_type` tinyint(1) NOT NULL,
   `notes` text,
   PRIMARY KEY (`id`),

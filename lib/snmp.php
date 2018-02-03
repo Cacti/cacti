@@ -582,9 +582,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user, $aut
 		}
 
 		if ($temp_array === false) {
-			if ($temp_array === false) {
-				cacti_log("WARNING: SNMP Error:'$snmp_error', Device:'$hostname', OID:'$oid'", false);
-			} elseif ($oid == '.1.3.6.1.2.1.47.1.1.1.1.2' ||
+			if ($oid == '.1.3.6.1.2.1.47.1.1.1.1.2' ||
 				$oid == '.1.3.6.1.4.1.9.9.68.1.2.2.1.2' ||
 				$oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.5' ||
 				$oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.14' ||
@@ -856,7 +854,7 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
 		return SNMP_METHOD_BINARY;
 	} elseif ($version == 3 && $engineid != '') {
 		return SNMP_METHOD_BINARY;
-	} elseif ($type == 'walk' && file_exists('path_snmpbulkwalk')) {
+	} elseif ($type == 'walk' && file_exists(read_config_option('path_snmpbulkwalk'))) {
 		return SNMP_METHOD_BINARY;
 	} elseif (function_exists('snmpget') && $version == 1) {
 		return SNMP_METHOD_PHP;
