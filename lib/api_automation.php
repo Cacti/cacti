@@ -760,7 +760,7 @@ function display_new_graphs($rule, $url) {
 	 * for a dropdown selection
 	 */
 	$xml_array = get_data_query_array($rule['snmp_query_id']);
-	if ($xml_array != false) {
+	if (sizeof($xml_array)) {
 		/* loop through once so we can find out how many input fields there are */
 		foreach ($xml_array['fields'] as $field_name => $field_array) {
 			if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
@@ -1898,7 +1898,7 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 		$xml_array = get_data_query_array($automation_rule['snmp_query_id']);
 		$fields = array();
 
-		if (sizeof($xml_array['fields'])) {
+		if (sizeof($xml_array) && sizeof($xml_array['fields'])) {
 			foreach($xml_array['fields'] as $key => $value) {
 				# ... work on all input fields
 				if (isset($value['direction']) && ($value['direction'] == 'input' || $value['direction'] == 'input-output')) {
