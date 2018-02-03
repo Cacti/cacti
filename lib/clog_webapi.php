@@ -28,12 +28,12 @@ function clog_get_datasource_titles($local_data_ids) {
 	}
 
 	$titles = array();
-	foreach ($local_data_ids as $local_data_id)
-	{
+	foreach ($local_data_ids as $local_data_id) {
 		if (!array_key_exists($local_data_id, $titles)) {
 			$titles[$local_data_id] = get_data_source_title($local_data_id);
 		}
 	}
+	
 	return $titles;
 }
 
