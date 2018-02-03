@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#1274: Host CPU script checks value prescence to prevent unnecessary errors
 -issue#1275: Fix issues with authPriv not supplying username/password
 -issue#1289: Change Script Server to output parameters as returned by parseArgs()
+-issue#1293: Correctly identify if command 'snmpbulkwalk' is available
 -issue: When a checkbox table has no rows, the checkbox is resizable
 -feature: CLog now has links and names for Poller, Data Query and Data Sources
 -feature: CLog now displays datasource link next to RRD files which is useful for missing RRD's
