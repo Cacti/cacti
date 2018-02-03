@@ -189,7 +189,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	} else {
 		$output = file_get_contents($url);
 	}
-	
+
 }
 $output = trim($output);
 $oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => $rra_id);
@@ -256,5 +256,6 @@ if ($output !== false && $output != '') {
 	}
 }
 
+header('Content-Type: application/json');
 print json_encode($oarray);
 
