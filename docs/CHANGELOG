@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -feature: CLog now has links and names for Poller, Data Query and Data Sources
 -feature: CLog now displays datasource link next to RRD files which is useful for missing RRD's
 -feature: CLog now uses a more dynamic functionality to query regex to allow plugin addition in future
+-feature: CLog now lists filenames in reverse order to be more intuitive
 
 1.1.33
 -issue#1253: Automatically generated RRDtool DEF names in Cacti 1.1.32 break existing Graph Templates
