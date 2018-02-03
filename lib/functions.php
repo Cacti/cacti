@@ -1345,11 +1345,15 @@ function get_data_source_title($local_data_id) {
 		WHERE data_template_data.local_data_id = data_local.id
 		AND data_local.id = ?', array($local_data_id));
 
-	if ((strstr($data['name'], '|')) && (!empty($data['host_id']))) {
-		$data['name'] = substitute_data_input_data($data['name'], '', $local_data_id);
-		return expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
+	if (isset($data) && sizeof($data)) {
+		if ((strstr($data['name'], '|')) && (!empty($data['host_id']))) {
+			$data['name'] = substitute_data_input_data($data['name'], '', $local_data_id);
+			return expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
+		} else {
+			return $data['name'];
+		}
 	} else {
-		return $data['name'];
+		return 'Missing Datasource '.$local_data_id;
 	}
 }
 
