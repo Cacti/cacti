@@ -331,10 +331,10 @@ if (get_nfilter_request_var('action') == 'login') {
 				/* because we use plugins, we can't redirect back to graph_view.php if they don't
 				 * have console access
 				 */
-				if (isset($_SERVER["REDIRECT_URL"])) {
-					$referer = $_SERVER["REDIRECT_URL"];
-					if (isset($_SERVER["REDIRECT_QUERY_STRING"])) {
-						$referer .= '?' . $_SERVER["REDIRECT_QUERY_STRING"] . ($newtheme ? '&newtheme=1':'');
+				if (isset($_SERVER['REDIRECT_URL'])) {
+					$referer = $_SERVER['REDIRECT_URL'];
+					if (isset($_SERVER['REDIRECT_QUERY_STRING'])) {
+						$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'] . ($newtheme ? '&newtheme=1':'');
 					}
 				} else if (isset($_SERVER['HTTP_REFERER'])) {
 					$referer = $_SERVER['HTTP_REFERER'];
@@ -607,7 +607,7 @@ $selectedTheme = get_selected_theme();
 						'action' => get_nfilter_request_var('action')));
 				?>
 				<div class='loginTitle'>
-					<p><? print __('Enter your Username and Password below');?></p>
+					<p><?php print __('Enter your Username and Password below');?></p>
 				</div>
 				<div class='cactiLogin'>
 					<table class='cactiLoginTable'>
