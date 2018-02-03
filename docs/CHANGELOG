@@ -7,9 +7,11 @@ Cacti CHANGELOG
 -issue#1260: Tabs should now display correctly in classic mode when TrueType is not available
 -issue#1261: Automatic logout should not fire when using Web Basic Authentication
 -issue#1263: Create utility to audit the Cacti schema for issues
+-issue#1266: Correct graphWrapper usage so all graphs are correctly displayed
 -issue#1268: Regex filters will now correctly filter
 -issue#1274: Host CPU script checks value prescence to prevent unnecessary errors
 -issue#1275: Fix issues with authPriv not supplying username/password
+-issue#1289: Change Script Server to output parameters as returned by parseArgs()
 -issue#1293: Correctly identify if command 'snmpbulkwalk' is available
 -issue: When a checkbox table has no rows, the checkbox is resizable
 

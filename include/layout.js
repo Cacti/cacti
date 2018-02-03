@@ -973,7 +973,12 @@ function responsiveResizeGraphs() {
 	myWidth = parseInt((graphRow - (drillDown * myColumns)) / myColumns);
 
 	$('.graphimage').each(function() {
-		graph_id = $(this).attr('id').replace('wrapper_','');
+		graph_id = $(this).attr('graph_id');
+		if (!(graph_id > 0)) {
+			graph_id = $(this).attr('id').replace('wrapper_','');
+		}
+
+		rra_id = $(this).attr('rra_id');
 
 		/* original image attributes */
 		image_width   = $(this).attr('image_width');
@@ -2203,6 +2208,8 @@ function redrawGraph(graph_id) {
 			$('#wrapper_'+data.local_graph_id).html(
 				"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
 				" src='data:image/"+data.type+";base64,"+data.image+"'"+
+				" rra_id='"+data.rra_id+"'"+
+				" graph_id='"+data.local_graph_id+"'"+
 				" graph_start='"+data.graph_start+"'"+
 				" graph_end='"+data.graph_end+"'"+
 				" graph_left='"+data.graph_left+"'"+
@@ -2275,11 +2282,20 @@ function initializeGraphs() {
 	myWidth = (mainWidth-(30*myColumns))/myColumns;
 
 	$('.graphWrapper').each(function() {
-		graph_id=$(this).attr('id').replace('wrapper_','');
+		graph_id=$(this).attr('graph_id');
+		if (!(graph_id > 0)) {
+			graph_id=$(this).attr('id').replace('wrapper_','');
+		}
+
+		rra_id=$(this).attr('rra_id');
+		if (!(rra_id > 0)) {
+			rra_id=0;
+		}
+
 		graph_height=$(this).attr('graph_height');
 		graph_width=$(this).attr('graph_width');
 
-		$.getJSON(urlPath+'graph_json.php?rra_id=0'+
+		$.getJSON(urlPath+'graph_json.php?rra_id='+rra_id+
 			'&local_graph_id='+graph_id+
 			'&graph_start='+graph_start+
 			'&graph_end='+graph_end+
@@ -2296,10 +2312,15 @@ function initializeGraphs() {
 					data.graph_top    = parseInt(data.graph_top  * ratio);
 					data.graph_left   = parseInt(data.graph_left * ratio);
 				}
+				var wrapper_id = '#wrapper_'+data.local_graph_id;
+				if (rra_id > 0) {
+					wrapper_id += '[rra_id=\'' + data.rra_id + '\']';
+				}
 
-				$('#wrapper_'+data.local_graph_id).html(
+				$(wrapper_id).html(
 					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
 					" src='data:image/"+data.type+";base64,"+data.image+"'"+
+					" rra_id='"+data.rra_id+"'"+
 					" graph_start='"+data.graph_start+"'"+
 					" graph_end='"+data.graph_end+"'"+
 					" graph_left='"+data.graph_left+"'"+
@@ -2318,7 +2339,12 @@ function initializeGraphs() {
 					" value_max='"+data.value_max+"'>"
 				);
 
-				$("#graph_"+data.local_graph_id).zoom({
+				var graph_id = '#graph_'+data.local_graph_id;
+				if (rra_id > 0) {
+					graph_id += '[rra_id=\'' + data.rra_id + '\']';
+				}
+
+				$(graph_id).zoom({
 					inputfieldStartTime : 'date1',
 					inputfieldEndTime : 'date2',
 					serverTimeOffset : timeOffset
