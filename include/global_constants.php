@@ -303,7 +303,11 @@ define('REPORTS_TREE_NONE', 0);
 define('REPORTS_TIMESPAN_DEFAULT', GT_LAST_DAY);
 
 define('REPORTS_EXTENSION_GD', 'gd');
-define('REPORTS_DEBUG', read_config_option('reports_log_verbosity'), true);
+if (function_exists('read_config_option')) {
+	define('REPORTS_DEBUG', read_config_option('reports_log_verbosity'), true);
+} else {
+	define('REPORTS_DEBUG', 1, true);
+}
 
 define('REPORTS_OUTPUT_STDOUT', 1);
 define('REPORTS_OUTPUT_EMAIL',  2);
@@ -370,7 +374,7 @@ define('AUTOMATION_ACTION_TREE_ENABLE', 2);
 define('AUTOMATION_ACTION_TREE_DISABLE', 3);
 define('AUTOMATION_ACTION_TREE_DELETE', 99);
 
-if ($database_type == 'mysql') {
+if (isset($database_type) && $database_type == 'mysql') {
 	define('SQL_NO_CACHE', 'SQL_NO_CACHE');
 } else {
 	define('SQL_NO_CACHE', '');
