@@ -123,7 +123,7 @@ case 'view':
 					<table>
 						<tr>
 							<td>
-								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] . '_' . $rra['id'];?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>'></div>
+								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] ?>' graph_id='<?php print $graph['local_graph_id'];?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' title_font_size='<?php print ((read_user_setting("custom_fonts") == "on") ? read_user_setting("title_size") : read_config_option("title_size"));?>'></div>
 							</td>
 							<td id='dd<?php print get_request_var('local_graph_id');?>' style='vertical-align:top;' class='graphDrillDown noprint'>
 								<a class='iconLink utils' href='#' id='graph_<?php print get_request_var('local_graph_id');?>_util' graph_start='<?php print $graph_start;?>' graph_end='<?php print $graph_end;?>' rra_id='<?php print $rra['id'];?>'><img class='drillDown' src='<?php print $config['url_path'] . "images/cog.png";?>' alt='' title='<?php print __esc('Graph Details, Zooming and Debugging Utilities');?>'></a><br>
@@ -154,12 +154,19 @@ case 'view':
 
 	function initializeGraph() {
 		$('.graphWrapper').each(function() {
-			graph_id=$(this).attr('graph_id');
-			rra_id=$(this).attr('rra_id');
-			graph_height=$(this).attr('graph_height');
-			graph_width=$(this).attr('graph_width');
-			graph_start=$(this).attr('graph_start');
-			graph_end=$(this).attr('graph_end');
+			var itemWrapper=$(this);
+			var itemGraph=$(this).find('.graphimage');
+
+			if (itemGraph.length != 1) {
+				itemGraph = itemWrapper;
+			}
+
+			graph_id=itemGraph.attr('graph_id');
+			rra_id=itemGraph.attr('rra_id');
+			graph_height=itemGraph.attr('graph_height');
+			graph_width=itemGraph.attr('graph_width');
+			graph_start=itemGraph.attr('graph_start');
+			graph_end=itemGraph.attr('graph_end');
 
 			$.getJSON(urlPath+'graph_json.php?'+
 				'local_graph_id='+graph_id+
@@ -171,9 +178,12 @@ case 'view':
 				'&disable_cache=true'+
 				<?php print (isset_request_var('thumbnails') && get_request_var('thumbnails') == 'true' ? "'&graph_nolegend=true'":"''");?>)
 				.done(function(data) {
-					$('#wrapper_'+data.local_graph_id+'_'+data.rra_id).html(
+					wrapper=$('#wrapper_'+data.local_graph_id+'[rra_id=\''+data.rra_id+'\']');
+					wrapper.html(
 						"<img class='graphimage' id='graph_"+data.local_graph_id+
 						"' src='data:image/"+data.type+";base64,"+data.image+
+						"' rra_id='"+data.rra_id+
+						"' graph_id='"+data.local_graph_id+
 						"' graph_start='"+data.graph_start+
 						"' graph_end='"+data.graph_end+
 						"' graph_left='"+data.graph_left+
@@ -193,6 +203,7 @@ case 'view':
 					);
 
 					responsiveResizeGraphs();
+
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -217,6 +228,7 @@ case 'view':
 	}
 
 	$(function() {
+		myGraphLocation='graph';
 		initializeGraph();
 		$('#navigation').show();
 		$('#navigation_right').show();
@@ -316,7 +328,7 @@ case 'zoom':
 			<table>
 				<tr>
 					<td align='center'>
-						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
+						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
                             <?php print (read_user_setting('show_graph_title') == 'on' ? "<span align='center'><strong>" . html_escape($graph['title_cache']) . '</strong></span>' : '');?>
 					</td>
 					<td id='dd<?php print $graph['local_graph_id'];?>' style='vertical-align:top;' class='graphDrillDown noprint'>
@@ -403,8 +415,12 @@ case 'zoom':
 			graph_id=$(this).attr('id').replace('wrapper_','');
 			graph_height=$(this).attr('graph_height');
 			graph_width=$(this).attr('graph_width');
+			rra_id=$(this).attr('rra_id');
+			if (!(rra_id > 0)) {
+				rra_id = 0;
+			}
 
-			$.getJSON(urlPath+'graph_json.php?rra_id=0'+
+			$.getJSON(urlPath+'graph_json.php?rra_id='+rra_id+
 				'&local_graph_id='+graph_id+
 				'&graph_start='+$('#graph_start').val()+
 				'&graph_end='+$('#graph_end').val()+
@@ -416,6 +432,8 @@ case 'zoom':
 					$('#wrapper_'+data.local_graph_id).html(
 						"<img class='graphimage' id='graph_"+data.local_graph_id+
 						"' src='data:image/"+data.type+";base64,"+data.image+
+						"' rra_id='"+data.rra_id+
+						"' graph_id='"+data.local_graph_id+
 						"' graph_start='"+data.graph_start+
 						"' graph_end='"+data.graph_end+
 						"' graph_left='"+data.graph_left+
@@ -437,7 +455,12 @@ case 'zoom':
 					$('#graph_start').val(data.graph_start);
 					$('#graph_end').val(data.graph_end);
 
-					$("#graph_"+data.local_graph_id).zoom({
+					var graph_id = '#graph_'+data.local_graph_id;
+					if (data.rra_id > 0) {
+						graph_id += '[rra_id=\'' + data.rra_id + '\']';
+					}
+
+					$(graph_id).zoom({
 						inputfieldStartTime : 'date1',
 						inputfieldEndTime : 'date2',
 						serverTimeOffset : <?php print date('Z') . "\n";?>
