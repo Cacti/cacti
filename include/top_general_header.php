@@ -34,8 +34,6 @@ $using_guest_account = false;
 
 $selectedTheme = get_selected_theme();
 
-$layout_md5 = get_md5_hash('include/layout.js');
-
 ?>
 <!DOCTYPE html>
 <html>
