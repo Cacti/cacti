@@ -1,0 +1,22 @@
+#!/bin/bash
+# A simple bash script to create MD5SUM from all cacti files
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+if [ ! -f include/config.php.dist ]
+then
+	printf "${RED}Run script in root folder !${NC}"
+	exit
+else 
+
+	#Delete old .md5sum file
+	rm .md5sum
+
+	#Create new .md5sum
+	tmp=`mktemp`
+	find . -type f ! -path "./.git/*" ! -path "./cache/*" ! -path "./log/*" ! -path "./plugins/*" ! -path "./rra/*" ! -name ".htaccess" -print0 | xargs -0 md5sum > $tmp; mv $tmp .md5sum
+	printf "${GREEN}Okay${NC}"
+
+fi
