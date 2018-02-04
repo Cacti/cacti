@@ -5057,3 +5057,32 @@ function get_nonsystem_data_input($data_input_id) {
 					array($data_input_id));
 	return $diid;
 }
+
+function get_md5_hash($path) {
+	if (!isset($_SESSION['md5_' . $path]) || !strlen($_SESSION['md5_' . $path])) {
+		$md5 = db_fetch_cell_prepared('SELECT md5sum
+			FROM poller_resource_cache
+			WHERE path = ?', 
+			array($path));
+
+		if (!isset($md5) || !strlen($md5)) {
+			$md5 = md5_file(dirname(__FILE__) . "/../" . $path);
+		}
+
+		$_SESSION['md5_'.$path] = $md5;
+	}
+
+	return $_SESSION['md5_'.$path];
+}
+
+function get_md5_include_js($path) {
+	global $config;
+
+	return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $path . '?' . get_md5_hash($path) . '\'></script>';
+}
+
+function get_md5_include_css($path) {
+	global $config;
+
+	return '<link href=\''. $config['url_path'] . $path . '?' . get_md5_hash($path) . '\' type=\'text/css\' rel=\'stylesheet\'>';
+}

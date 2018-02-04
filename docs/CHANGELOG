@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#1280: Remove redundant code from lib/snmp.php
 -issue#1287: JSON calls return validation error in HTML format
 -issue#1289: Change Script Server to output parameters as returned by parseArgs()
+-issue#1292: Fix issues with browser caching of javascript and css files
 -issue#1293: Correctly identify if command 'snmpbulkwalk' is available
 -issue#1296: CactiErrorHandler now ignores suppressed errors
 -issue#1300: Automation discovery : New devices added by automation discovery have empty SNMP community field
