@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -issue#1296: CactiErrorHandler now ignores suppressed errors
 -issue#1300: Automation discovery : New devices added by automation discovery have empty SNMP community field
 -issue#1302: Dont redirect unathenticated users to the automatic logout page
+-issue#1304: Cacti mib_cache.php file contains unsafe transactions for binary logging
 -issue: When a checkbox table has no rows, the checkbox is resizable
 -feature: New CLI script to generate and verify MD5 hashes for entire cacti source
 -feature: CLog now has links and names for Poller, Data Query and Data Sources
