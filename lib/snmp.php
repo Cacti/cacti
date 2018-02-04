@@ -581,18 +581,6 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user, $aut
 			$temp_array = snmp3_real_walk($hostname . ':' . $port, $auth_user, $sec_level, $auth_proto, $auth_pass, $priv_proto, $priv_pass, $oid, ($timeout * 1000), $retries);
 		}
 
-		if ($temp_array === false) {
-			if ($oid == '.1.3.6.1.2.1.47.1.1.1.1.2' ||
-				$oid == '.1.3.6.1.4.1.9.9.68.1.2.2.1.2' ||
-				$oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.5' ||
-				$oid == '.1.3.6.1.4.1.9.9.46.1.6.1.1.14' ||
-				$oid == '.1.3.6.1.4.1.9.9.23.1.2.1.1.6') {
-				/* do nothing */
-			} else {
-				cacti_log("WARNING: SNMP Error, Device:'$hostname', OID:'$oid'", false);
-			}
-		}
-
 		/* check for bad entries */
 		if ($temp_array !== false && sizeof($temp_array)) {
 			foreach($temp_array as $key => $value) {
