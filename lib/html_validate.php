@@ -55,7 +55,7 @@ function die_html_input_error($variable = '', $value = '', $message = '') {
 		print json_encode(
 			array(
 				'status' => '500',
-				'statusText' => 'Validation Error',
+				'statusText' => __('Validation Error'),
 				'responseText' => $message
 			)
 		);
