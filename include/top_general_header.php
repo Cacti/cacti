@@ -84,6 +84,7 @@ $selectedTheme = get_selected_theme();
 	<?php print get_md5_include_js('include/realtime.js'); ?>
 	<?php print get_md5_include_js('include/layout.js'); ?>
 	<?php print get_md5_include_js('include/themes/' . $selectedTheme . '/main.js'); ?>
+	<script type='text/javascript'>var theme='<?php print $selectedTheme;?>';</script>
 	<?php api_plugin_hook('page_head'); ?>
 </head>
 <body>

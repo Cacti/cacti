@@ -568,21 +568,46 @@ $selectedTheme = get_selected_theme();
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name='robots' content='noindex,nofollow'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/jquery-ui.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/main.css' type='text/css' rel='stylesheet'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
-    <link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js' language='javascript'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js' language='javascript'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js' language='javascript'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/js.storage.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js' language='javascript'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.metadata.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/main.js'></script>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
+	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css'); ?>
+	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css'); ?>
+	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css'); ?>
+	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.css'); ?>
+	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css'); ?>
+	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css'); ?>
+	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css'); ?>
+	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css'); ?>
+	<?php print get_md5_include_css('include/fa/css/font-awesome.css'); ?>
+	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css'); ?>
+	<?php print get_md5_include_js('include/js/screenfull.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery-migrate.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery-ui.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.ui.touch.punch.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.cookie.js'); ?>
+	<?php print get_md5_include_js('include/js/js.storage.js'); ?>
+	<?php print get_md5_include_js('include/js/jstree.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.hotkeys.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.tablednd.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.zoom.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.multiselect.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.multiselect.filter.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.timepicker.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.colorpicker.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.tablesorter.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.tablesorter.widgets.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.tablesorter.pager.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.metadata.js'); ?>
+	<?php print get_md5_include_js('include/js/jquery.sparkline.js'); ?>
+	<?php print get_md5_include_js('include/js/Chart.js'); ?>
+	<?php print get_md5_include_js('include/js/dygraph-combined.js'); ?>
+	<?php print get_md5_include_js('include/js/d3.js'); ?>
+	<?php print get_md5_include_js('include/js/c3.js'); ?>
+	<?php print get_md5_include_js('include/js/pace.js'); ?>
+	<?php print get_md5_include_js('include/realtime.js'); ?>
+	<?php print get_md5_include_js('include/layout.js');?>
+	<?php print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js'); ?>
 	<script type='text/javascript'>var theme='<?php print $selectedTheme;?>';</script>
 	<script type='text/javascript'>
 	$(function() {

@@ -80,7 +80,6 @@ $selectedTheme = get_selected_theme();
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
-
 	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css'); ?>
 	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css'); ?>
 	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css'); ?>
@@ -119,6 +118,7 @@ $selectedTheme = get_selected_theme();
 	<?php print get_md5_include_js('include/realtime.js'); ?>
 	<?php print get_md5_include_js('include/layout.js');?>
 	<?php print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js'); ?>
+	<script type='text/javascript'>var theme='<?php print $selectedTheme;?>';</script>
 	<?php api_plugin_hook('page_head'); ?>
 </head>
 <body>
