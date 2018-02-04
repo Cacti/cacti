@@ -13,8 +13,10 @@ Cacti CHANGELOG
 -issue#1274: Host CPU script checks value prescence to prevent unnecessary errors
 -issue#1275: Fix issues with authPriv not supplying username/password
 -issue#1280: Remove redundant code from lib/snmp.php
+-issue#1287: JSON calls return validation error in HTML format
 -issue#1289: Change Script Server to output parameters as returned by parseArgs()
 -issue#1293: Correctly identify if command 'snmpbulkwalk' is available
+-issue#1296: CactiErrorHandler now ignores suppressed errors
 -issue#1300: Automation discovery : New devices added by automation discovery have empty SNMP community field
 -issue#1302: Dont redirect unathenticated users to the automatic logout page
 -issue: When a checkbox table has no rows, the checkbox is resizable

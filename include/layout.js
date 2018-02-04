@@ -552,7 +552,7 @@ function cactiReturnTo(href) {
 function applySkin() {
 	pageName = basename($(location).attr('pathname'));
 
-	if (typeof requestURI !== 'undefined') {
+	if (typeof requestURI != 'undefined') {
 		pushState(myTitle, requestURI);
 	}
 
@@ -1795,7 +1795,7 @@ var graphPage  = urlPath+'graph_view.php';
 var pageAction = 'preview';
 
 function checkForLogout(data) {
-	if (typeof data === 'undefined') {
+	if (typeof data == 'undefined') {
 		return true;
 	} else if (typeof data === 'object') {
 		return true;
@@ -1889,7 +1889,7 @@ function pushState(myTitle, myHref) {
 	if (myHref.indexOf('nostate') < 0) {
 		if (statePushed == false) {
 			var myObject = { myTitle: myHref };
-			if (typeof window.history.pushState !== 'undefined') {
+			if (typeof window.history.pushState != 'undefined') {
 				window.history.pushState(myObject, myTitle, cleanHeader(myHref));
 			}
 		}
@@ -2195,38 +2195,42 @@ function redrawGraph(graph_id) {
 		'&graph_width='+graph_width+
 		(isThumb ? '&graph_nolegend=true':''))
 		.done(function(data) {
-			if (myWidth < data.image_width) {
-				ratio=myWidth/data.image_width;
-				data.image_width  = parseInt(data.image_width  * ratio);
-				data.image_height = parseInt(data.image_height * ratio);
-				data.graph_width  = parseInt(data.graph_width  * ratio);
-				data.graph_height = parseInt(data.graph_height * ratio);
-				data.graph_top    = parseInt(data.graph_top  * ratio);
-				data.graph_left   = parseInt(data.graph_left * ratio);
-			}
+			if (typeof data.status == 'undefined') {
+				if (myWidth < data.image_width) {
+					ratio=myWidth/data.image_width;
+					data.image_width  = parseInt(data.image_width  * ratio);
+					data.image_height = parseInt(data.image_height * ratio);
+					data.graph_width  = parseInt(data.graph_width  * ratio);
+					data.graph_height = parseInt(data.graph_height * ratio);
+					data.graph_top    = parseInt(data.graph_top  * ratio);
+					data.graph_left   = parseInt(data.graph_left * ratio);
+				}
 
-			$('#wrapper_'+data.local_graph_id).html(
-				"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
-				" src='data:image/"+data.type+";base64,"+data.image+"'"+
-				" rra_id='"+data.rra_id+"'"+
-				" graph_id='"+data.local_graph_id+"'"+
-				" graph_start='"+data.graph_start+"'"+
-				" graph_end='"+data.graph_end+"'"+
-				" graph_left='"+data.graph_left+"'"+
-				" graph_top='"+data.graph_top+"'"+
-				" graph_width='"+data.graph_width+"'"+
-				" graph_height='"+data.graph_height+"'"+
-				" width='"+data.image_width+"'"+
-				" height='"+data.image_height+"'"+
-				" image_width='"+data.image_width+"'"+
-				" image_height='"+data.image_height+"'"+
-				" canvas_top='"+data.graph_top+"'"+
-				" canvas_left='"+data.graph_left+"'"+
-				" canvas_width='"+data.graph_width+"'"+
-				" canvas_height='"+data.graph_height+"'"+
-				" value_min='"+data.value_min+"'"+
-				" value_max='"+data.value_max+"'>"
-			);
+				$('#wrapper_'+data.local_graph_id).html(
+					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
+					" src='data:image/"+data.type+";base64,"+data.image+"'"+
+					" rra_id='"+data.rra_id+"'"+
+					" graph_id='"+data.local_graph_id+"'"+
+					" graph_start='"+data.graph_start+"'"+
+					" graph_end='"+data.graph_end+"'"+
+					" graph_left='"+data.graph_left+"'"+
+					" graph_top='"+data.graph_top+"'"+
+					" graph_width='"+data.graph_width+"'"+
+					" graph_height='"+data.graph_height+"'"+
+					" width='"+data.image_width+"'"+
+					" height='"+data.image_height+"'"+
+					" image_width='"+data.image_width+"'"+
+					" image_height='"+data.image_height+"'"+
+					" canvas_top='"+data.graph_top+"'"+
+					" canvas_left='"+data.graph_left+"'"+
+					" canvas_width='"+data.graph_width+"'"+
+					" canvas_height='"+data.graph_height+"'"+
+					" value_min='"+data.value_min+"'"+
+					" value_max='"+data.value_max+"'>"
+				);
+			} else {
+				getPresentHTTPError(data);
+			}
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);

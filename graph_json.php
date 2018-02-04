@@ -33,6 +33,9 @@ include_once('./lib/rrd.php');
 
 api_plugin_hook_function('graph_image');
 
+/* set the json variable for request validation handling */
+set_request_var('json', true);
+
 $debug = false;
 
 if ($debug == false) {
