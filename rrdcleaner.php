@@ -552,37 +552,49 @@ function filter() {
 				$('#rescan').click(function() {
 					$('#text').text('Rebuilding RRDfile Listing');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&rescan=1&clear=1', function(data) {
-						checkForLogout(data);
+					$.get('rrdcleaner.php?header=false&rescan=1&clear=1')
+						.done(function(data) {
+							checkForLogout(data);
 
-						$('#main').html(data);
-						$('#text').text('Finished').fadeOut(2000);
-						applySkin();
-					});
+							$('#main').html(data);
+							$('#text').text('Finished').fadeOut(2000);
+							applySkin();
+						})
+						.fail(function(data) {
+							getPresentHTTPError(data);
+						});
 				});
 
 				$('#arcall').click(function() {
 					$('#text').text('Scheduling Archiving of All Unknowns');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&action=arcall&raction=3&clear=1', function(data) {
-						checkForLogout(data);
+					$.get('rrdcleaner.php?header=false&action=arcall&raction=3&clear=1')
+						.done(function(data) {
+							checkForLogout(data);
 
-						$('#main').html(data);
-						$('#text').text('Finished').fadeOut(2000);
-						applySkin();
-					});
+							$('#main').html(data);
+							$('#text').text('Finished').fadeOut(2000);
+							applySkin();
+						})
+						.fail(function(data) {
+							getPresentHTTPError(data);
+						});
 				});
 
 				$('#remall').click(function() {
 					$('#text').text('Scheduling Purging of All Unknowns');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&action=remall&raction=1&clear=1', function(data) {
-						checkForLogout(data);
+					$.get('rrdcleaner.php?header=false&action=remall&raction=1&clear=1')
+						.done(function(data) {
+							checkForLogout(data);
 
-						$('#main').html(data);
-						$('#text').text('Finished').fadeOut(2000);
-						applySkin();
-					});
+							$('#main').html(data);
+							$('#text').text('Finished').fadeOut(2000);
+							applySkin();
+						})
+						.fail(function(data) {
+							getPresentHTTPError(data);
+						});
 				});
 			});
 			</script>

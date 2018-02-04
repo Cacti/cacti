@@ -553,6 +553,7 @@ $enabled = '1';
 						html_start_box('<strong> ' . __('Required PHP Modules') . '</strong>', '30', 0, '', '', false);
 						html_header( array( __('Name'), __('Required'), __('Installed') ) );
 
+						form_alternate_row('phpline',true);
 						form_selectable_cell(__('PHP Version'), '');
 						form_selectable_cell('5.2.0+', '');
 						form_selectable_cell((version_compare(PHP_VERSION, '5.2.0', '<') ? "<font color=red>" . PHP_VERSION . "</font>" : "<font color=green>" . PHP_VERSION . "</font>"), '');
@@ -616,6 +617,7 @@ $enabled = '1';
 							form_end_row();
 							if (!$e['installed']) $enabled = '0';
 						}
+
 						html_end_box(false);
 
 						print '<h3>' . __('Optional PHP Module Support') .'</h3>';
@@ -627,6 +629,9 @@ $enabled = '1';
 						);
 
 						$ext = verify_php_extensions($extensions);
+						$ext[] = array('name' => 'TrueType Text', 'installed' => function_exists('imagettftext'));
+						$ext[] = array('name' => 'TrueType Box', 'installed' => function_exists('imagettfbbox'));
+
 						html_start_box('<strong> ' . __('Optional Modules') . '</strong>', '30', 0, '', '', false);
 						html_header( array( __('Name'), __('Optional'), __('Installed') ) );
 						foreach ($ext as $id => $e) {
@@ -636,6 +641,7 @@ $enabled = '1';
 							form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
 							form_end_row();
 						}
+
 						html_end_box();
 
 						print '<br>' . __('These MySQL performance tuning settings will help your Cacti system perform better without issues for a longer time.') . '<br><br>';

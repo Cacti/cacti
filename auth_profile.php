@@ -118,6 +118,7 @@ function form_save() {
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var('sess_user_language');
 	kill_session_var('sess_user_config_array');
+	kill_session_var('selected_theme');
 }
 
 /* --------------------------
@@ -418,7 +419,7 @@ function settings() {
 		});
 
 		$('input[value="<?php print __esc('Return');?>"]').unbind().click(function(event) {
-			document.location = '<?php print htmlspecialchars($_SESSION['profile_referer'], ENT_QUOTES);?>';
+			document.location = '<?php print html_escape($_SESSION['profile_referer']);?>';
 		});
 	});
 

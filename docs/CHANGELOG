@@ -1,5 +1,54 @@
 Cacti CHANGELOG
 
+1.1.34
+-issue#1040: Correct sizeof() issues with get_data_query_array() and get_graph_group() results
+-issue#1195: Convert Cacti's use of $.get(), $.getJSON, and $.post() to $.ajax() in order to trap and handle errors
+-issue#1256: Error reporting of custom errors now display correctly
+-issue#1257: Boost no longer ignores logging levels when updating single local data id's
+-issue#1258: cacti.sql does not appear to be up to date for all tables
+-issue#1260: Tabs should now display correctly in classic mode when TrueType is not available
+-issue#1261: Automatic logout should not fire when using Web Basic Authentication
+-issue#1263: Create utility to audit the Cacti schema for issues
+-issue#1266: Correct graphWrapper usage so all graphs are correctly displayed
+-issue#1268: Regex filters will now correctly filter
+-issue#1274: Host CPU script checks value prescence to prevent unnecessary errors
+-issue#1275: Fix issues with authPriv not supplying username/password
+-issue#1280: Remove redundant code from lib/snmp.php
+-issue#1287: JSON calls return validation error in HTML format
+-issue#1289: Change Script Server to output parameters as returned by parseArgs()
+-issue#1292: Fix issues with browser caching of javascript and css files
+-issue#1293: Correctly identify if command 'snmpbulkwalk' is available
+-issue#1296: CactiErrorHandler now ignores suppressed errors
+-issue#1300: Automation discovery : New devices added by automation discovery have empty SNMP community field
+-issue#1302: Dont redirect unathenticated users to the automatic logout page
+-issue#1304: Cacti mib_cache.php file contains unsafe transactions for binary logging
+-issue: When a checkbox table has no rows, the checkbox is resizable
+-feature: New CLI script to generate and verify MD5 hashes for entire cacti source
+-feature: CLog now has links and names for Poller, Data Query and Data Sources
+-feature: CLog now displays datasource link next to RRD files which is useful for missing RRD's
+-feature: CLog now uses a more dynamic functionality to query regex to allow plugin addition in future
+-feature: CLog now lists filenames in reverse order to be more intuitive
+
+1.1.33
+-issue#1253: Automatically generated RRDtool DEF names in Cacti 1.1.32 break existing Graph Templates
+
+1.1.32
+-issue#969: Undefined index: color_id / task_item when viewing graphs
+-issue#1166: Fix typo of 'locale' in global_languages.php
+-issue#1222: Graphs with large number of items causes RRDTool to error
+-issue#1230: PHP Fatal error: Call to undefined function get_max_tree_sequence()
+-issue#1238: SNMP functions fail to handle "Invalid object identifier" error
+-issue#1239: Browser console error in layout.js
+-issue#1240: Page layout issues caused by library update
+-issue#1246: Make SNMP Error return more info
+-issue: Missing or corrupted theme files can corrupt user settings
+-issue: Theme may not change until next login
+-issue: Tree edit Tree/Device/Graph drag areas incorrect
+-issue: Make callback error handling compatible with jQuery 3.x
+-issue: Ensure the snmp_error is cleared before every call
+-issue: Indicate unknown error when RRDTool returns no error message
+-feature: Update Javascript library: js.storage.js, d3.js, jquery.js, jquery.tablednd.js, jquery.timepicker.js
+
 1.1.31
 -issue#629: Site reload after delete the last letter in the searchbar
 -issue#1022: Discovery network stuck in "running" state does not return results
@@ -15,16 +64,17 @@ Cacti CHANGELOG
 -issue#1197: Add more collection intervals to Data Source Profiles
 -issue#1206: Display issue with internationalization number format
 -issue#1210: CDEF and VDEF Items can not be properly edited
--issue#1212: Cacti breadcrumbs don't handle External links correctly
+-issue#1212: Navigation breadcrumbs fail to handle External links correctly
 -issue#1213: PHPMailer trying TLS despite SMTPSecure setting
--issue#1215: Make installation pages format better and display version
--issue#1217: Allow drill down to non-system data_input's from data_template
+-issue#1215: Show version when installation prompts for license
+-issue#1217: Add ability to view/edit Input/Query when editing Data Template
 -issue: Named colors fail to import on install or upgrade
 -issue: Drag and Drop issues on multiple pages could corrupt sequencing
 -feature: Enhance filter to permit more glyphs for table headers
 -feature: Add a page refresh dropdown to the Automation Networks
 -feature: Enhanced SNMP v3 input forms
 -feature: Allow Trees to be rearranged using Drag and Drop
+-feature: Trap GUI callback errors and present error message
 
 1.1.30
 -issue#1155: Non-secure mail setting not functional due to changes in phpmailer

@@ -569,7 +569,7 @@ label {
 
 
 .treeArea, .treeItemsArea {
-	width: 25%;
+	width: 33%;
 	border: 1px solid #006400;
 	vertical-align: top;
 }
@@ -1487,7 +1487,8 @@ th.sortable {
 }
 
 .tableSubHeaderCheckbox {
-	width:1%;
+	max-width: 20px;
+	width: 20px;
 	background: #3F75A2;
 }
 
@@ -1810,7 +1811,7 @@ div#gtabs {
 }
 
 .maintabs nav {
-	display: none;
+	display: block;
 }
 
 .maintabs li {

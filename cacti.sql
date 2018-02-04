@@ -3,7 +3,6 @@
 -- Allow MySQL to handle Cacti's legacy syntax
 --
 
-SET GLOBAL sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 SET SESSION sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 
 --
@@ -90,7 +89,7 @@ CREATE TABLE `aggregate_graph_templates_graph` (
   force_rules_legend char(2) DEFAULT NULL,
   t_legend_position char(2) DEFAULT '',
   legend_position varchar(10) DEFAULT NULL,
-  t_legend_direction char(2) DEFAULT '0',
+  t_legend_direction char(2) DEFAULT '',
   legend_direction varchar(10) DEFAULT NULL,
   PRIMARY KEY (`aggregate_template_id`)
 ) ENGINE=InnoDB COMMENT='Aggregate Template Graph Data';
@@ -179,7 +178,7 @@ CREATE TABLE `automation_devices` (
   `ip` varchar(17) NOT NULL DEFAULT '',
   `community` varchar(100) NOT NULL DEFAULT '',
   `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `snmp_port` int(10) unsigned NOT NULL DEFAULT '161',
+  `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
   `snmp_username` varchar(50) DEFAULT NULL,
   `snmp_password` varchar(50) DEFAULT NULL,
   `snmp_auth_protocol` char(6) DEFAULT '',
@@ -215,7 +214,7 @@ CREATE TABLE `automation_graph_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 COMMENT='Automation Graph Rule Items';
+) ENGINE=InnoDB COMMENT='Automation Graph Rule Items';
 
 --
 -- Dumping data for table `automation_graph_rule_items`
@@ -235,7 +234,7 @@ CREATE TABLE `automation_graph_rules` (
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `name` (`name`(171))
-) ENGINE=InnoDB AUTO_INCREMENT=5 COMMENT='Automation Graph Rules';
+) ENGINE=InnoDB COMMENT='Automation Graph Rules';
 
 --
 -- Dumping data for table `automation_graph_rules`
@@ -272,7 +271,7 @@ CREATE TABLE `automation_match_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 COMMENT='Automation Match Rule Items';
+) ENGINE=InnoDB COMMENT='Automation Match Rule Items';
 
 --
 -- Dumping data for table `automation_match_rule_items`
@@ -319,7 +318,7 @@ CREATE TABLE `automation_networks` (
   `rerun_data_queries` char(2) DEFAULT NULL COMMENT 'Rerun data queries or not for existing hosts',
   PRIMARY KEY (`id`),
   KEY `poller_id` (`poller_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 COMMENT='Stores scanning subnet definitions';
+) ENGINE=InnoDB COMMENT='Stores scanning subnet definitions';
 
 --
 -- Dumping data for table `automation_networks`
@@ -352,7 +351,7 @@ CREATE TABLE `automation_snmp` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Group of SNMP Option Sets';
+) ENGINE=InnoDB COMMENT='Group of SNMP Option Sets';
 
 --
 -- Dumping data for table `automation_snmp`
@@ -368,9 +367,9 @@ CREATE TABLE `automation_snmp_items` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `snmp_id` int(10) unsigned NOT NULL DEFAULT '0',
   `sequence` int(10) unsigned NOT NULL DEFAULT '0',
-  `snmp_version` varchar(100) NOT NULL DEFAULT '',
-  `snmp_readstring` varchar(100) NOT NULL,
-  `snmp_port` int(10) NOT NULL DEFAULT '161',
+  `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `snmp_community` varchar(100) NOT NULL,
+  `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
   `snmp_timeout` int(10) unsigned NOT NULL DEFAULT '500',
   `snmp_retries` tinyint(11) unsigned NOT NULL DEFAULT '3',
   `max_oids` int(12) unsigned DEFAULT '10',
@@ -382,7 +381,7 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_context` varchar(64) DEFAULT '',
   `snmp_engine_id` varchar(64) DEFAULT '',
   PRIMARY KEY (`id`,`snmp_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Set of SNMP Options';
+) ENGINE=InnoDB COMMENT='Set of SNMP Options';
 
 --
 -- Dumping data for table `automation_snmp_items`
@@ -403,7 +402,7 @@ CREATE TABLE `automation_templates` (
   `sysOid` varchar(60) DEFAULT '',
   `sequence` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 COMMENT='Templates of SNMP Sys variables used for automation';
+) ENGINE=InnoDB COMMENT='Templates of SNMP Sys variables used for automation';
 
 --
 -- Dumping data for table `automation_templates`
@@ -425,7 +424,7 @@ CREATE TABLE `automation_tree_rule_items` (
   `search_pattern` varchar(255) NOT NULL DEFAULT '',
   `replace_pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 COMMENT='Automation Tree Rule Items';
+) ENGINE=InnoDB COMMENT='Automation Tree Rule Items';
 
 --
 -- Dumping data for table `automation_tree_rule_items`
@@ -447,7 +446,7 @@ CREATE TABLE `automation_tree_rules` (
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `name` (`name`(171))
-) ENGINE=InnoDB AUTO_INCREMENT=4 COMMENT='Automation Tree Rules';
+) ENGINE=InnoDB COMMENT='Automation Tree Rules';
 
 --
 -- Dumping data for table `automation_tree_rules`
@@ -1164,6 +1163,7 @@ CREATE TABLE data_input_fields (
   allow_nulls char(2) default NULL,
   PRIMARY KEY (id),
   KEY data_input_id (data_input_id),
+  KEY input_output (input_output),
   KEY type_code_data_input_id (type_code, data_input_id)
 ) ENGINE=InnoDB;
 
@@ -1846,7 +1846,9 @@ CREATE TABLE host (
   KEY site_id (site_id),
   KEY external_id (external_id),
   KEY disabled (disabled),
-  KEY status (status)
+  KEY status (status),
+  KEY hostname (hostname),
+  KEY poller_id_last_updated (poller_id, last_updated)
 ) ENGINE=InnoDB;
 
 --
@@ -1886,6 +1888,7 @@ CREATE TABLE host_snmp_cache (
   KEY field_name (field_name),
   KEY field_value (field_value(191)),
   KEY snmp_query_id (snmp_query_id),
+  KEY last_updated (last_updated),
   KEY present (present)
 ) ENGINE=InnoDB;
 
@@ -1962,7 +1965,7 @@ CREATE TABLE host_template_snmp_query (
 --
 
 CREATE TABLE `plugin_config` (
-  `id` int(8) NOT NULL auto_increment,
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
   `directory` varchar(32) NOT NULL default '',
   `name` varchar(64) NOT NULL default '',
   `status` tinyint(2) NOT NULL default '0',
@@ -1979,7 +1982,7 @@ CREATE TABLE `plugin_config` (
 --
 
 CREATE TABLE `plugin_hooks` (
-  `id` int(8) NOT NULL auto_increment,
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
   `name` varchar(32) NOT NULL default '',
   `hook` varchar(64) NOT NULL default '',
   `file` varchar(255) NOT NULL default '',
@@ -1995,7 +1998,7 @@ CREATE TABLE `plugin_hooks` (
 --
 
 CREATE TABLE `plugin_realms` (
-  `id` int(8) NOT NULL auto_increment,
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
   `plugin` varchar(32) NOT NULL default '',
   `file` text NOT NULL,
   `display` varchar(64) NOT NULL default '',
@@ -2008,7 +2011,7 @@ CREATE TABLE `plugin_realms` (
 --
 
 CREATE TABLE `plugin_db_changes` (
-  `id` int(10) NOT NULL auto_increment,
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
   `plugin` varchar(16) NOT NULL default '',
   `table` varchar(64) NOT NULL default '',
   `column` varchar(64) NOT NULL,
@@ -2062,7 +2065,8 @@ CREATE TABLE poller_command (
   action tinyint(3) unsigned NOT NULL default '0',
   command varchar(191) NOT NULL default '',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (poller_id, action, command)
+  PRIMARY KEY (poller_id, action, command),
+  KEY poller_id_last_updated (poller_id, last_updated)
 ) ENGINE=InnoDB;
 
 --
@@ -2093,9 +2097,9 @@ CREATE TABLE poller_item (
   `snmp_version` tinyint(1) unsigned NOT NULL default '0',
   `snmp_username` varchar(50) NOT NULL default '',
   `snmp_password` varchar(50) NOT NULL default '',
-  `snmp_auth_protocol` varchar(6) NOT NULL default '',
+  `snmp_auth_protocol` char(6) NOT NULL default '',
   `snmp_priv_passphrase` varchar(200) NOT NULL default '',
-  `snmp_priv_protocol` varchar(6) NOT NULL default '',
+  `snmp_priv_protocol` char(6) NOT NULL default '',
   `snmp_context` varchar(64) default '',
   `snmp_engine_id` varchar(64) default '',
   `snmp_port` mediumint(5) unsigned NOT NULL default '161',
@@ -2114,7 +2118,8 @@ CREATE TABLE poller_item (
   KEY `present` (`present`),
   KEY `poller_id_host_id` (`poller_id`,`host_id`),
   KEY `poller_id_rrd_next_step` (`poller_id`,`rrd_next_step`),
-  KEY `poller_id_action` (`poller_id`,`action`)
+  KEY `poller_id_action` (`poller_id`,`action`),
+  KEY `poller_id_last_updated` (`poller_id`, `last_updated`)
 ) ENGINE=InnoDB;
 
 --
@@ -2509,7 +2514,7 @@ CREATE TABLE `user_auth_group` (
   `policy_graph_templates` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `enabled` char(2) NOT NULL DEFAULT 'on',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 COMMENT='Table that Contains User Groups';
+) ENGINE=InnoDB COMMENT='Table that Contains User Groups';
 
 --
 -- Dumping data for table `user_auth_group`
@@ -2811,15 +2816,15 @@ CREATE TABLE `snmpagent_managers` (
   `description` varchar(255) NOT NULL,
   `disabled` char(2) DEFAULT NULL,
   `max_log_size` tinyint(1) NOT NULL,
-  `snmp_version` varchar(255) NOT NULL,
-  `snmp_community` varchar(255) NOT NULL,
+  `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `snmp_community` varchar(100) NOT NULL DEFAULT '',
   `snmp_username` varchar(50) NOT NULL,
   `snmp_password` varchar(50) NOT NULL,
-  `snmp_auth_protocol` varchar(6) NOT NULL,
+  `snmp_auth_protocol` char(6) NOT NULL,
   `snmp_priv_passphrase` varchar(200) NOT NULL,
-  `snmp_priv_protocol` varchar(6) NOT NULL,
-  `snmp_engine_id` varchar(64) NOT NULL DEFAULT '80005d750302FFFFFFFFFF',
-  `snmp_port` varchar(255) NOT NULL,
+  `snmp_priv_protocol` char(6) NOT NULL,
+  `snmp_engine_id` varchar(64) DEFAULT NULL,
+  `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
   `snmp_message_type` tinyint(1) NOT NULL,
   `notes` text,
   PRIMARY KEY (`id`),

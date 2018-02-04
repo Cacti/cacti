@@ -649,14 +649,16 @@ function cdef_edit() {
 
 			id = $(this).attr('id').split('_');
 			request = 'cdef.php?action=item_remove_confirm&id='+id[0]+'&cdef_id='+id[1];
-			$.get(request, function(data) {
-				$('#cdialog').html(data);
-				applySkin();
-				$('#cdialog').dialog({ title: '<?php print __('Delete CDEF Item');?>', minHeight: 80, minWidth: 500 });
-			});
-		}).css('cursor', 'pointer');
-	});
-
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
+					applySkin();
+					$('#cdialog').dialog({ title: '<?php print __('Delete CDEF Item');?>', minHeight: 80, minWidth: 500 });
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
+		}
 	</script>
 	<?php
 }

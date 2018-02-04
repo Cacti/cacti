@@ -496,9 +496,13 @@ function graphs() {
 			'&rows='     + $('#rows').val() +
 			'&graph_type=' + $('#graph_type').val();
 
-		$.get(strURL, function(data) {
-			$('#text').show().text('<?php print __('Filter Settings Saved');?>').fadeOut(2000);
-		});
+		$.get(strURL)
+			.done(function(data) {
+				$('#text').show().text('<?php print __('Filter Settings Saved');?>').fadeOut(2000);
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 	}
 
 	$(function() {
@@ -757,7 +761,7 @@ function graphs() {
 				$num_input_fields = 0;
 				$num_visible_fields = 0;
 
-				if ($xml_array != false) {
+				if (sizeof($xml_array)) {
 					/* loop through once so we can find out how many input fields there are */
 					foreach ($xml_array['fields'] as $field_name => $field_array) {
 						if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
@@ -1017,7 +1021,7 @@ function graphs() {
 	}
 
 	if ($script != '') {
-		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()) });</script>\n";
+		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()) }).fail(function(data) { getPresentHTTPError(data); });</script>\n";
 		print $script;
 	}
 

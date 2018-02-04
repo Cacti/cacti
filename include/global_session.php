@@ -64,21 +64,29 @@ if (isset($_SESSION['refresh'])) {
 
 	unset($_SESSION['refresh']);
 } elseif (isset($refresh) && is_array($refresh)) {
-	$refreshIsLogout = 'false';
 	$myrefresh['seconds'] = $refresh['seconds'];
 	$myrefresh['page']    = sanitize_uri(strpos($refresh['page'], '?') ? '&':'?' . 'header=false');
+	$refreshIsLogout      = 'false';
 } elseif (isset($refresh)) {
-	$refreshIsLogout = 'false';
 	$myrefresh['seconds'] = $refresh;
 	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI'] . (strpos($_SERVER['REQUEST_URI'], '?') ? '&':'?') . 'header=false');
+	$refreshIsLogout      = 'false';
 } elseif (read_config_option('auth_cache_enabled') == 'on' && isset($_COOKIE['cacti_remembers'])) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = 'index.php';
-	$refreshIsLogout = 'false';
+	$refreshIsLogout      = 'false';
+} elseif (read_config_option('auth_method') == 2) {
+	$myrefresh['seconds'] = 99999999;
+	$myrefresh['page']    = 'index.php';
+	$refreshIsLogout      = 'false';
+} elseif (!isset($_SESSION['sess_user_id']) && strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) {
+	$myrefresh['seconds'] = 99999999;
+	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
+	$refreshIsLogout      = 'false';
 } else {
 	$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
 	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
-	$refreshIsLogout = 'true';
+	$refreshIsLogout      = 'true';
 } ?>
 <script type='text/javascript'>
 	var cactiVersion='<?php print $config['cacti_version'];?>';
@@ -124,4 +132,9 @@ if (isset($_SESSION['refresh'])) {
 	var passwordNotMatchTooShort='<?php print __('Passphrase too short and not matching');?>';
 	var passwordMatch='<?php print __('Passphrases match');?>';
 	var passwordNotMatch='<?php print __('Passphrases do not match');?>';
+	var errorOnPage='<?php print __('Sorry, we could not process your last action');?>';
+	var errorNumberPrefix='<?php print __('Error:');?>';
+	var errorReasonPrefix='<?php print __('Reason:');?>';
+	var errorReasonTitle='<?php print __('Action failed');?>';
+	var errorReasonUnexpected='<?php print __('The response to the last action was unexpected');?>';
 </script>

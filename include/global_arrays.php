@@ -105,6 +105,9 @@ $cacti_version_codes = array(
 	'1.1.29' => '0101',
 	'1.1.30' => '0101',
 	'1.1.31' => '0101',
+	'1.1.32' => '0101',
+	'1.1.33' => '0101',
+	'1.1.34' => '0101',
 );
 
 $messages = array(
@@ -263,7 +266,10 @@ $messages = array(
 		'type' => 'info'),
 	'resource_cache_rebuild' => array(
 		'message' => '<i>' . __('Poller Resource Cache Cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards.'),
-		'type' => 'info')
+		'type' => 'info'),
+	'custom_error' => array(
+		'message' => '<i>' . __('Unexpected error occurred'),
+		'type' => 'error')
 );
 
 if (isset($_SESSION['automation_message']) && $_SESSION['automation_message'] != '') {

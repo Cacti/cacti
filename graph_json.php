@@ -33,6 +33,9 @@ include_once('./lib/rrd.php');
 
 api_plugin_hook_function('graph_image');
 
+/* set the json variable for request validation handling */
+set_request_var('json', true);
+
 $debug = false;
 
 if ($debug == false) {
@@ -189,7 +192,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	} else {
 		$output = file_get_contents($url);
 	}
-	
+
 }
 $output = trim($output);
 $oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => $rra_id);
@@ -256,5 +259,6 @@ if ($output !== false && $output != '') {
 	}
 }
 
+header('Content-Type: application/json');
 print json_encode($oarray);
 

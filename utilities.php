@@ -979,14 +979,15 @@ function utilities_view_logfile() {
 	});
 
 	function applyFilter() {
-		strURL  = urlPath+'utilities.php?tail_lines=' + $('#tail_lines').val();
-		strURL += '&message_type=' + $('#message_type').val();
-		strURL += '&refresh=' + $('#refresh').val();
-		strURL += '&reverse=' + $('#reverse').val();
-		strURL += '&rfilter=' + $('#rfilter').val();
-		strURL += '&filename=' + $('#filename').val();
-		strURL += '&action=view_logfile';
-		strURL += '&header=false';
+		strURL  = urlPath+'utilities.php' +
+			'?tail_lines=' + $('#tail_lines').val() +
+			'&message_type=' + $('#message_type').val() +
+			'&refresh=' + $('#refresh').val() +
+			'&reverse=' + $('#reverse').val() +
+			'&rfilter=' + base64_encode($('#rfilter').val()) +
+			'&filename=' + $('#filename').val() +
+			'&action=view_logfile' +
+			'&header=false';
 		refreshMSeconds=$('#refresh').val()*1000;
 		loadPageNoHeader(strURL);
 	}
