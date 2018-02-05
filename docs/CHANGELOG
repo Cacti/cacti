@@ -1,5 +1,31 @@
 Cacti CHANGELOG
 
+1.1.34
+-issue#1040a PHP version 7.2 - ERROR PHP WARNING: sizeof()
+-issue#1195: Improved Javascript error message handling
+-issue#1245: Unable to reorder graph name suggested values
+-issue#1256: Error reporting of custom errors not displayed correctly
+-issue#1257: Boost excessively logging updates
+-issue#1258: cacti.sql updated to match expected schema
+-issue#1260: Tab images fail to render due to TrueType support in PHP GD Module
+-issue#1261: Automatic logout timeout does not apply to web basic authenication
+-issue#1263: CLI utility to validate database schema
+-issue#1266: Inconsistent usage graphWrapper CSS causes odd graph zoom behavior
+-issue#1268: Regex filters not working properly
+-issue#1274: Host CPU script checks value existance to avoid error
+-issue#1275: SNMP v3 authPriv fails to work
+-issue#1287: JSON calls return validation error in HTML format
+-issue#1289: Script Server should output parameter array rather than parameters
+-issue#1292: Chrome to aggressively caches Javascript files
+-issue#1293: Correctly identify if command 'snmpbulkwalk' is available
+-issue#1296: CactiErrorHandler does not ignore PHP suppressed errors
+-issue#1300: Automation discovery : New devices added by automation discovery have empty SNMP community field
+-issue#1302: Automatic logout should not be enforced on login page
+-issue#1304: mib_cache.php file contains unsafe transactions for binary logging
+-feature: CLI utilily to generate and verify file hashes for installed Cacti files
+-feature: Logging links back to appropriate areas for troubleshooting
+-feature: Logging lists filenames in reverse order
+
 1.1.33
 -issue#1253: Automatically generated RRDtool DEF names in Cacti 1.1.32 break existing Graph Templates
 

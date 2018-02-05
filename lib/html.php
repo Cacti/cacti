@@ -1912,22 +1912,27 @@ function html_spikekill_js() {
 			if (spikeKillOpen == false) {
 				local_graph_id = $(this).attr('data-graph');
 
-				$.get('?action=spikemenu&local_graph_id='+local_graph_id, function(data) {
-					$('#sk'+local_graph_id).after(data);
+				$.get('?action=spikemenu&local_graph_id='+local_graph_id)
+					.done(function(data) {
+						$('#sk'+local_graph_id).after(data);
 
-					$('.spikekillMenu').menu({
-						select: function(event, ui) {
-							$(this).menu('focus', event, ui.item);
-						},
-						delay: 1000
+						$('.spikekillMenu').menu({
+							select: function(event, ui) {
+								$(this).menu('focus', event, ui.item);
+							},
+							delay: 1000
+						});
+
+						$('.spikekillParent').show();
+
+						spikeKillActions();
+
+						spikeKillOpen = true;
+					})
+					.fail(function(data) {
+						getPresentHTTPError(data);
 					});
 
-					$('.spikekillParent').show();
-
-					spikeKillActions();
-
-					spikeKillOpen = true;
-				});
 			} else {
 				spikeKillOpen = false;
 				$(this).find('.spikekillMenu').menu('destroy').parent().remove();
@@ -1982,7 +1987,10 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=ravgnan&id='+$(this).attr('id').replace('method_','');
-			$.get(strURL);
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 
 		$('.skkills').unbind().click(function() {
@@ -1991,7 +1999,10 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rkills&id='+$(this).attr('id').replace('kills_','');
-			$.get(strURL);
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 
 		$('.skstddev').unbind().click(function() {
@@ -2000,7 +2011,10 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rstddev&id='+$(this).attr('id').replace('stddev_','');
-			$.get(strURL);
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 
 		$('.skvarpct').unbind().click(function() {
@@ -2009,7 +2023,10 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rvarpct&id='+$(this).attr('id').replace('varpct_','');
-			$.get(strURL);
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 
 		$('.skvarout').unbind().click(function() {
@@ -2018,10 +2035,71 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rvarout&id='+$(this).attr('id').replace('varout_','');
-			$.get(strURL);
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 	}
 	</script>
 	<?php
+}
+
+function html_common_header($title) {
+	global $config;
+
+	$selectedTheme = get_selected_theme();
+
+	?>
+	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
+	<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>
+	<meta name='apple-mobile-web-app-capable' content='yes'>
+	<meta name='mobile-web-app-capable' content='yes'>
+	<meta name='robots' content='noindex,nofollow'>
+	<title><?php echo $title; ?></title>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<script type='text/javascript'>var theme='<?php print $selectedTheme;?>';</script>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
+	<?php
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css'); 
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css'); 
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css'); 
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
+	print get_md5_include_css('include/fa/css/font-awesome.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
+	print get_md5_include_js('include/js/screenfull.js');
+	print get_md5_include_js('include/js/jquery.js');
+	print get_md5_include_js('include/js/jquery-migrate.js');
+	print get_md5_include_js('include/js/jquery-ui.js');
+	print get_md5_include_js('include/js/jquery.ui.touch.punch.js');
+	print get_md5_include_js('include/js/jquery.cookie.js');
+	print get_md5_include_js('include/js/js.storage.js');
+	print get_md5_include_js('include/js/jstree.js');
+	print get_md5_include_js('include/js/jquery.hotkeys.js');
+	print get_md5_include_js('include/js/jquery.tablednd.js');
+	print get_md5_include_js('include/js/jquery.zoom.js');
+	print get_md5_include_js('include/js/jquery.multiselect.js');
+	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
+	print get_md5_include_js('include/js/jquery.timepicker.js');
+	print get_md5_include_js('include/js/jquery.colorpicker.js');
+	print get_md5_include_js('include/js/jquery.tablesorter.js');
+	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js');
+	print get_md5_include_js('include/js/jquery.tablesorter.pager.js');
+	print get_md5_include_js('include/js/jquery.metadata.js');
+	print get_md5_include_js('include/js/jquery.sparkline.js');
+	print get_md5_include_js('include/js/Chart.js');
+	print get_md5_include_js('include/js/dygraph-combined.js');
+	print get_md5_include_js('include/js/d3.js');
+	print get_md5_include_js('include/js/c3.js');
+	print get_md5_include_js('include/js/pace.js');
+	print get_md5_include_js('include/realtime.js');
+	print get_md5_include_js('include/layout.js');
+	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
+	api_plugin_hook('page_head');
 }
 

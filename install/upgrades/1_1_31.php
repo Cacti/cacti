@@ -24,30 +24,26 @@
 
 function upgrade_to_1_1_31() {
 	db_install_execute(
-		'ALTER TABLE `host` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
+		'ALTER TABLE `host` MODIFY COLUMN `snmp_auth_protocol` char(6) DEFAULT ""'
 	);
 
 	db_install_execute(
-		'ALTER TABLE `automation_devices` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
+		'ALTER TABLE `automation_devices` MODIFY COLUMN `snmp_auth_protocol` char(6) DEFAULT ""'
 	);
 
 	db_install_execute(
-		'ALTER TABLE `automation_devices` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
+		'ALTER TABLE `automation_snmp_items` MODIFY COLUMN `snmp_auth_protocol` char(6) DEFAULT ""'
 	);
 
 	db_install_execute(
-		'ALTER TABLE `automation_snmp_items` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
-	);
-
-	db_install_execute(
-		'ALTER TABLE `poller_item` MODIFY COLUMN `snmp_auth_protocol` varchar(6) DEFAULT ""'
+		'ALTER TABLE `poller_item` MODIFY COLUMN `snmp_auth_protocol` char(6) DEFAULT ""'
 	);
 
 	db_install_execute(
 		'ALTER TABLE `snmpagent_managers`
-			MODIFY COLUMN `snmp_auth_protocol` varchar(6) NOT NULL DEFAULT "",
+			MODIFY COLUMN `snmp_auth_protocol` char(6) NOT NULL DEFAULT "",
 			MODIFY COLUMN `snmp_username` varchar(50) NOT NULL DEFAULT "",
-			MODIFY COLUMN `snmp_priv_protocol` varchar(6) NOT NULL DEFAULT ""'
+			MODIFY COLUMN `snmp_priv_protocol` char(6) NOT NULL DEFAULT ""'
 	);
 
 	if (!db_column_exists('snmpagent_managers', 'snmp_password')) {

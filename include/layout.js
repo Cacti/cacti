@@ -552,7 +552,7 @@ function cactiReturnTo(href) {
 function applySkin() {
 	pageName = basename($(location).attr('pathname'));
 
-	if (typeof requestURI !== 'undefined') {
+	if (typeof requestURI != 'undefined') {
 		pushState(myTitle, requestURI);
 	}
 
@@ -973,7 +973,12 @@ function responsiveResizeGraphs() {
 	myWidth = parseInt((graphRow - (drillDown * myColumns)) / myColumns);
 
 	$('.graphimage').each(function() {
-		graph_id = $(this).attr('id').replace('wrapper_','');
+		graph_id = $(this).attr('graph_id');
+		if (!(graph_id > 0)) {
+			graph_id = $(this).attr('id').replace('wrapper_','');
+		}
+
+		rra_id = $(this).attr('rra_id');
 
 		/* original image attributes */
 		image_width   = $(this).attr('image_width');
@@ -1248,7 +1253,7 @@ function loadPage(href) {
 			return false;
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 
@@ -1287,7 +1292,7 @@ function loadPageNoHeader(href, scroll) {
 			return false;
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 
@@ -1296,16 +1301,18 @@ function loadPageNoHeader(href, scroll) {
 
 function getPresentHTTPError(data) {
 	if (typeof data != 'undefined') {
-		var title_match = data.match(/<title>(.*?)<\/title>/);
-		var head_match  = data.match(/<h1>(.*?)<\/h1>/);
-		var para_match  = data.match(/<p>(.*?)<\/p>/);
+		errorStr  = data.status;
+		errorSub  = data.statusText;
+		errorText = errorReasonUnexpected;
 
-		errorStr  = '';
-		errorSub  = '';
-		errorText = '';
+		var dataText = data.responseText;
+
+		var title_match = dataText.match(/<title>(.*?)<\/title>/);
+		var head_match  = dataText.match(/<h1>(.*?)<\/h1>/);
+		var para_match  = dataText.match(/<p>(.*?)<\/p>/);
 
 		if (title_match != null) {
-			var errorStr = title_match[1];
+			var errorSub = title_match[1];
 		}
 
 		if (head_match != null) {
@@ -1319,7 +1326,7 @@ function getPresentHTTPError(data) {
 		returnStr = '<div id="httperror" style="display:none">' +
 			'<h4>' + errorOnPage + '</h4><hr>' +
 			'<div style="padding-bottom: 5px;"><div style="display:table-cell;width:75px"><b>' + errorNumberPrefix + '</b></div> ' +
-			'<div style="display:table-cell"> ' + errorStr + '</div></div>' +
+			'<div style="display:table-cell"> ' + errorStr + ' ' + errorSub + '</div></div>' +
 			'<div><div style="display:table-cell;width:75px"><b>'  + errorReasonPrefix + '</b></div> ' +
 			'<div style="display:table-cell"> ' + errorText + '</div></div>' +
 			'</div></div>';
@@ -1330,7 +1337,7 @@ function getPresentHTTPError(data) {
 			resizable: false,
 			height: 'auto',
 			width: 400,
-			title: errorStr,
+			title: errorReasonTitle,
 			buttons: {
 				Ok: function() {
 					$(this).dialog('close');
@@ -1496,7 +1503,7 @@ function setupSortable() {
 					applySkin();
 				})
 				.fail(function(data) {
-				getPresentHTTPError(data.responseText);
+					getPresentHTTPError(data);
 				}
 			);
 		}
@@ -1656,7 +1663,7 @@ function setupPageTimeout() {
 						applySkin();
 					})
 					.fail(function(data) {
-						getPresentHTTPError(data.responseText);
+						getPresentHTTPError(data);
 					}
 				);
 			}
@@ -1788,7 +1795,7 @@ var graphPage  = urlPath+'graph_view.php';
 var pageAction = 'preview';
 
 function checkForLogout(data) {
-	if (typeof data === 'undefined') {
+	if (typeof data == 'undefined') {
 		return true;
 	} else if (typeof data === 'object') {
 		return true;
@@ -1813,7 +1820,7 @@ function clearGraphFilter() {
 			applySkin();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -1836,7 +1843,7 @@ function saveGraphFilter(section) {
 			});
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -1865,7 +1872,7 @@ function applyGraphFilter() {
 			pushState(myTitle, myHref);
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -1882,7 +1889,7 @@ function pushState(myTitle, myHref) {
 	if (myHref.indexOf('nostate') < 0) {
 		if (statePushed == false) {
 			var myObject = { myTitle: myHref };
-			if (typeof window.history.pushState !== 'undefined') {
+			if (typeof window.history.pushState != 'undefined') {
 				window.history.pushState(myObject, myTitle, cleanHeader(myHref));
 			}
 		}
@@ -1931,7 +1938,7 @@ function applyGraphTimespan() {
 			applySkin();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2041,7 +2048,7 @@ function removeSpikesStdDev(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2056,7 +2063,7 @@ function removeSpikesVariance(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2071,7 +2078,7 @@ function removeSpikesInRange(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2086,7 +2093,7 @@ function removeRangeFill(local_graph_id) {
 			$('#spikeresults').remove();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2103,7 +2110,7 @@ function dryRunStdDev(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2120,7 +2127,7 @@ function dryRunVariance(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2138,7 +2145,7 @@ function dryRunSpikesInRange(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2156,7 +2163,7 @@ function dryRunRangeFill(local_graph_id) {
 			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2188,39 +2195,45 @@ function redrawGraph(graph_id) {
 		'&graph_width='+graph_width+
 		(isThumb ? '&graph_nolegend=true':''))
 		.done(function(data) {
-			if (myWidth < data.image_width) {
-				ratio=myWidth/data.image_width;
-				data.image_width  = parseInt(data.image_width  * ratio);
-				data.image_height = parseInt(data.image_height * ratio);
-				data.graph_width  = parseInt(data.graph_width  * ratio);
-				data.graph_height = parseInt(data.graph_height * ratio);
-				data.graph_top    = parseInt(data.graph_top  * ratio);
-				data.graph_left   = parseInt(data.graph_left * ratio);
-			}
+			if (typeof data.status == 'undefined') {
+				if (myWidth < data.image_width) {
+					ratio=myWidth/data.image_width;
+					data.image_width  = parseInt(data.image_width  * ratio);
+					data.image_height = parseInt(data.image_height * ratio);
+					data.graph_width  = parseInt(data.graph_width  * ratio);
+					data.graph_height = parseInt(data.graph_height * ratio);
+					data.graph_top    = parseInt(data.graph_top  * ratio);
+					data.graph_left   = parseInt(data.graph_left * ratio);
+				}
 
-			$('#wrapper_'+data.local_graph_id).html(
-				"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
-				" src='data:image/"+data.type+";base64,"+data.image+"'"+
-				" graph_start='"+data.graph_start+"'"+
-				" graph_end='"+data.graph_end+"'"+
-				" graph_left='"+data.graph_left+"'"+
-				" graph_top='"+data.graph_top+"'"+
-				" graph_width='"+data.graph_width+"'"+
-				" graph_height='"+data.graph_height+"'"+
-				" width='"+data.image_width+"'"+
-				" height='"+data.image_height+"'"+
-				" image_width='"+data.image_width+"'"+
-				" image_height='"+data.image_height+"'"+
-				" canvas_top='"+data.graph_top+"'"+
-				" canvas_left='"+data.graph_left+"'"+
-				" canvas_width='"+data.graph_width+"'"+
-				" canvas_height='"+data.graph_height+"'"+
-				" value_min='"+data.value_min+"'"+
-				" value_max='"+data.value_max+"'>"
-			);
+				$('#wrapper_'+data.local_graph_id).html(
+					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
+					" src='data:image/"+data.type+";base64,"+data.image+"'"+
+					" rra_id='"+data.rra_id+"'"+
+					" graph_id='"+data.local_graph_id+"'"+
+					" graph_start='"+data.graph_start+"'"+
+					" graph_end='"+data.graph_end+"'"+
+					" graph_left='"+data.graph_left+"'"+
+					" graph_top='"+data.graph_top+"'"+
+					" graph_width='"+data.graph_width+"'"+
+					" graph_height='"+data.graph_height+"'"+
+					" width='"+data.image_width+"'"+
+					" height='"+data.image_height+"'"+
+					" image_width='"+data.image_width+"'"+
+					" image_height='"+data.image_height+"'"+
+					" canvas_top='"+data.graph_top+"'"+
+					" canvas_left='"+data.graph_left+"'"+
+					" canvas_width='"+data.graph_width+"'"+
+					" canvas_height='"+data.graph_height+"'"+
+					" value_min='"+data.value_min+"'"+
+					" value_max='"+data.value_max+"'>"
+				);
+			} else {
+				getPresentHTTPError(data);
+			}
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data.responseText);
+			getPresentHTTPError(data);
 		}
 	);
 }
@@ -2245,7 +2258,7 @@ function initializeGraphs() {
 				clearTimeout(myRefresh);
 			})
 			.fail(function(data) {
-				getPresentHTTPError(data.responseText);
+				getPresentHTTPError(data);
 			}
 		);
 	});
@@ -2273,11 +2286,20 @@ function initializeGraphs() {
 	myWidth = (mainWidth-(30*myColumns))/myColumns;
 
 	$('.graphWrapper').each(function() {
-		graph_id=$(this).attr('id').replace('wrapper_','');
+		graph_id=$(this).attr('graph_id');
+		if (!(graph_id > 0)) {
+			graph_id=$(this).attr('id').replace('wrapper_','');
+		}
+
+		rra_id=$(this).attr('rra_id');
+		if (!(rra_id > 0)) {
+			rra_id=0;
+		}
+
 		graph_height=$(this).attr('graph_height');
 		graph_width=$(this).attr('graph_width');
 
-		$.getJSON(urlPath+'graph_json.php?rra_id=0'+
+		$.getJSON(urlPath+'graph_json.php?rra_id='+rra_id+
 			'&local_graph_id='+graph_id+
 			'&graph_start='+graph_start+
 			'&graph_end='+graph_end+
@@ -2294,10 +2316,15 @@ function initializeGraphs() {
 					data.graph_top    = parseInt(data.graph_top  * ratio);
 					data.graph_left   = parseInt(data.graph_left * ratio);
 				}
+				var wrapper_id = '#wrapper_'+data.local_graph_id;
+				if (rra_id > 0) {
+					wrapper_id += '[rra_id=\'' + data.rra_id + '\']';
+				}
 
-				$('#wrapper_'+data.local_graph_id).html(
+				$(wrapper_id).html(
 					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
 					" src='data:image/"+data.type+";base64,"+data.image+"'"+
+					" rra_id='"+data.rra_id+"'"+
 					" graph_start='"+data.graph_start+"'"+
 					" graph_end='"+data.graph_end+"'"+
 					" graph_left='"+data.graph_left+"'"+
@@ -2316,7 +2343,12 @@ function initializeGraphs() {
 					" value_max='"+data.value_max+"'>"
 				);
 
-				$("#graph_"+data.local_graph_id).zoom({
+				var graph_id = '#graph_'+data.local_graph_id;
+				if (rra_id > 0) {
+					graph_id += '[rra_id=\'' + data.rra_id + '\']';
+				}
+
+				$(graph_id).zoom({
 					inputfieldStartTime : 'date1',
 					inputfieldEndTime : 'date2',
 					serverTimeOffset : timeOffset
@@ -2325,7 +2357,7 @@ function initializeGraphs() {
 				realtimeArray[data.local_graph_id] = false;
 			})
 			.fail(function(data) {
-				getPresentHTTPError(data.responseText);
+				getPresentHTTPError(data);
 			}
 		);
 	});
@@ -2355,7 +2387,7 @@ function initializeGraphs() {
 				clearTimeout(myRefresh);
 			})
 			.fail(function(data) {
-				getPresentHTTPError(data.responseText);
+				getPresentHTTPError(data);
 			}
 		);
 	});

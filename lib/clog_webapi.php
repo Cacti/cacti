@@ -22,6 +22,21 @@
  +-------------------------------------------------------------------------+
 */
 
+function clog_get_datasource_titles($local_data_ids) {
+	if (!is_array($local_data_ids)) {
+		$local_data_ids = array($local_data_ids);
+	}
+
+	$titles = array();
+	foreach ($local_data_ids as $local_data_id) {
+		if (!array_key_exists($local_data_id, $titles)) {
+			$titles[$local_data_id] = get_data_source_title($local_data_id);
+		}
+	}
+	
+	return $titles;
+}
+
 function clog_get_graphs_from_datasource($local_data_id) {
 	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
 		gtg.local_graph_id AS id,
@@ -258,17 +273,11 @@ function clog_view_logfile() {
 		$hostDescriptions[$host['id']] = html_escape($host['description']);
 	}
 
+	$regex_array = clog_get_regex_array();
 	foreach ($logcontents as $item) {
 		$new_item = html_escape($item);
 
-		$host_start = strpos($new_item, 'Device[');
-		$ds_start   = strpos($new_item, 'DS[');
-
-		$ds_regex = '~( DS\[)([, \d]+)(\])~';
-		$dev_regex = '~( Device\[)([, \d]+)(\])~';
-
-		$new_item = preg_replace_callback($dev_regex,'clog_regex_device',$new_item);
-		$new_item = preg_replace_callback($ds_regex,'clog_regex_datasource',$new_item);
+		$new_item = preg_replace_callback($regex_array['complete'],'clog_regex_parser',$new_item);
 
 		/* respect the exclusion filter */
 		if ($exclude_regex != '' && !$clogAdmin) {
@@ -351,6 +360,7 @@ function filter($clogAdmin) {
 						}
 
 						if (sizeof($files)) {
+							$logFileArray = array();
 							foreach ($files as $logFile) {
 								if (in_array($logFile, array('.', '..', '.htaccess'))) {
 									continue;
@@ -365,6 +375,16 @@ function filter($clogAdmin) {
 									continue;
 								}
 
+								if (strcmp($logFile, 'cacti.log') == 0) {
+									continue;
+								}
+								$logFileArray[] = $logFile;
+							}
+
+							arsort($logFileArray);
+							array_unshift($logFileArray,'cacti.log');
+
+							foreach ($logFileArray as $logFile) {
 								print "<option value='" . $logFile . "'";
 
 								if ($selectedFile == $logFile) {
@@ -507,7 +527,8 @@ function filter($clogAdmin) {
 		function refreshFilter() {
 			refreshMSeconds=$('#refresh').val()*1000;
 
-			strURL = basename(location.pathname) + '?rfilter='+ $('#rfilter').val()+
+			strURL = basename(location.pathname)+
+				'?rfilter=' + base64_encode($('#rfilter').val())+
 				'&reverse='+$('#reverse').val()+
 				'&refresh='+$('#refresh').val()+
 				'&message_type='+$('#message_type').val()+
@@ -515,6 +536,7 @@ function filter($clogAdmin) {
 				'&filename='+$('#filename').val()+
 				'&header=false';
 
+			console.log(strURL);
 			loadPageNoHeader(strURL);
 		}
 		</script>
@@ -523,15 +545,73 @@ function filter($clogAdmin) {
 	<?php
 }
 
+function clog_get_regex_array() {
+	static $regex_array = array();
+
+	if (!sizeof($regex_array)) {
+		$regex_array = array(
+			1 => array('name' => 'DS',     'regex' => '( DS\[)([, \d]+)(\])',      'func' => 'clog_regex_datasource'),
+			2 => array('name' => 'DQ',     'regex' => '( DQ\[)([, \d]+)(\])',      'func' => 'clog_regex_dataquery'),
+			3 => array('name' => 'Device', 'regex' => '( Device\[)([, \d]+)(\])',  'func' => 'clog_regex_device'),
+			4 => array('name' => 'Poller', 'regex' => '( Poller\[)([, \d]+)(\])',  'func' => 'clog_regex_poller'),
+			5 => array('name' => 'RRA',    'regex' => "([_\/])(\d+)(\.rrd&#039;)", 'func' => 'clog_regex_rra')
+		);
+
+		$regex_array = api_plugin_hook_function('clog_regex_array',$regex_array);
+		$regex_complete = '';
+		foreach ($regex_array as $regex_key => $regex_setting) {
+			$regex_complete .= (strlen($regex_complete)?')|(':'').$regex_setting['regex'];
+		}
+		$regex_complete = '~('.$regex_complete.')~';
+		$regex_array['complete'] = $regex_complete;
+	}
+
+	return $regex_array;
+}
+
+function clog_regex_parser($matches) {
+	$result = $matches[0];
+	$match = $matches[0];
+
+	$key_match = -1;
+	for ($index = 1; $index < sizeof($matches); $index++) {
+		if ($match == $matches[$index]) {
+			$key_match = $index;
+		}
+	}
+
+	if ($key_match != -1) {
+		$key_setting = ($key_match - 1) / 4 + 1;
+		$regex_array = clog_get_regex_array();
+		if (sizeof($regex_array)) {
+			if (array_key_exists($key_setting, $regex_array)) {
+				$regex_setting = $regex_array[$key_setting];
+
+				$rekey_array = array();
+				for ($j = 0; $j < 4; $j++) {
+					$rekey_array[$j] = $matches[$key_match + $j];
+				}
+
+				$result=call_user_func_array($regex_setting['func'],array($rekey_array));
+			}
+		}
+	}
+
+	return $result;
+}
+
 function clog_regex_device($matches) {
 	global $config;
+
+	$result = $matches[0];
+
 	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
-	$result = '';
 	if (sizeof($dev_ids)) {
-		$hosts = db_fetch_assoc_prepared('SELECT id, description 
-						  FROM host
-						  WHERE id in (?)',
-						  array(implode(',',$dev_ids)));
+		$hosts = db_fetch_assoc_prepared('SELECT id, description
+			FROM host
+			WHERE id in (?)',
+			array(implode(',',$dev_ids)));
+		
 		$hostDescriptions = array();
 		foreach ($hosts as $host) {
 			$hostDescriptions[$host['id']] = html_escape($host['description']);
@@ -541,17 +621,18 @@ function clog_regex_device($matches) {
 			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . '\'>' . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:$host_id) . '</a>' . $matches[3];
 		}
 	}
+
 	return $result;
 }
 
 function clog_regex_datasource($matches) {
 	global $config;
 
+	$result = $matches[0];
+
 	$ds_ids = explode(',',str_replace(" ","",$matches[2]));
-
-	$result = '';
-
 	if (sizeof($ds_ids)) {
+		$result = '';
 		$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
 		$title = '';
@@ -575,15 +656,91 @@ function clog_regex_datasource($matches) {
 		}
 
 		$result .= $matches[1];
-		$i         = 0;
+		$i       = 0;
 
+		$ds_titles = clog_get_datasource_titles($ds_ids);
 		foreach($ds_ids as $ds_id) {
-			$result .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_id . '</a>';
+			$ds_title = $ds_id;
+			if (array_key_exists($ds_id, $ds_titles)) {
+				$ds_title = $ds_titles[$ds_id];
+			}
+			$result .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_title . '</a>';
 
 			$i++;
 		}
 
 		$result .= $matches[3];
 	}
+
 	return $result;
 }
+
+function clog_regex_poller($matches) {
+	global $config;
+
+	$result = $matches[0];
+
+	$poller_ids = explode(',',str_replace(" ","",$matches[2]));
+	if (sizeof($poller_ids)) {
+		$result = '';
+		$pollers = db_fetch_assoc_prepared('SELECT id, name
+			FROM poller
+			WHERE id in (?)',
+			array(implode(',',$poller_ids)));
+		
+		$pollerDescriptions = array();
+		foreach ($pollers as $poller) {
+			$pollerDescriptions[$poller['id']] = html_escape($poller['name']);
+		}
+
+		foreach ($poller_ids as $poller_id) {
+			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'pollers.php?action=edit&id=' . $poller_id) . '\'>' . (isset($pollerDescriptions[$poller_id]) ? $pollerDescriptions[$poller_id]:$poller_id) . '</a>' . $matches[3];
+		}
+	}
+
+	return $result;
+}
+
+function clog_regex_dataquery($matches) {
+	global $config;
+
+	$result = $matches[0];
+
+	$query_ids = explode(',',str_replace(" ","",$matches[2]));
+	if (sizeof($query_ids)) {
+		$result = '';
+		$querys = db_fetch_assoc_prepared('SELECT id, name
+			FROM snmp_query
+			WHERE id in (?)',
+			array(implode(',',$query_ids)));
+
+		$queryDescriptions = array();
+		foreach ($querys as $query) {
+			$queryDescriptions[$query['id']] = html_escape($query['name']);
+		}
+
+		foreach ($query_ids as $query_id) {
+			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'data_query.php?action=edit&id=' . $query_id) . '\'>' . (isset($queryDescriptions[$query_id]) ? $queryDescriptions[$query_id]:$query_id) . '</a>' . $matches[3];
+		}
+	}
+
+	return $result;
+}
+
+function clog_regex_rra($matches) {
+	global $config;
+
+	$result = $matches[0];
+
+	$local_data_ids = $matches[2];
+	if (strlen($local_data_ids)) {
+		$datasource_array = array( 0 => '', 1 => 'DS[', 2 => $local_data_ids, 3 => ']');
+		$datasource_result = clog_regex_datasource($datasource_array);
+		if (strlen($datasource_result)) {
+			$result .= ' '. $datasource_result;
+		}
+	}
+
+	return $result;
+}
+
