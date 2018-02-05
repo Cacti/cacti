@@ -5051,10 +5051,12 @@ function cacti_gethostbyname($hostname, $type = '') {
 
 function get_nonsystem_data_input($data_input_id) {
 	global $hash_system_data_inputs;
+
 	$diid = db_fetch_cell_prepared('SELECT id FROM data_input
-					WHERE hash NOT IN ("' . implode('","', $hash_system_data_inputs) . '")
-					AND id = ?',
-					array($data_input_id));
+		WHERE hash NOT IN ("' . implode('","', $hash_system_data_inputs) . '")
+		AND id = ?',
+		array($data_input_id));
+
 	return $diid;
 }
 
@@ -5066,7 +5068,7 @@ function get_md5_hash($path) {
 			array($path));
 
 		if (!isset($md5) || !strlen($md5)) {
-			$md5 = md5_file(dirname(__FILE__) . "/../" . $path);
+			$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
 		}
 
 		$_SESSION['md5_'.$path] = $md5;
@@ -5078,11 +5080,11 @@ function get_md5_hash($path) {
 function get_md5_include_js($path) {
 	global $config;
 
-	return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $path . '?' . get_md5_hash($path) . '\'></script>';
+	return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $path . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
 }
 
 function get_md5_include_css($path) {
 	global $config;
 
-	return '<link href=\''. $config['url_path'] . $path . '?' . get_md5_hash($path) . '\' type=\'text/css\' rel=\'stylesheet\'>';
+	return '<link href=\''. $config['url_path'] . $path . '?' . get_md5_hash($path) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
 }
