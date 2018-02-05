@@ -391,6 +391,57 @@ function data_query_item_moveup_dssv() {
 	move_item_up('snmp_query_graph_rrd_sv', get_request_var('id'), 'data_template_id=' . get_request_var('data_template_id') . ' AND snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . " AND field_name = " . db_qstr(get_nfilter_request_var('field_name')));
 }
 
+function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name) {
+	if ($type == 'ds' || $type == 'gr') {
+		if ($type == 'ds') {
+			$table = 'snmp_query_graph_rrd_sv';
+		} else {
+			$table = 'snmp_query_graph_sv';
+		}
+	} else {
+		return false;
+	}
+
+	$bad_seq = db_fetch_cell_prepared("SELECT COUNT(sequence)
+		FROM $table
+		WHERE sequence <= 0
+		AND field_name = ?
+		AND snmp_query_graph_id = ?",
+		array($field_name, $snmp_query_graph_id));
+
+	$dup_seq = db_fetch_cell_prepared("SELECT SUM(count)
+		FROM (
+			SELECT sequence, COUNT(sequence) AS count
+			FROM $table
+			WHERE field_name = ?
+			AND snmp_query_graph_id = ?
+			GROUP BY sequence
+		) AS t
+		WHERE t.count > 1",
+		array($field_name, $snmp_query_graph_id));
+
+	// report any bad or duplicate sequencs to the log for reporting purposes
+	if ($bad_seq > 0) {
+		cacti_log('WARN: Found ' . $bad_seq . " Bad Sequences in $talbe Table", false, 'WEBUI', POLLER_VERBOSITY_LOW);
+	}
+
+	if ($dup_seq > 0) {
+		cacti_log('WARN: Found ' . $dup_seq . " Duplicated Sequences in $table Table", false, 'WEBUI', POLLER_VERBOSITY_LOW);
+	}
+
+	if ($bad_seq > 0 || $dup_seq > 0) {
+		// resequence the list so it has no gaps, and 0 values will appear at the top
+		// since thats where they would have been displayed
+		db_execute_prepared("SET @seq = 0; 
+			UPDATE $table 
+			SET sequence = (@seq:=@seq+1) 
+			WHERE field_name = ? 
+			AND snmp_query_graph_id = ?
+			ORDER BY sequence, id;",
+			array($field_name, $snmp_query_graph_id));
+	}
+}
+
 function data_query_item_remove_dssv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -470,19 +521,27 @@ function data_query_item_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$snmp_query_item = db_fetch_row_prepared('SELECT * FROM snmp_query_graph WHERE id = ?', array(get_request_var('id')));
+		$snmp_query_item = db_fetch_row_prepared('SELECT * 
+			FROM snmp_query_graph 
+			WHERE id = ?', 
+			array(get_request_var('id')));
 	}
 
-	$snmp_query = db_fetch_row_prepared('SELECT name, xml_path FROM snmp_query WHERE id = ?', array(get_request_var('snmp_query_id')));
+	$snmp_query   = db_fetch_row_prepared('SELECT name, xml_path 
+		FROM snmp_query 
+		WHERE id = ?', 
+		array(get_request_var('snmp_query_id')));
+
 	$header_label = __('Associated Graph/Data Templates [edit: %s]', html_escape($snmp_query['name']));
 
 	form_start('data_queries.php', 'data_queries');
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($fields_data_query_item_edit, (isset($snmp_query_item) ? $snmp_query_item : array()), $_REQUEST)
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_data_query_item_edit, (isset($snmp_query_item) ? $snmp_query_item : array()), $_REQUEST)
 		)
 	);
 
@@ -580,13 +639,14 @@ function data_query_item_edit() {
 
 		html_end_box();
 
-		html_start_box( __('Suggested Values - Graph Names'), '100%', '', '3', 'center', '');
+		html_start_box( __('Suggested Values - Graphs'), '100%', '', '3', 'center', '');
 
 		/* suggested values for graphs templates */
-		$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name, id
+		$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name, snmp_query_graph_id, id
 			FROM snmp_query_graph_sv
 			WHERE snmp_query_graph_id = ?
-			ORDER BY field_name, sequence', array(get_request_var('id')));
+			ORDER BY field_name, sequence', 
+			array(get_request_var('id')));
 
 		html_header(array(
 			array('display' => __('Name'), 'align' => 'left'),
@@ -598,6 +658,8 @@ function data_query_item_edit() {
 		$total_values = sizeof($suggested_values);
 		if ($total_values) {
 			foreach ($suggested_values as $suggested_value) {
+				data_query_sv_check_sequences('gr', $suggested_value['snmp_query_graph_id'], $suggested_value['field_name']);
+
 				form_alternate_row();
 
 				$show_up   = false;
@@ -673,12 +735,12 @@ function data_query_item_edit() {
 
 		html_end_box();
 
-		html_start_box( __('Suggested Values - Data Source Names'), '100%', '', '3', 'center', '');
+		html_start_box( __('Suggested Values - Data Sources'), '100%', '', '3', 'center', '');
 
 		/* suggested values for data templates */
 		if (sizeof($data_templates)) {
 			foreach ($data_templates as $data_template) {
-				$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name, id
+				$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name, snmp_query_graph_id, id
 					FROM snmp_query_graph_rrd_sv
 					WHERE snmp_query_graph_id = ?
 					AND data_template_id = ?
@@ -696,6 +758,8 @@ function data_query_item_edit() {
 				if ($total_values) {
 					$prev_name = '';
 					foreach ($suggested_values as $suggested_value) {
+						data_query_sv_check_sequences('ds', $suggested_value['snmp_query_graph_id'], $suggested_value['field_name']);
+
 						form_alternate_row();
 
 						$show_up   = false;
