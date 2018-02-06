@@ -1,37 +1,34 @@
 Cacti CHANGELOG
 
 1.1.35
+-issue#993: Realtime not working on remote pollers for certain data query
 -issue#1286: Correct CHUNKED_ENCODING error when retrieving graph with some browsers
 
 1.1.34
--issue#1040: Correct sizeof() issues with get_data_query_array() and get_graph_group() results
--issue#1195: Convert Cacti's use of $.get(), $.getJSON, and $.post() to $.ajax() in order to trap and handle errors
--issue#1245: Cannot reorder Suggested Values - Graph Names on Data Queries
--issue#1256: Error reporting of custom errors now display correctly
--issue#1257: Boost no longer ignores logging levels when updating single local data id's
--issue#1258: cacti.sql does not appear to be up to date for all tables
--issue#1260: Tabs should now display correctly in classic mode when TrueType is not available
--issue#1261: Automatic logout should not fire when using Web Basic Authentication
--issue#1263: Create utility to audit the Cacti schema for issues
--issue#1266: Correct graphWrapper usage so all graphs are correctly displayed
--issue#1268: Regex filters will now correctly filter
--issue#1274: Host CPU script checks value prescence to prevent unnecessary errors
--issue#1275: Fix issues with authPriv not supplying username/password
--issue#1280: Remove redundant code from lib/snmp.php
+-issue#1040: PHP version 7.2 - ERROR PHP WARNING: sizeof()
+-issue#1195: Improved Javascript error message handling
+-issue#1245: Unable to reorder graph name suggested values
+-issue#1256: Error reporting of custom errors not displayed correctly
+-issue#1257: Boost excessively logging updates
+-issue#1258: cacti.sql updated to match expected schema
+-issue#1260: Tab images fail to render due to TrueType support in PHP GD Module
+-issue#1261: Automatic logout timeout does not apply to web basic authenication
+-issue#1263: CLI utility to validate database schema
+-issue#1266: Inconsistent usage graphWrapper CSS causes odd graph zoom behavior
+-issue#1268: Regex filters not working properly
+-issue#1274: Host CPU script checks value existance to avoid error
+-issue#1275: SNMP v3 authPriv fails to work
 -issue#1287: JSON calls return validation error in HTML format
--issue#1289: Change Script Server to output parameters as returned by parseArgs()
--issue#1292: Fix issues with browser caching of javascript and css files
+-issue#1289: Script Server should output parameter array rather than parameters
+-issue#1292: Chrome to aggressively caches Javascript files
 -issue#1293: Correctly identify if command 'snmpbulkwalk' is available
--issue#1296: CactiErrorHandler now ignores suppressed errors
+-issue#1296: CactiErrorHandler does not ignore PHP suppressed errors
 -issue#1300: Automation discovery : New devices added by automation discovery have empty SNMP community field
--issue#1302: Dont redirect unathenticated users to the automatic logout page
--issue#1304: Cacti mib_cache.php file contains unsafe transactions for binary logging
--issue: When a checkbox table has no rows, the checkbox is resizable
--feature: New CLI script to generate and verify MD5 hashes for entire cacti source
--feature: CLog now has links and names for Poller, Data Query and Data Sources
--feature: CLog now displays datasource link next to RRD files which is useful for missing RRD's
--feature: CLog now uses a more dynamic functionality to query regex to allow plugin addition in future
--feature: CLog now lists filenames in reverse order to be more intuitive
+-issue#1302: Automatic logout should not be enforced on login page
+-issue#1304: mib_cache.php file contains unsafe transactions for binary logging
+-feature: CLI utilily to generate and verify file hashes for installed Cacti files
+-feature: Logging links back to appropriate areas for troubleshooting
+-feature: Logging lists filenames in reverse order
 
 1.1.33
 -issue#1253: Automatically generated RRDtool DEF names in Cacti 1.1.32 break existing Graph Templates
