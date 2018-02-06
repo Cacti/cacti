@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.35
+-issue#1286: Correct CHUNKED_ENCODING error when retrieving graph with some browsers
+
 1.1.34
 -issue#1040: Correct sizeof() issues with get_data_query_array() and get_graph_group() results
 -issue#1195: Convert Cacti's use of $.get(), $.getJSON, and $.post() to $.ajax() in order to trap and handle errors
