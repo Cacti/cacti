@@ -116,6 +116,8 @@ if (sizeof($parms)) {
 	$options = getopt($shortopts, $longopts);
 
 	foreach($options as $arg => $value) {
+		$allow_multi = false;
+
 		switch($arg) {
 		case 'graph-type':
 			$graph_type = $value;
@@ -150,15 +152,27 @@ if (sizeof($parms)) {
 
 			break;
 		case 'snmp-field':
-			$dsGraph['snmpField'][] = $value;
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+			$dsGraph['snmpField'] = $value;
+			$allow_multi = true;
 
 			break;
 		case 'snmp-value-regex':
-			$dsGraph['snmpValueRegex'][] = $value;
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+			$dsGraph['snmpValueRegex'] = $value;
+			$allow_multi = true;
 
 			break;
 		case 'snmp-value':
-			$dsGraph['snmpValue'][] = $value;
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+			$dsGraph['snmpValue'] = $value;
+			$allow_multi = true;
 
 			break;
 		case 'reindex-method':
@@ -236,6 +250,11 @@ if (sizeof($parms)) {
 		default:
 			echo "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
+			exit(1);
+		}
+
+		if (!$allow_multi && isset($value) && is_array($value)) {
+			echo "ERROR: Multiple values specified for non-multi argument: ($arg)\n\n";
 			exit(1);
 		}
 	}
