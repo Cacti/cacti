@@ -436,14 +436,9 @@ function auth_display_custom_error_message($message) {
 
 	/* print error */
 	print '<!DOCTYPE html>';
-	print "<html>\n<head>\n";
-	print '     <title>' . 'Cacti' . "</title>\n";
-	print "     <meta http-equiv='Content-Type' content='text/html;charset=utf-8'>";
-	print "		<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>\n";
-	print "		<meta name='apple-mobile-web-app-capable' content='yes'>\n";
-	print "		<meta name='mobile-web-app-capable' content='yes'>\n";
-	print "     <meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>";
-	print "     <link href=\"include/main.css\" type=\"text/css\" rel=\"stylesheet\">";
+	print "<html>\n";
+	print "<head>\n";
+	html_common_header(__('Cacti'));
 	print "</head>\n";
 	print "<body>\n<br><br>\n";
 	display_custom_error_message($message);
@@ -622,29 +617,7 @@ $selectedTheme = get_selected_theme();
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title><?php print api_plugin_hook_function('login_title', __('Login to Cacti'));?></title>
-	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
-	<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>
-	<meta name='apple-mobile-web-app-capable' content='yes'>
-	<meta name='mobile-web-app-capable' content='yes'>
-	<meta name='robots' content='noindex,nofollow'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/jquery-ui.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/main.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
-    <link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js' language='javascript'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js' language='javascript'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js' language='javascript'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/js.storage.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js' language='javascript'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.metadata.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/main.js'></script>
-	<script type='text/javascript'>var theme='<?php print $selectedTheme;?>';</script>
+	<?php html_common_header(api_plugin_hook_function('login_title', __('Login to Cacti')));?>
 	<script type='text/javascript'>
 	$(function() {
 			$('#login_username').focus();

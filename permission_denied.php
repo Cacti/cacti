@@ -32,29 +32,10 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	$goBack = "<td colspan='2' align='center'>[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 }
 
-$selectedTheme = get_selected_theme();
-
 print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
 print "<html>\n";
 print "<head>\n";
-print "\t<title>Permission Denied</title>\n";
-print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
-print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
-print "\t" . get_md5_include_css('include/themes/' . $selectedTheme . '/main.css') . "\n";
-print "\t" . get_md5_include_css('include/themes/' . $selectedTheme . '/jquery-ui.css') . "\n";
-print "\t" . get_md5_include_css('include/fa/css/font-awesome.css') . "\n";
-print "\t" . get_md5_include_js('include/js/jquery.js') . "\n";
-print "\t" . get_md5_include_js('include/js/jquery-migrate.js') . "\n";
-print "\t" . get_md5_include_js('include/js/jquery-ui.js') . "\n";
-print "\t" . get_md5_include_js('include/js/jquery.tablesorter.js') . "\n";
-print "\t" . get_md5_include_js('include/js/jquery.tablesorter.widgets.js') . "\n";
-print "\t" . get_md5_include_js('include/js/jquery.tablesorter.pager.js') . "\n";
-print "\t" . get_md5_include_js('include/js/js.storage.js') . "\n";
-print "\t" . get_md5_include_js('include/js/jquery.cookie.js') . "\n";
-print "\t" . get_md5_include_js('include/js/jquery.hotkeys.js') . "\n";
-print "\t" . get_md5_include_js('include/layout.js') . "\n";
-print "\t" . get_md5_include_js('include/themes/' . $selectedTheme . '/main.js') . "\n";
-print "<script type='text/javascript'>var theme='" . $selectedTheme . "';<script>\n";
+html_common_header(__('Permission Denied'));
 print "</head>\n";
 print "<body class='logoutBody'>
 	<div class='logoutLeft'></div>

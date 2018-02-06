@@ -192,11 +192,11 @@ function tree_check_sequences() {
 
 	// report any bad or duplicate sequencs to the log for reporting purposes
 	if ($bad_seq > 0) {
-		cacti_log('WARN: Found ' . $bad_seq . ' Sequences in graph_tree Table', false, 'TREE', POLLER_DEBUG_VERBOSITY_HIGH);
+		cacti_log('WARN: Found ' . $bad_seq . ' Sequences in graph_tree Table', false, 'TREE', POLLER_VERBOSITY_HIGH);
 	}
 
 	if ($dup_seq > 0) {
-		cacti_log('WARN: Found ' . $dup_seq . ' Sequences in graph_tree Table', false, 'TREE', POLLER_DEBUG_VERBOSITY_HIGH);
+		cacti_log('WARN: Found ' . $dup_seq . ' Sequences in graph_tree Table', false, 'TREE', POLLER_VERBOSITY_HIGH);
 	}
 
 	if ($bad_seq > 0 || $dup_seq > 0) {
