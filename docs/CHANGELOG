@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.35
+-issue#993: Realtime not working on remote pollers for certain data query
+
 1.1.34
 -issue#1040: PHP version 7.2 - ERROR PHP WARNING: sizeof()
 -issue#1195: Improved Javascript error message handling
