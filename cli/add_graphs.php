@@ -702,12 +702,12 @@ if (sizeof($parms)) {
 				echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
 			}
 		} else {
-			$err_msg = 'ERROR: Could not find snmp-field ' . implode(',', $dsGraph['snmpField']) . ' (';
+			$err_msg = 'ERROR: Could not find one of more snmp-fields ' . implode(',', $dsGraph['snmpField']) . ' with values (';
 
 			if (sizeof($dsGraph['snmpValue'])) {
-				$err_msg .= implode($dsGraph['snmpValue']);
+				$err_msg .= implode(',',$dsGraph['snmpValue']);
 			} else {
-				$err_msg .= implode($dsGraph['snmpValueRegex']);
+				$err_msg .= implode(',',$dsGraph['snmpValueRegex']);
 			}
 			$err_msg .= ') for host-id ' . $host_id . ' (' . $hosts[$host_id]['hostname'] . ")\n";
 
