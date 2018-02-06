@@ -597,15 +597,25 @@ if (sizeof($parms)) {
 			AND snmp_query_id=' . $dsGraph['snmpQueryId'];
 
 		$index_snmp_filter = 0;
-		if (sizeof($dsGraph['snmpField'])) {
-			foreach ($dsGraph['snmpField'] as $snmpField) {
-				$req  .= ' AND snmp_index IN (
-					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($snmpField);
+		if (sizeof($dsGraph['snmpField'],1) == 1) {
+			$req  .= ' AND snmp_index IN (
+					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($dsGraph['snmpField'][$index_snmp_filter]);
 
 				if (sizeof($dsGraph['snmpValue'])) {
 					$req .= ' AND field_value = ' . db_qstr($dsGraph['snmpValue'][$index_snmp_filter]). ')';
 				} else {
 					$req .= ' AND field_value LIKE "%' . addslashes($dsGraph['snmpValueRegex'][$index_snmp_filter]) . '%")';
+				}
+			
+		} else {
+			foreach ($dsGraph['snmpField'][0] as $snmpField) {
+				$req  .= ' AND snmp_index IN (
+					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($snmpField);
+
+				if (sizeof($dsGraph['snmpValue'])) {
+					$req .= ' AND field_value = ' . db_qstr($dsGraph['snmpValue'][0][$index_snmp_filter]). ')';
+				} else {
+					$req .= ' AND field_value LIKE "%' . addslashes($dsGraph['snmpValueRegex'][0][$index_snmp_filter]) . '%")';
 				}
 
 				$index_snmp_filter++;
@@ -683,18 +693,28 @@ if (sizeof($parms)) {
 				echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
 			}
 		} else {
-			$err_msg = 'ERROR: Could not find snmp-field ' . implode(',', $dsGraph['snmpField']) . ' (';
+			if (sizeof($dsGraph['snmpField'],1) == 1) {
+				$err_msg = 'ERROR: Could not find snmp-field: ' . implode(",", $dsGraph['snmpField']) . ' (';
 
-			if (sizeof($dsGraph['snmpValue'])) {
-				$err_msg .= implode($dsGraph['snmpValue']);
+				if (sizeof($dsGraph['snmpValue'])) {
+					$err_msg .= implode(",", $dsGraph['snmpValue']);
+				} else {
+					$err_msg .= implode(",", $dsGraph['snmpValueRegex']);
+				}
+				$err_msg .= ') for host-id ' . $host_id . ' (' . $hosts[$host_id]['hostname'] . ")\n";
 			} else {
-				$err_msg .= implode($dsGraph['snmpValueRegex']);
-			}
-			$err_msg .= ') for host-id ' . $host_id . ' (' . $hosts[$host_id]['hostname'] . ")\n";
+				$err_msg = 'ERROR: Could not find snmp-field: ' . implode(",", $dsGraph['snmpField'][0]) . ' (';
 
-			echo $err_msg;
-			echo 'Try --host-id=' . $host_id . " --list-snmp-fields\n";
-			exit(1);
+				if (sizeof($dsGraph['snmpValue'])) {
+					$err_msg .= implode(",", $dsGraph['snmpValue'][0]);
+				} else {
+					$err_msg .= implode(",", $dsGraph['snmpValueRegex'][0]);
+				}
+				$err_msg .= ') for host-id ' . $host_id . ' (' . $hosts[$host_id]['hostname'] . ")\n";
+			}
+				echo $err_msg;
+				echo 'Try --host-id=' . $host_id . " --list-snmp-fields\n";
+				exit(1);
 		}
 	} else {
 		echo "ERROR: Graph Types must be either 'cg' or 'ds'\n";
