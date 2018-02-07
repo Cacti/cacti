@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#1306: Fix issue #1306 where multi-value args are not parsing correctly
 -issue#1309: Provide meaningful authentication errors in graph_json.php and graph_image.php
 -issue#1310: Unable to return to previous page from auth_changepassword.php
+-issue#1315: Realtime not working on local data collector
 
 1.1.34
 -issue#1040: PHP version 7.2 - ERROR PHP WARNING: sizeof()
