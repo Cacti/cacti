@@ -379,7 +379,7 @@ $enabled = '1';
 <!DOCTYPE html>
 <html>
 <head>
-	<?php print html_common_header(__('Cacti Server Installation/Upgrade'));?>
+	<?php print html_common_header(__('Cacti Server Installation/Upgrade'), 'modern');?>
 	<style type='text/css'>
 	input, select {
 		font-size: 12px;
