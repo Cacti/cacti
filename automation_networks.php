@@ -526,7 +526,7 @@ function network_edit() {
 	'enable_netbios' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Enable NetBIOS'),
-		'description' => __('Use NetBIOS to attempt to result the hostname of up hosts.'),
+		'description' => __('Use NetBIOS to attempt to resolve the hostname of up hosts.'),
 		'value' => '|arg1:enable_netbios|',
 		'default' => ''
 		),
