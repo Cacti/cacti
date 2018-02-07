@@ -261,7 +261,7 @@ if ($output !== false && $output != '') {
 
 header('Content-Type: application/json');
 $json = json_encode($oarray);
-header('Content-Length: '.strlen($json));
-echo $json;
+header('Content-Length: ' . strlen($json));
+print $json;
 
 
