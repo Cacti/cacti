@@ -26,6 +26,7 @@
 ob_start();
 
 $guest_account = true;
+$auth_json     = true;
 $gtype         = 'png';
 
 include('./include/auth.php');
@@ -194,6 +195,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	}
 
 }
+
 $output = trim($output);
 $oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => $rra_id);
 
