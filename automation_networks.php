@@ -526,7 +526,7 @@ function network_edit() {
 	'enable_netbios' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Enable NetBIOS'),
-		'description' => __('Use NetBIOS to attempt to result the hostname of up hosts.'),
+		'description' => __('Use NetBIOS to attempt to resolve the hostname of up hosts.'),
 		'value' => '|arg1:enable_netbios|',
 		'default' => ''
 		),
@@ -539,7 +539,7 @@ function network_edit() {
 	'rerun_data_queries' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Rerun Data Queries'),
-		'description' => __('If a device, previously added to Cacti, is found, rerun its data queries.'),
+		'description' => __('If a device previously added to Cacti is found, rerun its data queries.'),
 		'value' => '|arg1:rerun_data_queries|'
 		),
 	'spacer2' => array(

@@ -62,7 +62,12 @@ if (read_config_option('auth_method') != 0) {
 
 	/* don't even bother with the guest code if we're already logged in */
 	if ((isset($guest_account)) && (empty($_SESSION['sess_user_id']))) {
-		$guest_user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ? AND realm = 0 AND enabled = "on"', array(read_config_option('guest_user')));
+		$guest_user_id = db_fetch_cell_prepared('SELECT id 
+			FROM user_auth 
+			WHERE username = ? 
+			AND realm = 0 
+			AND enabled = "on"', 
+			array(read_config_option('guest_user')));
 
 		/* cannot find guest user */
 		if (!empty($guest_user_id)) {
@@ -73,13 +78,31 @@ if (read_config_option('auth_method') != 0) {
 
 	/* if we are a guest user in a non-guest area, wipe credentials */
 	if (!empty($_SESSION['sess_user_id'])) {
-		if ((!isset($guest_account)) && (db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ?', array(read_config_option('guest_user'))) == $_SESSION['sess_user_id'])) {
+		$guest_user = db_fetch_cell_prepared('SELECT id 
+			FROM user_auth 
+			WHERE username = ?', 
+			array(read_config_option('guest_user')));
+
+		if (!isset($guest_account) && $guest_user == $_SESSION['sess_user_id']) {
 			kill_session_var('sess_user_id');
 		}
 	}
 
 	if (empty($_SESSION['sess_user_id'])) {
-		include($config['base_path'] . '/auth_login.php');
+		if (isset($auth_json) && $auth_json == true) {
+			print json_encode(
+				array(
+					'status' => '500',
+					'statusText' => __('Not Logged In'),
+					'responseText' => __('You must be logged in to access this area of Cacti.')
+				)
+			);
+		} elseif (isset($auth_text) && $auth_text == true) {
+			print __('FATAL: You must be logged in to access this area of Cacti.');
+		} else {
+			include($config['base_path'] . '/auth_login.php');
+		}
+
 		exit;
 	} elseif (!empty($_SESSION['sess_user_id'])) {
 		$realm_id = 0;

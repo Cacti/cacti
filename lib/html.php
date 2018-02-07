@@ -2075,10 +2075,12 @@ function html_spikekill_js() {
 	<?php
 }
 
-function html_common_header($title) {
+function html_common_header($title, $selectedTheme = '') {
 	global $config;
 
-	$selectedTheme = get_selected_theme();
+	if ($selectedTheme == '') {
+		$selectedTheme = get_selected_theme();
+	}
 
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>

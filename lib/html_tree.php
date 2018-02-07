@@ -367,12 +367,12 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 		$dhtml_tree[] = "\t\t\t<ul>\n";
 		foreach ($heirarchy as $leaf) {
 			if ($leaf['host_id'] > 0) {  //It's a host
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>" . __('Device') . ": " . html_escape($leaf['hostname']) . "</li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>" . html_escape($leaf['hostname']) . "</li>\n";
 			} elseif ($leaf['site_id'] > 0) {
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tsite:" . $leaf['site_id'] . "' data-jstree='{ \"type\" : \"site\" }'>" . __('Site') . ": " . html_escape($leaf['sitename']) . "</a></li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tsite:" . $leaf['site_id'] . "' data-jstree='{ \"type\" : \"site\" }'>" . html_escape($leaf['sitename']) . "</a></li>\n";
 			} elseif ($leaf['local_graph_id'] > 0) {
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . __('Graph') . ": " . html_escape(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
-			} else { //It's not a host
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . html_escape(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
+			} else { //It's a branch
 				$dhtml_tree[] = "\t\t\t\t<li class='jstree-closed' id='tbranch:" . $leaf['id'] . "'>" . html_escape($leaf['title']) . "</li>\n";
 			}
 		}
@@ -397,7 +397,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 			$dhtml_tree[] = "\t\t\t<ul>\n";
 			foreach ($heirarchy as $leaf) {
 				if ($leaf['site_id'] > 0) {  // It's a site
-					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"site\" }'><a href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . __('Site') . ': ' . html_escape($leaf['sitename']) . "</a>\n";
+					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"site\" }'><a href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . html_escape($leaf['sitename']) . "</a>\n";
 
 					$devices = get_allowed_site_devices($leaf['site_id'], '', 'ht.name ASC, h1.description ASC');
 					$ht_name = '';
@@ -433,7 +433,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 					$dhtml_tree[] = "\t\t\t\t</li>\n";
 				} elseif ($leaf['host_id'] > 0) {  // It's a host
-					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . __('Device') . ': ' . html_escape($leaf['hostname']) . "</a>\n";
+					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . html_escape($leaf['hostname']) . "</a>\n";
 
 					if (read_user_setting('expand_hosts') == 'on') {
 						$dhtml_tree[] = "\t\t\t\t\t<ul>\n";
@@ -503,7 +503,11 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 					$dhtml_tree[] = "\t\t\t\t</li>\n";
 				} else { //It's not a host
-					$children = db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_tree_items WHERE parent = ? AND local_graph_id=0', array($leaf['id']));
+					$children = db_fetch_cell_prepared('SELECT COUNT(*) 
+						FROM graph_tree_items 
+						WHERE parent = ? 
+						AND local_graph_id=0', 
+						array($leaf['id']));
 
 					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . html_escape($leaf['title']) . "</a></li>\n";
 				}
