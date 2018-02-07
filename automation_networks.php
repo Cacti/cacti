@@ -539,7 +539,7 @@ function network_edit() {
 	'rerun_data_queries' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Rerun Data Queries'),
-		'description' => __('If a device, previously added to Cacti, is found, rerun its data queries.'),
+		'description' => __('If a device previously added to Cacti is found, rerun its data queries.'),
 		'value' => '|arg1:rerun_data_queries|'
 		),
 	'spacer2' => array(
