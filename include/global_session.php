@@ -96,7 +96,6 @@ if (isset($_SESSION['refresh'])) {
 	var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;
 	var urlPath='<?php print $config['url_path'];?>';
 	var previousPage='';
-	var requestURI='<?php print sanitize_uri($_SERVER['REQUEST_URI']);?>';
 	var searchFilter='<?php print __('Enter a search term');?>';
 	var searchRFilter='<?php print __('Enter a regular expression');?>';
 	var noFileSelected='<?php print __('No file selected');?>';
