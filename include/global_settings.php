@@ -662,7 +662,7 @@ $settings = array(
 			'friendly_name' => __('Theme'),
 			'description' => __('Please select one of the available Themes to skin your Cacti with.'),
 			'method' => 'drop_array',
-			'default' => 'classic',
+			'default' => 'modern',
 			'array' => $themes
 			),
 		'table_header' => array(
