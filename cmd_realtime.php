@@ -83,14 +83,16 @@ if (!count($local_data_ids)) {
 	exit(-1);
 }
 
-$ids   = array();
-$hosts = array();
+$ids      = array();
+$hosts    = array();
+$idbyhost = array();
+
 foreach ($local_data_ids as $row) {
 	$ids[$row['local_data_id']]  = $row['local_data_id'];
 	$hosts[$row['host_id']]      = $row['host_id'];
+
 	$idbyhost[$row['host_id']][] = $row['local_data_id'];
 }
-
 
 $print_data_to_stdout = true;
 
@@ -179,7 +181,7 @@ if (sizeof($idbyhost)) {
 			$poller_items = db_fetch_assoc_prepared('SELECT *
 				FROM poller_item
 				WHERE host_id = ?
-				AND local_data_id IN(' . implode(',', $local_data_ids) . ')',
+				AND local_data_id IN(' . implode(',', $local_data_ids['local_data_ids']) . ')',
 				array($host_id));
 
 			if (sizeof($poller_items)) {
@@ -189,7 +191,10 @@ if (sizeof($idbyhost)) {
 						if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
 							$output = 'U';
 						} else {
-							$host = db_fetch_row_prepared('SELECT ping_retries, max_oids FROM host WHERE id = ?', array($host_id));
+							$host = db_fetch_row_prepared('SELECT ping_retries, max_oids 
+								FROM host 
+								WHERE id = ?', 
+								array($host_id));
 
 							if (!sizeof($host)) {
 								$host['ping_retries'] = 1;
@@ -276,3 +281,4 @@ if (sizeof($idbyhost)) {
 		$return_value = proc_close($cactiphp);
 	}
 }
+

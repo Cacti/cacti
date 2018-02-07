@@ -30,7 +30,12 @@ function imageOptionsChanged(action) {
 	graph_start    = $("#graph_start").val();
 	graph_end      = 0;
 	ds_step        = $("#ds_step").val();
-	local_graph_id = $('#local_graph_id').val();
+
+	if ($('#local_graph_id').length) {
+		local_graph_id = $('#local_graph_id').val();
+	} else {
+		local_graph_id = 0;
+	}
 
 	if (rtWidth == 0) {
 		rtWidth = $(window).width();
@@ -40,18 +45,17 @@ function imageOptionsChanged(action) {
 		rtHeight = $(window).height()+50;
 	}
 
-	url="?top=0&left=0&action="+action+"&local_graph_id="+local_graph_id+"&graph_start=-"+graph_start+"&ds_step="+ds_step+"&count="+count;
+	url="graph_realtime.php?top=0&left=0&action="+action+"&local_graph_id="+local_graph_id+"&graph_start=-"+graph_start+"&ds_step="+ds_step+"&count="+count;
 
 	Pace.stop;
 
 	$.getJSON(url)
-		.success(function(data) {
+		.done(function(data) {
 			$('#image').empty().append('<img class="graphimage" src="data:image/png;base64,'+data.data+'"/>');
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);
 		});
-
 }
 
 function stopRealtime() {
@@ -158,3 +162,4 @@ function realtimeGrapher() {
 		realtimeTimer = setTimeout('realtimeGrapher()', $('#ds_step').val()*1000);
 	}
 }
+
