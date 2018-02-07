@@ -379,44 +379,7 @@ $enabled = '1';
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Cacti Server Installation/Upgrade</title>
-	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<meta http-equiv='cache-control" content='no-cache' />
-	<meta http-equiv='expires" content='0' />
-	<meta http-equiv='pragma" content='no-cache' />
-	<link href='<?php echo $config['url_path']; ?>include/themes/modern/main.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/modern/jquery.zoom.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/modern/jquery-ui.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/modern/default/style.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/modern/jquery.multiselect.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/modern/jquery.timepicker.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/modern/jquery.colorpicker.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/modern/pace.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>images/favicon.ico' rel='shortcut icon'>
-	<link rel='icon' type='image/gif' href='<?php echo $config['url_path']; ?>images/cacti_logo.gif' sizes='96x96'>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/js.storage.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablednd.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.zoom.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.multiselect.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.multiselect.filter.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.timepicker.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.colorpicker.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.metadata.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.sparkline.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/Chart.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/dygraph-combined.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/pace.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/realtime.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/modern/main.js'></script>
+	<?php print html_common_header(__('Cacti Server Installation/Upgrade'));?>
 	<style type='text/css'>
 	input, select {
 		font-size: 12px;
