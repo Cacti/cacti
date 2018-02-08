@@ -1514,12 +1514,6 @@ $settings = array(
 			'method' => 'spacer',
 			'collapsible' => 'true',
 			),
-		'dsstats_rrdtool_pipe' => array(
-			'friendly_name' => __('Enable Single RRDtool Pipe'),
-			'description' => __('Using a single pipe will speed the RRDtool process by 10x.  However, RRDtool crashes problems can occur.  Disable this setting if you need to find a bad RRDfile.'),
-			'method' => 'checkbox',
-			'default' => 'on'
-			),
 		'dsstats_partial_retrieve' => array(
 			'friendly_name' => __('Enable Partial Reference Data Retrieve'),
 			'description' => __('If using a large system, it may be beneficial for you to only gather data as needed during Cacti poller passes.  If you check this box, Data Source Statistics will gather data this way.'),
