@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#1309: Provide meaningful authentication errors in graph_json.php and graph_image.php
 -issue#1310: Unable to return to previous page from auth_changepassword.php
 -issue#1315: Realtime not working on local data collector
+-issue#1316: CDEF Item Value dialog doesn't update creating items
 -issue: Validate regular expressions if specified in add_graphs.php
 
 1.1.34
