@@ -153,14 +153,9 @@ if (sizeof($idbyhost)) {
 				'&' . http_build_query($local_data_ids) .
 				'&poller_id=' . $poller_id;
 
-			$fgc_contextoption = get_default_contextoption();
-			if ($fgc_contextoption) {
-				$fgc_context = stream_context_create($fgc_contextoption);
-
-				$output = json_decode(file_get_contents($url, FALSE, $fgc_context), true);
-			} else {
-				$output = json_decode(file_get_contents($url), true);
-			}
+			$fgc_contextoption = get_default_contextoption(4);
+			$fgc_context       = stream_context_create($fgc_contextoption);
+			$output            = json_decode(@file_get_contents($url, FALSE, $fgc_context), true);
 
 			if (sizeof($output)) {
 				$sql = '';
@@ -191,9 +186,9 @@ if (sizeof($idbyhost)) {
 						if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
 							$output = 'U';
 						} else {
-							$host = db_fetch_row_prepared('SELECT ping_retries, max_oids 
-								FROM host 
-								WHERE id = ?', 
+							$host = db_fetch_row_prepared('SELECT ping_retries, max_oids
+								FROM host
+								WHERE id = ?',
 								array($host_id));
 
 							if (!sizeof($host)) {

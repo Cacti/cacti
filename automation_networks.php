@@ -138,14 +138,9 @@ function api_networks_discover($network_id) {
 					WHERE id = ?',
 					array($poller_id));
 
-				$fgc_contextoption = get_default_contextoption();
-				if ($fgc_contextoption) {
-					$fgc_context = stream_context_create($fgc_contextoption);
-
-					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id, false, $fgc_context);
-				} else {
-					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id);
-				}
+				$fgc_contextoption = get_default_contextoption(5);
+				$fgc_context       = stream_context_create($fgc_contextoption);
+				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id, false, $fgc_context);
 			}
 		} else {
 			$_SESSION['automation_message'] = "Can Not Restart Discovery for Discovery in Progress for Network '$name'";
