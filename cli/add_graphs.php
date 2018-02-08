@@ -155,6 +155,7 @@ if (sizeof($parms)) {
 			if (!is_array($value)) {
 				$value = array($value);
 			}
+
 			$dsGraph['snmpField'] = $value;
 			$allow_multi = true;
 
@@ -163,6 +164,14 @@ if (sizeof($parms)) {
 			if (!is_array($value)) {
 				$value = array($value);
 			}
+
+			foreach($value as $item) {
+				if (!validate_is_regex($item)) {
+					echo "ERROR: Regex specified '$item', is not a valid Regex!\n";
+					exit(1);
+				}
+			}
+
 			$dsGraph['snmpValueRegex'] = $value;
 			$allow_multi = true;
 
@@ -171,6 +180,7 @@ if (sizeof($parms)) {
 			if (!is_array($value)) {
 				$value = array($value);
 			}
+
 			$dsGraph['snmpValue'] = $value;
 			$allow_multi = true;
 
@@ -427,29 +437,31 @@ if (sizeof($parms)) {
 			}
 
 			if ($snmpValue) {
-				$ok = 0;
+				$ok = false;
 
 				foreach ($snmpValues as $snmpValueKnown => $snmpValueSet) {
 					if ($snmpValue == $snmpValueKnown) {
-						$ok = 1;
+						$ok = true;
+						break;
 					}
 				}
 
-				if (! $ok) {
+				if (!$ok) {
 					echo "ERROR: Unknown snmp-value for field $snmpField - $snmpValue\n";
 					echo "Try --snmp-field=$snmpField --list-snmp-values\n";
 					exit(1);
 				}
 			} elseif ($snmpValueRegex) {
-				$ok = 0;
+				$ok = false;
 
 				foreach ($snmpValues as $snmpValueKnown => $snmpValueSet) {
-					if (preg_match("/$snmpValueRegex/", $snmpValueKnown)) {
-						$ok = 1;
+					if (preg_match("/$snmpValueRegex/i", $snmpValueKnown)) {
+						$ok = true;
+						break;
 					}
 				}
 
-				if (! $ok) {
+				if (!$ok) {
 					echo "ERROR: Unknown snmp-value for field $snmpField - $snmpValue\n";
 					echo "Try --snmp-field=$snmpField --list-snmp-values\n";
 					exit(1);
