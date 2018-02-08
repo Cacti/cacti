@@ -175,14 +175,15 @@ $process_leveling = read_config_option('process_leveling');
 $concurrent_processes = read_config_option('concurrent_processes');
 
 // assume a scheduled task of either 60 or 300 seconds
-if (isset($poller_interval)) {
+if (!empty($poller_interval)) {
 	$poller_runs = intval($cron_interval / $poller_interval);
 	$sql_where   = 'WHERE rrd_next_step<=0 AND poller_id = ' . $poller_id;
 
 	define('MAX_POLLER_RUNTIME', $poller_runs * $poller_interval - 2);
 } else {
-	$sql_where   = 'WHERE poller_id = ' . $poller_id;
-	$poller_runs = 1;
+	$sql_where       = 'WHERE poller_id = ' . $poller_id;
+	$poller_runs     = 1;
+	$poller_interval = 300;
 	define('MAX_POLLER_RUNTIME', 298);
 }
 
