@@ -47,12 +47,8 @@ function run_data_query($host_id, $snmp_query_id) {
 			array($poller_id));
 
 		$fgc_contextoption = get_default_contextoption();
-		if($fgc_contextoption) {
-			$fgc_context = stream_context_create($fgc_contextoption);
-			$response = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id, false, $fgc_context);
-		} else {
-			$response = file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id);
-		}
+		$fgc_context       = stream_context_create($fgc_contextoption);
+		$response          = @file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id, false, $fgc_context);
 
 		if ($response != '') {
 			$response = json_decode($response, true);

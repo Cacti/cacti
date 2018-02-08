@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -issue#1310: Unable to return to previous page from auth_changepassword.php
 -issue#1315: Realtime not working on local data collector
 -issue#1316: CDEF Item Value dialog doesn't update creating items
+-issue#1319: FrontEnd + Remote Poller - Connection timeout issue
 -issue: Validate regular expressions if specified in add_graphs.php
 
 1.1.34
