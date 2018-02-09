@@ -78,7 +78,21 @@ function draw_edit_form($array) {
 				// Make a form cell
 				print "<div class='formColumnLeft'>";
 
-				print "<div class='formFieldName'>" . $field_array['friendly_name'];
+				print "<div class='formFieldName'>";
+
+				if (isset($field_array['sub_checkbox'])) {
+					form_checkbox($field_array['sub_checkbox']['name'],
+						$field_array['sub_checkbox']['value'],
+						'',
+						((isset($field_array['sub_checkbox']['default'])) 	? $field_array['sub_checkbox']['default'] : ''),
+						((isset($field_array['sub_checkbox']['form_id'])) 	? $field_array['sub_checkbox']['form_id'] : ''),
+						((isset($field_array['sub_checkbox']['class'])) 	? $field_array['sub_checkbox']['class'] : ''),
+						((isset($field_array['sub_checkbox']['on_change'])) ? $field_array['sub_checkbox']['on_change'] : ''),
+						((isset($field_array['sub_checkbox']['friendly_name'])) ? $field_array['sub_checkbox']['friendly_name'] : ''));
+				}
+
+				print $field_array['friendly_name'];
+
 				if (read_config_option('hide_form_description') == 'on') {
 					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? $field_array['description'] : '') . "</span>\n";
 				} else {
@@ -87,18 +101,6 @@ function draw_edit_form($array) {
 					print '</div>';
 				}
 
-				if (isset($field_array['sub_checkbox'])) {
-					print '<br>';
-					print '<div class="formSubCheckbox">';
-					form_checkbox($field_array['sub_checkbox']['name'],
-						$field_array['sub_checkbox']['value'],
-						$field_array['sub_checkbox']['friendly_name'],
-						((isset($field_array['sub_checkbox']['default'])) 	? $field_array['sub_checkbox']['default'] : ''),
-						((isset($field_array['sub_checkbox']['form_id'])) 	? $field_array['sub_checkbox']['form_id'] : ''),
-						((isset($field_array['sub_checkbox']['class'])) 	? $field_array['sub_checkbox']['class'] : ''),
-						((isset($field_array['sub_checkbox']['on_change'])) ? $field_array['sub_checkbox']['on_change'] : ''));
-					print '</div>';
-				}
 				print '</div>';
 
 				// End form cell
@@ -577,13 +579,16 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
    @arg $type - the type of textbox, either 'text' or 'password'
    @arg $current_id - used to determine if a current value for this form element
      exists or not. a $current_id of '0' indicates that no current value exists,
-     a non-zero value indicates that a current value does exist */
-function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '') {
+     a non-zero value indicates that a current value does exist 
+   @arg $placeholder - place a placeholder over an empty field
+   @arg $title - use a title attribute when hovering over the textbox
+ */
+function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '', $title = '') {
 	if (($form_previous_value == '') && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type'";
+	print "<input type='$type'" . ($title != '' ? ' title="' . $title . '"':'');
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
@@ -801,8 +806,10 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
      exists or not. a $current_id of '0' indicates that no current value exists,
      a non-zero value indicates that a current value does exist
    @param string $class - specify a css class
-   @param string $on_change - specify a javascript onchange action */
-function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $class = '', $on_change = '') {
+   @param string $on_change - specify a javascript onchange action 
+   @param string $title - specify a title for the checkbox on hover
+*/
+function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $class = '', $on_change = '', $title = '') {
 	if (($form_previous_value == '') && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
@@ -827,7 +834,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$checked = " aria-checked='false'";
 	}
 
-	print "<input class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . ">" . ($form_caption != '' ? " <label class='formCheckboxLabel' for='$form_name'>$form_caption</label>\n":"");
+	print "<input " . ($title != "" ? " title='$title'":"") . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . ">";
 }
 
 /* form_radio_button - draws a standard html radio button

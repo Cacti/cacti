@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#1316: CDEF Item Value dialog doesn't update creating items
 -issue#1319: FrontEnd + Remote Poller - Connection timeout issue
 -issue#1321: Use of legacy RRDtool pipelining functions within DSSTATS
+-issue#1323: Enhance form layout for readability
 -issue: Validate regular expressions if specified in add_graphs.php
 
 1.1.34
