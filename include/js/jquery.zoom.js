@@ -196,7 +196,7 @@
 			if (zoom.custom.zoomOutPositioning == undefined) zoom.custom.zoomOutPositioning = 'center';
 			if (zoom.custom.zoomOutFactor == undefined) zoom.custom.zoomOutFactor = '2';
 			if (zoom.custom.zoomTimestamps == undefined) zoom.custom.zoomTimestamps = 'auto';
-			if (zoom.custom.zoom3rdMouseButton == undefined) zoom.custom.zoom3rdMouseButton = false;
+			if (zoom.custom.zoom3rdMouseButton == undefined) zoom.custom.zoom3rdMouseButton = 'zoom_out';
 			storage.set(zoom.options.cookieName, serialize(zoom.custom));
 
 			/* take care of different time zones server and client can make use of */
@@ -209,7 +209,7 @@
 			/* fetch all attributes that rrdgraph provides */
 			zoom.image.data 			= atob( zoom.initiator.attr('src').split(',')[1] );
 			zoom.image.type 			= (zoom.initiator.attr('src').split(';')[0] == 'data:image/svg+xml' )? 'svg' : 'png';
-			zoom.image.reference			= zoom.initiator.attr('id');
+			zoom.image.reference		= zoom.initiator.attr('id');
 			zoom.image.id				= zoom.image.reference.replace('graph_', '');
 			zoom.image.rra_id			= zoom.initiator.attr('rra_id');
 			zoom.image.name 			= 'cacti_' + zoomGetImageId(zoom.initiator)+ '.' + zoom.image.type;
@@ -225,7 +225,7 @@
 			zoom.graph.start			= parseInt(zoom.initiator.attr('graph_start'));
 			zoom.graph.end				= parseInt(zoom.initiator.attr('graph_end'));
 			zoom.graph.timespan			= zoom.graph.end - zoom.graph.start;
-			zoom.graph.secondsPerPixel		= zoom.graph.timespan/zoom.graph.width;
+			zoom.graph.secondsPerPixel	= zoom.graph.timespan/zoom.graph.width;
 			zoom.box.width				= zoom.graph.width;
 			zoom.box.height				= zoom.graph.height;
 			zoom.box.top 				= zoom.graph.top-1;
@@ -353,8 +353,8 @@
 					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__end">End with</span>'
 					+ 					'</div>'
 					+ 				'</div>'
-					+ 				'<div class="sec_li advanced_mode"><span>3rd Mouse Button</span>'
-					+ 					'<div class="inner_li advanced_mode">'
+					+ 				'<div class="sec_li"><span>3rd Mouse Button</span>'
+					+ 					'<div class="inner_li">'
 					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_in">Zoom in</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_out">Zoom out</span>'
 					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__off">Disabled</span>'
@@ -432,7 +432,7 @@
 				});
 
 				/* register the mouse up event */
-				$('#zoom-box').off('mouseup').on('mouseup', function(e) {
+				$('#zoom-box, #zoom-area').off('mouseup').on('mouseup', function(e) {
 					switch(e.which) {
 						/* leaving the left mouse button will execute a zoom in */
 						case 1:
@@ -440,30 +440,22 @@
 								zoomAction_zoom_in();
 							}
 						break;
-					}
-				});
 
-				/* register the mouse up event */
-				$('#zoom-area').off('mouseup').on('mouseup', function(e) {
-					switch(e.which) {
-						/* leaving the left mouse button will execute a zoom in */
-						case 1:
-							if (zoom.attr.start != 'none') {
+						case 2:
+							/* hide context menu if open */
+							zoomContextMenu_hide();
+							if (zoom.custom.zoom3rdMouseButton == 'zoom_in') {
 								zoomAction_zoom_in();
-
+							} else {
+								zoomAction_zoom_out( zoom.custom.zoomOutFactor );
 							}
 						break;
 					}
 				});
-
-				/* stretch the zoom area in that direction the user moved the mouse pointer */
-				$('#zoom-box').mousemove( function(e) {
-					zoomAction_draw(e);
-				} );
 
 				/* stretch the zoom area in that direction the user moved the mouse pointer.
 				   That is required to get it working faultlessly with Opera, IE and Chrome	*/
-				$('#zoom-area').mousemove( function(e) {
+				$('#zoom-box, #zoom-area').mousemove( function(e) {
 					zoomAction_draw(e);
 				} );
 
