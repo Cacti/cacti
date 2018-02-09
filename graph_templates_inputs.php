@@ -188,13 +188,13 @@ function input_edit() {
 		AND graph_templates_item.graph_template_id = ?
 		ORDER BY graph_templates_item.sequence", array(get_request_var('id'), get_request_var('graph_template_id')));
 
-	html_start_box(__('Associated Graph Items'), '100%', false, '3', 'center', '');
+	html_start_box(__('Associated Graph Items'), '100%', true, '3', 'center', '');
 
 	$i = 0; $any_selected_item = '';
 	if (sizeof($item_list)) {
-		foreach ($item_list as $item) {
-			form_alternate_row();
+		print '<div class="formColumn">';
 
+		foreach ($item_list as $item) {
 			if ($item['graph_template_input_id'] == '') {
 				$old_value = '';
 			} else {
@@ -204,27 +204,22 @@ function input_edit() {
 
 			if ($graph_item_types[$item['graph_type_id']] == 'GPRINT') {
 				$start_bold = '';
-				$end_bold   = '';
+				$end_bold = '';
 			} else {
 				$start_bold = '<strong>';
-				$end_bold   = '</strong>';
+				$end_bold = '</strong>';
 			}
-
-			print "<td>";
 
 			$name = "$start_bold Item #" . ($i+1) . ': ' . $graph_item_types[$item['graph_type_id']] . ' (' . $consolidation_functions[$item['consolidation_function_id']] . ")$end_bold";
 
-			form_checkbox('i_' . $item['graph_templates_item_id'], $old_value, $name, '', '', get_request_var('graph_template_id')); 
-			print "<label for='i_" . $item['graph_templates_item_id'] . "'>" . $name . "</label>";
-
-			print "</td>";
+			form_checkbox('i_' . $item['graph_templates_item_id'], $old_value, $name, '', '', get_request_var('graph_template_id')); print '<br>';
 
 			$i++;
-
-			form_end_row();
 		}
+
+		print '</div>';
 	} else {
-		print "<tr><td><em>" . __('No Items') . "</em></td></tr>";
+		print "<div style='width:100%;text-align:center'><em>" . __('No Items') . "</em></div>";
 	}
 
 	form_hidden_box('any_selected_item', $any_selected_item, '');
