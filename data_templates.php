@@ -550,7 +550,7 @@ function template_edit() {
 		$form_array += array($field_name => $struct_data_source[$field_name]);
 
 		if ($form_array[$field_name]['method'] != 'spacer') {
-			$form_array[$field_name]['value'] = (isset($template_graph[$field_name]) ? $template_graph[$field_name] : '');
+			$form_array[$field_name]['value'] = (isset($template_data[$field_name]) ? $template_data[$field_name] : '');
 		}
 
 		$form_array[$field_name]['form_id'] = (isset($template_data) ? $template_data['data_template_id'] : '0');
