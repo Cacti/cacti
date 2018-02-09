@@ -354,7 +354,7 @@ function item_edit() {
 		if (array_key_exists('t_' . $field_name, $item_overrides)) {
 			$form_array[$field_name]['sub_checkbox']  = array(
 				'name' => 't_' . $field_name,
-				'friendly_name' => __('Override this Value') . '<br>',
+				'friendly_name' => __esc('Override this Value') . '<br>',
 				'value' => ($item_overrides['t_'.$field_name] == 'on' ? 'on' : ''),
 				'on_change' => 'toggleFieldEnabled(this);'
 			);

@@ -116,6 +116,8 @@ if (sizeof($parms)) {
 	$options = getopt($shortopts, $longopts);
 
 	foreach($options as $arg => $value) {
+		$allow_multi = false;
+
 		switch($arg) {
 		case 'graph-type':
 			$graph_type = $value;
@@ -150,15 +152,37 @@ if (sizeof($parms)) {
 
 			break;
 		case 'snmp-field':
-			$dsGraph['snmpField'][] = $value;
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+
+			$dsGraph['snmpField'] = $value;
+			$allow_multi = true;
 
 			break;
 		case 'snmp-value-regex':
-			$dsGraph['snmpValueRegex'][] = $value;
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+
+			foreach($value as $item) {
+				if (!validate_is_regex($item)) {
+					echo "ERROR: Regex specified '$item', is not a valid Regex!\n";
+					exit(1);
+				}
+			}
+
+			$dsGraph['snmpValueRegex'] = $value;
+			$allow_multi = true;
 
 			break;
 		case 'snmp-value':
-			$dsGraph['snmpValue'][] = $value;
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+
+			$dsGraph['snmpValue'] = $value;
+			$allow_multi = true;
 
 			break;
 		case 'reindex-method':
@@ -236,6 +260,11 @@ if (sizeof($parms)) {
 		default:
 			echo "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
+			exit(1);
+		}
+
+		if (!$allow_multi && isset($value) && is_array($value)) {
+			echo "ERROR: Multiple values specified for non-multi argument: ($arg)\n\n";
 			exit(1);
 		}
 	}
@@ -408,29 +437,31 @@ if (sizeof($parms)) {
 			}
 
 			if ($snmpValue) {
-				$ok = 0;
+				$ok = false;
 
 				foreach ($snmpValues as $snmpValueKnown => $snmpValueSet) {
 					if ($snmpValue == $snmpValueKnown) {
-						$ok = 1;
+						$ok = true;
+						break;
 					}
 				}
 
-				if (! $ok) {
+				if (!$ok) {
 					echo "ERROR: Unknown snmp-value for field $snmpField - $snmpValue\n";
 					echo "Try --snmp-field=$snmpField --list-snmp-values\n";
 					exit(1);
 				}
 			} elseif ($snmpValueRegex) {
-				$ok = 0;
+				$ok = false;
 
 				foreach ($snmpValues as $snmpValueKnown => $snmpValueSet) {
-					if (preg_match("/$snmpValueRegex/", $snmpValueKnown)) {
-						$ok = 1;
+					if (preg_match("/$snmpValueRegex/i", $snmpValueKnown)) {
+						$ok = true;
+						break;
 					}
 				}
 
-				if (! $ok) {
+				if (!$ok) {
 					echo "ERROR: Unknown snmp-value for field $snmpField - $snmpValue\n";
 					echo "Try --snmp-field=$snmpField --list-snmp-values\n";
 					exit(1);
@@ -683,12 +714,12 @@ if (sizeof($parms)) {
 				echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
 			}
 		} else {
-			$err_msg = 'ERROR: Could not find snmp-field ' . implode(',', $dsGraph['snmpField']) . ' (';
+			$err_msg = 'ERROR: Could not find one of more snmp-fields ' . implode(',', $dsGraph['snmpField']) . ' with values (';
 
 			if (sizeof($dsGraph['snmpValue'])) {
-				$err_msg .= implode($dsGraph['snmpValue']);
+				$err_msg .= implode(',',$dsGraph['snmpValue']);
 			} else {
-				$err_msg .= implode($dsGraph['snmpValueRegex']);
+				$err_msg .= implode(',',$dsGraph['snmpValueRegex']);
 			}
 			$err_msg .= ') for host-id ' . $host_id . ' (' . $hosts[$host_id]['hostname'] . ")\n";
 

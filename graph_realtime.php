@@ -216,54 +216,8 @@ $selectedTheme = get_selected_theme();
 ?>
 <html>
 <head>
-    <meta http-equiv='X-UA-Compatible' content='edge'>
-	<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>
-	<meta name='apple-mobile-web-app-capable' content='yes'>
-	<meta name='mobile-web-app-capable' content='yes'>
-	<title><?php print __('Cacti Real-time Graphing');?></title>
-    <meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
-	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css'); ?>
-	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css'); ?>
-	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css'); ?>
-	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.css'); ?>
-	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css'); ?>
-	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css'); ?>
-	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css'); ?>
-	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css'); ?>
-	<?php print get_md5_include_css('include/fa/css/font-awesome.css'); ?>
-	<?php print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css'); ?>
-	<?php print get_md5_include_js('include/js/screenfull.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery-migrate.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery-ui.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.ui.touch.punch.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.cookie.js'); ?>
-	<?php print get_md5_include_js('include/js/js.storage.js'); ?>
-	<?php print get_md5_include_js('include/js/jstree.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.hotkeys.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.tablednd.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.zoom.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.multiselect.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.multiselect.filter.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.timepicker.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.colorpicker.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.tablesorter.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.tablesorter.widgets.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.tablesorter.pager.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.metadata.js'); ?>
-	<?php print get_md5_include_js('include/js/jquery.sparkline.js'); ?>
-	<?php print get_md5_include_js('include/js/Chart.js'); ?>
-	<?php print get_md5_include_js('include/js/dygraph-combined.js'); ?>
-	<?php print get_md5_include_js('include/js/d3.js'); ?>
-	<?php print get_md5_include_js('include/js/c3.js'); ?>
-	<?php print get_md5_include_js('include/js/pace.js'); ?>
-	<?php print get_md5_include_js('include/realtime.js'); ?>
-	<?php print get_md5_include_js('include/layout.js');?>
-	<?php print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js'); ?>
-	<script type='text/javascript'>var theme='<?php print $selectedTheme;?>';</script>
-    <?php include($config['base_path'] . '/include/global_session.php'); api_plugin_hook('page_head'); ?>
+	<?php html_common_header(__('Cacti Real-time Graphing'));?>
+    <?php include($config['base_path'] . '/include/global_session.php'); ?>
 </head>
 <body style='text-align: center; padding: 5px 0px 5px 0px; margin: 5px 0px 5px 0px;'>
 <form method='post' action='graph_popup_rt.php' id='gform'>
@@ -274,7 +228,7 @@ $selectedTheme = get_selected_theme();
 					<?php print __('Window');?>
 				</td>
 				<td>
-					<select name='graph_start' id='graph_start' onChange='imageOptionsChanged("timespan")'>
+					<select id='graph_start' onChange='imageOptionsChanged("timespan")'>
 					<?php
 					foreach ($realtime_window as $interval => $text) {
 						printf('<option value="%d"%s>%s</option>',
@@ -288,7 +242,7 @@ $selectedTheme = get_selected_theme();
 					<?php print __('Refresh');?>
 				</td>
 				<td>
-					<select name='ds_step' id='ds_step' onChange="imageOptionsChanged('interval')">
+					<select id='ds_step' onChange="imageOptionsChanged('interval')">
 					<?php
 					foreach ($realtime_refresh as $interval => $text) {
 						printf('<option value="%d"%s>%s</option>',

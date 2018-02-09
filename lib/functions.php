@@ -4373,7 +4373,7 @@ function get_classic_tabimage($text, $down = false) {
 						}
 
 						$line--;
-					}				
+					}
 				}
 
 				if($maxw<$wlimit) break;
@@ -4398,7 +4398,7 @@ function get_classic_tabimage($text, $down = false) {
 					if ($spacer === FALSE) {
 						$spacer = strlen($text) - 1;
 					}
-					$text = substr($text,0,$spacer);						
+					$text = substr($text,0,$spacer);
 //					$lines[] = array(substr($text,0,$maxtext).'.'.$w.'.'.$maxtext.'.'.$fontw, $fontid, 0, $realx, $realy);
 				} else {
 					break;
@@ -4642,14 +4642,16 @@ function get_url_type() {
  *  cookies for example.
  *
  *  @returns - an array of stream context options or false */
-function get_default_contextoption($protocol = false, $options = false) {
+function get_default_contextoption($timeout = '') {
 	$fgc_contextoption = false;
 
-	$timeout = read_config_option('script_timeout');
-
-	if (!$protocol) {
-		$protocol = get_url_type();
+	if ($timeout == '') {
+		$timeout = read_config_option('script_timeout');
+	} elseif (!is_numeric($timeout)) {
+		$timeout = 2;
 	}
+
+	$protocol = get_url_type();
 
 	if (in_array($protocol, array('ssl', 'https', 'ftps'))) {
 		$fgc_contextoption = array(
@@ -4663,16 +4665,14 @@ function get_default_contextoption($protocol = false, $options = false) {
 
 	if ($protocol == 'https') {
 		$fgc_contextoption['https'] = array(
-			'timeout' => $timeout
+			'timeout' => $timeout,
+			'ignore_errors' => true
 		);
 	} elseif ($protocol == 'http') {
 		$fgc_contextoption['http'] = array(
-			'timeout' => $timeout
+			'timeout' => $timeout,
+			'ignore_errors' => true
 		);
-	}
-
-	if (is_array($options)) {
-		$fgc_contextoption = array_replace_recursive($fgc_contextoption, $options);
 	}
 
 	$fgc_contextoption = api_plugin_hook_function('fgc_contextoption', $fgc_contextoption);
@@ -5051,10 +5051,12 @@ function cacti_gethostbyname($hostname, $type = '') {
 
 function get_nonsystem_data_input($data_input_id) {
 	global $hash_system_data_inputs;
+
 	$diid = db_fetch_cell_prepared('SELECT id FROM data_input
-					WHERE hash NOT IN ("' . implode('","', $hash_system_data_inputs) . '")
-					AND id = ?',
-					array($data_input_id));
+		WHERE hash NOT IN ("' . implode('","', $hash_system_data_inputs) . '")
+		AND id = ?',
+		array($data_input_id));
+
 	return $diid;
 }
 
@@ -5062,11 +5064,11 @@ function get_md5_hash($path) {
 	if (!isset($_SESSION['md5_' . $path]) || !strlen($_SESSION['md5_' . $path])) {
 		$md5 = db_fetch_cell_prepared('SELECT md5sum
 			FROM poller_resource_cache
-			WHERE path = ?', 
+			WHERE path = ?',
 			array($path));
 
 		if (!isset($md5) || !strlen($md5)) {
-			$md5 = md5_file(dirname(__FILE__) . "/../" . $path);
+			$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
 		}
 
 		$_SESSION['md5_'.$path] = $md5;
@@ -5078,11 +5080,11 @@ function get_md5_hash($path) {
 function get_md5_include_js($path) {
 	global $config;
 
-	return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $path . '?' . get_md5_hash($path) . '\'></script>';
+	return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $path . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
 }
 
 function get_md5_include_css($path) {
 	global $config;
 
-	return '<link href=\''. $config['url_path'] . $path . '?' . get_md5_hash($path) . '\' type=\'text/css\' rel=\'stylesheet\'>';
+	return '<link href=\''. $config['url_path'] . $path . '?' . get_md5_hash($path) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
 }

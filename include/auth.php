@@ -62,7 +62,12 @@ if (read_config_option('auth_method') != 0) {
 
 	/* don't even bother with the guest code if we're already logged in */
 	if ((isset($guest_account)) && (empty($_SESSION['sess_user_id']))) {
-		$guest_user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ? AND realm = 0 AND enabled = "on"', array(read_config_option('guest_user')));
+		$guest_user_id = db_fetch_cell_prepared('SELECT id 
+			FROM user_auth 
+			WHERE username = ? 
+			AND realm = 0 
+			AND enabled = "on"', 
+			array(read_config_option('guest_user')));
 
 		/* cannot find guest user */
 		if (!empty($guest_user_id)) {
@@ -73,13 +78,31 @@ if (read_config_option('auth_method') != 0) {
 
 	/* if we are a guest user in a non-guest area, wipe credentials */
 	if (!empty($_SESSION['sess_user_id'])) {
-		if ((!isset($guest_account)) && (db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ?', array(read_config_option('guest_user'))) == $_SESSION['sess_user_id'])) {
+		$guest_user = db_fetch_cell_prepared('SELECT id 
+			FROM user_auth 
+			WHERE username = ?', 
+			array(read_config_option('guest_user')));
+
+		if (!isset($guest_account) && $guest_user == $_SESSION['sess_user_id']) {
 			kill_session_var('sess_user_id');
 		}
 	}
 
 	if (empty($_SESSION['sess_user_id'])) {
-		include($config['base_path'] . '/auth_login.php');
+		if (isset($auth_json) && $auth_json == true) {
+			print json_encode(
+				array(
+					'status' => '500',
+					'statusText' => __('Not Logged In'),
+					'responseText' => __('You must be logged in to access this area of Cacti.')
+				)
+			);
+		} elseif (isset($auth_text) && $auth_text == true) {
+			print __('FATAL: You must be logged in to access this area of Cacti.');
+		} else {
+			include($config['base_path'] . '/auth_login.php');
+		}
+
 		exit;
 	} elseif (!empty($_SESSION['sess_user_id'])) {
 		$realm_id = 0;
@@ -118,55 +141,10 @@ if (read_config_option('auth_method') != 0) {
 				$goBack = "<td colspan='2' align='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
 
-			$selectedTheme = get_selected_theme();
-
 			print "<!DOCTYPE html>\n";
 			print "<html>\n";
 			print "<head>\n";
-			print "\t<title>" . __('Permission Denied') . "</title>\n";
-			print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
-			print "\t<meta name='robots' content='noindex,nofollow'>\n";
-			print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/images/favicon.ico' rel='shortcut icon'>";
-			print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/images/cacti_logo.gif' rel='icon' sizes='96x96'>";
-			print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css');
-			print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css');
-			print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css');
-			print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.css');
-			print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
-			print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
-			print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
-			print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
-			print get_md5_include_css('include/fa/css/font-awesome.css');
-			print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
-			print get_md5_include_js('include/js/screenfull.js');
-			print get_md5_include_js('include/js/jquery.js');
-			print get_md5_include_js('include/js/jquery-migrate.js');
-			print get_md5_include_js('include/js/jquery-ui.js');
-			print get_md5_include_js('include/js/jquery.ui.touch.punch.js');
-			print get_md5_include_js('include/js/jquery.cookie.js');
-			print get_md5_include_js('include/js/js.storage.js');
-			print get_md5_include_js('include/js/jstree.js');
-			print get_md5_include_js('include/js/jquery.hotkeys.js');
-			print get_md5_include_js('include/js/jquery.tablednd.js');
-			print get_md5_include_js('include/js/jquery.zoom.js');
-			print get_md5_include_js('include/js/jquery.multiselect.js');
-			print get_md5_include_js('include/js/jquery.multiselect.filter.js');
-			print get_md5_include_js('include/js/jquery.timepicker.js');
-			print get_md5_include_js('include/js/jquery.colorpicker.js');
-			print get_md5_include_js('include/js/jquery.tablesorter.js');
-			print get_md5_include_js('include/js/jquery.tablesorter.widgets.js');
-			print get_md5_include_js('include/js/jquery.tablesorter.pager.js');
-			print get_md5_include_js('include/js/jquery.metadata.js');
-			print get_md5_include_js('include/js/jquery.sparkline.js');
-			print get_md5_include_js('include/js/Chart.js');
-			print get_md5_include_js('include/js/dygraph-combined.js');
-			print get_md5_include_js('include/js/d3.js');
-			print get_md5_include_js('include/js/c3.js');
-			print get_md5_include_js('include/js/pace.js');
-			print get_md5_include_js('include/realtime.js');
-			print get_md5_include_js('include/layout.js');
-			print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
-			print "<script type='text/javascript'>var theme='" . $selectedTheme . "';</script>\n";
+			html_common_header(__('Permission Denied'));
 			print "</head>\n";
 			print "<body class='logoutBody'>
 			<div class='logoutLeft'></div>

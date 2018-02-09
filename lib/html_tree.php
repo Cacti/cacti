@@ -355,9 +355,9 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 		$dhtml_tree[] = "\t\t\t<ul>\n";
 		foreach ($heirarchy as $leaf) {
 			if ($leaf['host_id'] > 0) {  //It's a host
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>" . __('Device') . ": " . htmlspecialchars($leaf['hostname']) . "</li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>" . htmlspecialchars($leaf['hostname']) . "</li>\n";
 			} elseif ($leaf['local_graph_id'] > 0) {
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . __('Graph') . ": " . htmlspecialchars(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . htmlspecialchars(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
 			} else { //It's not a host
 				$dhtml_tree[] = "\t\t\t\t<li class='jstree-closed' id='tbranch:" . $leaf['id'] . "'>" . htmlspecialchars($leaf['title']) . "</li>\n";
 			}
@@ -383,7 +383,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 			$dhtml_tree[] = "\t\t\t<ul>\n";
 			foreach ($heirarchy as $leaf) {
 				if ($leaf['host_id'] > 0) {  //It's a host
-					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . __('Device') . ': ' . htmlspecialchars($leaf['hostname']) . "</a>\n";
+					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . htmlspecialchars($leaf['hostname']) . "</a>\n";
 
 					if (read_user_setting('expand_hosts') == 'on') {
 						$dhtml_tree[] = "\t\t\t\t\t<ul>\n";
@@ -453,7 +453,11 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 					$dhtml_tree[] = "\t\t\t\t</li>\n";
 				} else { //It's not a host
-					$children = db_fetch_cell_prepared('SELECT COUNT(*) FROM graph_tree_items WHERE parent = ? AND local_graph_id=0', array($leaf['id']));
+					$children = db_fetch_cell_prepared('SELECT COUNT(*) 
+						FROM graph_tree_items 
+						WHERE parent = ? 
+						AND local_graph_id=0', 
+						array($leaf['id']));
 
 					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . htmlspecialchars($leaf['title']) . "</a></li>\n";
 				}
@@ -597,9 +601,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$data_query_index = $host_group_data_array[2];
 	}
 
-	if (!empty($tree_name)) { $title .= $title_delimeter . '<strong>' . __('Tree:') . '</strong>' . htmlspecialchars($tree_name, ENT_QUOTES); $title_delimeter = '-> '; }
-	if (!empty($leaf_name)) { $title .= $title_delimeter . '<strong>' . __('Leaf:') . '</strong>' . htmlspecialchars($leaf_name, ENT_QUOTES); $title_delimeter = '-> '; }
-	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>' . __('Device:') . '</strong>' . htmlspecialchars($host_name, ENT_QUOTES); $title_delimeter = '-> '; }
+	if (!empty($tree_name)) { $title .= $title_delimeter . '<strong>' . __('Tree:') . '</strong> ' . htmlspecialchars($tree_name, ENT_QUOTES); $title_delimeter = '-> '; }
+	if (!empty($leaf_name)) { $title .= $title_delimeter . '<strong>' . __('Leaf:') . '</strong> ' . htmlspecialchars($leaf_name, ENT_QUOTES); $title_delimeter = '-> '; }
+	if (!empty($host_name)) { $title .= $title_delimeter . '<strong>' . __('Device:') . '</strong> ' . htmlspecialchars($host_name, ENT_QUOTES); $title_delimeter = '-> '; }
 	if (!empty($host_group_data_name)) { $title .= $title_delimeter . " $host_group_data_name"; $title_delimeter = '-> '; }
 
 	html_start_box(__('Graph Filters') . (get_request_var('rfilter') != '' ? " [ " . __('Filter') . " '" . htmlspecialchars(get_request_var('rfilter')) . "' " . __('Applied') . " ]" : ''), '100%', "", '3', 'center', '');

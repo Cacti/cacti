@@ -518,10 +518,11 @@ function template_edit() {
 		}
 
 		$form_array[$field_name]['form_id'] = (isset($template_graph['id']) ? $template_graph['id'] : '0');
+
 		if ($form_array[$field_name]['method'] != 'spacer') {
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
-				'friendly_name' => __('Use Per-Graph Value (Ignore this Value)'),
+				'friendly_name' => __esc('Use Per-Graph Value (Ignore this Value)'),
 				'value' => (isset($template_graph['t_' . $field_name]) ? $template_graph['t_' . $field_name] : '')
 			);
 		}

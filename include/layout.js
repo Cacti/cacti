@@ -552,10 +552,6 @@ function cactiReturnTo(href) {
 function applySkin() {
 	pageName = basename($(location).attr('pathname'));
 
-	if (typeof requestURI != 'undefined') {
-		pushState(myTitle, requestURI);
-	}
-
 	if (!theme || theme == 'classic') {
 		theme = 'classic';
 

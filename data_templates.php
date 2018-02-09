@@ -549,18 +549,21 @@ function template_edit() {
 	foreach ($struct_data_source as $field_name => $field_array) {
 		$form_array += array($field_name => $struct_data_source[$field_name]);
 
+		if ($form_array[$field_name]['method'] != 'spacer') {
+			$form_array[$field_name]['value'] = (isset($template_data[$field_name]) ? $template_data[$field_name] : '');
+		}
+
+		$form_array[$field_name]['form_id'] = (isset($template_data) ? $template_data['data_template_id'] : '0');
+
 		if ($field_array['flags'] == 'ALWAYSTEMPLATE') {
 			$form_array[$field_name]['description'] .= '<br><em>' . __('This field is always templated.') . '</em>';
 		} else {
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
-				'friendly_name' => __('Use Per-Data Source Value (Ignore this Value)'),
+				'friendly_name' => __esc('Use Per-Data Source Value (Ignore this Value)'),
 				'value' => (isset($template_data['t_' . $field_name]) ? $template_data['t_' . $field_name] : '')
 			);
 		}
-
-		$form_array[$field_name]['value'] = (isset($template_data[$field_name]) ? $template_data[$field_name] : '');
-		$form_array[$field_name]['form_id'] = (isset($template_data) ? $template_data['data_template_id'] : '0');
 	}
 
 	$form_array['data_source_profile_id']['sql'] = 'SELECT id, name FROM data_source_profiles ORDER BY name';
@@ -692,16 +695,19 @@ function template_edit() {
 					$class = 'odd';
 				}
 
+				if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code']) && $old_tvalue  == '') { 
+					$title = __esc('Value will be derived from the device if this field is left empty.');
+				} else {
+					$title = '';
+				}
+
 				?>
 				<div class='formColumnLeft'>
-					<div class='formFieldName'><?php print html_escape($field['name']);?><div class='formTooltip'><?php print display_tooltip($help);?></div><br>
-
-						<div class='formSubCheckbox'><?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, __('Use Per-Data Source Value (Ignore this Value)'), '', '', get_request_var('id'));?></div>
+					<div class='formFieldName'><?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, '', '', '', get_request_var('id'), '', __('Use Per-Data Source Value (Ignore this Value)'));?><?php print html_escape($field['name']);?><div class='formTooltip'><?php print display_tooltip($help);?></div>
 					</div>
 				</div>
 				<div class='formColumnRight'>
-					<?php form_text_box('value_' . $field['data_name'], $old_value, '', '');?>
-					<?php if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code'])) && ($old_tvalue  == '')) { print "<br><em>" . __('Value will be derived from the device if this field is left empty.') . "</em>\n"; } ?>
+					<?php form_text_box('value_' . $field['data_name'], $old_value, '', '', 30, 'text', 0, '', $title);?>
 				</div>
 				<?php
 				print "</div>";

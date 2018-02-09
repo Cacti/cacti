@@ -138,14 +138,9 @@ function api_networks_discover($network_id) {
 					WHERE id = ?',
 					array($poller_id));
 
-				$fgc_contextoption = get_default_contextoption();
-				if ($fgc_contextoption) {
-					$fgc_context = stream_context_create($fgc_contextoption);
-
-					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id, false, $fgc_context);
-				} else {
-					$response = file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id);
-				}
+				$fgc_contextoption = get_default_contextoption(5);
+				$fgc_context       = stream_context_create($fgc_contextoption);
+				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id, false, $fgc_context);
 			}
 		} else {
 			$_SESSION['automation_message'] = "Can Not Restart Discovery for Discovery in Progress for Network '$name'";
@@ -526,7 +521,7 @@ function network_edit() {
 	'enable_netbios' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Enable NetBIOS'),
-		'description' => __('Use NetBIOS to attempt to result the hostname of up hosts.'),
+		'description' => __('Use NetBIOS to attempt to resolve the hostname of up hosts.'),
 		'value' => '|arg1:enable_netbios|',
 		'default' => ''
 		),
@@ -539,7 +534,7 @@ function network_edit() {
 	'rerun_data_queries' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Rerun Data Queries'),
-		'description' => __('If a device, previously added to Cacti, is found, rerun its data queries.'),
+		'description' => __('If a device previously added to Cacti is found, rerun its data queries.'),
 		'value' => '|arg1:rerun_data_queries|'
 		),
 	'spacer2' => array(

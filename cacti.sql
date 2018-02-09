@@ -176,7 +176,7 @@ CREATE TABLE `automation_devices` (
   `network_id` int(10) unsigned NOT NULL DEFAULT '0',
   `hostname` varchar(100) NOT NULL DEFAULT '',
   `ip` varchar(17) NOT NULL DEFAULT '',
-  `community` varchar(100) NOT NULL DEFAULT '',
+  `snmp_community` varchar(100) NOT NULL DEFAULT '',
   `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
   `snmp_username` varchar(50) DEFAULT NULL,

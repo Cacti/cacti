@@ -455,16 +455,16 @@ function item_edit() {
 				?>
 			</select>
             <script type='text/javascript'>
-            $(function() {
-                $('#type_select').unbind().change(function() {
+			$(function() {
+				$('#type_select').unbind().change(function() {
 					strURL  = 'cdef.php?action=item_edit';
-					strURL += '&id='+<?php print get_request_var('id');?>;
-					strURL += '&cdef_id='+<?php print get_request_var('cdef_id');?>;
-					strURL += '&type_select='+$('#type_select').val();
+					strURL += '&id=' + $('#id').val();
+					strURL += '&cdef_id=' + $('#cdef_id').val();
+					strURL += '&type_select=' + $('#type_select').val();
 					strURL += '&header=false';
-                    loadPageNoHeader(strURL);
-                });
-            });
+					loadPageNoHeader(strURL);
+				});
+			});
             </script>
 		</td>
 	</tr>
@@ -644,7 +644,7 @@ function cdef_edit() {
 		});
 		<?php } ?>
 
-		$('.delete').click(function (event) {
+		$('.delete').click(function(event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
@@ -658,7 +658,8 @@ function cdef_edit() {
 				.fail(function(data) {
 					getPresentHTTPError(data);
 				});
-		}
+		});
+	});
 	</script>
 	<?php
 }

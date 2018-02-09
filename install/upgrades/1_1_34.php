@@ -106,14 +106,14 @@ function upgrade_to_1_1_34() {
 
 	if (db_column_exists('automation_devices', 'community')) {
 		db_install_execute('ALTER TABLE `automation_devices`
-			CHANGE COLUMN `community` `snmp_community` char(100) DEFAULT ""');
+			CHANGE COLUMN `community` `snmp_community` varchar(100) NOT NULL DEFAULT ""');
 	}
 
 	db_install_execute('ALTER TABLE `automation_ips`
 		MODIFY COLUMN `hostname` varchar(100) DEFAULT ""');
 
 	db_install_execute('ALTER TABLE `automation_snmp_items`
-		MODIFY COLUMN `snmp_version` tinyint(1) NOT NULL DEFAULT "1",
+		MODIFY COLUMN `snmp_version` tinyint(1) unsigned NOT NULL DEFAULT "1",
 		MODIFY COLUMN `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT "161",
 		MODIFY COLUMN `snmp_community` varchar(100) NOT NULL DEFAULT "",
 		MODIFY COLUMN `snmp_auth_protocol` char(6) DEFAULT ""');
