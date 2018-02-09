@@ -2973,3 +2973,12 @@ function checkSNMPPassphraseConfirm(type) {
 	}
 }
 
+function toggleCheckBoxInput(e) {
+	var formDataName = e.id;
+	var formData = $('#'+formDataName+'_formdata');
+	if (formData.hasClass('ui-state-disabled')) {
+		formData.removeClass('ui-state-disabled');
+	} else {
+		formData.addClass('ui-state-disabled');
+	}
+}

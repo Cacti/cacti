@@ -1902,3 +1902,8 @@ tr#realtime td:first-child {
 .graphWrapper {
 	position: relative;
 }
+
+.formData.ui-state-disabled {
+	pointer-events: none;
+}
+

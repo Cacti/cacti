@@ -2247,3 +2247,13 @@ tr#realtime td:first-child {
 .note a:hover {
 	text-decoration: underline;
 }
+
+.formData.ui-state-disabled {
+	pointer-events: none;
+}
+
+
+.formData.ui-state-disabled {
+	pointer-events: none;
+}
+

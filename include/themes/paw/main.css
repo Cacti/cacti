@@ -2015,3 +2015,8 @@ tr#realtime td:first-child {
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
+
+.formData.ui-state-disabled {
+	pointer-events: none;
+}
+

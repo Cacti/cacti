@@ -777,3 +777,7 @@ div.calendar { position: relative; }
 @media print {
 	.noprint { display:none }
 }
+
+.formData.ui-state-disabled {
+	pointer-events: none;
+}
