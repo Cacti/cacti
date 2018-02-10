@@ -947,6 +947,25 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
+		'snmp_bulk_walk_size' => array(
+			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
+			'description' => __('How many OID\'s should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN.'),
+			'method' => 'drop_array',
+			'default' => '10',
+			'array' => array(
+				'10' => '10',
+				'20' => '20',
+				'30' => '30',
+				'40' => '40',
+				'50' => '50',
+				'60' => '60',
+				'70' => '70',
+				'80' => '80',
+				'90' => '90',
+				'100' => '100',
+				'150' => '150',
+				'200' => '200')
+			),
 		'spine_header' => array(
 			'friendly_name' => __('Spine Specific Execution Parameters'),
 			'collapsible' => 'true',
