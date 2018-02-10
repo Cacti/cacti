@@ -398,7 +398,7 @@ $settings = array(
 		'hide_form_description' => array(
 			'friendly_name' => __('Show Form/Setting Help Inline'),
 			'description' => __('When checked, Form and Setting Help will be show inline.  Otherwise it will be presented when hovering over the help button.'),
-			'default' => 'on',
+			'default' => '',
 			'method' => 'checkbox',
 			),
 		'deletion_verification' => array(
