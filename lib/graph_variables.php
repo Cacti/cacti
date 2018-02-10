@@ -30,7 +30,7 @@
    @arg $percentile - Nth Percentile to calculate, integer between 1 and 99
    @arg $resolution - the accuracy of the data measured in seconds
    @returns - (array) an array containing each data source item, and its 95th percentile */
-function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0) {
+function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
 	global $config;
 
 	include_once($config['library_path'] . '/rrd.php');
@@ -43,7 +43,15 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 		$i = 0;
 		/* do a fetch for each data source */
 		foreach ($local_data_id as $ldi => $ldi_value) {
-			$fetch_array[$i] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
+			if ($peak) {
+				$fetch_array[$i] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, 'MAX');
+
+				if (!sizeof($fetch_array[$i])) {
+					$fetch_array[$i] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
+				}
+			} else {
+				$fetch_array[$i] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
+			}
 			/* clean up unwanted data source items */
 			if (!empty($fetch_array[$i])) {
 				foreach ($fetch_array[$i]['data_source_names'] as $id => $name) {
@@ -69,7 +77,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 			$sum_array['data_source_names'] = $fetch_array[0]['data_source_names'];
 		}
 
-		if (sizeof($fetch_array) > 0) {
+		if (sizeof($fetch_array)) {
 			/* Create hash of ds_item_name => array or fetch_array indexes */
 			/* this is used to later sum, max and total the data sources used on the graph */
 			/* Loop fetch array index  */
@@ -84,10 +92,13 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 			/* Sum up the like data sources */
 			$sum_array = array();
 			$i = 0;
+
 			foreach ($dsi_name_to_id as $ds_name => $id_array) {
 				$sum_array['data_source_names'][$i] = $ds_name;
+
 				foreach ($id_array as $id) {
 					$fetch_id = array_search($ds_name,$fetch_array[$id]['data_source_names']);
+
 					/* Sum up like ds names */
 					for ($j=0; $j<count($fetch_array[$id]['values'][$fetch_id]); $j++) {
 						if (isset($fetch_array[$id]['values'][$fetch_id][$j])) {
@@ -95,6 +106,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 						} else {
 							$value = 0;
 						}
+
 						if (isset($sum_array['values'][$i][$j])) {
 							$sum_array['values'][$i][$j] += $value;
 						} else {
@@ -102,6 +114,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 						}
 					}
 				}
+
 				$i++;
 			}
 		}
@@ -110,6 +123,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 		if (isset($sum_array['values'])) {
 			$num_ds = count($sum_array['values']);
 			$total_ds = count($sum_array['values']);
+
 			for ($j=0; $j<$total_ds; $j++) { /* each data source item */
 				for ($k=0; $k<count($sum_array['values'][$j]); $k++) { /* each rrd row */
 					/* now we must re-calculate the 95th max */
@@ -117,11 +131,13 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 					if (isset($sum_array['values'][$j][$k])) {
 						$value = $sum_array['values'][$j][$k];
 					}
+
 					if (isset($sum_array['values'][$num_ds][$k])) {
 						$sum_array['values'][$num_ds][$k] = max($value, $sum_array['values'][$num_ds][$k]);
 					} else {
 						$sum_array['values'][$num_ds][$k] = max($value, 0);
 					}
+
 					/* sum of all ds rows */
 					$value = 0;
 					if (isset($sum_array['values'][$j][$k])) {
@@ -272,22 +288,33 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 	/* Get the Nth percentile values */
 	switch ($regexp_match_array[4]) {
 		case 'current':
-		case 'max':
 			$nth_cache[$graph_item['local_data_id']] = nth_percentile($graph_item['local_data_id'], $graph_start, $graph_end, $regexp_match_array[1]);
+
+			break;
+		case 'max':
+			$nth_cache[$graph_item['local_data_id']] = nth_percentile($graph_item['local_data_id'], $graph_start, $graph_end, $regexp_match_array[1], 0, true);
+
 			break;
 		case 'total':
-		case 'total_peak':
 		case 'all_max_current':
-		case 'all_max_peak':
 			foreach ($graph_items as $graph_element) {
 				if (!empty($graph_element['local_data_id'])) {
 					$nth_cache[$graph_element['local_data_id']] = nth_percentile($graph_element['local_data_id'], $graph_start, $graph_end, $regexp_match_array[1]);
 				}
 			}
+
+			break;
+		case 'total_peak':
+		case 'all_max_peak':
+			foreach ($graph_items as $graph_element) {
+				if (!empty($graph_element['local_data_id'])) {
+					$nth_cache[$graph_element['local_data_id']] = nth_percentile($graph_element['local_data_id'], $graph_start, $graph_end, $regexp_match_array[1], 0, true);
+				}
+			}
+
 			break;
 		case 'aggregate':
 		case 'aggregate_sum':
-		case 'aggregate_max':
 			$local_data_array = array();
 			foreach ($graph_items as $graph_element) {
 				if (!empty($graph_element['data_template_rrd_id']) && preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_element['graph_type_id']])) {
@@ -295,6 +322,17 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				}
 			}
 			$nth_cache[0] = nth_percentile($local_data_array, $graph_start, $graph_end, $regexp_match_array[1]);
+
+			break;
+		case 'aggregate_max':
+			$local_data_array = array();
+			foreach ($graph_items as $graph_element) {
+				if (!empty($graph_element['data_template_rrd_id']) && preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_element['graph_type_id']])) {
+					$local_data_array[$graph_element['local_data_id']][] = $graph_element['data_source_name'];
+				}
+			}
+			$nth_cache[0] = nth_percentile($local_data_array, $graph_start, $graph_end, $regexp_match_array[1], 0, true);
+
 			break;
 		case 'aggregate_current':
 			$local_data_array = array();
@@ -308,6 +346,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				}
 				$nth_cache[0] = nth_percentile($local_data_array, $graph_start, $graph_end, $regexp_match_array[1]);
 			}
+
 			break;
 	}
 
@@ -321,6 +360,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				$nth = ($regexp_match_array[2] == 'bits') ? $nth * 8 : $nth;
 				$nth /= pow($pow, intval($regexp_match_array[3]));
 			}
+
 			break;
 		case 'total':
 			foreach ($graph_items as $graph_element) {
@@ -334,6 +374,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 					}
 				}
 			}
+
 			break;
 		case 'max':
 			if (!empty($nth_cache[$graph_item['local_data_id']]['nth_percentile_maximum'])) {
@@ -341,6 +382,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				$nth = ($regexp_match_array[2] == 'bits') ? $nth * 8 : $nth;
 				$nth /= pow($pow, intval($regexp_match_array[3]));
 			}
+
 			break;
 		case 'total_peak':
 			foreach ($graph_items as $graph_element) {
@@ -354,6 +396,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 					}
 				}
 			}
+
 			break;
 		case 'all_max_current':
 			foreach ($graph_items as $graph_element) {
@@ -369,6 +412,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 					}
 				}
 			}
+
 			break;
 		case 'all_max_peak':
 			foreach ($graph_items as $graph_element) {
@@ -384,6 +428,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 					}
 				}
 			}
+
 			break;
 		case 'aggregate':
 		case 'aggregate_current':
@@ -393,6 +438,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				$local_nth /= pow($pow, intval($regexp_match_array[3]));
 				$nth = $local_nth;
 			}
+
 			break;
 		case 'aggregate_max':
 			if (!empty($nth_cache[0]['nth_percentile_aggregate_max'])) {
@@ -401,6 +447,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				$local_nth /= pow($pow, intval($regexp_match_array[3]));
 				$nth = $local_nth;
 			}
+
 			break;
 		case 'aggregate_sum':
 			if (!empty($nth_cache[0]['nth_percentile_aggregate_sum'])) {
@@ -409,6 +456,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				$local_nth /= pow($pow, intval($regexp_match_array[3]));
 				$nth = $local_nth;
 			}
+
 			break;
 	}
 
@@ -468,6 +516,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 	switch($regexp_match_array[2]) {
 		case 'current':
 			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
+
 			break;
 		case 'total':
 			foreach ($graph_items as $graph_element) {
@@ -475,9 +524,11 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 					$summation_cache[$graph_element['local_data_id']] = bandwidth_summation($graph_element['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
 				}
 			}
+
 			break;
 		case 'atomic':
 			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, 1);
+
 			break;
 	}
 
@@ -490,6 +541,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 			if (isset($summation_cache[$graph_item['local_data_id']][$graph_item['data_source_name']])) {
 				$summation = $summation_cache[$graph_item['local_data_id']][$graph_item['data_source_name']];
 			}
+
 			break;
 		case 'total':
 			foreach ($graph_items as $graph_element) {
@@ -499,6 +551,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 					$summation += $summation_cache[$graph_element['local_data_id']][$graph_element['data_source_name']];
 				}
 			}
+
 			break;
 	}
 

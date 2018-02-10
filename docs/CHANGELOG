@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
 
 1.1.35
+-issue#114: *all_max_peak* percentile calculations wrong
 -issue#430: Pressing Back often fails to work as expected
 -issue#564: Can't move items in graph template as desired
 -issue#981: Hyperlinks for Data Profile stats
