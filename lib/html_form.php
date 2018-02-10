@@ -81,6 +81,10 @@ function draw_edit_form($array) {
 				print "<div class='formFieldName'>";
 
 				if (isset($field_array['sub_checkbox'])) {
+					if (!isset($field_array['sub_checkbox']['on_change'])) {
+						$field_array['sub_checkbox']['on_change'] = "toggleCheckBoxInput(this);";
+						$has_checkbox = $field_array['sub_checkbox']['name'];
+					}
 					form_checkbox($field_array['sub_checkbox']['name'],
 						$field_array['sub_checkbox']['value'],
 						'',
@@ -107,7 +111,10 @@ function draw_edit_form($array) {
 				print '</div>';
 
 				// New form column for content
-				print '<div class="formColumnRight"><div class="formData">';
+				if (isset($has_checkbox)) {
+					$has_checkbox = ' ui-state-disabled" id="'.$has_checkbox.'_formdata"';
+				}
+				print '<div class="formColumnRight"><div class="formData'.$has_checkbox.'">';
 
 				draw_edit_control($field_name, $field_array);
 
@@ -1245,4 +1252,5 @@ function form_end($ajax = true) {
 		<?php
 	}
 }
+
 
