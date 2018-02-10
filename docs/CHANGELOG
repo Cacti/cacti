@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#564: Can't move items in graph template as desired
 -issue#981: Hyperlinks for Data Profile stats
 -issue#993: Realtime not working on remote pollers for certain data query
+-issue#1244: Errors importing templates with deprecated hashes
 -issue#1251: Make 3rd mouse button configurable for all zoom modes. Set default to zoom out.
 -issue#1281: The variable max_oids is for bulkget and not bulkwalk operations
 -issue#1286: Correct CHUNKED_ENCODING error when retrieving graph with some browsers
