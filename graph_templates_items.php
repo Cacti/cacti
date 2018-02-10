@@ -307,12 +307,19 @@ function item_movedown() {
 
 	global $graph_item_types;
 
-	$arr     = get_graph_group(get_request_var('id'));
-	$next_id = get_graph_parent(get_request_var('id'), 'next');
+	$arr        = get_graph_group(get_request_var('id'));
+	$next_id    = get_graph_parent(get_request_var('id'), 'next');
 
-	if ((!empty($next_id)) && (isset($arr{get_request_var('id')}))) {
+	$graph_type = db_fetch_cell_prepared('SELECT graph_type_id 
+		FROM graph_templates_item 
+		WHERE id = ?', 
+		array(get_request_var('id')));
+
+	$text_type  = $graph_item_types[$graph_type];
+
+	if (!empty($next_id) && isset($arr[get_request_var('id')])) {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'next');
-	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (!preg_match('/(AREA|STACK|LINE)/', $text_type)) {
 		/* this is so we know the "other" graph item to propagate the changes to */
 		$next_item = get_item('graph_templates_item', 'sequence', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0', 'next');
 
@@ -335,9 +342,16 @@ function item_moveup() {
 	$arr = get_graph_group(get_request_var('id'));
 	$next_id = get_graph_parent(get_request_var('id'), 'previous');
 
-	if ((!empty($next_id)) && (isset($arr{get_request_var('id')}))) {
+	$graph_type = db_fetch_cell_prepared('SELECT graph_type_id 
+		FROM graph_templates_item 
+		WHERE id = ?', 
+		array(get_request_var('id')));
+
+	$text_type  = $graph_item_types[$graph_type];
+
+	if (!empty($next_id) && isset($arr[get_request_var('id')])) {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'previous');
-	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (!preg_match('/(AREA|STACK|LINE)/', $text_type)) {
 		/* this is so we know the "other" graph item to propagate the changes to */
 		$last_item = get_item('graph_templates_item', 'sequence', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0', 'previous');
 
