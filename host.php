@@ -416,7 +416,11 @@ function form_actions() {
 					$form_array += array($field_name => $fields_host_edit[$field_name]);
 
 					$form_array[$field_name]['value'] = '';
-					$form_array[$field_name]['description'] = '';
+
+					if (read_config_option('hide_form_description') == 'on') {
+						$form_array[$field_name]['description'] = '';
+					}
+
 					$form_array[$field_name]['form_id'] = 0;
 					$form_array[$field_name]['sub_checkbox'] = array(
 						'name' => 't_' . $field_name,
@@ -434,6 +438,8 @@ function form_actions() {
 			);
 
 			device_javascript();
+
+			device_change_javascript();
 
 			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Change Device(s) SNMP Options') . "'>";
 		} elseif (get_request_var('drp_action') == '5') { // Clear Statisitics for Selected Devices
@@ -961,6 +967,52 @@ function device_reindex_methods($item, $host) {
 	if ($selectedTheme != 'classic') {
 		print "</fieldset>\n";
 	}
+}
+
+function device_change_javascript() {
+	?>
+	<script type="text/javascript">
+	function disableField(id) {
+		$('#'+id).prop('disabled', true);
+
+		if ($('#'+id).button('instance')) {
+			console.log('button');
+			$('#'+id).button('disable');
+		} else if ($('#'+id).selectmenu('instance')) {
+			console.log('selectmenu');
+			$('#'+id).selectmenu('disable');
+		}
+	}
+
+	function enableField(id) {
+		$('#'+id).prop('disabled', false);
+
+		if ($('#'+id).button('instance')) {
+			console.log('button');
+			$('#'+id).button('enable');
+		} else if ($('#'+id).selectmenu('instance')) {
+			console.log('selectmenu');
+			$('#'+id).selectmenu('enable');
+		}
+	}
+
+	$(function() {
+		$('input[id^="t_"]').click(function() {
+			id = $(this).attr('id').substring(2);
+			if ($(this).is(':checked')) {
+				enableField(id);
+			} else {
+				disableField(id);
+			}
+		});
+
+		$('input[id^="t_"]').each(function() {
+			id = $(this).attr('id').substring(2);
+			disableField(id);
+		});
+	});
+	</script>
+	<?php
 }
 
 function device_javascript() {
