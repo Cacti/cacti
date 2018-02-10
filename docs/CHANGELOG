@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#981: Hyperlinks for Data Profile stats
 -issue#993: Realtime not working on remote pollers for certain data query
 -issue#1251: Make 3rd mouse button configurable for all zoom modes. Set default to zoom out.
+-issue#1281: The variable max_oids is for bulkget and not bulkwalk operations
 -issue#1286: Correct CHUNKED_ENCODING error when retrieving graph with some browsers
 -issue#1306: Fix issue #1306 where multi-value args are not parsing correctly
 -issue#1309: Provide meaningful authentication errors in graph_json.php and graph_image.php
