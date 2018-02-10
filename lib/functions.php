@@ -1612,7 +1612,10 @@ function generate_data_input_field_sequences($string, $data_input_id) {
    @arg $direction - ('next' or 'previous') whether the graph group is to be swapped with
       group above or below the current group */
 function move_graph_group($graph_template_item_id, $graph_group_array, $target_id, $direction) {
-	$graph_item = db_fetch_row_prepared('SELECT local_graph_id, graph_template_id FROM graph_templates_item WHERE id = ?', array($graph_template_item_id));
+	$graph_item = db_fetch_row_prepared('SELECT local_graph_id, graph_template_id 
+		FROM graph_templates_item 
+		WHERE id = ?', 
+		array($graph_template_item_id));
 
 	if (empty($graph_item['local_graph_id'])) {
 		$sql_where = 'graph_template_id = ' . $graph_item['graph_template_id'] . ' AND local_graph_id = 0';
@@ -1637,8 +1640,12 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 	/* start the sequence at '1' */
 	$sequence_counter = 1;
 
-	$graph_items = db_fetch_assoc_prepared("SELECT id, sequence FROM graph_templates_item WHERE $sql_where ORDER BY sequence");
-	if (sizeof($graph_items) > 0) {
+	$graph_items = db_fetch_assoc_prepared("SELECT id, sequence 
+		FROM graph_templates_item 
+		WHERE $sql_where 
+		ORDER BY sequence");
+
+	if (sizeof($graph_items)) {
 		foreach ($graph_items as $item) {
 			/* check to see if we are at the "target" spot in the loop; if we are, update the sequences and move on */
 			if ($target_id == $item['id']) {
@@ -1651,22 +1658,34 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 				}
 
 				foreach ($group_array1 as $graph_template_item_id) {
-					db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE id = ?', array($sequence_counter, $graph_template_item_id));
+					db_execute_prepared('UPDATE graph_templates_item 
+						SET sequence = ? 
+						WHERE id = ?', 
+						array($sequence_counter, $graph_template_item_id));
 
 					/* propagate to ALL graphs using this template */
 					if (empty($graph_item['local_graph_id'])) {
-						db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE local_graph_template_item_id = ?', array($sequence_counter, $graph_template_item_id));
+						db_execute_prepared('UPDATE graph_templates_item 
+							SET sequence = ? 
+							WHERE local_graph_template_item_id = ?', 
+							array($sequence_counter, $graph_template_item_id));
 					}
 
 					$sequence_counter++;
 				}
 
 				foreach ($group_array2 as $graph_template_item_id) {
-					db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE id = ?', array($sequence_counter, $graph_template_item_id));
+					db_execute_prepared('UPDATE graph_templates_item 
+						SET sequence = ? 
+						WHERE id = ?', 
+						array($sequence_counter, $graph_template_item_id));
 
 					/* propagate to ALL graphs using this template */
 					if (empty($graph_item['local_graph_id'])) {
-						db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE local_graph_template_item_id = ?', array($sequence_counter, $graph_template_item_id));
+						db_execute_prepared('UPDATE graph_templates_item 
+							SET sequence = ? 
+							WHERE local_graph_template_item_id = ?', 
+							array($sequence_counter, $graph_template_item_id));
 					}
 
 					$sequence_counter++;
@@ -1675,7 +1694,11 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 
 			/* make sure to "ignore" the items that we handled above */
 			if ((!isset($graph_group_array[$item['id']])) && (!isset($target_graph_group_array[$item['id']]))) {
-				db_execute_prepared('UPDATE graph_templates_item SET sequence = ? WHERE id = ?', array($sequence_counter, $item['id']));
+				db_execute_prepared('UPDATE graph_templates_item 
+					SET sequence = ? 
+					WHERE id = ?', 
+					array($sequence_counter, $item['id']));
+
 				$sequence_counter++;
 			}
 		}
@@ -1689,7 +1712,10 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 function get_graph_group($graph_template_item_id) {
 	global $graph_item_types;
 
-	$graph_item = db_fetch_row_prepared('SELECT graph_type_id, sequence, local_graph_id, graph_template_id FROM graph_templates_item WHERE id = ?', array($graph_template_item_id));
+	$graph_item = db_fetch_row_prepared('SELECT graph_type_id, sequence, local_graph_id, graph_template_id 
+		FROM graph_templates_item 
+		WHERE id = ?', 
+		array($graph_template_item_id));
 
 	if (empty($graph_item['local_graph_id'])) {
 		$sql_where = 'graph_template_id = ' . $graph_item['graph_template_id'] . ' AND local_graph_id = 0';
@@ -1697,8 +1723,8 @@ function get_graph_group($graph_template_item_id) {
 		$sql_where = 'local_graph_id = ' . $graph_item['local_graph_id'];
 	}
 
-	/* a parent must NOT be the following graph item types */
-	if (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types[$graph_item['graph_type_id']])) {
+	/* parents are LINE%, AREA%, and STACK%. If not return */
+	if (!preg_match('/(LINE|AREA|STACK)/', $graph_item_types[$graph_item['graph_type_id']])) {
 		return array();
 	}
 
@@ -1707,15 +1733,36 @@ function get_graph_group($graph_template_item_id) {
 	/* put the parent item in the array as well */
 	$graph_item_children_array[$graph_template_item_id] = $graph_template_item_id;
 
-	$graph_items = db_fetch_assoc("SELECT id, graph_type_id FROM graph_templates_item WHERE sequence > " . $graph_item['sequence'] . " AND $sql_where ORDER BY sequence");
+	$graph_items = db_fetch_assoc("SELECT id, graph_type_id, text_format, hard_return
+		FROM graph_templates_item 
+		WHERE sequence > " . $graph_item['sequence'] . " 
+		AND $sql_where 
+		ORDER BY sequence");
 
-	if (sizeof($graph_items) > 0) {
+	$is_hard = false;
+
+	if (sizeof($graph_items)) {
 		foreach ($graph_items as $item) {
-			if ($graph_item_types[$item['graph_type_id']] == 'GPRINT') {
+			if ($is_hard) {
+				return $graph_item_children_array;
+			} elseif (strstr($graph_item_types[$item['graph_type_id']], 'GPRINT') !== false) {
 				/* a child must be a GPRINT */
 				$graph_item_children_array[$item['id']] = $item['id'];
+
+				if ($item['hard_return'] == 'on') {
+					$is_hard = true;
+				}
+			} elseif (strstr($graph_item_types[$item['graph_type_id']], 'COMMENT') !== false) {
+				if (preg_match_all('/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):(\d)?\|/', $item['text_format'], $matches, PREG_SET_ORDER)) {
+					$graph_item_children_array[$item['id']] = $item['id'];
+				} elseif (preg_match_all('/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/', $item['text_format'], $matches, PREG_SET_ORDER)) {
+					$graph_item_children_array[$item['id']] = $item['id'];
+				} else {
+					/* if not a GPRINT or special COMMENT then get out */
+					return $graph_item_children_array;
+				}
 			} else {
-				/* if not a GPRINT then get out */
+				/* if not a GPRINT or special COMMENT then get out */
 				return $graph_item_children_array;
 			}
 		}
@@ -1729,7 +1776,10 @@ function get_graph_group($graph_template_item_id) {
    @arg $direction - ('next' or 'previous') whether to find the next or previous parent
    @returns - (int) the ID of the next or previous parent graph item id */
 function get_graph_parent($graph_template_item_id, $direction) {
-	$graph_item = db_fetch_row_prepared('SELECT sequence, local_graph_id, graph_template_id FROM graph_templates_item WHERE id = ?', array($graph_template_item_id));
+	$graph_item = db_fetch_row_prepared('SELECT sequence, local_graph_id, graph_template_id 
+		FROM graph_templates_item 
+		WHERE id = ?', 
+		array($graph_template_item_id));
 
 	if (empty($graph_item['local_graph_id'])) {
 		$sql_where = 'graph_template_id = ' . $graph_item['graph_template_id'] . ' AND local_graph_id = 0';
@@ -1745,7 +1795,13 @@ function get_graph_parent($graph_template_item_id, $direction) {
 		$sql_order = 'DESC';
 	}
 
-	$next_parent_id = db_fetch_cell("SELECT id FROM graph_templates_item WHERE sequence $sql_operator " . $graph_item['sequence'] . " AND graph_type_id != 9 AND $sql_where ORDER BY sequence $sql_order LIMIT 1");
+	$next_parent_id = db_fetch_cell("SELECT id 
+		FROM graph_templates_item 
+		WHERE sequence $sql_operator " . $graph_item['sequence'] . " 
+		AND graph_type_id IN (4, 5, 6, 7, 8, 20)
+		AND $sql_where 
+		ORDER BY sequence $sql_order 
+		LIMIT 1");
 
 	if (empty($next_parent_id)) {
 		return 0;
@@ -1770,8 +1826,16 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 		$sql_order = 'DESC';
 	}
 
-	$current_sequence = db_fetch_cell_prepared("SELECT $field FROM $tblname WHERE id = ?", array($startid));
-	$new_item_id = db_fetch_cell("SELECT id FROM $tblname WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query":"") . " ORDER BY $field $sql_order LIMIT 1");
+	$current_sequence = db_fetch_cell_prepared("SELECT $field 
+		FROM $tblname 
+		WHERE id = ?", 
+		array($startid));
+
+	$new_item_id = db_fetch_cell("SELECT id 
+		FROM $tblname 
+		WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query":"") . " 
+		ORDER BY $field $sql_order 
+		LIMIT 1");
 
 	if (empty($new_item_id)) {
 		return $startid;
@@ -1788,7 +1852,9 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
    @returns - (int) the next available sequence id */
 function get_sequence($id, $field, $table_name, $group_query) {
 	if (empty($id)) {
-		$data = db_fetch_row("SELECT max($field)+1 AS seq FROM $table_name WHERE $group_query");
+		$data = db_fetch_row("SELECT max($field)+1 AS seq 
+			FROM $table_name 
+			WHERE $group_query");
 
 		if ($data['seq'] == '') {
 			return 1;
@@ -1796,7 +1862,11 @@ function get_sequence($id, $field, $table_name, $group_query) {
 			return $data['seq'];
 		}
 	} else {
-		$data = db_fetch_row_prepared("SELECT $field FROM $table_name WHERE id = ?", array($id));
+		$data = db_fetch_row_prepared("SELECT $field 
+			FROM $table_name 
+			WHERE id = ?", 
+			array($id));
+
 		return $data[$field];
 	}
 }
@@ -1808,10 +1878,25 @@ function get_sequence($id, $field, $table_name, $group_query) {
 function move_item_down($table_name, $current_id, $group_query = '') {
 	$next_item = get_item($table_name, 'sequence', $current_id, $group_query, 'next');
 
-	$sequence = db_fetch_cell_prepared("SELECT sequence FROM $table_name WHERE id = ?", array($current_id));
-	$sequence_next = db_fetch_cell_prepared("SELECT sequence FROM $table_name WHERE id = ?", array($next_item));
-	db_execute_prepared("UPDATE $table_name SET sequence = ? WHERE id = ?", array($sequence_next, $current_id));
-	db_execute_prepared("UPDATE $table_name SET sequence = ? WHERE id = ?", array($sequence, $next_item));
+	$sequence = db_fetch_cell_prepared("SELECT sequence 
+		FROM $table_name 
+		WHERE id = ?", 
+		array($current_id));
+
+	$sequence_next = db_fetch_cell_prepared("SELECT sequence 
+		FROM $table_name 
+		WHERE id = ?", 
+		array($next_item));
+
+	db_execute_prepared("UPDATE $table_name 
+		SET sequence = ? 
+		WHERE id = ?", 
+		array($sequence_next, $current_id));
+
+	db_execute_prepared("UPDATE $table_name 
+		SET sequence = ? 
+		WHERE id = ?", 
+		array($sequence, $next_item));
 }
 
 /* move_item_up - moves an item down by swapping it with the item above it
@@ -1821,10 +1906,25 @@ function move_item_down($table_name, $current_id, $group_query = '') {
 function move_item_up($table_name, $current_id, $group_query = '') {
 	$last_item = get_item($table_name, 'sequence', $current_id, $group_query, 'previous');
 
-	$sequence = db_fetch_cell_prepared("SELECT sequence FROM $table_name WHERE id = ?", array($current_id));
-	$sequence_last = db_fetch_cell_prepared("SELECT sequence FROM $table_name WHERE id = ?", array($last_item));
-	db_execute_prepared("UPDATE $table_name set sequence = ? WHERE id = ?", array($sequence_last, $current_id));
-	db_execute_prepared("UPDATE $table_name set sequence = ? WHERE id = ?", array($sequence, $last_item));
+	$sequence = db_fetch_cell_prepared("SELECT sequence 
+		FROM $table_name 
+		WHERE id = ?", 
+		array($current_id));
+
+	$sequence_last = db_fetch_cell_prepared("SELECT sequence 
+		FROM $table_name 
+		WHERE id = ?", 
+		array($last_item));
+
+	db_execute_prepared("UPDATE $table_name 
+		SET sequence = ? 
+		WHERE id = ?", 
+		array($sequence_last, $current_id));
+
+	db_execute_prepared("UPDATE $table_name 
+		SET sequence = ? 
+		WHERE id = ?", 
+		array($sequence, $last_item));
 }
 
 /* exec_into_array - executes a command and puts each line of its output into
