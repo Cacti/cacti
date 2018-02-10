@@ -15,6 +15,7 @@ Cacti CHANGELOG
 1.1.35
 -issue#430: Pressing Back often fails to work as expected
 -issue#993: Realtime not working on remote pollers for certain data query
+-issue#1251: Make 3rd mouse button configurable for all zoom modes. Set default to zoom out.
 -issue#1286: Correct CHUNKED_ENCODING error when retrieving graph with some browsers
 -issue#1306: Fix issue #1306 where multi-value args are not parsing correctly
 -issue#1309: Provide meaningful authentication errors in graph_json.php and graph_image.php
@@ -23,6 +24,7 @@ Cacti CHANGELOG
 -issue#1316: CDEF Item Value dialog doesn't update creating items
 -issue#1319: FrontEnd + Remote Poller - Connection timeout issue
 -issue#1321: Use of legacy RRDtool pipelining functions within DSSTATS
+-issue#1323: Enhance form layout for readability
 -issue: Validate regular expressions if specified in add_graphs.php
 
 1.1.34
