@@ -332,7 +332,8 @@ function draw_edit_control($field_name, &$field_array) {
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
 			((isset($field_array['class'])) ? $field_array['class'] : ''),
-			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+			((isset($field_array['on_change'])) ? $field_array['on_change'] : ''),
+			$field_array['friendly_name']
 		);
 
 		break;
@@ -346,7 +347,9 @@ function draw_edit_control($field_name, &$field_array) {
 				((isset($check_array['default'])) ? $check_array['default'] : ''),
 				((isset($check_array['form_id'])) ? $check_array['form_id'] : ''),
 				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($check_array['on_change'])) ? $check_array['on_change'] : (((isset($field_array['on_change'])) ? $field_array['on_change'] : '')))
+				((isset($check_array['on_change'])) ? $check_array['on_change'] : (((isset($field_array['on_change'])) ? $field_array['on_change'] : ''))),
+				'',
+				true
 			);
 
 			print '<br>';
@@ -808,8 +811,9 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
    @param string $class - specify a css class
    @param string $on_change - specify a javascript onchange action 
    @param string $title - specify a title for the checkbox on hover
+   @param boolean $show_label - show the form caption in the checkbox
 */
-function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $class = '', $on_change = '', $title = '') {
+function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $class = '', $on_change = '', $title = '', $show_label = false) {
 	if (($form_previous_value == '') && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
@@ -835,6 +839,10 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 	}
 
 	print "<input " . ($title != "" ? " title='$title'":"") . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . ">";
+
+	if ($show_label) {
+		print "<label for='$form_name'>" . $form_caption . "</label>";
+	}
 }
 
 /* form_radio_button - draws a standard html radio button
