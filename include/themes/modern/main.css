@@ -83,6 +83,10 @@ fieldset {
 	text-align:center;
 }
 
+.checkboxLabel {
+	display:none;
+}
+
 /* links */
 
 a, a:active, a:visited {
