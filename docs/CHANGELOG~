@@ -1,17 +1,5 @@
 Cacti CHANGELOG
 
-1.2
--feature#122: Support a Site Branch Type
--feature#973: Obtain users email and full name from ldap 
--feature#1142: Add Site dropdown to the Graphs and Data Source pages
--issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
--issue#1097: When copying template user, enable that user, also template users should be disabled by default
--issue#1174: Disable drag and drop when tree is not in edit mode
--issue: Move Graph removal function to Graph API
--feature: Make Graph and Data Source suggested naming more efficient
--feature: Make tree editing responive
--feature: Add support for DDERIVE and DCOUNTER to Cacti
-
 1.1.35
 -issue#114: *all_max_peak* percentile calculations wrong
 -issue#430: Pressing Back often fails to work as expected
@@ -31,7 +19,6 @@ Cacti CHANGELOG
 -issue#1321: Use of legacy RRDtool pipelining functions within DSSTATS
 -issue#1323: Enhance form layout for readability
 -issue: Validate regular expressions if specified in add_graphs.php
--issue: Ensure compression levels are consisten when importing package
 
 1.1.34
 -issue#1040: PHP version 7.2 - ERROR PHP WARNING: sizeof()
@@ -113,6 +100,7 @@ Cacti CHANGELOG
 -issue#1161: Graph View regex's are not preserved during automatic page refresh
 -issue#1162: Error messages are not display when editing a user
 -issue#1166: Default language was not correctly set when editing a user
+-issue#1182: Support noAuthNoPriv for SNMPv3 in Cacti
 -issue: basename function undefined during upgrade to 1.0.x
 -issue: Storage API and translations required for Change password function
 -issue: ALTER IGNORE still throws an error when attempting to drop the primary key
