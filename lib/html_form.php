@@ -839,9 +839,10 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 	}
 
 	print "<input " . ($title != "" ? " title='$title'":"") . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . ">";
-
 	if ($show_label) {
 		print "<label for='$form_name'>" . $form_caption . "</label>";
+	} else {
+		print "<label class='checkboxLabel' for='$form_name'>" . $form_caption . "</label>";
 	}
 }
 
