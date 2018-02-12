@@ -163,7 +163,7 @@ if (read_config_option('logrotate_enabled') == 'on') {
 	$date_last = (new DateTime())->setTimestamp($last)->setTime(0,0,59)->modify('-1minute');
 	$date_next = $date_last->modify('+'.$frequency.'day');
 
-	if ($date_next <= $date_now) {
+	if ($date_next < $date_now) {
 		logrotate_rotatenow();
 	}
 }
