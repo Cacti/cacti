@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-11 12:22-0500\n"
-"PO-Revision-Date: 2018-02-12 16:21+0100\n"
+"PO-Revision-Date: 2018-02-12 17:13+0100\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -2459,7 +2459,7 @@ msgstr "%d Uren"
 
 #: /var/www/html/cacti/automation_networks.php:518
 msgid "Enable this Network Range Enabled."
-msgstr ""
+msgstr "Activeer dit netwerksegment."
 
 #: /var/www/html/cacti/automation_networks.php:523
 msgid "Enable NetBIOS"
@@ -5587,7 +5587,7 @@ msgstr "Host ID"
 #: /var/www/html/cacti/graph_xport.php:132
 #: /var/www/html/cacti/graph_xport.php:170
 msgid "Nth Percentile"
-msgstr ""
+msgstr "Nth Percentiel"
 
 #: /var/www/html/cacti/graph_xport.php:138
 #: /var/www/html/cacti/graph_xport.php:180
