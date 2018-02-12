@@ -228,7 +228,7 @@ $selectedTheme = get_selected_theme();
 					<?php print __('Window');?>
 				</td>
 				<td>
-					<select name='graph_start' id='graph_start' onChange='imageOptionsChanged("timespan")'>
+					<select id='graph_start' onChange='imageOptionsChanged("timespan")'>
 					<?php
 					foreach ($realtime_window as $interval => $text) {
 						printf('<option value="%d"%s>%s</option>',
@@ -242,7 +242,7 @@ $selectedTheme = get_selected_theme();
 					<?php print __('Refresh');?>
 				</td>
 				<td>
-					<select name='ds_step' id='ds_step' onChange="imageOptionsChanged('interval')">
+					<select id='ds_step' onChange="imageOptionsChanged('interval')">
 					<?php
 					foreach ($realtime_refresh as $interval => $text) {
 						printf('<option value="%d"%s>%s</option>',

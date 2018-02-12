@@ -141,6 +141,8 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 
 	$preview_only = $preview;
 
+	ini_set('zlib.output_compression', '0');
+
 	/* set new timeout and memory settings */
 	ini_set('max_execution_time', '50');
 	ini_set('memory_limit', '128M');
@@ -737,7 +739,11 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				$save['t_value']               = $item_array['t_value'];
 				$save['value']                 = xml_character_decode($item_array['value']);
 
-				sql_save($save, 'data_input_data', array('data_template_data_id', 'data_input_field_id'), false);
+				if (!empty($save['data_input_field_id'])) {
+					sql_save($save, 'data_input_data', array('data_template_data_id', 'data_input_field_id'), false);
+				} else {
+					cacti_log('Import Error: Failed to insert into data_input_data table', false, POLLER_VERBOSITY_HIGH);
+				}
 			}
 		}
 
@@ -872,7 +878,11 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 						$save['data_template_rrd_id'] = resolve_hash_to_id($sub_item_array['data_template_rrd_id'], $hash_cache);
 						$save['snmp_field_name']      = $sub_item_array['snmp_field_name'];
 
-						sql_save($save, 'snmp_query_graph_rrd', array('snmp_query_graph_id', 'data_template_id', 'data_template_rrd_id'), false);
+						if (!empty($save['data_template_id']) && !empty($save['data_template_rrd_id'])) {
+							sql_save($save, 'snmp_query_graph_rrd', array('snmp_query_graph_id', 'data_template_id', 'data_template_rrd_id'), false);
+						} else {
+							cacti_log('Import Error: inserting into snmp_query_graph_rrd', false, POLLER_VERBOSITY_HIGH);
+						}
 					}
 				}
 			} else {
@@ -963,7 +973,11 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					$status += compare_data($save, $previous_data, 'snmp_query_graph_rrd_sv');
 
 					if (!$preview_only) {
-						$data_query_graph_rrd_sv_id = sql_save($save, 'snmp_query_graph_rrd_sv');
+						if (!empty($save['data_template_id'])) {
+							$data_query_graph_rrd_sv_id = sql_save($save, 'snmp_query_graph_rrd_sv');
+						} else {
+							cacti_log('Import Error: Error Importing into snmp_query_graph_rrd_sv table', false, POLLER_VERBOSITY_HIGH);
+						}
 
 						$hash_cache['data_query_sv_data_source'][$parsed_hash['hash']] = $data_query_graph_rrd_sv_id;
 					} else {
@@ -1498,6 +1512,13 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			/* invalid/wrong hash */
 			if ($parsed_hash == false) { return false; }
 
+			/* bad snmp port hashes */
+			if ($parsed_hash['hash'] == '5240353b8f7f259acaf30e6229bc14e7') {
+				continue;
+			} elseif ($parsed_hash['hash'] == 'd94caa7cc3733bd95ee00a3917fdcbb5') {
+				continue;
+			}
+
 			unset($save);
 			$_data_input_field_id = db_fetch_cell_prepared('SELECT id
 				FROM data_input_fields
@@ -1613,7 +1634,7 @@ function hash_to_friendly_name($hash, $display_type_name) {
 
 	/* invalid/wrong hash */
 	if ($parsed_hash == false) {
-		return false;
+		return __('Unknown Field');
 	}
 
 	if ($display_type_name == true) {
@@ -1696,7 +1717,19 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 		$import_debug_info['dep'][$hash] = 'met';
 		return $hash_cache_array[$parsed_hash['type']][$parsed_hash['hash']];
 	} else {
+		/* bad snmp port hashes */
+		if ($parsed_hash['hash'] == '5240353b8f7f259acaf30e6229bc14e7') {
+			return 0;
+		} elseif ($parsed_hash['hash'] == 'd94caa7cc3733bd95ee00a3917fdcbb5') {
+			return 0;
+		} elseif ($parsed_hash['hash'] == 'cbbe5c1ddfb264a6e5d509ce1c78c95f') {
+			return 0;
+		}
+
+		cacti_log("Import Error: Import found an invalid dependency hash of :" . $parsed_hash['hash'] . ".  Please open bug on GitHub.");
+
 		$import_debug_info['dep'][$hash] = 'unmet';
+
 		return 0;
 	}
 }
@@ -1713,6 +1746,13 @@ function parse_xml_hash($hash) {
 			return false;
 		}
 	} else {
+		/* bad snmp port hashes */
+		if ($hash == '5240353b8f7f259acaf30e6229bc14e7') {
+			return false;
+		} elseif ($hash == 'd94caa7cc3733bd95ee00a3917fdcbb5') {
+			return false;
+		}
+
 		cacti_log(__FUNCTION__ . ' ERROR wrong hash format for hash: ' . $hash, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 		return false;
 	}

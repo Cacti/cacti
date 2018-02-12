@@ -83,6 +83,10 @@ fieldset {
 	text-align:center;
 }
 
+.checkboxLabel {
+	display:none;
+}
+
 /* links */
 
 a, a:active, a:visited {
@@ -483,6 +487,7 @@ label {
 
 .import_text {
 	opacity: 1;
+	color: #000000;
 }
 
 .color-icon {

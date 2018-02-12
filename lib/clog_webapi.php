@@ -320,7 +320,7 @@ function clog_view_logfile() {
 		<?php
 	}
 
-	html_end_box();
+	html_end_box(false);
 
 	if ($total_rows) {
 		print $nav;

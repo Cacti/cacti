@@ -26,6 +26,7 @@
 ob_start();
 
 $guest_account = true;
+$auth_text     = true;
 $gtype = 'png';
 
 include('./include/auth.php');

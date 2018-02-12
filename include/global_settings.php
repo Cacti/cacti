@@ -398,7 +398,7 @@ $settings = array(
 		'hide_form_description' => array(
 			'friendly_name' => __('Show Form/Setting Help Inline'),
 			'description' => __('When checked, Form and Setting Help will be show inline.  Otherwise it will be presented when hovering over the help button.'),
-			'default' => 'on',
+			'default' => '',
 			'method' => 'checkbox',
 			),
 		'deletion_verification' => array(
@@ -662,7 +662,7 @@ $settings = array(
 			'friendly_name' => __('Theme'),
 			'description' => __('Please select one of the available Themes to skin your Cacti with.'),
 			'method' => 'drop_array',
-			'default' => 'classic',
+			'default' => 'modern',
 			'array' => $themes
 			),
 		'table_header' => array(
@@ -946,6 +946,25 @@ $settings = array(
 			'description' => __('Controls disabling check for increasing OID while walking OID tree.'),
 			'method' => 'checkbox',
 			'default' => ''
+			),
+		'snmp_bulk_walk_size' => array(
+			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
+			'description' => __('How many OID\'s should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN.'),
+			'method' => 'drop_array',
+			'default' => '10',
+			'array' => array(
+				'10' => '10',
+				'20' => '20',
+				'30' => '30',
+				'40' => '40',
+				'50' => '50',
+				'60' => '60',
+				'70' => '70',
+				'80' => '80',
+				'90' => '90',
+				'100' => '100',
+				'150' => '150',
+				'200' => '200')
 			),
 		'spine_header' => array(
 			'friendly_name' => __('Spine Specific Execution Parameters'),
@@ -1499,12 +1518,6 @@ $settings = array(
 			'method' => 'spacer',
 			'collapsible' => 'true',
 			),
-		'dsstats_rrdtool_pipe' => array(
-			'friendly_name' => __('Enable Single RRDtool Pipe'),
-			'description' => __('Using a single pipe will speed the RRDtool process by 10x.  However, RRDtool crashes problems can occur.  Disable this setting if you need to find a bad RRDfile.'),
-			'method' => 'checkbox',
-			'default' => 'on'
-			),
 		'dsstats_partial_retrieve' => array(
 			'friendly_name' => __('Enable Partial Reference Data Retrieve'),
 			'description' => __('If using a large system, it may be beneficial for you to only gather data as needed during Cacti poller passes.  If you check this box, Data Source Statistics will gather data this way.'),
@@ -1831,7 +1844,7 @@ $settings_user = array(
 			'friendly_name' => __('Theme'),
 			'description' => __('Please select one of the available Themes to skin your Cacti with.'),
 			'method' => 'drop_array',
-			'default' => 'classic',
+			'default' => 'modern',
 			'array' => $themes
 			),
 		'default_view_mode' => array(
