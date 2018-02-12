@@ -70,9 +70,9 @@ $polling_items = array();
 /* get poller_item for graph_id */
 $local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dl.host_id
 	FROM graph_templates_item AS gti
-	LEFT JOIN data_template_rrd AS dtr
+	INNER JOIN data_template_rrd AS dtr
 	ON gti.task_item_id=dtr.id
-	LEFT JOIN data_local AS dl
+	INNER JOIN data_local AS dl
 	ON dl.id=dtr.local_data_id
 	WHERE gti.local_graph_id = ?
 	AND dtr.local_data_id > 0', 
