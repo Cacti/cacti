@@ -1,26 +1,26 @@
 Cacti CHANGELOG
 
 1.1.35
--issue#114: *all_max_peak* percentile calculations wrong
+-issue#114: *all_max_peak* percentile calculations incorrect
 -issue#430: Pressing Back often fails to work as expected
--issue#564: Can't move items in graph template as desired
+-issue#564: Fail to move items in graph template as desired
 -issue#981: Hyperlinks for Data Profile stats
 -issue#993: Realtime not working on remote pollers for certain data query
 -issue#1244: Errors importing templates with deprecated hashes
--issue#1251: Make 3rd mouse button configurable for all zoom modes. Set default to zoom out.
--issue#1281: The variable max_oids is for bulkget and not bulkwalk operations
+-issue#1251: Allow zoom out through mouse mmiddle button
+-issue#1281: Max OIDs setting is for bulkget and not bulkwalk operations
 -issue#1286: Correct CHUNKED_ENCODING error when retrieving graph with some browsers
--issue#1306: Fix issue #1306 where multi-value args are not parsing correctly
+-issue#1306: Graphs are not always refreshed properly
 -issue#1309: Provide meaningful authentication errors in graph_json.php and graph_image.php
--issue#1310: Unable to return to previous page from auth_changepassword.php
+-issue#1310: Return button fails on change password page
 -issue#1315: Realtime not working on local data collector
--issue#1316: CDEF Item Value dialog doesn't update creating items
--issue#1319: FrontEnd + Remote Poller - Connection timeout issue
--issue#1321: Use of legacy RRDtool pipelining functions within DSSTATS
+-issue#1316: CDEF Item Value dialog does not update creating items
+-issue#1319: Front end + remote poller - connection timeout issue
+-issue#1321: Use RRDtool pipelining functions within DSSTATS
 -issue#1323: Enhance form layout for readability
 -issue#1329: Spelling errors in automation_networks.php
 -issue: Validate regular expressions if specified in add_graphs.php
--issue: Ensure compression levels are consisten when importing package
+-issue: Ensure compression levels are consistent when importing package
 
 1.1.34
 -issue#1040: PHP version 7.2 - ERROR PHP WARNING: sizeof()
