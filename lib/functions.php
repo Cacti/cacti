@@ -3664,7 +3664,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	include_once($config['include_path'] . '/phpmailer/PHPMailerAutoload.php');
 
-	// Set the to informaiotn
+	// Set the to information
 	if ($to == '') {
 		return __('Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.');
 	}
@@ -3939,7 +3939,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	if ($mail->send()) {
-		cacti_log("Mail Sucessfully Sent to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
+		cacti_log("Mail Successfully Sent to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
 
 		return '';
 	} else {
