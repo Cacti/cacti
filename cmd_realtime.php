@@ -88,10 +88,12 @@ $hosts    = array();
 $idbyhost = array();
 
 foreach ($local_data_ids as $row) {
-	$ids[$row['local_data_id']]  = $row['local_data_id'];
-	$hosts[$row['host_id']]      = $row['host_id'];
+	if ($row['local_data_id'] > 0 && $row['host_id'] != '') {
+		$ids[$row['local_data_id']]  = $row['local_data_id'];
+		$hosts[$row['host_id']]      = $row['host_id'];
 
-	$idbyhost[$row['host_id']][] = $row['local_data_id'];
+		$idbyhost[$row['host_id']][] = $row['local_data_id'];
+	}
 }
 
 $print_data_to_stdout = true;
