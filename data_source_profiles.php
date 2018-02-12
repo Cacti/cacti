@@ -756,7 +756,7 @@ function get_span($duration) {
 }
 
 function profile() {
-	global $profile_actions, $item_rows, $sampling_intervals, $heartbeats;
+	global $profile_actions, $item_rows, $sampling_intervals, $heartbeats, $config;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
