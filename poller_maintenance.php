@@ -156,12 +156,17 @@ if (read_config_option('logrotate_enabled') == 'on') {
 
 	if (empty($last)) {
 		$last = time();
-		set_config_option('logrotate_lastrun', $time);
+		set_config_option('logrotate_lastrun', $last);
 	}
 
 	$date_now = (new DateTime())->setTimestamp($now);
-	$date_last = (new DateTime())->setTimestamp($last)->setTime(0,0,59)->modify('-1minute');
-	$date_next = $date_last->modify('+'.$frequency.'day');
+
+	// Take the last date/time, set the time to 59 seconds past midnight
+	// then remove one minute to make it the previous evening
+	$date_last = (new DateTime())->setTimestamp($last)->setTime(0,0,59)->modify('-1 minute');
+
+	// Make sure we clone the last date, or we end up modifying the same object!
+	$date_next = (clone $date_last)->modify('+'.$frequency.'day');
 
 	if ($date_next < $date_now) {
 		logrotate_rotatenow();
@@ -214,7 +219,7 @@ function logrotate_rotatenow () {
 
 	$run_time = time();
 	set_config_option('logrotate_lastrun', $run_time);
-	$date_log = new DateTime($run_time)->modify('-1day');
+	$date_log = (new DateTime($run_time))->modify('-1day');
 	clearstatcache();
 
 	if (is_writable(dirname($log) . '/') && is_writable($log)) {
