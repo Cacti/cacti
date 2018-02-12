@@ -150,12 +150,20 @@ if (read_config_option('logrotate_enabled') == 'on') {
 	if (empty($frequency)) {
 		$frequency = 1;
 	}
+
 	$last = read_config_option('logrotate_lastrun');
 	$now  = time();
 
 	if (empty($last)) {
-		set_config_option('logrotate_lastrun', time());
-	} elseif (($last + ($frequency * 86400)) < $now) {
+		$last = time();
+		set_config_option('logrotate_lastrun', $time);
+	}
+
+	$date_now = (new DateTime())->setTimestamp($now);
+	$date_last = (new DateTime())->setTimestamp($last)->setTime(0,0,59)->modify('-1minute');
+	$date_next = $date_last->modify('+'.$frequency.'day');
+
+	if ($date_next <= $date_now) {
 		logrotate_rotatenow();
 	}
 }
@@ -204,8 +212,9 @@ function logrotate_rotatenow () {
 		$log = $config['base_path'] . '/log/cacti.log';
 	}
 
-	set_config_option('logrotate_lastrun', time());
-
+	$run_time = time();
+	set_config_option('logrotate_lastrun', $run_time);
+	$date_log = new DateTime($run_time)->modify('-1day');
 	clearstatcache();
 
 	if (is_writable(dirname($log) . '/') && is_writable($log)) {
@@ -214,10 +223,10 @@ function logrotate_rotatenow () {
 		$group = filegroup($log);
 
 		if ($owner !== false) {
-			$ext = date('Ymd');
+			$ext = $date_log->format('Ymd');
 
 			if (file_exists($log . '-' . $ext)) {
-				$ext = date('YmdHis');
+				$ext = $date_log->format('YmdHis');
 			}
 
 			if (rename($log, $log . '-' . $ext)) {
