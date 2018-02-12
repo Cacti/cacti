@@ -2741,7 +2741,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 		array('display' => __('Rows'),                        'align' => 'right'),
 		array('display' => __('Cur Row'),                     'align' => 'right'),
 		array('display' => __('PDP per Row'),                 'align' => 'right'),
-		array('display' => __('X Files Factor'),              'align' => 'right'),
+		array('display' => __('X-Files Factor'),              'align' => 'right'),
 		array('display' => __('CDP Prep Value (0)'),          'align' => 'right'),
 		array('display' => __('CDP Unknown Data points (0)'), 'align' => 'right')
 	);
