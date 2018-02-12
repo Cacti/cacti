@@ -515,7 +515,7 @@ function network_edit() {
 	'enabled' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Enabled'),
-		'description' => __('Enable this Network Range Enabled.'),
+		'description' => __('Enable this Network Range.'),
 		'value' => '|arg1:enabled|'
 		),
 	'enable_netbios' => array(
