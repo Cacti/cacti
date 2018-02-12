@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-11 12:22-0500\n"
-"PO-Revision-Date: 2018-02-12 12:08+0100\n"
+"PO-Revision-Date: 2018-02-12 16:21+0100\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -6905,7 +6905,7 @@ msgstr "Fout: logbestand legen mislukt. Het bestand bestaat niet"
 
 #: /var/www/html/cacti/include/global_arrays.php:238
 msgid "CSRF Timeout, refreshing page."
-msgstr ""
+msgstr "CSRF time-out, pagina wordt vernieuwd."
 
 #: /var/www/html/cacti/include/global_arrays.php:241
 msgid "Invalid Timestamp. Select timestamp in the future."
@@ -9865,7 +9865,7 @@ msgstr "Rapporteer een fout"
 
 #: /var/www/html/cacti/include/global_session.php:117
 msgid "Click to Show/Hide Filter"
-msgstr ""
+msgstr "Klik om het filter te tonen/verbergen"
 
 #: /var/www/html/cacti/include/global_session.php:118
 msgid "Clear Current Filter"
@@ -9873,11 +9873,11 @@ msgstr "Stel filters opnieuw in"
 
 #: /var/www/html/cacti/include/global_session.php:119
 msgid "Clipboard"
-msgstr ""
+msgstr "Klembord"
 
 #: /var/www/html/cacti/include/global_session.php:120
 msgid "Clipboard ID"
-msgstr ""
+msgstr "Klembord ID"
 
 #: /var/www/html/cacti/include/global_session.php:121
 msgid "Copy operation is unavailable at this time"
@@ -9889,7 +9889,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_session.php:123
 msgid "Clipboard has been updated"
-msgstr ""
+msgstr "Klembord is bijgewerkt"
 
 #: /var/www/html/cacti/include/global_session.php:124
 msgid "Sorry, your clipboard could not be updated at this time"
@@ -10127,7 +10127,7 @@ msgstr "De locatie van de Spine binary."
 
 #: /var/www/html/cacti/include/global_settings.php:185
 msgid "Spine Config File Path"
-msgstr ""
+msgstr "Spine configuratiebestand pad"
 
 #: /var/www/html/cacti/include/global_settings.php:186
 msgid ""
@@ -10208,7 +10208,7 @@ msgstr "Log instellingen"
 
 #: /var/www/html/cacti/include/global_settings.php:255
 msgid "Generic Log Level"
-msgstr ""
+msgstr "Generiek log niveau"
 
 #: /var/www/html/cacti/include/global_settings.php:256
 msgid ""
@@ -10425,7 +10425,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:405
 msgid "Deletion Verification"
-msgstr ""
+msgstr "Verifieer verwijdering"
 
 #: /var/www/html/cacti/include/global_settings.php:406
 msgid "Prompt user before item deletion."
@@ -10752,7 +10752,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:762
 msgid "Watermark Text"
-msgstr ""
+msgstr "Watermerk tekst"
 
 #: /var/www/html/cacti/include/global_settings.php:763
 msgid "Text placed at the bottom center of every Graph."
@@ -11580,7 +11580,7 @@ msgstr "Dit is de afzender naam."
 
 #: /var/www/html/cacti/include/global_settings.php:1349
 msgid "Word Wrap"
-msgstr ""
+msgstr "Tekstterugloop"
 
 #: /var/www/html/cacti/include/global_settings.php:1350
 msgid ""
@@ -12038,7 +12038,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:1717
 msgid "Standard Deviation"
-msgstr ""
+msgstr "Standaard afwijking"
 
 #: /var/www/html/cacti/include/global_settings.php:1717
 msgid "Variance Based w/Outliers Removed"
@@ -12621,7 +12621,7 @@ msgstr ""
 
 #: /var/www/html/cacti/install/index.php:87
 msgid "Begin"
-msgstr ""
+msgstr "Start"
 
 #: /var/www/html/cacti/install/index.php:98
 #: /var/www/html/cacti/install/index.php:721
@@ -13089,14 +13089,14 @@ msgstr "Locatie hoeft uitsluitend schrijfbaar te zijn tijdens de installatie"
 #: /var/www/html/cacti/install/index.php:891
 #, php-format
 msgid "<p>%s is <font color=\"#008000\">Writable</font></p>"
-msgstr ""
+msgstr "<p>%s is <font color=\"#008000\">schrijfbaar</font></p>"
 
 #: /var/www/html/cacti/install/index.php:873
 #: /var/www/html/cacti/install/index.php:883
 #: /var/www/html/cacti/install/index.php:893
 #, php-format
 msgid "<p>%s is <font color=\"#FF0000\">Not Writable</font></p>"
-msgstr ""
+msgstr "<p>%s is <font color=\"#FF0000\">niet schrijfbaar</font></p>"
 
 #: /var/www/html/cacti/install/index.php:878
 #: /var/www/html/cacti/install/index.php:888
@@ -13432,7 +13432,7 @@ msgstr "Veld"
 #: /var/www/html/cacti/lib/api_automation.php:1242
 #: /var/www/html/cacti/lib/api_automation.php:1304
 msgid "Pattern"
-msgstr ""
+msgstr "Patroon"
 
 #: /var/www/html/cacti/lib/api_automation.php:1254
 #: /var/www/html/cacti/lib/api_automation.php:1316
@@ -13510,7 +13510,7 @@ msgstr "Apparaat is uitgeschakeld"
 
 #: /var/www/html/cacti/lib/api_device.php:415
 msgid "Device Availability Check Bypassed"
-msgstr "Controle op beschikbaarheid is uitgeschakeld"
+msgstr "Controle op beschikbaarheid is overgeslagen"
 
 #: /var/www/html/cacti/lib/api_device.php:422
 msgid "SNMP Information"
@@ -13731,7 +13731,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/data_query.php:251
 #, php-format
 msgid "Found number of indexes: %s"
-msgstr ""
+msgstr "Aantal gevonden indexes: %s"
 
 #: /var/www/html/cacti/lib/data_query.php:267
 #, php-format
@@ -13760,7 +13760,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/data_query.php:298
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
-msgstr ""
+msgstr "Gevonden item [%s='%s'] index: %s"
 
 #: /var/www/html/cacti/lib/data_query.php:369
 #, php-format
@@ -13871,7 +13871,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/data_query.php:691
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr ""
+msgstr "Gevonden item [%s='%s'] index: %s [van %s]"
 
 #: /var/www/html/cacti/lib/data_query.php:729
 #, php-format
@@ -13881,7 +13881,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/data_query.php:735
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
-msgstr ""
+msgstr "Gevonden item [%s='%s'] index: %s [van regexp oid parse]"
 
 #: /var/www/html/cacti/lib/functions.php:707
 #, php-format
@@ -14190,7 +14190,7 @@ msgstr "Ping resultaten:"
 
 #: /var/www/html/cacti/lib/functions.php:4055
 msgid "Bypassed"
-msgstr ""
+msgstr "Overgeslagen"
 
 #: /var/www/html/cacti/lib/functions.php:4063
 msgid "Creating Message Text..."
@@ -14275,7 +14275,7 @@ msgstr ""
 
 #: /var/www/html/cacti/lib/html.php:1850
 msgid "Standard Deviations"
-msgstr ""
+msgstr "Standaard afwijkingen"
 
 #: /var/www/html/cacti/lib/html.php:1852
 #, php-format
@@ -16003,7 +16003,7 @@ msgstr ""
 
 #: /var/www/html/cacti/managers.php:567
 msgid "Monitored"
-msgstr ""
+msgstr "Gemonitored"
 
 #: /var/www/html/cacti/managers.php:603
 msgid "No SNMP Notifications"
@@ -16166,7 +16166,7 @@ msgstr "De versie van deze plugin."
 
 #: /var/www/html/cacti/plugins.php:391
 msgid "Load Order"
-msgstr ""
+msgstr "Volgorde van inladen"
 
 #: /var/www/html/cacti/plugins.php:391
 msgid ""
@@ -16661,7 +16661,7 @@ msgstr "Voer stad of plaatsnaam in"
 
 #: /var/www/html/cacti/sites.php:76 /var/www/html/cacti/sites.php:497
 msgid "State"
-msgstr ""
+msgstr "Staat"
 
 #: /var/www/html/cacti/sites.php:77
 msgid "The state for the Site."
@@ -16705,7 +16705,7 @@ msgstr "De tijdzone voor de locatie."
 
 #: /var/www/html/cacti/sites.php:112
 msgid "Latitude"
-msgstr ""
+msgstr "Breedtegraad"
 
 #: /var/www/html/cacti/sites.php:113
 msgid "The Latitude for this Site."
@@ -17009,7 +17009,7 @@ msgstr ""
 
 #: /var/www/html/cacti/tree.php:1239
 msgid "Inherit"
-msgstr ""
+msgstr "Overerven"
 
 #: /var/www/html/cacti/tree.php:1267
 msgid "Alphabetic"
@@ -18043,7 +18043,7 @@ msgstr "Max OID"
 
 #: /var/www/html/cacti/utilities.php:360
 msgid "Last Run Statistics"
-msgstr ""
+msgstr "Statistieken van de laatste run"
 
 #: /var/www/html/cacti/utilities.php:368
 msgid "System Memory"
@@ -18614,7 +18614,7 @@ msgstr "Kolomdata"
 
 #: /var/www/html/cacti/utilities.php:2438
 msgid "Scalar"
-msgstr ""
+msgstr "Scalair"
 
 #: /var/www/html/cacti/utilities.php:2580
 msgid "SNMPAgent Notification Log"
