@@ -166,7 +166,8 @@ if (read_config_option('logrotate_enabled') == 'on') {
 	$date_last = (new DateTime())->setTimestamp($last)->setTime(0,0,59)->modify('-1 minute');
 
 	// Make sure we clone the last date, or we end up modifying the same object!
-	$date_next = (clone $date_last)->modify('+'.$frequency.'day');
+	$date_next = clone $date_last;
+	$date_next->modify('+'.$frequency.'day');
 
 	if ($date_next < $date_now) {
 		logrotate_rotatenow();
