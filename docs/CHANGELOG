@@ -2,6 +2,10 @@ Cacti CHANGELOG
 1.1.36
 -issue#1336: Fix issue with $config not being defined
 
+1.1.36
+-issue: Fixed some language string inconsistencies
+-feature: Updated Dutch translations
+
 1.1.35
 -issue#114: *all_max_peak* percentile calculations incorrect
 -issue#430: Pressing Back often fails to work as expected
