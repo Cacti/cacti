@@ -2235,7 +2235,6 @@ function redrawGraph(graph_id) {
 }
 
 function initializeGraphs() {
-	$.ajaxQ.abortAll();
 	$('a[id$="_mrtg"]').unbind('click').click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
