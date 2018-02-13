@@ -756,7 +756,7 @@ function get_span($duration) {
 }
 
 function profile() {
-	global $profile_actions, $item_rows, $sampling_intervals, $heartbeats;
+	global $profile_actions, $item_rows, $sampling_intervals, $heartbeats, $config;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -967,6 +967,18 @@ function profile() {
 				$readonly = false;
 			}
 
+			if ($profile['data_sources'] > 0) {
+				$ds = '<a class="linkEditMain" href="' . $config['url_path'] . 'data_sources.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['data_sources'], '-1') . '</a>';
+			} else {
+				$ds = number_format_i18n($profile['data_sources'], '-1');
+			}
+
+			if ($profile['templates'] > 0) {
+				$dt = '<a class="linkEditMain" href="' . $config['url_path'] . 'data_templates.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['templates'], '-1') . '</a>';
+			} else {
+				$dt = number_format_i18n($profile['templates'], '-1');
+			}
+
 			form_alternate_row('line' . $profile['id'], false, $disabled);
 			form_selectable_cell(filter_value($profile['name'], get_request_var('filter'), 'data_source_profiles.php?action=edit&id=' . $profile['id']), $profile['id']);
 			form_selectable_cell($profile['default'] == 'on' ? __('Yes'):'', $profile['id'], '', 'text-align:right');
@@ -974,8 +986,8 @@ function profile() {
 			form_selectable_cell($readonly ? __('Yes') : __('No'), $profile['id'], '', 'text-align:right');
 			form_selectable_cell($sampling_intervals[$profile['step']], $profile['id'], '', 'text-align:right');
 			form_selectable_cell($heartbeats[$profile['heartbeat']], $profile['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($profile['data_sources'], '-1'), $profile['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($profile['templates'], '-1'), $profile['id'], '', 'text-align:right');
+			form_selectable_cell($ds, $profile['id'], '', 'text-align:right');
+			form_selectable_cell($dt, $profile['id'], '', 'text-align:right');
 			form_checkbox_cell($profile['name'], $profile['id'], $disabled);
 			form_end_row();
 		}

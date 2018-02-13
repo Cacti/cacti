@@ -620,6 +620,8 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user, $aut
 			$oidCheck = '';
 		}
 
+		$max_oids = read_config_option('snmp_bulk_walk_size');
+
 		if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($max_oids > 1)) {
 			$temp_array = exec_into_array(cacti_escapeshellcmd($path_snmpbulkwalk) .
 				' -O QnU'  . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ':' ') . $snmp_auth .
