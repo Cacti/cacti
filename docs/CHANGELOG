@@ -1,15 +1,10 @@
 Cacti CHANGELOG
 1.1.36
+-issue#1331: Maintenance time should occur at midnight, not random time in day
 -issue#1334: Console->Users->(Edit) Permissions checkmark descriptions missing
 -issue#1336: Fix issue with $config not being defined
 -issue: Fixed some language string inconsistencies
 -feature: Updated Dutch translations
-
-1.1.36
--issue#1331: Maintenance time should occur at midnight, not random time in day
-
-1.1.36
--issue#1331: Maintenance time should occur at midnight, not random time in day
 
 1.1.35
 -issue#114: *all_max_peak* percentile calculations incorrect
