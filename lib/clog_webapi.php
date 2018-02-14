@@ -550,11 +550,14 @@ function clog_get_regex_array() {
 
 	if (!sizeof($regex_array)) {
 		$regex_array = array(
-			1 => array('name' => 'DS',     'regex' => '( DS\[)([, \d]+)(\])',      'func' => 'clog_regex_datasource'),
-			2 => array('name' => 'DQ',     'regex' => '( DQ\[)([, \d]+)(\])',      'func' => 'clog_regex_dataquery'),
-			3 => array('name' => 'Device', 'regex' => '( Device\[)([, \d]+)(\])',  'func' => 'clog_regex_device'),
-			4 => array('name' => 'Poller', 'regex' => '( Poller\[)([, \d]+)(\])',  'func' => 'clog_regex_poller'),
-			5 => array('name' => 'RRA',    'regex' => "([_\/])(\d+)(\.rrd&#039;)", 'func' => 'clog_regex_rra')
+			1 => array('name' => 'DS',     'regex' => '( DS\[)([, \d]+)(\])',       'func' => 'clog_regex_datasource'),
+			2 => array('name' => 'DQ',     'regex' => '( DQ\[)([, \d]+)(\])',       'func' => 'clog_regex_dataquery'),
+			3 => array('name' => 'Device', 'regex' => '( Device\[)([, \d]+)(\])',   'func' => 'clog_regex_device'),
+			4 => array('name' => 'Poller', 'regex' => '( Poller\[)([, \d]+)(\])',   'func' => 'clog_regex_poller'),
+			5 => array('name' => 'RRA',    'regex' => "([_\/])(\d+)(\.rrd&#039;)",  'func' => 'clog_regex_rra'),
+			6 => array('name' => 'GT',     'regex' => '( GT\[)([, \d]+)(\])',        'func' => 'clog_regex_graphtemplates'),
+			7 => array('name' => 'Graph',  'regex' => '( Graph\[)([, \d]+)(\])',     'func' => 'clog_regex_graphs'),
+			8 => array('name' => 'Graphs', 'regex' => '( Graphs\[)([, \d]+)(\])',    'func' => 'clog_regex_graphs')
 		);
 
 		$regex_array = api_plugin_hook_function('clog_regex_array',$regex_array);
@@ -564,6 +567,8 @@ function clog_get_regex_array() {
 		}
 		$regex_complete = '~('.$regex_complete.')~';
 		$regex_array['complete'] = $regex_complete;
+
+		file_put_contents('/tmp/regex.log',var_export($regex_array,true)."\n",FILE_APPEND);
 	}
 
 	return $regex_array;
@@ -574,15 +579,20 @@ function clog_regex_parser($matches) {
 	$match = $matches[0];
 
 	$key_match = -1;
+	file_put_contents('/tmp/regex.log',"Matching...\n" . var_export($matches, true),FILE_APPEND);
 	for ($index = 1; $index < sizeof($matches); $index++) {
 		if ($match == $matches[$index]) {
+			file_put_contents('/tmp/regex.log',"Matching $match to " . $matches[$index] . " ($index)\n",FILE_APPEND);
 			$key_match = $index;
+			break;
 		}
 	}
 
 	if ($key_match != -1) {
 		$key_setting = ($key_match - 1) / 4 + 1;
 		$regex_array = clog_get_regex_array();
+		file_put_contents('/tmp/regex.log',"km: $key_match, ks: $key_setting\n",FILE_APPEND);
+
 		if (sizeof($regex_array)) {
 			if (array_key_exists($key_setting, $regex_array)) {
 				$regex_setting = $regex_array[$key_setting];
@@ -607,11 +617,12 @@ function clog_regex_device($matches) {
 
 	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (sizeof($dev_ids)) {
+		$result = '';
 		$hosts = db_fetch_assoc_prepared('SELECT id, description
 			FROM host
 			WHERE id in (?)',
 			array(implode(',',$dev_ids)));
-		
+
 		$hostDescriptions = array();
 		foreach ($hosts as $host) {
 			$hostDescriptions[$host['id']] = html_escape($host['description']);
@@ -633,31 +644,31 @@ function clog_regex_datasource($matches) {
 	$ds_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (sizeof($ds_ids)) {
 		$result = '';
-		$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
-		$title = '';
-		$i     = 0;
+		$graph_rows = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
+			gtg.local_graph_id AS id
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_templates_item AS gti
+			ON gtg.local_graph_id=gti.local_graph_id
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id=dtr.id
+			WHERE gtg.local_graph_id>0
+			AND dtr.local_data_id iN (?)',
+			array($matches[2])),'id','id');
 
-		foreach($ds_ids as $ds_id) {
-			$graph_ids = clog_get_graphs_from_datasource($ds_id);
+		if (sizeof($graph_rows)) {
+			$graph_ids = implode(',',$graph_rows);
+			$graph_array = array( 0 => '', 1 => ' Graphs[', 2 => $graph_ids, 3 => ']');
 
-			if (sizeof($graph_ids)) {
-				$result .= " Graphs[<a href='";
-
-				foreach($graph_ids as $key => $title) {
-					$graph_add .= ($i > 0 ? '%2C' : '') . $key;
-					$title     .= ($title != '' ? ', ':'') . html_escape($title);
-
-					$i++;
-				}
-
-				$result .= html_escape($graph_add) . "' title='" . __esc('View Graphs') . "'>" . $title . '</a>]';
-			}
+			$graph_results = clog_regex_graphs($graph_array);
+			file_put_contents('/tmp/graphs.log',$graph_results."\n",FILE_APPEND);
+			$result .= $graph_results;
 		}
 
 		$result .= $matches[1];
 		$i       = 0;
 
+		$ds_ids = array_unique($ds_ids);
 		$ds_titles = clog_get_datasource_titles($ds_ids);
 		foreach($ds_ids as $ds_id) {
 			$ds_title = $ds_id;
@@ -738,6 +749,75 @@ function clog_regex_rra($matches) {
 		$datasource_result = clog_regex_datasource($datasource_array);
 		if (strlen($datasource_result)) {
 			$result .= ' '. $datasource_result;
+		}
+	}
+
+	return $result;
+}
+
+function clog_regex_graphs($matches) {
+	global $config;
+
+	$result = $matches[0];
+
+	$query_ids = explode(',',str_replace(" ","",$matches[2]));
+	if (sizeof($query_ids)) {
+		$result = '';
+		$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
+
+		$title = '';
+		$i     = 0;
+
+		$querys = db_fetch_assoc_prepared('SELECT DISTINCT
+			gtg.local_graph_id AS id,
+			gtg.title_cache AS title
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_templates_item AS gti
+			ON gtg.local_graph_id=gti.local_graph_id
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id=dtr.id
+			WHERE gtg.local_graph_id in (?)',
+			array(implode(',',$query_ids)));
+
+		$result .= $matches[1] . "<a href='";
+
+		$queryDescriptions = array();
+		foreach ($querys as $query) {
+			$queryDescriptions[$query['id']] = html_escape($query['title']);
+		}
+
+		$i=0;
+		foreach ($query_ids as $query_id) {
+			$graph_add .= ($i > 0 ? '%2C' : '') . $query_id;
+			$title     .= ($title != '' ? ', ':'') . html_escape((isset($queryDescriptions[$query_id]) ? $queryDescriptions[$query_id]:$query_id));
+			$i++;
+		}
+
+		$result .= html_escape($graph_add) . '\'>' . $title . '</a>' . $matches[3];
+	}
+	return $result;
+}
+
+function clog_regex_graphtemplates($matches) {
+	global $config;
+
+	$result = $matches[0];
+
+	$query_ids = explode(',',str_replace(" ","",$matches[2]));
+	if (sizeof($query_ids)) {
+		$result = '';
+		$querys = db_fetch_assoc_prepared('SELECT id, name
+			FROM graph_templates
+			WHERE id in (?)',
+			array(implode(',',$query_ids)));
+
+		$queryDescriptions = array();
+		foreach ($querys as $query) {
+			$queryDescriptions[$query['id']] = html_escape($query['name']);
+		}
+
+		foreach ($query_ids as $query_id) {
+			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'graph_templates.php?action=template_edit&id=' . $query_id) . '\'>' . (isset($queryDescriptions[$query_id]) ? $queryDescriptions[$query_id]:$query_id) . '</a>' . $matches[3];
 		}
 	}
 
