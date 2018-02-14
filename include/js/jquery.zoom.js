@@ -399,13 +399,13 @@
 				$(this).removeAttr('style');
 			});
 			$('#zoom-container').off();
-			$('#zoom-container').bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
+			$('#zoom-container').bind('contextmenu', function(e) { zoomContextMenu_toggle(e); return false;} );
 			$('#zoom-box').off();
 			$('#zoom-box').css({ cursor:'crosshair', width:zoom.box.width + 'px', height:zoom.box.height + 'px', top:zoom.box.top+'px', left:zoom.box.left+'px' });
-			$('#zoom-box').bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
+			$('#zoom-box').bind('contextmenu', function(e) { zoomContextMenu_toggle(e); return false;} );
 			$('#zoom-area').off().css({ top:zoom.box.top+'px', height:zoom.box.height+'px' });
 			$('.zoom-area-excluded').off();
-			$('.zoom-area-excluded').bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
+			$('.zoom-area-excluded').bind('contextmenu', function(e) { zoomContextMenu_toggle(e); return false;} );
 			$('.zoom-area-excluded').bind('click', function(e) { zoomContextMenu_hide(); return false;} );
 			$('.zoom-marker-arrow-up').css({ top:(zoom.box.height-6) + 'px' });
 			$('.zoom-marker-tooltip-value').disableSelection();
@@ -1084,6 +1084,10 @@
 
 		function zoomContextMenu_hide(){
 			$('#zoom-menu').hide();
+		}
+
+		function zoomContextMenu_toggle(e){
+			($('#zoom-menu').css('display') == 'none') ? zoomContextMenu_show(e) : zoomContextMenu_hide();
 		}
 
 	};
