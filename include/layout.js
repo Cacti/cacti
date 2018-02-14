@@ -1301,45 +1301,47 @@ function getPresentHTTPError(data) {
 		errorSub  = data.statusText;
 		errorText = errorReasonUnexpected;
 
-		var dataText = data.responseText;
+		if (typeof data.responseText != 'undefined') {
+			var dataText = data.responseText;
 
-		var title_match = dataText.match(/<title>(.*?)<\/title>/);
-		var head_match  = dataText.match(/<h1>(.*?)<\/h1>/);
-		var para_match  = dataText.match(/<p>(.*?)<\/p>/);
+			var title_match = dataText.match(/<title>(.*?)<\/title>/);
+			var head_match  = dataText.match(/<h1>(.*?)<\/h1>/);
+			var para_match  = dataText.match(/<p>(.*?)<\/p>/);
 
-		if (title_match != null) {
-			var errorSub = title_match[1];
-		}
-
-		if (head_match != null) {
-			var errorSub = head_match[1];
-		}
-
-		if (para_match != null) {
-			var errorText = para_match[1];
-		}
-
-		returnStr = '<div id="httperror" style="display:none">' +
-			'<h4>' + errorOnPage + '</h4><hr>' +
-			'<div style="padding-bottom: 5px;"><div style="display:table-cell;width:75px"><b>' + errorNumberPrefix + '</b></div> ' +
-			'<div style="display:table-cell"> ' + errorStr + ' ' + errorSub + '</div></div>' +
-			'<div><div style="display:table-cell;width:75px"><b>'  + errorReasonPrefix + '</b></div> ' +
-			'<div style="display:table-cell"> ' + errorText + '</div></div>' +
-			'</div></div>';
-
-		$('#httperror').remove();
-		$('body').append(returnStr);
-		$('#httperror').dialog({
-			resizable: false,
-			height: 'auto',
-			width: 400,
-			title: errorReasonTitle,
-			buttons: {
-				Ok: function() {
-					$(this).dialog('close');
-				}
+			if (title_match != null) {
+				var errorSub = title_match[1];
 			}
-		});
+
+			if (head_match != null) {
+				var errorSub = head_match[1];
+			}
+
+			if (para_match != null) {
+				var errorText = para_match[1];
+			}
+
+			returnStr = '<div id="httperror" style="display:none">' +
+				'<h4>' + errorOnPage + '</h4><hr>' +
+				'<div style="padding-bottom: 5px;"><div style="display:table-cell;width:75px"><b>' + errorNumberPrefix + '</b></div> ' +
+				'<div style="display:table-cell"> ' + errorStr + ' ' + errorSub + '</div></div>' +
+				'<div><div style="display:table-cell;width:75px"><b>'  + errorReasonPrefix + '</b></div> ' +
+				'<div style="display:table-cell"> ' + errorText + '</div></div>' +
+				'</div></div>';
+
+			$('#httperror').remove();
+			$('body').append(returnStr);
+			$('#httperror').dialog({
+				resizable: false,
+				height: 'auto',
+				width: 400,
+				title: errorReasonTitle,
+				buttons: {
+					Ok: function() {
+						$(this).dialog('close');
+					}
+				}
+			});
+		}
 	}
 }
 
