@@ -1021,7 +1021,7 @@ function graphs() {
 	}
 
 	if ($script != '') {
-		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()) }).fail(function(data) { getPresentHTTPError(data); });</script>\n";
+		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()).fail(function(data) { getPresentHTTPError(data); });});</script>\n";
 		print $script;
 	}
 
