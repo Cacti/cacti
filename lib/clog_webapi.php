@@ -818,7 +818,7 @@ function clog_regex_graphtemplates($matches) {
 			array(implode(',',$query_ids)));
 
 		$queryDescriptions = array();
-		if (sizeof($querys) {
+		if (sizeof($querys)) {
 			foreach ($querys as $query) {
 				$queryDescriptions[$query['id']] = html_escape($query['name']);
 			}
