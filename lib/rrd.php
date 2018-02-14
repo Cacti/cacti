@@ -3398,7 +3398,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	} else {
 		foreach($strings as $string) {
 			if (trim($string) != '') {
-				if (!imagestring($image, $font_size, $xpos, $ypos, $string, $font_color)) {
+				if (!imagestring($image, $font_size, $xpos, $ypos, $string, $text_color)) {
 					cacti_log('Text overlay failed');
 				}
 				$ypos -= ($font_size + $padding);

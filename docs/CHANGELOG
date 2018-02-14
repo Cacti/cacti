@@ -1,10 +1,12 @@
 Cacti CHANGELOG
+
 1.1.36
 -issue#1331: Maintenance time should occur at midnight, not random time in day
 -issue#1334: Console->Users->(Edit) Permissions checkmark descriptions missing
 -issue#1336: Fix issue with $config not being defined
 -issue#1339: First graph of second page does not render
 -issue#1348: Toggle context menu of Zoom
+-issue#1351: Errorimage does not render on systems without GD ttf support
 -issue: Fixed some language string inconsistencies
 -issue: Implementation of error handling causing errors on New Graphs page
 -feature: Updated Dutch translations
