@@ -1365,8 +1365,8 @@ function utilities_view_snmp_cache() {
 						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
+						<input id='with_index' type='checkbox' onChange='applyFilter()' title='<?php print __esc('Allow the search term to include the index column');?>' <?php if (get_request_var('with_index') == 1) { print ' checked '; }?>>
 						<label for='with_index'><?php print __('Include Index') ?></label>
-						<input id='with_index' type='checkbox' onChange='applyFilter()' <?php if (get_request_var('with_index') == 1) { print ' checked '; }?>>
 					</td>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
