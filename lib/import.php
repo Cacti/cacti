@@ -141,8 +141,6 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 
 	$preview_only = $preview;
 
-	ini_set('zlib.output_compression', '0');
-
 	/* set new timeout and memory settings */
 	ini_set('max_execution_time', '50');
 	ini_set('memory_limit', '128M');
