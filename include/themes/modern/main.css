@@ -83,6 +83,10 @@ fieldset {
 	text-align:center;
 }
 
+.checkboxLabel {
+	color: #000000;
+}
+
 /* links */
 
 a, a:active, a:visited {
@@ -811,15 +815,16 @@ ul#breadcrumbs {
 
 .cactiConsoleNavigationArea {
 	border-right: #aaaaaa 1px solid;
-	padding-left:0px;
-	padding-right:0px;
-	padding-top:5px;
-	vertical-align:top;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 5px;
+	vertical-align: top;
 	left: 0px;
 	top: 56px;
 	overflow-y: hidden;
 	width: 167px;
 	float: left;
+	background-color: #efefef;
 }
 
 .cactiConsoleNavigationArea table {
@@ -1383,7 +1388,6 @@ legend {
 	color: #444;
 	float: left;
 	text-align: left;
-	font-weight: bold;
 	vertical-align: top;
 	padding-left: 0px;
 }
