@@ -619,8 +619,10 @@ function clog_regex_device($matches) {
 			array(implode(',',$dev_ids)));
 
 		$hostDescriptions = array();
-		foreach ($hosts as $host) {
-			$hostDescriptions[$host['id']] = html_escape($host['description']);
+		if (sizeof($hosts)) {
+			foreach ($hosts as $host) {
+				$hostDescriptions[$host['id']] = html_escape($host['description']);
+			}
 		}
 
 		foreach ($dev_ids as $host_id) {
@@ -651,12 +653,12 @@ function clog_regex_datasource($matches) {
 			AND dtr.local_data_id iN (?)',
 			array($matches[2])),'id','id');
 
+		$graph_results = '';
 		if (sizeof($graph_rows)) {
 			$graph_ids = implode(',',$graph_rows);
 			$graph_array = array( 0 => '', 1 => ' Graphs[', 2 => $graph_ids, 3 => ']');
 
 			$graph_results = clog_regex_graphs($graph_array);
-			$result .= $graph_results;
 		}
 
 		$result .= $matches[1];
@@ -664,6 +666,10 @@ function clog_regex_datasource($matches) {
 
 		$ds_ids = array_unique($ds_ids);
 		$ds_titles = clog_get_datasource_titles($ds_ids);
+		if (!isset($ds_titles)) {
+			$ds_titles = array();
+		}
+
 		foreach($ds_ids as $ds_id) {
 			$ds_title = $ds_id;
 			if (array_key_exists($ds_id, $ds_titles)) {
@@ -674,7 +680,7 @@ function clog_regex_datasource($matches) {
 			$i++;
 		}
 
-		$result .= $matches[3];
+		$result .= $matches[3] . $graph_results;
 	}
 
 	return $result;
@@ -694,8 +700,10 @@ function clog_regex_poller($matches) {
 			array(implode(',',$poller_ids)));
 		
 		$pollerDescriptions = array();
-		foreach ($pollers as $poller) {
-			$pollerDescriptions[$poller['id']] = html_escape($poller['name']);
+		if (sizeof($pollers)) {
+			foreach ($pollers as $poller) {
+				$pollerDescriptions[$poller['id']] = html_escape($poller['name']);
+			}
 		}
 
 		foreach ($poller_ids as $poller_id) {
@@ -720,8 +728,10 @@ function clog_regex_dataquery($matches) {
 			array(implode(',',$query_ids)));
 
 		$queryDescriptions = array();
-		foreach ($querys as $query) {
-			$queryDescriptions[$query['id']] = html_escape($query['name']);
+		if (sizeof($querys)) {
+			foreach ($querys as $query) {
+				$queryDescriptions[$query['id']] = html_escape($query['name']);
+			}
 		}
 
 		foreach ($query_ids as $query_id) {
@@ -739,7 +749,7 @@ function clog_regex_rra($matches) {
 
 	$local_data_ids = $matches[2];
 	if (strlen($local_data_ids)) {
-		$datasource_array = array( 0 => '', 1 => 'DS[', 2 => $local_data_ids, 3 => ']');
+		$datasource_array = array( 0 => '', 1 => ' DS[', 2 => $local_data_ids, 3 => ']');
 		$datasource_result = clog_regex_datasource($datasource_array);
 		if (strlen($datasource_result)) {
 			$result .= ' '. $datasource_result;
@@ -776,8 +786,10 @@ function clog_regex_graphs($matches) {
 		$result .= $matches[1] . "<a href='";
 
 		$queryDescriptions = array();
-		foreach ($querys as $query) {
-			$queryDescriptions[$query['id']] = html_escape($query['title']);
+		if (sizeof($querys)) {
+			foreach ($querys as $query) {
+				$queryDescriptions[$query['id']] = html_escape($query['title']);
+			}
 		}
 
 		$i=0;
@@ -806,8 +818,10 @@ function clog_regex_graphtemplates($matches) {
 			array(implode(',',$query_ids)));
 
 		$queryDescriptions = array();
-		foreach ($querys as $query) {
-			$queryDescriptions[$query['id']] = html_escape($query['name']);
+		if (sizeof($querys) {
+			foreach ($querys as $query) {
+				$queryDescriptions[$query['id']] = html_escape($query['name']);
+			}
 		}
 
 		foreach ($query_ids as $query_id) {
