@@ -567,8 +567,6 @@ function clog_get_regex_array() {
 		}
 		$regex_complete = '~('.$regex_complete.')~';
 		$regex_array['complete'] = $regex_complete;
-
-		file_put_contents('/tmp/regex.log',var_export($regex_array,true)."\n",FILE_APPEND);
 	}
 
 	return $regex_array;
@@ -579,10 +577,8 @@ function clog_regex_parser($matches) {
 	$match = $matches[0];
 
 	$key_match = -1;
-	file_put_contents('/tmp/regex.log',"Matching...\n" . var_export($matches, true),FILE_APPEND);
 	for ($index = 1; $index < sizeof($matches); $index++) {
 		if ($match == $matches[$index]) {
-			file_put_contents('/tmp/regex.log',"Matching $match to " . $matches[$index] . " ($index)\n",FILE_APPEND);
 			$key_match = $index;
 			break;
 		}
@@ -591,7 +587,6 @@ function clog_regex_parser($matches) {
 	if ($key_match != -1) {
 		$key_setting = ($key_match - 1) / 4 + 1;
 		$regex_array = clog_get_regex_array();
-		file_put_contents('/tmp/regex.log',"km: $key_match, ks: $key_setting\n",FILE_APPEND);
 
 		if (sizeof($regex_array)) {
 			if (array_key_exists($key_setting, $regex_array)) {
@@ -661,7 +656,6 @@ function clog_regex_datasource($matches) {
 			$graph_array = array( 0 => '', 1 => ' Graphs[', 2 => $graph_ids, 3 => ']');
 
 			$graph_results = clog_regex_graphs($graph_array);
-			file_put_contents('/tmp/graphs.log',$graph_results."\n",FILE_APPEND);
 			$result .= $graph_results;
 		}
 
