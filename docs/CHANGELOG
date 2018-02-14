@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#1348: Toggle context menu of Zoom
 -issue#1351: Errorimage does not render on systems without GD ttf support
 -issue: Fixed some language string inconsistencies
+-issue: Update filter layout of Data Query Cache to match Poller Cache
 -issue: Implementation of error handling causing errors on New Graphs page
 -feature: Updated Dutch translations
 
