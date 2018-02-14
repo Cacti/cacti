@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#1339: First graph of second page does not render
 -issue#1348: Toggle context menu of Zoom
 -issue: Fixed some language string inconsistencies
+-issue: Implementation of error handling causing errors on New Graphs page
 -feature: Updated Dutch translations
 
 1.1.35
