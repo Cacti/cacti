@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue: Fixed some language string inconsistencies
 -issue: Update filter layout of Data Query Cache to match Poller Cache
 -issue: Implementation of error handling causing errors on New Graphs page
+-feature: Allow searching of SNMP Index in View Data Query Cache
 -feature: Updated Dutch translations
 
 1.1.35
