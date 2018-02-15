@@ -475,7 +475,14 @@ function item_edit() {
 
 		if (readonly) {
 			$('#steps').prop('disabled', true);
+			if ($('#steps').selectmenu('instance')) {
+				$('#steps').selectmenu('disable');
+			}
+
 			$('#rows').prop('disabled', true);
+			if ($('#rows').selectmenu('instance')) {
+				$('#rows').selectmenu('disable');
+			}
 		}
 	});
 
@@ -648,10 +655,21 @@ function profile_edit() {
 		}).css('cursor', 'pointer');
 		<?php } else { ?>
 		$('#step').prop('disabled', true);
+		if ($('#step').selectmenu('instance')) {
+			$('#step').selectmenu('disable')
+		}
+
 		$('#x_files_factor').prop('disabled', true);
+
 		$('#heartbeat').prop('disabled', true);
+		if ($('#heartbeat').selectmenu('instance')) {
+			$('#heartbeat').selectmenu('disable')
+		}
+
 		$('#consolidation_function_id').prop('disabled', true);
-		$('#consolidation_function_id').multiselect('disable');
+		if ($('#consolidation_function_id').multiselect('instance')) {
+			$('#consolidation_function_id').multiselect('disable');
+		}
 		<?php } ?>
 	});
 
