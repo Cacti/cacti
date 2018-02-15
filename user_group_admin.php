@@ -1483,7 +1483,7 @@ function user_group_realms_edit($header_label) {
 			}
 
 			if ($break || $i == 1) {
-				print '<strong>' . $r['name'] . "</strong><br>\n";
+				print '<i>' . $r['name'] . "</i><br>\n";
 			}
 
 			$realm = $r['realm_id'] + 100;
