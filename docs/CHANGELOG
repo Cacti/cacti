@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue: Remove spurious php code from checkbox area in user admin
 -issue: Minor plugin permissions format change
 -issue: Implementation of error handling causing errors on New Graphs page
+-issue: Remove deprecated setting fom DSStats settings
 -feature: Allow searching of SNMP Index in View Data Query Cache
 -feature: Updated Dutch translations
 
