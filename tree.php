@@ -1769,7 +1769,10 @@ function tree() {
 		foreach ($trees as $tree) {
 			$sequence = '';
 			if (get_request_var('sort_column') == 'sequence' && get_request_var('sort_direction') == 'ASC') {
-				if ($i == 1) {
+				if ($i == 1 && sizeof($trees) == 1) {
+					$sequence .= '<span class="moveArrowNone"></span>';
+					$sequence .= '<span class="moveArrowNone"></span>';
+				} elseif ($i == 1) {
 					$sequence .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
 					$sequence .= '<span class="moveArrowNone"></span>';
 				} elseif ($i == sizeof($trees)) {
