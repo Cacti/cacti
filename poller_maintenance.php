@@ -159,15 +159,15 @@ if (read_config_option('logrotate_enabled') == 'on') {
 		set_config_option('logrotate_lastrun', $last);
 	}
 
-	$daten    = new DateTime();
-	$date_now = $daten->setTimestamp($now);
+	$date_now = new DateTime();
+	$date_now->setTimestamp($now);
 
 	// Take the last date/time, set the time to 59 seconds past midnight
 	// then remove one minute to make it the previous evening
-	$dateo     = new DateTime();
-	$date_orig = $dateo->setTimestamp($last);
-	$datel     = new DateTime();
-	$date_last = $datel->setTimestamp($last)->setTime(0,0,59)->modify('-1 minute');
+	$date_orig = new DateTime();
+	$date_orig->setTimestamp($last);
+	$date_last = new DateTime();
+	$date_last->setTimestamp($last)->setTime(0,0,59)->modify('-1 minute');
 
 	// Make sure we clone the last date, or we end up modifying the same object!
 	$date_next = clone $date_last;
