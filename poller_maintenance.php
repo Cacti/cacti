@@ -159,12 +159,13 @@ if (read_config_option('logrotate_enabled') == 'on') {
 		set_config_option('logrotate_lastrun', $last);
 	}
 
-	$date_now = (new DateTime())->setTimestamp($now);
+	$date = new DateTime();
+	$date_now = $date->setTimestamp($now);
 
 	// Take the last date/time, set the time to 59 seconds past midnight
 	// then remove one minute to make it the previous evening
-	$date_orig = (new DateTime())->setTimestamp($last);
-	$date_last = (new DateTime())->setTimestamp($last)->setTime(0,0,59)->modify('-1 minute');
+	$date_orig = $date->setTimestamp($last);
+	$date_last = $date->setTimestamp($last)->setTime(0,0,59)->modify('-1 minute');
 
 	// Make sure we clone the last date, or we end up modifying the same object!
 	$date_next = clone $date_last;
@@ -225,7 +226,9 @@ function logrotate_rotatenow () {
 
 	$run_time = time();
 	set_config_option('logrotate_lastrun', $run_time);
-	$date_log = (new DateTime())->setTimestamp($run_time)->modify('-1day');
+
+	$date     = new DateTime();
+	$date_log = $date->setTimestamp($run_time)->modify('-1day');
 	clearstatcache();
 
 	if (is_writable(dirname($log) . '/') && is_writable($log)) {
@@ -299,7 +302,8 @@ function logrotate_cleanold () {
 
 	if (sizeof($dir)) {
 		$run_time = time();
-		$date_log = (new DateTime())->setTimestamp($run_time)->modify('-'.$r.'day');
+		$date     = new DateTime();
+		$date_log = $date->setTimestamp($run_time)->modify('-'.$r.'day');
 		$e = $date_log->format('Ymd');
 		cacti_log('Cacti Log Rotation - Purging all logs before '.$e, true, 'MAINT');
 		foreach ($dir as $d) {
