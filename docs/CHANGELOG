@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#1339: First graph of second page does not render
 -issue#1348: Toggle context menu of Zoom
 -issue#1351: Errorimage does not render on systems without GD ttf support
+-issue#1353: New install with missing config.php silently throws errors
 -issue: Fixed some language string inconsistencies
 -issue: Update filter layout of Data Query Cache to match Poller Cache
 -issue: Remove spurious php code from checkbox area in user admin
