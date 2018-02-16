@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#1353: New install with missing config.php silently throws errors
 -issue#1355: If only one tree exists, don't show move arrows
 -issue#1357: Data Profile - Disable fields shown temporarily as editable
+-issue#1359: Settings page can generate error if expected tab not found
 -issue: Fixed some language string inconsistencies
 -issue: Update filter layout of Data Query Cache to match Poller Cache
 -issue: Remove spurious php code from checkbox area in user admin
