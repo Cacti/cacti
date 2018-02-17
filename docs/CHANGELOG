@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#1357: Data Profile - Disable fields shown temporarily as editable
 -issue#1359: Settings page can generate error if expected tab not found
 -issue#1362: DSStats Avg/Peak function broken due to change in RRDtool processing
+-issue#1365: Plugin Management - Reject invalid folder names
 -issue: Fixed some language string inconsistencies
 -issue: Update filter layout of Data Query Cache to match Poller Cache
 -issue: Remove spurious php code from checkbox area in user admin
