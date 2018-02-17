@@ -11,12 +11,14 @@ Cacti CHANGELOG
 -issue#1355: If only one tree exists, don't show move arrows
 -issue#1357: Data Profile - Disable fields shown temporarily as editable
 -issue#1359: Settings page can generate error if expected tab not found
+-issue#1362: DSStats Avg/Peak function broken due to change in RRDtool processing
 -issue: Fixed some language string inconsistencies
 -issue: Update filter layout of Data Query Cache to match Poller Cache
 -issue: Remove spurious php code from checkbox area in user admin
 -issue: Minor plugin permissions format change
 -issue: Implementation of error handling causing errors on New Graphs page
 -issue: Remove deprecated setting fom DSStats settings
+-issue: Move several DSStats logic to standard functions
 -feature: Allow searching of SNMP Index in View Data Query Cache
 -feature: Updated Dutch translations
 
