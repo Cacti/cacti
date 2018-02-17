@@ -499,7 +499,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 }
 
 function plugin_actions($plugin) {
-	global $config;
+	global $config, $pluginslist, $plugins_integrated;
 
 	$link = '<td>';
 	switch ($plugin['status']) {
