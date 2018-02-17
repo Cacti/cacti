@@ -2033,13 +2033,23 @@ function draw_navigation_text($type = 'url') {
 			),
 		'graph.php:' => array(
 			'title' => '|current_graph_title|',
-			'mapping' => 'graph_view.php:,?',
-			'level' => '2'
+			'mapping' => 'graph_view.php:',
+			'level' => '1'
 			),
 		'graph.php:view' => array(
 			'title' => '|current_graph_title|',
-			'mapping' => 'graph_view.php:,?',
-			'level' => '2'
+			'mapping' => 'graph_view.php:',
+			'level' => '1'
+			),
+		'graph.php:zoom' => array(
+			'title' => '|current_graph_title|',
+			'mapping' => 'graph_view.php:',
+			'level' => '1'
+			),
+		'graph.php:update_timespan' => array(
+			'title' => '|current_graph_title|',
+			'mapping' => 'graph_view.php:',
+			'level' => '1'
 			),
 		'index.php:' => array(
 			'title' => __('Console'),

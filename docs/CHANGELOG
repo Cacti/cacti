@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#1334: Console->Users->(Edit) Permissions checkmark descriptions missing
 -issue#1336: Fix issue with $config not being defined
 -issue#1339: First graph of second page does not render
+-issue#1340: Unable to open Time Graph View in new tab
 -issue#1348: Toggle context menu of Zoom
 -issue#1351: Errorimage does not render on systems without GD ttf support
 -issue#1353: New install with missing config.php silently throws errors
@@ -19,6 +20,8 @@ Cacti CHANGELOG
 -issue: Implementation of error handling causing errors on New Graphs page
 -issue: Remove deprecated setting fom DSStats settings
 -issue: Move several DSStats logic to standard functions
+-issue: Disable graph context menu items that have no right context
+-issue: Resolve JavaScript errors when coming out of Realtime
 -feature: Allow searching of SNMP Index in View Data Query Cache
 -feature: Updated Dutch translations
 

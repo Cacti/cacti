@@ -1908,6 +1908,10 @@ function html_spikekill_js() {
 			}
 		});
 
+		$('span.spikekill').children().contextmenu(function() {
+			return false;
+		});
+
 		$('span.spikekill').unbind().click(function() {
 			if (spikeKillOpen == false) {
 				local_graph_id = $(this).attr('data-graph');
