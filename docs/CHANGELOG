@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue: Move several DSStats logic to standard functions
 -issue: Disable graph context menu items that have no right context
 -issue: Resolve JavaScript errors when coming out of Realtime
+-issue: snmpagent generates a Fatal error when plugin directories duplicated
 -feature: Allow searching of SNMP Index in View Data Query Cache
 -feature: Updated Dutch translations
 
