@@ -419,7 +419,7 @@ function settings() {
 		});
 
 		$('input[value="<?php print __esc('Return');?>"]').unbind().click(function(event) {
-			document.location = '<?php print html_escape($_SESSION['profile_referer']);?>';
+			document.location = '<?php print html_escape(isset($_SESSION['profile_referer']) ? $_SESSION['profile_referer']:'auth_profile.php');?>';
 		});
 	});
 
