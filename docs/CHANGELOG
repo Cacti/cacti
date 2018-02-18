@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#1331: Maintenance time should occur at midnight, not random time in day
 -issue#1334: Console->Users->(Edit) Permissions checkmark descriptions missing
 -issue#1336: Fix issue with $config not being defined
+-issue#1338: Allow automation to be run in debug mode from GUI
 -issue#1339: First graph of second page does not render
 -issue#1340: Unable to open Time Graph View in new tab
 -issue#1348: Toggle context menu of Zoom
