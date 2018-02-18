@@ -358,7 +358,7 @@ function form_actions() {
 				<p>" . __('Click \'Continue\' to discover the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
 				<p><input type='checkbox' id='discover_debug' name='discover_debug' value='1'>
-				<label id='discover_debug_label' for='discover_debug'>Run discover in debug mode</label></p>
+				<label id='discover_debug_label' for='discover_debug'>" . __('Run discover in debug mode') . "</label></p>
 			</td>
 		</tr>\n";
 	} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */

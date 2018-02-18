@@ -582,7 +582,7 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
    @arg $type - the type of textbox, either 'text' or 'password'
    @arg $current_id - used to determine if a current value for this form element
      exists or not. a $current_id of '0' indicates that no current value exists,
-     a non-zero value indicates that a current value does exist 
+     a non-zero value indicates that a current value does exist
    @arg $placeholder - place a placeholder over an empty field
    @arg $title - use a title attribute when hovering over the textbox
  */
@@ -809,7 +809,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
      exists or not. a $current_id of '0' indicates that no current value exists,
      a non-zero value indicates that a current value does exist
    @param string $class - specify a css class
-   @param string $on_change - specify a javascript onchange action 
+   @param string $on_change - specify a javascript onchange action
    @param string $title - specify a title for the checkbox on hover
    @param boolean $show_label - show the form caption in the checkbox
 */
@@ -1231,7 +1231,7 @@ function form_start($action, $id = '') {
 function form_end($ajax = true) {
 	global $form_id, $form_action;
 
-	print "</form>\n";
+	print '</form>' . PHP_EOL;
 
 	if ($ajax) { ?>
 		<script type='text/javascript'>
@@ -1240,7 +1240,7 @@ function form_end($ajax = true) {
 				event.preventDefault();
 				strURL = '<?php print $form_action;?>';
 				strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';
-				json =  $('#<?php print $form_id;?>').serializeObject();
+				json =  $(this).serializeObject();
 				$.post(strURL, json).done(function(data) {
 					checkForLogout(data);
 
