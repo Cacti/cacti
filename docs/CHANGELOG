@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -issue: Undefined index 'profile_referer' in auth_profile.php
 -feature: Allow searching of SNMP Index in View Data Query Cache
 -feature: Updated Dutch translations
+-feature: Error dialog is now prominent to prevent missing details
 
 1.1.35
 -issue#114: *all_max_peak* percentile calculations incorrect
