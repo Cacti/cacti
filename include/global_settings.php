@@ -1527,17 +1527,6 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '1024',
 			'array' => $dsstats_max_memory
-			),
-		'dsstats_debug_header' => array(
-			'friendly_name' => __('Debugging'),
-			'method' => 'spacer',
-			'collapsible' => 'true',
-			),
-		'dsstats_partial_retrieve' => array(
-			'friendly_name' => __('Enable Partial Reference Data Retrieve'),
-			'description' => __('If using a large system, it may be beneficial for you to only gather data as needed during Cacti poller passes.  If you check this box, Data Source Statistics will gather data this way.'),
-			'method' => 'checkbox',
-			'default' => ''
 			)
 		),
 	'boost' => array(

@@ -240,7 +240,7 @@ CREATE TABLE `automation_graph_rules` (
 -- Dumping data for table `automation_graph_rules`
 --
 
-INSERT INTO `automation_graph_rules` VALUES (1,'Traffic 64 bit Server',1,14,''),(2,'Traffic 64 bit Server Linux',1,14,''),(3,'Disk Space',8,18,'');
+INSERT INTO `automation_graph_rules` VALUES (1,'Traffic 64 bit Server',1,12,''),(2,'Traffic 64 bit Server Linux',1,12,''),(3,'Disk Space',3,17,'');
 
 --
 -- Table structure for table `automation_ips`

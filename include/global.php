@@ -64,8 +64,10 @@ $url_path = '/cacti/';
 /* allow upto 5000 items to be selected */
 ini_set('max_input_vars', '5000');
 
-/* Include configuration */
-include(dirname(__FILE__) . '/config.php');
+/* Include configuration, or use the defaults */
+if (file_exists(dirname(__FILE__) . '/config.php')) {
+	include(dirname(__FILE__) . '/config.php');
+}
 
 if (isset($config['cacti_version'])) {
 	die('Invalid include/config.php file detected.');

@@ -150,12 +150,34 @@ if (read_config_option('logrotate_enabled') == 'on') {
 	if (empty($frequency)) {
 		$frequency = 1;
 	}
+
 	$last = read_config_option('logrotate_lastrun');
 	$now  = time();
 
 	if (empty($last)) {
-		set_config_option('logrotate_lastrun', time());
-	} elseif (($last + ($frequency * 86400)) < $now) {
+		$last = time();
+		set_config_option('logrotate_lastrun', $last);
+	}
+
+	$date_now = new DateTime();
+	$date_now->setTimestamp($now);
+
+	// Take the last date/time, set the time to 59 seconds past midnight
+	// then remove one minute to make it the previous evening
+	$date_orig = new DateTime();
+	$date_orig->setTimestamp($last);
+	$date_last = new DateTime();
+	$date_last->setTimestamp($last)->setTime(0,0,59)->modify('-1 minute');
+
+	// Make sure we clone the last date, or we end up modifying the same object!
+	$date_next = clone $date_last;
+	$date_next->modify('+'.$frequency.'day');
+
+	cacti_log('Cacti Log Rotation - TIMECHECK Ran: ' . $date_orig->format('Y-m-d H:i:s')
+		. ', Now: ' . $date_now->format('Y-m-d H:i:s')
+		. ', Next: ' . $date_next->format('Y-m-d H:i:s'), true, 'MAINT', POLLER_VERBOSITY_HIGH);
+
+	if ($date_next < $date_now) {
 		logrotate_rotatenow();
 	}
 }
@@ -204,8 +226,11 @@ function logrotate_rotatenow () {
 		$log = $config['base_path'] . '/log/cacti.log';
 	}
 
-	set_config_option('logrotate_lastrun', time());
+	$run_time = time();
+	set_config_option('logrotate_lastrun', $run_time);
 
+	$date     = new DateTime();
+	$date_log = $date->setTimestamp($run_time)->modify('-1day');
 	clearstatcache();
 
 	if (is_writable(dirname($log) . '/') && is_writable($log)) {
@@ -214,10 +239,14 @@ function logrotate_rotatenow () {
 		$group = filegroup($log);
 
 		if ($owner !== false) {
-			$ext = date('Ymd');
+			$ext = $date_log->format('Ymd');
 
 			if (file_exists($log . '-' . $ext)) {
-				$ext = date('YmdHis');
+				$ext_inc = 1;
+				while (file_exists($log . '-' . $ext . '-' . $ext_inc) && $ext_inc < 99) {
+					$ext_inc++;
+				}
+				$ext = $ext . '-' . $ext_inc;
 			}
 
 			if (rename($log, $log . '-' . $ext)) {
@@ -225,15 +254,15 @@ function logrotate_rotatenow () {
 				chown($log, $owner);
 				chgrp($log, $group);
 				chmod($log, $perms);
-				cacti_log('Cacti Log Rotation - Created Log ' . basename($log) . '-' . $ext);
+				cacti_log('Cacti Log Rotation - Created Log ' . basename($log) . '-' . $ext, true, 'MAINT');
 			} else {
-				cacti_log('Cacti Log Rotation - ERROR: Could not rename ' . basename($log) . ' to ' . basename($log) . '-' . $ext);
+				cacti_log('Cacti Log Rotation - ERROR: Could not rename ' . basename($log) . ' to ' . basename($log) . '-' . $ext, true, 'MAINT');
 			}
 		} else {
-			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your log directory');
+			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your log directory', true, 'MAINT');
 		}
 	} else {
-		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Directory / Log not writable.');
+		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Directory / Log not writable.', true, 'MAINT');
 	}
 
 	logrotate_cleanold();
@@ -274,19 +303,27 @@ function logrotate_cleanold () {
 	}
 
 	if (sizeof($dir)) {
+		$run_time = time();
+		$date     = new DateTime();
+		$date_log = $date->setTimestamp($run_time)->modify('-'.$r.'day');
+		$e = $date_log->format('Ymd');
+		cacti_log('Cacti Log Rotation - Purging all logs before '.$e, true, 'MAINT');
 		foreach ($dir as $d) {
 			if (substr($d, 0, $baseloglen) == $baselogfile && strlen($d) >= $baseloglen + 8) {
-				$e = date('Ymd', time() - ($r * 86400));
 				$f = substr($d, 10, 8);
 
 				if ($f < $e) {
 					if (is_writable(dirname($logfile) . '/' . $d)) {
 						@unlink(dirname($logfile) . '/' . $d);
-						cacti_log('Cacti Log Rotation - Purging Log : ' . $d);
+						cacti_log('Cacti Log Rotation - Purging Log : ' . $d, true, 'MAINT');
 					} else {
-						cacti_log('Cacti Log Rotation - ERROR: Can not purge log : ' . $d);
+						cacti_log('Cacti Log Rotation - ERROR: Can not purge log : ' . $d, true, 'MAINT');
 					}
+				} else {
+					cacti_log('Cacti Log Rotation - NOTE: Not expired, keeping log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_HIGH);
 				}
+			} else {
+				cacti_log('Cacti Log Rotation - NOTE: File not in expected naming format, ignoring : ' . $d, true, 'MAINT', POLLER_VERBOSITY_HIGH);
 			}
 		}
 	}

@@ -25,17 +25,19 @@ var theme;
 var myRefresh;
 var userMenuTimer;
 var graphMenuTimer;
-var graphMenuElement=0;
-var pulsating=true;
-var pageLoaded=false;
-var shiftPressed=false;
-var messageTimer=null;
+var graphMenuElement = 0;
+var pulsating = true;
+var pageLoaded = false;
+var shiftPressed = false;
+var sessionMessage = null;
+var sessionMessageOpen = null;
+var sessionMessageTimer = null;
 var myTitle;
 var myHref;
-var lastPage=null;
-var statePushed=false;
-var popFired=false;
-var hostInfoHeight=0;
+var lastPage = null;
+var statePushed = false;
+var popFired = false;
+var hostInfoHeight = 0;
 var menuOpen = null;
 var menuHideResponsive = null;
 var marginLeft = null;
@@ -657,6 +659,100 @@ function applySkin() {
 	$.when.apply(this, showPage).done(function() {
 		responsiveUI('force');
 	});
+
+	displayMessages();
+}
+
+function displayMessages() {
+	var error   = false;
+	var title   = '';
+	var header  = '';
+
+	if (typeof sessionMessageTimer === 'function') {
+		clearTimeout(sessionMessageTimer);
+	}
+
+	if (typeof sessionMessage.type != 'undefined') {
+		if (sessionMessage.type == 'error') {
+			title = errorReasonTitle;
+			header = errorOnPage;
+			var sessionMessageButtons = {
+				'Ok': {
+					text: sessionMessageOk,
+					id: 'btnSessionMessageOk',
+					click: function() {
+						$(this).dialog('close');
+					}
+				}
+			};
+
+			sessionMessageOpen = {};
+		} else {
+			title = sessionMessageTitle;
+			header = sessionMessageSave;
+			var sessionMessageButtons = {
+				'Pause': {
+					text: sessionMessagePause,
+					id: 'btnSessionMessagePause',
+					click: function() {
+						if (sessionMessageTimer != null) {
+							clearInterval(sessionMessageTimer);
+							sessionMessageTimer = null;
+						}
+						$('#btnSessionMessagePause').remove();
+						$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + '</span>');
+					}
+				},
+				'Ok': {
+					text: sessionMessageOk,
+					id: 'btnSessionMessageOk',
+					click: function() {
+						$(this).dialog('close');
+					}
+				}
+			};
+
+			sessionMessageOpen = function() {
+				sessionMessageCountdown(5000);
+			}
+		}
+
+		returnStr = '<div id="messageContainer" style="display:none">' +
+			'<h4>' + header + '</h4>' +
+			'<p style="display:table-cell;overflow:auto"> ' + sessionMessage.message + '</p>' +
+			'</div>';
+
+		$('#messageContainer').remove();
+		$('body').append(returnStr);
+		$('#messageContainer').dialog({
+			open: sessionMessageOpen,
+			draggable: true,
+			resizable: false,
+			height: 'auto',
+			minWidth: 600,
+			maxWidth: 800,
+			maxHeight: 600,
+			title: title,
+			buttons: sessionMessageButtons
+		});
+	}
+}
+
+function sessionMessageCountdown(time) {
+	var sessionMessageTimeLeft = (time / 1000);
+
+	$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + ' (' + sessionMessageTimeLeft + ')</span>');
+
+	sessionMessageTimer = setInterval(function() {
+		sessionMessageTimeLeft--;
+
+		$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + ' (' + sessionMessageTimeLeft + ')</span>');
+
+		if (sessionMessageTimeLeft <= 0) {
+			clearInterval(sessionMessageTimer);
+			$('#messageContainer').dialog('close');
+		}
+	}, 1000);
 }
 
 function markFilterTDs(child, filterNum) {
@@ -1301,45 +1397,47 @@ function getPresentHTTPError(data) {
 		errorSub  = data.statusText;
 		errorText = errorReasonUnexpected;
 
-		var dataText = data.responseText;
+		if (typeof data.responseText != 'undefined') {
+			var dataText = data.responseText;
 
-		var title_match = dataText.match(/<title>(.*?)<\/title>/);
-		var head_match  = dataText.match(/<h1>(.*?)<\/h1>/);
-		var para_match  = dataText.match(/<p>(.*?)<\/p>/);
+			var title_match = dataText.match(/<title>(.*?)<\/title>/);
+			var head_match  = dataText.match(/<h1>(.*?)<\/h1>/);
+			var para_match  = dataText.match(/<p>(.*?)<\/p>/);
 
-		if (title_match != null) {
-			var errorSub = title_match[1];
-		}
-
-		if (head_match != null) {
-			var errorSub = head_match[1];
-		}
-
-		if (para_match != null) {
-			var errorText = para_match[1];
-		}
-
-		returnStr = '<div id="httperror" style="display:none">' +
-			'<h4>' + errorOnPage + '</h4><hr>' +
-			'<div style="padding-bottom: 5px;"><div style="display:table-cell;width:75px"><b>' + errorNumberPrefix + '</b></div> ' +
-			'<div style="display:table-cell"> ' + errorStr + ' ' + errorSub + '</div></div>' +
-			'<div><div style="display:table-cell;width:75px"><b>'  + errorReasonPrefix + '</b></div> ' +
-			'<div style="display:table-cell"> ' + errorText + '</div></div>' +
-			'</div></div>';
-
-		$('#httperror').remove();
-		$('body').append(returnStr);
-		$('#httperror').dialog({
-			resizable: false,
-			height: 'auto',
-			width: 400,
-			title: errorReasonTitle,
-			buttons: {
-				Ok: function() {
-					$(this).dialog('close');
-				}
+			if (title_match != null) {
+				var errorSub = title_match[1];
 			}
-		});
+
+			if (head_match != null) {
+				var errorSub = head_match[1];
+			}
+
+			if (para_match != null) {
+				var errorText = para_match[1];
+			}
+
+			returnStr = '<div id="httperror" style="display:none">' +
+				'<h4>' + errorOnPage + '</h4><hr>' +
+				'<div style="padding-bottom: 5px;"><div style="display:table-cell;width:75px"><b>' + errorNumberPrefix + '</b></div> ' +
+				'<div style="display:table-cell"> ' + errorStr + ' ' + errorSub + '</div></div>' +
+				'<div><div style="display:table-cell;width:75px"><b>'  + errorReasonPrefix + '</b></div> ' +
+				'<div style="display:table-cell"> ' + errorText + '</div></div>' +
+				'</div></div>';
+
+			$('#httperror').remove();
+			$('body').append(returnStr);
+			$('#httperror').dialog({
+				resizable: false,
+				height: 'auto',
+				width: 400,
+				title: errorReasonTitle,
+				buttons: {
+					Ok: function() {
+						$(this).dialog('close');
+					}
+				}
+			});
+		}
 	}
 }
 
@@ -2050,7 +2148,7 @@ function removeSpikesStdDev(local_graph_id) {
 }
 
 function removeSpikesVariance(local_graph_id) {
-	strURL = "spikekill.php?method=variance&local_graph_id="+local_graph_id;
+	strURL = 'spikekill.php?method=variance&local_graph_id='+local_graph_id;
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2095,7 +2193,7 @@ function removeRangeFill(local_graph_id) {
 }
 
 function dryRunStdDev(local_graph_id) {
-	strURL = "spikekill.php?method=stddev&dryrun=true&local_graph_id="+local_graph_id;
+	strURL = 'spikekill.php?method=stddev&dryrun=true&local_graph_id='+local_graph_id;
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2112,7 +2210,7 @@ function dryRunStdDev(local_graph_id) {
 }
 
 function dryRunVariance(local_graph_id) {
-	strURL = "spikekill.php?method=variance&dryrun=true&local_graph_id="+local_graph_id;
+	strURL = 'spikekill.php?method=variance&dryrun=true&local_graph_id='+local_graph_id;
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2236,37 +2334,59 @@ function redrawGraph(graph_id) {
 
 function initializeGraphs() {
 	$.ajaxQ.abortAll();
-	$('a[id$="_mrtg"]').unbind('click').click(function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
-		$.ajaxQ.abortAll();
-		$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false')
-			.done(function(data) {
-				checkForLogout(data);
 
-				$('#main').empty().hide();
-				$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">'+timeGraphView+'</a></li>');
-				$('#zoom-container').remove();
-				$('div[class^="ui-"]').remove();
-				$('#main').html(data);
-				applySkin();
-				clearTimeout(myRefresh);
-			})
-			.fail(function(data) {
-				getPresentHTTPError(data);
-			}
-		);
+	$('a[id$="_mrtg"]').each(function() {
+		graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
+
+		$(this).attr('href', urlPath+'graph.php?local_graph_id='+graph_id).addClass('linkEditMain');;
+
+		$(this).unbind('click').click(function(event) {
+			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
+			event.preventDefault();
+			event.stopPropagation();
+			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
+			$.ajaxQ.abortAll();
+			$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false')
+				.done(function(data) {
+					checkForLogout(data);
+
+					$('#main').empty().hide();
+					$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">'+timeGraphView+'</a></li>');
+					$('#zoom-container').remove();
+					$('div[class^="ui-"]').remove();
+					$('#main').html(data);
+					applySkin();
+					clearTimeout(myRefresh);
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				}
+			);
+		});
 	});
 
-	$('a[id$="_csv"]').unbind('click').click(function(event) {
-		event.preventDefault();
-		event.stopPropagation();
+	$('a[id$="_csv"]').each(function() {
 		graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
-		document.location = urlPath+
+
+		// Disable context menu
+		$(this).children().contextmenu(function() {
+			return false;
+		});
+
+		$(this).attr('href',urlPath+
 			'graph_xport.php?local_graph_id='+graph_id+
 			'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+
-			'&graph_end='+getTimestampFromDate($('#date2').val());
+			'&graph_end='+getTimestampFromDate($('#date2').val())).addClass('linkEditMain');
+
+		$(this).unbind('click').click(function(event) {
+			graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
+			event.preventDefault();
+			event.stopPropagation();
+			document.location = urlPath+
+				'graph_xport.php?local_graph_id='+graph_id+
+				'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+
+				'&graph_end='+getTimestampFromDate($('#date2').val());
+		});
 	});
 
 	$('#form_graph_view').unbind('submit').on('submit', function(event) {
@@ -2366,51 +2486,69 @@ function initializeGraphs() {
 		realtimeGrapher();
 	});
 
-	$('a[id$="_util"]').unbind('click').click(function(event) {
-		event.preventDefault();
-		event.stopPropagation();
+	$('a[id$="_util"]').each(function() {
 		graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
-		$.ajaxQ.abortAll();
-		$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()))
-			.done(function(data) {
-				checkForLogout(data);
+		$(this).attr('href',urlPath+
+			'graph.php?action=zoom&local_graph_id='+graph_id+
+			'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+
+			'&graph_end='+getTimestampFromDate($('#date2').val())).addClass('linkEditMain');
 
-				$('#main').empty().hide();
-				$('div[class^="ui-"]').remove();
-				$('#main').html(data);
-				$('#breadcrumbs').append('<li><a id="nav_butil" href="#">'+utilityView+'</a></li>');
-				applySkin();
-				clearTimeout(myRefresh);
-			})
-			.fail(function(data) {
-				getPresentHTTPError(data);
-			}
-		);
+		$(this).unbind('click').click(function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
+			$.ajaxQ.abortAll();
+			$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()))
+				.done(function(data) {
+					checkForLogout(data);
+
+					$('#main').empty().hide();
+					$('div[class^="ui-"]').remove();
+					$('#main').html(data);
+					$('#breadcrumbs').append('<li><a id="nav_butil" href="#">'+utilityView+'</a></li>');
+					applySkin();
+					clearTimeout(myRefresh);
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				}
+			);
+		});
 	});
 
-	$('a[id$="_realtime"]').unbind('click').click(function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		graph_id=$(this).attr('id').replace('graph_','').replace('_realtime','');
+	$('a[id$="_realtime"]').each(function() {
+		// Disable right click
+		$(this).children().bind('contextmenu', function(event) {
+			return false;
+		});
 
-		if (realtimeArray[graph_id]) {
-			$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
-			$(this).html("<img class='drillDown' title='"+realtimeClickOn+"' alt='' src='"+urlPath+"images/chart_curve_go.png'>");
-			$(this).find('img').tooltip().zoom({
-				inputfieldStartTime : 'date1',
-				inputfieldEndTime : 'date2',
-				serverTimeOffset : timeOffset
-			});
-			realtimeArray[graph_id] = false;
-			setFilters();
-		} else {
-			keepRealtime[graph_id]  = $('#wrapper_'+graph_id).html();
-			$(this).html("<i style='text-align:center;padding:0px;' title='"+realtimeClickOff+"' class='drillDown fa fa-circle-o-notch fa-spin'/>");
-			$(this).find('i').tooltip();
-			realtimeArray[graph_id] = true;
-			setFilters();
-			realtimeGrapher();
-		}
+		$(this).unbind('click').click(function(event) {
+			graph_id=$(this).attr('id').replace('graph_','').replace('_realtime','');
+
+			event.preventDefault();
+			event.stopPropagation();
+
+			if (realtimeArray[graph_id]) {
+				$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
+				$(this).html("<img class='drillDown' title='"+realtimeClickOn+"' alt='' src='"+urlPath+"images/chart_curve_go.png'>");
+
+				$('graph_id'+graph_id).tooltip().zoom({
+					inputfieldStartTime : 'date1',
+					inputfieldEndTime : 'date2',
+					serverTimeOffset : timeOffset
+				});
+
+				realtimeArray[graph_id] = false;
+				setFilters();
+			} else {
+				keepRealtime[graph_id]  = $('#wrapper_'+graph_id).html();
+				$(this).html("<i style='text-align:center;padding:0px;' title='"+realtimeClickOff+"' class='drillDown fa fa-circle-o-notch fa-spin'/>");
+				$(this).find('i').tooltip();
+				realtimeArray[graph_id] = true;
+				setFilters();
+				realtimeGrapher();
+			}
+		});
 	});
 }
 

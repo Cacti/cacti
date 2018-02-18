@@ -1873,7 +1873,7 @@ function html_spikekill_setting($name) {
 function html_spikekill_menu($local_graph_id) {
 	$ravgnan  = '<li>' . __('Replacement Method') . '<ul>';
 	$ravgnan .= '<li class="skmethod" id="method_avg"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Average') . '</li>';
-	$ravgnan .= '<li class="skmethod" id="method_nan"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Nan\'s') . '</li>';
+	$ravgnan .= '<li class="skmethod" id="method_nan"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('NaN\'s') . '</li>';
 	$ravgnan .= '<li class="skmethod" id="method_last"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'last' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Last Known Good') . '</li>';
 	$ravgnan .= '</ul></li>';
 
@@ -1936,6 +1936,10 @@ function html_spikekill_js() {
 				$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 				spikeKillOpen = false;
 			}
+		});
+
+		$('span.spikekill').children().contextmenu(function() {
+			return false;
 		});
 
 		$('span.spikekill').unbind().click(function() {

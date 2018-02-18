@@ -131,7 +131,6 @@ function settings() {
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
 	if (read_config_option('auth_method') == 0) {
 		raise_message(6);
-		display_output_messages();
 		return;
 	}
 
@@ -419,7 +418,7 @@ function settings() {
 		});
 
 		$('input[value="<?php print __esc('Return');?>"]').unbind().click(function(event) {
-			document.location = '<?php print html_escape($_SESSION['profile_referer']);?>';
+			document.location = '<?php print html_escape(isset($_SESSION['profile_referer']) ? $_SESSION['profile_referer']:'auth_profile.php');?>';
 		});
 	});
 

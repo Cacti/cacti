@@ -52,9 +52,6 @@ if (isset_request_var('update_policy')) {
 		break;
 	case 'user_edit':
 		top_header();
-		if (is_error_message() && get_nfilter_request_var('header')) {
-			display_output_messages();
-		}
 		user_edit();
 		bottom_footer();
 
@@ -1583,7 +1580,7 @@ function user_realms_edit($header_label) {
 	print "<div class='cactiTable' style='width:100%;text-align:left;'>
 		<div>
 			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . " $header_label</span></div>
-			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "' onClick='selectAllRealms(this.checked)'></a><?php }?><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></span></div>
+			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "' onClick='selectAllRealms(this.checked)'></a><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></span></div>
 		</div>
 	</div>\n";
 
@@ -1733,7 +1730,7 @@ function user_realms_edit($header_label) {
 			}
 
 			if ($break || $i == 1) {
-				print '<strong>' . $r['name'] . "</strong><br>\n";
+				print "<i>" . $r['name'] . "</i><br>\n";
 			}
 
 			$realm = $r['realm_id'] + 100;

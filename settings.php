@@ -200,6 +200,13 @@ default:
 	} else {
 		$current_tab = get_request_var('tab');
 	}
+
+	// If the tab no longer exists, use the first
+	if (!isset($tabs[$current_tab])) {
+		$current_tab = array_keys($tabs);
+		$current_tab = $current_tab[0];
+	}
+
 	$_SESSION['sess_settings_tab'] = $current_tab;
 
 	/* draw the categories tabs on the top of the page */

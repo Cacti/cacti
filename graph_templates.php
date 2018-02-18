@@ -522,7 +522,7 @@ function template_edit() {
 		if ($form_array[$field_name]['method'] != 'spacer') {
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
-				'friendly_name' => __esc('Use Per-Graph Value (Ignore this Value)'),
+				'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the value on the right during Graph creation.'),
 				'value' => (isset($template_graph['t_' . $field_name]) ? $template_graph['t_' . $field_name] : '')
 			);
 		}

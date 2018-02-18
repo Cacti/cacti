@@ -31,6 +31,8 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 /* We are not talking to the browser */
 $no_http_headers = true;
 
+ini_set('zlib.output_compression', '0');
+
 include(dirname(__FILE__).'/../include/global.php');
 include_once($config['base_path'] . '/lib/import.php');
 include_once($config['base_path'] . '/lib/utility.php');

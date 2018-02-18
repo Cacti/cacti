@@ -12,26 +12,58 @@ Cacti CHANGELOG
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
 
+1.1.36
+-issue#1211: CDEF and VDEF Item Edit do not use form API
+-issue#1331: Maintenance time should occur at midnight, not random time in day
+-issue#1334: Console->Users->(Edit) Permissions checkmark descriptions missing
+-issue#1336: Fix issue with $config not being defined
+-issue#1338: Allow automation to be run in debug mode from GUI
+-issue#1339: First graph of second page does not render
+-issue#1340: Unable to open Time Graph View in new tab
+-issue#1348: Toggle context menu of Zoom
+-issue#1351: Errorimage does not render on systems without GD ttf support
+-issue#1353: New install with missing config.php silently throws errors
+-issue#1355: If only one tree exists, don't show move arrows
+-issue#1357: Data Profile - Disable fields shown temporarily as editable
+-issue#1359: Settings page can generate error if expected tab not found
+-issue#1362: DSStats Avg/Peak function broken due to change in RRDtool processing
+-issue#1365: Plugin Management - Reject invalid folder names
+-issue#1366: Improve error/info message display
+-issue: Fixed some language string inconsistencies
+-issue: Update filter layout of Data Query Cache to match Poller Cache
+-issue: Remove spurious php code from checkbox area in user admin
+-issue: Minor plugin permissions format change
+-issue: Implementation of error handling causing errors on New Graphs page
+-issue: Remove deprecated setting fom DSStats settings
+-issue: Move several DSStats logic to standard functions
+-issue: Disable graph context menu items that have no right context
+-issue: Resolve JavaScript errors when coming out of Realtime
+-issue: snmpagent generates a Fatal error when plugin directories duplicated
+-issue: Undefined index 'profile_referer' in auth_profile.php
+-feature: Allow searching of SNMP Index in View Data Query Cache
+-feature: Updated Dutch translations
+
 1.1.35
--issue#114: *all_max_peak* percentile calculations wrong
+-issue#114: *all_max_peak* percentile calculations incorrect
 -issue#430: Pressing Back often fails to work as expected
--issue#564: Can't move items in graph template as desired
+-issue#564: Fail to move items in graph template as desired
 -issue#981: Hyperlinks for Data Profile stats
 -issue#993: Realtime not working on remote pollers for certain data query
 -issue#1244: Errors importing templates with deprecated hashes
--issue#1251: Make 3rd mouse button configurable for all zoom modes. Set default to zoom out.
--issue#1281: The variable max_oids is for bulkget and not bulkwalk operations
+-issue#1251: Allow zoom out through mouse mmiddle button
+-issue#1281: Max OIDs setting is for bulkget and not bulkwalk operations
 -issue#1286: Correct CHUNKED_ENCODING error when retrieving graph with some browsers
--issue#1306: Fix issue #1306 where multi-value args are not parsing correctly
+-issue#1306: Graphs are not always refreshed properly
 -issue#1309: Provide meaningful authentication errors in graph_json.php and graph_image.php
--issue#1310: Unable to return to previous page from auth_changepassword.php
+-issue#1310: Return button fails on change password page
 -issue#1315: Realtime not working on local data collector
--issue#1316: CDEF Item Value dialog doesn't update creating items
--issue#1319: FrontEnd + Remote Poller - Connection timeout issue
--issue#1321: Use of legacy RRDtool pipelining functions within DSSTATS
+-issue#1316: CDEF Item Value dialog does not update creating items
+-issue#1319: Front end + remote poller - connection timeout issue
+-issue#1321: Use RRDtool pipelining functions within DSSTATS
 -issue#1323: Enhance form layout for readability
+-issue#1329: Spelling errors in automation_networks.php
 -issue: Validate regular expressions if specified in add_graphs.php
--issue: Ensure compression levels are consisten when importing package
+-issue: Ensure compression levels are consistent when importing package
 
 1.1.34
 -issue#1040: PHP version 7.2 - ERROR PHP WARNING: sizeof()

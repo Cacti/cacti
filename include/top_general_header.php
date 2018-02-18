@@ -63,15 +63,12 @@ $using_guest_account = false;
 		</table>
 	</div>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;' id='main'>
 	<?php } else { ?>
 	<div id='navigation_right' class='cactiConsoleContentArea' style='margin-left:0px;'>
-		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;' id='main'>
 	<?php } ?>
 <?php } else { ?>
 	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
 		<div style='position:relative;' id='main' role='main'>
 <?php } ?>

@@ -560,7 +560,7 @@ function template_edit() {
 		} else {
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
-				'friendly_name' => __esc('Use Per-Data Source Value (Ignore this Value)'),
+				'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation.'),
 				'value' => (isset($template_data['t_' . $field_name]) ? $template_data['t_' . $field_name] : '')
 			);
 		}
@@ -631,7 +631,7 @@ function template_edit() {
 		$form_array[$field_name]['value'] = (isset($template_rrd) ? $template_rrd[$field_name] : '');
 		$form_array[$field_name]['sub_checkbox'] = array(
 			'name' => 't_' . $field_name,
-			'friendly_name' => __('Use Per-Data Source Value (Ignore this Value)'),
+			'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation.'),
 			'value' => (isset($template_rrd) ? $template_rrd['t_' . $field_name] : '')
 		);
 	}
@@ -703,7 +703,7 @@ function template_edit() {
 
 				?>
 				<div class='formColumnLeft'>
-					<div class='formFieldName'><?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, '', '', '', get_request_var('id'), '', __('Use Per-Data Source Value (Ignore this Value)'));?><?php print html_escape($field['name']);?><div class='formTooltip'><?php print display_tooltip($help);?></div>
+					<div class='formFieldName'><?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, '', '', '', get_request_var('id'), '', __esc('Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation.'));?><?php print html_escape($field['name']);?><div class='formTooltip'><?php print display_tooltip($help);?></div>
 					</div>
 				</div>
 				<div class='formColumnRight'>
