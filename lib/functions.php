@@ -472,7 +472,7 @@ function display_output_messages() {
 					switch ($messages[$current_message_id]['type']) {
 					case 'info':
 						if ($error_message == false) {
-							print "<div id='message' class='textInfo messageBox'>";
+							print "<div id='message' class='textInfo'>";
 							print $message;
 							print '</div>';
 
@@ -481,7 +481,7 @@ function display_output_messages() {
 						}
 						break;
 					case 'error':
-						print "<div id='message' class='textError messageBox'>";
+						print "<div id='message' class='textError'>";
 						print "Error: $message";
 						print '</div>';
 						break;
@@ -502,7 +502,7 @@ function display_output_messages() {
      the pre-defined error messages
    @arg $text - the actual text of the error message to display */
 function display_custom_error_message($message) {
-	print "<div id='message' class='textError messageBox'>";
+	print "<div id='message' class='textError'>";
 	print "Error: $message";
 	print '</div>';
 }
@@ -3558,7 +3558,6 @@ function bottom_footer() {
 	} else {
 		/* display output messages */
 		display_messages();
-		display_output_messages();
 
 		/* we use this session var to store field values for when a save fails,
 		this way we can restore the field's previous values. we reset it here, because
@@ -3579,33 +3578,58 @@ function bottom_footer() {
 function display_messages() {
 	?>
 	<script type='text/javascript'>
-	var message = "<?php print display_output_messages();?>";
-
+	var isSessionMessageError = "<?php print is_error_message(); ?>";
+	var textSessionMessage = "<?php print display_output_messages();?>";
 	$(function() {
 		if (typeof messageTimer === 'function') {
 			clearTimeout(messageTimer);
 		}
 
-		if (message != '') {
-			$('.messageContainer').empty().show().html(message);
-			message = '';
+		if (textSessionMessage != '') {
+			if (isSessionMessageError) {
+				messageTitle = 'ERROR';
+			} else {
+				messageTitle = 'Notice';
+			}
+			/* 				'<h4>' + messageTitle + '</h4><hr>' + */
+			returnStr = '<div id="sess_messages" style="display:none">' +
+				'<div style="display:table-cell"> ' + textSessionMessage +
+				'</div></div>';
 
-			messageTimer = setTimeout(function() {
-				$('#message_container').fadeOut(1000);
-			}, 2000);
+			$('#sess_messages').remove();
+			$('body').append(returnStr);
 
 			window.scrollTo(0,0);
+
+			$('#sess_messages').dialog({
+				autoOpen: false,
+				resizable: false,
+				height: 'auto',
+				width: 400,
+				title: messageTitle
+			});
+			if (!isSessionMessageError) {
+				$('#sess_messages').dialog('option',{
+					open: function() {
+						messageTimer = setTimeout(function() {
+							$('#sess_messages').dialog('close');
+						}, 3000);
+					}
+				});
+			} else {
+				$('#sess_messages').dialog('option','buttons',{
+					Ok: function() {
+						$(this).dialog('close');
+					}
+				});
+			}
+			$('#sess_messages').dialog('open');
 		}
 
 		if (refreshMSeconds == null || refreshMSeconds < 5000) {
 			refreshMSeconds=999999999;
 		}
-
-		$(document).submit(function() {
-			$('#message_container').hide().empty();
-		});
 	});
-
 	</script>
 	<?php
 }
