@@ -46,19 +46,19 @@ $pluginslist = retrieve_plugin_list();
 
 /* Check to see if we are installing, etc... */
 $modes = array(
-	'installold', 
-	'uninstallold', 
-	'install', 
-	'uninstall', 
-	'disable', 
-	'enable', 
-	'check', 
-	'moveup', 
+	'installold',
+	'uninstallold',
+	'install',
+	'uninstall',
+	'disable',
+	'enable',
+	'check',
+	'moveup',
 	'movedown'
 );
 
 if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $modes) && isset_request_var('id')) {
-	get_filter_request_var('id', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9]+)$/')));
+	get_filter_request_var('id', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9 _]+)$/')));
 
 	$mode = get_nfilter_request_var('mode');
 	$id   = sanitize_search_string(get_request_var('id'));
@@ -180,22 +180,25 @@ function plugins_load_temp_table() {
 					if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = __('Not Stated');
 					if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
 					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['longname'] = ucfirst($file);
+					if (!isset($cinfo[$file]['version']))  $cinfo[$file]['version']  = __('Unknown');
 
 					$cinfo[$file]['status'] = 0;
 					$pluginslist[] = $file;
 
-					if ($file != $cinfo[$file]['name']) {
+					if (strstr($file, ' ') !== false) {
+						$cinfo[$file]['status'] = -3;
+					} elseif ($file != $cinfo[$file]['name']) {
 						$cinfo[$file]['status'] = -2;
 					} elseif (!isset($cinfo[$file]['compat']) || cacti_version_compare(CACTI_VERSION, $cinfo[$file]['compat'], '<')) {
 						$cinfo[$file]['status'] = -1;
 					}
 				} else {
 					$cinfo[$file] = array(
-						'name'     => ucfirst($file), 
-						'longname' => '', 
-						'author'   => '', 
-						'homepage' => '', 
-						'version'  => '', 
+						'name'     => ucfirst($file),
+						'longname' => ucfirst($file),
+						'author'   => '',
+						'homepage' => '',
+						'version'  => __('Unknown'),
 						'compat'   => '0.8'
 					);
 
@@ -463,7 +466,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 	if ($plugin['status'] == '-1') {
 		$status = plugin_is_compatible($plugin['directory']);
 		$row .= "<td class='nowrap'>" . __('Not Compatible, %s', $status['requires']) . "</td>\n";
-	} elseif ($plugin['status'] == -2) {
+	} elseif ($plugin['status'] == -3 || $plugin['status'] == -2) {
 		$row .= "<td class='nowrap'>" . __('Plugin Error') . "</td>\n";
 	} else {
 		$row .= "<td class='nowrap'>" . $status_names[$plugin['status']] . "</td>\n";
@@ -517,6 +520,9 @@ function plugin_actions($plugin) {
 		case '4':	// Installed but not active
 			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
 			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/accept.png'></a>";
+			break;
+		case '-3': // Plugins can have spaces in their names
+			$link .= "<a href='#' title='" . __esc('Plugin directories can not include spaces') . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
 			break;
 		case '-2': // Naming issues
 			$path      = $config['base_path'] . '/plugins/' . $plugin['directory'];
