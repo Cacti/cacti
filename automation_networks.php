@@ -290,10 +290,7 @@ function form_actions() {
 					api_networks_disable($item);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '4') { /* run now */
-				$discover_debug = false;
-				if (isset_request_var('discover_debug')) {
-					$discover_debug = true;
-				}
+				$discover_debug = isset_request_var('discover_debug');
 
 				foreach($selected_items as $item) {
 					api_networks_discover($item, $discover_debug);
