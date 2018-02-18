@@ -52,9 +52,6 @@ if (isset_request_var('update_policy')) {
 		break;
 	case 'user_edit':
 		top_header();
-		if (is_error_message() && get_nfilter_request_var('header')) {
-			display_output_messages();
-		}
 		user_edit();
 		bottom_footer();
 

@@ -131,7 +131,6 @@ function settings() {
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
 	if (read_config_option('auth_method') == 0) {
 		raise_message(6);
-		display_output_messages();
 		return;
 	}
 

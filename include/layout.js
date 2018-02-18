@@ -25,17 +25,19 @@ var theme;
 var myRefresh;
 var userMenuTimer;
 var graphMenuTimer;
-var graphMenuElement=0;
-var pulsating=true;
-var pageLoaded=false;
-var shiftPressed=false;
-var messageTimer=null;
+var graphMenuElement = 0;
+var pulsating = true;
+var pageLoaded = false;
+var shiftPressed = false;
+var sessionMessage = null;
+var sessionMessageOpen = null;
+var sessionMessageTimer = null;
 var myTitle;
 var myHref;
-var lastPage=null;
-var statePushed=false;
-var popFired=false;
-var hostInfoHeight=0;
+var lastPage = null;
+var statePushed = false;
+var popFired = false;
+var hostInfoHeight = 0;
 var menuOpen = null;
 var menuHideResponsive = null;
 var marginLeft = null;
@@ -657,6 +659,107 @@ function applySkin() {
 	$.when.apply(this, showPage).done(function() {
 		responsiveUI('force');
 	});
+
+	displayMessages();
+}
+
+function displayMessages() {
+	var error   = false;
+	var title   = '';
+	var header  = '';
+
+	if (typeof sessionMessageTimer === 'function') {
+		clearTimeout(sessionMessageTimer);
+	}
+
+	if (typeof sessionMessage.type != 'undefined') {
+		if (sessionMessage.type == 'error') {
+			title = errorReasonTitle;
+			header = errorOnPage;
+			var sessionMessageButtons = {
+				'Ok': {
+					text: sessionMessageOk,
+					id: 'btnSessionMessageOk',
+					click: function() {
+						$(this).dialog('close');
+					}
+				}
+			};
+
+			sessionMessageOpen = {};
+
+			returnStr = '<div id="messageContainer" style="display:none">' +
+				'<h4>' + header + '</h4><hr>' +
+				'<div style="padding-bottom: 5px;">' +
+				'<div style="display:table-cell;overflow:auto"> ' + sessionMessage.message + '</div></div>' +
+				'</div>';
+		} else {
+			title = sessionMessageTitle;
+			header = sessionMessageSave;
+			var sessionMessageButtons = {
+				'Pause': {
+					text: sessionMessagePause,
+					id: 'btnSessionMessagePause',
+					click: function() {
+						if (sessionMessageTimer != null) {
+							clearInterval(sessionMessageTimer);
+							sessionMessageTimer = null;
+						}
+						$('#btnSessionMessagePause').remove();
+						$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + '</span>');
+					}
+				},
+				'Ok': {
+					text: sessionMessageOk,
+					id: 'btnSessionMessageOk',
+					click: function() {
+						$(this).dialog('close');
+					}
+				}
+			};
+
+			sessionMessageOpen = function() {
+				sessionMessageCountdown(5000);
+			}
+
+			returnStr = '<div id="messageContainer" style="display:none">' +
+				'<h4>' + header + '</h4><hr>' +
+				'<div style="padding-bottom: 5px;">' +
+				'<div style="display:table-cell;overflow:auto"> ' + sessionMessage.message + '</div></div>' +
+				'</div>';
+		}
+
+		$('#messageContainer').remove();
+		$('body').append(returnStr);
+		$('#messageContainer').dialog({
+			open: sessionMessageOpen,
+			modal: true,
+			resizable: false,
+			height: 'auto',
+			minWidth: 600,
+			maxWidth: 800,
+			maxHeight: 600,
+			title: title,
+			buttons: sessionMessageButtons
+		});
+	}
+}
+
+function sessionMessageCountdown(time) {
+	var sessionMessageTimeLeft = (time / 1000);
+
+	$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + ' (' + sessionMessageTimeLeft + ')</span>');
+
+	sessionMessageTimer = setInterval(function() {
+		sessionMessageTimeLeft--;
+
+		$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + ' (' + sessionMessageTimeLeft + ')</span>');
+
+		if (sessionMessageTimeLeft <= 0) {
+			clearInterval(sessionMessageTimer);
+			$('#messageContainer').dialog('close');
+		}
+	}, 1000);
 }
 
 function markFilterTDs(child, filterNum) {
