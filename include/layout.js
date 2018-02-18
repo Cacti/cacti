@@ -687,12 +687,6 @@ function displayMessages() {
 			};
 
 			sessionMessageOpen = {};
-
-			returnStr = '<div id="messageContainer" style="display:none">' +
-				'<h4>' + header + '</h4><hr>' +
-				'<div style="padding-bottom: 5px;">' +
-				'<div style="display:table-cell;overflow:auto"> ' + sessionMessage.message + '</div></div>' +
-				'</div>';
 		} else {
 			title = sessionMessageTitle;
 			header = sessionMessageSave;
@@ -721,19 +715,18 @@ function displayMessages() {
 			sessionMessageOpen = function() {
 				sessionMessageCountdown(5000);
 			}
-
-			returnStr = '<div id="messageContainer" style="display:none">' +
-				'<h4>' + header + '</h4><hr>' +
-				'<div style="padding-bottom: 5px;">' +
-				'<div style="display:table-cell;overflow:auto"> ' + sessionMessage.message + '</div></div>' +
-				'</div>';
 		}
+
+		returnStr = '<div id="messageContainer" style="display:none">' +
+			'<h4>' + header + '</h4>' +
+			'<p style="display:table-cell;overflow:auto"> ' + sessionMessage.message + '</p>' +
+			'</div>';
 
 		$('#messageContainer').remove();
 		$('body').append(returnStr);
 		$('#messageContainer').dialog({
 			open: sessionMessageOpen,
-			modal: true,
+			draggable: true,
 			resizable: false,
 			height: 'auto',
 			minWidth: 600,

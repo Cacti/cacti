@@ -136,8 +136,8 @@ if (isset($_SESSION['refresh'])) {
 	var errorReasonPrefix='<?php print __('Reason:');?>';
 	var errorReasonTitle='<?php print __('Action failed');?>';
 	var errorReasonUnexpected='<?php print __('The response to the last action was unexpected');?>';
-	var sessionMessageTitle='<?php print __('Save successful');?>';
-	var sessionMessageSave='<?php print __('The Save was successful.  Details below');?>';
+	var sessionMessageTitle='<?php print __('Operation successful');?>';
+	var sessionMessageSave='<?php print __('The Operation was successful.  Details are below');?>';
 	var sessionMessage=<?php print display_output_messages(false);?>;
 	var sessionMessageOk='<?php print __('Ok');?>';
 	var sessionMessagePause='<?php print __('Pause');?>';
