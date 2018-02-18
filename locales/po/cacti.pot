@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-18 10:35-0500\n"
+"POT-Creation-Date: 2018-02-18 17:19-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: /var/www/html/cacti/about.php:29
 #: /var/www/html/cacti/include/global_session.php:115
-#: /var/www/html/cacti/lib/functions.php:2589
+#: /var/www/html/cacti/lib/functions.php:2587
 msgid "About Cacti"
 msgstr ""
 
@@ -176,7 +176,7 @@ msgstr ""
 #: /var/www/html/cacti/aggregate_templates.php:312
 #: /var/www/html/cacti/automation_devices.php:199
 #: /var/www/html/cacti/automation_graph_rules.php:289
-#: /var/www/html/cacti/automation_networks.php:379
+#: /var/www/html/cacti/automation_networks.php:385
 #: /var/www/html/cacti/automation_snmp.php:254
 #: /var/www/html/cacti/automation_snmp.php:338
 #: /var/www/html/cacti/automation_templates.php:166
@@ -233,11 +233,11 @@ msgstr ""
 #: /var/www/html/cacti/pollers.php:297 /var/www/html/cacti/pollers.php:306
 #: /var/www/html/cacti/pollers.php:315 /var/www/html/cacti/sites.php:291
 #: /var/www/html/cacti/tree.php:625 /var/www/html/cacti/tree.php:634
-#: /var/www/html/cacti/tree.php:643 /var/www/html/cacti/user_admin.php:343
-#: /var/www/html/cacti/user_admin.php:383
-#: /var/www/html/cacti/user_admin.php:394
-#: /var/www/html/cacti/user_admin.php:405
-#: /var/www/html/cacti/user_admin.php:427
+#: /var/www/html/cacti/tree.php:643 /var/www/html/cacti/user_admin.php:340
+#: /var/www/html/cacti/user_admin.php:380
+#: /var/www/html/cacti/user_admin.php:391
+#: /var/www/html/cacti/user_admin.php:402
+#: /var/www/html/cacti/user_admin.php:424
 #: /var/www/html/cacti/user_domains.php:227
 #: /var/www/html/cacti/user_domains.php:236
 #: /var/www/html/cacti/user_domains.php:245
@@ -260,7 +260,7 @@ msgstr ""
 #: /var/www/html/cacti/aggregate_templates.php:312
 #: /var/www/html/cacti/automation_devices.php:199
 #: /var/www/html/cacti/automation_graph_rules.php:289
-#: /var/www/html/cacti/automation_networks.php:371
+#: /var/www/html/cacti/automation_networks.php:377
 #: /var/www/html/cacti/automation_snmp.php:229
 #: /var/www/html/cacti/automation_snmp.php:339
 #: /var/www/html/cacti/automation_templates.php:166
@@ -315,11 +315,11 @@ msgstr ""
 #: /var/www/html/cacti/pollers.php:297 /var/www/html/cacti/pollers.php:306
 #: /var/www/html/cacti/pollers.php:315 /var/www/html/cacti/sites.php:291
 #: /var/www/html/cacti/tree.php:625 /var/www/html/cacti/tree.php:634
-#: /var/www/html/cacti/tree.php:643 /var/www/html/cacti/user_admin.php:343
-#: /var/www/html/cacti/user_admin.php:383
-#: /var/www/html/cacti/user_admin.php:394
-#: /var/www/html/cacti/user_admin.php:405
-#: /var/www/html/cacti/user_admin.php:427
+#: /var/www/html/cacti/tree.php:643 /var/www/html/cacti/user_admin.php:340
+#: /var/www/html/cacti/user_admin.php:380
+#: /var/www/html/cacti/user_admin.php:391
+#: /var/www/html/cacti/user_admin.php:402
+#: /var/www/html/cacti/user_admin.php:424
 #: /var/www/html/cacti/user_domains.php:227
 #: /var/www/html/cacti/user_domains.php:236
 #: /var/www/html/cacti/user_domains.php:245
@@ -359,11 +359,11 @@ msgstr ""
 #: /var/www/html/cacti/aggregate_graphs.php:442
 #: /var/www/html/cacti/aggregate_templates.php:316
 #: /var/www/html/cacti/auth_changepassword.php:332
-#: /var/www/html/cacti/auth_profile.php:421
-#: /var/www/html/cacti/auth_profile.php:431
+#: /var/www/html/cacti/auth_profile.php:420
+#: /var/www/html/cacti/auth_profile.php:430
 #: /var/www/html/cacti/automation_devices.php:203
 #: /var/www/html/cacti/automation_graph_rules.php:287
-#: /var/www/html/cacti/automation_networks.php:380
+#: /var/www/html/cacti/automation_networks.php:386
 #: /var/www/html/cacti/automation_snmp.php:254
 #: /var/www/html/cacti/automation_templates.php:170
 #: /var/www/html/cacti/automation_tree_rules.php:284
@@ -387,7 +387,7 @@ msgstr ""
 #: /var/www/html/cacti/permission_denied.php:30
 #: /var/www/html/cacti/permission_denied.php:32
 #: /var/www/html/cacti/pollers.php:319 /var/www/html/cacti/sites.php:295
-#: /var/www/html/cacti/tree.php:647 /var/www/html/cacti/user_admin.php:432
+#: /var/www/html/cacti/tree.php:647 /var/www/html/cacti/user_admin.php:429
 #: /var/www/html/cacti/user_domains.php:258
 #: /var/www/html/cacti/user_group_admin.php:491
 #: /var/www/html/cacti/vdef.php:284
@@ -581,8 +581,8 @@ msgstr ""
 #: /var/www/html/cacti/aggregate_templates.php:538
 #: /var/www/html/cacti/automation_devices.php:448
 #: /var/www/html/cacti/automation_graph_rules.php:747
-#: /var/www/html/cacti/automation_networks.php:1092
-#: /var/www/html/cacti/automation_networks.php:1136
+#: /var/www/html/cacti/automation_networks.php:1098
+#: /var/www/html/cacti/automation_networks.php:1142
 #: /var/www/html/cacti/automation_snmp.php:787
 #: /var/www/html/cacti/automation_templates.php:392
 #: /var/www/html/cacti/automation_tree_rules.php:715
@@ -617,13 +617,13 @@ msgstr ""
 #: /var/www/html/cacti/settings.php:290 /var/www/html/cacti/settings.php:309
 #: /var/www/html/cacti/settings.php:358 /var/www/html/cacti/sites.php:398
 #: /var/www/html/cacti/tree.php:768 /var/www/html/cacti/tree.php:803
-#: /var/www/html/cacti/tree.php:1679 /var/www/html/cacti/user_admin.php:2210
-#: /var/www/html/cacti/user_admin.php:2548
-#: /var/www/html/cacti/user_admin.php:2655
-#: /var/www/html/cacti/user_admin.php:2741
-#: /var/www/html/cacti/user_admin.php:2844
-#: /var/www/html/cacti/user_admin.php:2929
-#: /var/www/html/cacti/user_admin.php:3014
+#: /var/www/html/cacti/tree.php:1679 /var/www/html/cacti/user_admin.php:2207
+#: /var/www/html/cacti/user_admin.php:2545
+#: /var/www/html/cacti/user_admin.php:2652
+#: /var/www/html/cacti/user_admin.php:2738
+#: /var/www/html/cacti/user_admin.php:2841
+#: /var/www/html/cacti/user_admin.php:2926
+#: /var/www/html/cacti/user_admin.php:3011
 #: /var/www/html/cacti/user_domains.php:621
 #: /var/www/html/cacti/user_group_admin.php:1827
 #: /var/www/html/cacti/user_group_admin.php:2152
@@ -651,15 +651,15 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:779
 #: /var/www/html/cacti/include/global_arrays.php:960
 #: /var/www/html/cacti/lib/api_automation.php:281
-#: /var/www/html/cacti/lib/functions.php:2005
+#: /var/www/html/cacti/lib/functions.php:2003
 #: /var/www/html/cacti/lib/html.php:1421 /var/www/html/cacti/lib/html.php:1423
 #: /var/www/html/cacti/lib/html.php:1502
 #: /var/www/html/cacti/lib/html_graph.php:210
 #: /var/www/html/cacti/lib/html_tree.php:669
 #: /var/www/html/cacti/lib/html_tree.php:1078
-#: /var/www/html/cacti/tree.php:1763 /var/www/html/cacti/user_admin.php:989
-#: /var/www/html/cacti/user_admin.php:1233
-#: /var/www/html/cacti/user_admin.php:2576
+#: /var/www/html/cacti/tree.php:1763 /var/www/html/cacti/user_admin.php:986
+#: /var/www/html/cacti/user_admin.php:1230
+#: /var/www/html/cacti/user_admin.php:2573
 #: /var/www/html/cacti/user_group_admin.php:813
 #: /var/www/html/cacti/user_group_admin.php:966
 #: /var/www/html/cacti/user_group_admin.php:2180
@@ -672,7 +672,7 @@ msgstr ""
 #: /var/www/html/cacti/aggregate_templates.php:554
 #: /var/www/html/cacti/automation_devices.php:533
 #: /var/www/html/cacti/automation_graph_rules.php:789
-#: /var/www/html/cacti/automation_networks.php:1102
+#: /var/www/html/cacti/automation_networks.php:1108
 #: /var/www/html/cacti/automation_snmp.php:797
 #: /var/www/html/cacti/automation_templates.php:402
 #: /var/www/html/cacti/automation_tree_rules.php:735
@@ -699,13 +699,13 @@ msgstr ""
 #: /var/www/html/cacti/managers.php:504 /var/www/html/cacti/plugins.php:335
 #: /var/www/html/cacti/pollers.php:527 /var/www/html/cacti/rrdcleaner.php:501
 #: /var/www/html/cacti/sites.php:408 /var/www/html/cacti/tree.php:1689
-#: /var/www/html/cacti/user_admin.php:2220
-#: /var/www/html/cacti/user_admin.php:2580
-#: /var/www/html/cacti/user_admin.php:2665
-#: /var/www/html/cacti/user_admin.php:2769
-#: /var/www/html/cacti/user_admin.php:2854
-#: /var/www/html/cacti/user_admin.php:2939
-#: /var/www/html/cacti/user_admin.php:3024
+#: /var/www/html/cacti/user_admin.php:2217
+#: /var/www/html/cacti/user_admin.php:2577
+#: /var/www/html/cacti/user_admin.php:2662
+#: /var/www/html/cacti/user_admin.php:2766
+#: /var/www/html/cacti/user_admin.php:2851
+#: /var/www/html/cacti/user_admin.php:2936
+#: /var/www/html/cacti/user_admin.php:3021
 #: /var/www/html/cacti/user_domains.php:32
 #: /var/www/html/cacti/user_domains.php:631
 #: /var/www/html/cacti/user_domains.php:714
@@ -732,7 +732,7 @@ msgstr ""
 #: /var/www/html/cacti/aggregate_templates.php:575
 #: /var/www/html/cacti/automation_devices.php:469
 #: /var/www/html/cacti/automation_graph_rules.php:801
-#: /var/www/html/cacti/automation_networks.php:1136
+#: /var/www/html/cacti/automation_networks.php:1142
 #: /var/www/html/cacti/automation_snmp.php:809
 #: /var/www/html/cacti/automation_templates.php:414
 #: /var/www/html/cacti/automation_tree_rules.php:747
@@ -761,13 +761,13 @@ msgstr ""
 #: /var/www/html/cacti/managers.php:172 /var/www/html/cacti/managers.php:516
 #: /var/www/html/cacti/managers.php:746 /var/www/html/cacti/plugins.php:347
 #: /var/www/html/cacti/pollers.php:539 /var/www/html/cacti/sites.php:420
-#: /var/www/html/cacti/tree.php:1701 /var/www/html/cacti/user_admin.php:2232
-#: /var/www/html/cacti/user_admin.php:2598
-#: /var/www/html/cacti/user_admin.php:2683
-#: /var/www/html/cacti/user_admin.php:2787
-#: /var/www/html/cacti/user_admin.php:2872
-#: /var/www/html/cacti/user_admin.php:2957
-#: /var/www/html/cacti/user_admin.php:3042
+#: /var/www/html/cacti/tree.php:1701 /var/www/html/cacti/user_admin.php:2229
+#: /var/www/html/cacti/user_admin.php:2595
+#: /var/www/html/cacti/user_admin.php:2680
+#: /var/www/html/cacti/user_admin.php:2784
+#: /var/www/html/cacti/user_admin.php:2869
+#: /var/www/html/cacti/user_admin.php:2954
+#: /var/www/html/cacti/user_admin.php:3039
 msgid "Go"
 msgstr ""
 
@@ -791,13 +791,13 @@ msgstr ""
 #: /var/www/html/cacti/managers.php:172 /var/www/html/cacti/managers.php:516
 #: /var/www/html/cacti/managers.php:746 /var/www/html/cacti/plugins.php:347
 #: /var/www/html/cacti/pollers.php:539 /var/www/html/cacti/sites.php:420
-#: /var/www/html/cacti/tree.php:1701 /var/www/html/cacti/user_admin.php:2232
-#: /var/www/html/cacti/user_admin.php:2598
-#: /var/www/html/cacti/user_admin.php:2683
-#: /var/www/html/cacti/user_admin.php:2787
-#: /var/www/html/cacti/user_admin.php:2872
-#: /var/www/html/cacti/user_admin.php:2957
-#: /var/www/html/cacti/user_admin.php:3042
+#: /var/www/html/cacti/tree.php:1701 /var/www/html/cacti/user_admin.php:2229
+#: /var/www/html/cacti/user_admin.php:2595
+#: /var/www/html/cacti/user_admin.php:2680
+#: /var/www/html/cacti/user_admin.php:2784
+#: /var/www/html/cacti/user_admin.php:2869
+#: /var/www/html/cacti/user_admin.php:2954
+#: /var/www/html/cacti/user_admin.php:3039
 #: /var/www/html/cacti/user_domains.php:643
 #: /var/www/html/cacti/user_group_admin.php:1849
 #: /var/www/html/cacti/user_group_admin.php:2202
@@ -819,7 +819,7 @@ msgstr ""
 #: /var/www/html/cacti/aggregate_templates.php:576
 #: /var/www/html/cacti/automation_devices.php:470
 #: /var/www/html/cacti/automation_graph_rules.php:802
-#: /var/www/html/cacti/automation_networks.php:1137
+#: /var/www/html/cacti/automation_networks.php:1143
 #: /var/www/html/cacti/automation_snmp.php:810
 #: /var/www/html/cacti/automation_templates.php:415
 #: /var/www/html/cacti/automation_tree_rules.php:748
@@ -849,13 +849,13 @@ msgstr ""
 #: /var/www/html/cacti/managers.php:173 /var/www/html/cacti/managers.php:517
 #: /var/www/html/cacti/managers.php:747 /var/www/html/cacti/plugins.php:348
 #: /var/www/html/cacti/pollers.php:540 /var/www/html/cacti/sites.php:421
-#: /var/www/html/cacti/tree.php:1702 /var/www/html/cacti/user_admin.php:2233
-#: /var/www/html/cacti/user_admin.php:2599
-#: /var/www/html/cacti/user_admin.php:2684
-#: /var/www/html/cacti/user_admin.php:2788
-#: /var/www/html/cacti/user_admin.php:2873
-#: /var/www/html/cacti/user_admin.php:2958
-#: /var/www/html/cacti/user_admin.php:3043
+#: /var/www/html/cacti/tree.php:1702 /var/www/html/cacti/user_admin.php:2230
+#: /var/www/html/cacti/user_admin.php:2596
+#: /var/www/html/cacti/user_admin.php:2681
+#: /var/www/html/cacti/user_admin.php:2785
+#: /var/www/html/cacti/user_admin.php:2870
+#: /var/www/html/cacti/user_admin.php:2955
+#: /var/www/html/cacti/user_admin.php:3040
 #: /var/www/html/cacti/user_domains.php:644
 msgid "Clear"
 msgstr ""
@@ -880,13 +880,13 @@ msgstr ""
 #: /var/www/html/cacti/managers.php:173 /var/www/html/cacti/managers.php:517
 #: /var/www/html/cacti/managers.php:747 /var/www/html/cacti/plugins.php:348
 #: /var/www/html/cacti/pollers.php:540 /var/www/html/cacti/sites.php:421
-#: /var/www/html/cacti/tree.php:1702 /var/www/html/cacti/user_admin.php:2233
-#: /var/www/html/cacti/user_admin.php:2599
-#: /var/www/html/cacti/user_admin.php:2684
-#: /var/www/html/cacti/user_admin.php:2788
-#: /var/www/html/cacti/user_admin.php:2873
-#: /var/www/html/cacti/user_admin.php:2958
-#: /var/www/html/cacti/user_admin.php:3043
+#: /var/www/html/cacti/tree.php:1702 /var/www/html/cacti/user_admin.php:2230
+#: /var/www/html/cacti/user_admin.php:2596
+#: /var/www/html/cacti/user_admin.php:2681
+#: /var/www/html/cacti/user_admin.php:2785
+#: /var/www/html/cacti/user_admin.php:2870
+#: /var/www/html/cacti/user_admin.php:2955
+#: /var/www/html/cacti/user_admin.php:3040
 #: /var/www/html/cacti/user_domains.php:644
 #: /var/www/html/cacti/user_group_admin.php:1850
 #: /var/www/html/cacti/user_group_admin.php:2203
@@ -907,7 +907,7 @@ msgstr ""
 #: /var/www/html/cacti/aggregate_graphs.php:1465
 #: /var/www/html/cacti/graph_view.php:621 /var/www/html/cacti/graphs.php:1089
 #: /var/www/html/cacti/lib/api_automation.php:569
-#: /var/www/html/cacti/user_admin.php:997
+#: /var/www/html/cacti/user_admin.php:994
 #: /var/www/html/cacti/user_group_admin.php:821
 msgid "Graph Title"
 msgstr ""
@@ -924,11 +924,11 @@ msgstr ""
 #: /var/www/html/cacti/host_templates.php:813
 #: /var/www/html/cacti/lib/api_automation.php:280
 #: /var/www/html/cacti/pollers.php:613 /var/www/html/cacti/sites.php:494
-#: /var/www/html/cacti/tree.php:1754 /var/www/html/cacti/user_admin.php:997
-#: /var/www/html/cacti/user_admin.php:1092
-#: /var/www/html/cacti/user_admin.php:1233
-#: /var/www/html/cacti/user_admin.php:1377
-#: /var/www/html/cacti/user_admin.php:1514
+#: /var/www/html/cacti/tree.php:1754 /var/www/html/cacti/user_admin.php:994
+#: /var/www/html/cacti/user_admin.php:1089
+#: /var/www/html/cacti/user_admin.php:1230
+#: /var/www/html/cacti/user_admin.php:1374
+#: /var/www/html/cacti/user_admin.php:1511
 #: /var/www/html/cacti/user_group_admin.php:675
 #: /var/www/html/cacti/user_group_admin.php:821
 #: /var/www/html/cacti/user_group_admin.php:966
@@ -967,7 +967,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_settings.php:1334
 #: /var/www/html/cacti/install/index.php:579
 #: /var/www/html/cacti/install/index.php:604 /var/www/html/cacti/tree.php:1791
-#: /var/www/html/cacti/tree.php:1792 /var/www/html/cacti/user_admin.php:2301
+#: /var/www/html/cacti/tree.php:1792 /var/www/html/cacti/user_admin.php:2298
 #: /var/www/html/cacti/user_domains.php:729
 #: /var/www/html/cacti/user_group_admin.php:1917
 #: /var/www/html/cacti/vdef.php:882
@@ -996,7 +996,7 @@ msgstr ""
 #: /var/www/html/cacti/install/index.php:579
 #: /var/www/html/cacti/install/index.php:603
 #: /var/www/html/cacti/install/index.php:604 /var/www/html/cacti/tree.php:1791
-#: /var/www/html/cacti/tree.php:1792 /var/www/html/cacti/user_admin.php:2299
+#: /var/www/html/cacti/tree.php:1792 /var/www/html/cacti/user_admin.php:2296
 #: /var/www/html/cacti/user_domains.php:727
 #: /var/www/html/cacti/user_domains.php:729
 #: /var/www/html/cacti/user_group_admin.php:1915
@@ -1012,7 +1012,7 @@ msgstr ""
 
 #: /var/www/html/cacti/aggregate_graphs.php:1348
 #: /var/www/html/cacti/aggregate_graphs.php:1456
-#: /var/www/html/cacti/lib/functions.php:2715
+#: /var/www/html/cacti/lib/functions.php:2713
 msgid "Aggregate Graphs"
 msgstr ""
 
@@ -1024,8 +1024,8 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_graph.php:159
 #: /var/www/html/cacti/lib/html_tree.php:624
 #: /var/www/html/cacti/rrdcleaner.php:351
-#: /var/www/html/cacti/user_admin.php:2554
-#: /var/www/html/cacti/user_admin.php:2747
+#: /var/www/html/cacti/user_admin.php:2551
+#: /var/www/html/cacti/user_admin.php:2744
 #: /var/www/html/cacti/user_group_admin.php:2158
 #: /var/www/html/cacti/user_group_admin.php:2266
 #: /var/www/html/cacti/utilities.php:1645
@@ -1054,8 +1054,8 @@ msgstr ""
 #: /var/www/html/cacti/lib/html.php:1762 /var/www/html/cacti/lib/html.php:1783
 #: /var/www/html/cacti/lib/html_reports.php:1432
 #: /var/www/html/cacti/managers.php:483 /var/www/html/cacti/managers.php:736
-#: /var/www/html/cacti/user_admin.php:2558
-#: /var/www/html/cacti/user_admin.php:2751
+#: /var/www/html/cacti/user_admin.php:2555
+#: /var/www/html/cacti/user_admin.php:2748
 #: /var/www/html/cacti/user_group_admin.php:2162
 #: /var/www/html/cacti/user_group_admin.php:2270
 #: /var/www/html/cacti/utilities.php:666
@@ -1072,8 +1072,8 @@ msgstr ""
 #: /var/www/html/cacti/aggregate_graphs.php:1480
 #: /var/www/html/cacti/automation_graph_rules.php:910
 #: /var/www/html/cacti/automation_graph_rules.php:911
-#: /var/www/html/cacti/automation_networks.php:442
-#: /var/www/html/cacti/automation_networks.php:654
+#: /var/www/html/cacti/automation_networks.php:448
+#: /var/www/html/cacti/automation_networks.php:660
 #: /var/www/html/cacti/automation_tree_rules.php:853
 #: /var/www/html/cacti/data_sources.php:824
 #: /var/www/html/cacti/data_sources.php:1211
@@ -1124,8 +1124,8 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_tree.php:844
 #: /var/www/html/cacti/settings.php:283 /var/www/html/cacti/settings.php:302
 #: /var/www/html/cacti/settings.php:328
-#: /var/www/html/cacti/user_admin.php:2559
-#: /var/www/html/cacti/user_admin.php:2752
+#: /var/www/html/cacti/user_admin.php:2556
+#: /var/www/html/cacti/user_admin.php:2749
 #: /var/www/html/cacti/user_group_admin.php:2163
 #: /var/www/html/cacti/user_group_admin.php:2271
 #: /var/www/html/cacti/utilities.php:1650
@@ -1185,7 +1185,7 @@ msgstr ""
 
 #: /var/www/html/cacti/aggregate_templates.php:531
 #: /var/www/html/cacti/aggregate_templates.php:630
-#: /var/www/html/cacti/lib/functions.php:2697
+#: /var/www/html/cacti/lib/functions.php:2695
 msgid "Aggregate Templates"
 msgstr ""
 
@@ -1196,7 +1196,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:788
 #: /var/www/html/cacti/include/global_arrays.php:846
 #: /var/www/html/cacti/install/index.php:934
-#: /var/www/html/cacti/user_admin.php:2850
+#: /var/www/html/cacti/user_admin.php:2847
 #: /var/www/html/cacti/user_group_admin.php:2369
 msgid "Templates"
 msgstr ""
@@ -1311,7 +1311,7 @@ msgstr ""
 #: /var/www/html/cacti/auth_changepassword.php:255
 #: /var/www/html/cacti/auth_changepassword.php:308
 #: /var/www/html/cacti/include/global_form.php:1462
-#: /var/www/html/cacti/lib/functions.php:1975
+#: /var/www/html/cacti/lib/functions.php:1973
 msgid "Change Password"
 msgstr ""
 
@@ -1332,8 +1332,8 @@ msgid "Confirm new password"
 msgstr ""
 
 #: /var/www/html/cacti/auth_changepassword.php:331
-#: /var/www/html/cacti/auth_profile.php:400
-#: /var/www/html/cacti/auth_profile.php:431
+#: /var/www/html/cacti/auth_profile.php:399
+#: /var/www/html/cacti/auth_profile.php:430
 #: /var/www/html/cacti/graphs_new.php:565
 #: /var/www/html/cacti/lib/html_form.php:1154
 #: /var/www/html/cacti/lib/html_form.php:1163
@@ -1413,13 +1413,13 @@ msgstr ""
 #: /var/www/html/cacti/auth_login.php:589
 #: /var/www/html/cacti/auth_login.php:592
 #: /var/www/html/cacti/include/global_settings.php:1267
-#: /var/www/html/cacti/lib/functions.php:4046
+#: /var/www/html/cacti/lib/functions.php:4006
 msgid "Username"
 msgstr ""
 
 #: /var/www/html/cacti/auth_login.php:597
 #: /var/www/html/cacti/include/global_form.php:1429
-#: /var/www/html/cacti/lib/functions.php:4047
+#: /var/www/html/cacti/lib/functions.php:4007
 msgid "Password"
 msgstr ""
 
@@ -1437,7 +1437,7 @@ msgid "LDAP"
 msgstr ""
 
 #: /var/www/html/cacti/auth_login.php:624
-#: /var/www/html/cacti/user_admin.php:2282
+#: /var/www/html/cacti/user_admin.php:2279
 #: /var/www/html/cacti/user_group_admin.php:675
 msgid "Realm"
 msgstr ""
@@ -1458,11 +1458,11 @@ msgstr ""
 msgid "User Account Disabled"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:151
+#: /var/www/html/cacti/auth_profile.php:150
 msgid "User Account Details"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:162
+#: /var/www/html/cacti/auth_profile.php:161
 #: /var/www/html/cacti/include/global_arrays.php:657
 #: /var/www/html/cacti/include/global_session.php:108
 #: /var/www/html/cacti/include/global_settings.php:1957
@@ -1470,92 +1470,92 @@ msgstr ""
 msgid "Tree View"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:166
+#: /var/www/html/cacti/auth_profile.php:165
 #: /var/www/html/cacti/include/global_arrays.php:658
 #: /var/www/html/cacti/include/global_session.php:109
 #: /var/www/html/cacti/lib/html.php:1655 /var/www/html/cacti/lib/html.php:1679
 msgid "List View"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:170
+#: /var/www/html/cacti/auth_profile.php:169
 #: /var/www/html/cacti/include/global_arrays.php:659
 #: /var/www/html/cacti/include/global_session.php:110
 #: /var/www/html/cacti/lib/html.php:1662
 msgid "Preview View"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:183
+#: /var/www/html/cacti/auth_profile.php:182
 #: /var/www/html/cacti/include/global_form.php:1405
-#: /var/www/html/cacti/user_admin.php:2279
+#: /var/www/html/cacti/user_admin.php:2276
 msgid "User Name"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:184
+#: /var/www/html/cacti/auth_profile.php:183
 #: /var/www/html/cacti/include/global_form.php:1406
 msgid "The login name for this user."
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:191
+#: /var/www/html/cacti/auth_profile.php:190
 #: /var/www/html/cacti/include/global_form.php:1413
-#: /var/www/html/cacti/user_admin.php:2280
+#: /var/www/html/cacti/user_admin.php:2277
 #: /var/www/html/cacti/user_group_admin.php:675
 #: /var/www/html/cacti/utilities.php:773
 msgid "Full Name"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:192
+#: /var/www/html/cacti/auth_profile.php:191
 #: /var/www/html/cacti/include/global_form.php:1414
 msgid ""
 "A more descriptive name for this user, that can include spaces or special "
 "characters."
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:199
+#: /var/www/html/cacti/auth_profile.php:198
 #: /var/www/html/cacti/include/global_form.php:1421
 msgid "Email Address"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:200
+#: /var/www/html/cacti/auth_profile.php:199
 msgid "An Email Address you be reached at."
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:207
-#: /var/www/html/cacti/auth_profile.php:209
+#: /var/www/html/cacti/auth_profile.php:206
+#: /var/www/html/cacti/auth_profile.php:208
 msgid "Clear Private Data"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:208
+#: /var/www/html/cacti/auth_profile.php:207
 msgid "Clear Private Data including Column sizing."
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:218
-#: /var/www/html/cacti/auth_profile.php:220
+#: /var/www/html/cacti/auth_profile.php:217
+#: /var/www/html/cacti/auth_profile.php:219
 msgid "Logout Everywhere"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:219
+#: /var/www/html/cacti/auth_profile.php:218
 msgid "Clear all your Login Session Tokens."
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:240
-#: /var/www/html/cacti/user_admin.php:1943
+#: /var/www/html/cacti/auth_profile.php:239
+#: /var/www/html/cacti/user_admin.php:1940
 #: /var/www/html/cacti/user_group_admin.php:1671
 msgid "User Settings"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:297
+#: /var/www/html/cacti/auth_profile.php:296
 msgid "Private Data Cleared"
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:297
+#: /var/www/html/cacti/auth_profile.php:296
 msgid "Your Private Data has been cleared."
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:317
+#: /var/www/html/cacti/auth_profile.php:316
 msgid "All your login sessions have been cleared."
 msgstr ""
 
-#: /var/www/html/cacti/auth_profile.php:317
+#: /var/www/html/cacti/auth_profile.php:316
 msgid "User Sessions Cleared"
 msgstr ""
 
@@ -1605,7 +1605,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:789
 #: /var/www/html/cacti/include/global_arrays.php:1538
 #: /var/www/html/cacti/lib/api_automation.php:424
-#: /var/www/html/cacti/lib/functions.php:4041
+#: /var/www/html/cacti/lib/functions.php:4001
 #: /var/www/html/cacti/lib/html.php:1758 /var/www/html/cacti/lib/html.php:1788
 #: /var/www/html/cacti/lib/html_reports.php:396
 #: /var/www/html/cacti/utilities.php:1500
@@ -1654,10 +1654,10 @@ msgstr ""
 #: /var/www/html/cacti/lib/api_automation.php:475
 #: /var/www/html/cacti/lib/api_automation.php:558
 #: /var/www/html/cacti/lib/api_automation.php:1161
-#: /var/www/html/cacti/lib/functions.php:2295
+#: /var/www/html/cacti/lib/functions.php:2293
 #: /var/www/html/cacti/pollers.php:617 /var/www/html/cacti/sites.php:495
-#: /var/www/html/cacti/tree.php:1762 /var/www/html/cacti/user_admin.php:1225
-#: /var/www/html/cacti/user_admin.php:2765
+#: /var/www/html/cacti/tree.php:1762 /var/www/html/cacti/user_admin.php:1222
+#: /var/www/html/cacti/user_admin.php:2762
 #: /var/www/html/cacti/user_group_admin.php:958
 #: /var/www/html/cacti/user_group_admin.php:2284
 #: /var/www/html/cacti/utilities.php:276
@@ -1694,8 +1694,8 @@ msgstr ""
 #: /var/www/html/cacti/lib/api_automation.php:276
 #: /var/www/html/cacti/lib/api_automation.php:1168
 #: /var/www/html/cacti/managers.php:216 /var/www/html/cacti/tree.php:782
-#: /var/www/html/cacti/user_admin.php:1092
-#: /var/www/html/cacti/user_admin.php:1233
+#: /var/www/html/cacti/user_admin.php:1089
+#: /var/www/html/cacti/user_admin.php:1230
 #: /var/www/html/cacti/user_group_admin.php:966
 #: /var/www/html/cacti/user_group_admin.php:1903
 msgid "Description"
@@ -1721,7 +1721,7 @@ msgstr ""
 #: /var/www/html/cacti/automation_devices.php:257
 #: /var/www/html/cacti/automation_devices.php:484
 #: /var/www/html/cacti/automation_graph_rules.php:775
-#: /var/www/html/cacti/automation_networks.php:995
+#: /var/www/html/cacti/automation_networks.php:1001
 #: /var/www/html/cacti/automation_tree_rules.php:721
 #: /var/www/html/cacti/data_sources.php:1231
 #: /var/www/html/cacti/data_templates.php:947 /var/www/html/cacti/host.php:727
@@ -1735,7 +1735,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_reports.php:1428
 #: /var/www/html/cacti/managers.php:218 /var/www/html/cacti/plugins.php:318
 #: /var/www/html/cacti/plugins.php:412 /var/www/html/cacti/pollers.php:615
-#: /var/www/html/cacti/user_admin.php:1233
+#: /var/www/html/cacti/user_admin.php:1230
 #: /var/www/html/cacti/user_group_admin.php:966
 msgid "Status"
 msgstr ""
@@ -1788,7 +1788,7 @@ msgid "Purge Discovered Devices"
 msgstr ""
 
 #: /var/www/html/cacti/automation_devices.php:643
-#: /var/www/html/cacti/automation_networks.php:1061
+#: /var/www/html/cacti/automation_networks.php:1067
 #: /var/www/html/cacti/automation_snmp.php:661
 #: /var/www/html/cacti/automation_snmp.php:662
 #: /var/www/html/cacti/automation_snmp.php:663
@@ -1796,7 +1796,7 @@ msgstr ""
 #: /var/www/html/cacti/automation_snmp.php:665
 #: /var/www/html/cacti/automation_snmp.php:666
 #: /var/www/html/cacti/lib/html.php:1025
-#: /var/www/html/cacti/user_admin.php:2294
+#: /var/www/html/cacti/user_admin.php:2291
 #: /var/www/html/cacti/utilities.php:419 /var/www/html/cacti/utilities.php:801
 #: /var/www/html/cacti/utilities.php:2113
 #: /var/www/html/cacti/utilities.php:2210
@@ -1945,7 +1945,7 @@ msgstr ""
 #: /var/www/html/cacti/automation_graph_rules.php:785
 #: /var/www/html/cacti/automation_graph_rules.php:890
 #: /var/www/html/cacti/include/global_arrays.php:799
-#: /var/www/html/cacti/lib/functions.php:2751
+#: /var/www/html/cacti/lib/functions.php:2749
 msgid "Graph Rules"
 msgstr ""
 
@@ -1960,7 +1960,7 @@ msgstr ""
 #: /var/www/html/cacti/automation_graph_rules.php:780
 #: /var/www/html/cacti/automation_graph_rules.php:903
 #: /var/www/html/cacti/automation_graph_rules.php:919
-#: /var/www/html/cacti/automation_networks.php:517
+#: /var/www/html/cacti/automation_networks.php:523
 #: /var/www/html/cacti/automation_tree_rules.php:726
 #: /var/www/html/cacti/automation_tree_rules.php:846
 #: /var/www/html/cacti/automation_tree_rules.php:864
@@ -1976,9 +1976,9 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_reports.php:1572
 #: /var/www/html/cacti/links.php:380 /var/www/html/cacti/managers.php:243
 #: /var/www/html/cacti/managers.php:598
-#: /var/www/html/cacti/user_admin.php:1092
-#: /var/www/html/cacti/user_admin.php:1104
-#: /var/www/html/cacti/user_admin.php:2281
+#: /var/www/html/cacti/user_admin.php:1089
+#: /var/www/html/cacti/user_admin.php:1101
+#: /var/www/html/cacti/user_admin.php:2278
 #: /var/www/html/cacti/user_domains.php:341
 #: /var/www/html/cacti/user_domains.php:716
 #: /var/www/html/cacti/user_group_admin.php:87
@@ -1991,7 +1991,7 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_graph_rules.php:781
 #: /var/www/html/cacti/automation_graph_rules.php:919
-#: /var/www/html/cacti/automation_networks.php:1010
+#: /var/www/html/cacti/automation_networks.php:1016
 #: /var/www/html/cacti/automation_tree_rules.php:727
 #: /var/www/html/cacti/automation_tree_rules.php:864
 #: /var/www/html/cacti/data_sources.php:1237
@@ -2014,7 +2014,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_reports.php:1572
 #: /var/www/html/cacti/lib/html_utility.php:844
 #: /var/www/html/cacti/managers.php:243 /var/www/html/cacti/managers.php:598
-#: /var/www/html/cacti/pollers.php:40 /var/www/html/cacti/user_admin.php:1104
+#: /var/www/html/cacti/pollers.php:40 /var/www/html/cacti/user_admin.php:1101
 #: /var/www/html/cacti/user_domains.php:402
 #: /var/www/html/cacti/user_group_admin.php:690
 #: /var/www/html/cacti/utilities.php:2245
@@ -2056,94 +2056,98 @@ msgstr ""
 msgid "Cancel Discovery"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:206
+#: /var/www/html/cacti/automation_networks.php:208
 #, php-format
 msgid "ERROR: You must specify the day of the week.  Disabling Network %s!."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:212
+#: /var/www/html/cacti/automation_networks.php:214
 #, php-format
 msgid ""
 "ERROR: You must specify both the Months and Days of Month.  Disabling "
 "Network %s!"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:218
+#: /var/www/html/cacti/automation_networks.php:220
 #, php-format
 msgid ""
 "ERROR: You must specify the Months, Weeks of Months, and Days of Week.  "
 "Disabling Network %s!"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:236
+#: /var/www/html/cacti/automation_networks.php:238
 #, php-format
 msgid "ERROR: Network '%s' is Invalid."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:333
+#: /var/www/html/cacti/automation_networks.php:337
 msgid "Click 'Continue' to delete the following Network(s)."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:340
+#: /var/www/html/cacti/automation_networks.php:344
 msgid "Click 'Continue' to enable the following Network(s)."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:347
+#: /var/www/html/cacti/automation_networks.php:351
 msgid "Click 'Continue' to disable the following Network(s)."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:354
+#: /var/www/html/cacti/automation_networks.php:358
 msgid "Click 'Continue' to discover the following Network(s)."
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:361
+msgid "Run discover in debug mode"
+msgstr ""
+
+#: /var/www/html/cacti/automation_networks.php:367
 msgid "Click 'Continue' to cancel on going Network Discovery(s)."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:368
+#: /var/www/html/cacti/automation_networks.php:374
 msgid "You must select at least one Network."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:399
-#: /var/www/html/cacti/automation_networks.php:983
+#: /var/www/html/cacti/automation_networks.php:405
+#: /var/www/html/cacti/automation_networks.php:989
 #: /var/www/html/cacti/tree.php:1253
 msgid "Manual"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:400
-#: /var/www/html/cacti/automation_networks.php:984
+#: /var/www/html/cacti/automation_networks.php:406
+#: /var/www/html/cacti/automation_networks.php:990
 #: /var/www/html/cacti/include/global_arrays.php:567
 #: /var/www/html/cacti/include/global_arrays.php:1560
 msgid "Daily"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:401
-#: /var/www/html/cacti/automation_networks.php:985
+#: /var/www/html/cacti/automation_networks.php:407
+#: /var/www/html/cacti/automation_networks.php:991
 #: /var/www/html/cacti/include/global_arrays.php:1561
 msgid "Weekly"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:402
-#: /var/www/html/cacti/automation_networks.php:986
+#: /var/www/html/cacti/automation_networks.php:408
+#: /var/www/html/cacti/automation_networks.php:992
 #: /var/www/html/cacti/include/global_arrays.php:1562
 msgid "Monthly"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:403
-#: /var/www/html/cacti/automation_networks.php:987
+#: /var/www/html/cacti/automation_networks.php:409
+#: /var/www/html/cacti/automation_networks.php:993
 msgid "Monthly on Day"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:407
+#: /var/www/html/cacti/automation_networks.php:413
 #, php-format
 msgid "Network Discovery Range [edit: %s]"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:409
+#: /var/www/html/cacti/automation_networks.php:415
 msgid "Network Discovery Range [new]"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:416
+#: /var/www/html/cacti/automation_networks.php:422
 #: /var/www/html/cacti/include/global_form.php:1857
 #: /var/www/html/cacti/include/global_form.php:1953
 #: /var/www/html/cacti/include/global_settings.php:51
@@ -2151,7 +2155,7 @@ msgstr ""
 msgid "General Settings"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:421
+#: /var/www/html/cacti/automation_networks.php:427
 #: /var/www/html/cacti/automation_snmp.php:602
 #: /var/www/html/cacti/data_input.php:471
 #: /var/www/html/cacti/data_input.php:505
@@ -2182,108 +2186,108 @@ msgstr ""
 #: /var/www/html/cacti/install/index.php:935
 #: /var/www/html/cacti/lib/vdef.php:74 /var/www/html/cacti/managers.php:562
 #: /var/www/html/cacti/pollers.php:52 /var/www/html/cacti/sites.php:40
-#: /var/www/html/cacti/user_admin.php:1092
+#: /var/www/html/cacti/user_admin.php:1089
 #: /var/www/html/cacti/user_domains.php:317
 #: /var/www/html/cacti/utilities.php:479
 #: /var/www/html/cacti/utilities.php:2439
 msgid "Name"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:422
+#: /var/www/html/cacti/automation_networks.php:428
 msgid "Give this Network a meaningful name."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:425
+#: /var/www/html/cacti/automation_networks.php:431
 msgid "New Network Discovery Range"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:429
-#: /var/www/html/cacti/automation_networks.php:992
+#: /var/www/html/cacti/automation_networks.php:435
+#: /var/www/html/cacti/automation_networks.php:998
 #: /var/www/html/cacti/host.php:1477
 msgid "Data Collector"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:430
+#: /var/www/html/cacti/automation_networks.php:436
 #: /var/www/html/cacti/include/global_form.php:1004
 msgid ""
 "Choose the Cacti Data Collector/Poller to be used to gather data from this "
 "Device."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:437
+#: /var/www/html/cacti/automation_networks.php:443
 msgid "Associated Site"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:438
+#: /var/www/html/cacti/automation_networks.php:444
 msgid ""
 "Choose the Cacti Site that you wish to associate discovered Devices with."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:446
+#: /var/www/html/cacti/automation_networks.php:452
 msgid "Subnet Range"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:447
+#: /var/www/html/cacti/automation_networks.php:453
 msgid ""
 "Enter valid Network Ranges separated by commas.  You may use an IP address, "
 "a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or "
 "using wildcards such as 192.168.*.*"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:456
+#: /var/www/html/cacti/automation_networks.php:462
 msgid "Total IP Addresses"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:457
+#: /var/www/html/cacti/automation_networks.php:463
 msgid "Total addressable IP Addresses in this Network Range."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:462
+#: /var/www/html/cacti/automation_networks.php:468
 msgid "Alternate DNS Servers"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:463
+#: /var/www/html/cacti/automation_networks.php:469
 msgid ""
 "A space delimited list of alternate DNS Servers to use for DNS resolution. "
 "If blank, the poller OS will be used to resolve DNS names."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:466
+#: /var/www/html/cacti/automation_networks.php:472
 msgid "Enter IPs or FQDNs of DNS Servers"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:470
+#: /var/www/html/cacti/automation_networks.php:476
 msgid "Schedule Type"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:471
+#: /var/www/html/cacti/automation_networks.php:477
 msgid "Define the collection frequency."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:478
+#: /var/www/html/cacti/automation_networks.php:484
 msgid "Discovery Threads"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:479
+#: /var/www/html/cacti/automation_networks.php:485
 msgid "Define the number of threads to use for discovering this Network Range."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:482
+#: /var/www/html/cacti/automation_networks.php:488
 #, php-format
 msgid "%d Thread"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:483
-#: /var/www/html/cacti/automation_networks.php:484
-#: /var/www/html/cacti/automation_networks.php:485
-#: /var/www/html/cacti/automation_networks.php:486
-#: /var/www/html/cacti/automation_networks.php:487
-#: /var/www/html/cacti/automation_networks.php:488
 #: /var/www/html/cacti/automation_networks.php:489
 #: /var/www/html/cacti/automation_networks.php:490
 #: /var/www/html/cacti/automation_networks.php:491
 #: /var/www/html/cacti/automation_networks.php:492
 #: /var/www/html/cacti/automation_networks.php:493
+#: /var/www/html/cacti/automation_networks.php:494
+#: /var/www/html/cacti/automation_networks.php:495
+#: /var/www/html/cacti/automation_networks.php:496
+#: /var/www/html/cacti/automation_networks.php:497
+#: /var/www/html/cacti/automation_networks.php:498
+#: /var/www/html/cacti/automation_networks.php:499
 #: /var/www/html/cacti/include/global_arrays.php:640
 #: /var/www/html/cacti/include/global_arrays.php:641
 #: /var/www/html/cacti/include/global_arrays.php:642
@@ -2293,27 +2297,27 @@ msgstr ""
 msgid "%d Threads"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:499
+#: /var/www/html/cacti/automation_networks.php:505
 msgid "Run Limit"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:500
+#: /var/www/html/cacti/automation_networks.php:506
 msgid "After the selected Run Limit, the discovery process will be terminated."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:503
-#: /var/www/html/cacti/automation_networks.php:1123
+#: /var/www/html/cacti/automation_networks.php:509
+#: /var/www/html/cacti/automation_networks.php:1129
 #: /var/www/html/cacti/include/global_arrays.php:592
 #, php-format
 msgid "%d Minute"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:504
-#: /var/www/html/cacti/automation_networks.php:505
-#: /var/www/html/cacti/automation_networks.php:506
-#: /var/www/html/cacti/automation_networks.php:507
-#: /var/www/html/cacti/automation_networks.php:1124
-#: /var/www/html/cacti/automation_networks.php:1125
+#: /var/www/html/cacti/automation_networks.php:510
+#: /var/www/html/cacti/automation_networks.php:511
+#: /var/www/html/cacti/automation_networks.php:512
+#: /var/www/html/cacti/automation_networks.php:513
+#: /var/www/html/cacti/automation_networks.php:1130
+#: /var/www/html/cacti/automation_networks.php:1131
 #: /var/www/html/cacti/data_sources.php:1071
 #: /var/www/html/cacti/include/global_arrays.php:557
 #: /var/www/html/cacti/include/global_arrays.php:558
@@ -2347,7 +2351,7 @@ msgstr ""
 msgid "%d Minutes"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:508
+#: /var/www/html/cacti/automation_networks.php:514
 #: /var/www/html/cacti/include/global_arrays.php:599
 #: /var/www/html/cacti/include/global_arrays.php:609
 #: /var/www/html/cacti/include/global_arrays.php:1174
@@ -2355,9 +2359,9 @@ msgstr ""
 msgid "%d Hour"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:509
-#: /var/www/html/cacti/automation_networks.php:510
-#: /var/www/html/cacti/automation_networks.php:511
+#: /var/www/html/cacti/automation_networks.php:515
+#: /var/www/html/cacti/automation_networks.php:516
+#: /var/www/html/cacti/automation_networks.php:517
 #: /var/www/html/cacti/data_source_profiles.php:769
 #: /var/www/html/cacti/include/global_arrays.php:562
 #: /var/www/html/cacti/include/global_arrays.php:563
@@ -2394,254 +2398,254 @@ msgstr ""
 msgid "%d Hours"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:518
+#: /var/www/html/cacti/automation_networks.php:524
 msgid "Enable this Network Range."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:523
+#: /var/www/html/cacti/automation_networks.php:529
 msgid "Enable NetBIOS"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:524
+#: /var/www/html/cacti/automation_networks.php:530
 msgid "Use NetBIOS to attempt to resolve the hostname of up hosts."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:530
+#: /var/www/html/cacti/automation_networks.php:536
 msgid "Automatically Add to Cacti"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:531
+#: /var/www/html/cacti/automation_networks.php:537
 msgid ""
 "For any newly discovered Devices that are reachable using SNMP and who match "
 "a Device Rule, add them to Cacti."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:536
+#: /var/www/html/cacti/automation_networks.php:542
 msgid "Rerun Data Queries"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:537
+#: /var/www/html/cacti/automation_networks.php:543
 msgid "If a device previously added to Cacti is found, rerun its data queries."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:542
+#: /var/www/html/cacti/automation_networks.php:548
 msgid "Discovery Timing"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:547
+#: /var/www/html/cacti/automation_networks.php:553
 msgid "Starting Date/Time"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:548
+#: /var/www/html/cacti/automation_networks.php:554
 msgid "What time will this Network discover item start?"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:556
+#: /var/www/html/cacti/automation_networks.php:562
 msgid "Rerun Every"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:557
+#: /var/www/html/cacti/automation_networks.php:563
 msgid "Rerun discovery for this Network Range every X."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:572
-msgid "Days of Week"
-msgstr ""
-
-#: /var/www/html/cacti/automation_networks.php:573
-#: /var/www/html/cacti/automation_networks.php:631
-msgid "What Day(s) of the week will this Network Range be discovered."
-msgstr ""
-
-#: /var/www/html/cacti/automation_networks.php:575
-#: /var/www/html/cacti/automation_networks.php:633
-#: /var/www/html/cacti/include/global_arrays.php:1602
-msgid "Sunday"
-msgstr ""
-
-#: /var/www/html/cacti/automation_networks.php:576
-#: /var/www/html/cacti/automation_networks.php:634
-#: /var/www/html/cacti/include/global_arrays.php:1603
-msgid "Monday"
-msgstr ""
-
-#: /var/www/html/cacti/automation_networks.php:577
-#: /var/www/html/cacti/automation_networks.php:635
-#: /var/www/html/cacti/include/global_arrays.php:1604
-msgid "Tuesday"
-msgstr ""
-
 #: /var/www/html/cacti/automation_networks.php:578
-#: /var/www/html/cacti/automation_networks.php:636
-#: /var/www/html/cacti/include/global_arrays.php:1605
-msgid "Wednesday"
+msgid "Days of Week"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:579
 #: /var/www/html/cacti/automation_networks.php:637
-#: /var/www/html/cacti/include/global_arrays.php:1606
-msgid "Thursday"
-msgstr ""
-
-#: /var/www/html/cacti/automation_networks.php:580
-#: /var/www/html/cacti/automation_networks.php:638
-#: /var/www/html/cacti/include/global_arrays.php:1607
-msgid "Friday"
+msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:581
 #: /var/www/html/cacti/automation_networks.php:639
+#: /var/www/html/cacti/include/global_arrays.php:1602
+msgid "Sunday"
+msgstr ""
+
+#: /var/www/html/cacti/automation_networks.php:582
+#: /var/www/html/cacti/automation_networks.php:640
+#: /var/www/html/cacti/include/global_arrays.php:1603
+msgid "Monday"
+msgstr ""
+
+#: /var/www/html/cacti/automation_networks.php:583
+#: /var/www/html/cacti/automation_networks.php:641
+#: /var/www/html/cacti/include/global_arrays.php:1604
+msgid "Tuesday"
+msgstr ""
+
+#: /var/www/html/cacti/automation_networks.php:584
+#: /var/www/html/cacti/automation_networks.php:642
+#: /var/www/html/cacti/include/global_arrays.php:1605
+msgid "Wednesday"
+msgstr ""
+
+#: /var/www/html/cacti/automation_networks.php:585
+#: /var/www/html/cacti/automation_networks.php:643
+#: /var/www/html/cacti/include/global_arrays.php:1606
+msgid "Thursday"
+msgstr ""
+
+#: /var/www/html/cacti/automation_networks.php:586
+#: /var/www/html/cacti/automation_networks.php:644
+#: /var/www/html/cacti/include/global_arrays.php:1607
+msgid "Friday"
+msgstr ""
+
+#: /var/www/html/cacti/automation_networks.php:587
+#: /var/www/html/cacti/automation_networks.php:645
 #: /var/www/html/cacti/include/global_arrays.php:1608
 msgid "Saturday"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:588
+#: /var/www/html/cacti/automation_networks.php:594
 msgid "Months of Year"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:589
+#: /var/www/html/cacti/automation_networks.php:595
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:591
+#: /var/www/html/cacti/automation_networks.php:597
 #: /var/www/html/cacti/include/global_arrays.php:1572
 msgid "January"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:592
+#: /var/www/html/cacti/automation_networks.php:598
 #: /var/www/html/cacti/include/global_arrays.php:1573
 msgid "February"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:593
+#: /var/www/html/cacti/automation_networks.php:599
 #: /var/www/html/cacti/include/global_arrays.php:1574
 msgid "March"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:594
+#: /var/www/html/cacti/automation_networks.php:600
 #: /var/www/html/cacti/include/global_arrays.php:1575
 msgid "April"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:595
+#: /var/www/html/cacti/automation_networks.php:601
 #: /var/www/html/cacti/include/global_arrays.php:1576
 msgid "May"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:596
+#: /var/www/html/cacti/automation_networks.php:602
 #: /var/www/html/cacti/include/global_arrays.php:1577
 msgid "June"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:597
+#: /var/www/html/cacti/automation_networks.php:603
 #: /var/www/html/cacti/include/global_arrays.php:1578
 msgid "July"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:598
+#: /var/www/html/cacti/automation_networks.php:604
 #: /var/www/html/cacti/include/global_arrays.php:1579
 msgid "August"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:599
+#: /var/www/html/cacti/automation_networks.php:605
 #: /var/www/html/cacti/include/global_arrays.php:1580
 msgid "September"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:600
+#: /var/www/html/cacti/automation_networks.php:606
 #: /var/www/html/cacti/include/global_arrays.php:1581
 msgid "October"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:601
+#: /var/www/html/cacti/automation_networks.php:607
 #: /var/www/html/cacti/include/global_arrays.php:1582
 msgid "November"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:602
+#: /var/www/html/cacti/automation_networks.php:608
 #: /var/www/html/cacti/include/global_arrays.php:1583
 msgid "December"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:609
+#: /var/www/html/cacti/automation_networks.php:615
 msgid "Days of Month"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:610
+#: /var/www/html/cacti/automation_networks.php:616
 msgid "What Day(s) of the Month will this Network Range be discovered."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:611
-#: /var/www/html/cacti/automation_networks.php:623
+#: /var/www/html/cacti/automation_networks.php:617
+#: /var/www/html/cacti/automation_networks.php:629
 msgid "Last"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:617
+#: /var/www/html/cacti/automation_networks.php:623
 msgid "Week(s) of Month"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:618
+#: /var/www/html/cacti/automation_networks.php:624
 msgid "What Week(s) of the Month will this Network Range be discovered."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:620
+#: /var/www/html/cacti/automation_networks.php:626
 msgid "First"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:621
+#: /var/www/html/cacti/automation_networks.php:627
 msgid "Second"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:622
+#: /var/www/html/cacti/automation_networks.php:628
 msgid "Third"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:630
+#: /var/www/html/cacti/automation_networks.php:636
 msgid "Day(s) of Week"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:646
+#: /var/www/html/cacti/automation_networks.php:652
 msgid "Reachability Settings"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:651
+#: /var/www/html/cacti/automation_networks.php:657
 #: /var/www/html/cacti/include/global_arrays.php:801
 #: /var/www/html/cacti/include/global_form.php:1044
 #: /var/www/html/cacti/include/global_form.php:1656
 msgid "SNMP Options"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:652
+#: /var/www/html/cacti/automation_networks.php:658
 msgid "Select the SNMP Options to use for discovery of this Network Range."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:658
+#: /var/www/html/cacti/automation_networks.php:664
 #: /var/www/html/cacti/include/global_form.php:1181
 msgid "Ping Method"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:659
+#: /var/www/html/cacti/automation_networks.php:665
 msgid "The type of ping packet to send."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:667
+#: /var/www/html/cacti/automation_networks.php:673
 #: /var/www/html/cacti/include/global_form.php:1191
 #: /var/www/html/cacti/include/global_settings.php:610
 msgid "Ping Port"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:669
+#: /var/www/html/cacti/automation_networks.php:675
 #: /var/www/html/cacti/include/global_form.php:1193
 msgid "TCP or UDP port to attempt connection."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:675
+#: /var/www/html/cacti/automation_networks.php:681
 #: /var/www/html/cacti/include/global_form.php:1199
 #: /var/www/html/cacti/include/global_settings.php:618
 msgid "Ping Timeout Value"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:676
+#: /var/www/html/cacti/automation_networks.php:682
 #: /var/www/html/cacti/include/global_form.php:1200
 #: /var/www/html/cacti/include/global_settings.php:619
 msgid ""
@@ -2649,131 +2653,131 @@ msgid ""
 "timeout value applies for SNMP pings."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:684
+#: /var/www/html/cacti/automation_networks.php:690
 #: /var/www/html/cacti/include/global_form.php:1208
 #: /var/www/html/cacti/include/global_settings.php:626
 msgid "Ping Retry Count"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:685
+#: /var/www/html/cacti/automation_networks.php:691
 #: /var/www/html/cacti/include/global_form.php:1209
 msgid ""
 "After an initial failure, the number of ping retries Cacti will attempt "
 "before failing."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:725
+#: /var/www/html/cacti/automation_networks.php:731
 msgid "Select the days(s) of the week"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:735
+#: /var/www/html/cacti/automation_networks.php:741
 msgid "Select the month(s) of the year"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:745
+#: /var/www/html/cacti/automation_networks.php:751
 msgid "Select the day(s) of the month"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:755
+#: /var/www/html/cacti/automation_networks.php:761
 msgid "Select the week(s) of the month"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:765
+#: /var/www/html/cacti/automation_networks.php:771
 msgid "Select the day(s) of the week"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:838
-#: /var/www/html/cacti/automation_networks.php:855
+#: /var/www/html/cacti/automation_networks.php:844
+#: /var/www/html/cacti/automation_networks.php:861
 msgid "every X Days"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:838
-#: /var/www/html/cacti/automation_networks.php:855
+#: /var/www/html/cacti/automation_networks.php:844
+#: /var/www/html/cacti/automation_networks.php:861
 msgid "every X Weeks"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:839
+#: /var/www/html/cacti/automation_networks.php:845
 msgid "every X Days."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:839
-#: /var/www/html/cacti/automation_networks.php:856
+#: /var/www/html/cacti/automation_networks.php:845
+#: /var/www/html/cacti/automation_networks.php:862
 msgid "every X."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:856
+#: /var/www/html/cacti/automation_networks.php:862
 msgid "every X Weeks."
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:964
+#: /var/www/html/cacti/automation_networks.php:970
 msgid "Network Filters"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:974
-#: /var/www/html/cacti/automation_networks.php:1098
+#: /var/www/html/cacti/automation_networks.php:980
+#: /var/www/html/cacti/automation_networks.php:1104
 #: /var/www/html/cacti/include/global_arrays.php:796
 msgid "Networks"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:991
+#: /var/www/html/cacti/automation_networks.php:997
 msgid "Network Name"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:993
+#: /var/www/html/cacti/automation_networks.php:999
 msgid "Schedule"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:994
+#: /var/www/html/cacti/automation_networks.php:1000
 msgid "Total IPs"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:995
+#: /var/www/html/cacti/automation_networks.php:1001
 msgid "The Current Status of this Networks Discovery"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:996
+#: /var/www/html/cacti/automation_networks.php:1002
 msgid "Pending/Running/Done"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:996
+#: /var/www/html/cacti/automation_networks.php:1002
 msgid "Progress"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:997
+#: /var/www/html/cacti/automation_networks.php:1003
 msgid "Up/SNMP Hosts"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:998
+#: /var/www/html/cacti/automation_networks.php:1004
 msgid "Threads"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:999
+#: /var/www/html/cacti/automation_networks.php:1005
 msgid "Last Runtime"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:1000
+#: /var/www/html/cacti/automation_networks.php:1006
 msgid "Next Start"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:1001
+#: /var/www/html/cacti/automation_networks.php:1007
 msgid "Last Started"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:1026
+#: /var/www/html/cacti/automation_networks.php:1032
 #: /var/www/html/cacti/pollers.php:37 /var/www/html/cacti/utilities.php:2050
 msgid "Running"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:1046
+#: /var/www/html/cacti/automation_networks.php:1052
 #: /var/www/html/cacti/pollers.php:38 /var/www/html/cacti/utilities.php:2049
 msgid "Idle"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:1067
+#: /var/www/html/cacti/automation_networks.php:1073
 msgid "No Networks Found"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:1113
+#: /var/www/html/cacti/automation_networks.php:1119
 #: /var/www/html/cacti/graph.php:353
 #: /var/www/html/cacti/graph_realtime.php:242
 #: /var/www/html/cacti/lib/clog_webapi.php:450
@@ -2785,10 +2789,10 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:1119
-#: /var/www/html/cacti/automation_networks.php:1120
-#: /var/www/html/cacti/automation_networks.php:1121
-#: /var/www/html/cacti/automation_networks.php:1122
+#: /var/www/html/cacti/automation_networks.php:1125
+#: /var/www/html/cacti/automation_networks.php:1126
+#: /var/www/html/cacti/automation_networks.php:1127
+#: /var/www/html/cacti/automation_networks.php:1128
 #: /var/www/html/cacti/data_sources.php:1067
 #: /var/www/html/cacti/include/global_arrays.php:555
 #: /var/www/html/cacti/include/global_arrays.php:589
@@ -2815,7 +2819,7 @@ msgstr ""
 msgid "%d Seconds"
 msgstr ""
 
-#: /var/www/html/cacti/automation_networks.php:1137
+#: /var/www/html/cacti/automation_networks.php:1143
 msgid "Clear Filtered"
 msgstr ""
 
@@ -3083,7 +3087,7 @@ msgid "Community"
 msgstr ""
 
 #: /var/www/html/cacti/automation_snmp.php:634
-#: /var/www/html/cacti/lib/functions.php:4042
+#: /var/www/html/cacti/lib/functions.php:4002
 msgid "Port"
 msgstr ""
 
@@ -3305,7 +3309,7 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_templates.php:490
 #: /var/www/html/cacti/data_sources.php:1410
-#: /var/www/html/cacti/graphs.php:1838 /var/www/html/cacti/user_admin.php:1377
+#: /var/www/html/cacti/graphs.php:1838 /var/www/html/cacti/user_admin.php:1374
 #: /var/www/html/cacti/user_group_admin.php:1109
 msgid "Template Name"
 msgstr ""
@@ -3373,7 +3377,7 @@ msgstr ""
 #: /var/www/html/cacti/automation_tree_rules.php:731
 #: /var/www/html/cacti/automation_tree_rules.php:831
 #: /var/www/html/cacti/include/global_arrays.php:800
-#: /var/www/html/cacti/lib/functions.php:2775
+#: /var/www/html/cacti/lib/functions.php:2773
 msgid "Tree Rules"
 msgstr ""
 
@@ -3489,7 +3493,7 @@ msgstr ""
 msgid "CDEF [new]"
 msgstr ""
 
-#: /var/www/html/cacti/cdef.php:594 /var/www/html/cacti/lib/functions.php:2145
+#: /var/www/html/cacti/cdef.php:594 /var/www/html/cacti/lib/functions.php:2143
 msgid "CDEF Items"
 msgstr ""
 
@@ -3509,7 +3513,7 @@ msgstr ""
 #: /var/www/html/cacti/cdef.php:733 /var/www/html/cacti/cdef.php:748
 #: /var/www/html/cacti/cdef.php:864
 #: /var/www/html/cacti/include/global_arrays.php:805
-#: /var/www/html/cacti/lib/functions.php:2127
+#: /var/www/html/cacti/lib/functions.php:2125
 msgid "CDEFs"
 msgstr ""
 
@@ -3636,7 +3640,7 @@ msgstr ""
 #: /var/www/html/cacti/color.php:520 /var/www/html/cacti/color.php:535
 #: /var/www/html/cacti/color.php:689
 #: /var/www/html/cacti/include/global_arrays.php:807
-#: /var/www/html/cacti/lib/functions.php:2193
+#: /var/www/html/cacti/lib/functions.php:2191
 msgid "Colors"
 msgstr ""
 
@@ -3776,7 +3780,7 @@ msgstr ""
 #: /var/www/html/cacti/color_templates.php:436
 #: /var/www/html/cacti/color_templates.php:449
 #: /var/www/html/cacti/color_templates.php:541
-#: /var/www/html/cacti/lib/functions.php:2673
+#: /var/www/html/cacti/lib/functions.php:2671
 msgid "Color Templates"
 msgstr ""
 
@@ -3942,7 +3946,7 @@ msgstr ""
 #: /var/www/html/cacti/data_input.php:618
 #: /var/www/html/cacti/include/global_arrays.php:786
 #: /var/www/html/cacti/include/global_arrays.php:956
-#: /var/www/html/cacti/lib/functions.php:2331
+#: /var/www/html/cacti/lib/functions.php:2329
 msgid "Data Input Methods"
 msgstr ""
 
@@ -4117,7 +4121,7 @@ msgstr ""
 
 #: /var/www/html/cacti/data_queries.php:979 /var/www/html/cacti/host.php:722
 #: /var/www/html/cacti/host_templates.php:458
-#: /var/www/html/cacti/lib/functions.php:2385
+#: /var/www/html/cacti/lib/functions.php:2383
 msgid "Associated Graph Templates"
 msgstr ""
 
@@ -4150,7 +4154,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:785
 #: /var/www/html/cacti/include/global_arrays.php:957
 #: /var/www/html/cacti/lib/api_automation.php:1058
-#: /var/www/html/cacti/lib/functions.php:2367
+#: /var/www/html/cacti/lib/functions.php:2365
 msgid "Data Queries"
 msgstr ""
 
@@ -4745,8 +4749,8 @@ msgstr ""
 #: /var/www/html/cacti/data_sources.php:1396 /var/www/html/cacti/host.php:1593
 #: /var/www/html/cacti/include/global_arrays.php:780
 #: /var/www/html/cacti/lib/api_automation.php:282
-#: /var/www/html/cacti/lib/functions.php:2277
-#: /var/www/html/cacti/user_admin.php:1233
+#: /var/www/html/cacti/lib/functions.php:2275
+#: /var/www/html/cacti/user_admin.php:1230
 #: /var/www/html/cacti/user_group_admin.php:966
 #: /var/www/html/cacti/utilities.php:286
 msgid "Data Sources"
@@ -4888,7 +4892,7 @@ msgstr ""
 #: /var/www/html/cacti/data_templates.php:810
 #: /var/www/html/cacti/data_templates.php:932
 #: /var/www/html/cacti/include/global_arrays.php:968
-#: /var/www/html/cacti/lib/functions.php:2259
+#: /var/www/html/cacti/lib/functions.php:2257
 msgid "Data Templates"
 msgstr ""
 
@@ -4964,7 +4968,7 @@ msgid "GPRINT Presets [new]"
 msgstr ""
 
 #: /var/www/html/cacti/gprint_presets.php:253
-#: /var/www/html/cacti/lib/functions.php:2109
+#: /var/www/html/cacti/lib/functions.php:2107
 msgid "GPRINT Presets"
 msgstr ""
 
@@ -5149,7 +5153,7 @@ msgid "Graph Template Items [edit: %s]"
 msgstr ""
 
 #: /var/www/html/cacti/graph_templates.php:420
-#: /var/www/html/cacti/lib/functions.php:2229
+#: /var/www/html/cacti/lib/functions.php:2227
 msgid "Graph Item Inputs"
 msgstr ""
 
@@ -5181,8 +5185,8 @@ msgstr ""
 #: /var/www/html/cacti/graph_templates.php:755
 #: /var/www/html/cacti/graphs_new.php:636
 #: /var/www/html/cacti/include/global_arrays.php:967
-#: /var/www/html/cacti/lib/functions.php:2205
-#: /var/www/html/cacti/user_admin.php:1369
+#: /var/www/html/cacti/lib/functions.php:2203
+#: /var/www/html/cacti/user_admin.php:1366
 #: /var/www/html/cacti/user_group_admin.php:1101
 msgid "Graph Templates"
 msgstr ""
@@ -5338,7 +5342,7 @@ msgstr ""
 
 #: /var/www/html/cacti/graph_view.php:730
 #: /var/www/html/cacti/include/global_settings.php:1953
-#: /var/www/html/cacti/lib/functions.php:2029
+#: /var/www/html/cacti/lib/functions.php:2027
 msgid "Preview Mode"
 msgstr ""
 
@@ -5413,7 +5417,7 @@ msgid "Summary Details"
 msgstr ""
 
 #: /var/www/html/cacti/graphs.php:49 /var/www/html/cacti/graphs.php:874
-#: /var/www/html/cacti/lib/functions.php:2079
+#: /var/www/html/cacti/lib/functions.php:2077
 msgid "Change Graph Template"
 msgstr ""
 
@@ -5638,7 +5642,7 @@ msgid "Graph Item Fields"
 msgstr ""
 
 #: /var/www/html/cacti/graphs.php:1693
-#: /var/www/html/cacti/lib/functions.php:2067
+#: /var/www/html/cacti/lib/functions.php:2065
 msgid "Graph Management"
 msgstr ""
 
@@ -5768,7 +5772,7 @@ msgstr ""
 
 #: /var/www/html/cacti/graphs_new.php:642
 #: /var/www/html/cacti/graphs_new.php:935 /var/www/html/cacti/lib/html.php:823
-#: /var/www/html/cacti/user_admin.php:1586
+#: /var/www/html/cacti/user_admin.php:1583
 #: /var/www/html/cacti/user_group_admin.php:1316
 msgid "Select All"
 msgstr ""
@@ -5969,7 +5973,7 @@ msgstr ""
 msgid "Data Query Debug Information"
 msgstr ""
 
-#: /var/www/html/cacti/host.php:705 /var/www/html/cacti/lib/functions.php:3291
+#: /var/www/html/cacti/host.php:705 /var/www/html/cacti/lib/functions.php:3289
 #: /var/www/html/cacti/tree.php:1333 /var/www/html/cacti/tree.php:1407
 #: /var/www/html/cacti/tree.php:1494 /var/www/html/cacti/user_admin.php:29
 #: /var/www/html/cacti/user_group_admin.php:31
@@ -6022,23 +6026,23 @@ msgstr ""
 #: /var/www/html/cacti/lib/api_automation.php:1243
 #: /var/www/html/cacti/lib/api_automation.php:1305
 #: /var/www/html/cacti/lib/api_automation.php:1368
-#: /var/www/html/cacti/lib/functions.php:2085
-#: /var/www/html/cacti/lib/functions.php:2151
-#: /var/www/html/cacti/lib/functions.php:2217
-#: /var/www/html/cacti/lib/functions.php:2253
-#: /var/www/html/cacti/lib/functions.php:2271
-#: /var/www/html/cacti/lib/functions.php:2289
-#: /var/www/html/cacti/lib/functions.php:2307
-#: /var/www/html/cacti/lib/functions.php:2337
-#: /var/www/html/cacti/lib/functions.php:2373
-#: /var/www/html/cacti/lib/functions.php:2403
-#: /var/www/html/cacti/lib/functions.php:2493
-#: /var/www/html/cacti/lib/functions.php:2685
-#: /var/www/html/cacti/lib/functions.php:2709
-#: /var/www/html/cacti/lib/functions.php:2727
-#: /var/www/html/cacti/lib/functions.php:2745
-#: /var/www/html/cacti/lib/functions.php:2763
-#: /var/www/html/cacti/lib/functions.php:2787
+#: /var/www/html/cacti/lib/functions.php:2083
+#: /var/www/html/cacti/lib/functions.php:2149
+#: /var/www/html/cacti/lib/functions.php:2215
+#: /var/www/html/cacti/lib/functions.php:2251
+#: /var/www/html/cacti/lib/functions.php:2269
+#: /var/www/html/cacti/lib/functions.php:2287
+#: /var/www/html/cacti/lib/functions.php:2305
+#: /var/www/html/cacti/lib/functions.php:2335
+#: /var/www/html/cacti/lib/functions.php:2371
+#: /var/www/html/cacti/lib/functions.php:2401
+#: /var/www/html/cacti/lib/functions.php:2491
+#: /var/www/html/cacti/lib/functions.php:2683
+#: /var/www/html/cacti/lib/functions.php:2707
+#: /var/www/html/cacti/lib/functions.php:2725
+#: /var/www/html/cacti/lib/functions.php:2743
+#: /var/www/html/cacti/lib/functions.php:2761
+#: /var/www/html/cacti/lib/functions.php:2785
 #: /var/www/html/cacti/lib/html_reports.php:1260
 #: /var/www/html/cacti/links.php:376 /var/www/html/cacti/plugins.php:409
 msgid "Actions"
@@ -6053,8 +6057,8 @@ msgstr ""
 msgid "Fail"
 msgstr ""
 
-#: /var/www/html/cacti/host.php:888 /var/www/html/cacti/lib/functions.php:4056
-#: /var/www/html/cacti/lib/functions.php:4061
+#: /var/www/html/cacti/host.php:888 /var/www/html/cacti/lib/functions.php:4016
+#: /var/www/html/cacti/lib/functions.php:4021
 msgid "Success"
 msgstr ""
 
@@ -6161,7 +6165,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/api_automation.php:840
 #: /var/www/html/cacti/lib/api_automation.php:1169
 #: /var/www/html/cacti/managers.php:219 /var/www/html/cacti/pollers.php:82
-#: /var/www/html/cacti/pollers.php:614 /var/www/html/cacti/user_admin.php:1233
+#: /var/www/html/cacti/pollers.php:614 /var/www/html/cacti/user_admin.php:1230
 #: /var/www/html/cacti/user_group_admin.php:966
 msgid "Hostname"
 msgstr ""
@@ -6331,7 +6335,7 @@ msgstr ""
 #: /var/www/html/cacti/host_templates.php:702
 #: /var/www/html/cacti/host_templates.php:803
 #: /var/www/html/cacti/include/global_arrays.php:969
-#: /var/www/html/cacti/lib/functions.php:2241
+#: /var/www/html/cacti/lib/functions.php:2239
 msgid "Device Templates"
 msgstr ""
 
@@ -7109,9 +7113,9 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:778
 #: /var/www/html/cacti/include/global_arrays.php:961
 #: /var/www/html/cacti/tree.php:1670 /var/www/html/cacti/tree.php:1685
-#: /var/www/html/cacti/tree.php:1744 /var/www/html/cacti/user_admin.php:1506
-#: /var/www/html/cacti/user_admin.php:2935
-#: /var/www/html/cacti/user_admin.php:3020
+#: /var/www/html/cacti/tree.php:1744 /var/www/html/cacti/user_admin.php:1503
+#: /var/www/html/cacti/user_admin.php:2932
+#: /var/www/html/cacti/user_admin.php:3017
 #: /var/www/html/cacti/user_group_admin.php:1235
 #: /var/www/html/cacti/user_group_admin.php:2454
 msgid "Trees"
@@ -7164,7 +7168,7 @@ msgid "Data Profiles"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:806
-#: /var/www/html/cacti/lib/functions.php:2487 /var/www/html/cacti/vdef.php:667
+#: /var/www/html/cacti/lib/functions.php:2485 /var/www/html/cacti/vdef.php:667
 #: /var/www/html/cacti/vdef.php:681 /var/www/html/cacti/vdef.php:854
 msgid "VDEFs"
 msgstr ""
@@ -7175,12 +7179,12 @@ msgid "Import/Export"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:811
-#: /var/www/html/cacti/lib/functions.php:2607
+#: /var/www/html/cacti/lib/functions.php:2605
 msgid "Import Templates"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:812
-#: /var/www/html/cacti/lib/functions.php:2595
+#: /var/www/html/cacti/lib/functions.php:2593
 #: /var/www/html/cacti/templates_export.php:159
 msgid "Export Templates"
 msgstr ""
@@ -7198,21 +7202,21 @@ msgid "Settings"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:816
-#: /var/www/html/cacti/lib/functions.php:2541
-#: /var/www/html/cacti/user_admin.php:2216
-#: /var/www/html/cacti/user_admin.php:2270
+#: /var/www/html/cacti/lib/functions.php:2539
+#: /var/www/html/cacti/user_admin.php:2213
+#: /var/www/html/cacti/user_admin.php:2267
 #: /var/www/html/cacti/user_group_admin.php:667
 #: /var/www/html/cacti/user_group_admin.php:2539
 msgid "Users"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:817
-#: /var/www/html/cacti/lib/functions.php:2571
+#: /var/www/html/cacti/lib/functions.php:2569
 msgid "User Groups"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:818
-#: /var/www/html/cacti/lib/functions.php:2559
+#: /var/www/html/cacti/lib/functions.php:2557
 #: /var/www/html/cacti/user_domains.php:612
 #: /var/www/html/cacti/user_domains.php:703
 msgid "User Domains"
@@ -7221,7 +7225,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:820
 #: /var/www/html/cacti/include/global_arrays.php:836
 #: /var/www/html/cacti/include/global_arrays.php:851
-#: /var/www/html/cacti/lib/functions.php:2415
+#: /var/www/html/cacti/lib/functions.php:2413
 msgid "Utilities"
 msgstr ""
 
@@ -7277,7 +7281,7 @@ msgid "Update Profile"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:952
-#: /var/www/html/cacti/user_admin.php:2195
+#: /var/www/html/cacti/user_admin.php:2192
 msgid "User Management"
 msgstr ""
 
@@ -9574,11 +9578,27 @@ msgstr ""
 msgid "The response to the last action was unexpected"
 msgstr ""
 
+#: /var/www/html/cacti/include/global_session.php:139
+msgid "Operation successful"
+msgstr ""
+
+#: /var/www/html/cacti/include/global_session.php:140
+msgid "The Operation was successful.  Details are below"
+msgstr ""
+
+#: /var/www/html/cacti/include/global_session.php:142
+msgid "Ok"
+msgstr ""
+
+#: /var/www/html/cacti/include/global_session.php:143
+msgid "Pause"
+msgstr ""
+
 #: /var/www/html/cacti/include/global_settings.php:38
 #: /var/www/html/cacti/include/global_settings.php:897
 #: /var/www/html/cacti/include/global_settings.php:1020
 #: /var/www/html/cacti/include/global_settings.php:1619
-#: /var/www/html/cacti/managers.php:39 /var/www/html/cacti/user_admin.php:1936
+#: /var/www/html/cacti/managers.php:39 /var/www/html/cacti/user_admin.php:1933
 #: /var/www/html/cacti/user_group_admin.php:1664
 msgid "General"
 msgstr ""
@@ -9605,8 +9625,8 @@ msgid "Visual"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:44
-#: /var/www/html/cacti/lib/functions.php:4045
-#: /var/www/html/cacti/lib/functions.php:4050
+#: /var/www/html/cacti/lib/functions.php:4005
+#: /var/www/html/cacti/lib/functions.php:4010
 msgid "Authentication"
 msgstr ""
 
@@ -9767,7 +9787,7 @@ msgid ""
 msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:191
-#: /var/www/html/cacti/lib/functions.php:2397
+#: /var/www/html/cacti/lib/functions.php:2395
 #: /var/www/html/cacti/rrdcleaner.php:296
 msgid "RRD Cleaner"
 msgstr ""
@@ -11138,12 +11158,12 @@ msgid "PHP Mail() Function"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:1327
-#: /var/www/html/cacti/lib/functions.php:4033
+#: /var/www/html/cacti/lib/functions.php:3993
 msgid "SMTP"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:1327
-#: /var/www/html/cacti/lib/functions.php:4028
+#: /var/www/html/cacti/lib/functions.php:3988
 msgid "Sendmail"
 msgstr ""
 
@@ -11188,7 +11208,7 @@ msgid "Sendmail Options"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:1362
-#: /var/www/html/cacti/lib/functions.php:4028
+#: /var/www/html/cacti/lib/functions.php:3988
 msgid "Sendmail Path"
 msgstr ""
 
@@ -12777,12 +12797,12 @@ msgid ""
 msgstr ""
 
 #: /var/www/html/cacti/lib/api_aggregate.php:1294
-#: /var/www/html/cacti/lib/functions.php:2091
+#: /var/www/html/cacti/lib/functions.php:2089
 msgid "Graph Items"
 msgstr ""
 
 #: /var/www/html/cacti/lib/api_aggregate.php:1294
-#: /var/www/html/cacti/lib/functions.php:2223
+#: /var/www/html/cacti/lib/functions.php:2221
 msgid "Graph Template Items"
 msgstr ""
 
@@ -13030,9 +13050,9 @@ msgid "Contact:"
 msgstr ""
 
 #: /var/www/html/cacti/lib/api_device.php:510
-#: /var/www/html/cacti/lib/functions.php:4059
-#: /var/www/html/cacti/lib/functions.php:4061
-#: /var/www/html/cacti/lib/functions.php:4065
+#: /var/www/html/cacti/lib/functions.php:4019
+#: /var/www/html/cacti/lib/functions.php:4021
+#: /var/www/html/cacti/lib/functions.php:4025
 msgid "Ping Results"
 msgstr ""
 
@@ -13342,332 +13362,332 @@ msgstr ""
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:707
+#: /var/www/html/cacti/lib/functions.php:705
 #, php-format
 msgid "Error %s is not readable"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:1967
-#: /var/www/html/cacti/lib/functions.php:1972
+#: /var/www/html/cacti/lib/functions.php:1965
+#: /var/www/html/cacti/lib/functions.php:1970
 msgid "Logged in as"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:1967
+#: /var/www/html/cacti/lib/functions.php:1965
 msgid "Login as Regular User"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:1967
+#: /var/www/html/cacti/lib/functions.php:1965
 msgid "guest"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:1974
+#: /var/www/html/cacti/lib/functions.php:1972
 msgid "Edit Profile"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:1976
+#: /var/www/html/cacti/lib/functions.php:1974
 msgid "Logout"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:1993
-#: /var/www/html/cacti/lib/functions.php:1999
+#: /var/www/html/cacti/lib/functions.php:1991
+#: /var/www/html/cacti/lib/functions.php:1997
 msgid "User Profile (Edit)"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2011
-#: /var/www/html/cacti/lib/functions.php:2017
+#: /var/www/html/cacti/lib/functions.php:2009
+#: /var/www/html/cacti/lib/functions.php:2015
 msgid "Tree Mode"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2023
+#: /var/www/html/cacti/lib/functions.php:2021
 msgid "List Mode"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2055
-#: /var/www/html/cacti/lib/functions.php:2061
-#: /var/www/html/cacti/lib/functions.php:2935
+#: /var/www/html/cacti/lib/functions.php:2053
+#: /var/www/html/cacti/lib/functions.php:2059
+#: /var/www/html/cacti/lib/functions.php:2933
 #: /var/www/html/cacti/lib/html.php:1412 /var/www/html/cacti/lib/html.php:1489
-#: /var/www/html/cacti/links.php:343 /var/www/html/cacti/user_admin.php:1646
+#: /var/www/html/cacti/links.php:343 /var/www/html/cacti/user_admin.php:1643
 #: /var/www/html/cacti/user_group_admin.php:1396
 msgid "Console"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2073
-#: /var/www/html/cacti/lib/functions.php:2115
-#: /var/www/html/cacti/lib/functions.php:2133
-#: /var/www/html/cacti/lib/functions.php:2187
-#: /var/www/html/cacti/lib/functions.php:2199
-#: /var/www/html/cacti/lib/functions.php:2211
-#: /var/www/html/cacti/lib/functions.php:2247
-#: /var/www/html/cacti/lib/functions.php:2265
-#: /var/www/html/cacti/lib/functions.php:2283
-#: /var/www/html/cacti/lib/functions.php:2301
-#: /var/www/html/cacti/lib/functions.php:2319
-#: /var/www/html/cacti/lib/functions.php:2343
-#: /var/www/html/cacti/lib/functions.php:2379
-#: /var/www/html/cacti/lib/functions.php:2499
-#: /var/www/html/cacti/lib/functions.php:2523
-#: /var/www/html/cacti/lib/functions.php:2547
-#: /var/www/html/cacti/lib/functions.php:2565
-#: /var/www/html/cacti/lib/functions.php:2577
-#: /var/www/html/cacti/lib/functions.php:2679
-#: /var/www/html/cacti/lib/functions.php:2703
-#: /var/www/html/cacti/lib/functions.php:2721
-#: /var/www/html/cacti/lib/functions.php:2739
-#: /var/www/html/cacti/lib/functions.php:2757
-#: /var/www/html/cacti/lib/functions.php:2781
+#: /var/www/html/cacti/lib/functions.php:2071
+#: /var/www/html/cacti/lib/functions.php:2113
+#: /var/www/html/cacti/lib/functions.php:2131
+#: /var/www/html/cacti/lib/functions.php:2185
+#: /var/www/html/cacti/lib/functions.php:2197
+#: /var/www/html/cacti/lib/functions.php:2209
+#: /var/www/html/cacti/lib/functions.php:2245
+#: /var/www/html/cacti/lib/functions.php:2263
+#: /var/www/html/cacti/lib/functions.php:2281
+#: /var/www/html/cacti/lib/functions.php:2299
+#: /var/www/html/cacti/lib/functions.php:2317
+#: /var/www/html/cacti/lib/functions.php:2341
+#: /var/www/html/cacti/lib/functions.php:2377
+#: /var/www/html/cacti/lib/functions.php:2497
+#: /var/www/html/cacti/lib/functions.php:2521
+#: /var/www/html/cacti/lib/functions.php:2545
+#: /var/www/html/cacti/lib/functions.php:2563
+#: /var/www/html/cacti/lib/functions.php:2575
+#: /var/www/html/cacti/lib/functions.php:2677
+#: /var/www/html/cacti/lib/functions.php:2701
+#: /var/www/html/cacti/lib/functions.php:2719
+#: /var/www/html/cacti/lib/functions.php:2737
+#: /var/www/html/cacti/lib/functions.php:2755
+#: /var/www/html/cacti/lib/functions.php:2779
 msgid "(Edit)"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2097
+#: /var/www/html/cacti/lib/functions.php:2095
 msgid "Create New Graphs"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2103
+#: /var/www/html/cacti/lib/functions.php:2101
 msgid "Create Graphs from Data Query"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2121
-#: /var/www/html/cacti/lib/functions.php:2139
-#: /var/www/html/cacti/lib/functions.php:2235
-#: /var/www/html/cacti/lib/functions.php:2325
-#: /var/www/html/cacti/lib/functions.php:2349
-#: /var/www/html/cacti/lib/functions.php:2505
+#: /var/www/html/cacti/lib/functions.php:2119
+#: /var/www/html/cacti/lib/functions.php:2137
+#: /var/www/html/cacti/lib/functions.php:2233
+#: /var/www/html/cacti/lib/functions.php:2323
+#: /var/www/html/cacti/lib/functions.php:2347
+#: /var/www/html/cacti/lib/functions.php:2503
 msgid "(Remove)"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2157
-#: /var/www/html/cacti/lib/functions.php:2163
-#: /var/www/html/cacti/lib/functions.php:2169
-#: /var/www/html/cacti/lib/functions.php:2175
-#: /var/www/html/cacti/lib/functions.php:2439
+#: /var/www/html/cacti/lib/functions.php:2155
+#: /var/www/html/cacti/lib/functions.php:2161
+#: /var/www/html/cacti/lib/functions.php:2167
+#: /var/www/html/cacti/lib/functions.php:2173
+#: /var/www/html/cacti/lib/functions.php:2437
 msgid "View Cacti Log"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2181
+#: /var/www/html/cacti/lib/functions.php:2179
 msgid "Graph Trees"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2313
+#: /var/www/html/cacti/lib/functions.php:2311
 msgid "Round Robin Archives"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2355
+#: /var/www/html/cacti/lib/functions.php:2353
 msgid "Data Input Fields"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2361
-#: /var/www/html/cacti/lib/functions.php:2391
+#: /var/www/html/cacti/lib/functions.php:2359
+#: /var/www/html/cacti/lib/functions.php:2389
 msgid "(Remove Item)"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2409
+#: /var/www/html/cacti/lib/functions.php:2407
 msgid "List unused Files"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2421
-#: /var/www/html/cacti/lib/functions.php:2433
+#: /var/www/html/cacti/lib/functions.php:2419
+#: /var/www/html/cacti/lib/functions.php:2431
 #: /var/www/html/cacti/utilities.php:1874
 msgid "View Poller Cache"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2427
+#: /var/www/html/cacti/lib/functions.php:2425
 #: /var/www/html/cacti/utilities.php:1878
 msgid "View Data Query Cache"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2445
+#: /var/www/html/cacti/lib/functions.php:2443
 #: /var/www/html/cacti/utilities.php:1240
 msgid "Clear Cacti Log"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2451
+#: /var/www/html/cacti/lib/functions.php:2449
 #: /var/www/html/cacti/utilities.php:1867
 msgid "View User Log"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2457
+#: /var/www/html/cacti/lib/functions.php:2455
 msgid "Clear User Log"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2463
+#: /var/www/html/cacti/lib/functions.php:2461
 #: /var/www/html/cacti/utilities.php:1858
 #: /var/www/html/cacti/utilities.php:1859
 msgid "Technical Support"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2469
+#: /var/www/html/cacti/lib/functions.php:2467
 #: /var/www/html/cacti/utilities.php:1975
 msgid "Boost Status"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2475
+#: /var/www/html/cacti/lib/functions.php:2473
 msgid "View SNMP Agent Cache"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2481
+#: /var/www/html/cacti/lib/functions.php:2479
 msgid "View SNMP Agent Notification Log"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2511 /var/www/html/cacti/vdef.php:568
+#: /var/www/html/cacti/lib/functions.php:2509 /var/www/html/cacti/vdef.php:568
 msgid "VDEF Items"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2517
+#: /var/www/html/cacti/lib/functions.php:2515
 msgid "View SNMP Notification Receivers"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2529
+#: /var/www/html/cacti/lib/functions.php:2527
 msgid "Cacti Settings"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2535
+#: /var/www/html/cacti/lib/functions.php:2533
 msgid "External Link"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2553
-#: /var/www/html/cacti/lib/functions.php:2583
+#: /var/www/html/cacti/lib/functions.php:2551
+#: /var/www/html/cacti/lib/functions.php:2581
 msgid "(Action)"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2601
+#: /var/www/html/cacti/lib/functions.php:2599
 msgid "Export Results"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2613
-#: /var/www/html/cacti/lib/functions.php:2643
+#: /var/www/html/cacti/lib/functions.php:2611
+#: /var/www/html/cacti/lib/functions.php:2641
 #: /var/www/html/cacti/lib/html.php:1433 /var/www/html/cacti/lib/html.php:1435
 #: /var/www/html/cacti/lib/html.php:1516
 msgid "Reporting"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2619
-#: /var/www/html/cacti/lib/functions.php:2649
+#: /var/www/html/cacti/lib/functions.php:2617
+#: /var/www/html/cacti/lib/functions.php:2647
 msgid "Report Add"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2625
-#: /var/www/html/cacti/lib/functions.php:2655
+#: /var/www/html/cacti/lib/functions.php:2623
+#: /var/www/html/cacti/lib/functions.php:2653
 msgid "Report Delete"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2631
-#: /var/www/html/cacti/lib/functions.php:2661
+#: /var/www/html/cacti/lib/functions.php:2629
+#: /var/www/html/cacti/lib/functions.php:2659
 msgid "Report Edit"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2637
-#: /var/www/html/cacti/lib/functions.php:2667
+#: /var/www/html/cacti/lib/functions.php:2635
+#: /var/www/html/cacti/lib/functions.php:2665
 msgid "Report Edit Item"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2691
+#: /var/www/html/cacti/lib/functions.php:2689
 msgid "Color Template Items"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2733
+#: /var/www/html/cacti/lib/functions.php:2731
 msgid "Aggregate Items"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2769
+#: /var/www/html/cacti/lib/functions.php:2767
 msgid "Graph Rule Items"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2793
+#: /var/www/html/cacti/lib/functions.php:2791
 msgid "Tree Rule Items"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2892
+#: /var/www/html/cacti/lib/functions.php:2890
 msgid "Leaf"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:2906
+#: /var/www/html/cacti/lib/functions.php:2904
 msgid "Non Query Based"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:3679
+#: /var/www/html/cacti/lib/functions.php:3639
 msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
 "link, please set the <b>Alert e-mail</b> setting."
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:3992
+#: /var/www/html/cacti/lib/functions.php:3952
 #, php-format
 msgid "Authentication failed: %s"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:3996
+#: /var/www/html/cacti/lib/functions.php:3956
 #, php-format
 msgid "HELO failed: %s"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:3999
+#: /var/www/html/cacti/lib/functions.php:3959
 #, php-format
 msgid "Connect failed: %s"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4002
+#: /var/www/html/cacti/lib/functions.php:3962
 msgid "SMTP error: "
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4015
+#: /var/www/html/cacti/lib/functions.php:3975
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
 "the configuration of your Mail Settings."
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4016
+#: /var/www/html/cacti/lib/functions.php:3976
 msgid "Your email settings are currently set as follows"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4017
+#: /var/www/html/cacti/lib/functions.php:3977
 msgid "Method"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4019
+#: /var/www/html/cacti/lib/functions.php:3979
 msgid "Checking Configuration...<br>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4026
+#: /var/www/html/cacti/lib/functions.php:3986
 msgid "PHP's Mailer Class"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4032
+#: /var/www/html/cacti/lib/functions.php:3992
 msgid "Method: SMTP"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4047
+#: /var/www/html/cacti/lib/functions.php:4007
 msgid "Not Shown for Security Reasons"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4048
+#: /var/www/html/cacti/lib/functions.php:4008
 msgid "Security"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4056
+#: /var/www/html/cacti/lib/functions.php:4016
 msgid "Ping Results:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4065
+#: /var/www/html/cacti/lib/functions.php:4025
 msgid "Bypassed"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4073
+#: /var/www/html/cacti/lib/functions.php:4033
 msgid "Creating Message Text..."
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4076
+#: /var/www/html/cacti/lib/functions.php:4036
 msgid "Sending Message..."
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4080
+#: /var/www/html/cacti/lib/functions.php:4040
 msgid "Cacti Test Message"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4082
+#: /var/www/html/cacti/lib/functions.php:4042
 msgid "Success!"
 msgstr ""
 
-#: /var/www/html/cacti/lib/functions.php:4085
+#: /var/www/html/cacti/lib/functions.php:4045
 msgid "Message Not Sent due to ping failure."
 msgstr ""
 
@@ -14290,7 +14310,7 @@ msgid "Report Item [new Report: %s]"
 msgstr ""
 
 #: /var/www/html/cacti/lib/html_reports.php:1103
-#: /var/www/html/cacti/user_admin.php:1952
+#: /var/www/html/cacti/user_admin.php:1949
 #, php-format
 msgid "[edit: %s]"
 msgstr ""
@@ -14301,7 +14321,7 @@ msgstr ""
 
 #: /var/www/html/cacti/lib/html_reports.php:1106
 #: /var/www/html/cacti/lib/import.php:1889
-#: /var/www/html/cacti/user_admin.php:1954
+#: /var/www/html/cacti/user_admin.php:1951
 msgid "[new]"
 msgstr ""
 
@@ -15189,17 +15209,17 @@ msgid "Reset filters"
 msgstr ""
 
 #: /var/www/html/cacti/links.php:344 /var/www/html/cacti/links.php:507
-#: /var/www/html/cacti/user_admin.php:1647
+#: /var/www/html/cacti/user_admin.php:1644
 #: /var/www/html/cacti/user_group_admin.php:1397
 msgid "Top Tab"
 msgstr ""
 
-#: /var/www/html/cacti/links.php:345 /var/www/html/cacti/user_admin.php:1648
+#: /var/www/html/cacti/links.php:345 /var/www/html/cacti/user_admin.php:1645
 #: /var/www/html/cacti/user_group_admin.php:1398
 msgid "Bottom Console"
 msgstr ""
 
-#: /var/www/html/cacti/links.php:346 /var/www/html/cacti/user_admin.php:1649
+#: /var/www/html/cacti/links.php:346 /var/www/html/cacti/user_admin.php:1646
 #: /var/www/html/cacti/user_group_admin.php:1399
 msgid "Top Console"
 msgstr ""
@@ -16435,7 +16455,7 @@ msgstr ""
 msgid "The name by which this Tree will be referred to as."
 msgstr ""
 
-#: /var/www/html/cacti/tree.php:1753 /var/www/html/cacti/user_admin.php:1514
+#: /var/www/html/cacti/tree.php:1753 /var/www/html/cacti/user_admin.php:1511
 #: /var/www/html/cacti/user_group_admin.php:1243
 msgid "Tree Name"
 msgstr ""
@@ -16508,55 +16528,55 @@ msgstr ""
 msgid "Batch Copy"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:338
+#: /var/www/html/cacti/user_admin.php:335
 msgid "Click 'Continue' to delete the selected User(s)."
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:343
+#: /var/www/html/cacti/user_admin.php:340
 msgid "Delete User(s)"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:353
+#: /var/www/html/cacti/user_admin.php:350
 msgid "Click 'Continue' to copy the selected User to a new User below."
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:358
+#: /var/www/html/cacti/user_admin.php:355
 msgid "Template Username:"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:363
+#: /var/www/html/cacti/user_admin.php:360
 msgid "Username:"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:370
+#: /var/www/html/cacti/user_admin.php:367
 msgid "Full Name:"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:377
+#: /var/www/html/cacti/user_admin.php:374
 msgid "Realm:"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:383
+#: /var/www/html/cacti/user_admin.php:380
 msgid "Copy User"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:389
+#: /var/www/html/cacti/user_admin.php:386
 msgid "Click 'Continue' to enable the selected User(s)."
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:394
+#: /var/www/html/cacti/user_admin.php:391
 msgid "Enable User(s)"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:400
+#: /var/www/html/cacti/user_admin.php:397
 msgid "Click 'Continue' to disable the selected User(s)."
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:405
+#: /var/www/html/cacti/user_admin.php:402
 msgid "Disable User(s)"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:413
+#: /var/www/html/cacti/user_admin.php:410
 msgid ""
 "Click 'Continue' to overwrite the User(s) settings with the selected "
 "template User settings and permissions.  The original users Full Name, "
@@ -16564,58 +16584,58 @@ msgid ""
 "overwritten from Template User."
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:416
+#: /var/www/html/cacti/user_admin.php:413
 msgid "Template User:"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:422
+#: /var/www/html/cacti/user_admin.php:419
 msgid "User(s) to update:"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:427
+#: /var/www/html/cacti/user_admin.php:424
 msgid "Reset User(s) Settings"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:430
+#: /var/www/html/cacti/user_admin.php:427
 msgid "You must select at least one user."
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:803
+#: /var/www/html/cacti/user_admin.php:800
 #: /var/www/html/cacti/user_group_admin.php:728
 msgid "Allow"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:804
+#: /var/www/html/cacti/user_admin.php:801
 #: /var/www/html/cacti/user_group_admin.php:729
 msgid "Deny"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:829
+#: /var/www/html/cacti/user_admin.php:826
 msgid ""
 "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have "
 "access to at least one of Graph, Device, or Graph Template to gain access to "
 "the Graph"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:831
+#: /var/www/html/cacti/user_admin.php:828
 msgid ""
 "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have "
 "access to the Graph, Device, and Graph Template to gain access to the Graph"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:835
+#: /var/www/html/cacti/user_admin.php:832
 #: /var/www/html/cacti/user_group_admin.php:745
 msgid "Default Graph Policy"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:840
+#: /var/www/html/cacti/user_admin.php:837
 msgid "Default Graph Policy for this User"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:845
-#: /var/www/html/cacti/user_admin.php:1150
-#: /var/www/html/cacti/user_admin.php:1311
-#: /var/www/html/cacti/user_admin.php:1452
+#: /var/www/html/cacti/user_admin.php:842
+#: /var/www/html/cacti/user_admin.php:1147
+#: /var/www/html/cacti/user_admin.php:1308
+#: /var/www/html/cacti/user_admin.php:1449
 #: /var/www/html/cacti/user_group_admin.php:755
 #: /var/www/html/cacti/user_group_admin.php:896
 #: /var/www/html/cacti/user_group_admin.php:1044
@@ -16623,10 +16643,10 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:997
-#: /var/www/html/cacti/user_admin.php:1233
-#: /var/www/html/cacti/user_admin.php:1377
-#: /var/www/html/cacti/user_admin.php:1514
+#: /var/www/html/cacti/user_admin.php:994
+#: /var/www/html/cacti/user_admin.php:1230
+#: /var/www/html/cacti/user_admin.php:1374
+#: /var/www/html/cacti/user_admin.php:1511
 #: /var/www/html/cacti/user_group_admin.php:821
 #: /var/www/html/cacti/user_group_admin.php:966
 #: /var/www/html/cacti/user_group_admin.php:1109
@@ -16634,19 +16654,19 @@ msgstr ""
 msgid "Effective Policy"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1011
+#: /var/www/html/cacti/user_admin.php:1008
 #: /var/www/html/cacti/user_group_admin.php:847
 msgid "No Matching Graphs Found"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1026
-#: /var/www/html/cacti/user_admin.php:1032
-#: /var/www/html/cacti/user_admin.php:1278
-#: /var/www/html/cacti/user_admin.php:1284
-#: /var/www/html/cacti/user_admin.php:1419
-#: /var/www/html/cacti/user_admin.php:1425
-#: /var/www/html/cacti/user_admin.php:1555
-#: /var/www/html/cacti/user_admin.php:1561
+#: /var/www/html/cacti/user_admin.php:1023
+#: /var/www/html/cacti/user_admin.php:1029
+#: /var/www/html/cacti/user_admin.php:1275
+#: /var/www/html/cacti/user_admin.php:1281
+#: /var/www/html/cacti/user_admin.php:1416
+#: /var/www/html/cacti/user_admin.php:1422
+#: /var/www/html/cacti/user_admin.php:1552
+#: /var/www/html/cacti/user_admin.php:1558
 #: /var/www/html/cacti/user_group_admin.php:862
 #: /var/www/html/cacti/user_group_admin.php:868
 #: /var/www/html/cacti/user_group_admin.php:1010
@@ -16658,14 +16678,14 @@ msgstr ""
 msgid "Revoke Access"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1027
-#: /var/www/html/cacti/user_admin.php:1031
-#: /var/www/html/cacti/user_admin.php:1279
-#: /var/www/html/cacti/user_admin.php:1283
-#: /var/www/html/cacti/user_admin.php:1420
-#: /var/www/html/cacti/user_admin.php:1424
-#: /var/www/html/cacti/user_admin.php:1556
-#: /var/www/html/cacti/user_admin.php:1560
+#: /var/www/html/cacti/user_admin.php:1024
+#: /var/www/html/cacti/user_admin.php:1028
+#: /var/www/html/cacti/user_admin.php:1276
+#: /var/www/html/cacti/user_admin.php:1280
+#: /var/www/html/cacti/user_admin.php:1417
+#: /var/www/html/cacti/user_admin.php:1421
+#: /var/www/html/cacti/user_admin.php:1553
+#: /var/www/html/cacti/user_admin.php:1557
 #: /var/www/html/cacti/user_group_admin.php:62
 #: /var/www/html/cacti/user_group_admin.php:863
 #: /var/www/html/cacti/user_group_admin.php:867
@@ -16678,74 +16698,74 @@ msgstr ""
 msgid "Grant Access"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1084
-#: /var/www/html/cacti/user_admin.php:2661
+#: /var/www/html/cacti/user_admin.php:1081
+#: /var/www/html/cacti/user_admin.php:2658
 #: /var/www/html/cacti/user_group_admin.php:1833
 #: /var/www/html/cacti/user_group_admin.php:1892
 msgid "Groups"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1092
-#: /var/www/html/cacti/user_admin.php:1101
+#: /var/www/html/cacti/user_admin.php:1089
+#: /var/www/html/cacti/user_admin.php:1098
 msgid "Member"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1092
+#: /var/www/html/cacti/user_admin.php:1089
 msgid "Policies (Graph/Device/Template)"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1101
+#: /var/www/html/cacti/user_admin.php:1098
 #: /var/www/html/cacti/user_group_admin.php:688
 msgid "Non Member"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1103
-#: /var/www/html/cacti/user_admin.php:2315
-#: /var/www/html/cacti/user_admin.php:2316
-#: /var/www/html/cacti/user_admin.php:2317
+#: /var/www/html/cacti/user_admin.php:1100
+#: /var/www/html/cacti/user_admin.php:2312
+#: /var/www/html/cacti/user_admin.php:2313
+#: /var/www/html/cacti/user_admin.php:2314
 #: /var/www/html/cacti/user_group_admin.php:1924
 #: /var/www/html/cacti/user_group_admin.php:1925
 #: /var/www/html/cacti/user_group_admin.php:1926
 msgid "ALLOW"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1103
-#: /var/www/html/cacti/user_admin.php:2315
-#: /var/www/html/cacti/user_admin.php:2316
-#: /var/www/html/cacti/user_admin.php:2317
+#: /var/www/html/cacti/user_admin.php:1100
+#: /var/www/html/cacti/user_admin.php:2312
+#: /var/www/html/cacti/user_admin.php:2313
+#: /var/www/html/cacti/user_admin.php:2314
 #: /var/www/html/cacti/user_group_admin.php:1924
 #: /var/www/html/cacti/user_group_admin.php:1925
 #: /var/www/html/cacti/user_group_admin.php:1926
 msgid "DENY"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1109
+#: /var/www/html/cacti/user_admin.php:1106
 msgid "No Matching User Groups Found"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1123
+#: /var/www/html/cacti/user_admin.php:1120
 msgid "Assign Membership"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1124
+#: /var/www/html/cacti/user_admin.php:1121
 msgid "Remove Membership"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1140
+#: /var/www/html/cacti/user_admin.php:1137
 #: /var/www/html/cacti/user_group_admin.php:886
 msgid "Default Device Policy"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1145
+#: /var/www/html/cacti/user_admin.php:1142
 msgid "Default Device Policy for this User"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1244
-#: /var/www/html/cacti/user_admin.php:1252
-#: /var/www/html/cacti/user_admin.php:1388
-#: /var/www/html/cacti/user_admin.php:1396
-#: /var/www/html/cacti/user_admin.php:1525
-#: /var/www/html/cacti/user_admin.php:1533
+#: /var/www/html/cacti/user_admin.php:1241
+#: /var/www/html/cacti/user_admin.php:1249
+#: /var/www/html/cacti/user_admin.php:1385
+#: /var/www/html/cacti/user_admin.php:1393
+#: /var/www/html/cacti/user_admin.php:1522
+#: /var/www/html/cacti/user_admin.php:1530
 #: /var/www/html/cacti/user_group_admin.php:832
 #: /var/www/html/cacti/user_group_admin.php:840
 #: /var/www/html/cacti/user_group_admin.php:977
@@ -16757,12 +16777,12 @@ msgstr ""
 msgid "Access Granted"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1246
-#: /var/www/html/cacti/user_admin.php:1250
-#: /var/www/html/cacti/user_admin.php:1390
-#: /var/www/html/cacti/user_admin.php:1394
-#: /var/www/html/cacti/user_admin.php:1527
-#: /var/www/html/cacti/user_admin.php:1531
+#: /var/www/html/cacti/user_admin.php:1243
+#: /var/www/html/cacti/user_admin.php:1247
+#: /var/www/html/cacti/user_admin.php:1387
+#: /var/www/html/cacti/user_admin.php:1391
+#: /var/www/html/cacti/user_admin.php:1524
+#: /var/www/html/cacti/user_admin.php:1528
 #: /var/www/html/cacti/user_group_admin.php:834
 #: /var/www/html/cacti/user_group_admin.php:838
 #: /var/www/html/cacti/user_group_admin.php:979
@@ -16774,171 +16794,171 @@ msgstr ""
 msgid "Access Restricted"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1263
+#: /var/www/html/cacti/user_admin.php:1260
 #: /var/www/html/cacti/user_group_admin.php:996
 msgid "No Matching Devices Found"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1301
+#: /var/www/html/cacti/user_admin.php:1298
 #: /var/www/html/cacti/user_group_admin.php:1034
 msgid "Default Graph Template Policy"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1306
+#: /var/www/html/cacti/user_admin.php:1303
 msgid "Default Graph Template Policy for this User"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1377
+#: /var/www/html/cacti/user_admin.php:1374
 #: /var/www/html/cacti/user_group_admin.php:1109
 msgid "Total Graphs"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1404
+#: /var/www/html/cacti/user_admin.php:1401
 #: /var/www/html/cacti/user_group_admin.php:1136
 msgid "No Matching Graph Templates Found"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1442
+#: /var/www/html/cacti/user_admin.php:1439
 #: /var/www/html/cacti/user_group_admin.php:1175
 msgid "Default Tree Policy"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1447
+#: /var/www/html/cacti/user_admin.php:1444
 msgid "Default Tree Policy for this User"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1540
+#: /var/www/html/cacti/user_admin.php:1537
 #: /var/www/html/cacti/user_group_admin.php:1269
 msgid "No Matching Trees Found"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1585
+#: /var/www/html/cacti/user_admin.php:1582
 #: /var/www/html/cacti/user_group_admin.php:1315
 msgid "User Permissions"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1652
+#: /var/www/html/cacti/user_admin.php:1649
 #: /var/www/html/cacti/user_group_admin.php:1402
 msgid "External Link Permissions"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1709
+#: /var/www/html/cacti/user_admin.php:1706
 #: /var/www/html/cacti/user_group_admin.php:1459
 msgid "Plugin Permissions"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1765
+#: /var/www/html/cacti/user_admin.php:1762
 msgid "Legacy 1.x Plugins"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1822
+#: /var/www/html/cacti/user_admin.php:1819
 #: /var/www/html/cacti/user_group_admin.php:1550
 #, php-format
 msgid "User Settings %s"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1937
+#: /var/www/html/cacti/user_admin.php:1934
 #: /var/www/html/cacti/user_group_admin.php:1666
 msgid "Permissions"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1938
+#: /var/www/html/cacti/user_admin.php:1935
 msgid "Group Membership"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1939
+#: /var/www/html/cacti/user_admin.php:1936
 #: /var/www/html/cacti/user_group_admin.php:1667
 msgid "Graph Perms"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1940
+#: /var/www/html/cacti/user_admin.php:1937
 #: /var/www/html/cacti/user_group_admin.php:1668
 msgid "Device Perms"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1941
+#: /var/www/html/cacti/user_admin.php:1938
 #: /var/www/html/cacti/user_group_admin.php:1669
 msgid "Template Perms"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1942
+#: /var/www/html/cacti/user_admin.php:1939
 #: /var/www/html/cacti/user_group_admin.php:1670
 msgid "Tree Perms"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:1984
+#: /var/www/html/cacti/user_admin.php:1981
 #, php-format
 msgid "User Management %s"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2016
+#: /var/www/html/cacti/user_admin.php:2013
 msgid "Password Too Short"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2021
+#: /var/www/html/cacti/user_admin.php:2018
 msgid "Password Validation Passes"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2035
+#: /var/www/html/cacti/user_admin.php:2032
 msgid "Passwords do Not Match"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2038
+#: /var/www/html/cacti/user_admin.php:2035
 msgid "Passwords Match"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2283
+#: /var/www/html/cacti/user_admin.php:2280
 #: /var/www/html/cacti/user_group_admin.php:1904
 msgid "Graph Policy"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2284
+#: /var/www/html/cacti/user_admin.php:2281
 #: /var/www/html/cacti/user_group_admin.php:1905
 msgid "Device Policy"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2285
+#: /var/www/html/cacti/user_admin.php:2282
 #: /var/www/html/cacti/user_group_admin.php:1906
 msgid "Template Policy"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2286
+#: /var/www/html/cacti/user_admin.php:2283
 msgid "Last Login"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2307
+#: /var/www/html/cacti/user_admin.php:2304
 msgid "Unavailable"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2323
+#: /var/www/html/cacti/user_admin.php:2320
 msgid "No Users Found"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2539
+#: /var/www/html/cacti/user_admin.php:2536
 #: /var/www/html/cacti/user_group_admin.php:2143
 #, php-format
 msgid "Graph Permissions %s"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2593
-#: /var/www/html/cacti/user_admin.php:2678
+#: /var/www/html/cacti/user_admin.php:2590
+#: /var/www/html/cacti/user_admin.php:2675
 msgid "Show All"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2646
+#: /var/www/html/cacti/user_admin.php:2643
 #, php-format
 msgid "Group Membership %s"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2732
+#: /var/www/html/cacti/user_admin.php:2729
 #: /var/www/html/cacti/user_group_admin.php:2251
 #, php-format
 msgid "Devices Permission %s"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2782
-#: /var/www/html/cacti/user_admin.php:2867
-#: /var/www/html/cacti/user_admin.php:2952
+#: /var/www/html/cacti/user_admin.php:2779
+#: /var/www/html/cacti/user_admin.php:2864
+#: /var/www/html/cacti/user_admin.php:2949
 #: /var/www/html/cacti/user_group_admin.php:2197
 #: /var/www/html/cacti/user_group_admin.php:2301
 #: /var/www/html/cacti/user_group_admin.php:2386
@@ -16946,20 +16966,20 @@ msgstr ""
 msgid "Show Exceptions"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2835
+#: /var/www/html/cacti/user_admin.php:2832
 #: /var/www/html/cacti/user_group_admin.php:2354
 #, php-format
 msgid "Template Permission %s"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:2920
-#: /var/www/html/cacti/user_admin.php:3005
+#: /var/www/html/cacti/user_admin.php:2917
+#: /var/www/html/cacti/user_admin.php:3002
 #: /var/www/html/cacti/user_group_admin.php:2439
 #, php-format
 msgid "Tree Permission %s"
 msgstr ""
 
-#: /var/www/html/cacti/user_admin.php:3037
+#: /var/www/html/cacti/user_admin.php:3034
 msgid "Show Exceptions<"
 msgstr ""
 
