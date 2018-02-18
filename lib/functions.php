@@ -3601,30 +3601,70 @@ function display_messages() {
 
 			window.scrollTo(0,0);
 
+			var sessionMessageButtons = {};
+			var sessionMessageOpen = null;
+			var sessionMessageTimer = null;
+
+			if (!isSessionMessageError) {
+				sessionMessageButtons['Pause'] = {
+					text: 'Pause',
+					id: 'btnSessionMessagePause',
+					click: function() {
+						if (sessionMessageTimer != null)
+						{
+							clearInterval(sessionMessageTimer);
+							sessionMessageTimer = null;
+						}
+
+						$("#btnSessionMessageOK").html('<span class="ui-button-text">OK</span>');
+						$("#btnSessionMessagePause").html('');
+
+
+						var dialogOptions = $(this).dialog('option','buttons');
+						delete dialogOptions.buttons.Pause;
+						$(this).dialog('option','buttons');
+					}
+				}
+							
+				sessionMessageOpen = function() {
+					SessionMessageCountdown(5000);
+				};
+			}
+
+			sessionMessageButtons['Ok'] = {
+				draggable: true,
+				text: 'OK',
+				id: 'btnSessionMessageOK',
+				click: function() {
+					$(this).dialog('close');
+				}
+			};
+
 			$('#sess_messages').dialog({
-				autoOpen: false,
+				open: sessionMessageOpen,
 				resizable: false,
 				height: 'auto',
 				width: 400,
-				title: messageTitle
+				title: messageTitle,
+				buttons: sessionMessageButtons
 			});
-			if (!isSessionMessageError) {
-				$('#sess_messages').dialog('option',{
-					open: function() {
-						messageTimer = setTimeout(function() {
-							$('#sess_messages').dialog('close');
-						}, 3000);
-					}
-				});
-			} else {
-				$('#sess_messages').dialog('option','buttons',{
-					Ok: function() {
-						$(this).dialog('close');
-					}
-				});
-			}
-			$('#sess_messages').dialog('open');
 		}
+
+		function SessionMessageCountdown(time) {
+			var sessionMessageTimeLeft = (time / 1000);
+			$("#btnSessionMessageOK").html('<span class="ui-button-text">OK (' + sessionMessageTimeLeft + ')</span>');
+
+			sessionMessageTimer = setInterval(function(){
+				sessionMessageTimeLeft--;
+//				document.getElementById("btnSessionMessageOK").textContent = "OK " + "(" + sessionMessageTimeLeft + ")";
+				$("#btnSessionMessageOK").html('<span class="ui-button-text">OK (' + sessionMessageTimeLeft + ')</span>');
+				if(sessionMessageTimeLeft <= 0)
+				{
+					clearInterval(sessionMessageTimer);
+					$('#sess_messages').dialog('close');
+				}
+			},1000);
+         	}
 
 		if (refreshMSeconds == null || refreshMSeconds < 5000) {
 			refreshMSeconds=999999999;
