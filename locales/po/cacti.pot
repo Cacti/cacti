@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-17 16:46-0500\n"
+"POT-Creation-Date: 2018-02-18 10:35-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -612,7 +612,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_tree.php:618
 #: /var/www/html/cacti/lib/html_tree.php:880 /var/www/html/cacti/links.php:309
 #: /var/www/html/cacti/managers.php:150 /var/www/html/cacti/managers.php:494
-#: /var/www/html/cacti/managers.php:726 /var/www/html/cacti/plugins.php:309
+#: /var/www/html/cacti/managers.php:726 /var/www/html/cacti/plugins.php:312
 #: /var/www/html/cacti/pollers.php:517 /var/www/html/cacti/rrdcleaner.php:475
 #: /var/www/html/cacti/settings.php:290 /var/www/html/cacti/settings.php:309
 #: /var/www/html/cacti/settings.php:358 /var/www/html/cacti/sites.php:398
@@ -696,7 +696,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/api_automation.php:1062
 #: /var/www/html/cacti/lib/html_reports.php:1442
 #: /var/www/html/cacti/links.php:319 /var/www/html/cacti/managers.php:160
-#: /var/www/html/cacti/managers.php:504 /var/www/html/cacti/plugins.php:332
+#: /var/www/html/cacti/managers.php:504 /var/www/html/cacti/plugins.php:335
 #: /var/www/html/cacti/pollers.php:527 /var/www/html/cacti/rrdcleaner.php:501
 #: /var/www/html/cacti/sites.php:408 /var/www/html/cacti/tree.php:1689
 #: /var/www/html/cacti/user_admin.php:2220
@@ -759,7 +759,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_reports.php:1453
 #: /var/www/html/cacti/lib/html_tree.php:656 /var/www/html/cacti/links.php:329
 #: /var/www/html/cacti/managers.php:172 /var/www/html/cacti/managers.php:516
-#: /var/www/html/cacti/managers.php:746 /var/www/html/cacti/plugins.php:344
+#: /var/www/html/cacti/managers.php:746 /var/www/html/cacti/plugins.php:347
 #: /var/www/html/cacti/pollers.php:539 /var/www/html/cacti/sites.php:420
 #: /var/www/html/cacti/tree.php:1701 /var/www/html/cacti/user_admin.php:2232
 #: /var/www/html/cacti/user_admin.php:2598
@@ -789,7 +789,7 @@ msgstr ""
 #: /var/www/html/cacti/host_templates.php:724
 #: /var/www/html/cacti/lib/html_graph.php:191
 #: /var/www/html/cacti/managers.php:172 /var/www/html/cacti/managers.php:516
-#: /var/www/html/cacti/managers.php:746 /var/www/html/cacti/plugins.php:344
+#: /var/www/html/cacti/managers.php:746 /var/www/html/cacti/plugins.php:347
 #: /var/www/html/cacti/pollers.php:539 /var/www/html/cacti/sites.php:420
 #: /var/www/html/cacti/tree.php:1701 /var/www/html/cacti/user_admin.php:2232
 #: /var/www/html/cacti/user_admin.php:2598
@@ -847,7 +847,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_tree.php:657
 #: /var/www/html/cacti/lib/html_tree.php:767 /var/www/html/cacti/links.php:330
 #: /var/www/html/cacti/managers.php:173 /var/www/html/cacti/managers.php:517
-#: /var/www/html/cacti/managers.php:747 /var/www/html/cacti/plugins.php:345
+#: /var/www/html/cacti/managers.php:747 /var/www/html/cacti/plugins.php:348
 #: /var/www/html/cacti/pollers.php:540 /var/www/html/cacti/sites.php:421
 #: /var/www/html/cacti/tree.php:1702 /var/www/html/cacti/user_admin.php:2233
 #: /var/www/html/cacti/user_admin.php:2599
@@ -878,7 +878,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_graph.php:192
 #: /var/www/html/cacti/lib/html_tree.php:657
 #: /var/www/html/cacti/managers.php:173 /var/www/html/cacti/managers.php:517
-#: /var/www/html/cacti/managers.php:747 /var/www/html/cacti/plugins.php:345
+#: /var/www/html/cacti/managers.php:747 /var/www/html/cacti/plugins.php:348
 #: /var/www/html/cacti/pollers.php:540 /var/www/html/cacti/sites.php:421
 #: /var/www/html/cacti/tree.php:1702 /var/www/html/cacti/user_admin.php:2233
 #: /var/www/html/cacti/user_admin.php:2599
@@ -1733,8 +1733,8 @@ msgstr ""
 #: /var/www/html/cacti/lib/api_automation.php:1043
 #: /var/www/html/cacti/lib/api_automation.php:1171
 #: /var/www/html/cacti/lib/html_reports.php:1428
-#: /var/www/html/cacti/managers.php:218 /var/www/html/cacti/plugins.php:315
-#: /var/www/html/cacti/plugins.php:409 /var/www/html/cacti/pollers.php:615
+#: /var/www/html/cacti/managers.php:218 /var/www/html/cacti/plugins.php:318
+#: /var/www/html/cacti/plugins.php:412 /var/www/html/cacti/pollers.php:615
 #: /var/www/html/cacti/user_admin.php:1233
 #: /var/www/html/cacti/user_group_admin.php:966
 msgid "Status"
@@ -3073,7 +3073,7 @@ msgstr ""
 #: /var/www/html/cacti/include/auth.php:162
 #: /var/www/html/cacti/include/global_settings.php:493
 #: /var/www/html/cacti/permission_denied.php:52
-#: /var/www/html/cacti/plugins.php:411
+#: /var/www/html/cacti/plugins.php:414
 msgid "Version"
 msgstr ""
 
@@ -4724,7 +4724,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_graph.php:385
 #: /var/www/html/cacti/lib/html_reports.php:347
 #: /var/www/html/cacti/lib/html_tree.php:843
-#: /var/www/html/cacti/plugins.php:319 /var/www/html/cacti/settings.php:282
+#: /var/www/html/cacti/plugins.php:322 /var/www/html/cacti/settings.php:282
 #: /var/www/html/cacti/settings.php:301 /var/www/html/cacti/settings.php:327
 #: /var/www/html/cacti/utilities.php:648
 #: /var/www/html/cacti/utilities.php:1084
@@ -4779,7 +4779,7 @@ msgstr ""
 
 #: /var/www/html/cacti/data_sources.php:1409
 #: /var/www/html/cacti/data_templates.php:966
-#: /var/www/html/cacti/plugins.php:38 /var/www/html/cacti/plugins.php:320
+#: /var/www/html/cacti/plugins.php:38 /var/www/html/cacti/plugins.php:323
 msgid "Active"
 msgstr ""
 
@@ -6040,7 +6040,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/functions.php:2763
 #: /var/www/html/cacti/lib/functions.php:2787
 #: /var/www/html/cacti/lib/html_reports.php:1260
-#: /var/www/html/cacti/links.php:376 /var/www/html/cacti/plugins.php:406
+#: /var/www/html/cacti/links.php:376 /var/www/html/cacti/plugins.php:409
 msgid "Actions"
 msgstr ""
 
@@ -6138,7 +6138,8 @@ msgstr ""
 #: /var/www/html/cacti/lib/api_automation.php:176
 #: /var/www/html/cacti/lib/api_automation.php:1054
 #: /var/www/html/cacti/lib/html_utility.php:860
-#: /var/www/html/cacti/plugins.php:179 /var/www/html/cacti/utilities.php:2109
+#: /var/www/html/cacti/plugins.php:179 /var/www/html/cacti/plugins.php:183
+#: /var/www/html/cacti/plugins.php:201 /var/www/html/cacti/utilities.php:2109
 msgid "Unknown"
 msgstr ""
 
@@ -12341,7 +12342,7 @@ msgstr ""
 
 #: /var/www/html/cacti/install/index.php:517
 #: /var/www/html/cacti/install/index.php:599
-#: /var/www/html/cacti/plugins.php:41 /var/www/html/cacti/plugins.php:321
+#: /var/www/html/cacti/plugins.php:41 /var/www/html/cacti/plugins.php:324
 #: /var/www/html/cacti/utilities.php:428
 msgid "Installed"
 msgstr ""
@@ -12647,7 +12648,7 @@ msgid ""
 msgstr ""
 
 #: /var/www/html/cacti/install/index.php:935
-#: /var/www/html/cacti/plugins.php:410
+#: /var/www/html/cacti/plugins.php:413
 msgid "Author"
 msgstr ""
 
@@ -14718,7 +14719,7 @@ msgid "Plugin cannot be installed."
 msgstr ""
 
 #: /var/www/html/cacti/lib/plugins.php:772
-#: /var/www/html/cacti/lib/plugins.php:779 /var/www/html/cacti/plugins.php:300
+#: /var/www/html/cacti/lib/plugins.php:779 /var/www/html/cacti/plugins.php:303
 msgid "Plugin Management"
 msgstr ""
 
@@ -15467,7 +15468,7 @@ msgstr ""
 msgid "Not Compatible"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:37 /var/www/html/cacti/plugins.php:324
+#: /var/www/html/cacti/plugins.php:37 /var/www/html/cacti/plugins.php:327
 #: /var/www/html/cacti/utilities.php:430
 msgid "Not Installed"
 msgstr ""
@@ -15484,133 +15485,137 @@ msgstr ""
 msgid "Not Stated"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:322
+#: /var/www/html/cacti/plugins.php:325
 msgid "Active/Installed"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:323
+#: /var/www/html/cacti/plugins.php:326
 msgid "Configuration Issues"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:328 /var/www/html/cacti/plugins.php:397
+#: /var/www/html/cacti/plugins.php:331 /var/www/html/cacti/plugins.php:400
 msgid "Plugins"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:406
+#: /var/www/html/cacti/plugins.php:409
 msgid ""
 "Actions available include 'Install', 'Activate', 'Disable', 'Enable', "
 "'Uninstall'."
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:407
+#: /var/www/html/cacti/plugins.php:410
 msgid "Plugin Name"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:407
+#: /var/www/html/cacti/plugins.php:410
 msgid ""
 "The name for this Plugin.  The name is controlled by the directory it "
 "resides in."
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:408
+#: /var/www/html/cacti/plugins.php:411
 msgid "A description that the Plugins author has given to the Plugin."
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:408
+#: /var/www/html/cacti/plugins.php:411
 msgid "Plugin Description"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:409
+#: /var/www/html/cacti/plugins.php:412
 msgid "The status of this Plugin."
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:410
+#: /var/www/html/cacti/plugins.php:413
 msgid "The author of this Plugin."
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:411
+#: /var/www/html/cacti/plugins.php:414
 msgid "The version of this Plugin."
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:412
+#: /var/www/html/cacti/plugins.php:415
 msgid "Load Order"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:412
+#: /var/www/html/cacti/plugins.php:415
 msgid ""
 "The load order of the Plugin.  You can change the load order by first "
 "sorting by it, then moving a Plugin either up or down."
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:441
+#: /var/www/html/cacti/plugins.php:444
 msgid "No Plugins Found"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:459
+#: /var/www/html/cacti/plugins.php:462
 msgid "ERROR: Directory Missing"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:465
+#: /var/www/html/cacti/plugins.php:468
 #, php-format
 msgid "Not Compatible, %s"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:467
+#: /var/www/html/cacti/plugins.php:470
 msgid "Plugin Error"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:478
+#: /var/www/html/cacti/plugins.php:481
 msgid "Order Before Previous Plugin"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:483
+#: /var/www/html/cacti/plugins.php:486
 msgid "Order After Next Plugin"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:507
+#: /var/www/html/cacti/plugins.php:510
 msgid "Install Plugin"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:511 /var/www/html/cacti/plugins.php:515
-#: /var/www/html/cacti/plugins.php:518
+#: /var/www/html/cacti/plugins.php:514 /var/www/html/cacti/plugins.php:518
+#: /var/www/html/cacti/plugins.php:521
 msgid "Uninstall Plugin"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:512
+#: /var/www/html/cacti/plugins.php:515
 msgid "Disable Plugin"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:519
+#: /var/www/html/cacti/plugins.php:522
 msgid "Enable Plugin"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:529
+#: /var/www/html/cacti/plugins.php:525
+msgid "Plugin directories can not include spaces"
+msgstr ""
+
+#: /var/www/html/cacti/plugins.php:535
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:531
+#: /var/www/html/cacti/plugins.php:537
 msgid "Plugin does not include an INFO file"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:534
+#: /var/www/html/cacti/plugins.php:540
 msgid "Directory does not appear to be plugin directory"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:543
+#: /var/www/html/cacti/plugins.php:549
 #, php-format
 msgid "Plugin directory '%s' is missing setup.php"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:545
+#: /var/www/html/cacti/plugins.php:551
 msgid "Plugin is lacking an INFO file"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:547
+#: /var/www/html/cacti/plugins.php:553
 msgid "Plugin is integrated into Cacti core"
 msgstr ""
 
-#: /var/www/html/cacti/plugins.php:549
+#: /var/www/html/cacti/plugins.php:555
 msgid "Plugin is not compatible"
 msgstr ""
 
