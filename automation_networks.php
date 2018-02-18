@@ -359,16 +359,6 @@ function form_actions() {
 				<div class='itemlist'><ul>$networks_list</ul></div>
 				<p><input type='checkbox' id='discover_debug' name='discover_debug' value='1'>
 				<label id='discover_debug_label' for='discover_debug'>Run discover in debug mode</label></p>
-
-				<script type='javascript'>
-				$('#discover_debug_label').click(function() {
-					if($('#discover_debug').attr('checked')) {
-						$('#discover_debug').attr('checked', false);
-					} else {
-						$('#discover_debug').attr('checked', true);
-					}
-				});
-				</script>
 			</td>
 		</tr>\n";
 	} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */
