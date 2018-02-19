@@ -144,7 +144,7 @@ $settings = array(
 			),
 		'path_cactilog' => array(
 			'friendly_name' => __('Cacti Log Path'),
-			'description' => __('The path to your Cacti log file (if blank, defaults to <path_cacti>/log/cacti.log)'),
+			'description' => __('The path to your Cacti log file (if blank, defaults to &lt;path_cacti&gt;/log/cacti.log)'),
 			'method' => 'filepath',
 			'default' => $config['base_path'] . '/log/cacti.log',
 			'max_length' => '255'
@@ -194,20 +194,20 @@ $settings = array(
 			),
 		'rrd_autoclean' => array(
 			'friendly_name' => __('RRDfile Auto Clean'),
-			'description' => __('Automatically Delete, Archive, or Delete RRDfiles when removed from Cacti'),
+			'description' => __('Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti'),
 			'method' => 'checkbox',
 			'default' => ''
  			),
 		'rrd_autoclean_method' => array(
 			'friendly_name' => __('RRDfile Auto Clean Method'),
-			'description' => __('The method used to Clean RRDfiles from Cacti after their deletion.'),
+			'description' => __('The method used to Clean RRDfiles from Cacti after their Data Sources are deleted.'),
 			'method' => 'drop_array',
 			'array' => array('1' => 'Delete', '3' => 'Archive'),
 			'default' => '1'
  			),
 		'rrd_archive' => array(
 			'friendly_name' => __('Archive directory'),
-			'description' => __('This is the directory where RRDfiles are <strong>moved</strong> for <strong>Archive</strong>'),
+			'description' => __('This is the directory where RRDfiles are <strong>moved</strong> for archiving'),
 			'method' => 'dirpath',
 			'default' => $config['base_path'] . '/rra/archive/',
 			'max_length' => 255,
