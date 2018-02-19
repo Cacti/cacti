@@ -3595,10 +3595,16 @@ function general_header() {
 }
 
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
+	$fromname = '';
+	if (is_array($from)) {
+		$fromname = $from[1];
+		$from     = $from[0];
+	}
+
 	if ($from == '') {
 		$from     = read_config_option('settings_from_email');
 		$fromname = read_config_option('settings_from_name');
-	} else {
+	} elseif ($fromname = '') {
 		$full_name = db_fetch_cell_prepared('SELECT full_name
 			FROM user_auth
 			WHERE email_address = ?',
