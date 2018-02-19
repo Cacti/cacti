@@ -67,8 +67,13 @@ function form_save() {
 
 	// Save the users profile information
 	if (isset_request_var('full_name') && isset_request_var('email_address') && isset($_SESSION['sess_user_id'])) {
-		db_execute_prepared("UPDATE user_auth SET full_name = ?, email_address = ? WHERE id = ?", array(get_nfilter_request_var('full_name'), get_nfilter_request_var('email_address'), $_SESSION['sess_user_id']));
+		db_execute_prepared("UPDATE user_auth
+			SET full_name = ?, email_address = ?
+			WHERE id = ?",
+			array(get_nfilter_request_var('full_name'), get_nfilter_request_var('email_address'), $_SESSION['sess_user_id']));
 	}
+
+	$errors = array();
 
 	// Save the users graph settings if they have permission
 	if (is_view_allowed('graph_settings') == true) {
@@ -81,39 +86,68 @@ function form_save() {
 
 				if ($field_array['method'] == 'checkbox') {
 					if (isset_request_var($field_name)) {
-						db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $field_name));
+						db_execute_prepared("REPLACE INTO settings_user
+							(user_id, name, value)
+							VALUES (?, ?, 'on')",
+							array($_SESSION['sess_user_id'], $field_name));
 					} else {
-						db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $field_name));
+						db_execute_prepared("REPLACE INTO settings_user
+							(user_id, name, value)
+							VALUES (?, ?, '')",
+							array($_SESSION['sess_user_id'], $field_name));
 					}
 				} elseif ($field_array['method'] == 'checkbox_group') {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						if (isset_request_var($sub_field_name)) {
-							db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $sub_field_name));
+							db_execute_prepared("REPLACE INTO settings_user
+								(user_id, name, value)
+								VALUES (?, ?, 'on')",
+								array($_SESSION['sess_user_id'], $sub_field_name));
 						} else {
-							db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $sub_field_name));
+							db_execute_prepared("REPLACE INTO settings_user
+								(user_id, name, value)
+								VALUES (?, ?, '')",
+								array($_SESSION['sess_user_id'], $sub_field_name));
 						}
 					}
 				} elseif ($field_array['method'] == 'textbox_password') {
 					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
-						raise_message(4);
-						break;
+						$_SESSION['sess_error_fields'][$field_name] = $field_name;
+						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+						$errors[4] = 4;
 					} elseif (isset_request_var($field_name)) {
-						db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
+						db_execute_prepared('REPLACE INTO settings_user
+							(user_id, name, value)
+							VALUES (?, ?, ?)',
+							array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
 					}
 				} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 						if (isset_request_var($sub_field_name)) {
-							db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_nfilter_request_var($sub_field_name)));
+							db_execute_prepared('REPLACE INTO settings_user
+								(user_id, name, value)
+								VALUES (?, ?, ?)',
+								array($_SESSION['sess_user_id'], $sub_field_name, get_nfilter_request_var($sub_field_name)));
 						}
 					}
 				}else if (isset_request_var($field_name)) {
-					db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
+					db_execute_prepared('REPLACE INTO settings_user
+						(user_id, name, value)
+						VALUES (?, ?, ?)',
+						array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
 				}
 			}
 		}
 	}
 
-	raise_message(1);
+	if (sizeof($errors) == 0) {
+		raise_message(1);
+	} else {
+		raise_message(35);
+		foreach($errors as $error) {
+			raise_message($error);
+		}
+	}
 
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var('sess_user_language');
