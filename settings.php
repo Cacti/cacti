@@ -31,6 +31,7 @@ get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_sear
 
 switch (get_request_var('action')) {
 case 'save':
+	$errors = array();
 	foreach ($settings{get_request_var('tab')} as $field_name => $field_array) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
@@ -62,7 +63,9 @@ case 'save':
 			}
 		} elseif ($field_array['method'] == 'dirpath') {
 			if (get_nfilter_request_var($field_name) != '' && !is_dir(get_nfilter_request_var($field_name))) {
-				raise_message(8);
+				$_SESSION['sess_error_fields'][$field_name] = $field_name;
+				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+				$errors[8] = 8;
 			} else {
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
@@ -71,7 +74,9 @@ case 'save':
 			}
 		} elseif ($field_array['method'] == 'filepath') {
 			if (get_nfilter_request_var($field_name) != '' && !is_file(get_nfilter_request_var($field_name))) {
-				raise_message(8);
+				$_SESSION['sess_error_fields'][$field_name] = $field_name;
+				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+				$errors[8] = 8;
 			} else {
 				$continue = true;
 
@@ -79,7 +84,9 @@ case 'save':
 					$extension = pathinfo(get_nfilter_request_var($field_name), PATHINFO_EXTENSION);
 
 					if ($extension != 'log') {
-						raise_message(9);
+						$_SESSION['sess_error_fields'][$field_name] = $field_name;
+						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+						$errors[9] = 9;
 						$continue = false;
 					}
 				}
@@ -92,8 +99,10 @@ case 'save':
 				}
 			}
 		} elseif ($field_array['method'] == 'textbox_password') {
-			if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
-				raise_message(4);
+			if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name . '_confirm')) {
+				$_SESSION['sess_error_fields'][$field_name] = $field_name;
+				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+				$errors[4] = 4;
 				break;
 			} elseif (!isempty_request_var($field_name)) {
 				db_execute_prepared('REPLACE INTO settings
@@ -162,7 +171,15 @@ case 'save':
 	snmpagent_global_settings_update();
 
 	api_plugin_hook_function('global_settings_update');
-	raise_message(1);
+
+	if (sizeof($errors) == 0) {
+		raise_message(1);
+	} else {
+		raise_message(35);
+		foreach($errors as $error) {
+			raise_message($error);
+		}
+	}
 
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var('sess_config_array');
@@ -270,6 +287,7 @@ default:
 
 	var themeChanged = false;
 	var currentTheme = '';
+	var rrdArchivePath = '';
 
 	$(function() {
 		$('#selective_plugin_debug').multiselect({
@@ -649,11 +667,23 @@ default:
 		if ($('#rrd_autoclean').is(':checked')) {
 			$('#row_rrd_autoclean_method').show();
 			if ($('#rrd_autoclean_method').val() == '3') {
+				if (rrdArchivePath != '') {
+					$('#rrd_archive').val(rrdArchivePath);
+				}
 				$('#row_rrd_archive').show();
 			} else {
+				if ($('#rrd_archive').val() != '') {
+					rrdArchivePath = $('#rrd_archive').val();
+				}
 				$('#row_rrd_archive').hide();
+				$('#rrd_archive').val('');
 			}
 		} else {
+			if ($('#rrd_archive').val() != '') {
+				rrdArchivePath = $('#rrd_archive').val();
+			}
+			$('#rrd_archive').val('');
+
 			$('#row_rrd_autoclean_method').hide();
 			$('#row_rrd_archive').hide();
 		}

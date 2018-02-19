@@ -30,6 +30,11 @@ Cacti CHANGELOG
 -issue: Undefined index 'profile_referer' in auth_profile.php
 -issue: Don't allow user to select spine unless the spine path is set properly
 -issue: Change message format to be consistent for all messages.
+-issue: Allow multiple errors to be returned from save operations
+-issue: Optimize filter visibility functions and make html consistent
+-issue: Allow error fields to be highlighted on the settings page
+-issue: Some error fields not showing when saving under Settings > Paths
+-issue: When refreshing some pages using F5, header would be removed
 -feature: Allow searching of SNMP Index in View Data Query Cache
 -feature: Updated Dutch translations
 

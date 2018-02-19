@@ -431,7 +431,9 @@ function is_error_message() {
 	if (isset($_SESSION['sess_messages'])) {
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
-				if ($messages[$current_message_id]['type'] == 'error') { return true; }
+				if ($messages[$current_message_id]['type'] == 'error') {
+					return true;
+				}
 			}
 		}
 	}
@@ -459,7 +461,11 @@ function display_output_messages() {
 
 		debug_log_clear('new_graphs');
 	} elseif (isset($_SESSION['sess_messages'])) {
-		$error_message = is_error_message();
+		if (is_error_message()) {
+			$omessage['type'] = 'error';
+		} else {
+			$omessage['type'] = 'info';
+		}
 
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
@@ -472,22 +478,17 @@ function display_output_messages() {
 					switch ($messages[$current_message_id]['type']) {
 					case 'info':
 						if ($error_message == false) {
-							$omessage['type']    = 'info';
-							$omessage['message'] = $message;
+							$omessage['message'] .= ($omessage['message'] != '' ? '<br>':'') . $message;
 
 							/* we don't need these if there are no error messages */
 							kill_session_var('sess_field_values');
 						} else {
-							$omessage['type']    = 'error';
-							$omessage['message'] = $message;
-
-							/* we don't need these if there are no error messages */
+							$omessage['message'] .= ($omessage['message'] != '' ? '<br>':'') . $message;
 						}
 
 						break;
 					case 'error':
-						$omessage['type']    = 'error';
-						$omessage['message'] = $message;
+						$omessage['message'] .= ($omessage['message'] != '' ? '<br>':'') . $message;
 						break;
 					}
 				} else {
