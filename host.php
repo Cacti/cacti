@@ -703,7 +703,7 @@ function host_edit() {
 				<div class='cactiTableButton'>
 					<span>
 						<a class='linkCopyDark cactiTableCopy' id='copyToClipboard<?php print $dbg_copy_uid;?>'><?php print __('Copy');?></a>
-						<a id='dbghide' class='deletequery fa fa-remove' href='#'><?php print __('Hide');?></a>
+						<a id='dbghide' class='fa fa-remove' href='#'><?php print __('Hide');?></a>
 					</span>
 				</div>
 			</div>
