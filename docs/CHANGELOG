@@ -28,6 +28,8 @@ Cacti CHANGELOG
 -issue: Resolve JavaScript errors when coming out of Realtime
 -issue: snmpagent generates a Fatal error when plugin directories duplicated
 -issue: Undefined index 'profile_referer' in auth_profile.php
+-issue: Don't allow user to select spine unless the spine path is set properly
+-issue: Change message format to be consistent for all messages.
 -feature: Allow searching of SNMP Index in View Data Query Cache
 -feature: Updated Dutch translations
 
