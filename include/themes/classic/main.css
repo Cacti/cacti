@@ -1477,6 +1477,8 @@ legend {
 	width: 100%;
 	height: 16px;
 	margin-top: auto;
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 
 .navBarNavigationNext i.ui-icon {
