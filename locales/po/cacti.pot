@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-19 22:29-0500\n"
+"POT-Creation-Date: 2018-02-19 22:33-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -6442,8 +6442,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:138
 msgid ""
-"The directory highlighted below does not exist.  Please enter a valid "
-"directory."
+"The directory highlighted does not exist.  Please enter a valid directory."
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:141
@@ -6570,8 +6569,7 @@ msgid ""
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:219
-msgid ""
-"The file highlighted below does not exist.  Please enter a valid file name."
+msgid "The file highlighted does not exist.  Please enter a valid file name."
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:222
