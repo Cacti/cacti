@@ -477,7 +477,7 @@ function display_output_messages() {
 						$message = $_SESSION['custom_error'];
 					}
 
-					$omessage['message'] .= (isset($omessage['message']) && $omessage['message'] != '' ? '<br>':'') . $message;
+					$omessage['message'] = (isset($omessage['message']) && $omessage['message'] != '' ? $omessage['message'] . '<br>':'') . $message;
 				} else {
 					cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
 				}
