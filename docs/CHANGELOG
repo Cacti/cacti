@@ -18,25 +18,15 @@ Cacti CHANGELOG
 -issue#1365: Plugin Management - Reject invalid folder names
 -issue#1366: Improve error/info message display
 -issue: Allow dynamic setting of from name when emailing
--issue: Fixed some language string inconsistencies
--issue: Update filter layout of Data Query Cache to match Poller Cache
--issue: Remove spurious php code from checkbox area in user admin
+-issue: Data Query Cache filter layout more consistent
 -issue: Minor plugin permissions format change
--issue: Implementation of error handling causing errors on New Graphs page
--issue: Remove deprecated setting fom DSStats settings
--issue: Move several DSStats logic to standard functions
--issue: Disable graph context menu items that have no right context
--issue: Resolve JavaScript errors when coming out of Realtime
--issue: snmpagent generates a Fatal error when plugin directories duplicated
--issue: Undefined index 'profile_referer' in auth_profile.php
--issue: Don't allow user to select spine unless the spine path is set properly
--issue: Change message format to be consistent for all messages.
--issue: Allow multiple errors to be returned from save operations
+-issue: Implementation of error handling causes errors creating New Graphs
+-issue: Deprecated DDStats setting removed
+-issue: Graph context menu items are now context aware
+-issue: Validate spine path before allowing enabling of spine
 -issue: Optimize filter visibility functions and make html consistent
--issue: Allow error fields to be highlighted on the settings page
--issue: Some error fields not showing when saving under Settings > Paths
--issue: When refreshing some pages using F5, header would be removed
--feature: Allow searching of SNMP Index in View Data Query Cache
+-issue: Errored settings fields now highlighted correctly on error
+-feature: Searching of SNMP Index in View Data Query Cache now works
 -feature: Updated Dutch translations
 
 1.1.35
