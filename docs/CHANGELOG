@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -issue: Validate spine path before allowing enabling of spine
 -issue: Optimize filter visibility functions and make html consistent
 -issue: Errored settings fields now highlighted correctly on error
+-issue: Reduce load time of settings page
 -feature: Searching of SNMP Index in View Data Query Cache now works
 -feature: Updated Dutch translations
 
