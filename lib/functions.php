@@ -435,6 +435,8 @@ function is_error_message() {
 					return true;
 				}
 			}
+		} else {
+			return true;
 		}
 	}
 
@@ -475,28 +477,12 @@ function display_output_messages() {
 						$message = $_SESSION['custom_error'];
 					}
 
-					switch ($messages[$current_message_id]['type']) {
-					case 'info':
-						if ($error_message == false) {
-							$omessage['message'] .= ($omessage['message'] != '' ? '<br>':'') . $message;
-
-							/* we don't need these if there are no error messages */
-							kill_session_var('sess_field_values');
-						} else {
-							$omessage['message'] .= ($omessage['message'] != '' ? '<br>':'') . $message;
-						}
-
-						break;
-					case 'error':
-						$omessage['message'] .= ($omessage['message'] != '' ? '<br>':'') . $message;
-						break;
-					}
+					$omessage['message'] .= (isset($omessage['message']) && $omessage['message'] != '' ? '<br>':'') . $message;
 				} else {
 					cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
 				}
 			}
 		} else {
-			$omessage['type']    = 'error';
 			$omessage['message'] = $_SESSION['sess_messages'];
 		}
 	}
