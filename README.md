@@ -1,4 +1,4 @@
-# Cacti <sup>TM</sup>
+# Cacti <sup>TM</sup> [![Build Status](https://travis-ci.org/Cacti/cacti.svg)][travis]
 
 -----------------------------------------------------------------------------
 
