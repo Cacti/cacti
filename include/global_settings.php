@@ -491,28 +491,28 @@ $settings = array(
 			),
 		'snmp_version' => array(
 			'friendly_name' => __('Version'),
-			'description' => __('Default SNMP version for all new hosts.'),
+			'description' => __('Default SNMP version for all new Devices.'),
 			'method' => 'drop_array',
 			'default' => '2',
 			'array' => $snmp_versions,
 			),
 		'snmp_community' => array(
 			'friendly_name' => __('Community'),
-			'description' => __('Default SNMP read community for all new hosts.'),
+			'description' => __('Default SNMP read community for all new Devices.'),
 			'method' => 'textbox',
 			'default' => 'public',
 			'max_length' => '100',
 			),
 		'snmp_security_level' => array(
 			'friendly_name' => __('Security Level'),
-			'description' => __('The SNMP v3 Security Level.'),
+			'description' => __('Default SNMP v3 Security Level for all new Devices.'),
 			'method' => 'drop_array',
 			'default' => 'authPriv',
 			'array' => $snmp_security_levels,
 			),
 		'snmp_username' => array(
-			'friendly_name' => __('Username (v3)'),
-			'description' => __('The SNMP v3 Username for polling hosts.'),
+			'friendly_name' => __('Auth User (v3)'),
+			'description' => __('Default SNMP v3 Authorization User for all new Devices.'),
 			'method' => 'textbox',
 			'default' => '',
 			'max_length' => '100',
@@ -520,13 +520,13 @@ $settings = array(
 		'snmp_auth_protocol' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Auth Protocol (v3)'),
-			'description' => __('Choose the SNMPv3 Authorization Protocol.'),
+			'description' => __('Default SNMPv3 Authorization Protocol for all new Devices.'),
 			'default' => 'MD5',
 			'array' => $snmp_auth_protocols,
 			),
 		'snmp_password' => array(
-			'friendly_name' => __('Password (v3)'),
-			'description' => __('The SNMP v3 Password for polling hosts.'),
+			'friendly_name' => __('Auth Passphrase (v3)'),
+			'description' => __('Default SNMP v3 Authorization Passphrase for all new Devices.'),
 			'method' => 'textbox_password',
 			'default' => '',
 			'max_length' => '100',
@@ -534,21 +534,21 @@ $settings = array(
 		'snmp_priv_protocol' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Privacy Protocol (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Protocol.'),
+			'description' => __('Default SNMPv3 Privacy Protocol for all new Devices.'),
 			'default' => 'DES',
 			'array' => $snmp_priv_protocols,
 			),
 		'snmp_priv_passphrase' => array(
 			'method' => 'textbox',
-			'friendly_name' => __('Privacy Passphrase (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
+			'friendly_name' => __('Privacy Passphrase (v3).'),
+			'description' => __('Default SNMPv3 Privacy Passphrase for all new Devices.'),
 			'default' => '',
 			'max_length' => '200'
 			),
 		'snmp_context' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('SNMP Context (v3)'),
-			'description' => __('Enter the SNMP v3 context to use for this device.'),
+			'description' => __('Enter the SNMP v3 Context for all new Devices.'),
 			'value' => '|arg1:snmp_context|',
 			'default' => '',
 			'max_length' => '64',
@@ -557,7 +557,7 @@ $settings = array(
 		'snmp_engine_id' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('SNMP Engine ID (v3)'),
-			'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
+			'description' => __('Default SNMP v3 Engine Id for all new Devices. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
 			'value' => '|arg1:snmp_engine_id|',
 			'default' => '',
 			'max_length' => '64',
@@ -565,7 +565,7 @@ $settings = array(
 			),
 		'snmp_port' => array(
 			'friendly_name' => __('Port Number'),
-			'description' => __('Default UDP port to be used for SNMP Calls.  Typically, 161.'),
+			'description' => __('Default UDP Port for all new Devices.  Typically 161.'),
 			'method' => 'textbox',
 			'default' => '161',
 			'max_length' => '10',
@@ -573,7 +573,7 @@ $settings = array(
 			),
 		'snmp_timeout' => array(
 			'friendly_name' => __('Timeout'),
-			'description' => __('Default SNMP timeout in milli-seconds.'),
+			'description' => __('Default SNMP timeout in milli-seconds for all new Devices.'),
 			'method' => 'textbox',
 			'default' => '500',
 			'max_length' => '10',
@@ -581,7 +581,7 @@ $settings = array(
 			),
 		'snmp_retries' => array(
 			'friendly_name' => __('Retries'),
-			'description' => __('The number of times the SNMP poller will attempt to reach the host before failing.'),
+			'description' => __('Default SNMP retries for all new Devices.'),
 			'method' => 'textbox',
 			'default' => '3',
 			'max_length' => '10',
@@ -594,21 +594,21 @@ $settings = array(
 			),
 		'availability_method' => array(
 			'friendly_name' => __('Downed Device Detection'),
-			'description' => __('The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>'),
+			'description' => __('Default Availability/Reachability for all new Devices.  The method Cacti will use to determine if a Device is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>'),
 			'method' => 'drop_array',
 			'default' => AVAIL_SNMP,
 			'array' => $availability_options,
 			),
 		'ping_method' => array(
 			'friendly_name' => __('Ping Type'),
-			'description' => __('The type of ping packet to send.  <br><i>NOTE: ICMP requires that the Cacti Service ID have root privileges in UNIX/Linux.</i>'),
+			'description' => __('Default Ping type for all new Devices.</i>'),
 			'method' => 'drop_array',
 			'default' => PING_UDP,
 			'array' => $ping_methods,
 			),
 		'ping_port' => array(
 			'friendly_name' => __('Ping Port'),
-			'description' => __('When choosing either TCP or UDP Ping, which port should be checked for availability of the host prior to polling.'),
+			'description' => __('Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a port not reachable error to determine if the Device is up or not.'),
 			'method' => 'textbox',
 			'default' => '23',
 			'max_length' => '10',
@@ -616,7 +616,7 @@ $settings = array(
 			),
 		'ping_timeout' => array(
 			'friendly_name' => __('Ping Timeout Value'),
-			'description' => __('The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.'),
+			'description' => __('Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SMMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows.'),
 			'method' => 'textbox',
 			'default' => '400',
 			'max_length' => '10',
@@ -624,7 +624,7 @@ $settings = array(
 			),
 		'ping_retries' => array(
 			'friendly_name' => __('Ping Retry Count'),
-			'description' => __('The number of times Cacti will attempt to ping a host before failing.'),
+			'description' => __('The number of times Cacti will attempt to ping a Device before marking it as down.'),
 			'method' => 'textbox',
 			'default' => '1',
 			'max_length' => '10',
@@ -637,7 +637,7 @@ $settings = array(
 			),
 		'ping_failure_count' => array(
 			'friendly_name' => __('Failure Count'),
-			'description' => __('The number of polling intervals a host must be down before logging an error and reporting host as down.'),
+			'description' => __('The number of polling intervals a Device must be down before logging an error and reporting Device as down.'),
 			'method' => 'textbox',
 			'default' => '2',
 			'max_length' => '10',
@@ -645,7 +645,7 @@ $settings = array(
 			),
 		'ping_recovery_count' => array(
 			'friendly_name' => __('Recovery Count'),
-			'description' => __('The number of polling intervals a host must remain up before returning host to an up status and issuing a notice.'),
+			'description' => __('The number of polling intervals a Device must remain up before returning Device to an up status and issuing a notice.'),
 			'method' => 'textbox',
 			'default' => '3',
 			'max_length' => '10',
@@ -973,7 +973,7 @@ $settings = array(
 			),
 		'spine_log_level' => array(
 			'friendly_name' => __('Invalid Data Logging'),
-			'description' => __('How would you like Spine output errors logged?  The options are: \'Detailed\' which is similar to cmd.php logging; \'Summary\' which provides the number of output errors per host; and \'None\', which does not provide error counts.'),
+			'description' => __('How would you like Spine output errors logged?  The options are: \'Detailed\' which is similar to cmd.php logging; \'Summary\' which provides the number of output errors per Device; and \'None\', which does not provide error counts.'),
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(
