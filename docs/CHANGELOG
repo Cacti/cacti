@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -issue: Optimize filter visibility functions and make html consistent
 -issue: Errored settings fields now highlighted correctly on error
 -issue: Reduce load time of settings page
+-issue: Separate directory path and file path error messages for readability
 -feature: Searching of SNMP Index in View Data Query Cache now works
 -feature: Updated Dutch translations
 

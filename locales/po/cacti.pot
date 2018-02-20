@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-19 22:16-0500\n"
+"POT-Creation-Date: 2018-02-19 22:29-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -125,7 +125,7 @@ msgstr ""
 #: /var/www/html/cacti/host_templates.php:30
 #: /var/www/html/cacti/host_templates.php:477
 #: /var/www/html/cacti/host_templates.php:534
-#: /var/www/html/cacti/include/global_arrays.php:1346
+#: /var/www/html/cacti/include/global_arrays.php:1349
 #: /var/www/html/cacti/lib/api_automation.php:1277
 #: /var/www/html/cacti/lib/api_automation.php:1339
 #: /var/www/html/cacti/lib/api_automation.php:1403
@@ -648,8 +648,8 @@ msgstr ""
 #: /var/www/html/cacti/graph_view.php:561
 #: /var/www/html/cacti/graph_view.php:615 /var/www/html/cacti/graphs.php:1743
 #: /var/www/html/cacti/graphs.php:1827 /var/www/html/cacti/host.php:1587
-#: /var/www/html/cacti/include/global_arrays.php:787
-#: /var/www/html/cacti/include/global_arrays.php:968
+#: /var/www/html/cacti/include/global_arrays.php:790
+#: /var/www/html/cacti/include/global_arrays.php:971
 #: /var/www/html/cacti/lib/api_automation.php:281
 #: /var/www/html/cacti/lib/functions.php:1990
 #: /var/www/html/cacti/lib/html.php:1421 /var/www/html/cacti/lib/html.php:1423
@@ -1085,12 +1085,12 @@ msgstr ""
 #: /var/www/html/cacti/graphs_items.php:331
 #: /var/www/html/cacti/graphs_items.php:443 /var/www/html/cacti/host.php:1107
 #: /var/www/html/cacti/host.php:1464 /var/www/html/cacti/host.php:1499
-#: /var/www/html/cacti/include/global_arrays.php:392
-#: /var/www/html/cacti/include/global_arrays.php:445
-#: /var/www/html/cacti/include/global_arrays.php:528
-#: /var/www/html/cacti/include/global_arrays.php:671
-#: /var/www/html/cacti/include/global_arrays.php:694
-#: /var/www/html/cacti/include/global_arrays.php:1430
+#: /var/www/html/cacti/include/global_arrays.php:395
+#: /var/www/html/cacti/include/global_arrays.php:448
+#: /var/www/html/cacti/include/global_arrays.php:531
+#: /var/www/html/cacti/include/global_arrays.php:674
+#: /var/www/html/cacti/include/global_arrays.php:697
+#: /var/www/html/cacti/include/global_arrays.php:1433
 #: /var/www/html/cacti/include/global_form.php:402
 #: /var/www/html/cacti/include/global_form.php:708
 #: /var/www/html/cacti/include/global_form.php:716
@@ -1193,8 +1193,8 @@ msgstr ""
 #: /var/www/html/cacti/automation_templates.php:398
 #: /var/www/html/cacti/automation_templates.php:481
 #: /var/www/html/cacti/color_templates.php:553
-#: /var/www/html/cacti/include/global_arrays.php:796
-#: /var/www/html/cacti/include/global_arrays.php:854
+#: /var/www/html/cacti/include/global_arrays.php:799
+#: /var/www/html/cacti/include/global_arrays.php:857
 #: /var/www/html/cacti/install/index.php:934
 #: /var/www/html/cacti/user_admin.php:2847
 #: /var/www/html/cacti/user_group_admin.php:2369
@@ -1248,8 +1248,8 @@ msgstr ""
 
 #: /var/www/html/cacti/aggregate_templates.php:642
 #: /var/www/html/cacti/graph_view.php:621
-#: /var/www/html/cacti/include/global_arrays.php:756
-#: /var/www/html/cacti/include/global_arrays.php:1092
+#: /var/www/html/cacti/include/global_arrays.php:759
+#: /var/www/html/cacti/include/global_arrays.php:1095
 #: /var/www/html/cacti/include/global_form.php:1317
 #: /var/www/html/cacti/include/global_form.php:1545
 #: /var/www/html/cacti/lib/html_reports.php:406
@@ -1431,7 +1431,7 @@ msgid "Local"
 msgstr ""
 
 #: /var/www/html/cacti/auth_login.php:613
-#: /var/www/html/cacti/include/global_arrays.php:682
+#: /var/www/html/cacti/include/global_arrays.php:685
 #: /var/www/html/cacti/lib/auth.php:369
 msgid "LDAP"
 msgstr ""
@@ -1463,7 +1463,7 @@ msgid "User Account Details"
 msgstr ""
 
 #: /var/www/html/cacti/auth_profile.php:195
-#: /var/www/html/cacti/include/global_arrays.php:665
+#: /var/www/html/cacti/include/global_arrays.php:668
 #: /var/www/html/cacti/include/global_session.php:108
 #: /var/www/html/cacti/include/global_settings.php:1957
 #: /var/www/html/cacti/lib/html.php:1648 /var/www/html/cacti/lib/html.php:1670
@@ -1471,14 +1471,14 @@ msgid "Tree View"
 msgstr ""
 
 #: /var/www/html/cacti/auth_profile.php:199
-#: /var/www/html/cacti/include/global_arrays.php:666
+#: /var/www/html/cacti/include/global_arrays.php:669
 #: /var/www/html/cacti/include/global_session.php:109
 #: /var/www/html/cacti/lib/html.php:1655 /var/www/html/cacti/lib/html.php:1679
 msgid "List View"
 msgstr ""
 
 #: /var/www/html/cacti/auth_profile.php:203
-#: /var/www/html/cacti/include/global_arrays.php:667
+#: /var/www/html/cacti/include/global_arrays.php:670
 #: /var/www/html/cacti/include/global_session.php:110
 #: /var/www/html/cacti/lib/html.php:1662
 msgid "Preview View"
@@ -1601,9 +1601,9 @@ msgstr ""
 #: /var/www/html/cacti/automation_devices.php:108
 #: /var/www/html/cacti/data_sources.php:822
 #: /var/www/html/cacti/graph_view.php:621 /var/www/html/cacti/graphs.php:1370
-#: /var/www/html/cacti/include/global_arrays.php:752
-#: /var/www/html/cacti/include/global_arrays.php:797
-#: /var/www/html/cacti/include/global_arrays.php:1546
+#: /var/www/html/cacti/include/global_arrays.php:755
+#: /var/www/html/cacti/include/global_arrays.php:800
+#: /var/www/html/cacti/include/global_arrays.php:1549
 #: /var/www/html/cacti/lib/api_automation.php:424
 #: /var/www/html/cacti/lib/functions.php:3994
 #: /var/www/html/cacti/lib/html.php:1758 /var/www/html/cacti/lib/html.php:1788
@@ -1647,8 +1647,8 @@ msgstr ""
 #: /var/www/html/cacti/automation_devices.php:529
 #: /var/www/html/cacti/host.php:1450 /var/www/html/cacti/host.php:1544
 #: /var/www/html/cacti/host.php:1644
-#: /var/www/html/cacti/include/global_arrays.php:784
-#: /var/www/html/cacti/include/global_arrays.php:836
+#: /var/www/html/cacti/include/global_arrays.php:787
+#: /var/www/html/cacti/include/global_arrays.php:839
 #: /var/www/html/cacti/lib/api_automation.php:180
 #: /var/www/html/cacti/lib/api_automation.php:269
 #: /var/www/html/cacti/lib/api_automation.php:475
@@ -1708,7 +1708,7 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_devices.php:255
 #: /var/www/html/cacti/host.php:1611
-#: /var/www/html/cacti/include/global_arrays.php:393
+#: /var/www/html/cacti/include/global_arrays.php:396
 msgid "Uptime"
 msgstr ""
 
@@ -1815,7 +1815,7 @@ msgstr ""
 #: /var/www/html/cacti/data_templates.php:34
 #: /var/www/html/cacti/graph_templates.php:34
 #: /var/www/html/cacti/graphs.php:63 /var/www/html/cacti/host_templates.php:31
-#: /var/www/html/cacti/include/global_arrays.php:1343
+#: /var/www/html/cacti/include/global_arrays.php:1346
 #: /var/www/html/cacti/vdef.php:30
 msgid "Duplicate"
 msgstr ""
@@ -1824,7 +1824,7 @@ msgstr ""
 #: /var/www/html/cacti/automation_networks.php:33
 #: /var/www/html/cacti/automation_tree_rules.php:30
 #: /var/www/html/cacti/data_sources.php:38 /var/www/html/cacti/host.php:39
-#: /var/www/html/cacti/include/global_arrays.php:1344
+#: /var/www/html/cacti/include/global_arrays.php:1347
 #: /var/www/html/cacti/include/global_settings.php:1225
 #: /var/www/html/cacti/links.php:29 /var/www/html/cacti/managers.php:29
 #: /var/www/html/cacti/managers.php:35 /var/www/html/cacti/plugins.php:29
@@ -1839,7 +1839,7 @@ msgstr ""
 #: /var/www/html/cacti/automation_networks.php:32
 #: /var/www/html/cacti/automation_tree_rules.php:31
 #: /var/www/html/cacti/data_sources.php:39 /var/www/html/cacti/host.php:40
-#: /var/www/html/cacti/include/global_arrays.php:1345
+#: /var/www/html/cacti/include/global_arrays.php:1348
 #: /var/www/html/cacti/links.php:30 /var/www/html/cacti/managers.php:30
 #: /var/www/html/cacti/managers.php:34 /var/www/html/cacti/plugins.php:30
 #: /var/www/html/cacti/pollers.php:30 /var/www/html/cacti/user_admin.php:31
@@ -1944,14 +1944,14 @@ msgstr ""
 #: /var/www/html/cacti/automation_graph_rules.php:738
 #: /var/www/html/cacti/automation_graph_rules.php:785
 #: /var/www/html/cacti/automation_graph_rules.php:890
-#: /var/www/html/cacti/include/global_arrays.php:807
+#: /var/www/html/cacti/include/global_arrays.php:810
 #: /var/www/html/cacti/lib/functions.php:2736
 msgid "Graph Rules"
 msgstr ""
 
 #: /var/www/html/cacti/automation_graph_rules.php:753
 #: /var/www/html/cacti/automation_graph_rules.php:901
-#: /var/www/html/cacti/include/global_arrays.php:1095
+#: /var/www/html/cacti/include/global_arrays.php:1098
 #: /var/www/html/cacti/include/global_form.php:1555
 #: /var/www/html/cacti/include/global_form.php:2170
 msgid "Data Query"
@@ -1965,7 +1965,7 @@ msgstr ""
 #: /var/www/html/cacti/automation_tree_rules.php:846
 #: /var/www/html/cacti/automation_tree_rules.php:864
 #: /var/www/html/cacti/data_sources.php:1236 /var/www/html/cacti/host.php:1534
-#: /var/www/html/cacti/include/global_arrays.php:715
+#: /var/www/html/cacti/include/global_arrays.php:718
 #: /var/www/html/cacti/include/global_form.php:1437
 #: /var/www/html/cacti/include/global_settings.php:356
 #: /var/www/html/cacti/lib/api_automation.php:170
@@ -1997,9 +1997,9 @@ msgstr ""
 #: /var/www/html/cacti/data_sources.php:1237
 #: /var/www/html/cacti/data_templates.php:966
 #: /var/www/html/cacti/host.php:1535
-#: /var/www/html/cacti/include/global_arrays.php:714
-#: /var/www/html/cacti/include/global_arrays.php:1271
-#: /var/www/html/cacti/include/global_arrays.php:1554
+#: /var/www/html/cacti/include/global_arrays.php:717
+#: /var/www/html/cacti/include/global_arrays.php:1274
+#: /var/www/html/cacti/include/global_arrays.php:1557
 #: /var/www/html/cacti/include/global_settings.php:356
 #: /var/www/html/cacti/include/global_settings.php:1101
 #: /var/www/html/cacti/include/global_settings.php:1115
@@ -2116,20 +2116,20 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:406
 #: /var/www/html/cacti/automation_networks.php:990
-#: /var/www/html/cacti/include/global_arrays.php:575
-#: /var/www/html/cacti/include/global_arrays.php:1568
+#: /var/www/html/cacti/include/global_arrays.php:578
+#: /var/www/html/cacti/include/global_arrays.php:1571
 msgid "Daily"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:407
 #: /var/www/html/cacti/automation_networks.php:991
-#: /var/www/html/cacti/include/global_arrays.php:1569
+#: /var/www/html/cacti/include/global_arrays.php:1572
 msgid "Weekly"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:408
 #: /var/www/html/cacti/automation_networks.php:992
-#: /var/www/html/cacti/include/global_arrays.php:1570
+#: /var/www/html/cacti/include/global_arrays.php:1573
 msgid "Monthly"
 msgstr ""
 
@@ -2288,11 +2288,11 @@ msgstr ""
 #: /var/www/html/cacti/automation_networks.php:497
 #: /var/www/html/cacti/automation_networks.php:498
 #: /var/www/html/cacti/automation_networks.php:499
-#: /var/www/html/cacti/include/global_arrays.php:648
-#: /var/www/html/cacti/include/global_arrays.php:649
-#: /var/www/html/cacti/include/global_arrays.php:650
 #: /var/www/html/cacti/include/global_arrays.php:651
 #: /var/www/html/cacti/include/global_arrays.php:652
+#: /var/www/html/cacti/include/global_arrays.php:653
+#: /var/www/html/cacti/include/global_arrays.php:654
+#: /var/www/html/cacti/include/global_arrays.php:655
 #, php-format
 msgid "%d Threads"
 msgstr ""
@@ -2307,7 +2307,7 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:509
 #: /var/www/html/cacti/automation_networks.php:1129
-#: /var/www/html/cacti/include/global_arrays.php:600
+#: /var/www/html/cacti/include/global_arrays.php:603
 #, php-format
 msgid "%d Minute"
 msgstr ""
@@ -2319,28 +2319,28 @@ msgstr ""
 #: /var/www/html/cacti/automation_networks.php:1130
 #: /var/www/html/cacti/automation_networks.php:1131
 #: /var/www/html/cacti/data_sources.php:1071
-#: /var/www/html/cacti/include/global_arrays.php:565
-#: /var/www/html/cacti/include/global_arrays.php:566
-#: /var/www/html/cacti/include/global_arrays.php:567
 #: /var/www/html/cacti/include/global_arrays.php:568
-#: /var/www/html/cacti/include/global_arrays.php:601
-#: /var/www/html/cacti/include/global_arrays.php:602
-#: /var/www/html/cacti/include/global_arrays.php:603
+#: /var/www/html/cacti/include/global_arrays.php:569
+#: /var/www/html/cacti/include/global_arrays.php:570
+#: /var/www/html/cacti/include/global_arrays.php:571
 #: /var/www/html/cacti/include/global_arrays.php:604
 #: /var/www/html/cacti/include/global_arrays.php:605
 #: /var/www/html/cacti/include/global_arrays.php:606
-#: /var/www/html/cacti/include/global_arrays.php:948
-#: /var/www/html/cacti/include/global_arrays.php:949
-#: /var/www/html/cacti/include/global_arrays.php:1278
-#: /var/www/html/cacti/include/global_arrays.php:1282
-#: /var/www/html/cacti/include/global_arrays.php:1290
-#: /var/www/html/cacti/include/global_arrays.php:1291
-#: /var/www/html/cacti/include/global_arrays.php:1313
-#: /var/www/html/cacti/include/global_arrays.php:1314
-#: /var/www/html/cacti/include/global_arrays.php:1315
+#: /var/www/html/cacti/include/global_arrays.php:607
+#: /var/www/html/cacti/include/global_arrays.php:608
+#: /var/www/html/cacti/include/global_arrays.php:609
+#: /var/www/html/cacti/include/global_arrays.php:951
+#: /var/www/html/cacti/include/global_arrays.php:952
+#: /var/www/html/cacti/include/global_arrays.php:1281
+#: /var/www/html/cacti/include/global_arrays.php:1285
+#: /var/www/html/cacti/include/global_arrays.php:1293
+#: /var/www/html/cacti/include/global_arrays.php:1294
 #: /var/www/html/cacti/include/global_arrays.php:1316
 #: /var/www/html/cacti/include/global_arrays.php:1317
-#: /var/www/html/cacti/include/global_arrays.php:1328
+#: /var/www/html/cacti/include/global_arrays.php:1318
+#: /var/www/html/cacti/include/global_arrays.php:1319
+#: /var/www/html/cacti/include/global_arrays.php:1320
+#: /var/www/html/cacti/include/global_arrays.php:1331
 #: /var/www/html/cacti/include/global_settings.php:1168
 #: /var/www/html/cacti/include/global_settings.php:1169
 #: /var/www/html/cacti/include/global_settings.php:1170
@@ -2352,9 +2352,9 @@ msgid "%d Minutes"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:514
-#: /var/www/html/cacti/include/global_arrays.php:607
-#: /var/www/html/cacti/include/global_arrays.php:617
-#: /var/www/html/cacti/include/global_arrays.php:1182
+#: /var/www/html/cacti/include/global_arrays.php:610
+#: /var/www/html/cacti/include/global_arrays.php:620
+#: /var/www/html/cacti/include/global_arrays.php:1185
 #, php-format
 msgid "%d Hour"
 msgstr ""
@@ -2363,33 +2363,33 @@ msgstr ""
 #: /var/www/html/cacti/automation_networks.php:516
 #: /var/www/html/cacti/automation_networks.php:517
 #: /var/www/html/cacti/data_source_profiles.php:769
-#: /var/www/html/cacti/include/global_arrays.php:570
-#: /var/www/html/cacti/include/global_arrays.php:571
-#: /var/www/html/cacti/include/global_arrays.php:572
 #: /var/www/html/cacti/include/global_arrays.php:573
 #: /var/www/html/cacti/include/global_arrays.php:574
-#: /var/www/html/cacti/include/global_arrays.php:608
-#: /var/www/html/cacti/include/global_arrays.php:609
-#: /var/www/html/cacti/include/global_arrays.php:610
+#: /var/www/html/cacti/include/global_arrays.php:575
+#: /var/www/html/cacti/include/global_arrays.php:576
+#: /var/www/html/cacti/include/global_arrays.php:577
 #: /var/www/html/cacti/include/global_arrays.php:611
-#: /var/www/html/cacti/include/global_arrays.php:618
-#: /var/www/html/cacti/include/global_arrays.php:619
-#: /var/www/html/cacti/include/global_arrays.php:620
+#: /var/www/html/cacti/include/global_arrays.php:612
+#: /var/www/html/cacti/include/global_arrays.php:613
+#: /var/www/html/cacti/include/global_arrays.php:614
 #: /var/www/html/cacti/include/global_arrays.php:621
-#: /var/www/html/cacti/include/global_arrays.php:1183
-#: /var/www/html/cacti/include/global_arrays.php:1184
-#: /var/www/html/cacti/include/global_arrays.php:1185
+#: /var/www/html/cacti/include/global_arrays.php:622
+#: /var/www/html/cacti/include/global_arrays.php:623
+#: /var/www/html/cacti/include/global_arrays.php:624
 #: /var/www/html/cacti/include/global_arrays.php:1186
-#: /var/www/html/cacti/include/global_arrays.php:1230
-#: /var/www/html/cacti/include/global_arrays.php:1231
-#: /var/www/html/cacti/include/global_arrays.php:1232
+#: /var/www/html/cacti/include/global_arrays.php:1187
+#: /var/www/html/cacti/include/global_arrays.php:1188
+#: /var/www/html/cacti/include/global_arrays.php:1189
 #: /var/www/html/cacti/include/global_arrays.php:1233
 #: /var/www/html/cacti/include/global_arrays.php:1234
-#: /var/www/html/cacti/include/global_arrays.php:1251
-#: /var/www/html/cacti/include/global_arrays.php:1252
-#: /var/www/html/cacti/include/global_arrays.php:1253
+#: /var/www/html/cacti/include/global_arrays.php:1235
+#: /var/www/html/cacti/include/global_arrays.php:1236
+#: /var/www/html/cacti/include/global_arrays.php:1237
 #: /var/www/html/cacti/include/global_arrays.php:1254
 #: /var/www/html/cacti/include/global_arrays.php:1255
+#: /var/www/html/cacti/include/global_arrays.php:1256
+#: /var/www/html/cacti/include/global_arrays.php:1257
+#: /var/www/html/cacti/include/global_arrays.php:1258
 #: /var/www/html/cacti/include/global_settings.php:1174
 #: /var/www/html/cacti/include/global_settings.php:1175
 #: /var/www/html/cacti/include/global_settings.php:1176
@@ -2459,43 +2459,43 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:581
 #: /var/www/html/cacti/automation_networks.php:639
-#: /var/www/html/cacti/include/global_arrays.php:1610
+#: /var/www/html/cacti/include/global_arrays.php:1613
 msgid "Sunday"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:582
 #: /var/www/html/cacti/automation_networks.php:640
-#: /var/www/html/cacti/include/global_arrays.php:1611
+#: /var/www/html/cacti/include/global_arrays.php:1614
 msgid "Monday"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:583
 #: /var/www/html/cacti/automation_networks.php:641
-#: /var/www/html/cacti/include/global_arrays.php:1612
+#: /var/www/html/cacti/include/global_arrays.php:1615
 msgid "Tuesday"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:584
 #: /var/www/html/cacti/automation_networks.php:642
-#: /var/www/html/cacti/include/global_arrays.php:1613
+#: /var/www/html/cacti/include/global_arrays.php:1616
 msgid "Wednesday"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:585
 #: /var/www/html/cacti/automation_networks.php:643
-#: /var/www/html/cacti/include/global_arrays.php:1614
+#: /var/www/html/cacti/include/global_arrays.php:1617
 msgid "Thursday"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:586
 #: /var/www/html/cacti/automation_networks.php:644
-#: /var/www/html/cacti/include/global_arrays.php:1615
+#: /var/www/html/cacti/include/global_arrays.php:1618
 msgid "Friday"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:587
 #: /var/www/html/cacti/automation_networks.php:645
-#: /var/www/html/cacti/include/global_arrays.php:1616
+#: /var/www/html/cacti/include/global_arrays.php:1619
 msgid "Saturday"
 msgstr ""
 
@@ -2508,62 +2508,62 @@ msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:597
-#: /var/www/html/cacti/include/global_arrays.php:1580
+#: /var/www/html/cacti/include/global_arrays.php:1583
 msgid "January"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:598
-#: /var/www/html/cacti/include/global_arrays.php:1581
+#: /var/www/html/cacti/include/global_arrays.php:1584
 msgid "February"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:599
-#: /var/www/html/cacti/include/global_arrays.php:1582
+#: /var/www/html/cacti/include/global_arrays.php:1585
 msgid "March"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:600
-#: /var/www/html/cacti/include/global_arrays.php:1583
+#: /var/www/html/cacti/include/global_arrays.php:1586
 msgid "April"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:601
-#: /var/www/html/cacti/include/global_arrays.php:1584
+#: /var/www/html/cacti/include/global_arrays.php:1587
 msgid "May"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:602
-#: /var/www/html/cacti/include/global_arrays.php:1585
+#: /var/www/html/cacti/include/global_arrays.php:1588
 msgid "June"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:603
-#: /var/www/html/cacti/include/global_arrays.php:1586
+#: /var/www/html/cacti/include/global_arrays.php:1589
 msgid "July"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:604
-#: /var/www/html/cacti/include/global_arrays.php:1587
+#: /var/www/html/cacti/include/global_arrays.php:1590
 msgid "August"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:605
-#: /var/www/html/cacti/include/global_arrays.php:1588
+#: /var/www/html/cacti/include/global_arrays.php:1591
 msgid "September"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:606
-#: /var/www/html/cacti/include/global_arrays.php:1589
+#: /var/www/html/cacti/include/global_arrays.php:1592
 msgid "October"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:607
-#: /var/www/html/cacti/include/global_arrays.php:1590
+#: /var/www/html/cacti/include/global_arrays.php:1593
 msgid "November"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:608
-#: /var/www/html/cacti/include/global_arrays.php:1591
+#: /var/www/html/cacti/include/global_arrays.php:1594
 msgid "December"
 msgstr ""
 
@@ -2609,7 +2609,7 @@ msgid "Reachability Settings"
 msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:657
-#: /var/www/html/cacti/include/global_arrays.php:809
+#: /var/www/html/cacti/include/global_arrays.php:812
 #: /var/www/html/cacti/include/global_form.php:1044
 #: /var/www/html/cacti/include/global_form.php:1656
 msgid "SNMP Options"
@@ -2714,7 +2714,7 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:980
 #: /var/www/html/cacti/automation_networks.php:1104
-#: /var/www/html/cacti/include/global_arrays.php:804
+#: /var/www/html/cacti/include/global_arrays.php:807
 msgid "Networks"
 msgstr ""
 
@@ -2793,26 +2793,26 @@ msgstr ""
 #: /var/www/html/cacti/automation_networks.php:1127
 #: /var/www/html/cacti/automation_networks.php:1128
 #: /var/www/html/cacti/data_sources.php:1067
-#: /var/www/html/cacti/include/global_arrays.php:563
-#: /var/www/html/cacti/include/global_arrays.php:597
-#: /var/www/html/cacti/include/global_arrays.php:598
-#: /var/www/html/cacti/include/global_arrays.php:599
-#: /var/www/html/cacti/include/global_arrays.php:943
-#: /var/www/html/cacti/include/global_arrays.php:944
-#: /var/www/html/cacti/include/global_arrays.php:945
+#: /var/www/html/cacti/include/global_arrays.php:566
+#: /var/www/html/cacti/include/global_arrays.php:600
+#: /var/www/html/cacti/include/global_arrays.php:601
+#: /var/www/html/cacti/include/global_arrays.php:602
 #: /var/www/html/cacti/include/global_arrays.php:946
-#: /var/www/html/cacti/include/global_arrays.php:1272
-#: /var/www/html/cacti/include/global_arrays.php:1273
-#: /var/www/html/cacti/include/global_arrays.php:1274
+#: /var/www/html/cacti/include/global_arrays.php:947
+#: /var/www/html/cacti/include/global_arrays.php:948
+#: /var/www/html/cacti/include/global_arrays.php:949
 #: /var/www/html/cacti/include/global_arrays.php:1275
 #: /var/www/html/cacti/include/global_arrays.php:1276
-#: /var/www/html/cacti/include/global_arrays.php:1309
-#: /var/www/html/cacti/include/global_arrays.php:1310
-#: /var/www/html/cacti/include/global_arrays.php:1322
-#: /var/www/html/cacti/include/global_arrays.php:1323
-#: /var/www/html/cacti/include/global_arrays.php:1324
+#: /var/www/html/cacti/include/global_arrays.php:1277
+#: /var/www/html/cacti/include/global_arrays.php:1278
+#: /var/www/html/cacti/include/global_arrays.php:1279
+#: /var/www/html/cacti/include/global_arrays.php:1312
+#: /var/www/html/cacti/include/global_arrays.php:1313
 #: /var/www/html/cacti/include/global_arrays.php:1325
 #: /var/www/html/cacti/include/global_arrays.php:1326
+#: /var/www/html/cacti/include/global_arrays.php:1327
+#: /var/www/html/cacti/include/global_arrays.php:1328
+#: /var/www/html/cacti/include/global_arrays.php:1329
 #: /var/www/html/cacti/include/global_settings.php:1884
 #, php-format
 msgid "%d Seconds"
@@ -3235,7 +3235,7 @@ msgid "You must select at least one Automation Template."
 msgstr ""
 
 #: /var/www/html/cacti/automation_templates.php:272
-#: /var/www/html/cacti/include/global_arrays.php:1096
+#: /var/www/html/cacti/include/global_arrays.php:1099
 #: /var/www/html/cacti/include/global_form.php:1020
 #: /var/www/html/cacti/include/global_form.php:1540
 #: /var/www/html/cacti/lib/html_reports.php:386
@@ -3371,7 +3371,7 @@ msgstr ""
 #: /var/www/html/cacti/automation_tree_rules.php:706
 #: /var/www/html/cacti/automation_tree_rules.php:731
 #: /var/www/html/cacti/automation_tree_rules.php:831
-#: /var/www/html/cacti/include/global_arrays.php:808
+#: /var/www/html/cacti/include/global_arrays.php:811
 #: /var/www/html/cacti/lib/functions.php:2760
 msgid "Tree Rules"
 msgstr ""
@@ -3507,7 +3507,7 @@ msgstr ""
 
 #: /var/www/html/cacti/cdef.php:733 /var/www/html/cacti/cdef.php:748
 #: /var/www/html/cacti/cdef.php:864
-#: /var/www/html/cacti/include/global_arrays.php:813
+#: /var/www/html/cacti/include/global_arrays.php:816
 #: /var/www/html/cacti/lib/functions.php:2112
 msgid "CDEFs"
 msgstr ""
@@ -3634,7 +3634,7 @@ msgstr ""
 
 #: /var/www/html/cacti/color.php:520 /var/www/html/cacti/color.php:535
 #: /var/www/html/cacti/color.php:689
-#: /var/www/html/cacti/include/global_arrays.php:815
+#: /var/www/html/cacti/include/global_arrays.php:818
 #: /var/www/html/cacti/lib/functions.php:2178
 msgid "Colors"
 msgstr ""
@@ -3679,7 +3679,7 @@ msgstr ""
 
 #: /var/www/html/cacti/color.php:701
 #: /var/www/html/cacti/color_templates.php:73
-#: /var/www/html/cacti/include/global_arrays.php:801
+#: /var/www/html/cacti/include/global_arrays.php:804
 #: /var/www/html/cacti/include/global_form.php:799
 #: /var/www/html/cacti/include/global_form.php:2052
 msgid "Color"
@@ -3880,22 +3880,22 @@ msgid "Data Input Methods [new]"
 msgstr ""
 
 #: /var/www/html/cacti/data_input.php:447
-#: /var/www/html/cacti/include/global_arrays.php:378
+#: /var/www/html/cacti/include/global_arrays.php:381
 msgid "SNMP Get"
 msgstr ""
 
 #: /var/www/html/cacti/data_input.php:450
-#: /var/www/html/cacti/include/global_arrays.php:379
+#: /var/www/html/cacti/include/global_arrays.php:382
 msgid "SNMP Query"
 msgstr ""
 
 #: /var/www/html/cacti/data_input.php:453
-#: /var/www/html/cacti/include/global_arrays.php:381
+#: /var/www/html/cacti/include/global_arrays.php:384
 msgid "Script Query"
 msgstr ""
 
 #: /var/www/html/cacti/data_input.php:456
-#: /var/www/html/cacti/include/global_arrays.php:383
+#: /var/www/html/cacti/include/global_arrays.php:386
 msgid "Script Query - Script Server"
 msgstr ""
 
@@ -3939,8 +3939,8 @@ msgid "Delete Data Input Field"
 msgstr ""
 
 #: /var/www/html/cacti/data_input.php:618
-#: /var/www/html/cacti/include/global_arrays.php:794
-#: /var/www/html/cacti/include/global_arrays.php:964
+#: /var/www/html/cacti/include/global_arrays.php:797
+#: /var/www/html/cacti/include/global_arrays.php:967
 #: /var/www/html/cacti/lib/functions.php:2316
 msgid "Data Input Methods"
 msgstr ""
@@ -3980,7 +3980,7 @@ msgstr ""
 
 #: /var/www/html/cacti/data_input.php:735
 #: /var/www/html/cacti/data_queries.php:1234
-#: /var/www/html/cacti/include/global_arrays.php:1088
+#: /var/www/html/cacti/include/global_arrays.php:1091
 #: /var/www/html/cacti/include/global_form.php:398
 #: /var/www/html/cacti/include/global_form.php:1298
 msgid "Data Input Method"
@@ -4041,7 +4041,7 @@ msgstr ""
 #: /var/www/html/cacti/data_sources.php:881
 #: /var/www/html/cacti/data_templates.php:542
 #: /var/www/html/cacti/graphs_items.php:439
-#: /var/www/html/cacti/include/global_arrays.php:799
+#: /var/www/html/cacti/include/global_arrays.php:802
 #: /var/www/html/cacti/include/global_form.php:784
 #: /var/www/html/cacti/lib/api_aggregate.php:1299
 #: /var/www/html/cacti/lib/html.php:944
@@ -4146,8 +4146,8 @@ msgstr ""
 #: /var/www/html/cacti/data_queries.php:1115
 #: /var/www/html/cacti/data_queries.php:1130
 #: /var/www/html/cacti/data_queries.php:1220
-#: /var/www/html/cacti/include/global_arrays.php:793
-#: /var/www/html/cacti/include/global_arrays.php:965
+#: /var/www/html/cacti/include/global_arrays.php:796
+#: /var/www/html/cacti/include/global_arrays.php:968
 #: /var/www/html/cacti/lib/api_automation.php:1058
 #: /var/www/html/cacti/lib/functions.php:2352
 msgid "Data Queries"
@@ -4313,8 +4313,8 @@ msgid "%s KBytes per Data Source"
 msgstr ""
 
 #: /var/www/html/cacti/data_source_profiles.php:734
-#: /var/www/html/cacti/include/global_arrays.php:634
-#: /var/www/html/cacti/include/global_arrays.php:1199
+#: /var/www/html/cacti/include/global_arrays.php:637
+#: /var/www/html/cacti/include/global_arrays.php:1202
 #: /var/www/html/cacti/include/global_settings.php:1107
 #, php-format
 msgid "%d Years"
@@ -4325,22 +4325,22 @@ msgid "1 Year"
 msgstr ""
 
 #: /var/www/html/cacti/data_source_profiles.php:743
-#: /var/www/html/cacti/include/global_arrays.php:628
-#: /var/www/html/cacti/include/global_arrays.php:1193
+#: /var/www/html/cacti/include/global_arrays.php:631
+#: /var/www/html/cacti/include/global_arrays.php:1196
 #: /var/www/html/cacti/rrdcleaner.php:489
 #, php-format
 msgid "%d Month"
 msgstr ""
 
 #: /var/www/html/cacti/data_source_profiles.php:743
-#: /var/www/html/cacti/include/global_arrays.php:629
-#: /var/www/html/cacti/include/global_arrays.php:630
-#: /var/www/html/cacti/include/global_arrays.php:631
 #: /var/www/html/cacti/include/global_arrays.php:632
-#: /var/www/html/cacti/include/global_arrays.php:1194
-#: /var/www/html/cacti/include/global_arrays.php:1195
-#: /var/www/html/cacti/include/global_arrays.php:1196
+#: /var/www/html/cacti/include/global_arrays.php:633
+#: /var/www/html/cacti/include/global_arrays.php:634
+#: /var/www/html/cacti/include/global_arrays.php:635
 #: /var/www/html/cacti/include/global_arrays.php:1197
+#: /var/www/html/cacti/include/global_arrays.php:1198
+#: /var/www/html/cacti/include/global_arrays.php:1199
+#: /var/www/html/cacti/include/global_arrays.php:1200
 #: /var/www/html/cacti/rrdcleaner.php:490
 #: /var/www/html/cacti/rrdcleaner.php:491
 #: /var/www/html/cacti/rrdcleaner.php:492
@@ -4349,8 +4349,8 @@ msgid "%d Months"
 msgstr ""
 
 #: /var/www/html/cacti/data_source_profiles.php:752
-#: /var/www/html/cacti/include/global_arrays.php:625
-#: /var/www/html/cacti/include/global_arrays.php:1191
+#: /var/www/html/cacti/include/global_arrays.php:628
+#: /var/www/html/cacti/include/global_arrays.php:1194
 #: /var/www/html/cacti/rrdcleaner.php:485
 #: /var/www/html/cacti/rrdcleaner.php:486
 #, php-format
@@ -4358,9 +4358,9 @@ msgid "%d Week"
 msgstr ""
 
 #: /var/www/html/cacti/data_source_profiles.php:752
-#: /var/www/html/cacti/include/global_arrays.php:626
-#: /var/www/html/cacti/include/global_arrays.php:627
-#: /var/www/html/cacti/include/global_arrays.php:1192
+#: /var/www/html/cacti/include/global_arrays.php:629
+#: /var/www/html/cacti/include/global_arrays.php:630
+#: /var/www/html/cacti/include/global_arrays.php:1195
 #: /var/www/html/cacti/rrdcleaner.php:487
 #: /var/www/html/cacti/rrdcleaner.php:488
 #, php-format
@@ -4368,20 +4368,20 @@ msgid "%d Weeks"
 msgstr ""
 
 #: /var/www/html/cacti/data_source_profiles.php:761
-#: /var/www/html/cacti/include/global_arrays.php:612
-#: /var/www/html/cacti/include/global_arrays.php:622
-#: /var/www/html/cacti/include/global_arrays.php:1187
+#: /var/www/html/cacti/include/global_arrays.php:615
+#: /var/www/html/cacti/include/global_arrays.php:625
+#: /var/www/html/cacti/include/global_arrays.php:1190
 #, php-format
 msgid "%d Day"
 msgstr ""
 
 #: /var/www/html/cacti/data_source_profiles.php:761
-#: /var/www/html/cacti/include/global_arrays.php:613
-#: /var/www/html/cacti/include/global_arrays.php:623
-#: /var/www/html/cacti/include/global_arrays.php:624
-#: /var/www/html/cacti/include/global_arrays.php:1188
-#: /var/www/html/cacti/include/global_arrays.php:1189
-#: /var/www/html/cacti/include/global_arrays.php:1190
+#: /var/www/html/cacti/include/global_arrays.php:616
+#: /var/www/html/cacti/include/global_arrays.php:626
+#: /var/www/html/cacti/include/global_arrays.php:627
+#: /var/www/html/cacti/include/global_arrays.php:1191
+#: /var/www/html/cacti/include/global_arrays.php:1192
+#: /var/www/html/cacti/include/global_arrays.php:1193
 #: /var/www/html/cacti/include/global_settings.php:1102
 #: /var/www/html/cacti/include/global_settings.php:1103
 #: /var/www/html/cacti/include/global_settings.php:1104
@@ -4395,18 +4395,18 @@ msgid "%d Days"
 msgstr ""
 
 #: /var/www/html/cacti/data_source_profiles.php:769
-#: /var/www/html/cacti/include/global_arrays.php:569
-#: /var/www/html/cacti/include/global_arrays.php:1229
-#: /var/www/html/cacti/include/global_arrays.php:1250
-#: /var/www/html/cacti/include/global_arrays.php:1283
-#: /var/www/html/cacti/include/global_arrays.php:1292
-#: /var/www/html/cacti/include/global_arrays.php:1318
+#: /var/www/html/cacti/include/global_arrays.php:572
+#: /var/www/html/cacti/include/global_arrays.php:1232
+#: /var/www/html/cacti/include/global_arrays.php:1253
+#: /var/www/html/cacti/include/global_arrays.php:1286
+#: /var/www/html/cacti/include/global_arrays.php:1295
+#: /var/www/html/cacti/include/global_arrays.php:1321
 #: /var/www/html/cacti/include/global_settings.php:1173
 msgid "1 Hour"
 msgstr ""
 
 #: /var/www/html/cacti/data_source_profiles.php:823
-#: /var/www/html/cacti/include/global_arrays.php:972
+#: /var/www/html/cacti/include/global_arrays.php:975
 msgid "Data Source Profiles"
 msgstr ""
 
@@ -4693,11 +4693,11 @@ msgid "External"
 msgstr ""
 
 #: /var/www/html/cacti/data_sources.php:1069
-#: /var/www/html/cacti/include/global_arrays.php:564
-#: /var/www/html/cacti/include/global_arrays.php:947
-#: /var/www/html/cacti/include/global_arrays.php:1277
-#: /var/www/html/cacti/include/global_arrays.php:1311
-#: /var/www/html/cacti/include/global_arrays.php:1327
+#: /var/www/html/cacti/include/global_arrays.php:567
+#: /var/www/html/cacti/include/global_arrays.php:950
+#: /var/www/html/cacti/include/global_arrays.php:1280
+#: /var/www/html/cacti/include/global_arrays.php:1314
+#: /var/www/html/cacti/include/global_arrays.php:1330
 #: /var/www/html/cacti/include/global_settings.php:1167
 #: /var/www/html/cacti/include/global_settings.php:1884
 msgid "1 Minute"
@@ -4742,7 +4742,7 @@ msgstr ""
 
 #: /var/www/html/cacti/data_sources.php:1283
 #: /var/www/html/cacti/data_sources.php:1396 /var/www/html/cacti/host.php:1593
-#: /var/www/html/cacti/include/global_arrays.php:788
+#: /var/www/html/cacti/include/global_arrays.php:791
 #: /var/www/html/cacti/lib/api_automation.php:282
 #: /var/www/html/cacti/lib/functions.php:2262
 #: /var/www/html/cacti/user_admin.php:1230
@@ -4886,7 +4886,7 @@ msgstr ""
 #: /var/www/html/cacti/data_templates.php:779
 #: /var/www/html/cacti/data_templates.php:810
 #: /var/www/html/cacti/data_templates.php:932
-#: /var/www/html/cacti/include/global_arrays.php:976
+#: /var/www/html/cacti/include/global_arrays.php:979
 #: /var/www/html/cacti/lib/functions.php:2244
 msgid "Data Templates"
 msgstr ""
@@ -4969,7 +4969,7 @@ msgstr ""
 
 #: /var/www/html/cacti/gprint_presets.php:268
 #: /var/www/html/cacti/gprint_presets.php:383
-#: /var/www/html/cacti/include/global_arrays.php:816
+#: /var/www/html/cacti/include/global_arrays.php:819
 msgid "GPRINTs"
 msgstr ""
 
@@ -5179,7 +5179,7 @@ msgstr ""
 #: /var/www/html/cacti/graph_templates.php:635
 #: /var/www/html/cacti/graph_templates.php:755
 #: /var/www/html/cacti/graphs_new.php:636
-#: /var/www/html/cacti/include/global_arrays.php:975
+#: /var/www/html/cacti/include/global_arrays.php:978
 #: /var/www/html/cacti/lib/functions.php:2190
 #: /var/www/html/cacti/user_admin.php:1366
 #: /var/www/html/cacti/user_group_admin.php:1101
@@ -5314,7 +5314,7 @@ msgstr ""
 
 #: /var/www/html/cacti/graph_view.php:579
 #: /var/www/html/cacti/graph_view.php:656
-#: /var/www/html/cacti/include/global_arrays.php:955
+#: /var/www/html/cacti/include/global_arrays.php:958
 #: /var/www/html/cacti/lib/clog_webapi.php:654
 msgid "View Graphs"
 msgstr ""
@@ -5673,7 +5673,7 @@ msgid "Data Sources [No Device]"
 msgstr ""
 
 #: /var/www/html/cacti/graphs_items.php:326
-#: /var/www/html/cacti/include/global_arrays.php:1087
+#: /var/www/html/cacti/include/global_arrays.php:1090
 #: /var/www/html/cacti/include/global_form.php:1550
 msgid "Data Template"
 msgstr ""
@@ -5780,8 +5780,8 @@ msgid "Select All Rows"
 msgstr ""
 
 #: /var/www/html/cacti/graphs_new.php:729
-#: /var/www/html/cacti/include/global_arrays.php:780
-#: /var/www/html/cacti/include/global_arrays.php:851
+#: /var/www/html/cacti/include/global_arrays.php:783
+#: /var/www/html/cacti/include/global_arrays.php:854
 #: /var/www/html/cacti/lib/html_form.php:1152
 #: /var/www/html/cacti/lib/html_form.php:1165
 #: /var/www/html/cacti/tree.php:1191
@@ -6083,27 +6083,27 @@ msgid "Add Data Query to Device"
 msgstr ""
 
 #: /var/www/html/cacti/host.php:1108
-#: /var/www/html/cacti/include/global_arrays.php:529
+#: /var/www/html/cacti/include/global_arrays.php:532
 msgid "Ping and SNMP Uptime"
 msgstr ""
 
 #: /var/www/html/cacti/host.php:1109
-#: /var/www/html/cacti/include/global_arrays.php:531
+#: /var/www/html/cacti/include/global_arrays.php:534
 msgid "SNMP Uptime"
 msgstr ""
 
 #: /var/www/html/cacti/host.php:1110
-#: /var/www/html/cacti/include/global_arrays.php:534
+#: /var/www/html/cacti/include/global_arrays.php:537
 msgid "Ping"
 msgstr ""
 
 #: /var/www/html/cacti/host.php:1111
-#: /var/www/html/cacti/include/global_arrays.php:530
+#: /var/www/html/cacti/include/global_arrays.php:533
 msgid "Ping or SNMP Uptime"
 msgstr ""
 
 #: /var/www/html/cacti/host.php:1112
-#: /var/www/html/cacti/include/global_arrays.php:532
+#: /var/www/html/cacti/include/global_arrays.php:535
 msgid "SNMP Desc"
 msgstr ""
 
@@ -6330,7 +6330,7 @@ msgstr ""
 #: /var/www/html/cacti/host_templates.php:687
 #: /var/www/html/cacti/host_templates.php:702
 #: /var/www/html/cacti/host_templates.php:803
-#: /var/www/html/cacti/include/global_arrays.php:977
+#: /var/www/html/cacti/include/global_arrays.php:980
 #: /var/www/html/cacti/lib/functions.php:2226
 msgid "Device Templates"
 msgstr ""
@@ -6441,7 +6441,9 @@ msgid "XML parse error."
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:138
-msgid "Form types dirpath and filepath must point to a valid diretory or file."
+msgid ""
+"The directory highlighted below does not exist.  Please enter a valid "
+"directory."
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:141
@@ -6568,427 +6570,432 @@ msgid ""
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:219
-msgid "Log file specified is not a Cacti log or archive file."
+msgid ""
+"The file highlighted below does not exist.  Please enter a valid file name."
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:222
-msgid "Log file specified was Cacti archive file and was removed."
+msgid "Log file specified is not a Cacti log or archive file."
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:225
-msgid "Cacti log purged successfully"
+msgid "Log file specified was Cacti archive file and was removed."
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:228
+msgid "Cacti log purged successfully"
+msgstr ""
+
+#: /var/www/html/cacti/include/global_arrays.php:231
 msgid ""
 "If you force a password change, you must also allow the user to change their "
 "password."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:231
+#: /var/www/html/cacti/include/global_arrays.php:234
 msgid "You are not allowed to change your password."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:234
+#: /var/www/html/cacti/include/global_arrays.php:237
 msgid "LDAP/AD based password change not supported."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:237
+#: /var/www/html/cacti/include/global_arrays.php:240
 msgid "Unable to clear log, no write permissions"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:240
+#: /var/www/html/cacti/include/global_arrays.php:243
 msgid "Unable to clear log, file does not exist"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:243
+#: /var/www/html/cacti/include/global_arrays.php:246
 msgid "CSRF Timeout, refreshing page."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:246
+#: /var/www/html/cacti/include/global_arrays.php:249
 msgid "Invalid timestamp. Select timestamp in the future."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:249
+#: /var/www/html/cacti/include/global_arrays.php:252
 msgid "Data Collector(s) synchronized for offline operation"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:252
+#: /var/www/html/cacti/include/global_arrays.php:255
 msgid "Data Collector(s) not found when attempting synchronization"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:255
+#: /var/www/html/cacti/include/global_arrays.php:258
 msgid "Unable to establish MySQL connection with remote Data Collector."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:258
+#: /var/www/html/cacti/include/global_arrays.php:261
 msgid ""
 "Data Collector synchronization must be initiated from the main Cacti server."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:261
+#: /var/www/html/cacti/include/global_arrays.php:264
 msgid "Report Saved"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:264
+#: /var/www/html/cacti/include/global_arrays.php:267
 msgid "Report Save Failed"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:267
+#: /var/www/html/cacti/include/global_arrays.php:270
 msgid "Report Item Saved"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:270
+#: /var/www/html/cacti/include/global_arrays.php:273
 msgid "Report Item Save Failed"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:273
+#: /var/www/html/cacti/include/global_arrays.php:276
 msgid ""
 "Poller Resource Cache cleared.  Main Data Collector will rebuild at the next "
 "poller start, and Remote Data Collectors will sync afterwards."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:276
+#: /var/www/html/cacti/include/global_arrays.php:279
 msgid "Unexpected error occurred"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:368
-#: /var/www/html/cacti/include/global_arrays.php:720
+#: /var/www/html/cacti/include/global_arrays.php:371
+#: /var/www/html/cacti/include/global_arrays.php:723
 msgid "Function"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:369
-#: /var/www/html/cacti/include/global_arrays.php:722
+#: /var/www/html/cacti/include/global_arrays.php:372
+#: /var/www/html/cacti/include/global_arrays.php:725
 msgid "Special Data Source"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:370
-#: /var/www/html/cacti/include/global_arrays.php:724
+#: /var/www/html/cacti/include/global_arrays.php:373
+#: /var/www/html/cacti/include/global_arrays.php:727
 msgid "Custom String"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:374
-#: /var/www/html/cacti/include/global_arrays.php:761
+#: /var/www/html/cacti/include/global_arrays.php:377
+#: /var/www/html/cacti/include/global_arrays.php:764
 msgid "Current Graph Item Data Source"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:380
-#: /var/www/html/cacti/include/global_arrays.php:387
+#: /var/www/html/cacti/include/global_arrays.php:383
+#: /var/www/html/cacti/include/global_arrays.php:390
 msgid "Script/Command"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:382
-#: /var/www/html/cacti/include/global_arrays.php:388
+#: /var/www/html/cacti/include/global_arrays.php:385
+#: /var/www/html/cacti/include/global_arrays.php:391
 #: /var/www/html/cacti/utilities.php:1697
 msgid "Script Server"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:394
+#: /var/www/html/cacti/include/global_arrays.php:397
 msgid "Index Count"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:395
+#: /var/www/html/cacti/include/global_arrays.php:398
 msgid "Verify All"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:399
+#: /var/www/html/cacti/include/global_arrays.php:402
 msgid ""
 "All Re-Indexing will be manual or managed through scripts or Device "
 "Automation."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:400
+#: /var/www/html/cacti/include/global_arrays.php:403
 msgid ""
 "When the Devices SNMP uptime goes backward, a Re-Index will be performed."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:401
+#: /var/www/html/cacti/include/global_arrays.php:404
 msgid "When the Data Query index count changes, a Re-Index will be performed."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:402
+#: /var/www/html/cacti/include/global_arrays.php:405
 msgid "Every polling cycle, a Re-Index will be performed.  Very expensive."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:406
+#: /var/www/html/cacti/include/global_arrays.php:409
 msgid "SNMP Field Name (Dropdown)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:407
+#: /var/www/html/cacti/include/global_arrays.php:410
 msgid "SNMP Field Value (From User)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:408
+#: /var/www/html/cacti/include/global_arrays.php:411
 msgid "SNMP Output Type (Dropdown)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:427
-#: /var/www/html/cacti/include/global_arrays.php:433
+#: /var/www/html/cacti/include/global_arrays.php:430
+#: /var/www/html/cacti/include/global_arrays.php:436
 msgid "Normal"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:428
+#: /var/www/html/cacti/include/global_arrays.php:431
 msgid "Light"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:429
-#: /var/www/html/cacti/include/global_arrays.php:434
+#: /var/www/html/cacti/include/global_arrays.php:432
+#: /var/www/html/cacti/include/global_arrays.php:437
 msgid "Mono"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:438
+#: /var/www/html/cacti/include/global_arrays.php:441
 msgid "North"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:439
+#: /var/www/html/cacti/include/global_arrays.php:442
 msgid "South"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:440
+#: /var/www/html/cacti/include/global_arrays.php:443
 msgid "West"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:441
+#: /var/www/html/cacti/include/global_arrays.php:444
 msgid "East"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:446
+#: /var/www/html/cacti/include/global_arrays.php:449
 msgid "Left"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:447
+#: /var/www/html/cacti/include/global_arrays.php:450
 msgid "Right"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:448
+#: /var/www/html/cacti/include/global_arrays.php:451
 msgid "Justified"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:449
+#: /var/www/html/cacti/include/global_arrays.php:452
 msgid "Center"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:453
+#: /var/www/html/cacti/include/global_arrays.php:456
 msgid "Top -> Down"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:454
+#: /var/www/html/cacti/include/global_arrays.php:457
 msgid "Bottom -> Up"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:458
+#: /var/www/html/cacti/include/global_arrays.php:461
 #: /var/www/html/cacti/tree.php:1295
 msgid "Numeric"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:459
+#: /var/www/html/cacti/include/global_arrays.php:462
 msgid "Timestamp"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:460
+#: /var/www/html/cacti/include/global_arrays.php:463
 msgid "Duration"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:498
+#: /var/www/html/cacti/include/global_arrays.php:501
 msgid "Not In Use"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:499
-#: /var/www/html/cacti/include/global_arrays.php:500
-#: /var/www/html/cacti/include/global_arrays.php:501
-#: /var/www/html/cacti/include/global_arrays.php:689
-#: /var/www/html/cacti/include/global_arrays.php:690
+#: /var/www/html/cacti/include/global_arrays.php:502
+#: /var/www/html/cacti/include/global_arrays.php:503
+#: /var/www/html/cacti/include/global_arrays.php:504
+#: /var/www/html/cacti/include/global_arrays.php:692
+#: /var/www/html/cacti/include/global_arrays.php:693
 #, php-format
 msgid "Version %d"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:505
-#: /var/www/html/cacti/include/global_arrays.php:511
+#: /var/www/html/cacti/include/global_arrays.php:508
+#: /var/www/html/cacti/include/global_arrays.php:514
 msgid "[None]"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:506
+#: /var/www/html/cacti/include/global_arrays.php:509
 msgid "MD5"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:507
+#: /var/www/html/cacti/include/global_arrays.php:510
 msgid "SHA"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:512
+#: /var/www/html/cacti/include/global_arrays.php:515
 msgid "DES"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:513
+#: /var/www/html/cacti/include/global_arrays.php:516
 msgid "AES"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:522
+#: /var/www/html/cacti/include/global_arrays.php:525
 msgid "Logfile Only"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:523
+#: /var/www/html/cacti/include/global_arrays.php:526
 msgid "Logfile and Syslog/Eventlog"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:524
+#: /var/www/html/cacti/include/global_arrays.php:527
 msgid "Syslog/Eventlog Only"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:533
+#: /var/www/html/cacti/include/global_arrays.php:536
 msgid "SNMP getNext"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:538
+#: /var/www/html/cacti/include/global_arrays.php:541
 msgid "ICMP Ping"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:539
+#: /var/www/html/cacti/include/global_arrays.php:542
 msgid "TCP Ping"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:540
+#: /var/www/html/cacti/include/global_arrays.php:543
 msgid "UDP Ping"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:544
+#: /var/www/html/cacti/include/global_arrays.php:547
 msgid "NONE - Syslog Only if Selected"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:545
+#: /var/www/html/cacti/include/global_arrays.php:548
 msgid "LOW - Statistics and Errors"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:546
+#: /var/www/html/cacti/include/global_arrays.php:549
 msgid "MEDIUM - Statistics, Errors and Results"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:547
+#: /var/www/html/cacti/include/global_arrays.php:550
 msgid "HIGH - Statistics, Errors, Results and Major I/O Events"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:548
+#: /var/www/html/cacti/include/global_arrays.php:551
 msgid "DEBUG - Statistics, Errors, Results, I/O and Program Flow"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:549
+#: /var/www/html/cacti/include/global_arrays.php:552
 msgid "DEVEL - Developer DEBUG Level"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:562
+#: /var/www/html/cacti/include/global_arrays.php:565
 msgid "Selected Poller Interval"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:579
-#: /var/www/html/cacti/include/global_arrays.php:580
-#: /var/www/html/cacti/include/global_arrays.php:581
 #: /var/www/html/cacti/include/global_arrays.php:582
-#: /var/www/html/cacti/include/global_arrays.php:638
-#: /var/www/html/cacti/include/global_arrays.php:639
-#: /var/www/html/cacti/include/global_arrays.php:640
+#: /var/www/html/cacti/include/global_arrays.php:583
+#: /var/www/html/cacti/include/global_arrays.php:584
+#: /var/www/html/cacti/include/global_arrays.php:585
 #: /var/www/html/cacti/include/global_arrays.php:641
+#: /var/www/html/cacti/include/global_arrays.php:642
+#: /var/www/html/cacti/include/global_arrays.php:643
+#: /var/www/html/cacti/include/global_arrays.php:644
 #, php-format
 msgid "Every %d Seconds"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:583
-#: /var/www/html/cacti/include/global_arrays.php:642
-#: /var/www/html/cacti/include/global_arrays.php:656
+#: /var/www/html/cacti/include/global_arrays.php:586
+#: /var/www/html/cacti/include/global_arrays.php:645
+#: /var/www/html/cacti/include/global_arrays.php:659
 msgid "Every Minute"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:584
-#: /var/www/html/cacti/include/global_arrays.php:585
-#: /var/www/html/cacti/include/global_arrays.php:586
 #: /var/www/html/cacti/include/global_arrays.php:587
-#: /var/www/html/cacti/include/global_arrays.php:643
-#: /var/www/html/cacti/include/global_arrays.php:657
+#: /var/www/html/cacti/include/global_arrays.php:588
+#: /var/www/html/cacti/include/global_arrays.php:589
+#: /var/www/html/cacti/include/global_arrays.php:590
+#: /var/www/html/cacti/include/global_arrays.php:646
+#: /var/www/html/cacti/include/global_arrays.php:660
 #, php-format
 msgid "Every %d Minutes"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:588
+#: /var/www/html/cacti/include/global_arrays.php:591
 msgid "Every Hour"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:589
-#: /var/www/html/cacti/include/global_arrays.php:590
-#: /var/www/html/cacti/include/global_arrays.php:591
 #: /var/www/html/cacti/include/global_arrays.php:592
-#: /var/www/html/cacti/include/global_arrays.php:1556
-#: /var/www/html/cacti/include/global_arrays.php:1557
-#: /var/www/html/cacti/include/global_arrays.php:1558
+#: /var/www/html/cacti/include/global_arrays.php:593
+#: /var/www/html/cacti/include/global_arrays.php:594
+#: /var/www/html/cacti/include/global_arrays.php:595
 #: /var/www/html/cacti/include/global_arrays.php:1559
 #: /var/www/html/cacti/include/global_arrays.php:1560
+#: /var/www/html/cacti/include/global_arrays.php:1561
+#: /var/www/html/cacti/include/global_arrays.php:1562
+#: /var/www/html/cacti/include/global_arrays.php:1563
 #: /var/www/html/cacti/include/global_settings.php:1807
 #: /var/www/html/cacti/include/global_settings.php:1808
 #, php-format
 msgid "Every %d Hours"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:593
+#: /var/www/html/cacti/include/global_arrays.php:596
 msgid "Every %1 Day"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:633
-#: /var/www/html/cacti/include/global_arrays.php:1198
+#: /var/www/html/cacti/include/global_arrays.php:636
+#: /var/www/html/cacti/include/global_arrays.php:1201
 #: /var/www/html/cacti/include/global_settings.php:1106
 #: /var/www/html/cacti/rrdcleaner.php:493
 #, php-format
 msgid "%d Year"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:647
+#: /var/www/html/cacti/include/global_arrays.php:650
 msgid "1 Thread (default)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:672
+#: /var/www/html/cacti/include/global_arrays.php:675
 msgid "Builtin Authentication"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:673
+#: /var/www/html/cacti/include/global_arrays.php:676
 msgid "Web Basic Authentication"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:677
+#: /var/www/html/cacti/include/global_arrays.php:680
 msgid "LDAP Authentication"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:678
+#: /var/www/html/cacti/include/global_arrays.php:681
 msgid "Multiple LDAP/AD Domains"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:683
+#: /var/www/html/cacti/include/global_arrays.php:686
 msgid "Active Directory"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:695
+#: /var/www/html/cacti/include/global_arrays.php:698
 #: /var/www/html/cacti/include/global_settings.php:1404
 msgid "SSL"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:696
+#: /var/www/html/cacti/include/global_arrays.php:699
 #: /var/www/html/cacti/include/global_settings.php:1404
 msgid "TLS"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:700
+#: /var/www/html/cacti/include/global_arrays.php:703
 msgid "No Searching"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:701
+#: /var/www/html/cacti/include/global_arrays.php:704
 msgid "Anonymous Searching"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:702
+#: /var/www/html/cacti/include/global_arrays.php:705
 msgid "Specific Searching"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:716
+#: /var/www/html/cacti/include/global_arrays.php:719
 msgid "Enabled (strict mode)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:721
+#: /var/www/html/cacti/include/global_arrays.php:724
 #: /var/www/html/cacti/include/global_form.php:2095
 #: /var/www/html/cacti/include/global_form.php:2137
 #: /var/www/html/cacti/lib/api_automation.php:1241
@@ -6996,123 +7003,123 @@ msgstr ""
 msgid "Operator"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:723
+#: /var/www/html/cacti/include/global_arrays.php:726
 msgid "Another CDEF"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:742
+#: /var/www/html/cacti/include/global_arrays.php:745
 msgid "Inherit Parent Sorting"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:743
+#: /var/www/html/cacti/include/global_arrays.php:746
 msgid "Manual Ordering (No Sorting)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:744
+#: /var/www/html/cacti/include/global_arrays.php:747
 msgid "Alphabetic Ordering"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:745
+#: /var/www/html/cacti/include/global_arrays.php:748
 msgid "Natural Ordering"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:746
+#: /var/www/html/cacti/include/global_arrays.php:749
 msgid "Numeric Ordering"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:750
+#: /var/www/html/cacti/include/global_arrays.php:753
 #: /var/www/html/cacti/lib/rrd.php:2676
 msgid "Header"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:751
-#: /var/www/html/cacti/include/global_arrays.php:798
-#: /var/www/html/cacti/include/global_arrays.php:1381
-#: /var/www/html/cacti/include/global_arrays.php:1545
+#: /var/www/html/cacti/include/global_arrays.php:754
+#: /var/www/html/cacti/include/global_arrays.php:801
+#: /var/www/html/cacti/include/global_arrays.php:1384
+#: /var/www/html/cacti/include/global_arrays.php:1548
 msgid "Graph"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:757
+#: /var/www/html/cacti/include/global_arrays.php:760
 #: /var/www/html/cacti/tree.php:1461
 msgid "Data Query Index"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:762
+#: /var/www/html/cacti/include/global_arrays.php:765
 msgid "Current Graph Item Polling Interval"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:763
+#: /var/www/html/cacti/include/global_arrays.php:766
 msgid "All Data Sources (Do not Include Duplicates)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:764
+#: /var/www/html/cacti/include/global_arrays.php:767
 msgid "All Data Sources (Include Duplicates)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:765
+#: /var/www/html/cacti/include/global_arrays.php:768
 msgid "All Similar Data Sources (Do not Include Duplicates)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:766
+#: /var/www/html/cacti/include/global_arrays.php:769
 msgid "All Similar Data Sources (Do not Include Duplicates) Polling Interval"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:767
+#: /var/www/html/cacti/include/global_arrays.php:770
 msgid "All Similar Data Sources (Include Duplicates)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:768
+#: /var/www/html/cacti/include/global_arrays.php:771
 msgid "Current Data Source Item: Minimum Value"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:769
+#: /var/www/html/cacti/include/global_arrays.php:772
 msgid "Current Data Source Item: Maximum Value"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:770
+#: /var/www/html/cacti/include/global_arrays.php:773
 msgid "Graph: Lower Limit"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:771
+#: /var/www/html/cacti/include/global_arrays.php:774
 msgid "Graph: Upper Limit"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:772
+#: /var/www/html/cacti/include/global_arrays.php:775
 msgid "Count of All Data Sources (Do not Include Duplicates)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:773
+#: /var/www/html/cacti/include/global_arrays.php:776
 msgid "Count of All Data Sources (Include Duplicates)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:774
+#: /var/www/html/cacti/include/global_arrays.php:777
 msgid "Count of All Similar Data Sources (Do not Include Duplicates)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:775
+#: /var/www/html/cacti/include/global_arrays.php:778
 msgid "Count of All Similar Data Sources (Include Duplicates)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:781
+#: /var/www/html/cacti/include/global_arrays.php:784
 #: /var/www/html/cacti/lib/html_form_template.php:568
 #: /var/www/html/cacti/lib/html_form_template.php:583
 msgid "New Graphs"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:783
-#: /var/www/html/cacti/include/global_arrays.php:835
-#: /var/www/html/cacti/include/global_arrays.php:852
+#: /var/www/html/cacti/include/global_arrays.php:786
+#: /var/www/html/cacti/include/global_arrays.php:838
+#: /var/www/html/cacti/include/global_arrays.php:855
 msgid "Management"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:785
+#: /var/www/html/cacti/include/global_arrays.php:788
 #: /var/www/html/cacti/sites.php:389 /var/www/html/cacti/sites.php:404
 #: /var/www/html/cacti/sites.php:484
 msgid "Sites"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:786
-#: /var/www/html/cacti/include/global_arrays.php:969
+#: /var/www/html/cacti/include/global_arrays.php:789
+#: /var/www/html/cacti/include/global_arrays.php:972
 #: /var/www/html/cacti/tree.php:1670 /var/www/html/cacti/tree.php:1685
 #: /var/www/html/cacti/tree.php:1744 /var/www/html/cacti/user_admin.php:1503
 #: /var/www/html/cacti/user_admin.php:2932
@@ -7122,87 +7129,87 @@ msgstr ""
 msgid "Trees"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:789
+#: /var/www/html/cacti/include/global_arrays.php:792
 msgid "Aggregates"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:791
-#: /var/www/html/cacti/include/global_arrays.php:838
-#: /var/www/html/cacti/include/global_arrays.php:853
+#: /var/www/html/cacti/include/global_arrays.php:794
+#: /var/www/html/cacti/include/global_arrays.php:841
+#: /var/www/html/cacti/include/global_arrays.php:856
 msgid "Data Collection"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:792
-#: /var/www/html/cacti/include/global_arrays.php:839
+#: /var/www/html/cacti/include/global_arrays.php:795
+#: /var/www/html/cacti/include/global_arrays.php:842
 #: /var/www/html/cacti/pollers.php:508
 msgid "Data Collectors"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:800
+#: /var/www/html/cacti/include/global_arrays.php:803
 msgid "Aggregate"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:803
-#: /var/www/html/cacti/include/global_arrays.php:855
+#: /var/www/html/cacti/include/global_arrays.php:806
+#: /var/www/html/cacti/include/global_arrays.php:858
 #: /var/www/html/cacti/include/global_settings.php:430
 msgid "Automation"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:805
+#: /var/www/html/cacti/include/global_arrays.php:808
 msgid "Discovered Devices"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:806
+#: /var/www/html/cacti/include/global_arrays.php:809
 msgid "Device Rules"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:811
-#: /var/www/html/cacti/include/global_arrays.php:856
+#: /var/www/html/cacti/include/global_arrays.php:814
+#: /var/www/html/cacti/include/global_arrays.php:859
 #: /var/www/html/cacti/lib/html_filter.php:178
 #: /var/www/html/cacti/lib/html_graph.php:253
 #: /var/www/html/cacti/lib/html_tree.php:712
 msgid "Presets"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:812
+#: /var/www/html/cacti/include/global_arrays.php:815
 msgid "Data Profiles"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:814
+#: /var/www/html/cacti/include/global_arrays.php:817
 #: /var/www/html/cacti/lib/functions.php:2472 /var/www/html/cacti/vdef.php:667
 #: /var/www/html/cacti/vdef.php:681 /var/www/html/cacti/vdef.php:854
 msgid "VDEFs"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:818
-#: /var/www/html/cacti/include/global_arrays.php:857
+#: /var/www/html/cacti/include/global_arrays.php:821
+#: /var/www/html/cacti/include/global_arrays.php:860
 msgid "Import/Export"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:819
+#: /var/www/html/cacti/include/global_arrays.php:822
 #: /var/www/html/cacti/lib/functions.php:2592
 msgid "Import Templates"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:820
+#: /var/www/html/cacti/include/global_arrays.php:823
 #: /var/www/html/cacti/lib/functions.php:2580
 #: /var/www/html/cacti/templates_export.php:159
 msgid "Export Templates"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:822
-#: /var/www/html/cacti/include/global_arrays.php:841
-#: /var/www/html/cacti/include/global_arrays.php:858
+#: /var/www/html/cacti/include/global_arrays.php:825
+#: /var/www/html/cacti/include/global_arrays.php:844
+#: /var/www/html/cacti/include/global_arrays.php:861
 #: /var/www/html/cacti/lib/plugins.php:772
 msgid "Configuration"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:823
-#: /var/www/html/cacti/include/global_arrays.php:842
+#: /var/www/html/cacti/include/global_arrays.php:826
+#: /var/www/html/cacti/include/global_arrays.php:845
 msgid "Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:824
+#: /var/www/html/cacti/include/global_arrays.php:827
 #: /var/www/html/cacti/lib/functions.php:2526
 #: /var/www/html/cacti/user_admin.php:2213
 #: /var/www/html/cacti/user_admin.php:2267
@@ -7211,46 +7218,43 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:825
+#: /var/www/html/cacti/include/global_arrays.php:828
 #: /var/www/html/cacti/lib/functions.php:2556
 msgid "User Groups"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:826
+#: /var/www/html/cacti/include/global_arrays.php:829
 #: /var/www/html/cacti/lib/functions.php:2544
 #: /var/www/html/cacti/user_domains.php:612
 #: /var/www/html/cacti/user_domains.php:703
 msgid "User Domains"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:828
-#: /var/www/html/cacti/include/global_arrays.php:844
-#: /var/www/html/cacti/include/global_arrays.php:859
+#: /var/www/html/cacti/include/global_arrays.php:831
+#: /var/www/html/cacti/include/global_arrays.php:847
+#: /var/www/html/cacti/include/global_arrays.php:862
 #: /var/www/html/cacti/lib/functions.php:2400
 msgid "Utilities"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:829
-#: /var/www/html/cacti/include/global_arrays.php:845
+#: /var/www/html/cacti/include/global_arrays.php:832
+#: /var/www/html/cacti/include/global_arrays.php:848
 msgid "System Utilities"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:830
-#: /var/www/html/cacti/include/global_arrays.php:860
-#: /var/www/html/cacti/include/global_arrays.php:874
-#: /var/www/html/cacti/include/global_arrays.php:958
+#: /var/www/html/cacti/include/global_arrays.php:833
+#: /var/www/html/cacti/include/global_arrays.php:863
+#: /var/www/html/cacti/include/global_arrays.php:877
+#: /var/www/html/cacti/include/global_arrays.php:961
 #: /var/www/html/cacti/links.php:90 /var/www/html/cacti/links.php:301
 #: /var/www/html/cacti/links.php:369 /var/www/html/cacti/links.php:482
 msgid "External Links"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:883
+#: /var/www/html/cacti/include/global_arrays.php:886
 msgid "All Lines"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:884
-#: /var/www/html/cacti/include/global_arrays.php:885
-#: /var/www/html/cacti/include/global_arrays.php:886
 #: /var/www/html/cacti/include/global_arrays.php:887
 #: /var/www/html/cacti/include/global_arrays.php:888
 #: /var/www/html/cacti/include/global_arrays.php:889
@@ -7260,688 +7264,691 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:893
 #: /var/www/html/cacti/include/global_arrays.php:894
 #: /var/www/html/cacti/include/global_arrays.php:895
+#: /var/www/html/cacti/include/global_arrays.php:896
+#: /var/www/html/cacti/include/global_arrays.php:897
+#: /var/www/html/cacti/include/global_arrays.php:898
 #, php-format
 msgid "%d Lines"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:950
+#: /var/www/html/cacti/include/global_arrays.php:953
 #: /var/www/html/cacti/lib/html_reports.php:1567
 msgid "Never"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:954
+#: /var/www/html/cacti/include/global_arrays.php:957
 msgid "Console Access"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:956
+#: /var/www/html/cacti/include/global_arrays.php:959
 msgid "Realtime Graphs"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:957
+#: /var/www/html/cacti/include/global_arrays.php:960
 msgid "Update Profile"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:960
+#: /var/www/html/cacti/include/global_arrays.php:963
 #: /var/www/html/cacti/user_admin.php:2192
 msgid "User Management"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:961
+#: /var/www/html/cacti/include/global_arrays.php:964
 msgid "Settings and Utilities"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:962
+#: /var/www/html/cacti/include/global_arrays.php:965
 msgid "Automation Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:967
+#: /var/www/html/cacti/include/global_arrays.php:970
 msgid "Sites/Devices/Data Sources/Data Collectors"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:970
+#: /var/www/html/cacti/include/global_arrays.php:973
 msgid "Remove Spikes from Graphs"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:973
+#: /var/www/html/cacti/include/global_arrays.php:976
 msgid "Colors/GPrints/CDEFs/VDEFs"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:979
+#: /var/www/html/cacti/include/global_arrays.php:982
 msgid "Export Data"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:980
+#: /var/www/html/cacti/include/global_arrays.php:983
 msgid "Import Data"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:982
+#: /var/www/html/cacti/include/global_arrays.php:985
 #: /var/www/html/cacti/include/global_settings.php:730
 msgid "Log Management"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:983
+#: /var/www/html/cacti/include/global_arrays.php:986
 msgid "Log Viewing"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:985
+#: /var/www/html/cacti/include/global_arrays.php:988
 msgid "Reports Management"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:986
+#: /var/www/html/cacti/include/global_arrays.php:989
 msgid "Reports Creation"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1084
+#: /var/www/html/cacti/include/global_arrays.php:1087
 msgid "CDEF"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1085
+#: /var/www/html/cacti/include/global_arrays.php:1088
 msgid "CDEF Item"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1086
+#: /var/www/html/cacti/include/global_arrays.php:1089
 msgid "GPRINT Preset"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1089
+#: /var/www/html/cacti/include/global_arrays.php:1092
 msgid "Data Input Field"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1090
+#: /var/www/html/cacti/include/global_arrays.php:1093
 #: /var/www/html/cacti/include/global_form.php:407
 #: /var/www/html/cacti/include/global_form.php:1607
 msgid "Data Source Profile"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1091
+#: /var/www/html/cacti/include/global_arrays.php:1094
 msgid "Data Template Item"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1093
+#: /var/www/html/cacti/include/global_arrays.php:1096
 msgid "Graph Template Item"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1094
+#: /var/www/html/cacti/include/global_arrays.php:1097
 msgid "Graph Template Input"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1097
+#: /var/www/html/cacti/include/global_arrays.php:1100
 msgid "VDEF"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1098
+#: /var/www/html/cacti/include/global_arrays.php:1101
 msgid "VDEF Item"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1150
+#: /var/www/html/cacti/include/global_arrays.php:1153
 msgid "Last Half Hour"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1151
+#: /var/www/html/cacti/include/global_arrays.php:1154
 msgid "Last Hour"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1152
-#: /var/www/html/cacti/include/global_arrays.php:1153
-#: /var/www/html/cacti/include/global_arrays.php:1154
 #: /var/www/html/cacti/include/global_arrays.php:1155
+#: /var/www/html/cacti/include/global_arrays.php:1156
+#: /var/www/html/cacti/include/global_arrays.php:1157
+#: /var/www/html/cacti/include/global_arrays.php:1158
 #, php-format
 msgid "Last %d Hours"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1156
+#: /var/www/html/cacti/include/global_arrays.php:1159
 msgid "Last Day"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1157
-#: /var/www/html/cacti/include/global_arrays.php:1158
-#: /var/www/html/cacti/include/global_arrays.php:1159
+#: /var/www/html/cacti/include/global_arrays.php:1160
+#: /var/www/html/cacti/include/global_arrays.php:1161
+#: /var/www/html/cacti/include/global_arrays.php:1162
 #, php-format
 msgid "Last %d Days"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1160
+#: /var/www/html/cacti/include/global_arrays.php:1163
 msgid "Last Week"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1161
+#: /var/www/html/cacti/include/global_arrays.php:1164
 #, php-format
 msgid "Last %d Weeks"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1162
+#: /var/www/html/cacti/include/global_arrays.php:1165
 msgid "Last Month"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1163
-#: /var/www/html/cacti/include/global_arrays.php:1164
-#: /var/www/html/cacti/include/global_arrays.php:1165
 #: /var/www/html/cacti/include/global_arrays.php:1166
+#: /var/www/html/cacti/include/global_arrays.php:1167
+#: /var/www/html/cacti/include/global_arrays.php:1168
+#: /var/www/html/cacti/include/global_arrays.php:1169
 #, php-format
 msgid "Last %d Months"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1167
+#: /var/www/html/cacti/include/global_arrays.php:1170
 msgid "Last Year"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1168
+#: /var/www/html/cacti/include/global_arrays.php:1171
 #, php-format
 msgid "Last %d Years"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1169
+#: /var/www/html/cacti/include/global_arrays.php:1172
 msgid "Day Shift"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1170
+#: /var/www/html/cacti/include/global_arrays.php:1173
 msgid "This Day"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1171
+#: /var/www/html/cacti/include/global_arrays.php:1174
 msgid "This Week"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1172
+#: /var/www/html/cacti/include/global_arrays.php:1175
 msgid "This Month"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1173
+#: /var/www/html/cacti/include/global_arrays.php:1176
 msgid "This Year"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1174
+#: /var/www/html/cacti/include/global_arrays.php:1177
 msgid "Previous Day"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1175
+#: /var/www/html/cacti/include/global_arrays.php:1178
 msgid "Previous Week"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1176
+#: /var/www/html/cacti/include/global_arrays.php:1179
 msgid "Previous Month"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1177
+#: /var/www/html/cacti/include/global_arrays.php:1180
 msgid "Previous Year"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1181
+#: /var/www/html/cacti/include/global_arrays.php:1184
 #, php-format
 msgid "%d Min"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1213
+#: /var/www/html/cacti/include/global_arrays.php:1216
 msgid "Month Number, Day, Year"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1214
+#: /var/www/html/cacti/include/global_arrays.php:1217
 msgid "Month Name, Day, Year"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1215
+#: /var/www/html/cacti/include/global_arrays.php:1218
 msgid "Day, Month Number, Year"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1216
+#: /var/www/html/cacti/include/global_arrays.php:1219
 msgid "Day, Month Name, Year"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1217
+#: /var/www/html/cacti/include/global_arrays.php:1220
 msgid "Year, Month Number, Day"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1218
+#: /var/www/html/cacti/include/global_arrays.php:1221
 msgid "Year, Month Name, Day"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1228
+#: /var/www/html/cacti/include/global_arrays.php:1231
 msgid "After Boost"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1238
-#: /var/www/html/cacti/include/global_arrays.php:1239
-#: /var/www/html/cacti/include/global_arrays.php:1240
 #: /var/www/html/cacti/include/global_arrays.php:1241
 #: /var/www/html/cacti/include/global_arrays.php:1242
-#: /var/www/html/cacti/include/global_arrays.php:1297
-#: /var/www/html/cacti/include/global_arrays.php:1298
-#: /var/www/html/cacti/include/global_arrays.php:1299
+#: /var/www/html/cacti/include/global_arrays.php:1243
+#: /var/www/html/cacti/include/global_arrays.php:1244
+#: /var/www/html/cacti/include/global_arrays.php:1245
 #: /var/www/html/cacti/include/global_arrays.php:1300
 #: /var/www/html/cacti/include/global_arrays.php:1301
+#: /var/www/html/cacti/include/global_arrays.php:1302
+#: /var/www/html/cacti/include/global_arrays.php:1303
+#: /var/www/html/cacti/include/global_arrays.php:1304
 #, php-format
 msgid "%d MBytes"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1243
-#: /var/www/html/cacti/include/global_arrays.php:1302
+#: /var/www/html/cacti/include/global_arrays.php:1246
+#: /var/www/html/cacti/include/global_arrays.php:1305
 msgid "1 GByte"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1244
-#: /var/www/html/cacti/include/global_arrays.php:1303
+#: /var/www/html/cacti/include/global_arrays.php:1247
+#: /var/www/html/cacti/include/global_arrays.php:1306
 #, php-format
 msgid "%s GBytes"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1245
-#: /var/www/html/cacti/include/global_arrays.php:1246
-#: /var/www/html/cacti/include/global_arrays.php:1304
-#: /var/www/html/cacti/include/global_arrays.php:1305
+#: /var/www/html/cacti/include/global_arrays.php:1248
+#: /var/www/html/cacti/include/global_arrays.php:1249
+#: /var/www/html/cacti/include/global_arrays.php:1307
+#: /var/www/html/cacti/include/global_arrays.php:1308
 #, php-format
 msgid "%d GBytes"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1259
+#: /var/www/html/cacti/include/global_arrays.php:1262
 msgid "2,000 Data Source Items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1260
+#: /var/www/html/cacti/include/global_arrays.php:1263
 msgid "5,000 Data Source Items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1261
+#: /var/www/html/cacti/include/global_arrays.php:1264
 msgid "10,000 Data Source Items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1262
+#: /var/www/html/cacti/include/global_arrays.php:1265
 msgid "15,000 Data Source Items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1263
+#: /var/www/html/cacti/include/global_arrays.php:1266
 msgid "25,000 Data Source Items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1264
+#: /var/www/html/cacti/include/global_arrays.php:1267
 msgid "50,000 Data Source Items (Default)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1265
+#: /var/www/html/cacti/include/global_arrays.php:1268
 msgid "100,000 Data Source Items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1266
+#: /var/www/html/cacti/include/global_arrays.php:1269
 msgid "200,000 Data Source Items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1267
+#: /var/www/html/cacti/include/global_arrays.php:1270
 msgid "400,000 Data Source Items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1284
+#: /var/www/html/cacti/include/global_arrays.php:1287
 msgid "2 Hours"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1285
+#: /var/www/html/cacti/include/global_arrays.php:1288
 msgid "4 Hours"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1286
+#: /var/www/html/cacti/include/global_arrays.php:1289
 msgid "6 Hours"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1293
+#: /var/www/html/cacti/include/global_arrays.php:1296
 #, php-format
 msgid "%s Hours"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1312
+#: /var/www/html/cacti/include/global_arrays.php:1315
 #, php-format
 msgid "%s Minutes"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1332
+#: /var/www/html/cacti/include/global_arrays.php:1335
 msgid "1 Megabyte"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1333
-#: /var/www/html/cacti/include/global_arrays.php:1334
-#: /var/www/html/cacti/include/global_arrays.php:1335
 #: /var/www/html/cacti/include/global_arrays.php:1336
 #: /var/www/html/cacti/include/global_arrays.php:1337
 #: /var/www/html/cacti/include/global_arrays.php:1338
+#: /var/www/html/cacti/include/global_arrays.php:1339
+#: /var/www/html/cacti/include/global_arrays.php:1340
+#: /var/www/html/cacti/include/global_arrays.php:1341
 #, php-format
 msgid "%d Megabytes"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1342
+#: /var/www/html/cacti/include/global_arrays.php:1345
 msgid "Send Now"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1350
+#: /var/www/html/cacti/include/global_arrays.php:1353
 msgid "Take Ownership"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1354
+#: /var/www/html/cacti/include/global_arrays.php:1357
 msgid "Inline PNG Image"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1359
+#: /var/www/html/cacti/include/global_arrays.php:1362
 msgid "Inline JPEG Image"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1360
+#: /var/www/html/cacti/include/global_arrays.php:1363
 msgid "Inline GIF Image"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1363
+#: /var/www/html/cacti/include/global_arrays.php:1366
 msgid "Attached PNG Image"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1366
+#: /var/www/html/cacti/include/global_arrays.php:1369
 msgid "Attached JPEG Image"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1367
+#: /var/www/html/cacti/include/global_arrays.php:1370
 msgid "Attached GIF Image"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1371
+#: /var/www/html/cacti/include/global_arrays.php:1374
 msgid "Inline PNG Image, LN Style"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1373
+#: /var/www/html/cacti/include/global_arrays.php:1376
 msgid "Inline JPEG Image, LN Style"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1374
+#: /var/www/html/cacti/include/global_arrays.php:1377
 msgid "Inline GIF Image, LN Style"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1379
+#: /var/www/html/cacti/include/global_arrays.php:1382
 msgid "Text"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1380
+#: /var/www/html/cacti/include/global_arrays.php:1383
 #: /var/www/html/cacti/include/global_form.php:2215
 msgid "Tree"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1382
+#: /var/www/html/cacti/include/global_arrays.php:1385
 msgid "Horizontal Rule"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1386
+#: /var/www/html/cacti/include/global_arrays.php:1389
 msgid "left"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1387
+#: /var/www/html/cacti/include/global_arrays.php:1390
 msgid "center"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1388
+#: /var/www/html/cacti/include/global_arrays.php:1391
 msgid "right"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1392
+#: /var/www/html/cacti/include/global_arrays.php:1395
 msgid "Minute(s)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1393
+#: /var/www/html/cacti/include/global_arrays.php:1396
 msgid "Hour(s)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1394
+#: /var/www/html/cacti/include/global_arrays.php:1397
 msgid "Day(s)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1395
+#: /var/www/html/cacti/include/global_arrays.php:1398
 msgid "Week(s)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1396
+#: /var/www/html/cacti/include/global_arrays.php:1399
 msgid "Month(s), Day of Month"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1397
+#: /var/www/html/cacti/include/global_arrays.php:1400
 msgid "Month(s), Day of Week"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1398
+#: /var/www/html/cacti/include/global_arrays.php:1401
 msgid "Year(s)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1402
+#: /var/www/html/cacti/include/global_arrays.php:1405
 msgid "Keep Graph Types"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1403
+#: /var/www/html/cacti/include/global_arrays.php:1406
 msgid "Keep Type and STACK"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1404
+#: /var/www/html/cacti/include/global_arrays.php:1407
 msgid "Convert to AREA/STACK Graph"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1405
+#: /var/www/html/cacti/include/global_arrays.php:1408
 msgid "Convert to LINE1 Graph"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1406
+#: /var/www/html/cacti/include/global_arrays.php:1409
 msgid "Convert to LINE2 Graph"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1407
+#: /var/www/html/cacti/include/global_arrays.php:1410
 msgid "Convert to LINE3 Graph"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1411
+#: /var/www/html/cacti/include/global_arrays.php:1414
 msgid "No Totals"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1412
+#: /var/www/html/cacti/include/global_arrays.php:1415
 msgid "Print all Legend Items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1413
+#: /var/www/html/cacti/include/global_arrays.php:1416
 msgid "Print totaling Legend Items Only"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1417
+#: /var/www/html/cacti/include/global_arrays.php:1420
 msgid "Total Similar Data Sources"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1418
+#: /var/www/html/cacti/include/global_arrays.php:1421
 msgid "Total All Data Sources"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1422
+#: /var/www/html/cacti/include/global_arrays.php:1425
 msgid "No Reordering"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1423
+#: /var/www/html/cacti/include/global_arrays.php:1426
 msgid "Data Source, Graph"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1424
+#: /var/www/html/cacti/include/global_arrays.php:1427
 msgid "Graph, Data Source"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1431
+#: /var/www/html/cacti/include/global_arrays.php:1434
 msgid "contains"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1432
+#: /var/www/html/cacti/include/global_arrays.php:1435
 msgid "does not contain"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1433
+#: /var/www/html/cacti/include/global_arrays.php:1436
 msgid "begins with"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1434
+#: /var/www/html/cacti/include/global_arrays.php:1437
 msgid "does not begin with"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1435
+#: /var/www/html/cacti/include/global_arrays.php:1438
 msgid "ends with"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1436
+#: /var/www/html/cacti/include/global_arrays.php:1439
 msgid "does not end with"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1437
+#: /var/www/html/cacti/include/global_arrays.php:1440
 msgid "matches"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1438
+#: /var/www/html/cacti/include/global_arrays.php:1441
 msgid "does not match with"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1439
+#: /var/www/html/cacti/include/global_arrays.php:1442
 msgid "is less than"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1440
+#: /var/www/html/cacti/include/global_arrays.php:1443
 msgid "is less than or equal"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1441
+#: /var/www/html/cacti/include/global_arrays.php:1444
 msgid "is greater than"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1442
+#: /var/www/html/cacti/include/global_arrays.php:1445
 msgid "is greater than or equal"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1443
+#: /var/www/html/cacti/include/global_arrays.php:1446
 msgid "is unknown"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1444
+#: /var/www/html/cacti/include/global_arrays.php:1447
 msgid "is not unknown"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1445
+#: /var/www/html/cacti/include/global_arrays.php:1448
 msgid "is empty"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1446
+#: /var/www/html/cacti/include/global_arrays.php:1449
 msgid "is not empty"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1447
+#: /var/www/html/cacti/include/global_arrays.php:1450
 msgid "matches regular expression"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1448
+#: /var/www/html/cacti/include/global_arrays.php:1451
 msgid "does not match regular expression"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1550
+#: /var/www/html/cacti/include/global_arrays.php:1553
 msgid "Fixed String"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1555
+#: /var/www/html/cacti/include/global_arrays.php:1558
 msgid "Every 1 Hour"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1561
+#: /var/www/html/cacti/include/global_arrays.php:1564
 msgid "Every Day"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1562
+#: /var/www/html/cacti/include/global_arrays.php:1565
 msgid "Every Week"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1563
-#: /var/www/html/cacti/include/global_arrays.php:1564
+#: /var/www/html/cacti/include/global_arrays.php:1566
+#: /var/www/html/cacti/include/global_arrays.php:1567
 #, php-format
 msgid "Every %d Weeks"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1595
+#: /var/www/html/cacti/include/global_arrays.php:1598
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1596
+#: /var/www/html/cacti/include/global_arrays.php:1599
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1597
+#: /var/www/html/cacti/include/global_arrays.php:1600
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1598
+#: /var/www/html/cacti/include/global_arrays.php:1601
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1599
+#: /var/www/html/cacti/include/global_arrays.php:1602
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1600
+#: /var/www/html/cacti/include/global_arrays.php:1603
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1601
+#: /var/www/html/cacti/include/global_arrays.php:1604
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1602
+#: /var/www/html/cacti/include/global_arrays.php:1605
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1603
+#: /var/www/html/cacti/include/global_arrays.php:1606
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1604
+#: /var/www/html/cacti/include/global_arrays.php:1607
 msgctxt "A short textual representation of a month, three letters"
 msgid "Oct"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1605
+#: /var/www/html/cacti/include/global_arrays.php:1608
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1606
+#: /var/www/html/cacti/include/global_arrays.php:1609
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1620
+#: /var/www/html/cacti/include/global_arrays.php:1623
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1621
+#: /var/www/html/cacti/include/global_arrays.php:1624
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1622
+#: /var/www/html/cacti/include/global_arrays.php:1625
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1623
+#: /var/www/html/cacti/include/global_arrays.php:1626
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1624
+#: /var/www/html/cacti/include/global_arrays.php:1627
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1625
+#: /var/www/html/cacti/include/global_arrays.php:1628
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_arrays.php:1626
+#: /var/www/html/cacti/include/global_arrays.php:1629
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
 msgstr ""

@@ -76,7 +76,7 @@ case 'save':
 			if (get_nfilter_request_var($field_name) != '' && !is_file(get_nfilter_request_var($field_name))) {
 				$_SESSION['sess_error_fields'][$field_name] = $field_name;
 				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-				$errors[8] = 8;
+				$errors[36] = 36;
 			} else {
 				$continue = true;
 
