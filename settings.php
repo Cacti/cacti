@@ -408,7 +408,7 @@ default:
 				placeholder: '<?php print __('Enter keyword');?>',
 				width: '150'
 			});
-		} else if (currentTab == 'storage') {
+		} else if (currentTab == 'data') {
 			$('#storage_location').change(function() {
 				if ($(this).val() == '0') {
 					$('#row_rrdp_header').hide();
@@ -1002,72 +1002,6 @@ default:
 			$('#row_ping_port').hide();
 			$('#row_ping_timeout').show();
 			$('#row_ping_retries').show();
-			break;
-		}
-	}
-
-	function initFTPExport() {
-		switch($('#export_type').val()) {
-		case 'disabled':
-		case 'local':
-			$('#row_export_hdr_ftp').hide();
-			$('#row_export_ftp_sanitize').hide();
-			$('#row_export_ftp_host').hide();
-			$('#row_export_ftp_port').hide();
-			$('#row_export_ftp_passive').hide();
-			$('#row_export_ftp_user').hide();
-			$('#row_export_ftp_password').hide();
-			break;
-		case 'ftp_php':
-		case 'ftp_ncftpput':
-		case 'sftp_php':
-			$('#row_export_hdr_ftp').show();
-			$('#row_export_ftp_sanitize').show();
-			$('#row_export_ftp_host').show();
-			$('#row_export_ftp_port').show();
-			$('#row_export_ftp_passive').show();
-			$('#row_export_ftp_user').show();
-			$('#row_export_ftp_password').show();
-			break;
-		}
-	}
-
-	function initPresentation() {
-		switch($('#export_presentation').val()) {
-		case 'classical':
-			$('#row_export_tree_options').hide();
-			$('#row_export_tree_isolation').hide();
-			$('#row_export_tree_expand_hosts').hide();
-			break;
-		case 'tree':
-			$('#row_export_tree_options').show();
-			$('#row_export_tree_isolation').show();
-			$('#row_export_tree_expand_hosts').show();
-			break;
-		}
-	}
-
-	function initTiming() {
-		switch($('#export_timing').val()) {
-		case 'disabled':
-			$('#row_path_html_export_skip').hide();
-			$('#row_export_hourly').hide();
-			$('#row_export_daily').hide();
-			break;
-		case 'classic':
-			$('#row_path_html_export_skip').show();
-			$('#row_export_hourly').hide();
-			$('#row_export_daily').hide();
-			break;
-		case 'export_hourly':
-			$('#row_path_html_export_skip').hide();
-			$('#row_export_hourly').show();
-			$('#row_export_daily').hide();
-			break;
-		case 'export_daily':
-			$('#row_path_html_export_skip').hide();
-			$('#row_export_hourly').hide();
-			$('#row_export_daily').show();
 			break;
 		}
 	}

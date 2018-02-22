@@ -35,24 +35,23 @@ $dir->close();
 
 /* tab information */
 $tabs = array(
-	'general' => __('General'),
-	'path' => __('Paths'),
-	'snmp' => __('Device Defaults'),
-	'poller' => __('Poller'),
-	'storage' => __('Data Storage'),
-	'visual' => __('Visual'),
+	'general'        => __('General'),
+	'path'           => __('Paths'),
+	'snmp'           => __('Device Defaults'),
+	'poller'         => __('Poller'),
+	'data'           => __('Data'),
+	'visual'         => __('Visual'),
 	'authentication' => __('Authentication'),
-	'dsstats' => __('Data Source Statistics'),
-	'boost' => __('Performance'),
-	'spikes' => __('Spikes'),
-	'mail' => __('Mail/Reporting/DNS'));
+	'boost'          => __('Performance'),
+	'spikes'         => __('Spikes'),
+	'mail'           => __('Mail/Reporting/DNS'));
 
 $tabs_graphs = array(
-	'general' => __('General Settings'),
-	'timespan' => __('Time Spanning/Shifting'),
+	'general'   => __('General Settings'),
+	'timespan'  => __('Time Spanning/Shifting'),
 	'thumbnail' => __('Graph Thumbnail Settings'),
-	'tree' => __('Tree Settings'),
-	'fonts' => __('Graph Fonts'));
+	'tree'      => __('Tree Settings'),
+	'fonts'     => __('Graph Fonts'));
 
 $spikekill_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT gt.id, gt.name
 	FROM graph_templates AS gt
@@ -1473,46 +1472,6 @@ $settings = array(
 			),
 		),
 	'dsstats' => array(
-		'dsstats_hq_header' => array(
-			'friendly_name' => __('Data Sources Statistics'),
-			'collapsible' => 'true',
-			'method' => 'spacer',
-			),
-		'dsstats_enable' => array(
-			'friendly_name' => __('Enable Data Source Statistics Collection'),
-			'description' => __('Should Data Source Statistics be collected for this Cacti system?'),
-			'method' => 'checkbox',
-			'default' => ''
-			),
-		'dsstats_daily_interval' => array(
-			'friendly_name' => __('Daily Update Frequency'),
-			'description' => __('How frequent should Daily Stats be updated?'),
-			'default' => '60',
-			'method' => 'drop_array',
-			'array' => $dsstats_refresh_interval
-			),
-		'dsstats_hourly_duration' => array(
-			'friendly_name' => __('Hourly Average Window'),
-			'description' => __('The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables'),
-			'default' => '60',
-			'method' => 'drop_array',
-			'array' => $dsstats_hourly_avg
-			),
-		'dsstats_major_update_time' => array(
-			'friendly_name' => __('Maintenance Time'),
-			'description' => __('What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]'),
-			'method' => 'textbox',
-			'default' => '12:00am',
-			'max_length' => '20',
-			'size' => '10'
-			),
-		'dsstats_poller_mem_limit' => array(
-			'friendly_name' => __('Memory Limit for Data Source Statistics Data Collector'),
-			'description' => __('The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller'),
-			'method' => 'drop_array',
-			'default' => '1024',
-			'array' => $dsstats_max_memory
-			)
 		),
 	'boost' => array(
 		'boost_hq_header' => array(
@@ -1614,9 +1573,49 @@ $settings = array(
 			'max_length' => '255'
 			)
 		),
-	'storage' => array(
-		'general_header' => array(
-			'friendly_name' => __('General'),
+	'data' => array(
+		'dsstats_hq_header' => array(
+			'friendly_name' => __('Data Sources Statistics'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'dsstats_enable' => array(
+			'friendly_name' => __('Enable Data Source Statistics Collection'),
+			'description' => __('Should Data Source Statistics be collected for this Cacti system?'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
+		'dsstats_daily_interval' => array(
+			'friendly_name' => __('Daily Update Frequency'),
+			'description' => __('How frequent should Daily Stats be updated?'),
+			'default' => '60',
+			'method' => 'drop_array',
+			'array' => $dsstats_refresh_interval
+			),
+		'dsstats_hourly_duration' => array(
+			'friendly_name' => __('Hourly Average Window'),
+			'description' => __('The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables'),
+			'default' => '60',
+			'method' => 'drop_array',
+			'array' => $dsstats_hourly_avg
+			),
+		'dsstats_major_update_time' => array(
+			'friendly_name' => __('Maintenance Time'),
+			'description' => __('What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]'),
+			'method' => 'textbox',
+			'default' => '12:00am',
+			'max_length' => '20',
+			'size' => '10'
+			),
+		'dsstats_poller_mem_limit' => array(
+			'friendly_name' => __('Memory Limit for Data Source Statistics Data Collector'),
+			'description' => __('The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller'),
+			'method' => 'drop_array',
+			'default' => '1024',
+			'array' => $dsstats_max_memory
+			),
+		'storage_header' => array(
+			'friendly_name' => __('Data Storage Settings'),
 			'method' => 'spacer',
 			'collapsible' => 'true'
 			),
@@ -1628,8 +1627,8 @@ $settings = array(
 			'array' => array ( __('Local'), __('RRDtool Proxy Server') ),
 			),
 		'extended_paths' => array(
-			'friendly_name' => __('Structured RRD Path (/host_id/local_data_id.rrd)'),
-			'description' => __('Use a separate subfolder for each hosts RRD files.'),
+			'friendly_name' => __('Structured RRD Paths'),
+			'description' => __('Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd.'),
 			'method' => 'checkbox'
 			),
 		'rrdp_header' => array(
