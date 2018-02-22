@@ -546,6 +546,9 @@ function snmpagent_get_pluginslist(){
 					$cinfo['directory'] = $file;
 
 					$pluginslist[$file] = $cinfo;
+					if (!isset($pluginslist[$file]['status'])) {
+						$pluginslist[$file]['status'] = 0;
+					}
 				}
 			}
 		}
