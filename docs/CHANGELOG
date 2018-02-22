@@ -31,7 +31,7 @@ Cacti CHANGELOG
 -feature: Searching of SNMP Index in View Data Query Cache now works
 -feature: Updated Dutch translations
 -feature: Update JavaScript library c3.js (v0.4.21) / jstree.js (3.3.5)
--feature: Update PHPMailer to version 2.0.10
+-feature: Update PHPSecLib to version 2.0.10
 
 1.1.35
 -issue#114: *all_max_peak* percentile calculations incorrect
