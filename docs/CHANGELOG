@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#1362: DSStats Avg/Peak function broken due to change in RRDtool processing
 -issue#1365: Plugin Management - Reject invalid folder names
 -issue#1366: Improve error/info message display
+-issue#1380: Potential failure when updating script type
 -issue#1384: When installing/enabling plugins, current user and admin should get permissions
 -issue#1386: form_selectable_cell() ignores width if no style_or_class is passed
 -issue#1389: Poller is including plugins that are not installed
