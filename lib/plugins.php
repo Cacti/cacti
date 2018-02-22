@@ -670,10 +670,10 @@ function api_plugin_register_realm ($plugin, $file, $display, $admin = true) {
 		FROM plugin_realms
 		WHERE plugin = ?
 		AND file = ?',
-		array($plugin, $file), false);
+		array($plugin, $file));
 
-	if (!empty($exists)) {
-		db_execute_prepared('INSERT INTO plugin_realms
+	if ($exists === false) {
+		db_execute_prepared('REPLACE INTO plugin_realms
 			(plugin, file, display)
 			VALUES (?, ?, ?)',
 			array($plugin, $file, $display));
