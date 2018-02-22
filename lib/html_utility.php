@@ -173,6 +173,10 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
 		}
 	} else {
 		$output = 'class="nowrap"';
+
+		if ($width != '') {
+			$output .= " style='width:$width;'";
+		}
 	}
 
 	if ($title != '') {
