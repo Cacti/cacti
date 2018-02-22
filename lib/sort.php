@@ -95,3 +95,13 @@ function usort_natural($a, $b) {
 	return strnatcmp($a, $b);
 }
 
+/* sort_by_subkey - takes the list of templates and performa a final sort
+   @returns - (array) an array of sorted templates */
+function sort_by_subkey(&$array, $subkey, $sort = SORT_ASC) {
+    foreach ($array as $subarray) {
+        $keys[] = $subarray[$subkey];
+    }
+
+    array_multisort($keys, $sort, $array);
+}
+

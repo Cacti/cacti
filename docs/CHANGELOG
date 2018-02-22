@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.36
+-issue#934: Template names missing in graph management list
 -issue#1211: CDEF and VDEF Item Edit do not use form API
 -issue#1331: Maintenance time should occur at midnight, not random time in day
 -issue#1334: Console->Users->(Edit) Permissions checkmark descriptions missing

@@ -1127,7 +1127,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	return $graphs;
 }
 
-function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
+function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
 	}
@@ -1681,37 +1681,40 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 }
 
 function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
-	$templates = get_allowed_graph_templates($sql_where, $order_by, $limit, $total_rows, $user, $graph_template_id);
+	$templates = array_rekey(get_allowed_graph_templates($sql_where, $order_by, $limit, $total_rows, $user, $graph_template_id), 'id', 'name');
 
 	if (!sizeof($templates)) {
 		return array();
 	}
 
-	$new_templates = array();
-	$sql_where     = ($sql_where != '' ? ' AND ' : '') . $sql_where;
-
-	foreach ($templates as $key => $t) {
-		$dqg = db_fetch_assoc_prepared("SELECT DISTINCT sqg.id, name
-			FROM snmp_query_graph AS sqg
-			INNER JOIN graph_local AS gl
-			ON gl.snmp_query_graph_id=sqg.id
-			WHERE sqg.graph_template_id = ?
-			$sql_where
-			ORDER BY name",
-			array($t['id'])
-		);
-
-		if (sizeof($dqg)) {
-			unset($templates[$key]);
-			foreach ($dqg as $t) {
-				$new_templates[] = array('id' => 'dq_' . $t['id'], 'name' => $t['name']);
-			}
-		} else {
-			$new_templates[] = array('id' => 'cg_' . $t['id'], 'name' => $t['name']);
-		}
+	if ($sql_where != '') {
+		$sql_where     = 'WHERE (' . $sql_where . ') AND gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ')';
+	} else {
+		$sql_where     = 'WHERE gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ')';
 	}
 
-	return $new_templates;
+	if ($limit != '') {
+		$sql_limit = 'LIMIT ' . $limit;
+	} else {
+		$sql_limit = '';
+	}
+
+	$sql_order = 'ORDER BY ' . $order_by;
+
+	$templates = db_fetch_assoc("SELECT DISTINCT
+		IF(snmp_query_graph_id=0, CONCAT('cg_',gl.graph_template_id), CONCAT('dq_', gl.snmp_query_graph_id)) AS id,
+		IF(snmp_query_graph_id=0, gt.name, sqg.name) AS name
+		FROM graph_local AS gl
+		INNER JOIN graph_templates AS gt
+		ON gt.id=gl.graph_template_id
+		LEFT JOIN snmp_query_graph AS sqg
+		ON gl.snmp_query_graph_id=sqg.id
+		AND gl.graph_template_id=sqg.graph_template_id
+		$sql_where
+		$sql_order
+		$sql_limit");
+
+	return $templates;
 }
 
 /* get_host_array - returns a list of hosts taking permissions into account if necessary
