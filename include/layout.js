@@ -343,7 +343,7 @@ function updateCheckboxes(checkboxes, clicked_element) {
  *  taking action as required to enable or disable rows. */
 function applySelectorVisibilityAndActions() {
 	// Change for accessibility
-	$('input[type="checkbox"], input[type="radio"]').click(function() {
+	$('input[type="checkbox"], input[type="radio"]').unbind('click').click(function() {
 		if ($(this).is(':checked')) {
 			$(this).attr('aria-checked', 'true');
 		} else {
@@ -363,7 +363,7 @@ function applySelectorVisibilityAndActions() {
 
 	// Create Actions for Rows
 	$('tr[id^="gt_line"].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
-		$(this).click(function(data) {
+		$(this).unbind('click').click(function(data) {
 			$(this).closest('tr').toggleClass('selected');
 			var checkbox = $(this).parent().find(':checkbox');
 			checkbox.prop('checked', !checkbox.is(':checked'));
@@ -371,7 +371,7 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Checkboxes
-	$('tr[id^="gt_line"].selectable').find('input.checkbox').click(function(data) {
+	$('tr[id^="gt_line"].selectable').find('input.checkbox').unbind('click').click(function(data) {
 		if (!$(this).is(':disabled')) {
 			if ($(this).is(':checked')) {
 				$('#all_cg').prop('checked', false);
@@ -386,7 +386,7 @@ function applySelectorVisibilityAndActions() {
 
 	// Create Actions for Rows
 	lines.filter(':not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
-		$(this).click(function(e) {
+		$(this).unbind('click').click(function(e) {
 			if (e.shiftKey) {
 				updateCheckboxes(checkboxes, $(this).closest('tr').find(':checkbox'));
 			} else {
@@ -399,7 +399,7 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Checkboxes
-	lines.find('input.checkbox').click(function(e) {
+	lines.find('input.checkbox').unbind('click').click(function(e) {
 		if (!$(this).is(':disabled')) {
 			if (e.shiftKey) {
 				updateCheckboxes(checkboxes, this);
@@ -452,7 +452,7 @@ function dqUpdateDeps(snmp_query_id) {
 	var dqlines = $('tr[id^="dqline'+snmp_query_id+'_"]').not('.disabled_row');
 	var checkboxes = dqlines.find(':checkbox');
 	dqlines.each(function() {
-		$(this).find(':checkbox').click(function(e) {
+		$(this).find(':checkbox').unbind('click').click(function(e) {
 			if (e.shiftKey) {
 				updateCheckboxes(checkboxes, this);
 			} else {
@@ -463,7 +463,7 @@ function dqUpdateDeps(snmp_query_id) {
 		});
 
 		$(this).find('td').not('.checkbox').each(function() {
-			$(this).click(function(e) {
+			$(this).unbind('click').click(function(e) {
 				if (e.shiftKey) {
 					updateCheckboxes(checkboxes, $(this).closest('tr').find(':checkbox'));
 				} else {
@@ -611,7 +611,7 @@ function applySkin() {
 	});
 
 	// Debug message actions
-	$('table.debug').click(function() {
+	$('table.debug').unbind('click').click(function() {
 		if ($(this).find('table').is(':visible')) {
 			$(this).find('table').slideUp('fast');
 		} else {
@@ -619,7 +619,7 @@ function applySkin() {
 		}
 	});
 
-	$('.cactiTableCopy').click(function(event) {
+	$('.cactiTableCopy').unbind('click').click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		containerId =  $(this).attr('id');
@@ -793,7 +793,7 @@ function makeFiltersResponsive() {
 					title = $('#export').attr('value');
 					filterHeader.find('div.cactiTableButton').append('<span title="'+title+'" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"</i></span>');
 
-					$('.cactiFilterExport').click(function(event) {
+					$('.cactiFilterExport').unbind('click').click(function(event) {
 						event.stopPropagation();
 						$('#export').trigger('click');
 					}).tooltip();
@@ -803,7 +803,7 @@ function makeFiltersResponsive() {
 					title = $('#import').attr('value');
 					filterHeader.find('div.cactiTableButton').append('<span title="'+title+'" style="display:none;" class="cactiFilterImport"><i class="fa fa-arrow-up"></i></span>');
 
-					$('.cactiFilterImport').click(function(event) {
+					$('.cactiFilterImport').unbind('click').click(function(event) {
 						event.stopPropagation();
 						$('#import').trigger('click');
 					}).tooltip();
@@ -812,7 +812,7 @@ function makeFiltersResponsive() {
 				if (filterContents.find('#clear').length) {
 					filterHeader.find('div.cactiTableButton').append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash-o"></i></span>');
 
-					$('.cactiFilterClear').click(function(event) {
+					$('.cactiFilterClear').unbind('click').click(function(event) {
 						event.stopPropagation();
 						$('#clear').trigger('click');
 					}).tooltip();
@@ -820,7 +820,7 @@ function makeFiltersResponsive() {
 
 				toggleFilterAndIcon(id, child, true);
 
-				filterHeader.find('.cactiTableTitle, .cactiTableButton').click(function() {
+				filterHeader.find('.cactiTableTitle, .cactiTableButton').unbind('click').click(function() {
 					id     = $(this).closest('.cactiTable').attr('id');
 					child  = id+'_child';
 					toggleFilterAndIcon(id, child, false);
@@ -880,7 +880,7 @@ function toggleFilterAndIcon(id, child, initial) {
 }
 
 function setupResponsiveMenuAndTabs() {
-	$('a[id^="maintab-anchor"]').unbind().click(function(event) {
+	$('a[id^="maintab-anchor"]').unbind('click').click(function(event) {
 		event.preventDefault();
 
 		if ($('.cactiTreeNavigationArea').length > 0) {
@@ -1395,7 +1395,7 @@ function getPresentHTTPError(data) {
 }
 
 function ajaxAnchors() {
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"]').unbind('click').click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -1458,7 +1458,7 @@ function setupCollapsible() {
 		}
 	});
 
-	$('.collapsible').click(function(data) {
+	$('.collapsible').unbind('click').click(function(data) {
 		id=$(this).attr('id')+'_cs';
 		if ($(this).find('i').hasClass('fa-angle-double-up')) {
 			$(this).addClass('collapsed');
