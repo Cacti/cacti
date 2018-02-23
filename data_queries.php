@@ -144,15 +144,26 @@ function form_save() {
 			if ($snmp_query_id) {
 				raise_message(1);
 
-				if ($change_data_input) {
-					$data_templates = array_rekey(
-						db_fetch_assoc_prepared('SELECT DISTINCT data_template_id
-							FROM data_local
-							WHERE snmp_query_id = ?',
-							array($snmp_query_id)),
-						'data_template_id', 'data_template_id'
-					);
+				$data_templates = array_rekey(
+					db_fetch_assoc_prepared('SELECT DISTINCT data_template_id
+						FROM data_local
+						WHERE snmp_query_id = ?',
+						array($snmp_query_id)),
+					'data_template_id', 'data_template_id'
+				);
 
+				// Look for messed up templates
+				$data_inputs = db_fetch_assoc('SELECT DISTINCT data_input_id
+					FROM data_template_data
+					WHERE data_template_id IN (' . implode(', ', array_keys($data_templates)) . ')');
+
+				if (sizeof($data_inputs) > 1) {
+					$change_data_input = true;
+				} elseif ($data_inputs[0]['data_input_id'] != $save['data_input_id']) {
+					$change_data_input = true;
+				}
+
+				if ($change_data_input) {
 					if (sizeof($data_templates)) {
 						db_execute_prepared('UPDATE data_template_data
 							SET data_input_id = ?
