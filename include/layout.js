@@ -735,6 +735,8 @@ function displayMessages() {
 			title: title,
 			buttons: sessionMessageButtons
 		});
+
+		sessionMessage = null;
 	}
 }
 
