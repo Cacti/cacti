@@ -29,7 +29,6 @@ $actions = array(
 	'enable'    => __('Enable'),
 	'disable'   => __('Disable'),
 	'uninstall' => __('Uninstall'),
-//	'check' => 'Check'
 );
 
 $status_names = array(
@@ -451,6 +450,49 @@ function update_show_current () {
 	}
 
 	form_end();
+
+	$uninstall_msg = __('Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Pluign, click \'Uninstall\' below.  Otherwise click \'Cancel\'');
+	$uninstall_title = __('Are you sure you want to Uninstall?');
+
+	?>
+	<script type='text/javascript'>
+	var url = '';
+
+	$(function() {
+		$('.uninstall').click(function(event) {
+			event.preventDefault();
+			url = $(this).attr('href');
+
+			var btnUninstall = {
+				'Cancel': {
+					text: '<?php print __('Cancel');?>',
+					id: 'btnCancel',
+					click: function() {
+						$(this).dialog('close');
+					}
+				},
+				'Uninstall': {
+					text: '<?php print __('Uninstall');?>',
+					id: 'btnUninstall',
+					click: function() {
+						$('#uninstalldialog').dialog('close');
+						loadPageNoHeader(url + '&header=false');
+					}
+				}
+			};
+
+			$('body').remove('#uninstalldialog').append("<div id='uninstalldialog'><h4><?php print $uninstall_msg;?></h4></div>");
+
+			$('#uninstalldialog').dialog({
+				title: '<?php print $uninstall_title;?>',
+				minHeight: 80,
+				minWidth: 500,
+				buttons: btnUninstall
+			});
+		});
+	});
+	</script>
+	<?php
 }
 
 function format_plugin_row($plugin, $last_plugin, $include_ordering) {
@@ -511,14 +553,14 @@ function plugin_actions($plugin) {
 			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
 			break;
 		case '1':	// Currently Active
-			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a class='uninstall' href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
 			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/stop.png'></a>";
 			break;
 		case '2': // Configuration issues
-			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a class='uninstall' href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
 			break;
 		case '4':	// Installed but not active
-			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a class='uninstall' href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
 			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/accept.png'></a>";
 			break;
 		case '-3': // Plugins can have spaces in their names
