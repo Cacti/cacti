@@ -126,16 +126,11 @@ function form_save() {
 		$save['data_input_id'] = get_request_var('data_input_id');
 
 		// Detect changing input id
-		$change_data_input = false;
 		if (!empty($save['id'])) {
 			$previous_input_id = db_fetch_cell_prepared('SELECT data_input_id
 				FROM snmp_query
 				WHERE id = ?',
 				array($save['id']));
-
-			if ($previous_input_id != $save['data_input_id']) {
-				$change_data_input = true;
-			}
 		}
 
 		if (!is_error_message()) {
@@ -144,36 +139,7 @@ function form_save() {
 			if ($snmp_query_id) {
 				raise_message(1);
 
-				$data_templates = array_rekey(
-					db_fetch_assoc_prepared('SELECT DISTINCT data_template_id
-						FROM data_local
-						WHERE snmp_query_id = ?',
-						array($snmp_query_id)),
-					'data_template_id', 'data_template_id'
-				);
-
-				// Look for messed up templates
-				$data_inputs = db_fetch_assoc('SELECT DISTINCT data_input_id
-					FROM data_template_data
-					WHERE data_template_id IN (' . implode(', ', array_keys($data_templates)) . ')');
-
-				if (sizeof($data_inputs) > 1) {
-					$change_data_input = true;
-				} elseif ($data_inputs[0]['data_input_id'] != $save['data_input_id']) {
-					$change_data_input = true;
-				}
-
-				if ($change_data_input) {
-					if (sizeof($data_templates)) {
-						db_execute_prepared('UPDATE data_template_data
-							SET data_input_id = ?
-							WHERE data_input_id = ?
-							AND data_template_id IN (' . implode(', ', array_keys($data_templates)) . ')',
-							array($save['data_input_id'], $previous_input_id));
-
-						push_out_data_input_method($save['data_input_id']);
-					}
-				}
+				data_query_update_input_method($snmp_query_id, $previous_input_id, $save['data_input_id']);
 
 				update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 			} else {
