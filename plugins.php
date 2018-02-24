@@ -455,7 +455,7 @@ function update_show_current () {
 			$j++;
 		}
 	} else {
-		print '<tr><td><em>' . __('No Plugins Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . sizeof($display_text) . '"><em>' . __('No Plugins Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
