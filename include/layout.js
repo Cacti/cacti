@@ -554,6 +554,8 @@ function cactiReturnTo(href) {
 function applySkin() {
 	pageName = basename($(location).attr('pathname'));
 
+	$('#messageContainer').remove();
+
 	if (!theme || theme == 'classic') {
 		theme = 'classic';
 
@@ -708,6 +710,7 @@ function displayMessages() {
 					id: 'btnSessionMessageOk',
 					click: function() {
 						$(this).dialog('close');
+						$('#messageContainer').remove();
 					}
 				}
 			};
@@ -753,6 +756,7 @@ function sessionMessageCountdown(time) {
 		if (sessionMessageTimeLeft <= 0) {
 			clearInterval(sessionMessageTimer);
 			$('#messageContainer').dialog('close');
+			$('#messageContainer').remove();
 		}
 	}, 1000);
 }
