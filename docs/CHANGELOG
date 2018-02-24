@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue: Separate directory path and file path error messages for readability
 -issue: Reduce horizontal space used by settings tabs 
 -issue: Install directory bypassed by site replication
+-issue: Disable collapsible method for snmp options in host.php
 -feature: Searching of SNMP Index in View Data Query Cache now works
 -feature: Updated Dutch translations
 -feature: Update JavaScript library c3.js (v0.4.21) / jstree.js (3.3.5)
