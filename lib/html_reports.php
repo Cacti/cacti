@@ -1575,7 +1575,7 @@ function reports() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td><em>" . __('No Reports Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Reports Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
