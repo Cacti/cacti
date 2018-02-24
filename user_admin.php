@@ -2317,7 +2317,7 @@ function user() {
 			form_end_row();
 		}
 	} else {
-		print '<tr><td><em>' . __('No Users Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . (sizeof($display_text)+1) . '"><em>' . __('No Users Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
