@@ -1042,7 +1042,6 @@ $fields_host_edit = array(
 	'host_snmp_head' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('SNMP Options'),
-		'collapsible' => 'true'
 		),
 	'snmp_version' => array(
 		'method' => 'drop_array',

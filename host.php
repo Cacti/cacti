@@ -976,10 +976,8 @@ function device_change_javascript() {
 		$('#'+id).prop('disabled', true);
 
 		if ($('#'+id).button('instance')) {
-			console.log('button');
 			$('#'+id).button('disable');
 		} else if ($('#'+id).selectmenu('instance')) {
-			console.log('selectmenu');
 			$('#'+id).selectmenu('disable');
 		}
 	}
@@ -988,10 +986,8 @@ function device_change_javascript() {
 		$('#'+id).prop('disabled', false);
 
 		if ($('#'+id).button('instance')) {
-			console.log('button');
 			$('#'+id).button('enable');
 		} else if ($('#'+id).selectmenu('instance')) {
-			console.log('selectmenu');
 			$('#'+id).selectmenu('enable');
 		}
 	}
@@ -1048,36 +1044,36 @@ function device_javascript() {
 
 		switch(availability_method) {
 		case '0': // none
-			$('#row_ping_method').css('display', 'none');
-			$('#row_ping_port').css('display', 'none');
-			$('#row_ping_timeout').css('display', 'none');
-			$('#row_ping_retries').css('display', 'none');
+			$('#row_ping_method').hide();
+			$('#row_ping_port').hide();
+			$('#row_ping_timeout').hide();
+			$('#row_ping_retries').hide();
 
 			break;
 		case '2': // snmp
 		case '5': // snmp sysDesc
 		case '6': // snmp getNext
-			$('#row_ping_method').css('display', 'none');
-			$('#row_ping_port').css('display', 'none');
-			$('#row_ping_timeout').css('display', '');
-			$('#row_ping_retries').css('display', '');
+			$('#row_ping_method').hide();
+			$('#row_ping_port').hide();
+			$('#row_ping_timeout').show();
+			$('#row_ping_retries').show();
 
 			break;
 		default: // ping ok
 			switch(ping_method) {
 			case '1': // ping icmp
-				$('#row_ping_method').css('display', '');
-				$('#row_ping_port').css('display', 'none');
-				$('#row_ping_timeout').css('display', '');
-				$('#row_ping_retries').css('display', '');
+				$('#row_ping_method').show();
+				$('#row_ping_port').hide();
+				$('#row_ping_timeout').show();
+				$('#row_ping_retries').show();
 
 				break;
 			case '2': // ping udp
 			case '3': // ping tcp
-				$('#row_ping_method').css('display', '');
-				$('#row_ping_port').css('display', '');
-				$('#row_ping_timeout').css('display', '');
-				$('#row_ping_retries').css('display', '');
+				$('#row_ping_method').show();
+				$('#row_ping_port').show();
+				$('#row_ping_timeout').show();
+				$('#row_ping_retries').show();
 
 				break;
 			}
@@ -1093,8 +1089,8 @@ function device_javascript() {
 
 		if ($('#snmp_version').val() == '0') {
 			methods = [
-				{ value: '0', text: 'None' },
-				{ value: '3', text: 'Ping' }
+				{ value: '0', text: '<?php print __('None');?>' },
+				{ value: '3', text: '<?php print __('Ping');?>' }
 			];
 
 			if ($('#availability_method').val() != '3' && $('#availability_method').val() != '0') {
