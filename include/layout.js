@@ -674,6 +674,10 @@ function displayMessages() {
 		clearTimeout(sessionMessageTimer);
 	}
 
+	if (sessionMessage == null) {
+		return;
+	}
+
 	if (typeof sessionMessage.type != 'undefined') {
 		if (sessionMessage.type == 'error') {
 			title = errorReasonTitle;
@@ -1705,6 +1709,9 @@ function setupPageTimeout() {
 
 				/* fix coner case with tree refresh */
 				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
+				if (refreshPage.indexOf('header=false') == -1) {
+					refreshPage += (refreshPage.indexOf('?') > 0 ? '&header=fasle':'?header=false');
+				}
 
 				$.get(refreshPage)
 					.done(function(data) {
