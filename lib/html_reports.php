@@ -816,9 +816,6 @@ function reports_send($id) {
 			generate_report($report, true);
 		}
 	}
-	if ($reports_item['tree_id'] == 0) {
-		$reports_item['branch_id'] = 0;
-	}
 }
 
 function reports_item_movedown() {
