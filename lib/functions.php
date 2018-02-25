@@ -492,6 +492,10 @@ function display_output_messages() {
 	return json_encode($omessage);
 }
 
+function display_custom_error_message($message) {
+	$_SESSION['sess_messages'] = $message;
+}
+
 /* clear_messages - clears the message cache */
 function clear_messages() {
 	kill_session_var('sess_messages');
