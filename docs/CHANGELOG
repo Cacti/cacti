@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#1389: Poller is including plugins that are not installed
 -issue#1390: Have Plugin Uninstall prompt user before Uninnstalling
 -issue#1396: Prevent installation/uninstallation of a plugin if a dependency would cause issues
+-issue#1397: Distinguish between plugin tabs and core tabs in settings
 -issue: Allow dynamic setting of from name when emailing
 -issue: Data Query Cache filter layout more consistent
 -issue: Minor plugin permissions format change
