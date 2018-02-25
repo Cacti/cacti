@@ -140,7 +140,8 @@ function form_save() {
 			allow_nulls, type_code, data_name
 			FROM data_input_fields
 			WHERE data_input_id = ?
-			AND input_output = 'in'", array(get_request_var('data_input_id')));
+			AND input_output = 'in'",
+			array(get_request_var('data_input_id')));
 
 		/* pass 1 for validation */
 		if (sizeof($input_fields)) {
@@ -151,7 +152,7 @@ function form_save() {
 					if ((isset_request_var('t_' . $form_value)) &&
 						(get_nfilter_request_var('t_' . $form_value) == 'on')) {
 						$not_required = true;
-					}else if ($input_field['allow_nulls'] == 'on') {
+					} elseif ($input_field['allow_nulls'] == 'on') {
 						$not_required = true;
 					} else {
 						$not_required = false;
@@ -208,7 +209,10 @@ function form_save() {
 				push_out_data_source($data_template_data_id);
 				push_out_data_source_item($data_template_rrd_id);
 
-				db_execute_prepared('DELETE FROM data_input_data WHERE data_template_data_id = ?', array($data_template_data_id));
+				db_execute_prepared('DELETE
+					FROM data_input_data
+					WHERE data_template_data_id = ?',
+					array($data_template_data_id));
 
 				if (sizeof($input_fields)) {
 					foreach ($input_fields as $input_field) {
@@ -234,7 +238,8 @@ function form_save() {
 
 								db_execute_prepared('INSERT INTO data_input_data
 									(data_input_field_id, data_template_data_id, t_value, value)
-									VALUES (?, ?, ?, ?)', array($input_field['id'], $data_template_data_id, $template_this_item, $value));
+									VALUES (?, ?, ?, ?)',
+									array($input_field['id'], $data_template_data_id, $template_this_item, $value));
 							}
 						}
 					}
@@ -695,7 +700,7 @@ function template_edit() {
 					$class = 'odd';
 				}
 
-				if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code']) && $old_tvalue  == '') { 
+				if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code']) && $old_tvalue  == '') {
 					$title = __esc('Value will be derived from the device if this field is left empty.');
 				} else {
 					$title = '';
