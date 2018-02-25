@@ -431,8 +431,12 @@ function is_error_message() {
 	if (isset($_SESSION['sess_messages'])) {
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
-				if ($messages[$current_message_id]['type'] == 'error') { return true; }
+				if ($messages[$current_message_id]['type'] == 'error') {
+					return true;
+				}
 			}
+		} else {
+			return true;
 		}
 	}
 
@@ -450,16 +454,20 @@ function raise_message($message_id) {
 function display_output_messages() {
 	global $messages;
 
+	$omessage      = array();
 	$debug_message = debug_log_return('new_graphs');
 
 	if ($debug_message != '') {
-		print "<div id='message' class='textInfo messageBox'>";
-		print $debug_message;
-		print '</div>';
+		$omessage['type']    = 'info';
+		$omessage['message'] = $debug_message;
 
 		debug_log_clear('new_graphs');
 	} elseif (isset($_SESSION['sess_messages'])) {
-		$error_message = is_error_message();
+		if (is_error_message()) {
+			$omessage['type'] = 'error';
+		} else {
+			$omessage['type'] = 'info';
+		}
 
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
@@ -469,42 +477,23 @@ function display_output_messages() {
 						$message = $_SESSION['custom_error'];
 					}
 
-					switch ($messages[$current_message_id]['type']) {
-					case 'info':
-						if ($error_message == false) {
-							print "<div id='message' class='textInfo messageBox'>";
-							print $message;
-							print '</div>';
-
-							/* we don't need these if there are no error messages */
-							kill_session_var('sess_field_values');
-						}
-						break;
-					case 'error':
-						print "<div id='message' class='textError messageBox'>";
-						print "Error: $message";
-						print '</div>';
-						break;
-					}
+					$omessage['message'] = (isset($omessage['message']) && $omessage['message'] != '' ? $omessage['message'] . '<br>':'') . $message;
 				} else {
 					cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
 				}
 			}
 		} else {
-			display_custom_error_message($_SESSION['sess_messages']);
+			$omessage['message'] = $_SESSION['sess_messages'];
 		}
 	}
 
 	kill_session_var('sess_messages');
+
+	return json_encode($omessage);
 }
 
-/* display_custom_error_message - displays a custom error message to the browser that looks like
-     the pre-defined error messages
-   @arg $text - the actual text of the error message to display */
 function display_custom_error_message($message) {
-	print "<div id='message' class='textError messageBox'>";
-	print "Error: $message";
-	print '</div>';
+	$_SESSION['sess_messages'] = $message;
 }
 
 /* clear_messages - clears the message cache */
@@ -1612,9 +1601,9 @@ function generate_data_input_field_sequences($string, $data_input_id) {
    @arg $direction - ('next' or 'previous') whether the graph group is to be swapped with
       group above or below the current group */
 function move_graph_group($graph_template_item_id, $graph_group_array, $target_id, $direction) {
-	$graph_item = db_fetch_row_prepared('SELECT local_graph_id, graph_template_id 
-		FROM graph_templates_item 
-		WHERE id = ?', 
+	$graph_item = db_fetch_row_prepared('SELECT local_graph_id, graph_template_id
+		FROM graph_templates_item
+		WHERE id = ?',
 		array($graph_template_item_id));
 
 	if (empty($graph_item['local_graph_id'])) {
@@ -1640,9 +1629,9 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 	/* start the sequence at '1' */
 	$sequence_counter = 1;
 
-	$graph_items = db_fetch_assoc_prepared("SELECT id, sequence 
-		FROM graph_templates_item 
-		WHERE $sql_where 
+	$graph_items = db_fetch_assoc_prepared("SELECT id, sequence
+		FROM graph_templates_item
+		WHERE $sql_where
 		ORDER BY sequence");
 
 	if (sizeof($graph_items)) {
@@ -1658,16 +1647,16 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 				}
 
 				foreach ($group_array1 as $graph_template_item_id) {
-					db_execute_prepared('UPDATE graph_templates_item 
-						SET sequence = ? 
-						WHERE id = ?', 
+					db_execute_prepared('UPDATE graph_templates_item
+						SET sequence = ?
+						WHERE id = ?',
 						array($sequence_counter, $graph_template_item_id));
 
 					/* propagate to ALL graphs using this template */
 					if (empty($graph_item['local_graph_id'])) {
-						db_execute_prepared('UPDATE graph_templates_item 
-							SET sequence = ? 
-							WHERE local_graph_template_item_id = ?', 
+						db_execute_prepared('UPDATE graph_templates_item
+							SET sequence = ?
+							WHERE local_graph_template_item_id = ?',
 							array($sequence_counter, $graph_template_item_id));
 					}
 
@@ -1675,16 +1664,16 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 				}
 
 				foreach ($group_array2 as $graph_template_item_id) {
-					db_execute_prepared('UPDATE graph_templates_item 
-						SET sequence = ? 
-						WHERE id = ?', 
+					db_execute_prepared('UPDATE graph_templates_item
+						SET sequence = ?
+						WHERE id = ?',
 						array($sequence_counter, $graph_template_item_id));
 
 					/* propagate to ALL graphs using this template */
 					if (empty($graph_item['local_graph_id'])) {
-						db_execute_prepared('UPDATE graph_templates_item 
-							SET sequence = ? 
-							WHERE local_graph_template_item_id = ?', 
+						db_execute_prepared('UPDATE graph_templates_item
+							SET sequence = ?
+							WHERE local_graph_template_item_id = ?',
 							array($sequence_counter, $graph_template_item_id));
 					}
 
@@ -1694,9 +1683,9 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 
 			/* make sure to "ignore" the items that we handled above */
 			if ((!isset($graph_group_array[$item['id']])) && (!isset($target_graph_group_array[$item['id']]))) {
-				db_execute_prepared('UPDATE graph_templates_item 
-					SET sequence = ? 
-					WHERE id = ?', 
+				db_execute_prepared('UPDATE graph_templates_item
+					SET sequence = ?
+					WHERE id = ?',
 					array($sequence_counter, $item['id']));
 
 				$sequence_counter++;
@@ -1712,9 +1701,9 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 function get_graph_group($graph_template_item_id) {
 	global $graph_item_types;
 
-	$graph_item = db_fetch_row_prepared('SELECT graph_type_id, sequence, local_graph_id, graph_template_id 
-		FROM graph_templates_item 
-		WHERE id = ?', 
+	$graph_item = db_fetch_row_prepared('SELECT graph_type_id, sequence, local_graph_id, graph_template_id
+		FROM graph_templates_item
+		WHERE id = ?',
 		array($graph_template_item_id));
 
 	if (empty($graph_item['local_graph_id'])) {
@@ -1734,9 +1723,9 @@ function get_graph_group($graph_template_item_id) {
 	$graph_item_children_array[$graph_template_item_id] = $graph_template_item_id;
 
 	$graph_items = db_fetch_assoc("SELECT id, graph_type_id, text_format, hard_return
-		FROM graph_templates_item 
-		WHERE sequence > " . $graph_item['sequence'] . " 
-		AND $sql_where 
+		FROM graph_templates_item
+		WHERE sequence > " . $graph_item['sequence'] . "
+		AND $sql_where
 		ORDER BY sequence");
 
 	$is_hard = false;
@@ -1776,9 +1765,9 @@ function get_graph_group($graph_template_item_id) {
    @arg $direction - ('next' or 'previous') whether to find the next or previous parent
    @returns - (int) the ID of the next or previous parent graph item id */
 function get_graph_parent($graph_template_item_id, $direction) {
-	$graph_item = db_fetch_row_prepared('SELECT sequence, local_graph_id, graph_template_id 
-		FROM graph_templates_item 
-		WHERE id = ?', 
+	$graph_item = db_fetch_row_prepared('SELECT sequence, local_graph_id, graph_template_id
+		FROM graph_templates_item
+		WHERE id = ?',
 		array($graph_template_item_id));
 
 	if (empty($graph_item['local_graph_id'])) {
@@ -1795,12 +1784,12 @@ function get_graph_parent($graph_template_item_id, $direction) {
 		$sql_order = 'DESC';
 	}
 
-	$next_parent_id = db_fetch_cell("SELECT id 
-		FROM graph_templates_item 
-		WHERE sequence $sql_operator " . $graph_item['sequence'] . " 
+	$next_parent_id = db_fetch_cell("SELECT id
+		FROM graph_templates_item
+		WHERE sequence $sql_operator " . $graph_item['sequence'] . "
 		AND graph_type_id IN (4, 5, 6, 7, 8, 20)
-		AND $sql_where 
-		ORDER BY sequence $sql_order 
+		AND $sql_where
+		ORDER BY sequence $sql_order
 		LIMIT 1");
 
 	if (empty($next_parent_id)) {
@@ -1826,15 +1815,15 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 		$sql_order = 'DESC';
 	}
 
-	$current_sequence = db_fetch_cell_prepared("SELECT $field 
-		FROM $tblname 
-		WHERE id = ?", 
+	$current_sequence = db_fetch_cell_prepared("SELECT $field
+		FROM $tblname
+		WHERE id = ?",
 		array($startid));
 
-	$new_item_id = db_fetch_cell("SELECT id 
-		FROM $tblname 
-		WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query":"") . " 
-		ORDER BY $field $sql_order 
+	$new_item_id = db_fetch_cell("SELECT id
+		FROM $tblname
+		WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query":"") . "
+		ORDER BY $field $sql_order
 		LIMIT 1");
 
 	if (empty($new_item_id)) {
@@ -1852,8 +1841,8 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
    @returns - (int) the next available sequence id */
 function get_sequence($id, $field, $table_name, $group_query) {
 	if (empty($id)) {
-		$data = db_fetch_row("SELECT max($field)+1 AS seq 
-			FROM $table_name 
+		$data = db_fetch_row("SELECT max($field)+1 AS seq
+			FROM $table_name
 			WHERE $group_query");
 
 		if ($data['seq'] == '') {
@@ -1862,9 +1851,9 @@ function get_sequence($id, $field, $table_name, $group_query) {
 			return $data['seq'];
 		}
 	} else {
-		$data = db_fetch_row_prepared("SELECT $field 
-			FROM $table_name 
-			WHERE id = ?", 
+		$data = db_fetch_row_prepared("SELECT $field
+			FROM $table_name
+			WHERE id = ?",
 			array($id));
 
 		return $data[$field];
@@ -1878,24 +1867,24 @@ function get_sequence($id, $field, $table_name, $group_query) {
 function move_item_down($table_name, $current_id, $group_query = '') {
 	$next_item = get_item($table_name, 'sequence', $current_id, $group_query, 'next');
 
-	$sequence = db_fetch_cell_prepared("SELECT sequence 
-		FROM $table_name 
-		WHERE id = ?", 
+	$sequence = db_fetch_cell_prepared("SELECT sequence
+		FROM $table_name
+		WHERE id = ?",
 		array($current_id));
 
-	$sequence_next = db_fetch_cell_prepared("SELECT sequence 
-		FROM $table_name 
-		WHERE id = ?", 
+	$sequence_next = db_fetch_cell_prepared("SELECT sequence
+		FROM $table_name
+		WHERE id = ?",
 		array($next_item));
 
-	db_execute_prepared("UPDATE $table_name 
-		SET sequence = ? 
-		WHERE id = ?", 
+	db_execute_prepared("UPDATE $table_name
+		SET sequence = ?
+		WHERE id = ?",
 		array($sequence_next, $current_id));
 
-	db_execute_prepared("UPDATE $table_name 
-		SET sequence = ? 
-		WHERE id = ?", 
+	db_execute_prepared("UPDATE $table_name
+		SET sequence = ?
+		WHERE id = ?",
 		array($sequence, $next_item));
 }
 
@@ -1906,24 +1895,24 @@ function move_item_down($table_name, $current_id, $group_query = '') {
 function move_item_up($table_name, $current_id, $group_query = '') {
 	$last_item = get_item($table_name, 'sequence', $current_id, $group_query, 'previous');
 
-	$sequence = db_fetch_cell_prepared("SELECT sequence 
-		FROM $table_name 
-		WHERE id = ?", 
+	$sequence = db_fetch_cell_prepared("SELECT sequence
+		FROM $table_name
+		WHERE id = ?",
 		array($current_id));
 
-	$sequence_last = db_fetch_cell_prepared("SELECT sequence 
-		FROM $table_name 
-		WHERE id = ?", 
+	$sequence_last = db_fetch_cell_prepared("SELECT sequence
+		FROM $table_name
+		WHERE id = ?",
 		array($last_item));
 
-	db_execute_prepared("UPDATE $table_name 
-		SET sequence = ? 
-		WHERE id = ?", 
+	db_execute_prepared("UPDATE $table_name
+		SET sequence = ?
+		WHERE id = ?",
 		array($sequence_last, $current_id));
 
-	db_execute_prepared("UPDATE $table_name 
-		SET sequence = ? 
-		WHERE id = ?", 
+	db_execute_prepared("UPDATE $table_name
+		SET sequence = ?
+		WHERE id = ?",
 		array($sequence, $last_item));
 }
 
@@ -2033,13 +2022,23 @@ function draw_navigation_text($type = 'url') {
 			),
 		'graph.php:' => array(
 			'title' => '|current_graph_title|',
-			'mapping' => 'graph_view.php:,?',
-			'level' => '2'
+			'mapping' => 'graph_view.php:',
+			'level' => '1'
 			),
 		'graph.php:view' => array(
 			'title' => '|current_graph_title|',
-			'mapping' => 'graph_view.php:,?',
-			'level' => '2'
+			'mapping' => 'graph_view.php:',
+			'level' => '1'
+			),
+		'graph.php:zoom' => array(
+			'title' => '|current_graph_title|',
+			'mapping' => 'graph_view.php:',
+			'level' => '1'
+			),
+		'graph.php:update_timespan' => array(
+			'title' => '|current_graph_title|',
+			'mapping' => 'graph_view.php:',
+			'level' => '1'
 			),
 		'index.php:' => array(
 			'title' => __('Console'),
@@ -3536,68 +3535,30 @@ function set_page_refresh($refresh) {
 }
 
 function bottom_footer() {
-	global $config;
+	global $config, $no_session_write;
 
 	include($config['base_path'] . '/include/global_session.php');
 
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		/* display output messages */
-		display_messages();
-
 		include($config['base_path'] . '/include/bottom_footer.php');
-	} else {
-		/* display output messages */
-		display_messages();
-		display_output_messages();
-
-		/* we use this session var to store field values for when a save fails,
-		this way we can restore the field's previous values. we reset it here, because
-		they only need to be stored for a single page */
-		kill_session_var('sess_field_values');
-
-		/* close the session */
-		session_write_close();
-
-		/* make sure the debug log doesn't get too big */
-		debug_log_clear();
-
-		/* close the database connection */
-		db_close();
 	}
-}
 
-function display_messages() {
-	?>
-	<script type='text/javascript'>
-	var message = "<?php print display_output_messages();?>";
+	/* we use this session var to store field values for when a save fails,
+ 	   this way we can restore the field's previous values. we reset it here, because
+	   they only need to be stored for a single page
+	*/
+	kill_session_var('sess_field_values');
 
-	$(function() {
-		if (typeof messageTimer === 'function') {
-			clearTimeout(messageTimer);
-		}
+	/* make sure the debug log doesn't get too big */
+	debug_log_clear();
 
-		if (message != '') {
-			$('.messageContainer').empty().show().html(message);
-			message = '';
+	/* close the session */
+	if (array_search(get_current_page(), $no_session_write) === false) {
+		session_write_close();
+	}
 
-			messageTimer = setTimeout(function() {
-				$('#message_container').fadeOut(1000);
-			}, 2000);
-
-			window.scrollTo(0,0);
-		}
-
-		if (refreshMSeconds == null || refreshMSeconds < 5000) {
-			refreshMSeconds=999999999;
-		}
-
-		$(document).submit(function() {
-			$('#message_container').hide().empty();
-		});
-	});
-
-	</script>
-	<?php
+	/* close the database connection */
+	db_close();
 }
 
 function top_header() {
@@ -3624,10 +3585,16 @@ function general_header() {
 }
 
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
+	$fromname = '';
+	if (is_array($from)) {
+		$fromname = $from[1];
+		$from     = $from[0];
+	}
+
 	if ($from == '') {
 		$from     = read_config_option('settings_from_email');
 		$fromname = read_config_option('settings_from_name');
-	} else {
+	} elseif ($fromname = '') {
 		$full_name = db_fetch_cell_prepared('SELECT full_name
 			FROM user_auth
 			WHERE email_address = ?',
@@ -3664,7 +3631,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	include_once($config['include_path'] . '/phpmailer/PHPMailerAutoload.php');
 
-	// Set the to informaiotn
+	// Set the to information
 	if ($to == '') {
 		return __('Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.');
 	}
@@ -3939,7 +3906,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	if ($mail->send()) {
-		cacti_log("Mail Sucessfully Sent to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
+		cacti_log("Mail Successfully Sent to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
 
 		return '';
 	} else {

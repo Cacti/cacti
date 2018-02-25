@@ -472,7 +472,7 @@ function form_file($form_name, $form_size = 30) {
 	print "<input class='import_button' type='file'";
 
 	if (isset($_SESSION["sess_error_fields"]) && !empty($_SESSION["sess_error_fields"][$form_name])) {
-		print "class='txtErrorTextBox'";
+		print " class='txtErrorTextBox'";
 		unset($_SESSION["sess_error_fields"][$form_name]);
 	}
 
@@ -502,7 +502,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
+			print " class='txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -547,7 +547,7 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
+			print " class='txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -582,7 +582,7 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
    @arg $type - the type of textbox, either 'text' or 'password'
    @arg $current_id - used to determine if a current value for this form element
      exists or not. a $current_id of '0' indicates that no current value exists,
-     a non-zero value indicates that a current value does exist 
+     a non-zero value indicates that a current value does exist
    @arg $placeholder - place a placeholder over an empty field
    @arg $title - use a title attribute when hovering over the textbox
  */
@@ -595,7 +595,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
+			print " class='txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -809,7 +809,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
      exists or not. a $current_id of '0' indicates that no current value exists,
      a non-zero value indicates that a current value does exist
    @param string $class - specify a css class
-   @param string $on_change - specify a javascript onchange action 
+   @param string $on_change - specify a javascript onchange action
    @param string $title - specify a title for the checkbox on hover
    @param boolean $show_label - show the form caption in the checkbox
 */
@@ -1077,7 +1077,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
+			print " class='txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -1089,7 +1089,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 	}
 
 	if ($form_previous_value == '') { # no data: defaults are used; everythings fine
-			$extra_data = '';
+		$extra_data = '';
 	} else {
 		/* verifying all possible pango font params is too complex to be tested here
 		 * so we only escape the font
@@ -1231,7 +1231,7 @@ function form_start($action, $id = '') {
 function form_end($ajax = true) {
 	global $form_id, $form_action;
 
-	print "</form>\n";
+	print '</form>' . PHP_EOL;
 
 	if ($ajax) { ?>
 		<script type='text/javascript'>
@@ -1240,7 +1240,7 @@ function form_end($ajax = true) {
 				event.preventDefault();
 				strURL = '<?php print $form_action;?>';
 				strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';
-				json =  $('#<?php print $form_id;?>').serializeObject();
+				json =  $(this).serializeObject();
 				$.post(strURL, json).done(function(data) {
 					checkForLogout(data);
 

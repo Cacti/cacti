@@ -63,8 +63,19 @@ function stopRealtime() {
 		graph_id=key;
 
 		$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
-		$('#graph_'+graph_id+'_realtime').html("<img class='drillDown' title='Click to view just this Graph in Realtime' alt='' src='"+urlPath+"images/chart_curve_go.png'>");
-		$(this).find('img').tooltip().zoom({ inputfieldStartTime : 'date1', inputfieldEndTime : 'date2', serverTimeOffset : timeOffset });
+		$('#graph_'+graph_id+'_realtime').html("<img class='drillDown' alt='' title='"+realtimeClickOn+"' src='"+urlPath+"images/chart_curve_go.png'>").find('img').tooltip();
+
+		// Disable right click
+		$(this).children().bind('contextmenu', function(event) {
+			return false;
+		});
+
+		$('graph_'+graph_id).zoom({ 
+			inputfieldStartTime : 'date1', 
+			inputfieldEndTime : 'date2', 
+			serverTimeOffset : timeOffset
+		});
+
 		$('.dispose_'+graph_id).remove();
 		$('#graph_'+graph_id).css('position','').css('top','').css('left', '');
 

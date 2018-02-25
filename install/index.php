@@ -234,10 +234,14 @@ if ($step == '7') {
 		if (!empty($host_template_id)) {
 			cacti_log('Device Template for First Cacti Device is ' . $host_template_id);
 
-			$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/add_device.php" .
-				" --description=" . cacti_escapeshellarg($description) . " --ip=" . cacti_escapeshellarg($ip) . " --template=$host_template_id" .
-				" --notes=" . cacti_escapeshellarg('Initial Cacti Device') . " --poller=1 --site=0 --avail=" . cacti_escapeshellarg($avail) .
-				" --version=$version --community=" . cacti_escapeshellarg($community));
+			$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/add_device.php' .
+				' --description=' . cacti_escapeshellarg($description) .
+				' --ip=' . cacti_escapeshellarg($ip) .
+				' --template=' . $host_template_id .
+				' --notes=' . cacti_escapeshellarg('Initial Cacti Device') .
+				' --poller=1 --site=0 --avail=' . cacti_escapeshellarg($avail) .
+				' --version=' . $version .
+				' --community=' . cacti_escapeshellarg($community));
 
 			$host_id = db_fetch_cell_prepared('SELECT id
 				FROM host
@@ -251,11 +255,19 @@ if ($step == '7') {
 					WHERE host_id = ?',
 					array($host_id));
 
+				cacti_log('Creating Graphs for Default Device');
 				if (sizeof($templates)) {
 					foreach($templates as $template) {
 						automation_execute_graph_template($host_id, $template['graph_template_id']);
 					}
 				}
+
+				cacti_log('Adding Device to Default Tree');
+				shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/add_tree.php' .
+					' --type=node' .
+					' --node-type=host' .
+					' --tree-id=1' .
+					' --host-id=' . $host_id);
 			}
 		} else {
 			cacti_log('WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server.');
@@ -431,7 +443,7 @@ $enabled = '1';
 						print '<h3>' . __('Location checks') . '</h3>';
 
 						// Get request URI and break into parts
-						$test_request_uri = $_SERVER['REQUEST_URI']; 
+						$test_request_uri = $_SERVER['REQUEST_URI'];
 						$test_request_parts = parse_url($test_request_uri);
 						$test_request_path = $test_request_parts['path'];
 						$test_request_len = strlen($test_request_parts['path']);

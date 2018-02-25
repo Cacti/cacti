@@ -84,7 +84,7 @@ fieldset {
 }
 
 .checkboxLabel {
-	display:none;
+	color: #000000;
 }
 
 /* links */
@@ -499,6 +499,7 @@ label {
 	display:block;
 	float:right;
 	text-align:right;
+	padding: 0px 5px 0px 0px;
 }
 
 .reloadquery {
@@ -518,16 +519,14 @@ label {
 }
 
 .deletequery {
-	cursor: pointer;
 	color: red !important;
+	cursor: pointer;
 	padding: 2px;
 	vertical-align: middle;
-	color:red;
 	font-size:14px
 }
 
 .deletequery:hover {
-	color: red !important;
 	text-decoration: none;
 	padding: 2px;
 	vertical-align:middle;
@@ -815,15 +814,16 @@ ul#breadcrumbs {
 
 .cactiConsoleNavigationArea {
 	border-right: #aaaaaa 1px solid;
-	padding-left:0px;
-	padding-right:0px;
-	padding-top:5px;
-	vertical-align:top;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 5px;
+	vertical-align: top;
 	left: 0px;
 	top: 56px;
 	overflow-y: hidden;
 	width: 167px;
 	float: left;
+	background-color: #efefef;
 }
 
 .cactiConsoleNavigationArea table {
@@ -1072,7 +1072,7 @@ legend {
 	text-decoration: none;
 	font-size: 12px;
 	font-weight: normal;
-	padding: 3px;
+	padding: 0px;
 	white-space: nowrap;
 	cursor:pointer;
 }
@@ -1387,7 +1387,6 @@ legend {
 	color: #444;
 	float: left;
 	text-align: left;
-	font-weight: bold;
 	vertical-align: top;
 	padding-left: 0px;
 }
@@ -1527,6 +1526,7 @@ legend {
 	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -o-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
 	background: -ms-linear-gradient(top, rgba(138,179,105,1) 0%, rgba(63,117,15,1) 100%);
+	height: 24px;
 }
 
 th.sortable {
@@ -1667,6 +1667,7 @@ th.secondarySort {
 	width:100%;
 	height: 20px;
 	margin-top: auto;
+	padding-top: 4px;
 }
 
 .navBarNavigationNext i.ui-icon {
