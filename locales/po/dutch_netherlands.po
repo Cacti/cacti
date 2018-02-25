@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-10-14 08:11-0400\n"
-"PO-Revision-Date: 2017-11-11 09:30+0100\n"
+"PO-Revision-Date: 2018-02-25 16:17+0100\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: /var/www/html/cacti/about.php:29
 #: /var/www/html/cacti/include/global_session.php:108
@@ -12300,17 +12300,17 @@ msgstr ""
 #: /var/www/html/cacti/index.php:67
 #, php-format
 msgid "<a href=\"%s\">Create devices</a> for network"
-msgstr "<a href=“%s”>Creëer apparaten</a> voor netwerk"
+msgstr "<a href=\"%s\">Creëer apparaten</a> voor netwerk"
 
 #: /var/www/html/cacti/index.php:68
 #, php-format
 msgid "<a href=\"%s\">Create graphs</a> for your new devices"
-msgstr "<a href=“%s”>Creëer grafieken</a> voor uw nieuwe apparaten"
+msgstr "<a href=\"%s\">Creëer grafieken</a> voor uw nieuwe apparaten"
 
 #: /var/www/html/cacti/index.php:69
 #, php-format
 msgid "<a href=\"%s\">View</a> your new graphs"
-msgstr "<a href=“%s”>Toon</a> uw nieuwe grafieken"
+msgstr "<a href=\"%s\">Toon</a> uw nieuwe grafieken"
 
 #: /var/www/html/cacti/index.php:78
 msgid "Offline"
