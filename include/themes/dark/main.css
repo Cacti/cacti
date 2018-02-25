@@ -1480,6 +1480,7 @@ legend {
 	background: -webkit-linear-gradient(top,  #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
 	background: -o-linear-gradient(top,  #45484d 0%,#000000 100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  #45484d 0%,#000000 100%); /* IE10+ */
+	height: 24px;
 }
 
 .tableHeader th:hover:not(.primarySort) {
