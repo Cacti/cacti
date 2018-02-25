@@ -344,7 +344,7 @@ $settings = array(
             'friendly_name' => __('Language'),
             'description' => __('Default language for this system.'),
             'method' => 'drop_array',
-            'default' => 'en',
+            'default' => 'en-US',
             'array' => get_installed_locales()
             ),
         'i18n_auto_detection' => array(
