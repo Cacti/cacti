@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-25 10:37-0500\n"
-"PO-Revision-Date: 2018-02-25 17:25+0100\n"
+"PO-Revision-Date: 2018-02-25 18:38+0100\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -571,12 +571,12 @@ msgstr "Geaggregeerd voorbeeld [%s]"
 #: /var/www/html/cacti/aggregate_graphs.php:657
 #: /var/www/html/cacti/graph.php:525 /var/www/html/cacti/graphs.php:1438
 msgid "RRDtool Command:"
-msgstr "RRDTool opdracht:"
+msgstr "RRDtool opdracht:"
 
 #: /var/www/html/cacti/aggregate_graphs.php:659
 #: /var/www/html/cacti/graph.php:528 /var/www/html/cacti/graphs.php:1440
 msgid "RRDtool Says:"
-msgstr "RRDTool zegt:"
+msgstr "RRDtool zegt:"
 
 #: /var/www/html/cacti/aggregate_graphs.php:684
 #, php-format
@@ -4842,7 +4842,7 @@ msgstr "Data bron debug"
 
 #: /var/www/html/cacti/data_sources.php:1039
 msgid "RRDtool Tune Info"
-msgstr "RRDTool Tune info"
+msgstr "RRDtool tune info"
 
 #: /var/www/html/cacti/data_sources.php:1065
 #: /var/www/html/cacti/data_templates.php:970
@@ -6106,8 +6106,8 @@ msgid ""
 "the new value."
 msgstr ""
 "Klik op 'Volgende' om de hieronder vermelde apparaat opties voor een of "
-"meerdere apparaten aan te passen. Selecteer de boksen naast de velden die u "
-"wilt bijwerken en vul de nieuwe waarde in."
+"meerdere apparaten aan te passen. Selecteer het selectievak naast de velden "
+"die u wilt bijwerken en vul de nieuwe waarde in."
 
 #: /var/www/html/cacti/host.php:427
 msgid "Update this Field"
@@ -7990,7 +7990,7 @@ msgstr "Tekst"
 #: /var/www/html/cacti/include/global_arrays.php:1383
 #: /var/www/html/cacti/include/global_form.php:2215
 msgid "Tree"
-msgstr ""
+msgstr "Menu"
 
 #: /var/www/html/cacti/include/global_arrays.php:1385
 msgid "Horizontal Rule"
@@ -8486,7 +8486,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:344
 msgid "The name given to this data template."
-msgstr ""
+msgstr "De naam van dit data template."
 
 #: /var/www/html/cacti/include/global_form.php:385
 msgid ""
@@ -8500,11 +8500,11 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:389
 msgid "Data Source Path"
-msgstr ""
+msgstr "Data bron pad"
 
 #: /var/www/html/cacti/include/global_form.php:394
 msgid "The full path to the RRDfile."
-msgstr ""
+msgstr "Het volledige pad naar het RRD bestand."
 
 #: /var/www/html/cacti/include/global_form.php:403
 msgid "The script/source used to gather data for this data source."
@@ -8619,7 +8619,7 @@ msgstr "Verticaal label (—vertical-label)"
 
 #: /var/www/html/cacti/include/global_form.php:530
 msgid "The label vertically printed to the left of the graph."
-msgstr ""
+msgstr "Het label verticaal geprint aan de linkerkant van de grafiek."
 
 #: /var/www/html/cacti/include/global_form.php:534
 msgid "Image Format (--imgformat)"
@@ -8640,6 +8640,8 @@ msgid ""
 "The height (in pixels) of the graph area within the graph. This area does "
 "not include the legend, axis legends, or title."
 msgstr ""
+"De hoogte (in pixels) van het grafiek deel in de grafiek. Dit gebied omvat "
+"niet de legenda, de as legenda of de titel."
 
 #: /var/www/html/cacti/include/global_form.php:549
 msgid "Width (--width)"
@@ -8650,6 +8652,8 @@ msgid ""
 "The width (in pixels) of the graph area within the graph. This area does not "
 "include the legend, axis legends, or title."
 msgstr ""
+"De breedte (in pixels) van het grafiek deel in de grafiek. Dit gebied omvat "
+"niet de legenda, de as legenda of de titel."
 
 #: /var/www/html/cacti/include/global_form.php:557
 msgid "Base Value (--base)"
@@ -8823,11 +8827,11 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:683
 msgid "Axis Options"
-msgstr ""
+msgstr "As opties"
 
 #: /var/www/html/cacti/include/global_form.php:688
 msgid "Right Axis (--right-axis &lt;scale:shift&gt;)"
-msgstr ""
+msgstr "Rechter as (--right-axis &lt;scale:shift&gt;) "
 
 #: /var/www/html/cacti/include/global_form.php:693
 msgid ""
@@ -8839,7 +8843,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:696
 msgid "Right Axis Label (--right-axis-label &lt;string&gt;)"
-msgstr ""
+msgstr "Label rechter as (--right-axis-label &lt;string&gt;)"
 
 #: /var/www/html/cacti/include/global_form.php:701
 msgid "The label for the right axis."
@@ -8847,7 +8851,7 @@ msgstr "Het label voor de rechter as."
 
 #: /var/www/html/cacti/include/global_form.php:704
 msgid "Right Axis Format (--right-axis-format &lt;format&gt;)"
-msgstr ""
+msgstr "Formaat rechter as (--right-axis-format &lt;format&gt;)"
 
 #: /var/www/html/cacti/include/global_form.php:709
 #, php-format
@@ -8910,7 +8914,7 @@ msgstr "Dynamische labels (--dynamic-labels)"
 
 #: /var/www/html/cacti/include/global_form.php:742
 msgid "Draw line markers as a line."
-msgstr ""
+msgstr "Trek lijnmarkeringen als een lijn."
 
 #: /var/www/html/cacti/include/global_form.php:745
 msgid "Force Rules Legend (--force-rules-legend)"
@@ -8922,7 +8926,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:751
 msgid "Tab Width (--tabwidth &lt;pixels&gt;)"
-msgstr ""
+msgstr "Tab breedte (--tabwidth &lt;pixels&gt;)"
 
 #: /var/www/html/cacti/include/global_form.php:756
 msgid "By default the tab-width is 40 pixels, use this option to change it."
@@ -8930,7 +8934,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:759
 msgid "Legend Position (--legend-position=&lt;position&gt;)"
-msgstr ""
+msgstr "Legenda positie (--legend-position=&lt;position&gt;)"
 
 #: /var/www/html/cacti/include/global_form.php:763
 msgid "Place the legend at the given side of the graph."
@@ -8938,7 +8942,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:766
 msgid "Legend Direction (--legend-direction=&lt;direction&gt;)"
-msgstr ""
+msgstr "Legenda richting (—legend-direction=&lt;direction&gt;)"
 
 #: /var/www/html/cacti/include/global_form.php:770
 msgid "Place the legend items in the given vertical order."
@@ -8960,7 +8964,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:803
 msgid "The color to use for the legend."
-msgstr ""
+msgstr "De kleur van de legenda."
 
 #: /var/www/html/cacti/include/global_form.php:806
 msgid "Opacity/Alpha Channel"
@@ -9433,7 +9437,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:1578
 msgid "Import Template from Local File"
-msgstr ""
+msgstr "Importeer template vanaf een lokaal bestand"
 
 #: /var/www/html/cacti/include/global_form.php:1579
 msgid ""
@@ -9443,7 +9447,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:1584
 msgid "Import Template from Text"
-msgstr ""
+msgstr "Importeer template vanaf tekst"
 
 #: /var/www/html/cacti/include/global_form.php:1585
 msgid ""
@@ -9453,7 +9457,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:1593
 msgid "Preview Import Only"
-msgstr ""
+msgstr "Import alleen bekijken"
 
 #: /var/www/html/cacti/include/global_form.php:1595
 msgid ""
@@ -9516,7 +9520,7 @@ msgstr "SNMP Auth wachtwoord (v3)"
 
 #: /var/www/html/cacti/include/global_form.php:1709
 msgid "SNMP v3 user password for this device."
-msgstr ""
+msgstr "SNMP v3 gebruiker wachtwoord voor dit apparaat."
 
 #: /var/www/html/cacti/include/global_form.php:1718
 msgid ""
@@ -9528,7 +9532,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:1726
 msgid "SNMP Privacy Password (v3)"
-msgstr ""
+msgstr "SNMP privacy wachtwoord (v3)"
 
 #: /var/www/html/cacti/include/global_form.php:1734
 msgid "SNMP Engine ID"
@@ -9586,7 +9590,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_form.php:1896
 #: /var/www/html/cacti/include/global_form.php:1994
 msgid "Totaling"
-msgstr ""
+msgstr "In totaal"
 
 #: /var/www/html/cacti/include/global_form.php:1818
 #: /var/www/html/cacti/include/global_form.php:1897
@@ -9695,7 +9699,7 @@ msgstr "Een naam voor dit template."
 #: /var/www/html/cacti/lib/api_automation.php:1239
 #: /var/www/html/cacti/lib/api_automation.php:1301
 msgid "Operation"
-msgstr ""
+msgstr "Atie"
 
 #: /var/www/html/cacti/include/global_form.php:2080
 #: /var/www/html/cacti/include/global_form.php:2122
@@ -9856,7 +9860,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_session.php:104
 #: /var/www/html/cacti/include/global_session.php:116
 msgid "SpikeKill Results"
-msgstr ""
+msgstr "SpikeKill resultaten"
 
 #: /var/www/html/cacti/include/global_session.php:106
 msgid "Click to view just this Graph in Realtime"
@@ -9940,7 +9944,7 @@ msgstr "Wachtwoorden komen niet overeen"
 
 #: /var/www/html/cacti/include/global_session.php:134
 msgid "Sorry, we could not process your last action."
-msgstr ""
+msgstr "Sorry, we konden uw laatste actie niet verwerken."
 
 #: /var/www/html/cacti/include/global_session.php:135
 msgid "Error:"
@@ -9948,7 +9952,7 @@ msgstr "Fout:"
 
 #: /var/www/html/cacti/include/global_session.php:136
 msgid "Reason:"
-msgstr ""
+msgstr "Reden:"
 
 #: /var/www/html/cacti/include/global_session.php:137
 msgid "Action failed"
@@ -9956,7 +9960,7 @@ msgstr "Actie mislukt"
 
 #: /var/www/html/cacti/include/global_session.php:138
 msgid "The response to the last action was unexpected."
-msgstr ""
+msgstr "De response van de laatste actie was onverwacht."
 
 #: /var/www/html/cacti/include/global_session.php:139
 msgid "Operation successful"
@@ -9964,15 +9968,15 @@ msgstr "Actie succesvol uitvoerd"
 
 #: /var/www/html/cacti/include/global_session.php:140
 msgid "The Operation was successful.  Details are below."
-msgstr ""
+msgstr "The actie was succesvol. Details staan hieronder."
 
 #: /var/www/html/cacti/include/global_session.php:142
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: /var/www/html/cacti/include/global_session.php:143
 msgid "Pause"
-msgstr ""
+msgstr "Pauze"
 
 #: /var/www/html/cacti/include/global_settings.php:38
 #: /var/www/html/cacti/include/global_settings.php:904
@@ -10027,7 +10031,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:52
 msgid "Graph Thumbnail Settings"
-msgstr ""
+msgstr "Grafiek thumbnail instellingen"
 
 #: /var/www/html/cacti/include/global_settings.php:53
 msgid "Tree Settings"
@@ -10083,7 +10087,7 @@ msgstr "De locatie van de snmptrap binary."
 
 #: /var/www/html/cacti/include/global_settings.php:128
 msgid "RRDtool Binary Path"
-msgstr "RRDTool binary locatie"
+msgstr "RRDtool binary locatie"
 
 #: /var/www/html/cacti/include/global_settings.php:129
 msgid "The path to the rrdtool binary."
@@ -10316,7 +10320,7 @@ msgstr "Foutmeldingen"
 
 #: /var/www/html/cacti/include/global_settings.php:303
 msgid "Other Defaults"
-msgstr ""
+msgstr "Overige standaard instellingen"
 
 #: /var/www/html/cacti/include/global_settings.php:308
 msgid "Has Graphs/Data Sources Checked"
@@ -10336,7 +10340,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:321
 msgid "Graph Template Height"
-msgstr ""
+msgstr "Grafiek template hoogte"
 
 #: /var/www/html/cacti/include/global_settings.php:322
 #: /var/www/html/cacti/include/global_settings.php:330
@@ -10408,11 +10412,11 @@ msgstr "RRDtool versie"
 
 #: /var/www/html/cacti/include/global_settings.php:378
 msgid "The version of RRDtool that you have installed."
-msgstr "De versie van RRDTool die u heeft geïnstalleerd."
+msgstr "De versie van RRDtool die u heeft geïnstalleerd."
 
 #: /var/www/html/cacti/include/global_settings.php:384
 msgid "Graph Permission Method"
-msgstr ""
+msgstr "Grafiek autorisatie methode"
 
 #: /var/www/html/cacti/include/global_settings.php:385
 msgid ""
@@ -10479,7 +10483,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:417
 msgid "Enable Drag-N-Drop"
-msgstr ""
+msgstr "Activeer Drag-N-Drop (slepen en loslaten)"
 
 #: /var/www/html/cacti/include/global_settings.php:418
 msgid ""
@@ -10826,7 +10830,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:764
 msgid "RRDtool Graph Watermark"
-msgstr ""
+msgstr "RRDtool grafiek watermerk"
 
 #: /var/www/html/cacti/include/global_settings.php:769
 msgid "Watermark Text"
@@ -10853,11 +10857,11 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:790
 msgid "Real-time Graphs"
-msgstr ""
+msgstr "Real-time grafieken"
 
 #: /var/www/html/cacti/include/global_settings.php:795
 msgid "Enable Real-time Graphing"
-msgstr ""
+msgstr "Activeer real-time grafieken maken"
 
 #: /var/www/html/cacti/include/global_settings.php:796
 msgid ""
@@ -10876,7 +10880,7 @@ msgstr "Vernieuwingsinterval"
 
 #: /var/www/html/cacti/include/global_settings.php:809
 msgid "This is the time between graph updates."
-msgstr ""
+msgstr "Dit is de tijd tussen grafiek updates."
 
 #: /var/www/html/cacti/include/global_settings.php:815
 msgid "Cache Directory"
@@ -10895,7 +10899,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:828
 msgid "Font Selection Method"
-msgstr ""
+msgstr "Lettertype selectiemethode"
 
 #: /var/www/html/cacti/include/global_settings.php:829
 msgid "How do you wish fonts to be handled by default?"
@@ -10928,86 +10932,96 @@ msgstr ""
 #: /var/www/html/cacti/include/global_settings.php:842
 #: /var/www/html/cacti/include/global_settings.php:2031
 msgid "Title Font Size"
-msgstr ""
+msgstr "Lettertype grootte titel"
 
 #: /var/www/html/cacti/include/global_settings.php:843
 #: /var/www/html/cacti/include/global_settings.php:2032
 msgid "The size of the font used for Graph Titles"
-msgstr ""
+msgstr "De grootte van het lettertype dat wordt gebruikt voor grafiek titels"
 
 #: /var/www/html/cacti/include/global_settings.php:850
 msgid "Title Font Setting"
-msgstr ""
+msgstr "Titel lettertype instellingen"
 
 #: /var/www/html/cacti/include/global_settings.php:851
 msgid ""
 "The font to use for Graph Titles.  Enter either a valid True Type Font file "
 "or valid Pango font-config value."
 msgstr ""
+"Het lettertype dat wordt gebruikt voor grafiek titels. Vul een geldig True "
+"Type Font in of een geldig Pango lettertype-configuratie waarde."
 
 #: /var/www/html/cacti/include/global_settings.php:857
 #: /var/www/html/cacti/include/global_settings.php:2044
 msgid "Legend Font Size"
-msgstr ""
+msgstr "Legenda lettertype grootte"
 
 #: /var/www/html/cacti/include/global_settings.php:858
 #: /var/www/html/cacti/include/global_settings.php:2045
 msgid "The size of the font used for Graph Legend items"
 msgstr ""
+"De grootte van het lettertype dat wordt gebruikt voor grafiek legenda items"
 
 #: /var/www/html/cacti/include/global_settings.php:865
 msgid "Legend Font Setting"
-msgstr ""
+msgstr "Legenda lettertype instellingen"
 
 #: /var/www/html/cacti/include/global_settings.php:866
 msgid ""
 "The font to use for Graph Legends.  Enter either a valid True Type Font file "
 "or valid Pango font-config value."
 msgstr ""
+"Het lettertype dat wordt gebruikt voor grafiek legenda’s. Vul een geldig "
+"True Type Font in of een geldig Pando lettertype-configuratie waarde."
 
 #: /var/www/html/cacti/include/global_settings.php:872
 #: /var/www/html/cacti/include/global_settings.php:2057
 msgid "Axis Font Size"
-msgstr ""
+msgstr "As lettertype grootte"
 
 #: /var/www/html/cacti/include/global_settings.php:873
 #: /var/www/html/cacti/include/global_settings.php:2058
 msgid "The size of the font used for Graph Axis"
-msgstr ""
+msgstr "De grootte van het lettertype dat wordt gebruikt voor grafiek-as."
 
 #: /var/www/html/cacti/include/global_settings.php:880
 msgid "Axis Font Setting"
-msgstr ""
+msgstr "As lettertype instellingen"
 
 #: /var/www/html/cacti/include/global_settings.php:881
 msgid ""
 "The font to use for Graph Axis items.  Enter either a valid True Type Font "
 "file or valid Pango font-config value."
 msgstr ""
+"Het lettertype dat wordt gebruikt voor de grafiek as items. Vul een geldig "
+"True Type Font in of een geldig Pando lettertype-configuratie waarde."
 
 #: /var/www/html/cacti/include/global_settings.php:887
 #: /var/www/html/cacti/include/global_settings.php:2070
 msgid "Unit Font Size"
-msgstr ""
+msgstr "Eenheid lettertype grootte"
 
 #: /var/www/html/cacti/include/global_settings.php:888
 #: /var/www/html/cacti/include/global_settings.php:2071
 msgid "The size of the font used for Graph Units"
 msgstr ""
+"De grootte van het lettertype dat wordt gebruikt voor de grafiek eenheden."
 
 #: /var/www/html/cacti/include/global_settings.php:895
 msgid "Unit Font Setting"
-msgstr ""
+msgstr "Eenheid lettertype instellingen"
 
 #: /var/www/html/cacti/include/global_settings.php:896
 msgid ""
 "The font to use for Graph Unit items.  Enter either a valid True Type Font "
 "file or valid Pango font-config value."
 msgstr ""
+"Het lettertype dat wordt gebruikt voor de grafiek eenheden. Vul een geldig "
+"Trye Type Font in of een geldig pando lettertype-configuratie waarde."
 
 #: /var/www/html/cacti/include/global_settings.php:909
 msgid "Data Collection Enabled"
-msgstr ""
+msgstr "Data verzameling geactiveerd"
 
 #: /var/www/html/cacti/include/global_settings.php:910
 msgid "If you wish to stop the polling process completely, uncheck this box."
@@ -11191,7 +11205,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:1039
 msgid "Support Authentication Cookies"
-msgstr ""
+msgstr "Ondersteuning voor authenticatie cookies inschakelen"
 
 #: /var/www/html/cacti/include/global_settings.php:1040
 msgid ""
@@ -11529,7 +11543,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_settings.php:1277
 #: /var/www/html/cacti/user_domains.php:450
 msgid "LDAP Specific Search Settings"
-msgstr ""
+msgstr "LDAP specifieke zoekinstellingen"
 
 #: /var/www/html/cacti/include/global_settings.php:1281
 #: /var/www/html/cacti/user_domains.php:454
@@ -11598,7 +11612,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:1324
 msgid "Test Email"
-msgstr ""
+msgstr "Test e-mail"
 
 #: /var/www/html/cacti/include/global_settings.php:1325
 msgid ""
@@ -11780,7 +11794,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:1449
 msgid "Enable Lotus Notes (R) tweak"
-msgstr ""
+msgstr "Activeer de Lotus Notes (R) tweak"
 
 #: /var/www/html/cacti/include/global_settings.php:1450
 msgid "Enable code tweak for specific handling of Lotus Notes Mail Clients."
@@ -11918,15 +11932,15 @@ msgstr ""
 #: /var/www/html/cacti/include/global_settings.php:1554
 #: /var/www/html/cacti/utilities.php:2242
 msgid "Image Caching"
-msgstr ""
+msgstr "Afbeelding caching"
 
 #: /var/www/html/cacti/include/global_settings.php:1559
 msgid "Enable Image Caching"
-msgstr ""
+msgstr "Activeer afbeelding cachine"
 
 #: /var/www/html/cacti/include/global_settings.php:1560
 msgid "Should image caching be enabled?"
-msgstr ""
+msgstr "Moet afbeeldingen cachen worden geactiveerd?"
 
 #: /var/www/html/cacti/include/global_settings.php:1565
 msgid "Location for Image Files"
@@ -14977,21 +14991,27 @@ msgstr "Klik op 'Volgende' om de volgende rapportage(s) direct te versturen."
 #, php-format
 msgid "Unable to send Report '%d'.  Please set destination e-mail addresses"
 msgstr ""
+"Kon geen rapport verzenden '%d'. Vul alstublieft het ontvangende e-mailadres "
+"in"
 
 #: /var/www/html/cacti/lib/html_reports.php:801
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail subject"
 msgstr ""
+"Kon geen rapport verzenden '%s'. Vul alstublieft een e-mail onderwerp in"
 
 #: /var/www/html/cacti/lib/html_reports.php:806
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail From Name"
 msgstr ""
+"Kon geen rapport verzenden '%s'. Vul alstublieft de naam van de verzender in"
 
 #: /var/www/html/cacti/lib/html_reports.php:811
 #, php-format
 msgid "Unable to send Report '%s'.  Please set an e-mail from address"
 msgstr ""
+"Kon geen rapport verzenden '%s'. Vul alstublieft het verzendende e-mailadres "
+"in"
 
 #: /var/www/html/cacti/lib/html_reports.php:860
 #, php-format
@@ -15122,7 +15142,7 @@ msgstr "Grafiektemplate:"
 #: /var/www/html/cacti/lib/html_tree.php:604
 #: /var/www/html/cacti/lib/reports.php:907
 msgid "Tree:"
-msgstr ""
+msgstr "Menu:"
 
 #: /var/www/html/cacti/lib/html_tree.php:605
 #: /var/www/html/cacti/lib/reports.php:912
@@ -15153,11 +15173,11 @@ msgstr "Geselecteerd"
 #: /var/www/html/cacti/lib/html_utility.php:659
 #, php-format
 msgid "The search term \"%s\" is not valid. Error is %s"
-msgstr ""
+msgstr "De zoekterm \"%s\" is niet geldig. Foutmelding is %s"
 
 #: /var/www/html/cacti/lib/html_utility.php:805
 msgid "There was an internal error!"
-msgstr ""
+msgstr "Er was een interne fout!"
 
 #: /var/www/html/cacti/lib/html_utility.php:806
 msgid "Backtrack limit was exhausted!"
@@ -15184,7 +15204,7 @@ msgstr ""
 
 #: /var/www/html/cacti/lib/html_validate.php:57
 msgid "Validation Error"
-msgstr ""
+msgstr "Validatie foutmelding"
 
 #: /var/www/html/cacti/lib/import.php:229
 msgid "written"
@@ -15650,7 +15670,7 @@ msgstr ""
 
 #: /var/www/html/cacti/lib/rrd.php:3376
 msgid "Unknown RRDtool Error"
-msgstr "Onbekende RRDTool fout"
+msgstr "Onbekende RRDtool fout"
 
 #: /var/www/html/cacti/lib/utility.php:686
 msgid ""
