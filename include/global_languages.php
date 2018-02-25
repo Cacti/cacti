@@ -442,7 +442,6 @@ function get_list_of_locales() {
 		'hy-AM' => array('language' => 'Armenian',            'country' => 'am', 'filename' => 'armenian_armenia'),
 		'be-BY' => array('language' => 'Belarusian',          'country' => 'by', 'filename' => 'belarusian_belarus'),
 		'bg-BG' => array('language' => 'Bulgarian',           'country' => 'bg', 'filename' => 'bulgarian_bulgaria'),
-		'zh-CN' => array('language' => 'Chinese',             'country' => 'cn', 'filename' => 'chinese_china'),
 		'zh-CN' => array('language' => 'Chinese (China)',     'country' => 'cn', 'filename' => 'chinese_china_simplified'),
 		'zh-HK' => array('language' => 'Chinese (Hong Kong)', 'country' => 'hk', 'filename' => 'chinese_hong_kong'),
 		'zh-SG' => array('language' => 'Chinese (Singapore)', 'country' => 'sg', 'filename' => 'chinese_singapore'),
