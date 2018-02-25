@@ -1021,6 +1021,7 @@ $fields_host_edit = array(
 		'description' => __('Choose the Device Template to use to define the default Graph Templates and Data Queries associated with this Device.'),
 		'value' => '|arg1:host_template_id|',
 		'none_value' => __('None'),
+		'default' => read_config_option('default_template'),
 		'sql' => 'SELECT id, name FROM host_template ORDER BY name',
 		),
 	'device_threads' => array(

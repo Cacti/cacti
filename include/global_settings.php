@@ -453,6 +453,14 @@ $settings = array(
 			'method' => 'spacer',
 			'collapsible' => 'true'
 			),
+		'default_template' => array(
+			'friendly_name' => __('Template'),
+			'description' => __('The default Device Template all new Devices.'),
+			'method' => 'drop_sql',
+			'default' => '1',
+			'none_value' => __('None'),
+			'sql' => 'SELECT id, name FROM host_template ORDER BY name',
+			),
 		'default_site' => array(
 			'friendly_name' => __('Site'),
 			'description' => __('The default Site for all new Devices.'),
