@@ -23,7 +23,7 @@
 */
 
 /* default localization of Cacti */
-$cacti_locale  = 'en_US';
+$cacti_locale  = 'en-US';
 $cacti_country = 'us';
 
 /* an array that will contains all textdomains being in use. */
