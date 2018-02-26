@@ -1274,6 +1274,10 @@ function utilities_view_snmp_cache() {
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
+		'with_index' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'default' => '0'
+			),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
@@ -1312,6 +1316,11 @@ function utilities_view_snmp_cache() {
 	function applyFilter() {
 		strURL  = urlPath+'utilities.php?host_id=' + $('#host_id').val();
 		strURL += '&snmp_query_id=' + $('#snmp_query_id').val();
+		if ($('#with_index').is(':checked')) {
+			strURL += '&with_index=1';
+		} else {
+			strURL += '&with_index=0';
+		}
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&action=view_snmp_cache';
@@ -1349,12 +1358,6 @@ function utilities_view_snmp_cache() {
 		<form id='form_snmpcache' action='utilities.php'>
 			<table class='filterTable'>
 				<tr>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
 						<?php print __('Query Name');?>
@@ -1390,6 +1393,22 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
+						<span>
+							<input type='submit' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						</span>
+					</td>
+				</tr>
+			</table>
+			<table class='filterTable'>
+				<tr>
+					<td>
+						<?php print __('Search');?>
+					</td>
+					<td>
+						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+					</td>
+					<td>
 						<?php print __('Rows');?>
 					</td>
 					<td>
@@ -1405,10 +1424,8 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
-						<span>
-							<input type='submit' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-						</span>
+						<input id='with_index' type='checkbox' onChange='applyFilter()' title='<?php print __esc('Allow the search term to include the index column');?>' <?php if (get_request_var('with_index') == 1) { print ' checked '; }?>>
+						<label for='with_index'><?php print __('Include Index') ?></label>
 					</td>
 				</tr>
 			</table>
@@ -1444,7 +1461,11 @@ function utilities_view_snmp_cache() {
 			OR sq.name LIKE '%" . get_request_var('filter') . "%'
 			OR hsc.field_name LIKE '%" . get_request_var('filter') . "%'
 			OR hsc.field_value LIKE '%" . get_request_var('filter') . "%'
-			OR hsc.oid LIKE '%" . get_request_var('filter') . "%')";
+			OR hsc.oid LIKE '%" . get_request_var('filter') . "%'";
+		if (get_request_var('with_index') == 1) {
+			$sql_where .= " OR hsc.snmp_index LIKE '%" . get_request_var('filter') . "%'";
+		}
+		$sql_where .= ")";
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)

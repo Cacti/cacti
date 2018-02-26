@@ -531,44 +531,31 @@ function snmpagent_get_pluginslist(){
 	}
 
 	$path = $config['base_path'] . '/plugins/';
-	$dh = opendir($path);
+	$dh   = opendir($path);
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
-			if ((is_dir("$path/$file")) &&
-				!in_array($file, $plugins_integrated) &&
-				(file_exists("$path/$file/setup.php")) &&
-				(!array_key_exists($file, $pluginslist))
-			) {
-				include_once("$path/$file/setup.php");
-				if (!function_exists('plugin_' . $file . '_install') && function_exists($file . '_version')) {
-					$function = $file . '_version';
-					$cinfo = $function();
+			if ((is_dir("$path/$file")) && !in_array($file, $plugins_integrated) &&
+				(file_exists("$path/$file/setup.php")) && (!array_key_exists($file, $pluginslist))) {
+				if (file_exists("$path/$file/INFO")) {
+					$cinfo = plugin_load_info_file("$path/$file/INFO");
+
 					if (!isset($cinfo['author']))   $cinfo['author']   = 'Unknown';
 					if (!isset($cinfo['homepage'])) $cinfo['homepage'] = 'Not Stated';
 					if (isset($cinfo['webpage']))   $cinfo['homepage'] = $cinfo['webpage'];
 					if (!isset($cinfo['longname'])) $cinfo['longname'] = ucfirst($file);
-					$cinfo['status'] = -2; // old PIA -- disabled
-					if (in_array($file, $plugins)) {
-						$cinfo['status'] = -1; // old PIA -- enabled
-					}
 					$cinfo['directory'] = $file;
-					$pluginslist[$file] = $cinfo;
 
-				} elseif (function_exists('plugin_' . $file . '_install') && function_exists('plugin_' . $file . '_version')) {
-					$function = 'plugin_' . $file . '_version';
-					$cinfo = $function();
-					$cinfo['status'] = 0;
-					if (!isset($cinfo['author']))   $cinfo['author']   = 'Unknown';
-					if (!isset($cinfo['homepage'])) $cinfo['homepage'] = 'Not Stated';
-					if (isset($cinfo['webpage']))   $cinfo['homepage'] = $cinfo['webpage'];
-					if (!isset($cinfo['longname'])) $cinfo['homepage'] = ucfirst($file);
-					$cinfo['directory'] = $file;
 					$pluginslist[$file] = $cinfo;
+					if (!isset($pluginslist[$file]['status'])) {
+						$pluginslist[$file]['status'] = 0;
+					}
 				}
 			}
 		}
+
 		closedir($dh);
 	}
+
 	return $pluginslist;
 }
 
